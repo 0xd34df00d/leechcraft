@@ -1,0 +1,643 @@
+#include <QtGui>
+#include <QtNetwork>
+#include <QtDebug>
+#include <plugininterface/proxy.h>
+#include <interfaces/interfaces.h>
+#include <settingsdialog/settingsdialog.h>
+#include "httpplugin.h"
+#include "settingsmanager.h"
+#include "jobadderdialog.h"
+#include "jobparams.h"
+#include "job.h"
+#include "jobmanager.h"
+#include "jobrepresentation.h"
+#include "joblistitem.h"
+#include "finishedjob.h"
+#include "mainviewdelegate.h"
+
+void HttpPlugin::Init ()
+{
+	ProvidesList_ << "http" << "ftp" << "resume";
+
+	JobManager_ = new JobManager (this);
+	connect (JobManager_, SIGNAL (jobAdded (unsigned int)), this, SLOT (pushJob (unsigned int)));
+	connect (JobManager_, SIGNAL (updateJobDisplay (unsigned int)), this, SLOT (updateJobDisplay (unsigned int)));
+	connect (JobManager_, SIGNAL (jobRemoved (unsigned int)), this, SLOT (handleJobRemoval (unsigned int)));
+	connect (JobManager_, SIGNAL (jobFinished (unsigned int)), this, SLOT (handleJobFinish (unsigned int)));
+	connect (JobManager_, SIGNAL (jobStarted (unsigned int)), this, SLOT (handleJobStart (unsigned int)));
+	connect (JobManager_, SIGNAL (deleteJob (unsigned int)), this, SLOT (handleJobDelete (unsigned int)));
+	connect (JobManager_, SIGNAL (showError (QString, QString)), this, SLOT (showJobErrorMessage (QString, QString)));
+	connect (JobManager_, SIGNAL (stopped (unsigned int)), this, SLOT (showStoppedIndicator (unsigned int)));
+
+	setWindowTitle (tr ("HTTP/FTP worker 0.2"));
+	setWindowIcon (QIcon (":/resources/images/pluginicon.png"));
+
+	SetupMainWidget ();
+
+	FillInterface ();
+	ReadSettings ();
+	JobManager_->SetTheMain (TasksList_);
+	JobManager_->DoDelayedInit ();
+
+	IsShown_ = false;
+
+	SettingsDialog_ = new SettingsDialog (this);
+	SettingsDialog_->RegisterObject (SettingsManager::Instance ());
+
+	QTimer *speedUpdTimer = new QTimer (this);
+	speedUpdTimer->setInterval (1000);
+	connect (speedUpdTimer, SIGNAL (timeout ()), this, SLOT (handleTotalSpeedUpdate ()));
+	speedUpdTimer->start ();
+}
+
+HttpPlugin::~HttpPlugin ()
+{
+}
+
+void HttpPlugin::FillInterface ()
+{
+	QToolBar *toolstb = addToolBar (tr ("&Tools"));
+	toolstb->setIconSize (QSize (16, 16));
+	QMenuBar *menuBar = new QMenuBar ();
+	setMenuBar (menuBar);
+	QMenu *jobsMenu = menuBar->addMenu (tr ("&Jobs"));
+	QMenu *toolsMenu = menuBar->addMenu (tr ("&Tools"));
+
+	SetupJobManagementBar ();
+	SetupJobManagementMenu (jobsMenu);
+	SetupToolsBar (toolstb);
+	SetupToolsMenu (toolsMenu);
+	SetupStatusBarStuff ();
+}
+
+void HttpPlugin::SetupJobManagementBar ()
+{
+	AddJobAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/addjob.png"), tr ("Add job..."), this, SLOT (initiateJobAddition ()));
+	AddJobAction_->setShortcut (Qt::Key_Insert);
+
+	DeleteJobAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/deletejob.png"), tr ("Delete selected active job"), this, SLOT (deleteDownloadSelected ()));
+	DeleteJobAction_->setShortcut (Qt::Key_Delete);
+
+	JobManagementToolbar_->addSeparator ();
+
+	StartJobAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/startjob.png"), tr ("Start current"), this, SLOT (startDownloadSelected ()));
+	StartJobAction_->setShortcut (tr ("Ctrl+S"));
+
+	StartAllAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/startall.png"), tr ("Start all"), this, SLOT (startDownloadAll ()));
+	StartAllAction_->setShortcut (tr ("Ctrl+Shift+S"));
+
+	StopJobAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/stopjob.png"), tr ("Stop current"), this, SLOT (stopDownloadSelected ()));
+	StopJobAction_->setShortcut (tr ("Ctrl+I"));
+
+	StopAllAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/stopall.png"), tr ("Stop all"), this, SLOT (stopDownloadAll ()));
+	StopAllAction_->setShortcut (tr ("Ctrl+Shift+I"));
+
+	DeleteFinishedAction_ = FinishedManagementToolbar_->addAction (QIcon (":/resources/images/deletejob.png"), tr ("Delete selected finished job"), this, SLOT (deleteDownloadSelectedFinished ()));
+	DeleteFinishedAction_->setShortcut (Qt::Key_Delete & Qt::ShiftModifier);
+
+	ToggleTasksListDependentActions (false);
+}
+
+void HttpPlugin::SetupJobManagementMenu (QMenu *jobsMenu)
+{
+	jobsMenu->addAction (AddJobAction_);
+	jobsMenu->addAction (DeleteJobAction_);
+	jobsMenu->addSeparator ();
+	jobsMenu->addAction (DeleteFinishedAction_);
+	jobsMenu->addSeparator ();
+	jobsMenu->addAction (StartJobAction_);
+	jobsMenu->addAction (StartAllAction_);
+	jobsMenu->addAction (StopJobAction_);
+	jobsMenu->addAction (StopAllAction_);
+	jobsMenu->addSeparator ();
+}
+
+void HttpPlugin::SetupToolsBar (QToolBar *toolstb)
+{
+	AutoAdjustInterfaceAction_ = toolstb->addAction (QIcon (":/resources/images/autoadjustiface.png"), tr ("Autoadjust interface"), this, SLOT (autoAdjustInterface ()));
+
+	PreferencesAction_ = toolstb->addAction (QIcon (":/resources/images/preferences.png"), tr ("Preferences..."), this, SLOT (showPreferences ()));
+	PreferencesAction_->setShortcut (tr ("Ctrl+P"));
+}
+
+void HttpPlugin::SetupToolsMenu (QMenu *toolsMenu)
+{
+	toolsMenu->addAction (AutoAdjustInterfaceAction_);
+	toolsMenu->addAction (PreferencesAction_);
+}
+
+void HttpPlugin::SetupStatusBarStuff ()
+{
+	SpeedIndicator_ = new QLabel ("0");
+	SpeedIndicator_->setMinimumWidth (70);
+	SpeedIndicator_->setAlignment (Qt::AlignRight);
+	statusBar ()->addPermanentWidget (SpeedIndicator_);
+}
+
+void HttpPlugin::ToggleTasksListDependentActions (bool enable)
+{
+	DeleteJobAction_->setEnabled (enable);
+	StartJobAction_->setEnabled (enable);
+	StartAllAction_->setEnabled (enable);
+	StopJobAction_->setEnabled (enable);
+	StopAllAction_->setEnabled (enable);
+}
+
+void HttpPlugin::ToggleFinishedListDependentActions (bool enable)
+{
+	DeleteFinishedAction_->setEnabled (enable);
+}
+
+void HttpPlugin::SetupMainWidget ()
+{
+	Splitter_ = new QSplitter (Qt::Vertical, this);
+	setCentralWidget (Splitter_);
+
+	Splitter_->addWidget (SetupTasksPart ());
+	Splitter_->addWidget (SetupFinishedPart ());
+	Splitter_->show ();
+}
+
+QWidget* HttpPlugin::SetupTasksPart ()
+{
+	TasksList_ = new QTreeWidget (this);
+	TasksList_->setItemDelegate (new MainViewDelegate (this));
+	TasksList_->header ()->setClickable (false);
+	TasksList_->setRootIsDecorated (false);
+	TasksList_->setSelectionMode (QAbstractItemView::ExtendedSelection);
+	TasksList_->setEditTriggers (QAbstractItemView::NoEditTriggers);
+	QStringList taskHeaderLabels;
+	taskHeaderLabels << tr ("ID") << tr ("Local name") << tr ("URL") << tr ("%") << tr ("Speed") << tr ("Downloaded size") << tr ("Total size");
+	TasksList_->setHeaderLabels (taskHeaderLabels);
+	TasksList_->header ()->setStretchLastSection (true);
+	TasksList_->header ()->setHighlightSections (false);
+	TasksList_->header ()->setDefaultAlignment (Qt::AlignLeft);
+
+	JobManagementToolbar_ = new QToolBar;
+	JobManagementToolbar_->setIconSize (QSize (16, 16));
+	QWidget *container = new QWidget;
+	QVBoxLayout *lay = new QVBoxLayout;
+	container->setLayout (lay);
+	lay->setSpacing (0);
+	lay->addWidget (JobManagementToolbar_);
+	lay->addWidget (TasksList_);
+
+	return container;
+}
+
+QWidget* HttpPlugin::SetupFinishedPart ()
+{
+	FinishedList_ = new QTreeWidget (this);
+	FinishedList_->setRootIsDecorated (false);
+	FinishedList_->setSelectionMode (QAbstractItemView::SingleSelection);
+	FinishedList_->setEditTriggers (QAbstractItemView::NoEditTriggers);
+	QStringList finishedHeaderLabels;
+	finishedHeaderLabels << tr ("Local name") << tr ("URL") << tr ("Size");
+	FinishedList_->setHeaderLabels (finishedHeaderLabels);
+	FinishedList_->header ()->setStretchLastSection (true);
+	FinishedList_->header ()->setHighlightSections (false);
+	FinishedList_->header ()->setDefaultAlignment (Qt::AlignLeft);
+
+	FinishedManagementToolbar_ = new QToolBar;
+	FinishedManagementToolbar_->setIconSize (QSize (16, 16));
+	QWidget *container = new QWidget;
+	QVBoxLayout *lay = new QVBoxLayout;
+	container->setLayout (lay);
+	lay->setSpacing (0);
+	lay->addWidget (FinishedManagementToolbar_);
+	lay->addWidget (FinishedList_);
+
+	return container;
+}
+
+QString HttpPlugin::GetName () const
+{
+	return Globals::Name;
+}
+
+QString HttpPlugin::GetInfo () const
+{
+	return "Simple HTTP and FTP plugin, providing basic functionality.";
+}
+
+QString HttpPlugin::GetStatusbarMessage () const
+{
+	return "Yeah, that works!";
+}
+
+IInfo& HttpPlugin::SetID (IInfo::ID_t id)
+{
+	ID_ = id;
+	return *this;
+}
+
+IInfo::ID_t HttpPlugin::GetID () const
+{
+	return ID_;
+}
+
+QStringList HttpPlugin::Provides () const
+{
+	return ProvidesList_;
+}
+
+QStringList HttpPlugin::Needs () const
+{
+	return NeedsList_;
+}
+
+QStringList HttpPlugin::Uses () const
+{
+	return QStringList ();
+}
+
+void HttpPlugin::SetProvider (QObject*, const QString&)
+{
+	// As we don't need nothing for now, just return
+}
+
+void HttpPlugin::Release ()
+{
+	JobManager_->Release ();
+	writeSettings ();
+	SettingsManager::Instance ()->Release ();
+
+	delete JobManager_;
+	JobManager_ = 0;
+}
+
+QIcon HttpPlugin::GetIcon () const
+{
+	return QIcon (":/resources/images/pluginicon.png");
+}
+
+void HttpPlugin::SetParent (QWidget *parent)
+{
+	setParent (parent);
+}
+
+void HttpPlugin::ShowWindow ()
+{
+	IsShown_ = 1 - IsShown_;
+	IsShown_ ? show () : hide ();
+}
+
+void HttpPlugin::ShowBalloonTip ()
+{
+}
+
+void HttpPlugin::StartAll ()
+{
+	JobManager_->StartAll ();
+}
+
+void HttpPlugin::StopAll ()
+{
+	JobManager_->StopAll ();
+}
+
+void HttpPlugin::StartAt (IDownload::JobID_t id)
+{
+	JobManager_->Start (id);
+}
+
+void HttpPlugin::StopAt (IDownload::JobID_t id)
+{
+	JobManager_->Stop (id);
+}
+
+void HttpPlugin::DeleteAt (IDownload::JobID_t id)
+{
+	JobManager_->DeleteAt (id);
+}
+
+int HttpPlugin::AddDownload (const DirectDownloadParams& params)
+{
+	JobParams *jp = new JobParams;
+	jp->IsFullName_				= true;
+	jp->URL_					= params.Resource_;
+	jp->LocalName_				= params.Location_;
+	jp->Autostart_				= params.Autostart_;
+	jp->ShouldBeSavedInHistory_	= params.ShouldBeSavedInHistory_;
+	return handleParams (jp);
+}
+
+void HttpPlugin::RemoveDownload (int id)
+{
+}
+
+int HttpPlugin::GetDownloadPercentage (int id) const
+{
+}
+
+IDirectDownload::Error HttpPlugin::GetDownloadStatus (int) const
+{
+}
+
+uint HttpPlugin::GetVersion () const
+{
+	return QDateTime (QDate (2007, 11, 30), QTime (10, 11)).toTime_t ();
+}
+
+int HttpPlugin::GetPercentageForRow (int row)
+{
+	JobRepresentation *jr = JobManager_->GetJobRepresentation (dynamic_cast<JobListItem*> (TasksList_->topLevelItem (row))->GetID ());
+	return jr->Size_ ? jr->Downloaded_ * 100 / jr->Size_ : 0;
+}
+
+qint64 HttpPlugin::GetDownloadSpeed () const
+{
+	return JobManager_->GetDownloadSpeed ();
+}
+
+qint64 HttpPlugin::GetUploadSpeed () const
+{
+	return 0;
+}
+
+void HttpPlugin::initiateJobAddition ()
+{
+	JobAdderDialog *dia = new JobAdderDialog ();
+	connect (dia, SIGNAL (gotParams (JobParams*)), this, SLOT (handleParams (JobParams*)));
+	dia->exec ();
+	delete dia;
+}
+
+int HttpPlugin::handleParams (JobParams *params)
+{
+	return JobManager_->addJob (params);
+}
+
+void HttpPlugin::pushJob (unsigned int id)
+{
+	JobRepresentation *jr = JobManager_->GetJobRepresentation (id);
+	JobListItem *item = new JobListItem;
+	item->SetID (jr->ID_);
+	item->setIcon (TListID,			QIcon (":/resources/images/stopjob.png"));
+	item->setText (TListLocalName,	QFileInfo (jr->LocalName_).fileName ());
+	item->setText (TListURL,		jr->URL_);
+	item->setText (TListPercent,	"0");
+	item->setText (TListSpeed,		"0.0");
+	item->setText (TListDownloaded,	"");
+	item->setText (TListTotal,		"");
+	TasksList_->addTopLevelItem (item);
+	delete jr;
+
+	ToggleTasksListDependentActions (true);
+}
+
+void HttpPlugin::updateJobDisplay (unsigned int id)
+{
+	JobRepresentation *jr = JobManager_->GetJobRepresentation (id);
+
+	int rowCount = TasksList_->topLevelItemCount ();
+	for (int i = 0; i < rowCount; ++i)
+		if (dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i))->GetID () == id)
+		{
+			QTreeWidgetItem *item = TasksList_->topLevelItem (i);
+			item->setText (TListLocalName, QFileInfo (jr->LocalName_).fileName ());
+			if (jr->Size_)
+				item->setText (TListPercent, QString::number (jr->Downloaded_ * 100 / jr->Size_));
+			else
+				item->setText (TListPercent, QString (tr ("0")));
+			item->setText (TListSpeed, Proxy::Instance ()->MakePrettySize (jr->Speed_) + "/s");
+			item->setText (TListDownloaded, Proxy::Instance ()->MakePrettySize (jr->Downloaded_));
+			item->setText (TListTotal, Proxy::Instance ()->MakePrettySize (jr->Size_));
+		}
+
+	delete jr;
+}
+
+void HttpPlugin::handleJobRemoval (unsigned int id)
+{
+	int rowCount = TasksList_->topLevelItemCount ();
+	for (int i = 0; i < rowCount; ++i)
+		if (dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i))->GetID () == id)
+		{
+			delete TasksList_->takeTopLevelItem (i);
+			ToggleTasksListDependentActions (TasksList_->topLevelItemCount ());
+			return;
+		}
+}
+
+void HttpPlugin::handleJobFinish (unsigned int id)
+{
+	emit jobFinished (id);
+
+	JobRepresentation *jr = JobManager_->GetJobRepresentation (id);
+	JobManager_->DeleteAt (id);
+
+	qDebug () << jr->ShouldBeSavedInHistory_;
+
+	if (jr->ShouldBeSavedInHistory_)
+	{
+		FinishedJob fj (*jr);
+		AddToFinishedList (&fj);
+	}
+
+	delete jr;
+
+	if (!SaveChangesScheduled_)
+	{
+		SaveChangesScheduled_ = true;
+		QTimer::singleShot (1000, this, SLOT (writeSettings ()));
+	}
+}
+
+void HttpPlugin::handleJobStart (unsigned int id)
+{
+	int rowCount = TasksList_->topLevelItemCount ();
+	for (int i = 0; i < rowCount; ++i)
+		if (dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i))->GetID () == id)
+				dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i))->setIcon (TListID, QIcon (":/resources/images/startjob.png"));
+}
+
+void HttpPlugin::handleJobDelete (unsigned int id)
+{
+	JobManager_->DeleteAt (id);
+}
+
+void HttpPlugin::startDownloadSelected ()
+{
+	HandleSelected (JAStart);
+}
+
+void HttpPlugin::stopDownloadSelected ()
+{
+	HandleSelected (JAStop);
+}
+
+void HttpPlugin::deleteDownloadSelected ()
+{
+	HandleSelected (JADelete);
+}
+
+void HttpPlugin::deleteDownloadSelectedFinished ()
+{
+	QList<QTreeWidgetItem*> items = FinishedList_->selectedItems ();
+
+	for (int i = 0; i < items.size (); ++i)
+		delete items [i];
+
+	ToggleFinishedListDependentActions (FinishedList_->topLevelItemCount ());
+}
+
+void HttpPlugin::startDownloadAll ()
+{
+	StartAll ();
+}
+
+void HttpPlugin::stopDownloadAll ()
+{
+	StopAll ();
+}
+
+void HttpPlugin::showPreferences ()
+{
+	SettingsDialog_->show ();
+	SettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
+}
+
+void HttpPlugin::showJobErrorMessage (QString url, QString message)
+{
+	QMessageBox::warning (this, tr ("Job error"), tr ("Job with URL %1 signals about following error:<br /><code>%2</code>").arg (url).arg (message));
+}
+
+void HttpPlugin::showStoppedIndicator (unsigned int id)
+{
+	for (int i = 0; i < TasksList_->topLevelItemCount (); ++i)
+	{
+		JobListItem *item = dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i));
+		if (item->GetID () == id)
+			item->setIcon (TListID, QIcon (":/resources/images/stopjob.png"));
+	}
+}
+
+void HttpPlugin::handleTotalSpeedUpdate ()
+{
+	SpeedIndicator_->setText (Proxy::Instance ()->MakePrettySize (GetDownloadSpeed ()) + tr ("/s"));
+}
+
+void HttpPlugin::autoAdjustInterface ()
+{
+	if (TasksList_->topLevelItemCount ())
+		for (int i = 0; i < TasksList_->columnCount (); ++i)
+			TasksList_->resizeColumnToContents (i);
+	if (FinishedList_->topLevelItemCount ())
+		for (int i = 0; i < FinishedList_->columnCount (); ++i)
+			FinishedList_->resizeColumnToContents (i);
+}
+
+void HttpPlugin::writeSettings ()
+{
+	SaveChangesScheduled_ = false;
+
+	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
+	settings.beginGroup (GetName ());
+	settings.beginGroup ("geometry");
+	settings.setValue ("size", size ());
+	settings.setValue ("pos", pos ());
+	settings.setValue ("jobListHeadersState", TasksList_->header ()->saveState ());
+	settings.setValue ("finishedListHeadersState", FinishedList_->header ()->saveState ());
+	settings.setValue ("splitterState", Splitter_->saveState ());
+	settings.endGroup ();
+
+	settings.beginWriteArray ("finished");
+	for (int i = 0; i < FinishedList_->topLevelItemCount (); ++i)
+	{
+		settings.setArrayIndex (i);
+		QByteArray arr;
+		QDataStream str (&arr, QIODevice::WriteOnly);
+		FinishedList_->topLevelItem (i)->write (str);
+		settings.setValue ("representation", arr);
+	}
+	settings.endArray ();
+	settings.endGroup ();
+}
+
+void HttpPlugin::ReadSettings ()
+{
+	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
+	settings.beginGroup (GetName ());
+	settings.beginGroup ("geometry");
+	resize (settings.value ("size", QSize (640, 480)).toSize ());
+	move   (settings.value ("pos",  QPoint (10, 10)).toPoint ());
+
+	QByteArray splitterArr = settings.value ("splitterState").toByteArray ();
+	if (!splitterArr.isEmpty () && !splitterArr.isNull ())
+		Splitter_->restoreState (splitterArr);
+
+	QByteArray jobListArr = settings.value ("jobListHeadersState").toByteArray ();
+	if (!jobListArr.isEmpty () && !jobListArr.isNull ())
+		TasksList_->header ()->restoreState (jobListArr);
+	else if (TasksList_->topLevelItemCount ())
+	{
+		for (int i = 0; i < TasksList_->columnCount (); ++i)
+			TasksList_->resizeColumnToContents (i);
+	}
+
+	QByteArray finishedListArr = settings.value ("finishedListHeadersState").toByteArray ();
+	if (!finishedListArr.isEmpty () && !finishedListArr.isNull ())
+		FinishedList_->header ()->restoreState (finishedListArr);
+	else if (FinishedList_->topLevelItemCount ())
+	{
+		for (int i = 0; i < TasksList_->columnCount (); ++i)
+			FinishedList_->resizeColumnToContents (i);
+	}
+
+	settings.endGroup ();
+
+	int size = settings.beginReadArray ("finished");
+	ToggleFinishedListDependentActions (size);
+	for (int i = 0; i < size; ++i)
+	{
+		settings.setArrayIndex (i);
+		QTreeWidgetItem item;
+		QDataStream str (settings.value ("representation").toByteArray ());
+		item.read (str);
+		FinishedList_->addTopLevelItem (new QTreeWidgetItem (item));
+	}
+	settings.endArray ();
+	settings.endGroup ();
+}
+
+void HttpPlugin::AddToFinishedList (const FinishedJob *fj)
+{
+	QTreeWidgetItem *item = new QTreeWidgetItem;
+	item->setText (FListLocalName, QFileInfo (fj->GetLocal ()).fileName ());
+	item->setText (FListURL, fj->GetURL ());
+	item->setText (FListSize, Proxy::Instance ()->MakePrettySize (fj->GetSize ()));
+
+	FinishedList_->addTopLevelItem (item);
+
+	ToggleFinishedListDependentActions (true);
+}
+
+void HttpPlugin::HandleSelected (JobAction ja)
+{
+	if (!TasksList_->topLevelItemCount ())
+		return;
+	QList<QTreeWidgetItem*> items = TasksList_->selectedItems ();
+
+	for (int i = 0; i < items.size (); ++i)
+	{
+		JobListItem *item = dynamic_cast<JobListItem*> (items [i]);
+		switch (ja)
+		{
+			case JAStart:
+				StartAt (item->GetID ());
+				item->setIcon (TListID, QIcon (":/resources/images/startjob.png"));
+				break;
+			case JAStop:
+				StopAt (item->GetID ());
+				item->setIcon (TListID, QIcon (":/resources/images/stopjob.png"));
+				break;
+			case JADelete:
+				DeleteAt (item->GetID ());
+				break;
+		}
+	}
+}
+
+Q_EXPORT_PLUGIN2 (leechcraft_http, HttpPlugin);
+

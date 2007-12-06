@@ -1,0 +1,14 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource>
+        <file>resources/images/pluginicon.png</file>
+        <file>resources/images/addjob.png</file>
+        <file>resources/images/deletejob.png</file>
+        <file>resources/images/startjob.png</file>
+        <file>resources/images/startall.png</file>
+        <file>resources/images/stopjob.png</file>
+        <file>resources/images/stopall.png</file>
+        <file>resources/images/preferences.png</file>
+		<file>resources/images/autoadjustiface.png</file>
+    </qresource>
+</RCC>
