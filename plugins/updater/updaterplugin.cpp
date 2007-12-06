@@ -13,6 +13,7 @@ void UpdaterPlugin::Init ()
 	connect (Core_, SIGNAL (error (const QString&)), this, SLOT (handleError (const QString&)));
 	Core_->start (QThread::LowestPriority);
 	setWindowTitle (tr ("Updater"));
+	setWindowIcon (GetIcon ());
 	IsShown_ = false;
 	SaveChangesScheduled_ = false;
 
@@ -82,7 +83,7 @@ void UpdaterPlugin::Release ()
 
 QIcon UpdaterPlugin::GetIcon () const
 {
-	return QIcon ();
+	return QIcon (":/resources/images/updater.png");
 }
 
 void UpdaterPlugin::SetParent (QWidget *parent)
@@ -134,9 +135,10 @@ void UpdaterPlugin::SetupToolbars ()
 
 void UpdaterPlugin::SetupActions ()
 {
-	CheckForUpdates_ = MainToolbar_->addAction (tr ("Check for updates"), Core_, SLOT (checkForUpdates ()));
+	CheckForUpdates_ = MainToolbar_->addAction (QIcon (":/resources/images/check.png"), tr ("Check for updates"), Core_, SLOT (checkForUpdates ()));
+	DownloadUpdates_ = MainToolbar_->addAction (QIcon (":/resources/images/download.png"), tr ("Download updates"), Core_, SLOT (downloadUpdates ()));
 	MainToolbar_->addSeparator ();
-	Settings_ = MainToolbar_->addAction (tr ("Settings..."), this, SLOT (showSettings ()));
+	Settings_ = MainToolbar_->addAction (QIcon (":/resources/images/preferences.png"), tr ("Settings..."), this, SLOT (showSettings ()));
 }
 
 void UpdaterPlugin::SetupMenus ()

@@ -12,4 +12,5 @@ INCLUDEPATH += .
 QT += xml
 HEADERS += updaterplugin.h globals.h settingsmanager.h core.h
 SOURCES += updaterplugin.cpp settingsmanager.cpp core.cpp
+RESOURCES += resources.qrc
 win32:LIBS += -L../.. -lplugininterface -lexceptions -lsettingsdialog

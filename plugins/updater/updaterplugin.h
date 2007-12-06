@@ -21,7 +21,7 @@ class UpdaterPlugin : public QMainWindow
 	SettingsDialog *SettingsDialog_;
 	QTreeWidget *Updates_;
 	QToolBar *MainToolbar_;
-	QAction *CheckForUpdates_, *Settings_;
+	QAction *CheckForUpdates_, *DownloadUpdates_, *Settings_;
 	bool SaveChangesScheduled_;
 
 	enum Columns
