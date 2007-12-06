@@ -8,6 +8,7 @@ CONFIG += release
 DEPENDPATH += .
 INCLUDEPATH += .
 DESTDIR = .
+win32:DESTDIR = ..
 
 # Input
 HEADERS += generic.h invalidparameter.h logic.h notimplemented.h outofbounds.h io.h situative.h

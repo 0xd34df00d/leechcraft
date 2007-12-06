@@ -5,6 +5,7 @@
 TEMPLATE = lib
 TARGET = settingsdialog
 DESTDIR = .
+win32:DESTDIR = ../
 DEPENDPATH += .
 INCLUDEPATH += .
 

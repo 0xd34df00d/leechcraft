@@ -7,6 +7,7 @@ TARGET = leechcraft
 DEPENDPATH += .
 INCLUDEPATH += .
 DESTDIR = .
+win32:DESTDIR = ./
 
 # Input
 HEADERS += mainwindow.h \
@@ -27,5 +28,4 @@ SOURCES += mainwindow.cpp \
 RESOURCES = resources.qrc
 CONFIG  += release threads warn_on
 LIBS    += -lexceptions -lplugininterface -lsettingsdialog
-#QMAKE_LFLAGS += -fPIC
 win32:LIBS += -L.

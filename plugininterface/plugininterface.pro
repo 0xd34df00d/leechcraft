@@ -7,6 +7,7 @@ TARGET = plugininterface
 DEPENDPATH += .
 INCLUDEPATH += .
 DESTDIR = .
+win32:DESTDIR = ..
 
 # Input
 HEADERS += addressparser.h proxy.h tcpsocket.h filewriter.h filewriterthread.h socketexceptions.h
