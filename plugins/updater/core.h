@@ -50,11 +50,13 @@ public:
 	Core ();
 	virtual ~Core ();
 	void SetProvider (QObject*, const QString&);
+	bool IsChecking () const;
 public slots:
 	void checkForUpdates ();
 signals:
 	void error (const QString&);
 	void gotFile (const QString&, const QString&, const QString&);
+	void finishedLoop ();
 private slots:
 	void handleDownloadFinished (int);
 	void handleDownloadRemoved (int);

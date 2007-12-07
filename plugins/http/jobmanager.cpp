@@ -110,7 +110,9 @@ qint64 JobManager::GetDownloadSpeed () const
 	qint64 result = 0;
 	for (int i = 0; i < Jobs_.size (); ++i)
 	{
-		result += Jobs_ [i]->GetRepresentation ()->Speed_;
+		JobRepresentation *jr = Jobs_ [i]->GetRepresentation ();
+		result += jr->Speed_;
+		delete jr;
 	}
 
 	return result;

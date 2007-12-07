@@ -59,8 +59,10 @@ private:
 private slots:
 	void saveSettings ();
 	void showSettings ();
+	void initCheckForUpdates ();
 	void addFile (const QString&, const QString&, const QString&);
 	void handleError (const QString&);
+	void setActionsEnabled ();
 };
 
 #endif

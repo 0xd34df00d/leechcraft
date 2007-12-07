@@ -17,6 +17,7 @@
 
 void HttpPlugin::Init ()
 {
+	SaveChangesScheduled_ = false;
 	ProvidesList_ << "http" << "ftp" << "resume";
 
 	JobManager_ = new JobManager (this);
@@ -342,7 +343,9 @@ uint HttpPlugin::GetVersion () const
 int HttpPlugin::GetPercentageForRow (int row)
 {
 	JobRepresentation *jr = JobManager_->GetJobRepresentation (dynamic_cast<JobListItem*> (TasksList_->topLevelItem (row))->GetID ());
-	return jr->Size_ ? jr->Downloaded_ * 100 / jr->Size_ : 0;
+	int result = jr->Size_ ? jr->Downloaded_ * 100 / jr->Size_ : 0;
+	delete jr;
+	return result;
 }
 
 qint64 HttpPlugin::GetDownloadSpeed () const

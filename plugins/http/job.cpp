@@ -121,6 +121,8 @@ void Job::Start ()
 			case FileExistsDialog::Abort:
 				throw Exceptions::Logic ("Abort requested");
 		}
+
+		delete fe;
 	}
 
 	delete File_;

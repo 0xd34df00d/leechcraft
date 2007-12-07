@@ -36,6 +36,11 @@ void Core::SetProvider (QObject* provider, const QString& feature)
 	}
 }
 
+bool Core::IsChecking () const
+{
+	return (CheckState_ == ShouldCheck || CheckState_ == Checking);
+}
+
 void Core::checkForUpdates ()
 {
 	if (CheckState_ == ShouldCheck || CheckState_ == Checking)
@@ -78,12 +83,15 @@ void Core::run ()
 		if (ShouldaDownload_)
 			Download ();
 
+		emit finishedLoop ();
+
 		Waiter_.first->unlock ();
 	}
 }
 
 bool Core::Check ()
 {
+	CheckState_ = Checking;
 	QStringList mirrors = SettingsManager::Instance ()->GetMirrors ();
 	bool result = false;
 	for (int i = 0; i < mirrors.size (); ++i)

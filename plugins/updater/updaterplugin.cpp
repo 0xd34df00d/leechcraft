@@ -11,6 +11,7 @@ void UpdaterPlugin::Init ()
 	Core_ = new Core;
 	connect (Core_, SIGNAL (gotFile (const QString&, const QString&, const QString&)), this, SLOT (addFile (const QString&, const QString&, const QString)));
 	connect (Core_, SIGNAL (error (const QString&)), this, SLOT (handleError (const QString&)));
+	connect (Core_, SIGNAL (finishedLoop ()), this, SLOT (setActionsEnabled ()));
 	Core_->start (QThread::LowestPriority);
 	setWindowTitle (tr ("Updater"));
 	setWindowIcon (GetIcon ());
@@ -21,8 +22,8 @@ void UpdaterPlugin::Init ()
 	SettingsDialog_->RegisterObject (SettingsManager::Instance ());
 
 	SetupInterface ();
-
 	ReadSettings ();
+	setActionsEnabled ();
 }
 
 UpdaterPlugin::~UpdaterPlugin ()
@@ -78,7 +79,10 @@ void UpdaterPlugin::SetProvider (QObject* provider, const QString& feature)
 void UpdaterPlugin::Release ()
 {
 	saveSettings ();
+	delete SettingsDialog_;
 	delete Core_;
+	SettingsDialog_ = 0;
+	Core_ = 0;
 }
 
 QIcon UpdaterPlugin::GetIcon () const
@@ -135,7 +139,7 @@ void UpdaterPlugin::SetupToolbars ()
 
 void UpdaterPlugin::SetupActions ()
 {
-	CheckForUpdates_ = MainToolbar_->addAction (QIcon (":/resources/images/check.png"), tr ("Check for updates"), Core_, SLOT (checkForUpdates ()));
+	CheckForUpdates_ = MainToolbar_->addAction (QIcon (":/resources/images/check.png"), tr ("Check for updates"), this, SLOT (initCheckForUpdates ()));
 	DownloadUpdates_ = MainToolbar_->addAction (QIcon (":/resources/images/download.png"), tr ("Download updates"), Core_, SLOT (downloadUpdates ()));
 	MainToolbar_->addSeparator ();
 	Settings_ = MainToolbar_->addAction (QIcon (":/resources/images/preferences.png"), tr ("Settings..."), this, SLOT (showSettings ()));
@@ -178,6 +182,13 @@ void UpdaterPlugin::showSettings ()
 	SettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
 }
 
+void UpdaterPlugin::initCheckForUpdates ()
+{
+	Updates_->clear ();
+	Core_->checkForUpdates ();
+	QTimer::singleShot (2, this, SLOT (setActionsEnabled ()));
+}
+
 void UpdaterPlugin::addFile (const QString& name, const QString& loc, const QString& descr)
 {
 	QTreeWidgetItem *item = new QTreeWidgetItem (Updates_);
@@ -193,6 +204,18 @@ void UpdaterPlugin::handleError (const QString& error)
 {
 	qDebug () << error;
 	QMessageBox::warning (this, tr ("Error!"), error);
+}
+
+void UpdaterPlugin::setActionsEnabled ()
+{
+	if (!Updates_->topLevelItemCount ())
+		DownloadUpdates_->setEnabled (false);
+	else if (Updates_->topLevelItemCount ())
+	{
+		// Check if some are selected
+	}
+
+	CheckForUpdates_->setEnabled (!Core_->IsChecking ());
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_updater, UpdaterPlugin);

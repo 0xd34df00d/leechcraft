@@ -19,6 +19,12 @@ Converter::Converter (QObject *parent)
 
 Converter::~Converter ()
 {
+	QList<QWidget*> keys = Widget2Object_.keys ();
+	for (int i = 0; i < keys.size (); ++i)
+	{
+		delete keys [i];
+		keys [i] = 0;
+	}
 }
 
 bool Converter::MakeLabel () const
