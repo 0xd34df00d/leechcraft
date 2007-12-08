@@ -4,6 +4,7 @@
 #include <QVector>
 #include <QMap>
 #include <QMultiMap>
+#include <QStack>
 
 class Job;
 struct JobParams;
@@ -22,8 +23,10 @@ class JobManager : public QObject
 
 	QVector<Job*> Jobs_;
 	QMap<unsigned int, QVector<Job*>::size_type> ID2Pos_;		// It's not position in the QListWidget etc, but position in the Jobs_ vector
+	int TotalDownloads_;
 	QMap<QString, int> DownloadsPerHost_;
-	QMultiMap<QString, int> ScheduledJobs_;
+	QMultiMap<QString, int> ScheduledJobsForHosts_;
+	QStack<int> ScheduledJobs_;
 	QVector<unsigned int> IDPool_;
 	QVector<qint64> JobSpeeds_;
 
@@ -57,6 +60,7 @@ signals:
 	void stopped (unsigned int);
 private slots:
 	void jobStopHandler (unsigned int);
+	void enqueue (unsigned int);
 	void handleJobDisplay (unsigned int);
 	void saveSettings ();
 private:

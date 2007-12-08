@@ -160,6 +160,7 @@ void Job::Run ()
 	connect (ProtoImp_, SIGNAL (finished ()), this, SLOT (reemitFinished ()), Qt::DirectConnection);
 	connect (ProtoImp_, SIGNAL (error (QString)), this, SLOT (handleShowError (QString)));
 	connect (ProtoImp_, SIGNAL (stopped ()), this, SLOT (reemitStopped ()));
+	connect (ProtoImp_, SIGNAL (enqueue ()), this, SLOT (reemitEnqueue ()));
 
 	ProtoImp_->SetURL (Params_->URL_);
 	ProtoImp_->SetRestartPosition (RestartPosition_);
@@ -283,6 +284,12 @@ void Job::handleShowError (QString error)
 void Job::reemitStopped ()
 {
 	emit stopped (GetID ());
+}
+
+void Job::reemitEnqueue ()
+{
+	qDebug () << Q_FUNC_INFO;
+	emit enqueue (GetID ());
 }
 
 void Job::FillErrorDictionary ()

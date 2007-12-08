@@ -74,7 +74,11 @@ void FtpImp::run ()
 
 	try
 	{
-		Negotiate ();
+		if (!Negotiate ())
+		{
+			Finalize ();
+			return;
+		}
 	}
 	catch (WrongLogin)
 	{
@@ -228,7 +232,8 @@ bool FtpImp::Negotiate ()
 	QFileInfo fileInfo (ControlSocket_->GetAddressParser ()->GetPath ());
 
 	HandleWelcome ();
-	Login (login, password);
+	if (!Login (login, password))
+		return false;
 	DoCwd (fileInfo.dir ().path ());
 	DoPasv ();
 
@@ -243,6 +248,8 @@ bool FtpImp::Negotiate ()
 void FtpImp::HandleWelcome ()
 {
 	ReadCtrlResponse ();
+	if (Result_ == 421)
+		emit enqueue ();
 }
 
 void FtpImp::DoCwd (const QString& dir)
@@ -289,7 +296,6 @@ void FtpImp::DoQuery (const QFileInfo& fileInfo)
 			listing = DataSocket_->ReadAll ().trimmed ();
 		}
 		catch (...) {}
-		qDebug () << Q_FUNC_INFO << listing;
 		if (listing.isEmpty ())
 			throw WrongPath ();
 		QStringList files = listing.split ("\r\n");
@@ -349,6 +355,7 @@ bool FtpImp::Login (const QString& login, const QString& password)
 
 	ControlSocket_->Write ("USER " + login + "\r\n", false);
 	ReadCtrlResponse ();
+	qDebug () << "After user result is" << Result_;
 	if (Result_ == 331 || Result_ == 220)
 	{
 		// All's ok, but we need password
@@ -360,15 +367,21 @@ bool FtpImp::Login (const QString& login, const QString& password)
 	}
 	else if (Result_ == 421)
 	{
-		// Maybe too much connections, let's try again later
-		qDebug () << Q_FUNC_INFO << "resp code 421 not implemented yet.";
+		emit enqueue ();
+		return false;
 	}
 	else
 		throw WrongLogin ();
 
 	ControlSocket_->Write ("PASS " + password + "\r\n", false);
 	ReadCtrlResponse ();
-	if (Result_ != 230 && Result_ != 220)
+	qDebug () << "After password result is" << Result_;
+	if (Result_ == 421)
+	{
+		emit enqueue ();
+		return false;
+	}
+	else if (Result_ != 230 && Result_ != 220)
 		throw WrongPassword ();
 
 	return true;

@@ -120,7 +120,7 @@ void SettingsDialog::RegisterObject (QObject *object)
 		if (TypeHandler_->MakeLabel (object->property (propName.toAscii ().data ()), sii))
 		{
 			QHBoxLayout *tmplay = new QHBoxLayout;
-			tmplay->addWidget (new QLabel (sii.Label_, this), 0, Qt::AlignTop);
+			tmplay->addWidget (new QLabel (sii.Label_, this));
 			tmplay->addWidget (representator);
 			layToAdd->addLayout (tmplay);
 		}

@@ -95,7 +95,6 @@ QVariant QStringConverter::ReadSetting (QWidget *w) const
 {
 	QLineEdit *le = qobject_cast<QLineEdit*> (w);
 	FilePickerWidget *fpw = qobject_cast<FilePickerWidget*> (w);
-	qDebug () << Q_FUNC_INFO << le << fpw;
 	if (fpw)
 		return fpw->text ();
 	else if (le)

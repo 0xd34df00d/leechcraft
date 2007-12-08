@@ -19,6 +19,7 @@
 JobManager::JobManager (QObject *parent)
 : QObject (parent)
 , SaveChangesScheduled_ (false)
+, TotalDownloads_ (0)
 {
 	IDPool_.resize (PoolSize_);
 	for (unsigned int i = 0; i < PoolSize_; ++i)
@@ -81,6 +82,7 @@ int JobManager::addJob (JobParams *params)
 	connect (job, SIGNAL (finished (unsigned int)), this, SLOT (jobStopHandler (unsigned int)));
 	connect (job, SIGNAL (deleteJob (unsigned int)), this, SLOT (jobStopHandler (unsigned int)));
 	connect (job, SIGNAL (stopped (unsigned int)), this, SLOT (jobStopHandler (unsigned int)));
+	connect (job, SIGNAL (enqueue (unsigned int)), this, SLOT (enqueue (unsigned int)));
 
 	connect (job, SIGNAL (updateDisplays (unsigned int)), this, SLOT (handleJobDisplay (unsigned int)));
 	connect (job, SIGNAL (finished (unsigned int)), this, SIGNAL (jobFinished (unsigned int)));
@@ -133,8 +135,14 @@ void JobManager::Start (unsigned int id)
 
 	if (DownloadsPerHost_ [host] >= SettingsManager::Instance ()->GetMaxConcurrentPerServer ())
 	{
-		qDebug () << Q_FUNC_INFO << "job enqueued, cuz max limit reached:" << DownloadsPerHost_ [host];;
-		ScheduledJobs_.insert (host, id);
+		ScheduledJobsForHosts_.insert (host, id);
+		emit jobWaiting (id);
+		return;
+	}
+
+	if (TotalDownloads_ >= SettingsManager::Instance ()->GetMaxTotalConcurrent ())
+	{
+		ScheduledJobs_.push (id);
 		emit jobWaiting (id);
 		return;
 	}
@@ -143,6 +151,7 @@ void JobManager::Start (unsigned int id)
 	{
 		Jobs_ [ID2Pos_ [id]]->Start ();
 		++DownloadsPerHost_ [host];
+		++TotalDownloads_;
 		emit jobStarted (id);
 	}
 	catch (Exceptions::IO& e)
@@ -195,18 +204,34 @@ void JobManager::jobStopHandler (unsigned int id)
 	QString host = QUrl (jr->URL_).host ();
 	delete jr;
 
-	qDebug () << Q_FUNC_INFO << DownloadsPerHost_ [host] << ScheduledJobs_.value (host);
-
-	--DownloadsPerHost_ [host];
+	if (DownloadsPerHost_ [host])
+		--DownloadsPerHost_ [host];
+	if (TotalDownloads_ > 0)
+		--TotalDownloads_;
 
 	if (DownloadsPerHost_ [host] < SettingsManager::Instance ()->GetMaxConcurrentPerServer () &&
-		ScheduledJobs_.contains (host) &&
-		ScheduledJobs_.value (host))
+		ScheduledJobsForHosts_.contains (host) &&
+		ScheduledJobsForHosts_.value (host))
 	{
-		qDebug () << Q_FUNC_INFO << "dequeueing job" << ScheduledJobs_.value (host) << "for host" << host << "; number of current jobs:" << DownloadsPerHost_ [host];
-		Start (ScheduledJobs_.value (host));
-		ScheduledJobs_.remove (host, ScheduledJobs_.value (host));
+		Start (ScheduledJobsForHosts_.value (host));
+		ScheduledJobsForHosts_.remove (host, ScheduledJobsForHosts_.value (host));
+		return;
 	}
+
+	if (TotalDownloads_ < SettingsManager::Instance ()->GetMaxTotalConcurrent () &&
+		!ScheduledJobs_.isEmpty ())
+	{
+		Start (ScheduledJobs_.pop ());
+		return;
+	}
+}
+
+void JobManager::enqueue (unsigned int id)
+{
+	qDebug () << Q_FUNC_INFO;
+	Stop (id);
+	emit jobWaiting (id);
+	jobStopHandler (id);
 }
 
 void JobManager::handleJobDisplay (unsigned int id)

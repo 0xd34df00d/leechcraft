@@ -36,6 +36,7 @@ void SettingsManager::ReadSettings ()
 	UserAgent_.Val ().first		= settings.value ("UserAgent.First").toStringList ();
 	UserAgent_.Val ().second	= settings.value ("UserAgent.Second", 3).toInt ();
 	MaxConcurrentPerServer_		= settings.value ("MaxConcurrentPerServer", 5).toInt ();
+	MaxTotalConcurrent_			= settings.value ("MaxTotalConcurrent", 5).toInt ();
 	settings.endGroup ();
 	settings.endGroup ();
 
@@ -69,6 +70,7 @@ void SettingsManager::WriteSettings ()
 	settings.setValue ("UserAgent.First", UserAgent_.Val ().first);
 	settings.setValue ("UserAgent.Second", UserAgent_.Val ().second);
 	settings.setValue ("MaxConcurrentPerServer", MaxConcurrentPerServer_);
+	settings.setValue ("MaxTotalConcurrent", MaxTotalConcurrent_);
 	settings.endGroup ();
 	settings.endGroup ();
 }
@@ -82,6 +84,10 @@ void SettingsManager::InitializeMap ()
 	SettingsItemInfo maxConcurrentPerServer = SettingsItemInfo (tr ("Max concurrent jobs per server"), tr ("Network options"));
 	maxConcurrentPerServer.IntRange_ = qMakePair (1, 99);	
 	PropertyInfo_ ["MaxConcurrentPerServer"] = maxConcurrentPerServer;
+
+	SettingsItemInfo maxTotalConcurrent = SettingsItemInfo (tr ("Max total concurrent jobs"), tr ("Network options"));
+	maxTotalConcurrent.IntRange_ = qMakePair (1, 99);	
+	PropertyInfo_ ["MaxTotalConcurrent"] = maxTotalConcurrent;
 
 	SettingsItemInfo connectTimeoutInfo = SettingsItemInfo (tr ("Connection timeout"), tr ("Network options"));
 	connectTimeoutInfo.SpinboxSuffix_ = tr (" ms");
@@ -119,13 +125,13 @@ void SettingsManager::InitializeMap ()
 	resourcePassword.BrowseButton_ = false;
 	PropertyInfo_ ["ResourcePassword"] = resourcePassword;
 
-	SettingsItemInfo cacheSize = SettingsItemInfo (tr ("Cache size"), tr ("System options"), tr ("IO"));
+	SettingsItemInfo cacheSize = SettingsItemInfo (tr ("Cache size"), tr ("Local options"), tr ("IO"));
 	cacheSize.SpinboxSuffix_ = tr (" kb");
 	cacheSize.SpinboxStep_ = 4;
 	cacheSize.IntRange_ = qMakePair (0, 1024);
 	PropertyInfo_ ["CacheSize"] = cacheSize;
 
-	SettingsItemInfo autostartChildren = SettingsItemInfo (tr ("Autostart spawned jobs"), tr ("Job options"));
+	SettingsItemInfo autostartChildren = SettingsItemInfo (tr ("Autostart spawned jobs"), tr ("Local options"));
 	PropertyInfo_ ["AutostartChildren"] = autostartChildren;
 
 	SettingsItemInfo userAgent = SettingsItemInfo (tr ("Mask as user agent"), tr ("HTTP options"));
@@ -311,6 +317,17 @@ int SettingsManager::GetMaxConcurrentPerServer () const
 void SettingsManager::SetMaxConcurrentPerServer (int value)
 {
 	MaxConcurrentPerServer_ = value;
+	ScheduleFlush ();
+}
+
+int SettingsManager::GetMaxTotalConcurrent () const
+{
+	return MaxTotalConcurrent_;
+}
+
+void SettingsManager::SetMaxTotalConcurrent (int value)
+{
+	MaxTotalConcurrent_ = value;
 	ScheduleFlush ();
 }
 

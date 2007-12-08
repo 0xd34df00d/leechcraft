@@ -33,6 +33,7 @@ signals:
 	void stopped ();
 	void warning (QString);
 	void error (QString);
+	void enqueue ();
 };
 
 #endif

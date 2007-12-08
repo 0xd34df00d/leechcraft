@@ -53,6 +53,7 @@ private slots:
 	void reemitFinished ();
 	void handleShowError (QString);
 	void reemitStopped ();
+	void reemitEnqueue ();
 signals:
 	void updateDisplays (unsigned int);
 	void finished (unsigned int);
@@ -60,6 +61,7 @@ signals:
 	void addJob (JobParams*);
 	void showError (QString, QString);
 	void stopped (unsigned int);
+	void enqueue (unsigned int);
 private:
 	JobType JobType_;
 
