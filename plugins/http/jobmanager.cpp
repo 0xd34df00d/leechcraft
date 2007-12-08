@@ -3,11 +3,13 @@
 #include <QVariantList>
 #include <QSettings>
 #include <QTimer>
+#include <QUrl>
 #include <exceptions/io.h>
 #include <exceptions/logic.h>
 #include <plugininterface/proxy.h>
-#include "httpplugin.h"
 #include "jobmanager.h"
+#include "settingsmanager.h"
+#include "httpplugin.h"
 #include "job.h"
 #include "jobparams.h"
 #include "jobrepresentation.h"
@@ -76,6 +78,10 @@ int JobManager::addJob (JobParams *params)
 
 	emit jobAdded (id);
 
+	connect (job, SIGNAL (finished (unsigned int)), this, SLOT (jobStopHandler (unsigned int)));
+	connect (job, SIGNAL (deleteJob (unsigned int)), this, SLOT (jobStopHandler (unsigned int)));
+	connect (job, SIGNAL (stopped (unsigned int)), this, SLOT (jobStopHandler (unsigned int)));
+
 	connect (job, SIGNAL (updateDisplays (unsigned int)), this, SLOT (handleJobDisplay (unsigned int)));
 	connect (job, SIGNAL (finished (unsigned int)), this, SIGNAL (jobFinished (unsigned int)));
 	connect (job, SIGNAL (deleteJob (unsigned int)), this, SIGNAL (deleteJob (unsigned int)));
@@ -85,16 +91,17 @@ int JobManager::addJob (JobParams *params)
 
 	job->DoDelayedInit ();
 
+	QString host = QUrl (params->URL_).host ();
+	if (!DownloadsPerHost_.contains (host))
+		DownloadsPerHost_ [host ] = 0;
+
 	if (params->Autostart_)
-	{
-		job->Start ();
-		emit jobStarted (id);
-	}
+		Start (id);
 
 	if (!SaveChangesScheduled_)
 	{
 		SaveChangesScheduled_ = true;
-		QTimer::singleShot (2000, this, SLOT (saveSettings ()));
+		QTimer::singleShot (500, this, SLOT (saveSettings ()));
 	}
 
 	return id;
@@ -120,9 +127,23 @@ qint64 JobManager::GetDownloadSpeed () const
 
 void JobManager::Start (unsigned int id)
 {
+	JobRepresentation *jr = GetJobRepresentation (id);
+	QString host = QUrl (jr->URL_).host ();
+	delete jr;
+
+	if (DownloadsPerHost_ [host] >= SettingsManager::Instance ()->GetMaxConcurrentPerServer ())
+	{
+		qDebug () << Q_FUNC_INFO << "job enqueued, cuz max limit reached:" << DownloadsPerHost_ [host];;
+		ScheduledJobs_.insert (host, id);
+		emit jobWaiting (id);
+		return;
+	}
+
 	try
 	{
 		Jobs_ [ID2Pos_ [id]]->Start ();
+		++DownloadsPerHost_ [host];
+		emit jobStarted (id);
 	}
 	catch (Exceptions::IO& e)
 	{
@@ -168,12 +189,24 @@ void JobManager::StopAll ()
 		Stop (i);
 }
 
-void JobManager::handleJobFinish (unsigned int id)
+void JobManager::jobStopHandler (unsigned int id)
 {
-	if (Jobs_ [ID2Pos_ [id]]->GetErrorFlag ())
-		QMessageBox::critical (TheMain_, "General job error ", Jobs_ [ID2Pos_ [id]]->GetErrorReason () + QString ("; anyway, keeping job in queue."));
+	JobRepresentation *jr = GetJobRepresentation (id);
+	QString host = QUrl (jr->URL_).host ();
+	delete jr;
 
-	emit jobFinished (id);
+	qDebug () << Q_FUNC_INFO << DownloadsPerHost_ [host] << ScheduledJobs_.value (host);
+
+	--DownloadsPerHost_ [host];
+
+	if (DownloadsPerHost_ [host] < SettingsManager::Instance ()->GetMaxConcurrentPerServer () &&
+		ScheduledJobs_.contains (host) &&
+		ScheduledJobs_.value (host))
+	{
+		qDebug () << Q_FUNC_INFO << "dequeueing job" << ScheduledJobs_.value (host) << "for host" << host << "; number of current jobs:" << DownloadsPerHost_ [host];
+		Start (ScheduledJobs_.value (host));
+		ScheduledJobs_.remove (host, ScheduledJobs_.value (host));
+	}
 }
 
 void JobManager::handleJobDisplay (unsigned int id)

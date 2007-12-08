@@ -35,6 +35,7 @@ protected:
 	Guarded<QString> DownloadDir_;
 	Guarded<bool> AutostartChildren_;
 	Guarded<PairedStringList> UserAgent_;
+	Guarded<int> MaxConcurrentPerServer_;
 private:
 	void ReadSettings ();
 	void WriteSettings ();
@@ -71,10 +72,13 @@ public:
 	void SetAutostartChildren (bool);
 	PairedStringList GetUserAgent () const;
 	void SetUserAgent (const PairedStringList&);
+	int GetMaxConcurrentPerServer () const;
+	void SetMaxConcurrentPerServer (int);
 
 	SettingsItemInfo GetInfoFor (const QString&) const;
 
 	Q_PROPERTY (QString DownloadDir READ GetDownloadDir WRITE SetDownloadDir);
+	Q_PROPERTY (int MaxConcurrentPerServer READ GetMaxConcurrentPerServer WRITE SetMaxConcurrentPerServer);
 	Q_PROPERTY (int ConnectTimeout READ GetConnectTimeout WRITE SetConnectTimeout);
 	Q_PROPERTY (int DefaultTimeout READ GetDefaultTimeout WRITE SetDefaultTimeout);
 	Q_PROPERTY (int StopTimeout READ GetStopTimeout WRITE SetStopTimeout);

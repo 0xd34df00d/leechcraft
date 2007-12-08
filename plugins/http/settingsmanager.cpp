@@ -35,6 +35,7 @@ void SettingsManager::ReadSettings ()
 	AutostartChildren_			= settings.value ("AutostartChildren", true).toBool ();
 	UserAgent_.Val ().first		= settings.value ("UserAgent.First").toStringList ();
 	UserAgent_.Val ().second	= settings.value ("UserAgent.Second", 3).toInt ();
+	MaxConcurrentPerServer_		= settings.value ("MaxConcurrentPerServer", 5).toInt ();
 	settings.endGroup ();
 	settings.endGroup ();
 
@@ -67,6 +68,7 @@ void SettingsManager::WriteSettings ()
 	settings.setValue ("AutostartChildren", AutostartChildren_);
 	settings.setValue ("UserAgent.First", UserAgent_.Val ().first);
 	settings.setValue ("UserAgent.Second", UserAgent_.Val ().second);
+	settings.setValue ("MaxConcurrentPerServer", MaxConcurrentPerServer_);
 	settings.endGroup ();
 	settings.endGroup ();
 }
@@ -76,6 +78,10 @@ void SettingsManager::InitializeMap ()
 	SettingsItemInfo downloadDirInfo = SettingsItemInfo (tr ("Default download directory"), tr ("Local options"));
 	downloadDirInfo.BrowseButton_ = true;
 	PropertyInfo_ ["DownloadDir"] = downloadDirInfo;
+
+	SettingsItemInfo maxConcurrentPerServer = SettingsItemInfo (tr ("Max concurrent jobs per server"), tr ("Network options"));
+	maxConcurrentPerServer.IntRange_ = qMakePair (1, 99);	
+	PropertyInfo_ ["MaxConcurrentPerServer"] = maxConcurrentPerServer;
 
 	SettingsItemInfo connectTimeoutInfo = SettingsItemInfo (tr ("Connection timeout"), tr ("Network options"));
 	connectTimeoutInfo.SpinboxSuffix_ = tr (" ms");
@@ -294,6 +300,17 @@ void SettingsManager::SetUserAgent (const PairedStringList& val)
 {
 	qDebug () << Q_FUNC_INFO;
 	UserAgent_ = val;
+	ScheduleFlush ();
+}
+
+int SettingsManager::GetMaxConcurrentPerServer () const
+{
+	return MaxConcurrentPerServer_;
+}
+
+void SettingsManager::SetMaxConcurrentPerServer (int value)
+{
+	MaxConcurrentPerServer_ = value;
 	ScheduleFlush ();
 }
 
