@@ -4,7 +4,7 @@
 #include <QObjectList>
 
 class QStackedWidget;
-class QComboBox;
+class QListWidget;
 class QLayout;
 class TypeHandler;
 class QGroupBox;
@@ -15,7 +15,7 @@ class SettingsDialog : public QDialog
 
 	QStackedWidget *Pages_;
 	QObjectList Objects_;
-	QComboBox *Combo_;
+	QListWidget *Sections_;
 	TypeHandler *TypeHandler_;
 	QList<QGroupBox*> GroupBoxes_;
 	QPushButton *OK_, *Cancel_;

@@ -6,7 +6,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QLabel>
-#include <QComboBox>
+#include <QListWidget>
 #include <QtDebug>
 #include <QMetaProperty>
 #include <QLayout>
@@ -18,19 +18,16 @@
 SettingsDialog::SettingsDialog (QWidget *parent)
 : QDialog (parent)
 {
-	Pages_ = new QStackedWidget (this);
-	Combo_ = new QComboBox (this);
+	Pages_ = new QStackedWidget ();
+	Sections_ = new QListWidget ();
+	Sections_->setMaximumWidth (150);
 
-	connect (Combo_, SIGNAL (activated (int)), Pages_, SLOT (setCurrentIndex (int)));
-	connect (Combo_, SIGNAL (activated (int)), this, SLOT (doAdjustSize ()));
-
-	QVBoxLayout *vl = new QVBoxLayout (this);
-	QHBoxLayout *comboContainer = new QHBoxLayout;
-	comboContainer->addWidget (Combo_);
-	comboContainer->addStretch (1);
+	connect (Sections_, SIGNAL (currentRowChanged (int)), Pages_, SLOT (setCurrentIndex (int)));
+	connect (Sections_, SIGNAL (currentRowChanged (int)), this, SLOT (doAdjustSize ()));
 
 	OK_ = new QPushButton (tr ("OK"));
 	Cancel_ = new QPushButton (tr ("Cancel"));
+
 	QHBoxLayout *buttons = new QHBoxLayout;
 	buttons->addStretch (1);
 	buttons->addWidget (OK_);
@@ -38,9 +35,14 @@ SettingsDialog::SettingsDialog (QWidget *parent)
 	connect (OK_, SIGNAL (released ()), this, SLOT (accept ()));
 	connect (Cancel_, SIGNAL (released ()), this, SLOT (reject ()));
 
-	vl->addLayout (comboContainer);
-	vl->addWidget (Pages_);
-	vl->addLayout (buttons);
+	QVBoxLayout *rightLay = new QVBoxLayout;
+	QHBoxLayout *mainLay = new QHBoxLayout (this);
+	mainLay->addWidget (Sections_);
+	rightLay->addWidget (Pages_);
+	rightLay->addStretch (1);
+	mainLay->addLayout (rightLay);
+	rightLay->addLayout (buttons);
+	setLayout (mainLay);
 
 	TypeHandler_ = new TypeHandler (this);
 }
@@ -78,17 +80,17 @@ void SettingsDialog::RegisterObject (QObject *object)
 			continue;
 		}
 
-		if (Combo_->findText (sii.Page_) == -1)
+		if (Sections_->findItems (sii.Page_, Qt::MatchExactly).isEmpty ())
 		{
 			QWidget *w = new QWidget;
 			QVBoxLayout *lay = new QVBoxLayout;
 			w->setLayout (lay);
 
-			Combo_->addItem (sii.Page_);
+			Sections_->addItem (sii.Page_);
 			Pages_->addWidget (w);
 		}
 
-		int position = Combo_->findText (sii.Page_);
+		int position = Sections_->row (Sections_->findItems (sii.Page_, Qt::MatchExactly).first ());
 		QVBoxLayout *layToAdd;
 
 		if (sii.Group_.isEmpty ())
@@ -118,7 +120,7 @@ void SettingsDialog::RegisterObject (QObject *object)
 		if (TypeHandler_->MakeLabel (object->property (propName.toAscii ().data ()), sii))
 		{
 			QHBoxLayout *tmplay = new QHBoxLayout;
-			tmplay->addWidget (new QLabel (sii.Label_, this));
+			tmplay->addWidget (new QLabel (sii.Label_, this), 0, Qt::AlignTop);
 			tmplay->addWidget (representator);
 			layToAdd->addLayout (tmplay);
 		}
