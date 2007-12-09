@@ -79,9 +79,14 @@ void UpdaterPlugin::SetProvider (QObject* provider, const QString& feature)
 void UpdaterPlugin::Release ()
 {
 	saveSettings ();
+	Core_->Release ();
 	delete SettingsDialog_;
-	delete Core_;
 	SettingsDialog_ = 0;
+
+	while (!Core_->wait (25))
+		qApp->processEvents ();
+
+	delete Core_;
 	Core_ = 0;
 }
 

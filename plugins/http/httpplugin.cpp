@@ -29,6 +29,7 @@ void HttpPlugin::Init ()
 	connect (JobManager_, SIGNAL (deleteJob (unsigned int)), this, SLOT (handleJobDelete (unsigned int)));
 	connect (JobManager_, SIGNAL (showError (QString, QString)), this, SLOT (showJobErrorMessage (QString, QString)));
 	connect (JobManager_, SIGNAL (stopped (unsigned int)), this, SLOT (showStoppedIndicator (unsigned int)));
+	connect (JobManager_, SIGNAL (jobWaiting (unsigned int)), this, SLOT (handleJobWaiting (unsigned int)));
 
 	setWindowTitle (tr ("HTTP/FTP worker 0.2"));
 	setWindowIcon (QIcon (":/resources/images/pluginicon.png"));
@@ -452,12 +453,21 @@ void HttpPlugin::handleJobStart (unsigned int id)
 	int rowCount = TasksList_->topLevelItemCount ();
 	for (int i = 0; i < rowCount; ++i)
 		if (dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i))->GetID () == id)
-				dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i))->setIcon (TListID, QIcon (":/resources/images/startjob.png"));
+			dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i))->setIcon (TListID, QIcon (":/resources/images/startjob.png"));
 }
 
 void HttpPlugin::handleJobDelete (unsigned int id)
 {
 	JobManager_->DeleteAt (id);
+}
+
+void HttpPlugin::handleJobWaiting (unsigned int id)
+{
+	qDebug () << Q_FUNC_INFO << id;
+	int rowCount = TasksList_->topLevelItemCount ();
+	for (int i = 0; i < rowCount; ++i)
+		if (dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i))->GetID () == id)
+			dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i))->setIcon (TListID, QIcon (":/resources/images/waiting.png"));
 }
 
 void HttpPlugin::startDownloadSelected ()

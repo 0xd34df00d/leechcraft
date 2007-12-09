@@ -6,14 +6,14 @@
 #include "core.h"
 
 Core::Core ()
-: ShouldaDownload_ (false)
+: Waiter_ (qMakePair (new QMutex, new QWaitCondition))
+, CheckWaiter_ (qMakePair (new QMutex, new QWaitCondition))
+, DownloadWaiter_ (qMakePair (new QMutex, new QWaitCondition))
+, ShouldQuit_ (false)
 , GotUpdateInfoFile_ (false)
 , CheckState_ (NotChecking)
+, DownloadState_ (NotDownloading)
 {
-	Waiter_.first = new QMutex;
-	Waiter_.second = new QWaitCondition;
-	CheckWaiter_.first = new QMutex;
-	CheckWaiter_.second = new QWaitCondition;
 }
 
 Core::~Core ()
@@ -22,6 +22,14 @@ Core::~Core ()
 	delete Waiter_.second;
 	delete CheckWaiter_.first;
 	delete CheckWaiter_.second;
+	delete DownloadWaiter_.first;
+	delete DownloadWaiter_.second;
+}
+
+void Core::Release ()
+{
+	ShouldQuit_ = true;
+	Waiter_.second->wakeOne ();
 }
 
 void Core::SetProvider (QObject* provider, const QString& feature)
@@ -41,12 +49,26 @@ bool Core::IsChecking () const
 	return (CheckState_ == ShouldCheck || CheckState_ == Checking);
 }
 
+bool Core::IsDownloading () const
+{
+	return (DownloadState_ == ShouldDownload || DownloadState_ == Downloading);
+}
+
 void Core::checkForUpdates ()
 {
-	if (CheckState_ == ShouldCheck || CheckState_ == Checking)
+	if (IsChecking () || IsDownloading ())
 		return;
 
 	CheckState_ = ShouldCheck;
+	Waiter_.second->wakeOne ();
+}
+
+void Core::downloadUpdates ()
+{
+	if (IsChecking () || IsDownloading ())
+		return;
+
+	DownloadState_ = ShouldDownload;
 	Waiter_.second->wakeOne ();
 }
 
@@ -80,8 +102,10 @@ void Core::run ()
 
 		if (CheckState_ == ShouldCheck)
 			Check ();
-		if (ShouldaDownload_)
+		if (DownloadState_ == ShouldDownload)
 			Download ();
+		if (ShouldQuit_)
+			break;
 
 		emit finishedLoop ();
 
@@ -118,7 +142,7 @@ bool Core::Check ()
 	if (!result)
 	{
 		emit error ("Queried all mirrors, but still no luck.");
-		CheckState_ = Error;
+		CheckState_ = CheckError;
 		return false;
 	}
 

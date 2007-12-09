@@ -124,6 +124,7 @@ private slots:
 	void handleJobFinish (unsigned int);
 	void handleJobStart (unsigned int);
 	void handleJobDelete (unsigned int);
+	void handleJobWaiting (unsigned int);
 	void startDownloadSelected ();
 	void stopDownloadSelected ();
 	void deleteDownloadSelected ();

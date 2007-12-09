@@ -37,6 +37,7 @@ protected:
 	Guarded<PairedStringList> UserAgent_;
 	Guarded<int> MaxConcurrentPerServer_;
 	Guarded<int> MaxTotalConcurrent_;
+	Guarded<int> RetryTimeout_;
 private:
 	void ReadSettings ();
 	void WriteSettings ();
@@ -77,12 +78,15 @@ public:
 	void SetMaxConcurrentPerServer (int);
 	int GetMaxTotalConcurrent () const;
 	void SetMaxTotalConcurrent (int);
+	int GetRetryTimeout () const;
+	void SetRetryTimeout (int);
 
 	SettingsItemInfo GetInfoFor (const QString&) const;
 
 	Q_PROPERTY (QString DownloadDir READ GetDownloadDir WRITE SetDownloadDir);
 	Q_PROPERTY (int MaxConcurrentPerServer READ GetMaxConcurrentPerServer WRITE SetMaxConcurrentPerServer);
 	Q_PROPERTY (int MaxTotalConcurrent READ GetMaxTotalConcurrent WRITE SetMaxTotalConcurrent);
+	Q_PROPERTY (int RetryTimeout READ GetRetryTimeout WRITE SetRetryTimeout);
 	Q_PROPERTY (int ConnectTimeout READ GetConnectTimeout WRITE SetConnectTimeout);
 	Q_PROPERTY (int DefaultTimeout READ GetDefaultTimeout WRITE SetDefaultTimeout);
 	Q_PROPERTY (int StopTimeout READ GetStopTimeout WRITE SetStopTimeout);

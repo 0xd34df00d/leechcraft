@@ -18,13 +18,13 @@
 Job::Job (JobParams *params, QObject *parent)
 : QObject (parent)
 , ProtoImp_ (0)
+, Params_ (params)
 , DownloadedSize_ (0)
 , TotalSize_ (0)
 , Speed_ (0)
 , File_ (0)
 , RestartPosition_ (0)
 , JobType_ (File)
-, Params_ (params)
 {
 	StartTime_ = new QTime;
 	FillErrorDictionary ();
@@ -93,9 +93,7 @@ QString Job::GetErrorReason ()
 
 void Job::Start ()
 {
-	qDebug () << Q_FUNC_INFO;
 	QString ln = MakeFilename (Params_->URL_, Params_->LocalName_);
-	qDebug () << "Gonna download to" << ln;
 	QFileInfo fileInfo (ln);
 	if (fileInfo.exists () && !fileInfo.isDir ())
 	{
@@ -132,11 +130,10 @@ void Job::Start ()
 
 void Job::Stop ()
 {
-	qDebug () << Q_FUNC_INFO;
 	if (ProtoImp_ && ProtoImp_->isRunning ())
 	{
 		ProtoImp_->StopDownload ();
-		while (!ProtoImp_->wait (100))
+		while (!ProtoImp_->wait (25))
 			qApp->processEvents ();
 	}
 }
@@ -288,7 +285,6 @@ void Job::reemitStopped ()
 
 void Job::reemitEnqueue ()
 {
-	qDebug () << Q_FUNC_INFO;
 	emit enqueue (GetID ());
 }
 

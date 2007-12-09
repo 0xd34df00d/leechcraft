@@ -10,5 +10,6 @@
         <file>resources/images/stopall.png</file>
         <file>resources/images/preferences.png</file>
 		<file>resources/images/autoadjustiface.png</file>
+		<file>resources/images/waiting.png</file>
     </qresource>
 </RCC>

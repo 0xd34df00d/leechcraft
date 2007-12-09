@@ -19,7 +19,8 @@ class Core : public QThread
 
 	QMap<QString, QObject*> Providers_;
 	QPair<QMutex*, QWaitCondition*> Waiter_
-								  , CheckWaiter_;
+								  , CheckWaiter_
+								  , DownloadWaiter_;
 
 	enum CheckState
 	{
@@ -27,14 +28,24 @@ class Core : public QThread
 		, ShouldCheck
 		, Checking
 		, CheckedSuccessfully
-		, Error
+		, CheckError
 	};
 
-	Guarded<bool> ShouldaDownload_
+	enum DownloadState
+	{
+		NotDownloading
+		, ShouldDownload
+		, Downloading
+		, DownloadedSuccessfully
+		, DownloadError
+	};
+
+	Guarded<bool> ShouldQuit_
 				, GotUpdateInfoFile_;
 	Guarded<int> UpdateInfoID_;
 	Guarded<QString> UpdateFilename_;
 	Guarded<CheckState> CheckState_;
+	Guarded<DownloadState> DownloadState_;
 
 	struct FileRepresentation
 	{
@@ -49,10 +60,13 @@ class Core : public QThread
 public:
 	Core ();
 	virtual ~Core ();
+	void Release ();
 	void SetProvider (QObject*, const QString&);
 	bool IsChecking () const;
+	bool IsDownloading () const;
 public slots:
 	void checkForUpdates ();
+	void downloadUpdates ();
 signals:
 	void error (const QString&);
 	void gotFile (const QString&, const QString&, const QString&);

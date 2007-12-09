@@ -37,6 +37,7 @@ void SettingsManager::ReadSettings ()
 	UserAgent_.Val ().second	= settings.value ("UserAgent.Second", 3).toInt ();
 	MaxConcurrentPerServer_		= settings.value ("MaxConcurrentPerServer", 5).toInt ();
 	MaxTotalConcurrent_			= settings.value ("MaxTotalConcurrent", 5).toInt ();
+	RetryTimeout_				= settings.value ("RetryTimeout", 30).toInt ();
 	settings.endGroup ();
 	settings.endGroup ();
 
@@ -71,6 +72,7 @@ void SettingsManager::WriteSettings ()
 	settings.setValue ("UserAgent.Second", UserAgent_.Val ().second);
 	settings.setValue ("MaxConcurrentPerServer", MaxConcurrentPerServer_);
 	settings.setValue ("MaxTotalConcurrent", MaxTotalConcurrent_);
+	settings.setValue ("RetryTimeout", RetryTimeout_);
 	settings.endGroup ();
 	settings.endGroup ();
 }
@@ -88,6 +90,12 @@ void SettingsManager::InitializeMap ()
 	SettingsItemInfo maxTotalConcurrent = SettingsItemInfo (tr ("Max total concurrent jobs"), tr ("Network options"));
 	maxTotalConcurrent.IntRange_ = qMakePair (1, 99);	
 	PropertyInfo_ ["MaxTotalConcurrent"] = maxTotalConcurrent;
+
+	SettingsItemInfo retryTimeout = SettingsItemInfo (tr ("Retry timeout"), tr ("Network options"));
+	retryTimeout.IntRange_ = qMakePair (10, 600);
+	retryTimeout.SpinboxSuffix_ = tr (" s");
+	retryTimeout.SpinboxStep_ = 10;
+	PropertyInfo_ ["RetryTimeout"] = retryTimeout;
 
 	SettingsItemInfo connectTimeoutInfo = SettingsItemInfo (tr ("Connection timeout"), tr ("Network options"));
 	connectTimeoutInfo.SpinboxSuffix_ = tr (" ms");
@@ -328,6 +336,17 @@ int SettingsManager::GetMaxTotalConcurrent () const
 void SettingsManager::SetMaxTotalConcurrent (int value)
 {
 	MaxTotalConcurrent_ = value;
+	ScheduleFlush ();
+}
+
+int SettingsManager::GetRetryTimeout () const
+{
+	return RetryTimeout_;
+}
+
+void SettingsManager::SetRetryTimeout (int value)
+{
+	RetryTimeout_ = value;
 	ScheduleFlush ();
 }
 

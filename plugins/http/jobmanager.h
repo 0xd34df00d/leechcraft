@@ -4,7 +4,9 @@
 #include <QVector>
 #include <QMap>
 #include <QMultiMap>
+#include <QPair>
 #include <QStack>
+#include <QTime>
 
 class Job;
 struct JobParams;
@@ -29,6 +31,7 @@ class JobManager : public QObject
 	QStack<int> ScheduledJobs_;
 	QVector<unsigned int> IDPool_;
 	QVector<qint64> JobSpeeds_;
+	QVector<QPair<int, QTime> > ScheduledStarters_;
 
 	FileExistsDialog *FileExists_;
 
@@ -63,6 +66,8 @@ private slots:
 	void enqueue (unsigned int);
 	void handleJobDisplay (unsigned int);
 	void saveSettings ();
+	void tryToStart ();
+	void scheduleSave ();
 private:
 	void RehashID2Pos ();
 };

@@ -67,6 +67,7 @@ void FtpImp::run ()
 		qDebug () << Q_FUNC_INFO << "while trying to connect we caught" << e.GetReason ().c_str ();
 		emit error ((QString (e.GetName ().c_str ())).append ("\r\n").append (e.GetReason ().c_str ()));
 		Finalize ();
+		emit stopped ();
 		return;
 	}
 
@@ -84,84 +85,91 @@ void FtpImp::run ()
 	{
 		emit error (tr ("Wrong login."));
 		Finalize ();
+		emit stopped ();
 		return;
 	}
 	catch (WrongPassword)
 	{
 		emit error (tr ("Wrong password."));
 		Finalize ();
+		emit stopped ();
 		return;
 	}
 	catch (WrongPath)
 	{
 		emit error (tr ("Wrong path, file not found."));
 		Finalize ();
+		emit stopped ();
 		return;
 	}
 	catch (WrongRestartPosition)
 	{
 		emit error (tr ("Wrong restart position."));
 		Finalize ();
+		emit stopped ();
 		return;
 	}
 	catch (PasvFailed)
 	{
 		emit error (tr ("PASV failed"));
 		Finalize ();
+		emit stopped ();
 		return;
 	}
 	catch (NlstFailed)
 	{
 		emit error (tr ("NLST failed."));
 		Finalize ();
+		emit stopped ();
 		return;
 	}
 	catch (RetrFailed)
 	{
 		emit error (tr ("RETR failed."));
 		Finalize ();
+		emit stopped ();
 		return;
 	}
 	catch (SizeFailed)
 	{
 		emit error (tr ("SIZE failed."));
 		Finalize ();
+		emit stopped ();
 		return;
 	}
 	catch (CwdFailed)
 	{
 		emit error (tr ("CWD failed."));
 		Finalize ();
+		emit stopped ();
 		return;
 	}
 	catch (TypeIFailed)
 	{
 		emit error (tr ("TYPE I failed."));
 		Finalize ();
+		emit stopped ();
 		return;
 	}
 	catch (const QStringList& files)
 	{
 		emit gotNewFiles (new QStringList (files));
 		Finalize ();
-		return;
-	}
-	catch (const QString& str)
-	{
-		qDebug () << Q_FUNC_INFO << str;
-		Finalize ();
+		emit stopped ();
 		return;
 	}
 	catch (const Exceptions::Generic& e)
 	{
 		qDebug () << Q_FUNC_INFO << "caught \"" << e.GetName ().c_str () << "\", saying\"" << e.GetReason ().c_str () << "\"";
 		Finalize ();
+		emit stopped ();
 		return;
 	}
 	catch (...)
 	{
 		qDebug () << Q_FUNC_INFO << "caught something very strange.";
 		Finalize ();
+		emit stopped ();
 		return;
 	}
 
@@ -224,14 +232,15 @@ bool FtpImp::Negotiate ()
 {
 	QString login = ControlSocket_->GetAddressParser ()->GetLogin ();
 	if (login.isEmpty ())
-		login = "anonymous";
+		login = SettingsManager::Instance ()->GetResourceLogin ();
 	QString password = ControlSocket_->GetAddressParser ()->GetPassword ();
 	if (password.isEmpty ())
 		password = SettingsManager::Instance ()->GetResourcePassword ();
 
 	QFileInfo fileInfo (ControlSocket_->GetAddressParser ()->GetPath ());
 
-	HandleWelcome ();
+	if (!HandleWelcome ())
+		return false;
 	if (!Login (login, password))
 		return false;
 	DoCwd (fileInfo.dir ().path ());
@@ -245,11 +254,15 @@ bool FtpImp::Negotiate ()
 	return true;
 }
 
-void FtpImp::HandleWelcome ()
+bool FtpImp::HandleWelcome ()
 {
 	ReadCtrlResponse ();
 	if (Result_ == 421)
+	{
 		emit enqueue ();
+		return false;
+	}
+	return true;
 }
 
 void FtpImp::DoCwd (const QString& dir)
@@ -340,7 +353,6 @@ void FtpImp::DoInitTransfer (const QString& filename)
 		throw RetrFailed ();
 	else if (!Size_)
 	{
-		// Size still unknown, last chance to get it.
 		int sizeOffsetStart = LastReply_.indexOf ('(');
 		int sizeOffsetEnd = LastReply_.indexOf (' ', sizeOffsetStart);
 		QString bytes = LastReply_.mid (sizeOffsetStart + 1, sizeOffsetEnd - sizeOffsetStart - 1);
@@ -355,16 +367,21 @@ bool FtpImp::Login (const QString& login, const QString& password)
 
 	ControlSocket_->Write ("USER " + login + "\r\n", false);
 	ReadCtrlResponse ();
-	qDebug () << "After user result is" << Result_;
 	if (Result_ == 331 || Result_ == 220)
 	{
-		// All's ok, but we need password
+		ControlSocket_->Write ("PASS " + password + "\r\n", false);
+		ReadCtrlResponse ();
+		if (Result_ == 421)
+		{
+			emit enqueue ();
+			return false;
+		}
+		else if (Result_ != 230 && Result_ != 220)
+			throw WrongPassword ();
+
 	}
 	else if (Result_ == 230)
-	{
-		// We don't need password, we're already logged in
 		return true;
-	}
 	else if (Result_ == 421)
 	{
 		emit enqueue ();
@@ -372,17 +389,6 @@ bool FtpImp::Login (const QString& login, const QString& password)
 	}
 	else
 		throw WrongLogin ();
-
-	ControlSocket_->Write ("PASS " + password + "\r\n", false);
-	ReadCtrlResponse ();
-	qDebug () << "After password result is" << Result_;
-	if (Result_ == 421)
-	{
-		emit enqueue ();
-		return false;
-	}
-	else if (Result_ != 230 && Result_ != 220)
-		throw WrongPassword ();
 
 	return true;
 }
@@ -470,6 +476,5 @@ void FtpImp::Finalize ()
 	delete DataSocket_;
 	ControlSocket_ = 0;
 	DataSocket_ = 0;
-	emit stopped ();
 }
 

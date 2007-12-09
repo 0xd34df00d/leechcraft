@@ -31,7 +31,7 @@ public:
 private:
 	virtual void run ();
 	virtual bool Negotiate ();
-	void HandleWelcome ();
+	bool HandleWelcome ();
 	void DoCwd (const QString&);
 	bool DoSize (const QString&);
 	void DoQuery (const QFileInfo&);

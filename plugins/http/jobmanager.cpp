@@ -18,8 +18,8 @@
 
 JobManager::JobManager (QObject *parent)
 : QObject (parent)
-, SaveChangesScheduled_ (false)
 , TotalDownloads_ (0)
+, SaveChangesScheduled_ (false)
 {
 	IDPool_.resize (PoolSize_);
 	for (unsigned int i = 0; i < PoolSize_; ++i)
@@ -100,11 +100,7 @@ int JobManager::addJob (JobParams *params)
 	if (params->Autostart_)
 		Start (id);
 
-	if (!SaveChangesScheduled_)
-	{
-		SaveChangesScheduled_ = true;
-		QTimer::singleShot (500, this, SLOT (saveSettings ()));
-	}
+	scheduleSave ();
 
 	return id;
 }
@@ -142,7 +138,7 @@ void JobManager::Start (unsigned int id)
 
 	if (TotalDownloads_ >= SettingsManager::Instance ()->GetMaxTotalConcurrent ())
 	{
-		ScheduledJobs_.push (id);
+		ScheduledJobs_.push_back (id);
 		emit jobWaiting (id);
 		return;
 	}
@@ -182,6 +178,8 @@ void JobManager::DeleteAt (unsigned int id)
 	for (int i = 0; i < ID2Pos_.size (); ++i)
 		if (ID2Pos_ [i] > pos)
 			--(ID2Pos_ [i]);
+
+	scheduleSave ();
 
 	emit jobRemoved (id);
 }
@@ -228,10 +226,8 @@ void JobManager::jobStopHandler (unsigned int id)
 
 void JobManager::enqueue (unsigned int id)
 {
-	qDebug () << Q_FUNC_INFO;
 	Stop (id);
 	emit jobWaiting (id);
-	jobStopHandler (id);
 }
 
 void JobManager::handleJobDisplay (unsigned int id)
@@ -254,6 +250,19 @@ void JobManager::saveSettings ()
 	}
 	settings.endArray ();
 	settings.endGroup ();
+}
+
+void JobManager::tryToStart ()
+{
+}
+
+void JobManager::scheduleSave ()
+{
+	if (!SaveChangesScheduled_)
+	{
+		SaveChangesScheduled_ = true;
+		QTimer::singleShot (500, this, SLOT (saveSettings ()));
+	}
 }
 
 void JobManager::RehashID2Pos ()
