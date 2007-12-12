@@ -9,12 +9,11 @@
 void UpdaterPlugin::Init ()
 {
 	Core_ = new Core;
-	connect (Core_, SIGNAL (gotFile (const QString&, const QString&, const QString&)), this, SLOT (addFile (const QString&, const QString&, const QString)));
+	connect (Core_, SIGNAL (gotFile (const QString&, const QString&, ulong, const QString&)), this, SLOT (addFile (const QString&, const QString&, ulong, const QString)));
 	connect (Core_, SIGNAL (error (const QString&)), this, SLOT (handleError (const QString&)));
 	connect (Core_, SIGNAL (finishedLoop ()), this, SLOT (setActionsEnabled ()));
+	connect (Core_, SIGNAL (finishedCheck ()), this, SLOT (handleFinishedCheck ()));
 	Core_->start (QThread::LowestPriority);
-	setWindowTitle (tr ("Updater"));
-	setWindowIcon (GetIcon ());
 	IsShown_ = false;
 	SaveChangesScheduled_ = false;
 
@@ -24,6 +23,9 @@ void UpdaterPlugin::Init ()
 	SetupInterface ();
 	ReadSettings ();
 	setActionsEnabled ();
+	statusBar ()->showMessage (tr ("Idle"));
+	connect (Updates_, SIGNAL (itemClicked (QTreeWidgetItem*, int)), this, SLOT (setActionsEnabled ()));
+	connect (Updates_, SIGNAL (itemClicked (QTreeWidgetItem*, int)), this, SLOT (updateStatusbar ()));
 }
 
 UpdaterPlugin::~UpdaterPlugin ()
@@ -117,17 +119,25 @@ uint UpdaterPlugin::GetVersion () const
 
 void UpdaterPlugin::SetupInterface ()
 {
+	setWindowTitle (tr ("Updater"));
+	setWindowIcon (GetIcon ());
+
 	SetupMainWidget ();
 	SetupToolbars ();
 	SetupActions ();
 	SetupMenus ();
+
+	SizeLabel_ = new QLabel (this);
+	SizeLabel_->setMinimumWidth (SizeLabel_->fontMetrics ().width ("9999 bytes"));
+	statusBar ()->addPermanentWidget (SizeLabel_);
+	updateStatusbar ();
 }
 
 void UpdaterPlugin::SetupMainWidget ()
 {
 	Updates_ = new QTreeWidget (this);
 	setCentralWidget (Updates_);
-	Updates_->setHeaderLabels (QStringList (tr ("Plugin")) << tr ("Location"));
+	Updates_->setHeaderLabels (QStringList (tr ("Plugin")) << tr ("Size") << tr ("Location"));
 	Updates_->setEditTriggers (QAbstractItemView::NoEditTriggers);
 	Updates_->setSelectionMode (QAbstractItemView::NoSelection);
 	Updates_->setAlternatingRowColors (true);
@@ -145,7 +155,7 @@ void UpdaterPlugin::SetupToolbars ()
 void UpdaterPlugin::SetupActions ()
 {
 	CheckForUpdates_ = MainToolbar_->addAction (QIcon (":/resources/images/check.png"), tr ("Check for updates"), this, SLOT (initCheckForUpdates ()));
-	DownloadUpdates_ = MainToolbar_->addAction (QIcon (":/resources/images/download.png"), tr ("Download updates"), Core_, SLOT (downloadUpdates ()));
+	DownloadUpdates_ = MainToolbar_->addAction (QIcon (":/resources/images/download.png"), tr ("Download updates"), this, SLOT (initDownloadUpdates ()));
 	MainToolbar_->addSeparator ();
 	Settings_ = MainToolbar_->addAction (QIcon (":/resources/images/preferences.png"), tr ("Settings..."), this, SLOT (showSettings ()));
 }
@@ -189,16 +199,27 @@ void UpdaterPlugin::showSettings ()
 
 void UpdaterPlugin::initCheckForUpdates ()
 {
+	statusBar ()->showMessage ("Checking for updates...");
 	Updates_->clear ();
 	Core_->checkForUpdates ();
 	QTimer::singleShot (2, this, SLOT (setActionsEnabled ()));
 }
 
-void UpdaterPlugin::addFile (const QString& name, const QString& loc, const QString& descr)
+void UpdaterPlugin::initDownloadUpdates ()
+{
+	statusBar ()->showMessage ("Downloading updates...");
+	Core_->downloadUpdates ();
+	QTimer::singleShot (2, this, SLOT (setActionsEnabled ()));
+}
+
+void UpdaterPlugin::addFile (const QString& name, const QString& loc, ulong size, const QString& descr)
 {
 	QTreeWidgetItem *item = new QTreeWidgetItem (Updates_);
-	item->setText (ColumnName_, name);
-	item->setText (ColumnLocation_, loc);
+	item->setCheckState (ColumnName, Qt::Unchecked);
+	item->setText (ColumnName, name);
+	item->setText (ColumnLocation, loc);
+	item->setText (ColumnSize, Proxy::Instance ()->MakePrettySize (size));
+	item->setData (ColumnSize, RoleSize, static_cast<qulonglong> (size));
 
 	QTreeWidgetItem *descItem = new QTreeWidgetItem (item);
 	descItem->setFirstColumnSpanned (true);
@@ -213,14 +234,34 @@ void UpdaterPlugin::handleError (const QString& error)
 
 void UpdaterPlugin::setActionsEnabled ()
 {
-	if (!Updates_->topLevelItemCount ())
-		DownloadUpdates_->setEnabled (false);
-	else if (Updates_->topLevelItemCount ())
+	DownloadUpdates_->setEnabled (false);
+	if (!Core_->IsDownloading ())
 	{
-		// Check if some are selected
+		for (int i = 0; i < Updates_->topLevelItemCount (); ++i)
+			if (Updates_->topLevelItem (i)->checkState (ColumnName) == Qt::Checked)
+			{
+				DownloadUpdates_->setEnabled (true);
+				break;
+			}
 	}
 
 	CheckForUpdates_->setEnabled (!Core_->IsChecking ());
+}
+
+void UpdaterPlugin::handleFinishedCheck ()
+{
+	Updates_->sortByColumn (ColumnName, Qt::AscendingOrder);
+	statusBar ()->showMessage (tr ("Checked successfully"));
+}
+
+void UpdaterPlugin::updateStatusbar ()
+{
+	ulong result = 0;
+	for (int i = 0; i < Updates_->topLevelItemCount (); ++i)
+		if (Updates_->topLevelItem (i)->checkState (ColumnName) == Qt::Checked)
+			result += Updates_->topLevelItem (i)->data (ColumnSize, RoleSize).toULongLong ();
+
+	SizeLabel_->setText (Proxy::Instance ()->MakePrettySize (result));
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_updater, UpdaterPlugin);

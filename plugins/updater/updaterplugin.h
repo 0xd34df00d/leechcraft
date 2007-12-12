@@ -6,6 +6,7 @@
 class SettingsDialog;
 class QTreeWidget;
 class QToolBar;
+class QLabel;
 class Core;
 
 class UpdaterPlugin : public QMainWindow
@@ -22,12 +23,19 @@ class UpdaterPlugin : public QMainWindow
 	QTreeWidget *Updates_;
 	QToolBar *MainToolbar_;
 	QAction *CheckForUpdates_, *DownloadUpdates_, *Settings_;
+	QLabel *SizeLabel_;
 	bool SaveChangesScheduled_;
 
 	enum Columns
 	{
-		ColumnName_ = 0
-		, ColumnLocation_ = 1
+		ColumnName = 0
+		, ColumnSize = 1
+		, ColumnLocation = 2
+	};
+
+	enum Roles
+	{
+		RoleSize = 40
 	};
 
 	Core *Core_;
@@ -60,9 +68,12 @@ private slots:
 	void saveSettings ();
 	void showSettings ();
 	void initCheckForUpdates ();
-	void addFile (const QString&, const QString&, const QString&);
+	void initDownloadUpdates ();
+	void addFile (const QString&, const QString&, ulong, const QString&);
 	void handleError (const QString&);
 	void setActionsEnabled ();
+	void handleFinishedCheck ();
+	void updateStatusbar ();
 };
 
 #endif

@@ -21,6 +21,8 @@ JobManager::JobManager (QObject *parent)
 , TotalDownloads_ (0)
 , SaveChangesScheduled_ (false)
 {
+	QueryWaitingTimer_ = startTimer (500);
+
 	IDPool_.resize (PoolSize_);
 	for (unsigned int i = 0; i < PoolSize_; ++i)
 		IDPool_ [i] = PoolSize_ - i;
@@ -32,6 +34,7 @@ JobManager::~JobManager ()
 
 void JobManager::Release ()
 {
+	killTimer (QueryWaitingTimer_);
 	saveSettings ();
 	StopAll ();
 
@@ -105,6 +108,12 @@ int JobManager::addJob (JobParams *params)
 	return id;
 }
 
+void JobManager::timerEvent (QTimerEvent *e)
+{
+	if (QueryWaitingTimer_ == e->timerId ())
+		TryToStartScheduled ();
+}
+
 JobRepresentation* JobManager::GetJobRepresentation (unsigned int id) const
 {
 	return Jobs_ [ID2Pos_ [id]]->GetRepresentation ();
@@ -123,7 +132,7 @@ qint64 JobManager::GetDownloadSpeed () const
 	return result;
 }
 
-void JobManager::Start (unsigned int id)
+bool JobManager::Start (unsigned int id)
 {
 	JobRepresentation *jr = GetJobRepresentation (id);
 	QString host = QUrl (jr->URL_).host ();
@@ -133,14 +142,14 @@ void JobManager::Start (unsigned int id)
 	{
 		ScheduledJobsForHosts_.insert (host, id);
 		emit jobWaiting (id);
-		return;
+		return false;
 	}
 
 	if (TotalDownloads_ >= SettingsManager::Instance ()->GetMaxTotalConcurrent ())
 	{
 		ScheduledJobs_.push_back (id);
 		emit jobWaiting (id);
-		return;
+		return false;
 	}
 
 	try
@@ -149,6 +158,7 @@ void JobManager::Start (unsigned int id)
 		++DownloadsPerHost_ [host];
 		++TotalDownloads_;
 		emit jobStarted (id);
+		return true;
 	}
 	catch (Exceptions::IO& e)
 	{
@@ -158,8 +168,8 @@ void JobManager::Start (unsigned int id)
 	{
 		QMessageBox::critical (TheMain_, "Job Logic error", e.GetReason ().c_str () + QString ("; anyway, deleting job, cause logic errors are very bad."));
 		DeleteAt (id);
-		return;
 	}
+	return false;
 }
 
 void JobManager::Stop (unsigned int id)
@@ -252,16 +262,22 @@ void JobManager::saveSettings ()
 	settings.endGroup ();
 }
 
-void JobManager::tryToStart ()
-{
-}
-
 void JobManager::scheduleSave ()
 {
 	if (!SaveChangesScheduled_)
 	{
 		SaveChangesScheduled_ = true;
 		QTimer::singleShot (500, this, SLOT (saveSettings ()));
+	}
+}
+
+void JobManager::TryToStartScheduled ()
+{
+	for (int i = 0; i < ScheduledStarters_.size (); ++i)
+	{
+		QPair<int, QTime> pair = ScheduledStarters_.at (i);
+		if (pair.second.msecsTo (QTime::currentTime ()) >= SettingsManager::Instance ()->GetRetryTimeout () && Start (pair.first))
+			ScheduledStarters_.remove (i);
 	}
 }
 

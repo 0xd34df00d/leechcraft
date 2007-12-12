@@ -40,7 +40,6 @@ void AddressParser::Reparse (const QString& str)
 		}
 	}
 
-	qDebug () << Q_FUNC_INFO << Path_ << newPath;
 	Path_ = newPath;
 }
 

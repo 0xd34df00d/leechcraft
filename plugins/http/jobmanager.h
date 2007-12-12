@@ -25,16 +25,17 @@ class JobManager : public QObject
 
 	QVector<Job*> Jobs_;
 	QMap<unsigned int, QVector<Job*>::size_type> ID2Pos_;		// It's not position in the QListWidget etc, but position in the Jobs_ vector
+	QVector<unsigned int> IDPool_;
+	QVector<qint64> JobSpeeds_;
+
 	int TotalDownloads_;
 	QMap<QString, int> DownloadsPerHost_;
 	QMultiMap<QString, int> ScheduledJobsForHosts_;
 	QStack<int> ScheduledJobs_;
-	QVector<unsigned int> IDPool_;
-	QVector<qint64> JobSpeeds_;
-	QVector<QPair<int, QTime> > ScheduledStarters_;
+	QVector<QPair<int, QTime> > ScheduledStarters_;				// Time of stop
 
+	int QueryWaitingTimer_;
 	FileExistsDialog *FileExists_;
-
 	bool SaveChangesScheduled_;
 public:
 	JobManager (QObject *parent = 0);
@@ -44,13 +45,15 @@ public:
 	void SetTheMain (QWidget*);
 	JobRepresentation* GetJobRepresentation (unsigned int) const;
 	qint64 GetDownloadSpeed () const;
-	void Start (unsigned int);
+	bool Start (unsigned int);
 	void Stop (unsigned int);
 	void DeleteAt (unsigned int);
 	void StartAll ();
 	void StopAll ();
 public slots:
 	int addJob (JobParams*);
+protected:
+	virtual void timerEvent (QTimerEvent*);
 signals:
 	void jobAdded (unsigned int);
 	void jobFinished (unsigned int);
@@ -66,9 +69,9 @@ private slots:
 	void enqueue (unsigned int);
 	void handleJobDisplay (unsigned int);
 	void saveSettings ();
-	void tryToStart ();
 	void scheduleSave ();
 private:
+	void TryToStartScheduled ();
 	void RehashID2Pos ();
 };
 

@@ -148,7 +148,13 @@ bool Core::Check ()
 
 	CheckState_ = CheckedSuccessfully;
 
-	return Parse ();
+	if (Parse ())
+	{
+		emit finishedCheck ();
+		return true;
+	}
+	else
+		return false;
 }
 
 void Core::Download ()
@@ -194,7 +200,7 @@ bool Core::Parse ()
 	CollectFiles (root);
 
 	for (int i = 0; i < Files_.size (); ++i)
-		emit gotFile (Files_ [i].Name_, Files_ [i].Location_, Files_ [i].Description_);
+		emit gotFile (Files_ [i].Name_, Files_ [i].Location_, Files_ [i].Size_, Files_ [i].Description_);
 
 	return true;
 }
@@ -209,7 +215,8 @@ void Core::CollectFiles (QDomElement &e)
 		QDomElement url = fileChild.firstChildElement ("url");
 		QDomElement loc = fileChild.firstChildElement ("location");
 		QDomElement hash = fileChild.firstChildElement ("hash");
-		if (name.isNull () || descr.isNull () || url.isNull () || loc.isNull () || hash.isNull ())
+		QDomElement size = fileChild.firstChildElement ("size");
+		if (name.isNull () || descr.isNull () || url.isNull () || loc.isNull () || hash.isNull () || size.isNull ())
 		{
 			emit error (tr ("Malformed update file"));
 			return;
@@ -219,13 +226,12 @@ void Core::CollectFiles (QDomElement &e)
 		QString location = loc.text ();
 
 		QFile file (QCoreApplication::applicationDirPath () + "/" + location);
-		qDebug () << file.fileName ();
 		if (file.open (QIODevice::ReadOnly))
 		{
 			QByteArray localHash = QCryptographicHash::hash (file.readAll (), QCryptographicHash::Md5);
 			if (localHash != md5)
 			{
-				FileRepresentation fr = { md5.toAscii (), location.trimmed (), url.text ().trimmed (), descr.text ().trimmed (), name.text ().trimmed () };
+				FileRepresentation fr = { md5.toAscii (), location.trimmed (), url.text ().trimmed (), descr.text ().trimmed (), name.text ().trimmed () , size.text ().toULong () };
 				Files_ << fr;
 			}
 		}

@@ -54,6 +54,7 @@ class Core : public QThread
 		QString URL_;
 		QString Description_;
 		QString Name_;
+		ulong Size_;
 	};
 
 	QList<FileRepresentation> Files_;
@@ -69,8 +70,9 @@ public slots:
 	void downloadUpdates ();
 signals:
 	void error (const QString&);
-	void gotFile (const QString&, const QString&, const QString&);
+	void gotFile (const QString&, const QString&, ulong, const QString&);
 	void finishedLoop ();
+	void finishedCheck ();
 private slots:
 	void handleDownloadFinished (int);
 	void handleDownloadRemoved (int);
