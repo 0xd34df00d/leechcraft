@@ -10,6 +10,8 @@ DESTDIR = .
 win32:DESTDIR = ./
 
 # Input
+TRANSLATIONS = leechcraft_ru.ts \
+			   leechcraft_en.ts
 HEADERS += mainwindow.h \
 	   core.h \
 	   pluginmanager.h \

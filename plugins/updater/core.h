@@ -57,7 +57,7 @@ class Core : public QThread
 		ulong Size_;
 	};
 
-	QList<FileRepresentation> Files_;
+	QList<FileRepresentation> Files_, ToApply_;
 	QList<int> IDs2Download_;
 	QMap<int, int> IDs2Pos_;
 public:
@@ -73,8 +73,11 @@ public slots:
 signals:
 	void error (const QString&);
 	void gotFile (int, const QString&, const QString&, ulong, const QString&);
+	void downloadedID (int);
 	void finishedLoop ();
 	void finishedCheck ();
+	void finishedDownload ();
+	void finishedApplying ();
 private slots:
 	void handleDownloadFinished (int);
 	void handleDownloadRemoved (int);
@@ -84,7 +87,7 @@ private:
 	virtual void run ();
 	bool Check ();
 	void Download ();
-	void DownloadSignleFile (const QString&);
+	void ApplyUpdates ();
 	bool Parse ();
 	void CollectFiles (QDomElement&);
 	bool HandleSingleMirror (IDirectDownload*, const QString&);

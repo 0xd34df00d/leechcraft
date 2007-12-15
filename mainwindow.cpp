@@ -44,7 +44,7 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	splash.showMessage (tr ("Reading settings..."));
 	ReadSettings ();
 
-	splash.showMessage (tr ("Initializing core & plugins..."));
+	splash.showMessage (tr ("Initializing core and plugins..."));
 	Model_ = new Core (this);
 	connect (Model_, SIGNAL (gotPlugin (const PluginInfo*)), this, SLOT (addPluginToList (const PluginInfo*)));
 	Model_->SetReallyMainWindow (this);

@@ -9,10 +9,14 @@
 void UpdaterPlugin::Init ()
 {
 	Core_ = new Core;
-	connect (Core_, SIGNAL (gotFile (int, const QString&, const QString&, ulong, const QString&)), this, SLOT (addFile (int, const QString&, const QString&, ulong, const QString)));
+	connect (Core_, SIGNAL (gotFile (int, const QString&, const QString&, ulong, const QString&)),
+			this, SLOT (addFile (int, const QString&, const QString&, ulong, const QString)));
 	connect (Core_, SIGNAL (error (const QString&)), this, SLOT (handleError (const QString&)));
 	connect (Core_, SIGNAL (finishedLoop ()), this, SLOT (setActionsEnabled ()));
 	connect (Core_, SIGNAL (finishedCheck ()), this, SLOT (handleFinishedCheck ()));
+	connect (Core_, SIGNAL (downloadedID (int)), this, SLOT (handleDownloadedID (int)));
+	connect (Core_, SIGNAL (finishedDownload ()), this, SLOT (handleFinishedDownload ()));
+	connect (Core_, SIGNAL (finishedApplying ()), this, SLOT (handleFinishedApplying ()));
 	Core_->start (QThread::LowestPriority);
 	IsShown_ = false;
 	SaveChangesScheduled_ = false;
@@ -237,18 +241,29 @@ void UpdaterPlugin::handleError (const QString& error)
 	QMessageBox::warning (this, tr ("Error!"), error);
 }
 
+void UpdaterPlugin::handleDownloadedID (int id)
+{
+	for (int i = 0; i < Updates_->topLevelItemCount (); ++i)
+		if (Updates_->topLevelItem (i)->data (ColumnName, RoleID).toInt () == id)
+		{
+			QTreeWidgetItem *item = Updates_->topLevelItem (i);
+			QBrush brushed (Qt::darkGray);
+			item->setForeground (ColumnName, brushed);
+			item->setForeground (ColumnSize, brushed);
+			item->setForeground (ColumnLocation, brushed);
+		}
+}
+
 void UpdaterPlugin::setActionsEnabled ()
 {
 	DownloadUpdates_->setEnabled (false);
 	if (!Core_->IsDownloading ())
-	{
 		for (int i = 0; i < Updates_->topLevelItemCount (); ++i)
 			if (Updates_->topLevelItem (i)->checkState (ColumnName) == Qt::Checked)
 			{
 				DownloadUpdates_->setEnabled (true);
 				break;
 			}
-	}
 
 	CheckForUpdates_->setEnabled (!Core_->IsChecking ());
 }
@@ -257,6 +272,17 @@ void UpdaterPlugin::handleFinishedCheck ()
 {
 	Updates_->sortByColumn (ColumnName, Qt::AscendingOrder);
 	statusBar ()->showMessage (tr ("Checked successfully"));
+}
+
+void UpdaterPlugin::handleFinishedDownload ()
+{
+	statusBar ()->showMessage (tr ("Downloaded updates successfully, applying..."));
+}
+
+void UpdaterPlugin::handleFinishedApplying ()
+{
+	statusBar ()->showMessage (tr ("Applied updates successfully, restart app now"));
+	QMessageBox::information (this, tr ("Restart application"), tr ("You should restart application now for the changes to take effect. You can continue to work but plugins won't be updated until restart."));
 }
 
 void UpdaterPlugin::updateStatusbar ()

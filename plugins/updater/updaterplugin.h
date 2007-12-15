@@ -72,8 +72,11 @@ private slots:
 	void initDownloadUpdates ();
 	void addFile (int, const QString&, const QString&, ulong, const QString&);
 	void handleError (const QString&);
+	void handleDownloadedID (int);
 	void setActionsEnabled ();
 	void handleFinishedCheck ();
+	void handleFinishedDownload ();
+	void handleFinishedApplying ();
 	void updateStatusbar ();
 };
 

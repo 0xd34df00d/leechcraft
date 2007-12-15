@@ -55,6 +55,11 @@ int main (int argc, char **argv)
 
 	qDebug () << "======APPLICATION STARTUP======";
 	qWarning () << "======APPLICATION STARTUP======";
+	qCritical () << "======APPLICATION STARTUP======";
+
+	QTranslator transl;
+	transl.load (QString ("leechcraft_") + QLocale::system ().name ());
+	app.installTranslator (&transl);
 
 	QCoreApplication::setApplicationName ("Leechcraft");
 	QCoreApplication::setOrganizationName ("Deviant");

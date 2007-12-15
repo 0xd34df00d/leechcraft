@@ -162,10 +162,8 @@ bool Core::Check ()
 
 void Core::Download ()
 {
-	qDebug () << Q_FUNC_INFO << IDs2Download_;
-
+	ToApply_.clear ();
 	QStringList mirrors = SettingsManager::Instance ()->GetMirrors ();
-
 	for (int i = 0; i < IDs2Download_.size (); ++i)
 	{
 		FileRepresentation rep = Files_.at (IDs2Download_.at (i));
@@ -185,6 +183,21 @@ void Core::Download ()
 
 			if (!mirror.endsWith ('/'))
 				mirror.append ('/');
+
+			QFile file (QFileInfo (rep.Location_).fileName ());
+			if (file.exists ())
+			{
+				if (!file.open (QIODevice::ReadOnly))
+					break;
+				QByteArray downloadedHash = QCryptographicHash::hash (file.readAll (), QCryptographicHash::Md5);
+				if (downloadedHash.toHex () == rep.MD5_)
+				{
+					emit downloadedID (i);
+					IDs2Download_.removeAt (i--);
+					ToApply_ << rep;
+					break;
+				}
+			}
 			
 			DirectDownloadParams ddp = { mirror + rep.URL_, QFileInfo (rep.Location_).fileName (), true, SettingsManager::Instance ()->GetSaveDownloadedInHistory () };
 			DownloadFileID_ = idd->AddDownload (ddp);
@@ -193,7 +206,6 @@ void Core::Download ()
 			DownloadWaiter_.second->wait (DownloadWaiter_.first);
 			DownloadWaiter_.first->unlock ();
 
-			QFile file (QFileInfo (rep.Location_).fileName ());
 			if (!file.open (QIODevice::ReadOnly))
 				continue;
 			QByteArray downloadedHash = QCryptographicHash::hash (file.readAll (), QCryptographicHash::Md5);
@@ -204,10 +216,40 @@ void Core::Download ()
 				if (!file.remove ())
 					break;
 			}
+			emit downloadedID (i);
 			IDs2Download_.removeAt (i--);
+			ToApply_ << rep;
 			break;
 		}
 	}
+
+	if (IDs2Download_.size ())
+	{
+		DownloadState_ = DownloadError;
+		emit error (tr ("Not all files were downloaded, sorry."));
+		return;
+	}
+	DownloadState_ = DownloadedSuccessfully;
+	emit finishedDownload ();
+
+	ApplyUpdates ();
+}
+
+void Core::ApplyUpdates ()
+{
+	for (int i = 0; i < ToApply_.size (); ++i)
+	{
+		FileRepresentation rep = ToApply_.at (i);
+		QString name = QFileInfo (rep.Location_).fileName ();
+		qDebug () << name << rep.Location_;
+		if (!QFile::remove (rep.Location_))
+			emit error (tr ("Removing old version failed."));
+		if (!QFile::copy (name, rep.Location_))
+			emit error (tr ("Copying failed."));
+	}
+
+	ToApply_.clear ();
+	emit finishedApplying ();
 }
 
 bool Core::Parse ()
@@ -300,6 +342,7 @@ bool Core::HandleSingleMirror (IDirectDownload *idd, const QString& mirror)
 	}
 	UpdateFilename_ = tmpfn;
 	DirectDownloadParams ddp = { mirror + QString ("update.xml"), tmpfn, true, false };
+	qDebug () << QThread::currentThread () << idd;
 	UpdateInfoID_ = idd->AddDownload (ddp);
 
 	CheckWaiter_.first->lock ();
