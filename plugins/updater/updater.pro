@@ -10,6 +10,8 @@ DEPENDPATH += .
 INCLUDEPATH += ../../
 INCLUDEPATH += .
 QT += xml
+TRANSLATIONS += leechcraft_updater_ru.ts \
+				leechcraft_updater_en.ts
 HEADERS += updaterplugin.h globals.h settingsmanager.h core.h
 SOURCES += updaterplugin.cpp settingsmanager.cpp core.cpp
 RESOURCES += resources.qrc

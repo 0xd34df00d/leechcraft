@@ -5,5 +5,7 @@
 		<file>resources/images/check.png</file>
 		<file>resources/images/download.png</file>
 		<file>resources/images/preferences.png</file>
+		<file>leechcraft_updater_en.qm</file>
+		<file>leechcraft_updater_ru.qm</file>
     </qresource>
 </RCC>

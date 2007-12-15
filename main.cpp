@@ -58,7 +58,8 @@ int main (int argc, char **argv)
 	qCritical () << "======APPLICATION STARTUP======";
 
 	QTranslator transl;
-	transl.load (QString ("leechcraft_") + QLocale::system ().name ());
+	QString localeName = QLocale::system ().name ();
+	transl.load (QString ("leechcraft_") + localeName);
 	app.installTranslator (&transl);
 
 	QCoreApplication::setApplicationName ("Leechcraft");

@@ -8,6 +8,11 @@
 
 void UpdaterPlugin::Init ()
 {
+	QTranslator *transl = new QTranslator;
+	QString localeName = QLocale::system ().name ();
+	transl->load (QString (":/leechcraft_updater_") + localeName);
+	qApp->installTranslator (transl);
+
 	Core_ = new Core;
 	connect (Core_, SIGNAL (gotFile (int, const QString&, const QString&, ulong, const QString&)),
 			this, SLOT (addFile (int, const QString&, const QString&, ulong, const QString)));
