@@ -36,6 +36,7 @@ class UpdaterPlugin : public QMainWindow
 	enum Roles
 	{
 		RoleSize = 40
+		, RoleID = 41
 	};
 
 	Core *Core_;
@@ -69,7 +70,7 @@ private slots:
 	void showSettings ();
 	void initCheckForUpdates ();
 	void initDownloadUpdates ();
-	void addFile (const QString&, const QString&, ulong, const QString&);
+	void addFile (int, const QString&, const QString&, ulong, const QString&);
 	void handleError (const QString&);
 	void setActionsEnabled ();
 	void handleFinishedCheck ();

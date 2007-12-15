@@ -22,6 +22,7 @@ class SettingsManager : public QObject
     bool SaveChangesScheduled_;
 protected:
 	Guarded<QStringList> Mirrors_;
+	Guarded<bool> SaveDownloadedInHistory_;
 private:
 	void ReadSettings ();
 	void WriteSettings ();
@@ -36,9 +37,12 @@ public:
 
 	const QStringList& GetMirrors () const;
 	void SetMirrors (const QStringList& mirrors);
+	bool GetSaveDownloadedInHistory () const;
+	void SetSaveDownloadedInHistory (bool);
 
 	SettingsItemInfo GetInfoFor (const QString&) const;
 
+	Q_PROPERTY (bool SaveDownloadedInHistory READ GetSaveDownloadedInHistory WRITE SetSaveDownloadedInHistory);
 	Q_PROPERTY (QStringList Mirrors READ GetMirrors WRITE SetMirrors);
 };
 

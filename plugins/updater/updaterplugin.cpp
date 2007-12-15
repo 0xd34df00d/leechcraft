@@ -9,7 +9,7 @@
 void UpdaterPlugin::Init ()
 {
 	Core_ = new Core;
-	connect (Core_, SIGNAL (gotFile (const QString&, const QString&, ulong, const QString&)), this, SLOT (addFile (const QString&, const QString&, ulong, const QString)));
+	connect (Core_, SIGNAL (gotFile (int, const QString&, const QString&, ulong, const QString&)), this, SLOT (addFile (int, const QString&, const QString&, ulong, const QString)));
 	connect (Core_, SIGNAL (error (const QString&)), this, SLOT (handleError (const QString&)));
 	connect (Core_, SIGNAL (finishedLoop ()), this, SLOT (setActionsEnabled ()));
 	connect (Core_, SIGNAL (finishedCheck ()), this, SLOT (handleFinishedCheck ()));
@@ -208,11 +208,15 @@ void UpdaterPlugin::initCheckForUpdates ()
 void UpdaterPlugin::initDownloadUpdates ()
 {
 	statusBar ()->showMessage ("Downloading updates...");
-	Core_->downloadUpdates ();
+	QList<int> downloaders;
+	for (int i = 0; i < Updates_->topLevelItemCount (); ++i)
+		if (Updates_->topLevelItem (i)->checkState (ColumnName) == Qt::Checked)
+			downloaders << Updates_->topLevelItem (i)->data (ColumnName, RoleID).toInt ();
+	Core_->downloadUpdates (downloaders);
 	QTimer::singleShot (2, this, SLOT (setActionsEnabled ()));
 }
 
-void UpdaterPlugin::addFile (const QString& name, const QString& loc, ulong size, const QString& descr)
+void UpdaterPlugin::addFile (int id, const QString& name, const QString& loc, ulong size, const QString& descr)
 {
 	QTreeWidgetItem *item = new QTreeWidgetItem (Updates_);
 	item->setCheckState (ColumnName, Qt::Unchecked);
@@ -220,6 +224,7 @@ void UpdaterPlugin::addFile (const QString& name, const QString& loc, ulong size
 	item->setText (ColumnLocation, loc);
 	item->setText (ColumnSize, Proxy::Instance ()->MakePrettySize (size));
 	item->setData (ColumnSize, RoleSize, static_cast<qulonglong> (size));
+	item->setData (ColumnName, RoleID, id);
 
 	QTreeWidgetItem *descItem = new QTreeWidgetItem (item);
 	descItem->setFirstColumnSpanned (true);

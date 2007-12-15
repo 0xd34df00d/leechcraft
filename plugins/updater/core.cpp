@@ -63,12 +63,13 @@ void Core::checkForUpdates ()
 	Waiter_.second->wakeOne ();
 }
 
-void Core::downloadUpdates ()
+void Core::downloadUpdates (const QList<int>& ids)
 {
 	if (IsChecking () || IsDownloading ())
 		return;
 
 	DownloadState_ = ShouldDownload;
+	IDs2Download_ = ids;
 	Waiter_.second->wakeOne ();
 }
 
@@ -79,6 +80,8 @@ void Core::handleDownloadFinished (int id)
 		CheckState_ = CheckedSuccessfully;
 		CheckWaiter_.second->wakeAll ();
 	}
+	else if (id == DownloadFileID_)
+		DownloadWaiter_.second->wakeAll ();
 }
 
 void Core::handleDownloadRemoved (int)
@@ -159,6 +162,52 @@ bool Core::Check ()
 
 void Core::Download ()
 {
+	qDebug () << Q_FUNC_INFO << IDs2Download_;
+
+	QStringList mirrors = SettingsManager::Instance ()->GetMirrors ();
+
+	for (int i = 0; i < IDs2Download_.size (); ++i)
+	{
+		FileRepresentation rep = Files_.at (IDs2Download_.at (i));
+		for (int j = 0; j < mirrors.size (); ++j)
+		{
+			IDirectDownload *idd;
+			QString mirror = mirrors [j];
+			if (mirror.left (6).toLower () == "ftp://")
+				idd = qobject_cast<IDirectDownload*> (Providers_ ["ftp"]);
+			else if (mirror.left (7).toLower () == "http://")
+				idd = qobject_cast<IDirectDownload*> (Providers_ ["http"]);
+			else
+				continue;
+
+			if (!idd)
+				continue;
+
+			if (!mirror.endsWith ('/'))
+				mirror.append ('/');
+			
+			DirectDownloadParams ddp = { mirror + rep.URL_, QFileInfo (rep.Location_).fileName (), true, SettingsManager::Instance ()->GetSaveDownloadedInHistory () };
+			DownloadFileID_ = idd->AddDownload (ddp);
+
+			DownloadWaiter_.first->lock ();
+			DownloadWaiter_.second->wait (DownloadWaiter_.first);
+			DownloadWaiter_.first->unlock ();
+
+			QFile file (QFileInfo (rep.Location_).fileName ());
+			if (!file.open (QIODevice::ReadOnly))
+				continue;
+			QByteArray downloadedHash = QCryptographicHash::hash (file.readAll (), QCryptographicHash::Md5);
+			if (downloadedHash.toHex () != rep.MD5_)
+			{
+				qDebug () << "File not downloaded";
+				file.close ();
+				if (!file.remove ())
+					break;
+			}
+			IDs2Download_.removeAt (i--);
+			break;
+		}
+	}
 }
 
 bool Core::Parse ()
@@ -200,7 +249,7 @@ bool Core::Parse ()
 	CollectFiles (root);
 
 	for (int i = 0; i < Files_.size (); ++i)
-		emit gotFile (Files_ [i].Name_, Files_ [i].Location_, Files_ [i].Size_, Files_ [i].Description_);
+		emit gotFile (i, Files_ [i].Name_, Files_ [i].Location_, Files_ [i].Size_, Files_ [i].Description_);
 
 	return true;
 }
@@ -229,7 +278,7 @@ void Core::CollectFiles (QDomElement &e)
 		if (file.open (QIODevice::ReadOnly))
 		{
 			QByteArray localHash = QCryptographicHash::hash (file.readAll (), QCryptographicHash::Md5);
-			if (localHash != md5)
+			if (localHash.toHex () != md5)
 			{
 				FileRepresentation fr = { md5.toAscii (), location.trimmed (), url.text ().trimmed (), descr.text ().trimmed (), name.text ().trimmed () , size.text ().toULong () };
 				Files_ << fr;

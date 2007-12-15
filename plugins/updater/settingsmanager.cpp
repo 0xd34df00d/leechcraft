@@ -20,6 +20,7 @@ void SettingsManager::ReadSettings ()
     settings.beginGroup (Globals::Name);
     settings.beginGroup ("mainsettings");
     Mirrors_ = settings.value ("Mirrors").toStringList ();
+    SaveDownloadedInHistory_ = settings.value ("SaveDownloadedInHistory").toBool ();
     settings.endGroup ();
     settings.endGroup ();
 }
@@ -30,6 +31,7 @@ void SettingsManager::WriteSettings ()
     settings.beginGroup (Globals::Name);
     settings.beginGroup ("mainsettings");
     settings.setValue ("Mirrors", Mirrors_);
+    settings.setValue ("SaveDownloadedInHistory", SaveDownloadedInHistory_);
     settings.endGroup ();
     settings.endGroup ();
 }
@@ -38,6 +40,9 @@ void SettingsManager::InitializeMap ()
 {
 	SettingsItemInfo mirrorsInfo = SettingsItemInfo (tr ("Update mirrors"), tr ("General options"));
 	PropertyInfo_ ["Mirrors"] = mirrorsInfo;
+
+	SettingsItemInfo saveDownloadedInHistory = SettingsItemInfo (tr ("Save downloaded files in history"), tr ("General options"));
+	PropertyInfo_ ["SaveDownloadedInHistory"] = saveDownloadedInHistory;
 }
 
 void SettingsManager::ScheduleFlush ()
@@ -84,6 +89,17 @@ const QStringList& SettingsManager::GetMirrors () const
 void SettingsManager::SetMirrors (const QStringList& mirrors)
 {
 	Mirrors_ = mirrors;
+	ScheduleFlush ();
+}
+
+bool SettingsManager::GetSaveDownloadedInHistory () const
+{
+	return SaveDownloadedInHistory_;
+}
+
+void SettingsManager::SetSaveDownloadedInHistory (bool value)
+{
+	SaveDownloadedInHistory_ = value;
 	ScheduleFlush ();
 }
 

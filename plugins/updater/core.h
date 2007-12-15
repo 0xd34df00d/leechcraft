@@ -42,7 +42,7 @@ class Core : public QThread
 
 	Guarded<bool> ShouldQuit_
 				, GotUpdateInfoFile_;
-	Guarded<int> UpdateInfoID_;
+	Guarded<int> UpdateInfoID_, DownloadFileID_;
 	Guarded<QString> UpdateFilename_;
 	Guarded<CheckState> CheckState_;
 	Guarded<DownloadState> DownloadState_;
@@ -58,6 +58,8 @@ class Core : public QThread
 	};
 
 	QList<FileRepresentation> Files_;
+	QList<int> IDs2Download_;
+	QMap<int, int> IDs2Pos_;
 public:
 	Core ();
 	virtual ~Core ();
@@ -67,10 +69,10 @@ public:
 	bool IsDownloading () const;
 public slots:
 	void checkForUpdates ();
-	void downloadUpdates ();
+	void downloadUpdates (const QList<int>&);
 signals:
 	void error (const QString&);
-	void gotFile (const QString&, const QString&, ulong, const QString&);
+	void gotFile (int, const QString&, const QString&, ulong, const QString&);
 	void finishedLoop ();
 	void finishedCheck ();
 private slots:
@@ -82,6 +84,7 @@ private:
 	virtual void run ();
 	bool Check ();
 	void Download ();
+	void DownloadSignleFile (const QString&);
 	bool Parse ();
 	void CollectFiles (QDomElement&);
 	bool HandleSingleMirror (IDirectDownload*, const QString&);
