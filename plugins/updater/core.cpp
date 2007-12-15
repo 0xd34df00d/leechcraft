@@ -246,6 +246,8 @@ void Core::ApplyUpdates ()
 			emit error (tr ("Removing old version failed."));
 		if (!QFile::copy (name, rep.Location_))
 			emit error (tr ("Copying failed."));
+		if (!QFile::remove (name))
+			emit error (tr ("Removing temporary file failed, do it yourself, cause I've done everything else."));
 	}
 
 	ToApply_.clear ();
