@@ -1,9 +1,14 @@
-#include <QtPlugin>
+#include <QtGui>
 #include "batcher.h"
 #include "globals.h"
 
 void Batcher::Init ()
 {
+	Q_INIT_RESOURCE (resources);
+	QTranslator *transl = new QTranslator;
+    QString localeName = QLocale::system ().name ();
+    transl->load (QString (":/leechcraft_batcher_") + localeName);
+    qApp->installTranslator (transl);
 }
 
 QString Batcher::GetName () const
@@ -44,6 +49,40 @@ QStringList Batcher::Needs () const
 QStringList Batcher::Uses () const
 {
 	return QStringList ();
+}
+
+void Batcher::SetProvider (QObject *obj, const QString& feature)
+{
+	Providers_ [feature] = obj;
+}
+
+void Batcher::Release ()
+{
+}
+
+QIcon Batcher::GetIcon () const
+{
+	return QIcon ();
+}
+
+void Batcher::SetParent (QWidget *parent)
+{
+	setParent (parent);
+}
+
+void Batcher::ShowWindow ()
+{
+	IsShown_ = 1 - IsShown_;
+	IsShown_ ? show () : hide ();
+}
+
+void Batcher::ShowBalloonTip ()
+{
+}
+
+void Batcher::closeEvent (QCloseEvent*)
+{
+	IsShown_ = false;
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_batcher, Batcher);

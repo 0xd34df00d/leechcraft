@@ -13,5 +13,6 @@ INCLUDEPATH += ../../
 # Input
 HEADERS += batcher.h
 SOURCES += batcher.cpp
+RESOURCES += resources.qrc
 TRANSLATIONS += leechcraft_batcher_en.ts \
 				leechcraft_batcher_ru.ts

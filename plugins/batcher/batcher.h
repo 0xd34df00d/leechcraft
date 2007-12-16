@@ -11,6 +11,8 @@ class Batcher : public QMainWindow
 	Q_INTERFACES (IInfo IWindow);
 
 	ID_t ID_;
+	bool IsShown_;
+	QMap<QString, QObject*> Providers_;
 public:
 	virtual void Init ();
 	virtual QString GetName () const;
@@ -27,6 +29,8 @@ public:
 	virtual void SetParent (QWidget*);
 	virtual void ShowWindow ();
 	virtual void ShowBalloonTip ();
+protected:
+	virtual void closeEvent (QCloseEvent*);
 };
 
 #endif
