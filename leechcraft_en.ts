@@ -175,4 +175,27 @@
         <translation>Release of one or more plugins failed. OS would cleanup after us, but it isn&apos;t good anyway, as this failed plugin could fail to save it&apos;s state.</translation>
     </message>
 </context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="main.cpp" line="72"/>
+        <source>bytes</source>
+        <translation>bytes</translation>
+    </message>
+    <message>
+        <location filename="main.cpp" line="72"/>
+        <source>KB</source>
+        <translation>KB</translation>
+    </message>
+    <message>
+        <location filename="main.cpp" line="72"/>
+        <source>MB</source>
+        <translation>MB</translation>
+    </message>
+    <message>
+        <location filename="main.cpp" line="72"/>
+        <source>GB</source>
+        <translation>GB</translation>
+    </message>
+</context>
 </TS>

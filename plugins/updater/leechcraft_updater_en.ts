@@ -70,99 +70,104 @@
 <context>
     <name>UpdaterPlugin</name>
     <message>
-        <location filename="updaterplugin.cpp" line="30"/>
+        <location filename="updaterplugin.cpp" line="36"/>
         <source>Idle</source>
         <translation>Idle</translation>
     </message>
     <message>
-        <location filename="updaterplugin.cpp" line="46"/>
+        <location filename="updaterplugin.cpp" line="52"/>
         <source>Simple updater</source>
         <translation>Simple updater</translation>
     </message>
     <message>
-        <location filename="updaterplugin.cpp" line="51"/>
-        <source></source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="updaterplugin.cpp" line="126"/>
+        <location filename="updaterplugin.cpp" line="132"/>
         <source>Updater</source>
         <translation>Updater</translation>
     </message>
     <message>
-        <location filename="updaterplugin.cpp" line="144"/>
+        <location filename="updaterplugin.cpp" line="150"/>
         <source>Plugin</source>
         <translation>Plugin</translation>
     </message>
     <message>
-        <location filename="updaterplugin.cpp" line="144"/>
+        <location filename="updaterplugin.cpp" line="150"/>
         <source>Size</source>
         <translation>Size</translation>
     </message>
     <message>
-        <location filename="updaterplugin.cpp" line="144"/>
+        <location filename="updaterplugin.cpp" line="150"/>
         <source>Location</source>
         <translation>Location</translation>
     </message>
     <message>
-        <location filename="updaterplugin.cpp" line="155"/>
+        <location filename="updaterplugin.cpp" line="161"/>
         <source>Main</source>
         <translation>Main</translation>
     </message>
     <message>
-        <location filename="updaterplugin.cpp" line="161"/>
+        <location filename="updaterplugin.cpp" line="167"/>
         <source>Check for updates</source>
         <translation>Check for updates</translation>
     </message>
     <message>
-        <location filename="updaterplugin.cpp" line="162"/>
+        <location filename="updaterplugin.cpp" line="168"/>
         <source>Download updates</source>
         <translation>Download updates</translation>
     </message>
     <message>
-        <location filename="updaterplugin.cpp" line="164"/>
+        <location filename="updaterplugin.cpp" line="170"/>
         <source>Settings...</source>
         <translation>Settings...</translation>
     </message>
     <message>
-        <location filename="updaterplugin.cpp" line="169"/>
+        <location filename="updaterplugin.cpp" line="175"/>
         <source>&amp;Tools</source>
         <translation>&amp;Tools</translation>
     </message>
     <message>
-        <location filename="updaterplugin.cpp" line="201"/>
+        <location filename="updaterplugin.cpp" line="207"/>
         <source>: Preferences</source>
         <translation>: Preferences</translation>
     </message>
     <message>
-        <location filename="updaterplugin.cpp" line="241"/>
+        <location filename="updaterplugin.cpp" line="247"/>
         <source>Error!</source>
         <translation>Error!</translation>
     </message>
     <message>
-        <location filename="updaterplugin.cpp" line="274"/>
+        <location filename="updaterplugin.cpp" line="280"/>
         <source>Checked successfully</source>
         <translation>Checked successfully</translation>
     </message>
     <message>
-        <location filename="updaterplugin.cpp" line="279"/>
+        <location filename="updaterplugin.cpp" line="285"/>
         <source>Downloaded updates successfully, applying...</source>
         <translation>Downloaded updates successfully, applying...</translation>
     </message>
     <message>
-        <location filename="updaterplugin.cpp" line="284"/>
+        <location filename="updaterplugin.cpp" line="290"/>
         <source>Applied updates successfully, restart app now</source>
         <translation>Applied updates successfully, restart app now</translation>
     </message>
     <message>
-        <location filename="updaterplugin.cpp" line="285"/>
+        <location filename="updaterplugin.cpp" line="291"/>
         <source>Restart application</source>
         <translation>Restart application</translation>
     </message>
     <message>
-        <location filename="updaterplugin.cpp" line="285"/>
+        <location filename="updaterplugin.cpp" line="291"/>
         <source>You should restart application now for the changes to take effect. You can continue to work but plugins won&apos;t be updated until restart.</source>
         <translation>You should restart application now for the changes to take effect. You can continue to work but plugins won&apos;t be updated until restart.</translation>
+    </message>
+    <message>
+        <location filename="updaterplugin.cpp" line="212"/>
+        <source>Checking for updates...</source>
+        <translation>Checking for updates...</translation>
+    </message>
+    <message>
+        <location filename="updaterplugin.cpp" line="220"/>
+        <source>Downloading updates...</source>
+        <translation>Downloading updates...</translation>
     </message>
 </context>
 </TS>

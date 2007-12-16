@@ -17,6 +17,12 @@
 
 void HttpPlugin::Init ()
 {
+	Q_INIT_RESOURCE (resources);
+    QTranslator *transl = new QTranslator;
+    QString localeName = QLocale::system ().name ();
+    transl->load (QString (":/leechcraft_http_") + localeName);
+    qApp->installTranslator (transl);
+
 	SaveChangesScheduled_ = false;
 	ProvidesList_ << "http" << "ftp" << "resume";
 
@@ -219,7 +225,7 @@ QString HttpPlugin::GetName () const
 
 QString HttpPlugin::GetInfo () const
 {
-	return "Simple HTTP and FTP plugin, providing basic functionality.";
+	return tr ("Simple HTTP and FTP plugin, providing basic functionality.");
 }
 
 QString HttpPlugin::GetStatusbarMessage () const

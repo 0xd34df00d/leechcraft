@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <iostream>
 #include <cstring>
+#include <plugininterface/proxy.h>
 #include "mainwindow.h"
 
 QMutex G_DbgMutex;
@@ -67,6 +68,8 @@ int main (int argc, char **argv)
 
 	qRegisterMetaType<QModelIndex> ("QModelIndex");
 	qRegisterMetaType<QModelIndex*> ("QModelIndexStar");
+
+	Proxy::Instance ()->SetStrings (QStringList (QObject::tr ("bytes")) << QObject::tr ("KB") << QObject::tr ("MB") << QObject::tr ("GB"));
 
 	MainWindow::Instance ();
     return app.exec ();

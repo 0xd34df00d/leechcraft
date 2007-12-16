@@ -134,7 +134,7 @@
     <message>
         <location filename="mainwindow.cpp" line="280"/>
         <source>/s</source>
-        <translation>/s</translation>
+        <translation>/c</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="313"/>
@@ -173,6 +173,29 @@
         <location filename="pluginmanager.cpp" line="88"/>
         <source>Release of one or more plugins failed. OS would cleanup after us, but it isn&apos;t good anyway, as this failed plugin could fail to save it&apos;s state.</source>
         <translation>Я не смог освободить один или несколько плагинов. Операционнка все равно подчистит ресурсы за нами, но все же это нехорошо, так как плагин мог не успеть сохранить свое состояние.</translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="main.cpp" line="72"/>
+        <source>bytes</source>
+        <translation>байт</translation>
+    </message>
+    <message>
+        <location filename="main.cpp" line="72"/>
+        <source>KB</source>
+        <translation>Кб</translation>
+    </message>
+    <message>
+        <location filename="main.cpp" line="72"/>
+        <source>MB</source>
+        <translation>Мб</translation>
+    </message>
+    <message>
+        <location filename="main.cpp" line="72"/>
+        <source>GB</source>
+        <translation>Гб</translation>
     </message>
 </context>
 </TS>

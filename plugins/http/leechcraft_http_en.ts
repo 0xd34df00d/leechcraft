@@ -246,6 +246,11 @@ know what to do.</source>
         <source>/s</source>
         <translation>/s</translation>
     </message>
+    <message>
+        <location filename="httpplugin.cpp" line="222"/>
+        <source>Simple HTTP and FTP plugin, providing basic functionality.</source>
+        <translation>Simple HTTP and FTP plugin, providing basic functionality.</translation>
+    </message>
 </context>
 <context>
     <name>Job</name>
@@ -308,127 +313,127 @@ know what to do.</source>
     <message>
         <location filename="settingsmanager.cpp" line="34"/>
         <source>Current directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Current directory</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="82"/>
         <source>Default download directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Default download directory</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="142"/>
         <source>Local options</source>
-        <translation type="unfinished"></translation>
+        <translation>Local options</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="86"/>
         <source>Max concurrent jobs per server</source>
-        <translation type="unfinished"></translation>
+        <translation>Max concurrent jobs per server</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="125"/>
         <source>Network options</source>
-        <translation type="unfinished"></translation>
+        <translation>Network options</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="90"/>
         <source>Max total concurrent jobs</source>
-        <translation type="unfinished"></translation>
+        <translation>Max total concurrent jobs</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="94"/>
         <source>Retry timeout</source>
-        <translation type="unfinished"></translation>
+        <translation>Retry timeout</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="96"/>
         <source> s</source>
-        <translation type="unfinished"></translation>
+        <translation>(sp)s</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="100"/>
         <source>Connection timeout</source>
-        <translation type="unfinished"></translation>
+        <translation>Connection timeout</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="113"/>
         <source> ms</source>
-        <translation type="unfinished"></translation>
+        <translation>(sp)ms</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="106"/>
         <source>Timeout for other operations</source>
-        <translation type="unfinished"></translation>
+        <translation>Timeout for other operations</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="112"/>
         <source>Stop timeout</source>
-        <translation type="unfinished"></translation>
+        <translation>Stop timeout</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="118"/>
         <source>Proxy enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Proxy enabled</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="125"/>
         <source>Proxy</source>
-        <translation type="unfinished"></translation>
+        <translation>Proxy</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="121"/>
         <source>Proxy address</source>
-        <translation type="unfinished"></translation>
+        <translation>Proxy address</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="125"/>
         <source>Proxy port</source>
-        <translation type="unfinished"></translation>
+        <translation>Proxy port</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="128"/>
         <source>Default login</source>
-        <translation type="unfinished"></translation>
+        <translation>Default login</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="132"/>
         <source>FTP options</source>
-        <translation type="unfinished"></translation>
+        <translation>FTP options</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="132"/>
         <source>Default password</source>
-        <translation type="unfinished"></translation>
+        <translation>Default password</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="136"/>
         <source>Cache size</source>
-        <translation type="unfinished"></translation>
+        <translation>Cache size</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="136"/>
         <source>IO</source>
-        <translation type="unfinished"></translation>
+        <translation>IO</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="137"/>
         <source> kb</source>
-        <translation type="unfinished"></translation>
+        <translation>(sp)kb</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="142"/>
         <source>Autostart spawned jobs</source>
-        <translation type="unfinished"></translation>
+        <translation>Autostart spawned jobs</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="145"/>
         <source>Mask as user agent</source>
-        <translation type="unfinished"></translation>
+        <translation>Mask as user agent</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="145"/>
         <source>HTTP options</source>
-        <translation type="unfinished"></translation>
+        <translation>HTTP options</translation>
     </message>
 </context>
 </TS>

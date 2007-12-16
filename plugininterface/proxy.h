@@ -1,6 +1,7 @@
 #ifndef PROXY_H
 #define PROXY_H
 #include <QObject>
+#include <QStringList>
 
 class TcpSocket;
 class FileWriter;
@@ -13,8 +14,10 @@ class Proxy : public QObject
 	~Proxy ();
 
 	static Proxy *Instance_;
+	QStringList Strings_;
 public:
 	static Proxy *Instance ();
+	void SetStrings (const QStringList&);
 	TcpSocket* MakeSocket () const;
 	FileWriter* GetFileWriter () const;
 	QString GetApplicationName () const;

@@ -11,5 +11,7 @@
         <file>resources/images/preferences.png</file>
 		<file>resources/images/autoadjustiface.png</file>
 		<file>resources/images/waiting.png</file>
+		<file>leechcraft_http_en.qm</file>
+		<file>leechcraft_http_ru.qm</file>
     </qresource>
 </RCC>

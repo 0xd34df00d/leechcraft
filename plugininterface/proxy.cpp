@@ -8,6 +8,7 @@ Proxy *Proxy::Instance_ = 0;
 
 Proxy::Proxy ()
 {
+	Strings_ << "bytes" << "KB" << "MB" << "GB";
 }
 
 Proxy::~Proxy ()
@@ -19,6 +20,11 @@ Proxy* Proxy::Instance ()
 	if (!Instance_)
 		Instance_ = new Proxy;
 	return Instance_;
+}
+
+void Proxy::SetStrings (const QStringList& str)
+{
+	Strings_ = str;
 }
 
 TcpSocket* Proxy::MakeSocket () const
@@ -43,25 +49,25 @@ QString Proxy::GetOrganizationName () const
 
 QString Proxy::MakePrettySize (qint64 sourcesize) const
 {
-	QString dString = tr (" bytes");
+	QString dString = Strings_ [0];
     long double size = sourcesize;
     if (size >= 1024)
     {
-        dString = tr (" KB");
+		dString = Strings_ [1];
         size /= 1024;
     }
     if (size >= 1024)
     {
-        dString = tr (" MB");
+		dString = Strings_ [1];
         size /= 1024;
     }
     if (size >= 1024)
     {
-        dString = tr (" GB");
+		dString = Strings_ [1];
         size /= 1024;
     }
 
-    return QString::number (size, 'f', 1) + dString;
+    return QString::number (size, 'f', 1) + " " + dString;
 }
 
 void Proxy::AddUploadMessage (const QString& msg) const

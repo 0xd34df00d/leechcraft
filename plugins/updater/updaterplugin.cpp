@@ -8,6 +8,7 @@
 
 void UpdaterPlugin::Init ()
 {
+	Q_INIT_RESOURCE (resources);
 	QTranslator *transl = new QTranslator;
 	QString localeName = QLocale::system ().name ();
 	transl->load (QString (":/leechcraft_updater_") + localeName);
@@ -208,7 +209,7 @@ void UpdaterPlugin::showSettings ()
 
 void UpdaterPlugin::initCheckForUpdates ()
 {
-	statusBar ()->showMessage ("Checking for updates...");
+	statusBar ()->showMessage (tr ("Checking for updates..."));
 	Updates_->clear ();
 	Core_->checkForUpdates ();
 	QTimer::singleShot (2, this, SLOT (setActionsEnabled ()));
@@ -216,7 +217,7 @@ void UpdaterPlugin::initCheckForUpdates ()
 
 void UpdaterPlugin::initDownloadUpdates ()
 {
-	statusBar ()->showMessage ("Downloading updates...");
+	statusBar ()->showMessage (tr ("Downloading updates..."));
 	QList<int> downloaders;
 	for (int i = 0; i < Updates_->topLevelItemCount (); ++i)
 		if (Updates_->topLevelItem (i)->checkState (ColumnName) == Qt::Checked)
