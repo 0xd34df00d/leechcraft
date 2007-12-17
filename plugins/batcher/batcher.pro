@@ -16,3 +16,4 @@ SOURCES += batcher.cpp
 RESOURCES += resources.qrc
 TRANSLATIONS += leechcraft_batcher_en.ts \
 				leechcraft_batcher_ru.ts
+win32:LIBS += -L../.. -lplugininterface

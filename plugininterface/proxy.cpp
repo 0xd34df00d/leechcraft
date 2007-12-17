@@ -58,12 +58,12 @@ QString Proxy::MakePrettySize (qint64 sourcesize) const
     }
     if (size >= 1024)
     {
-		dString = Strings_ [1];
+		dString = Strings_ [2];
         size /= 1024;
     }
     if (size >= 1024)
     {
-		dString = Strings_ [1];
+		dString = Strings_ [3];
         size /= 1024;
     }
 
