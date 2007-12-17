@@ -9,6 +9,8 @@ void Batcher::Init ()
     QString localeName = QLocale::system ().name ();
     transl->load (QString (":/leechcraft_batcher_") + localeName);
     qApp->installTranslator (transl);
+
+	setupUi (this);
 }
 
 QString Batcher::GetName () const
@@ -29,6 +31,7 @@ QString Batcher::GetStatusbarMessage () const
 IInfo& Batcher::SetID (IInfo::ID_t id)
 {
 	ID_ = id;
+	return *this;
 }
 
 IInfo::ID_t Batcher::GetID () const

@@ -2,8 +2,10 @@
 #define BATCHER_H
 #include <QMainWindow>
 #include <interfaces/interfaces.h>
+#include "ui_mainwindow.h"
 
 class Batcher : public QMainWindow
+			  , private Ui::MainWindow
 			  , public IInfo
 			  , public IWindow
 {
