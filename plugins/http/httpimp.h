@@ -96,7 +96,8 @@ private:
 	void WriteHeaders ();
 	bool ReadResponse ();
 	void ParseFirstLine (const QString&);
-	bool DoStuffWithResponse ();
+	bool DoPrimaryStuffWithResponse ();
+	bool DoSecondaryStuffWithResponse ();
 	void ParseSingleLine (const QString&);
 	void DoRedirect ();
 	void Finalize ();

@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>249</width>
-    <height>212</height>
+    <width>218</width>
+    <height>77</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -15,84 +15,46 @@
   <property name="modal" >
    <bool>true</bool>
   </property>
-  <widget class="QWidget" name="verticalLayout_3" >
+  <widget class="QWidget" name="" >
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>0</y>
-     <width>248</width>
-     <height>211</height>
+     <y>1</y>
+     <width>214</width>
+     <height>76</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" >
     <item>
      <widget class="QLabel" name="label" >
       <property name="text" >
-       <string>Specified file already exists, and I don't
-know what to do.</string>
+       <string>Specified file already exists, what should I do?</string>
       </property>
      </widget>
     </item>
     <item>
-     <spacer>
-      <property name="orientation" >
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" >
-       <size>
-        <width>20</width>
-        <height>40</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item>
-     <layout class="QVBoxLayout" >
+     <widget class="QComboBox" name="WhatToDo" >
       <item>
-       <widget class="QRadioButton" name="RadioScratch" >
-        <property name="text" >
-         <string>Start from scratch</string>
-        </property>
-       </widget>
+       <property name="text" >
+        <string>Continue the job</string>
+       </property>
       </item>
       <item>
-       <widget class="QRadioButton" name="RadioContinue" >
-        <property name="text" >
-         <string>Continue already started job</string>
-        </property>
-        <property name="checked" >
-         <bool>true</bool>
-        </property>
-       </widget>
+       <property name="text" >
+        <string>Delete old file</string>
+       </property>
       </item>
       <item>
-       <widget class="QRadioButton" name="RadioUnique" >
-        <property name="text" >
-         <string>Make the file unique (append a number)</string>
-        </property>
-       </widget>
+       <property name="text" >
+        <string>Make filename unique</string>
+       </property>
       </item>
       <item>
-       <widget class="QRadioButton" name="RadioCancel" >
-        <property name="text" >
-         <string>Cancel, do nothing</string>
-        </property>
-       </widget>
+       <property name="text" >
+        <string>Cancel</string>
+       </property>
       </item>
-     </layout>
-    </item>
-    <item>
-     <spacer>
-      <property name="orientation" >
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" >
-       <size>
-        <width>20</width>
-        <height>40</height>
-       </size>
-      </property>
-     </spacer>
+     </widget>
     </item>
     <item>
      <layout class="QVBoxLayout" >

@@ -9,29 +9,24 @@ struct JobParams;
 struct JobRepresentation;
 class QTime;
 class QFile;
+class FileExistsDialog;
 
 class Job : public QObject
 {
 	Q_OBJECT
 
 	unsigned int ID_;
-
 	ImpBase *ProtoImp_;
-
 	JobParams* Params_;
 	bool ErrorFlag_;
 	QString ErrorReason_;
-	ImpBase::length_t DownloadedSize_, TotalSize_;
+	ImpBase::length_t DownloadedSize_, TotalSize_, RestartPosition_;
 	double Speed_;
-
 	QMap<QAbstractSocket::SocketError, QString> ErrorDictionary_;
-
 	QFile *File_;
 	int DataOperations_;
-
-	ImpBase::length_t RestartPosition_;
-
 	QTime *StartTime_;
+	FileExistsDialog *FileExistsDialog_;
 public:
 	Job (JobParams *params = 0, QObject *parent = 0);
 	virtual ~Job ();
@@ -56,6 +51,7 @@ private slots:
 	void reemitEnqueue ();
 signals:
 	void updateDisplays (unsigned int);
+	void started (unsigned int);
 	void finished (unsigned int);
 	void deleteJob (unsigned int);
 	void addJob (JobParams*);

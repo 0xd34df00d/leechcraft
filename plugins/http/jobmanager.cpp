@@ -69,9 +69,14 @@ void JobManager::SetTheMain (QWidget *main)
 	FileExists_ = new FileExistsDialog (TheMain_);
 }
 
+QWidget* JobManager::GetTheMain () const
+{
+	return TheMain_;
+}
+
 int JobManager::addJob (JobParams *params)
 {
-	Job *job = new Job (params);
+	Job *job = new Job (params, this);
 
 	Jobs_.append (job);
 	unsigned int id = IDPool_.last ();
@@ -89,6 +94,7 @@ int JobManager::addJob (JobParams *params)
 
 	connect (job, SIGNAL (updateDisplays (unsigned int)), this, SLOT (handleJobDisplay (unsigned int)));
 	connect (job, SIGNAL (finished (unsigned int)), this, SIGNAL (jobFinished (unsigned int)));
+	connect (job, SIGNAL (started (unsigned int)), this, SIGNAL (jobStarted (unsigned int)));
 	connect (job, SIGNAL (deleteJob (unsigned int)), this, SIGNAL (deleteJob (unsigned int)));
 	connect (job, SIGNAL (addJob (JobParams*)), this, SLOT (addJob (JobParams*)));
 	connect (job, SIGNAL (showError (QString, QString)), this, SIGNAL (showError (QString, QString)));

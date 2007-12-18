@@ -12,6 +12,7 @@
 #include "jobrepresentation.h"
 #include "fileexistsdialog.h"
 #include "settingsmanager.h"
+#include "jobmanager.h"
 #include "httpimp.h"
 #include "ftpimp.h"
 
@@ -21,14 +22,15 @@ Job::Job (JobParams *params, QObject *parent)
 , Params_ (params)
 , DownloadedSize_ (0)
 , TotalSize_ (0)
+, RestartPosition_ (0)
 , Speed_ (0)
 , File_ (0)
-, RestartPosition_ (0)
 , JobType_ (File)
 {
 	StartTime_ = new QTime;
 	FillErrorDictionary ();
 	ErrorFlag_ = false;
+	FileExistsDialog_ = new FileExistsDialog (parent ? qobject_cast<JobManager*> (parent)->GetTheMain () : 0);
 }
 
 Job::~Job ()
@@ -42,9 +44,7 @@ Job::~Job ()
 void Job::DoDelayedInit ()
 {
 	if (Params_->LocalName_ == "Current directory")
-	{
 		Params_->LocalName_ = QDir::currentPath ();
-	}
 	QString filename = MakeFilename (Params_->URL_, Params_->LocalName_);
 	if (QFile::exists (filename))
 	{
@@ -97,10 +97,9 @@ void Job::Start ()
 	QFileInfo fileInfo (ln);
 	if (fileInfo.exists () && !fileInfo.isDir ())
 	{
-		FileExistsDialog *fe = new FileExistsDialog;
-		fe->exec ();
+		FileExistsDialog_->exec ();
 		QFile f (ln);
-		switch (fe->GetSelected ())
+		switch (FileExistsDialog_->GetSelected ())
 		{
 			case FileExistsDialog::Scratch:
 				if (!QFile::remove (ln))
@@ -119,8 +118,6 @@ void Job::Start ()
 			case FileExistsDialog::Abort:
 				throw Exceptions::Logic ("Abort requested");
 		}
-
-		delete fe;
 	}
 
 	delete File_;
@@ -221,7 +218,9 @@ void Job::handleClarifyURL (QString url)
 
 	Params_->URL_ = url;
 
-	Run ();
+	emit started (ID_);
+
+	Start ();
 }
 
 void Job::processData (ImpBase::length_t ready, ImpBase::length_t total, QByteArray newData)
@@ -305,7 +304,6 @@ void Job::FillErrorDictionary ()
 	ErrorDictionary_ [QAbstractSocket::ProxyAuthenticationRequiredError] = "Proxy autentication required";
 	ErrorDictionary_ [QAbstractSocket::UnknownSocketError] = "Unknown socket error";
 }
-
 
 QString Job::MakeUniqueNameFor (const QString& name)
 {

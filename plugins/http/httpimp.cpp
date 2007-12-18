@@ -160,7 +160,7 @@ bool HttpImp::ReadResponse ()
 		return true;
 	}
 	ParseFirstLine (br);
-	bool shouldWeReturn = DoStuffWithResponse ();
+	bool shouldWeReturn = DoPrimaryStuffWithResponse ();
 	while (!shouldWeReturn)
 	{
 		QByteArray lineRead;
@@ -179,6 +179,7 @@ bool HttpImp::ReadResponse ()
 	}
 	if (Response_.Fields_.contains ("content-length"))
 		Response_.ContentLength_ = Response_.Fields_ ["content-length"].toULong ();
+	shouldWeReturn = DoSecondaryStuffWithResponse ();
 	return shouldWeReturn;
 }
 
@@ -198,11 +199,11 @@ void HttpImp::ParseFirstLine (const QString& str)
 	Response_.StatusReason_ = rest;
 }
 
-bool HttpImp::DoStuffWithResponse ()
+bool HttpImp::DoPrimaryStuffWithResponse ()
 {
-	qDebug () << Q_FUNC_INFO;
 	switch (Response_.StatusCode_)
 	{
+		// All's ok
 		case Continue:
 		case SwitchingProtocols:
 		case Processing_WEBDAV_:
@@ -214,14 +215,14 @@ bool HttpImp::DoStuffWithResponse ()
 		case ResetContent:
 		case PartialContent:
 		case MultiStatus_WEBDAV_:
-			return false;
-		case RequestedRangeNotSatisfiable:
-			emit finished ();
-			return true;
+
+		// Will be handled later
 		case MovedPermanently:
 		case TemporaryRedirect:
 		case Found:
-			DoRedirect ();
+			return false;
+		case RequestedRangeNotSatisfiable:
+			emit finished ();
 			return true;
 		case BadRequest:
 		case NotFound:
@@ -229,7 +230,20 @@ bool HttpImp::DoStuffWithResponse ()
 		default:
 			throw Exceptions::NotImplemented (QString ("The HTTP status code " + QString::number (Response_.StatusCode_) + " wasn't implemented yet. Please, send the bugreport to us with URL of file you've tried to download.").toStdString ());
 	}
-	return false;
+}
+
+bool HttpImp::DoSecondaryStuffWithResponse ()
+{
+	switch (Response_.StatusCode_)
+	{
+		case MovedPermanently:
+		case TemporaryRedirect:
+		case Found:
+			DoRedirect ();
+			return true;
+		default:
+			return false;
+	}
 }
 
 void HttpImp::ParseSingleLine (const QString& str)
@@ -242,15 +256,12 @@ void HttpImp::ParseSingleLine (const QString& str)
 
 void HttpImp::DoRedirect ()
 {
-	qDebug () << Q_FUNC_INFO;
 	QString newLoc = Response_.Fields_ ["location"].trimmed ();
-	qDebug () << newLoc;
 	emit clarifyURL (newLoc);
 }
 
 void HttpImp::Finalize ()
 {
-	qDebug () << Q_FUNC_INFO;
 	Socket_->Disconnect ();
 	delete Socket_;
 	Socket_ = 0;

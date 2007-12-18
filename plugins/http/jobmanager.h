@@ -43,6 +43,7 @@ public:
 	void Release ();
 	void DoDelayedInit ();
 	void SetTheMain (QWidget*);
+	QWidget* GetTheMain () const;
 	JobRepresentation* GetJobRepresentation (unsigned int) const;
 	qint64 GetDownloadSpeed () const;
 	bool Start (unsigned int);
