@@ -38,10 +38,10 @@ public:
 	QString GetErrorReason ();
 	void Start ();
 	void Stop ();
-	void Run ();
 	void Release ();
 	enum JobType { File, Directory };
 private slots:
+	void handleRemoteFileInfo (const ImpBase::RemoteFileInfo&);
 	void handleNewFiles (QStringList*);
 	void handleClarifyURL (QString);
 	void processData (ImpBase::length_t, ImpBase::length_t, QByteArray);

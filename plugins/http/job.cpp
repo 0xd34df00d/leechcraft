@@ -27,6 +27,7 @@ Job::Job (JobParams *params, QObject *parent)
 , File_ (0)
 , JobType_ (File)
 {
+	qRegisterMetaType<ImpBase::RemoteFileInfo> ("ImpBase::RemoteFileInfo");
 	StartTime_ = new QTime;
 	FillErrorDictionary ();
 	ErrorFlag_ = false;
@@ -96,33 +97,89 @@ void Job::Start ()
 	QString ln = MakeFilename (Params_->URL_, Params_->LocalName_);
 	QFileInfo fileInfo (ln);
 	if (fileInfo.exists () && !fileInfo.isDir ())
-	{
-		FileExistsDialog_->exec ();
-		QFile f (ln);
-		switch (FileExistsDialog_->GetSelected ())
-		{
-			case FileExistsDialog::Scratch:
-				if (!QFile::remove (ln))
-				{
-					if (!f.open (QFile::Truncate))
-						throw Exceptions::IO ("File could be neither removed, nor truncated. Check your rights or smth.");
-					f.close ();
-				}
-				break;
-			case FileExistsDialog::Continue:
-				RestartPosition_ = f.size ();
-				break;
-			case FileExistsDialog::Unique:
-				Params_->LocalName_ = MakeUniqueNameFor (ln);
-				break;
-			case FileExistsDialog::Abort:
-				throw Exceptions::Logic ("Abort requested");
-		}
-	}
+		RestartPosition_ = QFile (ln).size ();
 
 	delete File_;
+	File_ = 0;
+	delete ProtoImp_;
+//	File_ = new QFile (MakeFilename (Params_->URL_, Params_->LocalName_));
+
+	if (Params_->URL_.left (3).toLower () == "ftp")
+		ProtoImp_ = new FtpImp ();
+	else
+		ProtoImp_ = new HttpImp ();
+
+	connect (ProtoImp_, SIGNAL (gotNewFiles (QStringList*)), this, SLOT (handleNewFiles (QStringList*)));
+	connect (ProtoImp_, SIGNAL (clarifyURL (QString)), this, SLOT (handleClarifyURL (QString)));
+	connect (ProtoImp_, SIGNAL (dataFetched (ImpBase::length_t, ImpBase::length_t, QByteArray)), this, SLOT (processData (ImpBase::length_t, ImpBase::length_t, QByteArray)), Qt::DirectConnection);
+	connect (ProtoImp_, SIGNAL (finished ()), this, SLOT (reemitFinished ()), Qt::DirectConnection);
+	connect (ProtoImp_, SIGNAL (error (QString)), this, SLOT (handleShowError (QString)));
+	connect (ProtoImp_, SIGNAL (stopped ()), this, SLOT (reemitStopped ()));
+	connect (ProtoImp_, SIGNAL (enqueue ()), this, SLOT (reemitEnqueue ()));
+	connect (ProtoImp_, SIGNAL (gotRemoteFileInfo (const ImpBase::RemoteFileInfo&)), this, SLOT (handleRemoteFileInfo (const ImpBase::RemoteFileInfo&)), Qt::QueuedConnection);
+
+	ProtoImp_->SetURL (Params_->URL_);
+	ProtoImp_->SetRestartPosition (RestartPosition_);
+
+	DownloadedSize_ = RestartPosition_;
+	TotalSize_ = RestartPosition_;
+
+	ProtoImp_->StartDownload ();
+	StartTime_->start ();
+}
+
+void Job::handleRemoteFileInfo (const ImpBase::RemoteFileInfo& rfi)
+{
+	QString ln = MakeFilename (Params_->URL_, Params_->LocalName_);
+	QFileInfo fileInfo (ln);
+	if (fileInfo.exists () && !fileInfo.isDir ())
+	{
+		if (rfi.Modification_ >= fileInfo.lastModified ())
+		{
+			if (QMessageBox::question (parent () ? qobject_cast<JobManager*> (parent ())->GetTheMain () : 0, tr ("Question."), tr ("File on remote server is newer than local. Should I redownload it from scratch or just leave it alone?"), QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok)
+			{
+				File_ = new QFile (ln);
+				if (!File_->open (QFile::Truncate))
+					throw Exceptions::IO (tr ("File could be neither removed, nor truncated. Check your rights or smth.").toStdString ());
+				File_->close ();
+				File_->open (QFile::WriteOnly);
+				RestartPosition_ = 0;
+				Stop ();
+				Start ();
+				return;
+			}
+			else
+			{
+				Stop ();
+				return;
+			}
+		}
+		else
+		{
+			FileExistsDialog_->exec ();
+			QFile f (ln);
+			switch (FileExistsDialog_->GetSelected ())
+			{
+				case FileExistsDialog::Scratch:
+					if (!QFile::remove (ln))
+					{
+						if (!f.open (QFile::Truncate))
+							throw Exceptions::IO (("File could be neither removed, nor truncated. Check your rights or smth."));
+						f.close ();
+					}
+					break;
+				case FileExistsDialog::Continue:
+					RestartPosition_ = f.size ();
+					break;
+				case FileExistsDialog::Unique:
+					Params_->LocalName_ = MakeUniqueNameFor (ln);
+					break;
+				case FileExistsDialog::Abort:
+					throw Exceptions::Logic ("Abort requested");
+			}
+		}
+	}
 	File_ = new QFile (MakeFilename (Params_->URL_, Params_->LocalName_));
-	Run ();
 }
 
 void Job::Stop ()
@@ -133,37 +190,6 @@ void Job::Stop ()
 		while (!ProtoImp_->wait (25))
 			qApp->processEvents ();
 	}
-}
-
-void Job::Run ()
-{
-	delete ProtoImp_;
-
-	if (Params_->URL_.left (3).toLower () == "ftp")
-	{
-		ProtoImp_ = new FtpImp ();
-		connect (ProtoImp_, SIGNAL (gotNewFiles (QStringList*)), this, SLOT (handleNewFiles (QStringList*)));
-	}
-	else
-	{
-		ProtoImp_ = new HttpImp ();
-		connect (ProtoImp_, SIGNAL (clarifyURL (QString)), this, SLOT (handleClarifyURL (QString)));
-	}
-
-	connect (ProtoImp_, SIGNAL (dataFetched (ImpBase::length_t, ImpBase::length_t, QByteArray)), this, SLOT (processData (ImpBase::length_t, ImpBase::length_t, QByteArray)), Qt::DirectConnection);
-	connect (ProtoImp_, SIGNAL (finished ()), this, SLOT (reemitFinished ()), Qt::DirectConnection);
-	connect (ProtoImp_, SIGNAL (error (QString)), this, SLOT (handleShowError (QString)));
-	connect (ProtoImp_, SIGNAL (stopped ()), this, SLOT (reemitStopped ()));
-	connect (ProtoImp_, SIGNAL (enqueue ()), this, SLOT (reemitEnqueue ()));
-
-	ProtoImp_->SetURL (Params_->URL_);
-	ProtoImp_->SetRestartPosition (RestartPosition_);
-
-	DownloadedSize_ = RestartPosition_;
-	TotalSize_ = RestartPosition_;
-
-	ProtoImp_->StartDownload ();
-	StartTime_->start ();
 }
 
 void Job::Release ()
@@ -232,6 +258,8 @@ void Job::processData (ImpBase::length_t ready, ImpBase::length_t total, QByteAr
 		StartTime_->restart ();
 		emit updateDisplays (GetID ());
 	}
+	else if (!File_)
+		return;
 	else if (!File_->open (QFile::WriteOnly | QFile::Append))
 	{
 		QTemporaryFile tmpFile ("leechcraft.httpplugin.XXXXXX");

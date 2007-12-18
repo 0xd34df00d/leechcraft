@@ -1,6 +1,8 @@
 #ifndef IMPBASE_H
 #define IMPBASE_H
 #include <QThread>
+#include <QDateTime>
+#include "fileexistsdialog.h"
 
 class QString;
 class Proxy;
@@ -13,6 +15,15 @@ class ImpBase : public QThread
 	QByteArray Cache_;
 public:
 	typedef quint64 length_t;
+
+	struct RemoteFileInfo
+	{
+		bool Valid_;
+		QDateTime Modification_;
+		length_t Size_;
+		QString ContentType_;
+	};
+
 	ImpBase (QObject *parent = 0);
 	virtual ~ImpBase ();
 	virtual void SetRestartPosition (length_t) = 0;
@@ -28,6 +39,7 @@ protected:
 	void Emit (length_t, length_t, QByteArray);
 	void EmitFlush (length_t, length_t);
 signals:
+	void gotRemoteFileInfo (const ImpBase::RemoteFileInfo&);
 	void dataFetched (ImpBase::length_t ready, ImpBase::length_t total, QByteArray data);
 	void finished ();
 	void stopped ();

@@ -18,6 +18,8 @@ FileExistsDialog::Result FileExistsDialog::GetSelected () const
 			return Unique;
 		case 3:
 			return Abort;
+		default:
+			return Unique;
 	}
 }
 

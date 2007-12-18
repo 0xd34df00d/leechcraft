@@ -180,6 +180,11 @@ bool HttpImp::ReadResponse ()
 	if (Response_.Fields_.contains ("content-length"))
 		Response_.ContentLength_ = Response_.Fields_ ["content-length"].toULong ();
 	shouldWeReturn = DoSecondaryStuffWithResponse ();
+
+	QDateTime dt = QDateTime::fromString (Response_.Fields_ ["last-modified"].left (25), "ddd, dd MMM yyyy HH:mm:ss");
+	RemoteFileInfo rfi = { true, dt, Response_.ContentLength_, Response_.Fields_ ["content-type"] };
+	emit gotRemoteFileInfo (rfi);
+
 	return shouldWeReturn;
 }
 

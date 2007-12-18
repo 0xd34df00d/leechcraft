@@ -12,5 +12,7 @@ public:
 	Result GetSelected () const;
 };
 
+Q_DECLARE_FLAGS (FileActions, FileExistsDialog::Result);
+
 #endif
 
