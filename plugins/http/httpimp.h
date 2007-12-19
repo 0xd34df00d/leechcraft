@@ -86,7 +86,7 @@ private:
 	Response Response_;
 	TcpSocket *Socket_;
 
-	Guarded<bool> Stop_;
+	Guarded<bool> Stop_, GetFileSize_;
 	QPair<QWaitCondition*, QMutex*> AwaitFileInfoReaction_;
 public:
 	HttpImp (QObject *parent = 0);
@@ -95,7 +95,7 @@ public:
 	virtual void SetURL (const QString&);
 	virtual void StopDownload ();
 	virtual void ReactedToFileInfo ();
-	virtual void ScheduleGetFileSize () {}
+	virtual void ScheduleGetFileSize ();
 private:
 	virtual void run ();
 	void WriteHeaders ();

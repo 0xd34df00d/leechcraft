@@ -13,6 +13,7 @@ HttpImp::HttpImp (QObject *parent)
 : ImpBase (parent)
 , Socket_ (0)
 , Stop_ (false)
+, GetFileSize_ (false)
 {
 	AwaitFileInfoReaction_.first = new QWaitCondition;
 	AwaitFileInfoReaction_.second = new QMutex;
@@ -45,6 +46,11 @@ void HttpImp::ReactedToFileInfo ()
 	AwaitFileInfoReaction_.first->wakeAll ();
 }
 
+void HttpImp::ScheduleGetFileSize ()
+{
+	GetFileSize_ = true;
+}
+
 void HttpImp::run ()
 {
 	Socket_ = Proxy::Instance ()->MakeSocket ();
@@ -70,6 +76,15 @@ void HttpImp::run ()
 		delete Socket_;
 		Socket_ = 0;
 		emit stopped ();
+		return;
+	}
+
+	if (GetFileSize_)
+	{
+		delete Socket_;
+		Socket_ = 0;
+		emit stopped ();
+		GetFileSize_ = false;
 		return;
 	}
 
@@ -169,7 +184,10 @@ bool HttpImp::ReadResponse ()
 		ParseSingleLine (lineRead);
 	}
 	if (Response_.Fields_.contains ("content-length"))
+	{
 		Response_.ContentLength_ = Response_.Fields_ ["content-length"].toULong ();
+		emit gotFileSize (Response_.ContentLength_);
+	}
 	shouldWeReturn = DoSecondaryStuffWithResponse ();
 
 	QDateTime dt = QDateTime::fromString (Response_.Fields_ ["last-modified"].left (25), "ddd, dd MMM yyyy HH:mm:ss");
