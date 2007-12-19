@@ -7,6 +7,7 @@
 #include <QPair>
 #include <QStack>
 #include <QTime>
+#include "impbase.h"
 
 class Job;
 struct JobParams;
@@ -49,6 +50,7 @@ public:
 	bool Start (unsigned int);
 	void Stop (unsigned int);
 	void DeleteAt (unsigned int);
+	void GetFileSizeAt (unsigned int);
 	void StartAll ();
 	void StopAll ();
 public slots:
@@ -65,6 +67,7 @@ signals:
 	void deleteJob (unsigned int);
 	void showError (QString, QString);
 	void stopped (unsigned int);
+	void gotFileSize (unsigned int);
 private slots:
 	void jobStopHandler (unsigned int);
 	void enqueue (unsigned int);

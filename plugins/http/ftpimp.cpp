@@ -2,6 +2,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QMutex>
+#include <QWaitCondition>
 #include <plugininterface/tcpsocket.h>
 #include <plugininterface/proxy.h>
 #include <plugininterface/addressparser.h>
@@ -31,13 +32,17 @@ FtpImp::FtpImp (QObject *parent)
 , Size_ (0)
 , Result_ (0)
 {
-	Stop_.first = false;
-	Stop_.second = new QMutex;
+	Stop_ = false;
+	GetFileSize_ = false;
+
+	AwaitFileInfoReaction_.second = new QMutex;
+	AwaitFileInfoReaction_.first = new QWaitCondition;
 }
 
 FtpImp::~FtpImp ()
 {
-	delete Stop_.second;
+	delete AwaitFileInfoReaction_.second;
+	delete AwaitFileInfoReaction_.first;
 }
 
 void FtpImp::SetRestartPosition (ImpBase::length_t pos)
@@ -184,6 +189,12 @@ void FtpImp::run ()
 
 	while (Size_ > counter)
 	{
+		if (Stop_)
+		{
+			Stop_ = false;
+			break;
+		}
+
 		QByteArray newData;
 		try
 		{
@@ -201,17 +212,6 @@ void FtpImp::run ()
 		}
 		counter += newData.size ();
 		Emit (counter + RestartPosition_, Size_, newData);
-
-		Stop_.second->lock ();
-		bool stop = Stop_.first;
-		Stop_.second->unlock ();
-		if (stop)
-		{
-			Stop_.second->lock ();
-			Stop_.first = false;
-			Stop_.second->unlock ();
-			break;
-		}
 	}
 	EmitFlush (counter + RestartPosition_, Size_);
 
@@ -223,9 +223,18 @@ void FtpImp::run ()
 
 void FtpImp::StopDownload ()
 {
-	Stop_.second->lock ();
-	Stop_.first = true;
-	Stop_.second->unlock ();
+	Stop_ = true;
+}
+
+void FtpImp::ReactedToFileInfo ()
+{
+	AwaitFileInfoReaction_.first->wakeAll ();
+}
+
+void FtpImp::ScheduleGetFileSize ()
+{
+	if (!DataSocket_ || DataSocket_->state () == QAbstractSocket::UnconnectedState)
+		GetFileSize_ = true;
 }
 
 bool FtpImp::Negotiate ()
@@ -246,8 +255,18 @@ bool FtpImp::Negotiate ()
 	DoCwd (fileInfo.dir ().path ());
 	DoPasv ();
 
-	if (DoSize (fileInfo.fileName ()))
+	bool query = DoSize (fileInfo.fileName ());
+
+	if (GetFileSize_)
+	{
+		GetFileSize_ = false;
+		return false;
+	}
+
+	if (query)
 		DoQuery (fileInfo);
+	else
+		DoGetFileInfo (fileInfo.fileName ());
 
 	DoInitTransfer (fileInfo.fileName ());
 
@@ -289,8 +308,22 @@ bool FtpImp::DoSize (const QString& dir)
 	else
 	{
 		Size_ = LastReply_.remove (0, 4).trimmed ().toLongLong ();
+		emit gotFileSize (Size_);
 		return false;
 	}
+}
+
+void FtpImp::DoGetFileInfo (const QString& file)
+{
+	ControlSocket_->Write ("MDTM " + file + "\r\n");
+	if (ReadCtrlResponse () == 213)
+		Modification_ = QDateTime::fromString (LastReply_.remove (0, 4).trimmed (), "yyyyMMddHHmmss");
+	RemoteFileInfo rfi = { true, Modification_, Size_, "" };
+	emit gotRemoteFileInfo (rfi);
+
+	AwaitFileInfoReaction_.second->lock ();
+	AwaitFileInfoReaction_.first->wait (AwaitFileInfoReaction_.second);
+	AwaitFileInfoReaction_.second->unlock ();
 }
 
 void FtpImp::DoQuery (const QFileInfo& fileInfo)

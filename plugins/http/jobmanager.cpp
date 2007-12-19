@@ -99,6 +99,7 @@ int JobManager::addJob (JobParams *params)
 	connect (job, SIGNAL (addJob (JobParams*)), this, SLOT (addJob (JobParams*)));
 	connect (job, SIGNAL (showError (QString, QString)), this, SIGNAL (showError (QString, QString)));
 	connect (job, SIGNAL (stopped (unsigned int)), this, SIGNAL (stopped (unsigned int)));
+	connect (job, SIGNAL (gotFileSize (unsigned int)), this, SIGNAL (gotFileSize (unsigned int)));
 
 	job->DoDelayedInit ();
 
@@ -200,6 +201,11 @@ void JobManager::DeleteAt (unsigned int id)
 	emit jobRemoved (id);
 }
 
+void JobManager::GetFileSizeAt (unsigned int id)
+{
+	Jobs_ [ID2Pos_ [id]]->GetFileSize ();
+}
+
 void JobManager::StartAll ()
 {
 	for (int i = 0; i < Jobs_.size (); ++i)
@@ -260,7 +266,9 @@ void JobManager::saveSettings ()
 	settings.beginWriteArray ("jobs");
 	for (int i = 0; i < Jobs_.size (); ++i)
 	{
-		QVariantList qvl = (JobParams (*(Jobs_ [i]->GetRepresentation ()))).ToVariantList ();
+		JobRepresentation *jr = Jobs_ [i]->GetRepresentation ();
+		QVariantList qvl = JobParams (*jr).ToVariantList ();
+		delete jr;
 		settings.setArrayIndex (i);
 		settings.setValue ("jobparamsrepresentation", qvl);
 	}

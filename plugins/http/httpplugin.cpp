@@ -17,8 +17,9 @@
 
 void HttpPlugin::Init ()
 {
+	qRegisterMetaType<ImpBase::length_t> ("ImpBase::length_t");
 	Q_INIT_RESOURCE (resources);
-    QTranslator *transl = new QTranslator;
+    QTranslator *transl = new QTranslator (this);
     QString localeName = QLocale::system ().name ();
     transl->load (QString (":/leechcraft_http_") + localeName);
     qApp->installTranslator (transl);
@@ -36,6 +37,7 @@ void HttpPlugin::Init ()
 	connect (JobManager_, SIGNAL (showError (QString, QString)), this, SLOT (showJobErrorMessage (QString, QString)));
 	connect (JobManager_, SIGNAL (stopped (unsigned int)), this, SLOT (showStoppedIndicator (unsigned int)));
 	connect (JobManager_, SIGNAL (jobWaiting (unsigned int)), this, SLOT (handleJobWaiting (unsigned int)));
+	connect (JobManager_, SIGNAL (gotFileSize (unsigned int)), this, SLOT (handleGotFileSize (unsigned int)));
 
 	setWindowTitle (tr ("HTTP/FTP worker 0.2"));
 	setWindowIcon (QIcon (":/resources/images/pluginicon.png"));
@@ -82,24 +84,18 @@ void HttpPlugin::SetupJobManagementBar ()
 {
 	AddJobAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/addjob.png"), tr ("Add job..."), this, SLOT (initiateJobAddition ()));
 	AddJobAction_->setShortcut (Qt::Key_Insert);
-
 	DeleteJobAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/deletejob.png"), tr ("Delete selected active job"), this, SLOT (deleteDownloadSelected ()));
 	DeleteJobAction_->setShortcut (Qt::Key_Delete);
-
 	JobManagementToolbar_->addSeparator ();
-
 	StartJobAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/startjob.png"), tr ("Start current"), this, SLOT (startDownloadSelected ()));
 	StartJobAction_->setShortcut (tr ("Ctrl+S"));
-
 	StartAllAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/startall.png"), tr ("Start all"), this, SLOT (startDownloadAll ()));
 	StartAllAction_->setShortcut (tr ("Ctrl+Shift+S"));
-
 	StopJobAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/stopjob.png"), tr ("Stop current"), this, SLOT (stopDownloadSelected ()));
 	StopJobAction_->setShortcut (tr ("Ctrl+I"));
-
 	StopAllAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/stopall.png"), tr ("Stop all"), this, SLOT (stopDownloadAll ()));
 	StopAllAction_->setShortcut (tr ("Ctrl+Shift+I"));
-
+	GetFileSizeAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/getfilesize.png"), tr ("Get file size"), this, SLOT (getFileSize ()));
 	DeleteFinishedAction_ = FinishedManagementToolbar_->addAction (QIcon (":/resources/images/deletejob.png"), tr ("Delete selected finished job"), this, SLOT (deleteDownloadSelectedFinished ()));
 	DeleteFinishedAction_->setShortcut (Qt::Key_Delete & Qt::ShiftModifier);
 
@@ -117,6 +113,7 @@ void HttpPlugin::SetupJobManagementMenu (QMenu *jobsMenu)
 	jobsMenu->addAction (StartAllAction_);
 	jobsMenu->addAction (StopJobAction_);
 	jobsMenu->addAction (StopAllAction_);
+	jobsMenu->addAction (GetFileSizeAction_);
 	jobsMenu->addSeparator ();
 }
 
@@ -319,6 +316,11 @@ void HttpPlugin::DeleteAt (IDownload::JobID_t id)
 	JobManager_->DeleteAt (id);
 }
 
+void HttpPlugin::GetFileSizeAt (IDownload::JobID_t id)
+{
+	JobManager_->GetFileSizeAt (id);
+}
+
 int HttpPlugin::AddDownload (const DirectDownloadParams& params)
 {
 	JobParams *jp = new JobParams;
@@ -418,6 +420,23 @@ void HttpPlugin::updateJobDisplay (unsigned int id)
 	delete jr;
 }
 
+void HttpPlugin::handleGotFileSize (unsigned int id)
+{
+	JobRepresentation *jr = JobManager_->GetJobRepresentation (id);
+
+	int rowCount = TasksList_->topLevelItemCount ();
+	for (int i = 0; i < rowCount; ++i)
+		if (dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i))->GetID () == id)
+		{
+			QTreeWidgetItem *item = TasksList_->topLevelItem (i);
+			item->setText (TListPercent, QString::number (jr->Downloaded_ * 100 / jr->Size_));
+			item->setText (TListDownloaded, Proxy::Instance ()->MakePrettySize (jr->Downloaded_));
+			item->setText (TListTotal, Proxy::Instance ()->MakePrettySize (jr->Size_));
+		}
+
+	delete jr;
+}
+
 void HttpPlugin::handleJobRemoval (unsigned int id)
 {
 	int rowCount = TasksList_->topLevelItemCount ();
@@ -436,8 +455,6 @@ void HttpPlugin::handleJobFinish (unsigned int id)
 
 	JobRepresentation *jr = JobManager_->GetJobRepresentation (id);
 	JobManager_->DeleteAt (id);
-
-	qDebug () << jr->ShouldBeSavedInHistory_;
 
 	if (jr->ShouldBeSavedInHistory_)
 	{
@@ -469,7 +486,6 @@ void HttpPlugin::handleJobDelete (unsigned int id)
 
 void HttpPlugin::handleJobWaiting (unsigned int id)
 {
-	qDebug () << Q_FUNC_INFO << id;
 	int rowCount = TasksList_->topLevelItemCount ();
 	for (int i = 0; i < rowCount; ++i)
 		if (dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i))->GetID () == id)
@@ -499,6 +515,11 @@ void HttpPlugin::deleteDownloadSelectedFinished ()
 		delete items [i];
 
 	ToggleFinishedListDependentActions (FinishedList_->topLevelItemCount ());
+}
+
+void HttpPlugin::getFileSize ()
+{
+	HandleSelected (JAGFS);
 }
 
 void HttpPlugin::startDownloadAll ()
@@ -653,6 +674,9 @@ void HttpPlugin::HandleSelected (JobAction ja)
 				break;
 			case JADelete:
 				DeleteAt (item->GetID ());
+				break;
+			case JAGFS:
+				GetFileSizeAt (item->GetID ());
 				break;
 		}
 	}

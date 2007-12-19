@@ -40,9 +40,16 @@ class HttpPlugin : public QMainWindow
 	JobManager *JobManager_;
 	QStringList ProvidesList_, NeedsList_;
 	QLabel *SpeedIndicator_;
-	QAction *AddJobAction_, *DeleteJobAction_, *StartJobAction_, *StartAllAction_, *StopJobAction_, *StopAllAction_;
-	QAction *DeleteFinishedAction_;
-	QAction *PreferencesAction_, *AutoAdjustInterfaceAction_;
+	QAction *AddJobAction_
+		  , *DeleteJobAction_
+		  , *StartJobAction_
+		  , *StartAllAction_
+		  , *StopJobAction_
+		  , *StopAllAction_
+		  , *GetFileSizeAction_
+		  , *DeleteFinishedAction_
+		  , *PreferencesAction_
+		  , *AutoAdjustInterfaceAction_;
 	QToolBar *JobManagementToolbar_, *FinishedManagementToolbar_;
 public:
 	enum TasksListHeaders
@@ -67,6 +74,7 @@ public:
 		JAStart
 		, JAStop
 		, JADelete
+		, JAGFS
 	};
 
 	virtual void Init ();
@@ -108,6 +116,7 @@ public:
 	virtual void StartAt (IDownload::JobID_t);
 	virtual void StopAt (IDownload::JobID_t);
 	virtual void DeleteAt (IDownload::JobID_t);
+	void GetFileSizeAt (IDownload::JobID_t);
 	virtual int AddDownload (const DirectDownloadParams&);
 	virtual void RemoveDownload (int);
 	virtual int GetDownloadPercentage (int) const;
@@ -120,6 +129,7 @@ private slots:
 	int handleParams (JobParams*);
 	void pushJob (unsigned int);
 	void updateJobDisplay (unsigned int);
+	void handleGotFileSize (unsigned int);
 	void handleJobRemoval (unsigned int);
 	void handleJobFinish (unsigned int);
 	void handleJobStart (unsigned int);
@@ -129,6 +139,7 @@ private slots:
 	void stopDownloadSelected ();
 	void deleteDownloadSelected ();
 	void deleteDownloadSelectedFinished ();
+	void getFileSize ();
 	void startDownloadAll ();
 	void stopDownloadAll ();
 	void showPreferences ();

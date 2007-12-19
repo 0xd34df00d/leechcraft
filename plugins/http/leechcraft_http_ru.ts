@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1">
+<defaultcodec></defaultcodec>
 <context>
     <name>FileExistsDialog</name>
     <message>
@@ -62,52 +63,52 @@
 <context>
     <name>FtpImp</name>
     <message>
-        <location filename="ftpimp.cpp" line="86"/>
+        <location filename="ftpimp.cpp" line="91"/>
         <source>Wrong login.</source>
         <translation>Неправильный логин.</translation>
     </message>
     <message>
-        <location filename="ftpimp.cpp" line="93"/>
+        <location filename="ftpimp.cpp" line="98"/>
         <source>Wrong password.</source>
         <translation>Неправильный пароль.</translation>
     </message>
     <message>
-        <location filename="ftpimp.cpp" line="100"/>
+        <location filename="ftpimp.cpp" line="105"/>
         <source>Wrong path, file not found.</source>
         <translation>Неправильный путь, файл не найден.</translation>
     </message>
     <message>
-        <location filename="ftpimp.cpp" line="107"/>
+        <location filename="ftpimp.cpp" line="112"/>
         <source>Wrong restart position.</source>
         <translation>Сервер не принял точку старта.</translation>
     </message>
     <message>
-        <location filename="ftpimp.cpp" line="114"/>
+        <location filename="ftpimp.cpp" line="119"/>
         <source>PASV failed</source>
         <translation>Команда PASV не выполнена</translation>
     </message>
     <message>
-        <location filename="ftpimp.cpp" line="121"/>
+        <location filename="ftpimp.cpp" line="126"/>
         <source>NLST failed.</source>
         <translation>Команда NLST не выполнена.</translation>
     </message>
     <message>
-        <location filename="ftpimp.cpp" line="128"/>
+        <location filename="ftpimp.cpp" line="133"/>
         <source>RETR failed.</source>
         <translation>Команда RETR не выполнена.</translation>
     </message>
     <message>
-        <location filename="ftpimp.cpp" line="135"/>
+        <location filename="ftpimp.cpp" line="140"/>
         <source>SIZE failed.</source>
         <translation>Команда SIZE не выполнена.</translation>
     </message>
     <message>
-        <location filename="ftpimp.cpp" line="142"/>
+        <location filename="ftpimp.cpp" line="147"/>
         <source>CWD failed.</source>
         <translation>Команда CWD не выполнена.</translation>
     </message>
     <message>
-        <location filename="ftpimp.cpp" line="149"/>
+        <location filename="ftpimp.cpp" line="154"/>
         <source>TYPE I failed.</source>
         <translation>Команда TYPE I не выполнена.</translation>
     </message>
@@ -115,190 +116,195 @@
 <context>
     <name>HttpPlugin</name>
     <message>
-        <location filename="httpplugin.cpp" line="40"/>
+        <location filename="httpplugin.cpp" line="42"/>
         <source>HTTP/FTP worker 0.2</source>
         <translation>Скачиватель по HTTP/FTP 0.2</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="72"/>
+        <location filename="httpplugin.cpp" line="74"/>
         <source>&amp;Tools</source>
         <translation>&amp;Инструменты</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="71"/>
+        <location filename="httpplugin.cpp" line="73"/>
         <source>&amp;Jobs</source>
         <translation>&amp;Задания</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="83"/>
+        <location filename="httpplugin.cpp" line="85"/>
         <source>Add job...</source>
         <translation>Добавить задание...</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="86"/>
+        <location filename="httpplugin.cpp" line="87"/>
         <source>Delete selected active job</source>
         <translation>Удалить выделенное задание</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="91"/>
+        <location filename="httpplugin.cpp" line="90"/>
         <source>Start current</source>
         <translation>Запустить выделенное</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="92"/>
+        <location filename="httpplugin.cpp" line="91"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="94"/>
+        <location filename="httpplugin.cpp" line="92"/>
         <source>Start all</source>
         <translation>Запустить все</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="95"/>
+        <location filename="httpplugin.cpp" line="93"/>
         <source>Ctrl+Shift+S</source>
         <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="97"/>
+        <location filename="httpplugin.cpp" line="94"/>
         <source>Stop current</source>
         <translation>Остановить выделенное</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="98"/>
+        <location filename="httpplugin.cpp" line="95"/>
         <source>Ctrl+I</source>
         <translation>Ctrl+I</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="100"/>
+        <location filename="httpplugin.cpp" line="96"/>
         <source>Stop all</source>
         <translation>Остановить все</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="101"/>
+        <location filename="httpplugin.cpp" line="97"/>
         <source>Ctrl+Shift+I</source>
         <translation>Ctrl+Shift+I</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="103"/>
+        <location filename="httpplugin.cpp" line="99"/>
         <source>Delete selected finished job</source>
         <translation>Удалить выделенную запись из истории</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="125"/>
+        <location filename="httpplugin.cpp" line="122"/>
         <source>Autoadjust interface</source>
         <translation>Подстроить интерфейс</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="127"/>
+        <location filename="httpplugin.cpp" line="124"/>
         <source>Preferences...</source>
         <translation>Настройки...</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="128"/>
+        <location filename="httpplugin.cpp" line="125"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="178"/>
+        <location filename="httpplugin.cpp" line="175"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="203"/>
+        <location filename="httpplugin.cpp" line="200"/>
         <source>Local name</source>
         <translation>Локальное имя</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="203"/>
+        <location filename="httpplugin.cpp" line="200"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="178"/>
+        <location filename="httpplugin.cpp" line="175"/>
         <source>%</source>
         <translation>%</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="178"/>
+        <location filename="httpplugin.cpp" line="175"/>
         <source>Speed</source>
         <translation>Скорость</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="178"/>
+        <location filename="httpplugin.cpp" line="175"/>
         <source>Downloaded size</source>
         <translation>Скачено</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="178"/>
+        <location filename="httpplugin.cpp" line="175"/>
         <source>Total size</source>
         <translation>Размер</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="203"/>
+        <location filename="httpplugin.cpp" line="200"/>
         <source>Size</source>
         <translation>Размер</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="412"/>
+        <location filename="httpplugin.cpp" line="414"/>
         <source>0</source>
         <translation>0</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="517"/>
+        <location filename="httpplugin.cpp" line="538"/>
         <source>: Preferences</source>
         <translation>: Настройки</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="522"/>
+        <location filename="httpplugin.cpp" line="543"/>
         <source>Job error</source>
         <translation>Ошибка задания</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="522"/>
+        <location filename="httpplugin.cpp" line="543"/>
         <source>Job with URL %1 signals about following error:&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;</source>
         <translation>Задание с URL %1 говорит о следующей ошибке:&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="537"/>
+        <location filename="httpplugin.cpp" line="558"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="228"/>
+        <location filename="httpplugin.cpp" line="225"/>
         <source>Simple HTTP and FTP plugin, providing basic functionality.</source>
         <translation>Простой HTTP/FTP плагин, обеспечивающий базовую функциональность.</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="98"/>
+        <source>Get file size</source>
+        <translation>Получить размер файла</translation>
     </message>
 </context>
 <context>
     <name>Job</name>
     <message>
-        <location filename="job.cpp" line="216"/>
+        <location filename="job.cpp" line="227"/>
         <source>Could not create directory&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Stopping work.</source>
         <translation>Не могу создать директорию&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Останавливаюсь.</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="268"/>
+        <location filename="job.cpp" line="279"/>
         <source>Could not open file for write/append&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Flushing cache to temp file&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;and stopping work.</source>
         <translation>Не могу открыть для записи файл &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Скидываю кэш в файл&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;и останавливаюсь.</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="274"/>
+        <location filename="job.cpp" line="285"/>
         <source>Could not open temporary file for write&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;</source>
         <translation>Не могу открыть для записи временный файл&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="139"/>
+        <location filename="job.cpp" line="148"/>
         <source>Question.</source>
         <translation>Вопрос.</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="139"/>
+        <location filename="job.cpp" line="148"/>
         <source>File on remote server is newer than local. Should I redownload it from scratch or just leave it alone?</source>
         <translation>Файл на удаленном сервере новее локального. Должен ли я грузить его сначала (отменить в противном случае)?</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="170"/>
+        <location filename="job.cpp" line="179"/>
         <source>File could be neither removed, nor truncated. Check your rights or smth.</source>
         <translation>Файл не может быть ни удален, ни усечен. Проверь права.</translation>
     </message>

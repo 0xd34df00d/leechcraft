@@ -20,6 +20,8 @@ Job::Job (JobParams *params, QObject *parent)
 : QObject (parent)
 , ProtoImp_ (0)
 , Params_ (params)
+, ErrorFlag_ (false)
+, GetFileSize_ (false)
 , DownloadedSize_ (0)
 , TotalSize_ (0)
 , RestartPosition_ (0)
@@ -30,7 +32,6 @@ Job::Job (JobParams *params, QObject *parent)
 	qRegisterMetaType<ImpBase::RemoteFileInfo> ("ImpBase::RemoteFileInfo");
 	StartTime_ = new QTime;
 	FillErrorDictionary ();
-	ErrorFlag_ = false;
 	FileExistsDialog_ = new FileExistsDialog (parent ? qobject_cast<JobManager*> (parent)->GetTheMain () : 0);
 }
 
@@ -102,7 +103,6 @@ void Job::Start ()
 	delete File_;
 	File_ = 0;
 	delete ProtoImp_;
-//	File_ = new QFile (MakeFilename (Params_->URL_, Params_->LocalName_));
 
 	if (Params_->URL_.left (3).toLower () == "ftp")
 		ProtoImp_ = new FtpImp ();
@@ -117,15 +117,25 @@ void Job::Start ()
 	connect (ProtoImp_, SIGNAL (stopped ()), this, SLOT (reemitStopped ()));
 	connect (ProtoImp_, SIGNAL (enqueue ()), this, SLOT (reemitEnqueue ()));
 	connect (ProtoImp_, SIGNAL (gotRemoteFileInfo (const ImpBase::RemoteFileInfo&)), this, SLOT (handleRemoteFileInfo (const ImpBase::RemoteFileInfo&)), Qt::QueuedConnection);
+	connect (ProtoImp_, SIGNAL (gotFileSize (ImpBase::length_t)), this, SLOT (reemitGotFileSize (ImpBase::length_t)));
 
 	ProtoImp_->SetURL (Params_->URL_);
 	ProtoImp_->SetRestartPosition (RestartPosition_);
+	if (GetFileSize_)
+		ProtoImp_->ScheduleGetFileSize ();
+	GetFileSize_ = false;
 
 	DownloadedSize_ = RestartPosition_;
 	TotalSize_ = RestartPosition_;
 
 	ProtoImp_->StartDownload ();
 	StartTime_->start ();
+}
+
+void Job::GetFileSize ()
+{
+	GetFileSize_ = true;
+	Start ();
 }
 
 void Job::handleRemoteFileInfo (const ImpBase::RemoteFileInfo& rfi)
@@ -178,6 +188,7 @@ void Job::handleRemoteFileInfo (const ImpBase::RemoteFileInfo& rfi)
 					Params_->LocalName_ = MakeUniqueNameFor (ln);
 					break;
 				case FileExistsDialog::Abort:
+					ProtoImp_->ReactedToFileInfo ();
 					Stop ();
 					return;
 			}
@@ -195,6 +206,7 @@ void Job::Stop ()
 		while (!ProtoImp_->wait (25))
 			qApp->processEvents ();
 	}
+	reemitStopped ();
 }
 
 void Job::Release ()
@@ -314,6 +326,12 @@ void Job::reemitStopped ()
 void Job::reemitEnqueue ()
 {
 	emit enqueue (GetID ());
+}
+
+void Job::reemitGotFileSize (ImpBase::length_t size)
+{
+	TotalSize_ = size;
+	emit gotFileSize (GetID ());
 }
 
 void Job::FillErrorDictionary ()

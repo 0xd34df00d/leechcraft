@@ -31,6 +31,7 @@ public:
 	virtual void StartDownload ();
 	virtual void StopDownload () = 0;
 	virtual void ReactedToFileInfo () = 0;
+	virtual void ScheduleGetFileSize () = 0;
 	virtual void run () = 0;
 protected:
 	length_t RestartPosition_;
@@ -41,7 +42,8 @@ protected:
 	void EmitFlush (length_t, length_t);
 signals:
 	void gotRemoteFileInfo (const ImpBase::RemoteFileInfo&);
-	void dataFetched (ImpBase::length_t ready, ImpBase::length_t total, QByteArray data);
+	void gotFileSize (ImpBase::length_t);
+	void dataFetched (ImpBase::length_t, ImpBase::length_t, QByteArray);
 	void finished ();
 	void stopped ();
 	void warning (QString);

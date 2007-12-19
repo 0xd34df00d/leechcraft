@@ -18,7 +18,7 @@ class Job : public QObject
 	unsigned int ID_;
 	ImpBase *ProtoImp_;
 	JobParams* Params_;
-	bool ErrorFlag_;
+	bool ErrorFlag_, GetFileSize_;
 	QString ErrorReason_;
 	ImpBase::length_t DownloadedSize_, TotalSize_, RestartPosition_;
 	double Speed_;
@@ -38,6 +38,7 @@ public:
 	QString GetErrorReason ();
 	void Start ();
 	void Stop ();
+	void GetFileSize ();
 	void Release ();
 	enum JobType { File, Directory };
 private slots:
@@ -49,6 +50,7 @@ private slots:
 	void handleShowError (QString);
 	void reemitStopped ();
 	void reemitEnqueue ();
+	void reemitGotFileSize (ImpBase::length_t);
 signals:
 	void updateDisplays (unsigned int);
 	void started (unsigned int);
@@ -58,6 +60,7 @@ signals:
 	void showError (QString, QString);
 	void stopped (unsigned int);
 	void enqueue (unsigned int);
+	void gotFileSize (unsigned int);
 private:
 	JobType JobType_;
 

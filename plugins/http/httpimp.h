@@ -95,6 +95,7 @@ public:
 	virtual void SetURL (const QString&);
 	virtual void StopDownload ();
 	virtual void ReactedToFileInfo ();
+	virtual void ScheduleGetFileSize () {}
 private:
 	virtual void run ();
 	void WriteHeaders ();
