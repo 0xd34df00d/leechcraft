@@ -1,18 +1,18 @@
 #include <QContextMenuEvent>
 #include <QMenu>
-#include "finishedjoblist.h"
+#include "contextablelist.h"
 
-FinishedJobList::FinishedJobList (QWidget *parent)
+ContextableList::ContextableList (QWidget *parent)
 : QTreeWidget (parent)
 {
 }
 
-void FinishedJobList::AddAction (QAction *action)
+void ContextableList::AddAction (QAction *action)
 {
 	Actions_.append (action);
 }
 
-void FinishedJobList::contextMenuEvent (QContextMenuEvent *e)
+void ContextableList::contextMenuEvent (QContextMenuEvent *e)
 {
 	QMenu menu (this);
 	for (int i = 0; i < Actions_.size (); ++i)

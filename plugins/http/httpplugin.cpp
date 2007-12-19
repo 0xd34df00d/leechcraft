@@ -14,7 +14,7 @@
 #include "joblistitem.h"
 #include "finishedjob.h"
 #include "mainviewdelegate.h"
-#include "finishedjoblist.h"
+#include "contextablelist.h"
 
 void HttpPlugin::Init ()
 {
@@ -102,7 +102,6 @@ void HttpPlugin::SetupJobManagementBar ()
 	GetFileSizeAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/getfilesize.png"), tr ("Get file size"), this, SLOT (getFileSize ()));
 	DeleteFinishedAction_ = FinishedManagementToolbar_->addAction (QIcon (":/resources/images/deletejob.png"), tr ("Delete selected finished job"), this, SLOT (deleteDownloadSelectedFinished ()));
 	DeleteFinishedAction_->setShortcut (Qt::Key_Delete & Qt::ShiftModifier);
-	FinishedList_->AddAction (DeleteFinishedAction_);
 }
 
 void HttpPlugin::SetupJobManagementMenu (QMenu *jobsMenu)
@@ -112,7 +111,6 @@ void HttpPlugin::SetupJobManagementMenu (QMenu *jobsMenu)
 	jobsMenu->addSeparator ();
 	jobsMenu->addAction (DeleteFinishedAction_);
 	CopyFinishedURL_ = jobsMenu->addAction (tr ("Copy URL to clipboard"), this, SLOT (copyFinishedURL ()));
-	FinishedList_->AddAction (CopyFinishedURL_);
 	jobsMenu->addSeparator ();
 	jobsMenu->addAction (StartJobAction_);
 	jobsMenu->addAction (StartAllAction_);
@@ -120,6 +118,14 @@ void HttpPlugin::SetupJobManagementMenu (QMenu *jobsMenu)
 	jobsMenu->addAction (StopAllAction_);
 	jobsMenu->addAction (GetFileSizeAction_);
 	jobsMenu->addSeparator ();
+
+	TasksList_->AddAction (DeleteJobAction_);
+	TasksList_->AddAction (StartJobAction_);
+	TasksList_->AddAction (StopJobAction_);
+	TasksList_->AddAction (GetFileSizeAction_);
+
+	FinishedList_->AddAction (DeleteFinishedAction_);
+	FinishedList_->AddAction (CopyFinishedURL_);
 }
 
 void HttpPlugin::SetupToolsBar (QToolBar *toolstb)
@@ -156,7 +162,7 @@ void HttpPlugin::SetupMainWidget ()
 
 QWidget* HttpPlugin::SetupTasksPart ()
 {
-	TasksList_ = new QTreeWidget (this);
+	TasksList_ = new ContextableList (this);
 	TasksList_->setItemDelegate (new MainViewDelegate (this));
 	TasksList_->header ()->setClickable (false);
 	TasksList_->setRootIsDecorated (false);
@@ -183,7 +189,7 @@ QWidget* HttpPlugin::SetupTasksPart ()
 
 QWidget* HttpPlugin::SetupFinishedPart ()
 {
-	FinishedList_ = new FinishedJobList (this);
+	FinishedList_ = new ContextableList (this);
 	FinishedList_->setRootIsDecorated (false);
 	FinishedList_->setSelectionMode (QAbstractItemView::SingleSelection);
 	FinishedList_->setEditTriggers (QAbstractItemView::NoEditTriggers);

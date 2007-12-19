@@ -27,7 +27,7 @@ HEADERS += httpplugin.h \
 	settingsmanager.h \
 	impbase.h \
 	mainviewdelegate.h \
-	finishedjoblist.h \
+	contextablelist.h \
 	globals.h
 SOURCES += httpplugin.cpp \
 	jobadderdialog.cpp \
@@ -41,7 +41,7 @@ SOURCES += httpplugin.cpp \
 	finishedjob.cpp \
 	impbase.cpp \
 	mainviewdelegate.cpp \
-	finishedjoblist.cpp \
+	contextablelist.cpp \
 	settingsmanager.cpp
 RESOURCES = resources.qrc
 win32:LIBS += -L../.. -lplugininterface -lexceptions -lsettingsdialog

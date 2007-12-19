@@ -8,7 +8,6 @@
 #include "httpimp.h"
 #include "globals.h"
 
-class QTreeWidget;
 class QPushButton;
 class QSplitter;
 class Job;
@@ -19,7 +18,7 @@ class SettingsDialog;
 class QLabel;
 class QAction;
 class QToolBar;
-class FinishedJobList;
+class ContextableList;
 
 struct JobParams;
 
@@ -36,8 +35,7 @@ class HttpPlugin : public QMainWindow
 	bool IsShown_, SaveChangesScheduled_;
 	QPushButton *AddJobButton_;
 	QSplitter *Splitter_;
-	QTreeWidget *TasksList_;
-	FinishedJobList *FinishedList_;
+	ContextableList *TasksList_, *FinishedList_;
 	SettingsDialog *SettingsDialog_;
 	JobManager *JobManager_;
 	QStringList ProvidesList_, NeedsList_;
