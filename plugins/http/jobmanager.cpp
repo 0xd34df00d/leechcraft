@@ -109,6 +109,8 @@ int JobManager::addJob (JobParams *params)
 
 	if (params->Autostart_)
 		Start (id);
+	else if (SettingsManager::Instance ()->GetAutoGetFileSize ())
+		GetFileSizeAt (id);
 
 	scheduleSave ();
 

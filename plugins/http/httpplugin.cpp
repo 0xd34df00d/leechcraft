@@ -412,7 +412,7 @@ void HttpPlugin::updateJobDisplay (unsigned int id)
 				item->setText (TListPercent, QString::number (jr->Downloaded_ * 100 / jr->Size_));
 			else
 				item->setText (TListPercent, QString (tr ("0")));
-			item->setText (TListSpeed, Proxy::Instance ()->MakePrettySize (jr->Speed_) + "/s");
+			item->setText (TListSpeed, Proxy::Instance ()->MakePrettySize (jr->Speed_) + tr ("/s"));
 			item->setText (TListDownloaded, Proxy::Instance ()->MakePrettySize (jr->Downloaded_));
 			item->setText (TListTotal, Proxy::Instance ()->MakePrettySize (jr->Size_));
 		}

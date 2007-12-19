@@ -38,6 +38,7 @@ void SettingsManager::ReadSettings ()
 	MaxConcurrentPerServer_		= settings.value ("MaxConcurrentPerServer", 5).toInt ();
 	MaxTotalConcurrent_			= settings.value ("MaxTotalConcurrent", 5).toInt ();
 	RetryTimeout_				= settings.value ("RetryTimeout", 30).toInt ();
+	AutoGetFileSize_			= settings.value ("AutoGetFileSize", false).toBool ();
 	settings.endGroup ();
 	settings.endGroup ();
 
@@ -73,6 +74,7 @@ void SettingsManager::WriteSettings ()
 	settings.setValue ("MaxConcurrentPerServer", MaxConcurrentPerServer_);
 	settings.setValue ("MaxTotalConcurrent", MaxTotalConcurrent_);
 	settings.setValue ("RetryTimeout", RetryTimeout_);
+	settings.setValue ("AutoGetFileSize", AutoGetFileSize_);
 	settings.endGroup ();
 	settings.endGroup ();
 }
@@ -142,6 +144,9 @@ void SettingsManager::InitializeMap ()
 	SettingsItemInfo autostartChildren = SettingsItemInfo (tr ("Autostart spawned jobs"), tr ("Local options"));
 	PropertyInfo_ ["AutostartChildren"] = autostartChildren;
 
+	SettingsItemInfo autoGetFileSize = SettingsItemInfo (tr ("Get file size on job addition"), tr ("Local options"));
+	PropertyInfo_ ["AutoGetFileSize"] = autoGetFileSize;
+
 	SettingsItemInfo userAgent = SettingsItemInfo (tr ("Mask as user agent"), tr ("HTTP options"));
 	userAgent.Modifiable_ = true;
 	userAgent.Choosable_ = true;
@@ -153,7 +158,7 @@ void SettingsManager::ScheduleFlush ()
 	if (!SaveChangesScheduled_)
 	{
 		SaveChangesScheduled_ = true;
-		QTimer::singleShot (1000, this, SLOT (flush ()));
+		QTimer::singleShot (100, this, SLOT (flush ()));
 	}
 }
 
@@ -347,6 +352,17 @@ int SettingsManager::GetRetryTimeout () const
 void SettingsManager::SetRetryTimeout (int value)
 {
 	RetryTimeout_ = value;
+	ScheduleFlush ();
+}
+
+bool SettingsManager::GetAutoGetFileSize () const
+{
+	return AutoGetFileSize_;
+}
+
+void SettingsManager::SetAutoGetFileSize (bool value)
+{
+	AutoGetFileSize_ = value;
 	ScheduleFlush ();
 }
 

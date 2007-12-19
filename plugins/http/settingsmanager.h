@@ -23,21 +23,22 @@ class SettingsManager : public QObject
 	static QMutex *InstanceMutex_;
 	bool SaveChangesScheduled_;
 protected:
-	Guarded<int> ConnectTimeout_;
-	Guarded<int> DefaultTimeout_;
-	Guarded<bool> ProxyEnabled_;
-	Guarded<QString> ProxyAddress_;
-	Guarded<int> ProxyPort_;
-	Guarded<QString> Login_;
-	Guarded<QString> Password_;
-	Guarded<int> CacheSize_;
-	Guarded<int> StopTimeout_;
-	Guarded<QString> DownloadDir_;
-	Guarded<bool> AutostartChildren_;
+	Guarded<int> ConnectTimeout_
+			   , DefaultTimeout_
+			   , ProxyPort_
+			   , CacheSize_
+			   , StopTimeout_
+			   , MaxConcurrentPerServer_
+			   , MaxTotalConcurrent_
+			   , RetryTimeout_;
+	Guarded<bool> ProxyEnabled_
+				, AutostartChildren_
+				, AutoGetFileSize_;
+	Guarded<QString> ProxyAddress_
+				   , Login_
+				   , Password_
+				   , DownloadDir_;
 	Guarded<PairedStringList> UserAgent_;
-	Guarded<int> MaxConcurrentPerServer_;
-	Guarded<int> MaxTotalConcurrent_;
-	Guarded<int> RetryTimeout_;
 private:
 	void ReadSettings ();
 	void WriteSettings ();
@@ -80,6 +81,8 @@ public:
 	void SetMaxTotalConcurrent (int);
 	int GetRetryTimeout () const;
 	void SetRetryTimeout (int);
+	bool GetAutoGetFileSize () const;
+	void SetAutoGetFileSize (bool);
 
 	SettingsItemInfo GetInfoFor (const QString&) const;
 
@@ -96,8 +99,9 @@ public:
 	Q_PROPERTY (PairedStringList UserAgent READ GetUserAgent WRITE SetUserAgent);
 	Q_PROPERTY (QString ResourceLogin READ GetResourceLogin WRITE SetResourceLogin);
 	Q_PROPERTY (QString ResourcePassword READ GetResourcePassword WRITE SetResourcePassword);
-	Q_PROPERTY (int CacheSize READ GetCacheSize WRITE SetCacheSize);
 	Q_PROPERTY (bool AutostartChildren READ GetAutostartChildren WRITE SetAutostartChildren);
+	Q_PROPERTY (bool AutoGetFileSize READ GetAutoGetFileSize WRITE SetAutoGetFileSize);
+	Q_PROPERTY (int CacheSize READ GetCacheSize WRITE SetCacheSize);
 };
 
 #endif
