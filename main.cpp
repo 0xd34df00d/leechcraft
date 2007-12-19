@@ -60,7 +60,7 @@ int main (int argc, char **argv)
 
 	QTranslator transl;
 	QString localeName = QLocale::system ().name ();
-	transl.load (QString ("leechcraft_") + localeName);
+	transl.load (QString (":/leechcraft_") + localeName);
 	app.installTranslator (&transl);
 
 	QCoreApplication::setApplicationName ("Leechcraft");

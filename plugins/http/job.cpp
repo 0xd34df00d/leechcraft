@@ -202,7 +202,6 @@ void Job::Release ()
 	if (ProtoImp_ && ProtoImp_->isRunning ())
 	{
 		ProtoImp_->StopDownload ();
-		qDebug () << SettingsManager::Instance ()->GetStopTimeout ();
 		if (!ProtoImp_->wait (SettingsManager::Instance ()->GetStopTimeout ()))
 			ProtoImp_->terminate ();
 	}
@@ -241,9 +240,6 @@ void Job::handleNewFiles (QStringList *files)
 
 void Job::handleClarifyURL (QString url)
 {
-	qDebug () << Q_FUNC_INFO << url;
-	// Maybe in future we should reopen file with the new name, or
-	// make a symlink, or something else... doesn't matter now.
 	delete ProtoImp_;
 	ProtoImp_ = 0;
 

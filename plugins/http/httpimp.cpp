@@ -67,7 +67,6 @@ void HttpImp::run ()
 
 	if (abort)
 	{
-		qDebug () << Q_FUNC_INFO << "Abort :(";
 		delete Socket_;
 		Socket_ = 0;
 		emit stopped ();

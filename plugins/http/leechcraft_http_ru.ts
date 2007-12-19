@@ -11,34 +11,53 @@
     </message>
     <message>
         <location filename="fileexistsdialog.ui" line="31"/>
-        <source>Specified file already exists, and I don&apos;t
-know what to do.</source>
-        <translation>Указанный файл уже существует.</translation>
+        <source>Specified file already exists, what should I do?</source>
+        <translation>Указанный файл уже существует, что мне делать?</translation>
     </message>
     <message>
         <location filename="fileexistsdialog.ui" line="54"/>
         <source>Start from scratch</source>
-        <translation>Начать сначала</translation>
+        <translation type="obsolete">Начать сначала</translation>
     </message>
     <message>
         <location filename="fileexistsdialog.ui" line="61"/>
         <source>Continue already started job</source>
-        <translation>Продолжить уже начатую работу</translation>
+        <translation type="obsolete">Продолжить уже начатую работу</translation>
     </message>
     <message>
         <location filename="fileexistsdialog.ui" line="71"/>
         <source>Make the file unique (append a number)</source>
-        <translation>Сделать имя скачиваемого файла уникальным (дописать число)</translation>
+        <translation type="obsolete">Сделать имя скачиваемого файла уникальным (дописать число)</translation>
     </message>
     <message>
         <location filename="fileexistsdialog.ui" line="78"/>
         <source>Cancel, do nothing</source>
-        <translation>Ничего не делать</translation>
+        <translation type="obsolete">Ничего не делать</translation>
     </message>
     <message>
-        <location filename="fileexistsdialog.ui" line="117"/>
+        <location filename="fileexistsdialog.ui" line="79"/>
         <source>OK</source>
         <translation>ОК</translation>
+    </message>
+    <message>
+        <location filename="fileexistsdialog.ui" line="39"/>
+        <source>Continue the job</source>
+        <translation>Продолжить закачку</translation>
+    </message>
+    <message>
+        <location filename="fileexistsdialog.ui" line="44"/>
+        <source>Delete old file</source>
+        <translation>Удалить старый файл</translation>
+    </message>
+    <message>
+        <location filename="fileexistsdialog.ui" line="49"/>
+        <source>Make filename unique</source>
+        <translation>Сделать имя скачиваемого файла уникальным</translation>
+    </message>
+    <message>
+        <location filename="fileexistsdialog.ui" line="54"/>
+        <source>Cancel</source>
+        <translation>Отменить</translation>
     </message>
 </context>
 <context>
@@ -97,157 +116,157 @@ know what to do.</source>
 <context>
     <name>HttpPlugin</name>
     <message>
-        <location filename="httpplugin.cpp" line="34"/>
+        <location filename="httpplugin.cpp" line="40"/>
         <source>HTTP/FTP worker 0.2</source>
         <translation>Скачиватель по HTTP/FTP 0.2</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="66"/>
+        <location filename="httpplugin.cpp" line="72"/>
         <source>&amp;Tools</source>
         <translation>&amp;Инструменты</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="65"/>
+        <location filename="httpplugin.cpp" line="71"/>
         <source>&amp;Jobs</source>
         <translation>&amp;Задания</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="77"/>
+        <location filename="httpplugin.cpp" line="83"/>
         <source>Add job...</source>
         <translation>Добавить задание...</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="80"/>
+        <location filename="httpplugin.cpp" line="86"/>
         <source>Delete selected active job</source>
         <translation>Удалить выделенное задание</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="85"/>
+        <location filename="httpplugin.cpp" line="91"/>
         <source>Start current</source>
         <translation>Запустить выделенное</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="86"/>
+        <location filename="httpplugin.cpp" line="92"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="88"/>
+        <location filename="httpplugin.cpp" line="94"/>
         <source>Start all</source>
         <translation>Запустить все</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="89"/>
+        <location filename="httpplugin.cpp" line="95"/>
         <source>Ctrl+Shift+S</source>
         <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="91"/>
+        <location filename="httpplugin.cpp" line="97"/>
         <source>Stop current</source>
         <translation>Остановить выделенное</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="92"/>
+        <location filename="httpplugin.cpp" line="98"/>
         <source>Ctrl+I</source>
         <translation>Ctrl+I</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="94"/>
+        <location filename="httpplugin.cpp" line="100"/>
         <source>Stop all</source>
         <translation>Остановить все</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="95"/>
+        <location filename="httpplugin.cpp" line="101"/>
         <source>Ctrl+Shift+I</source>
         <translation>Ctrl+Shift+I</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="97"/>
+        <location filename="httpplugin.cpp" line="103"/>
         <source>Delete selected finished job</source>
         <translation>Удалить выделенную запись из истории</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="119"/>
+        <location filename="httpplugin.cpp" line="125"/>
         <source>Autoadjust interface</source>
         <translation>Подстроить интерфейс</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="121"/>
+        <location filename="httpplugin.cpp" line="127"/>
         <source>Preferences...</source>
         <translation>Настройки...</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="122"/>
+        <location filename="httpplugin.cpp" line="128"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="172"/>
+        <location filename="httpplugin.cpp" line="178"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="197"/>
+        <location filename="httpplugin.cpp" line="203"/>
         <source>Local name</source>
         <translation>Локальное имя</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="197"/>
+        <location filename="httpplugin.cpp" line="203"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="172"/>
+        <location filename="httpplugin.cpp" line="178"/>
         <source>%</source>
         <translation>%</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="172"/>
+        <location filename="httpplugin.cpp" line="178"/>
         <source>Speed</source>
         <translation>Скорость</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="172"/>
+        <location filename="httpplugin.cpp" line="178"/>
         <source>Downloaded size</source>
         <translation>Скачено</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="172"/>
+        <location filename="httpplugin.cpp" line="178"/>
         <source>Total size</source>
         <translation>Размер</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="197"/>
+        <location filename="httpplugin.cpp" line="203"/>
         <source>Size</source>
         <translation>Размер</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="406"/>
+        <location filename="httpplugin.cpp" line="412"/>
         <source>0</source>
         <translation>0</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="511"/>
+        <location filename="httpplugin.cpp" line="517"/>
         <source>: Preferences</source>
         <translation>: Настройки</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="516"/>
+        <location filename="httpplugin.cpp" line="522"/>
         <source>Job error</source>
         <translation>Ошибка задания</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="516"/>
+        <location filename="httpplugin.cpp" line="522"/>
         <source>Job with URL %1 signals about following error:&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;</source>
         <translation>Задание с URL %1 говорит о следующей ошибке:&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="531"/>
+        <location filename="httpplugin.cpp" line="537"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="222"/>
+        <location filename="httpplugin.cpp" line="228"/>
         <source>Simple HTTP and FTP plugin, providing basic functionality.</source>
         <translation>Простой HTTP/FTP плагин, обеспечивающий базовую функциональность.</translation>
     </message>
@@ -255,19 +274,34 @@ know what to do.</source>
 <context>
     <name>Job</name>
     <message>
-        <location filename="job.cpp" line="189"/>
+        <location filename="job.cpp" line="217"/>
         <source>Could not create directory&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Stopping work.</source>
         <translation>Не могу создать директорию&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Останавливаюсь.</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="240"/>
+        <location filename="job.cpp" line="272"/>
         <source>Could not open file for write/append&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Flushing cache to temp file&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;and stopping work.</source>
         <translation>Не могу открыть для записи файл &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Скидываю кэш в файл&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;и останавливаюсь.</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="246"/>
+        <location filename="job.cpp" line="278"/>
         <source>Could not open temporary file for write&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;</source>
         <translation>Не могу открыть для записи временный файл&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;</translation>
+    </message>
+    <message>
+        <location filename="job.cpp" line="139"/>
+        <source>Question.</source>
+        <translation>Вопрос.</translation>
+    </message>
+    <message>
+        <location filename="job.cpp" line="139"/>
+        <source>File on remote server is newer than local. Should I redownload it from scratch or just leave it alone?</source>
+        <translation>Файл на удаленном сервере новее локального. Должен ли я грузить его сначала (отменить в противном случае)?</translation>
+    </message>
+    <message>
+        <location filename="job.cpp" line="170"/>
+        <source>File could be neither removed, nor truncated. Check your rights or smth.</source>
+        <translation>Файл не может быть ни удален, ни усечен. Проверь права.</translation>
     </message>
 </context>
 <context>
