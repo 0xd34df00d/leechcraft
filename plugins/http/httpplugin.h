@@ -19,6 +19,7 @@ class SettingsDialog;
 class QLabel;
 class QAction;
 class QToolBar;
+class FinishedJobList;
 
 struct JobParams;
 
@@ -35,7 +36,8 @@ class HttpPlugin : public QMainWindow
 	bool IsShown_, SaveChangesScheduled_;
 	QPushButton *AddJobButton_;
 	QSplitter *Splitter_;
-	QTreeWidget *TasksList_, *FinishedList_;
+	QTreeWidget *TasksList_;
+	FinishedJobList *FinishedList_;
 	SettingsDialog *SettingsDialog_;
 	JobManager *JobManager_;
 	QStringList ProvidesList_, NeedsList_;
@@ -48,6 +50,7 @@ class HttpPlugin : public QMainWindow
 		  , *StopAllAction_
 		  , *GetFileSizeAction_
 		  , *DeleteFinishedAction_
+		  , *CopyFinishedURL_
 		  , *PreferencesAction_
 		  , *AutoAdjustInterfaceAction_;
 	QToolBar *JobManagementToolbar_, *FinishedManagementToolbar_;
@@ -86,8 +89,6 @@ private:
 	void SetupToolsBar (QToolBar*);
 	void SetupToolsMenu (QMenu*);
 	void SetupStatusBarStuff ();
-	void ToggleTasksListDependentActions (bool);
-	void ToggleFinishedListDependentActions (bool);
 	void SetupMainWidget ();
 	QWidget* SetupTasksPart ();
 	QWidget* SetupFinishedPart ();
@@ -148,6 +149,8 @@ private slots:
 	void handleTotalSpeedUpdate ();
 	void autoAdjustInterface ();
 	void writeSettings ();
+	void copyFinishedURL ();
+	void setActionsEnabled ();
 private:
 	void ReadSettings ();
 	void AddToFinishedList (const FinishedJob*);
