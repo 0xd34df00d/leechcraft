@@ -139,9 +139,12 @@ void Job::handleRemoteFileInfo (const ImpBase::RemoteFileInfo& rfi)
 			if (QMessageBox::question (parent () ? qobject_cast<JobManager*> (parent ())->GetTheMain () : 0, tr ("Question."), tr ("File on remote server is newer than local. Should I redownload it from scratch or just leave it alone?"), QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok)
 			{
 				File_ = new QFile (ln);
-				if (!File_->open (QFile::Truncate))
-					throw Exceptions::IO (tr ("File could be neither removed, nor truncated. Check your rights or smth.").toStdString ());
-				File_->close ();
+				if (!File_->remove ())
+				{
+					if (!File_->open (QFile::Truncate))
+						throw Exceptions::IO (tr ("File could be neither removed, nor truncated. Check your rights or smth.").toStdString ());
+					File_->close ();
+				}
 				File_->open (QFile::WriteOnly);
 				RestartPosition_ = 0;
 				Stop ();
@@ -164,7 +167,7 @@ void Job::handleRemoteFileInfo (const ImpBase::RemoteFileInfo& rfi)
 					if (!QFile::remove (ln))
 					{
 						if (!f.open (QFile::Truncate))
-							throw Exceptions::IO (("File could be neither removed, nor truncated. Check your rights or smth."));
+							throw Exceptions::IO (tr ("File could be neither removed, nor truncated. Check your rights or smth.").toStdString ());
 						f.close ();
 					}
 					break;
@@ -175,11 +178,13 @@ void Job::handleRemoteFileInfo (const ImpBase::RemoteFileInfo& rfi)
 					Params_->LocalName_ = MakeUniqueNameFor (ln);
 					break;
 				case FileExistsDialog::Abort:
-					throw Exceptions::Logic ("Abort requested");
+					Stop ();
+					return;
 			}
 		}
 	}
 	File_ = new QFile (MakeFilename (Params_->URL_, Params_->LocalName_));
+	ProtoImp_->ReactedToFileInfo ();
 }
 
 void Job::Stop ()

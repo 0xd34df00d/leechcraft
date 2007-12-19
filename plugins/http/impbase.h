@@ -30,6 +30,7 @@ public:
 	virtual void SetURL (const QString&) = 0;
 	virtual void StartDownload ();
 	virtual void StopDownload () = 0;
+	virtual void ReactedToFileInfo () = 0;
 	virtual void run () = 0;
 protected:
 	length_t RestartPosition_;

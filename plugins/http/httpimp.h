@@ -2,11 +2,13 @@
 #define HTTPIMP_H
 #include <QMap>
 #include <QPair>
+#include <plugininterface/guarded.h>
 #include "impbase.h"
 
 class TcpSocket;
 class Proxy;
 class QMutex;
+class QWaitCondition;
 
 class HttpImp : public ImpBase
 {
@@ -84,13 +86,15 @@ private:
 	Response Response_;
 	TcpSocket *Socket_;
 
-	QPair<bool, QMutex*> Stop_;
+	Guarded<bool> Stop_;
+	QPair<QWaitCondition*, QMutex*> AwaitFileInfoReaction_;
 public:
 	HttpImp (QObject *parent = 0);
 	virtual ~HttpImp ();
 	virtual void SetRestartPosition (length_t);
 	virtual void SetURL (const QString&);
 	virtual void StopDownload ();
+	virtual void ReactedToFileInfo ();
 private:
 	virtual void run ();
 	void WriteHeaders ();

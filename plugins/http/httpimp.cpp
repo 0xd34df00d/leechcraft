@@ -1,5 +1,6 @@
 #include <QStringList>
 #include <QMutex>
+#include <QWaitCondition>
 #include <plugininterface/tcpsocket.h>
 #include <plugininterface/proxy.h>
 #include <plugininterface/addressparser.h>
@@ -11,15 +12,17 @@
 HttpImp::HttpImp (QObject *parent)
 : ImpBase (parent)
 , Socket_ (0)
+, Stop_ (false)
 {
-	Stop_.second = new QMutex;
-	Stop_.first = false;
+	AwaitFileInfoReaction_.first = new QWaitCondition;
+	AwaitFileInfoReaction_.second = new QMutex;
 }
 
 HttpImp::~HttpImp ()
 {
 	delete Socket_;
-	delete Stop_.second;
+	delete AwaitFileInfoReaction_.first;
+	delete AwaitFileInfoReaction_.second;
 }
 
 void HttpImp::SetRestartPosition (length_t pos)
@@ -34,9 +37,12 @@ void HttpImp::SetURL (const QString& url)
 
 void HttpImp::StopDownload ()
 {
-	Stop_.second->lock ();
-	Stop_.first = true;
-	Stop_.second->unlock ();
+	Stop_ = true;
+}
+
+void HttpImp::ReactedToFileInfo ()
+{
+	AwaitFileInfoReaction_.first->wakeAll ();
 }
 
 void HttpImp::run ()
@@ -76,14 +82,14 @@ void HttpImp::run ()
 	SetCacheSize (cacheSize);
 	Socket_->setReadBufferSize (cacheSize);
 
-	QByteArray data;
+	AwaitFileInfoReaction_.second->lock ();
+	AwaitFileInfoReaction_.first->wait (AwaitFileInfoReaction_.second);
+	AwaitFileInfoReaction_.second->unlock ();
 
 	emit dataFetched (RestartPosition_, Response_.ContentLength_ + RestartPosition_, QByteArray ());
-
 	while (counter < Response_.ContentLength_)
 	{
 		QByteArray newData;
-		bool stop = false;
 		try
 		{
 			newData = Socket_->ReadAll ();
@@ -91,33 +97,19 @@ void HttpImp::run ()
 		catch (const Exceptions::Socket::SocketTimeout&)
 		{
 			emit error ("Main read loop: operation timed out :(");
-			stop = true;
+			Stop_ = true;
 		}
 		catch (const Exceptions::Socket::BaseSocket& e)
 		{
 			qDebug () << Q_FUNC_INFO << "caught \"" << e.GetName ().c_str () << "\", saying\"" << e.GetReason ().c_str () << "\"";
-			stop = true;
-		}
-		catch (...)
-		{
-			qDebug () << Q_FUNC_INFO << "caught something strange";
-			continue;
+			Stop_ = true;
 		}
 
-		if (!stop)
-		{
-			Stop_.second->lock ();
-			stop = Stop_.first;
-			Stop_.second->unlock ();
-		}
-		if (stop)
+		if (Stop_)
 		{
 			qDebug () << Q_FUNC_INFO << ": stopping.";
-			Stop_.second->lock ();
-			Stop_.first = false;
-			Stop_.second->unlock ();
+			Stop_ = false;
 			break;
-			emit stopped ();
 		}
 
 		counter += newData.size ();

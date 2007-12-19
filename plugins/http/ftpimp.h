@@ -28,6 +28,7 @@ public:
 	virtual void SetRestartPosition (length_t);
 	virtual void SetURL (const QString&);
 	virtual void StopDownload ();
+	virtual void ReactedToFileInfo () {}
 private:
 	virtual void run ();
 	virtual bool Negotiate ();
