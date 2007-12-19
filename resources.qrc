@@ -1,9 +1,9 @@
-<!DOCTYPE RCC>
-<RCC version="1.0">
-	<qresource>
-		<file>resources/images/mainapp.png</file>
-		<file>resources/images/splashscreen.png</file>
-		<file>resources/images/loggerbg.png</file>
-		<file>leechcraft_ru.qm</file>
-	</qresource>
+<RCC>
+    <qresource prefix="/" >
+        <file>change.log</file>
+        <file>leechcraft_ru.qm</file>
+        <file>resources/images/loggerbg.png</file>
+        <file>resources/images/mainapp.png</file>
+        <file>resources/images/splashscreen.png</file>
+    </qresource>
 </RCC>

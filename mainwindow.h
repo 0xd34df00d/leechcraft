@@ -67,6 +67,7 @@ private slots:
 	void backupSettings ();
 	void restoreSettings ();
 	void clearSettings (bool);
+	void showChangelog ();
 };
 
 #endif

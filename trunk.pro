@@ -11,6 +11,7 @@ win32:DESTDIR = ./
 
 # Input
 TRANSLATIONS = leechcraft_ru.ts
+FORMS += changelogdialog.ui
 HEADERS += mainwindow.h \
 	   core.h \
 	   pluginmanager.h \
@@ -18,6 +19,7 @@ HEADERS += mainwindow.h \
 	   interfaces/structures.h \
 	   plugininfo.h \
 	   pluginlisttablewidgeticon.h \
+	   changelogdialog.h \
 	   logshower.h
 SOURCES += mainwindow.cpp \
 	   core.cpp \
@@ -25,6 +27,7 @@ SOURCES += mainwindow.cpp \
 	   pluginmanager.cpp \
 	   plugininfo.cpp \
 	   pluginlisttablewidgeticon.cpp \
+	   changelogdialog.cpp \
 	   logshower.cpp
 RESOURCES = resources.qrc
 CONFIG  += release threads warn_on

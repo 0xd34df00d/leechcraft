@@ -9,6 +9,7 @@
 #include "logshower.h"
 #include "plugininfo.h"
 #include "pluginlisttablewidgeticon.h"
+#include "changelogdialog.h"
 
 MainWindow *MainWindow::Instance_ = 0;
 QMutex *MainWindow::InstanceMutex_ = new QMutex;
@@ -146,13 +147,13 @@ void MainWindow::FillMenus ()
 
 void MainWindow::MakeActions ()
 {
-	QAction *a;
-	a = File_->addAction (tr ("&Quit"), qApp, SLOT (quit ()));
+	QAction *a = File_->addAction (tr ("&Quit"), qApp, SLOT (quit ()));
 	a->setStatusTip (tr ("Exit from application"));
 
 	ToolsMenu_->addAction (BackupSettings_);
 	ToolsMenu_->addAction (RestoreSettings_);
-	Help_->addAction (tr ("&About Qt"), qApp, SLOT (aboutQt ()));
+	Help_->addAction (tr ("&Changelog..."), this, SLOT (showChangelog ()));
+	Help_->addAction (tr ("&About Qt..."), qApp, SLOT (aboutQt ()));
 }
 
 void MainWindow::ReadSettings ()
@@ -325,6 +326,11 @@ void MainWindow::restoreSettings ()
 
 void MainWindow::clearSettings (bool scheduled)
 {
-//	SettingsClearScheduled_ = scheduled;
+}
+
+void MainWindow::showChangelog ()
+{
+	ChangelogDialog ce (this);
+	ce.exec ();
 }
 
