@@ -12,8 +12,7 @@ INCLUDEPATH += .
 QT += network
 
 # Input
-TRANSLATIONS = leechcraft_http_en.ts \
-	       leechcraft_http_ru.ts
+TRANSLATIONS = leechcraft_http_ru.ts
 FORMS += fileexistsdialog.ui
 HEADERS += httpplugin.h \
 	jobadderdialog.h \

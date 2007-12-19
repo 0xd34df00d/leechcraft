@@ -89,3 +89,4 @@ void Batcher::closeEvent (QCloseEvent*)
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_batcher, Batcher);
+

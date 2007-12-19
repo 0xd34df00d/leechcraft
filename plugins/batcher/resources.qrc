@@ -2,6 +2,5 @@
 <RCC version="1.0">
 	<qresource>
 		<file>leechcraft_batcher_ru.qm</file>
-		<file>leechcraft_batcher_en.qm</file>
 	</qresource>
 </RCC>

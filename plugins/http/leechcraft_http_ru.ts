@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1">
-<defaultcodec></defaultcodec>
 <context>
     <name>FileExistsDialog</name>
     <message>
@@ -274,17 +273,17 @@
 <context>
     <name>Job</name>
     <message>
-        <location filename="job.cpp" line="217"/>
+        <location filename="job.cpp" line="216"/>
         <source>Could not create directory&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Stopping work.</source>
         <translation>Не могу создать директорию&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Останавливаюсь.</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="272"/>
+        <location filename="job.cpp" line="268"/>
         <source>Could not open file for write/append&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Flushing cache to temp file&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;and stopping work.</source>
         <translation>Не могу открыть для записи файл &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Скидываю кэш в файл&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;и останавливаюсь.</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="278"/>
+        <location filename="job.cpp" line="274"/>
         <source>Could not open temporary file for write&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;</source>
         <translation>Не могу открыть для записи временный файл&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;</translation>
     </message>

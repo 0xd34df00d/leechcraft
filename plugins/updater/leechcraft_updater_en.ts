@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1">
-<defaultcodec></defaultcodec>
 <context>
     <name>Core</name>
     <message>
@@ -168,6 +167,11 @@
         <location filename="updaterplugin.cpp" line="220"/>
         <source>Downloading updates...</source>
         <translation>Downloading updates...</translation>
+    </message>
+    <message>
+        <location filename="updaterplugin.cpp" line="57"/>
+        <source></source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

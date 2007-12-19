@@ -5,6 +5,5 @@
 		<file>resources/images/splashscreen.png</file>
 		<file>resources/images/loggerbg.png</file>
 		<file>leechcraft_ru.qm</file>
-		<file>leechcraft_en.qm</file>
 	</qresource>
 </RCC>
