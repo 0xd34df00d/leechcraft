@@ -10,10 +10,13 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>MainWindow</string>
+   <string>Batcher</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="resources.qrc" >:/resources/images/batcher.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget" >
-   <widget class="QWidget" name="" >
+   <widget class="QWidget" name="layoutWidget" >
     <property name="geometry" >
      <rect>
       <x>10</x>
@@ -143,6 +146,8 @@
    </widget>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc" />
+ </resources>
  <connections/>
 </ui>

@@ -65,7 +65,7 @@ void Batcher::Release ()
 
 QIcon Batcher::GetIcon () const
 {
-	return QIcon ();
+	return QIcon (":/resources/images/batcher.png");
 }
 
 void Batcher::SetParent (QWidget *parent)

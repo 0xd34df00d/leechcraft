@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1">
+<defaultcodec></defaultcodec>
 <context>
     <name>Batcher</name>
     <message>
@@ -11,34 +12,34 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="mainwindow.ui" line="13"/>
-        <source>MainWindow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="31"/>
+        <location filename="mainwindow.ui" line="34"/>
         <source>Pattern:</source>
-        <translation type="unfinished"></translation>
+        <translation>Шаблон:</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="48"/>
+        <location filename="mainwindow.ui" line="51"/>
         <source>Boundaries:</source>
-        <translation type="unfinished"></translation>
+        <translation>Границы:</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="85"/>
+        <location filename="mainwindow.ui" line="88"/>
         <source>Step:</source>
-        <translation type="unfinished"></translation>
+        <translation>Шаг:</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="114"/>
+        <location filename="mainwindow.ui" line="117"/>
         <source>Leading zeroes</source>
-        <translation type="unfinished"></translation>
+        <translation>Ведущие нули</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="136"/>
+        <location filename="mainwindow.ui" line="139"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>ОК</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="13"/>
+        <source>Batcher</source>
+        <translation>Batcher</translation>
     </message>
 </context>
 </TS>

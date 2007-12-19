@@ -217,7 +217,7 @@ QWidget* HttpPlugin::SetupFinishedPart ()
 
 QString HttpPlugin::GetName () const
 {
-	return Globals::Name;
+	return "HTTP & FTP";
 }
 
 QString HttpPlugin::GetInfo () const
