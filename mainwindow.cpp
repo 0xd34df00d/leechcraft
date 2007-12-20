@@ -218,10 +218,14 @@ void MainWindow::handlePluginsListDoubleClick (QTreeWidgetItem *item, int column
 	int index = PluginsList_->indexOfTopLevelItem (item);
 
 	if (index != -1)
-		Model_->ShowPlugin (PluginsList_->indexOfTopLevelItem (item));
+	{
+		if (item->isDisabled ())
+			return;
 
-	if (column == 0)
-		PluginsList_->isItemExpanded (item) ? PluginsList_->collapseItem (item) : PluginsList_->expandItem (item);
+		Model_->ShowPlugin (PluginsList_->indexOfTopLevelItem (item));
+		if (column == 0)
+			PluginsList_->isItemExpanded (item) ? PluginsList_->collapseItem (item) : PluginsList_->expandItem (item);
+	}
 }
 
 void MainWindow::addPluginToList (const PluginInfo *pInfo)
@@ -237,6 +241,10 @@ void MainWindow::addPluginToList (const PluginInfo *pInfo)
 				needs = pInfo->GetNeeds (),
 				uses = pInfo->GetUses ();
 
+	QBrush failedDep (Qt::red);
+	if (!pInfo->GetDependenciesMet ())
+		item->setDisabled (true);
+
 	if (provides.size ())
 	{
 		QTreeWidgetItem *header = new QTreeWidgetItem (item);
@@ -244,6 +252,7 @@ void MainWindow::addPluginToList (const PluginInfo *pInfo)
 		for (int i = 0; i < provides.size (); ++i)
 		{
 			QTreeWidgetItem *p = new QTreeWidgetItem (header);
+			p->setFirstColumnSpanned (true);
 			p->setText (0, provides.at (i));
 		}
 	}
@@ -256,6 +265,10 @@ void MainWindow::addPluginToList (const PluginInfo *pInfo)
 		{
 			QTreeWidgetItem *n = new QTreeWidgetItem (header);
 			n->setText (0, needs.at (i));
+			n->setFirstColumnSpanned (true);
+			if (!pInfo->GetDependenciesMet ())
+				if (pInfo->GetFailedDeps ().contains (needs.at (i)))
+					n->setForeground (0, failedDep);
 		}
 	}
 
@@ -267,6 +280,7 @@ void MainWindow::addPluginToList (const PluginInfo *pInfo)
 		{
 			QTreeWidgetItem *u = new QTreeWidgetItem (header);
 			u->setText (0, uses.at (i));
+			u->setFirstColumnSpanned (true);
 		}
 	}
 

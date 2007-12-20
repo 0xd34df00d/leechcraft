@@ -1,6 +1,14 @@
 #include "plugininfo.h"
 
-PluginInfo::PluginInfo (const QString& name, const QString& info, const QIcon& icon, const QString& status, const QStringList& provides, const QStringList& needs, const QStringList& uses)
+PluginInfo::PluginInfo (const QString& name,
+						const QString& info,
+						const QIcon& icon,
+						const QString& status,
+						const QStringList& provides,
+						const QStringList& needs,
+						const QStringList& uses,
+						bool dm,
+						const QStringList& failedDeps)
 : Name_ (name)
 , Info_ (info)
 , Icon_ (icon)
@@ -8,6 +16,8 @@ PluginInfo::PluginInfo (const QString& name, const QString& info, const QIcon& i
 , Provides_ (provides)
 , Needs_ (needs)
 , Uses_ (uses)
+, FailedDeps_ (failedDeps)
+, DependenciesMet_ (dm)
 {
 }
 
@@ -44,5 +54,15 @@ const QStringList& PluginInfo::GetNeeds () const
 const QStringList& PluginInfo::GetUses () const
 {
 	return Uses_;
+}
+
+bool PluginInfo::GetDependenciesMet () const
+{
+	return DependenciesMet_;
+}
+
+const QStringList& PluginInfo::GetFailedDeps () const
+{
+	return FailedDeps_;
 }
 

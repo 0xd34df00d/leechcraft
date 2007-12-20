@@ -2,6 +2,7 @@
 #define PLUGINMANAGER_H
 #include <QVector>
 #include <QObject>
+#include <QMap>
 #include "interfaces/interfaces.h"
 
 class QPluginLoader;
@@ -13,6 +14,8 @@ class PluginManager : public QObject
 
 	typedef QVector<QPluginLoader*> PluginsContainer_t;
 	QVector<QPluginLoader*> Plugins_;
+	QMap<PluginsContainer_t::const_iterator, bool> DependenciesMet_;
+	QMap<PluginsContainer_t::const_iterator, QStringList> FailedDependencies_;
 public:
 	typedef PluginsContainer_t::size_type Size_t;
 	class Iterator : public QObject

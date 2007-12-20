@@ -166,6 +166,7 @@ void PluginManager::CalculateDependencies ()
 		QObject *pEntity = (*i)->instance ();
 		IInfo *info = qobject_cast<IInfo*> (pEntity);
 		QStringList needs = info->Needs ();
+		DependenciesMet_ [i] = true;
 
 		if (needs.isEmpty ())
 			continue;
@@ -186,7 +187,11 @@ void PluginManager::CalculateDependencies ()
 				}
 		}
 		if (!needs.isEmpty ())
+		{
+			DependenciesMet_ [i] = false;
+			FailedDependencies_ [i] = needs;
 			qWarning () << Q_FUNC_INFO << "not all plugins providing needs of" << info->GetName () << "are found. The remaining ones are:" << needs;
+		}
 	}
 }
 
@@ -202,7 +207,15 @@ void PluginManager::ThrowPlugins ()
 		if (window)
 			pIcon = window->GetIcon ();
 
-		PluginInfo *pInfo = new PluginInfo (info->GetName (), info->GetInfo (), pIcon, info->GetStatusbarMessage (), info->Provides (), info->Needs (), info->Uses ());
+		PluginInfo *pInfo = new PluginInfo (info->GetName (),
+											info->GetInfo (),
+											pIcon,
+											info->GetStatusbarMessage (),
+											info->Provides (),
+											info->Needs (),
+											info->Uses (),
+											DependenciesMet_ [i],
+											FailedDependencies_ [i]);
 		emit gotPlugin (pInfo);
 	}
 }
@@ -215,9 +228,6 @@ void PluginManager::FindPlugins ()
 
 	QStringList pluginNames;
 	foreach (QString filename, pluginsDir.entryList (QDir::Files))
-	{
 		Plugins_.push_back (new QPluginLoader (pluginsDir.absoluteFilePath (filename), this));
-		qDebug () << filename;
-	}
 }
 
