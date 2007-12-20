@@ -127,6 +127,8 @@ void Batcher::sendJobs ()
 		LocalDirLine_->setText (localDir);
 		QMessageBox::warning (this, tr ("Warning"), tr ("Because the specified directory doesn't exist, files will be downloaded to %1.").arg (localDir));
 	}
+	if (!localDir.endsWith ("/"))
+		localDir.append ("/");
 	for (int i = 0; i < PreviewList_->count (); ++i)
 	{
 		QString text = PreviewList_->item (i)->text ();
@@ -138,7 +140,7 @@ void Batcher::sendJobs ()
 			continue;
 		if (!provider)
 			continue;
-		DirectDownloadParams ddd = { text, localDir, true, true };
+		DirectDownloadParams ddd = { text, localDir + QFileInfo (text).fileName (), true, true };
 		disconnect (this, SIGNAL (addDownload (DirectDownloadParams)), provider, 0);
 		connect (this, SIGNAL (addDownload (DirectDownloadParams)), provider, SLOT (addDownload (DirectDownloadParams)));
 		emit addDownload (ddd);

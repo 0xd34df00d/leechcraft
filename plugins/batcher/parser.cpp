@@ -14,9 +14,11 @@ QStringList Parser::Parse (const Parser::ParserData& pd) const
 		return QStringList ();
 
 	int dollar = pattern.indexOf ('$');
-
 	if (dollar == -1)
 		return QStringList (pattern);
+
+	while (pattern.at (dollar + 1) == '$')
+		pattern.remove (dollar + 1, 1);
 
 	int width = 0;
 	if (pd.LeadingZeroes_)
