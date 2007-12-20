@@ -33,6 +33,15 @@ Job::Job (JobParams *params, QObject *parent)
 	StartTime_ = new QTime;
 	FillErrorDictionary ();
 	FileExistsDialog_ = new FileExistsDialog (parent ? qobject_cast<JobManager*> (parent)->GetTheMain () : 0);
+
+	if (Params_->IsFullName_)
+	{
+		if (!QFileInfo (Params_->LocalName_).dir ().exists ())
+			Params_->LocalName_ = QDir::homePath () + "/" + QFileInfo (Params_->LocalName_).fileName ();
+	}
+	else
+		if (!QFileInfo (Params_->LocalName_).exists ())
+			Params_->LocalName_ = QDir::homePath () + "/";
 }
 
 Job::~Job ()
@@ -45,8 +54,6 @@ Job::~Job ()
 
 void Job::DoDelayedInit ()
 {
-	if (Params_->LocalName_ == "Current directory")
-		Params_->LocalName_ = QDir::currentPath ();
 	QString filename = MakeFilename (Params_->URL_, Params_->LocalName_);
 	if (QFile::exists (filename))
 	{

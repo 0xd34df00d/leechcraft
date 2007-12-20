@@ -31,7 +31,7 @@ void SettingsManager::ReadSettings ()
 	Password_					= settings.value ("FTPPassword", "some@email.com").toString ();
 	CacheSize_					= settings.value ("CacheSize", 256).toInt ();
 	StopTimeout_				= settings.value ("StopTimeout", 10000).toInt ();
-	DownloadDir_				= settings.value ("DownloadDir", tr ("Current directory")).toString ();
+	DownloadDir_				= settings.value ("DownloadDir", "").toString ();
 	AutostartChildren_			= settings.value ("AutostartChildren", true).toBool ();
 	UserAgent_.Val ().first		= settings.value ("UserAgent.First").toStringList ();
 	UserAgent_.Val ().second	= settings.value ("UserAgent.Second", 3).toInt ();

@@ -16,9 +16,9 @@ JobAdderDialog::JobAdderDialog (QWidget *parent)
 	URL_ = new QLineEdit (defaultURL);
 	
 	QString dd = SettingsManager::Instance ()->GetDownloadDir ();
-	if (dd == "Current directory" || dd == "")
+	if (dd == "")
 	{
-		dd = QDir::currentPath ();
+		dd = QDir::homePath ();
 	}
 	LocalName_ = new QLineEdit (dd);
 

@@ -185,7 +185,7 @@ bool HttpImp::ReadResponse ()
 	}
 	if (Response_.Fields_.contains ("content-length"))
 	{
-		Response_.ContentLength_ = Response_.Fields_ ["content-length"].toULong ();
+		Response_.ContentLength_ = Response_.Fields_ ["content-length"].toULongLong ();
 		emit gotFileSize (Response_.ContentLength_);
 	}
 	shouldWeReturn = DoSecondaryStuffWithResponse ();
