@@ -9,9 +9,10 @@ DESTDIR = ../bin
 DEPENDPATH += .
 INCLUDEPATH += .
 INCLUDEPATH += ../../
+QT -= gui
 
 # Input
-HEADERS += cron.h globals.h
-SOURCES += cron.cpp
+HEADERS += cron.h core.h globals.h
+SOURCES += cron.cpp core.cpp
 RESOURCES += resources.qrc
 win32:LIBS += -L../.. -lplugininterface

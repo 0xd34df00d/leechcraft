@@ -1,9 +1,12 @@
-#include <QtGui>
+#include <QtCore>
 #include "cron.h"
+#include "core.h"
 #include "globals.h"
 
 void Cron::Init ()
 {
+	Core_ = new Core (this);
+	connect (Core_, SIGNAL (shot (quint64)), this, SIGNAL (shot (quint64)));
 }
 
 QString Cron::GetName () const
@@ -54,6 +57,13 @@ void Cron::SetProvider (QObject *provider, const QString& feature)
 
 void Cron::Release ()
 {
+	Core_->Release ();
+	delete Core_;
+}
+
+void Cron::addSingleShot (QDateTime dt)
+{
+	emit added (Core_->AddSingleShot (dt));
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_cron, Cron);

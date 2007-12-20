@@ -2,7 +2,9 @@
 #define INTERFACES_H
 #include <QString>
 #include <QStringList>
+#ifdef QT_GUI_LIB
 #include <QIcon>
+#endif
 #include "../settingsdialog/settingsiteminfo.h"
 #include "structures.h"
 
@@ -43,6 +45,7 @@ public:
 	virtual ~IVersionable () {}
 };
 
+#ifdef QT_GUI_LIB
 class IWindow
 {
 public:
@@ -55,6 +58,7 @@ public:
 
 	virtual ~IWindow () {}
 };
+#endif
 
 class IDownload
 {
@@ -97,7 +101,9 @@ public:
 Q_DECLARE_INTERFACE (ISettings, "org.Deviant.LeechCraft.ISettings/1.0");
 Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
 Q_DECLARE_INTERFACE (IVersionable, "org.Deviant.LeechCraft.IVersionable/1.0");
+#ifdef QT_GUI_LIB
 Q_DECLARE_INTERFACE (IWindow, "org.Deviant.LeechCraft.IWindow/1.0");
+#endif
 Q_DECLARE_INTERFACE (IDownload, "org.Deviant.LeechCraft.IDownload/1.0");
 Q_DECLARE_INTERFACE (IDirectDownload, "org.Deviant.LeechCraft.IDirectDownload/1.0");
 Q_DECLARE_INTERFACE (IPeer2PeerDownload, "org.Deviant.LeechCraft.IPeer2PeerDownload/1.0");
