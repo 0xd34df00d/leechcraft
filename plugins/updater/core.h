@@ -54,6 +54,7 @@ class Core : public QThread
 		QString URL_;
 		QString Description_;
 		QString Name_;
+		ulong Build_;
 		ulong Size_;
 	};
 
@@ -71,6 +72,7 @@ public slots:
 	void checkForUpdates ();
 	void downloadUpdates (const QList<int>&);
 signals:
+	void addDownload (DirectDownloadParams);
 	void error (const QString&);
 	void gotFile (int, const QString&, const QString&, ulong, const QString&);
 	void downloadedID (int);
@@ -83,6 +85,8 @@ private slots:
 	void handleDownloadRemoved (int);
 	void handleDownloadError (int, IDirectDownload::Error);
 	void handleDownloadProgressUpdated (int, int);
+	void versionDownloadAdded (int);
+	void fileDownloadAdded (int);
 private:
 	virtual void run ();
 	bool Check ();
@@ -90,7 +94,7 @@ private:
 	void ApplyUpdates ();
 	bool Parse ();
 	void CollectFiles (QDomElement&);
-	bool HandleSingleMirror (IDirectDownload*, const QString&);
+	bool HandleSingleMirror (QObject*, const QString&);
 };
 
 #endif

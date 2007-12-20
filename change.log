@@ -1,10 +1,18 @@
 ***Public build 5***
 Core:
 + Embedded changelog viewer.
+* Better failed dependencies handling. You cannot open the failed
+  plugin now, and the failed deps highlight in red now.
 
 Batcher:
 + Implemented basic parsing.
 + Works.
+
+Updater:
+* Few interface enhancements.
+
+HTTP/FTP:
+* Few interface enhancements.
 
 ***Public build 4***
 Core:

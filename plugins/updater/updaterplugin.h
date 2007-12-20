@@ -58,6 +58,8 @@ public:
 	virtual void ShowWindow ();
 	virtual void ShowBalloonTip ();
 	virtual uint GetVersion () const;
+protected:
+	virtual void closeEvent (QCloseEvent*);
 private:
 	void SetupInterface ();
 	void SetupMainWidget ();

@@ -2,6 +2,7 @@
 #include <QtXml>
 #include <QtDebug>
 #include <interfaces/interfaces.h>
+#include <plugininterface/proxy.h>
 #include "settingsmanager.h"
 #include "core.h"
 
@@ -96,6 +97,17 @@ void Core::handleDownloadProgressUpdated (int, int)
 {
 }
 
+void Core::versionDownloadAdded (int id)
+{
+	UpdateInfoID_ = id;
+}
+
+void Core::fileDownloadAdded (int id)
+{
+	qDebug () << Q_FUNC_INFO;
+	DownloadFileID_ = id;
+}
+
 void Core::run ()
 {
 	forever
@@ -123,22 +135,22 @@ bool Core::Check ()
 	bool result = false;
 	for (int i = 0; i < mirrors.size (); ++i)
 	{
-		IDirectDownload *idd;
+		QObject *provider;
 		QString mirror = mirrors [i];
 		if (mirror.left (6).toLower () == "ftp://")
-			idd = qobject_cast<IDirectDownload*> (Providers_ ["ftp"]);
+			provider = Providers_ ["ftp"];
 		else if (mirror.left (7).toLower () == "http://")
-			idd = qobject_cast<IDirectDownload*> (Providers_ ["http"]);
+			provider = Providers_ ["http"];
 		else
 			continue;
 
-		if (!idd)
+		if (!provider)
 			continue;
 
 		if (!mirror.endsWith ('/'))
 			mirror.append ('/');
 
-		if ((result = HandleSingleMirror (idd, mirror)))
+		if ((result = HandleSingleMirror (provider, mirror)))
 			break;
 	}
 
@@ -169,16 +181,16 @@ void Core::Download ()
 		FileRepresentation rep = Files_.at (IDs2Download_.at (i));
 		for (int j = 0; j < mirrors.size (); ++j)
 		{
-			IDirectDownload *idd;
+			QObject *provider;
 			QString mirror = mirrors [j];
 			if (mirror.left (6).toLower () == "ftp://")
-				idd = qobject_cast<IDirectDownload*> (Providers_ ["ftp"]);
+				provider = Providers_ ["ftp"];
 			else if (mirror.left (7).toLower () == "http://")
-				idd = qobject_cast<IDirectDownload*> (Providers_ ["http"]);
+				provider = Providers_ ["http"];
 			else
 				continue;
 
-			if (!idd)
+			if (!provider)
 				continue;
 
 			if (!mirror.endsWith ('/'))
@@ -200,7 +212,12 @@ void Core::Download ()
 			}
 			
 			DirectDownloadParams ddp = { mirror + rep.URL_, QFileInfo (rep.Location_).fileName (), true, SettingsManager::Instance ()->GetSaveDownloadedInHistory () };
-			DownloadFileID_ = idd->AddDownload (ddp);
+			disconnect (this, SIGNAL (addDownload (DirectDownloadParams)), provider, 0);
+			disconnect (provider, SIGNAL (jobAdded (int)), this, SLOT (fileDownloadAdded (int)));
+			connect (this, SIGNAL (addDownload (DirectDownloadParams)), provider, SLOT (addDownload (DirectDownloadParams)));
+			connect (provider, SIGNAL (jobAdded (int)), this, SLOT (fileDownloadAdded (int)));
+			emit addDownload (ddp);
+			qDebug () << Q_FUNC_INFO;
 
 			DownloadWaiter_.first->lock ();
 			DownloadWaiter_.second->wait (DownloadWaiter_.first);
@@ -231,12 +248,14 @@ void Core::Download ()
 	}
 	DownloadState_ = DownloadedSuccessfully;
 	emit finishedDownload ();
-
 	ApplyUpdates ();
 }
 
 void Core::ApplyUpdates ()
 {
+	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
+	settings.beginGroup (Globals::Name);
+	settings.beginGroup ("syncs");
 	for (int i = 0; i < ToApply_.size (); ++i)
 	{
 		FileRepresentation rep = ToApply_.at (i);
@@ -248,7 +267,11 @@ void Core::ApplyUpdates ()
 			emit error (tr ("Copying failed."));
 		if (!QFile::remove (name))
 			emit error (tr ("Removing temporary file failed, do it yourself, cause I've done everything else."));
+
+		settings.setValue (rep.Location_, static_cast<qulonglong> (rep.Build_));
 	}
+	settings.endGroup ();
+	settings.endGroup ();
 
 	ToApply_.clear ();
 	emit finishedApplying ();
@@ -301,6 +324,10 @@ bool Core::Parse ()
 void Core::CollectFiles (QDomElement &e)
 {
 	QDomElement fileChild = e.firstChildElement ("file");
+	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
+	settings.beginGroup (Globals::Name);
+	settings.beginGroup ("syncs");
+
 	while (!fileChild.isNull ())
 	{
 		QDomElement name = fileChild.firstChildElement ("name");
@@ -308,8 +335,9 @@ void Core::CollectFiles (QDomElement &e)
 		QDomElement url = fileChild.firstChildElement ("url");
 		QDomElement loc = fileChild.firstChildElement ("location");
 		QDomElement hash = fileChild.firstChildElement ("hash");
+		QDomElement build = fileChild.firstChildElement ("build");
 		QDomElement size = fileChild.firstChildElement ("size");
-		if (name.isNull () || descr.isNull () || url.isNull () || loc.isNull () || hash.isNull () || size.isNull ())
+		if (name.isNull () || descr.isNull () || url.isNull () || loc.isNull () || hash.isNull () || build.isNull () || size.isNull ())
 		{
 			emit error (tr ("Malformed update file"));
 			return;
@@ -318,22 +346,34 @@ void Core::CollectFiles (QDomElement &e)
 		QString md5 = hash.text ();
 		QString location = loc.text ();
 
+		if (build.text ().toULong () <= settings.value (location.trimmed (), 0).toULongLong ())
+			continue;
+
 		QFile file (QCoreApplication::applicationDirPath () + "/" + location);
 		if (file.open (QIODevice::ReadOnly))
 		{
 			QByteArray localHash = QCryptographicHash::hash (file.readAll (), QCryptographicHash::Md5);
 			if (localHash.toHex () != md5)
 			{
-				FileRepresentation fr = { md5.toAscii (), location.trimmed (), url.text ().trimmed (), descr.text ().trimmed (), name.text ().trimmed () , size.text ().toULong () };
+				FileRepresentation fr = {	md5.toAscii (),
+											location.trimmed (),
+											url.text ().trimmed (),
+											descr.text ().trimmed (),
+											name.text ().trimmed (),
+											build.text ().toULong (),
+											size.text ().toULong () };
 				Files_ << fr;
 			}
 		}
 
 		fileChild = fileChild.nextSiblingElement ("file");
 	}
+
+	settings.endGroup ();
+	settings.endGroup ();
 }
 
-bool Core::HandleSingleMirror (IDirectDownload *idd, const QString& mirror)
+bool Core::HandleSingleMirror (QObject *provider, const QString& mirror)
 {
 	QString tmpfn;
 	{
@@ -344,8 +384,11 @@ bool Core::HandleSingleMirror (IDirectDownload *idd, const QString& mirror)
 	}
 	UpdateFilename_ = tmpfn;
 	DirectDownloadParams ddp = { mirror + QString ("update.xml"), tmpfn, true, false };
-	qDebug () << QThread::currentThread () << idd;
-	UpdateInfoID_ = idd->AddDownload (ddp);
+	disconnect (this, SIGNAL (addDownload (DirectDownloadParams)), provider, 0);
+	disconnect (provider, SIGNAL (jobAdded (int)), this, SLOT (versionDownloadAdded (int)));
+	connect (this, SIGNAL (addDownload (DirectDownloadParams)), provider, SLOT (addDownload (DirectDownloadParams)));
+	connect (provider, SIGNAL (jobAdded (int)), this, SLOT (versionDownloadAdded (int)));
+	emit addDownload (ddp);
 
 	CheckWaiter_.first->lock ();
 	CheckWaiter_.second->wait (CheckWaiter_.first);

@@ -318,29 +318,6 @@ void HttpPlugin::GetFileSizeAt (IDownload::JobID_t id)
 	JobManager_->GetFileSizeAt (id);
 }
 
-int HttpPlugin::AddDownload (const DirectDownloadParams& params)
-{
-	JobParams *jp = new JobParams;
-	jp->IsFullName_				= true;
-	jp->URL_					= params.Resource_;
-	jp->LocalName_				= params.Location_;
-	jp->Autostart_				= params.Autostart_;
-	jp->ShouldBeSavedInHistory_	= params.ShouldBeSavedInHistory_;
-	return handleParams (jp);
-}
-
-void HttpPlugin::RemoveDownload (int id)
-{
-}
-
-int HttpPlugin::GetDownloadPercentage (int id) const
-{
-}
-
-IDirectDownload::Error HttpPlugin::GetDownloadStatus (int) const
-{
-}
-
 uint HttpPlugin::GetVersion () const
 {
 	return QDateTime (QDate (2007, 11, 30), QTime (10, 11)).toTime_t ();
@@ -362,6 +339,17 @@ qint64 HttpPlugin::GetDownloadSpeed () const
 qint64 HttpPlugin::GetUploadSpeed () const
 {
 	return 0;
+}
+
+void HttpPlugin::addDownload (const DirectDownloadParams& params)
+{
+	JobParams *jp = new JobParams;
+	jp->IsFullName_				= true;
+	jp->URL_					= params.Resource_;
+	jp->LocalName_				= params.Location_;
+	jp->Autostart_				= params.Autostart_;
+	jp->ShouldBeSavedInHistory_	= params.ShouldBeSavedInHistory_;
+	emit jobAdded (handleParams (jp));
 }
 
 void HttpPlugin::initiateJobAddition ()
@@ -699,6 +687,11 @@ void HttpPlugin::HandleSelected (JobAction ja)
 				break;
 		}
 	}
+}
+
+void HttpPlugin::closeEvent (QCloseEvent*)
+{
+	IsShown_ = false;
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_http, HttpPlugin);

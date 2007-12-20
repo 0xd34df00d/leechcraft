@@ -119,7 +119,7 @@ void Batcher::collectDataAndParse ()
 void Batcher::sendJobs ()
 {
 	int count = 0;
-	IDirectDownload *idd = 0;
+	QObject *provider = 0;
 	QString localDir = LocalDirLine_->text ();
 	if (!QFileInfo (localDir).exists ())
 	{
@@ -131,15 +131,17 @@ void Batcher::sendJobs ()
 	{
 		QString text = PreviewList_->item (i)->text ();
 		if (text.left (6).toLower () == "ftp://")
-			idd = qobject_cast<IDirectDownload*> (Providers_ ["ftp"]);
+			provider = Providers_ ["ftp"];
 		else if (text.left (7).toLower () == "http://")
-			idd = qobject_cast<IDirectDownload*> (Providers_ ["http"]);
+			provider = Providers_ ["http"];
 		else
 			continue;
-		if (!idd)
+		if (!provider)
 			continue;
 		DirectDownloadParams ddd = { text, localDir, true, true };
-		idd->AddDownload (ddd);
+		disconnect (this, SIGNAL (addDownload (DirectDownloadParams)), provider, 0);
+		connect (this, SIGNAL (addDownload (DirectDownloadParams)), provider, SLOT (addDownload (DirectDownloadParams)));
+		emit addDownload (ddd);
 		++count;
 	}
 	if (count)

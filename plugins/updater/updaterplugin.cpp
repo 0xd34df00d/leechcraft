@@ -14,6 +14,8 @@ void UpdaterPlugin::Init ()
 	transl->load (QString (":/leechcraft_updater_") + localeName);
 	qApp->installTranslator (transl);
 
+	qRegisterMetaType<DirectDownloadParams> ("DirectDownloadParams");
+
 	Core_ = new Core;
 	connect (Core_, SIGNAL (gotFile (int, const QString&, const QString&, ulong, const QString&)),
 			this, SLOT (addFile (int, const QString&, const QString&, ulong, const QString)));
@@ -125,6 +127,11 @@ void UpdaterPlugin::ShowBalloonTip ()
 uint UpdaterPlugin::GetVersion () const
 {
 	return QDateTime (QDate (2007, 11, 30), QTime (11, 11)).toTime_t ();
+}
+
+void UpdaterPlugin::closeEvent (QCloseEvent*)
+{
+	IsShown_ = false;
 }
 
 void UpdaterPlugin::SetupInterface ()

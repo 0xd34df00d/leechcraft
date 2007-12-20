@@ -36,6 +36,8 @@ public:
 	virtual void ShowBalloonTip ();
 protected:
 	virtual void closeEvent (QCloseEvent*);
+signals:
+	void addDownload (DirectDownloadParams);
 private slots:
 	void collectDataAndParse ();
 	void sendJobs ();

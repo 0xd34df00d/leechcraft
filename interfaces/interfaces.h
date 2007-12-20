@@ -85,10 +85,6 @@ public:
 	, ErrorOther
     };
 
-    virtual int AddDownload (const DirectDownloadParams&) = 0;
-    virtual void RemoveDownload (int) = 0;
-    virtual int GetDownloadPercentage (int) const = 0;
-    virtual Error GetDownloadStatus (int) const = 0;
     virtual ~IDirectDownload () {}
 };
 

@@ -116,13 +116,11 @@ public:
 	virtual void StopAt (IDownload::JobID_t);
 	virtual void DeleteAt (IDownload::JobID_t);
 	void GetFileSizeAt (IDownload::JobID_t);
-	virtual int AddDownload (const DirectDownloadParams&);
-	virtual void RemoveDownload (int);
-	virtual int GetDownloadPercentage (int) const;
-	virtual Error GetDownloadStatus (int) const;
 	virtual uint GetVersion () const;
 
 	int GetPercentageForRow (int);
+public slots:
+	virtual void addDownload (const DirectDownloadParams&);
 private slots:
 	void initiateJobAddition ();
 	int handleParams (JobParams*);
@@ -153,7 +151,10 @@ private:
 	void ReadSettings ();
 	void AddToFinishedList (const FinishedJob*);
 	void HandleSelected (JobAction);
+protected:
+	virtual void closeEvent (QCloseEvent*);
 signals:
+	void jobAdded (int);
 	void jobFinished (int);
 	void jobRemoved (int);
 	void jobError (int, IDirectDownload::Error);
