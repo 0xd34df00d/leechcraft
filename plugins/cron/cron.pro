@@ -11,9 +11,7 @@ INCLUDEPATH += .
 INCLUDEPATH += ../../
 
 # Input
-TRANSLATIONS = leechcraft_cron_ru.ts
 HEADERS += cron.h globals.h
 SOURCES += cron.cpp
-FORMS += mainwindow.ui
 RESOURCES += resources.qrc
-win32:LIBS += -L../.. -lplugininterface -lexceptions -lsettingsdialog
+win32:LIBS += -L../.. -lplugininterface

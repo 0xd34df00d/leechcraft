@@ -4,14 +4,6 @@
 
 void Cron::Init ()
 {
-	Q_INIT_RESOURCE (resources);
-    QTranslator *transl = new QTranslator (this);
-    QString localeName = QLocale::system ().name ();
-    transl->load (QString (":/leechcraft_cron_") + localeName);
-    qApp->installTranslator (transl);
-
-	IsShown_ = false;
-	setupUi (this);
 }
 
 QString Cron::GetName () const
@@ -62,31 +54,6 @@ void Cron::SetProvider (QObject *provider, const QString& feature)
 
 void Cron::Release ()
 {
-}
-
-QIcon Cron::GetIcon () const
-{
-	return windowIcon ();
-}
-
-void Cron::SetParent (QWidget *parent)
-{
-	setParent (parent);
-}
-
-void Cron::ShowWindow ()
-{
-	IsShown_ = 1 - IsShown_;
-	IsShown_ ? show () : hide ();
-}
-
-void Cron::ShowBalloonTip ()
-{
-}
-
-void Cron::closeEvent (QCloseEvent*)
-{
-	IsShown_ = false;
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_cron, Cron);

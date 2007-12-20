@@ -36,11 +36,18 @@ void Core::DoDelayedInit ()
 	PluginManager_->ThrowPlugins ();
 }
 
-void Core::ShowPlugin (IInfo::ID_t id)
+bool Core::ShowPlugin (IInfo::ID_t id)
 {
 	PluginManager::Iterator i = PluginManager_->FindByID (id);
 	QObject *plugin = *i;
-	qobject_cast<IWindow*> (plugin)->ShowWindow ();
+	IWindow *w = qobject_cast<IWindow*> (plugin);
+	if (w)
+	{
+		w->ShowWindow ();
+		return true;
+	}
+	else
+		return false;
 }
 
 QPair<qint64, qint64> Core::GetSpeeds () const

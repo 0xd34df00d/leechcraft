@@ -222,9 +222,9 @@ void MainWindow::handlePluginsListDoubleClick (QTreeWidgetItem *item, int column
 		if (item->isDisabled ())
 			return;
 
-		Model_->ShowPlugin (PluginsList_->indexOfTopLevelItem (item));
-		if (column == 0)
-			PluginsList_->isItemExpanded (item) ? PluginsList_->collapseItem (item) : PluginsList_->expandItem (item);
+		if (Model_->ShowPlugin (PluginsList_->indexOfTopLevelItem (item)))
+			if (column == 0)
+				PluginsList_->isItemExpanded (item) ? PluginsList_->collapseItem (item) : PluginsList_->expandItem (item);
 	}
 }
 

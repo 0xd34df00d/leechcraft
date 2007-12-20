@@ -1,8 +1,5 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
 	<qresource>
-		<file>resources/images/preferences.png</file>
-		<file>resources/images/cron.png</file>
-		<file>leechcraft_cron_ru.qm</file>
 	</qresource>
 </RCC>

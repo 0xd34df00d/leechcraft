@@ -1,20 +1,16 @@
 #ifndef CRON_H
 #define CRON_H
-#include <QMainWindow>
+#include <QObject>
 #include <QMap>
 #include <interfaces/interfaces.h>
-#include "ui_mainwindow.h"
 
-class Cron : public QMainWindow
+class Cron : public QObject
 		   , public IInfo
-		   , public IWindow
-		   , private Ui::MainWindow
 {
 	Q_OBJECT
-	Q_INTERFACES (IInfo IWindow);
+	Q_INTERFACES (IInfo);
 
 	ID_t ID_;
-	bool IsShown_;
 	QMap<QString, QObject*> Providers_;
 public:
 	void Init ();
@@ -28,12 +24,6 @@ public:
 	QStringList Uses () const;
 	void SetProvider (QObject*, const QString&);
 	void Release ();
-	QIcon GetIcon () const;
-	void SetParent (QWidget*);
-	void ShowWindow ();
-	void ShowBalloonTip ();
-protected:
-	virtual void closeEvent (QCloseEvent*);
 };
 
 #endif

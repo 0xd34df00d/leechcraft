@@ -29,7 +29,7 @@ public:
 
 	void DoDelayedInit ();
 	void InitTask (const QString&);
-	void ShowPlugin (IInfo::ID_t);
+	bool ShowPlugin (IInfo::ID_t);
 	
 	QPair<qint64, qint64> GetSpeeds () const;
 
