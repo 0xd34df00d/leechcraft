@@ -4,6 +4,8 @@
 #include <interfaces/interfaces.h>
 #include "ui_mainwindow.h"
 
+class Parser;
+
 class Batcher : public QMainWindow
 			  , private Ui::MainWindow
 			  , public IInfo
@@ -15,6 +17,7 @@ class Batcher : public QMainWindow
 	ID_t ID_;
 	bool IsShown_;
 	QMap<QString, QObject*> Providers_;
+	Parser *Parser_;
 public:
 	virtual void Init ();
 	virtual QString GetName () const;
@@ -33,6 +36,9 @@ public:
 	virtual void ShowBalloonTip ();
 protected:
 	virtual void closeEvent (QCloseEvent*);
+private slots:
+	void collectDataAndParse ();
+	void sendJobs ();
 };
 
 #endif

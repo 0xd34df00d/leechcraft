@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>320</width>
-    <height>156</height>
+    <width>317</width>
+    <height>411</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -22,10 +22,24 @@
       <x>10</x>
       <y>10</y>
       <width>301</width>
-      <height>137</height>
+      <height>391</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" >
+     <item>
+      <layout class="QHBoxLayout" >
+       <item>
+        <widget class="QLabel" name="LocalLabel_" >
+         <property name="text" >
+          <string>Local directory:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="LocalDirLine_" />
+       </item>
+      </layout>
+     </item>
      <item>
       <layout class="QHBoxLayout" >
        <item>
@@ -90,7 +104,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QSpinBox" name="StepSpinBox_" >
+        <widget class="QSpinBox" name="Step_" >
          <property name="minimum" >
           <number>1</number>
          </property>
@@ -121,6 +135,43 @@
      <item>
       <layout class="QHBoxLayout" >
        <item>
+        <widget class="QLabel" name="PreviewLabel_" >
+         <property name="text" >
+          <string>File names preview:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QListWidget" name="PreviewList_" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+         <horstretch>0</horstretch>
+         <verstretch>2</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="styleSheet" >
+        <string>background-color: rgba(0, 255, 0, 50);</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" >
+       <item>
         <spacer>
          <property name="orientation" >
           <enum>Qt::Horizontal</enum>
@@ -135,6 +186,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="OK_" >
+         <property name="enabled" >
+          <bool>false</bool>
+         </property>
          <property name="text" >
           <string>OK</string>
          </property>

@@ -1,5 +1,7 @@
 #include <QtGui>
+#include <interfaces/structures.h>
 #include "batcher.h"
+#include "parser.h"
 #include "globals.h"
 
 void Batcher::Init ()
@@ -10,7 +12,18 @@ void Batcher::Init ()
     transl->load (QString (":/leechcraft_batcher_") + localeName);
     qApp->installTranslator (transl);
 
+	IsShown_ = false;
+	Parser_ = new Parser (this);
+
 	setupUi (this);
+
+	connect (Step_, SIGNAL (valueChanged (int)), this, SLOT (collectDataAndParse ()));
+	connect (LowerBoundary_, SIGNAL (valueChanged (int)), this, SLOT (collectDataAndParse ()));
+	connect (UpperBoundary_, SIGNAL (valueChanged (int)), this, SLOT (collectDataAndParse ()));
+	connect (PatternLine_, SIGNAL (textChanged (const QString&)), this, SLOT (collectDataAndParse ()));
+	connect (LocalDirLine_, SIGNAL (textChanged (const QString&)), this, SLOT (collectDataAndParse ()));
+	connect (LeadingZeroes_, SIGNAL (stateChanged (int)), this, SLOT (collectDataAndParse ()));
+	connect (OK_, SIGNAL (released ()), this, SLOT (sendJobs ()));
 }
 
 QString Batcher::GetName () const
@@ -83,9 +96,56 @@ void Batcher::ShowBalloonTip ()
 {
 }
 
-void Batcher::closeEvent (QCloseEvent*)
+void Batcher::closeEvent (QCloseEvent *e)
 {
+	e->accept ();
 	IsShown_ = false;
+}
+
+void Batcher::collectDataAndParse ()
+{
+	UpperBoundary_->setMinimum (LowerBoundary_->value () + 1);
+	Parser::ParserData pd = { PatternLine_->text (), LowerBoundary_->value (), UpperBoundary_->value (), Step_->value (), LeadingZeroes_->checkState () == Qt::Checked};
+	QStringList result = Parser_->Parse (pd);
+	if (result.size () && LocalDirLine_->text ().size ())
+		OK_->setEnabled (true);
+	else
+		OK_->setEnabled (false);
+
+	PreviewList_->clear ();
+	PreviewList_->addItems (result);
+}
+
+void Batcher::sendJobs ()
+{
+	int count = 0;
+	IDirectDownload *idd = 0;
+	QString localDir = LocalDirLine_->text ();
+	if (!QFileInfo (localDir).exists ())
+	{
+		localDir = QDir::toNativeSeparators (QDir::homePath ());
+		LocalDirLine_->setText (localDir);
+		QMessageBox::warning (this, tr ("Warning"), tr ("Because the specified directory doesn't exist, files will be downloaded to %1.").arg (localDir));
+	}
+	for (int i = 0; i < PreviewList_->count (); ++i)
+	{
+		QString text = PreviewList_->item (i)->text ();
+		if (text.left (6).toLower () == "ftp://")
+			idd = qobject_cast<IDirectDownload*> (Providers_ ["ftp"]);
+		else if (text.left (7).toLower () == "http://")
+			idd = qobject_cast<IDirectDownload*> (Providers_ ["http"]);
+		else
+			continue;
+		if (!idd)
+			continue;
+		DirectDownloadParams ddd = { text, localDir, true, true };
+		idd->AddDownload (ddd);
+		++count;
+	}
+	if (count)
+		QMessageBox::information (this, tr ("Finished"), tr ("%1 jobs successfully added.").arg (count));
+	else
+		QMessageBox::warning (this, tr ("Finished"), tr ("No jobs were added. Check your pattern string or boundaries."));
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_batcher, Batcher);
