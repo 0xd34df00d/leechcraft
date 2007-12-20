@@ -2,6 +2,10 @@
 Core:
 + Embedded changelog viewer.
 
+Batcher:
++ Implemented basic parsing.
++ Works.
+
 ***Public build 4***
 Core:
 + Added a handler for PairedStringList, cannot explain this here.
