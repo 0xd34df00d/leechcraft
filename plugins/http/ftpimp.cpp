@@ -182,10 +182,10 @@ void FtpImp::run ()
 	SetCacheSize (cacheSize);
 	DataSocket_->setReadBufferSize (cacheSize);
 
-	length_t counter = 0;
-
 	QByteArray data;
 	emit dataFetched (RestartPosition_, Size_ + RestartPosition_, data);
+
+	length_t counter = RestartPosition_;
 
 	while (Size_ > counter)
 	{
@@ -210,11 +210,11 @@ void FtpImp::run ()
 			break;
 		}
 		counter += newData.size ();
-		Emit (counter + RestartPosition_, Size_, newData);
+		Emit (counter, Size_, newData);
 	}
-	EmitFlush (counter + RestartPosition_, Size_);
+	EmitFlush (counter, Size_);
 
-	if (counter + RestartPosition_ == Size_)
+	if (counter == Size_)
 		emit finished ();
 
 	Finalize ();
