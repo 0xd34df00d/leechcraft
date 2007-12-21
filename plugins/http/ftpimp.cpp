@@ -203,7 +203,6 @@ void FtpImp::run ()
 		catch (const Exceptions::Generic& e)
 		{
 			qDebug () << Q_FUNC_INFO << "caught \"" << e.GetName ().c_str () << "\", saying\"" << e.GetReason ().c_str () << "\"";
-			break;
 		}
 		catch (...)
 		{

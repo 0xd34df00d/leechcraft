@@ -25,7 +25,7 @@ class Job : public QObject
 	QMap<QAbstractSocket::SocketError, QString> ErrorDictionary_;
 	QFile *File_;
 	int DataOperations_;
-	QTime *StartTime_;
+	QTime *StartTime_, *UpdateTime_, *FlushTime_;
 	FileExistsDialog *FileExistsDialog_;
 public:
 	Job (JobParams *params = 0, QObject *parent = 0);

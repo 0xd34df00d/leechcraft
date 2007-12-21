@@ -31,6 +31,8 @@ Job::Job (JobParams *params, QObject *parent)
 {
 	qRegisterMetaType<ImpBase::RemoteFileInfo> ("ImpBase::RemoteFileInfo");
 	StartTime_ = new QTime;
+	UpdateTime_ = new QTime;
+	FlushTime_ = new QTime;
 	FillErrorDictionary ();
 	FileExistsDialog_ = new FileExistsDialog (parent ? qobject_cast<JobManager*> (parent)->GetTheMain () : 0);
 
@@ -47,6 +49,8 @@ Job::Job (JobParams *params, QObject *parent)
 Job::~Job ()
 {
 	delete StartTime_;
+	delete UpdateTime_;
+	delete FlushTime_;
 	delete ProtoImp_;
 	delete File_;
 	delete Params_;
@@ -276,11 +280,25 @@ void Job::processData (ImpBase::length_t ready, ImpBase::length_t total, QByteAr
 		DownloadedSize_ = ready;
 		TotalSize_ = total;
 		StartTime_->restart ();
+		UpdateTime_->restart ();
+		FlushTime_->restart ();
 		emit updateDisplays (GetID ());
+		return;
 	}
 	else if (!File_)
 		return;
-	else if (!File_->open (QFile::WriteOnly | QFile::Append))
+
+	DownloadedSize_ = ready;
+	TotalSize_ = total;
+	Speed_ = (DownloadedSize_ - RestartPosition_) / static_cast<double> (StartTime_->elapsed ()) * 1000;
+
+	if (UpdateTime_->elapsed () > 1000)
+	{
+		UpdateTime_->restart ();
+		emit updateDisplays (GetID ());
+	}
+
+	if (!File_->open (QFile::WriteOnly | QFile::Append))
 	{
 		QTemporaryFile tmpFile ("leechcraft.httpplugin.XXXXXX");
 		emit showError (Params_->URL_, QString (tr ("Could not open file for write/append<br /><code>%1</code>"
@@ -306,12 +324,7 @@ void Job::processData (ImpBase::length_t ready, ImpBase::length_t total, QByteAr
 	{
 		File_->write (newData);
 		File_->close ();
-
-		DownloadedSize_ = ready;
-		TotalSize_ = total;
-		Speed_ = (DownloadedSize_ - RestartPosition_) / static_cast<double> (StartTime_->elapsed ()) * 1000;
-
-		emit updateDisplays (GetID ());
+		FlushTime_->restart ();
 	}
 }
 

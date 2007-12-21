@@ -19,6 +19,7 @@ void ImpBase::StartDownload ()
 void ImpBase::SetCacheSize (int cs)
 {
 	CacheSize_ = cs;
+	Cache_.reserve (CacheSize_);
 }
 
 void ImpBase::Emit (ImpBase::length_t down, ImpBase::length_t total, QByteArray data)
@@ -29,6 +30,7 @@ void ImpBase::Emit (ImpBase::length_t down, ImpBase::length_t total, QByteArray 
 	{
 		emit dataFetched (down, total, Cache_);
 		Cache_.clear ();
+		Cache_.reserve (CacheSize_);
 	}
 }
 

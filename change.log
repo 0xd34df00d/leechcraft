@@ -13,6 +13,9 @@ Updater:
 
 HTTP/FTP:
 * Few interface enhancements.
+* Few performance enhancements.
+* Fixed a nasty bug in FtpImp which prevented from downloading from
+  slow servers.
 
 ***Public build 4***
 Core:
