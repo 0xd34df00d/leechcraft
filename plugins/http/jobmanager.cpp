@@ -209,6 +209,11 @@ void JobManager::GetFileSizeAt (unsigned int id)
 	Jobs_ [ID2Pos_ [id]]->GetFileSize ();
 }
 
+void JobManager::ScheduleAt (unsigned int id)
+{
+	emit jobWaiting (id);
+}
+
 void JobManager::StartAll ()
 {
 	for (int i = 0; i < Jobs_.size (); ++i)

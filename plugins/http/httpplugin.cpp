@@ -196,7 +196,7 @@ QWidget* HttpPlugin::SetupFinishedPart ()
 {
 	FinishedList_ = new ContextableList (this);
 	FinishedList_->setRootIsDecorated (false);
-	FinishedList_->setSelectionMode (QAbstractItemView::SingleSelection);
+	FinishedList_->setSelectionMode (QAbstractItemView::ExtendedSelection);
 	FinishedList_->setEditTriggers (QAbstractItemView::NoEditTriggers);
 	QStringList finishedHeaderLabels;
 	finishedHeaderLabels << tr ("Local name") << tr ("URL") << tr ("Size");
@@ -321,6 +321,11 @@ void HttpPlugin::DeleteAt (IDownload::JobID_t id)
 void HttpPlugin::GetFileSizeAt (IDownload::JobID_t id)
 {
 	JobManager_->GetFileSizeAt (id);
+}
+
+void HttpPlugin::ScheduleAt (IDownload::JobID_t id)
+{
+	JobManager_->ScheduleAt (id);
 }
 
 uint HttpPlugin::GetVersion () const
@@ -512,6 +517,11 @@ void HttpPlugin::getFileSize ()
 	HandleSelected (JAGFS);
 }
 
+void HttpPlugin::scheduleSelected ()
+{
+	HandleSelected (JASchedule);
+}
+
 void HttpPlugin::startDownloadAll ()
 {
 	StartAll ();
@@ -602,6 +612,7 @@ void HttpPlugin::setActionsEnabled ()
 	StartJobAction_->setEnabled (tasksItems.size ());
 	StopJobAction_->setEnabled (tasksItems.size ());
 	GetFileSizeAction_->setEnabled (tasksItems.size ());
+	ScheduleSelectedAction_->setEnabled (tasksItems.size () && CronEnabled_);
 
 	StartAllAction_->setEnabled (TasksList_->topLevelItemCount ());
 	StopAllAction_->setEnabled (TasksList_->topLevelItemCount ());
@@ -609,6 +620,8 @@ void HttpPlugin::setActionsEnabled ()
 
 void HttpPlugin::handleCronEnabled ()
 {
+	CronEnabled_ = true;
+	setActionsEnabled ();
 }
 
 void HttpPlugin::ReadSettings ()
@@ -693,6 +706,9 @@ void HttpPlugin::HandleSelected (JobAction ja)
 				break;
 			case JAGFS:
 				GetFileSizeAt (item->GetID ());
+				break;
+			case JASchedule:
+				ScheduleAt (item->GetID ());
 				break;
 		}
 	}

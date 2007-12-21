@@ -32,7 +32,7 @@ class HttpPlugin : public QMainWindow
 	Q_INTERFACES (IInfo IWindow IDirectDownload IVersionable);
 
 	int ID_;
-	bool IsShown_, SaveChangesScheduled_;
+	bool IsShown_, SaveChangesScheduled_, CronEnabled_;
 	QPushButton *AddJobButton_;
 	QSplitter *Splitter_;
 	ContextableList *TasksList_, *FinishedList_;
@@ -77,6 +77,7 @@ public:
 		, JAStop
 		, JADelete
 		, JAGFS
+		, JASchedule
 	};
 
 	virtual void Init ();
@@ -117,6 +118,7 @@ public:
 	virtual void StopAt (IDownload::JobID_t);
 	virtual void DeleteAt (IDownload::JobID_t);
 	void GetFileSizeAt (IDownload::JobID_t);
+	void ScheduleAt (IDownload::JobID_t);
 	virtual uint GetVersion () const;
 
 	int GetPercentageForRow (int);
@@ -138,6 +140,7 @@ private slots:
 	void deleteDownloadSelected ();
 	void deleteDownloadSelectedFinished ();
 	void getFileSize ();
+	void scheduleSelected ();
 	void startDownloadAll ();
 	void stopDownloadAll ();
 	void showPreferences ();
