@@ -330,6 +330,7 @@ void Job::processData (ImpBase::length_t ready, ImpBase::length_t total, QByteAr
 
 void Job::reemitFinished ()
 {
+	qDebug () << Q_FUNC_INFO;
 	emit finished (GetID ());
 }
 

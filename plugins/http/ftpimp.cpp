@@ -202,7 +202,6 @@ void FtpImp::run ()
 		}
 		catch (const Exceptions::Generic& e)
 		{
-			qDebug () << Q_FUNC_INFO << "caught \"" << e.GetName ().c_str () << "\", saying\"" << e.GetReason ().c_str () << "\"";
 		}
 		catch (...)
 		{
@@ -214,10 +213,9 @@ void FtpImp::run ()
 	}
 	EmitFlush (counter, Size_);
 
+	Finalize ();
 	if (counter == Size_)
 		emit finished ();
-
-	Finalize ();
 }
 
 void FtpImp::StopDownload ()
@@ -491,7 +489,7 @@ void FtpImp::Finalize ()
 	catch (...)
 	{ }
 
-	DataSocket_->SetDefaultTimeout (SettingsManager::Instance ()->GetStopTimeout ());
+	ControlSocket_->SetDefaultTimeout (SettingsManager::Instance ()->GetStopTimeout ());
 	try
 	{
 		if (ControlSocket_->state () != QAbstractSocket::UnconnectedState)

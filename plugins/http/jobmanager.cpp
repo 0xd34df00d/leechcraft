@@ -184,6 +184,12 @@ bool JobManager::Start (unsigned int id)
 
 void JobManager::Stop (unsigned int id)
 {
+	for (QMultiMap<QString, int>::Iterator i = ScheduledJobsForHosts_.begin (); i != ScheduledJobsForHosts_.end (); ++i)
+		if (i.value () == id)
+		{
+			i = ScheduledJobsForHosts_.erase (i);
+			break;
+		}
 	Jobs_ [ID2Pos_ [id]]->Stop ();
 }
 
@@ -242,17 +248,20 @@ void JobManager::jobStopHandler (unsigned int id)
 	QString host = QUrl (jr->URL_).host ();
 	delete jr;
 
-	if (DownloadsPerHost_ [host])
+	qDebug () << Q_FUNC_INFO << "host" << host << "downloads per host" << DownloadsPerHost_ [host] << "scheduled job id" << ScheduledJobsForHosts_.value (host);
+
+	if (DownloadsPerHost_ [host] > 0)
 		--DownloadsPerHost_ [host];
 	if (TotalDownloads_ > 0)
 		--TotalDownloads_;
 
 	if (DownloadsPerHost_ [host] < SettingsManager::Instance ()->GetMaxConcurrentPerServer () &&
-		ScheduledJobsForHosts_.contains (host) &&
-		ScheduledJobsForHosts_.value (host))
+		ScheduledJobsForHosts_.contains (host))
 	{
-		Start (ScheduledJobsForHosts_.value (host));
-		ScheduledJobsForHosts_.remove (host, ScheduledJobsForHosts_.value (host));
+		qDebug () << Q_FUNC_INFO << "Starting";
+		int id = ScheduledJobsForHosts_.value (host);
+		ScheduledJobsForHosts_.remove (host, id);
+		Start (id);
 		return;
 	}
 
@@ -266,7 +275,21 @@ void JobManager::jobStopHandler (unsigned int id)
 
 void JobManager::enqueue (unsigned int id)
 {
+	JobRepresentation *jr = GetJobRepresentation (id);
+	QString host = QUrl (jr->URL_).host ();
+	delete jr;
+
+	qDebug () << Q_FUNC_INFO << host << id << ID2Pos_ [id];
+	Job *job = Jobs_ [ID2Pos_ [id]];
+	disconnect (job, SIGNAL (stopped (unsigned int)), this, 0);
 	Stop (id);
+	connect (job, SIGNAL (stopped (unsigned int)), this, SIGNAL (stopped (unsigned int)));
+	connect (job, SIGNAL (stopped (unsigned int)), this, SLOT (jobStopHandler (unsigned int)));
+	ScheduledJobsForHosts_.insert (host, id);
+	if (DownloadsPerHost_ [host] > 0)
+		--DownloadsPerHost_ [host];
+	if (TotalDownloads_ > 0)
+		--TotalDownloads_;
 	emit jobWaiting (id);
 }
 
