@@ -34,10 +34,11 @@ class JobManager : public QObject
 	QMultiMap<QString, int> ScheduledJobsForHosts_;
 	QStack<int> ScheduledJobs_;
 	QVector<QPair<int, QTime> > ScheduledStarters_;				// Time of stop
+	QMap<QString, QObject*> Providers_;
 
 	int QueryWaitingTimer_;
 	FileExistsDialog *FileExists_;
-	bool SaveChangesScheduled_;
+	bool SaveChangesScheduled_, CronEnabled_;
 public:
 	JobManager (QObject *parent = 0);
 	~JobManager ();
@@ -53,6 +54,7 @@ public:
 	void GetFileSizeAt (unsigned int);
 	void StartAll ();
 	void StopAll ();
+	void SetProvider (QObject*, const QString&);
 public slots:
 	int addJob (JobParams*);
 protected:
@@ -68,6 +70,7 @@ signals:
 	void showError (QString, QString);
 	void stopped (unsigned int);
 	void gotFileSize (unsigned int);
+	void cronEnabled ();
 private slots:
 	void jobStopHandler (unsigned int);
 	void enqueue (unsigned int);

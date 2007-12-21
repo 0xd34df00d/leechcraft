@@ -167,6 +167,8 @@ bool HttpImp::ReadResponse ()
 	}
 	ParseFirstLine (br);
 	bool shouldWeReturn = DoPrimaryStuffWithResponse ();
+	if (shouldWeReturn)
+		return shouldWeReturn;
 	while (!shouldWeReturn)
 	{
 		QByteArray lineRead;

@@ -20,6 +20,7 @@ JobManager::JobManager (QObject *parent)
 : QObject (parent)
 , TotalDownloads_ (0)
 , SaveChangesScheduled_ (false)
+, CronEnabled_ (false)
 {
 	QueryWaitingTimer_ = startTimer (500);
 
@@ -218,6 +219,16 @@ void JobManager::StopAll ()
 {
 	for (int i = 0; i < Jobs_.size (); ++i)
 		Stop (i);
+}
+
+void JobManager::SetProvider (QObject *object, const QString& feature)
+{
+	Providers_ [feature] = object;
+	if (feature == "cron")
+	{
+		CronEnabled_ = true;
+		emit cronEnabled ();
+	}
 }
 
 void JobManager::jobStopHandler (unsigned int id)

@@ -165,32 +165,51 @@ void PluginManager::CalculateDependencies ()
 	{
 		QObject *pEntity = (*i)->instance ();
 		IInfo *info = qobject_cast<IInfo*> (pEntity);
-		QStringList needs = info->Needs ();
+		QStringList needs = info->Needs (),
+					uses = info->Uses ();
 		DependenciesMet_ [i] = true;
 
-		if (needs.isEmpty ())
-			continue;
-
-		for (PluginsContainer_t::const_iterator j = Plugins_.begin (); j != Plugins_.end (); ++j)
-		{
-			if (j == i)
-				continue;
-
-			QObject *qpEntity = (*j)->instance ();
-			IInfo *qinfo = qobject_cast<IInfo*> (qpEntity);
-			QStringList qprovides = qinfo->Provides ();
-			for (int i = 0; i < needs.size (); ++i)
-				if (qprovides.contains (needs [i]))
-				{
-					info->SetProvider (qpEntity, needs [i]);
-					needs.removeAt (i--);
-				}
-		}
 		if (!needs.isEmpty ())
 		{
-			DependenciesMet_ [i] = false;
-			FailedDependencies_ [i] = needs;
-			qWarning () << Q_FUNC_INFO << "not all plugins providing needs of" << info->GetName () << "are found. The remaining ones are:" << needs;
+			for (PluginsContainer_t::const_iterator j = Plugins_.begin (); j != Plugins_.end (); ++j)
+			{
+				if (j == i)
+					continue;
+
+				QObject *qpEntity = (*j)->instance ();
+				IInfo *qinfo = qobject_cast<IInfo*> (qpEntity);
+				QStringList qprovides = qinfo->Provides ();
+				for (int i = 0; i < needs.size (); ++i)
+					if (qprovides.contains (needs [i]))
+					{
+						info->SetProvider (qpEntity, needs [i]);
+						needs.removeAt (i--);
+					}
+			}
+			if (!needs.isEmpty ())
+			{
+				DependenciesMet_ [i] = false;
+				FailedDependencies_ [i] = needs;
+				qWarning () << Q_FUNC_INFO << "not all plugins providing needs of" << info->GetName () << "are found. The remaining ones are:" << needs;
+			}
+		}
+		if (!uses.isEmpty ())
+		{
+			for (PluginsContainer_t::const_iterator j = Plugins_.begin (); j != Plugins_.end (); ++j)
+			{
+				if (j == i)
+					continue;
+
+				QObject *qpEntity = (*j)->instance ();
+				IInfo *qinfo = qobject_cast<IInfo*> (qpEntity);
+				QStringList qprovides = qinfo->Provides ();
+				for (int i = 0; i < uses.size (); ++i)
+					if (qprovides.contains (uses [i]))
+					{
+						info->SetProvider (qpEntity, uses [i]);
+						uses.removeAt (i--);
+					}
+			}
 		}
 	}
 }

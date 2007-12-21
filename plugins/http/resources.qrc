@@ -12,6 +12,7 @@
 		<file>resources/images/autoadjustiface.png</file>
 		<file>resources/images/waiting.png</file>
 		<file>resources/images/getfilesize.png</file>
+		<file>resources/images/schedule.png</file>
 		<file>leechcraft_http_ru.qm</file>
     </qresource>
 </RCC>

@@ -27,6 +27,7 @@ void HttpPlugin::Init ()
 
 	SaveChangesScheduled_ = false;
 	ProvidesList_ << "http" << "ftp" << "resume";
+	UsesList_ << "cron";
 
 	JobManager_ = new JobManager (this);
 	connect (JobManager_, SIGNAL (jobAdded (unsigned int)), this, SLOT (pushJob (unsigned int)));
@@ -39,6 +40,7 @@ void HttpPlugin::Init ()
 	connect (JobManager_, SIGNAL (stopped (unsigned int)), this, SLOT (showStoppedIndicator (unsigned int)));
 	connect (JobManager_, SIGNAL (jobWaiting (unsigned int)), this, SLOT (handleJobWaiting (unsigned int)));
 	connect (JobManager_, SIGNAL (gotFileSize (unsigned int)), this, SLOT (handleGotFileSize (unsigned int)));
+	connect (JobManager_, SIGNAL (cronEnabled ()), this, SLOT (handleCronEnabled ()));
 
 	setWindowTitle (tr ("HTTP/FTP worker 0.2"));
 	setWindowIcon (QIcon (":/resources/images/pluginicon.png"));
@@ -100,6 +102,8 @@ void HttpPlugin::SetupJobManagementBar ()
 	StopAllAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/stopall.png"), tr ("Stop all"), this, SLOT (stopDownloadAll ()));
 	StopAllAction_->setShortcut (tr ("Ctrl+Shift+I"));
 	GetFileSizeAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/getfilesize.png"), tr ("Get file size"), this, SLOT (getFileSize ()));
+	JobManagementToolbar_->addSeparator ();
+	ScheduleSelectedAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/schedule.png"), tr ("Schedule selected"), this, SLOT (scheduleSelected ()));
 	DeleteFinishedAction_ = FinishedManagementToolbar_->addAction (QIcon (":/resources/images/deletejob.png"), tr ("Delete selected finished job"), this, SLOT (deleteDownloadSelectedFinished ()));
 	DeleteFinishedAction_->setShortcut (Qt::Key_Delete & Qt::ShiftModifier);
 }
@@ -118,6 +122,7 @@ void HttpPlugin::SetupJobManagementMenu (QMenu *jobsMenu)
 	jobsMenu->addAction (StopAllAction_);
 	jobsMenu->addAction (GetFileSizeAction_);
 	jobsMenu->addSeparator ();
+	jobsMenu->addAction (ScheduleSelectedAction_);
 
 	TasksList_->AddAction (DeleteJobAction_);
 	TasksList_->AddAction (StartJobAction_);
@@ -250,12 +255,12 @@ QStringList HttpPlugin::Needs () const
 
 QStringList HttpPlugin::Uses () const
 {
-	return QStringList ();
+	return UsesList_;
 }
 
-void HttpPlugin::SetProvider (QObject*, const QString&)
+void HttpPlugin::SetProvider (QObject *object, const QString& feature)
 {
-	// As we don't need nothing for now, just return
+	JobManager_->SetProvider (object, feature);
 }
 
 void HttpPlugin::Release ()
@@ -452,7 +457,7 @@ void HttpPlugin::handleJobFinish (unsigned int id)
 	if (!SaveChangesScheduled_)
 	{
 		SaveChangesScheduled_ = true;
-		QTimer::singleShot (1000, this, SLOT (writeSettings ()));
+		QTimer::singleShot (100, this, SLOT (writeSettings ()));
 	}
 }
 
@@ -600,6 +605,10 @@ void HttpPlugin::setActionsEnabled ()
 
 	StartAllAction_->setEnabled (TasksList_->topLevelItemCount ());
 	StopAllAction_->setEnabled (TasksList_->topLevelItemCount ());
+}
+
+void HttpPlugin::handleCronEnabled ()
+{
 }
 
 void HttpPlugin::ReadSettings ()
