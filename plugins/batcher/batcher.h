@@ -41,6 +41,7 @@ signals:
 private slots:
 	void collectDataAndParse ();
 	void sendJobs ();
+	void on_LocalBrowse__released ();
 };
 
 #endif

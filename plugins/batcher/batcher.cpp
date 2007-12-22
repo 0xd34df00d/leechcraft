@@ -152,5 +152,14 @@ void Batcher::sendJobs ()
 		QMessageBox::warning (this, tr ("Finished"), tr ("No jobs were added. Check your pattern string or boundaries."));
 }
 
+void Batcher::on_LocalBrowse__released ()
+{
+	QString dir = QFileDialog::getExistingDirectory (this, tr ("Select base path"), QDir::homePath ());
+	if (dir.isEmpty ())
+		return;
+	else
+		LocalDirLine_->setText (dir);
+}
+
 Q_EXPORT_PLUGIN2 (leechcraft_batcher, Batcher);
 

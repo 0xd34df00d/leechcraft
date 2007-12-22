@@ -16,13 +16,13 @@
    <iconset resource="resources.qrc" >:/resources/images/batcher.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget" >
-   <widget class="QWidget" name="layoutWidget" >
+   <widget class="QWidget" name="" >
     <property name="geometry" >
      <rect>
       <x>10</x>
       <y>10</y>
       <width>301</width>
-      <height>391</height>
+      <height>395</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" >
@@ -37,6 +37,13 @@
        </item>
        <item>
         <widget class="QLineEdit" name="LocalDirLine_" />
+       </item>
+       <item>
+        <widget class="QPushButton" name="LocalBrowse_" >
+         <property name="text" >
+          <string>Browse...</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
