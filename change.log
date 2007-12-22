@@ -7,9 +7,10 @@ Core:
 Batcher:
 + Implemented basic parsing.
 + Works.
++ Browse button for selection of local base save directory.
 
 Updater:
-* Few interface enhancements.
+* Few inter-plugin communication enhancements.
 
 HTTP/FTP:
 + Now shows current (momental) speed too.

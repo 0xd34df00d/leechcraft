@@ -383,7 +383,7 @@ void HttpPlugin::pushJob (unsigned int id)
 	item->SetID (jr->ID_);
 	item->setIcon (TListID,			QIcon (":/resources/images/stopjob.png"));
 	item->setText (TListLocalName,	QFileInfo (jr->LocalName_).fileName ());
-	item->setText (TListURL,		jr->URL_);
+	item->setText (TListURL,		QFileInfo (jr->URL_).dir ().path ());
 	item->setText (TListPercent,	"0");
 	item->setText (TListSpeed,		"0.0");
 	item->setText (TListDownloaded,	"");
