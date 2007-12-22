@@ -70,6 +70,7 @@ public:
 		FListLocalName = 0
 		, FListURL = 1
 		, FListSize = 2
+		, FListSpeed = 3
 	};
 
 	enum JobAction

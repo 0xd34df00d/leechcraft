@@ -199,8 +199,9 @@ QWidget* HttpPlugin::SetupFinishedPart ()
 	FinishedList_->setRootIsDecorated (false);
 	FinishedList_->setSelectionMode (QAbstractItemView::ExtendedSelection);
 	FinishedList_->setEditTriggers (QAbstractItemView::NoEditTriggers);
+	FinishedList_->setTextElideMode (Qt::ElideMiddle);
 	QStringList finishedHeaderLabels;
-	finishedHeaderLabels << tr ("Local name") << tr ("URL") << tr ("Size");
+	finishedHeaderLabels << tr ("Local name") << tr ("URL") << tr ("Size") << tr ("Average speed");
 	FinishedList_->setHeaderLabels (finishedHeaderLabels);
 	FinishedList_->header ()->setStretchLastSection (true);
 	FinishedList_->header ()->setHighlightSections (false);
@@ -410,6 +411,7 @@ void HttpPlugin::updateJobDisplay (unsigned int id)
 			int curseconds = jr->CurrentTime_ - curhours * 3600 - curminutes * 60;
 			QTreeWidgetItem *item = TasksList_->topLevelItem (i);
 			item->setText (TListLocalName, QFileInfo (jr->LocalName_).fileName ());
+			item->setText (TListURL, QFileInfo (jr->URL_).dir ().path ());
 			if (jr->Size_)
 				item->setText (TListPercent, QString::number (jr->Downloaded_ * 100 / jr->Size_));
 			else
@@ -691,6 +693,7 @@ void HttpPlugin::AddToFinishedList (const FinishedJob *fj)
 	item->setText (FListLocalName, QFileInfo (fj->GetLocal ()).fileName ());
 	item->setText (FListURL, fj->GetURL ());
 	item->setText (FListSize, Proxy::Instance ()->MakePrettySize (fj->GetSize ()));
+	item->setText (FListSpeed, fj->GetSpeed ());
 
 	FinishedList_->addTopLevelItem (item);
 
