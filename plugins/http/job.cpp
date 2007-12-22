@@ -23,7 +23,7 @@ Job::Job (JobParams *params, QObject *parent)
 , ErrorFlag_ (false)
 , GetFileSize_ (false)
 , DownloadedSize_ (0)
-, TotalSize_ (0)
+, TotalSize_ (params->Size_)
 , RestartPosition_ (0)
 , Speed_ (0)
 , File_ (0)
@@ -64,7 +64,7 @@ void Job::DoDelayedInit ()
 		QFile *file = new QFile (filename);
 		HttpImp::length_t size = file->size ();
 		delete file;
-		processData (size, 0, QByteArray ());
+		processData (size, TotalSize_, QByteArray ());
 	}
 	emit updateDisplays (ID_);
 }
@@ -81,7 +81,7 @@ unsigned int Job::GetID () const
 
 JobRepresentation* Job::GetRepresentation () const
 {
-	JobRepresentation *jr = new JobRepresentation;
+	JobRepresentation *jr		= new JobRepresentation;
 	jr->ID_						= ID_;
 	jr->URL_					= Params_->URL_;
 	jr->LocalName_				= MakeFilename (Params_->URL_, Params_->LocalName_);

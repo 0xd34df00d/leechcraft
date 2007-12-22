@@ -58,7 +58,8 @@ void JobManager::DoDelayedInit ()
 		settings.setArrayIndex (i);
 		JobParams *jp = new JobParams;
 		jp->FeedVariantList (settings.value ("jobparamsrepresentation").toList ());
-		addJob (jp);
+		int id = addJob (jp);
+		emit gotFileSize (id);
 	}
 	settings.endArray ();
 	settings.endGroup ();
@@ -319,9 +320,9 @@ void JobManager::saveSettings ()
 	{
 		JobRepresentation *jr = Jobs_ [i]->GetRepresentation ();
 		QVariantList qvl = JobParams (*jr).ToVariantList ();
-		delete jr;
 		settings.setArrayIndex (i);
 		settings.setValue ("jobparamsrepresentation", qvl);
+		delete jr;
 	}
 	settings.endArray ();
 	settings.endGroup ();

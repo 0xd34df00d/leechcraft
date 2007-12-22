@@ -424,7 +424,8 @@ void HttpPlugin::handleGotFileSize (unsigned int id)
 		if (dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i))->GetID () == id)
 		{
 			QTreeWidgetItem *item = TasksList_->topLevelItem (i);
-			item->setText (TListPercent, QString::number (jr->Downloaded_ * 100 / jr->Size_));
+			if (jr->Size_)
+				item->setText (TListPercent, QString::number (jr->Downloaded_ * 100 / jr->Size_));
 			item->setText (TListDownloaded, Proxy::Instance ()->MakePrettySize (jr->Downloaded_));
 			item->setText (TListTotal, Proxy::Instance ()->MakePrettySize (jr->Size_));
 		}

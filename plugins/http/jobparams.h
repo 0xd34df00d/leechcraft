@@ -2,6 +2,7 @@
 #define JOBPARAMS_H
 #include <QString>
 #include <QVariantList>
+#include "impbase.h"
 
 class JobRepresentation;
 
@@ -11,6 +12,7 @@ struct JobParams
 	QString URL_;
 	QString LocalName_;
 	bool Autostart_, ShouldBeSavedInHistory_;
+	ImpBase::length_t Size_;
 
 	JobParams ();
 	explicit JobParams (const JobRepresentation&);
