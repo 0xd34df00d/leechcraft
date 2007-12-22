@@ -207,6 +207,14 @@ void JobManager::DeleteAt (unsigned int id)
 
 	scheduleSave ();
 
+	for (MultiHostDict_t::Iterator i = ScheduledJobsForHosts_.begin (); i != ScheduledJobsForHosts_.end (); ++i)
+		if (i.value () == id)
+			i = ScheduledJobsForHosts_.erase (i);
+
+	for (int i = 0; i < ScheduledJobs_.size (); ++i)
+		if (ScheduledJobs_ [i] == id)
+			ScheduledJobs_.remove (i--);
+
 	emit jobRemoved (id);
 }
 
@@ -259,7 +267,9 @@ void JobManager::jobStopHandler (unsigned int id)
 		ScheduledJobsForHosts_.contains (host))
 	{
 		qDebug () << Q_FUNC_INFO << "Starting";
-		int id = ScheduledJobsForHosts_.value (host);
+		QList<int> ids = ScheduledJobsForHosts_.values (host);
+		qSort (ids);
+		int id = ids.takeFirst ();
 		ScheduledJobsForHosts_.remove (host, id);
 		Start (id);
 		return;

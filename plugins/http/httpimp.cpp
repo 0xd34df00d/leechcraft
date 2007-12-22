@@ -110,12 +110,10 @@ void HttpImp::run ()
 		}
 		catch (const Exceptions::Socket::SocketTimeout&)
 		{
-			emit error ("Main read loop: operation timed out :(");
-			Stop_ = true;
 		}
 		catch (const Exceptions::Socket::BaseSocket& e)
 		{
-			qDebug () << Q_FUNC_INFO << "caught \"" << e.GetName ().c_str () << "\", saying\"" << e.GetReason ().c_str () << "\"";
+			qDebug () << Q_FUNC_INFO << e.GetName ().c_str () << "\t\t" << e.GetReason ().c_str () << "\"";
 			Stop_ = true;
 		}
 

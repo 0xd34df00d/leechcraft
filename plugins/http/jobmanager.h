@@ -31,7 +31,8 @@ class JobManager : public QObject
 
 	int TotalDownloads_;
 	QMap<QString, int> DownloadsPerHost_;
-	QMultiMap<QString, int> ScheduledJobsForHosts_;
+	typedef QMultiMap<QString, int> MultiHostDict_t;
+	MultiHostDict_t ScheduledJobsForHosts_;
 	QStack<int> ScheduledJobs_;
 	QVector<QPair<int, QTime> > ScheduledStarters_;				// Time of stop
 	QMap<QString, QObject*> Providers_;

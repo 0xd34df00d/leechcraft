@@ -200,8 +200,12 @@ void FtpImp::run ()
 		{
 			newData = DataSocket_->ReadAll ();
 		}
+		catch (const Exceptions::Socket::SocketTimeout&)
+		{
+		}
 		catch (const Exceptions::Generic& e)
 		{
+			qDebug () << Q_FUNC_INFO << e.GetName ().c_str () << "\t\t" << e.GetReason ().c_str ();
 		}
 		catch (...)
 		{
@@ -464,27 +468,26 @@ void FtpImp::PasvHandler ()
 
 void FtpImp::Finalize ()
 {
-	DataSocket_->SetDefaultTimeout (SettingsManager::Instance ()->GetStopTimeout ());
-	try
-	{
-		if (DataSocket_->state () != QAbstractSocket::UnconnectedState)
-			DataSocket_->Disconnect ();
-	}
-	catch (const Exceptions::Generic& e)
-	{
-		qDebug () << Q_FUNC_INFO << "caught \"" << e.GetName ().c_str () << "\", saying\"" << e.GetReason ().c_str () << "\"";
-	}
-	catch (...)
-	{ }
-
 	try
 	{
 		ControlSocket_->Write (QString ("QUIT\r\n"), false);
+		DataSocket_->SetDefaultTimeout (SettingsManager::Instance ()->GetStopTimeout ());
+		try
+		{
+			if (DataSocket_->state () != QAbstractSocket::UnconnectedState)
+				DataSocket_->Disconnect ();
+		}
+		catch (const Exceptions::Generic& e)
+		{
+			qDebug () << Q_FUNC_INFO << "Disconnecting data socket failed:" << e.GetName ().c_str () << "\t\t" << e.GetReason ().c_str ();
+		}
+		catch (...)
+		{ }
 		ReadCtrlResponse ();
 	}
 	catch (const Exceptions::Generic& e)
 	{
-		qDebug () << Q_FUNC_INFO << "caught \"" << e.GetName ().c_str () << "\", saying\"" << e.GetReason ().c_str () << "\"";
+		qDebug () << Q_FUNC_INFO << "Gracefully quitting failed:" << e.GetName ().c_str () << "\t\t" << e.GetReason ().c_str ();
 	}
 	catch (...)
 	{ }
@@ -497,7 +500,7 @@ void FtpImp::Finalize ()
 	}
 	catch (const Exceptions::Generic& e)
 	{
-		qDebug () << Q_FUNC_INFO << "caught \"" << e.GetName ().c_str () << "\", saying\"" << e.GetReason ().c_str () << "\"";
+		qDebug () << Q_FUNC_INFO << "Disconnecting control socket failed:" << e.GetName ().c_str () << "\t\t" << e.GetReason ().c_str ();
 	}
 	catch (...)
 	{ }

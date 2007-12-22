@@ -16,6 +16,10 @@ HTTP/FTP:
 * Few performance enhancements.
 * Fixed a nasty bug in FtpImp which prevented from downloading from
   slow servers.
+* Fixed a logical bug in HttpImp which prevented from downloading from
+  slow servers.
+* Fixed a bug which prevented from starting a waiting job which waited
+  cause of remote server's limit.
 
 ***Public build 4***
 Core:
