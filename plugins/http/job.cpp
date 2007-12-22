@@ -292,7 +292,7 @@ void Job::processData (ImpBase::length_t ready, ImpBase::length_t total, QByteAr
 	TotalSize_ = total;
 	Speed_ = (DownloadedSize_ - RestartPosition_) / static_cast<double> (StartTime_->elapsed ()) * 1000;
 
-	if (UpdateTime_->elapsed () > 1000)
+	if (UpdateTime_->elapsed () > SettingsManager::Instance ()->GetInterfaceUpdateTimeout ())
 	{
 		UpdateTime_->restart ();
 		emit updateDisplays (GetID ());

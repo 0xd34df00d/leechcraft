@@ -30,7 +30,8 @@ protected:
 			   , StopTimeout_
 			   , MaxConcurrentPerServer_
 			   , MaxTotalConcurrent_
-			   , RetryTimeout_;
+			   , RetryTimeout_
+			   , InterfaceUpdateTimeout_;
 	Guarded<bool> ProxyEnabled_
 				, AutostartChildren_
 				, AutoGetFileSize_;
@@ -83,6 +84,8 @@ public:
 	void SetRetryTimeout (int);
 	bool GetAutoGetFileSize () const;
 	void SetAutoGetFileSize (bool);
+	int GetInterfaceUpdateTimeout () const;
+	void SetInterfaceUpdateTimeout (int);
 
 	SettingsItemInfo GetInfoFor (const QString&) const;
 
@@ -101,6 +104,7 @@ public:
 	Q_PROPERTY (QString ResourcePassword READ GetResourcePassword WRITE SetResourcePassword);
 	Q_PROPERTY (bool AutostartChildren READ GetAutostartChildren WRITE SetAutostartChildren);
 	Q_PROPERTY (bool AutoGetFileSize READ GetAutoGetFileSize WRITE SetAutoGetFileSize);
+	Q_PROPERTY (int InterfaceUpdateTimeout READ GetInterfaceUpdateTimeout WRITE SetInterfaceUpdateTimeout);
 	Q_PROPERTY (int CacheSize READ GetCacheSize WRITE SetCacheSize);
 };
 

@@ -39,6 +39,7 @@ void SettingsManager::ReadSettings ()
 	MaxTotalConcurrent_			= settings.value ("MaxTotalConcurrent", 5).toInt ();
 	RetryTimeout_				= settings.value ("RetryTimeout", 30).toInt ();
 	AutoGetFileSize_			= settings.value ("AutoGetFileSize", false).toBool ();
+	InterfaceUpdateTimeout_		= settings.value ("InterfaceUpdateTimeout", 1000).toInt ();
 	settings.endGroup ();
 	settings.endGroup ();
 
@@ -75,6 +76,7 @@ void SettingsManager::WriteSettings ()
 	settings.setValue ("MaxTotalConcurrent", MaxTotalConcurrent_);
 	settings.setValue ("RetryTimeout", RetryTimeout_);
 	settings.setValue ("AutoGetFileSize", AutoGetFileSize_);
+	settings.setValue ("InterfaceUpdateTimeout", InterfaceUpdateTimeout_);
 	settings.endGroup ();
 	settings.endGroup ();
 }
@@ -151,6 +153,12 @@ void SettingsManager::InitializeMap ()
 	userAgent.Modifiable_ = true;
 	userAgent.Choosable_ = true;
 	PropertyInfo_ ["UserAgent"] = userAgent;
+
+	SettingsItemInfo interfaceUpdateTimeout = SettingsItemInfo (tr ("Interface update timeout"), tr ("Local options"));
+	interfaceUpdateTimeout.IntRange_ = qMakePair (100, 2000);
+	interfaceUpdateTimeout.SpinboxSuffix_ = tr (" ms");
+	interfaceUpdateTimeout.SpinboxStep_ = 100;
+	PropertyInfo_ ["InterfaceUpdateTimeout"] = interfaceUpdateTimeout;
 }
 
 void SettingsManager::ScheduleFlush ()
@@ -363,6 +371,17 @@ bool SettingsManager::GetAutoGetFileSize () const
 void SettingsManager::SetAutoGetFileSize (bool value)
 {
 	AutoGetFileSize_ = value;
+	ScheduleFlush ();
+}
+
+int SettingsManager::GetInterfaceUpdateTimeout () const
+{
+	return InterfaceUpdateTimeout_;
+}
+
+void SettingsManager::SetInterfaceUpdateTimeout (int value)
+{
+	InterfaceUpdateTimeout_ = value;
 	ScheduleFlush ();
 }
 
