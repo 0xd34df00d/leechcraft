@@ -24,6 +24,7 @@ Job::Job (JobParams *params, QObject *parent)
 , GetFileSize_ (false)
 , DownloadedSize_ (0)
 , TotalSize_ (params->Size_)
+, PreviousDownloadSize_ (0)
 , RestartPosition_ (0)
 , Speed_ (0)
 , File_ (0)
@@ -32,7 +33,7 @@ Job::Job (JobParams *params, QObject *parent)
 	qRegisterMetaType<ImpBase::RemoteFileInfo> ("ImpBase::RemoteFileInfo");
 	StartTime_ = new QTime;
 	UpdateTime_ = new QTime;
-	FlushTime_ = new QTime;
+	CurrentSpeedTime_ = new QTime;
 	FillErrorDictionary ();
 	FileExistsDialog_ = new FileExistsDialog (parent ? qobject_cast<JobManager*> (parent)->GetTheMain () : 0);
 
@@ -50,7 +51,7 @@ Job::~Job ()
 {
 	delete StartTime_;
 	delete UpdateTime_;
-	delete FlushTime_;
+	delete CurrentSpeedTime_;
 	delete ProtoImp_;
 	delete File_;
 	delete Params_;
@@ -86,7 +87,10 @@ JobRepresentation* Job::GetRepresentation () const
 	jr->URL_					= Params_->URL_;
 	jr->LocalName_				= MakeFilename (Params_->URL_, Params_->LocalName_);
 	jr->Speed_					= Speed_;
+	jr->CurrentSpeed_			= CurrentSpeed_;
 	jr->Downloaded_				= DownloadedSize_;
+	jr->AverageTime_			= (TotalSize_ - DownloadedSize_) / Speed_;
+	jr->CurrentTime_			= (TotalSize_ - DownloadedSize_) / CurrentSpeed_;
 	jr->Size_					= TotalSize_;
 	jr->ShouldBeSavedInHistory_ = Params_->ShouldBeSavedInHistory_;
 	return jr;
@@ -277,11 +281,12 @@ void Job::processData (ImpBase::length_t ready, ImpBase::length_t total, QByteAr
 {
 	if (newData.isEmpty () || newData.isNull ())
 	{
+		PreviousDownloadSize_ = ready;
 		DownloadedSize_ = ready;
 		TotalSize_ = total;
 		StartTime_->restart ();
 		UpdateTime_->restart ();
-		FlushTime_->restart ();
+		CurrentSpeedTime_->restart ();
 		emit updateDisplays (GetID ());
 		return;
 	}
@@ -294,6 +299,8 @@ void Job::processData (ImpBase::length_t ready, ImpBase::length_t total, QByteAr
 
 	if (UpdateTime_->elapsed () > SettingsManager::Instance ()->GetInterfaceUpdateTimeout ())
 	{
+		CurrentSpeed_ = (DownloadedSize_ - PreviousDownloadSize_) / static_cast<double> (UpdateTime_->elapsed ()) * 1000;
+		PreviousDownloadSize_ = DownloadedSize_;
 		UpdateTime_->restart ();
 		emit updateDisplays (GetID ());
 	}
@@ -324,7 +331,6 @@ void Job::processData (ImpBase::length_t ready, ImpBase::length_t total, QByteAr
 	{
 		File_->write (newData);
 		File_->close ();
-		FlushTime_->restart ();
 	}
 }
 

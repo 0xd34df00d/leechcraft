@@ -20,12 +20,12 @@ class Job : public QObject
 	JobParams* Params_;
 	bool ErrorFlag_, GetFileSize_;
 	QString ErrorReason_;
-	ImpBase::length_t DownloadedSize_, TotalSize_, RestartPosition_;
-	double Speed_;
+	ImpBase::length_t DownloadedSize_, TotalSize_, RestartPosition_, PreviousDownloadSize_;
+	double Speed_, CurrentSpeed_;
 	QMap<QAbstractSocket::SocketError, QString> ErrorDictionary_;
 	QFile *File_;
 	int DataOperations_;
-	QTime *StartTime_, *UpdateTime_, *FlushTime_;
+	QTime *StartTime_, *UpdateTime_, *CurrentSpeedTime_;
 	FileExistsDialog *FileExistsDialog_;
 public:
 	Job (JobParams *params = 0, QObject *parent = 0);

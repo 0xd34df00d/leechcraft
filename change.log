@@ -12,6 +12,9 @@ Updater:
 * Few interface enhancements.
 
 HTTP/FTP:
++ Now shows current (momental) speed too.
++ Now shows remaining time with current/overall speed.
++ Save known total file sizes on exit.
 * Few interface enhancements.
 * Few performance enhancements.
 * Fixed a nasty bug in FtpImp which prevented from downloading from

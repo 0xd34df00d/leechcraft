@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1">
+<defaultcodec></defaultcodec>
 <context>
     <name>FileExistsDialog</name>
     <message>
@@ -115,200 +116,220 @@
 <context>
     <name>HttpPlugin</name>
     <message>
-        <location filename="httpplugin.cpp" line="44"/>
+        <location filename="httpplugin.cpp" line="45"/>
         <source>HTTP/FTP worker 0.2</source>
         <translation>Скачиватель по HTTP/FTP 0.2</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="79"/>
+        <location filename="httpplugin.cpp" line="80"/>
         <source>&amp;Tools</source>
         <translation>&amp;Инструменты</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="78"/>
+        <location filename="httpplugin.cpp" line="79"/>
         <source>&amp;Jobs</source>
         <translation>&amp;Задания</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="90"/>
+        <location filename="httpplugin.cpp" line="91"/>
         <source>Add job...</source>
         <translation>Добавить задание...</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="92"/>
+        <location filename="httpplugin.cpp" line="93"/>
         <source>Delete selected active job</source>
         <translation>Удалить выделенное задание</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="95"/>
+        <location filename="httpplugin.cpp" line="96"/>
         <source>Start current</source>
         <translation>Запустить выделенное</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="96"/>
+        <location filename="httpplugin.cpp" line="97"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="97"/>
+        <location filename="httpplugin.cpp" line="98"/>
         <source>Start all</source>
         <translation>Запустить все</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="98"/>
+        <location filename="httpplugin.cpp" line="99"/>
         <source>Ctrl+Shift+S</source>
         <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="99"/>
+        <location filename="httpplugin.cpp" line="100"/>
         <source>Stop current</source>
         <translation>Остановить выделенное</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="100"/>
+        <location filename="httpplugin.cpp" line="101"/>
         <source>Ctrl+I</source>
         <translation>Ctrl+I</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="101"/>
+        <location filename="httpplugin.cpp" line="102"/>
         <source>Stop all</source>
         <translation>Остановить все</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="102"/>
+        <location filename="httpplugin.cpp" line="103"/>
         <source>Ctrl+Shift+I</source>
         <translation>Ctrl+Shift+I</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="104"/>
+        <location filename="httpplugin.cpp" line="107"/>
         <source>Delete selected finished job</source>
         <translation>Удалить выделенную запись из истории</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="134"/>
+        <location filename="httpplugin.cpp" line="138"/>
         <source>Autoadjust interface</source>
         <translation>Подстроить интерфейс</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="136"/>
+        <location filename="httpplugin.cpp" line="140"/>
         <source>Preferences...</source>
         <translation>Настройки...</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="137"/>
+        <location filename="httpplugin.cpp" line="141"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="173"/>
-        <source>ID</source>
-        <translation>ID</translation>
-    </message>
-    <message>
-        <location filename="httpplugin.cpp" line="198"/>
-        <source>Local name</source>
-        <translation>Локальное имя</translation>
-    </message>
-    <message>
-        <location filename="httpplugin.cpp" line="198"/>
-        <source>URL</source>
-        <translation>URL</translation>
-    </message>
-    <message>
-        <location filename="httpplugin.cpp" line="173"/>
+        <location filename="httpplugin.cpp" line="178"/>
         <source>%</source>
         <translation>%</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="173"/>
+        <location filename="httpplugin.cpp" line="203"/>
+        <source>Local name</source>
+        <translation>Локальное имя</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="203"/>
+        <source>URL</source>
+        <translation>URL</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="178"/>
         <source>Speed</source>
         <translation>Скорость</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="173"/>
+        <location filename="httpplugin.cpp" line="177"/>
         <source>Downloaded size</source>
-        <translation>Скачено</translation>
+        <translation type="obsolete">Скачено</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="173"/>
+        <location filename="httpplugin.cpp" line="177"/>
         <source>Total size</source>
-        <translation>Размер</translation>
+        <translation type="obsolete">Размер</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="198"/>
+        <location filename="httpplugin.cpp" line="203"/>
         <source>Size</source>
         <translation>Размер</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="400"/>
+        <location filename="httpplugin.cpp" line="416"/>
         <source>0</source>
         <translation>0</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="524"/>
+        <location filename="httpplugin.cpp" line="553"/>
         <source>: Preferences</source>
         <translation>: Настройки</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="529"/>
+        <location filename="httpplugin.cpp" line="558"/>
         <source>Job error</source>
         <translation>Ошибка задания</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="529"/>
+        <location filename="httpplugin.cpp" line="558"/>
         <source>Job with URL %1 signals about following error:&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;</source>
         <translation>Задание с URL %1 говорит о следующей ошибке:&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="544"/>
+        <location filename="httpplugin.cpp" line="573"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="223"/>
+        <location filename="httpplugin.cpp" line="228"/>
         <source>Simple HTTP and FTP plugin, providing basic functionality.</source>
         <translation>Простой HTTP/FTP плагин, обеспечивающий базовую функциональность.</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="103"/>
+        <location filename="httpplugin.cpp" line="104"/>
         <source>Get file size</source>
         <translation>Получить размер файла</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="114"/>
+        <location filename="httpplugin.cpp" line="117"/>
         <source>Copy URL to clipboard</source>
         <translation>Скопировать URL в буфер</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="106"/>
+        <source>Schedule selected</source>
+        <translation>Запланировать выбранные задания</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="178"/>
+        <source>State</source>
+        <translation>Статус</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="178"/>
+        <source>Remaining time</source>
+        <translation>Оставшееся время</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="178"/>
+        <source>Downloaded</source>
+        <translation>Скачано</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="178"/>
+        <source>Total</source>
+        <translation>Размер</translation>
     </message>
 </context>
 <context>
     <name>Job</name>
     <message>
-        <location filename="job.cpp" line="235"/>
+        <location filename="job.cpp" line="243"/>
         <source>Could not create directory&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Stopping work.</source>
         <translation>Не могу создать директорию&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Останавливаюсь.</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="287"/>
+        <location filename="job.cpp" line="312"/>
         <source>Could not open file for write/append&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Flushing cache to temp file&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;and stopping work.</source>
         <translation>Не могу открыть для записи файл &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Скидываю кэш в файл&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;и останавливаюсь.</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="293"/>
+        <location filename="job.cpp" line="318"/>
         <source>Could not open temporary file for write&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;</source>
         <translation>Не могу открыть для записи временный файл&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="156"/>
+        <location filename="job.cpp" line="164"/>
         <source>Question.</source>
         <translation>Вопрос.</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="156"/>
+        <location filename="job.cpp" line="164"/>
         <source>File on remote server is newer than local. Should I redownload it from scratch or just leave it alone?</source>
         <translation>Файл на удаленном сервере новее локального. Должен ли я грузить его сначала (отменить в противном случае)?</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="187"/>
+        <location filename="job.cpp" line="195"/>
         <source>File could be neither removed, nor truncated. Check your rights or smth.</source>
         <translation>Файл не может быть ни удален, ни усечен. Проверь права.</translation>
     </message>
@@ -359,129 +380,134 @@
         <translation type="obsolete">Текущая директория</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="84"/>
+        <location filename="settingsmanager.cpp" line="86"/>
         <source>Default download directory</source>
         <translation>Директория для загрузки по умолчанию</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="147"/>
+        <location filename="settingsmanager.cpp" line="157"/>
         <source>Local options</source>
         <translation>Локальные опции</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="88"/>
+        <location filename="settingsmanager.cpp" line="90"/>
         <source>Max concurrent jobs per server</source>
         <translation>Максимальное количество одновременных скачиваний с сервера</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="127"/>
+        <location filename="settingsmanager.cpp" line="129"/>
         <source>Network options</source>
         <translation>Сетевые опции</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="92"/>
+        <location filename="settingsmanager.cpp" line="94"/>
         <source>Max total concurrent jobs</source>
         <translation>Максимальное количество одновременных скачиваний вообще</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="96"/>
+        <location filename="settingsmanager.cpp" line="98"/>
         <source>Retry timeout</source>
         <translation>Интервал между повторами</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="98"/>
+        <location filename="settingsmanager.cpp" line="100"/>
         <source> s</source>
         <translation> с</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="102"/>
+        <location filename="settingsmanager.cpp" line="104"/>
         <source>Connection timeout</source>
         <translation>Таймаут соединения</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="115"/>
+        <location filename="settingsmanager.cpp" line="159"/>
         <source> ms</source>
         <translation> мс</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="108"/>
+        <location filename="settingsmanager.cpp" line="110"/>
         <source>Timeout for other operations</source>
         <translation>Таймаут других операций</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="114"/>
+        <location filename="settingsmanager.cpp" line="116"/>
         <source>Stop timeout</source>
         <translation>Таймаут остановки</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="120"/>
+        <location filename="settingsmanager.cpp" line="122"/>
         <source>Proxy enabled</source>
         <translation>Прокси включен</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="127"/>
+        <location filename="settingsmanager.cpp" line="129"/>
         <source>Proxy</source>
         <translation>Прокси</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="123"/>
+        <location filename="settingsmanager.cpp" line="125"/>
         <source>Proxy address</source>
         <translation>Адрес прокси</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="127"/>
+        <location filename="settingsmanager.cpp" line="129"/>
         <source>Proxy port</source>
         <translation>Пароль прокси</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="130"/>
+        <location filename="settingsmanager.cpp" line="132"/>
         <source>Default login</source>
         <translation>Логин по умолчанию</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="134"/>
+        <location filename="settingsmanager.cpp" line="136"/>
         <source>FTP options</source>
         <translation>Настройки FTP</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="134"/>
+        <location filename="settingsmanager.cpp" line="136"/>
         <source>Default password</source>
         <translation>Пароль по умолчанию</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="138"/>
+        <location filename="settingsmanager.cpp" line="140"/>
         <source>Cache size</source>
         <translation>Размер кэша</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="138"/>
+        <location filename="settingsmanager.cpp" line="140"/>
         <source>IO</source>
         <translation>Ввод/вывод</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="139"/>
+        <location filename="settingsmanager.cpp" line="141"/>
         <source> kb</source>
         <translation> кб</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="144"/>
+        <location filename="settingsmanager.cpp" line="146"/>
         <source>Autostart spawned jobs</source>
         <translation>Автозапуск рожденных заданий</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="150"/>
+        <location filename="settingsmanager.cpp" line="152"/>
         <source>Mask as user agent</source>
         <translation>Маскироваться как</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="150"/>
+        <location filename="settingsmanager.cpp" line="152"/>
         <source>HTTP options</source>
         <translation>Опции HTTP</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="147"/>
+        <location filename="settingsmanager.cpp" line="149"/>
         <source>Get file size on job addition</source>
         <translation>Получать размер файла при добавлении задания</translation>
+    </message>
+    <message>
+        <location filename="settingsmanager.cpp" line="157"/>
+        <source>Interface update interval</source>
+        <translation>Интервал обновления интерфейса</translation>
     </message>
 </context>
 </TS>

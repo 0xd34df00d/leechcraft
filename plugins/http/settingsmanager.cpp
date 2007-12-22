@@ -154,7 +154,7 @@ void SettingsManager::InitializeMap ()
 	userAgent.Choosable_ = true;
 	PropertyInfo_ ["UserAgent"] = userAgent;
 
-	SettingsItemInfo interfaceUpdateTimeout = SettingsItemInfo (tr ("Interface update timeout"), tr ("Local options"));
+	SettingsItemInfo interfaceUpdateTimeout = SettingsItemInfo (tr ("Interface update interval"), tr ("Local options"));
 	interfaceUpdateTimeout.IntRange_ = qMakePair (100, 2000);
 	interfaceUpdateTimeout.SpinboxSuffix_ = tr (" ms");
 	interfaceUpdateTimeout.SpinboxStep_ = 100;

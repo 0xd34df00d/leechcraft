@@ -10,7 +10,8 @@ struct JobRepresentation
 	QString LocalName_;
 	ImpBase::length_t Size_;
 	ImpBase::length_t Downloaded_;
-	double Speed_;
+	double Speed_, CurrentSpeed_;
+	long AverageTime_, CurrentTime_;
 
 	bool ShouldBeSavedInHistory_;
 };
