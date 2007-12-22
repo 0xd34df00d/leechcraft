@@ -216,8 +216,8 @@ void Job::Stop ()
 		ProtoImp_->StopDownload ();
 		while (!ProtoImp_->wait (25))
 			qApp->processEvents ();
+		reemitStopped ();
 	}
-	reemitStopped ();
 }
 
 void Job::Release ()
