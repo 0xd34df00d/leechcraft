@@ -94,7 +94,7 @@ JobRepresentation* Job::GetRepresentation () const
 	jr->CurrentTime_			= (TotalSize_ - DownloadedSize_) / CurrentSpeed_;
 	jr->Size_					= TotalSize_;
 	jr->ShouldBeSavedInHistory_ = Params_->ShouldBeSavedInHistory_;
-	jr->DownloadTime_			= DownloadTime_ + (StartTime_->elapsed () > 0 ? StartTime_->elapsed () : 0);
+	jr->DownloadTime_			= DownloadTime_ + (GetState () == StateDownloading ? (StartTime_->elapsed () > 0 ? StartTime_->elapsed () : 0) : 0);
 	return jr;
 }
 
@@ -223,6 +223,8 @@ void Job::Stop ()
 		ProtoImp_->StopDownload ();
 		while (!ProtoImp_->wait (25))
 			qApp->processEvents ();
+		DownloadTime_ += StartTime_->elapsed ();
+		StartTime_->restart ();
 		reemitStopped ();
 	}
 	State_ = StateIdle;
@@ -238,7 +240,7 @@ void Job::Release ()
 	}
 }
 
-Job::State Job::GetState ()
+Job::State Job::GetState () const
 {
 	return State_;
 }
@@ -346,6 +348,8 @@ void Job::reemitFinished ()
 {
 	emit finished (GetID ());
 	State_ = StateIdle;
+	DownloadTime_ += StartTime_->elapsed ();
+	StartTime_->restart ();
 }
 
 void Job::handleShowError (QString error)
@@ -357,12 +361,16 @@ void Job::reemitStopped ()
 {
 	emit stopped (GetID ());
 	State_ = StateIdle;
+	DownloadTime_ += StartTime_->elapsed ();
+	StartTime_->restart ();
 }
 
 void Job::reemitEnqueue ()
 {
 	emit enqueue (GetID ());
 	State_ = StateWaiting;
+	DownloadTime_ += StartTime_->elapsed ();
+	StartTime_->restart ();
 }
 
 void Job::reemitGotFileSize (ImpBase::length_t size)

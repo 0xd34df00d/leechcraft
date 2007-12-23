@@ -50,7 +50,7 @@ public:
 	void Stop ();
 	void GetFileSize ();
 	void Release ();
-	State GetState ();
+	State GetState () const;
 private slots:
 	void handleRemoteFileInfo (const ImpBase::RemoteFileInfo&);
 	void handleNewFiles (QStringList*);

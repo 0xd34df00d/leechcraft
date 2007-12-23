@@ -70,6 +70,14 @@ QString Proxy::MakePrettySize (qint64 sourcesize) const
     return QString::number (size, 'f', 1) + " " + dString;
 }
 
+QTime Proxy::MakeTimeFromLong (ulong time) const
+{
+	int h = time / 3600;
+	int m = (time - h * 3600) / 60;
+	int s = time - h * 3600 - m * 60;
+	return QTime (h, m, s);
+}
+
 void Proxy::AddUploadMessage (const QString& msg) const
 {
 	emit addMessage (msg, true);

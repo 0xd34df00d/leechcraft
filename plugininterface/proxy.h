@@ -2,6 +2,7 @@
 #define PROXY_H
 #include <QObject>
 #include <QStringList>
+#include <QTime>
 
 class TcpSocket;
 class FileWriter;
@@ -23,6 +24,7 @@ public:
 	QString GetApplicationName () const;
 	QString GetOrganizationName () const;
 	QString MakePrettySize (qint64) const;
+	QTime MakeTimeFromLong (ulong) const;
 	void AddUploadMessage (const QString&) const;
 	void AddDownloadMessage (const QString&) const;
 signals:
