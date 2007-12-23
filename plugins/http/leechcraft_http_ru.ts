@@ -61,6 +61,14 @@
     </message>
 </context>
 <context>
+    <name>FinishedJob</name>
+    <message>
+        <location filename="finishedjob.cpp" line="19"/>
+        <source>/s</source>
+        <translation>/с</translation>
+    </message>
+</context>
+<context>
     <name>FtpImp</name>
     <message>
         <location filename="ftpimp.cpp" line="91"/>
@@ -206,12 +214,12 @@
         <translation>%</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="203"/>
+        <location filename="httpplugin.cpp" line="204"/>
         <source>Local name</source>
         <translation>Локальное имя</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="203"/>
+        <location filename="httpplugin.cpp" line="204"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
@@ -231,37 +239,37 @@
         <translation type="obsolete">Размер</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="203"/>
+        <location filename="httpplugin.cpp" line="204"/>
         <source>Size</source>
         <translation>Размер</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="416"/>
+        <location filename="httpplugin.cpp" line="413"/>
         <source>0</source>
         <translation>0</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="553"/>
+        <location filename="httpplugin.cpp" line="551"/>
         <source>: Preferences</source>
         <translation>: Настройки</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="558"/>
+        <location filename="httpplugin.cpp" line="556"/>
         <source>Job error</source>
         <translation>Ошибка задания</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="558"/>
+        <location filename="httpplugin.cpp" line="556"/>
         <source>Job with URL %1 signals about following error:&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;</source>
         <translation>Задание с URL %1 говорит о следующей ошибке:&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="573"/>
+        <location filename="httpplugin.cpp" line="571"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="228"/>
+        <location filename="httpplugin.cpp" line="229"/>
         <source>Simple HTTP and FTP plugin, providing basic functionality.</source>
         <translation>Простой HTTP/FTP плагин, обеспечивающий базовую функциональность.</translation>
     </message>
@@ -300,36 +308,51 @@
         <source>Total</source>
         <translation>Размер</translation>
     </message>
+    <message>
+        <location filename="httpplugin.cpp" line="178"/>
+        <source>Download time</source>
+        <translation>Время загрузки</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="204"/>
+        <source>Average speed</source>
+        <translation>Средняя скорость</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="204"/>
+        <source>Time to complete</source>
+        <translation>Время до завершения</translation>
+    </message>
 </context>
 <context>
     <name>Job</name>
     <message>
-        <location filename="job.cpp" line="243"/>
+        <location filename="job.cpp" line="254"/>
         <source>Could not create directory&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Stopping work.</source>
         <translation>Не могу создать директорию&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Останавливаюсь.</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="312"/>
+        <location filename="job.cpp" line="322"/>
         <source>Could not open file for write/append&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Flushing cache to temp file&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;and stopping work.</source>
         <translation>Не могу открыть для записи файл &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Скидываю кэш в файл&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;и останавливаюсь.</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="318"/>
+        <location filename="job.cpp" line="328"/>
         <source>Could not open temporary file for write&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;</source>
         <translation>Не могу открыть для записи временный файл&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="164"/>
+        <location filename="job.cpp" line="167"/>
         <source>Question.</source>
         <translation>Вопрос.</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="164"/>
+        <location filename="job.cpp" line="167"/>
         <source>File on remote server is newer than local. Should I redownload it from scratch or just leave it alone?</source>
         <translation>Файл на удаленном сервере новее локального. Должен ли я грузить его сначала (отменить в противном случае)?</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="195"/>
+        <location filename="job.cpp" line="198"/>
         <source>File could be neither removed, nor truncated. Check your rights or smth.</source>
         <translation>Файл не может быть ни удален, ни усечен. Проверь права.</translation>
     </message>
@@ -367,7 +390,7 @@
         <translation>Автозапуск</translation>
     </message>
     <message>
-        <location filename="jobadderdialog.cpp" line="78"/>
+        <location filename="jobadderdialog.cpp" line="80"/>
         <source>Select directory</source>
         <translation>Выбрать директорию</translation>
     </message>
