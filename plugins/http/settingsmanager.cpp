@@ -42,6 +42,8 @@ void SettingsManager::ReadSettings ()
 	InterfaceUpdateTimeout_		= settings.value ("InterfaceUpdateTimeout", 1000).toInt ();
 	ShowCurrentSpeed_			= settings.value ("ShowCurrentSpeed", false).toBool ();
 	ShowCurrentTime_			= settings.value ("ShowCurrentTime", false).toBool ();
+	ProxyLogin_					= settings.value ("ProxyLogin", "").toString ();
+	ProxyPassword_				= settings.value ("ProxyPassword", "").toString ();
 	settings.endGroup ();
 	settings.endGroup ();
 
@@ -81,6 +83,8 @@ void SettingsManager::WriteSettings ()
 	settings.setValue ("InterfaceUpdateTimeout", InterfaceUpdateTimeout_);
 	settings.setValue ("ShowCurrentSpeed", ShowCurrentSpeed_);
 	settings.setValue ("ShowCurrentTime", ShowCurrentTime_);
+	settings.setValue ("ProxyLogin", ProxyLogin_);
+	settings.setValue ("ProxyPassword", ProxyPassword_);
 	settings.endGroup ();
 	settings.endGroup ();
 }
@@ -133,11 +137,17 @@ void SettingsManager::InitializeMap ()
 	SettingsItemInfo proxyPort = SettingsItemInfo (tr ("Proxy port"), tr ("Network options"), tr ("Proxy"));
 	PropertyInfo_ ["ProxyPort"] = proxyPort;
 
-	SettingsItemInfo resourceLogin = SettingsItemInfo (tr ("Default login"), tr ("FTP options"));
+	SettingsItemInfo proxyLogin = SettingsItemInfo (tr ("Proxy login"), tr ("Network options"), tr ("Proxy"));
+	PropertyInfo_ ["ProxyLogin"] = proxyLogin;
+
+	SettingsItemInfo proxyPassword = SettingsItemInfo (tr ("Proxy password"), tr ("Network options"), tr ("Proxy"));
+	PropertyInfo_ ["ProxyPassword"] = proxyPassword;
+
+	SettingsItemInfo resourceLogin = SettingsItemInfo (tr ("Default login"), tr ("HTTP/FTP options"), tr ("FTP"));
 	resourceLogin.BrowseButton_ = false;
 	PropertyInfo_ ["ResourceLogin"] = resourceLogin;
 
-	SettingsItemInfo resourcePassword = SettingsItemInfo (tr ("Default password"), tr ("FTP options"));
+	SettingsItemInfo resourcePassword = SettingsItemInfo (tr ("Default password"), tr ("HTTP/FTP options"), tr ("FTP"));
 	resourcePassword.BrowseButton_ = false;
 	PropertyInfo_ ["ResourcePassword"] = resourcePassword;
 
@@ -153,7 +163,7 @@ void SettingsManager::InitializeMap ()
 	SettingsItemInfo autoGetFileSize = SettingsItemInfo (tr ("Get file size on job addition"), tr ("Local options"));
 	PropertyInfo_ ["AutoGetFileSize"] = autoGetFileSize;
 
-	SettingsItemInfo userAgent = SettingsItemInfo (tr ("Mask as user agent"), tr ("HTTP options"));
+	SettingsItemInfo userAgent = SettingsItemInfo (tr ("Mask as user agent"), tr ("HTTP/FTP options"), tr ("HTTP"));
 	userAgent.Modifiable_ = true;
 	userAgent.Choosable_ = true;
 	PropertyInfo_ ["UserAgent"] = userAgent;
@@ -414,6 +424,28 @@ bool SettingsManager::GetShowCurrentTime () const
 void SettingsManager::SetShowCurrentTime (bool value)
 {
 	ShowCurrentTime_ = value;
+	ScheduleFlush ();
+}
+
+QString SettingsManager::GetProxyLogin () const
+{
+	return ProxyLogin_;
+}
+
+void SettingsManager::SetProxyLogin (const QString& value)
+{
+	ProxyLogin_ = value;
+	ScheduleFlush ();
+}
+
+QString SettingsManager::GetProxyPassword () const
+{
+	return ProxyPassword_;
+}
+
+void SettingsManager::SetProxyPassword (const QString& value)
+{
+	ProxyPassword_ = value;
 	ScheduleFlush ();
 }
 

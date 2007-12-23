@@ -40,7 +40,9 @@ protected:
 	Guarded<QString> ProxyAddress_
 				   , Login_
 				   , Password_
-				   , DownloadDir_;
+				   , DownloadDir_
+				   , ProxyLogin_
+				   , ProxyPassword_;
 	Guarded<PairedStringList> UserAgent_;
 private:
 	void ReadSettings ();
@@ -92,6 +94,10 @@ public:
 	void SetShowCurrentSpeed (bool);
 	bool GetShowCurrentTime () const;
 	void SetShowCurrentTime (bool);
+	QString GetProxyLogin () const;
+	void SetProxyLogin (const QString&);
+	QString GetProxyPassword () const;
+	void SetProxyPassword (const QString&);
 
 	SettingsItemInfo GetInfoFor (const QString&) const;
 
@@ -105,6 +111,8 @@ public:
 	Q_PROPERTY (bool ProxyEnabled READ GetProxyEnabled WRITE SetProxyEnabled);
 	Q_PROPERTY (QString ProxyAddress READ GetProxyAddress WRITE SetProxyAddress);
 	Q_PROPERTY (int ProxyPort READ GetProxyPort WRITE SetProxyPort);
+	Q_PROPERTY (QString ProxyLogin READ GetProxyLogin WRITE SetProxyLogin);
+	Q_PROPERTY (QString ProxyPassword READ GetProxyPassword WRITE SetProxyPassword);
 	Q_PROPERTY (PairedStringList UserAgent READ GetUserAgent WRITE SetUserAgent);
 	Q_PROPERTY (QString ResourceLogin READ GetResourceLogin WRITE SetResourceLogin);
 	Q_PROPERTY (QString ResourcePassword READ GetResourcePassword WRITE SetResourcePassword);
