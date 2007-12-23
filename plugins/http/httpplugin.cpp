@@ -597,6 +597,7 @@ void HttpPlugin::writeSettings ()
 	settings.endGroup ();
 
 	settings.beginWriteArray ("finished");
+	settings.remove ("");
 	for (int i = 0; i < FinishedList_->topLevelItemCount (); ++i)
 	{
 		settings.setArrayIndex (i);

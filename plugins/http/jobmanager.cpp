@@ -316,6 +316,7 @@ void JobManager::saveSettings ()
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
 	settings.beginGroup (qobject_cast<HttpPlugin*> (parent ())->GetName ());
 	settings.beginWriteArray ("jobs");
+	settings.remove ("");
 	for (int i = 0; i < Jobs_.size (); ++i)
 	{
 		JobRepresentation *jr = Jobs_ [i]->GetRepresentation ();
