@@ -40,6 +40,8 @@ void SettingsManager::ReadSettings ()
 	RetryTimeout_				= settings.value ("RetryTimeout", 30).toInt ();
 	AutoGetFileSize_			= settings.value ("AutoGetFileSize", false).toBool ();
 	InterfaceUpdateTimeout_		= settings.value ("InterfaceUpdateTimeout", 1000).toInt ();
+	ShowCurrentSpeed_			= settings.value ("ShowCurrentSpeed", false).toBool ();
+	ShowCurrentTime_			= settings.value ("ShowCurrentTime", false).toBool ();
 	settings.endGroup ();
 	settings.endGroup ();
 
@@ -77,6 +79,8 @@ void SettingsManager::WriteSettings ()
 	settings.setValue ("RetryTimeout", RetryTimeout_);
 	settings.setValue ("AutoGetFileSize", AutoGetFileSize_);
 	settings.setValue ("InterfaceUpdateTimeout", InterfaceUpdateTimeout_);
+	settings.setValue ("ShowCurrentSpeed", ShowCurrentSpeed_);
+	settings.setValue ("ShowCurrentTime", ShowCurrentTime_);
 	settings.endGroup ();
 	settings.endGroup ();
 }
@@ -154,11 +158,17 @@ void SettingsManager::InitializeMap ()
 	userAgent.Choosable_ = true;
 	PropertyInfo_ ["UserAgent"] = userAgent;
 
-	SettingsItemInfo interfaceUpdateTimeout = SettingsItemInfo (tr ("Interface update interval"), tr ("Local options"));
+	SettingsItemInfo interfaceUpdateTimeout = SettingsItemInfo (tr ("Interface update interval"), tr ("Local options"), tr ("Interface"));
 	interfaceUpdateTimeout.IntRange_ = qMakePair (100, 2000);
 	interfaceUpdateTimeout.SpinboxSuffix_ = tr (" ms");
 	interfaceUpdateTimeout.SpinboxStep_ = 100;
 	PropertyInfo_ ["InterfaceUpdateTimeout"] = interfaceUpdateTimeout;
+
+	SettingsItemInfo showCurrentSpeed = SettingsItemInfo (tr ("Show current speed"), tr ("Local options"), tr ("Interface"));
+	PropertyInfo_ ["ShowCurrentSpeed"] = showCurrentSpeed;
+
+	SettingsItemInfo showCurrentTime = SettingsItemInfo (tr ("Show estimated time based on current speed"), tr ("Local options"), tr ("Interface"));
+	PropertyInfo_ ["ShowCurrentTime"] = showCurrentTime;
 }
 
 void SettingsManager::ScheduleFlush ()
@@ -382,6 +392,28 @@ int SettingsManager::GetInterfaceUpdateTimeout () const
 void SettingsManager::SetInterfaceUpdateTimeout (int value)
 {
 	InterfaceUpdateTimeout_ = value;
+	ScheduleFlush ();
+}
+
+bool SettingsManager::GetShowCurrentSpeed () const
+{
+	return ShowCurrentSpeed_;
+}
+
+void SettingsManager::SetShowCurrentSpeed (bool value)
+{
+	ShowCurrentSpeed_ = value;
+	ScheduleFlush ();
+}
+
+bool SettingsManager::GetShowCurrentTime () const
+{
+	return ShowCurrentTime_;
+}
+
+void SettingsManager::SetShowCurrentTime (bool value)
+{
+	ShowCurrentTime_ = value;
 	ScheduleFlush ();
 }
 

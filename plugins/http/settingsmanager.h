@@ -34,7 +34,9 @@ protected:
 			   , InterfaceUpdateTimeout_;
 	Guarded<bool> ProxyEnabled_
 				, AutostartChildren_
-				, AutoGetFileSize_;
+				, AutoGetFileSize_
+				, ShowCurrentSpeed_
+				, ShowCurrentTime_;
 	Guarded<QString> ProxyAddress_
 				   , Login_
 				   , Password_
@@ -86,6 +88,10 @@ public:
 	void SetAutoGetFileSize (bool);
 	int GetInterfaceUpdateTimeout () const;
 	void SetInterfaceUpdateTimeout (int);
+	bool GetShowCurrentSpeed () const;
+	void SetShowCurrentSpeed (bool);
+	bool GetShowCurrentTime () const;
+	void SetShowCurrentTime (bool);
 
 	SettingsItemInfo GetInfoFor (const QString&) const;
 
@@ -105,6 +111,8 @@ public:
 	Q_PROPERTY (bool AutostartChildren READ GetAutostartChildren WRITE SetAutostartChildren);
 	Q_PROPERTY (bool AutoGetFileSize READ GetAutoGetFileSize WRITE SetAutoGetFileSize);
 	Q_PROPERTY (int InterfaceUpdateTimeout READ GetInterfaceUpdateTimeout WRITE SetInterfaceUpdateTimeout);
+	Q_PROPERTY (bool ShowCurrentSpeed READ GetShowCurrentSpeed WRITE SetShowCurrentSpeed);
+	Q_PROPERTY (bool ShowCurrentTime READ GetShowCurrentTime WRITE SetShowCurrentTime);
 	Q_PROPERTY (int CacheSize READ GetCacheSize WRITE SetCacheSize);
 };
 

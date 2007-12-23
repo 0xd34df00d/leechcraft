@@ -436,134 +436,154 @@
         <translation type="obsolete">Текущая директория</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="86"/>
+        <location filename="settingsmanager.cpp" line="90"/>
         <source>Default download directory</source>
         <translation>Директория для загрузки по умолчанию</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="157"/>
+        <location filename="settingsmanager.cpp" line="170"/>
         <source>Local options</source>
         <translation>Локальные опции</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="90"/>
+        <location filename="settingsmanager.cpp" line="94"/>
         <source>Max concurrent jobs per server</source>
         <translation>Максимальное количество одновременных скачиваний с сервера</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="129"/>
+        <location filename="settingsmanager.cpp" line="133"/>
         <source>Network options</source>
         <translation>Сетевые опции</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="94"/>
+        <location filename="settingsmanager.cpp" line="98"/>
         <source>Max total concurrent jobs</source>
         <translation>Максимальное количество одновременных скачиваний вообще</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="98"/>
+        <location filename="settingsmanager.cpp" line="102"/>
         <source>Retry timeout</source>
         <translation>Интервал между повторами</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="100"/>
+        <location filename="settingsmanager.cpp" line="104"/>
         <source> s</source>
         <translation> с</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="104"/>
+        <location filename="settingsmanager.cpp" line="108"/>
         <source>Connection timeout</source>
         <translation>Таймаут соединения</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="159"/>
+        <location filename="settingsmanager.cpp" line="163"/>
         <source> ms</source>
         <translation> мс</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="110"/>
+        <location filename="settingsmanager.cpp" line="114"/>
         <source>Timeout for other operations</source>
         <translation>Таймаут других операций</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="116"/>
+        <location filename="settingsmanager.cpp" line="120"/>
         <source>Stop timeout</source>
         <translation>Таймаут остановки</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="122"/>
+        <location filename="settingsmanager.cpp" line="126"/>
         <source>Proxy enabled</source>
         <translation>Прокси включен</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="129"/>
+        <location filename="settingsmanager.cpp" line="133"/>
         <source>Proxy</source>
         <translation>Прокси</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="125"/>
+        <location filename="settingsmanager.cpp" line="129"/>
         <source>Proxy address</source>
         <translation>Адрес прокси</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="129"/>
+        <location filename="settingsmanager.cpp" line="133"/>
         <source>Proxy port</source>
         <translation>Пароль прокси</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="132"/>
+        <location filename="settingsmanager.cpp" line="136"/>
         <source>Default login</source>
         <translation>Логин по умолчанию</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="136"/>
+        <location filename="settingsmanager.cpp" line="140"/>
         <source>FTP options</source>
         <translation>Настройки FTP</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="136"/>
+        <location filename="settingsmanager.cpp" line="140"/>
         <source>Default password</source>
         <translation>Пароль по умолчанию</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="140"/>
+        <location filename="settingsmanager.cpp" line="144"/>
         <source>Cache size</source>
         <translation>Размер кэша</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="140"/>
+        <location filename="settingsmanager.cpp" line="144"/>
         <source>IO</source>
         <translation>Ввод/вывод</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="141"/>
+        <location filename="settingsmanager.cpp" line="145"/>
         <source> kb</source>
         <translation> кб</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="146"/>
+        <location filename="settingsmanager.cpp" line="150"/>
         <source>Autostart spawned jobs</source>
         <translation>Автозапуск рожденных заданий</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="152"/>
+        <location filename="settingsmanager.cpp" line="156"/>
         <source>Mask as user agent</source>
         <translation>Маскироваться как</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="152"/>
+        <location filename="settingsmanager.cpp" line="156"/>
         <source>HTTP options</source>
         <translation>Опции HTTP</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="149"/>
+        <location filename="settingsmanager.cpp" line="153"/>
         <source>Get file size on job addition</source>
         <translation>Получать размер файла при добавлении задания</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="157"/>
+        <location filename="settingsmanager.cpp" line="161"/>
         <source>Interface update interval</source>
         <translation>Интервал обновления интерфейса</translation>
+    </message>
+    <message>
+        <location filename="settingsmanager.cpp" line="170"/>
+        <source>Interface</source>
+        <translation>Интерфейс</translation>
+    </message>
+    <message>
+        <location filename="settingsmanager.cpp" line="167"/>
+        <source>Show current speed</source>
+        <translation>Показывать текущую скорость</translation>
+    </message>
+    <message>
+        <location filename="settingsmanager.cpp" line="170"/>
+        <source>Show current time</source>
+        <translation type="obsolete">Показывать время до завершения согласно текущей скорости</translation>
+    </message>
+    <message>
+        <location filename="settingsmanager.cpp" line="170"/>
+        <source>Show estimated time based on current speed</source>
+        <translation>Показывать время до завершения согласно текущей скорости</translation>
     </message>
 </context>
 </TS>

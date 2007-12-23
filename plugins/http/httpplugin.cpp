@@ -388,7 +388,7 @@ void HttpPlugin::pushJob (unsigned int id)
 	item->setText (TListURL,		QFileInfo (jr->URL_).dir ().path ());
 	item->setText (TListPercent,	"0");
 	item->setText (TListSpeed,		"0.0");
-	item->setText (TListDownloaded, Proxy::Instance ()->MakeTimeFromLong (jr->DownloadTime_ / 1000).toString ());
+	item->setText (TListDownloadTime, Proxy::Instance ()->MakeTimeFromLong (jr->DownloadTime_ / 1000).toString ());
 	item->setText (TListDownloaded,	"");
 	item->setText (TListTotal,		"");
 	TasksList_->addTopLevelItem (item);
@@ -412,13 +412,17 @@ void HttpPlugin::updateJobDisplay (unsigned int id)
 				item->setText (TListPercent, QString::number (jr->Downloaded_ * 100 / jr->Size_));
 			else
 				item->setText (TListPercent, QString (tr ("0")));
-			item->setText (TListSpeed,
-						   Proxy::Instance ()->MakePrettySize (jr->Speed_) + tr ("/s") + " # " +
-						   Proxy::Instance ()->MakePrettySize (jr->CurrentSpeed_) + tr ("/s"));
+
+			QString speed = Proxy::Instance ()->MakePrettySize (jr->Speed_) + tr ("/s"),
+					remaining = Proxy::Instance ()->MakeTimeFromLong (jr->AverageTime_).toString ();
+			if (SettingsManager::Instance ()->GetShowCurrentSpeed ())
+				speed.append (" # ").append (Proxy::Instance ()->MakePrettySize (jr->CurrentSpeed_) + tr ("/s"));
+			if (SettingsManager::Instance ()->GetShowCurrentTime ())
+				remaining.append (" / ").append (Proxy::Instance ()->MakeTimeFromLong (jr->CurrentTime_).toString ());
+
+			item->setText (TListSpeed, speed);
 			item->setText (TListDownloadTime, Proxy::Instance ()->MakeTimeFromLong (jr->DownloadTime_ / 1000).toString ());
-			item->setText (TListRemainingTime,
-						   Proxy::Instance ()->MakeTimeFromLong (jr->AverageTime_).toString () + "/" +
-						   Proxy::Instance ()->MakeTimeFromLong (jr->CurrentTime_).toString ());
+			item->setText (TListRemainingTime, remaining);
 			item->setText (TListDownloaded, Proxy::Instance ()->MakePrettySize (jr->Downloaded_));
 			item->setText (TListTotal, Proxy::Instance ()->MakePrettySize (jr->Size_));
 			break;
@@ -438,7 +442,14 @@ void HttpPlugin::handleGotFileSize (unsigned int id)
 			QTreeWidgetItem *item = TasksList_->topLevelItem (i);
 			if (jr->Size_)
 				item->setText (TListPercent, QString::number (jr->Downloaded_ * 100 / jr->Size_));
-			item->setText (TListRemainingTime, QTime (0, 0, 0).toString () + "/" + QTime (0, 0, 0).toString ());
+
+			QString remainingTime;
+			if (SettingsManager::Instance ()->GetShowCurrentTime ())
+				remainingTime = QTime (0, 0, 0).toString () + "/" + QTime (0, 0, 0).toString ();
+			else
+				remainingTime = QTime (0, 0, 0).toString ();
+			item->setText (TListRemainingTime, remainingTime);
+
 			item->setText (TListDownloaded, Proxy::Instance ()->MakePrettySize (jr->Downloaded_));
 			item->setText (TListTotal, Proxy::Instance ()->MakePrettySize (jr->Size_));
 		}

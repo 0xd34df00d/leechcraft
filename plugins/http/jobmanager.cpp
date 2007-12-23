@@ -196,6 +196,7 @@ void JobManager::Stop (unsigned int id)
 
 void JobManager::DeleteAt (unsigned int id)
 {
+	Jobs_ [ID2Pos_ [id]]->Stop ();
 	Jobs_ [ID2Pos_ [id]]->Release ();;
 	delete Jobs_ [ID2Pos_ [id]];
 	Jobs_.remove (ID2Pos_ [id]);
