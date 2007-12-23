@@ -13,6 +13,7 @@ struct JobParams
 	QString LocalName_;
 	bool Autostart_, ShouldBeSavedInHistory_;
 	ImpBase::length_t Size_;
+	long DownloadTime_;
 
 	JobParams ();
 	explicit JobParams (const JobRepresentation&);

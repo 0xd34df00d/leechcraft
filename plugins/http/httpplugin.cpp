@@ -175,7 +175,7 @@ QWidget* HttpPlugin::SetupTasksPart ()
 	TasksList_->setEditTriggers (QAbstractItemView::NoEditTriggers);
 	TasksList_->setTextElideMode (Qt::ElideMiddle);
 	QStringList taskHeaderLabels;
-	taskHeaderLabels << tr ("State") << tr ("Local name") << tr ("URL") << tr ("%") << tr ("Speed") << tr ("Remaining time") << tr ("Downloaded") << tr ("Total");
+	taskHeaderLabels << tr ("State") << tr ("Local name") << tr ("URL") << tr ("%") << tr ("Speed") << tr ("Download time") << tr ("Remaining time") << tr ("Downloaded") << tr ("Total");
 	TasksList_->setHeaderLabels (taskHeaderLabels);
 	TasksList_->header ()->setStretchLastSection (true);
 	TasksList_->header ()->setHighlightSections (false);
@@ -403,12 +403,6 @@ void HttpPlugin::updateJobDisplay (unsigned int id)
 	for (int i = 0; i < rowCount; ++i)
 		if (dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i))->GetID () == id)
 		{
-			int avehours = jr->AverageTime_ / 3600;
-			int aveminutes = (jr->AverageTime_ - avehours * 3600) / 60;
-			int aveseconds = jr->AverageTime_ - avehours * 3600 - aveminutes * 60;
-			int curhours = jr->CurrentTime_ / 3600;
-			int curminutes = (jr->CurrentTime_ - curhours * 3600) / 60;
-			int curseconds = jr->CurrentTime_ - curhours * 3600 - curminutes * 60;
 			QTreeWidgetItem *item = TasksList_->topLevelItem (i);
 			item->setText (TListLocalName, QFileInfo (jr->LocalName_).fileName ());
 			item->setText (TListURL, QFileInfo (jr->URL_).dir ().path ());
@@ -419,9 +413,10 @@ void HttpPlugin::updateJobDisplay (unsigned int id)
 			item->setText (TListSpeed,
 						   Proxy::Instance ()->MakePrettySize (jr->Speed_) + tr ("/s") + " # " +
 						   Proxy::Instance ()->MakePrettySize (jr->CurrentSpeed_) + tr ("/s"));
-			item->setText (TListTime,
-						   QTime (avehours, aveminutes, aveseconds).toString () + "/" +
-						   QTime (curhours, curminutes, curseconds).toString ());
+			item->setText (TListDownloadTime, Proxy::Instance ()->MakeTimeFromLong (jr->DownloadTime_ / 1000).toString ());
+			item->setText (TListRemainingTime,
+						   Proxy::Instance ()->MakeTimeFromLong (jr->AverageTime_).toString () + "/" +
+						   Proxy::Instance ()->MakeTimeFromLong (jr->CurrentTime_).toString ());
 			item->setText (TListDownloaded, Proxy::Instance ()->MakePrettySize (jr->Downloaded_));
 			item->setText (TListTotal, Proxy::Instance ()->MakePrettySize (jr->Size_));
 			break;
@@ -441,7 +436,8 @@ void HttpPlugin::handleGotFileSize (unsigned int id)
 			QTreeWidgetItem *item = TasksList_->topLevelItem (i);
 			if (jr->Size_)
 				item->setText (TListPercent, QString::number (jr->Downloaded_ * 100 / jr->Size_));
-			item->setText (TListTime, QTime (0, 0, 0).toString () + "/" + QTime (0, 0, 0).toString ());
+			item->setText (TListDownloadTime, QTime (0, 0, 0).toString ());
+			item->setText (TListRemainingTime, QTime (0, 0, 0).toString () + "/" + QTime (0, 0, 0).toString ());
 			item->setText (TListDownloaded, Proxy::Instance ()->MakePrettySize (jr->Downloaded_));
 			item->setText (TListTotal, Proxy::Instance ()->MakePrettySize (jr->Size_));
 		}

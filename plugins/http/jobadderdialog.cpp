@@ -67,6 +67,8 @@ void JobAdderDialog::done (int r)
 		p->IsFullName_ = false;
 		p->Autostart_ = (Autostart_->checkState () == Qt::Checked);
 		p->ShouldBeSavedInHistory_ = true;
+		p->Size_ = 0;
+		p->DownloadTime_ = 0;
 
 		emit gotParams (p);
 	}

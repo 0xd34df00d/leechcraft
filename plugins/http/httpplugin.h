@@ -61,9 +61,10 @@ public:
 		, TListURL = 2
 		, TListPercent = 3
 		, TListSpeed = 4
-		, TListTime = 5
-		, TListDownloaded = 6
-		, TListTotal = 7
+		, TListDownloadTime = 5
+		, TListRemainingTime = 6
+		, TListDownloaded = 7
+		, TListTotal = 8
 	};
 	enum FinishedListHeaders
 	{

@@ -18,10 +18,6 @@ FinishedJob::FinishedJob (const JobRepresentation& jr, QObject *parent)
 , Size_ (jr.Size_)
 , Speed_ (Proxy::Instance ()->MakePrettySize (jr.Speed_) + tr ("/s"))
 {
-	int avehours = jr.AverageTime_ / 3600;
-	int aveminutes = (jr.AverageTime_ - avehours * 3600) / 60;
-	int aveseconds = jr.AverageTime_ - avehours * 3600 - aveminutes * 60;
-	TimeToComplete_ = QTime (avehours, aveminutes, aveseconds).toString ();
 }
 
 FinishedJob::~FinishedJob ()

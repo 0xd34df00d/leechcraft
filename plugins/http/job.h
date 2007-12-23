@@ -16,17 +16,27 @@ class Job : public QObject
 	Q_OBJECT
 
 	unsigned int ID_;
+	bool ErrorFlag_, GetFileSize_;
+	double Speed_, CurrentSpeed_;
+	long DownloadTime_;
+	ImpBase::length_t DownloadedSize_, TotalSize_, RestartPosition_, PreviousDownloadSize_;
 	ImpBase *ProtoImp_;
 	JobParams* Params_;
-	bool ErrorFlag_, GetFileSize_;
 	QString ErrorReason_;
-	ImpBase::length_t DownloadedSize_, TotalSize_, RestartPosition_, PreviousDownloadSize_;
-	double Speed_, CurrentSpeed_;
 	QMap<QAbstractSocket::SocketError, QString> ErrorDictionary_;
 	QFile *File_;
-	int DataOperations_;
-	QTime *StartTime_, *UpdateTime_, *CurrentSpeedTime_;
+	QTime *StartTime_, *UpdateTime_;
 	FileExistsDialog *FileExistsDialog_;
+public:
+	enum State
+	{
+		StateIdle
+		, StateDownloading
+		, StateWaiting
+	};
+	enum JobType { File, Directory };
+private:
+	State State_;
 public:
 	Job (JobParams *params = 0, QObject *parent = 0);
 	virtual ~Job ();
@@ -40,7 +50,7 @@ public:
 	void Stop ();
 	void GetFileSize ();
 	void Release ();
-	enum JobType { File, Directory };
+	State GetState ();
 private slots:
 	void handleRemoteFileInfo (const ImpBase::RemoteFileInfo&);
 	void handleNewFiles (QStringList*);

@@ -18,22 +18,24 @@
 
 Job::Job (JobParams *params, QObject *parent)
 : QObject (parent)
-, ProtoImp_ (0)
-, Params_ (params)
 , ErrorFlag_ (false)
 , GetFileSize_ (false)
+, Speed_ (0)
+, CurrentSpeed_ (0)
+, DownloadTime_ (params->DownloadTime_)
 , DownloadedSize_ (0)
 , TotalSize_ (params->Size_)
-, PreviousDownloadSize_ (0)
 , RestartPosition_ (0)
-, Speed_ (0)
+, PreviousDownloadSize_ (params->Size_)
+, ProtoImp_ (0)
+, Params_ (params)
 , File_ (0)
+, State_ (StateIdle)
 , JobType_ (File)
 {
 	qRegisterMetaType<ImpBase::RemoteFileInfo> ("ImpBase::RemoteFileInfo");
 	StartTime_ = new QTime;
 	UpdateTime_ = new QTime;
-	CurrentSpeedTime_ = new QTime;
 	FillErrorDictionary ();
 	FileExistsDialog_ = new FileExistsDialog (parent ? qobject_cast<JobManager*> (parent)->GetTheMain () : 0);
 
@@ -51,7 +53,6 @@ Job::~Job ()
 {
 	delete StartTime_;
 	delete UpdateTime_;
-	delete CurrentSpeedTime_;
 	delete ProtoImp_;
 	delete File_;
 	delete Params_;
@@ -93,6 +94,7 @@ JobRepresentation* Job::GetRepresentation () const
 	jr->CurrentTime_			= (TotalSize_ - DownloadedSize_) / CurrentSpeed_;
 	jr->Size_					= TotalSize_;
 	jr->ShouldBeSavedInHistory_ = Params_->ShouldBeSavedInHistory_;
+	jr->DownloadTime_			= DownloadTime_ + (StartTime_->elapsed () > 0 ? StartTime_->elapsed () : 0);
 	return jr;
 }
 
@@ -110,6 +112,7 @@ QString Job::GetErrorReason ()
 
 void Job::Start ()
 {
+	State_ = StateDownloading;
 	QString ln = MakeFilename (Params_->URL_, Params_->LocalName_);
 	QFileInfo fileInfo (ln);
 	if (fileInfo.exists () && !fileInfo.isDir ())
@@ -222,6 +225,7 @@ void Job::Stop ()
 			qApp->processEvents ();
 		reemitStopped ();
 	}
+	State_ = StateIdle;
 }
 
 void Job::Release ()
@@ -232,6 +236,11 @@ void Job::Release ()
 		if (!ProtoImp_->wait (SettingsManager::Instance ()->GetStopTimeout ()))
 			ProtoImp_->terminate ();
 	}
+}
+
+Job::State Job::GetState ()
+{
+	return State_;
 }
 
 void Job::handleNewFiles (QStringList *files)
@@ -286,7 +295,6 @@ void Job::processData (ImpBase::length_t ready, ImpBase::length_t total, QByteAr
 		TotalSize_ = total;
 		StartTime_->restart ();
 		UpdateTime_->restart ();
-		CurrentSpeedTime_->restart ();
 		emit updateDisplays (GetID ());
 		return;
 	}
@@ -336,8 +344,8 @@ void Job::processData (ImpBase::length_t ready, ImpBase::length_t total, QByteAr
 
 void Job::reemitFinished ()
 {
-	qDebug () << Q_FUNC_INFO;
 	emit finished (GetID ());
+	State_ = StateIdle;
 }
 
 void Job::handleShowError (QString error)
@@ -348,11 +356,13 @@ void Job::handleShowError (QString error)
 void Job::reemitStopped ()
 {
 	emit stopped (GetID ());
+	State_ = StateIdle;
 }
 
 void Job::reemitEnqueue ()
 {
 	emit enqueue (GetID ());
+	State_ = StateWaiting;
 }
 
 void Job::reemitGotFileSize (ImpBase::length_t size)

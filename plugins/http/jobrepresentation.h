@@ -12,6 +12,7 @@ struct JobRepresentation
 	ImpBase::length_t Downloaded_;
 	double Speed_, CurrentSpeed_;
 	long AverageTime_, CurrentTime_;
+	long DownloadTime_;
 
 	bool ShouldBeSavedInHistory_;
 };
