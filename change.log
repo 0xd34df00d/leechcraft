@@ -18,6 +18,7 @@ HTTP/FTP:
 + Now shows overall download time in both active tasks list and
   finished tasks list.
 + Save known total file sizes on exit.
++ User can customize which columns to show.
 * Few interface enhancements.
 * Few performance enhancements.
 * Fixed a nasty bug in FtpImp which prevented from downloading from

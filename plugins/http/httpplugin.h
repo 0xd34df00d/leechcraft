@@ -38,7 +38,7 @@ class HttpPlugin : public QMainWindow
 	ContextableList *TasksList_, *FinishedList_;
 	SettingsDialog *SettingsDialog_;
 	JobManager *JobManager_;
-	QStringList ProvidesList_, NeedsList_, UsesList_;
+	QStringList ProvidesList_, NeedsList_, UsesList_, TaskHeaderLabels_, FinishedHeaderLabels_;
 	QLabel *SpeedIndicator_;
 	QAction *AddJobAction_
 		  , *DeleteJobAction_
@@ -51,6 +51,8 @@ class HttpPlugin : public QMainWindow
 		  , *DeleteFinishedAction_
 		  , *CopyFinishedURL_
 		  , *PreferencesAction_
+		  , *SelectTasksColumnsAction_
+		  , *SelectFinishedColumnsAction_
 		  , *AutoAdjustInterfaceAction_;
 	QToolBar *JobManagementToolbar_, *FinishedManagementToolbar_;
 public:
@@ -156,6 +158,8 @@ private slots:
 	void copyFinishedURL ();
 	void setActionsEnabled ();
 	void handleCronEnabled ();
+	void selectActiveTasksListColumns ();
+	void selectFinishedTasksListColumns ();
 private:
 	void ReadSettings ();
 	void AddToFinishedList (const FinishedJob*);

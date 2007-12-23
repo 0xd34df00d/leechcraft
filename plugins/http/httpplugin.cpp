@@ -4,6 +4,7 @@
 #include <plugininterface/proxy.h>
 #include <interfaces/interfaces.h>
 #include <settingsdialog/settingsdialog.h>
+#include "columnselector.h"
 #include "httpplugin.h"
 #include "settingsmanager.h"
 #include "jobadderdialog.h"
@@ -136,7 +137,7 @@ void HttpPlugin::SetupJobManagementMenu (QMenu *jobsMenu)
 void HttpPlugin::SetupToolsBar (QToolBar *toolstb)
 {
 	AutoAdjustInterfaceAction_ = toolstb->addAction (QIcon (":/resources/images/autoadjustiface.png"), tr ("Autoadjust interface"), this, SLOT (autoAdjustInterface ()));
-
+	SelectTasksColumnsAction_ = toolstb->addAction (QIcon (":/resources/images/selectcolumns.png"), tr ("Select active tasks list columns..."), this, SLOT (selectActiveTasksListColumns ()));
 	PreferencesAction_ = toolstb->addAction (QIcon (":/resources/images/preferences.png"), tr ("Preferences..."), this, SLOT (showPreferences ()));
 	PreferencesAction_->setShortcut (tr ("Ctrl+P"));
 }
@@ -144,6 +145,8 @@ void HttpPlugin::SetupToolsBar (QToolBar *toolstb)
 void HttpPlugin::SetupToolsMenu (QMenu *toolsMenu)
 {
 	toolsMenu->addAction (AutoAdjustInterfaceAction_);
+	toolsMenu->addAction (SelectTasksColumnsAction_);
+	SelectFinishedColumnsAction_ = toolsMenu->addAction (QIcon (":/resources/images/selectcolumns.png"), tr ("Select finished tasks list columns..."), this, SLOT (selectFinishedTasksListColumns ()));
 	toolsMenu->addAction (PreferencesAction_);
 }
 
@@ -174,9 +177,8 @@ QWidget* HttpPlugin::SetupTasksPart ()
 	TasksList_->setSelectionMode (QAbstractItemView::ExtendedSelection);
 	TasksList_->setEditTriggers (QAbstractItemView::NoEditTriggers);
 	TasksList_->setTextElideMode (Qt::ElideMiddle);
-	QStringList taskHeaderLabels;
-	taskHeaderLabels << tr ("State") << tr ("Local name") << tr ("URL") << tr ("%") << tr ("Speed") << tr ("Download time") << tr ("Remaining time") << tr ("Downloaded") << tr ("Total");
-	TasksList_->setHeaderLabels (taskHeaderLabels);
+	TaskHeaderLabels_ << tr ("State") << tr ("Local name") << tr ("URL") << tr ("%") << tr ("Speed") << tr ("Download time") << tr ("Remaining time") << tr ("Downloaded") << tr ("Total");
+	TasksList_->setHeaderLabels (TaskHeaderLabels_);
 	TasksList_->header ()->setStretchLastSection (true);
 	TasksList_->header ()->setHighlightSections (false);
 	TasksList_->header ()->setDefaultAlignment (Qt::AlignLeft);
@@ -200,9 +202,8 @@ QWidget* HttpPlugin::SetupFinishedPart ()
 	FinishedList_->setSelectionMode (QAbstractItemView::ExtendedSelection);
 	FinishedList_->setEditTriggers (QAbstractItemView::NoEditTriggers);
 	FinishedList_->setTextElideMode (Qt::ElideMiddle);
-	QStringList finishedHeaderLabels;
-	finishedHeaderLabels << tr ("Local name") << tr ("URL") << tr ("Size") << tr ("Average speed") << tr ("Time to complete");
-	FinishedList_->setHeaderLabels (finishedHeaderLabels);
+	FinishedHeaderLabels_ << tr ("Local name") << tr ("URL") << tr ("Size") << tr ("Average speed") << tr ("Time to complete");
+	FinishedList_->setHeaderLabels (FinishedHeaderLabels_);
 	FinishedList_->header ()->setStretchLastSection (true);
 	FinishedList_->header ()->setHighlightSections (false);
 	FinishedList_->header ()->setDefaultAlignment (Qt::AlignLeft);
@@ -635,6 +636,40 @@ void HttpPlugin::handleCronEnabled ()
 {
 	CronEnabled_ = true;
 	setActionsEnabled ();
+}
+
+void HttpPlugin::selectActiveTasksListColumns ()
+{
+	QList<QPair<QString, bool> > columns;
+	for (int i = 0; i < TaskHeaderLabels_.size (); ++i)
+		columns.append (qMakePair (TaskHeaderLabels_.at (i), !TasksList_->isColumnHidden (i)));
+	ColumnSelector selector (this);
+	selector.SetColumnsStates (columns);
+	if (selector.exec () == QDialog::Rejected)
+		return;
+	else
+	{
+		QList<bool> states = selector.GetColumnsStates ();
+		for (int i = 0; i < states.size (); ++i)
+			TasksList_->setColumnHidden (i, !states.at (i));
+	}
+}
+
+void HttpPlugin::selectFinishedTasksListColumns ()
+{
+	QList<QPair<QString, bool> > columns;
+	for (int i = 0; i < FinishedHeaderLabels_.size (); ++i)
+		columns.append (qMakePair (FinishedHeaderLabels_.at (i), !FinishedList_->isColumnHidden (i)));
+	ColumnSelector selector (this);
+	selector.SetColumnsStates (columns);
+	if (selector.exec () == QDialog::Rejected)
+		return;
+	else
+	{
+		QList<bool> states = selector.GetColumnsStates ();
+		for (int i = 0; i < states.size (); ++i)
+			FinishedList_->setColumnHidden (i, !states.at (i));
+	}
 }
 
 void HttpPlugin::ReadSettings ()

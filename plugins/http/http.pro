@@ -13,7 +13,7 @@ QT += network
 
 # Input
 TRANSLATIONS = leechcraft_http_ru.ts
-FORMS += fileexistsdialog.ui
+FORMS += fileexistsdialog.ui columnselector.ui
 HEADERS += httpplugin.h \
 	jobadderdialog.h \
 	jobparams.h \
@@ -28,6 +28,7 @@ HEADERS += httpplugin.h \
 	impbase.h \
 	mainviewdelegate.h \
 	contextablelist.h \
+	columnselector.h \
 	globals.h
 SOURCES += httpplugin.cpp \
 	jobadderdialog.cpp \
@@ -42,6 +43,7 @@ SOURCES += httpplugin.cpp \
 	impbase.cpp \
 	mainviewdelegate.cpp \
 	contextablelist.cpp \
+	columnselector.cpp \
 	settingsmanager.cpp
 RESOURCES = resources.qrc
 win32:LIBS += -L../.. -lplugininterface -lexceptions -lsettingsdialog

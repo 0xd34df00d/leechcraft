@@ -5,9 +5,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>218</width>
-    <height>77</height>
+    <width>231</width>
+    <height>93</height>
    </rect>
+  </property>
+  <property name="minimumSize" >
+   <size>
+    <width>231</width>
+    <height>93</height>
+   </size>
+  </property>
+  <property name="maximumSize" >
+   <size>
+    <width>231</width>
+    <height>93</height>
+   </size>
   </property>
   <property name="windowTitle" >
    <string comment="File already exists" >File exists</string>
@@ -15,11 +27,11 @@
   <property name="modal" >
    <bool>true</bool>
   </property>
-  <widget class="QWidget" name="" >
+  <widget class="QWidget" name="layoutWidget" >
    <property name="geometry" >
     <rect>
-     <x>0</x>
-     <y>1</y>
+     <x>10</x>
+     <y>10</y>
      <width>214</width>
      <height>76</height>
     </rect>
