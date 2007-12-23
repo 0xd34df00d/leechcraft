@@ -17,6 +17,7 @@ FinishedJob::FinishedJob (const JobRepresentation& jr, QObject *parent)
 , Local_ (jr.LocalName_)
 , Size_ (jr.Size_)
 , Speed_ (Proxy::Instance ()->MakePrettySize (jr.Speed_) + tr ("/s"))
+, TimeToComplete_ (Proxy::Instance ()->MakeTimeFromLong (jr.DownloadTime_ / 1000).toString ())
 {
 }
 

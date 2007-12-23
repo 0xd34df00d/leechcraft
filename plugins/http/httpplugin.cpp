@@ -201,7 +201,7 @@ QWidget* HttpPlugin::SetupFinishedPart ()
 	FinishedList_->setEditTriggers (QAbstractItemView::NoEditTriggers);
 	FinishedList_->setTextElideMode (Qt::ElideMiddle);
 	QStringList finishedHeaderLabels;
-	finishedHeaderLabels << tr ("Local name") << tr ("URL") << tr ("Size") << tr ("Average speed");
+	finishedHeaderLabels << tr ("Local name") << tr ("URL") << tr ("Size") << tr ("Average speed") << tr ("Time to complete");
 	FinishedList_->setHeaderLabels (finishedHeaderLabels);
 	FinishedList_->header ()->setStretchLastSection (true);
 	FinishedList_->header ()->setHighlightSections (false);
@@ -387,6 +387,7 @@ void HttpPlugin::pushJob (unsigned int id)
 	item->setText (TListURL,		QFileInfo (jr->URL_).dir ().path ());
 	item->setText (TListPercent,	"0");
 	item->setText (TListSpeed,		"0.0");
+	item->setText (TListDownloaded, Proxy::Instance ()->MakeTimeFromLong (jr->DownloadTime_ / 1000).toString ());
 	item->setText (TListDownloaded,	"");
 	item->setText (TListTotal,		"");
 	TasksList_->addTopLevelItem (item);
@@ -436,7 +437,6 @@ void HttpPlugin::handleGotFileSize (unsigned int id)
 			QTreeWidgetItem *item = TasksList_->topLevelItem (i);
 			if (jr->Size_)
 				item->setText (TListPercent, QString::number (jr->Downloaded_ * 100 / jr->Size_));
-			item->setText (TListDownloadTime, QTime (0, 0, 0).toString ());
 			item->setText (TListRemainingTime, QTime (0, 0, 0).toString () + "/" + QTime (0, 0, 0).toString ());
 			item->setText (TListDownloaded, Proxy::Instance ()->MakePrettySize (jr->Downloaded_));
 			item->setText (TListTotal, Proxy::Instance ()->MakePrettySize (jr->Size_));
@@ -690,6 +690,7 @@ void HttpPlugin::AddToFinishedList (const FinishedJob *fj)
 	item->setText (FListURL, fj->GetURL ());
 	item->setText (FListSize, Proxy::Instance ()->MakePrettySize (fj->GetSize ()));
 	item->setText (FListSpeed, fj->GetSpeed ());
+	item->setText (FListTimeToComplete, fj->GetTimeToComplete ());
 
 	FinishedList_->addTopLevelItem (item);
 

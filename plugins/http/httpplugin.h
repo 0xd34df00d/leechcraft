@@ -72,6 +72,7 @@ public:
 		, FListURL = 1
 		, FListSize = 2
 		, FListSpeed = 3
+		, FListTimeToComplete = 4
 	};
 
 	enum JobAction
