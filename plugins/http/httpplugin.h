@@ -48,6 +48,7 @@ class HttpPlugin : public QMainWindow
 		  , *StopAllAction_
 		  , *GetFileSizeAction_
 		  , *ScheduleSelectedAction_
+		  , *JobPropertiesAction_
 		  , *DeleteFinishedAction_
 		  , *CopyFinishedURL_
 		  , *PreferencesAction_
@@ -160,6 +161,7 @@ private slots:
 	void handleCronEnabled ();
 	void selectActiveTasksListColumns ();
 	void selectFinishedTasksListColumns ();
+	void changeJobProperties ();
 private:
 	void ReadSettings ();
 	void AddToFinishedList (const FinishedJob*);

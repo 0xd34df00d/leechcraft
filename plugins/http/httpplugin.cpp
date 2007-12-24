@@ -89,24 +89,37 @@ void HttpPlugin::FillInterface ()
 
 void HttpPlugin::SetupJobManagementBar ()
 {
-	AddJobAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/addjob.png"), tr ("Add job..."), this, SLOT (initiateJobAddition ()));
+	AddJobAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/addjob.png"), tr ("Add..."), this, SLOT (initiateJobAddition ()));
 	AddJobAction_->setShortcut (Qt::Key_Insert);
-	DeleteJobAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/deletejob.png"), tr ("Delete selected active job"), this, SLOT (deleteDownloadSelected ()));
+	AddJobAction_->setStatusTip (tr ("Add a new job"));
+	DeleteJobAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/deletejob.png"), tr ("Delete"), this, SLOT (deleteDownloadSelected ()));
 	DeleteJobAction_->setShortcut (Qt::Key_Delete);
+	DeleteJobAction_->setStatusTip (tr ("Delete selected job(s)"));
 	JobManagementToolbar_->addSeparator ();
-	StartJobAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/startjob.png"), tr ("Start current"), this, SLOT (startDownloadSelected ()));
+	StartJobAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/startjob.png"), tr ("Start"), this, SLOT (startDownloadSelected ()));
 	StartJobAction_->setShortcut (tr ("Ctrl+S"));
+	StartJobAction_->setStatusTip (tr ("Start selected job(s)"));
 	StartAllAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/startall.png"), tr ("Start all"), this, SLOT (startDownloadAll ()));
 	StartAllAction_->setShortcut (tr ("Ctrl+Shift+S"));
-	StopJobAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/stopjob.png"), tr ("Stop current"), this, SLOT (stopDownloadSelected ()));
+	StartAllAction_->setStatusTip (tr ("Start all jobs"));
+	StopJobAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/stopjob.png"), tr ("Stop"), this, SLOT (stopDownloadSelected ()));
 	StopJobAction_->setShortcut (tr ("Ctrl+I"));
+	StopJobAction_->setStatusTip (tr ("Stop selected job(s)"));
 	StopAllAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/stopall.png"), tr ("Stop all"), this, SLOT (stopDownloadAll ()));
 	StopAllAction_->setShortcut (tr ("Ctrl+Shift+I"));
+	StopAllAction_->setStatusTip (tr ("Stop all jobs"));
 	GetFileSizeAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/getfilesize.png"), tr ("Get file size"), this, SLOT (getFileSize ()));
+	GetFileSizeAction_->setStatusTip (tr ("Get file size for selected jobs without downloading them"));
 	JobManagementToolbar_->addSeparator ();
-	ScheduleSelectedAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/schedule.png"), tr ("Schedule selected"), this, SLOT (scheduleSelected ()));
-	DeleteFinishedAction_ = FinishedManagementToolbar_->addAction (QIcon (":/resources/images/deletejob.png"), tr ("Delete selected finished job"), this, SLOT (deleteDownloadSelectedFinished ()));
+	ScheduleSelectedAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/schedule.png"), tr ("Schedule"), this, SLOT (scheduleSelected ()));
+	ScheduleSelectedAction_->setStatusTip (tr ("Schedule select job(s)"));
+	JobManagementToolbar_->addSeparator ();
+	JobPropertiesAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/properties.png"), tr ("Job properties..."), this, SLOT (changeJobProperties ()));
+	JobPropertiesAction_->setShortcut (tr ("Ctrl+P"));
+	JobPropertiesAction_->setStatusTip (tr ("Change selected job's properties"));
+	DeleteFinishedAction_ = FinishedManagementToolbar_->addAction (QIcon (":/resources/images/deletejob.png"), tr ("Delete"), this, SLOT (deleteDownloadSelectedFinished ()));
 	DeleteFinishedAction_->setShortcut (Qt::Key_Delete & Qt::ShiftModifier);
+	DeleteFinishedAction_->setStatusTip (tr ("Delete selected finished job(s)"));
 }
 
 void HttpPlugin::SetupJobManagementMenu (QMenu *jobsMenu)
@@ -129,6 +142,7 @@ void HttpPlugin::SetupJobManagementMenu (QMenu *jobsMenu)
 	TasksList_->AddAction (StartJobAction_);
 	TasksList_->AddAction (StopJobAction_);
 	TasksList_->AddAction (GetFileSizeAction_);
+	TasksList_->AddAction (JobPropertiesAction_);
 
 	FinishedList_->AddAction (DeleteFinishedAction_);
 	FinishedList_->AddAction (CopyFinishedURL_);
@@ -137,16 +151,20 @@ void HttpPlugin::SetupJobManagementMenu (QMenu *jobsMenu)
 void HttpPlugin::SetupToolsBar (QToolBar *toolstb)
 {
 	AutoAdjustInterfaceAction_ = toolstb->addAction (QIcon (":/resources/images/autoadjustiface.png"), tr ("Autoadjust interface"), this, SLOT (autoAdjustInterface ()));
-	SelectTasksColumnsAction_ = toolstb->addAction (QIcon (":/resources/images/selectcolumns.png"), tr ("Select active tasks list columns..."), this, SLOT (selectActiveTasksListColumns ()));
+	AutoAdjustInterfaceAction_->setStatusTip (tr ("Adjust interface to make all text in columns fit"));
+	SelectTasksColumnsAction_ = toolstb->addAction (QIcon (":/resources/images/selectcolumns.png"), tr ("Active jobs list columns..."), this, SLOT (selectActiveTasksListColumns ()));
+	SelectTasksColumnsAction_->setStatusTip (tr ("Select active jobs list columns"));
 	PreferencesAction_ = toolstb->addAction (QIcon (":/resources/images/preferences.png"), tr ("Preferences..."), this, SLOT (showPreferences ()));
-	PreferencesAction_->setShortcut (tr ("Ctrl+P"));
+	PreferencesAction_->setShortcut (tr ("Ctrl+Shift+P"));
+	PreferencesAction_->setStatusTip (tr ("Open plugin's preferences dialog"));
 }
 
 void HttpPlugin::SetupToolsMenu (QMenu *toolsMenu)
 {
 	toolsMenu->addAction (AutoAdjustInterfaceAction_);
 	toolsMenu->addAction (SelectTasksColumnsAction_);
-	SelectFinishedColumnsAction_ = toolsMenu->addAction (QIcon (":/resources/images/selectcolumns.png"), tr ("Select finished tasks list columns..."), this, SLOT (selectFinishedTasksListColumns ()));
+	SelectFinishedColumnsAction_ = toolsMenu->addAction (QIcon (":/resources/images/selectcolumns.png"), tr ("Finished jobs list columns..."), this, SLOT (selectFinishedTasksListColumns ()));
+	SelectFinishedColumnsAction_->setStatusTip (tr ("Select finished jobs list columns"));
 	toolsMenu->addAction (PreferencesAction_);
 }
 
@@ -682,6 +700,10 @@ void HttpPlugin::selectFinishedTasksListColumns ()
 		for (int i = 0; i < states.size (); ++i)
 			FinishedList_->setColumnHidden (i, !states.at (i));
 	}
+}
+
+void HttpPlugin::changeJobProperties ()
+{
 }
 
 void HttpPlugin::ReadSettings ()

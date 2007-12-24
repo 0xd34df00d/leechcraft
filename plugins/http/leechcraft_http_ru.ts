@@ -147,162 +147,162 @@
 <context>
     <name>HttpImp</name>
     <message>
-        <location filename="httpimp.cpp" line="242"/>
+        <location filename="httpimp.cpp" line="243"/>
         <source>400 Bad request. The request contains bad syntax or cannot be fulfilled.</source>
         <translation>400 Плохой запрос. Запрос не понят сервером из-за наличия синтаксической ошибки. Клиенту следует повторно обратиться к ресурсу с изменённым запросом.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="245"/>
+        <location filename="httpimp.cpp" line="246"/>
         <source>401 Unauthorized. Authentication is possible but has failed or not yet been provided.</source>
         <translation>401 Неавторизован. Запрос требует идентификации пользователя. Клиент должен запросить имя и пароль у пользователя и передать их в записи WWW-Authenticate заголовка в следующем запросе. В случае ввода ошибочных данных сервер снова вернёт этот же статус.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="248"/>
+        <location filename="httpimp.cpp" line="249"/>
         <source>403 Forbidden. The request was legal, but server is refusing to respond to it. Authenticating will make no difference.</source>
         <translation>403 Запрещено. Сервер понял запрос, но он отказывается его выполнять из-за каких-то ограничений в доступе. Идентификация через протокол HTTP здесь не поможет. Скорее всего на сервере нужно провести аутентификацию другим способом, сделать запрос с определёнными параметрами или удовлетворить каким-либо условиям.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="251"/>
+        <location filename="httpimp.cpp" line="252"/>
         <source>404 Resource not found.</source>
         <translation>404 Ресурс не найден. Сервер понял запрос, но не нашёл соответствующего ресурса по указанному URI. Если серверу известно что по этому адресу был документ, то ему желательно использовать код 410 вместо этого. Этот код может использоваться вместо 403 если требуется тщательно скрыть от посторонних глаз определённые ресурсы.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="254"/>
+        <location filename="httpimp.cpp" line="255"/>
         <source>405 Method not allowed. Request method not supported by the URL.</source>
         <translation>405 Метод не поддерживается. Указанный клиентом метод нельзя применить к ресурсу. Сервер так же должен передать в заголовке ответа поле Allow со списком доступных методов.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="257"/>
+        <location filename="httpimp.cpp" line="258"/>
         <source>406 Not acceptable.</source>
         <translation>406 Не приемлимо. Запрошенный URI не может удовлетворить переданным в заголовке характеристикам. Если метод был не HEAD, то сервер должен вернуть список допустимых характеристик для данного ресурса.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="260"/>
+        <location filename="httpimp.cpp" line="261"/>
         <source>407 Proxy authentication required.</source>
         <translation>407 Необходима авторизация на прокси-сервере. Ответ аналогичен коду 401 за исключением того, что аутентификация производится для прокси-сервера. Механизм аналогичен идентификации на обычном сервере.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="263"/>
+        <location filename="httpimp.cpp" line="264"/>
         <source>408 Request timeout.</source>
         <translation>408 Время ожидания истекло. Время ожидания сервером передачи от клиента истекло. Клиент может повторить аналогичный предыдущему запрос в любое время.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="266"/>
+        <location filename="httpimp.cpp" line="267"/>
         <source>409 Conflict.</source>
         <translation>409 Конфликт. Запрос не может выполнен из-за конфликтного обращения к ресурсу. Такое возможно, например, когда два клиента пытаются изменить ресурс с помощью метода PUT.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="269"/>
+        <location filename="httpimp.cpp" line="270"/>
         <source>410 Gone. Resource is not available and will not be available again. Maybe it was intentionally removed.</source>
         <translation>410 Удален. Такой ответ сервер посылает когда ресурс раньше был по указанному URI, но был удалён и теперь не доступен. Серверу в этом случае не известно и местоположение альтернативного документа (например, копии). Если у сервера есть подозрение что документ в ближайшее время может быть восстановлен, то лучше клиенту передать код 404.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="272"/>
+        <location filename="httpimp.cpp" line="273"/>
         <source>411 Length required.</source>
         <translation>411 Необходима длина. Для указанного ресурса клиент должен указать Content-Length в заголовке запроса. Без указания этого поля не стоит делать повторную попытку запроса к серверу по данному URI.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="275"/>
+        <location filename="httpimp.cpp" line="276"/>
         <source>412 Precondition failed.</source>
         <translation>412 Предварительное условие не удовлетворено. Возвращается если ни одно из условных полей заголовка запроса не было выполнено.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="278"/>
+        <location filename="httpimp.cpp" line="279"/>
         <source>413 Request entity too large.</source>
         <translation>413 Запрашиваемые данные слишком большие. Возвращается если сервер по каким-то причинам не может передать запрашиваемый объём информации. Если проблема временная, то сервер может в ответе указать в поле Retry-After через которое можно повторить аналогичный запрос.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="281"/>
+        <location filename="httpimp.cpp" line="282"/>
         <source>414 Request URI too long.</source>
         <translation>414 Запрашиваемый URI слишком длинный. Сервер не может обработать запрос из-за слишком длинного указанного URI. Такую ошибку можно спровоцировать, например, когда клиент пытается передать длинные параметры через метод GET, а не POST.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="284"/>
+        <location filename="httpimp.cpp" line="285"/>
         <source>415 Unsupported media type.</source>
         <translation>415 Неподдерживаемый тип данных. По каким-то причинам сервер отказывается работать с указанным типом данных при данном методе.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="287"/>
+        <location filename="httpimp.cpp" line="288"/>
         <source>417 Expectation failed.</source>
         <translation>417 Ожидаемое ошибочно. По каким-то причинам сервер не может удовлетворить значению поля Except заголовка запроса.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="290"/>
+        <location filename="httpimp.cpp" line="291"/>
         <source>422 Unprocessable entity (WebDAV). The request was well-formed but was unable to be followed due to semantic errors.</source>
         <translation>422 Необрабатываемый экземпляр (WebDAV). Сервер успешно принял запрос, может работать с указанным видом данных, в теле запроса XML-документ имеет верный синтаксис, но имеется какая-то логическая ошибка из-за которой не возможно произвести операцию над ресурсом.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="293"/>
+        <location filename="httpimp.cpp" line="294"/>
         <source>423 Locked (WebDAV). The resource that is being accessed is locked.</source>
         <translation>423 Заблокировано (WebDAV). Целевой ресурс из запроса заблокирован от применения к нему указанного метода.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="296"/>
+        <location filename="httpimp.cpp" line="297"/>
         <source>424 Failed dependency (WebDAV). The request failed due to failure of a previous request.</source>
         <translation>424 Неудовлетворенная зависимость (WebDAV). Реализация текущего запроса может зависеть от успешности выполнения другой операции. Если она провалена и из-за этого нельзя выполнить текущий запрос, то сервер вернёт код 424.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="299"/>
+        <location filename="httpimp.cpp" line="300"/>
         <source>425 Unordered collection (WebDAV). You really never should see this message.</source>
         <translation>425 Неупорядоченная коллекция (WebDAV). Ты не должен видеть это сообщение, так как этот код ответа нигде не применяется.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="302"/>
+        <location filename="httpimp.cpp" line="303"/>
         <source>426 Upgrade required. The client should switch to TLS/1.0.</source>
         <translation>426 Необходимо обновление. Сервер указывает клиенту на необходимость обновить протокол (TLS/1.0). Заголовок ответа должен содержать правильно сформированные поля Upgrade и Connection.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="305"/>
+        <location filename="httpimp.cpp" line="306"/>
         <source>449 Retry with. A Microsoft extension: The request should be retried after doing the appropriate action.</source>
         <translation>449 Попробуй снова. Мелкомягкое расширение: запрос должен быть повторен после выполнения соответствующих действий.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="308"/>
+        <location filename="httpimp.cpp" line="309"/>
         <source>500 Internal server error. Server failed to fulfil the request due to misconfiguration.</source>
         <translation>500 Внутренняя ошибка сервера. Серверу не удалось выполнить запрос из-за внутренней ошибки, не входящей в другие класса 5xx.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="311"/>
+        <location filename="httpimp.cpp" line="312"/>
         <source>501 Not implemented.</source>
         <translation>501 Не реализовано. Сервер не поддерживает возможностей, необходимых для обработки запроса. Типичный ответ для случаев, когда сервер не понимает указанный в запросе метод.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="314"/>
+        <location filename="httpimp.cpp" line="315"/>
         <source>502 Bad gateway.</source>
         <translation>502 Плохой шлюз. Сервер в роли шлюза или прокси получил сообщение о неудачном выполнении промежуточной операции.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="317"/>
+        <location filename="httpimp.cpp" line="318"/>
         <source>503 Service unavailable.</source>
         <translation>503 Сервис недоступен. Сервер временно не имеет возможности обрабатывать запросы по техническим причинам (обслуживание, перегрузка и прочее). В поле Retry-After заголовка сервер может указать время, через которое клиенту рекомендуется повторить запрос. Хотя во время перегрузки очевидным является сразу разрывать соединение, эффективней может оказаться установка большого значения поля Retry-After для уменьшения частоты избыточных запросов.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="320"/>
+        <location filename="httpimp.cpp" line="321"/>
         <source>504 Gateway timeout.</source>
         <translation>504 Шлюз не отвечает. Сервер в роли шлюза или прокси не дождался ответа от вышестоящего сервера для завершения текущего запроса.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="323"/>
+        <location filename="httpimp.cpp" line="324"/>
         <source>505 HTTP version not supported.</source>
         <translation>505 Версия HTTP не поддерживается. Сервер не поддерживает или отказывается поддерживать указанную в запросе версию протокола HTTP.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="326"/>
+        <location filename="httpimp.cpp" line="327"/>
         <source>506 Variant also negotiates.</source>
         <translation>506 Вариант тоже согласован. В результате ошибочной конфигурации выбранный вариант указывает сам на себя, из-за чего процесс связывания прерывается.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="329"/>
+        <location filename="httpimp.cpp" line="330"/>
         <source>507 Insufficient storage (WebDAV).</source>
         <translation>507 Не хватает места (WebDAV). Не хватает места для выполнения текущего запроса. Проблема может быть временной.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="332"/>
+        <location filename="httpimp.cpp" line="333"/>
         <source>509 Bandwidth limit exceeded.</source>
         <translation>509 Превышен предел полосы пропускания. Неофициальный код, тем не менее, довольно часто используемый. Используется для указания израсходованной полосы пропускания.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="335"/>
+        <location filename="httpimp.cpp" line="336"/>
         <source>510 Not extented.</source>
         <translation>510 Не расширено. На сервере отсутствует расширение, которое планирует использовать клиент. Сервер может дополнительно передать информацию о доступных ему расширениях.</translation>
     </message>
@@ -326,91 +326,91 @@
     </message>
     <message>
         <location filename="httpplugin.cpp" line="92"/>
-        <source>Add job...</source>
+        <source>Add...</source>
         <translation>Добавить задание...</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="94"/>
-        <source>Delete selected active job</source>
-        <translation>Удалить выделенное задание</translation>
+        <source>Add a new job</source>
+        <translation>Добавить новое задание задание</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="97"/>
         <source>Start current</source>
-        <translation>Запустить выделенное</translation>
+        <translation type="obsolete">Запустить выделенное</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="98"/>
+        <location filename="httpplugin.cpp" line="100"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="99"/>
+        <location filename="httpplugin.cpp" line="102"/>
         <source>Start all</source>
         <translation>Запустить все</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="100"/>
+        <location filename="httpplugin.cpp" line="103"/>
         <source>Ctrl+Shift+S</source>
         <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="101"/>
         <source>Stop current</source>
-        <translation>Остановить выделенное</translation>
+        <translation type="obsolete">Остановить выделенное</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="102"/>
+        <location filename="httpplugin.cpp" line="106"/>
         <source>Ctrl+I</source>
         <translation>Ctrl+I</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="103"/>
+        <location filename="httpplugin.cpp" line="108"/>
         <source>Stop all</source>
         <translation>Остановить все</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="104"/>
+        <location filename="httpplugin.cpp" line="109"/>
         <source>Ctrl+Shift+I</source>
         <translation>Ctrl+Shift+I</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="108"/>
         <source>Delete selected finished job</source>
-        <translation>Удалить выделенную запись из истории</translation>
+        <translation type="obsolete">Удалить выделенную запись из истории</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="139"/>
+        <location filename="httpplugin.cpp" line="153"/>
         <source>Autoadjust interface</source>
         <translation>Подстроить интерфейс</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="141"/>
+        <location filename="httpplugin.cpp" line="157"/>
         <source>Preferences...</source>
         <translation>Настройки...</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="142"/>
+        <location filename="httpplugin.cpp" line="118"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="180"/>
+        <location filename="httpplugin.cpp" line="198"/>
         <source>%</source>
         <translation>%</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="205"/>
+        <location filename="httpplugin.cpp" line="223"/>
         <source>Local name</source>
         <translation>Локальное имя</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="205"/>
+        <location filename="httpplugin.cpp" line="223"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="180"/>
+        <location filename="httpplugin.cpp" line="198"/>
         <source>Speed</source>
         <translation>Скорость</translation>
     </message>
@@ -425,22 +425,22 @@
         <translation type="obsolete">Размер</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="205"/>
+        <location filename="httpplugin.cpp" line="223"/>
         <source>Size</source>
         <translation>Размер</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="414"/>
+        <location filename="httpplugin.cpp" line="432"/>
         <source>0</source>
         <translation>0</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="563"/>
+        <location filename="httpplugin.cpp" line="581"/>
         <source>: Preferences</source>
         <translation>: Настройки</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="568"/>
+        <location filename="httpplugin.cpp" line="586"/>
         <source>Job error</source>
         <translation>Ошибка задания</translation>
     </message>
@@ -450,79 +450,179 @@
         <translation type="obsolete">Задание с URL %1 говорит о следующей ошибке:&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="583"/>
+        <location filename="httpplugin.cpp" line="601"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="230"/>
+        <location filename="httpplugin.cpp" line="248"/>
         <source>Simple HTTP and FTP plugin, providing basic functionality.</source>
         <translation>Простой HTTP/FTP плагин, обеспечивающий базовую функциональность.</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="105"/>
+        <location filename="httpplugin.cpp" line="111"/>
         <source>Get file size</source>
         <translation>Получить размер файла</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="118"/>
+        <location filename="httpplugin.cpp" line="131"/>
         <source>Copy URL to clipboard</source>
         <translation>Скопировать URL в буфер</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="107"/>
-        <source>Schedule selected</source>
+        <source>Stop selected job(s)</source>
         <translation>Запланировать выбранные задания</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="180"/>
+        <location filename="httpplugin.cpp" line="198"/>
         <source>State</source>
         <translation>Статус</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="180"/>
+        <location filename="httpplugin.cpp" line="198"/>
         <source>Remaining time</source>
         <translation>Оставшееся время</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="180"/>
+        <location filename="httpplugin.cpp" line="198"/>
         <source>Downloaded</source>
         <translation>Скачано</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="180"/>
+        <location filename="httpplugin.cpp" line="198"/>
         <source>Total</source>
         <translation>Размер</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="180"/>
+        <location filename="httpplugin.cpp" line="198"/>
         <source>Download time</source>
         <translation>Время загрузки</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="205"/>
+        <location filename="httpplugin.cpp" line="223"/>
         <source>Average speed</source>
         <translation>Средняя скорость</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="205"/>
+        <location filename="httpplugin.cpp" line="223"/>
         <source>Time to complete</source>
         <translation>Время до завершения</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="140"/>
         <source>Select active tasks list columns...</source>
-        <translation>Выбрать столбцы списка активных задач...</translation>
+        <translation type="obsolete">Выбрать столбцы списка активных задач...</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="149"/>
         <source>Select finished tasks list columns...</source>
-        <translation>Выбрать столбцы списка завершенных задач...</translation>
+        <translation type="obsolete">Выбрать столбцы списка завершенных задач...</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="568"/>
+        <location filename="httpplugin.cpp" line="586"/>
         <source>Job with URL&lt;br /&gt;%1&lt;br /&gt;signals about following error:&lt;br /&gt;&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;</source>
         <translation>Задание с URL&lt;br /&gt;%1&lt;br /&gt;сообщает об ошибке:&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="120"/>
+        <source>Delete</source>
+        <translation>Удалить</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="97"/>
+        <source>Delete selected job(s)</source>
+        <translation>Удалить выбранное задание(ия)</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="101"/>
+        <source>Start selected job(s)</source>
+        <translation>Запустить выбранное задание(ия)</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="104"/>
+        <source>Start all jobs</source>
+        <translation>Запустить все задания</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="105"/>
+        <source>Stop</source>
+        <translation>Остановить</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="110"/>
+        <source>Stop all jobs</source>
+        <translation>Остановить все задания</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="112"/>
+        <source>Get file size for selected jobs without downloading them</source>
+        <translation>Получить размер файла выбранных заданий без их загрузки</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="114"/>
+        <source>Schedule</source>
+        <translation>Запланировать</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="115"/>
+        <source>Schedule select job(s)</source>
+        <translation>Запланировать выбранное задание(ия)</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="117"/>
+        <source>Job properties...</source>
+        <translation>Свойства задания...</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="119"/>
+        <source>Change selected job&apos;s properties</source>
+        <translation>Изменить свойства выбранного задания</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="122"/>
+        <source>Delete selected finished job(s)</source>
+        <translation>Удалить выбранное законченное задание(ия)</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="154"/>
+        <source>Adjust interface to make all text in columns fit</source>
+        <translation>Подстроить интерфейс, чтобы текст во всех столбцах был полностью виден</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="155"/>
+        <source>Active jobs list columns...</source>
+        <translation>Столбцы списка активных заданий...</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="167"/>
+        <source>Select finished jobs list columns</source>
+        <translation>Выбрать столбцы списка завершенных заданий</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="158"/>
+        <source>Ctrl+Shift+P</source>
+        <translation>Ctrl+Shift+P</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="159"/>
+        <source>Open plugin&apos;s preferences dialog</source>
+        <translation>Отрыть диалог настроек плагина</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="166"/>
+        <source>Finished jobs list columns...</source>
+        <translation>Столбцы списка законченных заданий...</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="99"/>
+        <source>Start</source>
+        <translation>Запустить</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="156"/>
+        <source>Select active jobs list columns</source>
+        <translation>Выбрать столбцы списка активных заданий</translation>
     </message>
 </context>
 <context>
