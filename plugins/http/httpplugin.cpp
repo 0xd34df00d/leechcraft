@@ -565,7 +565,7 @@ void HttpPlugin::showPreferences ()
 
 void HttpPlugin::showJobErrorMessage (QString url, QString message)
 {
-	QMessageBox::warning (this, tr ("Job error"), tr ("Job with URL %1 signals about following error:<br /><code>%2</code>").arg (url).arg (message));
+	QMessageBox::warning (this, tr ("Job error"), tr ("Job with URL<br />%1<br />signals about following error:<br /><br /><em>%2</em>").arg (url).arg (message));
 }
 
 void HttpPlugin::showStoppedIndicator (unsigned int id)

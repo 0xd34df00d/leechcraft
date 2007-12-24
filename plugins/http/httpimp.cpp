@@ -164,10 +164,7 @@ bool HttpImp::ReadResponse ()
 		return true;
 	}
 	ParseFirstLine (br);
-	bool shouldWeReturn = DoPrimaryStuffWithResponse ();
-	if (shouldWeReturn)
-		return shouldWeReturn;
-	while (!shouldWeReturn)
+	while (true)
 	{
 		QByteArray lineRead;
 		try
@@ -188,7 +185,8 @@ bool HttpImp::ReadResponse ()
 		Response_.ContentLength_ = Response_.Fields_ ["content-length"].toULongLong ();
 		emit gotFileSize (Response_.ContentLength_);
 	}
-	shouldWeReturn = DoSecondaryStuffWithResponse ();
+
+	bool shouldWeReturn = DoStuffWithResponse ();
 
 	QDateTime dt = QDateTime::fromString (Response_.Fields_ ["last-modified"].left (25), "ddd, dd MMM yyyy HH:mm:ss");
 	RemoteFileInfo rfi = { true, dt, Response_.ContentLength_, Response_.Fields_ ["content-type"] };
@@ -213,7 +211,7 @@ void HttpImp::ParseFirstLine (const QString& str)
 	Response_.StatusReason_ = rest;
 }
 
-bool HttpImp::DoPrimaryStuffWithResponse ()
+bool HttpImp::DoStuffWithResponse ()
 {
 	switch (Response_.StatusCode_)
 	{
@@ -229,34 +227,116 @@ bool HttpImp::DoPrimaryStuffWithResponse ()
 		case ResetContent:
 		case PartialContent:
 		case MultiStatus_WEBDAV_:
+			return false;
 
 		// Will be handled later
 		case MovedPermanently:
-		case TemporaryRedirect:
 		case Found:
-			return false;
+		case SeeOther:
+		case TemporaryRedirect:
+			DoRedirect ();
+			return true;
 		case RequestedRangeNotSatisfiable:
 			emit finished ();
 			return true;
 		case BadRequest:
+			emit error (tr ("400 Bad request. The request contains bad syntax or cannot be fulfilled."));
+			return true;
+		case Unauthorized:
+			emit error (tr ("401 Unauthorized. Authentication is possible but has failed or not yet been provided."));
+			return true;
+		case Forbidden:
+			emit error (tr ("403 Forbidden. The request was legal, but server is refusing to respond to it. Authenticating will make no difference."));
+			return true;
 		case NotFound:
+			emit error (tr ("404 Resource not found."));
+			return true;
+		case MethodNotAllowed:
+			emit error (tr ("405 Method not allowed. Request method not supported by the URL."));
+			return true;
+		case NotAcceptable:
+			emit error (tr ("406 Not acceptable."));
+			return true;
+		case ProxyAuthenticationRequired:
+			emit error (tr ("407 Proxy authentication required."));
+			return true;
+		case RequestTimeout:
+			emit error (tr ("408 Request timeout."));
+			return true;
+		case Conflict:
+			emit error (tr ("409 Conflict."));
+			return true;
+		case Gone:
+			emit error (tr ("410 Gone. Resource is not available and will not be available again. Maybe it was intentionally removed."));
+			return true;
+		case LengthRequired:
+			emit error (tr ("411 Length required."));
+			return true;
+		case PreconditionFailed:
+			emit error (tr ("412 Precondition failed."));
+			return true;
+		case RequestEntityTooLarge:
+			emit error (tr ("413 Request entity too large."));
+			return true;
+		case RequestURITooLong:
+			emit error (tr ("414 Request URI too long."));
+			return true;
+		case UnsupportedMediaType:
+			emit error (tr ("415 Unsupported media type."));
+			return true;
+		case ExpectationFailed:
+			emit error (tr ("417 Expectation failed."));
+			return true;
+		case UnprocessableEntity_WEBDAV_:
+			emit error (tr ("422 Unprocessable entity (WebDAV). The request was well-formed but was unable to be followed due to semantic errors."));
+			return true;
+		case Locked_WEBDAV_:
+			emit error (tr ("423 Locked (WebDAV). The resource that is being accessed is locked."));
+			return true;
+		case FailedDependency_WEBDAV_:
+			emit error (tr ("424 Failed dependency (WebDAV). The request failed due to failure of a previous request."));
+			return true;
+		case UnorderedCollection_WEBDAV_:
+			emit error (tr ("425 Unordered collection (WebDAV). You really never should see this message."));
+			return true;
+		case UpgradeRequired:
+			emit error (tr ("426 Upgrade required. The client should switch to TLS/1.0."));
+			return true;
+		case RetryWith:
+			emit error (tr ("449 Retry with. A Microsoft extension: The request should be retried after doing the appropriate action."));
+			return true;
+		case InternalServerError:
+			emit error (tr ("500 Internal server error. Server failed to fulfil the request due to misconfiguration."));
+			return true;
+		case NotImplemented:
+			emit error (tr ("501 Not implemented."));
+			return true;
+		case BadGateway:
+			emit error (tr ("502 Bad gateway."));
+			return true;
+		case ServiceUnavailable:
+			emit error (tr ("503 Service unavailable."));
+			return true;
+		case GatewayTimeout:
+			emit error (tr ("504 Gateway timeout."));
+			return true;
+		case HTTPVersionNotSupported:
+			emit error (tr ("505 HTTP version not supported."));
+			return true;
+		case VariantAlsoNegotiates:
+			emit error (tr ("506 Variant also negotiates."));
+			return true;
+		case InsufficientStorage_WEBDAV_:
+			emit error (tr ("507 Insufficient storage (WebDAV)."));
+			return true;
+		case BandwidthLimitExceeded:
+			emit error (tr ("509 Bandwidth limit exceeded."));
+			return true;
+		case NotExtented:
+			emit error (tr ("510 Not extented."));
 			return true;
 		default:
 			throw Exceptions::NotImplemented (QString ("The HTTP status code " + QString::number (Response_.StatusCode_) + " wasn't implemented yet. Please, send the bugreport to us with URL of file you've tried to download.").toStdString ());
-	}
-}
-
-bool HttpImp::DoSecondaryStuffWithResponse ()
-{
-	switch (Response_.StatusCode_)
-	{
-		case MovedPermanently:
-		case TemporaryRedirect:
-		case Found:
-			DoRedirect ();
-			return true;
-		default:
-			return false;
 	}
 }
 

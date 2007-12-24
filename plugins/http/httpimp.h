@@ -101,8 +101,7 @@ private:
 	void WriteHeaders ();
 	bool ReadResponse ();
 	void ParseFirstLine (const QString&);
-	bool DoPrimaryStuffWithResponse ();
-	bool DoSecondaryStuffWithResponse ();
+	bool DoStuffWithResponse ();
 	void ParseSingleLine (const QString&);
 	void DoRedirect ();
 	void Finalize ();

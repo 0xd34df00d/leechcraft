@@ -12,6 +12,10 @@ Batcher:
 Updater:
 * Few inter-plugin communication enhancements.
 
+Cron:
++ Started.
++ Started work on single-shot jobs.
+
 HTTP/FTP:
 + Now shows current (momental) speed too.
 + Now shows remaining time with current/overall speed.
@@ -22,6 +26,7 @@ HTTP/FTP:
 + User-selectable display of current speed/time.
 + Configurable proxy user & password. We should only implement the
   proxy support itself now :)
++ Show job errors with brief description on HTTP errors.
 * Deleting a running job no longer crashes the program.
 * Deleting old jobs from settings on exit.
 * Few interface enhancements.

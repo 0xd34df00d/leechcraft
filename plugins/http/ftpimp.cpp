@@ -365,6 +365,7 @@ void FtpImp::DoQuery (const QFileInfo& fileInfo)
 	}
 	else
 		throw NlstFailed ();
+
 }
 
 void FtpImp::DoInitTransfer (const QString& filename)
