@@ -252,6 +252,13 @@ void JobManager::SetProvider (QObject *object, const QString& feature)
 	}
 }
 
+void JobManager::UpdateParams (int id, JobParams *params)
+{
+	Job *job = Jobs_ [ID2Pos_ [id]];
+	if (job->GetState () == Job::StateIdle)
+		job->UpdateParams (params);
+}
+
 void JobManager::jobStopHandler (unsigned int id)
 {
 	JobRepresentation *jr = GetJobRepresentation (id);

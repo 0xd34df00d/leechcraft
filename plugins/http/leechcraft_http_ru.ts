@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1">
-<defaultcodec></defaultcodec>
 <context>
     <name>ColumnSelector</name>
     <message>
@@ -310,27 +309,27 @@
 <context>
     <name>HttpPlugin</name>
     <message>
-        <location filename="httpplugin.cpp" line="46"/>
+        <location filename="httpplugin.cpp" line="47"/>
         <source>HTTP/FTP worker 0.2</source>
         <translation>Скачиватель по HTTP/FTP 0.2</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="81"/>
+        <location filename="httpplugin.cpp" line="82"/>
         <source>&amp;Tools</source>
         <translation>&amp;Инструменты</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="80"/>
+        <location filename="httpplugin.cpp" line="81"/>
         <source>&amp;Jobs</source>
         <translation>&amp;Задания</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="92"/>
+        <location filename="httpplugin.cpp" line="93"/>
         <source>Add...</source>
         <translation>Добавить задание...</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="94"/>
+        <location filename="httpplugin.cpp" line="95"/>
         <source>Add a new job</source>
         <translation>Добавить новое задание задание</translation>
     </message>
@@ -340,17 +339,17 @@
         <translation type="obsolete">Запустить выделенное</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="100"/>
+        <location filename="httpplugin.cpp" line="101"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="102"/>
+        <location filename="httpplugin.cpp" line="103"/>
         <source>Start all</source>
         <translation>Запустить все</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="103"/>
+        <location filename="httpplugin.cpp" line="104"/>
         <source>Ctrl+Shift+S</source>
         <translation>Ctrl+Shift+S</translation>
     </message>
@@ -360,57 +359,57 @@
         <translation type="obsolete">Остановить выделенное</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="106"/>
+        <location filename="httpplugin.cpp" line="107"/>
         <source>Ctrl+I</source>
         <translation>Ctrl+I</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="108"/>
+        <location filename="httpplugin.cpp" line="109"/>
         <source>Stop all</source>
         <translation>Остановить все</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="109"/>
+        <location filename="httpplugin.cpp" line="110"/>
         <source>Ctrl+Shift+I</source>
         <translation>Ctrl+Shift+I</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="108"/>
-        <source>Delete selected finished job</source>
-        <translation type="obsolete">Удалить выделенную запись из истории</translation>
+        <source>Stop selected job(s)</source>
+        <translation>Запланировать выбранные задания</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="153"/>
+        <location filename="httpplugin.cpp" line="154"/>
         <source>Autoadjust interface</source>
         <translation>Подстроить интерфейс</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="157"/>
+        <location filename="httpplugin.cpp" line="158"/>
         <source>Preferences...</source>
         <translation>Настройки...</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="118"/>
+        <location filename="httpplugin.cpp" line="119"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="198"/>
+        <location filename="httpplugin.cpp" line="199"/>
         <source>%</source>
         <translation>%</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="223"/>
+        <location filename="httpplugin.cpp" line="224"/>
         <source>Local name</source>
         <translation>Локальное имя</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="223"/>
+        <location filename="httpplugin.cpp" line="224"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="198"/>
+        <location filename="httpplugin.cpp" line="199"/>
         <source>Speed</source>
         <translation>Скорость</translation>
     </message>
@@ -425,22 +424,22 @@
         <translation type="obsolete">Размер</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="223"/>
+        <location filename="httpplugin.cpp" line="224"/>
         <source>Size</source>
         <translation>Размер</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="432"/>
+        <location filename="httpplugin.cpp" line="433"/>
         <source>0</source>
         <translation>0</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="581"/>
+        <location filename="httpplugin.cpp" line="582"/>
         <source>: Preferences</source>
         <translation>: Настройки</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="586"/>
+        <location filename="httpplugin.cpp" line="587"/>
         <source>Job error</source>
         <translation>Ошибка задания</translation>
     </message>
@@ -450,62 +449,57 @@
         <translation type="obsolete">Задание с URL %1 говорит о следующей ошибке:&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="601"/>
+        <location filename="httpplugin.cpp" line="605"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="248"/>
+        <location filename="httpplugin.cpp" line="249"/>
         <source>Simple HTTP and FTP plugin, providing basic functionality.</source>
         <translation>Простой HTTP/FTP плагин, обеспечивающий базовую функциональность.</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="111"/>
+        <location filename="httpplugin.cpp" line="112"/>
         <source>Get file size</source>
         <translation>Получить размер файла</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="131"/>
+        <location filename="httpplugin.cpp" line="132"/>
         <source>Copy URL to clipboard</source>
         <translation>Скопировать URL в буфер</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="107"/>
-        <source>Stop selected job(s)</source>
-        <translation>Запланировать выбранные задания</translation>
-    </message>
-    <message>
-        <location filename="httpplugin.cpp" line="198"/>
+        <location filename="httpplugin.cpp" line="199"/>
         <source>State</source>
         <translation>Статус</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="198"/>
+        <location filename="httpplugin.cpp" line="199"/>
         <source>Remaining time</source>
         <translation>Оставшееся время</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="198"/>
+        <location filename="httpplugin.cpp" line="199"/>
         <source>Downloaded</source>
         <translation>Скачано</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="198"/>
+        <location filename="httpplugin.cpp" line="199"/>
         <source>Total</source>
         <translation>Размер</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="198"/>
+        <location filename="httpplugin.cpp" line="199"/>
         <source>Download time</source>
         <translation>Время загрузки</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="223"/>
+        <location filename="httpplugin.cpp" line="224"/>
         <source>Average speed</source>
         <translation>Средняя скорость</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="223"/>
+        <location filename="httpplugin.cpp" line="224"/>
         <source>Time to complete</source>
         <translation>Время до завершения</translation>
     </message>
@@ -520,107 +514,107 @@
         <translation type="obsolete">Выбрать столбцы списка завершенных задач...</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="586"/>
+        <location filename="httpplugin.cpp" line="587"/>
         <source>Job with URL&lt;br /&gt;%1&lt;br /&gt;signals about following error:&lt;br /&gt;&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;</source>
         <translation>Задание с URL&lt;br /&gt;%1&lt;br /&gt;сообщает об ошибке:&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="120"/>
+        <location filename="httpplugin.cpp" line="121"/>
         <source>Delete</source>
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="97"/>
+        <location filename="httpplugin.cpp" line="98"/>
         <source>Delete selected job(s)</source>
         <translation>Удалить выбранное задание(ия)</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="101"/>
+        <location filename="httpplugin.cpp" line="102"/>
         <source>Start selected job(s)</source>
         <translation>Запустить выбранное задание(ия)</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="104"/>
+        <location filename="httpplugin.cpp" line="105"/>
         <source>Start all jobs</source>
         <translation>Запустить все задания</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="105"/>
+        <location filename="httpplugin.cpp" line="106"/>
         <source>Stop</source>
         <translation>Остановить</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="110"/>
+        <location filename="httpplugin.cpp" line="111"/>
         <source>Stop all jobs</source>
         <translation>Остановить все задания</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="112"/>
+        <location filename="httpplugin.cpp" line="113"/>
         <source>Get file size for selected jobs without downloading them</source>
         <translation>Получить размер файла выбранных заданий без их загрузки</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="114"/>
+        <location filename="httpplugin.cpp" line="115"/>
         <source>Schedule</source>
         <translation>Запланировать</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="115"/>
+        <location filename="httpplugin.cpp" line="116"/>
         <source>Schedule select job(s)</source>
         <translation>Запланировать выбранное задание(ия)</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="117"/>
+        <location filename="httpplugin.cpp" line="118"/>
         <source>Job properties...</source>
         <translation>Свойства задания...</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="119"/>
+        <location filename="httpplugin.cpp" line="120"/>
         <source>Change selected job&apos;s properties</source>
         <translation>Изменить свойства выбранного задания</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="122"/>
+        <location filename="httpplugin.cpp" line="123"/>
         <source>Delete selected finished job(s)</source>
         <translation>Удалить выбранное законченное задание(ия)</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="154"/>
+        <location filename="httpplugin.cpp" line="155"/>
         <source>Adjust interface to make all text in columns fit</source>
         <translation>Подстроить интерфейс, чтобы текст во всех столбцах был полностью виден</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="155"/>
+        <location filename="httpplugin.cpp" line="156"/>
         <source>Active jobs list columns...</source>
         <translation>Столбцы списка активных заданий...</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="167"/>
+        <location filename="httpplugin.cpp" line="168"/>
         <source>Select finished jobs list columns</source>
         <translation>Выбрать столбцы списка завершенных заданий</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="158"/>
+        <location filename="httpplugin.cpp" line="159"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="159"/>
+        <location filename="httpplugin.cpp" line="160"/>
         <source>Open plugin&apos;s preferences dialog</source>
         <translation>Отрыть диалог настроек плагина</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="166"/>
+        <location filename="httpplugin.cpp" line="167"/>
         <source>Finished jobs list columns...</source>
         <translation>Столбцы списка законченных заданий...</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="99"/>
+        <location filename="httpplugin.cpp" line="100"/>
         <source>Start</source>
         <translation>Запустить</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="156"/>
+        <location filename="httpplugin.cpp" line="157"/>
         <source>Select active jobs list columns</source>
         <translation>Выбрать столбцы списка активных заданий</translation>
     </message>
@@ -628,17 +622,17 @@
 <context>
     <name>Job</name>
     <message>
-        <location filename="job.cpp" line="254"/>
+        <location filename="job.cpp" line="262"/>
         <source>Could not create directory&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Stopping work.</source>
         <translation>Не могу создать директорию&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Останавливаюсь.</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="322"/>
+        <location filename="job.cpp" line="330"/>
         <source>Could not open file for write/append&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Flushing cache to temp file&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;and stopping work.</source>
         <translation>Не могу открыть для записи файл &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Скидываю кэш в файл&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;и останавливаюсь.</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="328"/>
+        <location filename="job.cpp" line="336"/>
         <source>Could not open temporary file for write&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;</source>
         <translation>Не могу открыть для записи временный файл&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;</translation>
     </message>
@@ -663,37 +657,57 @@
     <message>
         <location filename="jobadderdialog.cpp" line="10"/>
         <source>URL:</source>
-        <translation>URL:</translation>
+        <translation type="obsolete">URL:</translation>
     </message>
     <message>
         <location filename="jobadderdialog.cpp" line="11"/>
         <source>Local path:</source>
-        <translation>Локальный путь:</translation>
+        <translation type="obsolete">Локальный путь:</translation>
     </message>
     <message>
-        <location filename="jobadderdialog.cpp" line="25"/>
+        <location filename="jobadderdialog.ui" line="45"/>
         <source>Browse...</source>
         <translation>Обзор...</translation>
     </message>
     <message>
         <location filename="jobadderdialog.cpp" line="28"/>
         <source>OK</source>
-        <translation>OK</translation>
+        <translation type="obsolete">OK</translation>
     </message>
     <message>
         <location filename="jobadderdialog.cpp" line="29"/>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation type="obsolete">Отмена</translation>
     </message>
     <message>
         <location filename="jobadderdialog.cpp" line="34"/>
         <source>Autostart</source>
-        <translation>Автозапуск</translation>
+        <translation type="obsolete">Автозапуск</translation>
     </message>
     <message>
-        <location filename="jobadderdialog.cpp" line="80"/>
+        <location filename="jobadderdialog.cpp" line="43"/>
         <source>Select directory</source>
         <translation>Выбрать директорию</translation>
+    </message>
+    <message>
+        <location filename="jobadderdialog.ui" line="21"/>
+        <source>URL</source>
+        <translation>URL</translation>
+    </message>
+    <message>
+        <location filename="jobadderdialog.ui" line="35"/>
+        <source>Local path</source>
+        <translation>Локальный путь</translation>
+    </message>
+    <message>
+        <location filename="jobadderdialog.ui" line="54"/>
+        <source>Automatically start the job</source>
+        <translation>Автоматически запустить задание</translation>
+    </message>
+    <message>
+        <location filename="jobadderdialog.ui" line="13"/>
+        <source>Add a job</source>
+        <translation>Добавление задания</translation>
     </message>
 </context>
 <context>

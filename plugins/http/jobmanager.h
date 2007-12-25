@@ -57,6 +57,7 @@ public:
 	void StartAll ();
 	void StopAll ();
 	void SetProvider (QObject*, const QString&);
+	void UpdateParams (int, JobParams*);
 public slots:
 	int addJob (JobParams*);
 protected:

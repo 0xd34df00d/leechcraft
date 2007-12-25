@@ -16,6 +16,7 @@
 #include "finishedjob.h"
 #include "mainviewdelegate.h"
 #include "contextablelist.h"
+#include "jobpropertiesdialog.h"
 
 void HttpPlugin::Init ()
 {
@@ -592,7 +593,10 @@ void HttpPlugin::showStoppedIndicator (unsigned int id)
 	{
 		JobListItem *item = dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i));
 		if (item->GetID () == id)
+		{
 			item->setIcon (TListID, QIcon (":/resources/images/stopjob.png"));
+			break;
+		}
 	}
 }
 
@@ -657,6 +661,7 @@ void HttpPlugin::setActionsEnabled ()
 	StopJobAction_->setEnabled (tasksItems.size ());
 	GetFileSizeAction_->setEnabled (tasksItems.size ());
 	ScheduleSelectedAction_->setEnabled (tasksItems.size () && CronEnabled_);
+	JobPropertiesAction_->setEnabled (tasksItems.size ());
 
 	StartAllAction_->setEnabled (TasksList_->topLevelItemCount ());
 	StopAllAction_->setEnabled (TasksList_->topLevelItemCount ());
@@ -704,6 +709,24 @@ void HttpPlugin::selectFinishedTasksListColumns ()
 
 void HttpPlugin::changeJobProperties ()
 {
+	QList<QTreeWidgetItem*> items = TasksList_->selectedItems ();
+	if (!items.size ())
+		return;
+
+	int id = dynamic_cast<JobListItem*> (items.at (0))->GetID ();
+
+	JobRepresentation *jr = JobManager_->GetJobRepresentation (id);
+	JobPropertiesDialog dia (jr);
+	delete jr;
+
+	if (dia.exec () == QDialog::Rejected)
+		return;
+	else
+	{
+		JobParams *p = dia.GetParams ();
+		JobManager_->UpdateParams (id, p);
+		delete p;
+	}
 }
 
 void HttpPlugin::ReadSettings ()

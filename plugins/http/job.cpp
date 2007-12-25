@@ -245,6 +245,14 @@ Job::State Job::GetState () const
 	return State_;
 }
 
+void Job::UpdateParams (JobParams *p)
+{
+	Params_->URL_ = p->URL_;
+	Params_->LocalName_ = p->LocalName_;
+	Params_->IsFullName_ = true;
+	emit updateDisplays (GetID ());
+}
+
 void Job::handleNewFiles (QStringList *files)
 {
 	QFileInfo fileInfo (Params_->LocalName_);

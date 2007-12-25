@@ -29,6 +29,7 @@ HEADERS += httpplugin.h \
 	mainviewdelegate.h \
 	contextablelist.h \
 	columnselector.h \
+	jobpropertiesdialog.h \
 	globals.h
 SOURCES += httpplugin.cpp \
 	jobadderdialog.cpp \
@@ -44,6 +45,7 @@ SOURCES += httpplugin.cpp \
 	mainviewdelegate.cpp \
 	contextablelist.cpp \
 	columnselector.cpp \
+	jobpropertiesdialog.cpp \
 	settingsmanager.cpp
 RESOURCES = resources.qrc
 win32:LIBS += -L../.. -lplugininterface -lexceptions -lsettingsdialog

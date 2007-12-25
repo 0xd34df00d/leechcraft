@@ -51,6 +51,7 @@ public:
 	void GetFileSize ();
 	void Release ();
 	State GetState () const;
+	void UpdateParams (JobParams*);
 private slots:
 	void handleRemoteFileInfo (const ImpBase::RemoteFileInfo&);
 	void handleNewFiles (QStringList*);
