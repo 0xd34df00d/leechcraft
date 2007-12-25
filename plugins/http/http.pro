@@ -13,7 +13,7 @@ QT += network
 
 # Input
 TRANSLATIONS = leechcraft_http_ru.ts
-FORMS += fileexistsdialog.ui columnselector.ui
+FORMS += fileexistsdialog.ui columnselector.ui jobadderdialog.ui
 HEADERS += httpplugin.h \
 	jobadderdialog.h \
 	jobparams.h \
