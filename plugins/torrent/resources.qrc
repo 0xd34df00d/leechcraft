@@ -8,5 +8,6 @@
 		<file>resources/images/bittorrent.png</file>
 		<file>resources/images/moveup.png</file>
 		<file>resources/images/movedown.png</file>
+		<file>leechcraft_torrent_ru.qm</file>
 	</qresource>
 </RCC>

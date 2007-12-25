@@ -12,6 +12,12 @@
 
 void TorrentPlugin::Init ()
 {
+	Q_INIT_RESOURCE (resources);
+	QTranslator *transl = new QTranslator (this);
+	QString localeName = QLocale::system ().name ();
+	transl->load (QString (":/leechcraft_torrent_") + localeName);
+	qApp->installTranslator (transl);
+
 	IsShown_ = false;
 	SaveChanges_ = false;
 

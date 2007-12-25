@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1">
+<defaultcodec></defaultcodec>
 <context>
     <name>ColumnSelector</name>
     <message>
@@ -622,34 +623,104 @@
 <context>
     <name>Job</name>
     <message>
-        <location filename="job.cpp" line="262"/>
+        <location filename="job.cpp" line="268"/>
         <source>Could not create directory&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Stopping work.</source>
         <translation>Не могу создать директорию&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Останавливаюсь.</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="330"/>
+        <location filename="job.cpp" line="339"/>
         <source>Could not open file for write/append&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Flushing cache to temp file&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;and stopping work.</source>
         <translation>Не могу открыть для записи файл &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Скидываю кэш в файл&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;и останавливаюсь.</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="336"/>
+        <location filename="job.cpp" line="345"/>
         <source>Could not open temporary file for write&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;</source>
         <translation>Не могу открыть для записи временный файл&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="167"/>
+        <location filename="job.cpp" line="170"/>
         <source>Question.</source>
         <translation>Вопрос.</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="167"/>
+        <location filename="job.cpp" line="170"/>
         <source>File on remote server is newer than local. Should I redownload it from scratch or just leave it alone?</source>
         <translation>Файл на удаленном сервере новее локального. Должен ли я грузить его сначала (отменить в противном случае)?</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="198"/>
+        <location filename="job.cpp" line="201"/>
         <source>File could be neither removed, nor truncated. Check your rights or smth.</source>
         <translation>Файл не может быть ни удален, ни усечен. Проверь права.</translation>
+    </message>
+    <message>
+        <location filename="job.cpp" line="403"/>
+        <source>Connection refused</source>
+        <translation>Соединение отклонено</translation>
+    </message>
+    <message>
+        <location filename="job.cpp" line="404"/>
+        <source>Remote host closed connection</source>
+        <translation>Удаленный сервер закрыл соединение</translation>
+    </message>
+    <message>
+        <location filename="job.cpp" line="405"/>
+        <source>Host not found</source>
+        <translation>Сервер не найден</translation>
+    </message>
+    <message>
+        <location filename="job.cpp" line="406"/>
+        <source>Socket access error</source>
+        <translation>Ошибка доступа к сокету</translation>
+    </message>
+    <message>
+        <location filename="job.cpp" line="407"/>
+        <source>Socker resource error</source>
+        <translation>Ошибка ресурса сокета</translation>
+    </message>
+    <message>
+        <location filename="job.cpp" line="408"/>
+        <source>Socket timed out</source>
+        <translation>Сокет истек временем</translation>
+    </message>
+    <message>
+        <location filename="job.cpp" line="409"/>
+        <source>Datagram too large</source>
+        <translation>Слишком большая датаграмма</translation>
+    </message>
+    <message>
+        <location filename="job.cpp" line="410"/>
+        <source>Network error</source>
+        <translation>Сетевая ошибка</translation>
+    </message>
+    <message>
+        <location filename="job.cpp" line="411"/>
+        <source>Address already in use</source>
+        <translation>Адрес уже используется</translation>
+    </message>
+    <message>
+        <location filename="job.cpp" line="412"/>
+        <source>Socket address not available</source>
+        <translation>Адрес сокета недоступен</translation>
+    </message>
+    <message>
+        <location filename="job.cpp" line="413"/>
+        <source>Unsupported socket operation</source>
+        <translation>Неподдерживаемая сокетом операция</translation>
+    </message>
+    <message>
+        <location filename="job.cpp" line="414"/>
+        <source>Unfinished socket operation</source>
+        <translation>Незаконченная операция с сокетом</translation>
+    </message>
+    <message>
+        <location filename="job.cpp" line="415"/>
+        <source>Proxy autentication required</source>
+        <translation>Требуется аутентификация на прокси-сервере</translation>
+    </message>
+    <message>
+        <location filename="job.cpp" line="416"/>
+        <source>Unknown socket error</source>
+        <translation>Неизвестная ошибка сокета</translation>
     </message>
 </context>
 <context>

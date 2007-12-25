@@ -78,7 +78,7 @@ private:
 	void FillErrorDictionary ();
 	void OpenFile ();
 	QString MakeUniqueNameFor (const QString&);
-	QString MakeFilename (const QString&, QString&) const;
+	QString MakeFilename () const;
 };
 
 #endif

@@ -60,7 +60,7 @@ public:
 	int GetPieceLengthAt (int) const;
 	const QBitArray& GetCompletedPieces () const;
 	void SetCompletedPieces (const QBitArray&);
-	const QString& GetErrorString () const;
+	QString GetErrorString () const;
 public slots:
 	void startDataVerification ();
 signals:

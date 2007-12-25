@@ -65,7 +65,6 @@ public:
 
 	const QByteArray& GetPeerID () const;
 	const QByteArray& GetInfoHash () const;
-	quint16 GetServerPort () const;
 
 	State GetState () const;
 	const QString& GetStateString () const;

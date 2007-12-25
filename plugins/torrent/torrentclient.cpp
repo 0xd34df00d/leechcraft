@@ -345,11 +345,6 @@ const QByteArray& TorrentClient::GetInfoHash () const
 	return TCI_->InfoHash_;
 }
 
-quint16 TorrentClient::GetServerPort () const
-{
-	qDebug () << "They've called us.";
-}
-
 TorrentClient::State TorrentClient::GetState () const
 {
 	return TCI_->State_;

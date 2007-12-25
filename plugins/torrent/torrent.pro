@@ -9,6 +9,7 @@ QT += network
 
 # Input
 RESOURCES = resources.qrc
+TRANSLATIONS = leechcraft_torrent_ru.ts
 HEADERS = torrentplugin.h \
 		  torrentfileparser.h \
 		  bencodeparser.h \

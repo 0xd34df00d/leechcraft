@@ -125,7 +125,7 @@ void FileManager::SetCompletedPieces (const QBitArray& pieces)
 	VerifiedPieces_ = pieces;
 }
 
-const QString& FileManager::GetErrorString () const
+QString FileManager::GetErrorString () const
 {
 	return ErrorString_;
 }
@@ -167,9 +167,6 @@ void FileManager::run ()
 		while (!Quit_ && !newWriteReqs.isEmpty ())
 		{
 			WriteRequest req = newWriteReqs.takeFirst ();
-//			Mutex_.unlock ();
-//			msleep (10);
-//			Mutex_.lock ();
 			WriteBlock (req.Index_, req.Offset_, req.Data_);
 		}
 

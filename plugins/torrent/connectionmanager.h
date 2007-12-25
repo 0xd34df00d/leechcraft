@@ -15,7 +15,7 @@ public:
 	void AddConnection (PeerConnection*);
 	void RemoveConnection (PeerConnection*);
 	int GetMaxConnections () const;
-	const QByteArray& GetClientID () const;
+	QByteArray GetClientID () const;
 };
 
 #endif

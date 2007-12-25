@@ -35,8 +35,8 @@ PeerConnection::PeerConnection (const QByteArray& id, QObject *parent)
 , State_ (Choking | Choked)
 , PendingBlockSizes_ (0)
 , GotHandshake_ (false)
-, SentHandshake_ (false)
 , GotPeerID_ (false)
+, SentHandshake_ (false)
 , NextLength_ (-1)
 , PendingRequestTimer_ (0)
 , KATimer_ (0)
@@ -44,7 +44,6 @@ PeerConnection::PeerConnection (const QByteArray& id, QObject *parent)
 , PeerID_ (id)
 , TorrentPeer_ (0)
 {
-	Socket_ = new QTcpSocket (parent);
 	std::memset (UploadSpeeds_, 0, sizeof (UploadSpeeds_));
 	std::memset (DownloadSpeeds_, 0, sizeof (DownloadSpeeds_));
 
@@ -53,19 +52,19 @@ PeerConnection::PeerConnection (const QByteArray& id, QObject *parent)
 
 	connect (this, SIGNAL (readyRead ()), this, SIGNAL (readyToTransfer ()));
 	connect (this, SIGNAL (connected ()), this, SIGNAL (readyToTransfer ()));
-	connect (Socket_, SIGNAL (connected ()), this, SIGNAL (connected ()));
-	connect (Socket_, SIGNAL (readyRead ()), this, SIGNAL (readyRead ()));
-	connect (Socket_, SIGNAL (disconnected ()), this, SIGNAL (disconnected ()));
-	connect (Socket_, SIGNAL (error (QAbstractSocket::SocketError)), this, SIGNAL (error (QAbstractSocket::SocketError)));
-	connect (Socket_, SIGNAL (bytesWritten (qint64)), this, SIGNAL (bytesWritten (qint64)));
-	connect (Socket_, SIGNAL (stateChanged (QAbstractSocket::SocketState)), this, SLOT (handleStateChange (QAbstractSocket::SocketState)));
+	connect (&Socket_, SIGNAL (connected ()), this, SIGNAL (connected ()));
+	connect (&Socket_, SIGNAL (readyRead ()), this, SIGNAL (readyRead ()));
+	connect (&Socket_, SIGNAL (disconnected ()), this, SIGNAL (disconnected ()));
+	connect (&Socket_, SIGNAL (error (QAbstractSocket::SocketError)), this, SIGNAL (error (QAbstractSocket::SocketError)));
+	connect (&Socket_, SIGNAL (bytesWritten (qint64)), this, SIGNAL (bytesWritten (qint64)));
+	connect (&Socket_, SIGNAL (stateChanged (QAbstractSocket::SocketState)), this, SLOT (handleStateChange (QAbstractSocket::SocketState)));
 }
 
 PeerConnection::~PeerConnection ()
 {
 }
 
-void PeerConnection::Initialize (const QByteArray& infoHash, quint32 pieceCount)
+void PeerConnection::Initialize (const QByteArray& infoHash, int pieceCount)
 {
 	InfoHash_ = infoHash;
 	PeerPieces_.resize (pieceCount);
@@ -143,13 +142,13 @@ void PeerConnection::SendNotInterested ()
 	State_ &= ~AmInterested;
 }
 
-void PeerConnection::SendPieceNotification (quint32 piece)
+void PeerConnection::SendPieceNotification (int piece)
 {
 	if (!SentHandshake_)
 		sendHandshake ();
 
 	char msg [] = { 0, 0, 0, 5, 4, 0, 0, 0, 0 };
-	ToNetworkData (piece, &(msg [5]));
+	ToNetworkData (piece, &msg [5]);
 	write (msg, sizeof (msg));
 }
 
@@ -173,21 +172,21 @@ void PeerConnection::SendPieceList (const QBitArray& bf)
 		}
 
 	char msg [] = { 0, 0, 0, 1, 5 };
-	ToNetworkData (bits.size () + 1, &(msg [0]));
+	ToNetworkData (bits.size () + 1, &msg [0]);
 	write (msg, sizeof (msg));
 	write (bits);
 }
 
-void PeerConnection::SendRequest (quint32 index, quint32 offset, quint32 length)
+void PeerConnection::SendRequest (int index, int offset, int length)
 {
 	char msg [] = { 0, 0, 0, 1, 6 };
-	ToNetworkData (13, &(msg [0]));
+	ToNetworkData (13, &msg [0]);
 	write (msg, sizeof (msg));
 
-	char numbers [4 * 3] = { 0 };
-	ToNetworkData (index, &(numbers [0]));
-	ToNetworkData (offset, &(numbers [4]));
-	ToNetworkData (length, &(numbers [8]));
+	char numbers [4 * 3];
+	ToNetworkData (index, &numbers [0]);
+	ToNetworkData (offset, &numbers [4]);
+	ToNetworkData (length, &numbers [8]);
 	write (numbers, sizeof (numbers));
 
 	Incoming_ << Block (index, offset, length);
@@ -197,41 +196,40 @@ void PeerConnection::SendRequest (quint32 index, quint32 offset, quint32 length)
 	PendingRequestTimer_ = startTimer (SettingsManager::Instance ()->GetPendingRequestTimeout ());
 }
 
-void PeerConnection::SendCancel (quint32 index, quint32 offset, quint32 length)
+void PeerConnection::SendCancel (int index, int offset, int length)
 {
 	char msg [] = { 0, 0, 0, 1, 8 };
-	ToNetworkData (13, &(msg [0]));
+	ToNetworkData (13, &msg [0]);
 	write (msg, sizeof (msg));
 	
-	char numbers [4 * 3] = { 0 };
-	ToNetworkData (index, &(numbers [0]));
-	ToNetworkData (offset, &(numbers [4]));
-	ToNetworkData (length, &(numbers [8]));
+	char numbers [4 * 3];
+	ToNetworkData (index, &numbers [0]);
+	ToNetworkData (offset, &numbers [4]);
+	ToNetworkData (length, &numbers [8]);
 	write (numbers, sizeof (numbers));
 
 	Incoming_.removeAll (Block (index, offset, length));
 }
 
-void PeerConnection::SendBlock (quint32 index, quint32 offset, const QByteArray& data)
+void PeerConnection::SendBlock (int index, int offset, const QByteArray& data)
 {
 	QByteArray block;
 
 	char msg [] = { 0, 0, 0, 1, 7 };
 
-	ToNetworkData (9 + data.size (), &(msg [0]));
+	ToNetworkData (9 + data.size (), &msg [0]);
 	block += QByteArray (msg, sizeof (msg));
 
 	char numbers [4 * 2];
-	ToNetworkData (index, &(numbers [0]));
-	ToNetworkData (offset, &(numbers [4]));
+	ToNetworkData (index, &numbers [0]);
+	ToNetworkData (offset, &numbers [4]);
 	block += QByteArray (numbers, sizeof (numbers));
-
 	block += data;
 
 	BlockInfo bi;
 	bi.Index_ = index;
 	bi.Offset_ = offset;
-	bi.Length_ = block.size ();
+	bi.Length_ = data.size ();
 	bi.Block_ = block;
 
 	PendingBlocks_ << bi;
@@ -253,7 +251,7 @@ qint64 PeerConnection::Read (qint64 bytes)
 	qint64 totalRead = 0;
 	do
 	{
-		qint64 bytesRead = Socket_->read (buffer, qMin<qint64> (bytes - totalRead, sizeof (buffer)));
+		qint64 bytesRead = Socket_.read (buffer, qMin<qint64> (bytes - totalRead, sizeof (buffer)));
 		if (bytesRead < 0)
 			break;
 
@@ -285,7 +283,7 @@ qint64 PeerConnection::Write (qint64 bytes)
 			PendingBlockSizes_ -= bi.Length_;
 			OutgoingBuffer_ += bi.Block_;
 		}
-		qint64 written = Socket_->write (OutgoingBuffer_.constData (), qMin<qint64> (bytes - totalWritten, OutgoingBuffer_.size ()));
+		qint64 written = Socket_.write (OutgoingBuffer_.constData (), qMin<qint64> (bytes - totalWritten, OutgoingBuffer_.size ()));
 
 		if (written <= 0)
 			return totalWritten ? totalWritten : written;
@@ -298,17 +296,17 @@ qint64 PeerConnection::Write (qint64 bytes)
 	return totalWritten;
 }
 
-quint64 PeerConnection::GetDownloadSpeed () const
+qint64 PeerConnection::GetDownloadSpeed () const
 {
-	quint64 sum = 0;
+	qint64 sum = 0;
 	for (uint i = 0; i < sizeof (DownloadSpeeds_) / sizeof (DownloadSpeeds_ [0]); ++i)
 		sum += DownloadSpeeds_ [i];
 	return sum / (MySpeedArrayRotateSize * 2);
 }
 
-quint64 PeerConnection::GetUploadSpeed () const
+qint64 PeerConnection::GetUploadSpeed () const
 {
-	quint64 sum = 0;
+	qint64 sum = 0;
 	for (uint i = 0; i < sizeof (UploadSpeeds_) / sizeof (UploadSpeeds_ [0]); ++i)
 		sum += UploadSpeeds_ [i];
 	return sum / (MySpeedArrayRotateSize * 2);
@@ -316,38 +314,38 @@ quint64 PeerConnection::GetUploadSpeed () const
 
 bool PeerConnection::CanTransfer () const
 {
-	return GetBytesAvailable () > 0 || Socket_->bytesAvailable () > 0 || !OutgoingBuffer_.isEmpty () || !PendingBlocks_.isEmpty ();
+	return GetBytesAvailable () > 0 || Socket_.bytesAvailable () > 0 || !OutgoingBuffer_.isEmpty () || !PendingBlocks_.isEmpty ();
 }
 
-quint64 PeerConnection::GetBytesAvailable () const
+qint64 PeerConnection::GetBytesAvailable () const
 {
-	return IncomingBuffer_.size  () + Socket_->bytesAvailable ();
+	return IncomingBuffer_.size () + QTcpSocket::bytesAvailable ();
 }
 
-quint64 PeerConnection::GetSocketBytes () const
+qint64 PeerConnection::GetSocketBytes () const
 {
-	return Socket_->bytesAvailable ();
+	return Socket_.bytesAvailable ();
 }
 
-quint64 PeerConnection::GetBytesToWrite () const
+qint64 PeerConnection::GetBytesToWrite () const
 {
-	return Socket_->bytesToWrite ();
+	return Socket_.bytesToWrite ();
 }
 
-void PeerConnection::SetReadBufferSize (quint32 size)
+void PeerConnection::SetReadBufferSize (int size)
 {
-	Socket_->setReadBufferSize (size);
+	Socket_.setReadBufferSize (size);
 }
 
 void PeerConnection::connectToHostImplementation (const QString& host, quint16 port, OpenMode om)
 {
 	setOpenMode (om);
-	Socket_->connectToHost (host, port, om);
+	Socket_.connectToHost (host, port, om);
 }
 
 void PeerConnection::disconnectFromHostImplementation ()
 {
-	Socket_->disconnectFromHost ();
+	Socket_.disconnectFromHost ();
 }
 
 void PeerConnection::timerEvent (QTimerEvent *e)
@@ -401,11 +399,11 @@ qint64 PeerConnection::writeData (const char *data, qint64 length)
 
 void PeerConnection::handleStateChange (QAbstractSocket::SocketState st)
 {
-	setLocalAddress (Socket_->localAddress ());
-	setLocalPort (Socket_->localPort ());
-	setPeerName (Socket_->peerName ());
-	setPeerAddress (Socket_->peerAddress ());
-	setPeerPort (Socket_->peerPort ());
+	setLocalAddress (Socket_.localAddress ());
+	setLocalPort (Socket_.localPort ());
+	setPeerName (Socket_.peerName ());
+	setPeerAddress (Socket_.peerAddress ());
+	setPeerPort (Socket_.peerPort ());
 	setSocketState (st);
 }
 
@@ -426,6 +424,7 @@ void PeerConnection::sendHandshake ()
 
 void PeerConnection::processIncomingData ()
 {
+	qDebug () << Q_FUNC_INFO;
 	InvalidateTimeout_ = true;
 	if (!GotHandshake_)
 	{

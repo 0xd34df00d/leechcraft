@@ -60,7 +60,10 @@ Job::~Job ()
 
 void Job::DoDelayedInit ()
 {
-	QString filename = MakeFilename (Params_->URL_, Params_->LocalName_);
+	if (Params_->LocalName_.endsWith ('/') || Params_->LocalName_.endsWith ('\\'))
+		Params_->LocalName_.remove (Params_->LocalName_.size () - 1, 1);
+
+	QString filename = MakeFilename ();
 	if (QFile::exists (filename))
 	{
 		QFile *file = new QFile (filename);
@@ -86,7 +89,7 @@ JobRepresentation* Job::GetRepresentation () const
 	JobRepresentation *jr		= new JobRepresentation;
 	jr->ID_						= ID_;
 	jr->URL_					= Params_->URL_;
-	jr->LocalName_				= MakeFilename (Params_->URL_, Params_->LocalName_);
+	jr->LocalName_				= MakeFilename ();
 	jr->Speed_					= Speed_;
 	jr->CurrentSpeed_			= CurrentSpeed_;
 	jr->Downloaded_				= DownloadedSize_;
@@ -113,7 +116,7 @@ QString Job::GetErrorReason ()
 void Job::Start ()
 {
 	State_ = StateDownloading;
-	QString ln = MakeFilename (Params_->URL_, Params_->LocalName_);
+	QString ln = MakeFilename ();
 	QFileInfo fileInfo (ln);
 	if (fileInfo.exists () && !fileInfo.isDir ())
 		RestartPosition_ = QFile (ln).size ();
@@ -158,7 +161,7 @@ void Job::GetFileSize ()
 
 void Job::handleRemoteFileInfo (const ImpBase::RemoteFileInfo& rfi)
 {
-	QString ln = MakeFilename (Params_->URL_, Params_->LocalName_);
+	QString ln = MakeFilename ();
 	QFileInfo fileInfo (ln);
 	if (fileInfo.exists () && !fileInfo.isDir ())
 	{
@@ -212,7 +215,10 @@ void Job::handleRemoteFileInfo (const ImpBase::RemoteFileInfo& rfi)
 			}
 		}
 	}
-	File_ = new QFile (MakeFilename (Params_->URL_, Params_->LocalName_));
+	else if (fileInfo.isDir ())
+	{
+	}
+	File_ = new QFile (MakeFilename ());
 	ProtoImp_->ReactedToFileInfo ();
 }
 
@@ -278,6 +284,9 @@ void Job::handleNewFiles (QStringList *files)
 		jp->LocalName_ = Params_->LocalName_ + QFileInfo (files->at (i)).fileName ();
 		jp->IsFullName_ = true;
 		jp->Autostart_ = SettingsManager::Instance ()->GetAutostartChildren ();
+		jp->ShouldBeSavedInHistory_ = true;
+		jp->Size_ = 0;
+		jp->DownloadTime_ = 0;
 		emit addJob (jp);
 	}
 
@@ -375,6 +384,8 @@ void Job::reemitStopped ()
 
 void Job::reemitEnqueue ()
 {
+	disconnect (this, SIGNAL (stopped (unsigned int)), 0, 0);
+	Stop ();
 	emit enqueue (GetID ());
 	State_ = StateWaiting;
 	DownloadTime_ += StartTime_->elapsed ();
@@ -389,20 +400,20 @@ void Job::reemitGotFileSize (ImpBase::length_t size)
 
 void Job::FillErrorDictionary ()
 {
-	ErrorDictionary_ [QAbstractSocket::ConnectionRefusedError] = "Connection refused";
-	ErrorDictionary_ [QAbstractSocket::RemoteHostClosedError] = "Remote host closed connection";
-	ErrorDictionary_ [QAbstractSocket::HostNotFoundError] = "Host not found";
-	ErrorDictionary_ [QAbstractSocket::SocketAccessError] = "Socket access error";
-	ErrorDictionary_ [QAbstractSocket::SocketResourceError] = "Socker resource error";
-	ErrorDictionary_ [QAbstractSocket::SocketTimeoutError] = "Socket timed out";
-	ErrorDictionary_ [QAbstractSocket::DatagramTooLargeError] = "Datagram too large";
-	ErrorDictionary_ [QAbstractSocket::NetworkError] = "Network error";
-	ErrorDictionary_ [QAbstractSocket::AddressInUseError] = "Address already in use";
-	ErrorDictionary_ [QAbstractSocket::SocketAddressNotAvailableError] = "Socket address not available";
-	ErrorDictionary_ [QAbstractSocket::UnsupportedSocketOperationError] = "Unsupported socket operation";
-	ErrorDictionary_ [QAbstractSocket::UnfinishedSocketOperationError] = "Unfinished socket operation";
-	ErrorDictionary_ [QAbstractSocket::ProxyAuthenticationRequiredError] = "Proxy autentication required";
-	ErrorDictionary_ [QAbstractSocket::UnknownSocketError] = "Unknown socket error";
+	ErrorDictionary_ [QAbstractSocket::ConnectionRefusedError] = tr ("Connection refused");
+	ErrorDictionary_ [QAbstractSocket::RemoteHostClosedError] = tr ("Remote host closed connection");
+	ErrorDictionary_ [QAbstractSocket::HostNotFoundError] = tr ("Host not found");
+	ErrorDictionary_ [QAbstractSocket::SocketAccessError] = tr ("Socket access error");
+	ErrorDictionary_ [QAbstractSocket::SocketResourceError] = tr ("Socker resource error");
+	ErrorDictionary_ [QAbstractSocket::SocketTimeoutError] = tr ("Socket timed out");
+	ErrorDictionary_ [QAbstractSocket::DatagramTooLargeError] = tr ("Datagram too large");
+	ErrorDictionary_ [QAbstractSocket::NetworkError] = tr ("Network error");
+	ErrorDictionary_ [QAbstractSocket::AddressInUseError] = tr ("Address already in use");
+	ErrorDictionary_ [QAbstractSocket::SocketAddressNotAvailableError] = tr ("Socket address not available");
+	ErrorDictionary_ [QAbstractSocket::UnsupportedSocketOperationError] = tr ("Unsupported socket operation");
+	ErrorDictionary_ [QAbstractSocket::UnfinishedSocketOperationError] = tr ("Unfinished socket operation");
+	ErrorDictionary_ [QAbstractSocket::ProxyAuthenticationRequiredError] = tr ("Proxy autentication required");
+	ErrorDictionary_ [QAbstractSocket::UnknownSocketError] = tr ("Unknown socket error");
 }
 
 QString Job::MakeUniqueNameFor (const QString& name)
@@ -413,20 +424,20 @@ QString Job::MakeUniqueNameFor (const QString& name)
 	return result + QString::number (i - 1);
 }
 
-QString Job::MakeFilename (const QString& url, QString& local) const
+QString Job::MakeFilename () const
 {
 	static AddressParser *ap = TcpSocket::GetAddressParser ("");
 	if (!Params_->IsFullName_)
 	{
-		ap->Reparse (url);
-		if (!(local.at (local.size () - 1) == '/'))
-			local.append ('/');
-		local.append (QFileInfo (ap->GetPath ()).fileName ());
+		ap->Reparse (Params_->URL_);
+		if (!(Params_->LocalName_.at (Params_->LocalName_.size () - 1) == '/'))
+			Params_->LocalName_.append ('/');
+		Params_->LocalName_.append (QFileInfo (ap->GetPath ()).fileName ());
 		Params_->IsFullName_ = true;
 	}
 
-	local = QUrl::fromPercentEncoding (local.toUtf8 ());
+	Params_->LocalName_ = QUrl::fromPercentEncoding (Params_->LocalName_.toUtf8 ());
 
-	return local;
+	return Params_->LocalName_;
 }
 

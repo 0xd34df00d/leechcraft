@@ -1,4 +1,5 @@
 #include <QDateTime>
+#include <QtDebug>
 #include "connectionmanager.h"
 #include "settingsmanager.h"
 
@@ -11,7 +12,7 @@ ConnectionManager* ConnectionManager::Instance ()
 
 bool ConnectionManager::CanAddConnection () const
 {
-	return Connections_.size () < GetMaxConnections ();
+	return (Connections_.size () < GetMaxConnections ());
 }
 
 void ConnectionManager::AddConnection (PeerConnection *pc)
@@ -29,15 +30,15 @@ int ConnectionManager::GetMaxConnections () const
 	return SettingsManager::Instance ()->GetMaxTotalConnections ();
 }
 
-const QByteArray& ConnectionManager::GetClientID () const
+QByteArray ConnectionManager::GetClientID () const
 {
 	if (ID_.isEmpty ())
 	{
 		int st = static_cast<int> (QDateTime::currentDateTime ().toTime_t ());
 		
-		QString s ("-LB0001");
+		QString s ("-LB0001-");
 		ID_ += s.toLatin1 ();
-		ID_ += QByteArray::number (st, 16);
+		ID_ += QByteArray::number (st, 10);
 		ID_ += QByteArray (20 - ID_.size (), '-');
 	}
 	return ID_;

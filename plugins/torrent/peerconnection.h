@@ -1,8 +1,7 @@
 #ifndef PEERCONNECTION_H
 #define PEERCONNECTION_H
-#include <QObject>
 #include <QBitArray>
-#include <QByteArray>
+#include <QList>
 #include <QTcpSocket>
 #include "block.h"
 
@@ -10,25 +9,15 @@ class TorrentPeer;
 
 static const int MySpeedArrayRotateSize = 8;
 
-/*! @brief Represents a connection with a remote peer.
- *
- *
- */
 class PeerConnection : public QTcpSocket
 {
 	Q_OBJECT
 public:
-	/*! @brief Represents connection state flags.
-	 */
 	enum PeerConnectionStateFlag
 	{
-		/// We are choking the remote peer
 		Choking = 0x1
-		/// We are interested in the remote per
 		, AmInterested = 0x2
-		/// We are choked by the remote peer
 		, Choked = 0x4
-		/// Remote peer is interested in us
 		, PeerInterested = 0x8
 	};
 
@@ -36,7 +25,7 @@ public:
 private:
 	struct BlockInfo
 	{
-		quint32 Index_, Offset_, Length_;
+		int Index_, Offset_, Length_;
 		QByteArray Block_;
 	};
 
@@ -54,32 +43,21 @@ private:
 		, TypePort = 9
 	};
 
-	QTcpSocket *Socket_;
+	QTcpSocket Socket_;
 	PeerConnectionState State_;
-	QByteArray IncomingBuffer_, OutgoingBuffer_;
+	QByteArray IncomingBuffer_, OutgoingBuffer_, InfoHash_, PeerID_;
 	QList<BlockInfo> PendingBlocks_;
-	quint32 PendingBlockSizes_;
+	int PendingBlockSizes_, NextLength_, SpeedTimer_, TimeoutTimer_, PendingRequestTimer_, KATimer_;
 	QList<Block> Incoming_;
-	bool GotHandshake_;
-	bool GotPeerID_;
-	bool SentHandshake_;
-	int NextLength_;
-	quint64 UploadSpeeds_ [MySpeedArrayRotateSize];
-	quint64 DownloadSpeeds_ [MySpeedArrayRotateSize];
-	int SpeedTimer_;
-	int TimeoutTimer_;
-	int PendingRequestTimer_;
-	int KATimer_;
-	bool InvalidateTimeout_;
-	QByteArray InfoHash_;
-	QByteArray PeerID_;
+	bool GotHandshake_, GotPeerID_, SentHandshake_, InvalidateTimeout_;
+	qint64 UploadSpeeds_ [MySpeedArrayRotateSize], DownloadSpeeds_ [MySpeedArrayRotateSize];
 	QBitArray PeerPieces_;
 	TorrentPeer *TorrentPeer_;
 public:
 	PeerConnection (const QByteArray&, QObject *parent = 0);
 	~PeerConnection ();
 
-	void Initialize (const QByteArray&, quint32);
+	void Initialize (const QByteArray&, int);
 	void SetPeer (TorrentPeer*);
 	TorrentPeer* GetPeer () const;
 
@@ -92,23 +70,23 @@ public:
 	void SendKA ();
 	void SendInterested ();
 	void SendNotInterested ();
-	void SendPieceNotification (quint32);
+	void SendPieceNotification (int);
 	void SendPieceList (const QBitArray&);
-	void SendRequest (quint32, quint32, quint32);
-	void SendCancel (quint32, quint32, quint32);
-	void SendBlock (quint32, quint32, const QByteArray&);
+	void SendRequest (int, int, int);
+	void SendCancel (int, int, int);
+	void SendBlock (int, int, const QByteArray&);
 
 	qint64 Read (qint64);
 	qint64 Write (qint64);
-	quint64 GetDownloadSpeed () const;
-	quint64 GetUploadSpeed () const;
+	qint64 GetDownloadSpeed () const;
+	qint64 GetUploadSpeed () const;
 
 	bool CanTransfer () const;
-	quint64 GetBytesAvailable () const;
-	quint64 GetSocketBytes () const;
-	quint64 GetBytesToWrite () const;
+	qint64 GetBytesAvailable () const;
+	qint64 GetSocketBytes () const;
+	qint64 GetBytesToWrite () const;
 
-	void SetReadBufferSize (quint32);
+	void SetReadBufferSize (int);
 protected:
 	virtual void timerEvent (QTimerEvent*);
 	virtual qint64 readData (char*, qint64);

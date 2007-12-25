@@ -2,24 +2,6 @@
 #include <QByteArray>
 #include "bencodeparser.h"
 
-struct ML_Logger
-{
-	QString Name_;
-
-	ML_Logger (QString name)
-	{
-		Name_ = name;
-		qDebug () << Name_.toStdString ().c_str () << ": enter";
-	}
-
-	~ML_Logger ()
-	{
-		qDebug () << Name_.toStdString ().c_str () << ": exit";
-	}
-};
-
-#define LOG_FUNC ML_Logger youshouldneverusethisnameok (Q_FUNC_INFO); 
-
 bool BencodeParser::Parse (const QByteArray& code)
 {
 	if (code.isEmpty () || code.isNull ())
@@ -58,13 +40,13 @@ bool BencodeParser::GetString (QByteArray& str)
 	do
 	{
 		QChar c = Code_.at (Index_);
-		if (!c.isDigit ())
+		if (c < '0' || c > '9')
 		{
 			if (strSize == -1)
 				return false;
 			if (c != ':')
 			{
-				Error_ = QObject::tr ("Wrong character at %1: %2").arg (Index_).arg (c);
+				Error_ = QObject::tr ("Unexpected character at %1: %2").arg (Index_).arg (c);
 				return false;
 			}
 			++Index_;
@@ -97,7 +79,7 @@ bool BencodeParser::GetInteger (qint64& integer)
 	do
 	{
 		QChar c = Code_.at (Index_);
-		if (!c.isDigit ())
+		if (c < '0' || c > '9')
 		{
 			if (curNum == -1)
 			{
@@ -110,7 +92,7 @@ bool BencodeParser::GetInteger (qint64& integer)
 			{
 				if (c != 'e')
 				{
-					Error_ = QObject::tr ("Wrong character at %1: %2)").arg (Index_).arg (c);
+					Error_ = QObject::tr ("Unexpected character at %1: %2").arg (Index_).arg (c);
 					return false;
 				}
 				++Index_;
@@ -193,7 +175,7 @@ bool BencodeParser::GetDictionary (Dictionary_t& dict)
 
 		QByteArray key;
 		if (!GetString (key))
-			return false;
+			break;
 
 		if (key == "info")
 			InfoStart_ = Index_;
