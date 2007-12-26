@@ -295,14 +295,13 @@ void Job::handleNewFiles (QStringList *files)
 
 void Job::handleClarifyURL (QString url)
 {
+	if (!ProtoImp_->wait (SettingsManager::Instance ()->GetStopTimeout ()))
+		ProtoImp_->terminate ();
 	delete ProtoImp_;
 	ProtoImp_ = 0;
-
 	Params_->URL_ = url;
-
-	emit started (ID_);
-
 	Start ();
+	emit started (GetID ());
 }
 
 void Job::processData (ImpBase::length_t ready, ImpBase::length_t total, QByteArray newData)
@@ -376,6 +375,7 @@ void Job::handleShowError (QString error)
 
 void Job::reemitStopped ()
 {
+	qDebug () << Q_FUNC_INFO;
 	emit stopped (GetID ());
 	State_ = StateIdle;
 	DownloadTime_ += StartTime_->elapsed ();

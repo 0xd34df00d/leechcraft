@@ -66,13 +66,13 @@ void HttpImp::run ()
 		emit error (e.GetReason ().c_str ());
 		return;
 	}
-
 	WriteHeaders ();
 	msleep (100);
 	bool abort = ReadResponse ();
 
 	if (abort)
 	{
+		Socket_->Disconnect ();
 		delete Socket_;
 		Socket_ = 0;
 		emit stopped ();
@@ -188,9 +188,12 @@ bool HttpImp::ReadResponse ()
 
 	bool shouldWeReturn = DoStuffWithResponse ();
 
-	QDateTime dt = QDateTime::fromString (Response_.Fields_ ["last-modified"].left (25), "ddd, dd MMM yyyy HH:mm:ss");
-	RemoteFileInfo rfi = { true, dt, Response_.ContentLength_, Response_.Fields_ ["content-type"] };
-	emit gotRemoteFileInfo (rfi);
+	if (!shouldWeReturn)
+	{
+		QDateTime dt = QDateTime::fromString (Response_.Fields_ ["last-modified"].left (25), "ddd, dd MMM yyyy HH:mm:ss");
+		RemoteFileInfo rfi = { true, dt, Response_.ContentLength_, Response_.Fields_ ["content-type"] };
+		emit gotRemoteFileInfo (rfi);
+	}
 
 	return shouldWeReturn;
 }
@@ -352,6 +355,7 @@ void HttpImp::DoRedirect ()
 {
 	QString newLoc = Response_.Fields_ ["location"].trimmed ();
 	emit clarifyURL (newLoc);
+	disconnect (this, 0, 0, 0);
 }
 
 void HttpImp::Finalize ()

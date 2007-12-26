@@ -87,6 +87,7 @@ private:
 	TcpSocket *Socket_;
 
 	Guarded<bool> Stop_, GetFileSize_;
+	bool Abort_, SoftAbort_;
 	QPair<QWaitCondition*, QMutex*> AwaitFileInfoReaction_;
 public:
 	HttpImp (QObject *parent = 0);

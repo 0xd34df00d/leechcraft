@@ -512,6 +512,7 @@ void HttpPlugin::handleJobFinish (unsigned int id)
 
 void HttpPlugin::handleJobStart (unsigned int id)
 {
+	qDebug () << Q_FUNC_INFO;
 	int rowCount = TasksList_->topLevelItemCount ();
 	for (int i = 0; i < rowCount; ++i)
 		if (dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i))->GetID () == id)
@@ -525,6 +526,7 @@ void HttpPlugin::handleJobDelete (unsigned int id)
 
 void HttpPlugin::handleJobWaiting (unsigned int id)
 {
+	qDebug () << Q_FUNC_INFO;
 	int rowCount = TasksList_->topLevelItemCount ();
 	for (int i = 0; i < rowCount; ++i)
 		if (dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i))->GetID () == id)
@@ -589,6 +591,7 @@ void HttpPlugin::showJobErrorMessage (QString url, QString message)
 
 void HttpPlugin::showStoppedIndicator (unsigned int id)
 {
+	qDebug () << Q_FUNC_INFO;
 	for (int i = 0; i < TasksList_->topLevelItemCount (); ++i)
 	{
 		JobListItem *item = dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i));
