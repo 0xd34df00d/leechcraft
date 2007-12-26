@@ -36,8 +36,7 @@ struct TorrentClientImp
 	QString ErrorString_, StateString_, ExtentedErrorString_, Destination_;
 	MetaInfo MetaInfo_;
 
-	QByteArray PeerID_;
-	QByteArray InfoHash_;
+	QByteArray PeerID_, InfoHash_;
 	TrackerClient TrackerClient_;
 	FileManager FileManager_;
 
@@ -49,8 +48,7 @@ struct TorrentClientImp
 	QMap<int, PeerConnection*> ReadIDs_;
 	QMultiMap<PeerConnection*, TorrentPiece*> Payloads_;
 	QMap<int, TorrentPiece*> PendingPieces_;
-	QBitArray CompletedPieces_;
-	QBitArray IncompletePieces_;
+	QBitArray CompletedPieces_, IncompletePieces_;
 	int PieceCount_;
 
 	int LastProgressValue_;
@@ -282,7 +280,7 @@ QByteArray TorrentClient::GetDumpedState () const
 	QMap<int, TorrentPiece*>::ConstIterator i = TCI_->PendingPieces_.constBegin ();
 	while (i != TCI_->PendingPieces_.constEnd ())
 	{
-		TorrentPiece *piece = *i;
+		TorrentPiece *piece = i.value ();
 		if (getBlocksLeftForPiece (piece) > 0 && getBlocksLeftForPiece (piece) < piece->Completed_.size ())
 		{
 			stream << piece->Index_;
@@ -323,7 +321,10 @@ int TorrentClient::GetConnectedPeerCount () const
 {
 	int result = 0;
 	foreach (PeerConnection *pc, TCI_->Connections_)
-		result += (pc->state () == QAbstractSocket::ConnectedState);
+		if (pc->state () == QAbstractSocket::ConnectedState)
+			++result;
+
+	qDebug () << Q_FUNC_INFO << result;
 	return result;
 }
 
@@ -331,7 +332,10 @@ int TorrentClient::GetSeedCount () const
 {
 	int result = 0;
 	foreach (PeerConnection *pc, TCI_->Connections_)
-		result += (pc->GetAvailablePieces ().count (true) == TCI_->PieceCount_);
+		if (pc->GetAvailablePieces ().count (true) == TCI_->PieceCount_)
+			++result;
+
+	qDebug () << Q_FUNC_INFO << result;
 	return result;
 }
 
