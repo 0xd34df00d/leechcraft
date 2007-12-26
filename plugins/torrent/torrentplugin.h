@@ -2,11 +2,13 @@
 #define TORRENTPLUIGN_H
 #include <QMainWindow>
 #include <interfaces/interfaces.h>
+#include "ui_mainwindow.h"
 
 class TorrentPlugin : public QMainWindow
 					, public IInfo
 					, public IWindow
 					, public IDownload
+					, private Ui::MainWindow
 {
 	Q_OBJECT
 
@@ -37,6 +39,14 @@ public:
 	void StartAt (ulong);
 	void StopAt (ulong);
 	void DeleteAt (ulong);
+protected:
+	virtual void closeEvent (QCloseEvent*);
+private slots:
+	void on_OpenTorrent__triggered ();
+	void on_RemoveTorrent__triggered ();
+	void on_Resume__triggered ();
+	void on_Stop__triggered ();
+	void on_Preferences__triggered ();
 };
 
 #endif

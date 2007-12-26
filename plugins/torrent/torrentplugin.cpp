@@ -1,11 +1,11 @@
 #include <QtGui>
 #include "torrentplugin.h"
+#include "addtorrent.h"
 
 void TorrentPlugin::Init ()
 {
+	setupUi (this);
 	IsShown_ = false;
-	setWindowTitle ("BitTorrent");
-	setWindowIcon (QIcon (":/resources/images/bittorrent.png"));
 }
 
 QString TorrentPlugin::GetName () const
@@ -104,6 +104,34 @@ void TorrentPlugin::StopAt (ulong)
 }
 
 void TorrentPlugin::DeleteAt (ulong)
+{
+}
+
+void TorrentPlugin::closeEvent (QCloseEvent*)
+{
+	IsShown_ = false;
+}
+
+void TorrentPlugin::on_OpenTorrent__triggered ()
+{
+	AddTorrent *adder = new AddTorrent (this);
+	adder->exec ();
+	delete adder;
+}
+
+void TorrentPlugin::on_RemoveTorrent__triggered ()
+{
+}
+
+void TorrentPlugin::on_Resume__triggered ()
+{
+}
+
+void TorrentPlugin::on_Stop__triggered ()
+{
+}
+
+void TorrentPlugin::on_Preferences__triggered ()
 {
 }
 

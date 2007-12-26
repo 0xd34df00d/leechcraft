@@ -1,12 +1,12 @@
-<!DOCTYPE RCC>
-<RCC version="1.0">
-    <qresource>
+<RCC>
+    <qresource prefix="/" >
         <file>resources/images/addjob.png</file>
+        <file>resources/images/bittorrent.png</file>
+        <file>resources/images/deletejob.png</file>
+        <file>resources/images/movedown.png</file>
+        <file>resources/images/moveup.png</file>
+        <file>resources/images/preferences.png</file>
         <file>resources/images/startjob.png</file>
         <file>resources/images/stopjob.png</file>
-        <file>resources/images/deletejob.png</file>
-        <file>resources/images/bittorrent.png</file>
-        <file>resources/images/moveup.png</file>
-        <file>resources/images/movedown.png</file>
     </qresource>
 </RCC>

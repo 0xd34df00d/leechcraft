@@ -11,8 +11,9 @@ INCLUDEPATH += ../../
 INCLUDEPATH += .
 
 # Input
-HEADERS += torrentplugin.h core.h
-SOURCES += torrentplugin.cpp core.cpp
+HEADERS += torrentplugin.h core.h addtorrent.h
+SOURCES += torrentplugin.cpp core.cpp addtorrent.cpp
+FORMS += mainwindow.ui addtorrent.ui
 RESOURCES += resources.qrc
 win32:LIBS += -L../.. -lplugininterface -lexceptions -lsettingsdialog
 LIBS += -ltorrent
