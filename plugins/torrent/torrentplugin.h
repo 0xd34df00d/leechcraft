@@ -2,6 +2,7 @@
 #define TORRENTPLUIGN_H
 #include <QMainWindow>
 #include <interfaces/interfaces.h>
+#include <settingsdialog/settingsdialog.h>
 #include "ui_mainwindow.h"
 
 class TorrentPlugin : public QMainWindow
@@ -16,6 +17,7 @@ class TorrentPlugin : public QMainWindow
 
 	ID_t ID_;
 	bool IsShown_;
+	SettingsDialog *SettingsDialog_;
 public:
 	void Init ();
 	QString GetName () const;

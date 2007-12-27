@@ -8,11 +8,18 @@ TARGET = leechcraft_torrent
 DESTDIR += ../bin
 DEPENDPATH += .
 INCLUDEPATH += ../../
+INCLUDEPATH += /usr/include/libtorrent 
 INCLUDEPATH += .
 
 # Input
-HEADERS += torrentplugin.h core.h addtorrent.h
-SOURCES += torrentplugin.cpp core.cpp addtorrent.cpp
+HEADERS += torrentplugin.h \
+		   core.h \
+		   addtorrent.h \
+		   settingsmanager.h
+SOURCES += torrentplugin.cpp \
+		   core.cpp \
+		   addtorrent.cpp \
+		   settingsmanager.cpp
 FORMS += mainwindow.ui addtorrent.ui
 RESOURCES += resources.qrc
 win32:LIBS += -L../.. -lplugininterface -lexceptions -lsettingsdialog

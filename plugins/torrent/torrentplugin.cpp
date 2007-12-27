@@ -1,11 +1,14 @@
 #include <QtGui>
 #include "torrentplugin.h"
 #include "addtorrent.h"
+#include "settingsmanager.h"
 
 void TorrentPlugin::Init ()
 {
 	setupUi (this);
 	IsShown_ = false;
+	SettingsDialog_ = new SettingsDialog (this);
+	SettingsDialog_->RegisterObject (SettingsManager::Instance ());
 }
 
 QString TorrentPlugin::GetName () const
@@ -55,6 +58,7 @@ void TorrentPlugin::SetProvider (QObject*, const QString&)
 
 void TorrentPlugin::Release ()
 {
+	SettingsManager::Instance ()->Release ();
 }
 
 QIcon TorrentPlugin::GetIcon () const
@@ -133,6 +137,8 @@ void TorrentPlugin::on_Stop__triggered ()
 
 void TorrentPlugin::on_Preferences__triggered ()
 {
+	SettingsDialog_->show ();
+	SettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_torrent, TorrentPlugin);
