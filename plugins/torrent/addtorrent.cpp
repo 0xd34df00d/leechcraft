@@ -32,6 +32,13 @@ void AddTorrent::on_TorrentBrowse__released ()
 		Comment_->setText (comment);
 	if (!date.isEmpty () && !date.isNull ())
 		Date_->setText (date);
+
+	for (libtorrent::torrent_info::file_iterator i = info.begin_files (); i != info.end_files (); ++i)
+	{
+		QTreeWidgetItem *item = new QTreeWidgetItem (FileWidget_);
+		item->setText (0, Proxy::Instance ()->MakePrettySize (i->size));
+		item->setText (1, QString::fromStdString (i->path.string ()));
+	}
 }
 
 void AddTorrent::on_DestinationBrowse__released ()
