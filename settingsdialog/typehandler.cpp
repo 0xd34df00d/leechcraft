@@ -12,6 +12,7 @@ TypeHandler::TypeHandler (QObject *parent)
 	Converters_.append (new BoolConverter (parent));
 	Converters_.append (new QStringListConverter (parent));
 	Converters_.append (new PairedStringListConverter (parent));
+	Converters_.append (new IntRangeConverter (parent));
 }
 
 TypeHandler::~TypeHandler ()

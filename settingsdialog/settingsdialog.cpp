@@ -60,8 +60,7 @@ void SettingsDialog::RegisterObject (QObject *object)
 		qDebug () << "Registered object isn't true settings manager, ignoring it";
 		return;
 	}
-	// Because append() takes [const T&] where T is QObject*, we won't
-	// actually lose any constness in the next line.
+
 	Objects_.append (const_cast<QObject*> (object));
 
 	const QMetaObject *mo = object->metaObject ();
@@ -76,7 +75,7 @@ void SettingsDialog::RegisterObject (QObject *object)
 		QWidget *representator = (*TypeHandler_) (object->property (propName.toAscii ().data ()), sii, propName, object);
 		if (!representator)
 		{
-			qDebug () << "Creating representator widget failed for type" << object->property (propName.toAscii ().data ()) << ", continuing...";
+			qWarning () << "Creating representator widget failed for type" << object->property (propName.toAscii ().data ()) << ", continuing...";
 			continue;
 		}
 

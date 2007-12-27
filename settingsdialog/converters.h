@@ -67,7 +67,7 @@ class BoolConverter : public Converter
 public:
 	BoolConverter (QObject *parent);
 	virtual ~BoolConverter ();
-	virtual QWidget *Convert (const QVariant& value, const SettingsItemInfo&, const QString&, QObject*);
+	virtual QWidget* Convert (const QVariant& value, const SettingsItemInfo&, const QString&, QObject*);
 	virtual bool MakeLabel () const;
 	virtual QVariant ReadSetting (QWidget*) const;
 };
@@ -78,7 +78,7 @@ class QStringListConverter : public Converter
 public:
 	QStringListConverter (QObject *parent);
 	virtual ~QStringListConverter ();
-	virtual QWidget *Convert (const QVariant& value, const SettingsItemInfo&, const QString&, QObject*);
+	virtual QWidget* Convert (const QVariant& value, const SettingsItemInfo&, const QString&, QObject*);
 	virtual bool MakeLabel () const;
 	virtual QVariant ReadSetting (QWidget*) const;
 };
@@ -89,7 +89,18 @@ class PairedStringListConverter : public Converter
 public:
 	PairedStringListConverter (QObject *parent);
 	virtual ~PairedStringListConverter ();
-	virtual QWidget *Convert (const QVariant& value, const SettingsItemInfo&, const QString&, QObject*);
+	virtual QWidget* Convert (const QVariant& value, const SettingsItemInfo&, const QString&, QObject*);
+	virtual bool MakeLabel () const;
+	virtual QVariant ReadSetting (QWidget*) const;
+};
+
+class IntRangeConverter : public Converter
+{
+	Q_OBJECT
+public:
+	IntRangeConverter (QObject *parent);
+	virtual ~IntRangeConverter ();
+	virtual QWidget* Convert (const QVariant& value, const SettingsItemInfo&, const QString&, QObject*);
 	virtual bool MakeLabel () const;
 	virtual QVariant ReadSetting (QWidget*) const;
 };

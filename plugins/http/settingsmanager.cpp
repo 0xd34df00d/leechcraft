@@ -3,6 +3,7 @@
 #include <QMutex>
 #include <QTimer>
 #include <QMutexLocker>
+#include <QDir>
 #include <plugininterface/proxy.h>
 #include <settingsdialog/typelist.h>
 #include "settingsmanager.h"
@@ -31,7 +32,7 @@ void SettingsManager::ReadSettings ()
 	Password_					= settings.value ("FTPPassword", "some@email.com").toString ();
 	CacheSize_					= settings.value ("CacheSize", 256).toInt ();
 	StopTimeout_				= settings.value ("StopTimeout", 10000).toInt ();
-	DownloadDir_				= settings.value ("DownloadDir", "").toString ();
+	DownloadDir_				= settings.value ("DownloadDir", QDir::homePath ()).toString ();
 	AutostartChildren_			= settings.value ("AutostartChildren", true).toBool ();
 	UserAgent_.Val ().first		= settings.value ("UserAgent.First").toStringList ();
 	UserAgent_.Val ().second	= settings.value ("UserAgent.Second", 3).toInt ();

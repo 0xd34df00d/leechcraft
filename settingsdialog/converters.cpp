@@ -6,6 +6,8 @@
 #include "datatypes.h"
 #include "settingsiteminfo.h"
 #include "filepickerwidget.h"
+#include "extendedspinbox.h"
+#include "collectorwidget.h"
 
 void Converter::SetType (unsigned int type)
 {
@@ -294,13 +296,69 @@ QVariant PairedStringListConverter::ReadSetting (QWidget *w) const
 	return QVariant::fromValue<PairedStringList> (result);
 }
 
+IntRangeConverter::IntRangeConverter (QObject *parent)
+: Converter (parent)
+{
+	SetType (qRegisterMetaType<IntRange> ("IntRange"));
+}
 
+IntRangeConverter::~IntRangeConverter ()
+{
+}
 
+QWidget* IntRangeConverter::Convert (const QVariant& value, const SettingsItemInfo& sii, const QString& propName, QObject *owner)
+{
+	if (!value.canConvert<IntRange> ())
+		return 0;
 
+	IntRange range = value.value<IntRange> ();
+	CollectorWidget *result = new CollectorWidget;
+	QHBoxLayout *lay = new QHBoxLayout (result);
+	result->setLayout (lay);
 
+	ExtendedSpinbox *low = new ExtendedSpinbox (result),
+					*high = new ExtendedSpinbox (result);
+	low->setObjectName ("low");
+	high->setObjectName ("high");
+	low->setRange (sii.IntRange_.first, range.second);
+	high->setRange (range.first, sii.IntRange_.second);
+	low->setSingleStep (sii.SpinboxStep_);
+	high->setSingleStep (sii.SpinboxStep_);
+	low->setSuffix (sii.SpinboxSuffix_);
+	high->setSuffix (sii.SpinboxSuffix_);
+	low->SetMaximumShift (-1);
+	high->SetMinimumShift (1);
+	low->setValue (range.first);
+	high->setValue (range.second);
 
+	connect (low, SIGNAL (valueChanged (int)), high, SLOT (changeMinimum (int)));
+	connect (high, SIGNAL (valueChanged (int)), low, SLOT (changeMaximum (int)));
+	connect (low, SIGNAL (valueChanged (int)), result, SIGNAL (collected ()));
+	connect (high, SIGNAL (valueChanged (int)), result, SIGNAL (collected ()));
+	connect (result, SIGNAL (collected ()), this, SLOT (updateSetting ()));
 
+	lay->addWidget (low);
+	lay->addWidget (high);
+	lay->addStretch ();
 
+	Widget2Property_ [result] = propName;
+	Widget2Object_ [result] = owner;
+	return result;
+}
 
+QVariant IntRangeConverter::ReadSetting (QWidget *w) const
+{
+	QList<ExtendedSpinbox*> lows = w->findChildren<ExtendedSpinbox*> ("low"),
+							highs = w->findChildren<ExtendedSpinbox*> ("high");
+	if (lows.size () != 1 || highs.size () != 1)
+		return QVariant ();
+
+	return QVariant::fromValue<IntRange> (qMakePair<int, int> (lows.at (0)->value (), highs.at (0)->value ()));
+}
+
+bool IntRangeConverter::MakeLabel () const
+{
+	return true;
+}
 
 

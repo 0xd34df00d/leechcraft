@@ -10,8 +10,8 @@ DEPENDPATH += .
 INCLUDEPATH += .
 
 # Input
-HEADERS += settingsdialog.h settingsiteminfo.h typehandler.h typelist.h converters.h filepickerwidget.h datatypes.h
-SOURCES += settingsdialog.cpp settingsiteminfo.cpp typehandler.cpp typelist.cpp converters.cpp filepickerwidget.cpp datatypes.cpp
+HEADERS += settingsdialog.h settingsiteminfo.h typehandler.h typelist.h converters.h filepickerwidget.h datatypes.h extendedspinbox.h collectorwidget.h
+SOURCES += settingsdialog.cpp settingsiteminfo.cpp typehandler.cpp typelist.cpp converters.cpp filepickerwidget.cpp datatypes.cpp extendedspinbox.cpp collectorwidget.cpp
 CONFIG += release threads
 
 unix:themain.path=/usr/lib

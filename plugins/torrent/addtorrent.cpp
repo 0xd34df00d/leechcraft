@@ -10,6 +10,36 @@ AddTorrent::AddTorrent (QWidget *parent)
 {
 	setupUi (this);
 	FileWidget_->header ()->setStretchLastSection (true);
+	OK_->setEnabled (false);
+	connect (this, SIGNAL (on_TorrentFile__textChanged ()), this, SLOT (setOkEnabled ()));
+	connect (this, SIGNAL (on_Destination__textChanged ()), this, SLOT (setOkEnabled ()));
+}
+
+void AddTorrent::Reinit ()
+{
+	while (FileWidget_->topLevelItemCount ())
+		delete FileWidget_->takeTopLevelItem (0);
+	TorrentFile_->setText ("");
+	TrackerURL_->setText (tr ("<unknown>"));
+	Size_->setText (tr ("<unknown>"));
+	Creator_->setText (tr ("<unknown>"));
+	Comment_->setText (tr ("<unknown>"));
+	Date_->setText (tr ("<unknown>"));
+}
+
+QString AddTorrent::GetFilename () const
+{
+	return TorrentFile_->text ();
+}
+
+QString AddTorrent::GetSavePath () const
+{
+	return Destination_->text ();
+}
+
+void AddTorrent::setOkEnabled ()
+{
+	OK_->setEnabled (QFileInfo (TorrentFile_->text ()).isReadable () && QFileInfo (Destination_->text ()).exists ());
 }
 
 void AddTorrent::on_TorrentBrowse__released ()
@@ -18,9 +48,14 @@ void AddTorrent::on_TorrentBrowse__released ()
 	if (filename.isEmpty ())
 		return;
 
-	SettingsManager::Instance ()->SetLastTorrentDirectory (QFileInfo (filename).absoluteDir ().dirName ());
+	Reinit ();
+
+	SettingsManager::Instance ()->SetLastTorrentDirectory (QFileInfo (filename).absolutePath ());
 	TorrentFile_->setText (filename);
+
 	libtorrent::torrent_info info = Core::Instance ()->GetTorrentInfo (filename);
+	if (!info.is_valid ())
+		return;
 	TrackerURL_->setText (QString::fromStdString (info.trackers ().at (0).url));
 	Size_->setText (Proxy::Instance ()->MakePrettySize (info.total_size ()));
 	QString creator = QString::fromStdString (info.creator ()),
@@ -32,7 +67,6 @@ void AddTorrent::on_TorrentBrowse__released ()
 		Comment_->setText (comment);
 	if (!date.isEmpty () && !date.isNull ())
 		Date_->setText (date);
-
 	for (libtorrent::torrent_info::file_iterator i = info.begin_files (); i != info.end_files (); ++i)
 	{
 		QTreeWidgetItem *item = new QTreeWidgetItem (FileWidget_);
@@ -47,7 +81,7 @@ void AddTorrent::on_DestinationBrowse__released ()
 	if (dir.isEmpty ())
 		return;
 
-	SettingsManager::Instance ()->SetLastSaveDirectory (QDir (dir).absolutePath ());
+	SettingsManager::Instance ()->SetLastSaveDirectory (dir);
 	Destination_->setText (dir);
 }
 

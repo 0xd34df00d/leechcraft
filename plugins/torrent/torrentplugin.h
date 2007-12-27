@@ -5,6 +5,8 @@
 #include <settingsdialog/settingsdialog.h>
 #include "ui_mainwindow.h"
 
+class AddTorrent;
+
 class TorrentPlugin : public QMainWindow
 					, public IInfo
 					, public IWindow
@@ -18,6 +20,7 @@ class TorrentPlugin : public QMainWindow
 	ID_t ID_;
 	bool IsShown_;
 	SettingsDialog *SettingsDialog_;
+	AddTorrent *AddTorrentDialog_;
 public:
 	void Init ();
 	QString GetName () const;
@@ -49,6 +52,7 @@ private slots:
 	void on_Resume__triggered ();
 	void on_Stop__triggered ();
 	void on_Preferences__triggered ();
+	void showError (QString);
 };
 
 #endif

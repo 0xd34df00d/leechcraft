@@ -1,5 +1,6 @@
 #include <QtGui>
 #include "torrentplugin.h"
+#include "core.h"
 #include "addtorrent.h"
 #include "settingsmanager.h"
 
@@ -9,6 +10,8 @@ void TorrentPlugin::Init ()
 	IsShown_ = false;
 	SettingsDialog_ = new SettingsDialog (this);
 	SettingsDialog_->RegisterObject (SettingsManager::Instance ());
+	AddTorrentDialog_ = new AddTorrent (this);
+	connect (Core::Instance (), SIGNAL (error (QString)), this, SLOT (showError (QString)));
 }
 
 QString TorrentPlugin::GetName () const
@@ -118,9 +121,12 @@ void TorrentPlugin::closeEvent (QCloseEvent*)
 
 void TorrentPlugin::on_OpenTorrent__triggered ()
 {
-	AddTorrent *adder = new AddTorrent (this);
-	adder->exec ();
-	delete adder;
+	if (AddTorrentDialog_->exec () == QDialog::Rejected)
+		return;
+
+	QString filename = AddTorrentDialog_->GetFilename (),
+			path = AddTorrentDialog_->GetSavePath ();
+	Core::Instance ()->AddFile (filename, path);
 }
 
 void TorrentPlugin::on_RemoveTorrent__triggered ()
@@ -139,6 +145,11 @@ void TorrentPlugin::on_Preferences__triggered ()
 {
 	SettingsDialog_->show ();
 	SettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
+}
+
+void TorrentPlugin::showError (QString e)
+{
+	QMessageBox::warning (this, tr ("Error!"), e);
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_torrent, TorrentPlugin);
