@@ -62,6 +62,7 @@ void TorrentPlugin::SetProvider (QObject*, const QString&)
 
 void TorrentPlugin::Release ()
 {
+	Core::Instance ()->Release ();
 	SettingsManager::Instance ()->Release ();
 }
 

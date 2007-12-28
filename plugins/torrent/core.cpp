@@ -1,9 +1,11 @@
 #include <QFile>
 #include <QFileInfo>
+#include <QTimerEvent>
 #include <bencode.hpp>
 #include <entry.hpp>
 #include <extensions/metadata_transfer.hpp>
 #include <extensions/ut_pex.hpp>
+#include <plugininterface/proxy.h>
 #include "core.h"
 #include "settingsmanager.h"
 
@@ -25,12 +27,14 @@ Core::Core (QObject *parent)
 	Session_->add_extension (&libtorrent::create_ut_pex_plugin);
 	Session_->start_dht (libtorrent::entry ());
 
-	Headers_ << tr ("Name") << tr ("Downloaded") << tr ("Size") << tr ("Progress") << tr ("State") << tr ("Seeds/peers") << tr ("Dspeed") << tr ("Uspeed") << tr ("Remaining");
+	Headers_ << tr ("Name") << tr ("Downloaded") << tr ("Uploaded") << tr ("Size") << tr ("Progress") << tr ("State") << tr ("Seeds/peers") << tr ("Dspeed") << tr ("Uspeed") << tr ("Remaining");
+	InterfaceUpdateTimer_ = startTimer (1000);
 }
 
 void Core::Release ()
 {
 	Session_->stop_dht ();
+	killTimer (InterfaceUpdateTimer_);
 }
 
 int Core::columnCount (const QModelIndex& index) const
@@ -43,7 +47,70 @@ int Core::columnCount (const QModelIndex& index) const
 
 QVariant Core::data (const QModelIndex& index, int role) const
 {
-	return QVariant ();
+	if (!index.isValid ())
+		return QVariant ();
+
+	if (role != Qt::DisplayRole)
+		return QVariant ();
+
+	int row = index.row (),
+		column = index.column ();
+
+	libtorrent::torrent_handle h = Handles_.at (row).second;
+	if (!h.is_valid ())
+	{
+		emit const_cast<Core*> (this)->error (tr ("%1: for row %2 torrent handle is invalid, ID is %3").arg (Q_FUNC_INFO).arg (row).arg (Handles_.at (row).first));
+		return QVariant ();
+	}
+
+	libtorrent::torrent_status status = h.status ();
+	libtorrent::torrent_info info = h.get_torrent_info ();
+	switch (column)
+	{
+		case ColumnName:
+			return QString::fromStdString (h.name ());
+		case ColumnDownloaded:
+			return Proxy::Instance ()->MakePrettySize (status.total_done);
+		case ColumnUploaded:
+			return QString ("NI");
+		case ColumnSize:
+			return Proxy::Instance ()->MakePrettySize (info.total_size ());
+		case ColumnProgress:
+			return QString::number (status.progress * 100) + ("%");
+		case ColumnState:
+			if (status.paused)
+				return tr ("Idle");
+			else
+				switch (status.state)
+				{
+					case libtorrent::torrent_status::queued_for_checking:
+						return tr ("Queued for checking");
+					case libtorrent::torrent_status::checking_files:
+						return tr ("Checking files");
+					case libtorrent::torrent_status::connecting_to_tracker:
+						return tr ("Connecting");
+					case libtorrent::torrent_status::downloading_metadata:
+						return tr ("Downloading metadata");
+					case libtorrent::torrent_status::downloading:
+						return tr ("Downloading");
+					case libtorrent::torrent_status::finished:
+						return tr ("Finished");
+					case libtorrent::torrent_status::seeding:
+						return tr ("Seeding");
+					case libtorrent::torrent_status::allocating:
+						return tr ("Allocating");
+				}
+		case ColumnSP:
+			return QString::number (status.num_seeds) + "/" + QString::number (status.num_peers);
+		case ColumnDSpeed:
+			return Proxy::Instance ()->MakePrettySize (status.download_rate) + tr ("/s");
+		case ColumnUSpeed:
+			return Proxy::Instance ()->MakePrettySize (status.upload_rate) + tr ("/s");
+		case ColumnRemaining:
+			return Proxy::Instance ()->MakeTimeFromLong ((info.total_size () - status.total_done) / status.download_rate).toString ();
+		default:
+			return QVariant ();
+	}
 }
 
 Qt::ItemFlags Core::flags (const QModelIndex&) const
@@ -64,13 +131,15 @@ QModelIndex Core::index (int row, int column, const QModelIndex& index) const
 	return createIndex (row, column);
 }
 
-QVariant Core::headerData (int column, Qt::Orientation, int role) const
+QVariant Core::headerData (int column, Qt::Orientation orient, int role) const
 {
+	if (orient == Qt::Vertical)
+		return QVariant ();
+
 	if (role != Qt::DisplayRole)
 		return QVariant ();
 
-	else
-		return Headers_ [column];
+	return Headers_ [column];
 }
 
 QModelIndex Core::parent (const QModelIndex&) const
@@ -141,26 +210,54 @@ void Core::AddFile (const QString& filename, const QString& path)
 		return;
 	}
 	TorrentID_t id = CurrentID_++;
-	Handles_ [id] = handle;
-	emit torrentAdded (id);
+	beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
+	Handles_.append (qMakePair (id, handle));
+	endInsertRows ();
 }
 
 void Core::RemoveTorrent (TorrentID_t id)
 {
-	if (!Handles_.contains (id))
+	HandleDict_t::iterator pos = FindTorrentByID (id);
+	if (pos == Handles_.end ())
 	{
-		emit error (tr ("Torrent with ID %1 doesn't exist in The Map").arg (id));
+		emit error (tr ("Torrent with ID %1 doesn't exist in The List").arg (id));
 		return;
 	}
-	if (!Handles_ [id].is_valid ())
+	if (!pos->second.is_valid ())
 	{
-		emit error (tr ("Torrent with ID %1 found in The Map, but is invalid, gonna remove it").arg (id));
-		Handles_.remove (id);
+		emit error (tr ("Torrent with ID %1 found in The List, but is invalid, so we remove it").arg (id));
+		Handles_.erase (pos);
 		return;
 	}
 
-	Session_->remove_torrent (Handles_ [id]);
-	Handles_.remove (id);
-	emit torrentRemoved (id);
+	Session_->remove_torrent (pos->second);
+	Handles_.erase (pos);
+}
+
+Core::HandleDict_t::iterator Core::FindTorrentByID (Core::TorrentID_t id)
+{
+	HandleDict_t::iterator i = Handles_.begin ();
+	for ( ; i != Handles_.end (); ++i)
+		if (i->first == id)
+			break;
+
+	return i;
+}
+
+
+Core::HandleDict_t::const_iterator Core::FindTorrentByID (Core::TorrentID_t id) const
+{
+	HandleDict_t::const_iterator i = Handles_.constBegin ();
+	for ( ; i != Handles_.constEnd (); ++i)
+		if (i->first == id)
+			break;
+
+	return i;
+}
+
+void Core::timerEvent (QTimerEvent *e)
+{
+	if (e->timerId () == InterfaceUpdateTimer_)
+		emit dataChanged (index (0, 0), index (Handles_.size (), columnCount (QModelIndex ())));
 }
 

@@ -54,7 +54,6 @@ set textwidth=70
 let s:so_save = &so | let s:siso_save = &siso | set so=0 siso=0
 let v:this_session=expand("<sfile>:p")
 silent only
-cd ~/Programming/xd/src/trunk/plugins/torrent
 if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
@@ -112,17 +111,6 @@ setlocal noexpandtab
 if &filetype != 'idlang'
 setlocal filetype=idlang
 endif
-setlocal foldcolumn=0
-setlocal foldenable
-setlocal foldexpr=0
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldmarker={{{,}}}
-set foldmethod=syntax
-setlocal foldmethod=syntax
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldtext=foldtext()
 setlocal formatexpr=
 setlocal formatoptions=tcq
 setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
@@ -178,12 +166,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 11 - ((10 * winheight(0) + 18) / 37)
+let s:l = 25 - ((24 * winheight(0) + 18) / 37)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-11
-normal! 037l
+25
+normal! 039l
 wincmd w
 argglobal
 edit resources.qrc
@@ -214,17 +202,6 @@ setlocal noexpandtab
 if &filetype != ''
 setlocal filetype=
 endif
-setlocal foldcolumn=0
-setlocal foldenable
-setlocal foldexpr=0
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldmarker={{{,}}}
-set foldmethod=syntax
-setlocal foldmethod=syntax
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldtext=foldtext()
 setlocal formatexpr=
 setlocal formatoptions=tcq
 setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
@@ -329,17 +306,6 @@ setlocal noexpandtab
 if &filetype != 'cpp'
 setlocal filetype=cpp
 endif
-setlocal foldcolumn=0
-setlocal foldenable
-setlocal foldexpr=0
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldmarker={{{,}}}
-set foldmethod=syntax
-setlocal foldmethod=syntax
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldtext=foldtext()
 setlocal formatexpr=
 setlocal formatoptions=croql
 setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
@@ -395,8 +361,6 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-15
-normal zo
 let s:l = 55 - ((18 * winheight(0) + 11) / 22)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
@@ -433,17 +397,6 @@ setlocal noexpandtab
 if &filetype != 'cpp'
 setlocal filetype=cpp
 endif
-setlocal foldcolumn=0
-setlocal foldenable
-setlocal foldexpr=0
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldmarker={{{,}}}
-set foldmethod=syntax
-setlocal foldmethod=syntax
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldtext=foldtext()
 setlocal formatexpr=
 setlocal formatoptions=croql
 setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
@@ -499,70 +452,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-8
-normal zo
-18
-normal zo
-23
-normal zo
-28
-normal zo
-33
-normal zo
-39
-normal zo
-44
-normal zo
-49
-normal zo
-54
-normal zo
-59
-normal zo
-63
-normal zo
-68
-normal zo
-73
-normal zo
-78
-normal zo
-84
-normal zo
-88
-normal zo
-93
-normal zo
-98
-normal zo
-102
-normal zo
-106
-normal zo
-110
-normal zo
-114
-normal zo
-118
-normal zo
-123
-normal zo
-132
-normal zo
-136
-normal zo
-140
-normal zo
-144
-normal zo
-150
-normal zo
-let s:l = 128 - ((26 * winheight(0) + 26) / 52)
+let s:l = 15 - ((14 * winheight(0) + 26) / 52)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-128
-normal! 0
+15
+normal! 043l
 wincmd w
 exe '1resize ' . ((&lines * 22 + 39) / 78)
 exe '2resize ' . ((&lines * 52 + 39) / 78)
@@ -576,8 +471,8 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe '1resize ' . ((&lines * 27 + 39) / 78)
-exe '2resize ' . ((&lines * 47 + 39) / 78)
+exe '1resize ' . ((&lines * 20 + 39) / 78)
+exe '2resize ' . ((&lines * 54 + 39) / 78)
 argglobal
 setlocal keymap=
 setlocal noarabic
@@ -606,17 +501,6 @@ setlocal noexpandtab
 if &filetype != 'cpp'
 setlocal filetype=cpp
 endif
-setlocal foldcolumn=0
-setlocal foldenable
-setlocal foldexpr=0
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldmarker={{{,}}}
-set foldmethod=syntax
-setlocal foldmethod=syntax
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldtext=foldtext()
 setlocal formatexpr=
 setlocal formatoptions=croql
 setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
@@ -672,14 +556,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-8
-normal zo
-let s:l = 6 - ((5 * winheight(0) + 13) / 27)
+let s:l = 26 - ((6 * winheight(0) + 10) / 20)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-6
-normal! 0
+26
+normal! 017l
 wincmd w
 argglobal
 edit core.cpp
@@ -710,17 +592,6 @@ setlocal noexpandtab
 if &filetype != 'cpp'
 setlocal filetype=cpp
 endif
-setlocal foldcolumn=0
-setlocal foldenable
-setlocal foldexpr=0
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldmarker={{{,}}}
-set foldmethod=syntax
-setlocal foldmethod=syntax
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldtext=foldtext()
 setlocal formatexpr=
 setlocal formatoptions=croql
 setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
@@ -776,51 +647,16 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-10
-normal zo
-10
-normal zo
-16
-normal zo
-23
-normal zo
-27
-normal zo
-30
-normal zo
-27
-normal zo
-38
-normal zo
-45
-normal zo
-51
-normal zo
-56
-normal zo
-63
-normal zo
-65
-normal zo
-63
-normal zo
-38
-normal zo
-63
-normal zo
-65
-normal zo
-63
-normal zo
-let s:l = 19 - ((18 * winheight(0) + 23) / 47)
+let s:l = 35 - ((0 * winheight(0) + 27) / 54)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-19
-normal! 055l
+35
+normal! 0
 wincmd w
-exe '1resize ' . ((&lines * 27 + 39) / 78)
-exe '2resize ' . ((&lines * 47 + 39) / 78)
+2wincmd w
+exe '1resize ' . ((&lines * 20 + 39) / 78)
+exe '2resize ' . ((&lines * 54 + 39) / 78)
 tabedit addtorrent.h
 set splitbelow splitright
 wincmd _ | wincmd |
@@ -861,17 +697,6 @@ setlocal noexpandtab
 if &filetype != 'cpp'
 setlocal filetype=cpp
 endif
-setlocal foldcolumn=0
-setlocal foldenable
-setlocal foldexpr=0
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldmarker={{{,}}}
-set foldmethod=syntax
-setlocal foldmethod=syntax
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldtext=foldtext()
 setlocal formatexpr=
 setlocal formatoptions=croql
 setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
@@ -927,14 +752,10 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-7
-normal zo
-let s:l = 16 - ((15 * winheight(0) + 10) / 20)
+let s:l = 17 - ((14 * winheight(0) + 10) / 20)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
-normal! zt
-16
-normal! 0
+normal! 021l
 wincmd w
 argglobal
 edit addtorrent.cpp
@@ -965,17 +786,6 @@ setlocal noexpandtab
 if &filetype != 'cpp'
 setlocal filetype=cpp
 endif
-setlocal foldcolumn=0
-setlocal foldenable
-setlocal foldexpr=0
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldmarker={{{,}}}
-set foldmethod=syntax
-setlocal foldmethod=syntax
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldtext=foldtext()
 setlocal formatexpr=
 setlocal formatoptions=croql
 setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
@@ -1031,39 +841,14 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-10
-normal zo
-16
-normal zo
-28
-normal zo
-33
-normal zo
-58
-normal zo
-33
-normal zo
-66
-normal zo
-16
-normal zo
-28
-normal zo
-33
-normal zo
-58
-normal zo
-33
-normal zo
-66
-normal zo
-let s:l = 19 - ((3 * winheight(0) + 27) / 54)
+let s:l = 69 - ((35 * winheight(0) + 27) / 54)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-19
+69
 normal! 023l
 wincmd w
+2wincmd w
 exe '1resize ' . ((&lines * 20 + 39) / 78)
 exe '2resize ' . ((&lines * 54 + 39) / 78)
 tabedit settingsmanager.h
@@ -1106,17 +891,6 @@ setlocal noexpandtab
 if &filetype != 'cpp'
 setlocal filetype=cpp
 endif
-setlocal foldcolumn=0
-setlocal foldenable
-setlocal foldexpr=0
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldmarker={{{,}}}
-set foldmethod=syntax
-setlocal foldmethod=syntax
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldtext=foldtext()
 setlocal formatexpr=
 setlocal formatoptions=croql
 setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
@@ -1172,14 +946,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-11
-normal zo
-let s:l = 18 - ((13 * winheight(0) + 14) / 29)
+let s:l = 42 - ((21 * winheight(0) + 14) / 29)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-18
-normal! 029l
+42
+normal! 0
 wincmd w
 argglobal
 edit settingsmanager.cpp
@@ -1210,17 +982,6 @@ setlocal noexpandtab
 if &filetype != 'cpp'
 setlocal filetype=cpp
 endif
-setlocal foldcolumn=0
-setlocal foldenable
-setlocal foldexpr=0
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldmarker={{{,}}}
-set foldmethod=syntax
-setlocal foldmethod=syntax
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldtext=foldtext()
 setlocal formatexpr=
 setlocal formatoptions=croql
 setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
@@ -1276,72 +1037,17 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-11
-normal zo
-11
-normal zo
-16
-normal zo
-20
-normal zo
-25
-normal zo
-36
-normal zo
-16
-normal zo
-20
-normal zo
-25
-normal zo
-30
-normal zo
-41
-normal zo
-20
-normal zo
-25
-normal zo
-30
-normal zo
-34
-normal zo
-43
-normal zo
-52
-normal zo
-61
-normal zo
-66
-normal zo
-72
-normal zo
-77
-normal zo
-34
-normal zo
-43
-normal zo
-52
-normal zo
-62
-normal zo
-67
-normal zo
-73
-normal zo
-78
-normal zo
-let s:l = 58 - ((30 * winheight(0) + 22) / 45)
+let s:l = 56 - ((12 * winheight(0) + 22) / 45)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-58
-normal! 023l
+56
+normal! 01l
 wincmd w
+2wincmd w
 exe '1resize ' . ((&lines * 29 + 39) / 78)
 exe '2resize ' . ((&lines * 45 + 39) / 78)
-tabnext 5
+tabnext 3
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
 endif
