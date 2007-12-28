@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>799</height>
+    <width>738</width>
+    <height>674</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -17,55 +17,53 @@
    <iconset resource="resources.qrc" >:/resources/images/bittorrent.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget" >
-   <layout class="QHBoxLayout" >
+   <layout class="QVBoxLayout" >
     <item>
-     <widget class="QTreeWidget" name="treeWidget" >
-      <property name="showDropIndicator" stdset="0" >
-       <bool>false</bool>
+     <widget class="QSplitter" name="splitter" >
+      <property name="orientation" >
+       <enum>Qt::Vertical</enum>
       </property>
-      <property name="rootIsDecorated" >
-       <bool>false</bool>
-      </property>
-      <column>
-       <property name="text" >
-        <string>Name</string>
+      <widget class="QTableView" name="TorrentView_" >
+       <property name="editTriggers" >
+        <set>QAbstractItemView::NoEditTriggers</set>
        </property>
-      </column>
-      <column>
-       <property name="text" >
-        <string>Downloaded/Size</string>
+       <property name="selectionMode" >
+        <enum>QAbstractItemView::ExtendedSelection</enum>
        </property>
-      </column>
-      <column>
-       <property name="text" >
-        <string>Progress</string>
+       <property name="selectionBehavior" >
+        <enum>QAbstractItemView::SelectRows</enum>
        </property>
-      </column>
-      <column>
-       <property name="text" >
-        <string>State</string>
+       <property name="horizontalScrollMode" >
+        <enum>QAbstractItemView::ScrollPerPixel</enum>
        </property>
-      </column>
-      <column>
-       <property name="text" >
-        <string>Seeds/peers</string>
+       <property name="wordWrap" >
+        <bool>false</bool>
        </property>
-      </column>
-      <column>
-       <property name="text" >
-        <string>Dspeed</string>
+      </widget>
+      <widget class="QTabWidget" name="Stats_" >
+       <property name="tabPosition" >
+        <enum>QTabWidget::North</enum>
        </property>
-      </column>
-      <column>
-       <property name="text" >
-        <string>Uspeed</string>
+       <property name="tabShape" >
+        <enum>QTabWidget::Rounded</enum>
        </property>
-      </column>
-      <column>
-       <property name="text" >
-        <string>Remaining</string>
+       <property name="currentIndex" >
+        <number>0</number>
        </property>
-      </column>
+       <property name="elideMode" >
+        <enum>Qt::ElideRight</enum>
+       </property>
+       <widget class="QWidget" name="OverallStats_" >
+        <attribute name="title" >
+         <string>Overall stats</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="TorrentStats_" >
+        <attribute name="title" >
+         <string>Torrent stats</string>
+        </attribute>
+       </widget>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -75,7 +73,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>738</width>
      <height>26</height>
     </rect>
    </property>

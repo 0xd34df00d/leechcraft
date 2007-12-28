@@ -12,6 +12,7 @@ void TorrentPlugin::Init ()
 	SettingsDialog_->RegisterObject (SettingsManager::Instance ());
 	AddTorrentDialog_ = new AddTorrent (this);
 	connect (Core::Instance (), SIGNAL (error (QString)), this, SLOT (showError (QString)));
+	TorrentView_->setModel (Core::Instance ());
 }
 
 QString TorrentPlugin::GetName () const

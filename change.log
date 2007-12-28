@@ -1,6 +1,8 @@
 ***Public build 5***
 Core:
 + Embedded changelog viewer.
++ Handling IntRange.
++ Collector widget - to collect signals from all its kids.
 * Better failed dependencies handling. You cannot open the failed plugin now, and the failed deps highlight in red now.
 
 Batcher:
@@ -15,6 +17,9 @@ Cron:
 + Started.
 + Started work on single-shot jobs.
 
+BitTorrent:
++ Complete rewrite started. We depend on Boost and rb-libtorrent now.
+
 HTTP/FTP:
 + Now shows current (momental) speed too.
 + Now shows remaining time with current/overall speed.
@@ -24,6 +29,7 @@ HTTP/FTP:
 + User-selectable display of current speed/time.
 + Configurable proxy user & password. We should only implement the proxy support itself now :)
 + Show job errors with brief description on HTTP errors.
+* Default download path is home path now.
 * Deleting a running job no longer crashes the program.
 * Deleting old jobs from settings on exit.
 * Few interface enhancements.

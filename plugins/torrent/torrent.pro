@@ -22,5 +22,6 @@ SOURCES += torrentplugin.cpp \
 		   settingsmanager.cpp
 FORMS += mainwindow.ui addtorrent.ui
 RESOURCES += resources.qrc
+TRANSLATIONS += leechcraft_torrent_ru.ts
 win32:LIBS += -L../.. -lplugininterface -lexceptions -lsettingsdialog
 LIBS += -ltorrent
