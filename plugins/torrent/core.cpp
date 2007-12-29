@@ -81,25 +81,7 @@ QVariant Core::data (const QModelIndex& index, int role) const
 			if (status.paused)
 				return tr ("Idle");
 			else
-				switch (status.state)
-				{
-					case libtorrent::torrent_status::queued_for_checking:
-						return tr ("Queued for checking");
-					case libtorrent::torrent_status::checking_files:
-						return tr ("Checking files");
-					case libtorrent::torrent_status::connecting_to_tracker:
-						return tr ("Connecting");
-					case libtorrent::torrent_status::downloading_metadata:
-						return tr ("Downloading metadata");
-					case libtorrent::torrent_status::downloading:
-						return tr ("Downloading");
-					case libtorrent::torrent_status::finished:
-						return tr ("Finished");
-					case libtorrent::torrent_status::seeding:
-						return tr ("Seeding");
-					case libtorrent::torrent_status::allocating:
-						return tr ("Allocating");
-				}
+				return GetStringForState (status.state);
 		case ColumnSP:
 			return QString::number (status.num_seeds) + "/" + QString::number (status.num_peers);
 		case ColumnDSpeed:
@@ -191,6 +173,33 @@ libtorrent::torrent_info Core::GetTorrentInfo (const QByteArray& data)
 	}
 }
 
+TorrentInfo Core::GetTorrentStats (int row)
+{
+	if (!CheckValidity (row))
+		return TorrentInfo ();
+
+	libtorrent::torrent_handle handle = Handles_.at (row).second;
+	libtorrent::torrent_status status = handle.status ();
+	libtorrent::torrent_info info = handle.get_torrent_info ();
+
+	TorrentInfo result;
+	result.Tracker_ = QString::fromStdString (status.current_tracker);
+	result.State_ = GetStringForState (status.state);
+	result.Downloaded_ = status.total_done;
+	result.TotalSize_ = info.total_size ();
+	result.FailedSize_ = status.total_failed_bytes;
+	result.DHTNodesCount_ = info.nodes ().size ();
+	result.TotalPieces_ = info.num_pieces ();
+	result.DownloadedPieces_ = status.num_pieces;
+	result.DownloadRate_ = status.download_rate;
+	result.UploadRate_ = status.upload_rate;
+	result.ConnectedPeers_ = status.num_peers;
+	result.ConnectedSeeds_ = status.num_seeds;
+	result.PieceSize_ = info.piece_length ();
+	result.Progress_ = status.progress;
+	return result;
+}
+
 void Core::AddFile (const QString& filename, const QString& path)
 {
 	if (!QFileInfo (filename).exists () || !QFileInfo (filename).isReadable ())
@@ -215,23 +224,29 @@ void Core::AddFile (const QString& filename, const QString& path)
 	endInsertRows ();
 }
 
-void Core::RemoveTorrent (TorrentID_t id)
+void Core::RemoveTorrent (int pos)
 {
-	HandleDict_t::iterator pos = FindTorrentByID (id);
-	if (pos == Handles_.end ())
-	{
-		emit error (tr ("Torrent with ID %1 doesn't exist in The List").arg (id));
+	if (!CheckValidity (pos))
 		return;
-	}
-	if (!pos->second.is_valid ())
-	{
-		emit error (tr ("Torrent with ID %1 found in The List, but is invalid, so we remove it").arg (id));
-		Handles_.erase (pos);
-		return;
-	}
 
-	Session_->remove_torrent (pos->second);
-	Handles_.erase (pos);
+	Session_->remove_torrent (Handles_.at (pos).second);
+	Handles_.removeAt (pos);
+}
+
+void Core::PauseTorrent (int pos)
+{
+	if (!CheckValidity (pos))
+		return;
+
+	Handles_.at (pos).second.pause ();
+}
+
+void Core::ResumeTorrent (int pos)
+{
+	if (!CheckValidity (pos))
+		return;
+
+	Handles_.at (pos).second.resume ();
 }
 
 Core::HandleDict_t::iterator Core::FindTorrentByID (Core::TorrentID_t id)
@@ -253,6 +268,44 @@ Core::HandleDict_t::const_iterator Core::FindTorrentByID (Core::TorrentID_t id) 
 			break;
 
 	return i;
+}
+
+QString Core::GetStringForState (libtorrent::torrent_status::state_t state) const
+{
+	switch (state)
+	{
+		case libtorrent::torrent_status::queued_for_checking:
+			return tr ("Queued for checking");
+		case libtorrent::torrent_status::checking_files:
+			return tr ("Checking files");
+		case libtorrent::torrent_status::connecting_to_tracker:
+			return tr ("Connecting");
+		case libtorrent::torrent_status::downloading_metadata:
+			return tr ("Downloading metadata");
+		case libtorrent::torrent_status::downloading:
+			return tr ("Downloading");
+		case libtorrent::torrent_status::finished:
+			return tr ("Finished");
+		case libtorrent::torrent_status::seeding:
+			return tr ("Seeding");
+		case libtorrent::torrent_status::allocating:
+			return tr ("Allocating");
+	}
+}
+
+bool Core::CheckValidity (int pos)
+{
+	if (pos >= Handles_.size () || pos < 0)
+	{
+		emit error (tr ("Torrent with position %1 doesn't exist in The List").arg (pos));
+		return false;
+	}
+	if (!Handles_.at (pos).second.is_valid ())
+	{
+		emit error (tr ("Torrent with position %1 found in The List, but is invalid").arg (pos));
+		return false;
+	}
+	return true;
 }
 
 void Core::timerEvent (QTimerEvent *e)

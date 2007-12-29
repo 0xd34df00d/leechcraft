@@ -48,20 +48,318 @@
         <enum>QTabWidget::Rounded</enum>
        </property>
        <property name="currentIndex" >
-        <number>0</number>
+        <number>1</number>
        </property>
        <property name="elideMode" >
         <enum>Qt::ElideRight</enum>
        </property>
-       <widget class="QWidget" name="OverallStats_" >
+       <widget class="QWidget" name="OverallStatus_" >
         <attribute name="title" >
-         <string>Overall stats</string>
+         <string>Overall status</string>
         </attribute>
        </widget>
-       <widget class="QWidget" name="TorrentStats_" >
+       <widget class="QWidget" name="TorrentStatus_" >
         <attribute name="title" >
-         <string>Torrent stats</string>
+         <string>Torrent status</string>
         </attribute>
+        <layout class="QVBoxLayout" >
+         <item>
+          <layout class="QHBoxLayout" >
+           <item>
+            <widget class="QLabel" name="label_5" >
+             <property name="text" >
+              <string>Tracker:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="LabelTracker_" >
+             <property name="text" >
+              <string>&lt;></string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer>
+             <property name="orientation" >
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" >
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" >
+           <item>
+            <layout class="QGridLayout" >
+             <item row="0" column="0" >
+              <widget class="QLabel" name="label" >
+               <property name="text" >
+                <string>State:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1" >
+              <widget class="QLabel" name="LabelState_" >
+               <property name="text" >
+                <string>&lt;></string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" >
+              <widget class="QLabel" name="label_3" >
+               <property name="text" >
+                <string>Progress:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1" >
+              <widget class="QLabel" name="LabelProgress_" >
+               <property name="text" >
+                <string>&lt;></string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0" >
+              <widget class="QLabel" name="label_12" >
+               <property name="text" >
+                <string>Downloaded:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1" >
+              <widget class="QLabel" name="LabelDownloaded_" >
+               <property name="text" >
+                <string>&lt;></string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0" >
+              <widget class="QLabel" name="label_13" >
+               <property name="text" >
+                <string>Total size:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1" >
+              <widget class="QLabel" name="LabelTotalSize_" >
+               <property name="text" >
+                <string>&lt;></string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0" >
+              <widget class="QLabel" name="label_11" >
+               <property name="text" >
+                <string>Failed:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1" >
+              <widget class="QLabel" name="LabelFailed_" >
+               <property name="text" >
+                <string>&lt;></string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer>
+             <property name="orientation" >
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" >
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <layout class="QGridLayout" >
+             <item row="0" column="0" >
+              <widget class="QLabel" name="label_2" >
+               <property name="text" >
+                <string>Connected peers:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1" >
+              <widget class="QLabel" name="LabelConnectedPeers_" >
+               <property name="text" >
+                <string>&lt;></string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" >
+              <widget class="QLabel" name="label_4" >
+               <property name="text" >
+                <string>Connected seeds:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1" >
+              <widget class="QLabel" name="LabelConnectedSeeds_" >
+               <property name="text" >
+                <string>&lt;></string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0" >
+              <widget class="QLabel" name="label_7" >
+               <property name="text" >
+                <string>Next announce:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1" >
+              <widget class="QLabel" name="LabelNextAnnounce_" >
+               <property name="text" >
+                <string>&lt;></string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0" >
+              <widget class="QLabel" name="label_9" >
+               <property name="text" >
+                <string>Announce interval:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1" >
+              <widget class="QLabel" name="LabelAnnounceInterval_" >
+               <property name="text" >
+                <string>&lt;></string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0" >
+              <widget class="QLabel" name="label_6" >
+               <property name="text" >
+                <string>DHT nodes count:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1" >
+              <widget class="QLabel" name="LabelDHTNodesCount_" >
+               <property name="text" >
+                <string>&lt;></string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer>
+             <property name="orientation" >
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" >
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <layout class="QGridLayout" >
+             <item row="0" column="0" >
+              <widget class="QLabel" name="label_8" >
+               <property name="text" >
+                <string>Total pieces:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1" >
+              <widget class="QLabel" name="LabelTotalPieces_" >
+               <property name="text" >
+                <string>&lt;></string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" >
+              <widget class="QLabel" name="label_10" >
+               <property name="text" >
+                <string>Downloaded pieces:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1" >
+              <widget class="QLabel" name="LabelDownloadedPieces_" >
+               <property name="text" >
+                <string>&lt;></string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0" >
+              <widget class="QLabel" name="label_14" >
+               <property name="text" >
+                <string>Piece size:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1" >
+              <widget class="QLabel" name="LabelPieceSize_" >
+               <property name="text" >
+                <string>&lt;></string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0" >
+              <widget class="QLabel" name="label_15" >
+               <property name="text" >
+                <string>Download rate:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1" >
+              <widget class="QLabel" name="LabelDownloadRate_" >
+               <property name="text" >
+                <string>&lt;></string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0" >
+              <widget class="QLabel" name="label_16" >
+               <property name="text" >
+                <string>Upload rate:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1" >
+              <widget class="QLabel" name="LabelUploadRate_" >
+               <property name="text" >
+                <string>&lt;></string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer>
+           <property name="orientation" >
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" >
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </widget>
       </widget>
      </widget>

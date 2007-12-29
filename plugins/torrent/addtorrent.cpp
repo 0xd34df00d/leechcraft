@@ -13,6 +13,9 @@ AddTorrent::AddTorrent (QWidget *parent)
 	OK_->setEnabled (false);
 	connect (this, SIGNAL (on_TorrentFile__textChanged ()), this, SLOT (setOkEnabled ()));
 	connect (this, SIGNAL (on_Destination__textChanged ()), this, SLOT (setOkEnabled ()));
+
+	QString dir = SettingsManager::Instance ()->GetLastSaveDirectory ();
+	Destination_->setText (dir);
 }
 
 void AddTorrent::Reinit ()

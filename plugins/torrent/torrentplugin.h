@@ -4,6 +4,7 @@
 #include <interfaces/interfaces.h>
 #include <settingsdialog/settingsdialog.h>
 #include "ui_mainwindow.h"
+#include "torrentinfo.h"
 
 class AddTorrent;
 
@@ -21,6 +22,7 @@ class TorrentPlugin : public QMainWindow
 	bool IsShown_;
 	SettingsDialog *SettingsDialog_;
 	AddTorrent *AddTorrentDialog_;
+	int CurrentRow_;
 public:
 	void Init ();
 	QString GetName () const;
@@ -52,7 +54,11 @@ private slots:
 	void on_Resume__triggered ();
 	void on_Stop__triggered ();
 	void on_Preferences__triggered ();
+	void on_TorrentView__clicked (const QModelIndex&);
+	void on_TorrentView__pressed (const QModelIndex&);
+	void setActionsEnabled ();
 	void showError (QString);
+	void updateTorrentStats ();
 };
 
 #endif

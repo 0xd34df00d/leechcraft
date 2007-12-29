@@ -6,6 +6,7 @@
 #include <torrent_info.hpp>
 #include <torrent_handle.hpp>
 #include <session.hpp>
+#include "torrentinfo.h"
 
 class Core : public QAbstractItemModel
 {
@@ -49,11 +50,16 @@ public:
 
 	libtorrent::torrent_info GetTorrentInfo (const QString&);
 	libtorrent::torrent_info GetTorrentInfo (const QByteArray&);
+	TorrentInfo GetTorrentStats (int);
 	void AddFile (const QString&, const QString&);
-	void RemoveTorrent (TorrentID_t);
+	void RemoveTorrent (int);
+	void PauseTorrent (int);
+	void ResumeTorrent (int);
 private:
 	HandleDict_t::iterator FindTorrentByID (TorrentID_t); 
 	HandleDict_t::const_iterator FindTorrentByID (TorrentID_t) const; 
+	QString GetStringForState (libtorrent::torrent_status::state_t) const;
+	bool CheckValidity (int);
 protected:
 	virtual void timerEvent (QTimerEvent*);
 signals:

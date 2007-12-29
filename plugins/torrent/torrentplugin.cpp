@@ -1,4 +1,5 @@
 #include <QtGui>
+#include <plugininterface/proxy.h>
 #include "torrentplugin.h"
 #include "core.h"
 #include "addtorrent.h"
@@ -12,7 +13,9 @@ void TorrentPlugin::Init ()
 	SettingsDialog_->RegisterObject (SettingsManager::Instance ());
 	AddTorrentDialog_ = new AddTorrent (this);
 	connect (Core::Instance (), SIGNAL (error (QString)), this, SLOT (showError (QString)));
+	connect (Core::Instance (), SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (updateTorrentStats ()));
 	TorrentView_->setModel (Core::Instance ());
+	CurrentRow_ = -1;
 }
 
 QString TorrentPlugin::GetName () const
@@ -133,6 +136,9 @@ void TorrentPlugin::on_OpenTorrent__triggered ()
 
 void TorrentPlugin::on_RemoveTorrent__triggered ()
 {
+	if (CurrentRow_ == TorrentView_->currentIndex ().row ())
+		CurrentRow_ = -1;
+	Core::Instance ()->RemoveTorrent (TorrentView_->currentIndex ().row ());
 }
 
 void TorrentPlugin::on_Resume__triggered ()
@@ -149,9 +155,67 @@ void TorrentPlugin::on_Preferences__triggered ()
 	SettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
 }
 
+void TorrentPlugin::on_TorrentView__clicked (const QModelIndex& index)
+{
+	CurrentRow_ = index.row ();
+}
+
+void TorrentPlugin::on_TorrentView__pressed (const QModelIndex& index)
+{
+	CurrentRow_ = index.row ();
+}
+
+void TorrentPlugin::setActionsEnabled ()
+{
+}
+
 void TorrentPlugin::showError (QString e)
 {
+	qWarning () << e;
 	QMessageBox::warning (this, tr ("Error!"), e);
+}
+
+void TorrentPlugin::updateTorrentStats ()
+{
+	if (CurrentRow_ == -1)
+	{
+		LabelState_->setText ("<>");
+		LabelTracker_->setText ("<>");
+		LabelProgress_->setText ("<>");
+		LabelDHTNodesCount_->setText ("<>");
+		LabelDownloaded_->setText ("<>");
+		LabelTotalSize_->setText ("<>");
+		LabelFailed_->setText ("<>");
+		LabelConnectedSeeds_->setText ("<>");
+		LabelConnectedPeers_->setText ("<>");
+		LabelNextAnnounce_->setText ("<>");
+		LabelAnnounceInterval_->setText ("<>");
+		LabelTotalPieces_->setText ("<>");
+		LabelDownloadedPieces_->setText ("<>");
+		LabelPieceSize_->setText ("<>");
+		LabelDownloadRate_->setText ("<>");
+		LabelUploadRate_->setText ("<>");
+	}
+	else
+	{
+		TorrentInfo i = Core::Instance ()->GetTorrentStats (CurrentRow_);
+		LabelState_->setText (i.State_);
+		LabelTracker_->setText (i.Tracker_);
+		LabelProgress_->setText (QString::number (i.Progress_ * 100) + "%");
+		LabelDHTNodesCount_->setText (QString::number (i.DHTNodesCount_));
+		LabelDownloaded_->setText (Proxy::Instance ()->MakePrettySize (i.Downloaded_));
+		LabelTotalSize_->setText (Proxy::Instance ()->MakePrettySize (i.TotalSize_));
+		LabelFailed_->setText (Proxy::Instance ()->MakePrettySize (i.FailedSize_));
+		LabelConnectedPeers_->setText (QString::number (i.ConnectedPeers_));
+		LabelConnectedSeeds_->setText (QString::number (i.ConnectedSeeds_));
+		LabelNextAnnounce_->setText (Proxy::Instance ()->MakeTimeFromLong (i.NextAnnounce_).toString ());
+		LabelAnnounceInterval_->setText (Proxy::Instance ()->MakeTimeFromLong (i.AnnounceInterval_).toString ());
+		LabelTotalPieces_->setText (QString::number (i.TotalPieces_));
+		LabelDownloadedPieces_->setText (QString::number (i.DownloadedPieces_));
+		LabelPieceSize_->setText (Proxy::Instance ()->MakePrettySize (i.PieceSize_));
+		LabelDownloadRate_->setText (QString::number (i.DownloadRate_));
+		LabelUploadRate_->setText (QString::number (i.UploadRate_));
+	}
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_torrent, TorrentPlugin);

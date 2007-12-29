@@ -15,7 +15,8 @@ INCLUDEPATH += .
 HEADERS += torrentplugin.h \
 		   core.h \
 		   addtorrent.h \
-		   settingsmanager.h
+		   settingsmanager.h \
+		   torrentinfo.h
 SOURCES += torrentplugin.cpp \
 		   core.cpp \
 		   addtorrent.cpp \
