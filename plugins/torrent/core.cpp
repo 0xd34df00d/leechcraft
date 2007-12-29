@@ -1,6 +1,9 @@
 #include <QFile>
+#include <QDir>
 #include <QFileInfo>
 #include <QTimerEvent>
+#include <QSettings>
+#include <QtDebug>
 #include <bencode.hpp>
 #include <entry.hpp>
 #include <extensions/metadata_transfer.hpp>
@@ -29,10 +32,18 @@ Core::Core (QObject *parent)
 
 	Headers_ << tr ("Name") << tr ("Downloaded") << tr ("Uploaded") << tr ("Size") << tr ("Progress") << tr ("State") << tr ("Seeds/peers") << tr ("Dspeed") << tr ("Uspeed") << tr ("Remaining");
 	InterfaceUpdateTimer_ = startTimer (1000);
+
+	ReadSettings ();
+}
+
+void Core::DoDelayedInit ()
+{
+	RestoreTorrents ();
 }
 
 void Core::Release ()
 {
+	writeSettings ();
 	Session_->stop_dht ();
 	killTimer (InterfaceUpdateTimer_);
 }
@@ -197,6 +208,12 @@ TorrentInfo Core::GetTorrentStats (int row)
 	result.ConnectedSeeds_ = status.num_seeds;
 	result.PieceSize_ = info.piece_length ();
 	result.Progress_ = status.progress;
+	result.NextAnnounce_ = QTime (status.next_announce.hours (),
+								  status.next_announce.minutes (),
+								  status.next_announce.seconds ());
+	result.AnnounceInterval_ = QTime (status.announce_interval.hours (),
+									  status.announce_interval.minutes (),
+									  status.announce_interval.seconds ());
 	return result;
 }
 
@@ -291,6 +308,138 @@ QString Core::GetStringForState (libtorrent::torrent_status::state_t state) cons
 		case libtorrent::torrent_status::allocating:
 			return tr ("Allocating");
 	}
+}
+
+void Core::ReadSettings ()
+{
+}
+
+void Core::RestoreTorrents ()
+{
+	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
+	settings.beginGroup ("Torrent");
+	settings.beginGroup ("Core");
+	int torrents = settings.beginReadArray ("AddedTorrents");
+	for (int i = 0; i < torrents; ++i)
+	{
+		settings.setArrayIndex (i);
+		boost::filesystem::path path = settings.value ("SavePath").toString ().toStdString ();
+		QFile file_info		(QDir::homePath () + "/.leechcraft_bittorrent/" + QString ("%1_torrent_info.bncd").arg (i)),
+			  file_resume	(QDir::homePath () + "/.leechcraft_bittorrent/" + QString ("%1_torrent_resume.bncd").arg (i));
+
+		if (!file_info.open (QIODevice::ReadOnly) || !file_resume.open (QIODevice::ReadOnly))
+		{
+			emit error (tr ("Could not open files to read settings :("));
+			continue;
+		}
+
+		QVector<char> data, resumeData;
+		for (int j = 0; j < file_info.size (); ++j)
+		{
+			char ch;
+			file_info.read (&ch, 1);
+			data.append (ch);
+		}
+		for (int j = 0; j < file_resume.size (); ++j)
+		{
+			char ch;
+			file_resume.read (&ch, 1);
+			resumeData.append (ch);
+		}
+		try
+		{
+			libtorrent::entry e = libtorrent::bdecode (data.constBegin (), data.constEnd ());
+			libtorrent::entry resume;
+			try
+			{
+				resume = libtorrent::bdecode (resumeData.constBegin (), resumeData.constEnd ());
+			}
+			catch (const libtorrent::invalid_encoding& e)
+			{
+			}
+			qDebug () << "Adding torrent";
+			libtorrent::torrent_handle handle;
+			try
+			{
+				handle = Session_->add_torrent (libtorrent::torrent_info (e), path, resume, false);
+				qDebug () << "Added.";
+			}
+			catch (const libtorrent::duplicate_torrent& e)
+			{
+				emit error (tr ("The just restored torrent already exists in the session, that's strange."));
+				continue;
+			}
+			TorrentID_t id = CurrentID_++;
+			beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
+			Handles_.append (qMakePair (id, handle));
+			endInsertRows ();
+		}
+		catch (const libtorrent::invalid_encoding& e)
+		{
+			qDebug () << "Bad :(";
+			emit error (tr ("Bad bencoding in saved torrent data"));
+			continue;
+		}
+		catch (const libtorrent::invalid_torrent_file& e)
+		{
+			emit error (tr ("Invalid saved torrent data"));
+			continue;
+		}
+		file_info.close ();
+		file_resume.close ();
+	}
+	settings.endArray ();
+	settings.endGroup ();
+	settings.endGroup ();
+}
+
+void Core::writeSettings ()
+{
+	QDir home = QDir::home ();
+	if (!home.exists (".leechcraft_bittorrent"))
+		if (!home.mkdir (".leechcraft_bittorrent"))
+		{
+			emit error (tr ("Could not create path %1/.leechcraft_bittorrent").arg (QDir::homePath ()));
+			return;
+		}
+
+	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
+	settings.beginGroup ("Torrent");
+	settings.beginGroup ("Core");
+	settings.beginWriteArray ("AddedTorrents");
+	for (int i = 0; i < Handles_.size (); ++i)
+	{
+		settings.setArrayIndex (i);
+
+		libtorrent::entry e = Handles_.at (i).second.get_torrent_info ().create_torrent ();
+		QVector<char> buf;
+		libtorrent::bencode (std::back_inserter (buf), e);
+		QFile file_info (QDir::homePath () + "/.leechcraft_bittorrent/" + QString ("%1_torrent_info.bncd").arg (i));
+		if (!file_info.open (QIODevice::WriteOnly))
+		{
+			emit error ("Cannot write settings! Cannot open files for write!");
+			break;
+		}
+		file_info.write (&buf.at (0), buf.size ());
+		file_info.close ();
+
+		buf.clear ();
+		libtorrent::entry resume = Handles_.at (i).second.write_resume_data ();
+		libtorrent::bencode (std::back_inserter (buf), resume);
+		QFile file_resume (QDir::homePath () + "/.leechcraft_bittorrent/" + QString ("%1_torrent_resume.bncd").arg (i));
+		if (!file_resume.open (QIODevice::WriteOnly))
+		{
+			emit error ("Cannot write settings! Cannot open files for write!");
+			break;
+		}
+		file_resume.write (&buf.at (0), buf.size ());
+		file_resume.close ();
+
+		settings.setValue ("SavePath", QString::fromStdString (Handles_.at (i).second.save_path ().string ()));
+	}
+	settings.endArray ();
+	settings.endGroup ();
+	settings.endGroup ();
 }
 
 bool Core::CheckValidity (int pos)

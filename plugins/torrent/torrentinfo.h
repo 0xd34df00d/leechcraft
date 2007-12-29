@@ -1,5 +1,6 @@
 #ifndef TORRENTINFO_H
 #define TORRENTINFO_H
+#include <QTime>
 
 struct TorrentInfo
 {
@@ -16,9 +17,9 @@ struct TorrentInfo
 			Progress_;
 	int ConnectedPeers_,
 		ConnectedSeeds_,
-		NextAnnounce_,
-		AnnounceInterval_,
 		PieceSize_;
+	QTime	NextAnnounce_,
+			AnnounceInterval_;
 };
 
 #endif

@@ -37,6 +37,7 @@ private:
 public:
 	static Core* Instance ();
 	Core (QObject *parent = 0);
+	void DoDelayedInit ();
 	void Release ();
 
 	virtual int columnCount (const QModelIndex&) const;
@@ -60,6 +61,10 @@ private:
 	HandleDict_t::const_iterator FindTorrentByID (TorrentID_t) const; 
 	QString GetStringForState (libtorrent::torrent_status::state_t) const;
 	bool CheckValidity (int);
+	void ReadSettings ();
+	void RestoreTorrents ();
+private slots:
+	void writeSettings ();
 protected:
 	virtual void timerEvent (QTimerEvent*);
 signals:

@@ -14,6 +14,7 @@ void TorrentPlugin::Init ()
 	AddTorrentDialog_ = new AddTorrent (this);
 	connect (Core::Instance (), SIGNAL (error (QString)), this, SLOT (showError (QString)));
 	connect (Core::Instance (), SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (updateTorrentStats ()));
+	Core::Instance ()->DoDelayedInit ();
 	TorrentView_->setModel (Core::Instance ());
 	CurrentRow_ = -1;
 }
@@ -143,10 +144,12 @@ void TorrentPlugin::on_RemoveTorrent__triggered ()
 
 void TorrentPlugin::on_Resume__triggered ()
 {
+	Core::Instance ()->ResumeTorrent (TorrentView_->currentIndex ().row ());
 }
 
 void TorrentPlugin::on_Stop__triggered ()
 {
+	Core::Instance ()->PauseTorrent (TorrentView_->currentIndex ().row ());
 }
 
 void TorrentPlugin::on_Preferences__triggered ()
@@ -158,11 +161,13 @@ void TorrentPlugin::on_Preferences__triggered ()
 void TorrentPlugin::on_TorrentView__clicked (const QModelIndex& index)
 {
 	CurrentRow_ = index.row ();
+	updateTorrentStats ();
 }
 
 void TorrentPlugin::on_TorrentView__pressed (const QModelIndex& index)
 {
 	CurrentRow_ = index.row ();
+	updateTorrentStats ();
 }
 
 void TorrentPlugin::setActionsEnabled ()
@@ -208,13 +213,13 @@ void TorrentPlugin::updateTorrentStats ()
 		LabelFailed_->setText (Proxy::Instance ()->MakePrettySize (i.FailedSize_));
 		LabelConnectedPeers_->setText (QString::number (i.ConnectedPeers_));
 		LabelConnectedSeeds_->setText (QString::number (i.ConnectedSeeds_));
-		LabelNextAnnounce_->setText (Proxy::Instance ()->MakeTimeFromLong (i.NextAnnounce_).toString ());
-		LabelAnnounceInterval_->setText (Proxy::Instance ()->MakeTimeFromLong (i.AnnounceInterval_).toString ());
+		LabelNextAnnounce_->setText (i.NextAnnounce_.toString ());
+		LabelAnnounceInterval_->setText (i.AnnounceInterval_.toString ());
 		LabelTotalPieces_->setText (QString::number (i.TotalPieces_));
 		LabelDownloadedPieces_->setText (QString::number (i.DownloadedPieces_));
 		LabelPieceSize_->setText (Proxy::Instance ()->MakePrettySize (i.PieceSize_));
-		LabelDownloadRate_->setText (QString::number (i.DownloadRate_));
-		LabelUploadRate_->setText (QString::number (i.UploadRate_));
+		LabelDownloadRate_->setText (Proxy::Instance ()->MakePrettySize (i.DownloadRate_) + tr ("/s"));
+		LabelUploadRate_->setText (Proxy::Instance ()->MakePrettySize (i.UploadRate_) + tr ("/s"));
 	}
 }
 
