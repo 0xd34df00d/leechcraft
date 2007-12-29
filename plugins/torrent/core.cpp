@@ -248,6 +248,7 @@ void Core::RemoveTorrent (int pos)
 
 	Session_->remove_torrent (Handles_.at (pos).second);
 	Handles_.removeAt (pos);
+	qDebug () << Q_FUNC_INFO << "Session size is" << Session_->get_torrents ().size ();
 }
 
 void Core::PauseTorrent (int pos)

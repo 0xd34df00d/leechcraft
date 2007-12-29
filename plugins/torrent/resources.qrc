@@ -8,5 +8,6 @@
         <file>resources/images/preferences.png</file>
         <file>resources/images/startjob.png</file>
         <file>resources/images/stopjob.png</file>
+		<file>leechcraft_torrent_ru.qm</file>
     </qresource>
 </RCC>
