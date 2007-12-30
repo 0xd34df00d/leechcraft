@@ -15,20 +15,22 @@ class SettingsManager : public QObject
 	Q_INTERFACES (ISettings);
 
 	QMap<QString, SettingsItemInfo> PropInfos_;
+	Guarded<bool> SaveScheduled_;
 
 	Guarded<QString> LastTorrentDirectory_
 				   , LastSaveDirectory_;
-
-	Guarded<bool> SaveScheduled_;
 	Guarded<IntRange> PortRange_;
+	Guarded<bool> DHTEnabled_;
+
+	QMap<QString, QPair<QObject*, QString> > Property2Object_;
 //	Guarded<libtorrent::entry> DHTState_;
 public:
 	SettingsManager ();
 	~SettingsManager ();
 	void Release ();
 	static SettingsManager* Instance ();
+	void RegisterObject (const QString&, QObject*, const QString&);
 	SettingsItemInfo GetInfoFor (const QString&) const;
-	void ScheduleSave ();
 	void ReadSettings ();
 private slots:
 	void writeSettings ();
@@ -41,10 +43,15 @@ public:
 //	void SetDHTState (const libtorrent::entry&);
 	IntRange GetPortRange () const;
 	void SetPortRange (const IntRange&);
+	bool GetDHTEnabled () const;
+	void SetDHTEnabled (bool);
 
 	Q_PROPERTY (IntRange PortRange READ GetPortRange WRITE SetPortRange);
+	Q_PROPERTY (bool DHTEnabled READ GetDHTEnabled WRITE SetDHTEnabled);
 private:
 	void FillMap ();
+	void ScheduleSave ();
+	void CallSlots (const QString&);
 };
 
 #endif

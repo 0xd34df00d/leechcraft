@@ -32,6 +32,11 @@ SettingsManager* SettingsManager::Instance ()
 	return SettingsManagerInstance ();
 }
 
+void SettingsManager::RegisterObject (const QString& propName, QObject *obj, const QString& slotName)
+{
+	Property2Object_ [propName] = qMakePair (obj, slotName);
+}
+
 SettingsItemInfo SettingsManager::GetInfoFor (const QString& propName) const
 {
 	return PropInfos_ [propName];
@@ -53,6 +58,7 @@ void SettingsManager::ReadSettings ()
 	LastTorrentDirectory_	= settings.value ("LastTorrentDirectory", QDir::homePath ()).toString ();
 	LastSaveDirectory_		= settings.value ("LastSaveDirectory", QDir::homePath ()).toString ();
 	PortRange_				= settings.value ("PortRange", QVariant::fromValue (qMakePair<int, int> (6881, 6889))).value<IntRange> ();
+	DHTEnabled_				= settings.value ("DHTEnabled", true).toBool ();
 //	DHTState_				= settings.value ("DHTState", QVariant::fromValue (libtorrent::entry ())).value<libtorrent::entry> ();
 	settings.endGroup ();
 }
@@ -64,6 +70,7 @@ void SettingsManager::writeSettings ()
 	settings.setValue ("LastTorrentDirectory", LastTorrentDirectory_);
 	settings.setValue ("LastSaveDirectory", LastSaveDirectory_);
 	settings.setValue ("PortRange", QVariant::fromValue (PortRange_.Val ()));
+	settings.setValue ("DHTEnabled", DHTEnabled_);
 //	settings.setValue ("DHTState", QVariant::fromValue (DHTState_.Val ()));
 	settings.endGroup ();
 	SaveScheduled_ = false;
@@ -115,11 +122,34 @@ void SettingsManager::SetPortRange (const IntRange& value)
 	ScheduleSave ();
 }
 
+bool SettingsManager::GetDHTEnabled () const
+{
+	return DHTEnabled_;
+}
+
+void SettingsManager::SetDHTEnabled (bool val)
+{
+	DHTEnabled_ = val;
+	ScheduleSave ();
+	CallSlots ("DHTState");
+}
+
 void SettingsManager::FillMap ()
 {
 	SettingsItemInfo portRange = SettingsItemInfo (tr ("Port range"), tr ("Network options"));
 	portRange.SpinboxStep_ = 1;
 	portRange.IntRange_ = qMakePair<int, int> (1025, 65535);
 	PropInfos_ ["PortRange"] = portRange;
+
+	SettingsItemInfo dhtEnabled = SettingsItemInfo (tr ("DHT enabled"), tr ("Network options"));
+	PropInfos_ ["DHTEnabled"] = dhtEnabled;
+}
+
+void SettingsManager::CallSlots (const QString& name)
+{
+	QObject *obj = Property2Object_ [name].first;
+	QString slotName = Property2Object_ [name].second;
+
+	QMetaObject::invokeMethod (obj, slotName.toStdString ().c_str (), Qt::AutoConnection);
 }
 

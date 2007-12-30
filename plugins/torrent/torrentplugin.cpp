@@ -20,13 +20,25 @@ void TorrentPlugin::Init ()
 	AddTorrentDialog_ = new AddTorrent (this);
 	connect (Core::Instance (), SIGNAL (error (QString)), this, SLOT (showError (QString)));
 	connect (Core::Instance (), SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (updateTorrentStats ()));
-	Core::Instance ()->DoDelayedInit ();
 	TorrentView_->setModel (Core::Instance ());
-	TorrentView_->verticalHeader ()->hide ();
+	Core::Instance ()->DoDelayedInit ();
 	
 	OverallStatsUpdateTimer_ = new QTimer (this);
 	connect (OverallStatsUpdateTimer_, SIGNAL (timeout ()), this, SLOT (updateOverallStats ()));
 	OverallStatsUpdateTimer_->start (500);
+
+	QFontMetrics fm = fontMetrics ();
+	QHeaderView *header = TorrentView_->header ();
+	header->resizeSection (Core::ColumnName, fm.width ("thisisanaveragewareztorrentname,right?maybeyes.torrent"));
+	header->resizeSection (Core::ColumnDownloaded, fm.width ("_1234.0 KB_"));
+	header->resizeSection (Core::ColumnUploaded, fm.width ("_1234.0 KB_"));
+	header->resizeSection (Core::ColumnSize, fm.width ("_1234.0 KB_"));
+	header->resizeSection (Core::ColumnProgress, fm.width ("___100%___"));
+	header->resizeSection (Core::ColumnState, fm.width ("__Downloading__"));
+	header->resizeSection (Core::ColumnSP, fm.width ("_123/123_"));
+	header->resizeSection (Core::ColumnUSpeed, fm.width ("_1234.0 KB/s_"));
+	header->resizeSection (Core::ColumnDSpeed, fm.width ("_1234.0 KB/s_"));
+	header->resizeSection (Core::ColumnRemaining, fm.width ("10d 00:00:00"));
 }
 
 QString TorrentPlugin::GetName () const
@@ -148,7 +160,11 @@ void TorrentPlugin::on_OpenTorrent__triggered ()
 
 void TorrentPlugin::on_RemoveTorrent__triggered ()
 {
-	Core::Instance ()->RemoveTorrent (TorrentView_->currentIndex ().row ());
+	int row = TorrentView_->currentIndex ().row ();
+	if (row == -1)
+		return;
+
+	Core::Instance ()->RemoveTorrent (row);
 	updateTorrentStats ();
 }
 

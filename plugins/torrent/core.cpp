@@ -3,6 +3,7 @@
 #include <QFileInfo>
 #include <QTimerEvent>
 #include <QSettings>
+#include <QTimer>
 #include <QtDebug>
 #include <bencode.hpp>
 #include <entry.hpp>
@@ -27,12 +28,20 @@ Core::Core (QObject *parent)
 	Session_->listen_on (std::make_pair (ports.first, ports.second));
 	Session_->add_extension (&libtorrent::create_metadata_plugin);
 	Session_->add_extension (&libtorrent::create_ut_pex_plugin);
-	Session_->start_dht (libtorrent::entry ());
+	if (SettingsManager::Instance ()->GetDHTEnabled ())
+		Session_->start_dht (libtorrent::entry ());
 
-	Headers_ << tr ("Name") << tr ("Downloaded") << tr ("Uploaded") << tr ("Size") << tr ("Progress") << tr ("State") << tr ("Seeds/peers") << tr ("Dspeed") << tr ("Uspeed") << tr ("Remaining");
-	InterfaceUpdateTimer_ = startTimer (1000);
+	Headers_ << tr ("Name") << tr ("Downloaded") << tr ("Uploaded") << tr ("Size") << tr ("Progress") << tr ("State") << tr ("Seeds/peers") << tr ("Drate") << tr ("Urate") << tr ("Remaining");
 
 	ReadSettings ();
+
+	InterfaceUpdateTimer_ = startTimer (1000);
+
+	SettingsSaveTimer_ = new QTimer (this);
+	connect (SettingsSaveTimer_, SIGNAL (timeout ()), this, SLOT (writeSettings ()));
+	SettingsSaveTimer_->start (120000);
+
+	SettingsManager::Instance ()->RegisterObject ("DHTState", this, "dhtStateChanged");
 }
 
 void Core::DoDelayedInit ()
@@ -49,17 +58,11 @@ void Core::Release ()
 
 int Core::columnCount (const QModelIndex& index) const
 {
-	if (index.isValid ())
-		return 0;
-	else
-		return Headers_.size ();
+	return Headers_.size ();
 }
 
 QVariant Core::data (const QModelIndex& index, int role) const
 {
-	if (!index.isValid ())
-		return QVariant ();
-
 	if (role != Qt::DisplayRole)
 		return QVariant ();
 
@@ -86,7 +89,7 @@ QVariant Core::data (const QModelIndex& index, int role) const
 		case ColumnSize:
 			return Proxy::Instance ()->MakePrettySize (info.total_size ());
 		case ColumnProgress:
-			return QString::number (static_cast<int> (status.progress * 1000) / 10) + ("%");
+			return QString::number (static_cast<float> (static_cast<int> (status.progress * 1000)) / 10) + ("%");
 		case ColumnState:
 			if (status.paused)
 				return tr ("Idle");
@@ -112,12 +115,12 @@ Qt::ItemFlags Core::flags (const QModelIndex&) const
 
 bool Core::hasChildren (const QModelIndex&) const
 {
-	return false;
+	return true;
 }
 
 QModelIndex Core::index (int row, int column, const QModelIndex& index) const
 {
-	if (index.isValid () || !hasIndex (row, column))
+	if (!hasIndex (row, column))
 		return QModelIndex ();
 
 	return createIndex (row, column);
@@ -257,6 +260,7 @@ void Core::AddFile (const QString& filename, const QString& path)
 	TorrentStruct tmp = { 0, handle };
 	Handles_.append (tmp);
 	endInsertRows ();
+	QTimer::singleShot (10000, this, SLOT (writeSettings ()));
 }
 
 void Core::RemoveTorrent (int pos)
@@ -462,5 +466,13 @@ void Core::timerEvent (QTimerEvent *e)
 {
 	if (e->timerId () == InterfaceUpdateTimer_)
 		emit dataChanged (index (0, 0), index (Handles_.size (), columnCount (QModelIndex ())));
+}
+
+void Core::dhtStateChanged ()
+{
+	if (SettingsManager::Instance ()->GetDHTEnabled ())
+		Session_->start_dht (libtorrent::entry ());
+	else
+		Session_->stop_dht ();
 }
 

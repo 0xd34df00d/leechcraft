@@ -23,20 +23,14 @@
       <property name="orientation" >
        <enum>Qt::Vertical</enum>
       </property>
-      <widget class="QTableView" name="TorrentView_" >
-       <property name="editTriggers" >
-        <set>QAbstractItemView::NoEditTriggers</set>
+      <widget class="QTreeView" name="TorrentView_" >
+       <property name="rootIsDecorated" >
+        <bool>false</bool>
        </property>
-       <property name="selectionMode" >
-        <enum>QAbstractItemView::ExtendedSelection</enum>
+       <property name="uniformRowHeights" >
+        <bool>true</bool>
        </property>
-       <property name="selectionBehavior" >
-        <enum>QAbstractItemView::SelectRows</enum>
-       </property>
-       <property name="horizontalScrollMode" >
-        <enum>QAbstractItemView::ScrollPerPixel</enum>
-       </property>
-       <property name="wordWrap" >
+       <property name="itemsExpandable" >
         <bool>false</bool>
        </property>
       </widget>

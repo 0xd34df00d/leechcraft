@@ -8,7 +8,8 @@
 #include <session.hpp>
 #include "torrentinfo.h"
 #include "overallstats.h"
-#include "torrentstruct.h"
+
+class QTimer;
 
 class Core : public QAbstractItemModel
 {
@@ -25,6 +26,9 @@ private:
 	typedef QList<TorrentStruct> HandleDict_t;
 	HandleDict_t Handles_;
 	QList<QString> Headers_;
+	int InterfaceUpdateTimer_;
+	QTimer *SettingsSaveTimer_;
+public:
 	enum Columns
 	{
 		ColumnName = 0
@@ -38,8 +42,6 @@ private:
 		, ColumnUSpeed 
 		, ColumnRemaining 
 	};
-	int InterfaceUpdateTimer_;
-public:
 	static Core* Instance ();
 	Core (QObject *parent = 0);
 	void DoDelayedInit ();
@@ -71,6 +73,8 @@ private slots:
 	void writeSettings ();
 protected:
 	virtual void timerEvent (QTimerEvent*);
+public slots:
+	void dhtStateChanged ();
 signals:
 	void error (QString);
 };
