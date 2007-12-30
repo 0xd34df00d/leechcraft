@@ -21,7 +21,6 @@ Core* Core::Instance ()
 
 Core::Core (QObject *parent)
 : QAbstractItemModel (parent)
-, CurrentID_ (0)
 {
 	Session_ = new libtorrent::session (libtorrent::fingerprint ("LB", 0, 0, 0, 2));
 	QPair<int, int> ports = SettingsManager::Instance ()->GetPortRange ();
@@ -67,10 +66,10 @@ QVariant Core::data (const QModelIndex& index, int role) const
 	int row = index.row (),
 		column = index.column ();
 
-	libtorrent::torrent_handle h = Handles_.at (row).second;
+	libtorrent::torrent_handle h = Handles_.at (row).Handle_;
 	if (!h.is_valid ())
 	{
-		emit const_cast<Core*> (this)->error (tr ("%1: for row %2 torrent handle is invalid, ID is %3").arg (Q_FUNC_INFO).arg (row).arg (Handles_.at (row).first));
+		emit const_cast<Core*> (this)->error (tr ("%1: for row %2 torrent handle is invalid").arg (Q_FUNC_INFO).arg (row));
 		return QVariant ();
 	}
 
@@ -83,11 +82,11 @@ QVariant Core::data (const QModelIndex& index, int role) const
 		case ColumnDownloaded:
 			return Proxy::Instance ()->MakePrettySize (status.total_done);
 		case ColumnUploaded:
-			return QString ("NI");
+			return Proxy::Instance ()->MakePrettySize (status.total_payload_upload + Handles_.at (row).UploadedBefore_);
 		case ColumnSize:
 			return Proxy::Instance ()->MakePrettySize (info.total_size ());
 		case ColumnProgress:
-			return QString::number (status.progress * 100) + ("%");
+			return QString::number (static_cast<int> (status.progress * 1000) / 10) + ("%");
 		case ColumnState:
 			if (status.paused)
 				return tr ("Idle");
@@ -96,11 +95,11 @@ QVariant Core::data (const QModelIndex& index, int role) const
 		case ColumnSP:
 			return QString::number (status.num_seeds) + "/" + QString::number (status.num_peers);
 		case ColumnDSpeed:
-			return Proxy::Instance ()->MakePrettySize (status.download_rate) + tr ("/s");
+			return Proxy::Instance ()->MakePrettySize (status.download_payload_rate) + tr ("/s");
 		case ColumnUSpeed:
-			return Proxy::Instance ()->MakePrettySize (status.upload_rate) + tr ("/s");
+			return Proxy::Instance ()->MakePrettySize (status.upload_payload_rate) + tr ("/s");
 		case ColumnRemaining:
-			return Proxy::Instance ()->MakeTimeFromLong ((info.total_size () - status.total_done) / status.download_rate).toString ();
+			return Proxy::Instance ()->MakeTimeFromLong ((info.total_size () - status.total_done) / status.download_payload_rate).toString ();
 		default:
 			return QVariant ();
 	}
@@ -189,7 +188,7 @@ TorrentInfo Core::GetTorrentStats (int row) const
 	if (!CheckValidity (row))
 		return TorrentInfo ();
 
-	libtorrent::torrent_handle handle = Handles_.at (row).second;
+	libtorrent::torrent_handle handle = Handles_.at (row).Handle_;
 	libtorrent::torrent_status status = handle.status ();
 	libtorrent::torrent_info info = handle.get_torrent_info ();
 
@@ -254,9 +253,9 @@ void Core::AddFile (const QString& filename, const QString& path)
 		emit error (tr ("The torrent %1 with save path %2 already exists in the session").arg (filename).arg (path));
 		return;
 	}
-	TorrentID_t id = CurrentID_++;
 	beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
-	Handles_.append (qMakePair (id, handle));
+	TorrentStruct tmp = { 0, handle };
+	Handles_.append (tmp);
 	endInsertRows ();
 }
 
@@ -265,7 +264,7 @@ void Core::RemoveTorrent (int pos)
 	if (!CheckValidity (pos))
 		return;
 
-	Session_->remove_torrent (Handles_.at (pos).second);
+	Session_->remove_torrent (Handles_.at (pos).Handle_);
 	beginRemoveRows (QModelIndex (), pos, pos);
 	Handles_.removeAt (pos);
 	endRemoveRows ();
@@ -276,7 +275,7 @@ void Core::PauseTorrent (int pos)
 	if (!CheckValidity (pos))
 		return;
 
-	Handles_.at (pos).second.pause ();
+	Handles_.at (pos).Handle_.pause ();
 }
 
 void Core::ResumeTorrent (int pos)
@@ -284,28 +283,7 @@ void Core::ResumeTorrent (int pos)
 	if (!CheckValidity (pos))
 		return;
 
-	Handles_.at (pos).second.resume ();
-}
-
-Core::HandleDict_t::iterator Core::FindTorrentByID (Core::TorrentID_t id)
-{
-	HandleDict_t::iterator i = Handles_.begin ();
-	for ( ; i != Handles_.end (); ++i)
-		if (i->first == id)
-			break;
-
-	return i;
-}
-
-
-Core::HandleDict_t::const_iterator Core::FindTorrentByID (Core::TorrentID_t id) const
-{
-	HandleDict_t::const_iterator i = Handles_.constBegin ();
-	for ( ; i != Handles_.constEnd (); ++i)
-		if (i->first == id)
-			break;
-
-	return i;
+	Handles_.at (pos).Handle_.resume ();
 }
 
 QString Core::GetStringForState (libtorrent::torrent_status::state_t state) const
@@ -367,6 +345,7 @@ void Core::RestoreTorrents ()
 			file_resume.read (&ch, 1);
 			resumeData.append (ch);
 		}
+		quint64 ub = settings.value ("UploadedBytes").value<quint64> ();
 		try
 		{
 			libtorrent::entry e = libtorrent::bdecode (data.constBegin (), data.constEnd ());
@@ -390,9 +369,9 @@ void Core::RestoreTorrents ()
 				emit error (tr ("The just restored torrent already exists in the session, that's strange."));
 				continue;
 			}
-			TorrentID_t id = CurrentID_++;
 			beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
-			Handles_.append (qMakePair (id, handle));
+			TorrentStruct tmp = { ub, handle };
+			Handles_.append (tmp);
 			endInsertRows ();
 		}
 		catch (const libtorrent::invalid_encoding& e)
@@ -432,7 +411,7 @@ void Core::writeSettings ()
 	{
 		settings.setArrayIndex (i);
 
-		libtorrent::entry e = Handles_.at (i).second.get_torrent_info ().create_torrent ();
+		libtorrent::entry e = Handles_.at (i).Handle_.get_torrent_info ().create_torrent ();
 		QVector<char> buf;
 		libtorrent::bencode (std::back_inserter (buf), e);
 		QFile file_info (QDir::homePath () + "/.leechcraft_bittorrent/" + QString ("%1_torrent_info.bncd").arg (i));
@@ -445,7 +424,7 @@ void Core::writeSettings ()
 		file_info.close ();
 
 		buf.clear ();
-		libtorrent::entry resume = Handles_.at (i).second.write_resume_data ();
+		libtorrent::entry resume = Handles_.at (i).Handle_.write_resume_data ();
 		libtorrent::bencode (std::back_inserter (buf), resume);
 		QFile file_resume (QDir::homePath () + "/.leechcraft_bittorrent/" + QString ("%1_torrent_resume.bncd").arg (i));
 		if (!file_resume.open (QIODevice::WriteOnly))
@@ -456,7 +435,8 @@ void Core::writeSettings ()
 		file_resume.write (&buf.at (0), buf.size ());
 		file_resume.close ();
 
-		settings.setValue ("SavePath", QString::fromStdString (Handles_.at (i).second.save_path ().string ()));
+		settings.setValue ("SavePath", QString::fromStdString (Handles_.at (i).Handle_.save_path ().string ()));
+		settings.setValue ("UploadedBytes", Handles_.at (i).UploadedBefore_ + Handles_.at (i).Handle_.status ().total_upload);
 	}
 	settings.endArray ();
 	settings.endGroup ();
@@ -470,7 +450,7 @@ bool Core::CheckValidity (int pos) const
 		emit const_cast<Core*> (this)->error (tr ("Torrent with position %1 doesn't exist in The List").arg (pos));
 		return false;
 	}
-	if (!Handles_.at (pos).second.is_valid ())
+	if (!Handles_.at (pos).Handle_.is_valid ())
 	{
 		emit const_cast<Core*> (this)->error (tr ("Torrent with position %1 found in The List, but is invalid").arg (pos));
 		return false;

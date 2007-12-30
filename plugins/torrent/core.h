@@ -8,19 +8,23 @@
 #include <session.hpp>
 #include "torrentinfo.h"
 #include "overallstats.h"
+#include "torrentstruct.h"
 
 class Core : public QAbstractItemModel
 {
 	Q_OBJECT
 
-public:
-	typedef ulong TorrentID_t;
 private:
+	struct TorrentStruct
+	{
+		quint64 UploadedBefore_;
+		libtorrent::torrent_handle Handle_;
+	};
+
 	libtorrent::session *Session_;
-	typedef QList<QPair<TorrentID_t, libtorrent::torrent_handle> > HandleDict_t;
+	typedef QList<TorrentStruct> HandleDict_t;
 	HandleDict_t Handles_;
 	QList<QString> Headers_;
-	TorrentID_t CurrentID_;
 	enum Columns
 	{
 		ColumnName = 0
@@ -59,8 +63,6 @@ public:
 	void PauseTorrent (int);
 	void ResumeTorrent (int);
 private:
-	HandleDict_t::iterator FindTorrentByID (TorrentID_t); 
-	HandleDict_t::const_iterator FindTorrentByID (TorrentID_t) const; 
 	QString GetStringForState (libtorrent::torrent_status::state_t) const;
 	bool CheckValidity (int) const;
 	void ReadSettings ();
@@ -71,8 +73,6 @@ protected:
 	virtual void timerEvent (QTimerEvent*);
 signals:
 	void error (QString);
-	void torrentAdded (TorrentID_t);
-	void torrentRemoved (TorrentID_t);
 };
 
 #endif
