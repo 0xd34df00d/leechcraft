@@ -7,6 +7,7 @@
 #include "torrentinfo.h"
 
 class AddTorrent;
+class QTimer;
 
 class TorrentPlugin : public QMainWindow
 					, public IInfo
@@ -22,7 +23,7 @@ class TorrentPlugin : public QMainWindow
 	bool IsShown_;
 	SettingsDialog *SettingsDialog_;
 	AddTorrent *AddTorrentDialog_;
-	int CurrentRow_;
+	QTimer *OverallStatsUpdateTimer_;
 public:
 	void Init ();
 	QString GetName () const;
@@ -59,6 +60,7 @@ private slots:
 	void setActionsEnabled ();
 	void showError (QString);
 	void updateTorrentStats ();
+	void updateOverallStats ();
 };
 
 #endif

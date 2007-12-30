@@ -7,6 +7,7 @@
 #include <torrent_handle.hpp>
 #include <session.hpp>
 #include "torrentinfo.h"
+#include "overallstats.h"
 
 class Core : public QAbstractItemModel
 {
@@ -51,7 +52,8 @@ public:
 
 	libtorrent::torrent_info GetTorrentInfo (const QString&);
 	libtorrent::torrent_info GetTorrentInfo (const QByteArray&);
-	TorrentInfo GetTorrentStats (int);
+	TorrentInfo GetTorrentStats (int) const;
+	OverallStats GetOverallStats () const;
 	void AddFile (const QString&, const QString&);
 	void RemoveTorrent (int);
 	void PauseTorrent (int);
@@ -60,7 +62,7 @@ private:
 	HandleDict_t::iterator FindTorrentByID (TorrentID_t); 
 	HandleDict_t::const_iterator FindTorrentByID (TorrentID_t) const; 
 	QString GetStringForState (libtorrent::torrent_status::state_t) const;
-	bool CheckValidity (int);
+	bool CheckValidity (int) const;
 	void ReadSettings ();
 	void RestoreTorrents ();
 private slots:

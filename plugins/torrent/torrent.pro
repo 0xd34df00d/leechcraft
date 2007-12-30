@@ -16,7 +16,8 @@ HEADERS += torrentplugin.h \
 		   core.h \
 		   addtorrent.h \
 		   settingsmanager.h \
-		   torrentinfo.h
+		   torrentinfo.h \
+		   overallstats.h
 SOURCES += torrentplugin.cpp \
 		   core.cpp \
 		   addtorrent.cpp \

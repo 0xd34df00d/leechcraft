@@ -184,7 +184,7 @@ libtorrent::torrent_info Core::GetTorrentInfo (const QByteArray& data)
 	}
 }
 
-TorrentInfo Core::GetTorrentStats (int row)
+TorrentInfo Core::GetTorrentStats (int row) const
 {
 	if (!CheckValidity (row))
 		return TorrentInfo ();
@@ -214,6 +214,25 @@ TorrentInfo Core::GetTorrentStats (int row)
 	result.AnnounceInterval_ = QTime (status.announce_interval.hours (),
 									  status.announce_interval.minutes (),
 									  status.announce_interval.seconds ());
+	return result;
+}
+
+OverallStats Core::GetOverallStats () const
+{
+	OverallStats result;
+
+	libtorrent::session_status status = Session_->status ();
+
+	result.ListenPort_ = Session_->listen_port ();
+	result.NumUploads_ = Session_->num_uploads ();
+	result.NumConnections_ = Session_->num_connections ();
+	result.SessionUpload_ = status.total_upload;
+	result.SessionDownload_ = status.total_download;
+	result.UploadRate_ = status.upload_rate;
+	result.DownloadRate_ = status.download_rate;
+	result.NumPeers_ = status.num_peers;
+	result.NumDHTNodes_ = status.dht_nodes;
+	result.NumDHTTorrents_ = status.dht_torrents;
 	return result;
 }
 
@@ -247,8 +266,9 @@ void Core::RemoveTorrent (int pos)
 		return;
 
 	Session_->remove_torrent (Handles_.at (pos).second);
+	beginRemoveRows (QModelIndex (), pos, pos);
 	Handles_.removeAt (pos);
-	qDebug () << Q_FUNC_INFO << "Session size is" << Session_->get_torrents ().size ();
+	endRemoveRows ();
 }
 
 void Core::PauseTorrent (int pos)
@@ -443,16 +463,16 @@ void Core::writeSettings ()
 	settings.endGroup ();
 }
 
-bool Core::CheckValidity (int pos)
+bool Core::CheckValidity (int pos) const
 {
 	if (pos >= Handles_.size () || pos < 0)
 	{
-		emit error (tr ("Torrent with position %1 doesn't exist in The List").arg (pos));
+		emit const_cast<Core*> (this)->error (tr ("Torrent with position %1 doesn't exist in The List").arg (pos));
 		return false;
 	}
 	if (!Handles_.at (pos).second.is_valid ())
 	{
-		emit error (tr ("Torrent with position %1 found in The List, but is invalid").arg (pos));
+		emit const_cast<Core*> (this)->error (tr ("Torrent with position %1 found in The List, but is invalid").arg (pos));
 		return false;
 	}
 	return true;

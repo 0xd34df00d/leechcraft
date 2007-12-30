@@ -22,7 +22,11 @@ void TorrentPlugin::Init ()
 	connect (Core::Instance (), SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (updateTorrentStats ()));
 	Core::Instance ()->DoDelayedInit ();
 	TorrentView_->setModel (Core::Instance ());
-	CurrentRow_ = -1;
+	TorrentView_->verticalHeader ()->hide ();
+	
+	OverallStatsUpdateTimer_ = new QTimer (this);
+	connect (OverallStatsUpdateTimer_, SIGNAL (timeout ()), this, SLOT (updateOverallStats ()));
+	OverallStatsUpdateTimer_->start (500);
 }
 
 QString TorrentPlugin::GetName () const
@@ -133,6 +137,7 @@ void TorrentPlugin::closeEvent (QCloseEvent*)
 
 void TorrentPlugin::on_OpenTorrent__triggered ()
 {
+	AddTorrentDialog_->Reinit ();
 	if (AddTorrentDialog_->exec () == QDialog::Rejected)
 		return;
 
@@ -143,9 +148,8 @@ void TorrentPlugin::on_OpenTorrent__triggered ()
 
 void TorrentPlugin::on_RemoveTorrent__triggered ()
 {
-	if (CurrentRow_ == TorrentView_->currentIndex ().row ())
-		CurrentRow_ = -1;
 	Core::Instance ()->RemoveTorrent (TorrentView_->currentIndex ().row ());
+	updateTorrentStats ();
 }
 
 void TorrentPlugin::on_Resume__triggered ()
@@ -164,15 +168,13 @@ void TorrentPlugin::on_Preferences__triggered ()
 	SettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
 }
 
-void TorrentPlugin::on_TorrentView__clicked (const QModelIndex& index)
+void TorrentPlugin::on_TorrentView__clicked (const QModelIndex&)
 {
-	CurrentRow_ = index.row ();
 	updateTorrentStats ();
 }
 
-void TorrentPlugin::on_TorrentView__pressed (const QModelIndex& index)
+void TorrentPlugin::on_TorrentView__pressed (const QModelIndex&)
 {
-	CurrentRow_ = index.row ();
 	updateTorrentStats ();
 }
 
@@ -188,7 +190,8 @@ void TorrentPlugin::showError (QString e)
 
 void TorrentPlugin::updateTorrentStats ()
 {
-	if (CurrentRow_ == -1)
+	QModelIndex index = TorrentView_->currentIndex ();
+	if (!index.isValid ())
 	{
 		LabelState_->setText ("<>");
 		LabelTracker_->setText ("<>");
@@ -209,7 +212,7 @@ void TorrentPlugin::updateTorrentStats ()
 	}
 	else
 	{
-		TorrentInfo i = Core::Instance ()->GetTorrentStats (CurrentRow_);
+		TorrentInfo i = Core::Instance ()->GetTorrentStats (index.row ());
 		LabelState_->setText (i.State_);
 		LabelTracker_->setText (i.Tracker_);
 		LabelProgress_->setText (QString::number (i.Progress_ * 100) + "%");
@@ -227,6 +230,21 @@ void TorrentPlugin::updateTorrentStats ()
 		LabelDownloadRate_->setText (Proxy::Instance ()->MakePrettySize (i.DownloadRate_) + tr ("/s"));
 		LabelUploadRate_->setText (Proxy::Instance ()->MakePrettySize (i.UploadRate_) + tr ("/s"));
 	}
+}
+
+void TorrentPlugin::updateOverallStats ()
+{
+	OverallStats stats = Core::Instance ()->GetOverallStats ();
+	LabelTotalDownloadRate_->setText (Proxy::Instance ()->MakePrettySize (static_cast<int> (stats.DownloadRate_)) + tr ("/s"));
+	LabelTotalUploadRate_->setText (Proxy::Instance ()->MakePrettySize (static_cast<int> (stats.UploadRate_)) + tr ("/s"));
+	LabelTotalDownloaded_->setText (Proxy::Instance ()->MakePrettySize (stats.SessionDownload_));
+	LabelTotalUploaded_->setText (Proxy::Instance ()->MakePrettySize (stats.SessionUpload_));
+	LabelTotalConnections_->setText (QString::number (stats.NumConnections_));
+	LabelUploadConnections_->setText (QString::number (stats.NumUploads_));
+	LabelTotalPeers_->setText (QString::number (stats.NumPeers_));
+	LabelTotalDHTNodes_->setText (QString::number (stats.NumDHTNodes_));
+	LabelDHTTorrents_->setText (QString::number (stats.NumDHTTorrents_));
+	LabelListenPort_->setText (QString::number (stats.ListenPort_));
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_torrent, TorrentPlugin);
