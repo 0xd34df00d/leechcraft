@@ -636,6 +636,9 @@
    <property name="text" >
     <string>Open torrent</string>
    </property>
+   <property name="shortcut" >
+    <string>Ins</string>
+   </property>
   </action>
   <action name="RemoveTorrent_" >
    <property name="icon" >
@@ -643,6 +646,9 @@
    </property>
    <property name="text" >
     <string>Remove</string>
+   </property>
+   <property name="shortcut" >
+    <string>Del</string>
    </property>
   </action>
   <action name="Preferences_" >
@@ -652,6 +658,9 @@
    <property name="text" >
     <string>Preferences...</string>
    </property>
+   <property name="shortcut" >
+    <string>Ctrl+Shift+P</string>
+   </property>
   </action>
   <action name="Resume_" >
    <property name="icon" >
@@ -660,6 +669,9 @@
    <property name="text" >
     <string>Start/resume</string>
    </property>
+   <property name="shortcut" >
+    <string>R</string>
+   </property>
   </action>
   <action name="Stop_" >
    <property name="icon" >
@@ -667,6 +679,9 @@
    </property>
    <property name="text" >
     <string>Stop</string>
+   </property>
+   <property name="shortcut" >
+    <string>S</string>
    </property>
   </action>
  </widget>
