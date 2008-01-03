@@ -4,7 +4,7 @@
 
 TEMPLATE = lib
 TARGET = exceptions
-CONFIG += release
+CONFIG += release shared
 DEPENDPATH += .
 INCLUDEPATH += .
 DESTDIR = .

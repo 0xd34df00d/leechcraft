@@ -10,6 +10,7 @@ DEPENDPATH += .
 INCLUDEPATH += ../../
 INCLUDEPATH += /usr/include/libtorrent 
 INCLUDEPATH += .
+INCLUDEPATH += libtorrent/
 
 # Input
 HEADERS += torrentplugin.h \
@@ -25,5 +26,5 @@ SOURCES += torrentplugin.cpp \
 FORMS += mainwindow.ui addtorrent.ui
 RESOURCES += resources.qrc
 TRANSLATIONS += leechcraft_torrent_ru.ts
-win32:LIBS += -L../.. -lplugininterface -lexceptions -lsettingsdialog
+win32:LIBS += -L../.. -lplugininterface -lexceptions -lsettingsdialog -Llibs -lws2_32 -lboost_date_time-mgw42-mt-1_34_1 -lboost_filesystem-mgw42-mt-1_34_1 -lboost_thread-mgw42-mt-1_34_1
 LIBS += -ltorrent
