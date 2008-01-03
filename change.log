@@ -1,3 +1,11 @@
+***Public build 6***
+Core:
+
+HTTP/FTP:
++ Autostart on by default.
++ Shows an error if timeout reading response.
+* Multiple starts of a single job don't lead to crash anymore.
+
 ***Public build 5***
 Core:
 + Embedded changelog viewer.

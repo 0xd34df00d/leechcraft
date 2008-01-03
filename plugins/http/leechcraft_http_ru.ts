@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1">
-<defaultcodec></defaultcodec>
 <context>
     <name>ColumnSelector</name>
     <message>
@@ -147,164 +146,169 @@
 <context>
     <name>HttpImp</name>
     <message>
-        <location filename="httpimp.cpp" line="243"/>
+        <location filename="httpimp.cpp" line="252"/>
         <source>400 Bad request. The request contains bad syntax or cannot be fulfilled.</source>
         <translation>400 Плохой запрос. Запрос не понят сервером из-за наличия синтаксической ошибки. Клиенту следует повторно обратиться к ресурсу с изменённым запросом.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="246"/>
+        <location filename="httpimp.cpp" line="255"/>
         <source>401 Unauthorized. Authentication is possible but has failed or not yet been provided.</source>
         <translation>401 Неавторизован. Запрос требует идентификации пользователя. Клиент должен запросить имя и пароль у пользователя и передать их в записи WWW-Authenticate заголовка в следующем запросе. В случае ввода ошибочных данных сервер снова вернёт этот же статус.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="249"/>
+        <location filename="httpimp.cpp" line="258"/>
         <source>403 Forbidden. The request was legal, but server is refusing to respond to it. Authenticating will make no difference.</source>
         <translation>403 Запрещено. Сервер понял запрос, но он отказывается его выполнять из-за каких-то ограничений в доступе. Идентификация через протокол HTTP здесь не поможет. Скорее всего на сервере нужно провести аутентификацию другим способом, сделать запрос с определёнными параметрами или удовлетворить каким-либо условиям.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="252"/>
+        <location filename="httpimp.cpp" line="261"/>
         <source>404 Resource not found.</source>
         <translation>404 Ресурс не найден. Сервер понял запрос, но не нашёл соответствующего ресурса по указанному URI. Если серверу известно что по этому адресу был документ, то ему желательно использовать код 410 вместо этого. Этот код может использоваться вместо 403 если требуется тщательно скрыть от посторонних глаз определённые ресурсы.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="255"/>
+        <location filename="httpimp.cpp" line="264"/>
         <source>405 Method not allowed. Request method not supported by the URL.</source>
         <translation>405 Метод не поддерживается. Указанный клиентом метод нельзя применить к ресурсу. Сервер так же должен передать в заголовке ответа поле Allow со списком доступных методов.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="258"/>
+        <location filename="httpimp.cpp" line="267"/>
         <source>406 Not acceptable.</source>
         <translation>406 Не приемлимо. Запрошенный URI не может удовлетворить переданным в заголовке характеристикам. Если метод был не HEAD, то сервер должен вернуть список допустимых характеристик для данного ресурса.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="261"/>
+        <location filename="httpimp.cpp" line="270"/>
         <source>407 Proxy authentication required.</source>
         <translation>407 Необходима авторизация на прокси-сервере. Ответ аналогичен коду 401 за исключением того, что аутентификация производится для прокси-сервера. Механизм аналогичен идентификации на обычном сервере.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="264"/>
+        <location filename="httpimp.cpp" line="273"/>
         <source>408 Request timeout.</source>
         <translation>408 Время ожидания истекло. Время ожидания сервером передачи от клиента истекло. Клиент может повторить аналогичный предыдущему запрос в любое время.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="267"/>
+        <location filename="httpimp.cpp" line="276"/>
         <source>409 Conflict.</source>
         <translation>409 Конфликт. Запрос не может выполнен из-за конфликтного обращения к ресурсу. Такое возможно, например, когда два клиента пытаются изменить ресурс с помощью метода PUT.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="270"/>
+        <location filename="httpimp.cpp" line="279"/>
         <source>410 Gone. Resource is not available and will not be available again. Maybe it was intentionally removed.</source>
         <translation>410 Удален. Такой ответ сервер посылает когда ресурс раньше был по указанному URI, но был удалён и теперь не доступен. Серверу в этом случае не известно и местоположение альтернативного документа (например, копии). Если у сервера есть подозрение что документ в ближайшее время может быть восстановлен, то лучше клиенту передать код 404.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="273"/>
+        <location filename="httpimp.cpp" line="282"/>
         <source>411 Length required.</source>
         <translation>411 Необходима длина. Для указанного ресурса клиент должен указать Content-Length в заголовке запроса. Без указания этого поля не стоит делать повторную попытку запроса к серверу по данному URI.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="276"/>
+        <location filename="httpimp.cpp" line="285"/>
         <source>412 Precondition failed.</source>
         <translation>412 Предварительное условие не удовлетворено. Возвращается если ни одно из условных полей заголовка запроса не было выполнено.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="279"/>
+        <location filename="httpimp.cpp" line="288"/>
         <source>413 Request entity too large.</source>
         <translation>413 Запрашиваемые данные слишком большие. Возвращается если сервер по каким-то причинам не может передать запрашиваемый объём информации. Если проблема временная, то сервер может в ответе указать в поле Retry-After через которое можно повторить аналогичный запрос.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="282"/>
+        <location filename="httpimp.cpp" line="291"/>
         <source>414 Request URI too long.</source>
         <translation>414 Запрашиваемый URI слишком длинный. Сервер не может обработать запрос из-за слишком длинного указанного URI. Такую ошибку можно спровоцировать, например, когда клиент пытается передать длинные параметры через метод GET, а не POST.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="285"/>
+        <location filename="httpimp.cpp" line="294"/>
         <source>415 Unsupported media type.</source>
         <translation>415 Неподдерживаемый тип данных. По каким-то причинам сервер отказывается работать с указанным типом данных при данном методе.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="288"/>
+        <location filename="httpimp.cpp" line="297"/>
         <source>417 Expectation failed.</source>
         <translation>417 Ожидаемое ошибочно. По каким-то причинам сервер не может удовлетворить значению поля Except заголовка запроса.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="291"/>
+        <location filename="httpimp.cpp" line="300"/>
         <source>422 Unprocessable entity (WebDAV). The request was well-formed but was unable to be followed due to semantic errors.</source>
         <translation>422 Необрабатываемый экземпляр (WebDAV). Сервер успешно принял запрос, может работать с указанным видом данных, в теле запроса XML-документ имеет верный синтаксис, но имеется какая-то логическая ошибка из-за которой не возможно произвести операцию над ресурсом.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="294"/>
+        <location filename="httpimp.cpp" line="303"/>
         <source>423 Locked (WebDAV). The resource that is being accessed is locked.</source>
         <translation>423 Заблокировано (WebDAV). Целевой ресурс из запроса заблокирован от применения к нему указанного метода.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="297"/>
+        <location filename="httpimp.cpp" line="306"/>
         <source>424 Failed dependency (WebDAV). The request failed due to failure of a previous request.</source>
         <translation>424 Неудовлетворенная зависимость (WebDAV). Реализация текущего запроса может зависеть от успешности выполнения другой операции. Если она провалена и из-за этого нельзя выполнить текущий запрос, то сервер вернёт код 424.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="300"/>
+        <location filename="httpimp.cpp" line="309"/>
         <source>425 Unordered collection (WebDAV). You really never should see this message.</source>
         <translation>425 Неупорядоченная коллекция (WebDAV). Ты не должен видеть это сообщение, так как этот код ответа нигде не применяется.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="303"/>
+        <location filename="httpimp.cpp" line="312"/>
         <source>426 Upgrade required. The client should switch to TLS/1.0.</source>
         <translation>426 Необходимо обновление. Сервер указывает клиенту на необходимость обновить протокол (TLS/1.0). Заголовок ответа должен содержать правильно сформированные поля Upgrade и Connection.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="306"/>
+        <location filename="httpimp.cpp" line="315"/>
         <source>449 Retry with. A Microsoft extension: The request should be retried after doing the appropriate action.</source>
         <translation>449 Попробуй снова. Мелкомягкое расширение: запрос должен быть повторен после выполнения соответствующих действий.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="309"/>
+        <location filename="httpimp.cpp" line="318"/>
         <source>500 Internal server error. Server failed to fulfil the request due to misconfiguration.</source>
         <translation>500 Внутренняя ошибка сервера. Серверу не удалось выполнить запрос из-за внутренней ошибки, не входящей в другие класса 5xx.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="312"/>
+        <location filename="httpimp.cpp" line="321"/>
         <source>501 Not implemented.</source>
         <translation>501 Не реализовано. Сервер не поддерживает возможностей, необходимых для обработки запроса. Типичный ответ для случаев, когда сервер не понимает указанный в запросе метод.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="315"/>
+        <location filename="httpimp.cpp" line="324"/>
         <source>502 Bad gateway.</source>
         <translation>502 Плохой шлюз. Сервер в роли шлюза или прокси получил сообщение о неудачном выполнении промежуточной операции.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="318"/>
+        <location filename="httpimp.cpp" line="327"/>
         <source>503 Service unavailable.</source>
         <translation>503 Сервис недоступен. Сервер временно не имеет возможности обрабатывать запросы по техническим причинам (обслуживание, перегрузка и прочее). В поле Retry-After заголовка сервер может указать время, через которое клиенту рекомендуется повторить запрос. Хотя во время перегрузки очевидным является сразу разрывать соединение, эффективней может оказаться установка большого значения поля Retry-After для уменьшения частоты избыточных запросов.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="321"/>
+        <location filename="httpimp.cpp" line="330"/>
         <source>504 Gateway timeout.</source>
         <translation>504 Шлюз не отвечает. Сервер в роли шлюза или прокси не дождался ответа от вышестоящего сервера для завершения текущего запроса.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="324"/>
+        <location filename="httpimp.cpp" line="333"/>
         <source>505 HTTP version not supported.</source>
         <translation>505 Версия HTTP не поддерживается. Сервер не поддерживает или отказывается поддерживать указанную в запросе версию протокола HTTP.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="327"/>
+        <location filename="httpimp.cpp" line="336"/>
         <source>506 Variant also negotiates.</source>
         <translation>506 Вариант тоже согласован. В результате ошибочной конфигурации выбранный вариант указывает сам на себя, из-за чего процесс связывания прерывается.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="330"/>
+        <location filename="httpimp.cpp" line="339"/>
         <source>507 Insufficient storage (WebDAV).</source>
         <translation>507 Не хватает места (WebDAV). Не хватает места для выполнения текущего запроса. Проблема может быть временной.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="333"/>
+        <location filename="httpimp.cpp" line="342"/>
         <source>509 Bandwidth limit exceeded.</source>
         <translation>509 Превышен предел полосы пропускания. Неофициальный код, тем не менее, довольно часто используемый. Используется для указания израсходованной полосы пропускания.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="336"/>
+        <location filename="httpimp.cpp" line="345"/>
         <source>510 Not extented.</source>
         <translation>510 Не расширено. На сервере отсутствует расширение, которое планирует использовать клиент. Сервер может дополнительно передать информацию о доступных ему расширениях.</translation>
+    </message>
+    <message>
+        <location filename="httpimp.cpp" line="164"/>
+        <source>Failed to read response: socket timeout</source>
+        <translation>Не удалось прочитать ответ сервера: таймаут соекта</translation>
     </message>
 </context>
 <context>
@@ -435,12 +439,12 @@
         <translation>0</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="582"/>
+        <location filename="httpplugin.cpp" line="584"/>
         <source>: Preferences</source>
         <translation>: Настройки</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="587"/>
+        <location filename="httpplugin.cpp" line="589"/>
         <source>Job error</source>
         <translation>Ошибка задания</translation>
     </message>
@@ -450,7 +454,7 @@
         <translation type="obsolete">Задание с URL %1 говорит о следующей ошибке:&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="605"/>
+        <location filename="httpplugin.cpp" line="608"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
@@ -515,7 +519,7 @@
         <translation type="obsolete">Выбрать столбцы списка завершенных задач...</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="587"/>
+        <location filename="httpplugin.cpp" line="589"/>
         <source>Job with URL&lt;br /&gt;%1&lt;br /&gt;signals about following error:&lt;br /&gt;&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;</source>
         <translation>Задание с URL&lt;br /&gt;%1&lt;br /&gt;сообщает об ошибке:&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;</translation>
     </message>
@@ -628,12 +632,12 @@
         <translation>Не могу создать директорию&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Останавливаюсь.</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="339"/>
+        <location filename="job.cpp" line="338"/>
         <source>Could not open file for write/append&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Flushing cache to temp file&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;and stopping work.</source>
         <translation>Не могу открыть для записи файл &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;&lt;br /&gt;Скидываю кэш в файл&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;и останавливаюсь.</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="345"/>
+        <location filename="job.cpp" line="344"/>
         <source>Could not open temporary file for write&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;</source>
         <translation>Не могу открыть для записи временный файл&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;</translation>
     </message>
@@ -789,82 +793,82 @@
         <translation type="obsolete">Текущая директория</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="94"/>
+        <location filename="settingsmanager.cpp" line="95"/>
         <source>Default download directory</source>
         <translation>Директория для загрузки по умолчанию</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="180"/>
+        <location filename="settingsmanager.cpp" line="181"/>
         <source>Local options</source>
         <translation>Локальные опции</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="98"/>
+        <location filename="settingsmanager.cpp" line="99"/>
         <source>Max concurrent jobs per server</source>
         <translation>Максимальное количество одновременных скачиваний с сервера</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="143"/>
+        <location filename="settingsmanager.cpp" line="144"/>
         <source>Network options</source>
         <translation>Сетевые опции</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="102"/>
+        <location filename="settingsmanager.cpp" line="103"/>
         <source>Max total concurrent jobs</source>
         <translation>Максимальное количество одновременных скачиваний вообще</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="106"/>
+        <location filename="settingsmanager.cpp" line="107"/>
         <source>Retry timeout</source>
         <translation>Интервал между повторами</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="108"/>
+        <location filename="settingsmanager.cpp" line="109"/>
         <source> s</source>
         <translation> с</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="112"/>
+        <location filename="settingsmanager.cpp" line="113"/>
         <source>Connection timeout</source>
         <translation>Таймаут соединения</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="173"/>
+        <location filename="settingsmanager.cpp" line="174"/>
         <source> ms</source>
         <translation> мс</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="118"/>
+        <location filename="settingsmanager.cpp" line="119"/>
         <source>Timeout for other operations</source>
         <translation>Таймаут других операций</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="124"/>
+        <location filename="settingsmanager.cpp" line="125"/>
         <source>Stop timeout</source>
         <translation>Таймаут остановки</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="130"/>
+        <location filename="settingsmanager.cpp" line="131"/>
         <source>Proxy enabled</source>
         <translation>Прокси-сервер включен</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="143"/>
+        <location filename="settingsmanager.cpp" line="144"/>
         <source>Proxy</source>
         <translation>Прокси-сервер</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="133"/>
+        <location filename="settingsmanager.cpp" line="134"/>
         <source>Proxy address</source>
         <translation>Адрес прокси-сервера</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="137"/>
+        <location filename="settingsmanager.cpp" line="138"/>
         <source>Proxy port</source>
         <translation>Порт прокси-сервера</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="146"/>
+        <location filename="settingsmanager.cpp" line="147"/>
         <source>Default login</source>
         <translation>Логин по умолчанию</translation>
     </message>
@@ -874,32 +878,32 @@
         <translation type="obsolete">Настройки FTP</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="150"/>
+        <location filename="settingsmanager.cpp" line="151"/>
         <source>Default password</source>
         <translation>Пароль по умолчанию</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="154"/>
+        <location filename="settingsmanager.cpp" line="155"/>
         <source>Cache size</source>
         <translation>Размер кэша</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="154"/>
+        <location filename="settingsmanager.cpp" line="155"/>
         <source>IO</source>
         <translation>Ввод/вывод</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="155"/>
+        <location filename="settingsmanager.cpp" line="156"/>
         <source> kb</source>
         <translation> кб</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="160"/>
+        <location filename="settingsmanager.cpp" line="161"/>
         <source>Autostart spawned jobs</source>
         <translation>Автозапуск рожденных заданий</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="166"/>
+        <location filename="settingsmanager.cpp" line="167"/>
         <source>Mask as user agent</source>
         <translation>Маскироваться как</translation>
     </message>
@@ -909,22 +913,22 @@
         <translation type="obsolete">Опции HTTP</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="163"/>
+        <location filename="settingsmanager.cpp" line="164"/>
         <source>Get file size on job addition</source>
         <translation>Получать размер файла при добавлении задания</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="171"/>
+        <location filename="settingsmanager.cpp" line="172"/>
         <source>Interface update interval</source>
         <translation>Интервал обновления интерфейса</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="180"/>
+        <location filename="settingsmanager.cpp" line="181"/>
         <source>Interface</source>
         <translation>Интерфейс</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="177"/>
+        <location filename="settingsmanager.cpp" line="178"/>
         <source>Show current speed</source>
         <translation>Показывать текущую скорость</translation>
     </message>
@@ -934,32 +938,32 @@
         <translation type="obsolete">Показывать время до завершения согласно текущей скорости</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="180"/>
+        <location filename="settingsmanager.cpp" line="181"/>
         <source>Show estimated time based on current speed</source>
         <translation>Показывать время до завершения согласно текущей скорости</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="150"/>
+        <location filename="settingsmanager.cpp" line="151"/>
         <source>FTP</source>
         <translation>FTP</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="166"/>
+        <location filename="settingsmanager.cpp" line="167"/>
         <source>HTTP</source>
         <translation>HTTP</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="166"/>
+        <location filename="settingsmanager.cpp" line="167"/>
         <source>HTTP/FTP options</source>
         <translation>Опции HTTP/FTP</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="140"/>
+        <location filename="settingsmanager.cpp" line="141"/>
         <source>Proxy login</source>
         <translation>Логин прокси-сервера</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="143"/>
+        <location filename="settingsmanager.cpp" line="144"/>
         <source>Proxy password</source>
         <translation>Пароль прокси-сервера</translation>
     </message>
