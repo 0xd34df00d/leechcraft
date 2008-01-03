@@ -145,6 +145,9 @@ qint64 JobManager::GetDownloadSpeed () const
 
 bool JobManager::Start (unsigned int id)
 {
+	if (Jobs_ [ID2Pos_ [id]]->GetState () != Job::StateIdle)
+		return false;
+
 	JobRepresentation *jr = GetJobRepresentation (id);
 	QString host = QUrl (jr->URL_).host ();
 	delete jr;
