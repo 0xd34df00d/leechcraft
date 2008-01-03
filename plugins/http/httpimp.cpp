@@ -158,6 +158,12 @@ bool HttpImp::ReadResponse ()
 	{
 		br = Socket_->ReadLine ();
 	}
+	catch (const Exceptions::Socket::SocketTimeout& e)
+	{
+		qDebug () << Q_FUNC_INFO << "Socket timeout";
+		emit error (tr ("Failed to read response: socket timeout"));
+		return true;
+	}
 	catch (const Exceptions::Socket::BaseSocket& e)
 	{
 		qDebug () << Q_FUNC_INFO << "caught \"" << e.GetName ().c_str () << "\", saying\"" << e.GetReason ().c_str () << "\"";
