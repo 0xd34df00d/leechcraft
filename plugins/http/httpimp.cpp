@@ -53,7 +53,7 @@ void HttpImp::ScheduleGetFileSize ()
 
 void HttpImp::run ()
 {
-	Socket_ = Proxy::Instance ()->MakeSocket ();
+	Socket_ = new TcpSocket;
 	Socket_->SetURL (URL_);
 	Socket_->SetDefaultTimeout (SettingsManager::Instance ()->GetConnectTimeout ());
 
@@ -114,7 +114,13 @@ void HttpImp::run ()
 		catch (const Exceptions::Socket::BaseSocket& e)
 		{
 			qDebug () << Q_FUNC_INFO << e.GetName ().c_str () << "\t\t" << e.GetReason ().c_str () << "\"";
-			Stop_ = true;
+			break;
+		}
+		catch (...)
+		{
+			qDebug () << Q_FUNC_INFO << "caught some strange exception";
+			emit error (tr ("HTTP implementation failed in a very strange way. Please send to developers any .log files you find in application's directory and it's subdirectories. Thanks for your help."));
+			break;
 		}
 
 		if (Stop_)

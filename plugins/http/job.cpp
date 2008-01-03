@@ -376,6 +376,7 @@ void Job::handleShowError (QString error)
 void Job::reemitStopped ()
 {
 	qDebug () << Q_FUNC_INFO;
+	State_ = StateIdle;
 	emit stopped (GetID ());
 	State_ = StateIdle;
 	DownloadTime_ += StartTime_->elapsed ();

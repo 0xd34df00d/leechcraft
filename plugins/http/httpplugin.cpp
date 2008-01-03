@@ -386,7 +386,7 @@ void HttpPlugin::addDownload (const DirectDownloadParams& params)
 
 void HttpPlugin::initiateJobAddition ()
 {
-	JobAdderDialog *dia = new JobAdderDialog ();
+	JobAdderDialog *dia = new JobAdderDialog (this);
 	connect (dia, SIGNAL (gotParams (JobParams*)), this, SLOT (handleParams (JobParams*)));
 	dia->exec ();
 	delete dia;
