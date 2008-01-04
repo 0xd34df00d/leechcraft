@@ -38,20 +38,20 @@ InstType "Minimal"
 
 Section "Qt4 Runtime" QT4RUNTIME
 	SetOutPath $INSTDIR
-	File QtGui4.dll
-	File QtNetwork4.dll
-	File QtCore4.dll
-	File QtXml4.dll
+	File ..\src\QtGui4.dll
+	File ..\src\QtNetwork4.dll
+	File ..\src\QtCore4.dll
+	File ..\src\QtXml4.dll
 	SectionIn 1 2
 SectionEnd
 
 Section "Main LeechCraft Files" MAINFILES
 	SetOutPath $INSTDIR
-	File exceptions.dll
-	File plugininterface.dll
-	File settingsdialog.dll
+	File ..\src\exceptions.dll
+	File ..\src\plugininterface.dll
+	File ..\src\settingsdialog.dll
 	File mingwm10.dll
-	File leechcraft.exe
+	File ..\src\leechcraft.exe
 	File icon64.ico
 	File icon32.ico
 	File icon24.ico
@@ -72,32 +72,32 @@ SectionEnd
 SectionGroup "Plugins"
 	Section "HTTP/FTP" HTTPPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
-		File leechcraft_http.dll
+		File ..\src\plugins\bin\leechcraft_http.dll
 		SectionIn 1
 	SectionEnd
 	Section "BitTorrent" TORRENTPLUGIN
 		SetOutPath $INSTDIR
-		File torrent.dll
-		File boost_date_time-mgw42-mt-1_34_1.dll
-		File boost_filesystem-mgw42-mt-1_34_1.dll
-		File boost_thread-mgw42-mt-1_34_1.dll
+		File ..\src\torrent.dll
+		File ..\src\boost_date_time-mgw42-mt-1_34_1.dll
+		File ..\src\boost_filesystem-mgw42-mt-1_34_1.dll
+		File ..\src\boost_thread-mgw42-mt-1_34_1.dll
 		SetOutPath $INSTDIR\plugins\bin
-		File leechcraft_torrent.dll
+		File ..\src\plugins\bin\leechcraft_torrent.dll
 		SectionIn 1
 	SectionEnd
 	Section "Updater" UPDATERPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
-		File leechcraft_updater.dll
+		File ..\src\plugins\bin\leechcraft_updater.dll
 		SectionIn 1
 	SectionEnd
 	Section "Batcher" BATCHERPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
-		File leechcraft_batcher.dll
+		File ..\src\plugins\bin\leechcraft_batcher.dll
 		SectionIn 1
 	SectionEnd
 	Section "Cron" CRONPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
-		File leechcraft_cron.dll
+		File ..\src\plugins\bin\leechcraft_cron.dll
 		SectionIn 1
 	SectionEnd
 SectionGroupEnd

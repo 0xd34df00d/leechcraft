@@ -1,0 +1,5 @@
+I tried to make it functional and fast while also trying to do bughunting. I also learned the Qt Library while writing this program, so don't think it would be damn stable and work 24/7 for years. And last, but not least, debugging multithreaded applications is a real hell, so I wouldn't be surprised if all data on your hard drive had been erased and Linux installed instead. Now I think you were warned.
+
+Don't hesitate to post bugs or feature requests to our page on the SourceForge.
+
+More oficially, this program is provided under the terms of Qt Public License. Go Google a bit if you want to know more.
