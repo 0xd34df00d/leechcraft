@@ -361,12 +361,10 @@ void Core::RestoreTorrents ()
 			catch (const libtorrent::invalid_encoding& e)
 			{
 			}
-			qDebug () << "Adding torrent";
 			libtorrent::torrent_handle handle;
 			try
 			{
 				handle = Session_->add_torrent (libtorrent::torrent_info (e), path, resume, false);
-				qDebug () << "Added.";
 			}
 			catch (const libtorrent::duplicate_torrent& e)
 			{

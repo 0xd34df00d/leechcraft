@@ -3,6 +3,7 @@
 #include <QMainWindow>
 #include <QDialog>
 #include <QSettings>
+#include <QSystemTrayIcon>
 #include <QMap>
 #include "common.h"
 #include "logshower.h"
@@ -36,7 +37,9 @@ class MainWindow : public QMainWindow
 	QToolBar *ToolToolbar_;
 	QMenu *ToolsMenu_;
 
-	bool SettingsClearScheduled_;
+	QSystemTrayIcon *TrayIcon_;
+
+	bool SettingsClearScheduled_, IsShown_;
 
 	static MainWindow *Instance_;
 	static QMutex *InstanceMutex_;
@@ -68,6 +71,9 @@ private slots:
 	void restoreSettings ();
 	void clearSettings (bool);
 	void showChangelog ();
+	void showHideMain ();
+	void hideAll ();
+	void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
 };
 
 #endif

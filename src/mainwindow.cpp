@@ -17,6 +17,7 @@ QMutex *MainWindow::InstanceMutex_ = new QMutex;
 MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 : QMainWindow (parent, flags)
 , SettingsClearScheduled_ (false)
+, IsShown_ (true)
 {
 	QSplashScreen splash (QPixmap (":/resources/images/splashscreen.png"), Qt::WindowStaysOnTopHint);
 	splash.show ();
@@ -101,6 +102,13 @@ void MainWindow::catchError (QString message, Errors::Severity error)
 
 void MainWindow::closeEvent (QCloseEvent *e)
 {
+	if (QMessageBox::question (this, tr ("Question"), tr ("Do you really want to exit?"), QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+	{
+		e->ignore ();
+		return;
+	}
+
+	TrayIcon_->hide ();
     WriteSettings ();
 	delete Model_;
 	qApp->quit ();
@@ -130,14 +138,15 @@ void MainWindow::SetupMenus ()
 void MainWindow::SetTrayIcon ()
 {
 	QMenu *iconMenu = new QMenu;
-	iconMenu->addAction (tr ("Show"), this, SLOT (show ()));
-	iconMenu->addAction (tr ("Hide"), this, SLOT (hide ()));
+	iconMenu->addAction (tr ("Show/hide main"), this, SLOT (showHideMain ()));
+	iconMenu->addAction (tr ("Hide all"), this, SLOT (hideAll ()));
 	iconMenu->addSeparator ();
 	iconMenu->addAction (tr ("Exit"), qApp, SLOT (quit ()));
 
-	QSystemTrayIcon *icon = new QSystemTrayIcon (QIcon (":/resources/images/mainapp.png"), this);
-	icon->setContextMenu (iconMenu);
-	icon->show ();
+	TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/mainapp.png"), this);
+	TrayIcon_->setContextMenu (iconMenu);
+	TrayIcon_->show ();
+	connect (TrayIcon_, SIGNAL (activated (QSystemTrayIcon::ActivationReason)), this, SLOT (handleTrayIconActivated (QSystemTrayIcon::ActivationReason)));
 }
 
 void MainWindow::FillMenus ()
@@ -346,5 +355,30 @@ void MainWindow::showChangelog ()
 {
 	ChangelogDialog ce (this);
 	ce.exec ();
+}
+
+void MainWindow::showHideMain ()
+{
+	IsShown_ = 1 - IsShown_;
+	IsShown_ ? show () : hide ();
+}
+
+void MainWindow::hideAll ()
+{
+}
+
+void MainWindow::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason)
+{
+	switch (reason)
+	{
+		case QSystemTrayIcon::Context:
+		case QSystemTrayIcon::Unknown:
+			return;
+		case QSystemTrayIcon::DoubleClick:
+		case QSystemTrayIcon::Trigger:
+		case QSystemTrayIcon::MiddleClick:
+			showHideMain ();
+			return;
+	}
 }
 

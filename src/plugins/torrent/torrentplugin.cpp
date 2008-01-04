@@ -160,6 +160,9 @@ void TorrentPlugin::on_OpenTorrent__triggered ()
 
 void TorrentPlugin::on_RemoveTorrent__triggered ()
 {
+	if (QMessageBox::question (this, tr ("Question"), tr ("Do you really want to delete the torrent?"), QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+		return;
+
 	int row = TorrentView_->currentIndex ().row ();
 	if (row == -1)
 		return;
