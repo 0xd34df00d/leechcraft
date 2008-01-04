@@ -250,3 +250,12 @@ void PluginManager::FindPlugins ()
 		Plugins_.push_back (new QPluginLoader (pluginsDir.absoluteFilePath (filename), this));
 }
 
+QObjectList PluginManager::GetAllPlugins () const
+{
+	QObjectList result;
+	foreach (QPluginLoader *loader, Plugins_)
+		result << loader->instance ();
+
+	return result;
+}
+

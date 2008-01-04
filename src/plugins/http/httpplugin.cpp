@@ -325,11 +325,6 @@ void HttpPlugin::StopAll ()
 	JobManager_->StopAll ();
 }
 
-uint HttpPlugin::GetVersion () const
-{
-	return QDateTime (QDate (2007, 11, 30), QTime (10, 11)).toTime_t ();
-}
-
 int HttpPlugin::GetPercentageForRow (int row)
 {
 	JobRepresentation *jr = JobManager_->GetJobRepresentation (dynamic_cast<JobListItem*> (TasksList_->topLevelItem (row))->GetID ());
@@ -357,6 +352,12 @@ void HttpPlugin::addDownload (const DirectDownloadParams& params)
 	jp->Autostart_				= params.Autostart_;
 	jp->ShouldBeSavedInHistory_	= params.ShouldBeSavedInHistory_;
 	emit jobAdded (handleParams (jp));
+}
+
+void HttpPlugin::handleHidePlugins ()
+{
+	IsShown_ = false;
+	hide ();
 }
 
 void HttpPlugin::initiateJobAddition ()

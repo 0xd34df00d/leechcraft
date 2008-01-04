@@ -124,9 +124,10 @@ void UpdaterPlugin::ShowBalloonTip ()
 {
 }
 
-uint UpdaterPlugin::GetVersion () const
+void UpdaterPlugin::handleHidePlugins ()
 {
-	return QDateTime (QDate (2007, 11, 30), QTime (11, 11)).toTime_t ();
+	IsShown_ = false;
+	hide ();
 }
 
 void UpdaterPlugin::closeEvent (QCloseEvent*)

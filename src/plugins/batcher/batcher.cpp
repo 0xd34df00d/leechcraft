@@ -96,6 +96,12 @@ void Batcher::ShowBalloonTip ()
 {
 }
 
+void Batcher::handleHidePlugins ()
+{
+	IsShown_ = false;
+	hide ();
+}
+
 void Batcher::closeEvent (QCloseEvent *e)
 {
 	e->accept ();

@@ -12,10 +12,9 @@ class Core;
 class UpdaterPlugin : public QMainWindow
 					, public IInfo
 					, public IWindow
-					, public IVersionable
 {
 	Q_OBJECT
-	Q_INTERFACES (IInfo IWindow IVersionable);
+	Q_INTERFACES (IInfo IWindow);
 
 	bool IsShown_;
 	ID_t ID_;
@@ -57,7 +56,8 @@ public:
 	virtual void SetParent (QWidget*);
 	virtual void ShowWindow ();
 	virtual void ShowBalloonTip ();
-	virtual uint GetVersion () const;
+public slots:
+	void handleHidePlugins ();
 protected:
 	virtual void closeEvent (QCloseEvent*);
 private:

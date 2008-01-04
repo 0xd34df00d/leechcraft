@@ -26,10 +26,9 @@ class HttpPlugin : public QMainWindow
 				 , public IInfo
 				 , public IWindow
 				 , public IDirectDownload
-				 , public IVersionable
 {
 	Q_OBJECT
-	Q_INTERFACES (IInfo IWindow IDirectDownload IVersionable);
+	Q_INTERFACES (IInfo IWindow IDirectDownload);
 
 	int ID_;
 	bool IsShown_, SaveChangesScheduled_, CronEnabled_;
@@ -121,17 +120,12 @@ public:
 
 	virtual void StartAll ();
 	virtual void StopAll ();
-	virtual uint GetVersion () const;
 
 	int GetPercentageForRow (int);
 public slots:
 	virtual void addDownload (const DirectDownloadParams&);
+	void handleHidePlugins ();
 private slots:
-	void startAt (IDownload::JobID_t);
-	void stopAt (IDownload::JobID_t);
-	void deleteAt (IDownload::JobID_t);
-	void getFileSizeAt (IDownload::JobID_t);
-	void scheduleAt (IDownload::JobID_t);
 	void initiateJobAddition ();
 	int handleParams (JobParams*);
 	void pushJob (unsigned int);

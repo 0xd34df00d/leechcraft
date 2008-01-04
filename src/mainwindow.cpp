@@ -365,6 +365,7 @@ void MainWindow::showHideMain ()
 
 void MainWindow::hideAll ()
 {
+	Model_->HideAll ();
 }
 
 void MainWindow::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason)

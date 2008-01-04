@@ -135,6 +135,12 @@ void TorrentPlugin::closeEvent (QCloseEvent*)
 	IsShown_ = false;
 }
 
+void TorrentPlugin::handleHidePlugins ()
+{
+	IsShown_ = false;
+	hide ();
+}
+
 void TorrentPlugin::on_OpenTorrent__triggered ()
 {
 	AddTorrentDialog_->Reinit ();

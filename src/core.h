@@ -30,6 +30,7 @@ public:
 	void DoDelayedInit ();
 	void InitTask (const QString&);
 	bool ShowPlugin (IInfo::ID_t);
+	void HideAll ();
 	
 	QPair<qint64, qint64> GetSpeeds () const;
 
@@ -52,6 +53,7 @@ signals:
 	void throwError (QString, Errors::Severity);
 	void pushTask (const QString&, int);
 	void gotPlugin (const PluginInfo*);
+	void hidePlugins ();
 };
 
 #endif

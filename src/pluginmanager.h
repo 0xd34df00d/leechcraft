@@ -50,6 +50,7 @@ public:
 	void InitializePlugins ();
 	void CalculateDependencies ();
 	void ThrowPlugins ();
+	QObjectList GetAllPlugins () const;
 private:
 	void FindPlugins ();
 signals:

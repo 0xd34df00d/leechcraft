@@ -34,6 +34,11 @@ void Core::DoDelayedInit ()
 	PluginManager_->InitializePlugins ();
 	PluginManager_->CalculateDependencies ();
 	PluginManager_->ThrowPlugins ();
+	QObjectList plugins = PluginManager_->GetAllPlugins ();
+	foreach (QObject *plugin, plugins)
+	{
+		connect (this, SIGNAL (hidePlugins ()), plugin, SLOT (handleHidePlugins ()));
+	}
 }
 
 bool Core::ShowPlugin (IInfo::ID_t id)
@@ -48,6 +53,11 @@ bool Core::ShowPlugin (IInfo::ID_t id)
 	}
 	else
 		return false;
+}
+
+void Core::HideAll ()
+{
+	emit hidePlugins ();
 }
 
 QPair<qint64, qint64> Core::GetSpeeds () const

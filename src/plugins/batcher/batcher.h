@@ -34,6 +34,8 @@ public:
 	virtual void SetParent (QWidget*);
 	virtual void ShowWindow ();
 	virtual void ShowBalloonTip ();
+public slots:
+	void handleHidePlugins ();
 protected:
 	virtual void closeEvent (QCloseEvent*);
 signals:

@@ -38,13 +38,6 @@ public:
 	virtual ~IInfo () {}
 };
 
-class IVersionable
-{
-public:
-	virtual uint GetVersion () const = 0;
-	virtual ~IVersionable () {}
-};
-
 #ifdef QT_GUI_LIB
 class IWindow
 {
@@ -97,7 +90,6 @@ public:
 
 Q_DECLARE_INTERFACE (ISettings, "org.Deviant.LeechCraft.ISettings/1.0");
 Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
-Q_DECLARE_INTERFACE (IVersionable, "org.Deviant.LeechCraft.IVersionable/1.0");
 #ifdef QT_GUI_LIB
 Q_DECLARE_INTERFACE (IWindow, "org.Deviant.LeechCraft.IWindow/1.0");
 #endif
