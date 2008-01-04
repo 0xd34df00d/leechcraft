@@ -130,18 +130,6 @@ void TorrentPlugin::StopAll ()
 {
 }
 
-void TorrentPlugin::StartAt (ulong)
-{
-}
-
-void TorrentPlugin::StopAt (ulong)
-{
-}
-
-void TorrentPlugin::DeleteAt (ulong)
-{
-}
-
 void TorrentPlugin::closeEvent (QCloseEvent*)
 {
 	IsShown_ = false;
@@ -160,7 +148,7 @@ void TorrentPlugin::on_OpenTorrent__triggered ()
 
 void TorrentPlugin::on_RemoveTorrent__triggered ()
 {
-	if (QMessageBox::question (this, tr ("Question"), tr ("Do you really want to delete the torrent?"), QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+	if (QMessageBox::question (this, tr ("Question"), tr ("Do you really want to delete the torrent?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 		return;
 
 	int row = TorrentView_->currentIndex ().row ();

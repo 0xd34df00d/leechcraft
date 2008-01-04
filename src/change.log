@@ -1,5 +1,11 @@
 ***Public build 6***
 Core:
++ Ask if user really wants to exit.
++ Completely reworked tray icon.
++ We can hide all plugins windows now by user's request.
+
+BitTorrent:
++ Ask if user really wants to delete a torrent.
 
 HTTP/FTP:
 + Autostart on by default.

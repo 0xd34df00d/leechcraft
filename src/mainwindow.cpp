@@ -102,7 +102,7 @@ void MainWindow::catchError (QString message, Errors::Severity error)
 
 void MainWindow::closeEvent (QCloseEvent *e)
 {
-	if (QMessageBox::question (this, tr ("Question"), tr ("Do you really want to exit?"), QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+	if (QMessageBox::question (this, tr ("Question"), tr ("Do you really want to exit?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 	{
 		e->ignore ();
 		return;

@@ -44,9 +44,6 @@ public:
 	qint64 GetUploadSpeed () const;
 	void StartAll ();
 	void StopAll ();
-	void StartAt (ulong);
-	void StopAt (ulong);
-	void DeleteAt (ulong);
 protected:
 	virtual void closeEvent (QCloseEvent*);
 private slots:

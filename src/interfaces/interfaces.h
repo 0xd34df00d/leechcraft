@@ -70,9 +70,6 @@ public:
 
 	virtual void StartAll () = 0;
 	virtual void StopAll () = 0;
-	virtual void StartAt (JobID_t) = 0;
-	virtual void StopAt (JobID_t) = 0;
-	virtual void DeleteAt (JobID_t) = 0;
 
 	virtual ~IDownload () {}
 };

@@ -112,7 +112,7 @@ int JobManager::addJob (JobParams *params)
 	if (params->Autostart_)
 		Start (id);
 	else if (SettingsManager::Instance ()->GetAutoGetFileSize ())
-		GetFileSizeAt (id);
+		GetFileSize (id);
 
 	scheduleSave ();
 
@@ -181,7 +181,7 @@ bool JobManager::Start (unsigned int id)
 	catch (Exceptions::Logic& e)
 	{
 		QMessageBox::critical (TheMain_, "Job Logic error", e.GetReason ().c_str () + QString ("; anyway, deleting job, cause logic errors are very bad."));
-		DeleteAt (id);
+		Delete (id);
 	}
 	return false;
 }
@@ -203,7 +203,7 @@ void JobManager::Stop (unsigned int id)
 		Jobs_ [ID2Pos_ [id]]->Stop ();
 }
 
-void JobManager::DeleteAt (unsigned int id)
+void JobManager::Delete (unsigned int id)
 {
 	Jobs_ [ID2Pos_ [id]]->Stop ();
 	Jobs_ [ID2Pos_ [id]]->Release ();;
@@ -229,12 +229,12 @@ void JobManager::DeleteAt (unsigned int id)
 	emit jobRemoved (id);
 }
 
-void JobManager::GetFileSizeAt (unsigned int id)
+void JobManager::GetFileSize (unsigned int id)
 {
 	Jobs_ [ID2Pos_ [id]]->GetFileSize ();
 }
 
-void JobManager::ScheduleAt (unsigned int id)
+void JobManager::Schedule (unsigned int id)
 {
 	emit jobWaiting (id);
 }

@@ -121,17 +121,17 @@ public:
 
 	virtual void StartAll ();
 	virtual void StopAll ();
-	virtual void StartAt (IDownload::JobID_t);
-	virtual void StopAt (IDownload::JobID_t);
-	virtual void DeleteAt (IDownload::JobID_t);
-	void GetFileSizeAt (IDownload::JobID_t);
-	void ScheduleAt (IDownload::JobID_t);
 	virtual uint GetVersion () const;
 
 	int GetPercentageForRow (int);
 public slots:
 	virtual void addDownload (const DirectDownloadParams&);
 private slots:
+	void startAt (IDownload::JobID_t);
+	void stopAt (IDownload::JobID_t);
+	void deleteAt (IDownload::JobID_t);
+	void getFileSizeAt (IDownload::JobID_t);
+	void scheduleAt (IDownload::JobID_t);
 	void initiateJobAddition ();
 	int handleParams (JobParams*);
 	void pushJob (unsigned int);

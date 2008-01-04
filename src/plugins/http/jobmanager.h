@@ -51,9 +51,9 @@ public:
 	qint64 GetDownloadSpeed () const;
 	bool Start (unsigned int);
 	void Stop (unsigned int);
-	void DeleteAt (unsigned int);
-	void GetFileSizeAt (unsigned int);
-	void ScheduleAt (unsigned int);
+	void Delete (unsigned int);
+	void GetFileSize (unsigned int);
+	void Schedule (unsigned int);
 	void StartAll ();
 	void StopAll ();
 	void SetProvider (QObject*, const QString&);

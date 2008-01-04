@@ -325,31 +325,6 @@ void HttpPlugin::StopAll ()
 	JobManager_->StopAll ();
 }
 
-void HttpPlugin::StartAt (IDownload::JobID_t id)
-{
-	JobManager_->Start (id);
-}
-
-void HttpPlugin::StopAt (IDownload::JobID_t id)
-{
-	JobManager_->Stop (id);
-}
-
-void HttpPlugin::DeleteAt (IDownload::JobID_t id)
-{
-	JobManager_->DeleteAt (id);
-}
-
-void HttpPlugin::GetFileSizeAt (IDownload::JobID_t id)
-{
-	JobManager_->GetFileSizeAt (id);
-}
-
-void HttpPlugin::ScheduleAt (IDownload::JobID_t id)
-{
-	JobManager_->ScheduleAt (id);
-}
-
 uint HttpPlugin::GetVersion () const
 {
 	return QDateTime (QDate (2007, 11, 30), QTime (10, 11)).toTime_t ();
@@ -493,7 +468,7 @@ void HttpPlugin::handleJobFinish (unsigned int id)
 	emit jobFinished (id);
 
 	JobRepresentation *jr = JobManager_->GetJobRepresentation (id);
-	JobManager_->DeleteAt (id);
+	JobManager_->Delete (id);
 
 	if (jr->ShouldBeSavedInHistory_)
 	{
@@ -521,7 +496,7 @@ void HttpPlugin::handleJobStart (unsigned int id)
 
 void HttpPlugin::handleJobDelete (unsigned int id)
 {
-	JobManager_->DeleteAt (id);
+	JobManager_->Delete (id);
 }
 
 void HttpPlugin::handleJobWaiting (unsigned int id)
@@ -798,27 +773,30 @@ void HttpPlugin::HandleSelected (JobAction ja)
 		return;
 	QList<QTreeWidgetItem*> items = TasksList_->selectedItems ();
 
+	if (ja == JADelete && QMessageBox::question (this, tr ("Question"), tr ("Do you really want to delete selected jobs?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+		return;
+
 	for (int i = 0; i < items.size (); ++i)
 	{
 		JobListItem *item = dynamic_cast<JobListItem*> (items [i]);
 		switch (ja)
 		{
 			case JAStart:
-				StartAt (item->GetID ());
+				JobManager_->Start (item->GetID ());
 				item->setIcon (TListID, QIcon (":/resources/images/startjob.png"));
 				break;
 			case JAStop:
-				StopAt (item->GetID ());
+				JobManager_->Stop (item->GetID ());
 				item->setIcon (TListID, QIcon (":/resources/images/stopjob.png"));
 				break;
 			case JADelete:
-				DeleteAt (item->GetID ());
+				JobManager_->Delete (item->GetID ());
 				break;
 			case JAGFS:
-				GetFileSizeAt (item->GetID ());
+				JobManager_->GetFileSize (item->GetID ());
 				break;
 			case JASchedule:
-				ScheduleAt (item->GetID ());
+				JobManager_->Schedule (item->GetID ());
 				break;
 		}
 	}
