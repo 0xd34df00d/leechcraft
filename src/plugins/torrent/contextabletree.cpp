@@ -1,6 +1,6 @@
 #include <QContextMenuEvent>
 #include <QMenu>
-#include "contextablelist.h"
+#include "contextabletree.h"
 
 ContextableTree::ContextableTree (QWidget *parent)
 : QTreeWidget (parent)

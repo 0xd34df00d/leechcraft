@@ -42,7 +42,7 @@
         <enum>QTabWidget::Rounded</enum>
        </property>
        <property name="currentIndex" >
-        <number>3</number>
+        <number>0</number>
        </property>
        <property name="elideMode" >
         <enum>Qt::ElideRight</enum>
@@ -565,11 +565,125 @@
         <attribute name="title" >
          <string>Files</string>
         </attribute>
+        <layout class="QVBoxLayout" >
+         <item>
+          <layout class="QHBoxLayout" >
+           <item>
+            <widget class="ContextableTree" name="files" >
+             <column>
+              <property name="text" >
+               <string>Name</string>
+              </property>
+             </column>
+             <column>
+              <property name="text" >
+               <string>Size</string>
+              </property>
+             </column>
+             <column>
+              <property name="text" >
+               <string>Priority</string>
+              </property>
+             </column>
+             <column>
+              <property name="text" >
+               <string>Progress</string>
+              </property>
+             </column>
+            </widget>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" >
+             <item>
+              <layout class="QHBoxLayout" >
+               <item>
+                <widget class="QLabel" name="label_32" >
+                 <property name="text" >
+                  <string>Priority:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QSpinBox" name="PrioritySpinbox_" >
+                 <property name="maximum" >
+                  <number>7</number>
+                 </property>
+                 <property name="value" >
+                  <number>1</number>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <spacer>
+               <property name="orientation" >
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" >
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </widget>
        <widget class="QWidget" name="PagePeers_" >
         <attribute name="title" >
          <string>Peers</string>
         </attribute>
+        <layout class="QVBoxLayout" >
+         <item>
+          <widget class="QTreeWidget" name="treeWidget" >
+           <column>
+            <property name="text" >
+             <string>IP</string>
+            </property>
+           </column>
+           <column>
+            <property name="text" >
+             <string>Seed</string>
+            </property>
+           </column>
+           <column>
+            <property name="text" >
+             <string>Download speed</string>
+            </property>
+           </column>
+           <column>
+            <property name="text" >
+             <string>Upload speed</string>
+            </property>
+           </column>
+           <column>
+            <property name="text" >
+             <string>Downloaded</string>
+            </property>
+           </column>
+           <column>
+            <property name="text" >
+             <string>Uploaded</string>
+            </property>
+           </column>
+           <column>
+            <property name="text" >
+             <string>Client</string>
+            </property>
+           </column>
+           <column>
+            <property name="text" >
+             <string>Country</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </widget>
      </widget>
@@ -695,8 +809,16 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ContextableTree</class>
+   <extends>QTreeWidget</extends>
+   <header location="global" >contextabletree.h</header>
+  </customwidget>
+ </customwidgets>
  <includes/>
  <resources>
+  <include location="../../../plugins/torrent/resources.qrc" />
   <include location="resources.qrc" />
  </resources>
  <connections/>

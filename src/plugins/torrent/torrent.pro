@@ -19,10 +19,12 @@ HEADERS += torrentplugin.h \
 		   addtorrent.h \
 		   settingsmanager.h \
 		   torrentinfo.h \
+		   contextabletree.h \
 		   overallstats.h
 SOURCES += torrentplugin.cpp \
 		   core.cpp \
 		   addtorrent.cpp \
+		   contextabletree.cpp \
 		   settingsmanager.cpp
 FORMS += mainwindow.ui addtorrent.ui
 RESOURCES += resources.qrc

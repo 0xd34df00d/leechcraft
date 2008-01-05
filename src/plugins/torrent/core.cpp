@@ -25,11 +25,18 @@ Core::Core (QObject *parent)
 {
 	Session_ = new libtorrent::session (libtorrent::fingerprint ("LB", 0, 0, 0, 2));
 	QPair<int, int> ports = SettingsManager::Instance ()->GetPortRange ();
-	Session_->listen_on (std::make_pair (ports.first, ports.second));
-	Session_->add_extension (&libtorrent::create_metadata_plugin);
-	Session_->add_extension (&libtorrent::create_ut_pex_plugin);
-	if (SettingsManager::Instance ()->GetDHTEnabled ())
-		Session_->start_dht (libtorrent::entry ());
+	try
+	{
+		Session_->listen_on (std::make_pair (ports.first, ports.second));
+		Session_->add_extension (&libtorrent::create_metadata_plugin);
+		Session_->add_extension (&libtorrent::create_ut_pex_plugin);
+		if (SettingsManager::Instance ()->GetDHTEnabled ())
+			Session_->start_dht (libtorrent::entry ());
+	}
+	catch (const asio::system_error&)
+	{
+		qWarning () << "Seems like address is already in use.";
+	}
 
 	Headers_ << tr ("Name") << tr ("Downloaded") << tr ("Uploaded") << tr ("Size") << tr ("Progress") << tr ("State") << tr ("Seeds/peers") << tr ("Drate") << tr ("Urate") << tr ("Remaining");
 
