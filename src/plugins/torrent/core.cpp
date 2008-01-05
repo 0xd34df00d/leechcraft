@@ -56,7 +56,7 @@ void Core::Release ()
 	killTimer (InterfaceUpdateTimer_);
 }
 
-int Core::columnCount (const QModelIndex& index) const
+int Core::columnCount (const QModelIndex&) const
 {
 	return Headers_.size ();
 }
@@ -87,7 +87,7 @@ QVariant Core::data (const QModelIndex& index, int role) const
 		case ColumnUploaded:
 			return Proxy::Instance ()->MakePrettySize (status.total_payload_upload + Handles_.at (row).UploadedBefore_);
 		case ColumnSize:
-			return Proxy::Instance ()->MakePrettySize (info.total_size ());
+			return Proxy::Instance ()->MakePrettySize (status.total_wanted);
 		case ColumnProgress:
 			return QString::number (static_cast<float> (static_cast<int> (status.progress * 1000)) / 10) + ("%");
 		case ColumnState:
@@ -118,7 +118,7 @@ bool Core::hasChildren (const QModelIndex&) const
 	return true;
 }
 
-QModelIndex Core::index (int row, int column, const QModelIndex& index) const
+QModelIndex Core::index (int row, int column, const QModelIndex&) const
 {
 	if (!hasIndex (row, column))
 		return QModelIndex ();
@@ -197,9 +197,9 @@ TorrentInfo Core::GetTorrentStats (int row) const
 
 	TorrentInfo result;
 	result.Tracker_ = QString::fromStdString (status.current_tracker);
-	result.State_ = GetStringForState (status.state);
+	result.State_ = status.paused ? tr ("Idle") : GetStringForState (status.state);
 	result.Downloaded_ = status.total_done;
-	result.TotalSize_ = info.total_size ();
+	result.TotalSize_ = status.total_wanted;
 	result.FailedSize_ = status.total_failed_bytes;
 	result.DHTNodesCount_ = info.nodes ().size ();
 	result.TotalPieces_ = info.num_pieces ();
@@ -238,7 +238,7 @@ OverallStats Core::GetOverallStats () const
 	return result;
 }
 
-void Core::AddFile (const QString& filename, const QString& path)
+void Core::AddFile (const QString& filename, const QString& path, const QVector<bool>& files)
 {
 	if (!QFileInfo (filename).exists () || !QFileInfo (filename).isReadable ())
 	{
@@ -249,15 +249,23 @@ void Core::AddFile (const QString& filename, const QString& path)
 	libtorrent::torrent_handle handle;
 	try
 	{
-		handle = Session_->add_torrent (GetTorrentInfo (filename), boost::filesystem::path (path.toStdString ()), libtorrent::entry (), false);
+		handle = Session_->add_torrent (GetTorrentInfo (filename), boost::filesystem::path (path.toStdString ()), libtorrent::entry (), libtorrent::storage_mode_allocate);
 	}
 	catch (const libtorrent::duplicate_torrent& e)
 	{
 		emit error (tr ("The torrent %1 with save path %2 already exists in the session").arg (filename).arg (path));
 		return;
 	}
+
+	std::vector<int> priorities;
+	priorities.resize (files.size ());
+	for (int i = 0; i < files.size (); ++i)
+		priorities [i] = files [i];
+
+	handle.prioritize_files (priorities);
+
 	beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
-	TorrentStruct tmp = { 0, handle };
+	TorrentStruct tmp = { 0, priorities, handle };
 	Handles_.append (tmp);
 	endInsertRows ();
 	QTimer::singleShot (10000, this, SLOT (writeSettings ()));
@@ -311,6 +319,7 @@ QString Core::GetStringForState (libtorrent::torrent_status::state_t state) cons
 		case libtorrent::torrent_status::allocating:
 			return tr ("Allocating");
 	}
+	return "Uninitialized?!";
 }
 
 void Core::ReadSettings ()
@@ -327,72 +336,109 @@ void Core::RestoreTorrents ()
 	{
 		settings.setArrayIndex (i);
 		boost::filesystem::path path = settings.value ("SavePath").toString ().toStdString ();
-		QFile file_info		(QDir::homePath () + "/.leechcraft_bittorrent/" + QString ("%1_torrent_info.bncd").arg (i)),
-			  file_resume	(QDir::homePath () + "/.leechcraft_bittorrent/" + QString ("%1_torrent_resume.bncd").arg (i));
-
-		if (!file_info.open (QIODevice::ReadOnly) || !file_resume.open (QIODevice::ReadOnly))
-		{
-			emit error (tr ("Could not open files to read settings :("));
+		QPair<QVector<char>, QVector<char> > datas = ReadDataFor (i);
+		if (datas.first.isEmpty ())
 			continue;
+
+		libtorrent::torrent_handle handle = RestoreSingleTorrent (datas.first, datas.second, path);
+		if (!handle.is_valid ())
+			continue;
+
+		std::vector<int> priorities;
+		priorities.resize (settings.beginReadArray ("Priorities"));
+		for (size_t j = 0; j < priorities.size (); ++j)
+		{
+			settings.setArrayIndex (j);
+			priorities [j] = settings.value ("Priority", 1).toInt ();
+		}
+		settings.endArray ();
+
+		if (!priorities.size ())
+		{
+			priorities.resize (handle.get_torrent_info ().num_files ());
+			std::fill (priorities.begin (), priorities.end (), 1);
 		}
 
-		QVector<char> data, resumeData;
-		for (int j = 0; j < file_info.size (); ++j)
-		{
-			char ch;
-			file_info.read (&ch, 1);
-			data.append (ch);
-		}
-		for (int j = 0; j < file_resume.size (); ++j)
-		{
-			char ch;
-			file_resume.read (&ch, 1);
-			resumeData.append (ch);
-		}
 		quint64 ub = settings.value ("UploadedBytes").value<quint64> ();
-		try
-		{
-			libtorrent::entry e = libtorrent::bdecode (data.constBegin (), data.constEnd ());
-			libtorrent::entry resume;
-			try
-			{
-				resume = libtorrent::bdecode (resumeData.constBegin (), resumeData.constEnd ());
-			}
-			catch (const libtorrent::invalid_encoding& e)
-			{
-			}
-			libtorrent::torrent_handle handle;
-			try
-			{
-				handle = Session_->add_torrent (libtorrent::torrent_info (e), path, resume, false);
-			}
-			catch (const libtorrent::duplicate_torrent& e)
-			{
-				emit error (tr ("The just restored torrent already exists in the session, that's strange."));
-				continue;
-			}
-			beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
-			TorrentStruct tmp = { ub, handle };
-			Handles_.append (tmp);
-			endInsertRows ();
-		}
-		catch (const libtorrent::invalid_encoding& e)
-		{
-			qDebug () << "Bad :(";
-			emit error (tr ("Bad bencoding in saved torrent data"));
-			continue;
-		}
-		catch (const libtorrent::invalid_torrent_file& e)
-		{
-			emit error (tr ("Invalid saved torrent data"));
-			continue;
-		}
-		file_info.close ();
-		file_resume.close ();
+
+		handle.prioritize_files (priorities);
+
+		beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
+		TorrentStruct tmp = { ub, priorities, handle };
+		Handles_.append (tmp);
+		endInsertRows ();
 	}
 	settings.endArray ();
 	settings.endGroup ();
 	settings.endGroup ();
+}
+
+QPair<QVector<char>, QVector<char> > Core::ReadDataFor (int i) const
+{
+	QFile file_info		(QDir::homePath () + "/.leechcraft_bittorrent/" + QString ("%1_torrent_info.bncd").arg (i)),
+		  file_resume	(QDir::homePath () + "/.leechcraft_bittorrent/" + QString ("%1_torrent_resume.bncd").arg (i));
+
+	QVector<char> data, resumeData;
+	if (!file_info.open (QIODevice::ReadOnly) || !file_resume.open (QIODevice::ReadOnly))
+	{
+		emit error (tr ("Could not open files to read settings :("));
+		return qMakePair (data, resumeData);
+	}
+
+	for (int j = 0; j < file_info.size (); ++j)
+	{
+		char ch;
+		file_info.read (&ch, 1);
+		data.append (ch);
+	}
+	for (int j = 0; j < file_resume.size (); ++j)
+	{
+		char ch;
+		file_resume.read (&ch, 1);
+		resumeData.append (ch);
+	}
+	file_info.close ();
+	file_resume.close ();
+
+	return qMakePair (data, resumeData);
+}
+
+libtorrent::torrent_handle Core::RestoreSingleTorrent (const QVector<char>& data, const QVector<char>& resumeData, const boost::filesystem::path& path)
+{
+	libtorrent::entry e;
+	libtorrent::entry resume;
+	try
+	{
+		resume = libtorrent::bdecode (resumeData.constBegin (), resumeData.constEnd ());
+	}
+	catch (const libtorrent::invalid_encoding& e)
+	{
+	}
+
+	try
+	{
+		e = libtorrent::bdecode (data.constBegin (), data.constEnd ());
+	}
+	catch (const libtorrent::invalid_encoding& e)
+	{
+		emit error (tr ("Bad bencoding in saved torrent data"));
+	}
+
+	libtorrent::torrent_handle handle;
+	try
+	{
+		handle = Session_->add_torrent (libtorrent::torrent_info (e), path, resume, libtorrent::storage_mode_allocate);
+	}
+	catch (const libtorrent::invalid_torrent_file& e)
+	{
+		emit error (tr ("Invalid saved torrent data"));
+	}
+	catch (const libtorrent::duplicate_torrent& e)
+	{
+		emit error (tr ("The just restored torrent already exists in the session, that's strange."));
+	}
+
+	return handle;
 }
 
 void Core::writeSettings ()
@@ -439,6 +485,14 @@ void Core::writeSettings ()
 
 		settings.setValue ("SavePath", QString::fromStdString (Handles_.at (i).Handle_.save_path ().string ()));
 		settings.setValue ("UploadedBytes", Handles_.at (i).UploadedBefore_ + Handles_.at (i).Handle_.status ().total_upload);
+
+		settings.beginWriteArray ("Priorities");
+		for (size_t j = 0; j < Handles_.at (i).FilePriorities_.size (); ++j)
+		{
+			settings.setArrayIndex (j);
+			settings.setValue ("Priority", Handles_.at (i).FilePriorities_ [j]);
+		}
+		settings.endArray ();
 	}
 	settings.endArray ();
 	settings.endGroup ();
@@ -449,7 +503,7 @@ bool Core::CheckValidity (int pos) const
 {
 	if (pos >= Handles_.size () || pos < 0)
 	{
-		emit const_cast<Core*> (this)->error (tr ("Torrent with position %1 doesn't exist in The List").arg (pos));
+		emit error (tr ("Torrent with position %1 doesn't exist in The List").arg (pos));
 		return false;
 	}
 	if (!Handles_.at (pos).Handle_.is_valid ())

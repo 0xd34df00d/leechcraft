@@ -149,7 +149,8 @@ void TorrentPlugin::on_OpenTorrent__triggered ()
 
 	QString filename = AddTorrentDialog_->GetFilename (),
 			path = AddTorrentDialog_->GetSavePath ();
-	Core::Instance ()->AddFile (filename, path);
+	QVector<bool> files = AddTorrentDialog_->GetSelectedFiles ();
+	Core::Instance ()->AddFile (filename, path, files);
 }
 
 void TorrentPlugin::on_RemoveTorrent__triggered ()

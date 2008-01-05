@@ -122,6 +122,12 @@
       </item>
       <item rowspan="2" row="6" column="1" >
        <widget class="QTreeWidget" name="FileWidget_" >
+        <property name="rootIsDecorated" >
+         <bool>false</bool>
+        </property>
+        <property name="uniformRowHeights" >
+         <bool>true</bool>
+        </property>
         <column>
          <property name="text" >
           <string>Size</string>

@@ -19,6 +19,7 @@ private:
 	struct TorrentStruct
 	{
 		quint64 UploadedBefore_;
+		std::vector<int> FilePriorities_;
 		libtorrent::torrent_handle Handle_;
 	};
 
@@ -60,7 +61,7 @@ public:
 	libtorrent::torrent_info GetTorrentInfo (const QByteArray&);
 	TorrentInfo GetTorrentStats (int) const;
 	OverallStats GetOverallStats () const;
-	void AddFile (const QString&, const QString&);
+	void AddFile (const QString&, const QString&, const QVector<bool>&);
 	void RemoveTorrent (int);
 	void PauseTorrent (int);
 	void ResumeTorrent (int);
@@ -69,6 +70,8 @@ private:
 	bool CheckValidity (int) const;
 	void ReadSettings ();
 	void RestoreTorrents ();
+	QPair<QVector<char>, QVector<char> > ReadDataFor (int) const;
+	libtorrent::torrent_handle RestoreSingleTorrent (const QVector<char>&, const QVector<char>&, const boost::filesystem::path&);
 private slots:
 	void writeSettings ();
 protected:
@@ -76,7 +79,7 @@ protected:
 public slots:
 	void dhtStateChanged ();
 signals:
-	void error (QString);
+	void error (QString) const;
 };
 
 #endif

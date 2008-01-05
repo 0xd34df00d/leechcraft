@@ -9,6 +9,7 @@ DESTDIR += ../bin
 DEPENDPATH += .
 INCLUDEPATH += ../../
 INCLUDEPATH += /usr/include/libtorrent 
+INCLUDEPATH += /usr/local/include/libtorrent 
 INCLUDEPATH += .
 INCLUDEPATH += libtorrent/
 

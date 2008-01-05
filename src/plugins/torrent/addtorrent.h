@@ -1,6 +1,7 @@
 #ifndef ADDTORRENT_H
 #define ADDTORRENT_H
 #include <QDialog>
+#include <QVector>
 #include "ui_addtorrent.h"
 
 class AddTorrent : public QDialog, private Ui::AddTorrent
@@ -11,6 +12,7 @@ public:
 	void Reinit ();
 	QString GetFilename () const;
 	QString GetSavePath () const;
+	QVector<bool> GetSelectedFiles () const;
 private slots:
 	void on_TorrentBrowse__released ();
 	void on_DestinationBrowse__released ();

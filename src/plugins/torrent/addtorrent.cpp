@@ -41,6 +41,14 @@ QString AddTorrent::GetSavePath () const
 	return Destination_->text ();
 }
 
+QVector<bool> AddTorrent::GetSelectedFiles () const
+{
+	QVector<bool> result;
+	for (int i = 0; i < FileWidget_->topLevelItemCount (); ++i)
+		result.append (FileWidget_->topLevelItem (i)->checkState (0) == Qt::Checked);
+	return result;
+}
+
 void AddTorrent::setOkEnabled ()
 {
 	OK_->setEnabled (QFileInfo (TorrentFile_->text ()).isReadable () && QFileInfo (Destination_->text ()).exists ());
@@ -74,6 +82,7 @@ void AddTorrent::on_TorrentBrowse__released ()
 	for (libtorrent::torrent_info::file_iterator i = info.begin_files (); i != info.end_files (); ++i)
 	{
 		QTreeWidgetItem *item = new QTreeWidgetItem (FileWidget_);
+		item->setCheckState (0, Qt::Checked);
 		item->setText (0, Proxy::Instance ()->MakePrettySize (i->size));
 		item->setText (1, QString::fromStdString (i->path.string ()));
 	}
