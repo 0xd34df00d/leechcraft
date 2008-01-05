@@ -62,6 +62,8 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	splash.finish (this);
 
 	connect (Proxy::Instance (), SIGNAL (addMessage (const QString&, bool)), this, SLOT (handleAddMessage (const QString&, bool)));
+
+	qApp->setQuitOnLastWindowClosed (false);
 }
 
 MainWindow::~MainWindow ()
@@ -111,8 +113,8 @@ void MainWindow::closeEvent (QCloseEvent *e)
 	TrayIcon_->hide ();
     WriteSettings ();
 	delete Model_;
-	qApp->quit ();
     e->accept ();
+	qApp->quit ();
 }
 
 void MainWindow::SetupToolbars ()

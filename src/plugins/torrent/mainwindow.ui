@@ -816,9 +816,7 @@
    <header location="global" >contextabletree.h</header>
   </customwidget>
  </customwidgets>
- <includes/>
  <resources>
-  <include location="../../../plugins/torrent/resources.qrc" />
   <include location="resources.qrc" />
  </resources>
  <connections/>
