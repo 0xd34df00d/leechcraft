@@ -42,7 +42,7 @@
         <enum>QTabWidget::Rounded</enum>
        </property>
        <property name="currentIndex" >
-        <number>0</number>
+        <number>3</number>
        </property>
        <property name="elideMode" >
         <enum>Qt::ElideRight</enum>
@@ -560,6 +560,16 @@
           </spacer>
          </item>
         </layout>
+       </widget>
+       <widget class="QWidget" name="PageFiles_" >
+        <attribute name="title" >
+         <string>Files</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="PagePeers_" >
+        <attribute name="title" >
+         <string>Peers</string>
+        </attribute>
        </widget>
       </widget>
      </widget>
