@@ -81,6 +81,7 @@ SectionGroup "Plugins"
 		File ..\src\boost_date_time-mgw42-mt-1_34_1.dll
 		File ..\src\boost_filesystem-mgw42-mt-1_34_1.dll
 		File ..\src\boost_thread-mgw42-mt-1_34_1.dll
+		File ..\src\zlib1.dll
 		SetOutPath $INSTDIR\plugins\bin
 		File ..\src\plugins\bin\leechcraft_torrent.dll
 		SectionIn 1
