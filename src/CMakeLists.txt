@@ -8,6 +8,8 @@ INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR} ${QT_QTCORE_INCLUDE_DIR}
 ADD_SUBDIRECTORY(plugins/http)
 ADD_SUBDIRECTORY(plugins/batcher)
 ADD_SUBDIRECTORY(plugins/torrent)
+ADD_SUBDIRECTORY(plugins/cron)
+ADD_SUBDIRECTORY(plugins/updater)
 
 SET (SRCS
 	mainwindow.cpp
