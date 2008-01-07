@@ -10,7 +10,8 @@ INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR}
 					 ${Boost_INCLUDE_DIRS}
 					 ../..
 					 /usr/include/libtorrent/
-					 /usr/local/include/libtorrent/)
+					 /usr/local/include/libtorrent/
+					 .)
 LINK_DIRECTORIES (${Boost_LINK_DIRS} /usr/local/lib)
 
 SET (SRCS
@@ -26,6 +27,8 @@ SET (HEADERS
 	settingsmanager.h 
 	torrentinfo.h 
 	contextabletree.h 
+	fileinfo.h
+	peerinfo.h
 	overallstats.h)
 SET (FORMS
     mainwindow.ui

@@ -21,6 +21,7 @@ class SettingsManager : public QObject
 				   , LastSaveDirectory_;
 	Guarded<IntRange> PortRange_;
 	Guarded<bool> DHTEnabled_;
+	Guarded<int> AutosaveInterval_;
 
 	QMap<QString, QPair<QObject*, QString> > Property2Object_;
 //	Guarded<libtorrent::entry> DHTState_;
@@ -45,9 +46,12 @@ public:
 	void SetPortRange (const IntRange&);
 	bool GetDHTEnabled () const;
 	void SetDHTEnabled (bool);
+	int GetAutosaveInterval () const;
+	void SetAutosaveInterval (int);
 
 	Q_PROPERTY (IntRange PortRange READ GetPortRange WRITE SetPortRange);
 	Q_PROPERTY (bool DHTEnabled READ GetDHTEnabled WRITE SetDHTEnabled);
+	Q_PROPERTY (int AutosaveInterval READ GetAutosaveInterval WRITE SetAutosaveInterval);
 private:
 	void FillMap ();
 	void ScheduleSave ();

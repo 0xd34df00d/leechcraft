@@ -46,7 +46,7 @@ Core::Core (QObject *parent)
 
 	SettingsSaveTimer_ = new QTimer (this);
 	connect (SettingsSaveTimer_, SIGNAL (timeout ()), this, SLOT (writeSettings ()));
-	SettingsSaveTimer_->start (120000);
+	SettingsSaveTimer_->start (SettingsManager::Instance ()->GetAutosaveInterval () * 1000);
 
 	SettingsManager::Instance ()->RegisterObject ("DHTState", this, "dhtStateChanged");
 }
@@ -244,6 +244,56 @@ OverallStats Core::GetOverallStats () const
 	return result;
 }
 
+QList<FileInfo> Core::GetTorrentFiles (int row) const
+{
+	if (!CheckValidity (row))
+		return QList<FileInfo> ();
+
+	QList<FileInfo> result;
+	libtorrent::torrent_handle handle = Handles_.at (row).Handle_;
+	libtorrent::torrent_info info = handle.get_torrent_info ();
+	std::vector<float> progresses;
+	handle.file_progress (progresses);
+	for (libtorrent::torrent_info::file_iterator i = info.begin_files (); i != info.end_files (); ++i)
+	{
+		FileInfo fi;
+		fi.Name_ = QString::fromStdString (i->path.string ());
+		fi.Size_ = i->size;
+		fi.Priority_ = Handles_.at (row).FilePriorities_.at (i - info.begin_files ());
+		fi.Progress_ = progresses.at (i - info.begin_files ());
+		result << fi;
+	}
+
+	return result;
+}
+
+QList<PeerInfo> Core::GetPeers (int row) const
+{
+	if (!CheckValidity (row))
+		return QList<PeerInfo> ();
+
+	QList<PeerInfo> result;
+	std::vector<libtorrent::peer_info> peerInfos;
+	Handles_.at (row).Handle_.get_peer_info (peerInfos);
+
+	for (int i = 0; i < peerInfos.size (); ++i)
+	{
+		libtorrent::peer_info pi = peerInfos [i];
+		PeerInfo ppi;
+		ppi.IP_ = QString::fromStdString (pi.ip.address ().to_string ());
+		ppi.Seed_ = pi.seed;
+		ppi.DSpeed_ = pi.down_speed;
+		ppi.USpeed_ = pi.up_speed;
+		ppi.Downloaded_ = pi.total_download;
+		ppi.Uploaded_ = pi.total_upload;
+		ppi.Client_ = QString::fromStdString (pi.client);
+		ppi.Country_ = pi.country;
+		result << ppi;
+	}
+
+	return result;
+}
+
 void Core::AddFile (const QString& filename, const QString& path, const QVector<bool>& files)
 {
 	if (!QFileInfo (filename).exists () || !QFileInfo (filename).isReadable ())
@@ -274,7 +324,7 @@ void Core::AddFile (const QString& filename, const QString& path, const QVector<
 	TorrentStruct tmp = { 0, priorities, handle };
 	Handles_.append (tmp);
 	endInsertRows ();
-	QTimer::singleShot (10000, this, SLOT (writeSettings ()));
+	QTimer::singleShot (1000, this, SLOT (writeSettings ()));
 }
 
 void Core::RemoveTorrent (int pos)
@@ -478,7 +528,14 @@ void Core::writeSettings ()
 		file_info.close ();
 
 		buf.clear ();
-		libtorrent::entry resume = Handles_.at (i).Handle_.write_resume_data ();
+		libtorrent::entry resume;
+		try
+		{
+			resume = Handles_.at (i).Handle_.write_resume_data ();
+		}
+		catch (const libtorrent::invalid_handle&)
+		{
+		}
 		libtorrent::bencode (std::back_inserter (buf), resume);
 		QFile file_resume (QDir::homePath () + "/.leechcraft_bittorrent/" + QString ("%1_torrent_resume.bncd").arg (i));
 		if (!file_resume.open (QIODevice::WriteOnly))
@@ -532,5 +589,11 @@ void Core::dhtStateChanged ()
 		Session_->start_dht (libtorrent::entry ());
 	else
 		Session_->stop_dht ();
+}
+
+void Core::autosaveIntervalChanged ()
+{
+	SettingsSaveTimer_->stop ();
+	SettingsSaveTimer_->start (SettingsManager::Instance ()->GetAutosaveInterval () * 1000);
 }
 

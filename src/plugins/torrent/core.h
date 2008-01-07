@@ -8,6 +8,8 @@
 #include <session.hpp>
 #include "torrentinfo.h"
 #include "overallstats.h"
+#include "fileinfo.h"
+#include "peerinfo.h"
 
 class QTimer;
 
@@ -61,6 +63,8 @@ public:
 	libtorrent::torrent_info GetTorrentInfo (const QByteArray&);
 	TorrentInfo GetTorrentStats (int) const;
 	OverallStats GetOverallStats () const;
+	QList<FileInfo> GetTorrentFiles (int) const;
+	QList<PeerInfo> GetPeers (int) const;
 	void AddFile (const QString&, const QString&, const QVector<bool>&);
 	void RemoveTorrent (int);
 	void PauseTorrent (int);
@@ -78,6 +82,7 @@ protected:
 	virtual void timerEvent (QTimerEvent*);
 public slots:
 	void dhtStateChanged ();
+	void autosaveIntervalChanged ();
 signals:
 	void error (QString) const;
 };

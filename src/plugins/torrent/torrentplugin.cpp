@@ -20,6 +20,7 @@ void TorrentPlugin::Init ()
 	AddTorrentDialog_ = new AddTorrent (this);
 	connect (Core::Instance (), SIGNAL (error (QString)), this, SLOT (showError (QString)));
 	connect (Core::Instance (), SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (updateTorrentStats ()));
+	connect (Stats_, SIGNAL (currentChanged (int)), this, SLOT (updateTorrentStats ()));
 	TorrentView_->setModel (Core::Instance ());
 	Core::Instance ()->DoDelayedInit ();
 	
@@ -205,44 +206,85 @@ void TorrentPlugin::showError (QString e)
 void TorrentPlugin::updateTorrentStats ()
 {
 	QModelIndex index = TorrentView_->currentIndex ();
-	if (!index.isValid ())
+	switch (Stats_->currentIndex ())
 	{
-		LabelState_->setText ("<>");
-		LabelTracker_->setText ("<>");
-		LabelProgress_->setText ("<>");
-		LabelDHTNodesCount_->setText ("<>");
-		LabelDownloaded_->setText ("<>");
-		LabelTotalSize_->setText ("<>");
-		LabelFailed_->setText ("<>");
-		LabelConnectedSeeds_->setText ("<>");
-		LabelConnectedPeers_->setText ("<>");
-		LabelNextAnnounce_->setText ("<>");
-		LabelAnnounceInterval_->setText ("<>");
-		LabelTotalPieces_->setText ("<>");
-		LabelDownloadedPieces_->setText ("<>");
-		LabelPieceSize_->setText ("<>");
-		LabelDownloadRate_->setText ("<>");
-		LabelUploadRate_->setText ("<>");
-	}
-	else
-	{
-		TorrentInfo i = Core::Instance ()->GetTorrentStats (index.row ());
-		LabelState_->setText (i.State_);
-		LabelTracker_->setText (i.Tracker_);
-		LabelProgress_->setText (QString::number (i.Progress_ * 100) + "%");
-		LabelDHTNodesCount_->setText (QString::number (i.DHTNodesCount_));
-		LabelDownloaded_->setText (Proxy::Instance ()->MakePrettySize (i.Downloaded_));
-		LabelTotalSize_->setText (Proxy::Instance ()->MakePrettySize (i.TotalSize_));
-		LabelFailed_->setText (Proxy::Instance ()->MakePrettySize (i.FailedSize_));
-		LabelConnectedPeers_->setText (QString::number (i.ConnectedPeers_));
-		LabelConnectedSeeds_->setText (QString::number (i.ConnectedSeeds_));
-		LabelNextAnnounce_->setText (i.NextAnnounce_.toString ());
-		LabelAnnounceInterval_->setText (i.AnnounceInterval_.toString ());
-		LabelTotalPieces_->setText (QString::number (i.TotalPieces_));
-		LabelDownloadedPieces_->setText (QString::number (i.DownloadedPieces_));
-		LabelPieceSize_->setText (Proxy::Instance ()->MakePrettySize (i.PieceSize_));
-		LabelDownloadRate_->setText (Proxy::Instance ()->MakePrettySize (i.DownloadRate_) + tr ("/s"));
-		LabelUploadRate_->setText (Proxy::Instance ()->MakePrettySize (i.UploadRate_) + tr ("/s"));
+		case 0:
+			break;
+		case 1:
+			if (!index.isValid ())
+			{
+				LabelState_->setText ("<>");
+				LabelTracker_->setText ("<>");
+				LabelProgress_->setText ("<>");
+				LabelDHTNodesCount_->setText ("<>");
+				LabelDownloaded_->setText ("<>");
+				LabelTotalSize_->setText ("<>");
+				LabelFailed_->setText ("<>");
+				LabelConnectedSeeds_->setText ("<>");
+				LabelConnectedPeers_->setText ("<>");
+				LabelNextAnnounce_->setText ("<>");
+				LabelAnnounceInterval_->setText ("<>");
+				LabelTotalPieces_->setText ("<>");
+				LabelDownloadedPieces_->setText ("<>");
+				LabelPieceSize_->setText ("<>");
+				LabelDownloadRate_->setText ("<>");
+				LabelUploadRate_->setText ("<>");
+			}
+			else
+			{
+				TorrentInfo i = Core::Instance ()->GetTorrentStats (index.row ());
+				LabelState_->setText (i.State_);
+				LabelTracker_->setText (i.Tracker_);
+				LabelProgress_->setText (QString::number (i.Progress_ * 100) + "%");
+				LabelDHTNodesCount_->setText (QString::number (i.DHTNodesCount_));
+				LabelDownloaded_->setText (Proxy::Instance ()->MakePrettySize (i.Downloaded_));
+				LabelTotalSize_->setText (Proxy::Instance ()->MakePrettySize (i.TotalSize_));
+				LabelFailed_->setText (Proxy::Instance ()->MakePrettySize (i.FailedSize_));
+				LabelConnectedPeers_->setText (QString::number (i.ConnectedPeers_));
+				LabelConnectedSeeds_->setText (QString::number (i.ConnectedSeeds_));
+				LabelNextAnnounce_->setText (i.NextAnnounce_.toString ());
+				LabelAnnounceInterval_->setText (i.AnnounceInterval_.toString ());
+				LabelTotalPieces_->setText (QString::number (i.TotalPieces_));
+				LabelDownloadedPieces_->setText (QString::number (i.DownloadedPieces_));
+				LabelPieceSize_->setText (Proxy::Instance ()->MakePrettySize (i.PieceSize_));
+				LabelDownloadRate_->setText (Proxy::Instance ()->MakePrettySize (i.DownloadRate_) + tr ("/s"));
+				LabelUploadRate_->setText (Proxy::Instance ()->MakePrettySize (i.UploadRate_) + tr ("/s"));
+			}
+			break;
+		case 2:
+			FilesWidget_->clear ();
+			if (index.isValid ())
+			{
+				QList<FileInfo> files = Core::Instance ()->GetTorrentFiles (index.row ());
+				for (int i = 0; i < files.size (); ++i)
+				{
+					QTreeWidgetItem *item = new QTreeWidgetItem (FilesWidget_);
+					item->setText (0, files.at (i).Name_);
+					item->setText (1, Proxy::Instance ()->MakePrettySize (files.at (i).Size_));
+					item->setText (2, QString::number (files.at (i).Priority_));
+					item->setText (3, QString::number (files.at (i).Progress_ * 100) + "%");
+				}
+			}
+			break;
+		case 3:
+			PeersWidget_->clear ();
+			if (index.isValid ())
+			{
+				QList<PeerInfo> peers = Core::Instance ()->GetPeers (index.row ());
+				for (int i = 0; i < peers.size (); ++i)
+				{
+					QTreeWidgetItem *item = new QTreeWidgetItem (PeersWidget_);
+					item->setText (0, peers.at (i).IP_);
+					item->setText (1, peers.at (i).Seed_ ? tr ("true") : ("false"));
+					item->setText (2, Proxy::Instance ()->MakePrettySize (peers.at (i).DSpeed_) + tr ("/s"));
+					item->setText (3, Proxy::Instance ()->MakePrettySize (peers.at (i).USpeed_) + tr ("/s"));
+					item->setText (4, Proxy::Instance ()->MakePrettySize (peers.at (i).Downloaded_));
+					item->setText (5, Proxy::Instance ()->MakePrettySize (peers.at (i).Uploaded_));
+					item->setText (6, peers.at (i).Client_);
+					item->setText (7, peers.at (i).Country_);
+				}
+			}
+			break;
 	}
 }
 

@@ -569,7 +569,7 @@
          <item>
           <layout class="QHBoxLayout" >
            <item>
-            <widget class="ContextableTree" name="files" >
+            <widget class="ContextableTree" name="FilesWidget_" >
              <column>
               <property name="text" >
                <string>Name</string>
@@ -640,7 +640,7 @@
         </attribute>
         <layout class="QVBoxLayout" >
          <item>
-          <widget class="QTreeWidget" name="treeWidget" >
+          <widget class="QTreeWidget" name="PeersWidget_" >
            <column>
             <property name="text" >
              <string>IP</string>

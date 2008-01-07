@@ -59,6 +59,7 @@ void SettingsManager::ReadSettings ()
 	LastSaveDirectory_		= settings.value ("LastSaveDirectory", QDir::homePath ()).toString ();
 	PortRange_				= settings.value ("PortRange", QVariant::fromValue (qMakePair<int, int> (6881, 6889))).value<IntRange> ();
 	DHTEnabled_				= settings.value ("DHTEnabled", true).toBool ();
+	AutosaveInterval_		= settings.value ("AutosaveInterval", 120).toInt ();
 //	DHTState_				= settings.value ("DHTState", QVariant::fromValue (libtorrent::entry ())).value<libtorrent::entry> ();
 	settings.endGroup ();
 }
@@ -71,6 +72,7 @@ void SettingsManager::writeSettings ()
 	settings.setValue ("LastSaveDirectory", LastSaveDirectory_);
 	settings.setValue ("PortRange", QVariant::fromValue (PortRange_.Val ()));
 	settings.setValue ("DHTEnabled", DHTEnabled_);
+	settings.setValue ("AutosaveInterval", AutosaveInterval_);
 //	settings.setValue ("DHTState", QVariant::fromValue (DHTState_.Val ()));
 	settings.endGroup ();
 	SaveScheduled_ = false;
@@ -120,6 +122,7 @@ void SettingsManager::SetPortRange (const IntRange& value)
 {
 	PortRange_ = value;
 	ScheduleSave ();
+	CallSlots ("PortRange");
 }
 
 bool SettingsManager::GetDHTEnabled () const
@@ -134,6 +137,18 @@ void SettingsManager::SetDHTEnabled (bool val)
 	CallSlots ("DHTState");
 }
 
+int SettingsManager::GetAutosaveInterval () const
+{
+	return AutosaveInterval_;
+}
+
+void SettingsManager::SetAutosaveInterval (int val)
+{ 
+	AutosaveInterval_ = val;
+	ScheduleSave ();
+	CallSlots ("AutosaveInterval");
+}
+
 void SettingsManager::FillMap ()
 {
 	SettingsItemInfo portRange = SettingsItemInfo (tr ("Port range"), tr ("Network options"));
@@ -143,6 +158,12 @@ void SettingsManager::FillMap ()
 
 	SettingsItemInfo dhtEnabled = SettingsItemInfo (tr ("DHT enabled"), tr ("Network options"));
 	PropInfos_ ["DHTEnabled"] = dhtEnabled;
+
+	SettingsItemInfo autosaveInterval = SettingsItemInfo (tr ("Auto save interval"), tr ("Local options"));
+	autosaveInterval.SpinboxStep_ = 1;
+	autosaveInterval.IntRange_ = qMakePair<int, int> (10, 600);
+	autosaveInterval.SpinboxSuffix_ = tr (" s");
+	PropInfos_ ["AutosaveInterval"] = autosaveInterval;
 }
 
 void SettingsManager::CallSlots (const QString& name)
