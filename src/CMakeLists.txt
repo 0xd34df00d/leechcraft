@@ -48,3 +48,4 @@ TARGET_LINK_LIBRARIES(leechcraft
 						plugininterface
 						exceptions
 						settingsdialog)
+INSTALL (TARGETS leechcraft DESTINATION bin)
