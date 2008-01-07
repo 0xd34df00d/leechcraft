@@ -1,6 +1,6 @@
 #include "plugininfo.h"
 
-PluginInfo::PluginInfo (const QString& name,
+Main::PluginInfo::PluginInfo (const QString& name,
 						const QString& info,
 						const QIcon& icon,
 						const QString& status,
@@ -21,47 +21,47 @@ PluginInfo::PluginInfo (const QString& name,
 {
 }
 
-const QString& PluginInfo::GetName () const
+const QString& Main::PluginInfo::GetName () const
 {
 	return Name_;
 }
 
-const QString& PluginInfo::GetInfo () const
+const QString& Main::PluginInfo::GetInfo () const
 {
 	return Info_;
 }
 
-const QIcon& PluginInfo::GetIcon () const
+const QIcon& Main::PluginInfo::GetIcon () const
 {
 	return Icon_;
 }
 
-const QString& PluginInfo::GetStatusbarMessage () const
+const QString& Main::PluginInfo::GetStatusbarMessage () const
 {
 	return StatusBarMessage_;
 }
 
-const QStringList& PluginInfo::GetProvides () const
+const QStringList& Main::PluginInfo::GetProvides () const
 {
 	return Provides_;
 }
 
-const QStringList& PluginInfo::GetNeeds () const
+const QStringList& Main::PluginInfo::GetNeeds () const
 {
 	return Needs_;
 }
 
-const QStringList& PluginInfo::GetUses () const
+const QStringList& Main::PluginInfo::GetUses () const
 {
 	return Uses_;
 }
 
-bool PluginInfo::GetDependenciesMet () const
+bool Main::PluginInfo::GetDependenciesMet () const
 {
 	return DependenciesMet_;
 }
 
-const QStringList& PluginInfo::GetFailedDeps () const
+const QStringList& Main::PluginInfo::GetFailedDeps () const
 {
 	return FailedDeps_;
 }

@@ -12,61 +12,7 @@
 #include "pluginmanager.h"
 #include "plugininfo.h"
 
-PluginManager::Iterator::Iterator (int pos, QObject *parent)
-: QObject (parent)
-, Position_ (pos)
-, PointeeCache_ (0)
-, CacheValid_ (false)
-{
-}
-
-PluginManager::Iterator::Iterator (const Iterator& obj)
-: QObject (obj.parent ())
-, Position_ (obj.Position_)
-, PointeeCache_ (obj.PointeeCache_)
-, CacheValid_ (obj.CacheValid_)
-{
-}
-
-QObject* PluginManager::Iterator::operator* ()
-{
-	if (!CacheValid_)
-	{
-		PluginManager *p = qobject_cast<PluginManager*> (parent ());
-
-		if (Position_ >= p->Plugins_.size ())
-			throw Exceptions::OutOfBounds ("PluginManager::Iterator::operator*(): wrong position.");
-
-		PointeeCache_ = p->Plugins_.at (Position_)->instance ();
-		CacheValid_ = true;
-	}
-
-	return PointeeCache_;
-}
-
-PluginManager::Iterator& PluginManager::Iterator::operator++ ()
-{
-	++Position_;
-	CacheValid_ = false;
-	return *this;
-}
-
-PluginManager::Iterator& PluginManager::Iterator::operator-- ()
-{
-	--Position_;
-	CacheValid_ = false;
-	return *this;
-}
-
-bool PluginManager::Iterator::operator== (const Iterator& obj)
-{
-	return Position_ == obj.Position_;
-}
-
-bool PluginManager::Iterator::operator!= (const Iterator& obj)
-{
-	return !(*this == obj);
-}
+using namespace Main;
 
 PluginManager::PluginManager (QObject *parent)
 : QObject (parent)
@@ -81,7 +27,7 @@ PluginManager::~PluginManager ()
 		try
 		{
 			Release (Plugins_.size () - 1);
-			Plugins_.remove (Plugins_.size () - 1);
+			Plugins_.removeAt (Plugins_.size () - 1);
 		}
 		catch (...)
 		{
@@ -114,35 +60,33 @@ QString PluginManager::Info (const PluginManager::Size_t& pos) const
 	return qobject_cast<IInfo*> (Plugins_ [pos]->instance ())->GetInfo ();
 }
 
-PluginManager::Iterator PluginManager::FindByID (IInfo::ID_t id)
+QObject* PluginManager::FindByID (IInfo::ID_t id) const
 {
 	for (PluginsContainer_t::const_iterator i = Plugins_.begin (); i != Plugins_.end (); ++i)
 		if (qobject_cast<IInfo*> ((*i)->instance ())->GetID () == id)
-			return Iterator (i - Plugins_.begin (), this);
-	return Iterator (Plugins_.size (), this);
+			return (*i)->instance ();
+	return 0;
 }
 
-PluginManager::Iterator PluginManager::Begin ()
+QObjectList PluginManager::GetAllPlugins ()
 {
-	return Iterator (0, this);
-}
-
-PluginManager::Iterator PluginManager::End ()
-{
-	return Iterator (Plugins_.size (), this);
+	QObjectList result;
+	for (PluginsContainer_t::const_iterator i = Plugins_.begin (); i != Plugins_.end (); ++i)
+		result << (*i)->instance ();
+	return result;
 }
 
 void PluginManager::InitializePlugins ()
 {
-	for (PluginsContainer_t::iterator i = Plugins_.begin (); i != Plugins_.end (); ++i)
+	for (int i = 0; i < Plugins_.size (); ++i)
 	{
-		QPluginLoader *loader = *i;
+		QPluginLoader *loader = Plugins_.at (i);
 
 		loader->load ();
 		if (!loader->isLoaded ())
 		{
 			qWarning () << "Could not load library: " << loader->fileName () << "; " << loader->errorString ();
-			Plugins_.erase (i--);
+			Plugins_.removeAt (i--);
 			continue;
 		}
 
@@ -151,11 +95,11 @@ void PluginManager::InitializePlugins ()
 		if (!info)
 		{
 			qWarning () << "Library successfully loaded, but it could not be initialized (casting to IInfo failed): " << loader->fileName ();
-			Plugins_.erase (i--);
+			Plugins_.removeAt (i--);
 			continue;
 		}
+		info->SetID (i);
 		info->Init ();
-		info->SetID (i - Plugins_.begin ());
 	}
 }
 
@@ -241,9 +185,7 @@ void PluginManager::ThrowPlugins ()
 
 void PluginManager::FindPlugins ()
 {
-	QDir pluginsDir = QDir (qApp->applicationDirPath ());
-	pluginsDir.cd ("plugins");
-	pluginsDir.cd ("bin");
+	QDir pluginsDir = QDir ("/usr/local/share/leechcraft/plugins");
 
 	QStringList pluginNames;
 	foreach (QString filename, pluginsDir.entryList (QDir::Files))

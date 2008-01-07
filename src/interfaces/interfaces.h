@@ -2,7 +2,8 @@
 #define INTERFACES_H
 #include <QString>
 #include <QStringList>
-#ifdef QT_GUI_LIB
+#include <QtPlugin>
+#ifndef NOGUI
 #include <QIcon>
 #endif
 #include "../settingsdialog/settingsiteminfo.h"
@@ -38,7 +39,7 @@ public:
 	virtual ~IInfo () {}
 };
 
-#ifdef QT_GUI_LIB
+#ifndef NOGUI
 class IWindow
 {
 public:
@@ -90,7 +91,7 @@ public:
 
 Q_DECLARE_INTERFACE (ISettings, "org.Deviant.LeechCraft.ISettings/1.0");
 Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
-#ifdef QT_GUI_LIB
+#ifndef NOGUI
 Q_DECLARE_INTERFACE (IWindow, "org.Deviant.LeechCraft.IWindow/1.0");
 #endif
 Q_DECLARE_INTERFACE (IDownload, "org.Deviant.LeechCraft.IDownload/1.0");

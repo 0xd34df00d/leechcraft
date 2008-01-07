@@ -229,7 +229,6 @@ TorrentInfo Core::GetTorrentStats (int row) const
 OverallStats Core::GetOverallStats () const
 {
 	OverallStats result;
-
 	libtorrent::session_status status = Session_->status ();
 
 	result.ListenPort_ = Session_->listen_port ();

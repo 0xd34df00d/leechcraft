@@ -1,35 +1,37 @@
 #include <QMainWindow>
+#include <QtDebug>
 #include <limits>
 #include <iostream>
 #include "pluginmanager.h"
+#include "plugininfo.h"
 #include "core.h"
 #include "exceptions/logic.h"
 #include "exceptions/outofbounds.h"
 
-Core::Core (QObject *parent)
+Main::Core::Core (QObject *parent)
 : QAbstractTableModel (parent)
 {
 	PreparePools ();
-	PluginManager_ = new PluginManager (this);
+	PluginManager_ = new Main::PluginManager (this);
 	connect (this, SIGNAL (throwError (QString, Errors::Severity)), parent, SLOT (catchError (QString, Errors::Severity)));
 	connect (PluginManager_, SIGNAL (gotPlugin (const PluginInfo*)), this, SIGNAL (gotPlugin (const PluginInfo*)));
 }
 
-Core::~Core ()
+Main::Core::~Core ()
 {
 }
 
-void Core::SetReallyMainWindow (QMainWindow *win)
+void Main::Core::SetReallyMainWindow (QMainWindow *win)
 {
 	ReallyMainWindow_ = win;
 }
 
-QMainWindow* Core::GetReallyMainWindow ()
+QMainWindow* Main::Core::GetReallyMainWindow ()
 {
 	return ReallyMainWindow_;
 }
 
-void Core::DoDelayedInit ()
+void Main::Core::DelayedInit ()
 {
 	PluginManager_->InitializePlugins ();
 	PluginManager_->CalculateDependencies ();
@@ -41,10 +43,9 @@ void Core::DoDelayedInit ()
 	}
 }
 
-bool Core::ShowPlugin (IInfo::ID_t id)
+bool Main::Core::ShowPlugin (IInfo::ID_t id)
 {
-	PluginManager::Iterator i = PluginManager_->FindByID (id);
-	QObject *plugin = *i;
+	QObject *plugin = PluginManager_->FindByID (id);
 	IWindow *w = qobject_cast<IWindow*> (plugin);
 	if (w)
 	{
@@ -55,18 +56,18 @@ bool Core::ShowPlugin (IInfo::ID_t id)
 		return false;
 }
 
-void Core::HideAll ()
+void Main::Core::HideAll ()
 {
 	emit hidePlugins ();
 }
 
-QPair<qint64, qint64> Core::GetSpeeds () const
+QPair<qint64, qint64> Main::Core::GetSpeeds () const
 {
 	qint64 download = 0;
 	qint64 upload = 0;
-	for (PluginManager::Iterator i = PluginManager_->Begin (); i != PluginManager_->End (); ++i)
+	QObjectList plugins = PluginManager_->GetAllPlugins ();
+	foreach (QObject *plugin, plugins)
 	{
-		QObject *plugin = *i;
 		IDownload *di = qobject_cast<IDownload*> (plugin);
 		if (di)
 		{
@@ -78,17 +79,17 @@ QPair<qint64, qint64> Core::GetSpeeds () const
 	return QPair<qint64, qint64> (download, upload);
 }
 
-int Core::rowCount (const QModelIndex&) const
+int Main::Core::rowCount (const QModelIndex&) const
 {
     return PluginManager_->GetSize ();
 }
 
-int Core::columnCount (const QModelIndex&) const
+int Main::Core::columnCount (const QModelIndex&) const
 {
     return 2;
 }
 
-QVariant Core::data (const QModelIndex& index, int role) const
+QVariant Main::Core::data (const QModelIndex& index, int role) const
 {
     if (!index.isValid ()) return QVariant ();
 
@@ -106,7 +107,7 @@ QVariant Core::data (const QModelIndex& index, int role) const
     }
 }
 
-QVariant Core::headerData (int section, Qt::Orientation orient, int role) const
+QVariant Main::Core::headerData (int section, Qt::Orientation orient, int role) const
 {
     if (role == Qt::DisplayRole)
 		if (orient == Qt::Horizontal)
@@ -117,7 +118,7 @@ QVariant Core::headerData (int section, Qt::Orientation orient, int role) const
 		return QAbstractTableModel::headerData (section, orient, role);
 }
 
-Qt::ItemFlags Core::flags (const QModelIndex& index) const
+Qt::ItemFlags Main::Core::flags (const QModelIndex& index) const
 {
     if (!index.isValid ())
 		return Qt::ItemIsEnabled;
@@ -125,14 +126,14 @@ Qt::ItemFlags Core::flags (const QModelIndex& index) const
     return QAbstractItemModel::flags (index);
 }
 
-bool Core::setData (const QModelIndex& index, const QVariant& value, int role)
+bool Main::Core::setData (const QModelIndex& index, const QVariant& value, int role)
 {
 	Q_UNUSED (index);
 	Q_UNUSED (value);
 	Q_UNUSED (role);
 }
 
-bool Core::removeRows (int pos, int rows, const QModelIndex& parent)
+bool Main::Core::removeRows (int pos, int rows, const QModelIndex& parent)
 {
     Q_UNUSED (parent)
     beginRemoveRows (QModelIndex (), pos, pos + rows - 1);
@@ -161,13 +162,13 @@ bool Core::removeRows (int pos, int rows, const QModelIndex& parent)
     return true;
 }
 
-QModelIndex Core::parent (const QModelIndex& index)
+QModelIndex Main::Core::parent (const QModelIndex& index)
 {
     Q_UNUSED (index)
     return QModelIndex ();
 }
 
-void Core::invalidate (unsigned int id)
+void Main::Core::invalidate (unsigned int id)
 {
 	QModelIndex first = index (id, 2);
 	QModelIndex last = index (id, columnCount ());
@@ -175,13 +176,13 @@ void Core::invalidate (unsigned int id)
 	emit dataChanged (first, last);
 }
 
-void Core::PreparePools ()
+void Main::Core::PreparePools ()
 {
 	for (int i = 0; i < 255; ++i)
 		TasksIDPool_.push_back (i);
 }
 
-QVariant Core::GetTaskData (int row, int column) const
+QVariant Main::Core::GetTaskData (int row, int column) const
 {
 	if (row == -1)
 	{

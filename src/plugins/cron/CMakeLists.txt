@@ -1,0 +1,27 @@
+SET (QT_DONT_USE_QTGUI true)
+INCLUDE (${CMAKE_ROOT}/Modules/FindQt4.cmake)
+INCLUDE (${CMAKE_ROOT}/Modules/UseQt4.cmake)
+INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR} ${QT_QTCORE_INCLUDE_DIR}
+    ${QT_QTGUI_INCLUDE_DIR} ${QT_QTNETWORK_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ../..)
+
+SET (SRCS
+    cron.cpp
+	core.cpp)
+SET (HEADERS
+	cron.h
+	core.h
+    globals.h)
+SET (RESOURCES resources.qrc)
+
+ADD_DEFINITIONS(${QT_DEFINITIONS})
+ADD_DEFINITIONS(-DQT_PLUGIN)
+ADD_DEFINITIONS(-DQT_NO_DEBUG)
+ADD_DEFINITIONS(-DQT_SHARED)
+QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+ADD_LIBRARY (leechcraft_cron SHARED ${SRCS} ${MOC_SRCS} ${RCCS})
+TARGET_LINK_LIBRARIES (leechcraft_cron
+                        ${QT_LIBRARIES}
+                        plugininterface
+                        exceptions)
+INSTALL (TARGETS leechcraft_cron DESTINATION share/leechcraft/plugins)

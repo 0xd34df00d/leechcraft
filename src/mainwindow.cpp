@@ -11,6 +11,9 @@
 #include "pluginlisttablewidgeticon.h"
 #include "changelogdialog.h"
 
+namespace Main
+{
+
 MainWindow *MainWindow::Instance_ = 0;
 QMutex *MainWindow::InstanceMutex_ = new QMutex;
 
@@ -47,23 +50,19 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	ReadSettings ();
 
 	splash.showMessage (tr ("Initializing core and plugins..."));
-	Model_ = new Core (this);
+	Model_ = new Main::Core (this);
 	connect (Model_, SIGNAL (gotPlugin (const PluginInfo*)), this, SLOT (addPluginToList (const PluginInfo*)));
 	Model_->SetReallyMainWindow (this);
-	Model_->DoDelayedInit ();
+	Model_->DelayedInit ();
 
 	QTimer *speedUpd = new QTimer (this);
 	speedUpd->setInterval (1000);
 	connect (speedUpd, SIGNAL (timeout ()), this, SLOT (updateSpeedIndicators ()));
 	speedUpd->start ();
-
-	show ();
-	
 	splash.finish (this);
-
 	connect (Proxy::Instance (), SIGNAL (addMessage (const QString&, bool)), this, SLOT (handleAddMessage (const QString&, bool)));
-
 	qApp->setQuitOnLastWindowClosed (false);
+	show ();
 }
 
 MainWindow::~MainWindow ()
@@ -384,4 +383,6 @@ void MainWindow::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reas
 			return;
 	}
 }
+
+};
 

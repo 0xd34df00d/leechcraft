@@ -3,58 +3,40 @@
 #include <QVector>
 #include <QObject>
 #include <QMap>
+#include "plugininfo.h"
 #include "interfaces/interfaces.h"
 
 class QPluginLoader;
-class PluginInfo;
 
-class PluginManager : public QObject
+namespace Main
 {
-	Q_OBJECT
-
-	typedef QVector<QPluginLoader*> PluginsContainer_t;
-	QVector<QPluginLoader*> Plugins_;
-	QMap<PluginsContainer_t::const_iterator, bool> DependenciesMet_;
-	QMap<PluginsContainer_t::const_iterator, QStringList> FailedDependencies_;
-public:
-	typedef PluginsContainer_t::size_type Size_t;
-	class Iterator : public QObject
+	class PluginManager : public QObject
 	{
-		friend class PluginManager;
-		int Position_;
-		QObject *PointeeCache_;
-		bool CacheValid_;
+		Q_OBJECT
 
-		Iterator (int pos = 0, QObject *parent = 0);
+		typedef QList<QPluginLoader*> PluginsContainer_t;
+		PluginsContainer_t Plugins_;
+		QMap<PluginsContainer_t::const_iterator, bool> DependenciesMet_;
+		QMap<PluginsContainer_t::const_iterator, QStringList> FailedDependencies_;
 	public:
-		Iterator (const Iterator&);
-		QObject* operator* ();
-		const QObject* operator* () const;
-		Iterator& operator++ ();
-		Iterator& operator-- ();
-
-		bool operator== (const Iterator&);
-		bool operator!= (const Iterator&);
+		typedef PluginsContainer_t::size_type Size_t;
+		PluginManager (QObject *parent = 0);
+		virtual ~PluginManager ();
+		Size_t GetSize () const;
+		void Release (Size_t);
+		QString Name (const Size_t& pos) const;
+		QString Info (const Size_t& pos) const;
+		QObject* FindByID (IInfo::ID_t) const;
+		QObjectList GetAllPlugins ();
+		void InitializePlugins ();
+		void CalculateDependencies ();
+		void ThrowPlugins ();
+		QObjectList GetAllPlugins () const;
+	private:
+		void FindPlugins ();
+	signals:
+		void gotPlugin (const PluginInfo*);
 	};
-	friend class Iterator;
-
-	PluginManager (QObject *parent = 0);
-	virtual ~PluginManager ();
-	Size_t GetSize () const;
-	void Release (Size_t);
-	QString Name (const Size_t& pos) const;
-	QString Info (const Size_t& pos) const;
-	Iterator FindByID (IInfo::ID_t);
-	Iterator Begin ();
-	Iterator End ();
-	void InitializePlugins ();
-	void CalculateDependencies ();
-	void ThrowPlugins ();
-	QObjectList GetAllPlugins () const;
-private:
-	void FindPlugins ();
-signals:
-	void gotPlugin (const PluginInfo*);
 };
 
 #endif

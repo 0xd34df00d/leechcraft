@@ -5,6 +5,7 @@
 #include <QSettings>
 #include <QSystemTrayIcon>
 #include <QMap>
+#include "core.h"
 #include "common.h"
 #include "logshower.h"
 
@@ -17,63 +18,63 @@ class QTreeWidget;
 class QTreeWidgetItem;
 class QLabel;
 class QSplashScreen;
-class View;
-class Core;
-class PluginInfo;
 class QMutex;
 
-class MainWindow : public QMainWindow
+namespace Main
 {
-    Q_OBJECT
+	class MainWindow : public QMainWindow
+	{
+		Q_OBJECT
 
-	QMenu *File_, *Help_;
-	QTreeWidget *PluginsList_;
-    Core *Model_;
-	QSplitter *Splitter_;
-	QLabel *DownloadSpeed_, *UploadSpeed_;
-	LogShower *LogShower_;
+		QMenu *File_, *Help_;
+		QTreeWidget *PluginsList_;
+		Main::Core *Model_;
+		QSplitter *Splitter_;
+		QLabel *DownloadSpeed_, *UploadSpeed_;
+		LogShower *LogShower_;
 
-	QAction *BackupSettings_, *RestoreSettings_, *ClearSettings_;
-	QToolBar *ToolToolbar_;
-	QMenu *ToolsMenu_;
+		QAction *BackupSettings_, *RestoreSettings_, *ClearSettings_;
+		QToolBar *ToolToolbar_;
+		QMenu *ToolsMenu_;
 
-	QSystemTrayIcon *TrayIcon_;
+		QSystemTrayIcon *TrayIcon_;
 
-	bool SettingsClearScheduled_, IsShown_;
+		bool SettingsClearScheduled_, IsShown_;
 
-	static MainWindow *Instance_;
-	static QMutex *InstanceMutex_;
+		static MainWindow *Instance_;
+		static QMutex *InstanceMutex_;
 
-    MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
-	~MainWindow ();
-public:
-	static MainWindow *Instance ();
-public slots:
-	void catchError (QString, Errors::Severity);
-protected:
-    virtual void closeEvent (QCloseEvent*);
-private:
-	void SetupToolbars ();
-	void SetupActions ();
-	void SetupMenus ();
-	void SetTrayIcon ();
-    void FillMenus ();
-    void MakeActions ();
-    void ReadSettings ();
-    void WriteSettings ();
-	void InitializeMainView (const QByteArray&);
-private slots:
-	void handlePluginsListDoubleClick (QTreeWidgetItem*, int);
-	void addPluginToList (const PluginInfo*);
-	void updateSpeedIndicators ();
-	void handleAddMessage (const QString&, bool);
-	void backupSettings ();
-	void restoreSettings ();
-	void clearSettings (bool);
-	void showChangelog ();
-	void showHideMain ();
-	void hideAll ();
-	void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
+		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
+		~MainWindow ();
+	public:
+		static MainWindow *Instance ();
+	public slots:
+		void catchError (QString, Errors::Severity);
+	protected:
+		virtual void closeEvent (QCloseEvent*);
+	private:
+		void SetupToolbars ();
+		void SetupActions ();
+		void SetupMenus ();
+		void SetTrayIcon ();
+		void FillMenus ();
+		void MakeActions ();
+		void ReadSettings ();
+		void WriteSettings ();
+		void InitializeMainView (const QByteArray&);
+	private slots:
+		void handlePluginsListDoubleClick (QTreeWidgetItem*, int);
+		void addPluginToList (const PluginInfo*);
+		void updateSpeedIndicators ();
+		void handleAddMessage (const QString&, bool);
+		void backupSettings ();
+		void restoreSettings ();
+		void clearSettings (bool);
+		void showChangelog ();
+		void showHideMain ();
+		void hideAll ();
+		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
+	};
 };
 
 #endif

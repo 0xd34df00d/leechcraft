@@ -11,7 +11,6 @@
 #include "mainwindow.h"
 
 QMutex G_DbgMutex;
-int G_DbgShiftLevel = 1;
 
 void debugMessageHandler (QtMsgType type, const char *message)
 {
@@ -33,16 +32,10 @@ void debugMessageHandler (QtMsgType type, const char *message)
 	}
 	std::ofstream ostr;
 	G_DbgMutex.lock ();
-	if (std::strstr (message, ": exit"))
-		--G_DbgShiftLevel;
 	ostr.open (name.c_str (), std::ios::app);
 	ostr << "[" << QTime::currentTime ().toString ("HH:mm:ss.zzz").toStdString () << "] [thread ptr " << QThread::currentThread () << "] ";
-	for (int i = 1; i < G_DbgShiftLevel; ++i)
-		ostr << "    ";
 	ostr << message << std::endl;
 	ostr.close ();
-	if (std::strstr (message, ": enter"))
-		++G_DbgShiftLevel;
 	G_DbgMutex.unlock ();
 }
 
@@ -71,7 +64,7 @@ int main (int argc, char **argv)
 
 	Proxy::Instance ()->SetStrings (QStringList (QObject::tr ("bytes")) << QObject::tr ("KB") << QObject::tr ("MB") << QObject::tr ("GB"));
 
-	MainWindow::Instance ();
+	Main::MainWindow::Instance ();
     return app.exec ();
 }
 
