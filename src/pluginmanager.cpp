@@ -186,20 +186,17 @@ void PluginManager::ThrowPlugins ()
 void PluginManager::FindPlugins ()
 {
 	QDir pluginsDir = QDir ("/usr/local/share/leechcraft/plugins");
-	qDebug () << pluginsDir.entryList (QDir::Files);
-	foreach (QString filename, pluginsDir.entryList (QDir::Files))
+	foreach (QString filename, pluginsDir.entryList (QStringList ("*leechcraft_*"), QDir::Files))
 		Plugins_.push_back (new QPluginLoader (pluginsDir.absoluteFilePath (filename), this));
 
 	pluginsDir = QDir ("/usr/share/leechcraft/plugins");
-	qDebug () << pluginsDir.entryList (QDir::Files);
-	foreach (QString filename, pluginsDir.entryList (QDir::Files))
+	foreach (QString filename, pluginsDir.entryList (QStringList ("*leechcraft_*"), QDir::Files))
 		Plugins_.push_back (new QPluginLoader (pluginsDir.absoluteFilePath (filename), this));
 
 	pluginsDir = QDir (QApplication::applicationDirPath ());
-	pluginsDir.cd ("plugins/bin");
-	qDebug () << pluginsDir.entryList (QDir::Files);
-	foreach (QString filename, pluginsDir.entryList (QDir::Files))
-		Plugins_.push_back (new QPluginLoader (pluginsDir.absoluteFilePath (filename), this));
+	if (pluginsDir.cd ("plugins/bin"))
+		foreach (QString filename, pluginsDir.entryList (QStringList ("*leechcraft_*"), QDir::Files))
+			Plugins_.push_back (new QPluginLoader (pluginsDir.absoluteFilePath (filename), this));
 }
 
 QObjectList PluginManager::GetAllPlugins () const

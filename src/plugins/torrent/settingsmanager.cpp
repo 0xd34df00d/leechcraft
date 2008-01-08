@@ -55,12 +55,14 @@ void SettingsManager::ReadSettings ()
 {
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
 	settings.beginGroup ("Torrent");
-	LastTorrentDirectory_	= settings.value ("LastTorrentDirectory", QDir::homePath ()).toString ();
-	LastSaveDirectory_		= settings.value ("LastSaveDirectory", QDir::homePath ()).toString ();
-	PortRange_				= settings.value ("PortRange", QVariant::fromValue (qMakePair<int, int> (6881, 6889))).value<IntRange> ();
-	DHTEnabled_				= settings.value ("DHTEnabled", true).toBool ();
-	AutosaveInterval_		= settings.value ("AutosaveInterval", 120).toInt ();
-//	DHTState_				= settings.value ("DHTState", QVariant::fromValue (libtorrent::entry ())).value<libtorrent::entry> ();
+	LastTorrentDirectory_		= settings.value ("LastTorrentDirectory", QDir::homePath ()).toString ();
+	LastSaveDirectory_			= settings.value ("LastSaveDirectory", QDir::homePath ()).toString ();
+	LastMakeTorrentDirectory_	= settings.value ("LastMakeTorrentDirectory", QDir::homePath ()).toString ();
+	LastAddDirectory_			= settings.value ("LastAddDirectory", QDir::homePath ()).toString ();
+	PortRange_					= settings.value ("PortRange", QVariant::fromValue (qMakePair<int, int> (6881, 6889))).value<IntRange> ();
+	DHTEnabled_					= settings.value ("DHTEnabled", true).toBool ();
+	AutosaveInterval_			= settings.value ("AutosaveInterval", 120).toInt ();
+//	DHTState_					= settings.value ("DHTState", QVariant::fromValue (libtorrent::entry ())).value<libtorrent::entry> ();
 	settings.endGroup ();
 }
 
@@ -70,6 +72,8 @@ void SettingsManager::writeSettings ()
 	settings.beginGroup ("Torrent");
 	settings.setValue ("LastTorrentDirectory", LastTorrentDirectory_);
 	settings.setValue ("LastSaveDirectory", LastSaveDirectory_);
+	settings.setValue ("LastMakeTorrentDirectory", LastMakeTorrentDirectory_);
+	settings.setValue ("LastAddDirectory", LastAddDirectory_);
 	settings.setValue ("PortRange", QVariant::fromValue (PortRange_.Val ()));
 	settings.setValue ("DHTEnabled", DHTEnabled_);
 	settings.setValue ("AutosaveInterval", AutosaveInterval_);
@@ -99,6 +103,29 @@ void SettingsManager::SetLastSaveDirectory (const QString& val)
 	LastSaveDirectory_ = val;
 	ScheduleSave ();
 }
+
+QString SettingsManager::GetLastMakeTorrentDirectory () const
+{
+	return LastMakeTorrentDirectory_;
+}
+
+void SettingsManager::SetLastMakeTorrentDirectory (const QString& val)
+{
+	LastMakeTorrentDirectory_ = val;
+	ScheduleSave ();
+}
+
+QString SettingsManager::GetLastAddDirectory () const
+{
+	return LastAddDirectory_;
+}
+
+void SettingsManager::SetLastAddDirectory (const QString& val)
+{
+	LastAddDirectory_ = val;
+	ScheduleSave ();
+}
+
 
 /*
 const libtorrent::entry& SettingsManager::GetDHTState () const

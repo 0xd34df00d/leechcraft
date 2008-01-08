@@ -1,6 +1,4 @@
 SET (QT_USE_QTNETWORK true)
-INCLUDE (${CMAKE_ROOT}/Modules/FindQt4.cmake)
-INCLUDE (${CMAKE_ROOT}/Modules/UseQt4.cmake)
 INCLUDE (${CMAKE_ROOT}/Modules/FindBoost.cmake)
 INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR}
 					 ${QT_QTCORE_INCLUDE_DIR}
@@ -19,6 +17,10 @@ SET (SRCS
 	core.cpp 
 	addtorrent.cpp 
 	contextabletree.cpp 
+	newtorrentwizard.cpp
+	intropage.cpp
+	firststep.cpp
+	secondstep.cpp
     settingsmanager.cpp)
 SET (HEADERS
 	torrentplugin.h 
@@ -27,12 +29,18 @@ SET (HEADERS
 	settingsmanager.h 
 	torrentinfo.h 
 	contextabletree.h 
+	newtorrentwizard.h
+	intropage.h
+	firststep.h
+	secondstep.h
 	fileinfo.h
 	peerinfo.h
 	overallstats.h)
 SET (FORMS
     mainwindow.ui
-	addtorrent.ui)
+	addtorrent.ui
+	newtorrentfirststep.ui
+	newtorrentsecondstep.ui)
 SET (RESOURCES resources.qrc)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})

@@ -3,6 +3,7 @@
 #include "torrentplugin.h"
 #include "core.h"
 #include "addtorrent.h"
+#include "newtorrentwizard.h"
 #include "settingsmanager.h"
 
 void TorrentPlugin::Init ()
@@ -152,6 +153,12 @@ void TorrentPlugin::on_OpenTorrent__triggered ()
 			path = AddTorrentDialog_->GetSavePath ();
 	QVector<bool> files = AddTorrentDialog_->GetSelectedFiles ();
 	Core::Instance ()->AddFile (filename, path, files);
+}
+
+void TorrentPlugin::on_CreateTorrent__triggered ()
+{
+	NewTorrentWizard *wizard = new NewTorrentWizard (this);
+	wizard->exec ();
 }
 
 void TorrentPlugin::on_RemoveTorrent__triggered ()

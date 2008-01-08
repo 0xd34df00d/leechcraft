@@ -6,11 +6,15 @@ Core:
 
 BitTorrent:
 + Ask if user really wants to delete a torrent.
++ Files completeion view for each torrent.
++ Files priority stubs.
++ Peers view for each torrent.
 
 HTTP/FTP:
 + Autostart on by default.
 + Shows an error if timeout reading response.
 * Multiple starts of a single job don't lead to crash anymore.
+* Few bugs fixed.
 
 ***Public build 5***
 Core:

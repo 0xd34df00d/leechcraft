@@ -23,7 +23,7 @@ Core* Core::Instance ()
 Core::Core (QObject *parent)
 : QAbstractItemModel (parent)
 {
-	Session_ = new libtorrent::session (libtorrent::fingerprint ("LB", 0, 0, 0, 2));
+	Session_ = new libtorrent::session (libtorrent::fingerprint ("LB", 0, 1, 0, 2));
 	QPair<int, int> ports = SettingsManager::Instance ()->GetPortRange ();
 	try
 	{
@@ -286,8 +286,8 @@ QList<PeerInfo> Core::GetPeers (int row) const
 		ppi.USpeed_ = pi.up_speed;
 		ppi.Downloaded_ = pi.total_download;
 		ppi.Uploaded_ = pi.total_upload;
-		ppi.Client_ = QString::fromStdString (pi.client);
-		ppi.Country_ = pi.country;
+		ppi.Client_ = QString::fromUtf8 (pi.client.c_str ());
+		ppi.Country_ = QString::fromLocal8Bit (pi.country, 2);
 		result << ppi;
 	}
 
@@ -324,6 +324,7 @@ void Core::AddFile (const QString& filename, const QString& path, const QVector<
 	TorrentStruct tmp = { 0, priorities, handle };
 	Handles_.append (tmp);
 	endInsertRows ();
+	handle.resolve_countries (true);
 	QTimer::singleShot (1000, this, SLOT (writeSettings ()));
 }
 
@@ -423,6 +424,7 @@ void Core::RestoreTorrents ()
 		TorrentStruct tmp = { ub, priorities, handle };
 		Handles_.append (tmp);
 		endInsertRows ();
+		handle.resolve_countries (true);
 	}
 	settings.endArray ();
 	settings.endGroup ();

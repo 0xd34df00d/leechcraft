@@ -71,6 +71,7 @@ namespace Main
 		void restoreSettings ();
 		void clearSettings (bool);
 		void showChangelog ();
+		void showAboutInfo ();
 		void showHideMain ();
 		void hideAll ();
 		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);

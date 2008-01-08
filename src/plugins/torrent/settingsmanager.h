@@ -18,6 +18,8 @@ class SettingsManager : public QObject
 	Guarded<bool> SaveScheduled_;
 
 	Guarded<QString> LastTorrentDirectory_
+				   , LastMakeTorrentDirectory_
+				   , LastAddDirectory_
 				   , LastSaveDirectory_;
 	Guarded<IntRange> PortRange_;
 	Guarded<bool> DHTEnabled_;
@@ -40,6 +42,10 @@ public:
 	void SetLastTorrentDirectory (const QString&);
 	QString GetLastSaveDirectory () const;
 	void SetLastSaveDirectory (const QString&);
+	QString GetLastMakeTorrentDirectory () const;
+	void SetLastMakeTorrentDirectory (const QString&);
+	QString GetLastAddDirectory () const;
+	void SetLastAddDirectory (const QString&);
 //	const libtorrent::entry& GetDHTState () const;
 //	void SetDHTState (const libtorrent::entry&);
 	IntRange GetPortRange () const;

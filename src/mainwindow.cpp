@@ -164,6 +164,7 @@ void MainWindow::MakeActions ()
 	ToolsMenu_->addAction (RestoreSettings_);
 	Help_->addAction (tr ("&Changelog..."), this, SLOT (showChangelog ()));
 	Help_->addAction (tr ("&About Qt..."), qApp, SLOT (aboutQt ()));
+	Help_->addAction (tr ("About &LeechCraft..."), this, SLOT (showAboutInfo ()));
 }
 
 void MainWindow::ReadSettings ()
@@ -356,6 +357,11 @@ void MainWindow::showChangelog ()
 {
 	ChangelogDialog ce (this);
 	ce.exec ();
+}
+
+void MainWindow::showAboutInfo ()
+{
+	QMessageBox::information (this, tr ("Information"), tr ("LeechCraft public build 6"));
 }
 
 void MainWindow::showHideMain ()
