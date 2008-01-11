@@ -12,8 +12,7 @@ NewTorrentWizard::NewTorrentWizard (QWidget *parent)
 
 	setPage (PageIntro, new IntroPage);
 	setPage (PageFirstStep, new FirstStep);
-	setPage (PageSecondStep, new SecondStep);
-	setPage (PageThirdStep, new ThirdStep);
+	setPage (PageSecondStep, new ThirdStep);
 }
 
 void NewTorrentWizard::accept ()
@@ -30,11 +29,17 @@ NewTorrentParams NewTorrentWizard::GetParams () const
 	result.AnnounceURL_ = field ("AnnounceURL").toString ();
 	result.Date_ = field ("Date").toDate ();
 	result.Comment_ = field ("Comment").toString ();
-	result.Paths_ = qobject_cast<SecondStep*> (page (PageSecondStep))->GetPaths ();
-	result.PieceSize_ = field ("PieceSize").toInt ();
+	result.Path_ = field ("RootPath").toString ();
 	result.URLSeeds_ = field ("URLSeeds").toString ().split(QRegExp("\\s+"));
 	result.DHTEnabled_ = field ("DHTEnabled").toBool ();
 	result.DHTNodes_ = field ("DHTNodes").toString ().split(QRegExp("\\s+"));
+	result.PieceSize_ = 32 * 1024;
+	int index = field ("PieceSize").toInt ();
+	while (index--)
+		result.PieceSize_ *= 2;
+
+	if (result.Path_.endsWith ('/'))
+		result.Path_.remove (result.Path_.size () - 1, 1);
 
 	return result;
 }

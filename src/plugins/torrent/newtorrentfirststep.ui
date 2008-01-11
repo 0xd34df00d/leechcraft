@@ -5,15 +5,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>414</width>
-    <height>368</height>
+    <width>450</width>
+    <height>509</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Main parameters</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="resources.qrc" >:/resources/images/bittorrent.png</iconset>
+   <iconset/>
   </property>
   <layout class="QGridLayout" >
    <item row="0" column="0" >
@@ -58,13 +58,34 @@
     <widget class="QLineEdit" name="AnnounceURL_" />
    </item>
    <item row="3" column="0" >
+    <widget class="QLabel" name="label_6" >
+     <property name="text" >
+      <string>Torrent's root path:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" >
+    <layout class="QHBoxLayout" >
+     <item>
+      <widget class="QLineEdit" name="RootPath_" />
+     </item>
+     <item>
+      <widget class="QPushButton" name="BrowseRoot_" >
+       <property name="text" >
+        <string>Browse...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="0" >
     <widget class="QLabel" name="label_5" >
      <property name="text" >
       <string>Date:</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="1" >
+   <item row="4" column="1" >
     <widget class="QDateEdit" name="Date_" >
      <property name="displayFormat" >
       <string>dd MMM yyyy</string>
@@ -74,17 +95,17 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0" >
+   <item row="5" column="0" >
     <widget class="QLabel" name="label_3" >
      <property name="text" >
       <string>Comment:</string>
      </property>
     </widget>
    </item>
-   <item rowspan="2" row="4" column="1" >
+   <item rowspan="2" row="5" column="1" >
     <widget class="QTextEdit" name="Comment_" />
    </item>
-   <item row="5" column="0" >
+   <item row="6" column="0" >
     <spacer>
      <property name="orientation" >
       <enum>Qt::Vertical</enum>

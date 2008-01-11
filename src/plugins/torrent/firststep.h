@@ -10,6 +10,7 @@ public:
 	FirstStep (QWidget *parent = 0);
 private slots:
 	void on_BrowseOutput__released ();
+	void on_BrowseRoot__released ();
 };
 
 #endif

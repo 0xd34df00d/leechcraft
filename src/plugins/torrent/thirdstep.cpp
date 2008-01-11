@@ -1,4 +1,5 @@
 #include <QFileInfo>
+#include <QDirIterator>
 #include <QtDebug>
 #include "thirdstep.h"
 #include "secondstep.h"
@@ -18,17 +19,16 @@ ThirdStep::ThirdStep (QWidget *parent)
 void ThirdStep::initializePage ()
 {
 	TotalSize_ = 0;
-	SecondStep *spage = qobject_cast<SecondStep*> (wizard ()->page (NewTorrentWizard::PageSecondStep));
-	if (!spage)
+	QString path = field ("RootPath").toString ();
+
+	QDirIterator it (field ("RootPath").toString (), QDirIterator::Subdirectories);
+	while (it.hasNext ())
 	{
-		qWarning () << Q_FUNC_INFO << "failed to initialize, because seocnd page is null";
-		return;
+		QFileInfo info = it.fileInfo ();
+		if (info.isFile () && info.isReadable ())
+			TotalSize_ += info.size ();
+		it.next ();
 	}
-
-	QStringList paths = spage->GetPaths ();
-
-	for (int i = 0; i < paths.size (); ++i)
-		TotalSize_ += QFileInfo (paths.at (i)).size ();
 
 	on_PieceSize__currentIndexChanged ();
 }

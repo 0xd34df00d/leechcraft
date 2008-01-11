@@ -9,9 +9,9 @@ struct NewTorrentParams
 	QString OutputDirectory_
 		, TorrentName_
 		, AnnounceURL_
-		, Comment_;
+		, Comment_
+		, Path_;
 	QDate Date_;
-	QStringList Paths_;
 	int PieceSize_;
 	QStringList URLSeeds_;
 	QStringList DHTNodes_;

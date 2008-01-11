@@ -9,6 +9,13 @@
 #include <entry.hpp>
 #include <extensions/metadata_transfer.hpp>
 #include <extensions/ut_pex.hpp>
+#include <file_pool.hpp>
+#include <hasher.hpp>
+#include <storage.hpp>
+#include <file.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/fstream.hpp>
 #include <plugininterface/proxy.h>
 #include "core.h"
 #include "settingsmanager.h"
@@ -355,8 +362,76 @@ void Core::ResumeTorrent (int pos)
 	Handles_.at (pos).Handle_.resume ();
 }
 
+namespace
+{
+	void AddFiles (libtorrent::torrent_info& t, const boost::filesystem::path& p, const boost::filesystem::path& l)
+	{
+		if (l.leaf () [0] == '.')
+			return;
+
+		boost::filesystem::path f (p / l);
+		if (boost::filesystem::is_directory (f))
+			for (boost::filesystem::directory_iterator i (f), end; i != end; ++i)
+				AddFiles (t, p, l / i->leaf ());
+		else
+			t.add_file (l, boost::filesystem::file_size (f));
+	}
+}
+
 void Core::MakeTorrent (NewTorrentParams params) const
 {
+	libtorrent::torrent_info info;
+	info.set_piece_size (params.PieceSize_);
+	info.set_creator ("Leechcraft BitTorrent");
+	info.add_tracker (params.AnnounceURL_.toStdString ());
+	info.set_piece_size (params.PieceSize_);
+	if (!params.Comment_.isEmpty ())
+		info.set_comment (params.Comment_.toUtf8 ());
+	for (int i = 0; i < params.URLSeeds_.size (); ++i)
+		info.add_url_seed (params.URLSeeds_.at (0).toStdString ());
+	info.set_priv (!params.DHTEnabled_);
+
+	if (params.DHTEnabled_)
+		for (int i = 0; i < params.DHTNodes_.size (); ++i)
+		{
+			QStringList splitted = params.DHTNodes_.at (i).split (":");
+			info.add_node (std::pair<std::string, int> (splitted [0].trimmed ().toStdString (), splitted [1].trimmed ().toInt ()));
+		}
+
+	boost::filesystem::path::default_name_check (boost::filesystem::no_check);
+	boost::filesystem::path fullPath = boost::filesystem::complete (params.Path_.toStdWString ());
+	AddFiles (info, fullPath.branch_path (), fullPath.leaf ());
+
+	libtorrent::file_pool fp;
+	boost::scoped_ptr<libtorrent::storage_interface> st (libtorrent::default_storage_constructor (&info, fullPath.branch_path (), fp));
+	std::vector<char> buf (params.PieceSize_);
+	for (int i = 0; i < info.num_pieces (); ++i)
+	{
+		st->read (&buf [0], i, 0, info.piece_size (i));
+		libtorrent::hasher h (&buf [0], info.piece_size (i));
+		info.set_hash (i, h.final ());
+		// emit that we are in progress
+	}
+
+	libtorrent::entry e = info.create_torrent ();
+	std::vector<char> outbuf;
+	libtorrent::bencode (std::back_inserter (outbuf), e);
+
+	QString filename = params.OutputDirectory_;
+	if (!filename.endsWith ("/"))
+		filename.append ("/");
+	filename.append (params.TorrentName_);
+	filename.append (".torrent");
+	QFile file (filename);
+	if (!file.open (QIODevice::WriteOnly))
+	{
+		emit error (tr ("Could not open file %1 for write!").arg (filename));
+		return;
+	}
+	QDataStream ostr (&file);
+	for (int i = 0; i < outbuf.size (); ++i)
+		ostr << outbuf.at (i);
+	file.close ();
 }
 
 QString Core::GetStringForState (libtorrent::torrent_status::state_t state) const
