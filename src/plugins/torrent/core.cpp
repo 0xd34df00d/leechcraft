@@ -355,6 +355,10 @@ void Core::ResumeTorrent (int pos)
 	Handles_.at (pos).Handle_.resume ();
 }
 
+void Core::MakeTorrent (NewTorrentParams params) const
+{
+}
+
 QString Core::GetStringForState (libtorrent::torrent_status::state_t state) const
 {
 	switch (state)

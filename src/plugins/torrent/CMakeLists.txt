@@ -21,6 +21,7 @@ SET (SRCS
 	intropage.cpp
 	firststep.cpp
 	secondstep.cpp
+	thirdstep.cpp
     settingsmanager.cpp)
 SET (HEADERS
 	torrentplugin.h 
@@ -33,14 +34,17 @@ SET (HEADERS
 	intropage.h
 	firststep.h
 	secondstep.h
+	thirdstep.h
 	fileinfo.h
 	peerinfo.h
-	overallstats.h)
+	overallstats.h
+	newtorrentparams.h)
 SET (FORMS
     mainwindow.ui
 	addtorrent.ui
 	newtorrentfirststep.ui
-	newtorrentsecondstep.ui)
+	newtorrentsecondstep.ui
+	newtorrentthirdstep.ui)
 SET (RESOURCES resources.qrc)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})

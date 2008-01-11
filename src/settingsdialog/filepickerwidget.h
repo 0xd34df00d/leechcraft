@@ -1,9 +1,7 @@
 #ifndef FILEPICKERWIDGET_H
 #define FILEPICKERWIDGET_H
 #include <QWidget>
-
-class QPushButton;
-class QLineEdit;
+#include <QtGui>
 
 class FilePickerWidget : public QWidget
 {
@@ -11,7 +9,6 @@ class FilePickerWidget : public QWidget
 
 	QPushButton *Browse_;
 	QLineEdit *File_;
-
 public:
 	FilePickerWidget (QWidget *parent = 0);
 	

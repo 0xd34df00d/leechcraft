@@ -1,7 +1,3 @@
-#include <QLineEdit>
-#include <QPushButton>
-#include <QHBoxLayout>
-#include <QFileDialog>
 #include "filepickerwidget.h"
 
 FilePickerWidget::FilePickerWidget (QWidget *parent)

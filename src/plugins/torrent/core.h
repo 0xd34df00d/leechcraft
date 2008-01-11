@@ -10,6 +10,7 @@
 #include "overallstats.h"
 #include "fileinfo.h"
 #include "peerinfo.h"
+#include "newtorrentparams.h"
 
 class QTimer;
 
@@ -69,6 +70,7 @@ public:
 	void RemoveTorrent (int);
 	void PauseTorrent (int);
 	void ResumeTorrent (int);
+	void MakeTorrent (NewTorrentParams) const;
 private:
 	QString GetStringForState (libtorrent::torrent_status::state_t) const;
 	bool CheckValidity (int) const;

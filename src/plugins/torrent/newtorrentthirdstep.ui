@@ -1,0 +1,182 @@
+<ui version="4.0" >
+ <class>NewTorrentThirdStep</class>
+ <widget class="QWidget" name="NewTorrentThirdStep" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>458</width>
+    <height>463</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Fine-tune parameters</string>
+  </property>
+  <layout class="QGridLayout" >
+   <item row="0" column="0" >
+    <widget class="QLabel" name="label" >
+     <property name="text" >
+      <string>Piece size:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" >
+    <layout class="QHBoxLayout" >
+     <item>
+      <widget class="QComboBox" name="PieceSize_" >
+       <property name="currentIndex" >
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text" >
+         <string>32 kb</string>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>64 kb</string>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>128 kb</string>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>256 kb</string>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>512 kb</string>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>1 mb</string>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>2 mb</string>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>4 mb</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="NumPieces_" >
+       <property name="text" >
+        <string>&lt;> pieces</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0" >
+    <widget class="QLabel" name="label_2" >
+     <property name="text" >
+      <string>URL seeds:</string>
+     </property>
+    </widget>
+   </item>
+   <item rowspan="2" row="1" column="1" >
+    <widget class="QTextEdit" name="URLSeeds_" />
+   </item>
+   <item row="2" column="0" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="3" column="0" colspan="2" >
+    <widget class="QGroupBox" name="DHTEnabled_" >
+     <property name="minimumSize" >
+      <size>
+       <width>0</width>
+       <height>150</height>
+      </size>
+     </property>
+     <property name="title" >
+      <string>Public torrent (DHT enabled)</string>
+     </property>
+     <property name="checkable" >
+      <bool>true</bool>
+     </property>
+     <property name="checked" >
+      <bool>false</bool>
+     </property>
+     <layout class="QHBoxLayout" >
+      <item>
+       <layout class="QVBoxLayout" >
+        <item>
+         <widget class="QLabel" name="label_3" >
+          <property name="text" >
+           <string>Known nodes:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QTextEdit" name="DHTNodes_" />
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

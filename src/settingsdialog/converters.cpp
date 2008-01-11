@@ -1,4 +1,3 @@
-#include <QVariant>
 #include <QtGui>
 #include <QtDebug>
 #include <QMetaType>

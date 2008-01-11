@@ -158,7 +158,8 @@ void TorrentPlugin::on_OpenTorrent__triggered ()
 void TorrentPlugin::on_CreateTorrent__triggered ()
 {
 	NewTorrentWizard *wizard = new NewTorrentWizard (this);
-	wizard->exec ();
+	if (wizard->exec () == QDialog::Accepted)
+		Core::Instance ()->MakeTorrent (wizard->GetParams ());
 }
 
 void TorrentPlugin::on_RemoveTorrent__triggered ()
