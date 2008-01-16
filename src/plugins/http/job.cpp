@@ -1,4 +1,4 @@
-#include <QtCore>
+#include <QtCore/QtCore>
 #include <QtDebug>
 #include <QMessageBox>
 #include <plugininterface/addressparser.h>

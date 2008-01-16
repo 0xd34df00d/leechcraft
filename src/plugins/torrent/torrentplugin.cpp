@@ -1,4 +1,4 @@
-#include <QtGui>
+#include <QtGui/QtGui>
 #include <plugininterface/proxy.h>
 #include "torrentplugin.h"
 #include "core.h"

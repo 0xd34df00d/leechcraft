@@ -1,4 +1,4 @@
-#include <QtGui>
+#include <QtGui/QtGui>
 #include "newtorrentwizard.h"
 #include "intropage.h"
 #include "firststep.h"

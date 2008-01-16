@@ -1,7 +1,7 @@
 #ifndef FILEPICKERWIDGET_H
 #define FILEPICKERWIDGET_H
 #include <QWidget>
-#include <QtGui>
+#include <QtGui/QtGui>
 
 class FilePickerWidget : public QWidget
 {

@@ -1,4 +1,4 @@
-#include <QtGui>
+#include <QtGui/QtGui>
 #include "pluginlisttablewidgeticon.h"
 
 PluginListTableWidgetIcon::PluginListTableWidgetIcon ()

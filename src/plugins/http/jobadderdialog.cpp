@@ -1,4 +1,4 @@
-#include <QtGui>
+#include <QtGui/QtGui>
 #include <QtDebug>
 #include "jobadderdialog.h"
 #include "jobparams.h"

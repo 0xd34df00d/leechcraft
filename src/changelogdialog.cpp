@@ -1,4 +1,4 @@
-#include <QtGui>
+#include <QtGui/QtGui>
 #include "changelogdialog.h"
 
 ChangelogDialog::ChangelogDialog (QWidget *parent)

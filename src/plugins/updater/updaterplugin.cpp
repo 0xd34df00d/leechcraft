@@ -1,4 +1,4 @@
-#include <QtGui>
+#include <QtGui/QtGui>
 #include <settingsdialog/settingsdialog.h>
 #include <plugininterface/proxy.h>
 #include "updaterplugin.h"

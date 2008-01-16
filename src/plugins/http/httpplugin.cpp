@@ -1,5 +1,5 @@
-#include <QtGui>
-#include <QtNetwork>
+#include <QtGui/QtGui>
+#include <QtNetwork/QtNetwork>
 #include <QtDebug>
 #include <plugininterface/proxy.h>
 #include <interfaces/interfaces.h>

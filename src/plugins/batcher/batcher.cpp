@@ -1,4 +1,4 @@
-#include <QtGui>
+#include <QtGui/QtGui>
 #include <interfaces/structures.h>
 #include "batcher.h"
 #include "parser.h"

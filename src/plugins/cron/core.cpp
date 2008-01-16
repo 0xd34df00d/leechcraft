@@ -1,4 +1,4 @@
-#include <QtCore>
+#include <QtCore/QtCore>
 #include <QtDebug>
 #include <plugininterface/proxy.h>
 #include "core.h"

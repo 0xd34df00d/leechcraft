@@ -1,4 +1,4 @@
-#include <QtGui>
+#include <QtGui/QtGui>
 #include <QMutex>
 #include <iostream>
 #include "plugininterface/proxy.h"

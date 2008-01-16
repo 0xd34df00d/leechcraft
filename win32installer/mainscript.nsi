@@ -38,20 +38,21 @@ InstType "Minimal"
 
 Section "Qt4 Runtime" QT4RUNTIME
 	SetOutPath $INSTDIR
-	File ..\src\QtGui4.dll
-	File ..\src\QtNetwork4.dll
-	File ..\src\QtCore4.dll
-	File ..\src\QtXml4.dll
+	File QtGui4.dll
+	File QtNetwork4.dll
+	File QtCore4.dll
+	File QtXml4.dll
 	SectionIn 1 2
 SectionEnd
 
 Section "Main LeechCraft Files" MAINFILES
 	SetOutPath $INSTDIR
-	File ..\src\exceptions.dll
-	File ..\src\plugininterface.dll
-	File ..\src\settingsdialog.dll
+	File libexceptions.dll
+	File libplugininterface.dll
+	File libsettingsdialog.dll
 	File mingwm10.dll
-	File ..\src\leechcraft.exe
+	File msvcr80.dll
+	File leechcraft.exe
 	File icon64.ico
 	File icon32.ico
 	File icon24.ico
@@ -72,33 +73,33 @@ SectionEnd
 SectionGroup "Plugins"
 	Section "HTTP/FTP" HTTPPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
-		File ..\src\plugins\bin\leechcraft_http.dll
+		File libleechcraft_http.dll
 		SectionIn 1
 	SectionEnd
 	Section "BitTorrent" TORRENTPLUGIN
 		SetOutPath $INSTDIR
-		File ..\src\torrent.dll
-		File ..\src\boost_date_time-mgw42-mt-1_34_1.dll
-		File ..\src\boost_filesystem-mgw42-mt-1_34_1.dll
-		File ..\src\boost_thread-mgw42-mt-1_34_1.dll
-		File ..\src\zlib1.dll
+		File torrent.dll
+		File boost_date_time-mgw42-mt-1_34_1.dll
+		File boost_filesystem-mgw42-mt-1_34_1.dll
+		File boost_thread-mgw42-mt-1_34_1.dll
+		File zlib1.dll
 		SetOutPath $INSTDIR\plugins\bin
-		File ..\src\plugins\bin\leechcraft_torrent.dll
+		File libleechcraft_torrent.dll
 		SectionIn 1
 	SectionEnd
 	Section "Updater" UPDATERPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
-		File ..\src\plugins\bin\leechcraft_updater.dll
+		File libleechcraft_updater.dll
 		SectionIn 1
 	SectionEnd
 	Section "Batcher" BATCHERPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
-		File ..\src\plugins\bin\leechcraft_batcher.dll
+		File libleechcraft_batcher.dll
 		SectionIn 1
 	SectionEnd
 	Section "Cron" CRONPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
-		File ..\src\plugins\bin\leechcraft_cron.dll
+		File libleechcraft_cron.dll
 		SectionIn 1
 	SectionEnd
 SectionGroupEnd
@@ -107,24 +108,26 @@ Var MUI_TEMP
 
 Section "Uninstall"
 	Delete "$INSTDIR\Uninstall.exe"
-	Delete "$INSTDIR\exceptions.dll"
-	Delete "$INSTDIR\plugininterface.dll"
-	Delete "$INSTDIR\settingsdialog.dll"
+	Delete "$INSTDIR\libexceptions.dll"
+	Delete "$INSTDIR\libplugininterface.dll"
+	Delete "$INSTDIR\libsettingsdialog.dll"
 	Delete "$INSTDIR\leechcraft.exe"
 	Delete "$INSTDIR\QtCore4.dll"
 	Delete "$INSTDIR\QtNetwork4.dll"
 	Delete "$INSTDIR\QtGui4.dll"
 	Delete "$INSTDIR\QtXml4.dll"
 	Delete "$INSTDIR\mingwm10.dll"
+	Delete "$INSTDIR\msvcr80.dll"
 	Delete "$INSTDIR\torrent.dll"
+	Delete "$INSTDIR\zlib1.dll"
 	Delete "$INSTDIR\boost_date_time-mgw42-mt-1_34_1.dll"
 	Delete "$INSTDIR\boost_filesystem-mgw42-mt-1_34_1.dll"
 	Delete "$INSTDIR\boost_thread-mgw42-mt-1_34_1.dll"
-	Delete "$INSTDIR\plugins\bin\leechcraft_http.dll"
-	Delete "$INSTDIR\plugins\bin\leechcraft_torrent.dll"
-	Delete "$INSTDIR\plugins\bin\leechcraft_updater.dll"
-	Delete "$INSTDIR\plugins\bin\leechcraft_batcher.dll"
-	Delete "$INSTDIR\plugins\bin\leechcraft_cron.dll"
+	Delete "$INSTDIR\plugins\bin\libleechcraft_http.dll"
+	Delete "$INSTDIR\plugins\bin\libleechcraft_torrent.dll"
+	Delete "$INSTDIR\plugins\bin\libleechcraft_updater.dll"
+	Delete "$INSTDIR\plugins\bin\libleechcraft_batcher.dll"
+	Delete "$INSTDIR\plugins\bin\libleechcraft_cron.dll"
 	Delete "$INSTDIR\plugins\bin\warning.log"
 	Delete "$INSTDIR\plugins\bin\debug.log"
 	Delete "$INSTDIR\plugins\bin\critical.log"

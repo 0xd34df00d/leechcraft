@@ -1,5 +1,5 @@
-#include <QtCore>
-#include <QtXml>
+#include <QtCore/QtCore>
+#include <QtXml/QtXml>
 #include <QtDebug>
 #include <interfaces/interfaces.h>
 #include <plugininterface/proxy.h>

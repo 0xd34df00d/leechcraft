@@ -1,4 +1,4 @@
-#include <QtCore>
+#include <QtCore/QtCore>
 #include "cron.h"
 #include "core.h"
 #include "globals.h"
