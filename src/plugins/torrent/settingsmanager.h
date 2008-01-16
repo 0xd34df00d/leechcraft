@@ -23,7 +23,10 @@ class SettingsManager : public QObject
 				   , LastSaveDirectory_;
 	Guarded<IntRange> PortRange_;
 	Guarded<bool> DHTEnabled_;
-	Guarded<int> AutosaveInterval_;
+	Guarded<int> AutosaveInterval_
+		, DownloadRateLimit_
+		, UploadRateLimit_;
+	Guarded<double> DesiredRating_;
 
 	QMap<QString, QPair<QObject*, QString> > Property2Object_;
 //	Guarded<libtorrent::entry> DHTState_;
@@ -46,8 +49,16 @@ public:
 	void SetLastMakeTorrentDirectory (const QString&);
 	QString GetLastAddDirectory () const;
 	void SetLastAddDirectory (const QString&);
+	int GetUploadRateLimit () const;
+	void SetUploadRateLimit (int);
+	int GetDownloadRateLimit () const;
+	void SetDownloadRateLimit (int);
+	double GetDesiredRating () const;
+	void SetDesiredRating (double);
+
 //	const libtorrent::entry& GetDHTState () const;
 //	void SetDHTState (const libtorrent::entry&);
+
 	IntRange GetPortRange () const;
 	void SetPortRange (const IntRange&);
 	bool GetDHTEnabled () const;

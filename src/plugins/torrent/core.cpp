@@ -48,12 +48,13 @@ Core::Core (QObject *parent)
 	Headers_ << tr ("Name") << tr ("Downloaded") << tr ("Uploaded") << tr ("Rating") << tr ("Size") << tr ("Progress") << tr ("State") << tr ("Seeds/peers") << tr ("Drate") << tr ("Urate") << tr ("Remaining");
 
 	ReadSettings ();
-
 	InterfaceUpdateTimer_ = startTimer (1000);
-
 	SettingsSaveTimer_ = new QTimer (this);
 	connect (SettingsSaveTimer_, SIGNAL (timeout ()), this, SLOT (writeSettings ()));
 	SettingsSaveTimer_->start (SettingsManager::Instance ()->GetAutosaveInterval () * 1000);
+	SetOverallDownloadRate (SettingsManager::Instance ()->GetDownloadRateLimit ());
+	SetOverallUploadRate (SettingsManager::Instance ()->GetUploadRateLimit ());
+	SetDesiredRating (SettingsManager::Instance ()->GetDesiredRating ());
 
 	SettingsManager::Instance ()->RegisterObject ("DHTState", this, "dhtStateChanged");
 }
@@ -375,6 +376,46 @@ void Core::ForceReannounce (int pos)
 	{
 		emit error (tr ("Torrent %1 could not be reannounced at the moment, try again later.").arg (pos));
 	}
+}
+
+void Core::SetOverallDownloadRate (int val)
+{
+	Session_->set_download_rate_limit (val == 100 ? -1 : val * 1024);
+	SettingsManager::Instance ()->SetDownloadRateLimit (val);
+}
+
+void Core::SetOverallUploadRate (int val)
+{
+	Session_->set_upload_rate_limit (val == 100 ? -1 : val * 1024);
+	SettingsManager::Instance ()->SetUploadRateLimit (val);
+}
+
+void Core::SetDesiredRating (double val)
+{
+	for (int i = 0; i < Handles_.size (); ++i)
+	{
+		if (!CheckValidity (i))
+			continue;
+
+		Handles_.at (i).Handle_.set_ratio (val ? 1/val : 0);
+	}
+
+	SettingsManager::Instance ()->SetDesiredRating (val);
+}
+
+int Core::GetOverallDownloadRate () const
+{
+	return SettingsManager::Instance ()->GetDownloadRateLimit ();
+}
+
+int Core::GetOverallUploadRate () const
+{
+	return SettingsManager::Instance ()->GetUploadRateLimit ();
+}
+
+double Core::GetDesiredRating () const
+{
+	return SettingsManager::Instance ()->GetDesiredRating ();
 }
 
 namespace

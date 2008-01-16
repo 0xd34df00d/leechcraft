@@ -207,6 +207,21 @@ void TorrentPlugin::on_TorrentView__pressed (const QModelIndex&)
 	updateTorrentStats ();
 }
 
+void TorrentPlugin::on_OverallDownloadRateController__valueChanged (int val)
+{
+	Core::Instance ()->SetOverallDownloadRate (val);
+}
+
+void TorrentPlugin::on_OverallUploadRateController__valueChanged (int val)
+{
+	Core::Instance ()->SetOverallUploadRate (val);
+}
+
+void TorrentPlugin::on_DesiredRating__valueChanged (double val)
+{
+	Core::Instance ()->SetDesiredRating (val);
+}
+
 void TorrentPlugin::setActionsEnabled ()
 {
 }
@@ -223,9 +238,11 @@ void TorrentPlugin::updateTorrentStats ()
 	switch (Stats_->currentIndex ())
 	{
 		case 0:
-			updateOverallStats ();
 			break;
 		case 1:
+			updateOverallStats ();
+			break;
+		case 2:
 			if (!index.isValid ())
 			{
 				LabelState_->setText ("<>");
@@ -270,7 +287,7 @@ void TorrentPlugin::updateTorrentStats ()
 				LabelTorrentRating_->setText (QString::number (i.Uploaded_ / static_cast<double> (i.Downloaded_), 'g', 4));
 			}
 			break;
-		case 2:
+		case 3:
 			FilesWidget_->clear ();
 			if (index.isValid ())
 			{
@@ -285,7 +302,7 @@ void TorrentPlugin::updateTorrentStats ()
 				}
 			}
 			break;
-		case 3:
+		case 4:
 			PeersWidget_->clear ();
 			if (index.isValid ())
 			{

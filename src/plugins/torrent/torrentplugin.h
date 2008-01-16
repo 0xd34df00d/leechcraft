@@ -58,6 +58,9 @@ private slots:
 	void on_Preferences__triggered ();
 	void on_TorrentView__clicked (const QModelIndex&);
 	void on_TorrentView__pressed (const QModelIndex&);
+	void on_OverallDownloadRateController__valueChanged (int);
+	void on_OverallUploadRateController__valueChanged (int);
+	void on_DesiredRating__valueChanged (double);
 	void setActionsEnabled ();
 	void showError (QString);
 	void updateTorrentStats ();

@@ -72,6 +72,12 @@ public:
 	void PauseTorrent (int);
 	void ResumeTorrent (int);
 	void ForceReannounce (int);
+	void SetOverallDownloadRate (int);
+	void SetOverallUploadRate (int);
+	void SetDesiredRating (double);
+	int GetOverallDownloadRate () const;
+	int GetOverallUploadRate () const;
+	double GetDesiredRating () const;
 	void MakeTorrent (NewTorrentParams) const;
 private:
 	QString GetStringForState (libtorrent::torrent_status::state_t) const;

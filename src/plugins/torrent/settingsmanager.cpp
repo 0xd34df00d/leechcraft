@@ -48,7 +48,7 @@ void SettingsManager::ScheduleSave ()
 		return;
 
 	SaveScheduled_ = true;
-	QTimer::singleShot (20, this, SLOT (writeSettings ()));
+	QTimer::singleShot (1000, this, SLOT (writeSettings ()));
 }
 
 void SettingsManager::ReadSettings ()
@@ -62,6 +62,9 @@ void SettingsManager::ReadSettings ()
 	PortRange_					= settings.value ("PortRange", QVariant::fromValue (qMakePair<int, int> (6881, 6889))).value<IntRange> ();
 	DHTEnabled_					= settings.value ("DHTEnabled", true).toBool ();
 	AutosaveInterval_			= settings.value ("AutosaveInterval", 120).toInt ();
+	UploadRateLimit_			= settings.value ("UploadRateLimit", -1).toInt ();
+	DownloadRateLimit_			= settings.value ("DownloadRateLimit", -1).toInt ();
+	DesiredRating_				= settings.value ("DesiredRating", 0).toDouble ();
 //	DHTState_					= settings.value ("DHTState", QVariant::fromValue (libtorrent::entry ())).value<libtorrent::entry> ();
 	settings.endGroup ();
 }
@@ -77,6 +80,9 @@ void SettingsManager::writeSettings ()
 	settings.setValue ("PortRange", QVariant::fromValue (PortRange_.Val ()));
 	settings.setValue ("DHTEnabled", DHTEnabled_);
 	settings.setValue ("AutosaveInterval", AutosaveInterval_);
+	settings.setValue ("UploadRateLimit", UploadRateLimit_);
+	settings.setValue ("DownloadRateLimit", DownloadRateLimit_);
+	settings.setValue ("DesiredRating", DesiredRating_);
 //	settings.setValue ("DHTState", QVariant::fromValue (DHTState_.Val ()));
 	settings.endGroup ();
 	SaveScheduled_ = false;
@@ -126,6 +132,38 @@ void SettingsManager::SetLastAddDirectory (const QString& val)
 	ScheduleSave ();
 }
 
+int SettingsManager::GetUploadRateLimit () const
+{
+	return UploadRateLimit_;
+}
+
+void SettingsManager::SetUploadRateLimit (int val)
+{
+	UploadRateLimit_ = val;
+	ScheduleSave ();
+}
+
+int SettingsManager::GetDownloadRateLimit () const
+{
+	return DownloadRateLimit_;
+}
+
+void SettingsManager::SetDownloadRateLimit (int val)
+{
+	DownloadRateLimit_ = val;
+	ScheduleSave ();
+}
+
+double SettingsManager::GetDesiredRating () const
+{
+	return DesiredRating_;
+}
+
+void SettingsManager::SetDesiredRating (double val)
+{
+	DesiredRating_ = val;
+	ScheduleSave ();
+}
 
 /*
 const libtorrent::entry& SettingsManager::GetDHTState () const
