@@ -34,6 +34,7 @@ void TorrentPlugin::Init ()
 	header->resizeSection (Core::ColumnName, fm.width ("thisisanaveragewareztorrentname,right?maybeyes.torrent"));
 	header->resizeSection (Core::ColumnDownloaded, fm.width ("_1234.0 KB_"));
 	header->resizeSection (Core::ColumnUploaded, fm.width ("_1234.0 KB_"));
+	header->resizeSection (Core::ColumnRating, fm.width ("_12.345_"));
 	header->resizeSection (Core::ColumnSize, fm.width ("_1234.0 KB_"));
 	header->resizeSection (Core::ColumnProgress, fm.width ("___100%___"));
 	header->resizeSection (Core::ColumnState, fm.width ("__Downloading__"));
@@ -185,6 +186,11 @@ void TorrentPlugin::on_Stop__triggered ()
 	Core::Instance ()->PauseTorrent (TorrentView_->currentIndex ().row ());
 }
 
+void TorrentPlugin::on_ForceReannounce__triggered ()
+{
+	Core::Instance ()->ForceReannounce (TorrentView_->currentIndex ().row ());
+}
+
 void TorrentPlugin::on_Preferences__triggered ()
 {
 	SettingsDialog_->show ();
@@ -217,6 +223,7 @@ void TorrentPlugin::updateTorrentStats ()
 	switch (Stats_->currentIndex ())
 	{
 		case 0:
+			updateOverallStats ();
 			break;
 		case 1:
 			if (!index.isValid ())
@@ -226,6 +233,7 @@ void TorrentPlugin::updateTorrentStats ()
 				LabelProgress_->setText ("<>");
 				LabelDHTNodesCount_->setText ("<>");
 				LabelDownloaded_->setText ("<>");
+				LabelUploaded_->setText ("<>");
 				LabelTotalSize_->setText ("<>");
 				LabelFailed_->setText ("<>");
 				LabelConnectedSeeds_->setText ("<>");
@@ -237,6 +245,7 @@ void TorrentPlugin::updateTorrentStats ()
 				LabelPieceSize_->setText ("<>");
 				LabelDownloadRate_->setText ("<>");
 				LabelUploadRate_->setText ("<>");
+				LabelTorrentRating_->setText ("<>");
 			}
 			else
 			{
@@ -246,6 +255,7 @@ void TorrentPlugin::updateTorrentStats ()
 				LabelProgress_->setText (QString::number (i.Progress_ * 100) + "%");
 				LabelDHTNodesCount_->setText (QString::number (i.DHTNodesCount_));
 				LabelDownloaded_->setText (Proxy::Instance ()->MakePrettySize (i.Downloaded_));
+				LabelUploaded_->setText (Proxy::Instance ()->MakePrettySize (i.Uploaded_));
 				LabelTotalSize_->setText (Proxy::Instance ()->MakePrettySize (i.TotalSize_));
 				LabelFailed_->setText (Proxy::Instance ()->MakePrettySize (i.FailedSize_));
 				LabelConnectedPeers_->setText (QString::number (i.ConnectedPeers_));
@@ -257,6 +267,7 @@ void TorrentPlugin::updateTorrentStats ()
 				LabelPieceSize_->setText (Proxy::Instance ()->MakePrettySize (i.PieceSize_));
 				LabelDownloadRate_->setText (Proxy::Instance ()->MakePrettySize (i.DownloadRate_) + tr ("/s"));
 				LabelUploadRate_->setText (Proxy::Instance ()->MakePrettySize (i.UploadRate_) + tr ("/s"));
+				LabelTorrentRating_->setText (QString::number (i.Uploaded_ / static_cast<double> (i.Downloaded_), 'g', 4));
 			}
 			break;
 		case 2:
@@ -309,6 +320,7 @@ void TorrentPlugin::updateOverallStats ()
 	LabelTotalDHTNodes_->setText (QString::number (stats.NumDHTNodes_));
 	LabelDHTTorrents_->setText (QString::number (stats.NumDHTTorrents_));
 	LabelListenPort_->setText (QString::number (stats.ListenPort_));
+	LabelSessionRating_->setText (QString::number (stats.SessionUpload_ / static_cast<double> (stats.SessionDownload_), 'g', 4));
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_torrent, TorrentPlugin);

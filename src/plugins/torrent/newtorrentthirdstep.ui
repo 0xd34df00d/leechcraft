@@ -12,6 +12,9 @@
   <property name="windowTitle" >
    <string>Fine-tune parameters</string>
   </property>
+  <property name="windowIcon" >
+   <iconset resource="resources.qrc" >:/resources/images/bittorrent.png</iconset>
+  </property>
   <layout class="QGridLayout" >
    <item row="0" column="0" >
     <widget class="QLabel" name="label" >
@@ -177,6 +180,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc" />
+ </resources>
  <connections/>
 </ui>

@@ -42,7 +42,7 @@
         <enum>QTabWidget::Rounded</enum>
        </property>
        <property name="currentIndex" >
-        <number>0</number>
+        <number>1</number>
        </property>
        <property name="elideMode" >
         <enum>Qt::ElideRight</enum>
@@ -121,6 +121,33 @@
              </item>
              <item row="4" column="1" >
               <widget class="QLabel" name="LabelTotalConnections_" >
+               <property name="text" >
+                <string>&lt;></string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0" >
+              <spacer>
+               <property name="orientation" >
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" >
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="5" column="0" >
+              <widget class="QLabel" name="label_18" >
+               <property name="text" >
+                <string>Session rating:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="1" >
+              <widget class="QLabel" name="LabelSessionRating_" >
                <property name="text" >
                 <string>&lt;></string>
                </property>
@@ -212,6 +239,19 @@
                 <string>&lt;></string>
                </property>
               </widget>
+             </item>
+             <item row="5" column="0" >
+              <spacer>
+               <property name="orientation" >
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" >
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
              </item>
             </layout>
            </item>
@@ -327,29 +367,70 @@
                </property>
               </widget>
              </item>
-             <item row="3" column="0" >
+             <item row="4" column="0" >
               <widget class="QLabel" name="label_13" >
                <property name="text" >
                 <string>Total size:</string>
                </property>
               </widget>
              </item>
-             <item row="3" column="1" >
+             <item row="4" column="1" >
               <widget class="QLabel" name="LabelTotalSize_" >
                <property name="text" >
                 <string>&lt;></string>
                </property>
               </widget>
              </item>
-             <item row="4" column="0" >
+             <item row="5" column="0" >
               <widget class="QLabel" name="label_11" >
                <property name="text" >
                 <string>Failed:</string>
                </property>
               </widget>
              </item>
-             <item row="4" column="1" >
+             <item row="5" column="1" >
               <widget class="QLabel" name="LabelFailed_" >
+               <property name="text" >
+                <string>&lt;></string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0" >
+              <widget class="QLabel" name="label_17" >
+               <property name="text" >
+                <string>Rating:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="1" >
+              <widget class="QLabel" name="LabelTorrentRating_" >
+               <property name="text" >
+                <string>&lt;></string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="0" >
+              <spacer>
+               <property name="orientation" >
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" >
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="3" column="0" >
+              <widget class="QLabel" name="label_19" >
+               <property name="text" >
+                <string>Uploaded:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1" >
+              <widget class="QLabel" name="LabelUploaded_" >
                <property name="text" >
                 <string>&lt;></string>
                </property>
@@ -442,6 +523,19 @@
                </property>
               </widget>
              </item>
+             <item row="5" column="0" >
+              <spacer>
+               <property name="orientation" >
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" >
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
             </layout>
            </item>
            <item>
@@ -529,6 +623,19 @@
                </property>
               </widget>
              </item>
+             <item row="5" column="0" >
+              <spacer>
+               <property name="orientation" >
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" >
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
             </layout>
            </item>
            <item>
@@ -553,8 +660,8 @@
            </property>
            <property name="sizeHint" >
             <size>
-             <width>20</width>
-             <height>40</height>
+             <width>698</width>
+             <height>101</height>
             </size>
            </property>
           </spacer>
@@ -715,9 +822,6 @@
     <addaction name="OpenTorrent_" />
     <addaction name="CreateTorrent_" />
     <addaction name="separator" />
-    <addaction name="Resume_" />
-    <addaction name="Stop_" />
-    <addaction name="RemoveTorrent_" />
    </widget>
    <widget class="QMenu" name="menuTools" >
     <property name="title" >
@@ -725,7 +829,17 @@
     </property>
     <addaction name="Preferences_" />
    </widget>
+   <widget class="QMenu" name="menuActions" >
+    <property name="title" >
+     <string>Actions</string>
+    </property>
+    <addaction name="RemoveTorrent_" />
+    <addaction name="Resume_" />
+    <addaction name="Stop_" />
+    <addaction name="ForceReannounce_" />
+   </widget>
    <addaction name="menuTorrents" />
+   <addaction name="menuActions" />
    <addaction name="menuTools" />
   </widget>
   <widget class="QStatusBar" name="Statusbar_" />
@@ -745,12 +859,13 @@
    <attribute name="toolBarBreak" >
     <bool>false</bool>
    </attribute>
-   <addaction name="OpenTorrent_" />
    <addaction name="CreateTorrent_" />
+   <addaction name="OpenTorrent_" />
    <addaction name="separator" />
+   <addaction name="RemoveTorrent_" />
    <addaction name="Resume_" />
    <addaction name="Stop_" />
-   <addaction name="RemoveTorrent_" />
+   <addaction name="ForceReannounce_" />
   </widget>
   <widget class="QToolBar" name="toolBar_2" >
    <property name="windowTitle" >
@@ -820,8 +935,19 @@
    </property>
   </action>
   <action name="CreateTorrent_" >
+   <property name="icon" >
+    <iconset resource="resources.qrc" >:/resources/images/new.png</iconset>
+   </property>
    <property name="text" >
     <string>Create torrent</string>
+   </property>
+  </action>
+  <action name="ForceReannounce_" >
+   <property name="icon" >
+    <iconset resource="resources.qrc" >:/resources/images/reannounce.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Force reannounce</string>
    </property>
   </action>
  </widget>

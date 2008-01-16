@@ -45,7 +45,7 @@ Core::Core (QObject *parent)
 		qWarning () << "Seems like address is already in use.";
 	}
 
-	Headers_ << tr ("Name") << tr ("Downloaded") << tr ("Uploaded") << tr ("Size") << tr ("Progress") << tr ("State") << tr ("Seeds/peers") << tr ("Drate") << tr ("Urate") << tr ("Remaining");
+	Headers_ << tr ("Name") << tr ("Downloaded") << tr ("Uploaded") << tr ("Rating") << tr ("Size") << tr ("Progress") << tr ("State") << tr ("Seeds/peers") << tr ("Drate") << tr ("Urate") << tr ("Remaining");
 
 	ReadSettings ();
 
@@ -100,15 +100,14 @@ QVariant Core::data (const QModelIndex& index, int role) const
 			return Proxy::Instance ()->MakePrettySize (status.total_done);
 		case ColumnUploaded:
 			return Proxy::Instance ()->MakePrettySize (status.total_payload_upload + Handles_.at (row).UploadedBefore_);
+		case ColumnRating:
+			return QString::number (static_cast<float> (status.total_payload_upload + Handles_.at (row).UploadedBefore_) / status.total_done, 'g', 2);
 		case ColumnSize:
 			return Proxy::Instance ()->MakePrettySize (status.total_wanted);
 		case ColumnProgress:
-			return QString::number (static_cast<float> (static_cast<int> (status.progress * 1000)) / 10) + ("%");
+			return QString::number (status.progress * 100, 'g', 4) + ("%");
 		case ColumnState:
-			if (status.paused)
-				return tr ("Idle");
-			else
-				return GetStringForState (status.state);
+			return status.paused ? tr ("Idle") : GetStringForState (status.state);
 		case ColumnSP:
 			return QString::number (status.num_seeds) + "/" + QString::number (status.num_peers);
 		case ColumnDSpeed:
@@ -213,6 +212,7 @@ TorrentInfo Core::GetTorrentStats (int row) const
 	result.Tracker_ = QString::fromStdString (status.current_tracker);
 	result.State_ = status.paused ? tr ("Idle") : GetStringForState (status.state);
 	result.Downloaded_ = status.total_done;
+	result.Uploaded_ = status.total_payload_upload + Handles_.at (row).UploadedBefore_;
 	result.TotalSize_ = status.total_wanted;
 	result.FailedSize_ = status.total_failed_bytes;
 	result.DHTNodesCount_ = info.nodes ().size ();
@@ -362,6 +362,21 @@ void Core::ResumeTorrent (int pos)
 	Handles_.at (pos).Handle_.resume ();
 }
 
+void Core::ForceReannounce (int pos)
+{
+	if (!CheckValidity (pos))
+		return;
+
+	try
+	{
+		Handles_.at (pos).Handle_.force_reannounce ();
+	}
+	catch (const libtorrent::invalid_handle&)
+	{
+		emit error (tr ("Torrent %1 could not be reannounced at the moment, try again later.").arg (pos));
+	}
+}
+
 namespace
 {
 	void AddFiles (libtorrent::torrent_info& t, const boost::filesystem::path& p, const boost::filesystem::path& l)
@@ -399,7 +414,7 @@ void Core::MakeTorrent (NewTorrentParams params) const
 		}
 
 	boost::filesystem::path::default_name_check (boost::filesystem::no_check);
-	boost::filesystem::path fullPath = boost::filesystem::complete (params.Path_.toStdWString ());
+	boost::filesystem::path fullPath = boost::filesystem::complete (params.Path_.toStdString ());
 	AddFiles (info, fullPath.branch_path (), fullPath.leaf ());
 
 	libtorrent::file_pool fp;

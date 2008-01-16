@@ -54,6 +54,7 @@ private slots:
 	void on_RemoveTorrent__triggered ();
 	void on_Resume__triggered ();
 	void on_Stop__triggered ();
+	void on_ForceReannounce__triggered ();
 	void on_Preferences__triggered ();
 	void on_TorrentView__clicked (const QModelIndex&);
 	void on_TorrentView__pressed (const QModelIndex&);

@@ -7,6 +7,7 @@ struct TorrentInfo
 	QString Tracker_,
 			State_;
 	quint64 Downloaded_,
+			Uploaded_,
 			TotalSize_,
 			FailedSize_,
 			DHTNodesCount_,

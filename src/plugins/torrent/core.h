@@ -38,6 +38,7 @@ public:
 		ColumnName = 0
 		, ColumnDownloaded
 		, ColumnUploaded
+		, ColumnRating
 		, ColumnSize
 		, ColumnProgress
 		, ColumnState
@@ -70,6 +71,7 @@ public:
 	void RemoveTorrent (int);
 	void PauseTorrent (int);
 	void ResumeTorrent (int);
+	void ForceReannounce (int);
 	void MakeTorrent (NewTorrentParams) const;
 private:
 	QString GetStringForState (libtorrent::torrent_status::state_t) const;
