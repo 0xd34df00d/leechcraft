@@ -1,4 +1,5 @@
 #include <QFile>
+#include <QProgressDialog>
 #include <QDir>
 #include <QFileInfo>
 #include <QTimerEvent>
@@ -436,40 +437,40 @@ namespace
 
 void Core::MakeTorrent (NewTorrentParams params) const
 {
-	libtorrent::torrent_info info;
-	info.set_piece_size (params.PieceSize_);
-	info.set_creator ("Leechcraft BitTorrent");
-	info.add_tracker (params.AnnounceURL_.toStdString ());
-	info.set_piece_size (params.PieceSize_);
+	boost::intrusive_ptr<libtorrent::torrent_info> info (new libtorrent::torrent_info);
+	info->set_creator ("Leechcraft BitTorrent");
 	if (!params.Comment_.isEmpty ())
-		info.set_comment (params.Comment_.toUtf8 ());
+		info->set_comment (params.Comment_.toUtf8 ());
 	for (int i = 0; i < params.URLSeeds_.size (); ++i)
-		info.add_url_seed (params.URLSeeds_.at (0).toStdString ());
-	info.set_priv (!params.DHTEnabled_);
+		info->add_url_seed (params.URLSeeds_.at (0).toStdString ());
+	info->set_priv (!params.DHTEnabled_);
 
 	if (params.DHTEnabled_)
 		for (int i = 0; i < params.DHTNodes_.size (); ++i)
 		{
 			QStringList splitted = params.DHTNodes_.at (i).split (":");
-			info.add_node (std::pair<std::string, int> (splitted [0].trimmed ().toStdString (), splitted [1].trimmed ().toInt ()));
+			info->add_node (std::pair<std::string, int> (splitted [0].trimmed ().toStdString (), splitted [1].trimmed ().toInt ()));
 		}
 
 	boost::filesystem::path::default_name_check (boost::filesystem::no_check);
 	boost::filesystem::path fullPath = boost::filesystem::complete (params.Path_.toStdString ());
-	AddFiles (info, fullPath.branch_path (), fullPath.leaf ());
+	AddFiles (*info, fullPath.branch_path (), fullPath.leaf ());
+	info->set_piece_size (params.PieceSize_);
 
 	libtorrent::file_pool fp;
-	boost::scoped_ptr<libtorrent::storage_interface> st (libtorrent::default_storage_constructor (&info, fullPath.branch_path (), fp));
+	boost::scoped_ptr<libtorrent::storage_interface> st (libtorrent::default_storage_constructor (info, fullPath.branch_path (), fp));
+	info->add_tracker (params.AnnounceURL_.toStdString ());
 	std::vector<char> buf (params.PieceSize_);
-	for (int i = 0; i < info.num_pieces (); ++i)
+	QProgressDialog pd (tr ("Hashing..."), tr ("Cancel"), 0, info->num_pieces ());
+	for (int i = 0; i < info->num_pieces (); ++i)
 	{
-		st->read (&buf [0], i, 0, info.piece_size (i));
-		libtorrent::hasher h (&buf [0], info.piece_size (i));
-		info.set_hash (i, h.final ());
-		// emit that we are in progress
+		st->read (&buf [0], i, 0, info->piece_size (i));
+		libtorrent::hasher h (&buf [0], info->piece_size (i));
+		info->set_hash (i, h.final ());
+		pd.setValue (i + 1);
 	}
 
-	libtorrent::entry e = info.create_torrent ();
+	libtorrent::entry e = info->create_torrent ();
 	std::vector<char> outbuf;
 	libtorrent::bencode (std::back_inserter (outbuf), e);
 
@@ -479,14 +480,13 @@ void Core::MakeTorrent (NewTorrentParams params) const
 	filename.append (params.TorrentName_);
 	filename.append (".torrent");
 	QFile file (filename);
-	if (!file.open (QIODevice::WriteOnly))
+	if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
 	{
 		emit error (tr ("Could not open file %1 for write!").arg (filename));
 		return;
 	}
-	QDataStream ostr (&file);
 	for (int i = 0; i < outbuf.size (); ++i)
-		ostr << outbuf.at (i);
+		file.write (&outbuf.at (i), 1);
 	file.close ();
 }
 
