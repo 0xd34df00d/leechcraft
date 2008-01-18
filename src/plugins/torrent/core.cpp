@@ -426,6 +426,8 @@ namespace
 		if (l.leaf () [0] == '.')
 			return;
 
+		qDebug () << QString::fromStdString (p.string ());
+
 		boost::filesystem::path f (p / l);
 		if (boost::filesystem::is_directory (f))
 			for (boost::filesystem::directory_iterator i (f), end; i != end; ++i)
