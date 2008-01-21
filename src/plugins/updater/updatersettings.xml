@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<name lang="en" value="General settings" />
+		<name lang="ru" value="Общие настройки" />
+
+		<item type="lineedit" property="Mirror" default="http://0xd34df00d.homelinux.org:10081">
+			<label lang="en" value="Mirror server" />
+			<label lang="ru" value="Зеркало" />
+		</item>
+
+		<item type="checkbox" property="SaveInHistory" state="on">
+			<label lang="en" value="Save downloaded files in history" />
+			<label lang="ru" value="Сохранять загруженные файлы в истории" />
+		</item>
+	</page>
+</settings>

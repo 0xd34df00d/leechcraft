@@ -8,11 +8,13 @@ INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR}
 SET (SRCS
 	updaterplugin.cpp
 	core.cpp
-    settingsmanager.cpp)
+    settingsmanager.cpp
+	xmlsettingsmanager.cpp)
 SET (HEADERS
 	updaterplugin.h
 	core.h
     settingsmanager.h
+	xmlsettingsmanager.h
 	globals.h)
 SET (RESOURCES resources.qrc)
 
@@ -29,5 +31,6 @@ TARGET_LINK_LIBRARIES (leechcraft_updater
                         ${QT_LIBRARIES}
                         plugininterface
                         exceptions
-                        settingsdialog)
+                        settingsdialog
+						xmlsettingsdialog)
 INSTALL (TARGETS leechcraft_updater DESTINATION share/leechcraft/plugins)

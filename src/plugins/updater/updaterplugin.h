@@ -8,6 +8,7 @@ class QTreeWidget;
 class QToolBar;
 class QLabel;
 class Core;
+class XmlSettingsDialog;
 
 class UpdaterPlugin : public QMainWindow
 					, public IInfo
@@ -19,6 +20,7 @@ class UpdaterPlugin : public QMainWindow
 	bool IsShown_;
 	ID_t ID_;
 	SettingsDialog *SettingsDialog_;
+	XmlSettingsDialog *XmlSettingsDialog_;
 	QTreeWidget *Updates_;
 	QToolBar *MainToolbar_;
 	QAction *CheckForUpdates_, *DownloadUpdates_, *Settings_;

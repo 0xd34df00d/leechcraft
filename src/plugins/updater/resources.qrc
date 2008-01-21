@@ -6,5 +6,6 @@
 		<file>resources/images/download.png</file>
 		<file>resources/images/preferences.png</file>
 		<file>leechcraft_updater_ru.qm</file>
+		<file>updatersettings.xml</file>
     </qresource>
 </RCC>

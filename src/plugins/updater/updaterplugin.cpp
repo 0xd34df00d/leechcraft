@@ -1,8 +1,10 @@
 #include <QtGui/QtGui>
 #include <settingsdialog/settingsdialog.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/proxy.h>
 #include "updaterplugin.h"
 #include "settingsmanager.h"
+#include "xmlsettingsmanager.h"
 #include "globals.h"
 #include "core.h"
 
@@ -29,8 +31,11 @@ void UpdaterPlugin::Init ()
 	IsShown_ = false;
 	SaveChangesScheduled_ = false;
 
-	SettingsDialog_ = new SettingsDialog ();
-	SettingsDialog_->RegisterObject (SettingsManager::Instance ());
+//	SettingsDialog_ = new SettingsDialog ();
+//	SettingsDialog_->RegisterObject (SettingsManager::Instance ());
+
+	XmlSettingsDialog_ = new XmlSettingsDialog ();
+	XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/updatersettings.xml");
 
 	SetupInterface ();
 	ReadSettings ();
@@ -94,8 +99,8 @@ void UpdaterPlugin::Release ()
 {
 	saveSettings ();
 	Core_->Release ();
-	delete SettingsDialog_;
-	SettingsDialog_ = 0;
+	delete XmlSettingsDialog_;
+	XmlSettingsDialog_ = 0;
 
 	while (!Core_->wait (25))
 		qApp->processEvents ();
@@ -211,8 +216,8 @@ void UpdaterPlugin::saveSettings ()
 
 void UpdaterPlugin::showSettings ()
 {
-	SettingsDialog_->show ();
-	SettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
+	XmlSettingsDialog_->show ();
+	XmlSettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
 }
 
 void UpdaterPlugin::initCheckForUpdates ()
