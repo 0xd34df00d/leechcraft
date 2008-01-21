@@ -329,14 +329,24 @@ void Core::AddFile (const QString& filename, const QString& path, const QVector<
 	}
 
 	std::vector<int> priorities;
-	priorities.resize (files.size ());
+	priorities.resize (handle.get_torrent_info ().num_files ());
 	for (int i = 0; i < files.size (); ++i)
-		priorities [i] = files [i];
+		priorities [i] = 1;
 
-	handle.prioritize_files (priorities);
+	if (files.size ())
+	{
+		for (int i = 0; i < files.size (); ++i)
+			priorities [i] = files [i];
+
+		handle.prioritize_files (priorities);
+	}
+	QFile file (filename);
+	file.open (QIODevice::ReadOnly);
+	QByteArray contents = file.readAll ();
+	file.close ();
 
 	beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
-	TorrentStruct tmp = { 0, priorities, handle };
+	TorrentStruct tmp = { 0, priorities, handle, contents, QFileInfo (filename).fileName ()};
 	Handles_.append (tmp);
 	endInsertRows ();
 	handle.resolve_countries (true);
@@ -534,11 +544,19 @@ void Core::RestoreTorrents ()
 	{
 		settings.setArrayIndex (i);
 		boost::filesystem::path path = settings.value ("SavePath").toString ().toStdString ();
-		QPair<QVector<char>, QVector<char> > datas = ReadDataFor (i);
-		if (datas.first.isEmpty ())
+		QString filename = settings.value ("Filename").toString ();
+		QFile torrent (QDir::homePath () + "/.leechcraft_bittorrent/" + filename);
+		if (!torrent.open (QIODevice::ReadOnly))
+		{
+			emit error (tr ("Could not open saved torrent %1 for read.").arg (filename));
+			continue;
+		}
+		QByteArray data = torrent.readAll ();
+		torrent.close ();
+		if (data.isEmpty ())
 			continue;
 
-		libtorrent::torrent_handle handle = RestoreSingleTorrent (datas.first, datas.second, path);
+		libtorrent::torrent_handle handle = RestoreSingleTorrent (data, path);
 		if (!handle.is_valid ())
 			continue;
 
@@ -562,7 +580,7 @@ void Core::RestoreTorrents ()
 		handle.prioritize_files (priorities);
 
 		beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
-		TorrentStruct tmp = { ub, priorities, handle };
+		TorrentStruct tmp = { ub, priorities, handle, data, filename };
 		Handles_.append (tmp);
 		endInsertRows ();
 		handle.resolve_countries (true);
@@ -572,51 +590,20 @@ void Core::RestoreTorrents ()
 	settings.endGroup ();
 }
 
-QPair<QVector<char>, QVector<char> > Core::ReadDataFor (int i) const
-{
-	QFile file_info		(QDir::homePath () + "/.leechcraft_bittorrent/" + QString ("%1_torrent_info.bncd").arg (i)),
-		  file_resume	(QDir::homePath () + "/.leechcraft_bittorrent/" + QString ("%1_torrent_resume.bncd").arg (i));
-
-	QVector<char> data, resumeData;
-	if (!file_info.open (QIODevice::ReadOnly) || !file_resume.open (QIODevice::ReadOnly))
-	{
-		emit error (tr ("Could not open files to read settings :("));
-		return qMakePair (data, resumeData);
-	}
-
-	for (int j = 0; j < file_info.size (); ++j)
-	{
-		char ch;
-		file_info.read (&ch, 1);
-		data.append (ch);
-	}
-	for (int j = 0; j < file_resume.size (); ++j)
-	{
-		char ch;
-		file_resume.read (&ch, 1);
-		resumeData.append (ch);
-	}
-	file_info.close ();
-	file_resume.close ();
-
-	return qMakePair (data, resumeData);
-}
-
-libtorrent::torrent_handle Core::RestoreSingleTorrent (const QVector<char>& data, const QVector<char>& resumeData, const boost::filesystem::path& path)
+libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data, const boost::filesystem::path& path)
 {
 	libtorrent::entry e;
-	libtorrent::entry resume;
-	try
+
+	QVector<char> byteData (data.size ());
+
+	for (int i = 0; i < data.size (); ++i)
 	{
-		resume = libtorrent::bdecode (resumeData.constBegin (), resumeData.constEnd ());
-	}
-	catch (const libtorrent::invalid_encoding& e)
-	{
+		byteData [i] = data.at (i);
 	}
 
 	try
 	{
-		e = libtorrent::bdecode (data.constBegin (), data.constEnd ());
+		e = libtorrent::bdecode (byteData.constBegin (), byteData.constEnd ());
 	}
 	catch (const libtorrent::invalid_encoding& e)
 	{
@@ -626,7 +613,7 @@ libtorrent::torrent_handle Core::RestoreSingleTorrent (const QVector<char>& data
 	libtorrent::torrent_handle handle;
 	try
 	{
-		handle = Session_->add_torrent (libtorrent::torrent_info (e), path, resume, libtorrent::storage_mode_allocate);
+		handle = Session_->add_torrent (libtorrent::torrent_info (e), path);
 	}
 	catch (const libtorrent::invalid_torrent_file& e)
 	{
@@ -661,36 +648,18 @@ void Core::writeSettings ()
 		libtorrent::entry e = Handles_.at (i).Handle_.get_torrent_info ().create_torrent ();
 		QVector<char> buf;
 		libtorrent::bencode (std::back_inserter (buf), e);
-		QFile file_info (QDir::homePath () + "/.leechcraft_bittorrent/" + QString ("%1_torrent_info.bncd").arg (i));
+		QFile file_info (QDir::homePath () + "/.leechcraft_bittorrent/" + Handles_.at (i).TorrentFileName_);
 		if (!file_info.open (QIODevice::WriteOnly))
 		{
 			emit error ("Cannot write settings! Cannot open files for write!");
 			break;
 		}
-		file_info.write (&buf.at (0), buf.size ());
+		file_info.write (Handles_.at (i).TorrentFileContents_);
 		file_info.close ();
-
-		buf.clear ();
-		libtorrent::entry resume;
-		try
-		{
-			resume = Handles_.at (i).Handle_.write_resume_data ();
-		}
-		catch (const libtorrent::invalid_handle&)
-		{
-		}
-		libtorrent::bencode (std::back_inserter (buf), resume);
-		QFile file_resume (QDir::homePath () + "/.leechcraft_bittorrent/" + QString ("%1_torrent_resume.bncd").arg (i));
-		if (!file_resume.open (QIODevice::WriteOnly))
-		{
-			emit error ("Cannot write settings! Cannot open files for write!");
-			break;
-		}
-		file_resume.write (&buf.at (0), buf.size ());
-		file_resume.close ();
 
 		settings.setValue ("SavePath", QString::fromStdString (Handles_.at (i).Handle_.save_path ().string ()));
 		settings.setValue ("UploadedBytes", Handles_.at (i).UploadedBefore_ + Handles_.at (i).Handle_.status ().total_upload);
+		settings.setValue ("Filename", Handles_.at (i).TorrentFileName_);
 
 		settings.beginWriteArray ("Priorities");
 		for (size_t j = 0; j < Handles_.at (i).FilePriorities_.size (); ++j)

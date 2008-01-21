@@ -9,6 +9,8 @@ BitTorrent:
 + Proxy support in torrents.
 + Separate proxy for trackers and for seeds.
 + Images for settings categories.
++ Multiple torrents adder.
+* Proper resume of saved torrents.
 
 HTTP/FTP:
 + Images for settings categories.

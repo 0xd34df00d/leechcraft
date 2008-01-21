@@ -3,6 +3,7 @@
 #include <QAbstractItemModel>
 #include <QPair>
 #include <QList>
+#include <QVector>
 #include <torrent_info.hpp>
 #include <torrent_handle.hpp>
 #include <session.hpp>
@@ -24,6 +25,8 @@ private:
 		quint64 UploadedBefore_;
 		std::vector<int> FilePriorities_;
 		libtorrent::torrent_handle Handle_;
+		QByteArray TorrentFileContents_;
+		QString TorrentFileName_;
 	};
 
 	libtorrent::session *Session_;
@@ -67,7 +70,7 @@ public:
 	OverallStats GetOverallStats () const;
 	QList<FileInfo> GetTorrentFiles (int) const;
 	QList<PeerInfo> GetPeers (int) const;
-	void AddFile (const QString&, const QString&, const QVector<bool>&);
+	void AddFile (const QString&, const QString&, const QVector<bool>& = QVector<bool> ());
 	void RemoveTorrent (int);
 	void PauseTorrent (int);
 	void ResumeTorrent (int);
@@ -84,8 +87,7 @@ private:
 	bool CheckValidity (int) const;
 	void ReadSettings ();
 	void RestoreTorrents ();
-	QPair<QVector<char>, QVector<char> > ReadDataFor (int) const;
-	libtorrent::torrent_handle RestoreSingleTorrent (const QVector<char>&, const QVector<char>&, const boost::filesystem::path&);
+	libtorrent::torrent_handle RestoreSingleTorrent (const QByteArray&, const boost::filesystem::path&);
 private slots:
 	void writeSettings ();
 protected:

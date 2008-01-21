@@ -24,11 +24,13 @@ SET (SRCS
 	firststep.cpp
 	secondstep.cpp
 	thirdstep.cpp
+	addmultipletorrents.cpp
     settingsmanager.cpp)
 SET (HEADERS
 	torrentplugin.h 
 	core.h 
 	addtorrent.h 
+	addmultipletorrents.h
 	settingsmanager.h 
 	torrentinfo.h 
 	contextabletree.h 
@@ -44,6 +46,7 @@ SET (HEADERS
 SET (FORMS
     mainwindow.ui
 	addtorrent.ui
+	addmultipletorrents.ui
 	newtorrentfirststep.ui
 	newtorrentsecondstep.ui
 	newtorrentthirdstep.ui)

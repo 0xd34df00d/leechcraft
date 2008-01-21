@@ -3,6 +3,7 @@
 #include "torrentplugin.h"
 #include "core.h"
 #include "addtorrent.h"
+#include "addmultipletorrents.h"
 #include "newtorrentwizard.h"
 #include "settingsmanager.h"
 
@@ -154,6 +155,26 @@ void TorrentPlugin::on_OpenTorrent__triggered ()
 			path = AddTorrentDialog_->GetSavePath ();
 	QVector<bool> files = AddTorrentDialog_->GetSelectedFiles ();
 	Core::Instance ()->AddFile (filename, path, files);
+}
+
+void TorrentPlugin::on_OpenMultipleTorrents__triggered ()
+{
+	AddMultipleTorrents dialog;
+	if (dialog.exec () == QDialog::Rejected)
+		return;
+
+	QString savePath = dialog.GetSaveDirectory (),
+			openPath = dialog.GetOpenDirectory ();
+	QDir dir (openPath);
+	QStringList names = dir.entryList (QStringList ("*.torrent"));
+	for (int i = 0; i < names.size (); ++i)
+	{
+		QString name = openPath;
+		if (!name.endsWith ('/'))
+			name += '/';
+		name += names.at (i);
+		Core::Instance ()->AddFile (name, savePath);
+	}
 }
 
 void TorrentPlugin::on_CreateTorrent__triggered ()

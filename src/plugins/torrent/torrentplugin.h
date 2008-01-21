@@ -50,6 +50,7 @@ protected:
 	virtual void closeEvent (QCloseEvent*);
 private slots:
 	void on_OpenTorrent__triggered ();
+	void on_OpenMultipleTorrents__triggered ();
 	void on_CreateTorrent__triggered ();
 	void on_RemoveTorrent__triggered ();
 	void on_Resume__triggered ();

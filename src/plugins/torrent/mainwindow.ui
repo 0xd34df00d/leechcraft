@@ -935,6 +935,7 @@
      <string>Torrents</string>
     </property>
     <addaction name="OpenTorrent_" />
+    <addaction name="OpenMultipleTorrents_" />
     <addaction name="CreateTorrent_" />
     <addaction name="separator" />
    </widget>
@@ -976,6 +977,7 @@
    </attribute>
    <addaction name="CreateTorrent_" />
    <addaction name="OpenTorrent_" />
+   <addaction name="OpenMultipleTorrents_" />
    <addaction name="separator" />
    <addaction name="RemoveTorrent_" />
    <addaction name="Resume_" />
@@ -1063,6 +1065,11 @@
    </property>
    <property name="text" >
     <string>Force reannounce</string>
+   </property>
+  </action>
+  <action name="OpenMultipleTorrents_" >
+   <property name="text" >
+    <string>Open multiple torrents</string>
    </property>
   </action>
  </widget>
