@@ -4,6 +4,7 @@
 #include "converters.h"
 #include "datatypes.h"
 #include "settingsiteminfo.h"
+#include "settingsdialog.h"
 #include "filepickerwidget.h"
 #include "extendedspinbox.h"
 #include "collectorwidget.h"
@@ -180,20 +181,42 @@ BoolConverter::~BoolConverter ()
 
 QWidget* BoolConverter::Convert (const QVariant& value, const SettingsItemInfo& sii, const QString& propName, QObject *owner)
 {
-	QCheckBox *result = new QCheckBox (sii.Label_);
-	Widget2Property_ [result] = propName;
-	Widget2Object_ [result] = owner;
-	connect (result, SIGNAL (stateChanged (int)), this, SLOT (updateSetting ()));
-	result->setCheckState (value.toBool () ? Qt::Checked : Qt::Unchecked);
-	return result;
+	if (sii.GroupBoxer_)
+	{
+		QGroupBox *result = new QGroupBox (sii.Label_);
+		Widget2Property_ [result] = propName;
+		Widget2Object_ [result] = owner;
+		connect (result, SIGNAL (toggled (bool)), this, SLOT (updateSetting ()));
+		result->setCheckable (true);
+		result->setChecked (value.toBool () ? Qt::Checked : Qt::Unchecked);
+		result->setLayout (new QVBoxLayout);
+		qDebug () << parent ();
+		for (int i = 0; i < sii.SubItems_.size (); ++i)
+			qobject_cast<SettingsDialog*> (parent ())->SetParentWidgetForProperty (sii.SubItems_.at (i), result);
+		qDebug () << parent ();
+		return result;
+	}
+	else
+	{
+		QCheckBox *result = new QCheckBox (sii.Label_);
+		Widget2Property_ [result] = propName;
+		Widget2Object_ [result] = owner;
+		connect (result, SIGNAL (stateChanged (int)), this, SLOT (updateSetting ()));
+		result->setCheckState (value.toBool () ? Qt::Checked : Qt::Unchecked);
+		return result;
+	}
 }
 
 QVariant BoolConverter::ReadSetting (QWidget *w) const
 {
 	QCheckBox *cb = qobject_cast<QCheckBox*> (w);
-	if (!cb)
+	QGroupBox *gb = qobject_cast<QGroupBox*> (w);
+	if (cb)
+		return cb->checkState () == Qt::Checked ? true : false;
+	else if (gb)
+		return gb->isChecked ();
+	else
 		return QVariant ();
-	return cb->checkState () == Qt::Checked ? true : false;
 }
 
 bool BoolConverter::MakeLabel () const

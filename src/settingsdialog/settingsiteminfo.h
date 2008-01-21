@@ -3,6 +3,7 @@
 #include <QString>
 #include <QVariant>
 #include <QPair>
+#include <QIcon>
 #include "typelist.h"
 
 struct SettingsItemInfo
@@ -26,6 +27,12 @@ struct SettingsItemInfo
 
 	// If settings item is QString
 	bool BrowseButton_;
+
+	// If settings item is a bool
+	bool GroupBoxer_;
+	QStringList SubItems_;
+
+	QIcon PageIcon_;
 
 	SettingsItemInfo ();
 	SettingsItemInfo (const SettingsItemInfo&);

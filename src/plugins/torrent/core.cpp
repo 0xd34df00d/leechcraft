@@ -40,6 +40,9 @@ Core::Core (QObject *parent)
 		Session_->add_extension (&libtorrent::create_ut_pex_plugin);
 		if (SettingsManager::Instance ()->GetDHTEnabled ())
 			Session_->start_dht (libtorrent::entry ());
+		Session_->set_max_uploads (SettingsManager::Instance ()->GetMaxUploads ());
+		Session_->set_max_connections (SettingsManager::Instance ()->GetMaxConnections ());
+		setSettings ();
 	}
 	catch (const asio::system_error&)
 	{
@@ -58,6 +61,9 @@ Core::Core (QObject *parent)
 	SetDesiredRating (SettingsManager::Instance ()->GetDesiredRating ());
 
 	SettingsManager::Instance ()->RegisterObject ("DHTState", this, "dhtStateChanged");
+	SettingsManager::Instance ()->RegisterObject ("AutosaveInterval", this, "autosaveIntervalChanged");
+	SettingsManager::Instance ()->RegisterObject ("MaxUploads", this, "maxUploadsChanged");
+	SettingsManager::Instance ()->RegisterObject ("MaxConnections", this, "maxConnectionsChanged");
 }
 
 void Core::DoDelayedInit ()
@@ -732,5 +738,38 @@ void Core::autosaveIntervalChanged ()
 {
 	SettingsSaveTimer_->stop ();
 	SettingsSaveTimer_->start (SettingsManager::Instance ()->GetAutosaveInterval () * 1000);
+}
+
+void Core::maxUploadsChanged ()
+{
+	Session_->set_max_uploads (SettingsManager::Instance ()->GetMaxUploads ());
+}
+
+void Core::maxConnectionsChanged ()
+{
+	Session_->set_max_connections (SettingsManager::Instance ()->GetMaxConnections ());
+}
+
+void Core::setSettings ()
+{
+	libtorrent::session_settings settings;
+	libtorrent::proxy_settings proxySettings;
+	if (SettingsManager::Instance ()->GetProxyEnabled ())
+	{
+		proxySettings.hostname = SettingsManager::Instance ()->GetProxyAddress ().toStdString ();
+		proxySettings.port = SettingsManager::Instance ()->GetProxyPort ();
+		proxySettings.username = SettingsManager::Instance ()->GetProxyLogin ().toStdString ();
+		proxySettings.password = SettingsManager::Instance ()->GetProxyPassword ().toStdString ();
+		if (proxySettings.username.size ())
+			proxySettings.type = libtorrent::proxy_settings::socks5_pw;
+		else
+			proxySettings.type = libtorrent::proxy_settings::socks5;
+	}
+	else
+		proxySettings.hostname = std::string ();
+
+	Session_->set_peer_proxy (proxySettings);
+	Session_->set_web_seed_proxy (proxySettings);
+	Session_->set_tracker_proxy (proxySettings);
 }
 

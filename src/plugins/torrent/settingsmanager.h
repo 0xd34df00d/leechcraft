@@ -18,18 +18,24 @@ class SettingsManager : public QObject
 	Guarded<bool> SaveScheduled_;
 
 	Guarded<QString> LastTorrentDirectory_
-				   , LastMakeTorrentDirectory_
-				   , LastAddDirectory_
-				   , LastSaveDirectory_;
+		, LastMakeTorrentDirectory_
+		, LastAddDirectory_
+		, LastSaveDirectory_
+		, ProxyAddress_
+		, ProxyLogin_
+		, ProxyPassword_;
 	Guarded<IntRange> PortRange_;
-	Guarded<bool> DHTEnabled_;
+	Guarded<bool> DHTEnabled_
+		, ProxyEnabled_;
 	Guarded<int> AutosaveInterval_
 		, DownloadRateLimit_
-		, UploadRateLimit_;
+		, UploadRateLimit_
+		, MaxUploads_
+		, MaxConnections_
+		, ProxyPort_;
 	Guarded<double> DesiredRating_;
 
 	QMap<QString, QPair<QObject*, QString> > Property2Object_;
-//	Guarded<libtorrent::entry> DHTState_;
 public:
 	SettingsManager ();
 	~SettingsManager ();
@@ -63,11 +69,33 @@ public:
 	void SetPortRange (const IntRange&);
 	bool GetDHTEnabled () const;
 	void SetDHTEnabled (bool);
+	int GetMaxUploads () const;
+	void SetMaxUploads (int);
+	int GetMaxConnections () const;
+	void SetMaxConnections (int);
+	bool GetProxyEnabled () const;
+	void SetProxyEnabled (bool);
+	QString GetProxyAddress () const;
+	void SetProxyAddress (QString);
+	int GetProxyPort () const;
+	void SetProxyPort (int);
+	QString GetProxyLogin () const;
+	void SetProxyLogin (QString);
+	QString GetProxyPassword () const;
+	void SetProxyPassword (QString);
 	int GetAutosaveInterval () const;
 	void SetAutosaveInterval (int);
 
 	Q_PROPERTY (IntRange PortRange READ GetPortRange WRITE SetPortRange);
 	Q_PROPERTY (bool DHTEnabled READ GetDHTEnabled WRITE SetDHTEnabled);
+	Q_PROPERTY (int MaxUploads READ GetMaxUploads WRITE SetMaxUploads);
+	Q_PROPERTY (int MaxConnections READ GetMaxConnections WRITE SetMaxConnections);
+	Q_PROPERTY (bool ProxyEnabled READ GetProxyEnabled WRITE SetProxyEnabled);
+	Q_PROPERTY (QString ProxyAddress READ GetProxyAddress WRITE SetProxyAddress);
+	Q_PROPERTY (int ProxyPort READ GetProxyPort WRITE SetProxyPort);
+	Q_PROPERTY (QString ProxyLogin READ GetProxyLogin WRITE SetProxyLogin);
+	Q_PROPERTY (QString ProxyPassword READ GetProxyPassword WRITE SetProxyPassword);
+
 	Q_PROPERTY (int AutosaveInterval READ GetAutosaveInterval WRITE SetAutosaveInterval);
 private:
 	void FillMap ();

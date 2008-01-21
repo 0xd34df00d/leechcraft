@@ -15,6 +15,9 @@
 		<file>resources/images/schedule.png</file>
 		<file>resources/images/selectcolumns.png</file>
 		<file>resources/images/properties.png</file>
+		<file>resources/images/httponly.png</file>
+		<file>resources/images/local.png</file>
+		<file>resources/images/network.png</file>
 		<file>leechcraft_http_ru.qm</file>
     </qresource>
 </RCC>

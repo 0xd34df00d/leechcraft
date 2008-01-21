@@ -21,6 +21,9 @@ SettingsDialog::SettingsDialog (QWidget *parent)
 	Pages_ = new QStackedWidget ();
 	Sections_ = new QListWidget ();
 	Sections_->setMaximumWidth (150);
+	Sections_->setMinimumWidth (100);
+	Sections_->setIconSize (QSize (32, 32));
+//	Sections_->setViewMode (QListView::IconMode);
 
 	connect (Sections_, SIGNAL (currentRowChanged (int)), Pages_, SLOT (setCurrentIndex (int)));
 	connect (Sections_, SIGNAL (currentRowChanged (int)), this, SLOT (doAdjustSize ()));
@@ -65,9 +68,13 @@ void SettingsDialog::RegisterObject (QObject *object)
 
 	const QMetaObject *mo = object->metaObject ();
 
+	CurrentProps_.clear ();
 	for (int i = mo->propertyOffset (); i < mo->propertyCount (); ++i)
+		CurrentProps_ << mo->property (i);
+
+	for (int i = 0; i < CurrentProps_.size (); ++i)
 	{
-		QMetaProperty currentProp = mo->property (i);
+		QMetaProperty currentProp = CurrentProps_.at (i);
 		QString propName = currentProp.name ();
 
 		SettingsItemInfo sii = castedObject->GetInfoFor (propName);
@@ -81,18 +88,26 @@ void SettingsDialog::RegisterObject (QObject *object)
 
 		if (Sections_->findItems (sii.Page_, Qt::MatchExactly).isEmpty ())
 		{
-			QWidget *w = new QWidget;
+			QWidget *w = new QGroupBox (sii.Page_);
 			QVBoxLayout *lay = new QVBoxLayout;
 			w->setLayout (lay);
 
-			Sections_->addItem (sii.Page_);
+			QListWidgetItem *item = new QListWidgetItem;
+			item->setText (sii.Page_);
+			Sections_->addItem (item);
 			Pages_->addWidget (w);
 		}
 
-		int position = Sections_->row (Sections_->findItems (sii.Page_, Qt::MatchExactly).first ());
+		QListWidgetItem *item = Sections_->findItems (sii.Page_, Qt::MatchExactly).first ();
+		if (!sii.PageIcon_.isNull ())
+			item->setIcon (sii.PageIcon_);
+
+		int position = Sections_->row (item);
 		QVBoxLayout *layToAdd;
 
-		if (sii.Group_.isEmpty ())
+		if (PropertyToParentWidget_.contains (propName))
+			layToAdd = qobject_cast<QVBoxLayout*> (PropertyToParentWidget_ [propName]->layout ());
+		else if (sii.Group_.isEmpty ())
 			layToAdd = qobject_cast<QVBoxLayout*> (Pages_->widget (position)->layout ());
 		else
 		{
@@ -132,6 +147,16 @@ void SettingsDialog::RegisterObject (QObject *object)
 		QVBoxLayout *lay = qobject_cast<QVBoxLayout*> (Pages_->widget (i)->layout ());
 		lay->insertStretch (-1, 1);
 	}
+}
+
+QList<QMetaProperty>& SettingsDialog::AccessProps ()
+{
+	return CurrentProps_;
+}
+
+void SettingsDialog::SetParentWidgetForProperty (const QString& prop, QWidget *widget)
+{
+	PropertyToParentWidget_ [prop] = widget;
 }
 
 void SettingsDialog::accept ()

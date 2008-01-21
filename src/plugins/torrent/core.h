@@ -93,6 +93,9 @@ protected:
 public slots:
 	void dhtStateChanged ();
 	void autosaveIntervalChanged ();
+	void maxUploadsChanged ();
+	void maxConnectionsChanged ();
+	void setSettings ();
 signals:
 	void error (QString) const;
 };

@@ -94,10 +94,12 @@ void SettingsManager::InitializeMap ()
 {
 	SettingsItemInfo downloadDirInfo = SettingsItemInfo (tr ("Default download directory"), tr ("Local options"));
 	downloadDirInfo.BrowseButton_ = true;
+	downloadDirInfo.PageIcon_ = QIcon (":/resources/images/local.png");
 	PropertyInfo_ ["DownloadDir"] = downloadDirInfo;
 
 	SettingsItemInfo maxConcurrentPerServer = SettingsItemInfo (tr ("Max concurrent jobs per server"), tr ("Network options"));
 	maxConcurrentPerServer.IntRange_ = qMakePair (1, 99);	
+	maxConcurrentPerServer.PageIcon_ = QIcon (":/resources/images/network.png");
 	PropertyInfo_ ["MaxConcurrentPerServer"] = maxConcurrentPerServer;
 
 	SettingsItemInfo maxTotalConcurrent = SettingsItemInfo (tr ("Max total concurrent jobs"), tr ("Network options"));
@@ -128,24 +130,27 @@ void SettingsManager::InitializeMap ()
 	stopTimeout.IntRange_ = qMakePair (1000, 60000);
 	PropertyInfo_ ["StopTimeout"] = stopTimeout;
 
-	SettingsItemInfo proxyEnabled = SettingsItemInfo (tr ("Proxy enabled"), tr ("Network options"), tr ("Proxy"));
+	SettingsItemInfo proxyEnabled = SettingsItemInfo (tr ("Proxy enabled"), tr ("Network options"));
+	proxyEnabled.GroupBoxer_ = true;
+	proxyEnabled.SubItems_ << "ProxyAddress" << "ProxyPort" << "ProxyLogin" << "ProxyPassword";
 	PropertyInfo_ ["ProxyEnabled"] = proxyEnabled;
 
-	SettingsItemInfo proxyAddr = SettingsItemInfo (tr ("Proxy address"), tr ("Network options"), tr ("Proxy"));
+	SettingsItemInfo proxyAddr = SettingsItemInfo (tr ("Proxy address"), tr ("Network options"));
 	proxyAddr.BrowseButton_ = false;
 	PropertyInfo_ ["ProxyAddress"] = proxyAddr;
 
-	SettingsItemInfo proxyPort = SettingsItemInfo (tr ("Proxy port"), tr ("Network options"), tr ("Proxy"));
+	SettingsItemInfo proxyPort = SettingsItemInfo (tr ("Proxy port"), tr ("Network options"));
 	PropertyInfo_ ["ProxyPort"] = proxyPort;
 
-	SettingsItemInfo proxyLogin = SettingsItemInfo (tr ("Proxy login"), tr ("Network options"), tr ("Proxy"));
+	SettingsItemInfo proxyLogin = SettingsItemInfo (tr ("Proxy login"), tr ("Network options"));
 	PropertyInfo_ ["ProxyLogin"] = proxyLogin;
 
-	SettingsItemInfo proxyPassword = SettingsItemInfo (tr ("Proxy password"), tr ("Network options"), tr ("Proxy"));
+	SettingsItemInfo proxyPassword = SettingsItemInfo (tr ("Proxy password"), tr ("Network options"));
 	PropertyInfo_ ["ProxyPassword"] = proxyPassword;
 
 	SettingsItemInfo resourceLogin = SettingsItemInfo (tr ("Default login"), tr ("HTTP/FTP options"), tr ("FTP"));
 	resourceLogin.BrowseButton_ = false;
+	resourceLogin.PageIcon_ = QIcon (":/resources/images/httponly.png");
 	PropertyInfo_ ["ResourceLogin"] = resourceLogin;
 
 	SettingsItemInfo resourcePassword = SettingsItemInfo (tr ("Default password"), tr ("HTTP/FTP options"), tr ("FTP"));

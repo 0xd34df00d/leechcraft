@@ -7,6 +7,7 @@ SettingsItemInfo::SettingsItemInfo ()
 , UIntRange_ (0, 65536)
 , SpinboxStep_ (1)
 , BrowseButton_ (false)
+, GroupBoxer_ (false)
 {
 }
 
@@ -22,6 +23,9 @@ SettingsItemInfo::SettingsItemInfo (const SettingsItemInfo& obj)
 , SpinboxSuffix_ (obj.SpinboxSuffix_)
 , SpinboxStep_ (obj.SpinboxStep_)
 , BrowseButton_ (obj.BrowseButton_)
+, PageIcon_ (obj.PageIcon_)
+, GroupBoxer_ (obj.GroupBoxer_)
+, SubItems_ (obj.SubItems_)
 {
 }
 
@@ -35,6 +39,7 @@ SettingsItemInfo::SettingsItemInfo (const QString& label, const QString& page, c
 , UIntRange_ (0, 65536)
 , SpinboxStep_ (1)
 , BrowseButton_ (false)
+, GroupBoxer_ (false)
 {
 }
 
@@ -51,6 +56,9 @@ SettingsItemInfo& SettingsItemInfo::operator= (const SettingsItemInfo& obj)
 	BrowseButton_ = obj.BrowseButton_;
 	Modifiable_ = obj.Modifiable_;
 	Choosable_ = obj.Choosable_;
+	GroupBoxer_ = obj.GroupBoxer_;
+	SubItems_ = obj.SubItems_;
+	PageIcon_ = obj.PageIcon_;
 
 	return *this;
 }

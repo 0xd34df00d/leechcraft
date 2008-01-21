@@ -11,5 +11,7 @@
         <file>resources/images/reannounce.png</file>
         <file>resources/images/startjob.png</file>
         <file>resources/images/stopjob.png</file>
+        <file>resources/images/local.png</file>
+        <file>resources/images/network.png</file>
     </qresource>
 </RCC>
