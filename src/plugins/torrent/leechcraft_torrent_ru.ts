@@ -901,8 +901,8 @@
     <name>TorrentPlugin</name>
     <message>
         <location filename="torrentplugin.cpp" line="54"/>
-        <source>BitTorrent client using rb-libtorrent.</source>
-        <translation>BitTorrent-клиент, использующий библиотеку rb-libtorrent.</translation>
+        <source>Full-featured BitTorrent client.</source>
+        <translation type="unfinished">Полнофункциональный BitTorrent-клиент.</translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="197"/>

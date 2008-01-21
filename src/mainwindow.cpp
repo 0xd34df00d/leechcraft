@@ -118,20 +118,20 @@ void MainWindow::closeEvent (QCloseEvent *e)
 
 void MainWindow::SetupToolbars ()
 {
-	ToolToolbar_ = addToolBar (tr ("Tools"));
+	PluginsToolbar_ = addToolBar (tr ("Plugins"));
 }
 
 void MainWindow::SetupActions ()
 {
-	BackupSettings_ = ToolToolbar_->addAction (tr ("Backup settings..."), this, SLOT (backupSettings ()));
-	RestoreSettings_ = ToolToolbar_->addAction (tr ("Restore settings..."), this, SLOT (restoreSettings ()));
+	
 }
 
 void MainWindow::SetupMenus ()
 {
-    File_		= menuBar ()->addMenu (tr ("&File"));
-	ToolsMenu_	= menuBar ()->addMenu (tr ("&Tools"));
-    Help_		= menuBar ()->addMenu (tr ("&Help"));
+    File_			= menuBar ()->addMenu (tr ("&File"));
+	PluginsMenu_	= menuBar ()->addMenu (tr ("&Plugins"));
+	ToolsMenu_		= menuBar ()->addMenu (tr ("&Tools"));
+    Help_			= menuBar ()->addMenu (tr ("&Help"));
 
     FillMenus ();
 }
@@ -160,8 +160,8 @@ void MainWindow::MakeActions ()
 	QAction *a = File_->addAction (tr ("&Quit"), qApp, SLOT (quit ()));
 	a->setStatusTip (tr ("Exit from application"));
 
-	ToolsMenu_->addAction (BackupSettings_);
-	ToolsMenu_->addAction (RestoreSettings_);
+	BackupSettings_ = ToolsMenu_->addAction (tr ("Backup settings..."), this, SLOT (backupSettings ()));
+	RestoreSettings_ = ToolsMenu_->addAction (tr ("Restore settings..."), this, SLOT (restoreSettings ()));
 	Help_->addAction (tr ("&Changelog..."), this, SLOT (showChangelog ()));
 	Help_->addAction (tr ("&About Qt..."), qApp, SLOT (aboutQt ()));
 	Help_->addAction (tr ("About &LeechCraft..."), this, SLOT (showAboutInfo ()));
@@ -224,22 +224,7 @@ void MainWindow::InitializeMainView (const QByteArray& pluginliststate)
 	Splitter_->show ();
 }
 
-void MainWindow::handlePluginsListDoubleClick (QTreeWidgetItem *item, int column)
-{
-	int index = PluginsList_->indexOfTopLevelItem (item);
-
-	if (index != -1)
-	{
-		if (item->isDisabled ())
-			return;
-
-		if (Model_->ShowPlugin (PluginsList_->indexOfTopLevelItem (item)))
-			if (column == 0)
-				PluginsList_->isItemExpanded (item) ? PluginsList_->collapseItem (item) : PluginsList_->expandItem (item);
-	}
-}
-
-void MainWindow::addPluginToList (const PluginInfo *pInfo)
+void MainWindow::AddPluginToTree (const PluginInfo* pInfo)
 {
 	QTreeWidgetItem *item = new QTreeWidgetItem ();
 	item->setData (0, Qt::DecorationRole, pInfo->GetIcon ());
@@ -294,8 +279,46 @@ void MainWindow::addPluginToList (const PluginInfo *pInfo)
 			u->setFirstColumnSpanned (true);
 		}
 	}
+}
+
+void MainWindow::handlePluginsListDoubleClick (QTreeWidgetItem *item, int column)
+{
+	int index = PluginsList_->indexOfTopLevelItem (item);
+
+	if (index != -1)
+	{
+		if (item->isDisabled ())
+			return;
+
+		if (Model_->ShowPlugin (PluginsList_->indexOfTopLevelItem (item)))
+			if (column == 0)
+				PluginsList_->isItemExpanded (item) ? PluginsList_->collapseItem (item) : PluginsList_->expandItem (item);
+	}
+}
+
+void MainWindow::addPluginToList (const PluginInfo *pInfo)
+{
+	int id = PluginsList_->topLevelItemCount ();
+	QAction *act = new QAction (this);
+	act->setData (id);
+	act->setText (pInfo->GetName ());
+	act->setIcon (pInfo->GetIcon ());
+	connect (act, SIGNAL (triggered ()), this, SLOT (pluginActionTriggered ()));
+	PluginsMenu_->addAction (act);
+	PluginsToolbar_->addAction (act);
+
+	AddPluginToTree (pInfo);
 
 	delete pInfo;
+}
+
+void MainWindow::pluginActionTriggered ()
+{
+	QAction *s = qobject_cast<QAction*> (sender ());
+	if (!s)
+		return;
+
+	Model_->ShowPlugin (s->data ().toInt ());
 }
 
 void MainWindow::updateSpeedIndicators ()
@@ -361,7 +384,7 @@ void MainWindow::showChangelog ()
 
 void MainWindow::showAboutInfo ()
 {
-	QMessageBox::information (this, tr ("Information"), tr ("LeechCraft public build 6"));
+	QMessageBox::information (this, tr ("Information"), tr ("LeechCraft public build 7"));
 }
 
 void MainWindow::showHideMain ()

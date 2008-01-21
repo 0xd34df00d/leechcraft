@@ -1,3 +1,8 @@
+***Public build 7***
+Core:
++ Creating menus and actions for added plugins.
++ "Backup/Restore Settings" moved to menu.
+
 ***Public build 6***
 Core:
 + Ask if user really wants to exit.
@@ -9,6 +14,12 @@ BitTorrent:
 + Files completeion view for each torrent.
 + Files priority stubs.
 + Peers view for each torrent.
++ Dashboard.
++ Global rating display and for each torrent.
++ Set desired rating.
++ Global upload/download rate control.
++ Force reannounce.
++ Creates torrents, but only with latin names for now.
 
 HTTP/FTP:
 + Autostart on by default.

@@ -51,7 +51,7 @@ QString TorrentPlugin::GetName () const
 
 QString TorrentPlugin::GetInfo () const
 {
-	return tr ("BitTorrent client using rb-libtorrent.");
+	return tr ("Full-featured BitTorrent client.");
 }
 
 QString TorrentPlugin::GetStatusbarMessage () const

@@ -49,7 +49,6 @@ int main (int argc, char **argv)
 
 	qDebug () << "======APPLICATION STARTUP======";
 	qWarning () << "======APPLICATION STARTUP======";
-	qCritical () << "======APPLICATION STARTUP======";
 
 	QTranslator transl;
 	QString localeName = QLocale::system ().name ();

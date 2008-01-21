@@ -34,8 +34,8 @@ namespace Main
 		LogShower *LogShower_;
 
 		QAction *BackupSettings_, *RestoreSettings_, *ClearSettings_;
-		QToolBar *ToolToolbar_;
-		QMenu *ToolsMenu_;
+		QToolBar *PluginsToolbar_;
+		QMenu *PluginsMenu_, *ToolsMenu_;
 
 		QSystemTrayIcon *TrayIcon_;
 
@@ -62,9 +62,11 @@ namespace Main
 		void ReadSettings ();
 		void WriteSettings ();
 		void InitializeMainView (const QByteArray&);
+		void AddPluginToTree (const PluginInfo*);
 	private slots:
 		void handlePluginsListDoubleClick (QTreeWidgetItem*, int);
 		void addPluginToList (const PluginInfo*);
+		void pluginActionTriggered ();
 		void updateSpeedIndicators ();
 		void handleAddMessage (const QString&, bool);
 		void backupSettings ();
