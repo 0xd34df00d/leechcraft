@@ -1,17 +1,5 @@
 <RCC>
     <qresource prefix="/" >
         <file>leechcraft_torrent_ru.qm</file>
-        <file>resources/images/addjob.png</file>
-        <file>resources/images/bittorrent.png</file>
-        <file>resources/images/deletejob.png</file>
-        <file>resources/images/local.png</file>
-        <file>resources/images/movedown.png</file>
-        <file>resources/images/moveup.png</file>
-        <file>resources/images/network.png</file>
-        <file>resources/images/new.png</file>
-        <file>resources/images/preferences.png</file>
-        <file>resources/images/reannounce.png</file>
-        <file>resources/images/startjob.png</file>
-        <file>resources/images/stopjob.png</file>
     </qresource>
 </RCC>
