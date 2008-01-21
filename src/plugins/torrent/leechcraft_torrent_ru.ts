@@ -102,62 +102,62 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="173"/>
+        <location filename="core.cpp" line="179"/>
         <source>Could not open file %1 for read: %2</source>
         <translation>Не могу открыть файл %1 на запись: %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="194"/>
+        <location filename="core.cpp" line="200"/>
         <source>Bad bencoding in torrent file</source>
         <translation>Плохой код в файле</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="199"/>
+        <location filename="core.cpp" line="205"/>
         <source>Invalid torrent file</source>
         <translation>Неправильный торрент-файл (или это вообще не торрент-файл?)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="310"/>
+        <location filename="core.cpp" line="316"/>
         <source>File %1 doesn&apos;t exist or could not be read</source>
         <translation>Файл %1 не существует или не может быть прочитан</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="321"/>
+        <location filename="core.cpp" line="327"/>
         <source>The torrent %1 with save path %2 already exists in the session</source>
         <translation>Торрент %1 с путем сохранения %2 уже существует в этой сессии</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="49"/>
+        <location filename="core.cpp" line="52"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="49"/>
+        <location filename="core.cpp" line="52"/>
         <source>Downloaded</source>
         <translation>Скачано</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="49"/>
+        <location filename="core.cpp" line="52"/>
         <source>Uploaded</source>
         <translation>Загружено</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="49"/>
+        <location filename="core.cpp" line="52"/>
         <source>Size</source>
         <translation>Размер</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="49"/>
+        <location filename="core.cpp" line="52"/>
         <source>Progress</source>
         <translation>Прогресс</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="49"/>
+        <location filename="core.cpp" line="52"/>
         <source>State</source>
         <translation>Состояние</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="49"/>
+        <location filename="core.cpp" line="52"/>
         <source>Seeds/peers</source>
         <translation>Сиды/пиры</translation>
     </message>
@@ -172,7 +172,7 @@
         <translation type="obsolete">Скорость отдачи</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="49"/>
+        <location filename="core.cpp" line="52"/>
         <source>Remaining</source>
         <translation>Оставшееся время</translation>
     </message>
@@ -182,127 +182,127 @@
         <translation type="obsolete">%1: для ряда %2 хэндл торрента не валиден, ID - %3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="215"/>
+        <location filename="core.cpp" line="221"/>
         <source>Idle</source>
         <translation>Ничего не делает</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="118"/>
+        <location filename="core.cpp" line="124"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="498"/>
+        <location filename="core.cpp" line="504"/>
         <source>Queued for checking</source>
         <translation>В очереди на проверку</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="500"/>
+        <location filename="core.cpp" line="506"/>
         <source>Checking files</source>
         <translation>Проверяются файлы</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="502"/>
+        <location filename="core.cpp" line="508"/>
         <source>Connecting</source>
         <translation>Соединяемся</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="504"/>
+        <location filename="core.cpp" line="510"/>
         <source>Downloading metadata</source>
         <translation>Качаем метаданные</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="506"/>
+        <location filename="core.cpp" line="512"/>
         <source>Downloading</source>
         <translation>Скачивание</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="508"/>
+        <location filename="core.cpp" line="514"/>
         <source>Finished</source>
         <translation>Закончен</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="510"/>
+        <location filename="core.cpp" line="516"/>
         <source>Seeding</source>
         <translation>Раздача</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="512"/>
+        <location filename="core.cpp" line="518"/>
         <source>Allocating</source>
         <translation>Выделение места</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="577"/>
+        <location filename="core.cpp" line="583"/>
         <source>Could not open files to read settings :(</source>
         <translation>Не могу открыть файлы для прочтения настроек :(</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="631"/>
+        <location filename="core.cpp" line="637"/>
         <source>The just restored torrent already exists in the session, that&apos;s strange.</source>
         <translation>Только что восстановленный торрент уже существует в сессии, это странно.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="617"/>
+        <location filename="core.cpp" line="623"/>
         <source>Bad bencoding in saved torrent data</source>
         <translation>Плохой код в сохраненном торренте</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="627"/>
+        <location filename="core.cpp" line="633"/>
         <source>Invalid saved torrent data</source>
         <translation>Невалидные сохраненные данные торрента</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="643"/>
+        <location filename="core.cpp" line="649"/>
         <source>Could not create path %1/.leechcraft_bittorrent</source>
         <translation>Не могу создать путь %1/.leechcraft_bittorrent</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="706"/>
+        <location filename="core.cpp" line="712"/>
         <source>Torrent with position %1 doesn&apos;t exist in The List</source>
         <translation>Торрент с позицией %1 не существует в Списке</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="711"/>
+        <location filename="core.cpp" line="717"/>
         <source>Torrent with position %1 found in The List, but is invalid</source>
         <translation>Торрент с позицией %1 найден в списке, но он невалиден</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="49"/>
+        <location filename="core.cpp" line="52"/>
         <source>Drate</source>
         <translation>Скорость скачивания</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="49"/>
+        <location filename="core.cpp" line="52"/>
         <source>Urate</source>
         <translation>Скорость отдачи</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="91"/>
+        <location filename="core.cpp" line="97"/>
         <source>%1: for row %2 torrent handle is invalid</source>
         <translation>%1: хэндл торрента (ряд %2) не валиден</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="49"/>
+        <location filename="core.cpp" line="52"/>
         <source>Rating</source>
         <translation>Рэйтинг</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="378"/>
+        <location filename="core.cpp" line="384"/>
         <source>Torrent %1 could not be reannounced at the moment, try again later.</source>
         <translation>Торрент %1 не может быть перезапрошен в данный момент, попробуй позже.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="485"/>
+        <location filename="core.cpp" line="491"/>
         <source>Could not open file %1 for write!</source>
         <translation>Не могу открыть файл %1 на запись!</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="464"/>
+        <location filename="core.cpp" line="470"/>
         <source>Hashing...</source>
         <translation>Хэширую...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="464"/>
+        <location filename="core.cpp" line="470"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
@@ -859,34 +859,79 @@
 <context>
     <name>SettingsManager</name>
     <message>
-        <location filename="settingsmanager.cpp" line="219"/>
+        <location filename="settingsmanager.cpp" line="370"/>
         <source>Port range</source>
         <translation>Порты</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="224"/>
+        <location filename="settingsmanager.cpp" line="421"/>
         <source>Network options</source>
         <translation>Сетевые опции</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="224"/>
+        <location filename="settingsmanager.cpp" line="376"/>
         <source>DHT enabled</source>
         <translation>DHT включен</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="227"/>
+        <location filename="settingsmanager.cpp" line="424"/>
         <source>Auto save interval</source>
         <translation>Интервал автоматического сохранения</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="227"/>
+        <location filename="settingsmanager.cpp" line="424"/>
         <source>Local options</source>
         <translation>Локальные опции</translation>
     </message>
     <message>
-        <location filename="settingsmanager.cpp" line="230"/>
+        <location filename="settingsmanager.cpp" line="427"/>
         <source> s</source>
         <translation> с</translation>
+    </message>
+    <message>
+        <location filename="settingsmanager.cpp" line="379"/>
+        <source>Maximum uploads</source>
+        <translation>Максимум радач</translation>
+    </message>
+    <message>
+        <location filename="settingsmanager.cpp" line="383"/>
+        <source>Limits</source>
+        <translation>Ограничения</translation>
+    </message>
+    <message>
+        <location filename="settingsmanager.cpp" line="383"/>
+        <source>Maximum connections</source>
+        <translation>Максимум соединений</translation>
+    </message>
+    <message>
+        <location filename="settingsmanager.cpp" line="388"/>
+        <source>Tracker proxy</source>
+        <translation>Прокси для трэкеров</translation>
+    </message>
+    <message>
+        <location filename="settingsmanager.cpp" line="411"/>
+        <source>Hostname</source>
+        <translation>Хост</translation>
+    </message>
+    <message>
+        <location filename="settingsmanager.cpp" line="414"/>
+        <source>Port</source>
+        <translation>Порт</translation>
+    </message>
+    <message>
+        <location filename="settingsmanager.cpp" line="418"/>
+        <source>Login</source>
+        <translation>Логин</translation>
+    </message>
+    <message>
+        <location filename="settingsmanager.cpp" line="421"/>
+        <source>Password</source>
+        <translation>Пароль</translation>
+    </message>
+    <message>
+        <location filename="settingsmanager.cpp" line="406"/>
+        <source>Peer proxy</source>
+        <translation>Прокси для пиров</translation>
     </message>
 </context>
 <context>
@@ -902,7 +947,7 @@
     <message>
         <location filename="torrentplugin.cpp" line="54"/>
         <source>Full-featured BitTorrent client.</source>
-        <translation type="unfinished">Полнофункциональный BitTorrent-клиент.</translation>
+        <translation>Полнофункциональный BitTorrent-клиент.</translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="197"/>

@@ -65,11 +65,16 @@ void SettingsManager::ReadSettings ()
 	DesiredRating_				= settings.value ("DesiredRating", 0).toDouble ();
 	MaxUploads_					= settings.value ("MaxUploads", 100).toInt ();
 	MaxConnections_				= settings.value ("MaxConnections", 1000).toInt ();
-	ProxyEnabled_				= settings.value ("ProxyEnabled").toBool ();
-	ProxyAddress_				= settings.value ("ProxyAddress").toString ();
-	ProxyPort_					= settings.value ("ProxyPort", 8080).toInt ();
-	ProxyLogin_					= settings.value ("ProxyLogin").toString ();
-	ProxyPassword_				= settings.value ("ProxyPassword").toString ();
+	TrackerProxyEnabled_		= settings.value ("TrackerProxyEnabled").toBool ();
+	TrackerProxyAddress_		= settings.value ("TrackerProxyAddress").toString ();
+	TrackerProxyPort_			= settings.value ("TrackerProxyPort", 8080).toInt ();
+	TrackerProxyLogin_			= settings.value ("TrackerProxyLogin").toString ();
+	TrackerProxyPassword_		= settings.value ("TrackerProxyPassword").toString ();
+	PeerProxyEnabled_			= settings.value ("PeerProxyEnabled").toBool ();
+	PeerProxyAddress_			= settings.value ("PeerProxyAddress").toString ();
+	PeerProxyPort_				= settings.value ("PeerProxyPort", 8080).toInt ();
+	PeerProxyLogin_				= settings.value ("PeerProxyLogin").toString ();
+	PeerProxyPassword_			= settings.value ("PeerProxyPassword").toString ();
 	settings.endGroup ();
 }
 
@@ -89,11 +94,16 @@ void SettingsManager::writeSettings ()
 	settings.setValue ("DesiredRating", DesiredRating_);
 	settings.setValue ("MaxUploads", MaxUploads_);
 	settings.setValue ("MaxConnections", MaxConnections_);
-	settings.setValue ("ProxyEnabled", ProxyEnabled_);
-	settings.setValue ("ProxyAddress", ProxyAddress_);
-	settings.setValue ("ProxyPort", ProxyPort_);
-	settings.setValue ("ProxyLogin", ProxyLogin_);
-	settings.setValue ("ProxyPassword", ProxyPassword_);
+	settings.setValue ("TrackerProxyEnabled", TrackerProxyEnabled_);
+	settings.setValue ("TrackerProxyAddress", TrackerProxyAddress_);
+	settings.setValue ("TrackerProxyPort", TrackerProxyPort_);
+	settings.setValue ("TrackerProxyLogin", TrackerProxyLogin_);
+	settings.setValue ("TrackerProxyPassword", TrackerProxyPassword_);
+	settings.setValue ("PeerProxyEnabled", PeerProxyEnabled_);
+	settings.setValue ("PeerProxyAddress", PeerProxyAddress_);
+	settings.setValue ("PeerProxyPort", PeerProxyPort_);
+	settings.setValue ("PeerProxyLogin", PeerProxyLogin_);
+	settings.setValue ("PeerProxyPassword", PeerProxyPassword_);
 	settings.endGroup ();
 	SaveScheduled_ = false;
 }
@@ -223,64 +233,124 @@ void SettingsManager::SetMaxConnections (int val)
 	CallSlots ("MaxConnections");
 }
 
-bool SettingsManager::GetProxyEnabled () const
+bool SettingsManager::GetTrackerProxyEnabled () const
 {
-	return ProxyEnabled_;
+	return TrackerProxyEnabled_;
 }
 
-void SettingsManager::SetProxyEnabled (bool val)
+void SettingsManager::SetTrackerProxyEnabled (bool val)
 {
-	ProxyEnabled_ = val;
+	TrackerProxyEnabled_ = val;
 	ScheduleSave ();
-	CallSlots ("ProxyEnabled");
+	CallSlots ("TrackerProxyEnabled");
 }
 
-QString SettingsManager::GetProxyAddress () const
+QString SettingsManager::GetTrackerProxyAddress () const
 {
-	return ProxyAddress_;
+	return TrackerProxyAddress_;
 }
 
-void SettingsManager::SetProxyAddress (QString val)
+void SettingsManager::SetTrackerProxyAddress (QString val)
 {
-	ProxyAddress_ = val;
+	TrackerProxyAddress_ = val;
 	ScheduleSave ();
-	CallSlots ("ProxyAddress");
+	CallSlots ("TrackerProxyAddress");
 }
 
-int SettingsManager::GetProxyPort () const
+int SettingsManager::GetTrackerProxyPort () const
 {
-	return ProxyPort_;
+	return TrackerProxyPort_;
 }
 
-void SettingsManager::SetProxyPort (int val)
+void SettingsManager::SetTrackerProxyPort (int val)
 {
-	ProxyPort_ = val;
+	TrackerProxyPort_ = val;
 	ScheduleSave ();
-	CallSlots ("ProxyPort");
+	CallSlots ("TrackerProxyPort");
 }
 
-QString SettingsManager::GetProxyLogin () const
+QString SettingsManager::GetTrackerProxyLogin () const
 {
-	return ProxyLogin_;
+	return TrackerProxyLogin_;
 }
 
-void SettingsManager::SetProxyLogin (QString val)
+void SettingsManager::SetTrackerProxyLogin (QString val)
 {
-	ProxyLogin_ = val;
+	TrackerProxyLogin_ = val;
 	ScheduleSave ();
-	CallSlots ("ProxyLogin");
+	CallSlots ("TrackerProxyLogin");
 }
 
-QString SettingsManager::GetProxyPassword () const
+QString SettingsManager::GetTrackerProxyPassword () const
 {
-	return ProxyPassword_;
+	return TrackerProxyPassword_;
 }
 
-void SettingsManager::SetProxyPassword (QString val)
+void SettingsManager::SetTrackerProxyPassword (QString val)
 {
-	ProxyPassword_ = val;
+	TrackerProxyPassword_ = val;
 	ScheduleSave ();
-	CallSlots ("ProxyPassword");
+	CallSlots ("TrackerProxyPassword");
+}
+
+bool SettingsManager::GetPeerProxyEnabled () const
+{
+	return PeerProxyEnabled_;
+}
+
+void SettingsManager::SetPeerProxyEnabled (bool val)
+{
+	PeerProxyEnabled_ = val;
+	ScheduleSave ();
+	CallSlots ("PeerProxyEnabled");
+}
+
+QString SettingsManager::GetPeerProxyAddress () const
+{
+	return PeerProxyAddress_;
+}
+
+void SettingsManager::SetPeerProxyAddress (QString val)
+{
+	PeerProxyAddress_ = val;
+	ScheduleSave ();
+	CallSlots ("PeerProxyAddress");
+}
+
+int SettingsManager::GetPeerProxyPort () const
+{
+	return PeerProxyPort_;
+}
+
+void SettingsManager::SetPeerProxyPort (int val)
+{
+	PeerProxyPort_ = val;
+	ScheduleSave ();
+	CallSlots ("PeerProxyPort");
+}
+
+QString SettingsManager::GetPeerProxyLogin () const
+{
+	return PeerProxyLogin_;
+}
+
+void SettingsManager::SetPeerProxyLogin (QString val)
+{
+	PeerProxyLogin_ = val;
+	ScheduleSave ();
+	CallSlots ("PeerProxyLogin");
+}
+
+QString SettingsManager::GetPeerProxyPassword () const
+{
+	return PeerProxyPassword_;
+}
+
+void SettingsManager::SetPeerProxyPassword (QString val)
+{
+	PeerProxyPassword_ = val;
+	ScheduleSave ();
+	CallSlots ("PeerProxyPassword");
 }
 
 int SettingsManager::GetAutosaveInterval () const
@@ -315,23 +385,41 @@ void SettingsManager::FillMap ()
 	maxConnections.IntRange_ = qMakePair<int, int> (2, 10000);
 	PropInfos_ ["MaxConnections"] = maxConnections;
 
-	SettingsItemInfo proxyEnabled = SettingsItemInfo (tr ("Proxy enabled"), tr ("Network options"));
-	proxyEnabled.GroupBoxer_ = true;
-	proxyEnabled.SubItems_ << "ProxyAddress" << "ProxyPort" << "ProxyLogin" << "ProxyPassword";
-	PropInfos_ ["ProxyEnabled"] = proxyEnabled;
+	SettingsItemInfo trackerProxyEnabled = SettingsItemInfo (tr ("Tracker proxy"), tr ("Network options"));
+	trackerProxyEnabled.GroupBoxer_ = true;
+	trackerProxyEnabled.SubItems_ << "TrackerProxyAddress" << "TrackerProxyPort" << "TrackerProxyLogin" << "TrackerProxyPassword";
+	PropInfos_ ["TrackerProxyEnabled"] = trackerProxyEnabled;
 	
-	SettingsItemInfo proxyAddress = SettingsItemInfo (tr ("Hostname"), tr ("Network options"));
-	PropInfos_ ["ProxyAddress"] = proxyAddress;
+	SettingsItemInfo trackerProxyAddress = SettingsItemInfo (tr ("Hostname"), tr ("Network options"));
+	PropInfos_ ["TrackerProxyAddress"] = trackerProxyAddress;
 	
-	SettingsItemInfo proxyPort = SettingsItemInfo (tr ("Port"), tr ("Network options"));
-	proxyPort.IntRange_ = qMakePair<int, int> (1, 65535);
-	PropInfos_ ["ProxyPort"] = proxyPort;
+	SettingsItemInfo trackerProxyPort = SettingsItemInfo (tr ("Port"), tr ("Network options"));
+	trackerProxyPort.IntRange_ = qMakePair<int, int> (1, 65535);
+	PropInfos_ ["TrackerProxyPort"] = trackerProxyPort;
 
-	SettingsItemInfo proxyLogin = SettingsItemInfo (tr ("Login"), tr ("Network options"));
-	PropInfos_ ["ProxyLogin"] = proxyLogin;
+	SettingsItemInfo trackerProxyLogin = SettingsItemInfo (tr ("Login"), tr ("Network options"));
+	PropInfos_ ["TrackerProxyLogin"] = trackerProxyLogin;
 
-	SettingsItemInfo proxyPassword = SettingsItemInfo (tr ("Password"), tr ("Network options"));
-	PropInfos_ ["ProxyPassword"] = proxyPassword;
+	SettingsItemInfo trackerProxyPassword = SettingsItemInfo (tr ("Password"), tr ("Network options"));
+	PropInfos_ ["TrackerProxyPassword"] = trackerProxyPassword;
+
+	SettingsItemInfo peerProxyEnabled = SettingsItemInfo (tr ("Peer proxy"), tr ("Network options"));
+	peerProxyEnabled.GroupBoxer_ = true;
+	peerProxyEnabled.SubItems_ << "PeerProxyAddress" << "PeerProxyPort" << "PeerProxyLogin" << "PeerProxyPassword";
+	PropInfos_ ["PeerProxyEnabled"] = peerProxyEnabled;
+	
+	SettingsItemInfo peerProxyAddress = SettingsItemInfo (tr ("Hostname"), tr ("Network options"));
+	PropInfos_ ["PeerProxyAddress"] = peerProxyAddress;
+	
+	SettingsItemInfo peerProxyPort = SettingsItemInfo (tr ("Port"), tr ("Network options"));
+	peerProxyPort.IntRange_ = qMakePair<int, int> (1, 65535);
+	PropInfos_ ["PeerProxyPort"] = peerProxyPort;
+
+	SettingsItemInfo peerProxyLogin = SettingsItemInfo (tr ("Login"), tr ("Network options"));
+	PropInfos_ ["PeerProxyLogin"] = peerProxyLogin;
+
+	SettingsItemInfo peerProxyPassword = SettingsItemInfo (tr ("Password"), tr ("Network options"));
+	PropInfos_ ["PeerProxyPassword"] = peerProxyPassword;
 
 	SettingsItemInfo autosaveInterval = SettingsItemInfo (tr ("Auto save interval"), tr ("Local options"));
 	autosaveInterval.SpinboxStep_ = 1;

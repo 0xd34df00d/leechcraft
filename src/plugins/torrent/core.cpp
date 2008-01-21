@@ -42,7 +42,7 @@ Core::Core (QObject *parent)
 			Session_->start_dht (libtorrent::entry ());
 		Session_->set_max_uploads (SettingsManager::Instance ()->GetMaxUploads ());
 		Session_->set_max_connections (SettingsManager::Instance ()->GetMaxConnections ());
-		setSettings ();
+		setSessionSettings ();
 	}
 	catch (const asio::system_error&)
 	{
@@ -750,26 +750,40 @@ void Core::maxConnectionsChanged ()
 	Session_->set_max_connections (SettingsManager::Instance ()->GetMaxConnections ());
 }
 
-void Core::setSettings ()
+void Core::setSessionSettings ()
 {
 	libtorrent::session_settings settings;
-	libtorrent::proxy_settings proxySettings;
-	if (SettingsManager::Instance ()->GetProxyEnabled ())
+	libtorrent::proxy_settings trackerProxySettings, peerProxySettings;
+	if (SettingsManager::Instance ()->GetTrackerProxyEnabled ())
 	{
-		proxySettings.hostname = SettingsManager::Instance ()->GetProxyAddress ().toStdString ();
-		proxySettings.port = SettingsManager::Instance ()->GetProxyPort ();
-		proxySettings.username = SettingsManager::Instance ()->GetProxyLogin ().toStdString ();
-		proxySettings.password = SettingsManager::Instance ()->GetProxyPassword ().toStdString ();
-		if (proxySettings.username.size ())
-			proxySettings.type = libtorrent::proxy_settings::socks5_pw;
+		trackerProxySettings.hostname = SettingsManager::Instance ()->GetTrackerProxyAddress ().toStdString ();
+		trackerProxySettings.port = SettingsManager::Instance ()->GetTrackerProxyPort ();
+		trackerProxySettings.username = SettingsManager::Instance ()->GetTrackerProxyLogin ().toStdString ();
+		trackerProxySettings.password = SettingsManager::Instance ()->GetTrackerProxyPassword ().toStdString ();
+		if (trackerProxySettings.username.size ())
+			trackerProxySettings.type = libtorrent::proxy_settings::socks5_pw;
 		else
-			proxySettings.type = libtorrent::proxy_settings::socks5;
+			trackerProxySettings.type = libtorrent::proxy_settings::socks5;
 	}
 	else
-		proxySettings.hostname = std::string ();
+		trackerProxySettings.hostname = std::string ();
 
-	Session_->set_peer_proxy (proxySettings);
-	Session_->set_web_seed_proxy (proxySettings);
-	Session_->set_tracker_proxy (proxySettings);
+	if (SettingsManager::Instance ()->GetPeerProxyEnabled ())
+	{
+		peerProxySettings.hostname = SettingsManager::Instance ()->GetPeerProxyAddress ().toStdString ();
+		peerProxySettings.port = SettingsManager::Instance ()->GetPeerProxyPort ();
+		peerProxySettings.username = SettingsManager::Instance ()->GetPeerProxyLogin ().toStdString ();
+		peerProxySettings.password = SettingsManager::Instance ()->GetPeerProxyPassword ().toStdString ();
+		if (peerProxySettings.username.size ())
+			peerProxySettings.type = libtorrent::proxy_settings::socks5_pw;
+		else
+			peerProxySettings.type = libtorrent::proxy_settings::socks5;
+	}
+	else
+		peerProxySettings.hostname = std::string ();
+
+	Session_->set_peer_proxy (trackerProxySettings);
+	Session_->set_web_seed_proxy (peerProxySettings);
+	Session_->set_tracker_proxy (peerProxySettings);
 }
 

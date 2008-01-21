@@ -21,18 +21,23 @@ class SettingsManager : public QObject
 		, LastMakeTorrentDirectory_
 		, LastAddDirectory_
 		, LastSaveDirectory_
-		, ProxyAddress_
-		, ProxyLogin_
-		, ProxyPassword_;
+		, TrackerProxyAddress_
+		, TrackerProxyLogin_
+		, TrackerProxyPassword_
+		, PeerProxyAddress_
+		, PeerProxyLogin_
+		, PeerProxyPassword_;
 	Guarded<IntRange> PortRange_;
 	Guarded<bool> DHTEnabled_
-		, ProxyEnabled_;
+		, TrackerProxyEnabled_
+		, PeerProxyEnabled_;
 	Guarded<int> AutosaveInterval_
 		, DownloadRateLimit_
 		, UploadRateLimit_
 		, MaxUploads_
 		, MaxConnections_
-		, ProxyPort_;
+		, TrackerProxyPort_
+		, PeerProxyPort_;
 	Guarded<double> DesiredRating_;
 
 	QMap<QString, QPair<QObject*, QString> > Property2Object_;
@@ -73,16 +78,26 @@ public:
 	void SetMaxUploads (int);
 	int GetMaxConnections () const;
 	void SetMaxConnections (int);
-	bool GetProxyEnabled () const;
-	void SetProxyEnabled (bool);
-	QString GetProxyAddress () const;
-	void SetProxyAddress (QString);
-	int GetProxyPort () const;
-	void SetProxyPort (int);
-	QString GetProxyLogin () const;
-	void SetProxyLogin (QString);
-	QString GetProxyPassword () const;
-	void SetProxyPassword (QString);
+	bool GetTrackerProxyEnabled () const;
+	void SetTrackerProxyEnabled (bool);
+	QString GetTrackerProxyAddress () const;
+	void SetTrackerProxyAddress (QString);
+	int GetTrackerProxyPort () const;
+	void SetTrackerProxyPort (int);
+	QString GetTrackerProxyLogin () const;
+	void SetTrackerProxyLogin (QString);
+	QString GetTrackerProxyPassword () const;
+	void SetTrackerProxyPassword (QString);
+	bool GetPeerProxyEnabled () const;
+	void SetPeerProxyEnabled (bool);
+	QString GetPeerProxyAddress () const;
+	void SetPeerProxyAddress (QString);
+	int GetPeerProxyPort () const;
+	void SetPeerProxyPort (int);
+	QString GetPeerProxyLogin () const;
+	void SetPeerProxyLogin (QString);
+	QString GetPeerProxyPassword () const;
+	void SetPeerProxyPassword (QString);
 	int GetAutosaveInterval () const;
 	void SetAutosaveInterval (int);
 
@@ -90,11 +105,16 @@ public:
 	Q_PROPERTY (bool DHTEnabled READ GetDHTEnabled WRITE SetDHTEnabled);
 	Q_PROPERTY (int MaxUploads READ GetMaxUploads WRITE SetMaxUploads);
 	Q_PROPERTY (int MaxConnections READ GetMaxConnections WRITE SetMaxConnections);
-	Q_PROPERTY (bool ProxyEnabled READ GetProxyEnabled WRITE SetProxyEnabled);
-	Q_PROPERTY (QString ProxyAddress READ GetProxyAddress WRITE SetProxyAddress);
-	Q_PROPERTY (int ProxyPort READ GetProxyPort WRITE SetProxyPort);
-	Q_PROPERTY (QString ProxyLogin READ GetProxyLogin WRITE SetProxyLogin);
-	Q_PROPERTY (QString ProxyPassword READ GetProxyPassword WRITE SetProxyPassword);
+	Q_PROPERTY (bool TrackerProxyEnabled READ GetTrackerProxyEnabled WRITE SetTrackerProxyEnabled);
+	Q_PROPERTY (QString TrackerProxyAddress READ GetTrackerProxyAddress WRITE SetTrackerProxyAddress);
+	Q_PROPERTY (int TrackerProxyPort READ GetTrackerProxyPort WRITE SetTrackerProxyPort);
+	Q_PROPERTY (QString TrackerProxyLogin READ GetTrackerProxyLogin WRITE SetTrackerProxyLogin);
+	Q_PROPERTY (QString TrackerProxyPassword READ GetTrackerProxyPassword WRITE SetTrackerProxyPassword);
+	Q_PROPERTY (bool PeerProxyEnabled READ GetPeerProxyEnabled WRITE SetPeerProxyEnabled);
+	Q_PROPERTY (QString PeerProxyAddress READ GetPeerProxyAddress WRITE SetPeerProxyAddress);
+	Q_PROPERTY (int PeerProxyPort READ GetPeerProxyPort WRITE SetPeerProxyPort);
+	Q_PROPERTY (QString PeerProxyLogin READ GetPeerProxyLogin WRITE SetPeerProxyLogin);
+	Q_PROPERTY (QString PeerProxyPassword READ GetPeerProxyPassword WRITE SetPeerProxyPassword);
 
 	Q_PROPERTY (int AutosaveInterval READ GetAutosaveInterval WRITE SetAutosaveInterval);
 private:

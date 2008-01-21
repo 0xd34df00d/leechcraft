@@ -190,10 +190,8 @@ QWidget* BoolConverter::Convert (const QVariant& value, const SettingsItemInfo& 
 		result->setCheckable (true);
 		result->setChecked (value.toBool () ? Qt::Checked : Qt::Unchecked);
 		result->setLayout (new QVBoxLayout);
-		qDebug () << parent ();
 		for (int i = 0; i < sii.SubItems_.size (); ++i)
 			qobject_cast<SettingsDialog*> (parent ())->SetParentWidgetForProperty (sii.SubItems_.at (i), result);
-		qDebug () << parent ();
 		return result;
 	}
 	else

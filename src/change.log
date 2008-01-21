@@ -2,6 +2,16 @@
 Core:
 + Creating menus and actions for added plugins.
 + "Backup/Restore Settings" moved to menu.
++ Groupboxing of booleans in Settings.
++ Images for settings categories.
+
+BitTorrent:
++ Proxy support in torrents.
++ Separate proxy for trackers and for seeds.
++ Images for settings categories.
+
+HTTP/FTP:
++ Images for settings categories.
 
 ***Public build 6***
 Core:

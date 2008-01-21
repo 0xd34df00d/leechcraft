@@ -95,7 +95,7 @@ public slots:
 	void autosaveIntervalChanged ();
 	void maxUploadsChanged ();
 	void maxConnectionsChanged ();
-	void setSettings ();
+	void setSessionSettings ();
 signals:
 	void error (QString) const;
 };
