@@ -5,7 +5,6 @@
 #include <QSettings>
 #include <QSystemTrayIcon>
 #include <QMap>
-#include "core.h"
 #include "common.h"
 #include "logshower.h"
 
@@ -22,11 +21,15 @@ class QMutex;
 
 namespace Main
 {
+	class Core;
+	class PluginInfo;
 	class MainWindow : public QMainWindow
 	{
 		Q_OBJECT
 
-		QMenu *File_, *Help_;
+		QSystemTrayIcon *TrayIcon_;
+		QMenu *File_, *PluginsMenu_, *PluginsActionsMenu_, *ToolsMenu_, *Help_
+			, *TrayPluginsMenu_;
 		QTreeWidget *PluginsList_;
 		Main::Core *Model_;
 		QSplitter *Splitter_;
@@ -35,9 +38,6 @@ namespace Main
 
 		QAction *BackupSettings_, *RestoreSettings_, *ClearSettings_;
 		QToolBar *PluginsToolbar_;
-		QMenu *PluginsMenu_, *ToolsMenu_;
-
-		QSystemTrayIcon *TrayIcon_;
 
 		bool SettingsClearScheduled_, IsShown_;
 
@@ -48,6 +48,7 @@ namespace Main
 		~MainWindow ();
 	public:
 		static MainWindow *Instance ();
+		QMenu* GetRootPluginsMenu () const;
 	public slots:
 		void catchError (QString, Errors::Severity);
 	protected:

@@ -49,6 +49,8 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	splash.showMessage (tr ("Reading settings..."));
 	ReadSettings ();
 
+	Proxy::Instance ()->SetMainWindow (this);
+
 	splash.showMessage (tr ("Initializing core and plugins..."));
 	Model_ = new Main::Core (this);
 	connect (Model_, SIGNAL (gotPlugin (const PluginInfo*)), this, SLOT (addPluginToList (const PluginInfo*)));
@@ -63,6 +65,11 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	connect (Proxy::Instance (), SIGNAL (addMessage (const QString&, bool)), this, SLOT (handleAddMessage (const QString&, bool)));
 	qApp->setQuitOnLastWindowClosed (false);
 	show ();
+}
+
+QMenu* MainWindow::GetRootPluginsMenu () const
+{
+	return PluginsActionsMenu_;
 }
 
 MainWindow::~MainWindow ()
@@ -128,10 +135,11 @@ void MainWindow::SetupActions ()
 
 void MainWindow::SetupMenus ()
 {
-    File_			= menuBar ()->addMenu (tr ("&File"));
-	PluginsMenu_	= menuBar ()->addMenu (tr ("&Plugins"));
-	ToolsMenu_		= menuBar ()->addMenu (tr ("&Tools"));
-    Help_			= menuBar ()->addMenu (tr ("&Help"));
+    File_				= menuBar ()->addMenu (tr ("&File"));
+	PluginsMenu_		= menuBar ()->addMenu (tr ("&Plugins"));
+	PluginsActionsMenu_	= menuBar ()->addMenu (tr ("&Actions"));
+	ToolsMenu_			= menuBar ()->addMenu (tr ("&Tools"));
+    Help_				= menuBar ()->addMenu (tr ("&Help"));
 
     FillMenus ();
 }
@@ -141,6 +149,8 @@ void MainWindow::SetTrayIcon ()
 	QMenu *iconMenu = new QMenu;
 	iconMenu->addAction (tr ("Show/hide main"), this, SLOT (showHideMain ()));
 	iconMenu->addAction (tr ("Hide all"), this, SLOT (hideAll ()));
+	iconMenu->addSeparator ();
+	TrayPluginsMenu_ = iconMenu->addMenu (tr ("Plugins"));
 	iconMenu->addSeparator ();
 	iconMenu->addAction (tr ("Exit"), qApp, SLOT (quit ()));
 
@@ -306,6 +316,7 @@ void MainWindow::addPluginToList (const PluginInfo *pInfo)
 	connect (act, SIGNAL (triggered ()), this, SLOT (pluginActionTriggered ()));
 	PluginsMenu_->addAction (act);
 	PluginsToolbar_->addAction (act);
+	TrayPluginsMenu_->addAction (act);
 
 	AddPluginToTree (pInfo);
 

@@ -88,3 +88,13 @@ void Proxy::AddDownloadMessage (const QString& msg) const
 	emit addMessage (msg, false);
 }
 
+QMenu* Proxy::GetRootPluginsMenu () const
+{
+	return Window_->GetRootPluginsMenu ();
+}
+
+void Proxy::SetMainWindow (Main::MainWindow *w)
+{
+	Window_ = w;
+}
+
