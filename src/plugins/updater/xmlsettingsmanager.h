@@ -2,17 +2,17 @@
 #define XMLSETTINGSMANAGER_H
 #include <QObject>
 #include <interfaces/interfaces.h>
+#include <plugininterface/basicsettingsmanager.h>
 
-class XmlSettingsManager : public QObject
+class XmlSettingsManager : public BasicSettingsManager
 {
 	Q_OBJECT
 public:
 	XmlSettingsManager ();
-	~XmlSettingsManager ();
-	void Release ();
 	static XmlSettingsManager* Instance ();
 protected:
-	virtual bool event (QEvent*);
+	virtual QSettings* BeginSettings ();
+	virtual void EndSettings (QSettings*);
 };
 
 #endif

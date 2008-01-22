@@ -5,7 +5,7 @@
 #include "addtorrent.h"
 #include "addmultipletorrents.h"
 #include "newtorrentwizard.h"
-#include "settingsmanager.h"
+#include "xmlsettingsmanager.h"
 
 void TorrentPlugin::Init ()
 {
@@ -16,9 +16,9 @@ void TorrentPlugin::Init ()
 
 	setupUi (this);
 	IsShown_ = false;
-	SettingsDialog_ = new SettingsDialog (this);
-	SettingsDialog_->RegisterObject (SettingsManager::Instance ());
 	AddTorrentDialog_ = new AddTorrent (this);
+	XmlSettingsDialog_ = new XmlSettingsDialog ();
+	XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/torrentsettings.xml");
 	connect (Core::Instance (), SIGNAL (error (QString)), this, SLOT (showError (QString)));
 	connect (Core::Instance (), SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (updateTorrentStats ()));
 	connect (Stats_, SIGNAL (currentChanged (int)), this, SLOT (updateTorrentStats ()));
@@ -99,7 +99,7 @@ void TorrentPlugin::SetProvider (QObject*, const QString&)
 void TorrentPlugin::Release ()
 {
 	Core::Instance ()->Release ();
-	SettingsManager::Instance ()->Release ();
+	XmlSettingsManager::Instance ()->Release ();
 }
 
 QIcon TorrentPlugin::GetIcon () const
@@ -220,8 +220,8 @@ void TorrentPlugin::on_ForceReannounce__triggered ()
 
 void TorrentPlugin::on_Preferences__triggered ()
 {
-	SettingsDialog_->show ();
-	SettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
+	XmlSettingsDialog_->show ();
+	XmlSettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
 }
 
 void TorrentPlugin::on_TorrentView__clicked (const QModelIndex&)

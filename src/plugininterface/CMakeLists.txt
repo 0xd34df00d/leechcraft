@@ -7,6 +7,7 @@ SET (SRCS
 	 tcpsocket.cpp
 	 filewriter.cpp
 	 filewriterthread.cpp
+	 basicsettingsmanager.cpp
 	 socketexceptions.cpp)
 SET (HEADERS
 	 addressparser.h
@@ -14,6 +15,7 @@ SET (HEADERS
 	 tcpsocket.h
 	 filewriter.h
 	 filewriterthread.h
+	 basicsettingsmanager.h
 	 socketexceptions.h)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})

@@ -3,7 +3,6 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/proxy.h>
 #include "updaterplugin.h"
-#include "settingsmanager.h"
 #include "xmlsettingsmanager.h"
 #include "globals.h"
 #include "core.h"

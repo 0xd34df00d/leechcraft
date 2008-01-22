@@ -3,7 +3,7 @@
 #include <QtDebug>
 #include <interfaces/interfaces.h>
 #include <plugininterface/proxy.h>
-#include "settingsmanager.h"
+#include "xmlsettingsmanager.h"
 #include "core.h"
 
 Core::Core ()
@@ -131,28 +131,30 @@ void Core::run ()
 bool Core::Check ()
 {
 	CheckState_ = Checking;
-	QStringList mirrors = SettingsManager::Instance ()->GetMirrors ();
+	QString mirror = XmlSettingsManager::Instance ()->property ("Mirror").toString ();
 	bool result = false;
-	for (int i = 0; i < mirrors.size (); ++i)
+	QObject *provider;
+	if (mirror.left (6).toLower () == "ftp://")
+		provider = Providers_ ["ftp"];
+	else if (mirror.left (7).toLower () == "http://")
+		provider = Providers_ ["http"];
+	else
 	{
-		QObject *provider;
-		QString mirror = mirrors [i];
-		if (mirror.left (6).toLower () == "ftp://")
-			provider = Providers_ ["ftp"];
-		else if (mirror.left (7).toLower () == "http://")
-			provider = Providers_ ["http"];
-		else
-			continue;
-
-		if (!provider)
-			continue;
-
-		if (!mirror.endsWith ('/'))
-			mirror.append ('/');
-
-		if ((result = HandleSingleMirror (provider, mirror)))
-			break;
+		emit error ("Wrong mirror");
+		return false;
 	}
+
+	if (!provider)
+	{
+		emit error ("Could not find satisfying provider");
+		return false;
+	}
+
+	if (!mirror.endsWith ('/'))
+		mirror.append ('/');
+
+	result = HandleSingleMirror (provider, mirror);
+
 
 	if (!result)
 	{
@@ -175,69 +177,73 @@ bool Core::Check ()
 void Core::Download ()
 {
 	ToApply_.clear ();
-	QStringList mirrors = SettingsManager::Instance ()->GetMirrors ();
+	QString mirror = XmlSettingsManager::Instance ()->property ("Mirror").toString ();
 	for (int i = 0; i < IDs2Download_.size (); ++i)
 	{
 		FileRepresentation rep = Files_.at (IDs2Download_.at (i));
-		for (int j = 0; j < mirrors.size (); ++j)
+		QObject *provider;
+		if (mirror.left (6).toLower () == "ftp://")
+			provider = Providers_ ["ftp"];
+		else if (mirror.left (7).toLower () == "http://")
+			provider = Providers_ ["http"];
+		else
 		{
-			QObject *provider;
-			QString mirror = mirrors [j];
-			if (mirror.left (6).toLower () == "ftp://")
-				provider = Providers_ ["ftp"];
-			else if (mirror.left (7).toLower () == "http://")
-				provider = Providers_ ["http"];
-			else
-				continue;
-
-			if (!provider)
-				continue;
-
-			if (!mirror.endsWith ('/'))
-				mirror.append ('/');
-
-			QFile file (QFileInfo (rep.Location_).fileName ());
-			if (file.exists ())
-			{
-				if (!file.open (QIODevice::ReadOnly))
-					break;
-				QByteArray downloadedHash = QCryptographicHash::hash (file.readAll (), QCryptographicHash::Md5);
-				if (downloadedHash.toHex () == rep.MD5_)
-				{
-					emit downloadedID (i);
-					IDs2Download_.removeAt (i--);
-					ToApply_ << rep;
-					break;
-				}
-			}
-			
-			DirectDownloadParams ddp = { mirror + rep.URL_, QFileInfo (rep.Location_).fileName (), true, SettingsManager::Instance ()->GetSaveDownloadedInHistory () };
-			disconnect (this, SIGNAL (addDownload (DirectDownloadParams)), provider, 0);
-			disconnect (provider, SIGNAL (jobAdded (int)), this, SLOT (fileDownloadAdded (int)));
-			connect (this, SIGNAL (addDownload (DirectDownloadParams)), provider, SLOT (addDownload (DirectDownloadParams)));
-			connect (provider, SIGNAL (jobAdded (int)), this, SLOT (fileDownloadAdded (int)));
-			emit addDownload (ddp);
-			qDebug () << Q_FUNC_INFO;
-
-			DownloadWaiter_.first->lock ();
-			DownloadWaiter_.second->wait (DownloadWaiter_.first);
-			DownloadWaiter_.first->unlock ();
-
-			if (!file.open (QIODevice::ReadOnly))
-				continue;
-			QByteArray downloadedHash = QCryptographicHash::hash (file.readAll (), QCryptographicHash::Md5);
-			if (downloadedHash.toHex () != rep.MD5_)
-			{
-				qDebug () << "File not downloaded";
-				file.close ();
-				if (!file.remove ())
-					break;
-			}
-			emit downloadedID (i);
-			IDs2Download_.removeAt (i--);
-			ToApply_ << rep;
-			break;
+			emit error (tr ("Wrong mirror"));
+			return;
 		}
+
+		if (!provider)
+		{
+			emit error (tr ("Could not find satisfying provider"));
+			return;
+		}
+
+		if (!mirror.endsWith ('/'))
+			mirror.append ('/');
+
+		QFile file (QFileInfo (rep.Location_).fileName ());
+		if (file.exists ())
+		{
+			if (!file.open (QIODevice::ReadOnly))
+			{
+				emit error ("Could not open the file");
+				break;
+			}
+			QByteArray downloadedHash = QCryptographicHash::hash (file.readAll (), QCryptographicHash::Md5);
+			if (downloadedHash.toHex () == rep.MD5_)
+			{
+				emit downloadedID (i);
+				IDs2Download_.removeAt (i--);
+				ToApply_ << rep;
+				break;
+			}
+		}
+		
+		DirectDownloadParams ddp = { mirror + rep.URL_, QFileInfo (rep.Location_).fileName (), true, XmlSettingsManager::Instance ()->property ("SaveInHistory").toBool () };
+		disconnect (this, SIGNAL (addDownload (DirectDownloadParams)), provider, 0);
+		disconnect (provider, SIGNAL (jobAdded (int)), this, SLOT (fileDownloadAdded (int)));
+		connect (this, SIGNAL (addDownload (DirectDownloadParams)), provider, SLOT (addDownload (DirectDownloadParams)));
+		connect (provider, SIGNAL (jobAdded (int)), this, SLOT (fileDownloadAdded (int)));
+		emit addDownload (ddp);
+		qDebug () << Q_FUNC_INFO;
+
+		DownloadWaiter_.first->lock ();
+		DownloadWaiter_.second->wait (DownloadWaiter_.first);
+		DownloadWaiter_.first->unlock ();
+
+		if (!file.open (QIODevice::ReadOnly))
+			continue;
+		QByteArray downloadedHash = QCryptographicHash::hash (file.readAll (), QCryptographicHash::Md5);
+		if (downloadedHash.toHex () != rep.MD5_)
+		{
+			qDebug () << "File not downloaded";
+			file.close ();
+			if (!file.remove ())
+				return;
+		}
+		emit downloadedID (i);
+		IDs2Download_.removeAt (i--);
+		ToApply_ << rep;
 	}
 
 	if (IDs2Download_.size ())
@@ -254,7 +260,7 @@ void Core::Download ()
 void Core::ApplyUpdates ()
 {
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
-	settings.beginGroup (Globals::Name);
+	settings.beginGroup ("Updater");
 	settings.beginGroup ("syncs");
 	for (int i = 0; i < ToApply_.size (); ++i)
 	{
@@ -325,7 +331,7 @@ void Core::CollectFiles (QDomElement &e)
 {
 	QDomElement fileChild = e.firstChildElement ("file");
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
-	settings.beginGroup (Globals::Name);
+	settings.beginGroup ("Updater");
 	settings.beginGroup ("syncs");
 
 	while (!fileChild.isNull ())

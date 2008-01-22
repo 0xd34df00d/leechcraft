@@ -25,6 +25,7 @@ SET (SRCS
 	secondstep.cpp
 	thirdstep.cpp
 	addmultipletorrents.cpp
+	xmlsettingsmanager.cpp
     settingsmanager.cpp)
 SET (HEADERS
 	torrentplugin.h 
@@ -42,6 +43,7 @@ SET (HEADERS
 	fileinfo.h
 	peerinfo.h
 	overallstats.h
+	xmlsettingsmanager.h
 	newtorrentparams.h)
 SET (FORMS
     mainwindow.ui
@@ -69,6 +71,7 @@ IF (WIN32)
 							plugininterface
 							exceptions
 							settingsdialog
+							xmlsettingsdialog
 							torrent
 							boost_date_time-mgw42-mt-1_34_1
 							boost_filesystem-mgw42-mt-1_34_1

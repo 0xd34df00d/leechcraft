@@ -9,23 +9,7 @@ Q_GLOBAL_STATIC (XmlSettingsManager, XmlSettingsManagerInstance);
 
 XmlSettingsManager::XmlSettingsManager ()
 {
-    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
-    settings.beginGroup ("Updater");
-    settings.beginGroup ("mainsettings");
-	QStringList properties = settings.allKeys ();
-	qDebug () << properties;
-	for (int i = 0; i < properties.size (); ++i)
-		setProperty (PROP2CHAR (properties.at (i)), settings.value (properties.at (i)));
-	settings.endGroup ();
-	settings.endGroup ();
-}
-
-XmlSettingsManager::~XmlSettingsManager ()
-{
-}
-
-void XmlSettingsManager::Release ()
-{
+	BasicSettingsManager::Init ();
 }
 
 XmlSettingsManager* XmlSettingsManager::Instance ()
@@ -33,22 +17,18 @@ XmlSettingsManager* XmlSettingsManager::Instance ()
     return XmlSettingsManagerInstance ();
 }
 
-bool XmlSettingsManager::event (QEvent *e)
+QSettings* XmlSettingsManager::BeginSettings ()
 {
-	if (e->type () != QEvent::DynamicPropertyChange)
-		return false;
+    QSettings *settings = new QSettings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
+    settings->beginGroup ("Updater");
+    settings->beginGroup ("mainsettings");
+	return settings;
+}
 
-	QDynamicPropertyChangeEvent *event = dynamic_cast<QDynamicPropertyChangeEvent*> (e);
-
-	QByteArray name = event->propertyName ();
-    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
-    settings.beginGroup ("Updater");
-    settings.beginGroup ("mainsettings");
-	settings.setValue (name, property (name));
-	settings.endGroup ();
-	settings.endGroup ();
-
-	event->accept ();
-	return true;
+void XmlSettingsManager::EndSettings (QSettings* settings)
+{
+	settings->endGroup ();
+	settings->endGroup ();
+	delete settings;
 }
 

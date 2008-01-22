@@ -131,6 +131,23 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 
 		lay->addWidget (box, row, 0, 1, 2);
 	}
+	else if (type == "spinbox")
+	{
+		QLabel *label = new QLabel (GetLabel (item));
+		QSpinBox *box = new QSpinBox;
+		box->setObjectName (property);
+		box->setValue (value.isNull () ? item.attribute ("default").toInt () : value.toInt ());
+		if (item.hasAttribute ("minimum"))
+			box->setMinimum (item.attribute ("minimum").toInt ());
+		if (item.hasAttribute ("maximum"))
+			box->setMinimum (item.attribute ("maximum").toInt ());
+		if (item.hasAttribute ("step"))
+			box->setMinimum (item.attribute ("step").toInt ());
+		connect (box, SIGNAL (valueChanged (int)), this, SLOT (updatePreferences ()));
+		
+		lay->addWidget (label, row, 0);
+		lay->addWidget (box, row, 1);
+	}
 }
 
 QString XmlSettingsDialog::GetLabel (const QDomElement& item)

@@ -19,6 +19,7 @@
 #include <boost/filesystem/fstream.hpp>
 #include <plugininterface/proxy.h>
 #include "core.h"
+#include "xmlsettingsmanager.h"
 #include "settingsmanager.h"
 
 Q_GLOBAL_STATIC (Core, CoreInstance);

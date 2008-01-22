@@ -2,7 +2,7 @@
 #define TORRENTPLUIGN_H
 #include <QMainWindow>
 #include <interfaces/interfaces.h>
-#include <settingsdialog/settingsdialog.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "ui_mainwindow.h"
 #include "torrentinfo.h"
 
@@ -21,7 +21,7 @@ class TorrentPlugin : public QMainWindow
 
 	ID_t ID_;
 	bool IsShown_;
-	SettingsDialog *SettingsDialog_;
+	XmlSettingsDialog *XmlSettingsDialog_;
 	AddTorrent *AddTorrentDialog_;
 	QTimer *OverallStatsUpdateTimer_;
 public:
