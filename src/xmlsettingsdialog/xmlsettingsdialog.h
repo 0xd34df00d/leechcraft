@@ -2,6 +2,8 @@
 #define XMLSETTINGSDIALOG_H
 #include <QDialog>
 #include <QString>
+#include <QMap>
+#include <QVariant>
 
 class QStackedWidget;
 class QListWidget;
@@ -15,6 +17,9 @@ class XmlSettingsDialog : public QDialog
 	QPushButton *OK_, *Cancel_;
 	QStackedWidget *Pages_;
 	QListWidget *Sections_;
+	QObject *WorkingObject_;
+	typedef QMap<QString, QVariant> Property2Value_t;
+	Property2Value_t Prop2NewValue_;
 public:
 	XmlSettingsDialog (QWidget *parent = 0);
 	void RegisterObject (QObject*, const QString&);
@@ -24,6 +29,8 @@ private:
 	QString GetLabel (const QDomElement&);
 private slots:
 	void updatePreferences ();
+protected:
+	virtual void accept ();
 };
 
 #endif

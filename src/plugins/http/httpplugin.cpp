@@ -66,6 +66,13 @@ void HttpPlugin::Init ()
 	connect (FinishedList_, SIGNAL (itemSelectionChanged ()), this, SLOT (setActionsEnabled ()));
 	connect (TasksList_, SIGNAL (itemSelectionChanged ()), this, SLOT (setActionsEnabled ()));
 	setActionsEnabled ();
+
+    QMenu *plugins = Proxy::Instance ()->GetRootPluginsMenu ()->addMenu (tr ("&HTTP/FTP"));
+    plugins->addAction (AddJobAction_);
+    plugins->addAction (StartAllAction_);
+    plugins->addAction (StopAllAction_);
+    plugins->addSeparator ();
+    plugins->addAction (PreferencesAction_);
 }
 
 HttpPlugin::~HttpPlugin ()
@@ -122,12 +129,6 @@ void HttpPlugin::SetupJobManagementBar ()
 	DeleteFinishedAction_->setShortcut (Qt::Key_Delete & Qt::ShiftModifier);
 	DeleteFinishedAction_->setStatusTip (tr ("Delete selected finished job(s)"));
 
-    QMenu *plugins = Proxy::Instance ()->GetRootPluginsMenu ()->addMenu (tr ("&HTTP/FTP"));
-    plugins->addAction (AddJobAction_);
-    plugins->addAction (StartAllAction_);
-    plugins->addAction (StopAllAction_);
-    plugins->addSeparator ();
-    plugins->addAction (PreferencesAction_);
 }
 
 void HttpPlugin::SetupJobManagementMenu (QMenu *jobsMenu)

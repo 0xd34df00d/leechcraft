@@ -11,6 +11,8 @@ public:
 	~XmlSettingsManager ();
 	void Release ();
 	static XmlSettingsManager* Instance ();
+protected:
+	virtual bool event (QEvent*);
 };
 
 #endif

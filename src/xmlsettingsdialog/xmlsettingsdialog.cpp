@@ -36,6 +36,7 @@ XmlSettingsDialog::XmlSettingsDialog (QWidget *parent)
 
 void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& filename)
 {
+	WorkingObject_ = obj;
 	QFile file (filename);
 	if (!file.open (QIODevice::ReadOnly))
 	{
@@ -106,13 +107,16 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 	QGridLayout *lay = qobject_cast<QGridLayout*> (baseWidget->layout ());
 	int row = lay->rowCount ();
 
+	QString property = item.attribute ("property");
+	QVariant value = WorkingObject_->property (property.toLatin1 ().constData ());
+
 	if (type.isEmpty () || type.isNull ())
 		return;
 	else if (type == "lineedit")
 	{
 		QLabel *label = new QLabel (GetLabel (item));
-		QLineEdit *edit = new QLineEdit (item.attribute ("default"));
-		edit->setObjectName (item.attribute ("property"));
+		QLineEdit *edit = new QLineEdit (value.isNull () ? item.attribute ("default") : value.toString ());
+		edit->setObjectName (property);
 		connect (edit, SIGNAL (textChanged (const QString&)), this, SLOT (updatePreferences ()));
 
 		lay->addWidget (label, row, 0);
@@ -121,8 +125,8 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 	else if (type == "checkbox")
 	{
 		QCheckBox *box = new QCheckBox (GetLabel (item));
-		box->setObjectName (item.attribute ("property"));
-		box->setCheckState (item.attribute ("state") == "on" ? Qt::Checked : Qt::Unchecked);
+		box->setObjectName (property);
+		box->setCheckState ((value.isNull () ? item.attribute ("state") == "on" : value.toBool ()) ? Qt::Checked : Qt::Unchecked);
 		connect (box, SIGNAL (stateChanged (int)), this, SLOT (updatePreferences ()));
 
 		lay->addWidget (box, row, 0, 1, 2);
@@ -147,5 +151,30 @@ QString XmlSettingsDialog::GetLabel (const QDomElement& item)
 		label = label.nextSiblingElement ("label");
 	}
 	return result;
+}
+
+void XmlSettingsDialog::updatePreferences ()
+{
+	QString propertyName = sender ()->objectName ();
+	QVariant value;
+
+	QLineEdit *edit = qobject_cast<QLineEdit*> (sender ());
+	QCheckBox *checkbox = qobject_cast<QCheckBox*> (sender ());
+	if (edit)
+		value = edit->text ();
+	else if (checkbox)
+		value = checkbox->checkState ();
+	else
+		return;
+
+	Prop2NewValue_ [propertyName] = value;
+}
+
+void XmlSettingsDialog::accept ()
+{
+	for (Property2Value_t::const_iterator i = Prop2NewValue_.begin (); i != Prop2NewValue_.end (); ++i)
+		WorkingObject_->setProperty (i.key ().toLatin1 ().constData (), i.value ());
+
+	QDialog::accept ();
 }
 
