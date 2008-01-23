@@ -17,7 +17,7 @@ void TorrentPlugin::Init ()
 	setupUi (this);
 	IsShown_ = false;
 	AddTorrentDialog_ = new AddTorrent (this);
-	XmlSettingsDialog_ = new XmlSettingsDialog ();
+	XmlSettingsDialog_ = new XmlSettingsDialog (this);
 	XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/torrentsettings.xml");
 	connect (Core::Instance (), SIGNAL (error (QString)), this, SLOT (showError (QString)));
 	connect (Core::Instance (), SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (updateTorrentStats ()));

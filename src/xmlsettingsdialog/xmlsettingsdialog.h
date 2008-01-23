@@ -25,6 +25,7 @@ public:
 	void RegisterObject (QObject*, const QString&);
 private:
 	void ParsePage (const QDomElement&);
+	void ParseEntity (const QDomElement&, QWidget*);
 	void ParseItem (const QDomElement&, QWidget*);
 	QString GetLabel (const QDomElement&);
 private slots:

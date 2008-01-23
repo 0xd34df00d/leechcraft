@@ -90,13 +90,34 @@ void XmlSettingsDialog::ParsePage (const QDomElement& page)
 
 	QWidget *baseWidget = new QWidget;
 	Pages_->addWidget (baseWidget);
-	baseWidget->setLayout (new QGridLayout);
+	QGridLayout *lay = new QGridLayout;
+	baseWidget->setLayout (lay);
 
-	QDomElement item = page.firstChildElement ("item");
+	ParseEntity (page, baseWidget);
+	lay->setRowStretch (lay->rowCount (), 1);
+}
+
+void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWidget)
+{
+	QDomElement item = entity.firstChildElement ("item");
 	while (!item.isNull ())
 	{
 		ParseItem (item, baseWidget);
 		item = item.nextSiblingElement ("item");
+	}
+
+	QDomElement gbox = entity.firstChildElement ("groupbox");
+	while (!gbox.isNull ())
+	{
+		QGroupBox *box = new QGroupBox (GetLabel (gbox));
+		box->setLayout (new QGridLayout);
+		ParseEntity (gbox, box);
+		
+		QGridLayout *lay = qobject_cast<QGridLayout*> (baseWidget->layout ());
+		int row = lay->rowCount ();
+		lay->addWidget (box, row, 0, 1, 2);
+
+		gbox = gbox.nextSiblingElement ("groupbox");
 	}
 }
 
@@ -136,17 +157,30 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 		QLabel *label = new QLabel (GetLabel (item));
 		QSpinBox *box = new QSpinBox;
 		box->setObjectName (property);
-		box->setValue (value.isNull () ? item.attribute ("default").toInt () : value.toInt ());
 		if (item.hasAttribute ("minimum"))
 			box->setMinimum (item.attribute ("minimum").toInt ());
 		if (item.hasAttribute ("maximum"))
-			box->setMinimum (item.attribute ("maximum").toInt ());
+			box->setMaximum (item.attribute ("maximum").toInt ());
 		if (item.hasAttribute ("step"))
-			box->setMinimum (item.attribute ("step").toInt ());
+			box->setSingleStep (item.attribute ("step").toInt ());
+		box->setValue (value.isNull () ? item.attribute ("default").toInt () : value.toInt ());
 		connect (box, SIGNAL (valueChanged (int)), this, SLOT (updatePreferences ()));
 		
 		lay->addWidget (label, row, 0);
 		lay->addWidget (box, row, 1);
+	}
+	else if (type == "groupbox" && item.attribute ("checkable") == "true")
+	{
+		QGroupBox *box = new QGroupBox (GetLabel (item));
+		box->setObjectName (property);
+		box->setLayout (new QGridLayout);
+		box->setCheckable (true);
+		qDebug () << value;
+		box->setChecked (value.isNull () ? item.attribute ("state") == "on" : value.toBool ());
+		connect (box, SIGNAL (toggled (bool)), this, SLOT (updatePreferences ()));
+		ParseEntity (item, box);
+		
+		lay->addWidget (box, row, 0, 1, 2);
 	}
 }
 
@@ -177,12 +211,24 @@ void XmlSettingsDialog::updatePreferences ()
 
 	QLineEdit *edit = qobject_cast<QLineEdit*> (sender ());
 	QCheckBox *checkbox = qobject_cast<QCheckBox*> (sender ());
+	QSpinBox *spinbox = qobject_cast<QSpinBox*> (sender ());
+	QGroupBox *groupbox = qobject_cast<QGroupBox*> (sender ());
 	if (edit)
 		value = edit->text ();
 	else if (checkbox)
 		value = checkbox->checkState ();
+	else if (spinbox)
+		value = spinbox->value ();
+	else if (groupbox)
+	{
+		value = groupbox->isChecked ();
+		qDebug () << value;
+	}
 	else
+	{
+		qWarning () << Q_FUNC_INFO << "unhandled class" << sender ();
 		return;
+	}
 
 	Prop2NewValue_ [propertyName] = value;
 }

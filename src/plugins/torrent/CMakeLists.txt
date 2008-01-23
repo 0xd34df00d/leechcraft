@@ -70,7 +70,6 @@ IF (WIN32)
 							${QT_LIBRARIES}
 							plugininterface
 							exceptions
-							settingsdialog
 							xmlsettingsdialog
 							torrent
 							boost_date_time-mgw42-mt-1_34_1
@@ -81,7 +80,7 @@ ELSE (WIN32)
 							${QT_LIBRARIES}
 							plugininterface
 							exceptions
-							settingsdialog
+							xmlsettingsdialog
 							torrent)
 ENDIF (WIN32)
 INSTALL (TARGETS leechcraft_torrent DESTINATION share/leechcraft/plugins)
