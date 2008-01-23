@@ -67,12 +67,11 @@ void HttpPlugin::Init ()
 	connect (TasksList_, SIGNAL (itemSelectionChanged ()), this, SLOT (setActionsEnabled ()));
 	setActionsEnabled ();
 
-    QMenu *plugins = Proxy::Instance ()->GetRootPluginsMenu ()->addMenu (tr ("&HTTP/FTP"));
-    plugins->addAction (AddJobAction_);
-    plugins->addAction (StartAllAction_);
-    plugins->addAction (StopAllAction_);
-    plugins->addSeparator ();
-    plugins->addAction (PreferencesAction_);
+    Plugins_->addAction (AddJobAction_);
+    Plugins_->addAction (StartAllAction_);
+    Plugins_->addAction (StopAllAction_);
+    Plugins_->addSeparator ();
+    Plugins_->addAction (PreferencesAction_);
 }
 
 HttpPlugin::~HttpPlugin ()
@@ -291,6 +290,11 @@ QStringList HttpPlugin::Uses () const
 void HttpPlugin::SetProvider (QObject *object, const QString& feature)
 {
 	JobManager_->SetProvider (object, feature);
+}
+
+void HttpPlugin::PushMainWindowExternals (const MainWindowExternals& ex)
+{
+    Plugins_ = ex.RootMenu_->addMenu (tr ("&HTTP/FTP"));
 }
 
 void HttpPlugin::Release ()

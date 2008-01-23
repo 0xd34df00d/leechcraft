@@ -35,6 +35,7 @@ public:
 	virtual QStringList Needs () const = 0;
 	virtual QStringList Uses () const = 0;
 	virtual void SetProvider (QObject*, const QString&) = 0;
+	virtual void PushMainWindowExternals (const MainWindowExternals&) = 0;
 	virtual void Release () = 0;
 	virtual ~IInfo () {}
 };

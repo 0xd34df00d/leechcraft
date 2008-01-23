@@ -11,23 +11,23 @@
 #include "interfaces/interfaces.h"
 
 class QString;
-class QMainWindow;
 
 namespace Main
 {
+	class MainWindow;
 	class Core : public QAbstractTableModel
 	{
 		Q_OBJECT
 
 		QList<int> TasksIDPool_;
-		Main::PluginManager *PluginManager_;
-		QMainWindow *ReallyMainWindow_;
+		PluginManager *PluginManager_;
+		MainWindow *ReallyMainWindow_;
 	public:
 		Core (QObject *parent = 0);
 		~Core ();
 
-		void SetReallyMainWindow (QMainWindow*);
-		QMainWindow *GetReallyMainWindow ();
+		void SetReallyMainWindow (MainWindow*);
+		MainWindow *GetReallyMainWindow ();
 
 		void DelayedInit ();
 		void InitTask (const QString&);

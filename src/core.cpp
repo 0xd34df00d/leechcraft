@@ -2,6 +2,7 @@
 #include <QtDebug>
 #include <limits>
 #include <iostream>
+#include "mainwindow.h"
 #include "pluginmanager.h"
 #include "plugininfo.h"
 #include "core.h"
@@ -21,19 +22,19 @@ Main::Core::~Core ()
 {
 }
 
-void Main::Core::SetReallyMainWindow (QMainWindow *win)
+void Main::Core::SetReallyMainWindow (Main::MainWindow *win)
 {
 	ReallyMainWindow_ = win;
 }
 
-QMainWindow* Main::Core::GetReallyMainWindow ()
+Main::MainWindow* Main::Core::GetReallyMainWindow ()
 {
 	return ReallyMainWindow_;
 }
 
 void Main::Core::DelayedInit ()
 {
-	PluginManager_->InitializePlugins ();
+	PluginManager_->InitializePlugins (ReallyMainWindow_);
 	PluginManager_->CalculateDependencies ();
 	PluginManager_->ThrowPlugins ();
 	QObjectList plugins = PluginManager_->GetAllPlugins ();

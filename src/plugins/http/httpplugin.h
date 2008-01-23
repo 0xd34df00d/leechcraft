@@ -55,6 +55,7 @@ class HttpPlugin : public QMainWindow
 		  , *SelectFinishedColumnsAction_
 		  , *AutoAdjustInterfaceAction_;
 	QToolBar *JobManagementToolbar_, *FinishedManagementToolbar_;
+	QMenu *Plugins_;
 public:
 	enum TasksListHeaders
 	{
@@ -108,6 +109,7 @@ public:
 	virtual QStringList Needs () const;
 	virtual QStringList Uses () const;
 	virtual void SetProvider (QObject*, const QString&);
+	virtual void PushMainWindowExternals (const MainWindowExternals&);
 	virtual void Release ();
 
 	virtual QIcon GetIcon () const;

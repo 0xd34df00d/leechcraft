@@ -31,7 +31,6 @@ public:
 	QTime MakeTimeFromLong (ulong) const;
 	void AddUploadMessage (const QString&) const;
 	void AddDownloadMessage (const QString&) const;
-	QMenu* GetRootPluginsMenu () const;
 signals:
 	void addMessage (const QString&, bool) const;
 private:

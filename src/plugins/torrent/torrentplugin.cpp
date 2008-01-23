@@ -43,12 +43,11 @@ void TorrentPlugin::Init ()
 	header->resizeSection (Core::ColumnDSpeed, fm.width ("_1234.0 KB/s_"));
 	header->resizeSection (Core::ColumnRemaining, fm.width ("10d 00:00:00"));
 
-	QMenu *plugins = Proxy::Instance ()->GetRootPluginsMenu ()->addMenu (tr ("&BitTorrent"));
-	plugins->addAction (OpenTorrent_);
-	plugins->addAction (OpenMultipleTorrents_);
-	plugins->addAction (CreateTorrent_);
-	plugins->addSeparator ();
-	plugins->addAction (Preferences_);
+	Plugins_->addAction (OpenTorrent_);
+	Plugins_->addAction (OpenMultipleTorrents_);
+	Plugins_->addAction (CreateTorrent_);
+	Plugins_->addSeparator ();
+	Plugins_->addAction (Preferences_);
 }
 
 QString TorrentPlugin::GetName () const
@@ -94,6 +93,11 @@ QStringList TorrentPlugin::Uses () const
 
 void TorrentPlugin::SetProvider (QObject*, const QString&)
 {
+}
+
+void TorrentPlugin::PushMainWindowExternals (const MainWindowExternals& ex)
+{
+	Plugins_ = ex.RootMenu_->addMenu (tr ("&BitTorrent"));
 }
 
 void TorrentPlugin::Release ()

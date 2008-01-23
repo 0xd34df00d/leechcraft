@@ -24,6 +24,7 @@ class TorrentPlugin : public QMainWindow
 	XmlSettingsDialog *XmlSettingsDialog_;
 	AddTorrent *AddTorrentDialog_;
 	QTimer *OverallStatsUpdateTimer_;
+	QMenu *Plugins_;
 public:
 	void Init ();
 	QString GetName () const;
@@ -35,6 +36,7 @@ public:
 	QStringList Needs () const;
 	QStringList Uses () const;
 	void SetProvider (QObject*, const QString&);
+	void PushMainWindowExternals (const MainWindowExternals&);
 	void Release ();
 	QIcon GetIcon () const;
 	void SetParent (QWidget*);

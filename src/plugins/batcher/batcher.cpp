@@ -72,6 +72,10 @@ void Batcher::SetProvider (QObject *obj, const QString& feature)
 	Providers_ [feature] = obj;
 }
 
+void Batcher::PushMainWindowExternals (const MainWindowExternals&)
+{
+}
+
 void Batcher::Release ()
 {
 }

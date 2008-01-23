@@ -27,6 +27,7 @@ public:
 	QStringList Needs () const;
 	QStringList Uses () const;
 	void SetProvider (QObject*, const QString&);
+	void PushMainWindowExternals (const MainWindowExternals&);
 	void Release ();
 public slots:
 	void addSingleShot (QDateTime);

@@ -11,6 +11,7 @@
 #include "core.h"
 #include "pluginmanager.h"
 #include "plugininfo.h"
+#include "mainwindow.h"
 
 using namespace Main;
 
@@ -76,7 +77,7 @@ QObjectList PluginManager::GetAllPlugins ()
 	return result;
 }
 
-void PluginManager::InitializePlugins ()
+void PluginManager::InitializePlugins (const MainWindow* win)
 {
 	for (int i = 0; i < Plugins_.size (); ++i)
 	{
@@ -98,7 +99,9 @@ void PluginManager::InitializePlugins ()
 			Plugins_.removeAt (i--);
 			continue;
 		}
+		MainWindowExternals ex = { win->GetRootPluginsMenu () };
 		info->SetID (i);
+		info->PushMainWindowExternals (ex);
 		info->Init ();
 	}
 }

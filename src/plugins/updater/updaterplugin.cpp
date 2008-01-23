@@ -94,6 +94,10 @@ void UpdaterPlugin::SetProvider (QObject* provider, const QString& feature)
 	Core_->SetProvider (provider, feature);
 }
 
+void UpdaterPlugin::PushMainWindowExternals (const MainWindowExternals&)
+{
+}
+
 void UpdaterPlugin::Release ()
 {
 	saveSettings ();

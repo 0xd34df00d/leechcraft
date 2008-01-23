@@ -68,7 +68,6 @@ void Core::DoDelayedInit ()
 	XmlSettingsManager::Instance ()->RegisterObject ("AutosaveInterval", this, "autosaveIntervalChanged");
 	XmlSettingsManager::Instance ()->RegisterObject ("MaxUploads", this, "maxUploadsChanged");
 	XmlSettingsManager::Instance ()->RegisterObject ("MaxConnections", this, "maxConnectionsChanged");
-	XmlSettingsManager::Instance ()->RegisterObject
 
 	RestoreTorrents ();
 }

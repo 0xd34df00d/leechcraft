@@ -10,6 +10,7 @@ class QPluginLoader;
 
 namespace Main
 {
+	class MainWindow;
 	class PluginManager : public QObject
 	{
 		Q_OBJECT
@@ -28,7 +29,7 @@ namespace Main
 		QString Info (const Size_t& pos) const;
 		QObject* FindByID (IInfo::ID_t) const;
 		QObjectList GetAllPlugins ();
-		void InitializePlugins ();
+		void InitializePlugins (const MainWindow*);
 		void CalculateDependencies ();
 		void ThrowPlugins ();
 		QObjectList GetAllPlugins () const;

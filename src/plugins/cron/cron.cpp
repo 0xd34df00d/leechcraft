@@ -55,6 +55,10 @@ void Cron::SetProvider (QObject *provider, const QString& feature)
 	Providers_ [feature] = provider;
 }
 
+void Cron::PushMainWindowExternals (const MainWindowExternals&)
+{
+}
+
 void Cron::Release ()
 {
 	Core_->Release ();
