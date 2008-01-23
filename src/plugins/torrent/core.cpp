@@ -20,7 +20,6 @@
 #include <plugininterface/proxy.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
-#include "settingsmanager.h"
 
 Q_GLOBAL_STATIC (Core, CoreInstance);
 
@@ -32,17 +31,21 @@ Core* Core::Instance ()
 Core::Core (QObject *parent)
 : QAbstractItemModel (parent)
 {
+}
+
+void Core::DoDelayedInit ()
+{
 	Session_ = new libtorrent::session (libtorrent::fingerprint ("LB", 0, 1, 0, 2));
-	QPair<int, int> ports = SettingsManager::Instance ()->GetPortRange ();
+	QList<QVariant> ports = XmlSettingsManager::Instance ()->property ("TCPPortRange").toList ();
 	try
 	{
-		Session_->listen_on (std::make_pair (ports.first, ports.second));
+		Session_->listen_on (std::make_pair (ports.at (0).toInt (), ports.at (1).toInt ()));
 		Session_->add_extension (&libtorrent::create_metadata_plugin);
 		Session_->add_extension (&libtorrent::create_ut_pex_plugin);
-		if (SettingsManager::Instance ()->GetDHTEnabled ())
+		if (XmlSettingsManager::Instance ()->property ("DHTEnabled").toBool ())
 			Session_->start_dht (libtorrent::entry ());
-		Session_->set_max_uploads (SettingsManager::Instance ()->GetMaxUploads ());
-		Session_->set_max_connections (SettingsManager::Instance ()->GetMaxConnections ());
+		Session_->set_max_uploads (XmlSettingsManager::Instance ()->property ("MaxUploads").toInt ());
+		Session_->set_max_connections (XmlSettingsManager::Instance ()->property ("MaxConnections").toInt ());
 		setSessionSettings ();
 	}
 	catch (const asio::system_error&)
@@ -56,19 +59,17 @@ Core::Core (QObject *parent)
 	InterfaceUpdateTimer_ = startTimer (1000);
 	SettingsSaveTimer_ = new QTimer (this);
 	connect (SettingsSaveTimer_, SIGNAL (timeout ()), this, SLOT (writeSettings ()));
-	SettingsSaveTimer_->start (SettingsManager::Instance ()->GetAutosaveInterval () * 1000);
-	SetOverallDownloadRate (SettingsManager::Instance ()->GetDownloadRateLimit ());
-	SetOverallUploadRate (SettingsManager::Instance ()->GetUploadRateLimit ());
-	SetDesiredRating (SettingsManager::Instance ()->GetDesiredRating ());
+	SettingsSaveTimer_->start (XmlSettingsManager::Instance ()->property ("AutosaveInterval").toInt () * 1000);
+	SetOverallDownloadRate (XmlSettingsManager::Instance ()->Property ("DownloadRateLimit", 5000).toInt ());
+	SetOverallUploadRate (XmlSettingsManager::Instance ()->Property ("UploadRateLimit", 5000).toInt ());
+	SetDesiredRating (XmlSettingsManager::Instance ()->Property ("DesiredRating", 0).toInt ());
 
-	SettingsManager::Instance ()->RegisterObject ("DHTState", this, "dhtStateChanged");
-	SettingsManager::Instance ()->RegisterObject ("AutosaveInterval", this, "autosaveIntervalChanged");
-	SettingsManager::Instance ()->RegisterObject ("MaxUploads", this, "maxUploadsChanged");
-	SettingsManager::Instance ()->RegisterObject ("MaxConnections", this, "maxConnectionsChanged");
-}
+	XmlSettingsManager::Instance ()->RegisterObject ("DHTEnabled", this, "dhtStateChanged");
+	XmlSettingsManager::Instance ()->RegisterObject ("AutosaveInterval", this, "autosaveIntervalChanged");
+	XmlSettingsManager::Instance ()->RegisterObject ("MaxUploads", this, "maxUploadsChanged");
+	XmlSettingsManager::Instance ()->RegisterObject ("MaxConnections", this, "maxConnectionsChanged");
+	XmlSettingsManager::Instance ()->RegisterObject
 
-void Core::DoDelayedInit ()
-{
 	RestoreTorrents ();
 }
 
@@ -399,13 +400,13 @@ void Core::ForceReannounce (int pos)
 void Core::SetOverallDownloadRate (int val)
 {
 	Session_->set_download_rate_limit (val == 100 ? -1 : val * 1024);
-	SettingsManager::Instance ()->SetDownloadRateLimit (val);
+	XmlSettingsManager::Instance ()->setProperty ("DownloadRateLimit", val);
 }
 
 void Core::SetOverallUploadRate (int val)
 {
 	Session_->set_upload_rate_limit (val == 100 ? -1 : val * 1024);
-	SettingsManager::Instance ()->SetUploadRateLimit (val);
+	XmlSettingsManager::Instance ()->setProperty ("UploadRateLimit", val);
 }
 
 void Core::SetDesiredRating (double val)
@@ -418,22 +419,22 @@ void Core::SetDesiredRating (double val)
 		Handles_.at (i).Handle_.set_ratio (val ? 1/val : 0);
 	}
 
-	SettingsManager::Instance ()->SetDesiredRating (val);
+	XmlSettingsManager::Instance ()->setProperty ("DesiredRating", val);
 }
 
 int Core::GetOverallDownloadRate () const
 {
-	return SettingsManager::Instance ()->GetDownloadRateLimit ();
+	return XmlSettingsManager::Instance ()->property ("DownloadRateLimit").toInt ();
 }
 
 int Core::GetOverallUploadRate () const
 {
-	return SettingsManager::Instance ()->GetUploadRateLimit ();
+	return XmlSettingsManager::Instance ()->property ("UploadRateLimit").toInt ();
 }
 
 double Core::GetDesiredRating () const
 {
-	return SettingsManager::Instance ()->GetDesiredRating ();
+	return XmlSettingsManager::Instance ()->property ("DesiredRating").toInt ();
 }
 
 namespace
@@ -698,7 +699,7 @@ void Core::timerEvent (QTimerEvent *e)
 
 void Core::dhtStateChanged ()
 {
-	if (SettingsManager::Instance ()->GetDHTEnabled ())
+	if (XmlSettingsManager::Instance ()->property ("DHTEnabled").toBool ())
 		Session_->start_dht (libtorrent::entry ());
 	else
 		Session_->stop_dht ();
@@ -707,29 +708,29 @@ void Core::dhtStateChanged ()
 void Core::autosaveIntervalChanged ()
 {
 	SettingsSaveTimer_->stop ();
-	SettingsSaveTimer_->start (SettingsManager::Instance ()->GetAutosaveInterval () * 1000);
+	SettingsSaveTimer_->start (XmlSettingsManager::Instance ()->property ("AutosaveInterval").toInt () * 1000);
 }
 
 void Core::maxUploadsChanged ()
 {
-	Session_->set_max_uploads (SettingsManager::Instance ()->GetMaxUploads ());
+	Session_->set_max_uploads (XmlSettingsManager::Instance ()->property ("MaxUploads").toInt ());
 }
 
 void Core::maxConnectionsChanged ()
 {
-	Session_->set_max_connections (SettingsManager::Instance ()->GetMaxConnections ());
+	Session_->set_max_connections (XmlSettingsManager::Instance ()->property ("MaxConnections").toInt ());
 }
 
 void Core::setSessionSettings ()
 {
 	libtorrent::session_settings settings;
 	libtorrent::proxy_settings trackerProxySettings, peerProxySettings;
-	if (SettingsManager::Instance ()->GetTrackerProxyEnabled ())
+	if (XmlSettingsManager::Instance ()->property ("TrackerProxyEnabled").toBool ())
 	{
-		trackerProxySettings.hostname = SettingsManager::Instance ()->GetTrackerProxyAddress ().toStdString ();
-		trackerProxySettings.port = SettingsManager::Instance ()->GetTrackerProxyPort ();
-		trackerProxySettings.username = SettingsManager::Instance ()->GetTrackerProxyLogin ().toStdString ();
-		trackerProxySettings.password = SettingsManager::Instance ()->GetTrackerProxyPassword ().toStdString ();
+		trackerProxySettings.hostname = XmlSettingsManager::Instance ()->property ("TrackerProxyAddress").toString ().toStdString ();
+		trackerProxySettings.port = XmlSettingsManager::Instance ()->property ("TrackerProxyPort").toInt ();
+		trackerProxySettings.username = XmlSettingsManager::Instance ()->property ("TrackerProxyLogin").toString ().toStdString ();
+		trackerProxySettings.password = XmlSettingsManager::Instance ()->property ("TrackerProxyPassword").toString ().toStdString ();
 		if (trackerProxySettings.username.size ())
 			trackerProxySettings.type = libtorrent::proxy_settings::socks5_pw;
 		else
@@ -738,12 +739,12 @@ void Core::setSessionSettings ()
 	else
 		trackerProxySettings.hostname = std::string ();
 
-	if (SettingsManager::Instance ()->GetPeerProxyEnabled ())
+	if (XmlSettingsManager::Instance ()->property ("PeerProxyEnabled").toBool ())
 	{
-		peerProxySettings.hostname = SettingsManager::Instance ()->GetPeerProxyAddress ().toStdString ();
-		peerProxySettings.port = SettingsManager::Instance ()->GetPeerProxyPort ();
-		peerProxySettings.username = SettingsManager::Instance ()->GetPeerProxyLogin ().toStdString ();
-		peerProxySettings.password = SettingsManager::Instance ()->GetPeerProxyPassword ().toStdString ();
+		peerProxySettings.hostname = XmlSettingsManager::Instance ()->property ("PeerProxyAddress").toString ().toStdString ();
+		peerProxySettings.port = XmlSettingsManager::Instance ()->property ("PeerProxyPort").toInt ();
+		peerProxySettings.username = XmlSettingsManager::Instance ()->property ("PeerProxyLogin").toString ().toStdString ();
+		peerProxySettings.password = XmlSettingsManager::Instance ()->property ("PeerProxyPassword").toString ().toStdString ();
 		if (peerProxySettings.username.size ())
 			peerProxySettings.type = libtorrent::proxy_settings::socks5_pw;
 		else

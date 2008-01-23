@@ -1,6 +1,6 @@
 #include <QFileDialog>
 #include "firststep.h"
-#include "settingsmanager.h"
+#include "xmlsettingsmanager.h"
 
 FirstStep::FirstStep (QWidget *parent)
 : QWizardPage (parent)
@@ -13,8 +13,8 @@ FirstStep::FirstStep (QWidget *parent)
 	registerField ("Comment", Comment_);
 	registerField ("RootPath", RootPath_);
 	Date_->setDateTime (QDateTime::currentDateTime ());
-	OutputDirectory_->setText (SettingsManager::Instance ()->GetLastMakeTorrentDirectory ());
-	RootPath_->setText (SettingsManager::Instance ()->GetLastAddDirectory ());
+	OutputDirectory_->setText (XmlSettingsManager::Instance ()->property ("LastMakeTorrentDirectory").toString ());
+	RootPath_->setText (XmlSettingsManager::Instance ()->property ("LastAddDirectory").toString ());
 }
 
 void FirstStep::on_BrowseOutput__released ()
@@ -26,17 +26,18 @@ void FirstStep::on_BrowseOutput__released ()
 		return;
 
 	OutputDirectory_->setText (directory);
-	SettingsManager::Instance ()->SetLastMakeTorrentDirectory (directory);
+	XmlSettingsManager::Instance ()->setProperty ("LastMakeTorrentDirectory", directory);
 }
 
 void FirstStep::on_BrowseRoot__released ()
 {
 	QString directory = QFileDialog::getExistingDirectory (this,
 			tr ("Select root path"),
-			SettingsManager::Instance ()->GetLastAddDirectory ());
+			RootPath_->text ());
 	if (directory.isEmpty ())
 		return;
+
 	RootPath_->setText (directory);
-	SettingsManager::Instance ()->SetLastAddDirectory (directory);
+	XmlSettingsManager::Instance ()->setProperty ("LastAddDirectory", directory);
 }
 

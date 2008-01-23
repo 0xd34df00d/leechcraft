@@ -3,6 +3,7 @@
 #include <QtXml/QtXml>
 #include <QtDebug>
 #include "xmlsettingsdialog.h"
+#include "rangewidget.h"
 
 XmlSettingsDialog::XmlSettingsDialog (QWidget *parent)
 : QDialog (parent)
@@ -130,14 +131,22 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 
 	QString property = item.attribute ("property");
 	QVariant value = WorkingObject_->property (property.toLatin1 ().constData ());
+	if (!value.isValid () || value.isNull () && item.hasAttribute ("default"))
+	{
+		value = item.attribute ("default");
+		WorkingObject_->setProperty (property.toLatin1 ().constData (), value);
+	}
 
 	if (type.isEmpty () || type.isNull ())
 		return;
 	else if (type == "lineedit")
 	{
 		QLabel *label = new QLabel (GetLabel (item));
-		QLineEdit *edit = new QLineEdit (value.isNull () ? item.attribute ("default") : value.toString ());
+
+		QLineEdit *edit = new QLineEdit (value.toString ());
 		edit->setObjectName (property);
+		if (item.hasAttribute ("password"))
+			edit->setEchoMode (QLineEdit::Password);
 		connect (edit, SIGNAL (textChanged (const QString&)), this, SLOT (updatePreferences ()));
 
 		lay->addWidget (label, row, 0);
@@ -147,7 +156,12 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 	{
 		QCheckBox *box = new QCheckBox (GetLabel (item));
 		box->setObjectName (property);
-		box->setCheckState ((value.isNull () ? item.attribute ("state") == "on" : value.toBool ()) ? Qt::Checked : Qt::Unchecked);
+		if (!value.isValid () || value.isNull ())
+		{
+			value = (item.attribute ("state") == "on");
+			WorkingObject_->setProperty (property.toLatin1 ().constData (), value);
+		}
+		box->setCheckState (value.toBool () ? Qt::Checked : Qt::Unchecked);
 		connect (box, SIGNAL (stateChanged (int)), this, SLOT (updatePreferences ()));
 
 		lay->addWidget (box, row, 0, 1, 2);
@@ -163,7 +177,7 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 			box->setMaximum (item.attribute ("maximum").toInt ());
 		if (item.hasAttribute ("step"))
 			box->setSingleStep (item.attribute ("step").toInt ());
-		box->setValue (value.isNull () ? item.attribute ("default").toInt () : value.toInt ());
+		box->setValue (value.toInt ());
 		connect (box, SIGNAL (valueChanged (int)), this, SLOT (updatePreferences ()));
 		
 		lay->addWidget (label, row, 0);
@@ -175,12 +189,47 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 		box->setObjectName (property);
 		box->setLayout (new QGridLayout);
 		box->setCheckable (true);
-		qDebug () << value;
-		box->setChecked (value.isNull () ? item.attribute ("state") == "on" : value.toBool ());
+		if (!value.isValid () || value.isNull ())
+		{
+			value = (item.attribute ("state") == "on");
+			WorkingObject_->setProperty (property.toLatin1 ().constData (), value);
+		}
+		box->setChecked (value.toBool ());
 		connect (box, SIGNAL (toggled (bool)), this, SLOT (updatePreferences ()));
 		ParseEntity (item, box);
 		
 		lay->addWidget (box, row, 0, 1, 2);
+	}
+	else if (type == "spinboxrange")
+	{
+		if (!value.isValid () || value.isNull () || !value.canConvert<QList<QVariant> > ())
+		{
+			QStringList parts = item.attribute ("default").split (":");
+			QList<QVariant> result;
+			if (parts.size () != 2)
+			{
+				qWarning () << "spinboxrange parse error, wrong default value";
+				return;
+			}
+			result << parts.at (0).toInt () << parts.at (1).toInt ();
+			value = result;
+			WorkingObject_->setProperty (property.toLatin1 ().constData (), value);
+		}
+
+		QLabel *label = new QLabel (GetLabel (item));
+		RangeWidget *widget = new RangeWidget ();
+		widget->setObjectName (property);
+		widget->SetMinimum (item.attribute ("minimum").toInt ());
+		widget->SetMaximum (item.attribute ("maximum").toInt ());
+		widget->SetRange (value);
+		connect (widget, SIGNAL (changed ()), this, SLOT (updatePreferences ()));
+
+		lay->addWidget (label, row, 0);
+		lay->addWidget (widget, row, 1);
+	}
+	else
+	{
+		qWarning () << Q_FUNC_INFO << "unhandled type" << type;
 	}
 }
 

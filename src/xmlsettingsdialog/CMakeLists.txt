@@ -5,9 +5,11 @@ INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR}
                      ${CMAKE_CURRENT_BINARY_DIR} ../..)
 
 SET (SRCS
-    xmlsettingsdialog.cpp)
+    xmlsettingsdialog.cpp
+	rangewidget.cpp)
 SET (HEADERS
-    xmlsettingsdialog.h)
+    xmlsettingsdialog.h
+	rangewidget.h)
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 ADD_DEFINITIONS(-DQT_PLUGIN)
 ADD_DEFINITIONS(-DQT_NO_DEBUG)

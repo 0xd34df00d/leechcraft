@@ -4,6 +4,7 @@ Core:
 + "Backup/Restore Settings" moved to menu.
 + Groupboxing of booleans in Settings.
 + Images for settings categories.
++ XmlSettingsDialog - cleaner and neater.
 
 BitTorrent:
 + Proxy support in torrents.

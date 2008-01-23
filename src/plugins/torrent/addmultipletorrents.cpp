@@ -1,13 +1,13 @@
 #include <QFileDialog>
 #include "addmultipletorrents.h"
-#include "settingsmanager.h"
+#include "xmlsettingsmanager.h"
 
 AddMultipleTorrents::AddMultipleTorrents (QWidget *parent)
 : QDialog (parent)
 {
 	setupUi (this);
-	OpenDirectory_->setText (SettingsManager::Instance ()->GetLastTorrentDirectory ());
-	SaveDirectory_->setText (SettingsManager::Instance ()->GetLastSaveDirectory ());
+	OpenDirectory_->setText (XmlSettingsManager::Instance ()->property ("LastTorrentDirectory").toString ());
+	SaveDirectory_->setText (XmlSettingsManager::Instance ()->property ("LastSaveDirectory").toString ());
 }
 
 QString AddMultipleTorrents::GetOpenDirectory () const
@@ -22,21 +22,21 @@ QString AddMultipleTorrents::GetSaveDirectory () const
 
 void AddMultipleTorrents::on_BrowseOpen__released ()
 {
-	QString dir = QFileDialog::getExistingDirectory (this, tr ("Select directory with torrents"), SettingsManager::Instance ()->GetLastTorrentDirectory ());
+	QString dir = QFileDialog::getExistingDirectory (this, tr ("Select directory with torrents"), OpenDirectory_->text ());
 	if (dir.isEmpty ())
 		return;
 
-	SettingsManager::Instance ()->SetLastTorrentDirectory (dir);
+	XmlSettingsManager::Instance ()->setProperty ("LastTorrentDirectory", dir);
 	OpenDirectory_->setText (dir);
 }
 
 void AddMultipleTorrents::on_BrowseSave__released ()
 {
-	QString dir = QFileDialog::getExistingDirectory (this, tr ("Select save directory"), SettingsManager::Instance ()->GetLastSaveDirectory ());
+	QString dir = QFileDialog::getExistingDirectory (this, tr ("Select save directory"), SaveDirectory_->text ());
 	if (dir.isEmpty ())
 		return;
 
-	SettingsManager::Instance ()->SetLastSaveDirectory (dir);
+	XmlSettingsManager::Instance ()->setProperty ("LastSaveDirectory", dir);
 	SaveDirectory_->setText (dir);
 }
 

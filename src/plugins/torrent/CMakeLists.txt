@@ -25,14 +25,12 @@ SET (SRCS
 	secondstep.cpp
 	thirdstep.cpp
 	addmultipletorrents.cpp
-	xmlsettingsmanager.cpp
-    settingsmanager.cpp)
+	xmlsettingsmanager.cpp)
 SET (HEADERS
 	torrentplugin.h 
 	core.h 
 	addtorrent.h 
 	addmultipletorrents.h
-	settingsmanager.h 
 	torrentinfo.h 
 	contextabletree.h 
 	newtorrentwizard.h

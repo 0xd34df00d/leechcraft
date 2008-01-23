@@ -1,7 +1,7 @@
 #include <QFileDialog>
 #include <plugininterface/proxy.h>
 #include "secondstep.h"
-#include "settingsmanager.h"
+#include "xmlsettingsmanager.h"
 
 SecondStep::SecondStep (QWidget *parent)
 : QWizardPage (parent)
@@ -19,11 +19,11 @@ QStringList SecondStep::GetPaths () const
 
 void SecondStep::on_AddPath__released ()
 {
-	QStringList paths = QFileDialog::getOpenFileNames (this, tr ("Select one or more paths to add"), SettingsManager::Instance ()->GetLastAddDirectory ());
+	QStringList paths = QFileDialog::getOpenFileNames (this, tr ("Select one or more paths to add"), XmlSettingsManager::Instance ()->property ("LastAddDirectory").toString ());
 	if (paths.isEmpty ())
 		return;
 
-	SettingsManager::Instance ()->SetLastAddDirectory (paths.at (0));
+	XmlSettingsManager::Instance ()->setProperty ("LastAddDirectory", paths.at (0));
 	
 	QStringList files = paths;
 	for (int i = 0; i < files.size (); ++i)

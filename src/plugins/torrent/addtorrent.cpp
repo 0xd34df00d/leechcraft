@@ -3,7 +3,7 @@
 #include <plugininterface/proxy.h>
 #include <boost/date_time.hpp>
 #include "addtorrent.h"
-#include "settingsmanager.h"
+#include "xmlsettingsmanager.h"
 #include "core.h"
 
 AddTorrent::AddTorrent (QWidget *parent)
@@ -15,7 +15,7 @@ AddTorrent::AddTorrent (QWidget *parent)
 	connect (this, SIGNAL (on_TorrentFile__textChanged ()), this, SLOT (setOkEnabled ()));
 	connect (this, SIGNAL (on_Destination__textChanged ()), this, SLOT (setOkEnabled ()));
 
-	QString dir = SettingsManager::Instance ()->GetLastSaveDirectory ();
+	QString dir = XmlSettingsManager::Instance ()->property ("LastSaveDirectory").toString ();
 	Destination_->setText (dir);
 }
 
@@ -56,13 +56,13 @@ void AddTorrent::setOkEnabled ()
 
 void AddTorrent::on_TorrentBrowse__released ()
 {
-	QString filename = QFileDialog::getOpenFileName (this, tr ("Select torrent file"), SettingsManager::Instance ()->GetLastTorrentDirectory (), tr ("Torrents (*.torrent);;All files (*.*)"));
+	QString filename = QFileDialog::getOpenFileName (this, tr ("Select torrent file"), XmlSettingsManager::Instance ()->property ("LastTorrentDirectory").toString (), tr ("Torrents (*.torrent);;All files (*.*)"));
 	if (filename.isEmpty ())
 		return;
 
 	Reinit ();
 
-	SettingsManager::Instance ()->SetLastTorrentDirectory (QFileInfo (filename).absolutePath ());
+	XmlSettingsManager::Instance ()->setProperty ("LastTorrentDirectory", QFileInfo (filename).absolutePath ());
 	TorrentFile_->setText (filename);
 
 	libtorrent::torrent_info info = Core::Instance ()->GetTorrentInfo (filename);
@@ -90,11 +90,11 @@ void AddTorrent::on_TorrentBrowse__released ()
 
 void AddTorrent::on_DestinationBrowse__released ()
 {
-	QString dir = QFileDialog::getExistingDirectory (this, tr ("Select save directory"), SettingsManager::Instance ()->GetLastSaveDirectory ());
+	QString dir = QFileDialog::getExistingDirectory (this, tr ("Select save directory"), Destination_->text ());
 	if (dir.isEmpty ())
 		return;
 
-	SettingsManager::Instance ()->SetLastSaveDirectory (dir);
+	XmlSettingsManager::Instance ()->setProperty ("LastSaveDirectory", dir);
 	Destination_->setText (dir);
 }
 
