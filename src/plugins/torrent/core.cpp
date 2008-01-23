@@ -46,7 +46,7 @@ void Core::DoDelayedInit ()
 			Session_->start_dht (libtorrent::entry ());
 		Session_->set_max_uploads (XmlSettingsManager::Instance ()->property ("MaxUploads").toInt ());
 		Session_->set_max_connections (XmlSettingsManager::Instance ()->property ("MaxConnections").toInt ());
-		setSessionSettings ();
+		setProxySettings ();
 	}
 	catch (const asio::system_error&)
 	{
@@ -68,6 +68,16 @@ void Core::DoDelayedInit ()
 	XmlSettingsManager::Instance ()->RegisterObject ("AutosaveInterval", this, "autosaveIntervalChanged");
 	XmlSettingsManager::Instance ()->RegisterObject ("MaxUploads", this, "maxUploadsChanged");
 	XmlSettingsManager::Instance ()->RegisterObject ("MaxConnections", this, "maxConnectionsChanged");
+	XmlSettingsManager::Instance ()->RegisterObject ("TrackerProxyEnabled", this, "setProxySettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("TrackerProxyHost", this, "setProxySettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("TrackerProxyPort", this, "setProxySettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("TrackerProxyLogin", this, "setProxySettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("TrackerProxyPassword", this, "setProxySettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("PeerProxyEnabled", this, "setProxySettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("PeerProxyHost", this, "setProxySettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("PeerProxyPort", this, "setProxySettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("PeerProxyLogin", this, "setProxySettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("PeerProxyPassword", this, "setProxySettings");
 
 	RestoreTorrents ();
 }
@@ -720,7 +730,7 @@ void Core::maxConnectionsChanged ()
 	Session_->set_max_connections (XmlSettingsManager::Instance ()->property ("MaxConnections").toInt ());
 }
 
-void Core::setSessionSettings ()
+void Core::setProxySettings ()
 {
 	libtorrent::session_settings settings;
 	libtorrent::proxy_settings trackerProxySettings, peerProxySettings;

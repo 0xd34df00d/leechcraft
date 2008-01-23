@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
     <page>
-        <name lang="en" value="Network settings" />
-        <name lang="ru" value="Сетевые настройки" />
+        <label lang="en" value="Network settings" />
+        <label lang="ru" value="Сетевые настройки" />
 		<tab>
 			<label lang="en" value="General" />
 			<label lang="ru" value="Общие" />
@@ -69,11 +69,11 @@
 		</tab>
     </page>
 	<page>
-		<name lang="en" value="Local settings" />
-		<name lang="ru" value="Локальные настройки" />
+		<label lang="en" value="Local settings" />
+		<label lang="ru" value="Локальные настройки" />
 		<item type="spinbox" property="AutosaveInterval" default="120" minimum="5" maximum="3600" step="15" suffix=" s">
 			<label lang="en" value="Autosave interval" />
-			<lavel lang="ru" value="Интервал автосохранения" />
+			<label lang="ru" value="Интервал автосохранения" />
 		</item>
 	</page>
 </settings>

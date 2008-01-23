@@ -71,22 +71,7 @@ void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& filename)
 
 void XmlSettingsDialog::ParsePage (const QDomElement& page)
 {
-	QString locale = QLocale::system ().name ().toLower ();
-	if (locale == "c")
-		locale = "en";
-
-	QString sectionTitle;
-	QDomElement name = page.firstChildElement ("name");
-	while (!name.isNull ())
-	{
-		if (name.attribute ("lang").toLower () == locale)
-		{
-			sectionTitle = name.attribute ("value");
-			break;
-		}
-		name = name.nextSiblingElement ("name");
-	}
-
+	QString sectionTitle = GetLabel (page);
 	Sections_->addItem (sectionTitle);
 
 	QWidget *baseWidget = new QWidget;
@@ -196,6 +181,8 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 			box->setMaximum (item.attribute ("maximum").toInt ());
 		if (item.hasAttribute ("step"))
 			box->setSingleStep (item.attribute ("step").toInt ());
+		if (item.hasAttribute ("suffix"))
+			box->setSuffix (item.attribute ("suffix"));
 		box->setValue (value.toInt ());
 		connect (box, SIGNAL (valueChanged (int)), this, SLOT (updatePreferences ()));
 		
@@ -258,6 +245,8 @@ QString XmlSettingsDialog::GetLabel (const QDomElement& item)
 	if (locale == "c")
 		locale = "en";
 
+	locale = locale.left (2);
+
 	QString result;
 	QDomElement label = item.firstChildElement ("label");
 	while (!label.isNull ())
@@ -281,6 +270,7 @@ void XmlSettingsDialog::updatePreferences ()
 	QCheckBox *checkbox = qobject_cast<QCheckBox*> (sender ());
 	QSpinBox *spinbox = qobject_cast<QSpinBox*> (sender ());
 	QGroupBox *groupbox = qobject_cast<QGroupBox*> (sender ());
+	RangeWidget *rangeWidget = qobject_cast<RangeWidget*> (sender ());
 	if (edit)
 		value = edit->text ();
 	else if (checkbox)
@@ -288,10 +278,9 @@ void XmlSettingsDialog::updatePreferences ()
 	else if (spinbox)
 		value = spinbox->value ();
 	else if (groupbox)
-	{
 		value = groupbox->isChecked ();
-		qDebug () << value;
-	}
+	else if (rangeWidget)
+		value = rangeWidget->GetRange ();
 	else
 	{
 		qWarning () << Q_FUNC_INFO << "unhandled class" << sender ();

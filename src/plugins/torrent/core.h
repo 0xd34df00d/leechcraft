@@ -97,7 +97,7 @@ public slots:
 	void autosaveIntervalChanged ();
 	void maxUploadsChanged ();
 	void maxConnectionsChanged ();
-	void setSessionSettings ();
+	void setProxySettings ();
 signals:
 	void error (QString) const;
 };
