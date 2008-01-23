@@ -7,7 +7,6 @@ SET (SRCS
 	 tcpsocket.cpp
 	 filewriter.cpp
 	 filewriterthread.cpp
-	 basicsettingsmanager.cpp
 	 socketexceptions.cpp)
 SET (HEADERS
 	 addressparser.h

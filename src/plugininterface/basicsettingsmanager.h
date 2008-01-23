@@ -3,9 +3,12 @@
 #include <QObject>
 #include <QMap>
 #include <QByteArray>
+#include <QDynamicPropertyChangeEvent>
+#include <QSettings>
+#include <QtDebug>
 #include <interfaces/interfaces.h>
 
-class QSettings;
+#define PROP2CHAR(a) (a.toLatin1 ().constData ())
 
 class BasicSettingsManager : public QObject
 {
@@ -14,14 +17,73 @@ class BasicSettingsManager : public QObject
 	QMap<QByteArray, QPair<QObject*, QByteArray> > Properties2Object_;
 	bool Initializing_;
 public:
-    BasicSettingsManager ();
-    ~BasicSettingsManager ();
-	void Init ();
-    void Release ();
-	void RegisterObject (const QByteArray&, QObject*, const QByteArray&);
-	QVariant Property (const QString&, const QVariant&);
+    BasicSettingsManager ()
+	: Initializing_ (false)
+	{}
+
+    ~BasicSettingsManager ()
+	{
+	}
+
+	void Init ()
+	{
+		QSettings *settings = this->BeginSettings ();
+		QStringList properties = settings->childKeys ();
+		Initializing_ = true;
+		for (int i = 0; i < properties.size (); ++i)
+			setProperty (PROP2CHAR (properties.at (i)), settings->value (properties.at (i), QVariant ()));
+		Initializing_ = false;
+		this->EndSettings (settings);
+	}
+
+    void Release ()
+	{
+		QList<QByteArray> dProperties = dynamicPropertyNames ();
+		QSettings *settings = BeginSettings ();
+		for (int i = 0; i < dProperties.size (); ++i)
+			settings->setValue (dProperties.at (i), property (dProperties.at (i).constData ()));
+		EndSettings (settings);
+	}
+
+	void RegisterObject (const QByteArray& propName, QObject* object, const QByteArray& funcName)
+	{
+		Properties2Object_.insert (propName, qMakePair (object, funcName));
+	}
+
+	QVariant Property (const QString& propName, const QVariant& def)
+	{
+		QVariant result = property (PROP2CHAR (propName));
+		if (!result.isValid ())
+		{
+			result = def;
+			setProperty (PROP2CHAR (propName), def);
+		}
+
+		return result;
+	}
 protected:
-    virtual bool event (QEvent*);
+    virtual bool event (QEvent *e)
+	{
+		if (e->type () != QEvent::DynamicPropertyChange)
+			return false;
+
+		QDynamicPropertyChangeEvent *event = dynamic_cast<QDynamicPropertyChangeEvent*> (e);
+
+		QByteArray name = event->propertyName ();
+		QSettings *settings = BeginSettings ();
+		settings->setValue (name, property (name));
+		EndSettings (settings);
+
+		if (Properties2Object_.contains (name))
+		{
+			QPair<QObject*, QByteArray> object = Properties2Object_ [name];
+			object.first->metaObject ()->invokeMethod (object.first, object.second);
+		}
+
+		event->accept ();
+		return true;
+	}
+
     virtual QSettings* BeginSettings () = 0;
     virtual void EndSettings (QSettings*) = 0;
 };

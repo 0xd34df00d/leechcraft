@@ -11,7 +11,7 @@ win32:DESTDIR = ..
 
 # Input
 HEADERS += addressparser.h proxy.h tcpsocket.h filewriter.h filewriterthread.h socketexceptions.h basicsettingsmanager.h
-SOURCES += addressparser.cpp proxy.cpp tcpsocket.cpp filewriter.cpp filewriterthread.cpp socketexceptions.cpp basicsettingsmanager.cpp
+SOURCES += addressparser.cpp proxy.cpp tcpsocket.cpp filewriter.cpp filewriterthread.cpp socketexceptions.cpp
 CONFIG	+= release threads
 QT	+= network
 INCLUDEPATH += ../
