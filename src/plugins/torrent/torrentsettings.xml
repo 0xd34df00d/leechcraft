@@ -1,64 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
     <page>
-        <name lang="en" value="General settings" />
-        <name lang="ru" value="Общие настройки" />
-		<item type="spinboxrange" property="TCPPortRange" default="6881:6889" minimum="1" maximum="65535" step="5">
-			<label lang="en" value="Port range" />
-			<label lang="ru" value="Диапазон портов" />
-		</item>
-        <item type="checkbox" property="DHTEnabled" state="on">
-            <label lang="en" value="DHT enabled" />
-            <label lang="ru" value="DHT включен" />
-        </item>
-		<item type="spinbox" property="MaxUploads" default="100" minimum="1" maximum="5000" step="5">
-			<label lang="en" value="Maximum upload connections" />
-			<label lang="ru" value="Максимально одновременных соединений на раздачу" />
-		</item>
-		<item type="spinbox" property="MaxConnections" default="200" minimum="2" maximum="5000" step="10">
-			<label lang="en" value="Maximum total connections" />
-			<label lang="ru" value="Максимально одновременных соединений всего" />
-		</item>
-		<item type="groupbox" property="TrackerProxyEnabled" checkable="true" state="off">
-			<label lang="en" value="Tracker proxy" />
-			<label lang="ru" value="Прокси трэкеров" />
-			<item type="lineedit" property="TrackerProxyHost">
-				<label lang="en" value="Host" />
-				<label lang="ru" value="Хост" />
+        <name lang="en" value="Network settings" />
+        <name lang="ru" value="Сетевые настройки" />
+		<tab>
+			<label lang="en" value="General" />
+			<label lang="ru" value="Общие" />
+			<item type="spinboxrange" property="TCPPortRange" default="6881:6889" minimum="1" maximum="65535" step="5">
+				<label lang="en" value="Port range" />
+				<label lang="ru" value="Диапазон портов" />
 			</item>
-			<item type="spinbox" property="TrackerProxyPort" default="3128" minimum="1" maximum="65535" step="1">
-				<label lang="en" value="Port" />
-				<label lang="ru" value="Порт" />
+			<item type="checkbox" property="DHTEnabled" state="on">
+				<label lang="en" value="DHT enabled" />
+				<label lang="ru" value="DHT включен" />
 			</item>
-			<item type="lineedit" property="TrackerProxyLogin">
-				<label lang="en" value="Login" />
-				<label lang="ru" value="Логин" />
+			<item type="spinbox" property="MaxUploads" default="100" minimum="1" maximum="5000" step="5">
+				<label lang="en" value="Maximum upload connections" />
+				<label lang="ru" value="Максимально одновременных соединений на раздачу" />
 			</item>
-			<item type="lineedit" property="TrackerProxyPassword" default="" password="on">
-				<label lang="en" value="Password" />
-				<label lang="ru" value="Пароль" />
+			<item type="spinbox" property="MaxConnections" default="200" minimum="2" maximum="5000" step="10">
+				<label lang="en" value="Maximum total connections" />
+				<label lang="ru" value="Максимально одновременных соединений всего" />
 			</item>
-		</item>
-		<item type="groupbox" property="PeerProxyEnabled" checkable="true" state="off">
-			<label lang="en" value="Peer proxy" />
-			<label lang="ru" value="Прокси пиров" />
-			<item type="lineedit" property="PeerProxyHost">
-				<label lang="en" value="Host" />
-				<label lang="ru" value="Хост" />
+		</tab>
+		<tab>
+			<label lang="en" value="Proxy" />
+			<label lang="ru" value="Прокси" />
+			<item type="groupbox" property="TrackerProxyEnabled" checkable="true" state="off">
+				<label lang="en" value="Tracker proxy" />
+				<label lang="ru" value="Прокси трэкеров" />
+				<item type="lineedit" property="TrackerProxyHost">
+					<label lang="en" value="Host" />
+					<label lang="ru" value="Хост" />
+				</item>
+				<item type="spinbox" property="TrackerProxyPort" default="3128" minimum="1" maximum="65535" step="1">
+					<label lang="en" value="Port" />
+					<label lang="ru" value="Порт" />
+				</item>
+				<item type="lineedit" property="TrackerProxyLogin">
+					<label lang="en" value="Login" />
+					<label lang="ru" value="Логин" />
+				</item>
+				<item type="lineedit" property="TrackerProxyPassword" default="" password="on">
+					<label lang="en" value="Password" />
+					<label lang="ru" value="Пароль" />
+				</item>
 			</item>
-			<item type="spinbox" property="PeerProxyPort" default="3128" minimum="1" maximum="65535" step="1">
-				<label lang="en" value="Port" />
-				<label lang="ru" value="Порт" />
+			<item type="groupbox" property="PeerProxyEnabled" checkable="true" state="off">
+				<label lang="en" value="Peer proxy" />
+				<label lang="ru" value="Прокси пиров" />
+				<item type="lineedit" property="PeerProxyHost">
+					<label lang="en" value="Host" />
+					<label lang="ru" value="Хост" />
+				</item>
+				<item type="spinbox" property="PeerProxyPort" default="3128" minimum="1" maximum="65535" step="1">
+					<label lang="en" value="Port" />
+					<label lang="ru" value="Порт" />
+				</item>
+				<item type="lineedit" property="PeerProxyLogin">
+					<label lang="en" value="Login" />
+					<label lang="ru" value="Логин" />
+				</item>
+				<item type="lineedit" property="PeerProxyPassword">
+					<label lang="en" value="Password" />
+					<label lang="ru" value="Пароль" />
+				</item>
 			</item>
-			<item type="lineedit" property="PeerProxyLogin">
-				<label lang="en" value="Login" />
-				<label lang="ru" value="Логин" />
-			</item>
-			<item type="lineedit" property="PeerProxyPassword">
-				<label lang="en" value="Password" />
-				<label lang="ru" value="Пароль" />
-			</item>
-		</item>
+		</tab>
     </page>
 	<page>
 		<name lang="en" value="Local settings" />

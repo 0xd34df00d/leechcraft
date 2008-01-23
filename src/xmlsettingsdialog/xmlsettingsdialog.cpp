@@ -120,6 +120,25 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
 
 		gbox = gbox.nextSiblingElement ("groupbox");
 	}
+
+	QDomElement tab = entity.firstChildElement ("tab");
+	if (!tab.isNull ())
+	{
+		QTabWidget *tabs = new QTabWidget;
+		QGridLayout *lay = qobject_cast<QGridLayout*> (baseWidget->layout ());
+		int row = lay->rowCount ();
+		lay->addWidget (tabs, row, 0, 1, 2);
+		while (!tab.isNull ())
+		{
+			QWidget *page = new QWidget;
+			QGridLayout *widgetLay = new QGridLayout;
+			page->setLayout (widgetLay);
+			tabs->addTab (page, GetLabel (tab));
+			ParseEntity (tab, page);
+			tab = tab.nextSiblingElement ("tab");
+			widgetLay->setRowStretch (widgetLay->rowCount (), 1);
+		}
+	}
 }
 
 void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
