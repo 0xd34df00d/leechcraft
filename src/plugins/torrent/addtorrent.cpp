@@ -31,6 +31,19 @@ void AddTorrent::Reinit ()
 	Date_->setText (tr ("<unknown>"));
 }
 
+void AddTorrent::SetFilename (const QString& filename)
+{
+	if (filename.isEmpty ())
+		return;
+
+	Reinit ();
+
+	XmlSettingsManager::Instance ()->setProperty ("LastTorrentDirectory", QFileInfo (filename).absolutePath ());
+	TorrentFile_->setText (filename);
+
+	ParseBrowsed ();
+}
+
 QString AddTorrent::GetFilename () const
 {
 	return TorrentFile_->text ();
@@ -65,6 +78,22 @@ void AddTorrent::on_TorrentBrowse__released ()
 	XmlSettingsManager::Instance ()->setProperty ("LastTorrentDirectory", QFileInfo (filename).absolutePath ());
 	TorrentFile_->setText (filename);
 
+	ParseBrowsed ();
+}
+
+void AddTorrent::on_DestinationBrowse__released ()
+{
+	QString dir = QFileDialog::getExistingDirectory (this, tr ("Select save directory"), Destination_->text ());
+	if (dir.isEmpty ())
+		return;
+
+	XmlSettingsManager::Instance ()->setProperty ("LastSaveDirectory", dir);
+	Destination_->setText (dir);
+}
+
+void AddTorrent::ParseBrowsed ()
+{
+	QString filename = TorrentFile_->text ();
 	libtorrent::torrent_info info = Core::Instance ()->GetTorrentInfo (filename);
 	if (!info.is_valid ())
 		return;
@@ -86,15 +115,5 @@ void AddTorrent::on_TorrentBrowse__released ()
 		item->setText (0, Proxy::Instance ()->MakePrettySize (i->size));
 		item->setText (1, QString::fromStdString (i->path.string ()));
 	}
-}
-
-void AddTorrent::on_DestinationBrowse__released ()
-{
-	QString dir = QFileDialog::getExistingDirectory (this, tr ("Select save directory"), Destination_->text ());
-	if (dir.isEmpty ())
-		return;
-
-	XmlSettingsManager::Instance ()->setProperty ("LastSaveDirectory", dir);
-	Destination_->setText (dir);
 }
 

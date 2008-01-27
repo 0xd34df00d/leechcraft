@@ -337,6 +337,24 @@ void HttpPlugin::StopAll ()
 	JobManager_->StopAll ();
 }
 
+bool HttpPlugin::CouldDownload (const QString& string) const
+{
+	QUrl url (string);
+	return url.isValid () && url.scheme () == "ftp" || url.scheme () == "http";
+}
+
+void HttpPlugin::AddJob (const QString& name)
+{
+	if (!CouldDownload (name))
+		return;
+
+	JobAdderDialog *dia = new JobAdderDialog (this);
+	dia->SetURL (name);
+	connect (dia, SIGNAL (gotParams (JobParams*)), this, SLOT (handleParams (JobParams*)));
+	dia->exec ();
+	delete dia;
+}
+
 int HttpPlugin::GetPercentageForRow (int row)
 {
 	JobRepresentation *jr = JobManager_->GetJobRepresentation (dynamic_cast<JobListItem*> (TasksList_->topLevelItem (row))->GetID ());

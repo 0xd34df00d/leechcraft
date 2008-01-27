@@ -12,12 +12,12 @@ class QTimer;
 class TorrentPlugin : public QMainWindow
 					, public IInfo
 					, public IWindow
-					, public IDownload
+					, public IPeer2PeerDownload
 					, private Ui::MainWindow
 {
 	Q_OBJECT
 
-	Q_INTERFACES (IInfo IWindow IDownload);
+	Q_INTERFACES (IInfo IWindow IPeer2PeerDownload);
 
 	ID_t ID_;
 	bool IsShown_;
@@ -46,6 +46,8 @@ public:
 	qint64 GetUploadSpeed () const;
 	void StartAll ();
 	void StopAll ();
+	bool CouldDownload (const QString&) const;
+	void AddJob (const QString&);
 public slots:
 	void handleHidePlugins ();
 protected:

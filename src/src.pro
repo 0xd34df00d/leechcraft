@@ -11,7 +11,7 @@ win32:DESTDIR = ./
 
 # Input
 TRANSLATIONS = leechcraft_ru.ts
-FORMS += changelogdialog.ui
+FORMS += changelogdialog.ui commonjobadder.ui
 HEADERS += mainwindow.h \
 	   core.h \
 	   pluginmanager.h \

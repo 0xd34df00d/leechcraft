@@ -33,6 +33,7 @@ namespace Main
 		void InitTask (const QString&);
 		bool ShowPlugin (IInfo::ID_t);
 		void HideAll ();
+		void TryToAddJob (const QString&);
 		
 		QPair<qint64, qint64> GetSpeeds () const;
 

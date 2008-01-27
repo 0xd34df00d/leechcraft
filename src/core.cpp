@@ -62,6 +62,27 @@ void Main::Core::HideAll ()
 	emit hidePlugins ();
 }
 
+void Main::Core::TryToAddJob (const QString& name)
+{
+	QObjectList plugins = PluginManager_->GetAllPlugins ();
+	qDebug () << plugins;
+	foreach (QObject *plugin, plugins)
+	{
+		IDownload *di = dynamic_cast<IDownload*> (plugin);
+		IInfo *ii = qobject_cast<IInfo*> (plugin);
+		qDebug () << Q_FUNC_INFO << ii->GetName () << di;
+		if (di)
+		{
+			if (di->CouldDownload (name))
+			{
+				qDebug () << Q_FUNC_INFO << "Adding job";
+				di->AddJob (name);
+				break;
+			}
+		}
+	}
+}
+
 QPair<qint64, qint64> Main::Core::GetSpeeds () const
 {
 	qint64 download = 0;

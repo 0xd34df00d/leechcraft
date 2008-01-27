@@ -66,6 +66,7 @@ public:
 
 	libtorrent::torrent_info GetTorrentInfo (const QString&);
 	libtorrent::torrent_info GetTorrentInfo (const QByteArray&);
+	bool IsValidTorrent (const QByteArray&) const;
 	TorrentInfo GetTorrentStats (int) const;
 	OverallStats GetOverallStats () const;
 	QList<FileInfo> GetTorrentFiles (int) const;

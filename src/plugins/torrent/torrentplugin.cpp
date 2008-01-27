@@ -144,6 +144,29 @@ void TorrentPlugin::StopAll ()
 {
 }
 
+bool TorrentPlugin::CouldDownload (const QString& string) const
+{
+	QFile file (string);
+	if (!file.exists () || !file.open (QIODevice::ReadOnly))
+		return false;
+
+	return Core::Instance ()->IsValidTorrent (file.readAll ());
+}
+
+void TorrentPlugin::AddJob (const QString& name)
+{
+	AddTorrentDialog_->Reinit ();
+	AddTorrentDialog_->SetFilename (name);
+
+	if (AddTorrentDialog_->exec () == QDialog::Rejected)
+		return;
+
+	QString filename = AddTorrentDialog_->GetFilename (),
+			path = AddTorrentDialog_->GetSavePath ();
+	QVector<bool> files = AddTorrentDialog_->GetSelectedFiles ();
+	Core::Instance ()->AddFile (filename, path, files);
+}
+
 void TorrentPlugin::closeEvent (QCloseEvent*)
 {
 	IsShown_ = false;

@@ -20,6 +20,11 @@ JobAdderDialog::JobAdderDialog (QWidget *parent)
 	LocalName_->setText (dd);
 }
 
+void JobAdderDialog::SetURL (const QString& url)
+{
+	URL_->setText (url);
+}
+
 void JobAdderDialog::done (int r)
 {
 	if (r == Accepted)

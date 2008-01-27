@@ -10,6 +10,7 @@
 #include "plugininfo.h"
 #include "pluginlisttablewidgeticon.h"
 #include "changelogdialog.h"
+#include "commonjobadder.h"
 
 namespace Main
 {
@@ -125,6 +126,7 @@ void MainWindow::closeEvent (QCloseEvent *e)
 
 void MainWindow::SetupToolbars ()
 {
+	Toolbar_		= addToolBar (tr ("Tools"));
 	PluginsToolbar_ = addToolBar (tr ("Plugins"));
 }
 
@@ -167,6 +169,10 @@ void MainWindow::FillMenus ()
 
 void MainWindow::MakeActions ()
 {
+	AddJob_ = File_->addAction  (tr ("&Add job"), this, SLOT (addJob ()));
+	AddJob_->setStatusTip (tr ("Adds a job to a plugin supporting that addition"));
+	Toolbar_->addAction (AddJob_);
+
 	QAction *a = File_->addAction (tr ("&Quit"), qApp, SLOT (quit ()));
 	a->setStatusTip (tr ("Exit from application"));
 
@@ -421,6 +427,16 @@ void MainWindow::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reas
 		case QSystemTrayIcon::MiddleClick:
 			showHideMain ();
 			return;
+	}
+}
+
+void MainWindow::addJob ()
+{
+	CommonJobAdder adder (this);
+	if (adder.exec () == QDialog::Accepted)
+	{
+		QString name = adder.GetString ();
+		Model_->TryToAddJob (name);
 	}
 }
 

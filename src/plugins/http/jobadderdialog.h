@@ -14,6 +14,7 @@ class JobAdderDialog : public QDialog, private Ui::JobAdderDialog
 	Q_OBJECT
 public:
 	JobAdderDialog (QWidget *parent = 0);
+	void SetURL (const QString&);
 public slots:
 	virtual void done (int r);
 private slots:

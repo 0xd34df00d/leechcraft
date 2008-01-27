@@ -36,8 +36,8 @@ namespace Main
 		QLabel *DownloadSpeed_, *UploadSpeed_;
 		LogShower *LogShower_;
 
-		QAction *BackupSettings_, *RestoreSettings_, *ClearSettings_;
-		QToolBar *PluginsToolbar_;
+		QAction *AddJob_, *BackupSettings_, *RestoreSettings_, *ClearSettings_;
+		QToolBar *Toolbar_, *PluginsToolbar_;
 
 		bool SettingsClearScheduled_, IsShown_;
 
@@ -78,6 +78,7 @@ namespace Main
 		void showHideMain ();
 		void hideAll ();
 		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
+		void addJob ();
 	};
 };
 

@@ -24,6 +24,7 @@ ADD_SUBDIRECTORY(plugins/updater)
 
 SET (SRCS
 	mainwindow.cpp
+	commonjobadder.cpp
 	core.cpp
 	main.cpp
 	pluginmanager.cpp
@@ -34,6 +35,7 @@ SET (SRCS
 
 SET (HEADERS
 	mainwindow.h
+	commonjobadder.h
 	core.h
 	pluginmanager.h
 	plugininfo.h
@@ -43,7 +45,7 @@ SET (HEADERS
 	interfaces/interfaces.h
 	interfaces/structures.h)
 
-SET (FORMS changelogdialog.ui)
+SET (FORMS changelogdialog.ui commonjobadder.ui)
 SET (RESOURCES mainresources.qrc)
 
 ADD_DEFINITIONS(-DQT_GUI_LIB)

@@ -122,6 +122,9 @@ public:
 
 	virtual void StartAll ();
 	virtual void StopAll ();
+	
+	virtual bool CouldDownload (const QString&) const;
+	virtual void AddJob (const QString&);
 
 	int GetPercentageForRow (int);
 public slots:

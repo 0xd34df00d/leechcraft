@@ -218,6 +218,23 @@ libtorrent::torrent_info Core::GetTorrentInfo (const QByteArray& data)
 	}
 }
 
+bool Core::IsValidTorrent (const QByteArray& torrentData) const
+{
+	std::vector<char> buffer (torrentData.size ());
+	qCopy (torrentData.begin (), torrentData.end (), buffer.begin ());
+
+	try
+	{
+		libtorrent::entry e = libtorrent::bdecode (buffer.begin (), buffer.end ());
+		libtorrent::torrent_info result (e);
+	}
+	catch (...)
+	{
+		return false;
+	}
+	return true;
+}
+
 TorrentInfo Core::GetTorrentStats (int row) const
 {
 	if (!CheckValidity (row))
