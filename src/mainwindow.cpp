@@ -433,7 +433,7 @@ void MainWindow::addJob ()
 void MainWindow::handleDownloadFinished (const QString& string)
 {
 	if (XmlSettingsManager::Instance ()->property ("ShowFinishedDownloadMessages").toBool ())
-		TrayIcon_->showMessage (tr ("Download finished"), string, QSystemTrayIcon::Information, 5000);
+		TrayIcon_->showMessage (tr ("Download finished"), string, QSystemTrayIcon::Information, XmlSettingsManager::Instance ()->property ("FinishedDownloadMessageTimeout").toInt () * 1000);
 }
 
 void MainWindow::showSettings ()
