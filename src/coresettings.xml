@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label lang="en" value="Plugins intercommunication" />
+		<label lang="ru" value="Общение с плагинами" />
+
+		<item type="checkbox" property="ShowFinishedDownloadMessages" state="on">
+			<label lang="en" value="Show messages about finished downloads in tray" />
+			<label lang="ru" value="Показывать сообщения о завершенных закачках в трее" />
+		</item>
+		<item type="checkbox" property="QueryPluginsToHandleFinished" state="on">
+			<label lang="en" value="Query plugins to handle finished downloads" />
+			<label lang="ru" value="Опрашивать плагины на предмет обработки ими завершенных заданий" />
+		</item>
+	</page>
+</settings>

@@ -503,6 +503,7 @@ void HttpPlugin::handleJobFinish (unsigned int id)
 
 	QString string = tr ("Name: %1, size %2").arg (QFileInfo (jr->LocalName_).fileName ()).arg (Proxy::Instance ()->MakePrettySize (jr->Size_));
 	emit downloadFinished (string);
+	emit fileDownloaded (jr->LocalName_);
 
 	if (jr->ShouldBeSavedInHistory_)
 	{

@@ -69,7 +69,7 @@ QObject* PluginManager::FindByID (IInfo::ID_t id) const
 	return 0;
 }
 
-QObjectList PluginManager::GetAllPlugins ()
+QObjectList PluginManager::GetAllPlugins () const
 {
 	QObjectList result;
 	for (PluginsContainer_t::const_iterator i = Plugins_.begin (); i != Plugins_.end (); ++i)
@@ -200,14 +200,5 @@ void PluginManager::FindPlugins ()
 	if (pluginsDir.cd ("plugins/bin"))
 		foreach (QString filename, pluginsDir.entryList (QStringList ("*leechcraft_*"), QDir::Files))
 			Plugins_.push_back (new QPluginLoader (pluginsDir.absoluteFilePath (filename), this));
-}
-
-QObjectList PluginManager::GetAllPlugins () const
-{
-	QObjectList result;
-	foreach (QPluginLoader *loader, Plugins_)
-		result << loader->instance ();
-
-	return result;
 }
 

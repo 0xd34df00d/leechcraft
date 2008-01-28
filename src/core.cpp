@@ -1,4 +1,5 @@
 #include <QMainWindow>
+#include <QMessageBox>
 #include <QtDebug>
 #include <limits>
 #include <iostream>
@@ -8,6 +9,7 @@
 #include "core.h"
 #include "exceptions/logic.h"
 #include "exceptions/outofbounds.h"
+#include "xmlsettingsmanager.h"
 
 Main::Core::Core (QObject *parent)
 : QAbstractTableModel (parent)
@@ -43,7 +45,10 @@ void Main::Core::DelayedInit ()
 		connect (this, SIGNAL (hidePlugins ()), plugin, SLOT (handleHidePlugins ()));
 		IDownload *download = dynamic_cast<IDownload*> (plugin);
 		if (download)
+		{
 			connect (plugin, SIGNAL (downloadFinished (const QString&)), this, SIGNAL (downloadFinished (const QString&)));
+			connect (plugin, SIGNAL (fileDownloaded (const QString&)), this, SLOT (handleFileDownload (const QString&)));
+		}
 	}
 }
 
@@ -198,6 +203,29 @@ void Main::Core::invalidate (unsigned int id)
 	QModelIndex last = index (id, columnCount ());
 
 	emit dataChanged (first, last);
+}
+
+void Main::Core::handleFileDownload (const QString& file)
+{
+	if (!XmlSettingsManager::Instance ()->property ("QueryPluginsToHandleFinished").toBool ())
+		return;
+
+	QObjectList plugins = PluginManager_->GetAllCastableTo<IDownload*> ();
+	for (int i = 0; i < plugins.size (); ++i)
+	{
+		IDownload *id = dynamic_cast<IDownload*> (plugins.at (i));
+		IInfo *ii = dynamic_cast<IInfo*> (plugins.at (i));
+		if (id->CouldDownload (file))
+		{
+			if (QMessageBox::question (qobject_cast<QWidget*> (qobject_cast<QObject*> (this)->parent ()),
+				tr ("Question"),
+				tr ("File %1 could be handled by plugin %2, would you like to?").arg (file).arg (ii->GetName ()),
+				QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+				continue;
+
+			id->AddJob (file);
+		}
+	}
 }
 
 void Main::Core::PreparePools ()

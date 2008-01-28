@@ -31,7 +31,8 @@ SET (SRCS
 	plugininfo.cpp
 	pluginlisttablewidgeticon.cpp
 	changelogdialog.cpp
-	logshower.cpp)
+	logshower.cpp
+	xmlsettingsmanager.cpp)
 
 SET (HEADERS
 	mainwindow.h
@@ -42,6 +43,7 @@ SET (HEADERS
 	pluginlisttablewidgeticon.h
 	changelogdialog.h
 	logshower.h
+	xmlsettingsmanager.h
 	interfaces/interfaces.h
 	interfaces/structures.h)
 
@@ -60,5 +62,5 @@ TARGET_LINK_LIBRARIES(leechcraft
 						${QT_LIBRARIES}
 						plugininterface
 						exceptions
-						settingsdialog)
+						xmlsettingsdialog)
 INSTALL (TARGETS leechcraft DESTINATION bin)

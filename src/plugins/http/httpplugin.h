@@ -169,6 +169,7 @@ protected:
 	virtual void closeEvent (QCloseEvent*);
 signals:
 	void downloadFinished (const QString&);
+	void fileDownloaded (const QString&);
 	void jobAdded (int);
 	void jobFinished (int);
 	void jobRemoved (int);

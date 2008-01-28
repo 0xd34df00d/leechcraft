@@ -98,6 +98,7 @@ private:
 	void ReadSettings ();
 	void RestoreTorrents ();
 	libtorrent::torrent_handle RestoreSingleTorrent (const QByteArray&, const boost::filesystem::path&);
+	void HandleSingleFinished (const libtorrent::torrent_info&);
 private slots:
 	void writeSettings ();
 	void checkFinished ();
@@ -112,6 +113,7 @@ public slots:
 signals:
 	void error (QString) const;
 	void torrentFinished (const QString&);
+	void fileFinished (const QString&);
 };
 
 #endif

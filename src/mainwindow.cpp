@@ -1,6 +1,7 @@
 #include <QtGui/QtGui>
 #include <QMutex>
 #include <iostream>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "plugininterface/proxy.h"
 #include "exceptions/notimplemented.h"
 #include "mainwindow.h"
@@ -11,6 +12,7 @@
 #include "pluginlisttablewidgeticon.h"
 #include "changelogdialog.h"
 #include "commonjobadder.h"
+#include "xmlsettingsmanager.h"
 
 namespace Main
 {
@@ -20,7 +22,6 @@ QMutex *MainWindow::InstanceMutex_ = new QMutex;
 
 MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 : QMainWindow (parent, flags)
-, SettingsClearScheduled_ (false)
 , IsShown_ (true)
 {
 	QSplashScreen splash (QPixmap (":/resources/images/splashscreen.png"), Qt::WindowStaysOnTopHint);
@@ -67,6 +68,9 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	connect (Proxy::Instance (), SIGNAL (addMessage (const QString&, bool)), this, SLOT (handleAddMessage (const QString&, bool)));
 	qApp->setQuitOnLastWindowClosed (false);
 	show ();
+
+	XmlSettingsDialog_ = new XmlSettingsDialog (this);
+	XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/coresettings.xml");
 }
 
 QMenu* MainWindow::GetRootPluginsMenu () const
@@ -76,11 +80,6 @@ QMenu* MainWindow::GetRootPluginsMenu () const
 
 MainWindow::~MainWindow ()
 {
-	if (SettingsClearScheduled_)
-	{
-		QSettings settings ("Deviant", "Leechcraft");
-		settings.clear ();
-	}
 }
 
 MainWindow* MainWindow::Instance ()
@@ -125,7 +124,7 @@ void MainWindow::SetupMenus ()
 {
     File_				= menuBar ()->addMenu (tr ("&File"));
 	PluginsMenu_		= menuBar ()->addMenu (tr ("&Plugins"));
-	ActionsMenu_	= menuBar ()->addMenu (tr ("&Actions"));
+	ActionsMenu_		= menuBar ()->addMenu (tr ("&Actions"));
 	ToolsMenu_			= menuBar ()->addMenu (tr ("&Tools"));
     Help_				= menuBar ()->addMenu (tr ("&Help"));
 
@@ -164,6 +163,8 @@ void MainWindow::MakeActions ()
 	QAction *a = File_->addAction (tr ("&Quit"), this, SLOT (close ()));
 	a->setStatusTip (tr ("Exit from application"));
 
+	Settings_ = ToolsMenu_->addAction (QIcon (":/resources/images/main_preferences.png"), tr ("Settings..."), this, SLOT (showSettings ()));
+	Toolbar_->addAction (Settings_);
 	BackupSettings_ = ToolsMenu_->addAction (tr ("Backup settings..."), this, SLOT (backupSettings ()));
 	RestoreSettings_ = ToolsMenu_->addAction (tr ("Restore settings..."), this, SLOT (restoreSettings ()));
 	Help_->addAction (tr ("&Changelog..."), this, SLOT (showChangelog ()));
@@ -431,7 +432,14 @@ void MainWindow::addJob ()
 
 void MainWindow::handleDownloadFinished (const QString& string)
 {
-	TrayIcon_->showMessage (tr ("Download finished"), string, QSystemTrayIcon::Information, 5000);
+	if (XmlSettingsManager::Instance ()->property ("ShowFinishedDownloadMessages").toBool ())
+		TrayIcon_->showMessage (tr ("Download finished"), string, QSystemTrayIcon::Information, 5000);
+}
+
+void MainWindow::showSettings ()
+{
+	XmlSettingsDialog_->show ();
+	XmlSettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
 }
 
 };

@@ -72,6 +72,7 @@ private slots:
 	void updateOverallStats ();
 signals:
 	void downloadFinished (const QString&);
+	void fileDownloaded (const QString&);
 };
 
 #endif

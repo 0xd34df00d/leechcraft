@@ -573,7 +573,6 @@ void Core::RestoreTorrents ()
 	settings.beginGroup ("Torrent");
 	settings.beginGroup ("Core");
 	int torrents = settings.beginReadArray ("AddedTorrents");
-	qDebug () << Q_FUNC_INFO << torrents;
 	for (int i = 0; i < torrents; ++i)
 	{
 		settings.setArrayIndex (i);
@@ -661,6 +660,16 @@ libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data, c
 	return handle;
 }
 
+void Core::HandleSingleFinished (const libtorrent::torrent_info& info)
+{
+	QString name = QString::fromStdString (info.name ());
+	QString string = tr ("Torrent finished: %1").arg (name);
+	emit torrentFinished (string);
+
+	for (libtorrent::torrent_info::file_iterator i = info.begin_files (); i != info.end_files (); ++i)
+		emit fileFinished (QString::fromStdString (i->path.string ()));
+}
+
 void Core::writeSettings ()
 {
 	QDir home = QDir::home ();
@@ -676,7 +685,6 @@ void Core::writeSettings ()
 	settings.beginGroup ("Core");
 	settings.remove ("");
 	settings.beginWriteArray ("AddedTorrents");
-	qDebug () << Q_FUNC_INFO << Handles_.size ();
 	for (int i = 0; i < Handles_.size (); ++i)
 	{
 		settings.setArrayIndex (i);
@@ -737,10 +745,7 @@ void Core::checkFinished ()
 			case libtorrent::torrent_status::finished:
 			case libtorrent::torrent_status::seeding:
 				Handles_ [i].State_ = TSSeeding;
-				libtorrent::torrent_info info = Handles_.at (i).Handle_.get_torrent_info ();
-				QString name = QString::fromStdString (info.name ());
-				QString string = tr ("Torrent finished: %1").arg (name);
-				emit torrentFinished (string);
+				HandleSingleFinished (Handles_.at (i).Handle_.get_torrent_info ());
 				break;
 		}
 	}

@@ -47,6 +47,7 @@ namespace Main
 		virtual QModelIndex parent (const QModelIndex& index = QModelIndex ());
 	private slots:
 		void invalidate (unsigned int);
+		void handleFileDownload (const QString&);
 	private:
 		void PreparePools ();
 		void FetchPlugins ();

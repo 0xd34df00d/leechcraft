@@ -18,6 +18,7 @@ class QTreeWidgetItem;
 class QLabel;
 class QSplashScreen;
 class QMutex;
+class XmlSettingsDialog;
 
 namespace Main
 {
@@ -36,10 +37,12 @@ namespace Main
 		QLabel *DownloadSpeed_, *UploadSpeed_;
 		LogShower *LogShower_;
 
-		QAction *AddJob_, *BackupSettings_, *RestoreSettings_, *ClearSettings_;
+		QAction *AddJob_, *Settings_, *BackupSettings_, *RestoreSettings_, *ClearSettings_;
 		QToolBar *Toolbar_, *PluginsToolbar_;
 
-		bool SettingsClearScheduled_, IsShown_;
+		XmlSettingsDialog *XmlSettingsDialog_;
+
+		bool IsShown_;
 
 		static MainWindow *Instance_;
 		static QMutex *InstanceMutex_;
@@ -80,6 +83,7 @@ namespace Main
 		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
 		void addJob ();
 		void handleDownloadFinished (const QString&);
+		void showSettings ();
 	};
 };
 

@@ -3,10 +3,9 @@
 #include <QVector>
 #include <QObject>
 #include <QMap>
+#include <QPluginLoader>
 #include "plugininfo.h"
 #include "interfaces/interfaces.h"
-
-class QPluginLoader;
 
 namespace Main
 {
@@ -28,11 +27,21 @@ namespace Main
 		QString Name (const Size_t& pos) const;
 		QString Info (const Size_t& pos) const;
 		QObject* FindByID (IInfo::ID_t) const;
-		QObjectList GetAllPlugins ();
+		QObjectList GetAllPlugins () const;
+		template<typename T> QObjectList GetAllCastableTo () const
+		{
+			QObjectList result;
+			for (PluginsContainer_t::const_iterator i = Plugins_.begin (); i != Plugins_.end (); ++i)
+			{
+				QObject *instance = (*i)->instance ();
+				if (dynamic_cast<T> (instance))
+					result << instance;
+			}
+			return result;
+		}
 		void InitializePlugins (const MainWindow*);
 		void CalculateDependencies ();
 		void ThrowPlugins ();
-		QObjectList GetAllPlugins () const;
 	private:
 		void FindPlugins ();
 	signals:

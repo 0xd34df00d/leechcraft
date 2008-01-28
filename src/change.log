@@ -7,6 +7,9 @@ Core:
 + XmlSettingsDialog - cleaner and neater.
 + Common Job Adder.
 + Notifications on download finish.
++ Query plugins to handle just downloaded file.
++ Settings about notifications and plugins query.
++ Preferences introduced.
 * Fixed a way to exit without saving settings.
 
 BitTorrent:
