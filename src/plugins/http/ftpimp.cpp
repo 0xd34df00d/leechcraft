@@ -9,7 +9,7 @@
 #include <plugininterface/socketexceptions.h>
 #include <exceptions/notimplemented.h>
 #include "ftpimp.h"
-#include "settingsmanager.h"
+#include "xmlsettingsmanager.h"
 
 namespace
 {
@@ -59,9 +59,9 @@ void FtpImp::run ()
 {
 	ControlSocket_ = Proxy::Instance ()->MakeSocket ();
 	DataSocket_ = Proxy::Instance ()->MakeSocket ();
-	DataSocket_->SetDefaultTimeout (SettingsManager::Instance ()->GetDefaultTimeout ());
+	DataSocket_->SetDefaultTimeout (XmlSettingsManager::Instance ()->property ("DefaultTimeout").toInt ());
 	ControlSocket_->SetURL (URL_);
-	ControlSocket_->SetDefaultTimeout (SettingsManager::Instance ()->GetConnectTimeout ());
+	ControlSocket_->SetDefaultTimeout (XmlSettingsManager::Instance ()->property ("ConnectTimeout").toInt ());
 
 	try
 	{
@@ -76,7 +76,7 @@ void FtpImp::run ()
 		return;
 	}
 
-	ControlSocket_->SetDefaultTimeout (SettingsManager::Instance ()->GetDefaultTimeout ());
+	ControlSocket_->SetDefaultTimeout (XmlSettingsManager::Instance ()->property ("DefaultTimeout").toInt ());
 
 	try
 	{
@@ -178,7 +178,7 @@ void FtpImp::run ()
 		return;
 	}
 
-	int cacheSize = SettingsManager::Instance ()->GetCacheSize () * 1024;
+	int cacheSize = XmlSettingsManager::Instance ()->property ("CacheSize").toInt () * 1024;
 	SetCacheSize (cacheSize);
 	DataSocket_->setReadBufferSize (cacheSize);
 
@@ -242,10 +242,10 @@ bool FtpImp::Negotiate ()
 {
 	QString login = ControlSocket_->GetAddressParser ()->GetLogin ();
 	if (login.isEmpty ())
-		login = SettingsManager::Instance ()->GetResourceLogin ();
+		login = XmlSettingsManager::Instance ()->property ("FTPLogin").toString ();
 	QString password = ControlSocket_->GetAddressParser ()->GetPassword ();
 	if (password.isEmpty ())
-		password = SettingsManager::Instance ()->GetResourcePassword ();
+		password = XmlSettingsManager::Instance ()->property ("FTPPassword").toString ();
 
 	QFileInfo fileInfo (ControlSocket_->GetAddressParser ()->GetPath ());
 
@@ -472,7 +472,7 @@ void FtpImp::Finalize ()
 	try
 	{
 		ControlSocket_->Write (QString ("QUIT\r\n"), false);
-		DataSocket_->SetDefaultTimeout (SettingsManager::Instance ()->GetStopTimeout ());
+		DataSocket_->SetDefaultTimeout (XmlSettingsManager::Instance ()->property ("DisconnectTimeout").toInt ());
 		try
 		{
 			if (DataSocket_->state () != QAbstractSocket::UnconnectedState)
@@ -493,7 +493,7 @@ void FtpImp::Finalize ()
 	catch (...)
 	{ }
 
-	ControlSocket_->SetDefaultTimeout (SettingsManager::Instance ()->GetStopTimeout ());
+	ControlSocket_->SetDefaultTimeout (XmlSettingsManager::Instance ()->property ("DisconnectTimeout").toInt ());
 	try
 	{
 		if (ControlSocket_->state () != QAbstractSocket::UnconnectedState)

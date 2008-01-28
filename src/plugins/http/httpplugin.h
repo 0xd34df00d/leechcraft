@@ -20,6 +20,7 @@ class QLabel;
 class QAction;
 class QToolBar;
 class ContextableList;
+class XmlSettingsDialog;
 
 struct JobParams;
 
@@ -40,6 +41,7 @@ class HttpPlugin : public QMainWindow
 	QStringList ProvidesList_, NeedsList_, UsesList_, TaskHeaderLabels_, FinishedHeaderLabels_;
 	QLabel *SpeedIndicator_;
 	QMenu *Plugins_;
+	XmlSettingsDialog *XmlSettingsDialog_;
 public:
 	enum TasksListHeaders
 	{

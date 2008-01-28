@@ -2,7 +2,7 @@
 #include <QtDebug>
 #include "jobadderdialog.h"
 #include "jobparams.h"
-#include "settingsmanager.h"
+#include "xmlsettingsmanager.h"
 
 JobAdderDialog::JobAdderDialog (QWidget *parent)
 : QDialog (parent)
@@ -14,7 +14,7 @@ JobAdderDialog::JobAdderDialog (QWidget *parent)
 		defaultURL = "http://gentoo.osuosl.org/distfiles/vsftpd-2.0.5.tar.gz";
 	URL_->setText (defaultURL);
 	
-	QString dd = SettingsManager::Instance ()->GetDownloadDir ();
+	QString dd = XmlSettingsManager::Instance ()->property ("DownloadDir").toString ();
 	if (dd == "")
 		dd = QDir::homePath ();
 	LocalName_->setText (dd);

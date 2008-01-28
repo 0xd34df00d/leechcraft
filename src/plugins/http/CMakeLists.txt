@@ -18,7 +18,7 @@ SET (SRCS
 	contextablelist.cpp
 	columnselector.cpp
 	jobpropertiesdialog.cpp
-	settingsmanager.cpp)
+	xmlsettingsmanager.cpp)
 SET (HEADERS
 	httpplugin.h
 	jobadderdialog.h
@@ -30,7 +30,7 @@ SET (HEADERS
 	joblistitem.h
 	fileexistsdialog.h
 	finishedjob.h
-	settingsmanager.h
+	xmlsettingsmanager.h
 	impbase.h
 	mainviewdelegate.h
 	contextablelist.h
@@ -57,5 +57,5 @@ TARGET_LINK_LIBRARIES (leechcraft_http
                         ${QT_LIBRARIES}
                         plugininterface
                         exceptions
-                        settingsdialog)
+                        xmlsettingsdialog)
 INSTALL (TARGETS leechcraft_http DESTINATION share/leechcraft/plugins)

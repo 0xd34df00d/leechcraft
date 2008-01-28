@@ -3,10 +3,10 @@
 #include <QtDebug>
 #include <plugininterface/proxy.h>
 #include <interfaces/interfaces.h>
-#include <settingsdialog/settingsdialog.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "columnselector.h"
 #include "httpplugin.h"
-#include "settingsmanager.h"
+#include "xmlsettingsmanager.h"
 #include "jobadderdialog.h"
 #include "jobparams.h"
 #include "job.h"
@@ -53,8 +53,8 @@ void HttpPlugin::Init ()
 
 	IsShown_ = false;
 
-	SettingsDialog_ = new SettingsDialog (this);
-	SettingsDialog_->RegisterObject (SettingsManager::Instance ());
+	XmlSettingsDialog_ = new XmlSettingsDialog (this);
+	XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/httpsettings.xml");
 
 	QTimer *speedUpdTimer = new QTimer (this);
 	speedUpdTimer->setInterval (1000);
@@ -157,7 +157,7 @@ void HttpPlugin::Release ()
 {
 	JobManager_->Release ();
 	writeSettings ();
-	SettingsManager::Instance ()->Release ();
+	XmlSettingsManager::Instance ()->Release ();
 
 	delete JobManager_;
 	JobManager_ = 0;
@@ -296,9 +296,9 @@ void HttpPlugin::updateJobDisplay (unsigned int id)
 
 			QString speed = Proxy::Instance ()->MakePrettySize (jr->Speed_) + tr ("/s"),
 					remaining = Proxy::Instance ()->MakeTimeFromLong (jr->AverageTime_).toString ();
-			if (SettingsManager::Instance ()->GetShowCurrentSpeed ())
+			if (XmlSettingsManager::Instance ()->property ("ShowCurrentSpeed").toBool ())
 				speed.append (" # ").append (Proxy::Instance ()->MakePrettySize (jr->CurrentSpeed_) + tr ("/s"));
-			if (SettingsManager::Instance ()->GetShowCurrentTime ())
+			if (XmlSettingsManager::Instance ()->property ("ShowCurrentTime").toBool ())
 				remaining.append (" / ").append (Proxy::Instance ()->MakeTimeFromLong (jr->CurrentTime_).toString ());
 
 			item->setText (TListSpeed, speed);
@@ -325,7 +325,7 @@ void HttpPlugin::handleGotFileSize (unsigned int id)
 				item->setText (TListPercent, QString::number (jr->Downloaded_ * 100 / jr->Size_));
 
 			QString remainingTime;
-			if (SettingsManager::Instance ()->GetShowCurrentTime ())
+			if (XmlSettingsManager::Instance ()->property ("ShowCurrentTime").toBool ())
 				remainingTime = QTime (0, 0, 0).toString () + "/" + QTime (0, 0, 0).toString ();
 			else
 				remainingTime = QTime (0, 0, 0).toString ();
@@ -466,8 +466,8 @@ void HttpPlugin::on_ActionJobProperties__triggered ()
 
 void HttpPlugin::on_ActionPreferences__triggered ()
 {
-	SettingsDialog_->show ();
-	SettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
+	XmlSettingsDialog_->show ();
+	XmlSettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
 }
 
 void HttpPlugin::showJobErrorMessage (QString url, QString message)

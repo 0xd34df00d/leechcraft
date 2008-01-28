@@ -7,7 +7,7 @@
 #include <plugininterface/socketexceptions.h>
 #include <exceptions/notimplemented.h>
 #include "httpimp.h"
-#include "settingsmanager.h"
+#include "xmlsettingsmanager.h"
 
 HttpImp::HttpImp (QObject *parent)
 : ImpBase (parent)
@@ -55,7 +55,7 @@ void HttpImp::run ()
 {
 	Socket_ = new TcpSocket;
 	Socket_->SetURL (URL_);
-	Socket_->SetDefaultTimeout (SettingsManager::Instance ()->GetConnectTimeout ());
+	Socket_->SetDefaultTimeout (XmlSettingsManager::Instance ()->property ("ConnectTimeout").toInt ());
 
 	try
 	{
@@ -70,6 +70,7 @@ void HttpImp::run ()
 		emit stopped ();
 		return;
 	}
+	Socket_->SetDefaultTimeout (XmlSettingsManager::Instance ()->property ("DefaultTimeout").toInt ());
 	WriteHeaders ();
 	msleep (100);
 	bool abort = ReadResponse ();
@@ -92,11 +93,9 @@ void HttpImp::run ()
 		return;
 	}
 
-	Socket_->SetDefaultTimeout (SettingsManager::Instance ()->GetDefaultTimeout ());
-
 	length_t counter = 0;
 
-	int cacheSize = SettingsManager::Instance ()->GetCacheSize () * 1024; 
+	int cacheSize = XmlSettingsManager::Instance ()->property ("CacheSize").toInt () * 1024; 
 	SetCacheSize (cacheSize);
 	Socket_->setReadBufferSize (cacheSize);
 
@@ -154,8 +153,7 @@ void HttpImp::WriteHeaders ()
 	if (!query.isEmpty ())
 		request.append ("?").append (query);
 	Socket_->Write ("GET " + request + " HTTP/1.1\r\n");
-	PairedStringList ua = SettingsManager::Instance ()->GetUserAgent ();
-	QString agent = ua.first [ua.second];
+	QString agent = XmlSettingsManager::Instance ()->property ("HTTPAgent").toString ();
 	Socket_->Write ("User-Agent: " + agent.trimmed () + "\r\n");
 	Socket_->Write (QString ("Accept: */*\r\n"));
 	Socket_->Write ("Host: " + Socket_->GetAddressParser ()->GetHost () + "\r\n");

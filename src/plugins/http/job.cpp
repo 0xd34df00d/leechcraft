@@ -11,7 +11,7 @@
 #include "jobparams.h"
 #include "jobrepresentation.h"
 #include "fileexistsdialog.h"
-#include "settingsmanager.h"
+#include "xmlsettingsmanager.h"
 #include "jobmanager.h"
 #include "httpimp.h"
 #include "ftpimp.h"
@@ -241,7 +241,7 @@ void Job::Release ()
 	if (ProtoImp_ && ProtoImp_->isRunning ())
 	{
 		ProtoImp_->StopDownload ();
-		if (!ProtoImp_->wait (SettingsManager::Instance ()->GetStopTimeout ()))
+		if (!ProtoImp_->wait (XmlSettingsManager::Instance ()->property ("DisconnectTimeout").toInt ()))
 			ProtoImp_->terminate ();
 	}
 }
@@ -283,7 +283,7 @@ void Job::handleNewFiles (QStringList *files)
 			jp->URL_ = constructedURL + files->at (i);
 		jp->LocalName_ = Params_->LocalName_ + QFileInfo (files->at (i)).fileName ();
 		jp->IsFullName_ = true;
-		jp->Autostart_ = SettingsManager::Instance ()->GetAutostartChildren ();
+		jp->Autostart_ = XmlSettingsManager::Instance ()->property ("AutostartChildren").toBool ();
 		jp->ShouldBeSavedInHistory_ = true;
 		jp->Size_ = 0;
 		jp->DownloadTime_ = 0;
@@ -295,7 +295,7 @@ void Job::handleNewFiles (QStringList *files)
 
 void Job::handleClarifyURL (QString url)
 {
-	if (!ProtoImp_->wait (SettingsManager::Instance ()->GetStopTimeout ()))
+	if (!ProtoImp_->wait (XmlSettingsManager::Instance ()->property ("DisconnectTimeout").toInt ()))
 		ProtoImp_->terminate ();
 	delete ProtoImp_;
 	ProtoImp_ = 0;
@@ -323,7 +323,7 @@ void Job::processData (ImpBase::length_t ready, ImpBase::length_t total, QByteAr
 	TotalSize_ = total;
 	Speed_ = (DownloadedSize_ - RestartPosition_) / static_cast<double> (StartTime_->elapsed ()) * 1000;
 
-	if (UpdateTime_->elapsed () > SettingsManager::Instance ()->GetInterfaceUpdateTimeout ())
+	if (UpdateTime_->elapsed () > XmlSettingsManager::Instance ()->property ("InterfaceUpdateTimeout").toInt ())
 	{
 		CurrentSpeed_ = (DownloadedSize_ - PreviousDownloadSize_) / static_cast<double> (UpdateTime_->elapsed ()) * 1000;
 		PreviousDownloadSize_ = DownloadedSize_;

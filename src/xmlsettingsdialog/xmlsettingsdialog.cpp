@@ -4,6 +4,7 @@
 #include <QtDebug>
 #include "xmlsettingsdialog.h"
 #include "rangewidget.h"
+#include "filepicker.h"
 
 XmlSettingsDialog::XmlSettingsDialog (QWidget *parent)
 : QDialog (parent)
@@ -149,6 +150,7 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 
 		QLineEdit *edit = new QLineEdit (value.toString ());
 		edit->setObjectName (property);
+		edit->setMinimumWidth (QApplication::fontMetrics ().width ("thisismaybeadefaultsettingstring,dontyouthinkso?"));
 		if (item.hasAttribute ("password"))
 			edit->setEchoMode (QLineEdit::Password);
 		connect (edit, SIGNAL (textChanged (const QString&)), this, SLOT (updatePreferences ()));
@@ -233,6 +235,20 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 		lay->addWidget (label, row, 0);
 		lay->addWidget (widget, row, 1);
 	}
+	else if (type == "path")
+	{
+		if (value.isNull () || value.toString ().isEmpty ())
+			if (item.hasAttribute ("defaultHomePath") && item.attribute ("defaultHomePath") == "true")
+				value = QDir::homePath ();
+		QLabel *label = new QLabel (GetLabel (item));
+		FilePicker *picker = new FilePicker (this);
+		picker->SetText (value.toString ());
+		picker->setObjectName (property);
+		connect (picker, SIGNAL (textChanged (const QString&)), this, SLOT (updatePreferences ()));
+
+		lay->addWidget (label, row, 0);
+		lay->addWidget (picker, row, 1);
+	}
 	else
 	{
 		qWarning () << Q_FUNC_INFO << "unhandled type" << type;
@@ -271,6 +287,7 @@ void XmlSettingsDialog::updatePreferences ()
 	QSpinBox *spinbox = qobject_cast<QSpinBox*> (sender ());
 	QGroupBox *groupbox = qobject_cast<QGroupBox*> (sender ());
 	RangeWidget *rangeWidget = qobject_cast<RangeWidget*> (sender ());
+	FilePicker *picker = qobject_cast<FilePicker*> (sender ());
 	if (edit)
 		value = edit->text ();
 	else if (checkbox)
@@ -281,9 +298,11 @@ void XmlSettingsDialog::updatePreferences ()
 		value = groupbox->isChecked ();
 	else if (rangeWidget)
 		value = rangeWidget->GetRange ();
+	else if (picker)
+		value = picker->GetText ();
 	else
 	{
-		qWarning () << Q_FUNC_INFO << "unhandled class" << sender ();
+		qWarning () << Q_FUNC_INFO << "unhandled sender" << sender ();
 		return;
 	}
 

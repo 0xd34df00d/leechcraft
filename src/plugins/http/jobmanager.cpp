@@ -8,7 +8,7 @@
 #include <exceptions/logic.h>
 #include <plugininterface/proxy.h>
 #include "jobmanager.h"
-#include "settingsmanager.h"
+#include "xmlsettingsmanager.h"
 #include "httpplugin.h"
 #include "job.h"
 #include "jobparams.h"
@@ -50,7 +50,7 @@ void JobManager::Release ()
 void JobManager::DoDelayedInit ()
 {
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
-	settings.beginGroup (qobject_cast<HttpPlugin*> (parent ())->GetName ());
+	settings.beginGroup ("HTTP and FTP");
 	int size = settings.beginReadArray ("jobs");
 	for (int i = 0; i < size; ++i)
 	{
@@ -111,7 +111,7 @@ int JobManager::addJob (JobParams *params)
 
 	if (params->Autostart_)
 		Start (id);
-	else if (SettingsManager::Instance ()->GetAutoGetFileSize ())
+	else if (XmlSettingsManager::Instance ()->property ("AutoGetFileSize").toBool ())
 		GetFileSize (id);
 
 	scheduleSave ();
@@ -152,14 +152,14 @@ bool JobManager::Start (unsigned int id)
 	QString host = QUrl (jr->URL_).host ();
 	delete jr;
 
-	if (DownloadsPerHost_ [host] >= SettingsManager::Instance ()->GetMaxConcurrentPerServer ())
+	if (DownloadsPerHost_ [host] >= XmlSettingsManager::Instance ()->property ("MaxConcurrentPerServer").toInt ())
 	{
 		ScheduledJobsForHosts_.insert (host, id);
 		emit jobWaiting (id);
 		return false;
 	}
 
-	if (TotalDownloads_ >= SettingsManager::Instance ()->GetMaxTotalConcurrent ())
+	if (TotalDownloads_ >= XmlSettingsManager::Instance ()->property ("MaxTotalConcurrent").toInt ())
 	{
 		ScheduledJobs_.push_back (id);
 		emit jobWaiting (id);
@@ -279,7 +279,7 @@ void JobManager::jobStopHandler (unsigned int id)
 	if (TotalDownloads_ > 0)
 		--TotalDownloads_;
 
-	if (DownloadsPerHost_ [host] < SettingsManager::Instance ()->GetMaxConcurrentPerServer () &&
+	if (DownloadsPerHost_ [host] < XmlSettingsManager::Instance ()->property ("MaxConcurrentPerServer").toInt () &&
 		ScheduledJobsForHosts_.contains (host))
 	{
 		QList<int> ids = ScheduledJobsForHosts_.values (host);
@@ -290,7 +290,7 @@ void JobManager::jobStopHandler (unsigned int id)
 		return;
 	}
 
-	if (TotalDownloads_ < SettingsManager::Instance ()->GetMaxTotalConcurrent () &&
+	if (TotalDownloads_ < XmlSettingsManager::Instance ()->property ("MaxTotalConcurrent").toInt () &&
 		!ScheduledJobs_.isEmpty ())
 	{
 		Start (ScheduledJobs_.pop ());
@@ -325,7 +325,7 @@ void JobManager::saveSettings ()
 	SaveChangesScheduled_ = false;
 
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
-	settings.beginGroup (qobject_cast<HttpPlugin*> (parent ())->GetName ());
+	settings.beginGroup ("HTTP and FTP");
 	settings.beginWriteArray ("jobs");
 	settings.remove ("");
 	for (int i = 0; i < Jobs_.size (); ++i)
@@ -354,7 +354,7 @@ void JobManager::TryToStartScheduled ()
 	for (int i = 0; i < ScheduledStarters_.size (); ++i)
 	{
 		QPair<int, QTime> pair = ScheduledStarters_.at (i);
-		if (pair.second.msecsTo (QTime::currentTime ()) >= SettingsManager::Instance ()->GetRetryTimeout () && Start (pair.first))
+		if (pair.second.msecsTo (QTime::currentTime ()) >= XmlSettingsManager::Instance ()->property ("RetryTimeout").toInt () && Start (pair.first))
 			ScheduledStarters_.remove (i);
 	}
 }

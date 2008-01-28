@@ -19,5 +19,6 @@
 		<file>resources/images/local.png</file>
 		<file>resources/images/network.png</file>
 		<file>leechcraft_http_ru.qm</file>
+		<file>httpsettings.xml</file>
     </qresource>
 </RCC>
