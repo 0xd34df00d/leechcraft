@@ -5,16 +5,21 @@ Core:
 + Groupboxing of booleans in Settings.
 + Images for settings categories.
 + XmlSettingsDialog - cleaner and neater.
++ Common Job Adder.
++ Notifications on download finish.
+* Fixed a way to exit without saving settings.
 
 BitTorrent:
 + Proxy support in torrents.
 + Separate proxy for trackers and for seeds.
 + Images for settings categories.
 + Multiple torrents adder.
++ Supports finished downloads notifications.
 * Proper resume of saved torrents.
 
 HTTP/FTP:
 + Images for settings categories.
++ Supports finidhed downloads notifications.
 
 ***Public build 6***
 Core:

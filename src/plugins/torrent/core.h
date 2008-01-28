@@ -20,6 +20,14 @@ class Core : public QAbstractItemModel
 	Q_OBJECT
 
 private:
+	enum TorrentState
+	{
+		TSIdle
+		, TSPreparing
+		, TSDownloading
+		, TSSeeding
+	};
+
 	struct TorrentStruct
 	{
 		quint64 UploadedBefore_;
@@ -27,6 +35,7 @@ private:
 		libtorrent::torrent_handle Handle_;
 		QByteArray TorrentFileContents_;
 		QString TorrentFileName_;
+		TorrentState State_;
 	};
 
 	libtorrent::session *Session_;
@@ -91,6 +100,7 @@ private:
 	libtorrent::torrent_handle RestoreSingleTorrent (const QByteArray&, const boost::filesystem::path&);
 private slots:
 	void writeSettings ();
+	void checkFinished ();
 protected:
 	virtual void timerEvent (QTimerEvent*);
 public slots:
@@ -101,6 +111,7 @@ public slots:
 	void setProxySettings ();
 signals:
 	void error (QString) const;
+	void torrentFinished (const QString&);
 };
 
 #endif

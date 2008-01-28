@@ -70,6 +70,8 @@ private slots:
 	void showError (QString);
 	void updateTorrentStats ();
 	void updateOverallStats ();
+signals:
+	void downloadFinished (const QString&);
 };
 
 #endif

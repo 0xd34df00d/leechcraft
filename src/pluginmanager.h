@@ -37,6 +37,7 @@ namespace Main
 		void FindPlugins ();
 	signals:
 		void gotPlugin (const PluginInfo*);
+		void downloadFinished (QString);
 	};
 };
 

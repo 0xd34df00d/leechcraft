@@ -53,10 +53,11 @@ namespace Main
 
 		QVariant GetTaskData (int, int) const;
 	signals:
-		void throwError (QString, Errors::Severity);
+		void error (QString);
 		void pushTask (const QString&, int);
 		void gotPlugin (const PluginInfo*);
 		void hidePlugins ();
+		void downloadFinished (const QString&);
 	};
 };
 

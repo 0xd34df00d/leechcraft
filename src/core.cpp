@@ -14,7 +14,7 @@ Main::Core::Core (QObject *parent)
 {
 	PreparePools ();
 	PluginManager_ = new Main::PluginManager (this);
-	connect (this, SIGNAL (throwError (QString, Errors::Severity)), parent, SLOT (catchError (QString, Errors::Severity)));
+	connect (this, SIGNAL (error (QString)), parent, SLOT (catchError (QString)));
 	connect (PluginManager_, SIGNAL (gotPlugin (const PluginInfo*)), this, SIGNAL (gotPlugin (const PluginInfo*)));
 }
 
@@ -41,6 +41,9 @@ void Main::Core::DelayedInit ()
 	foreach (QObject *plugin, plugins)
 	{
 		connect (this, SIGNAL (hidePlugins ()), plugin, SLOT (handleHidePlugins ()));
+		IDownload *download = dynamic_cast<IDownload*> (plugin);
+		if (download)
+			connect (plugin, SIGNAL (downloadFinished (const QString&)), this, SIGNAL (downloadFinished (const QString&)));
 	}
 }
 
@@ -70,17 +73,16 @@ void Main::Core::TryToAddJob (const QString& name)
 	{
 		IDownload *di = dynamic_cast<IDownload*> (plugin);
 		IInfo *ii = qobject_cast<IInfo*> (plugin);
-		qDebug () << Q_FUNC_INFO << ii->GetName () << di;
 		if (di)
 		{
 			if (di->CouldDownload (name))
 			{
-				qDebug () << Q_FUNC_INFO << "Adding job";
 				di->AddJob (name);
-				break;
+				return;
 			}
 		}
 	}
+	emit error (tr ("No plugins are able to download \"%1\"").arg (name));
 }
 
 QPair<qint64, qint64> Main::Core::GetSpeeds () const
@@ -90,7 +92,7 @@ QPair<qint64, qint64> Main::Core::GetSpeeds () const
 	QObjectList plugins = PluginManager_->GetAllPlugins ();
 	foreach (QObject *plugin, plugins)
 	{
-		IDownload *di = qobject_cast<IDownload*> (plugin);
+		IDownload *di = dynamic_cast<IDownload*> (plugin);
 		if (di)
 		{
 			download += di->GetDownloadSpeed ();
@@ -168,15 +170,15 @@ bool Main::Core::removeRows (int pos, int rows, const QModelIndex& parent)
 		}
 		catch (const Exceptions::OutOfBounds& e)
 		{
-			throwError (QString::fromStdString ("Caught an error " + e.GetName () + "; more info: " + e.GetReason ()), Errors::Error);
+			error (QString::fromStdString ("Caught an error " + e.GetName () + "; more info: " + e.GetReason ()));
 		}
 		catch (const Exceptions::Logic& e)
 		{
-			throwError (QString::fromStdString ("Caught an error " + e.GetName () + "; more info: " + e.GetReason ()), Errors::Warning);
+			error (QString::fromStdString ("Caught an error " + e.GetName () + "; more info: " + e.GetReason ()));
 		}
 		catch (const Exceptions::Generic& e)
 		{
-			throwError (QString::fromStdString ("Unknown error " + e.GetName () + "; more info: " + e.GetReason ()), Errors::Notice);
+			error (QString::fromStdString ("Unknown error " + e.GetName () + "; more info: " + e.GetReason ()));
 		}
 	}
 

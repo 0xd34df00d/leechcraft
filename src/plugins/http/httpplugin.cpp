@@ -501,6 +501,9 @@ void HttpPlugin::handleJobFinish (unsigned int id)
 	JobRepresentation *jr = JobManager_->GetJobRepresentation (id);
 	JobManager_->Delete (id);
 
+	QString string = tr ("Name: %1, size %2").arg (QFileInfo (jr->LocalName_).fileName ()).arg (Proxy::Instance ()->MakePrettySize (jr->Size_));
+	emit downloadFinished (string);
+
 	if (jr->ShouldBeSavedInHistory_)
 	{
 		FinishedJob fj (*jr);

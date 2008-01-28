@@ -60,6 +60,11 @@ void Core::DoDelayedInit ()
 	SettingsSaveTimer_ = new QTimer (this);
 	connect (SettingsSaveTimer_, SIGNAL (timeout ()), this, SLOT (writeSettings ()));
 	SettingsSaveTimer_->start (XmlSettingsManager::Instance ()->property ("AutosaveInterval").toInt () * 1000);
+
+	QTimer *finished = new QTimer (this);
+	connect (finished, SIGNAL (timeout ()), this, SLOT (checkFinished ()));
+	finished->start (1000);
+
 	SetOverallDownloadRate (XmlSettingsManager::Instance ()->Property ("DownloadRateLimit", 5000).toInt ());
 	SetOverallUploadRate (XmlSettingsManager::Instance ()->Property ("UploadRateLimit", 5000).toInt ());
 	SetDesiredRating (XmlSettingsManager::Instance ()->Property ("DesiredRating", 0).toInt ());
@@ -374,7 +379,7 @@ void Core::AddFile (const QString& filename, const QString& path, const QVector<
 	file.close ();
 
 	beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
-	TorrentStruct tmp = { 0, priorities, handle, contents, QFileInfo (filename).fileName ()};
+	TorrentStruct tmp = { 0, priorities, handle, contents, QFileInfo (filename).fileName (), TSIdle };
 	Handles_.append (tmp);
 	endInsertRows ();
 	handle.resolve_countries (true);
@@ -568,6 +573,7 @@ void Core::RestoreTorrents ()
 	settings.beginGroup ("Torrent");
 	settings.beginGroup ("Core");
 	int torrents = settings.beginReadArray ("AddedTorrents");
+	qDebug () << Q_FUNC_INFO << torrents;
 	for (int i = 0; i < torrents; ++i)
 	{
 		settings.setArrayIndex (i);
@@ -668,7 +674,9 @@ void Core::writeSettings ()
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
 	settings.beginGroup ("Torrent");
 	settings.beginGroup ("Core");
+	settings.remove ("");
 	settings.beginWriteArray ("AddedTorrents");
+	qDebug () << Q_FUNC_INFO << Handles_.size ();
 	for (int i = 0; i < Handles_.size (); ++i)
 	{
 		settings.setArrayIndex (i);
@@ -700,6 +708,42 @@ void Core::writeSettings ()
 	settings.endArray ();
 	settings.endGroup ();
 	settings.endGroup ();
+}
+
+void Core::checkFinished ()
+{
+	for (int i = 0; i < Handles_.size (); ++i)
+	{
+		if (Handles_.at (i).State_ == TSSeeding)
+			continue;
+
+		libtorrent::torrent_status status = Handles_.at (i).Handle_.status ();
+		libtorrent::torrent_status::state_t state = status.state;
+
+		if (status.paused)
+			Handles_ [i].State_ = TSIdle;
+
+		switch (state)
+		{
+			case libtorrent::torrent_status::queued_for_checking:
+			case libtorrent::torrent_status::checking_files:
+			case libtorrent::torrent_status::allocating:
+				Handles_ [i].State_ = TSPreparing;
+				break;
+			case libtorrent::torrent_status::connecting_to_tracker:
+			case libtorrent::torrent_status::downloading:
+				Handles_ [i].State_ = TSDownloading;
+				break;
+			case libtorrent::torrent_status::finished:
+			case libtorrent::torrent_status::seeding:
+				Handles_ [i].State_ = TSSeeding;
+				libtorrent::torrent_info info = Handles_.at (i).Handle_.get_torrent_info ();
+				QString name = QString::fromStdString (info.name ());
+				QString string = tr ("Torrent finished: %1").arg (name);
+				emit torrentFinished (string);
+				break;
+		}
+	}
 }
 
 bool Core::CheckValidity (int pos) const

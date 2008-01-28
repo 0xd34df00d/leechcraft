@@ -28,12 +28,12 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 
 	splash.showMessage (tr ("Initializing interface..."));
 	statusBar ();
-	SetTrayIcon ();
 	SetupToolbars ();
 	SetupActions ();
 	SetupMenus ();
 	setWindowIcon (QIcon (":/resources/images/mainapp.png"));
     setWindowTitle (QCoreApplication::applicationName ());
+	SetTrayIcon ();
 
 	DownloadSpeed_ = new QLabel;
 	DownloadSpeed_->setText ("0");
@@ -55,6 +55,7 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	splash.showMessage (tr ("Initializing core and plugins..."));
 	Model_ = new Main::Core (this);
 	connect (Model_, SIGNAL (gotPlugin (const PluginInfo*)), this, SLOT (addPluginToList (const PluginInfo*)));
+	connect (Model_, SIGNAL (downloadFinished (const QString&)), this, SLOT (handleDownloadFinished (const QString&)));
 	Model_->SetReallyMainWindow (this);
 	Model_->DelayedInit ();
 
@@ -70,7 +71,7 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 
 QMenu* MainWindow::GetRootPluginsMenu () const
 {
-	return PluginsActionsMenu_;
+	return ActionsMenu_;
 }
 
 MainWindow::~MainWindow ()
@@ -89,24 +90,9 @@ MainWindow* MainWindow::Instance ()
 	return Instance_;
 }
 
-void MainWindow::catchError (QString message, Errors::Severity error)
+void MainWindow::catchError (QString message)
 {
-	switch (error)
-	{
-		case Errors::Notice:
-			QMessageBox::information (this, tr ("Notice"), message);
-			break;
-		case Errors::Warning:
-			QMessageBox::warning (this, tr ("Warning"), message);
-			break;
-		case Errors::Error:
-			QMessageBox::critical (this, tr ("Error"), message);
-			break;
-		case Errors::Critical:
-			QMessageBox::critical (this, tr ("Critical"), message);
-			qApp->quit ();
-			break;
-	}
+	QMessageBox::critical (this, tr ("Error"), message);
 }
 
 void MainWindow::closeEvent (QCloseEvent *e)
@@ -139,7 +125,7 @@ void MainWindow::SetupMenus ()
 {
     File_				= menuBar ()->addMenu (tr ("&File"));
 	PluginsMenu_		= menuBar ()->addMenu (tr ("&Plugins"));
-	PluginsActionsMenu_	= menuBar ()->addMenu (tr ("&Actions"));
+	ActionsMenu_	= menuBar ()->addMenu (tr ("&Actions"));
 	ToolsMenu_			= menuBar ()->addMenu (tr ("&Tools"));
     Help_				= menuBar ()->addMenu (tr ("&Help"));
 
@@ -152,9 +138,11 @@ void MainWindow::SetTrayIcon ()
 	iconMenu->addAction (tr ("Show/hide main"), this, SLOT (showHideMain ()));
 	iconMenu->addAction (tr ("Hide all"), this, SLOT (hideAll ()));
 	iconMenu->addSeparator ();
+	iconMenu->addAction (AddJob_);
+	iconMenu->addSeparator ();
 	TrayPluginsMenu_ = iconMenu->addMenu (tr ("Plugins"));
 	iconMenu->addSeparator ();
-	iconMenu->addAction (tr ("Exit"), qApp, SLOT (quit ()));
+	iconMenu->addAction (tr ("Quit"), this, SLOT (close ()));
 
 	TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/mainapp.png"), this);
 	TrayIcon_->setContextMenu (iconMenu);
@@ -169,11 +157,11 @@ void MainWindow::FillMenus ()
 
 void MainWindow::MakeActions ()
 {
-	AddJob_ = File_->addAction  (tr ("&Add job"), this, SLOT (addJob ()));
+	AddJob_ = ActionsMenu_->addAction (QIcon (":/resources/images/main_addjob.png"), tr ("&Add job"), this, SLOT (addJob ()));
 	AddJob_->setStatusTip (tr ("Adds a job to a plugin supporting that addition"));
 	Toolbar_->addAction (AddJob_);
 
-	QAction *a = File_->addAction (tr ("&Quit"), qApp, SLOT (quit ()));
+	QAction *a = File_->addAction (tr ("&Quit"), this, SLOT (close ()));
 	a->setStatusTip (tr ("Exit from application"));
 
 	BackupSettings_ = ToolsMenu_->addAction (tr ("Backup settings..."), this, SLOT (backupSettings ()));
@@ -436,8 +424,14 @@ void MainWindow::addJob ()
 	if (adder.exec () == QDialog::Accepted)
 	{
 		QString name = adder.GetString ();
-		Model_->TryToAddJob (name);
+		if (!name.isEmpty ())
+			Model_->TryToAddJob (name);
 	}
+}
+
+void MainWindow::handleDownloadFinished (const QString& string)
+{
+	TrayIcon_->showMessage (tr ("Download finished"), string, QSystemTrayIcon::Information, 5000);
 }
 
 };

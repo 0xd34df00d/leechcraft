@@ -28,7 +28,7 @@ namespace Main
 		Q_OBJECT
 
 		QSystemTrayIcon *TrayIcon_;
-		QMenu *File_, *PluginsMenu_, *PluginsActionsMenu_, *ToolsMenu_, *Help_
+		QMenu *File_, *PluginsMenu_, *ActionsMenu_, *ToolsMenu_, *Help_
 			, *TrayPluginsMenu_;
 		QTreeWidget *PluginsList_;
 		Main::Core *Model_;
@@ -50,7 +50,7 @@ namespace Main
 		static MainWindow *Instance ();
 		QMenu* GetRootPluginsMenu () const;
 	public slots:
-		void catchError (QString, Errors::Severity);
+		void catchError (QString);
 	protected:
 		virtual void closeEvent (QCloseEvent*);
 	private:
@@ -79,6 +79,7 @@ namespace Main
 		void hideAll ();
 		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
 		void addJob ();
+		void handleDownloadFinished (const QString&);
 	};
 };
 
