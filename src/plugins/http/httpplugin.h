@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QVector>
 #include <QStringList>
+#include "ui_mainwindow.h"
 #include "interfaces/interfaces.h"
 #include "httpimp.h"
 #include "globals.h"
@@ -30,31 +31,14 @@ class HttpPlugin : public QMainWindow
 	Q_OBJECT
 	Q_INTERFACES (IInfo IWindow IDirectDownload);
 
+	Ui::MainWindow Ui_;
+
 	int ID_;
 	bool IsShown_, SaveChangesScheduled_, CronEnabled_;
-	QPushButton *AddJobButton_;
-	QSplitter *Splitter_;
-	ContextableList *TasksList_, *FinishedList_;
 	SettingsDialog *SettingsDialog_;
 	JobManager *JobManager_;
 	QStringList ProvidesList_, NeedsList_, UsesList_, TaskHeaderLabels_, FinishedHeaderLabels_;
 	QLabel *SpeedIndicator_;
-	QAction *AddJobAction_
-		  , *DeleteJobAction_
-		  , *StartJobAction_
-		  , *StartAllAction_
-		  , *StopJobAction_
-		  , *StopAllAction_
-		  , *GetFileSizeAction_
-		  , *ScheduleSelectedAction_
-		  , *JobPropertiesAction_
-		  , *DeleteFinishedAction_
-		  , *CopyFinishedURL_
-		  , *PreferencesAction_
-		  , *SelectTasksColumnsAction_
-		  , *SelectFinishedColumnsAction_
-		  , *AutoAdjustInterfaceAction_;
-	QToolBar *JobManagementToolbar_, *FinishedManagementToolbar_;
 	QMenu *Plugins_;
 public:
 	enum TasksListHeaders
@@ -90,15 +74,7 @@ public:
 	virtual void Init ();
 	virtual ~HttpPlugin ();
 private:
-	void FillInterface ();
-	void SetupJobManagementBar ();
-	void SetupJobManagementMenu (QMenu*);
-	void SetupToolsBar (QToolBar*);
-	void SetupToolsMenu (QMenu*);
 	void SetupStatusBarStuff ();
-	void SetupMainWidget ();
-	QWidget* SetupTasksPart ();
-	QWidget* SetupFinishedPart ();
 public:
 	virtual QString GetName () const;
 	virtual QString GetInfo () const;
@@ -131,7 +107,7 @@ public slots:
 	virtual void addDownload (const DirectDownloadParams&);
 	void handleHidePlugins ();
 private slots:
-	void initiateJobAddition ();
+	void on_ActionAddJob__triggered ();
 	int handleParams (JobParams*);
 	void pushJob (unsigned int);
 	void updateJobDisplay (unsigned int);
@@ -141,26 +117,26 @@ private slots:
 	void handleJobStart (unsigned int);
 	void handleJobDelete (unsigned int);
 	void handleJobWaiting (unsigned int);
-	void startDownloadSelected ();
-	void stopDownloadSelected ();
-	void deleteDownloadSelected ();
-	void deleteDownloadSelectedFinished ();
-	void getFileSize ();
-	void scheduleSelected ();
-	void startDownloadAll ();
-	void stopDownloadAll ();
-	void showPreferences ();
+	void on_ActionStart__triggered ();
+	void on_ActionStop__triggered ();
+	void on_ActionRemoveJob__triggered ();
+	void on_ActionRemoveFinished__triggered ();
+	void on_ActionGetFileSize__triggered ();
+	void on_ActionSchedule__triggered ();
+	void on_ActionStartAll__triggered ();
+	void on_ActionStopAll__triggered ();
+	void on_ActionJobProperties__triggered ();
+	void on_ActionPreferences__triggered ();
 	void showJobErrorMessage (QString, QString);
 	void showStoppedIndicator (unsigned int);
 	void handleTotalSpeedUpdate ();
-	void autoAdjustInterface ();
+	void on_ActionAutoajust__triggered ();
 	void writeSettings ();
 	void copyFinishedURL ();
 	void setActionsEnabled ();
 	void handleCronEnabled ();
-	void selectActiveTasksListColumns ();
-	void selectFinishedTasksListColumns ();
-	void changeJobProperties ();
+	void on_ActionActiveColumns__triggered ();
+	void on_ActionFinishedColumns__triggered ();
 private:
 	void ReadSettings ();
 	void AddToFinishedList (const FinishedJob*);

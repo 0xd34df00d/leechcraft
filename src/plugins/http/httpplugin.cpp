@@ -27,6 +27,8 @@ void HttpPlugin::Init ()
     transl->load (QString (":/leechcraft_http_") + localeName);
     qApp->installTranslator (transl);
 
+	Ui_.setupUi (this);
+
 	SaveChangesScheduled_ = false;
 	ProvidesList_ << "http" << "ftp" << "resume";
 	UsesList_ << "cron";
@@ -43,15 +45,10 @@ void HttpPlugin::Init ()
 	connect (JobManager_, SIGNAL (jobWaiting (unsigned int)), this, SLOT (handleJobWaiting (unsigned int)));
 	connect (JobManager_, SIGNAL (gotFileSize (unsigned int)), this, SLOT (handleGotFileSize (unsigned int)));
 	connect (JobManager_, SIGNAL (cronEnabled ()), this, SLOT (handleCronEnabled ()));
+	SetupStatusBarStuff ();
 
-	setWindowTitle (tr ("HTTP/FTP worker 0.2"));
-	setWindowIcon (QIcon (":/resources/images/pluginicon.png"));
-
-	SetupMainWidget ();
-
-	FillInterface ();
 	ReadSettings ();
-	JobManager_->SetTheMain (TasksList_);
+	JobManager_->SetTheMain (Ui_.TasksList_);
 	JobManager_->DoDelayedInit ();
 
 	IsShown_ = false;
@@ -63,117 +60,38 @@ void HttpPlugin::Init ()
 	speedUpdTimer->setInterval (1000);
 	connect (speedUpdTimer, SIGNAL (timeout ()), this, SLOT (handleTotalSpeedUpdate ()));
 	speedUpdTimer->start ();
-	connect (FinishedList_, SIGNAL (itemSelectionChanged ()), this, SLOT (setActionsEnabled ()));
-	connect (TasksList_, SIGNAL (itemSelectionChanged ()), this, SLOT (setActionsEnabled ()));
+	connect (Ui_.FinishedList_, SIGNAL (itemSelectionChanged ()), this, SLOT (setActionsEnabled ()));
+	connect (Ui_.TasksList_, SIGNAL (itemSelectionChanged ()), this, SLOT (setActionsEnabled ()));
 	setActionsEnabled ();
 
-    Plugins_->addAction (AddJobAction_);
-    Plugins_->addAction (StartAllAction_);
-    Plugins_->addAction (StopAllAction_);
+    Plugins_->addAction (Ui_.ActionAddJob_);
+    Plugins_->addAction (Ui_.ActionStartAll_);
+    Plugins_->addAction (Ui_.ActionStopAll_);
     Plugins_->addSeparator ();
-    Plugins_->addAction (PreferencesAction_);
+    Plugins_->addAction (Ui_.ActionPreferences_);
+
+	Ui_.TasksList_->AddAction (Ui_.ActionRemoveJob_);
+	Ui_.TasksList_->AddAction (Ui_.ActionStart_);
+	Ui_.TasksList_->AddAction (Ui_.ActionStop_);
+	Ui_.TasksList_->AddAction (Ui_.ActionGetFileSize_);
+	Ui_.TasksList_->AddAction (Ui_.ActionJobProperties_);
+
+	Ui_.FinishedList_->AddAction (Ui_.ActionRemoveFinished_);
+	Ui_.FinishedList_->AddAction (Ui_.ActionCopyFinishedURL_);
+
+	Ui_.TasksList_->setItemDelegate (new MainViewDelegate (this));
+	Ui_.TasksList_->header ()->setClickable (false);
+	Ui_.TasksList_->header ()->setStretchLastSection (true);
+	Ui_.TasksList_->header ()->setHighlightSections (false);
+	Ui_.TasksList_->header ()->setDefaultAlignment (Qt::AlignLeft);
+
+	Ui_.FinishedList_->header ()->setStretchLastSection (true);
+	Ui_.FinishedList_->header ()->setHighlightSections (false);
+	Ui_.FinishedList_->header ()->setDefaultAlignment (Qt::AlignLeft);
 }
 
 HttpPlugin::~HttpPlugin ()
 {
-}
-
-void HttpPlugin::FillInterface ()
-{
-	QToolBar *toolstb = addToolBar (tr ("&Tools"));
-	toolstb->setIconSize (QSize (16, 16));
-	QMenuBar *menuBar = new QMenuBar ();
-	setMenuBar (menuBar);
-	QMenu *jobsMenu = menuBar->addMenu (tr ("&Jobs"));
-	QMenu *toolsMenu = menuBar->addMenu (tr ("&Tools"));
-
-	SetupJobManagementBar ();
-	SetupJobManagementMenu (jobsMenu);
-	SetupToolsBar (toolstb);
-	SetupToolsMenu (toolsMenu);
-	SetupStatusBarStuff ();
-}
-
-void HttpPlugin::SetupJobManagementBar ()
-{
-	AddJobAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/addjob.png"), tr ("Add..."), this, SLOT (initiateJobAddition ()));
-	AddJobAction_->setShortcut (Qt::Key_Insert);
-	AddJobAction_->setStatusTip (tr ("Add a new job"));
-	DeleteJobAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/deletejob.png"), tr ("Delete"), this, SLOT (deleteDownloadSelected ()));
-	DeleteJobAction_->setShortcut (Qt::Key_Delete);
-	DeleteJobAction_->setStatusTip (tr ("Delete selected job(s)"));
-	JobManagementToolbar_->addSeparator ();
-	StartJobAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/startjob.png"), tr ("Start"), this, SLOT (startDownloadSelected ()));
-	StartJobAction_->setShortcut (tr ("Ctrl+S"));
-	StartJobAction_->setStatusTip (tr ("Start selected job(s)"));
-	StartAllAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/startall.png"), tr ("Start all"), this, SLOT (startDownloadAll ()));
-	StartAllAction_->setShortcut (tr ("Ctrl+Shift+S"));
-	StartAllAction_->setStatusTip (tr ("Start all jobs"));
-	StopJobAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/stopjob.png"), tr ("Stop"), this, SLOT (stopDownloadSelected ()));
-	StopJobAction_->setShortcut (tr ("Ctrl+I"));
-	StopJobAction_->setStatusTip (tr ("Stop selected job(s)"));
-	StopAllAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/stopall.png"), tr ("Stop all"), this, SLOT (stopDownloadAll ()));
-	StopAllAction_->setShortcut (tr ("Ctrl+Shift+I"));
-	StopAllAction_->setStatusTip (tr ("Stop all jobs"));
-	GetFileSizeAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/getfilesize.png"), tr ("Get file size"), this, SLOT (getFileSize ()));
-	GetFileSizeAction_->setStatusTip (tr ("Get file size for selected jobs without downloading them"));
-	JobManagementToolbar_->addSeparator ();
-	ScheduleSelectedAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/schedule.png"), tr ("Schedule"), this, SLOT (scheduleSelected ()));
-	ScheduleSelectedAction_->setStatusTip (tr ("Schedule select job(s)"));
-	JobManagementToolbar_->addSeparator ();
-	JobPropertiesAction_ = JobManagementToolbar_->addAction (QIcon (":/resources/images/properties.png"), tr ("Job properties..."), this, SLOT (changeJobProperties ()));
-	JobPropertiesAction_->setShortcut (tr ("Ctrl+P"));
-	JobPropertiesAction_->setStatusTip (tr ("Change selected job's properties"));
-	DeleteFinishedAction_ = FinishedManagementToolbar_->addAction (QIcon (":/resources/images/deletejob.png"), tr ("Delete"), this, SLOT (deleteDownloadSelectedFinished ()));
-	DeleteFinishedAction_->setShortcut (Qt::Key_Delete & Qt::ShiftModifier);
-	DeleteFinishedAction_->setStatusTip (tr ("Delete selected finished job(s)"));
-
-}
-
-void HttpPlugin::SetupJobManagementMenu (QMenu *jobsMenu)
-{
-	jobsMenu->addAction (AddJobAction_);
-	jobsMenu->addAction (DeleteJobAction_);
-	jobsMenu->addSeparator ();
-	jobsMenu->addAction (DeleteFinishedAction_);
-	CopyFinishedURL_ = jobsMenu->addAction (tr ("Copy URL to clipboard"), this, SLOT (copyFinishedURL ()));
-	jobsMenu->addSeparator ();
-	jobsMenu->addAction (StartJobAction_);
-	jobsMenu->addAction (StartAllAction_);
-	jobsMenu->addAction (StopJobAction_);
-	jobsMenu->addAction (StopAllAction_);
-	jobsMenu->addAction (GetFileSizeAction_);
-	jobsMenu->addSeparator ();
-	jobsMenu->addAction (ScheduleSelectedAction_);
-
-	TasksList_->AddAction (DeleteJobAction_);
-	TasksList_->AddAction (StartJobAction_);
-	TasksList_->AddAction (StopJobAction_);
-	TasksList_->AddAction (GetFileSizeAction_);
-	TasksList_->AddAction (JobPropertiesAction_);
-
-	FinishedList_->AddAction (DeleteFinishedAction_);
-	FinishedList_->AddAction (CopyFinishedURL_);
-}
-
-void HttpPlugin::SetupToolsBar (QToolBar *toolstb)
-{
-	AutoAdjustInterfaceAction_ = toolstb->addAction (QIcon (":/resources/images/autoadjustiface.png"), tr ("Autoadjust interface"), this, SLOT (autoAdjustInterface ()));
-	AutoAdjustInterfaceAction_->setStatusTip (tr ("Adjust interface to make all text in columns fit"));
-	SelectTasksColumnsAction_ = toolstb->addAction (QIcon (":/resources/images/selectcolumns.png"), tr ("Active jobs list columns..."), this, SLOT (selectActiveTasksListColumns ()));
-	SelectTasksColumnsAction_->setStatusTip (tr ("Select active jobs list columns"));
-	PreferencesAction_ = toolstb->addAction (QIcon (":/resources/images/preferences.png"), tr ("Preferences..."), this, SLOT (showPreferences ()));
-	PreferencesAction_->setShortcut (tr ("Ctrl+Shift+P"));
-	PreferencesAction_->setStatusTip (tr ("Open plugin's preferences dialog"));
-}
-
-void HttpPlugin::SetupToolsMenu (QMenu *toolsMenu)
-{
-	toolsMenu->addAction (AutoAdjustInterfaceAction_);
-	toolsMenu->addAction (SelectTasksColumnsAction_);
-	SelectFinishedColumnsAction_ = toolsMenu->addAction (QIcon (":/resources/images/selectcolumns.png"), tr ("Finished jobs list columns..."), this, SLOT (selectFinishedTasksListColumns ()));
-	SelectFinishedColumnsAction_->setStatusTip (tr ("Select finished jobs list columns"));
-	toolsMenu->addAction (PreferencesAction_);
 }
 
 void HttpPlugin::SetupStatusBarStuff ()
@@ -182,68 +100,6 @@ void HttpPlugin::SetupStatusBarStuff ()
 	SpeedIndicator_->setMinimumWidth (70);
 	SpeedIndicator_->setAlignment (Qt::AlignRight);
 	statusBar ()->addPermanentWidget (SpeedIndicator_);
-}
-
-void HttpPlugin::SetupMainWidget ()
-{
-	Splitter_ = new QSplitter (Qt::Vertical, this);
-	setCentralWidget (Splitter_);
-
-	Splitter_->addWidget (SetupTasksPart ());
-	Splitter_->addWidget (SetupFinishedPart ());
-	Splitter_->show ();
-}
-
-QWidget* HttpPlugin::SetupTasksPart ()
-{
-	TasksList_ = new ContextableList (this);
-	TasksList_->setItemDelegate (new MainViewDelegate (this));
-	TasksList_->header ()->setClickable (false);
-	TasksList_->setRootIsDecorated (false);
-	TasksList_->setSelectionMode (QAbstractItemView::ExtendedSelection);
-	TasksList_->setEditTriggers (QAbstractItemView::NoEditTriggers);
-	TasksList_->setTextElideMode (Qt::ElideMiddle);
-	TaskHeaderLabels_ << tr ("State") << tr ("Local name") << tr ("URL") << tr ("%") << tr ("Speed") << tr ("Download time") << tr ("Remaining time") << tr ("Downloaded") << tr ("Total");
-	TasksList_->setHeaderLabels (TaskHeaderLabels_);
-	TasksList_->header ()->setStretchLastSection (true);
-	TasksList_->header ()->setHighlightSections (false);
-	TasksList_->header ()->setDefaultAlignment (Qt::AlignLeft);
-
-	JobManagementToolbar_ = new QToolBar;
-	JobManagementToolbar_->setIconSize (QSize (16, 16));
-	QWidget *container = new QWidget;
-	QVBoxLayout *lay = new QVBoxLayout;
-	container->setLayout (lay);
-	lay->setSpacing (0);
-	lay->addWidget (JobManagementToolbar_);
-	lay->addWidget (TasksList_);
-
-	return container;
-}
-
-QWidget* HttpPlugin::SetupFinishedPart ()
-{
-	FinishedList_ = new ContextableList (this);
-	FinishedList_->setRootIsDecorated (false);
-	FinishedList_->setSelectionMode (QAbstractItemView::ExtendedSelection);
-	FinishedList_->setEditTriggers (QAbstractItemView::NoEditTriggers);
-	FinishedList_->setTextElideMode (Qt::ElideMiddle);
-	FinishedHeaderLabels_ << tr ("Local name") << tr ("URL") << tr ("Size") << tr ("Average speed") << tr ("Time to complete");
-	FinishedList_->setHeaderLabels (FinishedHeaderLabels_);
-	FinishedList_->header ()->setStretchLastSection (true);
-	FinishedList_->header ()->setHighlightSections (false);
-	FinishedList_->header ()->setDefaultAlignment (Qt::AlignLeft);
-
-	FinishedManagementToolbar_ = new QToolBar;
-	FinishedManagementToolbar_->setIconSize (QSize (16, 16));
-	QWidget *container = new QWidget;
-	QVBoxLayout *lay = new QVBoxLayout;
-	container->setLayout (lay);
-	lay->setSpacing (0);
-	lay->addWidget (FinishedManagementToolbar_);
-	lay->addWidget (FinishedList_);
-
-	return container;
 }
 
 QString HttpPlugin::GetName () const
@@ -357,7 +213,7 @@ void HttpPlugin::AddJob (const QString& name)
 
 int HttpPlugin::GetPercentageForRow (int row)
 {
-	JobRepresentation *jr = JobManager_->GetJobRepresentation (dynamic_cast<JobListItem*> (TasksList_->topLevelItem (row))->GetID ());
+	JobRepresentation *jr = JobManager_->GetJobRepresentation (dynamic_cast<JobListItem*> (Ui_.TasksList_->topLevelItem (row))->GetID ());
 	int result = jr->Size_ ? jr->Downloaded_ * 100 / jr->Size_ : 0;
 	delete jr;
 	return result;
@@ -390,7 +246,7 @@ void HttpPlugin::handleHidePlugins ()
 	hide ();
 }
 
-void HttpPlugin::initiateJobAddition ()
+void HttpPlugin::on_ActionAddJob__triggered ()
 {
 	JobAdderDialog *dia = new JobAdderDialog (this);
 	connect (dia, SIGNAL (gotParams (JobParams*)), this, SLOT (handleParams (JobParams*)));
@@ -416,7 +272,7 @@ void HttpPlugin::pushJob (unsigned int id)
 	item->setText (TListDownloadTime, Proxy::Instance ()->MakeTimeFromLong (jr->DownloadTime_ / 1000).toString ());
 	item->setText (TListDownloaded,	"");
 	item->setText (TListTotal,		"");
-	TasksList_->addTopLevelItem (item);
+	Ui_.TasksList_->addTopLevelItem (item);
 	delete jr;
 
 	setActionsEnabled ();
@@ -426,11 +282,11 @@ void HttpPlugin::updateJobDisplay (unsigned int id)
 {
 	JobRepresentation *jr = JobManager_->GetJobRepresentation (id);
 
-	int rowCount = TasksList_->topLevelItemCount ();
+	int rowCount = Ui_.TasksList_->topLevelItemCount ();
 	for (int i = 0; i < rowCount; ++i)
-		if (dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i))->GetID () == id)
+		if (dynamic_cast<JobListItem*> (Ui_.TasksList_->topLevelItem (i))->GetID () == id)
 		{
-			QTreeWidgetItem *item = TasksList_->topLevelItem (i);
+			QTreeWidgetItem *item = Ui_.TasksList_->topLevelItem (i);
 			item->setText (TListLocalName, QFileInfo (jr->LocalName_).fileName ());
 			item->setText (TListURL, QFileInfo (jr->URL_).dir ().path ());
 			if (jr->Size_)
@@ -460,11 +316,11 @@ void HttpPlugin::handleGotFileSize (unsigned int id)
 {
 	JobRepresentation *jr = JobManager_->GetJobRepresentation (id);
 
-	int rowCount = TasksList_->topLevelItemCount ();
+	int rowCount = Ui_.TasksList_->topLevelItemCount ();
 	for (int i = 0; i < rowCount; ++i)
-		if (dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i))->GetID () == id)
+		if (dynamic_cast<JobListItem*> (Ui_.TasksList_->topLevelItem (i))->GetID () == id)
 		{
-			QTreeWidgetItem *item = TasksList_->topLevelItem (i);
+			QTreeWidgetItem *item = Ui_.TasksList_->topLevelItem (i);
 			if (jr->Size_)
 				item->setText (TListPercent, QString::number (jr->Downloaded_ * 100 / jr->Size_));
 
@@ -484,11 +340,11 @@ void HttpPlugin::handleGotFileSize (unsigned int id)
 
 void HttpPlugin::handleJobRemoval (unsigned int id)
 {
-	int rowCount = TasksList_->topLevelItemCount ();
+	int rowCount = Ui_.TasksList_->topLevelItemCount ();
 	for (int i = 0; i < rowCount; ++i)
-		if (dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i))->GetID () == id)
+		if (dynamic_cast<JobListItem*> (Ui_.TasksList_->topLevelItem (i))->GetID () == id)
 		{
-			delete TasksList_->takeTopLevelItem (i);
+			delete Ui_.TasksList_->takeTopLevelItem (i);
 			setActionsEnabled ();
 			return;
 		}
@@ -522,11 +378,10 @@ void HttpPlugin::handleJobFinish (unsigned int id)
 
 void HttpPlugin::handleJobStart (unsigned int id)
 {
-	qDebug () << Q_FUNC_INFO;
-	int rowCount = TasksList_->topLevelItemCount ();
+	int rowCount = Ui_.TasksList_->topLevelItemCount ();
 	for (int i = 0; i < rowCount; ++i)
-		if (dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i))->GetID () == id)
-			dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i))->setIcon (TListID, QIcon (":/resources/images/startjob.png"));
+		if (dynamic_cast<JobListItem*> (Ui_.TasksList_->topLevelItem (i))->GetID () == id)
+			dynamic_cast<JobListItem*> (Ui_.TasksList_->topLevelItem (i))->setIcon (TListID, QIcon (":/resources/images/startjob.png"));
 }
 
 void HttpPlugin::handleJobDelete (unsigned int id)
@@ -536,31 +391,30 @@ void HttpPlugin::handleJobDelete (unsigned int id)
 
 void HttpPlugin::handleJobWaiting (unsigned int id)
 {
-	qDebug () << Q_FUNC_INFO;
-	int rowCount = TasksList_->topLevelItemCount ();
+	int rowCount = Ui_.TasksList_->topLevelItemCount ();
 	for (int i = 0; i < rowCount; ++i)
-		if (dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i))->GetID () == id)
-			dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i))->setIcon (TListID, QIcon (":/resources/images/waiting.png"));
+		if (dynamic_cast<JobListItem*> (Ui_.TasksList_->topLevelItem (i))->GetID () == id)
+			dynamic_cast<JobListItem*> (Ui_.TasksList_->topLevelItem (i))->setIcon (TListID, QIcon (":/resources/images/waiting.png"));
 }
 
-void HttpPlugin::startDownloadSelected ()
+void HttpPlugin::on_ActionStart__triggered ()
 {
 	HandleSelected (JAStart);
 }
 
-void HttpPlugin::stopDownloadSelected ()
+void HttpPlugin::on_ActionStop__triggered ()
 {
 	HandleSelected (JAStop);
 }
 
-void HttpPlugin::deleteDownloadSelected ()
+void HttpPlugin::on_ActionRemoveJob__triggered ()
 {
 	HandleSelected (JADelete);
 }
 
-void HttpPlugin::deleteDownloadSelectedFinished ()
+void HttpPlugin::on_ActionRemoveFinished__triggered ()
 {
-	QList<QTreeWidgetItem*> items = FinishedList_->selectedItems ();
+	QList<QTreeWidgetItem*> items = Ui_.FinishedList_->selectedItems ();
 
 	for (int i = 0; i < items.size (); ++i)
 		delete items [i];
@@ -568,161 +422,29 @@ void HttpPlugin::deleteDownloadSelectedFinished ()
 	setActionsEnabled ();
 }
 
-void HttpPlugin::getFileSize ()
+void HttpPlugin::on_ActionGetFileSize__triggered ()
 {
 	HandleSelected (JAGFS);
 }
 
-void HttpPlugin::scheduleSelected ()
+void HttpPlugin::on_ActionSchedule__triggered ()
 {
 	HandleSelected (JASchedule);
 }
 
-void HttpPlugin::startDownloadAll ()
+void HttpPlugin::on_ActionStartAll__triggered ()
 {
 	StartAll ();
 }
 
-void HttpPlugin::stopDownloadAll ()
+void HttpPlugin::on_ActionStopAll__triggered ()
 {
 	StopAll ();
 }
 
-void HttpPlugin::showPreferences ()
+void HttpPlugin::on_ActionJobProperties__triggered ()
 {
-	SettingsDialog_->show ();
-	SettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
-}
-
-void HttpPlugin::showJobErrorMessage (QString url, QString message)
-{
-	QMessageBox::warning (this, tr ("Job error"), tr ("Job with URL<br />%1<br />signals about following error:<br /><br /><em>%2</em>").arg (url).arg (message));
-}
-
-void HttpPlugin::showStoppedIndicator (unsigned int id)
-{
-	qDebug () << Q_FUNC_INFO;
-	for (int i = 0; i < TasksList_->topLevelItemCount (); ++i)
-	{
-		JobListItem *item = dynamic_cast<JobListItem*> (TasksList_->topLevelItem (i));
-		if (item->GetID () == id)
-		{
-			item->setIcon (TListID, QIcon (":/resources/images/stopjob.png"));
-			break;
-		}
-	}
-}
-
-void HttpPlugin::handleTotalSpeedUpdate ()
-{
-	SpeedIndicator_->setText (Proxy::Instance ()->MakePrettySize (GetDownloadSpeed ()) + tr ("/s"));
-}
-
-void HttpPlugin::autoAdjustInterface ()
-{
-	if (TasksList_->topLevelItemCount ())
-		for (int i = 0; i < TasksList_->columnCount (); ++i)
-			TasksList_->resizeColumnToContents (i);
-	if (FinishedList_->topLevelItemCount ())
-		for (int i = 0; i < FinishedList_->columnCount (); ++i)
-			FinishedList_->resizeColumnToContents (i);
-}
-
-void HttpPlugin::writeSettings ()
-{
-	SaveChangesScheduled_ = false;
-
-	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
-	settings.beginGroup (GetName ());
-	settings.beginGroup ("geometry");
-	settings.setValue ("size", size ());
-	settings.setValue ("pos", pos ());
-	settings.setValue ("jobListHeadersState", TasksList_->header ()->saveState ());
-	settings.setValue ("finishedListHeadersState", FinishedList_->header ()->saveState ());
-	settings.setValue ("splitterState", Splitter_->saveState ());
-	settings.endGroup ();
-
-	settings.beginWriteArray ("finished");
-	settings.remove ("");
-	for (int i = 0; i < FinishedList_->topLevelItemCount (); ++i)
-	{
-		settings.setArrayIndex (i);
-		QByteArray arr;
-		QDataStream str (&arr, QIODevice::WriteOnly);
-		FinishedList_->topLevelItem (i)->write (str);
-		settings.setValue ("representation", arr);
-	}
-	settings.endArray ();
-	settings.endGroup ();
-}
-
-void HttpPlugin::copyFinishedURL ()
-{
-	QList<QTreeWidgetItem*> item = FinishedList_->selectedItems ();
-	QApplication::clipboard ()->setText (item.at (0)->text (FListURL));
-}
-
-void HttpPlugin::setActionsEnabled ()
-{
-	QList<QTreeWidgetItem*> finishedItems = FinishedList_->selectedItems (),
-							tasksItems = TasksList_->selectedItems ();
-	DeleteFinishedAction_->setEnabled (finishedItems.size ());
-	CopyFinishedURL_->setEnabled (finishedItems.size ());
-
-	DeleteJobAction_->setEnabled (tasksItems.size ());
-	StartJobAction_->setEnabled (tasksItems.size ());
-	StopJobAction_->setEnabled (tasksItems.size ());
-	GetFileSizeAction_->setEnabled (tasksItems.size ());
-	ScheduleSelectedAction_->setEnabled (tasksItems.size () && CronEnabled_);
-	JobPropertiesAction_->setEnabled (tasksItems.size ());
-
-	StartAllAction_->setEnabled (TasksList_->topLevelItemCount ());
-	StopAllAction_->setEnabled (TasksList_->topLevelItemCount ());
-}
-
-void HttpPlugin::handleCronEnabled ()
-{
-	CronEnabled_ = true;
-	setActionsEnabled ();
-}
-
-void HttpPlugin::selectActiveTasksListColumns ()
-{
-	QList<QPair<QString, bool> > columns;
-	for (int i = 0; i < TaskHeaderLabels_.size (); ++i)
-		columns.append (qMakePair (TaskHeaderLabels_.at (i), !TasksList_->isColumnHidden (i)));
-	ColumnSelector selector (this);
-	selector.SetColumnsStates (columns);
-	if (selector.exec () == QDialog::Rejected)
-		return;
-	else
-	{
-		QList<bool> states = selector.GetColumnsStates ();
-		for (int i = 0; i < states.size (); ++i)
-			TasksList_->setColumnHidden (i, !states.at (i));
-	}
-}
-
-void HttpPlugin::selectFinishedTasksListColumns ()
-{
-	QList<QPair<QString, bool> > columns;
-	for (int i = 0; i < FinishedHeaderLabels_.size (); ++i)
-		columns.append (qMakePair (FinishedHeaderLabels_.at (i), !FinishedList_->isColumnHidden (i)));
-	ColumnSelector selector (this);
-	selector.SetColumnsStates (columns);
-	if (selector.exec () == QDialog::Rejected)
-		return;
-	else
-	{
-		QList<bool> states = selector.GetColumnsStates ();
-		for (int i = 0; i < states.size (); ++i)
-			FinishedList_->setColumnHidden (i, !states.at (i));
-	}
-}
-
-void HttpPlugin::changeJobProperties ()
-{
-	QList<QTreeWidgetItem*> items = TasksList_->selectedItems ();
+	QList<QTreeWidgetItem*> items = Ui_.TasksList_->selectedItems ();
 	if (!items.size ())
 		return;
 
@@ -742,6 +464,138 @@ void HttpPlugin::changeJobProperties ()
 	}
 }
 
+void HttpPlugin::on_ActionPreferences__triggered ()
+{
+	SettingsDialog_->show ();
+	SettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
+}
+
+void HttpPlugin::showJobErrorMessage (QString url, QString message)
+{
+	QMessageBox::warning (this, tr ("Job error"), tr ("Job with URL<br />%1<br />signals about following error:<br /><br /><em>%2</em>").arg (url).arg (message));
+}
+
+void HttpPlugin::showStoppedIndicator (unsigned int id)
+{
+	qDebug () << Q_FUNC_INFO;
+	for (int i = 0; i < Ui_.TasksList_->topLevelItemCount (); ++i)
+	{
+		JobListItem *item = dynamic_cast<JobListItem*> (Ui_.TasksList_->topLevelItem (i));
+		if (item->GetID () == id)
+		{
+			item->setIcon (TListID, QIcon (":/resources/images/stopjob.png"));
+			break;
+		}
+	}
+}
+
+void HttpPlugin::handleTotalSpeedUpdate ()
+{
+	SpeedIndicator_->setText (Proxy::Instance ()->MakePrettySize (GetDownloadSpeed ()) + tr ("/s"));
+}
+
+void HttpPlugin::on_ActionAutoajust__triggered ()
+{
+	if (Ui_.TasksList_->topLevelItemCount ())
+		for (int i = 0; i < Ui_.TasksList_->columnCount (); ++i)
+			Ui_.TasksList_->resizeColumnToContents (i);
+	if (Ui_.FinishedList_->topLevelItemCount ())
+		for (int i = 0; i < Ui_.FinishedList_->columnCount (); ++i)
+			Ui_.FinishedList_->resizeColumnToContents (i);
+}
+
+void HttpPlugin::writeSettings ()
+{
+	SaveChangesScheduled_ = false;
+
+	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
+	settings.beginGroup (GetName ());
+	settings.beginGroup ("geometry");
+	settings.setValue ("size", size ());
+	settings.setValue ("pos", pos ());
+	settings.setValue ("jobListHeadersState", Ui_.TasksList_->header ()->saveState ());
+	settings.setValue ("finishedListHeadersState", Ui_.FinishedList_->header ()->saveState ());
+	settings.setValue ("splitterState", Ui_.Splitter_->saveState ());
+	settings.endGroup ();
+
+	settings.beginWriteArray ("finished");
+	settings.remove ("");
+	for (int i = 0; i < Ui_.FinishedList_->topLevelItemCount (); ++i)
+	{
+		settings.setArrayIndex (i);
+		QByteArray arr;
+		QDataStream str (&arr, QIODevice::WriteOnly);
+		Ui_.FinishedList_->topLevelItem (i)->write (str);
+		settings.setValue ("representation", arr);
+	}
+	settings.endArray ();
+	settings.endGroup ();
+}
+
+void HttpPlugin::copyFinishedURL ()
+{
+	QList<QTreeWidgetItem*> item = Ui_.FinishedList_->selectedItems ();
+	QApplication::clipboard ()->setText (item.at (0)->text (FListURL));
+}
+
+void HttpPlugin::setActionsEnabled ()
+{
+	QList<QTreeWidgetItem*> finishedItems = Ui_.FinishedList_->selectedItems (),
+							tasksItems = Ui_.TasksList_->selectedItems ();
+	Ui_.ActionRemoveFinished_->setEnabled (finishedItems.size ());
+	Ui_.ActionCopyFinishedURL_->setEnabled (finishedItems.size ());
+
+	Ui_.ActionRemoveJob_->setEnabled (tasksItems.size ());
+	Ui_.ActionStart_->setEnabled (tasksItems.size ());
+	Ui_.ActionStop_->setEnabled (tasksItems.size ());
+	Ui_.ActionGetFileSize_->setEnabled (tasksItems.size ());
+	Ui_.ActionSchedule_->setEnabled (tasksItems.size () && CronEnabled_);
+	Ui_.ActionJobProperties_->setEnabled (tasksItems.size ());
+
+	Ui_.ActionStartAll_->setEnabled (Ui_.TasksList_->topLevelItemCount ());
+	Ui_.ActionStopAll_->setEnabled (Ui_.TasksList_->topLevelItemCount ());
+}
+
+void HttpPlugin::handleCronEnabled ()
+{
+	CronEnabled_ = true;
+	setActionsEnabled ();
+}
+
+void HttpPlugin::on_ActionActiveColumns__triggered ()
+{
+	QList<QPair<QString, bool> > columns;
+	for (int i = 0; i < TaskHeaderLabels_.size (); ++i)
+		columns.append (qMakePair (TaskHeaderLabels_.at (i), !Ui_.TasksList_->isColumnHidden (i)));
+	ColumnSelector selector (this);
+	selector.SetColumnsStates (columns);
+	if (selector.exec () == QDialog::Rejected)
+		return;
+	else
+	{
+		QList<bool> states = selector.GetColumnsStates ();
+		for (int i = 0; i < states.size (); ++i)
+			Ui_.TasksList_->setColumnHidden (i, !states.at (i));
+	}
+}
+
+void HttpPlugin::on_ActionFinishedColumns__triggered ()
+{
+	QList<QPair<QString, bool> > columns;
+	for (int i = 0; i < FinishedHeaderLabels_.size (); ++i)
+		columns.append (qMakePair (FinishedHeaderLabels_.at (i), !Ui_.FinishedList_->isColumnHidden (i)));
+	ColumnSelector selector (this);
+	selector.SetColumnsStates (columns);
+	if (selector.exec () == QDialog::Rejected)
+		return;
+	else
+	{
+		QList<bool> states = selector.GetColumnsStates ();
+		for (int i = 0; i < states.size (); ++i)
+			Ui_.FinishedList_->setColumnHidden (i, !states.at (i));
+	}
+}
+
 void HttpPlugin::ReadSettings ()
 {
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
@@ -752,24 +606,24 @@ void HttpPlugin::ReadSettings ()
 
 	QByteArray splitterArr = settings.value ("splitterState").toByteArray ();
 	if (!splitterArr.isEmpty () && !splitterArr.isNull ())
-		Splitter_->restoreState (splitterArr);
+		Ui_.Splitter_->restoreState (splitterArr);
 
 	QByteArray jobListArr = settings.value ("jobListHeadersState").toByteArray ();
 	if (!jobListArr.isEmpty () && !jobListArr.isNull ())
-		TasksList_->header ()->restoreState (jobListArr);
-	else if (TasksList_->topLevelItemCount ())
+		Ui_.TasksList_->header ()->restoreState (jobListArr);
+	else if (Ui_.TasksList_->topLevelItemCount ())
 	{
-		for (int i = 0; i < TasksList_->columnCount (); ++i)
-			TasksList_->resizeColumnToContents (i);
+		for (int i = 0; i < Ui_.TasksList_->columnCount (); ++i)
+			Ui_.TasksList_->resizeColumnToContents (i);
 	}
 
 	QByteArray finishedListArr = settings.value ("finishedListHeadersState").toByteArray ();
 	if (!finishedListArr.isEmpty () && !finishedListArr.isNull ())
-		FinishedList_->header ()->restoreState (finishedListArr);
-	else if (FinishedList_->topLevelItemCount ())
+		Ui_.FinishedList_->header ()->restoreState (finishedListArr);
+	else if (Ui_.FinishedList_->topLevelItemCount ())
 	{
-		for (int i = 0; i < TasksList_->columnCount (); ++i)
-			FinishedList_->resizeColumnToContents (i);
+		for (int i = 0; i < Ui_.FinishedList_->columnCount (); ++i)
+			Ui_.FinishedList_->resizeColumnToContents (i);
 	}
 
 	settings.endGroup ();
@@ -781,7 +635,7 @@ void HttpPlugin::ReadSettings ()
 		QTreeWidgetItem item;
 		QDataStream str (settings.value ("representation").toByteArray ());
 		item.read (str);
-		FinishedList_->addTopLevelItem (new QTreeWidgetItem (item));
+		Ui_.FinishedList_->addTopLevelItem (new QTreeWidgetItem (item));
 	}
 	setActionsEnabled ();
 	settings.endArray ();
@@ -797,16 +651,16 @@ void HttpPlugin::AddToFinishedList (const FinishedJob *fj)
 	item->setText (FListSpeed, fj->GetSpeed ());
 	item->setText (FListTimeToComplete, fj->GetTimeToComplete ());
 
-	FinishedList_->addTopLevelItem (item);
+	Ui_.FinishedList_->addTopLevelItem (item);
 
 	setActionsEnabled ();
 }
 
 void HttpPlugin::HandleSelected (JobAction ja)
 {
-	if (!TasksList_->topLevelItemCount ())
+	if (!Ui_.TasksList_->topLevelItemCount ())
 		return;
-	QList<QTreeWidgetItem*> items = TasksList_->selectedItems ();
+	QList<QTreeWidgetItem*> items = Ui_.TasksList_->selectedItems ();
 
 	if (ja == JADelete && QMessageBox::question (this, tr ("Question"), tr ("Do you really want to delete selected jobs?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 		return;

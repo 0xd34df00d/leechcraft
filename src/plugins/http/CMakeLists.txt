@@ -40,7 +40,8 @@ SET (HEADERS
 SET (FORMS
 	fileexistsdialog.ui
 	columnselector.ui
-	jobadderdialog.ui)
+	jobadderdialog.ui
+	mainwindow.ui)
 SET (RESOURCES resources.qrc)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})

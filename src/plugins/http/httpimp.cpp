@@ -63,7 +63,11 @@ void HttpImp::run ()
 	}
 	catch (const Exceptions::Socket::BaseSocket& e)
 	{
-		emit error (e.GetReason ().c_str ());
+		emit error (tr ("Error while trying to connect to host %1, port %2: %3")
+				.arg (Socket_->GetAddressParser ()->GetHost ())
+				.arg (Socket_->GetAddressParser ()->GetPort ())
+				.arg (e.GetReason ().c_str ()));
+		emit stopped ();
 		return;
 	}
 	WriteHeaders ();
@@ -145,7 +149,11 @@ void HttpImp::run ()
 
 void HttpImp::WriteHeaders ()
 {
-	Socket_->Write ("GET " + Socket_->GetAddressParser ()->GetPath () + " HTTP/1.1\r\n");
+	QString request = Socket_->GetAddressParser ()->GetPath ();
+	QString query = Socket_->GetAddressParser ()->GetQuery ();
+	if (!query.isEmpty ())
+		request.append ("?").append (query);
+	Socket_->Write ("GET " + request + " HTTP/1.1\r\n");
 	PairedStringList ua = SettingsManager::Instance ()->GetUserAgent ();
 	QString agent = ua.first [ua.second];
 	Socket_->Write ("User-Agent: " + agent.trimmed () + "\r\n");

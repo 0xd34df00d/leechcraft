@@ -20,7 +20,7 @@ TcpSocket::~TcpSocket ()
 void TcpSocket::Connect (const QString& host, int port)
 {
 	connectToHost (host, port);
-	if (!waitForConnected (DefaultTimeout_))
+	if (state () != ConnectedState && !waitForConnected (DefaultTimeout_))
 		ThrowException ();
 }
 
