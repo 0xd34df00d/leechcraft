@@ -13,6 +13,7 @@ Core:
 + Configurable download message timeout.
 + XmlSettingsDialog can handle "path" type now.
 * Fixed a way to exit without saving settings.
+- Removed LogShower.
 
 BitTorrent:
 + Proxy support in torrents.
@@ -20,6 +21,9 @@ BitTorrent:
 + Images for settings categories.
 + Multiple torrents adder.
 + Supports finished downloads notifications.
++ Really fast resume now.
++ Shows which pieces are downloaded and which are not.
+* Compact allocation mode on now.
 * Proper resume of saved torrents.
 
 HTTP/FTP:

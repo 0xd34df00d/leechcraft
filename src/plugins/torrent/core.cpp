@@ -278,6 +278,7 @@ TorrentInfo Core::GetTorrentStats (int row) const
 	result.AnnounceInterval_ = QTime (status.announce_interval.hours (),
 									  status.announce_interval.minutes (),
 									  status.announce_interval.seconds ());
+	result.Pieces_ = status.pieces;
 	return result;
 }
 
@@ -360,7 +361,7 @@ void Core::AddFile (const QString& filename, const QString& path, const QVector<
 	libtorrent::torrent_handle handle;
 	try
 	{
-		handle = Session_->add_torrent (GetTorrentInfo (filename), boost::filesystem::path (path.toStdString ()), libtorrent::entry (), libtorrent::storage_mode_compact);
+		handle = Session_->add_torrent (GetTorrentInfo (filename), boost::filesystem::path (path.toStdString ()), libtorrent::entry (), libtorrent::storage_mode_sparse);
 	}
 	catch (const libtorrent::duplicate_torrent& e)
 	{
@@ -670,7 +671,7 @@ libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data, c
 	libtorrent::torrent_handle handle;
 	try
 	{
-		handle = Session_->add_torrent (libtorrent::torrent_info (e), path, resume);
+		handle = Session_->add_torrent (libtorrent::torrent_info (e), path);
 	}
 	catch (const libtorrent::invalid_torrent_file& e)
 	{
@@ -800,21 +801,21 @@ void Core::queryLibtorrentForWarnings ()
 	libtorrent::peer_error_alert *pea = dynamic_cast<libtorrent::peer_error_alert*> (alert.get ());
 	libtorrent::invalid_request_alert *ira = dynamic_cast<libtorrent::invalid_request_alert*> (alert.get ());
 	if (ta)
-		logstr.append ("failed tracker request: status code %1, for %2 times").arg (ta->status_code).arg (ta->times_in_row);
+		logstr.append (QString ("failed tracker request: status code %1, for %2 times").arg (ta->status_code).arg (ta->times_in_row));
 	else if (usa)
-		logstr.append ("problems with URL seed %1").arg (usa->url.c_str ());
+		logstr.append (QString ("problems with URL seed %1").arg (usa->url.c_str ()));
 	else if (hfa)
-		logstr.append ("piece hash failed, PN: %1").arg (hfa->piece_index);
+		logstr.append (QString ("piece hash failed, PN: %1").arg (hfa->piece_index));
 	else if (pba)
-		logstr.append ("peer banned: %1").arg (pba->ip.address ().to_string ().c_str ());
+		logstr.append (QString ("peer banned: %1").arg (pba->ip.address ().to_string ().c_str ()));
 	else if (pea)
-		logstr.append ("peer error: %1").arg (pea->ip.address ().to_string ().c_str ());
+		logstr.append (QString ("peer error: %1").arg (pea->ip.address ().to_string ().c_str ()));
 	else if (ira)
-		logstr.append ("invalid request: %1, request { piece %2, start %3, length %4 }")
+		logstr.append (QString ("invalid request: %1, request { piece %2, start %3, length %4 }")
 			.arg (ira->ip.address ().to_string ().c_str ())
 			.arg (ira->request.piece)
 			.arg (ira->request.start)
-			.arg (ira->request.length);
+			.arg (ira->request.length));
 	else
 		logstr.append (alert->msg ().c_str ());
 

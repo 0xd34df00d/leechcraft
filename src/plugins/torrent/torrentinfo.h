@@ -21,6 +21,7 @@ struct TorrentInfo
 		PieceSize_;
 	QTime	NextAnnounce_,
 			AnnounceInterval_;
+	const std::vector<bool>* Pieces_;
 };
 
 #endif

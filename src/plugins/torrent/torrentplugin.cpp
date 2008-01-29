@@ -344,6 +344,7 @@ void TorrentPlugin::updateTorrentStats ()
 				LabelDownloadRate_->setText (Proxy::Instance ()->MakePrettySize (i.DownloadRate_) + tr ("/s"));
 				LabelUploadRate_->setText (Proxy::Instance ()->MakePrettySize (i.UploadRate_) + tr ("/s"));
 				LabelTorrentRating_->setText (QString::number (i.Uploaded_ / static_cast<double> (i.Downloaded_), 'g', 4));
+				PiecesWidget_->setPieceMap (*(i.Pieces_));
 			}
 			break;
 		case 3:

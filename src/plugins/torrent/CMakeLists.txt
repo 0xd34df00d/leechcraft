@@ -25,6 +25,7 @@ SET (SRCS
 	secondstep.cpp
 	thirdstep.cpp
 	addmultipletorrents.cpp
+	pieceswidget.cpp
 	xmlsettingsmanager.cpp)
 SET (HEADERS
 	torrentplugin.h 
@@ -41,6 +42,7 @@ SET (HEADERS
 	fileinfo.h
 	peerinfo.h
 	overallstats.h
+	pieceswidget.h
 	xmlsettingsmanager.h
 	newtorrentparams.h)
 SET (FORMS
