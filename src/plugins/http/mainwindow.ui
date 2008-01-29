@@ -61,7 +61,7 @@
        </column>
        <column>
         <property name="text" >
-         <string>%</string>
+         <string>Progress</string>
         </property>
        </column>
        <column>

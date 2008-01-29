@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>738</width>
-    <height>674</height>
+    <width>730</width>
+    <height>640</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -917,6 +917,20 @@
         </layout>
        </widget>
       </widget>
+      <widget class="QTextEdit" name="LogShower_" >
+       <property name="lineWrapMode" >
+        <enum>QTextEdit::NoWrap</enum>
+       </property>
+       <property name="readOnly" >
+        <bool>true</bool>
+       </property>
+       <property name="tabStopWidth" >
+        <number>100</number>
+       </property>
+       <property name="acceptRichText" >
+        <bool>false</bool>
+       </property>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -926,7 +940,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>738</width>
+     <width>730</width>
      <height>26</height>
     </rect>
    </property>

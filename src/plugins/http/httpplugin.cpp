@@ -494,7 +494,7 @@ void HttpPlugin::handleTotalSpeedUpdate ()
 	SpeedIndicator_->setText (Proxy::Instance ()->MakePrettySize (GetDownloadSpeed ()) + tr ("/s"));
 }
 
-void HttpPlugin::on_ActionAutoajust__triggered ()
+void HttpPlugin::on_ActionAutoadjust__triggered ()
 {
 	if (Ui_.TasksList_->topLevelItemCount ())
 		for (int i = 0; i < Ui_.TasksList_->columnCount (); ++i)

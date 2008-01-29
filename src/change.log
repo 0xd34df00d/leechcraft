@@ -10,6 +10,7 @@ Core:
 + Query plugins to handle just downloaded file.
 + Settings about notifications and plugins query.
 + Preferences introduced.
++ Configurable download message timeout.
 + XmlSettingsDialog can handle "path" type now.
 * Fixed a way to exit without saving settings.
 

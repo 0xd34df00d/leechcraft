@@ -102,6 +102,7 @@ private:
 private slots:
 	void writeSettings ();
 	void checkFinished ();
+	void queryLibtorrentForWarnings ();
 protected:
 	virtual void timerEvent (QTimerEvent*);
 public slots:
@@ -112,6 +113,7 @@ public slots:
 	void setProxySettings ();
 signals:
 	void error (QString) const;
+	void logMessage (const QString&);
 	void torrentFinished (const QString&);
 	void fileFinished (const QString&);
 };

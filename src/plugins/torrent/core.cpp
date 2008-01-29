@@ -6,6 +6,7 @@
 #include <QSettings>
 #include <QTimer>
 #include <QtDebug>
+#include <memory>
 #include <bencode.hpp>
 #include <entry.hpp>
 #include <extensions/metadata_transfer.hpp>
@@ -14,6 +15,7 @@
 #include <hasher.hpp>
 #include <storage.hpp>
 #include <file.hpp>
+#include <alert_types.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
@@ -46,6 +48,7 @@ void Core::DoDelayedInit ()
 			Session_->start_dht (libtorrent::entry ());
 		Session_->set_max_uploads (XmlSettingsManager::Instance ()->property ("MaxUploads").toInt ());
 		Session_->set_max_connections (XmlSettingsManager::Instance ()->property ("MaxConnections").toInt ());
+		Session_->set_severity_level (libtorrent::alert::info);
 		setProxySettings ();
 	}
 	catch (const asio::system_error&)
@@ -64,6 +67,10 @@ void Core::DoDelayedInit ()
 	QTimer *finished = new QTimer (this);
 	connect (finished, SIGNAL (timeout ()), this, SLOT (checkFinished ()));
 	finished->start (1000);
+
+	QTimer *warningWatchdog = new QTimer (this);
+	connect (warningWatchdog, SIGNAL (timeout ()), this, SLOT (queryLibtorrentForWarnings ()));
+	warningWatchdog->start (100);
 
 	SetOverallDownloadRate (XmlSettingsManager::Instance ()->Property ("DownloadRateLimit", 5000).toInt ());
 	SetOverallUploadRate (XmlSettingsManager::Instance ()->Property ("UploadRateLimit", 5000).toInt ());
@@ -430,13 +437,14 @@ void Core::ForceReannounce (int pos)
 
 void Core::SetOverallDownloadRate (int val)
 {
-	Session_->set_download_rate_limit (val == 100 ? -1 : val * 1024);
+	qDebug () << Q_FUNC_INFO << (val == 0 ? -1 : val * 1024);
+	Session_->set_download_rate_limit (val == 0 ? -1 : val * 1024);
 	XmlSettingsManager::Instance ()->setProperty ("DownloadRateLimit", val);
 }
 
 void Core::SetOverallUploadRate (int val)
 {
-	Session_->set_upload_rate_limit (val == 100 ? -1 : val * 1024);
+	Session_->set_upload_rate_limit (val == 0 ? -1 : val * 1024);
 	XmlSettingsManager::Instance ()->setProperty ("UploadRateLimit", val);
 }
 
@@ -683,7 +691,6 @@ void Core::writeSettings ()
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
 	settings.beginGroup ("Torrent");
 	settings.beginGroup ("Core");
-	settings.remove ("");
 	settings.beginWriteArray ("AddedTorrents");
 	for (int i = 0; i < Handles_.size (); ++i)
 	{
@@ -749,6 +756,43 @@ void Core::checkFinished ()
 				break;
 		}
 	}
+}
+
+void Core::queryLibtorrentForWarnings ()
+{
+	std::auto_ptr<libtorrent::alert> alert = Session_->pop_alert ();
+	if (!alert.get ())
+		return;
+
+	QString logstr = "<libtorrent> ";
+
+	libtorrent::tracker_alert *ta = dynamic_cast<libtorrent::tracker_alert*> (alert.get ());
+	libtorrent::url_seed_alert *usa = dynamic_cast<libtorrent::url_seed_alert*> (alert.get ());
+	libtorrent::hash_failed_alert *hfa = dynamic_cast<libtorrent::hash_failed_alert*> (alert.get ());
+	libtorrent::peer_ban_alert *pba = dynamic_cast<libtorrent::peer_ban_alert*> (alert.get ());
+	libtorrent::peer_error_alert *pea = dynamic_cast<libtorrent::peer_error_alert*> (alert.get ());
+	libtorrent::invalid_request_alert *ira = dynamic_cast<libtorrent::invalid_request_alert*> (alert.get ());
+	if (ta)
+		logstr.append ("failed tracker request: status code %1, for %2 times").arg (ta->status_code).arg (ta->times_in_row);
+	else if (usa)
+		logstr.append ("problems with URL seed %1").arg (usa->url.c_str ());
+	else if (hfa)
+		logstr.append ("piece hash failed, PN: %1").arg (hfa->piece_index);
+	else if (pba)
+		logstr.append ("peer banned: %1").arg (pba->ip.address ().to_string ().c_str ());
+	else if (pea)
+		logstr.append ("peer error: %1").arg (pea->ip.address ().to_string ().c_str ());
+	else if (ira)
+		logstr.append ("invalid request: %1, request { piece %2, start %3, length %4 }")
+			.arg (ira->ip.address ().to_string ().c_str ())
+			.arg (ira->request.piece)
+			.arg (ira->request.start)
+			.arg (ira->request.length);
+	else
+		logstr.append (alert->msg ().c_str ());
+
+	qWarning () << logstr;
+	emit logMessage (logstr);
 }
 
 bool Core::CheckValidity (int pos) const

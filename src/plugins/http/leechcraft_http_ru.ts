@@ -146,169 +146,179 @@
 <context>
     <name>HttpImp</name>
     <message>
-        <location filename="httpimp.cpp" line="252"/>
+        <location filename="httpimp.cpp" line="264"/>
         <source>400 Bad request. The request contains bad syntax or cannot be fulfilled.</source>
         <translation>400 Плохой запрос. Запрос не понят сервером из-за наличия синтаксической ошибки. Клиенту следует повторно обратиться к ресурсу с изменённым запросом.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="255"/>
+        <location filename="httpimp.cpp" line="267"/>
         <source>401 Unauthorized. Authentication is possible but has failed or not yet been provided.</source>
         <translation>401 Неавторизован. Запрос требует идентификации пользователя. Клиент должен запросить имя и пароль у пользователя и передать их в записи WWW-Authenticate заголовка в следующем запросе. В случае ввода ошибочных данных сервер снова вернёт этот же статус.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="258"/>
+        <location filename="httpimp.cpp" line="270"/>
         <source>403 Forbidden. The request was legal, but server is refusing to respond to it. Authenticating will make no difference.</source>
         <translation>403 Запрещено. Сервер понял запрос, но он отказывается его выполнять из-за каких-то ограничений в доступе. Идентификация через протокол HTTP здесь не поможет. Скорее всего на сервере нужно провести аутентификацию другим способом, сделать запрос с определёнными параметрами или удовлетворить каким-либо условиям.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="261"/>
+        <location filename="httpimp.cpp" line="273"/>
         <source>404 Resource not found.</source>
         <translation>404 Ресурс не найден. Сервер понял запрос, но не нашёл соответствующего ресурса по указанному URI. Если серверу известно что по этому адресу был документ, то ему желательно использовать код 410 вместо этого. Этот код может использоваться вместо 403 если требуется тщательно скрыть от посторонних глаз определённые ресурсы.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="264"/>
+        <location filename="httpimp.cpp" line="276"/>
         <source>405 Method not allowed. Request method not supported by the URL.</source>
         <translation>405 Метод не поддерживается. Указанный клиентом метод нельзя применить к ресурсу. Сервер так же должен передать в заголовке ответа поле Allow со списком доступных методов.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="267"/>
+        <location filename="httpimp.cpp" line="279"/>
         <source>406 Not acceptable.</source>
         <translation>406 Не приемлимо. Запрошенный URI не может удовлетворить переданным в заголовке характеристикам. Если метод был не HEAD, то сервер должен вернуть список допустимых характеристик для данного ресурса.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="270"/>
+        <location filename="httpimp.cpp" line="282"/>
         <source>407 Proxy authentication required.</source>
         <translation>407 Необходима авторизация на прокси-сервере. Ответ аналогичен коду 401 за исключением того, что аутентификация производится для прокси-сервера. Механизм аналогичен идентификации на обычном сервере.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="273"/>
+        <location filename="httpimp.cpp" line="285"/>
         <source>408 Request timeout.</source>
         <translation>408 Время ожидания истекло. Время ожидания сервером передачи от клиента истекло. Клиент может повторить аналогичный предыдущему запрос в любое время.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="276"/>
+        <location filename="httpimp.cpp" line="288"/>
         <source>409 Conflict.</source>
         <translation>409 Конфликт. Запрос не может выполнен из-за конфликтного обращения к ресурсу. Такое возможно, например, когда два клиента пытаются изменить ресурс с помощью метода PUT.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="279"/>
+        <location filename="httpimp.cpp" line="291"/>
         <source>410 Gone. Resource is not available and will not be available again. Maybe it was intentionally removed.</source>
         <translation>410 Удален. Такой ответ сервер посылает когда ресурс раньше был по указанному URI, но был удалён и теперь не доступен. Серверу в этом случае не известно и местоположение альтернативного документа (например, копии). Если у сервера есть подозрение что документ в ближайшее время может быть восстановлен, то лучше клиенту передать код 404.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="282"/>
+        <location filename="httpimp.cpp" line="294"/>
         <source>411 Length required.</source>
         <translation>411 Необходима длина. Для указанного ресурса клиент должен указать Content-Length в заголовке запроса. Без указания этого поля не стоит делать повторную попытку запроса к серверу по данному URI.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="285"/>
+        <location filename="httpimp.cpp" line="297"/>
         <source>412 Precondition failed.</source>
         <translation>412 Предварительное условие не удовлетворено. Возвращается если ни одно из условных полей заголовка запроса не было выполнено.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="288"/>
+        <location filename="httpimp.cpp" line="300"/>
         <source>413 Request entity too large.</source>
         <translation>413 Запрашиваемые данные слишком большие. Возвращается если сервер по каким-то причинам не может передать запрашиваемый объём информации. Если проблема временная, то сервер может в ответе указать в поле Retry-After через которое можно повторить аналогичный запрос.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="291"/>
+        <location filename="httpimp.cpp" line="303"/>
         <source>414 Request URI too long.</source>
         <translation>414 Запрашиваемый URI слишком длинный. Сервер не может обработать запрос из-за слишком длинного указанного URI. Такую ошибку можно спровоцировать, например, когда клиент пытается передать длинные параметры через метод GET, а не POST.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="294"/>
+        <location filename="httpimp.cpp" line="306"/>
         <source>415 Unsupported media type.</source>
         <translation>415 Неподдерживаемый тип данных. По каким-то причинам сервер отказывается работать с указанным типом данных при данном методе.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="297"/>
+        <location filename="httpimp.cpp" line="309"/>
         <source>417 Expectation failed.</source>
         <translation>417 Ожидаемое ошибочно. По каким-то причинам сервер не может удовлетворить значению поля Except заголовка запроса.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="300"/>
+        <location filename="httpimp.cpp" line="312"/>
         <source>422 Unprocessable entity (WebDAV). The request was well-formed but was unable to be followed due to semantic errors.</source>
         <translation>422 Необрабатываемый экземпляр (WebDAV). Сервер успешно принял запрос, может работать с указанным видом данных, в теле запроса XML-документ имеет верный синтаксис, но имеется какая-то логическая ошибка из-за которой не возможно произвести операцию над ресурсом.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="303"/>
+        <location filename="httpimp.cpp" line="315"/>
         <source>423 Locked (WebDAV). The resource that is being accessed is locked.</source>
         <translation>423 Заблокировано (WebDAV). Целевой ресурс из запроса заблокирован от применения к нему указанного метода.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="306"/>
+        <location filename="httpimp.cpp" line="318"/>
         <source>424 Failed dependency (WebDAV). The request failed due to failure of a previous request.</source>
         <translation>424 Неудовлетворенная зависимость (WebDAV). Реализация текущего запроса может зависеть от успешности выполнения другой операции. Если она провалена и из-за этого нельзя выполнить текущий запрос, то сервер вернёт код 424.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="309"/>
+        <location filename="httpimp.cpp" line="321"/>
         <source>425 Unordered collection (WebDAV). You really never should see this message.</source>
         <translation>425 Неупорядоченная коллекция (WebDAV). Ты не должен видеть это сообщение, так как этот код ответа нигде не применяется.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="312"/>
+        <location filename="httpimp.cpp" line="324"/>
         <source>426 Upgrade required. The client should switch to TLS/1.0.</source>
         <translation>426 Необходимо обновление. Сервер указывает клиенту на необходимость обновить протокол (TLS/1.0). Заголовок ответа должен содержать правильно сформированные поля Upgrade и Connection.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="315"/>
+        <location filename="httpimp.cpp" line="327"/>
         <source>449 Retry with. A Microsoft extension: The request should be retried after doing the appropriate action.</source>
         <translation>449 Попробуй снова. Мелкомягкое расширение: запрос должен быть повторен после выполнения соответствующих действий.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="318"/>
+        <location filename="httpimp.cpp" line="330"/>
         <source>500 Internal server error. Server failed to fulfil the request due to misconfiguration.</source>
         <translation>500 Внутренняя ошибка сервера. Серверу не удалось выполнить запрос из-за внутренней ошибки, не входящей в другие класса 5xx.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="321"/>
+        <location filename="httpimp.cpp" line="333"/>
         <source>501 Not implemented.</source>
         <translation>501 Не реализовано. Сервер не поддерживает возможностей, необходимых для обработки запроса. Типичный ответ для случаев, когда сервер не понимает указанный в запросе метод.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="324"/>
+        <location filename="httpimp.cpp" line="336"/>
         <source>502 Bad gateway.</source>
         <translation>502 Плохой шлюз. Сервер в роли шлюза или прокси получил сообщение о неудачном выполнении промежуточной операции.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="327"/>
+        <location filename="httpimp.cpp" line="339"/>
         <source>503 Service unavailable.</source>
         <translation>503 Сервис недоступен. Сервер временно не имеет возможности обрабатывать запросы по техническим причинам (обслуживание, перегрузка и прочее). В поле Retry-After заголовка сервер может указать время, через которое клиенту рекомендуется повторить запрос. Хотя во время перегрузки очевидным является сразу разрывать соединение, эффективней может оказаться установка большого значения поля Retry-After для уменьшения частоты избыточных запросов.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="330"/>
+        <location filename="httpimp.cpp" line="342"/>
         <source>504 Gateway timeout.</source>
         <translation>504 Шлюз не отвечает. Сервер в роли шлюза или прокси не дождался ответа от вышестоящего сервера для завершения текущего запроса.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="333"/>
+        <location filename="httpimp.cpp" line="345"/>
         <source>505 HTTP version not supported.</source>
         <translation>505 Версия HTTP не поддерживается. Сервер не поддерживает или отказывается поддерживать указанную в запросе версию протокола HTTP.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="336"/>
+        <location filename="httpimp.cpp" line="348"/>
         <source>506 Variant also negotiates.</source>
         <translation>506 Вариант тоже согласован. В результате ошибочной конфигурации выбранный вариант указывает сам на себя, из-за чего процесс связывания прерывается.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="339"/>
+        <location filename="httpimp.cpp" line="351"/>
         <source>507 Insufficient storage (WebDAV).</source>
         <translation>507 Не хватает места (WebDAV). Не хватает места для выполнения текущего запроса. Проблема может быть временной.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="342"/>
+        <location filename="httpimp.cpp" line="354"/>
         <source>509 Bandwidth limit exceeded.</source>
         <translation>509 Превышен предел полосы пропускания. Неофициальный код, тем не менее, довольно часто используемый. Используется для указания израсходованной полосы пропускания.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="345"/>
+        <location filename="httpimp.cpp" line="357"/>
         <source>510 Not extented.</source>
         <translation>510 Не расширено. На сервере отсутствует расширение, которое планирует использовать клиент. Сервер может дополнительно передать информацию о доступных ему расширениях.</translation>
     </message>
     <message>
-        <location filename="httpimp.cpp" line="164"/>
+        <location filename="httpimp.cpp" line="176"/>
         <source>Failed to read response: socket timeout</source>
         <translation>Не удалось прочитать ответ сервера: таймаут соекта</translation>
+    </message>
+    <message>
+        <location filename="httpimp.cpp" line="67"/>
+        <source>Error while trying to connect to host %1, port %2: %3</source>
+        <translation>Ошибка при попытке подключения к хосту %1, порт %2: %3</translation>
+    </message>
+    <message>
+        <location filename="httpimp.cpp" line="125"/>
+        <source>HTTP implementation failed in a very strange way. Please send to developers any .log files you find in application&apos;s directory and it&apos;s subdirectories. Thanks for your help.</source>
+        <translation>HTTP-протокол упал очень странным образом. Пожайлуста, отправь разработчикам любые .log-файлы, которые найдешь в директории приложения и ее поддиректориях. Спасибо за помощь.</translation>
     </message>
 </context>
 <context>
@@ -316,27 +326,27 @@
     <message>
         <location filename="httpplugin.cpp" line="47"/>
         <source>HTTP/FTP worker 0.2</source>
-        <translation>Скачиватель по HTTP/FTP 0.2</translation>
+        <translation type="obsolete">Скачиватель по HTTP/FTP 0.2</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="82"/>
         <source>&amp;Tools</source>
-        <translation>&amp;Инструменты</translation>
+        <translation type="obsolete">&amp;Инструменты</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="81"/>
         <source>&amp;Jobs</source>
-        <translation>&amp;Задания</translation>
+        <translation type="obsolete">&amp;Задания</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="93"/>
         <source>Add...</source>
-        <translation>Добавить задание...</translation>
+        <translation type="obsolete">Добавить задание...</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="95"/>
         <source>Add a new job</source>
-        <translation>Добавить новое задание задание</translation>
+        <translation type="obsolete">Добавить новое задание задание</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="97"/>
@@ -346,17 +356,17 @@
     <message>
         <location filename="httpplugin.cpp" line="101"/>
         <source>Ctrl+S</source>
-        <translation>Ctrl+S</translation>
+        <translation type="obsolete">Ctrl+S</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="103"/>
         <source>Start all</source>
-        <translation>Запустить все</translation>
+        <translation type="obsolete">Запустить все</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="104"/>
         <source>Ctrl+Shift+S</source>
-        <translation>Ctrl+Shift+S</translation>
+        <translation type="obsolete">Ctrl+Shift+S</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="101"/>
@@ -366,57 +376,57 @@
     <message>
         <location filename="httpplugin.cpp" line="107"/>
         <source>Ctrl+I</source>
-        <translation>Ctrl+I</translation>
+        <translation type="obsolete">Ctrl+I</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="109"/>
         <source>Stop all</source>
-        <translation>Остановить все</translation>
+        <translation type="obsolete">Остановить все</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="110"/>
         <source>Ctrl+Shift+I</source>
-        <translation>Ctrl+Shift+I</translation>
+        <translation type="obsolete">Ctrl+Shift+I</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="108"/>
         <source>Stop selected job(s)</source>
-        <translation>Запланировать выбранные задания</translation>
+        <translation type="obsolete">Запланировать выбранные задания</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="154"/>
         <source>Autoadjust interface</source>
-        <translation>Подстроить интерфейс</translation>
+        <translation type="obsolete">Подстроить интерфейс</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="158"/>
         <source>Preferences...</source>
-        <translation>Настройки...</translation>
+        <translation type="obsolete">Настройки...</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="119"/>
         <source>Ctrl+P</source>
-        <translation>Ctrl+P</translation>
+        <translation type="obsolete">Ctrl+P</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="199"/>
         <source>%</source>
-        <translation>%</translation>
+        <translation type="obsolete">%</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="224"/>
         <source>Local name</source>
-        <translation>Локальное имя</translation>
+        <translation type="obsolete">Локальное имя</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="224"/>
         <source>URL</source>
-        <translation>URL</translation>
+        <translation type="obsolete">URL</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="199"/>
         <source>Speed</source>
-        <translation>Скорость</translation>
+        <translation type="obsolete">Скорость</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="177"/>
@@ -431,20 +441,20 @@
     <message>
         <location filename="httpplugin.cpp" line="224"/>
         <source>Size</source>
-        <translation>Размер</translation>
+        <translation type="obsolete">Размер</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="433"/>
+        <location filename="httpplugin.cpp" line="295"/>
         <source>0</source>
         <translation>0</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="584"/>
+        <location filename="httpplugin.cpp" line="470"/>
         <source>: Preferences</source>
         <translation>: Настройки</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="589"/>
+        <location filename="httpplugin.cpp" line="475"/>
         <source>Job error</source>
         <translation>Ошибка задания</translation>
     </message>
@@ -454,59 +464,59 @@
         <translation type="obsolete">Задание с URL %1 говорит о следующей ошибке:&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="608"/>
+        <location filename="httpplugin.cpp" line="494"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="249"/>
+        <location filename="httpplugin.cpp" line="112"/>
         <source>Simple HTTP and FTP plugin, providing basic functionality.</source>
         <translation>Простой HTTP/FTP плагин, обеспечивающий базовую функциональность.</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="112"/>
         <source>Get file size</source>
-        <translation>Получить размер файла</translation>
+        <translation type="obsolete">Получить размер файла</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="132"/>
         <source>Copy URL to clipboard</source>
-        <translation>Скопировать URL в буфер</translation>
+        <translation type="obsolete">Скопировать URL в буфер</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="199"/>
         <source>State</source>
-        <translation>Статус</translation>
+        <translation type="obsolete">Статус</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="199"/>
         <source>Remaining time</source>
-        <translation>Оставшееся время</translation>
+        <translation type="obsolete">Оставшееся время</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="199"/>
         <source>Downloaded</source>
-        <translation>Скачано</translation>
+        <translation type="obsolete">Скачано</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="199"/>
         <source>Total</source>
-        <translation>Размер</translation>
+        <translation type="obsolete">Размер</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="199"/>
         <source>Download time</source>
-        <translation>Время загрузки</translation>
+        <translation type="obsolete">Время загрузки</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="224"/>
         <source>Average speed</source>
-        <translation>Средняя скорость</translation>
+        <translation type="obsolete">Средняя скорость</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="224"/>
         <source>Time to complete</source>
-        <translation>Время до завершения</translation>
+        <translation type="obsolete">Время до завершения</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="140"/>
@@ -519,109 +529,129 @@
         <translation type="obsolete">Выбрать столбцы списка завершенных задач...</translation>
     </message>
     <message>
-        <location filename="httpplugin.cpp" line="589"/>
+        <location filename="httpplugin.cpp" line="475"/>
         <source>Job with URL&lt;br /&gt;%1&lt;br /&gt;signals about following error:&lt;br /&gt;&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;</source>
         <translation>Задание с URL&lt;br /&gt;%1&lt;br /&gt;сообщает об ошибке:&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="121"/>
         <source>Delete</source>
-        <translation>Удалить</translation>
+        <translation type="obsolete">Удалить</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="98"/>
         <source>Delete selected job(s)</source>
-        <translation>Удалить выбранное задание(ия)</translation>
+        <translation type="obsolete">Удалить выбранное задание(ия)</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="102"/>
         <source>Start selected job(s)</source>
-        <translation>Запустить выбранное задание(ия)</translation>
+        <translation type="obsolete">Запустить выбранное задание(ия)</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="105"/>
         <source>Start all jobs</source>
-        <translation>Запустить все задания</translation>
+        <translation type="obsolete">Запустить все задания</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="106"/>
         <source>Stop</source>
-        <translation>Остановить</translation>
+        <translation type="obsolete">Остановить</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="111"/>
         <source>Stop all jobs</source>
-        <translation>Остановить все задания</translation>
+        <translation type="obsolete">Остановить все задания</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="113"/>
         <source>Get file size for selected jobs without downloading them</source>
-        <translation>Получить размер файла выбранных заданий без их загрузки</translation>
+        <translation type="obsolete">Получить размер файла выбранных заданий без их загрузки</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="115"/>
         <source>Schedule</source>
-        <translation>Запланировать</translation>
+        <translation type="obsolete">Запланировать</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="116"/>
         <source>Schedule select job(s)</source>
-        <translation>Запланировать выбранное задание(ия)</translation>
+        <translation type="obsolete">Запланировать выбранное задание(ия)</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="118"/>
         <source>Job properties...</source>
-        <translation>Свойства задания...</translation>
+        <translation type="obsolete">Свойства задания...</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="120"/>
         <source>Change selected job&apos;s properties</source>
-        <translation>Изменить свойства выбранного задания</translation>
+        <translation type="obsolete">Изменить свойства выбранного задания</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="123"/>
         <source>Delete selected finished job(s)</source>
-        <translation>Удалить выбранное законченное задание(ия)</translation>
+        <translation type="obsolete">Удалить выбранное законченное задание(ия)</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="155"/>
         <source>Adjust interface to make all text in columns fit</source>
-        <translation>Подстроить интерфейс, чтобы текст во всех столбцах был полностью виден</translation>
+        <translation type="obsolete">Подстроить интерфейс, чтобы текст во всех столбцах был полностью виден</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="156"/>
         <source>Active jobs list columns...</source>
-        <translation>Столбцы списка активных заданий...</translation>
+        <translation type="obsolete">Столбцы списка активных заданий...</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="168"/>
         <source>Select finished jobs list columns</source>
-        <translation>Выбрать столбцы списка завершенных заданий</translation>
+        <translation type="obsolete">Выбрать столбцы списка завершенных заданий</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="159"/>
         <source>Ctrl+Shift+P</source>
-        <translation>Ctrl+Shift+P</translation>
+        <translation type="obsolete">Ctrl+Shift+P</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="160"/>
         <source>Open plugin&apos;s preferences dialog</source>
-        <translation>Отрыть диалог настроек плагина</translation>
+        <translation type="obsolete">Отрыть диалог настроек плагина</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="167"/>
         <source>Finished jobs list columns...</source>
-        <translation>Столбцы списка законченных заданий...</translation>
+        <translation type="obsolete">Столбцы списка законченных заданий...</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="100"/>
         <source>Start</source>
-        <translation>Запустить</translation>
+        <translation type="obsolete">Запустить</translation>
     </message>
     <message>
         <location filename="httpplugin.cpp" line="157"/>
         <source>Select active jobs list columns</source>
-        <translation>Выбрать столбцы списка активных заданий</translation>
+        <translation type="obsolete">Выбрать столбцы списка активных заданий</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="153"/>
+        <source>&amp;HTTP/FTP</source>
+        <translation>&amp;HTTP/FTP</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="360"/>
+        <source>Name: %1, size %2</source>
+        <translation>Имя: %1, размер: %2</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="665"/>
+        <source>Question</source>
+        <translation>Вопрос</translation>
+    </message>
+    <message>
+        <location filename="httpplugin.cpp" line="665"/>
+        <source>Do you really want to delete selected jobs?</source>
+        <translation>Ты действительно хочешь удалить выбранные задания?</translation>
     </message>
 </context>
 <context>
@@ -657,72 +687,72 @@
         <translation>Файл не может быть ни удален, ни усечен. Проверь права.</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="403"/>
+        <location filename="job.cpp" line="404"/>
         <source>Connection refused</source>
         <translation>Соединение отклонено</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="404"/>
+        <location filename="job.cpp" line="405"/>
         <source>Remote host closed connection</source>
         <translation>Удаленный сервер закрыл соединение</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="405"/>
+        <location filename="job.cpp" line="406"/>
         <source>Host not found</source>
         <translation>Сервер не найден</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="406"/>
+        <location filename="job.cpp" line="407"/>
         <source>Socket access error</source>
         <translation>Ошибка доступа к сокету</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="407"/>
+        <location filename="job.cpp" line="408"/>
         <source>Socker resource error</source>
         <translation>Ошибка ресурса сокета</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="408"/>
+        <location filename="job.cpp" line="409"/>
         <source>Socket timed out</source>
         <translation>Сокет истек временем</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="409"/>
+        <location filename="job.cpp" line="410"/>
         <source>Datagram too large</source>
         <translation>Слишком большая датаграмма</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="410"/>
+        <location filename="job.cpp" line="411"/>
         <source>Network error</source>
         <translation>Сетевая ошибка</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="411"/>
+        <location filename="job.cpp" line="412"/>
         <source>Address already in use</source>
         <translation>Адрес уже используется</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="412"/>
+        <location filename="job.cpp" line="413"/>
         <source>Socket address not available</source>
         <translation>Адрес сокета недоступен</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="413"/>
+        <location filename="job.cpp" line="414"/>
         <source>Unsupported socket operation</source>
         <translation>Неподдерживаемая сокетом операция</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="414"/>
+        <location filename="job.cpp" line="415"/>
         <source>Unfinished socket operation</source>
         <translation>Незаконченная операция с сокетом</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="415"/>
+        <location filename="job.cpp" line="416"/>
         <source>Proxy autentication required</source>
         <translation>Требуется аутентификация на прокси-сервере</translation>
     </message>
     <message>
-        <location filename="job.cpp" line="416"/>
+        <location filename="job.cpp" line="417"/>
         <source>Unknown socket error</source>
         <translation>Неизвестная ошибка сокета</translation>
     </message>
@@ -760,7 +790,7 @@
         <translation type="obsolete">Автозапуск</translation>
     </message>
     <message>
-        <location filename="jobadderdialog.cpp" line="43"/>
+        <location filename="jobadderdialog.cpp" line="48"/>
         <source>Select directory</source>
         <translation>Выбрать директорию</translation>
     </message>
@@ -786,6 +816,189 @@
     </message>
 </context>
 <context>
+    <name>MainWindow</name>
+    <message>
+        <location filename="mainwindow.ui" line="13"/>
+        <source>HTTP/FTP 0.3</source>
+        <translation>HTTP/FTP 0.3</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="49"/>
+        <source>State</source>
+        <translation>Статус</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="120"/>
+        <source>Local name</source>
+        <translation>Локальное имя</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="125"/>
+        <source>URL</source>
+        <translation>URL</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="64"/>
+        <source>%</source>
+        <translation type="obsolete">%</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="69"/>
+        <source>Speed</source>
+        <translation>Скорость</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="74"/>
+        <source>Download time</source>
+        <translation>Время загрузки</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="79"/>
+        <source>ETA</source>
+        <translation>Оставшееся время</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="84"/>
+        <source>Downloaded</source>
+        <translation>Скачано</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="89"/>
+        <source>Total</source>
+        <translation>Всего</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="130"/>
+        <source>Size</source>
+        <translation>Размер</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="135"/>
+        <source>Average speed</source>
+        <translation>Средняя скорость</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="140"/>
+        <source>Time to complete</source>
+        <translation>Время до завершения</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="159"/>
+        <source>Jobs</source>
+        <translation>Задания</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="163"/>
+        <source>Active</source>
+        <translation>Активные</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="175"/>
+        <source>Finished</source>
+        <translation>Законченные</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="187"/>
+        <source>Tools</source>
+        <translation>Сервис</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="200"/>
+        <source>Active jobs</source>
+        <translation>Активные задания</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="221"/>
+        <source>Main toolbar</source>
+        <translation>Главный тулбар</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="237"/>
+        <source>Finished jobs</source>
+        <translation>Законченные задания</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="257"/>
+        <source>Add job...</source>
+        <translation>Добавить задание...</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="265"/>
+        <source>Remove job</source>
+        <translation>Удалить задание</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="273"/>
+        <source>Start</source>
+        <translation>Запустить</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="281"/>
+        <source>Stop</source>
+        <translation>Остановить</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="289"/>
+        <source>Start all</source>
+        <translation>Запустить все</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="297"/>
+        <source>Stop all</source>
+        <translation>Остановить все</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="305"/>
+        <source>Get file size</source>
+        <translation>Получить размер файла</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="313"/>
+        <source>Schedule</source>
+        <translation>Запланировать</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="321"/>
+        <source>Job properties...</source>
+        <translation>Свойства задания...</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="329"/>
+        <source>Remove finished</source>
+        <translation>Удалить законченные</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="337"/>
+        <source>Autoadjust interface</source>
+        <translation>Подстроить интерфейс</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="345"/>
+        <source>Active jobs list columns...</source>
+        <translation>Столбцы списка активных заданий...</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="353"/>
+        <source>Finished jobs list columns...</source>
+        <translation>Столбцы списка законченных заданий...</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="361"/>
+        <source>Preferences...</source>
+        <translation>Настройки...</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="366"/>
+        <source>Copy URL to clipboard</source>
+        <translation>Скопировать URL в буфер</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="64"/>
+        <source>Progress</source>
+        <translation>Прогресс</translation>
+    </message>
+</context>
+<context>
     <name>SettingsManager</name>
     <message>
         <location filename="settingsmanager.cpp" line="34"/>
@@ -795,82 +1008,82 @@
     <message>
         <location filename="settingsmanager.cpp" line="95"/>
         <source>Default download directory</source>
-        <translation>Директория для загрузки по умолчанию</translation>
+        <translation type="obsolete">Директория для загрузки по умолчанию</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="181"/>
         <source>Local options</source>
-        <translation>Локальные опции</translation>
+        <translation type="obsolete">Локальные опции</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="99"/>
         <source>Max concurrent jobs per server</source>
-        <translation>Максимальное количество одновременных скачиваний с сервера</translation>
+        <translation type="obsolete">Максимальное количество одновременных скачиваний с сервера</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="144"/>
         <source>Network options</source>
-        <translation>Сетевые опции</translation>
+        <translation type="obsolete">Сетевые опции</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="103"/>
         <source>Max total concurrent jobs</source>
-        <translation>Максимальное количество одновременных скачиваний вообще</translation>
+        <translation type="obsolete">Максимальное количество одновременных скачиваний вообще</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="107"/>
         <source>Retry timeout</source>
-        <translation>Интервал между повторами</translation>
+        <translation type="obsolete">Интервал между повторами</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="109"/>
         <source> s</source>
-        <translation> с</translation>
+        <translation type="obsolete"> с</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="113"/>
         <source>Connection timeout</source>
-        <translation>Таймаут соединения</translation>
+        <translation type="obsolete">Таймаут соединения</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="174"/>
         <source> ms</source>
-        <translation> мс</translation>
+        <translation type="obsolete"> мс</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="119"/>
         <source>Timeout for other operations</source>
-        <translation>Таймаут других операций</translation>
+        <translation type="obsolete">Таймаут других операций</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="125"/>
         <source>Stop timeout</source>
-        <translation>Таймаут остановки</translation>
+        <translation type="obsolete">Таймаут остановки</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="131"/>
         <source>Proxy enabled</source>
-        <translation>Прокси-сервер включен</translation>
+        <translation type="obsolete">Прокси-сервер включен</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="144"/>
         <source>Proxy</source>
-        <translation>Прокси-сервер</translation>
+        <translation type="obsolete">Прокси-сервер</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="134"/>
         <source>Proxy address</source>
-        <translation>Адрес прокси-сервера</translation>
+        <translation type="obsolete">Адрес прокси-сервера</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="138"/>
         <source>Proxy port</source>
-        <translation>Порт прокси-сервера</translation>
+        <translation type="obsolete">Порт прокси-сервера</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="147"/>
         <source>Default login</source>
-        <translation>Логин по умолчанию</translation>
+        <translation type="obsolete">Логин по умолчанию</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="140"/>
@@ -880,32 +1093,32 @@
     <message>
         <location filename="settingsmanager.cpp" line="151"/>
         <source>Default password</source>
-        <translation>Пароль по умолчанию</translation>
+        <translation type="obsolete">Пароль по умолчанию</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="155"/>
         <source>Cache size</source>
-        <translation>Размер кэша</translation>
+        <translation type="obsolete">Размер кэша</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="155"/>
         <source>IO</source>
-        <translation>Ввод/вывод</translation>
+        <translation type="obsolete">Ввод/вывод</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="156"/>
         <source> kb</source>
-        <translation> кб</translation>
+        <translation type="obsolete"> кб</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="161"/>
         <source>Autostart spawned jobs</source>
-        <translation>Автозапуск рожденных заданий</translation>
+        <translation type="obsolete">Автозапуск рожденных заданий</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="167"/>
         <source>Mask as user agent</source>
-        <translation>Маскироваться как</translation>
+        <translation type="obsolete">Маскироваться как</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="156"/>
@@ -915,22 +1128,22 @@
     <message>
         <location filename="settingsmanager.cpp" line="164"/>
         <source>Get file size on job addition</source>
-        <translation>Получать размер файла при добавлении задания</translation>
+        <translation type="obsolete">Получать размер файла при добавлении задания</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="172"/>
         <source>Interface update interval</source>
-        <translation>Интервал обновления интерфейса</translation>
+        <translation type="obsolete">Интервал обновления интерфейса</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="181"/>
         <source>Interface</source>
-        <translation>Интерфейс</translation>
+        <translation type="obsolete">Интерфейс</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="178"/>
         <source>Show current speed</source>
-        <translation>Показывать текущую скорость</translation>
+        <translation type="obsolete">Показывать текущую скорость</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="170"/>
@@ -940,32 +1153,32 @@
     <message>
         <location filename="settingsmanager.cpp" line="181"/>
         <source>Show estimated time based on current speed</source>
-        <translation>Показывать время до завершения согласно текущей скорости</translation>
+        <translation type="obsolete">Показывать время до завершения согласно текущей скорости</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="151"/>
         <source>FTP</source>
-        <translation>FTP</translation>
+        <translation type="obsolete">FTP</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="167"/>
         <source>HTTP</source>
-        <translation>HTTP</translation>
+        <translation type="obsolete">HTTP</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="167"/>
         <source>HTTP/FTP options</source>
-        <translation>Опции HTTP/FTP</translation>
+        <translation type="obsolete">Опции HTTP/FTP</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="141"/>
         <source>Proxy login</source>
-        <translation>Логин прокси-сервера</translation>
+        <translation type="obsolete">Логин прокси-сервера</translation>
     </message>
     <message>
         <location filename="settingsmanager.cpp" line="144"/>
         <source>Proxy password</source>
-        <translation>Пароль прокси-сервера</translation>
+        <translation type="obsolete">Пароль прокси-сервера</translation>
     </message>
 </context>
 </TS>

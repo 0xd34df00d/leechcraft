@@ -20,6 +20,7 @@ void TorrentPlugin::Init ()
 	XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/torrentsettings.xml");
 	AddTorrentDialog_ = new AddTorrent (this);
 	connect (Core::Instance (), SIGNAL (error (QString)), this, SLOT (showError (QString)));
+	connect (Core::Instance (), SIGNAL (logMessage (const QString&)), this, SLOT (doLogMessage (const QString&)));
 	connect (Core::Instance (), SIGNAL (torrentFinished (const QString&)), this, SIGNAL (downloadFinished (const QString&)));
 	connect (Core::Instance (), SIGNAL (fileFinished (const QString&)), this, SIGNAL (fileDownloaded (const QString&)));
 	connect (Core::Instance (), SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (updateTorrentStats ()));
@@ -50,6 +51,8 @@ void TorrentPlugin::Init ()
 	Plugins_->addAction (CreateTorrent_);
 	Plugins_->addSeparator ();
 	Plugins_->addAction (Preferences_);
+
+	LogShower_->setPlainText ("BitTorrent initialized");
 }
 
 QString TorrentPlugin::GetName () const
@@ -394,6 +397,11 @@ void TorrentPlugin::updateOverallStats ()
 	LabelDHTTorrents_->setText (QString::number (stats.NumDHTTorrents_));
 	LabelListenPort_->setText (QString::number (stats.ListenPort_));
 	LabelSessionRating_->setText (QString::number (stats.SessionUpload_ / static_cast<double> (stats.SessionDownload_), 'g', 4));
+}
+
+void TorrentPlugin::doLogMessage (const QString& msg)
+{
+	LogShower_->append (msg.trimmed ());
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_torrent, TorrentPlugin);

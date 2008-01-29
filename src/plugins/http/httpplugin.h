@@ -132,7 +132,7 @@ private slots:
 	void showJobErrorMessage (QString, QString);
 	void showStoppedIndicator (unsigned int);
 	void handleTotalSpeedUpdate ();
-	void on_ActionAutoajust__triggered ();
+	void on_ActionAutoadjust__triggered ();
 	void writeSettings ();
 	void copyFinishedURL ();
 	void setActionsEnabled ();
