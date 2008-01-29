@@ -33,9 +33,7 @@ namespace Main
 			, *TrayPluginsMenu_;
 		QTreeWidget *PluginsList_;
 		Main::Core *Model_;
-		QSplitter *Splitter_;
 		QLabel *DownloadSpeed_, *UploadSpeed_;
-		LogShower *LogShower_;
 
 		QAction *AddJob_, *Settings_, *BackupSettings_, *RestoreSettings_, *ClearSettings_;
 		QToolBar *Toolbar_, *PluginsToolbar_;
@@ -72,7 +70,6 @@ namespace Main
 		void addPluginToList (const PluginInfo*);
 		void pluginActionTriggered ();
 		void updateSpeedIndicators ();
-		void handleAddMessage (const QString&, bool);
 		void backupSettings ();
 		void restoreSettings ();
 		void clearSettings (bool);

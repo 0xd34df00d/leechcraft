@@ -32,7 +32,6 @@ SET (SRCS
 	plugininfo.cpp
 	pluginlisttablewidgeticon.cpp
 	changelogdialog.cpp
-	logshower.cpp
 	xmlsettingsmanager.cpp)
 
 SET (HEADERS
@@ -43,7 +42,6 @@ SET (HEADERS
 	plugininfo.h
 	pluginlisttablewidgeticon.h
 	changelogdialog.h
-	logshower.h
 	xmlsettingsmanager.h
 	interfaces/interfaces.h
 	interfaces/structures.h)

@@ -97,7 +97,7 @@ private:
 	bool CheckValidity (int) const;
 	void ReadSettings ();
 	void RestoreTorrents ();
-	libtorrent::torrent_handle RestoreSingleTorrent (const QByteArray&, const boost::filesystem::path&);
+	libtorrent::torrent_handle RestoreSingleTorrent (const QByteArray&, const QByteArray&, const boost::filesystem::path&);
 	void HandleSingleFinished (const libtorrent::torrent_info&);
 private slots:
 	void writeSettings ();

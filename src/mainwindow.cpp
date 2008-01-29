@@ -7,7 +7,6 @@
 #include "mainwindow.h"
 #include "view.h"
 #include "core.h"
-#include "logshower.h"
 #include "plugininfo.h"
 #include "pluginlisttablewidgeticon.h"
 #include "changelogdialog.h"
@@ -65,7 +64,6 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	connect (speedUpd, SIGNAL (timeout ()), this, SLOT (updateSpeedIndicators ()));
 	speedUpd->start ();
 	splash.finish (this);
-	connect (Proxy::Instance (), SIGNAL (addMessage (const QString&, bool)), this, SLOT (handleAddMessage (const QString&, bool)));
 	qApp->setQuitOnLastWindowClosed (false);
 	show ();
 
@@ -176,7 +174,7 @@ void MainWindow::ReadSettings ()
 {
 	QSettings settings ("Deviant", "Leechcraft");
     settings.beginGroup ("geometry");
-    resize (settings.value ("size", QSize  (800, 550)).toSize ());
+    resize (settings.value ("size", QSize  (450, 250)).toSize ());
     move   (settings.value ("pos",  QPoint (10, 10)).toPoint ());
     settings.value ("maximized").toBool () ? showMaximized () : showNormal ();
 	InitializeMainView (settings.value ("pluginListHorizontalHeaderState").toByteArray ());
@@ -196,9 +194,6 @@ void MainWindow::WriteSettings ()
 
 void MainWindow::InitializeMainView (const QByteArray& pluginliststate)
 {
-	Splitter_ = new QSplitter (Qt::Vertical, this);
-	setCentralWidget (Splitter_);
-	
 	PluginsList_ = new QTreeWidget (this);
 	PluginsList_->header ()->setClickable (false);
 	PluginsList_->setUniformRowHeights (true);
@@ -222,11 +217,7 @@ void MainWindow::InitializeMainView (const QByteArray& pluginliststate)
 
 	PluginsList_->header ()->setStretchLastSection (true);
 	
-	LogShower_ = new LogShower;
-
-	Splitter_->addWidget (PluginsList_);
-	Splitter_->addWidget (LogShower_);
-	Splitter_->show ();
+	setCentralWidget (PluginsList_);
 }
 
 void MainWindow::AddPluginToTree (const PluginInfo* pInfo)
@@ -333,14 +324,6 @@ void MainWindow::updateSpeedIndicators ()
 
 	DownloadSpeed_->setText (Proxy::Instance ()->MakePrettySize (speeds.first) + tr ("/s"));
 	UploadSpeed_->setText (Proxy::Instance ()->MakePrettySize (speeds.second) + tr ("/s"));
-}
-
-void MainWindow::handleAddMessage (const QString& msg, bool uploading)
-{
-	if (uploading)
-		LogShower_->AddUploadMessage (msg);
-	else
-		LogShower_->AddDownloadMessage (msg);
 }
 
 void MainWindow::backupSettings ()

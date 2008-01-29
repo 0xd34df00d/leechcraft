@@ -360,7 +360,7 @@ void Core::AddFile (const QString& filename, const QString& path, const QVector<
 	libtorrent::torrent_handle handle;
 	try
 	{
-		handle = Session_->add_torrent (GetTorrentInfo (filename), boost::filesystem::path (path.toStdString ()), libtorrent::entry (), libtorrent::storage_mode_sparse);
+		handle = Session_->add_torrent (GetTorrentInfo (filename), boost::filesystem::path (path.toStdString ()), libtorrent::entry (), libtorrent::storage_mode_compact);
 	}
 	catch (const libtorrent::duplicate_torrent& e)
 	{
@@ -596,8 +596,14 @@ void Core::RestoreTorrents ()
 		torrent.close ();
 		if (data.isEmpty ())
 			continue;
+		QFile resumeData (QDir::homePath () + "/.leechcraft_bittorrent/" + filename + ".resume");
+		QByteArray resumed;
+		if (resumeData.open (QIODevice::ReadOnly))
+			resumed = resumeData.readAll ();
+		else
+			qWarning () << Q_FUNC_INFO << "could not open resume data for torrent" << filename;
 
-		libtorrent::torrent_handle handle = RestoreSingleTorrent (data, path);
+		libtorrent::torrent_handle handle = RestoreSingleTorrent (data, resumed, path);
 		if (!handle.is_valid ())
 			continue;
 
@@ -631,15 +637,25 @@ void Core::RestoreTorrents ()
 	settings.endGroup ();
 }
 
-libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data, const boost::filesystem::path& path)
+libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data, const QByteArray& resumeData, const boost::filesystem::path& path)
 {
-	libtorrent::entry e;
+	libtorrent::entry e, resume;
 
-	QVector<char> byteData (data.size ());
+	QVector<char> byteData (data.size ())
+		, byteResumeData (resumeData.size ());
 
 	for (int i = 0; i < data.size (); ++i)
-	{
 		byteData [i] = data.at (i);
+	for (int i = 0; i < resumeData.size (); ++i)
+		byteResumeData [i] = resumeData [i];
+
+	try
+	{
+		resume = libtorrent::bdecode (byteData.constBegin (), byteData.constEnd ());
+	}
+	catch (const libtorrent::invalid_encoding& e)
+	{
+		qWarning () << Q_FUNC_INFO << "bad resume data";
 	}
 
 	try
@@ -654,7 +670,7 @@ libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data, c
 	libtorrent::torrent_handle handle;
 	try
 	{
-		handle = Session_->add_torrent (libtorrent::torrent_info (e), path);
+		handle = Session_->add_torrent (libtorrent::torrent_info (e), path, resume);
 	}
 	catch (const libtorrent::invalid_torrent_file& e)
 	{
@@ -695,10 +711,9 @@ void Core::writeSettings ()
 	for (int i = 0; i < Handles_.size (); ++i)
 	{
 		settings.setArrayIndex (i);
-
-		libtorrent::entry e = Handles_.at (i).Handle_.get_torrent_info ().create_torrent ();
-		QVector<char> buf;
-		libtorrent::bencode (std::back_inserter (buf), e);
+		libtorrent::entry resume = Handles_.at (i).Handle_.write_resume_data ();
+		QVector<char> resumeBuf;
+		libtorrent::bencode (std::back_inserter (resumeBuf), resume);
 		QFile file_info (QDir::homePath () + "/.leechcraft_bittorrent/" + Handles_.at (i).TorrentFileName_);
 		if (!file_info.open (QIODevice::WriteOnly))
 		{
@@ -707,6 +722,18 @@ void Core::writeSettings ()
 		}
 		file_info.write (Handles_.at (i).TorrentFileContents_);
 		file_info.close ();
+
+		QFile file_resume (QDir::homePath () + "/.leechcraft_bittorrent/" + Handles_.at (i).TorrentFileName_ + ".resume");
+		if (file_resume.open (QIODevice::WriteOnly))
+		{
+			QByteArray data;
+			for (int i = 0; i < resumeBuf.size (); ++i)
+				data.append (resumeBuf.at (i));
+			file_resume.write (data);
+			file_resume.close ();
+		}
+		else
+			qWarning () << Q_FUNC_INFO << "could not open the resume file for write";
 
 		settings.setValue ("SavePath", QString::fromStdString (Handles_.at (i).Handle_.save_path ().string ()));
 		settings.setValue ("UploadedBytes", Handles_.at (i).UploadedBefore_ + Handles_.at (i).Handle_.status ().total_upload);
