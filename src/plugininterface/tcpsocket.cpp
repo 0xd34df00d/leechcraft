@@ -35,7 +35,6 @@ void TcpSocket::Disconnect ()
 void TcpSocket::Write (const QString& str, bool buffer)
 {
 	Write (str.toAscii (), buffer);
-	Proxy::Instance ()->AddUploadMessage (str.trimmed () + QString ("") + (buffer ? QString (tr ("[buffered]")) : QString (tr ("[unbuffered]"))));
 } 
 
 void TcpSocket::Write (const QByteArray& str, bool buffer)
@@ -44,7 +43,7 @@ void TcpSocket::Write (const QByteArray& str, bool buffer)
 	if (result == -1)
 		ThrowException ();
 	if (!buffer)
-		if (!waitForBytesWritten (DefaultTimeout_))
+		if (bytesToWrite () && !waitForBytesWritten (DefaultTimeout_))
 			ThrowException ();
 
 	qDebug () << "/\\:" << str.trimmed ();
@@ -53,7 +52,7 @@ void TcpSocket::Write (const QByteArray& str, bool buffer)
 void TcpSocket::Flush ()
 {
 //	flush ();
-	if (!waitForBytesWritten (DefaultTimeout_))
+	if (bytesToWrite () && !waitForBytesWritten (DefaultTimeout_))
 		ThrowException ();
 }
 
@@ -63,7 +62,6 @@ QByteArray TcpSocket::ReadLine ()
 	{
 		QByteArray response = readLine ();
 		qDebug () << "\\/:" << response.trimmed ();
-		Proxy::Instance ()->AddDownloadMessage (response.trimmed ());
 		return response;
 	}
 	else

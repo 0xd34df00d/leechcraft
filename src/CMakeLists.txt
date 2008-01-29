@@ -21,6 +21,7 @@ ADD_SUBDIRECTORY(plugins/batcher)
 ADD_SUBDIRECTORY(plugins/torrent)
 ADD_SUBDIRECTORY(plugins/cron)
 ADD_SUBDIRECTORY(plugins/updater)
+ADD_SUBDIRECTORY(plugins/mailleecher)
 
 SET (SRCS
 	mainwindow.cpp

@@ -360,7 +360,7 @@ void Core::AddFile (const QString& filename, const QString& path, const QVector<
 	libtorrent::torrent_handle handle;
 	try
 	{
-		handle = Session_->add_torrent (GetTorrentInfo (filename), boost::filesystem::path (path.toStdString ()), libtorrent::entry (), libtorrent::storage_mode_allocate);
+		handle = Session_->add_torrent (GetTorrentInfo (filename), boost::filesystem::path (path.toStdString ()), libtorrent::entry (), libtorrent::storage_mode_sparse);
 	}
 	catch (const libtorrent::duplicate_torrent& e)
 	{
