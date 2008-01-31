@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
+	<declare defaultlang="en" />
     <page>
         <label lang="en" value="Network settings" />
         <label lang="ru" value="Сетевые настройки" />
@@ -45,6 +46,17 @@
 					<label lang="en" value="Password" />
 					<label lang="ru" value="Пароль" />
 				</item>
+				<item type="radio" property="TrackerProxyType">
+					<option name="socks5">
+						<label lang="en" value="SOCKS5" />
+					</option>
+					<option name="socks4">
+						<label lang="en" value="SOCKS4" />
+					</option>
+					<option name="http" default="true">
+						<label lang="en" value="HTTP" />
+					</option>
+				</item>
 			</item>
 			<item type="groupbox" property="PeerProxyEnabled" checkable="true" state="off">
 				<label lang="en" value="Peer proxy" />
@@ -64,6 +76,17 @@
 				<item type="lineedit" property="PeerProxyPassword">
 					<label lang="en" value="Password" />
 					<label lang="ru" value="Пароль" />
+				</item>
+				<item type="radio" property="PeerProxyType">
+					<option name="socks5">
+						<label lang="en" value="SOCKS5" />
+					</option>
+					<option name="socks4">
+						<label lang="en" value="SOCKS4" />
+					</option>
+					<option name="http" default="true">
+						<label lang="en" value="HTTP" />
+					</option>
 				</item>
 			</item>
 		</tab>

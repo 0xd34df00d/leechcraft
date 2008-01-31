@@ -782,12 +782,15 @@
           </spacer>
          </item>
          <item>
-          <widget class="PiecesWidget" native="1" name="PiecesWidget_" >
+          <widget class="PiecesWidget" name="PiecesWidget_" >
            <property name="minimumSize" >
             <size>
              <width>0</width>
              <height>20</height>
             </size>
+           </property>
+           <property name="text" >
+            <string/>
            </property>
           </widget>
          </item>
@@ -1105,9 +1108,8 @@
   </customwidget>
   <customwidget>
    <class>PiecesWidget</class>
-   <extends>QWidget</extends>
+   <extends>QLabel</extends>
    <header location="global" >pieceswidget.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

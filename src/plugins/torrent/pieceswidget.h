@@ -1,9 +1,9 @@
 #ifndef PIECESWIDGET_H
 #define PIECESWIDGET_H
-#include <QWidget>
+#include <QLabel>
 #include <vector>
 
-class PiecesWidget : public QWidget
+class PiecesWidget : public QLabel
 {
 	Q_OBJECT
 

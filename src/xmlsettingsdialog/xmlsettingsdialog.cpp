@@ -5,6 +5,7 @@
 #include "xmlsettingsdialog.h"
 #include "rangewidget.h"
 #include "filepicker.h"
+#include "radiogroup.h"
 
 XmlSettingsDialog::XmlSettingsDialog (QWidget *parent)
 : QDialog (parent)
@@ -34,6 +35,8 @@ XmlSettingsDialog::XmlSettingsDialog (QWidget *parent)
 	mainLay->addLayout (rightLay);
 	rightLay->addLayout (buttons);
 	setLayout (mainLay);
+
+	DefaultLang_ = "en";
 }
 
 void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& filename)
@@ -61,6 +64,13 @@ void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& filename)
 		return;
 	}
 
+	QDomElement declaration = root.firstChildElement ("declare");
+	while (!declaration.isNull ())
+	{
+		HandleDeclaration (declaration);
+		declaration = declaration.nextSiblingElement ("declare");
+	}
+
 	QDomElement pageChild = root.firstChildElement ("page");
 	while (!pageChild.isNull ())
 	{
@@ -68,6 +78,12 @@ void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& filename)
 		pageChild = pageChild.nextSiblingElement ("page");
 		adjustSize ();
 	}
+}
+
+void XmlSettingsDialog::HandleDeclaration (const QDomElement& decl)
+{
+	if (decl.hasAttribute ("defaultlang"))
+		DefaultLang_ = decl.attribute ("defaultlang");
 }
 
 void XmlSettingsDialog::ParsePage (const QDomElement& page)
@@ -249,6 +265,26 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 		lay->addWidget (label, row, 0);
 		lay->addWidget (picker, row, 1);
 	}
+	else if (type == "radio")
+	{
+		QLabel *label = new QLabel (GetLabel (item));
+		RadioGroup *group = new RadioGroup (this);
+		group->setObjectName (property);
+
+		QDomElement option = item.firstChildElement ("option");
+		while (!option.isNull ())
+		{
+			QRadioButton *button = new QRadioButton (GetLabel (option));
+			button->setObjectName (option.attribute ("name"));
+			group->AddButton (button, option.hasAttribute ("default") && option.attribute ("default") == "true");
+			option = option.nextSiblingElement ("option");
+		}
+
+		connect (group, SIGNAL (valueChanged ()), this, SLOT (updatePreferences ()));
+
+		lay->addWidget (label, row, 0);
+		lay->addWidget (group, row, 1);
+	}
 	else
 	{
 		qWarning () << Q_FUNC_INFO << "unhandled type" << type;
@@ -274,6 +310,19 @@ QString XmlSettingsDialog::GetLabel (const QDomElement& item)
 		}
 		label = label.nextSiblingElement ("label");
 	}
+	if (result.isEmpty ())
+	{
+		label = item.firstChildElement ("label");
+		while (!label.isNull ())
+		{
+			if (label.attribute ("lang").toLower () == DefaultLang_)
+			{
+				result = label.attribute ("value");
+				break;
+			}
+			label = label.nextSiblingElement ("label");
+		}
+	}
 	return result;
 }
 
@@ -288,6 +337,7 @@ void XmlSettingsDialog::updatePreferences ()
 	QGroupBox *groupbox = qobject_cast<QGroupBox*> (sender ());
 	RangeWidget *rangeWidget = qobject_cast<RangeWidget*> (sender ());
 	FilePicker *picker = qobject_cast<FilePicker*> (sender ());
+	RadioGroup *radiogroup = qobject_cast<RadioGroup*> (sender ());
 	if (edit)
 		value = edit->text ();
 	else if (checkbox)
@@ -300,6 +350,8 @@ void XmlSettingsDialog::updatePreferences ()
 		value = rangeWidget->GetRange ();
 	else if (picker)
 		value = picker->GetText ();
+	else if (radiogroup)
+		value = radiogroup->GetValue ();
 	else
 	{
 		qWarning () << Q_FUNC_INFO << "unhandled sender" << sender ();

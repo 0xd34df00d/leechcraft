@@ -322,6 +322,7 @@ void TorrentPlugin::updateTorrentStats ()
 				LabelDownloadRate_->setText ("<>");
 				LabelUploadRate_->setText ("<>");
 				LabelTorrentRating_->setText ("<>");
+				PiecesWidget_->setPieceMap (std::vector<bool> ());
 			}
 			else
 			{

@@ -878,13 +878,19 @@ void Core::setProxySettings ()
 		trackerProxySettings.port = XmlSettingsManager::Instance ()->property ("TrackerProxyPort").toInt ();
 		trackerProxySettings.username = XmlSettingsManager::Instance ()->property ("TrackerProxyLogin").toString ().toStdString ();
 		trackerProxySettings.password = XmlSettingsManager::Instance ()->property ("TrackerProxyPassword").toString ().toStdString ();
-		if (trackerProxySettings.username.size ())
-			trackerProxySettings.type = libtorrent::proxy_settings::socks5_pw;
+		bool passworded = trackerProxySettings.username.size ();
+		QString pt = XmlSettingsManager::Instance ()->property ("TrackerProxyType").toString ();
+		if (pt == "http")
+			trackerProxySettings.type = passworded ? libtorrent::proxy_settings::http_pw : libtorrent::proxy_settings::http;
+		else if (pt == "socks4")
+			trackerProxySettings.type = libtorrent::proxy_settings::socks4;
+		else if (pt == "socks5")
+			trackerProxySettings.type = passworded ? libtorrent::proxy_settings::socks5_pw : libtorrent::proxy_settings::socks5;
 		else
-			trackerProxySettings.type = libtorrent::proxy_settings::socks5;
+			trackerProxySettings.type = libtorrent::proxy_settings::none;
 	}
 	else
-		trackerProxySettings.hostname = std::string ();
+		trackerProxySettings.type = libtorrent::proxy_settings::none;
 
 	if (XmlSettingsManager::Instance ()->property ("PeerProxyEnabled").toBool ())
 	{
@@ -892,13 +898,19 @@ void Core::setProxySettings ()
 		peerProxySettings.port = XmlSettingsManager::Instance ()->property ("PeerProxyPort").toInt ();
 		peerProxySettings.username = XmlSettingsManager::Instance ()->property ("PeerProxyLogin").toString ().toStdString ();
 		peerProxySettings.password = XmlSettingsManager::Instance ()->property ("PeerProxyPassword").toString ().toStdString ();
-		if (peerProxySettings.username.size ())
-			peerProxySettings.type = libtorrent::proxy_settings::socks5_pw;
+		bool passworded = peerProxySettings.username.size ();
+		QString pt = XmlSettingsManager::Instance ()->property ("PeerProxyType").toString ();
+		if (pt == "http")
+			peerProxySettings.type = passworded ? libtorrent::proxy_settings::http_pw : libtorrent::proxy_settings::http;
+		else if (pt == "socks4")
+			peerProxySettings.type = libtorrent::proxy_settings::socks4;
+		else if (pt == "socks5")
+			peerProxySettings.type = passworded ? libtorrent::proxy_settings::socks5_pw : libtorrent::proxy_settings::socks5;
 		else
-			peerProxySettings.type = libtorrent::proxy_settings::socks5;
+			peerProxySettings.type = libtorrent::proxy_settings::none;
 	}
 	else
-		peerProxySettings.hostname = std::string ();
+		peerProxySettings.type = libtorrent::proxy_settings::none;
 
 	Session_->set_peer_proxy (trackerProxySettings);
 	Session_->set_web_seed_proxy (peerProxySettings);
