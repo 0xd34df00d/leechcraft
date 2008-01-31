@@ -15,6 +15,7 @@ Core:
 + XmlSettingsDialog can handle "radio" type now.
 + Watch clipboard for addable tasks.
 * Fixed a way to exit without saving settings.
+* Show files in all selection dialogs.
 - Removed LogShower.
 
 BitTorrent:

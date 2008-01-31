@@ -30,6 +30,9 @@ QList<QPair<int, int> > FindTrues (const std::vector<bool>& pieces)
 			prevVal = 1 - prevVal;
 		}
 
+	if (prevVal && result.last ().second != pieces.size () - 1)
+		result << qMakePair<int, int> (prevPos, pieces.size () - 1);
+
 	if (!prevPos)
 		result << qMakePair<int, int> (0, pieces.size ());
 
