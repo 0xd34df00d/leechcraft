@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>392</width>
-    <height>101</height>
+    <width>395</width>
+    <height>151</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -27,6 +27,37 @@
      </item>
      <item>
       <widget class="QLineEdit" name="What_" />
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" >
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="Browse_" >
+       <property name="text" >
+        <string>Browse...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="Paste_" >
+       <property name="text" >
+        <string>Paste from clipboard</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

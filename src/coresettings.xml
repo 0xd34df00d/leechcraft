@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
 	<page>
+		<label lang="en" value="Behavior" />
+		<label lang="ru" value="Поведение" />
+		<item type="checkbox" property="WatchClipboard" state="on">
+			<label lang="en" value="Watch clipboard for addable task" />
+			<label lang="ru" value="Следить за буфером обмена" />
+		</item>
+	</page>
+	<page>
 		<label lang="en" value="Plugins intercommunication" />
 		<label lang="ru" value="Общение с плагинами" />
 

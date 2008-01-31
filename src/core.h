@@ -5,12 +5,13 @@
 #include <QMultiMap>
 #include <QFile>
 #include <QPair>
+#include <QString>
 #include "common.h"
 #include "pluginmanager.h"
 #include "plugininfo.h"
 #include "interfaces/interfaces.h"
 
-class QString;
+class QTimer;
 
 namespace Main
 {
@@ -22,6 +23,8 @@ namespace Main
 		QList<int> TasksIDPool_;
 		PluginManager *PluginManager_;
 		MainWindow *ReallyMainWindow_;
+		QTimer *ClipboardWatchdog_;
+		QString PreviousClipboardContents_;
 	public:
 		Core (QObject *parent = 0);
 		~Core ();
@@ -48,6 +51,7 @@ namespace Main
 	private slots:
 		void invalidate (unsigned int);
 		void handleFileDownload (const QString&);
+		void handleClipboardTimer ();
 	private:
 		void PreparePools ();
 		void FetchPlugins ();

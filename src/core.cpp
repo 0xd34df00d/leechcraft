@@ -1,8 +1,10 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QtDebug>
+#include <QTimer>
 #include <limits>
-#include <iostream>
+#include <QApplication>
+#include <QClipboard>
 #include "mainwindow.h"
 #include "pluginmanager.h"
 #include "plugininfo.h"
@@ -18,6 +20,10 @@ Main::Core::Core (QObject *parent)
 	PluginManager_ = new Main::PluginManager (this);
 	connect (this, SIGNAL (error (QString)), parent, SLOT (catchError (QString)));
 	connect (PluginManager_, SIGNAL (gotPlugin (const PluginInfo*)), this, SIGNAL (gotPlugin (const PluginInfo*)));
+
+	ClipboardWatchdog_ = new QTimer (this);
+	connect (ClipboardWatchdog_, SIGNAL (timeout ()), this, SLOT (handleClipboardTimer ()));
+	ClipboardWatchdog_->start (2000);
 }
 
 Main::Core::~Core ()
@@ -226,6 +232,18 @@ void Main::Core::handleFileDownload (const QString& file)
 			id->AddJob (file);
 		}
 	}
+}
+
+void Main::Core::handleClipboardTimer ()
+{
+	QString text = QApplication::clipboard ()->text ();
+	if (text.isEmpty () || text == PreviousClipboardContents_)
+		return;
+
+	PreviousClipboardContents_ = text;
+
+	if (XmlSettingsManager::Instance ()->property ("WatchClipboard").toBool ())
+		handleFileDownload (text);
 }
 
 void Main::Core::PreparePools ()
