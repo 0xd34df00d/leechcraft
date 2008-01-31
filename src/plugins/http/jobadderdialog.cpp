@@ -45,7 +45,7 @@ void JobAdderDialog::done (int r)
 
 void JobAdderDialog::on_BrowseButton__released ()
 {
-	QString dir = QFileDialog::getExistingDirectory (parentWidget (), tr ("Select directory"), LocalName_->text ());
+	QString dir = QFileDialog::getExistingDirectory (parentWidget (), tr ("Select directory"), LocalName_->text (), 0);
 	if (!dir.isEmpty ())
 		LocalName_->setText (dir);
 }

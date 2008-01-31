@@ -83,7 +83,7 @@ void AddTorrent::on_TorrentBrowse__released ()
 
 void AddTorrent::on_DestinationBrowse__released ()
 {
-	QString dir = QFileDialog::getExistingDirectory (this, tr ("Select save directory"), Destination_->text ());
+	QString dir = QFileDialog::getExistingDirectory (this, tr ("Select save directory"), Destination_->text (), 0);
 	if (dir.isEmpty ())
 		return;
 
