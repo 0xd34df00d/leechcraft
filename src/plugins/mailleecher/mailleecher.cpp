@@ -1,12 +1,18 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QMessageBox>
+#include <QTranslator>
 #include "mailleecher.h"
 #include "lcmlparser.h"
 #include "core.h"
 
 void MailLeecher::Init ()
 {
+	QTranslator *transl = new QTranslator (this);
+	QString localeName = QLocale::system ().name ();
+	transl->load (QString (":/leechcraft_mailleecher_") + localeName);
+	qApp->installTranslator (transl);
+
 	IsShown_ = false;
 	IsLeeching_ = false;
 	Ui_.setupUi (this);
