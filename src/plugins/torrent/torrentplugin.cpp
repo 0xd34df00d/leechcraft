@@ -133,12 +133,14 @@ void TorrentPlugin::ShowBalloonTip ()
 
 qint64 TorrentPlugin::GetDownloadSpeed () const
 {
-	return 0;
+	OverallStats stats = Core::Instance ()->GetOverallStats ();
+	return stats.DownloadRate_;
 }
 
 qint64 TorrentPlugin::GetUploadSpeed () const
 {
-	return 0;
+	OverallStats stats = Core::Instance ()->GetOverallStats ();
+	return stats.UploadRate_;
 }
 
 void TorrentPlugin::StartAll ()

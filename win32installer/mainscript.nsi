@@ -27,7 +27,7 @@ Var STARTMENU_FOLDER
 
 !define MUI_FINISHPAGE_RUN $INSTDIR\leechcraft.exe
 !define MUI_FINISHPAGE_LINK "Bugtracker"
-!define MUI_FINISHPAGE_LINK_LOCATION http://sourceforge.net/tracker/?group_id=161819&atid=821366
+!define MUI_FINISHPAGE_LINK_LOCATION http://bugs.deviant-soft.ws
 !insertmacro MUI_PAGE_FINISH
 
 !insertmacro MUI_LANGUAGE "English"
@@ -102,6 +102,11 @@ SectionGroup "Plugins"
 		File libleechcraft_cron.dll
 		SectionIn 1
 	SectionEnd
+	Section "MailLeecher" MAILPLUGIN
+		SetOutPath $INSTDIR\plugins\bin
+		File libleechcraft_mailleecher.dll
+		SectionIn 1
+	SectionEnd
 SectionGroupEnd
 
 Var MUI_TEMP
@@ -128,6 +133,7 @@ Section "Uninstall"
 	Delete "$INSTDIR\plugins\bin\libleechcraft_updater.dll"
 	Delete "$INSTDIR\plugins\bin\libleechcraft_batcher.dll"
 	Delete "$INSTDIR\plugins\bin\libleechcraft_cron.dll"
+	Delete "$INSTDIR\plugins\bin\libleechcraft_mailleecher.dll"
 	Delete "$INSTDIR\plugins\bin\warning.log"
 	Delete "$INSTDIR\plugins\bin\debug.log"
 	Delete "$INSTDIR\plugins\bin\critical.log"
@@ -170,6 +176,7 @@ LangString DESC_TORRENTPLUGIN ${LANG_ENGLISH} "A simple plugin implementing BitT
 LangString DESC_UPDATERPLUGIN ${LANG_ENGLISH} "You don't want to update manually, right?"
 LangString DESC_BATCHERPLUGIN ${LANG_ENGLISH} "Batch job manager."
 LangString DESC_CRONPLUGIN ${LANG_ENGLISH} "Job scheduler."
+LangString DESC_MAILPLUGIN ${LANG_ENGLISH} "Job scheduler."
 
 LangString DESC_QT4RUNTIME ${LANG_RUSSIAN} "Библиотеки Qt4."
 LangString DESC_MAINFILES ${LANG_RUSSIAN} "Сам LeechCraft и его вспомогательные бИблиотеки."
@@ -178,6 +185,7 @@ LangString DESC_TORRENTPLUGIN ${LANG_RUSSIAN} "Простейший Torrent-клиент."
 LangString DESC_UPDATERPLUGIN ${LANG_RUSSIAN} "Скачивалка обновленных файлов."
 LangString DESC_BATCHERPLUGIN ${LANG_RUSSIAN} "Менеджер пакетных заданий."
 LangString DESC_CRONPLUGIN ${LANG_RUSSIAN} "Планировщик заданий."
+LangString DESC_MAILPLUGIN ${LANG_RUSSIAN} "Job scheduler."
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
 	!insertmacro MUI_DESCRIPTION_TEXT ${QT4RUNTIME} $(DESC_QT4RUNTIME)
