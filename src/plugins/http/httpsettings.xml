@@ -22,7 +22,7 @@
 				<label lang="en" value="Show current ETA" />
 				<label lang="ru" value="Показывать текущее время до завершения" />
 			</item>
-			<item type="spinbox" property="InterfaceUpdateTimeout" default="1000" minimum="100" maximum="10000" step="500" suffix="ms">
+			<item type="spinbox" property="InterfaceUpdateTimeout" default="1000" minimum="100" maximum="10000" step="500" suffix=" ms">
 				<label lang="en" value="Interface update interval" />
 				<label lang="ru" value="Интервал обновления интерфейса" />
 			</item>

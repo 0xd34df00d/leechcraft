@@ -227,10 +227,8 @@ void Job::Stop ()
 	if (ProtoImp_ && ProtoImp_->isRunning ())
 	{
 		ProtoImp_->StopDownload ();
-		while (!ProtoImp_->wait (25))
-			qApp->processEvents ();
-		DownloadTime_ += StartTime_->elapsed ();
-		StartTime_->restart ();
+		if (!ProtoImp_->wait (XmlSettingsManager::Instance ()->property ("DisconnectTimeout").toInt ()))
+			ProtoImp_->terminate ();
 		reemitStopped ();
 	}
 	State_ = StateIdle;
@@ -244,6 +242,8 @@ void Job::Release ()
 		if (!ProtoImp_->wait (XmlSettingsManager::Instance ()->property ("DisconnectTimeout").toInt ()))
 			ProtoImp_->terminate ();
 	}
+	delete ProtoImp_;
+	ProtoImp_ = 0;
 }
 
 Job::State Job::GetState () const
