@@ -28,6 +28,7 @@ namespace Main
 	public:
 		Core (QObject *parent = 0);
 		~Core ();
+		void Release ();
 
 		void SetReallyMainWindow (MainWindow*);
 		MainWindow *GetReallyMainWindow ();

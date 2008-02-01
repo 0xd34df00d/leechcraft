@@ -102,7 +102,9 @@ void MainWindow::closeEvent (QCloseEvent *e)
 
 	TrayIcon_->hide ();
     WriteSettings ();
+	Model_->Release ();
 	delete Model_;
+	XmlSettingsManager::Instance ()->Release ();
     e->accept ();
 	qApp->quit ();
 }

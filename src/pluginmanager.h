@@ -23,6 +23,7 @@ namespace Main
 		PluginManager (QObject *parent = 0);
 		virtual ~PluginManager ();
 		Size_t GetSize () const;
+		void Release ();
 		void Release (Size_t);
 		QString Name (const Size_t& pos) const;
 		QString Info (const Size_t& pos) const;

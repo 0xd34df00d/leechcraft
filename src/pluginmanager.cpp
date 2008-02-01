@@ -23,6 +23,15 @@ PluginManager::PluginManager (QObject *parent)
 
 PluginManager::~PluginManager ()
 {
+}
+
+PluginManager::Size_t PluginManager::GetSize () const
+{
+	return Plugins_.size ();
+}
+
+void PluginManager::Release ()
+{
 	while (Plugins_.size ())
 	{
 		try
@@ -35,11 +44,6 @@ PluginManager::~PluginManager ()
 			QMessageBox::warning (0, tr ("No exit here"), tr ("Release of one or more plugins failed. OS would cleanup after us, but it isn't good anyway, as this failed plugin could fail to save it's state."));
 		}
 	}
-}
-
-PluginManager::Size_t PluginManager::GetSize () const
-{
-	return Plugins_.size ();
 }
 
 void PluginManager::Release (PluginManager::Size_t position)

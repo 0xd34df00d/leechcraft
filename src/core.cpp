@@ -30,6 +30,14 @@ Main::Core::~Core ()
 {
 }
 
+void Main::Core::Release ()
+{
+	PluginManager_->Release ();
+	delete PluginManager_;
+	ClipboardWatchdog_->stop ();
+	delete ClipboardWatchdog_;
+}
+
 void Main::Core::SetReallyMainWindow (Main::MainWindow *win)
 {
 	ReallyMainWindow_ = win;
