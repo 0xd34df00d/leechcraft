@@ -4,6 +4,10 @@
 #include "jobrepresentation.h"
 
 JobParams::JobParams ()
+: DownloadTime_ (0)
+, Size_ (0)
+, Autostart_ (false)
+, ShouldBeSavedInHistory_ (true)
 {
 }
 

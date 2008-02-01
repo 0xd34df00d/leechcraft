@@ -237,6 +237,7 @@ void HttpPlugin::addDownload (const DirectDownloadParams& params)
 	jp->LocalName_				= params.Location_;
 	jp->Autostart_				= params.Autostart_;
 	jp->ShouldBeSavedInHistory_	= params.ShouldBeSavedInHistory_;
+	jp->DownloadTime_			= 0;
 	emit jobAdded (handleParams (jp));
 }
 
