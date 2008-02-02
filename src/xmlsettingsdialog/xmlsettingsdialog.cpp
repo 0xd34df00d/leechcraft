@@ -161,134 +161,21 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 	if (type.isEmpty () || type.isNull ())
 		return;
 	else if (type == "lineedit")
-	{
-		QLabel *label = new QLabel (GetLabel (item));
-
-		QLineEdit *edit = new QLineEdit (value.toString ());
-		edit->setObjectName (property);
-		edit->setMinimumWidth (QApplication::fontMetrics ().width ("thisismaybeadefaultsettingstring,dontyouthinkso?"));
-		if (item.hasAttribute ("password"))
-			edit->setEchoMode (QLineEdit::Password);
-		connect (edit, SIGNAL (textChanged (const QString&)), this, SLOT (updatePreferences ()));
-
-		lay->addWidget (label, row, 0);
-		lay->addWidget (edit, row, 1);
-	}
+		DoLineedit (item, lay, value);
 	else if (type == "checkbox")
-	{
-		QCheckBox *box = new QCheckBox (GetLabel (item));
-		box->setObjectName (property);
-		if (!value.isValid () || value.isNull ())
-		{
-			value = (item.attribute ("state") == "on");
-			WorkingObject_->setProperty (property.toLatin1 ().constData (), value);
-		}
-		box->setCheckState (value.toBool () ? Qt::Checked : Qt::Unchecked);
-		connect (box, SIGNAL (stateChanged (int)), this, SLOT (updatePreferences ()));
-
-		lay->addWidget (box, row, 0, 1, 2);
-	}
+		DoCheckbox (item, lay, value);
 	else if (type == "spinbox")
-	{
-		QLabel *label = new QLabel (GetLabel (item));
-		QSpinBox *box = new QSpinBox;
-		box->setObjectName (property);
-		if (item.hasAttribute ("minimum"))
-			box->setMinimum (item.attribute ("minimum").toInt ());
-		if (item.hasAttribute ("maximum"))
-			box->setMaximum (item.attribute ("maximum").toInt ());
-		if (item.hasAttribute ("step"))
-			box->setSingleStep (item.attribute ("step").toInt ());
-		if (item.hasAttribute ("suffix"))
-			box->setSuffix (item.attribute ("suffix"));
-		box->setValue (value.toInt ());
-		connect (box, SIGNAL (valueChanged (int)), this, SLOT (updatePreferences ()));
-		
-		lay->addWidget (label, row, 0);
-		lay->addWidget (box, row, 1);
-	}
+		DoSpinbox (item, lay, value);
 	else if (type == "groupbox" && item.attribute ("checkable") == "true")
-	{
-		QGroupBox *box = new QGroupBox (GetLabel (item));
-		box->setObjectName (property);
-		box->setLayout (new QGridLayout);
-		box->setCheckable (true);
-		if (!value.isValid () || value.isNull ())
-		{
-			value = (item.attribute ("state") == "on");
-			WorkingObject_->setProperty (property.toLatin1 ().constData (), value);
-		}
-		box->setChecked (value.toBool ());
-		connect (box, SIGNAL (toggled (bool)), this, SLOT (updatePreferences ()));
-		ParseEntity (item, box);
-		
-		lay->addWidget (box, row, 0, 1, 2);
-	}
+		DoGroupbox (item, lay, value);
 	else if (type == "spinboxrange")
-	{
-		if (!value.isValid () || value.isNull () || !value.canConvert<QList<QVariant> > ())
-		{
-			QStringList parts = item.attribute ("default").split (":");
-			QList<QVariant> result;
-			if (parts.size () != 2)
-			{
-				qWarning () << "spinboxrange parse error, wrong default value";
-				return;
-			}
-			result << parts.at (0).toInt () << parts.at (1).toInt ();
-			value = result;
-			WorkingObject_->setProperty (property.toLatin1 ().constData (), value);
-		}
-
-		QLabel *label = new QLabel (GetLabel (item));
-		RangeWidget *widget = new RangeWidget ();
-		widget->setObjectName (property);
-		widget->SetMinimum (item.attribute ("minimum").toInt ());
-		widget->SetMaximum (item.attribute ("maximum").toInt ());
-		widget->SetRange (value);
-		connect (widget, SIGNAL (changed ()), this, SLOT (updatePreferences ()));
-
-		lay->addWidget (label, row, 0);
-		lay->addWidget (widget, row, 1);
-	}
+		DoSpinboxRange (item, lay, value);
 	else if (type == "path")
-	{
-		if (value.isNull () || value.toString ().isEmpty ())
-			if (item.hasAttribute ("defaultHomePath") && item.attribute ("defaultHomePath") == "true")
-				value = QDir::homePath ();
-		QLabel *label = new QLabel (GetLabel (item));
-		FilePicker *picker = new FilePicker (this);
-		picker->SetText (value.toString ());
-		picker->setObjectName (property);
-		connect (picker, SIGNAL (textChanged (const QString&)), this, SLOT (updatePreferences ()));
-
-		lay->addWidget (label, row, 0);
-		lay->addWidget (picker, row, 1);
-	}
+		DoPath (item, lay, value);
 	else if (type == "radio")
-	{
-		QLabel *label = new QLabel (GetLabel (item));
-		RadioGroup *group = new RadioGroup (this);
-		group->setObjectName (property);
-
-		QDomElement option = item.firstChildElement ("option");
-		while (!option.isNull ())
-		{
-			QRadioButton *button = new QRadioButton (GetLabel (option));
-			button->setObjectName (option.attribute ("name"));
-			group->AddButton (button, option.hasAttribute ("default") && option.attribute ("default") == "true");
-			option = option.nextSiblingElement ("option");
-		}
-
-		connect (group, SIGNAL (valueChanged ()), this, SLOT (updatePreferences ()));
-
-		lay->addWidget (label, row, 0);
-		lay->addWidget (group, row, 1);
-	}
+		DoRadio (item, lay, value);
 	else
-	{
 		qWarning () << Q_FUNC_INFO << "unhandled type" << type;
-	}
 }
 
 QString XmlSettingsDialog::GetLabel (const QDomElement& item)
@@ -324,6 +211,146 @@ QString XmlSettingsDialog::GetLabel (const QDomElement& item)
 		}
 	}
 	return result;
+}
+
+void XmlSettingsDialog::DoLineedit (const QDomElement& item, QGridLayout *lay, QVariant& value)
+{
+	int row = lay->rowCount ();
+	QLabel *label = new QLabel (GetLabel (item));
+
+	QLineEdit *edit = new QLineEdit (value.toString ());
+	edit->setObjectName (item.attribute ("property"));
+	edit->setMinimumWidth (QApplication::fontMetrics ().width ("thisismaybeadefaultsettingstring,dontyouthinkso?"));
+	if (item.hasAttribute ("password"))
+		edit->setEchoMode (QLineEdit::Password);
+	connect (edit, SIGNAL (textChanged (const QString&)), this, SLOT (updatePreferences ()));
+
+	lay->addWidget (label, row, 0);
+	lay->addWidget (edit, row, 1);
+}
+
+void XmlSettingsDialog::DoCheckbox (const QDomElement& item, QGridLayout *lay, QVariant& value)
+{
+	QCheckBox *box = new QCheckBox (GetLabel (item));
+	box->setObjectName (item.attribute ("property"));
+	if (!value.isValid () || value.isNull ())
+	{
+		value = (item.attribute ("state") == "on");
+		WorkingObject_->setProperty (item.attribute ("property").toLatin1 ().constData (), value);
+	}
+	box->setCheckState (value.toBool () ? Qt::Checked : Qt::Unchecked);
+	connect (box, SIGNAL (stateChanged (int)), this, SLOT (updatePreferences ()));
+
+	lay->addWidget (box, lay->rowCount (), 0, 1, 2);
+}
+
+void XmlSettingsDialog::DoSpinbox (const QDomElement& item, QGridLayout *lay, QVariant& value)
+{
+	int row = lay->rowCount ();
+	QLabel *label = new QLabel (GetLabel (item));
+	QSpinBox *box = new QSpinBox;
+	box->setObjectName (item.attribute ("property"));
+	if (item.hasAttribute ("minimum"))
+		box->setMinimum (item.attribute ("minimum").toInt ());
+	if (item.hasAttribute ("maximum"))
+		box->setMaximum (item.attribute ("maximum").toInt ());
+	if (item.hasAttribute ("step"))
+		box->setSingleStep (item.attribute ("step").toInt ());
+	if (item.hasAttribute ("suffix"))
+		box->setSuffix (item.attribute ("suffix"));
+	box->setValue (value.toInt ());
+	connect (box, SIGNAL (valueChanged (int)), this, SLOT (updatePreferences ()));
+	
+	lay->addWidget (label, row, 0);
+	lay->addWidget (box, row, 1);
+}
+
+void XmlSettingsDialog::DoGroupbox (const QDomElement& item, QGridLayout *lay, QVariant& value)
+{
+	QGroupBox *box = new QGroupBox (GetLabel (item));
+	box->setObjectName (item.attribute ("property"));
+	box->setLayout (new QGridLayout);
+	box->setCheckable (true);
+	if (!value.isValid () || value.isNull ())
+	{
+		value = (item.attribute ("state") == "on");
+		WorkingObject_->setProperty (item.attribute ("property").toLatin1 ().constData (), value);
+	}
+	box->setChecked (value.toBool ());
+	connect (box, SIGNAL (toggled (bool)), this, SLOT (updatePreferences ()));
+	ParseEntity (item, box);
+	
+	lay->addWidget (box, lay->rowCount (), 0, 1, 2);
+}
+
+void XmlSettingsDialog::DoSpinboxRange (const QDomElement& item, QGridLayout *lay, QVariant& value)
+{
+	if (!value.isValid () || value.isNull () || !value.canConvert<QList<QVariant> > ())
+	{
+		QStringList parts = item.attribute ("default").split (":");
+		QList<QVariant> result;
+		if (parts.size () != 2)
+		{
+			qWarning () << "spinboxrange parse error, wrong default value";
+			return;
+		}
+		result << parts.at (0).toInt () << parts.at (1).toInt ();
+		value = result;
+		WorkingObject_->setProperty (item.attribute ("property").toLatin1 ().constData (), value);
+	}
+
+	QLabel *label = new QLabel (GetLabel (item));
+	RangeWidget *widget = new RangeWidget ();
+	widget->setObjectName (item.attribute ("property"));
+	widget->SetMinimum (item.attribute ("minimum").toInt ());
+	widget->SetMaximum (item.attribute ("maximum").toInt ());
+	widget->SetRange (value);
+	connect (widget, SIGNAL (changed ()), this, SLOT (updatePreferences ()));
+
+	int row = lay->rowCount ();
+	lay->addWidget (label, row, 0);
+	lay->addWidget (widget, row, 1);
+}
+
+void XmlSettingsDialog::DoPath (const QDomElement& item, QGridLayout *lay, QVariant& value)
+{
+	if (value.isNull () || value.toString ().isEmpty ())
+		if (item.hasAttribute ("defaultHomePath") && item.attribute ("defaultHomePath") == "true")
+		{
+			value = QDir::homePath ();
+			WorkingObject_->setProperty (item.attribute ("property").toLatin1 ().constData(), value);
+		}
+	QLabel *label = new QLabel (GetLabel (item));
+	FilePicker *picker = new FilePicker (this);
+	picker->SetText (value.toString ());
+	picker->setObjectName (item.attribute ("property"));
+	connect (picker, SIGNAL (textChanged (const QString&)), this, SLOT (updatePreferences ()));
+
+	int row = lay->rowCount ();
+	lay->addWidget (label, row, 0);
+	lay->addWidget (picker, row, 1);
+}
+
+void XmlSettingsDialog::DoRadio (const QDomElement& item, QGridLayout *lay, QVariant& value)
+{
+	RadioGroup *group = new RadioGroup (this);
+	group->setObjectName (item.attribute ("property"));
+
+	QDomElement option = item.firstChildElement ("option");
+	while (!option.isNull ())
+	{
+		QRadioButton *button = new QRadioButton (GetLabel (option));
+		button->setObjectName (option.attribute ("name"));
+		group->AddButton (button, option.hasAttribute ("default") && option.attribute ("default") == "true");
+		option = option.nextSiblingElement ("option");
+	}
+	connect (group, SIGNAL (valueChanged ()), this, SLOT (updatePreferences ()));
+
+	QGroupBox *box = new QGroupBox (GetLabel (item));
+	QVBoxLayout *layout = new QVBoxLayout;
+	box->setLayout (layout);
+	layout->addWidget (group);
+	lay->addWidget (box, lay->rowCount (), 0, 1, 2);
 }
 
 void XmlSettingsDialog::updatePreferences ()

@@ -37,14 +37,12 @@ void JobManager::Release ()
 {
 	killTimer (QueryWaitingTimer_);
 	saveSettings ();
-	StopAll ();
 
 	for (int i = 0; i < Jobs_.size (); ++i)
 	{
 		Jobs_ [i]->Release ();
 		delete Jobs_ [i];
 	}
-	Jobs_.clear ();
 }
 
 void JobManager::DoDelayedInit ()

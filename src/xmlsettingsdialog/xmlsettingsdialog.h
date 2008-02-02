@@ -9,6 +9,7 @@ class QStackedWidget;
 class QListWidget;
 class QPushButton;
 class QDomElement;
+class QGridLayout;
 
 class XmlSettingsDialog : public QDialog
 {
@@ -30,6 +31,14 @@ private:
 	void ParseEntity (const QDomElement&, QWidget*);
 	void ParseItem (const QDomElement&, QWidget*);
 	QString GetLabel (const QDomElement&);
+private:
+	void DoLineedit (const QDomElement&, QGridLayout*, QVariant&);
+	void DoCheckbox (const QDomElement&, QGridLayout*, QVariant&);
+	void DoSpinbox (const QDomElement&, QGridLayout*, QVariant&);
+	void DoGroupbox (const QDomElement&, QGridLayout*, QVariant&);
+	void DoSpinboxRange (const QDomElement&, QGridLayout*, QVariant&);
+	void DoPath (const QDomElement&, QGridLayout*, QVariant&);
+	void DoRadio (const QDomElement&, QGridLayout*, QVariant&);
 private slots:
 	void updatePreferences ();
 protected:

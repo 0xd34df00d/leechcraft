@@ -47,6 +47,8 @@
 					<label lang="ru" value="Пароль" />
 				</item>
 				<item type="radio" property="TrackerProxyType">
+					<label lang="en" value="Proxy type" />
+					<label lang="ru" value="Тип прокси" />
 					<option name="socks5">
 						<label lang="en" value="SOCKS5" />
 					</option>
@@ -78,6 +80,8 @@
 					<label lang="ru" value="Пароль" />
 				</item>
 				<item type="radio" property="PeerProxyType">
+					<label lang="en" value="Proxy type" />
+					<label lang="ru" value="Тип прокси" />
 					<option name="socks5">
 						<label lang="en" value="SOCKS5" />
 					</option>

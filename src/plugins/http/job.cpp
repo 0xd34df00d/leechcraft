@@ -224,7 +224,7 @@ void Job::handleRemoteFileInfo (const ImpBase::RemoteFileInfo& rfi)
 
 void Job::Stop ()
 {
-	if (ProtoImp_ && ProtoImp_->isRunning ())
+	if (State_ != StateIdle && ProtoImp_ && ProtoImp_->isRunning ())
 	{
 		ProtoImp_->StopDownload ();
 		if (!ProtoImp_->wait (XmlSettingsManager::Instance ()->property ("DisconnectTimeout").toInt ()))
@@ -236,7 +236,7 @@ void Job::Stop ()
 
 void Job::Release ()
 {
-	if (ProtoImp_ && ProtoImp_->isRunning ())
+	if (State_ != StateIdle && ProtoImp_ && ProtoImp_->isRunning ())
 	{
 		ProtoImp_->StopDownload ();
 		if (!ProtoImp_->wait (XmlSettingsManager::Instance ()->property ("DisconnectTimeout").toInt ()))
