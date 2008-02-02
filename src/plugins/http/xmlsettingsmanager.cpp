@@ -85,6 +85,7 @@ void XmlSettingsManager::EndSettings (QSettings* settings)
 {
     settings->endGroup ();
     settings->endGroup ();
-    delete settings;
+//    delete settings;
+//    settings = 0;
 }
 

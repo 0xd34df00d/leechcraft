@@ -158,9 +158,6 @@ void HttpPlugin::Release ()
 	JobManager_->Release ();
 	writeSettings ();
 	XmlSettingsManager::Instance ()->Release ();
-
-	delete JobManager_;
-	JobManager_ = 0;
 }
 
 QIcon HttpPlugin::GetIcon () const

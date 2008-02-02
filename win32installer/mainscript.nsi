@@ -1,6 +1,6 @@
 !include "MUI.nsh"
 
-OutFile Leechcraft-Install-full.exe
+OutFile ../Leechcraft-Install-full.exe
 Name "Deviant LeechCraft"
 SetCompressor /SOLID lzma
 InstallDir "$PROGRAMFILES\Deviant\LeechCraft"
@@ -50,6 +50,7 @@ Section "Main LeechCraft Files" MAINFILES
 	File libexceptions.dll
 	File libplugininterface.dll
 	File libsettingsdialog.dll
+	File libxmlsettingsdialog.dll
 	File mingwm10.dll
 	File msvcr80.dll
 	File leechcraft.exe
@@ -176,7 +177,7 @@ LangString DESC_TORRENTPLUGIN ${LANG_ENGLISH} "A simple plugin implementing BitT
 LangString DESC_UPDATERPLUGIN ${LANG_ENGLISH} "You don't want to update manually, right?"
 LangString DESC_BATCHERPLUGIN ${LANG_ENGLISH} "Batch job manager."
 LangString DESC_CRONPLUGIN ${LANG_ENGLISH} "Job scheduler."
-LangString DESC_MAILPLUGIN ${LANG_ENGLISH} "Job scheduler."
+LangString DESC_MAILPLUGIN ${LANG_ENGLISH} "POP3 mail backuper."
 
 LangString DESC_QT4RUNTIME ${LANG_RUSSIAN} "Библиотеки Qt4."
 LangString DESC_MAINFILES ${LANG_RUSSIAN} "Сам LeechCraft и его вспомогательные бИблиотеки."
@@ -185,7 +186,7 @@ LangString DESC_TORRENTPLUGIN ${LANG_RUSSIAN} "Простейший Torrent-клиент."
 LangString DESC_UPDATERPLUGIN ${LANG_RUSSIAN} "Скачивалка обновленных файлов."
 LangString DESC_BATCHERPLUGIN ${LANG_RUSSIAN} "Менеджер пакетных заданий."
 LangString DESC_CRONPLUGIN ${LANG_RUSSIAN} "Планировщик заданий."
-LangString DESC_MAILPLUGIN ${LANG_RUSSIAN} "Job scheduler."
+LangString DESC_MAILPLUGIN ${LANG_RUSSIAN} "Выкачиватель почтовых ящиков по POP3."
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
 	!insertmacro MUI_DESCRIPTION_TEXT ${QT4RUNTIME} $(DESC_QT4RUNTIME)
