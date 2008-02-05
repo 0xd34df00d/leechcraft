@@ -14,8 +14,7 @@ SET (HEADERS
 	 tcpsocket.h
 	 filewriter.h
 	 filewriterthread.h
-	 socketexceptions.h
-	 basesettingsmanager.h)
+	 socketexceptions.h)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 ADD_DEFINITIONS(-DQT_PLUGIN)

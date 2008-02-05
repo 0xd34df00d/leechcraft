@@ -36,7 +36,8 @@ SET (HEADERS
 	contextablelist.h
 	columnselector.h
 	jobpropertiesdialog.h
-	globals.h)	
+	globals.h
+	../../plugininterface/basesettingsmanager.h)
 SET (FORMS
 	fileexistsdialog.ui
 	columnselector.ui

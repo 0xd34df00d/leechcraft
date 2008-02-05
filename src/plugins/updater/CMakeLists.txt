@@ -13,7 +13,8 @@ SET (HEADERS
 	updaterplugin.h
 	core.h
 	xmlsettingsmanager.h
-	globals.h)
+	globals.h
+	../../plugininterface/basesettingsmanager.h)
 SET (RESOURCES resources.qrc)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})

@@ -44,7 +44,8 @@ SET (HEADERS
 	overallstats.h
 	pieceswidget.h
 	xmlsettingsmanager.h
-	newtorrentparams.h)
+	newtorrentparams.h
+	../../plugininterface/basesettingsmanager.h)
 SET (FORMS
     mainwindow.ui
 	addtorrent.ui
