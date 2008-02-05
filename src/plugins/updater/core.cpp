@@ -176,11 +176,12 @@ bool Core::Check ()
 
 void Core::Download ()
 {
+	/*
 	ToApply_.clear ();
 	QString mirror = XmlSettingsManager::Instance ()->property ("Mirror").toString ();
 	for (int i = 0; i < IDs2Download_.size (); ++i)
 	{
-		FileRepresentation rep = Files_.at (IDs2Download_.at (i));
+//		FileRep rep = Files_.at (IDs2Download_.at (i));
 		QObject *provider;
 		if (mirror.left (6).toLower () == "ftp://")
 			provider = Providers_ ["ftp"];
@@ -255,18 +256,19 @@ void Core::Download ()
 	DownloadState_ = DownloadedSuccessfully;
 	emit finishedDownload ();
 	ApplyUpdates ();
+	*/
 }
 
 void Core::ApplyUpdates ()
 {
+	/*
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
 	settings.beginGroup ("Updater");
 	settings.beginGroup ("syncs");
 	for (int i = 0; i < ToApply_.size (); ++i)
 	{
-		FileRepresentation rep = ToApply_.at (i);
+		EntityRep rep = ToApply_.at (i);
 		QString name = QFileInfo (rep.Location_).fileName ();
-		qDebug () << name << rep.Location_;
 		if (!QFile::remove (rep.Location_))
 			emit error (tr ("Removing old version failed."));
 		if (!QFile::copy (name, rep.Location_))
@@ -281,11 +283,13 @@ void Core::ApplyUpdates ()
 
 	ToApply_.clear ();
 	emit finishedApplying ();
+	*/
 }
 
 bool Core::Parse ()
 {
-	Files_.clear ();
+	Entities_.clear ();
+	ToApply_.clear ();
 
 	QFile file (UpdateFilename_);
 	if (!file.open (QIODevice::ReadOnly))
@@ -321,8 +325,8 @@ bool Core::Parse ()
 
 	CollectFiles (root);
 
-	for (int i = 0; i < Files_.size (); ++i)
-		emit gotFile (i, Files_ [i].Name_, Files_ [i].Location_, Files_ [i].Size_, Files_ [i].Description_);
+//	for (int i = 0; i < Files_.size (); ++i)
+//		emit gotFile (i, Files_ [i].Name_, Files_ [i].Location_, Files_ [i].Size_, Files_ [i].Description_);
 
 	return true;
 }
@@ -361,14 +365,14 @@ void Core::CollectFiles (QDomElement &e)
 			QByteArray localHash = QCryptographicHash::hash (file.readAll (), QCryptographicHash::Md5);
 			if (localHash.toHex () != md5)
 			{
-				FileRepresentation fr = {	md5.toAscii (),
-											location.trimmed (),
-											url.text ().trimmed (),
-											descr.text ().trimmed (),
-											name.text ().trimmed (),
-											build.text ().toULong (),
-											size.text ().toULong () };
-				Files_ << fr;
+//				FileRepresentation fr = {	md5.toAscii (),
+//											location.trimmed (),
+//											url.text ().trimmed (),
+//											descr.text ().trimmed (),
+//											name.text ().trimmed (),
+//											build.text ().toULong (),
+//											size.text ().toULong () };
+//				Files_ << fr;
 			}
 		}
 

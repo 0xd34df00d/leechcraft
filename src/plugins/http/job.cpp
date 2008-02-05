@@ -224,6 +224,7 @@ void Job::handleRemoteFileInfo (const ImpBase::RemoteFileInfo& rfi)
 
 void Job::Stop ()
 {
+	qDebug () << Q_FUNC_INFO;
 	if (State_ != StateIdle && ProtoImp_ && ProtoImp_->isRunning ())
 	{
 		ProtoImp_->StopDownload ();
@@ -236,13 +237,18 @@ void Job::Stop ()
 
 void Job::Release ()
 {
+	qDebug () << Q_FUNC_INFO;
 	if (State_ != StateIdle && ProtoImp_ && ProtoImp_->isRunning ())
 	{
 		ProtoImp_->StopDownload ();
-		if (!ProtoImp_->wait (XmlSettingsManager::Instance ()->property ("DisconnectTimeout").toInt ()))
-			ProtoImp_->terminate ();
+		ProtoImp_->wait (XmlSettingsManager::Instance ()->property ("DisconnectTimeout").toInt ());
 	}
+	qDebug () << Q_FUNC_INFO;
+	if (ProtoImp_->isRunning ())
+		ProtoImp_->terminate ();
+	qDebug () << Q_FUNC_INFO;
 	delete ProtoImp_;
+	qDebug () << Q_FUNC_INFO;
 	ProtoImp_ = 0;
 }
 
@@ -375,7 +381,6 @@ void Job::handleShowError (QString error)
 
 void Job::reemitStopped ()
 {
-	qDebug () << Q_FUNC_INFO;
 	State_ = StateIdle;
 	emit stopped (GetID ());
 	State_ = StateIdle;

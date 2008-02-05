@@ -47,18 +47,22 @@ class Core : public QThread
 	Guarded<CheckState> CheckState_;
 	Guarded<DownloadState> DownloadState_;
 
-	struct FileRepresentation
+	struct FileRep
 	{
 		QByteArray MD5_;
 		QString Location_;
 		QString URL_;
+		ulong Size_;
+	};
+	struct EntityRep
+	{
 		QString Description_;
 		QString Name_;
 		ulong Build_;
-		ulong Size_;
+		QList<FileRep> Files_;
 	};
 
-	QList<FileRepresentation> Files_, ToApply_;
+	QList<EntityRep> Entities_, ToApply_;
 	QList<int> IDs2Download_;
 	QMap<int, int> IDs2Pos_;
 public:

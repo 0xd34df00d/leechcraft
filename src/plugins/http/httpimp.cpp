@@ -68,6 +68,8 @@ void HttpImp::run ()
 				.arg (Socket_->GetAddressParser ()->GetPort ())
 				.arg (e.GetReason ().c_str ()));
 		emit stopped ();
+		delete Socket_;
+		Socket_ = 0;
 		return;
 	}
 	Socket_->SetDefaultTimeout (XmlSettingsManager::Instance ()->property ("DefaultTimeout").toInt ());
