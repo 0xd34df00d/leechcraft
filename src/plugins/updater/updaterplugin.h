@@ -2,12 +2,12 @@
 #define UPDATERPLUGIN_H
 #include <QMainWindow>
 #include <interfaces/interfaces.h>
+#include "core.h"
 
 class SettingsDialog;
 class QTreeWidget;
 class QToolBar;
 class QLabel;
-class Core;
 class XmlSettingsDialog;
 
 class UpdaterPlugin : public QMainWindow
@@ -29,9 +29,8 @@ class UpdaterPlugin : public QMainWindow
 
 	enum Columns
 	{
-		ColumnName = 0
-		, ColumnSize = 1
-		, ColumnLocation = 2
+		ColumnSize = 0
+		, ColumnLocation = 1
 	};
 
 	enum Roles
@@ -75,7 +74,7 @@ private slots:
 	void showSettings ();
 	void initCheckForUpdates ();
 	void initDownloadUpdates ();
-	void addFile (int, const QString&, const QString&, ulong, const QString&);
+	void addFile (const Core::EntityRep&);
 	void handleError (const QString&);
 	void handleDownloadedID (int);
 	void setActionsEnabled ();

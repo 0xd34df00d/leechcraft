@@ -18,8 +18,7 @@ void UpdaterPlugin::Init ()
 	qRegisterMetaType<DirectDownloadParams> ("DirectDownloadParams");
 
 	Core_ = new Core;
-	connect (Core_, SIGNAL (gotFile (int, const QString&, const QString&, ulong, const QString&)),
-			this, SLOT (addFile (int, const QString&, const QString&, ulong, const QString)));
+	connect (Core_, SIGNAL (gotFile (const Core::EntityRep&)), this, SLOT (addFile (const Core::EntityRep&)));
 	connect (Core_, SIGNAL (error (const QString&)), this, SLOT (handleError (const QString&)));
 	connect (Core_, SIGNAL (finishedLoop ()), this, SLOT (setActionsEnabled ()));
 	connect (Core_, SIGNAL (finishedCheck ()), this, SLOT (handleFinishedCheck ()));
@@ -30,9 +29,6 @@ void UpdaterPlugin::Init ()
 	IsShown_ = false;
 	SaveChangesScheduled_ = false;
 
-//	SettingsDialog_ = new SettingsDialog ();
-//	SettingsDialog_->RegisterObject (SettingsManager::Instance ());
-
 	XmlSettingsDialog_ = new XmlSettingsDialog ();
 	XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/updatersettings.xml");
 
@@ -42,6 +38,8 @@ void UpdaterPlugin::Init ()
 	statusBar ()->showMessage (tr ("Idle"));
 	connect (Updates_, SIGNAL (itemClicked (QTreeWidgetItem*, int)), this, SLOT (setActionsEnabled ()));
 	connect (Updates_, SIGNAL (itemClicked (QTreeWidgetItem*, int)), this, SLOT (updateStatusbar ()));
+	connect (Updates_, SIGNAL (itemChanged (QTreeWidgetItem*, int)), this, SLOT (setActionsEnabled ()));
+	connect (Updates_, SIGNAL (itemChanged (QTreeWidgetItem*, int)), this, SLOT (updateStatusbar ()));
 }
 
 UpdaterPlugin::~UpdaterPlugin ()
@@ -163,7 +161,7 @@ void UpdaterPlugin::SetupMainWidget ()
 {
 	Updates_ = new QTreeWidget (this);
 	setCentralWidget (Updates_);
-	Updates_->setHeaderLabels (QStringList (tr ("Plugin")) << tr ("Size") << tr ("Location"));
+	Updates_->setHeaderLabels (QStringList (tr ("Size")) << tr ("Location"));
 	Updates_->setEditTriggers (QAbstractItemView::NoEditTriggers);
 	Updates_->setSelectionMode (QAbstractItemView::NoSelection);
 	Updates_->setAlternatingRowColors (true);
@@ -236,41 +234,50 @@ void UpdaterPlugin::initDownloadUpdates ()
 	statusBar ()->showMessage (tr ("Downloading updates..."));
 	QList<int> downloaders;
 	for (int i = 0; i < Updates_->topLevelItemCount (); ++i)
-		if (Updates_->topLevelItem (i)->checkState (ColumnName) == Qt::Checked)
-			downloaders << Updates_->topLevelItem (i)->data (ColumnName, RoleID).toInt ();
+		if (Updates_->topLevelItem (i)->checkState (0) == Qt::Checked)
+			downloaders << i;
 	Core_->downloadUpdates (downloaders);
 	QTimer::singleShot (2, this, SLOT (setActionsEnabled ()));
 }
 
-void UpdaterPlugin::addFile (int id, const QString& name, const QString& loc, ulong size, const QString& descr)
+void UpdaterPlugin::addFile (const Core::EntityRep& rep)
 {
 	QTreeWidgetItem *item = new QTreeWidgetItem (Updates_);
-	item->setCheckState (ColumnName, Qt::Unchecked);
-	item->setText (ColumnName, name);
-	item->setText (ColumnLocation, loc);
-	item->setText (ColumnSize, Proxy::Instance ()->MakePrettySize (size));
-	item->setData (ColumnSize, RoleSize, static_cast<qulonglong> (size));
-	item->setData (ColumnName, RoleID, id);
+	item->setCheckState (0, Qt::Unchecked);
+	item->setFirstColumnSpanned (true);
+	item->setText (0, rep.Name_ + tr ("; build ") + QString::number (rep.Build_));
+
+	quint64 totalSize = 0;
+	for (int i = 0; i < rep.Files_.size (); ++i)
+	{
+		QTreeWidgetItem *file = new QTreeWidgetItem (item);
+		file->setText (ColumnSize, Proxy::Instance ()->MakePrettySize (rep.Files_.at (i).Size_));
+		file->setData (ColumnSize, RoleSize, static_cast<qulonglong> (rep.Files_.at (i).Size_));
+		file->setText (ColumnLocation, rep.Files_.at (i).Location_);
+
+		totalSize += rep.Files_.at (i).Size_;
+	}
+
+	item->setData (0, RoleSize, totalSize);
 
 	QTreeWidgetItem *descItem = new QTreeWidgetItem (item);
 	descItem->setFirstColumnSpanned (true);
-	descItem->setText (0, descr);
+	descItem->setText (0, rep.Description_);
 }
 
 void UpdaterPlugin::handleError (const QString& error)
 {
-	qDebug () << error;
+	qWarning () << error;
 	QMessageBox::warning (this, tr ("Error!"), error);
 }
 
 void UpdaterPlugin::handleDownloadedID (int id)
 {
 	for (int i = 0; i < Updates_->topLevelItemCount (); ++i)
-		if (Updates_->topLevelItem (i)->data (ColumnName, RoleID).toInt () == id)
+		if (i == id)
 		{
 			QTreeWidgetItem *item = Updates_->topLevelItem (i);
 			QBrush brushed (Qt::darkGray);
-			item->setForeground (ColumnName, brushed);
 			item->setForeground (ColumnSize, brushed);
 			item->setForeground (ColumnLocation, brushed);
 		}
@@ -281,7 +288,7 @@ void UpdaterPlugin::setActionsEnabled ()
 	DownloadUpdates_->setEnabled (false);
 	if (!Core_->IsDownloading ())
 		for (int i = 0; i < Updates_->topLevelItemCount (); ++i)
-			if (Updates_->topLevelItem (i)->checkState (ColumnName) == Qt::Checked)
+			if (Updates_->topLevelItem (i)->checkState (0) == Qt::Checked)
 			{
 				DownloadUpdates_->setEnabled (true);
 				break;
@@ -292,7 +299,7 @@ void UpdaterPlugin::setActionsEnabled ()
 
 void UpdaterPlugin::handleFinishedCheck ()
 {
-	Updates_->sortByColumn (ColumnName, Qt::AscendingOrder);
+	Updates_->sortByColumn (0, Qt::AscendingOrder);
 	statusBar ()->showMessage (tr ("Checked successfully"));
 }
 
@@ -311,8 +318,8 @@ void UpdaterPlugin::updateStatusbar ()
 {
 	ulong result = 0;
 	for (int i = 0; i < Updates_->topLevelItemCount (); ++i)
-		if (Updates_->topLevelItem (i)->checkState (ColumnName) == Qt::Checked)
-			result += Updates_->topLevelItem (i)->data (ColumnSize, RoleSize).toULongLong ();
+		if (Updates_->topLevelItem (i)->checkState (0) == Qt::Checked)
+			result += Updates_->topLevelItem (i)->data (0, RoleSize).toULongLong ();
 
 	SizeLabel_->setText (Proxy::Instance ()->MakePrettySize (result));
 }

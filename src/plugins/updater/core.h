@@ -16,7 +16,22 @@ class QDomElement;
 class Core : public QThread
 {
 	Q_OBJECT;
-
+public:
+	struct FileRep
+	{
+		QString MD5_;
+		QString Location_;
+		ulong Size_;
+	};
+	struct EntityRep
+	{
+		QString Description_;
+		QString Name_;
+		float Build_;
+		QList<FileRep> Files_;
+		QList<QString> Depends_, Provides_, Uses_;
+	};
+private:
 	QMap<QString, QObject*> Providers_;
 	QPair<QMutex*, QWaitCondition*> Waiter_
 								  , CheckWaiter_
@@ -47,22 +62,8 @@ class Core : public QThread
 	Guarded<CheckState> CheckState_;
 	Guarded<DownloadState> DownloadState_;
 
-	struct FileRep
-	{
-		QByteArray MD5_;
-		QString Location_;
-		QString URL_;
-		ulong Size_;
-	};
-	struct EntityRep
-	{
-		QString Description_;
-		QString Name_;
-		ulong Build_;
-		QList<FileRep> Files_;
-	};
-
-	QList<EntityRep> Entities_, ToApply_;
+	QList<EntityRep> Entities_;
+	QList<FileRep> ToApply_;
 	QList<int> IDs2Download_;
 	QMap<int, int> IDs2Pos_;
 public:
@@ -78,7 +79,7 @@ public slots:
 signals:
 	void addDownload (DirectDownloadParams);
 	void error (const QString&);
-	void gotFile (int, const QString&, const QString&, ulong, const QString&);
+	void gotFile (const Core::EntityRep&);
 	void downloadedID (int);
 	void finishedLoop ();
 	void finishedCheck ();
@@ -97,9 +98,12 @@ private:
 	void Download ();
 	void ApplyUpdates ();
 	bool Parse ();
-	void CollectFiles (QDomElement&);
+	bool FileShouldBeDownloaded (const FileRep&) const;
+	void ParseEntity (const QDomElement&);
 	bool HandleSingleMirror (QObject*, const QString&);
 };
+
+Q_DECLARE_METATYPE (Core::EntityRep);
 
 #endif
 

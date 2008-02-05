@@ -15,6 +15,8 @@ Core::Core ()
 , CheckState_ (NotChecking)
 , DownloadState_ (NotDownloading)
 {
+	qRegisterMetaType<Core::EntityRep> ("Core::EntityRep");
+	qRegisterMetaType<Core::EntityRep*> ("Core::EntityRep*");
 }
 
 Core::~Core ()
@@ -176,75 +178,83 @@ bool Core::Check ()
 
 void Core::Download ()
 {
-	/*
+	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
+	settings.beginGroup ("Updater");
+	settings.beginGroup ("Syncs");
 	ToApply_.clear ();
 	QString mirror = XmlSettingsManager::Instance ()->property ("Mirror").toString ();
-	for (int i = 0; i < IDs2Download_.size (); ++i)
+	for (int j = 0; j < IDs2Download_.size (); ++j)
 	{
-//		FileRep rep = Files_.at (IDs2Download_.at (i));
-		QObject *provider;
-		if (mirror.left (6).toLower () == "ftp://")
-			provider = Providers_ ["ftp"];
-		else if (mirror.left (7).toLower () == "http://")
-			provider = Providers_ ["http"];
-		else
+		EntityRep entity = Entities_.at (IDs2Download_.at (j));
+		for (int i = 0; i < entity.Files_.size (); ++i)
 		{
-			emit error (tr ("Wrong mirror"));
-			return;
-		}
-
-		if (!provider)
-		{
-			emit error (tr ("Could not find satisfying provider"));
-			return;
-		}
-
-		if (!mirror.endsWith ('/'))
-			mirror.append ('/');
-
-		QFile file (QFileInfo (rep.Location_).fileName ());
-		if (file.exists ())
-		{
-			if (!file.open (QIODevice::ReadOnly))
+			FileRep rep = entity.Files_.at (i);
+			QObject *provider;
+			if (mirror.left (6).toLower () == "ftp://")
+				provider = Providers_ ["ftp"];
+			else if (mirror.left (7).toLower () == "http://")
+				provider = Providers_ ["http"];
+			else
 			{
-				emit error ("Could not open the file");
-				break;
-			}
-			QByteArray downloadedHash = QCryptographicHash::hash (file.readAll (), QCryptographicHash::Md5);
-			if (downloadedHash.toHex () == rep.MD5_)
-			{
-				emit downloadedID (i);
-				IDs2Download_.removeAt (i--);
-				ToApply_ << rep;
-				break;
-			}
-		}
-		
-		DirectDownloadParams ddp = { mirror + rep.URL_, QFileInfo (rep.Location_).fileName (), true, XmlSettingsManager::Instance ()->property ("SaveInHistory").toBool () };
-		disconnect (this, SIGNAL (addDownload (DirectDownloadParams)), provider, 0);
-		disconnect (provider, SIGNAL (jobAdded (int)), this, SLOT (fileDownloadAdded (int)));
-		connect (this, SIGNAL (addDownload (DirectDownloadParams)), provider, SLOT (addDownload (DirectDownloadParams)));
-		connect (provider, SIGNAL (jobAdded (int)), this, SLOT (fileDownloadAdded (int)));
-		emit addDownload (ddp);
-		qDebug () << Q_FUNC_INFO;
-
-		DownloadWaiter_.first->lock ();
-		DownloadWaiter_.second->wait (DownloadWaiter_.first);
-		DownloadWaiter_.first->unlock ();
-
-		if (!file.open (QIODevice::ReadOnly))
-			continue;
-		QByteArray downloadedHash = QCryptographicHash::hash (file.readAll (), QCryptographicHash::Md5);
-		if (downloadedHash.toHex () != rep.MD5_)
-		{
-			qDebug () << "File not downloaded";
-			file.close ();
-			if (!file.remove ())
+				emit error (tr ("Wrong mirror"));
 				return;
+			}
+
+			if (!provider)
+			{
+				emit error (tr ("Could not find satisfying provider"));
+				return;
+			}
+
+			if (!mirror.endsWith ('/'))
+				mirror.append ('/');
+
+			QFile file (QFileInfo (rep.Location_).fileName ());
+			if (file.exists ())
+			{
+				if (!file.open (QIODevice::ReadOnly))
+				{
+					emit error ("Could not open the file");
+					break;
+				}
+				QByteArray downloadedHash = QCryptographicHash::hash (file.readAll (), QCryptographicHash::Md5);
+				if (downloadedHash.toHex () == rep.MD5_)
+				{
+					emit downloadedID (i);
+					IDs2Download_.removeAt (i--);
+					ToApply_ << rep;
+					break;
+				}
+			}
+			
+			DirectDownloadParams ddp = { mirror + rep.Location_, QFileInfo (rep.Location_).fileName (), true, XmlSettingsManager::Instance ()->property ("SaveInHistory").toBool () };
+			disconnect (this, SIGNAL (addDownload (DirectDownloadParams)), provider, 0);
+			disconnect (provider, SIGNAL (jobAdded (int)), this, SLOT (fileDownloadAdded (int)));
+			connect (this, SIGNAL (addDownload (DirectDownloadParams)), provider, SLOT (addDownload (DirectDownloadParams)));
+			connect (provider, SIGNAL (jobAdded (int)), this, SLOT (fileDownloadAdded (int)));
+			emit addDownload (ddp);
+
+			DownloadWaiter_.first->lock ();
+			DownloadWaiter_.second->wait (DownloadWaiter_.first);
+			DownloadWaiter_.first->unlock ();
+			qDebug () << Q_FUNC_INFO << "unlocked";
+
+			if (!file.open (QIODevice::ReadOnly))
+				continue;
+			QByteArray downloadedHash = QCryptographicHash::hash (file.readAll (), QCryptographicHash::Md5);
+			if (downloadedHash.toHex () != rep.MD5_)
+			{
+				qDebug () << "File not downloaded";
+				file.close ();
+				if (!file.remove ())
+					return;
+			}
+			emit downloadedID (i);
+			IDs2Download_.removeAt (i--);
+			ToApply_ << rep;
 		}
-		emit downloadedID (i);
-		IDs2Download_.removeAt (i--);
-		ToApply_ << rep;
+
+		settings.setValue (entity.Name_, entity.Build_);
 	}
 
 	if (IDs2Download_.size ())
@@ -253,21 +263,18 @@ void Core::Download ()
 		emit error (tr ("Not all files were downloaded, sorry."));
 		return;
 	}
+	settings.endGroup ();
+	settings.endGroup ();
 	DownloadState_ = DownloadedSuccessfully;
 	emit finishedDownload ();
 	ApplyUpdates ();
-	*/
 }
 
 void Core::ApplyUpdates ()
 {
-	/*
-	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
-	settings.beginGroup ("Updater");
-	settings.beginGroup ("syncs");
 	for (int i = 0; i < ToApply_.size (); ++i)
 	{
-		EntityRep rep = ToApply_.at (i);
+		FileRep rep = ToApply_.at (i);
 		QString name = QFileInfo (rep.Location_).fileName ();
 		if (!QFile::remove (rep.Location_))
 			emit error (tr ("Removing old version failed."));
@@ -275,15 +282,10 @@ void Core::ApplyUpdates ()
 			emit error (tr ("Copying failed."));
 		if (!QFile::remove (name))
 			emit error (tr ("Removing temporary file failed, do it yourself, cause I've done everything else."));
-
-		settings.setValue (rep.Location_, static_cast<qulonglong> (rep.Build_));
 	}
-	settings.endGroup ();
-	settings.endGroup ();
 
 	ToApply_.clear ();
 	emit finishedApplying ();
-	*/
 }
 
 bool Core::Parse ()
@@ -323,64 +325,90 @@ bool Core::Parse ()
 		return false;
 	}
 
-	CollectFiles (root);
+	QDomElement entity = root.firstChildElement ("entity");
+	while (!entity.isNull ())
+	{
+		ParseEntity (entity);
+		entity = entity.nextSiblingElement ("entity");
+	}
 
-//	for (int i = 0; i < Files_.size (); ++i)
-//		emit gotFile (i, Files_ [i].Name_, Files_ [i].Location_, Files_ [i].Size_, Files_ [i].Description_);
+	for (int i = 0; i < Entities_.size (); ++i)
+		emit gotFile (Entities_.at (i));
 
 	return true;
 }
 
-void Core::CollectFiles (QDomElement &e)
+void Core::ParseEntity (const QDomElement& entity)
 {
-	QDomElement fileChild = e.firstChildElement ("file");
+	if (entity.attribute ("type") != "plugin")
+		return;
+
+	EntityRep rep;
+
+	rep.Name_ = entity.attribute ("name");
+	rep.Description_ = entity.firstChildElement ("desc").text ();
+	rep.Build_ = entity.attribute ("build").toFloat ();
+
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
 	settings.beginGroup ("Updater");
-	settings.beginGroup ("syncs");
+	settings.beginGroup ("Syncs");
+	if (settings.value (rep.Name_).toDouble () >= rep.Build_)
+		return;
+	settings.endGroup ();
+	settings.endGroup ();
 
-	while (!fileChild.isNull ())
+	QDomElement depends = entity.firstChildElement ("depends"),
+				provides = entity.firstChildElement ("provides"),
+				uses = entity.firstChildElement ("uses"),
+				file = entity.firstChildElement ("file");
+	while (!depends.isNull ())
 	{
-		QDomElement name = fileChild.firstChildElement ("name");
-		QDomElement descr = fileChild.firstChildElement ("desc");
-		QDomElement url = fileChild.firstChildElement ("url");
-		QDomElement loc = fileChild.firstChildElement ("location");
-		QDomElement hash = fileChild.firstChildElement ("hash");
-		QDomElement build = fileChild.firstChildElement ("build");
-		QDomElement size = fileChild.firstChildElement ("size");
-		if (name.isNull () || descr.isNull () || url.isNull () || loc.isNull () || hash.isNull () || build.isNull () || size.isNull ())
-		{
-			emit error (tr ("Malformed update file"));
-			return;
-		}
-
-		QString md5 = hash.text ();
-		QString location = loc.text ();
-
-		if (build.text ().toULong () <= settings.value (location.trimmed (), 0).toULongLong ())
-			continue;
-
-		QFile file (QCoreApplication::applicationDirPath () + "/" + location);
-		if (file.open (QIODevice::ReadOnly))
-		{
-			QByteArray localHash = QCryptographicHash::hash (file.readAll (), QCryptographicHash::Md5);
-			if (localHash.toHex () != md5)
-			{
-//				FileRepresentation fr = {	md5.toAscii (),
-//											location.trimmed (),
-//											url.text ().trimmed (),
-//											descr.text ().trimmed (),
-//											name.text ().trimmed (),
-//											build.text ().toULong (),
-//											size.text ().toULong () };
-//				Files_ << fr;
-			}
-		}
-
-		fileChild = fileChild.nextSiblingElement ("file");
+		rep.Depends_ << depends.attribute ("feature");
+		depends = depends.nextSiblingElement ("depends");
+	}
+	while (!provides.isNull ())
+	{
+		rep.Provides_ << provides.attribute ("feature");
+		provides = provides.nextSiblingElement ("provides");
+	}
+	while (!uses.isNull ())
+	{
+		rep.Uses_ << uses.attribute ("feature");
+		uses = uses.nextSiblingElement ("provides");
 	}
 
-	settings.endGroup ();
-	settings.endGroup ();
+	while (!file.isNull ())
+	{
+		FileRep fileRep;
+		fileRep.Location_ = file.attribute ("url");
+		fileRep.Size_ = file.attribute ("size").toULongLong ();
+		fileRep.MD5_ = file.attribute ("md5");
+		if (FileShouldBeDownloaded (fileRep))
+			rep.Files_ << fileRep;
+		file = file.nextSiblingElement ("file");
+	}
+
+	Entities_ << rep;
+}
+
+bool Core::FileShouldBeDownloaded (const Core::FileRep& rep) const
+{
+	QFile file (QCoreApplication::applicationDirPath () + "/" + rep.Location_);
+	if (!file.exists ())
+		return true;
+	if (!file.open (QIODevice::ReadOnly))
+	{
+		qWarning () << QString ("Could not open file %1 for read, but will try to continue").arg (file.fileName ());
+		return true;
+	}
+
+	if (file.size () != rep.Size_)
+		return true;
+
+	if (QCryptographicHash::hash (file.readAll (), QCryptographicHash::Md5).toHex () != rep.MD5_)
+		return true;
+
+	return false;
 }
 
 bool Core::HandleSingleMirror (QObject *provider, const QString& mirror)

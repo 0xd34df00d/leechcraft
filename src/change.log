@@ -1,3 +1,10 @@
+***Public build 8***
+BitTorrent:
+* Fixed a bug with crashing if clicking on fully downloaded torrent having all pieces.
+
+HTTP/FTP:
+* Fixed a bug when removing HTTP tasks, stopped by connection error.
+
 ***Public build 7***
 Core:
 + Creating menus and actions for added plugins.
