@@ -19,6 +19,7 @@ public slots:
 	virtual void done (int r);
 private slots:
 	void on_BrowseButton__released ();
+	void on_URL__textChanged ();
 signals:
 	void gotParams (JobParams*);
 };

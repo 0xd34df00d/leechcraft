@@ -1,5 +1,7 @@
 #include <QtGui/QtGui>
 #include <QtDebug>
+#include <QUrl>
+#include <QFileInfo>
 #include "jobadderdialog.h"
 #include "jobparams.h"
 #include "xmlsettingsmanager.h"
@@ -32,11 +34,16 @@ void JobAdderDialog::done (int r)
 		JobParams *p = new JobParams;
 		p->URL_ = URL_->text ();
 		p->LocalName_ = LocalName_->text ();
-		p->IsFullName_ = false;
+		if (!p->LocalName_.endsWith ('/') && !p->LocalName_.endsWith ('\\'))
+			p->LocalName_.append ('/');
+		p->LocalName_.append (FileName_->text ());
+		p->IsFullName_ = FileName_->text ().size ();
 		p->Autostart_ = (Autostart_->checkState () == Qt::Checked);
 		p->ShouldBeSavedInHistory_ = true;
 		p->Size_ = 0;
 		p->DownloadTime_ = 0;
+
+		qDebug () << p->URL_;
 
 		emit gotParams (p);
 	}
@@ -48,5 +55,10 @@ void JobAdderDialog::on_BrowseButton__released ()
 	QString dir = QFileDialog::getExistingDirectory (parentWidget (), tr ("Select directory"), LocalName_->text (), 0);
 	if (!dir.isEmpty ())
 		LocalName_->setText (dir);
+}
+
+void JobAdderDialog::on_URL__textChanged ()
+{
+	FileName_->setText (QFileInfo (QUrl (URL_->text ()).path ()).fileName ());
 }
 

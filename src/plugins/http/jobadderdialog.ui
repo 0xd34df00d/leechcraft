@@ -49,6 +49,20 @@
     </layout>
    </item>
    <item>
+    <layout class="QHBoxLayout" >
+     <item>
+      <widget class="QLabel" name="label" >
+       <property name="text" >
+        <string>File name:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="FileName_" />
+     </item>
+    </layout>
+   </item>
+   <item>
     <widget class="QCheckBox" name="Autostart_" >
      <property name="text" >
       <string>Automatically start the job</string>
@@ -65,8 +79,8 @@
      </property>
      <property name="sizeHint" >
       <size>
-       <width>20</width>
-       <height>40</height>
+       <width>362</width>
+       <height>31</height>
       </size>
      </property>
     </spacer>

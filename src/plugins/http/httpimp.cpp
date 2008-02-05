@@ -149,9 +149,9 @@ void HttpImp::run ()
 void HttpImp::WriteHeaders ()
 {
 	QString request = Socket_->GetAddressParser ()->GetPath ();
-	QString query = Socket_->GetAddressParser ()->GetQuery ();
-	if (!query.isEmpty ())
-		request.append ("?").append (query);
+	QStringList splitted = URL_.split ('?');
+	if (splitted.size () >= 2)
+		request.append ('?').append (splitted [1]);
 	Socket_->Write ("GET " + request + " HTTP/1.1\r\n");
 	QString agent = XmlSettingsManager::Instance ()->property ("HTTPAgent").toString ();
 	Socket_->Write ("User-Agent: " + agent.trimmed () + "\r\n");
