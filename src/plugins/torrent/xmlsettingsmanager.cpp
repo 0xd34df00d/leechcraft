@@ -33,12 +33,12 @@ XmlSettingsManager* XmlSettingsManager::Instance ()
     return XmlSettingsManagerInstance ();
 }
 
-QSettings* XmlSettingsManager::BeginSettings ()
+QSettings* XmlSettingsManager::BeginSettings () const
 {
 	return torrentBeginSettings ();
 }
 
-void XmlSettingsManager::EndSettings (QSettings* settings)
+void XmlSettingsManager::EndSettings (QSettings* settings) const
 {
 	return torrentEndSettings (settings);
 }

@@ -36,8 +36,6 @@ public:
 		for (int i = 0; i < dProperties.size (); ++i)
 			settings->setValue (dProperties.at (i), property (dProperties.at (i).constData ()));
 		EndSettings (settings);
-//		delete settings;
-//		settings = 0;
 	}
 
 	void RegisterObject (const QByteArray& propName, QObject* object, const QByteArray& funcName)
@@ -81,8 +79,8 @@ protected:
 		return true;
 	}
 
-	virtual QSettings* BeginSettings () = 0;
-	virtual void EndSettings (QSettings*) = 0;
+	virtual QSettings* BeginSettings () const = 0;
+	virtual void EndSettings (QSettings*) const = 0;
 };
 
 #endif

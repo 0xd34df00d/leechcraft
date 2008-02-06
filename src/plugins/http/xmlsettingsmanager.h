@@ -9,8 +9,8 @@ public:
     XmlSettingsManager ();
     static XmlSettingsManager* Instance ();
 protected:
-    virtual QSettings* BeginSettings ();
-    virtual void EndSettings (QSettings*);
+    virtual QSettings* BeginSettings () const;
+    virtual void EndSettings (QSettings*) const;
 };
 
 #endif

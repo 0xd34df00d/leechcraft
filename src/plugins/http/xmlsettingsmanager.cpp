@@ -35,12 +35,12 @@ XmlSettingsManager* XmlSettingsManager::Instance ()
     return XmlSettingsManagerInstance ();
 }
 
-QSettings* XmlSettingsManager::BeginSettings ()
+QSettings* XmlSettingsManager::BeginSettings () const
 {
 	return httpBeginSettings ();
 }
 
-void XmlSettingsManager::EndSettings (QSettings* settings)
+void XmlSettingsManager::EndSettings (QSettings* settings) const
 {
 	httpEndSettings (settings);
 }

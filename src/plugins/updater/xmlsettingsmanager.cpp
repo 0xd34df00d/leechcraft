@@ -31,12 +31,12 @@ XmlSettingsManager* XmlSettingsManager::Instance ()
     return XmlSettingsManagerInstance ();
 }
 
-QSettings* XmlSettingsManager::BeginSettings ()
+QSettings* XmlSettingsManager::BeginSettings () const
 {
 	return updaterBeginSettings ();
 }
 
-void XmlSettingsManager::EndSettings (QSettings* settings)
+void XmlSettingsManager::EndSettings (QSettings* settings) const
 {
 	updaterEndSettings (settings);
 }
