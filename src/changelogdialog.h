@@ -5,9 +5,9 @@
 
 class ChangelogDialog : public QDialog, private Ui::ChangelogDialog
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	ChangelogDialog (QWidget *parent = 0);
+    ChangelogDialog (QWidget *parent = 0);
 };
 
 #endif

@@ -3,7 +3,7 @@
 
 struct Errors
 {
-	enum Severity { Notice, Warning, Error, Critical };
+    enum Severity { Notice, Warning, Error, Critical };
 };
 
 #endif

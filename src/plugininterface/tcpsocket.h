@@ -6,32 +6,32 @@ class AddressParser;
 
 class TcpSocket : public QTcpSocket
 {
-	Q_OBJECT
+    Q_OBJECT
 
-	int DefaultTimeout_;
+    int DefaultTimeout_;
 protected:
-	AddressParser *AP_;
+    AddressParser *AP_;
 public:
-	TcpSocket ();
-	virtual ~TcpSocket ();
+    TcpSocket ();
+    virtual ~TcpSocket ();
 
-	void Connect (const QString&, int);
-	void Disconnect ();
+    void Connect (const QString&, int);
+    void Disconnect ();
 
-	void Write (const QString&, bool buffer = true);
-	void Write (const QByteArray&, bool buffer = true);
-	void Flush ();
-	QByteArray ReadLine ();
-	QByteArray ReadAll ();
+    void Write (const QString&, bool buffer = true);
+    void Write (const QByteArray&, bool buffer = true);
+    void Flush ();
+    QByteArray ReadLine ();
+    QByteArray ReadAll ();
 
-	void SetDefaultTimeout (int);
-	int GetDefaultTimeout () const;
+    void SetDefaultTimeout (int);
+    int GetDefaultTimeout () const;
 
-	void SetURL (const QString&);
-	const AddressParser* GetAddressParser () const;
-	static AddressParser* GetAddressParser (const QString&);
+    void SetURL (const QString&);
+    const AddressParser* GetAddressParser () const;
+    static AddressParser* GetAddressParser (const QString&);
 private:
-	void ThrowException () const;
+    void ThrowException () const;
 };
 
 #endif

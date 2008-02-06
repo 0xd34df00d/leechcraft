@@ -9,16 +9,16 @@ ContextableList::ContextableList (QWidget *parent)
 
 void ContextableList::AddAction (QAction *action)
 {
-	Actions_.append (action);
+   Actions_.append (action);
 }
 
 void ContextableList::contextMenuEvent (QContextMenuEvent *e)
 {
-	QMenu menu (this);
-	for (int i = 0; i < Actions_.size (); ++i)
-		menu.addAction (Actions_.at (i));
-	menu.exec (e->globalPos ());
+   QMenu menu (this);
+   for (int i = 0; i < Actions_.size (); ++i)
+      menu.addAction (Actions_.at (i));
+   menu.exec (e->globalPos ());
 
-	e->accept ();
+   e->accept ();
 }
 

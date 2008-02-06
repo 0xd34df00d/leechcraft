@@ -2,21 +2,21 @@
 
 namespace
 {
-	const int IntRangeVersion = 19;
+   const int IntRangeVersion = 19;
 };
 
 QDataStream& operator<< (QDataStream& out, const IntRange& val)
 {
-	out << IntRangeVersion << val.first << val.second;
-	return out;
+   out << IntRangeVersion << val.first << val.second;
+   return out;
 }
 
 QDataStream& operator>> (QDataStream& in, IntRange& val)
 {
-	int version;
-	in >> version;
-	if (version == IntRangeVersion)
-		in >> val.first >> val.second;
-	return in;
+   int version;
+   in >> version;
+   if (version == IntRangeVersion)
+      in >> val.first >> val.second;
+   return in;
 }
 

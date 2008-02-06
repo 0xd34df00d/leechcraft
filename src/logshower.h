@@ -4,11 +4,11 @@
 
 class LogShower : public QListWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	LogShower (QWidget *parent = 0);
-	void AddDownloadMessage (const QString&);
-	void AddUploadMessage (const QString&);
+    LogShower (QWidget *parent = 0);
+    void AddDownloadMessage (const QString&);
+    void AddUploadMessage (const QString&);
 };
 
 #endif

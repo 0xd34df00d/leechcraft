@@ -11,7 +11,7 @@ Exceptions::Logic::Logic (const std::string& reason) throw ()
 {
     try
     {
-	Corrections_ = "[undefined]";
+   Corrections_ = "[undefined]";
     }
     catch (...) {}
 }
@@ -32,7 +32,7 @@ Exceptions::Logic& Exceptions::Logic::SetCorrections (const std::string& cor) th
 {
     try
     {
-	Corrections_ = cor;
+   Corrections_ = cor;
     }
     catch (...) {}
     return *this;

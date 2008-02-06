@@ -11,76 +11,76 @@
 
 class BaseSettingsManager : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
-	QMap<QByteArray, QPair<QObject*, QByteArray> > Properties2Object_;
-	bool Initializing_;
+    QMap<QByteArray, QPair<QObject*, QByteArray> > Properties2Object_;
+    bool Initializing_;
 public:
-	void Init ()
-	{
-		QSettings *settings = BeginSettings ();
-		QStringList properties = settings->childKeys ();
-		Initializing_ = true;
-		for (int i = 0; i < properties.size (); ++i)
-			setProperty (PROP2CHAR (properties.at (i)), settings->value (properties.at (i), QVariant ()));
-		Initializing_ = false;
-		EndSettings (settings);
-		delete settings;
-		settings = 0;
-	}
+    void Init ()
+    {
+        QSettings *settings = BeginSettings ();
+        QStringList properties = settings->childKeys ();
+        Initializing_ = true;
+        for (int i = 0; i < properties.size (); ++i)
+            setProperty (PROP2CHAR (properties.at (i)), settings->value (properties.at (i), QVariant ()));
+        Initializing_ = false;
+        EndSettings (settings);
+        delete settings;
+        settings = 0;
+    }
 
-	void Release ()
-	{
-		QList<QByteArray> dProperties = dynamicPropertyNames ();
-		QSettings *settings = BeginSettings ();
-		for (int i = 0; i < dProperties.size (); ++i)
-			settings->setValue (dProperties.at (i), property (dProperties.at (i).constData ()));
-		EndSettings (settings);
-	}
+    void Release ()
+    {
+        QList<QByteArray> dProperties = dynamicPropertyNames ();
+        QSettings *settings = BeginSettings ();
+        for (int i = 0; i < dProperties.size (); ++i)
+            settings->setValue (dProperties.at (i), property (dProperties.at (i).constData ()));
+        EndSettings (settings);
+    }
 
-	void RegisterObject (const QByteArray& propName, QObject* object, const QByteArray& funcName)
-	{
-		Properties2Object_.insert (propName, qMakePair (object, funcName));
-	}
+    void RegisterObject (const QByteArray& propName, QObject* object, const QByteArray& funcName)
+    {
+        Properties2Object_.insert (propName, qMakePair (object, funcName));
+    }
 
-	QVariant Property (const QString& propName, const QVariant& def)
-	{
-		QVariant result = property (PROP2CHAR (propName));
-		if (!result.isValid ())
-		{
-			result = def;
-			setProperty (PROP2CHAR (propName), def);
-		}
+    QVariant Property (const QString& propName, const QVariant& def)
+    {
+        QVariant result = property (PROP2CHAR (propName));
+        if (!result.isValid ())
+        {
+            result = def;
+            setProperty (PROP2CHAR (propName), def);
+        }
 
-		return result;
-	}
+        return result;
+    }
 protected:
-	virtual bool event (QEvent *e)
-	{
-		if (e->type () != QEvent::DynamicPropertyChange)
-			return false;
+    virtual bool event (QEvent *e)
+    {
+        if (e->type () != QEvent::DynamicPropertyChange)
+            return false;
 
-		QDynamicPropertyChangeEvent *event = dynamic_cast<QDynamicPropertyChangeEvent*> (e);
+        QDynamicPropertyChangeEvent *event = dynamic_cast<QDynamicPropertyChangeEvent*> (e);
 
-		QByteArray name = event->propertyName ();
-		QSettings *settings = BeginSettings ();
-		settings->setValue (name, property (name));
-		EndSettings (settings);
-		delete settings;
-		settings = 0;
+        QByteArray name = event->propertyName ();
+        QSettings *settings = BeginSettings ();
+        settings->setValue (name, property (name));
+        EndSettings (settings);
+        delete settings;
+        settings = 0;
 
-		if (Properties2Object_.contains (name))
-		{
-			QPair<QObject*, QByteArray> object = Properties2Object_ [name];
-			object.first->metaObject ()->invokeMethod (object.first, object.second);
-		}
+        if (Properties2Object_.contains (name))
+        {
+            QPair<QObject*, QByteArray> object = Properties2Object_ [name];
+            object.first->metaObject ()->invokeMethod (object.first, object.second);
+        }
 
-		event->accept ();
-		return true;
-	}
+        event->accept ();
+        return true;
+    }
 
-	virtual QSettings* BeginSettings () const = 0;
-	virtual void EndSettings (QSettings*) const = 0;
+    virtual QSettings* BeginSettings () const = 0;
+    virtual void EndSettings (QSettings*) const = 0;
 };
 
 #endif

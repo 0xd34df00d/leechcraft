@@ -1,107 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-	<declare defaultlang="en" />
+    <declare defaultlang="en" />
     <page>
         <label lang="en" value="Network settings" />
         <label lang="ru" value="Сетевые настройки" />
-		<tab>
-			<label lang="en" value="General" />
-			<label lang="ru" value="Общие" />
-			<item type="spinboxrange" property="TCPPortRange" default="6881:6889" minimum="1" maximum="65535" step="5">
-				<label lang="en" value="Port range" />
-				<label lang="ru" value="Диапазон портов" />
-			</item>
-			<item type="checkbox" property="DHTEnabled" state="on">
-				<label lang="en" value="DHT enabled" />
-				<label lang="ru" value="DHT включен" />
-			</item>
-			<item type="spinbox" property="MaxUploads" default="100" minimum="1" maximum="5000" step="5">
-				<label lang="en" value="Maximum upload connections" />
-				<label lang="ru" value="Максимально одновременных соединений на раздачу" />
-			</item>
-			<item type="spinbox" property="MaxConnections" default="200" minimum="2" maximum="5000" step="10">
-				<label lang="en" value="Maximum total connections" />
-				<label lang="ru" value="Максимально одновременных соединений всего" />
-			</item>
-		</tab>
-		<tab>
-			<label lang="en" value="Proxy" />
-			<label lang="ru" value="Прокси" />
-			<item type="groupbox" property="TrackerProxyEnabled" checkable="true" state="off">
-				<label lang="en" value="Tracker proxy" />
-				<label lang="ru" value="Прокси трэкеров" />
-				<item type="lineedit" property="TrackerProxyHost">
-					<label lang="en" value="Host" />
-					<label lang="ru" value="Хост" />
-				</item>
-				<item type="spinbox" property="TrackerProxyPort" default="3128" minimum="1" maximum="65535" step="1">
-					<label lang="en" value="Port" />
-					<label lang="ru" value="Порт" />
-				</item>
-				<item type="lineedit" property="TrackerProxyLogin">
-					<label lang="en" value="Login" />
-					<label lang="ru" value="Логин" />
-				</item>
-				<item type="lineedit" property="TrackerProxyPassword" default="" password="on">
-					<label lang="en" value="Password" />
-					<label lang="ru" value="Пароль" />
-				</item>
-				<item type="radio" property="TrackerProxyType">
-					<label lang="en" value="Proxy type" />
-					<label lang="ru" value="Тип прокси" />
-					<option name="socks5">
-						<label lang="en" value="SOCKS5" />
-					</option>
-					<option name="socks4">
-						<label lang="en" value="SOCKS4" />
-					</option>
-					<option name="http" default="true">
-						<label lang="en" value="HTTP" />
-					</option>
-				</item>
-			</item>
-			<item type="groupbox" property="PeerProxyEnabled" checkable="true" state="off">
-				<label lang="en" value="Peer proxy" />
-				<label lang="ru" value="Прокси пиров" />
-				<item type="lineedit" property="PeerProxyHost">
-					<label lang="en" value="Host" />
-					<label lang="ru" value="Хост" />
-				</item>
-				<item type="spinbox" property="PeerProxyPort" default="3128" minimum="1" maximum="65535" step="1">
-					<label lang="en" value="Port" />
-					<label lang="ru" value="Порт" />
-				</item>
-				<item type="lineedit" property="PeerProxyLogin">
-					<label lang="en" value="Login" />
-					<label lang="ru" value="Логин" />
-				</item>
-				<item type="lineedit" property="PeerProxyPassword">
-					<label lang="en" value="Password" />
-					<label lang="ru" value="Пароль" />
-				</item>
-				<item type="radio" property="PeerProxyType">
-					<label lang="en" value="Proxy type" />
-					<label lang="ru" value="Тип прокси" />
-					<option name="socks5">
-						<label lang="en" value="SOCKS5" />
-					</option>
-					<option name="socks4">
-						<label lang="en" value="SOCKS4" />
-					</option>
-					<option name="http" default="true">
-						<label lang="en" value="HTTP" />
-					</option>
-				</item>
-			</item>
-		</tab>
+        <tab>
+            <label lang="en" value="General" />
+            <label lang="ru" value="Общие" />
+            <item type="spinboxrange" property="TCPPortRange" default="6881:6889" minimum="1" maximum="65535" step="5">
+                <label lang="en" value="Port range" />
+                <label lang="ru" value="Диапазон портов" />
+            </item>
+            <item type="checkbox" property="DHTEnabled" state="on">
+                <label lang="en" value="DHT enabled" />
+                <label lang="ru" value="DHT включен" />
+            </item>
+            <item type="spinbox" property="MaxUploads" default="100" minimum="1" maximum="5000" step="5">
+                <label lang="en" value="Maximum upload connections" />
+                <label lang="ru" value="Максимально одновременных соединений на раздачу" />
+            </item>
+            <item type="spinbox" property="MaxConnections" default="200" minimum="2" maximum="5000" step="10">
+                <label lang="en" value="Maximum total connections" />
+                <label lang="ru" value="Максимально одновременных соединений всего" />
+            </item>
+        </tab>
+        <tab>
+            <label lang="en" value="Proxy" />
+            <label lang="ru" value="Прокси" />
+            <item type="groupbox" property="TrackerProxyEnabled" checkable="true" state="off">
+                <label lang="en" value="Tracker proxy" />
+                <label lang="ru" value="Прокси трэкеров" />
+                <item type="lineedit" property="TrackerProxyHost">
+                    <label lang="en" value="Host" />
+                    <label lang="ru" value="Хост" />
+                </item>
+                <item type="spinbox" property="TrackerProxyPort" default="3128" minimum="1" maximum="65535" step="1">
+                    <label lang="en" value="Port" />
+                    <label lang="ru" value="Порт" />
+                </item>
+                <item type="lineedit" property="TrackerProxyLogin">
+                    <label lang="en" value="Login" />
+                    <label lang="ru" value="Логин" />
+                </item>
+                <item type="lineedit" property="TrackerProxyPassword" default="" password="on">
+                    <label lang="en" value="Password" />
+                    <label lang="ru" value="Пароль" />
+                </item>
+                <item type="radio" property="TrackerProxyType">
+                    <label lang="en" value="Proxy type" />
+                    <label lang="ru" value="Тип прокси" />
+                    <option name="socks5">
+                        <label lang="en" value="SOCKS5" />
+                    </option>
+                    <option name="socks4">
+                        <label lang="en" value="SOCKS4" />
+                    </option>
+                    <option name="http" default="true">
+                        <label lang="en" value="HTTP" />
+                    </option>
+                </item>
+            </item>
+            <item type="groupbox" property="PeerProxyEnabled" checkable="true" state="off">
+                <label lang="en" value="Peer proxy" />
+                <label lang="ru" value="Прокси пиров" />
+                <item type="lineedit" property="PeerProxyHost">
+                    <label lang="en" value="Host" />
+                    <label lang="ru" value="Хост" />
+                </item>
+                <item type="spinbox" property="PeerProxyPort" default="3128" minimum="1" maximum="65535" step="1">
+                    <label lang="en" value="Port" />
+                    <label lang="ru" value="Порт" />
+                </item>
+                <item type="lineedit" property="PeerProxyLogin">
+                    <label lang="en" value="Login" />
+                    <label lang="ru" value="Логин" />
+                </item>
+                <item type="lineedit" property="PeerProxyPassword">
+                    <label lang="en" value="Password" />
+                    <label lang="ru" value="Пароль" />
+                </item>
+                <item type="radio" property="PeerProxyType">
+                    <label lang="en" value="Proxy type" />
+                    <label lang="ru" value="Тип прокси" />
+                    <option name="socks5">
+                        <label lang="en" value="SOCKS5" />
+                    </option>
+                    <option name="socks4">
+                        <label lang="en" value="SOCKS4" />
+                    </option>
+                    <option name="http" default="true">
+                        <label lang="en" value="HTTP" />
+                    </option>
+                </item>
+            </item>
+        </tab>
     </page>
-	<page>
-		<label lang="en" value="Local settings" />
-		<label lang="ru" value="Локальные настройки" />
-		<item type="spinbox" property="AutosaveInterval" default="120" minimum="5" maximum="3600" step="15" suffix=" s">
-			<label lang="en" value="Autosave interval" />
-			<label lang="ru" value="Интервал автосохранения" />
-		</item>
-	</page>
+    <page>
+        <label lang="en" value="Local settings" />
+        <label lang="ru" value="Локальные настройки" />
+        <item type="spinbox" property="AutosaveInterval" default="120" minimum="5" maximum="3600" step="15" suffix=" s">
+            <label lang="en" value="Autosave interval" />
+            <label lang="ru" value="Интервал автосохранения" />
+        </item>
+    </page>
 </settings>
 

@@ -4,9 +4,9 @@
 
 class PluginList : public QListWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	PluginList (QWidget *parent = 0);
+    PluginList (QWidget *parent = 0);
 };
 
 #endif

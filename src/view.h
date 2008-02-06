@@ -11,16 +11,16 @@ class QHeaderView;
  */
 class View : public QTableView
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	View (QWidget *parent = 0);
-	void DoResizes (int size);
+    View (QWidget *parent = 0);
+    void DoResizes (int size);
 
-	enum UserInputActions
-	{
-		CellClick
-		, CellDoubleClick
-	};
+    enum UserInputActions
+    {
+        CellClick
+        , CellDoubleClick
+    };
 };
 
 #endif

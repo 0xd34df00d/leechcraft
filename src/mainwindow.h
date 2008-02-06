@@ -22,66 +22,66 @@ class XmlSettingsDialog;
 
 namespace Main
 {
-	class Core;
-	class PluginInfo;
-	class MainWindow : public QMainWindow
-	{
-		Q_OBJECT
+    class Core;
+    class PluginInfo;
+    class MainWindow : public QMainWindow
+    {
+        Q_OBJECT
 
-		QSystemTrayIcon *TrayIcon_;
-		QMenu *File_, *PluginsMenu_, *ActionsMenu_, *ToolsMenu_, *Help_
-			, *TrayPluginsMenu_;
-		QTreeWidget *PluginsList_;
-		Main::Core *Model_;
-		QLabel *DownloadSpeed_, *UploadSpeed_;
+        QSystemTrayIcon *TrayIcon_;
+        QMenu *File_, *PluginsMenu_, *ActionsMenu_, *ToolsMenu_, *Help_
+            , *TrayPluginsMenu_;
+        QTreeWidget *PluginsList_;
+        Main::Core *Model_;
+        QLabel *DownloadSpeed_, *UploadSpeed_;
 
-		QAction *AddJob_, *Settings_, *BackupSettings_, *RestoreSettings_, *ClearSettings_;
-		QToolBar *Toolbar_, *PluginsToolbar_;
+        QAction *AddJob_, *Settings_, *BackupSettings_, *RestoreSettings_, *ClearSettings_;
+        QToolBar *Toolbar_, *PluginsToolbar_;
 
-		XmlSettingsDialog *XmlSettingsDialog_;
+        XmlSettingsDialog *XmlSettingsDialog_;
 
-		bool IsShown_;
+        bool IsShown_;
 
-		static MainWindow *Instance_;
-		static QMutex *InstanceMutex_;
+        static MainWindow *Instance_;
+        static QMutex *InstanceMutex_;
 
-		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
-		~MainWindow ();
-	public:
-		static MainWindow *Instance ();
-		QMenu* GetRootPluginsMenu () const;
-	public slots:
-		void catchError (QString);
-	protected:
-		virtual void closeEvent (QCloseEvent*);
-	private:
-		void SetupToolbars ();
-		void SetupActions ();
-		void SetupMenus ();
-		void SetTrayIcon ();
-		void FillMenus ();
-		void MakeActions ();
-		void ReadSettings ();
-		void WriteSettings ();
-		void InitializeMainView (const QByteArray&);
-		void AddPluginToTree (const PluginInfo*);
-	private slots:
-		void handlePluginsListDoubleClick (QTreeWidgetItem*, int);
-		void addPluginToList (const PluginInfo*);
-		void pluginActionTriggered ();
-		void updateSpeedIndicators ();
-		void backupSettings ();
-		void restoreSettings ();
-		void clearSettings (bool);
-		void showChangelog ();
-		void showAboutInfo ();
-		void showHideMain ();
-		void hideAll ();
-		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
-		void addJob ();
-		void handleDownloadFinished (const QString&);
-		void showSettings ();
-	};
+        MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
+        ~MainWindow ();
+    public:
+        static MainWindow *Instance ();
+        QMenu* GetRootPluginsMenu () const;
+    public slots:
+        void catchError (QString);
+    protected:
+        virtual void closeEvent (QCloseEvent*);
+    private:
+        void SetupToolbars ();
+        void SetupActions ();
+        void SetupMenus ();
+        void SetTrayIcon ();
+        void FillMenus ();
+        void MakeActions ();
+        void ReadSettings ();
+        void WriteSettings ();
+        void InitializeMainView (const QByteArray&);
+        void AddPluginToTree (const PluginInfo*);
+    private slots:
+        void handlePluginsListDoubleClick (QTreeWidgetItem*, int);
+        void addPluginToList (const PluginInfo*);
+        void pluginActionTriggered ();
+        void updateSpeedIndicators ();
+        void backupSettings ();
+        void restoreSettings ();
+        void clearSettings (bool);
+        void showChangelog ();
+        void showAboutInfo ();
+        void showHideMain ();
+        void hideAll ();
+        void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
+        void addJob ();
+        void handleDownloadFinished (const QString&);
+        void showSettings ();
+    };
 };
 
 #endif

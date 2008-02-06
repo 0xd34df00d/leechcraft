@@ -12,11 +12,11 @@ JobListItem::JobListItem (const QTreeWidgetItem& other)
 
 void JobListItem::SetID (unsigned int id)
 {
-	ID_ = id;
+   ID_ = id;
 }
 
 unsigned int JobListItem::GetID () const
 {
-	return ID_;
+   return ID_;
 }
 

@@ -9,8 +9,8 @@ Exceptions::Generic::Generic (const std::string& name, const std::string& reason
 {
     try
     {
-	Name_ = name;
-	Reason_ = reason;
+   Name_ = name;
+   Reason_ = reason;
     }
     catch (...) {}
 }
@@ -65,7 +65,7 @@ Exceptions::Generic& Exceptions::Generic::OverrideName (const std::string& name)
 {
     try
     {
-	Name_ = name;
+   Name_ = name;
     }
     catch (...) {}
 

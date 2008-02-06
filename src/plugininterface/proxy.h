@@ -10,31 +10,31 @@ class FileWriter;
 
 class Proxy : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
-	Proxy ();
-	~Proxy ();
+    Proxy ();
+    ~Proxy ();
 
-	Main::MainWindow *Window_;
+    Main::MainWindow *Window_;
 
-	static Proxy *Instance_;
-	QStringList Strings_;
-	friend class Main::MainWindow;
+    static Proxy *Instance_;
+    QStringList Strings_;
+    friend class Main::MainWindow;
 public:
-	static Proxy *Instance ();
-	void SetStrings (const QStringList&);
-	TcpSocket* MakeSocket () const;
-	FileWriter* GetFileWriter () const;
-	QString GetApplicationName () const;
-	QString GetOrganizationName () const;
-	QString MakePrettySize (qint64) const;
-	QTime MakeTimeFromLong (ulong) const;
-	void AddUploadMessage (const QString&) const;
-	void AddDownloadMessage (const QString&) const;
+    static Proxy *Instance ();
+    void SetStrings (const QStringList&);
+    TcpSocket* MakeSocket () const;
+    FileWriter* GetFileWriter () const;
+    QString GetApplicationName () const;
+    QString GetOrganizationName () const;
+    QString MakePrettySize (qint64) const;
+    QTime MakeTimeFromLong (ulong) const;
+    void AddUploadMessage (const QString&) const;
+    void AddDownloadMessage (const QString&) const;
 signals:
-	void addMessage (const QString&, bool) const;
+    void addMessage (const QString&, bool) const;
 private:
-	void SetMainWindow (Main::MainWindow*);
+    void SetMainWindow (Main::MainWindow*);
 };
 
 #endif

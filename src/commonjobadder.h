@@ -5,13 +5,13 @@
 
 class CommonJobAdder : public QDialog, private Ui::CommonJobAdder
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	CommonJobAdder (QWidget *parent = 0);
-	QString GetString () const;
+    CommonJobAdder (QWidget *parent = 0);
+    QString GetString () const;
 private slots:
-	void on_Browse__released ();
-	void on_Paste__released ();
+    void on_Browse__released ();
+    void on_Paste__released ();
 };
 
 #endif
