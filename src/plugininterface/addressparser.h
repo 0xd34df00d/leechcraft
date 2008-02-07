@@ -3,6 +3,10 @@
 #include <QString>
 #include <QUrl>
 
+/*! @brief Parses URLs.
+ *
+ * Provides a useful ability to parse URLs and split them to parts.
+ */
 class AddressParser : public QObject
 {
     QString Protocol_;
@@ -23,14 +27,6 @@ public:
     QString GetPassword () const;
     QString GetPath () const;
     QString GetQuery () const;
-
-    void SetProtocol (const QString&);
-    void SetHost (const QString&);
-    void SetPort (const int&);
-    void SetLogin (const QString&);
-    void SetPassword (const QString&);
-    void SetPath (const QString&);
-    void SetQuery (const QString&);
 };
 
 #endif

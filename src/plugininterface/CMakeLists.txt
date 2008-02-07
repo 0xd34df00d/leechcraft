@@ -5,15 +5,11 @@ SET (SRCS
 	 addressparser.cpp
 	 proxy.cpp
 	 tcpsocket.cpp
-	 filewriter.cpp
-	 filewriterthread.cpp
 	 socketexceptions.cpp)
 SET (HEADERS
 	 addressparser.h
 	 proxy.h
 	 tcpsocket.h
-	 filewriter.h
-	 filewriterthread.h
 	 socketexceptions.h)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})

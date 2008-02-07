@@ -4,6 +4,9 @@
 
 class AddressParser;
 
+/*!
+ * @brief Blocking wrapper around QTcpSocket
+ */
 class TcpSocket : public QTcpSocket
 {
     Q_OBJECT

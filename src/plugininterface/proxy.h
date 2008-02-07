@@ -6,8 +6,14 @@
 #include "../mainwindow.h"
 
 class TcpSocket;
-class FileWriter;
 
+/*! @brief Provides some common features.
+ *
+ * Feature versions of Proxy class may include some sort of
+ * communications with MainWindow class as it was before removing of
+ * LogShower in main LeechCraft application.
+ *
+ */
 class Proxy : public QObject
 {
     Q_OBJECT
@@ -24,15 +30,10 @@ public:
     static Proxy *Instance ();
     void SetStrings (const QStringList&);
     TcpSocket* MakeSocket () const;
-    FileWriter* GetFileWriter () const;
     QString GetApplicationName () const;
     QString GetOrganizationName () const;
     QString MakePrettySize (qint64) const;
     QTime MakeTimeFromLong (ulong) const;
-    void AddUploadMessage (const QString&) const;
-    void AddDownloadMessage (const QString&) const;
-signals:
-    void addMessage (const QString&, bool) const;
 private:
     void SetMainWindow (Main::MainWindow*);
 };
