@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-   <page>
-      <label lang="en" value="Behavior" />
-      <label lang="ru" value="Поведение" />
-      <item type="checkbox" property="WatchClipboard" state="on">
-         <label lang="en" value="Watch clipboard for addable task" />
-         <label lang="ru" value="Следить за буфером обмена" />
-      </item>
-   </page>
-   <page>
-      <label lang="en" value="Plugins intercommunication" />
-      <label lang="ru" value="Общение с плагинами" />
+    <page>
+        <label lang="en" value="Behavior" />
+        <label lang="ru" value="Поведение" />
+        <item type="checkbox" property="WatchClipboard" state="on">
+            <label lang="en" value="Watch clipboard for addable task" />
+            <label lang="ru" value="Следить за буфером обмена" />
+        </item>
+    </page>
+    <page>
+        <label lang="en" value="Plugins intercommunication" />
+        <label lang="ru" value="Общение с плагинами" />
 
-      <item type="groupbox" property="ShowFinishedDownloadMessages" state="on" checkable="true">
-         <label lang="en" value="Show messages about finished downloads in tray" />
-         <label lang="ru" value="Показывать сообщения о завершенных закачках в трее" />
-         <item type="spinbox" property="FinishedDownloadMessageTimeout" default="10" minimum="1" maximum="15" step="1" suffix=" s">
-            <label lang="en" value="Finished download message timeout" />
-            <label lang="ru" value="Время показа уведомления о завершенной загрузке" />
-         </item>
-      </item>
-      <item type="checkbox" property="QueryPluginsToHandleFinished" state="on">
-         <label lang="en" value="Query plugins to handle finished downloads" />
-         <label lang="ru" value="Опрашивать плагины на предмет обработки ими завершенных заданий" />
-      </item>
-   </page>
+        <item type="groupbox" property="ShowFinishedDownloadMessages" state="on" checkable="true">
+            <label lang="en" value="Show messages about finished downloads in tray" />
+            <label lang="ru" value="Показывать сообщения о завершенных закачках в трее" />
+            <item type="spinbox" property="FinishedDownloadMessageTimeout" default="10" minimum="1" maximum="15" step="1" suffix=" s">
+                <label lang="en" value="Finished download message timeout" />
+                <label lang="ru" value="Время показа уведомления о завершенной загрузке" />
+            </item>
+        </item>
+        <item type="checkbox" property="QueryPluginsToHandleFinished" state="on">
+            <label lang="en" value="Query plugins to handle finished downloads" />
+            <label lang="ru" value="Опрашивать плагины на предмет обработки ими завершенных заданий" />
+        </item>
+    </page>
 </settings>

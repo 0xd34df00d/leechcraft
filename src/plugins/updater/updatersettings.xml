@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-   <page>
-      <label lang="en" value="General settings" />
-      <label lang="ru" value="Общие настройки" />
+    <page>
+        <label lang="en" value="General settings" />
+        <label lang="ru" value="Общие настройки" />
 
-      <item type="lineedit" property="Mirror" default="http://deviant-soft.ws/leechcraft/updates">
-         <label lang="en" value="Mirror server" />
-         <label lang="ru" value="Зеркало" />
-      </item>
+        <item type="lineedit" property="Mirror" default="http://deviant-soft.ws/leechcraft/updates">
+            <label lang="en" value="Mirror server" />
+            <label lang="ru" value="Зеркало" />
+        </item>
 
-      <item type="checkbox" property="SaveInHistory" state="on">
-         <label lang="en" value="Save downloaded files in history" />
-         <label lang="ru" value="Сохранять загруженные файлы в истории" />
-      </item>
-   </page>
+        <item type="checkbox" property="SaveInHistory" state="on">
+            <label lang="en" value="Save downloaded files in history" />
+            <label lang="ru" value="Сохранять загруженные файлы в истории" />
+        </item>
+    </page>
 </settings>

@@ -4,15 +4,15 @@
 
 class JobListItem : public QTreeWidgetItem
 {
- unsigned int ID_;
+    unsigned int ID_;
 
- enum { eimytype = Type };
+    enum { eimytype = Type };
 public:
- JobListItem ();
- JobListItem (const QTreeWidgetItem& other);
+    JobListItem ();
+    JobListItem (const QTreeWidgetItem& other);
 
- void SetID (unsigned int);
- unsigned int GetID () const;
+    void SetID (unsigned int);
+    unsigned int GetID () const;
 };
 
 #endif

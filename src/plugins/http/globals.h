@@ -5,7 +5,7 @@
 
 namespace Globals
 {
- const QString Name = "HTTP Plugin";
+    const QString Name = "HTTP Plugin";
 }
 
 #endif

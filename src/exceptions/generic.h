@@ -24,19 +24,19 @@ namespace Exceptions
      */
     class Generic : public std::exception
     {
- /** Name of the exception */ 
- std::string Name_;
- /** Reason of the exception */
- std::string Reason_;
+    /** Name of the exception */ 
+    std::string Name_;
+    /** Reason of the exception */
+    std::string Reason_;
     public:
- Generic (const std::string& name = std::string (), const std::string& reason = std::string ()) throw ();
- virtual ~Generic () throw ();
+    Generic (const std::string& name = std::string (), const std::string& reason = std::string ()) throw ();
+    virtual ~Generic () throw ();
 
- virtual const std::string& GetName () const throw ();
- virtual const std::string& GetReason () const throw ();
- virtual const char* what () const throw ();
+    virtual const std::string& GetName () const throw ();
+    virtual const std::string& GetReason () const throw ();
+    virtual const char* what () const throw ();
     protected:
- virtual Generic& OverrideName (const std::string& name) throw ();
+    virtual Generic& OverrideName (const std::string& name) throw ();
     };
 };
 

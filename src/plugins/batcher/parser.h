@@ -5,17 +5,17 @@
 
 class Parser : public QObject
 {
- Q_OBJECT
+    Q_OBJECT
 public:
- struct ParserData
- {
-  QString Pattern_;
-  int LowerBound_, UpperBound_, Step_;
-  bool LeadingZeroes_;
- };
+    struct ParserData
+    {
+        QString Pattern_;
+        int LowerBound_, UpperBound_, Step_;
+        bool LeadingZeroes_;
+    };
 
- Parser (QObject *parent = 0);
- QStringList Parse (const ParserData&) const;
+    Parser (QObject *parent = 0);
+    QStringList Parse (const ParserData&) const;
 };
 
 #endif

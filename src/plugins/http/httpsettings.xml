@@ -1,115 +1,115 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-   <page>
-      <label lang="en" value="Local" />
-      <label lang="ru" value="Локальные настройки" />
-      <item type="spinbox" property="CacheSize" default="32" minimum="8" maximum="1024" step="8" suffix=" kb">
-         <label lang="en" value="Cache size" />
-         <label lang="ru" value="Размер кэша" />
-      </item>
-      <item type="path" property="DownloadDir" defaultHomePath="true">
-         <label lang="en" value="Default download directory" />
-         <label lang="ru" value="Директория для загрузки по умолчанию" />
-      </item>
-      <groupbox>
-         <label lang="en" value="Interface" />
-         <label lang="ru" value="Интерфейс" />
-         <item type="checkbox" property="ShowCurrentSpeed" state="off">
-            <label lang="en" value="Show current speed" />
-            <label lang="ru" value="Показывать текущую скорость" />
-         </item>
-         <item type="checkbox" property="ShowCurrentTime" state="off">
-            <label lang="en" value="Show current ETA" />
-            <label lang="ru" value="Показывать текущее время до завершения" />
-         </item>
-         <item type="spinbox" property="InterfaceUpdateTimeout" default="1000" minimum="100" maximum="10000" step="500" suffix=" ms">
-            <label lang="en" value="Interface update interval" />
-            <label lang="ru" value="Интервал обновления интерфейса" />
-         </item>
-      </groupbox>
-      <groupbox>
-         <label lang="en" value="Behavior" />
-         <label lang="ru" value="Поведение" />
-         <item type="checkbox" property="AutostartChildren" state="on">
-            <label lang="en" value="Autostart children" />
-            <label lang="ru" value="Автоматически запускать детей" />
-         </item>
-         <item type="checkbox" property="AutoGetFileSize" state="on">
-            <label lang="en" value="Automatically get file size" />
-            <label lang="ru" value="Автоматически получать размер файла" />
-         </item>
-      </groupbox>
-   </page>
-   <page>
-      <label lang="en" value="Network" />
-      <label lang="ru" value="Сеть" />
-      <tab>
-         <label lang="en" value="General" />
-         <label lang="ru" value="Общие" />
-         <item type="lineedit" property="FTPLogin" default="anonymous">
-            <label lang="en" value="Default FTP login" />
-            <label lang="ru" value="FTP-логин по умолчанию" />
-         </item>
-         <item type="lineedit" property="FTPPassword" default="leechcraft@http.ftp">
-            <label lang="en" value="Default FTP password" />
-            <label lang="ru" value="FTP-пароль по умолчанию" />
-         </item>
-         <item type="lineedit" property="HTTPAgent" default="Mozilla/4.0 (Compatible; MSIE 7.0; Windows NT 5.1)">
-            <label lang="en" value="HTTP agent" />
-            <label lang="ru" value="HTTP-агент" />
-         </item>
-         <item type="groupbox" property="ProxyEnabled" state="off" checkable="true">
-            <label lang="en" value="Proxy enabled" />
-            <label lang="ru" value="Прокси включен" />
-            <item type="lineedit" property="ProxyAddress">
-               <label lang="en" value="Address" />
-               <label lang="ru" value="Адрес" />
+    <page>
+        <label lang="en" value="Local" />
+        <label lang="ru" value="Локальные настройки" />
+        <item type="spinbox" property="CacheSize" default="32" minimum="8" maximum="1024" step="8" suffix=" kb">
+            <label lang="en" value="Cache size" />
+            <label lang="ru" value="Размер кэша" />
+        </item>
+        <item type="path" property="DownloadDir" defaultHomePath="true">
+            <label lang="en" value="Default download directory" />
+            <label lang="ru" value="Директория для загрузки по умолчанию" />
+        </item>
+        <groupbox>
+            <label lang="en" value="Interface" />
+            <label lang="ru" value="Интерфейс" />
+            <item type="checkbox" property="ShowCurrentSpeed" state="off">
+                <label lang="en" value="Show current speed" />
+                <label lang="ru" value="Показывать текущую скорость" />
             </item>
-            <item type="spinbox" property="ProxyPort" default="3128" minimum="1025" maximum="65535" step="1">
-               <label lang="en" value="Port" />
-               <label lang="ru" value="Порт" />
+            <item type="checkbox" property="ShowCurrentTime" state="off">
+                <label lang="en" value="Show current ETA" />
+                <label lang="ru" value="Показывать текущее время до завершения" />
             </item>
-            <item type="lineedit" property="ProxyLogin">
-               <label lang="en" value="Login" />
-               <label lang="ru" value="Логин" />
+            <item type="spinbox" property="InterfaceUpdateTimeout" default="1000" minimum="100" maximum="10000" step="500" suffix=" ms">
+                <label lang="en" value="Interface update interval" />
+                <label lang="ru" value="Интервал обновления интерфейса" />
             </item>
-            <item type="lineedit" property="ProxyPassword" password="true">
-               <label lang="en" value="Password" />
-               <label lang="ru" value="Пароль" />
+        </groupbox>
+        <groupbox>
+            <label lang="en" value="Behavior" />
+            <label lang="ru" value="Поведение" />
+            <item type="checkbox" property="AutostartChildren" state="on">
+                <label lang="en" value="Autostart children" />
+                <label lang="ru" value="Автоматически запускать детей" />
             </item>
-         </item>
-      </tab>
-      <tab>
-         <label lang="en" value="Timeouts and limits" />
-         <label lang="ru" value="Таймауты и ограничения" />
-         <item type="spinbox" property="MaxConcurrentPerServer" default="5" minimum="1" maximum="10000" step="5">
-            <label lang="en" value="Max concurrent connections per server" />
-            <label lang="ru" value="Максимум одновременных соденинений с сервером" />
-         </item>
-         <item type="spinbox" property="MaxTotalConcurrent" default="10" minimum="10" maximum="10000" step="10">
-            <label lang="en" value="Max total concurrent connections" />
-            <label lang="ru" value="Максимум одновременных соединений всего" />
-         </item>
-         <groupbox>
-            <label lang="en" value="Timeouts" />
-            <label lang="ru" value="Таймауты" />
-            <item type="spinbox" property="ConnectTimeout" default="30000" minimum="1000" maximum="600000" step="1000" suffix=" ms">
-               <label lang="en" value="Connect" />
-               <label lang="ru" value="Подключение" />
+            <item type="checkbox" property="AutoGetFileSize" state="on">
+                <label lang="en" value="Automatically get file size" />
+                <label lang="ru" value="Автоматически получать размер файла" />
             </item>
-            <item type="spinbox" property="DefaultTimeout" default="10000" minimum="1000" maximum="600000" step="1000" suffix=" ms">
-               <label lang="en" value="Operation" />
-               <label lang="ru" value="Операция" />
+        </groupbox>
+    </page>
+    <page>
+        <label lang="en" value="Network" />
+        <label lang="ru" value="Сеть" />
+        <tab>
+            <label lang="en" value="General" />
+            <label lang="ru" value="Общие" />
+            <item type="lineedit" property="FTPLogin" default="anonymous">
+                <label lang="en" value="Default FTP login" />
+                <label lang="ru" value="FTP-логин по умолчанию" />
             </item>
-            <item type="spinbox" property="DisconnectTimeout" default="15000" minimum="1000" maximum="60000" step="1000" suffix=" ms">
-               <label lang="en" value="Disconnect" />
-               <label lang="ru" value="Отключение" />
+            <item type="lineedit" property="FTPPassword" default="leechcraft@http.ftp">
+                <label lang="en" value="Default FTP password" />
+                <label lang="ru" value="FTP-пароль по умолчанию" />
             </item>
-            <item type="spinbox" property="RetryTimeout" default="30" minimum="5" maximum="600" step="15" suffix=" s">
-               <label lang="en" value="Retry interval" />
-               <label lang="ru" value="Интервал повторения" />
+            <item type="lineedit" property="HTTPAgent" default="Mozilla/4.0 (Compatible; MSIE 7.0; Windows NT 5.1)">
+                <label lang="en" value="HTTP agent" />
+                <label lang="ru" value="HTTP-агент" />
             </item>
-         </groupbox>
-      </tab>
-   </page>
+            <item type="groupbox" property="ProxyEnabled" state="off" checkable="true">
+                <label lang="en" value="Proxy enabled" />
+                <label lang="ru" value="Прокси включен" />
+                <item type="lineedit" property="ProxyAddress">
+                    <label lang="en" value="Address" />
+                    <label lang="ru" value="Адрес" />
+                </item>
+                <item type="spinbox" property="ProxyPort" default="3128" minimum="1025" maximum="65535" step="1">
+                    <label lang="en" value="Port" />
+                    <label lang="ru" value="Порт" />
+                </item>
+                <item type="lineedit" property="ProxyLogin">
+                    <label lang="en" value="Login" />
+                    <label lang="ru" value="Логин" />
+                </item>
+                <item type="lineedit" property="ProxyPassword" password="true">
+                    <label lang="en" value="Password" />
+                    <label lang="ru" value="Пароль" />
+                </item>
+            </item>
+        </tab>
+        <tab>
+            <label lang="en" value="Timeouts and limits" />
+            <label lang="ru" value="Таймауты и ограничения" />
+            <item type="spinbox" property="MaxConcurrentPerServer" default="5" minimum="1" maximum="10000" step="5">
+                <label lang="en" value="Max concurrent connections per server" />
+                <label lang="ru" value="Максимум одновременных соденинений с сервером" />
+            </item>
+            <item type="spinbox" property="MaxTotalConcurrent" default="10" minimum="10" maximum="10000" step="10">
+                <label lang="en" value="Max total concurrent connections" />
+                <label lang="ru" value="Максимум одновременных соединений всего" />
+            </item>
+            <groupbox>
+                <label lang="en" value="Timeouts" />
+                <label lang="ru" value="Таймауты" />
+                <item type="spinbox" property="ConnectTimeout" default="30000" minimum="1000" maximum="600000" step="1000" suffix=" ms">
+                    <label lang="en" value="Connect" />
+                    <label lang="ru" value="Подключение" />
+                </item>
+                <item type="spinbox" property="DefaultTimeout" default="10000" minimum="1000" maximum="600000" step="1000" suffix=" ms">
+                    <label lang="en" value="Operation" />
+                    <label lang="ru" value="Операция" />
+                </item>
+                <item type="spinbox" property="DisconnectTimeout" default="15000" minimum="1000" maximum="60000" step="1000" suffix=" ms">
+                    <label lang="en" value="Disconnect" />
+                    <label lang="ru" value="Отключение" />
+                </item>
+                <item type="spinbox" property="RetryTimeout" default="30" minimum="5" maximum="600" step="15" suffix=" s">
+                    <label lang="en" value="Retry interval" />
+                    <label lang="ru" value="Интервал повторения" />
+                </item>
+            </groupbox>
+        </tab>
+    </page>
 </settings>

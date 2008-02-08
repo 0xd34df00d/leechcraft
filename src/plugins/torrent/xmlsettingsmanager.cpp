@@ -6,17 +6,17 @@
 
 namespace
 {
-   QSettings *torrentBeginSettings ()
-   {
-      QSettings *settings = new QSettings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
-      settings->beginGroup ("Torrent");
-      return settings;
-   }
+    QSettings *torrentBeginSettings ()
+    {
+        QSettings *settings = new QSettings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
+        settings->beginGroup ("Torrent");
+        return settings;
+    }
 
-   void torrentEndSettings (QSettings *settings)
-   {
-      settings->endGroup ();
-   }
+    void torrentEndSettings (QSettings *settings)
+    {
+        settings->endGroup ();
+    }
 };
 
 #define PROP2CHAR(a) (a.toLatin1 ().constData ())
@@ -25,7 +25,7 @@ Q_GLOBAL_STATIC (XmlSettingsManager, XmlSettingsManagerInstance);
 
 XmlSettingsManager::XmlSettingsManager ()
 {
-   BaseSettingsManager::Init ();
+    BaseSettingsManager::Init ();
 }
 
 XmlSettingsManager* XmlSettingsManager::Instance ()
@@ -35,11 +35,11 @@ XmlSettingsManager* XmlSettingsManager::Instance ()
 
 QSettings* XmlSettingsManager::BeginSettings () const
 {
-   return torrentBeginSettings ();
+    return torrentBeginSettings ();
 }
 
 void XmlSettingsManager::EndSettings (QSettings* settings) const
 {
-   return torrentEndSettings (settings);
+    return torrentEndSettings (settings);
 }
 

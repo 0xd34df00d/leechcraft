@@ -1,19 +1,19 @@
 INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR} ${QT_QTCORE_INCLUDE_DIR}
     ${QT_QTGUI_INCLUDE_DIR} ${QT_QTNETWORK_INCLUDE_DIR}
- ${CMAKE_CURRENT_BINARY_DIR} ../.. .)
+	${CMAKE_CURRENT_BINARY_DIR} ../.. .)
 
 SET (SRCS
- mailleecher.cpp
- core.cpp
- workingthread.cpp
- lcmlparser.cpp)
+	mailleecher.cpp
+	core.cpp
+	workingthread.cpp
+	lcmlparser.cpp)
 SET (HEADERS
- mailleecher.h
- core.h
- workingthread.h
- lcmlparser.h)
+	mailleecher.h
+	core.h
+	workingthread.h
+	lcmlparser.h)
 SET (FORMS
- mailleecher.ui)
+	mailleecher.ui)
 SET (RESOURCES resources.qrc)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})

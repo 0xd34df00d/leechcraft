@@ -24,33 +24,33 @@ JobParams::JobParams (const JobRepresentation& jr)
 
 QVariantList JobParams::ToVariantList () const
 {
-   QVariantList result;
-   result << URL_;
-   result << LocalName_;
-   result << Autostart_;
-   result << ShouldBeSavedInHistory_;
-   result << Size_;
-   result << static_cast<qulonglong> (DownloadTime_);
-   return result;
+    QVariantList result;
+    result << URL_;
+    result << LocalName_;
+    result << Autostart_;
+    result << ShouldBeSavedInHistory_;
+    result << Size_;
+    result << static_cast<qulonglong> (DownloadTime_);
+    return result;
 }
 
 void JobParams::FeedVariantList (const QVariantList& params)
 {
-   if (params.size () < 5)
-      throw Exceptions::InvalidParameter ("JobParams::FromVariantList(): wrong number of arguments.");
-   URL_ = params [0].toString ();
-   LocalName_ = params [1].toString ();
-   Autostart_ = params [2].toBool ();
-   ShouldBeSavedInHistory_ = params [3].toBool ();
-   Size_ = params [4].value<ImpBase::length_t> ();
-   DownloadTime_ = params [5].value<long> ();
-   IsFullName_ = true;
+    if (params.size () < 5)
+        throw Exceptions::InvalidParameter ("JobParams::FromVariantList(): wrong number of arguments.");
+    URL_ = params [0].toString ();
+    LocalName_ = params [1].toString ();
+    Autostart_ = params [2].toBool ();
+    ShouldBeSavedInHistory_ = params [3].toBool ();
+    Size_ = params [4].value<ImpBase::length_t> ();
+    DownloadTime_ = params [5].value<long> ();
+    IsFullName_ = true;
 }
 
 JobParams* JobParams::FromVariantList (const QVariantList& params)
 {
-   JobParams *jp = new JobParams;
-   jp->FeedVariantList (params);
-   return jp;
+    JobParams *jp = new JobParams;
+    jp->FeedVariantList (params);
+    return jp;
 }
 

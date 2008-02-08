@@ -10,25 +10,25 @@ class Particle;
 
 class GameWidget : public QWidget
 {
- Q_OBJECT
+    Q_OBJECT
 
- QPaintEngine *PaintEngine_;
- QPainter *Painter_;
- QVector<QPoint> Stars_;
- Ship *Ship_;
- QList<Particle*> Particles_;
+    QPaintEngine *PaintEngine_;
+    QPainter *Painter_;
+    QVector<QPoint> Stars_;
+    Ship *Ship_;
+    QList<Particle*> Particles_;
 
- bool FirstUpdate_;
+    bool FirstUpdate_;
 public:
- GameWidget (QWidget *parent = 0);
- void DoDelayedInit ();
- ~GameWidget ();
+    GameWidget (QWidget *parent = 0);
+    void DoDelayedInit ();
+    ~GameWidget ();
 public slots:
- void rotateLeft ();
- void rotateRight ();
- void speedUp ();
+    void rotateLeft ();
+    void rotateRight ();
+    void speedUp ();
 protected:
- void paintEvent (QPaintEvent*);
+    void paintEvent (QPaintEvent*);
 };
 
 #endif

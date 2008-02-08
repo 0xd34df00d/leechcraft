@@ -7,23 +7,23 @@
 
 class Core : public QObject
 {
- Q_OBJECT
+    Q_OBJECT
 
- int TimerID_;
- QList<quint64> UsedIDs_;
- QList<QPair<QDateTime, quint64> > SingleShots_;
+    int TimerID_;
+    QList<quint64> UsedIDs_;
+    QList<QPair<QDateTime, quint64> > SingleShots_;
 public:
- Core (QObject *parent = 0);
- void Release ();
- quint64 AddSingleShot (QDateTime);
+    Core (QObject *parent = 0);
+    void Release ();
+    quint64 AddSingleShot (QDateTime);
 protected:
- virtual void timerEvent (QTimerEvent*);
+    virtual void timerEvent (QTimerEvent*);
 private:
- void ReadSettings ();
+    void ReadSettings ();
 private slots:
- void writeSettings ();
+    void writeSettings ();
 signals:
- void shot (quint64);
+    void shot (quint64);
 };
 
 #endif

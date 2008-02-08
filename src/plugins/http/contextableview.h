@@ -1,15 +1,15 @@
 #ifndef CONTEXTABLELIST_H
 #define CONTEXTABLELIST_H
-#include <QTreeWidget>
+#include <QTreeView>
 #include <QList>
 
-class ContextableTree : public QTreeWidget
+class ContextableList : public QTreeView
 {
     Q_OBJECT
     
     QList<QAction*> Actions_;
 public:
-    ContextableTree (QWidget *parent = 0);
+    ContextableList (QWidget *parent = 0);
     void AddAction (QAction*);
 protected:
     virtual void contextMenuEvent (QContextMenuEvent*);

@@ -1,6 +1,6 @@
 #ifndef JOBMANAGER_H
 #define JOBMANAGER_H
-#include <QObject>
+#include <QAbstractItemModel>
 #include <QVector>
 #include <QMap>
 #include <QMultiMap>
@@ -16,73 +16,87 @@ class FileExistsDialog;
 class QWidget;
 class Proxy;
 
-class JobManager : public QObject
+class JobManager : public QAbstractItemModel
 {
- Q_OBJECT
+    Q_OBJECT
 
- enum { PoolSize_ = 4096 };
+    enum TasksListHeaders
+    {
+        TListState = 0
+        , TListLocalName = 1
+        , TListURL = 2
+        , TListPercent = 3
+        , TListSpeed = 4
+        , TListDownloadTime = 5
+        , TListRemainingTime = 6
+        , TListDownloaded = 7
+        , TListTotal = 8
+    };
 
- QWidget *TheMain_;
+    QWidget *TheMain_;
 
- QVector<Job*> Jobs_;
- QMap<unsigned int, QVector<Job*>::size_type> ID2Pos_;  // It's not position in the QListWidget etc, but position in the Jobs_ vector
- QVector<unsigned int> IDPool_;
- QVector<qint64> JobSpeeds_;
+    QVector<Job*> Jobs_;
+    QVector<qint64> JobSpeeds_;
 
- int TotalDownloads_;
- QMap<QString, int> DownloadsPerHost_;
- typedef QMultiMap<QString, int> MultiHostDict_t;
- MultiHostDict_t ScheduledJobsForHosts_;
- QStack<int> ScheduledJobs_;
- QVector<QPair<int, QTime> > ScheduledStarters_;    // Time of stop
- QMap<QString, QObject*> Providers_;
+    int TotalDownloads_;
+    QMap<QString, int> DownloadsPerHost_;
+    typedef QMultiMap<QString, int> MultiHostDict_t;
+    MultiHostDict_t ScheduledJobsForHosts_;
+    QStack<int> ScheduledJobs_;
+    QVector<QPair<int, QTime> > ScheduledStarters_;                // Time of stop
+    QMap<QString, QObject*> Providers_;
 
- int QueryWaitingTimer_;
- FileExistsDialog *FileExists_;
- bool SaveChangesScheduled_, CronEnabled_;
+    int QueryWaitingTimer_;
+    FileExistsDialog *FileExists_;
+    bool SaveChangesScheduled_, CronEnabled_;
+
+    QStringList Headers_;
 public:
- JobManager (QObject *parent = 0);
- ~JobManager ();
- void Release ();
- void DoDelayedInit ();
- void SetTheMain (QWidget*);
- QWidget* GetTheMain () const;
- JobRepresentation* GetJobRepresentation (unsigned int) const;
- qint64 GetDownloadSpeed () const;
- bool Start (unsigned int);
- void Stop (unsigned int);
- void Delete (unsigned int);
- void GetFileSize (unsigned int);
- void Schedule (unsigned int);
- void StartAll ();
- void StopAll ();
- void SetProvider (QObject*, const QString&);
- void UpdateParams (int, JobParams*);
+    JobManager (QObject *parent = 0);
+    ~JobManager ();
+    void Release ();
+    void DoDelayedInit ();
+
+    virtual int columnCount (const QModelIndex&) const;
+    virtual QVariant data (const QModelIndex&, int role = Qt::DisplayRole) const;
+    virtual Qt::ItemFlags flags (const QModelIndex&) const;
+    virtual bool hasChildren (const QModelIndex&) const;
+    virtual QVariant headerData (int, Qt::Orientation, int role = Qt::DisplayRole) const;
+    virtual QModelIndex index (int, int, const QModelIndex& parent = QModelIndex ()) const;
+    virtual QModelIndex parent (const QModelIndex&) const;
+    virtual int rowCount (const QModelIndex& parent = QModelIndex ()) const;
+
+    void SetTheMain (QWidget*);
+    QWidget* GetTheMain () const;
+    JobRepresentation* GetJobRepresentation (unsigned int) const;
+    qint64 GetDownloadSpeed () const;
+    bool Start (unsigned int);
+    void Stop (unsigned int);
+    void Delete (unsigned int);
+    void GetFileSize (unsigned int);
+    void Schedule (unsigned int);
+    void StartAll ();
+    void StopAll ();
+    void SetProvider (QObject*, const QString&);
+    void UpdateParams (int, JobParams*);
 public slots:
- int addJob (JobParams*);
+    int addJob (JobParams*);
 protected:
- virtual void timerEvent (QTimerEvent*);
+    virtual void timerEvent (QTimerEvent*);
 signals:
- void jobAdded (unsigned int);
- void jobFinished (unsigned int);
- void jobRemoved (unsigned int);
- void jobStarted (unsigned int);
- void jobWaiting (unsigned int);
- void updateJobDisplay (unsigned int);
- void deleteJob (unsigned int);
- void showError (QString, QString);
- void stopped (unsigned int);
- void gotFileSize (unsigned int);
- void cronEnabled ();
+    void showError (QString, QString);
+    void stopped (unsigned int);
+    void gotFileSize (unsigned int);
+    void cronEnabled ();
 private slots:
- void jobStopHandler (unsigned int);
- void enqueue (unsigned int);
- void handleJobDisplay (unsigned int);
- void saveSettings ();
- void scheduleSave ();
+    void jobStopHandler (unsigned int);
+    void enqueue (unsigned int);
+    void handleJobDisplay (unsigned int);
+    void saveSettings ();
+    void scheduleSave ();
 private:
- void TryToStartScheduled ();
- void RehashID2Pos ();
+    void TryToStartScheduled ();
+    void RehashID2Pos ();
 };
 
 #endif

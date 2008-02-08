@@ -5,12 +5,12 @@
 
 class FirstStep : public QWizardPage, private Ui::NewTorrentFirstStep
 {
- Q_OBJECT
+    Q_OBJECT
 public:
- FirstStep (QWidget *parent = 0);
+    FirstStep (QWidget *parent = 0);
 private slots:
- void on_BrowseOutput__released ();
- void on_BrowseRoot__released ();
+    void on_BrowseOutput__released ();
+    void on_BrowseRoot__released ();
 };
 
 #endif

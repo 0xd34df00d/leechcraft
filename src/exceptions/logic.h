@@ -17,18 +17,18 @@ namespace Exceptions
      */
     class Logic : public Generic
     {
- /** @brief Correction variants  representation.
-  * Keeps the message with the correction variants.
-  *
-  * @sa SetCorrections ), GetCorrections()
-  */
- std::string Corrections_;
+    /** @brief Correction variants  representation.
+     * Keeps the message with the correction variants.
+     *
+     * @sa SetCorrections ), GetCorrections()
+     */
+    std::string Corrections_;
     public:
- Logic (const std::string& reason = std::string ()) throw ();
- virtual ~Logic () throw ();
+    Logic (const std::string& reason = std::string ()) throw ();
+    virtual ~Logic () throw ();
 
- virtual Logic& SetCorrections (const std::string&) throw ();
- virtual const std::string& GetCorrections () const throw ();
+    virtual Logic& SetCorrections (const std::string&) throw ();
+    virtual const std::string& GetCorrections () const throw ();
     };
 };
 

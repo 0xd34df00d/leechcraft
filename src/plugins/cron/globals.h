@@ -4,7 +4,7 @@
 
 namespace Globals
 {
- const QString Name = "Cron";
+    const QString Name = "Cron";
 };
 
 #endif

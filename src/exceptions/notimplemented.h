@@ -16,8 +16,8 @@ namespace Exceptions
     class NotImplemented : public Generic
     {
     public:
- NotImplemented (const std::string& reason = std::string ()) throw ();
- virtual ~NotImplemented () throw ();
+    NotImplemented (const std::string& reason = std::string ()) throw ();
+    virtual ~NotImplemented () throw ();
     };
 };
 

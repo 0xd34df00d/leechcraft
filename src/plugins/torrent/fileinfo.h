@@ -3,10 +3,10 @@
 
 struct FileInfo
 {
- QString Name_;
- quint64 Size_;
- int Priority_;
- float Progress_;
+    QString Name_;
+    quint64 Size_;
+    int Priority_;
+    float Progress_;
 };
 
 #endif

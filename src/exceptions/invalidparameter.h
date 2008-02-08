@@ -17,8 +17,8 @@ namespace Exceptions
     class InvalidParameter : public Logic
     {
     public:
- InvalidParameter (const std::string& reason = std::string ()) throw ();
- virtual ~InvalidParameter () throw ();
+    InvalidParameter (const std::string& reason = std::string ()) throw ();
+    virtual ~InvalidParameter () throw ();
     };
 };
 

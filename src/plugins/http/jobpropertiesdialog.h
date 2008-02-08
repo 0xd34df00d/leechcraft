@@ -8,10 +8,10 @@ class JobParams;
 
 class JobPropertiesDialog : public QDialog, private Ui::JobAdderDialog
 {
- Q_OBJECT
+    Q_OBJECT
 public:
- JobPropertiesDialog (JobRepresentation*, QWidget *parent = 0);
- JobParams* GetParams () const;
+    JobPropertiesDialog (JobRepresentation*, QWidget *parent = 0);
+    JobParams* GetParams () const;
 };
 
 #endif

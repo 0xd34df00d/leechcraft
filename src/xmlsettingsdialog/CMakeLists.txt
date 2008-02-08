@@ -6,14 +6,14 @@ INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR}
 
 SET (SRCS
     xmlsettingsdialog.cpp
- rangewidget.cpp
- filepicker.cpp
- radiogroup.cpp)
+	rangewidget.cpp
+	filepicker.cpp
+	radiogroup.cpp)
 SET (HEADERS
     xmlsettingsdialog.h
- rangewidget.h
- filepicker.h
- radiogroup.h)
+	rangewidget.h
+	filepicker.h
+	radiogroup.h)
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 ADD_DEFINITIONS(-DQT_PLUGIN)
 ADD_DEFINITIONS(-DQT_NO_DEBUG)

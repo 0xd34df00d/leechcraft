@@ -122,11 +122,11 @@ void MainWindow::SetupActions ()
 
 void MainWindow::SetupMenus ()
 {
-    File_               = menuBar ()->addMenu (tr ("&File"));
+    File_                = menuBar ()->addMenu (tr ("&File"));
     PluginsMenu_        = menuBar ()->addMenu (tr ("&Plugins"));
     ActionsMenu_        = menuBar ()->addMenu (tr ("&Actions"));
-    ToolsMenu_          = menuBar ()->addMenu (tr ("&Tools"));
-    Help_               = menuBar ()->addMenu (tr ("&Help"));
+    ToolsMenu_            = menuBar ()->addMenu (tr ("&Tools"));
+    Help_                = menuBar ()->addMenu (tr ("&Help"));
 
     FillMenus ();
 }
@@ -326,10 +326,6 @@ void MainWindow::updateSpeedIndicators ()
 
     DownloadSpeed_->setText (Proxy::Instance ()->MakePrettySize (speeds.first) + tr ("/s"));
     UploadSpeed_->setText (Proxy::Instance ()->MakePrettySize (speeds.second) + tr ("/s"));
-
-    TrayIcon_->setToolTip (tr ("%1/s down, %2/s up")
-            .arg (Proxy::Instance ()->MakePrettySize (speeds.first))
-            .arg (Proxy::Instance ()->MakePrettySize (speeds.second))); 
 }
 
 void MainWindow::backupSettings ()

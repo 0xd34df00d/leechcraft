@@ -1,20 +1,20 @@
 INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR}
-      ${QT_QTCORE_INCLUDE_DIR}
-      ${QT_QTGUI_INCLUDE_DIR}
-      ${QT_QTNETWORK_INCLUDE_DIR}
-      ${QT_QTXML_INCLUDE_DIR}
-      ${CMAKE_CURRENT_BINARY_DIR} ../..)
+					 ${QT_QTCORE_INCLUDE_DIR}
+					 ${QT_QTGUI_INCLUDE_DIR}
+					 ${QT_QTNETWORK_INCLUDE_DIR}
+					 ${QT_QTXML_INCLUDE_DIR}
+					 ${CMAKE_CURRENT_BINARY_DIR} ../..)
 
 SET (SRCS
- updaterplugin.cpp
- core.cpp
- xmlsettingsmanager.cpp)
+	updaterplugin.cpp
+	core.cpp
+	xmlsettingsmanager.cpp)
 SET (HEADERS
- updaterplugin.h
- core.h
- xmlsettingsmanager.h
- globals.h
- ../../plugininterface/basesettingsmanager.h)
+	updaterplugin.h
+	core.h
+	xmlsettingsmanager.h
+	globals.h
+	../../plugininterface/basesettingsmanager.h)
 SET (RESOURCES resources.qrc)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})
@@ -30,5 +30,5 @@ TARGET_LINK_LIBRARIES (leechcraft_updater
                         ${QT_LIBRARIES}
                         plugininterface
                         exceptions
-      xmlsettingsdialog)
+						xmlsettingsdialog)
 INSTALL (TARGETS leechcraft_updater DESTINATION share/leechcraft/plugins)

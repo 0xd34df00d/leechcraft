@@ -4,14 +4,14 @@
 
 class AddMultipleTorrents : public QDialog, private Ui::AddMultipleTorrents
 {
- Q_OBJECT
+    Q_OBJECT
 public:
- AddMultipleTorrents (QWidget *parent = 0);
- QString GetOpenDirectory () const;
- QString GetSaveDirectory () const;
+    AddMultipleTorrents (QWidget *parent = 0);
+    QString GetOpenDirectory () const;
+    QString GetSaveDirectory () const;
 private slots:
- void on_BrowseOpen__released ();
- void on_BrowseSave__released ();
+    void on_BrowseOpen__released ();
+    void on_BrowseSave__released ();
 };
 
 #endif

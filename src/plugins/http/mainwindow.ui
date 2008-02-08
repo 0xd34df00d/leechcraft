@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>690</width>
-    <height>395</height>
+    <width>792</width>
+    <height>566</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -16,154 +16,130 @@
    <iconset resource="resources.qrc" >:/resources/images/pluginicon.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget" >
-   <layout class="QHBoxLayout" >
+   <layout class="QVBoxLayout" >
     <item>
-     <widget class="QTabWidget" name="tabWidget" >
-      <property name="tabPosition" >
-       <enum>QTabWidget::West</enum>
+     <widget class="QSplitter" name="Splitter_" >
+      <property name="orientation" >
+       <enum>Qt::Vertical</enum>
       </property>
-      <property name="tabShape" >
-       <enum>QTabWidget::Rounded</enum>
-      </property>
-      <property name="currentIndex" >
-       <number>1</number>
-      </property>
-      <widget class="QWidget" name="ActiveJobsTab_" >
-       <attribute name="title" >
-        <string>Active</string>
-       </attribute>
-       <layout class="QHBoxLayout" >
-        <item>
-         <widget class="ContextableList" name="TasksList_" >
-          <property name="editTriggers" >
-           <set>QAbstractItemView::NoEditTriggers</set>
-          </property>
-          <property name="alternatingRowColors" >
-           <bool>true</bool>
-          </property>
-          <property name="selectionMode" >
-           <enum>QAbstractItemView::ExtendedSelection</enum>
-          </property>
-          <property name="textElideMode" >
-           <enum>Qt::ElideMiddle</enum>
-          </property>
-          <property name="rootIsDecorated" >
-           <bool>false</bool>
-          </property>
-          <property name="uniformRowHeights" >
-           <bool>true</bool>
-          </property>
-          <property name="itemsExpandable" >
-           <bool>false</bool>
-          </property>
-          <column>
-           <property name="text" >
-            <string>State</string>
-           </property>
-          </column>
-          <column>
-           <property name="text" >
-            <string>Local name</string>
-           </property>
-          </column>
-          <column>
-           <property name="text" >
-            <string>URL</string>
-           </property>
-          </column>
-          <column>
-           <property name="text" >
-            <string>Progress</string>
-           </property>
-          </column>
-          <column>
-           <property name="text" >
-            <string>Speed</string>
-           </property>
-          </column>
-          <column>
-           <property name="text" >
-            <string>Download time</string>
-           </property>
-          </column>
-          <column>
-           <property name="text" >
-            <string>ETA</string>
-           </property>
-          </column>
-          <column>
-           <property name="text" >
-            <string>Downloaded</string>
-           </property>
-          </column>
-          <column>
-           <property name="text" >
-            <string>Total</string>
-           </property>
-          </column>
-         </widget>
-        </item>
-       </layout>
+      <widget class="ContextableView" name="TasksList_" >
+       <property name="editTriggers" >
+        <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
+       <property name="alternatingRowColors" >
+        <bool>true</bool>
+       </property>
+       <property name="selectionMode" >
+        <enum>QAbstractItemView::ExtendedSelection</enum>
+       </property>
+       <property name="textElideMode" >
+        <enum>Qt::ElideMiddle</enum>
+       </property>
+       <property name="rootIsDecorated" >
+        <bool>false</bool>
+       </property>
+       <property name="uniformRowHeights" >
+        <bool>true</bool>
+       </property>
+       <property name="itemsExpandable" >
+        <bool>false</bool>
+       </property>
+       <column>
+        <property name="text" >
+         <string>State</string>
+        </property>
+       </column>
+       <column>
+        <property name="text" >
+         <string>Local name</string>
+        </property>
+       </column>
+       <column>
+        <property name="text" >
+         <string>URL</string>
+        </property>
+       </column>
+       <column>
+        <property name="text" >
+         <string>Progress</string>
+        </property>
+       </column>
+       <column>
+        <property name="text" >
+         <string>Speed</string>
+        </property>
+       </column>
+       <column>
+        <property name="text" >
+         <string>Download time</string>
+        </property>
+       </column>
+       <column>
+        <property name="text" >
+         <string>ETA</string>
+        </property>
+       </column>
+       <column>
+        <property name="text" >
+         <string>Downloaded</string>
+        </property>
+       </column>
+       <column>
+        <property name="text" >
+         <string>Total</string>
+        </property>
+       </column>
       </widget>
-      <widget class="QWidget" name="FinishedJobsTab_" >
-       <attribute name="title" >
-        <string>Finished</string>
-       </attribute>
-       <layout class="QHBoxLayout" >
-        <item>
-         <widget class="ContextableList" name="FinishedList_" >
-          <property name="editTriggers" >
-           <set>QAbstractItemView::NoEditTriggers</set>
-          </property>
-          <property name="showDropIndicator" stdset="0" >
-           <bool>false</bool>
-          </property>
-          <property name="alternatingRowColors" >
-           <bool>true</bool>
-          </property>
-          <property name="selectionMode" >
-           <enum>QAbstractItemView::ExtendedSelection</enum>
-          </property>
-          <property name="textElideMode" >
-           <enum>Qt::ElideRight</enum>
-          </property>
-          <property name="rootIsDecorated" >
-           <bool>false</bool>
-          </property>
-          <property name="uniformRowHeights" >
-           <bool>true</bool>
-          </property>
-          <property name="itemsExpandable" >
-           <bool>false</bool>
-          </property>
-          <column>
-           <property name="text" >
-            <string>Local name</string>
-           </property>
-          </column>
-          <column>
-           <property name="text" >
-            <string>URL</string>
-           </property>
-          </column>
-          <column>
-           <property name="text" >
-            <string>Size</string>
-           </property>
-          </column>
-          <column>
-           <property name="text" >
-            <string>Average speed</string>
-           </property>
-          </column>
-          <column>
-           <property name="text" >
-            <string>Time to complete</string>
-           </property>
-          </column>
-         </widget>
-        </item>
-       </layout>
+      <widget class="ContextableList" name="FinishedList_" >
+       <property name="editTriggers" >
+        <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
+       <property name="showDropIndicator" stdset="0" >
+        <bool>false</bool>
+       </property>
+       <property name="alternatingRowColors" >
+        <bool>true</bool>
+       </property>
+       <property name="selectionMode" >
+        <enum>QAbstractItemView::ExtendedSelection</enum>
+       </property>
+       <property name="textElideMode" >
+        <enum>Qt::ElideRight</enum>
+       </property>
+       <property name="rootIsDecorated" >
+        <bool>false</bool>
+       </property>
+       <property name="uniformRowHeights" >
+        <bool>true</bool>
+       </property>
+       <property name="itemsExpandable" >
+        <bool>false</bool>
+       </property>
+       <column>
+        <property name="text" >
+         <string>Local name</string>
+        </property>
+       </column>
+       <column>
+        <property name="text" >
+         <string>URL</string>
+        </property>
+       </column>
+       <column>
+        <property name="text" >
+         <string>Size</string>
+        </property>
+       </column>
+       <column>
+        <property name="text" >
+         <string>Average speed</string>
+        </property>
+       </column>
+       <column>
+        <property name="text" >
+         <string>Time to complete</string>
+        </property>
+       </column>
       </widget>
      </widget>
     </item>
@@ -174,7 +150,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>690</width>
+     <width>792</width>
      <height>26</height>
     </rect>
    </property>
@@ -393,6 +369,9 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>ContextableView</class>
+   <extends>QTreeView</extends>
+   <header>contextablelist.h</header>
    <class>ContextableList</class>
    <extends>QTreeWidget</extends>
    <header>contextablelist.h</header>

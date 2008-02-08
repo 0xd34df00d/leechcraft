@@ -5,16 +5,16 @@
 
 class NewTorrentWizard : public QWizard
 {
- Q_OBJECT
+    Q_OBJECT
 public:
- enum Page { PageIntro
-  , PageFirstStep
-  , PageSecondStep
-  , PageThirdStep };
+    enum Page { PageIntro
+        , PageFirstStep
+        , PageSecondStep
+        , PageThirdStep };
 
- NewTorrentWizard (QWidget *parent = 0);
- virtual void accept ();
- NewTorrentParams GetParams () const;
+    NewTorrentWizard (QWidget *parent = 0);
+    virtual void accept ();
+    NewTorrentParams GetParams () const;
 };
 
 #endif

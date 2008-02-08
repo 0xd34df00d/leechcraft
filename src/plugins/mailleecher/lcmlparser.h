@@ -5,16 +5,16 @@
 
 struct LCML
 {
- QString Address_;
- QString Login_;
- QList<QByteArray> UIDLs_;
+    QString Address_;
+    QString Login_;
+    QList<QByteArray> UIDLs_;
 };
 
 class LCMLParser
 {
 public:
- static LCML Parse (const QByteArray&);
- static QByteArray Create (const LCML&);
+    static LCML Parse (const QByteArray&);
+    static QByteArray Create (const LCML&);
 };
 
 #endif
