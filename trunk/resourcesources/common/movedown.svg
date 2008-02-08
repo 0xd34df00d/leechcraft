@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64px"
+   height="64px"
+   id="svg2160"
+   sodipodi:version="0.32"
+   inkscape:version="0.45.1"
+   sodipodi:docbase="/home/d34df00d/myimages/icons/leechcraft"
+   sodipodi:docname="movedown.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="/home/d34df00d/Programming/xd/src/plugins/torrent/resources/images/moveup.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs2162">
+    <linearGradient
+       id="linearGradient6377">
+      <stop
+         style="stop-color:#006100;stop-opacity:1;"
+         offset="0"
+         id="stop6379" />
+      <stop
+         style="stop-color:#006100;stop-opacity:0.58823532;"
+         offset="1"
+         id="stop6381" />
+    </linearGradient>
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lstart"
+       style="overflow:visible">
+      <path
+         id="path6182"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none"
+         transform="scale(0.8) translate(12.5,0)" />
+    </marker>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6377"
+       id="linearGradient7386"
+       gradientUnits="userSpaceOnUse"
+       x1="4.980135"
+       y1="58.994438"
+       x2="23.502014"
+       y2="13.849999"
+       gradientTransform="matrix(1.2901873,0,0,1.3480152,4.2119752,-17.212664)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6377"
+       id="linearGradient9334"
+       x1="5.1046128"
+       y1="58.86245"
+       x2="29.567261"
+       y2="4.4500556"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.9768646,0,0,1.1184105,5.6507666,-3.5196416)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6377"
+       id="linearGradient10471"
+       gradientUnits="userSpaceOnUse"
+       x1="5.1046128"
+       y1="58.86245"
+       x2="29.567261"
+       y2="4.4500556"
+       gradientTransform="matrix(-1,0,0,-1,56.00015,63.51808)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6377"
+       id="linearGradient10473"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1.3207433,0,0,-1.2052956,57.473017,75.761368)"
+       x1="4.980135"
+       y1="58.994438"
+       x2="23.502014"
+       y2="13.849999" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6377"
+       id="linearGradient10477"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.8768449,-0.2781516,0.3184555,1.0038983,7.3967681,3.867389)"
+       x1="5.1046128"
+       y1="58.86245"
+       x2="29.567261"
+       y2="4.4500556" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6377"
+       id="linearGradient10479"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.1580872,-0.3673666,0.3838328,1.2099942,2.2063531,-8.013949)"
+       x1="4.980135"
+       y1="58.994438"
+       x2="23.502014"
+       y2="13.849999" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="12.46875"
+     inkscape:cx="41.358375"
+     inkscape:cy="27.463175"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:document-units="px"
+     inkscape:grid-bbox="true"
+     inkscape:window-width="1280"
+     inkscape:window-height="1002"
+     inkscape:window-x="0"
+     inkscape:window-y="22" />
+  <metadata
+     id="metadata2165">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer">
+    <path
+       sodipodi:nodetypes="cccsccccscc"
+       inkscape:label="#path4209"
+       d="M 30.642917,61.53887 L 21.0471,31.289013 L 27.333029,42.023974 C 27.333029,42.023974 30.946246,41.738413 30.840236,20.935125 C 30.741468,1.553246 30.741754,1.578618 30.741754,1.578618 M 30.645658,61.557978 L 42.51135,32.447049 L 35.473835,42.311612 C 35.473835,42.311612 31.89858,41.556433 33.518511,20.865903 C 35.027753,1.58907 35.025622,1.614287 35.025622,1.614287 L 30.741754,1.578618"
+       style="fill:url(#linearGradient10477);fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient10479);stroke-width:1.2421838;stroke-linecap:round;stroke-linejoin:round;marker-start:none;marker-mid:none;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="path10475"
+       inkscape:export-filename="/home/d34df00d/Programming/xd/src/plugins/torrent/resources/images/movedown.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+  </g>
+</svg>

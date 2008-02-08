@@ -1,0 +1,7 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+	<qresource>
+		<file>leechcraft_batcher_ru.qm</file>
+		<file>resources/images/batcher.png</file>
+	</qresource>
+</RCC>
