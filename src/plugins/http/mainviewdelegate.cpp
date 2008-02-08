@@ -4,6 +4,7 @@
 #include <QApplication>
 #include <QtDebug>
 #include "mainviewdelegate.h"
+#include "jobmanager.h"
 #include "httpplugin.h"
 
 MainViewDelegate::MainViewDelegate (HttpPlugin *plugin)
@@ -13,7 +14,7 @@ MainViewDelegate::MainViewDelegate (HttpPlugin *plugin)
 
 void MainViewDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
-    if (index.column () != HttpPlugin::TListPercent)
+    if (index.column () != JobManager::TListPercent)
     {
         QItemDelegate::paint (painter, option, index);
         return;

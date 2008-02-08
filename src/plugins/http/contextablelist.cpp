@@ -1,18 +1,18 @@
 #include <QContextMenuEvent>
 #include <QMenu>
-#include "contextableview.h"
+#include "contextablelist.h"
 
-ContextableView::ContextableView (QWidget *parent)
-: QTreeView (parent)
+ContextableList::ContextableList (QWidget *parent)
+: QTreeWidget (parent)
 {
 }
 
-void ContextableView::AddAction (QAction *action)
+void ContextableList::AddAction (QAction *action)
 {
     Actions_.append (action);
 }
 
-void ContextableView::contextMenuEvent (QContextMenuEvent *e)
+void ContextableList::contextMenuEvent (QContextMenuEvent *e)
 {
     QMenu menu (this);
     for (int i = 0; i < Actions_.size (); ++i)

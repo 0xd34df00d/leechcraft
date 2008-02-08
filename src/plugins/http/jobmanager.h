@@ -15,27 +15,15 @@ struct JobRepresentation;
 class FileExistsDialog;
 class QWidget;
 class Proxy;
+class FinishedJob;
 
 class JobManager : public QAbstractItemModel
 {
     Q_OBJECT
 
-    enum TasksListHeaders
-    {
-        TListState = 0
-        , TListLocalName = 1
-        , TListURL = 2
-        , TListPercent = 3
-        , TListSpeed = 4
-        , TListDownloadTime = 5
-        , TListRemainingTime = 6
-        , TListDownloaded = 7
-        , TListTotal = 8
-    };
-
     QWidget *TheMain_;
 
-    QVector<Job*> Jobs_;
+    QList<Job*> Jobs_;
     QVector<qint64> JobSpeeds_;
 
     int TotalDownloads_;
@@ -52,12 +40,25 @@ class JobManager : public QAbstractItemModel
 
     QStringList Headers_;
 public:
+    enum TasksListHeaders
+    {
+        TListState = 0
+        , TListLocalName = 1
+        , TListURL = 2
+        , TListPercent = 3
+        , TListSpeed = 4
+        , TListDownloadTime = 5
+        , TListRemainingTime = 6
+        , TListDownloaded = 7
+        , TListTotal = 8
+    };
+
     JobManager (QObject *parent = 0);
     ~JobManager ();
     void Release ();
     void DoDelayedInit ();
 
-    virtual int columnCount (const QModelIndex&) const;
+    virtual int columnCount (const QModelIndex& index = QModelIndex ()) const;
     virtual QVariant data (const QModelIndex&, int role = Qt::DisplayRole) const;
     virtual Qt::ItemFlags flags (const QModelIndex&) const;
     virtual bool hasChildren (const QModelIndex&) const;
@@ -68,7 +69,6 @@ public:
 
     void SetTheMain (QWidget*);
     QWidget* GetTheMain () const;
-    JobRepresentation* GetJobRepresentation (unsigned int) const;
     qint64 GetDownloadSpeed () const;
     bool Start (unsigned int);
     void Stop (unsigned int);
@@ -80,7 +80,7 @@ public:
     void SetProvider (QObject*, const QString&);
     void UpdateParams (int, JobParams*);
 public slots:
-    int addJob (JobParams*);
+    void addJob (JobParams*);
 protected:
     virtual void timerEvent (QTimerEvent*);
 signals:
@@ -88,15 +88,20 @@ signals:
     void stopped (unsigned int);
     void gotFileSize (unsigned int);
     void cronEnabled ();
+    void addToFinishedList (const FinishedJob&);
 private slots:
-    void jobStopHandler (unsigned int);
-    void enqueue (unsigned int);
+    void jobStopHandler ();
+    void addToFinishedList ();
+    void removeJob ();
+    void enqueue ();
+    void handleJobDisplay ();
     void handleJobDisplay (unsigned int);
+    void updateAll ();
     void saveSettings ();
     void scheduleSave ();
 private:
     void TryToStartScheduled ();
-    void RehashID2Pos ();
+    uint JobPosition (Job*);
 };
 
 #endif

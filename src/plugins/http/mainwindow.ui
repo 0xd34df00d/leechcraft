@@ -18,128 +18,55 @@
   <widget class="QWidget" name="centralwidget" >
    <layout class="QVBoxLayout" >
     <item>
-     <widget class="QSplitter" name="Splitter_" >
-      <property name="orientation" >
-       <enum>Qt::Vertical</enum>
+     <widget class="QTabWidget" name="Tabs_" >
+      <property name="currentIndex" >
+       <number>0</number>
       </property>
-      <widget class="ContextableView" name="TasksList_" >
-       <property name="editTriggers" >
-        <set>QAbstractItemView::NoEditTriggers</set>
-       </property>
-       <property name="alternatingRowColors" >
-        <bool>true</bool>
-       </property>
-       <property name="selectionMode" >
-        <enum>QAbstractItemView::ExtendedSelection</enum>
-       </property>
-       <property name="textElideMode" >
-        <enum>Qt::ElideMiddle</enum>
-       </property>
-       <property name="rootIsDecorated" >
-        <bool>false</bool>
-       </property>
-       <property name="uniformRowHeights" >
-        <bool>true</bool>
-       </property>
-       <property name="itemsExpandable" >
-        <bool>false</bool>
-       </property>
-       <column>
-        <property name="text" >
-         <string>State</string>
-        </property>
-       </column>
-       <column>
-        <property name="text" >
-         <string>Local name</string>
-        </property>
-       </column>
-       <column>
-        <property name="text" >
-         <string>URL</string>
-        </property>
-       </column>
-       <column>
-        <property name="text" >
-         <string>Progress</string>
-        </property>
-       </column>
-       <column>
-        <property name="text" >
-         <string>Speed</string>
-        </property>
-       </column>
-       <column>
-        <property name="text" >
-         <string>Download time</string>
-        </property>
-       </column>
-       <column>
-        <property name="text" >
-         <string>ETA</string>
-        </property>
-       </column>
-       <column>
-        <property name="text" >
-         <string>Downloaded</string>
-        </property>
-       </column>
-       <column>
-        <property name="text" >
-         <string>Total</string>
-        </property>
-       </column>
+      <widget class="QWidget" name="tab" >
+       <attribute name="title" >
+        <string>Active</string>
+       </attribute>
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="ContextableView" name="TasksList_" />
+        </item>
+       </layout>
       </widget>
-      <widget class="ContextableList" name="FinishedList_" >
-       <property name="editTriggers" >
-        <set>QAbstractItemView::NoEditTriggers</set>
-       </property>
-       <property name="showDropIndicator" stdset="0" >
-        <bool>false</bool>
-       </property>
-       <property name="alternatingRowColors" >
-        <bool>true</bool>
-       </property>
-       <property name="selectionMode" >
-        <enum>QAbstractItemView::ExtendedSelection</enum>
-       </property>
-       <property name="textElideMode" >
-        <enum>Qt::ElideRight</enum>
-       </property>
-       <property name="rootIsDecorated" >
-        <bool>false</bool>
-       </property>
-       <property name="uniformRowHeights" >
-        <bool>true</bool>
-       </property>
-       <property name="itemsExpandable" >
-        <bool>false</bool>
-       </property>
-       <column>
-        <property name="text" >
-         <string>Local name</string>
-        </property>
-       </column>
-       <column>
-        <property name="text" >
-         <string>URL</string>
-        </property>
-       </column>
-       <column>
-        <property name="text" >
-         <string>Size</string>
-        </property>
-       </column>
-       <column>
-        <property name="text" >
-         <string>Average speed</string>
-        </property>
-       </column>
-       <column>
-        <property name="text" >
-         <string>Time to complete</string>
-        </property>
-       </column>
+      <widget class="QWidget" name="FinishedTab_" >
+       <attribute name="title" >
+        <string>Finished</string>
+       </attribute>
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="ContextableList" name="FinishedList_" >
+          <column>
+           <property name="text" >
+            <string>Local name</string>
+           </property>
+          </column>
+          <column>
+           <property name="text" >
+            <string>URL</string>
+           </property>
+          </column>
+          <column>
+           <property name="text" >
+            <string>Size</string>
+           </property>
+          </column>
+          <column>
+           <property name="text" >
+            <string>Average speed</string>
+           </property>
+          </column>
+          <column>
+           <property name="text" >
+            <string>TTC</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
@@ -371,7 +298,9 @@
   <customwidget>
    <class>ContextableView</class>
    <extends>QTreeView</extends>
-   <header>contextablelist.h</header>
+   <header>contextableview.h</header>
+  </customwidget>
+  <customwidget>
    <class>ContextableList</class>
    <extends>QTreeWidget</extends>
    <header>contextablelist.h</header>

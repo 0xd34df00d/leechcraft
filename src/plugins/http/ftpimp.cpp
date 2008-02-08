@@ -196,6 +196,7 @@ void FtpImp::run ()
         }
 
         QByteArray newData;
+        msleep (10);
         try
         {
             newData = DataSocket_->ReadAll ();

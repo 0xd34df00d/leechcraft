@@ -98,8 +98,7 @@ public slots:
     void handleHidePlugins ();
 private slots:
     void on_ActionAddJob__triggered ();
-    int handleParams (JobParams*);
-    void pushJob (unsigned int);
+    void handleParams (JobParams*);
     void on_ActionStart__triggered ();
     void on_ActionStop__triggered ();
     void on_ActionRemoveJob__triggered ();

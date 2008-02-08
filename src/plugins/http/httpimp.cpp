@@ -109,6 +109,7 @@ void HttpImp::run ()
     while (counter < Response_.ContentLength_)
     {
         QByteArray newData;
+        msleep (10);
         try
         {
             newData = Socket_->ReadAll ();

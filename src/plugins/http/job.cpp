@@ -22,11 +22,11 @@ Job::Job (JobParams *params, QObject *parent)
 , GetFileSize_ (false)
 , Speed_ (0)
 , CurrentSpeed_ (0)
-, DownloadTime_ (params->DownloadTime_)
+, DownloadTime_ (0)
 , DownloadedSize_ (0)
-, TotalSize_ (params->Size_)
+, TotalSize_ (0)
 , RestartPosition_ (0)
-, PreviousDownloadSize_ (params->Size_)
+, PreviousDownloadSize_ (0)
 , ProtoImp_ (0)
 , Params_ (params)
 , File_ (0)
@@ -39,14 +39,8 @@ Job::Job (JobParams *params, QObject *parent)
     FillErrorDictionary ();
     FileExistsDialog_ = new FileExistsDialog (parent ? qobject_cast<JobManager*> (parent)->GetTheMain () : 0);
 
-    if (Params_->IsFullName_)
-    {
-        if (!QFileInfo (Params_->LocalName_).dir ().exists ())
-            Params_->LocalName_ = QDir::homePath () + "/" + QFileInfo (Params_->LocalName_).fileName ();
-    }
-    else
-        if (!QFileInfo (Params_->LocalName_).exists ())
-            Params_->LocalName_ = QDir::homePath () + "/";
+    if (Params_ && !QFileInfo (Params_->LocalName_).dir ().exists ())
+        Params_->LocalName_ = QDir::homePath () + "/" + QFileInfo (Params_->LocalName_).fileName ();
 }
 
 Job::~Job ()
@@ -71,17 +65,6 @@ void Job::DoDelayedInit ()
         delete file;
         processData (size, TotalSize_, QByteArray ());
     }
-    emit updateDisplays (ID_);
-}
-
-void Job::SetID (unsigned int id)
-{
-    ID_ = id;
-}
-
-unsigned int Job::GetID () const
-{
-    return ID_;
 }
 
 const QString& Job::GetURL () const
@@ -94,7 +77,7 @@ const QString& Job::GetLocalName () const
     return File_ ? File_->fileName () : MakeFilename ();
 }
 
-long Job::GetSPeed () const
+long Job::GetSpeed () const
 {
     return Speed_;
 }
@@ -161,12 +144,12 @@ void Job::Start ()
     connect (ProtoImp_, SIGNAL (gotNewFiles (QStringList*)), this, SLOT (handleNewFiles (QStringList*)));
     connect (ProtoImp_, SIGNAL (clarifyURL (QString)), this, SLOT (handleClarifyURL (QString)));
     connect (ProtoImp_, SIGNAL (dataFetched (ImpBase::length_t, ImpBase::length_t, QByteArray)), this, SLOT (processData (ImpBase::length_t, ImpBase::length_t, QByteArray)), Qt::DirectConnection);
-    connect (ProtoImp_, SIGNAL (finished ()), this, SLOT (reemitFinished ()), Qt::DirectConnection);
+    connect (ProtoImp_, SIGNAL (finished ()), this, SLOT (handleFinished ()), Qt::DirectConnection);
     connect (ProtoImp_, SIGNAL (error (QString)), this, SLOT (handleShowError (QString)));
-    connect (ProtoImp_, SIGNAL (stopped ()), this, SLOT (reemitStopped ()));
-    connect (ProtoImp_, SIGNAL (enqueue ()), this, SLOT (reemitEnqueue ()));
+    connect (ProtoImp_, SIGNAL (stopped ()), this, SLOT (handleStopped ()));
+    connect (ProtoImp_, SIGNAL (enqueue ()), this, SLOT (handleEnqueue ()));
     connect (ProtoImp_, SIGNAL (gotRemoteFileInfo (const ImpBase::RemoteFileInfo&)), this, SLOT (handleRemoteFileInfo (const ImpBase::RemoteFileInfo&)), Qt::QueuedConnection);
-    connect (ProtoImp_, SIGNAL (gotFileSize (ImpBase::length_t)), this, SLOT (reemitGotFileSize (ImpBase::length_t)));
+    connect (ProtoImp_, SIGNAL (gotFileSize (ImpBase::length_t)), this, SLOT (handleGotFileSize (ImpBase::length_t)));
 
     ProtoImp_->SetURL (Params_->URL_);
     ProtoImp_->SetRestartPosition (RestartPosition_);
@@ -252,20 +235,18 @@ void Job::handleRemoteFileInfo (const ImpBase::RemoteFileInfo& rfi)
 
 void Job::Stop ()
 {
-    qDebug () << Q_FUNC_INFO;
     if (State_ != StateIdle && ProtoImp_ && ProtoImp_->isRunning ())
     {
         ProtoImp_->StopDownload ();
         if (!ProtoImp_->wait (XmlSettingsManager::Instance ()->property ("DisconnectTimeout").toInt ()))
             ProtoImp_->terminate ();
-        reemitStopped ();
     }
     State_ = StateIdle;
+    handleStopped ();
 }
 
 void Job::Release ()
 {
-    qDebug () << Q_FUNC_INFO;
     if (State_ != StateIdle && ProtoImp_ && ProtoImp_->isRunning ())
     {
         ProtoImp_->StopDownload ();
@@ -289,8 +270,51 @@ void Job::UpdateParams (JobParams *p)
 {
     Params_->URL_ = p->URL_;
     Params_->LocalName_ = p->LocalName_;
-    Params_->IsFullName_ = true;
-    emit updateDisplays (GetID ());
+    emit updateDisplays ();
+}
+
+QByteArray Job::Serialized () const
+{
+    QByteArray result;
+    QDataStream out (&result, QIODevice::WriteOnly);
+    out << ErrorFlag_
+        << GetFileSize_
+        << Speed_
+        << CurrentSpeed_
+        << DownloadTime_
+        << DownloadedSize_
+        << TotalSize_
+        << RestartPosition_
+        << PreviousDownloadSize_;
+    out << Params_->URL_
+        << Params_->LocalName_
+        << Params_->Autostart_
+        << Params_->ShouldBeSavedInHistory_;
+
+    qDebug () << result;
+
+    return result;
+}
+
+void Job::Unserialize (const QByteArray& data)
+{
+    qDebug () << data;
+    QByteArray localdata = data;
+    Params_ = new JobParams;
+    QDataStream in (&localdata, QIODevice::WriteOnly);
+    in >> ErrorFlag_
+        >> GetFileSize_
+        >> Speed_
+        >> CurrentSpeed_
+        >> DownloadTime_
+        >> DownloadedSize_
+        >> TotalSize_
+        >> RestartPosition_
+        >> PreviousDownloadSize_;
+    in >> Params_->URL_
+        >> Params_->LocalName_
+        >> Params_->Autostart_
+        >> Params_->ShouldBeSavedInHistory_;
 }
 
 void Job::handleNewFiles (QStringList *files)
@@ -316,15 +340,12 @@ void Job::handleNewFiles (QStringList *files)
         else
             jp->URL_ = constructedURL + files->at (i);
         jp->LocalName_ = Params_->LocalName_ + QFileInfo (files->at (i)).fileName ();
-        jp->IsFullName_ = true;
         jp->Autostart_ = XmlSettingsManager::Instance ()->property ("AutostartChildren").toBool ();
         jp->ShouldBeSavedInHistory_ = true;
-        jp->Size_ = 0;
-        jp->DownloadTime_ = 0;
         emit addJob (jp);
     }
 
-    emit deleteJob (GetID ());
+    emit deleteJob ();
 }
 
 void Job::handleClarifyURL (QString url)
@@ -335,7 +356,7 @@ void Job::handleClarifyURL (QString url)
     ProtoImp_ = 0;
     Params_->URL_ = url;
     Start ();
-    emit started (GetID ());
+    emit started ();
 }
 
 void Job::processData (ImpBase::length_t ready, ImpBase::length_t total, QByteArray newData)
@@ -347,7 +368,7 @@ void Job::processData (ImpBase::length_t ready, ImpBase::length_t total, QByteAr
         TotalSize_ = total;
         StartTime_->restart ();
         UpdateTime_->restart ();
-        emit updateDisplays (GetID ());
+        emit updateDisplays ();
         return;
     }
     else if (!File_)
@@ -362,7 +383,6 @@ void Job::processData (ImpBase::length_t ready, ImpBase::length_t total, QByteAr
         CurrentSpeed_ = (DownloadedSize_ - PreviousDownloadSize_) / static_cast<double> (UpdateTime_->elapsed ()) * 1000;
         PreviousDownloadSize_ = DownloadedSize_;
         UpdateTime_->restart ();
-        emit updateDisplays (GetID ());
     }
 
     if (!File_->open (QFile::WriteOnly | QFile::Append))
@@ -394,12 +414,12 @@ void Job::processData (ImpBase::length_t ready, ImpBase::length_t total, QByteAr
     }
 }
 
-void Job::reemitFinished ()
+void Job::handleFinished ()
 {
-    emit finished (GetID ());
     State_ = StateIdle;
     DownloadTime_ += StartTime_->elapsed ();
     StartTime_->restart ();
+    emit finished ();
 }
 
 void Job::handleShowError (QString error)
@@ -407,29 +427,28 @@ void Job::handleShowError (QString error)
     emit showError (Params_->URL_, error);
 }
 
-void Job::reemitStopped ()
+void Job::handleStopped ()
 {
-    State_ = StateIdle;
-    emit stopped (GetID ());
     State_ = StateIdle;
     DownloadTime_ += StartTime_->elapsed ();
     StartTime_->restart ();
+    emit stopped ();
 }
 
-void Job::reemitEnqueue ()
+void Job::handleEnqueue ()
 {
     disconnect (this, SIGNAL (stopped (unsigned int)), 0, 0);
     Stop ();
-    emit enqueue (GetID ());
+    emit enqueue ();
     State_ = StateWaiting;
     DownloadTime_ += StartTime_->elapsed ();
     StartTime_->restart ();
 }
 
-void Job::reemitGotFileSize (ImpBase::length_t size)
+void Job::handleGotFileSize (ImpBase::length_t size)
 {
     TotalSize_ = size;
-    emit gotFileSize (GetID ());
+    emit gotFileSize ();
 }
 
 void Job::FillErrorDictionary ()
@@ -461,15 +480,6 @@ QString Job::MakeUniqueNameFor (const QString& name)
 QString Job::MakeFilename () const
 {
     static AddressParser *ap = TcpSocket::GetAddressParser ("");
-    if (!Params_->IsFullName_)
-    {
-        ap->Reparse (Params_->URL_);
-        if (!(Params_->LocalName_.at (Params_->LocalName_.size () - 1) == '/'))
-            Params_->LocalName_.append ('/');
-        Params_->LocalName_.append (QFileInfo (ap->GetPath ()).fileName ());
-        Params_->IsFullName_ = true;
-    }
-
     Params_->LocalName_ = QUrl::fromPercentEncoding (Params_->LocalName_.toUtf8 ());
 
     return Params_->LocalName_;

@@ -17,13 +17,16 @@
 #include "finishedjob.h"
 
 JobManager::JobManager (QObject *parent)
-: QObject (parent)
+: QAbstractItemModel (parent)
 , TotalDownloads_ (0)
 , SaveChangesScheduled_ (false)
 , CronEnabled_ (false)
 {
     QueryWaitingTimer_ = startTimer (500);
     Headers_ << tr ("State") << tr ("Local name") << tr ("URL") << tr ("Progress") << tr ("Speed") << tr ("ETA") << tr ("Download time") << tr ("Ready") << tr ("Total");
+    QTimer *timer = new QTimer;
+    connect (timer, SIGNAL (timeout ()), this, SLOT (updateAll ()));
+    timer->start (1000);
 }
 
 JobManager::~JobManager ()
@@ -72,32 +75,45 @@ QVariant JobManager::data (const QModelIndex& index, int role) const
 
     Job *job = Jobs_.at (row);
 
-    switch (static_cast<TasksListHeaders> (column))
+    switch (role)
     {
-        case TListState:
-            return QIcon ();
-        case TListLocalName:
-            return job->GetLocalName ();
-        case TListURL:
-            return job->GetURL ();
-        case TListPercent:
-            return QString::number (job->GetDownloaded () / job->GetTotal ());
-        case TListSpeed:
-            return job->GetSpeed ();
-        case TListDownloadTime:
-            return job->GetDownloadTime ();
-        case TListRemainingTime:
-            return job->GetAverageTime ();
-        case TListDownloaded:
-            return job->GetDownloaded ();
-        case TListTotal:
-            return job->GetTotal ();
+        case Qt::DisplayRole:
+            switch (static_cast<TasksListHeaders> (column))
+            {
+                case TListState:
+                    return QVariant ();
+                case TListLocalName:
+                    return job->GetLocalName ();
+                case TListURL:
+                    return job->GetURL ();
+                case TListPercent:
+                    return job->GetTotal () ? job->GetDownloaded () / job->GetTotal () : 0;
+                case TListSpeed:
+                    return Proxy::Instance ()->MakePrettySize (job->GetSpeed ()) + tr ("/s");
+                case TListDownloadTime:
+                    return Proxy::Instance ()->MakeTimeFromLong (job->GetDownloadTime ());
+                case TListRemainingTime:
+                    return Proxy::Instance ()->MakeTimeFromLong (job->GetAverageTime ());
+                case TListDownloaded:
+                    return Proxy::Instance ()->MakePrettySize (job->GetDownloaded ());
+                case TListTotal:
+                    return Proxy::Instance ()->MakePrettySize (job->GetTotal ());
+            }
+        case Qt::DecorationRole:
+            switch (static_cast<TasksListHeaders> (column))
+            {
+                case TListState:
+                default:
+                    return QVariant ();
+            }
+        default:
+            return QVariant ();
     }
 }
 
 Qt::ItemFlags JobManager::flags (const QModelIndex& index) const
 {
-    return Qt::ItemIsSelectible | Qt::ItemIsEnabled;
+    return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 }
 
 bool JobManager::hasChildren (const QModelIndex&) const
@@ -129,7 +145,7 @@ QModelIndex JobManager::parent (const QModelIndex&) const
 
 int JobManager::rowCount (const QModelIndex& parent) const
 {
-    if (index.isValid ())
+    if (parent.isValid ())
         return 0;
     else
         return Jobs_.size ();
@@ -145,32 +161,27 @@ QWidget* JobManager::GetTheMain () const
 {
     return TheMain_;
 } 
-int JobManager::addJob (JobParams *params)
+void JobManager::addJob (JobParams *params)
 {
     Job *job = new Job (params, this);
+    connect (job, SIGNAL (finished ()), this, SLOT (jobStopHandler ()));
+    connect (job, SIGNAL (finished ()), this, SLOT (addToFinishedList ()));
+    connect (job, SIGNAL (finished ()), this, SLOT (removeJob ()));
+    connect (job, SIGNAL (deleteJob ()), this, SLOT (jobStopHandler ()));
+    connect (job, SIGNAL (deleteJob ()), this, SLOT (removeJob ()));
+    connect (job, SIGNAL (stopped ()), this, SLOT (jobStopHandler ()));
+    connect (job, SIGNAL (enqueue ()), this, SLOT (enqueue ()));
 
-    Jobs_.append (job);
-    unsigned int id = IDPool_.last ();
-    IDPool_.pop_back ();
-
-    job->SetID (id);    
-    ID2Pos_ [id] = Jobs_.size () - 1;
-
-    emit jobAdded (id);
-
-    connect (job, SIGNAL (finished (unsigned int)), this, SLOT (jobStopHandler (unsigned int)));
-    connect (job, SIGNAL (deleteJob (unsigned int)), this, SLOT (jobStopHandler (unsigned int)));
-    connect (job, SIGNAL (stopped (unsigned int)), this, SLOT (jobStopHandler (unsigned int)));
-    connect (job, SIGNAL (enqueue (unsigned int)), this, SLOT (enqueue (unsigned int)));
-
-    connect (job, SIGNAL (updateDisplays (unsigned int)), this, SLOT (handleJobDisplay (unsigned int)));
-    connect (job, SIGNAL (finished (unsigned int)), this, SIGNAL (jobFinished (unsigned int)));
-    connect (job, SIGNAL (started (unsigned int)), this, SIGNAL (jobStarted (unsigned int)));
-    connect (job, SIGNAL (deleteJob (unsigned int)), this, SIGNAL (deleteJob (unsigned int)));
+    connect (job, SIGNAL (updateDisplays ()), this, SLOT (handleJobDisplay ()));
+    connect (job, SIGNAL (stopped ()), this, SLOT (handleJobDisplay ()));
+    connect (job, SIGNAL (started ()), this, SLOT (handleJobDisplay ()));
     connect (job, SIGNAL (addJob (JobParams*)), this, SLOT (addJob (JobParams*)));
     connect (job, SIGNAL (showError (QString, QString)), this, SIGNAL (showError (QString, QString)));
-    connect (job, SIGNAL (stopped (unsigned int)), this, SIGNAL (stopped (unsigned int)));
-    connect (job, SIGNAL (gotFileSize (unsigned int)), this, SIGNAL (gotFileSize (unsigned int)));
+    connect (job, SIGNAL (gotFileSize ()), this, SLOT (handleJobDisplay ()));
+
+    beginInsertRows (QModelIndex (), Jobs_.size (), Jobs_.size ());
+
+    Jobs_.append (job);
 
     job->DoDelayedInit ();
 
@@ -179,13 +190,12 @@ int JobManager::addJob (JobParams *params)
         DownloadsPerHost_ [host ] = 0;
 
     if (params->Autostart_)
-        Start (id);
+        Start (Jobs_.size () - 1);
     else if (XmlSettingsManager::Instance ()->property ("AutoGetFileSize").toBool ())
-        GetFileSize (id);
+        GetFileSize (Jobs_.size () - 1);
+    endInsertRows ();
 
     scheduleSave ();
-
-    return id;
 }
 
 void JobManager::timerEvent (QTimerEvent *e)
@@ -194,53 +204,42 @@ void JobManager::timerEvent (QTimerEvent *e)
         TryToStartScheduled ();
 }
 
-JobRepresentation* JobManager::GetJobRepresentation (unsigned int id) const
-{
-    return Jobs_ [ID2Pos_ [id]]->GetRepresentation ();
-}
-
 qint64 JobManager::GetDownloadSpeed () const
 {
     qint64 result = 0;
     for (int i = 0; i < Jobs_.size (); ++i)
-    {
-        JobRepresentation *jr = Jobs_ [i]->GetRepresentation ();
-        result += jr->Speed_;
-        delete jr;
-    }
+        result += Jobs_ [i]->GetCurrentSpeed ();
 
     return result;
 }
 
 bool JobManager::Start (unsigned int id)
 {
-    if (Jobs_ [ID2Pos_ [id]]->GetState () != Job::StateIdle)
+    if (Jobs_ [id]->GetState () != Job::StateIdle)
         return false;
 
-    JobRepresentation *jr = GetJobRepresentation (id);
-    QString host = QUrl (jr->URL_).host ();
-    delete jr;
+    QString host = QUrl (Jobs_ [id]->GetURL ()).host ();
 
     if (DownloadsPerHost_ [host] >= XmlSettingsManager::Instance ()->property ("MaxConcurrentPerServer").toInt ())
     {
         ScheduledJobsForHosts_.insert (host, id);
-        emit jobWaiting (id);
+        emit dataChanged (index (id, 0), index (id, columnCount ()));
         return false;
     }
 
     if (TotalDownloads_ >= XmlSettingsManager::Instance ()->property ("MaxTotalConcurrent").toInt ())
     {
         ScheduledJobs_.push_back (id);
-        emit jobWaiting (id);
+        emit dataChanged (index (id, 0), index (id, columnCount ()));
         return false;
     }
 
     try
     {
-        Jobs_ [ID2Pos_ [id]]->Start ();
+        Jobs_ [id]->Start ();
         ++DownloadsPerHost_ [host];
         ++TotalDownloads_;
-        emit jobStarted (id);
+        emit dataChanged (index (id, 0), index (id, columnCount ()));
         return true;
     }
     catch (Exceptions::IO& e)
@@ -249,8 +248,7 @@ bool JobManager::Start (unsigned int id)
     }
     catch (Exceptions::Logic& e)
     {
-        QMessageBox::critical (TheMain_, "Job Logic error", e.GetReason ().c_str () + QString ("; anyway, deleting job, cause logic errors are very bad."));
-        Delete (id);
+        QMessageBox::critical (TheMain_, "Job Logic error", e.GetReason ().c_str ());
     }
     return false;
 }
@@ -263,49 +261,41 @@ void JobManager::Stop (unsigned int id)
             i = ScheduledJobsForHosts_.erase (i);
             break;
         }
-    if (Jobs_ [ID2Pos_ [id]]->GetState () == Job::StateDownloading)
-    {
-        Jobs_ [ID2Pos_ [id]]->Stop ();
-        jobStopHandler (id);
-    }
-    else if (Jobs_ [ID2Pos_ [id]]->GetState () == Job::StateWaiting)
-        Jobs_ [ID2Pos_ [id]]->Stop ();
+    if (Jobs_ [id]->GetState () == Job::StateDownloading)
+        Jobs_ [id]->Stop ();
+    else if (Jobs_ [id]->GetState () == Job::StateWaiting)
+        Jobs_ [id]->Stop ();
+
+    emit dataChanged (index (0, id), index (0, id));
 }
 
 void JobManager::Delete (unsigned int id)
 {
-    disconnect (Jobs_ [ID2Pos_ [id]], 0, 0, 0);
-    Jobs_ [ID2Pos_ [id]]->Release ();;
-    delete Jobs_ [ID2Pos_ [id]];
-    Jobs_.remove (ID2Pos_ [id]);
-    QVector<Job*>::size_type pos = ID2Pos_ [id];
-    ID2Pos_.remove (id);
+    disconnect (Jobs_ [id], 0, 0, 0);
+    Jobs_ [id]->Release ();;
+    beginRemoveRows (QModelIndex (), id, id);
+    delete Jobs_ [id];
+    Jobs_.removeAt (id);
+    endRemoveRows ();
 
-    for (int i = 0; i < ID2Pos_.size (); ++i)
-        if (ID2Pos_ [i] > pos)
-            --(ID2Pos_ [i]);
-
+    QVector<Job*>::size_type pos = id;
     scheduleSave ();
-
     for (MultiHostDict_t::Iterator i = ScheduledJobsForHosts_.begin (); i != ScheduledJobsForHosts_.end (); ++i)
         if (i.value () == static_cast<int> (id))
             i = ScheduledJobsForHosts_.erase (i);
-
     for (int i = 0; i < ScheduledJobs_.size (); ++i)
         if (ScheduledJobs_ [i] == static_cast<int> (id))
             ScheduledJobs_.remove (i--);
-
-    emit jobRemoved (id);
 }
 
 void JobManager::GetFileSize (unsigned int id)
 {
-    Jobs_ [ID2Pos_ [id]]->GetFileSize ();
+    Jobs_ [id]->GetFileSize ();
 }
 
 void JobManager::Schedule (unsigned int id)
 {
-    emit jobWaiting (id);
+    emit dataChanged (index (id, 0), index (id, columnCount ()));
 }
 
 void JobManager::StartAll ()
@@ -332,16 +322,15 @@ void JobManager::SetProvider (QObject *object, const QString& feature)
 
 void JobManager::UpdateParams (int id, JobParams *params)
 {
-    Job *job = Jobs_ [ID2Pos_ [id]];
+    Job *job = Jobs_ [id];
     if (job->GetState () == Job::StateIdle)
         job->UpdateParams (params);
 }
 
-void JobManager::jobStopHandler (unsigned int id)
+void JobManager::jobStopHandler ()
 {
-    JobRepresentation *jr = GetJobRepresentation (id);
-    QString host = QUrl (jr->URL_).host ();
-    delete jr;
+    int id = JobPosition (qobject_cast<Job*> (sender ()));
+    QString host = QUrl (Jobs_ [id]->GetURL ()).host ();
 
     if (DownloadsPerHost_ [host] > 0)
         --DownloadsPerHost_ [host];
@@ -367,13 +356,31 @@ void JobManager::jobStopHandler (unsigned int id)
     }
 }
 
-void JobManager::enqueue (unsigned int id)
+void JobManager::addToFinishedList ()
 {
-    JobRepresentation *jr = GetJobRepresentation (id);
-    QString host = QUrl (jr->URL_).host ();
-    delete jr;
+    Job *job = qobject_cast<Job*> (sender ());
+    FinishedJob *fj = new FinishedJob;
+    fj->URL_ = job->GetURL ();
+    fj->Local_ = job->GetLocalName ();
+    fj->Size_ = job->GetTotal ();
+    fj->Speed_ = Proxy::Instance ()->MakePrettySize (job->GetSpeed ()) + tr ("/s");
+    fj->TimeToComplete_ = Proxy::Instance ()->MakeTimeFromLong (job->GetAverageTime ()).toString ();
+}
 
-    Job *job = Jobs_ [ID2Pos_ [id]];
+void JobManager::removeJob ()
+{
+    int id = JobPosition (qobject_cast<Job*> (sender ()));
+    Jobs_ [id]->Release ();
+    delete Jobs_ [id];
+    Jobs_.removeAt (id);
+}
+
+void JobManager::enqueue ()
+{
+    int id = JobPosition (qobject_cast<Job*> (sender ()));
+    QString host = QUrl (Jobs_ [id]->GetURL ()).host ();
+
+    Job *job = Jobs_ [id];
     connect (job, SIGNAL (stopped (unsigned int)), this, SIGNAL (stopped (unsigned int)));
     connect (job, SIGNAL (stopped (unsigned int)), this, SLOT (jobStopHandler (unsigned int)));
     ScheduledJobsForHosts_.insert (host, id);
@@ -381,12 +388,22 @@ void JobManager::enqueue (unsigned int id)
         --DownloadsPerHost_ [host];
     if (TotalDownloads_ > 0)
         --TotalDownloads_;
-    emit jobWaiting (id);
+    emit dataChanged (index (id, 0), index (id, columnCount ()));
+}
+
+void JobManager::handleJobDisplay ()
+{
+    handleJobDisplay (JobPosition (qobject_cast<Job*> (sender ())));
 }
 
 void JobManager::handleJobDisplay (unsigned int id)
 {
-    emit updateJobDisplay (id);
+    emit dataChanged (index (id, 0), index (id, columnCount ()));
+}
+
+void JobManager::updateAll ()
+{
+    emit dataChanged (index (0, 0), index (rowCount (), columnCount ()));
 }
 
 void JobManager::saveSettings ()
@@ -425,9 +442,9 @@ void JobManager::TryToStartScheduled ()
     }
 }
 
-void JobManager::RehashID2Pos ()
+uint JobManager::JobPosition (Job *job)
 {
-    for (int i = 0; i < Jobs_.size (); ++i)
-        ID2Pos_ [Jobs_ [i]->GetID ()] = i;
+    QList<Job*>::const_iterator i = qFind (Jobs_, job);
+    return i == Jobs_.end () ? -1 : i - Jobs_.begin ();
 }
 

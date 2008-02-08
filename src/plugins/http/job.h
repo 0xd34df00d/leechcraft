@@ -17,7 +17,7 @@ class Job : public QObject
 
     bool ErrorFlag_, GetFileSize_;
     double Speed_, CurrentSpeed_;
-    long DownloadTime_;
+    quint32 DownloadTime_;
     ImpBase::length_t DownloadedSize_, TotalSize_, RestartPosition_, PreviousDownloadSize_;
     ImpBase *ProtoImp_;
     JobParams* Params_;
@@ -40,9 +40,6 @@ public:
     Job (JobParams *params = 0, QObject *parent = 0);
     virtual ~Job ();
     void DoDelayedInit ();
-    void SetID (unsigned int);
-    unsigned int GetID () const;
-    JobRepresentation* GetRepresentation () const;
     const QString& GetURL () const;
     const QString& GetLocalName () const;
     long GetSpeed () const;
@@ -67,21 +64,21 @@ private slots:
     void handleNewFiles (QStringList*);
     void handleClarifyURL (QString);
     void processData (ImpBase::length_t, ImpBase::length_t, QByteArray);
-    void reemitFinished ();
+    void handleFinished ();
     void handleShowError (QString);
-    void reemitStopped ();
-    void reemitEnqueue ();
-    void reemitGotFileSize (ImpBase::length_t);
+    void handleStopped ();
+    void handleEnqueue ();
+    void handleGotFileSize (ImpBase::length_t);
 signals:
-    void updateDisplays (unsigned int);
-    void started (unsigned int);
-    void finished (unsigned int);
-    void deleteJob (unsigned int);
+    void updateDisplays ();
+    void started ();
+    void finished ();
+    void deleteJob ();
     void addJob (JobParams*);
     void showError (QString, QString);
-    void stopped (unsigned int);
-    void enqueue (unsigned int);
-    void gotFileSize (unsigned int);
+    void stopped ();
+    void enqueue ();
+    void gotFileSize ();
 private:
     JobType JobType_;
 

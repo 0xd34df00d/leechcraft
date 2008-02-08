@@ -37,11 +37,8 @@ void JobAdderDialog::done (int r)
         if (!p->LocalName_.endsWith ('/') && !p->LocalName_.endsWith ('\\'))
             p->LocalName_.append ('/');
         p->LocalName_.append (FileName_->text ());
-        p->IsFullName_ = FileName_->text ().size ();
         p->Autostart_ = (Autostart_->checkState () == Qt::Checked);
         p->ShouldBeSavedInHistory_ = true;
-        p->Size_ = 0;
-        p->DownloadTime_ = 0;
 
         qDebug () << p->URL_;
 
