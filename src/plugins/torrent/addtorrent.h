@@ -6,23 +6,23 @@
 
 class AddTorrent : public QDialog, private Ui::AddTorrent
 {
-	Q_OBJECT
+ Q_OBJECT
 public:
-	AddTorrent (QWidget *parent = 0);
-	void Reinit ();
-	void SetFilename (const QString&);
-	QString GetFilename () const;
-	QString GetSavePath () const;
-	QVector<bool> GetSelectedFiles () const;
+ AddTorrent (QWidget *parent = 0);
+ void Reinit ();
+ void SetFilename (const QString&);
+ QString GetFilename () const;
+ QString GetSavePath () const;
+ QVector<bool> GetSelectedFiles () const;
 private slots:
-	void on_TorrentBrowse__released ();
-	void on_DestinationBrowse__released ();
-	void setOkEnabled ();
+ void on_TorrentBrowse__released ();
+ void on_DestinationBrowse__released ();
+ void setOkEnabled ();
 private:
-	void ParseBrowsed ();
+ void ParseBrowsed ();
 signals:
-	void on_TorrentFile__textChanged ();
-	void on_Destination__textChanged ();
+ void on_TorrentFile__textChanged ();
+ void on_Destination__textChanged ();
 };
 
 #endif

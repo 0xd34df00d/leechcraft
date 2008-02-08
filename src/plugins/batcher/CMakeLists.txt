@@ -3,10 +3,10 @@ INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR} ${QT_QTCORE_INCLUDE_DIR}
 
 SET (SRCS
     batcher.cpp
-	parser.cpp)
+ parser.cpp)
 SET (HEADERS
     batcher.h
-	parser.h)
+ parser.h)
 SET (FORMS
     mainwindow.ui)
 SET (RESOURCES resources.qrc)

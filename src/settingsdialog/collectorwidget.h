@@ -4,11 +4,11 @@
 
 class CollectorWidget : public QWidget
 {
-	Q_OBJECT
+ Q_OBJECT
 public:
-	CollectorWidget (QWidget *parent = 0);
+ CollectorWidget (QWidget *parent = 0);
 signals:
-	void collected ();
+ void collected ();
 };
 
 #endif

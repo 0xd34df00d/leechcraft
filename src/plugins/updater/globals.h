@@ -4,7 +4,7 @@
 
 namespace Globals
 {
-	const QString Name = "Updater";
+ const QString Name = "Updater";
 };
 
 #endif

@@ -11,17 +11,17 @@ class QCheckBox;
 
 class JobAdderDialog : public QDialog, private Ui::JobAdderDialog
 {
-	Q_OBJECT
+ Q_OBJECT
 public:
-	JobAdderDialog (QWidget *parent = 0);
-	void SetURL (const QString&);
+ JobAdderDialog (QWidget *parent = 0);
+ void SetURL (const QString&);
 public slots:
-	virtual void done (int r);
+ virtual void done (int r);
 private slots:
-	void on_BrowseButton__released ();
-	void on_URL__textChanged ();
+ void on_BrowseButton__released ();
+ void on_URL__textChanged ();
 signals:
-	void gotParams (JobParams*);
+ void gotParams (JobParams*);
 };
 
 #endif

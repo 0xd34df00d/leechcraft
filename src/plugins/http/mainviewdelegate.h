@@ -9,10 +9,10 @@ class QModelIndex;
 
 class MainViewDelegate : public QItemDelegate
 {
-	Q_OBJECT
+ Q_OBJECT
 public:
-	MainViewDelegate (HttpPlugin*);
-	virtual void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
+ MainViewDelegate (HttpPlugin*);
+ virtual void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
 };
 
 #endif

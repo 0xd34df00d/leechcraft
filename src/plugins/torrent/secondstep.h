@@ -5,14 +5,14 @@
 
 class SecondStep : public QWizardPage, private Ui::NewTorrentSecondStep
 {
-	Q_OBJECT
+ Q_OBJECT
 public:
-	SecondStep (QWidget *parent = 0);
-	QStringList GetPaths () const;
+ SecondStep (QWidget *parent = 0);
+ QStringList GetPaths () const;
 private slots:
-	void on_AddPath__released ();
-	void on_RemoveSelected__released ();
-	void on_Clear__released ();
+ void on_AddPath__released ();
+ void on_RemoveSelected__released ();
+ void on_Clear__released ();
 };
 
 #endif

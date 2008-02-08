@@ -11,61 +11,65 @@ INCLUDE (${CMAKE_ROOT}/Modules/FindPNG.cmake)
 INCLUDE (${CMAKE_ROOT}/Modules/FindThreads.cmake)
 INCLUDE (${CMAKE_ROOT}/Modules/UseQt4.cmake)
 INCLUDE_DIRECTORIES (${QT_QTGUI_INCLUDE_DIR} ${QT_QTCORE_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR} .
-	plugininterface/)
+    plugininterface/)
 ADD_SUBDIRECTORY(exceptions)
 ADD_SUBDIRECTORY(plugininterface)
 ADD_SUBDIRECTORY(settingsdialog)
 ADD_SUBDIRECTORY(xmlsettingsdialog)
 IF (NOT DEFINED ENABLE_CONFIGURABLE)
-	ADD_SUBDIRECTORY(plugins/http)
-	ADD_SUBDIRECTORY(plugins/batcher)
-	ADD_SUBDIRECTORY(plugins/torrent)
-	ADD_SUBDIRECTORY(plugins/cron)
-	ADD_SUBDIRECTORY(plugins/updater)
-	ADD_SUBDIRECTORY(plugins/mailleecher)
+    ADD_SUBDIRECTORY(plugins/http)
+    ADD_SUBDIRECTORY(plugins/batcher)
+    ADD_SUBDIRECTORY(plugins/torrent)
+    ADD_SUBDIRECTORY(plugins/cron)
+    ADD_SUBDIRECTORY(plugins/updater)
+    ADD_SUBDIRECTORY(plugins/mailleecher)
+    ADD_SUBDIRECTORY(plugins/remoter)
 ELSE (NOT DEFINED ENABLE_CONFIGURABLE)
-	IF (DEFINED ENABLE_HTTP)
-		ADD_SUBDIRECTORY(plugins/http)
-	ENDIF (DEFINED ENABLE_HTTP)
-	IF (DEFINED ENABLE_BATCHER)
-		ADD_SUBDIRECTORY(plugins/batcher)
-	ENDIF (DEFINED ENABLE_BATCHER)
-	IF (DEFINED ENABLE_TORRENT)
-		ADD_SUBDIRECTORY(plugins/torrent)
-	ENDIF (DEFINED ENABLE_TORRENT)
-	IF (DEFINED ENABLE_CRON)
-		ADD_SUBDIRECTORY(plugins/cron)
-	ENDIF (DEFINED ENABLE_CRON)
-	IF (DEFINED ENABLE_UPDATER)
-		ADD_SUBDIRECTORY(plugins/updater)
-	ENDIF (DEFINED ENABLE_UPDATER)
-	IF (DEFINED ENABLE_MAIL)
-		ADD_SUBDIRECTORY(plugins/mailleecher)
-	ENDIF (DEFINED ENABLE_MAIL)
+    IF (DEFINED ENABLE_HTTP)
+        ADD_SUBDIRECTORY(plugins/http)
+    ENDIF (DEFINED ENABLE_HTTP)
+    IF (DEFINED ENABLE_BATCHER)
+        ADD_SUBDIRECTORY(plugins/batcher)
+    ENDIF (DEFINED ENABLE_BATCHER)
+    IF (DEFINED ENABLE_TORRENT)
+        ADD_SUBDIRECTORY(plugins/torrent)
+    ENDIF (DEFINED ENABLE_TORRENT)
+    IF (DEFINED ENABLE_CRON)
+        ADD_SUBDIRECTORY(plugins/cron)
+    ENDIF (DEFINED ENABLE_CRON)
+    IF (DEFINED ENABLE_UPDATER)
+        ADD_SUBDIRECTORY(plugins/updater)
+    ENDIF (DEFINED ENABLE_UPDATER)
+    IF (DEFINED ENABLE_MAIL)
+        ADD_SUBDIRECTORY(plugins/mailleecher)
+    ENDIF (DEFINED ENABLE_MAIL)
+    IF (DEFINED ENABLE_REMOTER)
+        ADD_SUBDIRECTORY(plugins/remoter)
+    ENDIF (DEFINED ENABLE_REMOTER)
 ENDIF (NOT DEFINED ENABLE_CONFIGURABLE)
 
 SET (SRCS
-	mainwindow.cpp
-	commonjobadder.cpp
-	core.cpp
-	main.cpp
-	pluginmanager.cpp
-	plugininfo.cpp
-	pluginlisttablewidgeticon.cpp
-	changelogdialog.cpp
-	xmlsettingsmanager.cpp)
+ mainwindow.cpp
+ commonjobadder.cpp
+ core.cpp
+ main.cpp
+ pluginmanager.cpp
+ plugininfo.cpp
+ pluginlisttablewidgeticon.cpp
+ changelogdialog.cpp
+ xmlsettingsmanager.cpp)
 
 SET (HEADERS
-	mainwindow.h
-	commonjobadder.h
-	core.h
-	pluginmanager.h
-	plugininfo.h
-	pluginlisttablewidgeticon.h
-	changelogdialog.h
-	xmlsettingsmanager.h
-	interfaces/interfaces.h
-	interfaces/structures.h)
+ mainwindow.h
+ commonjobadder.h
+ core.h
+ pluginmanager.h
+ plugininfo.h
+ pluginlisttablewidgeticon.h
+ changelogdialog.h
+ xmlsettingsmanager.h
+ interfaces/interfaces.h
+ interfaces/structures.h)
 
 SET (FORMS changelogdialog.ui commonjobadder.ui)
 SET (RESOURCES mainresources.qrc)
@@ -79,8 +83,8 @@ QT4_ADD_RESOURCES (RCC ${RESOURCES})
 
 ADD_EXECUTABLE (leechcraft WIN32 ${SRCS} ${MOC_SRCS} ${UIS_H} ${RCC})
 TARGET_LINK_LIBRARIES(leechcraft
-						${QT_LIBRARIES}
-						plugininterface
-						exceptions
-						xmlsettingsdialog)
+      ${QT_LIBRARIES}
+      plugininterface
+      exceptions
+      xmlsettingsdialog)
 INSTALL (TARGETS leechcraft DESTINATION bin)

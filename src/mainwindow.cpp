@@ -326,6 +326,10 @@ void MainWindow::updateSpeedIndicators ()
 
     DownloadSpeed_->setText (Proxy::Instance ()->MakePrettySize (speeds.first) + tr ("/s"));
     UploadSpeed_->setText (Proxy::Instance ()->MakePrettySize (speeds.second) + tr ("/s"));
+
+    TrayIcon_->setToolTip (tr ("%1/s down, %2/s up")
+            .arg (Proxy::Instance ()->MakePrettySize (speeds.first))
+            .arg (Proxy::Instance ()->MakePrettySize (speeds.second))); 
 }
 
 void MainWindow::backupSettings ()

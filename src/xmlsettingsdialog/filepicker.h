@@ -7,18 +7,18 @@ class QPushButton;
 
 class FilePicker : public QWidget
 {
-	Q_OBJECT
+ Q_OBJECT
 
-	QLineEdit *LineEdit_;
-	QPushButton *BrowseButton_;
+ QLineEdit *LineEdit_;
+ QPushButton *BrowseButton_;
 public:
-	FilePicker (QWidget *parent = 0);
-	void SetText (const QString&);
-	QString GetText () const;
+ FilePicker (QWidget *parent = 0);
+ void SetText (const QString&);
+ QString GetText () const;
 private slots:
-	void chooseFile ();
+ void chooseFile ();
 signals:
-	void textChanged (const QString&);
+ void textChanged (const QString&);
 };
 
 #endif

@@ -5,11 +5,11 @@ class QLabel;
 
 class IntroPage : public QWizardPage
 {
-	Q_OBJECT
+ Q_OBJECT
 
-	QLabel *Label_;
+ QLabel *Label_;
 public:
-	IntroPage (QWidget *parent = 0);
+ IntroPage (QWidget *parent = 0);
 };
 
 #endif

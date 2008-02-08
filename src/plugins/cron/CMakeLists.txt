@@ -3,10 +3,10 @@ INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR} ${QT_QTCORE_INCLUDE_DIR}
 
 SET (SRCS
     cron.cpp
-	core.cpp)
+ core.cpp)
 SET (HEADERS
-	cron.h
-	core.h
+ cron.h
+ core.h
     globals.h)
 SET (RESOURCES resources.qrc)
 

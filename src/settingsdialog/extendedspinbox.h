@@ -4,16 +4,16 @@
 
 class ExtendedSpinbox : public QSpinBox
 {
-	Q_OBJECT
+ Q_OBJECT
 
-	int MinimumShift_, MaximumShift_;
+ int MinimumShift_, MaximumShift_;
 public:
-	ExtendedSpinbox (QWidget *parent = 0);
-	void SetMinimumShift (int);
-	void SetMaximumShift (int);
+ ExtendedSpinbox (QWidget *parent = 0);
+ void SetMinimumShift (int);
+ void SetMaximumShift (int);
 public slots:
-	void changeMinimum (int);
-	void changeMaximum (int);
+ void changeMinimum (int);
+ void changeMaximum (int);
 };
 
 #endif

@@ -513,7 +513,6 @@ void HttpPlugin::writeSettings ()
    settings.setValue ("pos", pos ());
    settings.setValue ("jobListHeadersState", Ui_.TasksList_->header ()->saveState ());
    settings.setValue ("finishedListHeadersState", Ui_.FinishedList_->header ()->saveState ());
-   settings.setValue ("splitterState", Ui_.Splitter_->saveState ());
    settings.endGroup ();
 
    settings.beginWriteArray ("finished");
@@ -601,10 +600,6 @@ void HttpPlugin::ReadSettings ()
    settings.beginGroup ("geometry");
    resize (settings.value ("size", QSize (640, 480)).toSize ());
    move   (settings.value ("pos",  QPoint (10, 10)).toPoint ());
-
-   QByteArray splitterArr = settings.value ("splitterState").toByteArray ();
-   if (!splitterArr.isEmpty () && !splitterArr.isNull ())
-      Ui_.Splitter_->restoreState (splitterArr);
 
    QByteArray jobListArr = settings.value ("jobListHeadersState").toByteArray ();
    if (!jobListArr.isEmpty () && !jobListArr.isNull ())

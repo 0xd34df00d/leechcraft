@@ -5,19 +5,19 @@
 
 class FilePickerWidget : public QWidget
 {
-	Q_OBJECT
+ Q_OBJECT
 
-	QPushButton *Browse_;
-	QLineEdit *File_;
+ QPushButton *Browse_;
+ QLineEdit *File_;
 public:
-	FilePickerWidget (QWidget *parent = 0);
-	
-	void setText (const QString&);
-	QString text () const;
+ FilePickerWidget (QWidget *parent = 0);
+ 
+ void setText (const QString&);
+ QString text () const;
 private slots:
-	void initiateFileHandling ();
+ void initiateFileHandling ();
 signals:
-	void textChanged (const QString&);
+ void textChanged (const QString&);
 };
 
 #endif

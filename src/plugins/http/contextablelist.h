@@ -5,14 +5,14 @@
 
 class ContextableList : public QTreeWidget
 {
-	Q_OBJECT
-	
-	QList<QAction*> Actions_;
+ Q_OBJECT
+ 
+ QList<QAction*> Actions_;
 public:
-	ContextableList (QWidget *parent = 0);
-	void AddAction (QAction*);
+ ContextableList (QWidget *parent = 0);
+ void AddAction (QAction*);
 protected:
-	virtual void contextMenuEvent (QContextMenuEvent*);
+ virtual void contextMenuEvent (QContextMenuEvent*);
 };
 
 #endif

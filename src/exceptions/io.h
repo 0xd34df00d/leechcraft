@@ -6,9 +6,9 @@ namespace Exceptions
 {
     class IO : public Generic
     {
-	public:
-		IO (const std::string& reason = std::string ()) throw ();
-		virtual ~IO () throw ();
+ public:
+  IO (const std::string& reason = std::string ()) throw ();
+  virtual ~IO () throw ();
     };
 };
 

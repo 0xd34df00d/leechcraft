@@ -31,8 +31,8 @@ void AddressParser::Reparse (const QString& str)
         Port_ = url.port (80);
     else if (Protocol_.toLower () == "ftp")
         Port_ = url.port (21);
-	else
-		Port_ = url.port ();
+ else
+  Port_ = url.port ();
     
     Host_ = url.host ();
     Login_ = url.userName ();

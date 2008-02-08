@@ -2,25 +2,25 @@ INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR} ${QT_QTCORE_INCLUDE_DIR}
     ${QT_QTGUI_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ../..)
 
 SET (SRCS
-	 settingsdialog.cpp
-	 settingsiteminfo.cpp
-	 typehandler.cpp
-	 typelist.cpp
-	 converters.cpp
-	 filepickerwidget.cpp
-	 datatypes.cpp
-	 extendedspinbox.cpp
-	 collectorwidget.cpp)
+  settingsdialog.cpp
+  settingsiteminfo.cpp
+  typehandler.cpp
+  typelist.cpp
+  converters.cpp
+  filepickerwidget.cpp
+  datatypes.cpp
+  extendedspinbox.cpp
+  collectorwidget.cpp)
 SET (HEADERS
-	 settingsdialog.h
-	 settingsiteminfo.h
-	 typehandler.h
-	 typelist.h
-	 converters.h
-	 filepickerwidget.h
-	 datatypes.h
-	 extendedspinbox.h
-	 collectorwidget.h)
+  settingsdialog.h
+  settingsiteminfo.h
+  typehandler.h
+  typelist.h
+  converters.h
+  filepickerwidget.h
+  datatypes.h
+  extendedspinbox.h
+  collectorwidget.h)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 ADD_DEFINITIONS(-DQT_PLUGIN)
