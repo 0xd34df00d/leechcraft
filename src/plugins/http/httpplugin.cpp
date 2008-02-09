@@ -33,15 +33,15 @@ void HttpPlugin::Init ()
     ProvidesList_ << "http" << "ftp" << "resume";
     UsesList_ << "cron";
 
-    JobManager_ = new JobManager (this);
-    connect (JobManager_, SIGNAL (showError (QString, QString)), this, SLOT (showJobErrorMessage (QString, QString)));
-    connect (JobManager_, SIGNAL (cronEnabled ()), this, SLOT (handleCronEnabled ()));
-    JobManager_->SetTheMain (this);
+    connect (&JobManager::Instance (), SIGNAL (showError (QString, QString)), this, SLOT (showJobErrorMessage (QString, QString)));
+    connect (&JobManager::Instance (), SIGNAL (cronEnabled ()), this, SLOT (handleCronEnabled ()));
+    connect (&JobManager::Instance (), SIGNAL (addToFinishedList (const FinishedJob*, int)), this, SLOT (addToFinishedList (const FinishedJob*, int)));
+    JobManager::Instance ().SetTheMain (this);
     SetupStatusBarStuff ();
 
     ReadSettings ();
-    Ui_.TasksList_->setModel (JobManager_);
-    JobManager_->DoDelayedInit ();
+    Ui_.TasksList_->setModel (&JobManager::Instance ());
+    JobManager::Instance ().DoDelayedInit ();
 
     IsShown_ = false;
 
@@ -137,7 +137,7 @@ QStringList HttpPlugin::Uses () const
 
 void HttpPlugin::SetProvider (QObject *object, const QString& feature)
 {
-    JobManager_->SetProvider (object, feature);
+    JobManager::Instance ().SetProvider (object, feature);
 }
 
 void HttpPlugin::PushMainWindowExternals (const MainWindowExternals& ex)
@@ -147,7 +147,7 @@ void HttpPlugin::PushMainWindowExternals (const MainWindowExternals& ex)
 
 void HttpPlugin::Release ()
 {
-    JobManager_->Release ();
+    JobManager::Instance ().Release ();
     writeSettings ();
     XmlSettingsManager::Instance ()->Release ();
 }
@@ -174,12 +174,12 @@ void HttpPlugin::ShowBalloonTip ()
 
 void HttpPlugin::StartAll ()
 {
-    JobManager_->StartAll ();
+    JobManager::Instance ().StartAll ();
 }
 
 void HttpPlugin::StopAll ()
 {
-    JobManager_->StopAll ();
+    JobManager::Instance ().StopAll ();
 }
 
 bool HttpPlugin::CouldDownload (const QString& string) const
@@ -202,14 +202,16 @@ void HttpPlugin::AddJob (const QString& name)
 
 int HttpPlugin::GetPercentageForRow (int row)
 {
-    quint64 downloaded = JobManager_->data (JobManager_->index (row, JobManager::TListDownloaded)).value<quint64> ();
-    quint64 total = JobManager_->data (JobManager_->index (row, JobManager::TListTotal)).value<quint64> ();
-    return total ? downloaded / total : 0;
+    quint64 downloaded = JobManager::Instance ().data (JobManager::Instance ().index (row, JobManager::TListDownloaded), 40).value<quint64> ();
+    quint64 total = JobManager::Instance ().data (JobManager::Instance ().index (row, JobManager::TListTotal), 40).value<quint64> ();
+    double result = total ? 100 * static_cast<double> (downloaded) / total : 0;
+    qDebug () << result << downloaded << total;
+    return result;
 }
 
 qint64 HttpPlugin::GetDownloadSpeed () const
 {
-    return JobManager_->GetDownloadSpeed ();
+    return JobManager::Instance ().GetDownloadSpeed ();
 }
 
 qint64 HttpPlugin::GetUploadSpeed () const
@@ -217,14 +219,15 @@ qint64 HttpPlugin::GetUploadSpeed () const
     return 0;
 }
 
-void HttpPlugin::addDownload (const DirectDownloadParams& params)
+int HttpPlugin::addDownload (const DirectDownloadParams& params)
 {
     JobParams *jp = new JobParams;
     jp->URL_                    = params.Resource_;
     jp->LocalName_                = params.Location_;
     jp->Autostart_                = params.Autostart_;
     jp->ShouldBeSavedInHistory_    = params.ShouldBeSavedInHistory_;
-    JobManager_->addJob (jp);
+    JobManager::Instance ().addJob (jp);
+    return JobManager::Instance ().columnCount () - 1;
 }
 
 void HttpPlugin::handleHidePlugins ()
@@ -243,33 +246,8 @@ void HttpPlugin::on_ActionAddJob__triggered ()
 
 void HttpPlugin::handleParams (JobParams *params)
 {
-    JobManager_->addJob (params);
+    JobManager::Instance ().addJob (params);
 }
-
-/*
-void HttpPlugin::handleJobFinish (unsigned int id)
-{
-    emit jobFinished (id);
-
-    QString string = tr ("Name: %1, size %2").arg (QFileInfo (jr->LocalName_).fileName ()).arg (Proxy::Instance ()->MakePrettySize (jr->Size_));
-    emit downloadFinished (string);
-    emit fileDownloaded (jr->LocalName_);
-
-    if (jr->ShouldBeSavedInHistory_)
-    {
-        FinishedJob fj (*jr);
-        AddToFinishedList (&fj);
-    }
-
-    delete jr;
-
-    if (!SaveChangesScheduled_)
-    {
-        SaveChangesScheduled_ = true;
-        QTimer::singleShot (100, this, SLOT (writeSettings ()));
-    }
-}
-*/
 
 void HttpPlugin::on_ActionStart__triggered ()
 {
@@ -325,7 +303,7 @@ void HttpPlugin::on_ActionJobProperties__triggered ()
 
     int id = dynamic_cast<JobListItem*> (items.at (0))->GetID ();
 
-    JobRepresentation *jr = JobManager_->GetJobRepresentation (id);
+    JobRepresentation *jr = JobManager::Instance ().GetJobRepresentation (id);
     JobPropertiesDialog dia (jr);
     delete jr;
 
@@ -334,7 +312,7 @@ void HttpPlugin::on_ActionJobProperties__triggered ()
     else
     {
         JobParams *p = dia.GetParams ();
-        JobManager_->UpdateParams (id, p);
+        JobManager::Instance ().UpdateParams (id, p);
         delete p;
     }
     */
@@ -358,8 +336,8 @@ void HttpPlugin::handleTotalSpeedUpdate ()
 
 void HttpPlugin::on_ActionAutoadjust__triggered ()
 {
-    if (JobManager_->rowCount (QModelIndex ()))
-        for (int i = 0; i < JobManager_->columnCount (QModelIndex ()); ++i)
+    if (JobManager::Instance ().rowCount (QModelIndex ()))
+        for (int i = 0; i < JobManager::Instance ().columnCount (QModelIndex ()); ++i)
             Ui_.TasksList_->resizeColumnToContents (i);
     if (Ui_.FinishedList_->topLevelItemCount ())
         for (int i = 0; i < Ui_.FinishedList_->columnCount (); ++i)
@@ -401,7 +379,7 @@ void HttpPlugin::copyFinishedURL ()
 
 void HttpPlugin::setActionsEnabled ()
 {
-    QModelIndexList tasksItems = JobManager_->rowCount () ? Ui_.TasksList_->selectionModel ()->selectedIndexes () : QModelIndexList ();
+    QModelIndexList tasksItems = JobManager::Instance ().rowCount () ? Ui_.TasksList_->selectionModel ()->selectedIndexes () : QModelIndexList ();
     QList<QTreeWidgetItem*> finishedItems = Ui_.FinishedList_->selectedItems ();
     Ui_.ActionRemoveFinished_->setEnabled (finishedItems.size ());
     Ui_.ActionCopyFinishedURL_->setEnabled (finishedItems.size ());
@@ -413,8 +391,8 @@ void HttpPlugin::setActionsEnabled ()
     Ui_.ActionSchedule_->setEnabled (tasksItems.size () && CronEnabled_);
     Ui_.ActionJobProperties_->setEnabled (tasksItems.size ());
 
-    Ui_.ActionStartAll_->setEnabled (JobManager_->rowCount (QModelIndex ()));
-    Ui_.ActionStopAll_->setEnabled (JobManager_->rowCount ());
+    Ui_.ActionStartAll_->setEnabled (JobManager::Instance ().rowCount (QModelIndex ()));
+    Ui_.ActionStopAll_->setEnabled (JobManager::Instance ().rowCount ());
 }
 
 void HttpPlugin::handleCronEnabled ()
@@ -457,6 +435,32 @@ void HttpPlugin::on_ActionFinishedColumns__triggered ()
     }
 }
 
+void HttpPlugin::addToFinishedList (const FinishedJob *fj, int id)
+{
+    QTreeWidgetItem *item = new QTreeWidgetItem;
+    item->setText (FListLocalName, QFileInfo (fj->GetLocal ()).fileName ());
+    item->setText (FListURL, fj->GetURL ());
+    item->setText (FListSize, Proxy::Instance ()->MakePrettySize (fj->GetSize ()));
+    item->setText (FListSpeed, fj->GetSpeed ());
+    item->setText (FListTimeToComplete, fj->GetTimeToComplete ());
+
+    Ui_.FinishedList_->addTopLevelItem (item);
+
+    setActionsEnabled ();
+
+    emit jobFinished (id);
+    QString string = tr ("Name: %1, size %2").arg (QFileInfo (fj->GetLocal ()).fileName ()).arg (Proxy::Instance ()->MakePrettySize (fj->GetSize ()));
+    emit downloadFinished (string);
+    emit fileDownloaded (fj->GetLocal ());
+
+    if (!SaveChangesScheduled_)
+    {
+        SaveChangesScheduled_ = true;
+        QTimer::singleShot (100, this, SLOT (writeSettings ()));
+    }
+
+}
+
 void HttpPlugin::ReadSettings ()
 {
     QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
@@ -468,9 +472,9 @@ void HttpPlugin::ReadSettings ()
     QByteArray jobListArr = settings.value ("jobListHeadersState").toByteArray ();
     if (!jobListArr.isEmpty () && !jobListArr.isNull ())
         Ui_.TasksList_->header ()->restoreState (jobListArr);
-    else if (JobManager_->rowCount (QModelIndex ()))
+    else if (JobManager::Instance ().rowCount (QModelIndex ()))
     {
-        for (int i = 0; i < JobManager_->columnCount (QModelIndex ()); ++i)
+        for (int i = 0; i < JobManager::Instance ().columnCount (QModelIndex ()); ++i)
             Ui_.TasksList_->resizeColumnToContents (i);
     }
 
@@ -499,23 +503,9 @@ void HttpPlugin::ReadSettings ()
     settings.endGroup ();
 }
 
-void HttpPlugin::AddToFinishedList (const FinishedJob *fj)
-{
-    QTreeWidgetItem *item = new QTreeWidgetItem;
-    item->setText (FListLocalName, QFileInfo (fj->GetLocal ()).fileName ());
-    item->setText (FListURL, fj->GetURL ());
-    item->setText (FListSize, Proxy::Instance ()->MakePrettySize (fj->GetSize ()));
-    item->setText (FListSpeed, fj->GetSpeed ());
-    item->setText (FListTimeToComplete, fj->GetTimeToComplete ());
-
-    Ui_.FinishedList_->addTopLevelItem (item);
-
-    setActionsEnabled ();
-}
-
 void HttpPlugin::HandleSelected (JobAction ja)
 {
-    if (!JobManager_->rowCount (QModelIndex ()))
+    if (!JobManager::Instance ().rowCount (QModelIndex ()))
         return;
     QModelIndexList items = Ui_.TasksList_->selectionModel ()->selectedRows ();
 
@@ -527,19 +517,19 @@ void HttpPlugin::HandleSelected (JobAction ja)
         switch (ja)
         {
             case JAStart:
-                JobManager_->Start (items.at (i).row ());
+                JobManager::Instance ().Start (items.at (i).row ());
                 break;
             case JAStop:
-                JobManager_->Stop (items.at (i).row ());
+                JobManager::Instance ().Stop (items.at (i).row ());
                 break;
             case JADelete:
-                JobManager_->Delete (items.at (i).row ());
+                JobManager::Instance ().Delete (items.at (i).row ());
                 break;
             case JAGFS:
-                JobManager_->GetFileSize (items.at (i).row ());
+                JobManager::Instance ().GetFileSize (items.at (i).row ());
                 break;
             case JASchedule:
-                JobManager_->Schedule (items.at (i).row ());
+                JobManager::Instance ().Schedule (items.at (i).row ());
                 break;
         }
     }

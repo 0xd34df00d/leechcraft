@@ -26,6 +26,8 @@ class JobManager : public QAbstractItemModel
     QList<Job*> Jobs_;
     QVector<qint64> JobSpeeds_;
 
+    QMap<Job*, int> IDOnAddition_;
+
     int TotalDownloads_;
     QMap<QString, int> DownloadsPerHost_;
     typedef QMultiMap<QString, int> MultiHostDict_t;
@@ -39,6 +41,8 @@ class JobManager : public QAbstractItemModel
     bool SaveChangesScheduled_, CronEnabled_;
 
     QStringList Headers_;
+    JobManager (QObject *parent = 0);
+    ~JobManager ();
 public:
     enum TasksListHeaders
     {
@@ -53,8 +57,7 @@ public:
         , TListTotal = 8
     };
 
-    JobManager (QObject *parent = 0);
-    ~JobManager ();
+    static JobManager& Instance ();
     void Release ();
     void DoDelayedInit ();
 
@@ -88,7 +91,7 @@ signals:
     void stopped (unsigned int);
     void gotFileSize (unsigned int);
     void cronEnabled ();
-    void addToFinishedList (const FinishedJob&);
+    void addToFinishedList (const FinishedJob*, int);
 private slots:
     void jobStopHandler ();
     void addToFinishedList ();

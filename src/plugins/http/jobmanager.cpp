@@ -23,7 +23,7 @@ JobManager::JobManager (QObject *parent)
 , CronEnabled_ (false)
 {
     QueryWaitingTimer_ = startTimer (500);
-    Headers_ << tr ("State") << tr ("Local name") << tr ("URL") << tr ("Progress") << tr ("Speed") << tr ("ETA") << tr ("Download time") << tr ("Ready") << tr ("Total");
+    Headers_ << tr ("State") << tr ("Local name") << tr ("URL") << tr ("Progress") << tr ("Speed") << tr ("ETA") << tr ("Download time");
     QTimer *timer = new QTimer;
     connect (timer, SIGNAL (timeout ()), this, SLOT (updateAll ()));
     timer->start (1000);
@@ -31,6 +31,12 @@ JobManager::JobManager (QObject *parent)
 
 JobManager::~JobManager ()
 {
+}
+
+JobManager& JobManager::Instance ()
+{
+    static JobManager TheOnlyOne_;
+    return TheOnlyOne_;
 }
 
 void JobManager::Release ()
@@ -68,13 +74,9 @@ int JobManager::columnCount (const QModelIndex&) const
 
 QVariant JobManager::data (const QModelIndex& index, int role) const
 {
-    if (role != Qt::DisplayRole)
-        return QVariant ();
     int row = index.row (),
         column = index.column ();
-
     Job *job = Jobs_.at (row);
-
     switch (role)
     {
         case Qt::DisplayRole:
@@ -89,20 +91,29 @@ QVariant JobManager::data (const QModelIndex& index, int role) const
                 case TListPercent:
                     return job->GetTotal () ? job->GetDownloaded () / job->GetTotal () : 0;
                 case TListSpeed:
-                    return Proxy::Instance ()->MakePrettySize (job->GetSpeed ()) + tr ("/s");
+                    return static_cast<quint64> (job->GetSpeed ());
                 case TListDownloadTime:
-                    return Proxy::Instance ()->MakeTimeFromLong (job->GetDownloadTime ());
+                    return static_cast<quint64> (job->GetDownloadTime () / 1000);
                 case TListRemainingTime:
-                    return Proxy::Instance ()->MakeTimeFromLong (job->GetAverageTime ());
+                    return static_cast<quint64> (job->GetAverageTime ());
                 case TListDownloaded:
-                    return Proxy::Instance ()->MakePrettySize (job->GetDownloaded ());
+                    return job->GetDownloaded ();
                 case TListTotal:
-                    return Proxy::Instance ()->MakePrettySize (job->GetTotal ());
+                    return job->GetTotal ();
             }
         case Qt::DecorationRole:
             switch (static_cast<TasksListHeaders> (column))
             {
                 case TListState:
+                    switch (job->GetState ())
+                    {
+                        case Job::StateWaiting:
+                            return QIcon (":/resources/images/waiting.png");
+                        case Job::StateDownloading:
+                            return QIcon (":/resources/images/startjob.png");
+                        case Job::StateIdle:
+                            return QIcon (":/resources/images/stopjob.png");
+                    }
                 default:
                     return QVariant ();
             }
@@ -133,7 +144,7 @@ QVariant JobManager::headerData (int header, Qt::Orientation orient, int role) c
 
 QModelIndex JobManager::index (int r, int c, const QModelIndex&) const
 {
-    if (!hasIndex (r, c))
+    if (!hasIndex (r, c) && !hasIndex (r, c - 1) && !hasIndex (r, c - 2))
         return QModelIndex ();
     return createIndex (r, c);
 }
@@ -364,7 +375,10 @@ void JobManager::addToFinishedList ()
     fj->Local_ = job->GetLocalName ();
     fj->Size_ = job->GetTotal ();
     fj->Speed_ = Proxy::Instance ()->MakePrettySize (job->GetSpeed ()) + tr ("/s");
-    fj->TimeToComplete_ = Proxy::Instance ()->MakeTimeFromLong (job->GetAverageTime ()).toString ();
+    fj->TimeToComplete_ = Proxy::Instance ()->MakeTimeFromLong (job->GetDownloadTime ()).toString ();
+
+    emit addToFinishedList (fj, IDOnAddition_ [job]);
+    delete fj;
 }
 
 void JobManager::removeJob ()

@@ -28,7 +28,17 @@
        </attribute>
        <layout class="QHBoxLayout" >
         <item>
-         <widget class="ContextableView" name="TasksList_" />
+         <widget class="ContextableView" name="TasksList_" >
+          <property name="rootIsDecorated" >
+           <bool>false</bool>
+          </property>
+          <property name="uniformRowHeights" >
+           <bool>true</bool>
+          </property>
+          <property name="itemsExpandable" >
+           <bool>false</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -39,6 +49,18 @@
        <layout class="QHBoxLayout" >
         <item>
          <widget class="ContextableList" name="FinishedList_" >
+          <property name="selectionMode" >
+           <enum>QAbstractItemView::ExtendedSelection</enum>
+          </property>
+          <property name="rootIsDecorated" >
+           <bool>false</bool>
+          </property>
+          <property name="uniformRowHeights" >
+           <bool>true</bool>
+          </property>
+          <property name="itemsExpandable" >
+           <bool>false</bool>
+          </property>
           <column>
            <property name="text" >
             <string>Local name</string>

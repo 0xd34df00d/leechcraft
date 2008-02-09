@@ -35,6 +35,9 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
     setWindowTitle (QCoreApplication::applicationName ());
     SetTrayIcon ();
 
+    XmlSettingsDialog_ = new XmlSettingsDialog (this);
+    XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/coresettings.xml");
+
     DownloadSpeed_ = new QLabel;
     DownloadSpeed_->setText ("0");
     DownloadSpeed_->setMinimumWidth (70);
@@ -57,18 +60,16 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
     connect (Model_, SIGNAL (gotPlugin (const PluginInfo*)), this, SLOT (addPluginToList (const PluginInfo*)));
     connect (Model_, SIGNAL (downloadFinished (const QString&)), this, SLOT (handleDownloadFinished (const QString&)));
     Model_->SetReallyMainWindow (this);
+    splash.finish (this);
+    show ();
+
     Model_->DelayedInit ();
 
     QTimer *speedUpd = new QTimer (this);
     speedUpd->setInterval (1000);
     connect (speedUpd, SIGNAL (timeout ()), this, SLOT (updateSpeedIndicators ()));
     speedUpd->start ();
-    splash.finish (this);
     qApp->setQuitOnLastWindowClosed (false);
-    show ();
-
-    XmlSettingsDialog_ = new XmlSettingsDialog (this);
-    XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/coresettings.xml");
 }
 
 QMenu* MainWindow::GetRootPluginsMenu () const

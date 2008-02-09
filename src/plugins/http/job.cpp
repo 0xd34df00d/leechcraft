@@ -301,7 +301,7 @@ void Job::Unserialize (const QByteArray& data)
     qDebug () << data;
     QByteArray localdata = data;
     Params_ = new JobParams;
-    QDataStream in (&localdata, QIODevice::WriteOnly);
+    QDataStream in (&localdata, QIODevice::ReadOnly);
     in >> ErrorFlag_
         >> GetFileSize_
         >> Speed_

@@ -12,7 +12,6 @@
 class QPushButton;
 class QSplitter;
 class Job;
-class JobManager;
 class Proxy;
 class FinishedJob;
 class SettingsDialog;
@@ -37,7 +36,6 @@ class HttpPlugin : public QMainWindow
     int ID_;
     bool IsShown_, SaveChangesScheduled_, CronEnabled_;
     SettingsDialog *SettingsDialog_;
-    JobManager *JobManager_;
     QStringList ProvidesList_, NeedsList_, UsesList_, TaskHeaderLabels_, FinishedHeaderLabels_;
     QLabel *SpeedIndicator_;
     QMenu *Plugins_;
@@ -94,8 +92,8 @@ public:
 
     int GetPercentageForRow (int);
 public slots:
-    virtual void addDownload (const DirectDownloadParams&);
     void handleHidePlugins ();
+    virtual int addDownload (const DirectDownloadParams&);
 private slots:
     void on_ActionAddJob__triggered ();
     void handleParams (JobParams*);
@@ -119,9 +117,9 @@ private slots:
     void handleCronEnabled ();
     void on_ActionActiveColumns__triggered ();
     void on_ActionFinishedColumns__triggered ();
+    void addToFinishedList (const FinishedJob*, int);
 private:
     void ReadSettings ();
-    void AddToFinishedList (const FinishedJob*);
     void HandleSelected (JobAction);
 protected:
     virtual void closeEvent (QCloseEvent*);
@@ -130,7 +128,6 @@ signals:
     void fileDownloaded (const QString&);
     void jobAdded (int);
     void jobFinished (int);
-    void jobRemoved (int);
     void jobError (int, IDirectDownload::Error);
     void jobProgressUpdated (int, int);
 };
