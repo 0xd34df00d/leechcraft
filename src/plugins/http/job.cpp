@@ -144,7 +144,7 @@ void Job::Start ()
     connect (ProtoImp_, SIGNAL (gotNewFiles (QStringList*)), this, SLOT (handleNewFiles (QStringList*)));
     connect (ProtoImp_, SIGNAL (clarifyURL (QString)), this, SLOT (handleClarifyURL (QString)));
     connect (ProtoImp_, SIGNAL (dataFetched (ImpBase::length_t, ImpBase::length_t, QByteArray)), this, SLOT (processData (ImpBase::length_t, ImpBase::length_t, QByteArray)), Qt::DirectConnection);
-    connect (ProtoImp_, SIGNAL (finished ()), this, SLOT (handleFinished ()), Qt::DirectConnection);
+    connect (ProtoImp_, SIGNAL (finished ()), this, SLOT (handleFinished ()));
     connect (ProtoImp_, SIGNAL (error (QString)), this, SLOT (handleShowError (QString)));
     connect (ProtoImp_, SIGNAL (stopped ()), this, SLOT (handleStopped ()));
     connect (ProtoImp_, SIGNAL (enqueue ()), this, SLOT (handleEnqueue ()));
@@ -158,10 +158,12 @@ void Job::Start ()
     GetFileSize_ = false;
 
     DownloadedSize_ = RestartPosition_;
-    TotalSize_ = RestartPosition_;
+    if (TotalSize_ <= 0)
+        TotalSize_ = RestartPosition_;
 
     ProtoImp_->StartDownload ();
     StartTime_->start ();
+    emit updateDisplays ();
 }
 
 void Job::GetFileSize ()
@@ -173,11 +175,14 @@ void Job::GetFileSize ()
 void Job::handleRemoteFileInfo (const ImpBase::RemoteFileInfo& rfi)
 {
     QString ln = MakeFilename ();
+    qDebug () << Q_FUNC_INFO << ln;
     QFileInfo fileInfo (ln);
     if (fileInfo.exists () && !fileInfo.isDir ())
     {
+        qDebug () << "file exists and is not directory.";
         if (rfi.Modification_ >= fileInfo.lastModified ())
         {
+            qDebug () << "rfi is greater than local.";
             if (QMessageBox::question (parent () ? qobject_cast<JobManager*> (parent ())->GetTheMain () : 0, tr ("Question."), tr ("File on remote server is newer than local. Should I redownload it from scratch or just leave it alone?"), QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok)
             {
                 File_ = new QFile (ln);
@@ -189,35 +194,40 @@ void Job::handleRemoteFileInfo (const ImpBase::RemoteFileInfo& rfi)
                 }
                 File_->open (QFile::WriteOnly);
                 RestartPosition_ = 0;
-                Stop ();
-                Start ();
-                return;
+                qDebug () << "Starting from scratch";
             }
             else
             {
+                qDebug () << "Stopping at all";
                 Stop ();
                 return;
             }
         }
         else
         {
+            qDebug () << "local file is actual.";
             FileExistsDialog_->exec ();
             QFile f (ln);
             switch (FileExistsDialog_->GetSelected ())
             {
                 case FileExistsDialog::Scratch:
+                    qDebug () << "scratch";
                     if (!QFile::remove (ln))
                     {
                         if (!f.open (QFile::Truncate))
                             throw Exceptions::IO (tr ("File could be neither removed, nor truncated. Check your rights or smth.").toStdString ());
                         f.close ();
                     }
+                    RestartPosition_ = 0;
                     break;
                 case FileExistsDialog::Continue:
                     RestartPosition_ = f.size ();
+                    qDebug () << "continue" << RestartPosition_;
                     break;
                 case FileExistsDialog::Unique:
                     Params_->LocalName_ = MakeUniqueNameFor (ln);
+                    qDebug () << "unique" << Params_->LocalName_;
+                    RestartPosition_ = 0;
                     break;
                 case FileExistsDialog::Abort:
                     ProtoImp_->ReactedToFileInfo ();
@@ -229,7 +239,19 @@ void Job::handleRemoteFileInfo (const ImpBase::RemoteFileInfo& rfi)
     else if (fileInfo.isDir ())
     {
     }
+    else if (!fileInfo.exists ())
+    {
+        RestartPosition_ = 0;
+        qDebug () << "doesn't exist";
+    }
+    ProtoImp_->SetRestartPosition (RestartPosition_);
     File_ = new QFile (MakeFilename ());
+    if (!File_->open (QIODevice::WriteOnly | QIODevice::Append))
+    {
+        QMessageBox::warning (parent () ? qobject_cast<JobManager*> (parent ())->GetTheMain () : 0, tr ("Warning"), tr ("Could not open file %1 for write. Aborting.").arg (MakeFilename ()));
+        return;
+    }
+
     ProtoImp_->ReactedToFileInfo ();
 }
 
@@ -242,6 +264,7 @@ void Job::Stop ()
             ProtoImp_->terminate ();
     }
     State_ = StateIdle;
+    File_->close ();
     handleStopped ();
 }
 
@@ -252,13 +275,12 @@ void Job::Release ()
         ProtoImp_->StopDownload ();
         ProtoImp_->wait (XmlSettingsManager::Instance ()->property ("DisconnectTimeout").toInt ());
     }
-    qDebug () << Q_FUNC_INFO;
-    if (ProtoImp_->isRunning ())
+    if (ProtoImp_ && ProtoImp_->isRunning ())
         ProtoImp_->terminate ();
-    qDebug () << Q_FUNC_INFO;
     delete ProtoImp_;
-    qDebug () << Q_FUNC_INFO;
     ProtoImp_ = 0;
+    if (File_)
+        File_->close ();
 }
 
 Job::State Job::GetState () const
@@ -270,7 +292,6 @@ void Job::UpdateParams (JobParams *p)
 {
     Params_->URL_ = p->URL_;
     Params_->LocalName_ = p->LocalName_;
-    emit updateDisplays ();
 }
 
 QByteArray Job::Serialized () const
@@ -291,14 +312,11 @@ QByteArray Job::Serialized () const
         << Params_->Autostart_
         << Params_->ShouldBeSavedInHistory_;
 
-    qDebug () << result;
-
     return result;
 }
 
 void Job::Unserialize (const QByteArray& data)
 {
-    qDebug () << data;
     QByteArray localdata = data;
     Params_ = new JobParams;
     QDataStream in (&localdata, QIODevice::ReadOnly);
@@ -361,61 +379,27 @@ void Job::handleClarifyURL (QString url)
 
 void Job::processData (ImpBase::length_t ready, ImpBase::length_t total, QByteArray newData)
 {
-    if (newData.isEmpty () || newData.isNull ())
-    {
-        PreviousDownloadSize_ = ready;
-        DownloadedSize_ = ready;
-        TotalSize_ = total;
-        StartTime_->restart ();
-        UpdateTime_->restart ();
-        emit updateDisplays ();
-        return;
-    }
-    else if (!File_)
-        return;
-
+    if (File_)
+        File_->write (newData);
     DownloadedSize_ = ready;
     TotalSize_ = total;
-    Speed_ = (DownloadedSize_ - RestartPosition_) / static_cast<double> (StartTime_->elapsed ()) * 1000;
 
     if (UpdateTime_->elapsed () > XmlSettingsManager::Instance ()->property ("InterfaceUpdateTimeout").toInt ())
     {
-        CurrentSpeed_ = (DownloadedSize_ - PreviousDownloadSize_) / static_cast<double> (UpdateTime_->elapsed ()) * 1000;
+        Speed_ = static_cast<double> (DownloadedSize_ - RestartPosition_) / static_cast<double> (StartTime_->elapsed ());
+        CurrentSpeed_ = (DownloadedSize_ - PreviousDownloadSize_) / static_cast<double> (UpdateTime_->elapsed ());
         PreviousDownloadSize_ = DownloadedSize_;
         UpdateTime_->restart ();
-    }
-
-    if (!File_->open (QFile::WriteOnly | QFile::Append))
-    {
-        QTemporaryFile tmpFile ("leechcraft.httpplugin.XXXXXX");
-        emit showError (Params_->URL_, QString (tr ("Could not open file for write/append<br /><code>%1</code>"
-                        "<br /><br />Flushing cache to temp file<br /><code>%2</code><br />and stopping work."))
-                        .arg (File_->fileName ())
-                        .arg (tmpFile.fileName ()));
-
-        if (!tmpFile.open ())
-        {
-            emit showError (Params_->URL_, QString (tr ("Could not open temporary file for write<br /><code>%1</code>"))
-                        .arg (tmpFile.fileName ()));
-        }
-        else
-        {
-            tmpFile.write (newData);
-            tmpFile.close ();
-            tmpFile.setAutoRemove (false);
-        }
-
-        ProtoImp_->StopDownload ();
-    }
-    else
-    {
-        File_->write (newData);
-        File_->close ();
+        StartTime_->restart ();
+        UpdateTime_->restart ();
     }
 }
 
 void Job::handleFinished ()
 {
+    if (File_)
+        File_->close ();
+    qDebug () << Q_FUNC_INFO;
     State_ = StateIdle;
     DownloadTime_ += StartTime_->elapsed ();
     StartTime_->restart ();
@@ -429,6 +413,8 @@ void Job::handleShowError (QString error)
 
 void Job::handleStopped ()
 {
+    if (File_)
+        File_->close ();
     State_ = StateIdle;
     DownloadTime_ += StartTime_->elapsed ();
     StartTime_->restart ();
@@ -437,6 +423,8 @@ void Job::handleStopped ()
 
 void Job::handleEnqueue ()
 {
+    if (File_)
+        File_->close ();
     disconnect (this, SIGNAL (stopped (unsigned int)), 0, 0);
     Stop ();
     emit enqueue ();
@@ -448,7 +436,7 @@ void Job::handleEnqueue ()
 void Job::handleGotFileSize (ImpBase::length_t size)
 {
     TotalSize_ = size;
-    emit gotFileSize ();
+    emit updateDisplays ();
 }
 
 void Job::FillErrorDictionary ()

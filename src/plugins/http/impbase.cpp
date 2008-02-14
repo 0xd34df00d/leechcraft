@@ -24,19 +24,11 @@ void ImpBase::SetCacheSize (int cs)
 
 void ImpBase::Emit (ImpBase::length_t down, ImpBase::length_t total, QByteArray data)
 {
-    Cache_.append (data);
-
-    if (Cache_.size () >= CacheSize_)
-    {
-        emit dataFetched (down, total, Cache_);
-        Cache_.clear ();
-        Cache_.reserve (CacheSize_);
-    }
+    emit dataFetched (down, total, data);
 }
 
 void ImpBase::EmitFlush (ImpBase::length_t down, ImpBase::length_t total)
 {
-    emit dataFetched (down, total, Cache_);
-    Cache_.clear ();
+    emit dataFetched (down, total, QByteArray ());
 }
 

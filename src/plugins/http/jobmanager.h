@@ -96,12 +96,14 @@ private slots:
     void jobStopHandler ();
     void addToFinishedList ();
     void removeJob ();
+    void handleJobFinish ();
     void enqueue ();
     void handleJobDisplay ();
     void handleJobDisplay (unsigned int);
     void updateAll ();
     void saveSettings ();
     void scheduleSave ();
+    void readSettings ();
 private:
     void TryToStartScheduled ();
     uint JobPosition (Job*);

@@ -37,10 +37,10 @@ Core::Core (QObject *parent)
 
 void Core::DoDelayedInit ()
 {
-    Session_ = new libtorrent::session (libtorrent::fingerprint ("LB", 0, 1, 0, 2));
-    QList<QVariant> ports = XmlSettingsManager::Instance ()->property ("TCPPortRange").toList ();
     try
     {
+        QList<QVariant> ports = XmlSettingsManager::Instance ()->property ("TCPPortRange").toList ();
+        Session_ = new libtorrent::session (libtorrent::fingerprint ("LB", 0, 1, 0, 2));
         Session_->listen_on (std::make_pair (ports.at (0).toInt (), ports.at (1).toInt ()));
         Session_->add_extension (&libtorrent::create_metadata_plugin);
         Session_->add_extension (&libtorrent::create_ut_pex_plugin);

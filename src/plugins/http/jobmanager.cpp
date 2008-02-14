@@ -53,18 +53,7 @@ void JobManager::Release ()
 
 void JobManager::DoDelayedInit ()
 {
-    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
-    settings.beginGroup ("HTTP and FTP");
-    int size = settings.beginReadArray ("Jobs");
-    for (int i = 0; i < size; ++i)
-    {
-        settings.setArrayIndex (i);
-        Job *job = new Job;
-        job->Unserialize (settings.value ("job").toByteArray ());
-        Jobs_.append (job);
-    }
-    settings.endArray ();
-    settings.endGroup ();
+    QTimer::singleShot (500, this, SLOT (readSettings ()));
 }
 
 int JobManager::columnCount (const QModelIndex&) const
@@ -175,9 +164,7 @@ QWidget* JobManager::GetTheMain () const
 void JobManager::addJob (JobParams *params)
 {
     Job *job = new Job (params, this);
-    connect (job, SIGNAL (finished ()), this, SLOT (jobStopHandler ()));
-    connect (job, SIGNAL (finished ()), this, SLOT (addToFinishedList ()));
-    connect (job, SIGNAL (finished ()), this, SLOT (removeJob ()));
+    connect (job, SIGNAL (finished ()), this, SLOT (handleJobFinish ()));
     connect (job, SIGNAL (deleteJob ()), this, SLOT (jobStopHandler ()));
     connect (job, SIGNAL (deleteJob ()), this, SLOT (removeJob ()));
     connect (job, SIGNAL (stopped ()), this, SLOT (jobStopHandler ()));
@@ -369,6 +356,7 @@ void JobManager::jobStopHandler ()
 
 void JobManager::addToFinishedList ()
 {
+    qDebug () << Q_FUNC_INFO;
     Job *job = qobject_cast<Job*> (sender ());
     FinishedJob *fj = new FinishedJob;
     fj->URL_ = job->GetURL ();
@@ -384,9 +372,19 @@ void JobManager::addToFinishedList ()
 void JobManager::removeJob ()
 {
     int id = JobPosition (qobject_cast<Job*> (sender ()));
+    beginRemoveRows (QModelIndex (), id, id);
     Jobs_ [id]->Release ();
     delete Jobs_ [id];
     Jobs_.removeAt (id);
+    endRemoveRows ();
+}
+
+void JobManager::handleJobFinish ()
+{
+    qDebug () << Q_FUNC_INFO;
+    jobStopHandler ();
+    addToFinishedList ();
+    removeJob ();
 }
 
 void JobManager::enqueue ()
@@ -444,6 +442,39 @@ void JobManager::scheduleSave ()
         SaveChangesScheduled_ = true;
         QTimer::singleShot (500, this, SLOT (saveSettings ()));
     }
+}
+
+void JobManager::readSettings ()
+{
+    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
+    settings.beginGroup ("HTTP and FTP");
+    int size = settings.beginReadArray ("Jobs");
+    if (size)
+    {
+        beginInsertRows (QModelIndex (), 0, size - 1);
+        for (int i = 0; i < size; ++i)
+        {
+            settings.setArrayIndex (i);
+            Job *job = new Job;
+            job->Unserialize (settings.value ("job").toByteArray ());
+            Jobs_.append (job);
+            connect (job, SIGNAL (finished ()), this, SLOT (handleJobFinish ()));
+            connect (job, SIGNAL (deleteJob ()), this, SLOT (jobStopHandler ()));
+            connect (job, SIGNAL (deleteJob ()), this, SLOT (removeJob ()));
+            connect (job, SIGNAL (stopped ()), this, SLOT (jobStopHandler ()));
+            connect (job, SIGNAL (enqueue ()), this, SLOT (enqueue ()));
+
+            connect (job, SIGNAL (updateDisplays ()), this, SLOT (handleJobDisplay ()));
+            connect (job, SIGNAL (stopped ()), this, SLOT (handleJobDisplay ()));
+            connect (job, SIGNAL (started ()), this, SLOT (handleJobDisplay ()));
+            connect (job, SIGNAL (addJob (JobParams*)), this, SLOT (addJob (JobParams*)));
+            connect (job, SIGNAL (showError (QString, QString)), this, SIGNAL (showError (QString, QString)));
+            connect (job, SIGNAL (gotFileSize ()), this, SLOT (handleJobDisplay ()));
+        }
+        endInsertRows ();
+    }
+    settings.endArray ();
+    settings.endGroup ();
 }
 
 void JobManager::TryToStartScheduled ()

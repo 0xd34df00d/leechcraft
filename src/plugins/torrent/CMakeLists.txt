@@ -67,21 +67,21 @@ QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 ADD_LIBRARY (leechcraft_torrent SHARED ${SRCS} ${MOC_SRCS} ${UIS_H} ${RCCS})
 IF (WIN32)
-	TARGET_LINK_LIBRARIES (leechcraft_torrent
-							${QT_LIBRARIES}
-							plugininterface
-							exceptions
-							xmlsettingsdialog
-							torrent
-							boost_date_time-mgw42-mt-1_34_1
-							boost_filesystem-mgw42-mt-1_34_1
-							boost_thread-mgw42-mt-1_34_1)
+TARGET_LINK_LIBRARIES (leechcraft_torrent
+${QT_LIBRARIES}
+plugininterface
+exceptions
+xmlsettingsdialog
+torrent
+boost_date_time-mgw42-mt-1_34_1
+boost_filesystem-mgw42-mt-1_34_1
+boost_thread-mgw42-mt-1_34_1)
 ELSE (WIN32)
-	TARGET_LINK_LIBRARIES (leechcraft_torrent
-							${QT_LIBRARIES}
-							plugininterface
-							exceptions
-							xmlsettingsdialog
-							torrent)
+TARGET_LINK_LIBRARIES (leechcraft_torrent
+${QT_LIBRARIES}
+plugininterface
+exceptions
+xmlsettingsdialog
+torrent)
 ENDIF (WIN32)
 INSTALL (TARGETS leechcraft_torrent DESTINATION share/leechcraft/plugins)

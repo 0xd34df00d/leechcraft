@@ -15,6 +15,9 @@ MainViewDelegate::MainViewDelegate (HttpPlugin *plugin)
 
 void MainViewDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
+    if (!index.isValid ())
+        return;
+
     if (index.column () == JobManager::TListPercent)
     {
         QStyleOptionProgressBar pbo;

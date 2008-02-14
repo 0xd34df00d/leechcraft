@@ -2,7 +2,6 @@
 #include <QtNetwork/QtNetwork>
 #include <QtDebug>
 #include <plugininterface/proxy.h>
-#include <interfaces/interfaces.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "columnselector.h"
 #include "httpplugin.h"
@@ -40,8 +39,8 @@ void HttpPlugin::Init ()
     SetupStatusBarStuff ();
 
     ReadSettings ();
-    Ui_.TasksList_->setModel (&JobManager::Instance ());
     JobManager::Instance ().DoDelayedInit ();
+    Ui_.TasksList_->setModel (&JobManager::Instance ());
 
     IsShown_ = false;
 
@@ -53,7 +52,7 @@ void HttpPlugin::Init ()
     connect (speedUpdTimer, SIGNAL (timeout ()), this, SLOT (handleTotalSpeedUpdate ()));
     speedUpdTimer->start ();
     connect (Ui_.FinishedList_, SIGNAL (itemSelectionChanged ()), this, SLOT (setActionsEnabled ()));
-    connect (Ui_.TasksList_, SIGNAL (itemSelectionChanged ()), this, SLOT (setActionsEnabled ()));
+    connect (Ui_.TasksList_->selectionModel (), SIGNAL (selectionChanged (const QItemSelection&, const QItemSelection&)), this, SLOT (setActionsEnabled ()));
     setActionsEnabled ();
 
     Plugins_->addAction (Ui_.ActionAddJob_);
@@ -200,15 +199,6 @@ void HttpPlugin::AddJob (const QString& name)
     delete dia;
 }
 
-int HttpPlugin::GetPercentageForRow (int row)
-{
-    quint64 downloaded = JobManager::Instance ().data (JobManager::Instance ().index (row, JobManager::TListDownloaded), 40).value<quint64> ();
-    quint64 total = JobManager::Instance ().data (JobManager::Instance ().index (row, JobManager::TListTotal), 40).value<quint64> ();
-    double result = total ? 100 * static_cast<double> (downloaded) / total : 0;
-    qDebug () << result << downloaded << total;
-    return result;
-}
-
 qint64 HttpPlugin::GetDownloadSpeed () const
 {
     return JobManager::Instance ().GetDownloadSpeed ();
@@ -223,9 +213,9 @@ int HttpPlugin::addDownload (const DirectDownloadParams& params)
 {
     JobParams *jp = new JobParams;
     jp->URL_                    = params.Resource_;
-    jp->LocalName_                = params.Location_;
-    jp->Autostart_                = params.Autostart_;
-    jp->ShouldBeSavedInHistory_    = params.ShouldBeSavedInHistory_;
+    jp->LocalName_              = params.Location_;
+    jp->Autostart_              = params.Autostart_;
+    jp->ShouldBeSavedInHistory_ = params.ShouldBeSavedInHistory_;
     JobManager::Instance ().addJob (jp);
     return JobManager::Instance ().columnCount () - 1;
 }

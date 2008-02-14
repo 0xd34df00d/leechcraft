@@ -89,8 +89,6 @@ public:
     
     virtual bool CouldDownload (const QString&) const;
     virtual void AddJob (const QString&);
-
-    int GetPercentageForRow (int);
 public slots:
     void handleHidePlugins ();
     virtual int addDownload (const DirectDownloadParams&);
@@ -128,6 +126,7 @@ signals:
     void fileDownloaded (const QString&);
     void jobAdded (int);
     void jobFinished (int);
+    void jobRemoved (int);
     void jobError (int, IDirectDownload::Error);
     void jobProgressUpdated (int, int);
 };

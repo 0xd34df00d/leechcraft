@@ -8,6 +8,7 @@
 struct JobParams;
 struct JobRepresentation;
 class QTime;
+class QTimer;
 class QFile;
 class FileExistsDialog;
 
@@ -26,6 +27,8 @@ class Job : public QObject
     QFile *File_;
     QTime *StartTime_, *UpdateTime_;
     FileExistsDialog *FileExistsDialog_;
+    QByteArray Cache_;
+    QTimer *FlushTimer_;
 public:
     enum State
     {
@@ -64,6 +67,7 @@ private slots:
     void handleNewFiles (QStringList*);
     void handleClarifyURL (QString);
     void processData (ImpBase::length_t, ImpBase::length_t, QByteArray);
+    void flushCaches ();
     void handleFinished ();
     void handleShowError (QString);
     void handleStopped ();
