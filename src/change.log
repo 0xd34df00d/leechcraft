@@ -1,6 +1,8 @@
 ***Public build 8***
 Core:
 + XmlSettingsManager handles Comboboxes now.
++ IRemoteable.
+* Correctly handle situations where multiple plugins provide same use-feature.
 
 BitTorrent:
 * Fixed a bug with crashing if clicking on fully downloaded torrent having all pieces.

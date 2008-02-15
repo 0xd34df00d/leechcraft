@@ -1,6 +1,7 @@
 #ifndef CORE_H
 #define CORE_H
 #include <QObjectList>
+#include <QVariantList>
 #include <QMap>
 #include <QString>
 #include "reply.h"
@@ -25,9 +26,13 @@ private:
     Reply DoView (const QStringList&, const QMap<QString, QString>&);
     Reply DoUnhandled (const QStringList&, const QMap<QString, QString>&);
 
+    QString Row (const QVariantList&);
     QString Head (const QString&) const;
     QString Body (const QString&) const;
     QString Link (const QString&, const QString&, bool n = false) const;
+    QString Heading (const QString&, int level = 1);
+    QString Strong (const QString&);
+    QString Table (const QString&);
 };
 
 #endif

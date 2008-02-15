@@ -114,6 +114,9 @@ QVariant Core::data (const QModelIndex& index, int role) const
     int row = index.row (),
         column = index.column ();
 
+    if (!CheckValidity (row))
+        return QVariant ();
+
     libtorrent::torrent_handle h = Handles_.at (row).Handle_;
     if (!h.is_valid ())
     {
@@ -391,7 +394,7 @@ void Core::AddFile (const QString& filename, const QString& path, const QVector<
     Handles_.append (tmp);
     endInsertRows ();
     handle.resolve_countries (true);
-    QTimer::singleShot (1000, this, SLOT (writeSettings ()));
+    QTimer::singleShot (3000, this, SLOT (writeSettings ()));
 }
 
 void Core::RemoveTorrent (int pos)
@@ -714,41 +717,52 @@ void Core::writeSettings ()
         settings.setArrayIndex (i);
         if (!CheckValidity (i))
             continue;
-        libtorrent::entry resume = Handles_.at (i).Handle_.write_resume_data ();
-        QVector<char> resumeBuf;
-        libtorrent::bencode (std::back_inserter (resumeBuf), resume);
-        QFile file_info (QDir::homePath () + "/.leechcraft_bittorrent/" + Handles_.at (i).TorrentFileName_);
-        if (!file_info.open (QIODevice::WriteOnly))
+        try
         {
-            emit error ("Cannot write settings! Cannot open files for write!");
-            break;
-        }
-        file_info.write (Handles_.at (i).TorrentFileContents_);
-        file_info.close ();
+            libtorrent::entry resume = Handles_.at (i).Handle_.write_resume_data ();
+            QVector<char> resumeBuf;
+            libtorrent::bencode (std::back_inserter (resumeBuf), resume);
+            QFile file_info (QDir::homePath () + "/.leechcraft_bittorrent/" + Handles_.at (i).TorrentFileName_);
+            if (!file_info.open (QIODevice::WriteOnly))
+            {
+                emit error ("Cannot write settings! Cannot open files for write!");
+                break;
+            }
+            file_info.write (Handles_.at (i).TorrentFileContents_);
+            file_info.close ();
 
-        QFile file_resume (QDir::homePath () + "/.leechcraft_bittorrent/" + Handles_.at (i).TorrentFileName_ + ".resume");
-        if (file_resume.open (QIODevice::WriteOnly))
+            QFile file_resume (QDir::homePath () + "/.leechcraft_bittorrent/" + Handles_.at (i).TorrentFileName_ + ".resume");
+            if (file_resume.open (QIODevice::WriteOnly))
+            {
+                QByteArray data;
+                for (int i = 0; i < resumeBuf.size (); ++i)
+                    data.append (resumeBuf.at (i));
+                file_resume.write (data);
+                file_resume.close ();
+            }
+            else
+                qWarning () << Q_FUNC_INFO << "could not open the resume file for write";
+
+            settings.setValue ("SavePath", QString::fromStdString (Handles_.at (i).Handle_.save_path ().string ()));
+            settings.setValue ("UploadedBytes", Handles_.at (i).UploadedBefore_ + Handles_.at (i).Handle_.status ().total_upload);
+            settings.setValue ("Filename", Handles_.at (i).TorrentFileName_);
+
+            settings.beginWriteArray ("Priorities");
+            for (size_t j = 0; j < Handles_.at (i).FilePriorities_.size (); ++j)
+            {
+                settings.setArrayIndex (j);
+                settings.setValue ("Priority", Handles_.at (i).FilePriorities_ [j]);
+            }
+            settings.endArray ();
+        }
+        catch (const std::exception& e)
         {
-            QByteArray data;
-            for (int i = 0; i < resumeBuf.size (); ++i)
-                data.append (resumeBuf.at (i));
-            file_resume.write (data);
-            file_resume.close ();
+            qWarning () << Q_FUNC_INFO << e.what ();
         }
-        else
-            qWarning () << Q_FUNC_INFO << "could not open the resume file for write";
-
-        settings.setValue ("SavePath", QString::fromStdString (Handles_.at (i).Handle_.save_path ().string ()));
-        settings.setValue ("UploadedBytes", Handles_.at (i).UploadedBefore_ + Handles_.at (i).Handle_.status ().total_upload);
-        settings.setValue ("Filename", Handles_.at (i).TorrentFileName_);
-
-        settings.beginWriteArray ("Priorities");
-        for (size_t j = 0; j < Handles_.at (i).FilePriorities_.size (); ++j)
+        catch (...)
         {
-            settings.setArrayIndex (j);
-            settings.setValue ("Priority", Handles_.at (i).FilePriorities_ [j]);
+            qWarning () << Q_FUNC_INFO << "unknown exception";
         }
-        settings.endArray ();
     }
     settings.endArray ();
     settings.endGroup ();

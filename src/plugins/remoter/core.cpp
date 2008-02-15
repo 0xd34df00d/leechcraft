@@ -23,7 +23,7 @@ void Core::Release ()
 void Core::AddObject (QObject *object, const QString& feature)
 {
     qDebug () << Q_FUNC_INFO << feature << object;
-    if (feature == "remoteable" && qobject_cast<IRemoteable*> (object))
+    if (feature == "remoteable" && qobject_cast<IRemoteable*> (object) && qobject_cast<IInfo*> (object))
         Objects_.append (object);
 }
 
@@ -59,7 +59,29 @@ Reply Core::DoView (const QStringList&, const QMap<QString, QString>&)
     Reply rep;
     rep.State_ = StateOK;
     rep.Data_ = Head ("LeechCraft Remoter: View");
-    rep.Data_ += Body ("this is not implemented yet");
+    QString body;
+    for (int i = 0; i < Objects_.size (); ++i)
+    {
+        IRemoteable *ir = qobject_cast<IRemoteable*> (Objects_.at (i));
+        QList<QVariantList> datas = ir->GetAll ();
+        if (!datas.size ())
+            continue;
+
+        IInfo *ii = qobject_cast<IInfo*> (Objects_.at (i));
+        body += Strong (Heading (ii->GetName ()));
+        body += Heading (ii->GetInfo (), 3);
+
+        QString text = Strong (Row (datas.at (0)));
+        for (int i = 1; i < datas.size (); ++i)
+        {
+            text += Row (datas.at (i));
+        }
+
+        body += Table (text);
+
+        body += "<hr />";
+    }
+    rep.Data_ = body;
     return rep;
 }
 
@@ -70,6 +92,22 @@ Reply Core::DoUnhandled (const QStringList&, const QMap<QString, QString>&)
     rep.State_ = StateOK;
     rep.Data_ = Head ("LeechCraft Remoter: unhandled page") + Body ("You should never see this, report to bugtracker");
     return rep;
+}
+
+QString Core::Row (const QVariantList& list)
+{
+    QString result = "<tr>";
+    for (int i = 0; i < list.size (); ++i)
+    {
+        result += "<td>";
+        if (list.at (i).canConvert <QString> ())
+            result += list.at (i).value<QString> ();
+        else
+            result += "(unconvertable, that sucks)";
+        result += "</td>";
+    }
+    result += "</tr>";
+    return result;
 }
 
 QString Core::Head (const QString& title) const
@@ -91,5 +129,20 @@ QString Core::Link (const QString& title, const QString& where, bool newWindow) 
         string.append (">");
     string.append (title + "</a>");
     return string;
+}
+
+QString Core::Heading (const QString& text, int level)
+{
+    return QString ("<h%1>%2</h%1>").arg (level).arg (text);
+}
+
+QString Core::Strong (const QString& text)
+{
+    return QString ("<strong>%1</strong>").arg (text);
+}
+
+QString Core::Table (const QString& text)
+{
+    return QString ("<table border=\"1\">%1</table>").arg (text);
 }
 
