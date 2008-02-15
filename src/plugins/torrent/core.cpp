@@ -712,6 +712,8 @@ void Core::writeSettings ()
     for (int i = 0; i < Handles_.size (); ++i)
     {
         settings.setArrayIndex (i);
+        if (!CheckValidity (i))
+            continue;
         libtorrent::entry resume = Handles_.at (i).Handle_.write_resume_data ();
         QVector<char> resumeBuf;
         libtorrent::bencode (std::back_inserter (resumeBuf), resume);

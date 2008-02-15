@@ -1,4 +1,5 @@
 #include "remoter.h"
+#include "core.h"
 
 void Remoter::Init ()
 {
@@ -8,6 +9,7 @@ void Remoter::Init ()
 
 void Remoter::Release ()
 {
+    Core::Instance ().Release ();
 }
 
 QString Remoter::GetName () const
@@ -53,9 +55,7 @@ QStringList Remoter::Uses () const
 
 void Remoter::SetProvider (QObject *provider, const QString& feature)
 {
-    Q_UNUSED (feature);
-    if (feature == "remoteable")
-        Objects_ << provider;
+    Core::Instance ().AddObject (provider, feature);
 }
 
 void Remoter::PushMainWindowExternals (const MainWindowExternals&)

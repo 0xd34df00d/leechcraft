@@ -3,9 +3,14 @@ INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR} ${QT_QTCORE_INCLUDE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR} ../.. .)
 
 SET (SRCS
-    remoter.cpp)
+    remoter.cpp
+    core.cpp
+    server.cpp)
 SET (HEADERS
     remoter.h
+    core.h
+    server.h
+    reply.h
     ../../plugininterface/basesettingsmanager.h)
 SET (FORMS
     mainwindow.ui)
