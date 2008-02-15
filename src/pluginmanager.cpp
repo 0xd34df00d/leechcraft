@@ -36,13 +36,18 @@ void PluginManager::Release ()
     {
         try
         {
+            qDebug () << Q_FUNC_INFO << Name (Plugins_.size () - 1);
             Release (Plugins_.size () - 1);
-            Plugins_.removeAt (Plugins_.size () - 1);
+        }
+        catch (const std::exception& e)
+        {
+            qWarning () << Q_FUNC_INFO << e.what ();
         }
         catch (...)
         {
             QMessageBox::warning (0, tr ("No exit here"), tr ("Release of one or more plugins failed. OS would cleanup after us, but it isn't good anyway, as this failed plugin could fail to save it's state."));
         }
+        Plugins_.removeAt (Plugins_.size () - 1);
     }
 }
 

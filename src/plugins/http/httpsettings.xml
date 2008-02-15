@@ -58,6 +58,178 @@
                 <label lang="en" value="HTTP agent" />
                 <label lang="ru" value="HTTP-агент" />
             </item>
+            <item type="combobox" property="Encoding">
+                <label lang="en" value="Remote encoding" />
+                <label lang="ru" value="Кодировка удаленного сервера" />
+                <option name="Apple Roman">
+                    <label lang="en" value="Apple Roman" />
+                </option>
+                <option name="Big5">
+                    <label lang="en" value="Big5" />
+                </option>
+                <option name="Big5-HKSCS">
+                    <label lang="en" value="Big5-HKSCS" />
+                </option>
+                <option name="EUC-JP">
+                    <label lang="en" value="EUC-JP" />
+                </option>
+                <option name="EUC-KR">
+                    <label lang="en" value="EUC-KR" />
+                </option>
+                <option name="GB18030-0">
+                    <label lang="en" value="GB18030-0" />
+                </option>
+                <option name="IBM 850">
+                    <label lang="en" value="IBM 850" />
+                </option>
+                <option name="IBM 866">
+                    <label lang="en" value="IBM 866" />
+                </option>
+                <option name="IBM 874">
+                    <label lang="en" value="IBM 874" />
+                </option>
+                <option name="ISO 2022-JP">
+                    <label lang="en" value="ISO 2022-JP" />
+                </option>
+                <option name="ISO 8859-1">
+                    <label lang="en" value="ISO 8859-1" />
+                </option>
+                <option name="ISO 8859-2">
+                    <label lang="en" value="ISO 8859-2" />
+                </option>
+                <option name="ISO 8859-3">
+                    <label lang="en" value="ISO 8859-3" />
+                </option>
+                <option name="ISO 8859-4">
+                    <label lang="en" value="ISO 8859-4" />
+                </option>
+                <option name="ISO 8859-5">
+                    <label lang="en" value="ISO 8859-5" />
+                </option>
+                <option name="ISO 8859-6">
+                    <label lang="en" value="ISO 8859-6" />
+                </option>
+                <option name="ISO 8859-7">
+                    <label lang="en" value="ISO 8859-7" />
+                </option>
+                <option name="ISO 8859-8">
+                    <label lang="en" value="ISO 8859-8" />
+                </option>
+                <option name="ISO 8859-9">
+                    <label lang="en" value="ISO 8859-9" />
+                </option>
+                <option name="ISO 8859-10">
+                    <label lang="en" value="ISO 8859-10" />
+                </option>
+                <option name="ISO 8859-13">
+                    <label lang="en" value="ISO 8859-13" />
+                </option>
+                <option name="ISO 8859-14">
+                    <label lang="en" value="ISO 8859-14" />
+                </option>
+                <option name="ISO 8859-15">
+                    <label lang="en" value="ISO 8859-15" />
+                </option>
+                <option name="ISO 8859-16">
+                    <label lang="en" value="ISO 8859-16" />
+                </option>
+                <option name="Iscii-Bng">
+                    <label lang="en" value="Iscii-Bng" />
+                </option>
+                <option name="Iscii-Dev">
+                    <label lang="en" value="Iscii-Dev" />
+                </option>
+                <option name="Iscii-Gjr">
+                    <label lang="en" value="Iscii-Gjr" />
+                </option>
+                <option name="Iscii-Knd">
+                    <label lang="en" value="Iscii-Knd" />
+                </option>
+                <option name="Iscii-Mlm">
+                    <label lang="en" value="Iscii-Mlm" />
+                </option>
+                <option name="Iscii-Ori">
+                    <label lang="en" value="Iscii-Ori" />
+                </option>
+                <option name="Iscii-Pnj">
+                    <label lang="en" value="Iscii-Pnj" />
+                </option>
+                <option name="Iscii-Tlg">
+                    <label lang="en" value="Iscii-Tlg" />
+                </option>
+                <option name="Iscii-Tml">
+                    <label lang="en" value="Iscii-Tml" />
+                </option>
+                <option name="JIS X 0201">
+                    <label lang="en" value="JIS X 0201" />
+                </option>
+                <option name="JIS X 0208">
+                    <label lang="en" value="JIS X 0208" />
+                </option>
+                <option name="KOI8-R">
+                    <label lang="en" value="KOI8-R" />
+                </option>
+                <option name="KOI8-U">
+                    <label lang="en" value="KOI8-U" />
+                </option>
+                <option name="MuleLao-1">
+                    <label lang="en" value="MuleLao-1" />
+                </option>
+                <option name="ROMAN8">
+                    <label lang="en" value="ROMAN8" />
+                </option>
+                <option name="Shift-JIS">
+                    <label lang="en" value="Shift-JIS" />
+                </option>
+                <option name="TIS-620">
+                    <label lang="en" value="TIS-620" />
+                </option>
+                <option name="TSCII">
+                    <label lang="en" value="TSCII" />
+                </option>
+                <option name="UTF-8">
+                    <label lang="en" value="UTF-8" />
+                </option>
+                <option name="UTF-16">
+                    <label lang="en" value="UTF-16" />
+                </option>
+                <option name="UTF-16BE">
+                    <label lang="en" value="UTF-16BE" />
+                </option>
+                <option name="UTF-16LE">
+                    <label lang="en" value="UTF-16LE" />
+                </option>
+                <option name="Windows-1250">
+                    <label lang="en" value="Windows-1250" />
+                </option>
+                <option name="Windows-1251" default="true">
+                    <label lang="en" value="Windows-1251" />
+                </option>
+                <option name="Windows-1252">
+                    <label lang="en" value="Windows-1252" />
+                </option>
+                <option name="Windows-1253">
+                    <label lang="en" value="Windows-1253" />
+                </option>
+                <option name="Windows-1254">
+                    <label lang="en" value="Windows-1254" />
+                </option>
+                <option name="Windows-1255">
+                    <label lang="en" value="Windows-1255" />
+                </option>
+                <option name="Windows-1256">
+                    <label lang="en" value="Windows-1256" />
+                </option>
+                <option name="Windows-1257">
+                    <label lang="en" value="Windows-1257" />
+                </option>
+                <option name="Windows-1258">
+                    <label lang="en" value="Windows-1258" />
+                </option>
+                <option name="WINSAMI2">
+                    <label lang="en" value="WINSAMI2" />
+                </option>
+            </item>
             <item type="groupbox" property="ProxyEnabled" state="off" checkable="true">
                 <label lang="en" value="Proxy enabled" />
                 <label lang="ru" value="Прокси включен" />

@@ -792,7 +792,7 @@ void Core::queryLibtorrentForWarnings ()
     if (!alert.get ())
         return;
 
-    QString logstr = "<libtorrent> ";
+    QString logstr;
 
     libtorrent::tracker_alert *ta = dynamic_cast<libtorrent::tracker_alert*> (alert.get ());
     libtorrent::url_seed_alert *usa = dynamic_cast<libtorrent::url_seed_alert*> (alert.get ());
@@ -817,10 +817,12 @@ void Core::queryLibtorrentForWarnings ()
             .arg (ira->request.start)
             .arg (ira->request.length));
     else
-        logstr.append (alert->msg ().c_str ());
+        logstr.append ("just common failure");
 
-    qWarning () << logstr;
-    emit logMessage (logstr);
+    logstr.append (QString ("\r\nRaw message: ") + alert->msg ().c_str ());
+
+    qWarning () << "<libtorrent> " << logstr;
+    emit logMessage (QDateTime::currentDateTime ().toString () + " " + logstr);
 }
 
 bool Core::CheckValidity (int pos) const

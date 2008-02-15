@@ -1,9 +1,17 @@
 ***Public build 8***
+Core:
++ XmlSettingsManager handles Comboboxes now.
+
 BitTorrent:
 * Fixed a bug with crashing if clicking on fully downloaded torrent having all pieces.
 
 HTTP/FTP:
++ Selectable remote server encodings.
+* Completely rewritten interface and some core logic.
 * Fixed a bug when removing HTTP tasks, stopped by connection error.
+
+Remoter:
++ Started work.
 
 ***Public build 7***
 Core:

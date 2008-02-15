@@ -16,6 +16,8 @@ RangeWidget::RangeWidget (QWidget *parent)
 
     connect (Lower_, SIGNAL (valueChanged (int)), this, SLOT (lowerChanged (int)));
     connect (Higher_, SIGNAL (valueChanged (int)), this, SLOT (upperChanged (int)));
+    connect (Lower_, SIGNAL (valueChanged (int)), this, SIGNAL (changed ()));
+    connect (Higher_, SIGNAL (valueChanged (int)), this, SIGNAL (changed ()));
     
     setLayout (lay);
 }
@@ -60,6 +62,7 @@ QVariant RangeWidget::GetRange () const
 {
     QList<QVariant> result;
     result << Lower_->value () << Higher_->value ();
+    return result;
 }
 
 void RangeWidget::lowerChanged (int val)

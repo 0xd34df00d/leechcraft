@@ -83,7 +83,7 @@ IInfo::ID_t TorrentPlugin::GetID () const
 
 QStringList TorrentPlugin::Provides () const
 {
-    return QStringList ("bittorrent") << "resume";
+    return QStringList ("bittorrent") << "resume" << "remoteable";
 }
 
 QStringList TorrentPlugin::Needs () const

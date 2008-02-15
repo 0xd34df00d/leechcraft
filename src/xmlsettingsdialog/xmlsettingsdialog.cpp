@@ -174,8 +174,12 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
         DoPath (item, lay, value);
     else if (type == "radio")
         DoRadio (item, lay, value);
+    else if (type == "combobox")
+        DoCombobox (item, lay, value);
     else
         qWarning () << Q_FUNC_INFO << "unhandled type" << type;
+
+    WorkingObject_->setProperty (property.toLatin1 ().constData (), value);
 }
 
 QString XmlSettingsDialog::GetLabel (const QDomElement& item)
@@ -234,10 +238,7 @@ void XmlSettingsDialog::DoCheckbox (const QDomElement& item, QGridLayout *lay, Q
     QCheckBox *box = new QCheckBox (GetLabel (item));
     box->setObjectName (item.attribute ("property"));
     if (!value.isValid () || value.isNull ())
-    {
         value = (item.attribute ("state") == "on");
-        WorkingObject_->setProperty (item.attribute ("property").toLatin1 ().constData (), value);
-    }
     box->setCheckState (value.toBool () ? Qt::Checked : Qt::Unchecked);
     connect (box, SIGNAL (stateChanged (int)), this, SLOT (updatePreferences ()));
 
@@ -272,10 +273,7 @@ void XmlSettingsDialog::DoGroupbox (const QDomElement& item, QGridLayout *lay, Q
     box->setLayout (new QGridLayout);
     box->setCheckable (true);
     if (!value.isValid () || value.isNull ())
-    {
         value = (item.attribute ("state") == "on");
-        WorkingObject_->setProperty (item.attribute ("property").toLatin1 ().constData (), value);
-    }
     box->setChecked (value.toBool ());
     connect (box, SIGNAL (toggled (bool)), this, SLOT (updatePreferences ()));
     ParseEntity (item, box);
@@ -296,7 +294,6 @@ void XmlSettingsDialog::DoSpinboxRange (const QDomElement& item, QGridLayout *la
         }
         result << parts.at (0).toInt () << parts.at (1).toInt ();
         value = result;
-        WorkingObject_->setProperty (item.attribute ("property").toLatin1 ().constData (), value);
     }
 
     QLabel *label = new QLabel (GetLabel (item));
@@ -316,10 +313,7 @@ void XmlSettingsDialog::DoPath (const QDomElement& item, QGridLayout *lay, QVari
 {
     if (value.isNull () || value.toString ().isEmpty ())
         if (item.hasAttribute ("defaultHomePath") && item.attribute ("defaultHomePath") == "true")
-        {
             value = QDir::homePath ();
-            WorkingObject_->setProperty (item.attribute ("property").toLatin1 ().constData(), value);
-        }
     QLabel *label = new QLabel (GetLabel (item));
     FilePicker *picker = new FilePicker (this);
     picker->SetText (value.toString ());
@@ -342,6 +336,8 @@ void XmlSettingsDialog::DoRadio (const QDomElement& item, QGridLayout *lay, QVar
         QRadioButton *button = new QRadioButton (GetLabel (option));
         button->setObjectName (option.attribute ("name"));
         group->AddButton (button, option.hasAttribute ("default") && option.attribute ("default") == "true");
+        if (option.attribute ("default") == "true")
+            value = option.attribute ("name");
         option = option.nextSiblingElement ("option");
     }
     connect (group, SIGNAL (valueChanged ()), this, SLOT (updatePreferences ()));
@@ -353,9 +349,38 @@ void XmlSettingsDialog::DoRadio (const QDomElement& item, QGridLayout *lay, QVar
     lay->addWidget (box, lay->rowCount (), 0, 1, 2);
 }
 
+void XmlSettingsDialog::DoCombobox (const QDomElement& item, QGridLayout *lay, QVariant& value)
+{
+    QComboBox *box = new QComboBox (this);
+    box->setObjectName (item.attribute ("property"));
+
+    QDomElement option = item.firstChildElement ("option");
+    while (!option.isNull ())
+    {
+        box->addItem (GetLabel (option), option.attribute ("name"));
+        if (option.attribute ("default") == "true")
+        {
+            box->setCurrentIndex (box->count () - 1);
+            value = option.attribute ("name");
+        }
+        option = option.nextSiblingElement ("option");
+    }
+    connect (box, SIGNAL (currentIndexChanged (int)), this, SLOT (updatePreferences ()));
+
+    QLabel *label = new QLabel (GetLabel (item));
+    int row = lay->rowCount ();
+    lay->addWidget (label, row, 0);
+    lay->addWidget (box, row, 1);
+}
+
 void XmlSettingsDialog::updatePreferences ()
 {
     QString propertyName = sender ()->objectName ();
+    if (propertyName.isEmpty ())
+    {
+        qWarning () << Q_FUNC_INFO << "property name is empty for object" << sender ();
+        return;
+    }
     QVariant value;
 
     QLineEdit *edit = qobject_cast<QLineEdit*> (sender ());
@@ -365,6 +390,7 @@ void XmlSettingsDialog::updatePreferences ()
     RangeWidget *rangeWidget = qobject_cast<RangeWidget*> (sender ());
     FilePicker *picker = qobject_cast<FilePicker*> (sender ());
     RadioGroup *radiogroup = qobject_cast<RadioGroup*> (sender ());
+    QComboBox *combobox = qobject_cast<QComboBox*> (sender ());
     if (edit)
         value = edit->text ();
     else if (checkbox)
@@ -379,6 +405,8 @@ void XmlSettingsDialog::updatePreferences ()
         value = picker->GetText ();
     else if (radiogroup)
         value = radiogroup->GetValue ();
+    else if (combobox)
+        value = combobox->itemData (combobox->currentIndex ());
     else
     {
         qWarning () << Q_FUNC_INFO << "unhandled sender" << sender ();

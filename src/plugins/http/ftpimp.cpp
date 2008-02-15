@@ -295,7 +295,7 @@ void FtpImp::DoCwd (const QString& dir)
     ControlSocket_->Write (QString ("PWD\r\n"), false);
     ReadCtrlResponse ();
 
-    ControlSocket_->Write ("CWD " + QTextCodec::codecForName ("Windows-1251")->fromUnicode (dir) + "\r\n", false);
+    ControlSocket_->Write ("CWD " + QTextCodec::codecForName (XmlSettingsManager::Instance ()->property ("Encoding").toString ().toLatin1 ())->fromUnicode (dir) + "\r\n", false);
     if (ReadCtrlResponse () != 250)
         throw CwdFailed ();
 }
@@ -305,7 +305,7 @@ bool FtpImp::DoSize (const QString& dir)
     ControlSocket_->Write (QString ("TYPE I\r\n"), false);
     ReadCtrlResponse ();
 
-    ControlSocket_->Write ("SIZE " + QTextCodec::codecForName ("Windows-1251")->fromUnicode (dir) + "\r\n");
+    ControlSocket_->Write ("SIZE " + QTextCodec::codecForName (XmlSettingsManager::Instance ()->property ("Encoding").toString ().toLatin1 ())->fromUnicode (dir) + "\r\n");
     if (ReadCtrlResponse () != 213)
         return true;
     else
@@ -318,7 +318,7 @@ bool FtpImp::DoSize (const QString& dir)
 
 void FtpImp::DoGetFileInfo (const QString& file)
 {
-    ControlSocket_->Write ("MDTM " + QTextCodec::codecForName ("Windows-1251")->fromUnicode (file) + "\r\n");
+    ControlSocket_->Write ("MDTM " + QTextCodec::codecForName (XmlSettingsManager::Instance ()->property ("Encoding").toString ().toLatin1 ())->fromUnicode (file) + "\r\n");
     if (ReadCtrlResponse () == 213)
         Modification_ = QDateTime::fromString (LastReply_.remove (0, 4).trimmed (), "yyyyMMddHHmmss");
     RemoteFileInfo rfi = { true, Modification_, Size_, "" };
@@ -331,7 +331,7 @@ void FtpImp::DoGetFileInfo (const QString& file)
 
 void FtpImp::DoQuery (const QFileInfo& fileInfo)
 {
-    ControlSocket_->Write ("NLST " + QTextCodec::codecForName ("Windows-1251")->fromUnicode (fileInfo.fileName ()) + "\r\n", false);
+    ControlSocket_->Write ("NLST " + QTextCodec::codecForName (XmlSettingsManager::Instance ()->property ("Encoding").toString ().toLatin1 ())->fromUnicode (fileInfo.fileName ()) + "\r\n", false);
     ReadCtrlResponse ();
     if (Result_ == 501)
     {
@@ -384,7 +384,7 @@ void FtpImp::DoInitTransfer (const QString& filename)
 
     DoPasv ();
 
-    ControlSocket_->Write ("RETR " + QTextCodec::codecForName ("Windows-1251")->fromUnicode (filename) + "\r\n", false);
+    ControlSocket_->Write ("RETR " + QTextCodec::codecForName (XmlSettingsManager::Instance ()->property ("Encoding").toString ().toLatin1 ())->fromUnicode (filename) + "\r\n", false);
     ReadCtrlResponse ();
     if (Result_ != 150 && Result_ != 125)
         throw RetrFailed ();

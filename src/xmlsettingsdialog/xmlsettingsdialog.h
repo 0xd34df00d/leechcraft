@@ -39,6 +39,7 @@ private:
     void DoSpinboxRange (const QDomElement&, QGridLayout*, QVariant&);
     void DoPath (const QDomElement&, QGridLayout*, QVariant&);
     void DoRadio (const QDomElement&, QGridLayout*, QVariant&);
+    void DoCombobox (const QDomElement&, QGridLayout*, QVariant&);
 private slots:
     void updatePreferences ();
 protected:

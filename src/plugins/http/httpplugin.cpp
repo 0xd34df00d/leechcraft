@@ -29,7 +29,7 @@ void HttpPlugin::Init ()
     Ui_.setupUi (this);
 
     SaveChangesScheduled_ = false;
-    ProvidesList_ << "http" << "ftp" << "resume";
+    ProvidesList_ << "http" << "ftp" << "resume" << "remoteable";
     UsesList_ << "cron";
 
     connect (&JobManager::Instance (), SIGNAL (showError (QString, QString)), this, SLOT (showJobErrorMessage (QString, QString)));
