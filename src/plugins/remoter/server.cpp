@@ -35,7 +35,7 @@ void Server::ready ()
     if (line.isEmpty ())
         return;
 
-    qDebug () << Q_FUNC_INFO << line;
+//    qDebug () << Q_FUNC_INFO << line;
     QStringList head = line.split (' ');
     QString path = head.at (1);
     QMap<QString, QString> query;
@@ -58,16 +58,16 @@ void Server::ready ()
         if (!socket->bytesAvailable ())
             socket->waitForReadyRead ();
         line = socket->readLine ().trimmed ();
-        qDebug () << Q_FUNC_INFO << line << line.isEmpty ();
+//        qDebug () << Q_FUNC_INFO << line << line.isEmpty ();
     }
 
     Reply reply = qobject_cast<Core*> (parent ())->GetReplyFor (path, query);
     socket->write (QString ("HTTP/1.0 " + QString::number (reply.State_) + " OK\r\n").toAscii ());
     socket->write ("Server: LeechCraftRemoter/deep_alpha\r\n");
     socket->write ("Content-Type: text/html; charset=UTF-8\r\n");
-    socket->write (QString ("Content-Length: %1\r\n").arg (reply.Data_.size ()).toAscii ());
+    socket->write (QString ("Content-Length: %1\r\n").arg (reply.Data_.toUtf8 ().size ()).toAscii ());
     socket->write ("\r\n");
-    socket->write (reply.Data_);
+    socket->write (reply.Data_.toUtf8 ());
     socket->disconnectFromHost ();
 }
 

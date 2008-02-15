@@ -135,11 +135,11 @@ void PluginManager::CalculateDependencies ()
                 QObject *qpEntity = (*j)->instance ();
                 IInfo *qinfo = qobject_cast<IInfo*> (qpEntity);
                 QStringList qprovides = qinfo->Provides ();
-                for (int i = 0; i < needs.size (); ++i)
-                    if (qprovides.contains (needs [i]))
+                for (int k = 0; k < needs.size (); ++k)
+                    if (qprovides.contains (needs [k]))
                     {
-                        info->SetProvider (qpEntity, needs [i]);
-                        needs.removeAt (i--);
+                        info->SetProvider (qpEntity, needs [k]);
+                        needs.removeAt (k--);
                     }
             }
             if (!needs.isEmpty ())
@@ -151,6 +151,10 @@ void PluginManager::CalculateDependencies ()
         }
         if (!uses.isEmpty ())
         {
+            QMap<QString, bool> usesMet;
+            for (int j = 0; j < uses.size (); ++j)
+                usesMet [uses.at (j)] = false;
+
             for (PluginsContainer_t::const_iterator j = Plugins_.begin (); j != Plugins_.end (); ++j)
             {
                 if (j == i)
@@ -159,11 +163,11 @@ void PluginManager::CalculateDependencies ()
                 QObject *qpEntity = (*j)->instance ();
                 IInfo *qinfo = qobject_cast<IInfo*> (qpEntity);
                 QStringList qprovides = qinfo->Provides ();
-                for (int i = 0; i < uses.size (); ++i)
-                    if (qprovides.contains (uses [i]))
+                for (int k = 0; k < uses.size (); ++k)
+                    if (qprovides.contains (uses [k]))
                     {
-                        info->SetProvider (qpEntity, uses [i]);
-                        uses.removeAt (i--);
+                        info->SetProvider (qpEntity, uses [k]);
+                        usesMet [uses [k]] = true;
                     }
             }
         }

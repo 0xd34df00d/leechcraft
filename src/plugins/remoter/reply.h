@@ -11,7 +11,7 @@ enum State
 struct Reply
 {
     State State_;
-    QByteArray Data_;
+    QString Data_;
 };
 
 #endif

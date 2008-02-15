@@ -13,11 +13,12 @@ class TorrentPlugin : public QMainWindow
                     , public IInfo
                     , public IWindow
                     , public IPeer2PeerDownload
+                    , public IRemoteable
                     , private Ui::MainWindow
 {
     Q_OBJECT
 
-    Q_INTERFACES (IInfo IWindow IPeer2PeerDownload);
+    Q_INTERFACES (IInfo IWindow IPeer2PeerDownload IRemoteable);
 
     ID_t ID_;
     bool IsShown_;
@@ -46,6 +47,7 @@ public:
     qint64 GetUploadSpeed () const;
     void StartAll ();
     void StopAll ();
+    QList<QVariantList> GetAll () const;
     bool CouldDownload (const QString&) const;
     void AddJob (const QString&);
 public slots:

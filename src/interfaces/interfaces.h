@@ -2,6 +2,7 @@
 #define INTERFACES_H
 #include <QString>
 #include <QStringList>
+#include <QVariantList>
 #include <QtPlugin>
 #ifndef NOGUI
 #include <QIcon>
@@ -93,6 +94,13 @@ public:
     virtual ~IPeer2PeerDownload () {};
 };
 
+class IRemoteable
+{
+public:
+    virtual QList<QVariantList> GetAll () const = 0;
+    virtual ~IRemoteable () {}
+};
+
 Q_DECLARE_INTERFACE (ISettings, "org.Deviant.LeechCraft.ISettings/1.0");
 Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
 #ifndef NOGUI
@@ -101,6 +109,7 @@ Q_DECLARE_INTERFACE (IWindow, "org.Deviant.LeechCraft.IWindow/1.0");
 Q_DECLARE_INTERFACE (IDownload, "org.Deviant.LeechCraft.IDownload/1.0");
 Q_DECLARE_INTERFACE (IDirectDownload, "org.Deviant.LeechCraft.IDirectDownload/1.0");
 Q_DECLARE_INTERFACE (IPeer2PeerDownload, "org.Deviant.LeechCraft.IPeer2PeerDownload/1.0");
+Q_DECLARE_INTERFACE (IRemoteable, "org.Deviant.LeechCraft.IRemoteable/1.0");
 
 #endif
 

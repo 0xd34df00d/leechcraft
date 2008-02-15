@@ -5,6 +5,8 @@
 #include <QString>
 #include "reply.h"
 
+class QStringList;
+
 class Core : public QObject
 {
     Q_OBJECT
@@ -18,6 +20,14 @@ public:
 
     void AddObject (QObject*, const QString& feature);
     Reply GetReplyFor (const QString&, const QMap<QString, QString>&);
+private:
+    Reply DoMainPage (const QStringList&, const QMap<QString, QString>&);
+    Reply DoView (const QStringList&, const QMap<QString, QString>&);
+    Reply DoUnhandled (const QStringList&, const QMap<QString, QString>&);
+
+    QString Head (const QString&) const;
+    QString Body (const QString&) const;
+    QString Link (const QString&, const QString&, bool n = false) const;
 };
 
 #endif

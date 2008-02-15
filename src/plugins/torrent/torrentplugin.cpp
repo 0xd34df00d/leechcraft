@@ -151,6 +151,25 @@ void TorrentPlugin::StopAll ()
 {
 }
 
+QList<QVariantList> TorrentPlugin::GetAll () const
+{
+    QList<QVariantList> result;
+
+    QVariantList t;
+    for (int i = 0; i < Core::Instance ()->columnCount (QModelIndex ()); ++i)
+        t << Core::Instance ()->headerData (i, Qt::Horizontal);
+    result << t;
+
+    for (int i = 0; i < Core::Instance ()->rowCount (); ++i)
+    {
+        QVariantList tmp;
+        for (int j = 0; j < Core::Instance ()->columnCount (QModelIndex ()); ++j)
+            tmp << Core::Instance ()->data (Core::Instance ()->index (i, j));
+        result << tmp;
+    }
+    return result;
+}
+
 bool TorrentPlugin::CouldDownload (const QString& string) const
 {
     QFile file (string);
