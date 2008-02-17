@@ -106,7 +106,6 @@ private slots:
     void on_ActionJobProperties__triggered ();
     void on_ActionPreferences__triggered ();
     void showJobErrorMessage (QString, QString);
-    void showStoppedIndicator (unsigned int);
     void handleTotalSpeedUpdate ();
     void on_ActionAutoadjust__triggered ();
     void writeSettings ();

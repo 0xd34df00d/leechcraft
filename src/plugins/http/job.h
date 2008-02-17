@@ -67,7 +67,6 @@ private slots:
     void handleNewFiles (QStringList*);
     void handleClarifyURL (QString);
     void processData (ImpBase::length_t, ImpBase::length_t, QByteArray);
-    void flushCaches ();
     void handleFinished ();
     void handleShowError (QString);
     void handleStopped ();
