@@ -35,7 +35,6 @@ void Server::ready ()
     if (line.isEmpty ())
         return;
 
-//    qDebug () << Q_FUNC_INFO << line;
     QStringList head = line.split (' ');
     QString path = head.at (1);
     QMap<QString, QString> query;
@@ -53,18 +52,25 @@ void Server::ready ()
         }
     }
 
+    QMap<QString, QString> headers;
+
     while (!line.isEmpty ())
     {
         if (!socket->bytesAvailable ())
             socket->waitForReadyRead ();
         line = socket->readLine ().trimmed ();
-//        qDebug () << Q_FUNC_INFO << line << line.isEmpty ();
+
+        QStringList list = line.split (": ");
+        if (list.size () != 2)
+            continue;
+        headers [list [0].trimmed ().toLower ()] = list [1].trimmed ();
     }
 
-    Reply reply = qobject_cast<Core*> (parent ())->GetReplyFor (path, query);
+    Reply reply = qobject_cast<Core*> (parent ())->GetReplyFor (path, query, headers);
     socket->write (QString ("HTTP/1.0 " + QString::number (reply.State_) + " OK\r\n").toAscii ());
     socket->write ("Server: LeechCraftRemoter/deep_alpha\r\n");
     socket->write ("Content-Type: text/html; charset=UTF-8\r\n");
+    socket->write ("WWW-Authenticate: Basic realm=\"LeechCraft Remoter\"");
     socket->write (QString ("Content-Length: %1\r\n").arg (reply.Data_.toUtf8 ().size ()).toAscii ());
     socket->write ("\r\n");
     socket->write (reply.Data_.toUtf8 ());

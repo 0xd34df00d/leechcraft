@@ -1,11 +1,19 @@
 #include <QStringList>
 #include <interfaces/interfaces.h>
+#include <plugininterface/proxy.h>
 #include "core.h"
 #include "server.h"
 
 Core::Core ()
 {
     Server::Instance ().setParent (this);
+    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
+    settings.beginGroup ("Remoter");
+    int port = settings.value ("Port", 0).toInt ();
+    emit bindSuccessful (Server::Instance ().listen (QHostAddress::Any, port ? port : 14600));
+    Login_ = settings.value ("Login", "default").toString ();
+    Password_ = settings.value ("Password", "default").toString ();
+    settings.endGroup ();
 }
 
 Core& Core::Instance ()
@@ -16,28 +24,77 @@ Core& Core::Instance ()
 
 void Core::Release ()
 {
+    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
+    settings.beginGroup ("Remoter");
+    settings.setValue ("Port", GetPort ());
+    settings.setValue ("Login", GetLogin ());
+    settings.setValue ("Password", GetPassword ());
+    settings.endGroup ();
     Server::Instance ().Release ();
     Server::Instance ().setParent (0);
 }
 
+void Core::SetPort (int port)
+{
+    emit bindSuccessful (Server::Instance ().listen (QHostAddress::Any, port));
+}
+
+int Core::GetPort () const
+{
+    int port = Server::Instance ().serverPort ();
+    return port ? port : 14600;
+}
+
+void Core::SetLogin (const QString& login)
+{
+    Login_ = login;
+}
+
+const QString& Core::GetLogin () const
+{
+    return Login_;
+}
+
+void Core::SetPassword (const QString& password)
+{
+    Password_ = password;
+}
+
+const QString& Core::GetPassword () const
+{
+    return Password_;
+}
+
 void Core::AddObject (QObject *object, const QString& feature)
 {
-    qDebug () << Q_FUNC_INFO << feature << object;
     if (feature == "remoteable" && qobject_cast<IRemoteable*> (object) && qobject_cast<IInfo*> (object))
         Objects_.append (object);
 }
 
-Reply Core::GetReplyFor (const QString& p, const QMap<QString, QString>& query)
+Reply Core::GetReplyFor (const QString& p, const QMap<QString, QString>& query, const QMap<QString, QString>& headers)
 {
     QStringList parts = QString (p).remove (0, 1).split ('/'); // Trim first slash
     Reply rep;
-    if (parts.size () == 0 || parts.at (0).isEmpty () || parts.at (0) == "index")
+
+    QStringList base64 = headers ["authorization"].split (' ');
+    if (base64.size () != 2 || base64 [0].toLower () != "basic" || QByteArray::fromBase64 (base64 [1].toAscii ()) != QString ("%1:%2").arg (Login_).arg (Password_))
+        rep = DoNotAuthorized ();
+    else if (parts.size () == 0 || parts.at (0).isEmpty () || parts.at (0) == "index")
         rep = DoMainPage (parts, query);
     else if (parts.at (0) == "view")
         rep = DoView (parts, query);
     else
         rep = DoUnhandled (parts, query);
 
+    return rep;
+}
+
+Reply Core::DoNotAuthorized ()
+{
+    qDebug () << Q_FUNC_INFO;
+    Reply rep;
+    rep.State_ = StateUnauthorized;
+    rep.Data_ = "401 Unauthorized";
     return rep;
 }
 
@@ -81,7 +138,7 @@ Reply Core::DoView (const QStringList&, const QMap<QString, QString>&)
 
         body += "<hr />";
     }
-    rep.Data_ = body;
+    rep.Data_ = Head ("LeechCraft Remoter: View") + Body (body);
     return rep;
 }
 
@@ -89,8 +146,8 @@ Reply Core::DoUnhandled (const QStringList&, const QMap<QString, QString>&)
 {
     qDebug () << Q_FUNC_INFO;
     Reply rep;
-    rep.State_ = StateOK;
-    rep.Data_ = Head ("LeechCraft Remoter: unhandled page") + Body ("You should never see this, report to bugtracker");
+    rep.State_ = StateNotFound;
+    rep.Data_ = Head ("LeechCraft Remoter: not found") + Body ("You should never see this until you type something yourself in the address bar.");
     return rep;
 }
 

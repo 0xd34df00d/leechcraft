@@ -35,6 +35,10 @@ public:
     void ShowBalloonTip ();
 protected:
     virtual void closeEvent (QCloseEvent*);
+protected slots:
+    virtual void on_Port__valueChanged (int);
+    virtual void on_Login__textEdited (const QString&);
+    virtual void on_Password__textEdited (const QString&);
 };
 
 #endif

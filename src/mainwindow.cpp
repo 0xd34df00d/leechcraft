@@ -168,7 +168,6 @@ void MainWindow::MakeActions ()
     Toolbar_->addAction (Settings_);
     BackupSettings_ = ToolsMenu_->addAction (tr ("Backup settings..."), this, SLOT (backupSettings ()));
     RestoreSettings_ = ToolsMenu_->addAction (tr ("Restore settings..."), this, SLOT (restoreSettings ()));
-    Help_->addAction (tr ("&Changelog..."), this, SLOT (showChangelog ()));
     Help_->addAction (tr ("&About Qt..."), qApp, SLOT (aboutQt ()));
     Help_->addAction (tr ("About &LeechCraft..."), this, SLOT (showAboutInfo ()));
 }
@@ -376,7 +375,7 @@ void MainWindow::showChangelog ()
 
 void MainWindow::showAboutInfo ()
 {
-    QMessageBox::information (this, tr ("Information"), tr ("LeechCraft public build 7"));
+    QMessageBox::information (this, tr ("Information"), tr ("LeechCraft public build 8"));
 }
 
 void MainWindow::showHideMain ()

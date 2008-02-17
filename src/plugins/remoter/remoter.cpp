@@ -5,6 +5,9 @@ void Remoter::Init ()
 {
     IsShown_ = false;
     Ui_.setupUi (this);
+    Ui_.Port_->setValue (Core::Instance ().GetPort ());
+    Ui_.Login_->setText (Core::Instance ().GetLogin ());
+    Ui_.Password_->setText (Core::Instance ().GetPassword ());
 }
 
 void Remoter::Release ()
@@ -85,6 +88,21 @@ void Remoter::ShowBalloonTip ()
 void Remoter::closeEvent (QCloseEvent*)
 {
     IsShown_ = false;
+}
+
+void Remoter::on_Port__valueChanged (int value)
+{
+    Core::Instance ().SetPort (value);
+}
+
+void Remoter::on_Login__textEdited (const QString& text)
+{
+    Core::Instance ().SetLogin (text);
+}
+
+void Remoter::on_Password__textEdited (const QString& text)
+{
+    Core::Instance ().SetPassword (text);
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_remoter, Remoter);
