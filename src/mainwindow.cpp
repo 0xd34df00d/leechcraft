@@ -375,7 +375,7 @@ void MainWindow::showChangelog ()
 
 void MainWindow::showAboutInfo ()
 {
-    QMessageBox::information (this, tr ("Information"), tr ("LeechCraft public build 8"));
+    QMessageBox::information (this, tr ("Information"), tr ("LeechCraft public build 8, revision 477"));
 }
 
 void MainWindow::showHideMain ()
