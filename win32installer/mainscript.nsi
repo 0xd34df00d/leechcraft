@@ -1,6 +1,6 @@
 !include "MUI.nsh"
 
-OutFile ../Leechcraft-Install-full.exe
+OutFile ../lcinstall-pb8.exe
 Name "Deviant LeechCraft"
 SetCompressor /SOLID lzma
 InstallDir "$PROGRAMFILES\Deviant\LeechCraft"
@@ -12,6 +12,7 @@ InstallDir "$PROGRAMFILES\Deviant\LeechCraft"
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
 !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\Deviant\LeechCraft"
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
+!define MUI_STARTMENUPAGE_DEFAULTFOLDER "Deviant\LeechCraft"
 
 !define MUI_WELCOMEFINISHPAGE_BITMAP installscreen.bmp
 !insertmacro MUI_PAGE_WELCOME
@@ -52,7 +53,7 @@ Section "Main LeechCraft Files" MAINFILES
 	File libsettingsdialog.dll
 	File libxmlsettingsdialog.dll
 	File mingwm10.dll
-	File msvcr80.dll
+#	File msvcr80.dll
 	File leechcraft.exe
 	File icon64.ico
 	File icon32.ico
@@ -88,9 +89,9 @@ SectionGroup "Plugins"
 		File libleechcraft_torrent.dll
 		SectionIn 1
 	SectionEnd
-	Section "Updater" UPDATERPLUGIN
+	Section "Remoter" REMOTERPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
-		File libleechcraft_updater.dll
+		File libleechcraft_remoter.dll
 		SectionIn 1
 	SectionEnd
 	Section "Batcher" BATCHERPLUGIN
@@ -123,7 +124,6 @@ Section "Uninstall"
 	Delete "$INSTDIR\QtGui4.dll"
 	Delete "$INSTDIR\QtXml4.dll"
 	Delete "$INSTDIR\mingwm10.dll"
-	Delete "$INSTDIR\msvcr80.dll"
 	Delete "$INSTDIR\torrent.dll"
 	Delete "$INSTDIR\zlib1.dll"
 	Delete "$INSTDIR\boost_date_time-mgw42-mt-1_34_1.dll"
@@ -131,7 +131,7 @@ Section "Uninstall"
 	Delete "$INSTDIR\boost_thread-mgw42-mt-1_34_1.dll"
 	Delete "$INSTDIR\plugins\bin\libleechcraft_http.dll"
 	Delete "$INSTDIR\plugins\bin\libleechcraft_torrent.dll"
-	Delete "$INSTDIR\plugins\bin\libleechcraft_updater.dll"
+	Delete "$INSTDIR\plugins\bin\libleechcraft_remoter.dll"
 	Delete "$INSTDIR\plugins\bin\libleechcraft_batcher.dll"
 	Delete "$INSTDIR\plugins\bin\libleechcraft_cron.dll"
 	Delete "$INSTDIR\plugins\bin\libleechcraft_mailleecher.dll"
@@ -174,7 +174,7 @@ LangString DESC_QT4RUNTIME ${LANG_ENGLISH} "Qt4 library core files and MinGW sup
 LangString DESC_MAINFILES ${LANG_ENGLISH} "LeechCraft executable and support libraries."
 LangString DESC_HTTPPLUGIN ${LANG_ENGLISH} "A simple plugin implementing HTTP/FTP facilities."
 LangString DESC_TORRENTPLUGIN ${LANG_ENGLISH} "A simple plugin implementing BitTorrent protocol."
-LangString DESC_UPDATERPLUGIN ${LANG_ENGLISH} "You don't want to update manually, right?"
+LangString DESC_REMOTERPLUGIN ${LANG_ENGLISH} "Provides remote access to plugins supporting this feature."
 LangString DESC_BATCHERPLUGIN ${LANG_ENGLISH} "Batch job manager."
 LangString DESC_CRONPLUGIN ${LANG_ENGLISH} "Job scheduler."
 LangString DESC_MAILPLUGIN ${LANG_ENGLISH} "POP3 mail backuper."
@@ -183,7 +183,7 @@ LangString DESC_QT4RUNTIME ${LANG_RUSSIAN} "Библиотеки Qt4."
 LangString DESC_MAINFILES ${LANG_RUSSIAN} "Сам LeechCraft и его вспомогательные бИблиотеки."
 LangString DESC_HTTPPLUGIN ${LANG_RUSSIAN} "Простой HTTP/FTP-модуль."
 LangString DESC_TORRENTPLUGIN ${LANG_RUSSIAN} "Простейший Torrent-клиент."
-LangString DESC_UPDATERPLUGIN ${LANG_RUSSIAN} "Скачивалка обновленных файлов."
+LangString DESC_REMOTERPLUGIN ${LANG_RUSSIAN} "Предоставляет возможность удаленного администрирования плагинов."
 LangString DESC_BATCHERPLUGIN ${LANG_RUSSIAN} "Менеджер пакетных заданий."
 LangString DESC_CRONPLUGIN ${LANG_RUSSIAN} "Планировщик заданий."
 LangString DESC_MAILPLUGIN ${LANG_RUSSIAN} "Выкачиватель почтовых ящиков по POP3."
@@ -193,9 +193,10 @@ LangString DESC_MAILPLUGIN ${LANG_RUSSIAN} "Выкачиватель почтовых ящиков по POP3
 	!insertmacro MUI_DESCRIPTION_TEXT ${MAINFILES} $(DESC_MAINFILES)
 	!insertmacro MUI_DESCRIPTION_TEXT ${HTTPPLUGIN} $(DESC_HTTPPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${TORRENTPLUGIN} $(DESC_TORRENTPLUGIN)
-	!insertmacro MUI_DESCRIPTION_TEXT ${UPDATERPLUGIN} $(DESC_UPDATERPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${REMOTERPLUGIN} $(DESC_REMOTERPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${BATCHERPLUGIN} $(DESC_BATCHERPLUGIN)
-
+	!insertmacro MUI_DESCRIPTION_TEXT ${CRONPLUGIN} $(DESC_CRONPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${MAILPLUGIN} $(DESC_MAILPLUGIN)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Function .onInit
