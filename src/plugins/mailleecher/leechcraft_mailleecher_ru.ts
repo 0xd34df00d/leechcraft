@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1">
-<defaultcodec></defaultcodec>
 <context>
     <name>MailLeecher</name>
     <message>
-        <location filename="mailleecher.cpp" line="33"/>
+        <location filename="mailleecher.cpp" line="39"/>
         <source>Allows you to back up your POP3 mailbox</source>
         <translation>Позволяет сделать архивную копию почтового ящика</translation>
     </message>
     <message>
-        <location filename="mailleecher.cpp" line="38"/>
+        <location filename="mailleecher.cpp" line="44"/>
         <source>NI</source>
         <translation>Не реализовано</translation>
     </message>
     <message>
-        <location filename="mailleecher.cpp" line="116"/>
+        <location filename="mailleecher.cpp" line="122"/>
         <source>Select destination directory</source>
         <translation>Выбери директорию назначения</translation>
     </message>
     <message>
-        <location filename="mailleecher.cpp" line="140"/>
+        <location filename="mailleecher.cpp" line="146"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>

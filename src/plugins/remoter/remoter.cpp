@@ -1,8 +1,15 @@
+#include <QTranslator>
 #include "remoter.h"
 #include "core.h"
 
 void Remoter::Init ()
 {
+    Q_INIT_RESOURCE (resources);
+    QTranslator *transl = new QTranslator (this);
+    QString localeName = QLocale::system ().name ();
+    transl->load (QString (":/leechcraft_remoter_") + localeName);
+    qApp->installTranslator (transl);
+
     IsShown_ = false;
     Ui_.setupUi (this);
     Ui_.Port_->setValue (Core::Instance ().GetPort ());
