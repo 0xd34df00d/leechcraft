@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>change.log</file>
+        <file>leechcraft_ru.qm</file>
+		<file>coresettings.xml</file>
+        <file>resources/images/loggerbg.png</file>
+        <file>resources/images/mainapp.png</file>
+        <file>resources/images/splashscreen.png</file>
+		<file>resources/images/main_addjob.png</file>
+		<file>resources/images/main_preferences.png</file>
+    </qresource>
+</RCC>

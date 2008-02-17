@@ -1,0 +1,282 @@
+<ui version="4.0" >
+ <class>AddTorrent</class>
+ <widget class="QDialog" name="AddTorrent" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>497</width>
+    <height>485</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Add torrent</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="resources.qrc" >:/resources/images/addjob.png</iconset>
+  </property>
+  <layout class="QVBoxLayout" >
+   <item>
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>Torrent</string>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="QLabel" name="label" >
+        <property name="text" >
+         <string>Torrent:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="QLineEdit" name="TorrentFile_" />
+        </item>
+        <item>
+         <widget class="QPushButton" name="TorrentBrowse_" >
+          <property name="text" >
+           <string>Browse...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="label_2" >
+        <property name="text" >
+         <string>Tracker URL:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="QLabel" name="TrackerURL_" >
+        <property name="text" >
+         <string>&lt;unknown></string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QLabel" name="label_3" >
+        <property name="text" >
+         <string>Size:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" >
+       <widget class="QLabel" name="Size_" >
+        <property name="text" >
+         <string>&lt;unknown></string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" >
+       <widget class="QLabel" name="label_6" >
+        <property name="text" >
+         <string>Creator:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" >
+       <widget class="QLabel" name="Creator_" >
+        <property name="text" >
+         <string>&lt;unknown></string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" >
+       <widget class="QLabel" name="label_8" >
+        <property name="text" >
+         <string>Comment:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1" >
+       <widget class="QLabel" name="Comment_" >
+        <property name="text" >
+         <string>&lt;unknown></string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0" >
+       <widget class="QLabel" name="label_12" >
+        <property name="text" >
+         <string>Date:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1" >
+       <widget class="QLabel" name="Date_" >
+        <property name="text" >
+         <string>&lt;unknown></string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0" >
+       <widget class="QLabel" name="label_10" >
+        <property name="text" >
+         <string>Files:</string>
+        </property>
+       </widget>
+      </item>
+      <item rowspan="2" row="6" column="1" >
+       <widget class="QTreeWidget" name="FileWidget_" >
+        <property name="rootIsDecorated" >
+         <bool>false</bool>
+        </property>
+        <property name="uniformRowHeights" >
+         <bool>true</bool>
+        </property>
+        <column>
+         <property name="text" >
+          <string>Size</string>
+         </property>
+        </column>
+        <column>
+         <property name="text" >
+          <string>Name</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+      <item row="7" column="0" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="8" column="0" >
+       <widget class="QLabel" name="label_11" >
+        <property name="text" >
+         <string>Destination:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1" >
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="QLineEdit" name="Destination_" />
+        </item>
+        <item>
+         <widget class="QPushButton" name="DestinationBrowse_" >
+          <property name="text" >
+           <string>Browse...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" >
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="OK_" >
+       <property name="text" >
+        <string>OK</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="Cancel_" >
+       <property name="text" >
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="resources.qrc" />
+ </resources>
+ <connections>
+  <connection>
+   <sender>OK_</sender>
+   <signal>released()</signal>
+   <receiver>AddTorrent</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>366</x>
+     <y>462</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>312</x>
+     <y>470</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Cancel_</sender>
+   <signal>released()</signal>
+   <receiver>AddTorrent</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>453</x>
+     <y>456</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>493</x>
+     <y>451</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>TorrentFile_</sender>
+   <signal>returnPressed()</signal>
+   <receiver>OK_</receiver>
+   <slot>animateClick()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>202</x>
+     <y>47</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>378</x>
+     <y>457</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Destination_</sender>
+   <signal>returnPressed()</signal>
+   <receiver>OK_</receiver>
+   <slot>animateClick()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>307</x>
+     <y>409</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>392</x>
+     <y>470</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
