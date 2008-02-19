@@ -390,8 +390,6 @@ void Job::processData (ImpBase::length_t ready, ImpBase::length_t total, QByteAr
         CurrentSpeed_ = (DownloadedSize_ - PreviousDownloadSize_) / static_cast<double> (UpdateTime_->elapsed ());
         PreviousDownloadSize_ = DownloadedSize_;
         UpdateTime_->restart ();
-        StartTime_->restart ();
-        UpdateTime_->restart ();
     }
 }
 

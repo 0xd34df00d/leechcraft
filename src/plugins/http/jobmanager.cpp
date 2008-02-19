@@ -84,7 +84,7 @@ QVariant JobManager::data (const QModelIndex& index, int role) const
                 case TListDownloadTime:
                     return static_cast<quint64> (job->GetDownloadTime () / 1000);
                 case TListRemainingTime:
-                    return static_cast<quint64> (job->GetAverageTime ());
+                    return static_cast<quint64> (job->GetAverageTime () / 1000);
                 case TListDownloaded:
                     return job->GetDownloaded ();
                 case TListTotal:
