@@ -72,9 +72,10 @@ const QString& Job::GetURL () const
     return Params_->URL_;
 }
 
-const QString& Job::GetLocalName () const
+QString Job::GetLocalName () const
 {
-    return File_ ? File_->fileName () : MakeFilename ();
+    QString result = (File_ ? File_->fileName () : MakeFilename ());
+    return result;
 }
 
 long Job::GetSpeed () const
@@ -386,7 +387,8 @@ void Job::processData (ImpBase::length_t ready, ImpBase::length_t total, QByteAr
 
     if (UpdateTime_->elapsed () > XmlSettingsManager::Instance ()->property ("InterfaceUpdateTimeout").toInt ())
     {
-        Speed_ = static_cast<double> (DownloadedSize_ - RestartPosition_) / static_cast<double> (StartTime_->elapsed ());
+        Speed_ = static_cast<double> (DownloadedSize_ - RestartPosition_) / static_cast<double> (StartTime_->elapsed ()) * 1000;
+        qDebug () << DownloadedSize_ - RestartPosition_ << StartTime_->elapsed () << Speed_;
         CurrentSpeed_ = (DownloadedSize_ - PreviousDownloadSize_) / static_cast<double> (UpdateTime_->elapsed ());
         PreviousDownloadSize_ = DownloadedSize_;
         UpdateTime_->restart ();

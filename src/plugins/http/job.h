@@ -44,7 +44,7 @@ public:
     virtual ~Job ();
     void DoDelayedInit ();
     const QString& GetURL () const;
-    const QString& GetLocalName () const;
+    QString GetLocalName () const;
     long GetSpeed () const;
     long GetCurrentSpeed () const;
     quint64 GetDownloaded () const;
