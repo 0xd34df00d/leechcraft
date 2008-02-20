@@ -34,6 +34,7 @@ private:
     Reply DoNotAuthorized ();
     Reply DoMainPage (const QStringList&, const QMap<QString, QString>&);
     Reply DoView (const QStringList&, const QMap<QString, QString>&);
+    Reply DoAdd (const QStringList&, const QMap<QString, QString>&);
     Reply DoUnhandled (const QStringList&, const QMap<QString, QString>&);
     Reply DoResources (const QStringList&, const QMap<QString, QString>&);
 signals:

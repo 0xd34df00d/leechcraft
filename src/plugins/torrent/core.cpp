@@ -371,10 +371,25 @@ void Core::AddFile (const QString& filename, const QString& path, const QVector<
         emit error (tr ("The torrent %1 with save path %2 already exists in the session").arg (filename).arg (path));
         return;
     }
+    catch (const libtorrent::invalid_encoding& e)
+    {
+        emit error (tr ("Bad bencoding in torrent file"));
+        return;
+    }
+    catch (const libtorrent::invalid_torrent_file& e)
+    {
+        emit error (tr ("Invalid torrent file"));
+        return;
+    }
+    catch (const std::runtime_error& e)
+    {
+        emit error (tr ("Runtime error"));
+        return;
+    }
 
     std::vector<int> priorities;
     priorities.resize (handle.get_torrent_info ().num_files ());
-    for (int i = 0; i < files.size (); ++i)
+    for (int i = 0; i < priorities.size (); ++i)
         priorities [i] = 1;
 
     if (files.size ())

@@ -66,6 +66,25 @@ void Server::ready ()
         headers [list [0].trimmed ().toLower ()] = list [1].trimmed ();
     }
 
+    if (head [0].toLower () == "post")
+    {
+        qDebug () << "post method, waiting for data";
+//        socket->waitForReadyRead ();
+        QByteArray other = socket->readAll ();
+
+        if (other.contains ('?'))
+        {
+            QList<QByteArray> params = other.split ('?').at (1).split ('&');
+            qDebug () << params;
+            for (int i = 0; i < params.size (); ++i)
+            {
+                QList<QByteArray> p = params.at (i).split ('=');
+                if (p.size () < 2)
+                    continue;
+                query [p.at (0)] = p.at (1);
+            }
+        }
+    }
     Reply reply = qobject_cast<Core*> (parent ())->GetReplyFor (path, query, headers);
     socket->write (QString ("HTTP/1.0 " + QString::number (reply.State_) + " OK\r\n").toAscii ());
     socket->write ("Server: LeechCraftRemoter/deep_alpha\r\n");

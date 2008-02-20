@@ -1,4 +1,5 @@
 #include <QStringList>
+#include <QTemporaryFile>
 #include <interfaces/interfaces.h>
 #include <plugininterface/proxy.h>
 #include "core.h"
@@ -84,6 +85,8 @@ Reply Core::GetReplyFor (const QString& p, const QMap<QString, QString>& query, 
         rep = DoMainPage (parts, query);
     else if (parts.at (0) == "view")
         rep = DoView (parts, query);
+    else if (parts.at (0) == "add")
+        rep = DoAdd (parts, query);
     else if (parts.at (0) == "resources")
         rep = DoResources (parts, query);
     else
@@ -125,10 +128,9 @@ Reply Core::DoView (const QStringList&, const QMap<QString, QString>&)
     Reply rep;
     rep.State_ = StateOK;
 
-
     DocumentGenerator::CreateDocument ();
     DocumentGenerator::CreateHead (QString ("View : LeechCraft Remoter"));
-    DocumentGenerator::AddAutorefresh (3);
+    DocumentGenerator::AddAutorefresh (10);
 
     QDomDocument document = DocumentGenerator::GetDocument ();
     QDomNode body = document.elementsByTagName ("body").at (0);
@@ -154,9 +156,28 @@ Reply Core::DoView (const QStringList&, const QMap<QString, QString>&)
         if (!datas.size ())
             continue;
 
+        // Draw new job form
+        IRemoteable::AddType type = ir->GetAddJobType ();
+        QDomElement form = DocumentGenerator::CreateForm (QString ("/add/%1").arg (i), false);
+        QDomElement addEntity = DocumentGenerator::CreateInputField (type == IRemoteable::TypeString ? DocumentGenerator::TypeText : DocumentGenerator::TypeFile, "entity");
+        QDomElement where = DocumentGenerator::CreateInputField (DocumentGenerator::TypeText, "where");
+        QDomElement addHolder = DocumentGenerator::CreateText (),
+                    whereHolder = DocumentGenerator::CreateText (),
+                    submitHolder = DocumentGenerator::CreateText ();
+        addHolder.appendChild (DocumentGenerator::CreateInlineText ("What to add:"));
+        addHolder.appendChild (addEntity);
+        whereHolder.appendChild (DocumentGenerator::CreateInlineText ("Where to save:"));
+        whereHolder.appendChild (where);
+        submitHolder.appendChild (DocumentGenerator::CreateSubmitButton ("Add!"));
+        form.appendChild (addHolder);
+        form.appendChild (whereHolder);
+        form.appendChild (submitHolder);
+        body.appendChild (form);
+
+        // Create view for current jobs
+
         QVariantList heading = datas.at (0);
         heading.removeAt (0);
-
 
         for (int j = 1; j < datas.size (); ++j)
         {
@@ -177,6 +198,35 @@ Reply Core::DoView (const QStringList&, const QMap<QString, QString>&)
     }
 
     rep.Data_ += document.toByteArray ();
+    return rep;
+}
+
+Reply Core::DoAdd (const QStringList& path, const QMap<QString, QString>& query)
+{
+    qDebug () << Q_FUNC_INFO;
+    Reply rep;
+    rep.State_ = StateFound;
+    rep.RedirectTo_ = "/view";
+
+    int number = path [1].toInt ();
+    if (number >= Objects_.size ())
+        return rep;
+
+    QString entity = query ["entity"],
+            where = query ["where"];
+
+    IRemoteable *ir = qobject_cast<IRemoteable*> (Objects_.at (number));
+    if (ir->GetAddJobType () == IRemoteable::TypeString)
+        ir->AddJob (entity, where);
+    else if (ir->GetAddJobType () == IRemoteable::TypeFile)
+    {
+        QTemporaryFile file ("leechcraft.remoter.XXXXXX");
+        file.open ();
+        qDebug () << "writing to file" << file.fileName () << entity;
+        file.write (entity.toAscii ());
+        ir->AddJob (file.fileName (), where);
+    }
+
     return rep;
 }
 

@@ -8,7 +8,7 @@ QDomDocument DocumentGenerator::Document_;
 QString DocumentGenerator::GetStylesheet ()
 {
     QFile sheet (":/defaultstylesheet.css");
-    qDebug () << sheet.open (QIODevice::ReadOnly);
+    sheet.open (QIODevice::ReadOnly);
     return sheet.readAll ();
 }
 
@@ -103,6 +103,40 @@ QDomElement DocumentGenerator::CreateRow (const QVariantList& list)
         tr.appendChild (td);
     }
     return tr;
+}
+
+QDomElement DocumentGenerator::CreateForm (const QString& where, bool post)
+{
+    QDomElement form = Document_.createElement ("form");
+    form.setAttribute ("action", where);
+    form.setAttribute ("method", post ? "post" : "get");
+    return form;
+}
+
+QDomElement DocumentGenerator::CreateInputField (DocumentGenerator::InputType type, const QString& name)
+{
+    QDomElement result = Document_.createElement ("input");
+    QString t;
+    switch (type)
+    {
+        case TypeText:
+            t = "text";
+            break;
+        case TypeFile:
+            t = "file";
+            break;
+    }
+    result.setAttribute ("type", t);
+    result.setAttribute ("name", name);
+    return result;
+}
+
+QDomElement DocumentGenerator::CreateSubmitButton (const QString& text)
+{
+    QDomElement elem = Document_.createElement ("input");
+    elem.setAttribute ("name", text);
+    elem.setAttribute ("type", "submit");
+    return elem;
 }
 
 void DocumentGenerator::ApplyStyle (QDomElement& node, const QString& style)

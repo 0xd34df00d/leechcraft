@@ -27,6 +27,7 @@ class TorrentPlugin : public QMainWindow
     QTimer *OverallStatsUpdateTimer_;
     QMenu *Plugins_;
 public:
+    // IInfo
     void Init ();
     QString GetName () const;
     QString GetInfo () const;
@@ -39,17 +40,26 @@ public:
     void SetProvider (QObject*, const QString&);
     void PushMainWindowExternals (const MainWindowExternals&);
     void Release ();
+    //IWindow
     QIcon GetIcon () const;
     void SetParent (QWidget*);
     void ShowWindow ();
     void ShowBalloonTip ();
+    // IDownload
     qint64 GetDownloadSpeed () const;
     qint64 GetUploadSpeed () const;
     void StartAll ();
     void StopAll ();
-    QList<QVariantList> GetAll () const;
     bool CouldDownload (const QString&) const;
     void AddJob (const QString&);
+
+    // IRemoteable
+    QList<QVariantList> GetAll () const;
+    void AddJob (const QString&, const QString&);
+    AddType GetAddJobType () const;
+    void StartAt (int);
+    void StopAt (int);
+    void DeleteAt (int);
 public slots:
     void handleHidePlugins ();
 protected:

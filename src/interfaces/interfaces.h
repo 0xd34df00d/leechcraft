@@ -97,7 +97,17 @@ public:
 class IRemoteable
 {
 public:
+    enum AddType
+    {
+        TypeFile
+        , TypeString
+    };
     virtual QList<QVariantList> GetAll () const = 0;
+    virtual void AddJob (const QString&, const QString&) = 0;
+    virtual AddType GetAddJobType () const = 0;
+    virtual void StartAt (int) = 0;
+    virtual void StopAt (int) = 0;
+    virtual void DeleteAt (int) = 0;
     virtual ~IRemoteable () {}
 };
 

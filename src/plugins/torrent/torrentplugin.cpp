@@ -170,6 +170,32 @@ QList<QVariantList> TorrentPlugin::GetAll () const
     return result;
 }
 
+void TorrentPlugin::AddJob (const QString& file, const QString& where)
+{
+    QVector<bool> files (true);
+    Core::Instance ()->AddFile (file, where, files);
+}
+
+IRemoteable::AddType TorrentPlugin::GetAddJobType () const
+{
+    return TypeFile;
+}
+
+void TorrentPlugin::StartAt (int pos)
+{
+    Core::Instance ()->ResumeTorrent (pos);
+}
+
+void TorrentPlugin::StopAt (int pos)
+{
+    Core::Instance ()->PauseTorrent (pos);
+}
+
+void TorrentPlugin::DeleteAt (int pos)
+{
+    Core::Instance ()->RemoveTorrent (pos);
+}
+
 bool TorrentPlugin::CouldDownload (const QString& string) const
 {
     QFile file (string);
