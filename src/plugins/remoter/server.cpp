@@ -69,7 +69,9 @@ void Server::ready ()
     Reply reply = qobject_cast<Core*> (parent ())->GetReplyFor (path, query, headers);
     socket->write (QString ("HTTP/1.0 " + QString::number (reply.State_) + " OK\r\n").toAscii ());
     socket->write ("Server: LeechCraftRemoter/deep_alpha\r\n");
-    socket->write ("Content-Type: text/html; charset=UTF-8\r\n");
+    reply.Type_.isEmpty () ?
+        socket->write ("Content-Type: text/html; charset=UTF-8\r\n") :
+        socket->write (QString ("Content-Type: " + reply.Type_ + "\r\n").toAscii ());
     socket->write ("WWW-Authenticate: Basic realm=\"LeechCraft Remoter\"");
     socket->write (QString ("Content-Length: %1\r\n").arg (reply.Data_.toUtf8 ().size ()).toAscii ());
     socket->write ("\r\n");

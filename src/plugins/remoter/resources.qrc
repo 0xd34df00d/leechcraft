@@ -2,5 +2,6 @@
     <qresource prefix="/" >
         <file>resources/images/remoter.png</file>
         <file>leechcraft_remoter_ru.qm</file>
+        <file>defaultstylesheet.css</file>
     </qresource>
 </RCC>

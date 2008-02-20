@@ -1,6 +1,8 @@
 #ifndef CORE_H
 #define CORE_H
 #include <QObjectList>
+#include <QDomDocument>
+#include <QDomElement>
 #include <QVariantList>
 #include <QMap>
 #include <QString>
@@ -33,14 +35,7 @@ private:
     Reply DoMainPage (const QStringList&, const QMap<QString, QString>&);
     Reply DoView (const QStringList&, const QMap<QString, QString>&);
     Reply DoUnhandled (const QStringList&, const QMap<QString, QString>&);
-
-    QString Row (const QVariantList&);
-    QString Head (const QString&) const;
-    QString Body (const QString&) const;
-    QString Link (const QString&, const QString&, bool n = false) const;
-    QString Heading (const QString&, int level = 1);
-    QString Strong (const QString&);
-    QString Table (const QString&);
+    Reply DoResources (const QStringList&, const QMap<QString, QString>&);
 signals:
     void bindSuccessful (bool);
 };

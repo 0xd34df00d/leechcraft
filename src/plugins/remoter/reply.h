@@ -12,6 +12,7 @@ struct Reply
 {
     State State_;
     QString Data_;
+    QString Type_;
 };
 
 #endif
