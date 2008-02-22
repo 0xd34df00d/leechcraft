@@ -136,7 +136,7 @@ QVariant Core::data (const QModelIndex& index, int role) const
         case ColumnUploaded:
             return Proxy::Instance ()->MakePrettySize (status.total_payload_upload + Handles_.at (row).UploadedBefore_);
         case ColumnRating:
-            return QString::number (static_cast<float> (status.total_payload_upload + Handles_.at (row).UploadedBefore_) / status.total_done, 'g', 2);
+            return QString::number (static_cast<float> (status.total_payload_upload + Handles_.at (row).UploadedBefore_) / status.total_payload_download, 'g', 2);
         case ColumnSize:
             return Proxy::Instance ()->MakePrettySize (status.total_wanted);
         case ColumnProgress:
