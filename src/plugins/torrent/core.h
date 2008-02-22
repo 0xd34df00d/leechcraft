@@ -106,6 +106,7 @@ private slots:
 protected:
     virtual void timerEvent (QTimerEvent*);
 public slots:
+    void tcpPortRangeChanged ();
     void dhtStateChanged ();
     void autosaveIntervalChanged ();
     void maxUploadsChanged ();

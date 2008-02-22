@@ -39,8 +39,8 @@ void Core::DoDelayedInit ()
 {
     try
     {
-        QList<QVariant> ports = XmlSettingsManager::Instance ()->property ("TCPPortRange").toList ();
         Session_ = new libtorrent::session (libtorrent::fingerprint ("LB", 0, 1, 0, 2));
+        QList<QVariant> ports = XmlSettingsManager::Instance ()->property ("TCPPortRange").toList ();
         Session_->listen_on (std::make_pair (ports.at (0).toInt (), ports.at (1).toInt ()));
         Session_->add_extension (&libtorrent::create_metadata_plugin);
         Session_->add_extension (&libtorrent::create_ut_pex_plugin);
@@ -76,6 +76,7 @@ void Core::DoDelayedInit ()
     SetOverallUploadRate (XmlSettingsManager::Instance ()->Property ("UploadRateLimit", 5000).toInt ());
     SetDesiredRating (XmlSettingsManager::Instance ()->Property ("DesiredRating", 0).toInt ());
 
+    XmlSettingsManager::Instance ()->RegisterObject ("TCPPortRange", this, "tcpPortRangeChanged");
     XmlSettingsManager::Instance ()->RegisterObject ("DHTEnabled", this, "dhtStateChanged");
     XmlSettingsManager::Instance ()->RegisterObject ("AutosaveInterval", this, "autosaveIntervalChanged");
     XmlSettingsManager::Instance ()->RegisterObject ("MaxUploads", this, "maxUploadsChanged");
@@ -875,6 +876,12 @@ void Core::timerEvent (QTimerEvent *e)
 {
     if (e->timerId () == InterfaceUpdateTimer_)
         emit dataChanged (index (0, 0), index (Handles_.size (), columnCount (QModelIndex ())));
+}
+
+void Core::tcpPortRangeChanged ()
+{
+    QList<QVariant> ports = XmlSettingsManager::Instance ()->property ("TCPPortRange").toList ();
+    Session_->listen_on (std::make_pair (ports.at (0).toInt (), ports.at (1).toInt ()));
 }
 
 void Core::dhtStateChanged ()
