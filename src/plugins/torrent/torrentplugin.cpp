@@ -31,6 +31,9 @@ void TorrentPlugin::Init ()
     TorrentView_->setModel (Core::Instance ());
     Core::Instance ()->DoDelayedInit ();
     IgnoreTimer_ = true;
+    OverallDownloadRateController_->setValue (Core::Instance ()->GetOverallDownloadRate ());
+    OverallUploadRateController_->setValue (Core::Instance ()->GetOverallUploadRate ());
+    DesiredRating_->setValue (Core::Instance ()->GetDesiredRating ());
     
     OverallStatsUpdateTimer_ = new QTimer (this);
     connect (OverallStatsUpdateTimer_, SIGNAL (timeout ()), this, SLOT (updateOverallStats ()));

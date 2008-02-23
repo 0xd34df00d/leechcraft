@@ -457,7 +457,6 @@ void Core::ForceReannounce (int pos)
 
 void Core::SetOverallDownloadRate (int val)
 {
-    qDebug () << Q_FUNC_INFO << (val == 0 ? -1 : val * 1024);
     Session_->set_download_rate_limit (val == 0 ? -1 : val * 1024);
     XmlSettingsManager::Instance ()->setProperty ("DownloadRateLimit", val);
 }
