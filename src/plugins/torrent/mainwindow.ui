@@ -86,7 +86,7 @@
                <number>100</number>
               </property>
               <property name="value" >
-               <number>100</number>
+               <number>0</number>
               </property>
              </widget>
             </item>
@@ -118,7 +118,7 @@
                <number>100</number>
               </property>
               <property name="value" >
-               <number>100</number>
+               <number>0</number>
               </property>
              </widget>
             </item>
@@ -173,7 +173,7 @@
                <number>100</number>
               </property>
               <property name="value" >
-               <number>100</number>
+               <number>0</number>
               </property>
              </widget>
             </item>
@@ -199,7 +199,7 @@
                <number>100</number>
               </property>
               <property name="value" >
-               <number>100</number>
+               <number>0</number>
               </property>
              </widget>
             </item>
@@ -211,7 +211,7 @@
              </widget>
             </item>
             <item row="2" column="1" >
-             <widget class="QDoubleSpinBox" name="DesiredTorrentRating_" >
+             <widget class="QDoubleSpinBox" name="TorrentDesiredRating_" >
               <property name="specialValueText" >
                <string>Infinite</string>
               </property>

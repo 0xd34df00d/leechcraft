@@ -335,6 +335,33 @@ void TorrentPlugin::on_DesiredRating__valueChanged (double val)
     Core::Instance ()->SetDesiredRating (val);
 }
 
+void TorrentPlugin::on_TorrentDownloadRateController__valueChanged (int val)
+{
+    QModelIndex index = TorrentView_->currentIndex ();
+    if (!index.isValid ())
+        return;
+
+    Core::Instance ()->SetTorrentDownloadRate (val, index.row ());
+}
+
+void TorrentPlugin::on_TorrentUploadRateController__valueChanged (int val)
+{
+    QModelIndex index = TorrentView_->currentIndex ();
+    if (!index.isValid ())
+        return;
+
+    Core::Instance ()->SetTorrentUploadRate (val, index.row ());
+}
+
+void TorrentPlugin::on_TorrentDesiredRating__valueChanged (double val)
+{
+    QModelIndex index = TorrentView_->currentIndex ();
+    if (!index.isValid ())
+        return;
+
+    Core::Instance ()->SetTorrentDesiredRating (val, index.row ());
+}
+
 void TorrentPlugin::setActionsEnabled ()
 {
 }
@@ -356,6 +383,13 @@ void TorrentPlugin::updateTorrentStats ()
     switch (Stats_->currentIndex ())
     {
         case 0:
+            if (index.isValid ())
+            {
+                int row = index.row ();
+                TorrentDownloadRateController_->setValue (Core::Instance ()->GetTorrentDownloadRate (row));
+                TorrentUploadRateController_->setValue (Core::Instance ()->GetTorrentUploadRate (row));
+                TorrentDesiredRating_->setValue (Core::Instance ()->GetTorrentDesiredRating (row));
+            }
             break;
         case 1:
             updateOverallStats ();

@@ -36,6 +36,7 @@ private:
         QByteArray TorrentFileContents_;
         QString TorrentFileName_;
         TorrentState State_;
+        double Ratio_;
     };
 
     libtorrent::session *Session_;
@@ -91,6 +92,12 @@ public:
     int GetOverallDownloadRate () const;
     int GetOverallUploadRate () const;
     double GetDesiredRating () const;
+    void SetTorrentDownloadRate (int, int);
+    void SetTorrentUploadRate (int, int);
+    void SetTorrentDesiredRating (double, int);
+    int GetTorrentDownloadRate (int) const;
+    int GetTorrentUploadRate (int) const;
+    double GetTorrentDesiredRating (int) const;
     void MakeTorrent (NewTorrentParams) const;
 private:
     QString GetStringForState (libtorrent::torrent_status::state_t) const;

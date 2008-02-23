@@ -495,6 +495,53 @@ double Core::GetDesiredRating () const
     return XmlSettingsManager::Instance ()->property ("DesiredRating").toInt ();
 }
 
+void Core::SetTorrentDownloadRate (int val, int torrent)
+{
+    if (CheckValidity (torrent))
+        Handles_.at (torrent).Handle_.set_download_limit (val == 0 ? -1 : val * 1024);
+}
+
+void Core::SetTorrentUploadRate (int val, int torrent)
+{
+    if (CheckValidity (torrent))
+        Handles_.at (torrent).Handle_.set_upload_limit (val == 0 ? -1 : val * 1024);
+}
+
+void Core::SetTorrentDesiredRating (double val, int torrent)
+{
+    if (CheckValidity (torrent))
+    {
+        Handles_.at (torrent).Handle_.set_ratio (val ? 1/val : 0);
+        Handles_ [torrent].Ratio_ = val;
+    }
+}
+
+int Core::GetTorrentDownloadRate (int torrent) const
+{
+    if (CheckValidity (torrent))
+        return Handles_.at (torrent).Handle_.download_limit () / 1024;
+    else
+        return -1;
+}
+
+int Core::GetTorrentUploadRate (int torrent) const
+{
+    if (CheckValidity (torrent))
+        return Handles_.at (torrent).Handle_.upload_limit () / 1024;
+    else
+        return -1;
+}
+
+double Core::GetTorrentDesiredRating (int torrent) const
+{
+    if (CheckValidity (torrent))
+    {
+        return Handles_.at (torrent).Ratio_;
+    }
+    else
+        return -1;
+}
+
 namespace
 {
     void AddFiles (libtorrent::torrent_info& t, const boost::filesystem::path& p, const boost::filesystem::path& l)
