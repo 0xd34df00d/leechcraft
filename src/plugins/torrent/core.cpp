@@ -347,7 +347,7 @@ QList<PeerInfo> Core::GetPeers (int row) const
         ppi.Downloaded_ = pi.total_download;
         ppi.Uploaded_ = pi.total_upload;
         ppi.Client_ = QString::fromUtf8 (pi.client.c_str ());
-        ppi.Country_ = QString::fromLocal8Bit (pi.country, 2);
+        ppi.Pieces_ = pi.pieces;
         result << ppi;
     }
 

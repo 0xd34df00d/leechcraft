@@ -922,7 +922,7 @@
            </column>
            <column>
             <property name="text" >
-             <string>Country</string>
+             <string>Available pieces</string>
             </property>
            </column>
           </widget>

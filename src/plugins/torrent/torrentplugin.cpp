@@ -15,6 +15,8 @@ void TorrentPlugin::Init ()
     qApp->installTranslator (transl);
 
     setupUi (this);
+    LastPeersUpdate_ = new QTime;
+    LastPeersUpdate_->start ();
     IsShown_ = false;
     XmlSettingsDialog_ = new XmlSettingsDialog (this);
     XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/torrentsettings.xml");
@@ -24,9 +26,11 @@ void TorrentPlugin::Init ()
     connect (Core::Instance (), SIGNAL (torrentFinished (const QString&)), this, SIGNAL (downloadFinished (const QString&)));
     connect (Core::Instance (), SIGNAL (fileFinished (const QString&)), this, SIGNAL (fileDownloaded (const QString&)));
     connect (Core::Instance (), SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (updateTorrentStats ()));
+    connect (Stats_, SIGNAL (currentChanged (int)), this, SLOT (restartTimers ()));
     connect (Stats_, SIGNAL (currentChanged (int)), this, SLOT (updateTorrentStats ()));
     TorrentView_->setModel (Core::Instance ());
     Core::Instance ()->DoDelayedInit ();
+    IgnoreTimer_ = true;
     
     OverallStatsUpdateTimer_ = new QTimer (this);
     connect (OverallStatsUpdateTimer_, SIGNAL (timeout ()), this, SLOT (updateOverallStats ()));
@@ -338,6 +342,11 @@ void TorrentPlugin::showError (QString e)
     QMessageBox::warning (this, tr ("Error!"), e);
 }
 
+void TorrentPlugin::restartTimers ()
+{
+    IgnoreTimer_ = true;
+}
+
 void TorrentPlugin::updateTorrentStats ()
 {
     QModelIndex index = TorrentView_->currentIndex ();
@@ -411,6 +420,10 @@ void TorrentPlugin::updateTorrentStats ()
             }
             break;
         case 4:
+            if (!IgnoreTimer_ && LastPeersUpdate_->elapsed () < 5000)
+                break;
+            IgnoreTimer_ = false;
+
             PeersWidget_->clear ();
             if (index.isValid ())
             {
@@ -425,9 +438,12 @@ void TorrentPlugin::updateTorrentStats ()
                     item->setText (4, Proxy::Instance ()->MakePrettySize (peers.at (i).Downloaded_));
                     item->setText (5, Proxy::Instance ()->MakePrettySize (peers.at (i).Uploaded_));
                     item->setText (6, peers.at (i).Client_);
-                    item->setText (7, peers.at (i).Country_);
+                    PiecesWidget *pieces = new PiecesWidget ();
+                    PeersWidget_->setItemWidget (item, 7, pieces);
+                    pieces->setPieceMap (peers.at (i).Pieces_);
                 }
             }
+            LastPeersUpdate_->restart ();
             break;
     }
 }

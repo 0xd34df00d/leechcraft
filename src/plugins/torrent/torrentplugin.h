@@ -25,7 +25,9 @@ class TorrentPlugin : public QMainWindow
     XmlSettingsDialog *XmlSettingsDialog_;
     AddTorrent *AddTorrentDialog_;
     QTimer *OverallStatsUpdateTimer_;
+    QTime *LastPeersUpdate_;
     QMenu *Plugins_;
+    bool IgnoreTimer_;
 public:
     // IInfo
     void Init ();
@@ -81,6 +83,7 @@ private slots:
     void setActionsEnabled ();
     void showError (QString);
     void updateTorrentStats ();
+    void restartTimers ();
     void updateOverallStats ();
     void doLogMessage (const QString&);
 signals:
