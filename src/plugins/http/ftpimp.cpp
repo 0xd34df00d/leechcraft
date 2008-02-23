@@ -46,6 +46,13 @@ FtpImp::~FtpImp ()
     delete AwaitFileInfoReaction_.first;
 }
 
+void FtpImp::SetRangeDownload (const QPair<quint64, quint64>& pair)
+{
+    qDebug () << Q_FUNC_INFO << pair;
+    RestartPosition_ = pair.first;
+    StopPosition_ = pair.second;
+}
+
 void FtpImp::SetRestartPosition (ImpBase::length_t pos)
 {
     RestartPosition_ = pos;
@@ -184,6 +191,8 @@ void FtpImp::run ()
     DataSocket_->setReadBufferSize (cacheSize);
 
     QByteArray data;
+    if (StopPosition_)
+        Size_ = StopPosition_;
     emit dataFetched (RestartPosition_, Size_ + RestartPosition_, data);
 
     length_t counter = RestartPosition_;

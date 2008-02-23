@@ -27,6 +27,7 @@ public:
     ImpBase (QObject *parent = 0);
     virtual ~ImpBase ();
     virtual void SetRestartPosition (length_t) = 0;
+    virtual void SetRangeDownload (const QPair<quint64, quint64>&) = 0;
     virtual void SetURL (const QString&) = 0;
     virtual void StartDownload ();
     virtual void StopDownload () = 0;
@@ -35,6 +36,7 @@ public:
     virtual void run () = 0;
 protected:
     length_t RestartPosition_;
+    quint64 StopPosition_;
     QString URL_;
 
     void SetCacheSize (int);

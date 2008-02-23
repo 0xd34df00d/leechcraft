@@ -4,6 +4,7 @@
 ImpBase::ImpBase (QObject *parent)
 : QThread (parent)
 , CacheSize_ (0)
+, StopPosition_ (0)
 {
 }
 

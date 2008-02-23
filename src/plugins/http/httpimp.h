@@ -92,6 +92,7 @@ private:
 public:
     HttpImp (QObject *parent = 0);
     virtual ~HttpImp ();
+    virtual void SetRangeDownload (const QPair<quint64, quint64>&);
     virtual void SetRestartPosition (length_t);
     virtual void SetURL (const QString&);
     virtual void StopDownload ();

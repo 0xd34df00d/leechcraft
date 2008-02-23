@@ -26,6 +26,13 @@ HttpImp::~HttpImp ()
     delete AwaitFileInfoReaction_.second;
 }
 
+void HttpImp::SetRangeDownload (const QPair<quint64, quint64>& pair)
+{
+    qDebug () << Q_FUNC_INFO << pair;
+    RestartPosition_ = pair.first;
+    StopPosition_ = pair.second;
+}
+
 void HttpImp::SetRestartPosition (length_t pos)
 {
     RestartPosition_ = pos;
@@ -100,16 +107,19 @@ void HttpImp::run ()
     int cacheSize = XmlSettingsManager::Instance ()->property ("CacheSize").toInt () * 1024; 
     SetCacheSize (cacheSize);
     Socket_->setReadBufferSize (cacheSize);
-
-    AwaitFileInfoReaction_.second->lock ();
-    AwaitFileInfoReaction_.first->wait (AwaitFileInfoReaction_.second);
-    AwaitFileInfoReaction_.second->unlock ();
+    
+    if (!StopPosition_)
+    {
+        AwaitFileInfoReaction_.second->lock ();
+        AwaitFileInfoReaction_.first->wait (AwaitFileInfoReaction_.second);
+        AwaitFileInfoReaction_.second->unlock ();
+    }
 
     emit dataFetched (RestartPosition_, Response_.ContentLength_ + RestartPosition_, QByteArray ());
     while (counter < Response_.ContentLength_)
     {
         QByteArray newData;
-        msleep (10);
+        msleep (5);
         try
         {
             newData = Socket_->ReadAll ();
@@ -160,7 +170,9 @@ void HttpImp::WriteHeaders ()
     Socket_->Write ("User-Agent: " + agent.trimmed () + "\r\n");
     Socket_->Write (QString ("Accept: */*\r\n"));
     Socket_->Write ("Host: " + Socket_->GetAddressParser ()->GetHost () + "\r\n");
-    if (RestartPosition_)
+    if (RestartPosition_ && StopPosition_)
+        Socket_->Write ("Range: bytes=" + QString::number (RestartPosition_) + "-" + QString::number (StopPosition_) + "\r\n");
+    else if (RestartPosition_)
         Socket_->Write ("Range: bytes=" + QString::number (RestartPosition_) + "-\r\n");
     Socket_->Write (QString ("\r\n"));
     Socket_->Flush ();
@@ -209,7 +221,7 @@ bool HttpImp::ReadResponse ()
 
     bool shouldWeReturn = DoStuffWithResponse ();
 
-    if (!shouldWeReturn)
+    if (!shouldWeReturn && !StopPosition_)
     {
         QDateTime dt = QDateTime::fromString (Response_.Fields_ ["last-modified"].left (25), "ddd, dd MMM yyyy HH:mm:ss");
         RemoteFileInfo rfi = { true, dt, Response_.ContentLength_, Response_.Fields_ ["content-type"] };

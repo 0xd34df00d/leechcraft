@@ -153,10 +153,28 @@ void Job::Start ()
     connect (ProtoImp_, SIGNAL (gotFileSize (ImpBase::length_t)), this, SLOT (handleGotFileSize (ImpBase::length_t)));
 
     ProtoImp_->SetURL (Params_->URL_);
-    ProtoImp_->SetRestartPosition (RestartPosition_);
     if (GetFileSize_)
+    {
         ProtoImp_->ScheduleGetFileSize ();
-    GetFileSize_ = false;
+        GetFileSize_ = false;
+    }
+    else if (Params_->EndPosition_)
+    {
+        qDebug () << Q_FUNC_INFO << Params_->StartPosition_ << Params_->EndPosition_;
+        ProtoImp_->SetRangeDownload (qMakePair (Params_->StartPosition_, Params_->EndPosition_));
+
+        File_ = new QFile (MakeFilename ());
+        if (!File_->open (QIODevice::ReadWrite))
+        {
+            QMessageBox::warning (parent () ? qobject_cast<JobManager*> (parent ())->GetTheMain () : 0, tr ("Warning"), tr ("Could not open file %1 for write. Aborting.").arg (MakeFilename ()));
+            return;
+        }
+//        File_->write (QByteArray (Params_->EndPosition_ - Params_->StartPosition_ + 1, '\b'));
+//        qDebug () << QByteArray (10, '\b');
+        File_->seek (Params_->StartPosition_);
+    }
+    else
+        ProtoImp_->SetRestartPosition (RestartPosition_);
 
     DownloadedSize_ = RestartPosition_;
     if (TotalSize_ <= 0)
@@ -311,7 +329,9 @@ QByteArray Job::Serialized () const
     out << Params_->URL_
         << Params_->LocalName_
         << Params_->Autostart_
-        << Params_->ShouldBeSavedInHistory_;
+        << Params_->ShouldBeSavedInHistory_
+        << Params_->StartPosition_
+        << Params_->EndPosition_;
 
     return result;
 }
@@ -333,7 +353,9 @@ void Job::Unserialize (const QByteArray& data)
     in >> Params_->URL_
         >> Params_->LocalName_
         >> Params_->Autostart_
-        >> Params_->ShouldBeSavedInHistory_;
+        >> Params_->ShouldBeSavedInHistory_
+        >> Params_->StartPosition_
+        >> Params_->EndPosition_;
 }
 
 void Job::handleNewFiles (QStringList *files)
@@ -388,7 +410,6 @@ void Job::processData (ImpBase::length_t ready, ImpBase::length_t total, QByteAr
     if (UpdateTime_->elapsed () > XmlSettingsManager::Instance ()->property ("InterfaceUpdateTimeout").toInt ())
     {
         Speed_ = static_cast<double> (DownloadedSize_ - RestartPosition_) / static_cast<double> (StartTime_->elapsed ()) * 1000;
-        qDebug () << DownloadedSize_ - RestartPosition_ << StartTime_->elapsed () << Speed_;
         CurrentSpeed_ = (DownloadedSize_ - PreviousDownloadSize_) / static_cast<double> (UpdateTime_->elapsed ());
         PreviousDownloadSize_ = DownloadedSize_;
         UpdateTime_->restart ();

@@ -39,8 +39,21 @@ void JobAdderDialog::done (int r)
         p->LocalName_.append (FileName_->text ());
         p->Autostart_ = (Autostart_->checkState () == Qt::Checked);
         p->ShouldBeSavedInHistory_ = true;
-
-        qDebug () << p->URL_;
+        if (RangeDownload_->isChecked ())
+        {
+            p->StartPosition_ = StartPosition_->text ().toULongLong ();
+            p->EndPosition_ = StopPosition_->text ().toULongLong ();
+            if (p->StartPosition_ >= p->EndPosition_)
+            {
+                p->StartPosition_ = 0;
+                p->EndPosition_ = 0;
+            }
+        }
+        else
+        {
+            p->StartPosition_ = 0;
+            p->EndPosition_ = 0;
+        }
 
         emit gotParams (p);
     }
