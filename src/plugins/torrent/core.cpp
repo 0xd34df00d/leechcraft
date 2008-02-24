@@ -998,8 +998,8 @@ void Core::setProxySettings ()
     else
         peerProxySettings.type = libtorrent::proxy_settings::none;
 
-    Session_->set_peer_proxy (trackerProxySettings);
+    Session_->set_peer_proxy (peerProxySettings);
     Session_->set_web_seed_proxy (peerProxySettings);
-    Session_->set_tracker_proxy (peerProxySettings);
+    Session_->set_tracker_proxy (trackerProxySettings);
 }
 

@@ -26,7 +26,6 @@ void TorrentPlugin::Init ()
     connect (Core::Instance (), SIGNAL (torrentFinished (const QString&)), this, SIGNAL (downloadFinished (const QString&)));
     connect (Core::Instance (), SIGNAL (fileFinished (const QString&)), this, SIGNAL (fileDownloaded (const QString&)));
     connect (Core::Instance (), SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (updateTorrentStats ()));
-    connect (Stats_, SIGNAL (currentChanged (int)), this, SLOT (restartTimers ()));
     connect (Stats_, SIGNAL (currentChanged (int)), this, SLOT (updateTorrentStats ()));
     TorrentView_->setModel (Core::Instance ());
     Core::Instance ()->DoDelayedInit ();
@@ -312,11 +311,13 @@ void TorrentPlugin::on_Preferences__triggered ()
 
 void TorrentPlugin::on_TorrentView__clicked (const QModelIndex&)
 {
+    restartTimers ();
     updateTorrentStats ();
 }
 
 void TorrentPlugin::on_TorrentView__pressed (const QModelIndex&)
 {
+    restartTimers ();
     updateTorrentStats ();
 }
 
