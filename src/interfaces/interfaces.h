@@ -97,18 +97,19 @@ public:
 class IRemoteable
 {
 public:
-    enum AddType
-    {
-        TypeFile
-        , TypeString
-    };
     virtual QList<QVariantList> GetAll () const = 0;
-    virtual void AddJob (const QString&, const QString&) = 0;
-    virtual AddType GetAddJobType () const = 0;
+    virtual void AddJob (const QByteArray&, const QString&) = 0;
     virtual void StartAt (int) = 0;
     virtual void StopAt (int) = 0;
     virtual void DeleteAt (int) = 0;
     virtual ~IRemoteable () {}
+};
+
+class IJobHolder
+{
+public:
+    virtual QByteArray GetRepresentation () const = 0;
+    virtual ~IJobHolder () {}
 };
 
 Q_DECLARE_INTERFACE (ISettings, "org.Deviant.LeechCraft.ISettings/1.0");
@@ -120,6 +121,7 @@ Q_DECLARE_INTERFACE (IDownload, "org.Deviant.LeechCraft.IDownload/1.0");
 Q_DECLARE_INTERFACE (IDirectDownload, "org.Deviant.LeechCraft.IDirectDownload/1.0");
 Q_DECLARE_INTERFACE (IPeer2PeerDownload, "org.Deviant.LeechCraft.IPeer2PeerDownload/1.0");
 Q_DECLARE_INTERFACE (IRemoteable, "org.Deviant.LeechCraft.IRemoteable/1.0");
+Q_DECLARE_INTERFACE (IJobHolder, "org.Deviant.LeechCraft.IJobHolder/1.0");
 
 #endif
 

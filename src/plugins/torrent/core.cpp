@@ -5,6 +5,9 @@
 #include <QTimerEvent>
 #include <QSettings>
 #include <QTimer>
+#include <QDomDocument>
+#include <QDomElement>
+#include <QDomNode>
 #include <QtDebug>
 #include <memory>
 #include <bencode.hpp>
@@ -172,8 +175,7 @@ QModelIndex Core::index (int row, int column, const QModelIndex&) const
         return QModelIndex ();
 
     return createIndex (row, column);
-}
-
+} 
 QVariant Core::headerData (int column, Qt::Orientation orient, int role) const
 {
     if (orient == Qt::Vertical)
@@ -611,6 +613,48 @@ void Core::MakeTorrent (NewTorrentParams params) const
     for (int i = 0; i < outbuf.size (); ++i)
         file.write (&outbuf.at (i), 1);
     file.close ();
+}
+
+QByteArray Core::GetRepresentation () const
+{
+    QDomDocument result;
+    QDomElement root = result.createElement ("representation");
+    root.setAttribute ("xmlns", "LeechCraft/IJobHolder/GetRepresentation");
+    result.appendChild (root);
+
+    for (int i = 0; i < rowCount (); ++i)
+    {
+        QDomElement item = result.createElement ("item"),
+                    name = result.createElement ("name"),
+                    progress = result.createElement ("progress");
+        QDomText nameText = result.createTextNode (data (createIndex (i, ColumnName)).toString ()),
+                 progressText = result.createTextNode (QString ("%1 (%2 of %3)").
+                         arg (data (createIndex (i, ColumnProgress)).toString ()).
+                         arg (data (createIndex (i, ColumnDownloaded)).toString ()).
+                         arg (data (createIndex (i, ColumnSize)).toString ()));
+        name.appendChild (nameText);
+        progress.appendChild (progressText);
+
+        QList<int> toRun;
+        toRun << ColumnDownloaded << ColumnUploaded << ColumnRating << ColumnState << ColumnSP << ColumnDSpeed << ColumnUSpeed << ColumnRemaining;
+        for (int j = 0; j < toRun.size (); ++j)
+        {
+            QString descrName = headerData (toRun.at (j), Qt::Horizontal).toString ();
+            QString descrValue = data (createIndex (i, toRun.at (j))).toString ();
+
+            QDomElement descr = result.createElement ("descr");
+            QDomText descrText = result.createTextNode (descrValue);
+            descr.setAttribute ("name", descrName);
+            descr.appendChild (descrText);
+
+            item.appendChild (descr);
+        }
+
+        item.appendChild (name);
+        item.appendChild (progress);
+        root.appendChild (item);
+    }
+    return result.toByteArray ();
 }
 
 QString Core::GetStringForState (libtorrent::torrent_status::state_t state) const

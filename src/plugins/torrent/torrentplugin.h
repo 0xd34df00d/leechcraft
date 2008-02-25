@@ -14,11 +14,12 @@ class TorrentPlugin : public QMainWindow
                     , public IWindow
                     , public IPeer2PeerDownload
                     , public IRemoteable
+                    , public IJobHolder
                     , private Ui::MainWindow
 {
     Q_OBJECT
 
-    Q_INTERFACES (IInfo IWindow IPeer2PeerDownload IRemoteable);
+    Q_INTERFACES (IInfo IWindow IPeer2PeerDownload IRemoteable IJobHolder);
 
     ID_t ID_;
     bool IsShown_;
@@ -57,11 +58,13 @@ public:
 
     // IRemoteable
     QList<QVariantList> GetAll () const;
-    void AddJob (const QString&, const QString&);
-    AddType GetAddJobType () const;
+    void AddJob (const QByteArray&, const QString&);
     void StartAt (int);
     void StopAt (int);
     void DeleteAt (int);
+
+    // IJobHolder
+    QByteArray GetRepresentation () const;
 public slots:
     void handleHidePlugins ();
 protected:

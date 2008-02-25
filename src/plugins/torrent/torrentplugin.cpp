@@ -176,15 +176,16 @@ QList<QVariantList> TorrentPlugin::GetAll () const
     return result;
 }
 
-void TorrentPlugin::AddJob (const QString& file, const QString& where)
+void TorrentPlugin::AddJob (const QByteArray& data, const QString& where)
 {
     QVector<bool> files (true);
-    Core::Instance ()->AddFile (file, where, files);
-}
-
-IRemoteable::AddType TorrentPlugin::GetAddJobType () const
-{
-    return TypeFile;
+    QTemporaryFile file ("lc.remoteadded.XXXXXX");
+    if (!file.open ())
+    {
+        showError ("Could not open temporary file to add the interface-added job");
+    }
+    file.write (data);
+    Core::Instance ()->AddFile (file.fileName (), where, files);
 }
 
 void TorrentPlugin::StartAt (int pos)
@@ -200,6 +201,11 @@ void TorrentPlugin::StopAt (int pos)
 void TorrentPlugin::DeleteAt (int pos)
 {
     Core::Instance ()->RemoveTorrent (pos);
+}
+
+QByteArray TorrentPlugin::GetRepresentation () const
+{
+    return Core::Instance ()->GetRepresentation ();
 }
 
 bool TorrentPlugin::CouldDownload (const QString& string) const

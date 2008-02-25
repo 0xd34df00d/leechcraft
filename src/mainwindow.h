@@ -31,11 +31,11 @@ namespace Main
         QSystemTrayIcon *TrayIcon_;
         QMenu *File_, *PluginsMenu_, *ActionsMenu_, *ToolsMenu_, *Help_
             , *TrayPluginsMenu_;
-        QTreeWidget *PluginsList_;
+        QTreeWidget *PluginsList_, *JobsList_;
         Main::Core *Model_;
         QLabel *DownloadSpeed_, *UploadSpeed_;
 
-        QAction *AddJob_, *Settings_, *BackupSettings_, *RestoreSettings_, *ClearSettings_;
+        QAction *AddJob_, *Settings_, *BackupSettings_, *RestoreSettings_;
         QToolBar *Toolbar_, *PluginsToolbar_;
 
         XmlSettingsDialog *XmlSettingsDialog_;
@@ -81,6 +81,8 @@ namespace Main
         void addJob ();
         void handleDownloadFinished (const QString&);
         void showSettings ();
+        void handleRepresentationItem (QTreeWidgetItem*);
+        void clearRepresentations ();
     };
 };
 

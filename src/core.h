@@ -1,6 +1,6 @@
 #ifndef CORE_H
 #define CORE_H
-#include <QAbstractListModel>
+#include <QObject>
 #include <QList>
 #include <QMultiMap>
 #include <QFile>
@@ -12,18 +12,20 @@
 #include "interfaces/interfaces.h"
 
 class QTimer;
+class QDomDocument;
+class QTreeWidgetItem;
 
 namespace Main
 {
     class MainWindow;
-    class Core : public QAbstractTableModel
+    class Core : public QObject
     {
         Q_OBJECT
 
         QList<int> TasksIDPool_;
         PluginManager *PluginManager_;
         MainWindow *ReallyMainWindow_;
-        QTimer *ClipboardWatchdog_;
+        QTimer *ClipboardWatchdog_, *PluginJobsUpdate_;
         QString PreviousClipboardContents_;
     public:
         Core (QObject *parent = 0);
@@ -40,20 +42,12 @@ namespace Main
         void TryToAddJob (const QString&);
         
         QPair<qint64, qint64> GetSpeeds () const;
-
-        virtual int rowCount (const QModelIndex& parent = QModelIndex ()) const;
-        virtual int columnCount (const QModelIndex& parent = QModelIndex ()) const;
-        virtual QVariant data (const QModelIndex&, int role = Qt::DisplayRole) const;
-        virtual QVariant headerData (int, Qt::Orientation, int role = Qt::DisplayRole) const;
-        virtual Qt::ItemFlags flags (const QModelIndex& index) const;
-        virtual bool setData (const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
-        virtual bool removeRows (int pos, int rows, const QModelIndex& parent = QModelIndex ());
-        virtual QModelIndex parent (const QModelIndex& index = QModelIndex ());
     private slots:
-        void invalidate (unsigned int);
         void handleFileDownload (const QString&);
         void handleClipboardTimer ();
+        void handleJobsUpdate ();
     private:
+        void ParseSinglePluginRepresentation (const QDomDocument&);
         void PreparePools ();
         void FetchPlugins ();
 
@@ -64,6 +58,8 @@ namespace Main
         void gotPlugin (const PluginInfo*);
         void hidePlugins ();
         void downloadFinished (const QString&);
+        void gotRepresentationItem (QTreeWidgetItem*);
+        void newRepresentationCycle ();
     };
 };
 

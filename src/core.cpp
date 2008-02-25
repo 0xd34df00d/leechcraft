@@ -1,10 +1,13 @@
 #include <QMainWindow>
+#include <QTreeWidgetItem>
 #include <QMessageBox>
 #include <QtDebug>
 #include <QTimer>
 #include <limits>
 #include <QApplication>
 #include <QClipboard>
+#include <QDomDocument>
+#include <QDomElement>
 #include "mainwindow.h"
 #include "pluginmanager.h"
 #include "plugininfo.h"
@@ -14,7 +17,7 @@
 #include "xmlsettingsmanager.h"
 
 Main::Core::Core (QObject *parent)
-: QAbstractTableModel (parent)
+: QObject (parent)
 {
     PreparePools ();
     PluginManager_ = new Main::PluginManager (this);
@@ -24,6 +27,10 @@ Main::Core::Core (QObject *parent)
     ClipboardWatchdog_ = new QTimer (this);
     connect (ClipboardWatchdog_, SIGNAL (timeout ()), this, SLOT (handleClipboardTimer ()));
     ClipboardWatchdog_->start (2000);
+
+    PluginJobsUpdate_ = new QTimer (this);
+    connect (PluginJobsUpdate_, SIGNAL (timeout ()), this, SLOT (handleJobsUpdate ()));
+    PluginJobsUpdate_->start (1000);
 }
 
 Main::Core::~Core ()
@@ -122,105 +129,9 @@ QPair<qint64, qint64> Main::Core::GetSpeeds () const
     return QPair<qint64, qint64> (download, upload);
 }
 
-int Main::Core::rowCount (const QModelIndex&) const
-{
-    return PluginManager_->GetSize ();
-}
-
-int Main::Core::columnCount (const QModelIndex&) const
-{
-    return 2;
-}
-
-QVariant Main::Core::data (const QModelIndex& index, int role) const
-{
-    if (!index.isValid ()) return QVariant ();
-
-    int r = index.row (), c = index.column ();
-
-    if (r >= rowCount ())
-        return QVariant ();
-
-    switch (role)
-    {
-        case (Qt::DisplayRole):
-            return GetTaskData (r, c);
-        default:
-            return QVariant ();
-    }
-}
-
-QVariant Main::Core::headerData (int section, Qt::Orientation orient, int role) const
-{
-    if (role == Qt::DisplayRole)
-        if (orient == Qt::Horizontal)
-            return GetTaskData (-1, section);
-        else
-            return QAbstractTableModel::headerData (section, orient, role);
-    else
-        return QAbstractTableModel::headerData (section, orient, role);
-}
-
-Qt::ItemFlags Main::Core::flags (const QModelIndex& index) const
-{
-    if (!index.isValid ())
-        return Qt::ItemIsEnabled;
-
-    return QAbstractItemModel::flags (index);
-}
-
-bool Main::Core::setData (const QModelIndex& index, const QVariant& value, int role)
-{
-    Q_UNUSED (index);
-    Q_UNUSED (value);
-    Q_UNUSED (role);
-}
-
-bool Main::Core::removeRows (int pos, int rows, const QModelIndex& parent)
-{
-    Q_UNUSED (parent)
-    beginRemoveRows (QModelIndex (), pos, pos + rows - 1);
-
-    for (int row = 0; row < rows; ++row)
-    {
-        try
-        {
-            PluginManager_->Release (pos + row);
-        }
-        catch (const Exceptions::OutOfBounds& e)
-        {
-            error (QString::fromStdString ("Caught an error " + e.GetName () + "; more info: " + e.GetReason ()));
-        }
-        catch (const Exceptions::Logic& e)
-        {
-            error (QString::fromStdString ("Caught an error " + e.GetName () + "; more info: " + e.GetReason ()));
-        }
-        catch (const Exceptions::Generic& e)
-        {
-            error (QString::fromStdString ("Unknown error " + e.GetName () + "; more info: " + e.GetReason ()));
-        }
-    }
-
-    endRemoveRows ();
-    return true;
-}
-
-QModelIndex Main::Core::parent (const QModelIndex& index)
-{
-    Q_UNUSED (index)
-    return QModelIndex ();
-}
-
-void Main::Core::invalidate (unsigned int id)
-{
-    QModelIndex first = index (id, 2);
-    QModelIndex last = index (id, columnCount ());
-
-    emit dataChanged (first, last);
-}
-
 void Main::Core::handleFileDownload (const QString& file)
 {
+    qDebug () << Q_FUNC_INFO;
     if (!XmlSettingsManager::Instance ()->property ("QueryPluginsToHandleFinished").toBool ())
         return;
 
@@ -252,6 +163,48 @@ void Main::Core::handleClipboardTimer ()
 
     if (XmlSettingsManager::Instance ()->property ("WatchClipboard").toBool ())
         handleFileDownload (text);
+}
+
+void Main::Core::handleJobsUpdate ()
+{
+    QObjectList plugins = PluginManager_->GetAllCastableTo<IJobHolder*> ();
+    emit newRepresentationCycle ();
+    for (int i = 0; i < plugins.size (); ++i)
+    {
+        QDomDocument doc;
+        doc.setContent (qobject_cast<IJobHolder*> (plugins.at (i))->GetRepresentation ());
+        ParseSinglePluginRepresentation (doc);
+    }
+}
+
+void Main::Core::ParseSinglePluginRepresentation (const QDomDocument& doc)
+{
+    qDebug () << doc.toByteArray ();
+    QDomElement root = doc.documentElement ();
+    if (root.tagName () != "representation")
+        return;
+
+    QDomElement item = root.firstChildElement ("item");
+    while (!item.isNull ())
+    {
+        QString name = item.firstChildElement ("name").text ();
+        QString progress = item.firstChildElement ("progress").text ();
+        QTreeWidgetItem *rootItem = new QTreeWidgetItem;
+        rootItem->setText (0, name);
+        rootItem->setText (1, progress);
+
+        QDomElement descr = item.firstChildElement ("descr");
+        while (!descr.isNull ())
+        {
+            QTreeWidgetItem *dItem = new QTreeWidgetItem (rootItem);
+            dItem->setFirstColumnSpanned (true);
+            dItem->setText (0, descr.attribute ("name") + ": " + descr.text ());
+            descr = descr.nextSiblingElement ("descr");
+        }
+
+        emit gotRepresentationItem (rootItem);
+        item = item.nextSiblingElement ("item");
+    }
 }
 
 void Main::Core::PreparePools ()

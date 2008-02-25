@@ -1,5 +1,6 @@
 #include <QStringList>
 #include <QTemporaryFile>
+#include <QUrl>
 #include <interfaces/interfaces.h>
 #include <plugininterface/proxy.h>
 #include "core.h"
@@ -157,9 +158,8 @@ Reply Core::DoView (const QStringList&, const QMap<QString, QString>&)
             continue;
 
         // Draw new job form
-        IRemoteable::AddType type = ir->GetAddJobType ();
         QDomElement form = DocumentGenerator::CreateForm (QString ("/add/%1").arg (i), false);
-        QDomElement addEntity = DocumentGenerator::CreateInputField (type == IRemoteable::TypeString ? DocumentGenerator::TypeText : DocumentGenerator::TypeFile, "entity");
+        QDomElement addEntity = DocumentGenerator::CreateInputField (DocumentGenerator::TypeTextbox, "entity");
         QDomElement where = DocumentGenerator::CreateInputField (DocumentGenerator::TypeText, "where");
         QDomElement addHolder = DocumentGenerator::CreateText (),
                     whereHolder = DocumentGenerator::CreateText (),
@@ -212,20 +212,11 @@ Reply Core::DoAdd (const QStringList& path, const QMap<QString, QString>& query)
     if (number >= Objects_.size ())
         return rep;
 
-    QString entity = query ["entity"],
-            where = query ["where"];
+    QByteArray entity = QUrl::fromPercentEncoding (query ["entity"].toAscii ()).toUtf8 ();
+    QString where = query ["where"];
 
     IRemoteable *ir = qobject_cast<IRemoteable*> (Objects_.at (number));
-    if (ir->GetAddJobType () == IRemoteable::TypeString)
-        ir->AddJob (entity, where);
-    else if (ir->GetAddJobType () == IRemoteable::TypeFile)
-    {
-        QTemporaryFile file ("leechcraft.remoter.XXXXXX");
-        file.open ();
-        qDebug () << "writing to file" << file.fileName () << entity;
-        file.write (entity.toAscii ());
-        ir->AddJob (file.fileName (), where);
-    }
+    ir->AddJob (entity, where);
 
     return rep;
 }

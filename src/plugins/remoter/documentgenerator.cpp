@@ -125,6 +125,12 @@ QDomElement DocumentGenerator::CreateInputField (DocumentGenerator::InputType ty
         case TypeFile:
             t = "file";
             break;
+        case TypeTextbox:
+            result = Document_.createElement ("textarea");
+            result.setAttribute ("cols", QString::number (50));
+            result.setAttribute ("rows", QString::number (10));
+            result.setAttribute ("name", name);
+            return result;
     }
     result.setAttribute ("type", t);
     result.setAttribute ("name", name);

@@ -14,6 +14,7 @@ public:
     {
         TypeText
         , TypeFile
+        , TypeTextbox
     };
     static QString GetStylesheet ();
     static QDomDocument GetDocument ();
