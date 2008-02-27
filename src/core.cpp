@@ -27,10 +27,6 @@ Main::Core::Core (QObject *parent)
     ClipboardWatchdog_ = new QTimer (this);
     connect (ClipboardWatchdog_, SIGNAL (timeout ()), this, SLOT (handleClipboardTimer ()));
     ClipboardWatchdog_->start (2000);
-
-    PluginJobsUpdate_ = new QTimer (this);
-    connect (PluginJobsUpdate_, SIGNAL (timeout ()), this, SLOT (handleJobsUpdate ()));
-    PluginJobsUpdate_->start (1000);
 }
 
 Main::Core::~Core ()
@@ -129,6 +125,15 @@ QPair<qint64, qint64> Main::Core::GetSpeeds () const
     return QPair<qint64, qint64> (download, upload);
 }
 
+QList<QAbstractItemModel*> Main::Core::GetJobHolders () const
+{
+    QList<QAbstractItemModel*> result;
+    QObjectList plugins = PluginManager_->GetAllCastableTo<IJobHolder*> ();
+    for (int i = 0; i < plugins.size (); ++i)
+        result << qobject_cast<IJobHolder*> (plugins.at (i))->GetRepresentation ();
+    return result;
+}
+
 void Main::Core::handleFileDownload (const QString& file)
 {
     qDebug () << Q_FUNC_INFO;
@@ -163,48 +168,6 @@ void Main::Core::handleClipboardTimer ()
 
     if (XmlSettingsManager::Instance ()->property ("WatchClipboard").toBool ())
         handleFileDownload (text);
-}
-
-void Main::Core::handleJobsUpdate ()
-{
-    QObjectList plugins = PluginManager_->GetAllCastableTo<IJobHolder*> ();
-    emit newRepresentationCycle ();
-    for (int i = 0; i < plugins.size (); ++i)
-    {
-        QDomDocument doc;
-        doc.setContent (qobject_cast<IJobHolder*> (plugins.at (i))->GetRepresentation ());
-        ParseSinglePluginRepresentation (doc);
-    }
-}
-
-void Main::Core::ParseSinglePluginRepresentation (const QDomDocument& doc)
-{
-    qDebug () << doc.toByteArray ();
-    QDomElement root = doc.documentElement ();
-    if (root.tagName () != "representation")
-        return;
-
-    QDomElement item = root.firstChildElement ("item");
-    while (!item.isNull ())
-    {
-        QString name = item.firstChildElement ("name").text ();
-        QString progress = item.firstChildElement ("progress").text ();
-        QTreeWidgetItem *rootItem = new QTreeWidgetItem;
-        rootItem->setText (0, name);
-        rootItem->setText (1, progress);
-
-        QDomElement descr = item.firstChildElement ("descr");
-        while (!descr.isNull ())
-        {
-            QTreeWidgetItem *dItem = new QTreeWidgetItem (rootItem);
-            dItem->setFirstColumnSpanned (true);
-            dItem->setText (0, descr.attribute ("name") + ": " + descr.text ());
-            descr = descr.nextSiblingElement ("descr");
-        }
-
-        emit gotRepresentationItem (rootItem);
-        item = item.nextSiblingElement ("item");
-    }
 }
 
 void Main::Core::PreparePools ()

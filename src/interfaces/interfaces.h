@@ -12,6 +12,7 @@
 
 class Proxy;
 class MainWindow;
+class QAbstractItemModel;
 
 class ISettings
 {
@@ -108,7 +109,7 @@ public:
 class IJobHolder
 {
 public:
-    virtual QByteArray GetRepresentation () const = 0;
+    virtual QAbstractItemModel* GetRepresentation () const = 0;
     virtual ~IJobHolder () {}
 };
 

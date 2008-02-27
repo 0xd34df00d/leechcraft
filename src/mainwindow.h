@@ -19,6 +19,7 @@ class QLabel;
 class QSplashScreen;
 class QMutex;
 class XmlSettingsDialog;
+class QVBoxLayout;
 
 namespace Main
 {
@@ -31,7 +32,7 @@ namespace Main
         QSystemTrayIcon *TrayIcon_;
         QMenu *File_, *PluginsMenu_, *ActionsMenu_, *ToolsMenu_, *Help_
             , *TrayPluginsMenu_;
-        QTreeWidget *PluginsList_, *JobsList_;
+        QTreeWidget *PluginsList_;
         Main::Core *Model_;
         QLabel *DownloadSpeed_, *UploadSpeed_;
 
@@ -39,6 +40,7 @@ namespace Main
         QToolBar *Toolbar_, *PluginsToolbar_;
 
         XmlSettingsDialog *XmlSettingsDialog_;
+        QVBoxLayout *Jobs_;
 
         bool IsShown_;
 
@@ -81,8 +83,6 @@ namespace Main
         void addJob ();
         void handleDownloadFinished (const QString&);
         void showSettings ();
-        void handleRepresentationItem (QTreeWidgetItem*);
-        void clearRepresentations ();
     };
 };
 

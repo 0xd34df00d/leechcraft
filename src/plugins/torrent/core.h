@@ -99,7 +99,6 @@ public:
     int GetTorrentUploadRate (int) const;
     double GetTorrentDesiredRating (int) const;
     void MakeTorrent (NewTorrentParams) const;
-    QByteArray GetRepresentation () const;
 private:
     QString GetStringForState (libtorrent::torrent_status::state_t) const;
     bool CheckValidity (int) const;

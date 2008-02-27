@@ -64,7 +64,7 @@ public:
     void DeleteAt (int);
 
     // IJobHolder
-    QByteArray GetRepresentation () const;
+    QAbstractItemModel* GetRepresentation () const;
 public slots:
     void handleHidePlugins ();
 protected:

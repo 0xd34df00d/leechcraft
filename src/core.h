@@ -25,7 +25,7 @@ namespace Main
         QList<int> TasksIDPool_;
         PluginManager *PluginManager_;
         MainWindow *ReallyMainWindow_;
-        QTimer *ClipboardWatchdog_, *PluginJobsUpdate_;
+        QTimer *ClipboardWatchdog_;
         QString PreviousClipboardContents_;
     public:
         Core (QObject *parent = 0);
@@ -42,12 +42,11 @@ namespace Main
         void TryToAddJob (const QString&);
         
         QPair<qint64, qint64> GetSpeeds () const;
+        QList<QAbstractItemModel*> GetJobHolders () const;
     private slots:
         void handleFileDownload (const QString&);
         void handleClipboardTimer ();
-        void handleJobsUpdate ();
     private:
-        void ParseSinglePluginRepresentation (const QDomDocument&);
         void PreparePools ();
         void FetchPlugins ();
 

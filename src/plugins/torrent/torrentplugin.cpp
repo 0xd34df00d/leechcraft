@@ -203,9 +203,9 @@ void TorrentPlugin::DeleteAt (int pos)
     Core::Instance ()->RemoveTorrent (pos);
 }
 
-QByteArray TorrentPlugin::GetRepresentation () const
+QAbstractItemModel* TorrentPlugin::GetRepresentation () const
 {
-    return Core::Instance ()->GetRepresentation ();
+    return Core::Instance ();
 }
 
 bool TorrentPlugin::CouldDownload (const QString& string) const

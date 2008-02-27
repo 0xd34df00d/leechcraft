@@ -59,13 +59,21 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
     Model_ = new Main::Core (this);
     connect (Model_, SIGNAL (gotPlugin (const PluginInfo*)), this, SLOT (addPluginToList (const PluginInfo*)));
     connect (Model_, SIGNAL (downloadFinished (const QString&)), this, SLOT (handleDownloadFinished (const QString&)));
-    connect (Model_, SIGNAL (newRepresentationCycle ()), this, SLOT (clearRepresentations ()));
-    connect (Model_, SIGNAL (gotRepresentationItem (QTreeWidgetItem*)), this, SLOT (handleRepresentationItem (QTreeWidgetItem*)));
     Model_->SetReallyMainWindow (this);
     splash.finish (this);
     show ();
 
     Model_->DelayedInit ();
+    QList<QAbstractItemModel*> models = Model_->GetJobHolders ();
+    for (int i = 0; i < models.size (); ++i)
+    {
+        QTreeView *view = new QTreeView;
+        view->setModel (models.at (i));
+        Jobs_->addWidget (view);
+        int cc = models.at (i)->columnCount ();
+        for (int j = 0; j < cc; ++j)
+            view->resizeColumnToContents (j);
+    }
 
     QTimer *speedUpd = new QTimer (this);
     speedUpd->setInterval (1000);
@@ -221,28 +229,15 @@ void MainWindow::InitializeMainView (const QByteArray& pluginliststate)
 
     PluginsList_->header ()->setStretchLastSection (true);
 
-    JobsList_ = new QTreeWidget (this);
-    JobsList_->header ()->setClickable (false);
-    JobsList_->setUniformRowHeights (true);
-    JobsList_->setSelectionBehavior (QAbstractItemView::SelectRows);
-    JobsList_->setSelectionMode (QAbstractItemView::SingleSelection);
-    JobsList_->setEditTriggers (QAbstractItemView::NoEditTriggers);
-    JobsList_->setItemsExpandable (true);
-    JobsList_->setRootIsDecorated (false);
-    headerLabels.clear ();
-    headerLabels << tr ("Name") << tr ("Progress");
-    JobsList_->setHeaderLabels (headerLabels);
-    JobsList_->header ()->setHighlightSections (false);
-    JobsList_->header ()->setDefaultAlignment (Qt::AlignLeft);
-    QFontMetrics fm = fontMetrics ();
-    JobsList_->header ()->resizeSection (0, fm.width ("this is a typical job name, abstract or not, did you know?"));
-    JobsList_->header ()->resizeSection (1, fm.width ("100% (999.0 Gb of 999.0 Gb)"));
+    QWidget *jobsHolder = new QWidget;
+    Jobs_ = new QVBoxLayout;
+    jobsHolder->setLayout (Jobs_);
 
     QSplitter *split = new QSplitter (Qt::Horizontal);
     split->addWidget (PluginsList_);
-    split->addWidget (JobsList_);
+    split->addWidget (jobsHolder);
     split->setStretchFactor (0, 1);
-    split->setStretchFactor (1, 2);
+    split->setStretchFactor (1, 3);
     
     setCentralWidget (split);
 }
@@ -450,16 +445,6 @@ void MainWindow::showSettings ()
 {
     XmlSettingsDialog_->show ();
     XmlSettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
-}
-
-void MainWindow::handleRepresentationItem (QTreeWidgetItem *item)
-{
-    JobsList_->addTopLevelItem (item);
-}
-
-void MainWindow::clearRepresentations ()
-{
-    JobsList_->clear ();
 }
 
 };

@@ -199,6 +199,11 @@ void HttpPlugin::AddJob (const QString& name)
     delete dia;
 }
 
+QAbstractItemModel* HttpPlugin::GetRepresentation () const
+{
+    return &JobManager::Instance ();
+}
+
 qint64 HttpPlugin::GetDownloadSpeed () const
 {
     return JobManager::Instance ().GetDownloadSpeed ();

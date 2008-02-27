@@ -27,9 +27,10 @@ class HttpPlugin : public QMainWindow
                  , public IInfo
                  , public IWindow
                  , public IDirectDownload
+                 , public IJobHolder
 {
     Q_OBJECT
-    Q_INTERFACES (IInfo IWindow IDirectDownload);
+    Q_INTERFACES (IInfo IWindow IDirectDownload IJobHolder);
 
     Ui::MainWindow Ui_;
 
@@ -89,6 +90,8 @@ public:
     
     virtual bool CouldDownload (const QString&) const;
     virtual void AddJob (const QString&);
+
+    virtual QAbstractItemModel* GetRepresentation () const;
 public slots:
     void handleHidePlugins ();
     virtual int addDownload (const DirectDownloadParams&);
