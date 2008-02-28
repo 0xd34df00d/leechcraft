@@ -60,7 +60,6 @@ namespace Main
         virtual void closeEvent (QCloseEvent*);
     private:
         void SetupToolbars ();
-        void SetupActions ();
         void SetupMenus ();
         void SetTrayIcon ();
         void FillMenus ();
@@ -69,6 +68,7 @@ namespace Main
         void WriteSettings ();
         void InitializeMainView (const QByteArray&);
         void AddPluginToTree (const PluginInfo*);
+        QWidget* CreateAggregatedJobs ();
     private slots:
         void handlePluginsListDoubleClick (QTreeWidgetItem*, int);
         void addPluginToList (const PluginInfo*);
@@ -85,6 +85,7 @@ namespace Main
         void addJob ();
         void handleDownloadFinished (const QString&);
         void showSettings ();
+        void handleAggregateJobsChange ();
     };
 };
 

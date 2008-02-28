@@ -22,7 +22,11 @@
         </item>
         <item type="checkbox" property="QueryPluginsToHandleFinished" state="on">
             <label lang="en" value="Query plugins to handle finished downloads" />
-            <label lang="ru" value="Опрашивать плагины на предмет обработки ими завершенных заданий" />
+            <label lang="ru" value="Опрашивать плагины для обработки заданий при их завершении" />
+        </item>
+        <item type="checkbox" property="AggregateJobs" state="on">
+            <label lang="en" value="Aggregate jobs from plugins" />
+            <label lang="ru" value="Собирать задания из плагинов и показывать их в главном окне" />
         </item>
     </page>
 </settings>

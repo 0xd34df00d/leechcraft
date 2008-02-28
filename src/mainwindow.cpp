@@ -30,7 +30,6 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
     splash.showMessage (tr ("Initializing interface..."));
     statusBar ();
     SetupToolbars ();
-    SetupActions ();
     SetupMenus ();
     setWindowIcon (QIcon (":/resources/images/mainapp.png"));
     setWindowTitle (QCoreApplication::applicationName ());
@@ -38,6 +37,7 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 
     XmlSettingsDialog_ = new XmlSettingsDialog (this);
     XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/coresettings.xml");
+    XmlSettingsManager::Instance ()->RegisterObject ("AggregateJobs", this, "handleAggregateJobsChange");
 
     DownloadSpeed_ = new QLabel;
     DownloadSpeed_->setText ("0");
@@ -132,11 +132,6 @@ void MainWindow::SetupToolbars ()
 {
     Toolbar_        = addToolBar (tr ("Tools"));
     PluginsToolbar_ = addToolBar (tr ("Plugins"));
-}
-
-void MainWindow::SetupActions ()
-{
-    
 }
 
 void MainWindow::SetupMenus ()
@@ -237,15 +232,14 @@ void MainWindow::InitializeMainView (const QByteArray& pluginliststate)
 
     PluginsList_->header ()->setStretchLastSection (true);
 
-    QWidget *jobsHolder = new QWidget;
-    Jobs_ = new QVBoxLayout;
-    jobsHolder->setLayout (Jobs_);
-
     QSplitter *split = new QSplitter (Qt::Horizontal);
     split->addWidget (PluginsList_);
-    split->addWidget (jobsHolder);
-    split->setStretchFactor (0, 1);
-    split->setStretchFactor (1, 3);
+    if (XmlSettingsManager::Instance ()->property ("AggregateJobs").toBool ())
+    {
+        split->addWidget (CreateAggregatedJobs ());
+        split->setStretchFactor (0, 1);
+        split->setStretchFactor (1, 3);
+    }
     
     setCentralWidget (split);
 }
@@ -305,6 +299,14 @@ void MainWindow::AddPluginToTree (const PluginInfo* pInfo)
             u->setFirstColumnSpanned (true);
         }
     }
+}
+
+QWidget* MainWindow::CreateAggregatedJobs ()
+{
+    QWidget *jobsHolder = new QWidget;
+    Jobs_ = new QVBoxLayout;
+    jobsHolder->setLayout (Jobs_);
+    return jobsHolder;
 }
 
 void MainWindow::handlePluginsListDoubleClick (QTreeWidgetItem *item, int column)
@@ -455,6 +457,15 @@ void MainWindow::showSettings ()
 {
     XmlSettingsDialog_->show ();
     XmlSettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
+}
+
+void MainWindow::handleAggregateJobsChange ()
+{
+    QSplitter *split = qobject_cast<QSplitter*> (centralWidget ());
+    if (XmlSettingsManager::Instance ()->property ("AggregateJobs").toBool ())
+        split->widget (1)->show ();
+    else
+        split->widget (1)->hide ();
 }
 
 };
