@@ -29,6 +29,7 @@ class TorrentPlugin : public QMainWindow
     QTime *LastPeersUpdate_;
     QMenu *Plugins_;
     bool IgnoreTimer_;
+    bool TorrentSelectionChanged_;
 public:
     // IInfo
     void Init ();
@@ -86,6 +87,8 @@ private slots:
     void on_TorrentDownloadRateController__valueChanged (int);
     void on_TorrentUploadRateController__valueChanged (int);
     void on_TorrentDesiredRating__valueChanged (double);
+    void on_FilesWidget__currentItemChanged (QTreeWidgetItem*);
+    void on_PrioritySpinbox__valueChanged (int);
     void setActionsEnabled ();
     void showError (QString);
     void updateTorrentStats ();

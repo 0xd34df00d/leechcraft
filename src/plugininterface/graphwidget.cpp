@@ -37,7 +37,6 @@ void GraphWidget::paintEvent (QPaintEvent *e)
         {
             int x = width () - Speeds_.size () + i;
             double y = height () * (1 - static_cast<double> (Speeds_.at (i)) / static_cast<double> (max));
-            qDebug () << max << y << Speeds_;
             painter.drawLine (QPointF (x, height ()), QPointF (x, y));
         }
 }

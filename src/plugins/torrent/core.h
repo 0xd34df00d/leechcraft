@@ -98,6 +98,8 @@ public:
     int GetTorrentDownloadRate (int) const;
     int GetTorrentUploadRate (int) const;
     double GetTorrentDesiredRating (int) const;
+    void SetFilePriority (int, int, int);
+    int GetFilePriority (int, int) const;
     void MakeTorrent (NewTorrentParams) const;
 private:
     QString GetStringForState (libtorrent::torrent_status::state_t) const;

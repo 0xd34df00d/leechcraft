@@ -35,6 +35,7 @@ Job::Job (JobParams *params, QObject *parent)
 {
     qRegisterMetaType<ImpBase::RemoteFileInfo> ("ImpBase::RemoteFileInfo");
     StartTime_ = new QTime;
+    StartTime_->start ();
     UpdateTime_ = new QTime;
     FillErrorDictionary ();
     FileExistsDialog_ = new FileExistsDialog (parent ? qobject_cast<JobManager*> (parent)->GetTheMain () : 0);
@@ -181,7 +182,7 @@ void Job::Start ()
         TotalSize_ = RestartPosition_;
 
     ProtoImp_->StartDownload ();
-    StartTime_->start ();
+    StartTime_->restart ();
     emit updateDisplays ();
 }
 

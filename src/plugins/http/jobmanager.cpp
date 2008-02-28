@@ -116,9 +116,9 @@ Qt::ItemFlags JobManager::flags (const QModelIndex& index) const
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 }
 
-bool JobManager::hasChildren (const QModelIndex&) const
+bool JobManager::hasChildren (const QModelIndex& index) const
 {
-    return true;
+    return !index.isValid ();
 }
 
 QVariant JobManager::headerData (int header, Qt::Orientation orient, int role) const

@@ -136,7 +136,6 @@ QList<QAbstractItemModel*> Main::Core::GetJobHolders () const
 
 void Main::Core::handleFileDownload (const QString& file)
 {
-    qDebug () << Q_FUNC_INFO;
     if (!XmlSettingsManager::Instance ()->property ("QueryPluginsToHandleFinished").toBool ())
         return;
 

@@ -537,11 +537,38 @@ int Core::GetTorrentUploadRate (int torrent) const
 double Core::GetTorrentDesiredRating (int torrent) const
 {
     if (CheckValidity (torrent))
-    {
         return Handles_.at (torrent).Ratio_;
-    }
     else
         return -1;
+}
+
+void Core::SetFilePriority (int torrent, int file, int priority)
+{
+    if (!CheckValidity (torrent))
+        return;
+
+    if (priority > 7)
+        priority = 7;
+    else if (priority < 0)
+        priority = 0;
+
+    try
+    {
+        Handles_ [torrent].FilePriorities_.at (file) = priority;
+        Handles_.at (torrent).Handle_.prioritize_files (Handles_.at (torrent).FilePriorities_);
+    }
+    catch (...)
+    {
+        qWarning () << Q_FUNC_INFO << QString ("index for torrent %1, file %2 is out of bounds").arg (torrent).arg (file);
+    }
+}
+
+int Core::GetFilePriority (int torrent, int file) const
+{
+    if (!CheckValidity (torrent))
+        return -1;
+
+    return Handles_.at (torrent).FilePriorities_ [file];
 }
 
 namespace
