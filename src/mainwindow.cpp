@@ -3,6 +3,7 @@
 #include <iostream>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "plugininterface/proxy.h"
+#include "plugininterface/graphwidget.h"
 #include "exceptions/notimplemented.h"
 #include "mainwindow.h"
 #include "view.h"
@@ -47,6 +48,13 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
     UploadSpeed_->setMinimumWidth (70);
     UploadSpeed_->setAlignment (Qt::AlignRight);
 
+    DSpeedGraph_ = new GraphWidget (Qt::green);
+    DSpeedGraph_->setMinimumWidth (100);
+    USpeedGraph_ = new GraphWidget (Qt::yellow);
+    USpeedGraph_->setMinimumWidth (100);
+
+    statusBar ()->addPermanentWidget (DSpeedGraph_);
+    statusBar ()->addPermanentWidget (USpeedGraph_);
     statusBar ()->addPermanentWidget (DownloadSpeed_);
     statusBar ()->addPermanentWidget (UploadSpeed_);
 
@@ -346,6 +354,8 @@ void MainWindow::updateSpeedIndicators ()
 
     DownloadSpeed_->setText (Proxy::Instance ()->MakePrettySize (speeds.first) + tr ("/s"));
     UploadSpeed_->setText (Proxy::Instance ()->MakePrettySize (speeds.second) + tr ("/s"));
+    DSpeedGraph_->PushSpeed (speeds.first);
+    USpeedGraph_->PushSpeed (speeds.second);
 }
 
 void MainWindow::backupSettings ()

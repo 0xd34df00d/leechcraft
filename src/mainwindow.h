@@ -20,6 +20,7 @@ class QSplashScreen;
 class QMutex;
 class XmlSettingsDialog;
 class QVBoxLayout;
+class GraphWidget;
 
 namespace Main
 {
@@ -35,6 +36,7 @@ namespace Main
         QTreeWidget *PluginsList_;
         Main::Core *Model_;
         QLabel *DownloadSpeed_, *UploadSpeed_;
+        GraphWidget *DSpeedGraph_, *USpeedGraph_;
 
         QAction *AddJob_, *Settings_, *BackupSettings_, *RestoreSettings_;
         QToolBar *Toolbar_, *PluginsToolbar_;

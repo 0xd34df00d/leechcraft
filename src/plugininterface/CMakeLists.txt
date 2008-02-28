@@ -5,12 +5,14 @@ SET (SRCS
   addressparser.cpp
   proxy.cpp
   tcpsocket.cpp
-  socketexceptions.cpp)
+  socketexceptions.cpp
+  graphwidget.cpp)
 SET (HEADERS
   addressparser.h
   proxy.h
   tcpsocket.h
-  socketexceptions.h)
+  socketexceptions.h
+  graphwidget.h)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 ADD_DEFINITIONS(-DQT_PLUGIN)
