@@ -352,6 +352,8 @@ void JobManager::jobStopHandler ()
         Start (ScheduledJobs_.pop ());
         return;
     }
+
+    scheduleSave ();
 }
 
 void JobManager::addToFinishedList ()
@@ -367,6 +369,7 @@ void JobManager::addToFinishedList ()
 
     emit addToFinishedList (fj, IDOnAddition_ [job]);
     delete fj;
+    scheduleSave ();
 }
 
 void JobManager::removeJob ()
@@ -377,6 +380,7 @@ void JobManager::removeJob ()
     delete Jobs_ [id];
     Jobs_.removeAt (id);
     endRemoveRows ();
+    scheduleSave ();
 }
 
 void JobManager::handleJobFinish ()
