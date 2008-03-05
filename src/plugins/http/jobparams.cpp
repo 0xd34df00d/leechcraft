@@ -6,6 +6,8 @@
 JobParams::JobParams ()
 : Autostart_ (false)
 , ShouldBeSavedInHistory_ (true)
+, StartPosition_ (0)
+, EndPosition_ (0)
 {
 }
 

@@ -66,6 +66,7 @@ public:
 
     // IJobHolder
     QAbstractItemModel* GetRepresentation () const;
+    QAbstractItemDelegate* GetDelegate () const;
 public slots:
     void handleHidePlugins ();
 protected:

@@ -13,6 +13,8 @@ class Aggregator : public QMainWindow
     Ui::MainWindow Ui_;
     unsigned long int ID_;
     bool IsShown_;
+
+    QMenu *Plugins_;
 public:
     void Init ();
     void Release ();
@@ -32,6 +34,9 @@ public:
     void ShowBalloonTip ();
 protected:
     virtual void closeEvent (QCloseEvent*);
+private slots:
+    void showError (const QString&);
+    void on_ActionAddFeed__triggered ();
 };
 
 #endif

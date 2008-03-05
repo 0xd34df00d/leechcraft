@@ -209,6 +209,11 @@ QAbstractItemModel* TorrentPlugin::GetRepresentation () const
     return Core::Instance ();
 }
 
+QAbstractItemDelegate* TorrentPlugin::GetDelegate () const
+{
+    return 0;
+}
+
 bool TorrentPlugin::CouldDownload (const QString& string) const
 {
     QFile file (string);

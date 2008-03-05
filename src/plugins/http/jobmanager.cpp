@@ -4,6 +4,7 @@
 #include <QSettings>
 #include <QTimer>
 #include <QUrl>
+#include <limits>
 #include <exceptions/io.h>
 #include <exceptions/logic.h>
 #include <plugininterface/proxy.h>
@@ -21,12 +22,16 @@ JobManager::JobManager (QObject *parent)
 , TotalDownloads_ (0)
 , SaveChangesScheduled_ (false)
 , CronEnabled_ (false)
+, FreeIDS_ (10000)
 {
     QueryWaitingTimer_ = startTimer (500);
     Headers_ << tr ("State") << tr ("Local name") << tr ("URL") << tr ("Progress") << tr ("Speed") << tr ("ETA") << tr ("Download time");
     QTimer *timer = new QTimer;
     connect (timer, SIGNAL (timeout ()), this, SLOT (updateAll ()));
     timer->start (1000);
+
+    for (int i = 0; i < FreeIDS_.size (); ++i)
+        FreeIDS_ [i] = i;
 }
 
 JobManager::~JobManager ()
@@ -161,7 +166,8 @@ QWidget* JobManager::GetTheMain () const
 {
     return TheMain_;
 } 
-void JobManager::addJob (JobParams *params)
+
+int JobManager::addJob (JobParams *params)
 {
     Job *job = new Job (params, this);
     connect (job, SIGNAL (finished ()), this, SLOT (handleJobFinish ()));
@@ -194,6 +200,11 @@ void JobManager::addJob (JobParams *params)
     endInsertRows ();
 
     scheduleSave ();
+    int id = FreeIDS_.last ();
+    FreeIDS_.pop_back ();
+    ID2Job_ [id] = job;
+    Job2ID_ [job] = id;
+    return id;
 }
 
 void JobManager::timerEvent (QTimerEvent *e)
@@ -269,6 +280,9 @@ void JobManager::Stop (unsigned int id)
 
 void JobManager::Delete (unsigned int id)
 {
+    int rid = Job2ID_.take (Jobs_ [id]);
+    ID2Job_.take (rid);
+    FreeIDS_.append (rid);
     disconnect (Jobs_ [id], 0, 0, 0);
     Jobs_ [id]->Release ();;
     beginRemoveRows (QModelIndex (), id, id);
@@ -284,6 +298,7 @@ void JobManager::Delete (unsigned int id)
     for (int i = 0; i < ScheduledJobs_.size (); ++i)
         if (ScheduledJobs_ [i] == static_cast<int> (id))
             ScheduledJobs_.remove (i--);
+
 }
 
 void JobManager::GetFileSize (unsigned int id)
@@ -367,7 +382,7 @@ void JobManager::addToFinishedList ()
     fj->Speed_ = Proxy::Instance ()->MakePrettySize (job->GetSpeed ()) + tr ("/s");
     fj->TimeToComplete_ = Proxy::Instance ()->MakeTimeFromLong (job->GetDownloadTime ()).toString ();
 
-    emit addToFinishedList (fj, IDOnAddition_ [job]);
+    emit addToFinishedList (fj, Job2ID_ [job]);
     delete fj;
     scheduleSave ();
 }
@@ -375,6 +390,9 @@ void JobManager::addToFinishedList ()
 void JobManager::removeJob ()
 {
     int id = JobPosition (qobject_cast<Job*> (sender ()));
+    int rid = Job2ID_.take (Jobs_ [id]);
+    ID2Job_.take (rid);
+    FreeIDS_.append (rid);
     beginRemoveRows (QModelIndex (), id, id);
     Jobs_ [id]->Release ();
     delete Jobs_ [id];

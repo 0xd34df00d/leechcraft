@@ -125,12 +125,18 @@ QPair<qint64, qint64> Main::Core::GetSpeeds () const
     return QPair<qint64, qint64> (download, upload);
 }
 
-QList<QAbstractItemModel*> Main::Core::GetJobHolders () const
+QList<JobHolder> Main::Core::GetJobHolders () const
 {
-    QList<QAbstractItemModel*> result;
+    QList<JobHolder> result;
     QObjectList plugins = PluginManager_->GetAllCastableTo<IJobHolder*> ();
     for (int i = 0; i < plugins.size (); ++i)
-        result << qobject_cast<IJobHolder*> (plugins.at (i))->GetRepresentation ();
+    {
+        IJobHolder *ijh = qobject_cast<IJobHolder*> (plugins.at (i));
+        JobHolder jh = { qobject_cast<IInfo*> (plugins.at (i)),
+            ijh->GetRepresentation (),
+            ijh->GetDelegate () };
+        result << jh;
+    }
     return result;
 }
 

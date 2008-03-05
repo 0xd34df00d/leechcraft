@@ -15,6 +15,13 @@ class QTimer;
 class QDomDocument;
 class QTreeWidgetItem;
 
+struct JobHolder
+{
+    IInfo *Info_;
+    QAbstractItemModel *Model_;
+    QAbstractItemDelegate *Delegate_;
+};
+
 namespace Main
 {
     class MainWindow;
@@ -42,7 +49,7 @@ namespace Main
         void TryToAddJob (const QString&);
         
         QPair<qint64, qint64> GetSpeeds () const;
-        QList<QAbstractItemModel*> GetJobHolders () const;
+        QList<JobHolder> GetJobHolders () const;
     private slots:
         void handleFileDownload (const QString&);
         void handleClipboardTimer ();

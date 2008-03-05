@@ -90,11 +90,12 @@ public:
     
     virtual bool CouldDownload (const QString&) const;
     virtual void AddJob (const QString&);
+    virtual int AddJob (const DirectDownloadParams&);
 
     virtual QAbstractItemModel* GetRepresentation () const;
+    virtual QAbstractItemDelegate *GetDelegate () const;
 public slots:
     void handleHidePlugins ();
-    virtual int addDownload (const DirectDownloadParams&);
 private slots:
     void on_ActionAddJob__triggered ();
     void handleParams (JobParams*);

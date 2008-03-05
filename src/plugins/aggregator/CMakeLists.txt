@@ -4,13 +4,29 @@ INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR} ${QT_QTCORE_INCLUDE_DIR}
 
 SET (SRCS
     aggregator.cpp
-    core.cpp)
+    core.cpp
+    itemsmodel.cpp
+    addfeed.cpp
+    parserfactory.cpp
+    rss20parser.cpp
+    parser.cpp
+    item.cpp
+    channel.cpp)
 SET (HEADERS
     aggregator.h
     core.h
+    itemsmodel.h
+    addfeed.h
+    item.h
+    channel.h
+    enclosure.h
+    parserfactory.h
+    parser.h
+    rss20parser.h
     ../../plugininterface/basesettingsmanager.h)
 SET (FORMS
-    mainwindow.ui)
+    mainwindow.ui
+    addfeed.ui)
 SET (RESOURCES resources.qrc)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})

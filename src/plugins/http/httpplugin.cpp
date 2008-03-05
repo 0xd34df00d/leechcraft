@@ -95,7 +95,7 @@ void HttpPlugin::SetupStatusBarStuff ()
 
 QString HttpPlugin::GetName () const
 {
-    return "HTTP & FTP";
+    return "HTTP/FTP";
 }
 
 QString HttpPlugin::GetInfo () const
@@ -204,6 +204,11 @@ QAbstractItemModel* HttpPlugin::GetRepresentation () const
     return &JobManager::Instance ();
 }
 
+QAbstractItemDelegate* HttpPlugin::GetDelegate () const
+{
+    return Ui_.TasksList_->itemDelegate ();
+}
+
 qint64 HttpPlugin::GetDownloadSpeed () const
 {
     return JobManager::Instance ().GetDownloadSpeed ();
@@ -214,15 +219,14 @@ qint64 HttpPlugin::GetUploadSpeed () const
     return 0;
 }
 
-int HttpPlugin::addDownload (const DirectDownloadParams& params)
+int HttpPlugin::AddJob (const DirectDownloadParams& params)
 {
-    JobParams *jp = new JobParams;
+    JobParams *jp               = new JobParams;
     jp->URL_                    = params.Resource_;
     jp->LocalName_              = params.Location_;
     jp->Autostart_              = params.Autostart_;
     jp->ShouldBeSavedInHistory_ = params.ShouldBeSavedInHistory_;
-    JobManager::Instance ().addJob (jp);
-    return JobManager::Instance ().columnCount () - 1;
+    return JobManager::Instance ().addJob (jp);
 }
 
 void HttpPlugin::handleHidePlugins ()

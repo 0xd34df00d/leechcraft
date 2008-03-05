@@ -72,16 +72,27 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
     show ();
 
     Model_->DelayedInit ();
-    QList<QAbstractItemModel*> models = Model_->GetJobHolders ();
-    for (int i = 0; i < models.size (); ++i)
+    QList<JobHolder> holders = Model_->GetJobHolders ();
+    setDockNestingEnabled (true);
+    for (int i = 0; i < holders.size (); ++i)
     {
         QTreeView *view = new QTreeView;
-        view->setModel (models.at (i));
-        Jobs_->addWidget (view);
-        int cc = models.at (i)->columnCount ();
+        view->setModel (holders.at (i).Model_);
+        if (holders.at (i).Delegate_)
+            view->setItemDelegate (holders.at (i).Delegate_);
+        int cc = view->model ()->columnCount ();
         for (int j = 0; j < cc; ++j)
             view->resizeColumnToContents (j);
+        QDockWidget *widget = new QDockWidget (holders.at (i).Info_->GetName (), this);
+        widget->setFloating (false);
+        widget->setWidget (view);
+        widget->setFeatures (QDockWidget::DockWidgetMovable);
+        PluginWidgets_.append (widget);
+        addDockWidget (Qt::RightDockWidgetArea, widget);
+        widget->setVisible (XmlSettingsManager::Instance ()->property ("AggregateJobs").toBool ());
     }
+//    for (int i = 1; i < PluginWidgets_.size (); ++i)
+//        tabifyDockWidget (PluginWidgets_.at (i - 1), PluginWidgets_.at (i));
 
     QTimer *speedUpd = new QTimer (this);
     speedUpd->setInterval (1000);
@@ -231,17 +242,9 @@ void MainWindow::InitializeMainView (const QByteArray& pluginliststate)
     }
 
     PluginsList_->header ()->setStretchLastSection (true);
+    PluginsList_->setMinimumSize (200, 100);
 
-    QSplitter *split = new QSplitter (Qt::Horizontal);
-    split->addWidget (PluginsList_);
-    if (XmlSettingsManager::Instance ()->property ("AggregateJobs").toBool ())
-    {
-        split->addWidget (CreateAggregatedJobs ());
-        split->setStretchFactor (0, 1);
-        split->setStretchFactor (1, 3);
-    }
-    
-    setCentralWidget (split);
+    setCentralWidget (PluginsList_);
 }
 
 void MainWindow::AddPluginToTree (const PluginInfo* pInfo)
@@ -299,14 +302,6 @@ void MainWindow::AddPluginToTree (const PluginInfo* pInfo)
             u->setFirstColumnSpanned (true);
         }
     }
-}
-
-QWidget* MainWindow::CreateAggregatedJobs ()
-{
-    QWidget *jobsHolder = new QWidget;
-    Jobs_ = new QVBoxLayout;
-    jobsHolder->setLayout (Jobs_);
-    return jobsHolder;
 }
 
 void MainWindow::handlePluginsListDoubleClick (QTreeWidgetItem *item, int column)

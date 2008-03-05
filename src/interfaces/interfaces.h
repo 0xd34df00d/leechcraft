@@ -13,6 +13,7 @@
 class Proxy;
 class MainWindow;
 class QAbstractItemModel;
+class QAbstractItemDelegate;
 
 class ISettings
 {
@@ -85,7 +86,7 @@ public:
     , ErrorDenied
     , ErrorOther
     };
-
+    virtual int AddJob (const DirectDownloadParams&) = 0;
     virtual ~IDirectDownload () {}
 };
 
@@ -110,6 +111,7 @@ class IJobHolder
 {
 public:
     virtual QAbstractItemModel* GetRepresentation () const = 0;
+    virtual QAbstractItemDelegate* GetDelegate () const = 0;
     virtual ~IJobHolder () {}
 };
 

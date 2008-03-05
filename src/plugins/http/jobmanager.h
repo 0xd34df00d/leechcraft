@@ -26,7 +26,9 @@ class JobManager : public QAbstractItemModel
     QList<Job*> Jobs_;
     QVector<qint64> JobSpeeds_;
 
-    QMap<Job*, int> IDOnAddition_;
+    QVector<int> FreeIDS_;
+    QMap<int, Job*> ID2Job_;
+    QMap<Job*, int> Job2ID_;
 
     int TotalDownloads_;
     QMap<QString, int> DownloadsPerHost_;
@@ -83,7 +85,7 @@ public:
     void SetProvider (QObject*, const QString&);
     void UpdateParams (int, JobParams*);
 public slots:
-    void addJob (JobParams*);
+    int addJob (JobParams*);
 protected:
     virtual void timerEvent (QTimerEvent*);
 signals:

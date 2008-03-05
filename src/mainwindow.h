@@ -21,6 +21,7 @@ class QMutex;
 class XmlSettingsDialog;
 class QVBoxLayout;
 class GraphWidget;
+class QDockWidget;
 
 namespace Main
 {
@@ -42,7 +43,7 @@ namespace Main
         QToolBar *Toolbar_, *PluginsToolbar_;
 
         XmlSettingsDialog *XmlSettingsDialog_;
-        QVBoxLayout *Jobs_;
+        QList<QDockWidget*> PluginWidgets_;
 
         bool IsShown_;
 
@@ -68,7 +69,6 @@ namespace Main
         void WriteSettings ();
         void InitializeMainView (const QByteArray&);
         void AddPluginToTree (const PluginInfo*);
-        QWidget* CreateAggregatedJobs ();
     private slots:
         void handlePluginsListDoubleClick (QTreeWidgetItem*, int);
         void addPluginToList (const PluginInfo*);
