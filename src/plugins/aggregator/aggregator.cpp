@@ -11,6 +11,7 @@ void Aggregator::Init ()
     Plugins_->addAction (Ui_.ActionAddFeed_);
     connect (&Core::Instance (), SIGNAL (error (const QString&)), this, SLOT (showError (const QString&)));
     Ui_.Items_->setModel (&Core::Instance ());
+    connect (Ui_.Items_->selectionModel (), SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (currentItemChanged (const QModelIndex&)));
 }
 
 void Aggregator::Release ()
@@ -104,6 +105,21 @@ void Aggregator::on_ActionAddFeed__triggered ()
     AddFeed af;
     if (af.exec () == QDialog::Accepted)
         Core::Instance ().AddFeed (af.GetURL ());
+}
+
+void Aggregator::on_Items__activated (const QModelIndex& index)
+{
+    Core::Instance ().Activated (index);
+}
+
+void Aggregator::on_Items__doubleClicked (const QModelIndex& index)
+{
+    Core::Instance ().Activated (index);
+}
+
+void Aggregator::currentItemChanged (const QModelIndex& index)
+{
+    Ui_.ItemView_->setHtml (Core::Instance ().GetDescription (index));
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_aggregator, Aggregator);

@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>MainWindow</string>
+   <string>Aggregator</string>
   </property>
   <property name="windowIcon" >
    <iconset resource="resources.qrc" >:/resources/images/aggregator.png</iconset>
@@ -74,7 +74,14 @@
         </item>
        </layout>
       </widget>
-      <widget class="QTextBrowser" name="ItemView_" />
+      <widget class="QTextBrowser" name="ItemView_" >
+       <property name="autoFormatting" >
+        <set>QTextEdit::AutoAll</set>
+       </property>
+       <property name="openExternalLinks" >
+        <bool>true</bool>
+       </property>
+      </widget>
      </widget>
     </item>
    </layout>

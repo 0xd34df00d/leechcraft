@@ -81,7 +81,7 @@ Item RSS20Parser::ParseItem (const QDomElement& item) const
 {
     Item result;
     result.Title_ = UnescapeHTML (item.firstChildElement ("title").text ());
-    result.Link_ = item.firstChildElement ("link").text ();
+    result.Link_ = UnescapeHTML (item.firstChildElement ("link").text ());
     result.Description_ = UnescapeHTML (item.firstChildElement ("description").text ());
 
     QString time = item.firstChildElement ("pubDate").text ();
@@ -91,6 +91,7 @@ Item RSS20Parser::ParseItem (const QDomElement& item) const
     tmp.removeAt (tmp.size () - 1);
     time = tmp.join (" ");
     result.PubDate_ = QDateTime::fromString (time, "d MMM yyyy hh:mm:ss");
+    result.Guid_ = item.firstChildElement ("guid").text ();
     return result;
 }
 

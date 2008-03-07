@@ -47,6 +47,8 @@ public:
     void Release ();
     void SetProvider (QObject*, const QString&);
     void AddFeed (const QString&);
+    void Activated (const QModelIndex&);
+    QString GetDescription (const QModelIndex&);
 
     virtual int columnCount (const QModelIndex& parent = QModelIndex ()) const;
     virtual QVariant data (const QModelIndex&, int role = Qt::DisplayRole) const;

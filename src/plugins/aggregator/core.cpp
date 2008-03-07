@@ -1,4 +1,6 @@
 #include <QtDebug>
+#include <QDesktopServices>
+#include <QUrl>
 #include <QTemporaryFile>
 #include "core.h"
 #include "parserfactory.h"
@@ -33,6 +35,12 @@ void Core::SetProvider (QObject *provider, const QString& feature)
 
 void Core::AddFeed (const QString& url)
 {
+    if (Feeds_.contains (url))
+    {
+        emit error (tr ("This feed is already added"));
+        return;
+    }
+
     QObject *provider = Providers_ ["http"];
     IDirectDownload *idd = qobject_cast<IDirectDownload*> (provider);
     if (!provider || !idd)
@@ -54,6 +62,27 @@ void Core::AddFeed (const QString& url)
     file.close ();
 }
 
+void Core::Activated (const QModelIndex& index)
+{
+    qDebug () << Q_FUNC_INFO;
+    TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
+    if (!item || !TreeItem2Item_.contains (item))
+        return;
+    QString URL = TreeItem2Item_ [item].Link_;
+    ItemUnread_ [TreeItem2Item_ [item]] = false;
+    QDesktopServices::openUrl (QUrl (URL));
+}
+
+QString Core::GetDescription (const QModelIndex& index)
+{
+    qDebug () << Q_FUNC_INFO;
+    TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
+    if (!item || !TreeItem2Item_.contains (item))
+        return QString ();
+    ItemUnread_ [TreeItem2Item_ [item]] = false;
+    return TreeItem2Item_ [item].Description_;
+}
+
 int Core::columnCount (const QModelIndex& parent) const
 {
     if (parent.isValid ())
@@ -71,7 +100,13 @@ QVariant Core::data (const QModelIndex& parent, int role) const
     if (role == Qt::DisplayRole)
         return item->Data (parent.column ());
     else if (role == Qt::ForegroundRole)
-        return ItemUnread_ [TreeItem2Item_ [item]] ? Qt::red : Qt::black;
+    {
+        qDebug () << ItemUnread_.size ();
+        if (TreeItem2Item_.contains (item))
+            return ItemUnread_ [TreeItem2Item_ [item]] ? Qt::red : Qt::black;
+        else
+            return QVariant ();
+    }
     else
         return QVariant ();
 }

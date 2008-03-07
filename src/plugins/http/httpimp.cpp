@@ -79,6 +79,7 @@ void HttpImp::run ()
         Socket_ = 0;
         return;
     }
+    Response_.ContentLength_ = -1;
     Socket_->SetDefaultTimeout (XmlSettingsManager::Instance ()->property ("DefaultTimeout").toInt ());
     WriteHeaders ();
     msleep (100);
@@ -115,9 +116,13 @@ void HttpImp::run ()
         AwaitFileInfoReaction_.second->unlock ();
     }
 
-    emit dataFetched (RestartPosition_, Response_.ContentLength_ + RestartPosition_, QByteArray ());
+    if (Response_.ContentLength_ != -1)
+        emit dataFetched (RestartPosition_, Response_.ContentLength_ + RestartPosition_, QByteArray ());
+    else
+        emit dataFetched (RestartPosition_, 0, QByteArray ());
     while (counter < Response_.ContentLength_)
     {
+
         QByteArray newData;
         msleep (5);
         try
@@ -126,6 +131,12 @@ void HttpImp::run ()
         }
         catch (const Exceptions::Socket::SocketTimeout&)
         {
+        }
+        catch (const Exceptions::Socket::RemoteHostClosed&)
+        {
+            qWarning () << Q_FUNC_INFO << ", so we break and" << counter;
+            Response_.ContentLength_ = counter;
+            break;
         }
         catch (const Exceptions::Socket::BaseSocket& e)
         {
@@ -138,6 +149,7 @@ void HttpImp::run ()
             emit error (tr ("HTTP implementation failed in a very strange way. Please send to developers any .log files you find in application's directory and it's subdirectories. Thanks for your help."));
             break;
         }
+        qDebug () << newData;
 
         if (Stop_)
         {
@@ -147,7 +159,10 @@ void HttpImp::run ()
         }
 
         counter += newData.size ();
-        Emit (counter + RestartPosition_, Response_.ContentLength_ + RestartPosition_, newData);
+        if (Response_.ContentLength_ != -1)
+            Emit (counter + RestartPosition_, Response_.ContentLength_ + RestartPosition_, newData);
+        else
+            Emit (counter + RestartPosition_, 0, newData);
     }
     EmitFlush (counter + RestartPosition_, Response_.ContentLength_ + RestartPosition_);
     emit stopped ();
@@ -165,9 +180,10 @@ void HttpImp::WriteHeaders ()
     QStringList splitted = URL_.split ('?');
     if (splitted.size () >= 2)
         request.append ('?').append (splitted [1]);
-    Socket_->Write (GetFileSize_ ? "HEAD" : "GET " + request + " HTTP/1.1\r\n");
+    Socket_->Write (GetFileSize_ ? "HEAD" : "GET " + request + " HTTP/1.0\r\n");
     QString agent = XmlSettingsManager::Instance ()->property ("HTTPAgent").toString ();
     Socket_->Write ("User-Agent: " + agent.trimmed () + "\r\n");
+    Socket_->Write (QString ("Connection: close\r\n"));
     Socket_->Write (QString ("Accept: */*\r\n"));
     Socket_->Write ("Host: " + Socket_->GetAddressParser ()->GetHost () + "\r\n");
     if (RestartPosition_ && StopPosition_)
