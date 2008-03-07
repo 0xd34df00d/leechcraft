@@ -9,7 +9,8 @@ struct Channel
     QString Description_;
 };
 
-bool operator== (const Channel& c1, const Channel& c2);
+bool operator== (const Channel&, const Channel&);
+bool operator< (const Channel&, const Channel&);
 
 #endif
 

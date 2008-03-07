@@ -10,6 +10,7 @@ void Aggregator::Init ()
     IsShown_ = false;
     Plugins_->addAction (Ui_.ActionAddFeed_);
     connect (&Core::Instance (), SIGNAL (error (const QString&)), this, SLOT (showError (const QString&)));
+    Ui_.Items_->setModel (&Core::Instance ());
 }
 
 void Aggregator::Release ()

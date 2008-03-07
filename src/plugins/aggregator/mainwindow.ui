@@ -16,23 +16,65 @@
    <iconset resource="resources.qrc" >:/resources/images/aggregator.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget" >
-   <layout class="QHBoxLayout" >
+   <layout class="QVBoxLayout" >
     <item>
      <widget class="QSplitter" name="splitter" >
       <property name="orientation" >
-       <enum>Qt::Horizontal</enum>
+       <enum>Qt::Vertical</enum>
       </property>
       <widget class="QWidget" name="" >
        <layout class="QVBoxLayout" >
         <item>
-         <widget class="QLineEdit" name="Tags_" />
+         <layout class="QHBoxLayout" >
+          <item>
+           <layout class="QHBoxLayout" >
+            <item>
+             <widget class="QLabel" name="label" >
+              <property name="text" >
+               <string>Tags:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="TagsLine_" />
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" >
+            <item>
+             <widget class="QLabel" name="label_2" >
+              <property name="text" >
+               <string>Search:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="SearchLine_" />
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
         <item>
-         <widget class="QTreeView" name="Feeds_" />
+         <widget class="QTreeView" name="Items_" />
         </item>
        </layout>
       </widget>
-      <widget class="QTreeView" name="Items_" />
+      <widget class="QTextBrowser" name="ItemView_" />
      </widget>
     </item>
    </layout>

@@ -18,7 +18,7 @@ public:
     virtual bool CouldParse (const QDomDocument&) const;
     virtual QList<Item> Parse (const QDomDocument&, const QDomDocument&) const;
 private:
-    QPair<QList<Channel>, QList<Item> > Parse (const QDomDocument&) const;
+    QList<Item> Parse (const QDomDocument&) const;
     Item ParseItem (const QDomElement&) const;
 };
 

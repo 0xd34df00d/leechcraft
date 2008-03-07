@@ -7,3 +7,8 @@ bool operator== (const Channel& c1, const Channel& c2)
         c1.Description_ == c2.Description_;
 }
 
+bool operator< (const Channel& c1, const Channel& c2)
+{
+    return c1.Link_ < c2.Link_;
+}
+

@@ -11,7 +11,8 @@ SET (SRCS
     rss20parser.cpp
     parser.cpp
     item.cpp
-    channel.cpp)
+    channel.cpp
+    treeitem.cpp)
 SET (HEADERS
     aggregator.h
     core.h
@@ -23,6 +24,7 @@ SET (HEADERS
     parserfactory.h
     parser.h
     rss20parser.h
+    treeitem.h
     ../../plugininterface/basesettingsmanager.h)
 SET (FORMS
     mainwindow.ui
