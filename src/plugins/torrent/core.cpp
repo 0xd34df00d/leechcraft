@@ -95,7 +95,7 @@ void Core::DoDelayedInit ()
     XmlSettingsManager::Instance ()->RegisterObject ("PeerProxyLogin", this, "setProxySettings");
     XmlSettingsManager::Instance ()->RegisterObject ("PeerProxyPassword", this, "setProxySettings");
 
-//    RestoreTorrents ();
+    RestoreTorrents ();
 }
 
 void Core::Release ()
