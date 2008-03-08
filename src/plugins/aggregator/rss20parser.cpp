@@ -25,13 +25,13 @@ bool RSS20Parser::CouldParse (const QDomDocument& doc) const
 QList<Channel*> RSS20Parser::Parse (const QList<Channel*>& channels, const QDomDocument& recent) const
 {
     QList<Channel*> newes = Parse (recent),
-        result = channels;
+        result;
     for (int i = 0; i < newes.size (); ++i)
     {
         Channel *newChannel = newes.at (i);
         int position = -1;
-        for (int j = 0; j < result.size (); ++j)
-            if (*result.at (j) == *newChannel)
+        for (int j = 0; j < channels.size (); ++j)
+            if (*channels.at (j) == *newChannel)
             {
                 position = j;
                 break;
@@ -40,17 +40,23 @@ QList<Channel*> RSS20Parser::Parse (const QList<Channel*>& channels, const QDomD
             result.append (newChannel);
         else
         {
-            Channel *oldChannel = result.at (position);
-            Item *lastItemWeHave = oldChannel->Items_.last ();
+            Channel *oldChannel = channels.at (position);
+            Channel *toInsert = new Channel;
+            *toInsert = *oldChannel;
+            toInsert->Items_.clear ();
+
+            Item *lastItemWeHave = oldChannel->Items_.first ();
             int index = 0;
             for (int j = 0; j < newChannel->Items_.size (); ++j)
                 if (*newChannel->Items_.at (j) == *lastItemWeHave)
                 {
-                    index = j + 1;
+                    index = j - 1;
                     break;
                 }
-            for (int j = index; j < newChannel->Items_.size (); ++j)
-                oldChannel->Items_.append (newChannel->Items_.at (j));
+            for (int j = index; j >= 0; --j)
+                toInsert->Items_.prepend (newChannel->Items_.at (j));
+
+            result.append (toInsert);
         }
     }
     return result;

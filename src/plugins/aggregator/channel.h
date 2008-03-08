@@ -13,6 +13,8 @@ struct Channel
     QString Description_;
     QDateTime LastBuild_;
     QList<Item*> Items_;
+
+    Channel& operator= (const Channel&);
 };
 
 bool operator== (const Channel&, const Channel&);

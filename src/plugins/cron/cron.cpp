@@ -1,4 +1,4 @@
-#include <QtCore/QtCore>
+#include <QDateTime>
 #include "cron.h"
 #include "core.h"
 #include "globals.h"
@@ -6,7 +6,7 @@
 void Cron::Init ()
 {
     Core_ = new Core (this);
-    connect (Core_, SIGNAL (shot (quint64)), this, SIGNAL (shot (quint64)));
+    connect (Core_, SIGNAL (shot (int)), this, SIGNAL (shot (int)));
 }
 
 QString Cron::GetName () const
@@ -52,7 +52,6 @@ QStringList Cron::Uses () const
 
 void Cron::SetProvider (QObject *provider, const QString& feature)
 {
-    Providers_ [feature] = provider;
 }
 
 void Cron::PushMainWindowExternals (const MainWindowExternals&)
@@ -65,9 +64,14 @@ void Cron::Release ()
     delete Core_;
 }
 
-void Cron::addSingleShot (QDateTime dt)
+void Cron::addSingleshot (const QDateTime& dt, int *id)
 {
-    emit added (Core_->AddSingleShot (dt));
+    *id =Core_->AddSingleshot (dt);
+}
+
+void Cron::addInterval (int msecs, int *id)
+{
+    *id =Core_->AddInterval (msecs);
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_cron, Cron);

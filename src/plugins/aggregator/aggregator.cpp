@@ -51,7 +51,7 @@ QStringList Aggregator::Provides () const
 
 QStringList Aggregator::Needs () const
 {
-    return QStringList ("http");
+    return QStringList ("http") << "cron";
 }
 
 QStringList Aggregator::Uses () const

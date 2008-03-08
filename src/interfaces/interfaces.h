@@ -115,6 +115,11 @@ public:
     virtual ~IJobHolder () {}
 };
 
+class IScheduler
+{
+public:
+};
+
 Q_DECLARE_INTERFACE (ISettings, "org.Deviant.LeechCraft.ISettings/1.0");
 Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
 #ifndef NOGUI

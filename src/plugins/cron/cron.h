@@ -2,10 +2,10 @@
 #define CRON_H
 #include <QObject>
 #include <QMap>
-#include <QDateTime>
 #include <interfaces/interfaces.h>
 
 class Core;
+class QDateTime;
 
 class Cron : public QObject
            , public IInfo
@@ -14,7 +14,6 @@ class Cron : public QObject
     Q_INTERFACES (IInfo);
 
     ID_t ID_;
-    QMap<QString, QObject*> Providers_;
     Core *Core_;
 public:
     void Init ();
@@ -30,10 +29,10 @@ public:
     void PushMainWindowExternals (const MainWindowExternals&);
     void Release ();
 public slots:
-    void addSingleShot (QDateTime);
+    void addSingleshot (const QDateTime&, int*);
+    void addInterval (int, int*);
 signals:
-    void added (quint64);
-    void shot (quint64);
+    void shot (int);
 };
 
 #endif

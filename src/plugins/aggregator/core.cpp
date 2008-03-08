@@ -3,6 +3,7 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QTemporaryFile>
+#include <QTimer>
 #include <plugininterface/proxy.h>
 #include "core.h"
 #include "parserfactory.h"
@@ -17,6 +18,10 @@ Core::Core ()
     RootItem_ = new TreeItem (rootData);
 
     qRegisterMetaTypeStreamOperators<Feed> ("Feed");
+
+    QTimer *updateTimer = new QTimer (this);
+    updateTimer->start (30 * 1000);
+    connect (updateTimer, SIGNAL (timeout ()), this, SLOT (updateFeeds ()));
 }
 
 Core& Core::Instance ()
@@ -44,9 +49,14 @@ void Core::Release ()
 void Core::SetProvider (QObject *provider, const QString& feature)
 {
     Providers_ [feature] = provider;
-    connect (provider, SIGNAL (jobFinished (int)), this, SLOT (handleJobFinished (int)));
-    connect (provider, SIGNAL (jobRemoved (int)), this, SLOT (handleJobRemoved (int)));
-    connect (provider, SIGNAL (jobError (int, IDirectDownload::Error)), this, SLOT (handleJobError (int, IDirectDownload::Error)));
+    if (feature == "http")
+    {
+        connect (provider, SIGNAL (jobFinished (int)), this, SLOT (handleJobFinished (int)));
+        connect (provider, SIGNAL (jobRemoved (int)), this, SLOT (handleJobRemoved (int)));
+        connect (provider, SIGNAL (jobError (int, IDirectDownload::Error)), this, SLOT (handleJobError (int, IDirectDownload::Error)));
+    }
+    else if (feature == "cron")
+        connect (provider, SIGNAL (shot (int)), this, SLOT (handleShot (int)));
 }
 
 void Core::AddFeed (const QString& url)
@@ -189,6 +199,7 @@ void Core::handleJobFinished (int id)
     if (!PendingJobs_.contains (id))
         return;
     PendingJob pj = PendingJobs_ [id];
+    PendingJobs_.remove (id);
     QFile file (pj.Filename_);
     if (!file.open (QIODevice::ReadOnly))
     {
@@ -196,12 +207,17 @@ void Core::handleJobFinished (int id)
         return;
     }
     QByteArray data = file.readAll ();
+    file.remove ();
     if (pj.Role_ == PendingJob::RFeedAdded)
     {
         Feed feed = { pj.URL_, QDateTime::currentDateTime (), QList<Channel*> () };
         Feeds_ [pj.URL_] = feed;
     }
-    Feed& feed = Feeds_ [pj.URL_];
+    if (!Feeds_.contains (pj.URL_))
+    {
+        emit error (tr ("Feed with url %1 not found.").arg (pj.URL_));
+        return;
+    }
     QDomDocument doc;
     QString errorMsg;
     int errorLine, errorColumn;
@@ -217,7 +233,7 @@ void Core::handleJobFinished (int id)
         return;
     }
 
-    QList<Channel*> channels = parser->Parse (feed.Channels_, data);
+    QList<Channel*> channels = parser->Parse (Feeds_ [pj.URL_].Channels_, data);
     if (pj.Role_ == PendingJob::RFeedAdded)
     {
         beginInsertRows (QModelIndex (), rowCount (), rowCount () + channels.size () - 1);
@@ -225,7 +241,7 @@ void Core::handleJobFinished (int id)
         {
             QList<QVariant> data;
             Channel *current = channels.at (i);
-            data << current->Title_ << (current->LastBuild_.isValid () ? current->LastBuild_ : feed.LastUpdate_);
+            data << current->Title_ << (current->LastBuild_.isValid () ? current->LastBuild_ : Feeds_ [pj.URL_].LastUpdate_);
             TreeItem *channelItem = new TreeItem (data, RootItem_);
             RootItem_->AppendChild (channelItem);
             Channel2TreeItem_ [channels.at (i)] = channelItem;
@@ -242,7 +258,97 @@ void Core::handleJobFinished (int id)
             }
         }
         endInsertRows ();
+        Feeds_ [pj.URL_].Channels_ = channels;
     }
-    feed.Channels_ = channels;
+    else if (pj.Role_ == PendingJob::RFeedUpdated)
+    {
+        for (int i = 0; i < channels.size (); ++i)
+        {
+            Channel *current = channels.at (i);
+            if (current->Items_.size () <= 0)
+                continue;
+
+            int position = -1;
+            for (int j = 0; j < Feeds_ [pj.URL_].Channels_.size (); ++j)
+                if (*Feeds_ [pj.URL_].Channels_.at (j) == *current)
+                {
+                    position = j;
+                    break;
+                }
+
+            if (position == -1)
+            {
+                beginInsertRows (QModelIndex (), rowCount (), rowCount () + channels.size () - 1);
+                Feeds_ [pj.URL_].Channels_.append (current);
+                QList<QVariant> data;
+                Channel *current = channels.at (i);
+                data << current->Title_ << (current->LastBuild_.isValid () ? current->LastBuild_ : Feeds_ [pj.URL_].LastUpdate_);
+                TreeItem *channelItem = new TreeItem (data, RootItem_);
+                RootItem_->AppendChild (channelItem);
+                Channel2TreeItem_ [channels.at (i)] = channelItem;
+                for (int j = 0; j < current->Items_.size (); ++j)
+                {
+                    Item *it = current->Items_.at (j);
+                    QList<QVariant> data;
+                    data << it->Title_ << it->PubDate_;
+                    TreeItem *item = new TreeItem (data, channelItem);
+                    channelItem->AppendChild (item);
+                    Item2TreeItem_ [it] = item;
+                    TreeItem2Item_ [item] = it;
+                    ItemUnread_ [it] = true;
+                }
+                endInsertRows ();
+            }
+            else
+            {
+                TreeItem *channelItem = Channel2TreeItem_ [Feeds_ [pj.URL_].Channels_.at (i)];
+                QModelIndex channelIndex = index (channelItem->Row (), 0);
+
+                beginInsertRows (channelIndex, 0, current->Items_.size () - 1);
+                for (int j = current->Items_.size () - 1; j >= 0; --j)
+                {
+                    qDebug () << current->Items_.size ();
+                    Item *it = current->Items_.at (j);
+                    QList<QVariant> data;
+                    data << it->Title_ << it->PubDate_;
+                    TreeItem *item = new TreeItem (data, channelItem);
+                    channelItem->PrependChild (item);
+                    Item2TreeItem_ [it] = item;
+                    TreeItem2Item_ [item] = it;
+                    ItemUnread_ [it] = true;
+                }
+                Feeds_ [pj.URL_].Channels_.at (position)->Items_ = current->Items_ + Feeds_ [pj.URL_].Channels_.at (position)->Items_;
+                endInsertRows ();
+            }
+        }
+    }
+}
+
+void Core::updateFeeds ()
+{
+    QObject *provider = Providers_ ["http"];
+    IDirectDownload *idd = qobject_cast<IDirectDownload*> (provider);
+    if (!provider || !idd)
+    {
+        emit error (tr ("Strange, but no suitable provider found"));
+        return;
+    }
+    QList<QString> urls = Feeds_.keys ();
+    for (int i = 0; i < urls.size (); ++i)
+    {
+        if (!idd->CouldDownload (urls.at (i)))
+        {
+            emit error (tr ("Could not handle URL %1").arg (urls.at (i)));
+            continue;
+        }
+
+        QTemporaryFile file;
+        file.open ();
+        DirectDownloadParams params = { urls.at (i), file.fileName (), true, false };
+        PendingJob pj = { PendingJob :: RFeedUpdated, urls.at (i), file.fileName () };
+        int id = idd->AddJob (params);
+        PendingJobs_ [id] = pj;
+        file.close ();
+    }
 }
 

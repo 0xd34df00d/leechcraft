@@ -462,7 +462,7 @@ void JobManager::scheduleSave ()
     if (!SaveChangesScheduled_)
     {
         SaveChangesScheduled_ = true;
-        QTimer::singleShot (500, this, SLOT (saveSettings ()));
+        QTimer::singleShot (10, this, SLOT (saveSettings ()));
     }
 }
 

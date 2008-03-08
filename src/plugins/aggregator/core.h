@@ -61,6 +61,7 @@ private slots:
     void handleJobFinished (int);
     void handleJobRemoved (int);
     void handleJobError (int, IDirectDownload::Error);
+    void updateFeeds ();
 signals:
     void error (const QString&);
 };

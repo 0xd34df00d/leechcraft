@@ -17,6 +17,11 @@ void TreeItem::AppendChild (TreeItem *child)
     Childs_.append (child);
 }
 
+void TreeItem::PrependChild (TreeItem *child)
+{
+    Childs_.prepend (child);
+}
+
 TreeItem* TreeItem::Child (int row)
 {
     return Childs_.value (row);

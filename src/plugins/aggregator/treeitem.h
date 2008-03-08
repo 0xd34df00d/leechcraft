@@ -13,6 +13,7 @@ public:
     ~TreeItem ();
 
     void AppendChild (TreeItem*);
+    void PrependChild (TreeItem*);
     TreeItem* Child (int);
     int ChildCount () const;
     int ColumnCount () const;
