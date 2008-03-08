@@ -7,12 +7,15 @@
 struct Feed
 {
     QString URL_;
-    QByteArray Previous_;
     QDateTime LastUpdate_;
-    QList<Item> Items_;
+    QList<Channel*> Channels_;
 };
 
+Q_DECLARE_METATYPE (Feed);
+
 bool operator< (const Feed& f1, const Feed& f2);
+QDataStream& operator<< (QDataStream&, const Feed&);
+QDataStream& operator>> (QDataStream&, Feed&);
 
 #endif
 

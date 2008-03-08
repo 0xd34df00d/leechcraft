@@ -2,11 +2,9 @@
 #define ITEM_H
 #include <QString>
 #include <QDateTime>
-#include "channel.h"
 
 struct Item
 {
-    Channel Parent_;
     QString Title_;
     QString Link_;
     QString Description_;

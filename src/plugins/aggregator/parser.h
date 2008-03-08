@@ -2,20 +2,20 @@
 #define PARSER_H
 #include <QObject>
 #include <QDomDocument>
-#include "item.h"
+
+class Channel;
 
 class Parser : public QObject
 {
     Q_OBJECT
 public:
     virtual bool CouldParse (const QDomDocument&) const = 0;
-    virtual QList<Item> Parse (const QDomDocument&, const QDomDocument&) const = 0;
-    QList<Item> Parse (const QByteArray& o, const QByteArray& n)
+    virtual QList<Channel*> Parse (const QList<Channel*>&, const QDomDocument&) const = 0;
+    QList<Channel*> Parse (const QList<Channel*>& o, const QByteArray& n)
     {
-        QDomDocument old, newd;
-        old.setContent (o);
+        QDomDocument newd;
         newd.setContent (n);
-        return Parse (old, newd);
+        return Parse (o, newd);
     }
 };
 

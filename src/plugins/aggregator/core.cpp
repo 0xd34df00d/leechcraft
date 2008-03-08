@@ -1,7 +1,9 @@
 #include <QtDebug>
+#include <QSettings>
 #include <QDesktopServices>
 #include <QUrl>
 #include <QTemporaryFile>
+#include <plugininterface/proxy.h>
 #include "core.h"
 #include "parserfactory.h"
 #include "rss20parser.h"
@@ -13,6 +15,8 @@ Core::Core ()
     QList<QVariant> rootData;
     rootData << tr ("Name") << tr ("Date");
     RootItem_ = new TreeItem (rootData);
+
+    qRegisterMetaTypeStreamOperators<Feed> ("Feed");
 }
 
 Core& Core::Instance ()
@@ -23,6 +27,18 @@ Core& Core::Instance ()
 
 void Core::Release ()
 {
+    QList<Feed> feeds = Feeds_.values ();
+    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
+    settings.beginGroup ("Aggregator");
+    settings.beginWriteArray ("Feeds");
+    for (int i = 0; i < feeds.size (); ++i)
+    {
+        settings.setArrayIndex (i);
+        Feed feed = feeds.at (i);
+
+    }
+    settings.endArray ();
+    settings.endGroup ();
 }
 
 void Core::SetProvider (QObject *provider, const QString& feature)
@@ -64,23 +80,21 @@ void Core::AddFeed (const QString& url)
 
 void Core::Activated (const QModelIndex& index)
 {
-    qDebug () << Q_FUNC_INFO;
     TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
     if (!item || !TreeItem2Item_.contains (item))
         return;
-    QString URL = TreeItem2Item_ [item].Link_;
+    QString URL = TreeItem2Item_ [item]->Link_;
     ItemUnread_ [TreeItem2Item_ [item]] = false;
     QDesktopServices::openUrl (QUrl (URL));
 }
 
 QString Core::GetDescription (const QModelIndex& index)
 {
-    qDebug () << Q_FUNC_INFO;
     TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
     if (!item || !TreeItem2Item_.contains (item))
         return QString ();
     ItemUnread_ [TreeItem2Item_ [item]] = false;
-    return TreeItem2Item_ [item].Description_;
+    return TreeItem2Item_ [item]->Description_;
 }
 
 int Core::columnCount (const QModelIndex& parent) const
@@ -101,7 +115,6 @@ QVariant Core::data (const QModelIndex& parent, int role) const
         return item->Data (parent.column ());
     else if (role == Qt::ForegroundRole)
     {
-        qDebug () << ItemUnread_.size ();
         if (TreeItem2Item_.contains (item))
             return ItemUnread_ [TreeItem2Item_ [item]] ? Qt::red : Qt::black;
         else
@@ -185,7 +198,7 @@ void Core::handleJobFinished (int id)
     QByteArray data = file.readAll ();
     if (pj.Role_ == PendingJob::RFeedAdded)
     {
-        Feed feed = { pj.URL_, QByteArray (), QDateTime::currentDateTime (), QList<Item> () };
+        Feed feed = { pj.URL_, QDateTime::currentDateTime (), QList<Channel*> () };
         Feeds_ [pj.URL_] = feed;
     }
     Feed& feed = Feeds_ [pj.URL_];
@@ -204,46 +217,32 @@ void Core::handleJobFinished (int id)
         return;
     }
 
-    QList<Item> items = parser->Parse (feed.Previous_, data);
-    QList<Channel> channels;
-    for (int i = 0; i < items.size (); ++i)
-    {
-        Channel chan = items.at (i).Parent_;
-        if (channels.indexOf (chan) == -1)
-            channels << chan;
-    }
+    QList<Channel*> channels = parser->Parse (feed.Channels_, data);
     if (pj.Role_ == PendingJob::RFeedAdded)
     {
-        qDebug () << Q_FUNC_INFO << "inserting rows";
         beginInsertRows (QModelIndex (), rowCount (), rowCount () + channels.size () - 1);
         for (int i = 0; i < channels.size (); ++i)
         {
             QList<QVariant> data;
-            data << channels.at (i).Title_ << feed.LastUpdate_;
-            TreeItem *item = new TreeItem (data, RootItem_);
-            RootItem_->AppendChild (item);
-            Channel2TreeItem_ [channels.at (i)] = item;
+            Channel *current = channels.at (i);
+            data << current->Title_ << (current->LastBuild_.isValid () ? current->LastBuild_ : feed.LastUpdate_);
+            TreeItem *channelItem = new TreeItem (data, RootItem_);
+            RootItem_->AppendChild (channelItem);
+            Channel2TreeItem_ [channels.at (i)] = channelItem;
+            for (int j = 0; j < current->Items_.size (); ++j)
+            {
+                Item *it = current->Items_.at (j);
+                QList<QVariant> data;
+                data << it->Title_ << it->PubDate_;
+                TreeItem *item = new TreeItem (data, channelItem);
+                channelItem->AppendChild (item);
+                Item2TreeItem_ [it] = item;
+                TreeItem2Item_ [item] = it;
+                ItemUnread_ [it] = true;
+            }
         }
         endInsertRows ();
     }
-    for (int i = 0; i < items.size (); ++i)
-    {
-        Item it = items.at (i);
-        QList<QVariant> data;
-        data << it.Title_ << it.PubDate_;
-
-        TreeItem *channelParent = Channel2TreeItem_ [it.Parent_];
-        QModelIndex channelIndex = index (channelParent->Row (), 0);
-
-        beginInsertRows (channelIndex, 0, 0);
-        TreeItem *item = new TreeItem (data, channelParent);
-        channelParent->AppendChild (item);
-        Item2TreeItem_ [it] = item;
-        TreeItem2Item_ [item] = it;
-        ItemUnread_ [it] = true;
-        endInsertRows ();
-    }
-
-    feed.Previous_ = data;
+    feed.Channels_ = channels;
 }
 

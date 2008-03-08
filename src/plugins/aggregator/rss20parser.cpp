@@ -3,6 +3,8 @@
 #include <QDomElement>
 #include <QStringList>
 #include "rss20parser.h"
+#include "item.h"
+#include "channel.h"
 
 RSS20Parser::RSS20Parser ()
 {
@@ -20,47 +22,65 @@ bool RSS20Parser::CouldParse (const QDomDocument& doc) const
     return root.tagName () == "rss" && root.attribute ("version") == "2.0";
 }
 
-QList<Item> RSS20Parser::Parse (const QDomDocument& old, const QDomDocument& recent) const
+QList<Channel*> RSS20Parser::Parse (const QList<Channel*>& channels, const QDomDocument& recent) const
 {
-    QList<Item> oldes = Parse (old),
-        newes = Parse (recent);
-    if (oldes.size ())
+    QList<Channel*> newes = Parse (recent),
+        result = channels;
+    for (int i = 0; i < newes.size (); ++i)
     {
-        Item lastItem = oldes.last ();
-        int index = newes.indexOf (lastItem);
-        QList<Item> result;
-        for (int i = index + 1; i < newes.size (); ++i)
-            result << newes.at (i);
-        return result;
+        Channel *newChannel = newes.at (i);
+        int position = -1;
+        for (int j = 0; j < result.size (); ++j)
+            if (*result.at (j) == *newChannel)
+            {
+                position = j;
+                break;
+            }
+        if (position == -1)
+            result.append (newChannel);
+        else
+        {
+            Channel *oldChannel = result.at (position);
+            Item *lastItemWeHave = oldChannel->Items_.last ();
+            int index = 0;
+            for (int j = 0; j < newChannel->Items_.size (); ++j)
+                if (*newChannel->Items_.at (j) == *lastItemWeHave)
+                {
+                    index = j + 1;
+                    break;
+                }
+            for (int j = index; j < newChannel->Items_.size (); ++j)
+                oldChannel->Items_.append (newChannel->Items_.at (j));
+        }
     }
-    else
-        return newes;
+    return result;
 }
 
-QList<Item> RSS20Parser::Parse (const QDomDocument& doc) const
+QList<Channel*> RSS20Parser::Parse (const QDomDocument& doc) const
 {
-    QList<Item> items;
+    QList<Channel*> channels;
     QDomElement root = doc.documentElement ();
     QDomElement channel = root.firstChildElement ("channel");
     while (!channel.isNull ())
     {
-        Channel chan;
-        chan.Title_ = channel.firstChildElement ("title").text ();
-        chan.Description_ = channel.firstChildElement ("description").text ();
-        chan.Link_ = channel.firstChildElement ("link").text ();
+        Channel *chan = new Channel;
+        chan->Title_ = channel.firstChildElement ("title").text ();
+        chan->Description_ = channel.firstChildElement ("description").text ();
+        chan->Link_ = channel.firstChildElement ("link").text ();
+        chan->LastBuild_ = FromRFC822 (channel.firstChildElement ("lastBuildDate").text ());
 
         QDomElement item = channel.firstChildElement ("item");
         while (!item.isNull ())
         {
-            Item it = ParseItem (item);
-            it.Parent_ = chan;
-            items << it;
+            chan->Items_ << ParseItem (item);
             item = item.nextSiblingElement ("item");
         }
 
+        channels << chan;
+
         channel = channel.nextSiblingElement ("channel");
     }
-    return items;
+    return channels;
 }
 
 // Via
@@ -77,21 +97,25 @@ QString UnescapeHTML (const QString& escaped)
     return result;
 }
 
-Item RSS20Parser::ParseItem (const QDomElement& item) const
+Item* RSS20Parser::ParseItem (const QDomElement& item) const
 {
-    Item result;
-    result.Title_ = UnescapeHTML (item.firstChildElement ("title").text ());
-    result.Link_ = UnescapeHTML (item.firstChildElement ("link").text ());
-    result.Description_ = UnescapeHTML (item.firstChildElement ("description").text ());
+    Item *result = new Item;
+    result->Title_ = UnescapeHTML (item.firstChildElement ("title").text ());
+    result->Link_ = UnescapeHTML (item.firstChildElement ("link").text ());
+    result->Description_ = UnescapeHTML (item.firstChildElement ("description").text ());
+    result->PubDate_ = FromRFC822 (item.firstChildElement ("pubDate").text ());
+    result->Guid_ = item.firstChildElement ("guid").text ();
+    return result;
+}
 
-    QString time = item.firstChildElement ("pubDate").text ();
+QDateTime RSS20Parser::FromRFC822 (const QString& t) const
+{
+    QString time = t;
     if (time [3] == ',')
         time.remove (0, 5);
     QStringList tmp = time.split (' ');
     tmp.removeAt (tmp.size () - 1);
     time = tmp.join (" ");
-    result.PubDate_ = QDateTime::fromString (time, "d MMM yyyy hh:mm:ss");
-    result.Guid_ = item.firstChildElement ("guid").text ();
-    return result;
+    return QDateTime::fromString (time, "d MMM yyyy hh:mm:ss");
 }
 

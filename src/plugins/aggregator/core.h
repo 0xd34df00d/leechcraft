@@ -37,10 +37,10 @@ class Core : public QAbstractItemModel
     QMap<int, PendingJob> PendingJobs_;
 
     QMap<QString, Feed> Feeds_;
-    QMap<Channel, TreeItem*> Channel2TreeItem_;
-    QMap<Item, TreeItem*> Item2TreeItem_;
-    QMap<Item, bool> ItemUnread_;
-    QMap<TreeItem*, Item> TreeItem2Item_;
+    QMap<Channel*, TreeItem*> Channel2TreeItem_;
+    QMap<Item*, TreeItem*> Item2TreeItem_;
+    QMap<Item*, bool> ItemUnread_;
+    QMap<TreeItem*, Item*> TreeItem2Item_;
     TreeItem *RootItem_;
 public:
     static Core& Instance ();

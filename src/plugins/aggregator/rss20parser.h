@@ -1,10 +1,11 @@
 #ifndef RSS20PARSER_H
 #define RSS20PARSER_H
 #include <QPair>
+#include <QDateTime>
 #include "parserfactory.h"
 #include "parser.h"
-#include "item.h"
-#include "channel.h"
+
+class Item;
 
 class RSS20Parser : public Parser
 {
@@ -16,10 +17,11 @@ class RSS20Parser : public Parser
 public:
     static RSS20Parser& Instance ();
     virtual bool CouldParse (const QDomDocument&) const;
-    virtual QList<Item> Parse (const QDomDocument&, const QDomDocument&) const;
+    virtual QList<Channel*> Parse (const QList<Channel*>&, const QDomDocument&) const;
 private:
-    QList<Item> Parse (const QDomDocument&) const;
-    Item ParseItem (const QDomElement&) const;
+    QList<Channel*> Parse (const QDomDocument&) const;
+    Item* ParseItem (const QDomElement&) const;
+    QDateTime FromRFC822 (const QString&) const;
 };
 
 #endif

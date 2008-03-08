@@ -149,7 +149,6 @@ void HttpImp::run ()
             emit error (tr ("HTTP implementation failed in a very strange way. Please send to developers any .log files you find in application's directory and it's subdirectories. Thanks for your help."));
             break;
         }
-        qDebug () << newData;
 
         if (Stop_)
         {
