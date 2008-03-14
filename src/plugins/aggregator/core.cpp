@@ -206,8 +206,12 @@ void Core::handleJobFinished (int id)
         qWarning () << Q_FUNC_INFO << "could not open file for pj " << pj.Filename_;
         return;
     }
+    if (!file.size ())
+    {
+        emit error (tr ("Downloaded file has null size!"));
+        return;
+    }
     QByteArray data = file.readAll ();
-    file.remove ();
     if (pj.Role_ == PendingJob::RFeedAdded)
     {
         Feed feed = { pj.URL_, QDateTime::currentDateTime (), QList<Channel*> () };
@@ -232,6 +236,7 @@ void Core::handleJobFinished (int id)
         emit error (tr ("Could not find parser to parse file %1").arg (pj.Filename_));
         return;
     }
+    file.remove ();
 
     QList<Channel*> channels = parser->Parse (Feeds_ [pj.URL_].Channels_, data);
     if (pj.Role_ == PendingJob::RFeedAdded)

@@ -8,6 +8,7 @@
 
 class AddTorrent;
 class QTimer;
+class QSortFilterProxyModel;
 
 class TorrentPlugin : public QMainWindow
                     , public IInfo
@@ -27,6 +28,7 @@ class TorrentPlugin : public QMainWindow
     AddTorrent *AddTorrentDialog_;
     QTimer *OverallStatsUpdateTimer_;
     QTime *LastPeersUpdate_;
+    QSortFilterProxyModel *FilterModel_;
     QMenu *Plugins_;
     bool IgnoreTimer_;
     bool TorrentSelectionChanged_;

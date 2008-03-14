@@ -69,8 +69,8 @@ void AddTorrent::setOkEnabled ()
 
 void AddTorrent::on_TorrentBrowse__released ()
 {
-    QString filename = QFileDialog::getOpenFileName (this, tr ("Select torrent file"), XmlSettingsManager::Instance ()->property ("LastTorrentDirectory").toString (), tr ("Torrents (*.torrent);;All files (*.*)"));
-    if (filename.isEmpty ())
+      QString filename = QFileDialog::getOpenFileName (this, tr ("Select torrent file"), XmlSettingsManager::Instance ()->property ("LastTorrentDirectory").toString (), tr ("Torrents (*.torrent);;All files (*.*)"));
+      if (filename.isEmpty ())
         return;
 
     Reinit ();
