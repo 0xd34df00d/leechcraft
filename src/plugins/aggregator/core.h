@@ -9,7 +9,7 @@
 #include "channel.h"
 #include "feed.h"
 
-class TreeItem;
+class ChannelsModel;
 
 class Core : public QAbstractItemModel
 {
@@ -37,11 +37,9 @@ class Core : public QAbstractItemModel
     QMap<int, PendingJob> PendingJobs_;
 
     QMap<QString, Feed> Feeds_;
-    QMap<Channel*, TreeItem*> Channel2TreeItem_;
-    QMap<Item*, TreeItem*> Item2TreeItem_;
-    QMap<Item*, bool> ItemUnread_;
-    QMap<TreeItem*, Item*> TreeItem2Item_;
-    TreeItem *RootItem_;
+    Channel* ActivatedChannel_;
+    QStringList ItemHeaders_;
+    ChannelsModel *ChannelsModel_;
 public:
     static Core& Instance ();
     void Release ();
@@ -49,14 +47,18 @@ public:
     void AddFeed (const QString&);
     void Activated (const QModelIndex&);
     QString GetDescription (const QModelIndex&);
+    QAbstractItemModel* GetChannelsModel ();
 
     virtual int columnCount (const QModelIndex& parent = QModelIndex ()) const;
     virtual QVariant data (const QModelIndex&, int role = Qt::DisplayRole) const;
     virtual Qt::ItemFlags flags (const QModelIndex&) const;
+    virtual bool hasChildren (const QModelIndex&) const;
     virtual QVariant headerData (int, Qt::Orientation, int role = Qt::DisplayRole) const;
     virtual QModelIndex index (int, int, const QModelIndex& parent = QModelIndex()) const;
     virtual QModelIndex parent (const QModelIndex&) const;
     virtual int rowCount (const QModelIndex& parent = QModelIndex ()) const;
+public slots:
+    void currentChannelChanged (const QModelIndex&);
 private slots:
     void handleJobFinished (int);
     void handleJobRemoved (int);

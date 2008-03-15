@@ -9,15 +9,17 @@
 #include "parserfactory.h"
 #include "rss20parser.h"
 #include "treeitem.h"
+#include "channelsmodel.h"
 
 Core::Core ()
 {
     ParserFactory::Instance ().Register (&RSS20Parser::Instance ());
-    QList<QVariant> rootData;
-    rootData << tr ("Name") << tr ("Date");
-    RootItem_ = new TreeItem (rootData);
+    ItemHeaders_ << tr ("Name") << tr ("Date");
 
     qRegisterMetaTypeStreamOperators<Feed> ("Feed");
+
+    ChannelsModel_ = new ChannelsModel (this);
+    ActivatedChannel_ = 0;
 
     QTimer *updateTimer = new QTimer (this);
     updateTimer->start (30 * 1000);
@@ -40,7 +42,6 @@ void Core::Release ()
     {
         settings.setArrayIndex (i);
         Feed feed = feeds.at (i);
-
     }
     settings.endArray ();
     settings.endGroup ();
@@ -55,8 +56,6 @@ void Core::SetProvider (QObject *provider, const QString& feature)
         connect (provider, SIGNAL (jobRemoved (int)), this, SLOT (handleJobRemoved (int)));
         connect (provider, SIGNAL (jobError (int, IDirectDownload::Error)), this, SLOT (handleJobError (int, IDirectDownload::Error)));
     }
-    else if (feature == "cron")
-        connect (provider, SIGNAL (shot (int)), this, SLOT (handleShot (int)));
 }
 
 void Core::AddFeed (const QString& url)
@@ -82,7 +81,7 @@ void Core::AddFeed (const QString& url)
     QTemporaryFile file;
     file.open ();
     DirectDownloadParams params = { url, file.fileName (), true, false };
-    PendingJob pj = { PendingJob :: RFeedAdded, url, file.fileName () };
+    PendingJob pj = { PendingJob::RFeedAdded, url, file.fileName () };
     int id = idd->AddJob (params);
     PendingJobs_ [id] = pj;
     file.close ();
@@ -90,39 +89,56 @@ void Core::AddFeed (const QString& url)
 
 void Core::Activated (const QModelIndex& index)
 {
+    /*
     TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
     if (!item || !TreeItem2Item_.contains (item))
         return;
     QString URL = TreeItem2Item_ [item]->Link_;
     ItemUnread_ [TreeItem2Item_ [item]] = false;
     QDesktopServices::openUrl (QUrl (URL));
+    */
 }
 
 QString Core::GetDescription (const QModelIndex& index)
 {
+    /*
     TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
     if (!item || !TreeItem2Item_.contains (item))
         return QString ();
     ItemUnread_ [TreeItem2Item_ [item]] = false;
     return TreeItem2Item_ [item]->Description_;
+    */
+    return QString ();
+}
+
+QAbstractItemModel* Core::GetChannelsModel ()
+{
+    return ChannelsModel_;
 }
 
 int Core::columnCount (const QModelIndex& parent) const
 {
-    if (parent.isValid ())
-        return static_cast<TreeItem*> (parent.internalPointer ())->ColumnCount ();
-    else
-        return RootItem_->ColumnCount ();
+    return ItemHeaders_.size ();
 }
 
-QVariant Core::data (const QModelIndex& parent, int role) const
+QVariant Core::data (const QModelIndex& index, int role) const
 {
-    if (!parent.isValid ())
+    if (!index.isValid () || !ActivatedChannel_)
         return QVariant ();
 
-    TreeItem *item = static_cast<TreeItem*> (parent.internalPointer ());
     if (role == Qt::DisplayRole)
-        return item->Data (parent.column ());
+    {
+        switch (index.column ())
+        {
+            case 0:
+                return ActivatedChannel_->Items_.at (index.row ())->Title_;
+            case 1:
+                return ActivatedChannel_->Items_.at (index.row ())->PubDate_;
+            default:
+                return QVariant ();
+        }
+    }
+    /*
     else if (role == Qt::ForegroundRole)
     {
         if (TreeItem2Item_.contains (item))
@@ -130,22 +146,25 @@ QVariant Core::data (const QModelIndex& parent, int role) const
         else
             return QVariant ();
     }
+        */
     else
         return QVariant ();
 }
 
 Qt::ItemFlags Core::flags (const QModelIndex& index) const
 {
-    if (!index.isValid ())
-        return 0;
-    else
-        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+}
+
+bool Core::hasChildren (const QModelIndex& index) const
+{
+    return !index.isValid ();
 }
 
 QVariant Core::headerData (int column, Qt::Orientation orient, int role) const
 {
     if (orient == Qt::Horizontal && role == Qt::DisplayRole)
-        return RootItem_->Data (column);
+        return ItemHeaders_.at (column);
     else
         return QVariant ();
 }
@@ -155,43 +174,29 @@ QModelIndex Core::index (int row, int column, const QModelIndex& parent) const
     if (!hasIndex (row, column, parent))
         return QModelIndex ();
 
-    TreeItem *parentItem;
-    if (!parent.isValid ())
-        parentItem = RootItem_;
-    else
-        parentItem = static_cast<TreeItem*> (parent.internalPointer ());
-
-    TreeItem *childItem = parentItem->Child (row);
-    if (childItem)
-        return createIndex (row, column, childItem);
-    else
-        return QModelIndex ();
+    return createIndex (row, column);
 }
 
 QModelIndex Core::parent (const QModelIndex& index) const
 {
-    if (!index.isValid ())
-        return QModelIndex ();
-
-    TreeItem *child = static_cast<TreeItem*> (index.internalPointer ()),
-             *parent = child->Parent ();
-    if (parent == RootItem_)
-        return QModelIndex ();
-    return createIndex (parent->Row (), 0, parent);
+    return QModelIndex ();
 }
 
 int Core::rowCount (const QModelIndex& parent) const
 {
-    TreeItem *parentItem;
-    if (parent.column () > 0)
-        return 0;
-
-    if (!parent.isValid ())
-        parentItem = RootItem_;
+    if (ActivatedChannel_)
+        return ActivatedChannel_->Items_.size ();
     else
-        parentItem = static_cast<TreeItem*> (parent.internalPointer ());
+        return 0;
+}
 
-    return parentItem->ChildCount ();
+void Core::currentChannelChanged (const QModelIndex& index)
+{
+    Channel *ch = ChannelsModel_->GetChannelForIndex (index);
+    if (!ch)
+        return;
+    ActivatedChannel_ = ch;
+    reset ();
 }
 
 void Core::handleJobFinished (int id)
@@ -227,7 +232,7 @@ void Core::handleJobFinished (int id)
     int errorLine, errorColumn;
     if (!doc.setContent (data, true, &errorMsg, &errorLine, &errorColumn))
     {
-        emit error (tr ("Parse error: %1, line %2, column %3, filename %4").arg (errorMsg).arg (errorLine).arg (errorColumn).arg (pj.Filename_));
+        emit error (tr ("XML file parse error: %1, line %2, column %3, filename %4").arg (errorMsg).arg (errorLine).arg (errorColumn).arg (pj.Filename_));
         return;
     }
     Parser *parser = ParserFactory::Instance ().Return (doc);
@@ -241,30 +246,10 @@ void Core::handleJobFinished (int id)
     QList<Channel*> channels = parser->Parse (Feeds_ [pj.URL_].Channels_, data);
     if (pj.Role_ == PendingJob::RFeedAdded)
     {
-        beginInsertRows (QModelIndex (), rowCount (), rowCount () + channels.size () - 1);
-        for (int i = 0; i < channels.size (); ++i)
-        {
-            QList<QVariant> data;
-            Channel *current = channels.at (i);
-            data << current->Title_ << (current->LastBuild_.isValid () ? current->LastBuild_ : Feeds_ [pj.URL_].LastUpdate_);
-            TreeItem *channelItem = new TreeItem (data, RootItem_);
-            RootItem_->AppendChild (channelItem);
-            Channel2TreeItem_ [channels.at (i)] = channelItem;
-            for (int j = 0; j < current->Items_.size (); ++j)
-            {
-                Item *it = current->Items_.at (j);
-                QList<QVariant> data;
-                data << it->Title_ << it->PubDate_;
-                TreeItem *item = new TreeItem (data, channelItem);
-                channelItem->AppendChild (item);
-                Item2TreeItem_ [it] = item;
-                TreeItem2Item_ [item] = it;
-                ItemUnread_ [it] = true;
-            }
-        }
-        endInsertRows ();
         Feeds_ [pj.URL_].Channels_ = channels;
+        ChannelsModel_->AddFeed (Feeds_ [pj.URL_]);
     }
+    /*
     else if (pj.Role_ == PendingJob::RFeedUpdated)
     {
         for (int i = 0; i < channels.size (); ++i)
@@ -327,6 +312,7 @@ void Core::handleJobFinished (int id)
             }
         }
     }
+    */
 }
 
 void Core::updateFeeds ()

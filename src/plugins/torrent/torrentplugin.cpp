@@ -29,6 +29,7 @@ void TorrentPlugin::Init ()
     connect (Core::Instance (), SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (updateTorrentStats ()));
     connect (Stats_, SIGNAL (currentChanged (int)), this, SLOT (updateTorrentStats ()));
 
+    Core::Instance ()->DoDelayedInit ();
     FilterModel_ = new QSortFilterProxyModel;
     FilterModel_->setSourceModel (Core::Instance ());
     FilterModel_->setFilterKeyColumn (0);
@@ -37,7 +38,6 @@ void TorrentPlugin::Init ()
     connect (FixedStringSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setFilterFixedString (const QString&)));
     connect (WildcardSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setFilterWildcard (const QString&)));
     connect (RegexpSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setFilterRegExp (const QString&)));
-    Core::Instance ()->DoDelayedInit ();
 
     IgnoreTimer_ = true;
     OverallDownloadRateController_->setValue (Core::Instance ()->GetOverallDownloadRate ());

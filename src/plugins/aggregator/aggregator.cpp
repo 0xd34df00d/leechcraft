@@ -11,7 +11,9 @@ void Aggregator::Init ()
     Plugins_->addAction (Ui_.ActionAddFeed_);
     connect (&Core::Instance (), SIGNAL (error (const QString&)), this, SLOT (showError (const QString&)));
     Ui_.Items_->setModel (&Core::Instance ());
+    Ui_.Feeds_->setModel (Core::Instance ().GetChannelsModel ());
     connect (Ui_.Items_->selectionModel (), SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (currentItemChanged (const QModelIndex&)));
+    connect (Ui_.Feeds_->selectionModel (), SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)), &Core::Instance (), SLOT (currentChannelChanged (const QModelIndex&)));
 }
 
 void Aggregator::Release ()
@@ -51,7 +53,7 @@ QStringList Aggregator::Provides () const
 
 QStringList Aggregator::Needs () const
 {
-    return QStringList ("http") << "cron";
+    return QStringList ("http");
 }
 
 QStringList Aggregator::Uses () const

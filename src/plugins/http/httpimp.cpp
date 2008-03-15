@@ -176,9 +176,14 @@ void HttpImp::run ()
 void HttpImp::WriteHeaders ()
 {
     QString request = Socket_->GetAddressParser ()->GetPath ();
-    QStringList splitted = URL_.split ('?');
-    if (splitted.size () >= 2)
-        request.append ('?').append (splitted [1]);
+    if (request.size ())
+    {
+        QStringList splitted = URL_.split ('?');
+        if (splitted.size () >= 2)
+            request.append ('?').append (splitted [1]);
+    }
+    else
+        request = "/";
     Socket_->Write (GetFileSize_ ? "HEAD" : "GET " + request + " HTTP/1.0\r\n");
     QString agent = XmlSettingsManager::Instance ()->property ("HTTPAgent").toString ();
     Socket_->Write ("User-Agent: " + agent.trimmed () + "\r\n");
