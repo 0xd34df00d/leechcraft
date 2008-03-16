@@ -112,6 +112,7 @@ Item* RSS20Parser::ParseItem (const QDomElement& item) const
     result->Description_ = UnescapeHTML (item.firstChildElement ("description").text ());
     result->PubDate_ = FromRFC822 (item.firstChildElement ("pubDate").text ());
     result->Guid_ = item.firstChildElement ("guid").text ();
+    result->Unread_ = true;
     return result;
 }
 

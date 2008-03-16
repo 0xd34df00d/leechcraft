@@ -22,7 +22,7 @@ Core::Core ()
     ActivatedChannel_ = 0;
 
     QTimer *updateTimer = new QTimer (this);
-    updateTimer->start (30 * 1000);
+    updateTimer->start (3 * 1000);
     connect (updateTimer, SIGNAL (timeout ()), this, SLOT (updateFeeds ()));
 }
 
@@ -89,26 +89,25 @@ void Core::AddFeed (const QString& url)
 
 void Core::Activated (const QModelIndex& index)
 {
-    /*
-    TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
-    if (!item || !TreeItem2Item_.contains (item))
+    if (!ActivatedChannel_ || ActivatedChannel_->Items_.size () <= index.row ())
         return;
-    QString URL = TreeItem2Item_ [item]->Link_;
-    ItemUnread_ [TreeItem2Item_ [item]] = false;
+
+    Item *item = ActivatedChannel_->Items_.at (index.row ());
+
+    QString URL =item->Link_;
+    item->Unread_ = false;
     QDesktopServices::openUrl (QUrl (URL));
-    */
 }
 
 QString Core::GetDescription (const QModelIndex& index)
 {
-    /*
-    TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
-    if (!item || !TreeItem2Item_.contains (item))
+    if (!ActivatedChannel_ || ActivatedChannel_->Items_.size () <= index.row ())
         return QString ();
-    ItemUnread_ [TreeItem2Item_ [item]] = false;
-    return TreeItem2Item_ [item]->Description_;
-    */
-    return QString ();
+
+    Item *item = ActivatedChannel_->Items_.at (index.row ());
+
+    item->Unread_ = false;
+    return item->Description_;
 }
 
 QAbstractItemModel* Core::GetChannelsModel ()
@@ -138,15 +137,8 @@ QVariant Core::data (const QModelIndex& index, int role) const
                 return QVariant ();
         }
     }
-    /*
     else if (role == Qt::ForegroundRole)
-    {
-        if (TreeItem2Item_.contains (item))
-            return ItemUnread_ [TreeItem2Item_ [item]] ? Qt::red : Qt::black;
-        else
-            return QVariant ();
-    }
-        */
+        return ActivatedChannel_->Items_.at (index.row ())->Unread_ ? Qt::red : Qt::black;
     else
         return QVariant ();
 }
@@ -249,70 +241,32 @@ void Core::handleJobFinished (int id)
         Feeds_ [pj.URL_].Channels_ = channels;
         ChannelsModel_->AddFeed (Feeds_ [pj.URL_]);
     }
-    /*
     else if (pj.Role_ == PendingJob::RFeedUpdated)
     {
+        ChannelsModel_->Update (channels);
         for (int i = 0; i < channels.size (); ++i)
         {
-            Channel *current = channels.at (i);
-            if (current->Items_.size () <= 0)
-                continue;
-
             int position = -1;
             for (int j = 0; j < Feeds_ [pj.URL_].Channels_.size (); ++j)
-                if (*Feeds_ [pj.URL_].Channels_.at (j) == *current)
+                if (*Feeds_ [pj.URL_].Channels_.at (j) == *channels.at (i))
                 {
                     position = j;
                     break;
                 }
 
             if (position == -1)
-            {
-                beginInsertRows (QModelIndex (), rowCount (), rowCount () + channels.size () - 1);
-                Feeds_ [pj.URL_].Channels_.append (current);
-                QList<QVariant> data;
-                Channel *current = channels.at (i);
-                data << current->Title_ << (current->LastBuild_.isValid () ? current->LastBuild_ : Feeds_ [pj.URL_].LastUpdate_);
-                TreeItem *channelItem = new TreeItem (data, RootItem_);
-                RootItem_->AppendChild (channelItem);
-                Channel2TreeItem_ [channels.at (i)] = channelItem;
-                for (int j = 0; j < current->Items_.size (); ++j)
-                {
-                    Item *it = current->Items_.at (j);
-                    QList<QVariant> data;
-                    data << it->Title_ << it->PubDate_;
-                    TreeItem *item = new TreeItem (data, channelItem);
-                    channelItem->AppendChild (item);
-                    Item2TreeItem_ [it] = item;
-                    TreeItem2Item_ [item] = it;
-                    ItemUnread_ [it] = true;
-                }
-                endInsertRows ();
-            }
+                Feeds_ [pj.URL_].Channels_.append (channels.at (i));
             else
             {
-                TreeItem *channelItem = Channel2TreeItem_ [Feeds_ [pj.URL_].Channels_.at (i)];
-                QModelIndex channelIndex = index (channelItem->Row (), 0);
-
-                beginInsertRows (channelIndex, 0, current->Items_.size () - 1);
-                for (int j = current->Items_.size () - 1; j >= 0; --j)
-                {
-                    qDebug () << current->Items_.size ();
-                    Item *it = current->Items_.at (j);
-                    QList<QVariant> data;
-                    data << it->Title_ << it->PubDate_;
-                    TreeItem *item = new TreeItem (data, channelItem);
-                    channelItem->PrependChild (item);
-                    Item2TreeItem_ [it] = item;
-                    TreeItem2Item_ [item] = it;
-                    ItemUnread_ [it] = true;
-                }
-                Feeds_ [pj.URL_].Channels_.at (position)->Items_ = current->Items_ + Feeds_ [pj.URL_].Channels_.at (position)->Items_;
-                endInsertRows ();
+                qDebug () << Q_FUNC_INFO << "found, position" << position;
+                if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position) && channels.at (i)->Items_.size ())
+                    beginInsertRows (QModelIndex (), 0, channels.at (i)->Items_.size () - 1);
+                Feeds_ [pj.URL_].Channels_.at (position)->Items_ = channels.at (i)->Items_+ Feeds_ [pj.URL_].Channels_.at (position)->Items_;
+                if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position) && channels.at (i)->Items_.size ())
+                    endInsertRows ();
             }
         }
     }
-    */
 }
 
 void Core::updateFeeds ()

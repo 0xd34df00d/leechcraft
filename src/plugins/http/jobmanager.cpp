@@ -390,6 +390,11 @@ void JobManager::addToFinishedList ()
 void JobManager::removeJob ()
 {
     int id = JobPosition (qobject_cast<Job*> (sender ()));
+    if (id < 0)
+    {
+        qWarning () << Q_FUNC_INFO << "id less than zero!!!";
+        return;
+    }
     int rid = Job2ID_.take (Jobs_ [id]);
     ID2Job_.take (rid);
     FreeIDS_.append (rid);

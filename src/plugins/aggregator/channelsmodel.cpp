@@ -1,3 +1,4 @@
+#include <QtDebug>
 #include "treeitem.h"
 #include "channelsmodel.h"
 #include "channel.h"
@@ -7,7 +8,7 @@ ChannelsModel::ChannelsModel (QObject *parent)
 : QAbstractItemModel (parent)
 {
     QVariantList roots;
-    roots << tr ("Feeds");
+    roots << tr ("Feed") << tr ("Last build");
     RootItem_ = new TreeItem (roots);
 }
 
@@ -106,6 +107,27 @@ void ChannelsModel::AddFeed (const Feed& feed)
         TreeItem2Channel_ [channelItem] = current;
     }
     endInsertRows ();
+}
+
+void ChannelsModel::Update (const QList<Channel*>& channels)
+{
+    QList<Channel*> channelswh = Channel2TreeItem_.keys ();
+    for (int i = 0; i < channels.size (); ++i)
+    {
+        bool found = false;
+        for (int j = 0; j < channelswh.size (); ++j)
+            if (*channels.at (i) == *channelswh.at (j))
+                found = true;
+        if (found)
+            continue;
+        QList<QVariant> data;
+        Channel *current = channels.at (i);
+        data << current->Title_ << current->LastBuild_;
+        TreeItem *channelItem = new TreeItem (data, RootItem_);
+        RootItem_->AppendChild (channelItem);
+        Channel2TreeItem_ [current] = channelItem;
+        TreeItem2Channel_ [channelItem] = current;
+    }
 }
 
 Channel* ChannelsModel::GetChannelForIndex (const QModelIndex& index) const

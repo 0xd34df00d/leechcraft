@@ -13,6 +13,7 @@ struct Item
     QString Comments_;
     QString Guid_;
     QDateTime PubDate_;
+    bool Unread_;
 };
 
 bool operator== (const Item&, const Item&);
