@@ -14,10 +14,12 @@ public:
 
     void AppendChild (TreeItem*);
     void PrependChild (TreeItem*);
+    int ChildPosition (TreeItem*);
     TreeItem* Child (int);
     int ChildCount () const;
     int ColumnCount () const;
     QVariant Data (int) const;
+    void ModifyData (int, const QVariant&);
     TreeItem* Parent ();
     int Row () const;
 };

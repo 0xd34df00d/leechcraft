@@ -3,6 +3,9 @@
 #include <QString>
 #include <QDateTime>
 #include <QList>
+#include <QMetaType>
+
+class Channel;
 
 struct Feed
 {

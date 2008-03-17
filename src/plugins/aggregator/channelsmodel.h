@@ -26,6 +26,7 @@ public:
 
     void AddFeed (const Feed&);
     void Update (const QList<Channel*>&);
+    void UpdateTimestamp (Channel*);
     Channel* GetChannelForIndex (const QModelIndex&) const;
 };
 

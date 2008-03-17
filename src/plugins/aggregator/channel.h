@@ -13,11 +13,11 @@ struct Channel
     QString Description_;
     QDateTime LastBuild_;
     QList<Item*> Items_;
-
-    Channel& operator= (const Channel&);
 };
 
 bool operator== (const Channel&, const Channel&);
+QDataStream& operator<< (QDataStream&, const Channel&);
+QDataStream& operator>> (QDataStream&, Channel&);
 
 #endif
 

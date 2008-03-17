@@ -12,6 +12,7 @@ SET (SRCS
     parser.cpp
     item.cpp
     channel.cpp
+    feed.cpp
     treeitem.cpp
     channelsmodel.cpp)
 SET (HEADERS
@@ -21,6 +22,7 @@ SET (HEADERS
     addfeed.h
     item.h
     channel.h
+    feed.h
     enclosure.h
     parserfactory.h
     parser.h

@@ -17,12 +17,27 @@ Core::Core ()
     ItemHeaders_ << tr ("Name") << tr ("Date");
 
     qRegisterMetaTypeStreamOperators<Feed> ("Feed");
+    qRegisterMetaTypeStreamOperators<Item> ("Item");
 
     ChannelsModel_ = new ChannelsModel (this);
+
+    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Aggregator");
+    settings.beginGroup ("Aggregator");
+    int numFeeds = settings.beginReadArray ("Feeds");
+    for (int i = 0; i < numFeeds; ++i)
+    {
+        settings.setArrayIndex (i);
+        Feed feed = settings.value ("Feed").value<Feed> ();
+        Feeds_ [feed.URL_] = feed;
+        ChannelsModel_->AddFeed (feed);
+    }
+    settings.endArray ();
+    settings.endGroup ();
+
     ActivatedChannel_ = 0;
 
     QTimer *updateTimer = new QTimer (this);
-    updateTimer->start (3 * 1000);
+    updateTimer->start (30 * 1000);
     connect (updateTimer, SIGNAL (timeout ()), this, SLOT (updateFeeds ()));
 }
 
@@ -34,14 +49,16 @@ Core& Core::Instance ()
 
 void Core::Release ()
 {
-    QList<Feed> feeds = Feeds_.values ();
-    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
+    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Aggregator");
+    settings.clear ();
     settings.beginGroup ("Aggregator");
     settings.beginWriteArray ("Feeds");
+    QList<Feed> feeds = Feeds_.values ();
     for (int i = 0; i < feeds.size (); ++i)
     {
         settings.setArrayIndex (i);
         Feed feed = feeds.at (i);
+        settings.setValue ("Feed", qVariantFromValue<Feed> (feed));
     }
     settings.endArray ();
     settings.endGroup ();
@@ -262,8 +279,10 @@ void Core::handleJobFinished (int id)
                 if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position) && channels.at (i)->Items_.size ())
                     beginInsertRows (QModelIndex (), 0, channels.at (i)->Items_.size () - 1);
                 Feeds_ [pj.URL_].Channels_.at (position)->Items_ = channels.at (i)->Items_+ Feeds_ [pj.URL_].Channels_.at (position)->Items_;
+                ChannelsModel_->UpdateTimestamp (channels.at (i));
                 if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position) && channels.at (i)->Items_.size ())
                     endInsertRows ();
+                delete channels.at (i);
             }
         }
     }

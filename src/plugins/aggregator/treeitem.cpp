@@ -22,6 +22,11 @@ void TreeItem::PrependChild (TreeItem *child)
     Childs_.prepend (child);
 }
 
+int TreeItem::ChildPosition (TreeItem *child)
+{
+    return Childs_.indexOf (child);
+}
+
 TreeItem* TreeItem::Child (int row)
 {
     return Childs_.value (row);
@@ -40,6 +45,13 @@ int TreeItem::ColumnCount () const
 QVariant TreeItem::Data (int column) const
 {
     return Data_.value (column);
+}
+
+void TreeItem::ModifyData (int column, const QVariant& data)
+{
+    if (Data_.size () <= column)
+        return;
+    Data_ [column] = data;
 }
 
 TreeItem* TreeItem::Parent ()

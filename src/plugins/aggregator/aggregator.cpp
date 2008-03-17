@@ -18,6 +18,7 @@ void Aggregator::Init ()
 
 void Aggregator::Release ()
 {
+    Core::Instance ().Release ();
 }
 
 QString Aggregator::GetName () const
@@ -99,7 +100,7 @@ void Aggregator::closeEvent (QCloseEvent*)
 void Aggregator::showError (const QString& msg)
 {
     qDebug () << Q_FUNC_INFO << msg;
-    QMessageBox::warning (this, tr ("Error"), msg);
+    QMessageBox::warning (0, tr ("Error"), msg);
 }
 
 void Aggregator::on_ActionAddFeed__triggered ()

@@ -100,7 +100,7 @@ void ChannelsModel::AddFeed (const Feed& feed)
     {
         QList<QVariant> data;
         Channel *current = channels.at (i);
-        data << current->Title_ << (current->LastBuild_.isValid () ? current->LastBuild_ : feed.LastUpdate_);
+        data << current->Title_ << current->LastBuild_;
         TreeItem *channelItem = new TreeItem (data, RootItem_);
         RootItem_->AppendChild (channelItem);
         Channel2TreeItem_ [current] = channelItem;
@@ -128,6 +128,21 @@ void ChannelsModel::Update (const QList<Channel*>& channels)
         Channel2TreeItem_ [current] = channelItem;
         TreeItem2Channel_ [channelItem] = current;
     }
+}
+
+void ChannelsModel::UpdateTimestamp (Channel* channel)
+{
+    if (!Channel2TreeItem_.contains (channel))
+    {
+        qWarning () << Q_FUNC_INFO << channel << "not found";
+        return;
+    }
+    TreeItem *item = Channel2TreeItem_ [channel];
+    item->ModifyData (1, channel->LastBuild_);
+    int pos = RootItem_->ChildPosition (item);
+    if (pos == -1)
+        return;
+    emit dataChanged (index (pos, 1), index (pos, 1));
 }
 
 Channel* ChannelsModel::GetChannelForIndex (const QModelIndex& index) const

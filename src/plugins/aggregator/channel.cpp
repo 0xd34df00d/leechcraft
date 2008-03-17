@@ -1,4 +1,6 @@
+#include <QDataStream>
 #include "channel.h"
+#include "item.h"
 
 bool operator== (const Channel& c1, const Channel& c2)
 {
@@ -6,14 +8,32 @@ bool operator== (const Channel& c1, const Channel& c2)
         c1.Link_ == c2.Link_;
 }
 
-Channel& Channel::operator= (const Channel& c)
+QDataStream& operator<< (QDataStream& out, const Channel& chan)
 {
-    Title_ = c.Title_;
-    Link_ = c.Link_;
-    Description_ = c.Description_;
-    LastBuild_ = c.LastBuild_;
-    Items_ = c.Items_;
+    out << chan.Title_
+        << chan.Link_
+        << chan.Description_
+        << chan.LastBuild_
+        << chan.Items_.size ();
+    for (int i = 0; i < chan.Items_.size (); ++i)
+        out << *chan.Items_.at (i);
+    return out;
+}
 
-    return *this;
+QDataStream& operator>> (QDataStream& in, Channel& chan)
+{
+    int size;
+    in >> chan.Title_
+        >> chan.Link_
+        >> chan.Description_
+        >> chan.LastBuild_;
+    in >> size;
+    for (int i = 0; i < size; ++i)
+    {
+        Item *it = new Item;
+        in >> *it;
+        chan.Items_.append (it);
+    }
+    return in;
 }
 

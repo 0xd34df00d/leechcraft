@@ -18,6 +18,8 @@ struct Item
 
 bool operator== (const Item&, const Item&);
 bool operator< (const Item&, const Item&);
+QDataStream& operator<< (QDataStream&, const Item&);
+QDataStream& operator>> (QDataStream&, Item&);
 
 #endif
 
