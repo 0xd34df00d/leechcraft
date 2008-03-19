@@ -3,6 +3,14 @@
 #include "feed.h"
 #include "channel.h"
 
+Feed& Feed::operator= (const Feed& feed)
+{
+    URL_ = feed.URL_;
+    LastUpdate_ = feed.LastUpdate_;
+    for (int i = 0; i < feed.Channels_.size (); ++i)
+        Channels_.append (feed.Channels_.at (i));
+}
+
 bool operator< (const Feed& f1, const Feed& f2)
 {
     return f1.URL_ < f2.URL_;

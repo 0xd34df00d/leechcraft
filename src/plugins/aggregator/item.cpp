@@ -1,3 +1,4 @@
+#include <QtDebug>
 #include <QDataStream>
 #include "item.h"
 

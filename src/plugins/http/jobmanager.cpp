@@ -412,6 +412,7 @@ void JobManager::handleJobFinish ()
     jobStopHandler ();
     addToFinishedList ();
     removeJob ();
+    scheduleSave ();
 }
 
 void JobManager::enqueue ()

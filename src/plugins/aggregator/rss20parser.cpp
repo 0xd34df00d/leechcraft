@@ -19,8 +19,7 @@ RSS20Parser& RSS20Parser::Instance ()
 bool RSS20Parser::CouldParse (const QDomDocument& doc) const
 {
     QDomElement root = doc.documentElement ();
-    bool result = root.tagName () == "rss" && root.attribute ("version") == "2.0";
-    return result;
+    return root.tagName () == "rss" && root.attribute ("version") == "2.0";
 }
 
 QList<Channel*> RSS20Parser::Parse (const QList<Channel*>& channels, const QDomDocument& recent) const
@@ -47,7 +46,7 @@ QList<Channel*> RSS20Parser::Parse (const QList<Channel*>& channels, const QDomD
             toInsert->Items_.clear ();
 
             Item *lastItemWeHave = oldChannel->Items_.first ();
-            int index = 0;
+            int index = newChannel->Items_.size ();
             for (int j = 0; j < newChannel->Items_.size (); ++j)
                 if (*newChannel->Items_.at (j) == *lastItemWeHave)
                 {

@@ -1,6 +1,17 @@
+#include <QtDebug>
 #include <QDataStream>
 #include "channel.h"
 #include "item.h"
+
+Channel& Channel::operator= (const Channel& channel)
+{
+    Title_ = channel.Title_;
+    Link_ = channel.Link_;
+    Description_ = channel.Description_;
+    LastBuild_ = channel.LastBuild_;
+    for (int i = 0; i < channel.Items_.size (); ++i)
+        Items_.append (channel.Items_.at (i));
+}
 
 bool operator== (const Channel& c1, const Channel& c2)
 {

@@ -12,6 +12,8 @@ struct Feed
     QString URL_;
     QDateTime LastUpdate_;
     QList<Channel*> Channels_;
+
+    Feed& operator= (const Feed&);
 };
 
 Q_DECLARE_METATYPE (Feed);

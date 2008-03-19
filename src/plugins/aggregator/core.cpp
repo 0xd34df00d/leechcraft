@@ -29,6 +29,7 @@ Core::Core ()
         settings.setArrayIndex (i);
         Feed feed = settings.value ("Feed").value<Feed> ();
         Feeds_ [feed.URL_] = feed;
+        qDebug () << feed.Channels_.size () << Feeds_ [feed.URL_].Channels_.size ();
         ChannelsModel_->AddFeed (feed);
     }
     settings.endArray ();
@@ -39,6 +40,7 @@ Core::Core ()
     QTimer *updateTimer = new QTimer (this);
     updateTimer->start (30 * 1000);
     connect (updateTimer, SIGNAL (timeout ()), this, SLOT (updateFeeds ()));
+//    QTimer::singleShot (2000, this, SLOT (updateFeeds ()));
 }
 
 Core& Core::Instance ()
@@ -139,7 +141,7 @@ int Core::columnCount (const QModelIndex& parent) const
 
 QVariant Core::data (const QModelIndex& index, int role) const
 {
-    if (!index.isValid () || !ActivatedChannel_)
+    if (!index.isValid () || !ActivatedChannel_ || index.row () >= rowCount ())
         return QVariant ();
 
     if (role == Qt::DisplayRole)
@@ -275,7 +277,6 @@ void Core::handleJobFinished (int id)
                 Feeds_ [pj.URL_].Channels_.append (channels.at (i));
             else
             {
-                qDebug () << Q_FUNC_INFO << "found, position" << position;
                 if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position) && channels.at (i)->Items_.size ())
                     beginInsertRows (QModelIndex (), 0, channels.at (i)->Items_.size () - 1);
                 Feeds_ [pj.URL_].Channels_.at (position)->Items_ = channels.at (i)->Items_+ Feeds_ [pj.URL_].Channels_.at (position)->Items_;

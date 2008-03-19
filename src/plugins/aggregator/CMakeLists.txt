@@ -9,6 +9,7 @@ SET (SRCS
     addfeed.cpp
     parserfactory.cpp
     rss20parser.cpp
+    atom10parser.cpp
     parser.cpp
     item.cpp
     channel.cpp
@@ -27,6 +28,7 @@ SET (HEADERS
     parserfactory.h
     parser.h
     rss20parser.h
+    atom10parser.h
     channelsmodel.h
     treeitem.h
     ../../plugininterface/basesettingsmanager.h)
