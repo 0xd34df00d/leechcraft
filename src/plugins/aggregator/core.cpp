@@ -14,6 +14,7 @@
 
 Core::Core ()
 {
+    SaveScheduled_ = false;
     ParserFactory::Instance ().Register (&RSS20Parser::Instance ());
     ParserFactory::Instance ().Register (&Atom10Parser::Instance ());
     ItemHeaders_ << tr ("Name") << tr ("Date");
@@ -43,6 +44,10 @@ Core::Core ()
     updateTimer->start (30 * 1000);
     connect (updateTimer, SIGNAL (timeout ()), this, SLOT (updateFeeds ()));
     QTimer::singleShot (2000, this, SLOT (updateFeeds ()));
+
+    QTimer *saveTimer = new QTimer (this);
+    saveTimer->start (60 * 1000);
+    connect (saveTimer, SIGNAL (timeout ()), this, SLOT (scheduleSave ()));
 }
 
 Core& Core::Instance ()
@@ -53,19 +58,7 @@ Core& Core::Instance ()
 
 void Core::Release ()
 {
-    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Aggregator");
-    settings.clear ();
-    settings.beginGroup ("Aggregator");
-    settings.beginWriteArray ("Feeds");
-    QList<Feed> feeds = Feeds_.values ();
-    for (int i = 0; i < feeds.size (); ++i)
-    {
-        settings.setArrayIndex (i);
-        Feed feed = feeds.at (i);
-        settings.setValue ("Feed", qVariantFromValue<Feed> (feed));
-    }
-    settings.endArray ();
-    settings.endGroup ();
+    saveSettings ();
 }
 
 void Core::SetProvider (QObject *provider, const QString& feature)
@@ -212,6 +205,13 @@ void Core::currentChannelChanged (const QModelIndex& index)
     reset ();
 }
 
+void Core::scheduleSave ()
+{
+    if (SaveScheduled_)
+        return;
+    QTimer::singleShot (500, this, SLOT (saveSettings ()));
+}
+
 void Core::handleJobFinished (int id)
 {
     if (!PendingJobs_.contains (id))
@@ -291,6 +291,7 @@ void Core::handleJobFinished (int id)
             }
         }
     }
+    scheduleSave ();
 }
 
 void Core::updateFeeds ()
@@ -319,5 +320,23 @@ void Core::updateFeeds ()
         PendingJobs_ [id] = pj;
         file.close ();
     }
+}
+
+void Core::saveSettings ()
+{
+    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Aggregator");
+    settings.clear ();
+    settings.beginGroup ("Aggregator");
+    settings.beginWriteArray ("Feeds");
+    QList<Feed> feeds = Feeds_.values ();
+    for (int i = 0; i < feeds.size (); ++i)
+    {
+        settings.setArrayIndex (i);
+        Feed feed = feeds.at (i);
+        settings.setValue ("Feed", qVariantFromValue<Feed> (feed));
+    }
+    settings.endArray ();
+    settings.endGroup ();
+    SaveScheduled_ = false;
 }
 

@@ -45,6 +45,8 @@ QList<Channel*> Atom10Parser::Parse (const QList<Channel*>& old, const QDomDocum
                 index = j - 1;
                 break;
             }
+        for (int j = newes.at (0)->Items_.size () - 1; j > index; --j)
+            delete newes.at (0)->Items_.at (j);
         for (int j = index; j >= 0; --j)
             result.at (0)->Items_.prepend (newes.at (0)->Items_.at (j));
     }

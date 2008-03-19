@@ -53,6 +53,8 @@ QList<Channel*> RSS20Parser::Parse (const QList<Channel*>& channels, const QDomD
                     index = j - 1;
                     break;
                 }
+            for (int j = newChannel->Items_.size () - 1; j > index; --j)
+                delete newChannel->Items_.at (j);
             for (int j = index; j >= 0; --j)
                 toInsert->Items_.prepend (newChannel->Items_.at (j));
 

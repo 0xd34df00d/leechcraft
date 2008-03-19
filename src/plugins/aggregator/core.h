@@ -40,6 +40,7 @@ class Core : public QAbstractItemModel
     Channel *ActivatedChannel_;
     QStringList ItemHeaders_;
     ChannelsModel *ChannelsModel_;
+    bool SaveScheduled_;
 public:
     static Core& Instance ();
     void Release ();
@@ -60,10 +61,12 @@ public:
 public slots:
     void currentChannelChanged (const QModelIndex&);
 private slots:
+    void scheduleSave ();
     void handleJobFinished (int);
     void handleJobRemoved (int);
     void handleJobError (int, IDirectDownload::Error);
     void updateFeeds ();
+    void saveSettings ();
 signals:
     void error (const QString&);
 };
