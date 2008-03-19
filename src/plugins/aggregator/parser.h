@@ -17,6 +17,8 @@ public:
         newd.setContent (n);
         return Parse (o, newd);
     }
+protected:
+    QString UnescapeHTML (const QString&) const;
 };
 
 #endif

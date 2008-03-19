@@ -89,20 +89,6 @@ QList<Channel*> RSS20Parser::Parse (const QDomDocument& doc) const
     return channels;
 }
 
-// Via
-// http://www.theukwebdesigncompany.com/articles/entity-escape-characters.php
-QString UnescapeHTML (const QString& escaped)
-{
-    QString result = escaped;
-    result.replace ("&euro;", "€");
-    result.replace ("&quot;", "\"");
-    result.replace ("&amp;", "&");
-    result.replace ("&nbsp;", " ");
-    result.replace ("&lt;", "<");
-    result.replace ("&gt;", ">");
-    return result;
-}
-
 Item* RSS20Parser::ParseItem (const QDomElement& item) const
 {
     Item *result = new Item;

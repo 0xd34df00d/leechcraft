@@ -3,6 +3,18 @@
 #include "feed.h"
 #include "channel.h"
 
+Feed::Feed ()
+{
+}
+
+Feed::Feed (const Feed& feed)
+: URL_ (feed.URL_)
+, LastUpdate_ (feed.LastUpdate_)
+{
+    for (int i = 0; i < feed.Channels_.size (); ++i)
+        Channels_.append (feed.Channels_.at (i));
+}
+
 Feed& Feed::operator= (const Feed& feed)
 {
     URL_ = feed.URL_;

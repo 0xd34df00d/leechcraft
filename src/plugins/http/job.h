@@ -62,6 +62,7 @@ public:
     void UpdateParams (JobParams*);
     QByteArray Serialized () const;
     void Unserialize (const QByteArray&);
+    bool ShouldBeSavedInHistory () const;
 private slots:
     void handleRemoteFileInfo (const ImpBase::RemoteFileInfo&);
     void handleNewFiles (QStringList*);

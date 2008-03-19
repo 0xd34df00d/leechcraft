@@ -28,7 +28,7 @@ QString Aggregator::GetName () const
 
 QString Aggregator::GetInfo () const
 {
-    return tr ("RSS 2.0 feed reader.");
+    return tr ("RSS2.0/Atom1.0 feed reader.");
 }
 
 QString Aggregator::GetStatusbarMessage () const

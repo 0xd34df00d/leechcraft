@@ -359,6 +359,11 @@ void Job::Unserialize (const QByteArray& data)
         >> Params_->EndPosition_;
 }
 
+bool Job::ShouldBeSavedInHistory () const
+{
+    return Params_->ShouldBeSavedInHistory_;
+}
+
 void Job::handleNewFiles (QStringList *files)
 {
     QFileInfo fileInfo (Params_->LocalName_);

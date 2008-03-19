@@ -21,7 +21,8 @@ public:
 private:
     QList<Channel*> Parse (const QDomDocument&) const;
     Item* ParseItem (const QDomElement&) const;
-    QDateTime FromRFC822 (const QString&) const;
+    QDateTime FromRFC3339 (const QString&) const;
+    QString GetLink (const QDomElement&) const;
 };
 
 #endif

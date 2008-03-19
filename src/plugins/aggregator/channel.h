@@ -14,6 +14,8 @@ struct Channel
     QDateTime LastBuild_;
     QList<Item*> Items_;
 
+    Channel ();
+    Channel (const Channel&);
     Channel& operator= (const Channel&);
 };
 

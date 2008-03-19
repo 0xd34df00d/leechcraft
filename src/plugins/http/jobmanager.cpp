@@ -375,15 +375,18 @@ void JobManager::addToFinishedList ()
 {
     qDebug () << Q_FUNC_INFO;
     Job *job = qobject_cast<Job*> (sender ());
-    FinishedJob *fj = new FinishedJob;
-    fj->URL_ = job->GetURL ();
-    fj->Local_ = job->GetLocalName ();
-    fj->Size_ = job->GetTotal ();
-    fj->Speed_ = Proxy::Instance ()->MakePrettySize (job->GetSpeed ()) + tr ("/s");
-    fj->TimeToComplete_ = Proxy::Instance ()->MakeTimeFromLong (job->GetDownloadTime ()).toString ();
+    if (job->ShouldBeSavedInHistory ())
+    {
+        FinishedJob *fj = new FinishedJob;
+        fj->URL_ = job->GetURL ();
+        fj->Local_ = job->GetLocalName ();
+        fj->Size_ = job->GetTotal ();
+        fj->Speed_ = Proxy::Instance ()->MakePrettySize (job->GetSpeed ()) + tr ("/s");
+        fj->TimeToComplete_ = Proxy::Instance ()->MakeTimeFromLong (job->GetDownloadTime ()).toString ();
 
-    emit addToFinishedList (fj, Job2ID_ [job]);
-    delete fj;
+        emit addToFinishedList (fj, Job2ID_ [job]);
+        delete fj;
+    }
     scheduleSave ();
 }
 

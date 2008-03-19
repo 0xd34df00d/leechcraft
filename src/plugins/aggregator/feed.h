@@ -13,6 +13,8 @@ struct Feed
     QDateTime LastUpdate_;
     QList<Channel*> Channels_;
 
+    Feed ();
+    Feed (const Feed&);
     Feed& operator= (const Feed&);
 };
 

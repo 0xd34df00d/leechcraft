@@ -8,12 +8,14 @@
 #include "core.h"
 #include "parserfactory.h"
 #include "rss20parser.h"
+#include "atom10parser.h"
 #include "treeitem.h"
 #include "channelsmodel.h"
 
 Core::Core ()
 {
     ParserFactory::Instance ().Register (&RSS20Parser::Instance ());
+    ParserFactory::Instance ().Register (&Atom10Parser::Instance ());
     ItemHeaders_ << tr ("Name") << tr ("Date");
 
     qRegisterMetaTypeStreamOperators<Feed> ("Feed");
@@ -40,7 +42,7 @@ Core::Core ()
     QTimer *updateTimer = new QTimer (this);
     updateTimer->start (30 * 1000);
     connect (updateTimer, SIGNAL (timeout ()), this, SLOT (updateFeeds ()));
-//    QTimer::singleShot (2000, this, SLOT (updateFeeds ()));
+    QTimer::singleShot (2000, this, SLOT (updateFeeds ()));
 }
 
 Core& Core::Instance ()
@@ -230,7 +232,9 @@ void Core::handleJobFinished (int id)
     QByteArray data = file.readAll ();
     if (pj.Role_ == PendingJob::RFeedAdded)
     {
-        Feed feed = { pj.URL_, QDateTime::currentDateTime (), QList<Channel*> () };
+        Feed feed;
+        feed.URL_ = pj.URL_;
+        feed.LastUpdate_ = QDateTime::currentDateTime ();
         Feeds_ [pj.URL_] = feed;
     }
     if (!Feeds_.contains (pj.URL_))
