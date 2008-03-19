@@ -8,14 +8,12 @@ namespace
 {
     QSettings *torrentBeginSettings ()
     {
-        QSettings *settings = new QSettings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
-        settings->beginGroup ("Torrent");
+        QSettings *settings = new QSettings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Torrent");
         return settings;
     }
 
     void torrentEndSettings (QSettings *settings)
     {
-        settings->endGroup ();
     }
 };
 

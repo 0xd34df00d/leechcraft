@@ -35,6 +35,7 @@ void HttpPlugin::Init ()
     connect (&JobManager::Instance (), SIGNAL (showError (QString, QString)), this, SLOT (showJobErrorMessage (QString, QString)));
     connect (&JobManager::Instance (), SIGNAL (cronEnabled ()), this, SLOT (handleCronEnabled ()));
     connect (&JobManager::Instance (), SIGNAL (addToFinishedList (const FinishedJob*, int)), this, SLOT (addToFinishedList (const FinishedJob*, int)));
+    connect (&JobManager::Instance (), SIGNAL (jobFinished (int)), this, SIGNAL (jobFinished (int)));
     JobManager::Instance ().SetTheMain (this);
     SetupStatusBarStuff ();
 
@@ -347,8 +348,7 @@ void HttpPlugin::writeSettings ()
 {
     SaveChangesScheduled_ = false;
 
-    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
-    settings.beginGroup (GetName ());
+    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_HTTP");
     settings.beginGroup ("geometry");
     settings.setValue ("size", size ());
     settings.setValue ("pos", pos ());
@@ -367,7 +367,6 @@ void HttpPlugin::writeSettings ()
         settings.setValue ("representation", arr);
     }
     settings.endArray ();
-    settings.endGroup ();
 }
 
 void HttpPlugin::copyFinishedURL ()
@@ -447,7 +446,6 @@ void HttpPlugin::addToFinishedList (const FinishedJob *fj, int id)
 
     setActionsEnabled ();
 
-    emit jobFinished (id);
     QString string = tr ("Name: %1, size %2").arg (QFileInfo (fj->GetLocal ()).fileName ()).arg (Proxy::Instance ()->MakePrettySize (fj->GetSize ()));
     emit downloadFinished (string);
     emit fileDownloaded (fj->GetLocal ());
@@ -457,13 +455,11 @@ void HttpPlugin::addToFinishedList (const FinishedJob *fj, int id)
         SaveChangesScheduled_ = true;
         QTimer::singleShot (100, this, SLOT (writeSettings ()));
     }
-
 }
 
 void HttpPlugin::ReadSettings ()
 {
-    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
-    settings.beginGroup (GetName ());
+    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_HTTP");
     settings.beginGroup ("geometry");
     resize (settings.value ("size", QSize (640, 480)).toSize ());
     move   (settings.value ("pos",  QPoint (10, 10)).toPoint ());
@@ -499,7 +495,6 @@ void HttpPlugin::ReadSettings ()
     }
     setActionsEnabled ();
     settings.endArray ();
-    settings.endGroup ();
 }
 
 void HttpPlugin::HandleSelected (JobAction ja)

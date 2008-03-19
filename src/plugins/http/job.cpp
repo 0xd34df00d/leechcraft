@@ -161,7 +161,6 @@ void Job::Start ()
     }
     else if (Params_->EndPosition_)
     {
-        qDebug () << Q_FUNC_INFO << Params_->StartPosition_ << Params_->EndPosition_;
         ProtoImp_->SetRangeDownload (qMakePair (Params_->StartPosition_, Params_->EndPosition_));
 
         File_ = new QFile (MakeFilename ());
@@ -170,8 +169,6 @@ void Job::Start ()
             QMessageBox::warning (parent () ? qobject_cast<JobManager*> (parent ())->GetTheMain () : 0, tr ("Warning"), tr ("Could not open file %1 for write. Aborting.").arg (MakeFilename ()));
             return;
         }
-//        File_->write (QByteArray (Params_->EndPosition_ - Params_->StartPosition_ + 1, '\b'));
-//        qDebug () << QByteArray (10, '\b');
         File_->seek (Params_->StartPosition_);
     }
     else
@@ -195,7 +192,6 @@ void Job::GetFileSize ()
 void Job::handleRemoteFileInfo (const ImpBase::RemoteFileInfo& rfi)
 {
     QString ln = MakeFilename ();
-    qDebug () << Q_FUNC_INFO << ln;
     QFileInfo fileInfo (ln);
     if (fileInfo.exists () && !fileInfo.isDir ())
     {
@@ -426,7 +422,6 @@ void Job::handleFinished ()
 {
     if (File_)
         File_->close ();
-    qDebug () << Q_FUNC_INFO;
     State_ = StateIdle;
     DownloadTime_ += StartTime_->elapsed ();
     StartTime_->restart ();

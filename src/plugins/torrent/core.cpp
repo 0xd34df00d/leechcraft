@@ -672,8 +672,7 @@ void Core::ReadSettings ()
 
 void Core::RestoreTorrents ()
 {
-    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
-    settings.beginGroup ("Torrent");
+    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Torrent");
     settings.beginGroup ("Core");
     int torrents = settings.beginReadArray ("AddedTorrents");
     for (int i = 0; i < torrents; ++i)
@@ -728,7 +727,6 @@ void Core::RestoreTorrents ()
         handle.resolve_countries (true);
     }
     settings.endArray ();
-    settings.endGroup ();
     settings.endGroup ();
 }
 
@@ -799,8 +797,7 @@ void Core::writeSettings ()
             return;
         }
 
-    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
-    settings.beginGroup ("Torrent");
+    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Torrent");
     settings.beginGroup ("Core");
     settings.beginWriteArray ("AddedTorrents");
     for (int i = 0; i < Handles_.size (); ++i)
@@ -856,7 +853,6 @@ void Core::writeSettings ()
         }
     }
     settings.endArray ();
-    settings.endGroup ();
     settings.endGroup ();
 }
 

@@ -8,15 +8,13 @@ namespace
 {
     QSettings *httpBeginSettings ()
     {
-        QSettings *settings = new QSettings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
-        settings->beginGroup ("HTTP and FTP");
+        QSettings *settings = new QSettings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_HTTP");
         settings->beginGroup ("Mainsettings");
         return settings;
     }
 
     void httpEndSettings (QSettings *settings)
     {
-        settings->endGroup ();
         settings->endGroup ();
     }
 };

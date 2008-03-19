@@ -373,7 +373,6 @@ void JobManager::jobStopHandler ()
 
 void JobManager::addToFinishedList ()
 {
-    qDebug () << Q_FUNC_INFO;
     Job *job = qobject_cast<Job*> (sender ());
     if (job->ShouldBeSavedInHistory ())
     {
@@ -387,6 +386,7 @@ void JobManager::addToFinishedList ()
         emit addToFinishedList (fj, Job2ID_ [job]);
         delete fj;
     }
+    emit jobFinished (Job2ID_ [job]);
     scheduleSave ();
 }
 
@@ -411,7 +411,6 @@ void JobManager::removeJob ()
 
 void JobManager::handleJobFinish ()
 {
-    qDebug () << Q_FUNC_INFO;
     jobStopHandler ();
     addToFinishedList ();
     removeJob ();
@@ -453,8 +452,7 @@ void JobManager::saveSettings ()
 {
     SaveChangesScheduled_ = false;
 
-    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
-    settings.beginGroup ("HTTP and FTP");
+    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_HTTP");
     settings.beginWriteArray ("Jobs");
     settings.remove ("");
     for (int i = 0; i < Jobs_.size (); ++i)
@@ -463,7 +461,6 @@ void JobManager::saveSettings ()
         settings.setValue ("job", Jobs_.at (i)->Serialized ());
     }
     settings.endArray ();
-    settings.endGroup ();
 }
 
 void JobManager::scheduleSave ()
@@ -477,8 +474,7 @@ void JobManager::scheduleSave ()
 
 void JobManager::readSettings ()
 {
-    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
-    settings.beginGroup ("HTTP and FTP");
+    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_HTTP");
     int size = settings.beginReadArray ("Jobs");
     if (size)
     {
@@ -505,7 +501,6 @@ void JobManager::readSettings ()
         endInsertRows ();
     }
     settings.endArray ();
-    settings.endGroup ();
 }
 
 void JobManager::TryToStartScheduled ()

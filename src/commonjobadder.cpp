@@ -17,12 +17,12 @@ QString CommonJobAdder::GetString () const
 
 void CommonJobAdder::on_Browse__released ()
 {
-    QString name = QFileDialog::getOpenFileName (this, tr ("Select file"), XmlSettingsManager::Instance ()->Property ("LastCommonFolder", QDir::homePath ()).toString ());
+    QString name = QFileDialog::getOpenFileName (this, tr ("Select file"), Main::XmlSettingsManager::Instance ()->Property ("LastCommonFolder", QDir::homePath ()).toString ());
     if (name.isEmpty ())
         return;
 
     What_->setText (name);
-    XmlSettingsManager::Instance ()->setProperty ("LastCommonFolder", name);
+    Main::XmlSettingsManager::Instance ()->setProperty ("LastCommonFolder", name);
 }
 
 void CommonJobAdder::on_Paste__released ()

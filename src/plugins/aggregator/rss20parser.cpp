@@ -46,7 +46,7 @@ QList<Channel*> RSS20Parser::Parse (const QList<Channel*>& channels, const QDomD
             toInsert->Items_.clear ();
 
             Item *lastItemWeHave = oldChannel->Items_.first ();
-            int index = newChannel->Items_.size ();
+            int index = newChannel->Items_.size () - 1;
             for (int j = 0; j < newChannel->Items_.size (); ++j)
                 if (*newChannel->Items_.at (j) == *lastItemWeHave)
                 {
@@ -59,6 +59,7 @@ QList<Channel*> RSS20Parser::Parse (const QList<Channel*>& channels, const QDomD
             result.append (toInsert);
         }
     }
+    qDebug () << Q_FUNC_INFO << result.size () << result.at (0)->Items_.size ();
     return result;
 }
 

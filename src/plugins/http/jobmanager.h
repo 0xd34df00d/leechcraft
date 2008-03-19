@@ -94,6 +94,7 @@ signals:
     void gotFileSize (unsigned int);
     void cronEnabled ();
     void addToFinishedList (const FinishedJob*, int);
+    void jobFinished (int);
 private slots:
     void jobStopHandler ();
     void addToFinishedList ();
