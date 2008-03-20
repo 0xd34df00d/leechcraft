@@ -148,6 +148,8 @@
      <string>Actions</string>
     </property>
     <addaction name="ActionAddFeed_" />
+    <addaction name="separator" />
+    <addaction name="ActionPreferences_" />
    </widget>
    <addaction name="menuActions" />
   </widget>
@@ -163,6 +165,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="ActionAddFeed_" />
+   <addaction name="ActionPreferences_" />
   </widget>
   <action name="ActionAddFeed_" >
    <property name="icon" >
@@ -170,6 +173,14 @@
    </property>
    <property name="text" >
     <string>Add feed...</string>
+   </property>
+  </action>
+  <action name="ActionPreferences_" >
+   <property name="icon" >
+    <iconset resource="resources.qrc" >:/resources/images/preferences.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Preferences</string>
    </property>
   </action>
  </widget>
