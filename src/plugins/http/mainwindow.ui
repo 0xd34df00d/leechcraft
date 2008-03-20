@@ -175,9 +175,6 @@
    <attribute name="toolBarBreak" >
     <bool>false</bool>
    </attribute>
-   <addaction name="ActionAutoadjust_" />
-   <addaction name="ActionActiveColumns_" />
-   <addaction name="ActionFinishedColumns_" />
    <addaction name="separator" />
    <addaction name="ActionPreferences_" />
   </widget>
@@ -205,6 +202,9 @@
    <property name="text" >
     <string>Add job...</string>
    </property>
+   <property name="shortcut" >
+    <string>Ins, Ctrl+S</string>
+   </property>
   </action>
   <action name="ActionRemoveJob_" >
    <property name="icon" >
@@ -212,6 +212,9 @@
    </property>
    <property name="text" >
     <string>Remove job</string>
+   </property>
+   <property name="shortcut" >
+    <string>Del</string>
    </property>
   </action>
   <action name="ActionStart_" >
@@ -221,6 +224,9 @@
    <property name="text" >
     <string>Start</string>
    </property>
+   <property name="shortcut" >
+    <string>R</string>
+   </property>
   </action>
   <action name="ActionStop_" >
    <property name="icon" >
@@ -228,6 +234,9 @@
    </property>
    <property name="text" >
     <string>Stop</string>
+   </property>
+   <property name="shortcut" >
+    <string>S</string>
    </property>
   </action>
   <action name="ActionStartAll_" >
@@ -237,6 +246,9 @@
    <property name="text" >
     <string>Start all</string>
    </property>
+   <property name="shortcut" >
+    <string>Shift+R</string>
+   </property>
   </action>
   <action name="ActionStopAll_" >
    <property name="icon" >
@@ -245,6 +257,9 @@
    <property name="text" >
     <string>Stop all</string>
    </property>
+   <property name="shortcut" >
+    <string>Shift+S, Ctrl+S</string>
+   </property>
   </action>
   <action name="ActionGetFileSize_" >
    <property name="icon" >
@@ -252,6 +267,9 @@
    </property>
    <property name="text" >
     <string>Get file size</string>
+   </property>
+   <property name="shortcut" >
+    <string>G</string>
    </property>
   </action>
   <action name="ActionSchedule_" >
@@ -277,27 +295,21 @@
    <property name="text" >
     <string>Remove finished</string>
    </property>
+   <property name="shortcut" >
+    <string>Shift+Del, Ctrl+S</string>
+   </property>
   </action>
   <action name="ActionAutoadjust_" >
-   <property name="icon" >
-    <iconset resource="resources.qrc" >:/resources/images/autoadjustiface.png</iconset>
-   </property>
    <property name="text" >
     <string>Autoadjust interface</string>
    </property>
   </action>
   <action name="ActionActiveColumns_" >
-   <property name="icon" >
-    <iconset resource="resources.qrc" >:/resources/images/selectcolumns.png</iconset>
-   </property>
    <property name="text" >
     <string>Active jobs list columns...</string>
    </property>
   </action>
   <action name="ActionFinishedColumns_" >
-   <property name="icon" >
-    <iconset resource="resources.qrc" >:/resources/images/selectcolumns.png</iconset>
-   </property>
    <property name="text" >
     <string>Finished jobs list columns...</string>
    </property>
@@ -308,6 +320,9 @@
    </property>
    <property name="text" >
     <string>Preferences...</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+P</string>
    </property>
   </action>
   <action name="ActionCopyFinishedURL_" >
