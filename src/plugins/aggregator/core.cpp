@@ -290,7 +290,11 @@ void Core::handleJobFinished (int id)
                 if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position) && channels.at (i)->Items_.size ())
                     beginInsertRows (QModelIndex (), 0, channels.at (i)->Items_.size () - 1);
                 Feeds_ [pj.URL_].Channels_.at (position)->Items_ = channels.at (i)->Items_+ Feeds_ [pj.URL_].Channels_.at (position)->Items_;
-                ChannelsModel_->UpdateTimestamp (channels.at (i));
+                if (channels.at (i)->LastBuild_.isValid ())
+                    Feeds_ [pj.URL_].Channels_.at (position)->LastBuild_ = channels.at (i)->LastBuild_;
+                else
+                    Feeds_ [pj.URL_].Channels_.at (position)->LastBuild_ = Feeds_ [pj.URL_].Channels_.at (position)->Items_.at (0)->PubDate_;
+                ChannelsModel_->UpdateTimestamp (Feeds_ [pj.URL_].Channels_.at (position));
                 if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position) && channels.at (i)->Items_.size ())
                     endInsertRows ();
                 delete channels.at (i);

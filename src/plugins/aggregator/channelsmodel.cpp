@@ -140,8 +140,6 @@ void ChannelsModel::UpdateTimestamp (Channel* channel)
     TreeItem *item = Channel2TreeItem_ [channel];
     item->ModifyData (1, channel->LastBuild_);
     int pos = RootItem_->ChildPosition (item);
-    if (pos == -1)
-        return;
     emit dataChanged (index (pos, 1), index (pos, 1));
 }
 
