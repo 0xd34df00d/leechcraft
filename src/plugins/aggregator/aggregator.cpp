@@ -1,15 +1,23 @@
 #include <QMessageBox>
 #include <QtDebug>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "aggregator.h"
 #include "core.h"
 #include "addfeed.h"
+#include "xmlsettingsmanager.h"
 
 void Aggregator::Init ()
 {
     Ui_.setupUi (this);
     IsShown_ = false;
+
     Plugins_->addAction (Ui_.ActionAddFeed_);
     connect (&Core::Instance (), SIGNAL (error (const QString&)), this, SLOT (showError (const QString&)));
+
+    XmlSettingsDialog_ = new XmlSettingsDialog (this);
+    XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/aggregatorsettings.xml");
+    Core::Instance ().DoDelayedInit ();
+
     Ui_.Items_->setModel (&Core::Instance ());
     Ui_.Feeds_->setModel (Core::Instance ().GetChannelsModel ());
     connect (Ui_.Items_->selectionModel (), SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (currentItemChanged (const QModelIndex&)));
@@ -108,6 +116,12 @@ void Aggregator::on_ActionAddFeed__triggered ()
     AddFeed af;
     if (af.exec () == QDialog::Accepted)
         Core::Instance ().AddFeed (af.GetURL ());
+}
+
+void Aggregator::on_ActionPreferences__triggered ()
+{
+    XmlSettingsDialog_->show ();
+    XmlSettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
 }
 
 void Aggregator::on_Items__activated (const QModelIndex& index)

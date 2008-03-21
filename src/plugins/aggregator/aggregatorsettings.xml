@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+    <declare defaultlang="en" />
+    <page>
+        <label lang="en" value="General settings" />
+        <label lang="ru" value="Общие настройки" />
+        <groupbox>
+            <label lang="en" value="Startup" />
+            <label lang="ru" value="Запуск" />
+            <item type="checkbox" property="UpdateOnStartup" state="on">
+                <label lang="en" value="Update feeds on startup" />
+                <label lang="ru" value="Обновлять ленты при запуске" />
+            </item>
+        </groupbox>
+        <groupbox>
+            <label lang="en" value="Updates" />
+            <label lang="ru" value="Обновления" />
+            <item type="spinbox" property="UpdateInterval" default="10" minimum="1" maximum="300" step="5">
+                <lang value="en">
+                    <label value="Update interval" />
+                    <suffix value=" min" />
+                </lang>
+                <lang value="ru">
+                    <label value="Интервал обновления" />
+                    <suffix value=" мин" />
+                </lang>
+            </item>
+        </groupbox>
+    </page>
+</settings>

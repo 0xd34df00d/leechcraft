@@ -6,6 +6,7 @@
 #include <QTimer>
 #include <plugininterface/proxy.h>
 #include "core.h"
+#include "xmlsettingsmanager.h"
 #include "parserfactory.h"
 #include "rss20parser.h"
 #include "atom10parser.h"
@@ -25,7 +26,6 @@ Core::Core ()
     ChannelsModel_ = new ChannelsModel (this);
 
     QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Aggregator");
-    settings.beginGroup ("Aggregator");
     int numFeeds = settings.beginReadArray ("Feeds");
     for (int i = 0; i < numFeeds; ++i)
     {
@@ -36,18 +36,8 @@ Core::Core ()
         ChannelsModel_->AddFeed (feed);
     }
     settings.endArray ();
-    settings.endGroup ();
 
     ActivatedChannel_ = 0;
-
-    QTimer *updateTimer = new QTimer (this);
-    updateTimer->start (30 * 1000);
-    connect (updateTimer, SIGNAL (timeout ()), this, SLOT (updateFeeds ()));
-    QTimer::singleShot (2000, this, SLOT (updateFeeds ()));
-
-    QTimer *saveTimer = new QTimer (this);
-    saveTimer->start (60 * 1000);
-    connect (saveTimer, SIGNAL (timeout ()), this, SLOT (scheduleSave ()));
 }
 
 Core& Core::Instance ()
@@ -59,6 +49,22 @@ Core& Core::Instance ()
 void Core::Release ()
 {
     saveSettings ();
+    XmlSettingsManager::Instance ()->Release ();
+}
+
+void Core::DoDelayedInit ()
+{
+    UpdateTimer_ = new QTimer (this);
+    UpdateTimer_->start (XmlSettingsManager::Instance ()->property ("UpdateInterval").toInt () * 60 * 1000);
+    connect (UpdateTimer_, SIGNAL (timeout ()), this, SLOT (updateFeeds ()));
+    if (XmlSettingsManager::Instance ()->property ("UpdateOnStartup").toBool ())
+        QTimer::singleShot (2000, this, SLOT (updateFeeds ()));
+
+    QTimer *saveTimer = new QTimer (this);
+    saveTimer->start (60 * 1000);
+    connect (saveTimer, SIGNAL (timeout ()), this, SLOT (scheduleSave ()));
+    
+    XmlSettingsManager::Instance ()->RegisterObject ("UpdateInterval", this, "updateIntervalChanged");
 }
 
 void Core::SetProvider (QObject *provider, const QString& feature)
@@ -325,9 +331,8 @@ void Core::updateFeeds ()
 void Core::saveSettings ()
 {
     QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Aggregator");
-    settings.clear ();
-    settings.beginGroup ("Aggregator");
     settings.beginWriteArray ("Feeds");
+    settings.remove ("");
     QList<Feed> feeds = Feeds_.values ();
     for (int i = 0; i < feeds.size (); ++i)
     {
@@ -336,7 +341,11 @@ void Core::saveSettings ()
         settings.setValue ("Feed", qVariantFromValue<Feed> (feed));
     }
     settings.endArray ();
-    settings.endGroup ();
     SaveScheduled_ = false;
+}
+
+void Core::updateIntervalChanged ()
+{
+    UpdateTimer_->setInterval (XmlSettingsManager::Instance ()->property ("UpdateInterval").toInt () * 60 * 1000);
 }
 

@@ -182,7 +182,7 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
     WorkingObject_->setProperty (property.toLatin1 ().constData (), value);
 }
 
-QString XmlSettingsDialog::GetLabel (const QDomElement& item)
+QString XmlSettingsDialog::GetLabel (const QDomElement& item) const
 {
     QString locale = QLocale::system ().name ().toLower ();
     if (locale == "c")
@@ -215,6 +215,80 @@ QString XmlSettingsDialog::GetLabel (const QDomElement& item)
         }
     }
     return result;
+}
+
+XmlSettingsDialog::LangElements XmlSettingsDialog::GetLangElements (const QDomElement& parent) const
+{
+    QString locale = QLocale::system ().name ().toLower ();
+    if (locale == "c")
+        locale = "en";
+
+    locale = locale.left (2);
+    LangElements returning;
+    returning.Valid_ = false;
+
+    bool found = false;
+
+    QDomElement result = parent.firstChildElement ("lang");
+    while (!result.isNull ())
+    {
+        if (result.attribute ("value").toLower () == locale)
+        {
+            found = true;
+            break;
+        }
+        result = result.nextSiblingElement ("result");
+    }
+    if (!found)
+    {
+        result = parent.firstChildElement ("lang");
+        while (!result.isNull ())
+        {
+            if (result.attribute ("value").toLower () == DefaultLang_)
+            {
+                found = true;
+                break;
+            }
+            result = result.nextSiblingElement ("result");
+        }
+    }
+    if (!found)
+    {
+        result = parent.firstChildElement ("lang");
+        while (!result.isNull ())
+        {
+            if (result.attribute ("value").toLower () == "en" || !result.hasAttribute ("value"))
+            {
+                found = true;
+                break;
+            }
+            result = result.nextSiblingElement ("result");
+        }
+    }
+    if (result.isNull ())
+        return returning;
+
+    returning.Valid_ = true;
+
+    QDomElement label = result.firstChildElement ("label");
+    if (!label.isNull () && label.hasAttribute ("value"))
+    {
+        returning.Label_.first = true;
+        returning.Label_.second = label.attribute ("value");
+    }
+    else
+        returning.Label_.first = false;
+
+    QDomElement suffix = result.firstChildElement ("suffix");
+    if (!suffix.isNull () && suffix.hasAttribute ("value"))
+    {
+        returning.Suffix_.first = true;
+        returning.Suffix_.second = suffix.attribute ("value");
+    }
+    else
+        returning.Suffix_.first = false;
+
+    return returning;
 }
 
 void XmlSettingsDialog::DoLineedit (const QDomElement& item, QGridLayout *lay, QVariant& value)
@@ -259,6 +333,14 @@ void XmlSettingsDialog::DoSpinbox (const QDomElement& item, QGridLayout *lay, QV
         box->setSingleStep (item.attribute ("step").toInt ());
     if (item.hasAttribute ("suffix"))
         box->setSuffix (item.attribute ("suffix"));
+    LangElements langs = GetLangElements (item);
+    if (langs.Valid_)
+    {
+        if (langs.Label_.first)
+            label->setText (langs.Label_.second);
+        if (langs.Suffix_.first)
+            box->setSuffix (langs.Suffix_.second);
+    }
     box->setValue (value.toInt ());
     connect (box, SIGNAL (valueChanged (int)), this, SLOT (updatePreferences ()));
     

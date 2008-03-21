@@ -10,6 +10,7 @@
 #include "feed.h"
 
 class ChannelsModel;
+class QTimer;
 
 class Core : public QAbstractItemModel
 {
@@ -20,8 +21,7 @@ class Core : public QAbstractItemModel
 
     enum Columns
     {
-        ColumnName = 0
-        , ColumnDate = 1
+        ColumnName = 0 , ColumnDate = 1
     };
 
     struct PendingJob
@@ -40,10 +40,12 @@ class Core : public QAbstractItemModel
     Channel *ActivatedChannel_;
     QStringList ItemHeaders_;
     ChannelsModel *ChannelsModel_;
+    QTimer *UpdateTimer_;
     bool SaveScheduled_;
 public:
     static Core& Instance ();
     void Release ();
+    void DoDelayedInit ();
     void SetProvider (QObject*, const QString&);
     void AddFeed (const QString&);
     void Activated (const QModelIndex&);
@@ -67,6 +69,8 @@ private slots:
     void handleJobError (int, IDirectDownload::Error);
     void updateFeeds ();
     void saveSettings ();
+public slots:
+    void updateIntervalChanged ();
 signals:
     void error (const QString&);
 };

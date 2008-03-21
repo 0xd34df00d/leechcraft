@@ -22,6 +22,12 @@ class XmlSettingsDialog : public QDialog
     typedef QMap<QString, QVariant> Property2Value_t;
     Property2Value_t Prop2NewValue_;
     QString DefaultLang_;
+    struct LangElements
+    {
+        bool Valid_;
+        QPair<bool, QString> Label_;
+        QPair<bool, QString> Suffix_;
+    };
 public:
     XmlSettingsDialog (QWidget *parent = 0);
     void RegisterObject (QObject*, const QString&);
@@ -30,7 +36,8 @@ private:
     void ParsePage (const QDomElement&);
     void ParseEntity (const QDomElement&, QWidget*);
     void ParseItem (const QDomElement&, QWidget*);
-    QString GetLabel (const QDomElement&);
+    QString GetLabel (const QDomElement&) const;
+    LangElements GetLangElements (const QDomElement&) const;
 private:
     void DoLineedit (const QDomElement&, QGridLayout*, QVariant&);
     void DoCheckbox (const QDomElement&, QGridLayout*, QVariant&);
