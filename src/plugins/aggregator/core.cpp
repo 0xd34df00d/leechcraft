@@ -50,6 +50,12 @@ void Core::Release ()
 {
     saveSettings ();
     XmlSettingsManager::Instance ()->Release ();
+    for (QMap<QString, Feed>::iterator i = Feeds_.begin (); i != Feeds_.end (); ++i)
+    {
+        for (QList<Channel*>::iterator j = i.value ().Channels_.begin (); j != i.value ().Channels_.end (); ++j)
+            qDeleteAll ((*j)->Items_);
+        qDeleteAll (i.value ().Channels_);
+    }
 }
 
 void Core::DoDelayedInit ()
@@ -306,6 +312,8 @@ void Core::handleJobFinished (int id)
                         beginRemoveRows (QModelIndex (), ipc, ActivatedChannel_->Items_.size ());
                     QList<Item*>::iterator first = Feeds_ [pj.URL_].Channels_.at (position)->Items_.begin () + ipc,
                         last = Feeds_ [pj.URL_].Channels_.at (position)->Items_.end ();
+                    for (QList<Item*>::iterator tmp = first; tmp != last; ++i)
+                        delete *(tmp++);
                     Feeds_ [pj.URL_].Channels_.at (position)->Items_.erase (first, last);
                     if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position))
                         endRemoveRows ();
