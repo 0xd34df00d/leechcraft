@@ -98,6 +98,7 @@ Item* Atom10Parser::ParseItem (const QDomElement& entry) const
 
 QDateTime Atom10Parser::FromRFC3339 (const QString& t) const
 {
+    qDebug () << Q_FUNC_INFO << t.left (19) << QDateTime::fromString (t.left (19), "yyyy-MM-ddTHH:mm:ss");
     return QDateTime::fromString (t.left (19), "yyyy-MM-ddTHH:mm:ss");
 }
 

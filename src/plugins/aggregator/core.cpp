@@ -294,6 +294,17 @@ void Core::handleJobFinished (int id)
                 if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position) && channels.at (i)->Items_.size ())
                     endInsertRows ();
                 delete channels.at (i);
+
+                if (Feeds_ [pj.URL_].Channels_.at (position)->Items_.size () > 30)
+                {
+                    if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position))
+                        beginRemoveRows (QModelIndex (), 30, ActivatedChannel_->Items_.size ());
+                    QList<Item*>::iterator first = Feeds_ [pj.URL_].Channels_.at (position)->Items_.begin () + 30,
+                        last = Feeds_ [pj.URL_].Channels_.at (position)->Items_.end ();
+                    Feeds_ [pj.URL_].Channels_.at (position)->Items_.erase (first, last);
+                    if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position))
+                        endRemoveRows ();
+                }
             }
         }
     }
