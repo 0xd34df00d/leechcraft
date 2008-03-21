@@ -26,5 +26,13 @@
                 </lang>
             </item>
         </groupbox>
+        <groupbox>
+            <label lang="en" value="Store" />
+            <label lang="ru" value="Хранение" />
+            <item type="spinbox" property="ItemsPerChannel" default="50" minimum="20" maximum="10000" step="50">
+                <label lang="en" value="Items per channel" />
+                <label lang="ru" value="Статей в канале" />
+            </item>
+        </groupbox>
     </page>
 </settings>

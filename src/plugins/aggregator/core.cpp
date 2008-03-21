@@ -299,11 +299,12 @@ void Core::handleJobFinished (int id)
                     endInsertRows ();
                 delete channels.at (i);
 
-                if (Feeds_ [pj.URL_].Channels_.at (position)->Items_.size () > 30)
+                int ipc = XmlSettingsManager::Instance ()->property ("ItemsPerChannel").toInt ();
+                if (Feeds_ [pj.URL_].Channels_.at (position)->Items_.size () > ipc)
                 {
                     if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position))
-                        beginRemoveRows (QModelIndex (), 30, ActivatedChannel_->Items_.size ());
-                    QList<Item*>::iterator first = Feeds_ [pj.URL_].Channels_.at (position)->Items_.begin () + 30,
+                        beginRemoveRows (QModelIndex (), ipc, ActivatedChannel_->Items_.size ());
+                    QList<Item*>::iterator first = Feeds_ [pj.URL_].Channels_.at (position)->Items_.begin () + ipc,
                         last = Feeds_ [pj.URL_].Channels_.at (position)->Items_.end ();
                     Feeds_ [pj.URL_].Channels_.at (position)->Items_.erase (first, last);
                     if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position))
