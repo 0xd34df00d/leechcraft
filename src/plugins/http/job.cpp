@@ -51,6 +51,7 @@ Job::~Job ()
     delete ProtoImp_;
     delete File_;
     delete Params_;
+    delete FileExistsDialog_;
 }
 
 void Job::DoDelayedInit ()

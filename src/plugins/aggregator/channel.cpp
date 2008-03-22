@@ -14,10 +14,7 @@ Channel::Channel (const Channel& channel)
 , LastBuild_ (channel.LastBuild_)
 {
     for (int i = 0; i < channel.Items_.size (); ++i)
-    {
         Items_.append (channel.Items_.at (i));
-//        channel.Items_ [i] = 0;
-    }
 }
 
 Channel& Channel::operator= (const Channel& channel)
@@ -27,10 +24,7 @@ Channel& Channel::operator= (const Channel& channel)
     Description_ = channel.Description_;
     LastBuild_ = channel.LastBuild_;
     for (int i = 0; i < channel.Items_.size (); ++i)
-    {
         Items_.append (channel.Items_.at (i));
-//        channel.Items_ [i] = 0;
-    }
 }
 
 bool operator== (const Channel& c1, const Channel& c2)

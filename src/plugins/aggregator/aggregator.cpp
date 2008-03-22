@@ -27,6 +27,7 @@ void Aggregator::Init ()
 void Aggregator::Release ()
 {
     Core::Instance ().Release ();
+    delete XmlSettingsDialog_;
 }
 
 QString Aggregator::GetName () const

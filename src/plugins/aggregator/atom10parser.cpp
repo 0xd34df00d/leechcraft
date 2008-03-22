@@ -49,6 +49,7 @@ QList<Channel*> Atom10Parser::Parse (const QList<Channel*>& old, const QDomDocum
             delete newes.at (0)->Items_.at (j);
         for (int j = index; j >= 0; --j)
             result.at (0)->Items_.prepend (newes.at (0)->Items_.at (j));
+        delete newes.at (0);
     }
     return result;
 }
@@ -98,7 +99,6 @@ Item* Atom10Parser::ParseItem (const QDomElement& entry) const
 
 QDateTime Atom10Parser::FromRFC3339 (const QString& t) const
 {
-    qDebug () << Q_FUNC_INFO << t.left (19) << QDateTime::fromString (t.left (19), "yyyy-MM-ddTHH:mm:ss");
     return QDateTime::fromString (t.left (19), "yyyy-MM-ddTHH:mm:ss");
 }
 

@@ -12,6 +12,11 @@ ChannelsModel::ChannelsModel (QObject *parent)
     RootItem_ = new TreeItem (roots);
 }
 
+ChannelsModel::~ChannelsModel ()
+{
+    delete RootItem_;
+}
+
 int ChannelsModel::columnCount (const QModelIndex& parent) const
 {
     if (parent.isValid ())

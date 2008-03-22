@@ -295,7 +295,7 @@ void Core::handleJobFinished (int id)
             {
                 if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position) && channels.at (i)->Items_.size ())
                     beginInsertRows (QModelIndex (), 0, channels.at (i)->Items_.size () - 1);
-                Feeds_ [pj.URL_].Channels_.at (position)->Items_ = channels.at (i)->Items_+ Feeds_ [pj.URL_].Channels_.at (position)->Items_;
+                Feeds_ [pj.URL_].Channels_.at (position)->Items_ = channels.at (i)->Items_ + Feeds_ [pj.URL_].Channels_.at (position)->Items_;
                 if (channels.at (i)->LastBuild_.isValid ())
                     Feeds_ [pj.URL_].Channels_.at (position)->LastBuild_ = channels.at (i)->LastBuild_;
                 else
@@ -312,8 +312,8 @@ void Core::handleJobFinished (int id)
                         beginRemoveRows (QModelIndex (), ipc, ActivatedChannel_->Items_.size ());
                     QList<Item*>::iterator first = Feeds_ [pj.URL_].Channels_.at (position)->Items_.begin () + ipc,
                         last = Feeds_ [pj.URL_].Channels_.at (position)->Items_.end ();
-                    for (QList<Item*>::iterator tmp = first; tmp != last; ++i)
-                        delete *(tmp++);
+                    for (QList<Item*>::iterator tmp = first; tmp != last; ++tmp)
+                        delete *tmp;
                     Feeds_ [pj.URL_].Channels_.at (position)->Items_.erase (first, last);
                     if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position))
                         endRemoveRows ();

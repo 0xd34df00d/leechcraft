@@ -15,6 +15,7 @@ class ChannelsModel : public QAbstractItemModel
     QMap<TreeItem*, Channel*> TreeItem2Channel_;
 public:
     ChannelsModel (QObject *parent = 0);
+    virtual ~ChannelsModel ();
 
     virtual int columnCount (const QModelIndex& parent = QModelIndex ()) const;
     virtual QVariant data (const QModelIndex&, int role = Qt::DisplayRole) const;
