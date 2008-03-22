@@ -10,6 +10,7 @@ INCLUDE (${CMAKE_ROOT}/Modules/FindQt4.cmake)
 INCLUDE (${CMAKE_ROOT}/Modules/FindPNG.cmake)
 INCLUDE (${CMAKE_ROOT}/Modules/FindThreads.cmake)
 INCLUDE (${CMAKE_ROOT}/Modules/UseQt4.cmake)
+INCLUDE (${CMAKE_ROOT}/Modules/FindBoost.cmake)
 INCLUDE_DIRECTORIES (${QT_QTGUI_INCLUDE_DIR} ${QT_QTCORE_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR} .
 	plugininterface/)
 ADD_SUBDIRECTORY(exceptions)

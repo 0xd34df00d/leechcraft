@@ -51,11 +51,7 @@ void Core::Release ()
     saveSettings ();
     XmlSettingsManager::Instance ()->Release ();
     for (QMap<QString, Feed>::iterator i = Feeds_.begin (); i != Feeds_.end (); ++i)
-    {
-        for (QList<Channel*>::iterator j = i.value ().Channels_.begin (); j != i.value ().Channels_.end (); ++j)
-            qDeleteAll ((*j)->Items_);
         qDeleteAll (i.value ().Channels_);
-    }
 }
 
 void Core::DoDelayedInit ()
@@ -118,7 +114,7 @@ void Core::Activated (const QModelIndex& index)
     if (!ActivatedChannel_ || ActivatedChannel_->Items_.size () <= index.row ())
         return;
 
-    Item *item = ActivatedChannel_->Items_.at (index.row ());
+    boost::shared_ptr<Item> item = ActivatedChannel_->Items_ [index.row ()];
 
     QString URL =item->Link_;
     item->Unread_ = false;
@@ -130,7 +126,7 @@ QString Core::GetDescription (const QModelIndex& index)
     if (!ActivatedChannel_ || ActivatedChannel_->Items_.size () <= index.row ())
         return QString ();
 
-    Item *item = ActivatedChannel_->Items_.at (index.row ());
+    boost::shared_ptr<Item> item = ActivatedChannel_->Items_ [index.row ()];
 
     item->Unread_ = false;
     return item->Description_;
@@ -156,15 +152,15 @@ QVariant Core::data (const QModelIndex& index, int role) const
         switch (index.column ())
         {
             case 0:
-                return ActivatedChannel_->Items_.at (index.row ())->Title_;
+                return ActivatedChannel_->Items_ [index.row ()]->Title_;
             case 1:
-                return ActivatedChannel_->Items_.at (index.row ())->PubDate_;
+                return ActivatedChannel_->Items_ [index.row ()]->PubDate_;
             default:
                 return QVariant ();
         }
     }
     else if (role == Qt::ForegroundRole)
-        return ActivatedChannel_->Items_.at (index.row ())->Unread_ ? Qt::red : Qt::black;
+        return ActivatedChannel_->Items_ [index.row ()]->Unread_ ? Qt::red : Qt::black;
     else
         return QVariant ();
 }
@@ -295,26 +291,25 @@ void Core::handleJobFinished (int id)
             {
                 if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position) && channels.at (i)->Items_.size ())
                     beginInsertRows (QModelIndex (), 0, channels.at (i)->Items_.size () - 1);
-                Feeds_ [pj.URL_].Channels_.at (position)->Items_ = channels.at (i)->Items_ + Feeds_ [pj.URL_].Channels_.at (position)->Items_;
+                Feeds_ [pj.URL_].Channels_.at (position)->Items_.insert (Feeds_ [pj.URL_].Channels_.at (position)->Items_.begin (),
+                        channels.at (i)->Items_.begin (), channels.at (i)->Items_.end ());
                 if (channels.at (i)->LastBuild_.isValid ())
                     Feeds_ [pj.URL_].Channels_.at (position)->LastBuild_ = channels.at (i)->LastBuild_;
                 else
-                    Feeds_ [pj.URL_].Channels_.at (position)->LastBuild_ = Feeds_ [pj.URL_].Channels_.at (position)->Items_.at (0)->PubDate_;
+                    Feeds_ [pj.URL_].Channels_.at (position)->LastBuild_ = Feeds_ [pj.URL_].Channels_.at (position)->Items_ [0]->PubDate_;
                 ChannelsModel_->UpdateTimestamp (Feeds_ [pj.URL_].Channels_.at (position));
                 if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position) && channels.at (i)->Items_.size ())
                     endInsertRows ();
                 delete channels.at (i);
+
 
                 int ipc = XmlSettingsManager::Instance ()->property ("ItemsPerChannel").toInt ();
                 if (Feeds_ [pj.URL_].Channels_.at (position)->Items_.size () > ipc)
                 {
                     if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position))
                         beginRemoveRows (QModelIndex (), ipc, ActivatedChannel_->Items_.size ());
-                    QList<Item*>::iterator first = Feeds_ [pj.URL_].Channels_.at (position)->Items_.begin () + ipc,
-                        last = Feeds_ [pj.URL_].Channels_.at (position)->Items_.end ();
-                    for (QList<Item*>::iterator tmp = first; tmp != last; ++tmp)
-                        delete *tmp;
-                    Feeds_ [pj.URL_].Channels_.at (position)->Items_.erase (first, last);
+                    Feeds_ [pj.URL_].Channels_.at (position)->Items_.erase (Feeds_ [pj.URL_].Channels_.at (position)->Items_.begin () + ipc,
+                            Feeds_ [pj.URL_].Channels_.at (position)->Items_.end ());
                     if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position))
                         endRemoveRows ();
                 }

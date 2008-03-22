@@ -38,6 +38,10 @@ QList<Channel*> RSS20Parser::Parse (const QList<Channel*>& channels, const QDomD
             }
         if (position == -1)
             result.append (newChannel);
+        else if (!channels.at (position)->Items_.size ())
+        {
+            // handle
+        }
         else
         {
             Channel *oldChannel = channels.at (position);
@@ -45,18 +49,16 @@ QList<Channel*> RSS20Parser::Parse (const QList<Channel*>& channels, const QDomD
             *toInsert = *oldChannel;
             toInsert->Items_.clear ();
 
-            Item *lastItemWeHave = oldChannel->Items_.first ();
+            boost::shared_ptr<Item> lastItemWeHave = *oldChannel->Items_.begin ();
             int index = newChannel->Items_.size () - 1;
             for (int j = 0; j < newChannel->Items_.size (); ++j)
-                if (*newChannel->Items_.at (j) == *lastItemWeHave)
+                if (*newChannel->Items_ [j] == *lastItemWeHave)
                 {
                     index = j - 1;
                     break;
                 }
-            for (int j = newChannel->Items_.size () - 1; j > index; --j)
-                delete newChannel->Items_.at (j);
             for (int j = index; j >= 0; --j)
-                toInsert->Items_.prepend (newChannel->Items_.at (j));
+                toInsert->Items_.insert (toInsert->Items_.begin (), newChannel->Items_ [j]);
 
             delete newChannel;
             result.append (toInsert);
@@ -81,7 +83,7 @@ QList<Channel*> RSS20Parser::Parse (const QDomDocument& doc) const
         QDomElement item = channel.firstChildElement ("item");
         while (!item.isNull ())
         {
-            chan->Items_ << ParseItem (item);
+            chan->Items_.push_back (boost::shared_ptr<Item> (ParseItem (item)));
             item = item.nextSiblingElement ("item");
         }
 

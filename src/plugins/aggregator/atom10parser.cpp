@@ -37,18 +37,16 @@ QList<Channel*> Atom10Parser::Parse (const QList<Channel*>& old, const QDomDocum
         *toInsert = *newes.at (0);
         result.append (toInsert);
         result.at (0)->Items_.clear ();
-        Item *lastItemWeHave = old.at (0)->Items_.first ();
+        boost::shared_ptr<Item> lastItemWeHave = *old.at (0)->Items_.begin ();
         int index = newes.at (0)->Items_.size ();
         for (int j = 0; j < newes.at (0)->Items_.size (); ++j)
-            if (*newes.at (0)->Items_.at (j) == *lastItemWeHave)
+            if (*newes.at (0)->Items_ [j] == *lastItemWeHave)
             {
                 index = j - 1;
                 break;
             }
-        for (int j = newes.at (0)->Items_.size () - 1; j > index; --j)
-            delete newes.at (0)->Items_.at (j);
         for (int j = index; j >= 0; --j)
-            result.at (0)->Items_.prepend (newes.at (0)->Items_.at (j));
+            result.at (0)->Items_.insert (result.at (0)->Items_.begin (), newes.at (0)->Items_ [j]);
         delete newes.at (0);
     }
     return result;
@@ -68,8 +66,7 @@ QList<Channel*> Atom10Parser::Parse (const QDomDocument& doc) const
     QDomElement entry = root.firstChildElement ("entry");
     while (!entry.isNull ())
     {
-        chan->Items_.append (ParseItem (entry));
-
+        chan->Items_.push_back (boost::shared_ptr<Item> (ParseItem (entry)));
         entry = entry.nextSiblingElement ("entry");
     }
 

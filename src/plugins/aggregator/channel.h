@@ -3,6 +3,8 @@
 #include <QString>
 #include <QList>
 #include <QDateTime>
+#include <boost/shared_ptr.hpp>
+#include <vector>
 
 class Item;
 
@@ -12,7 +14,7 @@ struct Channel
     QString Link_;
     QString Description_;
     QDateTime LastBuild_;
-    QList<Item*> Items_;
+    std::vector<boost::shared_ptr<Item> > Items_;
 
     Channel ();
     Channel (const Channel&);
