@@ -50,8 +50,6 @@ void Core::Release ()
 {
     saveSettings ();
     XmlSettingsManager::Instance ()->Release ();
-    for (QMap<QString, Feed>::iterator i = Feeds_.begin (); i != Feeds_.end (); ++i)
-        qDeleteAll (i.value ().Channels_);
 }
 
 void Core::DoDelayedInit ()
@@ -206,10 +204,10 @@ int Core::rowCount (const QModelIndex& parent) const
 
 void Core::currentChannelChanged (const QModelIndex& index)
 {
-    Channel *ch = ChannelsModel_->GetChannelForIndex (index);
+    boost::shared_ptr<Channel> ch = ChannelsModel_->GetChannelForIndex (index);
     if (!ch)
         return;
-    ActivatedChannel_ = ch;
+    ActivatedChannel_ = ch.get ();
     reset ();
 }
 
@@ -266,7 +264,7 @@ void Core::handleJobFinished (int id)
     }
     file.remove ();
 
-    QList<Channel*> channels = parser->Parse (Feeds_ [pj.URL_].Channels_, data);
+    std::vector<boost::shared_ptr<Channel> > channels = parser->Parse (Feeds_ [pj.URL_].Channels_, data);
     if (pj.Role_ == PendingJob::RFeedAdded)
     {
         Feeds_ [pj.URL_].Channels_ = channels;
@@ -286,10 +284,10 @@ void Core::handleJobFinished (int id)
                 }
 
             if (position == -1)
-                Feeds_ [pj.URL_].Channels_.append (channels.at (i));
+                Feeds_ [pj.URL_].Channels_.push_back (channels.at (i));
             else
             {
-                if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position) && channels.at (i)->Items_.size ())
+                if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position).get () && channels.at (i)->Items_.size ())
                     beginInsertRows (QModelIndex (), 0, channels.at (i)->Items_.size () - 1);
                 Feeds_ [pj.URL_].Channels_.at (position)->Items_.insert (Feeds_ [pj.URL_].Channels_.at (position)->Items_.begin (),
                         channels.at (i)->Items_.begin (), channels.at (i)->Items_.end ());
@@ -298,19 +296,18 @@ void Core::handleJobFinished (int id)
                 else
                     Feeds_ [pj.URL_].Channels_.at (position)->LastBuild_ = Feeds_ [pj.URL_].Channels_.at (position)->Items_ [0]->PubDate_;
                 ChannelsModel_->UpdateTimestamp (Feeds_ [pj.URL_].Channels_.at (position));
-                if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position) && channels.at (i)->Items_.size ())
+                if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position).get () && channels.at (i)->Items_.size ())
                     endInsertRows ();
-                delete channels.at (i);
 
 
                 int ipc = XmlSettingsManager::Instance ()->property ("ItemsPerChannel").toInt ();
                 if (Feeds_ [pj.URL_].Channels_.at (position)->Items_.size () > ipc)
                 {
-                    if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position))
+                    if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position).get ())
                         beginRemoveRows (QModelIndex (), ipc, ActivatedChannel_->Items_.size ());
                     Feeds_ [pj.URL_].Channels_.at (position)->Items_.erase (Feeds_ [pj.URL_].Channels_.at (position)->Items_.begin () + ipc,
                             Feeds_ [pj.URL_].Channels_.at (position)->Items_.end ());
-                    if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position))
+                    if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position).get ())
                         endRemoveRows ();
                 }
             }

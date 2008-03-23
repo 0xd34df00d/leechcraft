@@ -5,6 +5,7 @@
 #include <QMap>
 #include <QDateTime>
 #include <interfaces/interfaces.h>
+#include <boost/shared_ptr.hpp>
 #include "item.h"
 #include "channel.h"
 #include "feed.h"

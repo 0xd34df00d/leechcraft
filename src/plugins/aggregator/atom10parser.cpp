@@ -23,20 +23,20 @@ bool Atom10Parser::CouldParse (const QDomDocument& doc) const
     return root.tagName () == "feed";
 }
 
-QList<Channel*> Atom10Parser::Parse (const QList<Channel*>& old, const QDomDocument& recent) const
+std::vector<boost::shared_ptr<Channel> > Atom10Parser::Parse (const std::vector<boost::shared_ptr<Channel> >& old, const QDomDocument& recent) const
 {
-    QList<Channel*> newes = Parse (recent),
+    std::vector<boost::shared_ptr<Channel> > newes = Parse (recent),
         result;
     if (!newes.size ())
-        return QList<Channel*> ();
+        return std::vector<boost::shared_ptr<Channel> > ();
     else if (!old.size ())
         return newes;
     else
     {
-        Channel *toInsert = new Channel;
+        boost::shared_ptr<Channel> toInsert (new Channel);
         *toInsert = *newes.at (0);
-        result.append (toInsert);
-        result.at (0)->Items_.clear ();
+        result.push_back (toInsert);
+        result [0]->Items_.clear ();
         boost::shared_ptr<Item> lastItemWeHave = *old.at (0)->Items_.begin ();
         int index = newes.at (0)->Items_.size ();
         for (int j = 0; j < newes.at (0)->Items_.size (); ++j)
@@ -47,16 +47,15 @@ QList<Channel*> Atom10Parser::Parse (const QList<Channel*>& old, const QDomDocum
             }
         for (int j = index; j >= 0; --j)
             result.at (0)->Items_.insert (result.at (0)->Items_.begin (), newes.at (0)->Items_ [j]);
-        delete newes.at (0);
     }
     return result;
 }
 
-QList<Channel*> Atom10Parser::Parse (const QDomDocument& doc) const
+std::vector<boost::shared_ptr<Channel> > Atom10Parser::Parse (const QDomDocument& doc) const
 {
-    QList<Channel*> channels;
-    Channel *chan = new Channel;
-    channels.append (chan);
+    std::vector<boost::shared_ptr<Channel> > channels;
+    boost::shared_ptr<Channel> chan (new Channel);
+    channels.push_back (chan);
 
     QDomElement root = doc.documentElement ();
     chan->Title_ = root.firstChildElement ("title").text ();

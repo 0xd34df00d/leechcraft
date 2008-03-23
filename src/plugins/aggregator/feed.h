@@ -4,6 +4,8 @@
 #include <QDateTime>
 #include <QList>
 #include <QMetaType>
+#include <boost/shared_ptr.hpp>
+#include <vector>
 
 class Channel;
 
@@ -11,7 +13,7 @@ struct Feed
 {
     QString URL_;
     QDateTime LastUpdate_;
-    QList<Channel*> Channels_;
+    std::vector<boost::shared_ptr<Channel> > Channels_;
 
     Feed ();
     Feed (const Feed&);

@@ -22,13 +22,13 @@ bool RSS20Parser::CouldParse (const QDomDocument& doc) const
     return root.tagName () == "rss" && root.attribute ("version") == "2.0";
 }
 
-QList<Channel*> RSS20Parser::Parse (const QList<Channel*>& channels, const QDomDocument& recent) const
+std::vector<boost::shared_ptr<Channel> > RSS20Parser::Parse (const std::vector<boost::shared_ptr<Channel> >& channels, const QDomDocument& recent) const
 {
-    QList<Channel*> newes = Parse (recent),
+    std::vector<boost::shared_ptr<Channel> > newes = Parse (recent),
         result;
     for (int i = 0; i < newes.size (); ++i)
     {
-        Channel *newChannel = newes.at (i);
+        boost::shared_ptr<Channel> newChannel = newes.at (i);
         int position = -1;
         for (int j = 0; j < channels.size (); ++j)
             if (*channels.at (j) == *newChannel)
@@ -37,15 +37,15 @@ QList<Channel*> RSS20Parser::Parse (const QList<Channel*>& channels, const QDomD
                 break;
             }
         if (position == -1)
-            result.append (newChannel);
+            result.push_back (newChannel);
         else if (!channels.at (position)->Items_.size ())
         {
             // handle
         }
         else
         {
-            Channel *oldChannel = channels.at (position);
-            Channel *toInsert = new Channel;
+            boost::shared_ptr<Channel> oldChannel = channels [position];
+            boost::shared_ptr<Channel> toInsert (new Channel);
             *toInsert = *oldChannel;
             toInsert->Items_.clear ();
 
@@ -60,21 +60,20 @@ QList<Channel*> RSS20Parser::Parse (const QList<Channel*>& channels, const QDomD
             for (int j = index; j >= 0; --j)
                 toInsert->Items_.insert (toInsert->Items_.begin (), newChannel->Items_ [j]);
 
-            delete newChannel;
-            result.append (toInsert);
+            result.push_back (toInsert);
         }
     }
     return result;
 }
 
-QList<Channel*> RSS20Parser::Parse (const QDomDocument& doc) const
+std::vector<boost::shared_ptr<Channel> > RSS20Parser::Parse (const QDomDocument& doc) const
 {
-    QList<Channel*> channels;
+    std::vector<boost::shared_ptr<Channel> > channels;
     QDomElement root = doc.documentElement ();
     QDomElement channel = root.firstChildElement ("channel");
     while (!channel.isNull ())
     {
-        Channel *chan = new Channel;
+        boost::shared_ptr<Channel> chan (new Channel);
         chan->Title_ = channel.firstChildElement ("title").text ();
         chan->Description_ = channel.firstChildElement ("description").text ();
         chan->Link_ = channel.firstChildElement ("link").text ();
@@ -86,9 +85,7 @@ QList<Channel*> RSS20Parser::Parse (const QDomDocument& doc) const
             chan->Items_.push_back (boost::shared_ptr<Item> (ParseItem (item)));
             item = item.nextSiblingElement ("item");
         }
-
-        channels << chan;
-
+        channels.push_back (chan);
         channel = channel.nextSiblingElement ("channel");
     }
     return channels;

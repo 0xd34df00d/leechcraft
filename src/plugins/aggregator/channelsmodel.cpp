@@ -99,12 +99,12 @@ int ChannelsModel::rowCount (const QModelIndex& parent) const
 
 void ChannelsModel::AddFeed (const Feed& feed)
 {
-    QList<Channel*> channels = feed.Channels_;
+    std::vector<boost::shared_ptr<Channel> > channels = feed.Channels_;
     beginInsertRows (QModelIndex (), rowCount (), rowCount () + channels.size () - 1);
     for (int i = 0; i < channels.size (); ++i)
     {
         QList<QVariant> data;
-        Channel *current = channels.at (i);
+        boost::shared_ptr<Channel> current = channels.at (i);
         data << current->Title_ << current->LastBuild_;
         TreeItem *channelItem = new TreeItem (data, RootItem_);
         RootItem_->AppendChild (channelItem);
@@ -114,19 +114,20 @@ void ChannelsModel::AddFeed (const Feed& feed)
     endInsertRows ();
 }
 
-void ChannelsModel::Update (const QList<Channel*>& channels)
+void ChannelsModel::Update (const std::vector<boost::shared_ptr<Channel> >& channels)
 {
-    QList<Channel*> channelswh = Channel2TreeItem_.keys ();
+    QList<boost::shared_ptr<Channel> > channelswh = Channel2TreeItem_.keys ();
     for (int i = 0; i < channels.size (); ++i)
     {
         bool found = false;
         for (int j = 0; j < channelswh.size (); ++j)
             if (*channels.at (i) == *channelswh.at (j))
                 found = true;
+        qDebug () << Q_FUNC_INFO << found;
         if (found)
             continue;
         QList<QVariant> data;
-        Channel *current = channels.at (i);
+        boost::shared_ptr<Channel> current = channels.at (i);
         data << current->Title_ << current->LastBuild_;
         TreeItem *channelItem = new TreeItem (data, RootItem_);
         RootItem_->AppendChild (channelItem);
@@ -135,7 +136,7 @@ void ChannelsModel::Update (const QList<Channel*>& channels)
     }
 }
 
-void ChannelsModel::UpdateTimestamp (Channel* channel)
+void ChannelsModel::UpdateTimestamp (const boost::shared_ptr<Channel>& channel)
 {
     if (!Channel2TreeItem_.contains (channel))
     {
@@ -148,11 +149,11 @@ void ChannelsModel::UpdateTimestamp (Channel* channel)
     emit dataChanged (index (pos, 1), index (pos, 1));
 }
 
-Channel* ChannelsModel::GetChannelForIndex (const QModelIndex& index) const
+boost::shared_ptr<Channel> ChannelsModel::GetChannelForIndex (const QModelIndex& index) const
 {
     if (index.isValid ())
         return TreeItem2Channel_ [static_cast<TreeItem*> (index.internalPointer ())];
     else
-        return 0;
+        return boost::shared_ptr<Channel> ();
 }
 

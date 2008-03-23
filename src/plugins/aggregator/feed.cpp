@@ -10,17 +10,15 @@ Feed::Feed ()
 Feed::Feed (const Feed& feed)
 : URL_ (feed.URL_)
 , LastUpdate_ (feed.LastUpdate_)
+, Channels_ (feed.Channels_)
 {
-    for (int i = 0; i < feed.Channels_.size (); ++i)
-        Channels_.append (feed.Channels_.at (i));
 }
 
 Feed& Feed::operator= (const Feed& feed)
 {
     URL_ = feed.URL_;
     LastUpdate_ = feed.LastUpdate_;
-    for (int i = 0; i < feed.Channels_.size (); ++i)
-        Channels_.append (feed.Channels_.at (i));
+    Channels_ = feed.Channels_;
 }
 
 bool operator< (const Feed& f1, const Feed& f2)
@@ -32,23 +30,23 @@ QDataStream& operator<< (QDataStream& out, const Feed& feed)
 {
     out << feed.URL_
         << feed.LastUpdate_
-        << feed.Channels_.size ();
-    for (int i = 0; i < feed.Channels_.size (); ++i)
-        out << (*feed.Channels_.at (i));
+        << static_cast<quint32> (feed.Channels_.size ());
+    for (quint32 i = 0; i < feed.Channels_.size (); ++i)
+        out << *feed.Channels_.at (i);
     return out;
 }
 
 QDataStream& operator>> (QDataStream& in, Feed& feed)
 {
-    int size;
+    quint32 size;
     in >> feed.URL_
         >> feed.LastUpdate_
         >> size;
-    for (int i = 0; i < size; ++i)
+    for (quint32 i = 0; i < size; ++i)
     {
-        Channel *channel = new Channel;
+        boost::shared_ptr<Channel> channel (new Channel);
         in >> *channel;
-        feed.Channels_.append (channel);
+        feed.Channels_.push_back (channel);
     }
     return in;
 }

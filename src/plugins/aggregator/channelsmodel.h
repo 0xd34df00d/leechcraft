@@ -1,6 +1,8 @@
 #ifndef CHANNELSMODEL_H
 #define CHANNELSMODEL_H
 #include <QAbstractItemModel>
+#include <boost/shared_ptr.hpp>
+#include <vector>
 
 class TreeItem;
 class Channel;
@@ -11,8 +13,8 @@ class ChannelsModel : public QAbstractItemModel
     Q_OBJECT
 
     TreeItem *RootItem_;
-    QMap<Channel*, TreeItem*> Channel2TreeItem_;
-    QMap<TreeItem*, Channel*> TreeItem2Channel_;
+    QMap<boost::shared_ptr<Channel>, TreeItem*> Channel2TreeItem_;
+    QMap<TreeItem*, boost::shared_ptr<Channel> > TreeItem2Channel_;
 public:
     ChannelsModel (QObject *parent = 0);
     virtual ~ChannelsModel ();
@@ -26,9 +28,9 @@ public:
     virtual int rowCount (const QModelIndex& parent = QModelIndex ()) const;
 
     void AddFeed (const Feed&);
-    void Update (const QList<Channel*>&);
-    void UpdateTimestamp (Channel*);
-    Channel* GetChannelForIndex (const QModelIndex&) const;
+    void Update (const std::vector<boost::shared_ptr<Channel> >&);
+    void UpdateTimestamp (const boost::shared_ptr<Channel>&);
+    boost::shared_ptr<Channel> GetChannelForIndex (const QModelIndex&) const;
 };
 
 #endif
