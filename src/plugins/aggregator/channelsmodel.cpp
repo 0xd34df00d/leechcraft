@@ -123,7 +123,6 @@ void ChannelsModel::Update (const std::vector<boost::shared_ptr<Channel> >& chan
         for (int j = 0; j < channelswh.size (); ++j)
             if (*channels.at (i) == *channelswh.at (j))
                 found = true;
-        qDebug () << Q_FUNC_INFO << found;
         if (found)
             continue;
         QList<QVariant> data;

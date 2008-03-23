@@ -32,7 +32,6 @@ Core::Core ()
         settings.setArrayIndex (i);
         Feed feed = settings.value ("Feed").value<Feed> ();
         Feeds_ [feed.URL_] = feed;
-        qDebug () << feed.Channels_.size () << Feeds_ [feed.URL_].Channels_.size ();
         ChannelsModel_->AddFeed (feed);
     }
     settings.endArray ();

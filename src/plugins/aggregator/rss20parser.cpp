@@ -2,6 +2,7 @@
 #include <QtDebug>
 #include <QDomElement>
 #include <QStringList>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include "rss20parser.h"
 #include "item.h"
 #include "channel.h"
@@ -38,9 +39,11 @@ std::vector<boost::shared_ptr<Channel> > RSS20Parser::Parse (const std::vector<b
             }
         if (position == -1)
             result.push_back (newChannel);
-        else if (!channels.at (position)->Items_.size ())
+        else if (!channels [position]->Items_.size ())
         {
-            // handle
+            boost::shared_ptr<Channel> pointer = channels [position];
+            pointer->Items_ = newChannel->Items_;
+            result.push_back (pointer);
         }
         else
         {

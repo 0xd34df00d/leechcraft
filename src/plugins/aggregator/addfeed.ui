@@ -25,7 +25,7 @@
      <item>
       <widget class="QLineEdit" name="URL_" >
        <property name="text" >
-        <string>http://rss.thepiratebay.org/0</string>
+        <string>http://www.mininova.org/rss.xml</string>
        </property>
       </widget>
      </item>
