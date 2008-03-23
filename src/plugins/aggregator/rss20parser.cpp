@@ -50,8 +50,35 @@ std::vector<boost::shared_ptr<Channel> > RSS20Parser::Parse (const std::vector<b
             boost::shared_ptr<Channel> oldChannel = channels [position];
             boost::shared_ptr<Channel> toInsert (new Channel);
             *toInsert = *oldChannel;
-            toInsert->Items_.clear ();
+            toInsert->LastBuild_ = newChannel->LastBuild_;
 
+            for (int j = 0; j < newChannel->Items_.size (); ++j)
+            {
+                bool found = false;
+                // Check if that item already exists
+                for (int h = 0; h < toInsert->Items_.size (); ++h)
+                    if (*toInsert->Items_ [h] == *newChannel->Items_ [j])
+                    {
+                        found = true;
+                        break;
+                    }
+                if (found)
+                    continue;
+
+                // Okay, this item is new, let's find where to place
+                // it. We should place it before the first found item
+                // with earlier datetime.
+                for (int h = 0; h < toInsert->Items_.size (); ++h)
+                {
+                    if (toInsert->Items_ [h]->PubDate_ < newChannel->Items_ [j]->PubDate_)
+                    {
+                        toInsert->Items_.insert (toInsert->Items_.begin () + h++, newChannel->Items_ [j]);
+                        break;
+                    }
+                }
+            }
+
+            /*
             boost::shared_ptr<Item> lastItemWeHave = *oldChannel->Items_.begin ();
             int index = newChannel->Items_.size () - 1;
             for (int j = 0; j < newChannel->Items_.size (); ++j)
@@ -62,6 +89,7 @@ std::vector<boost::shared_ptr<Channel> > RSS20Parser::Parse (const std::vector<b
                 }
             for (int j = index; j >= 0; --j)
                 toInsert->Items_.insert (toInsert->Items_.begin (), newChannel->Items_ [j]);
+                */
 
             result.push_back (toInsert);
         }

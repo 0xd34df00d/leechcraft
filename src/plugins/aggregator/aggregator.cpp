@@ -22,6 +22,7 @@ void Aggregator::Init ()
     Ui_.Feeds_->setModel (Core::Instance ().GetChannelsModel ());
     connect (Ui_.Items_->selectionModel (), SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (currentItemChanged (const QModelIndex&)));
     connect (Ui_.Feeds_->selectionModel (), SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)), &Core::Instance (), SLOT (currentChannelChanged (const QModelIndex&)));
+    connect (Ui_.ActionUpdateFeeds_, SIGNAL (triggered ()), &Core::Instance (), SLOT (updateFeeds ()));
 }
 
 void Aggregator::Release ()

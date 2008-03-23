@@ -63,12 +63,12 @@ public:
     virtual int rowCount (const QModelIndex& parent = QModelIndex ()) const;
 public slots:
     void currentChannelChanged (const QModelIndex&);
+    void updateFeeds ();
 private slots:
     void scheduleSave ();
     void handleJobFinished (int);
     void handleJobRemoved (int);
     void handleJobError (int, IDirectDownload::Error);
-    void updateFeeds ();
     void saveSettings ();
 public slots:
     void updateIntervalChanged ();

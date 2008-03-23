@@ -22,7 +22,7 @@
       <property name="orientation" >
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QWidget" name="" >
+      <widget class="QWidget" name="layoutWidget" >
        <layout class="QVBoxLayout" >
         <item>
          <layout class="QHBoxLayout" >
@@ -73,7 +73,7 @@
        <property name="orientation" >
         <enum>Qt::Vertical</enum>
        </property>
-       <widget class="QWidget" name="" >
+       <widget class="QWidget" name="layoutWidget" >
         <layout class="QVBoxLayout" >
          <item>
           <layout class="QHBoxLayout" >
@@ -148,6 +148,7 @@
      <string>Actions</string>
     </property>
     <addaction name="ActionAddFeed_" />
+    <addaction name="ActionUpdateFeeds_" />
     <addaction name="separator" />
     <addaction name="ActionPreferences_" />
    </widget>
@@ -166,6 +167,7 @@
    </attribute>
    <addaction name="ActionAddFeed_" />
    <addaction name="ActionPreferences_" />
+   <addaction name="ActionUpdateFeeds_" />
   </widget>
   <action name="ActionAddFeed_" >
    <property name="icon" >
@@ -181,6 +183,11 @@
    </property>
    <property name="text" >
     <string>Preferences</string>
+   </property>
+  </action>
+  <action name="ActionUpdateFeeds_" >
+   <property name="text" >
+    <string>Update feeds</string>
    </property>
   </action>
  </widget>

@@ -34,10 +34,8 @@ std::vector<boost::shared_ptr<Channel> > Atom10Parser::Parse (const std::vector<
     else
     {
         boost::shared_ptr<Channel> toInsert (new Channel);
-        *toInsert = *newes.at (0);
-        result.push_back (toInsert);
-        result [0]->Items_.clear ();
-        boost::shared_ptr<Item> lastItemWeHave = *old.at (0)->Items_.begin ();
+        *toInsert = *old.at (0);
+        boost::shared_ptr<Item> lastItemWeHave = old.at (0)->Items_ [0];
         int index = newes.at (0)->Items_.size ();
         for (int j = 0; j < newes.at (0)->Items_.size (); ++j)
             if (*newes.at (0)->Items_ [j] == *lastItemWeHave)
@@ -46,7 +44,9 @@ std::vector<boost::shared_ptr<Channel> > Atom10Parser::Parse (const std::vector<
                 break;
             }
         for (int j = index; j >= 0; --j)
-            result.at (0)->Items_.insert (result.at (0)->Items_.begin (), newes.at (0)->Items_ [j]);
+            toInsert->Items_.insert (toInsert->Items_.begin (), newes.at (0)->Items_ [j]);
+
+        result.push_back (toInsert);
     }
     return result;
 }

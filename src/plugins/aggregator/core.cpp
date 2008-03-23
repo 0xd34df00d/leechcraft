@@ -261,6 +261,7 @@ void Core::handleJobFinished (int id)
         emit error (tr ("Could not find parser to parse file %1").arg (pj.Filename_));
         return;
     }
+    file.close ();
     file.remove ();
 
     std::vector<boost::shared_ptr<Channel> > channels = parser->Parse (Feeds_ [pj.URL_].Channels_, data);
@@ -286,10 +287,9 @@ void Core::handleJobFinished (int id)
                 Feeds_ [pj.URL_].Channels_.push_back (channels.at (i));
             else
             {
-                if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position).get () && channels.at (i)->Items_.size ())
-                    beginInsertRows (QModelIndex (), 0, channels.at (i)->Items_.size () - 1);
-                Feeds_ [pj.URL_].Channels_.at (position)->Items_.insert (Feeds_ [pj.URL_].Channels_.at (position)->Items_.begin (),
-                        channels.at (i)->Items_.begin (), channels.at (i)->Items_.end ());
+                if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_ [position].get () && channels [i]->Items_.size ())
+                    beginInsertRows (QModelIndex (), 0, channels [i]->Items_.size () - Feeds_ [pj.URL_].Channels_ [position]->Items_.size ());
+                Feeds_ [pj.URL_].Channels_ [position]->Items_ = channels.at (i)->Items_;
                 if (channels.at (i)->LastBuild_.isValid ())
                     Feeds_ [pj.URL_].Channels_.at (position)->LastBuild_ = channels.at (i)->LastBuild_;
                 else
@@ -297,6 +297,7 @@ void Core::handleJobFinished (int id)
                 ChannelsModel_->UpdateTimestamp (Feeds_ [pj.URL_].Channels_.at (position));
                 if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position).get () && channels.at (i)->Items_.size ())
                     endInsertRows ();
+                emit dataChanged (index (0, 0), index (1, channels [i]->Items_.size () - 1));
 
 
                 int ipc = XmlSettingsManager::Instance ()->property ("ItemsPerChannel").toInt ();
