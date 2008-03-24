@@ -100,6 +100,9 @@ int ChannelsModel::rowCount (const QModelIndex& parent) const
 void ChannelsModel::AddFeed (const Feed& feed)
 {
     std::vector<boost::shared_ptr<Channel> > channels = feed.Channels_;
+    if (!channels.size ())
+        return;
+
     beginInsertRows (QModelIndex (), rowCount (), rowCount () + channels.size () - 1);
     for (int i = 0; i < channels.size (); ++i)
     {

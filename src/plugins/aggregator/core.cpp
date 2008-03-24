@@ -257,6 +257,8 @@ void Core::scheduleSave ()
 
 void Core::handleJobFinished (int id)
 {
+    bool silent = XmlSettingsManager::Instance ()->property ("BeSilent").toBool ();
+
     if (!PendingJobs_.contains (id))
         return;
     PendingJob pj = PendingJobs_ [id];
@@ -269,20 +271,19 @@ void Core::handleJobFinished (int id)
     }
     if (!file.size ())
     {
-        emit error (tr ("Downloaded file has null size!"));
+        if (silent)
+            qWarning () << "Downloaded file has null size!";
+        else
+            emit error (tr ("Downloaded file has null size!"));
         return;
     }
     QByteArray data = file.readAll ();
-    if (pj.Role_ == PendingJob::RFeedAdded)
-    {
-        Feed feed;
-        feed.URL_ = pj.URL_;
-        feed.LastUpdate_ = QDateTime::currentDateTime ();
-        Feeds_ [pj.URL_] = feed;
-    }
     if (!Feeds_.contains (pj.URL_))
     {
-        emit error (tr ("Feed with url %1 not found.").arg (pj.URL_));
+        if (silent)
+            qWarning () << "Feed with url %1 not found.";
+        else
+            emit error (tr ("Feed with url %1 not found.").arg (pj.URL_));
         return;
     }
     QDomDocument doc;
@@ -290,9 +291,20 @@ void Core::handleJobFinished (int id)
     int errorLine, errorColumn;
     if (!doc.setContent (data, true, &errorMsg, &errorLine, &errorColumn))
     {
-        emit error (tr ("XML file parse error: %1, line %2, column %3, filename %4").arg (errorMsg).arg (errorLine).arg (errorColumn).arg (pj.Filename_));
+        if (silent)
+            qWarning () << tr ("XML file parse error: %1, line %2, column %3, filename %4").arg (errorMsg).arg (errorLine).arg (errorColumn).arg (pj.Filename_);
+        else
+            emit error (tr ("XML file parse error: %1, line %2, column %3, filename %4").arg (errorMsg).arg (errorLine).arg (errorColumn).arg (pj.Filename_));
         return;
     }
+    if (pj.Role_ == PendingJob::RFeedAdded)
+    {
+        Feed feed;
+        feed.URL_ = pj.URL_;
+        feed.LastUpdate_ = QDateTime::currentDateTime ();
+        Feeds_ [pj.URL_] = feed;
+    }
+
     Parser *parser = ParserFactory::Instance ().Return (doc);
     if (!parser)
     {
@@ -353,11 +365,16 @@ void Core::handleJobFinished (int id)
                 QDateTime current = QDateTime::currentDateTime ();
                 int removeFrom = -1;
                 for (int j = 0; j < Feeds_ [pj.URL_].Channels_ [position]->Items_.size (); ++j)
+                {
+                    qDebug () << Feeds_ [pj.URL_].Channels_ [position]->Items_ [j]->Title_ << Feeds_ [pj.URL_].Channels_ [position]->Items_ [j]->PubDate_;
                     if (Feeds_ [pj.URL_].Channels_ [position]->Items_ [j]->PubDate_.daysTo (current) > days)
                     {
                         removeFrom = j;
                         break;
                     }
+                }
+                if (removeFrom == 0)
+                    removeFrom = 1;
                 if (removeFrom > 0)
                 {
                     if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_ [position].get ())
