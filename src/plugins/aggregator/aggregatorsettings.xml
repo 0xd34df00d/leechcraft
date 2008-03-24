@@ -33,6 +33,16 @@
                 <label lang="en" value="Items per channel" />
                 <label lang="ru" value="Статей в канале" />
             </item>
+            <item type="spinbox" property="ItemsMaxAge" default="7" minimum="1" maximum="52" step="1">
+                <lang value="en">
+                    <label value="Store items for" />
+                    <suffix value=" days" />
+                </lang>
+                <lang value="ru">
+                    <label value="Хранить статьи" />
+                    <suffix value=" дней" />
+                </lang>
+            </item>
         </groupbox>
     </page>
 </settings>

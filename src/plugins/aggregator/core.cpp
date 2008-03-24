@@ -315,14 +315,14 @@ void Core::handleJobFinished (int id)
         {
             int position = -1;
             for (int j = 0; j < Feeds_ [pj.URL_].Channels_.size (); ++j)
-                if (*Feeds_ [pj.URL_].Channels_.at (j) == *channels.at (i))
+                if (*Feeds_ [pj.URL_].Channels_ [j] == *channels [i])
                 {
                     position = j;
                     break;
                 }
 
             if (position == -1)
-                Feeds_ [pj.URL_].Channels_.push_back (channels.at (i));
+                Feeds_ [pj.URL_].Channels_.push_back (channels [i]);
             else
             {
                 if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_ [position].get () && channels [i]->Items_.size ())
@@ -339,13 +339,32 @@ void Core::handleJobFinished (int id)
 
 
                 int ipc = XmlSettingsManager::Instance ()->property ("ItemsPerChannel").toInt ();
-                if (Feeds_ [pj.URL_].Channels_.at (position)->Items_.size () > ipc)
+                if (Feeds_ [pj.URL_].Channels_ [position]->Items_.size () > ipc)
                 {
-                    if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position).get ())
+                    if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_ [position].get ())
                         beginRemoveRows (QModelIndex (), ipc, ActivatedChannel_->Items_.size ());
-                    Feeds_ [pj.URL_].Channels_.at (position)->Items_.erase (Feeds_ [pj.URL_].Channels_.at (position)->Items_.begin () + ipc,
-                            Feeds_ [pj.URL_].Channels_.at (position)->Items_.end ());
-                    if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position).get ())
+                    Feeds_ [pj.URL_].Channels_ [position]->Items_.erase (Feeds_ [pj.URL_].Channels_ [position]->Items_.begin () + ipc,
+                            Feeds_ [pj.URL_].Channels_ [position]->Items_.end ());
+                    if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_ [position].get ())
+                        endRemoveRows ();
+                }
+
+                int days = XmlSettingsManager::Instance ()->property ("ItemsMaxAge").toInt ();
+                QDateTime current = QDateTime::currentDateTime ();
+                int removeFrom = -1;
+                for (int j = 0; j < Feeds_ [pj.URL_].Channels_ [position]->Items_.size (); ++j)
+                    if (Feeds_ [pj.URL_].Channels_ [position]->Items_ [j]->PubDate_.daysTo (current) > days)
+                    {
+                        removeFrom = j;
+                        break;
+                    }
+                if (removeFrom > 0)
+                {
+                    if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_ [position].get ())
+                        beginRemoveRows (QModelIndex (), removeFrom, ActivatedChannel_->Items_.size ());
+                    Feeds_ [pj.URL_].Channels_ [position]->Items_.erase (Feeds_ [pj.URL_].Channels_ [position]->Items_.begin () + removeFrom,
+                            Feeds_ [pj.URL_].Channels_ [position]->Items_.end ());
+                    if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_ [position].get ())
                         endRemoveRows ();
                 }
             }
