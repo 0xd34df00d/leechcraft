@@ -38,7 +38,7 @@ QString Aggregator::GetName () const
 
 QString Aggregator::GetInfo () const
 {
-    return tr ("RSS2.0/Atom1.0 feed reader.");
+    return tr ("RSS 2.0, Atom 1.0 feed reader.");
 }
 
 QString Aggregator::GetStatusbarMessage () const
@@ -118,6 +118,11 @@ void Aggregator::on_ActionAddFeed__triggered ()
     AddFeed af;
     if (af.exec () == QDialog::Accepted)
         Core::Instance ().AddFeed (af.GetURL ());
+}
+
+void Aggregator::on_ActionRemoveFeed__triggered ()
+{
+    Core::Instance ().RemoveFeed (Ui_.Feeds_->selectionModel ()->currentIndex ());
 }
 
 void Aggregator::on_ActionPreferences__triggered ()

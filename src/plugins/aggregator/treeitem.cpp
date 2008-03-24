@@ -27,6 +27,11 @@ int TreeItem::ChildPosition (TreeItem *child)
     return Childs_.indexOf (child);
 }
 
+void TreeItem::RemoveChild (int child)
+{
+    Childs_.removeAt (child);
+}
+
 TreeItem* TreeItem::Child (int row)
 {
     return Childs_.value (row);

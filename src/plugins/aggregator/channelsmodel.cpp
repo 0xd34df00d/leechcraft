@@ -138,10 +138,7 @@ void ChannelsModel::Update (const std::vector<boost::shared_ptr<Channel> >& chan
 void ChannelsModel::UpdateTimestamp (const boost::shared_ptr<Channel>& channel)
 {
     if (!Channel2TreeItem_.contains (channel))
-    {
-        qWarning () << Q_FUNC_INFO << channel << "not found";
         return;
-    }
     TreeItem *item = Channel2TreeItem_ [channel];
     item->ModifyData (1, channel->LastBuild_);
     int pos = RootItem_->ChildPosition (item);
@@ -154,5 +151,21 @@ boost::shared_ptr<Channel> ChannelsModel::GetChannelForIndex (const QModelIndex&
         return TreeItem2Channel_ [static_cast<TreeItem*> (index.internalPointer ())];
     else
         return boost::shared_ptr<Channel> ();
+}
+
+void ChannelsModel::RemoveChannel (const boost::shared_ptr<Channel>& channel)
+{
+    if (!Channel2TreeItem_.contains (channel))
+        return;
+
+    TreeItem *container = Channel2TreeItem_ [channel];
+    int pos = RootItem_->ChildPosition (container);
+
+    beginRemoveRows (QModelIndex (), pos, pos);
+    TreeItem2Channel_.remove (container);
+    Channel2TreeItem_.remove (channel);
+    RootItem_->RemoveChild (pos);
+    delete container;
+    endRemoveRows ();
 }
 

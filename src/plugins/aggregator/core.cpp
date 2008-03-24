@@ -106,6 +106,44 @@ void Core::AddFeed (const QString& url)
     file.close ();
 }
 
+void Core::RemoveFeed (const QModelIndex& index)
+{
+    if (!index.isValid ())
+        return;
+    boost::shared_ptr<Channel> channel = ChannelsModel_->GetChannelForIndex (index);
+    bool shouldChangeChannel = (channel.get () == ActivatedChannel_);
+    if (shouldChangeChannel)
+        beginRemoveRows (QModelIndex (), 0, ActivatedChannel_->Items_.size () - 1);
+
+    std::vector<boost::shared_ptr<Channel> > channelsToRemove;
+    for (QMap<QString, Feed>::iterator i = Feeds_.begin (); i != Feeds_.end (); ++i)
+    {
+        bool thisOne = false;
+        for (int j = 0; j < i.value ().Channels_.size (); ++j)
+            if (*i.value ().Channels_ [j] == *channel)
+            {
+                thisOne = true;
+                break;
+            }
+
+        if (!thisOne)
+            continue;
+
+        for (int j = 0; j < i.value ().Channels_.size (); ++j)
+        {
+            channelsToRemove.push_back (i.value ().Channels_ [j]);
+        }
+
+        Feeds_.erase (i);
+        break;
+    }
+    for (int i = 0; i < channelsToRemove.size (); ++i)
+        ChannelsModel_->RemoveChannel (channelsToRemove [i]);
+
+    if (shouldChangeChannel)
+        endRemoveRows ();
+}
+
 void Core::Activated (const QModelIndex& index)
 {
     if (!ActivatedChannel_ || ActivatedChannel_->Items_.size () <= index.row ())

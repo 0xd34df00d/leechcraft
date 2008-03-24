@@ -148,6 +148,7 @@
      <string>Actions</string>
     </property>
     <addaction name="ActionAddFeed_" />
+    <addaction name="ActionRemoveFeed_" />
     <addaction name="ActionUpdateFeeds_" />
     <addaction name="separator" />
     <addaction name="ActionPreferences_" />
@@ -166,8 +167,10 @@
     <bool>false</bool>
    </attribute>
    <addaction name="ActionAddFeed_" />
-   <addaction name="ActionPreferences_" />
+   <addaction name="ActionRemoveFeed_" />
    <addaction name="ActionUpdateFeeds_" />
+   <addaction name="separator" />
+   <addaction name="ActionPreferences_" />
   </widget>
   <action name="ActionAddFeed_" >
    <property name="icon" >
@@ -188,6 +191,11 @@
   <action name="ActionUpdateFeeds_" >
    <property name="text" >
     <string>Update feeds</string>
+   </property>
+  </action>
+  <action name="ActionRemoveFeed_" >
+   <property name="text" >
+    <string>Remove feed</string>
    </property>
   </action>
  </widget>

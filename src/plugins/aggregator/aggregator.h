@@ -40,6 +40,7 @@ protected:
 private slots:
     void showError (const QString&);
     void on_ActionAddFeed__triggered ();
+    void on_ActionRemoveFeed__triggered ();
     void on_ActionPreferences__triggered ();
     void on_Items__activated (const QModelIndex&);
     void on_Items__doubleClicked (const QModelIndex&);

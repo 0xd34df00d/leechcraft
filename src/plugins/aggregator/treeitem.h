@@ -15,6 +15,7 @@ public:
     void AppendChild (TreeItem*);
     void PrependChild (TreeItem*);
     int ChildPosition (TreeItem*);
+    void RemoveChild (int);
     TreeItem* Child (int);
     int ChildCount () const;
     int ColumnCount () const;

@@ -49,6 +49,7 @@ public:
     void DoDelayedInit ();
     void SetProvider (QObject*, const QString&);
     void AddFeed (const QString&);
+    void RemoveFeed (const QModelIndex&);
     void Activated (const QModelIndex&);
     QString GetDescription (const QModelIndex&);
     QAbstractItemModel* GetChannelsModel ();

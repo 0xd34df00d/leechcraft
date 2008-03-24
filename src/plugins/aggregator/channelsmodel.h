@@ -31,6 +31,7 @@ public:
     void Update (const std::vector<boost::shared_ptr<Channel> >&);
     void UpdateTimestamp (const boost::shared_ptr<Channel>&);
     boost::shared_ptr<Channel> GetChannelForIndex (const QModelIndex&) const;
+    void RemoveChannel (const boost::shared_ptr<Channel>&);
 };
 
 #endif
