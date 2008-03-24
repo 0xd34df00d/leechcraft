@@ -278,7 +278,7 @@ void Core::handleJobFinished (int id)
         return;
     }
     QByteArray data = file.readAll ();
-    if (!Feeds_.contains (pj.URL_))
+    if (pj.Role_ != PendingJob::RFeedAdded && !Feeds_.contains (pj.URL_))
     {
         if (silent)
             qWarning () << "Feed with url %1 not found.";
@@ -315,6 +315,7 @@ void Core::handleJobFinished (int id)
     file.remove ();
 
     std::vector<boost::shared_ptr<Channel> > channels = parser->Parse (Feeds_ [pj.URL_].Channels_, data);
+    QString emitString;
     if (pj.Role_ == PendingJob::RFeedAdded)
     {
         Feeds_ [pj.URL_].Channels_ = channels;
@@ -334,9 +335,17 @@ void Core::handleJobFinished (int id)
                 }
 
             if (position == -1)
+            {
                 Feeds_ [pj.URL_].Channels_.push_back (channels [i]);
+                emitString += tr ("Added channel \"%1\" (has %2 items)\r\n").arg (channels [i]->Title_).arg (channels [i]->Items_.size ());
+            }
             else
             {
+                if (channels [i]->Items_.size () - Feeds_ [pj.URL_].Channels_ [position]->Items_.size ())
+                    emitString += tr ("Updated channel \"%1\" (%2 new items)\r\n")
+                        .arg (channels [i]->Title_)
+                        .arg (channels [i]->Items_.size () - Feeds_ [pj.URL_].Channels_ [position]->Items_.size ());
+
                 if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_ [position].get () && channels [i]->Items_.size ())
                     beginInsertRows (QModelIndex (), 0, channels [i]->Items_.size () - Feeds_ [pj.URL_].Channels_ [position]->Items_.size ());
                 Feeds_ [pj.URL_].Channels_ [position]->Items_ = channels.at (i)->Items_;
@@ -366,7 +375,6 @@ void Core::handleJobFinished (int id)
                 int removeFrom = -1;
                 for (int j = 0; j < Feeds_ [pj.URL_].Channels_ [position]->Items_.size (); ++j)
                 {
-                    qDebug () << Feeds_ [pj.URL_].Channels_ [position]->Items_ [j]->Title_ << Feeds_ [pj.URL_].Channels_ [position]->Items_ [j]->PubDate_;
                     if (Feeds_ [pj.URL_].Channels_ [position]->Items_ [j]->PubDate_.daysTo (current) > days)
                     {
                         removeFrom = j;
@@ -386,6 +394,12 @@ void Core::handleJobFinished (int id)
                 }
             }
         }
+    }
+    if (!emitString.isEmpty ())
+    {
+        emitString.prepend ("Aggregator updated:\r\n");
+        qDebug () << emitString;
+        emit showDownloadMessage (emitString);
     }
     scheduleSave ();
 }

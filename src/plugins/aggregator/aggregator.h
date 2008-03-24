@@ -47,6 +47,8 @@ private slots:
     void on_Items__activated (const QModelIndex&);
     void on_Items__doubleClicked (const QModelIndex&);
     void currentItemChanged (const QModelIndex&);
+signals:
+    void downloadFinished (const QString&);
 };
 
 #endif

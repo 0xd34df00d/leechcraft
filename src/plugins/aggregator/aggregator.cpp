@@ -15,6 +15,7 @@ void Aggregator::Init ()
 
     Plugins_->addAction (Ui_.ActionAddFeed_);
     connect (&Core::Instance (), SIGNAL (error (const QString&)), this, SLOT (showError (const QString&)));
+    connect (&Core::Instance (), SIGNAL (showDownloadMessage (const QString&)), this, SIGNAL (downloadFinished (const QString&)));
 
     XmlSettingsDialog_ = new XmlSettingsDialog (this);
     XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/aggregatorsettings.xml");

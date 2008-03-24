@@ -63,9 +63,9 @@ void Main::Core::DelayedInit ()
         IDownload *download = dynamic_cast<IDownload*> (plugin);
         if (download)
         {
-            connect (plugin, SIGNAL (downloadFinished (const QString&)), this, SIGNAL (downloadFinished (const QString&)));
             connect (plugin, SIGNAL (fileDownloaded (const QString&)), this, SLOT (handleFileDownload (const QString&)));
         }
+        connect (plugin, SIGNAL (downloadFinished (const QString&)), this, SIGNAL (downloadFinished (const QString&)));
     }
 }
 

@@ -75,6 +75,7 @@ public slots:
     void updateIntervalChanged ();
 signals:
     void error (const QString&);
+    void showDownloadMessage (const QString&);
 };
 
 #endif
