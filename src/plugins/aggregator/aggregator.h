@@ -4,6 +4,7 @@
 #include "ui_mainwindow.h"
 
 class XmlSettingsDialog;
+class QSortFilterProxyModel;
 
 class Aggregator : public QMainWindow
                  , public IInfo
@@ -18,6 +19,7 @@ class Aggregator : public QMainWindow
 
     QMenu *Plugins_;
     XmlSettingsDialog *XmlSettingsDialog_;
+    QSortFilterProxyModel *ItemsFilterModel_;
 public:
     void Init ();
     void Release ();

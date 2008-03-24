@@ -1,5 +1,7 @@
 #include <QMessageBox>
 #include <QtDebug>
+#include <QSortFilterProxyModel>
+#include <QHeaderView>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "aggregator.h"
 #include "core.h"
@@ -16,9 +18,21 @@ void Aggregator::Init ()
 
     XmlSettingsDialog_ = new XmlSettingsDialog (this);
     XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/aggregatorsettings.xml");
-    Core::Instance ().DoDelayedInit ();
 
-    Ui_.Items_->setModel (&Core::Instance ());
+    Core::Instance ().DoDelayedInit ();
+    ItemsFilterModel_ = new QSortFilterProxyModel (this);
+    ItemsFilterModel_->setSourceModel (&Core::Instance ());
+    ItemsFilterModel_->setFilterKeyColumn (0);
+    Ui_.Items_->setModel (ItemsFilterModel_);
+    connect (&Core::Instance (), SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)), ItemsFilterModel_, SLOT (invalidate ()));
+    connect (Ui_.FixedStringSearch_, SIGNAL (textChanged (const QString&)), ItemsFilterModel_, SLOT (setFilterFixedString (const QString&)));
+    connect (Ui_.WildcardSearch_, SIGNAL (textChanged (const QString&)), ItemsFilterModel_, SLOT (setFilterWildcard (const QString&)));
+    connect (Ui_.RegexpSearch_, SIGNAL (textChanged (const QString&)), ItemsFilterModel_, SLOT (setFilterRegExp (const QString&)));
+
+    QHeaderView *itemsHeader = Ui_.Items_->header ();
+    QFontMetrics fm = fontMetrics ();
+    itemsHeader->resizeSection (1, fm.width ("_99 Mar 9999 99:99:99_"));
+
     Ui_.Feeds_->setModel (Core::Instance ().GetChannelsModel ());
     connect (Ui_.Items_->selectionModel (), SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (currentItemChanged (const QModelIndex&)));
     connect (Ui_.Feeds_->selectionModel (), SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)), &Core::Instance (), SLOT (currentChannelChanged (const QModelIndex&)));
