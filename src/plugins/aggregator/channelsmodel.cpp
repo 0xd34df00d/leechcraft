@@ -1,4 +1,6 @@
 #include <QtDebug>
+#include <QApplication>
+#include <QFont>
 #include "treeitem.h"
 #include "channelsmodel.h"
 #include "channel.h"
@@ -8,7 +10,7 @@ ChannelsModel::ChannelsModel (QObject *parent)
 : QAbstractItemModel (parent)
 {
     QVariantList roots;
-    roots << tr ("Feed") << tr ("Last build");
+    roots << tr ("Feed") << tr ("Last build") << tr ("Unread items");
     RootItem_ = new TreeItem (roots);
 }
 
@@ -29,10 +31,24 @@ QVariant ChannelsModel::data (const QModelIndex& index, int role) const
 {
     if (!index.isValid ())
         return QVariant ();
-    if (role != Qt::DisplayRole)
-        return QVariant ();
 
-    return static_cast<TreeItem*> (index.internalPointer ())->Data (index.column ());
+    if (role == Qt::DisplayRole)
+        return static_cast<TreeItem*> (index.internalPointer ())->Data (index.column ());
+    else if (role == Qt::ForegroundRole)
+        return static_cast<TreeItem*> (index.internalPointer ())->Data (2).toInt () ? Qt::red : Qt::black;
+    else if (role == Qt::FontRole)
+    {
+        if (static_cast<TreeItem*> (index.internalPointer ())->Data (2).toInt ())
+        {
+            QFont defaultFont = QApplication::font ();
+            defaultFont.setBold (true);
+            return defaultFont;
+        }
+        else
+            return QVariant ();
+    }
+    else
+        return QVariant ();
 }
 
 Qt::ItemFlags ChannelsModel::flags (const QModelIndex& index) const
@@ -108,7 +124,7 @@ void ChannelsModel::AddFeed (const Feed& feed)
     {
         QList<QVariant> data;
         boost::shared_ptr<Channel> current = channels.at (i);
-        data << current->Title_ << current->LastBuild_;
+        data << current->Title_ << current->LastBuild_ << current->CountUnreadItems ();
         TreeItem *channelItem = new TreeItem (data, RootItem_);
         RootItem_->AppendChild (channelItem);
         Channel2TreeItem_ [current] = channelItem;
@@ -130,7 +146,7 @@ void ChannelsModel::Update (const std::vector<boost::shared_ptr<Channel> >& chan
             continue;
         QList<QVariant> data;
         boost::shared_ptr<Channel> current = channels.at (i);
-        data << current->Title_ << current->LastBuild_;
+        data << current->Title_ << current->LastBuild_ << current->CountUnreadItems ();
         TreeItem *channelItem = new TreeItem (data, RootItem_);
         RootItem_->AppendChild (channelItem);
         Channel2TreeItem_ [current] = channelItem;
@@ -138,14 +154,29 @@ void ChannelsModel::Update (const std::vector<boost::shared_ptr<Channel> >& chan
     }
 }
 
-void ChannelsModel::UpdateTimestamp (const boost::shared_ptr<Channel>& channel)
+void ChannelsModel::UpdateChannelData (const Channel* channel)
 {
-    if (!Channel2TreeItem_.contains (channel))
+    Channel2TreeItemDictionary_t::const_iterator position = Channel2TreeItem_.end ();
+    for (Channel2TreeItemDictionary_t::const_iterator i = Channel2TreeItem_.begin (); i != Channel2TreeItem_.end (); ++i)
+        if (i.key ().get () == channel)
+        {
+            position = i;
+            break;
+        }
+
+    if (position == Channel2TreeItem_.end ())
         return;
-    TreeItem *item = Channel2TreeItem_ [channel];
+    
+    TreeItem *item = position.value ();
     item->ModifyData (1, channel->LastBuild_);
+    item->ModifyData (2, channel->CountUnreadItems ());
     int pos = RootItem_->ChildPosition (item);
-    emit dataChanged (index (pos, 1), index (pos, 1));
+    emit dataChanged (index (pos, 1), index (pos, 2));
+}
+
+void ChannelsModel::UpdateChannelData (const boost::shared_ptr<Channel>& channel)
+{
+    UpdateChannelData (channel.get ());
 }
 
 boost::shared_ptr<Channel> ChannelsModel::GetChannelForIndex (const QModelIndex& index) const

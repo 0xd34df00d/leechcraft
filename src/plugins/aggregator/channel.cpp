@@ -26,6 +26,14 @@ Channel& Channel::operator= (const Channel& channel)
     Items_ = channel.Items_;
 }
 
+int Channel::CountUnreadItems () const
+{
+    int result = 0;
+    for (size_t i = 0; i < Items_.size (); ++i)
+        result += (Items_ [i]->Unread_);
+    return result;
+}
+
 bool operator== (const Channel& c1, const Channel& c2)
 {
     return c1.Title_ == c2.Title_ &&

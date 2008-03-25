@@ -19,6 +19,8 @@ struct Channel
     Channel ();
     Channel (const Channel&);
     Channel& operator= (const Channel&);
+
+    int CountUnreadItems () const;
 };
 
 bool operator== (const Channel&, const Channel&);

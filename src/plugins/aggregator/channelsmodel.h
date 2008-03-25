@@ -13,8 +13,10 @@ class ChannelsModel : public QAbstractItemModel
     Q_OBJECT
 
     TreeItem *RootItem_;
-    QMap<boost::shared_ptr<Channel>, TreeItem*> Channel2TreeItem_;
-    QMap<TreeItem*, boost::shared_ptr<Channel> > TreeItem2Channel_;
+    typedef QMap<boost::shared_ptr<Channel>, TreeItem*> Channel2TreeItemDictionary_t;
+    typedef QMap<TreeItem*, boost::shared_ptr<Channel> > TreeItem2ChannelDictionary_t;
+    Channel2TreeItemDictionary_t Channel2TreeItem_;
+    TreeItem2ChannelDictionary_t TreeItem2Channel_;
 public:
     ChannelsModel (QObject *parent = 0);
     virtual ~ChannelsModel ();
@@ -29,7 +31,8 @@ public:
 
     void AddFeed (const Feed&);
     void Update (const std::vector<boost::shared_ptr<Channel> >&);
-    void UpdateTimestamp (const boost::shared_ptr<Channel>&);
+    void UpdateChannelData (const Channel*);
+    void UpdateChannelData (const boost::shared_ptr<Channel>&);
     boost::shared_ptr<Channel> GetChannelForIndex (const QModelIndex&) const;
     void RemoveChannel (const boost::shared_ptr<Channel>&);
 };

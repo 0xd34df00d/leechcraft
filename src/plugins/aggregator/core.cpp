@@ -153,6 +153,7 @@ void Core::Activated (const QModelIndex& index)
 
     QString URL =item->Link_;
     item->Unread_ = false;
+    ChannelsModel_->UpdateChannelData (ActivatedChannel_);
     QDesktopServices::openUrl (QUrl (URL));
 }
 
@@ -164,6 +165,7 @@ QString Core::GetDescription (const QModelIndex& index)
     boost::shared_ptr<Item> item = ActivatedChannel_->Items_ [index.row ()];
 
     item->Unread_ = false;
+    ChannelsModel_->UpdateChannelData (ActivatedChannel_);
     return item->Description_;
 }
 
@@ -353,7 +355,7 @@ void Core::handleJobFinished (int id)
                     Feeds_ [pj.URL_].Channels_.at (position)->LastBuild_ = channels.at (i)->LastBuild_;
                 else
                     Feeds_ [pj.URL_].Channels_.at (position)->LastBuild_ = Feeds_ [pj.URL_].Channels_.at (position)->Items_ [0]->PubDate_;
-                ChannelsModel_->UpdateTimestamp (Feeds_ [pj.URL_].Channels_.at (position));
+                ChannelsModel_->UpdateChannelData (Feeds_ [pj.URL_].Channels_.at (position));
                 if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position).get () && channels.at (i)->Items_.size ())
                     endInsertRows ();
                 emit dataChanged (index (0, 0), index (1, channels [i]->Items_.size () - 1));
