@@ -5,6 +5,7 @@
 #include "channelsmodel.h"
 #include "channel.h"
 #include "feed.h"
+#include "item.h"
 
 ChannelsModel::ChannelsModel (QObject *parent)
 : QAbstractItemModel (parent)
@@ -201,5 +202,25 @@ void ChannelsModel::RemoveChannel (const boost::shared_ptr<Channel>& channel)
     RootItem_->RemoveChild (pos);
     delete container;
     endRemoveRows ();
+}
+
+void ChannelsModel::MarkChannelAsRead (const QModelIndex& index)
+{
+    TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
+    boost::shared_ptr<Channel> channel = TreeItem2Channel_ [item];
+    for (int i = 0; i < channel->Items_.size (); ++i)
+        channel->Items_ [i]->Unread_ = false;
+
+    UpdateChannelData (channel);
+}
+
+void ChannelsModel::MarkChannelAsUnread (const QModelIndex& index)
+{
+    TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
+    boost::shared_ptr<Channel> channel = TreeItem2Channel_ [item];
+    for (int i = 0; i < channel->Items_.size (); ++i)
+        channel->Items_ [i]->Unread_ = true;
+
+    UpdateChannelData (channel);
 }
 

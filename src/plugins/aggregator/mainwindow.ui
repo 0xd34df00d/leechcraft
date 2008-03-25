@@ -56,7 +56,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="" >
+      <widget class="QWidget" name="layoutWidget" >
        <layout class="QVBoxLayout" >
         <item>
          <layout class="QGridLayout" >
@@ -186,6 +186,21 @@
   <action name="ActionRemoveFeed_" >
    <property name="text" >
     <string>Remove feed</string>
+   </property>
+  </action>
+  <action name="ActionMarkItemAsUnread_" >
+   <property name="text" >
+    <string>Mark item as unread</string>
+   </property>
+  </action>
+  <action name="ActionMarkChannelAsRead_" >
+   <property name="text" >
+    <string>Mark channel as read</string>
+   </property>
+  </action>
+  <action name="ActionMarkChannelAsUnread_" >
+   <property name="text" >
+    <string>Mark channel as unread</string>
    </property>
   </action>
  </widget>

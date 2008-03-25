@@ -174,6 +174,37 @@ QAbstractItemModel* Core::GetChannelsModel ()
     return ChannelsModel_;
 }
 
+void Core::MarkItemAsUnread (const QModelIndex& i)
+{
+    qDebug () << Q_FUNC_INFO;
+    if (!ActivatedChannel_ || !i.isValid ())
+        return;
+
+    ActivatedChannel_->Items_ [i.row ()]->Unread_ = true;
+    ChannelsModel_->UpdateChannelData (ActivatedChannel_);
+    emit dataChanged (index (i.row (), 0), index (i.row (), 1));
+}
+
+void Core::MarkChannelAsRead (const QModelIndex& i)
+{
+    if (!ActivatedChannel_ || !i.isValid ())
+        return;
+
+    ChannelsModel_->MarkChannelAsRead (i);
+    if (ChannelsModel_->GetChannelForIndex (i).get () == ActivatedChannel_)
+        emit dataChanged (index (0, 0), index (ActivatedChannel_->Items_.size () - 1, 1));
+}
+
+void Core::MarkChannelAsUnread (const QModelIndex& i)
+{
+    if (!ActivatedChannel_ || !i.isValid ())
+        return;
+
+    ChannelsModel_->MarkChannelAsUnread (i);
+    if (ChannelsModel_->GetChannelForIndex (i).get () == ActivatedChannel_)
+        emit dataChanged (index (0, 0), index (ActivatedChannel_->Items_.size () - 1, 1));
+}
+
 int Core::columnCount (const QModelIndex& parent) const
 {
     return ItemHeaders_.size ();
@@ -358,7 +389,7 @@ void Core::handleJobFinished (int id)
                 ChannelsModel_->UpdateChannelData (Feeds_ [pj.URL_].Channels_.at (position));
                 if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position).get () && channels.at (i)->Items_.size ())
                     endInsertRows ();
-                emit dataChanged (index (0, 0), index (1, channels [i]->Items_.size () - 1));
+                emit dataChanged (index (0, 0), index (channels [i]->Items_.size () - 1, 1));
 
 
                 int ipc = XmlSettingsManager::Instance ()->property ("ItemsPerChannel").toInt ();
@@ -400,7 +431,6 @@ void Core::handleJobFinished (int id)
     if (!emitString.isEmpty ())
     {
         emitString.prepend ("Aggregator updated:\r\n");
-        qDebug () << emitString;
         emit showDownloadMessage (emitString);
     }
     scheduleSave ();

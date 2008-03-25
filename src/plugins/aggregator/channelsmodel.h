@@ -35,6 +35,8 @@ public:
     void UpdateChannelData (const boost::shared_ptr<Channel>&);
     boost::shared_ptr<Channel> GetChannelForIndex (const QModelIndex&) const;
     void RemoveChannel (const boost::shared_ptr<Channel>&);
+    void MarkChannelAsRead (const QModelIndex&);
+    void MarkChannelAsUnread (const QModelIndex&);
 };
 
 #endif

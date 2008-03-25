@@ -53,6 +53,9 @@ public:
     void Activated (const QModelIndex&);
     QString GetDescription (const QModelIndex&);
     QAbstractItemModel* GetChannelsModel ();
+    void MarkItemAsUnread (const QModelIndex&);
+    void MarkChannelAsRead (const QModelIndex&);
+    void MarkChannelAsUnread (const QModelIndex&);
 
     virtual int columnCount (const QModelIndex& parent = QModelIndex ()) const;
     virtual QVariant data (const QModelIndex&, int role = Qt::DisplayRole) const;

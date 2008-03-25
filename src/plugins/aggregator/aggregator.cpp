@@ -25,6 +25,8 @@ void Aggregator::Init ()
     ItemsFilterModel_->setSourceModel (&Core::Instance ());
     ItemsFilterModel_->setFilterKeyColumn (0);
     Ui_.Items_->setModel (ItemsFilterModel_);
+    Ui_.Items_->addAction (Ui_.ActionMarkItemAsUnread_);
+    Ui_.Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
     connect (&Core::Instance (), SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)), ItemsFilterModel_, SLOT (invalidate ()));
     connect (Ui_.FixedStringSearch_, SIGNAL (textChanged (const QString&)), ItemsFilterModel_, SLOT (setFilterFixedString (const QString&)));
     connect (Ui_.WildcardSearch_, SIGNAL (textChanged (const QString&)), ItemsFilterModel_, SLOT (setFilterWildcard (const QString&)));
@@ -35,6 +37,9 @@ void Aggregator::Init ()
     itemsHeader->resizeSection (1, fm.width ("_99 Mar 9999 99:99:99_"));
 
     Ui_.Feeds_->setModel (Core::Instance ().GetChannelsModel ());
+    Ui_.Feeds_->addAction (Ui_.ActionMarkChannelAsRead_);
+    Ui_.Feeds_->addAction (Ui_.ActionMarkChannelAsUnread_);
+    Ui_.Feeds_->setContextMenuPolicy (Qt::ActionsContextMenu);
     connect (Ui_.Items_->selectionModel (), SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (currentItemChanged (const QModelIndex&)));
     connect (Ui_.Feeds_->selectionModel (), SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)), &Core::Instance (), SLOT (currentChannelChanged (const QModelIndex&)));
     connect (Ui_.ActionUpdateFeeds_, SIGNAL (triggered ()), &Core::Instance (), SLOT (updateFeeds ()));
@@ -154,6 +159,27 @@ void Aggregator::on_Items__activated (const QModelIndex& index)
 void Aggregator::on_Items__doubleClicked (const QModelIndex& index)
 {
     Core::Instance ().Activated (index);
+}
+
+void Aggregator::on_ActionMarkItemAsUnread__triggered ()
+{
+    QModelIndexList indexes = Ui_.Items_->selectionModel ()->selectedRows ();
+    for (int i = 0; i < indexes.size (); ++i)
+        Core::Instance ().MarkItemAsUnread (indexes.at (i));
+}
+
+void Aggregator::on_ActionMarkChannelAsRead__triggered ()
+{
+    QModelIndexList indexes = Ui_.Feeds_->selectionModel ()->selectedRows ();
+    for (int i = 0; i < indexes.size (); ++i)
+        Core::Instance ().MarkChannelAsRead (indexes.at (i));
+}
+
+void Aggregator::on_ActionMarkChannelAsUnread__triggered ()
+{
+    QModelIndexList indexes = Ui_.Feeds_->selectionModel ()->selectedRows ();
+    for (int i = 0; i < indexes.size (); ++i)
+        Core::Instance ().MarkChannelAsUnread (indexes.at (i));
 }
 
 void Aggregator::currentItemChanged (const QModelIndex& index)
