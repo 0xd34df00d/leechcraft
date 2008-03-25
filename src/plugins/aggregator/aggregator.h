@@ -51,6 +51,7 @@ private slots:
     void on_ActionMarkItemAsUnread__triggered ();
     void on_ActionMarkChannelAsRead__triggered ();
     void on_ActionMarkChannelAsUnread__triggered ();
+    void on_ChannelTags__textChanged (const QString&);
     void currentItemChanged (const QModelIndex&);
     void currentChannelChanged (const QModelIndex&);
 signals:

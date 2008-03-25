@@ -57,7 +57,8 @@ public:
     void MarkItemAsUnread (const QModelIndex&);
     void MarkChannelAsRead (const QModelIndex&);
     void MarkChannelAsUnread (const QModelIndex&);
-    QStringList GetTagsForIndex (int);
+    QStringList GetTagsForIndex (int) const;
+    void SetTagsForIndex (const QString&, const QModelIndex&);
 
     virtual int columnCount (const QModelIndex& parent = QModelIndex ()) const;
     virtual QVariant data (const QModelIndex&, int role = Qt::DisplayRole) const;

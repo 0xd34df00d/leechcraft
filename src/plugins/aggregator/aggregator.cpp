@@ -175,21 +175,29 @@ void Aggregator::on_ActionMarkItemAsUnread__triggered ()
 {
     QModelIndexList indexes = Ui_.Items_->selectionModel ()->selectedRows ();
     for (int i = 0; i < indexes.size (); ++i)
-        Core::Instance ().MarkItemAsUnread (indexes.at (i));
+        Core::Instance ().MarkItemAsUnread (ItemsFilterModel_->mapToSource (indexes.at (i)));
 }
 
 void Aggregator::on_ActionMarkChannelAsRead__triggered ()
 {
     QModelIndexList indexes = Ui_.Feeds_->selectionModel ()->selectedRows ();
     for (int i = 0; i < indexes.size (); ++i)
-        Core::Instance ().MarkChannelAsRead (indexes.at (i));
+        Core::Instance ().MarkChannelAsRead (ChannelsFilterModel_->mapToSource (indexes.at (i)));
 }
 
 void Aggregator::on_ActionMarkChannelAsUnread__triggered ()
 {
     QModelIndexList indexes = Ui_.Feeds_->selectionModel ()->selectedRows ();
     for (int i = 0; i < indexes.size (); ++i)
-        Core::Instance ().MarkChannelAsUnread (indexes.at (i));
+        Core::Instance ().MarkChannelAsUnread (ChannelsFilterModel_->mapToSource (indexes.at (i)));
+}
+
+void Aggregator::on_ChannelTags__textChanged (const QString& tags)
+{
+    QModelIndex current = Ui_.Feeds_->selectionModel ()->currentIndex ();
+    if (!current.isValid ())
+        return;
+    Core::Instance ().SetTagsForIndex (tags, ChannelsFilterModel_->mapToSource (current));
 }
 
 void Aggregator::currentItemChanged (const QModelIndex& index)
@@ -200,6 +208,7 @@ void Aggregator::currentItemChanged (const QModelIndex& index)
 void Aggregator::currentChannelChanged (const QModelIndex& index)
 {
     Core::Instance ().currentChannelChanged (ChannelsFilterModel_->mapToSource (index));
+    Ui_.ChannelTags_->setText (Core::Instance ().GetTagsForIndex (ChannelsFilterModel_->mapToSource (index).row ()).join (" "));
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_aggregator, Aggregator);

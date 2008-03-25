@@ -204,13 +204,19 @@ void Core::MarkChannelAsUnread (const QModelIndex& i)
         emit dataChanged (index (0, 0), index (ActivatedChannel_->Items_.size () - 1, 1));
 }
 
-QStringList Core::GetTagsForIndex (int i)
+QStringList Core::GetTagsForIndex (int i) const
 {
     boost::shared_ptr<Channel> channel = ChannelsModel_->GetChannelForIndex (ChannelsModel_->index (i, 0));
     if (channel)
         return channel->Tags_;
     else
         return QStringList ();
+}
+
+void Core::SetTagsForIndex (const QString& tags, const QModelIndex& index)
+{
+    boost::shared_ptr<Channel> channel = ChannelsModel_->GetChannelForIndex (index);
+    channel->Tags_ = tags.split (' ');
 }
 
 int Core::columnCount (const QModelIndex& parent) const

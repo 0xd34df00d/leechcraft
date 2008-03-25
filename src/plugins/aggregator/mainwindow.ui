@@ -54,6 +54,80 @@
           </property>
          </widget>
         </item>
+        <item>
+         <widget class="QGroupBox" name="ChannelDashboard_" >
+          <property name="minimumSize" >
+           <size>
+            <width>0</width>
+            <height>140</height>
+           </size>
+          </property>
+          <property name="title" >
+           <string>Channel dashboard</string>
+          </property>
+          <layout class="QGridLayout" >
+           <item row="0" column="0" colspan="2" >
+            <widget class="QLabel" name="ChannelImage_" >
+             <property name="text" >
+              <string>&lt;channel image></string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" >
+            <widget class="QLabel" name="label_5" >
+             <property name="text" >
+              <string>Tags:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1" >
+            <widget class="QLineEdit" name="ChannelTags_" />
+           </item>
+           <item row="2" column="0" >
+            <widget class="QLabel" name="label_8" >
+             <property name="text" >
+              <string>Description:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1" >
+            <widget class="QLabel" name="ChannelDescription_" >
+             <property name="text" >
+              <string>&lt;description></string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0" >
+            <widget class="QLabel" name="label_6" >
+             <property name="text" >
+              <string>Author:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1" >
+            <widget class="QLabel" name="ChannelAuthor_" >
+             <property name="text" >
+              <string>&lt;author></string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0" >
+            <widget class="QLabel" name="label_7" >
+             <property name="text" >
+              <string>Language:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1" >
+            <widget class="QLabel" name="ChannelLanguage_" >
+             <property name="text" >
+              <string>&lt;language></string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="layoutWidget" >
