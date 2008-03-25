@@ -9,6 +9,7 @@ class AddFeed : public QDialog, private Ui::AddFeed
 public:
     AddFeed (QWidget *parent = 0);
     QString GetURL () const;
+    QStringList GetTags () const;
 };
 
 #endif

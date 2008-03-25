@@ -5,6 +5,7 @@
 
 class XmlSettingsDialog;
 class QSortFilterProxyModel;
+class ChannelsFilterModel;
 
 class Aggregator : public QMainWindow
                  , public IInfo
@@ -20,6 +21,7 @@ class Aggregator : public QMainWindow
     QMenu *Plugins_;
     XmlSettingsDialog *XmlSettingsDialog_;
     QSortFilterProxyModel *ItemsFilterModel_;
+    ChannelsFilterModel *ChannelsFilterModel_;
 public:
     void Init ();
     void Release ();
@@ -50,6 +52,7 @@ private slots:
     void on_ActionMarkChannelAsRead__triggered ();
     void on_ActionMarkChannelAsUnread__triggered ();
     void currentItemChanged (const QModelIndex&);
+    void currentChannelChanged (const QModelIndex&);
 signals:
     void downloadFinished (const QString&);
 };

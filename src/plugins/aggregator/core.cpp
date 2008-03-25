@@ -77,7 +77,7 @@ void Core::SetProvider (QObject *provider, const QString& feature)
     }
 }
 
-void Core::AddFeed (const QString& url)
+void Core::AddFeed (const QString& url, const QStringList& tags)
 {
     if (Feeds_.contains (url))
     {
@@ -100,7 +100,7 @@ void Core::AddFeed (const QString& url)
     QTemporaryFile file;
     file.open ();
     DirectDownloadParams params = { url, file.fileName (), true, false };
-    PendingJob pj = { PendingJob::RFeedAdded, url, file.fileName () };
+    PendingJob pj = { PendingJob::RFeedAdded, url, file.fileName (), tags };
     int id = idd->AddJob (params);
     PendingJobs_ [id] = pj;
     file.close ();
@@ -176,7 +176,6 @@ QAbstractItemModel* Core::GetChannelsModel ()
 
 void Core::MarkItemAsUnread (const QModelIndex& i)
 {
-    qDebug () << Q_FUNC_INFO;
     if (!ActivatedChannel_ || !i.isValid ())
         return;
 
@@ -203,6 +202,15 @@ void Core::MarkChannelAsUnread (const QModelIndex& i)
     ChannelsModel_->MarkChannelAsUnread (i);
     if (ChannelsModel_->GetChannelForIndex (i).get () == ActivatedChannel_)
         emit dataChanged (index (0, 0), index (ActivatedChannel_->Items_.size () - 1, 1));
+}
+
+QStringList Core::GetTagsForIndex (int i)
+{
+    boost::shared_ptr<Channel> channel = ChannelsModel_->GetChannelForIndex (ChannelsModel_->index (i, 0));
+    if (channel)
+        return channel->Tags_;
+    else
+        return QStringList ();
 }
 
 int Core::columnCount (const QModelIndex& parent) const
@@ -334,7 +342,6 @@ void Core::handleJobFinished (int id)
     {
         Feed feed;
         feed.URL_ = pj.URL_;
-        feed.LastUpdate_ = QDateTime::currentDateTime ();
         Feeds_ [pj.URL_] = feed;
     }
 
@@ -352,6 +359,8 @@ void Core::handleJobFinished (int id)
     if (pj.Role_ == PendingJob::RFeedAdded)
     {
         Feeds_ [pj.URL_].Channels_ = channels;
+        for (int i = 0; i < channels.size (); ++i)
+            channels [i]->Tags_ = pj.Tags_;
         ChannelsModel_->AddFeed (Feeds_ [pj.URL_]);
     }
     else if (pj.Role_ == PendingJob::RFeedUpdated)

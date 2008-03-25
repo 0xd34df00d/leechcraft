@@ -10,3 +10,9 @@ QString AddFeed::GetURL () const
 {
     return URL_->text ();
 }
+
+QStringList AddFeed::GetTags () const
+{
+    return Tags_->text ().split (' ', QString::SkipEmptyParts);
+}
+

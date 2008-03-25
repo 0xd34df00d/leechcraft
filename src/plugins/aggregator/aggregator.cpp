@@ -6,6 +6,7 @@
 #include "aggregator.h"
 #include "core.h"
 #include "addfeed.h"
+#include "channelsfiltermodel.h"
 #include "xmlsettingsmanager.h"
 
 void Aggregator::Init ()
@@ -24,24 +25,33 @@ void Aggregator::Init ()
     ItemsFilterModel_ = new QSortFilterProxyModel (this);
     ItemsFilterModel_->setSourceModel (&Core::Instance ());
     ItemsFilterModel_->setFilterKeyColumn (0);
+    ItemsFilterModel_->setDynamicSortFilter (true);
     Ui_.Items_->setModel (ItemsFilterModel_);
     Ui_.Items_->addAction (Ui_.ActionMarkItemAsUnread_);
     Ui_.Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
-    connect (&Core::Instance (), SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)), ItemsFilterModel_, SLOT (invalidate ()));
     connect (Ui_.FixedStringSearch_, SIGNAL (textChanged (const QString&)), ItemsFilterModel_, SLOT (setFilterFixedString (const QString&)));
     connect (Ui_.WildcardSearch_, SIGNAL (textChanged (const QString&)), ItemsFilterModel_, SLOT (setFilterWildcard (const QString&)));
     connect (Ui_.RegexpSearch_, SIGNAL (textChanged (const QString&)), ItemsFilterModel_, SLOT (setFilterRegExp (const QString&)));
-
     QHeaderView *itemsHeader = Ui_.Items_->header ();
     QFontMetrics fm = fontMetrics ();
+    itemsHeader->resizeSection (0, fm.width ("Average news article size is about this width or maybe bigger"));
     itemsHeader->resizeSection (1, fm.width ("_99 Mar 9999 99:99:99_"));
 
-    Ui_.Feeds_->setModel (Core::Instance ().GetChannelsModel ());
+    ChannelsFilterModel_ = new ChannelsFilterModel (this);
+    ChannelsFilterModel_->setSourceModel (Core::Instance ().GetChannelsModel ());
+    ChannelsFilterModel_->setFilterKeyColumn (0);
+    ChannelsFilterModel_->setDynamicSortFilter (true);
+    Ui_.Feeds_->setModel (ChannelsFilterModel_);
     Ui_.Feeds_->addAction (Ui_.ActionMarkChannelAsRead_);
     Ui_.Feeds_->addAction (Ui_.ActionMarkChannelAsUnread_);
     Ui_.Feeds_->setContextMenuPolicy (Qt::ActionsContextMenu);
+    QHeaderView *channelsHeader = Ui_.Feeds_->header ();
+    channelsHeader->resizeSection (0, fm.width ("Average channel name or maybe bigger"));
+    channelsHeader->resizeSection (1, fm.width ("_99 Mar 9999 99:99:99_"));
+    channelsHeader->resizeSection (2, fm.width ("_999_"));
+    connect (Ui_.TagsLine_, SIGNAL (textChanged (const QString&)), ChannelsFilterModel_, SLOT (setFilterFixedString (const QString&)));
+    connect (Ui_.Feeds_->selectionModel (), SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (currentChannelChanged (const QModelIndex&)));
     connect (Ui_.Items_->selectionModel (), SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (currentItemChanged (const QModelIndex&)));
-    connect (Ui_.Feeds_->selectionModel (), SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)), &Core::Instance (), SLOT (currentChannelChanged (const QModelIndex&)));
     connect (Ui_.ActionUpdateFeeds_, SIGNAL (triggered ()), &Core::Instance (), SLOT (updateFeeds ()));
 }
 
@@ -129,7 +139,7 @@ void Aggregator::closeEvent (QCloseEvent*)
 
 void Aggregator::showError (const QString& msg)
 {
-    qDebug () << Q_FUNC_INFO << msg;
+    qWarning () << Q_FUNC_INFO << msg;
     QMessageBox::warning (0, tr ("Error"), msg);
 }
 
@@ -137,7 +147,7 @@ void Aggregator::on_ActionAddFeed__triggered ()
 {
     AddFeed af;
     if (af.exec () == QDialog::Accepted)
-        Core::Instance ().AddFeed (af.GetURL ());
+        Core::Instance ().AddFeed (af.GetURL (), af.GetTags ());
 }
 
 void Aggregator::on_ActionRemoveFeed__triggered ()
@@ -185,6 +195,11 @@ void Aggregator::on_ActionMarkChannelAsUnread__triggered ()
 void Aggregator::currentItemChanged (const QModelIndex& index)
 {
     Ui_.ItemView_->setHtml (Core::Instance ().GetDescription (index));
+}
+
+void Aggregator::currentChannelChanged (const QModelIndex& index)
+{
+    Core::Instance ().currentChannelChanged (ChannelsFilterModel_->mapToSource (index));
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_aggregator, Aggregator);

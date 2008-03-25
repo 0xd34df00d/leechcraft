@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>320</width>
-    <height>75</height>
+    <width>335</width>
+    <height>102</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -14,18 +14,32 @@
   </property>
   <layout class="QVBoxLayout" >
    <item>
-    <layout class="QHBoxLayout" >
-     <item>
+    <layout class="QGridLayout" >
+     <item row="0" column="0" >
       <widget class="QLabel" name="label" >
        <property name="text" >
         <string>URL:</string>
        </property>
       </widget>
      </item>
-     <item>
+     <item row="0" column="1" >
       <widget class="QLineEdit" name="URL_" >
        <property name="text" >
         <string>http://www.mininova.org/rss.xml</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" >
+      <widget class="QLabel" name="label_2" >
+       <property name="text" >
+        <string>Tags:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" >
+      <widget class="QLineEdit" name="Tags_" >
+       <property name="text" >
+        <string>untagged</string>
        </property>
       </widget>
      </item>

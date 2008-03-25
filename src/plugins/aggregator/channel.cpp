@@ -1,6 +1,7 @@
 #include <QtDebug>
 #include <QDataStream>
 #include <QVariant>
+#include <QStringList>
 #include "channel.h"
 #include "item.h"
 
@@ -13,6 +14,7 @@ Channel::Channel (const Channel& channel)
 , Link_ (channel.Link_)
 , Description_ (channel.Description_)
 , LastBuild_ (channel.LastBuild_)
+, Tags_ (channel.Tags_)
 , Items_ (channel.Items_)
 {
 }
@@ -23,6 +25,7 @@ Channel& Channel::operator= (const Channel& channel)
     Link_ = channel.Link_;
     Description_ = channel.Description_;
     LastBuild_ = channel.LastBuild_;
+    Tags_ = channel.Tags_;
     Items_ = channel.Items_;
 }
 
@@ -45,6 +48,7 @@ QDataStream& operator<< (QDataStream& out, const Channel& chan)
     out << chan.Title_
         << chan.Link_
         << chan.Description_
+        << chan.Tags_
         << chan.LastBuild_
         << static_cast<quint32> (chan.Items_.size ());
     for (int i = 0; i < chan.Items_.size (); ++i)
@@ -58,6 +62,7 @@ QDataStream& operator>> (QDataStream& in, Channel& chan)
     in >> chan.Title_
         >> chan.Link_
         >> chan.Description_
+        >> chan.Tags_
         >> chan.LastBuild_;
     in >> size;
     chan.Items_.reserve (size);

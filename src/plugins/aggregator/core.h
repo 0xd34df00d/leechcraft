@@ -34,6 +34,7 @@ class Core : public QAbstractItemModel
         } Role_;
         QString URL_;
         QString Filename_;
+        QStringList Tags_;
     };
     QMap<int, PendingJob> PendingJobs_;
 
@@ -48,7 +49,7 @@ public:
     void Release ();
     void DoDelayedInit ();
     void SetProvider (QObject*, const QString&);
-    void AddFeed (const QString&);
+    void AddFeed (const QString&, const QStringList&);
     void RemoveFeed (const QModelIndex&);
     void Activated (const QModelIndex&);
     QString GetDescription (const QModelIndex&);
@@ -56,6 +57,7 @@ public:
     void MarkItemAsUnread (const QModelIndex&);
     void MarkChannelAsRead (const QModelIndex&);
     void MarkChannelAsUnread (const QModelIndex&);
+    QStringList GetTagsForIndex (int);
 
     virtual int columnCount (const QModelIndex& parent = QModelIndex ()) const;
     virtual QVariant data (const QModelIndex&, int role = Qt::DisplayRole) const;
