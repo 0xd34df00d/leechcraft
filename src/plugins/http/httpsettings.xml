@@ -38,6 +38,10 @@
                 <label lang="en" value="Automatically get file size" />
                 <label lang="ru" value="Автоматически получать размер файла" />
             </item>
+            <item type="lineedit" property="FiletypesFromBuffer" default="7z aac aiff arj avi bin bz2 cab dll exe flac gz img iso jar mkv mp3 ogg pdf rar tar tta wav zip">
+                <label lang="en" value="Watch these filetypes in clipboard" />
+                <label lang="ru" value="Следить за этими типами файлов в буфере обмена" />
+            </item>
         </groupbox>
     </page>
     <page>

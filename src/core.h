@@ -51,7 +51,7 @@ namespace Main
         QPair<qint64, qint64> GetSpeeds () const;
         QList<JobHolder> GetJobHolders () const;
     private slots:
-        void handleFileDownload (const QString&);
+        void handleFileDownload (const QString&, bool fromBuffer = false);
         void handleClipboardTimer ();
     private:
         void PreparePools ();

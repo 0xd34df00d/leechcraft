@@ -69,7 +69,7 @@ public:
     virtual void StartAll () = 0;
     virtual void StopAll () = 0;
 
-    virtual bool CouldDownload (const QString&) const = 0;
+    virtual bool CouldDownload (const QString&, bool) const = 0;
     virtual void AddJob (const QString&) = 0;
 
     virtual ~IDownload () {}

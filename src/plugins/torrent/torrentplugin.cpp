@@ -223,7 +223,7 @@ QAbstractItemDelegate* TorrentPlugin::GetDelegate () const
     return 0;
 }
 
-bool TorrentPlugin::CouldDownload (const QString& string) const
+bool TorrentPlugin::CouldDownload (const QString& string, bool buffer) const
 {
     QFile file (string);
     if (!file.exists () || !file.open (QIODevice::ReadOnly))

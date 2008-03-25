@@ -56,7 +56,7 @@ public:
     qint64 GetUploadSpeed () const;
     void StartAll ();
     void StopAll ();
-    bool CouldDownload (const QString&) const;
+    bool CouldDownload (const QString&, bool) const;
     void AddJob (const QString&);
 
     // IRemoteable

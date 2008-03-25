@@ -182,15 +182,29 @@ void HttpPlugin::StopAll ()
     JobManager::Instance ().StopAll ();
 }
 
-bool HttpPlugin::CouldDownload (const QString& string) const
+bool HttpPlugin::CouldDownload (const QString& string, bool buffer) const
 {
-    QUrl url (string);
-    return url.isValid () && url.scheme () == "ftp" || url.scheme () == "http";
+    if (buffer)
+    {
+        QUrl url (string);
+        if (url.isValid () && url.scheme () == "ftp" || url.scheme () == "http")
+        {
+            QStringList extensions = XmlSettingsManager::Instance ()->property ("FiletypesFromBuffer").toString ().split (' ');
+            return extensions.contains (QFileInfo (string).suffix ());
+        }
+        else
+            return false;
+    }
+    else
+    {
+        QUrl url (string);
+        return url.isValid () && url.scheme () == "ftp" || url.scheme () == "http";
+    }
 }
 
 void HttpPlugin::AddJob (const QString& name)
 {
-    if (!CouldDownload (name))
+    if (!CouldDownload (name, false))
         return;
 
     JobAdderDialog *dia = new JobAdderDialog (this);

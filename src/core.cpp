@@ -95,13 +95,10 @@ void Main::Core::TryToAddJob (const QString& name)
     {
         IDownload *di = dynamic_cast<IDownload*> (plugin);
         IInfo *ii = qobject_cast<IInfo*> (plugin);
-        if (di)
+        if (di && di->CouldDownload (name, false))
         {
-            if (di->CouldDownload (name))
-            {
-                di->AddJob (name);
-                return;
-            }
+            di->AddJob (name);
+            return;
         }
     }
     emit error (tr ("No plugins are able to download \"%1\"").arg (name));
@@ -140,9 +137,9 @@ QList<JobHolder> Main::Core::GetJobHolders () const
     return result;
 }
 
-void Main::Core::handleFileDownload (const QString& file)
+void Main::Core::handleFileDownload (const QString& file, bool fromBuffer)
 {
-    if (!XmlSettingsManager::Instance ()->property ("QueryPluginsToHandleFinished").toBool ())
+    if (!fromBuffer && !XmlSettingsManager::Instance ()->property ("QueryPluginsToHandleFinished").toBool ())
         return;
 
     QObjectList plugins = PluginManager_->GetAllCastableTo<IDownload*> ();
@@ -150,7 +147,7 @@ void Main::Core::handleFileDownload (const QString& file)
     {
         IDownload *id = dynamic_cast<IDownload*> (plugins.at (i));
         IInfo *ii = dynamic_cast<IInfo*> (plugins.at (i));
-        if (id->CouldDownload (file))
+        if (id->CouldDownload (file, fromBuffer))
         {
             if (QMessageBox::question (qobject_cast<QWidget*> (qobject_cast<QObject*> (this)->parent ()),
                 tr ("Question"),
@@ -172,7 +169,7 @@ void Main::Core::handleClipboardTimer ()
     PreviousClipboardContents_ = text;
 
     if (XmlSettingsManager::Instance ()->property ("WatchClipboard").toBool ())
-        handleFileDownload (text);
+        handleFileDownload (text, true);
 }
 
 void Main::Core::PreparePools ()

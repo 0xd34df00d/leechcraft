@@ -92,7 +92,7 @@ void Core::AddFeed (const QString& url)
         emit error (tr ("Strange, but no suitable provider found"));
         return;
     }
-    if (!idd->CouldDownload (url))
+    if (!idd->CouldDownload (url, false))
     {
         emit error (tr ("Could not handle URL %1").arg (url));
         return;
@@ -448,7 +448,7 @@ void Core::updateFeeds ()
     QList<QString> urls = Feeds_.keys ();
     for (int i = 0; i < urls.size (); ++i)
     {
-        if (!idd->CouldDownload (urls.at (i)))
+        if (!idd->CouldDownload (urls.at (i), false))
         {
             emit error (tr ("Could not handle URL %1").arg (urls.at (i)));
             continue;

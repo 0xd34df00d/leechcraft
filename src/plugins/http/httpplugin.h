@@ -88,7 +88,7 @@ public:
     virtual void StartAll ();
     virtual void StopAll ();
     
-    virtual bool CouldDownload (const QString&) const;
+    virtual bool CouldDownload (const QString&, bool) const;
     virtual void AddJob (const QString&);
     virtual int AddJob (const DirectDownloadParams&);
 
