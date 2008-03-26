@@ -121,6 +121,7 @@ public slots:
     void maxUploadsChanged ();
     void maxConnectionsChanged ();
     void setProxySettings ();
+    void setGeneralSettings ();
 signals:
     void error (QString) const;
     void logMessage (const QString&);

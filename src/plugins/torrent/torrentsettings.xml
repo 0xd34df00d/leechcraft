@@ -7,22 +7,60 @@
         <tab>
             <label lang="en" value="General" />
             <label lang="ru" value="Общие" />
-            <item type="spinboxrange" property="TCPPortRange" default="6881:6889" minimum="1" maximum="65535" step="5">
-                <label lang="en" value="Port range" />
-                <label lang="ru" value="Диапазон портов" />
-            </item>
-            <item type="checkbox" property="DHTEnabled" state="on">
-                <label lang="en" value="DHT enabled" />
-                <label lang="ru" value="DHT включен" />
-            </item>
-            <item type="spinbox" property="MaxUploads" default="100" minimum="1" maximum="5000" step="5">
-                <label lang="en" value="Maximum upload connections" />
-                <label lang="ru" value="Максимально одновременных соединений на раздачу" />
-            </item>
-            <item type="spinbox" property="MaxConnections" default="200" minimum="2" maximum="5000" step="10">
-                <label lang="en" value="Maximum total connections" />
-                <label lang="ru" value="Максимально одновременных соединений всего" />
-            </item>
+            <groupbox>
+                <label lang="en" value="General" />
+                <label lang="ru" value="Общие" />
+                <item type="checkbox" property="DHTEnabled" state="on">
+                    <label lang="en" value="DHT enabled" />
+                    <label lang="ru" value="DHT включен" />
+                </item>
+                <item type="spinboxrange" property="TCPPortRange" default="6881:6889" minimum="1" maximum="65535" step="5">
+                    <label lang="en" value="Port range" />
+                    <label lang="ru" value="Диапазон портов" />
+                </item>
+                <item type="spinbox" property="MaxUploads" default="100" minimum="1" maximum="5000" step="5">
+                    <label lang="en" value="Maximum upload connections" />
+                    <label lang="ru" value="Максимально одновременных соединений на раздачу" />
+                </item>
+                <item type="spinbox" property="MaxConnections" default="200" minimum="2" maximum="5000" step="10">
+                    <label lang="en" value="Maximum total connections" />
+                    <label lang="ru" value="Максимально одновременных соединений всего" />
+                </item>
+                <item type="lineedit" property="UserAgent" default="LeechCraft">
+                    <label lang="en" value="User agent" />
+                    <label lang="ru" value="Идентифицировать себя как" />
+                </item>
+                <item type="spinbox" property="TrackerCompletionTimeout" default="60">
+                    <lang value="en">
+                        <label value="Tracker request completion timeout" />
+                        <suffix value=" s" />
+                    </lang>
+                    <lang value="ru">
+                        <label value="Таймаут ожидания результата запроса от трекера" />
+                        <suffix value=" с" />
+                    </lang>
+                </item>
+                <item type="spinbox" property="TrackerReceiveTimeout" default="40">
+                    <lang value="en">
+                        <label value="Tracker data receive timeout" />
+                        <suffix value=" s" />
+                    </lang>
+                    <lang value="ru">
+                        <label value="Таймаут ожидания получения данных от трекера" />
+                        <suffix value=" с" />
+                    </lang>
+                </item>
+                <item type="spinbox" property="StopTrackerTimeout" default="5">
+                    <lang value="en">
+                        <label value="Stop tracker timeout" />
+                        <suffix value=" s" />
+                    </lang>
+                    <lang value="ru">
+                        <label value="Таймаут отсоединения от трекера" />
+                        <suffix value=" с" />
+                    </lang>
+                </item>
+            </groupbox>
         </tab>
         <tab>
             <label lang="en" value="Proxy" />

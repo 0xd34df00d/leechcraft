@@ -237,7 +237,7 @@ XmlSettingsDialog::LangElements XmlSettingsDialog::GetLangElements (const QDomEl
             found = true;
             break;
         }
-        result = result.nextSiblingElement ("result");
+        result = result.nextSiblingElement ("lang");
     }
     if (!found)
     {
@@ -249,7 +249,7 @@ XmlSettingsDialog::LangElements XmlSettingsDialog::GetLangElements (const QDomEl
                 found = true;
                 break;
             }
-            result = result.nextSiblingElement ("result");
+            result = result.nextSiblingElement ("lang");
         }
     }
     if (!found)
@@ -262,7 +262,7 @@ XmlSettingsDialog::LangElements XmlSettingsDialog::GetLangElements (const QDomEl
                 found = true;
                 break;
             }
-            result = result.nextSiblingElement ("result");
+            result = result.nextSiblingElement ("lang");
         }
     }
     if (result.isNull ())
@@ -334,6 +334,7 @@ void XmlSettingsDialog::DoSpinbox (const QDomElement& item, QGridLayout *lay, QV
     if (item.hasAttribute ("suffix"))
         box->setSuffix (item.attribute ("suffix"));
     LangElements langs = GetLangElements (item);
+    qDebug () << Q_FUNC_INFO << langs.Valid_;
     if (langs.Valid_)
     {
         if (langs.Label_.first)

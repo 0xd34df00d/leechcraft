@@ -53,6 +53,7 @@ void Core::DoDelayedInit ()
         Session_->set_max_connections (XmlSettingsManager::Instance ()->property ("MaxConnections").toInt ());
         Session_->set_severity_level (libtorrent::alert::info);
         setProxySettings ();
+        setGeneralSettings ();
     }
     catch (const asio::system_error&)
     {
@@ -982,7 +983,6 @@ void Core::maxConnectionsChanged ()
 
 void Core::setProxySettings ()
 {
-    libtorrent::session_settings settings;
     libtorrent::proxy_settings trackerProxySettings, peerProxySettings;
     if (XmlSettingsManager::Instance ()->property ("TrackerProxyEnabled").toBool ())
     {
@@ -1027,5 +1027,17 @@ void Core::setProxySettings ()
     Session_->set_peer_proxy (peerProxySettings);
     Session_->set_web_seed_proxy (peerProxySettings);
     Session_->set_tracker_proxy (trackerProxySettings);
+}
+
+void Core::setGeneralSettings ()
+{
+    libtorrent::session_settings settings = Session_->settings ();
+
+    settings.user_agent = XmlSettingsManager::Instance ()->property ("UserAgent").toString ().toStdString ();
+    settings.tracker_completion_timeout = XmlSettingsManager::Instance ()->property ("TrackerCompletionTimeout").toInt ();
+    settings.tracker_receive_timeout = XmlSettingsManager::Instance ()->property ("TrackerReceiveTimeout").toInt ();
+    settings.stop_tracker_timeout = XmlSettingsManager::Instance ()->property ("StopTrackerTimeout").toInt ();
+
+    Session_->set_settings (settings);
 }
 
