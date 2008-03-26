@@ -52,12 +52,17 @@ public:
     void AddFeed (const QString&, const QStringList&);
     void RemoveFeed (const QModelIndex&);
     void Activated (const QModelIndex&);
+    void FeedActivated (const QModelIndex&);
     QString GetDescription (const QModelIndex&);
     QAbstractItemModel* GetChannelsModel ();
     void MarkItemAsUnread (const QModelIndex&);
     void MarkChannelAsRead (const QModelIndex&);
     void MarkChannelAsUnread (const QModelIndex&);
     QStringList GetTagsForIndex (int) const;
+    QString GetChannelLink (const QModelIndex&) const;
+    QString GetChannelDescription (const QModelIndex&) const;
+    QString GetChannelAuthor (const QModelIndex&) const;
+    QString GetChannelLanguage (const QModelIndex&) const;
     void SetTagsForIndex (const QString&, const QModelIndex&);
 
     virtual int columnCount (const QModelIndex& parent = QModelIndex ()) const;

@@ -50,6 +50,9 @@ QDataStream& operator<< (QDataStream& out, const Channel& chan)
         << chan.Description_
         << chan.Tags_
         << chan.LastBuild_
+        << chan.Language_
+        << chan.Author_
+        << chan.Pixmap_
         << static_cast<quint32> (chan.Items_.size ());
     for (int i = 0; i < chan.Items_.size (); ++i)
         out << *chan.Items_ [i];
@@ -63,7 +66,10 @@ QDataStream& operator>> (QDataStream& in, Channel& chan)
         >> chan.Link_
         >> chan.Description_
         >> chan.Tags_
-        >> chan.LastBuild_;
+        >> chan.LastBuild_
+        >> chan.Language_
+        >> chan.Author_
+        >> chan.Pixmap_;
     in >> size;
     chan.Items_.reserve (size);
     for (int i = 0; i < size; ++i)

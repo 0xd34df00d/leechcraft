@@ -61,6 +61,10 @@ std::vector<boost::shared_ptr<Channel> > Atom10Parser::Parse (const QDomDocument
     chan->Title_ = root.firstChildElement ("title").text ();
     chan->LastBuild_ = FromRFC3339 (root.firstChildElement ("updated").text ());
     chan->Link_ = GetLink (root);
+    chan->Description_ = root.firstChildElement ("subtitle").text ();
+    QDomElement author = root.firstChildElement ("author");
+    chan->Author_ = author.firstChildElement ("name").text () + " (" + author.firstChildElement ("email").text () + ")";
+    chan->Language_ = "<>";
 
     QDomElement entry = root.firstChildElement ("entry");
     while (!entry.isNull ())

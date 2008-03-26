@@ -151,10 +151,15 @@ void Core::Activated (const QModelIndex& index)
 
     boost::shared_ptr<Item> item = ActivatedChannel_->Items_ [index.row ()];
 
-    QString URL =item->Link_;
+    QString URL = item->Link_;
     item->Unread_ = false;
     ChannelsModel_->UpdateChannelData (ActivatedChannel_);
     QDesktopServices::openUrl (QUrl (URL));
+}
+
+void Core::FeedActivated (const QModelIndex& index)
+{
+    QDesktopServices::openUrl (QUrl (ChannelsModel_->GetChannelForIndex (index)->Link_));
 }
 
 QString Core::GetDescription (const QModelIndex& index)
@@ -211,6 +216,42 @@ QStringList Core::GetTagsForIndex (int i) const
         return channel->Tags_;
     else
         return QStringList ();
+}
+
+QString Core::GetChannelLink (const QModelIndex& i) const
+{
+    boost::shared_ptr<Channel> channel = ChannelsModel_->GetChannelForIndex (i);
+    if (channel)
+        return channel->Link_;
+    else
+        return tr ("<empty>");;
+}
+
+QString Core::GetChannelDescription (const QModelIndex& i) const
+{
+    boost::shared_ptr<Channel> channel = ChannelsModel_->GetChannelForIndex (i);
+    if (channel)
+        return channel->Description_;
+    else
+        return tr ("<empty>");;
+}
+
+QString Core::GetChannelAuthor (const QModelIndex& i) const
+{
+    boost::shared_ptr<Channel> channel = ChannelsModel_->GetChannelForIndex (i);
+    if (channel)
+        return channel->Author_;
+    else
+        return tr ("<empty>");;
+}
+
+QString Core::GetChannelLanguage (const QModelIndex& i) const
+{
+    boost::shared_ptr<Channel> channel = ChannelsModel_->GetChannelForIndex (i);
+    if (channel)
+        return channel->Language_;
+    else
+        return tr ("<empty>");;
 }
 
 void Core::SetTagsForIndex (const QString& tags, const QModelIndex& index)
@@ -394,15 +435,19 @@ void Core::handleJobFinished (int id)
                         .arg (channels [i]->Title_)
                         .arg (channels [i]->Items_.size () - Feeds_ [pj.URL_].Channels_ [position]->Items_.size ());
 
-                if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_ [position].get () && channels [i]->Items_.size ())
+                bool insertedRows = false;
+                if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_ [position].get () && channels [i]->Items_.size () - Feeds_ [pj.URL_].Channels_ [position]->Items_.size ())
+                {
+                    insertedRows = true;
                     beginInsertRows (QModelIndex (), 0, channels [i]->Items_.size () - Feeds_ [pj.URL_].Channels_ [position]->Items_.size ());
+                }
                 Feeds_ [pj.URL_].Channels_ [position]->Items_ = channels.at (i)->Items_;
                 if (channels.at (i)->LastBuild_.isValid ())
                     Feeds_ [pj.URL_].Channels_.at (position)->LastBuild_ = channels.at (i)->LastBuild_;
                 else
                     Feeds_ [pj.URL_].Channels_.at (position)->LastBuild_ = Feeds_ [pj.URL_].Channels_.at (position)->Items_ [0]->PubDate_;
                 ChannelsModel_->UpdateChannelData (Feeds_ [pj.URL_].Channels_.at (position));
-                if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_.at (position).get () && channels.at (i)->Items_.size ())
+                if (insertedRows)
                     endInsertRows ();
                 emit dataChanged (index (0, 0), index (channels [i]->Items_.size () - 1, 1));
 

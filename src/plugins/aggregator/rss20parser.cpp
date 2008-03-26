@@ -77,20 +77,6 @@ std::vector<boost::shared_ptr<Channel> > RSS20Parser::Parse (const std::vector<b
                     }
                 }
             }
-
-            /*
-            boost::shared_ptr<Item> lastItemWeHave = *oldChannel->Items_.begin ();
-            int index = newChannel->Items_.size () - 1;
-            for (int j = 0; j < newChannel->Items_.size (); ++j)
-                if (*newChannel->Items_ [j] == *lastItemWeHave)
-                {
-                    index = j - 1;
-                    break;
-                }
-            for (int j = index; j >= 0; --j)
-                toInsert->Items_.insert (toInsert->Items_.begin (), newChannel->Items_ [j]);
-                */
-
             result.push_back (toInsert);
         }
     }
@@ -109,6 +95,10 @@ std::vector<boost::shared_ptr<Channel> > RSS20Parser::Parse (const QDomDocument&
         chan->Description_ = channel.firstChildElement ("description").text ();
         chan->Link_ = channel.firstChildElement ("link").text ();
         chan->LastBuild_ = FromRFC822 (channel.firstChildElement ("lastBuildDate").text ());
+        chan->Language_ = channel.firstChildElement ("language").text ();
+        chan->Author_ = channel.firstChildElement ("managingEditor").text ();
+        if (chan->Author_.isEmpty ())
+            chan->Author_ = channel.firstChildElement ("webMaster").text ();
 
         QDomElement item = channel.firstChildElement ("item");
         while (!item.isNull ())

@@ -34,7 +34,7 @@ void Aggregator::Init ()
     connect (Ui_.RegexpSearch_, SIGNAL (textChanged (const QString&)), ItemsFilterModel_, SLOT (setFilterRegExp (const QString&)));
     QHeaderView *itemsHeader = Ui_.Items_->header ();
     QFontMetrics fm = fontMetrics ();
-    itemsHeader->resizeSection (0, fm.width ("Average news article size is about this width or maybe bigger"));
+    itemsHeader->resizeSection (0, fm.width ("Average news article size is about this width or maybe bigger, because they are bigger"));
     itemsHeader->resizeSection (1, fm.width ("_99 Mar 9999 99:99:99_"));
 
     ChannelsFilterModel_ = new ChannelsFilterModel (this);
@@ -46,13 +46,16 @@ void Aggregator::Init ()
     Ui_.Feeds_->addAction (Ui_.ActionMarkChannelAsUnread_);
     Ui_.Feeds_->setContextMenuPolicy (Qt::ActionsContextMenu);
     QHeaderView *channelsHeader = Ui_.Feeds_->header ();
-    channelsHeader->resizeSection (0, fm.width ("Average channel name or maybe bigger"));
+    channelsHeader->resizeSection (0, fm.width ("Average channel name"));
     channelsHeader->resizeSection (1, fm.width ("_99 Mar 9999 99:99:99_"));
     channelsHeader->resizeSection (2, fm.width ("_999_"));
     connect (Ui_.TagsLine_, SIGNAL (textChanged (const QString&)), ChannelsFilterModel_, SLOT (setFilterFixedString (const QString&)));
     connect (Ui_.Feeds_->selectionModel (), SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (currentChannelChanged (const QModelIndex&)));
     connect (Ui_.Items_->selectionModel (), SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (currentItemChanged (const QModelIndex&)));
     connect (Ui_.ActionUpdateFeeds_, SIGNAL (triggered ()), &Core::Instance (), SLOT (updateFeeds ()));
+
+    Ui_.MainSplitter_->setStretchFactor (0, 5);
+    Ui_.MainSplitter_->setStretchFactor (1, 9);
 }
 
 void Aggregator::Release ()
@@ -152,7 +155,7 @@ void Aggregator::on_ActionAddFeed__triggered ()
 
 void Aggregator::on_ActionRemoveFeed__triggered ()
 {
-    Core::Instance ().RemoveFeed (Ui_.Feeds_->selectionModel ()->currentIndex ());
+    Core::Instance ().RemoveFeed (ChannelsFilterModel_->mapToSource (Ui_.Feeds_->selectionModel ()->currentIndex ()));
 }
 
 void Aggregator::on_ActionPreferences__triggered ()
@@ -163,12 +166,12 @@ void Aggregator::on_ActionPreferences__triggered ()
 
 void Aggregator::on_Items__activated (const QModelIndex& index)
 {
-    Core::Instance ().Activated (index);
+    Core::Instance ().Activated (ItemsFilterModel_->mapToSource (index));
 }
 
-void Aggregator::on_Items__doubleClicked (const QModelIndex& index)
+void Aggregator::on_Feeds__activated (const QModelIndex& index)
 {
-    Core::Instance ().Activated (index);
+    Core::Instance ().FeedActivated (ChannelsFilterModel_->mapToSource (index));
 }
 
 void Aggregator::on_ActionMarkItemAsUnread__triggered ()
@@ -209,6 +212,10 @@ void Aggregator::currentChannelChanged (const QModelIndex& index)
 {
     Core::Instance ().currentChannelChanged (ChannelsFilterModel_->mapToSource (index));
     Ui_.ChannelTags_->setText (Core::Instance ().GetTagsForIndex (ChannelsFilterModel_->mapToSource (index).row ()).join (" "));
+    Ui_.ChannelLink_->setText (Core::Instance ().GetChannelLink (ChannelsFilterModel_->mapToSource (index)));
+    Ui_.ChannelDescription_->setText (Core::Instance ().GetChannelDescription (ChannelsFilterModel_->mapToSource (index)));
+    Ui_.ChannelAuthor_->setText (Core::Instance ().GetChannelAuthor (ChannelsFilterModel_->mapToSource (index)));
+    Ui_.ChannelLanguage_->setText (Core::Instance ().GetChannelLanguage (ChannelsFilterModel_->mapToSource (index)));
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_aggregator, Aggregator);

@@ -4,6 +4,7 @@
 #include <QList>
 #include <QDateTime>
 #include <QStringList>
+#include <QPixmap>
 #include <boost/shared_ptr.hpp>
 #include <vector>
 
@@ -16,6 +17,9 @@ struct Channel
     QString Description_;
     QDateTime LastBuild_;
     QStringList Tags_;
+    QString Language_;
+    QString Author_;
+    QPixmap Pixmap_;
     std::vector<boost::shared_ptr<Item> > Items_;
 
     Channel ();
