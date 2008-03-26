@@ -278,6 +278,7 @@ TorrentInfo Core::GetTorrentStats (int row) const
     result.ConnectedSeeds_ = status.num_seeds;
     result.PieceSize_ = info.piece_length ();
     result.Progress_ = status.progress;
+    result.DistributedCopies_ = status.distributed_copies;
     result.NextAnnounce_ = QTime (status.next_announce.hours (),
                                   status.next_announce.minutes (),
                                   status.next_announce.seconds ());

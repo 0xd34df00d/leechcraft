@@ -51,8 +51,7 @@ void Aggregator::Init ()
     channelsHeader->resizeSection (2, fm.width ("_999_"));
     connect (Ui_.TagsLine_, SIGNAL (textChanged (const QString&)), ChannelsFilterModel_, SLOT (setFilterFixedString (const QString&)));
     connect (Ui_.Feeds_->selectionModel (), SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (currentChannelChanged ()));
-    connect (Ui_.Items_->selectionModel (), SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (currentItemChanged ()));
-    connect (&Core::Instance (), SIGNAL (channelDataUpdated ()), this, SLOT (currentChannelChanged ()));
+    connect (Ui_.Items_->selectionModel (), SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (currentItemChanged (const QModelIndex&)));
     connect (Ui_.ActionUpdateFeeds_, SIGNAL (triggered ()), &Core::Instance (), SLOT (updateFeeds ()));
 
     Ui_.MainSplitter_->setStretchFactor (0, 5);
@@ -177,9 +176,9 @@ void Aggregator::on_Feeds__activated (const QModelIndex& index)
 
 void Aggregator::on_ActionMarkItemAsUnread__triggered ()
 {
-    QModelIndex index = Ui_.Items_->selectionModel ()->currentIndex ();
-    qDebug () << Q_FUNC_INFO << index;
-    Core::Instance ().MarkItemAsUnread (ItemsFilterModel_->mapToSource (index));
+    QModelIndexList indexes = Ui_.Items_->selectionModel ()->selectedRows ();
+    for (int i = 0; i < indexes.size (); ++i)
+        Core::Instance ().MarkItemAsUnread (ItemsFilterModel_->mapToSource (indexes.at (i)));
 }
 
 void Aggregator::on_ActionMarkChannelAsRead__triggered ()
@@ -204,10 +203,8 @@ void Aggregator::on_ChannelTags__textChanged (const QString& tags)
     Core::Instance ().SetTagsForIndex (tags, ChannelsFilterModel_->mapToSource (current));
 }
 
-void Aggregator::currentItemChanged ()
+void Aggregator::currentItemChanged (const QModelIndex& index)
 {
-    QModelIndex index = Ui_.Items_->selectionModel ()->currentIndex ();
-    qDebug () << Q_FUNC_INFO << index;
     Ui_.ItemView_->setHtml (Core::Instance ().GetDescription (index));
 }
 
@@ -220,7 +217,6 @@ void Aggregator::currentChannelChanged ()
     Ui_.ChannelDescription_->setText (Core::Instance ().GetChannelDescription (ChannelsFilterModel_->mapToSource (index)));
     Ui_.ChannelAuthor_->setText (Core::Instance ().GetChannelAuthor (ChannelsFilterModel_->mapToSource (index)));
     Ui_.ChannelLanguage_->setText (Core::Instance ().GetChannelLanguage (ChannelsFilterModel_->mapToSource (index)));
-    Ui_.ChannelImage_->setPixmap (Core::Instance ().GetChannelPixmap (ChannelsFilterModel_->mapToSource (index)).scaledToWidth (Ui_.ChannelImage_->width ()));
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_aggregator, Aggregator);

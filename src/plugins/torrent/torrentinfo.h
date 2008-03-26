@@ -13,14 +13,15 @@ struct TorrentInfo
             DHTNodesCount_,
             TotalPieces_,
             DownloadedPieces_;
-    double    DownloadRate_,
-            UploadRate_,
-            Progress_;
+    double DownloadRate_,
+           UploadRate_,
+           Progress_,
+           DistributedCopies_;
     int ConnectedPeers_,
         ConnectedSeeds_,
         PieceSize_;
-    QTime    NextAnnounce_,
-            AnnounceInterval_;
+    QTime NextAnnounce_,
+          AnnounceInterval_;
     const std::vector<bool>* Pieces_;
 };
 
