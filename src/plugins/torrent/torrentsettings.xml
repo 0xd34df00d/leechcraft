@@ -60,14 +60,6 @@
                         <suffix value=" с" />
                     </lang>
                 </item>
-            </groupbox>
-        </tab>
-        <tab>
-            <label lang="en" value="Advanced" />
-            <label lang="ru" value="Расширенные" />
-            <groupbox>
-                <label lang="en" value="Advanced" />
-                <label lang="ru" value="Расширенные настройки" />
                 <item type="spinbox" property="TrackerMaximumResponseLength" default="1024" minimum="512" maximum="16384" step="512">
                     <lang value="en">
                         <label value="Tracker maximum response length" />
@@ -78,6 +70,14 @@
                         <suffix value=" кб" />
                     </lang>
                 </item>
+            </groupbox>
+        </tab>
+        <tab>
+            <label lang="en" value="Advanced" />
+            <label lang="ru" value="Расширенные" />
+            <groupbox>
+                <label lang="en" value="Advanced" />
+                <label lang="ru" value="Расширенные настройки" />
                 <item type="spinbox" property="PieceTimeout" default="10" minimum="5" maximum="30" step="5">
                     <lang value="en">
                         <label value="Piece response timeout" />
@@ -140,6 +140,26 @@
                     <label lang="en" value="Web seed pipeline size" />
                     <label lang="ru" value="Размер конвеера веб-сида (Web seed)" />
                 </item>
+                <item type="spinbox" property="UrlSeedWaitRetry" default="30" minimum="5" maximum="300" step="10">
+                    <lang value="en">
+                        <label value="Web seed retry wait" />
+                        <suffix value=" s" />
+                    </lang>
+                    <lang value="ru">
+                        <label value="Задержка перед повторным соединением с веб-сидом (Web seed)" />
+                        <suffix value=" с" />
+                    </lang>
+                </item>
+                <item type="spinbox" property="MinReconnectTime" default="60" minimum="10" maximum="600" step="10">
+                    <lang value="en">
+                        <label value="Minimum peer reconnect time" />
+                        <suffix value=" s" />
+                    </lang>
+                    <lang value="ru">
+                        <label value="Минимальное время перед повторным соединением с пиром (peer)" />
+                        <suffix value=" с" />
+                    </lang>
+                </item>
             </groupbox>
         </tab>
         <tab>
@@ -164,29 +184,17 @@
                     <label lang="en" value="Lazy bitfields (help us seed against bad ISPs)" />
                     <label lang="ru" value="Ленивые битовые маски (помогает обходить защиту против сидинга у некоторых ISP" />
                 </item>
-                <item type="spinbox" property="UrlSeedWaitRetry" default="30" minimum="5" maximum="300" step="10">
-                    <lang value="en">
-                        <label value="Web seed retry wait" />
-                        <suffix value=" s" />
-                    </lang>
-                    <lang value="ru">
-                        <label value="Задержка перед повторным соединением с веб-сидом (Web seed)" />
-                        <suffix value=" с" />
-                    </lang>
+                <item type="checkbox" property="UseDHTAsFallback" state="on">
+                    <label lang="en" value="Use DHT as fallback" />
+                    <label lang="ru" value="Использовать DHT в случае недоступного трекера" />
+                </item>
+                <item type="checkbox" property="UPNPIgnoreNonrouters" state="on">
+                    <label lang="en" value="Ignore UPNP-nonrouters" />
+                    <label lang="ru" value="Игнорировать UPNP-устройства, не являющиеся роутерами" />
                 </item>
                 <item type="spinbox" property="MaxFailcount" default="5" minimum="1" maximum="99" step="1">
                     <label lang="en" value="Maximum peer connection attempt failcount" />
                     <label lang="ru" value="Максимальное количество неудачных попыток соединения с пиром (peer)" />
-                </item>
-                <item type="spinbox" property="MinReconnectTime" default="60" minimum="10" maximum="600" step="10">
-                    <lang value="en">
-                        <label value="Minimum peer reconnect time" />
-                        <suffix value=" s" />
-                    </lang>
-                    <lang value="ru">
-                        <label value="Минимальное время перед повторным соединением с пиром (peer)" />
-                        <suffix value=" с" />
-                    </lang>
                 </item>
                 <item type="spinbox" property="PeerConnectTimeout" default="10" minimum="1" maximum="60" step="5">
                     <lang value="en">
@@ -212,14 +220,6 @@
                         <suffix value=" с" />
                     </lang>
                 </item>
-            </groupbox>
-        </tab>
-        <tab>
-            <label lang="en" value="Advanced III" />
-            <label lang="ru" value="Расширенные III" />
-            <groupbox>
-                <label lang="en" value="Advanced" />
-                <label lang="ru" value="Расширенные настройки" />
                 <item type="spinbox" property="UnchokeInterval" default="15" minimum="1" maximum="60" step="5">
                     <lang value="en">
                         <label value="Unchoke interval" />
@@ -230,6 +230,14 @@
                         <suffix value=" с" />
                     </lang>
                 </item>
+            </groupbox>
+        </tab>
+        <tab>
+            <label lang="en" value="Advanced III" />
+            <label lang="ru" value="Расширенные III" />
+            <groupbox>
+                <label lang="en" value="Advanced" />
+                <label lang="ru" value="Расширенные настройки" />
                 <item type="spinbox" property="OptimisticUnchokeMultiplier" default="4" minimum="2" maximum="10" step="1">
                     <label lang="en" value="Optimistic unchoke multiplier" />
                     <label lang="ru" value="Множитель оптимистичного unchoke" />
@@ -249,6 +257,36 @@
                 <item type="spinbox" property="AllowedFastSetSize" default="10" minimum="1" maximum="50" step="5">
                     <label lang="en" value="Amount of pieces to send too peers supporting the fast extensions" />
                     <label lang="ru" value="Количество кусков, посылаемое пирам, поддерживающим fast extensions" />
+                </item>
+                <item type="spinbox" property="HandshakeTimeout" default="10" minimum="1" maximum="60" step="10">
+                    <lang value="en">
+                        <label value="Handshake timeout" />
+                        <suffix value=" s" />
+                    </lang>
+                    <lang value="ru">
+                        <label value="Таймаут рукопожатия" />
+                        <suffix value=" с" />
+                    </lang>
+                </item>
+            </groupbox>
+            <groupbox>
+                <label lang="en" value="DHT" />
+                <label lang="ru" value="DHT" />
+                <item type="spinbox" property="MaxPeersReply" default="50" minimum="10" maximum="150" step="10">
+                    <label lang="en" value="Maximum peers in reply" />
+                    <label lang="ru" value="Максимально пиров (peers) в ответе" />
+                </item>
+                <item type="spinbox" property="SearchBranching" default="5" minimum="2" maximum="10" step="1">
+                    <label lang="en" value="Search branching" />
+                    <label lang="ru" value="Ветвление поиска" />
+                </item>
+                <item type="spinbox" property="ServicePort" default="0" minimum="0" maximum="65535" step="1">
+                    <label lang="en" value="Service port (0 - same as TCP)" />
+                    <label lang="ru" value="Сервисный порт (0 - такой же, как TCP)" />
+                </item>
+                <item type="spinbox" property="MaxDHTFailcount" default="20" minimum="5" maximum="50" step="5">
+                    <label lang="en" value="Maximum node fail count" />
+                    <label lang="ru" value="Максимальное количество неудач узла" />
                 </item>
             </groupbox>
         </tab>
@@ -335,6 +373,20 @@
         <groupbox>
             <label lang="en" value="Advanced" />
             <label lang="ru" value="Расширенные настройки" />
+            <item type="checkbox" property="FreeTorrentHashes" state="on">
+                <label lang="en" value="Unload hashes from memory if seeding" />
+                <label lang="ru" value="Выгружать хэши из памяти при раздаче" />
+            </item>
+            <item type="spinbox" property="MaxOutstandingDiskBytesPerConnection" default="1024" minimum="32" maximum="16384" step="512">
+                <lang value="en">
+                    <label value="Maximum outstanding disk bytes per connection" />
+                    <suffix value=" kb" />
+                </lang>
+                <lang value="ru">
+                    <label value="Максимальное количество байт в очередни за запись на одно соединение" />
+                    <suffix value=" кб" />
+                </lang>
+            </item>
             <item type="spinbox" property="FilePoolSize" default="40" minimum="5" maximum="100" step="5">
                 <label lang="en" value="Maximum amount of concurrently open files" />
                 <label lang="ru" value="Максимальное число одновременно открытых файлов" />

@@ -54,6 +54,7 @@ void Core::DoDelayedInit ()
         Session_->set_severity_level (libtorrent::alert::info);
         setProxySettings ();
         setGeneralSettings ();
+        setDHTSettings ();
     }
     catch (const asio::system_error&)
     {
@@ -126,6 +127,16 @@ void Core::DoDelayedInit ()
     XmlSettingsManager::Instance ()->RegisterObject ("NumWant", this, "setGeneralSettings");
     XmlSettingsManager::Instance ()->RegisterObject ("InitialPickerThreshold", this, "setGeneralSettings");
     XmlSettingsManager::Instance ()->RegisterObject ("AllowedFastSetSize", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("MaxOutstandingDiskBytesPerConnection", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("HandshakeTimeout", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("UseDHTAsFallback", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("FreeTorrentHashes", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("UPNPIgnoreNonrouters", this, "setGeneralSettings");
+
+    XmlSettingsManager::Instance ()->RegisterObject ("MaxPeersReply", this, "setDHTSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("SearchBranching", this, "setDHTSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("ServicePort", this, "setDHTSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("MaxDHTFailcount", this, "setDHTSettings");
     RestoreTorrents ();
 }
 
@@ -1067,7 +1078,7 @@ void Core::setGeneralSettings ()
     settings.tracker_completion_timeout = XmlSettingsManager::Instance ()->property ("TrackerCompletionTimeout").toInt ();
     settings.tracker_receive_timeout = XmlSettingsManager::Instance ()->property ("TrackerReceiveTimeout").toInt ();
     settings.stop_tracker_timeout = XmlSettingsManager::Instance ()->property ("StopTrackerTimeout").toInt ();
-    settings.tracker_maximum_response_length = XmlSettingsManager::Instance ()->property ("TrackerMaximumResponseLength").toInt ();
+    settings.tracker_maximum_response_length = XmlSettingsManager::Instance ()->property ("TrackerMaximumResponseLength").toInt () * 1024;
     settings.piece_timeout = XmlSettingsManager::Instance ()->property ("PieceTimeout").toInt ();
     settings.request_queue_time = XmlSettingsManager::Instance ()->property ("RequestQueueTime").toInt ();
     settings.max_allowed_in_request_queue = XmlSettingsManager::Instance ()->property ("MaxAllowedInRequestQueue").toInt ();
@@ -1093,7 +1104,24 @@ void Core::setGeneralSettings ()
     settings.num_want = XmlSettingsManager::Instance ()->property ("NumWant").toInt ();
     settings.initial_picker_threshold = XmlSettingsManager::Instance ()->property ("InitialPickerThreshold").toInt ();
     settings.allowed_fast_set_size = XmlSettingsManager::Instance ()->property ("AllowedFastSetSize").toInt ();
+    settings.max_outstanding_disk_bytes_per_connection = XmlSettingsManager::Instance ()->property ("MaxOutstandingDiskBytesPerConnection").toInt () * 1024;
+    settings.handshake_timeout = XmlSettingsManager::Instance ()->property ("HandshakeTimeout").toInt ();
+    settings.use_dht_as_fallback = XmlSettingsManager::Instance ()->property ("UseDHTAsFallback").toBool ();
+    settings.free_torrent_hashes = XmlSettingsManager::Instance ()->property ("FreeTorrentHashes").toBool ();
+    settings.upnp_ignore_nonrouters = XmlSettingsManager::Instance ()->property ("UPNPIgnoreNonrouters").toBool ();
 
     Session_->set_settings (settings);
+}
+
+void Core::setDHTSettings ()
+{
+    libtorrent::dht_settings settings;
+
+    settings.max_peers_reply = XmlSettingsManager::Instance ()->property ("MaxPeersReply").toInt ();
+    settings.search_branching = XmlSettingsManager::Instance ()->property ("SearchBranching").toInt ();
+    settings.service_port = XmlSettingsManager::Instance ()->property ("ServicePort").toInt ();
+    settings.max_fail_count = XmlSettingsManager::Instance ()->property ("MaxDHTFailcount").toInt ();
+
+    Session_->set_dht_settings (settings);
 }
 

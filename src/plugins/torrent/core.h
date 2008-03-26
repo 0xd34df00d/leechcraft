@@ -122,6 +122,7 @@ public slots:
     void maxConnectionsChanged ();
     void setProxySettings ();
     void setGeneralSettings ();
+    void setDHTSettings ();
 signals:
     void error (QString) const;
     void logMessage (const QString&);
