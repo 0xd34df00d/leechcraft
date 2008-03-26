@@ -111,6 +111,21 @@ void Core::DoDelayedInit ()
     XmlSettingsManager::Instance ()->RegisterObject ("UrlSeedPipelineSize", this, "setGeneralSettings");
     XmlSettingsManager::Instance ()->RegisterObject ("UrlSeedWaitRetry", this, "setGeneralSettings");
     XmlSettingsManager::Instance ()->RegisterObject ("FilePoolSize", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("AllowMultipleConnectionsPerIP", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("MaxFailcount", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("MinReconnectTime", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("PeerConnectTimeout", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("IgnoreLimitsOnLocalNetwork", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("ConnectionSpeed", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("SendRedundantHave", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("LazyBitfields", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("InactivityTimeout", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("UnchokeInterval", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("OptimisticUnchokeMultiplier", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("AnnounceIP", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("NumWant", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("InitialPickerThreshold", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("AllowedFastSetSize", this, "setGeneralSettings");
     RestoreTorrents ();
 }
 
@@ -1063,6 +1078,21 @@ void Core::setGeneralSettings ()
     settings.urlseed_pipeline_size = XmlSettingsManager::Instance ()->property ("UrlSeedPipelineSize").toInt ();
     settings.urlseed_wait_retry = XmlSettingsManager::Instance ()->property ("UrlSeedWaitRetry").toInt ();
     settings.file_pool_size = XmlSettingsManager::Instance ()->property ("FilePoolSize").toInt ();
+    settings.allow_multiple_connections_per_ip = XmlSettingsManager::Instance ()->property ("AllowMultipleConnectionsPerIP").toBool ();
+    settings.max_failcount = XmlSettingsManager::Instance ()->property ("MaxFailcount").toInt ();
+    settings.min_reconnect_time = XmlSettingsManager::Instance ()->property ("MinReconnectTime").toInt ();
+    settings.peer_connect_timeout = XmlSettingsManager::Instance ()->property ("PeerConnectTimeout").toInt ();
+    settings.ignore_limits_on_local_network = XmlSettingsManager::Instance ()->property ("IgnoreLimitsOnLocalNetwork").toBool ();
+    settings.connection_speed = XmlSettingsManager::Instance ()->property ("ConnectionSpeed").toInt ();
+    settings.send_redundant_have = XmlSettingsManager::Instance ()->property ("SendRedundantHave").toBool ();
+    settings.lazy_bitfields = XmlSettingsManager::Instance ()->property ("LazyBitfields").toBool ();
+    settings.inactivity_timeout = XmlSettingsManager::Instance ()->property ("InactivityTimeout").toInt ();
+    settings.unchoke_interval = XmlSettingsManager::Instance ()->property ("UnchokeInterval").toInt ();
+    settings.optimistic_unchoke_multiplier = XmlSettingsManager::Instance ()->property ("OptimisticUnchokeMultiplier").toInt ();
+    settings.announce_ip = asio::ip::address::from_string (XmlSettingsManager::Instance ()->property ("AnnounceIP").toString ().toStdString ());
+    settings.num_want = XmlSettingsManager::Instance ()->property ("NumWant").toInt ();
+    settings.initial_picker_threshold = XmlSettingsManager::Instance ()->property ("InitialPickerThreshold").toInt ();
+    settings.allowed_fast_set_size = XmlSettingsManager::Instance ()->property ("AllowedFastSetSize").toInt ();
 
     Session_->set_settings (settings);
 }
