@@ -97,6 +97,7 @@ std::vector<boost::shared_ptr<Channel> > RSS20Parser::Parse (const QDomDocument&
         chan->LastBuild_ = FromRFC822 (channel.firstChildElement ("lastBuildDate").text ());
         chan->Language_ = channel.firstChildElement ("language").text ();
         chan->Author_ = channel.firstChildElement ("managingEditor").text ();
+        chan->PixmapURL_ = channel.firstChildElement ("image").attribute ("url");
         if (chan->Author_.isEmpty ())
             chan->Author_ = channel.firstChildElement ("webMaster").text ();
 

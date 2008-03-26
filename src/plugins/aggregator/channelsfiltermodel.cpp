@@ -12,7 +12,6 @@ bool ChannelsFilterModel::filterAcceptsRow (int source_row, const QModelIndex& s
 {
     QStringList itemTags = Core::Instance ().GetTagsForIndex (source_row),
                 filterTags = filterRegExp ().pattern ().split (' ', QString::SkipEmptyParts);
-    qDebug () << itemTags << filterTags;
     if (!filterTags.size ())
         return true;
 

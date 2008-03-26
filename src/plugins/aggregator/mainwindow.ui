@@ -43,14 +43,8 @@
           <property name="rootIsDecorated" >
            <bool>false</bool>
           </property>
-          <property name="uniformRowHeights" >
-           <bool>true</bool>
-          </property>
           <property name="itemsExpandable" >
            <bool>false</bool>
-          </property>
-          <property name="sortingEnabled" >
-           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -192,11 +186,11 @@
            <enum>Qt::Vertical</enum>
           </property>
           <widget class="QTreeView" name="Items_" >
+           <property name="selectionMode" >
+            <enum>QAbstractItemView::ExtendedSelection</enum>
+           </property>
            <property name="rootIsDecorated" >
             <bool>false</bool>
-           </property>
-           <property name="uniformRowHeights" >
-            <bool>true</bool>
            </property>
            <property name="itemsExpandable" >
             <bool>false</bool>

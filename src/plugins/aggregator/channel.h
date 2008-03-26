@@ -19,6 +19,7 @@ struct Channel
     QStringList Tags_;
     QString Language_;
     QString Author_;
+    QString PixmapURL_;
     QPixmap Pixmap_;
     std::vector<boost::shared_ptr<Item> > Items_;
 

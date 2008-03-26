@@ -1,9 +1,11 @@
 #include <QtDebug>
+#include <QImage>
 #include <QSettings>
 #include <QDesktopServices>
 #include <QUrl>
 #include <QTemporaryFile>
 #include <QTimer>
+#include <stdexcept>
 #include <plugininterface/proxy.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -24,6 +26,7 @@ Core::Core ()
     qRegisterMetaTypeStreamOperators<Item> ("Item");
 
     ChannelsModel_ = new ChannelsModel (this);
+    connect (ChannelsModel_, SIGNAL (channelDataUpdated ()), this, SIGNAL (channelDataUpdated ()));
 
     QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Aggregator");
     int numFeeds = settings.beginReadArray ("Feeds");
@@ -97,13 +100,15 @@ void Core::AddFeed (const QString& url, const QStringList& tags)
         emit error (tr ("Could not handle URL %1").arg (url));
         return;
     }
-    QTemporaryFile file;
-    file.open ();
-    DirectDownloadParams params = { url, file.fileName (), true, false };
-    PendingJob pj = { PendingJob::RFeedAdded, url, file.fileName (), tags };
-    int id = idd->AddJob (params);
-    PendingJobs_ [id] = pj;
-    file.close ();
+    {
+        QTemporaryFile file;
+        file.open ();
+        DirectDownloadParams params = { url, file.fileName (), true, false };
+        PendingJob pj = { PendingJob::RFeedAdded, url, file.fileName (), tags };
+        int id = idd->AddJob (params);
+        PendingJobs_ [id] = pj;
+        file.close ();
+    }
 }
 
 void Core::RemoveFeed (const QModelIndex& index)
@@ -224,7 +229,7 @@ QString Core::GetChannelLink (const QModelIndex& i) const
     if (channel)
         return channel->Link_;
     else
-        return tr ("<empty>");;
+        return tr ("<empty>");
 }
 
 QString Core::GetChannelDescription (const QModelIndex& i) const
@@ -233,7 +238,7 @@ QString Core::GetChannelDescription (const QModelIndex& i) const
     if (channel)
         return channel->Description_;
     else
-        return tr ("<empty>");;
+        return tr ("<empty>");
 }
 
 QString Core::GetChannelAuthor (const QModelIndex& i) const
@@ -242,7 +247,7 @@ QString Core::GetChannelAuthor (const QModelIndex& i) const
     if (channel)
         return channel->Author_;
     else
-        return tr ("<empty>");;
+        return tr ("<empty>");
 }
 
 QString Core::GetChannelLanguage (const QModelIndex& i) const
@@ -251,7 +256,16 @@ QString Core::GetChannelLanguage (const QModelIndex& i) const
     if (channel)
         return channel->Language_;
     else
-        return tr ("<empty>");;
+        return tr ("<empty>");
+}
+
+QPixmap Core::GetChannelPixmap (const QModelIndex& i) const
+{
+    boost::shared_ptr<Channel> channel = ChannelsModel_->GetChannelForIndex (i);
+    if (channel)
+        return channel->Pixmap_;
+    else
+        return QPixmap ();
 }
 
 void Core::SetTagsForIndex (const QString& tags, const QModelIndex& index)
@@ -365,8 +379,7 @@ void Core::handleJobFinished (int id)
             emit error (tr ("Downloaded file has null size!"));
         return;
     }
-    QByteArray data = file.readAll ();
-    if (pj.Role_ != PendingJob::RFeedAdded && !Feeds_.contains (pj.URL_))
+    if (pj.Role_ == PendingJob::RFeedUpdated && !Feeds_.contains (pj.URL_))
     {
         if (silent)
             qWarning () << "Feed with url %1 not found.";
@@ -374,40 +387,66 @@ void Core::handleJobFinished (int id)
             emit error (tr ("Feed with url %1 not found.").arg (pj.URL_));
         return;
     }
-    QDomDocument doc;
-    QString errorMsg;
-    int errorLine, errorColumn;
-    if (!doc.setContent (data, true, &errorMsg, &errorLine, &errorColumn))
+    std::vector<boost::shared_ptr<Channel> > channels;
+    if (pj.Role_ != PendingJob::RFeedExternalData)
     {
-        if (silent)
-            qWarning () << tr ("XML file parse error: %1, line %2, column %3, filename %4").arg (errorMsg).arg (errorLine).arg (errorColumn).arg (pj.Filename_);
-        else
-            emit error (tr ("XML file parse error: %1, line %2, column %3, filename %4").arg (errorMsg).arg (errorLine).arg (errorColumn).arg (pj.Filename_));
-        return;
-    }
-    if (pj.Role_ == PendingJob::RFeedAdded)
-    {
-        Feed feed;
-        feed.URL_ = pj.URL_;
-        Feeds_ [pj.URL_] = feed;
-    }
+        QByteArray data = file.readAll ();
+        QDomDocument doc;
+        QString errorMsg;
+        int errorLine, errorColumn;
+        if (!doc.setContent (data, true, &errorMsg, &errorLine, &errorColumn))
+        {
+            if (silent)
+                qWarning () << tr ("XML file parse error: %1, line %2, column %3, filename %4").arg (errorMsg).arg (errorLine).arg (errorColumn).arg (pj.Filename_);
+            else
+                emit error (tr ("XML file parse error: %1, line %2, column %3, filename %4").arg (errorMsg).arg (errorLine).arg (errorColumn).arg (pj.Filename_));
+            return;
+        }
+        if (pj.Role_ == PendingJob::RFeedAdded)
+        {
+            Feed feed;
+            feed.URL_ = pj.URL_;
+            Feeds_ [pj.URL_] = feed;
+        }
 
-    Parser *parser = ParserFactory::Instance ().Return (doc);
-    if (!parser)
-    {
-        emit error (tr ("Could not find parser to parse file %1").arg (pj.Filename_));
-        return;
-    }
-    file.close ();
-    file.remove ();
+        Parser *parser = ParserFactory::Instance ().Return (doc);
+        if (!parser)
+        {
+            emit error (tr ("Could not find parser to parse file %1").arg (pj.Filename_));
+            return;
+        }
+        file.close ();
+        file.remove ();
 
-    std::vector<boost::shared_ptr<Channel> > channels = parser->Parse (Feeds_ [pj.URL_].Channels_, data);
+        channels = parser->Parse (Feeds_ [pj.URL_].Channels_, data);
+    }
     QString emitString;
     if (pj.Role_ == PendingJob::RFeedAdded)
     {
         Feeds_ [pj.URL_].Channels_ = channels;
         for (int i = 0; i < channels.size (); ++i)
+        {
             channels [i]->Tags_ = pj.Tags_;
+            if (QUrl (channels [i]->PixmapURL_).isValid () && !QUrl (channels [i]->PixmapURL_).isRelative ())
+            {
+                ExternalData data;
+                data.Type_ = ExternalData::TImage;
+                data.RelatedChannel_ = channels [i];
+                QTemporaryFile file;
+                file.open ();
+                try
+                {
+                    fetchExternalFile (channels [i]->PixmapURL_, file.fileName ());
+                }
+                catch (const std::runtime_error& e)
+                {
+                    qWarning () << Q_FUNC_INFO << e.what ();
+                    continue;
+                }
+                PendingJob2ExternalData_ [channels [i]->PixmapURL_] = data;
+                file.close ();
+            }
+        }
         ChannelsModel_->AddFeed (Feeds_ [pj.URL_]);
     }
     else if (pj.Role_ == PendingJob::RFeedUpdated)
@@ -446,7 +485,7 @@ void Core::handleJobFinished (int id)
                     Feeds_ [pj.URL_].Channels_.at (position)->LastBuild_ = channels.at (i)->LastBuild_;
                 else
                     Feeds_ [pj.URL_].Channels_.at (position)->LastBuild_ = Feeds_ [pj.URL_].Channels_.at (position)->Items_ [0]->PubDate_;
-                ChannelsModel_->UpdateChannelData (Feeds_ [pj.URL_].Channels_.at (position));
+                ChannelsModel_->UpdateChannelData (Feeds_ [pj.URL_].Channels_ [position]);
                 if (insertedRows)
                     endInsertRows ();
                 emit dataChanged (index (0, 0), index (channels [i]->Items_.size () - 1, 1));
@@ -461,6 +500,8 @@ void Core::handleJobFinished (int id)
                             Feeds_ [pj.URL_].Channels_ [position]->Items_.end ());
                     if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_ [position].get ())
                         endRemoveRows ();
+
+                    ChannelsModel_->UpdateChannelData (Feeds_ [pj.URL_].Channels_ [position]);
                 }
 
                 int days = XmlSettingsManager::Instance ()->property ("ItemsMaxAge").toInt ();
@@ -484,8 +525,28 @@ void Core::handleJobFinished (int id)
                             Feeds_ [pj.URL_].Channels_ [position]->Items_.end ());
                     if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_ [position].get ())
                         endRemoveRows ();
+
+                    ChannelsModel_->UpdateChannelData (Feeds_ [pj.URL_].Channels_ [position]);
                 }
             }
+        }
+    }
+    else if (pj.Role_ == PendingJob::RFeedExternalData)
+    {
+        ExternalData data = PendingJob2ExternalData_ [pj.URL_];
+        PendingJob2ExternalData_.remove (pj.URL_);
+        if (data.RelatedChannel_)
+        {
+            switch (data.Type_)
+            {
+                case ExternalData::TImage:
+                    data.RelatedChannel_->Pixmap_ = QPixmap::fromImage (QImage (file.fileName ()));
+                    ChannelsModel_->UpdateChannelData (data.RelatedChannel_);
+                    break;
+            }
+        }
+        else if (data.RelatedFeed_)
+        {
         }
     }
     if (!emitString.isEmpty ())
@@ -522,6 +583,27 @@ void Core::updateFeeds ()
         PendingJobs_ [id] = pj;
         file.close ();
     }
+}
+
+void Core::fetchExternalFile (const QString& url, const QString& where)
+{
+    QObject *provider = Providers_ ["http"];
+    IDirectDownload *idd = qobject_cast<IDirectDownload*> (provider);
+    if (!provider || !idd)
+    {
+        emit error (tr ("Strange, but no suitable provider found"));
+        throw std::runtime_error ("no suitable provider");
+    }
+    if (!idd->CouldDownload (url, false))
+    {
+        emit error (tr ("Could not handle URL %1").arg (url));
+        throw std::runtime_error ("could not handle URL");
+    }
+
+    DirectDownloadParams params = { url, where, true, false };
+    PendingJob pj = { PendingJob :: RFeedExternalData, url, where };
+    int id = idd->AddJob (params);
+    PendingJobs_ [id] = pj;
 }
 
 void Core::saveSettings ()

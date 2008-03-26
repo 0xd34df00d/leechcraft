@@ -173,6 +173,7 @@ void ChannelsModel::UpdateChannelData (const Channel* channel)
     item->ModifyData (2, channel->CountUnreadItems ());
     int pos = RootItem_->ChildPosition (item);
     emit dataChanged (index (pos, 1), index (pos, 2));
+    emit channelDataUpdated ();
 }
 
 void ChannelsModel::UpdateChannelData (const boost::shared_ptr<Channel>& channel)

@@ -31,12 +31,25 @@ class Core : public QAbstractItemModel
         {
             RFeedAdded
             , RFeedUpdated
+            , RFeedExternalData
         } Role_;
         QString URL_;
         QString Filename_;
         QStringList Tags_;
     };
+    struct ExternalData
+    {
+        enum Type
+        {
+            TImage
+            , TIcon
+            , TEmbeddedObject
+        } Type_;
+        boost::shared_ptr<Channel> RelatedChannel_;
+        boost::shared_ptr<Feed> RelatedFeed_;
+    };
     QMap<int, PendingJob> PendingJobs_;
+    QMap<QString, ExternalData> PendingJob2ExternalData_;
 
     QMap<QString, Feed> Feeds_;
     Channel *ActivatedChannel_;
@@ -63,6 +76,7 @@ public:
     QString GetChannelDescription (const QModelIndex&) const;
     QString GetChannelAuthor (const QModelIndex&) const;
     QString GetChannelLanguage (const QModelIndex&) const;
+    QPixmap GetChannelPixmap (const QModelIndex&) const;
     void SetTagsForIndex (const QString&, const QModelIndex&);
 
     virtual int columnCount (const QModelIndex& parent = QModelIndex ()) const;
@@ -77,6 +91,7 @@ public slots:
     void currentChannelChanged (const QModelIndex&);
     void updateFeeds ();
 private slots:
+    void fetchExternalFile (const QString&, const QString&);
     void scheduleSave ();
     void handleJobFinished (int);
     void handleJobRemoved (int);
@@ -87,6 +102,7 @@ public slots:
 signals:
     void error (const QString&);
     void showDownloadMessage (const QString&);
+    void channelDataUpdated ();
 };
 
 #endif
