@@ -295,10 +295,11 @@ void XmlSettingsDialog::DoLineedit (const QDomElement& item, QGridLayout *lay, Q
 {
     int row = lay->rowCount ();
     QLabel *label = new QLabel (GetLabel (item));
+    label->setWordWrap (true);
 
     QLineEdit *edit = new QLineEdit (value.toString ());
     edit->setObjectName (item.attribute ("property"));
-    edit->setMinimumWidth (QApplication::fontMetrics ().width ("thisismaybeadefaultsettingstring,dontyouthinkso?"));
+    edit->setMinimumWidth (QApplication::fontMetrics ().width ("thisismaybeadefaultsetting"));
     if (item.hasAttribute ("password"))
         edit->setEchoMode (QLineEdit::Password);
     connect (edit, SIGNAL (textChanged (const QString&)), this, SLOT (updatePreferences ()));
@@ -323,6 +324,7 @@ void XmlSettingsDialog::DoSpinbox (const QDomElement& item, QGridLayout *lay, QV
 {
     int row = lay->rowCount ();
     QLabel *label = new QLabel (GetLabel (item));
+    label->setWordWrap (true);
     QSpinBox *box = new QSpinBox;
     box->setObjectName (item.attribute ("property"));
     if (item.hasAttribute ("minimum"))
@@ -334,7 +336,6 @@ void XmlSettingsDialog::DoSpinbox (const QDomElement& item, QGridLayout *lay, QV
     if (item.hasAttribute ("suffix"))
         box->setSuffix (item.attribute ("suffix"));
     LangElements langs = GetLangElements (item);
-    qDebug () << Q_FUNC_INFO << langs.Valid_;
     if (langs.Valid_)
     {
         if (langs.Label_.first)
@@ -380,6 +381,7 @@ void XmlSettingsDialog::DoSpinboxRange (const QDomElement& item, QGridLayout *la
     }
 
     QLabel *label = new QLabel (GetLabel (item));
+    label->setWordWrap (true);
     RangeWidget *widget = new RangeWidget ();
     widget->setObjectName (item.attribute ("property"));
     widget->SetMinimum (item.attribute ("minimum").toInt ());
@@ -398,6 +400,7 @@ void XmlSettingsDialog::DoPath (const QDomElement& item, QGridLayout *lay, QVari
         if (item.hasAttribute ("defaultHomePath") && item.attribute ("defaultHomePath") == "true")
             value = QDir::homePath ();
     QLabel *label = new QLabel (GetLabel (item));
+    label->setWordWrap (true);
     FilePicker *picker = new FilePicker (this);
     picker->SetText (value.toString ());
     picker->setObjectName (item.attribute ("property"));

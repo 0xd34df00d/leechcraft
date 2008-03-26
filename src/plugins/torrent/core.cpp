@@ -96,6 +96,21 @@ void Core::DoDelayedInit ()
     XmlSettingsManager::Instance ()->RegisterObject ("PeerProxyLogin", this, "setProxySettings");
     XmlSettingsManager::Instance ()->RegisterObject ("PeerProxyPassword", this, "setProxySettings");
 
+    XmlSettingsManager::Instance ()->RegisterObject ("UserAgent", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("TrackerCompletionTimeout", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("TrackerReceiveTimeout", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("StopTrackerTimeout", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("TrackerMaximumResponseLength", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("PieceTimeout", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("RequestQueueTime", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("MaxAllowedInRequestQueue", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("MaxOutRequestQueue", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("WholePiecesThreshold", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("PeerTimeout", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("UrlSeedTimeout", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("UrlSeedPipelineSize", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("UrlSeedWaitRetry", this, "setGeneralSettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("FilePoolSize", this, "setGeneralSettings");
     RestoreTorrents ();
 }
 
@@ -1037,6 +1052,17 @@ void Core::setGeneralSettings ()
     settings.tracker_completion_timeout = XmlSettingsManager::Instance ()->property ("TrackerCompletionTimeout").toInt ();
     settings.tracker_receive_timeout = XmlSettingsManager::Instance ()->property ("TrackerReceiveTimeout").toInt ();
     settings.stop_tracker_timeout = XmlSettingsManager::Instance ()->property ("StopTrackerTimeout").toInt ();
+    settings.tracker_maximum_response_length = XmlSettingsManager::Instance ()->property ("TrackerMaximumResponseLength").toInt ();
+    settings.piece_timeout = XmlSettingsManager::Instance ()->property ("PieceTimeout").toInt ();
+    settings.request_queue_time = XmlSettingsManager::Instance ()->property ("RequestQueueTime").toInt ();
+    settings.max_allowed_in_request_queue = XmlSettingsManager::Instance ()->property ("MaxAllowedInRequestQueue").toInt ();
+    settings.max_out_request_queue = XmlSettingsManager::Instance ()->property ("MaxOutRequestQueue").toInt ();
+    settings.whole_pieces_threshold = XmlSettingsManager::Instance ()->property ("WholePiecesThreshold").toInt ();
+    settings.peer_timeout = XmlSettingsManager::Instance ()->property ("PeerTimeout").toInt ();
+    settings.urlseed_timeout = XmlSettingsManager::Instance ()->property ("UrlSeedTimeout").toInt ();
+    settings.urlseed_pipeline_size = XmlSettingsManager::Instance ()->property ("UrlSeedPipelineSize").toInt ();
+    settings.urlseed_wait_retry = XmlSettingsManager::Instance ()->property ("UrlSeedWaitRetry").toInt ();
+    settings.file_pool_size = XmlSettingsManager::Instance ()->property ("FilePoolSize").toInt ();
 
     Session_->set_settings (settings);
 }

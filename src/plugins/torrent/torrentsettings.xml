@@ -30,7 +30,7 @@
                     <label lang="en" value="User agent" />
                     <label lang="ru" value="Идентифицировать себя как" />
                 </item>
-                <item type="spinbox" property="TrackerCompletionTimeout" default="60">
+                <item type="spinbox" property="TrackerCompletionTimeout" default="60" minimum="10" maximum="300" step="10">
                     <lang value="en">
                         <label value="Tracker request completion timeout" />
                         <suffix value=" s" />
@@ -40,7 +40,7 @@
                         <suffix value=" с" />
                     </lang>
                 </item>
-                <item type="spinbox" property="TrackerReceiveTimeout" default="40">
+                <item type="spinbox" property="TrackerReceiveTimeout" default="40" minimum="10" maximum="300" step="10">
                     <lang value="en">
                         <label value="Tracker data receive timeout" />
                         <suffix value=" s" />
@@ -50,7 +50,7 @@
                         <suffix value=" с" />
                     </lang>
                 </item>
-                <item type="spinbox" property="StopTrackerTimeout" default="5">
+                <item type="spinbox" property="StopTrackerTimeout" default="5" minimum="1" maximum="30" step="1">
                     <lang value="en">
                         <label value="Stop tracker timeout" />
                         <suffix value=" s" />
@@ -61,13 +61,107 @@
                     </lang>
                 </item>
             </groupbox>
+            <groupbox>
+                <label lang="en" value="Advanced" />
+                <label lang="ru" value="Расширенные настройки" />
+                <item type="spinbox" property="TrackerMaximumResponseLength" default="1024" minimum="512" maximum="16384" step="512">
+                    <lang value="en">
+                        <label value="Tracker maximum response length" />
+                        <suffix value=" kb" />
+                    </lang>
+                    <lang value="ru">
+                        <label value="Максимальный размер ответа от трекера" />
+                        <suffix value=" кб" />
+                    </lang>
+                </item>
+                <item type="spinbox" property="PieceTimeout" default="10" minimum="5" maximum="30" step="5">
+                    <lang value="en">
+                        <label value="Piece response timeout" />
+                        <suffix value=" s" />
+                    </lang>
+                    <lang value="ru">
+                        <label value="Таймаут получения ответа о куске (piece)" />
+                        <suffix value=" с" />
+                    </lang>
+                </item>
+                <item type="spinbox" property="RequestQueueTime" default="3" minimum="1" maximum="10" step="1">
+                    <lang value="en">
+                        <label value="Piece request queue time" />
+                        <suffix value=" s" />
+                    </lang>
+                    <lang value="ru">
+                        <label value="Длина очереди запросов для куска (piece)" />
+                        <suffix value=" с" />
+                    </lang>
+                </item>
+            </groupbox>
+        </tab>
+        <tab>
+            <label lang="en" value="General II" />
+            <label lang="ru" value="Общие II" />
+            <groupbox>
+                <label lang="en" value="Advanced" />
+                <label lang="ru" value="Расширенные настройки" />
+                <item type="spinbox" property="MaxAllowedInRequestQueue" default="250" minimum="50" maximum="1000" step="50">
+                    <label lang="en" value="The number of block requests a peer is allowed to queue up" />
+                    <label lang="ru" value="Максимальное число запросов на блоки (block) от одного пира (peer) в очереди" />
+                </item>
+                <item type="spinbox" property="MaxOutRequestQueue" default="200" minimum="50" maximum="1000" step="50">
+                    <label lang="en" value="The number of block requests to a peer in a queue" />
+                    <label lang="ru" value="Максимальное число запросов на блоки (block) одному пиру (peer) в очереди" />
+                </item>
+                <item type="spinbox" property="WholePiecesThreshold" default="20" minimum="5" maximum="50" step="5">
+                    <lang value="en">
+                        <label value="If whole piece could be downloaded in this time, pieces manager would do its best to do that" />
+                        <suffix value=" s" />
+                    </lang>
+                    <lang value="ru">
+                        <label value="Если цельный кусок (piece) может быть закачан в течение этого времени, менеджер кусков постарается это сделать" />
+                        <suffix value=" с" />
+                    </lang>
+                </item>
+                <item type="spinbox" property="PeerTimeout" default="120" minimum="10" maximum="300" step="10">
+                    <lang value="en">
+                        <label value="Peer timeout" />
+                        <suffix value=" s" />
+                    </lang>
+                    <lang value="ru">
+                        <label value="Таймаут связи с пиром (peer)" />
+                        <suffix value=" с" />
+                    </lang>
+                </item>
+                <item type="spinbox" property="UrlSeedTimeout" default="20" minimum="10" maximum="300" step="10">
+                    <lang value="en">
+                        <label value="Web seed timeout" />
+                        <suffix value=" s" />
+                    </lang>
+                    <lang value="ru">
+                        <label value="Таймаут связи с веб-сидом (Web seed)" />
+                        <suffix value=" с" />
+                    </lang>
+                </item>
+                <item type="spinbox" property="UrlSeedPipelineSize" default="5" minimum="1" maximum="20" step="1">
+                    <label lang="en" value="Web seed pipeline size" />
+                    <label lang="ru" value="Размер конвеера веб-сида (Web seed)" />
+                </item>
+                <item type="spinbox" property="UrlSeedWaitRetry" default="30" minimum="5" maximum="300" step="10">
+                    <lang value="en">
+                        <label value="Web seed retry wait" />
+                        <suffix value=" s" />
+                    </lang>
+                    <lang value="ru">
+                        <label value="Задержка перед повторным соединением с веб-сидом (Web seed)" />
+                        <suffix value=" с" />
+                    </lang>
+                </item>
+            </groupbox>
         </tab>
         <tab>
             <label lang="en" value="Proxy" />
             <label lang="ru" value="Прокси" />
             <item type="groupbox" property="TrackerProxyEnabled" checkable="true" state="off">
                 <label lang="en" value="Tracker proxy" />
-                <label lang="ru" value="Прокси трэкеров" />
+                <label lang="ru" value="Прокси трекеров" />
                 <item type="lineedit" property="TrackerProxyHost">
                     <label lang="en" value="Host" />
                     <label lang="ru" value="Хост" />
@@ -136,10 +230,22 @@
     <page>
         <label lang="en" value="Local settings" />
         <label lang="ru" value="Локальные настройки" />
-        <item type="spinbox" property="AutosaveInterval" default="120" minimum="5" maximum="3600" step="15" suffix=" s">
-            <label lang="en" value="Autosave interval" />
-            <label lang="ru" value="Интервал автосохранения" />
-        </item>
+        <groupbox>
+            <label lang="en" value="Local settings" />
+            <label lang="ru" value="Локальные настройки" />
+            <item type="spinbox" property="AutosaveInterval" default="120" minimum="5" maximum="3600" step="15" suffix=" s">
+                <label lang="en" value="Autosave interval" />
+                <label lang="ru" value="Интервал автосохранения" />
+            </item>
+        </groupbox>
+        <groupbox>
+            <label lang="en" value="Advanced" />
+            <label lang="ru" value="Расширенные настройки" />
+            <item type="spinbox" property="FilePoolSize" default="40" minimum="5" maximum="100" step="5">
+                <label lang="en" value="Maximum amount of concurrently open files" />
+                <label lang="ru" value="Максимальное число одновременно открытых файлов" />
+            </item>
+        </groupbox>
     </page>
 </settings>
 
