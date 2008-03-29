@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1">
-<defaultcodec></defaultcodec>
 <context>
     <name>MainWindow</name>
     <message>
@@ -37,12 +36,12 @@
 <context>
     <name>Remoter</name>
     <message>
-        <location filename="remoter.cpp" line="20"/>
+        <location filename="remoter.cpp" line="27"/>
         <source>Remoter</source>
         <translation>Remoter</translation>
     </message>
     <message>
-        <location filename="remoter.cpp" line="25"/>
+        <location filename="remoter.cpp" line="32"/>
         <source>Server providing remote access to other plugins.</source>
         <translation>Сервер, обеспечивающий удаленный доступ к другим плагинам.</translation>
     </message>

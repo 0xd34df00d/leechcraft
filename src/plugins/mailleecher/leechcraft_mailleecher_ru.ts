@@ -13,12 +13,12 @@
         <translation>Не реализовано</translation>
     </message>
     <message>
-        <location filename="mailleecher.cpp" line="122"/>
+        <location filename="mailleecher.cpp" line="128"/>
         <source>Select destination directory</source>
         <translation>Выбери директорию назначения</translation>
     </message>
     <message>
-        <location filename="mailleecher.cpp" line="146"/>
+        <location filename="mailleecher.cpp" line="152"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>

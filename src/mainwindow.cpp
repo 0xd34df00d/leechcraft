@@ -193,7 +193,7 @@ void MainWindow::MakeActions ()
     BackupSettings_ = ToolsMenu_->addAction (tr ("Backup settings..."), this, SLOT (backupSettings ()));
     RestoreSettings_ = ToolsMenu_->addAction (tr ("Restore settings..."), this, SLOT (restoreSettings ()));
     Help_->addAction (tr ("&About Qt..."), qApp, SLOT (aboutQt ()));
-    Help_->addAction (tr ("About &LeechCraft..."), this, SLOT (showAboutInfo ()));
+//    Help_->addAction (tr ("About &LeechCraft..."), this, SLOT (showAboutInfo ()));
 }
 
 void MainWindow::ReadSettings ()

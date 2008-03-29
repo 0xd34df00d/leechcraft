@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="ru">
-<defaultcodec></defaultcodec>
 <context>
     <name>ChangelogDialog</name>
     <message>
@@ -48,17 +47,17 @@
         <translation>Нет плагинов, способных закачать &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="235"/>
+        <location filename="core.cpp" line="153"/>
         <source>Question</source>
         <translation>Вопрос</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="236"/>
+        <location filename="core.cpp" line="154"/>
         <source>File %1 could be handled by plugin %2, would you like to?</source>
         <translation>File %1 может быть обработан плагином %2, ты не против?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="272"/>
+        <location filename="core.cpp" line="190"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
@@ -66,117 +65,117 @@
 <context>
     <name>Main::MainWindow</name>
     <message>
-        <location filename="mainwindow.cpp" line="29"/>
+        <location filename="mainwindow.cpp" line="30"/>
         <source>Initializing interface...</source>
         <translation>Инициализирую интерфейс...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="53"/>
+        <location filename="mainwindow.cpp" line="61"/>
         <source>Reading settings...</source>
         <translation>Читаю настройки...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="58"/>
+        <location filename="mainwindow.cpp" line="66"/>
         <source>Initializing core and plugins...</source>
         <translation>Инициализирую ядро и плагины...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="93"/>
+        <location filename="mainwindow.cpp" line="122"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="98"/>
+        <location filename="mainwindow.cpp" line="127"/>
         <source>Question</source>
         <translation>Вопрос</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="98"/>
+        <location filename="mainwindow.cpp" line="127"/>
         <source>Do you really want to exit?</source>
         <translation>Ты действительно хочешь выйти?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="115"/>
+        <location filename="mainwindow.cpp" line="144"/>
         <source>Tools</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="143"/>
+        <location filename="mainwindow.cpp" line="167"/>
         <source>Plugins</source>
         <translation>Плагины</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="126"/>
+        <location filename="mainwindow.cpp" line="150"/>
         <source>&amp;File</source>
         <translation>&amp;Файл</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="127"/>
+        <location filename="mainwindow.cpp" line="151"/>
         <source>&amp;Plugins</source>
         <translation>&amp;Плагины</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="128"/>
+        <location filename="mainwindow.cpp" line="152"/>
         <source>&amp;Actions</source>
         <translation>&amp;Действия</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="129"/>
+        <location filename="mainwindow.cpp" line="153"/>
         <source>&amp;Tools</source>
         <translation>&amp;Настройки</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="130"/>
+        <location filename="mainwindow.cpp" line="154"/>
         <source>&amp;Help</source>
         <translation>&amp;Помощь</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="138"/>
+        <location filename="mainwindow.cpp" line="162"/>
         <source>Show/hide main</source>
         <translation>Показать/спрятать главное окно</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="139"/>
+        <location filename="mainwindow.cpp" line="163"/>
         <source>Hide all</source>
         <translation>Спрятать все</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="145"/>
+        <location filename="mainwindow.cpp" line="169"/>
         <source>Quit</source>
         <translation>Выход</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="160"/>
+        <location filename="mainwindow.cpp" line="184"/>
         <source>&amp;Add job</source>
         <translation>&amp;Добавить задание</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="161"/>
+        <location filename="mainwindow.cpp" line="185"/>
         <source>Adds a job to a plugin supporting that addition</source>
         <translation>Добавляет задание в плагин, способный его обработать</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="164"/>
+        <location filename="mainwindow.cpp" line="188"/>
         <source>&amp;Quit</source>
         <translation>&amp;Выход</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="165"/>
+        <location filename="mainwindow.cpp" line="189"/>
         <source>Exit from application</source>
         <translation>Выйти из приложения</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="167"/>
+        <location filename="mainwindow.cpp" line="191"/>
         <source>Settings...</source>
         <translation>Настройки...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="169"/>
+        <location filename="mainwindow.cpp" line="193"/>
         <source>Backup settings...</source>
         <translation>Выгрузить настройки...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="170"/>
+        <location filename="mainwindow.cpp" line="194"/>
         <source>Restore settings...</source>
         <translation>Загрузить настройки....</translation>
     </message>
@@ -186,72 +185,72 @@
         <translation type="obsolete">&amp;Изменения...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="171"/>
+        <location filename="mainwindow.cpp" line="195"/>
         <source>&amp;About Qt...</source>
         <translation>&amp;О Qt...</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="172"/>
         <source>About &amp;LeechCraft...</source>
-        <translation>О &amp;LeechCraft...</translation>
+        <translation type="obsolete">О &amp;LeechCraft...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="207"/>
+        <location filename="mainwindow.cpp" line="231"/>
         <source>Plugin</source>
         <translation>Плагин</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="207"/>
+        <location filename="mainwindow.cpp" line="231"/>
         <source>Plugin details</source>
         <translation>Информация о плагине</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="245"/>
+        <location filename="mainwindow.cpp" line="270"/>
         <source>Provides:</source>
         <translation>Обеспечивает:</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="257"/>
+        <location filename="mainwindow.cpp" line="282"/>
         <source>Needs:</source>
         <translation>Нуждается в:</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="272"/>
+        <location filename="mainwindow.cpp" line="297"/>
         <source>Uses:</source>
         <translation>Использует:</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="328"/>
+        <location filename="mainwindow.cpp" line="353"/>
         <source>/s</source>
         <translation>/c</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="353"/>
+        <location filename="mainwindow.cpp" line="380"/>
         <source>Backup file</source>
         <translation>Файл с настройками</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="353"/>
+        <location filename="mainwindow.cpp" line="380"/>
         <source>Settings files (*.ini)</source>
         <translation>Файлы настроек (*.ini)</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="363"/>
+        <location filename="mainwindow.cpp" line="390"/>
         <source>Finished</source>
         <translation>Законченные</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="347"/>
+        <location filename="mainwindow.cpp" line="374"/>
         <source>Settings sucessfully backuped to %1</source>
         <translation>Настройки успешно выгружены в %1</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="363"/>
+        <location filename="mainwindow.cpp" line="390"/>
         <source>Settings sucessfully restored from %1</source>
         <translation>Настройки успешно загружены из %1</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="378"/>
+        <location filename="mainwindow.cpp" line="405"/>
         <source>Information</source>
         <translation>Информация</translation>
     </message>
@@ -261,12 +260,12 @@
         <translation type="obsolete">LeechCraft, публичный билд 7</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="421"/>
+        <location filename="mainwindow.cpp" line="448"/>
         <source>Download finished</source>
         <translation>Закачка окончена</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="427"/>
+        <location filename="mainwindow.cpp" line="454"/>
         <source>: Preferences</source>
         <translation>: Настройки</translation>
     </message>
@@ -276,7 +275,7 @@
         <translation type="obsolete">LeechCraft, публичный билд 8, ревизия 477</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="378"/>
+        <location filename="mainwindow.cpp" line="405"/>
         <source>LeechCraft public build 8, revision 477</source>
         <translation>LeechCraft, публичный билд 8, ревизия 477</translation>
     </message>

@@ -31,17 +31,17 @@
 <context>
     <name>Aggregator</name>
     <message>
-        <location filename="aggregator.cpp" line="74"/>
+        <location filename="aggregator.cpp" line="80"/>
         <source>RSS 2.0, Atom 1.0 feed reader.</source>
         <translation>RSS 2.0, Atom 1.0 агрегатор.</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="146"/>
+        <location filename="aggregator.cpp" line="158"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="164"/>
+        <location filename="aggregator.cpp" line="176"/>
         <source>: Preferences</source>
         <translation>: Настройки</translation>
     </message>
@@ -82,12 +82,12 @@
         <translation>Эта лента уже добавлена</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="594"/>
+        <location filename="core.cpp" line="608"/>
         <source>Strange, but no suitable provider found</source>
         <translation>Странно, но не найден ни один подходящий провайдер</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="599"/>
+        <location filename="core.cpp" line="613"/>
         <source>Could not handle URL %1</source>
         <translation>Не могу обработать URL %1</translation>
     </message>
