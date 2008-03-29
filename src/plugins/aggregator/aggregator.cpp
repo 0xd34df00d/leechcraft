@@ -146,6 +146,12 @@ void Aggregator::closeEvent (QCloseEvent*)
     IsShown_ = false;
 }
 
+void Aggregator::handleHidePlugins ()
+{
+    IsShown_ = false;
+    hide ();
+}
+
 void Aggregator::showError (const QString& msg)
 {
     qWarning () << Q_FUNC_INFO << msg;

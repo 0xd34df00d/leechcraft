@@ -33,6 +33,8 @@ public:
     void ShowBalloonTip ();
 protected:
     virtual void closeEvent (QEvent*);
+public slots:
+    void handleHidePlugins ();
 private slots:
     void on_ServerAddress__textChanged ();
     void on_OutputDirectory__textChanged ();

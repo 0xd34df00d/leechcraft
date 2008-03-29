@@ -97,6 +97,12 @@ void Remoter::closeEvent (QCloseEvent*)
     IsShown_ = false;
 }
 
+void Remoter::handleHidePlugins ()
+{
+    IsShown_ = false;
+    hide ();
+}
+
 void Remoter::on_Port__valueChanged (int value)
 {
     Core::Instance ().SetPort (value);

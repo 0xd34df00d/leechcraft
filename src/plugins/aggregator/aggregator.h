@@ -41,6 +41,8 @@ public:
     void ShowBalloonTip ();
 protected:
     virtual void closeEvent (QCloseEvent*);
+public slots:
+    void handleHidePlugins ();
 private slots:
     void showError (const QString&);
     void on_ActionAddFeed__triggered ();

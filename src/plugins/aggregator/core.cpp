@@ -557,6 +557,20 @@ void Core::handleJobFinished (int id)
     scheduleSave ();
 }
 
+void Core::handleJobRemoved (int id)
+{
+    if (!PendingJobs_.contains (id))
+        return;
+    PendingJobs_.remove (id);
+}
+
+void Core::handleJobError (int id, IDirectDownload::Error)
+{
+    if (!PendingJobs_.contains (id))
+        return;
+    PendingJobs_.remove (id);
+}
+
 void Core::updateFeeds ()
 {
     QObject *provider = Providers_ ["http"];

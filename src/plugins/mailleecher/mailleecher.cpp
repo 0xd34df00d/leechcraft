@@ -102,6 +102,12 @@ void MailLeecher::closeEvent (QEvent*)
     IsShown_ = false;
 }
 
+void MailLeecher::handleHidePlugins ()
+{
+    IsShown_ = false;
+    hide ();
+}
+
 void MailLeecher::on_ServerAddress__textChanged ()
 {
     setActionsEnabled ();
