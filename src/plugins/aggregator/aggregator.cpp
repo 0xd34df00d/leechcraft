@@ -2,6 +2,7 @@
 #include <QtDebug>
 #include <QSortFilterProxyModel>
 #include <QHeaderView>
+#include <QTranslator>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "aggregator.h"
 #include "core.h"
@@ -11,6 +12,11 @@
 
 void Aggregator::Init ()
 {
+    QTranslator *transl = new QTranslator (this);
+    QString localeName = QLocale::system ().name ();
+    transl->load (QString (":/leechcraft_aggregator_") + localeName);
+    qApp->installTranslator (transl);
+
     Ui_.setupUi (this);
     IsShown_ = false;
 

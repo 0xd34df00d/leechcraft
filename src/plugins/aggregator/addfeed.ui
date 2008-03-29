@@ -10,7 +10,10 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Dialog</string>
+   <string>Add feed</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="resources.qrc" >:/resources/images/aggregator.png</iconset>
   </property>
   <layout class="QVBoxLayout" >
    <item>
@@ -57,7 +60,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc" />
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>
