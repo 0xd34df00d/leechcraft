@@ -362,7 +362,7 @@ QList<FileInfo> Core::GetTorrentFiles (int row) const
     for (libtorrent::torrent_info::file_iterator i = info.begin_files (); i != info.end_files (); ++i)
     {
         FileInfo fi;
-        fi.Name_ = QString::fromStdString (i->path.string ());
+        fi.Name_ = QString::fromUtf8 (i->path.string ().c_str ());
         fi.Size_ = i->size;
         fi.Priority_ = Handles_.at (row).FilePriorities_.at (i - info.begin_files ());
         fi.Progress_ = progresses.at (i - info.begin_files ());
@@ -827,7 +827,7 @@ void Core::HandleSingleFinished (const libtorrent::torrent_info& info)
     emit torrentFinished (string);
 
     for (libtorrent::torrent_info::file_iterator i = info.begin_files (); i != info.end_files (); ++i)
-        emit fileFinished (QString::fromStdString (i->path.string ()));
+        emit fileFinished (QString::fromUtf8 (i->path.string ().c_str ()));
 }
 
 void Core::writeSettings ()

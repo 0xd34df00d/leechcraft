@@ -113,7 +113,7 @@ void AddTorrent::ParseBrowsed ()
         QTreeWidgetItem *item = new QTreeWidgetItem (FileWidget_);
         item->setCheckState (0, Qt::Checked);
         item->setText (0, Proxy::Instance ()->MakePrettySize (i->size));
-        item->setText (1, QString::fromStdString (i->path.string ()));
+        item->setText (1, QString::fromUtf8 (i->path.string ().c_str ()));
     }
 }
 

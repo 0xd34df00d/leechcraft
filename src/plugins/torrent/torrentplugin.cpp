@@ -186,6 +186,11 @@ QList<QVariantList> TorrentPlugin::GetAll () const
     return result;
 }
 
+IRemoteable::AddJobType TorrentPlugin::GetAddJobType () const
+{
+    return AJTFile;
+}
+
 void TorrentPlugin::AddJob (const QByteArray& data, const QString& where)
 {
     QVector<bool> files (true);

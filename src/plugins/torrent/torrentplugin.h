@@ -61,6 +61,7 @@ public:
 
     // IRemoteable
     QList<QVariantList> GetAll () const;
+    AddJobType GetAddJobType () const;
     void AddJob (const QByteArray&, const QString&);
     void StartAt (int);
     void StopAt (int);
