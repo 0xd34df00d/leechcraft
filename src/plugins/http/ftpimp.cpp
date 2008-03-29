@@ -228,10 +228,11 @@ void FtpImp::run ()
     }
     qDebug () << Q_FUNC_INFO << counter << Size_;
     EmitFlush (counter, Size_);
-    if (counter == Size_)
-        emit finished ();
 
     Finalize ();
+
+    if (counter == Size_)
+        emit finished ();
 }
 
 void FtpImp::StopDownload ()
