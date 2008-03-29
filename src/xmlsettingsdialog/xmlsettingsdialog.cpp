@@ -510,3 +510,50 @@ void XmlSettingsDialog::accept ()
     QDialog::accept ();
 }
 
+void XmlSettingsDialog::reject ()
+{
+    for (Property2Value_t::iterator i = Prop2NewValue_.begin (); i != Prop2NewValue_.end (); ++i)
+    {
+        QWidget *object = findChild<QWidget*> (i.key ());
+        if (!object)
+        {
+            qWarning () << Q_FUNC_INFO << "could not find object for property" << i.key ();
+            continue;
+        }
+
+        QVariant oldValue = WorkingObject_->property (i.key ().toLatin1 ().constData ());
+
+        QLineEdit *edit = qobject_cast<QLineEdit*> (object);
+        QCheckBox *checkbox = qobject_cast<QCheckBox*> (object);
+        QSpinBox *spinbox = qobject_cast<QSpinBox*> (object);
+        QGroupBox *groupbox = qobject_cast<QGroupBox*> (object);
+        RangeWidget *rangeWidget = qobject_cast<RangeWidget*> (object);
+        FilePicker *picker = qobject_cast<FilePicker*> (object);
+        RadioGroup *radiogroup = qobject_cast<RadioGroup*> (object);
+        QComboBox *combobox = qobject_cast<QComboBox*> (object);
+        if (edit)
+            edit->setText (oldValue.toString ());
+        else if (checkbox)
+            checkbox->setCheckState (oldValue.toBool () ? Qt::Checked : Qt::Unchecked);
+        else if (spinbox)
+            spinbox->setValue (oldValue.toLongLong ());
+        else if (groupbox)
+            groupbox->setChecked (oldValue.toBool ());
+        else if (rangeWidget)
+            rangeWidget->SetRange (oldValue);
+        else if (picker)
+            picker->SetText (oldValue.toString ());
+        else if (radiogroup)
+            radiogroup->SetValue (oldValue.toString ());
+        else if (combobox)
+            combobox->setCurrentIndex (combobox->findText (oldValue.toString ()));
+        else
+        {
+            qWarning () << Q_FUNC_INFO << "unhandled object" << object << "for" << i.key ();
+            continue;
+        }
+    }
+
+    QDialog::reject ();
+}
+

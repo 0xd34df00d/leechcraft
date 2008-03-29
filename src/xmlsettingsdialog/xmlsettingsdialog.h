@@ -51,6 +51,7 @@ private slots:
     void updatePreferences ();
 protected:
     virtual void accept ();
+    virtual void reject ();
 };
 
 #endif

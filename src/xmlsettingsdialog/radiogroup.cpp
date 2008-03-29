@@ -1,4 +1,5 @@
 #include <QButtonGroup>
+#include <QtDebug>
 #include <QRadioButton>
 #include <QVBoxLayout>
 #include "radiogroup.h"
@@ -23,6 +24,17 @@ void RadioGroup::AddButton (QRadioButton *button, bool def)
 QString RadioGroup::GetValue () const
 {
     return Value_;
+}
+
+void RadioGroup::SetValue (const QString& value)
+{
+    QRadioButton *button = findChild<QRadioButton*> (value);
+    if (!button)
+    {
+        qWarning () << Q_FUNC_INFO << "could not find button for" << value;
+        return;
+    }
+    button->setChecked (true);
 }
 
 void RadioGroup::handleToggled (bool value)
