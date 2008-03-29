@@ -29,12 +29,12 @@ public:
     const QString& GetPassword () const;
 
     void AddObject (QObject*, const QString& feature);
-    Reply GetReplyFor (const QString&, const QMap<QString, QString>&, const QMap<QString, QString>&);
+    Reply GetReplyFor (const QString&, const QMap<QString, QString>&, const QMap<QString, QString>&, const QByteArray&);
 private:
     Reply DoNotAuthorized ();
     Reply DoMainPage (const QStringList&, const QMap<QString, QString>&);
     Reply DoView (const QStringList&, const QMap<QString, QString>&);
-    Reply DoAdd (const QStringList&, const QMap<QString, QString>&);
+    Reply DoAdd (const QStringList&, const QMap<QString, QString>&, const QByteArray&);
     Reply DoUnhandled (const QStringList&, const QMap<QString, QString>&);
     Reply DoResources (const QStringList&, const QMap<QString, QString>&);
 signals:

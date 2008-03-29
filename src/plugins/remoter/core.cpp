@@ -74,7 +74,7 @@ void Core::AddObject (QObject *object, const QString& feature)
         Objects_.append (object);
 }
 
-Reply Core::GetReplyFor (const QString& p, const QMap<QString, QString>& query, const QMap<QString, QString>& headers)
+Reply Core::GetReplyFor (const QString& p, const QMap<QString, QString>& query, const QMap<QString, QString>& headers, const QByteArray& postData)
 {
     QStringList parts = QString (p).remove (0, 1).split ('/'); // Trim first slash
     Reply rep;
@@ -87,7 +87,7 @@ Reply Core::GetReplyFor (const QString& p, const QMap<QString, QString>& query, 
     else if (parts.at (0) == "view")
         rep = DoView (parts, query);
     else if (parts.at (0) == "add")
-        rep = DoAdd (parts, query);
+        rep = DoAdd (parts, query, postData);
     else if (parts.at (0) == "resources")
         rep = DoResources (parts, query);
     else
@@ -158,7 +158,8 @@ Reply Core::DoView (const QStringList&, const QMap<QString, QString>&)
             continue;
 
         // Draw new job form
-        QDomElement form = DocumentGenerator::CreateForm (QString ("/add/%1").arg (i), false);
+        QDomElement form = DocumentGenerator::CreateForm (QString ("/add/%1").arg (i), true);
+        DocumentGenerator::InputType type;
         QDomElement addEntity = DocumentGenerator::CreateInputField (DocumentGenerator::TypeTextbox, "entity");
         QDomElement where = DocumentGenerator::CreateInputField (DocumentGenerator::TypeText, "where");
         QDomElement addHolder = DocumentGenerator::CreateText (),
@@ -201,7 +202,7 @@ Reply Core::DoView (const QStringList&, const QMap<QString, QString>&)
     return rep;
 }
 
-Reply Core::DoAdd (const QStringList& path, const QMap<QString, QString>& query)
+Reply Core::DoAdd (const QStringList& path, const QMap<QString, QString>& query, const QByteArray& postData)
 {
     qDebug () << Q_FUNC_INFO;
     Reply rep;
@@ -216,7 +217,7 @@ Reply Core::DoAdd (const QStringList& path, const QMap<QString, QString>& query)
     QString where = query ["where"];
 
     IRemoteable *ir = qobject_cast<IRemoteable*> (Objects_.at (number));
-    ir->AddJob (entity, where);
+//    ir->AddJob (postData, where);
 
     return rep;
 }

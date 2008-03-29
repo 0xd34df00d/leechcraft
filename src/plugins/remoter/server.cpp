@@ -59,6 +59,7 @@ void Server::ready ()
         if (!socket->bytesAvailable ())
             socket->waitForReadyRead ();
         line = socket->readLine ().trimmed ();
+        qDebug () << Q_FUNC_INFO << line;
 
         QStringList list = line.split (": ");
         if (list.size () != 2)
@@ -66,26 +67,37 @@ void Server::ready ()
         headers [list [0].trimmed ().toLower ()] = list [1].trimmed ();
     }
 
-    if (head [0].toLower () == "post")
+    QByteArray other;
+    if (head [0].toLower () == "post" && headers.contains ("content-length"))
     {
-        qDebug () << "post method, waiting for data";
-//        socket->waitForReadyRead ();
-        QByteArray other = socket->readAll ();
-
-        if (other.contains ('?'))
+        quint64 counter = 0, postSize = headers ["content-length"].toULongLong ();
+        bool emptyLineEncountered = false;
+        while (counter < postSize)
         {
-            QList<QByteArray> params = other.split ('?').at (1).split ('&');
-            qDebug () << params;
-            for (int i = 0; i < params.size (); ++i)
+            try
             {
-                QList<QByteArray> p = params.at (i).split ('=');
-                if (p.size () < 2)
-                    continue;
-                query [p.at (0)] = p.at (1);
+                QByteArray tmp = socket->readAll ();
+                counter += tmp.size ();
+                other += tmp;
+            }
+            catch (...)
+            {
             }
         }
+        QList<QByteArray> splitted = other.split ('\n');
+        int position = -1;
+        for (int i = 0; i < splitted.size (); ++i)
+            if (splitted.at (i).simplified ().isEmpty ())
+            {
+                position = i;
+                break;
+            }
+        other.clear ();
+        for (int i = position; i < splitted.size (); ++i)
+            other += splitted.at (i);
+        qDebug () << other;
     }
-    Reply reply = qobject_cast<Core*> (parent ())->GetReplyFor (path, query, headers);
+    Reply reply = qobject_cast<Core*> (parent ())->GetReplyFor (path, query, headers, other);
     socket->write (QString ("HTTP/1.0 " + QString::number (reply.State_) + " OK\r\n").toAscii ());
     socket->write ("Server: LeechCraftRemoter/deep_alpha\r\n");
     reply.Type_.isEmpty () ?

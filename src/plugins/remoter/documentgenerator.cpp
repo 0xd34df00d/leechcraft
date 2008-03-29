@@ -110,6 +110,8 @@ QDomElement DocumentGenerator::CreateForm (const QString& where, bool post)
     QDomElement form = Document_.createElement ("form");
     form.setAttribute ("action", where);
     form.setAttribute ("method", post ? "post" : "get");
+    if (post)
+        form.setAttribute ("enctype", "multipart/form-data");
     return form;
 }
 
@@ -127,6 +129,7 @@ QDomElement DocumentGenerator::CreateInputField (DocumentGenerator::InputType ty
             break;
         case TypeTextbox:
             result = Document_.createElement ("textarea");
+            result.appendChild (Document_.createTextNode (""));
             result.setAttribute ("cols", QString::number (50));
             result.setAttribute ("rows", QString::number (10));
             result.setAttribute ("name", name);
