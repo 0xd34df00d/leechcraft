@@ -972,7 +972,7 @@
          <item>
           <layout class="QHBoxLayout" >
            <item>
-            <widget class="ContextableTree" name="FilesWidget_" >
+            <widget class="QTreeWidget" name="FilesWidget_" >
              <property name="rootIsDecorated" >
               <bool>false</bool>
              </property>
@@ -1269,11 +1269,6 @@
   </action>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>ContextableTree</class>
-   <extends>QTreeWidget</extends>
-   <header location="global" >contextabletree.h</header>
-  </customwidget>
   <customwidget>
    <class>PiecesWidget</class>
    <extends>QLabel</extends>
