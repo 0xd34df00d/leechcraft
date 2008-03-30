@@ -407,6 +407,7 @@ void TorrentPlugin::on_PrioritySpinbox__valueChanged (int val)
 {
     int torrent = TorrentView_->currentIndex ().row ();
     Core::Instance ()->SetFilePriority (torrent, FilesWidget_->indexOfTopLevelItem (FilesWidget_->currentItem ()), val);
+    updateTorrentStats ();
 }
 
 void TorrentPlugin::setActionsEnabled ()
