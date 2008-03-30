@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>resources/images/aggregator.png</file>
+        <file>resources/images/preferences.png</file>
+        <file>resources/images/rss-feed.png</file>
+        <file>aggregatorsettings.xml</file>
+        <file>leechcraft_aggregator_ru.qm</file>
+    </qresource>
+</RCC>

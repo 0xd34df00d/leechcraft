@@ -1,0 +1,36 @@
+body
+{
+    background-color: #090;
+}
+
+td
+{
+    background-color: #070;
+    border-width: 1px;
+    border-style: solid;
+    border-color: black;
+    padding-left: 1ex;
+    padding-right: 1ex;
+    margin: 0px;
+}
+
+table
+{
+    border-width: 1px;
+}
+
+.heading
+{
+    font-weight: bold;
+}
+
+.emed
+{
+    font-style: italic;
+}
+
+.jobName
+{
+    font-weight: bold;
+    text-align: center;
+}

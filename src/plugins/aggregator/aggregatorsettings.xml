@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+    <declare defaultlang="en" />
+    <page>
+        <label lang="en" value="General settings" />
+        <label lang="ru" value="Общие настройки" />
+        <groupbox>
+            <label lang="en" value="Behavior" />
+            <label lang="ru" value="Поведение" />
+            <item type="checkbox" property="BeSilent" state="off">
+                <label lang="en" value="Be silent" />
+                <label lang="ru" value="Вести себя тихо" />
+            </item>
+        </groupbox>
+        <groupbox>
+            <label lang="en" value="Updates" />
+            <label lang="ru" value="Обновления" />
+            <item type="checkbox" property="UpdateOnStartup" state="on">
+                <label lang="en" value="Update feeds on startup" />
+                <label lang="ru" value="Обновлять ленты при запуске" />
+            </item>
+            <item type="spinbox" property="UpdateInterval" default="10" minimum="1" maximum="300" step="5">
+                <lang value="en">
+                    <label value="Update interval" />
+                    <suffix value=" min" />
+                </lang>
+                <lang value="ru">
+                    <label value="Интервал обновления" />
+                    <suffix value=" мин" />
+                </lang>
+            </item>
+        </groupbox>
+        <groupbox>
+            <label lang="en" value="Store" />
+            <label lang="ru" value="Хранение" />
+            <item type="spinbox" property="ItemsPerChannel" default="50" minimum="20" maximum="10000" step="50">
+                <label lang="en" value="Items per channel" />
+                <label lang="ru" value="Статей в канале" />
+            </item>
+            <item type="spinbox" property="ItemsMaxAge" default="7" minimum="1" maximum="52" step="1">
+                <lang value="en">
+                    <label value="Store items for" />
+                    <suffix value=" days" />
+                </lang>
+                <lang value="ru">
+                    <label value="Хранить статьи" />
+                    <suffix value=" дней" />
+                </lang>
+            </item>
+        </groupbox>
+    </page>
+</settings>

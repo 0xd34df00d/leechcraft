@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+    <page>
+        <label lang="en" value="Behavior" />
+        <label lang="ru" value="Поведение" />
+        <item type="checkbox" property="WatchClipboard" state="on">
+            <label lang="en" value="Watch clipboard for addable task" />
+            <label lang="ru" value="Следить за буфером обмена" />
+        </item>
+    </page>
+    <page>
+        <label lang="en" value="Plugins intercommunication" />
+        <label lang="ru" value="Общение с плагинами" />
+
+        <item type="groupbox" property="ShowFinishedDownloadMessages" state="on" checkable="true">
+            <label lang="en" value="Show messages about finished downloads in tray" />
+            <label lang="ru" value="Показывать сообщения о завершенных закачках в трее" />
+            <item type="spinbox" property="FinishedDownloadMessageTimeout" default="10" minimum="1" maximum="15" step="1" suffix=" s">
+                <label lang="en" value="Finished download message timeout" />
+                <label lang="ru" value="Время показа уведомления о завершенной загрузке" />
+            </item>
+        </item>
+        <item type="checkbox" property="QueryPluginsToHandleFinished" state="on">
+            <label lang="en" value="Query plugins to handle finished downloads" />
+            <label lang="ru" value="Опрашивать плагины для обработки заданий при их завершении" />
+        </item>
+        <item type="checkbox" property="AggregateJobs" state="on">
+            <label lang="en" value="Aggregate jobs from plugins" />
+            <label lang="ru" value="Собирать задания из плагинов и показывать их в главном окне" />
+        </item>
+    </page>
+</settings>
