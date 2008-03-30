@@ -52,20 +52,22 @@ void PiecesWidget::paintEvent (QPaintEvent *e)
         return;
     }
 
-    int h = height ();
-
-    painter.fillRect (0, 0, width (), height (), QBrush (Qt::red));
-
-    qreal scaleFactor = static_cast<qreal> (width ()) / static_cast<qreal> (s);
-
+    QPixmap tempPicture (s, 1);
+    QPainter tempPainter (&tempPicture);
+    tempPainter.setPen (Qt::red);
+    tempPainter.drawLine (0, 0, s, 0);
     QList<QPair<int, int> > trues = FindTrues (Pieces_);
     for (int i = 0; i < trues.size (); ++i)
     {
         QPair<int, int> pair = trues.at (i);
-        QPointF first (scaleFactor * pair.first, 0);
-        QPointF second (scaleFactor * pair.second, h);
-        painter.fillRect (QRectF (first, second), QBrush (Qt::darkGreen));
+
+        tempPainter.setPen (Qt::darkGreen);
+        tempPainter.drawLine (pair.first, 0, pair.second, 0);
     }
+    tempPainter.end ();
+
+    painter.drawPixmap (QRect (0, 0, width (), height ()), tempPicture);
+
     painter.end ();
 
     e->accept ();
