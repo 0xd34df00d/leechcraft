@@ -1100,7 +1100,17 @@ void Core::setGeneralSettings ()
     settings.inactivity_timeout = XmlSettingsManager::Instance ()->property ("InactivityTimeout").toInt ();
     settings.unchoke_interval = XmlSettingsManager::Instance ()->property ("UnchokeInterval").toInt ();
     settings.optimistic_unchoke_multiplier = XmlSettingsManager::Instance ()->property ("OptimisticUnchokeMultiplier").toInt ();
-    settings.announce_ip = asio::ip::address::from_string (XmlSettingsManager::Instance ()->property ("AnnounceIP").toString ().toStdString ());
+    try
+    {
+        if (XmlSettingsManager::Instance ()->property ("AnnounceIP").toString ().isEmpty ())
+            settings.announce_ip = asio::ip::address ();
+        else
+            settings.announce_ip = asio::ip::address::from_string (XmlSettingsManager::Instance ()->property ("AnnounceIP").toString ().toStdString ());
+    }
+    catch (const asio::system_error&)
+    {
+        error (tr ("Wrong announce address %1").arg (XmlSettingsManager::Instance ()->property ("AnnounceIP").toString ()));
+    }
     settings.num_want = XmlSettingsManager::Instance ()->property ("NumWant").toInt ();
     settings.initial_picker_threshold = XmlSettingsManager::Instance ()->property ("InitialPickerThreshold").toInt ();
     settings.allowed_fast_set_size = XmlSettingsManager::Instance ()->property ("AllowedFastSetSize").toInt ();
