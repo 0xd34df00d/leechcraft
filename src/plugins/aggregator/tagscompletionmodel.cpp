@@ -1,3 +1,4 @@
+#include <QLineEdit>
 #include <QtDebug>
 #include "tagscompletionmodel.h"
 
@@ -65,5 +66,10 @@ void TagsCompletionModel::UpdateTags (const QStringList& newTags)
 QStringList TagsCompletionModel::GetTags () const
 {
     return Tags_;
+}
+
+void TagsCompletionModel::SetLineEdit (const QLineEdit* edit)
+{
+    LineEdit_ = edit;
 }
 

@@ -70,7 +70,7 @@ public:
     void FeedActivated (const QModelIndex&);
     QString GetDescription (const QModelIndex&);
     QAbstractItemModel* GetChannelsModel ();
-    QAbstractItemModel* GetTagsCompletionModel ();
+    TagsCompletionModel* GetTagsCompletionModel ();
     void UpdateTags (const QStringList&);
     void MarkItemAsUnread (const QModelIndex&);
     void MarkChannelAsRead (const QModelIndex&);

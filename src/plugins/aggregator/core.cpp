@@ -188,7 +188,7 @@ QAbstractItemModel* Core::GetChannelsModel ()
     return ChannelsModel_;
 }
 
-QAbstractItemModel* Core::GetTagsCompletionModel ()
+TagsCompletionModel* Core::GetTagsCompletionModel ()
 {
     return TagsCompletionModel_;
 }

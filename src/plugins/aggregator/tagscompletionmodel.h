@@ -3,11 +3,14 @@
 #include <QAbstractItemModel>
 #include <QStringList>
 
+class QLineEdit;
+
 class TagsCompletionModel : public QAbstractItemModel
 {
     Q_OBJECT
 
     QStringList Tags_;
+    const QLineEdit* LineEdit_;
 public:
     TagsCompletionModel (QObject *parent = 0);
 
@@ -22,6 +25,7 @@ public:
 
     void UpdateTags (const QStringList&);
     QStringList GetTags () const;
+    void SetLineEdit (const QLineEdit*);
 };
 
 #endif

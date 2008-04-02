@@ -6,7 +6,7 @@
 class XmlSettingsDialog;
 class QSortFilterProxyModel;
 class ChannelsFilterModel;
-class QCompleter;
+class TagsCompleter;
 
 class Aggregator : public QMainWindow
                  , public IInfo
@@ -23,7 +23,7 @@ class Aggregator : public QMainWindow
     XmlSettingsDialog *XmlSettingsDialog_;
     QSortFilterProxyModel *ItemsFilterModel_;
     ChannelsFilterModel *ChannelsFilterModel_;
-    QCompleter *TagsCompleter_;
+    TagsCompleter *TagsCompleter_;
 public:
     void Init ();
     void Release ();

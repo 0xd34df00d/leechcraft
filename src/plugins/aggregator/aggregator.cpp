@@ -10,6 +10,8 @@
 #include "addfeed.h"
 #include "channelsfiltermodel.h"
 #include "xmlsettingsmanager.h"
+#include "tagscompletionmodel.h"
+#include "tagscompleter.h"
 
 void Aggregator::Init ()
 {
@@ -61,8 +63,10 @@ void Aggregator::Init ()
     connect (Ui_.Items_->selectionModel (), SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (currentItemChanged (const QModelIndex&)));
     connect (Ui_.ActionUpdateFeeds_, SIGNAL (triggered ()), &Core::Instance (), SLOT (updateFeeds ()));
 
-    TagsCompleter_ = new QCompleter (this);
+    TagsCompleter_ = new TagsCompleter (this);
     TagsCompleter_->setModel (Core::Instance ().GetTagsCompletionModel ());
+    Core::Instance ().GetTagsCompletionModel ()->SetLineEdit (Ui_.TagsLine_);
+    TagsCompleter_->setCompletionPrefix ("fuck");
     Ui_.TagsLine_->setCompleter (TagsCompleter_);
     Ui_.ChannelTags_->setCompleter (TagsCompleter_);
 
