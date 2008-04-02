@@ -980,28 +980,26 @@ void Core::queryLibtorrentForWarnings ()
     libtorrent::peer_error_alert *pea = dynamic_cast<libtorrent::peer_error_alert*> (alert.get ());
     libtorrent::invalid_request_alert *ira = dynamic_cast<libtorrent::invalid_request_alert*> (alert.get ());
     if (ta)
-        logstr.append (QString ("failed tracker request: status code %1, for %2 times").arg (ta->status_code).arg (ta->times_in_row));
+        logstr.append (QString ("\nfailed tracker request: status code %1, for %2 times").arg (ta->status_code).arg (ta->times_in_row));
     else if (usa)
-        logstr.append (QString ("problems with URL seed %1").arg (usa->url.c_str ()));
+        logstr.append (QString ("\nproblems with URL seed %1").arg (usa->url.c_str ()));
     else if (hfa)
-        logstr.append (QString ("piece hash failed, PN: %1").arg (hfa->piece_index));
+        logstr.append (QString ("\npiece hash failed, PN: %1").arg (hfa->piece_index));
     else if (pba)
-        logstr.append (QString ("peer banned: %1").arg (pba->ip.address ().to_string ().c_str ()));
+        logstr.append (QString ("\npeer banned: %1").arg (pba->ip.address ().to_string ().c_str ()));
     else if (pea)
-        logstr.append (QString ("peer error: %1").arg (pea->ip.address ().to_string ().c_str ()));
+        logstr.append (QString ("\npeer error: %1").arg (pea->ip.address ().to_string ().c_str ()));
     else if (ira)
-        logstr.append (QString ("invalid request: %1, request { piece %2, start %3, length %4 }")
+        logstr.append (QString ("\ninvalid request: %1, request { piece %2, start %3, length %4 }")
             .arg (ira->ip.address ().to_string ().c_str ())
             .arg (ira->request.piece)
             .arg (ira->request.start)
             .arg (ira->request.length));
-    else
-        logstr.append ("just common failure");
 
     logstr.append (QString ("\r\nRaw message: ") + alert->msg ().c_str ());
 
     qWarning () << "<libtorrent> " << logstr;
-    emit logMessage (QDateTime::currentDateTime ().toString () + " " + logstr);
+    emit logMessage (QDateTime::currentDateTime ().toString () + logstr);
 }
 
 bool Core::CheckValidity (int pos) const

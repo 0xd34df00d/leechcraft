@@ -94,6 +94,7 @@ private slots:
     void on_TorrentDesiredRating__valueChanged (double);
     void on_FilesWidget__currentItemChanged (QTreeWidgetItem*);
     void on_PrioritySpinbox__valueChanged (int);
+    void on_CaseSensitiveSearch__stateChanged (int);
     void setActionsEnabled ();
     void showError (QString);
     void updateTorrentStats ();

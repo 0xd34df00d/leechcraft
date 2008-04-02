@@ -34,8 +34,8 @@ void TorrentPlugin::Init ()
     FilterModel_ = new QSortFilterProxyModel;
     FilterModel_->setSourceModel (Core::Instance ());
     FilterModel_->setFilterKeyColumn (0);
+    FilterModel_->setDynamicSortFilter (true);
     TorrentView_->setModel (FilterModel_);
-    connect (Core::Instance (), SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)), FilterModel_, SLOT (invalidate ()));
     connect (FixedStringSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setFilterFixedString (const QString&)));
     connect (WildcardSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setFilterWildcard (const QString&)));
     connect (RegexpSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setFilterRegExp (const QString&)));
@@ -421,6 +421,11 @@ void TorrentPlugin::on_PrioritySpinbox__valueChanged (int val)
     int torrent = TorrentView_->currentIndex ().row ();
     Core::Instance ()->SetFilePriority (torrent, FilesWidget_->indexOfTopLevelItem (FilesWidget_->currentItem ()), val);
     updateTorrentStats ();
+}
+
+void TorrentPlugin::on_CaseSensitiveSearch__stateChanged (int state)
+{
+    FilterModel_->setFilterCaseSensitivity (state ? Qt::CaseSensitive : Qt::CaseInsensitive);
 }
 
 void TorrentPlugin::setActionsEnabled ()
