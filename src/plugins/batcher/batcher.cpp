@@ -151,9 +151,8 @@ void Batcher::sendJobs ()
         if (!provider)
             continue;
         DirectDownloadParams ddd = { text, localDir + QFileInfo (text).fileName (), true, true };
-        disconnect (this, SIGNAL (addDownload (DirectDownloadParams)), provider, 0);
-        connect (this, SIGNAL (addDownload (DirectDownloadParams)), provider, SLOT (addDownload (DirectDownloadParams)));
-        emit addDownload (ddd);
+        IDirectDownload *idd = qobject_cast<IDirectDownload*> (provider);
+        idd->AddJob (ddd);
         ++count;
     }
     if (count)
