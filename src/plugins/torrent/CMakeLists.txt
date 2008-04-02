@@ -26,7 +26,8 @@ SET (SRCS
 	thirdstep.cpp
 	addmultipletorrents.cpp
 	pieceswidget.cpp
-	xmlsettingsmanager.cpp)
+	xmlsettingsmanager.cpp
+	trackerschanger.cpp)
 SET (HEADERS
 	torrentplugin.h 
 	core.h 
@@ -44,6 +45,7 @@ SET (HEADERS
 	overallstats.h
 	pieceswidget.h
 	xmlsettingsmanager.h
+	trackerschanger.h
 	newtorrentparams.h
 	../../plugininterface/basesettingsmanager.h)
 SET (FORMS
@@ -52,7 +54,8 @@ SET (FORMS
 	addmultipletorrents.ui
 	newtorrentfirststep.ui
 	newtorrentsecondstep.ui
-	newtorrentthirdstep.ui)
+	newtorrentthirdstep.ui
+	trackerschanger.ui)
 SET (RESOURCES resources.qrc)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})

@@ -30,6 +30,7 @@ HEADERS += torrentplugin.h \
 		   peerinfo.h \
 		   overallstats.h \
 		   addmultipletorrens.h \
+		   trackerschanger.h \
 		   newtorrentparams.h
 SOURCES += torrentplugin.cpp \
 		   core.cpp \
@@ -41,10 +42,11 @@ SOURCES += torrentplugin.cpp \
 		   secondstep.cpp \
 		   thirdstep.cpp \
 		   addmultipletorrens.cpp \
+		   trackerschanger.cpp \
 		   settingsmanager.cpp
 FORMS += mainwindow.ui addtorrent.ui newtorrentfirststep.ui \
 	 	 newtorrentsecondstep.ui newtorrentthirdstep.ui \
-		 addmultipletorrents.ui
+		 addmultipletorrents.ui trackerschanger.ui
 RESOURCES += resources.qrc
 TRANSLATIONS += leechcraft_torrent_ru.ts
 win32:LIBS += -L../.. -lplugininterface -lexceptions -lsettingsdialog -Llibs -lws2_32 -lboost_date_time-mgw42-mt-1_34_1 -lboost_filesystem-mgw42-mt-1_34_1 -lboost_thread-mgw42-mt-1_34_1 -lzdll

@@ -5,6 +5,7 @@
 #include "addtorrent.h"
 #include "addmultipletorrents.h"
 #include "newtorrentwizard.h"
+#include "trackerschanger.h"
 #include "xmlsettingsmanager.h"
 
 void TorrentPlugin::Init ()
@@ -327,6 +328,18 @@ void TorrentPlugin::on_Stop__triggered ()
 void TorrentPlugin::on_ForceReannounce__triggered ()
 {
     Core::Instance ()->ForceReannounce (TorrentView_->currentIndex ().row ());
+}
+
+void TorrentPlugin::on_ChangeTrackers__triggered ()
+{
+    QStringList trackers = Core::Instance ()->GetTrackers (TorrentView_->currentIndex ().row ());
+    TrackersChanger changer;
+    changer.SetTrackers (trackers);
+    if (changer.exec () == QDialog::Accepted)
+    {
+        QStringList newTrackers = changer.GetTrackers ();
+        Core::Instance ()->SetTrackers (TorrentView_->currentIndex ().row (), newTrackers);
+    }
 }
 
 void TorrentPlugin::on_Preferences__triggered ()

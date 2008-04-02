@@ -100,6 +100,8 @@ public:
     double GetTorrentDesiredRating (int) const;
     void SetFilePriority (int, int, int);
     int GetFilePriority (int, int) const;
+    QStringList GetTrackers (int) const;
+    void SetTrackers (int, const QStringList&);
     void MakeTorrent (NewTorrentParams) const;
 private:
     QString GetStringForState (libtorrent::torrent_status::state_t) const;

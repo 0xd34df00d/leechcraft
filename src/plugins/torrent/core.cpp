@@ -614,6 +614,31 @@ int Core::GetFilePriority (int torrent, int file) const
     return Handles_.at (torrent).FilePriorities_ [file];
 }
 
+QStringList Core::GetTrackers (int torrent) const
+{
+    if (!CheckValidity (torrent))
+        return QStringList ();
+
+    std::vector<libtorrent::announce_entry> an = Handles_.at (torrent).Handle_.trackers ();
+    QStringList result;
+    for (int i = 0; i < an.size (); ++i)
+        result.append (QString::fromStdString (an [i].url));
+    return result;
+}
+
+void Core::SetTrackers (int torrent, const QStringList& trackers)
+{
+    if (!CheckValidity (torrent))
+        return;
+
+    qDebug () << trackers;
+    std::vector<libtorrent::announce_entry> announces;
+    for (int i = 0; i < trackers.size (); ++i)
+        announces.push_back (libtorrent::announce_entry (trackers.at (i).toStdString ()));
+    Handles_ [torrent].Handle_.replace_trackers (announces);
+    Handles_ [torrent].Handle_.force_reannounce ();
+}
+
 namespace
 {
     void AddFiles (libtorrent::torrent_info& t, const boost::filesystem::path& p, const boost::filesystem::path& l)

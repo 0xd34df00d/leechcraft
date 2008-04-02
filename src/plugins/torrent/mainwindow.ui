@@ -42,7 +42,7 @@
         <enum>QTabWidget::Rounded</enum>
        </property>
        <property name="currentIndex" >
-        <number>2</number>
+        <number>0</number>
        </property>
        <property name="elideMode" >
         <enum>Qt::ElideRight</enum>
@@ -1148,6 +1148,7 @@
     <addaction name="Resume_" />
     <addaction name="Stop_" />
     <addaction name="ForceReannounce_" />
+    <addaction name="ChangeTrackers_" />
    </widget>
    <addaction name="menuTorrents" />
    <addaction name="menuActions" />
@@ -1178,6 +1179,7 @@
    <addaction name="Resume_" />
    <addaction name="Stop_" />
    <addaction name="ForceReannounce_" />
+   <addaction name="ChangeTrackers_" />
   </widget>
   <widget class="QToolBar" name="toolBar_2" >
    <property name="windowTitle" >
@@ -1265,6 +1267,11 @@
   <action name="OpenMultipleTorrents_" >
    <property name="text" >
     <string>Open multiple torrents</string>
+   </property>
+  </action>
+  <action name="ChangeTrackers_" >
+   <property name="text" >
+    <string>Change trackers</string>
    </property>
   </action>
  </widget>
