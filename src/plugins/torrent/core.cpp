@@ -631,7 +631,6 @@ void Core::SetTrackers (int torrent, const QStringList& trackers)
     if (!CheckValidity (torrent))
         return;
 
-    qDebug () << trackers;
     std::vector<libtorrent::announce_entry> announces;
     for (int i = 0; i < trackers.size (); ++i)
         announces.push_back (libtorrent::announce_entry (trackers.at (i).toStdString ()));
@@ -787,6 +786,14 @@ void Core::RestoreTorrents ()
         quint64 ub = settings.value ("UploadedBytes").value<quint64> ();
 
         handle.prioritize_files (priorities);
+        QStringList trackers = settings.value ("TrackersOverride").toStringList ();
+        if (!trackers.isEmpty ())
+        {
+            std::vector<libtorrent::announce_entry> announces;
+            for (int i = 0; i < trackers.size (); ++i)
+                announces.push_back (libtorrent::announce_entry (trackers.at (i).toStdString ()));
+            handle.replace_trackers (announces);
+        }
 
         beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
         TorrentStruct tmp = { ub, priorities, handle, data, filename };
@@ -902,6 +909,7 @@ void Core::writeSettings ()
             settings.setValue ("SavePath", QString::fromStdString (Handles_.at (i).Handle_.save_path ().string ()));
             settings.setValue ("UploadedBytes", Handles_.at (i).UploadedBefore_ + Handles_.at (i).Handle_.status ().total_upload);
             settings.setValue ("Filename", Handles_.at (i).TorrentFileName_);
+            settings.setValue ("TrackersOverride", GetTrackers (i));
 
             settings.beginWriteArray ("Priorities");
             for (size_t j = 0; j < Handles_.at (i).FilePriorities_.size (); ++j)
