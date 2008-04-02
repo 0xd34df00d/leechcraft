@@ -28,14 +28,15 @@ void TorrentPlugin::Init ()
     connect (Core::Instance (), SIGNAL (torrentFinished (const QString&)), this, SIGNAL (downloadFinished (const QString&)));
     connect (Core::Instance (), SIGNAL (fileFinished (const QString&)), this, SIGNAL (fileDownloaded (const QString&)));
     connect (Core::Instance (), SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (updateTorrentStats ()));
+    connect (Core::Instance (), SIGNAL (addToHistory (const QString&, const QString&, quint64, QDateTime)), this, SLOT (addToHistory (const QString&, const QString&, quint64, QDateTime)));
     connect (Stats_, SIGNAL (currentChanged (int)), this, SLOT (updateTorrentStats ()));
 
     Core::Instance ()->DoDelayedInit ();
     FilterModel_ = new QSortFilterProxyModel;
     FilterModel_->setSourceModel (Core::Instance ());
     FilterModel_->setFilterKeyColumn (0);
-    FilterModel_->setDynamicSortFilter (true);
     TorrentView_->setModel (FilterModel_);
+    connect (Core::Instance (), SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)), FilterModel_, SLOT (invalidate ()));
     connect (FixedStringSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setFilterFixedString (const QString&)));
     connect (WildcardSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setFilterWildcard (const QString&)));
     connect (RegexpSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setFilterRegExp (const QString&)));
@@ -70,6 +71,18 @@ void TorrentPlugin::Init ()
     Plugins_->addAction (Preferences_);
 
     LogShower_->setPlainText ("BitTorrent initialized");
+    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Torrent");
+    int max = settings.beginReadArray ("History");
+    for (int i = 0; i < max; ++i)
+    {
+        settings.setArrayIndex (i);
+        QTreeWidgetItem *item = new QTreeWidgetItem (HistoryTree_);
+        item->setText (0, settings.value ("Name").toString ());
+        item->setText (1, settings.value ("Where").toString ());
+        item->setText (2, settings.value ("TorrentSize").toString ());
+        item->setText (3, settings.value ("Date").toString ());
+    }
+    settings.endArray ();
 }
 
 QString TorrentPlugin::GetName () const
@@ -126,6 +139,17 @@ void TorrentPlugin::Release ()
 {
     Core::Instance ()->Release ();
     XmlSettingsManager::Instance ()->Release ();
+    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Torrent");
+    settings.beginWriteArray ("History");
+    for (int i = 0; i < HistoryTree_->topLevelItemCount (); ++i)
+    {
+        settings.setArrayIndex (i);
+        settings.setValue ("Name", HistoryTree_->topLevelItem (i)->text (0));
+        settings.setValue ("Where", HistoryTree_->topLevelItem (i)->text (1));
+        settings.setValue ("TorrentSize", HistoryTree_->topLevelItem (i)->text (2));
+        settings.setValue ("Date", HistoryTree_->topLevelItem (i)->text (3));
+    }
+    settings.endArray ();
 }
 
 QIcon TorrentPlugin::GetIcon () const
@@ -588,6 +612,15 @@ void TorrentPlugin::updateOverallStats ()
 void TorrentPlugin::doLogMessage (const QString& msg)
 {
     LogShower_->append (msg.trimmed ());
+}
+
+void TorrentPlugin::addToHistory (const QString& name, const QString& where, quint64 size, QDateTime when)
+{
+    QTreeWidgetItem *item = new QTreeWidgetItem (HistoryTree_);
+    item->setText (0, name);
+    item->setText (1, where);
+    item->setText (2, Proxy::Instance ()->MakePrettySize (size));
+    item->setText (3, when.toString ());
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_torrent, TorrentPlugin);

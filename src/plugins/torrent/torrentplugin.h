@@ -101,6 +101,7 @@ private slots:
     void restartTimers ();
     void updateOverallStats ();
     void doLogMessage (const QString&);
+    void addToHistory (const QString&, const QString&, quint64, QDateTime);
 signals:
     void downloadFinished (const QString&);
     void fileDownloaded (const QString&);

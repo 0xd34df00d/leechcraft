@@ -852,7 +852,7 @@ libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data, c
     return handle;
 }
 
-void Core::HandleSingleFinished (const libtorrent::torrent_info& info)
+void Core::HandleSingleFinished (const libtorrent::torrent_info& info, const QString& where)
 {
     QString name = QString::fromStdString (info.name ());
     QString string = tr ("Torrent finished: %1").arg (name);
@@ -860,6 +860,8 @@ void Core::HandleSingleFinished (const libtorrent::torrent_info& info)
 
     for (libtorrent::torrent_info::file_iterator i = info.begin_files (); i != info.end_files (); ++i)
         emit fileFinished (QString::fromUtf8 (i->path.string ().c_str ()));
+
+    emit addToHistory (QString::fromStdString (info.name ()), where, info.total_size (), QDateTime::currentDateTime ());
 }
 
 void Core::writeSettings ()
@@ -950,16 +952,18 @@ void Core::checkFinished ()
             case libtorrent::torrent_status::queued_for_checking:
             case libtorrent::torrent_status::checking_files:
             case libtorrent::torrent_status::allocating:
+            case libtorrent::torrent_status::connecting_to_tracker:
                 Handles_ [i].State_ = TSPreparing;
                 break;
-            case libtorrent::torrent_status::connecting_to_tracker:
             case libtorrent::torrent_status::downloading:
                 Handles_ [i].State_ = TSDownloading;
                 break;
             case libtorrent::torrent_status::finished:
             case libtorrent::torrent_status::seeding:
+                TorrentState oldState = Handles_ [i].State_;
                 Handles_ [i].State_ = TSSeeding;
-                HandleSingleFinished (Handles_.at (i).Handle_.get_torrent_info ());
+                if (oldState == TSDownloading)
+                    HandleSingleFinished (Handles_.at (i).Handle_.get_torrent_info (), QString::fromUtf8 (Handles_.at (i).Handle_.save_path ().string ().c_str ()));
                 break;
         }
     }

@@ -1136,6 +1136,40 @@
          </item>
         </layout>
        </widget>
+       <widget class="QWidget" name="tab_2" >
+        <attribute name="title" >
+         <string>History</string>
+        </attribute>
+        <layout class="QGridLayout" >
+         <item row="0" column="0" >
+          <widget class="QTreeWidget" name="HistoryTree_" >
+           <property name="rootIsDecorated" >
+            <bool>false</bool>
+           </property>
+           <column>
+            <property name="text" >
+             <string>Torrent name</string>
+            </property>
+           </column>
+           <column>
+            <property name="text" >
+             <string>Path</string>
+            </property>
+           </column>
+           <column>
+            <property name="text" >
+             <string>Size</string>
+            </property>
+           </column>
+           <column>
+            <property name="text" >
+             <string>Date</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </widget>
       <widget class="QTextEdit" name="LogShower_" >
        <property name="lineWrapMode" >
