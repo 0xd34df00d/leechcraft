@@ -6,6 +6,7 @@
 class XmlSettingsDialog;
 class QSortFilterProxyModel;
 class ChannelsFilterModel;
+class QCompleter;
 
 class Aggregator : public QMainWindow
                  , public IInfo
@@ -22,6 +23,7 @@ class Aggregator : public QMainWindow
     XmlSettingsDialog *XmlSettingsDialog_;
     QSortFilterProxyModel *ItemsFilterModel_;
     ChannelsFilterModel *ChannelsFilterModel_;
+    QCompleter *TagsCompleter_;
 public:
     void Init ();
     void Release ();
@@ -53,7 +55,10 @@ private slots:
     void on_ActionMarkItemAsUnread__triggered ();
     void on_ActionMarkChannelAsRead__triggered ();
     void on_ActionMarkChannelAsUnread__triggered ();
+    void on_ActionUpdateSelectedFeed__triggered ();
     void on_ChannelTags__textChanged (const QString&);
+    void on_ChannelTags__editingFinished ();
+    void on_CaseSensitiveSearch__stateChanged (int);
     void currentItemChanged (const QModelIndex&);
     void currentChannelChanged ();
 signals:

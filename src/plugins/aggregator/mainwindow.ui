@@ -178,6 +178,16 @@
           <item row="2" column="1" >
            <widget class="QLineEdit" name="RegexpSearch_" />
           </item>
+          <item row="3" column="0" >
+           <widget class="QCheckBox" name="CaseSensitiveSearch_" >
+            <property name="text" >
+             <string>Case sensitive</string>
+            </property>
+            <property name="checked" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
         <item>
@@ -247,6 +257,7 @@
    <addaction name="ActionAddFeed_" />
    <addaction name="ActionRemoveFeed_" />
    <addaction name="ActionUpdateFeeds_" />
+   <addaction name="ActionUpdateSelectedFeed_" />
    <addaction name="separator" />
    <addaction name="ActionPreferences_" />
   </widget>
@@ -267,11 +278,17 @@
    </property>
   </action>
   <action name="ActionUpdateFeeds_" >
+   <property name="icon" >
+    <iconset resource="resources.qrc" >:/resources/images/updateallfeeds.png</iconset>
+   </property>
    <property name="text" >
     <string>Update feeds</string>
    </property>
   </action>
   <action name="ActionRemoveFeed_" >
+   <property name="icon" >
+    <iconset resource="resources.qrc" >:/resources/images/removefeed.png</iconset>
+   </property>
    <property name="text" >
     <string>Remove feed</string>
    </property>
@@ -289,6 +306,14 @@
   <action name="ActionMarkChannelAsUnread_" >
    <property name="text" >
     <string>Mark channel as unread</string>
+   </property>
+  </action>
+  <action name="ActionUpdateSelectedFeed_" >
+   <property name="icon" >
+    <iconset resource="resources.qrc" >:/resources/images/updateselectedfeed.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Update selected feed</string>
    </property>
   </action>
  </widget>

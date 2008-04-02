@@ -11,6 +11,7 @@
 #include "feed.h"
 
 class ChannelsModel;
+class TagsCompletionModel;
 class QTimer;
 
 class Core : public QAbstractItemModel
@@ -55,6 +56,7 @@ class Core : public QAbstractItemModel
     Channel *ActivatedChannel_;
     QStringList ItemHeaders_;
     ChannelsModel *ChannelsModel_;
+    TagsCompletionModel *TagsCompletionModel_;
     QTimer *UpdateTimer_;
     bool SaveScheduled_;
 public:
@@ -68,6 +70,8 @@ public:
     void FeedActivated (const QModelIndex&);
     QString GetDescription (const QModelIndex&);
     QAbstractItemModel* GetChannelsModel ();
+    QAbstractItemModel* GetTagsCompletionModel ();
+    void UpdateTags (const QStringList&);
     void MarkItemAsUnread (const QModelIndex&);
     void MarkChannelAsRead (const QModelIndex&);
     void MarkChannelAsUnread (const QModelIndex&);
@@ -78,6 +82,7 @@ public:
     QString GetChannelLanguage (const QModelIndex&) const;
     QPixmap GetChannelPixmap (const QModelIndex&) const;
     void SetTagsForIndex (const QString&, const QModelIndex&);
+    void UpdateFeed (const QModelIndex&);
 
     virtual int columnCount (const QModelIndex& parent = QModelIndex ()) const;
     virtual QVariant data (const QModelIndex&, int role = Qt::DisplayRole) const;
@@ -99,6 +104,8 @@ private slots:
     void saveSettings ();
 public slots:
     void updateIntervalChanged ();
+private:
+    QString FindFeedForChannel (const boost::shared_ptr<Channel>&) const;
 signals:
     void error (const QString&);
     void showDownloadMessage (const QString&);

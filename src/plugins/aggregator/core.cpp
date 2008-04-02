@@ -14,6 +14,7 @@
 #include "atom10parser.h"
 #include "treeitem.h"
 #include "channelsmodel.h"
+#include "tagscompletionmodel.h"
 
 Core::Core ()
 {
@@ -28,6 +29,8 @@ Core::Core ()
     ChannelsModel_ = new ChannelsModel (this);
     connect (ChannelsModel_, SIGNAL (channelDataUpdated ()), this, SIGNAL (channelDataUpdated ()));
 
+    TagsCompletionModel_ = new TagsCompletionModel (this);
+
     QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Aggregator");
     int numFeeds = settings.beginReadArray ("Feeds");
     for (int i = 0; i < numFeeds; ++i)
@@ -38,6 +41,7 @@ Core::Core ()
         ChannelsModel_->AddFeed (feed);
     }
     settings.endArray ();
+    TagsCompletionModel_->UpdateTags (settings.value ("GlobalTags", QStringList ("untagged")).toStringList ());
 
     ActivatedChannel_ = 0;
 }
@@ -184,6 +188,16 @@ QAbstractItemModel* Core::GetChannelsModel ()
     return ChannelsModel_;
 }
 
+QAbstractItemModel* Core::GetTagsCompletionModel ()
+{
+    return TagsCompletionModel_;
+}
+
+void Core::UpdateTags (const QStringList& tags)
+{
+    TagsCompletionModel_->UpdateTags (tags);
+}
+
 void Core::MarkItemAsUnread (const QModelIndex& i)
 {
     if (!ActivatedChannel_ || !i.isValid ())
@@ -272,6 +286,38 @@ void Core::SetTagsForIndex (const QString& tags, const QModelIndex& index)
 {
     boost::shared_ptr<Channel> channel = ChannelsModel_->GetChannelForIndex (index);
     channel->Tags_ = tags.split (' ');
+}
+
+void Core::UpdateFeed (const QModelIndex& index)
+{
+    boost::shared_ptr<Channel> channel = ChannelsModel_->GetChannelForIndex (index);
+    QString url = FindFeedForChannel (channel);
+    if (url.isEmpty ())
+    {
+        qWarning () << Q_FUNC_INFO << "could not found feed for index" << index;
+        return;
+    }
+
+    QObject *provider = Providers_ ["http"];
+    IDirectDownload *idd = qobject_cast<IDirectDownload*> (provider);
+    if (!provider || !idd)
+    {
+        emit error (tr ("Strange, but no suitable provider found"));
+        return;
+    }
+    if (!idd->CouldDownload (url, false))
+    {
+        emit error (tr ("Could not handle URL %1").arg (url));
+        return;
+    }
+
+    QTemporaryFile file;
+    file.open ();
+    DirectDownloadParams params = { url, file.fileName (), true, false };
+    PendingJob pj = { PendingJob :: RFeedUpdated, url, file.fileName () };
+    int id = idd->AddJob (params);
+    PendingJobs_ [id] = pj;
+    file.close ();
 }
 
 int Core::columnCount (const QModelIndex& parent) const
@@ -448,6 +494,7 @@ void Core::handleJobFinished (int id)
             }
         }
         ChannelsModel_->AddFeed (Feeds_ [pj.URL_]);
+        TagsCompletionModel_->UpdateTags (pj.Tags_);
     }
     else if (pj.Role_ == PendingJob::RFeedUpdated)
     {
@@ -633,11 +680,23 @@ void Core::saveSettings ()
         settings.setValue ("Feed", qVariantFromValue<Feed> (feed));
     }
     settings.endArray ();
+    settings.setValue ("GlobalTags", TagsCompletionModel_->GetTags ());
     SaveScheduled_ = false;
 }
 
 void Core::updateIntervalChanged ()
 {
     UpdateTimer_->setInterval (XmlSettingsManager::Instance ()->property ("UpdateInterval").toInt () * 60 * 1000);
+}
+
+QString Core::FindFeedForChannel (const boost::shared_ptr<Channel>& channel) const
+{
+    for (QMap<QString, Feed>::const_iterator i = Feeds_.begin (); i != Feeds_.end (); ++i)
+    {
+        std::vector<boost::shared_ptr<Channel> >::const_iterator j = std::find (i.value ().Channels_.begin (), i.value ().Channels_.end (), channel);
+        if (j != i.value ().Channels_.end ())
+            return i.key ();
+    }
+    return QString ();
 }
 

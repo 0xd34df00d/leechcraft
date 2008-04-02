@@ -2,6 +2,7 @@
 #include <QtDebug>
 #include <QSortFilterProxyModel>
 #include <QHeaderView>
+#include <QCompleter>
 #include <QTranslator>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "aggregator.h"
@@ -59,6 +60,11 @@ void Aggregator::Init ()
     connect (Ui_.Feeds_->selectionModel (), SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (currentChannelChanged ()));
     connect (Ui_.Items_->selectionModel (), SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (currentItemChanged (const QModelIndex&)));
     connect (Ui_.ActionUpdateFeeds_, SIGNAL (triggered ()), &Core::Instance (), SLOT (updateFeeds ()));
+
+    TagsCompleter_ = new QCompleter (this);
+    TagsCompleter_->setModel (Core::Instance ().GetTagsCompletionModel ());
+    Ui_.TagsLine_->setCompleter (TagsCompleter_);
+    Ui_.ChannelTags_->setCompleter (TagsCompleter_);
 
     Ui_.MainSplitter_->setStretchFactor (0, 5);
     Ui_.MainSplitter_->setStretchFactor (1, 9);
@@ -207,12 +213,31 @@ void Aggregator::on_ActionMarkChannelAsUnread__triggered ()
         Core::Instance ().MarkChannelAsUnread (ChannelsFilterModel_->mapToSource (indexes.at (i)));
 }
 
+void Aggregator::on_ActionUpdateSelectedFeed__triggered ()
+{
+    QModelIndex current = Ui_.Feeds_->selectionModel ()->currentIndex ();
+    if (!current.isValid ())
+        return;
+
+    Core::Instance ().UpdateFeed (ChannelsFilterModel_->mapToSource (current));
+}
+
 void Aggregator::on_ChannelTags__textChanged (const QString& tags)
 {
     QModelIndex current = Ui_.Feeds_->selectionModel ()->currentIndex ();
     if (!current.isValid ())
         return;
     Core::Instance ().SetTagsForIndex (tags, ChannelsFilterModel_->mapToSource (current));
+}
+
+void Aggregator::on_ChannelTags__editingFinished ()
+{
+    Core::Instance ().UpdateTags (Ui_.ChannelTags_->text ().split (' '));
+}
+
+void Aggregator::on_CaseSensitiveSearch__stateChanged (int state)
+{
+    ItemsFilterModel_->setFilterCaseSensitivity (state ? Qt::CaseSensitive : Qt::CaseInsensitive);
 }
 
 void Aggregator::currentItemChanged (const QModelIndex& index)

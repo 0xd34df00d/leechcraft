@@ -1,9 +1,12 @@
 <RCC>
     <qresource prefix="/" >
-        <file>resources/images/aggregator.png</file>
-        <file>resources/images/preferences.png</file>
-        <file>resources/images/rss-feed.png</file>
         <file>aggregatorsettings.xml</file>
         <file>leechcraft_aggregator_ru.qm</file>
+        <file>resources/images/aggregator.png</file>
+        <file>resources/images/preferences.png</file>
+        <file>resources/images/removefeed.png</file>
+        <file>resources/images/rss-feed.png</file>
+        <file>resources/images/updateallfeeds.png</file>
+        <file>resources/images/updateselectedfeed.png</file>
     </qresource>
 </RCC>
