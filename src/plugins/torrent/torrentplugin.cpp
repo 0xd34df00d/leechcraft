@@ -70,6 +70,7 @@ void TorrentPlugin::Init ()
     Plugins_->addSeparator ();
     Plugins_->addAction (Preferences_);
 
+    setActionsEnabled ();
     LogShower_->setPlainText ("BitTorrent initialized");
     QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Torrent");
     int max = settings.beginReadArray ("History");
@@ -186,10 +187,17 @@ qint64 TorrentPlugin::GetUploadSpeed () const
 
 void TorrentPlugin::StartAll ()
 {
+    int numTorrents = Core::Instance ()->columnCount (QModelIndex ());
+    for (int i = 0; i < numTorrents; ++i)
+        Core::Instance ()->ResumeTorrent (i);
+    setActionsEnabled ();
 }
 
 void TorrentPlugin::StopAll ()
 {
+    int numTorrents = Core::Instance ()->columnCount (QModelIndex ());
+    for (int i = 0; i < numTorrents; ++i)
+        Core::Instance ()->PauseTorrent (i);
 }
 
 QList<QVariantList> TorrentPlugin::GetAll () const
@@ -226,21 +234,25 @@ void TorrentPlugin::AddJob (const QByteArray& data, const QString& where)
     }
     file.write (data);
     Core::Instance ()->AddFile (file.fileName (), where, files);
+    setActionsEnabled ();
 }
 
 void TorrentPlugin::StartAt (int pos)
 {
     Core::Instance ()->ResumeTorrent (pos);
+    setActionsEnabled ();
 }
 
 void TorrentPlugin::StopAt (int pos)
 {
     Core::Instance ()->PauseTorrent (pos);
+    setActionsEnabled ();
 }
 
 void TorrentPlugin::DeleteAt (int pos)
 {
     Core::Instance ()->RemoveTorrent (pos);
+    setActionsEnabled ();
 }
 
 QAbstractItemModel* TorrentPlugin::GetRepresentation () const
@@ -274,6 +286,7 @@ void TorrentPlugin::AddJob (const QString& name)
             path = AddTorrentDialog_->GetSavePath ();
     QVector<bool> files = AddTorrentDialog_->GetSelectedFiles ();
     Core::Instance ()->AddFile (filename, path, files);
+    setActionsEnabled ();
 }
 
 void TorrentPlugin::closeEvent (QCloseEvent*)
@@ -297,6 +310,7 @@ void TorrentPlugin::on_OpenTorrent__triggered ()
             path = AddTorrentDialog_->GetSavePath ();
     QVector<bool> files = AddTorrentDialog_->GetSelectedFiles ();
     Core::Instance ()->AddFile (filename, path, files);
+    setActionsEnabled ();
 }
 
 void TorrentPlugin::on_OpenMultipleTorrents__triggered ()
@@ -317,6 +331,7 @@ void TorrentPlugin::on_OpenMultipleTorrents__triggered ()
         name += names.at (i);
         Core::Instance ()->AddFile (name, savePath);
     }
+    setActionsEnabled ();
 }
 
 void TorrentPlugin::on_CreateTorrent__triggered ()
@@ -324,6 +339,7 @@ void TorrentPlugin::on_CreateTorrent__triggered ()
     NewTorrentWizard *wizard = new NewTorrentWizard (this);
     if (wizard->exec () == QDialog::Accepted)
         Core::Instance ()->MakeTorrent (wizard->GetParams ());
+    setActionsEnabled ();
 }
 
 void TorrentPlugin::on_RemoveTorrent__triggered ()
@@ -337,16 +353,19 @@ void TorrentPlugin::on_RemoveTorrent__triggered ()
 
     Core::Instance ()->RemoveTorrent (row);
     updateTorrentStats ();
+    setActionsEnabled ();
 }
 
 void TorrentPlugin::on_Resume__triggered ()
 {
     Core::Instance ()->ResumeTorrent (TorrentView_->currentIndex ().row ());
+    setActionsEnabled ();
 }
 
 void TorrentPlugin::on_Stop__triggered ()
 {
     Core::Instance ()->PauseTorrent (TorrentView_->currentIndex ().row ());
+    setActionsEnabled ();
 }
 
 void TorrentPlugin::on_ForceReannounce__triggered ()
@@ -374,6 +393,7 @@ void TorrentPlugin::on_Preferences__triggered ()
 
 void TorrentPlugin::on_TorrentView__clicked (const QModelIndex&)
 {
+    setActionsEnabled ();
     PrioritySpinbox_->setValue (1);
     PrioritySpinbox_->setEnabled (false);
     TorrentSelectionChanged_ = true;
@@ -383,6 +403,7 @@ void TorrentPlugin::on_TorrentView__clicked (const QModelIndex&)
 
 void TorrentPlugin::on_TorrentView__pressed (const QModelIndex&)
 {
+    setActionsEnabled ();
     PrioritySpinbox_->setValue (1);
     PrioritySpinbox_->setEnabled (false);
     TorrentSelectionChanged_ = true;
@@ -454,6 +475,10 @@ void TorrentPlugin::on_CaseSensitiveSearch__stateChanged (int state)
 
 void TorrentPlugin::setActionsEnabled ()
 {
+    RemoveTorrent_->setEnabled (TorrentView_->selectionModel ()->currentIndex ().isValid ());
+    Stop_->setEnabled (TorrentView_->selectionModel ()->currentIndex ().isValid ());
+    Resume_->setEnabled (TorrentView_->selectionModel ()->currentIndex ().isValid ());
+    ForceReannounce_->setEnabled (TorrentView_->selectionModel ()->currentIndex ().isValid ());
 }
 
 void TorrentPlugin::showError (QString e)
