@@ -1,0 +1,204 @@
+<ui version="4.0" >
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>317</width>
+    <height>411</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Batcher</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="resources.qrc" >:/resources/images/batcher.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget" >
+   <layout class="QVBoxLayout" >
+    <item>
+     <layout class="QHBoxLayout" >
+      <item>
+       <widget class="QLabel" name="LocalLabel_" >
+        <property name="text" >
+         <string>Local directory:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="LocalDirLine_" />
+      </item>
+      <item>
+       <widget class="QPushButton" name="LocalBrowse_" >
+        <property name="text" >
+         <string>Browse...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" >
+      <item>
+       <widget class="QLabel" name="PatternLabel_" >
+        <property name="text" >
+         <string>Pattern:</string>
+        </property>
+        <property name="textFormat" >
+         <enum>Qt::AutoText</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="PatternLine_" />
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" >
+      <item>
+       <widget class="QLabel" name="SpinLabel_" >
+        <property name="text" >
+         <string>Boundaries:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="LowerBoundary_" />
+      </item>
+      <item>
+       <widget class="QSpinBox" name="UpperBoundary_" >
+        <property name="minimum" >
+         <number>1</number>
+        </property>
+        <property name="maximum" >
+         <number>9999</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" >
+      <item>
+       <widget class="QLabel" name="StepLabel_" >
+        <property name="text" >
+         <string>Step:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="Step_" >
+        <property name="minimum" >
+         <number>1</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QCheckBox" name="LeadingZeroes_" >
+      <property name="text" >
+       <string>Leading zeroes</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" >
+      <item>
+       <widget class="QLabel" name="PreviewLabel_" >
+        <property name="text" >
+         <string>File names preview:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QListWidget" name="PreviewList_" >
+      <property name="sizePolicy" >
+       <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+        <horstretch>0</horstretch>
+        <verstretch>2</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="styleSheet" >
+       <string>background-color: rgba(0, 255, 0, 50);</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" >
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="OK_" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>OK</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources>
+  <include location="resources.qrc" />
+ </resources>
+ <connections/>
+</ui>

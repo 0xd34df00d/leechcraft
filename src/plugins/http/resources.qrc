@@ -1,0 +1,22 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource>
+        <file>resources/images/pluginicon.png</file>
+        <file>resources/images/addjob.png</file>
+        <file>resources/images/deletejob.png</file>
+        <file>resources/images/startjob.png</file>
+        <file>resources/images/startall.png</file>
+        <file>resources/images/stopjob.png</file>
+        <file>resources/images/stopall.png</file>
+        <file>resources/images/preferences.png</file>
+		<file>resources/images/waiting.png</file>
+		<file>resources/images/getfilesize.png</file>
+		<file>resources/images/schedule.png</file>
+		<file>resources/images/properties.png</file>
+		<file>resources/images/httponly.png</file>
+		<file>resources/images/local.png</file>
+		<file>resources/images/network.png</file>
+		<file>leechcraft_http_ru.qm</file>
+		<file>httpsettings.xml</file>
+    </qresource>
+</RCC>
