@@ -479,6 +479,7 @@ void TorrentPlugin::setActionsEnabled ()
     Stop_->setEnabled (TorrentView_->selectionModel ()->currentIndex ().isValid ());
     Resume_->setEnabled (TorrentView_->selectionModel ()->currentIndex ().isValid ());
     ForceReannounce_->setEnabled (TorrentView_->selectionModel ()->currentIndex ().isValid ());
+    ChangeTrackers_->setEnabled (TorrentView_->selectionModel ()->currentIndex ().isValid ());
 }
 
 void TorrentPlugin::showError (QString e)
