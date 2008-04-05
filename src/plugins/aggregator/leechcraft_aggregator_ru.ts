@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1">
+<defaultcodec></defaultcodec>
 <context>
     <name>AddFeed</name>
     <message>
@@ -9,8 +10,8 @@
     </message>
     <message>
         <location filename="addfeed.ui" line="31"/>
-        <source>http://www.mininova.org/rss.xml</source>
-        <translation>http://www.mininova.org/rss.xml</translation>
+        <source>http://deviant-soft.ws/rss.xml</source>
+        <translation>http://deviant-soft.ws/rss.xml</translation>
     </message>
     <message>
         <location filename="addfeed.ui" line="38"/>
@@ -31,17 +32,17 @@
 <context>
     <name>Aggregator</name>
     <message>
-        <location filename="aggregator.cpp" line="80"/>
+        <location filename="aggregator.cpp" line="90"/>
         <source>RSS 2.0, Atom 1.0 feed reader.</source>
         <translation>RSS 2.0, Atom 1.0 агрегатор.</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="158"/>
+        <location filename="aggregator.cpp" line="168"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="176"/>
+        <location filename="aggregator.cpp" line="186"/>
         <source>: Preferences</source>
         <translation>: Настройки</translation>
     </message>
@@ -67,64 +68,64 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="23"/>
+        <location filename="core.cpp" line="24"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="23"/>
+        <location filename="core.cpp" line="24"/>
         <source>Date</source>
         <translation>Дата</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="87"/>
+        <location filename="core.cpp" line="91"/>
         <source>This feed is already added</source>
         <translation>Эта лента уже добавлена</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="608"/>
+        <location filename="core.cpp" line="655"/>
         <source>Strange, but no suitable provider found</source>
         <translation>Странно, но не найден ни один подходящий провайдер</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="613"/>
+        <location filename="core.cpp" line="660"/>
         <source>Could not handle URL %1</source>
         <translation>Не могу обработать URL %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="259"/>
+        <location filename="core.cpp" line="273"/>
         <source>&lt;empty&gt;</source>
         <translation>&lt;пусто&gt;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="379"/>
+        <location filename="core.cpp" line="425"/>
         <source>Downloaded file has null size!</source>
         <translation>Скачанный файл имеет нулевой размер!</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="387"/>
+        <location filename="core.cpp" line="433"/>
         <source>Feed with url %1 not found.</source>
         <translation>Лента с URL %1 не найдена.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="402"/>
+        <location filename="core.cpp" line="448"/>
         <source>XML file parse error: %1, line %2, column %3, filename %4</source>
         <translation>Ошибка парсинга XML-файла: %1, строка %2, столбец %3, файл %4</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="415"/>
+        <location filename="core.cpp" line="461"/>
         <source>Could not find parser to parse file %1</source>
         <translation>Не могу найти парсер для обработки файла %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="468"/>
+        <location filename="core.cpp" line="515"/>
         <source>Added channel &quot;%1&quot; (has %2 items)<byte value="xd"/>
 </source>
         <translation>Добавлен канал &quot;%1&quot; (%2 статей)
 </translation>
     </message>
     <message>
-        <location filename="core.cpp" line="474"/>
+        <location filename="core.cpp" line="521"/>
         <source>Updated channel &quot;%1&quot; (%2 new items)<byte value="xd"/>
 </source>
         <translation>Обновлен канал &quot;%1&quot; (%2 новых статей)
@@ -209,49 +210,59 @@
         <translation>Поиск по регулярному выражению:</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="226"/>
+        <location filename="mainwindow.ui" line="236"/>
         <source>Actions</source>
         <translation>Действия</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="239"/>
+        <location filename="mainwindow.ui" line="249"/>
         <source>toolBar</source>
         <translation>Тулбар</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="258"/>
+        <location filename="mainwindow.ui" line="269"/>
         <source>Add feed...</source>
         <translation>Добавить ленту...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="266"/>
+        <location filename="mainwindow.ui" line="277"/>
         <source>Preferences</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="271"/>
+        <location filename="mainwindow.ui" line="285"/>
         <source>Update feeds</source>
         <translation>Обновить ленты</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="276"/>
+        <location filename="mainwindow.ui" line="293"/>
         <source>Remove feed</source>
         <translation>Удалить ленту</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="281"/>
+        <location filename="mainwindow.ui" line="298"/>
         <source>Mark item as unread</source>
         <translation>Отметить статью как непрочитанную</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="286"/>
+        <location filename="mainwindow.ui" line="303"/>
         <source>Mark channel as read</source>
         <translation>Отметить канал как прочитанный</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="291"/>
+        <location filename="mainwindow.ui" line="308"/>
         <source>Mark channel as unread</source>
         <translation>Отметить канал как непрочитанный</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="184"/>
+        <source>Case sensitive</source>
+        <translation>Учитывать регистр</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="316"/>
+        <source>Update selected feed</source>
+        <translation>Обновить выделенную ленту</translation>
     </message>
 </context>
 </TS>
