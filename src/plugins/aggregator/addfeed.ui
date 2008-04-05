@@ -28,7 +28,7 @@
      <item row="0" column="1" >
       <widget class="QLineEdit" name="URL_" >
        <property name="text" >
-        <string>http://www.mininova.org/rss.xml</string>
+        <string>http://deviant-soft.ws/rss.xml</string>
        </property>
       </widget>
      </item>
