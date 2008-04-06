@@ -86,6 +86,7 @@ namespace Main
         void handleDownloadFinished (const QString&);
         void showSettings ();
         void handleAggregateJobsChange ();
+        void cleanUp ();
     };
 };
 

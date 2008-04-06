@@ -67,6 +67,7 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
     Model_ = new Main::Core (this);
     connect (Model_, SIGNAL (gotPlugin (const PluginInfo*)), this, SLOT (addPluginToList (const PluginInfo*)));
     connect (Model_, SIGNAL (downloadFinished (const QString&)), this, SLOT (handleDownloadFinished (const QString&)));
+    connect (qApp, SIGNAL (aboutToQuit ()), this, SLOT (cleanUp ()));
     Model_->SetReallyMainWindow (this);
     splash.finish (this);
     show ();
@@ -91,8 +92,6 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
         addDockWidget (Qt::RightDockWidgetArea, widget);
         widget->setVisible (XmlSettingsManager::Instance ()->property ("AggregateJobs").toBool ());
     }
-//    for (int i = 1; i < PluginWidgets_.size (); ++i)
-//        tabifyDockWidget (PluginWidgets_.at (i - 1), PluginWidgets_.at (i));
 
     QTimer *speedUpd = new QTimer (this);
     speedUpd->setInterval (1000);
@@ -124,19 +123,9 @@ void MainWindow::catchError (QString message)
 
 void MainWindow::closeEvent (QCloseEvent *e)
 {
-    if (QMessageBox::question (this, tr ("Question"), tr ("Do you really want to exit?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-    {
-        e->ignore ();
-        return;
-    }
-
-    TrayIcon_->hide ();
-    WriteSettings ();
-    Model_->Release ();
-    delete Model_;
-    XmlSettingsManager::Instance ()->Release ();
-    e->accept ();
-    qApp->quit ();
+    e->ignore ();
+    hide ();
+    IsShown_ = false;
 }
 
 void MainWindow::SetupToolbars ()
@@ -166,7 +155,7 @@ void MainWindow::SetTrayIcon ()
     iconMenu->addSeparator ();
     TrayPluginsMenu_ = iconMenu->addMenu (tr ("Plugins"));
     iconMenu->addSeparator ();
-    iconMenu->addAction (tr ("Quit"), this, SLOT (close ()));
+    iconMenu->addAction (tr ("Quit"), qApp, SLOT (quit ()));
 
     TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/mainapp.png"), this);
     TrayIcon_->setContextMenu (iconMenu);
@@ -185,7 +174,7 @@ void MainWindow::MakeActions ()
     AddJob_->setStatusTip (tr ("Adds a job to a plugin supporting that addition"));
     Toolbar_->addAction (AddJob_);
 
-    QAction *a = File_->addAction (tr ("&Quit"), this, SLOT (close ()));
+    QAction *a = File_->addAction (tr ("&Quit"), qApp, SLOT (quit ()));
     a->setStatusTip (tr ("Exit from application"));
 
     Settings_ = ToolsMenu_->addAction (QIcon (":/resources/images/main_preferences.png"), tr ("Settings..."), this, SLOT (showSettings ()));
@@ -461,6 +450,16 @@ void MainWindow::handleAggregateJobsChange ()
         split->widget (1)->show ();
     else
         split->widget (1)->hide ();
+}
+
+void MainWindow::cleanUp ()
+{
+    TrayIcon_->hide ();
+    WriteSettings ();
+    Model_->Release ();
+    delete Model_;
+    XmlSettingsManager::Instance ()->Release ();
+    qDebug () << "Destroyed fine";
 }
 
 };
