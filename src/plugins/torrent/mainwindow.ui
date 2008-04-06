@@ -139,21 +139,39 @@
               </property>
              </widget>
             </item>
+            <item row="4" column="0" >
+             <widget class="QLabel" name="label_42" >
+              <property name="text" >
+               <string>Max upload torrents:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1" >
+             <widget class="QSpinBox" name="UploadingTorrents_" >
+              <property name="specialValueText" >
+               <string>Unlimited</string>
+              </property>
+              <property name="maximum" >
+               <number>1000</number>
+              </property>
+             </widget>
+            </item>
             <item row="3" column="0" >
-             <spacer>
-              <property name="orientation" >
-               <enum>Qt::Vertical</enum>
+             <widget class="QLabel" name="label_41" >
+              <property name="text" >
+               <string>Max downloading torrents:</string>
               </property>
-              <property name="sizeType" >
-               <enum>QSizePolicy::Minimum</enum>
+             </widget>
+            </item>
+            <item row="3" column="1" >
+             <widget class="QSpinBox" name="DownloadingTorrents_" >
+              <property name="specialValueText" >
+               <string>Unlimited</string>
               </property>
-              <property name="sizeHint" >
-               <size>
-                <width>20</width>
-                <height>10</height>
-               </size>
+              <property name="maximum" >
+               <number>1000</number>
               </property>
-             </spacer>
+             </widget>
             </item>
            </layout>
           </widget>
@@ -236,18 +254,15 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="0" >
+            <item row="3" column="1" >
              <spacer>
               <property name="orientation" >
                <enum>Qt::Vertical</enum>
               </property>
-              <property name="sizeType" >
-               <enum>QSizePolicy::Minimum</enum>
-              </property>
               <property name="sizeHint" >
                <size>
                 <width>20</width>
-                <height>10</height>
+                <height>40</height>
                </size>
               </property>
              </spacer>

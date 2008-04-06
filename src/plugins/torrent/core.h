@@ -23,6 +23,8 @@ private:
     enum TorrentState
     {
         TSIdle
+        , TSWaiting2Download
+        , TSWaiting2Seed
         , TSPreparing
         , TSDownloading
         , TSSeeding
@@ -88,9 +90,13 @@ public:
     void ForceReannounce (int);
     void SetOverallDownloadRate (int);
     void SetOverallUploadRate (int);
+    void SetMaxDownloadingTorrents (int);
+    void SetMaxUploadingTorrents (int);
     void SetDesiredRating (double);
     int GetOverallDownloadRate () const;
     int GetOverallUploadRate () const;
+    int GetMaxDownloadingTorrents () const;
+    int GetMaxUploadingTorrents () const;
     double GetDesiredRating () const;
     void SetTorrentDownloadRate (int, int);
     void SetTorrentUploadRate (int, int);
@@ -110,6 +116,8 @@ private:
     void RestoreTorrents ();
     libtorrent::torrent_handle RestoreSingleTorrent (const QByteArray&, const QByteArray&, const boost::filesystem::path&);
     void HandleSingleFinished (const libtorrent::torrent_info&, const QString&);
+    int GetCurrentlyDownloading () const;
+    int GetCurrentlySeeding () const;
 private slots:
     void writeSettings ();
     void checkFinished ();

@@ -44,6 +44,8 @@ void TorrentPlugin::Init ()
     IgnoreTimer_ = true;
     OverallDownloadRateController_->setValue (Core::Instance ()->GetOverallDownloadRate ());
     OverallUploadRateController_->setValue (Core::Instance ()->GetOverallUploadRate ());
+    DownloadingTorrents_->setValue (Core::Instance ()->GetMaxDownloadingTorrents ());
+    UploadingTorrents_->setValue (Core::Instance ()->GetMaxUploadingTorrents ());
     DesiredRating_->setValue (Core::Instance ()->GetDesiredRating ());
     
     OverallStatsUpdateTimer_ = new QTimer (this);
@@ -471,6 +473,16 @@ void TorrentPlugin::on_PrioritySpinbox__valueChanged (int val)
 void TorrentPlugin::on_CaseSensitiveSearch__stateChanged (int state)
 {
     FilterModel_->setFilterCaseSensitivity (state ? Qt::CaseSensitive : Qt::CaseInsensitive);
+}
+
+void TorrentPlugin::on_DownloadingTorrents__valueChanged (int newValue)
+{
+    Core::Instance ()->SetMaxDownloadingTorrents (newValue);
+}
+
+void TorrentPlugin::on_UploadingTorrents__valueChanged (int newValue)
+{
+    Core::Instance ()->SetMaxUploadingTorrents (newValue);
 }
 
 void TorrentPlugin::setActionsEnabled ()

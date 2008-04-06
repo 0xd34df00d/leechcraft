@@ -95,6 +95,8 @@ private slots:
     void on_FilesWidget__currentItemChanged (QTreeWidgetItem*);
     void on_PrioritySpinbox__valueChanged (int);
     void on_CaseSensitiveSearch__stateChanged (int);
+    void on_DownloadingTorrents__valueChanged (int);
+    void on_UploadingTorrents__valueChanged (int);
     void setActionsEnabled ();
     void showError (QString);
     void updateTorrentStats ();

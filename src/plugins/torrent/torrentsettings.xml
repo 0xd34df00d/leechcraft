@@ -26,6 +26,86 @@
                     <label lang="en" value="Maximum total connections" />
                     <label lang="ru" value="Максимально одновременных соединений всего" />
                 </item>
+            </groupbox>
+        </tab>
+        <tab>
+            <label lang="en" value="Proxy" />
+            <label lang="ru" value="Прокси" />
+            <item type="groupbox" property="TrackerProxyEnabled" checkable="true" state="off">
+                <label lang="en" value="Tracker proxy" />
+                <label lang="ru" value="Прокси трекеров" />
+                <item type="lineedit" property="TrackerProxyHost">
+                    <label lang="en" value="Host" />
+                    <label lang="ru" value="Хост" />
+                </item>
+                <item type="spinbox" property="TrackerProxyPort" default="3128" minimum="1" maximum="65535" step="1">
+                    <label lang="en" value="Port" />
+                    <label lang="ru" value="Порт" />
+                </item>
+                <item type="lineedit" property="TrackerProxyLogin">
+                    <label lang="en" value="Login" />
+                    <label lang="ru" value="Логин" />
+                </item>
+                <item type="lineedit" property="TrackerProxyPassword" default="" password="on">
+                    <label lang="en" value="Password" /> <label lang="ru" value="Пароль" /> </item>
+                <item type="combobox" property="TrackerProxyType">
+                    <label lang="en" value="Proxy type" />
+                    <label lang="ru" value="Тип прокси" />
+                    <option name="socks5">
+                        <label lang="en" value="SOCKS5" />
+                    </option>
+                    <option name="socks4">
+                        <label lang="en" value="SOCKS4" />
+                    </option>
+                    <option name="http" default="true">
+                        <label lang="en" value="HTTP" />
+                    </option>
+                </item>
+            </item>
+            <item type="groupbox" property="PeerProxyEnabled" checkable="true" state="off">
+                <label lang="en" value="Peer proxy" />
+                <label lang="ru" value="Прокси пиров" />
+                <item type="lineedit" property="PeerProxyHost">
+                    <label lang="en" value="Host" />
+                    <label lang="ru" value="Хост" />
+                </item>
+                <item type="spinbox" property="PeerProxyPort" default="3128" minimum="1" maximum="65535" step="1">
+                    <label lang="en" value="Port" />
+                    <label lang="ru" value="Порт" />
+                </item>
+                <item type="lineedit" property="PeerProxyLogin">
+                    <label lang="en" value="Login" />
+                    <label lang="ru" value="Логин" />
+                </item>
+                <item type="lineedit" property="PeerProxyPassword">
+                    <label lang="en" value="Password" />
+                    <label lang="ru" value="Пароль" />
+                </item>
+                <item type="combobox" property="PeerProxyType">
+                    <label lang="en" value="Proxy type" />
+                    <label lang="ru" value="Тип прокси" />
+                    <option name="socks5">
+                        <label lang="en" value="SOCKS5" />
+                    </option>
+                    <option name="socks4">
+                        <label lang="en" value="SOCKS4" />
+                    </option>
+                    <option name="http" default="true">
+                        <label lang="en" value="HTTP" />
+                    </option>
+                </item>
+            </item>
+        </tab>
+    </page>
+    <page>
+        <label lang="en" value="Advanced network settings" />
+        <label lang="ru" value="Расширенные сетевые настройки" />
+        <tab>
+            <label lang="en" value="Advanced" />
+            <label lang="ru" value="Расширенные" />
+            <groupbox>
+                <label lang="en" value="Advanced" />
+                <label lang="ru" value="Расширенные" />
                 <item type="lineedit" property="UserAgent" default="LeechCraft">
                     <label lang="en" value="User agent" />
                     <label lang="ru" value="Идентифицировать себя как" />
@@ -70,14 +150,6 @@
                         <suffix value=" кб" />
                     </lang>
                 </item>
-            </groupbox>
-        </tab>
-        <tab>
-            <label lang="en" value="Advanced" />
-            <label lang="ru" value="Расширенные" />
-            <groupbox>
-                <label lang="en" value="Advanced" />
-                <label lang="ru" value="Расширенные настройки" />
                 <item type="spinbox" property="PieceTimeout" default="10" minimum="5" maximum="30" step="5">
                     <lang value="en">
                         <label value="Piece response timeout" />
@@ -88,6 +160,22 @@
                         <suffix value=" с" />
                     </lang>
                 </item>
+                <item type="spinbox" property="OptimisticUnchokeMultiplier" default="4" minimum="2" maximum="10" step="1">
+                    <label lang="en" value="Optimistic unchoke multiplier" />
+                    <label lang="ru" value="Множитель оптимистичного unchoke" />
+                </item>
+                <item type="spinbox" property="NumWant" default="200" minimum="10" maximum="1000" step="25">
+                    <label lang="en" value="How much peers to get from the tracker" />
+                    <label lang="ru" value="Желаемое количество пиров, получаемое от трекера" />
+                </item>
+            </groupbox>
+        </tab>
+        <tab>
+            <label lang="en" value="Advanced II" />
+            <label lang="ru" value="Расширенные II" />
+            <groupbox>
+                <label lang="en" value="Advanced" />
+                <label lang="ru" value="Расширенные настройки" />
                 <item type="spinbox" property="RequestQueueTime" default="3" minimum="1" maximum="10" step="1">
                     <lang value="en">
                         <label value="Piece request queue time" />
@@ -163,8 +251,8 @@
             </groupbox>
         </tab>
         <tab>
-            <label lang="en" value="Advanced II" />
-            <label lang="ru" value="Расширенные II" />
+            <label lang="en" value="Advanced III" />
+            <label lang="ru" value="Расширенные III" />
             <groupbox>
                 <label lang="en" value="Advanced" />
                 <label lang="ru" value="Расширенные настройки" />
@@ -233,22 +321,14 @@
             </groupbox>
         </tab>
         <tab>
-            <label lang="en" value="Advanced III" />
-            <label lang="ru" value="Расширенные III" />
+            <label lang="en" value="Advanced IV" />
+            <label lang="ru" value="Расширенные IV" />
             <groupbox>
                 <label lang="en" value="Advanced" />
                 <label lang="ru" value="Расширенные настройки" />
-                <item type="spinbox" property="OptimisticUnchokeMultiplier" default="4" minimum="2" maximum="10" step="1">
-                    <label lang="en" value="Optimistic unchoke multiplier" />
-                    <label lang="ru" value="Множитель оптимистичного unchoke" />
-                </item>
                 <item type="lineedit" property="AnnounceIP" default="">
                     <label lang="en" value="Announce IP (leave blank for real)" />
                     <label lang="ru" value="IP, передаваемый трекеру (пустой для реального)" />
-                </item>
-                <item type="spinbox" property="NumWant" default="200" minimum="10" maximum="1000" step="25">
-                    <label lang="en" value="How much peers to get from the tracker" />
-                    <label lang="ru" value="Желаемое количество пиров, получаемое от трекера" />
                 </item>
                 <item type="spinbox" property="InitialPickerThreshold" default="4" minimum="1" maximum="50" step="5">
                     <label lang="en" value="While we have fewer pieces, request random pieces instead of rarest" />
@@ -290,74 +370,6 @@
                 </item>
             </groupbox>
         </tab>
-        <tab>
-            <label lang="en" value="Proxy" />
-            <label lang="ru" value="Прокси" />
-            <item type="groupbox" property="TrackerProxyEnabled" checkable="true" state="off">
-                <label lang="en" value="Tracker proxy" />
-                <label lang="ru" value="Прокси трекеров" />
-                <item type="lineedit" property="TrackerProxyHost">
-                    <label lang="en" value="Host" />
-                    <label lang="ru" value="Хост" />
-                </item>
-                <item type="spinbox" property="TrackerProxyPort" default="3128" minimum="1" maximum="65535" step="1">
-                    <label lang="en" value="Port" />
-                    <label lang="ru" value="Порт" />
-                </item>
-                <item type="lineedit" property="TrackerProxyLogin">
-                    <label lang="en" value="Login" />
-                    <label lang="ru" value="Логин" />
-                </item>
-                <item type="lineedit" property="TrackerProxyPassword" default="" password="on">
-                    <label lang="en" value="Password" /> <label lang="ru" value="Пароль" /> </item>
-                <item type="combobox" property="TrackerProxyType">
-                    <label lang="en" value="Proxy type" />
-                    <label lang="ru" value="Тип прокси" />
-                    <option name="socks5">
-                        <label lang="en" value="SOCKS5" />
-                    </option>
-                    <option name="socks4">
-                        <label lang="en" value="SOCKS4" />
-                    </option>
-                    <option name="http" default="true">
-                        <label lang="en" value="HTTP" />
-                    </option>
-                </item>
-            </item>
-            <item type="groupbox" property="PeerProxyEnabled" checkable="true" state="off">
-                <label lang="en" value="Peer proxy" />
-                <label lang="ru" value="Прокси пиров" />
-                <item type="lineedit" property="PeerProxyHost">
-                    <label lang="en" value="Host" />
-                    <label lang="ru" value="Хост" />
-                </item>
-                <item type="spinbox" property="PeerProxyPort" default="3128" minimum="1" maximum="65535" step="1">
-                    <label lang="en" value="Port" />
-                    <label lang="ru" value="Порт" />
-                </item>
-                <item type="lineedit" property="PeerProxyLogin">
-                    <label lang="en" value="Login" />
-                    <label lang="ru" value="Логин" />
-                </item>
-                <item type="lineedit" property="PeerProxyPassword">
-                    <label lang="en" value="Password" />
-                    <label lang="ru" value="Пароль" />
-                </item>
-                <item type="combobox" property="PeerProxyType">
-                    <label lang="en" value="Proxy type" />
-                    <label lang="ru" value="Тип прокси" />
-                    <option name="socks5">
-                        <label lang="en" value="SOCKS5" />
-                    </option>
-                    <option name="socks4">
-                        <label lang="en" value="SOCKS4" />
-                    </option>
-                    <option name="http" default="true">
-                        <label lang="en" value="HTTP" />
-                    </option>
-                </item>
-            </item>
-        </tab>
     </page>
     <page>
         <label lang="en" value="Local settings" />
@@ -366,8 +378,14 @@
             <label lang="en" value="Local settings" />
             <label lang="ru" value="Локальные настройки" />
             <item type="spinbox" property="AutosaveInterval" default="120" minimum="5" maximum="3600" step="15" suffix=" s">
-                <label lang="en" value="Autosave interval" />
-                <label lang="ru" value="Интервал автосохранения" />
+                <lang value="en">
+                    <label value="Autosave interval" />
+                    <suffix value=" s" />
+                </lang>
+                <lang value="ru">
+                    <label value="Интервал автосохранения" />
+                    <suffix value=" с" />
+                </lang>
             </item>
         </groupbox>
         <groupbox>
