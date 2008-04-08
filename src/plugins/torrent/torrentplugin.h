@@ -100,10 +100,15 @@ private slots:
     void setActionsEnabled ();
     void showError (QString);
     void updateTorrentStats ();
-    void restartTimers ();
     void updateOverallStats ();
+    void restartTimers ();
     void doLogMessage (const QString&);
     void addToHistory (const QString&, const QString&, quint64, QDateTime);
+private:
+    void UpdateDashboard ();
+    void UpdateTorrentPage ();
+    void UpdateFilesPage ();
+    void UpdatePeersPage ();
 signals:
     void downloadFinished (const QString&);
     void fileDownloaded (const QString&);

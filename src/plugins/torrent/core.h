@@ -80,6 +80,7 @@ public:
     libtorrent::torrent_info GetTorrentInfo (const QByteArray&);
     bool IsValidTorrent (const QByteArray&) const;
     TorrentInfo GetTorrentStats (int) const;
+    const std::vector<bool>* GetLocalPieces (int) const;
     OverallStats GetOverallStats () const;
     QList<FileInfo> GetTorrentFiles (int) const;
     QList<PeerInfo> GetPeers (int) const;

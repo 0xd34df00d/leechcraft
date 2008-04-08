@@ -340,6 +340,13 @@ TorrentInfo Core::GetTorrentStats (int row) const
     return result;
 }
 
+const std::vector<bool>* Core::GetLocalPieces (int row) const
+{
+    if (!CheckValidity (row))
+        return 0;
+    return Handles_.at (row).Handle_.status ().pieces;
+}
+
 OverallStats Core::GetOverallStats () const
 {
     OverallStats result;
@@ -395,13 +402,22 @@ QList<PeerInfo> Core::GetPeers (int row) const
         libtorrent::peer_info pi = peerInfos [i];
         PeerInfo ppi;
         ppi.IP_ = QString::fromStdString (pi.ip.address ().to_string ());
-        ppi.Seed_ = pi.seed;
         ppi.DSpeed_ = pi.down_speed;
         ppi.USpeed_ = pi.up_speed;
         ppi.Downloaded_ = pi.total_download;
         ppi.Uploaded_ = pi.total_upload;
         ppi.Client_ = QString::fromUtf8 (pi.client.c_str ());
         ppi.Pieces_ = pi.pieces;
+        ppi.LoadBalancing_ = pi.load_balancing;
+        ppi.LastActive_ = QTime (0, 0, 0);
+        ppi.LastActive_.addMSecs (libtorrent::total_milliseconds (pi.last_active));
+        qDebug () << ppi.LastActive_;
+        ppi.Hashfails_ = pi.num_hashfails;
+        ppi.Failcount_ = pi.failcount;
+        ppi.DownloadingPiece_ = pi.downloading_piece_index;
+        ppi.DownloadingBlock_ = pi.downloading_block_index;
+        ppi.DownloadingProgress_ = pi.downloading_progress;
+        ppi.DownloadingTotal_ = pi.downloading_total;
         result << ppi;
     }
 
@@ -419,7 +435,7 @@ void Core::AddFile (const QString& filename, const QString& path, const QVector<
     libtorrent::torrent_handle handle;
     try
     {
-        handle = Session_->add_torrent (GetTorrentInfo (filename), boost::filesystem::path (path.toStdString ()), libtorrent::entry (), libtorrent::storage_mode_sparse);
+        handle = Session_->add_torrent (GetTorrentInfo (filename), boost::filesystem::path (path.toStdString ()), libtorrent::entry (), libtorrent::storage_mode_allocate);
     }
     catch (const libtorrent::duplicate_torrent& e)
     {
@@ -940,7 +956,7 @@ libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data, c
     libtorrent::torrent_handle handle;
     try
     {
-        handle = Session_->add_torrent (libtorrent::torrent_info (e), path);
+        handle = Session_->add_torrent (libtorrent::torrent_info (e), path, libtorrent::entry (), libtorrent::storage_mode_allocate);
     }
     catch (const libtorrent::invalid_torrent_file& e)
     {
