@@ -18,7 +18,6 @@ SET (SRCS
 	torrentplugin.cpp 
 	core.cpp 
 	addtorrent.cpp 
-	contextabletree.cpp 
 	newtorrentwizard.cpp
 	intropage.cpp
 	firststep.cpp
@@ -27,26 +26,27 @@ SET (SRCS
 	addmultipletorrents.cpp
 	pieceswidget.cpp
 	xmlsettingsmanager.cpp
+	piecesmodel.cpp
 	trackerschanger.cpp)
 SET (HEADERS
 	torrentplugin.h 
 	core.h 
 	addtorrent.h 
-	addmultipletorrents.h
-	torrentinfo.h 
-	contextabletree.h 
 	newtorrentwizard.h
 	intropage.h
 	firststep.h
 	secondstep.h
 	thirdstep.h
-	fileinfo.h
-	peerinfo.h
-	overallstats.h
+	addmultipletorrents.h
 	pieceswidget.h
 	xmlsettingsmanager.h
+	piecesmodel.h
 	trackerschanger.h
 	newtorrentparams.h
+	overallstats.h
+	torrentinfo.h 
+	fileinfo.h
+	peerinfo.h
 	../../plugininterface/basesettingsmanager.h)
 SET (FORMS
     mainwindow.ui

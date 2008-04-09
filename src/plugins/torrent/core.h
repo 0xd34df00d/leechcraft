@@ -14,6 +14,7 @@
 #include "newtorrentparams.h"
 
 class QTimer;
+class PiecesModel;
 
 class Core : public QAbstractItemModel
 {
@@ -47,6 +48,7 @@ private:
     QList<QString> Headers_;
     int InterfaceUpdateTimer_;
     QTimer *SettingsSaveTimer_;
+    PiecesModel *PiecesModel_;
 public:
     enum Columns
     {
@@ -66,6 +68,9 @@ public:
     Core (QObject *parent = 0);
     void DoDelayedInit ();
     void Release ();
+    PiecesModel* GetPiecesModel ();
+    void ClearPieces ();
+    void UpdatePieces (int);
 
     virtual int columnCount (const QModelIndex&) const;
     virtual QVariant data (const QModelIndex&, int role = Qt::DisplayRole) const;
@@ -110,6 +115,7 @@ public:
     QStringList GetTrackers (int) const;
     void SetTrackers (int, const QStringList&);
     void MakeTorrent (NewTorrentParams) const;
+    void TorrentSelected (int);
 private:
     QString GetStringForState (libtorrent::torrent_status::state_t) const;
     bool CheckValidity (int) const;

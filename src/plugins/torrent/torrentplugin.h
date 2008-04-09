@@ -109,6 +109,7 @@ private:
     void UpdateTorrentPage ();
     void UpdateFilesPage ();
     void UpdatePeersPage ();
+    void UpdatePiecesPage ();
 signals:
     void downloadFinished (const QString&);
     void fileDownloaded (const QString&);

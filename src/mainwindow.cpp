@@ -392,15 +392,14 @@ void MainWindow::showChangelog ()
 void MainWindow::showAboutInfo ()
 {
     QMessageBox::information (this, tr ("Information"), tr ("<img src=\":/resources/images/mainapp.png\" /><h1>LeechCraft 0.3.0_pre</h1>"
-				"LeechCraft is a cross-platform extensibe download manager. Currently it offers "
-				"full-featured BitTorrent client, feed reader, HTTP/FTP plugin, Remote access "
-				"and much more. It also aims to be resource-efficient working quite well on "
-				"even old computers.<br /><br />Here are some useful links for you:<br />"
-				"<a href=\"http://bugs.deviant-soft.ws\">Bugtracker and feature request tracker</a><br />"
-				"<a href=\"http://sourceforge.net/project/showfiles.php?group_id=161819\">Latest file releases</a><br />"
-				"<a href=\"http://deviant-soft.ws\">LeechCraft's Site</a><br />"
-				"<a href=\"http://sourceforge.net/projects/leechcraft\">LeechCraft's site at sourceforge.net</a><br />"
-				));
+                "LeechCraft is a cross-platform extensibe download manager. Currently it offers "
+                "full-featured BitTorrent client, feed reader, HTTP/FTP plugin, Remote access "
+                "and much more. It also aims to be resource-efficient working quite well on "
+                "even old computers.<br /><br />Here are some useful links for you:<br />"
+                "<a href=\"http://bugs.deviant-soft.ws\">Bugtracker and feature request tracker</a><br />"
+                "<a href=\"http://sourceforge.net/project/showfiles.php?group_id=161819\">Latest file releases</a><br />"
+                "<a href=\"http://deviant-soft.ws\">LeechCraft's Site</a><br />"
+                "<a href=\"http://sourceforge.net/projects/leechcraft\">LeechCraft's site at sourceforge.net</a><br />"));
 }
 
 void MainWindow::showHideMain ()

@@ -8,6 +8,7 @@
 #include "newtorrentwizard.h"
 #include "trackerschanger.h"
 #include "xmlsettingsmanager.h"
+#include "piecesmodel.h"
 
 void TorrentPlugin::Init ()
 {
@@ -41,6 +42,8 @@ void TorrentPlugin::Init ()
     connect (FixedStringSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setFilterFixedString (const QString&)));
     connect (WildcardSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setFilterWildcard (const QString&)));
     connect (RegexpSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setFilterRegExp (const QString&)));
+
+    PiecesView_->setModel (Core::Instance ()->GetPiecesModel ());
 
     IgnoreTimer_ = true;
     OverallDownloadRateController_->setValue (Core::Instance ()->GetOverallDownloadRate ());
@@ -540,6 +543,9 @@ void TorrentPlugin::updateTorrentStats ()
         case 4:
             UpdatePeersPage ();
             break;
+        case 5:
+            UpdatePiecesPage ();
+            break;
     }
     TorrentSelectionChanged_ = false;
 }
@@ -730,5 +736,13 @@ void TorrentPlugin::UpdatePeersPage ()
         qDeleteAll (PeersWidget_->findItems (peerIPs.at (i), Qt::MatchExactly));
 }
 
+void TorrentPlugin::UpdatePiecesPage ()
+{
+    QModelIndex index = TorrentView_->currentIndex ();
+    if (!index.isValid ())
+        Core::Instance ()->ClearPieces ();
+    else
+        Core::Instance ()->UpdatePieces (index.row ());
+}
 Q_EXPORT_PLUGIN2 (leechcraft_torrent, TorrentPlugin);
 

@@ -25,6 +25,7 @@
 #include <plugininterface/proxy.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "piecesmodel.h"
 
 Q_GLOBAL_STATIC (Core, CoreInstance);
 
@@ -36,13 +37,14 @@ Core* Core::Instance ()
 Core::Core (QObject *parent)
 : QAbstractItemModel (parent)
 {
+    PiecesModel_ = new PiecesModel (this);
 }
 
 void Core::DoDelayedInit ()
 {
     try
     {
-        Session_ = new libtorrent::session (libtorrent::fingerprint ("LB", 0, 1, 0, 2));
+        Session_ = new libtorrent::session (libtorrent::fingerprint ("LB", 0, 3, 0, 0));
         QList<QVariant> ports = XmlSettingsManager::Instance ()->property ("TCPPortRange").toList ();
         Session_->listen_on (std::make_pair (ports.at (0).toInt (), ports.at (1).toInt ()));
         Session_->add_extension (&libtorrent::create_metadata_plugin);
@@ -152,6 +154,26 @@ void Core::Release ()
     killTimer (InterfaceUpdateTimer_);
 }
 
+PiecesModel* Core::GetPiecesModel ()
+{
+    return PiecesModel_;
+}
+
+void Core::ClearPieces ()
+{
+    PiecesModel_->Clear ();
+}
+
+void Core::UpdatePieces (int torrent)
+{
+    if (!CheckValidity (torrent))
+        return;
+
+    std::vector<libtorrent::partial_piece_info> queue;
+    Handles_.at (torrent).Handle_.get_download_queue (queue);
+    PiecesModel_->Update (queue);
+}
+
 int Core::columnCount (const QModelIndex&) const
 {
     return Headers_.size ();
@@ -227,6 +249,7 @@ QModelIndex Core::index (int row, int column, const QModelIndex&) const
 
     return createIndex (row, column);
 } 
+
 QVariant Core::headerData (int column, Qt::Orientation orient, int role) const
 {
     if (orient == Qt::Vertical)

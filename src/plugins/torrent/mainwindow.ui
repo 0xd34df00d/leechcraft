@@ -1181,6 +1181,23 @@
          </item>
         </layout>
        </widget>
+       <widget class="QWidget" name="PagePieces_" >
+        <attribute name="title" >
+         <string>Pieces in progress</string>
+        </attribute>
+        <layout class="QGridLayout" >
+         <item row="0" column="0" >
+          <widget class="QTreeView" name="PiecesView_" >
+           <property name="rootIsDecorated" >
+            <bool>false</bool>
+           </property>
+           <property name="uniformRowHeights" >
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
        <widget class="QWidget" name="tab_2" >
         <attribute name="title" >
          <string>History</string>
