@@ -42,7 +42,7 @@
         <enum>QTabWidget::Rounded</enum>
        </property>
        <property name="currentIndex" >
-        <number>4</number>
+        <number>0</number>
        </property>
        <property name="elideMode" >
         <enum>Qt::ElideRight</enum>
@@ -1159,7 +1159,7 @@
            </column>
            <column>
             <property name="text" >
-             <string>Last request</string>
+             <string>Last active</string>
             </property>
            </column>
            <column>
@@ -1174,7 +1174,7 @@
            </column>
            <column>
             <property name="text" >
-             <string>Downloading stat</string>
+             <string>Progress</string>
             </property>
            </column>
           </widget>

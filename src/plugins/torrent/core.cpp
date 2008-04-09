@@ -411,7 +411,6 @@ QList<PeerInfo> Core::GetPeers (int row) const
         ppi.LoadBalancing_ = pi.load_balancing;
         ppi.LastActive_ = QTime (0, 0, 0);
         ppi.LastActive_.addMSecs (libtorrent::total_milliseconds (pi.last_active));
-        qDebug () << ppi.LastActive_;
         ppi.Hashfails_ = pi.num_hashfails;
         ppi.Failcount_ = pi.failcount;
         ppi.DownloadingPiece_ = pi.downloading_piece_index;

@@ -4,6 +4,8 @@
 #include <QHeaderView>
 #include <QCompleter>
 #include <QTranslator>
+#include <QSystemTrayIcon>
+#include <QPainter>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "aggregator.h"
 #include "core.h"
@@ -23,9 +25,13 @@ void Aggregator::Init ()
     Ui_.setupUi (this);
     IsShown_ = false;
 
+    TrayIcon_ = new QSystemTrayIcon (this);
+    TrayIcon_->hide ();
+
     Plugins_->addAction (Ui_.ActionAddFeed_);
     connect (&Core::Instance (), SIGNAL (error (const QString&)), this, SLOT (showError (const QString&)));
     connect (&Core::Instance (), SIGNAL (showDownloadMessage (const QString&)), this, SIGNAL (downloadFinished (const QString&)));
+    connect (&Core::Instance (), SIGNAL (unreadNumberChanged (int)), this, SLOT (unreadNumberChanged (int)));
 
     XmlSettingsDialog_ = new XmlSettingsDialog (this);
     XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/aggregatorsettings.xml");
@@ -78,6 +84,7 @@ void Aggregator::Release ()
 {
     Core::Instance ().Release ();
     delete XmlSettingsDialog_;
+    TrayIcon_->hide ();
 }
 
 QString Aggregator::GetName () const
@@ -258,6 +265,32 @@ void Aggregator::currentChannelChanged ()
     Ui_.ChannelDescription_->setText (Core::Instance ().GetChannelDescription (ChannelsFilterModel_->mapToSource (index)));
     Ui_.ChannelAuthor_->setText (Core::Instance ().GetChannelAuthor (ChannelsFilterModel_->mapToSource (index)));
     Ui_.ChannelLanguage_->setText (Core::Instance ().GetChannelLanguage (ChannelsFilterModel_->mapToSource (index)));
+}
+
+void Aggregator::unreadNumberChanged (int number)
+{
+    if (!number)
+    {
+        TrayIcon_->hide ();
+        return;
+    }
+
+    QIcon icon (":/resources/images/trayicon.png");
+    QPixmap pixmap = icon.pixmap (22, 22);
+    QPainter painter;
+    painter.begin (&pixmap);
+    QFont font = QApplication::font ();
+    font.setBold (true);
+    font.setPointSize (14);
+    font.setFamily ("Arial");
+    painter.setFont (font);
+    painter.setPen (Qt::blue);
+    painter.setRenderHints (QPainter::TextAntialiasing);
+    painter.drawText (0, 0, 21, 21, Qt::AlignBottom | Qt::AlignRight, QString::number (number));
+    painter.end ();
+
+    TrayIcon_->setIcon (QIcon (pixmap));
+    TrayIcon_->show ();
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_aggregator, Aggregator);

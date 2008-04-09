@@ -71,6 +71,7 @@ void Core::DoDelayedInit ()
     connect (saveTimer, SIGNAL (timeout ()), this, SLOT (scheduleSave ()));
     
     XmlSettingsManager::Instance ()->RegisterObject ("UpdateInterval", this, "updateIntervalChanged");
+    UpdateUnreadItemsNumber ();
 }
 
 void Core::SetProvider (QObject *provider, const QString& feature)
@@ -163,6 +164,7 @@ void Core::Activated (const QModelIndex& index)
     QString URL = item->Link_;
     item->Unread_ = false;
     ChannelsModel_->UpdateChannelData (ActivatedChannel_);
+    UpdateUnreadItemsNumber ();
     QDesktopServices::openUrl (QUrl (URL));
 }
 
@@ -180,6 +182,7 @@ QString Core::GetDescription (const QModelIndex& index)
 
     item->Unread_ = false;
     ChannelsModel_->UpdateChannelData (ActivatedChannel_);
+    UpdateUnreadItemsNumber ();
     return item->Description_;
 }
 
@@ -206,6 +209,7 @@ void Core::MarkItemAsUnread (const QModelIndex& i)
     ActivatedChannel_->Items_ [i.row ()]->Unread_ = true;
     ChannelsModel_->UpdateChannelData (ActivatedChannel_);
     emit dataChanged (index (i.row (), 0), index (i.row (), 1));
+    UpdateUnreadItemsNumber ();
 }
 
 void Core::MarkChannelAsRead (const QModelIndex& i)
@@ -216,6 +220,7 @@ void Core::MarkChannelAsRead (const QModelIndex& i)
     ChannelsModel_->MarkChannelAsRead (i);
     if (ChannelsModel_->GetChannelForIndex (i).get () == ActivatedChannel_)
         emit dataChanged (index (0, 0), index (ActivatedChannel_->Items_.size () - 1, 1));
+    UpdateUnreadItemsNumber ();
 }
 
 void Core::MarkChannelAsUnread (const QModelIndex& i)
@@ -226,6 +231,7 @@ void Core::MarkChannelAsUnread (const QModelIndex& i)
     ChannelsModel_->MarkChannelAsUnread (i);
     if (ChannelsModel_->GetChannelForIndex (i).get () == ActivatedChannel_)
         emit dataChanged (index (0, 0), index (ActivatedChannel_->Items_.size () - 1, 1));
+    UpdateUnreadItemsNumber ();
 }
 
 QStringList Core::GetTagsForIndex (int i) const
@@ -596,6 +602,7 @@ void Core::handleJobFinished (int id)
         {
         }
     }
+    UpdateUnreadItemsNumber ();
     if (!emitString.isEmpty ())
     {
         emitString.prepend ("Aggregator updated:\r\n");
@@ -698,5 +705,15 @@ QString Core::FindFeedForChannel (const boost::shared_ptr<Channel>& channel) con
             return i.key ();
     }
     return QString ();
+}
+
+void Core::UpdateUnreadItemsNumber () const
+{
+    int result = 0;
+    for (QMap<QString, Feed>::const_iterator i = Feeds_.begin (); i != Feeds_.end (); ++i)
+        for (int j = 0; j < i.value ().Channels_.size (); ++j)
+            for (int k = 0; k < i.value ().Channels_ [j]->Items_.size (); ++k)
+                result += i.value ().Channels_ [j]->Items_ [k]->Unread_;
+    emit unreadNumberChanged (result);
 }
 

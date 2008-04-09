@@ -106,10 +106,12 @@ public slots:
     void updateIntervalChanged ();
 private:
     QString FindFeedForChannel (const boost::shared_ptr<Channel>&) const;
+    void UpdateUnreadItemsNumber () const;
 signals:
     void error (const QString&);
     void showDownloadMessage (const QString&);
     void channelDataUpdated ();
+    void unreadNumberChanged (int) const;
 };
 
 #endif

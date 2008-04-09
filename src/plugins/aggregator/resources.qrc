@@ -8,5 +8,6 @@
         <file>resources/images/rss-feed.png</file>
         <file>resources/images/updateallfeeds.png</file>
         <file>resources/images/updateselectedfeed.png</file>
+        <file>resources/images/trayicon.png</file>
     </qresource>
 </RCC>
