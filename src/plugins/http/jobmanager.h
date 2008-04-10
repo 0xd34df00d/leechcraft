@@ -53,8 +53,8 @@ public:
         , TListURL = 2
         , TListPercent = 3
         , TListSpeed = 4
-        , TListDownloadTime = 5
-        , TListRemainingTime = 6
+        , TListRemainingTime = 5
+        , TListDownloadTime = 6
         , TListDownloaded = 7
         , TListTotal = 8
     };

@@ -413,7 +413,7 @@ void Job::processData (ImpBase::length_t ready, ImpBase::length_t total, QByteAr
     if (UpdateTime_->elapsed () > XmlSettingsManager::Instance ()->property ("InterfaceUpdateTimeout").toInt ())
     {
         Speed_ = static_cast<double> (DownloadedSize_ - RestartPosition_) / static_cast<double> (StartTime_->elapsed ()) * 1000;
-        CurrentSpeed_ = (DownloadedSize_ - PreviousDownloadSize_) / static_cast<double> (UpdateTime_->elapsed ());
+        CurrentSpeed_ = (DownloadedSize_ - PreviousDownloadSize_) / static_cast<double> (UpdateTime_->elapsed ()) * 1000;
         PreviousDownloadSize_ = DownloadedSize_;
         UpdateTime_->restart ();
     }
