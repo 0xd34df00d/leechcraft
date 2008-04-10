@@ -71,7 +71,6 @@ void Aggregator::Init ()
 
     TagsCompleter_ = new TagsCompleter (this);
     TagsCompleter_->setModel (Core::Instance ().GetTagsCompletionModel ());
-    Core::Instance ().GetTagsCompletionModel ()->SetLineEdit (Ui_.TagsLine_);
     TagsCompleter_->setCompletionPrefix ("fuck");
     Ui_.TagsLine_->setCompleter (TagsCompleter_);
     Ui_.ChannelTags_->setCompleter (TagsCompleter_);

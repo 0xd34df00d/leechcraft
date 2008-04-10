@@ -68,8 +68,3 @@ QStringList TagsCompletionModel::GetTags () const
     return Tags_;
 }
 
-void TagsCompletionModel::SetLineEdit (const QLineEdit* edit)
-{
-    LineEdit_ = edit;
-}
-
