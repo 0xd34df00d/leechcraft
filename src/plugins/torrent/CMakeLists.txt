@@ -27,7 +27,8 @@ SET (SRCS
 	pieceswidget.cpp
 	xmlsettingsmanager.cpp
 	piecesmodel.cpp
-	trackerschanger.cpp)
+	trackerschanger.cpp
+	channelsfiltermodel.cpp)
 SET (HEADERS
 	torrentplugin.h 
 	core.h 
@@ -42,6 +43,7 @@ SET (HEADERS
 	xmlsettingsmanager.h
 	piecesmodel.h
 	trackerschanger.h
+	channelsfiltermodel.h
 	newtorrentparams.h
 	overallstats.h
 	torrentinfo.h 

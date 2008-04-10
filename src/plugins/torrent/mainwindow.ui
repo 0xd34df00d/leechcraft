@@ -177,9 +177,111 @@
           </widget>
          </item>
          <item row="0" column="1" >
+          <widget class="QGroupBox" name="groupBox_3" >
+           <property name="title" >
+            <string>Search</string>
+           </property>
+           <layout class="QGridLayout" >
+            <item row="0" column="0" >
+             <widget class="QLabel" name="label_37" >
+              <property name="text" >
+               <string>Fixed string:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1" >
+             <widget class="QLineEdit" name="FixedStringSearch_" />
+            </item>
+            <item row="1" column="0" >
+             <widget class="QLabel" name="label_38" >
+              <property name="text" >
+               <string>Wildcard:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1" >
+             <widget class="QLineEdit" name="WildcardSearch_" />
+            </item>
+            <item row="2" column="0" >
+             <widget class="QLabel" name="label_39" >
+              <property name="text" >
+               <string>Regexp:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1" >
+             <widget class="QLineEdit" name="RegexpSearch_" />
+            </item>
+            <item row="4" column="0" colspan="2" >
+             <widget class="QCheckBox" name="CaseSensitiveSearch_" >
+              <property name="text" >
+               <string>Case sensitive</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0" >
+             <widget class="QLabel" name="label_43" >
+              <property name="text" >
+               <string>Tags:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1" >
+             <widget class="QLineEdit" name="TagsSearch_" />
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item row="0" column="2" >
+          <spacer>
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" >
+            <size>
+             <width>51</width>
+             <height>105</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="1" column="0" >
+          <spacer>
+           <property name="orientation" >
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" >
+            <size>
+             <width>175</width>
+             <height>101</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="1" column="1" >
+          <spacer>
+           <property name="orientation" >
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" >
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="TorrentControlTab_" >
+        <attribute name="title" >
+         <string>Torrent settings</string>
+        </attribute>
+        <layout class="QGridLayout" >
+         <item row="0" column="0" >
           <widget class="QGroupBox" name="groupBox_2" >
            <property name="title" >
-            <string>Selected torrent</string>
+            <string>Settings</string>
            </property>
            <layout class="QGridLayout" >
             <item row="0" column="0" >
@@ -255,117 +357,32 @@
              </widget>
             </item>
             <item row="3" column="1" >
-             <spacer>
-              <property name="orientation" >
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" >
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item row="0" column="2" >
-          <widget class="QGroupBox" name="groupBox_3" >
-           <property name="title" >
-            <string>Search</string>
-           </property>
-           <layout class="QGridLayout" >
-            <item row="0" column="0" >
-             <widget class="QLabel" name="label_37" >
-              <property name="text" >
-               <string>Fixed string:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1" >
-             <widget class="QLineEdit" name="FixedStringSearch_" />
-            </item>
-            <item row="1" column="0" >
-             <widget class="QLabel" name="label_38" >
-              <property name="text" >
-               <string>Wildcard:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1" >
-             <widget class="QLineEdit" name="WildcardSearch_" />
-            </item>
-            <item row="2" column="0" >
-             <widget class="QLabel" name="label_39" >
-              <property name="text" >
-               <string>Regexp:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1" >
-             <widget class="QLineEdit" name="RegexpSearch_" />
-            </item>
-            <item row="4" column="0" colspan="2" >
-             <widget class="QCheckBox" name="CaseSensitiveSearch_" >
-              <property name="text" >
-               <string>Case sensitive</string>
-              </property>
-             </widget>
+             <widget class="QLineEdit" name="TorrentTags_" />
             </item>
             <item row="3" column="0" >
-             <widget class="QLabel" name="label_43" >
+             <widget class="QLabel" name="label_44" >
               <property name="text" >
                <string>Tags:</string>
               </property>
              </widget>
             </item>
-            <item row="3" column="1" >
-             <widget class="QLineEdit" name="TagsSearch_" />
-            </item>
            </layout>
           </widget>
          </item>
-         <item row="0" column="3" >
+         <item row="0" column="1" >
           <spacer>
            <property name="orientation" >
             <enum>Qt::Horizontal</enum>
            </property>
            <property name="sizeHint" >
             <size>
-             <width>51</width>
-             <height>105</height>
+             <width>40</width>
+             <height>20</height>
             </size>
            </property>
           </spacer>
          </item>
          <item row="1" column="0" >
-          <spacer>
-           <property name="orientation" >
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" >
-            <size>
-             <width>175</width>
-             <height>101</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="1" column="1" >
-          <spacer>
-           <property name="orientation" >
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" >
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="1" column="2" >
           <spacer>
            <property name="orientation" >
             <enum>Qt::Vertical</enum>
@@ -1001,19 +1018,6 @@
           </layout>
          </item>
          <item>
-          <spacer>
-           <property name="orientation" >
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" >
-            <size>
-             <width>698</width>
-             <height>101</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
           <widget class="PiecesWidget" name="PiecesWidget_" >
            <property name="minimumSize" >
             <size>
@@ -1025,6 +1029,19 @@
             <string/>
            </property>
           </widget>
+         </item>
+         <item>
+          <spacer>
+           <property name="orientation" >
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" >
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </widget>
@@ -1183,7 +1200,7 @@
        </widget>
        <widget class="QWidget" name="PagePieces_" >
         <attribute name="title" >
-         <string>Pieces in progress</string>
+         <string>Pieces</string>
         </attribute>
         <layout class="QGridLayout" >
          <item row="0" column="0" >
@@ -1232,20 +1249,29 @@
          </item>
         </layout>
        </widget>
-      </widget>
-      <widget class="QTextEdit" name="LogShower_" >
-       <property name="lineWrapMode" >
-        <enum>QTextEdit::NoWrap</enum>
-       </property>
-       <property name="readOnly" >
-        <bool>true</bool>
-       </property>
-       <property name="tabStopWidth" >
-        <number>100</number>
-       </property>
-       <property name="acceptRichText" >
-        <bool>false</bool>
-       </property>
+       <widget class="QWidget" name="LogTab_" >
+        <attribute name="title" >
+         <string>Log</string>
+        </attribute>
+        <layout class="QGridLayout" >
+         <item row="0" column="0" >
+          <widget class="QTextEdit" name="LogShower_" >
+           <property name="lineWrapMode" >
+            <enum>QTextEdit::NoWrap</enum>
+           </property>
+           <property name="readOnly" >
+            <bool>true</bool>
+           </property>
+           <property name="tabStopWidth" >
+            <number>100</number>
+           </property>
+           <property name="acceptRichText" >
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </widget>
     </item>

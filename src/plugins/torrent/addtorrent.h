@@ -14,6 +14,7 @@ public:
     QString GetFilename () const;
     QString GetSavePath () const;
     QVector<bool> GetSelectedFiles () const;
+	QStringList GetTags () const;
 private slots:
     void on_TorrentBrowse__released ();
     void on_DestinationBrowse__released ();

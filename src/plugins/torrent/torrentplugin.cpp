@@ -1,5 +1,7 @@
 #include <QtGui/QtGui>
 #include <plugininterface/proxy.h>
+#include <plugininterface/tagscompleter.h>
+#include <plugininterface/tagscompletionmodel.h>
 #include <numeric>
 #include "torrentplugin.h"
 #include "core.h"
@@ -9,6 +11,7 @@
 #include "trackerschanger.h"
 #include "xmlsettingsmanager.h"
 #include "piecesmodel.h"
+#include "channelsfiltermodel.h"
 
 void TorrentPlugin::Init ()
 {
@@ -34,14 +37,23 @@ void TorrentPlugin::Init ()
     connect (Stats_, SIGNAL (currentChanged (int)), this, SLOT (updateTorrentStats ()));
 
     Core::Instance ()->DoDelayedInit ();
-    FilterModel_ = new QSortFilterProxyModel;
+    FilterModel_ = new ChannelsFilterModel;
     FilterModel_->setSourceModel (Core::Instance ());
     FilterModel_->setFilterKeyColumn (0);
     TorrentView_->setModel (FilterModel_);
     connect (Core::Instance (), SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)), FilterModel_, SLOT (invalidate ()));
+    connect (FixedStringSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setNormalMode ()));
+    connect (WildcardSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setNormalMode ()));
+    connect (RegexpSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setNormalMode ()));
     connect (FixedStringSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setFilterFixedString (const QString&)));
     connect (WildcardSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setFilterWildcard (const QString&)));
     connect (RegexpSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setFilterRegExp (const QString&)));
+    connect (TagsSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setTagsMode ()));
+    connect (TagsSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setFilterFixedString (const QString&)));
+    TagsCompleter_ = new TagsCompleter (this);
+    TagsCompleter_->setModel (Core::Instance ()->GetTagsCompletionModel ());
+    TorrentTags_->setCompleter (TagsCompleter_);
+    TagsSearch_->setCompleter (TagsCompleter_);
 
     PiecesView_->setModel (Core::Instance ()->GetPiecesModel ());
 
@@ -254,7 +266,7 @@ void TorrentPlugin::AddJob (const QByteArray& data, const QString& where)
         showError ("Could not open temporary file to add the interface-added job");
     }
     file.write (data);
-    Core::Instance ()->AddFile (file.fileName (), where, files);
+    Core::Instance ()->AddFile (file.fileName (), where, QStringList (tr ("untagged")), files);
     setActionsEnabled ();
 }
 
@@ -306,7 +318,8 @@ void TorrentPlugin::AddJob (const QString& name)
     QString filename = AddTorrentDialog_->GetFilename (),
             path = AddTorrentDialog_->GetSavePath ();
     QVector<bool> files = AddTorrentDialog_->GetSelectedFiles ();
-    Core::Instance ()->AddFile (filename, path, files);
+    QStringList tags = AddTorrentDialog_->GetTags ();
+    Core::Instance ()->AddFile (filename, path, tags, files);
     setActionsEnabled ();
 }
 
@@ -330,7 +343,8 @@ void TorrentPlugin::on_OpenTorrent__triggered ()
     QString filename = AddTorrentDialog_->GetFilename (),
             path = AddTorrentDialog_->GetSavePath ();
     QVector<bool> files = AddTorrentDialog_->GetSelectedFiles ();
-    Core::Instance ()->AddFile (filename, path, files);
+    QStringList tags = AddTorrentDialog_->GetTags ();
+    Core::Instance ()->AddFile (filename, path, tags, files);
     setActionsEnabled ();
 }
 
@@ -350,7 +364,7 @@ void TorrentPlugin::on_OpenMultipleTorrents__triggered ()
         if (!name.endsWith ('/'))
             name += '/';
         name += names.at (i);
-        Core::Instance ()->AddFile (name, savePath);
+        Core::Instance ()->AddFile (name, savePath, QStringList (tr ("untagged")));
     }
     setActionsEnabled ();
 }
@@ -412,21 +426,23 @@ void TorrentPlugin::on_Preferences__triggered ()
     XmlSettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
 }
 
-void TorrentPlugin::on_TorrentView__clicked (const QModelIndex&)
+void TorrentPlugin::on_TorrentView__clicked (const QModelIndex& index)
 {
     setActionsEnabled ();
     PrioritySpinbox_->setValue (1);
     PrioritySpinbox_->setEnabled (false);
+    TorrentTags_->setText (Core::Instance ()->GetTagsForIndex (index.row ()).join (" "));
     TorrentSelectionChanged_ = true;
     restartTimers ();
     updateTorrentStats ();
 }
 
-void TorrentPlugin::on_TorrentView__pressed (const QModelIndex&)
+void TorrentPlugin::on_TorrentView__pressed (const QModelIndex& index)
 {
     setActionsEnabled ();
     PrioritySpinbox_->setValue (1);
     PrioritySpinbox_->setEnabled (false);
+    TorrentTags_->setText (Core::Instance ()->GetTagsForIndex (index.row ()).join (" "));
     TorrentSelectionChanged_ = true;
     restartTimers ();
     updateTorrentStats ();
@@ -504,6 +520,15 @@ void TorrentPlugin::on_UploadingTorrents__valueChanged (int newValue)
     Core::Instance ()->SetMaxUploadingTorrents (newValue);
 }
 
+void TorrentPlugin::on_TorrentTags__editingFinished ()
+{
+    QModelIndex i = TorrentView_->selectionModel ()->currentIndex ();
+    if (!i.isValid ())
+        return;
+
+    Core::Instance ()->UpdateTags (i.row (), TorrentTags_->text ().split (' ', QString::SkipEmptyParts));
+}
+
 void TorrentPlugin::setActionsEnabled ()
 {
     RemoveTorrent_->setEnabled (TorrentView_->selectionModel ()->currentIndex ().isValid ());
@@ -573,6 +598,11 @@ void TorrentPlugin::doLogMessage (const QString& msg)
 
 void TorrentPlugin::addToHistory (const QString& name, const QString& where, quint64 size, QDateTime when)
 {
+    QList<QTreeWidgetItem*> items = HistoryTree_->findItems (name, Qt::MatchExactly);
+    for (int i = 0; i < items.size (); ++i)
+        if (items.at (i)->text (1) == where)
+            return;
+
     QTreeWidgetItem *item = new QTreeWidgetItem (HistoryTree_);
     item->setText (0, name);
     item->setText (1, where);

@@ -62,6 +62,11 @@ QVector<bool> AddTorrent::GetSelectedFiles () const
     return result;
 }
 
+QStringList AddTorrent::GetTags () const
+{
+	return TagsEdit_->text ().split (' ', QString::SkipEmptyParts);
+}
+
 void AddTorrent::setOkEnabled ()
 {
     OK_->setEnabled (QFileInfo (TorrentFile_->text ()).isReadable () && QFileInfo (Destination_->text ()).exists ());

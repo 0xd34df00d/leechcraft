@@ -9,6 +9,8 @@
 class AddTorrent;
 class QTimer;
 class QSortFilterProxyModel;
+class ChannelsFilterModel;
+class TagsCompleter;
 
 class TorrentPlugin : public QMainWindow
                     , public IInfo
@@ -28,10 +30,11 @@ class TorrentPlugin : public QMainWindow
     AddTorrent *AddTorrentDialog_;
     QTimer *OverallStatsUpdateTimer_;
     QTime *LastPeersUpdate_;
-    QSortFilterProxyModel *FilterModel_;
+    ChannelsFilterModel *FilterModel_;
     QMenu *Plugins_;
     bool IgnoreTimer_;
     bool TorrentSelectionChanged_;
+    QCompleter *TagsCompleter_;
 public:
     // IInfo
     void Init ();
@@ -97,6 +100,7 @@ private slots:
     void on_CaseSensitiveSearch__stateChanged (int);
     void on_DownloadingTorrents__valueChanged (int);
     void on_UploadingTorrents__valueChanged (int);
+    void on_TorrentTags__editingFinished ();
     void setActionsEnabled ();
     void showError (QString);
     void updateTorrentStats ();

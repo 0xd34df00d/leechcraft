@@ -15,6 +15,7 @@
 
 class QTimer;
 class PiecesModel;
+class TagsCompletionModel;
 
 class Core : public QAbstractItemModel
 {
@@ -40,6 +41,7 @@ private:
         QString TorrentFileName_;
         TorrentState State_;
         double Ratio_;
+        QStringList Tags_;
     };
 
     libtorrent::session *Session_;
@@ -49,6 +51,7 @@ private:
     int InterfaceUpdateTimer_;
     QTimer *SettingsSaveTimer_;
     PiecesModel *PiecesModel_;
+    TagsCompletionModel *TagsCompletionModel_;
 public:
     enum Columns
     {
@@ -89,7 +92,10 @@ public:
     OverallStats GetOverallStats () const;
     QList<FileInfo> GetTorrentFiles (int) const;
     QList<PeerInfo> GetPeers (int) const;
-    void AddFile (const QString&, const QString&, const QVector<bool>& = QVector<bool> ());
+    QStringList GetTagsForIndex (int) const;
+    void UpdateTags (int, const QStringList&);
+    TagsCompletionModel* GetTagsCompletionModel ();
+    void AddFile (const QString&, const QString&, const QStringList&, const QVector<bool>& = QVector<bool> ());
     void RemoveTorrent (int);
     void PauseTorrent (int);
     void ResumeTorrent (int);
@@ -125,6 +131,7 @@ private:
     void HandleSingleFinished (const libtorrent::torrent_info&, const QString&);
     int GetCurrentlyDownloading () const;
     int GetCurrentlySeeding () const;
+    void ManipulateSettings ();
 private slots:
     void writeSettings ();
     void checkFinished ();

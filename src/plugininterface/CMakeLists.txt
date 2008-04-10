@@ -6,12 +6,16 @@ SET (SRCS
   proxy.cpp
   tcpsocket.cpp
   socketexceptions.cpp
+  tagscompleter.cpp
+  tagscompletionmodel.cpp
   graphwidget.cpp)
 SET (HEADERS
   addressparser.h
   proxy.h
   tcpsocket.h
   socketexceptions.h
+  tagscompleter.h
+  tagscompletionmodel.h
   graphwidget.h)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})

@@ -7,6 +7,7 @@
 #include <QTimer>
 #include <stdexcept>
 #include <plugininterface/proxy.h>
+#include <plugininterface/tagscompletionmodel.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "parserfactory.h"
@@ -14,7 +15,6 @@
 #include "atom10parser.h"
 #include "treeitem.h"
 #include "channelsmodel.h"
-#include "tagscompletionmodel.h"
 
 Core::Core ()
 {

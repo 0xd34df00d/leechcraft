@@ -7,13 +7,13 @@
 #include <QSystemTrayIcon>
 #include <QPainter>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <plugininterface/tagscompletionmodel.h>
+#include <plugininterface/tagscompleter.h>
 #include "aggregator.h"
 #include "core.h"
 #include "addfeed.h"
 #include "channelsfiltermodel.h"
 #include "xmlsettingsmanager.h"
-#include "tagscompletionmodel.h"
-#include "tagscompleter.h"
 
 void Aggregator::Init ()
 {
@@ -71,7 +71,6 @@ void Aggregator::Init ()
 
     TagsCompleter_ = new TagsCompleter (this);
     TagsCompleter_->setModel (Core::Instance ().GetTagsCompletionModel ());
-    TagsCompleter_->setCompletionPrefix ("fuck");
     Ui_.TagsLine_->setCompleter (TagsCompleter_);
     Ui_.ChannelTags_->setCompleter (TagsCompleter_);
 
