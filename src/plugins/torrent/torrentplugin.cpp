@@ -553,22 +553,22 @@ void TorrentPlugin::updateTorrentStats ()
 {
     switch (Stats_->currentIndex ())
     {
-        case 0:
+        case 1:
             UpdateDashboard ();
             break;
-        case 1:
+        case 2:
             updateOverallStats ();
             break;
-        case 2:
+        case 3:
             UpdateTorrentPage ();
             break;
-        case 3:
+        case 4:
             UpdateFilesPage ();
             break;
-        case 4:
+        case 5:
             UpdatePeersPage ();
             break;
-        case 5:
+        case 6:
             UpdatePiecesPage ();
             break;
     }
@@ -615,7 +615,7 @@ void TorrentPlugin::UpdateDashboard ()
     QModelIndex index = TorrentView_->currentIndex ();
     if (index.isValid ())
     {
-        int row = index.row ();
+        int row = FilterModel_->mapToSource (index).row ();
         TorrentDownloadRateController_->setValue (Core::Instance ()->GetTorrentDownloadRate (row));
         TorrentUploadRateController_->setValue (Core::Instance ()->GetTorrentUploadRate (row));
         TorrentDesiredRating_->setValue (Core::Instance ()->GetTorrentDesiredRating (row));
@@ -650,7 +650,7 @@ void TorrentPlugin::UpdateTorrentPage ()
     }
     else
     {
-        TorrentInfo i = Core::Instance ()->GetTorrentStats (index.row ());
+        TorrentInfo i = Core::Instance ()->GetTorrentStats (FilterModel_->mapToSource (index).row ());
         LabelState_->setText (i.State_);
         LabelTracker_->setText (i.Tracker_);
         LabelProgress_->setText (QString::number (i.Progress_ * 100) + "%");
@@ -676,7 +676,7 @@ void TorrentPlugin::UpdateTorrentPage ()
 
 void TorrentPlugin::UpdateFilesPage ()
 {
-    QModelIndex index = TorrentView_->currentIndex ();
+    QModelIndex index = FilterModel_->mapToSource (TorrentView_->currentIndex ());
     if (TorrentSelectionChanged_)
     {
         FilesWidget_->clear ();
@@ -710,7 +710,7 @@ void TorrentPlugin::UpdateFilesPage ()
 
 void TorrentPlugin::UpdatePeersPage ()
 {
-    QModelIndex index = TorrentView_->currentIndex ();
+    QModelIndex index = FilterModel_->mapToSource (TorrentView_->currentIndex ());
     if (!index.isValid ())
     {
         PeersWidget_->clear ();
@@ -768,7 +768,7 @@ void TorrentPlugin::UpdatePeersPage ()
 
 void TorrentPlugin::UpdatePiecesPage ()
 {
-    QModelIndex index = TorrentView_->currentIndex ();
+    QModelIndex index = FilterModel_->mapToSource (TorrentView_->currentIndex ());
     if (!index.isValid ())
         Core::Instance ()->ClearPieces ();
     else

@@ -23,7 +23,6 @@ void ChannelsFilterModel::setNormalMode ()
 
 bool ChannelsFilterModel::filterAcceptsRow (int source_row, const QModelIndex& source_parent) const
 {
-	qDebug () << NormalMode_;
 	if (NormalMode_)
 		return QSortFilterProxyModel::filterAcceptsRow (source_row, source_parent);
 	else
