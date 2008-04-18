@@ -15,6 +15,7 @@ class PeersModel : public QAbstractItemModel
     QList<PeerInfo> Peers_;
     int CurrentTorrent_;
 public:
+    enum { SortRole = 45 };
     PeersModel (QObject *parent = 0);
     virtual ~PeersModel ();
 

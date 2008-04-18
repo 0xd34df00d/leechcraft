@@ -1,6 +1,7 @@
 #include <QtDebug>
 #include <numeric>
 #include <plugininterface/treeitem.h>
+#include <plugininterface/proxy.h>
 #include "core.h"
 #include "peersmodel.h"
 
@@ -33,22 +34,43 @@ int PeersModel::columnCount (const QModelIndex& index) const
 
 QVariant PeersModel::data (const QModelIndex& index, int role) const
 {
-    if (!index.isValid () || role != Qt::DisplayRole)
+    if (!index.isValid () || (role != Qt::DisplayRole && role != SortRole))
         return QVariant ();
 
     const std::vector<bool>* localPieces = Core::Instance ()->GetLocalPieces (CurrentTorrent_);
+
     switch (index.column ())
     {
         case 0:
             return Peers_.at (index.row ()).IP_;
         case 1:
-            return Peers_.at (index.row ()).DSpeed_;
+            if (role == Qt::DisplayRole)
+                return Proxy::Instance ()->MakePrettySize (Peers_.at (index.row ()).DSpeed_) + tr ("/s");
+            else if (role == SortRole)
+                return Peers_.at (index.row ()).DSpeed_;
+            else
+                return QVariant ();
         case 2:
-            return Peers_.at (index.row ()).USpeed_;
+            if (role == Qt::DisplayRole)
+                return Proxy::Instance ()->MakePrettySize (Peers_.at (index.row ()).USpeed_) + tr ("/s");
+            else if (role == SortRole)
+                return Peers_.at (index.row ()).USpeed_;
+            else
+                return QVariant ();
         case 3:
-            return Peers_.at (index.row ()).Downloaded_;
+            if (role == Qt::DisplayRole)
+                return Proxy::Instance ()->MakePrettySize (Peers_.at (index.row ()).Downloaded_);
+            else if (role == SortRole)
+                return Peers_.at (index.row ()).Downloaded_;
+            else
+                return QVariant ();
         case 4:
-            return Peers_.at (index.row ()).Uploaded_;
+            if (role == Qt::DisplayRole)
+                return Proxy::Instance ()->MakePrettySize (Peers_.at (index.row ()).Uploaded_);
+            else if (role == SortRole)
+                return Peers_.at (index.row ()).Uploaded_;
+            else
+                return QVariant ();
         case 5:
             return Peers_.at (index.row ()).Client_;
         case 6:

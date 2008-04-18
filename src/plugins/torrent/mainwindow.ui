@@ -1127,7 +1127,17 @@
         </attribute>
         <layout class="QVBoxLayout" >
          <item>
-          <widget class="QTreeView" name="PeersView_" />
+          <widget class="QTreeView" name="PeersView_" >
+           <property name="rootIsDecorated" >
+            <bool>false</bool>
+           </property>
+           <property name="itemsExpandable" >
+            <bool>false</bool>
+           </property>
+           <property name="sortingEnabled" >
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>

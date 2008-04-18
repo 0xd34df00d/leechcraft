@@ -35,6 +35,11 @@ class TorrentPlugin : public QMainWindow
     bool IgnoreTimer_;
     bool TorrentSelectionChanged_;
     QCompleter *TagsCompleter_;
+
+	void SetupCore ();
+	void SetupTorrentView ();
+	void SetupStuff ();
+	void SetupHeaders ();
 public:
     // IInfo
     void Init ();

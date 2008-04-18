@@ -13,15 +13,8 @@
 #include "peersmodel.h"
 #include "channelsfiltermodel.h"
 
-void TorrentPlugin::Init ()
+void TorrentPlugin::SetupCore ()
 {
-    QTranslator *transl = new QTranslator (this);
-    QString localeName = QString(::getenv ("LANG")).left (2);
-    if (localeName.isNull () || localeName.isEmpty ())
-        localeName = QLocale::system ().name ();
-    transl->load (QString (":/leechcraft_torrent_") + localeName);
-    qApp->installTranslator (transl);
-
     setupUi (this);
     TorrentSelectionChanged_ = true;
     LastPeersUpdate_ = new QTime;
@@ -39,6 +32,10 @@ void TorrentPlugin::Init ()
     connect (Stats_, SIGNAL (currentChanged (int)), this, SLOT (updateTorrentStats ()));
 
     Core::Instance ()->DoDelayedInit ();
+}
+
+void TorrentPlugin::SetupTorrentView ()
+{
     FilterModel_ = new ChannelsFilterModel;
     FilterModel_->setSourceModel (Core::Instance ());
     FilterModel_->setFilterKeyColumn (0);
@@ -54,12 +51,21 @@ void TorrentPlugin::Init ()
     connect (TagsSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setFilterFixedString (const QString&)));
     TagsCompleter_ = new TagsCompleter (this);
     TagsCompleter_->setModel (Core::Instance ()->GetTagsCompletionModel ());
+}
+
+void TorrentPlugin::SetupStuff ()
+{
     TorrentTags_->setCompleter (TagsCompleter_);
     TagsSearch_->setCompleter (TagsCompleter_);
     AddTorrentDialog_->SetCompleter (TagsCompleter_);
 
     PiecesView_->setModel (Core::Instance ()->GetPiecesModel ());
-    PeersView_->setModel (Core::Instance ()->GetPeersModel ());
+
+    QSortFilterProxyModel *peersSorter = new QSortFilterProxyModel (this);
+    peersSorter->setDynamicSortFilter (true);
+    peersSorter->setSourceModel (Core::Instance ()->GetPeersModel ());
+    peersSorter->setSortRole (PeersModel::SortRole);
+    PeersView_->setModel (peersSorter);
 
     IgnoreTimer_ = true;
     OverallDownloadRateController_->setValue (Core::Instance ()->GetOverallDownloadRate ());
@@ -71,7 +77,10 @@ void TorrentPlugin::Init ()
     OverallStatsUpdateTimer_ = new QTimer (this);
     connect (OverallStatsUpdateTimer_, SIGNAL (timeout ()), this, SLOT (updateOverallStats ()));
     OverallStatsUpdateTimer_->start (500);
+}
 
+void TorrentPlugin::SetupHeaders ()
+{
     QFontMetrics fm = fontMetrics ();
     QHeaderView *header = TorrentView_->header ();
     header->resizeSection (Core::ColumnName, fm.width ("thisisanaveragewareztorrentname,right?maybeyes.torrent"));
@@ -100,6 +109,21 @@ void TorrentPlugin::Init ()
     header->resizeSection (10, fm.width ("99"));
     header->resizeSection (11, fm.width ("99"));
     header->resizeSection (12, fm.width ("Piece 100, block 50, 16384 of 16384 bytes"));
+}
+
+void TorrentPlugin::Init ()
+{
+    QTranslator *transl = new QTranslator (this);
+    QString localeName = QString(::getenv ("LANG")).left (2);
+    if (localeName.isNull () || localeName.isEmpty ())
+        localeName = QLocale::system ().name ();
+    transl->load (QString (":/leechcraft_torrent_") + localeName);
+    qApp->installTranslator (transl);
+
+    SetupCore ();
+    SetupTorrentView ();
+    SetupStuff ();
+    SetupHeaders ();
 
     Plugins_->addAction (OpenTorrent_);
     Plugins_->addAction (OpenMultipleTorrents_);
