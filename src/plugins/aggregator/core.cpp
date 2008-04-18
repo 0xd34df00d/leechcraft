@@ -521,7 +521,7 @@ void Core::handleJobFinished (int id)
                 if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_ [position].get () && channels [i]->Items_.size () - Feeds_ [pj.URL_].Channels_ [position]->Items_.size ())
                 {
                     insertedRows = true;
-                    beginInsertRows (QModelIndex (), 0, channels [i]->Items_.size () - Feeds_ [pj.URL_].Channels_ [position]->Items_.size ());
+                    beginInsertRows (QModelIndex (), 0, channels [i]->Items_.size () - Feeds_ [pj.URL_].Channels_ [position]->Items_.size () - 1);
                 }
                 Feeds_ [pj.URL_].Channels_ [position]->Items_ = channels.at (i)->Items_;
                 if (channels.at (i)->LastBuild_.isValid ())

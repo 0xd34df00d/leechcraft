@@ -134,10 +134,12 @@ void PiecesModel::Update (const std::vector<libtorrent::partial_piece_info>& que
     }
 
     // Remove
-    for (QMap<int, int>::const_iterator i = index2position.begin (); i != index2position.end (); ++i)
+    QList<int> values = index2position.values ();
+    qSort (values.begin (), values.end (), qGreater<int> ());
+    for (int i = 0; i < values.size (); ++i)
     {
-        beginRemoveRows (QModelIndex (), i.value (), i.value ());
-        Pieces_.removeAt (i.value ());
+        beginRemoveRows (QModelIndex (), values.at (i), values.at (i));
+        Pieces_.removeAt (values.at (i));
         endRemoveRows ();
     }
 

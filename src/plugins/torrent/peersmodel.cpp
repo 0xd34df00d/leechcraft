@@ -39,66 +39,68 @@ QVariant PeersModel::data (const QModelIndex& index, int role) const
 
     const std::vector<bool>* localPieces = Core::Instance ()->GetLocalPieces (CurrentTorrent_);
 
+    int i = index.row ();
+
     switch (index.column ())
     {
         case 0:
             return Peers_.at (index.row ()).IP_;
         case 1:
             if (role == Qt::DisplayRole)
-                return Proxy::Instance ()->MakePrettySize (Peers_.at (index.row ()).DSpeed_) + tr ("/s");
+                return Proxy::Instance ()->MakePrettySize (Peers_.at (i).DSpeed_) + tr ("/s");
             else if (role == SortRole)
-                return Peers_.at (index.row ()).DSpeed_;
+                return Peers_.at (i).DSpeed_;
             else
                 return QVariant ();
         case 2:
             if (role == Qt::DisplayRole)
-                return Proxy::Instance ()->MakePrettySize (Peers_.at (index.row ()).USpeed_) + tr ("/s");
+                return Proxy::Instance ()->MakePrettySize (Peers_.at (i).USpeed_) + tr ("/s");
             else if (role == SortRole)
-                return Peers_.at (index.row ()).USpeed_;
+                return Peers_.at (i).USpeed_;
             else
                 return QVariant ();
         case 3:
             if (role == Qt::DisplayRole)
-                return Proxy::Instance ()->MakePrettySize (Peers_.at (index.row ()).Downloaded_);
+                return Proxy::Instance ()->MakePrettySize (Peers_.at (i).Downloaded_);
             else if (role == SortRole)
-                return Peers_.at (index.row ()).Downloaded_;
+                return Peers_.at (i).Downloaded_;
             else
                 return QVariant ();
         case 4:
             if (role == Qt::DisplayRole)
-                return Proxy::Instance ()->MakePrettySize (Peers_.at (index.row ()).Uploaded_);
+                return Proxy::Instance ()->MakePrettySize (Peers_.at (i).Uploaded_);
             else if (role == SortRole)
-                return Peers_.at (index.row ()).Uploaded_;
+                return Peers_.at (i).Uploaded_;
             else
                 return QVariant ();
         case 5:
-            return Peers_.at (index.row ()).Client_;
+            return Peers_.at (i).Client_;
         case 6:
             if (localPieces)
             {
-                int remoteNum = std::accumulate (Peers_.at (index.row ()).Pieces_.begin (), Peers_.at (index.row ()).Pieces_.end (), 0),
+                int remoteNum = std::accumulate (Peers_.at (i).Pieces_.begin (), Peers_.at (i).Pieces_.end (), 0),
                     remoteHasWeDont = 0;
                 for (int j = 0; j < localPieces->size (); ++j)
-                    remoteHasWeDont += (Peers_.at (index.row ()).Pieces_ [j] && !(*localPieces) [j]);
+                    remoteHasWeDont += (Peers_.at (i).Pieces_ [j] && !(*localPieces) [j]);
                 return tr ("%1, %2 we don't have").arg (remoteNum).arg (remoteHasWeDont);
             }
             else
                 return "";
         case 7:
-            return static_cast<quint64> (Peers_.at (index.row ()).LoadBalancing_);
+            return static_cast<quint64> (Peers_.at (i).LoadBalancing_);
         case 8:
-            return Peers_.at (index.row ()).LastActive_.toString ("mm:ss.zzz");
+            return Peers_.at (i).LastActive_.toString ("mm:ss.zzz");
         case 9:
-            return Peers_.at (index.row ()).Hashfails_;
+            return Peers_.at (i).Hashfails_;
         case 10:
-            return Peers_.at (index.row ()).Failcount_;
+            return Peers_.at (i).Failcount_;
         case 11:
-            if (Peers_.at (index.row ()).DownloadingPiece_ >= 0)
+            if (Peers_.at (i).DownloadingPiece_ >= 0)
                 return tr ("Piece %1, block %2, %3 of %4 bytes").
-                        arg (Peers_.at (index.row ()).DownloadingPiece_).
-                        arg (Peers_.at (index.row ()).DownloadingBlock_).
-                        arg (Peers_.at (index.row ()).DownloadingProgress_).
-                        arg (Peers_.at (index.row ()).DownloadingTotal_);
+                        arg (Peers_.at (i).DownloadingPiece_).
+                        arg (Peers_.at (i).DownloadingBlock_).
+                        arg (Peers_.at (i).DownloadingProgress_).
+                        arg (Peers_.at (i).DownloadingTotal_);
             else
                 return tr ("Not downloading");
         default:
@@ -182,10 +184,12 @@ void PeersModel::Update (const QList<PeerInfo>& peers, int torrent)
         peers2insert << pi;
     }
 
-    for (QMap<QString, int>::const_iterator i = IP2position.begin (); i != IP2position.end (); ++i)
+    QList<int> values = IP2position.values ();
+    qSort (values.begin (), values.end (), qGreater<int> ());
+    for (int i = 0; i < values.size (); ++i)
     {
-        beginRemoveRows (QModelIndex (), i.value (), i.value ());
-        Peers_.removeAt (i.value ());
+        beginRemoveRows (QModelIndex (), values.at (i), values.at (i));
+        Peers_.removeAt (values.at (i));
         endRemoveRows ();
     }
 

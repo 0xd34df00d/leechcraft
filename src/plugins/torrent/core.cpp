@@ -416,7 +416,6 @@ QStringList Core::GetTagsForIndex (int index) const
 
 void Core::UpdateTags (int index, const QStringList& tags)
 {
-    qDebug () << Q_FUNC_INFO << index << tags;
     if (!CheckValidity (index))
         return;
 
@@ -512,7 +511,6 @@ void Core::PauseTorrent (int pos)
 
 void Core::ResumeTorrent (int pos)
 {
-    qDebug () << Q_FUNC_INFO << pos;
     if (!CheckValidity (pos))
         return;
 
