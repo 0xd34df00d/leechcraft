@@ -1,7 +1,7 @@
 #include <QtDebug>
 #include <QApplication>
 #include <QFont>
-#include "treeitem.h"
+#include <plugininterface/treeitem.h>
 #include "channelsmodel.h"
 #include "channel.h"
 #include "feed.h"

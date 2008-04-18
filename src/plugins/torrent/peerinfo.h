@@ -1,6 +1,7 @@
 #ifndef PEERINFO_H
 #define PEERINFO_H
 #include <vector>
+#include <QTime>
 
 struct PeerInfo
 {

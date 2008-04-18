@@ -8,6 +8,7 @@ SET (SRCS
   socketexceptions.cpp
   tagscompleter.cpp
   tagscompletionmodel.cpp
+  treeitem.cpp
   graphwidget.cpp)
 SET (HEADERS
   addressparser.h
@@ -16,6 +17,7 @@ SET (HEADERS
   socketexceptions.h
   tagscompleter.h
   tagscompletionmodel.h
+  treeitem.h
   graphwidget.h)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})

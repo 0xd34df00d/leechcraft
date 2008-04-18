@@ -15,6 +15,7 @@
 
 class QTimer;
 class PiecesModel;
+class PeersModel;
 class TagsCompletionModel;
 
 class Core : public QAbstractItemModel
@@ -51,6 +52,7 @@ private:
     int InterfaceUpdateTimer_;
     QTimer *SettingsSaveTimer_;
     PiecesModel *PiecesModel_;
+    PeersModel *PeersModel_;
     TagsCompletionModel *TagsCompletionModel_;
 public:
     enum Columns
@@ -74,6 +76,9 @@ public:
     PiecesModel* GetPiecesModel ();
     void ClearPieces ();
     void UpdatePieces (int);
+    PeersModel* GetPeersModel ();
+    void ClearPeers ();
+    void UpdatePeers (int);
 
     virtual int columnCount (const QModelIndex&) const;
     virtual QVariant data (const QModelIndex&, int role = Qt::DisplayRole) const;

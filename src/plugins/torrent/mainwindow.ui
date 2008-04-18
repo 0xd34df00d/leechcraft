@@ -1127,74 +1127,7 @@
         </attribute>
         <layout class="QVBoxLayout" >
          <item>
-          <widget class="QTreeWidget" name="PeersWidget_" >
-           <property name="rootIsDecorated" >
-            <bool>false</bool>
-           </property>
-           <property name="sortingEnabled" >
-            <bool>true</bool>
-           </property>
-           <column>
-            <property name="text" >
-             <string>IP</string>
-            </property>
-           </column>
-           <column>
-            <property name="text" >
-             <string>Drate</string>
-            </property>
-           </column>
-           <column>
-            <property name="text" >
-             <string>Urate</string>
-            </property>
-           </column>
-           <column>
-            <property name="text" >
-             <string>Downloaded</string>
-            </property>
-           </column>
-           <column>
-            <property name="text" >
-             <string>Uploaded</string>
-            </property>
-           </column>
-           <column>
-            <property name="text" >
-             <string>Client</string>
-            </property>
-           </column>
-           <column>
-            <property name="text" >
-             <string>Available pieces</string>
-            </property>
-           </column>
-           <column>
-            <property name="text" >
-             <string>LB</string>
-            </property>
-           </column>
-           <column>
-            <property name="text" >
-             <string>Last active</string>
-            </property>
-           </column>
-           <column>
-            <property name="text" >
-             <string>Hashfails</string>
-            </property>
-           </column>
-           <column>
-            <property name="text" >
-             <string>Failcount</string>
-            </property>
-           </column>
-           <column>
-            <property name="text" >
-             <string>Progress</string>
-            </property>
-           </column>
-          </widget>
+          <widget class="QTreeView" name="PeersView_" />
          </item>
         </layout>
        </widget>

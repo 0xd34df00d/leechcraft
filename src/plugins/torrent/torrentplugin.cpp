@@ -2,7 +2,6 @@
 #include <plugininterface/proxy.h>
 #include <plugininterface/tagscompleter.h>
 #include <plugininterface/tagscompletionmodel.h>
-#include <numeric>
 #include "torrentplugin.h"
 #include "core.h"
 #include "addtorrent.h"
@@ -11,6 +10,7 @@
 #include "trackerschanger.h"
 #include "xmlsettingsmanager.h"
 #include "piecesmodel.h"
+#include "peersmodel.h"
 #include "channelsfiltermodel.h"
 
 void TorrentPlugin::Init ()
@@ -59,6 +59,7 @@ void TorrentPlugin::Init ()
     AddTorrentDialog_->SetCompleter (TagsCompleter_);
 
     PiecesView_->setModel (Core::Instance ()->GetPiecesModel ());
+    PeersView_->setModel (Core::Instance ()->GetPeersModel ());
 
     IgnoreTimer_ = true;
     OverallDownloadRateController_->setValue (Core::Instance ()->GetOverallDownloadRate ());
@@ -85,7 +86,7 @@ void TorrentPlugin::Init ()
     header->resizeSection (Core::ColumnDSpeed, fm.width ("_1234.0 KB/s_"));
     header->resizeSection (Core::ColumnRemaining, fm.width ("10d 00:00:00"));
 
-    header = PeersWidget_->header ();
+    header = PeersView_->header ();
     header->resizeSection (0, fm.width ("000.000.000.000"));
     header->resizeSection (1, fm.width ("_1234.0 KB/s_"));
     header->resizeSection (2, fm.width ("_1234.0 KB/s_"));
@@ -556,6 +557,8 @@ void TorrentPlugin::updateTorrentStats ()
 {
     switch (Stats_->currentIndex ())
     {
+        case 0:
+            break;
         case 1:
             UpdateDashboard ();
             break;
@@ -715,58 +718,9 @@ void TorrentPlugin::UpdatePeersPage ()
 {
     QModelIndex index = FilterModel_->mapToSource (TorrentView_->currentIndex ());
     if (!index.isValid ())
-    {
-        PeersWidget_->clear ();
-        return;
-    }
-
-    QList<PeerInfo> peers = Core::Instance ()->GetPeers (index.row ());
-    QList<QString> peerIPs;
-    for (int i = 0; i < PeersWidget_->topLevelItemCount (); ++i)
-        peerIPs << PeersWidget_->topLevelItem (i)->text (0);
-
-    const std::vector<bool>* localPieces = Core::Instance ()->GetLocalPieces (index.row ());
-
-    for (int i = 0; i < peers.size (); ++i)
-    {
-        QTreeWidgetItem *item;
-        QList<QTreeWidgetItem*> items = PeersWidget_->findItems (peers.at (i).IP_, Qt::MatchExactly);
-        if (items.size ())
-            item = items.at (0);
-        else
-            item = new QTreeWidgetItem (PeersWidget_);
-
-        item->setText (0, peers.at (i).IP_);
-        item->setText (1, Proxy::Instance ()->MakePrettySize (peers.at (i).DSpeed_) + tr ("/s"));
-        item->setText (2, Proxy::Instance ()->MakePrettySize (peers.at (i).USpeed_) + tr ("/s"));
-        item->setText (3, Proxy::Instance ()->MakePrettySize (peers.at (i).Downloaded_));
-        item->setText (4, Proxy::Instance ()->MakePrettySize (peers.at (i).Uploaded_));
-        item->setText (5, peers.at (i).Client_);
-        if (localPieces)
-        {
-            int remoteNum = std::accumulate (peers.at (i).Pieces_.begin (), peers.at (i).Pieces_.end (), 0),
-                remoteHasWeDont = 0;
-            for (int j = 0; j < localPieces->size (); ++j)
-                remoteHasWeDont += (peers.at (i).Pieces_ [j] && !(*localPieces) [j]);
-            item->setText (6, QString (tr ("%1, %2 we don't have").arg (remoteNum).arg (remoteHasWeDont)));
-        }
-        item->setText (7, QString::number (peers.at (i).LoadBalancing_));
-        item->setText (8, peers.at (i).LastActive_.toString ("mm:ss.zzz"));
-        item->setText (9, QString::number (peers.at (i).Hashfails_));
-        item->setText (10, QString::number (peers.at (i).Failcount_));
-        if (peers.at (i).DownloadingPiece_ >= 0)
-            item->setText (11, tr ("Piece %1, block %2, %3 of %4 bytes").
-                    arg (peers.at (i).DownloadingPiece_).
-                    arg (peers.at (i).DownloadingBlock_).
-                    arg (peers.at (i).DownloadingProgress_).
-                    arg (peers.at (i).DownloadingTotal_));
-        else
-            item->setText (11, tr ("Not downloading"));
-
-        peerIPs.removeAll (peers.at (i).IP_);
-    }
-    for (int i = 0; i < peerIPs.size (); ++i)
-        qDeleteAll (PeersWidget_->findItems (peerIPs.at (i), Qt::MatchExactly));
+        Core::Instance ()->ClearPeers ();
+    else
+        Core::Instance ()->UpdatePeers (index.row ());
 }
 
 void TorrentPlugin::UpdatePiecesPage ()

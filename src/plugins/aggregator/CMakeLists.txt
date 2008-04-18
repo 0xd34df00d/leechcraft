@@ -16,7 +16,6 @@ SET (SRCS
     item.cpp
     channel.cpp
     feed.cpp
-    treeitem.cpp
     xmlsettingsmanager.cpp
     channelsmodel.cpp
     channelsfiltermodel.cpp)
@@ -34,7 +33,6 @@ SET (HEADERS
     rss20parser.h
     atom10parser.h
     channelsmodel.h
-    treeitem.h
     xmlsettingsmanager.h
     channelsfiltermodel.h
     ../../plugininterface/basesettingsmanager.h)

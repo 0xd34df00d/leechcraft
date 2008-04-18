@@ -31,6 +31,7 @@ HEADERS += torrentplugin.h \
 		   overallstats.h \
 		   addmultipletorrens.h \
 		   trackerschanger.h \
+		   peersmodel.h \
 		   newtorrentparams.h
 SOURCES += torrentplugin.cpp \
 		   core.cpp \
@@ -42,6 +43,7 @@ SOURCES += torrentplugin.cpp \
 		   secondstep.cpp \
 		   thirdstep.cpp \
 		   addmultipletorrens.cpp \
+		   peersmodel.cpp \
 		   trackerschanger.cpp \
 		   settingsmanager.cpp
 FORMS += mainwindow.ui addtorrent.ui newtorrentfirststep.ui \

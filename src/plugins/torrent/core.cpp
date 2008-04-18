@@ -27,6 +27,7 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "piecesmodel.h"
+#include "peersmodel.h"
 
 Q_GLOBAL_STATIC (Core, CoreInstance);
 
@@ -38,6 +39,7 @@ Core* Core::Instance ()
 Core::Core (QObject *parent)
 : QAbstractItemModel (parent)
 {
+    PeersModel_ = new PeersModel (this);
     PiecesModel_ = new PiecesModel (this);
     TagsCompletionModel_ = new TagsCompletionModel (this);
 }
@@ -112,6 +114,24 @@ void Core::UpdatePieces (int torrent)
     std::vector<libtorrent::partial_piece_info> queue;
     Handles_.at (torrent).Handle_.get_download_queue (queue);
     PiecesModel_->Update (queue);
+}
+
+PeersModel* Core::GetPeersModel ()
+{
+    return PeersModel_;
+}
+
+void Core::ClearPeers ()
+{
+    PeersModel_->Clear ();
+}
+
+void Core::UpdatePeers (int torrent)
+{
+    if (!CheckValidity (torrent))
+        return;
+
+    PeersModel_->Update (GetPeers (torrent), torrent);
 }
 
 int Core::columnCount (const QModelIndex&) const

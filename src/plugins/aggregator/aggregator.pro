@@ -9,7 +9,6 @@ SOURCES += aggregator.cpp \
            item.cpp \
            channel.cpp \
            feed.cpp \
-           treeitem.cpp \
            xmlsettingsmanager.cpp \
            channelsmodel.cpp \
            channelsfiltermodel.cpp
@@ -26,7 +25,6 @@ HEADERS += aggregator.h \
            rss20parser.h \
            atom10parser.h \
            channelsmodel.h \
-           treeitem.h \
            xmlsettingsmanager.h \
            channelsfiltermodel.h
 FORMS += mainwindow.ui addfeed.ui

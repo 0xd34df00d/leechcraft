@@ -13,7 +13,6 @@
 #include "parserfactory.h"
 #include "rss20parser.h"
 #include "atom10parser.h"
-#include "treeitem.h"
 #include "channelsmodel.h"
 
 Core::Core ()
