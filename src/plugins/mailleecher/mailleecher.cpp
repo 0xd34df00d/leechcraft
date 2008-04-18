@@ -9,7 +9,9 @@
 void MailLeecher::Init ()
 {
     QTranslator *transl = new QTranslator (this);
-    QString localeName = QLocale::system ().name ();
+    QString localeName = QString(::getenv ("LANG")).left (2);
+    if (localeName.isNull () || localeName.isEmpty ())
+        localeName = QLocale::system ().name ();
     transl->load (QString (":/leechcraft_mailleecher_") + localeName);
     qApp->installTranslator (transl);
 

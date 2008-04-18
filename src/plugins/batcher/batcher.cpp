@@ -8,7 +8,9 @@ void Batcher::Init ()
 {
     Q_INIT_RESOURCE (resources);
     QTranslator *transl = new QTranslator;
-    QString localeName = QLocale::system ().name ();
+    QString localeName = QString(::getenv ("LANG")).left (2);
+    if (localeName.isNull () || localeName.isEmpty ())
+        localeName = QLocale::system ().name ();
     transl->load (QString (":/leechcraft_batcher_") + localeName);
     qApp->installTranslator (transl);
 

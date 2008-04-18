@@ -18,7 +18,9 @@
 void Aggregator::Init ()
 {
     QTranslator *transl = new QTranslator (this);
-    QString localeName = QLocale::system ().name ();
+    QString localeName = QString(::getenv ("LANG")).left (2);
+    if (localeName.isNull () || localeName.isEmpty ())
+        localeName = QLocale::system ().name ();
     transl->load (QString (":/leechcraft_aggregator_") + localeName);
     qApp->installTranslator (transl);
 
@@ -170,7 +172,8 @@ void Aggregator::handleHidePlugins ()
 void Aggregator::showError (const QString& msg)
 {
     qWarning () << Q_FUNC_INFO << msg;
-    QMessageBox::warning (0, tr ("Error"), msg);
+    if (!XmlSettingsManager::Instance ()->property ("Silent").toBool ())
+        QMessageBox::warning (0, tr ("Error"), msg);
 }
 
 void Aggregator::on_ActionAddFeed__triggered ()

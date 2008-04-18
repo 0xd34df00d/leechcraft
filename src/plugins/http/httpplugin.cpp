@@ -22,7 +22,9 @@ void HttpPlugin::Init ()
     qRegisterMetaType<ImpBase::length_t> ("ImpBase::length_t");
     Q_INIT_RESOURCE (resources);
     QTranslator *transl = new QTranslator (this);
-    QString localeName = QLocale::system ().name ();
+    QString localeName = QString(::getenv ("LANG")).left (2);
+    if (localeName.isNull () || localeName.isEmpty ())
+        localeName = QLocale::system ().name ();
     transl->load (QString (":/leechcraft_http_") + localeName);
     qApp->installTranslator (transl);
 

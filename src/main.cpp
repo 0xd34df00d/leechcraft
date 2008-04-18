@@ -51,7 +51,9 @@ int main (int argc, char **argv)
     qWarning () << "======APPLICATION STARTUP======";
 
     QTranslator transl;
-    QString localeName = QLocale::system ().name ();
+    QString localeName = QString(::getenv ("LANG")).left (2);
+    if (localeName.isNull () || localeName.isEmpty ())
+        localeName = QLocale::system ().name ();
     transl.load (QString (":/leechcraft_") + localeName);
     app.installTranslator (&transl);
 

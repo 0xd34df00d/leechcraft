@@ -413,8 +413,6 @@ void Core::scheduleSave ()
 
 void Core::handleJobFinished (int id)
 {
-    bool silent = XmlSettingsManager::Instance ()->property ("BeSilent").toBool ();
-
     if (!PendingJobs_.contains (id))
         return;
     PendingJob pj = PendingJobs_ [id];
@@ -427,18 +425,12 @@ void Core::handleJobFinished (int id)
     }
     if (!file.size ())
     {
-        if (silent)
-            qWarning () << "Downloaded file has null size!";
-        else
-            emit error (tr ("Downloaded file has null size!"));
+        emit error (tr ("Downloaded file has null size!"));
         return;
     }
     if (pj.Role_ == PendingJob::RFeedUpdated && !Feeds_.contains (pj.URL_))
     {
-        if (silent)
-            qWarning () << "Feed with url %1 not found.";
-        else
-            emit error (tr ("Feed with url %1 not found.").arg (pj.URL_));
+        emit error (tr ("Feed with url %1 not found.").arg (pj.URL_));
         return;
     }
     std::vector<boost::shared_ptr<Channel> > channels;
@@ -450,10 +442,7 @@ void Core::handleJobFinished (int id)
         int errorLine, errorColumn;
         if (!doc.setContent (data, true, &errorMsg, &errorLine, &errorColumn))
         {
-            if (silent)
-                qWarning () << tr ("XML file parse error: %1, line %2, column %3, filename %4").arg (errorMsg).arg (errorLine).arg (errorColumn).arg (pj.Filename_);
-            else
-                emit error (tr ("XML file parse error: %1, line %2, column %3, filename %4").arg (errorMsg).arg (errorLine).arg (errorColumn).arg (pj.Filename_));
+            emit error (tr ("XML file parse error: %1, line %2, column %3, filename %4").arg (errorMsg).arg (errorLine).arg (errorColumn).arg (pj.Filename_));
             return;
         }
         if (pj.Role_ == PendingJob::RFeedAdded)
