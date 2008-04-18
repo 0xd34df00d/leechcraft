@@ -64,7 +64,12 @@ QVector<bool> AddTorrent::GetSelectedFiles () const
 
 QStringList AddTorrent::GetTags () const
 {
-	return TagsEdit_->text ().split (' ', QString::SkipEmptyParts);
+    return TagsEdit_->text ().split (' ', QString::SkipEmptyParts);
+}
+
+void AddTorrent::SetCompleter (QCompleter *completer)
+{
+    TagsEdit_->setCompleter (completer);
 }
 
 void AddTorrent::setOkEnabled ()
@@ -94,6 +99,32 @@ void AddTorrent::on_DestinationBrowse__released ()
 
     XmlSettingsManager::Instance ()->setProperty ("LastSaveDirectory", dir);
     Destination_->setText (dir);
+}
+
+void AddTorrent::on_MarkAll__released ()
+{
+    for (int i = 0; i < FileWidget_->topLevelItemCount (); ++i)
+        FileWidget_->topLevelItem (i)->setCheckState (0, Qt::Checked);
+}
+
+void AddTorrent::on_UnmarkAll__released ()
+{
+    for (int i = 0; i < FileWidget_->topLevelItemCount (); ++i)
+        FileWidget_->topLevelItem (i)->setCheckState (0, Qt::Unchecked);
+}
+
+void AddTorrent::on_MarkSelected__released ()
+{
+    QList<QTreeWidgetItem*> items = FileWidget_->selectedItems ();
+    for (int i = 0; i < items.size (); ++i)
+        items.at (i)->setCheckState (0, Qt::Checked);
+}
+
+void AddTorrent::on_UnmarkSelected__released ()
+{
+    QList<QTreeWidgetItem*> items = FileWidget_->selectedItems ();
+    for (int i = 0; i < items.size (); ++i)
+        items.at (i)->setCheckState (0, Qt::Unchecked);
 }
 
 void AddTorrent::ParseBrowsed ()

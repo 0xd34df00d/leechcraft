@@ -184,7 +184,9 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 
 QString XmlSettingsDialog::GetLabel (const QDomElement& item) const
 {
-    QString locale = QLocale::system ().name ().toLower ();
+    QString locale = QString(::getenv ("LANG")).left (2);
+    if (locale.isNull () || locale.isEmpty ())
+        locale = QLocale::system ().name ().toLower ();
     if (locale == "c")
         locale = "en";
 
@@ -219,7 +221,9 @@ QString XmlSettingsDialog::GetLabel (const QDomElement& item) const
 
 XmlSettingsDialog::LangElements XmlSettingsDialog::GetLangElements (const QDomElement& parent) const
 {
-    QString locale = QLocale::system ().name ().toLower ();
+    QString locale = QString(::getenv ("LANG")).left (2);
+    if (locale.isNull () || locale.isEmpty ())
+        locale = QLocale::system ().name ().toLower ();
     if (locale == "c")
         locale = "en";
 

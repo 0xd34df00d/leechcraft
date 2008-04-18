@@ -56,6 +56,7 @@ void TorrentPlugin::Init ()
     TagsCompleter_->setModel (Core::Instance ()->GetTagsCompletionModel ());
     TorrentTags_->setCompleter (TagsCompleter_);
     TagsSearch_->setCompleter (TagsCompleter_);
+    AddTorrentDialog_->SetCompleter (TagsCompleter_);
 
     PiecesView_->setModel (Core::Instance ()->GetPiecesModel ());
 
