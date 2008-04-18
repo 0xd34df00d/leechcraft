@@ -196,10 +196,8 @@ void Job::handleRemoteFileInfo (const ImpBase::RemoteFileInfo& rfi)
     QFileInfo fileInfo (ln);
     if (fileInfo.exists () && !fileInfo.isDir ())
     {
-        qDebug () << "file exists and is not directory.";
         if (rfi.Modification_ >= fileInfo.lastModified ())
         {
-            qDebug () << "rfi is greater than local.";
             if (QMessageBox::question (parent () ? qobject_cast<JobManager*> (parent ())->GetTheMain () : 0, tr ("Question."), tr ("File on remote server is newer than local. Should I redownload it from scratch or just leave it alone?"), QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok)
             {
                 File_ = new QFile (ln);
@@ -211,24 +209,20 @@ void Job::handleRemoteFileInfo (const ImpBase::RemoteFileInfo& rfi)
                 }
                 File_->open (QFile::WriteOnly);
                 RestartPosition_ = 0;
-                qDebug () << "Starting from scratch";
             }
             else
             {
-                qDebug () << "Stopping at all";
                 Stop ();
                 return;
             }
         }
         else
         {
-            qDebug () << "local file is actual.";
             FileExistsDialog_->exec ();
             QFile f (ln);
             switch (FileExistsDialog_->GetSelected ())
             {
                 case FileExistsDialog::Scratch:
-                    qDebug () << "scratch";
                     if (!QFile::remove (ln))
                     {
                         if (!f.open (QFile::Truncate))
@@ -239,11 +233,9 @@ void Job::handleRemoteFileInfo (const ImpBase::RemoteFileInfo& rfi)
                     break;
                 case FileExistsDialog::Continue:
                     RestartPosition_ = f.size ();
-                    qDebug () << "continue" << RestartPosition_;
                     break;
                 case FileExistsDialog::Unique:
                     Params_->LocalName_ = MakeUniqueNameFor (ln);
-                    qDebug () << "unique" << Params_->LocalName_;
                     RestartPosition_ = 0;
                     break;
                 case FileExistsDialog::Abort:
@@ -259,7 +251,6 @@ void Job::handleRemoteFileInfo (const ImpBase::RemoteFileInfo& rfi)
     else if (!fileInfo.exists ())
     {
         RestartPosition_ = 0;
-        qDebug () << "doesn't exist";
     }
     ProtoImp_->SetRestartPosition (RestartPosition_);
     File_ = new QFile (MakeFilename ());

@@ -85,7 +85,6 @@ QVariant JobManager::data (const QModelIndex& index, int role) const
                 case TListPercent:
                     return job->GetTotal () ? job->GetDownloaded () / job->GetTotal () : 0;
                 case TListSpeed:
-                    qDebug () << job->GetSpeed ();
                     return static_cast<quint64> (job->GetSpeed ());
                 case TListDownloadTime:
                     return static_cast<quint64> (job->GetDownloadTime () / 1000);
