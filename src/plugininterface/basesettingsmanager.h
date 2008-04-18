@@ -20,6 +20,7 @@ class BaseSettingsManager : public QObject
 
     QMap<QByteArray, QPair<QObject*, QByteArray> > Properties2Object_;
     bool Initializing_;
+    QSettings *Settings_;
 public:
  /*! @brief Initalizes the settings manager.
   *
@@ -30,15 +31,12 @@ public:
   */
     void Init ()
     {
-        QSettings *settings = BeginSettings ();
-        QStringList properties = settings->childKeys ();
+        Settings_ = BeginSettings ();
+        QStringList properties = Settings_->childKeys ();
         Initializing_ = true;
         for (int i = 0; i < properties.size (); ++i)
-            setProperty (PROP2CHAR (properties.at (i)), settings->value (properties.at (i), QVariant ()));
+            setProperty (PROP2CHAR (properties.at (i)), Settings_->value (properties.at (i), QVariant ()));
         Initializing_ = false;
-        EndSettings (settings);
-        delete settings;
-        settings = 0;
     }
 
  /*! @brief Prepares the settings manager for deletion.
@@ -51,10 +49,11 @@ public:
     void Release ()
     {
         QList<QByteArray> dProperties = dynamicPropertyNames ();
-        QSettings *settings = BeginSettings ();
         for (int i = 0; i < dProperties.size (); ++i)
-            settings->setValue (dProperties.at (i), property (dProperties.at (i).constData ()));
-        EndSettings (settings);
+            Settings_->setValue (dProperties.at (i), property (dProperties.at (i).constData ()));
+        EndSettings (Settings_);
+        delete Settings_;
+        Settings_ = 0;
     }
 
  /*! @brief Subscribes object to property changes.
@@ -107,11 +106,7 @@ protected:
         QDynamicPropertyChangeEvent *event = dynamic_cast<QDynamicPropertyChangeEvent*> (e);
 
         QByteArray name = event->propertyName ();
-        QSettings *settings = BeginSettings ();
-        settings->setValue (name, property (name));
-        EndSettings (settings);
-        delete settings;
-        settings = 0;
+        Settings_->setValue (name, property (name));
 
         if (Properties2Object_.contains (name))
         {

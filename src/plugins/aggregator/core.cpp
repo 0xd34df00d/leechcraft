@@ -152,6 +152,8 @@ void Core::RemoveFeed (const QModelIndex& index)
 
     if (shouldChangeChannel)
         endRemoveRows ();
+    
+    UpdateUnreadItemsNumber ();
 }
 
 void Core::Activated (const QModelIndex& index)
@@ -683,8 +685,7 @@ void Core::saveSettings ()
     for (int i = 0; i < feeds.size (); ++i)
     {
         settings.setArrayIndex (i);
-        Feed feed = feeds.at (i);
-        settings.setValue ("Feed", qVariantFromValue<Feed> (feed));
+        settings.setValue ("Feed", qVariantFromValue<Feed> (feeds.at (i)));
     }
     settings.endArray ();
     settings.setValue ("GlobalTags", TagsCompletionModel_->GetTags ());
