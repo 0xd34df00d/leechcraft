@@ -13,7 +13,7 @@ Core::Core ()
     QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
     settings.beginGroup ("Remoter");
     int port = settings.value ("Port", 0).toInt ();
-    emit bindSuccessful (Server::Instance ().listen (QHostAddress::Any, port ? port : 14600));
+    emit bindSuccessful (Server::Instance ().Listen (port ? port : 14600));
     Login_ = settings.value ("Login", "default").toString ();
     Password_ = settings.value ("Password", "default").toString ();
     settings.endGroup ();
@@ -39,12 +39,13 @@ void Core::Release ()
 
 void Core::SetPort (int port)
 {
-    emit bindSuccessful (Server::Instance ().listen (QHostAddress::Any, port));
+    qWarning () << Q_FUNC_INFO << Q_FUNC_INFO << "Currently setting port requires restart.";
+//    emit bindSuccessful (Server::Instance ().Listen (port));
 }
 
 int Core::GetPort () const
 {
-    int port = Server::Instance ().serverPort ();
+    int port = Server::Instance ().GetPort ();
     return port ? port : 14600;
 }
 
