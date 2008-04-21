@@ -105,13 +105,12 @@ QDomElement DocumentGenerator::CreateRow (const QVariantList& list)
     return tr;
 }
 
-QDomElement DocumentGenerator::CreateForm (const QString& where, bool post)
+QDomElement DocumentGenerator::CreateForm (const QString& where)
 {
     QDomElement form = Document_.createElement ("form");
     form.setAttribute ("action", where);
-    form.setAttribute ("method", post ? "post" : "get");
-    if (post)
-        form.setAttribute ("enctype", "multipart/form-data");
+    form.setAttribute ("method", "post");
+    form.setAttribute ("enctype", "multipart/form-data");
     return form;
 }
 

@@ -4,6 +4,7 @@
 #include <Poco/Net/HTTPServer.h>
 #include <Poco/Net/HTTPServerParams.h>
 #include <Poco/Net/ServerSocket.h>
+#include <Poco/Net/NetException.h>
 #include <Poco/Util/Application.h>
 #include "server.h"
 #include "reply.h"
@@ -45,14 +46,22 @@ void Server::Release ()
 
 bool Server::Listen (int port)
 {
-    qDebug () << port;
-    ServerSocket_ = new Poco::Net::ServerSocket (port);
+    try
+    {
+        ServerSocket_ = new Poco::Net::ServerSocket (port);
+    }
+    catch (const Poco::Net::NetException& e)
+    {
+        qWarning () << "Could not create server socket:" << e.message ().c_str ();
+        return false;
+    }
 
     Poco::Net::HTTPServerParams *params = new Poco::Net::HTTPServerParams ();
     params->setSoftwareVersion ("LeechCraft::Remoter/0.3.0");
 
     HTTPServer_ = new Poco::Net::HTTPServer (new HTTPRequestHandlerFactory (), *ServerSocket_, params);
     HTTPServer_->start ();
+    return true;
 }
 
 int Server::GetPort () const

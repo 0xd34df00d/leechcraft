@@ -5,7 +5,6 @@ enum State
 {
     StateOK = 200
     , StateFound = 302
-    , StateUnauthorized = 401
     , StateNotFound = 404
 };
 

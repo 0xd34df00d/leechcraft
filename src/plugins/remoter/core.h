@@ -10,6 +10,14 @@
 
 class QStringList;
 
+namespace Poco
+{
+    namespace Net
+    {
+        class HTTPServerRequest;
+    };
+};
+
 class Core : public QObject
 {
     Q_OBJECT
@@ -17,6 +25,8 @@ class Core : public QObject
     QObjectList Objects_;
     QString Login_, Password_;
     Core ();
+
+    bool Initialized_;
 public:
     static Core& Instance ();
     void Release ();
@@ -29,9 +39,10 @@ public:
     const QString& GetPassword () const;
 
     void AddObject (QObject*, const QString& feature);
-    Reply GetReplyFor (const QString&, const QMap<QString, QString>&, const QMap<QString, QString>&, const QByteArray&);
+
+    bool IsAuthorized (const Poco::Net::HTTPServerRequest&) const;
+    Reply GetReplyFor (const QString&, const QMap<QString, QString>&, const QByteArray&);
 private:
-    Reply DoNotAuthorized ();
     Reply DoMainPage (const QStringList&, const QMap<QString, QString>&);
     Reply DoView (const QStringList&, const QMap<QString, QString>&);
     Reply DoAdd (const QStringList&, const QMap<QString, QString>&, const QByteArray&);

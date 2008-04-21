@@ -1,6 +1,8 @@
 #include <QStringList>
 #include <QTemporaryFile>
 #include <QUrl>
+#include <Poco/Net/HTTPServerRequest.h>
+#include <Poco/Net/NetException.h>
 #include <interfaces/interfaces.h>
 #include <plugininterface/proxy.h>
 #include "core.h"
@@ -13,10 +15,11 @@ Core::Core ()
     QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName ());
     settings.beginGroup ("Remoter");
     int port = settings.value ("Port", 0).toInt ();
-    emit bindSuccessful (Server::Instance ().Listen (port ? port : 14600));
     Login_ = settings.value ("Login", "default").toString ();
     Password_ = settings.value ("Password", "default").toString ();
     settings.endGroup ();
+
+    Initialized_ = Server::Instance ().Listen (port ? port : 14600);
 }
 
 Core& Core::Instance ()
@@ -45,6 +48,8 @@ void Core::SetPort (int port)
 
 int Core::GetPort () const
 {
+    if (!Initialized_)
+        return -1;
     int port = Server::Instance ().GetPort ();
     return port ? port : 14600;
 }
@@ -56,6 +61,8 @@ void Core::SetLogin (const QString& login)
 
 const QString& Core::GetLogin () const
 {
+    if (!Initialized_)
+        tr ("Systems failed to initialize");
     return Login_;
 }
 
@@ -75,15 +82,25 @@ void Core::AddObject (QObject *object, const QString& feature)
         Objects_.append (object);
 }
 
-Reply Core::GetReplyFor (const QString& p, const QMap<QString, QString>& query, const QMap<QString, QString>& headers, const QByteArray& postData)
+bool Core::IsAuthorized (const Poco::Net::HTTPServerRequest& request) const
 {
-    QStringList parts = QString (p).remove (0, 1).split ('/'); // Trim first slash
-    Reply rep;
+    std::string scheme, auth;
+    try
+    {
+        request.getCredentials (scheme, auth);
+        return (QByteArray::fromBase64 (auth.c_str ()) == QString ("%1:%2").arg (Login_).arg (Password_));
+    }
+    catch (const Poco::Net::NotAuthenticatedException&)
+    {
+        return false;
+    }
+}
 
-    QStringList base64 = headers ["authorization"].split (' ');
-    if (base64.size () != 2 || base64 [0].toLower () != "basic" || QByteArray::fromBase64 (base64 [1].toAscii ()) != QString ("%1:%2").arg (Login_).arg (Password_))
-        rep = DoNotAuthorized ();
-    else if (parts.size () == 0 || parts.at (0).isEmpty () || parts.at (0) == "index")
+Reply Core::GetReplyFor (const QString& p, const QMap<QString, QString>& query, const QByteArray& postData)
+{
+    QStringList parts = QString (p).remove (0, 1).split ('/');
+    Reply rep;
+    if (!parts.size () || parts.at (0).isEmpty () || parts.at (0) == "index")
         rep = DoMainPage (parts, query);
     else if (parts.at (0) == "view")
         rep = DoView (parts, query);
@@ -94,15 +111,6 @@ Reply Core::GetReplyFor (const QString& p, const QMap<QString, QString>& query, 
     else
         rep = DoUnhandled (parts, query);
 
-    return rep;
-}
-
-Reply Core::DoNotAuthorized ()
-{
-    qDebug () << Q_FUNC_INFO;
-    Reply rep;
-    rep.State_ = StateUnauthorized;
-    rep.Data_ = "401 Unauthorized";
     return rep;
 }
 
@@ -159,9 +167,9 @@ Reply Core::DoView (const QStringList&, const QMap<QString, QString>&)
             continue;
 
         // Draw new job form
-        QDomElement form = DocumentGenerator::CreateForm (QString ("/add/%1").arg (i), true);
+        QDomElement form = DocumentGenerator::CreateForm (QString ("/add/%1").arg (i));
         DocumentGenerator::InputType type;
-        QDomElement addEntity = DocumentGenerator::CreateInputField (DocumentGenerator::TypeTextbox, "entity");
+        QDomElement addEntity = DocumentGenerator::CreateInputField (DocumentGenerator::TypeFile, "entity");
         QDomElement where = DocumentGenerator::CreateInputField (DocumentGenerator::TypeText, "where");
         QDomElement addHolder = DocumentGenerator::CreateText (),
                     whereHolder = DocumentGenerator::CreateText (),
@@ -199,7 +207,7 @@ Reply Core::DoView (const QStringList&, const QMap<QString, QString>&)
         }
     }
 
-    rep.Data_ += document.toByteArray ();
+    rep.Data_ += document.toString ();
     return rep;
 }
 

@@ -29,7 +29,7 @@ public:
     static QDomElement CreateDefaultHeading ();
     static QDomElement CreateTable ();
     static QDomElement CreateRow (const QVariantList&);
-    static QDomElement CreateForm (const QString&, bool);
+    static QDomElement CreateForm (const QString&);
     static QDomElement CreateInputField (InputType, const QString&);
     static QDomElement CreateSubmitButton (const QString&);
     static void ApplyStyle (QDomElement& node, const QString&);
