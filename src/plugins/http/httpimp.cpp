@@ -1,5 +1,6 @@
 #include <QStringList>
 #include <QMutex>
+#include <QFileInfo>
 #include <QWaitCondition>
 #include <plugininterface/tcpsocket.h>
 #include <plugininterface/proxy.h>
@@ -187,6 +188,7 @@ void HttpImp::WriteHeaders ()
     Socket_->Write (GetFileSize_ ? "HEAD" : "GET " + request + " HTTP/1.0\r\n");
     QString agent = XmlSettingsManager::Instance ()->property ("HTTPAgent").toString ();
     Socket_->Write ("User-Agent: " + agent.trimmed () + "\r\n");
+    Socket_->Write ("Referer: http://" + Socket_->GetAddressParser ()->GetHost () + QFileInfo (request).filePath () + "\r\n");
     Socket_->Write (QString ("Connection: close\r\n"));
     Socket_->Write (QString ("Accept: */*\r\n"));
     Socket_->Write ("Host: " + Socket_->GetAddressParser ()->GetHost () + "\r\n");
