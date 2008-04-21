@@ -6,6 +6,7 @@
 #include <QVariantList>
 #include <QMap>
 #include <QString>
+#include <QPair>
 #include "reply.h"
 
 class QStringList;
@@ -28,6 +29,11 @@ class Core : public QObject
 
     bool Initialized_;
 public:
+    struct PostEntity
+    {
+        QByteArray Data_;
+        QMap<QString, QString> Metadata_;
+    };
     static Core& Instance ();
     void Release ();
 
@@ -41,7 +47,7 @@ public:
     void AddObject (QObject*, const QString& feature);
 
     bool IsAuthorized (const Poco::Net::HTTPServerRequest&) const;
-    Reply GetReplyFor (const QString&, const QMap<QString, QString>&, const QByteArray&);
+    Reply GetReplyFor (const QString&, const QMap<QString, QString>&, const QList<PostEntity>&);
 private:
     Reply DoMainPage (const QStringList&, const QMap<QString, QString>&);
     Reply DoView (const QStringList&, const QMap<QString, QString>&);

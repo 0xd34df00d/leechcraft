@@ -5,6 +5,7 @@
 #include <QtDebug>
 #include <QStringList>
 #include <iostream>
+#include <functional>
 #include <string>
 #include "core.h"
 #include "httprequesthandler.h"
@@ -37,7 +38,7 @@ void HTTPRequestHandler::handleRequest (Poco::Net::HTTPServerRequest& request, P
         }
     }
 
-    QByteArray postData;
+    QList<Core::PostEntity> postData;
     Poco::Net::MultipartReader mreader (request.stream ());
     do 
     {
@@ -52,9 +53,22 @@ void HTTPRequestHandler::handleRequest (Poco::Net::HTTPServerRequest& request, P
         }
         std::string str;
         std::getline (mreader.stream (), str, static_cast<char> (0));
-        postData = str.c_str ();
+        Core::PostEntity entity;
+        entity.Data_ = str.c_str ();
         for (Poco::Net::NameValueCollection::ConstIterator i = h.begin (), end = h.end (); i != end; ++i)
-            qDebug () << "{ " << i->first.c_str () << " }, { " << i->second.c_str () << " }";
+        {
+            std::string key;
+            std::transform (i->first.begin (), i->first.end (), std::back_inserter (key), std::ptr_fun (tolower));
+            if (key == "content-disposition")
+            {
+                std::string value;
+                Poco::Net::NameValueCollection parms;
+                Poco::Net::MessageHeader::splitParameters (i->second, value, parms);
+                for (Poco::Net::NameValueCollection::ConstIterator j = parms.begin (), end = parms.end (); j != end; ++j)
+                    entity.Metadata_ [QString::fromStdString (j->first)] = QString::fromStdString (j->second);
+            }
+        }
+        postData << entity;
     } while (mreader.hasNextPart ());
 
     Reply rep = Core::Instance ().GetReplyFor (fullUri, query, postData);

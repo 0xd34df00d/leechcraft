@@ -96,7 +96,7 @@ bool Core::IsAuthorized (const Poco::Net::HTTPServerRequest& request) const
     }
 }
 
-Reply Core::GetReplyFor (const QString& p, const QMap<QString, QString>& query, const QByteArray& postData)
+Reply Core::GetReplyFor (const QString& p, const QMap<QString, QString>& query, const QList<PostEntity>& postData)
 {
     QStringList parts = QString (p).remove (0, 1).split ('/');
     Reply rep;
@@ -104,8 +104,8 @@ Reply Core::GetReplyFor (const QString& p, const QMap<QString, QString>& query, 
         rep = DoMainPage (parts, query);
     else if (parts.at (0) == "view")
         rep = DoView (parts, query);
-    else if (parts.at (0) == "add")
-        rep = DoAdd (parts, query, postData);
+//    else if (parts.at (0) == "add")
+//        rep = DoAdd (parts, query, postData);
     else if (parts.at (0) == "resources")
         rep = DoResources (parts, query);
     else
