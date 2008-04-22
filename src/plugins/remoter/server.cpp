@@ -24,6 +24,8 @@ public:
 };
 
 Server::Server ()
+: ServerSocket_ (0)
+, HTTPServer_ (0)
 {
     App app;
     std::vector<std::string> args;
@@ -39,9 +41,12 @@ Server& Server::Instance ()
 
 void Server::Release ()
 {
-    HTTPServer_->stop ();
-    delete HTTPServer_;
+    if (ServerSocket_)
+    {
+        HTTPServer_->stop ();
+    }
     delete ServerSocket_;
+    delete HTTPServer_;
 }
 
 bool Server::Listen (int port)
