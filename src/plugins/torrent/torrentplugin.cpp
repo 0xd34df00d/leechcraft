@@ -13,6 +13,7 @@
 #include "peersmodel.h"
 #include "channelsfiltermodel.h"
 #include "torrentfilesmodel.h"
+#include "filesviewdelegate.h"
 
 void TorrentPlugin::SetupCore ()
 {
@@ -63,6 +64,7 @@ void TorrentPlugin::SetupStuff ()
     PiecesView_->setModel (Core::Instance ()->GetPiecesModel ());
 
     FilesView_->setModel (Core::Instance ()->GetTorrentFilesModel ());
+    FilesView_->setItemDelegate (new FilesViewDelegate (this));
 
     QSortFilterProxyModel *peersSorter = new QSortFilterProxyModel (this);
     peersSorter->setDynamicSortFilter (true);
@@ -112,6 +114,12 @@ void TorrentPlugin::SetupHeaders ()
     header->resizeSection (10, fm.width ("99"));
     header->resizeSection (11, fm.width ("99"));
     header->resizeSection (12, fm.width ("Piece 100, block 50, 16384 of 16384 bytes"));
+
+    header = FilesView_->header ();
+    header->resizeSection (0, fm.width ("Thisisanaveragetorrentcontainedfilename,ormaybeevenbiggerthanthat!"));
+    header->resizeSection (1, fm.width ("_999.9 MB_"));
+    header->resizeSection (2, fm.width ("_8_"));
+    header->resizeSection (3, fm.width ("_0.0246_"));
 }
 
 void TorrentPlugin::Init ()
@@ -459,10 +467,9 @@ void TorrentPlugin::on_Preferences__triggered ()
 
 void TorrentPlugin::on_TorrentView__clicked (const QModelIndex& index)
 {
+    Core::Instance ()->SetCurrentTorrent (FilterModel_->mapToSource (index).row ());
     setActionsEnabled ();
-    PrioritySpinbox_->setValue (1);
-    PrioritySpinbox_->setEnabled (false);
-    TorrentTags_->setText (Core::Instance ()->GetTagsForIndex (index.row ()).join (" "));
+    TorrentTags_->setText (Core::Instance ()->GetTagsForIndex (FilterModel_->mapToSource (index).row ()).join (" "));
     TorrentSelectionChanged_ = true;
     restartTimers ();
     updateTorrentStats ();
@@ -470,10 +477,9 @@ void TorrentPlugin::on_TorrentView__clicked (const QModelIndex& index)
 
 void TorrentPlugin::on_TorrentView__pressed (const QModelIndex& index)
 {
+    Core::Instance ()->SetCurrentTorrent (FilterModel_->mapToSource (index).row ());
     setActionsEnabled ();
-    PrioritySpinbox_->setValue (1);
-    PrioritySpinbox_->setEnabled (false);
-    TorrentTags_->setText (Core::Instance ()->GetTagsForIndex (index.row ()).join (" "));
+    TorrentTags_->setText (Core::Instance ()->GetTagsForIndex (FilterModel_->mapToSource (index).row ()).join (" "));
     TorrentSelectionChanged_ = true;
     restartTimers ();
     updateTorrentStats ();
@@ -519,21 +525,6 @@ void TorrentPlugin::on_TorrentDesiredRating__valueChanged (double val)
         return;
 
     Core::Instance ()->SetTorrentDesiredRating (val, index.row ());
-}
-
-void TorrentPlugin::on_FilesWidget__currentItemChanged (QTreeWidgetItem *current)
-{
-//    int torrent = TorrentView_->currentIndex ().row ();
-//    int prio = Core::Instance ()->GetFilePriority (torrent, FilesWidget_->indexOfTopLevelItem (current));
-//    PrioritySpinbox_->setValue (prio);
-//    PrioritySpinbox_->setEnabled (true);
-}
-
-void TorrentPlugin::on_PrioritySpinbox__valueChanged (int val)
-{
-//    int torrent = TorrentView_->currentIndex ().row ();
-//    Core::Instance ()->SetFilePriority (torrent, FilesWidget_->indexOfTopLevelItem (FilesWidget_->currentItem ()), val);
-    updateTorrentStats ();
 }
 
 void TorrentPlugin::on_CaseSensitiveSearch__stateChanged (int state)
@@ -716,12 +707,16 @@ void TorrentPlugin::UpdateFilesPage ()
         return;
     }
 
+    Core::Instance ()->SetCurrentTorrent (index.row ());
+
     if (TorrentSelectionChanged_)
+    {
         Core::Instance ()->ResetFiles (index.row ());
+        FilesView_->expandAll ();
+    }
     else
         Core::Instance ()->UpdateFiles (index.row ());
 
-    FilesView_->expandAll ();
 }
 
 void TorrentPlugin::UpdatePeersPage ()

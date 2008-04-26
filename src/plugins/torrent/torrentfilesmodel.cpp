@@ -3,6 +3,7 @@
 #include <plugininterface/proxy.h>
 #include <iterator>
 #include "torrentfilesmodel.h"
+#include "core.h"
 
 TorrentFilesModel::TorrentFilesModel (bool addDia, QObject *parent)
 : QAbstractItemModel (parent)
@@ -60,6 +61,8 @@ Qt::ItemFlags TorrentFilesModel::flags (const QModelIndex& index) const
 
     if (AdditionDialog_ && index.column () == 0 && !hasChildren (index))
         return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
+    else if (!AdditionDialog_ && index.column () == 2 && !hasChildren (index))
+        return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
     else
         return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 }
@@ -121,9 +124,20 @@ int TorrentFilesModel::rowCount (const QModelIndex& parent) const
 
 bool TorrentFilesModel::setData (const QModelIndex& index, const QVariant& value, int role)
 {
-    if (role == Qt::CheckStateRole && index.isValid ())
+    qDebug () << Q_FUNC_INFO << index << value << (role == Qt::EditRole);
+    if (!index.isValid ())
+        return false;
+
+    if (role == Qt::CheckStateRole)
     {
         static_cast<TreeItem*> (index.internalPointer ())->ModifyData (0, value, Qt::CheckStateRole);
+        emit dataChanged (index, index);
+        return true;
+    }
+    else if (role == Qt::EditRole && index.column () == 2)
+    {
+        static_cast<Core*> (QObject::parent ())->SetFilePriority (-1, index.row (), value.toInt ());
+        static_cast<TreeItem*> (index.internalPointer ())->ModifyData (index.column (), value);
         emit dataChanged (index, index);
         return true;
     }
@@ -214,12 +228,11 @@ void TorrentFilesModel::UpdateFiles (const QList<FileInfo>& infos)
     {
         FileInfo fi = infos.at (i);
         TreeItem *item = Path2TreeItem_ [fi.Path_];
-        item->ModifyData (2, QString::number (fi.Priority_));
         item->ModifyData (3, QString::number (fi.Progress_, 'f', 3));
     }
     for (int i = 0; i < RootItem_->ChildCount (); ++i)
         UpdateSizeGraph (RootItem_->Child (i));
-    emit dataChanged (index (0, 0), index (RootItem_->ChildCount () - 1, 3));
+    emit dataChanged (index (0, 3), index (RootItem_->ChildCount () - 1, 3));
 }
 
 QVector<bool> TorrentFilesModel::GetSelectedFiles () const

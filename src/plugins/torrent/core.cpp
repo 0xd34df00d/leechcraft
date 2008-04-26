@@ -39,6 +39,7 @@ Core* Core::Instance ()
 
 Core::Core (QObject *parent)
 : QAbstractItemModel (parent)
+, CurrentTorrent_ (-1)
 {
     PeersModel_ = new PeersModel (this);
     PiecesModel_ = new PiecesModel (this);
@@ -739,6 +740,8 @@ double Core::GetTorrentDesiredRating (int torrent) const
 
 void Core::SetFilePriority (int torrent, int file, int priority)
 {
+	if (torrent == -1)
+		torrent = CurrentTorrent_;
     if (!CheckValidity (torrent))
         return;
 
@@ -859,6 +862,11 @@ void Core::MakeTorrent (NewTorrentParams params) const
     for (int i = 0; i < outbuf.size (); ++i)
         file.write (&outbuf.at (i), 1);
     file.close ();
+}
+
+void Core::SetCurrentTorrent (int torrent)
+{
+	CurrentTorrent_ = torrent;
 }
 
 QString Core::GetStringForState (libtorrent::torrent_status::state_t state) const

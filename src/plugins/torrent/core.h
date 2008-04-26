@@ -50,7 +50,7 @@ private:
     typedef QList<TorrentStruct> HandleDict_t;
     HandleDict_t Handles_;
     QList<QString> Headers_;
-    int InterfaceUpdateTimer_;
+    int InterfaceUpdateTimer_, CurrentTorrent_;
     QTimer *SettingsSaveTimer_;
     PiecesModel *PiecesModel_;
     PeersModel *PeersModel_;
@@ -132,7 +132,7 @@ public:
     QStringList GetTrackers (int) const;
     void SetTrackers (int, const QStringList&);
     void MakeTorrent (NewTorrentParams) const;
-    void TorrentSelected (int);
+	void SetCurrentTorrent (int);
 private:
     QString GetStringForState (libtorrent::torrent_status::state_t) const;
     bool CheckValidity (int) const;

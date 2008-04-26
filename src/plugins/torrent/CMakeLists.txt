@@ -30,7 +30,8 @@ SET (SRCS
 	trackerschanger.cpp
 	channelsfiltermodel.cpp
 	torrentfilesmodel.cpp
-	peersmodel.cpp)
+	peersmodel.cpp
+	filesviewdelegate.cpp)
 SET (HEADERS
 	torrentplugin.h 
 	core.h 
@@ -48,6 +49,7 @@ SET (HEADERS
 	channelsfiltermodel.h
 	torrentfilesmodel.h
 	peersmodel.h
+	filesviewdelegate.h
 	newtorrentparams.h
 	overallstats.h
 	torrentinfo.h 
