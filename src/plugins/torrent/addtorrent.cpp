@@ -105,33 +105,26 @@ void AddTorrent::on_DestinationBrowse__released ()
     Destination_->setText (dir);
 }
 
-/*
 void AddTorrent::on_MarkAll__released ()
 {
-    for (int i = 0; i < FileWidget_->topLevelItemCount (); ++i)
-        FileWidget_->topLevelItem (i)->setCheckState (0, Qt::Checked);
+    FilesModel_->MarkAll ();
 }
 
 void AddTorrent::on_UnmarkAll__released ()
 {
-    for (int i = 0; i < FileWidget_->topLevelItemCount (); ++i)
-        FileWidget_->topLevelItem (i)->setCheckState (0, Qt::Unchecked);
+    FilesModel_->UnmarkAll ();
 }
 
 void AddTorrent::on_MarkSelected__released ()
 {
-    QList<QTreeWidgetItem*> items = FileWidget_->selectedItems ();
-    for (int i = 0; i < items.size (); ++i)
-        items.at (i)->setCheckState (0, Qt::Checked);
+    FilesModel_->MarkIndexes (FilesView_->selectionModel ()->selectedRows ());
 }
 
 void AddTorrent::on_UnmarkSelected__released ()
 {
-    QList<QTreeWidgetItem*> items = FileWidget_->selectedItems ();
-    for (int i = 0; i < items.size (); ++i)
-        items.at (i)->setCheckState (0, Qt::Unchecked);
+    FilesModel_->UnmarkIndexes (FilesView_->selectionModel ()->selectedRows ());
 }
-*/
+
 void AddTorrent::ParseBrowsed ()
 {
     QString filename = TorrentFile_->text ();
