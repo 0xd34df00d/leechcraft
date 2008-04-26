@@ -17,6 +17,7 @@ class QTimer;
 class PiecesModel;
 class PeersModel;
 class TagsCompletionModel;
+class TorrentFilesModel;
 
 class Core : public QAbstractItemModel
 {
@@ -54,6 +55,7 @@ private:
     PiecesModel *PiecesModel_;
     PeersModel *PeersModel_;
     TagsCompletionModel *TagsCompletionModel_;
+	TorrentFilesModel *TorrentFilesModel_;
 public:
     enum Columns
     {
@@ -79,6 +81,10 @@ public:
     PeersModel* GetPeersModel ();
     void ClearPeers ();
     void UpdatePeers (int);
+	TorrentFilesModel* GetTorrentFilesModel ();
+	void ClearFiles ();
+	void UpdateFiles (int);
+	void ResetFiles (int);
 
     virtual int columnCount (const QModelIndex&) const;
     virtual QVariant data (const QModelIndex&, int role = Qt::DisplayRole) const;

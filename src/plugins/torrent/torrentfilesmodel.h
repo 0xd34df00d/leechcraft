@@ -2,6 +2,7 @@
 #define TORRENTFILESMODEL_H
 #include <QAbstractItemModel>
 #include <libtorrent/torrent_info.hpp>
+#include "fileinfo.h"
 
 class TreeItem;
 
@@ -30,6 +31,8 @@ public:
 
     void Clear ();
     void ResetFiles (libtorrent::torrent_info::file_iterator, const libtorrent::torrent_info::file_iterator&);
+    void ResetFiles (const QList<FileInfo>&);
+    void UpdateFiles (const QList<FileInfo>&);
     QVector<bool> GetSelectedFiles () const;
     void MarkAll ();
     void UnmarkAll ();

@@ -12,6 +12,7 @@
 #include "piecesmodel.h"
 #include "peersmodel.h"
 #include "channelsfiltermodel.h"
+#include "torrentfilesmodel.h"
 
 void TorrentPlugin::SetupCore ()
 {
@@ -60,6 +61,8 @@ void TorrentPlugin::SetupStuff ()
     AddTorrentDialog_->SetCompleter (TagsCompleter_);
 
     PiecesView_->setModel (Core::Instance ()->GetPiecesModel ());
+
+    FilesView_->setModel (Core::Instance ()->GetTorrentFilesModel ());
 
     QSortFilterProxyModel *peersSorter = new QSortFilterProxyModel (this);
     peersSorter->setDynamicSortFilter (true);
@@ -520,16 +523,16 @@ void TorrentPlugin::on_TorrentDesiredRating__valueChanged (double val)
 
 void TorrentPlugin::on_FilesWidget__currentItemChanged (QTreeWidgetItem *current)
 {
-    int torrent = TorrentView_->currentIndex ().row ();
-    int prio = Core::Instance ()->GetFilePriority (torrent, FilesWidget_->indexOfTopLevelItem (current));
-    PrioritySpinbox_->setValue (prio);
-    PrioritySpinbox_->setEnabled (true);
+//    int torrent = TorrentView_->currentIndex ().row ();
+//    int prio = Core::Instance ()->GetFilePriority (torrent, FilesWidget_->indexOfTopLevelItem (current));
+//    PrioritySpinbox_->setValue (prio);
+//    PrioritySpinbox_->setEnabled (true);
 }
 
 void TorrentPlugin::on_PrioritySpinbox__valueChanged (int val)
 {
-    int torrent = TorrentView_->currentIndex ().row ();
-    Core::Instance ()->SetFilePriority (torrent, FilesWidget_->indexOfTopLevelItem (FilesWidget_->currentItem ()), val);
+//    int torrent = TorrentView_->currentIndex ().row ();
+//    Core::Instance ()->SetFilePriority (torrent, FilesWidget_->indexOfTopLevelItem (FilesWidget_->currentItem ()), val);
     updateTorrentStats ();
 }
 
@@ -707,35 +710,18 @@ void TorrentPlugin::UpdateTorrentPage ()
 void TorrentPlugin::UpdateFilesPage ()
 {
     QModelIndex index = FilterModel_->mapToSource (TorrentView_->currentIndex ());
+    if (!index.isValid ())
+    {
+        Core::Instance ()->ClearFiles ();
+        return;
+    }
+
     if (TorrentSelectionChanged_)
-    {
-        FilesWidget_->clear ();
-        if (index.isValid ())
-        {
-            QList<FileInfo> files = Core::Instance ()->GetTorrentFiles (index.row ());
-            for (int i = 0; i < files.size (); ++i)
-            {
-                QTreeWidgetItem *item = new QTreeWidgetItem (FilesWidget_);
-                item->setText (0, files.at (i).Name_);
-                item->setText (1, Proxy::Instance ()->MakePrettySize (files.at (i).Size_));
-                item->setText (2, QString::number (files.at (i).Priority_));
-                item->setText (3, QString::number (files.at (i).Progress_ * 100) + "%");
-            }
-        }
-    }
+        Core::Instance ()->ResetFiles (index.row ());
     else
-    {
-        if (index.isValid ())
-        {
-            QList<FileInfo> files = Core::Instance ()->GetTorrentFiles (index.row ());
-            for (int i = 0; i < files.size (); ++i)
-                if (FilesWidget_->topLevelItem (i))
-                {
-                    FilesWidget_->topLevelItem (i)->setText (2, QString::number (files.at (i).Priority_));
-                    FilesWidget_->topLevelItem (i)->setText (3, QString::number (files.at (i).Progress_ * 100) + "%");
-                }
-        }
-    }
+        Core::Instance ()->UpdateFiles (index.row ());
+
+    FilesView_->expandAll ();
 }
 
 void TorrentPlugin::UpdatePeersPage ()

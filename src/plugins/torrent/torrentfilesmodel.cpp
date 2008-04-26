@@ -158,14 +158,12 @@ void TorrentFilesModel::ResetFiles (libtorrent::torrent_info::file_iterator begi
         MkParentIfDoesntExist (begin->path);
 
         QList<QVariant> displayData;
-        if (AdditionDialog_)
-            displayData << QString::fromUtf8 (begin->path.leaf ().c_str ()) << Proxy::Instance ()->MakePrettySize (begin->size);
+        displayData << QString::fromUtf8 (begin->path.leaf ().c_str ()) << Proxy::Instance ()->MakePrettySize (begin->size);
         
         TreeItem *parentItem = Path2TreeItem_ [parentPath],
                  *item = new TreeItem (displayData, parentItem);
         item->ModifyData (1, static_cast<qulonglong> (begin->size), RawDataRole);
-        if (AdditionDialog_)
-            item->ModifyData (0, Qt::Checked, Qt::CheckStateRole);
+        item->ModifyData (0, Qt::Checked, Qt::CheckStateRole);
         parentItem->AppendChild (item);
         Path2TreeItem_ [begin->path] = item;
     }
@@ -173,6 +171,55 @@ void TorrentFilesModel::ResetFiles (libtorrent::torrent_info::file_iterator begi
         UpdateSizeGraph (RootItem_->Child (i));
     beginInsertRows (QModelIndex (), 0, RootItem_->ChildCount () - 1);
     endInsertRows ();
+}
+
+void TorrentFilesModel::ResetFiles (const QList<FileInfo>& infos)
+{
+    Clear ();
+    FilesInTorrent_ = infos.size ();
+    Path2TreeItem_ [boost::filesystem::path ()] = RootItem_;
+    for (int i = 0; i < infos.size (); ++i)
+    {
+        FileInfo fi = infos.at (i);
+        path_t parentPath = fi.Path_.branch_path ();
+        MkParentIfDoesntExist (fi.Path_);
+
+        QList<QVariant> displayData;
+        displayData << QString::fromUtf8 (fi.Path_.leaf ().c_str ())
+            << Proxy::Instance ()->MakePrettySize (fi.Size_)
+            << QString::number (fi.Priority_)
+            << QString::number (fi.Progress_, 'f', 3);
+        
+        TreeItem *parentItem = Path2TreeItem_ [parentPath],
+                 *item = new TreeItem (displayData, parentItem);
+        item->ModifyData (1, static_cast<qulonglong> (fi.Size_), RawDataRole);
+        parentItem->AppendChild (item);
+        Path2TreeItem_ [fi.Path_] = item;
+    }
+    for (int i = 0; i < RootItem_->ChildCount (); ++i)
+        UpdateSizeGraph (RootItem_->Child (i));
+    beginInsertRows (QModelIndex (), 0, RootItem_->ChildCount () - 1);
+    endInsertRows ();
+}
+
+void TorrentFilesModel::UpdateFiles (const QList<FileInfo>& infos)
+{
+    if (Path2TreeItem_.isEmpty ())
+    {
+        ResetFiles (infos);
+        return;
+    }
+
+    for (int i = 0; i < infos.size (); ++i)
+    {
+        FileInfo fi = infos.at (i);
+        TreeItem *item = Path2TreeItem_ [fi.Path_];
+        item->ModifyData (2, QString::number (fi.Priority_));
+        item->ModifyData (3, QString::number (fi.Progress_, 'f', 3));
+    }
+    for (int i = 0; i < RootItem_->ChildCount (); ++i)
+        UpdateSizeGraph (RootItem_->Child (i));
+    emit dataChanged (index (0, 0), index (RootItem_->ChildCount () - 1, 3));
 }
 
 QVector<bool> TorrentFilesModel::GetSelectedFiles () const

@@ -28,6 +28,7 @@
 #include "xmlsettingsmanager.h"
 #include "piecesmodel.h"
 #include "peersmodel.h"
+#include "torrentfilesmodel.h"
 
 Q_GLOBAL_STATIC (Core, CoreInstance);
 
@@ -42,6 +43,7 @@ Core::Core (QObject *parent)
     PeersModel_ = new PeersModel (this);
     PiecesModel_ = new PiecesModel (this);
     TagsCompletionModel_ = new TagsCompletionModel (this);
+	TorrentFilesModel_ = new TorrentFilesModel (false, this);
 }
 
 void Core::DoDelayedInit ()
@@ -132,6 +134,32 @@ void Core::UpdatePeers (int torrent)
         return;
 
     PeersModel_->Update (GetPeers (torrent), torrent);
+}
+
+TorrentFilesModel* Core::GetTorrentFilesModel ()
+{
+	return TorrentFilesModel_;
+}
+
+void Core::ClearFiles ()
+{
+	TorrentFilesModel_->Clear ();
+}
+
+void Core::UpdateFiles (int torrent)
+{
+	if (!CheckValidity (torrent))
+		return;
+
+	TorrentFilesModel_->UpdateFiles (GetTorrentFiles (torrent));
+}
+
+void Core::ResetFiles (int torrent)
+{
+	if (!CheckValidity (torrent))
+		return;
+
+	TorrentFilesModel_->ResetFiles (GetTorrentFiles (torrent));
 }
 
 int Core::columnCount (const QModelIndex&) const
@@ -361,7 +389,7 @@ QList<FileInfo> Core::GetTorrentFiles (int row) const
     for (libtorrent::torrent_info::file_iterator i = info.begin_files (); i != info.end_files (); ++i)
     {
         FileInfo fi;
-        fi.Name_ = QString::fromUtf8 (i->path.string ().c_str ());
+        fi.Path_ = i->path;
         fi.Size_ = i->size;
         fi.Priority_ = Handles_.at (row).FilePriorities_.at (i - info.begin_files ());
         fi.Progress_ = progresses.at (i - info.begin_files ());

@@ -1053,30 +1053,10 @@
          <item>
           <layout class="QHBoxLayout" >
            <item>
-            <widget class="QTreeWidget" name="FilesWidget_" >
+            <widget class="QTreeView" name="FilesView_" >
              <property name="rootIsDecorated" >
               <bool>false</bool>
              </property>
-             <column>
-              <property name="text" >
-               <string>Name</string>
-              </property>
-             </column>
-             <column>
-              <property name="text" >
-               <string>Size</string>
-              </property>
-             </column>
-             <column>
-              <property name="text" >
-               <string>Priority</string>
-              </property>
-             </column>
-             <column>
-              <property name="text" >
-               <string>Progress</string>
-              </property>
-             </column>
             </widget>
            </item>
            <item>
