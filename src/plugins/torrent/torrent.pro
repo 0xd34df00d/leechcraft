@@ -34,18 +34,21 @@ HEADERS += torrentplugin.h \
 		   peersmodel.h \
 		   newtorrentparams.h
 SOURCES += torrentplugin.cpp \
-		   core.cpp \
-		   addtorrent.cpp \
-		   contextabletree.cpp \
-		   newtorrentwizard.cpp \
-		   intropage.cpp \
-		   firststep.cpp \
-		   secondstep.cpp \
-		   thirdstep.cpp \
-		   addmultipletorrens.cpp \
-		   peersmodel.cpp \
-		   trackerschanger.cpp \
-		   settingsmanager.cpp
+			core.cpp \
+			addtorrent.cpp \
+			newtorrentwizard.cpp\
+			intropage.cpp\
+			firststep.cpp\
+			secondstep.cpp \
+			thirdstep.cpp \
+			addmultipletorrents.cpp \
+			pieceswidget.cpp \
+			xmlsettingsmanager.cpp \
+			piecesmodel.cpp \
+			trackerschanger.cpp \
+			channelsfiltermodel.cpp \
+			torrentfilesmodel.cpp \
+			peersmodel.cpp
 FORMS += mainwindow.ui addtorrent.ui newtorrentfirststep.ui \
 	 	 newtorrentsecondstep.ui newtorrentthirdstep.ui \
 		 addmultipletorrents.ui trackerschanger.ui

@@ -11,6 +11,10 @@ PiecesModel::PiecesModel (QObject *parent)
     Headers_ << tr ("Index") << tr ("Speed") << tr ("State");
 }
 
+PiecesModel::~PiecesModel ()
+{
+}
+
 int PiecesModel::columnCount (const QModelIndex& index) const
 {
     return Headers_.size ();

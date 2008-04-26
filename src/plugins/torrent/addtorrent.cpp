@@ -3,6 +3,7 @@
 #include <plugininterface/proxy.h>
 #include <boost/date_time.hpp>
 #include "addtorrent.h"
+#include "torrentfilesmodel.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
 
@@ -10,19 +11,25 @@ AddTorrent::AddTorrent (QWidget *parent)
 : QDialog (parent)
 {
     setupUi (this);
-    FileWidget_->header ()->setStretchLastSection (true);
+    FilesModel_ = new TorrentFilesModel (true, this);
+    FilesView_->header ()->setStretchLastSection (true);
+    FilesView_->setModel (FilesModel_);
     OK_->setEnabled (false);
     connect (this, SIGNAL (on_TorrentFile__textChanged ()), this, SLOT (setOkEnabled ()));
     connect (this, SIGNAL (on_Destination__textChanged ()), this, SLOT (setOkEnabled ()));
 
     QString dir = XmlSettingsManager::Instance ()->property ("LastSaveDirectory").toString ();
     Destination_->setText (dir);
+
+    QFontMetrics fm = fontMetrics ();
+    QHeaderView *header = FilesView_->header ();
+    header->resizeSection (0, fm.width ("Thisisanaveragetorrentcontainedfilename,ormaybeevenbiggerthanthat!"));
+    header->resizeSection (1, fm.width ("_999.9 MB_"));
 }
 
 void AddTorrent::Reinit ()
 {
-    while (FileWidget_->topLevelItemCount ())
-        delete FileWidget_->takeTopLevelItem (0);
+    FilesModel_->Clear ();
     TorrentFile_->setText ("");
     TrackerURL_->setText (tr ("<unknown>"));
     Size_->setText (tr ("<unknown>"));
@@ -56,10 +63,7 @@ QString AddTorrent::GetSavePath () const
 
 QVector<bool> AddTorrent::GetSelectedFiles () const
 {
-    QVector<bool> result;
-    for (int i = 0; i < FileWidget_->topLevelItemCount (); ++i)
-        result.append (FileWidget_->topLevelItem (i)->checkState (0) == Qt::Checked);
-    return result;
+    return FilesModel_->GetSelectedFiles ();
 }
 
 QStringList AddTorrent::GetTags () const
@@ -101,6 +105,7 @@ void AddTorrent::on_DestinationBrowse__released ()
     Destination_->setText (dir);
 }
 
+/*
 void AddTorrent::on_MarkAll__released ()
 {
     for (int i = 0; i < FileWidget_->topLevelItemCount (); ++i)
@@ -126,7 +131,7 @@ void AddTorrent::on_UnmarkSelected__released ()
     for (int i = 0; i < items.size (); ++i)
         items.at (i)->setCheckState (0, Qt::Unchecked);
 }
-
+*/
 void AddTorrent::ParseBrowsed ()
 {
     QString filename = TorrentFile_->text ();
@@ -144,12 +149,7 @@ void AddTorrent::ParseBrowsed ()
         Comment_->setText (comment);
     if (!date.isEmpty () && !date.isNull ())
         Date_->setText (date);
-    for (libtorrent::torrent_info::file_iterator i = info.begin_files (); i != info.end_files (); ++i)
-    {
-        QTreeWidgetItem *item = new QTreeWidgetItem (FileWidget_);
-        item->setCheckState (0, Qt::Checked);
-        item->setText (0, Proxy::Instance ()->MakePrettySize (i->size));
-        item->setText (1, QString::fromUtf8 (i->path.string ().c_str ()));
-    }
+    FilesModel_->ResetFiles (info.begin_files (), info.end_files ());
+    FilesView_->expandAll ();
 }
 

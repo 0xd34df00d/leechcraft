@@ -1,6 +1,5 @@
 #include <QtDebug>
 #include <numeric>
-#include <plugininterface/treeitem.h>
 #include <plugininterface/proxy.h>
 #include "core.h"
 #include "peersmodel.h"

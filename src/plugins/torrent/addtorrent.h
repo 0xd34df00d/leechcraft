@@ -5,10 +5,13 @@
 #include "ui_addtorrent.h"
 
 class QCompleter;
+class TorrentFilesModel;
 
 class AddTorrent : public QDialog, private Ui::AddTorrent
 {
     Q_OBJECT
+
+    TorrentFilesModel *FilesModel_;
 public:
     AddTorrent (QWidget *parent = 0);
     void Reinit ();

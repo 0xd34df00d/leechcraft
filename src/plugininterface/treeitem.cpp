@@ -2,9 +2,9 @@
 #include "treeitem.h"
 
 TreeItem::TreeItem (const QList<QVariant>& data, TreeItem *parent)
-: Data_ (data)
-, Parent_ (parent)
+: Parent_ (parent)
 {
+    Data_ [Qt::DisplayRole] = data.toVector ();
 }
 
 TreeItem::~TreeItem ()
@@ -29,7 +29,7 @@ int TreeItem::ChildPosition (TreeItem *child)
 
 void TreeItem::RemoveChild (int child)
 {
-    Childs_.removeAt (child);
+    delete Childs_.takeAt (child);
 }
 
 TreeItem* TreeItem::Child (int row)
@@ -42,21 +42,21 @@ int TreeItem::ChildCount () const
     return Childs_.count ();
 }
 
-int TreeItem::ColumnCount () const
+int TreeItem::ColumnCount (int role) const
 {
-    return Data_.count ();
+    return Data_ [role].count ();
 }
 
-QVariant TreeItem::Data (int column) const
+QVariant TreeItem::Data (int column, int role) const
 {
-    return Data_.value (column);
+    return Data_ [role].value (column);
 }
 
-void TreeItem::ModifyData (int column, const QVariant& data)
+void TreeItem::ModifyData (int column, const QVariant& data, int role)
 {
-    if (Data_.size () <= column)
-        return;
-    Data_ [column] = data;
+    if (Data_ [role].size () <= column)
+        Data_ [role].resize (column + 1);
+    Data_ [role] [column] = data;
 }
 
 TreeItem* TreeItem::Parent ()

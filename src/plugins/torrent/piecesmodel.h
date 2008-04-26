@@ -27,6 +27,7 @@ class PiecesModel : public QAbstractItemModel
     QList<Info> Pieces_;
 public:
     PiecesModel (QObject *parent = 0);
+	virtual ~PiecesModel ();
 
     virtual int columnCount (const QModelIndex&) const;
     virtual QVariant data (const QModelIndex&, int role = Qt::DisplayRole) const;
