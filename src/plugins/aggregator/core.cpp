@@ -70,6 +70,7 @@ void Core::DoDelayedInit ()
     connect (saveTimer, SIGNAL (timeout ()), this, SLOT (scheduleSave ()));
     
     XmlSettingsManager::Instance ()->RegisterObject ("UpdateInterval", this, "updateIntervalChanged");
+    XmlSettingsManager::Instance ()->RegisterObject ("ShowIconInTray", this, "showIconInTrayChanged");
     UpdateUnreadItemsNumber ();
 }
 
@@ -683,6 +684,11 @@ void Core::saveSettings ()
 void Core::updateIntervalChanged ()
 {
     UpdateTimer_->setInterval (XmlSettingsManager::Instance ()->property ("UpdateInterval").toInt () * 60 * 1000);
+}
+
+void Core::showIconInTrayChanged ()
+{
+    UpdateUnreadItemsNumber ();
 }
 
 QString Core::FindFeedForChannel (const boost::shared_ptr<Channel>& channel) const

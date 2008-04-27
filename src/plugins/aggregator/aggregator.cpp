@@ -270,7 +270,7 @@ void Aggregator::currentChannelChanged ()
 
 void Aggregator::unreadNumberChanged (int number)
 {
-    if (!number)
+    if (!number || !XmlSettingsManager::Instance ()->property ("ShowIconInTray").toBool ())
     {
         TrayIcon_->hide ();
         return;

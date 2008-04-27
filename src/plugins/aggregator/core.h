@@ -104,6 +104,7 @@ private slots:
     void saveSettings ();
 public slots:
     void updateIntervalChanged ();
+    void showIconInTrayChanged ();
 private:
     QString FindFeedForChannel (const boost::shared_ptr<Channel>&) const;
     void UpdateUnreadItemsNumber () const;

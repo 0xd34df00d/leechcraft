@@ -11,6 +11,10 @@
                 <label lang="en" value="Be silent" />
                 <label lang="ru" value="Вести себя тихо" />
             </item>
+            <item type="checkbox" property="ShowIconInTray" state="on">
+                <label lang="en" value="Show icon in tray when there are unread items" />
+                <label lang="ru" value="Показывать иконку в трее при непрочтенных сообщениях" />
+            </item>
         </groupbox>
         <groupbox>
             <label lang="en" value="Updates" />

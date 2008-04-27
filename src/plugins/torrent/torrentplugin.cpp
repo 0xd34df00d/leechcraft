@@ -426,6 +426,7 @@ void TorrentPlugin::on_RemoveTorrent__triggered ()
         return;
 
     Core::Instance ()->RemoveTorrent (row);
+    TorrentSelectionChanged_ = true;
     updateTorrentStats ();
     setActionsEnabled ();
 }
