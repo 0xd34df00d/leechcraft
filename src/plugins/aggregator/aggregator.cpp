@@ -29,6 +29,7 @@ void Aggregator::Init ()
 
     TrayIcon_ = new QSystemTrayIcon (this);
     TrayIcon_->hide ();
+    connect (TrayIcon_, SIGNAL (activated (QSystemTrayIcon::ActivationReason)), this, SLOT (trayIconActivated ()));
 
     Plugins_->addAction (Ui_.ActionAddFeed_);
     connect (&Core::Instance (), SIGNAL (error (const QString&)), this, SLOT (showError (const QString&)));
@@ -292,6 +293,13 @@ void Aggregator::unreadNumberChanged (int number)
 
     TrayIcon_->setIcon (QIcon (pixmap));
     TrayIcon_->show ();
+}
+
+void Aggregator::trayIconActivated ()
+{
+    show ();
+    IsShown_ = true;
+    Ui_.Feeds_->setCurrentIndex (ChannelsFilterModel_->mapFromSource (Core::Instance ().GetUnreadChannelIndex ()));
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_aggregator, Aggregator);

@@ -328,6 +328,11 @@ void Core::UpdateFeed (const QModelIndex& index)
     file.close ();
 }
 
+QModelIndex Core::GetUnreadChannelIndex ()
+{
+    return ChannelsModel_->GetUnreadChannelIndex ();
+}
+
 int Core::columnCount (const QModelIndex& parent) const
 {
     return ItemHeaders_.size ();

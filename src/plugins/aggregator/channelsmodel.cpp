@@ -225,3 +225,15 @@ void ChannelsModel::MarkChannelAsUnread (const QModelIndex& index)
     UpdateChannelData (channel);
 }
 
+QModelIndex ChannelsModel::GetUnreadChannelIndex ()
+{
+    for (int i = 0; i < RootItem_->ChildCount (); ++i)
+    {
+        TreeItem *item = RootItem_->Child (i);
+        boost::shared_ptr<Channel> channel = TreeItem2Channel_ [item];
+        if (channel->CountUnreadItems ())
+            return index (i, 0);
+    }
+    return QModelIndex ();
+}
+

@@ -83,6 +83,7 @@ public:
     QPixmap GetChannelPixmap (const QModelIndex&) const;
     void SetTagsForIndex (const QString&, const QModelIndex&);
     void UpdateFeed (const QModelIndex&);
+    QModelIndex GetUnreadChannelIndex ();
 
     virtual int columnCount (const QModelIndex& parent = QModelIndex ()) const;
     virtual QVariant data (const QModelIndex&, int role = Qt::DisplayRole) const;
