@@ -24,7 +24,7 @@ class Aggregator : public QMainWindow
     XmlSettingsDialog *XmlSettingsDialog_;
     QSortFilterProxyModel *ItemsFilterModel_;
     ChannelsFilterModel *ChannelsFilterModel_;
-    TagsCompleter *TagsCompleter_;
+    TagsCompleter *TagsLineCompleter_, *ChannelTagsCompleter_;
     QSystemTrayIcon *TrayIcon_;
 public:
     void Init ();

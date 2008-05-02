@@ -227,7 +227,7 @@
              </widget>
             </item>
             <item row="3" column="1" >
-             <widget class="QLineEdit" name="TagsSearch_" />
+             <widget class="TagsLineEdit" name="TagsSearch_" />
             </item>
            </layout>
           </widget>
@@ -357,7 +357,7 @@
              </widget>
             </item>
             <item row="3" column="1" >
-             <widget class="QLineEdit" name="TorrentTags_" />
+             <widget class="TagsLineEdit" name="TorrentTags_" />
             </item>
             <item row="3" column="0" >
              <widget class="QLabel" name="label_44" >
@@ -1326,6 +1326,11 @@
    <class>PiecesWidget</class>
    <extends>QLabel</extends>
    <header location="global" >pieceswidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>TagsLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>../../plugininterface/tagslineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources>

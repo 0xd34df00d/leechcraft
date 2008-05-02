@@ -71,9 +71,9 @@ QStringList AddTorrent::GetTags () const
     return TagsEdit_->text ().split (' ', QString::SkipEmptyParts);
 }
 
-void AddTorrent::SetCompleter (QCompleter *completer)
+QLineEdit* AddTorrent::GetEdit ()
 {
-    TagsEdit_->setCompleter (completer);
+    return TagsEdit_;
 }
 
 void AddTorrent::setOkEnabled ()

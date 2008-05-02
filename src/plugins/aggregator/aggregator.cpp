@@ -72,10 +72,10 @@ void Aggregator::Init ()
     connect (Ui_.Items_->selectionModel (), SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (currentItemChanged (const QModelIndex&)));
     connect (Ui_.ActionUpdateFeeds_, SIGNAL (triggered ()), &Core::Instance (), SLOT (updateFeeds ()));
 
-    TagsCompleter_ = new TagsCompleter (this);
-    TagsCompleter_->setModel (Core::Instance ().GetTagsCompletionModel ());
-    Ui_.TagsLine_->setCompleter (TagsCompleter_);
-    Ui_.ChannelTags_->setCompleter (TagsCompleter_);
+    TagsLineCompleter_ = new TagsCompleter (Ui_.TagsLine_, this);
+    ChannelTagsCompleter_ = new TagsCompleter (Ui_.ChannelTags_, this);
+    TagsLineCompleter_->setModel (Core::Instance ().GetTagsCompletionModel ());
+    ChannelTagsCompleter_->setModel (Core::Instance ().GetTagsCompletionModel ());
 
     Ui_.MainSplitter_->setStretchFactor (0, 5);
     Ui_.MainSplitter_->setStretchFactor (1, 9);

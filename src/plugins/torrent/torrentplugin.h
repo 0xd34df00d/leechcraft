@@ -34,12 +34,12 @@ class TorrentPlugin : public QMainWindow
     QMenu *Plugins_;
     bool IgnoreTimer_;
     bool TorrentSelectionChanged_;
-    QCompleter *TagsCompleter_;
+    TagsCompleter *TagsSearchCompleter_, *TagsChangeCompleter_, *TagsAddDiaCompleter_;
 
-	void SetupCore ();
-	void SetupTorrentView ();
-	void SetupStuff ();
-	void SetupHeaders ();
+    void SetupCore ();
+    void SetupTorrentView ();
+    void SetupStuff ();
+    void SetupHeaders ();
 public:
     // IInfo
     void Init ();

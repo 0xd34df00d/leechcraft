@@ -20,7 +20,7 @@ public:
     QString GetSavePath () const;
     QVector<bool> GetSelectedFiles () const;
     QStringList GetTags () const;
-    void SetCompleter (QCompleter*);
+    QLineEdit* GetEdit ();
 private slots:
     void on_TorrentBrowse__released ();
     void on_DestinationBrowse__released ();

@@ -2,11 +2,13 @@
 #define TAGSCOMPLETER_H
 #include <QCompleter>
 
+class QLineEdit;
+
 class TagsCompleter : public QCompleter
 {
     Q_OBJECT
 public:
-    TagsCompleter (QObject *parent = 0);
+    TagsCompleter (QLineEdit*, QObject* = 0);
     virtual QStringList splitPath (const QString&) const;
 };
 

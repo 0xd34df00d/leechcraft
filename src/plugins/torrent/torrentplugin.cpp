@@ -51,15 +51,16 @@ void TorrentPlugin::SetupTorrentView ()
     connect (RegexpSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setFilterRegExp (const QString&)));
     connect (TagsSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setTagsMode ()));
     connect (TagsSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setFilterFixedString (const QString&)));
-    TagsCompleter_ = new TagsCompleter (this);
-    TagsCompleter_->setModel (Core::Instance ()->GetTagsCompletionModel ());
 }
 
 void TorrentPlugin::SetupStuff ()
 {
-    TorrentTags_->setCompleter (TagsCompleter_);
-    TagsSearch_->setCompleter (TagsCompleter_);
-    AddTorrentDialog_->SetCompleter (TagsCompleter_);
+    TagsChangeCompleter_ = new TagsCompleter (TorrentTags_, this);
+    TagsSearchCompleter_ = new TagsCompleter (TagsSearch_, this);
+    TagsAddDiaCompleter_ = new TagsCompleter (AddTorrentDialog_->GetEdit (), this);
+    TagsChangeCompleter_->setModel (Core::Instance ()->GetTagsCompletionModel ());
+    TagsSearchCompleter_->setModel (Core::Instance ()->GetTagsCompletionModel ());
+    TagsAddDiaCompleter_->setModel (Core::Instance ()->GetTagsCompletionModel ());
 
     PiecesView_->setModel (Core::Instance ()->GetPiecesModel ());
 

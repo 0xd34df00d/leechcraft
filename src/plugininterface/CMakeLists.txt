@@ -9,6 +9,7 @@ SET (SRCS
   tagscompleter.cpp
   tagscompletionmodel.cpp
   treeitem.cpp
+  tagslineedit.cpp
   graphwidget.cpp)
 SET (HEADERS
   addressparser.h
@@ -18,6 +19,7 @@ SET (HEADERS
   tagscompleter.h
   tagscompletionmodel.h
   treeitem.h
+  tagslineedit.h
   graphwidget.h)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})

@@ -194,7 +194,7 @@
        </widget>
       </item>
       <item row="10" column="1" >
-       <widget class="QLineEdit" name="TagsEdit_" >
+       <widget class="TagsLineEdit" name="TagsEdit_" >
         <property name="text" >
          <string>untagged</string>
         </property>
@@ -249,6 +249,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TagsLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>../../plugininterface/tagslineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="resources.qrc" />
  </resources>
