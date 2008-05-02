@@ -201,7 +201,6 @@ void ChannelsModel::RemoveChannel (const boost::shared_ptr<Channel>& channel)
     TreeItem2Channel_.remove (container);
     Channel2TreeItem_.remove (channel);
     RootItem_->RemoveChild (pos);
-    delete container;
     endRemoveRows ();
 }
 

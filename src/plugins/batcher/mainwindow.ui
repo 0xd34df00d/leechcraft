@@ -65,7 +65,11 @@
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="LowerBoundary_" />
+       <widget class="QSpinBox" name="LowerBoundary_" >
+        <property name="maximum" >
+         <number>9999</number>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QSpinBox" name="UpperBoundary_" >
