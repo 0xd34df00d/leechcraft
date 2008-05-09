@@ -121,38 +121,23 @@ void Core::RemoveFeed (const QModelIndex& index)
     if (!index.isValid ())
         return;
     boost::shared_ptr<Channel> channel = ChannelsModel_->GetChannelForIndex (index);
-    bool shouldChangeChannel = (channel.get () == ActivatedChannel_);
-    if (shouldChangeChannel)
+    bool shouldEraseItemsList = (channel.get () == ActivatedChannel_);
+    if (shouldEraseItemsList)
         beginRemoveRows (QModelIndex (), 0, ActivatedChannel_->Items_.size () - 1);
 
-    std::vector<boost::shared_ptr<Channel> > channelsToRemove;
-    for (QMap<QString, Feed>::iterator i = Feeds_.begin (); i != Feeds_.end (); ++i)
+    QString feedURL = FindFeedForChannel (channel);
+    if (feedURL.isEmpty ())
     {
-        bool thisOne = false;
-        for (int j = 0; j < i.value ().Channels_.size (); ++j)
-            if (*i.value ().Channels_ [j] == *channel)
-            {
-                thisOne = true;
-                break;
-            }
-
-        if (!thisOne)
-            continue;
-
-        for (int j = 0; j < i.value ().Channels_.size (); ++j)
-        {
-            channelsToRemove.push_back (i.value ().Channels_ [j]);
-        }
-
-        Feeds_.erase (i);
-        break;
+        qWarning () << Q_FUNC_INFO << "could not find feed for channel" ;
+        return;
     }
-    for (int i = 0; i < channelsToRemove.size (); ++i)
-        ChannelsModel_->RemoveChannel (channelsToRemove [i]);
 
-    if (shouldChangeChannel)
+    for (int i = 0; i < Feeds_ [feedURL].Channels_.size (); ++i)
+        ChannelsModel_->RemoveChannel (Feeds_ [feedURL].Channels_ [i]);
+    Feeds_.remove (feedURL);
+
+    if (shouldEraseItemsList)
         endRemoveRows ();
-    
     UpdateUnreadItemsNumber ();
 }
 
@@ -418,6 +403,7 @@ void Core::scheduleSave ()
 
 void Core::handleJobFinished (int id)
 {
+    qDebug () << Q_FUNC_INFO;
     if (!PendingJobs_.contains (id))
         return;
     PendingJob pj = PendingJobs_ [id];
@@ -605,6 +591,8 @@ void Core::handleJobFinished (int id)
         emit showDownloadMessage (emitString);
     }
     scheduleSave ();
+    if (file.exists ())
+        file.remove ();
 }
 
 void Core::handleJobRemoved (int id)
