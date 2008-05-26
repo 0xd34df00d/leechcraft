@@ -21,11 +21,12 @@
 #define CONFIG_H
 
 #define FS_SERVER "irc.freenode.net"
-#define FS_CHANNEL "#fsirc"
+#define FS_CHANNEL "#qt-ru"
 #define FS_PORT 6667
 #define FS_REALNAME "Fucking simple irc v3"
-#define FS_VERSION "2.99"
+#define FS_VERSION "3.0"
 #define FS_COM_CHAR "/"
+#define FS_VERSION_REPLY QString("VERSION leechcraft chatter v")+QString(FS_VERSION)+tr(", using Qt v")+QString(QT_VERSION_STR)
 
 #define ACT_URI 0
 #define ACT_NICK 1
