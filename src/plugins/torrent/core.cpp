@@ -10,6 +10,8 @@
 #include <QDomNode>
 #include <QtDebug>
 #include <memory>
+#define TORRENT_MAX_ALERT_TYPES 25
+#include <alert.hpp>
 #include <bencode.hpp>
 #include <entry.hpp>
 #include <extensions/metadata_transfer.hpp>
@@ -793,6 +795,24 @@ void Core::SetTrackers (int torrent, const QStringList& trackers)
     Handles_ [torrent].Handle_.force_reannounce ();
 }
 
+QString Core::GetTorrentDirectory (int torrent) const
+{
+    if (!CheckValidity (torrent))
+        return QString ();
+
+    return QString::fromUtf8 (Handles_.at (torrent).Handle_.save_path ().string ().c_str ());
+}
+
+bool Core::MoveTorrentFiles (int torrent, const QString& newDir)
+{
+    if (!CheckValidity (torrent) || newDir == GetTorrentDirectory (torrent))
+        return false;
+
+	qDebug () << Q_FUNC_INFO << newDir;
+    Handles_.at (torrent).Handle_.move_storage (newDir.toUtf8 ().constData ());
+    return true;
+}
+
 namespace
 {
     void AddFiles (libtorrent::torrent_info& t, const boost::filesystem::path& p, const boost::filesystem::path& l)
@@ -866,7 +886,12 @@ void Core::MakeTorrent (NewTorrentParams params) const
 
 void Core::SetCurrentTorrent (int torrent)
 {
-	CurrentTorrent_ = torrent;
+    CurrentTorrent_ = torrent;
+}
+
+void Core::LogMessage (const QString& message)
+{
+    emit logMessage (message);
 }
 
 QString Core::GetStringForState (libtorrent::torrent_status::state_t state) const
@@ -1242,41 +1267,205 @@ void Core::checkFinished ()
     }
 }
 
+struct BaseDispatcher
+{
+	virtual void Log (const QString& logstr) const
+	{
+		qWarning () << "<libtorrent> " << logstr;
+		Core::Instance ()->LogMessage (QDateTime::currentDateTime ().toString () + " " + logstr);
+	}
+};
+
+struct SimpleDispatcher : public BaseDispatcher
+{
+	void operator() (const libtorrent::listen_failed_alert& a) const
+	{
+		QString logstr = QString ("Failed to open any port for listening (%1).")
+			.arg (QString::fromStdString (a.msg ()));
+		Log (logstr);
+	}
+	void operator() (const libtorrent::listen_succeeded_alert& a) const
+	{
+		QString logstr = QString ("Listen succeeded %1 (%2).")
+			.arg (QString::fromStdString (a.endpoint.address ().to_string ()))
+			.arg (QString::fromStdString (a.msg ()));
+		Log (logstr);
+	}
+	void operator() (const libtorrent::portmap_error_alert& a) const
+	{
+		QString logstr = QString ("NAT router was successfully"
+				" found but some port mapping request failed (%1).")
+			.arg (QString::fromStdString (a.msg ()));
+		Log (logstr);
+	}
+	void operator() (const libtorrent::portmap_alert& a) const
+	{
+		QString logstr = QString ("Port successfully mapped on a router (%1)")
+			.arg (QString::fromStdString (a.msg ()));
+		Log (logstr);
+	}
+	void operator() (const libtorrent::file_error_alert& a) const
+	{
+		QString logstr = QString ("File IO failure (%1).").arg (QString::fromStdString (a.msg ()));
+		Log (logstr);
+	}
+	void operator() (const libtorrent::tracker_announce_alert& a) const
+	{
+		QString logstr = QString ("Tracker announce is sent (%1).").arg (QString::fromStdString (a.msg ()));
+		Log (logstr);
+	}
+	void operator() (const libtorrent::tracker_alert& a) const
+	{
+		QString logstr = QString ("Failed tracker request:"
+			"status code %1, for %2 times (%3).")
+			.arg (a.status_code)
+			.arg (a.times_in_row)
+			.arg (QString::fromStdString (a.msg ()));
+		Log (logstr);
+	}
+	void operator() (const libtorrent::tracker_reply_alert& a) const
+	{
+		QString logstr = QString ("Tracker announce succeeded. %1 peers (%2).")
+			.arg (a.num_peers)
+			.arg (QString::fromStdString (a.msg ()));
+		Log (logstr);
+	}
+	void operator() (const libtorrent::tracker_warning_alert& a) const
+	{
+		QString logstr = QString ("Tracker announce has warning (%1).")
+			.arg (QString::fromStdString (a.msg ()));
+		Log (logstr);
+	}
+	void operator() (const libtorrent::url_seed_alert& a) const
+	{
+		QString logstr = QString ("HTTP seed %1 name lookup failed (%2).")
+			.arg (QString::fromStdString (a.url))
+			.arg (QString::fromStdString (a.msg ()));
+		Log (logstr);
+	}
+	void operator() (const libtorrent::hash_failed_alert& a) const
+	{
+		QString logstr = QString ("Piece %1 hash check failed (%2).")
+			.arg (a.piece_index)
+			.arg (QString::fromStdString (a.msg ()));
+		Log (logstr);
+	}
+	void operator() (const libtorrent::peer_ban_alert& a) const
+	{
+		QString logstr = QString ("Peer %1 banned (%2).")
+			.arg (QString::fromStdString (a.ip.address ().to_string ()))
+			.arg (QString::fromStdString (a.msg ()));
+		Log (logstr);				
+	}
+	void operator() (const libtorrent::peer_error_alert& a) const
+	{
+		QString logstr = QString ("Peer %1 sent something bad (%2).")
+			.arg (QString::fromStdString (a.ip.address ().to_string ()))
+			.arg (QString::fromStdString (a.msg ()));
+		Log (logstr);
+	}
+	void operator() (const libtorrent::invalid_request_alert& a) const
+	{
+		QString logstr = QString ("Invalid incoming piece request by %1, "
+			"piece %2, start %3, length %4 (%5).")
+			.arg (QString ::fromStdString (a.ip.address ().to_string ()))
+			.arg (a.request.piece)
+			.arg (a.request.start)
+			.arg (a.request.length)
+			.arg (QString::fromStdString (a.msg ()));
+		Log (logstr);
+	}
+	void operator() (const libtorrent::torrent_finished_alert& a) const
+	{
+		QString logstr = QString ("Torrent finished (%1).")
+			.arg (QString::fromStdString (a.msg ()));
+		Log (logstr);
+	}
+	void operator() (const libtorrent::metadata_failed_alert& a) const
+	{
+		QString logstr = QString ("Metadata hash failed (%1).")
+			.arg (QString::fromStdString (a.msg ()));
+		Log (logstr);
+	}
+	void operator() (const libtorrent::metadata_received_alert& a) const
+	{
+		QString logstr = QString ("Metadata received (%1).")
+			.arg (QString::fromStdString (a.msg ()));
+		Log (logstr);
+	}
+	void operator() (const libtorrent::fastresume_rejected_alert& a) const
+	{
+		QString logstr = QString ("Fast resume rejected (%1).")
+			.arg (QString::fromStdString (a.msg ()));
+		Log (logstr);
+	}
+	void operator() (const libtorrent::peer_blocked_alert& a) const
+	{
+		QString logstr = QString ("Peer %1 blocked by the IP filter (%2).")
+			.arg (QString::fromStdString (a.ip.to_string ()))
+			.arg (QString::fromStdString (a.msg ()));
+		Log (logstr);
+	}
+	void operator() (const libtorrent::storage_moved_alert& a) const
+	{
+		QString logstr = QString ("Storage successfully moved for torrent %1.")
+			.arg (QString::fromStdString (a.handle.name ()));
+		Log (logstr);
+	}
+	void operator() (const libtorrent::torrent_paused_alert& a) const
+	{
+		QString logstr = QString ("Torrent %1 paused.")
+			.arg (QString::fromStdString (a.handle.name ()));
+		Log (logstr);
+	}
+	void operator() (const libtorrent::alert& a) const
+	{
+		QString logstr = QString ("General alert (%1).")
+			.arg (QString::fromStdString (a.msg ()));
+		Log (logstr);
+	}
+};
+
 void Core::queryLibtorrentForWarnings ()
 {
-    std::auto_ptr<libtorrent::alert> alert = Session_->pop_alert ();
-    if (!alert.get ())
-        return;
-
-    QString logstr;
-
-    libtorrent::tracker_alert *ta = dynamic_cast<libtorrent::tracker_alert*> (alert.get ());
-    libtorrent::url_seed_alert *usa = dynamic_cast<libtorrent::url_seed_alert*> (alert.get ());
-    libtorrent::hash_failed_alert *hfa = dynamic_cast<libtorrent::hash_failed_alert*> (alert.get ());
-    libtorrent::peer_ban_alert *pba = dynamic_cast<libtorrent::peer_ban_alert*> (alert.get ());
-    libtorrent::peer_error_alert *pea = dynamic_cast<libtorrent::peer_error_alert*> (alert.get ());
-    libtorrent::invalid_request_alert *ira = dynamic_cast<libtorrent::invalid_request_alert*> (alert.get ());
-    if (ta)
-        logstr.append (QString ("\nfailed tracker request: status code %1, for %2 times").arg (ta->status_code).arg (ta->times_in_row));
-    else if (usa)
-        logstr.append (QString ("\nproblems with URL seed %1").arg (usa->url.c_str ()));
-    else if (hfa)
-        logstr.append (QString ("\npiece hash failed, PN: %1").arg (hfa->piece_index));
-    else if (pba)
-        logstr.append (QString ("\npeer banned: %1").arg (pba->ip.address ().to_string ().c_str ()));
-    else if (pea)
-        logstr.append (QString ("\npeer error: %1").arg (pea->ip.address ().to_string ().c_str ()));
-    else if (ira)
-        logstr.append (QString ("\ninvalid request: %1, request { piece %2, start %3, length %4 }")
-            .arg (ira->ip.address ().to_string ().c_str ())
-            .arg (ira->request.piece)
-            .arg (ira->request.start)
-            .arg (ira->request.length));
-
-    logstr.append (QString ("\r\nRaw message: ") + alert->msg ().c_str ());
-
-    qWarning () << "<libtorrent> " << logstr;
-    emit logMessage (QDateTime::currentDateTime ().toString () + logstr);
+	std::auto_ptr<libtorrent::alert> a;
+	a = Session_->pop_alert ();
+	SimpleDispatcher sd;
+	while (a.get ())
+	{
+		try
+		{
+			libtorrent::handle_alert<
+				libtorrent::listen_failed_alert
+				, libtorrent::listen_succeeded_alert
+				, libtorrent::portmap_error_alert
+				, libtorrent::portmap_alert
+				, libtorrent::file_error_alert
+				, libtorrent::tracker_announce_alert
+				, libtorrent::tracker_alert
+				, libtorrent::tracker_reply_alert
+				, libtorrent::tracker_warning_alert
+				, libtorrent::url_seed_alert
+				, libtorrent::hash_failed_alert
+				, libtorrent::peer_ban_alert
+				, libtorrent::peer_error_alert
+				, libtorrent::invalid_request_alert
+				, libtorrent::torrent_finished_alert
+				, libtorrent::metadata_failed_alert
+				, libtorrent::metadata_received_alert
+				, libtorrent::fastresume_rejected_alert
+				, libtorrent::peer_blocked_alert
+				, libtorrent::storage_moved_alert
+				, libtorrent::torrent_paused_alert
+				, libtorrent::alert
+				>::handle_alert (a, sd);
+		}
+		catch (const libtorrent::unhandled_alert& e)
+		{
+			qWarning () << Q_FUNC_INFO << "unhandled alert" << QString::fromStdString (a->msg ());
+		}
+		a = Session_->pop_alert ();
+	}
 }
 
 bool Core::CheckValidity (int pos) const

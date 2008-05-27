@@ -131,8 +131,11 @@ public:
     int GetFilePriority (int, int) const;
     QStringList GetTrackers (int) const;
     void SetTrackers (int, const QStringList&);
+    QString GetTorrentDirectory (int) const;
+    bool MoveTorrentFiles (int, const QString&);
     void MakeTorrent (NewTorrentParams) const;
-	void SetCurrentTorrent (int);
+    void SetCurrentTorrent (int);
+    void LogMessage (const QString&);
 private:
     QString GetStringForState (libtorrent::torrent_status::state_t) const;
     bool CheckValidity (int) const;

@@ -31,7 +31,8 @@ SET (SRCS
 	channelsfiltermodel.cpp
 	torrentfilesmodel.cpp
 	peersmodel.cpp
-	filesviewdelegate.cpp)
+	filesviewdelegate.cpp
+	movetorrentfiles.cpp)
 SET (HEADERS
 	torrentplugin.h 
 	core.h 
@@ -50,6 +51,7 @@ SET (HEADERS
 	torrentfilesmodel.h
 	peersmodel.h
 	filesviewdelegate.h
+	movetorrentfiles.h
 	newtorrentparams.h
 	overallstats.h
 	torrentinfo.h 
@@ -63,7 +65,8 @@ SET (FORMS
 	newtorrentfirststep.ui
 	newtorrentsecondstep.ui
 	newtorrentthirdstep.ui
-	trackerschanger.ui)
+	trackerschanger.ui
+	movetorrentfiles.ui)
 SET (RESOURCES resources.qrc)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})
@@ -84,9 +87,9 @@ plugininterface
 exceptions
 xmlsettingsdialog
 torrent
-boost_date_time-mgw42-mt-1_34_1
-boost_filesystem-mgw42-mt-1_34_1
-boost_thread-mgw42-mt-1_34_1)
+boost_date_time-mgw42-mt-1_35_0
+boost_filesystem-mgw42-mt-1_35_0
+boost_thread-mgw42-mt-1_35_0)
 ELSE (WIN32)
 TARGET_LINK_LIBRARIES (leechcraft_torrent
 ${QT_LIBRARIES}

@@ -125,7 +125,7 @@ void TcpSocket::Write (const QByteArray& str, bool buffer)
         if (bytesToWrite () && !waitForBytesWritten (DefaultTimeout_))
             ThrowException ();
 
-    qDebug () << "/\\:" << str.trimmed ();
+//    qDebug () << "/\\:" << str.trimmed ();
 }
 
 /*!
@@ -165,7 +165,7 @@ QByteArray TcpSocket::ReadLine ()
     if (canReadLine () || waitForReadyRead (DefaultTimeout_))
     {
         QByteArray response = readLine ();
-        qDebug () << "\\/:" << response.trimmed ();
+//        qDebug () << "\\/:" << response.trimmed ();
         return response;
     }
     else

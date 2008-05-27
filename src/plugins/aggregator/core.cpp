@@ -407,6 +407,7 @@ void Core::handleJobFinished (int id)
     if (!PendingJobs_.contains (id))
         return;
     PendingJob pj = PendingJobs_ [id];
+    qDebug () << id << pj.URL_;
     PendingJobs_.remove (id);
     QFile file (pj.Filename_);
     if (!file.open (QIODevice::ReadOnly))
@@ -490,15 +491,23 @@ void Core::handleJobFinished (int id)
         for (int i = 0; i < channels.size (); ++i)
         {
             int position = -1;
+            qDebug () << "new chan params:" << channels [i]->Title_ << channels [i]->Link_;
             for (int j = 0; j < Feeds_ [pj.URL_].Channels_.size (); ++j)
+            {
+                qDebug () << "testing chan:"
+                    << Feeds_ [pj.URL_].Channels_ [j]->Title_
+                    << Feeds_ [pj.URL_].Channels_ [j]->Link_;
                 if (*Feeds_ [pj.URL_].Channels_ [j] == *channels [i])
                 {
                     position = j;
                     break;
                 }
+            }
+
 
             if (position == -1)
             {
+                qDebug () << "not found";
                 Feeds_ [pj.URL_].Channels_.push_back (channels [i]);
                 emitString += tr ("Added channel \"%1\" (has %2 items)\r\n").arg (channels [i]->Title_).arg (channels [i]->Items_.size ());
             }
@@ -619,6 +628,7 @@ void Core::updateFeeds ()
         return;
     }
     QList<QString> urls = Feeds_.keys ();
+    qDebug () << Q_FUNC_INFO << urls;
     for (int i = 0; i < urls.size (); ++i)
     {
         if (!idd->CouldDownload (urls.at (i), false))
@@ -634,6 +644,8 @@ void Core::updateFeeds ()
         int id = idd->AddJob (params);
         PendingJobs_ [id] = pj;
         file.close ();
+        file.remove ();
+        qDebug () << urls.at (i) << id;
     }
 }
 

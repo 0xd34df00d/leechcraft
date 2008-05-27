@@ -104,6 +104,7 @@ private slots:
     void on_DownloadingTorrents__valueChanged (int);
     void on_UploadingTorrents__valueChanged (int);
     void on_TorrentTags__editingFinished ();
+    void on_MoveFiles__triggered ();
     void setActionsEnabled ();
     void showError (QString);
     void updateTorrentStats ();

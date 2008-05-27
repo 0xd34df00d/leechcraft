@@ -14,9 +14,18 @@
    <string>BitTorrent</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="resources.qrc" >:/resources/images/torrent_bittorrent.png</iconset>
+   <iconset resource="resources.qrc" >
+    <normaloff>:/resources/images/torrent_bittorrent.png</normaloff>:/resources/images/torrent_bittorrent.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>65</y>
+     <width>730</width>
+     <height>556</height>
+    </rect>
+   </property>
    <layout class="QVBoxLayout" >
     <item>
      <widget class="QSplitter" name="splitter" >
@@ -48,6 +57,14 @@
         <enum>Qt::ElideRight</enum>
        </property>
        <widget class="QWidget" name="tab" >
+        <property name="geometry" >
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>708</width>
+          <height>308</height>
+         </rect>
+        </property>
         <attribute name="title" >
          <string>Dashboard</string>
         </attribute>
@@ -237,7 +254,7 @@
            <property name="orientation" >
             <enum>Qt::Horizontal</enum>
            </property>
-           <property name="sizeHint" >
+           <property name="sizeHint" stdset="0" >
             <size>
              <width>51</width>
              <height>105</height>
@@ -250,7 +267,7 @@
            <property name="orientation" >
             <enum>Qt::Vertical</enum>
            </property>
-           <property name="sizeHint" >
+           <property name="sizeHint" stdset="0" >
             <size>
              <width>175</width>
              <height>101</height>
@@ -263,7 +280,7 @@
            <property name="orientation" >
             <enum>Qt::Vertical</enum>
            </property>
-           <property name="sizeHint" >
+           <property name="sizeHint" stdset="0" >
             <size>
              <width>20</width>
              <height>40</height>
@@ -274,6 +291,14 @@
         </layout>
        </widget>
        <widget class="QWidget" name="TorrentControlTab_" >
+        <property name="geometry" >
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>708</width>
+          <height>308</height>
+         </rect>
+        </property>
         <attribute name="title" >
          <string>Torrent settings</string>
         </attribute>
@@ -374,7 +399,7 @@
            <property name="orientation" >
             <enum>Qt::Horizontal</enum>
            </property>
-           <property name="sizeHint" >
+           <property name="sizeHint" stdset="0" >
             <size>
              <width>40</width>
              <height>20</height>
@@ -387,7 +412,7 @@
            <property name="orientation" >
             <enum>Qt::Vertical</enum>
            </property>
-           <property name="sizeHint" >
+           <property name="sizeHint" stdset="0" >
             <size>
              <width>20</width>
              <height>40</height>
@@ -398,6 +423,14 @@
         </layout>
        </widget>
        <widget class="QWidget" name="OverallStatus_" >
+        <property name="geometry" >
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>708</width>
+          <height>308</height>
+         </rect>
+        </property>
         <attribute name="title" >
          <string>Overall status</string>
         </attribute>
@@ -481,7 +514,7 @@
                <property name="orientation" >
                 <enum>Qt::Vertical</enum>
                </property>
-               <property name="sizeHint" >
+               <property name="sizeHint" stdset="0" >
                 <size>
                  <width>20</width>
                  <height>40</height>
@@ -510,7 +543,7 @@
              <property name="orientation" >
               <enum>Qt::Horizontal</enum>
              </property>
-             <property name="sizeHint" >
+             <property name="sizeHint" stdset="0" >
               <size>
                <width>40</width>
                <height>20</height>
@@ -595,7 +628,7 @@
                <property name="orientation" >
                 <enum>Qt::Vertical</enum>
                </property>
-               <property name="sizeHint" >
+               <property name="sizeHint" stdset="0" >
                 <size>
                  <width>20</width>
                  <height>40</height>
@@ -610,7 +643,7 @@
              <property name="orientation" >
               <enum>Qt::Horizontal</enum>
              </property>
-             <property name="sizeHint" >
+             <property name="sizeHint" stdset="0" >
               <size>
                <width>40</width>
                <height>20</height>
@@ -625,7 +658,7 @@
            <property name="orientation" >
             <enum>Qt::Vertical</enum>
            </property>
-           <property name="sizeHint" >
+           <property name="sizeHint" stdset="0" >
             <size>
              <width>20</width>
              <height>40</height>
@@ -636,6 +669,14 @@
         </layout>
        </widget>
        <widget class="QWidget" name="TorrentStatus_" >
+        <property name="geometry" >
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>708</width>
+          <height>308</height>
+         </rect>
+        </property>
         <attribute name="title" >
          <string>Torrent status</string>
         </attribute>
@@ -661,7 +702,7 @@
              <property name="orientation" >
               <enum>Qt::Horizontal</enum>
              </property>
-             <property name="sizeHint" >
+             <property name="sizeHint" stdset="0" >
               <size>
                <width>40</width>
                <height>20</height>
@@ -764,7 +805,7 @@
                <property name="orientation" >
                 <enum>Qt::Vertical</enum>
                </property>
-               <property name="sizeHint" >
+               <property name="sizeHint" stdset="0" >
                 <size>
                  <width>20</width>
                  <height>40</height>
@@ -793,7 +834,7 @@
              <property name="orientation" >
               <enum>Qt::Horizontal</enum>
              </property>
-             <property name="sizeHint" >
+             <property name="sizeHint" stdset="0" >
               <size>
                <width>40</width>
                <height>20</height>
@@ -878,7 +919,7 @@
                <property name="orientation" >
                 <enum>Qt::Vertical</enum>
                </property>
-               <property name="sizeHint" >
+               <property name="sizeHint" stdset="0" >
                 <size>
                  <width>20</width>
                  <height>40</height>
@@ -907,7 +948,7 @@
              <property name="orientation" >
               <enum>Qt::Horizontal</enum>
              </property>
-             <property name="sizeHint" >
+             <property name="sizeHint" stdset="0" >
               <size>
                <width>111</width>
                <height>20</height>
@@ -992,7 +1033,7 @@
                <property name="orientation" >
                 <enum>Qt::Vertical</enum>
                </property>
-               <property name="sizeHint" >
+               <property name="sizeHint" stdset="0" >
                 <size>
                  <width>20</width>
                  <height>40</height>
@@ -1007,7 +1048,7 @@
              <property name="orientation" >
               <enum>Qt::Horizontal</enum>
              </property>
-             <property name="sizeHint" >
+             <property name="sizeHint" stdset="0" >
               <size>
                <width>40</width>
                <height>20</height>
@@ -1035,7 +1076,7 @@
            <property name="orientation" >
             <enum>Qt::Vertical</enum>
            </property>
-           <property name="sizeHint" >
+           <property name="sizeHint" stdset="0" >
             <size>
              <width>20</width>
              <height>40</height>
@@ -1046,6 +1087,14 @@
         </layout>
        </widget>
        <widget class="QWidget" name="PageFiles_" >
+        <property name="geometry" >
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>708</width>
+          <height>308</height>
+         </rect>
+        </property>
         <attribute name="title" >
          <string>Files</string>
         </attribute>
@@ -1064,6 +1113,14 @@
         </layout>
        </widget>
        <widget class="QWidget" name="PagePeers_" >
+        <property name="geometry" >
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>708</width>
+          <height>308</height>
+         </rect>
+        </property>
         <attribute name="title" >
          <string>Peers</string>
         </attribute>
@@ -1084,6 +1141,14 @@
         </layout>
        </widget>
        <widget class="QWidget" name="PagePieces_" >
+        <property name="geometry" >
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>708</width>
+          <height>308</height>
+         </rect>
+        </property>
         <attribute name="title" >
          <string>Pieces</string>
         </attribute>
@@ -1101,6 +1166,14 @@
         </layout>
        </widget>
        <widget class="QWidget" name="tab_2" >
+        <property name="geometry" >
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>708</width>
+          <height>308</height>
+         </rect>
+        </property>
         <attribute name="title" >
          <string>History</string>
         </attribute>
@@ -1135,6 +1208,14 @@
         </layout>
        </widget>
        <widget class="QWidget" name="LogTab_" >
+        <property name="geometry" >
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>708</width>
+          <height>308</height>
+         </rect>
+        </property>
         <attribute name="title" >
          <string>Log</string>
         </attribute>
@@ -1200,8 +1281,25 @@
    <addaction name="menuActions" />
    <addaction name="menuTools" />
   </widget>
-  <widget class="QStatusBar" name="Statusbar_" />
+  <widget class="QStatusBar" name="Statusbar_" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>621</y>
+     <width>730</width>
+     <height>19</height>
+    </rect>
+   </property>
+  </widget>
   <widget class="QToolBar" name="toolBar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>26</y>
+     <width>505</width>
+     <height>39</height>
+    </rect>
+   </property>
    <property name="windowTitle" >
     <string>toolBar</string>
    </property>
@@ -1226,8 +1324,17 @@
    <addaction name="Stop_" />
    <addaction name="ForceReannounce_" />
    <addaction name="ChangeTrackers_" />
+   <addaction name="MoveFiles_" />
   </widget>
   <widget class="QToolBar" name="toolBar_2" >
+   <property name="geometry" >
+    <rect>
+     <x>505</x>
+     <y>26</y>
+     <width>225</width>
+     <height>39</height>
+    </rect>
+   </property>
    <property name="windowTitle" >
     <string>toolBar_2</string>
    </property>
@@ -1241,7 +1348,8 @@
   </widget>
   <action name="OpenTorrent_" >
    <property name="icon" >
-    <iconset resource="resources.qrc" >:/resources/images/torrent_addjob.png</iconset>
+    <iconset resource="resources.qrc" >
+     <normaloff>:/resources/images/torrent_addjob.png</normaloff>:/resources/images/torrent_addjob.png</iconset>
    </property>
    <property name="text" >
     <string>Open torrent</string>
@@ -1252,7 +1360,8 @@
   </action>
   <action name="RemoveTorrent_" >
    <property name="icon" >
-    <iconset resource="resources.qrc" >:/resources/images/torrent_deletejob.png</iconset>
+    <iconset resource="resources.qrc" >
+     <normaloff>:/resources/images/torrent_deletejob.png</normaloff>:/resources/images/torrent_deletejob.png</iconset>
    </property>
    <property name="text" >
     <string>Remove</string>
@@ -1263,7 +1372,8 @@
   </action>
   <action name="Preferences_" >
    <property name="icon" >
-    <iconset resource="resources.qrc" >:/resources/images/torrent_preferences.png</iconset>
+    <iconset resource="resources.qrc" >
+     <normaloff>:/resources/images/torrent_preferences.png</normaloff>:/resources/images/torrent_preferences.png</iconset>
    </property>
    <property name="text" >
     <string>Preferences...</string>
@@ -1274,7 +1384,8 @@
   </action>
   <action name="Resume_" >
    <property name="icon" >
-    <iconset resource="resources.qrc" >:/resources/images/torrent_startjob.png</iconset>
+    <iconset resource="resources.qrc" >
+     <normaloff>:/resources/images/torrent_startjob.png</normaloff>:/resources/images/torrent_startjob.png</iconset>
    </property>
    <property name="text" >
     <string>Start/resume</string>
@@ -1285,7 +1396,8 @@
   </action>
   <action name="Stop_" >
    <property name="icon" >
-    <iconset resource="resources.qrc" >:/resources/images/torrent_stopjob.png</iconset>
+    <iconset resource="resources.qrc" >
+     <normaloff>:/resources/images/torrent_stopjob.png</normaloff>:/resources/images/torrent_stopjob.png</iconset>
    </property>
    <property name="text" >
     <string>Stop</string>
@@ -1296,18 +1408,26 @@
   </action>
   <action name="CreateTorrent_" >
    <property name="icon" >
-    <iconset resource="resources.qrc" >:/resources/images/torrent_new.png</iconset>
+    <iconset resource="resources.qrc" >
+     <normaloff>:/resources/images/torrent_new.png</normaloff>:/resources/images/torrent_new.png</iconset>
    </property>
    <property name="text" >
     <string>Create torrent</string>
    </property>
+   <property name="shortcut" >
+    <string>N</string>
+   </property>
   </action>
   <action name="ForceReannounce_" >
    <property name="icon" >
-    <iconset resource="resources.qrc" >:/resources/images/torrent_reannounce.png</iconset>
+    <iconset resource="resources.qrc" >
+     <normaloff>:/resources/images/torrent_reannounce.png</normaloff>:/resources/images/torrent_reannounce.png</iconset>
    </property>
    <property name="text" >
     <string>Force reannounce</string>
+   </property>
+   <property name="shortcut" >
+    <string>F</string>
    </property>
   </action>
   <action name="OpenMultipleTorrents_" >
@@ -1318,6 +1438,17 @@
   <action name="ChangeTrackers_" >
    <property name="text" >
     <string>Change trackers</string>
+   </property>
+   <property name="shortcut" >
+    <string>C</string>
+   </property>
+  </action>
+  <action name="MoveFiles_" >
+   <property name="text" >
+    <string>Move files</string>
+   </property>
+   <property name="shortcut" >
+    <string>M</string>
    </property>
   </action>
  </widget>

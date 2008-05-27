@@ -39,8 +39,7 @@ int Channel::CountUnreadItems () const
 
 bool operator== (const Channel& c1, const Channel& c2)
 {
-    return c1.Title_ == c2.Title_ &&
-        c1.Link_ == c2.Link_;
+    return c1.Title_ == c2.Title_ && c1.Link_ == c2.Link_;
 }
 
 QDataStream& operator<< (QDataStream& out, const Channel& chan)

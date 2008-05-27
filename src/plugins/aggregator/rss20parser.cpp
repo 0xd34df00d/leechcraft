@@ -2,6 +2,7 @@
 #include <QtDebug>
 #include <QDomElement>
 #include <QStringList>
+#include <QLocale>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "rss20parser.h"
 #include "item.h"
@@ -135,6 +136,6 @@ QDateTime RSS20Parser::FromRFC822 (const QString& t) const
     QStringList tmp = time.split (' ');
     tmp.removeAt (tmp.size () - 1);
     time = tmp.join (" ");
-    return QDateTime::fromString (time, "d MMM yyyy hh:mm:ss");
+    return QLocale::c ().toDateTime (time, "dd MMM yyyy hh:mm:ss");
 }
 

@@ -14,6 +14,7 @@
 #include "channelsfiltermodel.h"
 #include "torrentfilesmodel.h"
 #include "filesviewdelegate.h"
+#include "movetorrentfiles.h"
 
 void TorrentPlugin::SetupCore ()
 {
@@ -546,11 +547,37 @@ void TorrentPlugin::on_UploadingTorrents__valueChanged (int newValue)
 
 void TorrentPlugin::on_TorrentTags__editingFinished ()
 {
-    QModelIndex i = TorrentView_->selectionModel ()->currentIndex ();
+    QModelIndex i = FilterModel_->mapToSource (TorrentView_->selectionModel ()->currentIndex ());
     if (!i.isValid ())
         return;
 
     Core::Instance ()->UpdateTags (i.row (), TorrentTags_->text ().split (' ', QString::SkipEmptyParts));
+}
+
+void TorrentPlugin::on_MoveFiles__triggered ()
+{
+    QModelIndex i = FilterModel_->mapToSource (TorrentView_->selectionModel ()->currentIndex ());
+    if (!i.isValid ())
+        return;
+
+    QString oldDir = Core::Instance ()->GetTorrentDirectory (i.row ());
+    MoveTorrentFiles mtf (oldDir, this);
+    if (mtf.exec () == QDialog::Rejected)
+        return;
+    QString newDir = mtf.GetNewLocation ();
+    if (oldDir == newDir)
+        return;
+
+    if (Core::Instance ()->MoveTorrentFiles (i.row (), newDir))
+        QMessageBox::information (this, tr ("Information"),
+                tr ("Started moving torrent's files from %1 to %2").
+                arg (oldDir).
+                arg (newDir));
+    else
+        QMessageBox::warning (this, tr ("Warning"),
+                tr ("Failed to move torrent's files from %1 to %2").
+                arg (oldDir).
+                arg (newDir));
 }
 
 void TorrentPlugin::setActionsEnabled ()
