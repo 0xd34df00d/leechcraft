@@ -13,9 +13,18 @@
    <string>Aggregator</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="resources.qrc" >:/resources/images/aggregator.png</iconset>
+   <iconset resource="resources.qrc" >
+    <normaloff>:/resources/images/aggregator.png</normaloff>:/resources/images/aggregator.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>65</y>
+     <width>800</width>
+     <height>516</height>
+    </rect>
+   </property>
    <layout class="QGridLayout" >
     <item row="0" column="0" >
      <widget class="QSplitter" name="MainSplitter_" >
@@ -206,12 +215,11 @@
             <bool>false</bool>
            </property>
           </widget>
-          <widget class="QTextBrowser" name="ItemView_" >
-           <property name="autoFormatting" >
-            <set>QTextEdit::AutoAll</set>
-           </property>
-           <property name="openExternalLinks" >
-            <bool>true</bool>
+          <widget class="QWebView" name="ItemView_" >
+           <property name="url" >
+            <url>
+             <string>about:blank</string>
+            </url>
            </property>
           </widget>
          </widget>
@@ -243,8 +251,25 @@
    </widget>
    <addaction name="menuActions" />
   </widget>
-  <widget class="QStatusBar" name="statusbar" />
+  <widget class="QStatusBar" name="statusbar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>581</y>
+     <width>800</width>
+     <height>19</height>
+    </rect>
+   </property>
+  </widget>
   <widget class="QToolBar" name="toolBar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>26</y>
+     <width>800</width>
+     <height>39</height>
+    </rect>
+   </property>
    <property name="windowTitle" >
     <string>toolBar</string>
    </property>
@@ -263,7 +288,8 @@
   </widget>
   <action name="ActionAddFeed_" >
    <property name="icon" >
-    <iconset resource="resources.qrc" >:/resources/images/rss-feed.png</iconset>
+    <iconset resource="resources.qrc" >
+     <normaloff>:/resources/images/rss-feed.png</normaloff>:/resources/images/rss-feed.png</iconset>
    </property>
    <property name="text" >
     <string>Add feed...</string>
@@ -271,7 +297,8 @@
   </action>
   <action name="ActionPreferences_" >
    <property name="icon" >
-    <iconset resource="resources.qrc" >:/resources/images/preferences.png</iconset>
+    <iconset resource="resources.qrc" >
+     <normaloff>:/resources/images/preferences.png</normaloff>:/resources/images/preferences.png</iconset>
    </property>
    <property name="text" >
     <string>Preferences</string>
@@ -279,7 +306,8 @@
   </action>
   <action name="ActionUpdateFeeds_" >
    <property name="icon" >
-    <iconset resource="resources.qrc" >:/resources/images/updateallfeeds.png</iconset>
+    <iconset resource="resources.qrc" >
+     <normaloff>:/resources/images/updateallfeeds.png</normaloff>:/resources/images/updateallfeeds.png</iconset>
    </property>
    <property name="text" >
     <string>Update feeds</string>
@@ -287,7 +315,8 @@
   </action>
   <action name="ActionRemoveFeed_" >
    <property name="icon" >
-    <iconset resource="resources.qrc" >:/resources/images/removefeed.png</iconset>
+    <iconset resource="resources.qrc" >
+     <normaloff>:/resources/images/removefeed.png</normaloff>:/resources/images/removefeed.png</iconset>
    </property>
    <property name="text" >
     <string>Remove feed</string>
@@ -310,7 +339,8 @@
   </action>
   <action name="ActionUpdateSelectedFeed_" >
    <property name="icon" >
-    <iconset resource="resources.qrc" >:/resources/images/updateselectedfeed.png</iconset>
+    <iconset resource="resources.qrc" >
+     <normaloff>:/resources/images/updateselectedfeed.png</normaloff>:/resources/images/updateselectedfeed.png</iconset>
    </property>
    <property name="text" >
     <string>Update selected feed</string>
@@ -318,6 +348,11 @@
   </action>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QWebView</class>
+   <extends>QWidget</extends>
+   <header>QtWebKit/QWebView</header>
+  </customwidget>
   <customwidget>
    <class>TagsLineEdit</class>
    <extends>QLineEdit</extends>

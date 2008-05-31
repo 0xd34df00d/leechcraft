@@ -407,7 +407,7 @@ void Core::handleJobFinished (int id)
     if (!PendingJobs_.contains (id))
         return;
     PendingJob pj = PendingJobs_ [id];
-    qDebug () << id << pj.URL_;
+    qDebug () << id << pj.URL_ << pj.Filename_;
     PendingJobs_.remove (id);
     QFile file (pj.Filename_);
     if (!file.open (QIODevice::ReadOnly))
@@ -602,6 +602,7 @@ void Core::handleJobFinished (int id)
     scheduleSave ();
     if (file.exists ())
         file.remove ();
+    qDebug () << "DOWNLOAD HANDLER FINISHED TEMPORARY" << file.exists ();
 }
 
 void Core::handleJobRemoved (int id)
@@ -640,6 +641,7 @@ void Core::updateFeeds ()
         QTemporaryFile file;
         file.open ();
         DirectDownloadParams params = { urls.at (i), file.fileName (), true, false };
+        qDebug () << "TEMPRORARY FILE AS SAMPLE" << file.fileName ();
         PendingJob pj = { PendingJob :: RFeedUpdated, urls.at (i), file.fileName () };
         int id = idd->AddJob (params);
         PendingJobs_ [id] = pj;
