@@ -68,8 +68,14 @@ void Aggregator::Init ()
     channelsHeader->resizeSection (1, fm.width ("_99 Mar 9999 99:99:99_"));
     channelsHeader->resizeSection (2, fm.width ("_999_"));
     connect (Ui_.TagsLine_, SIGNAL (textChanged (const QString&)), ChannelsFilterModel_, SLOT (setFilterFixedString (const QString&)));
-    connect (Ui_.Feeds_->selectionModel (), SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (currentChannelChanged ()));
-    connect (Ui_.Items_->selectionModel (), SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (currentItemChanged (const QModelIndex&)));
+    connect (Ui_.Feeds_->selectionModel (),
+			SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
+			this,
+			SLOT (currentChannelChanged ()));
+    connect (Ui_.Items_->selectionModel (),
+			SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
+			this,
+			SLOT (currentItemChanged (const QModelIndex&)));
     connect (Ui_.ActionUpdateFeeds_, SIGNAL (triggered ()), &Core::Instance (), SLOT (updateFeeds ()));
 
     TagsLineCompleter_ = new TagsCompleter (Ui_.TagsLine_, this);
@@ -79,6 +85,23 @@ void Aggregator::Init ()
 
     Ui_.MainSplitter_->setStretchFactor (0, 5);
     Ui_.MainSplitter_->setStretchFactor (1, 9);
+
+	connect (Ui_.ItemView_,
+			SIGNAL (statusBarMessage (const QString&)),
+			statusBar (),
+			SLOT (showMessage (const QString&)));
+	connect (Ui_.ItemView_,
+			SIGNAL (loadStarted ()),
+			this,
+			SLOT (loadStarted ()));
+	connect (Ui_.ItemView_,
+			SIGNAL (loadFinished (bool)),
+			this,
+			SLOT (loadFinished (bool)));
+	connect (Ui_.ItemView_,
+			SIGNAL (loadProgress (int)),
+			this,
+			SLOT (loadProgress (int)));
 }
 
 void Aggregator::Release ()
@@ -304,6 +327,25 @@ void Aggregator::trayIconActivated ()
     show ();
     IsShown_ = true;
     Ui_.Feeds_->setCurrentIndex (ChannelsFilterModel_->mapFromSource (Core::Instance ().GetUnreadChannelIndex ()));
+}
+
+void Aggregator::loadStarted ()
+{
+	Ui_.PageLoadProgressBar_->setFormat (tr ("Loading..."));
+	Ui_.PageLoadProgressBar_->setValue (100);
+}
+
+void Aggregator::loadFinished (bool ok)
+{
+	QString text = ok ? Ui_.ItemView_->title () : Ui_.ItemView_->title () + tr (" (with errors)");
+	Ui_.PageLoadProgressBar_->setFormat (text);
+	Ui_.PageLoadProgressBar_->setValue (100);
+}
+
+void Aggregator::loadProgress (int progress)
+{
+	Ui_.PageLoadProgressBar_->setFormat (tr ("Loading (\%p)"));
+	Ui_.PageLoadProgressBar_->setValue (progress);
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_aggregator, Aggregator);
