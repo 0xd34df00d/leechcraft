@@ -13,6 +13,7 @@
 class ChannelsModel;
 class TagsCompletionModel;
 class QTimer;
+class QNetworkReply;
 
 class Core : public QAbstractItemModel
 {
@@ -106,6 +107,7 @@ private slots:
 public slots:
     void updateIntervalChanged ();
     void showIconInTrayChanged ();
+    void handleSslError (QNetworkReply*);
 private:
     QString FindFeedForChannel (const boost::shared_ptr<Channel>&) const;
     void UpdateUnreadItemsNumber () const;

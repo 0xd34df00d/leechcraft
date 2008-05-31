@@ -256,6 +256,10 @@ void Aggregator::on_CaseSensitiveSearch__stateChanged (int state)
 void Aggregator::currentItemChanged (const QModelIndex& index)
 {
     Ui_.ItemView_->setHtml (Core::Instance ().GetDescription (index));
+	connect (Ui_.ItemView_->page ()->networkAccessManager (),
+			SIGNAL (sslErrors (QNetworkReply*, const QList<QSslError>&)),
+			&Core::Instance (),
+			SLOT (handleSslError (QNetworkReply*)));
 }
 
 void Aggregator::currentChannelChanged ()

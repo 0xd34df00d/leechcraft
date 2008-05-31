@@ -5,6 +5,7 @@
 #include <QUrl>
 #include <QTemporaryFile>
 #include <QTimer>
+#include <QNetworkReply>
 #include <stdexcept>
 #include <plugininterface/proxy.h>
 #include <plugininterface/tagscompletionmodel.h>
@@ -696,6 +697,11 @@ void Core::updateIntervalChanged ()
 void Core::showIconInTrayChanged ()
 {
     UpdateUnreadItemsNumber ();
+}
+
+void Core::handleSslError (QNetworkReply *reply)
+{
+    reply->ignoreSslErrors ();
 }
 
 QString Core::FindFeedForChannel (const boost::shared_ptr<Channel>& channel) const
