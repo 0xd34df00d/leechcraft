@@ -15,6 +15,7 @@
 #include "rss20parser.h"
 #include "atom10parser.h"
 #include "channelsmodel.h"
+#include "itembucket.h"
 
 Core::Core ()
 {
@@ -317,6 +318,14 @@ void Core::UpdateFeed (const QModelIndex& index)
 QModelIndex Core::GetUnreadChannelIndex ()
 {
     return ChannelsModel_->GetUnreadChannelIndex ();
+}
+
+void Core::AddToItemBucket (const QModelIndex& index) const
+{
+	if (!index.isValid () || index.row () >= rowCount ())
+		return;
+
+	ItemBucket::Instance ().AddItem (ActivatedChannel_->Items_ [index.row ()]);
 }
 
 int Core::columnCount (const QModelIndex& parent) const

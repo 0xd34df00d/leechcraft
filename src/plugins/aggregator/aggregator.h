@@ -61,13 +61,12 @@ private slots:
     void on_ChannelTags__textChanged (const QString&);
     void on_ChannelTags__editingFinished ();
     void on_CaseSensitiveSearch__stateChanged (int);
+	void on_ActionAddToItemBucket__triggered ();
+	void on_ActionItemBucket__triggered ();
     void currentItemChanged (const QModelIndex&);
     void currentChannelChanged ();
     void unreadNumberChanged (int);
     void trayIconActivated ();
-	void loadStarted ();
-	void loadFinished (bool);
-	void loadProgress (int);
 signals:
     void downloadFinished (const QString&);
 };

@@ -11,7 +11,8 @@ SOURCES += aggregator.cpp \
            feed.cpp \
            xmlsettingsmanager.cpp \
            channelsmodel.cpp \
-           channelsfiltermodel.cpp
+           channelsfiltermodel.cpp \
+		   browserwidget.cpp
 HEADERS += aggregator.h \
            core.h \
            itemsmodel.h \
@@ -26,6 +27,7 @@ HEADERS += aggregator.h \
            atom10parser.h \
            channelsmodel.h \
            xmlsettingsmanager.h \
-           channelsfiltermodel.h
-FORMS += mainwindow.ui addfeed.ui
+           channelsfiltermodel.h \
+		   browserwidget.h
+FORMS += mainwindow.ui addfeed.ui browserwidget.ui
 TRANSLATIONS += leechcraft_aggregator_ru.ts

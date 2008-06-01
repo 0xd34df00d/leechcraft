@@ -85,6 +85,7 @@ public:
     void SetTagsForIndex (const QString&, const QModelIndex&);
     void UpdateFeed (const QModelIndex&);
     QModelIndex GetUnreadChannelIndex ();
+	void AddToItemBucket (const QModelIndex&) const;
 
     virtual int columnCount (const QModelIndex& parent = QModelIndex ()) const;
     virtual QVariant data (const QModelIndex&, int role = Qt::DisplayRole) const;

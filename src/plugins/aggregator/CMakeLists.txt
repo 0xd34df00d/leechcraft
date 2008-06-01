@@ -19,7 +19,10 @@ SET (SRCS
     feed.cpp
     xmlsettingsmanager.cpp
     channelsmodel.cpp
-    channelsfiltermodel.cpp)
+    channelsfiltermodel.cpp
+	browserwidget.cpp
+	itembucket.cpp
+	itemmodel.cpp)
 SET (HEADERS
     aggregator.h
     core.h
@@ -36,10 +39,15 @@ SET (HEADERS
     channelsmodel.h
     xmlsettingsmanager.h
     channelsfiltermodel.h
+	browserwidget.h
+	itembucket.h
+	itemmodel.h
     ../../plugininterface/basesettingsmanager.h)
 SET (FORMS
     mainwindow.ui
-    addfeed.ui)
+    addfeed.ui
+	browserwidget.ui
+	itembucket.ui)
 SET (RESOURCES resources.qrc)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})

@@ -14,6 +14,7 @@
 #include "addfeed.h"
 #include "channelsfiltermodel.h"
 #include "xmlsettingsmanager.h"
+#include "itembucket.h"
 
 void Aggregator::Init ()
 {
@@ -46,10 +47,20 @@ void Aggregator::Init ()
     ItemsFilterModel_->setDynamicSortFilter (true);
     Ui_.Items_->setModel (ItemsFilterModel_);
     Ui_.Items_->addAction (Ui_.ActionMarkItemAsUnread_);
+	Ui_.Items_->addAction (Ui_.ActionAddToItemBucket_);
     Ui_.Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
-    connect (Ui_.FixedStringSearch_, SIGNAL (textChanged (const QString&)), ItemsFilterModel_, SLOT (setFilterFixedString (const QString&)));
-    connect (Ui_.WildcardSearch_, SIGNAL (textChanged (const QString&)), ItemsFilterModel_, SLOT (setFilterWildcard (const QString&)));
-    connect (Ui_.RegexpSearch_, SIGNAL (textChanged (const QString&)), ItemsFilterModel_, SLOT (setFilterRegExp (const QString&)));
+    connect (Ui_.FixedStringSearch_,
+			SIGNAL (textChanged (const QString&)),
+			ItemsFilterModel_,
+			SLOT (setFilterFixedString (const QString&)));
+    connect (Ui_.WildcardSearch_,
+			SIGNAL (textChanged (const QString&)),
+			ItemsFilterModel_,
+			SLOT (setFilterWildcard (const QString&)));
+    connect (Ui_.RegexpSearch_,
+			SIGNAL (textChanged (const QString&)),
+			ItemsFilterModel_,
+			SLOT (setFilterRegExp (const QString&)));
     QHeaderView *itemsHeader = Ui_.Items_->header ();
     QFontMetrics fm = fontMetrics ();
     itemsHeader->resizeSection (0, fm.width ("Average news article size is about this width or maybe bigger, because they are bigger"));
@@ -67,7 +78,10 @@ void Aggregator::Init ()
     channelsHeader->resizeSection (0, fm.width ("Average channel name"));
     channelsHeader->resizeSection (1, fm.width ("_99 Mar 9999 99:99:99_"));
     channelsHeader->resizeSection (2, fm.width ("_999_"));
-    connect (Ui_.TagsLine_, SIGNAL (textChanged (const QString&)), ChannelsFilterModel_, SLOT (setFilterFixedString (const QString&)));
+    connect (Ui_.TagsLine_,
+			SIGNAL (textChanged (const QString&)),
+			ChannelsFilterModel_,
+			SLOT (setFilterFixedString (const QString&)));
     connect (Ui_.Feeds_->selectionModel (),
 			SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
 			this,
@@ -85,23 +99,6 @@ void Aggregator::Init ()
 
     Ui_.MainSplitter_->setStretchFactor (0, 5);
     Ui_.MainSplitter_->setStretchFactor (1, 9);
-
-	connect (Ui_.ItemView_,
-			SIGNAL (statusBarMessage (const QString&)),
-			statusBar (),
-			SLOT (showMessage (const QString&)));
-	connect (Ui_.ItemView_,
-			SIGNAL (loadStarted ()),
-			this,
-			SLOT (loadStarted ()));
-	connect (Ui_.ItemView_,
-			SIGNAL (loadFinished (bool)),
-			this,
-			SLOT (loadFinished (bool)));
-	connect (Ui_.ItemView_,
-			SIGNAL (loadProgress (int)),
-			this,
-			SLOT (loadProgress (int)));
 }
 
 void Aggregator::Release ()
@@ -276,6 +273,18 @@ void Aggregator::on_CaseSensitiveSearch__stateChanged (int state)
     ItemsFilterModel_->setFilterCaseSensitivity (state ? Qt::CaseSensitive : Qt::CaseInsensitive);
 }
 
+void Aggregator::on_ActionAddToItemBucket__triggered ()
+{
+	Core::Instance ().AddToItemBucket (ItemsFilterModel_->
+			mapToSource (Ui_.Items_->selectionModel ()->
+				currentIndex ()));
+}
+
+void Aggregator::on_ActionItemBucket__triggered ()
+{
+	ItemBucket::Instance ().show ();
+}
+
 void Aggregator::currentItemChanged (const QModelIndex& index)
 {
     Ui_.ItemView_->setHtml (Core::Instance ().GetDescription (index));
@@ -294,6 +303,7 @@ void Aggregator::currentChannelChanged ()
     Ui_.ChannelDescription_->setText (Core::Instance ().GetChannelDescription (ChannelsFilterModel_->mapToSource (index)));
     Ui_.ChannelAuthor_->setText (Core::Instance ().GetChannelAuthor (ChannelsFilterModel_->mapToSource (index)));
     Ui_.ChannelLanguage_->setText (Core::Instance ().GetChannelLanguage (ChannelsFilterModel_->mapToSource (index)));
+	Ui_.ItemView_->setHtml ("");
 }
 
 void Aggregator::unreadNumberChanged (int number)
@@ -327,25 +337,6 @@ void Aggregator::trayIconActivated ()
     show ();
     IsShown_ = true;
     Ui_.Feeds_->setCurrentIndex (ChannelsFilterModel_->mapFromSource (Core::Instance ().GetUnreadChannelIndex ()));
-}
-
-void Aggregator::loadStarted ()
-{
-	Ui_.PageLoadProgressBar_->setFormat (tr ("Loading..."));
-	Ui_.PageLoadProgressBar_->setValue (100);
-}
-
-void Aggregator::loadFinished (bool ok)
-{
-	QString text = ok ? Ui_.ItemView_->title () : Ui_.ItemView_->title () + tr (" (with errors)");
-	Ui_.PageLoadProgressBar_->setFormat (text);
-	Ui_.PageLoadProgressBar_->setValue (100);
-}
-
-void Aggregator::loadProgress (int progress)
-{
-	Ui_.PageLoadProgressBar_->setFormat (tr ("Loading (\%p)"));
-	Ui_.PageLoadProgressBar_->setValue (progress);
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_aggregator, Aggregator);
