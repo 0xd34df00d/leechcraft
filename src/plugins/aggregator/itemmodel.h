@@ -13,6 +13,7 @@ class ItemModel : public QAbstractItemModel
 
 	std::deque<boost::shared_ptr<Item> > Items_;
 	QStringList ItemHeaders_;
+	bool SaveScheduled_;
 public:
 	ItemModel (QObject* = 0);
 	virtual ~ItemModel ();
@@ -30,6 +31,10 @@ public:
     virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
     virtual QModelIndex parent (const QModelIndex&) const;
     virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
+private:
+	void ScheduleSave ();
+public slots:
+	void saveSettings ();
 };
 
 #endif

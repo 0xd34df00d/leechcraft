@@ -18,6 +18,7 @@ class ItemBucket : public QDialog
 public:
 	virtual ~ItemBucket ();
 	static ItemBucket& Instance ();
+	void Release ();
 	void AddItem (const boost::shared_ptr<Item>&);
 private slots:
 	void on_Items__activated (const QModelIndex&);

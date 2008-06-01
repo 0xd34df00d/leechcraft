@@ -56,6 +56,7 @@ Core& Core::Instance ()
 void Core::Release ()
 {
     saveSettings ();
+	ItemBucket::Instance ().Release ();
     XmlSettingsManager::Instance ()->Release ();
 }
 
@@ -409,6 +410,7 @@ void Core::scheduleSave ()
     if (SaveScheduled_)
         return;
     QTimer::singleShot (500, this, SLOT (saveSettings ()));
+	SaveScheduled_ = true;
 }
 
 void Core::handleJobFinished (int id)

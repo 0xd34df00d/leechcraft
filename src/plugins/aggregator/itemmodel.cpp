@@ -1,13 +1,27 @@
 #include <QDesktopServices>
+#include <QSettings>
 #include <QUrl>
+#include <QTimer>
+#include <QVariant>
 #include <QtDebug>
+#include <plugininterface/proxy.h>
 #include "item.h"
 #include "itemmodel.h"
 
 ItemModel::ItemModel (QObject *parent)
 : QAbstractItemModel (parent)
+, SaveScheduled_ (false)
 {
 	ItemHeaders_ << tr ("Name");
+
+    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Aggregator");
+    int numItems = settings.beginReadArray ("ItemBucket");
+    for (int i = 0; i < numItems; ++i)
+    {
+        settings.setArrayIndex (i);
+		Items_.push_back (boost::shared_ptr<Item> (new Item (settings.value ("Item").value<Item> ())));
+    }
+    settings.endArray ();
 }
 
 ItemModel::~ItemModel ()
@@ -21,6 +35,8 @@ void ItemModel::AddItem (const boost::shared_ptr<Item>& item)
 	beginInsertRows (QModelIndex (), rowCount (), rowCount ());
 	Items_.push_front (local);
 	endInsertRows ();
+
+	ScheduleSave ();
 }
 
 void ItemModel::RemoveItem (const QModelIndex& index)
@@ -32,6 +48,8 @@ void ItemModel::RemoveItem (const QModelIndex& index)
 	beginRemoveRows (QModelIndex (), index.row (), index.row ());
 	Items_.erase (Items_.begin () + index.row ());
 	endRemoveRows ();
+
+	ScheduleSave ();
 }
 
 void ItemModel::Activated (const QModelIndex& index) const
@@ -103,5 +121,26 @@ QModelIndex ItemModel::parent (const QModelIndex& index) const
 int ItemModel::rowCount (const QModelIndex& parent) const
 {
 	return Items_.size ();
+}
+
+void ItemModel::ScheduleSave ()
+{
+	if (SaveScheduled_)
+		return;
+	QTimer::singleShot (500, this, SLOT (saveSettings ()));
+}
+
+void ItemModel::saveSettings ()
+{
+    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Aggregator");
+    settings.beginWriteArray ("ItemBucket");
+    settings.remove ("");
+    for (int i = 0; i < Items_.size (); ++i)
+    {
+        settings.setArrayIndex (i);
+        settings.setValue ("Item", qVariantFromValue<Item> (*Items_ [i]));
+    }
+    settings.endArray ();
+    SaveScheduled_ = false;
 }
 

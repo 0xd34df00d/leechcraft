@@ -27,6 +27,11 @@ ItemBucket& ItemBucket::Instance ()
 	return bucket;
 }
 
+void ItemBucket::Release ()
+{
+	Model_->saveSettings ();
+}
+
 void ItemBucket::AddItem (const boost::shared_ptr<Item>& item)
 {
 	Model_->AddItem (item);
