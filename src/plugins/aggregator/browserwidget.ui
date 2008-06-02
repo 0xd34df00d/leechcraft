@@ -87,11 +87,19 @@
    </property>
   </action>
   <action name="ActionBrowserStop_" >
+   <property name="icon" >
+    <iconset resource="resources.qrc" >
+     <normaloff>:/resources/images/stop.png</normaloff>:/resources/images/stop.png</iconset>
+   </property>
    <property name="text" >
     <string>Stop</string>
    </property>
   </action>
   <action name="ActionBrowserReload_" >
+   <property name="icon" >
+    <iconset resource="resources.qrc" >
+     <normaloff>:/resources/images/refresh.png</normaloff>:/resources/images/refresh.png</iconset>
+   </property>
    <property name="text" >
     <string>Reload</string>
    </property>

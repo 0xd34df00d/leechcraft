@@ -20,6 +20,10 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	Ui_.BrowserForwardButton_->setDefaultAction (Ui_.ActionBrowserForward_);
 	Ui_.BrowserReloadButton_->setDefaultAction (Ui_.ActionBrowserReload_);
 	Ui_.BrowserStopButton_->setDefaultAction (Ui_.ActionBrowserStop_);
+	connect (Ui_.ActionBrowserBack_, SIGNAL (triggered ()), Ui_.ItemView_, SLOT (back ()));
+	connect (Ui_.ActionBrowserForward_, SIGNAL (triggered ()), Ui_.ItemView_, SLOT (forward ()));
+	connect (Ui_.ActionBrowserStop_, SIGNAL (triggered ()), Ui_.ItemView_, SLOT (stop ()));
+	connect (Ui_.ActionBrowserReload_, SIGNAL (triggered ()), Ui_.ItemView_, SLOT (reload ()));
 }
 
 void BrowserWidget::setHtml (const QString& html)

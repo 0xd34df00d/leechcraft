@@ -1,17 +1,22 @@
 #ifndef ITEMBUCKET_H
 #define ITEMBUCKET_H
 #include <QDialog>
-#include "ui_itembucket.h"
 #include <boost/shared_ptr.hpp>
 
 class Item;
 class ItemModel;
+class QModelIndex;
+
+namespace Ui
+{
+	class ItemBucket;
+};
 
 class ItemBucket : public QDialog
 {
 	Q_OBJECT
 
-	Ui::ItemBucket Ui_;
+	Ui::ItemBucket *Ui_;
 	ItemModel *Model_;
 
 	ItemBucket ();
