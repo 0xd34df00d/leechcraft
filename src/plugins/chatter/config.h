@@ -20,6 +20,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#define FS_NICK "chatter%1"
 #define FS_SERVER "irc.freenode.net"
 #define FS_CHANNEL "#qt-ru"
 #define FS_PORT 6667
@@ -30,8 +31,7 @@
 
 #define ACT_URI 0
 #define ACT_NICK 1
-#define ACT_CHANNEL 2
-#define ACT_ENCODING 3
-#define ACT_QUIT 4
+#define ACT_ENCODING 2
+#define ACT_QUIT 3
 
 #endif
