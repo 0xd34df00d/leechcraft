@@ -23,9 +23,9 @@ SettingsItemInfo::SettingsItemInfo (const SettingsItemInfo& obj)
 , SpinboxSuffix_ (obj.SpinboxSuffix_)
 , SpinboxStep_ (obj.SpinboxStep_)
 , BrowseButton_ (obj.BrowseButton_)
-, PageIcon_ (obj.PageIcon_)
 , GroupBoxer_ (obj.GroupBoxer_)
 , SubItems_ (obj.SubItems_)
+, PageIcon_ (obj.PageIcon_)
 {
 }
 

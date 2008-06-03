@@ -79,7 +79,7 @@ QVariant PeersModel::data (const QModelIndex& index, int role) const
             {
                 int remoteNum = std::accumulate (Peers_.at (i).Pieces_.begin (), Peers_.at (i).Pieces_.end (), 0),
                     remoteHasWeDont = 0;
-                for (int j = 0; j < localPieces->size (); ++j)
+                for (size_t j = 0; j < localPieces->size (); ++j)
                     remoteHasWeDont += (Peers_.at (i).Pieces_ [j] && !(*localPieces) [j]);
                 return tr ("%1, %2 we don't have").arg (remoteNum).arg (remoteHasWeDont);
             }
@@ -140,7 +140,7 @@ QModelIndex PeersModel::parent (const QModelIndex&) const
 
 int PeersModel::rowCount (const QModelIndex& index) const
 {
-    Peers_.size ();
+    return Peers_.size ();
 }
 
 void PeersModel::Clear ()
@@ -156,31 +156,24 @@ void PeersModel::Clear ()
 void PeersModel::Update (const QList<PeerInfo>& peers, int torrent)
 {
     CurrentTorrent_ = torrent;
-    QList<PeerInfo> peers2insert;
-    QMap<QString, int> IP2position;
 
+    QHash<QString, int> IP2position;
     for (int i = 0; i < Peers_.size (); ++i)
         IP2position [Peers_.at (i).IP_] = i;
 
-    for (int i = 0; i < peers.size (); ++i)
+	int psize = peers.size ();
+    QList<PeerInfo> peers2insert;
+    for (int i = 0; i < psize; ++i)
     {
-        PeerInfo pi = peers.at (i);
-
-        int found = false;
-        for (int j = 0; j < Peers_.size (); ++j)
-            if (Peers_.at (j).IP_ == pi.IP_)
-            {
-                found = true;
-                Peers_ [j] = pi;
-                IP2position.remove (pi.IP_);
-                emit dataChanged (index (j, 1), index (j, 11));
-                break;
-            }
-
-        if (found)
-            continue;
-
-        peers2insert << pi;
+        const PeerInfo& pi = peers.at (i);
+		QHash<QString, int>::iterator pos = IP2position.find (pi.IP_);
+        if (pos != IP2position.end ())
+		{
+			Peers_ [pos.value ()] = pi;
+			IP2position.erase (pos);
+		}
+		else
+			peers2insert << pi;
     }
 
     QList<int> values = IP2position.values ();
@@ -191,6 +184,8 @@ void PeersModel::Update (const QList<PeerInfo>& peers, int torrent)
         Peers_.removeAt (values.at (i));
         endRemoveRows ();
     }
+
+	reset ();
 
     if (peers2insert.size ())
     {

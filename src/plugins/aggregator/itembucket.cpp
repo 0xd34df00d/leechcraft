@@ -5,11 +5,10 @@
 #include "ui_itembucket.h"
 
 ItemBucket::ItemBucket ()
+: Model_ (new ItemModel)
+, Ui_ (new Ui::ItemBucket)
 {
-	Ui_ = new Ui::ItemBucket;
 	Ui_->setupUi (this);
-
-	Model_ = new ItemModel (this);
 	Ui_->Items_->setModel (Model_);
     Ui_->Items_->addAction (Ui_->ActionDeleteItem_);
     Ui_->Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
@@ -22,7 +21,6 @@ ItemBucket::ItemBucket ()
 
 ItemBucket::~ItemBucket ()
 {
-	qDebug () << metaObject ()->className ();
 }
 
 ItemBucket& ItemBucket::Instance ()
@@ -33,9 +31,10 @@ ItemBucket& ItemBucket::Instance ()
 
 void ItemBucket::Release ()
 {
+	qDebug () << Q_FUNC_INFO;
 	Model_->saveSettings ();
 	delete Ui_;
-	Ui_ = 0;
+	delete Model_;
 }
 
 void ItemBucket::AddItem (const boost::shared_ptr<Item>& item)

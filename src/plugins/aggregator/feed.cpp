@@ -19,6 +19,7 @@ Feed& Feed::operator= (const Feed& feed)
     URL_ = feed.URL_;
     LastUpdate_ = feed.LastUpdate_;
     Channels_ = feed.Channels_;
+	return *this;
 }
 
 bool operator< (const Feed& f1, const Feed& f2)

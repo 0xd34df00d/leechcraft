@@ -40,9 +40,13 @@ QVariant PiecesModel::data (const QModelIndex& index, int role) const
                     return tr ("Medium");
                 case libtorrent::partial_piece_info::fast:
                     return tr ("Fast");
+				default:
+					return QVariant ();
             }
         case 2:
             return QString ("%1/%2").arg (Pieces_.at (index.row ()).FinishedBlocks_).arg (Pieces_.at (index.row ()).TotalBlocks_);
+		default:
+			return QVariant ();
     }
 }
 
@@ -107,7 +111,7 @@ void PiecesModel::Update (const std::vector<libtorrent::partial_piece_info>& que
         index2position [Pieces_.at (i).Index_] = i;
 
     // Update
-    for (int i = 0; i < queue.size (); ++i)
+    for (size_t i = 0; i < queue.size (); ++i)
     {
         libtorrent::partial_piece_info ppi = queue [i];
 

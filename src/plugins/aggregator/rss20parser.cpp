@@ -28,11 +28,11 @@ std::vector<boost::shared_ptr<Channel> > RSS20Parser::Parse (const std::vector<b
 {
     std::vector<boost::shared_ptr<Channel> > newes = Parse (recent),
         result;
-    for (int i = 0; i < newes.size (); ++i)
+    for (size_t i = 0; i < newes.size (); ++i)
     {
         boost::shared_ptr<Channel> newChannel = newes.at (i);
         int position = -1;
-        for (int j = 0; j < channels.size (); ++j)
+        for (size_t j = 0; j < channels.size (); ++j)
             if (*channels.at (j) == *newChannel)
             {
                 position = j;
@@ -53,11 +53,11 @@ std::vector<boost::shared_ptr<Channel> > RSS20Parser::Parse (const std::vector<b
             *toInsert = *oldChannel;
             toInsert->LastBuild_ = newChannel->LastBuild_;
 
-            for (int j = 0; j < newChannel->Items_.size (); ++j)
+            for (size_t j = 0; j < newChannel->Items_.size (); ++j)
             {
                 bool found = false;
                 // Check if that item already exists
-                for (int h = 0; h < toInsert->Items_.size (); ++h)
+                for (size_t h = 0; h < toInsert->Items_.size (); ++h)
                     if (*toInsert->Items_ [h] == *newChannel->Items_ [j])
                     {
                         found = true;
@@ -69,7 +69,7 @@ std::vector<boost::shared_ptr<Channel> > RSS20Parser::Parse (const std::vector<b
                 // Okay, this item is new, let's find where to place
                 // it. We should place it before the first found item
                 // with earlier datetime.
-                for (int h = 0; h < toInsert->Items_.size (); ++h)
+                for (size_t h = 0; h < toInsert->Items_.size (); ++h)
                 {
                     if (toInsert->Items_ [h]->PubDate_ < newChannel->Items_ [j]->PubDate_)
                     {

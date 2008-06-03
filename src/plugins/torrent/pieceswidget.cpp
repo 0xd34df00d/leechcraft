@@ -21,7 +21,8 @@ QList<QPair<int, int> > FindTrues (const std::vector<bool>& pieces)
     QList<QPair<int, int> > result;
     bool prevVal = pieces [0];
     int prevPos = 0;
-    for (int i = 1; i < pieces.size (); ++i)
+	int size = static_cast<int> (pieces.size ());
+    for (int i = 1; i < size; ++i)
         if (pieces [i] != prevVal)
         {
             if (prevVal)
@@ -32,10 +33,10 @@ QList<QPair<int, int> > FindTrues (const std::vector<bool>& pieces)
 
     if (!prevPos && prevVal)
         result << qMakePair<int, int> (0, pieces.size ());
-    else if (prevVal && result.size () && result.last ().second != pieces.size () - 1)
-        result << qMakePair<int, int> (prevPos, pieces.size ());
+    else if (prevVal && result.size () && result.last ().second != size - 1)
+        result << qMakePair<int, int> (prevPos, size);
     else if (prevVal && !result.size ())
-        result << qMakePair<int, int> (0, pieces.size ());
+        result << qMakePair<int, int> (0, size);
 
     return result;
 }

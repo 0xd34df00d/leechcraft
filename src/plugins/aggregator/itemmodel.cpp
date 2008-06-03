@@ -135,7 +135,7 @@ void ItemModel::saveSettings ()
     QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Aggregator");
     settings.beginWriteArray ("ItemBucket");
     settings.remove ("");
-    for (int i = 0; i < Items_.size (); ++i)
+    for (size_t i = 0; i < Items_.size (); ++i)
     {
         settings.setArrayIndex (i);
         settings.setValue ("Item", qVariantFromValue<Item> (*Items_ [i]));

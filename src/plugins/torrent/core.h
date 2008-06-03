@@ -56,6 +56,8 @@ private:
     PeersModel *PeersModel_;
     TagsCompletionModel *TagsCompletionModel_;
 	TorrentFilesModel *TorrentFilesModel_;
+
+    Core ();
 public:
     enum Columns
     {
@@ -72,7 +74,7 @@ public:
         , ColumnRemaining 
     };
     static Core* Instance ();
-    Core (QObject *parent = 0);
+	virtual ~Core ();
     void DoDelayedInit ();
     void Release ();
     PiecesModel* GetPiecesModel ();

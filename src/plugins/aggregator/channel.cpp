@@ -27,6 +27,7 @@ Channel& Channel::operator= (const Channel& channel)
     LastBuild_ = channel.LastBuild_;
     Tags_ = channel.Tags_;
     Items_ = channel.Items_;
+	return *this;
 }
 
 int Channel::CountUnreadItems () const
@@ -53,7 +54,7 @@ QDataStream& operator<< (QDataStream& out, const Channel& chan)
         << chan.Author_
         << chan.Pixmap_
         << static_cast<quint32> (chan.Items_.size ());
-    for (int i = 0; i < chan.Items_.size (); ++i)
+    for (size_t i = 0; i < chan.Items_.size (); ++i)
         out << *chan.Items_ [i];
     return out;
 }
@@ -71,7 +72,7 @@ QDataStream& operator>> (QDataStream& in, Channel& chan)
         >> chan.Pixmap_;
     in >> size;
     chan.Items_.reserve (size);
-    for (int i = 0; i < size; ++i)
+    for (size_t i = 0; i < size; ++i)
     {
         boost::shared_ptr<Item> it (new Item);
         in >> *it;

@@ -55,6 +55,7 @@ Core& Core::Instance ()
 
 void Core::Release ()
 {
+	qDebug () << Q_FUNC_INFO;
     saveSettings ();
 	ItemBucket::Instance ().Release ();
     XmlSettingsManager::Instance ()->Release ();
@@ -135,7 +136,7 @@ void Core::RemoveFeed (const QModelIndex& index)
         return;
     }
 
-    for (int i = 0; i < Feeds_ [feedURL].Channels_.size (); ++i)
+    for (size_t i = 0; i < Feeds_ [feedURL].Channels_.size (); ++i)
         ChannelsModel_->RemoveChannel (Feeds_ [feedURL].Channels_ [i]);
     Feeds_.remove (feedURL);
 
@@ -146,7 +147,7 @@ void Core::RemoveFeed (const QModelIndex& index)
 
 void Core::Activated (const QModelIndex& index)
 {
-    if (!ActivatedChannel_ || ActivatedChannel_->Items_.size () <= index.row ())
+    if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
         return;
 
     boost::shared_ptr<Item> item = ActivatedChannel_->Items_ [index.row ()];
@@ -165,7 +166,7 @@ void Core::FeedActivated (const QModelIndex& index)
 
 QString Core::GetDescription (const QModelIndex& index)
 {
-    if (!ActivatedChannel_ || ActivatedChannel_->Items_.size () <= index.row ())
+    if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
         return QString ();
 
     boost::shared_ptr<Item> item = ActivatedChannel_->Items_ [index.row ()];
@@ -471,7 +472,7 @@ void Core::handleJobFinished (int id)
     if (pj.Role_ == PendingJob::RFeedAdded)
     {
         Feeds_ [pj.URL_].Channels_ = channels;
-        for (int i = 0; i < channels.size (); ++i)
+        for (size_t i = 0; i < channels.size (); ++i)
         {
             channels [i]->Tags_ = pj.Tags_;
             if (QUrl (channels [i]->PixmapURL_).isValid () && !QUrl (channels [i]->PixmapURL_).isRelative ())
@@ -500,11 +501,11 @@ void Core::handleJobFinished (int id)
     else if (pj.Role_ == PendingJob::RFeedUpdated)
     {
         ChannelsModel_->Update (channels);
-        for (int i = 0; i < channels.size (); ++i)
+        for (size_t i = 0; i < channels.size (); ++i)
         {
             int position = -1;
             qDebug () << "new chan params:" << channels [i]->Title_ << channels [i]->Link_;
-            for (int j = 0; j < Feeds_ [pj.URL_].Channels_.size (); ++j)
+            for (size_t j = 0; j < Feeds_ [pj.URL_].Channels_.size (); ++j)
             {
                 qDebug () << "testing chan:"
                     << Feeds_ [pj.URL_].Channels_ [j]->Title_
@@ -547,7 +548,7 @@ void Core::handleJobFinished (int id)
                 emit dataChanged (index (0, 0), index (channels [i]->Items_.size () - 1, 1));
 
 
-                int ipc = XmlSettingsManager::Instance ()->property ("ItemsPerChannel").toInt ();
+                size_t ipc = XmlSettingsManager::Instance ()->property ("ItemsPerChannel").value<size_t> ();
                 if (Feeds_ [pj.URL_].Channels_ [position]->Items_.size () > ipc)
                 {
                     if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_ [position].get ())
@@ -563,7 +564,7 @@ void Core::handleJobFinished (int id)
                 int days = XmlSettingsManager::Instance ()->property ("ItemsMaxAge").toInt ();
                 QDateTime current = QDateTime::currentDateTime ();
                 int removeFrom = -1;
-                for (int j = 0; j < Feeds_ [pj.URL_].Channels_ [position]->Items_.size (); ++j)
+                for (size_t j = 0; j < Feeds_ [pj.URL_].Channels_ [position]->Items_.size (); ++j)
                 {
                     if (Feeds_ [pj.URL_].Channels_ [position]->Items_ [j]->PubDate_.daysTo (current) > days)
                     {
@@ -730,8 +731,8 @@ void Core::UpdateUnreadItemsNumber () const
 {
     int result = 0;
     for (QMap<QString, Feed>::const_iterator i = Feeds_.begin (); i != Feeds_.end (); ++i)
-        for (int j = 0; j < i.value ().Channels_.size (); ++j)
-            for (int k = 0; k < i.value ().Channels_ [j]->Items_.size (); ++k)
+        for (size_t j = 0; j < i.value ().Channels_.size (); ++j)
+            for (size_t k = 0; k < i.value ().Channels_ [j]->Items_.size (); ++k)
                 result += i.value ().Channels_ [j]->Items_ [k]->Unread_;
     emit unreadNumberChanged (result);
 }

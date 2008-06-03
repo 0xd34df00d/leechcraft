@@ -32,21 +32,23 @@
 #include "peersmodel.h"
 #include "torrentfilesmodel.h"
 
-Q_GLOBAL_STATIC (Core, CoreInstance);
-
 Core* Core::Instance ()
 {
-    return CoreInstance ();
+	static Core core;
+	return &core;
 }
 
-Core::Core (QObject *parent)
-: QAbstractItemModel (parent)
-, CurrentTorrent_ (-1)
+Core::Core ()
+: CurrentTorrent_ (-1)
 {
-    PeersModel_ = new PeersModel (this);
-    PiecesModel_ = new PiecesModel (this);
-    TagsCompletionModel_ = new TagsCompletionModel (this);
-	TorrentFilesModel_ = new TorrentFilesModel (false, this);
+    PeersModel_ = new PeersModel ();
+    PiecesModel_ = new PiecesModel ();
+    TagsCompletionModel_ = new TagsCompletionModel ();
+	TorrentFilesModel_ = new TorrentFilesModel (false);
+}
+
+Core::~Core ()
+{
 }
 
 void Core::DoDelayedInit ()
@@ -99,6 +101,24 @@ void Core::Release ()
     writeSettings ();
     Session_->stop_dht ();
     killTimer (InterfaceUpdateTimer_);
+	delete Session_;
+	Session_ = 0;
+	delete SettingsSaveTimer_;
+	SettingsSaveTimer_ = 0;
+	delete PiecesModel_;
+	PiecesModel_ = 0;
+	delete PeersModel_;
+	PeersModel_ = 0;
+	delete TagsCompletionModel_;
+	TagsCompletionModel_ = 0;
+	delete TorrentFilesModel_;
+	TorrentFilesModel_ = 0;
+	QObjectList kids = children ();
+	for (int i = 0; i < kids.size (); ++i)
+	{
+		delete kids.at (i);
+		kids [i] = 0;
+	}
 }
 
 PiecesModel* Core::GetPiecesModel ()
@@ -411,7 +431,7 @@ QList<PeerInfo> Core::GetPeers (int row) const
     std::vector<libtorrent::peer_info> peerInfos;
     Handles_.at (row).Handle_.get_peer_info (peerInfos);
 
-    for (int i = 0; i < peerInfos.size (); ++i)
+    for (size_t i = 0; i < peerInfos.size (); ++i)
     {
         libtorrent::peer_info pi = peerInfos [i];
         PeerInfo ppi;
@@ -495,7 +515,7 @@ void Core::AddFile (const QString& filename, const QString& path, const QStringL
 
     std::vector<int> priorities;
     priorities.resize (handle.get_torrent_info ().num_files ());
-    for (int i = 0; i < priorities.size (); ++i)
+    for (size_t i = 0; i < priorities.size (); ++i)
         priorities [i] = 1;
 
     if (files.size ())
@@ -778,7 +798,7 @@ QStringList Core::GetTrackers (int torrent) const
 
     std::vector<libtorrent::announce_entry> an = Handles_.at (torrent).Handle_.trackers ();
     QStringList result;
-    for (int i = 0; i < an.size (); ++i)
+    for (size_t i = 0; i < an.size (); ++i)
         result.append (QString::fromStdString (an [i].url));
     return result;
 }
@@ -879,7 +899,7 @@ void Core::MakeTorrent (NewTorrentParams params) const
         emit error (tr ("Could not open file %1 for write!").arg (filename));
         return;
     }
-    for (int i = 0; i < outbuf.size (); ++i)
+    for (size_t i = 0; i < outbuf.size (); ++i)
         file.write (&outbuf.at (i), 1);
     file.close ();
 }
@@ -1248,6 +1268,8 @@ void Core::checkFinished ()
                     }
                 }
                 break;
+			case libtorrent::torrent_status::downloading_metadata:
+				break;
             case libtorrent::torrent_status::finished:
             case libtorrent::torrent_status::seeding:
                 TorrentState oldState = Handles_ [i].State_;

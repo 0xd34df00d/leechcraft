@@ -169,7 +169,11 @@ QByteArray TcpSocket::ReadLine ()
         return response;
     }
     else
+	{
         ThrowException ();
+		// shut up the warning
+		return QByteArray ();
+	}
 }
 
 /*!
@@ -188,7 +192,11 @@ QByteArray TcpSocket::ReadAll ()
     if (bytesAvailable () || waitForReadyRead (DefaultTimeout_))
         return readAll ();
     else
+	{
         ThrowException ();
+		// shut up the warning
+		return QByteArray ();
+	}
 }
 
 /*!
@@ -288,7 +296,7 @@ void TcpSocket::ThrowException () const
             throw Exceptions::Socket::ProxyAuthenticationRequired (errorString ());
         case UnfinishedSocketOperationError:
             throw Exceptions::Socket::UnfinishedSocketOperation (errorString ());
-        case UnknownSocketError:
+        default:
             throw Exceptions::Socket::GenericSocket (errorString ());
     }
 }

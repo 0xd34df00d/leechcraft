@@ -26,6 +26,10 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	connect (Ui_.ActionBrowserReload_, SIGNAL (triggered ()), Ui_.ItemView_, SLOT (reload ()));
 }
 
+BrowserWidget::~BrowserWidget ()
+{
+}
+
 void BrowserWidget::setHtml (const QString& html)
 {
 	Ui_.ItemView_->setHtml (html);

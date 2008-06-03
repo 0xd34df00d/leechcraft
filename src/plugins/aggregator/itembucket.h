@@ -2,6 +2,7 @@
 #define ITEMBUCKET_H
 #include <QDialog>
 #include <boost/shared_ptr.hpp>
+#include <boost/scoped_ptr.hpp>
 
 class Item;
 class ItemModel;
@@ -16,8 +17,8 @@ class ItemBucket : public QDialog
 {
 	Q_OBJECT
 
-	Ui::ItemBucket *Ui_;
 	ItemModel *Model_;
+	Ui::ItemBucket *Ui_;
 
 	ItemBucket ();
 public:

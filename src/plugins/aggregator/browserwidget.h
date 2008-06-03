@@ -12,6 +12,7 @@ class BrowserWidget : public QWidget
 	Ui::BrowserWidget Ui_;
 public:
 	BrowserWidget (QWidget* = 0);
+	virtual ~BrowserWidget ();
 	void setHtml (const QString&);
 	QWebPage *page () const;
 private slots:

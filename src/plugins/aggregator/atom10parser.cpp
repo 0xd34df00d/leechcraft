@@ -37,7 +37,7 @@ std::vector<boost::shared_ptr<Channel> > Atom10Parser::Parse (const std::vector<
         *toInsert = *old.at (0);
         boost::shared_ptr<Item> lastItemWeHave = old.at (0)->Items_ [0];
         int index = newes.at (0)->Items_.size ();
-        for (int j = 0; j < newes.at (0)->Items_.size (); ++j)
+        for (size_t j = 0; j < newes.at (0)->Items_.size (); ++j)
             if (*newes.at (0)->Items_ [j] == *lastItemWeHave)
             {
                 index = j - 1;

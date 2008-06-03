@@ -287,7 +287,7 @@ void Aggregator::on_ActionItemBucket__triggered ()
 
 void Aggregator::currentItemChanged (const QModelIndex& index)
 {
-    Ui_.ItemView_->setHtml (Core::Instance ().GetDescription (index));
+    Ui_.ItemView_->setHtml (Core::Instance ().GetDescription (ItemsFilterModel_->mapToSource (index)));
 	connect (Ui_.ItemView_->page ()->networkAccessManager (),
 			SIGNAL (sslErrors (QNetworkReply*, const QList<QSslError>&)),
 			&Core::Instance (),

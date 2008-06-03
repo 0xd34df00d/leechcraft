@@ -148,7 +148,6 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
     QString type = item.attribute ("type");
 
     QGridLayout *lay = qobject_cast<QGridLayout*> (baseWidget->layout ());
-    int row = lay->rowCount ();
 
     QString property = item.attribute ("property");
     QVariant value = WorkingObject_->property (property.toLatin1 ().constData ());
