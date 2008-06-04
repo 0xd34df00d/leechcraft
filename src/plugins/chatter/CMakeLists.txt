@@ -1,7 +1,7 @@
 INCLUDE_DIRECTORIES(
    ${QT_INCLUDES}
    ${CMAKE_CURRENT_BINARY_DIR}
-   ../..
+   .
    src/
 )
 
