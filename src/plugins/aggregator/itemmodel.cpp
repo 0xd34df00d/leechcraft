@@ -41,7 +41,6 @@ void ItemModel::AddItem (const boost::shared_ptr<Item>& item)
 
 void ItemModel::RemoveItem (const QModelIndex& index)
 {
-	qDebug () << Q_FUNC_INFO << index.isValid () << index.row () << rowCount ();
 	if (!index.isValid () || index.row () >= rowCount ())
 		return;
 

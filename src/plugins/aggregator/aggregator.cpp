@@ -217,12 +217,14 @@ void Aggregator::on_ActionPreferences__triggered ()
 
 void Aggregator::on_Items__activated (const QModelIndex& index)
 {
-    Core::Instance ().Activated (ItemsFilterModel_->mapToSource (index));
+	if (index.isValid ())
+		Core::Instance ().Activated (ItemsFilterModel_->mapToSource (index));
 }
 
 void Aggregator::on_Feeds__activated (const QModelIndex& index)
 {
-    Core::Instance ().FeedActivated (ChannelsFilterModel_->mapToSource (index));
+	if (index.isValid ())
+		Core::Instance ().FeedActivated (ChannelsFilterModel_->mapToSource (index));
 }
 
 void Aggregator::on_ActionMarkItemAsUnread__triggered ()
@@ -251,7 +253,6 @@ void Aggregator::on_ActionUpdateSelectedFeed__triggered ()
     QModelIndex current = Ui_.Feeds_->selectionModel ()->currentIndex ();
     if (!current.isValid ())
         return;
-
     Core::Instance ().UpdateFeed (ChannelsFilterModel_->mapToSource (current));
 }
 
@@ -297,6 +298,8 @@ void Aggregator::currentItemChanged (const QModelIndex& index)
 void Aggregator::currentChannelChanged ()
 {
     QModelIndex index = Ui_.Feeds_->selectionModel ()->currentIndex ();
+	if (!index.isValid ())
+		return;
     Core::Instance ().currentChannelChanged (ChannelsFilterModel_->mapToSource (index));
     Ui_.ChannelTags_->setText (Core::Instance ().GetTagsForIndex (ChannelsFilterModel_->mapToSource (index).row ()).join (" "));
     Ui_.ChannelLink_->setText (Core::Instance ().GetChannelLink (ChannelsFilterModel_->mapToSource (index)));
@@ -336,7 +339,9 @@ void Aggregator::trayIconActivated ()
 {
     show ();
     IsShown_ = true;
-    Ui_.Feeds_->setCurrentIndex (ChannelsFilterModel_->mapFromSource (Core::Instance ().GetUnreadChannelIndex ()));
+	QModelIndex unread = Core::Instance ().GetUnreadChannelIndex ();
+	if (unread.isValid ())
+		Ui_.Feeds_->setCurrentIndex (ChannelsFilterModel_->mapFromSource (unread));
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_aggregator, Aggregator);

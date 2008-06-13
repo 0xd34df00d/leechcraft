@@ -55,7 +55,6 @@ Core& Core::Instance ()
 
 void Core::Release ()
 {
-	qDebug () << Q_FUNC_INFO;
     saveSettings ();
 	ItemBucket::Instance ().Release ();
     XmlSettingsManager::Instance ()->Release ();
@@ -124,10 +123,7 @@ void Core::RemoveFeed (const QModelIndex& index)
 {
     if (!index.isValid ())
         return;
-    boost::shared_ptr<Channel> channel = ChannelsModel_->GetChannelForIndex (index);
-    bool shouldEraseItemsList = (channel.get () == ActivatedChannel_);
-    if (shouldEraseItemsList)
-        beginRemoveRows (QModelIndex (), 0, ActivatedChannel_->Items_.size () - 1);
+    boost::shared_ptr<Channel>& channel = ChannelsModel_->GetChannelForIndex (index);
 
     QString feedURL = FindFeedForChannel (channel);
     if (feedURL.isEmpty ())
@@ -135,14 +131,12 @@ void Core::RemoveFeed (const QModelIndex& index)
         qWarning () << Q_FUNC_INFO << "could not find feed for channel" ;
         return;
     }
-
-    for (size_t i = 0; i < Feeds_ [feedURL].Channels_.size (); ++i)
+    for (size_t i = 0, size = Feeds_ [feedURL].Channels_.size (); i < size; ++i)
         ChannelsModel_->RemoveChannel (Feeds_ [feedURL].Channels_ [i]);
     Feeds_.remove (feedURL);
 
-    if (shouldEraseItemsList)
-        endRemoveRows ();
     UpdateUnreadItemsNumber ();
+	scheduleSave ();
 }
 
 void Core::Activated (const QModelIndex& index)
@@ -391,7 +385,7 @@ QModelIndex Core::parent (const QModelIndex& index) const
 
 int Core::rowCount (const QModelIndex& parent) const
 {
-    if (ActivatedChannel_)
+    if (ActivatedChannel_ && !parent.isValid ())
         return ActivatedChannel_->Items_.size ();
     else
         return 0;
@@ -416,13 +410,28 @@ void Core::scheduleSave ()
 
 void Core::handleJobFinished (int id)
 {
+	class FileRemoval : public QFile
+	{
+	public:
+		FileRemoval (const QString& name)
+		: QFile (name)
+		{
+		}
+
+		virtual ~FileRemoval ()
+		{
+			close ();
+			remove ();
+		}
+	};
+
     qDebug () << Q_FUNC_INFO;
     if (!PendingJobs_.contains (id))
         return;
     PendingJob pj = PendingJobs_ [id];
     qDebug () << id << pj.URL_ << pj.Filename_;
     PendingJobs_.remove (id);
-    QFile file (pj.Filename_);
+    FileRemoval file (pj.Filename_);
     if (!file.open (QIODevice::ReadOnly))
     {
         qWarning () << Q_FUNC_INFO << "could not open file for pj " << pj.Filename_;
@@ -463,8 +472,6 @@ void Core::handleJobFinished (int id)
             emit error (tr ("Could not find parser to parse file %1").arg (pj.Filename_));
             return;
         }
-        file.close ();
-        file.remove ();
 
         channels = parser->Parse (Feeds_ [pj.URL_].Channels_, data);
     }
@@ -492,7 +499,6 @@ void Core::handleJobFinished (int id)
                     continue;
                 }
                 PendingJob2ExternalData_ [channels [i]->PixmapURL_] = data;
-                file.close ();
             }
         }
         ChannelsModel_->AddFeed (Feeds_ [pj.URL_]);
@@ -590,8 +596,7 @@ void Core::handleJobFinished (int id)
     }
     else if (pj.Role_ == PendingJob::RFeedExternalData)
     {
-        ExternalData data = PendingJob2ExternalData_ [pj.URL_];
-        PendingJob2ExternalData_.remove (pj.URL_);
+        ExternalData data = PendingJob2ExternalData_.take (pj.URL_);
         if (data.RelatedChannel_)
         {
             switch (data.Type_)
@@ -613,8 +618,6 @@ void Core::handleJobFinished (int id)
         emit showDownloadMessage (emitString);
     }
     scheduleSave ();
-    if (file.exists ())
-        file.remove ();
     qDebug () << "DOWNLOAD HANDLER FINISHED TEMPORARY" << file.exists ();
 }
 
@@ -653,13 +656,14 @@ void Core::updateFeeds ()
 
         QTemporaryFile file;
         file.open ();
-        DirectDownloadParams params = { urls.at (i), file.fileName (), true, false };
-        qDebug () << "TEMPRORARY FILE AS SAMPLE" << file.fileName ();
-        PendingJob pj = { PendingJob :: RFeedUpdated, urls.at (i), file.fileName () };
-        int id = idd->AddJob (params);
-        PendingJobs_ [id] = pj;
+		QString filename = file.fileName ();
         file.close ();
         file.remove ();
+        DirectDownloadParams params = { urls.at (i), filename, true, false };
+        qDebug () << "TEMPRORARY FILE AS SAMPLE" << file.fileName ();
+        PendingJob pj = { PendingJob :: RFeedUpdated, urls.at (i), filename };
+        int id = idd->AddJob (params);
+        PendingJobs_ [id] = pj;
         qDebug () << urls.at (i) << id;
     }
 }

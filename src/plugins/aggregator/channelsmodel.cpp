@@ -116,7 +116,7 @@ int ChannelsModel::rowCount (const QModelIndex& parent) const
 
 void ChannelsModel::AddFeed (const Feed& feed)
 {
-    std::vector<boost::shared_ptr<Channel> > channels = feed.Channels_;
+    const std::vector<boost::shared_ptr<Channel> >& channels = feed.Channels_;
     if (!channels.size ())
         return;
 
@@ -124,7 +124,7 @@ void ChannelsModel::AddFeed (const Feed& feed)
     for (size_t i = 0; i < channels.size (); ++i)
     {
         QList<QVariant> data;
-        boost::shared_ptr<Channel> current = channels.at (i);
+        const boost::shared_ptr<Channel>& current = channels.at (i);
         data << current->Title_ << current->LastBuild_ << current->CountUnreadItems ();
         TreeItem *channelItem = new TreeItem (data, RootItem_);
         RootItem_->AppendChild (channelItem);
@@ -181,12 +181,9 @@ void ChannelsModel::UpdateChannelData (const boost::shared_ptr<Channel>& channel
     UpdateChannelData (channel.get ());
 }
 
-boost::shared_ptr<Channel> ChannelsModel::GetChannelForIndex (const QModelIndex& index) const
+boost::shared_ptr<Channel>& ChannelsModel::GetChannelForIndex (const QModelIndex& index)
 {
-    if (index.isValid ())
-        return TreeItem2Channel_ [static_cast<TreeItem*> (index.internalPointer ())];
-    else
-        return boost::shared_ptr<Channel> ();
+	return TreeItem2Channel_ [static_cast<TreeItem*> (index.internalPointer ())];
 }
 
 void ChannelsModel::RemoveChannel (const boost::shared_ptr<Channel>& channel)
@@ -198,8 +195,8 @@ void ChannelsModel::RemoveChannel (const boost::shared_ptr<Channel>& channel)
     int pos = RootItem_->ChildPosition (container);
 
     beginRemoveRows (QModelIndex (), pos, pos);
-    TreeItem2Channel_.remove (container);
     Channel2TreeItem_.remove (channel);
+    TreeItem2Channel_.remove (container);
     RootItem_->RemoveChild (pos);
     endRemoveRows ();
 }

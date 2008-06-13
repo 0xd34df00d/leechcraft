@@ -170,6 +170,8 @@ void HttpImp::run ()
     if (counter == Response_.ContentLength_ || RequestedRangeNotSatisfiable == Response_.StatusCode_)
         emit finished ();
 
+	Socket_->SetDefaultTimeout (XmlSettingsManager::Instance ()->property ("Disconnect timeout").toInt ());
+	Socket_->Disconnect ();
     delete Socket_;
     Socket_ = 0;
 }

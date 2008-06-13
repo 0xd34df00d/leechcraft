@@ -1,3 +1,4 @@
+#include <QDebug>
 #include "browserwidget.h"
 
 BrowserWidget::BrowserWidget (QWidget *parent)
@@ -20,10 +21,10 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	Ui_.BrowserForwardButton_->setDefaultAction (Ui_.ActionBrowserForward_);
 	Ui_.BrowserReloadButton_->setDefaultAction (Ui_.ActionBrowserReload_);
 	Ui_.BrowserStopButton_->setDefaultAction (Ui_.ActionBrowserStop_);
-	connect (Ui_.ActionBrowserBack_, SIGNAL (triggered ()), Ui_.ItemView_, SLOT (back ()));
-	connect (Ui_.ActionBrowserForward_, SIGNAL (triggered ()), Ui_.ItemView_, SLOT (forward ()));
-	connect (Ui_.ActionBrowserStop_, SIGNAL (triggered ()), Ui_.ItemView_, SLOT (stop ()));
-	connect (Ui_.ActionBrowserReload_, SIGNAL (triggered ()), Ui_.ItemView_, SLOT (reload ()));
+	connect (Ui_.ActionBrowserBack_, SIGNAL (triggered ()), this, SLOT (back ()));
+	connect (Ui_.ActionBrowserForward_, SIGNAL (triggered ()), this, SLOT (forward ()));
+	connect (Ui_.ActionBrowserStop_, SIGNAL (triggered ()), this, SLOT (stop ()));
+	connect (Ui_.ActionBrowserReload_, SIGNAL (triggered ()), this, SLOT (reload ()));
 }
 
 BrowserWidget::~BrowserWidget ()
@@ -60,5 +61,29 @@ void BrowserWidget::loadProgress (int progress)
 {
 	Ui_.PageLoadProgressBar_->setFormat (tr ("Loading (\%p)"));
 	Ui_.PageLoadProgressBar_->setValue (progress);
+}
+
+void BrowserWidget::back ()
+{
+	qDebug () << Q_FUNC_INFO;
+	Ui_.ItemView_->back ();
+}
+
+void BrowserWidget::forward ()
+{
+	qDebug () << Q_FUNC_INFO;
+	Ui_.ItemView_->forward ();
+}
+
+void BrowserWidget::stop ()
+{
+	qDebug () << Q_FUNC_INFO;
+	Ui_.ItemView_->stop ();
+}
+
+void BrowserWidget::reload ()
+{
+	qDebug () << Q_FUNC_INFO;
+	Ui_.ItemView_->reload ();
 }
 

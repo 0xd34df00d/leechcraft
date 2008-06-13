@@ -25,6 +25,7 @@ struct Channel
 
     Channel ();
     Channel (const Channel&);
+	~Channel ();
     Channel& operator= (const Channel&);
 
     int CountUnreadItems () const;

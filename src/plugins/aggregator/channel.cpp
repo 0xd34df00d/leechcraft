@@ -19,6 +19,10 @@ Channel::Channel (const Channel& channel)
 {
 }
 
+Channel::~Channel ()
+{
+}
+
 Channel& Channel::operator= (const Channel& channel)
 {
     Title_ = channel.Title_;

@@ -7,17 +7,10 @@
 #include <QMap>
 #include <QString>
 #include <QPair>
+#include <QFuture>
 #include "reply.h"
 
 class QStringList;
-
-namespace Poco
-{
-    namespace Net
-    {
-        class HTTPServerRequest;
-    };
-};
 
 class Core : public QObject
 {
@@ -28,6 +21,7 @@ class Core : public QObject
     Core ();
 
     bool Initialized_;
+	QFuture<int> Future_;
 public:
     struct PostEntity
     {
@@ -45,15 +39,6 @@ public:
     const QString& GetPassword () const;
 
     void AddObject (QObject*, const QString& feature);
-
-    bool IsAuthorized (const Poco::Net::HTTPServerRequest&) const;
-    Reply GetReplyFor (const QString&, const QMap<QString, QString>&, const QList<PostEntity>&);
-private:
-    Reply DoMainPage (const QStringList&, const QMap<QString, QString>&);
-    Reply DoView (const QStringList&, const QMap<QString, QString>&);
-    Reply DoAdd (const QStringList&, const QMap<QString, QString>&, const QByteArray&);
-    Reply DoUnhandled (const QStringList&, const QMap<QString, QString>&);
-    Reply DoResources (const QStringList&, const QMap<QString, QString>&);
 signals:
     void bindSuccessful (bool);
 };

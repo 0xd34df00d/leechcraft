@@ -7,17 +7,15 @@ SET (SRCS
     remoter.cpp
     core.cpp
     server.cpp
-    httprequesthandlerfactory.cpp
-    httprequesthandler.cpp
-    documentgenerator.cpp)
+    documentgenerator.cpp
+	application.cpp)
 SET (HEADERS
     remoter.h
     core.h
     server.h
-    httprequesthandlerfactory.h
-    httprequesthandler.h
     reply.h
     documentgenerator.h
+	application.h
     ../../plugininterface/basesettingsmanager.h)
 SET (FORMS
     mainwindow.ui)
@@ -34,11 +32,9 @@ QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 ADD_LIBRARY (leechcraft_remoter SHARED ${SRCS} ${MOC_SRCS} ${UIS_H} ${RCCS})
 TARGET_LINK_LIBRARIES (leechcraft_remoter
                         ${QT_LIBRARIES}
-                        PocoNet
-                        PocoXML
-                        PocoFoundation
-                        PocoUtil
                         plugininterface
                         exceptions
-                        xmlsettingsdialog)
+                        xmlsettingsdialog
+						wt
+						wthttp)
 INSTALL (TARGETS leechcraft_remoter DESTINATION share/leechcraft/plugins)

@@ -1,13 +1,14 @@
+#include <WApplication>
 #include <QStringList>
 #include <QTemporaryFile>
 #include <QUrl>
-#include <Poco/Net/HTTPServerRequest.h>
-#include <Poco/Net/NetException.h>
+#include <QtConcurrentRun>
 #include <interfaces/interfaces.h>
 #include <plugininterface/proxy.h>
 #include "core.h"
 #include "server.h"
 #include "documentgenerator.h"
+#include "application.h"
 
 Core::Core ()
 {
@@ -19,7 +20,8 @@ Core::Core ()
     Password_ = settings.value ("Password", "default").toString ();
     settings.endGroup ();
 
-    Initialized_ = Server::Instance ().Listen (port ? port : 14600);
+	char *args[] = { "lc-rm\0", "--docroot\0", ".\0", "--http-port\0", "14600\0" };
+//	QtConcurrent::run (Wt::WRun, 3, static_cast<char**> (args), &ApplicationCreator);
 }
 
 Core& Core::Instance ()
@@ -82,6 +84,7 @@ void Core::AddObject (QObject *object, const QString& feature)
         Objects_.append (object);
 }
 
+/*
 bool Core::IsAuthorized (const Poco::Net::HTTPServerRequest& request) const
 {
     std::string scheme, auth;
@@ -259,4 +262,6 @@ Reply Core::DoResources (const QStringList& path, const QMap<QString, QString>&)
     }
     return result;
 }
+
+*/
 
