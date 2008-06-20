@@ -22,7 +22,8 @@ SET (SRCS
     channelsfiltermodel.cpp
 	browserwidget.cpp
 	itembucket.cpp
-	itemmodel.cpp)
+	itemmodel.cpp
+	regexpmatcherui.cpp)
 SET (HEADERS
     aggregator.h
     core.h
@@ -42,12 +43,14 @@ SET (HEADERS
 	browserwidget.h
 	itembucket.h
 	itemmodel.h
+	regexpmatcherui.h
     ../../plugininterface/basesettingsmanager.h)
 SET (FORMS
     mainwindow.ui
     addfeed.ui
 	browserwidget.ui
-	itembucket.ui)
+	itembucket.ui
+	regexpmatcherui.ui)
 SET (RESOURCES resources.qrc)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})

@@ -61,7 +61,7 @@ Qt::ItemFlags TorrentFilesModel::flags (const QModelIndex& index) const
 
     if (AdditionDialog_ && index.column () == 0 && !hasChildren (index))
         return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
-    else if (!AdditionDialog_ && index.column () == 2 && !hasChildren (index))
+    else if (!AdditionDialog_ && index.column () == 2 && !rowCount (index.sibling (index.row (), 0)))
         return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
     else
         return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
@@ -124,7 +124,6 @@ int TorrentFilesModel::rowCount (const QModelIndex& parent) const
 
 bool TorrentFilesModel::setData (const QModelIndex& index, const QVariant& value, int role)
 {
-    qDebug () << Q_FUNC_INFO << index << value << (role == Qt::EditRole);
     if (!index.isValid ())
         return false;
 
@@ -158,9 +157,11 @@ void TorrentFilesModel::Clear ()
     Path2TreeItem_.clear ();
 }
 
-void TorrentFilesModel::ResetFiles (libtorrent::torrent_info::file_iterator begin, const libtorrent::torrent_info::file_iterator& end)
+void TorrentFilesModel::ResetFiles (libtorrent::torrent_info::file_iterator begin,
+		const libtorrent::torrent_info::file_iterator& end)
 {
     Clear ();
+    beginInsertRows (QModelIndex (), 0, RootItem_->ChildCount () - 1);
     int distance = std::distance (begin, end);
     if (!distance)
         return;
@@ -172,7 +173,8 @@ void TorrentFilesModel::ResetFiles (libtorrent::torrent_info::file_iterator begi
         MkParentIfDoesntExist (begin->path);
 
         QList<QVariant> displayData;
-        displayData << QString::fromUtf8 (begin->path.leaf ().c_str ()) << Proxy::Instance ()->MakePrettySize (begin->size);
+        displayData << QString::fromUtf8 (begin->path.leaf ().c_str ())
+			<< Proxy::Instance ()->MakePrettySize (begin->size);
         
         TreeItem *parentItem = Path2TreeItem_ [parentPath],
                  *item = new TreeItem (displayData, parentItem);
@@ -183,13 +185,13 @@ void TorrentFilesModel::ResetFiles (libtorrent::torrent_info::file_iterator begi
     }
     for (int i = 0; i < RootItem_->ChildCount (); ++i)
         UpdateSizeGraph (RootItem_->Child (i));
-    beginInsertRows (QModelIndex (), 0, RootItem_->ChildCount () - 1);
     endInsertRows ();
 }
 
 void TorrentFilesModel::ResetFiles (const QList<FileInfo>& infos)
 {
     Clear ();
+    beginInsertRows (QModelIndex (), 0, RootItem_->ChildCount () - 1);
     FilesInTorrent_ = infos.size ();
     Path2TreeItem_ [boost::filesystem::path ()] = RootItem_;
     for (int i = 0; i < infos.size (); ++i)
@@ -212,13 +214,12 @@ void TorrentFilesModel::ResetFiles (const QList<FileInfo>& infos)
     }
     for (int i = 0; i < RootItem_->ChildCount (); ++i)
         UpdateSizeGraph (RootItem_->Child (i));
-    beginInsertRows (QModelIndex (), 0, RootItem_->ChildCount () - 1);
     endInsertRows ();
 }
 
 void TorrentFilesModel::UpdateFiles (const QList<FileInfo>& infos)
 {
-    if (Path2TreeItem_.isEmpty ())
+    if (Path2TreeItem_.isEmpty () || Path2TreeItem_.size () == 1)
     {
         ResetFiles (infos);
         return;
@@ -301,7 +302,9 @@ void TorrentFilesModel::MkParentIfDoesntExist (const boost::filesystem::path& pa
     TreeItem *parent = Path2TreeItem_ [parentPath.branch_path ()];
 
     QList<QVariant> data;
-    data << QString::fromStdString (parentPath.leaf ()) << QString ("");
+	data << QString::fromStdString (parentPath.leaf ()) << QString ("");
+	if (!AdditionDialog_)
+		data << QString ("") << QString ("");
     TreeItem *item = new TreeItem (data, parent);
     parent->AppendChild (item);
     Path2TreeItem_ [parentPath] = item;

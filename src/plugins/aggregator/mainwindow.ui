@@ -20,9 +20,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>65</y>
+     <y>39</y>
      <width>800</width>
-     <height>516</height>
+     <height>542</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout" >
@@ -153,7 +153,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="" >
+      <widget class="QWidget" name="layoutWidget" >
        <layout class="QVBoxLayout" name="verticalLayout_2" >
         <item>
          <layout class="QGridLayout" >
@@ -224,27 +224,6 @@
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menubar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuActions" >
-    <property name="title" >
-     <string>Actions</string>
-    </property>
-    <addaction name="ActionAddFeed_" />
-    <addaction name="ActionRemoveFeed_" />
-    <addaction name="ActionUpdateFeeds_" />
-    <addaction name="separator" />
-    <addaction name="ActionPreferences_" />
-   </widget>
-   <addaction name="menuActions" />
-  </widget>
   <widget class="QStatusBar" name="statusbar" >
    <property name="geometry" >
     <rect>
@@ -259,7 +238,7 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>26</y>
+     <y>0</y>
      <width>800</width>
      <height>39</height>
     </rect>
@@ -279,6 +258,7 @@
    <addaction name="ActionUpdateSelectedFeed_" />
    <addaction name="separator" />
    <addaction name="ActionItemBucket_" />
+   <addaction name="ActionRegexpMatcher_" />
    <addaction name="separator" />
    <addaction name="ActionPreferences_" />
   </widget>
@@ -352,18 +332,23 @@
     <string>Item bucket...</string>
    </property>
   </action>
+  <action name="ActionRegexpMatcher_" >
+   <property name="text" >
+    <string>Regexp matcher</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>TagsLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>../../plugininterface/tagslineedit.h</header>
-  </customwidget>
   <customwidget>
    <class>BrowserWidget</class>
    <extends>QWidget</extends>
    <header>browserwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TagsLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>../../plugininterface/tagslineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources>

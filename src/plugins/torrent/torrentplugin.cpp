@@ -602,29 +602,38 @@ void TorrentPlugin::restartTimers ()
 
 void TorrentPlugin::updateTorrentStats ()
 {
-    switch (Stats_->currentIndex ())
-    {
-        case 0:
-            break;
-        case 1:
-            UpdateDashboard ();
-            break;
-        case 2:
-            updateOverallStats ();
-            break;
-        case 3:
-            UpdateTorrentPage ();
-            break;
-        case 4:
-            UpdateFilesPage ();
-            break;
-        case 5:
-            UpdatePeersPage ();
-            break;
-        case 6:
-            UpdatePiecesPage ();
-            break;
-    }
+	if (TorrentSelectionChanged_)
+	{
+		UpdateDashboard ();
+		UpdateTorrentPage ();
+		UpdateFilesPage ();
+		UpdatePeersPage ();
+		UpdatePiecesPage ();
+	}
+	else
+		switch (Stats_->currentIndex ())
+		{
+			case 0:
+				break;
+			case 1:
+				UpdateDashboard ();
+				break;
+			case 2:
+				updateOverallStats ();
+				break;
+			case 3:
+				UpdateTorrentPage ();
+				break;
+			case 4:
+				UpdateFilesPage ();
+				break;
+			case 5:
+				UpdatePeersPage ();
+				break;
+			case 6:
+				UpdatePiecesPage ();
+				break;
+		}
     TorrentSelectionChanged_ = false;
 }
 
@@ -745,7 +754,6 @@ void TorrentPlugin::UpdateFilesPage ()
     }
     else
         Core::Instance ()->UpdateFiles (index.row ());
-
 }
 
 void TorrentPlugin::UpdatePeersPage ()

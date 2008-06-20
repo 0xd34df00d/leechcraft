@@ -6,6 +6,7 @@
 #include <QTranslator>
 #include <QSystemTrayIcon>
 #include <QPainter>
+#include <QMenu>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/tagscompletionmodel.h>
 #include <plugininterface/tagscompleter.h>
@@ -15,6 +16,7 @@
 #include "channelsfiltermodel.h"
 #include "xmlsettingsmanager.h"
 #include "itembucket.h"
+#include "regexpmatcherui.h"
 
 void Aggregator::Init ()
 {
@@ -284,6 +286,11 @@ void Aggregator::on_ActionAddToItemBucket__triggered ()
 void Aggregator::on_ActionItemBucket__triggered ()
 {
 	ItemBucket::Instance ().show ();
+}
+
+void Aggregator::on_ActionRegexpMatcher__triggered ()
+{
+	RegexpMatcherUi::Instance ().show ();
 }
 
 void Aggregator::currentItemChanged (const QModelIndex& index)

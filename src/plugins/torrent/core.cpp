@@ -44,7 +44,7 @@ Core::Core ()
     PeersModel_ = new PeersModel ();
     PiecesModel_ = new PiecesModel ();
     TagsCompletionModel_ = new TagsCompletionModel ();
-	TorrentFilesModel_ = new TorrentFilesModel (false);
+	TorrentFilesModel_ = new TorrentFilesModel (false, this);
 }
 
 Core::~Core ()

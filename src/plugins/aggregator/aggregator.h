@@ -63,6 +63,7 @@ private slots:
     void on_CaseSensitiveSearch__stateChanged (int);
 	void on_ActionAddToItemBucket__triggered ();
 	void on_ActionItemBucket__triggered ();
+	void on_ActionRegexpMatcher__triggered ();
     void currentItemChanged (const QModelIndex&);
     void currentChannelChanged ();
     void unreadNumberChanged (int);

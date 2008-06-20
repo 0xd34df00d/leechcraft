@@ -42,6 +42,8 @@ void FilesViewDelegate::setModelData (QWidget *editor, QAbstractItemModel *model
 {
     if (index.column () == 2)
     {
+		if (model->rowCount (index.sibling (index.row (), 0)))
+			return;
         int value = qobject_cast<QSpinBox*> (editor)->value ();
         model->setData (index, value);
     }
