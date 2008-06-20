@@ -1,6 +1,8 @@
+IF(Wt_FOUND)
 INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR} ${QT_QTCORE_INCLUDE_DIR}
     ${QT_QTGUI_INCLUDE_DIR} ${QT_QTNETWORK_INCLUDE_DIR}
     ${QT_QTXML_INCLUDE_DIR}
+    ${Wt_INCLUDE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR} ../.. .)
 
 SET (SRCS
@@ -31,10 +33,10 @@ QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 ADD_LIBRARY (leechcraft_remoter SHARED ${SRCS} ${MOC_SRCS} ${UIS_H} ${RCCS})
 TARGET_LINK_LIBRARIES (leechcraft_remoter
-                        ${QT_LIBRARIES}
-                        plugininterface
-                        exceptions
-                        xmlsettingsdialog
-						wt
-						wthttp)
+	${QT_LIBRARIES}
+	plugininterface
+	exceptions
+	xmlsettingsdialog
+	${Wt_LIBRARIES})
 INSTALL (TARGETS leechcraft_remoter DESTINATION share/leechcraft/plugins)
+ENDIF(Wt_FOUND)

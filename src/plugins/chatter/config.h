@@ -19,7 +19,6 @@
  ***************************************************************************/
 #ifndef CONFIG_H
 #define CONFIG_H
-#cmakedefine FSIRC_NO_TRAY_ICON
 #define FS_NICK "chatter%1"
 #define FS_SERVER "irc.freenode.net"
 #define FS_CHANNEL "#qt-ru"

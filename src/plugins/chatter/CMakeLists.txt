@@ -4,7 +4,7 @@ INCLUDE_DIRECTORIES(
    .
    src/
 )
-SET(FSIRC_NO_TRAY_ICON 1)
+ADD_DEFINITIONS("-DFSIRC_NO_TRAY_ICON")
 INCLUDE(src/CMakeLists.txt)
 
 SET(chatter_SRCS chatter.cpp)
