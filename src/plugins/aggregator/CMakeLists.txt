@@ -8,7 +8,6 @@ INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR} ${QT_QTCORE_INCLUDE_DIR}
 SET (SRCS
     aggregator.cpp
     core.cpp
-    itemsmodel.cpp
     addfeed.cpp
     parserfactory.cpp
     rss20parser.cpp
@@ -23,11 +22,12 @@ SET (SRCS
 	browserwidget.cpp
 	itembucket.cpp
 	itemmodel.cpp
-	regexpmatcherui.cpp)
+	regexpmatcherui.cpp
+	singleregexp.cpp
+	regexpmatchermanager.cpp)
 SET (HEADERS
     aggregator.h
     core.h
-    itemsmodel.h
     addfeed.h
     item.h
     channel.h
@@ -44,13 +44,16 @@ SET (HEADERS
 	itembucket.h
 	itemmodel.h
 	regexpmatcherui.h
+	singleregexp.h
+	regexpmatchermanager.h
     ../../plugininterface/basesettingsmanager.h)
 SET (FORMS
     mainwindow.ui
     addfeed.ui
 	browserwidget.ui
 	itembucket.ui
-	regexpmatcherui.ui)
+	regexpmatcherui.ui
+	singleregexp.ui)
 SET (RESOURCES resources.qrc)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})

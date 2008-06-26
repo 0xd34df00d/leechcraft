@@ -1,2 +1,0 @@
-#include "itemsmodel.h"
-
