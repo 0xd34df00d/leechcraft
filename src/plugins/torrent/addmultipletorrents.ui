@@ -13,7 +13,8 @@
    <string>Add multiple torrents</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="resources.qrc" >:/resources/images/bittorrent.png</iconset>
+   <iconset>
+    <normaloff>:/resources/images/bittorrent.png</normaloff>:/resources/images/bittorrent.png</iconset>
   </property>
   <layout class="QVBoxLayout" >
    <item>
@@ -60,6 +61,20 @@
        </item>
       </layout>
      </item>
+     <item row="2" column="0" >
+      <widget class="QLabel" name="label_3" >
+       <property name="text" >
+        <string>Tags:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1" >
+      <widget class="QLineEdit" name="TagsEdit_" >
+       <property name="text" >
+        <string>untagged</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
@@ -67,7 +82,7 @@
      <property name="orientation" >
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" >
+     <property name="sizeHint" stdset="0" >
       <size>
        <width>20</width>
        <height>40</height>
@@ -81,7 +96,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>

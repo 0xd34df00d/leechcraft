@@ -9,6 +9,8 @@ public:
     AddMultipleTorrents (QWidget *parent = 0);
     QString GetOpenDirectory () const;
     QString GetSaveDirectory () const;
+	QLineEdit* GetEdit ();
+	QStringList GetTags () const;
 private slots:
     void on_BrowseOpen__released ();
     void on_BrowseSave__released ();

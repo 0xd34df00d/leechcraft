@@ -20,6 +20,16 @@ QString AddMultipleTorrents::GetSaveDirectory () const
     return SaveDirectory_->text ();
 }
 
+QLineEdit* AddMultipleTorrents::GetEdit ()
+{
+	return TagsEdit_;
+}
+
+QStringList AddMultipleTorrents::GetTags () const
+{
+    return TagsEdit_->text ().split (' ', QString::SkipEmptyParts);
+}
+
 void AddMultipleTorrents::on_BrowseOpen__released ()
 {
     QString dir = QFileDialog::getExistingDirectory (this, tr ("Select directory with torrents"), OpenDirectory_->text ());

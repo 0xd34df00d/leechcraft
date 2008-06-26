@@ -392,6 +392,9 @@ void TorrentPlugin::on_OpenTorrent__triggered ()
 void TorrentPlugin::on_OpenMultipleTorrents__triggered ()
 {
     AddMultipleTorrents dialog;
+	std::auto_ptr<TagsCompleter> completer (new TagsCompleter (dialog.GetEdit (), this));
+    completer->setModel (Core::Instance ()->GetTagsCompletionModel ());
+
     if (dialog.exec () == QDialog::Rejected)
         return;
 
@@ -405,14 +408,14 @@ void TorrentPlugin::on_OpenMultipleTorrents__triggered ()
         if (!name.endsWith ('/'))
             name += '/';
         name += names.at (i);
-        Core::Instance ()->AddFile (name, savePath, QStringList (tr ("untagged")));
+        Core::Instance ()->AddFile (name, savePath, dialog.GetTags ());
     }
     setActionsEnabled ();
 }
 
 void TorrentPlugin::on_CreateTorrent__triggered ()
 {
-    NewTorrentWizard *wizard = new NewTorrentWizard (this);
+	std::auto_ptr<NewTorrentWizard> wizard (new NewTorrentWizard (this));
     if (wizard->exec () == QDialog::Accepted)
         Core::Instance ()->MakeTorrent (wizard->GetParams ());
     setActionsEnabled ();
