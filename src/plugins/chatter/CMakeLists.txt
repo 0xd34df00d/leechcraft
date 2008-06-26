@@ -13,7 +13,7 @@ SET(chatter_MOC_HDRS chatter.h)
 
 QT4_WRAP_CPP(chatter_MOC_SRCS ${chatter_MOC_HDRS})
 
-ADD_LIBRARY(leechcraft_chatter SHARED ${fsirc_SRCS} ${fsirc_MOC_SRCS} ${chatter_SRCS} ${chatter_MOC_SRCS} ${fsirc_UIS_H})
+ADD_LIBRARY(leechcraft_chatter SHARED ${fsirc_SRCS} ${fsirc_MOC_SRCS} ${chatter_SRCS} ${chatter_MOC_SRCS} ${fsirc_UIS_H} ${fsirc_RES_H})
 TARGET_LINK_LIBRARIES(leechcraft_chatter
    ${QT_LIBRARIES}
    plugininterface
