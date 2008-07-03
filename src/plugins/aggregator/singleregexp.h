@@ -11,7 +11,7 @@ class SingleRegexp : public QDialog
 
 	Ui::SingleRegexp Ui_;
 public:
-	SingleRegexp (const QString& = QString (), const QString& = QString (), QWidget* = 0);
+	SingleRegexp (const QString& = QString (), const QString& = QString (), bool = false, QWidget* = 0);
 	QString GetTitle () const;
 	QString GetBody () const;
 private slots:

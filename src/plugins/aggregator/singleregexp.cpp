@@ -11,6 +11,7 @@ namespace
 
 SingleRegexp::SingleRegexp (const QString& title,
 		const QString& body,
+		bool modifier,
 		QWidget *parent)
 : QDialog (parent)
 {
@@ -20,6 +21,9 @@ SingleRegexp::SingleRegexp (const QString& title,
 
 	Ui_.TitleEdit_->setText (title);
 	Ui_.BodyEdit_->setText (body);
+
+	if (modifier)
+		Ui_.TitleEdit_->setEnabled (false);
 
 	lineEdited (title, Ui_.TitleEdit_);
 	lineEdited (body, Ui_.BodyEdit_);
@@ -32,7 +36,7 @@ QString SingleRegexp::GetTitle () const
 
 QString SingleRegexp::GetBody () const
 {
-	return Ui_.TitleEdit_->text ();
+	return Ui_.BodyEdit_->text ();
 }
 
 void SingleRegexp::lineEdited (const QString& newText, QWidget *setter)
