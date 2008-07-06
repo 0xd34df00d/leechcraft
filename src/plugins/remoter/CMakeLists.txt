@@ -1,4 +1,3 @@
-IF(Wt_FOUND)
 INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR} ${QT_QTCORE_INCLUDE_DIR}
     ${QT_QTGUI_INCLUDE_DIR} ${QT_QTNETWORK_INCLUDE_DIR}
     ${QT_QTXML_INCLUDE_DIR}
@@ -9,15 +8,11 @@ SET (SRCS
     remoter.cpp
     core.cpp
     server.cpp
-    documentgenerator.cpp
-	application.cpp)
+	)
 SET (HEADERS
     remoter.h
     core.h
     server.h
-    reply.h
-    documentgenerator.h
-	application.h
     ../../plugininterface/basesettingsmanager.h)
 SET (FORMS
     mainwindow.ui)
@@ -37,6 +32,5 @@ TARGET_LINK_LIBRARIES (leechcraft_remoter
 	plugininterface
 	exceptions
 	xmlsettingsdialog
-	${Wt_LIBRARIES})
+	)
 INSTALL (TARGETS leechcraft_remoter DESTINATION share/leechcraft/plugins)
-ENDIF(Wt_FOUND)

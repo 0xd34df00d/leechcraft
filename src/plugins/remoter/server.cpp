@@ -2,7 +2,6 @@
 #include <QTcpSocket>
 #include <QUrl>
 #include "server.h"
-#include "reply.h"
 #include "core.h"
 
 Server::Server ()

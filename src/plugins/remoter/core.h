@@ -8,7 +8,6 @@
 #include <QString>
 #include <QPair>
 #include <QFuture>
-#include "reply.h"
 
 class QStringList;
 
