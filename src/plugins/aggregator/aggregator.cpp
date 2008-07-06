@@ -47,22 +47,19 @@ void Aggregator::Init ()
     ItemsFilterModel_->setSourceModel (&Core::Instance ());
     ItemsFilterModel_->setFilterKeyColumn (0);
     ItemsFilterModel_->setDynamicSortFilter (true);
+    ItemsFilterModel_->setFilterCaseSensitivity (Qt::CaseInsensitive);
     Ui_.Items_->setModel (ItemsFilterModel_);
     Ui_.Items_->addAction (Ui_.ActionMarkItemAsUnread_);
 	Ui_.Items_->addAction (Ui_.ActionAddToItemBucket_);
     Ui_.Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
-    connect (Ui_.FixedStringSearch_,
+    connect (Ui_.SearchLine_,
 			SIGNAL (textChanged (const QString&)),
-			ItemsFilterModel_,
-			SLOT (setFilterFixedString (const QString&)));
-    connect (Ui_.WildcardSearch_,
-			SIGNAL (textChanged (const QString&)),
-			ItemsFilterModel_,
-			SLOT (setFilterWildcard (const QString&)));
-    connect (Ui_.RegexpSearch_,
-			SIGNAL (textChanged (const QString&)),
-			ItemsFilterModel_,
-			SLOT (setFilterRegExp (const QString&)));
+			this,
+			SLOT (updateItemsFilter ()));
+    connect (Ui_.SearchType_,
+			SIGNAL (currentIndexChanged (int)),
+			this,
+			SLOT (updateItemsFilter ()));
     QHeaderView *itemsHeader = Ui_.Items_->header ();
     QFontMetrics fm = fontMetrics ();
     itemsHeader->resizeSection (0, fm.width ("Average news article size is about this width or maybe bigger, because they are bigger"));
@@ -295,7 +292,13 @@ void Aggregator::on_ActionRegexpMatcher__triggered ()
 
 void Aggregator::currentItemChanged (const QModelIndex& index)
 {
-    Ui_.ItemView_->setHtml (Core::Instance ().GetDescription (ItemsFilterModel_->mapToSource (index)));
+	QModelIndex sindex = ItemsFilterModel_->mapToSource (index);
+	if (!sindex.isValid ())
+	{
+		Ui_.ItemView_->setHtml ("");
+		return;
+	}
+    Ui_.ItemView_->setHtml (Core::Instance ().GetDescription (sindex));
 	connect (Ui_.ItemView_->page ()->networkAccessManager (),
 			SIGNAL (sslErrors (QNetworkReply*, const QList<QSslError>&)),
 			&Core::Instance (),
@@ -349,6 +352,24 @@ void Aggregator::trayIconActivated ()
 	QModelIndex unread = Core::Instance ().GetUnreadChannelIndex ();
 	if (unread.isValid ())
 		Ui_.Feeds_->setCurrentIndex (ChannelsFilterModel_->mapFromSource (unread));
+}
+
+void Aggregator::updateItemsFilter ()
+{
+	int section = Ui_.SearchType_->currentIndex ();
+	QString text = Ui_.SearchLine_->text ();
+	switch (section)
+	{
+	case 1:
+		ItemsFilterModel_->setFilterWildcard (text);
+		break;
+	case 2:
+		ItemsFilterModel_->setFilterRegExp (text);
+		break;
+	default:
+		ItemsFilterModel_->setFilterFixedString (text);
+		break;
+	}
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_aggregator, Aggregator);

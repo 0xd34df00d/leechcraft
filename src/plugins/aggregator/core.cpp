@@ -160,10 +160,11 @@ void Core::FeedActivated (const QModelIndex& index)
 
 QString Core::GetDescription (const QModelIndex& index)
 {
+	qDebug () << index.row ();
     if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
         return QString ();
 
-    boost::shared_ptr<Item> item = ActivatedChannel_->Items_ [index.row ()];
+    boost::shared_ptr<Item>& item = ActivatedChannel_->Items_ [index.row ()];
 
     item->Unread_ = false;
     ChannelsModel_->UpdateChannelData (ActivatedChannel_);

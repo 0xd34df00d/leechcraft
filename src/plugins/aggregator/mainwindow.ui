@@ -158,42 +158,31 @@
         <item>
          <layout class="QGridLayout" >
           <item row="0" column="0" >
-           <widget class="QLabel" name="label_2" >
-            <property name="text" >
-             <string>Fixed string search:</string>
-            </property>
-           </widget>
+           <widget class="QLineEdit" name="SearchLine_" />
           </item>
           <item row="0" column="1" >
-           <widget class="QLineEdit" name="FixedStringSearch_" />
-          </item>
-          <item row="1" column="0" >
-           <widget class="QLabel" name="label_3" >
-            <property name="text" >
-             <string>Wildcard search:</string>
-            </property>
+           <widget class="QComboBox" name="SearchType_" >
+            <item>
+             <property name="text" >
+              <string>Fixed string</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>Wildcard</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>Regexp</string>
+             </property>
+            </item>
            </widget>
           </item>
-          <item row="1" column="1" >
-           <widget class="QLineEdit" name="WildcardSearch_" />
-          </item>
-          <item row="2" column="0" >
-           <widget class="QLabel" name="label_4" >
-            <property name="text" >
-             <string>Regexp search:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1" >
-           <widget class="QLineEdit" name="RegexpSearch_" />
-          </item>
-          <item row="3" column="0" >
+          <item row="0" column="2" >
            <widget class="QCheckBox" name="CaseSensitiveSearch_" >
             <property name="text" >
              <string>Case sensitive</string>
-            </property>
-            <property name="checked" >
-             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -334,7 +323,7 @@
   </action>
   <action name="ActionRegexpMatcher_" >
    <property name="text" >
-    <string>Regexp matcher</string>
+    <string>Regexp matcher...</string>
    </property>
   </action>
  </widget>

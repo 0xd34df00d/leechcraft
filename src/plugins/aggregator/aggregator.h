@@ -68,6 +68,7 @@ private slots:
     void currentChannelChanged ();
     void unreadNumberChanged (int);
     void trayIconActivated ();
+	void updateItemsFilter ();
 signals:
     void downloadFinished (const QString&);
 };

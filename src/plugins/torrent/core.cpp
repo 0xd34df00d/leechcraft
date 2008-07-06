@@ -549,6 +549,8 @@ void Core::RemoveTorrent (int pos)
     beginRemoveRows (QModelIndex (), pos, pos);
     Handles_.removeAt (pos);
     endRemoveRows ();
+
+    QTimer::singleShot (3000, this, SLOT (writeSettings ()));
 }
 
 void Core::PauseTorrent (int pos)
