@@ -213,7 +213,7 @@ QVariant Core::data (const QModelIndex& index, int role) const
     switch (column)
     {
         case ColumnName:
-            return QString::fromStdString (h.name ());
+            return QString::fromUtf8 (h.name ().c_str ());
         case ColumnDownloaded:
             return Proxy::Instance ()->MakePrettySize (status.total_done);
         case ColumnUploaded:
