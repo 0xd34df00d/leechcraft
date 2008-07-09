@@ -302,7 +302,7 @@ void TorrentFilesModel::MkParentIfDoesntExist (const boost::filesystem::path& pa
     TreeItem *parent = Path2TreeItem_ [parentPath.branch_path ()];
 
     QList<QVariant> data;
-	data << QString::fromStdString (parentPath.leaf ()) << QString ("");
+	data << QString::fromUtf8 (parentPath.leaf ().c_str ()) << QString ("");
 	if (!AdditionDialog_)
 		data << QString ("") << QString ("");
     TreeItem *item = new TreeItem (data, parent);

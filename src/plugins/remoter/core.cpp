@@ -1,4 +1,3 @@
-#include <WApplication>
 #include <QStringList>
 #include <QTemporaryFile>
 #include <QUrl>
