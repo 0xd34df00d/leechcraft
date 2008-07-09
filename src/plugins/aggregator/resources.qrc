@@ -1,7 +1,6 @@
 <RCC>
   <qresource prefix="/" >
     <file>resources/images/stop.png</file>
-    <file>resources/images/refresh.png</file>
     <file>resources/images/larrow.png</file>
     <file>resources/images/rarrow.png</file>
     <file>aggregatorsettings.xml</file>

@@ -13,6 +13,7 @@
 #include "aggregator.h"
 #include "core.h"
 #include "addfeed.h"
+#include "itemsfiltermodel.h"
 #include "channelsfiltermodel.h"
 #include "xmlsettingsmanager.h"
 #include "itembucket.h"
@@ -43,7 +44,7 @@ void Aggregator::Init ()
     XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/aggregatorsettings.xml");
 
     Core::Instance ().DoDelayedInit ();
-    ItemsFilterModel_ = new QSortFilterProxyModel (this);
+    ItemsFilterModel_ = new ItemsFilterModel (this);
     ItemsFilterModel_->setSourceModel (&Core::Instance ());
     ItemsFilterModel_->setFilterKeyColumn (0);
     ItemsFilterModel_->setDynamicSortFilter (true);
@@ -288,6 +289,11 @@ void Aggregator::on_ActionItemBucket__triggered ()
 void Aggregator::on_ActionRegexpMatcher__triggered ()
 {
 	RegexpMatcherUi::Instance ().show ();
+}
+
+void Aggregator::on_ActionHideReadItems__triggered ()
+{
+	ItemsFilterModel_->SetHideRead (Ui_.ActionHideReadItems_->isChecked ());
 }
 
 void Aggregator::currentItemChanged (const QModelIndex& index)

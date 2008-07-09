@@ -4,7 +4,7 @@
 #include "ui_mainwindow.h"
 
 class XmlSettingsDialog;
-class QSortFilterProxyModel;
+class ItemsFilterModel;
 class ChannelsFilterModel;
 class TagsCompleter;
 class QSystemTrayIcon;
@@ -22,7 +22,7 @@ class Aggregator : public QMainWindow
 
     QMenu *Plugins_;
     XmlSettingsDialog *XmlSettingsDialog_;
-    QSortFilterProxyModel *ItemsFilterModel_;
+    ItemsFilterModel *ItemsFilterModel_;
     ChannelsFilterModel *ChannelsFilterModel_;
     TagsCompleter *TagsLineCompleter_, *ChannelTagsCompleter_;
     QSystemTrayIcon *TrayIcon_;
@@ -64,6 +64,7 @@ private slots:
 	void on_ActionAddToItemBucket__triggered ();
 	void on_ActionItemBucket__triggered ();
 	void on_ActionRegexpMatcher__triggered ();
+	void on_ActionHideReadItems__triggered ();
     void currentItemChanged (const QModelIndex&);
     void currentChannelChanged ();
     void unreadNumberChanged (int);

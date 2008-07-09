@@ -98,7 +98,7 @@
   <action name="ActionBrowserReload_" >
    <property name="icon" >
     <iconset resource="resources.qrc" >
-     <normaloff>:/resources/images/refresh.png</normaloff>:/resources/images/refresh.png</iconset>
+     <normaloff>:/resources/images/updateselectedfeed.png</normaloff>:/resources/images/updateselectedfeed.png</iconset>
    </property>
    <property name="text" >
     <string>Reload</string>

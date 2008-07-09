@@ -74,6 +74,7 @@ public:
     TagsCompletionModel* GetTagsCompletionModel ();
     void UpdateTags (const QStringList&);
     void MarkItemAsUnread (const QModelIndex&);
+	bool IsItemRead (int) const;
     void MarkChannelAsRead (const QModelIndex&);
     void MarkChannelAsUnread (const QModelIndex&);
     QStringList GetTagsForIndex (int) const;

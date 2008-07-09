@@ -10,7 +10,6 @@ TagsLineEdit::TagsLineEdit (QWidget* parent)
 void TagsLineEdit::complete (const QString& completion)
 {
     QString wtext = text ();
-    qDebug () << Q_FUNC_INFO << wtext;
     int pos = wtext.lastIndexOf (' ');
     if (pos == -1)
         wtext = completion;

@@ -198,6 +198,15 @@ void Core::MarkItemAsUnread (const QModelIndex& i)
     UpdateUnreadItemsNumber ();
 }
 
+bool Core::IsItemRead (int item) const
+{
+	if (!ActivatedChannel_ ||
+			ActivatedChannel_->Items_.size () <= item)
+		return true;
+	else
+		return !ActivatedChannel_->Items_ [item]->Unread_;
+}
+
 void Core::MarkChannelAsRead (const QModelIndex& i)
 {
     if (!ActivatedChannel_ || !i.isValid ())

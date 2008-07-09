@@ -237,7 +237,7 @@ QVariant Core::data (const QModelIndex& index, int role) const
         case ColumnUSpeed:
             return Proxy::Instance ()->MakePrettySize (status.upload_payload_rate) + tr ("/s");
         case ColumnRemaining:
-            return Proxy::Instance ()->MakeTimeFromLong ((info.total_size () - status.total_done) / status.download_payload_rate).toString ();
+            return Proxy::Instance ()->MakeTimeFromLong ((status.total_wanted - status.total_wanted_done) / status.download_payload_rate).toString ();
         default:
             return QVariant ();
     }

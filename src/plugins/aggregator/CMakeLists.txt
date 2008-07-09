@@ -24,7 +24,9 @@ SET (SRCS
 	itemmodel.cpp
 	regexpmatcherui.cpp
 	singleregexp.cpp
-	regexpmatchermanager.cpp)
+	regexpmatchermanager.cpp
+	itemsfiltermodel.cpp
+	)
 SET (HEADERS
     aggregator.h
     core.h
@@ -46,6 +48,7 @@ SET (HEADERS
 	regexpmatcherui.h
 	singleregexp.h
 	regexpmatchermanager.h
+	itemsfiltermodel.h
     ../../plugininterface/basesettingsmanager.h)
 SET (FORMS
     mainwindow.ui
