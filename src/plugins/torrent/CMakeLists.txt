@@ -98,4 +98,4 @@ exceptions
 xmlsettingsdialog
 torrent)
 ENDIF (WIN32)
-INSTALL (TARGETS leechcraft_torrent DESTINATION share/leechcraft/plugins)
+INSTALL (TARGETS leechcraft_torrent DESTINATION ${LC_PLUGINS_DEST})

@@ -30,4 +30,4 @@ TARGET_LINK_LIBRARIES (leechcraft_mailleecher
                         plugininterface
                         exceptions
                         xmlsettingsdialog)
-INSTALL (TARGETS leechcraft_mailleecher DESTINATION share/leechcraft/plugins)
+INSTALL (TARGETS leechcraft_mailleecher DESTINATION ${LC_PLUGINS_DEST})

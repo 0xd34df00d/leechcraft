@@ -25,4 +25,4 @@ TARGET_LINK_LIBRARIES (leechcraft_batcher
                         plugininterface
                         exceptions
                         settingsdialog)
-INSTALL (TARGETS leechcraft_batcher DESTINATION share/leechcraft/plugins)
+INSTALL (TARGETS leechcraft_batcher DESTINATION ${LC_PLUGINS_DEST})

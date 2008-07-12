@@ -294,7 +294,8 @@ void Aggregator::on_ActionRegexpMatcher__triggered ()
 
 void Aggregator::on_ActionHideReadItems__triggered ()
 {
-	Ui_.Items_->selectionModel ()->reset ();
+	if (Ui_.ActionHideReadItems_->isChecked ())
+		Ui_.Items_->selectionModel ()->reset ();
 	ItemsFilterModel_->SetHideRead (Ui_.ActionHideReadItems_->isChecked ());
 }
 

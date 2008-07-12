@@ -61,4 +61,4 @@ TARGET_LINK_LIBRARIES (leechcraft_http
                         plugininterface
                         exceptions
                         xmlsettingsdialog)
-INSTALL (TARGETS leechcraft_http DESTINATION share/leechcraft/plugins)
+INSTALL (TARGETS leechcraft_http DESTINATION ${LC_PLUGINS_DEST})

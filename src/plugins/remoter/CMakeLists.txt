@@ -32,4 +32,4 @@ TARGET_LINK_LIBRARIES (leechcraft_remoter
 	exceptions
 	xmlsettingsdialog
 	)
-INSTALL (TARGETS leechcraft_remoter DESTINATION share/leechcraft/plugins)
+INSTALL (TARGETS leechcraft_remoter DESTINATION ${LC_PLUGINS_DEST})

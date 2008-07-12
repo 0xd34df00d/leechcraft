@@ -21,4 +21,4 @@ TARGET_LINK_LIBRARIES (leechcraft_cron
                         ${QT_LIBRARIES}
                         plugininterface
                         exceptions)
-INSTALL (TARGETS leechcraft_cron DESTINATION share/leechcraft/plugins)
+INSTALL (TARGETS leechcraft_cron DESTINATION ${LC_PLUGINS_DEST})

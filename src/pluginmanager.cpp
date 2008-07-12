@@ -201,11 +201,11 @@ void PluginManager::ThrowPlugins ()
 
 void PluginManager::FindPlugins ()
 {
-    QDir pluginsDir = QDir ("/usr/local/share/leechcraft/plugins");
+    QDir pluginsDir = QDir ("/usr/local/lib/leechcraft/plugins");
     foreach (QString filename, pluginsDir.entryList (QStringList ("*leechcraft_*"), QDir::Files))
         Plugins_.push_back (new QPluginLoader (pluginsDir.absoluteFilePath (filename), this));
 
-    pluginsDir = QDir ("/usr/share/leechcraft/plugins");
+    pluginsDir = QDir ("/usr/lib/leechcraft/plugins");
     foreach (QString filename, pluginsDir.entryList (QStringList ("*leechcraft_*"), QDir::Files))
         Plugins_.push_back (new QPluginLoader (pluginsDir.absoluteFilePath (filename), this));
 

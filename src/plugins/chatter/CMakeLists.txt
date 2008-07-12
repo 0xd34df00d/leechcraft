@@ -18,4 +18,4 @@ TARGET_LINK_LIBRARIES(leechcraft_chatter
    ${QT_LIBRARIES}
    plugininterface
 )
-INSTALL(TARGETS leechcraft_chatter DESTINATION share/leechcraft/plugins)
+INSTALL(TARGETS leechcraft_chatter DESTINATION ${LC_PLUGINS_DEST})
