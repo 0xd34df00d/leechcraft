@@ -7,6 +7,7 @@
 #include <QSystemTrayIcon>
 #include <QPainter>
 #include <QMenu>
+#include <QtWebKit>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/tagscompletionmodel.h>
 #include <plugininterface/tagscompleter.h>
@@ -293,6 +294,7 @@ void Aggregator::on_ActionRegexpMatcher__triggered ()
 
 void Aggregator::on_ActionHideReadItems__triggered ()
 {
+	Ui_.Items_->selectionModel ()->reset ();
 	ItemsFilterModel_->SetHideRead (Ui_.ActionHideReadItems_->isChecked ());
 }
 

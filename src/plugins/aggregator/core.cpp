@@ -160,7 +160,6 @@ void Core::FeedActivated (const QModelIndex& index)
 
 QString Core::GetDescription (const QModelIndex& index)
 {
-	qDebug () << index.row ();
     if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
         return QString ();
 
