@@ -537,35 +537,42 @@ void Core::handleJobFinished (int id)
             {
                 qDebug () << "not found";
                 Feeds_ [pj.URL_].Channels_.push_back (channels [i]);
-                emitString += tr ("Added channel \"%1\" (has %2 items)\r\n").arg (channels [i]->Title_).arg (channels [i]->Items_.size ());
+                emitString += tr ("Added channel \"%1\" (has %2 items)\r\n")
+					.arg (channels [i]->Title_)
+					.arg (channels [i]->Items_.size ());
             }
             else
             {
-                if (channels [i]->Items_.size () - Feeds_ [pj.URL_].Channels_ [position]->Items_.size ())
+                if (channels [i]->Items_.size ())
                     emitString += tr ("Updated channel \"%1\" (%2 new items)\r\n")
                         .arg (channels [i]->Title_)
                         .arg (channels [i]->Items_.size ());
 
                 bool insertedRows = (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_ [position].get ());
 
+				Feed &cfeed = Feeds_ [pj.URL_];
+				boost::shared_ptr<Channel> &cchannel = cfeed.Channels_ [position];
+
                 // Okay, this item is new, let's find where to place
                 // it. We should place it before the first found item
                 // with earlier datetime.
-				for (Channel::items_container_t::const_iterator j = channels.at (i)->Items_.begin (),
-						newsize = channels.at (i)->Items_.end (); j != newsize; ++j)
+				for (Channel::items_container_t::const_iterator j =
+						channels.at (i)->Items_.begin (),
+						newsize = channels.at (i)->Items_.end ();
+						j != newsize; ++j)
 				{
-					for (Channel::items_container_t::iterator h = Feeds_ [pj.URL_].Channels_ [position]->Items_.begin ();
-							h != Feeds_ [pj.URL_].Channels_ [position]->Items_.end ();)
+					for (Channel::items_container_t::iterator h = cchannel->Items_.begin ();
+							h != cchannel->Items_.end ();)
 					{
 						if ((*h)->PubDate_ < (*j)->PubDate_)
 						{
-							size_t pos = std::distance (Feeds_ [pj.URL_].Channels_ [position]->Items_.begin (), h);
+							size_t pos = std::distance (cchannel->Items_.begin (), h);
 							if (insertedRows)
 								beginInsertRows (QModelIndex (), pos, pos);
-							Feeds_ [pj.URL_].Channels_ [position]->Items_.insert (h, *j);
+							cchannel->Items_.insert (h, *j);
 							if (insertedRows)
 								endInsertRows ();
-							h = Feeds_ [pj.URL_].Channels_ [position]->Items_.begin () + pos + 1;
+							h = cchannel->Items_.begin () + pos + 1;
 							break;
 						}
 						else
@@ -574,30 +581,30 @@ void Core::handleJobFinished (int id)
 				}
 
                 if (channels.at (i)->LastBuild_.isValid ())
-                    Feeds_ [pj.URL_].Channels_.at (position)->LastBuild_ = channels.at (i)->LastBuild_;
-                else
-                    Feeds_ [pj.URL_].Channels_.at (position)->LastBuild_ = Feeds_ [pj.URL_].Channels_.at (position)->Items_ [0]->PubDate_;
-                ChannelsModel_->UpdateChannelData (Feeds_ [pj.URL_].Channels_ [position]);
+                    cchannel->LastBuild_ = channels.at (i)->LastBuild_;
+                else if (cchannel->Items_.size ())
+                    cchannel->LastBuild_ = cchannel->Items_ [0]->PubDate_;
+                ChannelsModel_->UpdateChannelData (cchannel);
 
                 size_t ipc = XmlSettingsManager::Instance ()->property ("ItemsPerChannel").value<size_t> ();
-                if (Feeds_ [pj.URL_].Channels_ [position]->Items_.size () > ipc)
+                if (cchannel->Items_.size () > ipc)
                 {
-                    if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_ [position].get ())
+                    if (ActivatedChannel_ == cchannel.get ())
                         beginRemoveRows (QModelIndex (), ipc, ActivatedChannel_->Items_.size ());
-                    Feeds_ [pj.URL_].Channels_ [position]->Items_.erase (Feeds_ [pj.URL_].Channels_ [position]->Items_.begin () + ipc,
-                            Feeds_ [pj.URL_].Channels_ [position]->Items_.end ());
-                    if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_ [position].get ())
+                    cchannel->Items_.erase (cchannel->Items_.begin () + ipc,
+                            cchannel->Items_.end ());
+                    if (ActivatedChannel_ == cchannel.get ())
                         endRemoveRows ();
 
-                    ChannelsModel_->UpdateChannelData (Feeds_ [pj.URL_].Channels_ [position]);
+                    ChannelsModel_->UpdateChannelData (cchannel);
                 }
 
                 int days = XmlSettingsManager::Instance ()->property ("ItemsMaxAge").toInt ();
                 QDateTime current = QDateTime::currentDateTime ();
                 int removeFrom = -1;
-                for (size_t j = 0; j < Feeds_ [pj.URL_].Channels_ [position]->Items_.size (); ++j)
+                for (size_t j = 0; j < cchannel->Items_.size (); ++j)
                 {
-                    if (Feeds_ [pj.URL_].Channels_ [position]->Items_ [j]->PubDate_.daysTo (current) > days)
+                    if (cchannel->Items_ [j]->PubDate_.daysTo (current) > days)
                     {
                         removeFrom = j;
                         break;
@@ -607,14 +614,14 @@ void Core::handleJobFinished (int id)
                     removeFrom = 1;
                 if (removeFrom > 0)
                 {
-                    if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_ [position].get ())
+                    if (ActivatedChannel_ == cchannel.get ())
                         beginRemoveRows (QModelIndex (), removeFrom, ActivatedChannel_->Items_.size ());
-                    Feeds_ [pj.URL_].Channels_ [position]->Items_.erase (Feeds_ [pj.URL_].Channels_ [position]->Items_.begin () + removeFrom,
-                            Feeds_ [pj.URL_].Channels_ [position]->Items_.end ());
-                    if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_ [position].get ())
+                    cchannel->Items_.erase (cchannel->Items_.begin () + removeFrom,
+                            cchannel->Items_.end ());
+                    if (ActivatedChannel_ == cchannel.get ())
                         endRemoveRows ();
 
-                    ChannelsModel_->UpdateChannelData (Feeds_ [pj.URL_].Channels_ [position]);
+                    ChannelsModel_->UpdateChannelData (cchannel);
                 }
             }
         }
