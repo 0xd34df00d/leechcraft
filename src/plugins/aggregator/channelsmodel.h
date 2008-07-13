@@ -2,11 +2,10 @@
 #define CHANNELSMODEL_H
 #include <QAbstractItemModel>
 #include <boost/shared_ptr.hpp>
-#include <vector>
+#include "feed.h"
 
 class TreeItem;
 class Channel;
-class Feed;
 
 class ChannelsModel : public QAbstractItemModel
 {
@@ -30,7 +29,7 @@ public:
     virtual int rowCount (const QModelIndex& parent = QModelIndex ()) const;
 
     void AddFeed (const Feed&);
-    void Update (const std::vector<boost::shared_ptr<Channel> >&);
+    void Update (const Feed::channels_container_t&);
     void UpdateChannelData (const Channel*);
     void UpdateChannelData (const boost::shared_ptr<Channel>&);
     boost::shared_ptr<Channel>& GetChannelForIndex (const QModelIndex&);

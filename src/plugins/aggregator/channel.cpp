@@ -10,13 +10,9 @@ Channel::Channel ()
 }
 
 Channel::Channel (const Channel& channel)
-: Title_ (channel.Title_)
-, Link_ (channel.Link_)
-, Description_ (channel.Description_)
-, LastBuild_ (channel.LastBuild_)
-, Tags_ (channel.Tags_)
-, Items_ (channel.Items_)
+: Items_ (channel.Items_)
 {
+	Equalify (channel);
 }
 
 Channel::~Channel ()
@@ -25,11 +21,7 @@ Channel::~Channel ()
 
 Channel& Channel::operator= (const Channel& channel)
 {
-    Title_ = channel.Title_;
-    Link_ = channel.Link_;
-    Description_ = channel.Description_;
-    LastBuild_ = channel.LastBuild_;
-    Tags_ = channel.Tags_;
+	Equalify (channel);
     Items_ = channel.Items_;
 	return *this;
 }
@@ -40,6 +32,15 @@ int Channel::CountUnreadItems () const
     for (size_t i = 0; i < Items_.size (); ++i)
         result += (Items_ [i]->Unread_);
     return result;
+}
+
+void Channel::Equalify (const Channel& channel)
+{
+    Title_ = channel.Title_;
+    Link_ = channel.Link_;
+    Description_ = channel.Description_;
+    LastBuild_ = channel.LastBuild_;
+    Tags_ = channel.Tags_;
 }
 
 bool operator== (const Channel& c1, const Channel& c2)
@@ -75,7 +76,6 @@ QDataStream& operator>> (QDataStream& in, Channel& chan)
         >> chan.Author_
         >> chan.Pixmap_;
     in >> size;
-    chan.Items_.reserve (size);
     for (size_t i = 0; i < size; ++i)
     {
         boost::shared_ptr<Item> it (new Item);

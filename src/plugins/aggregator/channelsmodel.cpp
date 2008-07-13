@@ -116,7 +116,7 @@ int ChannelsModel::rowCount (const QModelIndex& parent) const
 
 void ChannelsModel::AddFeed (const Feed& feed)
 {
-    const std::vector<boost::shared_ptr<Channel> >& channels = feed.Channels_;
+    const Feed::channels_container_t& channels = feed.Channels_;
     if (!channels.size ())
         return;
 
@@ -134,7 +134,7 @@ void ChannelsModel::AddFeed (const Feed& feed)
     endInsertRows ();
 }
 
-void ChannelsModel::Update (const std::vector<boost::shared_ptr<Channel> >& channels)
+void ChannelsModel::Update (const Feed::channels_container_t& channels)
 {
     QList<boost::shared_ptr<Channel> > channelswh = Channel2TreeItem_.keys ();
     for (size_t i = 0; i < channels.size (); ++i)

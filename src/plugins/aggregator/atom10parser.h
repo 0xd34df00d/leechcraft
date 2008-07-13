@@ -17,9 +17,9 @@ class Atom10Parser : public Parser
 public:
     static Atom10Parser& Instance ();
     virtual bool CouldParse (const QDomDocument&) const;
-    virtual std::vector<boost::shared_ptr<Channel> > Parse (const std::vector<boost::shared_ptr<Channel> >&, const QDomDocument&) const;
+    virtual Feed::channels_container_t Parse (const Feed::channels_container_t&, const QDomDocument&) const;
 private:
-    std::vector<boost::shared_ptr<Channel> > Parse (const QDomDocument&) const;
+	Feed::channels_container_t Parse (const QDomDocument&) const;
     Item* ParseItem (const QDomElement&) const;
     QDateTime FromRFC3339 (const QString&) const;
     QString GetLink (const QDomElement&) const;

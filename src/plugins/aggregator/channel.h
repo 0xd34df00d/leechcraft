@@ -6,7 +6,7 @@
 #include <QStringList>
 #include <QPixmap>
 #include <boost/shared_ptr.hpp>
-#include <vector>
+#include <deque>
 
 class Item;
 
@@ -21,7 +21,8 @@ struct Channel
     QString Author_;
     QString PixmapURL_;
     QPixmap Pixmap_;
-    std::vector<boost::shared_ptr<Item> > Items_;
+	typedef std::deque<boost::shared_ptr<Item> > items_container_t;
+    items_container_t Items_;
 
     Channel ();
     Channel (const Channel&);
@@ -29,6 +30,7 @@ struct Channel
     Channel& operator= (const Channel&);
 
     int CountUnreadItems () const;
+	void Equalify (const Channel&);
 };
 
 bool operator== (const Channel&, const Channel&);

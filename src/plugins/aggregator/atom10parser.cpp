@@ -23,37 +23,37 @@ bool Atom10Parser::CouldParse (const QDomDocument& doc) const
     return root.tagName () == "feed";
 }
 
-std::vector<boost::shared_ptr<Channel> > Atom10Parser::Parse (const std::vector<boost::shared_ptr<Channel> >& old, const QDomDocument& recent) const
+Feed::channels_container_t Atom10Parser::Parse (const Feed::channels_container_t& old, const QDomDocument& recent) const
 {
-    std::vector<boost::shared_ptr<Channel> > newes = Parse (recent),
+	Feed::channels_container_t newes = Parse (recent),
         result;
     if (!newes.size ())
-        return std::vector<boost::shared_ptr<Channel> > ();
+        return Feed::channels_container_t ();
     else if (!old.size ())
         return newes;
     else
     {
-        boost::shared_ptr<Channel> toInsert (new Channel);
-        *toInsert = *old.at (0);
-        boost::shared_ptr<Item> lastItemWeHave = old.at (0)->Items_ [0];
-        int index = newes.at (0)->Items_.size ();
-        for (size_t j = 0; j < newes.at (0)->Items_.size (); ++j)
-            if (*newes.at (0)->Items_ [j] == *lastItemWeHave)
+        boost::shared_ptr<Channel> toInsert (new Channel ());
+        toInsert->Equalify (*old [0]);
+        boost::shared_ptr<Item> lastItemWeHave = old [0]->Items_ [0];
+        int index = newes [0]->Items_.size ();
+        for (size_t j = 0, size = newes [0]->Items_.size (); j < size; ++j)
+            if (*newes [0]->Items_ [j] == *lastItemWeHave)
             {
                 index = j - 1;
                 break;
             }
         for (int j = index; j >= 0; --j)
-            toInsert->Items_.insert (toInsert->Items_.begin (), newes.at (0)->Items_ [j]);
+            toInsert->Items_.insert (toInsert->Items_.begin (), newes [0]->Items_ [j]);
 
         result.push_back (toInsert);
     }
     return result;
 }
 
-std::vector<boost::shared_ptr<Channel> > Atom10Parser::Parse (const QDomDocument& doc) const
+Feed::channels_container_t Atom10Parser::Parse (const QDomDocument& doc) const
 {
-    std::vector<boost::shared_ptr<Channel> > channels;
+	Feed::channels_container_t channels;
     boost::shared_ptr<Channel> chan (new Channel);
     channels.push_back (chan);
 

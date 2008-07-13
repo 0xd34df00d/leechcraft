@@ -5,7 +5,7 @@
 #include <QList>
 #include <QMetaType>
 #include <boost/shared_ptr.hpp>
-#include <vector>
+#include <deque>
 
 class Channel;
 
@@ -13,7 +13,8 @@ struct Feed
 {
     QString URL_;
     QDateTime LastUpdate_;
-    std::vector<boost::shared_ptr<Channel> > Channels_;
+	typedef std::deque<boost::shared_ptr<Channel> > channels_container_t;
+	channels_container_t Channels_;
 
     Feed ();
     Feed (const Feed&);

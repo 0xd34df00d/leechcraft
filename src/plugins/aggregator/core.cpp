@@ -456,7 +456,7 @@ void Core::handleJobFinished (int id)
         emit error (tr ("Feed with url %1 not found.").arg (pj.URL_));
         return;
     }
-    std::vector<boost::shared_ptr<Channel> > channels;
+	Feed::channels_container_t channels;
     if (pj.Role_ != PendingJob::RFeedExternalData)
     {
         QByteArray data = file.readAll ();
@@ -544,24 +544,40 @@ void Core::handleJobFinished (int id)
                 if (channels [i]->Items_.size () - Feeds_ [pj.URL_].Channels_ [position]->Items_.size ())
                     emitString += tr ("Updated channel \"%1\" (%2 new items)\r\n")
                         .arg (channels [i]->Title_)
-                        .arg (channels [i]->Items_.size () - Feeds_ [pj.URL_].Channels_ [position]->Items_.size ());
+                        .arg (channels [i]->Items_.size ());
 
-                bool insertedRows = false;
-                if (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_ [position].get () && channels [i]->Items_.size () - Feeds_ [pj.URL_].Channels_ [position]->Items_.size ())
-                {
-                    insertedRows = true;
-                    beginInsertRows (QModelIndex (), 0, channels [i]->Items_.size () - Feeds_ [pj.URL_].Channels_ [position]->Items_.size () - 1);
-                }
-                Feeds_ [pj.URL_].Channels_ [position]->Items_ = channels.at (i)->Items_;
+                bool insertedRows = (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_ [position].get ());
+
+                // Okay, this item is new, let's find where to place
+                // it. We should place it before the first found item
+                // with earlier datetime.
+				for (Channel::items_container_t::const_iterator j = channels.at (i)->Items_.begin (),
+						newsize = channels.at (i)->Items_.end (); j != newsize; ++j)
+				{
+					for (Channel::items_container_t::iterator h = Feeds_ [pj.URL_].Channels_ [position]->Items_.begin ();
+							h != Feeds_ [pj.URL_].Channels_ [position]->Items_.end ();)
+					{
+						if ((*h)->PubDate_ < (*j)->PubDate_)
+						{
+							size_t pos = std::distance (Feeds_ [pj.URL_].Channels_ [position]->Items_.begin (), h);
+							if (insertedRows)
+								beginInsertRows (QModelIndex (), pos, pos);
+							Feeds_ [pj.URL_].Channels_ [position]->Items_.insert (h, *j);
+							if (insertedRows)
+								endInsertRows ();
+							h = Feeds_ [pj.URL_].Channels_ [position]->Items_.begin () + pos + 1;
+							break;
+						}
+						else
+							++h;
+					}
+				}
+
                 if (channels.at (i)->LastBuild_.isValid ())
                     Feeds_ [pj.URL_].Channels_.at (position)->LastBuild_ = channels.at (i)->LastBuild_;
                 else
                     Feeds_ [pj.URL_].Channels_.at (position)->LastBuild_ = Feeds_ [pj.URL_].Channels_.at (position)->Items_ [0]->PubDate_;
                 ChannelsModel_->UpdateChannelData (Feeds_ [pj.URL_].Channels_ [position]);
-                if (insertedRows)
-                    endInsertRows ();
-                emit dataChanged (index (0, 0), index (channels [i]->Items_.size () - 1, 1));
-
 
                 size_t ipc = XmlSettingsManager::Instance ()->property ("ItemsPerChannel").value<size_t> ();
                 if (Feeds_ [pj.URL_].Channels_ [position]->Items_.size () > ipc)
@@ -733,7 +749,7 @@ QString Core::FindFeedForChannel (const boost::shared_ptr<Channel>& channel) con
 {
     for (QMap<QString, Feed>::const_iterator i = Feeds_.begin (); i != Feeds_.end (); ++i)
     {
-        std::vector<boost::shared_ptr<Channel> >::const_iterator j = std::find (i.value ().Channels_.begin (), i.value ().Channels_.end (), channel);
+		Feed::channels_container_t::const_iterator j = std::find (i.value ().Channels_.begin (), i.value ().Channels_.end (), channel);
         if (j != i.value ().Channels_.end ())
             return i.key ();
     }

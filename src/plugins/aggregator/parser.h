@@ -4,6 +4,7 @@
 #include <QDomDocument>
 #include <vector>
 #include <boost/shared_ptr.hpp>
+#include "feed.h"
 
 class Channel;
 
@@ -12,8 +13,8 @@ class Parser : public QObject
     Q_OBJECT
 public:
     virtual bool CouldParse (const QDomDocument&) const = 0;
-    virtual std::vector<boost::shared_ptr<Channel> > Parse (const std::vector<boost::shared_ptr<Channel> >&, const QDomDocument&) const = 0;
-    std::vector<boost::shared_ptr<Channel> > Parse (const std::vector<boost::shared_ptr<Channel> >& o, const QByteArray& n)
+    virtual Feed::channels_container_t Parse (const Feed::channels_container_t&, const QDomDocument&) const = 0;
+	Feed::channels_container_t Parse (const Feed::channels_container_t& o, const QByteArray& n)
     {
         QDomDocument newd;
         newd.setContent (n);

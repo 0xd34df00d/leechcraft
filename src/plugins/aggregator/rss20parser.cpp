@@ -24,16 +24,16 @@ bool RSS20Parser::CouldParse (const QDomDocument& doc) const
     return root.tagName () == "rss" && root.attribute ("version") == "2.0";
 }
 
-std::vector<boost::shared_ptr<Channel> > RSS20Parser::Parse (const std::vector<boost::shared_ptr<Channel> >& channels, const QDomDocument& recent) const
+Feed::channels_container_t RSS20Parser::Parse (const Feed::channels_container_t& channels, const QDomDocument& recent) const
 {
-    std::vector<boost::shared_ptr<Channel> > newes = Parse (recent),
+	Feed::channels_container_t newes = Parse (recent),
         result;
     for (size_t i = 0; i < newes.size (); ++i)
     {
-        boost::shared_ptr<Channel> newChannel = newes.at (i);
+        boost::shared_ptr<Channel> newChannel = newes [i];
         int position = -1;
         for (size_t j = 0; j < channels.size (); ++j)
-            if (*channels.at (j) == *newChannel)
+            if (*channels [j] == *newChannel)
             {
                 position = j;
                 break;
@@ -49,34 +49,23 @@ std::vector<boost::shared_ptr<Channel> > RSS20Parser::Parse (const std::vector<b
         else
         {
             boost::shared_ptr<Channel> oldChannel = channels [position];
-            boost::shared_ptr<Channel> toInsert (new Channel);
-            *toInsert = *oldChannel;
-            toInsert->LastBuild_ = newChannel->LastBuild_;
+            boost::shared_ptr<Channel> toInsert (new Channel ());
+			toInsert->Equalify (*oldChannel);
 
             for (size_t j = 0; j < newChannel->Items_.size (); ++j)
             {
                 bool found = false;
+				size_t h = 0;
                 // Check if that item already exists
-                for (size_t h = 0; h < toInsert->Items_.size (); ++h)
-                    if (*toInsert->Items_ [h] == *newChannel->Items_ [j])
+                for (size_t size = oldChannel->Items_.size (); h < size; ++h)
+                    if (*oldChannel->Items_ [h] == *newChannel->Items_ [j])
                     {
                         found = true;
                         break;
                     }
-                if (found)
-                    continue;
 
-                // Okay, this item is new, let's find where to place
-                // it. We should place it before the first found item
-                // with earlier datetime.
-                for (size_t h = 0; h < toInsert->Items_.size (); ++h)
-                {
-                    if (toInsert->Items_ [h]->PubDate_ < newChannel->Items_ [j]->PubDate_)
-                    {
-                        toInsert->Items_.insert (toInsert->Items_.begin () + h++, newChannel->Items_ [j]);
-                        break;
-                    }
-                }
+                if (!found)
+					toInsert->Items_.push_back (newChannel->Items_ [j]);
             }
             result.push_back (toInsert);
         }
@@ -84,9 +73,9 @@ std::vector<boost::shared_ptr<Channel> > RSS20Parser::Parse (const std::vector<b
     return result;
 }
 
-std::vector<boost::shared_ptr<Channel> > RSS20Parser::Parse (const QDomDocument& doc) const
+Feed::channels_container_t RSS20Parser::Parse (const QDomDocument& doc) const
 {
-    std::vector<boost::shared_ptr<Channel> > channels;
+	Feed::channels_container_t channels;
     QDomElement root = doc.documentElement ();
     QDomElement channel = root.firstChildElement ("channel");
     while (!channel.isNull ())
