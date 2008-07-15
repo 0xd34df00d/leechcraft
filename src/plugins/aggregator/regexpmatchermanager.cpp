@@ -61,9 +61,8 @@ void RegexpMatcherManager::Add (const QString& title, const QString& body)
 	if (found != Items_.end ())
 		throw AlreadyExists ("Regexp user tries to add already exists in the RegexpMatcherManager");
 
-	Item item (title, body);
 	beginInsertRows (QModelIndex (), rowCount (), rowCount ());
-	Items_.push_back (item);
+	Items_.push_back (Item (title, body));
 	endInsertRows ();
 
 	ScheduleSave ();

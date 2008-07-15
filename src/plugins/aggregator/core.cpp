@@ -417,6 +417,26 @@ void Core::scheduleSave ()
 	SaveScheduled_ = true;
 }
 
+namespace
+{
+	struct IsDateSuitable : public std::unary_function<
+							Channel::items_container_t::value_type,
+							bool>
+	{
+		QDateTime DateTime_;
+
+		IsDateSuitable (const QDateTime& dt)
+		: DateTime_ (dt)
+		{
+		}
+
+		bool operator() (const Channel::items_container_t::value_type& it)
+		{
+			return it->PubDate_ < DateTime_;
+		}
+	};
+};
+
 void Core::handleJobFinished (int id)
 {
 	class FileRemoval : public QFile
@@ -561,23 +581,16 @@ void Core::handleJobFinished (int id)
 						newsize = channels.at (i)->Items_.end ();
 						j != newsize; ++j)
 				{
-					for (Channel::items_container_t::iterator h = cchannel->Items_.begin ();
-							h != cchannel->Items_.end ();)
-					{
-						if ((*h)->PubDate_ < (*j)->PubDate_)
-						{
-							size_t pos = std::distance (cchannel->Items_.begin (), h);
-							if (insertedRows)
-								beginInsertRows (QModelIndex (), pos, pos);
-							cchannel->Items_.insert (h, *j);
-							if (insertedRows)
-								endInsertRows ();
-							h = cchannel->Items_.begin () + pos + 1;
-							break;
-						}
-						else
-							++h;
-					}
+					Channel::items_container_t::iterator item =
+						std::find_if (cchannel->Items_.begin (),
+								cchannel->Items_.end (),
+								IsDateSuitable ((*j)->PubDate_));
+					size_t pos = std::distance (cchannel->Items_.begin (), item);
+					if (insertedRows)
+						beginInsertRows (QModelIndex (), pos, pos);
+					cchannel->Items_.insert (item, *j);
+					if (insertedRows)
+						endInsertRows ();
 				}
 
                 if (channels.at (i)->LastBuild_.isValid ())
