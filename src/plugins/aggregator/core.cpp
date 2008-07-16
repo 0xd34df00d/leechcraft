@@ -7,9 +7,11 @@
 #include <QTimer>
 #include <QNetworkReply>
 #include <stdexcept>
+#include <boost/bind.hpp>
 #include <plugininterface/proxy.h>
 #include <plugininterface/tagscompletionmodel.h>
 #include "core.h"
+#include "regexpmatchermanager.h"
 #include "xmlsettingsmanager.h"
 #include "parserfactory.h"
 #include "rss20parser.h"
@@ -592,6 +594,12 @@ void Core::handleJobFinished (int id)
 					if (insertedRows)
 						endInsertRows ();
 				}
+
+				std::for_each (channels.at (i)->Items_.begin (),
+						channels.at (i)->Items_.end (),
+						boost::bind (&RegexpMatcherManager::HandleItem,
+							&RegexpMatcherManager::Instance (),
+							_1));
 
                 if (channels.at (i)->LastBuild_.isValid ())
                     cchannel->LastBuild_ = channels.at (i)->LastBuild_;

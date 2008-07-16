@@ -19,6 +19,7 @@
 #include "xmlsettingsmanager.h"
 #include "itembucket.h"
 #include "regexpmatcherui.h"
+#include "regexpmatchermanager.h"
 
 void Aggregator::Init ()
 {
@@ -100,6 +101,11 @@ void Aggregator::Init ()
 
     Ui_.MainSplitter_->setStretchFactor (0, 5);
     Ui_.MainSplitter_->setStretchFactor (1, 9);
+
+	connect (&RegexpMatcherManager::Instance (),
+			SIGNAL (gotLink (const QString&)),
+			this,
+			SLOT (fileDownloaded (const QString&)));
 }
 
 void Aggregator::Release ()

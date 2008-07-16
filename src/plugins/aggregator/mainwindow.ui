@@ -251,7 +251,7 @@
     <rect>
      <x>155</x>
      <y>0</y>
-     <width>215</width>
+     <width>180</width>
      <height>39</height>
     </rect>
    </property>
@@ -272,9 +272,9 @@
   <widget class="QToolBar" name="toolBar_3" >
    <property name="geometry" >
     <rect>
-     <x>370</x>
+     <x>335</x>
      <y>0</y>
-     <width>430</width>
+     <width>465</width>
      <height>39</height>
     </rect>
    </property>
@@ -355,6 +355,10 @@
    </property>
   </action>
   <action name="ActionItemBucket_" >
+   <property name="icon" >
+    <iconset resource="resources.qrc" >
+     <normaloff>:/resources/images/favorites.png</normaloff>:/resources/images/favorites.png</iconset>
+   </property>
    <property name="text" >
     <string>Item bucket...</string>
    </property>
@@ -368,8 +372,16 @@
    <property name="checkable" >
     <bool>true</bool>
    </property>
+   <property name="icon" >
+    <iconset resource="resources.qrc" >
+     <normaloff>:/resources/images/rss-show.png</normaloff>
+     <normalon>:/resources/images/rss-hide.png</normalon>:/resources/images/rss-show.png</iconset>
+   </property>
    <property name="text" >
-    <string>Hide read items</string>
+    <string>Show/hide read items</string>
+   </property>
+   <property name="toolTip" >
+    <string>Show/hide read items</string>
    </property>
   </action>
  </widget>

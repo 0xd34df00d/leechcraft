@@ -4,6 +4,9 @@
 #include <QStringList>
 #include <deque>
 #include <stdexcept>
+#include <boost/shared_ptr.hpp>
+
+class Item;
 
 class RegexpMatcherManager : public QAbstractItemModel
 {
@@ -37,18 +40,18 @@ public:
 		}
 	};
 
-	struct Item
+	struct RegexpItem
 	{
 		QString Title_;
 		QString Body_;
 
-		Item (const QString& title, const QString& body)
+		RegexpItem (const QString& title, const QString& body)
 		: Title_ (title)
 		, Body_ (body)
 		{
 		}
 
-		bool operator== (const Item& other) const
+		bool operator== (const RegexpItem& other) const
 		{
 			return Title_ == other.Title_ &&
 				Body_ == other.Body_;
@@ -60,9 +63,8 @@ public:
 		}
 	};
 private:
-
 	QStringList ItemHeaders_;
-	typedef std::deque<Item> items_t;
+	typedef std::deque<RegexpItem> items_t;
 	items_t Items_;
 
 	RegexpMatcherManager ();
@@ -78,6 +80,7 @@ public:
 	void Remove (const QModelIndex&);
 	void Modify (const QString&, const QString&);
 	titlebody_t GetTitleBody (const QModelIndex&) const;
+	void HandleItem (const boost::shared_ptr<Item>&) const;
 
     virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
     virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
@@ -91,6 +94,8 @@ private slots:
 private:
 	void RestoreSettings ();
 	void ScheduleSave ();
+signals:
+	void gotLink (const QString&) const;
 };
 
 #endif

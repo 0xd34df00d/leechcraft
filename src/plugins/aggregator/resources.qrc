@@ -1,5 +1,8 @@
 <RCC>
   <qresource prefix="/" >
+    <file>resources/images/favorites.png</file>
+    <file>resources/images/rss-hide.png</file>
+    <file>resources/images/rss-show.png</file>
     <file>resources/images/stop.png</file>
     <file>resources/images/larrow.png</file>
     <file>resources/images/rarrow.png</file>

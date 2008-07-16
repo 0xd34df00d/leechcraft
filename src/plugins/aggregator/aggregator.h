@@ -72,6 +72,7 @@ private slots:
 	void updateItemsFilter ();
 signals:
     void downloadFinished (const QString&);
+	void fileDownloaded (const QString&);
 };
 
 #endif

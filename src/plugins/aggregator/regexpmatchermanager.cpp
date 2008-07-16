@@ -1,10 +1,13 @@
 #include <QTimer>
+#include <QtDebug>
 #include <QSettings>
 #include <algorithm>
 #include <functional>
 #include <iterator>
 #include <plugininterface/proxy.h>
+#include <plugininterface/util.h>
 #include "regexpmatchermanager.h"
+#include "item.h"
 
 RegexpMatcherManager::RegexpMatcherManager ()
 : SaveScheduled_ (false)
@@ -29,7 +32,7 @@ void RegexpMatcherManager::Release ()
 }
 
 // Finds items with same title
-struct IsEqual : public std::unary_function<RegexpMatcherManager::Item, bool>
+struct IsEqual : public std::unary_function<RegexpMatcherManager::RegexpItem, bool>
 {
 	QString String_;
 
@@ -38,7 +41,7 @@ struct IsEqual : public std::unary_function<RegexpMatcherManager::Item, bool>
 	{
 	}
 
-	bool operator() (const RegexpMatcherManager::Item& it)
+	bool operator() (const RegexpMatcherManager::RegexpItem& it)
 	{
 		return it.IsEqual (String_);
 	}
@@ -48,7 +51,7 @@ namespace
 {
 	inline bool IsRegexpValid (const QString& rx)
 	{
-		return QRegExp (rx).isValid () && !QRegExp (rx).isEmpty ();
+		return QRegExp (rx).isValid ();
 	}
 };
 
@@ -62,7 +65,7 @@ void RegexpMatcherManager::Add (const QString& title, const QString& body)
 		throw AlreadyExists ("Regexp user tries to add already exists in the RegexpMatcherManager");
 
 	beginInsertRows (QModelIndex (), rowCount (), rowCount ());
-	Items_.push_back (Item (title, body));
+	Items_.push_back (RegexpItem (title, body));
 	endInsertRows ();
 
 	ScheduleSave ();
@@ -119,6 +122,73 @@ RegexpMatcherManager::titlebody_t RegexpMatcherManager::GetTitleBody (const QMod
 	result.first = Items_ [index.row ()].Title_;
 	result.second = Items_ [index.row ()].Body_;
 	return result;
+}
+
+namespace
+{
+	struct IfTitleMatches : public std::unary_function<RegexpMatcherManager::RegexpItem, bool>
+	{
+		QString Title_;
+
+		IfTitleMatches (const QString& str)
+		: Title_ (str)
+		{
+		}
+
+		bool operator() (const RegexpMatcherManager::RegexpItem& item)
+		{
+			return QRegExp (item.Title_).exactMatch (Title_);
+		}
+	};
+
+	struct HandleBody : public std::unary_function<RegexpMatcherManager::RegexpItem, void>
+	{
+		QString Link_, Description_;
+		QStringList Links_;
+
+		HandleBody (const QString& descr, const QString& link)
+		: Link_ (link)
+		, Description_ (descr)
+		{
+		}
+
+		void operator() (const RegexpMatcherManager::RegexpItem& item)
+		{
+			QRegExp ib (item.Body_);
+			if (item.Body_.isEmpty ())
+				Links_ << Link_;
+			else if (ib.indexIn (Description_) > -1)
+				Links_ << ib.cap (0);
+		}
+
+		QStringList GetLinks ()
+		{
+			std::sort (Links_.begin (), Links_.end ());
+
+			QStringList result;
+			std::unique_copy (Links_.begin (),
+					Links_.end (),
+					std::back_inserter (result));
+			return result;
+		}
+	};
+};
+
+void RegexpMatcherManager::HandleItem (const boost::shared_ptr<Item>& item) const
+{
+	std::deque<RegexpItem> matchingTitles;
+
+	LeechCraft::Util::copy_if (Items_.begin (), Items_.end (),
+			std::back_inserter (matchingTitles),
+			IfTitleMatches (item->Title_));
+
+	QStringList links = std::for_each (matchingTitles.begin (),
+			matchingTitles.end (),
+			HandleBody (item->Description_, item->Link_)).Links_;
+
+	for (QStringList::const_iterator i = links.begin (),
+			end = links.end ();	i != end; ++i)
+		emit gotLink (*i);
 }
 
 int RegexpMatcherManager::columnCount (const QModelIndex& parent) const
