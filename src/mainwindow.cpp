@@ -215,9 +215,10 @@ void MainWindow::InitializeMainView (const QByteArray& pluginliststate)
     PluginsList_->setSelectionBehavior (QAbstractItemView::SelectRows);
     PluginsList_->setSelectionMode (QAbstractItemView::SingleSelection);
     PluginsList_->setEditTriggers (QAbstractItemView::NoEditTriggers);
-    PluginsList_->setItemsExpandable (true);
+    PluginsList_->setItemsExpandable (false);
+    PluginsList_->setRootIsDecorated (false);
     QStringList headerLabels;
-    headerLabels << tr ("Plugin") << tr ("Plugin details");
+    headerLabels << tr ("Plugin");
     PluginsList_->setHeaderLabels (headerLabels);
     PluginsList_->header ()->setHighlightSections (false);
     PluginsList_->header ()->setDefaultAlignment (Qt::AlignLeft);
@@ -226,12 +227,10 @@ void MainWindow::InitializeMainView (const QByteArray& pluginliststate)
     connect (PluginsList_, SIGNAL (itemDoubleClicked (QTreeWidgetItem*, int)), this, SLOT (handlePluginsListDoubleClick (QTreeWidgetItem*, int)));
         
     if (!pluginliststate.isNull () && !pluginliststate.isEmpty ())
-    {
         PluginsList_->header ()->restoreState (pluginliststate);
-    }
 
     PluginsList_->header ()->setStretchLastSection (true);
-    PluginsList_->setMinimumSize (200, 100);
+    PluginsList_->setMinimumSize (150, 150);
 
     setCentralWidget (PluginsList_);
 }
@@ -240,57 +239,10 @@ void MainWindow::AddPluginToTree (const PluginInfo* pInfo)
 {
     QTreeWidgetItem *item = new QTreeWidgetItem ();
     item->setData (0, Qt::DecorationRole, pInfo->GetIcon ());
-    item->setData (0, Qt::StatusTipRole, pInfo->GetStatusbarMessage ());
     item->setData (0, Qt::DisplayRole, pInfo->GetName ());
-    item->setText (1, pInfo->GetInfo ());
     PluginsList_->addTopLevelItem (item);
-
-    QStringList provides = pInfo->GetProvides (),
-                needs = pInfo->GetNeeds (),
-                uses = pInfo->GetUses ();
-
-    QBrush failedDep (Qt::red);
     if (!pInfo->GetDependenciesMet ())
         item->setDisabled (true);
-
-    if (provides.size ())
-    {
-        QTreeWidgetItem *header = new QTreeWidgetItem (item);
-        header->setText (0, tr ("Provides:"));
-        for (int i = 0; i < provides.size (); ++i)
-        {
-            QTreeWidgetItem *p = new QTreeWidgetItem (header);
-            p->setFirstColumnSpanned (true);
-            p->setText (0, provides.at (i));
-        }
-    }
-
-    if (needs.size ())
-    {
-        QTreeWidgetItem *header = new QTreeWidgetItem (item);
-        header->setText (0, tr ("Needs:"));
-        for (int i = 0; i < needs.size (); ++i)
-        {
-            QTreeWidgetItem *n = new QTreeWidgetItem (header);
-            n->setText (0, needs.at (i));
-            n->setFirstColumnSpanned (true);
-            if (!pInfo->GetDependenciesMet ())
-                if (pInfo->GetFailedDeps ().contains (needs.at (i)))
-                    n->setForeground (0, failedDep);
-        }
-    }
-
-    if (uses.size ())
-    {
-        QTreeWidgetItem *header = new QTreeWidgetItem (item);
-        header->setText (0, tr ("Uses:"));
-        for (int i = 0; i < uses.size (); ++i)
-        {
-            QTreeWidgetItem *u = new QTreeWidgetItem (header);
-            u->setText (0, uses.at (i));
-            u->setFirstColumnSpanned (true);
-        }
-    }
 }
 
 void MainWindow::handlePluginsListDoubleClick (QTreeWidgetItem *item, int column)
@@ -302,9 +254,7 @@ void MainWindow::handlePluginsListDoubleClick (QTreeWidgetItem *item, int column
         if (item->isDisabled ())
             return;
 
-        if (Model_->ShowPlugin (PluginsList_->indexOfTopLevelItem (item)))
-            if (column == 0)
-                PluginsList_->isItemExpanded (item) ? PluginsList_->collapseItem (item) : PluginsList_->expandItem (item);
+        Model_->ShowPlugin (PluginsList_->indexOfTopLevelItem (item));
     }
 }
 
