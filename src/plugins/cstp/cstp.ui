@@ -67,7 +67,7 @@
      <normaloff>:/resources/images/add.png</normaloff>:/resources/images/add.png</iconset>
    </property>
    <property name="text" >
-    <string>Add task</string>
+    <string>Add task...</string>
    </property>
   </action>
   <action name="ActionRemoveTask_" >
@@ -114,7 +114,7 @@
      <normaloff>:/resources/images/preferences.png</normaloff>:/resources/images/preferences.png</iconset>
    </property>
    <property name="text" >
-    <string>Preferences</string>
+    <string>Preferences...</string>
    </property>
   </action>
  </widget>

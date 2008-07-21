@@ -5,6 +5,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "addjob.h"
 
 CSTP::CSTP ()
 : IsShown_ (false)
@@ -109,6 +110,13 @@ void CSTP::ShowBalloonTip ()
 void CSTP::closeEvent (QCloseEvent*)
 {
 	IsShown_ = false;
+}
+
+void CSTP::on_ActionAddTask__triggered ()
+{
+	AddJob addjob;
+	if (addjob.exec () == QDialog::Rejected)
+		return;
 }
 
 void CSTP::on_ActionPreferences__triggered ()

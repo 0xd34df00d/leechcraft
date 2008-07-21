@@ -4,7 +4,9 @@
 #include <QUrl>
 #include <QHttp>
 #include <QFtp>
+#include <QFileInfo>
 #include "hook.h"
+#include "xmlsettingsmanager.h"
 
 Task::Task (const QString& str)
 : Http_ (0)
@@ -64,12 +66,18 @@ void Task::Start (QIODevice *to)
 				mode,
 				(URL_.port () == -1) ? 0 : URL_.port ());
 		Commands_.push_back (cmd_t (id, CConnect));
+
+		QString ua = XmlSettingsManager::Instance ()
+			.property ("UserUserAgent").toString ();
+		if (ua.isEmpty ())
+			ua = XmlSettingsManager::Instance ()
+				.property ("PredefinedUserAgent").toString ();
 		
 		QHttpRequestHeader header ("GET", URL_.path ());
 		header.setValue ("Host", URL_.host ());
 		header.setValue ("Range", QString ("bytes=%1-").arg (to->size ()));
 		header.setValue ("Accept", "*/*");
-		header.setValue ("User-Agent", "ShittyCrap");		// FIXME
+		header.setValue ("User-Agent", ua);
 		header.setValue ("Referer", QString ("http://") + URL_.host ());
 		id = Http_->request (header, 0, to);
 		Commands_.push_back (cmd_t (id, CTransfer));
@@ -83,9 +91,11 @@ void Task::Start (QIODevice *to)
 		QString login = URL_.userName ();
 		QString password = URL_.password ();
 		if (login.isEmpty ())
-			login = "anonymous";							// FIXME
+			login = XmlSettingsManager::Instance ()
+				.property ("FTPLogin").toString ();
 		if (password.isEmpty ())
-			password = "default@password.com";				// FIXME
+			password = XmlSettingsManager::Instance ()
+				.property ("FTPPassword").toString ();
 		id = Ftp_->login (login, password);
 		Commands_.push_back (cmd_t (id, CLogin));
 
@@ -95,7 +105,16 @@ void Task::Start (QIODevice *to)
 		id = Ftp_->rawCommand ("REST " + QString::number (to->size ()));
 		Commands_.push_back (cmd_t (id, CRest));
 
-		id = Ftp_->get (URL_.path (), to);					// FIXME transfer type
+		QStringList exts = XmlSettingsManager::Instance ()
+			.property ("TextTransferMode").toString ()
+			.split (' ', QString::SkipEmptyParts);
+		QFtp::TransferType ftt;
+		if (exts.contains (QFileInfo (URL_.path ()).suffix ()))
+			ftt = QFtp::Ascii;
+		else
+			ftt = QFtp::Binary;
+
+		id = Ftp_->get (URL_.path (), to, ftt);
 		Commands_.push_back (cmd_t (id, CTransfer));
 
 		id = Ftp_->close ();
@@ -177,6 +196,11 @@ void Task::Construct ()
 				SIGNAL (requestFinished (int, bool)),
 				this,
 				SLOT (handleRequestFinish (int, bool)));
+		if (Type_ == THttps)
+			connect (Http_,
+					SIGNAL (sslErrors (const QList<QSslError>&)),
+					Http_,
+					SLOT (ignoreSslErrors ()));
 	}
 }
 

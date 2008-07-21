@@ -10,6 +10,7 @@ SET (SRCS
 	core.cpp
 	task.cpp
 	hook.cpp
+	addjob.cpp
 	xmlsettingsmanager.cpp
 	)
 SET (HEADERS
@@ -17,10 +18,12 @@ SET (HEADERS
 	core.h
 	task.h
 	hook.h
+	addjob.h
 	xmlsettingsmanager.h
 	)
 SET (FORMS
 	cstp.ui
+	addjob.ui
 	)
 SET (RESOURCES
 	resources.qrc
