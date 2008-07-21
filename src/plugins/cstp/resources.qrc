@@ -1,0 +1,10 @@
+<RCC>
+  <qresource prefix="/" >
+    <file>resources/images/preferences.png</file>
+    <file>resources/images/remove.png</file>
+    <file>resources/images/stop.png</file>
+    <file>resources/images/add.png</file>
+	<file>leechcraft_cstp_ru.qm</file>
+	<file>cstpsettings.xml</file>
+  </qresource>
+</RCC>

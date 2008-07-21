@@ -49,7 +49,7 @@ SET (HEADERS
 	singleregexp.h
 	regexpmatchermanager.h
 	itemsfiltermodel.h
-    ../../plugininterface/basesettingsmanager.h)
+	)
 SET (FORMS
     mainwindow.ui
     addfeed.ui

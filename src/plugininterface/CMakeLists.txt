@@ -13,6 +13,7 @@ SET (SRCS
   graphwidget.cpp)
 SET (HEADERS
   addressparser.h
+  basesettingsmanager.h
   proxy.h
   tcpsocket.h
   socketexceptions.h

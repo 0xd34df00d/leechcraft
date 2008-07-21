@@ -9,17 +9,21 @@ SET (SRCS
 	cstp.cpp
 	core.cpp
 	task.cpp
+	hook.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (HEADERS
 	cstp.h
 	core.h
 	task.h
 	hook.h
+	xmlsettingsmanager.h
 	)
 SET (FORMS
 	cstp.ui
 	)
 SET (RESOURCES
+	resources.qrc
 	)
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 ADD_DEFINITIONS(-DQT_PLUGIN)

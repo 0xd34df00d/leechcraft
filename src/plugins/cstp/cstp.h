@@ -3,6 +3,8 @@
 #include <interfaces/interfaces.h>
 #include "ui_cstp.h"
 
+class XmlSettingsDialog;
+
 class CSTP : public QMainWindow
 			 , public IInfo
 			 , public IWindow
@@ -14,6 +16,7 @@ class CSTP : public QMainWindow
 	unsigned long int ID_;
 	bool IsShown_;
 	QMenu *Plugins_;
+	XmlSettingsDialog *XmlSettingsDialog_;
 public:
 	explicit CSTP ();
 	virtual ~CSTP ();
@@ -35,6 +38,8 @@ public:
     void ShowBalloonTip ();
 protected:
     virtual void closeEvent (QCloseEvent*);
+private slots:
+	void on_ActionPreferences__triggered ();
 };
 
 #endif

@@ -57,7 +57,7 @@ SET (HEADERS
 	torrentinfo.h 
 	fileinfo.h
 	peerinfo.h
-	../../plugininterface/basesettingsmanager.h)
+	)
 SET (FORMS
     mainwindow.ui
 	addtorrent.ui

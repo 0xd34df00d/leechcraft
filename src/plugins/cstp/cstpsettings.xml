@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<declare defaultlang="en" />
+	<page>
+		<label lang="en" value="Network settings" />
+		<label lang="ru" value="Сетевые настройки" />
+		<groupbox>
+			<label lang="en" value="Behavior" />
+			<label lang="ru" value="Поведение" />
+		</groupbox>
+		<groupbox>
+			<label lang="en" value="Identification" />
+			<label lang="ru" value="Идентификация" />
+            <item type="lineedit" property="UserUserAgent">
+				<label lang="en" value="User's user agent" />
+				<label lang="ru" value="Пользовательский user agent" />
+            </item>
+			<item type="combobox" property="PredefinedUserAgent">
+				<label lang="en" value="Predefined user agent" />
+				<label lang="ru" value="Предустановленный user agent" />
+				<option default="true" value="Mozilla/4.0 (Compatible; MSIE 7.0; Windows NT 5.1)">
+					<label lang="en" value="Mozilla/4.0 (Compatible; MSIE 7.0; Windows NT 5.1)" />
+				</option>
+			</item>
+		</groupbox>
+	</page>
+</settings>

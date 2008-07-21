@@ -1,5 +1,10 @@
 #include "cstp.h"
+#include <QMenu>
+#include <QTranslator>
+#include <QLocale>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 CSTP::CSTP ()
 : IsShown_ (false)
@@ -12,7 +17,18 @@ CSTP::~CSTP ()
 
 void CSTP::Init ()
 {
+    QTranslator *transl = new QTranslator (this);
+    QString localeName = QString(::getenv ("LANG")).left (2);
+    if (localeName.isNull () || localeName.isEmpty ())
+        localeName = QLocale::system ().name ();
+    transl->load (QString (":/leechcraft_cstp_") + localeName);
+    qApp->installTranslator (transl);
+
 	Ui_.setupUi (this);
+
+	XmlSettingsDialog_ = new XmlSettingsDialog (this);
+	XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (), ":/cstpsettings.xml");
+
 	Core::Instance ();
 }
 
@@ -93,6 +109,11 @@ void CSTP::ShowBalloonTip ()
 void CSTP::closeEvent (QCloseEvent*)
 {
 	IsShown_ = false;
+}
+
+void CSTP::on_ActionPreferences__triggered ()
+{
+	XmlSettingsDialog_->show ();
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_cstp, CSTP);

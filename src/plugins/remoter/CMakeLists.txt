@@ -12,7 +12,7 @@ SET (HEADERS
     remoter.h
     core.h
     server.h
-    ../../plugininterface/basesettingsmanager.h)
+	)
 SET (FORMS
     mainwindow.ui)
 SET (RESOURCES resources.qrc)

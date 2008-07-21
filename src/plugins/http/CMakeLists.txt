@@ -39,7 +39,7 @@ SET (HEADERS
     columnselector.h
     jobpropertiesdialog.h
     globals.h
-    ../../plugininterface/basesettingsmanager.h)
+	)
 SET (FORMS
     fileexistsdialog.ui
     columnselector.ui
