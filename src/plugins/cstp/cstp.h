@@ -15,7 +15,7 @@ class CSTP : public QMainWindow
 	bool IsShown_;
 	QMenu *Plugins_;
 public:
-	CSTP ();
+	explicit CSTP ();
 	virtual ~CSTP ();
 	void Init ();
 	void Release ();

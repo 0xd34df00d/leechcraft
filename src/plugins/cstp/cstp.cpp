@@ -1,4 +1,5 @@
 #include "cstp.h"
+#include "core.h"
 
 CSTP::CSTP ()
 : IsShown_ (false)
@@ -12,6 +13,7 @@ CSTP::~CSTP ()
 void CSTP::Init ()
 {
 	Ui_.setupUi (this);
+	Core::Instance ();
 }
 
 void CSTP::Release ()
