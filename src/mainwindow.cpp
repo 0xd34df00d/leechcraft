@@ -342,7 +342,7 @@ void MainWindow::showChangelog ()
 void MainWindow::showAboutInfo ()
 {
     QMessageBox::information (this, tr ("Information"), tr ("<img src=\":/resources/images/mainapp.png\" /><h1>LeechCraft 0.3.0_pre</h1>"
-                "LeechCraft is a cross-platform extensibe download manager. Currently it offers "
+                "LeechCraft is a cross-platform extensible download manager. Currently it offers "
                 "full-featured BitTorrent client, feed reader, HTTP/FTP plugin, Remote access "
                 "and much more. It also aims to be resource-efficient working quite well on "
                 "even old computers.<br /><br />Here are some useful links for you:<br />"
