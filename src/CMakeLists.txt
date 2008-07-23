@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.4)
+CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
 IF (COMMAND cmake_policy)
 		      cmake_policy (SET CMP0003 NEW)
 ENDIF (COMMAND cmake_policy)
@@ -17,6 +17,32 @@ SET (LC_PLUGINS_DEST "lib/leechcraft/plugins")
 FIND_PACKAGE(Boost REQUIRED)
 FIND_PACKAGE(Qt4 REQUIRED)
 FIND_PACKAGE(Threads REQUIRED)
+
+INCLUDE (InstallRequiredSystemLibraries)
+SET (CPACK_CMAKE_GENERATOR "Unix Makefiles")
+SET (CPACK_PACKAGE_NAME "leechcraft")
+SET (CPACK_GENERATOR "DEB;RPM")
+SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Extensible crossplatform download manager")
+SET (CPACK_PACKAGE_VENDOR "0xd34df00d")
+SET (CPACK_DEBIAN_PACKAGE_SECTION "net")
+SET (CPACK_DEBIAN_PACKAGE_DESCRIPTION "Extensible crossplatform download manager
+ LeechCraft is a cross-platform
+ extensibe download manager written
+ in C++. Currently it offers full-featured BitTorrent client, feed
+ reader, HTTP/FTP plugin, Remote access and much more. It also aims
+ to be resource-efficient, working quite well on even old computers.")
+SET (CPACK_DEBIAN_PACKAGE_DEPENDS "libqt4-core (>= 4.4.0), libqt4-gui (>= 4.4.0), libqt4-network (>= 4.4.0), libqt4-svg (>= 4.4.0), libqt4-webkit (>= 4.4.0), libqt4-xml (>= 4.4.0), libtorrent-rasterbar-0.13")
+SET (CPACK_PACKAGE_DESCRIPTION_FILE	"${CMAKE_CURRENT_SOURCE_DIR}/ReadMe.txt")
+SET (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/Copyright.txt")
+SET (CPACK_PACKAGE_VERSION_MAJOR "0")
+SET (CPACK_PACKAGE_VERSION_MINOR "2")
+SET (CPACK_PACKAGE_VERSION_PATCH "634")
+SET (CPACK_PACKAGE_INSTALL_DIRECTORY "CMake ${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}")
+SET (CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
+SET (CPACK_PACKAGE_CONTACT "0xd34df00d@gmail.com")
+SET (CPACK_DEBIAN_PACKAGE_MAINTAINER "0xd34df00d")
+INCLUDE (CPack)
+
 INCLUDE (${CMAKE_ROOT}/Modules/UseQt4.cmake)
 INCLUDE_DIRECTORIES (${QT_QTGUI_INCLUDE_DIR} ${QT_QTCORE_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR} .
 	plugininterface/)
