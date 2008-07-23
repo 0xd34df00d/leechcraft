@@ -21,6 +21,41 @@
      <height>542</height>
     </rect>
    </property>
+   <layout class="QVBoxLayout" name="verticalLayout" >
+    <item>
+     <widget class="QTreeView" name="treeView" />
+    </item>
+    <item>
+     <widget class="QTabWidget" name="tabWidget" >
+      <widget class="QWidget" name="tab" >
+       <property name="geometry" >
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>778</width>
+         <height>232</height>
+        </rect>
+       </property>
+       <attribute name="title" >
+        <string>Tab 1</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="tab_2" >
+       <property name="geometry" >
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>840</width>
+         <height>420</height>
+        </rect>
+       </property>
+       <attribute name="title" >
+        <string>Tab 2</string>
+       </attribute>
+      </widget>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QStatusBar" name="statusbar" >
    <property name="geometry" >
