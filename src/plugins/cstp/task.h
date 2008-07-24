@@ -64,6 +64,7 @@ public:
 	QString GetState () const;
 	QString GetURL () const;
 	int GetTimeFromStart () const;
+	bool IsRunning () const;
 private:
 	void Reset ();
 	void Construct ();

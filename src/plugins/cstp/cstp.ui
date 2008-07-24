@@ -23,34 +23,50 @@
    </property>
    <layout class="QVBoxLayout" name="verticalLayout" >
     <item>
-     <widget class="QTreeView" name="treeView" />
+     <widget class="QTreeView" name="MainView_" >
+      <property name="rootIsDecorated" >
+       <bool>false</bool>
+      </property>
+      <property name="itemsExpandable" >
+       <bool>false</bool>
+      </property>
+      <property name="expandsOnDoubleClick" >
+       <bool>false</bool>
+      </property>
+     </widget>
     </item>
     <item>
      <widget class="QTabWidget" name="tabWidget" >
+      <property name="tabPosition" >
+       <enum>QTabWidget::West</enum>
+      </property>
+      <property name="currentIndex" >
+       <number>0</number>
+      </property>
       <widget class="QWidget" name="tab" >
        <property name="geometry" >
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>778</width>
-         <height>232</height>
+         <width>758</width>
+         <height>252</height>
         </rect>
        </property>
        <attribute name="title" >
-        <string>Tab 1</string>
+        <string>Dashboard</string>
        </attribute>
       </widget>
-      <widget class="QWidget" name="tab_2" >
+      <widget class="QWidget" name="TabLog_" >
        <property name="geometry" >
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>840</width>
-         <height>420</height>
+         <width>758</width>
+         <height>252</height>
         </rect>
        </property>
        <attribute name="title" >
-        <string>Tab 2</string>
+        <string>Log</string>
        </attribute>
       </widget>
      </widget>

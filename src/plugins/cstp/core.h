@@ -11,16 +11,6 @@ class QFile;
 class Core : public QAbstractItemModel
 {
 	Q_OBJECT
-
-	enum
-	{
-		HState
-		, HURL
-		, HProgress
-		, HSpeed
-		, HRemaining
-		, HDownloading
-	};
 	QStringList Headers_;
 
 	struct TaskDescr
@@ -30,22 +20,38 @@ class Core : public QAbstractItemModel
 		QString Comment_;
 	};
 	typedef std::deque<TaskDescr> tasks_t;
-	tasks_t RunningTasks_;
+	tasks_t ActiveTasks_;
 	
 	explicit Core ();
 public:
+	enum
+	{
+		HState
+		, HURL
+		, HProgress
+		, HSpeed
+		, HRemaining
+		, HDownloading
+	};
+
 	virtual ~Core ();
 	static Core& Instance ();
 	void Release ();
 
-	virtual int columnCount (const QModelIndex& parent = QModelIndex ()) const;
-	virtual QVariant data (const QModelIndex&, int role = Qt::DisplayRole) const;
+	void AddJob (const QString&, const QString&, const QString&, const QString&);
+
+	virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
+	virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
 	virtual Qt::ItemFlags flags (const QModelIndex&) const;
 	virtual bool hasChildren (const QModelIndex&) const;
-	virtual QVariant headerData (int, Qt::Orientation, int role = Qt::DisplayRole) const;
-	virtual QModelIndex index (int, int, const QModelIndex& parent = QModelIndex()) const;
+	virtual QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
+	virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
 	virtual QModelIndex parent (const QModelIndex&) const;
-	virtual int rowCount (const QModelIndex& parent = QModelIndex ()) const;
+	virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
+
+	qint64 GetDone (int) const;
+	qint64 GetTotal (int) const;
+	bool IsRunning (int) const;
 };
 
 #endif

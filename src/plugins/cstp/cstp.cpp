@@ -6,6 +6,7 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "addjob.h"
+#include "mainviewdelegate.h"
 
 CSTP::CSTP ()
 : IsShown_ (false)
@@ -25,12 +26,12 @@ void CSTP::Init ()
     transl->load (QString (":/leechcraft_cstp_") + localeName);
     qApp->installTranslator (transl);
 
-	Ui_.setupUi (this);
-
 	XmlSettingsDialog_ = new XmlSettingsDialog (this);
 	XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (), ":/cstpsettings.xml");
 
-	Core::Instance ();
+	Ui_.setupUi (this);
+	Ui_.MainView_->setItemDelegate (new MainViewDelegate (Ui_.MainView_));
+	Ui_.MainView_->setModel (&Core::Instance ());
 }
 
 void CSTP::Release ()
@@ -117,6 +118,16 @@ void CSTP::on_ActionAddTask__triggered ()
 	AddJob addjob;
 	if (addjob.exec () == QDialog::Rejected)
 		return;
+
+	AddJob::Job job = addjob.GetJob ();
+	Core::Instance ().AddJob (job.URL_,
+			job.LocalPath_,
+			job.Filename_,
+			job.Comment_);
+}
+
+void CSTP::on_ActionStart__triggered ()
+{
 }
 
 void CSTP::on_ActionPreferences__triggered ()

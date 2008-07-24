@@ -1,5 +1,6 @@
 #include "core.h"
 #include <QFile>
+#include <QDir>
 #include <plugininterface/proxy.h>
 #include "task.h"
 
@@ -22,6 +23,23 @@ void Core::Release ()
 {
 }
 
+void Core::AddJob (const QString& url,
+		const QString& path,
+		const QString& filename,
+		const QString& comment)
+{
+	TaskDescr td;
+	td.Task_ = boost::shared_ptr<Task> (new Task (url));
+	QDir dir (path);
+	td.File_ = boost::shared_ptr<QFile> (new QFile (QDir::cleanPath (dir
+					.filePath (filename))));
+	td.Comment_ = comment;
+
+	beginInsertRows (QModelIndex (), rowCount (), rowCount ());
+	ActiveTasks_.push_back (td);
+	endInsertRows ();
+}
+
 int Core::columnCount (const QModelIndex& parent) const
 {
 	return Headers_.size ();
@@ -34,7 +52,7 @@ QVariant Core::data (const QModelIndex& index, int role) const
 
     if (role == Qt::DisplayRole)
 	{
-		boost::shared_ptr<Task> task = RunningTasks_ [index.row ()]
+		boost::shared_ptr<Task> task = ActiveTasks_ [index.row ()]
 			.Task_;
 		switch (index.column ())
 		{
@@ -43,13 +61,16 @@ QVariant Core::data (const QModelIndex& index, int role) const
 			case HURL:
 				return task->GetURL ();
 			case HProgress:
-				return QString::number (task->GetDone () * 100 /
-						task->GetTotal ()) + "%";
+				return "Delegate isn't installed";
 			case HSpeed:
-				return Proxy::Instance ()->
-					MakePrettySize (task->GetSpeed ()) + tr ("/s");
+				return task->IsRunning () ? Proxy::Instance ()->
+					MakePrettySize (task->GetSpeed ()) + tr ("/s") :
+					QVariant ();
 			case HRemaining:
 				{
+					if (!task->IsRunning ())
+						return QVariant ();
+
 					qint64 done = task->GetDone (),
 						   total = task->GetTotal ();
 					double speed = task->GetSpeed ();
@@ -59,8 +80,9 @@ QVariant Core::data (const QModelIndex& index, int role) const
 					return Proxy::Instance ()->MakeTimeFromLong (rem);
 				}
 			case HDownloading:
-				return Proxy::Instance ()->
-					MakeTimeFromLong (task->GetTimeFromStart ());
+				return task->IsRunning () ? Proxy::Instance ()->
+					MakeTimeFromLong (task->GetTimeFromStart ()) :
+					QVariant ();;
 			default:
 				return QVariant ();
 		}
@@ -102,6 +124,21 @@ QModelIndex Core::parent (const QModelIndex& index) const
 
 int Core::rowCount (const QModelIndex& parent) const
 {
-	return parent.isValid () ? 0 : RunningTasks_.size ();
+	return parent.isValid () ? 0 : ActiveTasks_.size ();
+}
+
+qint64 Core::GetDone (int pos) const
+{
+	return ActiveTasks_.at (pos).Task_->GetDone ();
+}
+
+qint64 Core::GetTotal (int pos) const
+{
+	return ActiveTasks_.at (pos).Task_->GetTotal ();
+}
+
+bool Core::IsRunning (int pos) const
+{
+	return ActiveTasks_.at (pos).Task_->IsRunning ();
 }
 

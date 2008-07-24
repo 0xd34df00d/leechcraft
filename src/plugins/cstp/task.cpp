@@ -173,6 +173,22 @@ int Task::GetTimeFromStart () const
 	return StartTime_.elapsed ();
 }
 
+bool Task::IsRunning () const
+{
+	if (Type_ == THttp || Type_ == THttps)
+	{
+		QHttp::State st = Http_->state ();
+		return st != QHttp::Unconnected;
+	}
+	else if (Type_ == TFtp)
+	{
+		QFtp::State st = Ftp_->state ();
+		return st != QFtp::Unconnected;
+	}
+	else
+		return false;
+}
+
 void Task::Reset ()
 {
 	Done_ = 0;

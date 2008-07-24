@@ -40,6 +40,7 @@ protected:
     virtual void closeEvent (QCloseEvent*);
 private slots:
 	void on_ActionAddTask__triggered ();
+	void on_ActionStart__triggered ();
 	void on_ActionPreferences__triggered ();
 };
 
