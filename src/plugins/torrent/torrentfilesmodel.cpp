@@ -161,7 +161,7 @@ void TorrentFilesModel::ResetFiles (libtorrent::torrent_info::file_iterator begi
 		const libtorrent::torrent_info::file_iterator& end)
 {
     Clear ();
-    beginInsertRows (QModelIndex (), 0, RootItem_->ChildCount () - 1);
+    beginInsertRows (QModelIndex (), 0, 0);
     int distance = std::distance (begin, end);
     if (!distance)
         return;
@@ -191,7 +191,7 @@ void TorrentFilesModel::ResetFiles (libtorrent::torrent_info::file_iterator begi
 void TorrentFilesModel::ResetFiles (const QList<FileInfo>& infos)
 {
     Clear ();
-    beginInsertRows (QModelIndex (), 0, RootItem_->ChildCount () - 1);
+    beginInsertRows (QModelIndex (), 0, 0);
     FilesInTorrent_ = infos.size ();
     Path2TreeItem_ [boost::filesystem::path ()] = RootItem_;
     for (int i = 0; i < infos.size (); ++i)

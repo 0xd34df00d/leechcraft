@@ -138,11 +138,17 @@ void AddTorrent::ParseBrowsed ()
     QString date = QString::fromStdString (boost::posix_time::to_simple_string (info.creation_date ().get ()));
     if (!creator.isEmpty () && !creator.isNull ())
         Creator_->setText (creator);
+	else
+		Creator_->setText ("<>");
     if (!comment.isEmpty () && !comment.isNull ())
         Comment_->setText (comment);
+	else
+		Comment_->setText ("<>");
     if (!date.isEmpty () && !date.isNull ())
         Date_->setText (date);
-    FilesModel_->ResetFiles (info.begin_files (), info.end_files ());
-    FilesView_->expandAll ();
+	else
+		Date_->setText ("<>");
+	FilesModel_->ResetFiles (info.begin_files (), info.end_files ());
+	FilesView_->expandAll ();
 }
 
