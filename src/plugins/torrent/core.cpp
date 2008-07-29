@@ -861,7 +861,6 @@ namespace
         if (l.leaf () [0] == '.')
             return;
 
-		QApplication::processEvents ();
         boost::filesystem::path f (p / l);
         if (boost::filesystem::is_directory (f))
             for (boost::filesystem::directory_iterator i (f), end; i != end; ++i)
@@ -922,7 +921,7 @@ void Core::MakeTorrent (NewTorrentParams params) const
 
     boost::filesystem::path::default_name_check (boost::filesystem::no_check);
     boost::filesystem::path fullPath =
-		boost::filesystem::complete (params.Path_.toStdString ());
+		boost::filesystem::complete (params.Path_.toUtf8 ().constData ());
 	AddFiles (*info, fullPath.branch_path (), fullPath.leaf ());
 
     info->set_piece_size (params.PieceSize_);

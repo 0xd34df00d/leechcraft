@@ -1,5 +1,4 @@
 #include "threadedpd.h"
-#include <QMutexLocker>
 #include <QtDebug>
 
 ThreadedPD::ThreadedPD (QWidget *parent, Qt::WindowFlags f)
