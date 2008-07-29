@@ -38,7 +38,7 @@ void Core::AddJob (const QString& url,
 
 	connect (td.Task_.get (), SIGNAL (done (bool)), this, SLOT (done (bool)));
 
-	// FIXME various checks for file
+	// TODO various checks for file
 
 	beginInsertRows (QModelIndex (), rowCount (), rowCount ());
 	ActiveTasks_.push_back (td);
