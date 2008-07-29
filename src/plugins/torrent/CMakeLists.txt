@@ -32,7 +32,9 @@ SET (SRCS
 	torrentfilesmodel.cpp
 	peersmodel.cpp
 	filesviewdelegate.cpp
-	movetorrentfiles.cpp)
+	movetorrentfiles.cpp
+	threadedpd.cpp
+	)
 SET (HEADERS
 	torrentplugin.h 
 	core.h 
@@ -52,6 +54,7 @@ SET (HEADERS
 	peersmodel.h
 	filesviewdelegate.h
 	movetorrentfiles.h
+	threadedpd.h
 	newtorrentparams.h
 	overallstats.h
 	torrentinfo.h 

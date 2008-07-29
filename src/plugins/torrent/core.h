@@ -18,6 +18,7 @@ class PiecesModel;
 class PeersModel;
 class TagsCompletionModel;
 class TorrentFilesModel;
+class TorrentPlugin;
 
 class Core : public QAbstractItemModel
 {
@@ -56,6 +57,7 @@ private:
     PeersModel *PeersModel_;
     TagsCompletionModel *TagsCompletionModel_;
 	TorrentFilesModel *TorrentFilesModel_;
+	mutable TorrentPlugin *TorrentPlugin_;
 
     Core ();
 public:
@@ -76,6 +78,7 @@ public:
     static Core* Instance ();
 	virtual ~Core ();
     void DoDelayedInit ();
+	void SetWindow (TorrentPlugin*);
     void Release ();
     PiecesModel* GetPiecesModel ();
     void ClearPieces ();

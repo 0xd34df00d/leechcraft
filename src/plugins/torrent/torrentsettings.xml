@@ -103,13 +103,64 @@
         <tab>
             <label lang="en" value="Advanced" />
             <label lang="ru" value="Расширенные" />
+			<groupbox>
+				<label lang="en" value="Identification" />
+				<label lang="ru" value="Идентификация" />
+				<item type="lineedit" property="UserAgent" default="LeechCraft">
+					<label lang="en" value="HTTP User-Agent" />
+					<label lang="ru" value="HTTP User-Agent" />
+				</item>
+				<item type="combobox" property="PeerIDString">
+					<label lang="en" value="Peer ID string" />
+					<label lang="ru" value="Строка Peer ID" />
+					<option name="AG">
+						<label lang="en" value="Ares" />
+					</option>
+					<option name="AZ">
+						<label lang="en" value="Azureus" />
+					</option>
+					<option name="BC">
+						<label lang="en" value="BitComet" />
+					</option>
+					<option name="AX">
+						<label lang="en" value="BitPump" />
+					</option>
+					<option name="BG">
+						<label lang="en" value="BTG" />
+					</option>
+					<option name="DE">
+						<label lang="en" value="DelugeTorrent" />
+					</option>
+					<option name="KT">
+						<label lang="en" value="KTorrent" />
+					</option>
+					<option name="LC" default="true">
+						<label lang="en" value="LeechCraft" />
+					</option>
+					<option name="LT">
+						<label lang="en" value="rb-libtorrent" />
+					</option>
+					<option name="qB">
+						<label lang="en" value="qBittorrent" />
+					</option>
+					<option name="SZ">
+						<label lang="en" value="Shareaza" />
+					</option>
+					<option name="st">
+						<label lang="en" value="sharktorrent" />
+					</option>
+					<option name="UT">
+						<label lang="en" value="µTorrent" />
+					</option>
+				</item>
+				<item type="lineedit" property="PeerIDVersion" default="0300" inputMask="9999">
+					<label lang="en" value="Peer ID version" />
+					<label lang="ru" value="Версия Peer ID" />
+				</item>
+			</groupbox>
             <groupbox>
                 <label lang="en" value="Advanced" />
                 <label lang="ru" value="Расширенные" />
-                <item type="lineedit" property="UserAgent" default="LeechCraft">
-                    <label lang="en" value="User agent" />
-                    <label lang="ru" value="Идентифицировать себя как" />
-                </item>
                 <item type="spinbox" property="TrackerCompletionTimeout" default="60" minimum="10" maximum="300" step="10">
                     <lang value="en">
                         <label value="Tracker request completion timeout" />

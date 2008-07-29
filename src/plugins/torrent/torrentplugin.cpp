@@ -26,6 +26,7 @@ void TorrentPlugin::SetupCore ()
     XmlSettingsDialog_ = new XmlSettingsDialog (this);
     XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/torrentsettings.xml");
     AddTorrentDialog_ = new AddTorrent (this);
+	Core::Instance ()->SetWindow (this);
     connect (Core::Instance (), SIGNAL (error (QString)), this, SLOT (showError (QString)));
     connect (Core::Instance (), SIGNAL (logMessage (const QString&)), this, SLOT (doLogMessage (const QString&)));
     connect (Core::Instance (), SIGNAL (torrentFinished (const QString&)), this, SIGNAL (downloadFinished (const QString&)));

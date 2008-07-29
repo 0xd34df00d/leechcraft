@@ -8,16 +8,24 @@
 class Task;
 class QFile;
 
+namespace _Local
+{
+	struct ObjectFinder;
+};
+
 class Core : public QAbstractItemModel
 {
 	Q_OBJECT
 	QStringList Headers_;
+
+	friend class _Local::ObjectFinder;
 
 	struct TaskDescr
 	{
 		boost::shared_ptr<Task> Task_;
 		boost::shared_ptr<QFile> File_;
 		QString Comment_;
+		bool ErrorFlag_;
 	};
 	typedef std::deque<TaskDescr> tasks_t;
 	tasks_t ActiveTasks_;
@@ -39,6 +47,7 @@ public:
 	void Release ();
 
 	void AddJob (const QString&, const QString&, const QString&, const QString&);
+	void Start (const QModelIndex&);
 
 	virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
 	virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
@@ -52,6 +61,13 @@ public:
 	qint64 GetDone (int) const;
 	qint64 GetTotal (int) const;
 	bool IsRunning (int) const;
+private slots:
+	void done (bool); 
+private:
+	tasks_t::const_iterator FindTask (QObject*) const;
+	tasks_t::iterator FindTask (QObject*);
+	void Remove (tasks_t::iterator);
+	void AddToHistory (tasks_t::const_iterator);
 };
 
 #endif

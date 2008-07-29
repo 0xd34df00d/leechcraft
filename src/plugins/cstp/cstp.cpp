@@ -1,4 +1,6 @@
 #include "cstp.h"
+#include <boost/lambda/lambda.hpp>
+#include <boost/lambda/bind.hpp>
 #include <QMenu>
 #include <QTranslator>
 #include <QLocale>
@@ -128,6 +130,11 @@ void CSTP::on_ActionAddTask__triggered ()
 
 void CSTP::on_ActionStart__triggered ()
 {
+	QModelIndexList indexes = Ui_.MainView_->selectionModel ()->
+		selectedRows ();
+	using boost::lambda::_1;
+	std::for_each (indexes.begin (), indexes.end (),
+			boost::lambda::bind (&Core::Start, &Core::Instance (), _1));
 }
 
 void CSTP::on_ActionPreferences__triggered ()

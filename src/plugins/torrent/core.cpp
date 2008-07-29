@@ -1,3 +1,5 @@
+#define TORRENT_MAX_ALERT_TYPES 25
+#include "core.h"
 #include <QFile>
 #include <QProgressDialog>
 #include <QDir>
@@ -9,8 +11,10 @@
 #include <QDomElement>
 #include <QDomNode>
 #include <QtDebug>
+#include <QThreadPool>
+#include <QApplication>
+#include <QRunnable>
 #include <memory>
-#define TORRENT_MAX_ALERT_TYPES 25
 #include <alert.hpp>
 #include <bencode.hpp>
 #include <entry.hpp>
@@ -26,11 +30,12 @@
 #include <boost/filesystem/fstream.hpp>
 #include <plugininterface/proxy.h>
 #include <plugininterface/tagscompletionmodel.h>
-#include "core.h"
 #include "xmlsettingsmanager.h"
 #include "piecesmodel.h"
 #include "peersmodel.h"
 #include "torrentfilesmodel.h"
+#include "threadedpd.h"
+#include "torrentplugin.h"
 
 Core* Core::Instance ()
 {
@@ -55,7 +60,16 @@ void Core::DoDelayedInit ()
 {
     try
     {
-        Session_ = new libtorrent::session (libtorrent::fingerprint ("LB", 0, 3, 0, 0));
+		QString peerIDstring = XmlSettingsManager::Instance ()->
+			property ("PeerIDString").toString ();
+		QString ver = XmlSettingsManager::Instance ()->
+			property ("PeerIDVersion").toString ();
+        Session_ = new libtorrent::session (libtorrent::fingerprint
+				(peerIDstring.toLatin1 ().constData (),
+				 ver.at (0).digitValue (),
+				 ver.at (1).digitValue (), 
+				 ver.at (2).digitValue (),
+				 ver.at (3).digitValue ()));
         QList<QVariant> ports = XmlSettingsManager::Instance ()->property ("TCPPortRange").toList ();
         Session_->listen_on (std::make_pair (ports.at (0).toInt (), ports.at (1).toInt ()));
         Session_->add_extension (&libtorrent::create_metadata_plugin);
@@ -87,13 +101,18 @@ void Core::DoDelayedInit ()
 
     QTimer *finished = new QTimer (this);
     connect (finished, SIGNAL (timeout ()), this, SLOT (checkFinished ()));
-    finished->start (1000);
+    finished->start (100);
 
     QTimer *warningWatchdog = new QTimer (this);
     connect (warningWatchdog, SIGNAL (timeout ()), this, SLOT (queryLibtorrentForWarnings ()));
     warningWatchdog->start (100);
 
     ManipulateSettings ();
+}
+
+void Core::SetWindow (TorrentPlugin *tp)
+{
+	TorrentPlugin_ = tp;
 }
 
 void Core::Release ()
@@ -842,6 +861,7 @@ namespace
         if (l.leaf () [0] == '.')
             return;
 
+		QApplication::processEvents ();
         boost::filesystem::path f (p / l);
         if (boost::filesystem::is_directory (f))
             for (boost::filesystem::directory_iterator i (f), end; i != end; ++i)
@@ -850,6 +870,38 @@ namespace
             t.add_file (l, boost::filesystem::file_size (f));
     }
 }
+
+class HasherRunnable : public QRunnable
+{
+	int I_;
+	boost::intrusive_ptr<libtorrent::torrent_info>& Info_;
+	boost::scoped_ptr<libtorrent::storage_interface>& St_;
+	ThreadedPD *PD_;
+public:
+	HasherRunnable (int i,
+			boost::intrusive_ptr<libtorrent::torrent_info>& info,
+			boost::scoped_ptr<libtorrent::storage_interface>& st,
+			ThreadedPD *tpd)
+	: I_ (i)
+	, Info_ (info)
+	, St_ (st)
+	, PD_ (tpd)
+	{
+	}
+
+	virtual ~HasherRunnable ()
+	{
+	}
+
+	virtual void run ()
+	{
+		PD_->Increment ();
+		std::auto_ptr<char> buf (new char [Info_->piece_size (I_)]);
+		St_->read (buf.get (), I_, 0, Info_->piece_size (I_));
+		libtorrent::hasher h (buf.get (), Info_->piece_size (I_));
+		Info_->set_hash (I_, h.final ());
+	}
+};
 
 void Core::MakeTorrent (NewTorrentParams params) const
 {
@@ -869,22 +921,33 @@ void Core::MakeTorrent (NewTorrentParams params) const
         }
 
     boost::filesystem::path::default_name_check (boost::filesystem::no_check);
-    boost::filesystem::path fullPath = boost::filesystem::complete (params.Path_.toStdString ());
-    AddFiles (*info, fullPath.branch_path (), fullPath.leaf ());
+    boost::filesystem::path fullPath =
+		boost::filesystem::complete (params.Path_.toStdString ());
+	AddFiles (*info, fullPath.branch_path (), fullPath.leaf ());
+
     info->set_piece_size (params.PieceSize_);
 
     libtorrent::file_pool fp;
     boost::scoped_ptr<libtorrent::storage_interface> st (libtorrent::default_storage_constructor (info, fullPath.branch_path (), fp));
     info->add_tracker (params.AnnounceURL_.toStdString ());
-    std::vector<char> buf (params.PieceSize_);
-    QProgressDialog pd (tr ("Hashing..."), tr ("Cancel"), 0, info->num_pieces ());
-    for (int i = 0; i < info->num_pieces (); ++i)
-    {
-        st->read (&buf [0], i, 0, info->piece_size (i));
-        libtorrent::hasher h (&buf [0], info->piece_size (i));
-        info->set_hash (i, h.final ());
-        pd.setValue (i + 1);
-    }
+
+	std::auto_ptr<ThreadedPD> pd (new ThreadedPD (tr ("Hashing..."),
+				tr ("Cancel"), 0, info->num_pieces (),
+				TorrentPlugin_));
+	pd->setValue (0);
+	pd->setModal (true);
+	pd->setMinimumDuration (0);
+	pd->show ();
+
+	std::auto_ptr<QThreadPool> hashers (new QThreadPool ());
+	for (int i = 0; i < info->num_pieces (); ++i)
+		hashers->start (new HasherRunnable (i, info, st, pd.get ()));
+	QEventLoop loop;
+	while (hashers->activeThreadCount ())
+	{
+		QTimer::singleShot (50, &loop, SLOT (quit ()));
+		loop.exec ();
+	}
 
     libtorrent::entry e = info->create_torrent ();
     std::vector<char> outbuf;

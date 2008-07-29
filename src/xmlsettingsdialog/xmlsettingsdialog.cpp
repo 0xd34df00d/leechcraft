@@ -305,6 +305,8 @@ void XmlSettingsDialog::DoLineedit (const QDomElement& item, QGridLayout *lay, Q
     edit->setMinimumWidth (QApplication::fontMetrics ().width ("thisismaybeadefaultsetting"));
     if (item.hasAttribute ("password"))
         edit->setEchoMode (QLineEdit::Password);
+	if (item.hasAttribute ("inputMask"))
+		edit->setInputMask (item.attribute ("inputMask"));
     connect (edit, SIGNAL (textChanged (const QString&)), this, SLOT (updatePreferences ()));
 
     lay->addWidget (label, row, 0);

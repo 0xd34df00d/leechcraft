@@ -34,10 +34,22 @@ void Core::AddJob (const QString& url,
 	td.File_ = boost::shared_ptr<QFile> (new QFile (QDir::cleanPath (dir
 					.filePath (filename))));
 	td.Comment_ = comment;
+	td.ErrorFlag_ = false;
+
+	connect (td.Task_.get (), SIGNAL (done (bool)), this, SLOT (done (bool)));
+
+	// FIXME various checks for file
 
 	beginInsertRows (QModelIndex (), rowCount (), rowCount ());
 	ActiveTasks_.push_back (td);
 	endInsertRows ();
+}
+
+void Core::Start (const QModelIndex& index)
+{
+	TaskDescr selected = ActiveTasks_.at (index.row ());
+	selected.File_->open (QIODevice::ReadWrite);
+	selected.Task_->Start (selected.File_);
 }
 
 int Core::columnCount (const QModelIndex& parent) const
@@ -140,5 +152,73 @@ qint64 Core::GetTotal (int pos) const
 bool Core::IsRunning (int pos) const
 {
 	return ActiveTasks_.at (pos).Task_->IsRunning ();
+}
+
+void Core::done (bool error)
+{
+	tasks_t::iterator taskdscr = FindTask (sender ());
+	if (taskdscr == ActiveTasks_.end ())
+		return;
+
+	taskdscr->File_->close ();
+	
+	if (!error)
+	{
+		AddToHistory (taskdscr);
+		Remove (taskdscr);
+	}
+	else
+		taskdscr->ErrorFlag_ = true;
+}
+
+struct _Local::ObjectFinder
+{
+	QObject *Pred_;
+
+	enum Type
+	{
+		TObject
+	};
+
+	Type Type_;
+
+	ObjectFinder (QObject* task)
+	: Pred_ (task)
+	, Type_ (TObject)
+	{
+	}
+
+	bool operator() (const Core::TaskDescr& td)
+	{
+		switch (Type_)
+		{
+			case TObject:
+				return Pred_ == td.Task_.get ();
+		}
+	}
+};
+
+Core::tasks_t::const_iterator Core::FindTask (QObject *task) const
+{
+	return std::find_if (ActiveTasks_.begin (), ActiveTasks_.end (),
+			_Local::ObjectFinder (task));
+}
+
+Core::tasks_t::iterator Core::FindTask (QObject *task)
+{
+	return std::find_if (ActiveTasks_.begin (), ActiveTasks_.end (),
+			_Local::ObjectFinder (task));
+}
+
+void Core::Remove (tasks_t::iterator it)
+{
+	int dst = std::distance (ActiveTasks_.begin (), it);
+	beginRemoveRows (QModelIndex (), dst, dst);
+	ActiveTasks_.erase (it);
+	endRemoveRows ();
+}
+
+void Core::AddToHistory (tasks_t::const_iterator it)
+{
 }
 

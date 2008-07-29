@@ -56,9 +56,10 @@ void Task::RemoveHook (const Hook& hook)
 	std::remove_if (Hooks_.begin (), Hooks_.end (), HookTypeEqual (hook));
 }
 
-void Task::Start (QIODevice *to)
+void Task::Start (const boost::shared_ptr<QFile>& tof)
 {
 	StartTime_.restart ();
+	QFile *to = tof.get ();
 	if (Type_ == THttp || Type_ == THttps)
 	{
 		QHttp::ConnectionMode mode;
@@ -223,6 +224,10 @@ void Task::ConstructFTP (const QString&)
 			this,
 			SIGNAL (done (bool)));
 	connect (Ftp_,
+			SIGNAL (done (bool)),
+			this,
+			SIGNAL (updateInterface ()));
+	connect (Ftp_,
 			SIGNAL (stateChanged (int)),
 			this,
 			SIGNAL (updateInterface ()));
@@ -250,7 +255,11 @@ void Task::ConstructHTTP (const QString& scheme)
 	connect (Http_,
 			SIGNAL (done (bool)),
 			this,
-			SLOT (done (bool)));
+			SIGNAL (done (bool)));
+	connect (Http_,
+			SIGNAL (done (bool)),
+			this,
+			SIGNAL (updateInterface ()));
 	connect (Http_,
 			SIGNAL (stateChanged (int)),
 			this,
@@ -258,7 +267,7 @@ void Task::ConstructHTTP (const QString& scheme)
 	connect (Http_,
 			SIGNAL (dataReadProgress (int, int)),
 			this,
-			SLOT (handleDataTransferProgress (qint64, qint64)));
+			SLOT (handleDataTransferProgress (int, int)));
 	connect (Http_,
 			SIGNAL (requestStarted (int)),
 			this,
@@ -369,5 +378,11 @@ void Task::handleDataTransferProgress (qint64 done, qint64 total)
 	RecalculateSpeed ();
 
 	emit updateInterface ();
+}
+
+void Task::handleDataTransferProgress (int done, int total)
+{
+	handleDataTransferProgress (static_cast<qint64> (done),
+			static_cast<qint64> (total));
 }
 

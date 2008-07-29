@@ -41,9 +41,9 @@
        <enum>QTabWidget::West</enum>
       </property>
       <property name="currentIndex" >
-       <number>0</number>
+       <number>2</number>
       </property>
-      <widget class="QWidget" name="tab" >
+      <widget class="QWidget" name="TabDashboard_" >
        <property name="geometry" >
         <rect>
          <x>0</x>
@@ -54,6 +54,11 @@
        </property>
        <attribute name="title" >
         <string>Dashboard</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="TabHistory_" >
+       <attribute name="title" >
+        <string>History</string>
        </attribute>
       </widget>
       <widget class="QWidget" name="TabLog_" >

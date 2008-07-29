@@ -1,6 +1,7 @@
 #ifndef TASK_H
 #define TASK_H
 #include <list>
+#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QUrl>
 #include <QTime>
@@ -10,7 +11,7 @@ class QFtp;
 class Hook;
 class QAuthenticator;
 class QNetworkProxy;
-class QIODevice;
+class QFile;
 
 class Task : public QObject
 {
@@ -55,7 +56,7 @@ public:
 	virtual ~Task ();
 	void AddHook (const Hook&);
 	void RemoveHook (const Hook&);
-	void Start (QIODevice*);
+	void Start (const boost::shared_ptr<QFile>&);
 	void Stop ();
 
 	double GetSpeed () const;
@@ -78,6 +79,7 @@ private slots:
 	void handleRequestStart (int);
 	void handleRequestFinish (int, bool);
 	void handleDataTransferProgress (qint64, qint64);
+	void handleDataTransferProgress (int, int);
 signals:
 	void authenticationRequired (const QString&, quint16,
 			QAuthenticator*);
