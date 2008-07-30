@@ -13,6 +13,7 @@ SET (SRCS
 	addjob.cpp
 	xmlsettingsmanager.cpp
 	mainviewdelegate.cpp
+	historymodel.cpp
 	)
 SET (HEADERS
 	cstp.h
@@ -22,6 +23,7 @@ SET (HEADERS
 	addjob.h
 	xmlsettingsmanager.h
 	mainviewdelegate.h
+	historymodel.h
 	)
 SET (FORMS
 	cstp.ui

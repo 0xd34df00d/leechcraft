@@ -118,4 +118,15 @@ void Chatter::ShowBalloonTip ()
 {
 }
 
+void Chatter::closeEvent (QCloseEvent*)
+{
+	IsShown_ = false;
+}
+
+void Chatter::handleHidePlugins ()
+{
+	IsShown_ = false;
+	hide ();
+}
+
 Q_EXPORT_PLUGIN2 (leechcraft_Chatter, Chatter);

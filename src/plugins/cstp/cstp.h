@@ -38,10 +38,13 @@ public:
     void ShowBalloonTip ();
 protected:
     virtual void closeEvent (QCloseEvent*);
+public slots:
+	void handleHidePlugins ();
 private slots:
 	void on_ActionAddTask__triggered ();
 	void on_ActionStart__triggered ();
 	void on_ActionPreferences__triggered ();
+	void on_ActionRemoveItemFromHistory__triggered ();
 };
 
 #endif

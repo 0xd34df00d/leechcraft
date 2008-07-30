@@ -1,12 +1,25 @@
 #include "core.h"
+#include <stdexcept>
 #include <QFile>
 #include <QDir>
+#include <QTimer>
+#include <QtDebug>
 #include <plugininterface/proxy.h>
 #include "task.h"
+#include "historymodel.h"
 
 Core::Core ()
+: SaveScheduled_ (false)
 {
-	Headers_ << tr ("State") << tr ("URL") << tr ("Progress") << tr ("Speed") << tr ("ETA") << tr ("DTA");
+	Headers_ << tr ("State")
+		<< tr ("URL")
+		<< tr ("Progress")
+		<< tr ("Speed")
+		<< tr ("ETA")
+		<< tr ("DTA");
+	HistoryModel_ = new HistoryModel (this);
+
+	ReadSettings ();
 }
 
 Core::~Core ()
@@ -23,6 +36,11 @@ void Core::Release ()
 {
 }
 
+QAbstractItemModel* Core::GetHistoryModel ()
+{
+	return HistoryModel_;
+}
+
 void Core::AddJob (const QString& url,
 		const QString& path,
 		const QString& filename,
@@ -37,17 +55,26 @@ void Core::AddJob (const QString& url,
 	td.ErrorFlag_ = false;
 
 	connect (td.Task_.get (), SIGNAL (done (bool)), this, SLOT (done (bool)));
+	connect (td.Task_.get (), SIGNAL (updateInterface ()), this, SLOT (updateInterface ()));
 
 	// TODO various checks for file
 
 	beginInsertRows (QModelIndex (), rowCount (), rowCount ());
 	ActiveTasks_.push_back (td);
 	endInsertRows ();
+	ScheduleSave ();
+}
+
+void Core::RemoveFromHistory (const QModelIndex& index)
+{
+	HistoryModel_->Remove (index);
 }
 
 void Core::Start (const QModelIndex& index)
 {
 	TaskDescr selected = ActiveTasks_.at (index.row ());
+	if (selected.Task_->IsRunning ())
+		return;
 	selected.File_->open (QIODevice::ReadWrite);
 	selected.Task_->Start (selected.File_);
 }
@@ -93,8 +120,8 @@ QVariant Core::data (const QModelIndex& index, int role) const
 				}
 			case HDownloading:
 				return task->IsRunning () ? Proxy::Instance ()->
-					MakeTimeFromLong (task->GetTimeFromStart ()) :
-					QVariant ();;
+					MakeTimeFromLong (task->GetTimeFromStart () / 1000)
+					: QVariant ();;
 			default:
 				return QVariant ();
 		}
@@ -169,6 +196,90 @@ void Core::done (bool error)
 	}
 	else
 		taskdscr->ErrorFlag_ = true;
+	ScheduleSave ();
+}
+
+void Core::updateInterface ()
+{
+	tasks_t::const_iterator it = FindTask (sender ());
+	if (it == ActiveTasks_.end ())
+		return;
+
+	int pos = std::distance<tasks_t::const_iterator>
+		(ActiveTasks_.begin (), it);
+	emit dataChanged (index (pos, 0), index (pos, columnCount () - 1));
+}
+
+void Core::writeSettings ()
+{
+	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
+			Proxy::Instance ()->GetApplicationName () + "_CSTP");
+	settings.beginWriteArray ("ActiveTasks");
+	settings.remove ("");
+	for (tasks_t::const_iterator i = ActiveTasks_.begin (),
+			begin = ActiveTasks_.begin (),
+			end = ActiveTasks_.end (); i != end; ++i)
+	{
+		settings.setArrayIndex (std::distance (begin, i));
+		settings.setValue ("Task", i->Task_->Serialize ());
+		settings.setValue ("Filename", i->File_->fileName ());
+		settings.setValue ("Comment", i->Comment_);
+		settings.setValue ("ErrorFlag", i->ErrorFlag_);
+	}
+	SaveScheduled_ = false;
+	settings.endArray ();
+}
+
+void Core::ReadSettings ()
+{
+	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
+			Proxy::Instance ()->GetApplicationName () + "_CSTP");
+	int size = settings.beginReadArray ("ActiveTasks");
+	for (int i = 0; i < size; ++i)
+	{
+		settings.setArrayIndex (i);
+
+		TaskDescr td;
+
+		QByteArray data = settings.value ("Task").toByteArray ();
+		td.Task_ = boost::shared_ptr<Task> (new Task ());
+		try
+		{
+			td.Task_->Deserialize (data);
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO << e.what ();
+			continue;
+		}
+
+		connect (td.Task_.get (),
+				SIGNAL (done (bool)),
+				this,
+				SLOT (done (bool)));
+		connect (td.Task_.get (),
+				SIGNAL (updateInterface ()),
+				this,
+				SLOT (updateInterface ()));
+
+		QString filename = settings.value ("Filename").toString ();
+		td.File_ = boost::shared_ptr<QFile> (new QFile (filename));
+
+		td.Comment_ = settings.value ("Comment").toString ();
+		td.ErrorFlag_ = settings.value ("ErrorFlag").toBool ();
+
+		ActiveTasks_.push_back (td);
+	}
+	SaveScheduled_ = false;
+	settings.endArray ();
+}
+
+void Core::ScheduleSave ()
+{
+	if (SaveScheduled_)
+		return;
+
+	QTimer::singleShot (100, this, SLOT (writeSettings ()));
 }
 
 struct _Local::ObjectFinder
@@ -216,9 +327,16 @@ void Core::Remove (tasks_t::iterator it)
 	beginRemoveRows (QModelIndex (), dst, dst);
 	ActiveTasks_.erase (it);
 	endRemoveRows ();
+	ScheduleSave ();
 }
 
 void Core::AddToHistory (tasks_t::const_iterator it)
 {
+	HistoryModel::Item item;
+	item.Filename_ = it->File_->fileName ();
+	item.URL_ = it->Task_->GetURL ();
+	item.Size_ = it->File_->size ();
+	item.DateTime_ = QDateTime::currentDateTime ();
+	HistoryModel_->Add (item);
 }
 

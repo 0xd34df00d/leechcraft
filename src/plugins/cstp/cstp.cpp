@@ -34,6 +34,8 @@ void CSTP::Init ()
 	Ui_.setupUi (this);
 	Ui_.MainView_->setItemDelegate (new MainViewDelegate (Ui_.MainView_));
 	Ui_.MainView_->setModel (&Core::Instance ());
+	Ui_.HistoryView_->setModel (Core::Instance ().GetHistoryModel ());
+	Ui_.HistoryView_->addAction (Ui_.ActionRemoveItemFromHistory_);
 }
 
 void CSTP::Release ()
@@ -115,6 +117,12 @@ void CSTP::closeEvent (QCloseEvent*)
 	IsShown_ = false;
 }
 
+void CSTP::handleHidePlugins ()
+{
+	IsShown_ = false;
+	hide ();
+}
+
 void CSTP::on_ActionAddTask__triggered ()
 {
 	AddJob addjob;
@@ -140,6 +148,15 @@ void CSTP::on_ActionStart__triggered ()
 void CSTP::on_ActionPreferences__triggered ()
 {
 	XmlSettingsDialog_->show ();
+}
+
+void CSTP::on_ActionRemoveItemFromHistory__triggered ()
+{
+	QModelIndexList indexes = Ui_.HistoryView_->selectionModel ()->
+		selectedRows ();
+	using boost::lambda::_1;
+	std::for_each (indexes.begin (), indexes.end (),
+			boost::lambda::bind (&Core::RemoveFromHistory, &Core::Instance (), _1));
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_cstp, CSTP);

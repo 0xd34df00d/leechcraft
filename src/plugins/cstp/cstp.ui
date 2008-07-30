@@ -41,7 +41,7 @@
        <enum>QTabWidget::West</enum>
       </property>
       <property name="currentIndex" >
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="TabDashboard_" >
        <property name="geometry" >
@@ -57,9 +57,32 @@
        </attribute>
       </widget>
       <widget class="QWidget" name="TabHistory_" >
+       <property name="geometry" >
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>758</width>
+         <height>252</height>
+        </rect>
+       </property>
        <attribute name="title" >
         <string>History</string>
        </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_2" >
+        <item>
+         <widget class="QTreeView" name="HistoryView_" >
+          <property name="contextMenuPolicy" >
+           <enum>Qt::ActionsContextMenu</enum>
+          </property>
+          <property name="rootIsDecorated" >
+           <bool>false</bool>
+          </property>
+          <property name="expandsOnDoubleClick" >
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="TabLog_" >
        <property name="geometry" >
@@ -171,6 +194,11 @@
    </property>
    <property name="text" >
     <string>Preferences...</string>
+   </property>
+  </action>
+  <action name="ActionRemoveItemFromHistory_" >
+   <property name="text" >
+    <string>Remove item</string>
    </property>
   </action>
  </widget>

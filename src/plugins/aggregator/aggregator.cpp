@@ -105,7 +105,7 @@ void Aggregator::Init ()
 	connect (&RegexpMatcherManager::Instance (),
 			SIGNAL (gotLink (const QString&)),
 			this,
-			SLOT (fileDownloaded (const QString&)));
+			SIGNAL (fileDownloaded (const QString&)));
 }
 
 void Aggregator::Release ()

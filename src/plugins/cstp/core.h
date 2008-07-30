@@ -7,6 +7,7 @@
 
 class Task;
 class QFile;
+class HistoryModel;
 
 namespace _Local
 {
@@ -29,6 +30,8 @@ class Core : public QAbstractItemModel
 	};
 	typedef std::deque<TaskDescr> tasks_t;
 	tasks_t ActiveTasks_;
+	HistoryModel *HistoryModel_;
+	bool SaveScheduled_;
 	
 	explicit Core ();
 public:
@@ -45,8 +48,10 @@ public:
 	virtual ~Core ();
 	static Core& Instance ();
 	void Release ();
+	QAbstractItemModel* GetHistoryModel ();
 
 	void AddJob (const QString&, const QString&, const QString&, const QString&);
+	void RemoveFromHistory (const QModelIndex&);
 	void Start (const QModelIndex&);
 
 	virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
@@ -63,7 +68,11 @@ public:
 	bool IsRunning (int) const;
 private slots:
 	void done (bool); 
+	void updateInterface ();
+	void writeSettings ();
 private:
+	void ReadSettings ();
+	void ScheduleSave ();
 	tasks_t::const_iterator FindTask (QObject*) const;
 	tasks_t::iterator FindTask (QObject*);
 	void Remove (tasks_t::iterator);

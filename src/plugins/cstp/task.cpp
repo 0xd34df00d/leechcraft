@@ -1,17 +1,18 @@
 #include "task.h"
 #include <algorithm>
 #include <typeinfo>
+#include <stdexcept>
 #include <QUrl>
 #include <QHttp>
 #include <QFtp>
 #include <QFileInfo>
+#include <QDataStream>
+#include <QtDebug>
 #include "hook.h"
 #include "xmlsettingsmanager.h"
 
 Task::Task (const QString& str)
-: Http_ (0)
-, Ftp_ (0)
-, URL_ (str)
+: URL_ (str)
 , Type_ (TInvalid)
 , CurrentCmd_ (cmd_t (0, CInvalid))
 , Done_ (0)
@@ -24,8 +25,6 @@ Task::Task (const QString& str)
 
 Task::~Task ()
 {
-	delete Http_;
-	delete Ftp_;
 }
 
 struct HookTypeEqual
@@ -139,6 +138,43 @@ void Task::Stop ()
 	Construct ();
 }
 
+QByteArray Task::Serialize () const
+{
+	QByteArray result;
+	{
+		QDataStream out (&result, QIODevice::WriteOnly);
+		out << 1
+			<< URL_
+			<< StartTime_
+			<< Type_
+			<< Done_
+			<< Total_
+			<< Speed_;
+	}
+	return result;
+}
+
+void Task::Deserialize (QByteArray& data)
+{
+	QDataStream in (&data, QIODevice::ReadOnly);
+	int version = 0;
+	in >> version;
+	if (version == 1)
+	{
+		int type;
+		in >> URL_
+			>> StartTime_
+			>> type
+			>> Done_
+			>> Total_
+			>> Speed_;
+		Type_ = static_cast<Type> (type);
+		Construct ();
+	}
+	else
+		throw std::runtime_error ("Unknown version");
+}
+
 double Task::GetSpeed () const
 {
 	return Speed_;
@@ -196,10 +232,8 @@ void Task::Reset ()
 	Total_ = 0;
 	Speed_ = 0;
 	Type_ = TInvalid;
-	delete Http_;
-	delete Ftp_;
-	Http_ = 0;
-	Ftp_ = 0;
+	Http_.reset ();
+	Ftp_.reset ();
 }
 
 void Task::Construct ()
@@ -217,29 +251,29 @@ void Task::Construct ()
 
 void Task::ConstructFTP (const QString&)
 {
-	Ftp_ = new QFtp (this);
+	Ftp_.reset (new QFtp (this));
 	Type_ = TFtp;
-	connect (Ftp_,
+	connect (Ftp_.get (),
 			SIGNAL (done (bool)),
 			this,
 			SIGNAL (done (bool)));
-	connect (Ftp_,
+	connect (Ftp_.get (),
 			SIGNAL (done (bool)),
 			this,
 			SIGNAL (updateInterface ()));
-	connect (Ftp_,
+	connect (Ftp_.get (),
 			SIGNAL (stateChanged (int)),
 			this,
 			SIGNAL (updateInterface ()));
-	connect (Ftp_,
+	connect (Ftp_.get (),
 			SIGNAL (dataTransferProgress (qint64, qint64)),
 			this,
 			SLOT (handleDataTransferProgress (qint64, qint64)));
-	connect (Ftp_,
+	connect (Ftp_.get (),
 			SIGNAL (commandStarted (int)),
 			this,
 			SLOT (handleRequestStart (int)));
-	connect (Ftp_,
+	connect (Ftp_.get (),
 			SIGNAL (commandFinished (int, bool)),
 			this,
 			SLOT (handleRequestFinish (int, bool)));
@@ -247,39 +281,39 @@ void Task::ConstructFTP (const QString&)
 
 void Task::ConstructHTTP (const QString& scheme)
 {
-	Http_ = new QHttp (this);
+	Http_.reset (new QHttp (this));
 	if (scheme == "http")
 		Type_ = THttp;
 	else if (scheme == "https")
 		Type_ = THttps;
-	connect (Http_,
+	connect (Http_.get (),
 			SIGNAL (done (bool)),
 			this,
 			SIGNAL (done (bool)));
-	connect (Http_,
+	connect (Http_.get (),
 			SIGNAL (done (bool)),
 			this,
 			SIGNAL (updateInterface ()));
-	connect (Http_,
+	connect (Http_.get (),
 			SIGNAL (stateChanged (int)),
 			this,
 			SIGNAL (updateInterface ()));
-	connect (Http_,
+	connect (Http_.get (),
 			SIGNAL (dataReadProgress (int, int)),
 			this,
 			SLOT (handleDataTransferProgress (int, int)));
-	connect (Http_,
+	connect (Http_.get (),
 			SIGNAL (requestStarted (int)),
 			this,
 			SLOT (handleRequestStart (int)));
-	connect (Http_,
+	connect (Http_.get (),
 			SIGNAL (requestFinished (int, bool)),
 			this,
 			SLOT (handleRequestFinish (int, bool)));
 	if (Type_ == THttps)
-		connect (Http_,
+		connect (Http_.get (),
 				SIGNAL (sslErrors (const QList<QSslError>&)),
-				Http_,
+				Http_.get (),
 				SLOT (ignoreSslErrors ()));
 }
 
@@ -316,7 +350,7 @@ void Task::RecalculateSpeed ()
 
 QString Task::GetHTTPState () const
 {
-	if (!Http_)
+	if (!Http_.get ())
 		return "HTTP is null";
 	switch (Http_->state ())
 	{
@@ -339,7 +373,7 @@ QString Task::GetHTTPState () const
 
 QString Task::GetFTPState () const
 {
-	if (!Ftp_)
+	if (!Ftp_.get ())
 		return "FTP is null";
 	switch (Ftp_->state ())
 	{

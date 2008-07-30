@@ -61,11 +61,20 @@ void Main::Core::DelayedInit ()
     {
         connect (this, SIGNAL (hidePlugins ()), plugin, SLOT (handleHidePlugins ()));
         IDownload *download = dynamic_cast<IDownload*> (plugin);
+
+		const QMetaObject *qmo = plugin->metaObject ();
+
         if (download)
         {
             connect (plugin, SIGNAL (fileDownloaded (const QString&)), this, SLOT (handleFileDownload (const QString&)));
         }
-        connect (plugin, SIGNAL (downloadFinished (const QString&)), this, SIGNAL (downloadFinished (const QString&)));
+		if (qmo->indexOfSignal (QMetaObject::
+					normalizedSignature ("downloadFinished (const "
+						"QString&)").constData ()) != -1)
+			connect (plugin,
+					SIGNAL (downloadFinished (const QString&)),
+					this,
+					SIGNAL (downloadFinished (const QString&)));
     }
 }
 

@@ -123,6 +123,7 @@ QTime Proxy::MakeTimeFromLong (ulong time) const
     int h = time / 3600;
     int m = (time - h * 3600) / 60;
     int s = time - h * 3600 - m * 60;
+	qDebug () << h << m << s;
     return QTime (h, m, s);
 }
 

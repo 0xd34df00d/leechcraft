@@ -2,6 +2,7 @@
 #define TASK_H
 #include <list>
 #include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <QUrl>
 #include <QTime>
@@ -16,8 +17,8 @@ class QFile;
 class Task : public QObject
 {
 	Q_OBJECT
-	QHttp *Http_;
-	QFtp *Ftp_;
+	std::auto_ptr<QHttp> Http_;
+	std::auto_ptr<QFtp> Ftp_;
 	QUrl URL_;
 	QTime StartTime_;
 
@@ -58,6 +59,9 @@ public:
 	void RemoveHook (const Hook&);
 	void Start (const boost::shared_ptr<QFile>&);
 	void Stop ();
+
+	QByteArray Serialize () const;
+	void Deserialize (QByteArray&);
 
 	double GetSpeed () const;
 	qint64 GetDone () const;
