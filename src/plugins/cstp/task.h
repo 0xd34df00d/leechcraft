@@ -39,6 +39,7 @@ class Task : public QObject
 		, CTypeI
 		, CRest
 		, CConnect
+		, CCD
 		, CTransfer
 		, CDisconnect
 	};
@@ -70,6 +71,7 @@ public:
 	QString GetURL () const;
 	int GetTimeFromStart () const;
 	bool IsRunning () const;
+	QString GetErrorString () const;
 private:
 	void Reset ();
 	void Construct ();

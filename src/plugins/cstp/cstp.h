@@ -8,9 +8,12 @@ class XmlSettingsDialog;
 class CSTP : public QMainWindow
 			 , public IInfo
 			 , public IWindow
+			 , public IDownload
+			 , public IDirectDownload
+			 , public IJobHolder
 {
 	Q_OBJECT
-	Q_INTERFACES (IInfo IWindow)
+	Q_INTERFACES (IInfo IWindow IDownload IDirectDownload IJobHolder)
 
 	Ui::CSTP Ui_;
 	unsigned long int ID_;
@@ -36,15 +39,39 @@ public:
     void SetParent (QWidget*);
     void ShowWindow ();
     void ShowBalloonTip ();
+
+	qint64 GetDownloadSpeed () const;
+	qint64 GetUploadSpeed () const;
+	void StartAll ();
+	void StopAll ();
+	bool CouldDownload (const QString&, LeechCraft::TaskParameters) const;
+	int AddJob (const DirectDownloadParams&, LeechCraft::TaskParameters);
+
+	QAbstractItemModel* GetRepresentation () const;
+	QAbstractItemDelegate* GetDelegate () const;
 protected:
     virtual void closeEvent (QCloseEvent*);
+private:
+	template<typename T, typename U> void ApplyCore2Selection (T, U);
 public slots:
 	void handleHidePlugins ();
 private slots:
 	void on_ActionAddTask__triggered ();
+	void on_ActionRemoveTask__triggered ();
 	void on_ActionStart__triggered ();
-	void on_ActionPreferences__triggered ();
+	void on_ActionStop__triggered ();
+	void on_ActionRemoveAll__triggered ();
+	void on_ActionStartAll__triggered ();
+	void on_ActionStopAll__triggered ();
 	void on_ActionRemoveItemFromHistory__triggered ();
+	void on_ActionPreferences__triggered ();
+	void handleError (const QString&);
+signals:
+	void jobFinished (int);
+	void jobRemoved (int);
+	void jobError (int, IDirectDownload::Error);
+	void fileDownloaded (const QString&);
+	void downloadFinished (const QString&);
 };
 
 #endif

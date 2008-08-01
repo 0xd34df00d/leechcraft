@@ -61,12 +61,22 @@ QString AddTorrent::GetSavePath () const
     return Destination_->text ();
 }
 
+QString AddTorrent::GetDefaultSavePath () const
+{
+    return XmlSettingsManager::Instance ()->property ("LastSaveDirectory").toString ();
+}
+
 QVector<bool> AddTorrent::GetSelectedFiles () const
 {
     return FilesModel_->GetSelectedFiles ();
 }
 
 QStringList AddTorrent::GetTags () const
+{
+    return TagsEdit_->text ().split (' ', QString::SkipEmptyParts);
+}
+
+QStringList AddTorrent::GetDefaultTags () const
 {
     return TagsEdit_->text ().split (' ', QString::SkipEmptyParts);
 }

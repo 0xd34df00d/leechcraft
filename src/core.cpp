@@ -6,8 +6,7 @@
 #include <limits>
 #include <QApplication>
 #include <QClipboard>
-#include <QDomDocument>
-#include <QDomElement>
+#include <QDir>
 #include "mainwindow.h"
 #include "pluginmanager.h"
 #include "plugininfo.h"
@@ -66,7 +65,10 @@ void Main::Core::DelayedInit ()
 
         if (download)
         {
-            connect (plugin, SIGNAL (fileDownloaded (const QString&)), this, SLOT (handleFileDownload (const QString&)));
+			connect (plugin,
+					SIGNAL (fileDownloaded (const QString&)),
+					this,
+					SLOT (handleFileDownload (const QString&)));
         }
 		if (qmo->indexOfSignal (QMetaObject::
 					normalizedSignature ("downloadFinished (const "
@@ -99,14 +101,27 @@ void Main::Core::HideAll ()
 void Main::Core::TryToAddJob (const QString& name)
 {
     QObjectList plugins = PluginManager_->GetAllPlugins ();
-    qDebug () << plugins;
     foreach (QObject *plugin, plugins)
     {
-        IDownload *di = dynamic_cast<IDownload*> (plugin);
-        IInfo *ii = qobject_cast<IInfo*> (plugin);
-        if (di && di->CouldDownload (name, false))
+        IDownload *di = qobject_cast<IDownload*> (plugin);
+		IDirectDownload *idd = qobject_cast<IDirectDownload*> (plugin);
+		IPeer2PeerDownload *ip2p =
+			qobject_cast<IPeer2PeerDownload*> (plugin);
+		LeechCraft::TaskParameters tp = LeechCraft::SaveInHistory &
+			LeechCraft::FromCommonDialog & LeechCraft::Autostart;
+        if (di && di->CouldDownload (name, tp))
         {
-            di->AddJob (name);
+			if (idd)
+			{
+				DirectDownloadParams ddp = { name, QDir::homePath () };
+				idd->AddJob (ddp, tp); // FIXME allow to select destination
+				return;
+			}
+			else if (ip2p)
+			{
+				ip2p->AddJob (name, tp);
+				return;
+			}
             return;
         }
     }
@@ -156,15 +171,26 @@ void Main::Core::handleFileDownload (const QString& file, bool fromBuffer)
     {
         IDownload *id = dynamic_cast<IDownload*> (plugins.at (i));
         IInfo *ii = dynamic_cast<IInfo*> (plugins.at (i));
-        if (id->CouldDownload (file, fromBuffer))
+		LeechCraft::TaskParameters tp = LeechCraft::SaveInHistory;
+        if (id->CouldDownload (file, tp))
         {
             if (QMessageBox::question (qobject_cast<QWidget*> (qobject_cast<QObject*> (this)->parent ()),
                 tr ("Question"),
                 tr ("File %1 could be handled by plugin %2, would you like to?").arg (file).arg (ii->GetName ()),
                 QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
                 continue;
+			IDirectDownload *idd = qobject_cast<IDirectDownload*>
+				(plugins.at (i));
+			IPeer2PeerDownload *ip2p = qobject_cast<IPeer2PeerDownload*>
+				(plugins.at (i));
 
-            id->AddJob (file);
+			if (idd)
+			{
+				DirectDownloadParams ddp = { file, QDir::homePath () }; 	// FIXME
+				idd->AddJob (ddp, tp);
+			}
+			else if (ip2p)
+				ip2p->AddJob (file, tp);
         }
     }
 }

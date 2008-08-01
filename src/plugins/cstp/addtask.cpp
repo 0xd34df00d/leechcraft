@@ -1,4 +1,4 @@
-#include "addjob.h"
+#include "addtask.h"
 #include <QUrl>
 #include <QFileInfo>
 #include <QValidator>
@@ -26,7 +26,7 @@ public:
 	}
 };
 
-AddJob::Job::Job (const QString& url,
+AddTask::Task::Task (const QString& url,
 		const QString& localPath,
 		const QString& filename,
 		const QString& comment)
@@ -37,7 +37,7 @@ AddJob::Job::Job (const QString& url,
 {
 }
 
-AddJob::AddJob (QWidget *parent)
+AddTask::AddTask (QWidget *parent)
 : QDialog (parent)
 , UserModifiedFilename_ (false)
 {
@@ -46,19 +46,19 @@ AddJob::AddJob (QWidget *parent)
 	Ui_.URL_->setValidator (new URLValidator (this));
 }
 
-AddJob::~AddJob ()
+AddTask::~AddTask ()
 {
 }
 
-AddJob::Job AddJob::GetJob () const
+AddTask::Task AddTask::GetTask () const
 {
-	return Job (Ui_.URL_->text (),
+	return Task (Ui_.URL_->text (),
 			Ui_.LocalPath_->text (),
 			Ui_.Filename_->text (),
 			Ui_.Comment_->toPlainText ());
 }
 
-void AddJob::accept ()
+void AddTask::accept ()
 {
 	QFileInfo dir (Ui_.LocalPath_->text ());
 	QString message;
@@ -90,7 +90,7 @@ void AddJob::accept ()
 		QDialog::reject ();
 }
 
-void AddJob::on_URL__textEdited (const QString& str)
+void AddTask::on_URL__textEdited (const QString& str)
 {
 	if (UserModifiedFilename_)
 		return;
@@ -100,18 +100,18 @@ void AddJob::on_URL__textEdited (const QString& str)
 	CheckOK ();
 }
 
-void AddJob::on_LocalPath__textEdited ()
+void AddTask::on_LocalPath__textEdited ()
 {
 	CheckOK ();
 }
 
-void AddJob::on_Filename__textEdited ()
+void AddTask::on_Filename__textEdited ()
 {
 	UserModifiedFilename_ = true;
 	CheckOK ();
 }
 
-void AddJob::on_BrowseButton__released ()
+void AddTask::on_BrowseButton__released ()
 {
 	QString dir = QFileDialog::getExistingDirectory (this,
 			tr ("Select directory"));							// FIXME show old directory
@@ -123,7 +123,7 @@ void AddJob::on_BrowseButton__released ()
 	// FIXME save selected directory
 }
 
-void AddJob::CheckOK ()
+void AddTask::CheckOK ()
 {
 	bool valid = QUrl (Ui_.URL_->text ()).isValid () &&
 			!Ui_.LocalPath_->text ().isEmpty () &&

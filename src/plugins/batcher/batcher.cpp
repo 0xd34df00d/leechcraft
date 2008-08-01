@@ -152,9 +152,9 @@ void Batcher::sendJobs ()
             continue;
         if (!provider)
             continue;
-        DirectDownloadParams ddd = { text, localDir + QFileInfo (text).fileName (), true, true };
+        DirectDownloadParams ddd = { text, localDir + QFileInfo (text).fileName () };
         IDirectDownload *idd = qobject_cast<IDirectDownload*> (provider);
-        idd->AddJob (ddd);
+		idd->AddJob (ddd, LeechCraft::Autostart | LeechCraft::SaveInHistory);
         ++count;
     }
     if (count)

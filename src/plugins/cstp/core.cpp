@@ -1,5 +1,6 @@
 #include "core.h"
 #include <stdexcept>
+#include <numeric>
 #include <QFile>
 #include <QDir>
 #include <QTimer>
@@ -18,6 +19,9 @@ Core::Core ()
 		<< tr ("ETA")
 		<< tr ("DTA");
 	HistoryModel_ = new HistoryModel (this);
+
+	for (int i = 0; i < 65535; ++i)
+		IDPool_.push_back (i);
 
 	ReadSettings ();
 }
@@ -41,10 +45,11 @@ QAbstractItemModel* Core::GetHistoryModel ()
 	return HistoryModel_;
 }
 
-void Core::AddJob (const QString& url,
+int Core::AddTask (const QString& url,
 		const QString& path,
 		const QString& filename,
-		const QString& comment)
+		const QString& comment,
+		LeechCraft::TaskParameters tp)
 {
 	TaskDescr td;
 	td.Task_ = boost::shared_ptr<Task> (new Task (url));
@@ -53,16 +58,35 @@ void Core::AddJob (const QString& url,
 					.filePath (filename))));
 	td.Comment_ = comment;
 	td.ErrorFlag_ = false;
+	td.Parameters_ = tp;
+	td.ID_ = IDPool_.front ();
+	IDPool_.pop_front ();
 
 	connect (td.Task_.get (), SIGNAL (done (bool)), this, SLOT (done (bool)));
 	connect (td.Task_.get (), SIGNAL (updateInterface ()), this, SLOT (updateInterface ()));
 
-	// TODO various checks for file
+	if (td.File_->exists ())
+	{
+		bool remove = false;
+		emit fileExists (&remove);
+	}
 
 	beginInsertRows (QModelIndex (), rowCount (), rowCount ());
 	ActiveTasks_.push_back (td);
 	endInsertRows ();
 	ScheduleSave ();
+	if (tp & LeechCraft::Autostart)
+		StartI (rowCount () - 1);
+	return td.ID_;
+}
+
+void Core::RemoveTask (const QModelIndex& index)
+{
+	if (!index.isValid ())
+		return;
+
+	Stop (index);
+	Remove (ActiveTasks_.begin () + index.row ());
 }
 
 void Core::RemoveFromHistory (const QModelIndex& index)
@@ -72,11 +96,100 @@ void Core::RemoveFromHistory (const QModelIndex& index)
 
 void Core::Start (const QModelIndex& index)
 {
-	TaskDescr selected = ActiveTasks_.at (index.row ());
+	StartI (index.row ());
+}
+
+void Core::StartI (int i)
+{
+	TaskDescr selected = ActiveTasks_.at (i);
 	if (selected.Task_->IsRunning ())
 		return;
-	selected.File_->open (QIODevice::ReadWrite);
+	if (!selected.File_->open (QIODevice::ReadWrite))
+	{
+		QString msg = tr ("Could not open file ") +
+			selected.File_->error ();
+		qWarning () << Q_FUNC_INFO << msg;
+		emit error (msg);
+		return;
+	}
 	selected.Task_->Start (selected.File_);
+}
+
+void Core::Stop (const QModelIndex& index)
+{
+	StopI (index.row ());
+}
+
+void Core::StopI (int i)
+{
+	TaskDescr selected = ActiveTasks_.at (i);
+	if (!selected.Task_->IsRunning ())
+		return;
+	selected.Task_->Stop ();
+	selected.File_->close ();
+}
+
+void Core::RemoveAll ()
+{
+	// FIXME implement via RemoveTask
+	for (int i = 0, size = ActiveTasks_.size (); i < size; ++i)
+		StopI (i);
+	tasks_t::iterator current = ActiveTasks_.begin ();
+	while (current != ActiveTasks_.end ())
+		current = Remove (current);
+}
+
+void Core::StartAll ()
+{
+	for (int i = 0, size = ActiveTasks_.size (); i < size; ++i)
+		StartI (i);
+}
+
+void Core::StopAll ()
+{
+	for (int i = 0, size = ActiveTasks_.size (); i < size; ++i)
+		StopI (i);
+}
+
+qint64 Core::GetDone (int pos) const
+{
+	return ActiveTasks_.at (pos).Task_->GetDone ();
+}
+
+qint64 Core::GetTotal (int pos) const
+{
+	return ActiveTasks_.at (pos).Task_->GetTotal ();
+}
+
+bool Core::IsRunning (int pos) const
+{
+	return ActiveTasks_.at (pos).Task_->IsRunning ();
+}
+
+namespace _Local
+{
+	struct SpeedAccumulator
+	{
+		qint64 operator() (qint64 result, const Core::TaskDescr& td)
+		{
+			result += td.Task_->GetSpeed ();
+			return result;
+		}
+	};
+};
+
+qint64 Core::GetTotalDownloadSpeed () const
+{
+	qint64 result = 0;
+	return std::accumulate (ActiveTasks_.begin (), ActiveTasks_.end (),
+			result, _Local::SpeedAccumulator ());
+}
+
+bool Core::CouldDownload (const QString& str, LeechCraft::TaskParameters)
+{
+	QUrl url (str);
+	return url.isValid () &&
+		(url.scheme () == "http" || url.scheme () == "https");
 }
 
 int Core::columnCount (const QModelIndex& parent) const
@@ -166,22 +279,7 @@ int Core::rowCount (const QModelIndex& parent) const
 	return parent.isValid () ? 0 : ActiveTasks_.size ();
 }
 
-qint64 Core::GetDone (int pos) const
-{
-	return ActiveTasks_.at (pos).Task_->GetDone ();
-}
-
-qint64 Core::GetTotal (int pos) const
-{
-	return ActiveTasks_.at (pos).Task_->GetTotal ();
-}
-
-bool Core::IsRunning (int pos) const
-{
-	return ActiveTasks_.at (pos).Task_->IsRunning ();
-}
-
-void Core::done (bool error)
+void Core::done (bool err)
 {
 	tasks_t::iterator taskdscr = FindTask (sender ());
 	if (taskdscr == ActiveTasks_.end ())
@@ -189,13 +287,23 @@ void Core::done (bool error)
 
 	taskdscr->File_->close ();
 	
-	if (!error)
+	if (!err)
 	{
-		AddToHistory (taskdscr);
+		if (taskdscr->Parameters_ & LeechCraft::SaveInHistory)
+			AddToHistory (taskdscr);
+		emit taskFinished (taskdscr->ID_);
+		emit fileDownloaded (taskdscr->File_->fileName ());
+		if (taskdscr->Parameters_ ^ LeechCraft::DoNotNotifyUser)
+			emit downloadFinished (taskdscr->File_->fileName () +
+					QString ("\n") + taskdscr->Task_->GetURL ());
 		Remove (taskdscr);
 	}
 	else
+	{
 		taskdscr->ErrorFlag_ = true;
+		emit error (taskdscr->Task_->GetErrorString ());
+		emit taskError (taskdscr->ID_, IDirectDownload::ErrorOther);
+	}
 	ScheduleSave ();
 }
 
@@ -321,13 +429,15 @@ Core::tasks_t::iterator Core::FindTask (QObject *task)
 			_Local::ObjectFinder (task));
 }
 
-void Core::Remove (tasks_t::iterator it)
+Core::tasks_t::iterator Core::Remove (tasks_t::iterator it)
 {
 	int dst = std::distance (ActiveTasks_.begin (), it);
+	emit taskRemoved (it->ID_);
 	beginRemoveRows (QModelIndex (), dst, dst);
-	ActiveTasks_.erase (it);
+	tasks_t::iterator result = ActiveTasks_.erase (it);
 	endRemoveRows ();
 	ScheduleSave ();
+	return result;
 }
 
 void Core::AddToHistory (tasks_t::const_iterator it)

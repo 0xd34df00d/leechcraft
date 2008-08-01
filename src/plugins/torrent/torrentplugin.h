@@ -64,8 +64,8 @@ public:
     qint64 GetUploadSpeed () const;
     void StartAll ();
     void StopAll ();
-    bool CouldDownload (const QString&, bool) const;
-    void AddJob (const QString&);
+	bool CouldDownload (const QString&, LeechCraft::TaskParameters) const;
+	int AddJob (const QString&, LeechCraft::TaskParameters);
 
     // IRemoteable
     QList<QVariantList> GetAll () const;
@@ -121,6 +121,8 @@ private:
 signals:
     void downloadFinished (const QString&);
     void fileDownloaded (const QString&);
+	void jobFinished (int);
+	void jobRemoved (int);
 };
 
 #endif

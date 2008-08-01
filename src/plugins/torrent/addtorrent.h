@@ -18,8 +18,10 @@ public:
     void SetFilename (const QString&);
     QString GetFilename () const;
     QString GetSavePath () const;
+	QString GetDefaultSavePath () const;
     QVector<bool> GetSelectedFiles () const;
     QStringList GetTags () const;
+	QStringList GetDefaultTags () const;
     QLineEdit* GetEdit ();
 private slots:
     void on_TorrentBrowse__released ();

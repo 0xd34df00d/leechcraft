@@ -45,22 +45,12 @@ public:
 		QString Title_;
 		QString Body_;
 
-		RegexpItem (const QString& title, const QString& body)
-		: Title_ (title)
-		, Body_ (body)
-		{
-		}
-
-		bool operator== (const RegexpItem& other) const
-		{
-			return Title_ == other.Title_ &&
-				Body_ == other.Body_;
-		}
-
-		bool IsEqual (const QString& str) const
-		{
-			return Title_ == str;
-		}
+		RegexpItem (const QString& = QString (),
+				const QString& = QString ());
+		bool operator== (const RegexpItem&) const;
+		bool IsEqual (const QString&) const;
+		QByteArray Serialize () const;
+		void Deserialize (QByteArray&);
 	};
 private:
 	QStringList ItemHeaders_;

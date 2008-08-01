@@ -1,5 +1,6 @@
 #ifndef CORE_H
 #define CORE_H
+#include <list>
 #include <QAbstractItemModel>
 #include <QPair>
 #include <QList>
@@ -7,6 +8,7 @@
 #include <torrent_info.hpp>
 #include <torrent_handle.hpp>
 #include <session.hpp>
+#include <interfaces/structures.h>
 #include "torrentinfo.h"
 #include "overallstats.h"
 #include "fileinfo.h"
@@ -45,6 +47,9 @@ private:
         TorrentState State_;
         double Ratio_;
         QStringList Tags_;
+
+		int ID_;
+		LeechCraft::TaskParameters Parameters_;
     };
 
     libtorrent::session *Session_;
@@ -58,6 +63,8 @@ private:
     TagsCompletionModel *TagsCompletionModel_;
 	TorrentFilesModel *TorrentFilesModel_;
 	mutable TorrentPlugin *TorrentPlugin_;
+
+	std::list<quint16> IDPool_;
 
     Core ();
 public:
@@ -111,7 +118,9 @@ public:
     QStringList GetTagsForIndex (int) const;
     void UpdateTags (int, const QStringList&);
     TagsCompletionModel* GetTagsCompletionModel ();
-    void AddFile (const QString&, const QString&, const QStringList&, const QVector<bool>& = QVector<bool> ());
+	int AddFile (const QString&, const QString&, const QStringList&,
+			const QVector<bool>& = QVector<bool> (),
+			LeechCraft::TaskParameters = LeechCraft::NoParameters);
     void RemoveTorrent (int);
     void PauseTorrent (int);
     void ResumeTorrent (int);
@@ -146,8 +155,9 @@ private:
     bool CheckValidity (int) const;
     void ReadSettings ();
     void RestoreTorrents ();
-    libtorrent::torrent_handle RestoreSingleTorrent (const QByteArray&, const QByteArray&, const boost::filesystem::path&);
-    void HandleSingleFinished (const libtorrent::torrent_info&, const QString&);
+    libtorrent::torrent_handle RestoreSingleTorrent (const QByteArray&,
+			const QByteArray&, const boost::filesystem::path&);
+    void HandleSingleFinished (int);
     int GetCurrentlyDownloading () const;
     int GetCurrentlySeeding () const;
     void ManipulateSettings ();
@@ -172,6 +182,8 @@ signals:
     void torrentFinished (const QString&);
     void fileFinished (const QString&);
     void addToHistory (const QString&, const QString&, quint64, QDateTime);
+	void taskFinished (int);
+	void taskRemoved (int);
 };
 
 #endif

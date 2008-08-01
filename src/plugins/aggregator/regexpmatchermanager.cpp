@@ -1,13 +1,53 @@
-#include <QTimer>
-#include <QtDebug>
-#include <QSettings>
+#include "regexpmatchermanager.h"
 #include <algorithm>
 #include <functional>
 #include <iterator>
+#include <stdexcept>
+#include <QTimer>
+#include <QtDebug>
+#include <QSettings>
 #include <plugininterface/proxy.h>
 #include <plugininterface/util.h>
-#include "regexpmatchermanager.h"
 #include "item.h"
+
+RegexpMatcherManager::RegexpItem::RegexpItem (const QString& title,
+		const QString& body)
+: Title_ (title)
+, Body_ (body)
+{
+}
+
+bool RegexpMatcherManager::RegexpItem::operator== (const RegexpMatcherManager::RegexpItem& other) const
+{
+	return Title_ == other.Title_ &&
+		Body_ == other.Body_;
+}
+
+bool RegexpMatcherManager::RegexpItem::IsEqual (const QString& str) const
+{
+	return Title_ == str;
+}
+
+QByteArray RegexpMatcherManager::RegexpItem::Serialize () const
+{
+	QByteArray result;
+	{
+		QDataStream out (&result, QIODevice::WriteOnly);
+		out << 1 << Title_ << Body_;
+	}
+	return result;
+}
+
+void RegexpMatcherManager::RegexpItem::Deserialize (QByteArray& data)
+{
+	QDataStream in (&data, QIODevice::ReadOnly);
+	int version = 0;
+	in >> version;
+	if (version == 1)
+		in >> Title_ >> Body_;
+	else
+		throw std::runtime_error ("Unknown version");
+}
 
 RegexpMatcherManager::RegexpMatcherManager ()
 : SaveScheduled_ (false)
@@ -245,16 +285,59 @@ int RegexpMatcherManager::rowCount (const QModelIndex& parent) const
 	return parent.isValid () ? 0 : Items_.size ();
 }
 
+namespace
+{
+	struct WriteOut
+	{
+		QSettings& Settings_;
+		int Index_;
+
+		WriteOut (QSettings& settings)
+		: Settings_ (settings)
+		, Index_ (0)
+		{
+		}
+
+		void operator() (const RegexpMatcherManager::RegexpItem& item)
+		{
+			Settings_.setArrayIndex (Index_++);
+			Settings_.setValue ("Item", item.Serialize ());
+		}
+	};
+};
+
 void RegexpMatcherManager::saveSettings () const
 {
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
 			Proxy::Instance ()->GetApplicationName () + "_Aggregator");
+	settings.beginWriteArray ("RegexpMatcher");
+	std::for_each (Items_.begin (), Items_.end (), WriteOut (settings));
+	settings.endArray ();
 
 	SaveScheduled_ = false;
 }
 
 void RegexpMatcherManager::RestoreSettings ()
 {
+	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
+			Proxy::Instance ()->GetApplicationName () + "_Aggregator");
+	int size = settings.beginReadArray ("RegexpMatcher");
+	for (int i = 0; i < size; ++i)
+	{
+		QByteArray data = settings.value ("Item").toByteArray ();
+		RegexpItem item;
+		try
+		{
+			item.Deserialize (data);
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO << e.what ();
+			continue;
+		}
+		Items_.push_back (item);
+	}
+	settings.endArray ();
 }
 
 void RegexpMatcherManager::ScheduleSave ()

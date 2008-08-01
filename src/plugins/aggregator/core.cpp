@@ -92,33 +92,34 @@ void Core::SetProvider (QObject *provider, const QString& feature)
 
 void Core::AddFeed (const QString& url, const QStringList& tags)
 {
-    if (Feeds_.contains (url))
-    {
-        emit error (tr ("This feed is already added"));
-        return;
-    }
+	if (Feeds_.contains (url))
+	{
+		emit error (tr ("This feed is already added"));
+		return;
+	}
 
-    QObject *provider = Providers_ ["http"];
-    IDirectDownload *idd = qobject_cast<IDirectDownload*> (provider);
-    if (!provider || !idd)
-    {
-        emit error (tr ("Strange, but no suitable provider found"));
-        return;
-    }
-    if (!idd->CouldDownload (url, false))
-    {
-        emit error (tr ("Could not handle URL %1").arg (url));
-        return;
-    }
-    {
-        QTemporaryFile file;
-        file.open ();
-        DirectDownloadParams params = { url, file.fileName (), true, false };
-        PendingJob pj = { PendingJob::RFeedAdded, url, file.fileName (), tags };
-        int id = idd->AddJob (params);
-        PendingJobs_ [id] = pj;
-        file.close ();
-    }
+	QObject *provider = Providers_ ["http"];
+	IDownload *id = qobject_cast<IDownload*> (provider);
+	IDirectDownload *idd = qobject_cast<IDirectDownload*> (provider);
+	if (!provider || !idd || !id)
+	{
+		emit error (tr ("Strange, but no suitable provider found"));
+		return;
+	}
+	if (!id->CouldDownload (url, LeechCraft::Autostart))
+	{
+		emit error (tr ("Could not handle URL %1").arg (url));
+		return;
+	}
+	{
+		QTemporaryFile file;
+		file.open ();
+		DirectDownloadParams params = { url, file.fileName () };
+		PendingJob pj = { PendingJob::RFeedAdded, url, file.fileName (), tags };
+		int id = idd->AddJob (params, LeechCraft::Autostart | LeechCraft::DoNotNotifyUser);
+		PendingJobs_ [id] = pj;
+		file.close ();
+	}
 }
 
 void Core::RemoveFeed (const QModelIndex& index)
@@ -301,13 +302,14 @@ void Core::UpdateFeed (const QModelIndex& index)
     }
 
     QObject *provider = Providers_ ["http"];
+	IDownload *isd = qobject_cast<IDownload*> (provider);
     IDirectDownload *idd = qobject_cast<IDirectDownload*> (provider);
-    if (!provider || !idd)
+    if (!provider || !idd || !isd)
     {
         emit error (tr ("Strange, but no suitable provider found"));
         return;
     }
-    if (!idd->CouldDownload (url, false))
+    if (!isd->CouldDownload (url, LeechCraft::Autostart))
     {
         emit error (tr ("Could not handle URL %1").arg (url));
         return;
@@ -315,9 +317,9 @@ void Core::UpdateFeed (const QModelIndex& index)
 
     QTemporaryFile file;
     file.open ();
-    DirectDownloadParams params = { url, file.fileName (), true, false };
+    DirectDownloadParams params = { url, file.fileName () };
     PendingJob pj = { PendingJob :: RFeedUpdated, url, file.fileName () };
-    int id = idd->AddJob (params);
+    int id = idd->AddJob (params, LeechCraft::Autostart | LeechCraft::DoNotNotifyUser);
     PendingJobs_ [id] = pj;
     file.close ();
 }
@@ -676,9 +678,8 @@ void Core::handleJobFinished (int id)
 
 void Core::handleJobRemoved (int id)
 {
-    if (!PendingJobs_.contains (id))
-        return;
-    PendingJobs_.remove (id);
+    if (PendingJobs_.contains (id))
+		PendingJobs_.remove (id);
 }
 
 void Core::handleJobError (int id, IDirectDownload::Error)
@@ -691,8 +692,9 @@ void Core::handleJobError (int id, IDirectDownload::Error)
 void Core::updateFeeds ()
 {
     QObject *provider = Providers_ ["http"];
+	IDownload *isd = qobject_cast<IDownload*> (provider);
     IDirectDownload *idd = qobject_cast<IDirectDownload*> (provider);
-    if (!provider || !idd)
+    if (!provider || !idd || !isd)
     {
         emit error (tr ("Strange, but no suitable provider found"));
         return;
@@ -701,21 +703,24 @@ void Core::updateFeeds ()
     qDebug () << Q_FUNC_INFO << urls;
     for (int i = 0; i < urls.size (); ++i)
     {
-        if (!idd->CouldDownload (urls.at (i), false))
+        if (!isd->CouldDownload (urls.at (i), LeechCraft::Autostart))
         {
             emit error (tr ("Could not handle URL %1").arg (urls.at (i)));
             continue;
         }
 
-        QTemporaryFile file;
-        file.open ();
-		QString filename = file.fileName ();
-        file.close ();
-        file.remove ();
-        DirectDownloadParams params = { urls.at (i), filename, true, false };
-        qDebug () << "TEMPRORARY FILE AS SAMPLE" << file.fileName ();
+		QString filename;
+		{
+			QTemporaryFile file;
+			file.open ();
+			filename = file.fileName ();
+			file.close ();
+			file.remove ();
+		}
+        DirectDownloadParams params = { urls.at (i), filename };
+        qDebug () << "TEMPORARY FILE AS SAMPLE" << filename;
         PendingJob pj = { PendingJob :: RFeedUpdated, urls.at (i), filename };
-        int id = idd->AddJob (params);
+        int id = idd->AddJob (params, LeechCraft::Autostart | LeechCraft::DoNotNotifyUser);
         PendingJobs_ [id] = pj;
         qDebug () << urls.at (i) << id;
     }
@@ -724,21 +729,22 @@ void Core::updateFeeds ()
 void Core::fetchExternalFile (const QString& url, const QString& where)
 {
     QObject *provider = Providers_ ["http"];
+	IDownload *isd = qobject_cast<IDownload*> (provider);
     IDirectDownload *idd = qobject_cast<IDirectDownload*> (provider);
-    if (!provider || !idd)
+    if (!provider || !idd || !isd)
     {
         emit error (tr ("Strange, but no suitable provider found"));
         throw std::runtime_error ("no suitable provider");
     }
-    if (!idd->CouldDownload (url, false))
+    if (!isd->CouldDownload (url, LeechCraft::Autostart))
     {
         emit error (tr ("Could not handle URL %1").arg (url));
         throw std::runtime_error ("could not handle URL");
     }
 
-    DirectDownloadParams params = { url, where, true, false };
+    DirectDownloadParams params = { url, where };
     PendingJob pj = { PendingJob :: RFeedExternalData, url, where };
-    int id = idd->AddJob (params);
+    int id = idd->AddJob (params, LeechCraft::Autostart | LeechCraft::DoNotNotifyUser);
     PendingJobs_ [id] = pj;
 }
 

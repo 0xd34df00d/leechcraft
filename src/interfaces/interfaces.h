@@ -4,6 +4,7 @@
 #include <QStringList>
 #include <QVariantList>
 #include <QtPlugin>
+#include <QFlags>
 #ifndef NOGUI
 #include <QIcon>
 #endif
@@ -69,31 +70,31 @@ public:
     virtual void StartAll () = 0;
     virtual void StopAll () = 0;
 
-    virtual bool CouldDownload (const QString&, bool) const = 0;
-    virtual void AddJob (const QString&) = 0;
+    virtual bool CouldDownload (const QString&, LeechCraft::TaskParameters) const = 0;
 
     virtual ~IDownload () {}
 };
 
-class IDirectDownload : public IDownload
+class IDirectDownload
 {
 public:
     enum Error
     {
-    NoError
-    , ErrorNetwork
-    , ErrorNotFound
-    , ErrorDenied
-    , ErrorOther
+		NoError
+		, ErrorNetwork
+		, ErrorNotFound
+		, ErrorDenied
+		, ErrorOther
     };
-    virtual int AddJob (const DirectDownloadParams&) = 0;
+    virtual int AddJob (const DirectDownloadParams&, LeechCraft::TaskParameters) = 0;
     virtual ~IDirectDownload () {}
 };
 
-class IPeer2PeerDownload : public IDownload
+class IPeer2PeerDownload
 {
 public:
-    virtual ~IPeer2PeerDownload () {};
+    virtual int AddJob (const QString&, LeechCraft::TaskParameters) = 0;
+    virtual ~IPeer2PeerDownload () {}
 };
 
 class IRemoteable

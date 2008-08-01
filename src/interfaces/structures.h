@@ -7,14 +7,30 @@ struct DirectDownloadParams
 {
     QString Resource_;
     QString Location_;
-    bool Autostart_;
-    bool ShouldBeSavedInHistory_;
 };
 
 struct MainWindowExternals
 {
     QMenu *RootMenu_;
 };
+
+namespace LeechCraft
+{
+	enum TaskParameter
+	{
+		NoParameters = 0x0,
+		Autostart = 0x1,
+		SaveInHistory = 0x2,
+		FromClipboard = 0x4,
+		FromCommonDialog = 0x8,
+		FromAutomatic = 0x16,
+		DoNotNotifyUser = 0x32
+	};
+
+	Q_DECLARE_FLAGS (TaskParameters, TaskParameter);
+};
+
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::TaskParameters);
 
 #endif
 

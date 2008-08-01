@@ -50,6 +50,9 @@ Core::Core ()
     PiecesModel_ = new PiecesModel ();
     TagsCompletionModel_ = new TagsCompletionModel ();
 	TorrentFilesModel_ = new TorrentFilesModel (false, this);
+
+	for (quint16 i = 0; i < 65535; ++i)
+		IDPool_.push_back (i);
 }
 
 Core::~Core ()
@@ -498,12 +501,16 @@ TagsCompletionModel* Core::GetTagsCompletionModel ()
     return TagsCompletionModel_;
 }
 
-void Core::AddFile (const QString& filename, const QString& path, const QStringList& tags, const QVector<bool>& files)
+int Core::AddFile (const QString& filename,
+		const QString& path,
+		const QStringList& tags,
+		const QVector<bool>& files,
+		LeechCraft::TaskParameters params)
 {
     if (!QFileInfo (filename).exists () || !QFileInfo (filename).isReadable ())
     {
         emit error (tr ("File %1 doesn't exist or could not be read").arg (filename));
-        return;
+        return -1;
     }
 
     libtorrent::torrent_handle handle;
@@ -514,22 +521,22 @@ void Core::AddFile (const QString& filename, const QString& path, const QStringL
     catch (const libtorrent::duplicate_torrent& e)
     {
         emit error (tr ("The torrent %1 with save path %2 already exists in the session").arg (filename).arg (path));
-        return;
+        return -1;
     }
     catch (const libtorrent::invalid_encoding& e)
     {
         emit error (tr ("Bad bencoding in torrent file"));
-        return;
+        return -1;
     }
     catch (const libtorrent::invalid_torrent_file& e)
     {
         emit error (tr ("Invalid torrent file"));
-        return;
+        return -1;
     }
     catch (const std::runtime_error& e)
     {
         emit error (tr ("Runtime error"));
-        return;
+        return -1;
     }
 
     std::vector<int> priorities;
@@ -552,11 +559,18 @@ void Core::AddFile (const QString& filename, const QString& path, const QStringL
     beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
     TorrentStruct tmp = { 0, priorities, handle, contents, QFileInfo (filename).fileName (), TSIdle };
     tmp.Tags_ = tags;
+	tmp.Parameters_ = params;
+	tmp.ID_ = IDPool_.front ();
+	IDPool_.pop_front ();
     Handles_.append (tmp);
     endInsertRows ();
     TagsCompletionModel_->UpdateTags (tags);
 
+	if (params ^ LeechCraft::Autostart)
+		PauseTorrent (Handles_.size () - 1);
+
     QTimer::singleShot (3000, this, SLOT (writeSettings ()));
+	return tmp.ID_;
 }
 
 void Core::RemoveTorrent (int pos)
@@ -565,11 +579,14 @@ void Core::RemoveTorrent (int pos)
         return;
 
     Session_->remove_torrent (Handles_.at (pos).Handle_);
+	int id = Handles_.at (pos).ID_;
     beginRemoveRows (QModelIndex (), pos, pos);
     Handles_.removeAt (pos);
     endRemoveRows ();
+	IDPool_.push_front (id);
 
     QTimer::singleShot (3000, this, SLOT (writeSettings ()));
+	emit taskRemoved (id);
 }
 
 void Core::PauseTorrent (int pos)
@@ -1064,9 +1081,12 @@ void Core::RestoreTorrents ()
             handle.replace_trackers (announces);
         }
 
-        beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
         TorrentStruct tmp = { ub, priorities, handle, data, filename };
         tmp.Tags_ = settings.value ("Tags").toStringList ();
+		tmp.ID_ = settings.value ("ID").toInt ();
+		IDPool_.erase (std::find (IDPool_.begin (), IDPool_.end (), tmp.ID_));
+		tmp.Parameters_ = static_cast<LeechCraft::TaskParameters> (settings.value ("Parameters").toInt ());
+        beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
         Handles_.append (tmp);
         endInsertRows ();
     }
@@ -1121,16 +1141,29 @@ libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data, c
     return handle;
 }
 
-void Core::HandleSingleFinished (const libtorrent::torrent_info& info, const QString& where)
+void Core::HandleSingleFinished (int i)
 {
+	TorrentStruct torrent = Handles_.at (i);
+	libtorrent::torrent_info info = Handles_.at (i).Handle_
+		.get_torrent_info ();
+	QString where = QString::fromUtf8 (Handles_.at (i).Handle_
+			.save_path ().string ().c_str ());
+
     QString name = QString::fromStdString (info.name ());
     QString string = tr ("Torrent finished: %1").arg (name);
     emit torrentFinished (string);
 
-    for (libtorrent::torrent_info::file_iterator i = info.begin_files (); i != info.end_files (); ++i)
+    for (libtorrent::torrent_info::file_iterator i = info.begin_files (),
+			end = info.end_files (); i != end; ++i)
         emit fileFinished (QString::fromUtf8 (i->path.string ().c_str ()));
 
-    emit addToHistory (QString::fromStdString (info.name ()), where, info.total_size (), QDateTime::currentDateTime ());
+	if (torrent.Parameters_ & LeechCraft::SaveInHistory)
+		emit addToHistory (QString::fromStdString (info.name ()),
+				where,
+				info.total_size (),
+				QDateTime::currentDateTime ());
+
+	emit taskFinished (torrent.ID_);
 }
 
 int Core::GetCurrentlyDownloading () const
@@ -1269,6 +1302,8 @@ void Core::writeSettings ()
             settings.setValue ("Filename", Handles_.at (i).TorrentFileName_);
             settings.setValue ("TrackersOverride", GetTrackers (i));
             settings.setValue ("Tags", Handles_.at (i).Tags_);
+			settings.setValue ("ID", Handles_.at (i).ID_);
+			settings.setValue ("Parameters", static_cast<int> (Handles_.at (i).Parameters_));
 
             settings.beginWriteArray ("Priorities");
             for (size_t j = 0; j < Handles_.at (i).FilePriorities_.size (); ++j)
@@ -1346,7 +1381,7 @@ void Core::checkFinished ()
                         Handles_.at (i).Handle_.pause ();
                         Handles_ [i].State_ = TSWaiting2Seed;
                     }
-                    HandleSingleFinished (Handles_.at (i).Handle_.get_torrent_info (), QString::fromUtf8 (Handles_.at (i).Handle_.save_path ().string ().c_str ()));
+					HandleSingleFinished (i);
                 }
                 break;
         }

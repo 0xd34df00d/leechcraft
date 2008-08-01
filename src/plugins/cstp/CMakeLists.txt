@@ -10,7 +10,7 @@ SET (SRCS
 	core.cpp
 	task.cpp
 	hook.cpp
-	addjob.cpp
+	addtask.cpp
 	xmlsettingsmanager.cpp
 	mainviewdelegate.cpp
 	historymodel.cpp
@@ -20,14 +20,14 @@ SET (HEADERS
 	core.h
 	task.h
 	hook.h
-	addjob.h
+	addtask.h
 	xmlsettingsmanager.h
 	mainviewdelegate.h
 	historymodel.h
 	)
 SET (FORMS
 	cstp.ui
-	addjob.ui
+	addtask.ui
 	)
 SET (RESOURCES
 	resources.qrc

@@ -7,6 +7,7 @@
 #include <QFtp>
 #include <QFileInfo>
 #include <QDataStream>
+#include <QDir>
 #include <QtDebug>
 #include "hook.h"
 #include "xmlsettingsmanager.h"
@@ -119,7 +120,12 @@ void Task::Start (const boost::shared_ptr<QFile>& tof)
 		else
 			ftt = QFtp::Binary;
 
-		id = Ftp_->get (URL_.path (), to, ftt);
+		QFileInfo fi = QFileInfo (URL_.path ());
+
+		id = Ftp_->cd (fi.dir ().path ());
+		Commands_.push_back (cmd_t (id, CCD));
+
+		id = Ftp_->get (fi.fileName (), to, ftt);
 		Commands_.push_back (cmd_t (id, CTransfer));
 
 		id = Ftp_->close ();
@@ -133,9 +139,6 @@ void Task::Stop ()
 		Http_->abort ();
 	else if (Type_ == TFtp)
 		Ftp_->abort ();
-
-	URL_ = QUrl ();
-	Construct ();
 }
 
 QByteArray Task::Serialize () const
@@ -226,6 +229,34 @@ bool Task::IsRunning () const
 		return false;
 }
 
+QString Task::GetErrorString () const
+{
+	if (Type_ != TFtp)
+		switch (Http_->error ())
+		{
+			case QHttp::NoError:
+				return tr ("No error occurred.");
+			case QHttp::HostNotFound:
+				return tr ("The host name lookup failed.");
+			case QHttp::ConnectionRefused:
+				return tr ("The server refused the connection.");
+			case QHttp::UnexpectedClose:
+				return tr ("The server closed the connection unexpectedly.");
+			case QHttp::InvalidResponseHeader:
+				return tr ("The server sent an invalid response header.");
+			case QHttp::WrongContentLength:
+				return tr ("The client could not read the content correctly because an error with respect to the content length occurred.");
+			case QHttp::Aborted:
+				return tr ("The request was aborted with abort().");
+			case QHttp::ProxyAuthenticationRequiredError:
+				return tr ("QHttp is using a proxy, and the proxy server requires authentication to establish a connection.");
+			case QHttp::AuthenticationRequiredError:
+				return tr ("The web server requires authentication to complete the request.");
+			case QHttp::UnknownError:
+				return tr ("An error other than those specified above occurred.");
+		}
+}
+
 void Task::Reset ()
 {
 	Done_ = 0;
@@ -251,7 +282,7 @@ void Task::Construct ()
 
 void Task::ConstructFTP (const QString&)
 {
-	Ftp_.reset (new QFtp (this));
+	Ftp_.reset (new QFtp ());
 	Type_ = TFtp;
 	connect (Ftp_.get (),
 			SIGNAL (done (bool)),
@@ -281,7 +312,7 @@ void Task::ConstructFTP (const QString&)
 
 void Task::ConstructHTTP (const QString& scheme)
 {
-	Http_.reset (new QHttp (this));
+	Http_.reset (new QHttp ());
 	if (scheme == "http")
 		Type_ = THttp;
 	else if (scheme == "https")

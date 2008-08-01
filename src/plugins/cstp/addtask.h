@@ -1,32 +1,32 @@
-#ifndef ADDJOB_H
-#define ADDJOB_H
+#ifndef ADDTASK_H
+#define ADDTASK_H
 #include <QDialog>
-#include "ui_addjob.h"
+#include "ui_addtask.h"
 
-class AddJob : public QDialog
+class AddTask : public QDialog
 {
 	Q_OBJECT
 
-	Ui::AddJob Ui_;
+	Ui::AddTask Ui_;
 	bool UserModifiedFilename_;
 public:
-	AddJob (QWidget* = 0);
-	virtual ~AddJob ();
+	AddTask (QWidget* = 0);
+	virtual ~AddTask ();
 
-	struct Job
+	struct Task
 	{
 		QString URL_;
 		QString LocalPath_;
 		QString Filename_;
 		QString Comment_;
 
-		Job (const QString&,
+		Task (const QString&,
 				const QString&,
 				const QString&,
 				const QString&);
 	};
 
-	Job GetJob () const;
+	Task GetTask () const;
 public slots:
 	virtual void accept ();
 private slots:

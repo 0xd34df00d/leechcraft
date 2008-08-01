@@ -27,13 +27,45 @@ void TorrentPlugin::SetupCore ()
     XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/torrentsettings.xml");
     AddTorrentDialog_ = new AddTorrent (this);
 	Core::Instance ()->SetWindow (this);
-    connect (Core::Instance (), SIGNAL (error (QString)), this, SLOT (showError (QString)));
-    connect (Core::Instance (), SIGNAL (logMessage (const QString&)), this, SLOT (doLogMessage (const QString&)));
-    connect (Core::Instance (), SIGNAL (torrentFinished (const QString&)), this, SIGNAL (downloadFinished (const QString&)));
-    connect (Core::Instance (), SIGNAL (fileFinished (const QString&)), this, SIGNAL (fileDownloaded (const QString&)));
-    connect (Core::Instance (), SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)), this, SLOT (updateTorrentStats ()));
-    connect (Core::Instance (), SIGNAL (addToHistory (const QString&, const QString&, quint64, QDateTime)), this, SLOT (addToHistory (const QString&, const QString&, quint64, QDateTime)));
-    connect (Stats_, SIGNAL (currentChanged (int)), this, SLOT (updateTorrentStats ()));
+	connect (Core::Instance (),
+			SIGNAL (error (QString)),
+			this,
+			SLOT (showError (QString)));
+	connect (Core::Instance (),
+			SIGNAL (logMessage (const QString&)),
+			this,
+			SLOT (doLogMessage (const QString&)));
+	connect (Core::Instance (),
+			SIGNAL (torrentFinished (const QString&)),
+			this,
+			SIGNAL (downloadFinished (const QString&)));
+	connect (Core::Instance (),
+			SIGNAL (fileFinished (const QString&)),
+			this,
+			SIGNAL (fileDownloaded (const QString&)));
+	connect (Core::Instance (),
+			SIGNAL (dataChanged (const QModelIndex&,
+					const QModelIndex&)),
+			this,
+			SLOT (updateTorrentStats ()));
+	connect (Core::Instance (),
+			SIGNAL (addToHistory (const QString&, const QString&,
+					quint64, QDateTime)),
+			this,
+			SLOT (addToHistory (const QString&, const QString&,
+					quint64, QDateTime)));
+	connect (Stats_,
+			SIGNAL (currentChanged (int)),
+			this,
+			SLOT (updateTorrentStats ()));
+	connect (Core::Instance (),
+			SIGNAL (taskFinished (int)),
+			this,
+			SIGNAL (jobFinished (int)));
+	connect (Core::Instance (),
+			SIGNAL (taskRemoved (int)),
+			this,
+			SIGNAL (jobRemoved (int)));
 
     Core::Instance ()->DoDelayedInit ();
 }
@@ -44,15 +76,43 @@ void TorrentPlugin::SetupTorrentView ()
     FilterModel_->setSourceModel (Core::Instance ());
     FilterModel_->setFilterKeyColumn (0);
     TorrentView_->setModel (FilterModel_);
-    connect (Core::Instance (), SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)), FilterModel_, SLOT (invalidate ()));
-    connect (FixedStringSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setNormalMode ()));
-    connect (WildcardSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setNormalMode ()));
-    connect (RegexpSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setNormalMode ()));
-    connect (FixedStringSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setFilterFixedString (const QString&)));
-    connect (WildcardSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setFilterWildcard (const QString&)));
-    connect (RegexpSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setFilterRegExp (const QString&)));
-    connect (TagsSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setTagsMode ()));
-    connect (TagsSearch_, SIGNAL (textChanged (const QString&)), FilterModel_, SLOT (setFilterFixedString (const QString&)));
+	connect (Core::Instance (),
+			SIGNAL (dataChanged (const QModelIndex&,
+					const QModelIndex&)),
+			FilterModel_,
+			SLOT (invalidate ()));
+	connect (FixedStringSearch_,
+			SIGNAL (textChanged (const QString&)),
+			FilterModel_,
+			SLOT (setNormalMode ()));
+	connect (WildcardSearch_,
+			SIGNAL (textChanged (const QString&)),
+			FilterModel_,
+			SLOT (setNormalMode ()));
+	connect (RegexpSearch_,
+			SIGNAL (textChanged (const QString&)),
+			FilterModel_,
+			SLOT (setNormalMode ()));
+	connect (FixedStringSearch_,
+			SIGNAL (textChanged (const QString&)),
+			FilterModel_,
+			SLOT (setFilterFixedString (const QString&)));
+	connect (WildcardSearch_,
+			SIGNAL (textChanged (const QString&)),
+			FilterModel_,
+			SLOT (setFilterWildcard (const QString&)));
+	connect (RegexpSearch_,
+			SIGNAL (textChanged (const QString&)),
+			FilterModel_,
+			SLOT (setFilterRegExp (const QString&)));
+	connect (TagsSearch_,
+			SIGNAL (textChanged (const QString&)),
+			FilterModel_,
+			SLOT (setTagsMode ()));
+	connect (TagsSearch_,
+			SIGNAL (textChanged (const QString&)),
+			FilterModel_,
+			SLOT (setFilterFixedString (const QString&)));
 }
 
 void TorrentPlugin::SetupStuff ()
@@ -340,7 +400,7 @@ QAbstractItemDelegate* TorrentPlugin::GetDelegate () const
     return 0;
 }
 
-bool TorrentPlugin::CouldDownload (const QString& string, bool buffer) const
+bool TorrentPlugin::CouldDownload (const QString& string, LeechCraft::TaskParameters) const
 {
     QFile file (string);
     if (!file.exists () || !file.open (QIODevice::ReadOnly))
@@ -349,20 +409,34 @@ bool TorrentPlugin::CouldDownload (const QString& string, bool buffer) const
     return Core::Instance ()->IsValidTorrent (file.readAll ());
 }
 
-void TorrentPlugin::AddJob (const QString& name)
+int TorrentPlugin::AddJob (const QString& name, LeechCraft::TaskParameters parameters)
 {
     AddTorrentDialog_->Reinit ();
     AddTorrentDialog_->SetFilename (name);
 
     if (AddTorrentDialog_->exec () == QDialog::Rejected)
-        return;
+        return -1;
 
-    QString filename = AddTorrentDialog_->GetFilename (),
-            path = AddTorrentDialog_->GetSavePath ();
-    QVector<bool> files = AddTorrentDialog_->GetSelectedFiles ();
-    QStringList tags = AddTorrentDialog_->GetTags ();
-    Core::Instance ()->AddFile (filename, path, tags, files);
+	QString path;
+	QStringList tags;
+	QVector<bool> files;
+	QString fname;
+	if (parameters & LeechCraft::FromAutomatic)
+	{
+		fname = name;
+		path = AddTorrentDialog_->GetDefaultSavePath ();
+		tags = AddTorrentDialog_->GetDefaultTags ();
+	}
+	else
+	{
+		fname = AddTorrentDialog_->GetFilename (),
+		path = AddTorrentDialog_->GetSavePath ();
+		files = AddTorrentDialog_->GetSelectedFiles ();
+		tags = AddTorrentDialog_->GetTags ();
+	}
+	int result = Core::Instance ()->AddFile (fname, path, tags, files, parameters);
     setActionsEnabled ();
+	return result;
 }
 
 void TorrentPlugin::closeEvent (QCloseEvent*)

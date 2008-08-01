@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>AddJob</class>
- <widget class="QDialog" name="AddJob" >
+ <class>AddTask</class>
+ <widget class="QDialog" name="AddTask" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Add job</string>
+   <string>Add task</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
@@ -91,7 +91,7 @@
   <connection>
    <sender>ButtonBox_</sender>
    <signal>accepted()</signal>
-   <receiver>AddJob</receiver>
+   <receiver>AddTask</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -107,7 +107,7 @@
   <connection>
    <sender>ButtonBox_</sender>
    <signal>rejected()</signal>
-   <receiver>AddJob</receiver>
+   <receiver>AddTask</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel" >

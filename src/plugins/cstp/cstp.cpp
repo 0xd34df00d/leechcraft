@@ -1,13 +1,15 @@
 #include "cstp.h"
-#include <boost/lambda/lambda.hpp>
-#include <boost/lambda/bind.hpp>
+#include <boost/bind.hpp>
 #include <QMenu>
 #include <QTranslator>
 #include <QLocale>
+#include <QFileInfo>
+#include <QMessageBox>
+#include <QDir>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
-#include "addjob.h"
+#include "addtask.h"
 #include "mainviewdelegate.h"
 
 CSTP::CSTP ()
@@ -36,6 +38,31 @@ void CSTP::Init ()
 	Ui_.MainView_->setModel (&Core::Instance ());
 	Ui_.HistoryView_->setModel (Core::Instance ().GetHistoryModel ());
 	Ui_.HistoryView_->addAction (Ui_.ActionRemoveItemFromHistory_);
+
+	connect (&Core::Instance (),
+			SIGNAL (taskFinished (int)),
+			this,
+			SIGNAL (jobFinished (int)));
+	connect (&Core::Instance (),
+			SIGNAL (taskRemoved (int)),
+			this,
+			SIGNAL (jobRemoved (int)));
+	connect (&Core::Instance (),
+			SIGNAL (taskError (int, IDirectDownload::Error)),
+			this,
+			SIGNAL (jobError (int, IDirectDownload::Error)));
+	connect (&Core::Instance (),
+			SIGNAL (fileDownloaded (const QString&)),
+			this,
+			SIGNAL (fileDownloaded (const QString&)));
+	connect (&Core::Instance (),
+			SIGNAL (downloadFinished (const QString&)),
+			this,
+			SIGNAL (downloadFinished (const QString&)));
+	connect (&Core::Instance (),
+			SIGNAL (error (const QString&)),
+			this,
+			SLOT (handleError (const QString&)));
 }
 
 void CSTP::Release ()
@@ -70,7 +97,7 @@ unsigned long int CSTP::GetID () const
 
 QStringList CSTP::Provides () const
 {
-	return QStringList ();
+	return QStringList ("http") << "https" << "remoteable" << "resume";
 }
 
 QStringList CSTP::Needs () const
@@ -112,9 +139,63 @@ void CSTP::ShowBalloonTip ()
 {
 }
 
+qint64 CSTP::GetDownloadSpeed () const
+{
+	return Core::Instance ().GetTotalDownloadSpeed ();
+}
+
+qint64 CSTP::GetUploadSpeed () const
+{
+	return 0;
+}
+
+void CSTP::StartAll ()
+{
+	on_ActionStartAll__triggered ();
+}
+
+void CSTP::StopAll ()
+{
+	on_ActionStopAll__triggered ();
+}
+
+bool CSTP::CouldDownload (const QString& url, LeechCraft::TaskParameters tp) const
+{
+	return Core::Instance ().CouldDownload (url, tp);
+}
+
+int CSTP::AddJob (const DirectDownloadParams& ddp, LeechCraft::TaskParameters tp)
+{
+	QFileInfo fi (ddp.Location_);
+	return Core::Instance ().AddTask (ddp.Resource_,
+			fi.dir ().path (), fi.fileName (),
+			QString (), tp);
+}
+
+QAbstractItemModel* CSTP::GetRepresentation () const
+{
+	return &Core::Instance ();
+}
+
+QAbstractItemDelegate* CSTP::GetDelegate () const
+{
+	return new MainViewDelegate (Ui_.MainView_);
+}
+
 void CSTP::closeEvent (QCloseEvent*)
 {
 	IsShown_ = false;
+}
+
+template<typename T, typename U>
+void CSTP::ApplyCore2Selection (T temp, U view)
+{
+	QModelIndexList indexes = view->selectionModel ()->
+		selectedRows ();
+	std::for_each (indexes.begin (), indexes.end (),
+			boost::bind (temp,
+				&Core::Instance (),
+				_1));
 }
 
 void CSTP::handleHidePlugins ()
@@ -125,24 +206,50 @@ void CSTP::handleHidePlugins ()
 
 void CSTP::on_ActionAddTask__triggered ()
 {
-	AddJob addjob;
-	if (addjob.exec () == QDialog::Rejected)
+	AddTask at;
+	if (at.exec () == QDialog::Rejected)
 		return;
 
-	AddJob::Job job = addjob.GetJob ();
-	Core::Instance ().AddJob (job.URL_,
-			job.LocalPath_,
-			job.Filename_,
-			job.Comment_);
+	AddTask::Task task = at.GetTask ();
+	Core::Instance ().AddTask (task.URL_,
+			task.LocalPath_,
+			task.Filename_,
+			task.Comment_);
+}
+
+void CSTP::on_ActionRemoveTask__triggered ()
+{
+	ApplyCore2Selection (&Core::RemoveTask, Ui_.MainView_);
 }
 
 void CSTP::on_ActionStart__triggered ()
 {
-	QModelIndexList indexes = Ui_.MainView_->selectionModel ()->
-		selectedRows ();
-	using boost::lambda::_1;
-	std::for_each (indexes.begin (), indexes.end (),
-			boost::lambda::bind (&Core::Start, &Core::Instance (), _1));
+	ApplyCore2Selection (&Core::Start, Ui_.MainView_);
+}
+
+void CSTP::on_ActionStop__triggered ()
+{
+	ApplyCore2Selection (&Core::Stop, Ui_.MainView_);
+}
+
+void CSTP::on_ActionRemoveItemFromHistory__triggered ()
+{
+	ApplyCore2Selection (&Core::RemoveFromHistory, Ui_.HistoryView_);
+}
+
+void CSTP::on_ActionRemoveAll__triggered ()
+{
+	Core::Instance ().RemoveAll ();
+}
+
+void CSTP::on_ActionStartAll__triggered ()
+{
+	Core::Instance ().StartAll ();
+}
+
+void CSTP::on_ActionStopAll__triggered ()
+{
+	Core::Instance ().StopAll ();
 }
 
 void CSTP::on_ActionPreferences__triggered ()
@@ -150,13 +257,10 @@ void CSTP::on_ActionPreferences__triggered ()
 	XmlSettingsDialog_->show ();
 }
 
-void CSTP::on_ActionRemoveItemFromHistory__triggered ()
+void CSTP::handleError (const QString& text)
 {
-	QModelIndexList indexes = Ui_.HistoryView_->selectionModel ()->
-		selectedRows ();
-	using boost::lambda::_1;
-	std::for_each (indexes.begin (), indexes.end (),
-			boost::lambda::bind (&Core::RemoveFromHistory, &Core::Instance (), _1));
+	// TODO either write to log or show big dumb messagebox
+	QMessageBox::warning (this, tr ("Error"), text);
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_cstp, CSTP);
