@@ -13,7 +13,9 @@ SET (HEADERS
     xmlsettingsdialog.h
 	rangewidget.h
 	filepicker.h
-	radiogroup.h)
+	radiogroup.h
+	basesettingsmanager.h
+	)
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 ADD_DEFINITIONS(-DQT_PLUGIN)
 ADD_DEFINITIONS(-DQT_NO_DEBUG)

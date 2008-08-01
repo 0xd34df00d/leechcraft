@@ -1,6 +1,6 @@
 #ifndef XMLSETTINGSMANAGER_H
 #define XMLSETTINGSMANAGER_H
-#include <plugininterface/basesettingsmanager.h>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 class XmlSettingsManager : public BaseSettingsManager
 {

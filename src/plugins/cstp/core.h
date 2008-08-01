@@ -102,6 +102,7 @@ signals:
 	void fileDownloaded (const QString&);
 	void downloadFinished (const QString&);
 	void error (const QString&);
+	void fileExists (bool*);		// TODO handle this in CSTP
 };
 
 #endif

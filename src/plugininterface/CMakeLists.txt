@@ -14,7 +14,6 @@ SET (SRCS
   )
 SET (HEADERS
   addressparser.h
-  basesettingsmanager.h
   proxy.h
   tcpsocket.h
   socketexceptions.h
