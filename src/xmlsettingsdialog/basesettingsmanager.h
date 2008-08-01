@@ -16,8 +16,8 @@
 #include <QPair>
 #include <QObject>
 #include <QSettings>
+#include <QStringList>
 #include <QDynamicPropertyChangeEvent>
-#include <interfaces/interfaces.h>
 
 #define PROP2CHAR(a) (a.toLatin1 ().constData ())
 
