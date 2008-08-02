@@ -25,6 +25,5 @@ QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ADD_LIBRARY (xmlsettingsdialog SHARED ${SRCS} ${MOC_SRCS})
 TARGET_LINK_LIBRARIES (xmlsettingsdialog
                         ${QT_LIBRARIES}
-                        plugininterface
-                        exceptions)
+						)
 INSTALL (TARGETS xmlsettingsdialog DESTINATION lib)
