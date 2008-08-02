@@ -293,7 +293,7 @@ void Core::done (bool err)
 			AddToHistory (taskdscr);
 		emit taskFinished (taskdscr->ID_);
 		emit fileDownloaded (taskdscr->File_->fileName ());
-		if (taskdscr->Parameters_ ^ LeechCraft::DoNotNotifyUser)
+		if (taskdscr->Parameters_ & LeechCraft::DoNotNotifyUser)
 			emit downloadFinished (taskdscr->File_->fileName () +
 					QString ("\n") + taskdscr->Task_->GetURL ());
 		Remove (taskdscr);
