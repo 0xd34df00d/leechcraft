@@ -89,7 +89,7 @@ ${QT_LIBRARIES}
 plugininterface
 exceptions
 xmlsettingsdialog
-torrent
+torrent-rasterbar
 boost_date_time-mgw42-mt-1_35_0
 boost_filesystem-mgw42-mt-1_35_0
 boost_thread-mgw42-mt-1_35_0)
@@ -99,6 +99,6 @@ ${QT_LIBRARIES}
 plugininterface
 exceptions
 xmlsettingsdialog
-torrent)
+torrent-rasterbar)
 ENDIF (WIN32)
 INSTALL (TARGETS leechcraft_torrent DESTINATION ${LC_PLUGINS_DEST})
