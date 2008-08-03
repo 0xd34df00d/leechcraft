@@ -20,7 +20,7 @@ namespace LeechCraft
 	{
 		NoParameters = 0x0,
 		Autostart = 0x1,
-		SaveInHistory = 0x2,
+		DoNotSaveInHistory = 0x2,
 		FromClipboard = 0x4,
 		FromCommonDialog = 0x8,
 		FromAutomatic = 0x16,

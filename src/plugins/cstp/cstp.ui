@@ -24,6 +24,9 @@
    <layout class="QVBoxLayout" name="verticalLayout" >
     <item>
      <widget class="QTreeView" name="MainView_" >
+      <property name="selectionMode" >
+       <enum>QAbstractItemView::ExtendedSelection</enum>
+      </property>
       <property name="rootIsDecorated" >
        <bool>false</bool>
       </property>
@@ -74,7 +77,13 @@
           <property name="contextMenuPolicy" >
            <enum>Qt::ActionsContextMenu</enum>
           </property>
+          <property name="selectionMode" >
+           <enum>QAbstractItemView::ExtendedSelection</enum>
+          </property>
           <property name="rootIsDecorated" >
+           <bool>false</bool>
+          </property>
+          <property name="itemsExpandable" >
            <bool>false</bool>
           </property>
           <property name="expandsOnDoubleClick" >
@@ -96,6 +105,11 @@
        <attribute name="title" >
         <string>Log</string>
        </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout" >
+        <item>
+         <widget class="QTextBrowser" name="Logger_" />
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>

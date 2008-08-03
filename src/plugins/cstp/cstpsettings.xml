@@ -2,14 +2,26 @@
 <settings>
 	<declare defaultlang="en" />
 	<page>
+		<label lang="en" value="Local settings" />
+		<label lang="ru" value="Локальные настройки" />
+		<groupbox>
+			<label lang="en" value="Behavior" />
+			<label lang="ru" value="Поведение" />
+			<item type="checkbox" property="AlertAboutErrors" default="on">
+				<label lang="en" value="Alert about errors" />
+				<label lang="en" value="Оповещать об ошибках" />
+			</item>
+		</groupbox>
+	</page>
+	<page>
 		<label lang="en" value="Network settings" />
 		<label lang="ru" value="Сетевые настройки" />
 		<groupbox>
 			<label lang="en" value="Behavior" />
 			<label lang="ru" value="Поведение" />
 			<item type="lineedit" property="TextTransferMode" default="txt cpp cxx c ui asm htm html css asp vbs js">
-				<label lang="en" value="Use text transfer mode for" />
-				<label lang="ru" value="Использовать текстовый режим передачи для" />
+				<label lang="en" value="Use text transfer mode" />
+				<label lang="ru" value="Использовать текстовый режим передачи" />
 			</item>
 		</groupbox>
 		<groupbox>

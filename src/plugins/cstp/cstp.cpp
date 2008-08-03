@@ -1,5 +1,6 @@
 #include "cstp.h"
 #include <boost/bind.hpp>
+#include <boost/logic/tribool.hpp>
 #include <QMenu>
 #include <QTranslator>
 #include <QLocale>
@@ -187,8 +188,8 @@ void CSTP::closeEvent (QCloseEvent*)
 	IsShown_ = false;
 }
 
-template<typename T, typename U>
-void CSTP::ApplyCore2Selection (T temp, U view)
+template<typename T>
+void CSTP::ApplyCore2Selection (void (Core::*temp) (const QModelIndex&), T view)
 {
 	QModelIndexList indexes = view->selectionModel ()->
 		selectedRows ();
@@ -259,8 +260,22 @@ void CSTP::on_ActionPreferences__triggered ()
 
 void CSTP::handleError (const QString& text)
 {
-	// TODO either write to log or show big dumb messagebox
-	QMessageBox::warning (this, tr ("Error"), text);
+	if (XmlSettingsManager::Instance ().property ("AlertAboutErrors").toBool ())
+		QMessageBox::warning (this, tr ("Error"), text);
+	Ui_.Logger_->append (QString ("<br />") + text);
+}
+
+void CSTP::handleFileExists (boost::logic::tribool *remove)
+{
+	QMessageBox::StandardButton userReply = QMessageBox::warning (this,
+			tr ("File exists"), tr ("File %1 already exists, continue download?"),
+			QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+	if (userReply == QMessageBox::Yes)
+		*remove = false;
+	else if (userReply == QMessageBox::No)
+		*remove = true;
+	else
+		*remove = boost::logic::indeterminate;
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_cstp, CSTP);

@@ -107,8 +107,7 @@ void Main::Core::TryToAddJob (const QString& name)
 		IDirectDownload *idd = qobject_cast<IDirectDownload*> (plugin);
 		IPeer2PeerDownload *ip2p =
 			qobject_cast<IPeer2PeerDownload*> (plugin);
-		LeechCraft::TaskParameters tp = LeechCraft::SaveInHistory &
-			LeechCraft::FromCommonDialog & LeechCraft::Autostart;
+		LeechCraft::TaskParameters tp = LeechCraft::FromCommonDialog & LeechCraft::Autostart;
         if (di && di->CouldDownload (name, tp))
         {
 			if (idd)
@@ -171,7 +170,7 @@ void Main::Core::handleFileDownload (const QString& file, bool fromBuffer)
     {
         IDownload *id = dynamic_cast<IDownload*> (plugins.at (i));
         IInfo *ii = dynamic_cast<IInfo*> (plugins.at (i));
-		LeechCraft::TaskParameters tp = LeechCraft::SaveInHistory;
+		LeechCraft::TaskParameters tp = LeechCraft::Autostart;
         if (id->CouldDownload (file, tp))
         {
             if (QMessageBox::question (qobject_cast<QWidget*> (qobject_cast<QObject*> (this)->parent ()),

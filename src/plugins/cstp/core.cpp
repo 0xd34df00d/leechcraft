@@ -1,6 +1,7 @@
 #include "core.h"
 #include <stdexcept>
 #include <numeric>
+#include <boost/logic/tribool.hpp>
 #include <QFile>
 #include <QDir>
 #include <QTimer>
@@ -62,21 +63,37 @@ int Core::AddTask (const QString& url,
 	td.ID_ = IDPool_.front ();
 	IDPool_.pop_front ();
 
-	connect (td.Task_.get (), SIGNAL (done (bool)), this, SLOT (done (bool)));
-	connect (td.Task_.get (), SIGNAL (updateInterface ()), this, SLOT (updateInterface ()));
-
 	if (td.File_->exists ())
 	{
-		bool remove = false;
+		boost::logic::tribool remove = false;
 		emit fileExists (&remove);
+		if (remove)
+		{
+			if (!td.File_->resize (0))
+			{
+				QString msg = tr ("Could not truncate file ") +
+					td.File_->errorString ();
+				qWarning () << Q_FUNC_INFO << msg;
+				emit error (msg);
+			}
+		}
+		else if (!remove);
+		else
+		{
+			IDPool_.push_front (td.ID_);
+			return -1;
+		}
 	}
+
+	connect (td.Task_.get (), SIGNAL (done (bool)), this, SLOT (done (bool)));
+	connect (td.Task_.get (), SIGNAL (updateInterface ()), this, SLOT (updateInterface ()));
 
 	beginInsertRows (QModelIndex (), rowCount (), rowCount ());
 	ActiveTasks_.push_back (td);
 	endInsertRows ();
 	ScheduleSave ();
 	if (tp & LeechCraft::Autostart)
-		StartI (rowCount () - 1);
+		Start (rowCount () - 1);
 	return td.ID_;
 }
 
@@ -96,10 +113,10 @@ void Core::RemoveFromHistory (const QModelIndex& index)
 
 void Core::Start (const QModelIndex& index)
 {
-	StartI (index.row ());
+	Start (index.row ());
 }
 
-void Core::StartI (int i)
+void Core::Start (int i)
 {
 	TaskDescr selected = ActiveTasks_.at (i);
 	if (selected.Task_->IsRunning ())
@@ -117,10 +134,10 @@ void Core::StartI (int i)
 
 void Core::Stop (const QModelIndex& index)
 {
-	StopI (index.row ());
+	Stop (index.row ());
 }
 
-void Core::StopI (int i)
+void Core::Stop (int i)
 {
 	TaskDescr selected = ActiveTasks_.at (i);
 	if (!selected.Task_->IsRunning ())
@@ -133,7 +150,7 @@ void Core::RemoveAll ()
 {
 	// FIXME implement via RemoveTask
 	for (int i = 0, size = ActiveTasks_.size (); i < size; ++i)
-		StopI (i);
+		Stop (i);
 	tasks_t::iterator current = ActiveTasks_.begin ();
 	while (current != ActiveTasks_.end ())
 		current = Remove (current);
@@ -142,13 +159,13 @@ void Core::RemoveAll ()
 void Core::StartAll ()
 {
 	for (int i = 0, size = ActiveTasks_.size (); i < size; ++i)
-		StartI (i);
+		Start (i);
 }
 
 void Core::StopAll ()
 {
 	for (int i = 0, size = ActiveTasks_.size (); i < size; ++i)
-		StopI (i);
+		Stop (i);
 }
 
 qint64 Core::GetDone (int pos) const
@@ -289,11 +306,11 @@ void Core::done (bool err)
 	
 	if (!err)
 	{
-		if (taskdscr->Parameters_ & LeechCraft::SaveInHistory)
+		if (!(taskdscr->Parameters_ & LeechCraft::DoNotSaveInHistory))
 			AddToHistory (taskdscr);
 		emit taskFinished (taskdscr->ID_);
 		emit fileDownloaded (taskdscr->File_->fileName ());
-		if (taskdscr->Parameters_ & LeechCraft::DoNotNotifyUser)
+		if (!(taskdscr->Parameters_ & LeechCraft::DoNotNotifyUser))
 			emit downloadFinished (taskdscr->File_->fileName () +
 					QString ("\n") + taskdscr->Task_->GetURL ());
 		Remove (taskdscr);

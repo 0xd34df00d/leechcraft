@@ -566,7 +566,7 @@ int Core::AddFile (const QString& filename,
     endInsertRows ();
     TagsCompletionModel_->UpdateTags (tags);
 
-	if (params ^ LeechCraft::Autostart)
+	if (!(params & LeechCraft::Autostart))
 		PauseTorrent (Handles_.size () - 1);
 
     QTimer::singleShot (3000, this, SLOT (writeSettings ()));
@@ -1157,7 +1157,7 @@ void Core::HandleSingleFinished (int i)
 			end = info.end_files (); i != end; ++i)
         emit fileFinished (QString::fromUtf8 (i->path.string ().c_str ()));
 
-	if (torrent.Parameters_ & LeechCraft::SaveInHistory)
+	if (!(torrent.Parameters_ & LeechCraft::DoNotSaveInHistory))
 		emit addToHistory (QString::fromStdString (info.name ()),
 				where,
 				info.total_size (),

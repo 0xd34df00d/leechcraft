@@ -11,6 +11,14 @@ class Task;
 class QFile;
 class HistoryModel;
 
+namespace boost
+{
+	namespace logic
+	{
+		class tribool;
+	};
+};
+
 namespace _Local
 {
 	struct ObjectFinder;
@@ -60,13 +68,13 @@ public:
 
 	int AddTask (const QString&, const QString&,
 			const QString&, const QString&,
-			LeechCraft::TaskParameters = LeechCraft::SaveInHistory);
+			LeechCraft::TaskParameters = LeechCraft::Autostart);
 	void RemoveTask (const QModelIndex&);
 	void RemoveFromHistory (const QModelIndex&);
 	void Start (const QModelIndex&);
-	void StartI (int);		// FIXME
+	void Start (int);		// FIXME
 	void Stop (const QModelIndex&);
-	void StopI (int);		// FIXME
+	void Stop (int);		// FIXME
 	void RemoveAll ();
 	void StartAll ();
 	void StopAll ();
@@ -102,7 +110,7 @@ signals:
 	void fileDownloaded (const QString&);
 	void downloadFinished (const QString&);
 	void error (const QString&);
-	void fileExists (bool*);		// TODO handle this in CSTP
+	void fileExists (boost::logic::tribool*);
 };
 
 #endif

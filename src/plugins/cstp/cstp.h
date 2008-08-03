@@ -4,6 +4,15 @@
 #include "ui_cstp.h"
 
 class XmlSettingsDialog;
+class Core;
+
+namespace boost
+{
+	namespace logic
+	{
+		class tribool;
+	};
+};
 
 class CSTP : public QMainWindow
 			 , public IInfo
@@ -52,7 +61,7 @@ public:
 protected:
     virtual void closeEvent (QCloseEvent*);
 private:
-	template<typename T, typename U> void ApplyCore2Selection (T, U);
+	template<typename T> void ApplyCore2Selection (void (Core::*) (const QModelIndex&), T);
 public slots:
 	void handleHidePlugins ();
 private slots:
@@ -66,6 +75,7 @@ private slots:
 	void on_ActionRemoveItemFromHistory__triggered ();
 	void on_ActionPreferences__triggered ();
 	void handleError (const QString&);
+	void handleFileExists (boost::logic::tribool*);
 signals:
 	void jobFinished (int);
 	void jobRemoved (int);
