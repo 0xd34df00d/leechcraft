@@ -59,6 +59,7 @@ private:
     void DoPath (const QDomElement&, QGridLayout*, QVariant&);
     void DoRadio (const QDomElement&, QGridLayout*, QVariant&);
     void DoCombobox (const QDomElement&, QGridLayout*, QVariant&);
+	QList<QImage> GetImages (const QDomElement&) const;
 private slots:
     void updatePreferences ();
 protected:

@@ -460,7 +460,15 @@ void XmlSettingsDialog::DoCombobox (const QDomElement& item, QGridLayout *lay, Q
     QDomElement option = item.firstChildElement ("option");
     while (!option.isNull ())
     {
-        box->addItem (GetLabel (option), option.attribute ("name"));
+		QList<QImage> images = GetImages (option);
+		if (images.size ())
+		{
+			QIcon icon = QIcon (QPixmap::fromImage (images.at (0)));
+			box->addItem (icon, GetLabel (option), option.attribute ("name"));
+		}
+		else
+			box->addItem (GetLabel (option), option.attribute ("name"));
+
         if (option.attribute ("default") == "true")
         {
             box->setCurrentIndex (box->count () - 1);
@@ -474,6 +482,25 @@ void XmlSettingsDialog::DoCombobox (const QDomElement& item, QGridLayout *lay, Q
     int row = lay->rowCount ();
     lay->addWidget (label, row, 0);
     lay->addWidget (box, row, 1);
+}
+
+QList<QImage> XmlSettingsDialog::GetImages (const QDomElement& item) const
+{
+	QList<QImage> result;
+	QDomElement binary = item.firstChildElement ("binary");
+	while (!binary.isNull ())
+	{
+		if (binary.attribute ("type") == "image")
+		{
+			QByteArray base64 = binary.text ().toLatin1 ();
+			QByteArray data = QByteArray::fromBase64 (base64);
+			QImage image = QImage::fromData (data);
+			if (!image.isNull ())
+				result << image;
+		}
+		binary = binary.nextSiblingElement ("binary");
+	}
+	return result;
 }
 
 void XmlSettingsDialog::updatePreferences ()

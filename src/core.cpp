@@ -113,7 +113,7 @@ void Main::Core::TryToAddJob (const QString& name, const QString& where)
 			if (idd)
 			{
 				DirectDownloadParams ddp = { name, where };
-				idd->AddJob (ddp, tp); // FIXME allow to select destination
+				idd->AddJob (ddp, tp);
 				return;
 			}
 			else if (ip2p)
