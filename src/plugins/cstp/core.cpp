@@ -102,8 +102,13 @@ void Core::RemoveTask (const QModelIndex& index)
 	if (!index.isValid ())
 		return;
 
-	Stop (index);
-	Remove (ActiveTasks_.begin () + index.row ());
+	RemoveTask (index.row ());
+}
+
+void Core::RemoveTask (int i)
+{
+	Stop (i);
+	Remove (ActiveTasks_.begin () + i);
 }
 
 void Core::RemoveFromHistory (const QModelIndex& index)
@@ -113,6 +118,9 @@ void Core::RemoveFromHistory (const QModelIndex& index)
 
 void Core::Start (const QModelIndex& index)
 {
+	if (!index.isValid ())
+		return;
+
 	Start (index.row ());
 }
 
@@ -148,12 +156,8 @@ void Core::Stop (int i)
 
 void Core::RemoveAll ()
 {
-	// FIXME implement via RemoveTask
 	for (int i = 0, size = ActiveTasks_.size (); i < size; ++i)
-		Stop (i);
-	tasks_t::iterator current = ActiveTasks_.begin ();
-	while (current != ActiveTasks_.end ())
-		current = Remove (current);
+		RemoveTask (i);
 }
 
 void Core::StartAll ()

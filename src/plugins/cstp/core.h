@@ -70,11 +70,12 @@ public:
 			const QString&, const QString&,
 			LeechCraft::TaskParameters = LeechCraft::Autostart);
 	void RemoveTask (const QModelIndex&);
+	void RemoveTask (int);
 	void RemoveFromHistory (const QModelIndex&);
 	void Start (const QModelIndex&);
-	void Start (int);		// FIXME
+	void Start (int);
 	void Stop (const QModelIndex&);
-	void Stop (int);		// FIXME
+	void Stop (int);
 	void RemoveAll ();
 	void StartAll ();
 	void StopAll ();

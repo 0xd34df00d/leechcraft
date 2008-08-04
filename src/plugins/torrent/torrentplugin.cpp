@@ -414,9 +414,6 @@ int TorrentPlugin::AddJob (const QString& name, LeechCraft::TaskParameters param
     AddTorrentDialog_->Reinit ();
     AddTorrentDialog_->SetFilename (name);
 
-    if (AddTorrentDialog_->exec () == QDialog::Rejected)
-        return -1;
-
 	QString path;
 	QStringList tags;
 	QVector<bool> files;
@@ -429,10 +426,17 @@ int TorrentPlugin::AddJob (const QString& name, LeechCraft::TaskParameters param
 	}
 	else
 	{
+		if (AddTorrentDialog_->exec () == QDialog::Rejected)
+			return -1;
+
 		fname = AddTorrentDialog_->GetFilename (),
 		path = AddTorrentDialog_->GetSavePath ();
 		files = AddTorrentDialog_->GetSelectedFiles ();
 		tags = AddTorrentDialog_->GetTags ();
+		if (AddTorrentDialog_->GetAddType () == Core::Started)
+			parameters |= LeechCraft::Autostart;
+		else
+			parameters &= ~LeechCraft::Autostart;
 	}
 	int result = Core::Instance ()->AddFile (fname, path, tags, files, parameters);
     setActionsEnabled ();
@@ -460,7 +464,10 @@ void TorrentPlugin::on_OpenTorrent__triggered ()
             path = AddTorrentDialog_->GetSavePath ();
     QVector<bool> files = AddTorrentDialog_->GetSelectedFiles ();
     QStringList tags = AddTorrentDialog_->GetTags ();
-    Core::Instance ()->AddFile (filename, path, tags, files);
+	LeechCraft::TaskParameters tp;
+	if (AddTorrentDialog_->GetAddType () == Core::Started)
+		tp |= LeechCraft::Autostart;
+    Core::Instance ()->AddFile (filename, path, tags, files, tp);
     setActionsEnabled ();
 }
 
@@ -472,6 +479,10 @@ void TorrentPlugin::on_OpenMultipleTorrents__triggered ()
 
     if (dialog.exec () == QDialog::Rejected)
         return;
+
+	LeechCraft::TaskParameters tp;
+	if (dialog.GetAddType () == Core::Started)
+		tp |= LeechCraft::Autostart;
 
     QString savePath = dialog.GetSaveDirectory (),
             openPath = dialog.GetOpenDirectory ();

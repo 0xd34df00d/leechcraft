@@ -98,7 +98,7 @@ void Main::Core::HideAll ()
     emit hidePlugins ();
 }
 
-void Main::Core::TryToAddJob (const QString& name)
+void Main::Core::TryToAddJob (const QString& name, const QString& where)
 {
     QObjectList plugins = PluginManager_->GetAllPlugins ();
     foreach (QObject *plugin, plugins)
@@ -112,7 +112,7 @@ void Main::Core::TryToAddJob (const QString& name)
         {
 			if (idd)
 			{
-				DirectDownloadParams ddp = { name, QDir::homePath () };
+				DirectDownloadParams ddp = { name, where };
 				idd->AddJob (ddp, tp); // FIXME allow to select destination
 				return;
 			}
@@ -170,7 +170,7 @@ void Main::Core::handleFileDownload (const QString& file, bool fromBuffer)
     {
         IDownload *id = dynamic_cast<IDownload*> (plugins.at (i));
         IInfo *ii = dynamic_cast<IInfo*> (plugins.at (i));
-		LeechCraft::TaskParameters tp = LeechCraft::Autostart;
+		LeechCraft::TaskParameters tp = LeechCraft::Autostart | LeechCraft::FromAnother;
         if (id->CouldDownload (file, tp))
         {
             if (QMessageBox::question (qobject_cast<QWidget*> (qobject_cast<QObject*> (this)->parent ()),
@@ -185,7 +185,7 @@ void Main::Core::handleFileDownload (const QString& file, bool fromBuffer)
 
 			if (idd)
 			{
-				DirectDownloadParams ddp = { file, QDir::homePath () }; 	// FIXME
+				DirectDownloadParams ddp = { file, "" };
 				idd->AddJob (ddp, tp);
 			}
 			else if (ip2p)

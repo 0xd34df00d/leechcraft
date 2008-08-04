@@ -71,6 +71,19 @@ QVector<bool> AddTorrent::GetSelectedFiles () const
     return FilesModel_->GetSelectedFiles ();
 }
 
+Core::AddType AddTorrent::GetAddType () const
+{
+	switch (AddTypeBox_->currentIndex ())
+	{
+		case 0:
+			return Core::Started;
+		case 1:
+			return Core::Paused;
+		default:
+			return Core::Started;
+	}
+}
+
 QStringList AddTorrent::GetTags () const
 {
     return TagsEdit_->text ().split (' ', QString::SkipEmptyParts);

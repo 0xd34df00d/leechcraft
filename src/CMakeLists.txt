@@ -22,15 +22,26 @@ IF (ENABLE_PACK)
 	SET (CPACK_GENERATOR "DEB;RPM")
 	SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Extensible crossplatform download manager")
 	SET (CPACK_PACKAGE_VENDOR "0xd34df00d")
+
+	FIND_PROGRAM(DPKG_CMD dpkg)
+	IF(NOT DPKG_CMD)
+		MESSAGE(STATUS "Can not find dpkg in your path, default to i386.")
+		SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE i386)
+	ENDIF(NOT DPKG_CMD)
+	EXECUTE_PROCESS(COMMAND "${DPKG_CMD}" --print-architecture
+		OUTPUT_VARIABLE CPACK_DEBIAN_PACKAGE_ARCHITECTURE
+		OUTPUT_STRIP_TRAILING_WHITESPACE
+		)
+
 	SET (CPACK_DEBIAN_PACKAGE_SECTION "net")
 	SET (CPACK_DEBIAN_PACKAGE_DESCRIPTION "Extensible crossplatform download manager
-	 LeechCraft is a cross-platform extensibe download manager written
-	 in C++. Currently it offers full-featured BitTorrent client, feed
-	 reader, HTTP/FTP plugin, Remote access and much more. It also aims
-	 to be resource-efficient, working quite well on even old computers.")
+  LeechCraft is a cross-platform extensibe download manager written
+  in C++. Currently it offers full-featured BitTorrent client, feed
+  reader, HTTP/FTP plugin, Remote access and much more. It also aims
+  to be resource-efficient, working quite well on even old computers.")
 	SET (CPACK_DEBIAN_PACKAGE_DEPENDS "libqt4-core (>= 4.4.0), libqt4-gui (>= 4.4.0), libqt4-network (>= 4.4.0), libqt4-webkit (>= 4.4.0), libqt4-xml (>= 4.4.0), libtorrent-rasterbar-0.13")
 	SET (CPACK_PACKAGE_DESCRIPTION_FILE	"${CMAKE_CURRENT_SOURCE_DIR}/ReadMe.txt")
-	SET (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/Copyright.txt")
+	SET (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.GPL")
 	SET (CPACK_PACKAGE_VERSION_MAJOR "0")
 	SET (CPACK_PACKAGE_VERSION_MINOR "2")
 	FIND_PACKAGE (Subversion)
@@ -41,7 +52,7 @@ IF (ENABLE_PACK)
 		SET (CPACK_PACKAGE_VERSION_PATCH "9999_svn")
 	ENDIF (Subversion_FOUND)
 	SET (CPACK_PACKAGE_INSTALL_DIRECTORY "CMake ${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}")
-	SET (CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
+	SET (CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
 	SET (CPACK_PACKAGE_CONTACT "0xd34df00d@gmail.com")
 	SET (CPACK_DEBIAN_PACKAGE_MAINTAINER "0xd34df00d")
 

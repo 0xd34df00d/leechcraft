@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>395</width>
+    <width>454</width>
     <height>151</height>
    </rect>
   </property>
@@ -13,60 +13,69 @@
    <string>Common job adder</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="mainresources.qrc" >:/resources/images/mainapp.png</iconset>
+   <iconset resource="mainresources.qrc" >
+    <normaloff>:/resources/images/mainapp.png</normaloff>:/resources/images/mainapp.png</iconset>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
-    <layout class="QHBoxLayout" >
-     <item>
+    <layout class="QFormLayout" name="formLayout" >
+     <item row="0" column="0" >
       <widget class="QLabel" name="label" >
        <property name="text" >
-        <string>What to download:</string>
+        <string>What:</string>
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QLineEdit" name="What_" />
+     <item row="0" column="1" >
+      <layout class="QHBoxLayout" name="horizontalLayout" >
+       <item>
+        <widget class="QLineEdit" name="What_" />
+       </item>
+       <item>
+        <widget class="QPushButton" name="Browse_" >
+         <property name="text" >
+          <string>Browse...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="Paste_" >
+         <property name="text" >
+          <string>Paste from clipboard</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="1" column="0" >
+      <widget class="QLabel" name="label_2" >
+       <property name="text" >
+        <string>Where:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" >
+      <layout class="QHBoxLayout" name="horizontalLayout_2" >
+       <item>
+        <widget class="QLineEdit" name="Where_" />
+       </item>
+       <item>
+        <widget class="QPushButton" name="BrowseWhere_" >
+         <property name="text" >
+          <string>Browse...</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" >
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="Browse_" >
-       <property name="text" >
-        <string>Browse...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="Paste_" >
-       <property name="text" >
-        <string>Paste from clipboard</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <spacer>
+    <spacer name="verticalSpacer" >
      <property name="orientation" >
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" >
+     <property name="sizeHint" stdset="0" >
       <size>
        <width>20</width>
        <height>40</height>
@@ -80,7 +89,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>

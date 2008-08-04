@@ -20,6 +20,19 @@ QString AddMultipleTorrents::GetSaveDirectory () const
     return SaveDirectory_->text ();
 }
 
+Core::AddType AddMultipleTorrents::GetAddType () const
+{
+	switch (AddTypeBox_->currentIndex ())
+	{
+		case 0:
+			return Core::Started;
+		case 1:
+			return Core::Paused;
+		default:
+			return Core::Started;
+	}
+}
+
 QLineEdit* AddMultipleTorrents::GetEdit ()
 {
 	return TagsEdit_;

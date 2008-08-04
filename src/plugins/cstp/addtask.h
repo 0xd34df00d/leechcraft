@@ -31,7 +31,7 @@ public slots:
 	virtual void accept ();
 private slots:
 	void on_URL__textEdited (const QString&);
-	void on_LocalPath__textEdited ();
+	void on_LocalPath__textChanged ();
 	void on_Filename__textEdited ();
 	void on_BrowseButton__released ();
 private:

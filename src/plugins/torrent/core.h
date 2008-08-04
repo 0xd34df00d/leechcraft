@@ -82,6 +82,11 @@ public:
         , ColumnUSpeed 
         , ColumnRemaining 
     };
+	enum AddType
+	{
+		Started
+		, Paused
+	};
     static Core* Instance ();
 	virtual ~Core ();
     void DoDelayedInit ();

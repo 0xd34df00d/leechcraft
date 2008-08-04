@@ -4,6 +4,7 @@
 #include <QValidator>
 #include <QMessageBox>
 #include <QFileDialog>
+#include "xmlsettingsmanager.h"
 
 class URLValidator : public QValidator
 {
@@ -44,6 +45,8 @@ AddTask::AddTask (QWidget *parent)
 	Ui_.setupUi (this);
 	Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (false);
 	Ui_.URL_->setValidator (new URLValidator (this));
+	Ui_.LocalPath_->setText (XmlSettingsManager::Instance ().Property ("LocalPath",
+				QDir::homePath ()).toString ());
 }
 
 AddTask::~AddTask ()
@@ -92,17 +95,17 @@ void AddTask::accept ()
 
 void AddTask::on_URL__textEdited (const QString& str)
 {
+	CheckOK ();
 	if (UserModifiedFilename_)
 		return;
 
 	Ui_.Filename_->setText (QFileInfo (QUrl (str).path ()).fileName ());
-
-	CheckOK ();
 }
 
-void AddTask::on_LocalPath__textEdited ()
+void AddTask::on_LocalPath__textChanged ()
 {
 	CheckOK ();
+	XmlSettingsManager::Instance ().setProperty ("LocalPath", Ui_.LocalPath_->text ());
 }
 
 void AddTask::on_Filename__textEdited ()
@@ -113,14 +116,13 @@ void AddTask::on_Filename__textEdited ()
 
 void AddTask::on_BrowseButton__released ()
 {
-	QString dir = QFileDialog::getExistingDirectory (this,
-			tr ("Select directory"));							// FIXME show old directory
+	QString dir = QFileDialog::getExistingDirectory (this, tr ("Select directory"),
+			XmlSettingsManager::Instance ().property ("LocalPath").toString ());
 	if (dir.isEmpty ())
 		return;
 
 	Ui_.LocalPath_->setText (dir);
-	on_LocalPath__textEdited ();
-	// FIXME save selected directory
+	on_LocalPath__textChanged ();
 }
 
 void AddTask::CheckOK ()

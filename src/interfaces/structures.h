@@ -24,7 +24,8 @@ namespace LeechCraft
 		FromClipboard = 0x4,
 		FromCommonDialog = 0x8,
 		FromAutomatic = 0x16,
-		DoNotNotifyUser = 0x32
+		DoNotNotifyUser = 0x32,
+		FromAnother = 0x64
 	};
 
 	Q_DECLARE_FLAGS (TaskParameters, TaskParameter);

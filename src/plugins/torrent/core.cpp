@@ -516,7 +516,11 @@ int Core::AddFile (const QString& filename,
     libtorrent::torrent_handle handle;
     try
     {
-        handle = Session_->add_torrent (GetTorrentInfo (filename), boost::filesystem::path (path.toStdString ()), libtorrent::entry (), libtorrent::storage_mode_allocate);
+		handle = Session_->add_torrent (GetTorrentInfo (filename),
+				boost::filesystem::path (path.toStdString ()),
+				libtorrent::entry (),
+				libtorrent::storage_mode_allocate,
+				!(params & LeechCraft::Autostart));
     }
     catch (const libtorrent::duplicate_torrent& e)
     {
@@ -565,9 +569,6 @@ int Core::AddFile (const QString& filename,
     Handles_.append (tmp);
     endInsertRows ();
     TagsCompletionModel_->UpdateTags (tags);
-
-	if (!(params & LeechCraft::Autostart))
-		PauseTorrent (Handles_.size () - 1);
 
     QTimer::singleShot (3000, this, SLOT (writeSettings ()));
 	return tmp.ID_;

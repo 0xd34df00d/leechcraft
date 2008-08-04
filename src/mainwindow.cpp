@@ -385,7 +385,7 @@ void MainWindow::addJob ()
     {
         QString name = adder.GetString ();
         if (!name.isEmpty ())
-            Model_->TryToAddJob (name);
+            Model_->TryToAddJob (name, adder.GetWhere ());
     }
 }
 

@@ -3,6 +3,7 @@
 #include <QDialog>
 #include <QVector>
 #include "ui_addtorrent.h"
+#include "core.h"
 
 class QCompleter;
 class TorrentFilesModel;
@@ -20,6 +21,7 @@ public:
     QString GetSavePath () const;
 	QString GetDefaultSavePath () const;
     QVector<bool> GetSelectedFiles () const;
+	Core::AddType GetAddType () const;
     QStringList GetTags () const;
 	QStringList GetDefaultTags () const;
     QLineEdit* GetEdit ();
