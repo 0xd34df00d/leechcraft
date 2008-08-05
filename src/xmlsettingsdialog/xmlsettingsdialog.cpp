@@ -88,7 +88,6 @@ void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& filename)
     {
         ParsePage (pageChild);
         pageChild = pageChild.nextSiblingElement ("page");
-        adjustSize ();
     }
 }
 
@@ -105,11 +104,10 @@ void XmlSettingsDialog::ParsePage (const QDomElement& page)
 
     QWidget *baseWidget = new QWidget;
     Pages_->addWidget (baseWidget);
-    QGridLayout *lay = new QGridLayout;
+    QFormLayout *lay = new QFormLayout;
     baseWidget->setLayout (lay);
 
     ParseEntity (page, baseWidget);
-    lay->setRowStretch (lay->rowCount (), 1);
 }
 
 void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWidget)
@@ -125,12 +123,15 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
     while (!gbox.isNull ())
     {
         QGroupBox *box = new QGroupBox (GetLabel (gbox));
-        box->setLayout (new QGridLayout);
+		QFormLayout *groupLayout = new QFormLayout ();
+		groupLayout->setLabelAlignment (Qt::AlignLeft);
+		groupLayout->setRowWrapPolicy (QFormLayout::WrapLongRows);
+		groupLayout->setFieldGrowthPolicy (QFormLayout::FieldsStayAtSizeHint);
+		box->setLayout (groupLayout);
         ParseEntity (gbox, box);
         
-        QGridLayout *lay = qobject_cast<QGridLayout*> (baseWidget->layout ());
-        int row = lay->rowCount ();
-        lay->addWidget (box, row, 0, 1, 2);
+        QFormLayout *lay = qobject_cast<QFormLayout*> (baseWidget->layout ());
+        lay->addRow (box);
 
         gbox = gbox.nextSiblingElement ("groupbox");
     }
@@ -139,18 +140,16 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
     if (!tab.isNull ())
     {
         QTabWidget *tabs = new QTabWidget;
-        QGridLayout *lay = qobject_cast<QGridLayout*> (baseWidget->layout ());
-        int row = lay->rowCount ();
-        lay->addWidget (tabs, row, 0, 1, 2);
+        QFormLayout *lay = qobject_cast<QFormLayout*> (baseWidget->layout ());
+        lay->addRow (tabs);
         while (!tab.isNull ())
         {
             QWidget *page = new QWidget;
-            QGridLayout *widgetLay = new QGridLayout;
+            QFormLayout *widgetLay = new QFormLayout;
             page->setLayout (widgetLay);
             tabs->addTab (page, GetLabel (tab));
             ParseEntity (tab, page);
             tab = tab.nextSiblingElement ("tab");
-            widgetLay->setRowStretch (widgetLay->rowCount (), 1);
         }
     }
 }
@@ -159,7 +158,7 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 {
     QString type = item.attribute ("type");
 
-    QGridLayout *lay = qobject_cast<QGridLayout*> (baseWidget->layout ());
+    QFormLayout *lay = qobject_cast<QFormLayout*> (baseWidget->layout ());
 
     QString property = item.attribute ("property");
     QVariant value = WorkingObject_->property (property.toLatin1 ().constData ());
@@ -306,11 +305,10 @@ XmlSettingsDialog::LangElements XmlSettingsDialog::GetLangElements (const QDomEl
     return returning;
 }
 
-void XmlSettingsDialog::DoLineedit (const QDomElement& item, QGridLayout *lay, QVariant& value)
+void XmlSettingsDialog::DoLineedit (const QDomElement& item, QFormLayout *lay, QVariant& value)
 {
-    int row = lay->rowCount ();
     QLabel *label = new QLabel (GetLabel (item));
-    label->setWordWrap (true);
+    label->setWordWrap (false);
 
     QLineEdit *edit = new QLineEdit (value.toString ());
     edit->setObjectName (item.attribute ("property"));
@@ -321,11 +319,10 @@ void XmlSettingsDialog::DoLineedit (const QDomElement& item, QGridLayout *lay, Q
 		edit->setInputMask (item.attribute ("inputMask"));
     connect (edit, SIGNAL (textChanged (const QString&)), this, SLOT (updatePreferences ()));
 
-    lay->addWidget (label, row, 0);
-    lay->addWidget (edit, row, 1);
+	lay->addRow (label, edit);
 }
 
-void XmlSettingsDialog::DoCheckbox (const QDomElement& item, QGridLayout *lay, QVariant& value)
+void XmlSettingsDialog::DoCheckbox (const QDomElement& item, QFormLayout *lay, QVariant& value)
 {
     QCheckBox *box = new QCheckBox (GetLabel (item));
     box->setObjectName (item.attribute ("property"));
@@ -334,14 +331,13 @@ void XmlSettingsDialog::DoCheckbox (const QDomElement& item, QGridLayout *lay, Q
     box->setCheckState (value.toBool () ? Qt::Checked : Qt::Unchecked);
     connect (box, SIGNAL (stateChanged (int)), this, SLOT (updatePreferences ()));
 
-    lay->addWidget (box, lay->rowCount (), 0, 1, 2);
+    lay->addRow (box);
 }
 
-void XmlSettingsDialog::DoSpinbox (const QDomElement& item, QGridLayout *lay, QVariant& value)
+void XmlSettingsDialog::DoSpinbox (const QDomElement& item, QFormLayout *lay, QVariant& value)
 {
-    int row = lay->rowCount ();
     QLabel *label = new QLabel (GetLabel (item));
-    label->setWordWrap (true);
+    label->setWordWrap (false);
     QSpinBox *box = new QSpinBox;
     box->setObjectName (item.attribute ("property"));
     if (item.hasAttribute ("minimum"))
@@ -362,16 +358,15 @@ void XmlSettingsDialog::DoSpinbox (const QDomElement& item, QGridLayout *lay, QV
     }
     box->setValue (value.toInt ());
     connect (box, SIGNAL (valueChanged (int)), this, SLOT (updatePreferences ()));
-    
-    lay->addWidget (label, row, 0);
-    lay->addWidget (box, row, 1);
+
+	lay->addRow (label, box);
 }
 
-void XmlSettingsDialog::DoGroupbox (const QDomElement& item, QGridLayout *lay, QVariant& value)
+void XmlSettingsDialog::DoGroupbox (const QDomElement& item, QFormLayout *lay, QVariant& value)
 {
     QGroupBox *box = new QGroupBox (GetLabel (item));
     box->setObjectName (item.attribute ("property"));
-	QGridLayout *groupLayout = new QGridLayout ();
+	QFormLayout *groupLayout = new QFormLayout ();
     box->setLayout (groupLayout);
     box->setCheckable (true);
     if (!value.isValid () || value.isNull ())
@@ -380,10 +375,10 @@ void XmlSettingsDialog::DoGroupbox (const QDomElement& item, QGridLayout *lay, Q
     connect (box, SIGNAL (toggled (bool)), this, SLOT (updatePreferences ()));
     ParseEntity (item, box);
     
-    lay->addWidget (box, lay->rowCount (), 0, 1, 2);
+    lay->addRow (box);
 }
 
-void XmlSettingsDialog::DoSpinboxRange (const QDomElement& item, QGridLayout *lay, QVariant& value)
+void XmlSettingsDialog::DoSpinboxRange (const QDomElement& item, QFormLayout *lay, QVariant& value)
 {
     if (!value.isValid () || value.isNull () || !value.canConvert<QList<QVariant> > ())
     {
@@ -399,7 +394,7 @@ void XmlSettingsDialog::DoSpinboxRange (const QDomElement& item, QGridLayout *la
     }
 
     QLabel *label = new QLabel (GetLabel (item));
-    label->setWordWrap (true);
+    label->setWordWrap (false);
     RangeWidget *widget = new RangeWidget ();
     widget->setObjectName (item.attribute ("property"));
     widget->SetMinimum (item.attribute ("minimum").toInt ());
@@ -407,29 +402,25 @@ void XmlSettingsDialog::DoSpinboxRange (const QDomElement& item, QGridLayout *la
     widget->SetRange (value);
     connect (widget, SIGNAL (changed ()), this, SLOT (updatePreferences ()));
 
-    int row = lay->rowCount ();
-    lay->addWidget (label, row, 0);
-    lay->addWidget (widget, row, 1);
+	lay->addRow (label, widget);
 }
 
-void XmlSettingsDialog::DoPath (const QDomElement& item, QGridLayout *lay, QVariant& value)
+void XmlSettingsDialog::DoPath (const QDomElement& item, QFormLayout *lay, QVariant& value)
 {
     if (value.isNull () || value.toString ().isEmpty ())
         if (item.hasAttribute ("defaultHomePath") && item.attribute ("defaultHomePath") == "true")
             value = QDir::homePath ();
     QLabel *label = new QLabel (GetLabel (item));
-    label->setWordWrap (true);
+    label->setWordWrap (false);
     FilePicker *picker = new FilePicker (this);
     picker->SetText (value.toString ());
     picker->setObjectName (item.attribute ("property"));
     connect (picker, SIGNAL (textChanged (const QString&)), this, SLOT (updatePreferences ()));
 
-    int row = lay->rowCount ();
-    lay->addWidget (label, row, 0);
-    lay->addWidget (picker, row, 1);
+	lay->addRow (label, picker);
 }
 
-void XmlSettingsDialog::DoRadio (const QDomElement& item, QGridLayout *lay, QVariant& value)
+void XmlSettingsDialog::DoRadio (const QDomElement& item, QFormLayout *lay, QVariant& value)
 {
     RadioGroup *group = new RadioGroup (this);
     group->setObjectName (item.attribute ("property"));
@@ -447,13 +438,14 @@ void XmlSettingsDialog::DoRadio (const QDomElement& item, QGridLayout *lay, QVar
     connect (group, SIGNAL (valueChanged ()), this, SLOT (updatePreferences ()));
 
     QGroupBox *box = new QGroupBox (GetLabel (item));
-    QVBoxLayout *layout = new QVBoxLayout;
+    QVBoxLayout *layout = new QVBoxLayout ();
     box->setLayout (layout);
     layout->addWidget (group);
-    lay->addWidget (box, lay->rowCount (), 0, 1, 2);
+
+    lay->addRow (box);
 }
 
-void XmlSettingsDialog::DoCombobox (const QDomElement& item, QGridLayout *lay, QVariant& value)
+void XmlSettingsDialog::DoCombobox (const QDomElement& item, QFormLayout *lay, QVariant& value)
 {
     QComboBox *box = new QComboBox (this);
     box->setObjectName (item.attribute ("property"));
@@ -482,9 +474,9 @@ void XmlSettingsDialog::DoCombobox (const QDomElement& item, QGridLayout *lay, Q
     connect (box, SIGNAL (currentIndexChanged (int)), this, SLOT (updatePreferences ()));
 
     QLabel *label = new QLabel (GetLabel (item));
-    int row = lay->rowCount ();
-    lay->addWidget (label, row, 0);
-    lay->addWidget (box, row, 1);
+	label->setWordWrap (false);
+
+	lay->addRow (label, box);
 }
 
 QList<QImage> XmlSettingsDialog::GetImages (const QDomElement& item) const

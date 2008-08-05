@@ -21,7 +21,7 @@ class QStackedWidget;
 class QListWidget;
 class QPushButton;
 class QDomElement;
-class QGridLayout;
+class QFormLayout;
 
 class XmlSettingsDialog : public QDialog
 {
@@ -51,14 +51,14 @@ private:
     QString GetLabel (const QDomElement&) const;
     LangElements GetLangElements (const QDomElement&) const;
 private:
-    void DoLineedit (const QDomElement&, QGridLayout*, QVariant&);
-    void DoCheckbox (const QDomElement&, QGridLayout*, QVariant&);
-    void DoSpinbox (const QDomElement&, QGridLayout*, QVariant&);
-    void DoGroupbox (const QDomElement&, QGridLayout*, QVariant&);
-    void DoSpinboxRange (const QDomElement&, QGridLayout*, QVariant&);
-    void DoPath (const QDomElement&, QGridLayout*, QVariant&);
-    void DoRadio (const QDomElement&, QGridLayout*, QVariant&);
-    void DoCombobox (const QDomElement&, QGridLayout*, QVariant&);
+    void DoLineedit (const QDomElement&, QFormLayout*, QVariant&);
+    void DoCheckbox (const QDomElement&, QFormLayout*, QVariant&);
+    void DoSpinbox (const QDomElement&, QFormLayout*, QVariant&);
+    void DoGroupbox (const QDomElement&, QFormLayout*, QVariant&);
+    void DoSpinboxRange (const QDomElement&, QFormLayout*, QVariant&);
+    void DoPath (const QDomElement&, QFormLayout*, QVariant&);
+    void DoRadio (const QDomElement&, QFormLayout*, QVariant&);
+    void DoCombobox (const QDomElement&, QFormLayout*, QVariant&);
 	QList<QImage> GetImages (const QDomElement&) const;
 private slots:
     void updatePreferences ();

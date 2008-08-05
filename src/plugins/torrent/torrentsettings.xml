@@ -232,7 +232,7 @@
                         <suffix value=" s" />
                     </lang>
                     <lang value="ru">
-                        <label value="Таймаут получения ответа о куске (piece)" />
+                        <label value="Таймаут получения ответа о куске" />
                         <suffix value=" с" />
                     </lang>
                 </item>
@@ -258,25 +258,25 @@
                         <suffix value=" s" />
                     </lang>
                     <lang value="ru">
-                        <label value="Длина очереди запросов для куска (piece)" />
+                        <label value="Длина очереди запросов для куска" />
                         <suffix value=" с" />
                     </lang>
                 </item>
                 <item type="spinbox" property="MaxAllowedInRequestQueue" default="250" minimum="50" maximum="1000" step="50">
                     <label lang="en" value="The number of block requests a peer is allowed to queue up" />
-                    <label lang="ru" value="Максимальное число запросов на блоки (block) от одного пира (peer) в очереди" />
+                    <label lang="ru" value="Максимальное число запросов на блоки (block) от одного пира в очереди" />
                 </item>
                 <item type="spinbox" property="MaxOutRequestQueue" default="200" minimum="50" maximum="1000" step="50">
                     <label lang="en" value="The number of block requests to a peer in a queue" />
-                    <label lang="ru" value="Максимальное число запросов на блоки (block) одному пиру (peer) в очереди" />
+                    <label lang="ru" value="Максимальное число запросов на блоки (block) одному пиру в очереди" />
                 </item>
                 <item type="spinbox" property="WholePiecesThreshold" default="20" minimum="5" maximum="50" step="5">
                     <lang value="en">
-                        <label value="If whole piece could be downloaded in this time, pieces manager would do its best to do that" />
+                        <label value="Force download of a piece if it could not be fetched in" />
                         <suffix value=" s" />
                     </lang>
                     <lang value="ru">
-                        <label value="Если цельный кусок (piece) может быть закачан в течение этого времени, менеджер кусков постарается это сделать" />
+                        <label value="Форсировать закачку куска, если он не скачан в течение" />
                         <suffix value=" с" />
                     </lang>
                 </item>
@@ -286,7 +286,7 @@
                         <suffix value=" s" />
                     </lang>
                     <lang value="ru">
-                        <label value="Таймаут связи с пиром (peer)" />
+                        <label value="Таймаут связи с пиром" />
                         <suffix value=" с" />
                     </lang>
                 </item>
@@ -320,7 +320,7 @@
                         <suffix value=" s" />
                     </lang>
                     <lang value="ru">
-                        <label value="Минимальное время перед повторным соединением с пиром (peer)" />
+                        <label value="Минимальное время перед повторным соединением с пиром" />
                         <suffix value=" с" />
                     </lang>
                 </item>
@@ -358,7 +358,7 @@
                 </item>
                 <item type="spinbox" property="MaxFailcount" default="5" minimum="1" maximum="99" step="1">
                     <label lang="en" value="Maximum peer connection attempt failcount" />
-                    <label lang="ru" value="Максимальное количество неудачных попыток соединения с пиром (peer)" />
+                    <label lang="ru" value="Максимальное количество неудачных попыток соединения с пиром" />
                 </item>
                 <item type="spinbox" property="PeerConnectTimeout" default="10" minimum="1" maximum="60" step="5">
                     <lang value="en">
@@ -366,7 +366,7 @@
                         <suffix value=" s" />
                     </lang>
                     <lang value="ru">
-                        <label value="Таймаут соединения с пиром (peer)" />
+                        <label value="Таймаут соединения с пиром" />
                         <suffix value=" с" />
                     </lang>
                 </item>
@@ -380,7 +380,7 @@
                         <suffix value=" s" />
                     </lang>
                     <lang value="ru">
-                        <label value="Таймаут отсоединения пира (peer) из-за неактивности" />
+                        <label value="Таймаут отсоединения пира из-за неактивности" />
                         <suffix value=" с" />
                     </lang>
                 </item>
@@ -408,7 +408,7 @@
                 </item>
                 <item type="spinbox" property="InitialPickerThreshold" default="4" minimum="1" maximum="50" step="5">
                     <label lang="en" value="While we have fewer pieces, request random pieces instead of rarest" />
-                    <label lang="ru" value="Пока у нас меньше кусков (pieces), запрашивать случайные, а не редчайшие" />
+                    <label lang="ru" value="Пока у нас меньше кусков, запрашивать случайные, а не редчайшие" />
                 </item>
                 <item type="spinbox" property="AllowedFastSetSize" default="10" minimum="1" maximum="50" step="5">
                     <label lang="en" value="Amount of pieces to send too peers supporting the fast extensions" />
@@ -430,7 +430,7 @@
                 <label lang="ru" value="DHT" />
                 <item type="spinbox" property="MaxPeersReply" default="50" minimum="10" maximum="150" step="10">
                     <label lang="en" value="Maximum peers in reply" />
-                    <label lang="ru" value="Максимально пиров (peers) в ответе" />
+                    <label lang="ru" value="Максимально пиров в ответе" />
                 </item>
                 <item type="spinbox" property="SearchBranching" default="5" minimum="2" maximum="10" step="1">
                     <label lang="en" value="Search branching" />
