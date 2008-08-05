@@ -485,10 +485,28 @@ QList<QImage> XmlSettingsDialog::GetImages (const QDomElement& item) const
 	QDomElement binary = item.firstChildElement ("binary");
 	while (!binary.isNull ())
 	{
-		if (binary.attribute ("type") == "image")
+		QByteArray data;
+		if (binary.attribute ("place") == "rcc")
+		{
+			QFile file (binary.text ());
+			if (!file.open (QIODevice::ReadOnly))
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "could not open file"
+					<< binary.text ()
+					<< ", because"
+					<< file.errorString ();
+				continue;
+			}
+			data = file.readAll ();
+		}
+		else
 		{
 			QByteArray base64 = binary.text ().toLatin1 ();
-			QByteArray data = QByteArray::fromBase64 (base64);
+			data = QByteArray::fromBase64 (base64);
+		}
+		if (binary.attribute ("type") == "image")
+		{
 			QImage image = QImage::fromData (data);
 			if (!image.isNull ())
 				result << image;
