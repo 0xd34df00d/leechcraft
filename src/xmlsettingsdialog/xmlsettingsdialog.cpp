@@ -371,7 +371,8 @@ void XmlSettingsDialog::DoGroupbox (const QDomElement& item, QGridLayout *lay, Q
 {
     QGroupBox *box = new QGroupBox (GetLabel (item));
     box->setObjectName (item.attribute ("property"));
-    box->setLayout (new QGridLayout);
+	QGridLayout *groupLayout = new QGridLayout ();
+    box->setLayout (groupLayout);
     box->setCheckable (true);
     if (!value.isValid () || value.isNull ())
         value = (item.attribute ("state") == "on");
@@ -456,6 +457,8 @@ void XmlSettingsDialog::DoCombobox (const QDomElement& item, QGridLayout *lay, Q
 {
     QComboBox *box = new QComboBox (this);
     box->setObjectName (item.attribute ("property"));
+	if (item.hasAttribute ("maxVisibleItems"))
+		box->setMaxVisibleItems (item.attribute ("maxVisibleItems").toInt ());
 
     QDomElement option = item.firstChildElement ("option");
     while (!option.isNull ())
