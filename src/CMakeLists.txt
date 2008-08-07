@@ -140,3 +140,7 @@ TARGET_LINK_LIBRARIES(leechcraft
 						exceptions
 						xmlsettingsdialog)
 INSTALL (TARGETS leechcraft DESTINATION bin)
+IF (UNIX)
+	INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor)
+	INSTALL (FILES freedesktop/leechcraft.desktop DESTINATION share/applications)
+ENDIF (UNIX)
