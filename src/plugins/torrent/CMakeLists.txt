@@ -89,7 +89,7 @@ ${QT_LIBRARIES}
 plugininterface
 exceptions
 xmlsettingsdialog
-torrent-rasterbar
+torrent
 boost_date_time-mgw42-mt-1_35_0
 boost_filesystem-mgw42-mt-1_35_0
 boost_thread-mgw42-mt-1_35_0)
