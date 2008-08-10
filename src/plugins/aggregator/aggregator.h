@@ -70,6 +70,7 @@ private slots:
     void unreadNumberChanged (int);
     void trayIconActivated ();
 	void updateItemsFilter ();
+	void updatePixmap (int);
 signals:
     void downloadFinished (const QString&);
 	void fileDownloaded (const QString&);

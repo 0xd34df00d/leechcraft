@@ -37,10 +37,19 @@ void Aggregator::Init ()
     TrayIcon_->hide ();
     connect (TrayIcon_, SIGNAL (activated (QSystemTrayIcon::ActivationReason)), this, SLOT (trayIconActivated ()));
 
-    Plugins_->addAction (Ui_.ActionAddFeed_);
-    connect (&Core::Instance (), SIGNAL (error (const QString&)), this, SLOT (showError (const QString&)));
-    connect (&Core::Instance (), SIGNAL (showDownloadMessage (const QString&)), this, SIGNAL (downloadFinished (const QString&)));
-    connect (&Core::Instance (), SIGNAL (unreadNumberChanged (int)), this, SLOT (unreadNumberChanged (int)));
+	Plugins_->addAction (Ui_.ActionAddFeed_);
+	connect (&Core::Instance (),
+			SIGNAL (error (const QString&)),
+			this,
+			SLOT (showError (const QString&)));
+	connect (&Core::Instance (),
+			SIGNAL (showDownloadMessage (const QString&)),
+			this,
+			SIGNAL (downloadFinished (const QString&)));
+	connect (&Core::Instance (),
+			SIGNAL (unreadNumberChanged (int)),
+			this,
+			SLOT (unreadNumberChanged (int)));
 
     XmlSettingsDialog_ = new XmlSettingsDialog (this);
     XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/aggregatorsettings.xml");
@@ -106,6 +115,10 @@ void Aggregator::Init ()
 			SIGNAL (gotLink (const QString&)),
 			this,
 			SIGNAL (fileDownloaded (const QString&)));
+	connect (Ui_.MainSplitter_,
+			SIGNAL (splitterMoved (int, int)),
+			this,
+			SLOT (updatePixmap (int)));
 }
 
 void Aggregator::Release ()
@@ -325,13 +338,17 @@ void Aggregator::currentChannelChanged ()
     QModelIndex index = Ui_.Feeds_->selectionModel ()->currentIndex ();
 	if (!index.isValid ())
 		return;
-    Core::Instance ().currentChannelChanged (ChannelsFilterModel_->mapToSource (index));
-    Ui_.ChannelTags_->setText (Core::Instance ().GetTagsForIndex (ChannelsFilterModel_->mapToSource (index).row ()).join (" "));
-    Ui_.ChannelLink_->setText (Core::Instance ().GetChannelLink (ChannelsFilterModel_->mapToSource (index)));
-    Ui_.ChannelDescription_->setText (Core::Instance ().GetChannelDescription (ChannelsFilterModel_->mapToSource (index)));
-    Ui_.ChannelAuthor_->setText (Core::Instance ().GetChannelAuthor (ChannelsFilterModel_->mapToSource (index)));
-    Ui_.ChannelLanguage_->setText (Core::Instance ().GetChannelLanguage (ChannelsFilterModel_->mapToSource (index)));
+
+	QModelIndex mapped = ChannelsFilterModel_->mapToSource (index);
+    Core::Instance ().currentChannelChanged (mapped);
+    Ui_.ChannelTags_->setText (Core::Instance ().GetTagsForIndex (mapped.row ()).join (" "));
+    Ui_.ChannelLink_->setText (Core::Instance ().GetChannelLink (mapped));
+	Ui_.ChannelDescription_->setText (Core::Instance ().GetChannelDescription (mapped));
+    Ui_.ChannelAuthor_->setText (Core::Instance ().GetChannelAuthor (mapped));
+    Ui_.ChannelLanguage_->setText (Core::Instance ().GetChannelLanguage (mapped));
 	Ui_.ItemView_->setHtml ("");
+
+	updatePixmap (Ui_.MainSplitter_->sizes ().at (0));
 }
 
 void Aggregator::unreadNumberChanged (int number)
@@ -385,6 +402,20 @@ void Aggregator::updateItemsFilter ()
 		ItemsFilterModel_->setFilterFixedString (text);
 		break;
 	}
+}
+
+void Aggregator::updatePixmap (int width)
+{
+    QModelIndex index = Ui_.Feeds_->selectionModel ()->currentIndex ();
+	if (!index.isValid ())
+		return;
+
+	QModelIndex mapped = ChannelsFilterModel_->mapToSource (index);
+
+	QPixmap pixmap = Core::Instance ().GetChannelPixmap (mapped);
+	if (!pixmap.isNull ())
+		Ui_.ChannelImage_->setPixmap (pixmap.scaledToWidth (width,
+					Qt::SmoothTransformation));
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_aggregator, Aggregator);

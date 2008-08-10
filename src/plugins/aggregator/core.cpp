@@ -526,24 +526,7 @@ void Core::handleJobFinished (int id)
         for (size_t i = 0; i < channels.size (); ++i)
         {
             channels [i]->Tags_ = pj.Tags_;
-            if (QUrl (channels [i]->PixmapURL_).isValid () && !QUrl (channels [i]->PixmapURL_).isRelative ())
-            {
-                ExternalData data;
-                data.Type_ = ExternalData::TImage;
-                data.RelatedChannel_ = channels [i];
-                QTemporaryFile file;
-                file.open ();
-                try
-                {
-                    fetchExternalFile (channels [i]->PixmapURL_, file.fileName ());
-                }
-                catch (const std::runtime_error& e)
-                {
-                    qWarning () << Q_FUNC_INFO << e.what ();
-                    continue;
-                }
-                PendingJob2ExternalData_ [channels [i]->PixmapURL_] = data;
-            }
+			FetchPixmap (channels [i]);
         }
         ChannelsModel_->AddFeed (Feeds_ [pj.URL_]);
         TagsCompletionModel_->UpdateTags (pj.Tags_);
@@ -661,22 +644,7 @@ void Core::handleJobFinished (int id)
         }
     }
     else if (pj.Role_ == PendingJob::RFeedExternalData)
-    {
-        ExternalData data = PendingJob2ExternalData_.take (pj.URL_);
-        if (data.RelatedChannel_)
-        {
-            switch (data.Type_)
-            {
-                case ExternalData::TImage:
-                    data.RelatedChannel_->Pixmap_ = QPixmap::fromImage (QImage (file.fileName ()));
-                    ChannelsModel_->UpdateChannelData (data.RelatedChannel_);
-                    break;
-            }
-        }
-        else if (data.RelatedFeed_)
-        {
-        }
-    }
+		HandleExternalData (pj.URL_, file);
     UpdateUnreadItemsNumber ();
     if (!emitString.isEmpty ())
     {
@@ -684,7 +652,6 @@ void Core::handleJobFinished (int id)
         emit showDownloadMessage (emitString);
     }
     scheduleSave ();
-    qDebug () << "DOWNLOAD HANDLER FINISHED TEMPORARY" << file.exists ();
 }
 
 void Core::handleJobRemoved (int id)
@@ -755,7 +722,7 @@ void Core::fetchExternalFile (const QString& url, const QString& where)
     }
 
     DirectDownloadParams params = { url, where };
-    PendingJob pj = { PendingJob :: RFeedExternalData, url, where };
+    PendingJob pj = { PendingJob::RFeedExternalData, url, where };
 	int id = idd->AddJob (params, LeechCraft::Autostart |
 			LeechCraft::DoNotNotifyUser | LeechCraft::DoNotSaveInHistory);
     PendingJobs_ [id] = pj;
@@ -811,5 +778,52 @@ void Core::UpdateUnreadItemsNumber () const
             for (size_t k = 0; k < i.value ().Channels_ [j]->Items_.size (); ++k)
                 result += i.value ().Channels_ [j]->Items_ [k]->Unread_;
     emit unreadNumberChanged (result);
+}
+
+void Core::FetchPixmap (const boost::shared_ptr<Channel>& channel)
+{
+	if (QUrl (channel->PixmapURL_).isValid () &&
+			!QUrl (channel->PixmapURL_).isRelative ())
+	{
+		ExternalData data;
+		data.Type_ = ExternalData::TImage;
+		data.RelatedChannel_ = channel;
+		QString exFName;
+		{
+			QTemporaryFile file;
+			file.open ();
+			exFName = file.fileName ();
+			file.close ();
+			file.remove ();
+		}
+		try
+		{
+			fetchExternalFile (channel->PixmapURL_, exFName);
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO << e.what ();
+			return;
+		}
+		PendingJob2ExternalData_ [channel->PixmapURL_] = data;
+	}
+}
+
+void Core::HandleExternalData (const QString& url, const QFile& file)
+{
+	ExternalData data = PendingJob2ExternalData_.take (url);
+	if (data.RelatedChannel_.get ())
+	{
+		switch (data.Type_)
+		{
+			case ExternalData::TImage:
+				data.RelatedChannel_->Pixmap_ = QPixmap::fromImage (QImage (file.fileName ()));
+				ChannelsModel_->UpdateChannelData (data.RelatedChannel_);
+				break;
+		}
+	}
+	else if (data.RelatedFeed_)
+	{
+	}
 }
 
