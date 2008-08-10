@@ -324,6 +324,10 @@ void Aggregator::currentItemChanged (const QModelIndex& index)
 	if (!sindex.isValid ())
 	{
 		Ui_.ItemView_->setHtml ("");
+		Ui_.ItemAuthor_->setText ("");
+		Ui_.ItemCategory_->setText ("");
+		Ui_.ItemLink_->setText ("");
+		Ui_.ItemPubDate_->setDateTime (QDateTime ());
 		return;
 	}
     Ui_.ItemView_->setHtml (Core::Instance ().GetDescription (sindex));
@@ -331,6 +335,10 @@ void Aggregator::currentItemChanged (const QModelIndex& index)
 			SIGNAL (sslErrors (QNetworkReply*, const QList<QSslError>&)),
 			&Core::Instance (),
 			SLOT (handleSslError (QNetworkReply*)));
+	Ui_.ItemAuthor_->setText (Core::Instance ().GetAuthor (sindex));
+	Ui_.ItemCategory_->setText (Core::Instance ().GetCategory (sindex));
+	Ui_.ItemLink_->setText (Core::Instance ().GetLink (sindex));
+	Ui_.ItemPubDate_->setDateTime (Core::Instance ().GetPubDate (sindex));
 }
 
 void Aggregator::currentChannelChanged ()

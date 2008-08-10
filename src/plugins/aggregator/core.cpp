@@ -179,6 +179,58 @@ QString Core::GetDescription (const QModelIndex& index)
     return item->Description_;
 }
 
+QString Core::GetAuthor (const QModelIndex& index)
+{
+    if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
+        return QString ();
+
+    boost::shared_ptr<Item>& item = ActivatedChannel_->Items_ [index.row ()];
+
+    item->Unread_ = false;
+    ChannelsModel_->UpdateChannelData (ActivatedChannel_);
+    UpdateUnreadItemsNumber ();
+    return item->Author_;
+}
+
+QString Core::GetCategory (const QModelIndex& index)
+{
+    if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
+        return QString ();
+
+    boost::shared_ptr<Item>& item = ActivatedChannel_->Items_ [index.row ()];
+
+    item->Unread_ = false;
+    ChannelsModel_->UpdateChannelData (ActivatedChannel_);
+    UpdateUnreadItemsNumber ();
+    return item->Category_;
+}
+
+QString Core::GetLink (const QModelIndex& index)
+{
+    if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
+        return QString ();
+
+    boost::shared_ptr<Item>& item = ActivatedChannel_->Items_ [index.row ()];
+
+    item->Unread_ = false;
+    ChannelsModel_->UpdateChannelData (ActivatedChannel_);
+    UpdateUnreadItemsNumber ();
+    return item->Link_;
+}
+
+QDateTime Core::GetPubDate (const QModelIndex& index)
+{
+    if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
+        return QDateTime ();
+
+    boost::shared_ptr<Item>& item = ActivatedChannel_->Items_ [index.row ()];
+
+    item->Unread_ = false;
+    ChannelsModel_->UpdateChannelData (ActivatedChannel_);
+    UpdateUnreadItemsNumber ();
+    return item->PubDate_;
+}
+
 QAbstractItemModel* Core::GetChannelsModel ()
 {
     return ChannelsModel_;

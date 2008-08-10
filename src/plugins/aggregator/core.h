@@ -71,6 +71,10 @@ public:
     void Activated (const QModelIndex&);
     void FeedActivated (const QModelIndex&);
     QString GetDescription (const QModelIndex&);
+	QString GetAuthor (const QModelIndex&);
+	QString GetCategory (const QModelIndex&);
+	QString GetLink (const QModelIndex&);
+	QDateTime GetPubDate (const QModelIndex&);
     QAbstractItemModel* GetChannelsModel ();
     TagsCompletionModel* GetTagsCompletionModel ();
     void UpdateTags (const QStringList&);

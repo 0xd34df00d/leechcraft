@@ -58,6 +58,71 @@
          </widget>
         </item>
         <item>
+         <widget class="QGroupBox" name="ItemInfo_" >
+          <property name="title" >
+           <string>Item info</string>
+          </property>
+          <layout class="QFormLayout" name="formLayout" >
+           <item row="0" column="0" >
+            <widget class="QLabel" name="label_4" >
+             <property name="text" >
+              <string>Link:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1" >
+            <widget class="QLabel" name="ItemLink_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" >
+            <widget class="QLabel" name="label_13" >
+             <property name="text" >
+              <string>Author:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1" >
+            <widget class="QLabel" name="ItemAuthor_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" >
+            <widget class="QLabel" name="label_15" >
+             <property name="text" >
+              <string>Category:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1" >
+            <widget class="QLabel" name="ItemCategory_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0" >
+            <widget class="QLabel" name="label_17" >
+             <property name="text" >
+              <string>Publication date:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1" >
+            <widget class="QDateTimeEdit" name="ItemPubDate_" >
+             <property name="calendarPopup" >
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
          <widget class="QGroupBox" name="ChannelDashboard_" >
           <property name="minimumSize" >
            <size>
@@ -68,23 +133,10 @@
           <property name="title" >
            <string>Channel dashboard</string>
           </property>
-          <layout class="QGridLayout" >
-           <item row="0" column="0" colspan="2" >
-            <widget class="QLabel" name="ChannelImage_" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Preferred" hsizetype="Ignored" >
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text" >
-              <string>&lt;channel image></string>
-             </property>
-             <property name="scaledContents" >
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
+          <layout class="QFormLayout" name="formLayout_2" >
+           <property name="fieldGrowthPolicy" >
+            <enum>QFormLayout::ExpandingFieldsGrow</enum>
+           </property>
            <item row="1" column="0" >
             <widget class="QLabel" name="label_5" >
              <property name="text" >
@@ -94,6 +146,29 @@
            </item>
            <item row="1" column="1" >
             <widget class="TagsLineEdit" name="ChannelTags_" />
+           </item>
+           <item row="2" column="0" >
+            <widget class="QLabel" name="label_10" >
+             <property name="text" >
+              <string>Link:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1" >
+            <widget class="QLabel" name="ChannelLink_" >
+             <property name="text" >
+              <string/>
+             </property>
+             <property name="scaledContents" >
+              <bool>true</bool>
+             </property>
+             <property name="wordWrap" >
+              <bool>true</bool>
+             </property>
+             <property name="openExternalLinks" >
+              <bool>true</bool>
+             </property>
+            </widget>
            </item>
            <item row="3" column="0" >
             <widget class="QLabel" name="label_8" >
@@ -105,7 +180,7 @@
            <item row="3" column="1" >
             <widget class="QLabel" name="ChannelDescription_" >
              <property name="text" >
-              <string>&lt;description></string>
+              <string/>
              </property>
              <property name="scaledContents" >
               <bool>true</bool>
@@ -125,7 +200,7 @@
            <item row="4" column="1" >
             <widget class="QLabel" name="ChannelAuthor_" >
              <property name="text" >
-              <string>&lt;author></string>
+              <string/>
              </property>
             </widget>
            </item>
@@ -139,37 +214,35 @@
            <item row="5" column="1" >
             <widget class="QLabel" name="ChannelLanguage_" >
              <property name="text" >
-              <string>&lt;language></string>
+              <string/>
              </property>
             </widget>
            </item>
-           <item row="2" column="1" >
-            <widget class="QLabel" name="ChannelLink_" >
+           <item row="0" column="1" >
+            <widget class="QLabel" name="ChannelImage_" >
              <property name="text" >
-              <string>&lt;url></string>
-             </property>
-             <property name="scaledContents" >
-              <bool>true</bool>
-             </property>
-             <property name="wordWrap" >
-              <bool>true</bool>
-             </property>
-             <property name="openExternalLinks" >
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0" >
-            <widget class="QLabel" name="label_10" >
-             <property name="text" >
-              <string>Link:</string>
+              <string>&lt;channel image></string>
              </property>
             </widget>
            </item>
           </layout>
+          <zorder>label_5</zorder>
+          <zorder>ChannelTags_</zorder>
+          <zorder>label_8</zorder>
+          <zorder>ChannelDescription_</zorder>
+          <zorder>label_6</zorder>
+          <zorder>ChannelAuthor_</zorder>
+          <zorder>label_7</zorder>
+          <zorder>ChannelLanguage_</zorder>
+          <zorder>ChannelLink_</zorder>
+          <zorder>label_10</zorder>
+          <zorder>ChannelImage_</zorder>
          </widget>
         </item>
        </layout>
+       <zorder>Feeds_</zorder>
+       <zorder>ChannelDashboard_</zorder>
+       <zorder>ItemInfo_</zorder>
       </widget>
       <widget class="QWidget" name="layoutWidget" >
        <layout class="QVBoxLayout" name="verticalLayout_2" >
