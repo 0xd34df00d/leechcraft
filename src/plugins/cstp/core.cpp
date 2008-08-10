@@ -454,6 +454,7 @@ Core::tasks_t::iterator Core::Remove (tasks_t::iterator it)
 {
 	int dst = std::distance (ActiveTasks_.begin (), it);
 	emit taskRemoved (it->ID_);
+	IDPool_.push_front (it->ID_);
 	beginRemoveRows (QModelIndex (), dst, dst);
 	tasks_t::iterator result = ActiveTasks_.erase (it);
 	endRemoveRows ();

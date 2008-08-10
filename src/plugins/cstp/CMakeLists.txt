@@ -24,6 +24,7 @@ SET (HEADERS
 	xmlsettingsmanager.h
 	mainviewdelegate.h
 	historymodel.h
+	../../xmlsettingsdialog/basesettingsmanager.h
 	)
 SET (FORMS
 	cstp.ui

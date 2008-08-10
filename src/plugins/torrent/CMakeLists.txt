@@ -60,6 +60,7 @@ SET (HEADERS
 	torrentinfo.h 
 	fileinfo.h
 	peerinfo.h
+	../../xmlsettingsdialog/basesettingsmanager.h
 	)
 SET (FORMS
     mainwindow.ui

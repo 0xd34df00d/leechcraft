@@ -3,9 +3,9 @@ IF (COMMAND cmake_policy)
   cmake_policy (SET CMP0003 NEW)
 ENDIF (COMMAND cmake_policy)
 PROJECT (leechcraft)
-SET (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-SET (CMAKE_BUILD_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-SET (CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+#SET (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+#SET (CMAKE_BUILD_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+#SET (CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 LIST (APPEND CMAKE_MODULE_PATH "cmake")
 SET (QT_USE_QTNETWORK true)
 SET (QT_USE_QTXML true)
@@ -35,13 +35,13 @@ IF (ENABLE_PACK)
 
 	SET (CPACK_DEBIAN_PACKAGE_SECTION "net")
 	SET (CPACK_DEBIAN_PACKAGE_DESCRIPTION "Extensible crossplatform download manager
-  LeechCraft is a cross-platform extensibe download manager written
-  in C++. Currently it offers full-featured BitTorrent client, feed
-  reader, HTTP/FTP plugin, Remote access and much more. It also aims
-  to be resource-efficient, working quite well on even old computers.")
+ LeechCraft is a cross-platform extensibe download manager written
+ in C++. Currently it offers full-featured BitTorrent client, feed
+ reader, HTTP/FTP plugin, Remote access and much more. It also aims
+ to be resource-efficient, working quite well on even old computers.")
 	SET (CPACK_DEBIAN_PACKAGE_DEPENDS "libqt4-core (>= 4.4.0), libqt4-gui (>= 4.4.0), libqt4-network (>= 4.4.0), libqt4-webkit (>= 4.4.0), libqt4-xml (>= 4.4.0), libtorrent-rasterbar-0.13")
 	SET (CPACK_PACKAGE_DESCRIPTION_FILE	"${CMAKE_CURRENT_SOURCE_DIR}/ReadMe.txt")
-	SET (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.GPL")
+	SET (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/copyright.txt")
 	SET (CPACK_PACKAGE_VERSION_MAJOR "0")
 	SET (CPACK_PACKAGE_VERSION_MINOR "2")
 	FIND_PACKAGE (Subversion)
@@ -54,10 +54,13 @@ IF (ENABLE_PACK)
 	SET (CPACK_PACKAGE_INSTALL_DIRECTORY "CMake ${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}")
 	SET (CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
 	SET (CPACK_PACKAGE_CONTACT "0xd34df00d@gmail.com")
-	SET (CPACK_DEBIAN_PACKAGE_MAINTAINER "0xd34df00d")
+	SET (CPACK_DEBIAN_PACKAGE_MAINTAINER "Rudoy Georg <0xd34df00d@gmail.com>")
+	SET (CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_SOURCE_DIR}/scripts/postinst")
 
 	SET (CPACK_SOURCE_GENERATOR "TGZ;ZIP;TBZ2")
 	SET (CPACK_SOURCE_IGNORE_FILES "/.svn/;.log")
+	SET (CPACK_PACKAGE_EXECUTABLES "leechcraft" "LeechCraft")
+	SET (CPACK_STRIP_FILES "leechcraft")
 	INCLUDE (CPack)
 ENDIF (ENABLE_PACK)
 
@@ -141,6 +144,7 @@ TARGET_LINK_LIBRARIES(leechcraft
 						xmlsettingsdialog)
 INSTALL (TARGETS leechcraft DESTINATION bin)
 IF (UNIX)
-	INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor)
+	INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor
+		PATTERN ".svn" EXCLUDE)
 	INSTALL (FILES freedesktop/leechcraft.desktop DESTINATION share/applications)
 ENDIF (UNIX)

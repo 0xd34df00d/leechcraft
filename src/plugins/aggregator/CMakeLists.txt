@@ -49,6 +49,7 @@ SET (HEADERS
 	singleregexp.h
 	regexpmatchermanager.h
 	itemsfiltermodel.h
+	../../xmlsettingsdialog/basesettingsmanager.h
 	)
 SET (FORMS
     mainwindow.ui

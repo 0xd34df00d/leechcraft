@@ -99,28 +99,32 @@ void Core::AddFeed (const QString& url, const QStringList& tags)
 	}
 
 	QObject *provider = Providers_ ["http"];
-	IDownload *id = qobject_cast<IDownload*> (provider);
+	IDownload *iid = qobject_cast<IDownload*> (provider);
 	IDirectDownload *idd = qobject_cast<IDirectDownload*> (provider);
-	if (!provider || !idd || !id)
+	if (!provider || !idd || !iid)
 	{
 		emit error (tr ("Strange, but no suitable provider found"));
 		return;
 	}
-	if (!id->CouldDownload (url, LeechCraft::Autostart))
+	if (!iid->CouldDownload (url, LeechCraft::Autostart))
 	{
 		emit error (tr ("Could not handle URL %1").arg (url));
 		return;
 	}
+
+	QString name;
 	{
 		QTemporaryFile file;
 		file.open ();
-		DirectDownloadParams params = { url, file.fileName () };
-		PendingJob pj = { PendingJob::RFeedAdded, url, file.fileName (), tags };
-		int id = idd->AddJob (params, LeechCraft::Autostart |
-				LeechCraft::DoNotNotifyUser | LeechCraft::DoNotSaveInHistory);
-		PendingJobs_ [id] = pj;
+		name = file.fileName ();
 		file.close ();
+		file.remove ();
 	}
+	DirectDownloadParams params = { url, name };
+	PendingJob pj = { PendingJob::RFeedAdded, url, name, tags };
+	int id = idd->AddJob (params, LeechCraft::Autostart |
+			LeechCraft::DoNotNotifyUser | LeechCraft::DoNotSaveInHistory);
+	PendingJobs_ [id] = pj;
 }
 
 void Core::RemoveFeed (const QModelIndex& index)
@@ -316,14 +320,19 @@ void Core::UpdateFeed (const QModelIndex& index)
         return;
     }
 
-    QTemporaryFile file;
-    file.open ();
-    DirectDownloadParams params = { url, file.fileName () };
-    PendingJob pj = { PendingJob :: RFeedUpdated, url, file.fileName () };
+	QString name;
+	{
+		QTemporaryFile file;
+		file.open ();
+		name = file.fileName ();
+		file.close ();
+		file.remove ();
+	}
+    DirectDownloadParams params = { url, name };
+    PendingJob pj = { PendingJob::RFeedUpdated, url, name };
     int id = idd->AddJob (params, LeechCraft::Autostart |
 			LeechCraft::DoNotNotifyUser | LeechCraft::DoNotSaveInHistory);
     PendingJobs_ [id] = pj;
-    file.close ();
 }
 
 QModelIndex Core::GetUnreadChannelIndex ()
@@ -721,7 +730,7 @@ void Core::updateFeeds ()
 		}
         DirectDownloadParams params = { urls.at (i), filename };
         qDebug () << "TEMPORARY FILE AS SAMPLE" << filename;
-        PendingJob pj = { PendingJob :: RFeedUpdated, urls.at (i), filename };
+        PendingJob pj = { PendingJob::RFeedUpdated, urls.at (i), filename };
 		int id = idd->AddJob (params, LeechCraft::Autostart |
 				LeechCraft::DoNotNotifyUser | LeechCraft::DoNotSaveInHistory);
         PendingJobs_ [id] = pj;

@@ -98,6 +98,9 @@
              <property name="text" >
               <string>&lt;description></string>
              </property>
+             <property name="scaledContents" >
+              <bool>true</bool>
+             </property>
              <property name="wordWrap" >
               <bool>true</bool>
              </property>
@@ -135,6 +138,9 @@
             <widget class="QLabel" name="ChannelLink_" >
              <property name="text" >
               <string>&lt;url></string>
+             </property>
+             <property name="scaledContents" >
+              <bool>true</bool>
              </property>
              <property name="openExternalLinks" >
               <bool>true</bool>
