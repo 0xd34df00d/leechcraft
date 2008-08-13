@@ -588,6 +588,9 @@ void Core::RemoveTorrent (int pos)
 
     QTimer::singleShot (3000, this, SLOT (writeSettings ()));
 	emit taskRemoved (id);
+
+	CheckUploadQueue ();
+	CheckDownloadQueue ();
 }
 
 void Core::PauseTorrent (int pos)
@@ -1252,6 +1255,42 @@ void Core::ManipulateSettings ()
     RestoreTorrents ();
 }
 
+void Core::CheckDownloadQueue ()
+{
+	int mdt = XmlSettingsManager::Instance ()->property ("MaxDownloadingTorrents").toInt ();
+	while (GetCurrentlyDownloading () < mdt)
+	{
+		HandleDict_t::iterator i = Handles_.begin ();
+		for (HandleDict_t::iterator end = Handles_.end ();
+				i != end; ++i)
+			if (i->State_ == TSWaiting2Download)
+				break;
+
+		if (i == Handles_.end ())
+			break;
+		else
+			ResumeTorrent (std::distance (Handles_.begin (), i));
+	}
+}
+
+void Core::CheckUploadQueue ()
+{
+	int mdt = XmlSettingsManager::Instance ()->property ("MaxDownloadingTorrents").toInt ();
+	while (GetCurrentlySeeding () < mdt)
+	{
+		HandleDict_t::iterator i = Handles_.begin ();
+		for (HandleDict_t::iterator end = Handles_.end ();
+				i != end; ++i)
+			if (i->State_ == TSWaiting2Seed)
+				break;
+
+		if (i == Handles_.end ())
+			break;
+		else
+			ResumeTorrent (std::distance (Handles_.begin (), i));
+	}
+}
+
 void Core::writeSettings ()
 {
     QDir home = QDir::home ();
@@ -1358,8 +1397,8 @@ void Core::checkFinished ()
             case libtorrent::torrent_status::downloading:
                 if (Handles_ [i].State_ != TSDownloading)
                 {
-                    if (!XmlSettingsManager::Instance ()->property ("MaxDownloadingTorrents").toInt () ||
-                        GetCurrentlyDownloading () < XmlSettingsManager::Instance ()->property ("MaxDownloadingTorrents").toInt ())
+					int mdt = XmlSettingsManager::Instance ()->property ("MaxDownloadingTorrents").toInt ();
+                    if (!mdt || GetCurrentlyDownloading () < mdt)
                         Handles_ [i].State_ = TSDownloading;
                     else
                     {
@@ -1376,12 +1415,15 @@ void Core::checkFinished ()
                 Handles_ [i].State_ = TSSeeding;
                 if (oldState == TSDownloading)
                 {
-                    if (XmlSettingsManager::Instance ()->property ("MaxUploadingTorrents").toInt () &&
-                        GetCurrentlySeeding () >= XmlSettingsManager::Instance ()->property ("MaxUploadingTorrents").toInt ())
-                    {
-                        Handles_.at (i).Handle_.pause ();
-                        Handles_ [i].State_ = TSWaiting2Seed;
-                    }
+					int mut = XmlSettingsManager::Instance ()->property ("MaxUploadingTorrents").toInt ();
+					if (mut && GetCurrentlySeeding () >= mut)
+					{
+						Handles_.at (i).Handle_.pause ();
+						Handles_ [i].State_ = TSWaiting2Seed;
+					}
+
+					CheckDownloadQueue ();
+
 					HandleSingleFinished (i);
                 }
                 break;

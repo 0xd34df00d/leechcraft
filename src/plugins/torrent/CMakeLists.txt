@@ -13,6 +13,7 @@ INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR}
 					 libtorrent/
 					 zlib/)
 LINK_DIRECTORIES (${Boost_LINK_DIRS} /usr/local/lib ../..)
+FIND_PACKAGE (Boost REQUIRED COMPONENTS date_time filesystem system thread)
 
 SET (SRCS
 	torrentplugin.cpp 
@@ -90,16 +91,17 @@ ${QT_LIBRARIES}
 plugininterface
 exceptions
 xmlsettingsdialog
+${Boost_LIBRARIES}
 torrent
-boost_date_time-mgw42-mt-1_35_0
-boost_filesystem-mgw42-mt-1_35_0
-boost_thread-mgw42-mt-1_35_0)
+)
 ELSE (WIN32)
 TARGET_LINK_LIBRARIES (leechcraft_torrent
 ${QT_LIBRARIES}
 plugininterface
 exceptions
 xmlsettingsdialog
-torrent-rasterbar)
+torrent-rasterbar
+${Boost_LIBRARIES}
+)
 ENDIF (WIN32)
 INSTALL (TARGETS leechcraft_torrent DESTINATION ${LC_PLUGINS_DEST})

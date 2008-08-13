@@ -166,6 +166,8 @@ private:
     int GetCurrentlyDownloading () const;
     int GetCurrentlySeeding () const;
     void ManipulateSettings ();
+	void CheckDownloadQueue ();
+	void CheckUploadQueue ();
 private slots:
     void writeSettings ();
     void checkFinished ();
