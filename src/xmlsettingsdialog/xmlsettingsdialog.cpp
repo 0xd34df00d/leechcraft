@@ -105,6 +105,8 @@ void XmlSettingsDialog::ParsePage (const QDomElement& page)
     QWidget *baseWidget = new QWidget;
     Pages_->addWidget (baseWidget);
     QFormLayout *lay = new QFormLayout;
+	lay->setRowWrapPolicy (QFormLayout::WrapLongRows);
+	lay->setFieldGrowthPolicy (QFormLayout::FieldsStayAtSizeHint);
     baseWidget->setLayout (lay);
 
     ParseEntity (page, baseWidget);
@@ -124,7 +126,6 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
     {
         QGroupBox *box = new QGroupBox (GetLabel (gbox));
 		QFormLayout *groupLayout = new QFormLayout ();
-		groupLayout->setLabelAlignment (Qt::AlignLeft);
 		groupLayout->setRowWrapPolicy (QFormLayout::WrapLongRows);
 		groupLayout->setFieldGrowthPolicy (QFormLayout::FieldsStayAtSizeHint);
 		box->setLayout (groupLayout);
@@ -146,6 +147,8 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
         {
             QWidget *page = new QWidget;
             QFormLayout *widgetLay = new QFormLayout;
+			widgetLay->setRowWrapPolicy (QFormLayout::WrapLongRows);
+			widgetLay->setFieldGrowthPolicy (QFormLayout::FieldsStayAtSizeHint);
             page->setLayout (widgetLay);
             tabs->addTab (page, GetLabel (tab));
             ParseEntity (tab, page);
@@ -202,7 +205,7 @@ QString XmlSettingsDialog::GetLabel (const QDomElement& item) const
 
     locale = locale.left (2);
 
-    QString result;
+    QString result = "<no label>";
     QDomElement label = item.firstChildElement ("label");
     while (!label.isNull ())
     {
@@ -213,7 +216,7 @@ QString XmlSettingsDialog::GetLabel (const QDomElement& item) const
         }
         label = label.nextSiblingElement ("label");
     }
-    if (result.isEmpty ())
+    if (result == "<no label>")
     {
         label = item.firstChildElement ("label");
         while (!label.isNull ())
@@ -367,6 +370,8 @@ void XmlSettingsDialog::DoGroupbox (const QDomElement& item, QFormLayout *lay, Q
     QGroupBox *box = new QGroupBox (GetLabel (item));
     box->setObjectName (item.attribute ("property"));
 	QFormLayout *groupLayout = new QFormLayout ();
+	groupLayout->setRowWrapPolicy (QFormLayout::WrapLongRows);
+	groupLayout->setFieldGrowthPolicy (QFormLayout::FieldsStayAtSizeHint);
     box->setLayout (groupLayout);
     box->setCheckable (true);
     if (!value.isValid () || value.isNull ())

@@ -257,6 +257,22 @@ QString Task::GetErrorString () const
 		}
 }
 
+void Task::SetProxy (const QNetworkProxy& proxy)
+{
+	switch (Type_)
+	{
+		case THttp:
+		case THttps:
+			Http_->setProxy (proxy);
+			break;
+		case TFtp:
+			// Doesn't matter, we'll abandon QFtp soon anyway.
+			break;
+		default:
+			break;
+	}
+}
+
 void Task::Reset ()
 {
 	Done_ = 0;

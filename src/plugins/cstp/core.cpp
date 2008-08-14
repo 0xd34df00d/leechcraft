@@ -9,6 +9,7 @@
 #include <plugininterface/proxy.h>
 #include "task.h"
 #include "historymodel.h"
+#include "xmlsettingsmanager.h"
 
 Core::Core ()
 : SaveScheduled_ (false)
@@ -54,6 +55,7 @@ int Core::AddTask (const QString& url,
 {
 	TaskDescr td;
 	td.Task_ = boost::shared_ptr<Task> (new Task (url));
+	td.Task_->SetProxy (GetProxySettings ());
 	QDir dir (path);
 	td.File_ = boost::shared_ptr<QFile> (new QFile (QDir::cleanPath (dir
 					.filePath (filename))));
@@ -382,6 +384,8 @@ void Core::ReadSettings ()
 			continue;
 		}
 
+		td.Task_->SetProxy (GetProxySettings ());
+
 		connect (td.Task_.get (),
 				SIGNAL (done (bool)),
 				this,
@@ -470,5 +474,32 @@ void Core::AddToHistory (tasks_t::const_iterator it)
 	item.Size_ = it->File_->size ();
 	item.DateTime_ = QDateTime::currentDateTime ();
 	HistoryModel_->Add (item);
+}
+
+QNetworkProxy Core::GetProxySettings () const
+{
+	bool enabled = XmlSettingsManager::Instance ().property ("ProxyEnabled").toBool ();
+	QNetworkProxy pr;
+	if (enabled)
+	{
+		pr.setHostName (XmlSettingsManager::Instance ().property ("ProxyHost").toString ());
+		pr.setPort (XmlSettingsManager::Instance ().property ("ProxyPort").toInt ());
+		pr.setUser (XmlSettingsManager::Instance ().property ("ProxyLogin").toString ());
+		pr.setPassword (XmlSettingsManager::Instance ().property ("ProxyPassword").toString ());
+		QString type = XmlSettingsManager::Instance ().property ("ProxyType").toString ();
+		QNetworkProxy::ProxyType pt;
+		if (type == "socks5")
+			pt = QNetworkProxy::Socks5Proxy;
+		else if (type == "tphttp")
+			pt = QNetworkProxy::HttpProxy;
+		else if (type == "chttp")
+			pr = QNetworkProxy::HttpCachingProxy;
+		else if (type == "cftp")
+			pr = QNetworkProxy::FtpCachingProxy;
+		pr.setType (pt);
+	}
+	else
+		pr.setType (QNetworkProxy::NoProxy);
+	return pr;
 }
 

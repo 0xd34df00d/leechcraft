@@ -3,6 +3,7 @@
 #include <QMessageBox>
 #include <QtDebug>
 #include <QTimer>
+#include <QNetworkProxy>
 #include <limits>
 #include <QApplication>
 #include <QClipboard>
@@ -78,6 +79,15 @@ void Main::Core::DelayedInit ()
 					this,
 					SIGNAL (downloadFinished (const QString&)));
     }
+
+	XmlSettingsManager::Instance ()->RegisterObject ("ProxyEnabled", this, "handleProxySettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("ProxyHost", this, "handleProxySettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("ProxyPort", this, "handleProxySettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("ProxyLogin", this, "handleProxySettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("ProxyPassword", this, "handleProxySettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("ProxyType", this, "handleProxySettings");
+
+	handleProxySettings ();
 }
 
 bool Main::Core::ShowPlugin (IInfo::ID_t id)
@@ -158,6 +168,33 @@ QList<JobHolder> Main::Core::GetJobHolders () const
         result << jh;
     }
     return result;
+}
+
+void Main::Core::handleProxySettings () const
+{
+	bool enabled = XmlSettingsManager::Instance ()->property ("ProxyEnabled").toBool ();
+	QNetworkProxy pr;
+	if (enabled)
+	{
+		pr.setHostName (XmlSettingsManager::Instance ()->property ("ProxyHost").toString ());
+		pr.setPort (XmlSettingsManager::Instance ()->property ("ProxyPort").toInt ());
+		pr.setUser (XmlSettingsManager::Instance ()->property ("ProxyLogin").toString ());
+		pr.setPassword (XmlSettingsManager::Instance ()->property ("ProxyPassword").toString ());
+		QString type = XmlSettingsManager::Instance ()->property ("ProxyType").toString ();
+		QNetworkProxy::ProxyType pt;
+		if (type == "socks5")
+			pt = QNetworkProxy::Socks5Proxy;
+		else if (type == "tphttp")
+			pt = QNetworkProxy::HttpProxy;
+		else if (type == "chttp")
+			pr = QNetworkProxy::HttpCachingProxy;
+		else if (type == "cftp")
+			pr = QNetworkProxy::FtpCachingProxy;
+		pr.setType (pt);
+	}
+	else
+		pr.setType (QNetworkProxy::NoProxy);
+	QNetworkProxy::setApplicationProxy (pr);
 }
 
 void Main::Core::handleFileDownload (const QString& file, bool fromBuffer)

@@ -72,6 +72,7 @@ public:
 	int GetTimeFromStart () const;
 	bool IsRunning () const;
 	QString GetErrorString () const;
+	void SetProxy (const QNetworkProxy&);
 private:
 	void Reset ();
 	void Construct ();

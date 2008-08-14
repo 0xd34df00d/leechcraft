@@ -9,85 +9,132 @@
 			<label lang="ru" value="Поведение" />
 			<item type="checkbox" property="AlertAboutErrors" default="on">
 				<label lang="en" value="Alert about errors" />
-				<label lang="en" value="Оповещать об ошибках" />
+				<label lang="ru" value="Оповещать об ошибках" />
 			</item>
 		</groupbox>
 	</page>
 	<page>
 		<label lang="en" value="Network settings" />
 		<label lang="ru" value="Сетевые настройки" />
-		<groupbox>
-			<label lang="en" value="Behavior" />
-			<label lang="ru" value="Поведение" />
-			<item type="lineedit" property="TextTransferMode" default="txt cpp cxx c ui asm htm html css asp vbs js">
-				<label lang="en" value="Use text transfer mode" />
-				<label lang="ru" value="Использовать текстовый режим передачи" />
+		<tab>
+			<label lang="en" value="General" />
+			<label lang="ru" value="Общие" />
+			<groupbox>
+				<label lang="en" value="Behavior" />
+				<label lang="ru" value="Поведение" />
+				<item type="lineedit" property="TextTransferMode" default="txt cpp cxx c ui asm htm html css asp vbs js">
+					<label lang="en" value="Use text transfer mode" />
+					<label lang="ru" value="Использовать текстовый режим передачи" />
+				</item>
+			</groupbox>
+			<item type="groupbox" property="ProxyEnabled" checkable="true" state="off">
+				<label lang="en" value="Proxy" />
+				<label lang="ru" value="Прокси" />
+				<item type="lineedit" property="ProxyHost">
+					<label lang="en" value="Host:" />
+					<label lang="ru" value="Хост:" />
+				</item>
+				<item type="spinbox" property="ProxyPort" default="3128" minimum="1" maximum="65535" step="1">
+					<label lang="en" value="Port:" />
+					<label lang="ru" value="Порт:" />
+				</item>
+				<item type="lineedit" property="ProxyLogin">
+					<label lang="en" value="Login:" />
+					<label lang="ru" value="Логин:" />
+				</item>
+				<item type="lineedit" property="ProxyPassword" password="true">
+					<label lang="en" value="Password:" />
+					<label lang="ru" value="Пароль:" />
+				</item>
+				<item type="combobox" property="ProxyType">
+					<label lang="en" value="Proxy type:" />
+					<label lang="ru" value="Тип прокси:" />
+					<option name="socks5" default="true">
+						<label lang="en" value="SOCKS5" />
+					</option>
+					<option name="tphttp">
+						<label lang="en" value="Transparent HTTP" />
+						<label lang="ru" value="Прозрачный HTTP" />
+					</option>
+					<option name="chttp">
+						<label lang="en" value="Caching HTTP" />
+						<label lang="ru" value="Кэширующий HTTP" />
+					</option>
+					<option name="cftp">
+						<label lang="en" value="Caching FTP" />
+						<label lang="ru" value="Кэширующий FTP" />
+					</option>
+				</item>
 			</item>
-		</groupbox>
-		<groupbox>
-			<label lang="en" value="FTP Identification" />
-			<label lang="ru" value="FTP-Идентификация" />
-			<item type="lineedit" property="FTPLogin" default="anonymous">
-				<label lang="en" value="Default login" />
-				<label lang="ru" value="Логин по умолчанию" />
-			</item>
-			<item type="lineedit" property="FTPPassword" default="simpleemail@leechcraft.org">
-				<label lang="en" value="Default password" />
-				<label lang="ru" value="Пароль по умолчанию" />
-			</item>
-		</groupbox>
-		<groupbox>
-			<label lang="en" value="HTTP Identification" />
-			<label lang="ru" value="HTTP-Идентификация" />
-			<item type="lineedit" property="HTTPLogin" default="anonymous">
-				<label lang="en" value="Default login" />
-				<label lang="ru" value="Логин по умолчанию" />
-			</item>
-			<item type="lineedit" property="HTTPPassword" default="simpleemail@leechcraft.org">
-				<label lang="en" value="Default password" />
-				<label lang="ru" value="Пароль по умолчанию" />
-			</item>
-            <item type="lineedit" property="UserUserAgent">
-				<label lang="en" value="User's user agent" />
-				<label lang="ru" value="Пользовательский user agent" />
-            </item>
-			<item type="combobox" property="PredefinedUserAgent">
-				<label lang="en" value="Predefined user agent" />
-				<label lang="ru" value="Предустановленный user agent" />
-				<option default="true" value="Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Gecko/2008071719 Firefox/3.0.1">
-					<label lang="en" value="Firefox 3.0.1 [Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Gecko/2008071719 Firefox/3.0.1]" />
-				</option>
-				<option value="Mozilla/4.0 (Compatible; MSIE 7.0; Windows NT 5.1)">
-					<label lang="en" value="Internet Explorer 6.0 [Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)]" />
-				</option>
-				<option value="Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)">
-					<label lang="en" value="Internet Explorer 7.0 [Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)]" />
-				</option>
-				<option value="Mozilla/4.0 (compatible; MSIE 4.0; Windows 98)">
-					<label lang="en" value="Internet Explorer 4.0 [Mozilla/4.0 (compatible; MSIE 4.0; Windows 98)]" />
-				</option>
-				<option value="Mozilla/1.22 (compatible; MSIE 2.0; Windows 95)">
-					<label lang="en" value="Internet Explorer 2.0 [Mozilla/1.22 (compatible; MSIE 2.0; Windows 95)]" />
-				</option>
-				<option value="Mozilla/5.0 (compatible; Konqueror/4.0; Linux) KHTML/4.0.2 (like Gecko)">
-					<label lang="en" value="Konqueror 4.0 [Mozilla/5.0 (compatible; Konqueror/4.0; Linux) KHTML/4.0.2 (like Gecko)]" />
-				</option>
-				<option value="Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9) Gecko">
-					<label lang="en" value="Mozilla 1.9 [Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9) Gecko]" />
-				</option>
-				<option value="Opera/9.52 (X11; Linux x86_64; U; en)">
-					<label lang="en" value="Opera 9.52 [Opera/9.52 (X11; Linux x86_64; U; en)]" />
-				</option>
-				<option value="Wget/1.9.1">
-					<label lang="en" value="Wget 1.9.1 [Wget/1.9.1]" />
-				</option>
-				<option value="w3m/0.5.2">
-					<label lang="en" value="w3m 0.5.2 [w3m/0.5.2]" />
-				</option>
-				<option value="Lynx/2.8.7dev.4 libwww-FM/2.14 SSL-MM/1.4.1 OpenSSL/0.9.8d">
-					<label lang="en" value="Lynx 2.8.7dev.4 [Lynx/2.8.7dev.4 libwww-FM/2.14 SSL-MM/1.4.1 OpenSSL/0.9.8d]" />
-				</option>
-			</item>
-		</groupbox>
+		</tab>
+		<tab>
+			<label lang="en" value="Identification" />
+			<label lang="ru" value="Идентификация" />
+			<groupbox>
+				<label lang="en" value="FTP" />
+				<label lang="ru" value="FTP" />
+				<item type="lineedit" property="FTPLogin" default="anonymous">
+					<label lang="en" value="Login" />
+					<label lang="ru" value="Логин" />
+				</item>
+				<item type="lineedit" property="FTPPassword" default="simpleemail@leechcraft.org">
+					<label lang="en" value="Password" />
+					<label lang="ru" value="Пароль" />
+				</item>
+			</groupbox>
+			<groupbox>
+				<label lang="en" value="HTTP" />
+				<label lang="ru" value="HTTP" />
+				<item type="lineedit" property="HTTPLogin" default="anonymous">
+					<label lang="en" value="Login" />
+					<label lang="ru" value="Логин" />
+				</item>
+				<item type="lineedit" property="HTTPPassword" default="simpleemail@leechcraft.org">
+					<label lang="en" value="Password" />
+					<label lang="ru" value="Пароль" />
+				</item>
+				<item type="lineedit" property="UserUserAgent">
+					<label lang="en" value="User's user agent" />
+					<label lang="ru" value="Пользовательский user agent" />
+				</item>
+				<item type="combobox" property="PredefinedUserAgent">
+					<label lang="en" value="Predefined user agent" />
+					<label lang="ru" value="Предустановленный user agent" />
+					<option default="true" value="Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Firefox/3.0.1">
+						<label lang="en" value="Firefox 3.0.1 on Linux i686" />
+					</option>
+					<option value="Mozilla/4.0 (Compatible; MSIE 7.0; Windows NT 5.1)">
+						<label lang="en" value="Internet Explorer 6.0 on Windows XP" />
+					</option>
+					<option value="Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)">
+						<label lang="en" value="Internet Explorer 7.0 on Windows Vista" />
+					</option>
+					<option value="Mozilla/4.0 (compatible; MSIE 4.0; Windows 98)">
+						<label lang="en" value="Internet Explorer 4.0 on Windows 98" />
+					</option>
+					<option value="Mozilla/1.22 (compatible; MSIE 2.0; Windows 95)">
+						<label lang="en" value="Internet Explorer 2.0 on Windows 95" />
+					</option>
+					<option value="Mozilla/5.0 (compatible; Konqueror/4.0; Linux) KHTML/4.0.2 (like Gecko)">
+						<label lang="en" value="Konqueror 4.0" />
+					</option>
+					<option value="Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9) Gecko">
+						<label lang="en" value="Mozilla 1.9 on Linux i686" />
+					</option>
+					<option value="Opera/9.52 (X11; Linux x86_64; U; en)">
+						<label lang="en" value="Opera 9.52 on Linux x86_64" />
+					</option>
+					<option value="Wget/1.9.1">
+						<label lang="en" value="Wget 1.9.1" />
+					</option>
+					<option value="w3m/0.5.2">
+						<label lang="en" value="w3m 0.5.2" />
+					</option>
+					<option value="Lynx/2.8.7dev.4 libwww-FM/2.14 SSL-MM/1.4.1 OpenSSL/0.9.8d">
+						<label lang="en" value="Lynx 2.8.7 with OpenSSL" />
+					</option>
+				</item>
+			</groupbox>
+		</tab>
 	</page>
 </settings>

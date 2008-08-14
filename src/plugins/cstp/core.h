@@ -2,9 +2,10 @@
 #define CORE_H
 #include <deque>
 #include <list>
+#include <boost/shared_ptr.hpp>
 #include <QAbstractItemModel>
 #include <QStringList>
-#include <boost/shared_ptr.hpp>
+#include <QNetworkProxy>
 #include <interfaces/interfaces.h>
 
 class Task;
@@ -104,6 +105,7 @@ private:
 	tasks_t::iterator FindTask (QObject*);
 	tasks_t::iterator Remove (tasks_t::iterator);
 	void AddToHistory (tasks_t::const_iterator);
+	QNetworkProxy GetProxySettings () const;
 signals:
 	void taskFinished (int);
 	void taskRemoved (int);

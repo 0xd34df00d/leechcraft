@@ -7,19 +7,6 @@
             <label lang="en" value="Watch clipboard for addable task" />
             <label lang="ru" value="Следить за буфером обмена" />
         </item>
-    </page>
-    <page>
-        <label lang="en" value="Plugins intercommunication" />
-        <label lang="ru" value="Общение с плагинами" />
-
-        <item type="groupbox" property="ShowFinishedDownloadMessages" state="on" checkable="true">
-            <label lang="en" value="Show messages about finished downloads in tray" />
-            <label lang="ru" value="Показывать сообщения о завершенных закачках в трее" />
-            <item type="spinbox" property="FinishedDownloadMessageTimeout" default="10" minimum="1" maximum="15" step="1" suffix=" s">
-                <label lang="en" value="Finished download message timeout" />
-                <label lang="ru" value="Время показа уведомления о завершенной загрузке" />
-            </item>
-        </item>
         <item type="checkbox" property="QueryPluginsToHandleFinished" state="on">
             <label lang="en" value="Query plugins to handle finished downloads" />
             <label lang="ru" value="Опрашивать плагины для обработки заданий при их завершении" />
@@ -28,5 +15,62 @@
             <label lang="en" value="Aggregate jobs from plugins" />
             <label lang="ru" value="Собирать задания из плагинов и показывать их в главном окне" />
         </item>
+        <item type="groupbox" property="ShowFinishedDownloadMessages" state="on" checkable="true">
+            <label lang="en" value="Show messages about finished downloads in tray" />
+            <label lang="ru" value="Показывать сообщения о завершенных закачках в трее" />
+            <item type="spinbox" property="FinishedDownloadMessageTimeout" default="10" minimum="1" maximum="15" step="1">
+				<lang value="en">
+					<label value="Finished download message timeout:" />
+					<suffix value=" s" />
+				</lang>
+				<lang value="ru">
+					<label value="Время показа уведомления о завершенной загрузке:" />
+					<suffix value=" с" />
+				</lang>
+            </item>
+        </item>
     </page>
+	<page>
+		<label lang="en" value="Network" />
+		<label lang="ru" value="Сеть" />
+		<item type="groupbox" property="ProxyEnabled" checkable="true" state="off">
+			<label lang="en" value="Application-wide proxy" />
+			<label lang="ru" value="Глобальный прокси" />
+			<item type="lineedit" property="ProxyHost">
+				<label lang="en" value="Host:" />
+				<label lang="ru" value="Хост:" />
+			</item>
+			<item type="spinbox" property="ProxyPort" default="3128" minimum="1" maximum="65535" step="1">
+				<label lang="en" value="Port:" />
+				<label lang="ru" value="Порт:" />
+			</item>
+			<item type="lineedit" property="ProxyLogin">
+				<label lang="en" value="Login:" />
+				<label lang="ru" value="Логин:" />
+			</item>
+			<item type="lineedit" property="ProxyPassword" password="true">
+				<label lang="en" value="Password:" />
+				<label lang="ru" value="Пароль:" />
+			</item>
+			<item type="combobox" property="ProxyType">
+				<label lang="en" value="Proxy type:" />
+				<label lang="ru" value="Тип прокси:" />
+				<option name="socks5" default="true">
+					<label lang="en" value="SOCKS5" />
+				</option>
+				<option name="tphttp">
+					<label lang="en" value="Transparent HTTP" />
+					<label lang="ru" value="Прозрачный HTTP" />
+				</option>
+				<option name="chttp">
+					<label lang="en" value="Caching HTTP" />
+					<label lang="ru" value="Кэширующий HTTP" />
+				</option>
+				<option name="cftp">
+					<label lang="en" value="Caching FTP" />
+					<label lang="ru" value="Кэширующий FTP" />
+				</option>
+			</item>
+		</item>
+	</page>
 </settings>

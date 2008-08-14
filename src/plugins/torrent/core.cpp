@@ -1202,13 +1202,11 @@ void Core::ManipulateSettings ()
     XmlSettingsManager::Instance ()->RegisterObject ("TrackerProxyEnabled", this, "setProxySettings");
     XmlSettingsManager::Instance ()->RegisterObject ("TrackerProxyHost", this, "setProxySettings");
     XmlSettingsManager::Instance ()->RegisterObject ("TrackerProxyPort", this, "setProxySettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("TrackerProxyLogin", this, "setProxySettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("TrackerProxyPassword", this, "setProxySettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("TrackerProxyAuth", this, "setProxySettings");
     XmlSettingsManager::Instance ()->RegisterObject ("PeerProxyEnabled", this, "setProxySettings");
     XmlSettingsManager::Instance ()->RegisterObject ("PeerProxyHost", this, "setProxySettings");
     XmlSettingsManager::Instance ()->RegisterObject ("PeerProxyPort", this, "setProxySettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("PeerProxyLogin", this, "setProxySettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("PeerProxyPassword", this, "setProxySettings");
+    XmlSettingsManager::Instance ()->RegisterObject ("PeerProxyAuth", this, "setProxySettings");
 
     XmlSettingsManager::Instance ()->RegisterObject ("UserAgent", this, "setGeneralSettings");
     XmlSettingsManager::Instance ()->RegisterObject ("TrackerCompletionTimeout", this, "setGeneralSettings");
@@ -1690,8 +1688,11 @@ void Core::setProxySettings ()
     {
         trackerProxySettings.hostname = XmlSettingsManager::Instance ()->property ("TrackerProxyAddress").toString ().toStdString ();
         trackerProxySettings.port = XmlSettingsManager::Instance ()->property ("TrackerProxyPort").toInt ();
-        trackerProxySettings.username = XmlSettingsManager::Instance ()->property ("TrackerProxyLogin").toString ().toStdString ();
-        trackerProxySettings.password = XmlSettingsManager::Instance ()->property ("TrackerProxyPassword").toString ().toStdString ();
+		QStringList auth = XmlSettingsManager::Instance ()->property ("TrackerProxyAuth").toString ().split ('@');
+		if (auth.size ())
+			trackerProxySettings.username = auth.at (0).toStdString ();
+		if (auth.size () > 1)
+			trackerProxySettings.password = auth.at (1).toStdString ();
         bool passworded = trackerProxySettings.username.size ();
         QString pt = XmlSettingsManager::Instance ()->property ("TrackerProxyType").toString ();
         if (pt == "http")
@@ -1710,8 +1711,11 @@ void Core::setProxySettings ()
     {
         peerProxySettings.hostname = XmlSettingsManager::Instance ()->property ("PeerProxyAddress").toString ().toStdString ();
         peerProxySettings.port = XmlSettingsManager::Instance ()->property ("PeerProxyPort").toInt ();
-        peerProxySettings.username = XmlSettingsManager::Instance ()->property ("PeerProxyLogin").toString ().toStdString ();
-        peerProxySettings.password = XmlSettingsManager::Instance ()->property ("PeerProxyPassword").toString ().toStdString ();
+		QStringList auth = XmlSettingsManager::Instance ()->property ("PeerProxyAuth").toString ().split ('@');
+		if (auth.size ())
+			peerProxySettings.username = auth.at (0).toStdString ();
+		if (auth.size () > 1)
+			peerProxySettings.password = auth.at (1).toStdString ();
         bool passworded = peerProxySettings.username.size ();
         QString pt = XmlSettingsManager::Instance ()->property ("PeerProxyType").toString ();
         if (pt == "http")

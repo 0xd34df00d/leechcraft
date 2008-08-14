@@ -50,6 +50,8 @@ namespace Main
         
         QPair<qint64, qint64> GetSpeeds () const;
         QList<JobHolder> GetJobHolders () const;
+	public slots:
+		void handleProxySettings () const;
     private slots:
         void handleFileDownload (const QString&, bool fromBuffer = false);
         void handleClipboardTimer ();

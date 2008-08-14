@@ -22,6 +22,7 @@ RangeWidget::RangeWidget (QWidget *parent)
     Higher_ = new QSpinBox;
 
     QHBoxLayout *lay = new QHBoxLayout;
+	lay->setContentsMargins (0, 0, 0, 0);
     lay->addWidget (Lower_);
     lay->addWidget (Higher_);
     lay->addStretch (1);
