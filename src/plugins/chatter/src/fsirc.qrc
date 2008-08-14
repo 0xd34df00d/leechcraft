@@ -1,0 +1,7 @@
+ <!DOCTYPE RCC><RCC version="1.0">
+ <qresource prefix="/fsirc">
+    <file>data/icon.svg</file>
+    <file>data/icon-msg.svg</file>
+    <file>data/icon-hlite.svg</file>
+ </qresource>
+ </RCC>
