@@ -14,6 +14,7 @@
 class QTimer;
 class QDomDocument;
 class QTreeWidgetItem;
+class QLocalServer;
 
 struct JobHolder
 {
@@ -34,6 +35,7 @@ namespace Main
         MainWindow *ReallyMainWindow_;
         QTimer *ClipboardWatchdog_;
         QString PreviousClipboardContents_;
+		QLocalServer *Server_;
     public:
         Core (QObject *parent = 0);
         ~Core ();

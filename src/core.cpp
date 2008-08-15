@@ -8,6 +8,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QDir>
+#include <QLocalServer>
 #include "mainwindow.h"
 #include "pluginmanager.h"
 #include "plugininfo.h"
@@ -18,6 +19,7 @@
 
 Main::Core::Core (QObject *parent)
 : QObject (parent)
+, Server_ (new QLocalServer)
 {
     PreparePools ();
     PluginManager_ = new Main::PluginManager (this);
@@ -27,6 +29,8 @@ Main::Core::Core (QObject *parent)
     ClipboardWatchdog_ = new QTimer (this);
     connect (ClipboardWatchdog_, SIGNAL (timeout ()), this, SLOT (handleClipboardTimer ()));
     ClipboardWatchdog_->start (2000);
+
+	Server_->listen ("LeechCraft local socket");
 }
 
 Main::Core::~Core ()
@@ -65,12 +69,11 @@ void Main::Core::DelayedInit ()
 		const QMetaObject *qmo = plugin->metaObject ();
 
         if (download)
-        {
 			connect (plugin,
 					SIGNAL (fileDownloaded (const QString&)),
 					this,
 					SLOT (handleFileDownload (const QString&)));
-        }
+
 		if (qmo->indexOfSignal (QMetaObject::
 					normalizedSignature ("downloadFinished (const "
 						"QString&)").constData ()) != -1)

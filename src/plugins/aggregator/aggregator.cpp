@@ -337,7 +337,10 @@ void Aggregator::currentItemChanged (const QModelIndex& index)
 			SLOT (handleSslError (QNetworkReply*)));
 	Ui_.ItemAuthor_->setText (Core::Instance ().GetAuthor (sindex));
 	Ui_.ItemCategory_->setText (Core::Instance ().GetCategory (sindex));
-	Ui_.ItemLink_->setText (Core::Instance ().GetLink (sindex));
+	QString link = Core::Instance ().GetLink (sindex);
+	if (link.size () >= 40)
+		link = link.left (15) + "..." + link.right (15);
+	Ui_.ItemLink_->setText (link);
 	Ui_.ItemPubDate_->setDateTime (Core::Instance ().GetPubDate (sindex));
 }
 
@@ -350,7 +353,10 @@ void Aggregator::currentChannelChanged ()
 	QModelIndex mapped = ChannelsFilterModel_->mapToSource (index);
     Core::Instance ().currentChannelChanged (mapped);
     Ui_.ChannelTags_->setText (Core::Instance ().GetTagsForIndex (mapped.row ()).join (" "));
-    Ui_.ChannelLink_->setText (Core::Instance ().GetChannelLink (mapped));
+	QString link = Core::Instance ().GetChannelLink (mapped);
+	if (link.size () >= 40)
+		link = link.left (15) + "..." + link.right (15);
+    Ui_.ChannelLink_->setText (link);
 	Ui_.ChannelDescription_->setText (Core::Instance ().GetChannelDescription (mapped));
     Ui_.ChannelAuthor_->setText (Core::Instance ().GetChannelAuthor (mapped));
     Ui_.ChannelLanguage_->setText (Core::Instance ().GetChannelLanguage (mapped));
