@@ -341,6 +341,11 @@ libtorrent::torrent_info Core::GetTorrentInfo (const QByteArray& data)
         emit error (tr ("Invalid torrent file"));
         return libtorrent::torrent_info ();
     }
+	catch (...)
+	{
+		emit error (tr ("General torrent parsing error"));
+		return libtorrent::torrent_info ();
+	}
 }
 
 bool Core::IsValidTorrent (const QByteArray& torrentData) const
