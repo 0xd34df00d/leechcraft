@@ -48,35 +48,20 @@ bool IsAlreadyRunning ()
 	if (socket.waitForConnected ())
 		return true;
 
+	// Clear any halted servers
 	QLocalServer server;
-	if (server.listen ("LeechCraft local socket"))
-		return false;
-
-#ifdef Q_OS_UNIX
-	if (server.serverError () == QAbstractSocket::AddressInUseError)
-	{
-		QFile file (server.fullServerName ());
-		if (!file.remove ())
-		{
-			QMessageBox::critical (0, "Critical failure",
-					QString ("LeechCraft has detected that the local "
-					"server socket already exists, but the file could "
-					"not be deleted. Please delete %1 manually and "
-					"then run LeechCraft again.")
-					.arg (server.fullServerName ()));
-			exit (1);
-		}
-		else
-			return false;
-	}
-#endif
-
+	server.listen ("LeechCraft local socket");
 	return false;
 }
 
 int main (int argc, char **argv)
 {
     int author = 0xd34df00d;
+
+
+    qInstallMsgHandler (debugMessageHandler);
+    QApplication app (argc, argv);
+    qInstallMsgHandler (debugMessageHandler);
 
 	if (IsAlreadyRunning ())
 	{
@@ -85,10 +70,6 @@ int main (int argc, char **argv)
 				"instance before starting it.");
 		return 1;
 	}
-
-    qInstallMsgHandler (debugMessageHandler);
-    QApplication app (argc, argv);
-    qInstallMsgHandler (debugMessageHandler);
 
     qDebug () << "======APPLICATION STARTUP======";
     qWarning () << "======APPLICATION STARTUP======";

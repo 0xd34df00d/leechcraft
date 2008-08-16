@@ -1,5 +1,6 @@
 #ifndef CORE_H
 #define CORE_H
+#include <memory>
 #include <QObject>
 #include <QList>
 #include <QMultiMap>
@@ -35,7 +36,7 @@ namespace Main
         MainWindow *ReallyMainWindow_;
         QTimer *ClipboardWatchdog_;
         QString PreviousClipboardContents_;
-		QLocalServer *Server_;
+		std::auto_ptr<QLocalServer> Server_;
     public:
         Core (QObject *parent = 0);
         ~Core ();
