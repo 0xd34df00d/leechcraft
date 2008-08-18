@@ -92,8 +92,6 @@ private slots:
     void on_ForceReannounce__triggered ();
     void on_ChangeTrackers__triggered ();
     void on_Preferences__triggered ();
-    void on_TorrentView__clicked (const QModelIndex&);
-    void on_TorrentView__pressed (const QModelIndex&);
     void on_OverallDownloadRateController__valueChanged (int);
     void on_OverallUploadRateController__valueChanged (int);
     void on_DesiredRating__valueChanged (double);
@@ -105,6 +103,8 @@ private slots:
     void on_UploadingTorrents__valueChanged (int);
     void on_TorrentTags__editingFinished ();
     void on_MoveFiles__triggered ();
+	void itemSelectionChanged (const QModelIndex&);
+	void tabChanged ();
     void setActionsEnabled ();
     void showError (QString);
     void updateTorrentStats ();

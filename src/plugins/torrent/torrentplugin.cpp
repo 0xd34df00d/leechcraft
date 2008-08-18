@@ -66,6 +66,14 @@ void TorrentPlugin::SetupCore ()
 			SIGNAL (taskRemoved (int)),
 			this,
 			SIGNAL (jobRemoved (int)));
+	connect (TorrentView_->selectionModel (),
+			SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
+			this,
+			SLOT (itemSelectionChanged (const QModelIndex&)));
+	connect (Stats_,
+			SIGNAL (currentChanged (int)),
+			this,
+			SLOT (tabChanged ()));
 
     Core::Instance ()->DoDelayedInit ();
 }
@@ -557,26 +565,6 @@ void TorrentPlugin::on_Preferences__triggered ()
     XmlSettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
 }
 
-void TorrentPlugin::on_TorrentView__clicked (const QModelIndex& index)
-{
-    Core::Instance ()->SetCurrentTorrent (FilterModel_->mapToSource (index).row ());
-    setActionsEnabled ();
-    TorrentTags_->setText (Core::Instance ()->GetTagsForIndex (FilterModel_->mapToSource (index).row ()).join (" "));
-    TorrentSelectionChanged_ = true;
-    restartTimers ();
-    updateTorrentStats ();
-}
-
-void TorrentPlugin::on_TorrentView__pressed (const QModelIndex& index)
-{
-    Core::Instance ()->SetCurrentTorrent (FilterModel_->mapToSource (index).row ());
-    setActionsEnabled ();
-    TorrentTags_->setText (Core::Instance ()->GetTagsForIndex (FilterModel_->mapToSource (index).row ()).join (" "));
-    TorrentSelectionChanged_ = true;
-    restartTimers ();
-    updateTorrentStats ();
-}
-
 void TorrentPlugin::on_OverallDownloadRateController__valueChanged (int val)
 {
     Core::Instance ()->SetOverallDownloadRate (val);
@@ -669,6 +657,21 @@ void TorrentPlugin::on_MoveFiles__triggered ()
                 arg (newDir));
 }
 
+void TorrentPlugin::itemSelectionChanged (const QModelIndex& index)
+{
+    Core::Instance ()->SetCurrentTorrent (FilterModel_->mapToSource (index).row ());
+    setActionsEnabled ();
+    TorrentTags_->setText (Core::Instance ()->GetTagsForIndex (FilterModel_->mapToSource (index).row ()).join (" "));
+    TorrentSelectionChanged_ = true;
+    restartTimers ();
+    updateTorrentStats ();
+}
+
+void TorrentPlugin::tabChanged ()
+{
+	updateTorrentStats ();
+}
+
 void TorrentPlugin::setActionsEnabled ()
 {
     RemoveTorrent_->setEnabled (TorrentView_->selectionModel ()->currentIndex ().isValid ());
@@ -691,39 +694,29 @@ void TorrentPlugin::restartTimers ()
 
 void TorrentPlugin::updateTorrentStats ()
 {
-	if (TorrentSelectionChanged_)
+	switch (Stats_->currentIndex ())
 	{
-		UpdateDashboard ();
-		UpdateTorrentPage ();
-		UpdateFilesPage ();
-		UpdatePeersPage ();
-		UpdatePiecesPage ();
+		case 0:
+			break;
+		case 1:
+			UpdateDashboard ();
+			break;
+		case 2:
+			updateOverallStats ();
+			break;
+		case 3:
+			UpdateTorrentPage ();
+			break;
+		case 4:
+			UpdateFilesPage ();
+			break;
+		case 5:
+			UpdatePeersPage ();
+			break;
+		case 6:
+			UpdatePiecesPage ();
+			break;
 	}
-	else
-		switch (Stats_->currentIndex ())
-		{
-			case 0:
-				break;
-			case 1:
-				UpdateDashboard ();
-				break;
-			case 2:
-				updateOverallStats ();
-				break;
-			case 3:
-				UpdateTorrentPage ();
-				break;
-			case 4:
-				UpdateFilesPage ();
-				break;
-			case 5:
-				UpdatePeersPage ();
-				break;
-			case 6:
-				UpdatePiecesPage ();
-				break;
-		}
-    TorrentSelectionChanged_ = false;
 }
 
 void TorrentPlugin::updateOverallStats ()
