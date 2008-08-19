@@ -66,10 +66,6 @@ void TorrentPlugin::SetupCore ()
 			SIGNAL (taskRemoved (int)),
 			this,
 			SIGNAL (jobRemoved (int)));
-	connect (TorrentView_->selectionModel (),
-			SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
-			this,
-			SLOT (itemSelectionChanged (const QModelIndex&)));
 	connect (Stats_,
 			SIGNAL (currentChanged (int)),
 			this,
@@ -214,7 +210,13 @@ void TorrentPlugin::Init ()
     Plugins_->addAction (Preferences_);
 
     setActionsEnabled ();
+
+	connect (TorrentView_->selectionModel (),
+			SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
+			this,
+			SLOT (itemSelectionChanged (const QModelIndex&)));
     LogShower_->setPlainText ("BitTorrent initialized");
+
     QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Torrent");
     int max = settings.beginReadArray ("History");
     for (int i = 0; i < max; ++i)
@@ -659,12 +661,16 @@ void TorrentPlugin::on_MoveFiles__triggered ()
 
 void TorrentPlugin::itemSelectionChanged (const QModelIndex& index)
 {
-    Core::Instance ()->SetCurrentTorrent (FilterModel_->mapToSource (index).row ());
     setActionsEnabled ();
-    TorrentTags_->setText (Core::Instance ()->GetTagsForIndex (FilterModel_->mapToSource (index).row ()).join (" "));
-    TorrentSelectionChanged_ = true;
     restartTimers ();
     updateTorrentStats ();
+
+	if (index.isValid ())
+	{
+		Core::Instance ()->SetCurrentTorrent (FilterModel_->mapToSource (index).row ());
+		TorrentTags_->setText (Core::Instance ()->GetTagsForIndex (FilterModel_->mapToSource (index).row ()).join (" "));
+		TorrentSelectionChanged_ = true;
+	}
 }
 
 void TorrentPlugin::tabChanged ()
@@ -674,11 +680,12 @@ void TorrentPlugin::tabChanged ()
 
 void TorrentPlugin::setActionsEnabled ()
 {
-    RemoveTorrent_->setEnabled (TorrentView_->selectionModel ()->currentIndex ().isValid ());
-    Stop_->setEnabled (TorrentView_->selectionModel ()->currentIndex ().isValid ());
-    Resume_->setEnabled (TorrentView_->selectionModel ()->currentIndex ().isValid ());
-    ForceReannounce_->setEnabled (TorrentView_->selectionModel ()->currentIndex ().isValid ());
-    ChangeTrackers_->setEnabled (TorrentView_->selectionModel ()->currentIndex ().isValid ());
+	bool isValid = TorrentView_->selectionModel ()->currentIndex ().isValid ();
+    RemoveTorrent_->setEnabled (isValid);
+    Stop_->setEnabled (isValid);
+    Resume_->setEnabled (isValid);
+    ForceReannounce_->setEnabled (isValid);
+    ChangeTrackers_->setEnabled (isValid);
 }
 
 void TorrentPlugin::showError (QString e)
