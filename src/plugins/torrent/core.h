@@ -1,6 +1,7 @@
 #ifndef CORE_H
 #define CORE_H
 #include <list>
+#include <memory>
 #include <QAbstractItemModel>
 #include <QPair>
 #include <QList>
@@ -57,11 +58,11 @@ private:
     HandleDict_t Handles_;
     QList<QString> Headers_;
     int InterfaceUpdateTimer_, CurrentTorrent_;
-    QTimer *SettingsSaveTimer_;
-    PiecesModel *PiecesModel_;
-    PeersModel *PeersModel_;
-    TagsCompletionModel *TagsCompletionModel_;
-	TorrentFilesModel *TorrentFilesModel_;
+	std::auto_ptr<QTimer> SettingsSaveTimer_, FinishedTimer_, WarningWatchdog_;
+	std::auto_ptr<PiecesModel> PiecesModel_;
+	std::auto_ptr<PeersModel> PeersModel_;
+	std::auto_ptr<TagsCompletionModel> TagsCompletionModel_;
+	std::auto_ptr<TorrentFilesModel> TorrentFilesModel_;
 	mutable TorrentPlugin *TorrentPlugin_;
 
 	std::list<quint16> IDPool_;

@@ -45,12 +45,14 @@ Core* Core::Instance ()
 
 Core::Core ()
 : CurrentTorrent_ (-1)
+, SettingsSaveTimer_ (new QTimer ())
+, FinishedTimer_ (new QTimer ())
+, WarningWatchdog_ (new QTimer ())
+, PeersModel_ (new PeersModel ())
+, PiecesModel_ (new PiecesModel ())
+, TagsCompletionModel_ (new TagsCompletionModel)
+, TorrentFilesModel_ (new TorrentFilesModel (false, this))
 {
-    PeersModel_ = new PeersModel ();
-    PiecesModel_ = new PiecesModel ();
-    TagsCompletionModel_ = new TagsCompletionModel ();
-	TorrentFilesModel_ = new TorrentFilesModel (false, this);
-
 	for (quint16 i = 0; i < 65535; ++i)
 		IDPool_.push_back (i);
 }
@@ -98,17 +100,14 @@ void Core::DoDelayedInit ()
 
     ReadSettings ();
     InterfaceUpdateTimer_ = startTimer (1000);
-    SettingsSaveTimer_ = new QTimer (this);
-    connect (SettingsSaveTimer_, SIGNAL (timeout ()), this, SLOT (writeSettings ()));
+    connect (SettingsSaveTimer_.get (), SIGNAL (timeout ()), this, SLOT (writeSettings ()));
     SettingsSaveTimer_->start (XmlSettingsManager::Instance ()->property ("AutosaveInterval").toInt () * 1000);
 
-    QTimer *finished = new QTimer (this);
-    connect (finished, SIGNAL (timeout ()), this, SLOT (checkFinished ()));
-    finished->start (100);
+	connect (FinishedTimer_.get (), SIGNAL (timeout ()), this, SLOT (checkFinished ()));
+	FinishedTimer_->start (100);
 
-    QTimer *warningWatchdog = new QTimer (this);
-    connect (warningWatchdog, SIGNAL (timeout ()), this, SLOT (queryLibtorrentForWarnings ()));
-    warningWatchdog->start (100);
+	connect (WarningWatchdog_.get (), SIGNAL (timeout ()), this, SLOT (queryLibtorrentForWarnings ()));
+	WarningWatchdog_->start (100);
 
     ManipulateSettings ();
 }
@@ -121,31 +120,31 @@ void Core::SetWindow (TorrentPlugin *tp)
 void Core::Release ()
 {
     writeSettings ();
-    Session_->stop_dht ();
     killTimer (InterfaceUpdateTimer_);
-	delete Session_;
-	Session_ = 0;
-	delete SettingsSaveTimer_;
-	SettingsSaveTimer_ = 0;
-	delete PiecesModel_;
-	PiecesModel_ = 0;
-	delete PeersModel_;
-	PeersModel_ = 0;
-	delete TagsCompletionModel_;
-	TagsCompletionModel_ = 0;
-	delete TorrentFilesModel_;
-	TorrentFilesModel_ = 0;
+
+	SettingsSaveTimer_.reset ();
+	FinishedTimer_.reset ();
+	WarningWatchdog_.reset ();
+	PiecesModel_.reset ();
+	PeersModel_.reset ();
+	TagsCompletionModel_.reset ();
+	TorrentFilesModel_.reset ();
+
 	QObjectList kids = children ();
 	for (int i = 0; i < kids.size (); ++i)
 	{
 		delete kids.at (i);
 		kids [i] = 0;
 	}
+
+    Session_->stop_dht ();
+	delete Session_;
+	Session_ = 0;
 }
 
 PiecesModel* Core::GetPiecesModel ()
 {
-    return PiecesModel_;
+    return PiecesModel_.get ();
 }
 
 void Core::ClearPieces ()
@@ -165,7 +164,7 @@ void Core::UpdatePieces (int torrent)
 
 PeersModel* Core::GetPeersModel ()
 {
-    return PeersModel_;
+    return PeersModel_.get ();
 }
 
 void Core::ClearPeers ()
@@ -183,7 +182,7 @@ void Core::UpdatePeers (int torrent)
 
 TorrentFilesModel* Core::GetTorrentFilesModel ()
 {
-	return TorrentFilesModel_;
+	return TorrentFilesModel_.get ();
 }
 
 void Core::ClearFiles ()
@@ -503,7 +502,7 @@ void Core::UpdateTags (int index, const QStringList& tags)
 
 TagsCompletionModel* Core::GetTagsCompletionModel ()
 {
-    return TagsCompletionModel_;
+    return TagsCompletionModel_.get ();
 }
 
 int Core::AddFile (const QString& filename,
