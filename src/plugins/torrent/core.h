@@ -58,7 +58,7 @@ private:
     HandleDict_t Handles_;
     QList<QString> Headers_;
     int InterfaceUpdateTimer_, CurrentTorrent_;
-	std::auto_ptr<QTimer> SettingsSaveTimer_, FinishedTimer_, WarningWatchdog_;
+	std::auto_ptr<QTimer> SettingsSaveTimer_, FinishedTimer_, WarningWatchdog_, ScrapeTimer_;
 	std::auto_ptr<PiecesModel> PiecesModel_;
 	std::auto_ptr<PeersModel> PeersModel_;
 	std::auto_ptr<TagsCompletionModel> TagsCompletionModel_;
@@ -173,6 +173,7 @@ private slots:
     void writeSettings ();
     void checkFinished ();
     void queryLibtorrentForWarnings ();
+	void scrape ();
 protected:
     virtual void timerEvent (QTimerEvent*);
 public slots:
@@ -184,6 +185,7 @@ public slots:
     void setProxySettings ();
     void setGeneralSettings ();
     void setDHTSettings ();
+	void setScrapeInterval ();
 signals:
     void error (QString) const;
     void logMessage (const QString&);

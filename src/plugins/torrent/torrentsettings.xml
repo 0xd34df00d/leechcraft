@@ -173,6 +173,20 @@
         <tab>
             <label lang="en" value="Advanced I" />
             <label lang="ru" value="Расширенные I" />
+			<item type="groupbox" property="ScrapeEnabled" checkable="true" state="off">
+				<label lang="en" value="Scrape enabled" />
+				<label lang="ru" value="Scrape включен" />
+				<item type="spinbox" property="ScrapeInterval" default="60" minimum="10" maximum="3600" step="60">
+					<lang value="en">
+						<label value="Scrape interval" />
+						<suffix value=" s" />
+					</lang>
+					<lang value="ru">
+						<label value="Интервал scrape-запросов" />
+						<suffix value=" с" />
+					</lang>
+				</item>
+			</item>
 			<item type="spinbox" property="TrackerCompletionTimeout" default="60" minimum="10" maximum="300" step="10">
 				<lang value="en">
 					<label value="Tracker request completion timeout:" />
