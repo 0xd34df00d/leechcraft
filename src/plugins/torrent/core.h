@@ -9,7 +9,7 @@
 #include <torrent_info.hpp>
 #include <torrent_handle.hpp>
 #include <session.hpp>
-#include <interfaces/structures.h>
+#include <interfaces/interfaces.h>
 #include "torrentinfo.h"
 #include "overallstats.h"
 #include "fileinfo.h"
@@ -153,8 +153,11 @@ public:
     void SetTrackers (int, const QStringList&);
     QString GetTorrentDirectory (int) const;
     bool MoveTorrentFiles (int, const QString&);
-    void MakeTorrent (NewTorrentParams) const;
     void SetCurrentTorrent (int);
+
+    void MakeTorrent (NewTorrentParams) const;
+	void ImportData (const QByteArray&, IImportExport::Whats);
+	QByteArray ExportData (IImportExport::Whats) const;
     void LogMessage (const QString&);
 private:
     QString GetStringForState (libtorrent::torrent_status::state_t) const;

@@ -231,6 +231,10 @@ void TorrentPlugin::Init ()
     settings.endArray ();
 }
 
+TorrentPlugin::~TorrentPlugin ()
+{
+}
+
 QString TorrentPlugin::GetName () const
 {
     return windowTitle ();
@@ -345,6 +349,49 @@ void TorrentPlugin::StopAll ()
         Core::Instance ()->PauseTorrent (i);
 }
 
+bool TorrentPlugin::CouldDownload (const QString& string, LeechCraft::TaskParameters) const
+{
+    QFile file (string);
+    if (!file.exists () || !file.open (QIODevice::ReadOnly))
+        return false;
+
+    return Core::Instance ()->IsValidTorrent (file.readAll ());
+}
+
+int TorrentPlugin::AddJob (const QString& name, LeechCraft::TaskParameters parameters)
+{
+    AddTorrentDialog_->Reinit ();
+    AddTorrentDialog_->SetFilename (name);
+
+	QString path;
+	QStringList tags;
+	QVector<bool> files;
+	QString fname;
+	if (parameters & LeechCraft::FromAutomatic)
+	{
+		fname = name;
+		path = AddTorrentDialog_->GetDefaultSavePath ();
+		tags = AddTorrentDialog_->GetDefaultTags ();
+	}
+	else
+	{
+		if (AddTorrentDialog_->exec () == QDialog::Rejected)
+			return -1;
+
+		fname = AddTorrentDialog_->GetFilename (),
+		path = AddTorrentDialog_->GetSavePath ();
+		files = AddTorrentDialog_->GetSelectedFiles ();
+		tags = AddTorrentDialog_->GetTags ();
+		if (AddTorrentDialog_->GetAddType () == Core::Started)
+			parameters |= LeechCraft::Autostart;
+		else
+			parameters &= ~LeechCraft::Autostart;
+	}
+	int result = Core::Instance ()->AddFile (fname, path, tags, files, parameters);
+    setActionsEnabled ();
+	return result;
+}
+
 QList<QVariantList> TorrentPlugin::GetAll () const
 {
     QList<QVariantList> result;
@@ -410,58 +457,25 @@ QAbstractItemDelegate* TorrentPlugin::GetDelegate () const
     return 0;
 }
 
-bool TorrentPlugin::CouldDownload (const QString& string, LeechCraft::TaskParameters) const
+void TorrentPlugin::ImportData (const QByteArray& data, IImportExport::Whats flags)
 {
-    QFile file (string);
-    if (!file.exists () || !file.open (QIODevice::ReadOnly))
-        return false;
-
-    return Core::Instance ()->IsValidTorrent (file.readAll ());
+	Core::Instance ()->ImportData (data, flags);
 }
 
-int TorrentPlugin::AddJob (const QString& name, LeechCraft::TaskParameters parameters)
+QByteArray TorrentPlugin::ExportData (IImportExport::Whats flags) const
 {
-    AddTorrentDialog_->Reinit ();
-    AddTorrentDialog_->SetFilename (name);
-
-	QString path;
-	QStringList tags;
-	QVector<bool> files;
-	QString fname;
-	if (parameters & LeechCraft::FromAutomatic)
-	{
-		fname = name;
-		path = AddTorrentDialog_->GetDefaultSavePath ();
-		tags = AddTorrentDialog_->GetDefaultTags ();
-	}
-	else
-	{
-		if (AddTorrentDialog_->exec () == QDialog::Rejected)
-			return -1;
-
-		fname = AddTorrentDialog_->GetFilename (),
-		path = AddTorrentDialog_->GetSavePath ();
-		files = AddTorrentDialog_->GetSelectedFiles ();
-		tags = AddTorrentDialog_->GetTags ();
-		if (AddTorrentDialog_->GetAddType () == Core::Started)
-			parameters |= LeechCraft::Autostart;
-		else
-			parameters &= ~LeechCraft::Autostart;
-	}
-	int result = Core::Instance ()->AddFile (fname, path, tags, files, parameters);
-    setActionsEnabled ();
-	return result;
-}
-
-void TorrentPlugin::closeEvent (QCloseEvent*)
-{
-    IsShown_ = false;
+	return Core::Instance ()->ExportData (flags);
 }
 
 void TorrentPlugin::handleHidePlugins ()
 {
     IsShown_ = false;
     hide ();
+}
+
+void TorrentPlugin::closeEvent (QCloseEvent*)
+{
+    IsShown_ = false;
 }
 
 void TorrentPlugin::on_OpenTorrent__triggered ()
@@ -862,5 +876,6 @@ void TorrentPlugin::UpdatePiecesPage ()
     else
         Core::Instance ()->UpdatePieces (index.row ());
 }
+
 Q_EXPORT_PLUGIN2 (leechcraft_torrent, TorrentPlugin);
 

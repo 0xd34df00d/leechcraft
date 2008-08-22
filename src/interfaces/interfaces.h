@@ -119,10 +119,19 @@ public:
     virtual ~IJobHolder () {}
 };
 
-class IScheduler
+class IImportExport
 {
 public:
+	enum What { IEFSettings, IEFEntities };
+	Q_DECLARE_FLAGS (Whats, What);
+
+	virtual void ImportData (const QByteArray&, Whats) = 0;
+	virtual QByteArray ExportData (Whats) const = 0;
+
+	virtual ~IImportExport () {}
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS (IImportExport::Whats);
 
 Q_DECLARE_INTERFACE (ISettings, "org.Deviant.LeechCraft.ISettings/1.0");
 Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
@@ -134,6 +143,7 @@ Q_DECLARE_INTERFACE (IDirectDownload, "org.Deviant.LeechCraft.IDirectDownload/1.
 Q_DECLARE_INTERFACE (IPeer2PeerDownload, "org.Deviant.LeechCraft.IPeer2PeerDownload/1.0");
 Q_DECLARE_INTERFACE (IRemoteable, "org.Deviant.LeechCraft.IRemoteable/1.0");
 Q_DECLARE_INTERFACE (IJobHolder, "org.Deviant.LeechCraft.IJobHolder/1.0");
+Q_DECLARE_INTERFACE (IImportExport, "org.Deviant.LeechCraft.IImportExport/1.0");
 
 #endif
 

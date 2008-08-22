@@ -18,11 +18,12 @@ class TorrentPlugin : public QMainWindow
                     , public IPeer2PeerDownload
                     , public IRemoteable
                     , public IJobHolder
+					, public IImportExport
                     , private Ui::MainWindow
 {
     Q_OBJECT
 
-    Q_INTERFACES (IInfo IWindow IPeer2PeerDownload IRemoteable IJobHolder);
+    Q_INTERFACES (IInfo IWindow IPeer2PeerDownload IRemoteable IJobHolder IImportExport);
 
     ID_t ID_;
     bool IsShown_;
@@ -43,6 +44,7 @@ class TorrentPlugin : public QMainWindow
 public:
     // IInfo
     void Init ();
+	virtual ~TorrentPlugin ();
     QString GetName () const;
     QString GetInfo () const;
     QString GetStatusbarMessage () const;
@@ -59,6 +61,7 @@ public:
     void SetParent (QWidget*);
     void ShowWindow ();
     void ShowBalloonTip ();
+
     // IDownload
     qint64 GetDownloadSpeed () const;
     qint64 GetUploadSpeed () const;
@@ -78,6 +81,10 @@ public:
     // IJobHolder
     QAbstractItemModel* GetRepresentation () const;
     QAbstractItemDelegate* GetDelegate () const;
+
+	// IImportExport
+	void ImportData (const QByteArray&, Whats);
+	QByteArray ExportData (Whats) const;
 public slots:
     void handleHidePlugins ();
 protected:

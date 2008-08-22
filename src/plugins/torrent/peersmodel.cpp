@@ -155,43 +155,40 @@ void PeersModel::Clear ()
 
 void PeersModel::Update (const QList<PeerInfo>& peers, int torrent)
 {
-    CurrentTorrent_ = torrent;
+	if (torrent != CurrentTorrent_)
+	{
+		CurrentTorrent_ = torrent;
+		Peers_.clear ();
 
-    QHash<QString, int> IP2position;
-    for (int i = 0; i < Peers_.size (); ++i)
-        IP2position [Peers_.at (i).IP_] = i;
+		Update (peers, torrent);
+	}
+	else
+	{
+		QHash<QString, int> IP2position;
+		for (int i = 0; i < Peers_.size (); ++i)
+			IP2position [Peers_.at (i).IP_] = i;
 
-	int psize = peers.size ();
-    QList<PeerInfo> peers2insert;
-    for (int i = 0; i < psize; ++i)
-    {
-        const PeerInfo& pi = peers.at (i);
-		QHash<QString, int>::iterator pos = IP2position.find (pi.IP_);
-        if (pos != IP2position.end ())
+		int psize = peers.size ();
+		QList<PeerInfo> peers2insert;
+		for (int i = 0; i < psize; ++i)
 		{
-			Peers_ [pos.value ()] = pi;
-			IP2position.erase (pos);
+			const PeerInfo& pi = peers.at (i);
+			QHash<QString, int>::iterator pos = IP2position.find (pi.IP_);
+			if (pos != IP2position.end ())
+			{
+				Peers_ [pos.value ()] = pi;
+				IP2position.erase (pos);
+			}
+			else
+				peers2insert << pi;
 		}
-		else
-			peers2insert << pi;
-    }
 
-    QList<int> values = IP2position.values ();
-    qSort (values.begin (), values.end (), qGreater<int> ());
-    for (int i = 0; i < values.size (); ++i)
-    {
-        beginRemoveRows (QModelIndex (), values.at (i), values.at (i));
-        Peers_.removeAt (values.at (i));
-        endRemoveRows ();
-    }
+		QList<int> values = IP2position.values ();
+		for (int i = 0; i < values.size (); ++i)
+			Peers_.removeAt (values.at (i));
+		Peers_ += peers2insert;
 
-	reset ();
-
-    if (peers2insert.size ())
-    {
-        beginInsertRows (QModelIndex (), Peers_.size (), Peers_.size () + peers2insert.size () - 1);
-        Peers_ += peers2insert;
-        endInsertRows ();
-    }
+		reset ();
+	}
 }
 

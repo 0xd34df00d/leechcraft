@@ -914,6 +914,11 @@ bool Core::MoveTorrentFiles (int torrent, const QString& newDir)
     return true;
 }
 
+void Core::SetCurrentTorrent (int torrent)
+{
+    CurrentTorrent_ = torrent;
+}
+
 namespace
 {
     void AddFiles (libtorrent::torrent_info& t, const boost::filesystem::path& p, const boost::filesystem::path& l)
@@ -1028,9 +1033,12 @@ void Core::MakeTorrent (NewTorrentParams params) const
     file.close ();
 }
 
-void Core::SetCurrentTorrent (int torrent)
+void Core::ImportData (const QByteArray& data, IImportExport::Whats)
 {
-    CurrentTorrent_ = torrent;
+}
+
+QByteArray Core::ExportData (IImportExport::Whats) const
+{
 }
 
 void Core::LogMessage (const QString& message)
