@@ -6,7 +6,6 @@
 #include <QSystemTrayIcon>
 #include <QMap>
 #include "common.h"
-#include "logshower.h"
 
 class QMenu;
 class QMenuBar;
@@ -23,6 +22,11 @@ class QVBoxLayout;
 class GraphWidget;
 class QDockWidget;
 
+namespace Ui
+{
+	class LeechCraft;
+};
+
 namespace Main
 {
     class Core;
@@ -31,45 +35,31 @@ namespace Main
     {
         Q_OBJECT
 
+		Ui::LeechCraft *Ui_;
+
         QSystemTrayIcon *TrayIcon_;
-        QMenu *File_, *PluginsMenu_, *ActionsMenu_, *ToolsMenu_, *Help_
-            , *TrayPluginsMenu_;
-        QTreeWidget *PluginsList_;
-        Main::Core *Model_;
+		QMenu *TrayPluginsMenu_;
         QLabel *DownloadSpeed_, *UploadSpeed_;
         GraphWidget *DSpeedGraph_, *USpeedGraph_;
-
-        QAction *AddJob_, *Settings_, *BackupSettings_, *RestoreSettings_;
-        QToolBar *Toolbar_, *PluginsToolbar_;
 
         XmlSettingsDialog *XmlSettingsDialog_;
         QList<QDockWidget*> PluginWidgets_;
 
         bool IsShown_;
 
+    public:
         MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
         virtual ~MainWindow ();
-    public:
-        static MainWindow *Instance ();
         QMenu* GetRootPluginsMenu () const;
     public slots:
         void catchError (QString);
     protected:
         virtual void closeEvent (QCloseEvent*);
     private:
-        void SetupToolbars ();
-        void SetupMenus ();
         void SetTrayIcon ();
-        void FillMenus ();
-        void MakeActions ();
         void ReadSettings ();
         void WriteSettings ();
-        void InitializeMainView (const QByteArray&);
-        void AddPluginToTree (const PluginInfo*);
     private slots:
-        void handlePluginsListDoubleClick (QTreeWidgetItem*, int);
-        void addPluginToList (const PluginInfo*);
-        void pluginActionTriggered ();
         void updateSpeedIndicators ();
         void backupSettings ();
         void restoreSettings ();

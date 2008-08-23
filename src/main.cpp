@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <iostream>
 #include <cstring>
+#include <memory>
 #include <QtGui/QtGui>
 #include <QMutex>
 #include <QTime>
@@ -87,9 +88,12 @@ int main (int argc, char **argv)
     qRegisterMetaType<QModelIndex> ("QModelIndex");
     qRegisterMetaType<QModelIndex*> ("QModelIndexStar");
 
-    Proxy::Instance ()->SetStrings (QStringList (QObject::tr ("bytes")) << QObject::tr ("KB") << QObject::tr ("MB") << QObject::tr ("GB"));
+    Proxy::Instance ()->SetStrings (QStringList (QObject::tr ("bytes")) <<
+			QObject::tr ("KB") <<
+			QObject::tr ("MB") <<
+			QObject::tr ("GB"));
 
-    Main::MainWindow::Instance ();
+	std::auto_ptr<Main::MainWindow> mw (new Main::MainWindow ());
     return app.exec ();
 }
 

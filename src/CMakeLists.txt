@@ -109,7 +109,8 @@ SET (SRCS
 	plugininfo.cpp
 	pluginlisttablewidgeticon.cpp
 	changelogdialog.cpp
-	xmlsettingsmanager.cpp)
+	xmlsettingsmanager.cpp
+	)
 
 SET (HEADERS
 	mainwindow.h
@@ -121,9 +122,14 @@ SET (HEADERS
 	changelogdialog.h
 	xmlsettingsmanager.h
 	interfaces/interfaces.h
-	interfaces/structures.h)
+	interfaces/structures.h
+	)
 
-SET (FORMS changelogdialog.ui commonjobadder.ui)
+SET (FORMS
+	changelogdialog.ui
+	commonjobadder.ui
+	leechcraft.ui
+	)
 SET (RESOURCES mainresources.qrc)
 
 ADD_DEFINITIONS (-DQT_GUI_LIB)

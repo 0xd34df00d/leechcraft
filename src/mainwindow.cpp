@@ -13,30 +13,35 @@
 #include "changelogdialog.h"
 #include "commonjobadder.h"
 #include "xmlsettingsmanager.h"
+#include "ui_leechcraft.h"
 
 namespace Main
 {
-
-MainWindow *MainWindow::Instance_ = 0;
 
 MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 : QMainWindow (parent, flags)
 , IsShown_ (true)
 {
-    QSplashScreen splash (QPixmap (":/resources/images/splashscreen.png"), Qt::WindowStaysOnTopHint);
+    QSplashScreen splash (QPixmap (":/resources/images/splashscreen.png"),
+			Qt::WindowStaysOnTopHint);
     splash.show ();
-
     splash.showMessage (tr ("Initializing interface..."));
-    statusBar ();
-    SetupToolbars ();
-    SetupMenus ();
-    setWindowIcon (QIcon (":/resources/images/mainapp.png"));
-    setWindowTitle (QCoreApplication::applicationName ());
+
+	Ui_ = new Ui::LeechCraft;
+	Ui_->setupUi (this);
+
+	connect (Ui_->ActionAddTask_, SIGNAL (triggered ()), this, SLOT (addJob ()));
+	connect (Ui_->ActionQuit_, SIGNAL (triggered ()), qApp, SLOT (quit ()));
+	connect (Ui_->ActionSettings_, SIGNAL (triggered ()), this, SLOT (showSettings ()));
+	connect (Ui_->ActionAboutQt_, SIGNAL (triggered ()), qApp, SLOT (aboutQt ()));
+	connect (Ui_->ActionAboutLeechCraft_, SIGNAL (triggered ()), this, SLOT (showAboutInfo ()));
+
     SetTrayIcon ();
 
-    XmlSettingsDialog_ = new XmlSettingsDialog (this);
-    XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/coresettings.xml");
-    XmlSettingsManager::Instance ()->RegisterObject ("AggregateJobs", this, "handleAggregateJobsChange");
+	XmlSettingsDialog_ = new XmlSettingsDialog (this);
+	XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/coresettings.xml");
+    XmlSettingsManager::Instance ()->RegisterObject ("AggregateJobs",
+			this, "handleAggregateJobsChange");
 
     DownloadSpeed_ = new QLabel;
     DownloadSpeed_->setText ("0");
@@ -56,62 +61,36 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
     statusBar ()->addPermanentWidget (USpeedGraph_);
     statusBar ()->addPermanentWidget (DownloadSpeed_);
     statusBar ()->addPermanentWidget (UploadSpeed_);
-
-    splash.showMessage (tr ("Reading settings..."));
     ReadSettings ();
-
     Proxy::Instance ()->SetMainWindow (this);
 
     splash.showMessage (tr ("Initializing core and plugins..."));
-    Model_ = new Main::Core (this);
-    connect (Model_, SIGNAL (gotPlugin (const PluginInfo*)), this, SLOT (addPluginToList (const PluginInfo*)));
-    connect (Model_, SIGNAL (downloadFinished (const QString&)), this, SLOT (handleDownloadFinished (const QString&)));
+    connect (&Core::Instance (),
+			SIGNAL (downloadFinished (const QString&)),
+			this,
+			SLOT (handleDownloadFinished (const QString&)));
     connect (qApp, SIGNAL (aboutToQuit ()), this, SLOT (cleanUp ()));
-    Model_->SetReallyMainWindow (this);
-    splash.finish (this);
-    show ();
+	Core::Instance ().SetReallyMainWindow (this);
 
-    Model_->DelayedInit ();
-    QList<JobHolder> holders = Model_->GetJobHolders ();
-    setDockNestingEnabled (true);
-    for (int i = 0; i < holders.size (); ++i)
-    {
-        QTreeView *view = new QTreeView;
-        view->setModel (holders.at (i).Model_);
-        if (holders.at (i).Delegate_)
-            view->setItemDelegate (holders.at (i).Delegate_);
-        int cc = view->model ()->columnCount ();
-        for (int j = 0; j < cc; ++j)
-            view->resizeColumnToContents (j);
-        QDockWidget *widget = new QDockWidget (holders.at (i).Info_->GetName (), this);
-        widget->setFloating (false);
-        widget->setWidget (view);
-        widget->setFeatures (QDockWidget::DockWidgetMovable);
-        PluginWidgets_.append (widget);
-        addDockWidget (Qt::RightDockWidgetArea, widget);
-        widget->setVisible (XmlSettingsManager::Instance ()->property ("AggregateJobs").toBool ());
-    }
+	Core::Instance ().DelayedInit ();
 
     QTimer *speedUpd = new QTimer (this);
     speedUpd->setInterval (1000);
     connect (speedUpd, SIGNAL (timeout ()), this, SLOT (updateSpeedIndicators ()));
     speedUpd->start ();
     qApp->setQuitOnLastWindowClosed (false);
-}
 
-QMenu* MainWindow::GetRootPluginsMenu () const
-{
-    return ActionsMenu_;
+    splash.finish (this);
+    show ();
 }
 
 MainWindow::~MainWindow ()
 {
 }
 
-MainWindow* MainWindow::Instance ()
+QMenu* MainWindow::GetRootPluginsMenu () const
 {
-	static MainWindow mw;
-    return &mw;
+    return Ui_->PluginsMenu_;
 }
 
 void MainWindow::catchError (QString message)
@@ -126,61 +105,25 @@ void MainWindow::closeEvent (QCloseEvent *e)
     IsShown_ = false;
 }
 
-void MainWindow::SetupToolbars ()
-{
-    Toolbar_        = addToolBar (tr ("Tools"));
-    PluginsToolbar_ = addToolBar (tr ("Plugins"));
-}
-
-void MainWindow::SetupMenus ()
-{
-    File_                = menuBar ()->addMenu (tr ("&File"));
-    PluginsMenu_        = menuBar ()->addMenu (tr ("&Plugins"));
-    ActionsMenu_        = menuBar ()->addMenu (tr ("&Actions"));
-    ToolsMenu_            = menuBar ()->addMenu (tr ("&Tools"));
-    Help_                = menuBar ()->addMenu (tr ("&Help"));
-
-    FillMenus ();
-}
-
 void MainWindow::SetTrayIcon ()
 {
-    QMenu *iconMenu = new QMenu;
-    iconMenu->addAction (tr ("Show/hide main"), this, SLOT (showHideMain ()));
-    iconMenu->addAction (tr ("Hide all"), this, SLOT (hideAll ()));
-    iconMenu->addSeparator ();
-    iconMenu->addAction (AddJob_);
-    iconMenu->addSeparator ();
-    TrayPluginsMenu_ = iconMenu->addMenu (tr ("Plugins"));
-    iconMenu->addSeparator ();
-    iconMenu->addAction (tr ("Quit"), qApp, SLOT (quit ()));
+	QMenu *iconMenu = new QMenu;
+	iconMenu->addAction (tr ("Show/hide main"), this, SLOT (showHideMain ()));
+	iconMenu->addAction (tr ("Hide all"), this, SLOT (hideAll ()));
+	iconMenu->addSeparator ();
+	iconMenu->addAction (Ui_->ActionAddTask_);
+	iconMenu->addSeparator ();
+	TrayPluginsMenu_ = iconMenu->addMenu (tr ("Plugins"));
+	iconMenu->addSeparator ();
+	iconMenu->addAction (tr ("Quit"), qApp, SLOT (quit ()));
 
-    TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/mainapp.png"), this);
-    TrayIcon_->setContextMenu (iconMenu);
-    TrayIcon_->show ();
-    connect (TrayIcon_, SIGNAL (activated (QSystemTrayIcon::ActivationReason)), this, SLOT (handleTrayIconActivated (QSystemTrayIcon::ActivationReason)));
-}
-
-void MainWindow::FillMenus ()
-{
-    MakeActions ();
-}
-
-void MainWindow::MakeActions ()
-{
-    AddJob_ = ActionsMenu_->addAction (QIcon (":/resources/images/main_addjob.png"), tr ("&Add job"), this, SLOT (addJob ()));
-    AddJob_->setStatusTip (tr ("Adds a job to a plugin supporting that addition"));
-    Toolbar_->addAction (AddJob_);
-
-    QAction *a = File_->addAction (tr ("&Quit"), qApp, SLOT (quit ()));
-    a->setStatusTip (tr ("Exit from application"));
-
-    Settings_ = ToolsMenu_->addAction (QIcon (":/resources/images/main_preferences.png"), tr ("Settings..."), this, SLOT (showSettings ()));
-    Toolbar_->addAction (Settings_);
-    BackupSettings_ = ToolsMenu_->addAction (tr ("Backup settings..."), this, SLOT (backupSettings ()));
-    RestoreSettings_ = ToolsMenu_->addAction (tr ("Restore settings..."), this, SLOT (restoreSettings ()));
-    Help_->addAction (tr ("&About Qt..."), qApp, SLOT (aboutQt ()));
-    Help_->addAction (tr ("About &LeechCraft..."), this, SLOT (showAboutInfo ()));
+	TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/mainapp.png"), this);
+	TrayIcon_->setContextMenu (iconMenu);
+	TrayIcon_->show ();
+	connect (TrayIcon_,
+			SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
+			this,
+			SLOT (handleTrayIconActivated (QSystemTrayIcon::ActivationReason)));
 }
 
 void MainWindow::ReadSettings ()
@@ -190,7 +133,6 @@ void MainWindow::ReadSettings ()
     resize (settings.value ("size", QSize  (750, 550)).toSize ());
     move   (settings.value ("pos",  QPoint (10, 10)).toPoint ());
     settings.value ("maximized").toBool () ? showMaximized () : showNormal ();
-    InitializeMainView (settings.value ("pluginListHorizontalHeaderState").toByteArray ());
     settings.endGroup ();
 }
 
@@ -201,90 +143,12 @@ void MainWindow::WriteSettings ()
     settings.setValue ("size", size ());
     settings.setValue ("pos",  pos ());
     settings.setValue ("maximized", isMaximized ());
-    settings.setValue ("pluginListHorizontalHeaderState", PluginsList_->header ()->saveState ());
     settings.endGroup ();
-}
-
-void MainWindow::InitializeMainView (const QByteArray& pluginliststate)
-{
-    PluginsList_ = new QTreeWidget (this);
-    PluginsList_->header ()->setClickable (false);
-    PluginsList_->setUniformRowHeights (true);
-    PluginsList_->setSelectionBehavior (QAbstractItemView::SelectRows);
-    PluginsList_->setSelectionMode (QAbstractItemView::SingleSelection);
-    PluginsList_->setEditTriggers (QAbstractItemView::NoEditTriggers);
-    PluginsList_->setItemsExpandable (false);
-    PluginsList_->setRootIsDecorated (false);
-    QStringList headerLabels;
-    headerLabels << tr ("Plugin");
-    PluginsList_->setHeaderLabels (headerLabels);
-    PluginsList_->header ()->setHighlightSections (false);
-    PluginsList_->header ()->setDefaultAlignment (Qt::AlignLeft);
-    PluginsList_->header ()->setResizeMode (QHeaderView::ResizeToContents);
-    
-    connect (PluginsList_, SIGNAL (itemDoubleClicked (QTreeWidgetItem*, int)), this, SLOT (handlePluginsListDoubleClick (QTreeWidgetItem*, int)));
-        
-    if (!pluginliststate.isNull () && !pluginliststate.isEmpty ())
-        PluginsList_->header ()->restoreState (pluginliststate);
-
-    PluginsList_->header ()->setStretchLastSection (true);
-    PluginsList_->setMinimumSize (150, 150);
-
-    setCentralWidget (PluginsList_);
-}
-
-void MainWindow::AddPluginToTree (const PluginInfo* pInfo)
-{
-    QTreeWidgetItem *item = new QTreeWidgetItem ();
-    item->setData (0, Qt::DecorationRole, pInfo->GetIcon ());
-    item->setData (0, Qt::DisplayRole, pInfo->GetName ());
-    PluginsList_->addTopLevelItem (item);
-    if (!pInfo->GetDependenciesMet ())
-        item->setDisabled (true);
-}
-
-void MainWindow::handlePluginsListDoubleClick (QTreeWidgetItem *item, int column)
-{
-    int index = PluginsList_->indexOfTopLevelItem (item);
-
-    if (index != -1)
-    {
-        if (item->isDisabled ())
-            return;
-
-        Model_->ShowPlugin (PluginsList_->indexOfTopLevelItem (item));
-    }
-}
-
-void MainWindow::addPluginToList (const PluginInfo *pInfo)
-{
-    int id = PluginsList_->topLevelItemCount ();
-    QAction *act = new QAction (this);
-    act->setData (id);
-    act->setText (pInfo->GetName ());
-    act->setIcon (pInfo->GetIcon ());
-    connect (act, SIGNAL (triggered ()), this, SLOT (pluginActionTriggered ()));
-    PluginsMenu_->addAction (act);
-    PluginsToolbar_->addAction (act);
-    TrayPluginsMenu_->addAction (act);
-
-    AddPluginToTree (pInfo);
-
-    delete pInfo;
-}
-
-void MainWindow::pluginActionTriggered ()
-{
-    QAction *s = qobject_cast<QAction*> (sender ());
-    if (!s)
-        return;
-
-    Model_->ShowPlugin (s->data ().toInt ());
 }
 
 void MainWindow::updateSpeedIndicators ()
 {
-    QPair<qint64, qint64> speeds = Model_->GetSpeeds ();
+    QPair<qint64, qint64> speeds = Core::Instance ().GetSpeeds ();
 
     DownloadSpeed_->setText (Proxy::Instance ()->MakePrettySize (speeds.first) + tr ("/s"));
     UploadSpeed_->setText (Proxy::Instance ()->MakePrettySize (speeds.second) + tr ("/s"));
@@ -358,7 +222,7 @@ void MainWindow::showHideMain ()
 
 void MainWindow::hideAll ()
 {
-    Model_->HideAll ();
+	Core::Instance ().HideAll ();
 }
 
 void MainWindow::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason)
@@ -383,7 +247,7 @@ void MainWindow::addJob ()
     {
         QString name = adder.GetString ();
         if (!name.isEmpty ())
-            Model_->TryToAddJob (name, adder.GetWhere ());
+            Core::Instance ().TryToAddJob (name, adder.GetWhere ());
     }
 }
 
@@ -412,10 +276,12 @@ void MainWindow::cleanUp ()
 {
     TrayIcon_->hide ();
     WriteSettings ();
-    Model_->Release ();
-    delete Model_;
+	Core::Instance ().Release ();
+    qDebug () << "Releasing XmlSettingsManager";
     XmlSettingsManager::Instance ()->Release ();
+	Ui_ = 0;
     qDebug () << "Destroyed fine";
+	delete Ui_;
 }
 
 };

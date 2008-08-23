@@ -37,9 +37,11 @@ namespace Main
         QTimer *ClipboardWatchdog_;
         QString PreviousClipboardContents_;
 		std::auto_ptr<QLocalServer> Server_;
+
+        Core ();
     public:
-        Core (QObject *parent = 0);
-        ~Core ();
+        virtual ~Core ();
+		static Core& Instance ();
         void Release ();
 
         void SetReallyMainWindow (MainWindow*);

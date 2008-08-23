@@ -17,17 +17,21 @@
 #include "exceptions/outofbounds.h"
 #include "xmlsettingsmanager.h"
 
-Main::Core::Core (QObject *parent)
-: QObject (parent)
-, Server_ (new QLocalServer)
+Main::Core::Core ()
+: Server_ (new QLocalServer)
 {
     PreparePools ();
-    PluginManager_ = new Main::PluginManager (this);
-    connect (this, SIGNAL (error (QString)), parent, SLOT (catchError (QString)));
-    connect (PluginManager_, SIGNAL (gotPlugin (const PluginInfo*)), this, SIGNAL (gotPlugin (const PluginInfo*)));
+	PluginManager_ = new Main::PluginManager (this);
+    connect (PluginManager_,
+			SIGNAL (gotPlugin (const PluginInfo*)),
+			this,
+			SIGNAL (gotPlugin (const PluginInfo*)));
 
     ClipboardWatchdog_ = new QTimer (this);
-    connect (ClipboardWatchdog_, SIGNAL (timeout ()), this, SLOT (handleClipboardTimer ()));
+    connect (ClipboardWatchdog_,
+			SIGNAL (timeout ()),
+			this,
+			SLOT (handleClipboardTimer ()));
     ClipboardWatchdog_->start (2000);
 
 	Server_->listen ("LeechCraft local socket");
@@ -35,6 +39,12 @@ Main::Core::Core (QObject *parent)
 
 Main::Core::~Core ()
 {
+}
+
+Main::Core& Main::Core::Instance ()
+{
+	static Core core;
+	return core;
 }
 
 void Main::Core::Release ()
@@ -57,6 +67,11 @@ Main::MainWindow* Main::Core::GetReallyMainWindow ()
 
 void Main::Core::DelayedInit ()
 {
+	connect (this,
+			SIGNAL (error (QString)),
+			parent (),
+			SLOT (catchError (QString)));
+
     PluginManager_->InitializePlugins (ReallyMainWindow_);
     PluginManager_->CalculateDependencies ();
     PluginManager_->ThrowPlugins ();
