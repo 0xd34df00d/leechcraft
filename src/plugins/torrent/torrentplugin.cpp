@@ -457,14 +457,24 @@ QAbstractItemDelegate* TorrentPlugin::GetDelegate () const
     return 0;
 }
 
-void TorrentPlugin::ImportData (const QByteArray& data, IImportExport::Whats flags)
+void TorrentPlugin::ImportSettings (const QByteArray& settings)
 {
-	Core::Instance ()->ImportData (data, flags);
+	XmlSettingsDialog_->MergeXml (settings);
 }
 
-QByteArray TorrentPlugin::ExportData (IImportExport::Whats flags) const
+void TorrentPlugin::ImportData (const QByteArray& data)
 {
-	return Core::Instance ()->ExportData (flags);
+	Core::Instance ()->ImportData (data);
+}
+
+QByteArray TorrentPlugin::ExportSettings () const
+{
+	return XmlSettingsDialog_->GetXml ().toUtf8 ();
+}
+
+QByteArray TorrentPlugin::ExportData () const
+{
+	return Core::Instance ()->ExportData ();
 }
 
 void TorrentPlugin::handleHidePlugins ()

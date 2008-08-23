@@ -47,6 +47,8 @@ public:
     XmlSettingsDialog (QWidget *parent = 0);
 	virtual ~XmlSettingsDialog ();
     void RegisterObject (QObject*, const QString&);
+	QString GetXml () const;
+	void MergeXml (const QByteArray&);
 private:
     void HandleDeclaration (const QDomElement&);
     void ParsePage (const QDomElement&);
@@ -54,18 +56,18 @@ private:
     void ParseItem (const QDomElement&, QWidget*);
     QString GetLabel (const QDomElement&) const;
     LangElements GetLangElements (const QDomElement&) const;
-    void DoLineedit (const QDomElement&, QFormLayout*, QVariant&);
-    void DoCheckbox (const QDomElement&, QFormLayout*, QVariant&);
-    void DoSpinbox (const QDomElement&, QFormLayout*, QVariant&);
-    void DoGroupbox (const QDomElement&, QFormLayout*, QVariant&);
-    void DoSpinboxRange (const QDomElement&, QFormLayout*, QVariant&);
-    void DoPath (const QDomElement&, QFormLayout*, QVariant&);
-    void DoRadio (const QDomElement&, QFormLayout*, QVariant&);
-    void DoCombobox (const QDomElement&, QFormLayout*, QVariant&);
+	QVariant GetValue (const QDomElement&, bool = false) const;
+    void DoLineedit (const QDomElement&, QFormLayout*);
+    void DoCheckbox (const QDomElement&, QFormLayout*);
+    void DoSpinbox (const QDomElement&, QFormLayout*);
+    void DoGroupbox (const QDomElement&, QFormLayout*);
+    void DoSpinboxRange (const QDomElement&, QFormLayout*);
+    void DoPath (const QDomElement&, QFormLayout*);
+    void DoRadio (const QDomElement&, QFormLayout*);
+    void DoCombobox (const QDomElement&, QFormLayout*);
 	QList<QImage> GetImages (const QDomElement&) const;
 	void UpdateXml (bool = false);
 	void UpdateSingle (const QString&, const QVariant&, QDomElement&);
-	QString GetXml () const;
 private slots:
     void updatePreferences ();
 protected:

@@ -99,6 +99,41 @@ void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& filename)
 	UpdateXml (true);
 }
 
+QString XmlSettingsDialog::GetXml () const
+{
+	return Document_->toString ();
+}
+
+void XmlSettingsDialog::MergeXml (const QByteArray& newXml)
+{
+	QDomDocument newDoc;
+	newDoc.setContent (newXml);
+
+	QList<QByteArray> props = WorkingObject_->dynamicPropertyNames ();
+
+	QDomNodeList nodes = newDoc.elementsByTagName ("item");
+	for (int i = 0; i < nodes.size (); ++i)
+	{
+		QDomElement elem = nodes.at (i).toElement ();
+		if (elem.isNull ())
+			continue;
+
+		QString propName = elem.attribute ("property");
+		if (!props.contains (propName.toLatin1 ()))
+			continue;
+
+		QVariant value = GetValue (elem);
+		if (value.isNull ())
+			continue;
+
+		WorkingObject_->setProperty (propName.toLatin1 ().constData (), value);
+		Prop2NewValue_ [propName] = value;
+	}
+
+	UpdateXml ();
+	Prop2NewValue_.clear ();
+}
+
 void XmlSettingsDialog::HandleDeclaration (const QDomElement& decl)
 {
     if (decl.hasAttribute ("defaultlang"))
@@ -172,35 +207,29 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
     QFormLayout *lay = qobject_cast<QFormLayout*> (baseWidget->layout ());
 
     QString property = item.attribute ("property");
-    QVariant value = WorkingObject_->property (property.toLatin1 ().constData ());
-    if (!value.isValid () || value.isNull () && item.hasAttribute ("default"))
-    {
-        value = item.attribute ("default");
-        WorkingObject_->setProperty (property.toLatin1 ().constData (), value);
-    }
 
     if (type.isEmpty () || type.isNull ())
         return;
     else if (type == "lineedit")
-        DoLineedit (item, lay, value);
+        DoLineedit (item, lay);
     else if (type == "checkbox")
-        DoCheckbox (item, lay, value);
+        DoCheckbox (item, lay);
     else if (type == "spinbox")
-        DoSpinbox (item, lay, value);
+        DoSpinbox (item, lay);
     else if (type == "groupbox" && item.attribute ("checkable") == "true")
-        DoGroupbox (item, lay, value);
+        DoGroupbox (item, lay);
     else if (type == "spinboxrange")
-        DoSpinboxRange (item, lay, value);
+        DoSpinboxRange (item, lay);
     else if (type == "path")
-        DoPath (item, lay, value);
+        DoPath (item, lay);
     else if (type == "radio")
-        DoRadio (item, lay, value);
+        DoRadio (item, lay);
     else if (type == "combobox")
-        DoCombobox (item, lay, value);
+        DoCombobox (item, lay);
     else
         qWarning () << Q_FUNC_INFO << "unhandled type" << type;
 
-    WorkingObject_->setProperty (property.toLatin1 ().constData (), value);
+    WorkingObject_->setProperty (property.toLatin1 ().constData (), GetValue (item));
 }
 
 QString XmlSettingsDialog::GetLabel (const QDomElement& item) const
@@ -316,10 +345,98 @@ XmlSettingsDialog::LangElements XmlSettingsDialog::GetLangElements (const QDomEl
     return returning;
 }
 
-void XmlSettingsDialog::DoLineedit (const QDomElement& item, QFormLayout *lay, QVariant& value)
+QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject) const
+{
+	QString type = item.attribute ("type");
+    QString property = item.attribute ("property");
+
+	QVariant value;
+	if (ignoreObject)
+	{
+		value = item.attribute ("default");
+	}
+	else
+	{
+		value = WorkingObject_->property (property.toLatin1 ().constData ());
+		if (!value.isValid () || value.isNull () && item.hasAttribute ("default"))
+		{
+			value = item.attribute ("default");
+			WorkingObject_->setProperty (property.toLatin1 ().constData (), value);
+		}
+	}
+
+    if (type == "lineedit" ||
+			type == "spinbox")
+		return value;
+    else if (type == "checkbox" ||
+			(type == "groupbox" && item.attribute ("checkable") == "true"))
+	{
+		if (!value.isValid () ||
+				value.isNull () ||
+				value.toString () == "on" ||
+				value.toString () == "off")
+		{
+			if (item.hasAttribute ("default"))
+				value = (item.attribute ("default") == "on");
+			else
+				value = (item.attribute ("state") == "on");
+		}
+	}
+    else if (type == "spinboxrange")
+	{
+		if (!value.isValid () ||
+				value.isNull () ||
+				!value.canConvert<QList<QVariant> > ())
+		{
+			QStringList parts = item.attribute ("default").split (":");
+			QList<QVariant> result;
+			if (parts.size () != 2)
+			{
+				qWarning () << "spinboxrange parse error, wrong default value";
+				return QVariant ();
+			}
+			result << parts.at (0).toInt () << parts.at (1).toInt ();
+			value = result;
+		}
+	}
+    else if (type == "path")
+	{
+		if (value.isNull () ||
+				value.toString ().isEmpty ())
+			if (item.hasAttribute ("defaultHomePath") &&
+					item.attribute ("defaultHomePath") == "true")
+				value = QDir::homePath ();
+	}
+    else if (type == "radio" ||
+			type == "combobox")
+	{
+		if (value.isNull () ||
+				value.toString ().isEmpty ())
+		{
+			QDomElement option = item.firstChildElement ("option");
+			while (!option.isNull ())
+			{
+				if (option.attribute ("default") == "true")
+				{
+					value = option.attribute ("name");
+					break;
+				}
+				option = option.nextSiblingElement ("option");
+			}
+		}
+	}
+    else
+        qWarning () << Q_FUNC_INFO << "unhandled type" << type;
+
+	return value;
+}
+
+void XmlSettingsDialog::DoLineedit (const QDomElement& item, QFormLayout *lay)
 {
     QLabel *label = new QLabel (GetLabel (item));
     label->setWordWrap (false);
+
+	QVariant value = GetValue (item);
 
     QLineEdit *edit = new QLineEdit (value.toString ());
     edit->setObjectName (item.attribute ("property"));
@@ -333,27 +450,20 @@ void XmlSettingsDialog::DoLineedit (const QDomElement& item, QFormLayout *lay, Q
 	lay->addRow (label, edit);
 }
 
-void XmlSettingsDialog::DoCheckbox (const QDomElement& item, QFormLayout *lay, QVariant& value)
+void XmlSettingsDialog::DoCheckbox (const QDomElement& item, QFormLayout *lay)
 {
     QCheckBox *box = new QCheckBox (GetLabel (item));
     box->setObjectName (item.attribute ("property"));
-    if (!value.isValid () ||
-			value.isNull () ||
-			value.toString () == "on" ||
-			value.toString () == "off")
-	{
-		if (item.hasAttribute ("default"))
-			value = (item.attribute ("default") == "on");
-		else
-			value = (item.attribute ("state") == "on");
-	}
+
+	QVariant value = GetValue (item);
+
     box->setCheckState (value.toBool () ? Qt::Checked : Qt::Unchecked);
     connect (box, SIGNAL (stateChanged (int)), this, SLOT (updatePreferences ()));
 
     lay->addRow (box);
 }
 
-void XmlSettingsDialog::DoSpinbox (const QDomElement& item, QFormLayout *lay, QVariant& value)
+void XmlSettingsDialog::DoSpinbox (const QDomElement& item, QFormLayout *lay)
 {
     QLabel *label = new QLabel (GetLabel (item));
     label->setWordWrap (false);
@@ -375,13 +485,16 @@ void XmlSettingsDialog::DoSpinbox (const QDomElement& item, QFormLayout *lay, QV
         if (langs.Suffix_.first)
             box->setSuffix (langs.Suffix_.second);
     }
+
+	QVariant value = GetValue (item);
+
     box->setValue (value.toInt ());
     connect (box, SIGNAL (valueChanged (int)), this, SLOT (updatePreferences ()));
 
 	lay->addRow (label, box);
 }
 
-void XmlSettingsDialog::DoGroupbox (const QDomElement& item, QFormLayout *lay, QVariant& value)
+void XmlSettingsDialog::DoGroupbox (const QDomElement& item, QFormLayout *lay)
 {
     QGroupBox *box = new QGroupBox (GetLabel (item));
     box->setObjectName (item.attribute ("property"));
@@ -390,16 +503,9 @@ void XmlSettingsDialog::DoGroupbox (const QDomElement& item, QFormLayout *lay, Q
 	groupLayout->setFieldGrowthPolicy (QFormLayout::FieldsStayAtSizeHint);
     box->setLayout (groupLayout);
     box->setCheckable (true);
-    if (!value.isValid () ||
-			value.isNull () ||
-			value.toString () == "on" ||
-			value.toString () == "off")
-	{
-		if (item.hasAttribute ("default"))
-			value = (item.attribute ("default") == "on");
-		else
-			value = (item.attribute ("state") == "on");
-	}
+
+	QVariant value = GetValue (item);
+
     box->setChecked (value.toBool ());
     connect (box, SIGNAL (toggled (bool)), this, SLOT (updatePreferences ()));
     ParseEntity (item, box);
@@ -407,20 +513,8 @@ void XmlSettingsDialog::DoGroupbox (const QDomElement& item, QFormLayout *lay, Q
     lay->addRow (box);
 }
 
-void XmlSettingsDialog::DoSpinboxRange (const QDomElement& item, QFormLayout *lay, QVariant& value)
+void XmlSettingsDialog::DoSpinboxRange (const QDomElement& item, QFormLayout *lay)
 {
-    if (!value.isValid () || value.isNull () || !value.canConvert<QList<QVariant> > ())
-    {
-        QStringList parts = item.attribute ("default").split (":");
-        QList<QVariant> result;
-        if (parts.size () != 2)
-        {
-            qWarning () << "spinboxrange parse error, wrong default value";
-            return;
-        }
-        result << parts.at (0).toInt () << parts.at (1).toInt ();
-        value = result;
-    }
 
     QLabel *label = new QLabel (GetLabel (item));
     label->setWordWrap (false);
@@ -428,20 +522,21 @@ void XmlSettingsDialog::DoSpinboxRange (const QDomElement& item, QFormLayout *la
     widget->setObjectName (item.attribute ("property"));
     widget->SetMinimum (item.attribute ("minimum").toInt ());
     widget->SetMaximum (item.attribute ("maximum").toInt ());
+
+	QVariant value = GetValue (item);
+
     widget->SetRange (value);
     connect (widget, SIGNAL (changed ()), this, SLOT (updatePreferences ()));
 
 	lay->addRow (label, widget);
 }
 
-void XmlSettingsDialog::DoPath (const QDomElement& item, QFormLayout *lay, QVariant& value)
+void XmlSettingsDialog::DoPath (const QDomElement& item, QFormLayout *lay)
 {
-    if (value.isNull () || value.toString ().isEmpty ())
-        if (item.hasAttribute ("defaultHomePath") && item.attribute ("defaultHomePath") == "true")
-            value = QDir::homePath ();
     QLabel *label = new QLabel (GetLabel (item));
     label->setWordWrap (false);
     FilePicker *picker = new FilePicker (this);
+	QVariant value = GetValue (item);
     picker->SetText (value.toString ());
     picker->setObjectName (item.attribute ("property"));
     connect (picker, SIGNAL (textChanged (const QString&)), this, SLOT (updatePreferences ()));
@@ -449,7 +544,7 @@ void XmlSettingsDialog::DoPath (const QDomElement& item, QFormLayout *lay, QVari
 	lay->addRow (label, picker);
 }
 
-void XmlSettingsDialog::DoRadio (const QDomElement& item, QFormLayout *lay, QVariant& value)
+void XmlSettingsDialog::DoRadio (const QDomElement& item, QFormLayout *lay)
 {
     RadioGroup *group = new RadioGroup (this);
     group->setObjectName (item.attribute ("property"));
@@ -462,10 +557,11 @@ void XmlSettingsDialog::DoRadio (const QDomElement& item, QFormLayout *lay, QVar
 		group->AddButton (button,
 				option.hasAttribute ("default") &&
 				option.attribute ("default") == "true");
-        if (option.attribute ("default") == "true")
-            value = option.attribute ("name");
         option = option.nextSiblingElement ("option");
     }
+
+	QVariant value = GetValue (item);
+
     connect (group, SIGNAL (valueChanged ()), this, SLOT (updatePreferences ()));
 
     QGroupBox *box = new QGroupBox (GetLabel (item));
@@ -476,7 +572,7 @@ void XmlSettingsDialog::DoRadio (const QDomElement& item, QFormLayout *lay, QVar
     lay->addRow (box);
 }
 
-void XmlSettingsDialog::DoCombobox (const QDomElement& item, QFormLayout *lay, QVariant& value)
+void XmlSettingsDialog::DoCombobox (const QDomElement& item, QFormLayout *lay)
 {
     QComboBox *box = new QComboBox (this);
     box->setObjectName (item.attribute ("property"));
@@ -496,10 +592,7 @@ void XmlSettingsDialog::DoCombobox (const QDomElement& item, QFormLayout *lay, Q
 			box->addItem (GetLabel (option), option.attribute ("name"));
 
         if (option.attribute ("default") == "true")
-        {
             box->setCurrentIndex (box->count () - 1);
-            value = option.attribute ("name");
-        }
         option = option.nextSiblingElement ("option");
     }
     connect (box, SIGNAL (currentIndexChanged (int)), this, SLOT (updatePreferences ()));
@@ -629,11 +722,6 @@ void XmlSettingsDialog::UpdateSingle (const QString& name,
 			}
 		}
 	}
-}
-
-QString XmlSettingsDialog::GetXml () const
-{
-	return Document_->toString ();
 }
 
 void XmlSettingsDialog::updatePreferences ()

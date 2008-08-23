@@ -156,9 +156,10 @@ public:
     void SetCurrentTorrent (int);
 
     void MakeTorrent (NewTorrentParams) const;
-	void ImportData (const QByteArray&, IImportExport::Whats);
-	QByteArray ExportData (IImportExport::Whats) const;
     void LogMessage (const QString&);
+
+	void ImportData (const QByteArray&);
+	QByteArray ExportData () const;
 private:
     QString GetStringForState (libtorrent::torrent_status::state_t) const;
     bool CheckValidity (int) const;

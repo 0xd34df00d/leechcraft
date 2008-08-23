@@ -1033,17 +1033,17 @@ void Core::MakeTorrent (NewTorrentParams params) const
     file.close ();
 }
 
-void Core::ImportData (const QByteArray& data, IImportExport::Whats)
-{
-}
-
-QByteArray Core::ExportData (IImportExport::Whats) const
-{
-}
-
 void Core::LogMessage (const QString& message)
 {
     emit logMessage (message);
+}
+
+void Core::ImportData (const QByteArray& data)
+{
+}
+
+QByteArray Core::ExportData () const
+{
 }
 
 QString Core::GetStringForState (libtorrent::torrent_status::state_t state) const

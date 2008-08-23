@@ -83,8 +83,10 @@ public:
     QAbstractItemDelegate* GetDelegate () const;
 
 	// IImportExport
-	void ImportData (const QByteArray&, Whats);
-	QByteArray ExportData (Whats) const;
+	void ImportSettings (const QByteArray&);
+	void ImportData (const QByteArray&);
+	QByteArray ExportSettings () const;
+	QByteArray ExportData () const;
 public slots:
     void handleHidePlugins ();
 protected:

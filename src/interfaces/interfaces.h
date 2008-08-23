@@ -122,16 +122,14 @@ public:
 class IImportExport
 {
 public:
-	enum What { IEFSettings, IEFEntities };
-	Q_DECLARE_FLAGS (Whats, What);
-
-	virtual void ImportData (const QByteArray&, Whats) = 0;
-	virtual QByteArray ExportData (Whats) const = 0;
+	virtual void ImportSettings (const QByteArray&) = 0;
+	virtual void ImportData (const QByteArray&) = 0;
+	virtual QByteArray ExportSettings () const = 0;
+	virtual QByteArray ExportData () const = 0;
 
 	virtual ~IImportExport () {}
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS (IImportExport::Whats);
 
 Q_DECLARE_INTERFACE (ISettings, "org.Deviant.LeechCraft.ISettings/1.0");
 Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
