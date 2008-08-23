@@ -17,10 +17,6 @@ namespace
     }
 };
 
-#define PROP2CHAR(a) (a.toLatin1 ().constData ())
-
-Q_GLOBAL_STATIC (XmlSettingsManager, XmlSettingsManagerInstance);
-
 XmlSettingsManager::XmlSettingsManager ()
 {
     BaseSettingsManager::Init ();
@@ -28,7 +24,8 @@ XmlSettingsManager::XmlSettingsManager ()
 
 XmlSettingsManager* XmlSettingsManager::Instance ()
 {
-    return XmlSettingsManagerInstance ();
+	static XmlSettingsManager manager;
+	return &manager;
 }
 
 QSettings* XmlSettingsManager::BeginSettings () const

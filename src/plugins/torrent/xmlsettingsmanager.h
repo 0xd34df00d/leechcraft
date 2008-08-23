@@ -5,8 +5,9 @@
 class XmlSettingsManager : public BaseSettingsManager
 {
     Q_OBJECT
-public:
+
     XmlSettingsManager ();
+public:
     static XmlSettingsManager* Instance ();
 protected:
     virtual QSettings* BeginSettings () const;

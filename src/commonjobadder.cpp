@@ -8,7 +8,9 @@ CommonJobAdder::CommonJobAdder (QWidget *parent)
 : QDialog (parent)
 {
     setupUi (this);
-	Where_->setText (Main::XmlSettingsManager::Instance ()->Property ("LastCommonFolder",
+	What_->setText (Main::XmlSettingsManager::Instance ()->Property ("LastWhatFolder",
+				QDir::homePath ()).toString ());
+	Where_->setText (Main::XmlSettingsManager::Instance ()->Property ("LastWhereFolder",
 				QDir::homePath ()).toString ());
 }
 
@@ -26,13 +28,13 @@ void CommonJobAdder::on_Browse__released ()
 {
     QString name = QFileDialog::getOpenFileName (this,
 			tr ("Select file"),
-			Main::XmlSettingsManager::Instance ()->Property ("LastCommonFolder",
+			Main::XmlSettingsManager::Instance ()->Property ("LastWhatFolder",
 				QDir::homePath ()).toString ());
     if (name.isEmpty ())
         return;
 
     What_->setText (name);
-    Main::XmlSettingsManager::Instance ()->setProperty ("LastCommonFolder", name);
+    Main::XmlSettingsManager::Instance ()->setProperty ("LastWhatFolder", name);
 }
 
 void CommonJobAdder::on_BrowseWhere__released ()

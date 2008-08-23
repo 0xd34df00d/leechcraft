@@ -1,31 +1,20 @@
 #ifndef XMLSETTINGSMANAGER_H
 #define XMLSETTINGSMANAGER_H
-#include <QMap>
-#include <QPair>
-#include <QObject>
-#include <interfaces/interfaces.h>
-
-class QSettings;
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace Main
 {
-    class XmlSettingsManager : public QObject
-    {
-        Q_OBJECT
+	class XmlSettingsManager : public BaseSettingsManager
+	{
+		Q_OBJECT
 
-        QMap<QByteArray, QPair<QObject*, QByteArray> > Properties2Object_;
-        bool Initializing_;
-    public:
-        XmlSettingsManager ();
-        static XmlSettingsManager* Instance ();
-        void Release ();
-        void RegisterObject (const QByteArray& propName, QObject* object, const QByteArray& funcName);
-        QVariant Property (const QString& propName, const QVariant& def);
-    protected:
-        virtual bool event (QEvent*);
-        virtual QSettings* BeginSettings ();
-        virtual void EndSettings (QSettings*);
-    };
+		XmlSettingsManager ();
+	public:
+		static XmlSettingsManager* Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
+	};
 };
 
 #endif

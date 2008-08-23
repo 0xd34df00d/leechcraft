@@ -47,11 +47,8 @@ namespace Main
 
         bool IsShown_;
 
-        static MainWindow *Instance_;
-        static QMutex *InstanceMutex_;
-
         MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
-        ~MainWindow ();
+        virtual ~MainWindow ();
     public:
         static MainWindow *Instance ();
         QMenu* GetRootPluginsMenu () const;

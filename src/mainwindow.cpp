@@ -18,7 +18,6 @@ namespace Main
 {
 
 MainWindow *MainWindow::Instance_ = 0;
-QMutex *MainWindow::InstanceMutex_ = new QMutex;
 
 MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 : QMainWindow (parent, flags)
@@ -111,9 +110,8 @@ MainWindow::~MainWindow ()
 
 MainWindow* MainWindow::Instance ()
 {
-    if (!Instance_)
-        Instance_ = new MainWindow ();
-    return Instance_;
+	static MainWindow mw;
+    return &mw;
 }
 
 void MainWindow::catchError (QString message)
