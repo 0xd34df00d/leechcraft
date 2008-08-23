@@ -24,6 +24,8 @@ ADD_DEFINITIONS(-DQT_GUI_LIB)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ADD_LIBRARY (xmlsettingsdialog SHARED ${SRCS} ${MOC_SRCS})
 TARGET_LINK_LIBRARIES (xmlsettingsdialog
-                        ${QT_LIBRARIES}
+						${QT_QTCORE_LIBRARY}
+						${QT_QTGUI_LIBRARY}
+						${QT_QTXML_LIBRARY}
 						)
 INSTALL (TARGETS xmlsettingsdialog DESTINATION lib)

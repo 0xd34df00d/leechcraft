@@ -14,6 +14,8 @@
 #include <QtGui/QtGui>
 #include <QtXml/QtXml>
 #include <QtDebug>
+#include <QUrl>
+#include <QDomNodeList>
 #include "xmlsettingsdialog.h"
 #include "rangewidget.h"
 #include "filepicker.h"
@@ -21,6 +23,7 @@
 
 XmlSettingsDialog::XmlSettingsDialog (QWidget *parent)
 : QDialog (parent)
+, Document_ (new QDomDocument)
 {
     Pages_ = new QStackedWidget;
     Sections_ = new QListWidget;
@@ -51,6 +54,10 @@ XmlSettingsDialog::XmlSettingsDialog (QWidget *parent)
     DefaultLang_ = "en";
 }
 
+XmlSettingsDialog::~XmlSettingsDialog ()
+{
+}
+
 void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& filename)
 {
     WorkingObject_ = obj;
@@ -63,13 +70,12 @@ void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& filename)
     QByteArray data = file.readAll ();
     file.close ();
 
-    QDomDocument document;
-    if (!document.setContent (data))
+    if (!Document_->setContent (data))
     {
         qWarning () << "Could not parse file";
         return;
     }
-    QDomElement root = document.documentElement ();
+    QDomElement root = Document_->documentElement ();
     if (root.tagName () != "settings")
     {
         qWarning () << "Bad settings file";
@@ -89,6 +95,8 @@ void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& filename)
         ParsePage (pageChild);
         pageChild = pageChild.nextSiblingElement ("page");
     }
+
+	UpdateXml (true);
 }
 
 void XmlSettingsDialog::HandleDeclaration (const QDomElement& decl)
@@ -329,8 +337,16 @@ void XmlSettingsDialog::DoCheckbox (const QDomElement& item, QFormLayout *lay, Q
 {
     QCheckBox *box = new QCheckBox (GetLabel (item));
     box->setObjectName (item.attribute ("property"));
-    if (!value.isValid () || value.isNull ())
-        value = (item.attribute ("state") == "on");
+    if (!value.isValid () ||
+			value.isNull () ||
+			value.toString () == "on" ||
+			value.toString () == "off")
+	{
+		if (item.hasAttribute ("default"))
+			value = (item.attribute ("default") == "on");
+		else
+			value = (item.attribute ("state") == "on");
+	}
     box->setCheckState (value.toBool () ? Qt::Checked : Qt::Unchecked);
     connect (box, SIGNAL (stateChanged (int)), this, SLOT (updatePreferences ()));
 
@@ -374,8 +390,16 @@ void XmlSettingsDialog::DoGroupbox (const QDomElement& item, QFormLayout *lay, Q
 	groupLayout->setFieldGrowthPolicy (QFormLayout::FieldsStayAtSizeHint);
     box->setLayout (groupLayout);
     box->setCheckable (true);
-    if (!value.isValid () || value.isNull ())
-        value = (item.attribute ("state") == "on");
+    if (!value.isValid () ||
+			value.isNull () ||
+			value.toString () == "on" ||
+			value.toString () == "off")
+	{
+		if (item.hasAttribute ("default"))
+			value = (item.attribute ("default") == "on");
+		else
+			value = (item.attribute ("state") == "on");
+	}
     box->setChecked (value.toBool ());
     connect (box, SIGNAL (toggled (bool)), this, SLOT (updatePreferences ()));
     ParseEntity (item, box);
@@ -435,7 +459,9 @@ void XmlSettingsDialog::DoRadio (const QDomElement& item, QFormLayout *lay, QVar
     {
         QRadioButton *button = new QRadioButton (GetLabel (option));
         button->setObjectName (option.attribute ("name"));
-        group->AddButton (button, option.hasAttribute ("default") && option.attribute ("default") == "true");
+		group->AddButton (button,
+				option.hasAttribute ("default") &&
+				option.attribute ("default") == "true");
         if (option.attribute ("default") == "true")
             value = option.attribute ("name");
         option = option.nextSiblingElement ("option");
@@ -521,6 +547,95 @@ QList<QImage> XmlSettingsDialog::GetImages (const QDomElement& item) const
 	return result;
 }
 
+void XmlSettingsDialog::UpdateXml (bool whole)
+{
+	QDomNodeList nodes = Document_->elementsByTagName ("item");
+	if (whole)
+		for (int i = 0; i < nodes.size (); ++i)
+		{
+			QDomElement elem = nodes.at (i).toElement ();
+			if (!elem.hasAttribute ("property"))
+				continue;
+
+			QString name = elem.attribute ("property");
+			QVariant value = WorkingObject_->property (name.toLatin1 ().constData ());
+
+			UpdateSingle (name, value, elem);
+		}
+	else
+		for (Property2Value_t::const_iterator i = Prop2NewValue_.begin (),
+				end = Prop2NewValue_.end (); i != end; ++i)
+		{
+			QDomElement element;
+			QString name = i.key ();
+			qDebug () << nodes.size ();
+			for (int j = 0, size = nodes.size (); j < size; ++j)
+			{
+				QDomElement e = nodes.at (j).toElement ();
+				qDebug () << e.tagName ();
+				if (e.isNull ())
+					continue;
+				if (e.attribute ("property") == name)
+				{
+					element = e;
+					break;
+				}
+			}
+			if (element.isNull ())
+			{
+				qWarning () << Q_FUNC_INFO << "element for property" << name << "not found";
+				return;
+			}
+
+			UpdateSingle (name, i.value (), element);
+		}
+}
+
+void XmlSettingsDialog::UpdateSingle (const QString& name,
+		const QVariant& value, QDomElement& element)
+{
+	QString type = element.attribute ("type");
+	if (type == "lineedit" ||
+			type == "checkbox" ||
+			type == "spinbox" ||
+			type == "groupbox" ||
+			type == "path")
+		element.setAttribute ("default", value.toString ());
+	else if (type == "spinboxrange")
+	{
+		QStringList vals = value.toStringList ();
+		if (vals.size () != 2)
+		{
+			qWarning () << Q_FUNC_INFO << "spinboxrange value error, not 2 elems in list";
+			return;
+		}
+		element.setAttribute ("default", vals.at (0) + ':' + vals.at (1));
+	}
+	else if (type == "radio" ||
+			type == "combobox")
+	{
+		QDomNodeList options = element.elementsByTagName ("option");
+		for (int i = 0; i < options.size (); ++i)
+			options.at (i).toElement ().removeAttribute ("default");
+
+		for (int i = 0; i < options.size (); ++i)
+		{
+			QDomElement option = options.at (i).toElement ();
+			QString optName = value.toString ();
+			if (option.attribute ("name") == optName)
+			{
+				option.setAttribute ("default", "true");
+				break;
+			}
+		}
+	}
+}
+
+QString XmlSettingsDialog::GetXml () const
+{
+	return Document_->toString ();
+}
+
 void XmlSettingsDialog::updatePreferences ()
 {
     QString propertyName = sender ()->objectName ();
@@ -566,8 +681,13 @@ void XmlSettingsDialog::updatePreferences ()
 
 void XmlSettingsDialog::accept ()
 {
-    for (Property2Value_t::const_iterator i = Prop2NewValue_.begin (); i != Prop2NewValue_.end (); ++i)
+    for (Property2Value_t::const_iterator i = Prop2NewValue_.begin (),
+			end = Prop2NewValue_.end (); i != end; ++i)
         WorkingObject_->setProperty (i.key ().toLatin1 ().constData (), i.value ());
+
+	UpdateXml ();
+
+	Prop2NewValue_.clear ();
 
     QDialog::accept ();
 }
@@ -615,6 +735,8 @@ void XmlSettingsDialog::reject ()
             continue;
         }
     }
+	
+	Prop2NewValue_.clear ();
 
     QDialog::reject ();
 }

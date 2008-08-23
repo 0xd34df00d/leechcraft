@@ -16,12 +16,14 @@
 #include <QString>
 #include <QMap>
 #include <QVariant>
+#include <boost/shared_ptr.hpp>
 
 class QStackedWidget;
 class QListWidget;
 class QPushButton;
 class QDomElement;
 class QFormLayout;
+class QDomDocument;
 
 class XmlSettingsDialog : public QDialog
 {
@@ -34,6 +36,7 @@ class XmlSettingsDialog : public QDialog
     typedef QMap<QString, QVariant> Property2Value_t;
     Property2Value_t Prop2NewValue_;
     QString DefaultLang_;
+	boost::shared_ptr<QDomDocument> Document_;
     struct LangElements
     {
         bool Valid_;
@@ -42,6 +45,7 @@ class XmlSettingsDialog : public QDialog
     };
 public:
     XmlSettingsDialog (QWidget *parent = 0);
+	virtual ~XmlSettingsDialog ();
     void RegisterObject (QObject*, const QString&);
 private:
     void HandleDeclaration (const QDomElement&);
@@ -50,7 +54,6 @@ private:
     void ParseItem (const QDomElement&, QWidget*);
     QString GetLabel (const QDomElement&) const;
     LangElements GetLangElements (const QDomElement&) const;
-private:
     void DoLineedit (const QDomElement&, QFormLayout*, QVariant&);
     void DoCheckbox (const QDomElement&, QFormLayout*, QVariant&);
     void DoSpinbox (const QDomElement&, QFormLayout*, QVariant&);
@@ -60,6 +63,9 @@ private:
     void DoRadio (const QDomElement&, QFormLayout*, QVariant&);
     void DoCombobox (const QDomElement&, QFormLayout*, QVariant&);
 	QList<QImage> GetImages (const QDomElement&) const;
+	void UpdateXml (bool = false);
+	void UpdateSingle (const QString&, const QVariant&, QDomElement&);
+	QString GetXml () const;
 private slots:
     void updatePreferences ();
 protected:
