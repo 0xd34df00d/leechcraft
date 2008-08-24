@@ -39,7 +39,6 @@ namespace Main
 		Ui::LeechCraft *Ui_;
 
         QSystemTrayIcon *TrayIcon_;
-		QMenu *TrayPluginsMenu_;
         QLabel *DownloadSpeed_, *UploadSpeed_;
         GraphWidget *DSpeedGraph_, *USpeedGraph_;
 

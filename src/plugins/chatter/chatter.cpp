@@ -127,4 +127,5 @@ void Chatter::handleHidePlugins ()
 	hide ();
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_Chatter, Chatter);
+Q_EXPORT_PLUGIN2 (leechcraft_chatter, Chatter);
+

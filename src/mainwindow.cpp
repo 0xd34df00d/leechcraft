@@ -31,6 +31,8 @@ namespace Main
 		Ui_ = new Ui::LeechCraft;
 		Ui_->setupUi (this);
 
+		Ui_->MainSplitter_->setStretchFactor (1, 4);
+
 		connect (Ui_->ActionAddTask_, SIGNAL (triggered ()), this, SLOT (addJob ()));
 		connect (Ui_->ActionQuit_, SIGNAL (triggered ()), qApp, SLOT (quit ()));
 		connect (Ui_->ActionSettings_, SIGNAL (triggered ()), this, SLOT (showSettings ()));
@@ -115,8 +117,6 @@ namespace Main
 		iconMenu->addAction (tr ("Hide all"), this, SLOT (hideAll ()));
 		iconMenu->addSeparator ();
 		iconMenu->addAction (Ui_->ActionAddTask_);
-		iconMenu->addSeparator ();
-		TrayPluginsMenu_ = iconMenu->addMenu (tr ("Plugins"));
 		iconMenu->addSeparator ();
 		iconMenu->addAction (tr ("Quit"), qApp, SLOT (quit ()));
 
