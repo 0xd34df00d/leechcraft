@@ -9,9 +9,6 @@
 #include "mainwindow.h"
 #include "view.h"
 #include "core.h"
-#include "plugininfo.h"
-#include "pluginlisttablewidgeticon.h"
-#include "changelogdialog.h"
 #include "commonjobadder.h"
 #include "xmlsettingsmanager.h"
 #include "ui_leechcraft.h"
@@ -159,56 +156,11 @@ namespace Main
 		USpeedGraph_->PushSpeed (speeds.second);
 	}
 
-	void MainWindow::backupSettings ()
-	{
-		QSettings settings ("Deviant", "Leechcraft");
-		QString filename = QFileDialog::getSaveFileName (this, tr ("Backup file"), QString (), tr ("Settings files (*.ini)"));
-		if (filename.isEmpty ())
-			return;
-
-		if (filename.right (4).toLower () != QString (".ini"))
-			filename += ".ini";
-
-		QSettings backupSettings (filename, QSettings::IniFormat);
-		QStringList allKeys = settings.allKeys ();
-
-		for (int i = 0; i < allKeys.size (); ++i)
-			backupSettings.setValue (allKeys [i], settings.value (allKeys [i]));
-
-		QMessageBox::information (this, tr ("Finished"), tr ("Settings sucessfully backuped to %1").arg (backupSettings.fileName ()));
-	}
-
-	void MainWindow::restoreSettings ()
-	{
-		QSettings settings ("Deviant", "Leechcraft");
-		QString filename = QFileDialog::getOpenFileName (this, tr ("Backup file"), QString (), tr ("Settings files (*.ini)"));
-		if (filename.isEmpty () || !QFile::exists (filename))
-			return;
-
-		QSettings backupSettings (filename, QSettings::IniFormat);
-		settings.clear ();
-		QStringList allKeys = backupSettings.allKeys ();
-		for (int i = 0; i < allKeys.size (); ++i)
-			settings.setValue (allKeys [i], backupSettings.value (allKeys [i]));
-
-		QMessageBox::information (this, tr ("Finished"), tr ("Settings sucessfully restored from %1").arg (backupSettings.fileName ()));
-	}
-
-	void MainWindow::clearSettings (bool scheduled)
-	{
-	}
-
-	void MainWindow::showChangelog ()
-	{
-		ChangelogDialog ce (this);
-		ce.exec ();
-	}
-
 	void MainWindow::showAboutInfo ()
 	{
 		QMessageBox::information (this, tr ("Information"), tr ("<img src=\":/resources/images/mainapp.png\" /><h1>LeechCraft 0.3.0_pre</h1>"
 					"LeechCraft is a cross-platform extensible download manager. Currently it offers "
-					"full-featured BitTorrent client, feed reader, HTTP/FTP plugin, Remote access "
+					"full-featured BitTorrent client, feed reader, HTTP support, Remote access "
 					"and much more. It also aims to be resource-efficient working quite well on "
 					"even old computers.<br /><br />Here are some useful links for you:<br />"
 					"<a href=\"http://bugs.deviant-soft.ws\">Bugtracker and feature request tracker</a><br />"

@@ -11,6 +11,10 @@ namespace Main
 		BaseSettingsManager::Init ();
 	}
 
+	XmlSettingsManager::~XmlSettingsManager ()
+	{
+	}
+
 	XmlSettingsManager* XmlSettingsManager::Instance ()
 	{
 		static XmlSettingsManager manager;

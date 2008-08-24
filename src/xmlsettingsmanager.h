@@ -10,6 +10,7 @@ namespace Main
 
 		XmlSettingsManager ();
 	public:
+		virtual ~XmlSettingsManager ();
 		static XmlSettingsManager* Instance ();
 	protected:
 		virtual QSettings* BeginSettings () const;

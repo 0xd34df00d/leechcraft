@@ -8,6 +8,7 @@ class CommonJobAdder : public QDialog, private Ui::CommonJobAdder
     Q_OBJECT
 public:
     CommonJobAdder (QWidget *parent = 0);
+	virtual ~CommonJobAdder ();
     QString GetString () const;
 	QString GetWhere () const;
 private slots:

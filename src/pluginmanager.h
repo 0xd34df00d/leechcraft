@@ -4,7 +4,6 @@
 #include <QAbstractItemModel>
 #include <QMap>
 #include <QPluginLoader>
-#include "plugininfo.h"
 #include "interfaces/interfaces.h"
 
 namespace Main
@@ -54,7 +53,6 @@ namespace Main
     private:
         void FindPlugins ();
     signals:
-        void gotPlugin (const PluginInfo*);
         void downloadFinished (QString);
     };
 };

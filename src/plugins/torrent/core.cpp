@@ -1073,7 +1073,8 @@ void Core::ReadSettings ()
 
 void Core::RestoreTorrents ()
 {
-    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Torrent");
+    QSettings settings (Proxy::Instance ()->GetOrganizationName (),
+			Proxy::Instance ()->GetApplicationName () + "_Torrent");
     settings.beginGroup ("Core");
     int torrents = settings.beginReadArray ("AddedTorrents");
     for (int i = 0; i < torrents; ++i)

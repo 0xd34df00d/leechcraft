@@ -10,7 +10,6 @@
 #include <plugininterface/proxy.h>
 #include "core.h"
 #include "pluginmanager.h"
-#include "plugininfo.h"
 #include "mainwindow.h"
 
 using namespace Main;

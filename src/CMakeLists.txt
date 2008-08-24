@@ -106,10 +106,8 @@ SET (SRCS
 	core.cpp
 	main.cpp
 	pluginmanager.cpp
-	plugininfo.cpp
-	pluginlisttablewidgeticon.cpp
-	changelogdialog.cpp
 	xmlsettingsmanager.cpp
+	mergemodel.cpp
 	)
 
 SET (HEADERS
@@ -117,10 +115,8 @@ SET (HEADERS
 	commonjobadder.h
 	core.h
 	pluginmanager.h
-	plugininfo.h
-	pluginlisttablewidgeticon.h
-	changelogdialog.h
 	xmlsettingsmanager.h
+	mergemodel.h
 	interfaces/interfaces.h
 	interfaces/structures.h
 	)

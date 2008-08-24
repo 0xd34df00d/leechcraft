@@ -11,7 +11,6 @@
 #include <QLocalServer>
 #include "mainwindow.h"
 #include "pluginmanager.h"
-#include "plugininfo.h"
 #include "core.h"
 #include "exceptions/logic.h"
 #include "exceptions/outofbounds.h"
@@ -180,21 +179,6 @@ QPair<qint64, qint64> Main::Core::GetSpeeds () const
     }
 
     return QPair<qint64, qint64> (download, upload);
-}
-
-QList<JobHolder> Main::Core::GetJobHolders () const
-{
-    QList<JobHolder> result;
-    QObjectList plugins = PluginManager_->GetAllCastableTo<IJobHolder*> ();
-    for (int i = 0; i < plugins.size (); ++i)
-    {
-        IJobHolder *ijh = qobject_cast<IJobHolder*> (plugins.at (i));
-        JobHolder jh = { qobject_cast<IInfo*> (plugins.at (i)),
-            ijh->GetRepresentation (),
-            ijh->GetDelegate () };
-        result << jh;
-    }
-    return result;
 }
 
 void Main::Core::handleProxySettings () const

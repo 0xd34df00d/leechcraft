@@ -9,20 +9,13 @@
 #include <QString>
 #include "common.h"
 #include "pluginmanager.h"
-#include "plugininfo.h"
 #include "interfaces/interfaces.h"
 
 class QTimer;
 class QDomDocument;
 class QTreeWidgetItem;
 class QLocalServer;
-
-struct JobHolder
-{
-    IInfo *Info_;
-    QAbstractItemModel *Model_;
-    QAbstractItemDelegate *Delegate_;
-};
+class MergeModel;
 
 namespace Main
 {
@@ -57,7 +50,6 @@ namespace Main
 		void Activated (const QModelIndex&);
         
         QPair<qint64, qint64> GetSpeeds () const;
-        QList<JobHolder> GetJobHolders () const;
 	public slots:
 		void handleProxySettings () const;
     private slots:
@@ -71,7 +63,6 @@ namespace Main
     signals:
         void error (QString);
         void pushTask (const QString&, int);
-        void gotPlugin (const PluginInfo*);
         void hidePlugins ();
         void downloadFinished (const QString&);
         void gotRepresentationItem (QTreeWidgetItem*);

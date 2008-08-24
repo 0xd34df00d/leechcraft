@@ -60,10 +60,6 @@ namespace Main
         void WriteSettings ();
     private slots:
         void updateSpeedIndicators ();
-        void backupSettings ();
-        void restoreSettings ();
-        void clearSettings (bool);
-        void showChangelog ();
         void showAboutInfo ();
         void showHideMain ();
         void hideAll ();

@@ -14,6 +14,10 @@ CommonJobAdder::CommonJobAdder (QWidget *parent)
 				QDir::homePath ()).toString ());
 }
 
+CommonJobAdder::~CommonJobAdder ()
+{
+}
+
 QString CommonJobAdder::GetString () const
 {
     return What_->text ();
