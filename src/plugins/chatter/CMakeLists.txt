@@ -2,7 +2,7 @@ INCLUDE_DIRECTORIES(
    ${QT_INCLUDES}
    ${CMAKE_CURRENT_BINARY_DIR}
    .
-   src/
+   src
 )
 
 SET(FSIRC_VERSION "3.1")
@@ -14,6 +14,9 @@ SET(FSIRC_IDENT "lcraft")
 SET(FSIRC_REALNAME "tr(\"Leechcraft user\")")
 SET(FSIRC_COM_CHAR "/")
 SET(FSIRC_QUIT_MSG "tr(\"STOP DRINKING COGNAC ON MORNINGS!\")")
+
+
+CONFIGURE_FILE("src/config.cmake" "config.h")
 
 # ADD_DEFINITIONS("-DFSIRC_NO_TRAY_ICON")
 # Hooray for icons!
