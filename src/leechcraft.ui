@@ -20,9 +20,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>65</y>
+     <y>67</y>
      <width>800</width>
-     <height>516</height>
+     <height>512</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2" >
@@ -31,26 +31,44 @@
       <property name="orientation" >
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QTreeView" name="PluginsTree_" />
+      <widget class="QTreeView" name="PluginsTree_" >
+       <property name="editTriggers" >
+        <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
+       <property name="alternatingRowColors" >
+        <bool>true</bool>
+       </property>
+       <property name="rootIsDecorated" >
+        <bool>false</bool>
+       </property>
+       <property name="itemsExpandable" >
+        <bool>false</bool>
+       </property>
+       <property name="sortingEnabled" >
+        <bool>true</bool>
+       </property>
+       <property name="headerHidden" >
+        <bool>true</bool>
+       </property>
+       <property name="expandsOnDoubleClick" >
+        <bool>false</bool>
+       </property>
+      </widget>
       <widget class="QSplitter" name="splitter" >
        <property name="orientation" >
         <enum>Qt::Vertical</enum>
        </property>
-       <widget class="QWidget" name="" >
+       <widget class="QWidget" name="layoutWidget" >
         <layout class="QVBoxLayout" name="verticalLayout" >
          <item>
-          <widget class="QWidget" native="1" name="PluginControls_" >
-           <zorder>PluginTasksTree_</zorder>
-          </widget>
+          <widget class="QWidget" native="1" name="PluginControls_" />
          </item>
          <item>
           <widget class="QTreeView" name="PluginTasksTree_" />
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" native="1" name="PluginAdditionalInfo_" >
-        <zorder>PluginTasksTree_</zorder>
-       </widget>
+       <widget class="QWidget" native="1" name="PluginAdditionalInfo_" />
       </widget>
      </widget>
     </item>
@@ -62,7 +80,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>26</height>
+     <height>28</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >
@@ -101,9 +119,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>581</y>
+     <y>579</y>
      <width>800</width>
-     <height>19</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
@@ -111,7 +129,7 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>26</y>
+     <y>28</y>
      <width>85</width>
      <height>39</height>
     </rect>
@@ -132,7 +150,7 @@
    <property name="geometry" >
     <rect>
      <x>85</x>
-     <y>26</y>
+     <y>28</y>
      <width>715</width>
      <height>39</height>
     </rect>

@@ -65,6 +65,11 @@ Main::MainWindow* Main::Core::GetReallyMainWindow ()
     return ReallyMainWindow_;
 }
 
+QAbstractItemModel* Main::Core::GetPluginsModel () const
+{
+	return PluginManager_;
+}
+
 void Main::Core::DelayedInit ()
 {
 	connect (this,
@@ -74,7 +79,6 @@ void Main::Core::DelayedInit ()
 
     PluginManager_->InitializePlugins (ReallyMainWindow_);
     PluginManager_->CalculateDependencies ();
-    PluginManager_->ThrowPlugins ();
     QObjectList plugins = PluginManager_->GetAllPlugins ();
     foreach (QObject *plugin, plugins)
     {
@@ -153,6 +157,11 @@ void Main::Core::TryToAddJob (const QString& name, const QString& where)
         }
     }
     emit error (tr ("No plugins are able to download \"%1\"").arg (name));
+}
+
+void Main::Core::Activated (const QModelIndex& index)
+{
+	ShowPlugin (index.row ());
 }
 
 QPair<qint64, qint64> Main::Core::GetSpeeds () const

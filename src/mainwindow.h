@@ -21,6 +21,7 @@ class XmlSettingsDialog;
 class QVBoxLayout;
 class GraphWidget;
 class QDockWidget;
+class QModelIndex;
 
 namespace Ui
 {
@@ -46,7 +47,6 @@ namespace Main
         QList<QDockWidget*> PluginWidgets_;
 
         bool IsShown_;
-
     public:
         MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
         virtual ~MainWindow ();
@@ -74,6 +74,7 @@ namespace Main
         void showSettings ();
         void handleAggregateJobsChange ();
         void cleanUp ();
+		void on_PluginsTree__activated (const QModelIndex&);
     };
 };
 

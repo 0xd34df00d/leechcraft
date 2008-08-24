@@ -100,7 +100,7 @@ void Chatter::Release ()
 
 QIcon Chatter::GetIcon () const
 {
-    return QIcon ();
+    return QIcon (":/fsirc/data/icon.svg");
 }
 
 void Chatter::SetParent (QWidget *parent)

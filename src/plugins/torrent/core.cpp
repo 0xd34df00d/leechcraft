@@ -239,9 +239,6 @@ QVariant Core::data (const QModelIndex& index, int role) const
     int row = index.row (),
         column = index.column ();
 
-    if (!CheckValidity (row))
-        return QVariant ();
-
     libtorrent::torrent_handle h = Handles_.at (row).Handle_;
     if (!h.is_valid ())
     {

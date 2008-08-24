@@ -16,13 +16,76 @@
 using namespace Main;
 
 PluginManager::PluginManager (QObject *parent)
-: QObject (parent)
+: QAbstractItemModel (parent)
 {
     FindPlugins ();
 }
 
 PluginManager::~PluginManager ()
 {
+}
+
+int PluginManager::columnCount (const QModelIndex& parent) const
+{
+	return 1;
+}
+
+QVariant PluginManager::data (const QModelIndex& index, int role) const
+{
+	if (!index.isValid () || index.row () >= GetSize ())
+		return QVariant ();
+
+	switch (index.column ())
+	{
+		case 0:
+			switch (role)
+			{
+				case Qt::DisplayRole:
+					return qobject_cast<IInfo*> (Plugins_.at (index.row ())->
+							instance ())->GetName ();
+				case Qt::DecorationRole:
+					{
+						IWindow *win = qobject_cast<IWindow*> (Plugins_.at (index.row ())->
+								instance ());
+						if (win)
+							return win->GetIcon ();
+						else
+							return QVariant ();
+					}
+				default:
+					return QVariant ();
+			}
+		default:
+			return QVariant ();
+	}
+}
+
+Qt::ItemFlags PluginManager::flags (const QModelIndex&) const
+{
+	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+}
+
+QVariant PluginManager::headerData (int, Qt::Orientation, int) const
+{
+	return QVariant ();
+}
+
+QModelIndex PluginManager::index (int row, int column, const QModelIndex&) const
+{
+	return createIndex (row, column);
+}
+
+QModelIndex PluginManager::parent (const QModelIndex&) const
+{
+	return QModelIndex ();
+}
+
+int PluginManager::rowCount (const QModelIndex& index) const
+{
+	if (!index.isValid ())
+		return Plugins_.size ();
+	else
+		return 0;
 }
 
 PluginManager::Size_t PluginManager::GetSize () const
@@ -171,31 +234,6 @@ void PluginManager::CalculateDependencies ()
                     }
             }
         }
-    }
-}
-
-void PluginManager::ThrowPlugins ()
-{
-    for (PluginsContainer_t::const_iterator i = Plugins_.begin (); i != Plugins_.end (); ++i)
-    {
-        QObject *pEntity = (*i)->instance ();
-        IInfo *info = qobject_cast<IInfo*> (pEntity);
-
-        IWindow *window = qobject_cast<IWindow*> (pEntity);
-        QIcon pIcon;
-        if (window)
-            pIcon = window->GetIcon ();
-
-        PluginInfo *pInfo = new PluginInfo (info->GetName (),
-                                            info->GetInfo (),
-                                            pIcon,
-                                            info->GetStatusbarMessage (),
-                                            info->Provides (),
-                                            info->Needs (),
-                                            info->Uses (),
-                                            DependenciesMet_ [i],
-                                            FailedDependencies_ [i]);
-        emit gotPlugin (pInfo);
     }
 }
 

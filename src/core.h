@@ -45,13 +45,16 @@ namespace Main
         void Release ();
 
         void SetReallyMainWindow (MainWindow*);
-        MainWindow *GetReallyMainWindow ();
+        MainWindow* GetReallyMainWindow ();
+
+		QAbstractItemModel* GetPluginsModel () const;
 
         void DelayedInit ();
-        void InitTask (const QString&);
         bool ShowPlugin (IInfo::ID_t);
         void HideAll ();
         void TryToAddJob (const QString&, const QString&);
+
+		void Activated (const QModelIndex&);
         
         QPair<qint64, qint64> GetSpeeds () const;
         QList<JobHolder> GetJobHolders () const;

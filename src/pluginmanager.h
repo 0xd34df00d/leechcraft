@@ -1,7 +1,7 @@
 #ifndef PLUGINMANAGER_H
 #define PLUGINMANAGER_H
 #include <QVector>
-#include <QObject>
+#include <QAbstractItemModel>
 #include <QMap>
 #include <QPluginLoader>
 #include "plugininfo.h"
@@ -10,7 +10,7 @@
 namespace Main
 {
     class MainWindow;
-    class PluginManager : public QObject
+    class PluginManager : public QAbstractItemModel
     {
         Q_OBJECT
 
@@ -22,6 +22,15 @@ namespace Main
         typedef PluginsContainer_t::size_type Size_t;
         PluginManager (QObject *parent = 0);
         virtual ~PluginManager ();
+
+		virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
+		virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
+		virtual Qt::ItemFlags flags (const QModelIndex&) const;
+		virtual QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
+		virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
+		virtual QModelIndex parent (const QModelIndex&) const;
+		virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
+
         Size_t GetSize () const;
         void Release ();
         void Release (Size_t);
@@ -42,7 +51,6 @@ namespace Main
         }
         void InitializePlugins (const MainWindow*);
         void CalculateDependencies ();
-        void ThrowPlugins ();
     private:
         void FindPlugins ();
     signals:

@@ -1,6 +1,7 @@
+#include <iostream>
 #include <QtGui/QtGui>
 #include <QMutex>
-#include <iostream>
+#include <QModelIndex>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "plugininterface/proxy.h"
 #include "plugininterface/graphwidget.h"
@@ -18,271 +19,278 @@
 namespace Main
 {
 
-MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
-: QMainWindow (parent, flags)
-, IsShown_ (true)
-{
-    QSplashScreen splash (QPixmap (":/resources/images/splashscreen.png"),
-			Qt::WindowStaysOnTopHint);
-    splash.show ();
-    splash.showMessage (tr ("Initializing interface..."));
+	MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
+	: QMainWindow (parent, flags)
+	, IsShown_ (true)
+	{
+		QSplashScreen splash (QPixmap (":/resources/images/splashscreen.png"),
+				Qt::WindowStaysOnTopHint);
+		splash.show ();
+		splash.showMessage (tr ("Initializing interface..."));
 
-	Ui_ = new Ui::LeechCraft;
-	Ui_->setupUi (this);
+		Ui_ = new Ui::LeechCraft;
+		Ui_->setupUi (this);
 
-	connect (Ui_->ActionAddTask_, SIGNAL (triggered ()), this, SLOT (addJob ()));
-	connect (Ui_->ActionQuit_, SIGNAL (triggered ()), qApp, SLOT (quit ()));
-	connect (Ui_->ActionSettings_, SIGNAL (triggered ()), this, SLOT (showSettings ()));
-	connect (Ui_->ActionAboutQt_, SIGNAL (triggered ()), qApp, SLOT (aboutQt ()));
-	connect (Ui_->ActionAboutLeechCraft_, SIGNAL (triggered ()), this, SLOT (showAboutInfo ()));
+		connect (Ui_->ActionAddTask_, SIGNAL (triggered ()), this, SLOT (addJob ()));
+		connect (Ui_->ActionQuit_, SIGNAL (triggered ()), qApp, SLOT (quit ()));
+		connect (Ui_->ActionSettings_, SIGNAL (triggered ()), this, SLOT (showSettings ()));
+		connect (Ui_->ActionAboutQt_, SIGNAL (triggered ()), qApp, SLOT (aboutQt ()));
+		connect (Ui_->ActionAboutLeechCraft_, SIGNAL (triggered ()), this, SLOT (showAboutInfo ()));
 
-    SetTrayIcon ();
+		SetTrayIcon ();
 
-	XmlSettingsDialog_ = new XmlSettingsDialog (this);
-	XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/coresettings.xml");
-    XmlSettingsManager::Instance ()->RegisterObject ("AggregateJobs",
-			this, "handleAggregateJobsChange");
+		XmlSettingsDialog_ = new XmlSettingsDialog (this);
+		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/coresettings.xml");
+		XmlSettingsManager::Instance ()->RegisterObject ("AggregateJobs",
+				this, "handleAggregateJobsChange");
 
-    DownloadSpeed_ = new QLabel;
-    DownloadSpeed_->setText ("0");
-    DownloadSpeed_->setMinimumWidth (70);
-    DownloadSpeed_->setAlignment (Qt::AlignRight);
-    UploadSpeed_ = new QLabel;
-    UploadSpeed_->setText ("0");
-    UploadSpeed_->setMinimumWidth (70);
-    UploadSpeed_->setAlignment (Qt::AlignRight);
+		DownloadSpeed_ = new QLabel;
+		DownloadSpeed_->setText ("0");
+		DownloadSpeed_->setMinimumWidth (70);
+		DownloadSpeed_->setAlignment (Qt::AlignRight);
+		UploadSpeed_ = new QLabel;
+		UploadSpeed_->setText ("0");
+		UploadSpeed_->setMinimumWidth (70);
+		UploadSpeed_->setAlignment (Qt::AlignRight);
 
-    DSpeedGraph_ = new GraphWidget (Qt::green);
-    DSpeedGraph_->setMinimumWidth (100);
-    USpeedGraph_ = new GraphWidget (Qt::yellow);
-    USpeedGraph_->setMinimumWidth (100);
+		DSpeedGraph_ = new GraphWidget (Qt::green);
+		DSpeedGraph_->setMinimumWidth (100);
+		USpeedGraph_ = new GraphWidget (Qt::yellow);
+		USpeedGraph_->setMinimumWidth (100);
 
-    statusBar ()->addPermanentWidget (DSpeedGraph_);
-    statusBar ()->addPermanentWidget (USpeedGraph_);
-    statusBar ()->addPermanentWidget (DownloadSpeed_);
-    statusBar ()->addPermanentWidget (UploadSpeed_);
-    ReadSettings ();
-    Proxy::Instance ()->SetMainWindow (this);
+		statusBar ()->addPermanentWidget (DSpeedGraph_);
+		statusBar ()->addPermanentWidget (USpeedGraph_);
+		statusBar ()->addPermanentWidget (DownloadSpeed_);
+		statusBar ()->addPermanentWidget (UploadSpeed_);
+		ReadSettings ();
+		Proxy::Instance ()->SetMainWindow (this);
 
-    splash.showMessage (tr ("Initializing core and plugins..."));
-    connect (&Core::Instance (),
-			SIGNAL (downloadFinished (const QString&)),
-			this,
-			SLOT (handleDownloadFinished (const QString&)));
-    connect (qApp, SIGNAL (aboutToQuit ()), this, SLOT (cleanUp ()));
-	Core::Instance ().SetReallyMainWindow (this);
+		splash.showMessage (tr ("Initializing core and plugins..."));
+		connect (&Core::Instance (),
+				SIGNAL (downloadFinished (const QString&)),
+				this,
+				SLOT (handleDownloadFinished (const QString&)));
+		connect (qApp, SIGNAL (aboutToQuit ()), this, SLOT (cleanUp ()));
+		Core::Instance ().SetReallyMainWindow (this);
 
-	Core::Instance ().DelayedInit ();
+		Core::Instance ().DelayedInit ();
 
-    QTimer *speedUpd = new QTimer (this);
-    speedUpd->setInterval (1000);
-    connect (speedUpd, SIGNAL (timeout ()), this, SLOT (updateSpeedIndicators ()));
-    speedUpd->start ();
-    qApp->setQuitOnLastWindowClosed (false);
+		Ui_->PluginsTree_->setModel (Core::Instance ().GetPluginsModel ());
 
-    splash.finish (this);
-    show ();
-}
+		QTimer *speedUpd = new QTimer (this);
+		speedUpd->setInterval (1000);
+		connect (speedUpd, SIGNAL (timeout ()), this, SLOT (updateSpeedIndicators ()));
+		speedUpd->start ();
+		qApp->setQuitOnLastWindowClosed (false);
 
-MainWindow::~MainWindow ()
-{
-}
+		splash.finish (this);
+		show ();
+	}
 
-QMenu* MainWindow::GetRootPluginsMenu () const
-{
-    return Ui_->PluginsMenu_;
-}
+	MainWindow::~MainWindow ()
+	{
+	}
 
-void MainWindow::catchError (QString message)
-{
-    QMessageBox::critical (this, tr ("Error"), message);
-}
+	QMenu* MainWindow::GetRootPluginsMenu () const
+	{
+		return Ui_->PluginsMenu_;
+	}
 
-void MainWindow::closeEvent (QCloseEvent *e)
-{
-    e->ignore ();
-    hide ();
-    IsShown_ = false;
-}
+	void MainWindow::catchError (QString message)
+	{
+		QMessageBox::critical (this, tr ("Error"), message);
+	}
 
-void MainWindow::SetTrayIcon ()
-{
-	QMenu *iconMenu = new QMenu;
-	iconMenu->addAction (tr ("Show/hide main"), this, SLOT (showHideMain ()));
-	iconMenu->addAction (tr ("Hide all"), this, SLOT (hideAll ()));
-	iconMenu->addSeparator ();
-	iconMenu->addAction (Ui_->ActionAddTask_);
-	iconMenu->addSeparator ();
-	TrayPluginsMenu_ = iconMenu->addMenu (tr ("Plugins"));
-	iconMenu->addSeparator ();
-	iconMenu->addAction (tr ("Quit"), qApp, SLOT (quit ()));
+	void MainWindow::closeEvent (QCloseEvent *e)
+	{
+		e->ignore ();
+		hide ();
+		IsShown_ = false;
+	}
 
-	TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/mainapp.png"), this);
-	TrayIcon_->setContextMenu (iconMenu);
-	TrayIcon_->show ();
-	connect (TrayIcon_,
-			SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
-			this,
-			SLOT (handleTrayIconActivated (QSystemTrayIcon::ActivationReason)));
-}
+	void MainWindow::SetTrayIcon ()
+	{
+		QMenu *iconMenu = new QMenu;
+		iconMenu->addAction (tr ("Show/hide main"), this, SLOT (showHideMain ()));
+		iconMenu->addAction (tr ("Hide all"), this, SLOT (hideAll ()));
+		iconMenu->addSeparator ();
+		iconMenu->addAction (Ui_->ActionAddTask_);
+		iconMenu->addSeparator ();
+		TrayPluginsMenu_ = iconMenu->addMenu (tr ("Plugins"));
+		iconMenu->addSeparator ();
+		iconMenu->addAction (tr ("Quit"), qApp, SLOT (quit ()));
 
-void MainWindow::ReadSettings ()
-{
-    QSettings settings ("Deviant", "Leechcraft");
-    settings.beginGroup ("geometry");
-    resize (settings.value ("size", QSize  (750, 550)).toSize ());
-    move   (settings.value ("pos",  QPoint (10, 10)).toPoint ());
-    settings.value ("maximized").toBool () ? showMaximized () : showNormal ();
-    settings.endGroup ();
-}
+		TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/mainapp.png"), this);
+		TrayIcon_->setContextMenu (iconMenu);
+		TrayIcon_->show ();
+		connect (TrayIcon_,
+				SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
+				this,
+				SLOT (handleTrayIconActivated (QSystemTrayIcon::ActivationReason)));
+	}
 
-void MainWindow::WriteSettings ()
-{
-    QSettings settings ("Deviant", "Leechcraft");
-    settings.beginGroup ("geometry");
-    settings.setValue ("size", size ());
-    settings.setValue ("pos",  pos ());
-    settings.setValue ("maximized", isMaximized ());
-    settings.endGroup ();
-}
+	void MainWindow::ReadSettings ()
+	{
+		QSettings settings ("Deviant", "Leechcraft");
+		settings.beginGroup ("geometry");
+		resize (settings.value ("size", QSize  (750, 550)).toSize ());
+		move   (settings.value ("pos",  QPoint (10, 10)).toPoint ());
+		settings.value ("maximized").toBool () ? showMaximized () : showNormal ();
+		settings.endGroup ();
+	}
 
-void MainWindow::updateSpeedIndicators ()
-{
-    QPair<qint64, qint64> speeds = Core::Instance ().GetSpeeds ();
+	void MainWindow::WriteSettings ()
+	{
+		QSettings settings ("Deviant", "Leechcraft");
+		settings.beginGroup ("geometry");
+		settings.setValue ("size", size ());
+		settings.setValue ("pos",  pos ());
+		settings.setValue ("maximized", isMaximized ());
+		settings.endGroup ();
+	}
 
-    DownloadSpeed_->setText (Proxy::Instance ()->MakePrettySize (speeds.first) + tr ("/s"));
-    UploadSpeed_->setText (Proxy::Instance ()->MakePrettySize (speeds.second) + tr ("/s"));
-    DSpeedGraph_->PushSpeed (speeds.first);
-    USpeedGraph_->PushSpeed (speeds.second);
-}
+	void MainWindow::updateSpeedIndicators ()
+	{
+		QPair<qint64, qint64> speeds = Core::Instance ().GetSpeeds ();
 
-void MainWindow::backupSettings ()
-{
-    QSettings settings ("Deviant", "Leechcraft");
-    QString filename = QFileDialog::getSaveFileName (this, tr ("Backup file"), QString (), tr ("Settings files (*.ini)"));
-    if (filename.isEmpty ())
-        return;
+		DownloadSpeed_->setText (Proxy::Instance ()->MakePrettySize (speeds.first) + tr ("/s"));
+		UploadSpeed_->setText (Proxy::Instance ()->MakePrettySize (speeds.second) + tr ("/s"));
+		DSpeedGraph_->PushSpeed (speeds.first);
+		USpeedGraph_->PushSpeed (speeds.second);
+	}
 
-    if (filename.right (4).toLower () != QString (".ini"))
-        filename += ".ini";
+	void MainWindow::backupSettings ()
+	{
+		QSettings settings ("Deviant", "Leechcraft");
+		QString filename = QFileDialog::getSaveFileName (this, tr ("Backup file"), QString (), tr ("Settings files (*.ini)"));
+		if (filename.isEmpty ())
+			return;
 
-    QSettings backupSettings (filename, QSettings::IniFormat);
-    QStringList allKeys = settings.allKeys ();
+		if (filename.right (4).toLower () != QString (".ini"))
+			filename += ".ini";
 
-    for (int i = 0; i < allKeys.size (); ++i)
-        backupSettings.setValue (allKeys [i], settings.value (allKeys [i]));
+		QSettings backupSettings (filename, QSettings::IniFormat);
+		QStringList allKeys = settings.allKeys ();
 
-    QMessageBox::information (this, tr ("Finished"), tr ("Settings sucessfully backuped to %1").arg (backupSettings.fileName ()));
-}
+		for (int i = 0; i < allKeys.size (); ++i)
+			backupSettings.setValue (allKeys [i], settings.value (allKeys [i]));
 
-void MainWindow::restoreSettings ()
-{
-    QSettings settings ("Deviant", "Leechcraft");
-    QString filename = QFileDialog::getOpenFileName (this, tr ("Backup file"), QString (), tr ("Settings files (*.ini)"));
-    if (filename.isEmpty () || !QFile::exists (filename))
-        return;
+		QMessageBox::information (this, tr ("Finished"), tr ("Settings sucessfully backuped to %1").arg (backupSettings.fileName ()));
+	}
 
-    QSettings backupSettings (filename, QSettings::IniFormat);
-    settings.clear ();
-    QStringList allKeys = backupSettings.allKeys ();
-    for (int i = 0; i < allKeys.size (); ++i)
-        settings.setValue (allKeys [i], backupSettings.value (allKeys [i]));
+	void MainWindow::restoreSettings ()
+	{
+		QSettings settings ("Deviant", "Leechcraft");
+		QString filename = QFileDialog::getOpenFileName (this, tr ("Backup file"), QString (), tr ("Settings files (*.ini)"));
+		if (filename.isEmpty () || !QFile::exists (filename))
+			return;
 
-    QMessageBox::information (this, tr ("Finished"), tr ("Settings sucessfully restored from %1").arg (backupSettings.fileName ()));
-}
+		QSettings backupSettings (filename, QSettings::IniFormat);
+		settings.clear ();
+		QStringList allKeys = backupSettings.allKeys ();
+		for (int i = 0; i < allKeys.size (); ++i)
+			settings.setValue (allKeys [i], backupSettings.value (allKeys [i]));
 
-void MainWindow::clearSettings (bool scheduled)
-{
-}
+		QMessageBox::information (this, tr ("Finished"), tr ("Settings sucessfully restored from %1").arg (backupSettings.fileName ()));
+	}
 
-void MainWindow::showChangelog ()
-{
-    ChangelogDialog ce (this);
-    ce.exec ();
-}
+	void MainWindow::clearSettings (bool scheduled)
+	{
+	}
 
-void MainWindow::showAboutInfo ()
-{
-    QMessageBox::information (this, tr ("Information"), tr ("<img src=\":/resources/images/mainapp.png\" /><h1>LeechCraft 0.3.0_pre</h1>"
-                "LeechCraft is a cross-platform extensible download manager. Currently it offers "
-                "full-featured BitTorrent client, feed reader, HTTP/FTP plugin, Remote access "
-                "and much more. It also aims to be resource-efficient working quite well on "
-                "even old computers.<br /><br />Here are some useful links for you:<br />"
-                "<a href=\"http://bugs.deviant-soft.ws\">Bugtracker and feature request tracker</a><br />"
-                "<a href=\"http://sourceforge.net/project/showfiles.php?group_id=161819\">Latest file releases</a><br />"
-                "<a href=\"http://deviant-soft.ws\">LeechCraft's Site</a><br />"
-                "<a href=\"http://sourceforge.net/projects/leechcraft\">LeechCraft's site at sourceforge.net</a><br />"));
-}
+	void MainWindow::showChangelog ()
+	{
+		ChangelogDialog ce (this);
+		ce.exec ();
+	}
 
-void MainWindow::showHideMain ()
-{
-    IsShown_ = 1 - IsShown_;
-    IsShown_ ? show () : hide ();
-}
+	void MainWindow::showAboutInfo ()
+	{
+		QMessageBox::information (this, tr ("Information"), tr ("<img src=\":/resources/images/mainapp.png\" /><h1>LeechCraft 0.3.0_pre</h1>"
+					"LeechCraft is a cross-platform extensible download manager. Currently it offers "
+					"full-featured BitTorrent client, feed reader, HTTP/FTP plugin, Remote access "
+					"and much more. It also aims to be resource-efficient working quite well on "
+					"even old computers.<br /><br />Here are some useful links for you:<br />"
+					"<a href=\"http://bugs.deviant-soft.ws\">Bugtracker and feature request tracker</a><br />"
+					"<a href=\"http://sourceforge.net/project/showfiles.php?group_id=161819\">Latest file releases</a><br />"
+					"<a href=\"http://deviant-soft.ws\">LeechCraft's Site</a><br />"
+					"<a href=\"http://sourceforge.net/projects/leechcraft\">LeechCraft's site at sourceforge.net</a><br />"));
+	}
 
-void MainWindow::hideAll ()
-{
-	Core::Instance ().HideAll ();
-}
+	void MainWindow::showHideMain ()
+	{
+		IsShown_ = 1 - IsShown_;
+		IsShown_ ? show () : hide ();
+	}
 
-void MainWindow::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason)
-{
-    switch (reason)
-    {
-        case QSystemTrayIcon::Context:
-        case QSystemTrayIcon::Unknown:
-            return;
-        case QSystemTrayIcon::DoubleClick:
-        case QSystemTrayIcon::Trigger:
-        case QSystemTrayIcon::MiddleClick:
-            showHideMain ();
-            return;
-    }
-}
+	void MainWindow::hideAll ()
+	{
+		Core::Instance ().HideAll ();
+	}
 
-void MainWindow::addJob ()
-{
-    CommonJobAdder adder (this);
-    if (adder.exec () == QDialog::Accepted)
-    {
-        QString name = adder.GetString ();
-        if (!name.isEmpty ())
-            Core::Instance ().TryToAddJob (name, adder.GetWhere ());
-    }
-}
+	void MainWindow::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason)
+	{
+		switch (reason)
+		{
+			case QSystemTrayIcon::Context:
+			case QSystemTrayIcon::Unknown:
+				return;
+			case QSystemTrayIcon::DoubleClick:
+			case QSystemTrayIcon::Trigger:
+			case QSystemTrayIcon::MiddleClick:
+				showHideMain ();
+				return;
+		}
+	}
 
-void MainWindow::handleDownloadFinished (const QString& string)
-{
-    if (XmlSettingsManager::Instance ()->property ("ShowFinishedDownloadMessages").toBool ())
-        TrayIcon_->showMessage (tr ("Download finished"), string, QSystemTrayIcon::Information, XmlSettingsManager::Instance ()->property ("FinishedDownloadMessageTimeout").toInt () * 1000);
-}
+	void MainWindow::addJob ()
+	{
+		CommonJobAdder adder (this);
+		if (adder.exec () == QDialog::Accepted)
+		{
+			QString name = adder.GetString ();
+			if (!name.isEmpty ())
+				Core::Instance ().TryToAddJob (name, adder.GetWhere ());
+		}
+	}
 
-void MainWindow::showSettings ()
-{
-    XmlSettingsDialog_->show ();
-    XmlSettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
-}
+	void MainWindow::handleDownloadFinished (const QString& string)
+	{
+		if (XmlSettingsManager::Instance ()->property ("ShowFinishedDownloadMessages").toBool ())
+			TrayIcon_->showMessage (tr ("Download finished"), string, QSystemTrayIcon::Information, XmlSettingsManager::Instance ()->property ("FinishedDownloadMessageTimeout").toInt () * 1000);
+	}
 
-void MainWindow::handleAggregateJobsChange ()
-{
-    QSplitter *split = qobject_cast<QSplitter*> (centralWidget ());
-    if (XmlSettingsManager::Instance ()->property ("AggregateJobs").toBool ())
-        split->widget (1)->show ();
-    else
-        split->widget (1)->hide ();
-}
+	void MainWindow::showSettings ()
+	{
+		XmlSettingsDialog_->show ();
+		XmlSettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
+	}
 
-void MainWindow::cleanUp ()
-{
-    TrayIcon_->hide ();
-    WriteSettings ();
-	Core::Instance ().Release ();
-    qDebug () << "Releasing XmlSettingsManager";
-    XmlSettingsManager::Instance ()->Release ();
-	Ui_ = 0;
-    qDebug () << "Destroyed fine";
-	delete Ui_;
-}
+	void MainWindow::handleAggregateJobsChange ()
+	{
+		QSplitter *split = qobject_cast<QSplitter*> (centralWidget ());
+		if (XmlSettingsManager::Instance ()->property ("AggregateJobs").toBool ())
+			split->widget (1)->show ();
+		else
+			split->widget (1)->hide ();
+	}
+
+	void MainWindow::cleanUp ()
+	{
+		TrayIcon_->hide ();
+		WriteSettings ();
+		Core::Instance ().Release ();
+		qDebug () << "Releasing XmlSettingsManager";
+		XmlSettingsManager::Instance ()->Release ();
+		Ui_ = 0;
+		qDebug () << "Destroyed fine";
+		delete Ui_;
+	}
+
+	void MainWindow::on_PluginsTree__activated (const QModelIndex& index)
+	{
+		Core::Instance ().Activated (index);
+	}
 
 };
 

@@ -20,13 +20,13 @@ public:
     ChannelsModel (QObject *parent = 0);
     virtual ~ChannelsModel ();
 
-    virtual int columnCount (const QModelIndex& parent = QModelIndex ()) const;
-    virtual QVariant data (const QModelIndex&, int role = Qt::DisplayRole) const;
+    virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
+    virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
     virtual Qt::ItemFlags flags (const QModelIndex&) const;
-    virtual QVariant headerData (int, Qt::Orientation, int role = Qt::DisplayRole) const;
-    virtual QModelIndex index (int, int, const QModelIndex& parent = QModelIndex()) const;
+    virtual QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
+    virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
     virtual QModelIndex parent (const QModelIndex&) const;
-    virtual int rowCount (const QModelIndex& parent = QModelIndex ()) const;
+    virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 
     void AddFeed (const Feed&);
     void Update (const Feed::channels_container_t&);
