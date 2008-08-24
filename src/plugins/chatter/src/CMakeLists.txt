@@ -1,9 +1,11 @@
 INCLUDE_DIRECTORIES(
    ${QT_INCLUDES}
    ${CMAKE_CURRENT_BINARY_DIR}
-   ..
+   .
    src
 )
+
+CONFIGURE_FILE(src/config.cmake src/config.h)
 
 SET(fsirc_SRCS
 src/fsirc.cpp
@@ -15,7 +17,6 @@ src/fstrayicon.cpp
 )
 
 SET(fsirc_MOC_HDRS
-config.h
 src/fsirc.h
 src/irc.h
 src/fsettings.h

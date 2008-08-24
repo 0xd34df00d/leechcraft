@@ -22,6 +22,8 @@
 #include <interfaces/interfaces.h>
 #include <QMainWindow>
 
+class fsirc;
+
 class Chatter : public QMainWindow
                  , public IInfo
               , public IWindow
@@ -53,8 +55,11 @@ public:
     virtual void ShowBalloonTip ();
 protected:
 	virtual void closeEvent (QCloseEvent*);
+	fsirc * ircClient;
 public slots:
 	void handleHidePlugins ();
+signals:
+	void gotEntity(QString);
 };
 
 #endif

@@ -20,21 +20,19 @@
 
 
 #include <QApplication>
-#include "fsirc.h"
 #include <plugininterface/proxy.h>
+
 #include "chatter.h"
+#include "fsirc.h"
 
 void Chatter::Init ()
 {
     setWindowTitle ("Chatter");
     IsShown_ = false;
-
-    resize (800, 600);
-    setMinimumSize (800, 600);
-    setMaximumSize (800, 600);
-    fsirc *widget = new fsirc();
-    connect(widget,SIGNAL(lastWindowClosed()), widget, SLOT(fsQuit()));
-    setCentralWidget (widget);
+	ircClient = new fsirc();
+	connect(ircClient, SIGNAL(gotLink(QString)), this, SIGNAL(gotEntity(QString)));
+    connect(ircClient,SIGNAL(lastWindowClosed()), ircClient, SLOT(fsQuit()));
+    setCentralWidget (ircClient);
 }
 
 QString Chatter::GetName () const

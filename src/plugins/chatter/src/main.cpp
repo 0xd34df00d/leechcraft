@@ -21,11 +21,13 @@
 
 #include <QApplication>
 #include <QTranslator>
+
 #include "fsirc.h"
 #include "config.h"
 
 int main(int argc, char *argv[])
 {
+//	This used to cause creepy errors
 //	Q_INIT_RESOURCE(i18n);
      QApplication fsApp(argc, argv);
 	fsApp.setApplicationName("fsirc");

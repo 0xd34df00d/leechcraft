@@ -19,6 +19,7 @@
  ***************************************************************************/
 #ifndef IRC_H
 #define IRC_H
+
 #include <QObject>
 #include <QTcpSocket>
 #include <QHash>
@@ -31,6 +32,7 @@ class ircLayer : public QObject
 	Q_OBJECT
 	public:
 		ircLayer(QObject * parent);
+		~ircLayer();
 		void ircConnect(QString server, int port=6667);
 		void ircThrow(QString what);
 		void ircMsg(QString what, QString where);
@@ -72,27 +74,13 @@ class ircLayer : public QObject
 		int joined;
 		QTcpSocket *ircSocket;
 		QTextCodec *ircCodec;
-		QRegExp privmsgRgx;
-		QRegExp noticeRgx;
-		QRegExp pingRgx;
-		QRegExp ctcpRgx;
-		QRegExp namesRgx;
-		QRegExp topicRgx;
-		QRegExp lineBrRgx;
-		QRegExp nickRgx;
-		QRegExp partRgx;
-		QRegExp quitRgx;
-		QRegExp joinRgx;
-		QRegExp modeRgx;
-		QRegExp kickRgx;
-		QRegExp respRgx;
-		QRegExp cmdRgx;
-		QRegExp ircUriRgx;
-		QRegExp ircUriPortRgx;
-		QRegExp chanPrefix;
-		QRegExp mircColors;
-		QRegExp mircShit;
-		QRegExp genError;
+		QHash<QString, QRegExp> prRegexes;
+		QRegExp * ircUriRgx;
+		QRegExp * ircUriPortRgx;
+		QRegExp * chanPrefix;
+		QRegExp * mircColors;
+		QRegExp * mircShit;
+		QRegExp * genError;
 		// methods
 		void infMsg(QString message);
 		void errMsg(QString message);

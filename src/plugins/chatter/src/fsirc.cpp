@@ -17,7 +17,6 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "fsirc.h"
 #include <QDialog>
 #include <QDebug>
 #include <QScrollBar>
@@ -25,26 +24,47 @@
 #include <QStringList>
 #include <QPixmap>
 #include <QPalette>
+#include <QDesktopServices>
+
 #include "config.h"
+#include "fsirc.h"
 
 fsirc::fsirc(QWidget *parent) : QDialog(parent)
 {
 	fSettings settings;
 	setupUi(this);
-	setAttribute(Qt::WA_DeleteOnClose, 1);
-	QPixmap bgpix=QPixmap(1,1);
-	bgpix.fill(Qt::white);
-	QPalette pal(fsChatView->palette());
-	pal.setBrush(QPalette::Background,bgpix);
-	fsChatView->setPalette(pal);
+	fsChatView->setOpenLinks(false);
+	setWindowIcon(QIcon(":/fsirc/data/icon.svg"));
+	fsChatView->setFocusProxy(cmdEdit);
 	irc=new ircLayer(this);
-	mArg.setPattern("(\\S+)(?: (.+))+");
+	ticker = new QTimer;
+	ticker->setInterval(700);
+	ticker->start();
+	mArg = new QRegExp("(\\S+)(?: (.+))+");
+	linkRegexp = new QRegExp("([a-zA-Z\\+\\-\\.]+://(?:["+QRegExp::escape("-_.!~*'();/?:@&=+$,%#")+"]|\\w)+)");
 	initCompleters();
 	initConnections();
+
+	// TODO: make those customizable.. or not?
+	msgColors["plain"]="#FFFFFF";
+	msgColors["action"]="#59FF00";
+	msgColors["event"]="#6075FF";
+	msgColors["private"]="#FF1C1F";
+	msgColors["notice"]="#5CE7FF";
+	msgColors["error"]="#FF0000";
+	msgColors["badevent"]="#FF1C1F";
+	msgColors["raw"]="#C0C000";
+
 #ifndef FSIRC_NO_TRAY_ICON
 	addTrayIcon();
+	connect(ticker, SIGNAL(timeout()), this, SLOT(checkIfTop()));
 #endif
 	pickAction();
+}
+
+fsirc::~fsirc()
+{
+
 }
 
 void fsirc::addTrayIcon()
@@ -63,12 +83,21 @@ void fsirc::addTrayIcon()
 
 void fsirc::fsEcho(QString message, QString style)
 {
+	if (style.isEmpty()) style = msgColors["plain"];
 	QScrollBar *scrollbar = fsChatView->verticalScrollBar();
 	int offset = -1;
 	if(scrollbar->sliderPosition() < scrollbar->maximum())
 		offset = scrollbar->sliderPosition();
 	fsChatView->moveCursor(QTextCursor::End);
-	fsChatView->insertHtml("<div style='color:"+style+"'> "+Qt::escape(message)+"</div> <br />");
+	message = Qt::escape(message);
+	int pos = 0;
+	while((pos = linkRegexp->indexIn(message,pos)) != -1)
+	{
+		emit gotLink(linkRegexp->cap(1));
+		pos+=linkRegexp->matchedLength();
+	}
+	message.replace(*linkRegexp,"<a href='\\1'>\\1</a>");
+	fsChatView->insertHtml(QString("<span style='color: %1'>%2</span> <br />").arg(style,message));
 	if(offset < 0) offset = scrollbar->maximum();
 	scrollbar->setValue(offset);
 //	qDebug() << fsChatView->toHtml();
@@ -95,6 +124,7 @@ void fsirc::initConnections()
 	connect(irc, SIGNAL(gotQuit(QHash<QString, QString>)), this, SLOT(gotQuit(QHash<QString, QString>)));
 	connect(irc, SIGNAL(gotKick(QHash<QString, QString>)), this, SLOT(gotKick(QHash<QString, QString>)));
 	connect(irc, SIGNAL(gotMode(QHash<QString, QString>)), this, SLOT(gotMode(QHash<QString, QString>)));
+	connect(fsChatView, SIGNAL(anchorClicked(QUrl)), this, SLOT(anchorClicked(QUrl)));
 }
 
 void fsirc::initCompleters()
@@ -208,23 +238,34 @@ void fsirc::takeAction()
 void fsirc::gotChannelMsg(QHash<QString, QString> data)
 {
 	// Channel message
-	fsEcho(data["nick"]+": "+data["text"]);
+	if(data["text"].contains(
+	   QRegExp(
+			 QString("\\b%1\\b").arg(QRegExp::escape(irc->nick()))
+			)
+		)
+	)
+	{
+		fsEcho(data["nick"]+": "+data["text"],msgColors["private"]);
+		emit gotHlite();
+	}
+	else
+		fsEcho(data["nick"]+": "+data["text"]);
 }
 
 void fsirc::gotPrivMsg(QHash<QString, QString> data)
 {
 	// Private message
-	fsEcho(tr("Private> ")+data["nick"]+": "+data["text"], "red");
+	fsEcho(tr("Private> ")+data["nick"]+": "+data["text"], msgColors["private"]);
 }
 
 void fsirc::gotNotice(QHash<QString, QString> data)
 {
-	fsEcho(tr("Notice> ")+data["nick"]+": "+data["text"], "#030A70");
+	fsEcho(tr("Notice> ")+data["nick"]+": "+data["text"], msgColors["notice"]);
 }
 
 void fsirc::gotAction(QHash<QString, QString> data)
 {
-	fsEcho("* "+data["nick"]+" "+data["text"], "#2DBF10");
+	fsEcho("* "+data["nick"]+" "+data["text"], msgColors["action"]);
 }
 
 void fsirc::sayHere()
@@ -253,13 +294,13 @@ void fsirc::sayHere()
 void fsirc::gotInfo(QString message)
 {
 	// Various info
-	fsEcho(message,"green");
+	fsEcho(message,msgColors["notice"]);
 }
 
 void fsirc::gotError(QString message)
 {
 	// Bad news from IRC layer
-	fsEcho(message,"red");
+	fsEcho(message,msgColors["error"]);
 }
 
 void fsirc::gotNames(QStringList data)
@@ -267,17 +308,17 @@ void fsirc::gotNames(QStringList data)
 	QString output = tr("Names for ") + data[1] + ":";
 	for(int i = 2; i < data.count(); i++)
 		output.append(" " + data[i]);
-	fsEcho(output, "blue");
+	fsEcho(output, msgColors["event"]);
 }
 
 void fsirc::gotTopic(QStringList data)
 {
-	fsEcho(tr("Topic for ") + data[1] + ": " + data[2], "blue");
+	fsEcho(tr("Topic for ") + data[1] + ": " + data[2], msgColors["event"]);
 }
 
 void fsirc::gotNick(QHash<QString, QString> data)
 {
-	fsEcho(data["nick"] + tr(" is now known as ") + data["target"], "blue");
+	fsEcho(data["nick"] + tr(" is now known as ") + data["target"], msgColors["event"]);
 	// Record nick to history
 	if(irc->nick()==data["target"])
 	{
@@ -297,7 +338,7 @@ void fsirc::nickToHistory(QString nick)
 
 void fsirc::gotJoin(QHash<QString, QString> data)
 {
-	fsEcho(data["nick"] + tr(" has joined ") + data["target"], "blue");
+	fsEcho(data["nick"] + tr(" has joined ") + data["target"], msgColors["event"]);
 	if(data["nick"]==irc->nick())
 	{
 		fSettings settings;
@@ -310,22 +351,22 @@ void fsirc::gotJoin(QHash<QString, QString> data)
 
 void fsirc::gotPart(QHash<QString, QString> data)
 {
-	fsEcho(data["nick"] + tr(" has left ") + data["target"] + ": "+data["text"], "blue");
+	fsEcho(data["nick"] + tr(" has left ") + data["target"] + ": "+data["text"], msgColors["event"]);
 }
 
 void fsirc::gotQuit(QHash<QString, QString> data)
 {
-	fsEcho(data["nick"] + tr(" has quit IRC: ") + data["text"], "blue");
+	fsEcho(data["nick"] + tr(" has quit IRC: ") + data["text"], msgColors["event"]);
 }
 
 void fsirc::gotKick(QHash<QString, QString> data)
 {
-	fsEcho(data["nick"] + tr(" has kicked ") + data["subject"] + tr(" out of ") + data["target"] + ": " + data["text"], "red");
+	fsEcho(data["nick"] + tr(" has kicked ") + data["subject"] + tr(" out of ") + data["target"] + ": " + data["text"], msgColors["badevent"]);
 }
 
 void fsirc::gotMode(QHash<QString, QString> data)
 {
-	fsEcho(data["nick"] + tr(" has set mode ") + data["text"] + " " + data["subject"] + tr(" on ") + data["target"], "blue");
+	fsEcho(data["nick"] + tr(" has set mode ") + data["text"] + " " + data["subject"] + tr(" on ") + data["target"], msgColors["event"]);
 }
 
 void fsirc::fsExec(QString cmd, QString arg)
@@ -349,7 +390,7 @@ void fsirc::fsExec(QString cmd, QString arg)
 		arg.prepend('\x01');
 		arg.append('\x01');
 		irc->ircMsg(arg, irc->channel());
-		fsEcho("* "+irc->nick()+" "+sarg, "#2DBF10");
+		fsEcho("* "+irc->nick()+" "+sarg, msgColors["action"]);
 	} else
 	if(cmd=="join" || cmd=="j")
 	{
@@ -382,49 +423,75 @@ void fsirc::fsExec(QString cmd, QString arg)
 	{
 		irc->ircMs(arg);
 	} else
-        if(mArg.exactMatch(arg))
+        if(mArg->exactMatch(arg))
 	{
 	// More-than-one parameters
 		if(cmd=="msg")
 		{
-			irc->ircMsg(mArg.cap(2), mArg.cap(1));
+			irc->ircMsg(mArg->cap(2), mArg->cap(1));
 		} else
 		if(cmd=="kick")
 		{
-			irc->ircKick(mArg.cap(1), mArg.cap(2));
+			irc->ircKick(mArg->cap(1), mArg->cap(2));
 		}
 	} else
 	//fsEcho(tr("Unknown command: ") + cmd, "red");
 	{
 		irc->ircThrow(cmd+" "+arg);
-		fsEcho(tr("RAW -> ")+cmd+" "+arg,"brown");
+		fsEcho(tr("RAW -> ")+cmd+" "+arg,msgColors["raw"]);
 	}
 }
 
 void fsirc::gotSomeMsg()
 {
-	if (isHidden())
+	if (!isActiveWindow())
 		trayIcon->raiseState(1);
 }
 
 void fsirc::gotHlite()
 {
-	if (isHidden())
+	if (!isActiveWindow())
 		trayIcon->raiseState(2);
 }
 
 void fsirc::toggleShow()
 {
-	if(isHidden())
+	// I've done some stuff to bring window to top here, but it doesn't work. At least on kde 3.5
+	if(isHidden()/* || !isActiveWindow()*/)
 	{
 		show();
+//		window()->activateWindow();
+//		window()->raise();
+//		window()->setFocus();
 		trayIcon->resetState();
 	}
 	else
+	{
+//		qDebug("Hiding window");
 		hide();
+	}
+
+}
+
+void fsirc::checkIfTop()
+{
+	if(isActiveWindow())
+	{
+		trayIcon->resetState();
+	}
 }
 
 void fsirc::fsQuit()
 {
-	irc->ircQuit("Fsirc "+QString(FS_VERSION)+" by Voker57. "+tr("STOP DRINKING COGNAC ON MORNINGS!"));
+	irc->ircQuit(FS_QUIT_MSG);
+}
+
+void fsirc::anchorClicked(QUrl url)
+{
+	if(url.scheme()=="irc")
+	{
+		fsActionCombo->setCurrentIndex(ACT_URI);
+		fsActionEdit->setText(url.toString());
+		fsActionEdit->setFocus();
+	} else QDesktopServices::openUrl(url);
 }

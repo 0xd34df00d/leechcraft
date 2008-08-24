@@ -21,11 +21,12 @@
  ***************************************************************************/
 #include <QLineEdit>
 #include <QKeyEvent>
-class fsCmdEdit : public QLineEdit
+
+class FsCmdEdit : public QLineEdit
 {
 	Q_OBJECT
 	public:
-		fsCmdEdit(QWidget * parent=0);
+		FsCmdEdit(QWidget * parent=0);
 		void toHistory(QString entry);
 	public slots:
 		// public slot toHistory() — adds current command line to history

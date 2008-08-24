@@ -21,23 +21,30 @@
 #define FSIRC_H
 
 #include <QDialog>
+#include <QTimer>
 #include <QDebug>
-#include "ui_fsmain.h"
-#include "irc.h"
 #include <QHash>
 #include <QCompleter>
-#include "fsettings.h"
 #include <QSystemTrayIcon>
+
+#include "fsettings.h"
+#include "fscmdedit.h"
 #include "fstrayicon.h"
+#include "ui_fsmain.h"
+#include "irc.h"
 
 class fsirc : public QDialog, public Ui::fsMainWindow
 {
 	Q_OBJECT
 	public:
 		fsirc(QWidget *parent= 0);
-		void fsEcho(QString message, QString style="#000000");
+		~fsirc();
+		void fsEcho(QString message, QString style=QString());
 		void fsExec(QString cmd, QString arg="");
-		QRegExp mArg;
+		QRegExp * mArg;
+		QRegExp * linkRegexp;
+		// Dropdown actions
+		enum {ACT_URI, ACT_NICK, ACT_ENCODING, ACT_QUIT};
 	private:
 		ircLayer *irc;
 		QHash<int, QStringList> completeLists;
@@ -47,6 +54,8 @@ class fsirc : public QDialog, public Ui::fsMainWindow
 		void addTrayIcon();
 		void nickToHistory(QString nick);
 		fsTrayIcon * trayIcon;
+		QTimer * ticker;
+		QHash<QString,QString> msgColors;
 	private slots:
 		void gotChannelMsg(QHash<QString, QString> data);
 		void gotPrivMsg(QHash<QString, QString> data);
@@ -64,11 +73,15 @@ class fsirc : public QDialog, public Ui::fsMainWindow
 		void gotKick(QHash<QString, QString> data);
 		void gotSomeMsg();
 		void gotHlite();
+		void anchorClicked(QUrl url);
 	public slots:
 		void fsQuit();
 		void sayHere();
 		void pickAction();
 		void takeAction();
 		void toggleShow();
+		void checkIfTop();
+	signals:
+		void gotLink(QString);
 };
 #endif

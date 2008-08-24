@@ -20,12 +20,12 @@
 
 #include "fscmdedit.h"
 
-fsCmdEdit::fsCmdEdit(QWidget * parent) : QLineEdit(parent)
+FsCmdEdit::FsCmdEdit(QWidget * parent) : QLineEdit(parent)
 {
 	connect(this, SIGNAL(returnPressed()), this, SLOT(currentToHistory()));
 }
 
-void fsCmdEdit::keyReleaseEvent(QKeyEvent * event)
+void FsCmdEdit::keyReleaseEvent(QKeyEvent * event)
 {
 	if(event->key()==Qt::Key_Up)
 	{
@@ -55,13 +55,13 @@ void fsCmdEdit::keyReleaseEvent(QKeyEvent * event)
 	QLineEdit::keyReleaseEvent(event);
 }
 
-void fsCmdEdit::currentToHistory()
+void FsCmdEdit::currentToHistory()
 {
 	cmdIndex=-1;
 	toHistory(text());
 }
 
-void fsCmdEdit::toHistory(QString entry)
+void FsCmdEdit::toHistory(QString entry)
 {
 	if(!entry.isEmpty())
 	{
