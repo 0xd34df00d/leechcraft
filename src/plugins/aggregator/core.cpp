@@ -567,8 +567,6 @@ void Core::handleJobFinished (int id)
 		if (!parser)
 		{
 			emit error (tr ("Could not find parser to parse file %1").arg (pj.Filename_));
-			qWarning () << Q_FUNC_INFO << "dumping file";
-			qWarning () << pj.Filename_;
 			return;
 		}
 

@@ -79,7 +79,7 @@ void Task::Start (const boost::shared_ptr<QFile>& tof)
 			ua = XmlSettingsManager::Instance ()
 				.property ("PredefinedUserAgent").toString ();
 		
-		QHttpRequestHeader header ("GET", URL_.path ());
+		QHttpRequestHeader header ("GET", URL_.path () + '?' + URL_.encodedQuery ());
 		header.setValue ("Host", URL_.host ());
 		header.setValue ("Range", QString ("bytes=%1-").arg (to->size ()));
 		header.setValue ("Accept", "*/*");
