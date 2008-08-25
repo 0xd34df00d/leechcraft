@@ -562,18 +562,21 @@ void Core::handleJobFinished (int id)
 			emit error (tr ("XML file parse error: %1, line %2, column %3, filename %4").arg (errorMsg).arg (errorLine).arg (errorColumn).arg (pj.Filename_));
 			return;
 		}
-		if (pj.Role_ == PendingJob::RFeedAdded)
-		{
-			Feed feed;
-			feed.URL_ = pj.URL_;
-			Feeds_ [pj.URL_] = feed;
-		}
 
 		Parser *parser = ParserFactory::Instance ().Return (doc);
 		if (!parser)
 		{
 			emit error (tr ("Could not find parser to parse file %1").arg (pj.Filename_));
+			qWarning () << Q_FUNC_INFO << "dumping file";
+			qWarning () << pj.Filename_;
 			return;
+		}
+
+		if (pj.Role_ == PendingJob::RFeedAdded)
+		{
+			Feed feed;
+			feed.URL_ = pj.URL_;
+			Feeds_ [pj.URL_] = feed;
 		}
 
 		channels = parser->Parse (Feeds_ [pj.URL_].Channels_, data);
