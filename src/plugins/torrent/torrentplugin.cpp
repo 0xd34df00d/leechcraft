@@ -686,8 +686,6 @@ void TorrentPlugin::on_MoveFiles__triggered ()
 void TorrentPlugin::itemSelectionChanged (const QModelIndex& index)
 {
     setActionsEnabled ();
-    restartTimers ();
-    updateTorrentStats ();
 
 	if (index.isValid ())
 	{
@@ -695,6 +693,9 @@ void TorrentPlugin::itemSelectionChanged (const QModelIndex& index)
 		TorrentTags_->setText (Core::Instance ()->GetTagsForIndex (FilterModel_->mapToSource (index).row ()).join (" "));
 		TorrentSelectionChanged_ = true;
 	}
+
+    restartTimers ();
+    updateTorrentStats ();
 }
 
 void TorrentPlugin::tabChanged ()
@@ -748,6 +749,7 @@ void TorrentPlugin::updateTorrentStats ()
 			UpdatePiecesPage ();
 			break;
 	}
+	TorrentSelectionChanged_ = false;
 }
 
 void TorrentPlugin::updateOverallStats ()
@@ -866,7 +868,10 @@ void TorrentPlugin::UpdateFilesPage ()
         FilesView_->expandAll ();
     }
     else
+	{
         Core::Instance ()->UpdateFiles (index.row ());
+		FilesView_->expandAll ();
+	}
 }
 
 void TorrentPlugin::UpdatePeersPage ()

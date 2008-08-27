@@ -231,8 +231,6 @@ void TorrentFilesModel::UpdateFiles (const QList<FileInfo>& infos)
         TreeItem *item = Path2TreeItem_ [fi.Path_];
         item->ModifyData (3, QString::number (fi.Progress_, 'f', 3));
     }
-    for (int i = 0; i < RootItem_->ChildCount (); ++i)
-        UpdateSizeGraph (RootItem_->Child (i));
     emit dataChanged (index (0, 3), index (RootItem_->ChildCount () - 1, 3));
 }
 
