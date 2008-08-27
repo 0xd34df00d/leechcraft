@@ -24,12 +24,12 @@
         <translation>Директория назначения:</translation>
     </message>
     <message>
-        <location filename="addmultipletorrents.cpp" line="35"/>
+        <location filename="addmultipletorrents.cpp" line="48"/>
         <source>Select directory with torrents</source>
         <translation>Выбери директорию с торрентами</translation>
     </message>
     <message>
-        <location filename="addmultipletorrents.cpp" line="45"/>
+        <location filename="addmultipletorrents.cpp" line="58"/>
         <source>Select save directory</source>
         <translation>Выбери директорию сохранения</translation>
     </message>
@@ -43,26 +43,41 @@
         <source>untagged</source>
         <translation>непротеганное</translation>
     </message>
+    <message>
+        <location filename="addmultipletorrents.ui" line="81"/>
+        <source>Add as:</source>
+        <translation>При добавлении:</translation>
+    </message>
+    <message>
+        <location filename="addmultipletorrents.ui" line="89"/>
+        <source>Started</source>
+        <translation>Запускать</translation>
+    </message>
+    <message>
+        <location filename="addmultipletorrents.ui" line="94"/>
+        <source>Paused</source>
+        <translation>Приостановливать</translation>
+    </message>
 </context>
 <context>
     <name>AddTorrent</name>
     <message>
-        <location filename="addtorrent.ui" line="112"/>
+        <location filename="addtorrent.ui" line="114"/>
         <source>&lt;unknown&gt;</source>
         <translation>&lt;неизвестно&gt;</translation>
     </message>
     <message>
-        <location filename="addtorrent.cpp" line="86"/>
+        <location filename="addtorrent.cpp" line="109"/>
         <source>Select torrent file</source>
         <translation>Выбери торрент-файл</translation>
     </message>
     <message>
-        <location filename="addtorrent.cpp" line="86"/>
+        <location filename="addtorrent.cpp" line="109"/>
         <source>Torrents (*.torrent);;All files (*.*)</source>
         <translation>Торренты (*.torrent);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="addtorrent.cpp" line="100"/>
+        <location filename="addtorrent.cpp" line="123"/>
         <source>Select save directory</source>
         <translation>Выбери директорию сохранения</translation>
     </message>
@@ -72,342 +87,332 @@
         <translation>Добавить торрент</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="22"/>
+        <location filename="addtorrent.ui" line="24"/>
         <source>Torrent</source>
         <translation>Торрент</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="28"/>
+        <location filename="addtorrent.ui" line="30"/>
         <source>Torrent:</source>
         <translation>Торрент:</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="183"/>
+        <location filename="addtorrent.ui" line="185"/>
         <source>Browse...</source>
         <translation>Обзор...</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="49"/>
+        <location filename="addtorrent.ui" line="51"/>
         <source>Tracker URL:</source>
         <translation>URL трекера:</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="63"/>
+        <location filename="addtorrent.ui" line="65"/>
         <source>Size:</source>
         <translation>Размер:</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="77"/>
+        <location filename="addtorrent.ui" line="79"/>
         <source>Creator:</source>
         <translation>Создатель:</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="91"/>
+        <location filename="addtorrent.ui" line="93"/>
         <source>Comment:</source>
         <translation>Комментарий:</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="105"/>
+        <location filename="addtorrent.ui" line="107"/>
         <source>Date:</source>
         <translation>Дата:</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="119"/>
+        <location filename="addtorrent.ui" line="121"/>
         <source>Files:</source>
         <translation>Файлы:</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="136"/>
-        <source>Size</source>
-        <translation type="obsolete">Размер</translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="141"/>
-        <source>Name</source>
-        <translation type="obsolete">Имя</translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="171"/>
+        <location filename="addtorrent.ui" line="173"/>
         <source>Destination:</source>
         <translation>Пункт назначения:</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="237"/>
+        <location filename="addtorrent.ui" line="266"/>
         <source>OK</source>
         <translation>ОК</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="244"/>
+        <location filename="addtorrent.ui" line="273"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="141"/>
+        <location filename="addtorrent.ui" line="143"/>
         <source>Mark all</source>
         <translation>Отметить все</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="148"/>
+        <location filename="addtorrent.ui" line="150"/>
         <source>Unmark all</source>
         <translation>Снять отметку со всех</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="155"/>
+        <location filename="addtorrent.ui" line="157"/>
         <source>Mark selected</source>
         <translation>Отметить выделенные</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="162"/>
+        <location filename="addtorrent.ui" line="164"/>
         <source>Unmark selected</source>
         <translation>Снять отметку с выделенных</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="192"/>
+        <location filename="addtorrent.ui" line="194"/>
         <source>Tags:</source>
         <translation>Тэги:</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="199"/>
+        <location filename="addtorrent.ui" line="201"/>
         <source>untagged</source>
         <translation>непротеганное</translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="227"/>
+        <source>Add as:</source>
+        <translation>При добавлении:</translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="235"/>
+        <source>Started</source>
+        <translation>Запускать</translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="240"/>
+        <source>Paused</source>
+        <translation>Приостановливать</translation>
     </message>
 </context>
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="293"/>
+        <location filename="core.cpp" line="343"/>
         <source>Could not open file %1 for read: %2</source>
         <translation>Не могу открыть файл %1 на запись: %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="502"/>
+        <location filename="core.cpp" line="568"/>
         <source>Bad bencoding in torrent file</source>
         <translation>Плохой код в файле</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="507"/>
+        <location filename="core.cpp" line="573"/>
         <source>Invalid torrent file</source>
         <translation>Неправильный торрент-файл (или это вообще не торрент-файл?)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="486"/>
+        <location filename="core.cpp" line="545"/>
         <source>File %1 doesn&apos;t exist or could not be read</source>
         <translation>Файл %1 не существует или не может быть прочитан</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="497"/>
+        <location filename="core.cpp" line="563"/>
         <source>The torrent %1 with save path %2 already exists in the session</source>
         <translation>Торрент %1 с путем сохранения %2 уже существует в этой сессии</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="80"/>
+        <location filename="core.cpp" line="100"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="80"/>
+        <location filename="core.cpp" line="100"/>
         <source>Downloaded</source>
         <translation>Скачано</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="80"/>
+        <location filename="core.cpp" line="100"/>
         <source>Uploaded</source>
         <translation>Загружено</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="80"/>
+        <location filename="core.cpp" line="100"/>
         <source>Size</source>
         <translation>Размер</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="80"/>
+        <location filename="core.cpp" line="100"/>
         <source>Progress</source>
         <translation>Прогресс</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="80"/>
+        <location filename="core.cpp" line="100"/>
         <source>State</source>
         <translation>Состояние</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="80"/>
+        <location filename="core.cpp" line="100"/>
         <source>Seeds/peers</source>
         <translation>Сиды/пиры</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="33"/>
-        <source>Dspeed</source>
-        <translation type="obsolete">Скорость скачивания</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="33"/>
-        <source>Uspeed</source>
-        <translation type="obsolete">Скорость отдачи</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="80"/>
+        <location filename="core.cpp" line="100"/>
         <source>Remaining</source>
         <translation>Оставшееся время</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="73"/>
-        <source>%1: for row %2 torrent handle is invalid, ID is %3</source>
-        <translation type="obsolete">%1: для ряда %2 хэндл торрента не валиден, ID - %3</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="352"/>
+        <location filename="core.cpp" line="407"/>
         <source>Idle</source>
         <translation>Ничего не делает</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="238"/>
+        <location filename="core.cpp" line="288"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="924"/>
+        <location filename="core.cpp" line="1051"/>
         <source>Queued for checking</source>
         <translation>В очереди на проверку</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="926"/>
+        <location filename="core.cpp" line="1053"/>
         <source>Checking files</source>
         <translation>Проверяются файлы</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="928"/>
+        <location filename="core.cpp" line="1055"/>
         <source>Connecting</source>
         <translation>Соединяемся</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="930"/>
+        <location filename="core.cpp" line="1057"/>
         <source>Downloading metadata</source>
         <translation>Качаем метаданные</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="932"/>
+        <location filename="core.cpp" line="1059"/>
         <source>Downloading</source>
         <translation>Скачивание</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="934"/>
+        <location filename="core.cpp" line="1061"/>
         <source>Finished</source>
         <translation>Закончен</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="936"/>
+        <location filename="core.cpp" line="1063"/>
         <source>Seeding</source>
         <translation>Раздача</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="938"/>
+        <location filename="core.cpp" line="1065"/>
         <source>Allocating</source>
         <translation>Выделение места</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="583"/>
-        <source>Could not open files to read settings :(</source>
-        <translation type="obsolete">Не могу открыть файлы для прочтения настроек :(</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1056"/>
+        <location filename="core.cpp" line="1190"/>
         <source>The just restored torrent already exists in the session, that&apos;s strange.</source>
         <translation>Только что восстановленный торрент уже существует в сессии, это странно.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1042"/>
+        <location filename="core.cpp" line="1173"/>
         <source>Bad bencoding in saved torrent data</source>
         <translation>Плохой код в сохраненном торренте</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1052"/>
+        <location filename="core.cpp" line="1186"/>
         <source>Invalid saved torrent data</source>
         <translation>Невалидные сохраненные данные торрента</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1165"/>
+        <location filename="core.cpp" line="1408"/>
         <source>Could not create path %1/.leechcraft_bittorrent</source>
         <translation>Не могу создать путь %1/.leechcraft_bittorrent</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1499"/>
+        <location filename="core.cpp" line="1754"/>
         <source>Torrent with position %1 doesn&apos;t exist in The List</source>
         <translation>Торрент с позицией %1 не существует в Списке</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1504"/>
+        <location filename="core.cpp" line="1759"/>
         <source>Torrent with position %1 found in The List, but is invalid</source>
         <translation>Торрент с позицией %1 найден в списке, но он невалиден</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="80"/>
+        <location filename="core.cpp" line="100"/>
         <source>Drate</source>
         <translation>Скорость скачивания</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="80"/>
+        <location filename="core.cpp" line="100"/>
         <source>Urate</source>
         <translation>Скорость отдачи</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="207"/>
+        <location filename="core.cpp" line="245"/>
         <source>%1: for row %2 torrent handle is invalid</source>
         <translation>%1: хэндл торрента (ряд %2) не валиден</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="80"/>
+        <location filename="core.cpp" line="100"/>
         <source>Rating</source>
         <translation>Рэйтинг</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="586"/>
+        <location filename="core.cpp" line="662"/>
         <source>Torrent %1 could not be reannounced at the moment, try again later.</source>
         <translation>Торрент %1 не может быть перезапрошен в данный момент, попробуй позже.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="901"/>
+        <location filename="core.cpp" line="1025"/>
         <source>Could not open file %1 for write!</source>
         <translation>Не могу открыть файл %1 на запись!</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="880"/>
+        <location filename="core.cpp" line="995"/>
         <source>Hashing...</source>
         <translation>Хэширую...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="880"/>
+        <location filename="core.cpp" line="996"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="960"/>
+        <location filename="core.cpp" line="1088"/>
         <source>Could not open saved torrent %1 for read.</source>
         <translation>Не могу открыть сохраненный торрент %1 на чтение.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1065"/>
+        <location filename="core.cpp" line="1205"/>
         <source>Torrent finished: %1</source>
         <translation>Торрент завершен: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="512"/>
+        <location filename="core.cpp" line="578"/>
         <source>Runtime error</source>
         <translation>Ошибка выполнения</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1633"/>
+        <location filename="core.cpp" line="1894"/>
         <source>Wrong announce address %1</source>
         <translation>Неправильный announce-адрес %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="230"/>
+        <location filename="core.cpp" line="268"/>
         <source>Waiting in queue</source>
         <translation>Ожидает в очереди</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1155"/>
+        <location filename="core.cpp" line="1362"/>
         <source>untagged</source>
         <translation>непротеганное</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="374"/>
+        <source>General torrent parsing error</source>
+        <translation>Общая ошибка парсинга торрент-файла</translation>
     </message>
 </context>
 <context>
@@ -654,74 +659,14 @@
         <translation>Файлы</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="1062"/>
-        <source>Name</source>
-        <translation type="obsolete">Имя</translation>
-    </message>
-    <message>
         <location filename="mainwindow.ui" line="1198"/>
         <source>Size</source>
         <translation>Размер</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="1072"/>
-        <source>Priority</source>
-        <translation type="obsolete">Приоритет</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="1077"/>
-        <source>Progress</source>
-        <translation type="obsolete">Прогресс</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="1089"/>
-        <source>Priority:</source>
-        <translation type="obsolete">Приоритет:</translation>
-    </message>
-    <message>
         <location filename="mainwindow.ui" line="1125"/>
         <source>Peers</source>
         <translation>Пиры</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="1097"/>
-        <source>IP</source>
-        <translation type="obsolete">IP</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="1102"/>
-        <source>Seed</source>
-        <translation type="obsolete">Сид</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="1107"/>
-        <source>Download speed</source>
-        <translation type="obsolete">Скорость скачивания</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="1112"/>
-        <source>Upload speed</source>
-        <translation type="obsolete">Скорость отдачи</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="1117"/>
-        <source>Downloaded</source>
-        <translation type="obsolete">Скачано</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="1122"/>
-        <source>Uploaded</source>
-        <translation type="obsolete">Загружено</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="1127"/>
-        <source>Client</source>
-        <translation type="obsolete">Клиент</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="925"/>
-        <source>Country</source>
-        <translation type="obsolete">Страна</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="1415"/>
@@ -734,19 +679,9 @@
         <translation>Панель управления</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="60"/>
-        <source>Overall download rate:</source>
-        <translation type="obsolete">Общая скорость закачки:</translation>
-    </message>
-    <message>
         <location filename="mainwindow.ui" line="354"/>
         <source> kb/s</source>
         <translation> кб/с</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="92"/>
-        <source>Overall upload rate:</source>
-        <translation type="obsolete">Общая скорость отдачи:</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="370"/>
@@ -799,11 +734,6 @@
         <translation>Суммарно</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="164"/>
-        <source>Selected torrent</source>
-        <translation type="obsolete">Выбранный торрент</translation>
-    </message>
-    <message>
         <location filename="mainwindow.ui" line="199"/>
         <source>Search</source>
         <translation>Поиск</translation>
@@ -827,11 +757,6 @@
         <location filename="mainwindow.ui" line="933"/>
         <source>Distributed copies:</source>
         <translation>Распределенных копий:</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="1132"/>
-        <source>Available pieces</source>
-        <translation type="obsolete">Доступно кусков</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="235"/>
@@ -1041,69 +966,89 @@
         <translation>Отрегулировать параметры</translation>
     </message>
     <message>
-        <location filename="newtorrentthirdstep.ui" line="22"/>
+        <location filename="newtorrentthirdstep.ui" line="23"/>
         <source>Piece size:</source>
         <translation>Размер кусочка:</translation>
     </message>
     <message>
-        <location filename="newtorrentthirdstep.ui" line="35"/>
+        <location filename="newtorrentthirdstep.ui" line="36"/>
         <source>32 kb</source>
         <translation>32 кб</translation>
     </message>
     <message>
-        <location filename="newtorrentthirdstep.ui" line="40"/>
+        <location filename="newtorrentthirdstep.ui" line="41"/>
         <source>64 kb</source>
         <translation>64 кб</translation>
     </message>
     <message>
-        <location filename="newtorrentthirdstep.ui" line="45"/>
+        <location filename="newtorrentthirdstep.ui" line="46"/>
         <source>128 kb</source>
         <translation>128 кб</translation>
     </message>
     <message>
-        <location filename="newtorrentthirdstep.ui" line="50"/>
+        <location filename="newtorrentthirdstep.ui" line="51"/>
         <source>256 kb</source>
         <translation>256 кб</translation>
     </message>
     <message>
-        <location filename="newtorrentthirdstep.ui" line="55"/>
+        <location filename="newtorrentthirdstep.ui" line="56"/>
         <source>512 kb</source>
         <translation>512 кб</translation>
     </message>
     <message>
-        <location filename="newtorrentthirdstep.ui" line="60"/>
+        <location filename="newtorrentthirdstep.ui" line="61"/>
         <source>1 mb</source>
         <translation>1 мб</translation>
     </message>
     <message>
-        <location filename="newtorrentthirdstep.ui" line="65"/>
+        <location filename="newtorrentthirdstep.ui" line="66"/>
         <source>2 mb</source>
         <translation>2 мб</translation>
     </message>
     <message>
-        <location filename="newtorrentthirdstep.ui" line="70"/>
+        <location filename="newtorrentthirdstep.ui" line="71"/>
         <source>4 mb</source>
         <translation>4 мб</translation>
     </message>
     <message>
-        <location filename="newtorrentthirdstep.ui" line="91"/>
+        <location filename="newtorrentthirdstep.ui" line="112"/>
         <source>&lt;&gt; pieces</source>
         <translation>&lt;&gt; кусочков</translation>
     </message>
     <message>
-        <location filename="newtorrentthirdstep.ui" line="113"/>
+        <location filename="newtorrentthirdstep.ui" line="134"/>
         <source>URL seeds:</source>
         <translation>URL web-сидов:</translation>
     </message>
     <message>
-        <location filename="newtorrentthirdstep.ui" line="142"/>
+        <location filename="newtorrentthirdstep.ui" line="163"/>
         <source>Public torrent (DHT enabled)</source>
         <translation>Публичный торрент (DHT включен)</translation>
     </message>
     <message>
-        <location filename="newtorrentthirdstep.ui" line="156"/>
+        <location filename="newtorrentthirdstep.ui" line="177"/>
         <source>Known nodes:</source>
         <translation>Известные узлы:</translation>
+    </message>
+    <message>
+        <location filename="newtorrentthirdstep.ui" line="76"/>
+        <source>8 mb</source>
+        <translation>8 мб</translation>
+    </message>
+    <message>
+        <location filename="newtorrentthirdstep.ui" line="81"/>
+        <source>16 mb</source>
+        <translation>16 мб</translation>
+    </message>
+    <message>
+        <location filename="newtorrentthirdstep.ui" line="86"/>
+        <source>32 mb</source>
+        <translation>32 мб</translation>
+    </message>
+    <message>
+        <location filename="newtorrentthirdstep.ui" line="91"/>
+        <source>64 mb</source>
+        <translation>64 мб</translation>
     </message>
 </context>
 <context>
@@ -1244,89 +1189,11 @@
     </message>
 </context>
 <context>
-    <name>SettingsManager</name>
-    <message>
-        <location filename="settingsmanager.cpp" line="370"/>
-        <source>Port range</source>
-        <translation type="obsolete">Порты</translation>
-    </message>
-    <message>
-        <location filename="settingsmanager.cpp" line="421"/>
-        <source>Network options</source>
-        <translation type="obsolete">Сетевые опции</translation>
-    </message>
-    <message>
-        <location filename="settingsmanager.cpp" line="376"/>
-        <source>DHT enabled</source>
-        <translation type="obsolete">DHT включен</translation>
-    </message>
-    <message>
-        <location filename="settingsmanager.cpp" line="424"/>
-        <source>Auto save interval</source>
-        <translation type="obsolete">Интервал автоматического сохранения</translation>
-    </message>
-    <message>
-        <location filename="settingsmanager.cpp" line="424"/>
-        <source>Local options</source>
-        <translation type="obsolete">Локальные опции</translation>
-    </message>
-    <message>
-        <location filename="settingsmanager.cpp" line="427"/>
-        <source> s</source>
-        <translation type="obsolete"> с</translation>
-    </message>
-    <message>
-        <location filename="settingsmanager.cpp" line="379"/>
-        <source>Maximum uploads</source>
-        <translation type="obsolete">Максимум радач</translation>
-    </message>
-    <message>
-        <location filename="settingsmanager.cpp" line="383"/>
-        <source>Limits</source>
-        <translation type="obsolete">Ограничения</translation>
-    </message>
-    <message>
-        <location filename="settingsmanager.cpp" line="383"/>
-        <source>Maximum connections</source>
-        <translation type="obsolete">Максимум соединений</translation>
-    </message>
-    <message>
-        <location filename="settingsmanager.cpp" line="388"/>
-        <source>Tracker proxy</source>
-        <translation type="obsolete">Прокси для трэкеров</translation>
-    </message>
-    <message>
-        <location filename="settingsmanager.cpp" line="411"/>
-        <source>Hostname</source>
-        <translation type="obsolete">Хост</translation>
-    </message>
-    <message>
-        <location filename="settingsmanager.cpp" line="414"/>
-        <source>Port</source>
-        <translation type="obsolete">Порт</translation>
-    </message>
-    <message>
-        <location filename="settingsmanager.cpp" line="418"/>
-        <source>Login</source>
-        <translation type="obsolete">Логин</translation>
-    </message>
-    <message>
-        <location filename="settingsmanager.cpp" line="421"/>
-        <source>Password</source>
-        <translation type="obsolete">Пароль</translation>
-    </message>
-    <message>
-        <location filename="settingsmanager.cpp" line="406"/>
-        <source>Peer proxy</source>
-        <translation type="obsolete">Прокси для пиров</translation>
-    </message>
-</context>
-<context>
     <name>ThirdStep</name>
     <message>
-        <location filename="thirdstep.cpp" line="47"/>
-        <source> pieces</source>
-        <translation> кусочков</translation>
+        <location filename="thirdstep.cpp" line="61"/>
+        <source> pieces (%1)</source>
+        <translation>кусков (%1)</translation>
     </message>
 </context>
 <context>
@@ -1355,67 +1222,62 @@
 <context>
     <name>TorrentPlugin</name>
     <message>
-        <location filename="torrentplugin.cpp" line="170"/>
+        <location filename="torrentplugin.cpp" line="245"/>
         <source>Full-featured BitTorrent client.</source>
         <translation>Полнофункциональный BitTorrent-клиент.</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="471"/>
+        <location filename="torrentplugin.cpp" line="591"/>
         <source>: Preferences</source>
         <translation>: Настройки</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="598"/>
+        <location filename="torrentplugin.cpp" line="719"/>
         <source>Error!</source>
         <translation>Ошибка!</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="735"/>
+        <location filename="torrentplugin.cpp" line="847"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="426"/>
+        <location filename="torrentplugin.cpp" line="546"/>
         <source>Question</source>
         <translation>Вопрос</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="426"/>
+        <location filename="torrentplugin.cpp" line="546"/>
         <source>Do you really want to delete the torrent?</source>
         <translation>Ты действительно хочешь удалить торрент?</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="604"/>
-        <source>true</source>
-        <translation type="obsolete">да</translation>
-    </message>
-    <message>
-        <location filename="torrentplugin.cpp" line="210"/>
+        <location filename="torrentplugin.cpp" line="285"/>
         <source>&amp;BitTorrent</source>
         <translation>&amp;BitTorrent</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="310"/>
+        <location filename="torrentplugin.cpp" line="428"/>
         <source>untagged</source>
         <translation>непротеганное</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="575"/>
+        <location filename="torrentplugin.cpp" line="675"/>
         <source>Information</source>
         <translation>Информация</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="577"/>
+        <location filename="torrentplugin.cpp" line="677"/>
         <source>Started moving torrent&apos;s files from %1 to %2</source>
         <translation>Начало перемещения файлов торрента из %1 в %2</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="580"/>
+        <location filename="torrentplugin.cpp" line="680"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="582"/>
+        <location filename="torrentplugin.cpp" line="682"/>
         <source>Failed to move torrent&apos;s files from %1 to %2</source>
         <translation>Ошибка при перемещении файлов торрента из %1 в %2</translation>
     </message>

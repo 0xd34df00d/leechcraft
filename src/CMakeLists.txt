@@ -122,11 +122,13 @@ SET (HEADERS
 	)
 
 SET (FORMS
-	changelogdialog.ui
 	commonjobadder.ui
 	leechcraft.ui
 	)
 SET (RESOURCES mainresources.qrc)
+SET (TRANSLATIONS
+	leechcraft_ru.qm
+	)
 
 ADD_DEFINITIONS (-DQT_GUI_LIB)
 ADD_DEFINITIONS (-D_REENTRANT)
@@ -135,7 +137,13 @@ QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCC ${RESOURCES})
 
-ADD_EXECUTABLE (leechcraft WIN32 ${SRCS} ${MOC_SRCS} ${UIS_H} ${RCC})
+ADD_CUSTOM_COMMAND (OUTPUT ${TRANSLATIONS}
+	COMMAND "lrelease" ARGS "leechcraft_ru.ts"
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	)
+
+ADD_EXECUTABLE (leechcraft WIN32 ${SRCS} ${MOC_SRCS} ${UIS_H} ${RCC}
+	${TRANSLATIONS})
 TARGET_LINK_LIBRARIES(leechcraft
 						${QT_LIBRARIES}
 						plugininterface

@@ -59,6 +59,9 @@ SET (FORMS
 	regexpmatcherui.ui
 	singleregexp.ui)
 SET (RESOURCES resources.qrc)
+SET (TRANSLATIONS
+	leechcraft_aggregator_ru.qm
+	)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 ADD_DEFINITIONS(-DQT_PLUGIN)
@@ -68,7 +71,13 @@ ADD_DEFINITIONS(-DQT_GUI_LIB)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
-ADD_LIBRARY (leechcraft_aggregator SHARED ${SRCS} ${MOC_SRCS} ${UIS_H} ${RCCS})
+
+ADD_CUSTOM_COMMAND (OUTPUT ${TRANSLATIONS}
+	COMMAND "lrelease" ARGS "leechcraft_aggregator_ru.ts"
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	)
+
+ADD_LIBRARY (leechcraft_aggregator SHARED ${SRCS} ${MOC_SRCS} ${UIS_H} ${RCCS} ${TRANSLATIONS})
 LINK_DIRECTORIES (${Boost_LIBRARY_DIR})
 TARGET_LINK_LIBRARIES (leechcraft_aggregator
                         ${QT_LIBRARIES}

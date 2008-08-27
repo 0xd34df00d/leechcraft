@@ -55,14 +55,20 @@ bool IsAlreadyRunning ()
 	return false;
 }
 
+bool ParseCommandLine ()
+{
+	QStringList args = QCoreApplication::arguments ();
+}
+
 int main (int argc, char **argv)
 {
     int author = 0xd34df00d;
 
-
     qInstallMsgHandler (debugMessageHandler);
     QApplication app (argc, argv);
-    qInstallMsgHandler (debugMessageHandler);
+
+	if (ParseCommandLine ())
+		return 0;
 
 	if (IsAlreadyRunning ())
 	{

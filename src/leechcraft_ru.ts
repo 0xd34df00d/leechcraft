@@ -1,63 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="ru">
-<context>
-    <name>ChangelogDialog</name>
-    <message>
-        <location filename="changelogdialog.ui" line="13"/>
-        <source>Changelog</source>
-        <translation>Изменения</translation>
-    </message>
-</context>
+<defaultcodec></defaultcodec>
 <context>
     <name>CommonJobAdder</name>
     <message>
+        <location filename="commonjobadder.cpp" line="47"/>
+        <source>Select file</source>
+        <translation>Выбери файл</translation>
+    </message>
+    <message>
         <location filename="commonjobadder.ui" line="13"/>
         <source>Common job adder</source>
-        <translation>Абстрагированное добавление заданий</translation>
+        <translation>Добавление задачи</translation>
     </message>
     <message>
-        <location filename="commonjobadder.ui" line="24"/>
-        <source>What to download:</source>
-        <translation>Что качать:</translation>
+        <location filename="commonjobadder.ui" line="25"/>
+        <source>What:</source>
+        <translation>Что:</translation>
     </message>
     <message>
-        <location filename="commonjobadder.ui" line="51"/>
+        <location filename="commonjobadder.ui" line="65"/>
         <source>Browse...</source>
         <translation>Обзор...</translation>
     </message>
     <message>
-        <location filename="commonjobadder.ui" line="58"/>
+        <location filename="commonjobadder.ui" line="44"/>
         <source>Paste from clipboard</source>
-        <translation>Вставить из буфера</translation>
+        <translation>Вставить из буфера обмена</translation>
+    </message>
+    <message>
+        <location filename="commonjobadder.ui" line="53"/>
+        <source>Where:</source>
+        <translation>Куда:</translation>
     </message>
 </context>
 <context>
-    <name>Core</name>
+    <name>LeechCraft</name>
     <message>
-        <location filename="core.cpp" line="176"/>
-        <source>Name</source>
-        <translation type="obsolete">Имя</translation>
+        <location filename="leechcraft.ui" line="13"/>
+        <source>LeechCraft</source>
+        <translation>LeechCraft</translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="101"/>
+        <source>Actions</source>
+        <translation>Действия</translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="180"/>
+        <source>Settings</source>
+        <translation>Настройки</translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="116"/>
+        <source>Help</source>
+        <translation>Помощь</translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="123"/>
+        <source>Plugins</source>
+        <translation>Плагины</translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="151"/>
+        <source>toolBar</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="168"/>
+        <source>Add task</source>
+        <translation>Добавить задачу</translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="171"/>
+        <source>Adds job to a supporting plugin</source>
+        <translation>Добавляет задачу в поддерживающий плагин</translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="185"/>
+        <source>Quit</source>
+        <translation>Выход</translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="190"/>
+        <source>About LeechCraft...</source>
+        <translation>О LeechCraft...</translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="195"/>
+        <source>About Qt...</source>
+        <translation>О Qt...</translation>
     </message>
 </context>
 <context>
     <name>Main::Core</name>
     <message>
-        <location filename="core.cpp" line="104"/>
+        <location filename="core.cpp" line="158"/>
         <source>No plugins are able to download &quot;%1&quot;</source>
-        <translation>Нет плагинов, способных закачать &quot;%1&quot;</translation>
+        <translation>Нет плагинов, способных скачать &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="153"/>
+        <location filename="core.cpp" line="225"/>
         <source>Question</source>
         <translation>Вопрос</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="154"/>
+        <location filename="core.cpp" line="226"/>
         <source>File %1 could be handled by plugin %2, would you like to?</source>
-        <translation>File %1 может быть обработан плагином %2, ты не против?</translation>
+        <translation>Файл %1 может быть обработан плагином %2, ты хочешь?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="190"/>
+        <location filename="core.cpp" line="272"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
@@ -65,416 +118,93 @@
 <context>
     <name>Main::MainWindow</name>
     <message>
-        <location filename="mainwindow.cpp" line="30"/>
+        <location filename="mainwindow.cpp" line="26"/>
         <source>Initializing interface...</source>
         <translation>Инициализирую интерфейс...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="61"/>
-        <source>Reading settings...</source>
-        <translation>Читаю настройки...</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="66"/>
+        <location filename="mainwindow.cpp" line="67"/>
         <source>Initializing core and plugins...</source>
         <translation>Инициализирую ядро и плагины...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="122"/>
+        <location filename="mainwindow.cpp" line="100"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="127"/>
-        <source>Question</source>
-        <translation>Вопрос</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="127"/>
-        <source>Do you really want to exit?</source>
-        <translation>Ты действительно хочешь выйти?</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="144"/>
-        <source>Tools</source>
-        <translation>Настройки</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="167"/>
-        <source>Plugins</source>
-        <translation>Плагины</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="150"/>
-        <source>&amp;File</source>
-        <translation>&amp;Файл</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="151"/>
-        <source>&amp;Plugins</source>
-        <translation>&amp;Плагины</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="152"/>
-        <source>&amp;Actions</source>
-        <translation>&amp;Действия</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="153"/>
-        <source>&amp;Tools</source>
-        <translation>&amp;Настройки</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="154"/>
-        <source>&amp;Help</source>
-        <translation>&amp;Помощь</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="162"/>
+        <location filename="mainwindow.cpp" line="113"/>
         <source>Show/hide main</source>
-        <translation>Показать/спрятать главное окно</translation>
+        <translation>Показать/скрыть главное окно</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="163"/>
+        <location filename="mainwindow.cpp" line="114"/>
         <source>Hide all</source>
-        <translation>Спрятать все</translation>
+        <translation>Скрыть все</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="169"/>
+        <location filename="mainwindow.cpp" line="118"/>
         <source>Quit</source>
         <translation>Выход</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="184"/>
-        <source>&amp;Add job</source>
-        <translation>&amp;Добавить задание</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="185"/>
-        <source>Adds a job to a plugin supporting that addition</source>
-        <translation>Добавляет задание в плагин, способный его обработать</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="188"/>
-        <source>&amp;Quit</source>
-        <translation>&amp;Выход</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="189"/>
-        <source>Exit from application</source>
-        <translation>Выйти из приложения</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="191"/>
-        <source>Settings...</source>
-        <translation>Настройки...</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="193"/>
-        <source>Backup settings...</source>
-        <translation>Выгрузить настройки...</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="194"/>
-        <source>Restore settings...</source>
-        <translation>Загрузить настройки....</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="170"/>
-        <source>&amp;Changelog...</source>
-        <translation type="obsolete">&amp;Изменения...</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="195"/>
-        <source>&amp;About Qt...</source>
-        <translation>&amp;О Qt...</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="172"/>
-        <source>About &amp;LeechCraft...</source>
-        <translation type="obsolete">О &amp;LeechCraft...</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="231"/>
-        <source>Plugin</source>
-        <translation>Плагин</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="231"/>
-        <source>Plugin details</source>
-        <translation>Информация о плагине</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="270"/>
-        <source>Provides:</source>
-        <translation>Обеспечивает:</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="282"/>
-        <source>Needs:</source>
-        <translation>Нуждается в:</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="297"/>
-        <source>Uses:</source>
-        <translation>Использует:</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="353"/>
+        <location filename="mainwindow.cpp" line="154"/>
         <source>/s</source>
-        <translation>/c</translation>
+        <translation>/с</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="380"/>
-        <source>Backup file</source>
-        <translation>Файл с настройками</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="380"/>
-        <source>Settings files (*.ini)</source>
-        <translation>Файлы настроек (*.ini)</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="390"/>
-        <source>Finished</source>
-        <translation>Законченные</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="374"/>
-        <source>Settings sucessfully backuped to %1</source>
-        <translation>Настройки успешно выгружены в %1</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="390"/>
-        <source>Settings sucessfully restored from %1</source>
-        <translation>Настройки успешно загружены из %1</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="405"/>
+        <location filename="mainwindow.cpp" line="161"/>
         <source>Information</source>
         <translation>Информация</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="393"/>
-        <source>LeechCraft public build 7</source>
-        <translation type="obsolete">LeechCraft, публичный билд 7</translation>
+        <location filename="mainwindow.cpp" line="169"/>
+        <source>&lt;img src=&quot;:/resources/images/mainapp.png&quot; /&gt;&lt;h1&gt;LeechCraft 0.3.0_pre&lt;/h1&gt;LeechCraft is a cross-platform extensible download manager. Currently it offers full-featured BitTorrent client, feed reader, HTTP support, Remote access and much more. It also aims to be resource-efficient working quite well on even old computers.&lt;br /&gt;&lt;br /&gt;Here are some useful links for you:&lt;br /&gt;&lt;a href=&quot;http://bugs.deviant-soft.ws&quot;&gt;Bugtracker and feature request tracker&lt;/a&gt;&lt;br /&gt;&lt;a href=&quot;http://sourceforge.net/project/showfiles.php?group_id=161819&quot;&gt;Latest file releases&lt;/a&gt;&lt;br /&gt;&lt;a href=&quot;http://deviant-soft.ws&quot;&gt;LeechCraft&apos;s Site&lt;/a&gt;&lt;br /&gt;&lt;a href=&quot;http://sourceforge.net/projects/leechcraft&quot;&gt;LeechCraft&apos;s site at sourceforge.net&lt;/a&gt;&lt;br /&gt;</source>
+        <translation>&lt;img src=&quot;:/resources/images/mainapp.png&quot; /&gt;&lt;h1&gt;LeechCraft 0.3.0_pre&lt;/h1&gt;LeechCraft — кроссплатформенный расширяемый интернет-клиент. В настоящее время он предлагает полнофункциональный BitTorrent-клиент, агрегатор лент новостей, HTTP-клиент, удаленный доступ и многое другое. Он также стремится потреблять мало ресурсов и работать на старых компьютерах.&lt;br /&gt;&lt;br /&gt;Вот несколько полезных ссылок:&lt;br /&gt;&lt;a href=&quot;http://bugs.deviant-soft.ws&quot;&gt;Багтрекер&lt;/a&gt;&lt;br /&gt;&lt;a href=&quot;http://sourceforge.net/project/showfiles.php?group_id=161819&quot;&gt;Последние релизы&lt;/a&gt;&lt;br /&gt;&lt;a href=&quot;http://deviant-soft.ws&quot;&gt;Сайт LeechCraft&apos;а&lt;/a&gt;&lt;br /&gt;&lt;a href=&quot;http://sourceforge.net/projects/leechcraft&quot;&gt;Сайт LeechCraft&apos;а на SourceForge.net&lt;/a&gt;&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="448"/>
+        <location filename="mainwindow.cpp" line="212"/>
         <source>Download finished</source>
-        <translation>Закачка окончена</translation>
+        <translation>Закачка завершена</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="454"/>
+        <location filename="mainwindow.cpp" line="218"/>
         <source>: Preferences</source>
         <translation>: Настройки</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="378"/>
-        <source>LeechCraft public build 8</source>
-        <translation type="obsolete">LeechCraft, публичный билд 8, ревизия 477</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="405"/>
-        <source>LeechCraft public build 8, revision 477</source>
-        <translation>LeechCraft, публичный билд 8, ревизия 477</translation>
-    </message>
-</context>
-<context>
-    <name>MainWindow</name>
-    <message>
-        <location filename="mainwindow.cpp" line="24"/>
-        <source>Initializing interface...</source>
-        <translation type="obsolete">Инициализирую интерфейс...</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="45"/>
-        <source>Reading settings...</source>
-        <translation type="obsolete">Читаю настройки...</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="48"/>
-        <source>Initializing core and plugins...</source>
-        <translation type="obsolete">Инициализирую ядро и плагины...</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="87"/>
-        <source>Notice</source>
-        <translation type="obsolete">Замечание</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="90"/>
-        <source>Warning</source>
-        <translation type="obsolete">Предупреждение</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="93"/>
-        <source>Error</source>
-        <translation type="obsolete">Ошибка</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="96"/>
-        <source>Critical</source>
-        <translation type="obsolete">Критическая ошибка</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="112"/>
-        <source>Tools</source>
-        <translation type="obsolete">Настройки</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="117"/>
-        <source>Backup settings...</source>
-        <translation type="obsolete">Выгрузить настройки...</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="118"/>
-        <source>Restore settings...</source>
-        <translation type="obsolete">Загрузить настройки....</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="123"/>
-        <source>&amp;File</source>
-        <translation type="obsolete">&amp;Файл</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="124"/>
-        <source>&amp;Tools</source>
-        <translation type="obsolete">&amp;Настройки</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="125"/>
-        <source>&amp;Help</source>
-        <translation type="obsolete">&amp;Помощь</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="133"/>
-        <source>Show</source>
-        <translation type="obsolete">Показать</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="134"/>
-        <source>Hide</source>
-        <translation type="obsolete">Скрыть</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="136"/>
-        <source>Exit</source>
-        <translation type="obsolete">Выход</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="150"/>
-        <source>&amp;Quit</source>
-        <translation type="obsolete">&amp;Выход</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="151"/>
-        <source>Exit from application</source>
-        <translation type="obsolete">Выйти из приложения</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="155"/>
-        <source>&amp;About Qt</source>
-        <translation type="obsolete">&amp;О Qt</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="194"/>
-        <source>Plugin</source>
-        <translation type="obsolete">Плагин</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="194"/>
-        <source>Plugin details</source>
-        <translation type="obsolete">Информация о плагине</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="243"/>
-        <source>Provides:</source>
-        <translation type="obsolete">Обеспечивает:</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="254"/>
-        <source>Needs:</source>
-        <translation type="obsolete">Нуждается в:</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="265"/>
-        <source>Uses:</source>
-        <translation type="obsolete">Использует:</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="281"/>
-        <source>/s</source>
-        <translation type="obsolete">/c</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="314"/>
-        <source>Backup file</source>
-        <translation type="obsolete">Файл с настройками</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="314"/>
-        <source>Settings files (*.ini)</source>
-        <translation type="obsolete">Файлы настроек (*.ini)</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="324"/>
-        <source>Finished</source>
-        <translation type="obsolete">Закончил</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="308"/>
-        <source>Settings sucessfully backuped to %1</source>
-        <translation type="obsolete">Настройки успешно выгружены в %1</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="324"/>
-        <source>Settings sucessfully restored from %1</source>
-        <translation type="obsolete">Настройки успешно загружены из %1</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="155"/>
-        <source>&amp;Changelog...</source>
-        <translation type="obsolete">&amp;Изменения...</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="156"/>
-        <source>&amp;About Qt...</source>
-        <translation type="obsolete">&amp;О Qt...</translation>
     </message>
 </context>
 <context>
     <name>PluginManager</name>
     <message>
-        <location filename="pluginmanager.cpp" line="48"/>
+        <location filename="pluginmanager.cpp" line="110"/>
         <source>No exit here</source>
-        <translation>Нету выхода</translation>
+        <translation>Нет выхода</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="48"/>
+        <location filename="pluginmanager.cpp" line="110"/>
         <source>Release of one or more plugins failed. OS would cleanup after us, but it isn&apos;t good anyway, as this failed plugin could fail to save it&apos;s state.</source>
-        <translation>Я не смог освободить один или несколько плагинов. Операционнка все равно подчистит ресурсы за нами, но все же это нехорошо, так как плагин мог не успеть сохранить свое состояние.</translation>
+        <translation>Освобождение одного или нескольких плагинов не удалось. ОС почистит за нами, но это все равно нехорошо.</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="main.cpp" line="64"/>
+        <location filename="main.cpp" line="97"/>
         <source>bytes</source>
         <translation>байт</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="64"/>
+        <location filename="main.cpp" line="98"/>
         <source>KB</source>
         <translation>Кб</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="64"/>
+        <location filename="main.cpp" line="99"/>
         <source>MB</source>
         <translation>Мб</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="64"/>
+        <location filename="main.cpp" line="100"/>
         <source>GB</source>
         <translation>Гб</translation>
     </message>
