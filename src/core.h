@@ -2,19 +2,14 @@
 #define CORE_H
 #include <memory>
 #include <QObject>
-#include <QList>
-#include <QMultiMap>
-#include <QFile>
-#include <QPair>
 #include <QString>
 #include "common.h"
 #include "pluginmanager.h"
 #include "interfaces/interfaces.h"
 
 class QTimer;
-class QDomDocument;
-class QTreeWidgetItem;
 class QLocalServer;
+class QAbstractProxyModel;
 class MergeModel;
 
 namespace Main
@@ -24,12 +19,12 @@ namespace Main
     {
         Q_OBJECT
 
-        QList<int> TasksIDPool_;
         PluginManager *PluginManager_;
         MainWindow *ReallyMainWindow_;
         QTimer *ClipboardWatchdog_;
         QString PreviousClipboardContents_;
 		std::auto_ptr<QLocalServer> Server_;
+		std::auto_ptr<MergeModel> MergeModel_;
 
         Core ();
     public:
@@ -41,6 +36,7 @@ namespace Main
         MainWindow* GetReallyMainWindow ();
 
 		QAbstractItemModel* GetPluginsModel () const;
+		QAbstractProxyModel* GetTasksModel () const;
 
         void DelayedInit ();
         bool ShowPlugin (IInfo::ID_t);
@@ -55,18 +51,10 @@ namespace Main
     private slots:
         void handleFileDownload (const QString&, bool fromBuffer = false);
         void handleClipboardTimer ();
-    private:
-        void PreparePools ();
-        void FetchPlugins ();
-
-        QVariant GetTaskData (int, int) const;
     signals:
         void error (QString);
-        void pushTask (const QString&, int);
         void hidePlugins ();
         void downloadFinished (const QString&);
-        void gotRepresentationItem (QTreeWidgetItem*);
-        void newRepresentationCycle ();
     };
 };
 

@@ -35,6 +35,7 @@ SET (RESOURCES
 	)
 SET (TRANSLATIONS
 	leechcraft_cstp_ru.qm
+	leechcraft_cstp_uk.qm
 	)
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 ADD_DEFINITIONS(-DQT_PLUGIN)
@@ -46,7 +47,7 @@ QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 ADD_CUSTOM_COMMAND (OUTPUT ${TRANSLATIONS}
-	COMMAND "lrelease" ARGS "leechcraft_cstp_ru.ts"
+	COMMAND "lrelease" ARGS "leechcraft_cstp_ru.ts" "leechcraft_cstp_uk.ts"
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	)
 

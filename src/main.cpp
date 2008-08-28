@@ -85,6 +85,7 @@ int main (int argc, char **argv)
     QString localeName = QString(::getenv ("LANG")).left (2);
     if (localeName.isNull () || localeName.isEmpty ())
         localeName = QLocale::system ().name ();
+	qDebug () << localeName;
     transl.load (QString (":/leechcraft_") + localeName);
     app.installTranslator (&transl);
 

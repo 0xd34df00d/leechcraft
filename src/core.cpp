@@ -15,16 +15,13 @@
 #include "exceptions/logic.h"
 #include "exceptions/outofbounds.h"
 #include "xmlsettingsmanager.h"
+#include "mergemodel.h"
 
 Main::Core::Core ()
 : Server_ (new QLocalServer)
+, MergeModel_ (new MergeModel)
 {
-    PreparePools ();
 	PluginManager_ = new Main::PluginManager (this);
-    connect (PluginManager_,
-			SIGNAL (gotPlugin (const PluginInfo*)),
-			this,
-			SIGNAL (gotPlugin (const PluginInfo*)));
 
     ClipboardWatchdog_ = new QTimer (this);
     connect (ClipboardWatchdog_,
@@ -52,6 +49,9 @@ void Main::Core::Release ()
     delete PluginManager_;
     ClipboardWatchdog_->stop ();
     delete ClipboardWatchdog_;
+
+	Server_.reset ();
+	MergeModel_.reset ();
 }
 
 void Main::Core::SetReallyMainWindow (Main::MainWindow *win)
@@ -69,6 +69,11 @@ QAbstractItemModel* Main::Core::GetPluginsModel () const
 	return PluginManager_;
 }
 
+QAbstractProxyModel* Main::Core::GetTasksModel () const
+{
+	return MergeModel_.get ();
+}
+
 void Main::Core::DelayedInit ()
 {
 	connect (this,
@@ -83,6 +88,7 @@ void Main::Core::DelayedInit ()
     {
         connect (this, SIGNAL (hidePlugins ()), plugin, SLOT (handleHidePlugins ()));
         IDownload *download = dynamic_cast<IDownload*> (plugin);
+		IJobHolder *ijh = dynamic_cast<IJobHolder*> (plugin);
 
 		const QMetaObject *qmo = plugin->metaObject ();
 
@@ -99,6 +105,9 @@ void Main::Core::DelayedInit ()
 					SIGNAL (downloadFinished (const QString&)),
 					this,
 					SIGNAL (downloadFinished (const QString&)));
+
+		if (ijh)
+			MergeModel_->AddModel (ijh->GetRepresentation ());
     }
 
 	XmlSettingsManager::Instance ()->RegisterObject ("ProxyEnabled", this, "handleProxySettings");
@@ -252,34 +261,5 @@ void Main::Core::handleClipboardTimer ()
 
     if (XmlSettingsManager::Instance ()->property ("WatchClipboard").toBool ())
         handleFileDownload (text, true);
-}
-
-void Main::Core::PreparePools ()
-{
-    for (int i = 0; i < 255; ++i)
-        TasksIDPool_.push_back (i);
-}
-
-QVariant Main::Core::GetTaskData (int row, int column) const
-{
-    if (row == -1)
-    {
-        switch (column)
-        {
-            case 0:
-                return tr ("Name");
-            case 1:
-                return tr ("Name");
-        }
-    }
-    switch (column)
-    {
-        case 0:
-            return PluginManager_->Name (row);
-        case 1:
-            return PluginManager_->Info (row);
-        default:
-            return QVariant ();
-    }
 }
 

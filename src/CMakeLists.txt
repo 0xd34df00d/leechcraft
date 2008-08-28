@@ -128,6 +128,7 @@ SET (FORMS
 SET (RESOURCES mainresources.qrc)
 SET (TRANSLATIONS
 	leechcraft_ru.qm
+	leechcraft_uk.qm
 	)
 
 ADD_DEFINITIONS (-DQT_GUI_LIB)
@@ -138,7 +139,7 @@ QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCC ${RESOURCES})
 
 ADD_CUSTOM_COMMAND (OUTPUT ${TRANSLATIONS}
-	COMMAND "lrelease" ARGS "leechcraft_ru.ts"
+	COMMAND "lrelease" ARGS "leechcraft_ru.ts" "leechcraft_uk.ts"
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	)
 

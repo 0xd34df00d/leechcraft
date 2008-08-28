@@ -20,9 +20,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>67</y>
+     <y>68</y>
      <width>800</width>
-     <height>512</height>
+     <height>510</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2" >
@@ -70,7 +70,7 @@
           <widget class="QWidget" native="1" name="PluginControls_" />
          </item>
          <item>
-          <widget class="QTreeView" name="PluginTasksTree_" >
+          <widget class="QTreeView" name="PluginsTasksTree_" >
            <property name="minimumSize" >
             <size>
              <width>250</width>
@@ -93,7 +93,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>28</height>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >
@@ -132,9 +132,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>579</y>
+     <y>578</y>
      <width>800</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
@@ -142,7 +142,7 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>28</y>
+     <y>29</y>
      <width>800</width>
      <height>39</height>
     </rect>

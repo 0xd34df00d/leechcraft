@@ -75,6 +75,7 @@ namespace Main
 		Core::Instance ().DelayedInit ();
 
 		Ui_->PluginsTree_->setModel (Core::Instance ().GetPluginsModel ());
+		Ui_->PluginsTasksTree_->setModel (Core::Instance ().GetTasksModel ());
 
 		QTimer *speedUpd = new QTimer (this);
 		speedUpd->setInterval (1000);

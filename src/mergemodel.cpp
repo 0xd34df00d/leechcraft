@@ -5,7 +5,10 @@
 MergeModel::MergeModel (QObject *parent)
 : QAbstractProxyModel (parent)
 {
-	Headers_ << tr ("") << tr ("");
+	Headers_ << tr ("Name")
+		<< tr ("State")
+		<< tr ("Progress")
+		<< tr ("Speed");
 }
 
 MergeModel::~MergeModel ()
@@ -127,6 +130,9 @@ void MergeModel::setSourceModel (QAbstractItemModel*)
 
 void MergeModel::AddModel (QAbstractItemModel *model)
 {
+	if (!model)
+		return;
+
 	int rows = model->rowCount (QModelIndex ());
 	bool wouldInsert = false;
 	if (rows > 0)
