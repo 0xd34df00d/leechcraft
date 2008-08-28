@@ -175,12 +175,7 @@ int CSTP::AddJob (const DirectDownloadParams& ddp, LeechCraft::TaskParameters tp
 
 QAbstractItemModel* CSTP::GetRepresentation () const
 {
-	return &Core::Instance ();
-}
-
-QAbstractItemDelegate* CSTP::GetDelegate () const
-{
-	return new MainViewDelegate (Ui_.MainView_);
+	return Core::Instance ().GetRepresentationModel ();
 }
 
 void CSTP::closeEvent (QCloseEvent*)

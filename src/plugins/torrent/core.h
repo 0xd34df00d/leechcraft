@@ -22,6 +22,7 @@ class PeersModel;
 class TagsCompletionModel;
 class TorrentFilesModel;
 class TorrentPlugin;
+class RepresentationModel;
 
 class Core : public QAbstractItemModel
 {
@@ -63,6 +64,7 @@ private:
 	std::auto_ptr<PeersModel> PeersModel_;
 	std::auto_ptr<TagsCompletionModel> TagsCompletionModel_;
 	std::auto_ptr<TorrentFilesModel> TorrentFilesModel_;
+	std::auto_ptr<RepresentationModel> RepresentationModel_;
 	mutable TorrentPlugin *TorrentPlugin_;
 
 	std::list<quint16> IDPool_;
@@ -72,15 +74,13 @@ public:
     enum Columns
     {
         ColumnName = 0
-        , ColumnDownloaded
-        , ColumnUploaded
-        , ColumnRating
-        , ColumnSize
-        , ColumnProgress
         , ColumnState
-        , ColumnSP
+        , ColumnProgress  // percentage, Downloaded of Size
         , ColumnDSpeed
         , ColumnUSpeed 
+        , ColumnUploaded
+        , ColumnRating
+        , ColumnSP
         , ColumnRemaining 
     };
 	enum AddType
@@ -123,7 +123,8 @@ public:
     QList<PeerInfo> GetPeers (int) const;
     QStringList GetTagsForIndex (int) const;
     void UpdateTags (int, const QStringList&);
-    TagsCompletionModel* GetTagsCompletionModel ();
+    TagsCompletionModel* GetTagsCompletionModel () const;
+	QAbstractItemModel* GetRepresentationModel () const;
 	int AddFile (const QString&, const QString&, const QStringList&,
 			const QVector<bool>& = QVector<bool> (),
 			LeechCraft::TaskParameters = LeechCraft::NoParameters);

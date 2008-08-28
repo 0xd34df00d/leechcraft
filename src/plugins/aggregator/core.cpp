@@ -528,11 +528,9 @@ void Core::handleJobFinished (int id)
 			}
 	};
 
-	qDebug () << Q_FUNC_INFO;
 	if (!PendingJobs_.contains (id))
 		return;
 	PendingJob pj = PendingJobs_ [id];
-	qDebug () << id << pj.URL_ << pj.Filename_;
 	PendingJobs_.remove (id);
 	FileRemoval file (pj.Filename_);
 	if (!file.open (QIODevice::ReadOnly))
@@ -597,23 +595,16 @@ void Core::handleJobFinished (int id)
 		for (size_t i = 0; i < channels.size (); ++i)
 		{
 			int position = -1;
-			qDebug () << "new chan params:" << channels [i]->Title_ << channels [i]->Link_;
 			for (size_t j = 0; j < Feeds_ [pj.URL_].Channels_.size (); ++j)
-			{
-				qDebug () << "testing chan:"
-					<< Feeds_ [pj.URL_].Channels_ [j]->Title_
-					<< Feeds_ [pj.URL_].Channels_ [j]->Link_;
 				if (*Feeds_ [pj.URL_].Channels_ [j] == *channels [i])
 				{
 					position = j;
 					break;
 				}
-			}
 
 
 			if (position == -1)
 			{
-				qDebug () << "not found";
 				Feeds_ [pj.URL_].Channels_.push_back (channels [i]);
 				emitString += tr ("Added channel \"%1\" (has %2 items)\r\n")
 					.arg (channels [i]->Title_)
@@ -738,7 +729,6 @@ void Core::updateFeeds ()
 		return;
 	}
 	QList<QString> urls = Feeds_.keys ();
-	qDebug () << Q_FUNC_INFO << urls;
 	for (int i = 0; i < urls.size (); ++i)
 	{
 		if (!isd->CouldDownload (urls.at (i), LeechCraft::Autostart))
@@ -756,12 +746,10 @@ void Core::updateFeeds ()
 			file.remove ();
 		}
 		DirectDownloadParams params = { urls.at (i), filename };
-		qDebug () << "TEMPORARY FILE AS SAMPLE" << filename;
 		PendingJob pj = { PendingJob::RFeedUpdated, urls.at (i), filename };
 		int id = idd->AddJob (params, LeechCraft::Autostart |
 				LeechCraft::DoNotNotifyUser | LeechCraft::DoNotSaveInHistory);
 		PendingJobs_ [id] = pj;
-		qDebug () << urls.at (i) << id;
 	}
 }
 

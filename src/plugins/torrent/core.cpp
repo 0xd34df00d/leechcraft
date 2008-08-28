@@ -36,6 +36,7 @@
 #include "torrentfilesmodel.h"
 #include "threadedpd.h"
 #include "torrentplugin.h"
+#include "representationmodel.h"
 
 Core* Core::Instance ()
 {
@@ -52,8 +53,14 @@ Core::Core ()
 , PeersModel_ (new PeersModel ())
 , PiecesModel_ (new PiecesModel ())
 , TagsCompletionModel_ (new TagsCompletionModel)
-, TorrentFilesModel_ (new TorrentFilesModel (false, this))
+, TorrentFilesModel_ (new TorrentFilesModel (false))
+, RepresentationModel_ (new RepresentationModel ())
 {
+	RepresentationModel_->setSourceModel (this);
+	connect (this,
+			SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
+			RepresentationModel_.get (),
+			SLOT (invalidate ()));
 	for (quint16 i = 0; i < 65535; ++i)
 		IDPool_.push_back (i);
 }
@@ -97,7 +104,15 @@ void Core::DoDelayedInit ()
         qWarning () << "Seems like address is already in use.";
     }
 
-    Headers_ << tr ("Name") << tr ("Downloaded") << tr ("Uploaded") << tr ("Rating") << tr ("Size") << tr ("Progress") << tr ("State") << tr ("Seeds/peers") << tr ("Drate") << tr ("Urate") << tr ("Remaining");
+    Headers_ << tr ("Name")
+		<< tr ("State")
+		<< tr ("Progress")
+		<< tr ("Drate")
+		<< tr ("Urate")
+		<< tr ("Uploaded")
+		<< tr ("Rating")
+		<< tr ("Seeds/peers")
+		<< tr ("Remaining");
 
     ReadSettings ();
     InterfaceUpdateTimer_ = startTimer (1000);
@@ -149,6 +164,7 @@ void Core::Release ()
 	PeersModel_.reset ();
 	TagsCompletionModel_.reset ();
 	TorrentFilesModel_.reset ();
+	RepresentationModel_.reset ();
 
 	QObjectList kids = children ();
 	for (int i = 0; i < kids.size (); ++i)
@@ -252,22 +268,25 @@ QVariant Core::data (const QModelIndex& index, int role) const
     {
         case ColumnName:
             return QString::fromUtf8 (h.name ().c_str ());
-        case ColumnDownloaded:
-            return Proxy::Instance ()->MakePrettySize (status.total_done);
-        case ColumnUploaded:
-            return Proxy::Instance ()->MakePrettySize (status.total_payload_upload + Handles_.at (row).UploadedBefore_);
-        case ColumnRating:
-            return QString::number (static_cast<float> (status.total_payload_upload + Handles_.at (row).UploadedBefore_) / status.total_payload_download, 'g', 2);
-        case ColumnSize:
-            return Proxy::Instance ()->MakePrettySize (status.total_wanted);
-        case ColumnProgress:
-            return QString::number (status.progress * 100, 'g', 4) + ("%");
         case ColumnState:
             if (Handles_.at (row).State_ == TSWaiting2Download ||
                 Handles_.at (row).State_ == TSWaiting2Seed)
                 return tr ("Waiting in queue");
             else
                 return status.paused ? tr ("Idle") : GetStringForState (status.state);
+        case ColumnProgress:
+            return QString ("%1% (%2 of %3)")
+				.arg (status.progress * 100, 0, 'f', 4)
+				.arg (Proxy::Instance ()->MakePrettySize (status.total_done))
+				.arg (Proxy::Instance ()->MakePrettySize (status.total_wanted));
+        case ColumnDSpeed:
+            return Proxy::Instance ()->MakePrettySize (status.download_payload_rate) + tr ("/s");
+        case ColumnUSpeed:
+            return Proxy::Instance ()->MakePrettySize (status.upload_payload_rate) + tr ("/s");
+        case ColumnUploaded:
+            return Proxy::Instance ()->MakePrettySize (status.total_payload_upload + Handles_.at (row).UploadedBefore_);
+        case ColumnRating:
+            return QString::number (static_cast<float> (status.total_payload_upload + Handles_.at (row).UploadedBefore_) / status.total_payload_download, 'g', 2);
         case ColumnSP:
 			{
 				QString result = QString ("%1/%2 (%3/%4)")
@@ -282,10 +301,6 @@ QVariant Core::data (const QModelIndex& index, int role) const
 						.arg (status.num_incomplete);
 				return result;
 			}
-        case ColumnDSpeed:
-            return Proxy::Instance ()->MakePrettySize (status.download_payload_rate) + tr ("/s");
-        case ColumnUSpeed:
-            return Proxy::Instance ()->MakePrettySize (status.upload_payload_rate) + tr ("/s");
         case ColumnRemaining:
             return Proxy::Instance ()->MakeTimeFromLong ((status.total_wanted - status.total_wanted_done) / status.download_payload_rate).toString ();
         default:
@@ -529,9 +544,14 @@ void Core::UpdateTags (int index, const QStringList& tags)
     TagsCompletionModel_->UpdateTags (tags);
 }
 
-TagsCompletionModel* Core::GetTagsCompletionModel ()
+TagsCompletionModel* Core::GetTagsCompletionModel () const
 {
     return TagsCompletionModel_.get ();
+}
+
+QAbstractItemModel* Core::GetRepresentationModel () const
+{
+	return RepresentationModel_.get ();
 }
 
 int Core::AddFile (const QString& filename,

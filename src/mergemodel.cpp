@@ -28,7 +28,7 @@ int MergeModel::columnCount (const QModelIndex& index) const
 
 QVariant MergeModel::headerData (int column, Qt::Orientation orient, int role) const
 {
-	if (orient != Qt::Horizontal && role != Qt::DisplayRole)
+	if (orient != Qt::Horizontal || role != Qt::DisplayRole)
 		return QVariant ();
 
 	return Headers_.at (column);
@@ -39,15 +39,16 @@ QVariant MergeModel::data (const QModelIndex& index, int role) const
 	if (index.isValid ())
 	{
 		QModelIndex mapped = mapToSource (index);
-		return mapped.model ()->data (mapped, role);
+		return mapped.data (role);
 	}
 	else
-	{
-		int indexRow = index.row ();
-		const_iterator modIter = GetModelForRow (indexRow);
-		int startingRow = GetStartingRow (modIter);
-		return (*modIter)->data (createIndex (indexRow - startingRow, index.column (), role));
-	}
+		return QVariant ();
+}
+
+Qt::ItemFlags MergeModel::flags (const QModelIndex& index) const
+{
+	QModelIndex mapped = mapToSource (index);
+	return mapped.flags ();
 }
 
 QModelIndex MergeModel::index (int row, int column, const QModelIndex& parent) const
@@ -63,11 +64,8 @@ QModelIndex MergeModel::index (int row, int column, const QModelIndex& parent) c
 
 QModelIndex MergeModel::parent (const QModelIndex& index) const
 {
-	if (!index.isValid ())
-		return QModelIndex ();
-
-	QModelIndex mapped = mapToSource (index);
-	return mapped.model ()->parent (mapped);
+	// here goes blocker for hierarchical #1
+	return QModelIndex ();
 }
 
 int MergeModel::rowCount (const QModelIndex& parent) const
@@ -116,10 +114,12 @@ QModelIndex MergeModel::mapToSource (const QModelIndex& proxyIndex) const
 
 	int proxyRow = proxyIndex.row ();
 	int proxyColumn = proxyIndex.column ();
-	QModelIndex mappedParent = mapToSource (proxyIndex.parent ());
 	const_iterator modIter = GetModelForRow (proxyRow);
-	int startingRow = mappedParent.isValid () ? 0 : GetStartingRow (modIter);
-	return (*modIter)->index (proxyRow - startingRow, proxyColumn, mappedParent);
+	//
+	// here goes blocker for hierarchical #2
+	int startingRow = GetStartingRow (modIter);
+
+	return (*modIter)->index (proxyRow - startingRow, proxyColumn, QModelIndex ());
 }
 
 void MergeModel::setSourceModel (QAbstractItemModel*)
@@ -141,6 +141,54 @@ void MergeModel::AddModel (QAbstractItemModel *model)
 	if (wouldInsert)
 		beginInsertRows (QModelIndex (), rowCount (), rowCount () + rows - 1);
 	Models_.push_back (model);
+	connect (model,
+			SIGNAL (columnsAboutToBeInserted (const QModelIndex&, int, int)),
+			this,
+			SLOT (handleColumnsAboutToBeInserted (const QModelIndex&, int, int)));
+	connect (model,
+			SIGNAL (columnsAboutToBeRemoved (const QModelIndex&, int, int)),
+			this,
+			SLOT (handleColumnsAboutToBeRemoved (const QModelIndex&, int, int)));
+	connect (model,
+			SIGNAL (columnsInserted (const QModelIndex&, int, int)),
+			this,
+			SLOT (handleColumnsInserted (const QModelIndex&, int, int)));
+	connect (model,
+			SIGNAL (columnsRemoved (const QModelIndex&, int, int)),
+			this,
+			SLOT (handleColumnsRemoved (const QModelIndex&, int, int)));
+	connect (model,
+			SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
+			this,
+			SLOT (handleDataChanged (const QModelIndex&, const QModelIndex&)));
+	connect (model,
+			SIGNAL (layoutAboutToBeChanged ()),
+			this,
+			SIGNAL (layoutAboutToBeChanged ()));
+	connect (model,
+			SIGNAL (layoutChanged ()),
+			this,
+			SIGNAL (layoutChanged ()));
+	connect (model,
+			SIGNAL (modelAboutToBeReset ()),
+			this,
+			SIGNAL (modelReset ()));
+	connect (model,
+			SIGNAL (rowsAboutToBeInserted (const QModelIndex&, int, int)),
+			this,
+			SLOT (handleRowsAboutToBeInserted (const QModelIndex&, int, int)));
+	connect (model,
+			SIGNAL (rowsAboutToBeRemoved (const QModelIndex&, int, int)),
+			this,
+			SLOT (handleRowsAboutToBeRemoved (const QModelIndex&, int, int)));
+	connect (model,
+			SIGNAL (rowsInserted (const QModelIndex&, int, int)),
+			this,
+			SLOT (handleRowsInserted (const QModelIndex&, int, int)));
+	connect (model,
+			SIGNAL (rowsRemoved (const QModelIndex&, int, int)),
+			this,
+			SLOT (handleRowsRemoved (const QModelIndex&, int, int)));
 	if (wouldInsert)
 		endInsertRows ();
 }
@@ -211,5 +259,68 @@ MergeModel::iterator MergeModel::GetModelForRow (int row)
 	}
 	qWarning () << Q_FUNC_INFO << "not found";
 	return Models_.end ();
+}
+
+void MergeModel::handleColumnsAboutToBeInserted (const QModelIndex&, int, int)
+{
+	qWarning () << "model" << sender ()
+		<< "called handleColumnsAboutToBeInserted, ignoring it";
+	return;
+}
+
+void MergeModel::handleColumnsAboutToBeRemoved (const QModelIndex&, int, int)
+{
+	qWarning () << "model" << sender ()
+		<< "called handleColumnsAboutToBeRemoved, ignoring it";
+	return;
+}
+
+void MergeModel::handleColumnsInserted (const QModelIndex&, int, int)
+{
+	qWarning () << "model" << sender ()
+		<< "called handleColumnsInserted, ignoring it";
+	return;
+}
+
+void MergeModel::handleColumnsRemoved (const QModelIndex&, int, int)
+{
+	qWarning () << "model" << sender ()
+		<< "called handleColumnsRemoved, ignoring it";
+	return;
+}
+
+void MergeModel::handleDataChanged (const QModelIndex& topLeft,
+		const QModelIndex& bottomRight)
+{
+	qDebug () << Q_FUNC_INFO;
+	emit dataChanged (mapFromSource (topLeft), mapFromSource (bottomRight));
+}
+
+void MergeModel::handleRowsAboutToBeInserted (const QModelIndex& parent,
+		int first, int last)
+{
+	QAbstractItemModel *model = static_cast<QAbstractItemModel*> (sender ());
+	int startingRow = GetStartingRow (FindModel (model));
+	beginInsertRows (mapFromSource (parent),
+			first + startingRow, last + startingRow);
+}
+
+void MergeModel::handleRowsAboutToBeRemoved (const QModelIndex& parent,
+		int first, int last)
+{
+	QAbstractItemModel *model = static_cast<QAbstractItemModel*> (sender ());
+	int startingRow = GetStartingRow (FindModel (model));
+	beginRemoveRows (mapFromSource (parent),
+			first + startingRow, last + startingRow);
+}
+
+void MergeModel::handleRowsInserted (const QModelIndex&, int, int)
+{
+	endInsertRows ();
+}
+
+void MergeModel::handleRowsRemoved (const QModelIndex&, int, int)
+{
+	endRemoveRows ();
 }
 

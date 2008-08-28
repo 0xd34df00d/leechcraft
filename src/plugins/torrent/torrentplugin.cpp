@@ -156,13 +156,11 @@ void TorrentPlugin::SetupHeaders ()
     QFontMetrics fm = fontMetrics ();
     QHeaderView *header = TorrentView_->header ();
     header->resizeSection (Core::ColumnName, fm.width ("thisisanaveragewareztorrentname,right?maybeyes.torrent"));
-    header->resizeSection (Core::ColumnDownloaded, fm.width ("_1234.0 KB_"));
     header->resizeSection (Core::ColumnUploaded, fm.width ("_1234.0 KB_"));
     header->resizeSection (Core::ColumnRating, fm.width ("_12.345_"));
-    header->resizeSection (Core::ColumnSize, fm.width ("_1234.0 KB_"));
-    header->resizeSection (Core::ColumnProgress, fm.width ("_100%_"));
+    header->resizeSection (Core::ColumnProgress, fm.width ("_100%_(999.0_MB_of_999.0_MB)__"));
     header->resizeSection (Core::ColumnState, fm.width ("__Downloading__"));
-    header->resizeSection (Core::ColumnSP, fm.width ("_123/123_"));
+    header->resizeSection (Core::ColumnSP, fm.width ("_123/123_(456/456)__[789/789]"));
     header->resizeSection (Core::ColumnUSpeed, fm.width ("_1234.0 KB/s_"));
     header->resizeSection (Core::ColumnDSpeed, fm.width ("_1234.0 KB/s_"));
     header->resizeSection (Core::ColumnRemaining, fm.width ("10d 00:00:00"));
@@ -449,12 +447,7 @@ void TorrentPlugin::DeleteAt (int pos)
 
 QAbstractItemModel* TorrentPlugin::GetRepresentation () const
 {
-    return Core::Instance ();
-}
-
-QAbstractItemDelegate* TorrentPlugin::GetDelegate () const
-{
-    return 0;
+    return Core::Instance ()->GetRepresentationModel ();
 }
 
 void TorrentPlugin::ImportSettings (const QByteArray& settings)

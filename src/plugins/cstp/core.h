@@ -11,6 +11,7 @@
 class Task;
 class QFile;
 class HistoryModel;
+class RepresentationModel;
 
 namespace boost
 {
@@ -46,6 +47,7 @@ class Core : public QAbstractItemModel
 	typedef std::deque<TaskDescr> tasks_t;
 	tasks_t ActiveTasks_;
 	HistoryModel *HistoryModel_;
+	RepresentationModel *RepresentationModel_;
 	bool SaveScheduled_;
 
 	std::list<quint32> IDPool_;
@@ -54,8 +56,8 @@ class Core : public QAbstractItemModel
 public:
 	enum
 	{
-		HState
-		, HURL
+		HURL
+		, HState
 		, HProgress
 		, HSpeed
 		, HRemaining
@@ -85,6 +87,7 @@ public:
 	bool IsRunning (int) const;
 	qint64 GetTotalDownloadSpeed () const;
 	bool CouldDownload (const QString&, LeechCraft::TaskParameters);
+	QAbstractItemModel* GetRepresentationModel ();
 
 	virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
 	virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;

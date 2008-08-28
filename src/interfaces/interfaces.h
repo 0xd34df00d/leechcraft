@@ -115,7 +115,7 @@ class IJobHolder
 {
 public:
     virtual QAbstractItemModel* GetRepresentation () const = 0;
-    virtual QAbstractItemDelegate* GetDelegate () const = 0;
+
     virtual ~IJobHolder () {}
 };
 

@@ -57,7 +57,6 @@ public:
 	int AddJob (const DirectDownloadParams&, LeechCraft::TaskParameters);
 
 	QAbstractItemModel* GetRepresentation () const;
-	QAbstractItemDelegate* GetDelegate () const;
 protected:
     virtual void closeEvent (QCloseEvent*);
 private:

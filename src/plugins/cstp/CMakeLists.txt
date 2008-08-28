@@ -14,6 +14,7 @@ SET (SRCS
 	xmlsettingsmanager.cpp
 	mainviewdelegate.cpp
 	historymodel.cpp
+	representationmodel.cpp
 	)
 SET (HEADERS
 	cstp.h
@@ -24,6 +25,7 @@ SET (HEADERS
 	xmlsettingsmanager.h
 	mainviewdelegate.h
 	historymodel.h
+	representationmodel.h
 	../../xmlsettingsdialog/basesettingsmanager.h
 	)
 SET (FORMS

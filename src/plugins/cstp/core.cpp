@@ -10,17 +10,21 @@
 #include "task.h"
 #include "historymodel.h"
 #include "xmlsettingsmanager.h"
+#include "representationmodel.h"
 
 Core::Core ()
 : SaveScheduled_ (false)
+, HistoryModel_ (new HistoryModel ())
+, RepresentationModel_ (new RepresentationModel ())
 {
-	Headers_ << tr ("State")
-		<< tr ("URL")
+	Headers_ << tr ("URL")
+		<< tr ("State")
 		<< tr ("Progress")
 		<< tr ("Speed")
 		<< tr ("ETA")
 		<< tr ("DTA");
-	HistoryModel_ = new HistoryModel (this);
+
+	RepresentationModel_->setSourceModel (this);
 
 	for (int i = 0; i < 65535; ++i)
 		IDPool_.push_back (i);
@@ -40,6 +44,8 @@ Core& Core::Instance ()
 
 void Core::Release ()
 {
+	delete HistoryModel_;
+	delete RepresentationModel_;
 }
 
 QAbstractItemModel* Core::GetHistoryModel ()
@@ -215,6 +221,11 @@ bool Core::CouldDownload (const QString& str, LeechCraft::TaskParameters)
 		(url.scheme () == "http" || url.scheme () == "https");
 }
 
+QAbstractItemModel* Core::GetRepresentationModel ()
+{
+	return RepresentationModel_;
+}
+
 int Core::columnCount (const QModelIndex& parent) const
 {
 	return Headers_.size ();
@@ -231,12 +242,20 @@ QVariant Core::data (const QModelIndex& index, int role) const
 			.Task_;
 		switch (index.column ())
 		{
-			case HState:
-				return task->GetState ();
 			case HURL:
 				return task->GetURL ();
+			case HState:
+				return task->GetState ();
 			case HProgress:
-				return "Delegate isn't installed";
+				{
+					qint64 done = task->GetDone (),
+						   total = task->GetTotal ();
+					int progress = total ? done * 100 / total : 0;
+					return QString ("%1% (%2 of %3)")
+						.arg (progress)
+						.arg (Proxy::Instance ()->MakePrettySize (done))
+						.arg (Proxy::Instance ()->MakePrettySize (total));
+				}
 			case HSpeed:
 				return task->IsRunning () ? Proxy::Instance ()->
 					MakePrettySize (task->GetSpeed ()) + tr ("/s") :
