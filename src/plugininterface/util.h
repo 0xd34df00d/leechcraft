@@ -1,6 +1,8 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+class QString;
+
 namespace LeechCraft
 {
 	namespace Util
@@ -16,6 +18,8 @@ namespace LeechCraft
 			}
 			return res;
 		}
+
+		void InstallTranslator (const QString&);
 	};
 };
 

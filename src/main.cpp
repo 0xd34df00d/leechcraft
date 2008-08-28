@@ -1,6 +1,5 @@
 #include <typeinfo>
 #include <fstream>
-#include <cstdio>
 #include <iostream>
 #include <cstring>
 #include <memory>
@@ -11,6 +10,7 @@
 #include <QLocalServer>
 #include <QLocalSocket>
 #include <plugininterface/proxy.h>
+#include <plugininterface/util.h>
 #include "mainwindow.h"
 
 QMutex G_DbgMutex;
@@ -81,16 +81,10 @@ int main (int argc, char **argv)
     qDebug () << "======APPLICATION STARTUP======";
     qWarning () << "======APPLICATION STARTUP======";
 
-    QTranslator transl;
-    QString localeName = QString(::getenv ("LANG")).left (2);
-    if (localeName.isNull () || localeName.isEmpty ())
-        localeName = QLocale::system ().name ();
-	qDebug () << localeName;
-    transl.load (QString (":/leechcraft_") + localeName);
-    app.installTranslator (&transl);
-
     QCoreApplication::setApplicationName ("Leechcraft");
     QCoreApplication::setOrganizationName ("Deviant");
+
+	LeechCraft::Util::InstallTranslator ("");
 
     qRegisterMetaType<QModelIndex> ("QModelIndex");
     qRegisterMetaType<QModelIndex*> ("QModelIndexStar");

@@ -1,8 +1,8 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
 	<qresource>
-		<file>leechcraft_batcher_ru.qm</file>
-		<file>leechcraft_batcher_uk.qm</file>
+		<file>leechcraft_batcher_ru_RU.qm</file>
+		<file>leechcraft_batcher_uk_UA.qm</file>
 		<file>resources/images/batcher.png</file>
 	</qresource>
 </RCC>

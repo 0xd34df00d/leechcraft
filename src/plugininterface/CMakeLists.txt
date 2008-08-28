@@ -4,24 +4,24 @@ INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR} ${QT_QTCORE_INCLUDE_DIR}
 SET (SRCS
   addressparser.cpp
   proxy.cpp
-  tcpsocket.cpp
   socketexceptions.cpp
   tagscompleter.cpp
   tagscompletionmodel.cpp
   treeitem.cpp
   tagslineedit.cpp
   graphwidget.cpp
+  util.cpp
   )
 SET (HEADERS
   addressparser.h
   proxy.h
-  tcpsocket.h
   socketexceptions.h
   tagscompleter.h
   tagscompletionmodel.h
   treeitem.h
   tagslineedit.h
   graphwidget.h
+  util.h
   )
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})

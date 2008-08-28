@@ -188,7 +188,7 @@
     <message>
         <location filename="mainwindow.cpp" line="218"/>
         <source>: Preferences</source>
-        <translation>:Налаштування</translation>
+        <translation>: Параметри</translation>
     </message>
 </context>
 <context>

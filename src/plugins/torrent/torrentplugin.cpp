@@ -2,6 +2,7 @@
 #include <plugininterface/proxy.h>
 #include <plugininterface/tagscompleter.h>
 #include <plugininterface/tagscompletionmodel.h>
+#include <plugininterface/util.h>
 #include "torrentplugin.h"
 #include "core.h"
 #include "addtorrent.h"
@@ -189,12 +190,7 @@ void TorrentPlugin::SetupHeaders ()
 
 void TorrentPlugin::Init ()
 {
-    QTranslator *transl = new QTranslator (this);
-    QString localeName = QString(::getenv ("LANG")).left (2);
-    if (localeName.isNull () || localeName.isEmpty ())
-        localeName = QLocale::system ().name ();
-    transl->load (QString (":/leechcraft_torrent_") + localeName);
-    qApp->installTranslator (transl);
+	LeechCraft::Util::InstallTranslator ("torrent");
 
     SetupCore ();
     SetupTorrentView ();

@@ -14,7 +14,7 @@
     <file>resources/images/updateselectedfeed.png</file>
     <file>resources/images/trayicon.png</file>
     <file>aggregatorsettings.xml</file>
-    <file>leechcraft_aggregator_ru.qm</file>
-    <file>leechcraft_aggregator_uk.qm</file>
+    <file>leechcraft_aggregator_ru_RU.qm</file>
+    <file>leechcraft_aggregator_uk_UA.qm</file>
   </qresource>
 </RCC>

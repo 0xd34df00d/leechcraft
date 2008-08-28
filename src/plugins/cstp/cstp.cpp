@@ -8,6 +8,7 @@
 #include <QMessageBox>
 #include <QDir>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <plugininterface/util.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "addtask.h"
@@ -24,12 +25,7 @@ CSTP::~CSTP ()
 
 void CSTP::Init ()
 {
-    QTranslator *transl = new QTranslator (this);
-    QString localeName = QString(::getenv ("LANG")).left (2);
-    if (localeName.isNull () || localeName.isEmpty ())
-        localeName = QLocale::system ().name ();
-    transl->load (QString (":/leechcraft_cstp_") + localeName);
-    qApp->installTranslator (transl);
+	LeechCraft::Util::InstallTranslator ("cstp");
 
 	XmlSettingsDialog_ = new XmlSettingsDialog (this);
 	XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (), ":/cstpsettings.xml");

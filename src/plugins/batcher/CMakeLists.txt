@@ -11,12 +11,12 @@ SET (FORMS
     mainwindow.ui)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS
-	leechcraft_batcher_ru.qm
-	leechcraft_batcher_uk.qm
+	leechcraft_batcher_ru_RU.qm
+	leechcraft_batcher_uk_UA.qm
 	)
 
 ADD_CUSTOM_COMMAND (OUTPUT ${TRANSLATIONS}
-	COMMAND "lrelease" ARGS "leechcraft_batcher_ru.ts" "leechcraft_batcher_uk.ts"
+	COMMAND "lrelease" ARGS "leechcraft_batcher_ru_RU.ts" "leechcraft_batcher_uk_UA.ts"
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	)
 

@@ -77,7 +77,8 @@ SET (FORMS
 SET (RESOURCES resources.qrc)
 
 SET (TRANSLATIONS
-	leechcraft_torrent_ru.qm
+	leechcraft_torrent_ru_RU.qm
+	leechcraft_torrent_uk_UA.qm
 	)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})
@@ -93,7 +94,7 @@ QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 ADD_CUSTOM_COMMAND (OUTPUT ${TRANSLATIONS}
-	COMMAND "lrelease" ARGS "leechcraft_torrent_ru.ts"
+	COMMAND "lrelease" ARGS "leechcraft_torrent_ru_RU.ts" "leechcraft_torrent_uk_UA.ts"
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	)
 

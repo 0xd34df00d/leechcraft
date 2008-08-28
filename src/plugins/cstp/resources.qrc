@@ -4,8 +4,8 @@
     <file>resources/images/remove.png</file>
     <file>resources/images/stop.png</file>
     <file>resources/images/add.png</file>
-	<file>leechcraft_cstp_ru.qm</file>
-	<file>leechcraft_cstp_uk.qm</file>
+	<file>leechcraft_cstp_ru_RU.qm</file>
+	<file>leechcraft_cstp_uk_UA.qm</file>
 	<file>cstpsettings.xml</file>
   </qresource>
 </RCC>

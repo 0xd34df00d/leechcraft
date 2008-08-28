@@ -1,7 +1,6 @@
 #include <QCoreApplication>
 #include "../mainwindow.h"
 #include "proxy.h"
-#include "tcpsocket.h"
 
 Proxy *Proxy::Instance_ = 0;
 
@@ -40,20 +39,6 @@ Proxy* Proxy::Instance ()
 void Proxy::SetStrings (const QStringList& str)
 {
     Strings_ = str;
-}
-
-/*! @brief Makes a TCP socket.
- *
- * Makes and returns a TCP socket, possibly registering it in some
- * internal structures to facilitate, for example, bandwidth consume
- * controlling.
- *
- * @return The created socket.
- * @sa TcpSocket
- */
-TcpSocket* Proxy::MakeSocket () const
-{
-    return new TcpSocket;
 }
 
 /*! @brief Returns application name.

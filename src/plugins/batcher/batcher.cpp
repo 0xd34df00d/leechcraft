@@ -1,18 +1,13 @@
 #include <QtGui/QtGui>
 #include <interfaces/structures.h>
+#include <plugininterface/util.h>
 #include "batcher.h"
 #include "parser.h"
 #include "globals.h"
 
 void Batcher::Init ()
 {
-    Q_INIT_RESOURCE (resources);
-    QTranslator *transl = new QTranslator;
-    QString localeName = QString(::getenv ("LANG")).left (2);
-    if (localeName.isNull () || localeName.isEmpty ())
-        localeName = QLocale::system ().name ();
-    transl->load (QString (":/leechcraft_batcher_") + localeName);
-    qApp->installTranslator (transl);
+	LeechCraft::Util::InstallTranslator ("batcher");
 
     IsShown_ = false;
     Parser_ = new Parser (this);

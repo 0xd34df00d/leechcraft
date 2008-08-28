@@ -5,8 +5,6 @@
 #include <QTime>
 #include "../mainwindow.h"
 
-class TcpSocket;
-
 /*! @brief Provides some common features.
  *
  * Feature versions of Proxy class may include some sort of
@@ -29,7 +27,6 @@ class Proxy : public QObject
 public:
     static Proxy *Instance ();
     void SetStrings (const QStringList&);
-    TcpSocket* MakeSocket () const;
     QString GetApplicationName () const;
     QString GetOrganizationName () const;
     QString MakePrettySize (qint64) const;
