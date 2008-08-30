@@ -2,16 +2,17 @@
 #define PIECESWIDGET_H
 #include <QLabel>
 #include <vector>
+#include <bitfield.hpp>
 
 class PiecesWidget : public QLabel
 {
     Q_OBJECT
 
-    std::vector<bool> Pieces_;
+    libtorrent::bitfield Pieces_;
 public:
     PiecesWidget (QWidget *parent = 0);
 public slots:
-    void setPieceMap (const std::vector<bool>&);
+    void setPieceMap (const libtorrent::bitfield&);
 private:
     void paintEvent (QPaintEvent*);
 };

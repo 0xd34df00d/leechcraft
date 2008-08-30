@@ -2,6 +2,7 @@
 #define PEERINFO_H
 #include <vector>
 #include <QTime>
+#include <bitfield.hpp>
 
 struct PeerInfo
 {
@@ -9,7 +10,7 @@ struct PeerInfo
     quint64 DSpeed_, USpeed_;
     quint64 Downloaded_, Uploaded_;
     QString Client_;
-    std::vector<bool> Pieces_;
+	libtorrent::bitfield Pieces_;
     std::size_t LoadBalancing_;
     QTime LastActive_;
     int Hashfails_;

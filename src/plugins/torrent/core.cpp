@@ -18,6 +18,7 @@
 #include <alert.hpp>
 #include <bencode.hpp>
 #include <entry.hpp>
+#include <create_torrent.hpp>
 #include <extensions/metadata_transfer.hpp>
 #include <extensions/ut_pex.hpp>
 #include <file_pool.hpp>
@@ -25,6 +26,7 @@
 #include <storage.hpp>
 #include <file.hpp>
 #include <alert_types.hpp>
+#include <asio/system_error.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
@@ -91,7 +93,6 @@ void Core::DoDelayedInit ()
             Session_->start_dht (libtorrent::entry ());
         Session_->set_max_uploads (XmlSettingsManager::Instance ()->property ("MaxUploads").toInt ());
         Session_->set_max_connections (XmlSettingsManager::Instance ()->property ("MaxConnections").toInt ());
-        Session_->set_severity_level (libtorrent::alert::info);
         Session_->start_lsd ();
         Session_->start_upnp ();
         Session_->start_natpmp ();
@@ -356,50 +357,40 @@ libtorrent::torrent_info Core::GetTorrentInfo (const QString& filename)
     if (!file.open (QIODevice::ReadOnly))
     {
         emit error (tr ("Could not open file %1 for read: %2").arg (filename).arg (file.errorString ()));
-        return libtorrent::torrent_info ();
+        return libtorrent::torrent_info (libtorrent::sha1_hash ());
     }
     return GetTorrentInfo (file.readAll ());
 }
 
 libtorrent::torrent_info Core::GetTorrentInfo (const QByteArray& data)
 {
-    std::vector<char> buffer;
-    buffer.resize (data.size ());
-    for (int i = 0; i < data.size (); ++i)
-        buffer [i] = data.at (i);
-
     try
     {
-        libtorrent::entry e = libtorrent::bdecode (buffer.begin (), buffer.end ());
-        libtorrent::torrent_info result (e);
+        libtorrent::torrent_info result (data.constData (), data.size ());
         return result;
     }
     catch (const libtorrent::invalid_encoding& e)
     {
         emit error (tr ("Bad bencoding in torrent file"));
-        return libtorrent::torrent_info ();
+        return libtorrent::torrent_info (libtorrent::sha1_hash ());
     }
     catch (const libtorrent::invalid_torrent_file& e)
     {
         emit error (tr ("Invalid torrent file"));
-        return libtorrent::torrent_info ();
+        return libtorrent::torrent_info (libtorrent::sha1_hash ());
     }
 	catch (...)
 	{
 		emit error (tr ("General torrent parsing error"));
-		return libtorrent::torrent_info ();
+		return libtorrent::torrent_info (libtorrent::sha1_hash ());
 	}
 }
 
 bool Core::IsValidTorrent (const QByteArray& torrentData) const
 {
-    std::vector<char> buffer (torrentData.size ());
-    qCopy (torrentData.begin (), torrentData.end (), buffer.begin ());
-
     try
     {
-        libtorrent::entry e = libtorrent::bdecode (buffer.begin (), buffer.end ());
-        libtorrent::torrent_info result (e);
+        libtorrent::torrent_info result (torrentData.constData (), torrentData.size ());
     }
     catch (...)
     {
@@ -444,7 +435,7 @@ TorrentInfo Core::GetTorrentStats (int row) const
     return result;
 }
 
-const std::vector<bool>* Core::GetLocalPieces (int row) const
+libtorrent::bitfield Core::GetLocalPieces (int row) const
 {
     if (!CheckValidity (row))
         return 0;
@@ -477,15 +468,16 @@ QList<FileInfo> Core::GetTorrentFiles (int row) const
     QList<FileInfo> result;
     libtorrent::torrent_handle handle = Handles_.at (row).Handle_;
     libtorrent::torrent_info info = handle.get_torrent_info ();
-    std::vector<float> progresses;
-    handle.file_progress (progresses);
+	std::vector<libtorrent::size_type> prbytes;
+    handle.file_progress (prbytes);
     for (libtorrent::torrent_info::file_iterator i = info.begin_files (); i != info.end_files (); ++i)
     {
         FileInfo fi;
         fi.Path_ = i->path;
         fi.Size_ = i->size;
         fi.Priority_ = Handles_.at (row).FilePriorities_.at (i - info.begin_files ());
-        fi.Progress_ = progresses.at (i - info.begin_files ());
+        fi.Progress_ = static_cast<float> (prbytes.at (i - info.begin_files ())) / 
+			static_cast<float> (fi.Size_);
         result << fi;
     }
 
@@ -938,116 +930,69 @@ void Core::SetCurrentTorrent (int torrent)
 
 namespace
 {
-    void AddFiles (libtorrent::torrent_info& t, const boost::filesystem::path& p, const boost::filesystem::path& l)
-    {
-        if (l.leaf () [0] == '.')
-            return;
+	bool FileFilter (const boost::filesystem::path& filename)
+	{
+		if (filename.leaf () [0] == '.')
+			return false;
+		return true;
+	}
 
-        boost::filesystem::path f (p / l);
-        if (boost::filesystem::is_directory (f))
-            for (boost::filesystem::directory_iterator i (f), end; i != end; ++i)
-                AddFiles (t, p, l / i->leaf ());
-        else
-            t.add_file (l, boost::filesystem::file_size (f));
-    }
+	void UpdateProgress (int i, int num, const QProgressDialog *pd)
+	{
+		qDebug () << Q_FUNC_INFO << i << num;
+	}
 }
-
-class HasherRunnable : public QRunnable
-{
-	int I_;
-	boost::intrusive_ptr<libtorrent::torrent_info>& Info_;
-	boost::scoped_ptr<libtorrent::storage_interface>& St_;
-	ThreadedPD *PD_;
-public:
-	HasherRunnable (int i,
-			boost::intrusive_ptr<libtorrent::torrent_info>& info,
-			boost::scoped_ptr<libtorrent::storage_interface>& st,
-			ThreadedPD *tpd)
-	: I_ (i)
-	, Info_ (info)
-	, St_ (st)
-	, PD_ (tpd)
-	{
-	}
-
-	virtual ~HasherRunnable ()
-	{
-	}
-
-	virtual void run ()
-	{
-		PD_->Increment ();
-		std::auto_ptr<char> buf (new char [Info_->piece_size (I_)]);
-		St_->read (buf.get (), I_, 0, Info_->piece_size (I_));
-		libtorrent::hasher h (buf.get (), Info_->piece_size (I_));
-		Info_->set_hash (I_, h.final ());
-	}
-};
 
 void Core::MakeTorrent (NewTorrentParams params) const
 {
-    boost::intrusive_ptr<libtorrent::torrent_info> info (new libtorrent::torrent_info);
-    info->set_creator ("Leechcraft BitTorrent");
-    if (!params.Comment_.isEmpty ())
-        info->set_comment (params.Comment_.toUtf8 ());
-    for (int i = 0; i < params.URLSeeds_.size (); ++i)
-        info->add_url_seed (params.URLSeeds_.at (0).toStdString ());
-    info->set_priv (!params.DHTEnabled_);
-
-    if (params.DHTEnabled_)
-        for (int i = 0; i < params.DHTNodes_.size (); ++i)
-        {
-            QStringList splitted = params.DHTNodes_.at (i).split (":");
-            info->add_node (std::pair<std::string, int> (splitted [0].trimmed ().toStdString (), splitted [1].trimmed ().toInt ()));
-        }
-
     boost::filesystem::path::default_name_check (boost::filesystem::no_check);
-    boost::filesystem::path fullPath =
+
+	libtorrent::file_storage fs;
+	libtorrent::file_pool fp;
+	libtorrent::create_torrent ct (fs, params.PieceSize_);
+
+	ct.set_creator ("LeechCraft BitTorrent");
+	if (!params.Comment_.isEmpty ())
+		ct.set_comment (params.Comment_.toUtf8 ());
+	for (int i = 0; i < params.URLSeeds_.size (); ++i)
+		ct.add_url_seed (params.URLSeeds_.at (0).toStdString ());
+    ct.set_priv (!params.DHTEnabled_);
+
+	if (params.DHTEnabled_)
+		for (int i = 0; i < params.DHTNodes_.size (); ++i)
+		{
+			QStringList splitted = params.DHTNodes_.at (i).split (":");
+			ct.add_node (std::pair<std::string, int> (splitted [0].trimmed ().toStdString (), splitted [1].trimmed ().toInt ()));
+		}
+
+	ct.add_tracker (params.AnnounceURL_.toStdString ());
+
+	std::auto_ptr<QProgressDialog> pd (new QProgressDialog ());
+
+	boost::filesystem::path fullPath =
 		boost::filesystem::complete (params.Path_.toUtf8 ().constData ());
-	AddFiles (*info, fullPath.branch_path (), fullPath.leaf ());
+	libtorrent::add_files (fs, fullPath, FileFilter);
+	libtorrent::set_piece_hashes (ct, fullPath.branch_path (),
+			boost::bind (&UpdateProgress, _1, ct.num_pieces (), pd.get ()));
 
-    info->set_piece_size (params.PieceSize_);
+	libtorrent::entry e = ct.generate ();
+	std::deque<char> outbuf;
+	libtorrent::bencode (std::back_inserter (outbuf), e);
 
-    libtorrent::file_pool fp;
-    boost::scoped_ptr<libtorrent::storage_interface> st (libtorrent::default_storage_constructor (info, fullPath.branch_path (), fp));
-    info->add_tracker (params.AnnounceURL_.toStdString ());
-
-	std::auto_ptr<ThreadedPD> pd (new ThreadedPD (tr ("Hashing..."),
-				tr ("Cancel"), 0, info->num_pieces (),
-				TorrentPlugin_));
-	pd->setValue (0);
-	pd->setModal (true);
-	pd->setMinimumDuration (0);
-	pd->show ();
-
-	std::auto_ptr<QThreadPool> hashers (new QThreadPool ());
-	for (int i = 0; i < info->num_pieces (); ++i)
-		hashers->start (new HasherRunnable (i, info, st, pd.get ()));
-	QEventLoop loop;
-	while (hashers->activeThreadCount ())
+	QString filename = params.OutputDirectory_;
+	if (!filename.endsWith ("/"))
+		filename.append ("/");
+	filename.append (params.TorrentName_);
+	filename.append (".torrent");
+	QFile file (filename);
+	if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
 	{
-		QTimer::singleShot (50, &loop, SLOT (quit ()));
-		loop.exec ();
+		emit error (tr ("Could not open file %1 for write!").arg (filename));
+		return;
 	}
-
-    libtorrent::entry e = info->create_torrent ();
-    std::vector<char> outbuf;
-    libtorrent::bencode (std::back_inserter (outbuf), e);
-
-    QString filename = params.OutputDirectory_;
-    if (!filename.endsWith ("/"))
-        filename.append ("/");
-    filename.append (params.TorrentName_);
-    filename.append (".torrent");
-    QFile file (filename);
-    if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
-    {
-        emit error (tr ("Could not open file %1 for write!").arg (filename));
-        return;
-    }
-    for (size_t i = 0; i < outbuf.size (); ++i)
-        file.write (&outbuf.at (i), 1);
-    file.close ();
+	for (size_t i = 0; i < outbuf.size (); ++i)
+		file.write (&outbuf.at (i), 1);
+	file.close ();
 }
 
 void Core::LogMessage (const QString& message)
@@ -1071,8 +1016,6 @@ QString Core::GetStringForState (libtorrent::torrent_status::state_t state) cons
             return tr ("Queued for checking");
         case libtorrent::torrent_status::checking_files:
             return tr ("Checking files");
-        case libtorrent::torrent_status::connecting_to_tracker:
-            return tr ("Connecting");
         case libtorrent::torrent_status::downloading_metadata:
             return tr ("Downloading metadata");
         case libtorrent::torrent_status::downloading:
@@ -1112,12 +1055,7 @@ void Core::RestoreTorrents ()
         torrent.close ();
         if (data.isEmpty ())
             continue;
-        QFile resumeData (QDir::homePath () + "/.leechcraft_bittorrent/" + filename + ".resume");
         QByteArray resumed;
-        if (resumeData.open (QIODevice::ReadOnly))
-            resumed = resumeData.readAll ();
-        else
-            qWarning () << Q_FUNC_INFO << "could not open resume data for torrent" << filename;
 
         libtorrent::torrent_handle handle = RestoreSingleTorrent (data, resumed, path);
         if (!handle.is_valid ())
@@ -1441,9 +1379,6 @@ void Core::writeSettings ()
             continue;
         try
         {
-            libtorrent::entry resume = Handles_.at (i).Handle_.write_resume_data ();
-            QVector<char> resumeBuf;
-            libtorrent::bencode (std::back_inserter (resumeBuf), resume);
             QFile file_info (QDir::homePath () + "/.leechcraft_bittorrent/" + Handles_.at (i).TorrentFileName_);
             if (!file_info.open (QIODevice::WriteOnly))
             {
@@ -1452,18 +1387,6 @@ void Core::writeSettings ()
             }
             file_info.write (Handles_.at (i).TorrentFileContents_);
             file_info.close ();
-
-            QFile file_resume (QDir::homePath () + "/.leechcraft_bittorrent/" + Handles_.at (i).TorrentFileName_ + ".resume");
-            if (file_resume.open (QIODevice::WriteOnly))
-            {
-                QByteArray data;
-                for (int i = 0; i < resumeBuf.size (); ++i)
-                    data.append (resumeBuf.at (i));
-                file_resume.write (data);
-                file_resume.close ();
-            }
-            else
-                qWarning () << Q_FUNC_INFO << "could not open the resume file for write";
 
             settings.setValue ("SavePath", QString::fromStdString (Handles_.at (i).Handle_.save_path ().string ()));
             settings.setValue ("UploadedBytes", Handles_.at (i).UploadedBefore_ + Handles_.at (i).Handle_.status ().total_upload);
@@ -1519,7 +1442,6 @@ void Core::checkFinished ()
             case libtorrent::torrent_status::queued_for_checking:
             case libtorrent::torrent_status::checking_files:
             case libtorrent::torrent_status::allocating:
-            case libtorrent::torrent_status::connecting_to_tracker:
                 Handles_ [i].State_ = TSPreparing;
                 break;
             case libtorrent::torrent_status::downloading:
@@ -1573,87 +1495,85 @@ struct SimpleDispatcher : public BaseDispatcher
 	void operator() (const libtorrent::listen_failed_alert& a) const
 	{
 		QString logstr = QString ("Failed to open any port for listening (%1).")
-			.arg (QString::fromStdString (a.msg ()));
+			.arg (QString::fromStdString (a.message ()));
 		Log (logstr);
 	}
 	void operator() (const libtorrent::listen_succeeded_alert& a) const
 	{
 		QString logstr = QString ("Listen succeeded %1 (%2).")
 			.arg (QString::fromStdString (a.endpoint.address ().to_string ()))
-			.arg (QString::fromStdString (a.msg ()));
+			.arg (QString::fromStdString (a.message ()));
 		Log (logstr);
 	}
 	void operator() (const libtorrent::portmap_error_alert& a) const
 	{
 		QString logstr = QString ("NAT router was successfully"
 				" found but some port mapping request failed (%1).")
-			.arg (QString::fromStdString (a.msg ()));
+			.arg (QString::fromStdString (a.message ()));
 		Log (logstr);
 	}
 	void operator() (const libtorrent::portmap_alert& a) const
 	{
 		QString logstr = QString ("Port successfully mapped on a router (%1)")
-			.arg (QString::fromStdString (a.msg ()));
+			.arg (QString::fromStdString (a.message ()));
 		Log (logstr);
 	}
 	void operator() (const libtorrent::file_error_alert& a) const
 	{
-		QString logstr = QString ("File IO failure (%1).").arg (QString::fromStdString (a.msg ()));
+		QString logstr = QString ("File IO failure (%1).").arg (QString::fromStdString (a.message ()));
 		Log (logstr);
 	}
 	void operator() (const libtorrent::tracker_announce_alert& a) const
 	{
-		QString logstr = QString ("Tracker announce is sent (%1).").arg (QString::fromStdString (a.msg ()));
+		QString logstr = QString ("Tracker announce is sent (%1).").arg (QString::fromStdString (a.message ()));
 		Log (logstr);
 	}
 	void operator() (const libtorrent::tracker_alert& a) const
 	{
 		QString logstr = QString ("Failed tracker request:"
-			"status code %1, for %2 times (%3).")
-			.arg (a.status_code)
-			.arg (a.times_in_row)
-			.arg (QString::fromStdString (a.msg ()));
+			"%1.")
+			.arg (QString::fromStdString (a.message ()));
 		Log (logstr);
 	}
 	void operator() (const libtorrent::tracker_reply_alert& a) const
 	{
 		QString logstr = QString ("Tracker announce succeeded. %1 peers (%2).")
 			.arg (a.num_peers)
-			.arg (QString::fromStdString (a.msg ()));
+			.arg (QString::fromStdString (a.message ()));
 		Log (logstr);
 	}
 	void operator() (const libtorrent::tracker_warning_alert& a) const
 	{
 		QString logstr = QString ("Tracker announce has warning (%1).")
-			.arg (QString::fromStdString (a.msg ()));
+			.arg (QString::fromStdString (a.message ()));
 		Log (logstr);
 	}
 	void operator() (const libtorrent::url_seed_alert& a) const
 	{
 		QString logstr = QString ("HTTP seed %1 name lookup failed (%2).")
 			.arg (QString::fromStdString (a.url))
-			.arg (QString::fromStdString (a.msg ()));
+			.arg (QString::fromStdString (a.message ()));
 		Log (logstr);
 	}
 	void operator() (const libtorrent::hash_failed_alert& a) const
 	{
 		QString logstr = QString ("Piece %1 hash check failed (%2).")
 			.arg (a.piece_index)
-			.arg (QString::fromStdString (a.msg ()));
+			.arg (QString::fromStdString (a.message ()));
 		Log (logstr);
 	}
 	void operator() (const libtorrent::peer_ban_alert& a) const
 	{
 		QString logstr = QString ("Peer %1 banned (%2).")
 			.arg (QString::fromStdString (a.ip.address ().to_string ()))
-			.arg (QString::fromStdString (a.msg ()));
+			.arg (QString::fromStdString (a.message ()));
 		Log (logstr);				
 	}
 	void operator() (const libtorrent::peer_error_alert& a) const
 	{
 		QString logstr = QString ("Peer %1 sent something bad (%2).")
 			.arg (QString::fromStdString (a.ip.address ().to_string ()))
-			.arg (QString::fromStdString (a.msg ()));
+			.arg (QString::fromStdString (a.message ()));
 		Log (logstr);
 	}
 	void operator() (const libtorrent::invalid_request_alert& a) const
@@ -1664,38 +1584,38 @@ struct SimpleDispatcher : public BaseDispatcher
 			.arg (a.request.piece)
 			.arg (a.request.start)
 			.arg (a.request.length)
-			.arg (QString::fromStdString (a.msg ()));
+			.arg (QString::fromStdString (a.message ()));
 		Log (logstr);
 	}
 	void operator() (const libtorrent::torrent_finished_alert& a) const
 	{
 		QString logstr = QString ("Torrent finished (%1).")
-			.arg (QString::fromStdString (a.msg ()));
+			.arg (QString::fromStdString (a.message ()));
 		Log (logstr);
 	}
 	void operator() (const libtorrent::metadata_failed_alert& a) const
 	{
 		QString logstr = QString ("Metadata hash failed (%1).")
-			.arg (QString::fromStdString (a.msg ()));
+			.arg (QString::fromStdString (a.message ()));
 		Log (logstr);
 	}
 	void operator() (const libtorrent::metadata_received_alert& a) const
 	{
 		QString logstr = QString ("Metadata received (%1).")
-			.arg (QString::fromStdString (a.msg ()));
+			.arg (QString::fromStdString (a.message ()));
 		Log (logstr);
 	}
 	void operator() (const libtorrent::fastresume_rejected_alert& a) const
 	{
 		QString logstr = QString ("Fast resume rejected (%1).")
-			.arg (QString::fromStdString (a.msg ()));
+			.arg (QString::fromStdString (a.message ()));
 		Log (logstr);
 	}
 	void operator() (const libtorrent::peer_blocked_alert& a) const
 	{
 		QString logstr = QString ("Peer %1 blocked by the IP filter (%2).")
 			.arg (QString::fromStdString (a.ip.to_string ()))
-			.arg (QString::fromStdString (a.msg ()));
+			.arg (QString::fromStdString (a.message ()));
 		Log (logstr);
 	}
 	void operator() (const libtorrent::storage_moved_alert& a) const
@@ -1713,7 +1633,7 @@ struct SimpleDispatcher : public BaseDispatcher
 	void operator() (const libtorrent::alert& a) const
 	{
 		QString logstr = QString ("General alert (%1).")
-			.arg (QString::fromStdString (a.msg ()));
+			.arg (QString::fromStdString (a.message ()));
 		Log (logstr);
 	}
 };
@@ -1754,7 +1674,7 @@ void Core::queryLibtorrentForWarnings ()
 		}
 		catch (const libtorrent::unhandled_alert& e)
 		{
-			qWarning () << Q_FUNC_INFO << "unhandled alert" << QString::fromStdString (a->msg ());
+			qWarning () << Q_FUNC_INFO << "unhandled alert" << QString::fromStdString (a->message ());
 		}
 		a = Session_->pop_alert ();
 	}
@@ -1905,11 +1825,11 @@ void Core::setGeneralSettings ()
     try
     {
         if (XmlSettingsManager::Instance ()->property ("AnnounceIP").toString ().isEmpty ())
-            settings.announce_ip = asio::ip::address ();
+            settings.announce_ip = boost::asio::ip::address ();
         else
-            settings.announce_ip = asio::ip::address::from_string (XmlSettingsManager::Instance ()->property ("AnnounceIP").toString ().toStdString ());
+            settings.announce_ip = boost::asio::ip::address::from_string (XmlSettingsManager::Instance ()->property ("AnnounceIP").toString ().toStdString ());
     }
-    catch (const asio::system_error&)
+    catch (...)
     {
         error (tr ("Wrong announce address %1").arg (XmlSettingsManager::Instance ()->property ("AnnounceIP").toString ()));
     }

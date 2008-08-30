@@ -36,7 +36,7 @@ QVariant PeersModel::data (const QModelIndex& index, int role) const
     if (!index.isValid () || (role != Qt::DisplayRole && role != SortRole))
         return QVariant ();
 
-    const std::vector<bool>* localPieces = Core::Instance ()->GetLocalPieces (CurrentTorrent_);
+	libtorrent::bitfield localPieces = Core::Instance ()->GetLocalPieces (CurrentTorrent_);
 
     int i = index.row ();
 
@@ -75,16 +75,13 @@ QVariant PeersModel::data (const QModelIndex& index, int role) const
         case 5:
             return Peers_.at (i).Client_;
         case 6:
-            if (localPieces)
-            {
-                int remoteNum = std::accumulate (Peers_.at (i).Pieces_.begin (), Peers_.at (i).Pieces_.end (), 0),
-                    remoteHasWeDont = 0;
-                for (size_t j = 0; j < localPieces->size (); ++j)
-                    remoteHasWeDont += (Peers_.at (i).Pieces_ [j] && !(*localPieces) [j]);
-                return tr ("%1, %2 we don't have").arg (remoteNum).arg (remoteHasWeDont);
-            }
-            else
-                return "";
+			{
+				int remoteNum = std::accumulate (Peers_.at (i).Pieces_.begin (), Peers_.at (i).Pieces_.end (), 0),
+					remoteHasWeDont = 0;
+				for (size_t j = 0; j < localPieces.size (); ++j)
+					remoteHasWeDont += (Peers_.at (i).Pieces_ [j] && !localPieces [j]);
+				return tr ("%1, %2 we don't have").arg (remoteNum).arg (remoteHasWeDont);
+			}
         case 7:
             return static_cast<quint64> (Peers_.at (i).LoadBalancing_);
         case 8:

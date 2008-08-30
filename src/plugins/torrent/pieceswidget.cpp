@@ -9,14 +9,14 @@ PiecesWidget::PiecesWidget (QWidget *parent)
 {
 }
 
-void PiecesWidget::setPieceMap (const std::vector<bool>& pieces)
+void PiecesWidget::setPieceMap (const libtorrent::bitfield& pieces)
 {
     Pieces_ = pieces;
 
     update ();
 }
 
-QList<QPair<int, int> > FindTrues (const std::vector<bool>& pieces)
+QList<QPair<int, int> > FindTrues (const libtorrent::bitfield& pieces)
 {
     QList<QPair<int, int> > result;
     bool prevVal = pieces [0];

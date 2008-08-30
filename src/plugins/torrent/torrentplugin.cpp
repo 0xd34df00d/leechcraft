@@ -812,7 +812,7 @@ void TorrentPlugin::UpdateTorrentPage ()
         LabelUploadRate_->setText ("<>");
         LabelTorrentRating_->setText ("<>");
         LabelDistributedCopies_->setText ("<>");
-        PiecesWidget_->setPieceMap (std::vector<bool> ());
+        PiecesWidget_->setPieceMap (libtorrent::bitfield ());
     }
     else
     {
@@ -836,7 +836,7 @@ void TorrentPlugin::UpdateTorrentPage ()
         LabelUploadRate_->setText (Proxy::Instance ()->MakePrettySize (i.UploadRate_) + tr ("/s"));
         LabelTorrentRating_->setText (QString::number (i.Uploaded_ / static_cast<double> (i.Downloaded_), 'g', 4));
         LabelDistributedCopies_->setText (QString::number (i.DistributedCopies_));
-        PiecesWidget_->setPieceMap (*(i.Pieces_));
+        PiecesWidget_->setPieceMap (i.Pieces_);
     }
 }
 

@@ -1,6 +1,7 @@
 #ifndef TORRENTINFO_H
 #define TORRENTINFO_H
 #include <QTime>
+#include <bitfield.hpp>
 
 struct TorrentInfo
 {
@@ -22,7 +23,7 @@ struct TorrentInfo
         PieceSize_;
     QTime NextAnnounce_,
           AnnounceInterval_;
-    const std::vector<bool>* Pieces_;
+	libtorrent::bitfield Pieces_;
 };
 
 #endif
