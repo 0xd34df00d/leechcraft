@@ -1,7 +1,7 @@
 #ifndef TORRENTINFO_H
 #define TORRENTINFO_H
 #include <QTime>
-#include <bitfield.hpp>
+#include <libtorrent/bitfield.hpp>
 
 struct TorrentInfo
 {

@@ -15,17 +15,19 @@
 #include <QApplication>
 #include <QRunnable>
 #include <memory>
-#include <alert.hpp>
-#include <bencode.hpp>
-#include <entry.hpp>
-#include <create_torrent.hpp>
-#include <extensions/metadata_transfer.hpp>
-#include <extensions/ut_pex.hpp>
-#include <file_pool.hpp>
-#include <hasher.hpp>
-#include <storage.hpp>
-#include <file.hpp>
-#include <alert_types.hpp>
+#include <libtorrent/alert.hpp>
+#include <libtorrent/bencode.hpp>
+#include <libtorrent/entry.hpp>
+#include <libtorrent/create_torrent.hpp>
+#include <libtorrent/extensions/metadata_transfer.hpp>
+#include <libtorrent/extensions/ut_metadata.hpp>
+#include <libtorrent/extensions/ut_pex.hpp>
+#include <libtorrent/extensions/smart_ban.hpp>
+#include <libtorrent/file_pool.hpp>
+#include <libtorrent/hasher.hpp>
+#include <libtorrent/storage.hpp>
+#include <libtorrent/file.hpp>
+#include <libtorrent/alert_types.hpp>
 #include <asio/system_error.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
@@ -89,6 +91,8 @@ void Core::DoDelayedInit ()
         Session_->listen_on (std::make_pair (ports.at (0).toInt (), ports.at (1).toInt ()));
         Session_->add_extension (&libtorrent::create_metadata_plugin);
         Session_->add_extension (&libtorrent::create_ut_pex_plugin);
+		Session_->add_extension (&libtorrent::create_ut_metadata_plugin);
+		Session_->add_extension (&libtorrent::create_smart_ban_plugin);
         if (XmlSettingsManager::Instance ()->property ("DHTEnabled").toBool ())
             Session_->start_dht (libtorrent::entry ());
         Session_->set_max_uploads (XmlSettingsManager::Instance ()->property ("MaxUploads").toInt ());

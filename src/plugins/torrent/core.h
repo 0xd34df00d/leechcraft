@@ -6,9 +6,9 @@
 #include <QPair>
 #include <QList>
 #include <QVector>
-#include <torrent_info.hpp>
-#include <torrent_handle.hpp>
-#include <session.hpp>
+#include <libtorrent/torrent_info.hpp>
+#include <libtorrent/torrent_handle.hpp>
+#include <libtorrent/session.hpp>
 #include <interfaces/interfaces.h>
 #include "torrentinfo.h"
 #include "overallstats.h"

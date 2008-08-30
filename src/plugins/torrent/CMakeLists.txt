@@ -8,9 +8,6 @@ INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR}
 					 ${Boost_INCLUDE_DIRS}
 					 ../..
 					 .
-					 /usr/include/libtorrent/
-					 /usr/local/include/libtorrent/
-					 libtorrent/
 					 zlib/)
 LINK_DIRECTORIES (${Boost_LINK_DIRS} /usr/local/lib ../..)
 FIND_PACKAGE (Boost REQUIRED COMPONENTS date_time filesystem system thread)

@@ -4,7 +4,7 @@
 #include <QStringList>
 #include <QList>
 #include <vector>
-#include <torrent_handle.hpp>
+#include <libtorrent/torrent_handle.hpp>
 
 class Core;
 

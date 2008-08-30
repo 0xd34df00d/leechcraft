@@ -2,7 +2,7 @@
 #define PIECESWIDGET_H
 #include <QLabel>
 #include <vector>
-#include <bitfield.hpp>
+#include <libtorrent/bitfield.hpp>
 
 class PiecesWidget : public QLabel
 {

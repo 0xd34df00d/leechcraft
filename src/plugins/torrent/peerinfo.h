@@ -2,7 +2,7 @@
 #define PEERINFO_H
 #include <vector>
 #include <QTime>
-#include <bitfield.hpp>
+#include <libtorrent/bitfield.hpp>
 
 struct PeerInfo
 {
