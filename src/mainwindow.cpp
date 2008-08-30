@@ -27,7 +27,6 @@ namespace Main
 
 		Ui_ = new Ui::LeechCraft;
 		Ui_->setupUi (this);
-
 		Ui_->MainSplitter_->setStretchFactor (1, 4);
 
 		connect (Ui_->ActionAddTask_, SIGNAL (triggered ()), this, SLOT (addJob ()));
@@ -75,7 +74,13 @@ namespace Main
 		Core::Instance ().DelayedInit ();
 
 		Ui_->PluginsTree_->setModel (Core::Instance ().GetPluginsModel ());
-		Ui_->PluginsTasksTree_->setModel (Core::Instance ().GetTasksModel ());
+		QAbstractItemModel *tasksModel = Core::Instance ().GetTasksModel ();
+		Ui_->PluginsTasksTree_->setModel (tasksModel);
+
+		connect (Ui_->PluginsTasksTree_->selectionModel (),
+				SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
+				this,
+				SLOT (updatePanes (const QModelIndex&)));
 
 		QTimer *speedUpd = new QTimer (this);
 		speedUpd->setInterval (1000);
@@ -96,9 +101,37 @@ namespace Main
 		return Ui_->PluginsMenu_;
 	}
 
+	std::list<int> MainWindow::GetSelectedRows () const
+	{
+		std::list<int> result;
+		QModelIndexList list = Ui_->PluginsTasksTree_->selectionModel ()->selectedRows ();
+		for (int i = 0; i < list.size (); ++i)
+			result.push_back (list [i].row ());
+		return result;
+	}
+
 	void MainWindow::catchError (QString message)
 	{
 		QMessageBox::critical (this, tr ("Error"), message);
+	}
+
+	void MainWindow::updatePanes (const QModelIndex& newIndex)
+	{
+		if (Ui_->PluginsStuff_->count () == 3)
+		{
+			Ui_->PluginsStuff_->takeAt (2)->widget ()->hide ();
+			Ui_->PluginsStuff_->takeAt (0)->widget ()->hide ();
+		}
+
+		if (newIndex.isValid ())
+		{
+			QWidget *controls = Core::Instance ().GetControls (newIndex.row ()),
+					*addiInfo = Core::Instance ().GetAdditionalInfo (newIndex.row ());
+			Ui_->PluginsStuff_->insertWidget (0, controls);
+			Ui_->PluginsStuff_->addWidget (addiInfo);
+			controls->show ();
+			addiInfo->show ();
+		}
 	}
 
 	void MainWindow::closeEvent (QCloseEvent *e)

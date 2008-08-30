@@ -44,6 +44,8 @@ Core& Core::Instance ()
 
 void Core::Release ()
 {
+	writeSettings ();
+	stopAllTriggered ();
 	delete HistoryModel_;
 	delete RepresentationModel_;
 }
@@ -101,83 +103,13 @@ int Core::AddTask (const QString& url,
 	endInsertRows ();
 	ScheduleSave ();
 	if (tp & LeechCraft::Autostart)
-		Start (rowCount () - 1);
+		startTriggered (rowCount () - 1);
 	return td.ID_;
-}
-
-void Core::RemoveTask (const QModelIndex& index)
-{
-	if (!index.isValid ())
-		return;
-
-	RemoveTask (index.row ());
-}
-
-void Core::RemoveTask (int i)
-{
-	Stop (i);
-	Remove (ActiveTasks_.begin () + i);
 }
 
 void Core::RemoveFromHistory (const QModelIndex& index)
 {
 	HistoryModel_->Remove (index);
-}
-
-void Core::Start (const QModelIndex& index)
-{
-	if (!index.isValid ())
-		return;
-
-	Start (index.row ());
-}
-
-void Core::Start (int i)
-{
-	TaskDescr selected = ActiveTasks_.at (i);
-	if (selected.Task_->IsRunning ())
-		return;
-	if (!selected.File_->open (QIODevice::ReadWrite))
-	{
-		QString msg = tr ("Could not open file ") +
-			selected.File_->error ();
-		qWarning () << Q_FUNC_INFO << msg;
-		emit error (msg);
-		return;
-	}
-	selected.Task_->Start (selected.File_);
-}
-
-void Core::Stop (const QModelIndex& index)
-{
-	Stop (index.row ());
-}
-
-void Core::Stop (int i)
-{
-	TaskDescr selected = ActiveTasks_.at (i);
-	if (!selected.Task_->IsRunning ())
-		return;
-	selected.Task_->Stop ();
-	selected.File_->close ();
-}
-
-void Core::RemoveAll ()
-{
-	for (int i = 0, size = ActiveTasks_.size (); i < size; ++i)
-		RemoveTask (i);
-}
-
-void Core::StartAll ()
-{
-	for (int i = 0, size = ActiveTasks_.size (); i < size; ++i)
-		Start (i);
-}
-
-void Core::StopAll ()
-{
-	for (int i = 0, size = ActiveTasks_.size (); i < size; ++i)
-		Stop (i);
 }
 
 qint64 Core::GetDone (int pos) const
@@ -319,6 +251,55 @@ QModelIndex Core::parent (const QModelIndex& index) const
 int Core::rowCount (const QModelIndex& parent) const
 {
 	return parent.isValid () ? 0 : ActiveTasks_.size ();
+}
+
+void Core::removeTriggered (int i)
+{
+	stopTriggered (i);
+	Remove (ActiveTasks_.begin () + i);
+}
+
+void Core::removeAllTriggered (int)
+{
+	while (ActiveTasks_.size ())
+		removeTriggered (0);
+}
+
+void Core::startTriggered (int i)
+{
+	TaskDescr selected = ActiveTasks_.at (i);
+	if (selected.Task_->IsRunning ())
+		return;
+	if (!selected.File_->open (QIODevice::ReadWrite))
+	{
+		QString msg = tr ("Could not open file ") +
+			selected.File_->error ();
+		qWarning () << Q_FUNC_INFO << msg;
+		emit error (msg);
+		return;
+	}
+	selected.Task_->Start (selected.File_);
+}
+
+void Core::stopTriggered (int i)
+{
+	TaskDescr selected = ActiveTasks_.at (i);
+	if (!selected.Task_->IsRunning ())
+		return;
+	selected.Task_->Stop ();
+	selected.File_->close ();
+}
+
+void Core::startAllTriggered (int)
+{
+	for (int i = 0, size = ActiveTasks_.size (); i < size; ++i)
+		startTriggered (i);
+}
+
+void Core::stopAllTriggered (int)
+{
+	for (int i = 0, size = ActiveTasks_.size (); i < size; ++i)
+		stopTriggered (i);
 }
 
 void Core::done (bool err)

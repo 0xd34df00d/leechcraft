@@ -72,16 +72,7 @@ public:
 	int AddTask (const QString&, const QString&,
 			const QString&, const QString&,
 			LeechCraft::TaskParameters = LeechCraft::Autostart);
-	void RemoveTask (const QModelIndex&);
-	void RemoveTask (int);
 	void RemoveFromHistory (const QModelIndex&);
-	void Start (const QModelIndex&);
-	void Start (int);
-	void Stop (const QModelIndex&);
-	void Stop (int);
-	void RemoveAll ();
-	void StartAll ();
-	void StopAll ();
 	qint64 GetDone (int) const;
 	qint64 GetTotal (int) const;
 	bool IsRunning (int) const;
@@ -97,6 +88,13 @@ public:
 	virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
 	virtual QModelIndex parent (const QModelIndex&) const;
 	virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
+public slots:
+	void removeTriggered (int);
+	void removeAllTriggered (int = -1);
+	void startTriggered (int);
+	void stopTriggered (int);
+	void startAllTriggered (int = -1);
+	void stopAllTriggered (int = -1);
 private slots:
 	void done (bool); 
 	void updateInterface ();

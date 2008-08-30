@@ -29,6 +29,7 @@ class IInfo
 {
 public:
     typedef unsigned long int ID_t;
+
     virtual void Init () = 0;
     virtual QString GetName () const = 0;
     virtual QString GetInfo () const = 0;
@@ -41,6 +42,8 @@ public:
     virtual void SetProvider (QObject*, const QString&) = 0;
     virtual void PushMainWindowExternals (const MainWindowExternals&) = 0;
     virtual void Release () = 0;
+    virtual QIcon GetIcon () const = 0;
+
     virtual ~IInfo () {}
 };
 
@@ -48,12 +51,8 @@ public:
 class IWindow
 {
 public:
-    virtual QIcon GetIcon () const = 0;
-
     virtual void SetParent (QWidget*) = 0;
-
     virtual void ShowWindow () = 0;
-    virtual void ShowBalloonTip () = 0;
 
     virtual ~IWindow () {}
 };
@@ -115,6 +114,8 @@ class IJobHolder
 {
 public:
     virtual QAbstractItemModel* GetRepresentation () const = 0;
+	virtual QWidget* GetControls () const = 0;
+	virtual QWidget* GetAdditionalInfo () const = 0;
 
     virtual ~IJobHolder () {}
 };

@@ -446,6 +446,16 @@ QAbstractItemModel* TorrentPlugin::GetRepresentation () const
     return Core::Instance ()->GetRepresentationModel ();
 }
 
+QWidget* TorrentPlugin::GetControls () const
+{
+	return new QWidget ();
+}
+
+QWidget* TorrentPlugin::GetAdditionalInfo () const
+{
+	return new QWidget ();
+}
+
 void TorrentPlugin::ImportSettings (const QByteArray& settings)
 {
 	XmlSettingsDialog_->MergeXml (settings);

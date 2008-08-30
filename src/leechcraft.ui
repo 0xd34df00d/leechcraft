@@ -65,10 +65,7 @@
         <enum>Qt::Vertical</enum>
        </property>
        <widget class="QWidget" name="layoutWidget" >
-        <layout class="QVBoxLayout" name="verticalLayout" >
-         <item>
-          <widget class="QWidget" native="1" name="PluginControls_" />
-         </item>
+        <layout class="QVBoxLayout" name="PluginsStuff_" >
          <item>
           <widget class="QTreeView" name="PluginsTasksTree_" >
            <property name="minimumSize" >
@@ -90,7 +87,6 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" native="1" name="PluginAdditionalInfo_" />
       </widget>
      </widget>
     </item>

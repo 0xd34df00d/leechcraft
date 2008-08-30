@@ -292,7 +292,6 @@ void MergeModel::handleColumnsRemoved (const QModelIndex&, int, int)
 void MergeModel::handleDataChanged (const QModelIndex& topLeft,
 		const QModelIndex& bottomRight)
 {
-	qDebug () << Q_FUNC_INFO;
 	emit dataChanged (mapFromSource (topLeft), mapFromSource (bottomRight));
 }
 

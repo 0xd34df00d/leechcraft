@@ -5,17 +5,21 @@
 #include <QTranslator>
 #include <QLocale>
 #include <QFileInfo>
+#include <QTabWidget>
+#include <QToolBar>
 #include <QMessageBox>
+#include <QModelIndex>
 #include <QDir>
+#include <QUrl>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/util.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "addtask.h"
 #include "mainviewdelegate.h"
+#include "ui_tabwidget.h"
 
 CSTP::CSTP ()
-: IsShown_ (false)
 {
 }
 
@@ -27,14 +31,11 @@ void CSTP::Init ()
 {
 	LeechCraft::Util::InstallTranslator ("cstp");
 
-	XmlSettingsDialog_ = new XmlSettingsDialog (this);
+	XmlSettingsDialog_ = new XmlSettingsDialog ();
 	XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (), ":/cstpsettings.xml");
 
-	Ui_.setupUi (this);
-	Ui_.MainView_->setItemDelegate (new MainViewDelegate (Ui_.MainView_));
-	Ui_.MainView_->setModel (&Core::Instance ());
-	Ui_.HistoryView_->setModel (Core::Instance ().GetHistoryModel ());
-	Ui_.HistoryView_->addAction (Ui_.ActionRemoveItemFromHistory_);
+	SetupTabWidget ();
+	SetupToolbar ();
 
 	connect (&Core::Instance (),
 			SIGNAL (taskFinished (int)),
@@ -64,6 +65,10 @@ void CSTP::Init ()
 
 void CSTP::Release ()
 {
+	Core::Instance ().Release ();
+	XmlSettingsManager::Instance ().Release ();
+	delete XmlSettingsDialog_;
+	XmlSettingsDialog_ = 0;
 }
 
 QString CSTP::GetName () const
@@ -121,21 +126,6 @@ QIcon CSTP::GetIcon () const
 	return QIcon ();
 }
 
-void CSTP::SetParent (QWidget *parent)
-{
-	setParent (parent);
-}
-
-void CSTP::ShowWindow ()
-{
-	IsShown_ = 1 - IsShown_;
-	IsShown_ ? show () : hide ();
-}
-
-void CSTP::ShowBalloonTip ()
-{
-}
-
 qint64 CSTP::GetDownloadSpeed () const
 {
 	return Core::Instance ().GetTotalDownloadSpeed ();
@@ -148,12 +138,12 @@ qint64 CSTP::GetUploadSpeed () const
 
 void CSTP::StartAll ()
 {
-	on_ActionStartAll__triggered ();
+	Core::Instance ().startAllTriggered ();
 }
 
 void CSTP::StopAll ()
 {
-	on_ActionStopAll__triggered ();
+	Core::Instance ().stopAllTriggered ();
 }
 
 bool CSTP::CouldDownload (const QString& url, LeechCraft::TaskParameters tp) const
@@ -163,10 +153,42 @@ bool CSTP::CouldDownload (const QString& url, LeechCraft::TaskParameters tp) con
 
 int CSTP::AddJob (const DirectDownloadParams& ddp, LeechCraft::TaskParameters tp)
 {
-	QFileInfo fi (ddp.Location_);
-	return Core::Instance ().AddTask (ddp.Resource_,
-			fi.dir ().path (), fi.fileName (),
-			QString (), tp);
+	if (tp & LeechCraft::FromCommonDialog)
+	{
+		AddTask at (ddp.Resource_, ddp.Location_);
+		if (at.exec () == QDialog::Rejected)
+			return -1;
+
+		AddTask::Task task = at.GetTask ();
+
+		return Core::Instance ().AddTask (task.URL_,
+				task.LocalPath_,
+				task.Filename_,
+				task.Comment_,
+				tp);
+	}
+	else
+	{
+		QFileInfo fi (ddp.Location_);
+		QString dir = fi.dir ().path (), file = fi.fileName ();
+
+		if (!(tp & LeechCraft::Internal))
+		{
+			if (fi.isDir ())
+			{
+				dir = ddp.Location_;
+				file = QFileInfo (QUrl (ddp.Resource_).path ()).fileName ();
+				if (file.isEmpty ())
+					file = "index";
+			}
+			else if (fi.isFile ());
+			else
+				return -1;
+		}
+
+		return Core::Instance ().AddTask (ddp.Resource_,
+				dir, file, QString (), tp);
+	}
 }
 
 QAbstractItemModel* CSTP::GetRepresentation () const
@@ -174,9 +196,24 @@ QAbstractItemModel* CSTP::GetRepresentation () const
 	return Core::Instance ().GetRepresentationModel ();
 }
 
-void CSTP::closeEvent (QCloseEvent*)
+QWidget* CSTP::GetControls () const
 {
-	IsShown_ = false;
+	return Toolbar_.get ();
+}
+
+QWidget* CSTP::GetAdditionalInfo () const
+{
+	return TabWidget_.get ();
+}
+
+void CSTP::on_ActionRemoveItemFromHistory__triggered ()
+{
+	ApplyCore2Selection (&Core::RemoveFromHistory, UiTabWidget_->HistoryView_);
+}
+
+void CSTP::showSettings (int)
+{
+	XmlSettingsDialog_->show ();
 }
 
 template<typename T>
@@ -190,75 +227,77 @@ void CSTP::ApplyCore2Selection (void (Core::*temp) (const QModelIndex&), T view)
 				_1));
 }
 
-void CSTP::handleHidePlugins ()
+void CSTP::SetupTabWidget ()
 {
-	IsShown_ = false;
-	hide ();
+	UiTabWidget_.reset (new Ui::TabWidget);
+	TabWidget_.reset (new QTabWidget);
+	UiTabWidget_->setupUi (TabWidget_.get ());
+	UiTabWidget_->HistoryView_->setModel (Core::Instance ().GetHistoryModel ());
+	UiTabWidget_->HistoryView_->addAction (UiTabWidget_->ActionRemoveItemFromHistory_);
+
+	connect (UiTabWidget_->ActionRemoveItemFromHistory_,
+			SIGNAL (triggered ()),
+			this,
+			SLOT (on_ActionRemoveItemFromHistory__triggered ()));
 }
 
-void CSTP::on_ActionAddTask__triggered ()
+void CSTP::SetupToolbar ()
 {
-	AddTask at;
-	if (at.exec () == QDialog::Rejected)
-		return;
+	Toolbar_.reset (new QToolBar);
+	Toolbar_->setMovable (false);
+	Toolbar_->setFloatable (false);
 
-	AddTask::Task task = at.GetTask ();
-	Core::Instance ().AddTask (task.URL_,
-			task.LocalPath_,
-			task.Filename_,
-			task.Comment_);
-}
+	QAction *remove = Toolbar_->addAction (QIcon (":/resources/images/remove.png"),
+			tr ("Remove"));
+	remove->setProperty ("Slot", "removeTriggered");
+	remove->setProperty ("Object",
+			QVariant::fromValue<QObject*> (&Core::Instance ()));
 
-void CSTP::on_ActionRemoveTask__triggered ()
-{
-	ApplyCore2Selection (&Core::RemoveTask, Ui_.MainView_);
-}
+	QAction *removeAll = Toolbar_->addAction (tr ("Remove all"));
+	removeAll->setProperty ("Slot", "removeAllTriggered");
+	removeAll->setProperty ("Object",
+			QVariant::fromValue<QObject*> (&Core::Instance ()));
 
-void CSTP::on_ActionStart__triggered ()
-{
-	ApplyCore2Selection (&Core::Start, Ui_.MainView_);
-}
+	Toolbar_->addSeparator ();
 
-void CSTP::on_ActionStop__triggered ()
-{
-	ApplyCore2Selection (&Core::Stop, Ui_.MainView_);
-}
+	QAction *start = Toolbar_->addAction (tr ("Start"));
+	start->setProperty ("Slot", "startTriggered");
+	start->setProperty ("Object",
+			QVariant::fromValue<QObject*> (&Core::Instance ()));
 
-void CSTP::on_ActionRemoveItemFromHistory__triggered ()
-{
-	ApplyCore2Selection (&Core::RemoveFromHistory, Ui_.HistoryView_);
-}
+	QAction *stop = Toolbar_->addAction (QIcon (":/resources/images/stop.png"),
+			tr ("Stop"));
+	stop->setProperty ("Slot", "stopTriggered");
+	stop->setProperty ("Object",
+			QVariant::fromValue<QObject*> (&Core::Instance ()));
 
-void CSTP::on_ActionRemoveAll__triggered ()
-{
-	Core::Instance ().RemoveAll ();
-}
+	QAction *startAll = Toolbar_->addAction (tr ("Start all"));
+	startAll->setProperty ("Slot", "startAllTriggered");
+	startAll->setProperty ("Object",
+			QVariant::fromValue<QObject*> (&Core::Instance ()));
 
-void CSTP::on_ActionStartAll__triggered ()
-{
-	Core::Instance ().StartAll ();
-}
+	QAction *stopAll = Toolbar_->addAction (tr ("Stop all"));
+	stopAll->setProperty ("Slot", "stopAllTriggered");
+	stopAll->setProperty ("Object",
+			QVariant::fromValue<QObject*> (&Core::Instance ()));
 
-void CSTP::on_ActionStopAll__triggered ()
-{
-	Core::Instance ().StopAll ();
-}
+	Toolbar_->addSeparator ();
 
-void CSTP::on_ActionPreferences__triggered ()
-{
-	XmlSettingsDialog_->show ();
+	QAction *settings = Toolbar_->addAction (QIcon (":/resources/images/preferences.png"),
+			tr ("Settings"));
+	settings->setProperty ("Slot", "showSettings");
+	settings->setProperty ("Object",
+			QVariant::fromValue<QObject*> (this));
 }
 
 void CSTP::handleError (const QString& text)
 {
-	if (XmlSettingsManager::Instance ().property ("AlertAboutErrors").toBool ())
-		QMessageBox::warning (this, tr ("Error"), text);
-	Ui_.Logger_->append (QString ("<br />") + text);
+	UiTabWidget_->Logger_->append (text + QString ("<br />"));
 }
 
 void CSTP::handleFileExists (boost::logic::tribool *remove)
 {
-	QMessageBox::StandardButton userReply = QMessageBox::warning (this,
+	QMessageBox::StandardButton userReply = QMessageBox::warning (0,
 			tr ("File exists"), tr ("File %1 already exists, continue download?"),
 			QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
 	if (userReply == QMessageBox::Yes)

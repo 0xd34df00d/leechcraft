@@ -49,6 +49,20 @@ AddTask::AddTask (QWidget *parent)
 				QDir::homePath ()).toString ());
 }
 
+AddTask::AddTask (const QString& url, const QString& where, QWidget *parent)
+: QDialog (parent)
+, UserModifiedFilename_ (false)
+{
+	Ui_.setupUi (this);
+	Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (false);
+	Ui_.URL_->setValidator (new URLValidator (this));
+	Ui_.LocalPath_->setText (where);
+	Ui_.URL_->setText (url);
+	on_LocalPath__textChanged ();
+	on_URL__textEdited (url);
+	CheckOK ();
+}
+
 AddTask::~AddTask ()
 {
 }

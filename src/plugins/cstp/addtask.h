@@ -11,6 +11,7 @@ class AddTask : public QDialog
 	bool UserModifiedFilename_;
 public:
 	AddTask (QWidget* = 0);
+	AddTask (const QString&, const QString&, QWidget* = 0);
 	virtual ~AddTask ();
 
 	struct Task

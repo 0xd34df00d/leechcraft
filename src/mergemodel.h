@@ -33,7 +33,7 @@ public:
 
 	void AddModel (QAbstractItemModel*);
 	void RemoveModel (QAbstractItemModel*);
-private:
+
 	const_iterator FindModel (const QAbstractItemModel*) const;
 	iterator FindModel (const QAbstractItemModel*);
 	int GetStartingRow (const_iterator) const;

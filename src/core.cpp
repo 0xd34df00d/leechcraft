@@ -1,11 +1,13 @@
+#include <limits>
+#include <list>
 #include <QMainWindow>
 #include <QTreeWidgetItem>
 #include <QMessageBox>
 #include <QtDebug>
 #include <QTimer>
 #include <QNetworkProxy>
-#include <limits>
 #include <QApplication>
+#include <QAction>
 #include <QClipboard>
 #include <QDir>
 #include <QLocalServer>
@@ -74,6 +76,22 @@ QAbstractProxyModel* Main::Core::GetTasksModel () const
 	return MergeModel_.get ();
 }
 
+QWidget* Main::Core::GetControls (int index) const
+{
+	QAbstractItemModel *model = *MergeModel_->GetModelForRow (index);
+	const IJobHolder *ijh = dynamic_cast<const IJobHolder*> (Representation2Object_ [model]);
+
+	return ijh->GetControls ();
+}
+
+QWidget* Main::Core::GetAdditionalInfo (int index) const
+{
+	QAbstractItemModel *model = *MergeModel_->GetModelForRow (index);
+	const IJobHolder *ijh = dynamic_cast<const IJobHolder*> (Representation2Object_ [model]);
+
+	return ijh->GetAdditionalInfo ();
+}
+
 void Main::Core::DelayedInit ()
 {
 	connect (this,
@@ -107,7 +125,22 @@ void Main::Core::DelayedInit ()
 					SIGNAL (downloadFinished (const QString&)));
 
 		if (ijh)
-			MergeModel_->AddModel (ijh->GetRepresentation ());
+		{
+			QAbstractItemModel *model = ijh->GetRepresentation ();
+			Representation2Object_ [model] = plugin;
+			MergeModel_->AddModel (model);
+
+			QList<QAction*> actions = ijh->GetControls ()->actions ();
+			for (QList<QAction*>::iterator i = actions.begin (),
+					end = actions.end (); i != end; ++i)
+			{
+				connect (*i,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handlePluginAction ()));
+				Action2Model_ [*i] = model;
+			}
+		}
     }
 
 	XmlSettingsManager::Instance ()->RegisterObject ("ProxyEnabled", this, "handleProxySettings");
@@ -143,11 +176,12 @@ void Main::Core::TryToAddJob (const QString& name, const QString& where)
     QObjectList plugins = PluginManager_->GetAllPlugins ();
     foreach (QObject *plugin, plugins)
     {
+		IInfo *ii = qobject_cast<IInfo*> (plugin);
         IDownload *di = qobject_cast<IDownload*> (plugin);
 		IDirectDownload *idd = qobject_cast<IDirectDownload*> (plugin);
 		IPeer2PeerDownload *ip2p =
 			qobject_cast<IPeer2PeerDownload*> (plugin);
-		LeechCraft::TaskParameters tp = LeechCraft::FromCommonDialog & LeechCraft::Autostart;
+		LeechCraft::TaskParameters tp = LeechCraft::FromCommonDialog | LeechCraft::Autostart;
         if (di && di->CouldDownload (name, tp))
         {
 			if (idd)
@@ -215,6 +249,53 @@ void Main::Core::handleProxySettings () const
 	else
 		pr.setType (QNetworkProxy::NoProxy);
 	QNetworkProxy::setApplicationProxy (pr);
+}
+
+void Main::Core::handlePluginAction ()
+{
+	QAction *source = dynamic_cast<QAction*> (sender ());
+	QString slot = source->property ("Slot").toString ();
+	QString signal = source->property ("Signal").toString ();
+
+	if (slot.isEmpty () && signal.isEmpty ())
+		return;
+
+	QObject *object = source->property ("Object").value<QObject*> ();
+
+	std::list<int> selected = ReallyMainWindow_->GetSelectedRows ();
+	QAbstractItemModel *model = Action2Model_ [source];
+	int startingRow = MergeModel_->GetStartingRow (MergeModel_->FindModel (model));
+	int endingRow = startingRow + model->rowCount ();
+	if (!slot.isEmpty ())
+	{
+		for (std::list<int>::const_iterator i = selected.begin (),
+				end = selected.end (); i != end; ++i)
+		{
+			if (*i < startingRow)
+				continue;
+			if (*i >= endingRow)
+				break;
+
+			QMetaObject::invokeMethod (object,
+					slot.toLatin1 (),
+					Q_ARG (int, *i));
+		}
+	}
+	if (!signal.isEmpty ())
+	{
+		for (std::list<int>::const_iterator i = selected.begin (),
+				end = selected.end (); i != end; ++i)
+		{
+			if (*i < startingRow)
+				continue;
+			if (*i >= endingRow)
+				break;
+
+			QMetaObject::invokeMethod (object,
+					signal.toLatin1 (),
+					Q_ARG (int, *i));
+		}
+	}
 }
 
 void Main::Core::handleFileDownload (const QString& file, bool fromBuffer)

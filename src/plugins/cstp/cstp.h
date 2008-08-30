@@ -1,10 +1,13 @@
 #ifndef CSTP_H
 #define CSTP_H
+#include <memory>
 #include <interfaces/interfaces.h>
-#include "ui_cstp.h"
 
 class XmlSettingsDialog;
 class Core;
+class QTabWidget;
+class QToolBar;
+class QModelIndex;
 
 namespace boost
 {
@@ -14,21 +17,26 @@ namespace boost
 	};
 };
 
-class CSTP : public QMainWindow
+namespace Ui
+{
+	class TabWidget;
+};
+
+class CSTP : public QObject
 			 , public IInfo
-			 , public IWindow
 			 , public IDownload
 			 , public IDirectDownload
 			 , public IJobHolder
 {
 	Q_OBJECT
-	Q_INTERFACES (IInfo IWindow IDownload IDirectDownload IJobHolder)
+	Q_INTERFACES (IInfo IDownload IDirectDownload IJobHolder)
 
-	Ui::CSTP Ui_;
 	unsigned long int ID_;
-	bool IsShown_;
 	QMenu *Plugins_;
 	XmlSettingsDialog *XmlSettingsDialog_;
+	std::auto_ptr<Ui::TabWidget> UiTabWidget_;
+	std::auto_ptr<QTabWidget> TabWidget_;
+	std::auto_ptr<QToolBar> Toolbar_;
 public:
 	explicit CSTP ();
 	virtual ~CSTP ();
@@ -45,9 +53,6 @@ public:
     void SetProvider (QObject*, const QString&);
     void PushMainWindowExternals (const MainWindowExternals&);
     QIcon GetIcon () const;
-    void SetParent (QWidget*);
-    void ShowWindow ();
-    void ShowBalloonTip ();
 
 	qint64 GetDownloadSpeed () const;
 	qint64 GetUploadSpeed () const;
@@ -57,22 +62,16 @@ public:
 	int AddJob (const DirectDownloadParams&, LeechCraft::TaskParameters);
 
 	QAbstractItemModel* GetRepresentation () const;
-protected:
-    virtual void closeEvent (QCloseEvent*);
+	QWidget* GetControls () const;
+	QWidget* GetAdditionalInfo () const;
+public slots:
+	void on_ActionRemoveItemFromHistory__triggered ();
+	void showSettings (int = -1);
 private:
 	template<typename T> void ApplyCore2Selection (void (Core::*) (const QModelIndex&), T);
-public slots:
-	void handleHidePlugins ();
+	void SetupTabWidget ();
+	void SetupToolbar ();
 private slots:
-	void on_ActionAddTask__triggered ();
-	void on_ActionRemoveTask__triggered ();
-	void on_ActionStart__triggered ();
-	void on_ActionStop__triggered ();
-	void on_ActionRemoveAll__triggered ();
-	void on_ActionStartAll__triggered ();
-	void on_ActionStopAll__triggered ();
-	void on_ActionRemoveItemFromHistory__triggered ();
-	void on_ActionPreferences__triggered ();
 	void handleError (const QString&);
 	void handleFileExists (boost::logic::tribool*);
 signals:

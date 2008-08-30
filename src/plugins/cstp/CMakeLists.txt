@@ -29,8 +29,8 @@ SET (HEADERS
 	../../xmlsettingsdialog/basesettingsmanager.h
 	)
 SET (FORMS
-	cstp.ui
 	addtask.ui
+	tabwidget.ui
 	)
 SET (RESOURCES
 	resources.qrc

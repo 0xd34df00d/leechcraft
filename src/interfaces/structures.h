@@ -18,14 +18,15 @@ namespace LeechCraft
 {
 	enum TaskParameter
 	{
-		NoParameters = 0x0,
-		Autostart = 0x1,
-		DoNotSaveInHistory = 0x2,
-		FromClipboard = 0x4,
-		FromCommonDialog = 0x8,
-		FromAutomatic = 0x16,
-		DoNotNotifyUser = 0x32,
-		FromAnother = 0x64
+		NoParameters = 0,
+		Autostart = 1,
+		DoNotSaveInHistory = 2,
+		FromClipboard = 4,
+		FromCommonDialog = 8,
+		FromAutomatic = 16,
+		DoNotNotifyUser = 32,
+		FromAnother = 64,
+		Internal = 128
 	};
 
 	Q_DECLARE_FLAGS (TaskParameters, TaskParameter);

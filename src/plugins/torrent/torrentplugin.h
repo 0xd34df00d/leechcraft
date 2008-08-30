@@ -80,6 +80,8 @@ public:
 
     // IJobHolder
     QAbstractItemModel* GetRepresentation () const;
+	QWidget* GetControls () const;
+	QWidget* GetAdditionalInfo () const;
 
 	// IImportExport
 	void ImportSettings (const QByteArray&);

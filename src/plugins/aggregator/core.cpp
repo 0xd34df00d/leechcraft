@@ -122,7 +122,7 @@ void Core::AddFeed (const QString& url, const QStringList& tags)
 	}
 	DirectDownloadParams params = { url, name };
 	PendingJob pj = { PendingJob::RFeedAdded, url, name, tags };
-	int id = idd->AddJob (params, LeechCraft::Autostart |
+	int id = idd->AddJob (params, LeechCraft::Internal | LeechCraft::Autostart |
 			LeechCraft::DoNotNotifyUser | LeechCraft::DoNotSaveInHistory);
 	PendingJobs_ [id] = pj;
 }
@@ -389,7 +389,7 @@ void Core::UpdateFeed (const QModelIndex& index)
 	}
 	DirectDownloadParams params = { url, name };
 	PendingJob pj = { PendingJob::RFeedUpdated, url, name };
-	int id = idd->AddJob (params, LeechCraft::Autostart |
+	int id = idd->AddJob (params, LeechCraft::Internal | LeechCraft::Autostart |
 			LeechCraft::DoNotNotifyUser | LeechCraft::DoNotSaveInHistory);
 	PendingJobs_ [id] = pj;
 }
@@ -747,7 +747,7 @@ void Core::updateFeeds ()
 		}
 		DirectDownloadParams params = { urls.at (i), filename };
 		PendingJob pj = { PendingJob::RFeedUpdated, urls.at (i), filename };
-		int id = idd->AddJob (params, LeechCraft::Autostart |
+		int id = idd->AddJob (params, LeechCraft::Internal | LeechCraft::Autostart |
 				LeechCraft::DoNotNotifyUser | LeechCraft::DoNotSaveInHistory);
 		PendingJobs_ [id] = pj;
 	}
@@ -771,7 +771,7 @@ void Core::fetchExternalFile (const QString& url, const QString& where)
 
 	DirectDownloadParams params = { url, where };
 	PendingJob pj = { PendingJob::RFeedExternalData, url, where };
-	int id = idd->AddJob (params, LeechCraft::Autostart |
+	int id = idd->AddJob (params, LeechCraft::Internal | LeechCraft::Autostart |
 			LeechCraft::DoNotNotifyUser | LeechCraft::DoNotSaveInHistory);
 	PendingJobs_ [id] = pj;
 }

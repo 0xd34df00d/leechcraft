@@ -1,5 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
+#include <list>
 #include <QMainWindow>
 #include <QDialog>
 #include <QSettings>
@@ -50,8 +51,10 @@ namespace Main
         MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
         virtual ~MainWindow ();
         QMenu* GetRootPluginsMenu () const;
+		std::list<int> GetSelectedRows () const;
     public slots:
         void catchError (QString);
+		void updatePanes (const QModelIndex&);
     protected:
         virtual void closeEvent (QCloseEvent*);
     private:
