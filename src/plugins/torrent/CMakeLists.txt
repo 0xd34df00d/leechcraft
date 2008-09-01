@@ -26,7 +26,6 @@ SET (SRCS
 	xmlsettingsmanager.cpp
 	piecesmodel.cpp
 	trackerschanger.cpp
-	channelsfiltermodel.cpp
 	torrentfilesmodel.cpp
 	peersmodel.cpp
 	filesviewdelegate.cpp
@@ -48,7 +47,6 @@ SET (HEADERS
 	xmlsettingsmanager.h
 	piecesmodel.h
 	trackerschanger.h
-	channelsfiltermodel.h
 	torrentfilesmodel.h
 	peersmodel.h
 	filesviewdelegate.h
@@ -63,7 +61,7 @@ SET (HEADERS
 	../../xmlsettingsdialog/basesettingsmanager.h
 	)
 SET (FORMS
-    mainwindow.ui
+    tabwidget.ui
 	addtorrent.ui
 	addmultipletorrents.ui
 	newtorrentfirststep.ui

@@ -1,46 +1,57 @@
 #ifndef TORRENTPLUIGN_H
 #define TORRENTPLUIGN_H
+#include <memory>
 #include <QMainWindow>
 #include <interfaces/interfaces.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "ui_mainwindow.h"
+#include "ui_tabwidget.h"
 #include "torrentinfo.h"
 
 class AddTorrent;
 class QTimer;
+class QToolBar;
 class QSortFilterProxyModel;
-class ChannelsFilterModel;
+class QTabWidget;
+class RepresentationModel;
 class TagsCompleter;
 
-class TorrentPlugin : public QMainWindow
+class TorrentPlugin : public QObject
                     , public IInfo
-                    , public IWindow
+					, public IDownload
                     , public IPeer2PeerDownload
                     , public IRemoteable
                     , public IJobHolder
 					, public IImportExport
-                    , private Ui::MainWindow
+					, public IEmbedModel
 {
     Q_OBJECT
 
-    Q_INTERFACES (IInfo IWindow IPeer2PeerDownload IRemoteable IJobHolder IImportExport);
+    Q_INTERFACES (IInfo IDownload IPeer2PeerDownload IRemoteable IJobHolder IImportExport IEmbedModel);
 
     ID_t ID_;
-    bool IsShown_;
-    XmlSettingsDialog *XmlSettingsDialog_;
-    AddTorrent *AddTorrentDialog_;
-    QTimer *OverallStatsUpdateTimer_;
-    QTime *LastPeersUpdate_;
-    ChannelsFilterModel *FilterModel_;
+    std::auto_ptr<XmlSettingsDialog> XmlSettingsDialog_;
+	std::auto_ptr<AddTorrent> AddTorrentDialog_;
+	std::auto_ptr<QTimer> OverallStatsUpdateTimer_;
+	std::auto_ptr<QTime> LastPeersUpdate_;
+	std::auto_ptr<RepresentationModel> FilterModel_;
     QMenu *Plugins_;
     bool IgnoreTimer_;
     bool TorrentSelectionChanged_;
-    TagsCompleter *TagsSearchCompleter_, *TagsChangeCompleter_, *TagsAddDiaCompleter_;
-
-    void SetupCore ();
-    void SetupTorrentView ();
-    void SetupStuff ();
-    void SetupHeaders ();
+	std::auto_ptr<TagsCompleter> TagsChangeCompleter_,
+		TagsAddDiaCompleter_;
+	std::auto_ptr<QTabWidget> TabWidget_;
+	Ui::TabWidget Ui_;
+	std::auto_ptr<QAction> OpenTorrent_,
+		RemoveTorrent_,
+		Preferences_,
+		Resume_,
+		Stop_,
+		CreateTorrent_,
+		ForceReannounce_,
+		OpenMultipleTorrents_,
+		ChangeTrackers_,
+		MoveFiles_;
+	std::auto_ptr<QToolBar> Toolbar_;
 public:
     // IInfo
     void Init ();
@@ -56,11 +67,7 @@ public:
     void SetProvider (QObject*, const QString&);
     void PushMainWindowExternals (const MainWindowExternals&);
     void Release ();
-    //IWindow
     QIcon GetIcon () const;
-    void SetParent (QWidget*);
-    void ShowWindow ();
-    void ShowBalloonTip ();
 
     // IDownload
     qint64 GetDownloadSpeed () const;
@@ -88,19 +95,20 @@ public:
 	void ImportData (const QByteArray&);
 	QByteArray ExportSettings () const;
 	QByteArray ExportData () const;
+
+	// IEmbedModel
+	void ItemSelected (const QModelIndex&);
 public slots:
-    void handleHidePlugins ();
-protected:
-    virtual void closeEvent (QCloseEvent*);
+    void updateTorrentStats ();
 private slots:
     void on_OpenTorrent__triggered ();
     void on_OpenMultipleTorrents__triggered ();
     void on_CreateTorrent__triggered ();
-    void on_RemoveTorrent__triggered ();
-    void on_Resume__triggered ();
-    void on_Stop__triggered ();
-    void on_ForceReannounce__triggered ();
-    void on_ChangeTrackers__triggered ();
+    void on_RemoveTorrent__triggered (int);
+    void on_Resume__triggered (int);
+    void on_Stop__triggered (int);
+    void on_ForceReannounce__triggered (int);
+    void on_ChangeTrackers__triggered (int);
     void on_Preferences__triggered ();
     void on_OverallDownloadRateController__valueChanged (int);
     void on_OverallUploadRateController__valueChanged (int);
@@ -112,12 +120,9 @@ private slots:
     void on_DownloadingTorrents__valueChanged (int);
     void on_UploadingTorrents__valueChanged (int);
     void on_TorrentTags__editingFinished ();
-    void on_MoveFiles__triggered ();
-	void itemSelectionChanged (const QModelIndex&);
-	void tabChanged ();
+    void on_MoveFiles__triggered (int = 0);
     void setActionsEnabled ();
     void showError (QString);
-    void updateTorrentStats ();
     void updateOverallStats ();
     void restartTimers ();
     void doLogMessage (const QString&);
@@ -128,6 +133,11 @@ private:
     void UpdateFilesPage ();
     void UpdatePeersPage ();
     void UpdatePiecesPage ();
+	void SetupTabWidget ();
+    void SetupCore ();
+    void SetupTorrentView ();
+    void SetupStuff ();
+	void SetupActions ();
 signals:
     void downloadFinished (const QString&);
     void fileDownloaded (const QString&);

@@ -81,6 +81,10 @@ namespace Main
 				SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
 				this,
 				SLOT (updatePanes (const QModelIndex&)));
+		connect (Ui_->PluginsTasksTree_,
+				SIGNAL (clicked (const QModelIndex&)),
+				this,
+				SLOT (updatePanes (const QModelIndex&)));
 
 		QTimer *speedUpd = new QTimer (this);
 		speedUpd->setInterval (1000);
@@ -125,6 +129,8 @@ namespace Main
 
 		if (newIndex.isValid ())
 		{
+			Core::Instance ().SetNewRow (newIndex);
+
 			QWidget *controls = Core::Instance ().GetControls (newIndex.row ()),
 					*addiInfo = Core::Instance ().GetAdditionalInfo (newIndex.row ());
 			Ui_->PluginsStuff_->insertWidget (0, controls);

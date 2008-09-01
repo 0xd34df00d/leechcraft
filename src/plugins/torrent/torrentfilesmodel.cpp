@@ -135,7 +135,7 @@ bool TorrentFilesModel::setData (const QModelIndex& index, const QVariant& value
     }
     else if (role == Qt::EditRole && index.column () == 2)
     {
-        static_cast<Core*> (QObject::parent ())->SetFilePriority (-1, index.row (), value.toInt ());
+		Core::Instance ()->SetFilePriority (index.row (), value.toInt ());
         static_cast<TreeItem*> (index.internalPointer ())->ModifyData (index.column (), value);
         emit dataChanged (index, index);
         return true;

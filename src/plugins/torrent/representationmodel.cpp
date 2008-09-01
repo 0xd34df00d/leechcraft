@@ -3,7 +3,6 @@
 RepresentationModel::RepresentationModel (QObject *parent)
 : QSortFilterProxyModel (parent)
 {
-	setDynamicSortFilter (true);
 }
 
 RepresentationModel::~RepresentationModel ()

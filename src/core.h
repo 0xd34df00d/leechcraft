@@ -51,6 +51,7 @@ namespace Main
         void TryToAddJob (const QString&, const QString&);
 
 		void Activated (const QModelIndex&);
+		void SetNewRow (const QModelIndex&);
         
         QPair<qint64, qint64> GetSpeeds () const;
 	public slots:

@@ -21,7 +21,6 @@ class PiecesModel;
 class PeersModel;
 class TagsCompletionModel;
 class TorrentFilesModel;
-class TorrentPlugin;
 class RepresentationModel;
 
 class Core : public QAbstractItemModel
@@ -58,14 +57,13 @@ private:
     typedef QList<TorrentStruct> HandleDict_t;
     HandleDict_t Handles_;
     QList<QString> Headers_;
-    int InterfaceUpdateTimer_, CurrentTorrent_;
+    int InterfaceUpdateTimer_;
+	mutable int CurrentTorrent_;
 	std::auto_ptr<QTimer> SettingsSaveTimer_, FinishedTimer_, WarningWatchdog_, ScrapeTimer_;
 	std::auto_ptr<PiecesModel> PiecesModel_;
 	std::auto_ptr<PeersModel> PeersModel_;
 	std::auto_ptr<TagsCompletionModel> TagsCompletionModel_;
 	std::auto_ptr<TorrentFilesModel> TorrentFilesModel_;
-	std::auto_ptr<RepresentationModel> RepresentationModel_;
-	mutable TorrentPlugin *TorrentPlugin_;
 
 	std::list<quint16> IDPool_;
 
@@ -91,18 +89,17 @@ public:
     static Core* Instance ();
 	virtual ~Core ();
     void DoDelayedInit ();
-	void SetWindow (TorrentPlugin*);
     void Release ();
     PiecesModel* GetPiecesModel ();
     void ClearPieces ();
-    void UpdatePieces (int);
+    void UpdatePieces ();
     PeersModel* GetPeersModel ();
     void ClearPeers ();
-    void UpdatePeers (int);
+    void UpdatePeers ();
 	TorrentFilesModel* GetTorrentFilesModel ();
 	void ClearFiles ();
-	void UpdateFiles (int);
-	void ResetFiles (int);
+	void UpdateFiles ();
+	void ResetFiles ();
 
     virtual int columnCount (const QModelIndex&) const;
     virtual QVariant data (const QModelIndex&, int role = Qt::DisplayRole) const;
@@ -116,15 +113,14 @@ public:
     libtorrent::torrent_info GetTorrentInfo (const QString&);
     libtorrent::torrent_info GetTorrentInfo (const QByteArray&);
     bool IsValidTorrent (const QByteArray&) const;
-    TorrentInfo GetTorrentStats (int) const;
-	libtorrent::bitfield GetLocalPieces (int) const;
+    TorrentInfo GetTorrentStats () const;
+	libtorrent::bitfield GetLocalPieces () const;
     OverallStats GetOverallStats () const;
-    QList<FileInfo> GetTorrentFiles (int) const;
-    QList<PeerInfo> GetPeers (int) const;
-    QStringList GetTagsForIndex (int) const;
-    void UpdateTags (int, const QStringList&);
+    QList<FileInfo> GetTorrentFiles () const;
+    QList<PeerInfo> GetPeers () const;
+    QStringList GetTagsForIndex () const;
+    void UpdateTags (const QStringList&);
     TagsCompletionModel* GetTagsCompletionModel () const;
-	QAbstractItemModel* GetRepresentationModel () const;
 	int AddFile (const QString&, const QString&, const QStringList&,
 			const QVector<bool>& = QVector<bool> (),
 			LeechCraft::TaskParameters = LeechCraft::NoParameters);
@@ -142,28 +138,32 @@ public:
     int GetMaxDownloadingTorrents () const;
     int GetMaxUploadingTorrents () const;
     double GetDesiredRating () const;
-    void SetTorrentDownloadRate (int, int);
-    void SetTorrentUploadRate (int, int);
-    void SetTorrentDesiredRating (double, int);
-    int GetTorrentDownloadRate (int) const;
-    int GetTorrentUploadRate (int) const;
-    double GetTorrentDesiredRating (int) const;
-    void SetFilePriority (int, int, int);
-    int GetFilePriority (int, int) const;
+    void SetTorrentDownloadRate (int);
+    void SetTorrentUploadRate (int);
+    void SetTorrentDesiredRating (double);
+    int GetTorrentDownloadRate () const;
+    int GetTorrentUploadRate () const;
+    double GetTorrentDesiredRating () const;
+    void SetFilePriority (int, int);
+    int GetFilePriority (int) const;
+    QStringList GetTrackers () const;
     QStringList GetTrackers (int) const;
+    void SetTrackers (const QStringList&);
     void SetTrackers (int, const QStringList&);
-    QString GetTorrentDirectory (int) const;
-    bool MoveTorrentFiles (int, const QString&);
+    QString GetTorrentDirectory () const;
+    bool MoveTorrentFiles (const QString&);
     void SetCurrentTorrent (int);
+	int GetCurrentTorrent () const;
 
     void MakeTorrent (NewTorrentParams) const;
     void LogMessage (const QString&);
 
 	void ImportData (const QByteArray&);
 	QByteArray ExportData () const;
+
+    bool CheckValidity (int) const;
 private:
     QString GetStringForState (libtorrent::torrent_status::state_t) const;
-    bool CheckValidity (int) const;
     void ReadSettings ();
     void RestoreTorrents ();
     libtorrent::torrent_handle RestoreSingleTorrent (const QByteArray&,

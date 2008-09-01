@@ -176,25 +176,22 @@ void Main::Core::TryToAddJob (const QString& name, const QString& where)
     QObjectList plugins = PluginManager_->GetAllPlugins ();
     foreach (QObject *plugin, plugins)
     {
-		IInfo *ii = qobject_cast<IInfo*> (plugin);
-        IDownload *di = qobject_cast<IDownload*> (plugin);
-		IDirectDownload *idd = qobject_cast<IDirectDownload*> (plugin);
-		IPeer2PeerDownload *ip2p =
-			qobject_cast<IPeer2PeerDownload*> (plugin);
+		IInfo *ii = dynamic_cast<IInfo*> (plugin);
+        IDownload *di = dynamic_cast<IDownload*> (plugin);
 		LeechCraft::TaskParameters tp = LeechCraft::FromCommonDialog | LeechCraft::Autostart;
         if (di && di->CouldDownload (name, tp))
         {
+			IDirectDownload *idd = dynamic_cast<IDirectDownload*> (plugin);
+			IPeer2PeerDownload *ip2p =
+				dynamic_cast<IPeer2PeerDownload*> (plugin);
+
 			if (idd)
 			{
 				DirectDownloadParams ddp = { name, where };
 				idd->AddJob (ddp, tp);
-				return;
 			}
 			else if (ip2p)
-			{
 				ip2p->AddJob (name, tp);
-				return;
-			}
             return;
         }
     }
@@ -204,6 +201,17 @@ void Main::Core::TryToAddJob (const QString& name, const QString& where)
 void Main::Core::Activated (const QModelIndex& index)
 {
 	ShowPlugin (index.row ());
+}
+
+void Main::Core::SetNewRow (const QModelIndex& index)
+{
+	MergeModel::const_iterator modIter = MergeModel_->GetModelForRow (index.row ());
+	QObject *plugin = Representation2Object_ [*modIter];
+
+	IEmbedModel *iee = dynamic_cast<IEmbedModel*> (plugin);
+	qDebug () << iee;
+	if (iee)
+		iee->ItemSelected (MergeModel_->mapToSource (index));
 }
 
 QPair<qint64, qint64> Main::Core::GetSpeeds () const

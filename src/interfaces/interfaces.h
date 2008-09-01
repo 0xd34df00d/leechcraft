@@ -15,6 +15,7 @@ class Proxy;
 class MainWindow;
 class QAbstractItemModel;
 class QAbstractItemDelegate;
+class QModelIndex;
 
 class ISettings
 {
@@ -131,6 +132,14 @@ public:
 	virtual ~IImportExport () {}
 };
 
+class IEmbedModel
+{
+public:
+	virtual void ItemSelected (const QModelIndex&) = 0;
+
+	virtual ~IEmbedModel () {}
+};
+
 
 Q_DECLARE_INTERFACE (ISettings, "org.Deviant.LeechCraft.ISettings/1.0");
 Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
@@ -143,6 +152,7 @@ Q_DECLARE_INTERFACE (IPeer2PeerDownload, "org.Deviant.LeechCraft.IPeer2PeerDownl
 Q_DECLARE_INTERFACE (IRemoteable, "org.Deviant.LeechCraft.IRemoteable/1.0");
 Q_DECLARE_INTERFACE (IJobHolder, "org.Deviant.LeechCraft.IJobHolder/1.0");
 Q_DECLARE_INTERFACE (IImportExport, "org.Deviant.LeechCraft.IImportExport/1.0");
+Q_DECLARE_INTERFACE (IEmbedModel, "org.Deviant.LeechCraft.IEmbedModel/1.0");
 
 #endif
 

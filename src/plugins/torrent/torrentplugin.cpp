@@ -1,4 +1,13 @@
-#include <QtGui/QtGui>
+#include <QMessageBox>
+#include <QTemporaryFile>
+#include <QtDebug>
+#include <QDir>
+#include <QMenu>
+#include <QAction>
+#include <QTabWidget>
+#include <QTimer>
+#include <QToolBar>
+#include <QSortFilterProxyModel>
 #include <plugininterface/proxy.h>
 #include <plugininterface/tagscompleter.h>
 #include <plugininterface/tagscompletionmodel.h>
@@ -12,181 +21,10 @@
 #include "xmlsettingsmanager.h"
 #include "piecesmodel.h"
 #include "peersmodel.h"
-#include "channelsfiltermodel.h"
 #include "torrentfilesmodel.h"
 #include "filesviewdelegate.h"
 #include "movetorrentfiles.h"
-
-void TorrentPlugin::SetupCore ()
-{
-    setupUi (this);
-    TorrentSelectionChanged_ = true;
-    LastPeersUpdate_ = new QTime;
-    LastPeersUpdate_->start ();
-    IsShown_ = false;
-    XmlSettingsDialog_ = new XmlSettingsDialog (this);
-    XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/torrentsettings.xml");
-    AddTorrentDialog_ = new AddTorrent (this);
-	Core::Instance ()->SetWindow (this);
-	connect (Core::Instance (),
-			SIGNAL (error (QString)),
-			this,
-			SLOT (showError (QString)));
-	connect (Core::Instance (),
-			SIGNAL (logMessage (const QString&)),
-			this,
-			SLOT (doLogMessage (const QString&)));
-	connect (Core::Instance (),
-			SIGNAL (torrentFinished (const QString&)),
-			this,
-			SIGNAL (downloadFinished (const QString&)));
-	connect (Core::Instance (),
-			SIGNAL (fileFinished (const QString&)),
-			this,
-			SIGNAL (fileDownloaded (const QString&)));
-	connect (Core::Instance (),
-			SIGNAL (dataChanged (const QModelIndex&,
-					const QModelIndex&)),
-			this,
-			SLOT (updateTorrentStats ()));
-	connect (Core::Instance (),
-			SIGNAL (addToHistory (const QString&, const QString&,
-					quint64, QDateTime)),
-			this,
-			SLOT (addToHistory (const QString&, const QString&,
-					quint64, QDateTime)));
-	connect (Stats_,
-			SIGNAL (currentChanged (int)),
-			this,
-			SLOT (updateTorrentStats ()));
-	connect (Core::Instance (),
-			SIGNAL (taskFinished (int)),
-			this,
-			SIGNAL (jobFinished (int)));
-	connect (Core::Instance (),
-			SIGNAL (taskRemoved (int)),
-			this,
-			SIGNAL (jobRemoved (int)));
-	connect (Stats_,
-			SIGNAL (currentChanged (int)),
-			this,
-			SLOT (tabChanged ()));
-
-    Core::Instance ()->DoDelayedInit ();
-}
-
-void TorrentPlugin::SetupTorrentView ()
-{
-    FilterModel_ = new ChannelsFilterModel;
-    FilterModel_->setSourceModel (Core::Instance ());
-    FilterModel_->setFilterKeyColumn (0);
-    TorrentView_->setModel (FilterModel_);
-	connect (Core::Instance (),
-			SIGNAL (dataChanged (const QModelIndex&,
-					const QModelIndex&)),
-			FilterModel_,
-			SLOT (invalidate ()));
-	connect (FixedStringSearch_,
-			SIGNAL (textChanged (const QString&)),
-			FilterModel_,
-			SLOT (setNormalMode ()));
-	connect (WildcardSearch_,
-			SIGNAL (textChanged (const QString&)),
-			FilterModel_,
-			SLOT (setNormalMode ()));
-	connect (RegexpSearch_,
-			SIGNAL (textChanged (const QString&)),
-			FilterModel_,
-			SLOT (setNormalMode ()));
-	connect (FixedStringSearch_,
-			SIGNAL (textChanged (const QString&)),
-			FilterModel_,
-			SLOT (setFilterFixedString (const QString&)));
-	connect (WildcardSearch_,
-			SIGNAL (textChanged (const QString&)),
-			FilterModel_,
-			SLOT (setFilterWildcard (const QString&)));
-	connect (RegexpSearch_,
-			SIGNAL (textChanged (const QString&)),
-			FilterModel_,
-			SLOT (setFilterRegExp (const QString&)));
-	connect (TagsSearch_,
-			SIGNAL (textChanged (const QString&)),
-			FilterModel_,
-			SLOT (setTagsMode ()));
-	connect (TagsSearch_,
-			SIGNAL (textChanged (const QString&)),
-			FilterModel_,
-			SLOT (setFilterFixedString (const QString&)));
-}
-
-void TorrentPlugin::SetupStuff ()
-{
-    TagsChangeCompleter_ = new TagsCompleter (TorrentTags_, this);
-    TagsSearchCompleter_ = new TagsCompleter (TagsSearch_, this);
-    TagsAddDiaCompleter_ = new TagsCompleter (AddTorrentDialog_->GetEdit (), this);
-    TagsChangeCompleter_->setModel (Core::Instance ()->GetTagsCompletionModel ());
-    TagsSearchCompleter_->setModel (Core::Instance ()->GetTagsCompletionModel ());
-    TagsAddDiaCompleter_->setModel (Core::Instance ()->GetTagsCompletionModel ());
-
-    PiecesView_->setModel (Core::Instance ()->GetPiecesModel ());
-
-    FilesView_->setModel (Core::Instance ()->GetTorrentFilesModel ());
-    FilesView_->setItemDelegate (new FilesViewDelegate (this));
-
-    QSortFilterProxyModel *peersSorter = new QSortFilterProxyModel (this);
-    peersSorter->setDynamicSortFilter (true);
-    peersSorter->setSourceModel (Core::Instance ()->GetPeersModel ());
-    peersSorter->setSortRole (PeersModel::SortRole);
-    PeersView_->setModel (peersSorter);
-
-    IgnoreTimer_ = true;
-    OverallDownloadRateController_->setValue (Core::Instance ()->GetOverallDownloadRate ());
-    OverallUploadRateController_->setValue (Core::Instance ()->GetOverallUploadRate ());
-    DownloadingTorrents_->setValue (Core::Instance ()->GetMaxDownloadingTorrents ());
-    UploadingTorrents_->setValue (Core::Instance ()->GetMaxUploadingTorrents ());
-    DesiredRating_->setValue (Core::Instance ()->GetDesiredRating ());
-    
-    OverallStatsUpdateTimer_ = new QTimer (this);
-    connect (OverallStatsUpdateTimer_, SIGNAL (timeout ()), this, SLOT (updateOverallStats ()));
-    OverallStatsUpdateTimer_->start (500);
-}
-
-void TorrentPlugin::SetupHeaders ()
-{
-    QFontMetrics fm = fontMetrics ();
-    QHeaderView *header = TorrentView_->header ();
-    header->resizeSection (Core::ColumnName, fm.width ("thisisanaveragewareztorrentname,right?maybeyes.torrent"));
-    header->resizeSection (Core::ColumnUploaded, fm.width ("_1234.0 KB_"));
-    header->resizeSection (Core::ColumnRating, fm.width ("_12.345_"));
-    header->resizeSection (Core::ColumnProgress, fm.width ("_100%_(999.0_MB_of_999.0_MB)__"));
-    header->resizeSection (Core::ColumnState, fm.width ("__Downloading__"));
-    header->resizeSection (Core::ColumnSP, fm.width ("_123/123_(456/456)__[789/789]"));
-    header->resizeSection (Core::ColumnUSpeed, fm.width ("_1234.0 KB/s_"));
-    header->resizeSection (Core::ColumnDSpeed, fm.width ("_1234.0 KB/s_"));
-    header->resizeSection (Core::ColumnRemaining, fm.width ("10d 00:00:00"));
-
-    header = PeersView_->header ();
-    header->resizeSection (0, fm.width ("000.000.000.000"));
-    header->resizeSection (1, fm.width ("_1234.0 KB/s_"));
-    header->resizeSection (2, fm.width ("_1234.0 KB/s_"));
-    header->resizeSection (3, fm.width ("_1234.0 KB_"));
-    header->resizeSection (4, fm.width ("_1234.0 KB_"));
-    header->resizeSection (5, fm.width ("LeechCraft rulez"));
-    header->resizeSection (6, fm.width ("888, 888 we don't have"));
-    header->resizeSection (7, fm.width ("000"));
-    header->resizeSection (8, fm.width ("00:00"));
-    header->resizeSection (9, fm.width ("00:00"));
-    header->resizeSection (10, fm.width ("99"));
-    header->resizeSection (11, fm.width ("99"));
-    header->resizeSection (12, fm.width ("Piece 100, block 50, 16384 of 16384 bytes"));
-
-    header = FilesView_->header ();
-    header->resizeSection (0, fm.width ("Thisisanaveragetorrentcontainedfilename,ormaybeevenbiggerthanthat!"));
-    header->resizeSection (1, fm.width ("_999.9 MB_"));
-    header->resizeSection (2, fm.width ("_8_"));
-    header->resizeSection (3, fm.width ("_0.0246_"));
-}
+#include "representationmodel.h"
 
 void TorrentPlugin::Init ()
 {
@@ -194,29 +32,25 @@ void TorrentPlugin::Init ()
 
     SetupCore ();
     SetupTorrentView ();
+	SetupActions ();
     SetupStuff ();
-    SetupHeaders ();
 
-    Plugins_->addAction (OpenTorrent_);
-    Plugins_->addAction (OpenMultipleTorrents_);
-    Plugins_->addAction (CreateTorrent_);
+    Plugins_->addAction (OpenTorrent_.get ());
+    Plugins_->addAction (OpenMultipleTorrents_.get ());
+    Plugins_->addAction (CreateTorrent_.get ());
     Plugins_->addSeparator ();
-    Plugins_->addAction (Preferences_);
+    Plugins_->addAction (Preferences_.get ());
 
     setActionsEnabled ();
 
-	connect (TorrentView_->selectionModel (),
-			SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
-			this,
-			SLOT (itemSelectionChanged (const QModelIndex&)));
-    LogShower_->setPlainText ("BitTorrent initialized");
+    Ui_.LogShower_->setPlainText ("BitTorrent initialized");
 
     QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Torrent");
     int max = settings.beginReadArray ("History");
     for (int i = 0; i < max; ++i)
     {
         settings.setArrayIndex (i);
-        QTreeWidgetItem *item = new QTreeWidgetItem (HistoryTree_);
+        QTreeWidgetItem *item = new QTreeWidgetItem (Ui_.HistoryTree_);
         item->setText (0, settings.value ("Name").toString ());
         item->setText (1, settings.value ("Where").toString ());
         item->setText (2, settings.value ("TorrentSize").toString ());
@@ -231,7 +65,7 @@ TorrentPlugin::~TorrentPlugin ()
 
 QString TorrentPlugin::GetName () const
 {
-    return windowTitle ();
+    return "BitTorrent";
 }
 
 QString TorrentPlugin::GetInfo () const
@@ -285,35 +119,20 @@ void TorrentPlugin::Release ()
     XmlSettingsManager::Instance ()->Release ();
     QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Torrent");
     settings.beginWriteArray ("History");
-    for (int i = 0; i < HistoryTree_->topLevelItemCount (); ++i)
+    for (int i = 0; i < Ui_.HistoryTree_->topLevelItemCount (); ++i)
     {
         settings.setArrayIndex (i);
-        settings.setValue ("Name", HistoryTree_->topLevelItem (i)->text (0));
-        settings.setValue ("Where", HistoryTree_->topLevelItem (i)->text (1));
-        settings.setValue ("TorrentSize", HistoryTree_->topLevelItem (i)->text (2));
-        settings.setValue ("Date", HistoryTree_->topLevelItem (i)->text (3));
+        settings.setValue ("Name", Ui_.HistoryTree_->topLevelItem (i)->text (0));
+        settings.setValue ("Where", Ui_.HistoryTree_->topLevelItem (i)->text (1));
+        settings.setValue ("TorrentSize", Ui_.HistoryTree_->topLevelItem (i)->text (2));
+        settings.setValue ("Date", Ui_.HistoryTree_->topLevelItem (i)->text (3));
     }
     settings.endArray ();
 }
 
 QIcon TorrentPlugin::GetIcon () const
 {
-    return windowIcon ();
-}
-
-void TorrentPlugin::SetParent (QWidget *w)
-{
-    setParent (w);
-}
-
-void TorrentPlugin::ShowWindow ()
-{
-    IsShown_ = 1 - IsShown_;
-    IsShown_ ? show () : hide ();
-}
-
-void TorrentPlugin::ShowBalloonTip ()
-{
+    return QIcon (":/resources/images/torrent_bittorrent.png"); 
 }
 
 qint64 TorrentPlugin::GetDownloadSpeed () const
@@ -443,17 +262,17 @@ void TorrentPlugin::DeleteAt (int pos)
 
 QAbstractItemModel* TorrentPlugin::GetRepresentation () const
 {
-    return Core::Instance ()->GetRepresentationModel ();
+    return FilterModel_.get ();
 }
 
 QWidget* TorrentPlugin::GetControls () const
 {
-	return new QWidget ();
+	return Toolbar_.get ();
 }
 
 QWidget* TorrentPlugin::GetAdditionalInfo () const
 {
-	return new QWidget ();
+	return TabWidget_.get ();
 }
 
 void TorrentPlugin::ImportSettings (const QByteArray& settings)
@@ -476,15 +295,21 @@ QByteArray TorrentPlugin::ExportData () const
 	return Core::Instance ()->ExportData ();
 }
 
-void TorrentPlugin::handleHidePlugins ()
+void TorrentPlugin::ItemSelected (const QModelIndex& item)
 {
-    IsShown_ = false;
-    hide ();
-}
+    setActionsEnabled ();
 
-void TorrentPlugin::closeEvent (QCloseEvent*)
-{
-    IsShown_ = false;
+	QModelIndex mapped = FilterModel_->mapToSource (item);
+	Core::Instance ()->SetCurrentTorrent (mapped.row ());
+	qDebug () << Core::Instance ()->GetTagsForIndex ();
+	Ui_.TorrentTags_->setText (Core::Instance ()->GetTagsForIndex ().join (" "));
+	if (mapped.isValid ())
+	{
+		TorrentSelectionChanged_ = true;
+	}
+
+    restartTimers ();
+    updateTorrentStats ();
 }
 
 void TorrentPlugin::on_OpenTorrent__triggered ()
@@ -534,60 +359,55 @@ void TorrentPlugin::on_OpenMultipleTorrents__triggered ()
 
 void TorrentPlugin::on_CreateTorrent__triggered ()
 {
-	std::auto_ptr<NewTorrentWizard> wizard (new NewTorrentWizard (this));
+	std::auto_ptr<NewTorrentWizard> wizard (new NewTorrentWizard ());
     if (wizard->exec () == QDialog::Accepted)
         Core::Instance ()->MakeTorrent (wizard->GetParams ());
     setActionsEnabled ();
 }
 
-void TorrentPlugin::on_RemoveTorrent__triggered ()
+void TorrentPlugin::on_RemoveTorrent__triggered (int row)
 {
-    if (QMessageBox::question (this, tr ("Question"), tr ("Do you really want to delete the torrent?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-        return;
-
-    int row = TorrentView_->currentIndex ().row ();
-    if (row == -1)
+    if (QMessageBox::question (0, tr ("Question"), tr ("Do you really want to delete the torrent?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
         return;
 
     Core::Instance ()->RemoveTorrent (row);
     TorrentSelectionChanged_ = true;
-    updateTorrentStats ();
     setActionsEnabled ();
 }
 
-void TorrentPlugin::on_Resume__triggered ()
+void TorrentPlugin::on_Resume__triggered (int row)
 {
-    Core::Instance ()->ResumeTorrent (TorrentView_->currentIndex ().row ());
+    Core::Instance ()->ResumeTorrent (row);
     setActionsEnabled ();
 }
 
-void TorrentPlugin::on_Stop__triggered ()
+void TorrentPlugin::on_Stop__triggered (int row)
 {
-    Core::Instance ()->PauseTorrent (TorrentView_->currentIndex ().row ());
+    Core::Instance ()->PauseTorrent (row);
     setActionsEnabled ();
 }
 
-void TorrentPlugin::on_ForceReannounce__triggered ()
+void TorrentPlugin::on_ForceReannounce__triggered (int row)
 {
-    Core::Instance ()->ForceReannounce (TorrentView_->currentIndex ().row ());
+    Core::Instance ()->ForceReannounce (row);
 }
 
-void TorrentPlugin::on_ChangeTrackers__triggered ()
+void TorrentPlugin::on_ChangeTrackers__triggered (int row)
 {
-    QStringList trackers = Core::Instance ()->GetTrackers (TorrentView_->currentIndex ().row ());
+    QStringList trackers = Core::Instance ()->GetTrackers (row);
     TrackersChanger changer;
     changer.SetTrackers (trackers);
     if (changer.exec () == QDialog::Accepted)
     {
         QStringList newTrackers = changer.GetTrackers ();
-        Core::Instance ()->SetTrackers (TorrentView_->currentIndex ().row (), newTrackers);
+        Core::Instance ()->SetTrackers (row, newTrackers);
     }
 }
 
 void TorrentPlugin::on_Preferences__triggered ()
 {
     XmlSettingsDialog_->show ();
-    XmlSettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
+    XmlSettingsDialog_->setWindowTitle ("BitTorrent" + tr (": Settings"));
 }
 
 void TorrentPlugin::on_OverallDownloadRateController__valueChanged (int val)
@@ -607,29 +427,17 @@ void TorrentPlugin::on_DesiredRating__valueChanged (double val)
 
 void TorrentPlugin::on_TorrentDownloadRateController__valueChanged (int val)
 {
-    QModelIndex index = TorrentView_->currentIndex ();
-    if (!index.isValid ())
-        return;
-
-    Core::Instance ()->SetTorrentDownloadRate (val, index.row ());
+    Core::Instance ()->SetTorrentDownloadRate (val);
 }
 
 void TorrentPlugin::on_TorrentUploadRateController__valueChanged (int val)
 {
-    QModelIndex index = TorrentView_->currentIndex ();
-    if (!index.isValid ())
-        return;
-
-    Core::Instance ()->SetTorrentUploadRate (val, index.row ());
+    Core::Instance ()->SetTorrentUploadRate (val);
 }
 
 void TorrentPlugin::on_TorrentDesiredRating__valueChanged (double val)
 {
-    QModelIndex index = TorrentView_->currentIndex ();
-    if (!index.isValid ())
-        return;
-
-    Core::Instance ()->SetTorrentDesiredRating (val, index.row ());
+    Core::Instance ()->SetTorrentDesiredRating (val);
 }
 
 void TorrentPlugin::on_CaseSensitiveSearch__stateChanged (int state)
@@ -649,62 +457,37 @@ void TorrentPlugin::on_UploadingTorrents__valueChanged (int newValue)
 
 void TorrentPlugin::on_TorrentTags__editingFinished ()
 {
-    QModelIndex i = FilterModel_->mapToSource (TorrentView_->selectionModel ()->currentIndex ());
-    if (!i.isValid ())
-        return;
-
-    Core::Instance ()->UpdateTags (i.row (), TorrentTags_->text ().split (' ', QString::SkipEmptyParts));
+    Core::Instance ()->UpdateTags (Ui_.TorrentTags_->text ().split (' ', QString::SkipEmptyParts));
 }
 
-void TorrentPlugin::on_MoveFiles__triggered ()
+void TorrentPlugin::on_MoveFiles__triggered (int)
 {
-    QModelIndex i = FilterModel_->mapToSource (TorrentView_->selectionModel ()->currentIndex ());
-    if (!i.isValid ())
-        return;
-
-    QString oldDir = Core::Instance ()->GetTorrentDirectory (i.row ());
-    MoveTorrentFiles mtf (oldDir, this);
+    QString oldDir = Core::Instance ()->GetTorrentDirectory ();
+    MoveTorrentFiles mtf (oldDir);
     if (mtf.exec () == QDialog::Rejected)
         return;
     QString newDir = mtf.GetNewLocation ();
     if (oldDir == newDir)
         return;
 
-    if (Core::Instance ()->MoveTorrentFiles (i.row (), newDir))
-        QMessageBox::information (this, tr ("Information"),
+    if (Core::Instance ()->MoveTorrentFiles (newDir))
+        QMessageBox::information (0, tr ("Information"),
                 tr ("Started moving torrent's files from %1 to %2").
                 arg (oldDir).
                 arg (newDir));
     else
-        QMessageBox::warning (this, tr ("Warning"),
+        QMessageBox::warning (0, tr ("Warning"),
                 tr ("Failed to move torrent's files from %1 to %2").
                 arg (oldDir).
                 arg (newDir));
 }
 
-void TorrentPlugin::itemSelectionChanged (const QModelIndex& index)
-{
-    setActionsEnabled ();
-
-	if (index.isValid ())
-	{
-		Core::Instance ()->SetCurrentTorrent (FilterModel_->mapToSource (index).row ());
-		TorrentTags_->setText (Core::Instance ()->GetTagsForIndex (FilterModel_->mapToSource (index).row ()).join (" "));
-		TorrentSelectionChanged_ = true;
-	}
-
-    restartTimers ();
-    updateTorrentStats ();
-}
-
-void TorrentPlugin::tabChanged ()
-{
-	updateTorrentStats ();
-}
-
 void TorrentPlugin::setActionsEnabled ()
 {
-	bool isValid = TorrentView_->selectionModel ()->currentIndex ().isValid ();
+	int torrent = Core::Instance ()->GetCurrentTorrent ();
+	bool isValid = false;
+	if (torrent != -1)
+		isValid = Core::Instance ()->CheckValidity (torrent);
     RemoveTorrent_->setEnabled (isValid);
     Stop_->setEnabled (isValid);
     Resume_->setEnabled (isValid);
@@ -715,7 +498,7 @@ void TorrentPlugin::setActionsEnabled ()
 void TorrentPlugin::showError (QString e)
 {
     qWarning () << e;
-    QMessageBox::warning (this, tr ("Error!"), e);
+    QMessageBox::warning (0, tr ("Error!"), e);
 }
 
 void TorrentPlugin::restartTimers ()
@@ -725,7 +508,7 @@ void TorrentPlugin::restartTimers ()
 
 void TorrentPlugin::updateTorrentStats ()
 {
-	switch (Stats_->currentIndex ())
+	switch (TabWidget_->currentIndex ())
 	{
 		case 0:
 			break;
@@ -754,32 +537,32 @@ void TorrentPlugin::updateTorrentStats ()
 void TorrentPlugin::updateOverallStats ()
 {
     OverallStats stats = Core::Instance ()->GetOverallStats ();
-    LabelTotalDownloadRate_->setText (Proxy::Instance ()->MakePrettySize (static_cast<int> (stats.DownloadRate_)) + tr ("/s"));
-    LabelTotalUploadRate_->setText (Proxy::Instance ()->MakePrettySize (static_cast<int> (stats.UploadRate_)) + tr ("/s"));
-    LabelTotalDownloaded_->setText (Proxy::Instance ()->MakePrettySize (stats.SessionDownload_));
-    LabelTotalUploaded_->setText (Proxy::Instance ()->MakePrettySize (stats.SessionUpload_));
-    LabelTotalConnections_->setText (QString::number (stats.NumConnections_));
-    LabelUploadConnections_->setText (QString::number (stats.NumUploads_));
-    LabelTotalPeers_->setText (QString::number (stats.NumPeers_));
-    LabelTotalDHTNodes_->setText (QString::number (stats.NumDHTNodes_));
-    LabelDHTTorrents_->setText (QString::number (stats.NumDHTTorrents_));
-    LabelListenPort_->setText (QString::number (stats.ListenPort_));
-    LabelSessionRating_->setText (QString::number (stats.SessionUpload_ / static_cast<double> (stats.SessionDownload_), 'g', 4));
+    Ui_.LabelTotalDownloadRate_->setText (Proxy::Instance ()->MakePrettySize (static_cast<int> (stats.DownloadRate_)) + tr ("/s"));
+    Ui_.LabelTotalUploadRate_->setText (Proxy::Instance ()->MakePrettySize (static_cast<int> (stats.UploadRate_)) + tr ("/s"));
+    Ui_.LabelTotalDownloaded_->setText (Proxy::Instance ()->MakePrettySize (stats.SessionDownload_));
+    Ui_.LabelTotalUploaded_->setText (Proxy::Instance ()->MakePrettySize (stats.SessionUpload_));
+    Ui_.LabelTotalConnections_->setText (QString::number (stats.NumConnections_));
+    Ui_.LabelUploadConnections_->setText (QString::number (stats.NumUploads_));
+    Ui_.LabelTotalPeers_->setText (QString::number (stats.NumPeers_));
+    Ui_.LabelTotalDHTNodes_->setText (QString::number (stats.NumDHTNodes_));
+    Ui_.LabelDHTTorrents_->setText (QString::number (stats.NumDHTTorrents_));
+    Ui_.LabelListenPort_->setText (QString::number (stats.ListenPort_));
+    Ui_.LabelSessionRating_->setText (QString::number (stats.SessionUpload_ / static_cast<double> (stats.SessionDownload_), 'g', 4));
 }
 
 void TorrentPlugin::doLogMessage (const QString& msg)
 {
-    LogShower_->append (msg.trimmed ());
+    Ui_.LogShower_->append (msg.trimmed ());
 }
 
 void TorrentPlugin::addToHistory (const QString& name, const QString& where, quint64 size, QDateTime when)
 {
-    QList<QTreeWidgetItem*> items = HistoryTree_->findItems (name, Qt::MatchExactly);
+    QList<QTreeWidgetItem*> items = Ui_.HistoryTree_->findItems (name, Qt::MatchExactly);
     for (int i = 0; i < items.size (); ++i)
         if (items.at (i)->text (1) == where)
             return;
 
-    QTreeWidgetItem *item = new QTreeWidgetItem (HistoryTree_);
+    QTreeWidgetItem *item = new QTreeWidgetItem (Ui_.HistoryTree_);
     item->setText (0, name);
     item->setText (1, where);
     item->setText (2, Proxy::Instance ()->MakePrettySize (size));
@@ -788,107 +571,251 @@ void TorrentPlugin::addToHistory (const QString& name, const QString& where, qui
 
 void TorrentPlugin::UpdateDashboard ()
 {
-    QModelIndex index = TorrentView_->currentIndex ();
-    if (index.isValid ())
-    {
-        int row = FilterModel_->mapToSource (index).row ();
-        TorrentDownloadRateController_->setValue (Core::Instance ()->GetTorrentDownloadRate (row));
-        TorrentUploadRateController_->setValue (Core::Instance ()->GetTorrentUploadRate (row));
-        TorrentDesiredRating_->setValue (Core::Instance ()->GetTorrentDesiredRating (row));
-    }
+	Ui_.TorrentDownloadRateController_->setValue (Core::Instance ()->GetTorrentDownloadRate ());
+	Ui_.TorrentUploadRateController_->setValue (Core::Instance ()->GetTorrentUploadRate ());
+	Ui_.TorrentDesiredRating_->setValue (Core::Instance ()->GetTorrentDesiredRating ());
 }
 
 void TorrentPlugin::UpdateTorrentPage ()
 {
-    QModelIndex index = TorrentView_->currentIndex ();
-    if (!index.isValid ())
-    {
-        LabelState_->setText ("<>");
-        LabelTracker_->setText ("<>");
-        LabelProgress_->setText ("<>");
-        LabelDHTNodesCount_->setText ("<>");
-        LabelDownloaded_->setText ("<>");
-        LabelUploaded_->setText ("<>");
-        LabelTotalSize_->setText ("<>");
-        LabelFailed_->setText ("<>");
-        LabelConnectedSeeds_->setText ("<>");
-        LabelConnectedPeers_->setText ("<>");
-        LabelNextAnnounce_->setText ("<>");
-        LabelAnnounceInterval_->setText ("<>");
-        LabelTotalPieces_->setText ("<>");
-        LabelDownloadedPieces_->setText ("<>");
-        LabelPieceSize_->setText ("<>");
-        LabelDownloadRate_->setText ("<>");
-        LabelUploadRate_->setText ("<>");
-        LabelTorrentRating_->setText ("<>");
-        LabelDistributedCopies_->setText ("<>");
-        PiecesWidget_->setPieceMap (libtorrent::bitfield ());
-    }
-    else
-    {
-        TorrentInfo i = Core::Instance ()->GetTorrentStats (FilterModel_->mapToSource (index).row ());
-        LabelState_->setText (i.State_);
-        LabelTracker_->setText (i.Tracker_);
-        LabelProgress_->setText (QString::number (i.Progress_ * 100) + "%");
-        LabelDHTNodesCount_->setText (QString::number (i.DHTNodesCount_));
-        LabelDownloaded_->setText (Proxy::Instance ()->MakePrettySize (i.Downloaded_));
-        LabelUploaded_->setText (Proxy::Instance ()->MakePrettySize (i.Uploaded_));
-        LabelTotalSize_->setText (Proxy::Instance ()->MakePrettySize (i.TotalSize_));
-        LabelFailed_->setText (Proxy::Instance ()->MakePrettySize (i.FailedSize_));
-        LabelConnectedPeers_->setText (QString::number (i.ConnectedPeers_));
-        LabelConnectedSeeds_->setText (QString::number (i.ConnectedSeeds_));
-        LabelNextAnnounce_->setText (i.NextAnnounce_.toString ());
-        LabelAnnounceInterval_->setText (i.AnnounceInterval_.toString ());
-        LabelTotalPieces_->setText (QString::number (i.TotalPieces_));
-        LabelDownloadedPieces_->setText (QString::number (i.DownloadedPieces_));
-        LabelPieceSize_->setText (Proxy::Instance ()->MakePrettySize (i.PieceSize_));
-        LabelDownloadRate_->setText (Proxy::Instance ()->MakePrettySize (i.DownloadRate_) + tr ("/s"));
-        LabelUploadRate_->setText (Proxy::Instance ()->MakePrettySize (i.UploadRate_) + tr ("/s"));
-        LabelTorrentRating_->setText (QString::number (i.Uploaded_ / static_cast<double> (i.Downloaded_), 'g', 4));
-        LabelDistributedCopies_->setText (QString::number (i.DistributedCopies_));
-        PiecesWidget_->setPieceMap (i.Pieces_);
-    }
+	TorrentInfo i = Core::Instance ()->GetTorrentStats ();
+	Ui_.LabelState_->setText (i.State_);
+	Ui_.LabelTracker_->setText (i.Tracker_);
+	Ui_.LabelProgress_->setText (QString::number (i.Progress_ * 100) + "%");
+	Ui_.LabelDHTNodesCount_->setText (QString::number (i.DHTNodesCount_));
+	Ui_.LabelDownloaded_->setText (Proxy::Instance ()->MakePrettySize (i.Downloaded_));
+	Ui_.LabelUploaded_->setText (Proxy::Instance ()->MakePrettySize (i.Uploaded_));
+	Ui_.LabelTotalSize_->setText (Proxy::Instance ()->MakePrettySize (i.TotalSize_));
+	Ui_.LabelFailed_->setText (Proxy::Instance ()->MakePrettySize (i.FailedSize_));
+	Ui_.LabelConnectedPeers_->setText (QString::number (i.ConnectedPeers_));
+	Ui_.LabelConnectedSeeds_->setText (QString::number (i.ConnectedSeeds_));
+	Ui_.LabelNextAnnounce_->setText (i.NextAnnounce_.toString ());
+	Ui_.LabelAnnounceInterval_->setText (i.AnnounceInterval_.toString ());
+	Ui_.LabelTotalPieces_->setText (QString::number (i.TotalPieces_));
+	Ui_.LabelDownloadedPieces_->setText (QString::number (i.DownloadedPieces_));
+	Ui_.LabelPieceSize_->setText (Proxy::Instance ()->MakePrettySize (i.PieceSize_));
+	Ui_.LabelDownloadRate_->setText (Proxy::Instance ()->MakePrettySize (i.DownloadRate_) + tr ("/s"));
+	Ui_.LabelUploadRate_->setText (Proxy::Instance ()->MakePrettySize (i.UploadRate_) + tr ("/s"));
+	Ui_.LabelTorrentRating_->setText (QString::number (i.Uploaded_ / static_cast<double> (i.Downloaded_), 'g', 4));
+	Ui_.LabelDistributedCopies_->setText (QString::number (i.DistributedCopies_));
+	Ui_.PiecesWidget_->setPieceMap (i.Pieces_);
 }
 
 void TorrentPlugin::UpdateFilesPage ()
 {
-    QModelIndex index = FilterModel_->mapToSource (TorrentView_->currentIndex ());
-    if (!index.isValid ())
-    {
-        Core::Instance ()->ClearFiles ();
-        return;
-    }
-
-    Core::Instance ()->SetCurrentTorrent (index.row ());
-
     if (TorrentSelectionChanged_)
     {
-        Core::Instance ()->ResetFiles (index.row ());
-        FilesView_->expandAll ();
+        Core::Instance ()->ResetFiles ();
+        Ui_.FilesView_->expandAll ();
     }
     else
 	{
-        Core::Instance ()->UpdateFiles (index.row ());
-		FilesView_->expandAll ();
+        Core::Instance ()->UpdateFiles ();
+		Ui_.FilesView_->expandAll ();
 	}
 }
 
 void TorrentPlugin::UpdatePeersPage ()
 {
-    QModelIndex index = FilterModel_->mapToSource (TorrentView_->currentIndex ());
-    if (!index.isValid ())
-        Core::Instance ()->ClearPeers ();
-    else
-        Core::Instance ()->UpdatePeers (index.row ());
+	Core::Instance ()->UpdatePeers ();
 }
 
 void TorrentPlugin::UpdatePiecesPage ()
 {
-    QModelIndex index = FilterModel_->mapToSource (TorrentView_->currentIndex ());
-    if (!index.isValid ())
-        Core::Instance ()->ClearPieces ();
-    else
-        Core::Instance ()->UpdatePieces (index.row ());
+	Core::Instance ()->UpdatePieces ();
+}
+
+void TorrentPlugin::SetupTabWidget ()
+{
+	TabWidget_.reset (new QTabWidget ());
+	Ui_.setupUi (TabWidget_.get ());
+}
+
+void TorrentPlugin::SetupCore ()
+{
+	SetupTabWidget ();
+    TorrentSelectionChanged_ = true;
+    LastPeersUpdate_.reset (new QTime);
+    LastPeersUpdate_->start ();
+    XmlSettingsDialog_.reset (new XmlSettingsDialog ());
+    XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/torrentsettings.xml");
+    AddTorrentDialog_.reset (new AddTorrent ());
+	connect (Core::Instance (),
+			SIGNAL (error (QString)),
+			this,
+			SLOT (showError (QString)));
+	connect (Core::Instance (),
+			SIGNAL (logMessage (const QString&)),
+			this,
+			SLOT (doLogMessage (const QString&)));
+	connect (Core::Instance (),
+			SIGNAL (torrentFinished (const QString&)),
+			this,
+			SIGNAL (downloadFinished (const QString&)));
+	connect (Core::Instance (),
+			SIGNAL (fileFinished (const QString&)),
+			this,
+			SIGNAL (fileDownloaded (const QString&)));
+	connect (Core::Instance (),
+			SIGNAL (dataChanged (const QModelIndex&,
+					const QModelIndex&)),
+			this,
+			SLOT (updateTorrentStats ()));
+	connect (Core::Instance (),
+			SIGNAL (addToHistory (const QString&, const QString&,
+					quint64, QDateTime)),
+			this,
+			SLOT (addToHistory (const QString&, const QString&,
+					quint64, QDateTime)));
+	connect (TabWidget_.get (),
+			SIGNAL (currentChanged (int)),
+			this,
+			SLOT (updateTorrentStats ()));
+	connect (Core::Instance (),
+			SIGNAL (taskFinished (int)),
+			this,
+			SIGNAL (jobFinished (int)));
+	connect (Core::Instance (),
+			SIGNAL (taskRemoved (int)),
+			this,
+			SIGNAL (jobRemoved (int)));
+
+    Core::Instance ()->DoDelayedInit ();
+}
+
+void TorrentPlugin::SetupTorrentView ()
+{
+    FilterModel_.reset (new RepresentationModel);
+    FilterModel_->setSourceModel (Core::Instance ());
+	connect (Core::Instance (),
+			SIGNAL (dataChanged (const QModelIndex&,
+					const QModelIndex&)),
+			FilterModel_.get (),
+			SLOT (invalidate ()));
+}
+
+void TorrentPlugin::SetupStuff ()
+{
+    TagsChangeCompleter_.reset (new TagsCompleter (Ui_.TorrentTags_));
+    TagsAddDiaCompleter_.reset (new TagsCompleter (AddTorrentDialog_->GetEdit ()));
+    TagsChangeCompleter_->setModel (Core::Instance ()->GetTagsCompletionModel ());
+    TagsAddDiaCompleter_->setModel (Core::Instance ()->GetTagsCompletionModel ());
+
+    Ui_.PiecesView_->setModel (Core::Instance ()->GetPiecesModel ());
+
+    Ui_.FilesView_->setModel (Core::Instance ()->GetTorrentFilesModel ());
+    Ui_.FilesView_->setItemDelegate (new FilesViewDelegate (this));
+
+    QSortFilterProxyModel *peersSorter = new QSortFilterProxyModel (this);
+    peersSorter->setDynamicSortFilter (true);
+    peersSorter->setSourceModel (Core::Instance ()->GetPeersModel ());
+    peersSorter->setSortRole (PeersModel::SortRole);
+    Ui_.PeersView_->setModel (peersSorter);
+
+    IgnoreTimer_ = true;
+    Ui_.OverallDownloadRateController_->setValue (Core::Instance ()->GetOverallDownloadRate ());
+    Ui_.OverallUploadRateController_->setValue (Core::Instance ()->GetOverallUploadRate ());
+    Ui_.DownloadingTorrents_->setValue (Core::Instance ()->GetMaxDownloadingTorrents ());
+    Ui_.UploadingTorrents_->setValue (Core::Instance ()->GetMaxUploadingTorrents ());
+    Ui_.DesiredRating_->setValue (Core::Instance ()->GetDesiredRating ());
+    
+    OverallStatsUpdateTimer_.reset (new QTimer (this));
+    connect (OverallStatsUpdateTimer_.get (), SIGNAL (timeout ()), this, SLOT (updateOverallStats ()));
+    OverallStatsUpdateTimer_->start (500);
+}
+
+void TorrentPlugin::SetupActions ()
+{
+	Toolbar_.reset (new QToolBar ());
+	Toolbar_->setMovable (false);
+	Toolbar_->setFloatable (false);
+
+	OpenTorrent_.reset (new QAction (QIcon (":/resources/images/torrent_addjob.png"),
+				tr ("Open torrent..."),
+				Toolbar_.get ()));
+	OpenTorrent_->setShortcut (Qt::Key_Insert);
+	connect (OpenTorrent_.get (),
+			SIGNAL (triggered ()),
+			this,
+			SLOT (on_OpenTorrent__triggered ()));
+
+	Preferences_.reset (new QAction (QIcon (":/resources/images/torrent_preferences.png"),
+				tr ("Settings..."),
+				Toolbar_.get ()));
+	Preferences_->setShortcut (tr ("Ctrl+Shift+P"));
+	connect (Preferences_.get (),
+			SIGNAL (triggered ()),
+			this,
+			SLOT (on_Preferences__triggered ()));
+
+	CreateTorrent_.reset (new QAction (QIcon (":/resources/images/torrent_new.png"),
+				tr ("Create torrent..."),
+				Toolbar_.get ()));
+	CreateTorrent_->setShortcut (tr ("N"));
+	connect (CreateTorrent_.get (),
+			SIGNAL (triggered ()),
+			this,
+			SLOT (on_CreateTorrent__triggered ()));
+
+	OpenMultipleTorrents_.reset (new QAction (tr ("Open multiple torrents..."),
+			Toolbar_.get ()));
+	connect (OpenMultipleTorrents_.get (),
+			SIGNAL (triggered ()),
+			this,
+			SLOT (on_OpenMultipleTorrents__triggered ()));
+
+	RemoveTorrent_.reset (new QAction (QIcon (":/resources/images/torrent_deletejob.png"),
+				tr ("Remove"),
+				Toolbar_.get ()));
+	RemoveTorrent_->setShortcut (tr ("Del"));
+	RemoveTorrent_->setProperty ("Slot", "on_RemoveTorrent__triggered");
+	RemoveTorrent_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
+	
+	Resume_.reset (new QAction (QIcon (":/resources/images/torrent_startjob.png"),
+				tr ("Resume"),
+				Toolbar_.get ()));
+	Resume_->setShortcut (tr ("R"));
+	Resume_->setProperty ("Slot", "on_Resume__triggered");
+	Resume_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
+
+	Stop_.reset (new QAction (QIcon (":/resources/images/torrent_stopjob.png"),
+				tr ("Pause"),
+				Toolbar_.get ()));
+	Stop_->setShortcut (tr ("S"));
+	Stop_->setProperty ("Slot", "on_Stop__triggered");
+	Stop_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
+
+	ForceReannounce_.reset (new QAction (QIcon (":/resources/images/torrent_reannounce.png"),
+				tr ("Reannounce"),
+				Toolbar_.get ()));
+	ForceReannounce_->setShortcut (tr ("F"));
+	ForceReannounce_->setProperty ("Slot", "on_ForceReannounce__triggered");
+	ForceReannounce_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
+
+	ChangeTrackers_.reset (new QAction (tr ("Change trackers..."),
+				Toolbar_.get ()));
+	ChangeTrackers_->setShortcut (tr ("C"));
+	ChangeTrackers_->setProperty ("Slot", "on_ChangeTrackers__triggered");
+	ChangeTrackers_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
+
+	MoveFiles_.reset (new QAction (tr ("Move files..."),
+				Toolbar_.get ()));
+	MoveFiles_->setShortcut (tr ("M"));
+	MoveFiles_->setProperty ("Slot", "on_MoveFiles__triggered");
+	MoveFiles_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
+
+	Toolbar_->addAction (CreateTorrent_.get ());
+	Toolbar_->addAction (OpenTorrent_.get ());
+	Toolbar_->addAction (OpenMultipleTorrents_.get ());
+	Toolbar_->addSeparator ();
+	Toolbar_->addAction (RemoveTorrent_.get ());
+	Toolbar_->addAction (Resume_.get ());
+	Toolbar_->addAction (Stop_.get ());
+	Toolbar_->addAction (ForceReannounce_.get ());
+	Toolbar_->addAction (ChangeTrackers_.get ());
+	Toolbar_->addAction (MoveFiles_.get ());
+	Toolbar_->addSeparator ();
+	Toolbar_->addAction (Preferences_.get ());
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_torrent, TorrentPlugin);

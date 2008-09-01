@@ -58,13 +58,7 @@ Core::Core ()
 , PiecesModel_ (new PiecesModel ())
 , TagsCompletionModel_ (new TagsCompletionModel)
 , TorrentFilesModel_ (new TorrentFilesModel (false))
-, RepresentationModel_ (new RepresentationModel ())
 {
-	RepresentationModel_->setSourceModel (this);
-	connect (this,
-			SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
-			RepresentationModel_.get (),
-			SLOT (invalidate ()));
 	for (quint16 i = 0; i < 65535; ++i)
 		IDPool_.push_back (i);
 }
@@ -151,11 +145,6 @@ void Core::DoDelayedInit ()
     ManipulateSettings ();
 }
 
-void Core::SetWindow (TorrentPlugin *tp)
-{
-	TorrentPlugin_ = tp;
-}
-
 void Core::Release ()
 {
     writeSettings ();
@@ -169,7 +158,6 @@ void Core::Release ()
 	PeersModel_.reset ();
 	TagsCompletionModel_.reset ();
 	TorrentFilesModel_.reset ();
-	RepresentationModel_.reset ();
 
 	QObjectList kids = children ();
 	for (int i = 0; i < kids.size (); ++i)
@@ -193,13 +181,16 @@ void Core::ClearPieces ()
     PiecesModel_->Clear ();
 }
 
-void Core::UpdatePieces (int torrent)
+void Core::UpdatePieces ()
 {
-    if (!CheckValidity (torrent))
+    if (!CheckValidity (CurrentTorrent_))
+	{
+		ClearPieces ();
         return;
+	}
 
     std::vector<libtorrent::partial_piece_info> queue;
-    Handles_.at (torrent).Handle_.get_download_queue (queue);
+    Handles_.at (CurrentTorrent_).Handle_.get_download_queue (queue);
     PiecesModel_->Update (queue);
 }
 
@@ -213,12 +204,15 @@ void Core::ClearPeers ()
     PeersModel_->Clear ();
 }
 
-void Core::UpdatePeers (int torrent)
+void Core::UpdatePeers ()
 {
-    if (!CheckValidity (torrent))
+    if (!CheckValidity (CurrentTorrent_))
+	{
+		ClearPeers ();
         return;
+	}
 
-    PeersModel_->Update (GetPeers (torrent), torrent);
+    PeersModel_->Update (GetPeers (), CurrentTorrent_);
 }
 
 TorrentFilesModel* Core::GetTorrentFilesModel ()
@@ -231,20 +225,26 @@ void Core::ClearFiles ()
 	TorrentFilesModel_->Clear ();
 }
 
-void Core::UpdateFiles (int torrent)
+void Core::UpdateFiles ()
 {
-	if (!CheckValidity (torrent))
+	if (!CheckValidity (CurrentTorrent_))
+	{
+		ClearFiles ();
 		return;
+	}
 
-	TorrentFilesModel_->UpdateFiles (GetTorrentFiles (torrent));
+	TorrentFilesModel_->UpdateFiles (GetTorrentFiles ());
 }
 
-void Core::ResetFiles (int torrent)
+void Core::ResetFiles ()
 {
-	if (!CheckValidity (torrent))
+	if (!CheckValidity (CurrentTorrent_))
+	{
+		ClearFiles ();
 		return;
+	}
 
-	TorrentFilesModel_->ResetFiles (GetTorrentFiles (torrent));
+	TorrentFilesModel_->ResetFiles (GetTorrentFiles ());
 }
 
 int Core::columnCount (const QModelIndex&) const
@@ -403,12 +403,12 @@ bool Core::IsValidTorrent (const QByteArray& torrentData) const
     return true;
 }
 
-TorrentInfo Core::GetTorrentStats (int row) const
+TorrentInfo Core::GetTorrentStats () const
 {
-    if (!CheckValidity (row))
+    if (!CheckValidity (CurrentTorrent_))
         return TorrentInfo ();
 
-    libtorrent::torrent_handle handle = Handles_.at (row).Handle_;
+    libtorrent::torrent_handle handle = Handles_.at (CurrentTorrent_).Handle_;
     libtorrent::torrent_status status = handle.status ();
     libtorrent::torrent_info info = handle.get_torrent_info ();
 
@@ -416,7 +416,7 @@ TorrentInfo Core::GetTorrentStats (int row) const
     result.Tracker_ = QString::fromStdString (status.current_tracker);
     result.State_ = status.paused ? tr ("Idle") : GetStringForState (status.state);
     result.Downloaded_ = status.total_done;
-    result.Uploaded_ = status.total_payload_upload + Handles_.at (row).UploadedBefore_;
+    result.Uploaded_ = status.total_payload_upload + Handles_.at (CurrentTorrent_).UploadedBefore_;
     result.TotalSize_ = status.total_wanted;
     result.FailedSize_ = status.total_failed_bytes;
     result.DHTNodesCount_ = info.nodes ().size ();
@@ -439,11 +439,11 @@ TorrentInfo Core::GetTorrentStats (int row) const
     return result;
 }
 
-libtorrent::bitfield Core::GetLocalPieces (int row) const
+libtorrent::bitfield Core::GetLocalPieces () const
 {
-    if (!CheckValidity (row))
+    if (!CheckValidity (CurrentTorrent_))
         return 0;
-    return Handles_.at (row).Handle_.status ().pieces;
+    return Handles_.at (CurrentTorrent_).Handle_.status ().pieces;
 }
 
 OverallStats Core::GetOverallStats () const
@@ -464,13 +464,13 @@ OverallStats Core::GetOverallStats () const
     return result;
 }
 
-QList<FileInfo> Core::GetTorrentFiles (int row) const
+QList<FileInfo> Core::GetTorrentFiles () const
 {
-    if (!CheckValidity (row))
+    if (!CheckValidity (CurrentTorrent_))
         return QList<FileInfo> ();
 
     QList<FileInfo> result;
-    libtorrent::torrent_handle handle = Handles_.at (row).Handle_;
+    libtorrent::torrent_handle handle = Handles_.at (CurrentTorrent_).Handle_;
     libtorrent::torrent_info info = handle.get_torrent_info ();
 	std::vector<libtorrent::size_type> prbytes;
     handle.file_progress (prbytes);
@@ -479,7 +479,7 @@ QList<FileInfo> Core::GetTorrentFiles (int row) const
         FileInfo fi;
         fi.Path_ = i->path;
         fi.Size_ = i->size;
-        fi.Priority_ = Handles_.at (row).FilePriorities_.at (i - info.begin_files ());
+        fi.Priority_ = Handles_.at (CurrentTorrent_).FilePriorities_.at (i - info.begin_files ());
         fi.Progress_ = static_cast<float> (prbytes.at (i - info.begin_files ())) / 
 			static_cast<float> (fi.Size_);
         result << fi;
@@ -488,14 +488,14 @@ QList<FileInfo> Core::GetTorrentFiles (int row) const
     return result;
 }
 
-QList<PeerInfo> Core::GetPeers (int row) const
+QList<PeerInfo> Core::GetPeers () const
 {
-    if (!CheckValidity (row))
+    if (!CheckValidity (CurrentTorrent_))
         return QList<PeerInfo> ();
 
     QList<PeerInfo> result;
     std::vector<libtorrent::peer_info> peerInfos;
-    Handles_.at (row).Handle_.get_peer_info (peerInfos);
+    Handles_.at (CurrentTorrent_).Handle_.get_peer_info (peerInfos);
 
     for (size_t i = 0; i < peerInfos.size (); ++i)
     {
@@ -523,31 +523,26 @@ QList<PeerInfo> Core::GetPeers (int row) const
     return result;
 }
 
-QStringList Core::GetTagsForIndex (int index) const
+QStringList Core::GetTagsForIndex () const
 {
-    if (!CheckValidity (index))
+    if (!CheckValidity (CurrentTorrent_))
         return QStringList ();
 
-    return Handles_.at (index).Tags_;
+    return Handles_.at (CurrentTorrent_).Tags_;
 }
 
-void Core::UpdateTags (int index, const QStringList& tags)
+void Core::UpdateTags (const QStringList& tags)
 {
-    if (!CheckValidity (index))
+    if (!CheckValidity (CurrentTorrent_))
         return;
 
-    Handles_ [index].Tags_ = tags;
+    Handles_ [CurrentTorrent_].Tags_ = tags;
     TagsCompletionModel_->UpdateTags (tags);
 }
 
 TagsCompletionModel* Core::GetTagsCompletionModel () const
 {
     return TagsCompletionModel_.get ();
-}
-
-QAbstractItemModel* Core::GetRepresentationModel () const
-{
-	return RepresentationModel_.get ();
 }
 
 int Core::AddFile (const QString& filename,
@@ -809,56 +804,54 @@ double Core::GetDesiredRating () const
     return XmlSettingsManager::Instance ()->property ("DesiredRating").toInt ();
 }
 
-void Core::SetTorrentDownloadRate (int val, int torrent)
+void Core::SetTorrentDownloadRate (int val)
 {
-    if (CheckValidity (torrent))
-        Handles_.at (torrent).Handle_.set_download_limit (val == 0 ? -1 : val * 1024);
+    if (CheckValidity (CurrentTorrent_))
+        Handles_.at (CurrentTorrent_).Handle_.set_download_limit (val == 0 ? -1 : val * 1024);
 }
 
-void Core::SetTorrentUploadRate (int val, int torrent)
+void Core::SetTorrentUploadRate (int val)
 {
-    if (CheckValidity (torrent))
-        Handles_.at (torrent).Handle_.set_upload_limit (val == 0 ? -1 : val * 1024);
+    if (CheckValidity (CurrentTorrent_))
+        Handles_.at (CurrentTorrent_).Handle_.set_upload_limit (val == 0 ? -1 : val * 1024);
 }
 
-void Core::SetTorrentDesiredRating (double val, int torrent)
+void Core::SetTorrentDesiredRating (double val)
 {
-    if (CheckValidity (torrent))
+    if (CheckValidity (CurrentTorrent_))
     {
-        Handles_.at (torrent).Handle_.set_ratio (val ? 1/val : 0);
-        Handles_ [torrent].Ratio_ = val;
+        Handles_.at (CurrentTorrent_).Handle_.set_ratio (val ? 1/val : 0);
+        Handles_ [CurrentTorrent_].Ratio_ = val;
     }
 }
 
-int Core::GetTorrentDownloadRate (int torrent) const
+int Core::GetTorrentDownloadRate () const
 {
-    if (CheckValidity (torrent))
-        return Handles_.at (torrent).Handle_.download_limit () / 1024;
+    if (CheckValidity (CurrentTorrent_))
+        return Handles_.at (CurrentTorrent_).Handle_.download_limit () / 1024;
     else
         return -1;
 }
 
-int Core::GetTorrentUploadRate (int torrent) const
+int Core::GetTorrentUploadRate () const
 {
-    if (CheckValidity (torrent))
-        return Handles_.at (torrent).Handle_.upload_limit () / 1024;
+    if (CheckValidity (CurrentTorrent_))
+        return Handles_.at (CurrentTorrent_).Handle_.upload_limit () / 1024;
     else
         return -1;
 }
 
-double Core::GetTorrentDesiredRating (int torrent) const
+double Core::GetTorrentDesiredRating () const
 {
-    if (CheckValidity (torrent))
-        return Handles_.at (torrent).Ratio_;
+    if (CheckValidity (CurrentTorrent_))
+        return Handles_.at (CurrentTorrent_).Ratio_;
     else
         return -1;
 }
 
-void Core::SetFilePriority (int torrent, int file, int priority)
+void Core::SetFilePriority (int file, int priority)
 {
-	if (torrent == -1)
-		torrent = CurrentTorrent_;
-    if (!CheckValidity (torrent))
+    if (!CheckValidity (CurrentTorrent_))
         return;
 
     if (priority > 7)
@@ -868,68 +861,88 @@ void Core::SetFilePriority (int torrent, int file, int priority)
 
     try
     {
-        Handles_ [torrent].FilePriorities_.at (file) = priority;
-        Handles_.at (torrent).Handle_.prioritize_files (Handles_.at (torrent).FilePriorities_);
+        Handles_ [CurrentTorrent_].FilePriorities_.at (file) = priority;
+        Handles_.at (CurrentTorrent_).Handle_.prioritize_files (Handles_.at (CurrentTorrent_).FilePriorities_);
     }
     catch (...)
     {
-        qWarning () << Q_FUNC_INFO << QString ("index for torrent %1, file %2 is out of bounds").arg (torrent).arg (file);
+        qWarning () << Q_FUNC_INFO << QString ("index for torrent %1, file %2 is out of bounds").arg (CurrentTorrent_).arg (file);
     }
 }
 
-int Core::GetFilePriority (int torrent, int file) const
+int Core::GetFilePriority (int file) const
 {
-    if (!CheckValidity (torrent))
+    if (!CheckValidity (CurrentTorrent_))
         return -1;
 
-    return Handles_.at (torrent).FilePriorities_ [file];
+    return Handles_.at (CurrentTorrent_).FilePriorities_ [file];
 }
 
-QStringList Core::GetTrackers (int torrent) const
+QStringList Core::GetTrackers () const
 {
-    if (!CheckValidity (torrent))
+    if (!CheckValidity (CurrentTorrent_))
         return QStringList ();
 
-    std::vector<libtorrent::announce_entry> an = Handles_.at (torrent).Handle_.trackers ();
+    std::vector<libtorrent::announce_entry> an = Handles_.at (CurrentTorrent_).Handle_.trackers ();
     QStringList result;
     for (size_t i = 0; i < an.size (); ++i)
         result.append (QString::fromStdString (an [i].url));
     return result;
 }
 
-void Core::SetTrackers (int torrent, const QStringList& trackers)
+QStringList Core::GetTrackers (int row) const
 {
-    if (!CheckValidity (torrent))
+	int old = CurrentTorrent_;
+	CurrentTorrent_ = row;
+	GetTrackers ();
+	CurrentTorrent_ = old;
+}
+
+void Core::SetTrackers (const QStringList& trackers)
+{
+    if (!CheckValidity (CurrentTorrent_))
         return;
 
     std::vector<libtorrent::announce_entry> announces;
     for (int i = 0; i < trackers.size (); ++i)
         announces.push_back (libtorrent::announce_entry (trackers.at (i).toStdString ()));
-    Handles_ [torrent].Handle_.replace_trackers (announces);
-    Handles_ [torrent].Handle_.force_reannounce ();
+    Handles_ [CurrentTorrent_].Handle_.replace_trackers (announces);
+    Handles_ [CurrentTorrent_].Handle_.force_reannounce ();
 }
 
-QString Core::GetTorrentDirectory (int torrent) const
+void Core::SetTrackers (int row, const QStringList& trackers)
 {
-    if (!CheckValidity (torrent))
+	int old = CurrentTorrent_;
+	CurrentTorrent_ = row;
+	SetTrackers (trackers);
+	CurrentTorrent_ = old;
+}
+
+QString Core::GetTorrentDirectory () const
+{
+    if (!CheckValidity (CurrentTorrent_))
         return QString ();
 
-    return QString::fromUtf8 (Handles_.at (torrent).Handle_.save_path ().string ().c_str ());
+    return QString::fromUtf8 (Handles_.at (CurrentTorrent_).Handle_.save_path ().string ().c_str ());
 }
 
-bool Core::MoveTorrentFiles (int torrent, const QString& newDir)
+bool Core::MoveTorrentFiles (const QString& newDir)
 {
-    if (!CheckValidity (torrent) || newDir == GetTorrentDirectory (torrent))
+    if (!CheckValidity (CurrentTorrent_) || newDir == GetTorrentDirectory ())
         return false;
 
-	qDebug () << Q_FUNC_INFO << newDir;
-    Handles_.at (torrent).Handle_.move_storage (newDir.toUtf8 ().constData ());
+    Handles_.at (CurrentTorrent_).Handle_.move_storage (newDir.toUtf8 ().constData ());
     return true;
 }
 
 void Core::SetCurrentTorrent (int torrent)
 {
     CurrentTorrent_ = torrent;
+}
+
+int Core::GetCurrentTorrent () const
+{
+	return CurrentTorrent_;
 }
 
 namespace
@@ -1381,6 +1394,8 @@ void Core::writeSettings ()
         settings.setArrayIndex (i);
         if (!CheckValidity (i))
             continue;
+		int oldCurrent = CurrentTorrent_;
+		CurrentTorrent_ = i;
         try
         {
             QFile file_info (QDir::homePath () + "/.leechcraft_bittorrent/" + Handles_.at (i).TorrentFileName_);
@@ -1395,7 +1410,7 @@ void Core::writeSettings ()
             settings.setValue ("SavePath", QString::fromStdString (Handles_.at (i).Handle_.save_path ().string ()));
             settings.setValue ("UploadedBytes", Handles_.at (i).UploadedBefore_ + Handles_.at (i).Handle_.status ().total_upload);
             settings.setValue ("Filename", Handles_.at (i).TorrentFileName_);
-            settings.setValue ("TrackersOverride", GetTrackers (i));
+            settings.setValue ("TrackersOverride", GetTrackers ());
             settings.setValue ("Tags", Handles_.at (i).Tags_);
 			settings.setValue ("ID", Handles_.at (i).ID_);
 			settings.setValue ("Parameters", static_cast<int> (Handles_.at (i).Parameters_));
@@ -1416,6 +1431,7 @@ void Core::writeSettings ()
         {
             qWarning () << Q_FUNC_INFO << "unknown exception";
         }
+		CurrentTorrent_ = oldCurrent;
     }
     settings.endArray ();
     settings.endGroup ();
@@ -1695,12 +1711,12 @@ bool Core::CheckValidity (int pos) const
 {
     if (pos >= Handles_.size () || pos < 0)
     {
-        emit error (tr ("Torrent with position %1 doesn't exist in The List").arg (pos));
+        qWarning () << QString ("Torrent with position %1 doesn't exist in The List").arg (pos);
         return false;
     }
     if (!Handles_.at (pos).Handle_.is_valid ())
     {
-        emit const_cast<Core*> (this)->error (tr ("Torrent with position %1 found in The List, but is invalid").arg (pos));
+        qWarning () << QString ("Torrent with position %1 found in The List, but is invalid").arg (pos);
         return false;
     }
     return true;

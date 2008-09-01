@@ -36,7 +36,7 @@ QVariant PeersModel::data (const QModelIndex& index, int role) const
     if (!index.isValid () || (role != Qt::DisplayRole && role != SortRole))
         return QVariant ();
 
-	libtorrent::bitfield localPieces = Core::Instance ()->GetLocalPieces (CurrentTorrent_);
+	libtorrent::bitfield localPieces = Core::Instance ()->GetLocalPieces ();
 
     int i = index.row ();
 
