@@ -128,6 +128,7 @@ public:
     void PauseTorrent (int);
     void ResumeTorrent (int);
     void ForceReannounce (int);
+	void ForceRecheck (int);
     void SetOverallDownloadRate (int);
     void SetOverallUploadRate (int);
     void SetMaxDownloadingTorrents (int);

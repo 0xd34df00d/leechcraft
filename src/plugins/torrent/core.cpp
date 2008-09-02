@@ -673,6 +673,14 @@ void Core::ForceReannounce (int pos)
     }
 }
 
+void Core::ForceRecheck (int pos)
+{
+	if (!CheckValidity (pos))
+		return;
+	
+	Handles_.at (pos).Handle_.force_recheck ();
+}
+
 void Core::SetOverallDownloadRate (int val)
 {
     Session_->set_download_rate_limit (val == 0 ? -1 : val * 1024);

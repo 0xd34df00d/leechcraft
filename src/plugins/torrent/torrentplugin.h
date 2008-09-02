@@ -49,6 +49,7 @@ class TorrentPlugin : public QObject
 		Stop_,
 		CreateTorrent_,
 		ForceReannounce_,
+		ForceRecheck_,
 		OpenMultipleTorrents_,
 		ChangeTrackers_,
 		MoveFiles_;
@@ -113,6 +114,7 @@ private slots:
     void on_Resume__triggered (int);
     void on_Stop__triggered (int);
     void on_ForceReannounce__triggered (int);
+	void on_ForceRecheck__triggered (int);
     void on_ChangeTrackers__triggered (int);
     void on_Preferences__triggered ();
     void on_OverallDownloadRateController__valueChanged (int);

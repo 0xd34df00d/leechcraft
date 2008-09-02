@@ -401,6 +401,11 @@ void TorrentPlugin::on_ForceReannounce__triggered (int row)
     Core::Instance ()->ForceReannounce (row);
 }
 
+void TorrentPlugin::on_ForceRecheck__triggered (int row)
+{
+	Core::Instance ()->ForceRecheck (row);
+}
+
 void TorrentPlugin::on_ChangeTrackers__triggered (int row)
 {
     QStringList trackers = Core::Instance ()->GetTrackers (row);
@@ -836,6 +841,11 @@ void TorrentPlugin::SetupActions ()
 	ForceReannounce_->setShortcut (tr ("F"));
 	ForceReannounce_->setProperty ("Slot", "on_ForceReannounce__triggered");
 	ForceReannounce_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
+	
+	ForceRecheck_.reset (new QAction (tr ("Recheck"),
+			Toolbar_.get ()));
+	ForceRecheck_->setProperty ("Slot", "on_ForceRecheck__triggered");
+	ForceRecheck_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
 
 	ChangeTrackers_.reset (new QAction (tr ("Change trackers..."),
 				Toolbar_.get ()));
@@ -857,6 +867,7 @@ void TorrentPlugin::SetupActions ()
 	Toolbar_->addAction (Resume_.get ());
 	Toolbar_->addAction (Stop_.get ());
 	Toolbar_->addAction (ForceReannounce_.get ());
+	Toolbar_->addAction (ForceRecheck_.get ());
 	Toolbar_->addAction (ChangeTrackers_.get ());
 	Toolbar_->addAction (MoveFiles_.get ());
 	Toolbar_->addSeparator ();
