@@ -523,21 +523,20 @@ QList<PeerInfo> Core::GetPeers () const
     return result;
 }
 
-QStringList Core::GetTagsForIndex () const
+QStringList Core::GetTagsForIndex (int torrent) const
 {
-    if (!CheckValidity (CurrentTorrent_))
-        return QStringList ();
-
-    return Handles_.at (CurrentTorrent_).Tags_;
+	if (torrent != -1)
+		return GetTagsForIndexImpl (torrent);
+	else
+		return GetTagsForIndexImpl (CurrentTorrent_);
 }
 
-void Core::UpdateTags (const QStringList& tags)
+void Core::UpdateTags (const QStringList& tags, int torrent)
 {
-    if (!CheckValidity (CurrentTorrent_))
-        return;
-
-    Handles_ [CurrentTorrent_].Tags_ = tags;
-    TagsCompletionModel_->UpdateTags (tags);
+	if (torrent != -1)
+		UpdateTagsImpl (tags, torrent);
+	else
+        UpdateTagsImpl (tags, CurrentTorrent_);
 }
 
 TagsCompletionModel* Core::GetTagsCompletionModel () const
@@ -1372,6 +1371,23 @@ void Core::CheckUploadQueue ()
 		else
 			ResumeTorrent (std::distance (Handles_.begin (), i));
 	}
+}
+
+QStringList Core::GetTagsForIndexImpl (int torrent) const
+{
+	if (!CheckValidity (torrent))
+		return QStringList ();
+
+	return Handles_.at (torrent).Tags_;
+}
+
+void Core::UpdateTagsImpl (const QStringList& tags, int torrent)
+{
+    if (!CheckValidity (torrent))
+        return;
+
+    Handles_ [torrent].Tags_ = tags;
+    TagsCompletionModel_->UpdateTags (tags);
 }
 
 void Core::writeSettings ()

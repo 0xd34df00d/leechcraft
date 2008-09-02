@@ -301,7 +301,6 @@ void TorrentPlugin::ItemSelected (const QModelIndex& item)
 
 	QModelIndex mapped = FilterModel_->mapToSource (item);
 	Core::Instance ()->SetCurrentTorrent (mapped.row ());
-	qDebug () << Core::Instance ()->GetTagsForIndex ();
 	Ui_.TorrentTags_->setText (Core::Instance ()->GetTagsForIndex ().join (" "));
 	if (mapped.isValid ())
 	{
@@ -310,6 +309,16 @@ void TorrentPlugin::ItemSelected (const QModelIndex& item)
 
     restartTimers ();
     updateTorrentStats ();
+}
+
+QStringList TorrentPlugin::GetTags (int torrent) const
+{
+	return Core::Instance ()->GetTagsForIndex (torrent);
+}
+
+void TorrentPlugin::SetTags (int torrent, const QStringList& tags)
+{
+	Core::Instance ()->UpdateTags (tags, torrent);
 }
 
 void TorrentPlugin::on_OpenTorrent__triggered ()
@@ -629,6 +638,42 @@ void TorrentPlugin::SetupTabWidget ()
 {
 	TabWidget_.reset (new QTabWidget ());
 	Ui_.setupUi (TabWidget_.get ());
+	connect (Ui_.OverallDownloadRateController_,
+			SIGNAL (valueChanged (int)),
+			this,
+			SLOT (on_OverallDownloadRateController__valueChanged (int)));
+	connect (Ui_.OverallUploadRateController_,
+			SIGNAL (valueChanged (int)),
+			this,
+			SLOT (on_OverallUploadRateController__valueChanged (int)));
+	connect (Ui_.DesiredRating_,
+			SIGNAL (valueChanged (double)),
+			this,
+			SLOT (on_DesiredRating__valueChanged (double)));
+	connect (Ui_.TorrentDownloadRateController_,
+			SIGNAL (valueChanged (int)),
+			this,
+			SLOT (on_TorrentDownloadRateController__valueChanged (int)));
+	connect (Ui_.TorrentUploadRateController_,
+			SIGNAL (valueChanged (int)),
+			this,
+			SLOT (on_TorrentUploadRateController__valueChanged (int)));
+	connect (Ui_.TorrentDesiredRating_,
+			SIGNAL (valueChanged (double)),
+			this,
+			SLOT (on_TorrentDesiredRating__valueChanged (double)));
+	connect (Ui_.DownloadingTorrents_,
+			SIGNAL (valueChanged (int)),
+			this,
+			SLOT (on_DownloadingTorrents__valueChanged (int)));
+	connect (Ui_.UploadingTorrents_,
+			SIGNAL (valueChanged (int)),
+			this,
+			SLOT (on_UploadingTorrents__valueChanged (int)));
+	connect (Ui_.TorrentTags_,
+			SIGNAL (editingFinished ()),
+			this,
+			SLOT (on_TorrentTags__editingFinished ()));
 }
 
 void TorrentPlugin::SetupCore ()

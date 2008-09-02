@@ -107,6 +107,7 @@ SET (SRCS
 	pluginmanager.cpp
 	xmlsettingsmanager.cpp
 	mergemodel.cpp
+	filtermodel.cpp
 	)
 
 SET (HEADERS
@@ -116,6 +117,7 @@ SET (HEADERS
 	pluginmanager.h
 	xmlsettingsmanager.h
 	mergemodel.h
+	filtermodel.h
 	interfaces/interfaces.h
 	interfaces/structures.h
 	)

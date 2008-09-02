@@ -23,10 +23,11 @@ class TorrentPlugin : public QObject
                     , public IJobHolder
 					, public IImportExport
 					, public IEmbedModel
+					, public ITaggableJobs
 {
     Q_OBJECT
 
-    Q_INTERFACES (IInfo IDownload IPeer2PeerDownload IRemoteable IJobHolder IImportExport IEmbedModel);
+    Q_INTERFACES (IInfo IDownload IPeer2PeerDownload IRemoteable IJobHolder IImportExport IEmbedModel ITaggableJobs);
 
     ID_t ID_;
     std::auto_ptr<XmlSettingsDialog> XmlSettingsDialog_;
@@ -98,6 +99,10 @@ public:
 
 	// IEmbedModel
 	void ItemSelected (const QModelIndex&);
+
+	// ITaggableJobs
+	QStringList GetTags (int) const;
+	void SetTags (int, const QStringList&);
 public slots:
     void updateTorrentStats ();
 private slots:

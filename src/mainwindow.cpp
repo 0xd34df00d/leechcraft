@@ -29,11 +29,39 @@ namespace Main
 		Ui_->setupUi (this);
 		Ui_->MainSplitter_->setStretchFactor (1, 4);
 
-		connect (Ui_->ActionAddTask_, SIGNAL (triggered ()), this, SLOT (addJob ()));
-		connect (Ui_->ActionQuit_, SIGNAL (triggered ()), qApp, SLOT (quit ()));
-		connect (Ui_->ActionSettings_, SIGNAL (triggered ()), this, SLOT (showSettings ()));
-		connect (Ui_->ActionAboutQt_, SIGNAL (triggered ()), qApp, SLOT (aboutQt ()));
-		connect (Ui_->ActionAboutLeechCraft_, SIGNAL (triggered ()), this, SLOT (showAboutInfo ()));
+		connect (Ui_->ActionAddTask_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (addJob ()));
+		connect (Ui_->ActionQuit_,
+				SIGNAL (triggered ()),
+				qApp,
+				SLOT (quit ()));
+		connect (Ui_->ActionSettings_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (showSettings ()));
+		connect (Ui_->ActionAboutQt_,
+				SIGNAL (triggered ()),
+				qApp,
+				SLOT (aboutQt ()));
+		connect (Ui_->ActionAboutLeechCraft_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (showAboutInfo ()));
+		
+		connect (Ui_->FilterCaseSensitivity_,
+				SIGNAL (stateChanged (int)),
+				this,
+				SLOT (filterParametersChanged ()));
+		connect (Ui_->FilterLine_,
+				SIGNAL (textEdited (const QString&)),
+				this,
+				SLOT (filterParametersChanged ()));
+		connect (Ui_->FilterType_,
+				SIGNAL (currentIndexChanged (int)),
+				this,
+				SLOT (filterParametersChanged ()));
 
 		SetTrayIcon ();
 
@@ -105,13 +133,9 @@ namespace Main
 		return Ui_->PluginsMenu_;
 	}
 
-	std::list<int> MainWindow::GetSelectedRows () const
+	QModelIndexList MainWindow::GetSelectedRows () const
 	{
-		std::list<int> result;
-		QModelIndexList list = Ui_->PluginsTasksTree_->selectionModel ()->selectedRows ();
-		for (int i = 0; i < list.size (); ++i)
-			result.push_back (list [i].row ());
-		return result;
+		return Ui_->PluginsTasksTree_->selectionModel ()->selectedRows ();
 	}
 
 	void MainWindow::catchError (QString message)
@@ -121,19 +145,21 @@ namespace Main
 
 	void MainWindow::updatePanes (const QModelIndex& newIndex)
 	{
-		if (Ui_->PluginsStuff_->count () == 3)
+		if (Ui_->PluginsStuff_->count () == 4)
 		{
-			Ui_->PluginsStuff_->takeAt (2)->widget ()->hide ();
-			Ui_->PluginsStuff_->takeAt (0)->widget ()->hide ();
+			Ui_->PluginsStuff_->takeAt (3)->widget ()->hide ();
+			Ui_->PluginsStuff_->takeAt (1)->widget ()->hide ();
 		}
 
 		if (newIndex.isValid ())
 		{
 			Core::Instance ().SetNewRow (newIndex);
 
-			QWidget *controls = Core::Instance ().GetControls (newIndex.row ()),
-					*addiInfo = Core::Instance ().GetAdditionalInfo (newIndex.row ());
-			Ui_->PluginsStuff_->insertWidget (0, controls);
+			QWidget *controls = Core::Instance ()
+						.GetControls (newIndex),
+					*addiInfo = Core::Instance ()
+						.GetAdditionalInfo (newIndex);
+			Ui_->PluginsStuff_->insertWidget (1, controls);
 			Ui_->PluginsStuff_->addWidget (addiInfo);
 			controls->show ();
 			addiInfo->show ();
@@ -284,5 +310,34 @@ namespace Main
 		Core::Instance ().Activated (index);
 	}
 
+	void MainWindow::filterParametersChanged ()
+	{
+		Core::FilterType ft;
+		switch (Ui_->FilterType_->currentIndex ())
+		{
+			case 0:
+				ft = Core::FTFixedString;
+				break;
+			case 1:
+				ft = Core::FTWildcard;
+				break;
+			case 2:
+				ft = Core::FTRegexp;
+				break;
+			case 3:
+				ft = Core::FTTags;
+				break;
+			default:
+				qWarning () << Q_FUNC_INFO
+					<< "unhandled ft"
+					<< Ui_->FilterType_->currentIndex ();
+				return;
+		}
+
+		bool caseSensitivity = (Ui_->FilterCaseSensitivity_->checkState () == Qt::Checked);
+		Core::Instance ().UpdateFiltering (Ui_->FilterLine_->text (),
+				ft,
+				caseSensitivity);
+	}
 };
 

@@ -1,35 +1,29 @@
 #include <QStringList>
 #include <QtDebug>
-#include "channelsfiltermodel.h"
+#include "filtermodel.h"
 #include "core.h"
 
-ChannelsFilterModel::ChannelsFilterModel (QObject *parent)
+FilterModel::FilterModel (QObject *parent)
 : QSortFilterProxyModel (parent)
 , NormalMode_ (true)
 {
 }
 
-void ChannelsFilterModel::setTagsMode ()
+void FilterModel::SetTagsMode (bool tagsMode)
 {
-	NormalMode_ = false;
+	NormalMode_ = !tagsMode;
 	invalidateFilter ();
 }
 
-void ChannelsFilterModel::setNormalMode ()
-{
-	NormalMode_ = true;
-	invalidateFilter ();
-}
-
-bool ChannelsFilterModel::filterAcceptsRow (int source_row, const QModelIndex& source_parent) const
+bool FilterModel::filterAcceptsRow (int source_row, const QModelIndex& source_parent) const
 {
 	if (NormalMode_)
 		return QSortFilterProxyModel::filterAcceptsRow (source_row, source_parent);
 	else
 	{
-		QStringList itemTags = Core::Instance ()->GetTagsForIndex (source_row),
+		QStringList itemTags = Main::Core::Instance ().GetTagsForIndex (source_row),
 					filterTags = filterRegExp ().pattern ().split (' ', QString::SkipEmptyParts);
-		if (!filterTags.size ())
+		if (!filterTags.size () || !itemTags.size ())
 			return true;
 
 		for (int i = 0; i < filterTags.size (); ++i)

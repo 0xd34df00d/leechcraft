@@ -118,8 +118,8 @@ public:
     OverallStats GetOverallStats () const;
     QList<FileInfo> GetTorrentFiles () const;
     QList<PeerInfo> GetPeers () const;
-    QStringList GetTagsForIndex () const;
-    void UpdateTags (const QStringList&);
+    QStringList GetTagsForIndex (int = -1) const;
+    void UpdateTags (const QStringList&, int = -1);
     TagsCompletionModel* GetTagsCompletionModel () const;
 	int AddFile (const QString&, const QString&, const QStringList&,
 			const QVector<bool>& = QVector<bool> (),
@@ -174,6 +174,8 @@ private:
     void ManipulateSettings ();
 	void CheckDownloadQueue ();
 	void CheckUploadQueue ();
+	QStringList GetTagsForIndexImpl (int) const;
+	void UpdateTagsImpl (const QStringList&, int);
 private slots:
     void writeSettings ();
     void checkFinished ();

@@ -20,9 +20,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>68</y>
+     <y>69</y>
      <width>800</width>
-     <height>510</height>
+     <height>508</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2" >
@@ -67,6 +67,47 @@
        <widget class="QWidget" name="layoutWidget" >
         <layout class="QVBoxLayout" name="PluginsStuff_" >
          <item>
+          <layout class="QHBoxLayout" name="horizontalLayout" >
+           <item>
+            <widget class="QLineEdit" name="FilterLine_" />
+           </item>
+           <item>
+            <widget class="QComboBox" name="FilterType_" >
+             <item>
+              <property name="text" >
+               <string>Fixed string</string>
+              </property>
+             </item>
+             <item>
+              <property name="text" >
+               <string>Wildcard</string>
+              </property>
+             </item>
+             <item>
+              <property name="text" >
+               <string>Regexp</string>
+              </property>
+             </item>
+             <item>
+              <property name="text" >
+               <string>Tags</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="FilterCaseSensitivity_" >
+             <property name="text" >
+              <string>Case sensitive</string>
+             </property>
+             <property name="checked" >
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
           <widget class="QTreeView" name="PluginsTasksTree_" >
            <property name="minimumSize" >
             <size>
@@ -98,7 +139,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>29</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >
@@ -137,9 +178,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>578</y>
+     <y>577</y>
      <width>800</width>
-     <height>22</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>
@@ -147,7 +188,7 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>29</y>
+     <y>30</y>
      <width>800</width>
      <height>39</height>
     </rect>

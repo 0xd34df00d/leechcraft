@@ -12,6 +12,7 @@ class QLocalServer;
 class QAbstractProxyModel;
 class MergeModel;
 class QAction;
+class FilterModel;
 
 namespace Main
 {
@@ -26,6 +27,7 @@ namespace Main
         QString PreviousClipboardContents_;
 		std::auto_ptr<QLocalServer> Server_;
 		std::auto_ptr<MergeModel> MergeModel_;
+		std::auto_ptr<FilterModel> FilterModel_;
 		typedef std::map<const QAbstractItemModel*, QObject*> repres2object_t;
 		mutable repres2object_t Representation2Object_;
 		typedef std::map<const QAction*, QAbstractItemModel*> action2model_t;
@@ -33,6 +35,14 @@ namespace Main
 
         Core ();
     public:
+		enum FilterType
+		{
+			FTFixedString
+			, FTWildcard
+			, FTRegexp
+			, FTTags
+		};
+
         virtual ~Core ();
 		static Core& Instance ();
         void Release ();
@@ -42,8 +52,10 @@ namespace Main
 
 		QAbstractItemModel* GetPluginsModel () const;
 		QAbstractProxyModel* GetTasksModel () const;
-		QWidget* GetControls (int) const;
-		QWidget* GetAdditionalInfo (int) const;
+		QWidget* GetControls (const QModelIndex&) const;
+		QWidget* GetAdditionalInfo (const QModelIndex&) const;
+
+		QStringList GetTagsForIndex (int) const;
 
         void DelayedInit ();
         bool ShowPlugin (IInfo::ID_t);
@@ -52,13 +64,14 @@ namespace Main
 
 		void Activated (const QModelIndex&);
 		void SetNewRow (const QModelIndex&);
+		void UpdateFiltering (const QString&, FilterType, bool);
         
         QPair<qint64, qint64> GetSpeeds () const;
 	public slots:
 		void handleProxySettings () const;
 		void handlePluginAction ();
     private slots:
-        void handleFileDownload (const QString&, bool fromBuffer = false);
+        void handleFileDownload (const QString&, bool = false);
         void handleClipboardTimer ();
     signals:
         void error (QString);

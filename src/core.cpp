@@ -18,12 +18,20 @@
 #include "exceptions/outofbounds.h"
 #include "xmlsettingsmanager.h"
 #include "mergemodel.h"
+#include "filtermodel.h"
 
 Main::Core::Core ()
 : Server_ (new QLocalServer)
 , MergeModel_ (new MergeModel)
+, FilterModel_ (new FilterModel)
 {
 	PluginManager_ = new Main::PluginManager (this);
+
+	FilterModel_->setSourceModel (MergeModel_.get ());
+//	connect (MergeModel_.get (),
+//			SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
+//			FilterModel_.get (),
+//			SLOT (invalidate ()));
 
     ClipboardWatchdog_ = new QTimer (this);
     connect (ClipboardWatchdog_,
@@ -73,23 +81,41 @@ QAbstractItemModel* Main::Core::GetPluginsModel () const
 
 QAbstractProxyModel* Main::Core::GetTasksModel () const
 {
-	return MergeModel_.get ();
+	return FilterModel_.get ();
 }
 
-QWidget* Main::Core::GetControls (int index) const
+QWidget* Main::Core::GetControls (const QModelIndex& index) const
 {
-	QAbstractItemModel *model = *MergeModel_->GetModelForRow (index);
-	const IJobHolder *ijh = dynamic_cast<const IJobHolder*> (Representation2Object_ [model]);
+	QAbstractItemModel *model = *MergeModel_->
+		GetModelForRow (FilterModel_->mapToSource (index).row ());
+	const IJobHolder *ijh =
+		dynamic_cast<const IJobHolder*> (Representation2Object_ [model]);
 
 	return ijh->GetControls ();
 }
 
-QWidget* Main::Core::GetAdditionalInfo (int index) const
+QWidget* Main::Core::GetAdditionalInfo (const QModelIndex& index) const
 {
-	QAbstractItemModel *model = *MergeModel_->GetModelForRow (index);
-	const IJobHolder *ijh = dynamic_cast<const IJobHolder*> (Representation2Object_ [model]);
+	QAbstractItemModel *model = *MergeModel_->
+		GetModelForRow (FilterModel_->mapToSource (index).row ());
+	const IJobHolder *ijh =
+		dynamic_cast<const IJobHolder*> (Representation2Object_ [model]);
 
 	return ijh->GetAdditionalInfo ();
+}
+
+QStringList Main::Core::GetTagsForIndex (int index) const
+{
+	MergeModel::const_iterator modIter = MergeModel_->GetModelForRow (index);
+	const ITaggableJobs *ijh =
+	   dynamic_cast<const ITaggableJobs*> (Representation2Object_ [*modIter]);
+
+	if (!ijh)
+		return QStringList ();
+
+	int starting = MergeModel_->GetStartingRow (modIter);
+
+	return ijh->GetTags (index - starting);
 }
 
 void Main::Core::DelayedInit ()
@@ -205,13 +231,40 @@ void Main::Core::Activated (const QModelIndex& index)
 
 void Main::Core::SetNewRow (const QModelIndex& index)
 {
-	MergeModel::const_iterator modIter = MergeModel_->GetModelForRow (index.row ());
+	QModelIndex mapped = FilterModel_->mapToSource (index);
+	MergeModel::const_iterator modIter = MergeModel_->GetModelForRow (mapped.row ());
 	QObject *plugin = Representation2Object_ [*modIter];
 
 	IEmbedModel *iee = dynamic_cast<IEmbedModel*> (plugin);
 	qDebug () << iee;
 	if (iee)
-		iee->ItemSelected (MergeModel_->mapToSource (index));
+		iee->ItemSelected (MergeModel_->mapToSource (mapped));
+}
+
+void Main::Core::UpdateFiltering (const QString& text, Main::Core::FilterType ft, bool caseSensitive)
+{
+	FilterModel_->setFilterCaseSensitivity (caseSensitive ?
+			Qt::CaseSensitive : Qt::CaseInsensitive);
+
+	switch (ft)
+	{
+		case FTFixedString:
+			FilterModel_->SetTagsMode (false);
+			FilterModel_->setFilterFixedString (text);
+			break;
+		case FTWildcard:
+			FilterModel_->SetTagsMode (false);
+			FilterModel_->setFilterWildcard (text);
+			break;
+		case FTRegexp:
+			FilterModel_->SetTagsMode (false);
+			FilterModel_->setFilterRegExp (text);
+			break;
+		case FTTags:
+			FilterModel_->SetTagsMode (true);
+			FilterModel_->setFilterFixedString (text);
+			break;
+	}
 }
 
 QPair<qint64, qint64> Main::Core::GetSpeeds () const
@@ -270,38 +323,43 @@ void Main::Core::handlePluginAction ()
 
 	QObject *object = source->property ("Object").value<QObject*> ();
 
-	std::list<int> selected = ReallyMainWindow_->GetSelectedRows ();
+	QModelIndexList origSelection = ReallyMainWindow_->GetSelectedRows ();
+	QModelIndexList selected;
+	for (QModelIndexList::const_iterator i = origSelection.begin (),
+			end = origSelection.end (); i != end; ++i)
+		selected.push_back (FilterModel_->mapToSource (*i));
+
 	QAbstractItemModel *model = Action2Model_ [source];
 	int startingRow = MergeModel_->GetStartingRow (MergeModel_->FindModel (model));
 	int endingRow = startingRow + model->rowCount ();
 	if (!slot.isEmpty ())
 	{
-		for (std::list<int>::const_iterator i = selected.begin (),
+		for (QModelIndexList::const_iterator i = selected.begin (),
 				end = selected.end (); i != end; ++i)
 		{
-			if (*i < startingRow)
+			if (i->row () < startingRow)
 				continue;
-			if (*i >= endingRow)
+			if (i->row () >= endingRow)
 				break;
 
 			QMetaObject::invokeMethod (object,
 					slot.toLatin1 (),
-					Q_ARG (int, *i));
+					Q_ARG (int, i->row ()));
 		}
 	}
 	if (!signal.isEmpty ())
 	{
-		for (std::list<int>::const_iterator i = selected.begin (),
+		for (QModelIndexList::const_iterator i = selected.begin (),
 				end = selected.end (); i != end; ++i)
 		{
-			if (*i < startingRow)
+			if (i->row () < startingRow)
 				continue;
-			if (*i >= endingRow)
+			if (i->row () >= endingRow)
 				break;
 
 			QMetaObject::invokeMethod (object,
 					signal.toLatin1 (),
-					Q_ARG (int, *i));
+					Q_ARG (int, i->row ()));
 		}
 	}
 }
