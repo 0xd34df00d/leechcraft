@@ -20,9 +20,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>39</y>
+     <y>34</y>
      <width>800</width>
-     <height>542</height>
+     <height>545</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout" >
@@ -114,6 +114,9 @@
            </item>
            <item row="3" column="1" >
             <widget class="QDateTimeEdit" name="ItemPubDate_" >
+             <property name="readOnly" >
+              <bool>true</bool>
+             </property>
              <property name="calendarPopup" >
               <bool>true</bool>
              </property>
@@ -299,9 +302,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>581</y>
+     <y>579</y>
      <width>800</width>
-     <height>19</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
@@ -310,8 +313,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>155</width>
-     <height>39</height>
+     <width>138</width>
+     <height>34</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -331,10 +334,10 @@
   <widget class="QToolBar" name="toolBar_2" >
    <property name="geometry" >
     <rect>
-     <x>155</x>
+     <x>138</x>
      <y>0</y>
-     <width>180</width>
-     <height>39</height>
+     <width>185</width>
+     <height>34</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -354,10 +357,10 @@
   <widget class="QToolBar" name="toolBar_3" >
    <property name="geometry" >
     <rect>
-     <x>335</x>
+     <x>323</x>
      <y>0</y>
-     <width>465</width>
-     <height>39</height>
+     <width>477</width>
+     <height>34</height>
     </rect>
    </property>
    <property name="windowTitle" >

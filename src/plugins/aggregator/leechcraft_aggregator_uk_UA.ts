@@ -82,7 +82,7 @@
     <message>
         <location filename="browserwidget.ui" line="55"/>
         <source>Idle</source>
-        <translation>Не кативний</translation>
+        <translation type="unfinished">Не активний</translation>
     </message>
     <message>
         <location filename="browserwidget.ui" line="65"/>

@@ -332,9 +332,23 @@ void Aggregator::currentItemChanged (const QModelIndex& index)
 	Ui_.ItemAuthor_->setText (Core::Instance ().GetAuthor (sindex));
 	Ui_.ItemCategory_->setText (Core::Instance ().GetCategory (sindex));
 	QString link = Core::Instance ().GetLink (sindex);
-	if (link.size () >= 40)
-		link = link.left (15) + "..." + link.right (15);
-	Ui_.ItemLink_->setText (link);
+	QString shortLink;
+    if (link.size () >= 40)
+        shortLink = link.left (15) + "..." + link.right (15);
+    else
+        shortLink = link;
+	if(QUrl (link).isValid ())
+	{
+	    link.insert (0,"<a href=\"");
+	    link.append ("\">" + shortLink + "</a>");
+        Ui_.ItemLink_->setText (link);
+        Ui_.ItemLink_->setOpenExternalLinks (true);
+	}
+	else
+	{
+        Ui_.ItemLink_->setOpenExternalLinks (false);
+        Ui_.ItemLink_->setText (shortLink);
+    }
 	Ui_.ItemPubDate_->setDateTime (Core::Instance ().GetPubDate (sindex));
 }
 
