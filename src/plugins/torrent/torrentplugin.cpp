@@ -525,23 +525,21 @@ void TorrentPlugin::updateTorrentStats ()
 	switch (TabWidget_->currentIndex ())
 	{
 		case 0:
-			break;
-		case 1:
 			UpdateDashboard ();
-			break;
-		case 2:
 			updateOverallStats ();
 			break;
-		case 3:
+		case 1:
+			break;
+		case 2:
 			UpdateTorrentPage ();
 			break;
-		case 4:
+		case 3:
 			UpdateFilesPage ();
 			break;
-		case 5:
+		case 4:
 			UpdatePeersPage ();
 			break;
-		case 6:
+		case 5:
 			UpdatePiecesPage ();
 			break;
 	}
@@ -605,6 +603,7 @@ void TorrentPlugin::UpdateDashboard ()
 void TorrentPlugin::UpdateTorrentPage ()
 {
 	TorrentInfo i = Core::Instance ()->GetTorrentStats ();
+	qDebug () << i.State_;
 	Ui_.LabelState_->setText (i.State_);
 	Ui_.LabelTracker_->setText (i.Tracker_);
 	Ui_.LabelProgress_->setText (QString::number (i.Progress_ * 100) + "%");
@@ -623,7 +622,20 @@ void TorrentPlugin::UpdateTorrentPage ()
 	Ui_.LabelDownloadRate_->setText (Proxy::Instance ()->MakePrettySize (i.DownloadRate_) + tr ("/s"));
 	Ui_.LabelUploadRate_->setText (Proxy::Instance ()->MakePrettySize (i.UploadRate_) + tr ("/s"));
 	Ui_.LabelTorrentRating_->setText (QString::number (i.Uploaded_ / static_cast<double> (i.Downloaded_), 'g', 4));
-	Ui_.LabelDistributedCopies_->setText (QString::number (i.DistributedCopies_));
+	Ui_.LabelDistributedCopies_->setText (i.DistributedCopies_ == -1 ? tr ("Not tracking") : QString::number (i.DistributedCopies_));
+	Ui_.LabelRedundantData_->setText (Proxy::Instance ()->MakePrettySize (i.RedundantBytes_));
+	Ui_.LabelPeersInList_->setText (QString::number (i.PeersInList_));
+	Ui_.LabelSeedsInList_->setText (QString::number (i.SeedsInList_));
+	Ui_.LabelPeersInSwarm_->setText (i.PeersInSwarm_ == -1 ? tr ("Unknown") : QString::number (i.PeersInSwarm_));
+	Ui_.LabelSeedsInSwarm_->setText (i.SeedsInSwarm_ == -1 ? tr ("Unknown") : QString::number (i.SeedsInSwarm_));
+	Ui_.LabelConnectCandidates_->setText (QString::number (i.ConnectCandidates_));
+	Ui_.LabelBlockSize_->setText (Proxy::Instance ()->MakePrettySize (i.BlockSize_));
+	Ui_.LabelUpBandwidthQueue_->setText (QString::number (i.UpBandwidthQueue_));
+	Ui_.LabelDownBandwidthQueue_->setText (QString::number (i.DownBandwidthQueue_));
+	Ui_.LabelLastScrape_->setText (Proxy::Instance ()->MakeTimeFromLong (i.LastScrape_).toString ());
+	Ui_.LabelActiveTime_->setText (Proxy::Instance ()->MakeTimeFromLong (i.ActiveTime_).toString ());
+	Ui_.LabelSeedingTime_->setText (Proxy::Instance ()->MakeTimeFromLong (i.SeedingTime_).toString ());
+	Ui_.LabelSeedRank_->setText (QString::number (i.SeedRank_));
 	Ui_.PiecesWidget_->setPieceMap (i.Pieces_);
 }
 

@@ -11,16 +11,29 @@ struct TorrentInfo
             Uploaded_,
             TotalSize_,
             FailedSize_,
+			RedundantBytes_,
             DHTNodesCount_,
             TotalPieces_,
-            DownloadedPieces_;
+            DownloadedPieces_,
+			PieceSize_,
+			BlockSize_;
     double DownloadRate_,
            UploadRate_,
            Progress_,
            DistributedCopies_;
     int ConnectedPeers_,
         ConnectedSeeds_,
-        PieceSize_;
+		PeersInList_,
+		SeedsInList_,
+		PeersInSwarm_,
+		SeedsInSwarm_,
+		ConnectCandidates_,
+		UpBandwidthQueue_,
+		DownBandwidthQueue_,
+		LastScrape_,
+		ActiveTime_,
+		SeedingTime_,
+		SeedRank_;
     QTime NextAnnounce_,
           AnnounceInterval_;
 	libtorrent::bitfield Pieces_;

@@ -413,12 +413,13 @@ TorrentInfo Core::GetTorrentStats () const
     libtorrent::torrent_info info = handle.get_torrent_info ();
 
     TorrentInfo result;
-    result.Tracker_ = QString::fromStdString (status.current_tracker);
+    result.Tracker_ = QString::fromStdString (status.current_tracker).left (100);
     result.State_ = status.paused ? tr ("Idle") : GetStringForState (status.state);
     result.Downloaded_ = status.total_done;
     result.Uploaded_ = status.total_payload_upload + Handles_.at (CurrentTorrent_).UploadedBefore_;
     result.TotalSize_ = status.total_wanted;
     result.FailedSize_ = status.total_failed_bytes;
+	result.RedundantBytes_ = status.total_redundant_bytes;
     result.DHTNodesCount_ = info.nodes ().size ();
     result.TotalPieces_ = info.num_pieces ();
     result.DownloadedPieces_ = status.num_pieces;
@@ -426,9 +427,21 @@ TorrentInfo Core::GetTorrentStats () const
     result.UploadRate_ = status.upload_rate;
     result.ConnectedPeers_ = status.num_peers;
     result.ConnectedSeeds_ = status.num_seeds;
+	result.PeersInList_ = status.list_peers;
+	result.SeedsInList_ = status.list_seeds;
+	result.PeersInSwarm_ = status.num_incomplete;
+	result.SeedsInSwarm_ = status.num_complete;
+	result.ConnectCandidates_ = status.connect_candidates;
+	result.BlockSize_ = status.block_size;
     result.PieceSize_ = info.piece_length ();
     result.Progress_ = status.progress;
     result.DistributedCopies_ = status.distributed_copies;
+	result.UpBandwidthQueue_ = status.up_bandwidth_queue;
+	result.DownBandwidthQueue_ = status.down_bandwidth_queue;
+	result.LastScrape_ = status.last_scrape;
+	result.ActiveTime_ = status.active_time;
+	result.SeedingTime_ = status.seeding_time;
+	result.SeedRank_ = status.seed_rank;
     result.NextAnnounce_ = QTime (status.next_announce.hours (),
                                   status.next_announce.minutes (),
                                   status.next_announce.seconds ());

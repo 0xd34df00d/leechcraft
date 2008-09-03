@@ -28,10 +28,6 @@ Main::Core::Core ()
 	PluginManager_ = new Main::PluginManager (this);
 
 	FilterModel_->setSourceModel (MergeModel_.get ());
-//	connect (MergeModel_.get (),
-//			SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
-//			FilterModel_.get (),
-//			SLOT (invalidate ()));
 
     ClipboardWatchdog_ = new QTimer (this);
     connect (ClipboardWatchdog_,
@@ -236,7 +232,6 @@ void Main::Core::SetNewRow (const QModelIndex& index)
 	QObject *plugin = Representation2Object_ [*modIter];
 
 	IEmbedModel *iee = dynamic_cast<IEmbedModel*> (plugin);
-	qDebug () << iee;
 	if (iee)
 		iee->ItemSelected (MergeModel_->mapToSource (mapped));
 }
