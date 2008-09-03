@@ -116,6 +116,7 @@ public:
     TorrentInfo GetTorrentStats () const;
 	libtorrent::bitfield GetLocalPieces () const;
     OverallStats GetOverallStats () const;
+	libtorrent::cache_status GetCacheStats () const;
     QList<FileInfo> GetTorrentFiles () const;
     QList<PeerInfo> GetPeers () const;
     QStringList GetTagsForIndex (int = -1) const;

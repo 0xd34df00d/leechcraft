@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>641</width>
-    <height>352</height>
+    <height>390</height>
    </rect>
   </property>
   <property name="tabPosition" >
@@ -17,7 +17,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex" >
-   <number>0</number>
+   <number>2</number>
   </property>
   <property name="elideMode" >
    <enum>Qt::ElideRight</enum>
@@ -28,7 +28,7 @@
      <x>0</x>
      <y>0</y>
      <width>637</width>
-     <height>325</height>
+     <height>362</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -262,7 +262,7 @@
      <x>0</x>
      <y>0</y>
      <width>637</width>
-     <height>325</height>
+     <height>362</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -394,17 +394,17 @@
      <x>0</x>
      <y>0</y>
      <width>637</width>
-     <height>325</height>
+     <height>362</height>
     </rect>
    </property>
    <attribute name="title" >
     <string>Overall status</string>
    </attribute>
-   <layout class="QVBoxLayout" >
+   <layout class="QVBoxLayout" name="verticalLayout" >
     <item>
-     <layout class="QHBoxLayout" >
+     <layout class="QHBoxLayout" name="horizontalLayout_2" >
       <item>
-       <layout class="QGridLayout" >
+       <layout class="QFormLayout" name="formLayout_4" >
         <item row="0" column="0" >
          <widget class="QLabel" name="label_22" >
           <property name="text" >
@@ -475,19 +475,6 @@
           </property>
          </widget>
         </item>
-        <item row="6" column="0" >
-         <spacer>
-          <property name="orientation" >
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0" >
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
         <item row="5" column="0" >
          <widget class="QLabel" name="label_18" >
           <property name="text" >
@@ -518,7 +505,7 @@
        </spacer>
       </item>
       <item>
-       <layout class="QGridLayout" >
+       <layout class="QFormLayout" name="formLayout_3" >
         <item row="0" column="0" >
          <widget class="QLabel" name="label_27" >
           <property name="text" >
@@ -589,19 +576,6 @@
           </property>
          </widget>
         </item>
-        <item row="5" column="0" >
-         <spacer>
-          <property name="orientation" >
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0" >
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
        </layout>
       </item>
       <item>
@@ -618,6 +592,164 @@
        </spacer>
       </item>
      </layout>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox_4" >
+      <property name="title" >
+       <string>Cache</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout" >
+       <item>
+        <layout class="QFormLayout" name="formLayout_2" >
+         <item row="0" column="0" >
+          <widget class="QLabel" name="label_32" >
+           <property name="text" >
+            <string>Blocks written:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1" >
+          <widget class="QLabel" name="BlocksWritten_" >
+           <property name="text" >
+            <string>&lt;></string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" >
+          <widget class="QLabel" name="label_46" >
+           <property name="text" >
+            <string>Write operations:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1" >
+          <widget class="QLabel" name="Writes_" >
+           <property name="text" >
+            <string>&lt;></string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0" >
+          <widget class="QLabel" name="label_52" >
+           <property name="text" >
+            <string>Write hit ratio:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1" >
+          <widget class="QLabel" name="WriteHitRatio_" >
+           <property name="text" >
+            <string>&lt;></string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1" >
+          <widget class="QLabel" name="CacheSize_" >
+           <property name="text" >
+            <string>&lt;></string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0" >
+          <widget class="QLabel" name="label_54" >
+           <property name="text" >
+            <string>Cache size:</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer" >
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0" >
+          <size>
+           <width>139</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <layout class="QFormLayout" name="formLayout" >
+         <property name="fieldGrowthPolicy" >
+          <enum>QFormLayout::ExpandingFieldsGrow</enum>
+         </property>
+         <item row="0" column="0" >
+          <widget class="QLabel" name="label_48" >
+           <property name="text" >
+            <string>Total blocks read:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1" >
+          <widget class="QLabel" name="TotalBlocksRead_" >
+           <property name="text" >
+            <string>&lt;></string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0" >
+          <widget class="QLabel" name="label_49" >
+           <property name="text" >
+            <string>Read hit ratio:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1" >
+          <widget class="QLabel" name="ReadHitRatio_" >
+           <property name="text" >
+            <string>&lt;></string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0" >
+          <widget class="QLabel" name="label_56" >
+           <property name="text" >
+            <string>Read cache size:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1" >
+          <widget class="QLabel" name="ReadCacheSize_" >
+           <property name="text" >
+            <string>&lt;></string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" >
+          <widget class="QLabel" name="label_45" >
+           <property name="text" >
+            <string>Cached block reads:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1" >
+          <widget class="QLabel" name="CachedBlockReads_" >
+           <property name="text" >
+            <string>&lt;></string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_2" >
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0" >
+          <size>
+           <width>140</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
     </item>
     <item>
      <spacer>
@@ -640,7 +772,7 @@
      <x>0</x>
      <y>0</y>
      <width>637</width>
-     <height>325</height>
+     <height>362</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -1058,7 +1190,7 @@
      <x>0</x>
      <y>0</y>
      <width>637</width>
-     <height>325</height>
+     <height>362</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -1084,7 +1216,7 @@
      <x>0</x>
      <y>0</y>
      <width>637</width>
-     <height>325</height>
+     <height>362</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -1112,7 +1244,7 @@
      <x>0</x>
      <y>0</y>
      <width>637</width>
-     <height>325</height>
+     <height>362</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -1137,7 +1269,7 @@
      <x>0</x>
      <y>0</y>
      <width>637</width>
-     <height>325</height>
+     <height>362</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -1179,7 +1311,7 @@
      <x>0</x>
      <y>0</y>
      <width>637</width>
-     <height>325</height>
+     <height>362</height>
     </rect>
    </property>
    <attribute name="title" >

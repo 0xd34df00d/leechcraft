@@ -562,6 +562,18 @@ void TorrentPlugin::updateOverallStats ()
     Ui_.LabelDHTTorrents_->setText (QString::number (stats.NumDHTTorrents_));
     Ui_.LabelListenPort_->setText (QString::number (stats.ListenPort_));
     Ui_.LabelSessionRating_->setText (QString::number (stats.SessionUpload_ / static_cast<double> (stats.SessionDownload_), 'g', 4));
+
+	libtorrent::cache_status cs = Core::Instance ()->GetCacheStats ();
+	Ui_.BlocksWritten_->setText (QString::number (cs.blocks_written));
+	Ui_.Writes_->setText (QString::number (cs.writes));
+	Ui_.WriteHitRatio_->setText (QString::number (static_cast<double> (cs.blocks_written - cs.writes ) /
+				static_cast<double> (cs.blocks_written)));
+	Ui_.CacheSize_->setText (QString::number (cs.cache_size));
+	Ui_.TotalBlocksRead_->setText (QString::number (cs.blocks_read));
+	Ui_.CachedBlockReads_->setText (QString::number (cs.blocks_read_hit));
+	Ui_.ReadHitRatio_->setText (QString::number (static_cast<double> (cs.blocks_read_hit) /
+				static_cast<double> (cs.blocks_read)));
+	Ui_.ReadCacheSize_->setText (QString::number (cs.read_cache_size));
 }
 
 void TorrentPlugin::doLogMessage (const QString& msg)

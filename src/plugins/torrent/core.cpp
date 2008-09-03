@@ -464,6 +464,11 @@ OverallStats Core::GetOverallStats () const
     return result;
 }
 
+libtorrent::cache_status Core::GetCacheStats () const
+{
+	return Session_->get_cache_status ();
+}
+
 QList<FileInfo> Core::GetTorrentFiles () const
 {
     if (!CheckValidity (CurrentTorrent_))
