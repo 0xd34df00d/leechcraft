@@ -30,7 +30,6 @@ SET (SRCS
 	peersmodel.cpp
 	filesviewdelegate.cpp
 	movetorrentfiles.cpp
-	threadedpd.cpp
 	representationmodel.cpp
 	)
 SET (HEADERS
@@ -51,7 +50,6 @@ SET (HEADERS
 	peersmodel.h
 	filesviewdelegate.h
 	movetorrentfiles.h
-	threadedpd.h
 	representationmodel.h
 	newtorrentparams.h
 	overallstats.h
