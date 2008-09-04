@@ -216,6 +216,8 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
         DoCheckbox (item, lay);
     else if (type == "spinbox")
         DoSpinbox (item, lay);
+	else if (type == "doublespinbox")
+		DoDoubleSpinbox (item, lay);
     else if (type == "groupbox" && item.attribute ("checkable") == "true")
         DoGroupbox (item, lay);
     else if (type == "spinboxrange")
@@ -494,6 +496,37 @@ void XmlSettingsDialog::DoSpinbox (const QDomElement& item, QFormLayout *lay)
 	lay->addRow (label, box);
 }
 
+void XmlSettingsDialog::DoDoubleSpinbox (const QDomElement& item, QFormLayout *lay)
+{
+    QLabel *label = new QLabel (GetLabel (item));
+    label->setWordWrap (false);
+    QDoubleSpinBox *box = new QDoubleSpinBox;
+    box->setObjectName (item.attribute ("property"));
+    if (item.hasAttribute ("minimum"))
+        box->setMinimum (item.attribute ("minimum").toDouble ());
+    if (item.hasAttribute ("maximum"))
+        box->setMaximum (item.attribute ("maximum").toDouble ());
+    if (item.hasAttribute ("step"))
+        box->setSingleStep (item.attribute ("step").toDouble ());
+    if (item.hasAttribute ("suffix"))
+        box->setSuffix (item.attribute ("suffix"));
+    LangElements langs = GetLangElements (item);
+    if (langs.Valid_)
+    {
+        if (langs.Label_.first)
+            label->setText (langs.Label_.second);
+        if (langs.Suffix_.first)
+            box->setSuffix (langs.Suffix_.second);
+    }
+
+	QVariant value = GetValue (item);
+
+    box->setValue (value.toDouble ());
+    connect (box, SIGNAL (valueChanged (int)), this, SLOT (updatePreferences ()));
+
+	lay->addRow (label, box);
+}
+
 void XmlSettingsDialog::DoGroupbox (const QDomElement& item, QFormLayout *lay)
 {
     QGroupBox *box = new QGroupBox (GetLabel (item));
@@ -737,6 +770,7 @@ void XmlSettingsDialog::updatePreferences ()
     QLineEdit *edit = qobject_cast<QLineEdit*> (sender ());
     QCheckBox *checkbox = qobject_cast<QCheckBox*> (sender ());
     QSpinBox *spinbox = qobject_cast<QSpinBox*> (sender ());
+	QDoubleSpinBox *doubleSpinbox = qobject_cast<QDoubleSpinBox*> (sender ());
     QGroupBox *groupbox = qobject_cast<QGroupBox*> (sender ());
     RangeWidget *rangeWidget = qobject_cast<RangeWidget*> (sender ());
     FilePicker *picker = qobject_cast<FilePicker*> (sender ());
@@ -748,6 +782,8 @@ void XmlSettingsDialog::updatePreferences ()
         value = checkbox->checkState ();
     else if (spinbox)
         value = spinbox->value ();
+	else if (doubleSpinbox)
+		value = doubleSpinbox->value ();
     else if (groupbox)
         value = groupbox->isChecked ();
     else if (rangeWidget)

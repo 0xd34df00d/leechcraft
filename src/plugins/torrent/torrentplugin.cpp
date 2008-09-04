@@ -557,9 +557,12 @@ void TorrentPlugin::updateOverallStats ()
     Ui_.LabelUploadConnections_->setText (QString::number (stats.NumUploads_));
     Ui_.LabelTotalPeers_->setText (QString::number (stats.NumPeers_));
     Ui_.LabelTotalDHTNodes_->setText (QString::number (stats.NumDHTNodes_));
+    Ui_.LabelGlobalDHTNodes_->setText (QString::number (stats.NumGlobalDHTNodes_));
     Ui_.LabelDHTTorrents_->setText (QString::number (stats.NumDHTTorrents_));
     Ui_.LabelListenPort_->setText (QString::number (stats.ListenPort_));
     Ui_.LabelSessionRating_->setText (QString::number (stats.SessionUpload_ / static_cast<double> (stats.SessionDownload_), 'g', 4));
+	Ui_.LabelTotalFailedData_->setText (Proxy::Instance ()->MakePrettySize (stats.TotalFailedData_));
+	Ui_.LabelTotalRedundantData_->setText (Proxy::Instance ()->MakePrettySize (stats.TotalRedundantData_));
 
 	libtorrent::cache_status cs = Core::Instance ()->GetCacheStats ();
 	Ui_.BlocksWritten_->setText (QString::number (cs.blocks_written));

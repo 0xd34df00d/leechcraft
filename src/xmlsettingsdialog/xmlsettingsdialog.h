@@ -60,6 +60,7 @@ private:
     void DoLineedit (const QDomElement&, QFormLayout*);
     void DoCheckbox (const QDomElement&, QFormLayout*);
     void DoSpinbox (const QDomElement&, QFormLayout*);
+    void DoDoubleSpinbox (const QDomElement&, QFormLayout*);
     void DoGroupbox (const QDomElement&, QFormLayout*);
     void DoSpinboxRange (const QDomElement&, QFormLayout*);
     void DoPath (const QDomElement&, QFormLayout*);

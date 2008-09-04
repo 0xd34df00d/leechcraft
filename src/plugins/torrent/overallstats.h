@@ -8,9 +8,12 @@ struct OverallStats
         NumConnections_,
         NumPeers_,
         NumDHTNodes_,
+        NumGlobalDHTNodes_,
         NumDHTTorrents_;
     quint64    SessionDownload_,
-            SessionUpload_;
+            SessionUpload_,
+			TotalFailedData_,
+			TotalRedundantData_;
     float    DownloadRate_,
             UploadRate_;
     unsigned short ListenPort_;

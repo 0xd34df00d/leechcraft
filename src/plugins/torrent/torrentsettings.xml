@@ -2,8 +2,8 @@
 <settings>
     <declare defaultlang="en" />
     <page>
-        <label lang="en" value="Network settings" />
-        <label lang="ru" value="Сетевые настройки" />
+        <label lang="en" value="Network" />
+        <label lang="ru" value="Сетевые" />
         <tab>
             <label lang="en" value="General" />
             <label lang="ru" value="Общие" />
@@ -170,9 +170,13 @@
                 </item>
             </item>
         </tab>
+	</page>
+    <page>
+        <label lang="en" value="Advanced network" />
+        <label lang="ru" value="Расширенные сетевые" />
         <tab>
-            <label lang="en" value="Advanced I" />
-            <label lang="ru" value="Расширенные I" />
+            <label lang="en" value="I" />
+            <label lang="ru" value="I" />
 			<groupbox>
 				<label lang="en" value="Advanced settings" />
 				<label lang="ru" value="Расширенные настройки" />
@@ -223,11 +227,11 @@
 				<item type="spinbox" property="TrackerMaximumResponseLength" default="1024" minimum="512" maximum="16384" step="512">
 					<lang value="en">
 						<label value="Tracker maximum response length:" />
-						<suffix value=" kb" />
+						<suffix value=" KB" />
 					</lang>
 					<lang value="ru">
 						<label value="Максимальный размер ответа от трекера:" />
-						<suffix value=" кб" />
+						<suffix value=" КБ" />
 					</lang>
 				</item>
 				<item type="spinbox" property="PieceTimeout" default="10" minimum="5" maximum="30" step="5">
@@ -261,15 +265,11 @@
 			</groupbox>
         </tab>
         <tab>
-            <label lang="en" value="Advanced II" />
-            <label lang="ru" value="Расширенные II" />
+            <label lang="en" value="II" />
+            <label lang="ru" value="II" />
 			<groupbox>
 				<label lang="en" value="Advanced settings" />
 				<label lang="ru" value="Расширенные настройки" />
-				<item type="spinbox" property="OptimisticUnchokeMultiplier" default="4" minimum="2" maximum="10" step="1">
-					<label lang="en" value="Optimistic unchoke multiplier:" />
-					<label lang="ru" value="Множитель оптимистичного unchoke:" />
-				</item>
 				<item type="spinbox" property="RequestQueueTime" default="3" minimum="1" maximum="10" step="1">
 					<lang value="en">
 						<label value="Piece request queue time:" />
@@ -287,16 +287,6 @@
 				<item type="spinbox" property="MaxOutRequestQueue" default="200" minimum="50" maximum="1000" step="50">
 					<label lang="en" value="The number of block requests to a peer in a queue:" />
 					<label lang="ru" value="Максимальное число запросов на блоки пиру в очереди:" />
-				</item>
-				<item type="spinbox" property="WholePiecesThreshold" default="20" minimum="5" maximum="50" step="5">
-					<lang value="en">
-						<label value="Force download of a piece if it could not be fetched in:" />
-						<suffix value=" s" />
-					</lang>
-					<lang value="ru">
-						<label value="Форсировать закачку куска, если он не скачан в течение:" />
-						<suffix value=" с" />
-					</lang>
 				</item>
 				<item type="spinbox" property="PeerTimeout" default="120" minimum="10" maximum="300" step="10">
 					<lang value="en">
@@ -342,11 +332,31 @@
 						<suffix value=" с" />
 					</lang>
 				</item>
+				<item type="spinbox" property="CacheSize" default="8" minimum="1" maximum="256">
+					<lang value="en">
+						<label value="Cache size:" />
+						<suffix value=" KB" />
+					</lang>
+					<lang value="ru">
+						<label value="Размер кэша:" />
+						<suffix value=" МБ" />
+					</lang>
+				</item>
+				<item type="spinbox" property="CacheExpiry" default="60" minimum="5" maximum="1200">
+					<lang value="en">
+						<label value="Cache expiry:" />
+						<suffix value=" s" />
+					</lang>
+					<lang value="ru">
+						<label value="Годность кэша:" />
+						<suffix value=" с" />
+					</lang>
+				</item>
 			</groupbox>
         </tab>
         <tab>
-            <label lang="en" value="Advanced III" />
-            <label lang="ru" value="Расширенные III" />
+            <label lang="en" value="III" />
+            <label lang="ru" value="III" />
 			<groupbox>
 				<label lang="en" value="Advanced settings" />
 				<label lang="ru" value="Расширенные настройки" />
@@ -358,6 +368,10 @@
 					<label lang="en" value="Ignore limits on local network" />
 					<label lang="ru" value="Игнорировать ограничения в локальной сети" />
 				</item>
+				<item type="checkbox" property="DontCountSlowTorrents" default="true">
+					<label lang="en" value="Don't count slow torrents" />
+					<label lang="ru" value="Не учитывать медленные торренты" />
+				</item>
 				<item type="checkbox" property="SendRedundantHave" state="off">
 					<label lang="en" value="Send redundant have messages" />
 					<label lang="ru" value="Посылать ненужные have-сообщения" />
@@ -367,6 +381,7 @@
 					<label lang="ru" value="Ленивые битовые маски" />
 				</item>
 				<item type="checkbox" property="UseDHTAsFallback" state="on">
+					
 					<label lang="en" value="Use DHT as fallback" />
 					<label lang="ru" value="Использовать DHT в случае недоступного трекера" />
 				</item>
@@ -374,13 +389,53 @@
 					<label lang="en" value="Ignore UPNP-nonrouters" />
 					<label lang="ru" value="Игнорировать UPNP-устройства, не являющиеся роутерами" />
 				</item>
+				<item type="checkbox" property="AutoUploadSlots" default="true">
+					<label lang="en" value="Auto upload slots" />
+					<label lang="ru" value="Автоматические слоты на отдачу" />
+				</item>
+				<item type="checkbox" property="UseParoleMode" default="tru">
+					<label lang="en" value="Use parole mode" />
+					<label lang="ru" value="Использовать parole mode" />
+				</item>
+				<item type="checkbox" property="CloseRedundantConnections">
+					<label lang="en" value="Close redundant connections" />
+					<label lang="ru" value="Закрывать ненужные соединения" />
+				</item>
+			</groupbox>
+        </tab>
+		<tab>
+			<label lang="en" value="IV" />
+			<label lang="ru" value="IV" />
+			<groupbox>
+                <label lang="en" value="Advanced" />
+                <label lang="ru" value="Расширенные настройки" />
+				<item type="spinbox" property="WholePiecesThreshold" default="20" minimum="5" maximum="50" step="5">
+					<lang value="en">
+						<label value="Force download of a piece if it could not be fetched in:" />
+						<suffix value=" s" />
+					</lang>
+					<lang value="ru">
+						<label value="Форсировать закачку куска, если он не скачан в течение:" />
+						<suffix value=" с" />
+					</lang>
+				</item>
 				<item type="spinbox" property="MaxFailcount" default="5" minimum="1" maximum="99" step="1">
-					<label lang="en" value="Maximum peer connection attempt failcount" />
-					<label lang="ru" value="Максимальное количество неудачных соединений с пиром" />
+					<label lang="en" value="Maximum peer connection attempt failcount:" />
+					<label lang="ru" value="Максимальное количество неудачных соединений с пиром:" />
 				</item>
 				<item type="spinbox" property="ConnectionSpeed" default="20" minimum="1" maximum="100" step="10">
 					<label lang="en" value="Connection attempts per second:" />
 					<label lang="ru" value="Количество попыток соединения в секунду:" />
+				</item>
+				<item type="spinbox" property="SendBufferWatermark" default="80" minimum="1" maximum="100">
+					<lang value="en">
+						<label value="Upper send buffer low-watermark:" />
+						<suffix value=" KB" />
+					</lang>
+					<lang value="ru">
+						<label value="Верхняя отметка исходящего буфера:" />
+						<suffix value=" КБ" />
+					</lang>
 				</item>
 				<item type="spinbox" property="InactivityTimeout" default="600" minimum="30" maximum="1200" step="60">
 					<lang value="en">
@@ -402,19 +457,83 @@
 						<suffix value=" с" />
 					</lang>
 				</item>
+				<item type="spinboxrange" property="OutgoingPorts" default="0:0" minimum="1025" maximum="65535">
+					<label lang="en" value="Outgoing ports:" />
+					<label lang="ru" value="Порты исходящих соединений:" />
+				</item>
+				<item type="spinbox" property="OptimisticUnchokeMultiplier" default="4" minimum="2" maximum="10" step="1">
+					<label lang="en" value="Optimistic unchoke multiplier:" />
+					<label lang="ru" value="Множитель оптимистичного unchoke:" />
+				</item>
+				<item type="spinbox" property="PeerTOS" default="0" minimum="0" maximum="255">
+					<label lang="en" value="TOS byte:" />
+					<label lang="ru" value="TOS-байт:" />
+				</item>
 			</groupbox>
-        </tab>
+		</tab>
 		<tab>
-			<label lang="en" value="Advanced IV" />
-			<label lang="ru" value="Расширенные IV" />
-			<groupbox>
+            <label lang="en" value="V" />
+            <label lang="ru" value="V" />
+            <groupbox>
                 <label lang="en" value="Advanced" />
                 <label lang="ru" value="Расширенные настройки" />
+				<item type="doublespinbox" property="ShareRatioLimit" default="2" minimum="0.7" maximum="1000">
+					<label lang="en" value="Share ratio limit:" />
+					<label lang="ru" value="Лимит рейтинга:" />
+				</item>
+				<item type="doublespinbox" property="SeedTimeRatioLimit" default="2" minimum="0.7" maximum="1000">
+					<label lang="en" value="Seed time ratio limit:" />
+					<label lang="ru" value="Лимит отношения времени сидирования:" />
+				</item>
+				<item type="doublespinbox" property="SeedTimeLimit" default="1440" minimum="60" maximum="30240" step="60">
+					<lang value="en">
+						<label value="Seed time limit:" />
+						<suffix value=" min" />
+					</lang>
+					<lang value="ru">
+						<label value="Лимит времени сидирования:" />
+						<suffix value=" мин" />
+					</lang>
+				</item>
+				<item type="spinbox" property="AutoScrapeInterval" default="30" minimum="5" maximum="240" step="10">
+					<lang value="en">
+						<label value="Auto scrape interval:" />
+						<suffix value=" min" />
+					</lang>
+					<lang value="ru">
+						<label value="Интервал автоматического scrape:" />
+						<suffix value=" мин" />
+					</lang>
+				</item>
+				<item type="spinbox" property="AutoScrapeMinInterval" default="120" minimum="10" maximum="600" step="10">
+					<lang value="en">
+						<label value="Minimal scrape interval:" />
+						<suffix value=" s" />
+					</lang>
+					<lang value="ru">
+						<label value="Минимальный интервал между scrape:" />
+						<suffix value=" с" />
+					</lang>
+				</item>
+				<item type="spinbox" property="MaxPeerListSize" default="8000" minimum="5" maximum="32000" step="500">
+					<label lang="en" value="Max peer list size:" />
+					<label lang="ru" value="Максимальное количество пиров в списке:" />
+				</item>
+				<item type="spinbox" property="MinAnnounceInterval" default="300" minimum="10" maximum="3600" step="10">
+					<lang value="en">
+						<label value="Minimal announce interval:" />
+						<suffix value=" s" />
+					</lang>
+					<lang value="ru">
+						<label value="Минимальный интервал announce:" />
+						<suffix value=" с" />
+					</lang>
+				</item>
 			</groupbox>
 		</tab>
         <tab>
-            <label lang="en" value="Advanced V" />
-            <label lang="ru" value="Расширенные V" />
+            <label lang="en" value="VI" />
+            <label lang="ru" value="VI" />
             <groupbox>
                 <label lang="en" value="Advanced" />
                 <label lang="ru" value="Расширенные настройки" />
@@ -426,6 +545,16 @@
                     <label lang="en" value="N of pieces to send via fast extensions:" />
                     <label lang="ru" value="Посылать через fast extensions кусков:" />
                 </item>
+				<item type="spinbox" property="AutoManageInterval" default="10" minimum="10" maximum="1200" step="10">
+					<lang value="en">
+						<label value="Auto queue manage interval" />
+						<suffix value=" s" />
+					</lang>
+					<lang value="ru">
+						<label value="Интервал управления очередью" />
+						<suffix value=" с" />
+					</lang>
+				</item>
                 <item type="spinbox" property="HandshakeTimeout" default="10" minimum="1" maximum="60" step="10">
                     <lang value="en">
                         <label value="Handshake timeout:" />
@@ -486,11 +615,11 @@
             <item type="spinbox" property="MaxOutstandingDiskBytesPerConnection" default="1024" minimum="32" maximum="65536" step="512">
                 <lang value="en">
                     <label value="Maximum outstanding disk bytes per connection:" />
-                    <suffix value=" kb" />
+                    <suffix value=" KB" />
                 </lang>
                 <lang value="ru">
                     <label value="Максимально байт в очереди за запись на соединение:" />
-                    <suffix value=" кб" />
+					<suffix value=" КБ" />
                 </lang>
             </item>
             <item type="spinbox" property="FilePoolSize" default="40" minimum="5" maximum="1000" step="5">

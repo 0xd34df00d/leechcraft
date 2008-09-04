@@ -281,7 +281,7 @@ QVariant Core::data (const QModelIndex& index, int role) const
                 return status.paused ? tr ("Idle") : GetStringForState (status.state);
         case ColumnProgress:
             return QString ("%1% (%2 of %3)")
-				.arg (status.progress * 100, 0, 'f', 4)
+				.arg (status.progress * 100, 0, 'f', 2)
 				.arg (Proxy::Instance ()->MakePrettySize (status.total_done))
 				.arg (Proxy::Instance ()->MakePrettySize (status.total_wanted));
         case ColumnDSpeed:
@@ -473,7 +473,10 @@ OverallStats Core::GetOverallStats () const
     result.DownloadRate_ = status.download_rate;
     result.NumPeers_ = status.num_peers;
     result.NumDHTNodes_ = status.dht_nodes;
+    result.NumGlobalDHTNodes_ = status.dht_global_nodes;
     result.NumDHTTorrents_ = status.dht_torrents;
+	result.TotalFailedData_ = status.total_failed_bytes;
+	result.TotalRedundantData_ = status.total_redundant_bytes;
     return result;
 }
 
@@ -1344,6 +1347,40 @@ void Core::ManipulateSettings ()
 			this, "setGeneralSettings");
     XmlSettingsManager::Instance ()->RegisterObject ("UPNPIgnoreNonrouters",
 			this, "setGeneralSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("SendBufferWatermark",
+			this, "setGeneralSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("AutoUploadSlots",
+			this, "setGeneralSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("UseParoleMode",
+			this, "setGeneralSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("CacheSize",
+			this, "setGeneralSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("CacheExpiry",
+			this, "setGeneralSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("OutgoingPorts",
+			this, "setGeneralSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("PeerTOS",
+			this, "setGeneralSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("DontCountSlowTorrents",
+			this, "setGeneralSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("AutoManageInterval",
+			this, "setGeneralSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("ShareRatioLimit",
+			this, "setGeneralSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("SeedTimeRatioLimit",
+			this, "setGeneralSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("SeedTimeLimit",
+			this, "setGeneralSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("CloseRedundantConnections",
+			this, "setGeneralSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("AutoScrapeInterval",
+			this, "setGeneralSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("AutoScrapeMinInterval",
+			this, "setGeneralSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("MaxPeerListSize",
+			this, "setGeneralSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("MinAnnounceInterval",
+			this, "setGeneralSettings");
 
     XmlSettingsManager::Instance ()->RegisterObject ("MaxPeersReply",
 			this, "setDHTSettings");
@@ -1858,32 +1895,58 @@ void Core::setGeneralSettings ()
 {
     libtorrent::session_settings settings = Session_->settings ();
 
-    settings.user_agent = XmlSettingsManager::Instance ()->property ("UserAgent").toString ().toStdString ();
-    settings.tracker_completion_timeout = XmlSettingsManager::Instance ()->property ("TrackerCompletionTimeout").toInt ();
-    settings.tracker_receive_timeout = XmlSettingsManager::Instance ()->property ("TrackerReceiveTimeout").toInt ();
-    settings.stop_tracker_timeout = XmlSettingsManager::Instance ()->property ("StopTrackerTimeout").toInt ();
-    settings.tracker_maximum_response_length = XmlSettingsManager::Instance ()->property ("TrackerMaximumResponseLength").toInt () * 1024;
-    settings.piece_timeout = XmlSettingsManager::Instance ()->property ("PieceTimeout").toInt ();
-    settings.request_queue_time = XmlSettingsManager::Instance ()->property ("RequestQueueTime").toInt ();
-    settings.max_allowed_in_request_queue = XmlSettingsManager::Instance ()->property ("MaxAllowedInRequestQueue").toInt ();
-    settings.max_out_request_queue = XmlSettingsManager::Instance ()->property ("MaxOutRequestQueue").toInt ();
-    settings.whole_pieces_threshold = XmlSettingsManager::Instance ()->property ("WholePiecesThreshold").toInt ();
-    settings.peer_timeout = XmlSettingsManager::Instance ()->property ("PeerTimeout").toInt ();
-    settings.urlseed_timeout = XmlSettingsManager::Instance ()->property ("UrlSeedTimeout").toInt ();
-    settings.urlseed_pipeline_size = XmlSettingsManager::Instance ()->property ("UrlSeedPipelineSize").toInt ();
-    settings.urlseed_wait_retry = XmlSettingsManager::Instance ()->property ("UrlSeedWaitRetry").toInt ();
-    settings.file_pool_size = XmlSettingsManager::Instance ()->property ("FilePoolSize").toInt ();
-    settings.allow_multiple_connections_per_ip = XmlSettingsManager::Instance ()->property ("AllowMultipleConnectionsPerIP").toBool ();
-    settings.max_failcount = XmlSettingsManager::Instance ()->property ("MaxFailcount").toInt ();
-    settings.min_reconnect_time = XmlSettingsManager::Instance ()->property ("MinReconnectTime").toInt ();
-    settings.peer_connect_timeout = XmlSettingsManager::Instance ()->property ("PeerConnectTimeout").toInt ();
-    settings.ignore_limits_on_local_network = XmlSettingsManager::Instance ()->property ("IgnoreLimitsOnLocalNetwork").toBool ();
-    settings.connection_speed = XmlSettingsManager::Instance ()->property ("ConnectionSpeed").toInt ();
-    settings.send_redundant_have = XmlSettingsManager::Instance ()->property ("SendRedundantHave").toBool ();
-    settings.lazy_bitfields = XmlSettingsManager::Instance ()->property ("LazyBitfields").toBool ();
-    settings.inactivity_timeout = XmlSettingsManager::Instance ()->property ("InactivityTimeout").toInt ();
-    settings.unchoke_interval = XmlSettingsManager::Instance ()->property ("UnchokeInterval").toInt ();
-    settings.optimistic_unchoke_multiplier = XmlSettingsManager::Instance ()->property ("OptimisticUnchokeMultiplier").toInt ();
+    settings.user_agent = XmlSettingsManager::Instance ()->
+		property ("UserAgent").toString ().toStdString ();
+    settings.tracker_completion_timeout = XmlSettingsManager::Instance ()->
+		property ("TrackerCompletionTimeout").toInt ();
+    settings.tracker_receive_timeout = XmlSettingsManager::Instance ()->
+		property ("TrackerReceiveTimeout").toInt ();
+    settings.stop_tracker_timeout = XmlSettingsManager::Instance ()->
+		property ("StopTrackerTimeout").toInt ();
+    settings.tracker_maximum_response_length = XmlSettingsManager::Instance ()->
+		property ("TrackerMaximumResponseLength").toInt () * 1024;
+    settings.piece_timeout = XmlSettingsManager::Instance ()->
+		property ("PieceTimeout").toInt ();
+    settings.request_queue_time = XmlSettingsManager::Instance ()->
+		property ("RequestQueueTime").toInt ();
+    settings.max_allowed_in_request_queue = XmlSettingsManager::Instance ()->
+		property ("MaxAllowedInRequestQueue").toInt ();
+    settings.max_out_request_queue = XmlSettingsManager::Instance ()->
+		property ("MaxOutRequestQueue").toInt ();
+    settings.whole_pieces_threshold = XmlSettingsManager::Instance ()->
+		property ("WholePiecesThreshold").toInt ();
+    settings.peer_timeout = XmlSettingsManager::Instance ()->
+		property ("PeerTimeout").toInt ();
+    settings.urlseed_timeout = XmlSettingsManager::Instance ()->
+		property ("UrlSeedTimeout").toInt ();
+    settings.urlseed_pipeline_size = XmlSettingsManager::Instance ()->
+		property ("UrlSeedPipelineSize").toInt ();
+    settings.urlseed_wait_retry = XmlSettingsManager::Instance ()->
+		property ("UrlSeedWaitRetry").toInt ();
+    settings.file_pool_size = XmlSettingsManager::Instance ()->
+		property ("FilePoolSize").toInt ();
+    settings.allow_multiple_connections_per_ip = XmlSettingsManager::Instance ()->
+		property ("AllowMultipleConnectionsPerIP").toBool ();
+    settings.max_failcount = XmlSettingsManager::Instance ()->
+		property ("MaxFailcount").toInt ();
+    settings.min_reconnect_time = XmlSettingsManager::Instance ()->
+		property ("MinReconnectTime").toInt ();
+    settings.peer_connect_timeout = XmlSettingsManager::Instance ()->
+		property ("PeerConnectTimeout").toInt ();
+    settings.ignore_limits_on_local_network = XmlSettingsManager::Instance ()->
+		property ("IgnoreLimitsOnLocalNetwork").toBool ();
+    settings.connection_speed = XmlSettingsManager::Instance ()->
+		property ("ConnectionSpeed").toInt ();
+    settings.send_redundant_have = XmlSettingsManager::Instance ()->
+		property ("SendRedundantHave").toBool ();
+    settings.lazy_bitfields = XmlSettingsManager::Instance ()->
+		property ("LazyBitfields").toBool ();
+    settings.inactivity_timeout = XmlSettingsManager::Instance ()->
+		property ("InactivityTimeout").toInt ();
+    settings.unchoke_interval = XmlSettingsManager::Instance ()->
+		property ("UnchokeInterval").toInt ();
+    settings.optimistic_unchoke_multiplier = XmlSettingsManager::Instance ()->
+		property ("OptimisticUnchokeMultiplier").toInt ();
     try
     {
         if (XmlSettingsManager::Instance ()->property ("AnnounceIP").toString ().isEmpty ())
@@ -1895,14 +1958,59 @@ void Core::setGeneralSettings ()
     {
         error (tr ("Wrong announce address %1").arg (XmlSettingsManager::Instance ()->property ("AnnounceIP").toString ()));
     }
-    settings.num_want = XmlSettingsManager::Instance ()->property ("NumWant").toInt ();
-    settings.initial_picker_threshold = XmlSettingsManager::Instance ()->property ("InitialPickerThreshold").toInt ();
-    settings.allowed_fast_set_size = XmlSettingsManager::Instance ()->property ("AllowedFastSetSize").toInt ();
-    settings.max_outstanding_disk_bytes_per_connection = XmlSettingsManager::Instance ()->property ("MaxOutstandingDiskBytesPerConnection").toInt () * 1024;
-    settings.handshake_timeout = XmlSettingsManager::Instance ()->property ("HandshakeTimeout").toInt ();
-    settings.use_dht_as_fallback = XmlSettingsManager::Instance ()->property ("UseDHTAsFallback").toBool ();
-    settings.free_torrent_hashes = XmlSettingsManager::Instance ()->property ("FreeTorrentHashes").toBool ();
-    settings.upnp_ignore_nonrouters = XmlSettingsManager::Instance ()->property ("UPNPIgnoreNonrouters").toBool ();
+    settings.num_want = XmlSettingsManager::Instance ()->
+		property ("NumWant").toInt ();
+    settings.initial_picker_threshold = XmlSettingsManager::Instance ()->
+		property ("InitialPickerThreshold").toInt ();
+    settings.allowed_fast_set_size = XmlSettingsManager::Instance ()->
+		property ("AllowedFastSetSize").toInt ();
+    settings.max_outstanding_disk_bytes_per_connection = XmlSettingsManager::Instance ()->
+		property ("MaxOutstandingDiskBytesPerConnection").toInt () * 1024;
+    settings.handshake_timeout = XmlSettingsManager::Instance ()->
+		property ("HandshakeTimeout").toInt ();
+    settings.use_dht_as_fallback = XmlSettingsManager::Instance ()->
+		property ("UseDHTAsFallback").toBool ();
+    settings.free_torrent_hashes = XmlSettingsManager::Instance ()->
+		property ("FreeTorrentHashes").toBool ();
+    settings.upnp_ignore_nonrouters = XmlSettingsManager::Instance ()->
+		property ("UPNPIgnoreNonrouters").toBool ();
+	settings.send_buffer_watermark = XmlSettingsManager::Instance ()->
+		property ("SendBufferWatermark").toInt () * 1024;
+	settings.auto_upload_slots = XmlSettingsManager::Instance ()->
+		property ("AutoUploadSlots").toBool ();
+	settings.use_parole_mode = XmlSettingsManager::Instance ()->
+		property ("UseParoleMode").toBool ();
+	settings.cache_size = 1048576 / 16384 * XmlSettingsManager::Instance ()->
+		property ("CacheSize").value<long int> ();
+	settings.cache_expiry = XmlSettingsManager::Instance ()->
+		property ("CacheExpiry").toInt ();
+	QList<QVariant> ports = XmlSettingsManager::Instance ()->
+		property ("OutgoingPorts").toList ();
+	if (ports.size () == 2)
+		settings.outgoing_ports = std::make_pair (ports.at (0).toInt (),
+				ports.at (1).toInt ());
+	settings.peer_tos = XmlSettingsManager::Instance ()->
+		property ("PeerTOS").toInt ();
+	settings.dont_count_slow_torrents = XmlSettingsManager::Instance ()->
+		property ("DontCountSlowTorrents").toBool ();
+	settings.auto_manage_interval = XmlSettingsManager::Instance ()->
+		property ("AutoManageInterval").toInt ();
+	settings.share_ratio_limit = XmlSettingsManager::Instance ()->
+		property ("ShareRatioLimit").toDouble ();
+	settings.seed_time_ratio_limit = XmlSettingsManager::Instance ()->
+		property ("SeedTimeRatioLimit").toDouble ();
+	settings.seed_time_limit = XmlSettingsManager::Instance ()->
+		property ("SeedTimeLimit").toULongLong () * 60;
+	settings.close_redundant_connections = XmlSettingsManager::Instance ()->
+		property ("CloseRedundantConnections").toBool ();
+	settings.auto_scrape_interval = XmlSettingsManager::Instance ()->
+		property ("AutoScrapeInterval").toInt () * 60;
+	settings.auto_scrape_min_interval = XmlSettingsManager::Instance ()->
+		property ("AutoScrapeMinInterval").toInt ();
+	settings.max_peerlist_size = XmlSettingsManager::Instance ()->
+		property ("MaxPeerListSize").toInt ();
+	settings.min_announce_interval = XmlSettingsManager::Instance ()->
+		property ("MinAnnounceInterval").toInt ();
 
     Session_->set_settings (settings);
 }
