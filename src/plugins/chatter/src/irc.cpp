@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <ctime>
 #include <QRegExp>
 #include <QStringList>
 
@@ -29,7 +30,7 @@
 ircLayer::ircLayer(QObject * parent=0) : QObject(parent)
 {
 	fSettings settings;
-	qsrand(time(NULL));
+	qsrand(std::time(NULL));
 	nickChanged=0;
 	// Protocol regexes
 	initRegexes();
@@ -236,7 +237,7 @@ void ircLayer::parseCtcp(QString type, QString arg, QHash<QString, QString> data
 	} else if(type=="PING")
 	{
 		QString answer;
-		answer.setNum(time(NULL));
+		answer.setNum(std::time(NULL));
 		ircNotice("\x01PING "+answer+"\x01", data["nick"]);
 	} else if(type=="VERSION")
 	{

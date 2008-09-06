@@ -1,16 +1,14 @@
 SET (QT_USE_QTNETWORK true)
-INCLUDE (${CMAKE_ROOT}/Modules/FindBoost.cmake)
 INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR}
 					 ${QT_QTCORE_INCLUDE_DIR}
 					 ${QT_QTGUI_INCLUDE_DIR}
 					 ${QT_QTNETWORK_INCLUDE_DIR}
 					 ${CMAKE_CURRENT_BINARY_DIR}
-					 ${Boost_INCLUDE_DIRS}
+					 ${Boost_INCLUDE_DIR}
 					 ../..
 					 .
 					 zlib/)
 LINK_DIRECTORIES (${Boost_LINK_DIRS} /usr/local/lib ../..)
-FIND_PACKAGE (Boost REQUIRED COMPONENTS date_time filesystem system thread)
 
 SET (SRCS
 	torrentplugin.cpp 
@@ -99,13 +97,14 @@ ADD_LIBRARY (leechcraft_torrent SHARED
 	${TRANSLATIONS}
 	)
 
+
 IF (WIN32)
 TARGET_LINK_LIBRARIES (leechcraft_torrent
 ${QT_LIBRARIES}
 plugininterface
 exceptions
 xmlsettingsdialog
-${Boost_LIBRARIES}
+${Boost_DATE_TIME_LIBRARY}
 torrent
 )
 ELSE (WIN32)
@@ -115,7 +114,6 @@ plugininterface
 exceptions
 xmlsettingsdialog
 torrent-rasterbar
-${Boost_LIBRARIES}
 )
 ENDIF (WIN32)
 

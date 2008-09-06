@@ -2,6 +2,7 @@ INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR}
                      ${QT_QTCORE_INCLUDE_DIR}
                      ${QT_QTGUI_INCLUDE_DIR}
                      ${QT_QTXML_INCLUDE_DIR}
+                     ${Boost_INCLUDE_DIRS}
                      ${CMAKE_CURRENT_BINARY_DIR} ../..)
 
 SET (SRCS

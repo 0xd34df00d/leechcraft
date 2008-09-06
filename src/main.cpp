@@ -67,9 +67,6 @@ int main (int argc, char **argv)
     qInstallMsgHandler (debugMessageHandler);
     QApplication app (argc, argv);
 
-	if (ParseCommandLine ())
-		return 0;
-
 	if (IsAlreadyRunning ())
 	{
 		QMessageBox::critical (0, "Critical failure",
@@ -96,5 +93,6 @@ int main (int argc, char **argv)
 
 	std::auto_ptr<Main::MainWindow> mw (new Main::MainWindow ());
     return app.exec ();
+	return 0;
 }
 

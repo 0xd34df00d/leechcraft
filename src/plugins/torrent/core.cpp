@@ -28,7 +28,6 @@
 #include <libtorrent/storage.hpp>
 #include <libtorrent/file.hpp>
 #include <libtorrent/alert_types.hpp>
-#include <asio/system_error.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
@@ -97,7 +96,7 @@ void Core::DoDelayedInit ()
         setGeneralSettings ();
         setDHTSettings ();
     }
-    catch (const asio::system_error&)
+    catch (...)
     {
         qWarning () << "Seems like address is already in use.";
     }

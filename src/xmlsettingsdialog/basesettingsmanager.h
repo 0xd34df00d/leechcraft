@@ -28,8 +28,6 @@
  */
 class BaseSettingsManager : public QObject
 {
-    Q_OBJECT
-
     QMap<QByteArray, QPair<QObject*, QByteArray> > Properties2Object_;
     bool Initializing_;
     QSettings *Settings_;

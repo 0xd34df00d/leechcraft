@@ -1,7 +1,7 @@
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <QHeaderView>
 #include <QFileDialog>
 #include <plugininterface/proxy.h>
-#include <boost/date_time.hpp>
 #include "addtorrent.h"
 #include "torrentfilesmodel.h"
 #include "xmlsettingsmanager.h"
