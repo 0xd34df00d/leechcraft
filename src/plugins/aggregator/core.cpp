@@ -699,7 +699,7 @@ void Core::handleJobFinished (int id)
 	UpdateUnreadItemsNumber ();
 	if (!emitString.isEmpty ())
 	{
-		emitString.prepend ("Aggregator updated:\r\n");
+		emitString.prepend (tr("Aggregator updated:\r\n"));
 		emit showDownloadMessage (emitString);
 	}
 	scheduleSave ();

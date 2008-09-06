@@ -4,6 +4,7 @@
 #include "ui_browserwidget.h"
 
 class QWebPage;
+class QWebSettings;
 
 class BrowserWidget : public QWidget
 {
@@ -15,6 +16,7 @@ public:
 	virtual ~BrowserWidget ();
 	void setHtml (const QString&);
 	QWebPage *page () const;
+	QWebSettings *settings () const;
 private slots:
 	void loadStarted ();
 	void loadFinished (bool);

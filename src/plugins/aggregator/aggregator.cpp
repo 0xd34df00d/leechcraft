@@ -113,6 +113,12 @@ void Aggregator::Init ()
 			SIGNAL (splitterMoved (int, int)),
 			this,
 			SLOT (updatePixmap (int)));
+
+	XmlSettingsManager::Instance ()->RegisterObject ("MinimumFontSize", this, "viewerSettingsChanged");
+	XmlSettingsManager::Instance ()->RegisterObject ("DefaultFontSize", this, "viewerSettingsChanged");
+	XmlSettingsManager::Instance ()->RegisterObject ("DefaultFixedFontSize", this, "viewerSettingsChanged");
+	XmlSettingsManager::Instance ()->RegisterObject ("AutoLoadImages", this, "viewerSettingsChanged");
+	XmlSettingsManager::Instance ()->RegisterObject ("AllowJavaScript", this, "viewerSettingsChanged");
 }
 
 void Aggregator::Release ()
@@ -324,7 +330,7 @@ void Aggregator::currentItemChanged (const QModelIndex& index)
 		Ui_.ItemPubDate_->setDateTime (QDateTime ());
 		return;
 	}
-    Ui_.ItemView_->setHtml (Core::Instance ().GetDescription (sindex));
+	Ui_.ItemView_->setHtml (Core::Instance ().GetDescription (sindex));
 	connect (Ui_.ItemView_->page ()->networkAccessManager (),
 			SIGNAL (sslErrors (QNetworkReply*, const QList<QSslError>&)),
 			&Core::Instance (),
@@ -333,22 +339,23 @@ void Aggregator::currentItemChanged (const QModelIndex& index)
 	Ui_.ItemCategory_->setText (Core::Instance ().GetCategory (sindex));
 	QString link = Core::Instance ().GetLink (sindex);
 	QString shortLink;
-    if (link.size () >= 40)
-        shortLink = link.left (15) + "..." + link.right (15);
-    else
-        shortLink = link;
+	Ui_.ItemLink_->setToolTip (link);
+	if (link.size () >= 40)
+		shortLink = link.left (15) + "..." + link.right (15);
+	else
+		shortLink = link;
 	if(QUrl (link).isValid ())
 	{
-	    link.insert (0,"<a href=\"");
-	    link.append ("\">" + shortLink + "</a>");
-        Ui_.ItemLink_->setText (link);
-        Ui_.ItemLink_->setOpenExternalLinks (true);
+		link.insert (0,"<a href=\"");
+		link.append ("\">" + shortLink + "</a>");
+		Ui_.ItemLink_->setText (link);
+		Ui_.ItemLink_->setOpenExternalLinks (true);
 	}
 	else
 	{
-        Ui_.ItemLink_->setOpenExternalLinks (false);
-        Ui_.ItemLink_->setText (shortLink);
-    }
+		Ui_.ItemLink_->setOpenExternalLinks (false);
+		Ui_.ItemLink_->setText (shortLink);
+	}
 	Ui_.ItemPubDate_->setDateTime (Core::Instance ().GetPubDate (sindex));
 }
 
@@ -359,15 +366,30 @@ void Aggregator::currentChannelChanged ()
 		return;
 
 	QModelIndex mapped = ChannelsFilterModel_->mapToSource (index);
-    Core::Instance ().currentChannelChanged (mapped);
-    Ui_.ChannelTags_->setText (Core::Instance ().GetTagsForIndex (mapped.row ()).join (" "));
+	Core::Instance ().currentChannelChanged (mapped);
+	Ui_.ChannelTags_->setText (Core::Instance ().GetTagsForIndex (mapped.row ()).join (" "));
 	QString link = Core::Instance ().GetChannelLink (mapped);
+	QString shortLink;
+	Ui_.ChannelLink_->setToolTip (link);
 	if (link.size () >= 40)
-		link = link.left (15) + "..." + link.right (15);
-    Ui_.ChannelLink_->setText (link);
+        	shortLink = link.left (15) + "..." + link.right (15);
+	else
+		shortLink = link;
+	if(QUrl (link).isValid ())
+	{
+		link.insert (0,"<a href=\"");
+		link.append ("\">" + shortLink + "</a>");
+		Ui_.ChannelLink_->setText (link);
+		Ui_.ChannelLink_->setOpenExternalLinks (true);
+	}
+	else
+	{
+		Ui_.ChannelLink_->setOpenExternalLinks (false);
+		Ui_.ChannelLink_->setText (shortLink);
+	}
 	Ui_.ChannelDescription_->setText (Core::Instance ().GetChannelDescription (mapped));
-    Ui_.ChannelAuthor_->setText (Core::Instance ().GetChannelAuthor (mapped));
-    Ui_.ChannelLanguage_->setText (Core::Instance ().GetChannelLanguage (mapped));
+	Ui_.ChannelAuthor_->setText (Core::Instance ().GetChannelAuthor (mapped));
+	Ui_.ChannelLanguage_->setText (Core::Instance ().GetChannelLanguage (mapped));
 	Ui_.ItemView_->setHtml ("");
 
 	updatePixmap (Ui_.MainSplitter_->sizes ().at (0));
@@ -438,6 +460,20 @@ void Aggregator::updatePixmap (int width)
 	if (!pixmap.isNull ())
 		Ui_.ChannelImage_->setPixmap (pixmap.scaledToWidth (width,
 					Qt::SmoothTransformation));
+}
+
+void Aggregator::viewerSettingsChanged ()
+{
+	Ui_.ItemView_->settings ()->setFontSize (QWebSettings::MinimumFontSize,
+						XmlSettingsManager::Instance ()->property ("MinimumFontSize").toInt ());
+	Ui_.ItemView_->settings ()->setFontSize (QWebSettings::DefaultFontSize,
+						XmlSettingsManager::Instance ()->property ("DefaultFontSize").toInt ());
+	Ui_.ItemView_->settings ()->setFontSize (QWebSettings::DefaultFixedFontSize,
+						XmlSettingsManager::Instance ()->property ("DefaultFixedFontSize").toInt ());
+	Ui_.ItemView_->settings ()->setAttribute (QWebSettings::AutoLoadImages,
+						XmlSettingsManager::Instance ()->property ("AutoloadImages").toBool ());
+	Ui_.ItemView_->settings ()->setAttribute (QWebSettings::JavascriptEnabled,
+						XmlSettingsManager::Instance ()->property ("AllowJavaScript").toBool ());
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_aggregator, Aggregator);

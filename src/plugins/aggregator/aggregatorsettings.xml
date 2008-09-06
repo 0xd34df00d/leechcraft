@@ -8,7 +8,7 @@
         <groupbox>
             <label lang="en" value="Behavior" />
             <label lang="ru" value="Поведение" />
-	    <lagel lang="uk" value="Поведінка" />
+			<label lang="uk" value="Поведінка" />
             <item type="checkbox" property="BeSilent" state="off">
                 <label lang="en" value="Be silent" />
                 <label lang="ru" value="Вести себя тихо" />
@@ -31,15 +31,15 @@
             </item>
             <item type="spinbox" property="UpdateInterval" default="10" minimum="1" maximum="300" step="5">
                 <lang value="en">
-		<label value="Update interval" />
-	<suffix value=" min" />
+					<label value="Update interval:" />
+					<suffix value=" min" />
                 </lang>
                 <lang value="ru">
-                    <label value="Интервал между обновлениями" />
+                    <label value="Интервал между обновлениями:" />
                     <suffix value=" мин" />
                 </lang>
                 <lang value="uk">
-                    <label value="Інтервал оновлення" />
+                    <label value="Інтервал оновлення:" />
                     <suffix value=" хв" />
                 </lang>
             </item>
@@ -47,26 +47,65 @@
         <groupbox>
             <label lang="en" value="Store" />
             <label lang="ru" value="Хранение" />
-	    <label lang="uk" value="Зберігання" />
+			<label lang="uk" value="Зберігання" />
             <item type="spinbox" property="ItemsPerChannel" default="50" minimum="20" maximum="10000" step="50">
-                <label lang="en" value="Items per channel" />
-                <label lang="ru" value="Статей в канале" />
-		<label lang="uk" value="Статей в каналі" />
+                <label lang="en" value="Items per channel:" />
+                <label lang="ru" value="Статей в канале:" />
+				<label lang="uk" value="Статей в каналі:" />
             </item>
             <item type="spinbox" property="ItemsMaxAge" default="30" minimum="1" maximum="365" step="1">
                 <lang value="en">
-                    <label value="Store items for" />
+                    <label value="Store items for:" />
                     <suffix value=" days" />
                 </lang>
                 <lang value="ru">
-                    <label value="Хранить статьи" />
+                    <label value="Хранить статьи:" />
                     <suffix value=" дней" />
                 </lang>
-		<lang value="uk">
-			<label value="Зберігати статті" />
-			<suffix value=" днів" />
-                </lang>
+				<lang value="uk">
+					<label value="Зберігати статті:" />
+					<suffix value=" днів" />
+				</lang>
             </item>
         </groupbox>
     </page>
+	<page>
+		<label lang="en" value="Viewer settings" />
+		<label lang="ru" value="Параметры просмотрщика" />
+		<label lang="uk" value="Параметри переглядача" />
+		<groupbox>
+			<label lang="en" value="Behaviour" />
+			<label lang="uk" value="Поведінка" />
+				<item type="checkbox" property="AutoloadImages" state="on">
+					<label lang="en" value="Load images automatically" />
+					<label lang="ru" value="Автоматически загружать изображения" />
+					<label lang="uk" value="Автоматично завантажувати зображення" />
+				</item>
+				<item type="checkbox" property="AllowJavaScript" state="off">
+					<label lang="en" value="Allow JavaScript" />
+					<label lang="ru" value="Разрешить JavaScript" />
+					<label lang="uk" value="Дозволити JavaScript" />
+				</item>
+	    	</groupbox>
+		<groupbox>
+			<label lang="en" value="Fonts" />
+			<label lang="ru" value="Шрифты" />
+			<label lang="uk" value="Шрифти" />
+				<item type="spinbox" property="MinimumFontSize" default="9" minimum="5" maximum="40" step="1">
+					<label lang="en" value="Minimum font size:" />
+					<label lang="ru" value="Минимальный размер шрифта:" />
+					<label lang="uk" value="Мінімальний розмір шрифта:" />
+				</item>
+				<item type="spinbox" property="DefaultFontSize" default="14" minimum="5" maximum="40" step="1">
+					<label lang="en" value="Default font size:" />
+					<label lang="ru" value="Размер шрифта по умолчанию:" />
+					<label lang="uk" value="Розмірш шрифта за заомвчуванням:" />
+				</item>	
+				<item type="spinbox" property="DefaultFixedFontSize" default="14" minimum="5" maximum="40" step="1">
+					<label lang="en" value="Default fixed font size:" />
+					<label lang="ru" value="Размер фиксированного шрифта по умолчанию:" />
+					<label lang="uk" value="Розмір фіксованого шрифта за замовчуванням:" />
+				</item>	
+		</groupbox>
+	</page>
 </settings>

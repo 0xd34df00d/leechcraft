@@ -71,6 +71,7 @@ private slots:
     void trayIconActivated ();
 	void updateItemsFilter ();
 	void updatePixmap (int);
+	void viewerSettingsChanged ();
 signals:
     void downloadFinished (const QString&);
 	void fileDownloaded (const QString&);

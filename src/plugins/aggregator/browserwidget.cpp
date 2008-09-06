@@ -86,4 +86,8 @@ void BrowserWidget::reload ()
 	qDebug () << Q_FUNC_INFO;
 	Ui_.ItemView_->reload ();
 }
+QWebSettings *BrowserWidget::settings () const
+{
+	return Ui_.ItemView_->settings ();
+}
 

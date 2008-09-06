@@ -38,7 +38,6 @@
 #include "piecesmodel.h"
 #include "peersmodel.h"
 #include "torrentfilesmodel.h"
-#include "threadedpd.h"
 #include "torrentplugin.h"
 #include "representationmodel.h"
 

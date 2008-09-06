@@ -79,7 +79,7 @@
     <message>
         <location filename="mainwindow.ui" line="142"/>
         <source>File names preview:</source>
-        <translation>Попередній перегляд назв файлві:</translation>
+        <translation>Попередній перегляд назв файлів:</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="170"/>
