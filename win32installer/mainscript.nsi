@@ -1,6 +1,6 @@
 !include "MUI.nsh"
 
-OutFile ../lcinstall-pb8.exe
+OutFile ../lcinstall-0.2.0.exe
 Name "Deviant LeechCraft"
 SetCompressor /SOLID lzma
 InstallDir "$PROGRAMFILES\Deviant\LeechCraft"
@@ -43,6 +43,8 @@ Section "Qt4 Runtime" QT4RUNTIME
 	File QtNetwork4.dll
 	File QtCore4.dll
 	File QtXml4.dll
+	File QtWebkit4.dll
+	File QtSvg4.dll
 	SectionIn 1 2
 SectionEnd
 
@@ -53,7 +55,6 @@ Section "Main LeechCraft Files" MAINFILES
 	File libsettingsdialog.dll
 	File libxmlsettingsdialog.dll
 	File mingwm10.dll
-#	File msvcr80.dll
 	File leechcraft.exe
 	File icon64.ico
 	File icon32.ico
@@ -73,20 +74,26 @@ Section "Main LeechCraft Files" MAINFILES
 SectionEnd
 
 SectionGroup "Plugins"
-	Section "HTTP/FTP" HTTPPLUGIN
-		SetOutPath $INSTDIR\plugins\bin
-		File libleechcraft_http.dll
-		SectionIn 1
-	SectionEnd
 	Section "BitTorrent" TORRENTPLUGIN
 		SetOutPath $INSTDIR
 		File torrent.dll
-		File boost_date_time-mgw42-mt-1_34_1.dll
-		File boost_filesystem-mgw42-mt-1_34_1.dll
-		File boost_thread-mgw42-mt-1_34_1.dll
+		File boost_date_time-mgw43-mt-1_36.dll
+		File boost_filesystem-mgw43-mt-1_36.dll
+		File boost_thread-mgw43-mt-1_36.dll
+		File boost_system-mgw43-mt-1_36.dll
 		File zlib1.dll
 		SetOutPath $INSTDIR\plugins\bin
 		File libleechcraft_torrent.dll
+		SectionIn 1
+	SectionEnd
+	Section "Aggregator" AGGREGATORPLUGIN
+		SetOutPath $INSTDIR\plugins\bin
+		File libleechcraft_aggregator.dll
+		SectionIn 1
+	SectionEnd
+	Section "CSTP" HTTPPLUGIN
+		SetOutPath $INSTDIR\plugins\bin
+		File libleechcraft_cstp.dll
 		SectionIn 1
 	SectionEnd
 	Section "Remoter" REMOTERPLUGIN
@@ -99,14 +106,9 @@ SectionGroup "Plugins"
 		File libleechcraft_batcher.dll
 		SectionIn 1
 	SectionEnd
-	Section "Cron" CRONPLUGIN
+	Section "Chatter" BATCHERPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
-		File libleechcraft_cron.dll
-		SectionIn 1
-	SectionEnd
-	Section "MailLeecher" MAILPLUGIN
-		SetOutPath $INSTDIR\plugins\bin
-		File libleechcraft_mailleecher.dll
+		File libleechcraft_chatter.dll
 		SectionIn 1
 	SectionEnd
 SectionGroupEnd
@@ -118,23 +120,27 @@ Section "Uninstall"
 	Delete "$INSTDIR\libexceptions.dll"
 	Delete "$INSTDIR\libplugininterface.dll"
 	Delete "$INSTDIR\libsettingsdialog.dll"
+	Delete "$INSTDIR\libxmlsettingsdialog.dll"
 	Delete "$INSTDIR\leechcraft.exe"
 	Delete "$INSTDIR\QtCore4.dll"
 	Delete "$INSTDIR\QtNetwork4.dll"
 	Delete "$INSTDIR\QtGui4.dll"
 	Delete "$INSTDIR\QtXml4.dll"
+	Delete "$INSTDIR\QtWebKit4.dll"
+	Delete "$INSTDIR\QtSvg4.dll"
 	Delete "$INSTDIR\mingwm10.dll"
 	Delete "$INSTDIR\torrent.dll"
 	Delete "$INSTDIR\zlib1.dll"
-	Delete "$INSTDIR\boost_date_time-mgw42-mt-1_34_1.dll"
-	Delete "$INSTDIR\boost_filesystem-mgw42-mt-1_34_1.dll"
-	Delete "$INSTDIR\boost_thread-mgw42-mt-1_34_1.dll"
-	Delete "$INSTDIR\plugins\bin\libleechcraft_http.dll"
+	Delete "$INSTDIR\boost_date_time-mgw42-mt-1_35.dll"
+	Delete "$INSTDIR\boost_filesystem-mgw42-mt-1_35.dll"
+	Delete "$INSTDIR\boost_thread-mgw42-mt-1_35.dll"
+	Delete "$INSTDIR\boost_system-mgw42-mt-1_35.dll"
+	Delete "$INSTDIR\plugins\bin\libleechcraft_cstp.dll"
 	Delete "$INSTDIR\plugins\bin\libleechcraft_torrent.dll"
 	Delete "$INSTDIR\plugins\bin\libleechcraft_remoter.dll"
 	Delete "$INSTDIR\plugins\bin\libleechcraft_batcher.dll"
-	Delete "$INSTDIR\plugins\bin\libleechcraft_cron.dll"
-	Delete "$INSTDIR\plugins\bin\libleechcraft_mailleecher.dll"
+	Delete "$INSTDIR\plugins\bin\libleechcraft_chatter.dll"
+	Delete "$INSTDIR\plugins\bin\libleechcraft_aggregator.dll"
 	Delete "$INSTDIR\plugins\bin\warning.log"
 	Delete "$INSTDIR\plugins\bin\debug.log"
 	Delete "$INSTDIR\plugins\bin\critical.log"
@@ -172,21 +178,23 @@ SectionEnd
 
 LangString DESC_QT4RUNTIME ${LANG_ENGLISH} "Qt4 library core files and MinGW support library."
 LangString DESC_MAINFILES ${LANG_ENGLISH} "LeechCraft executable and support libraries."
-LangString DESC_HTTPPLUGIN ${LANG_ENGLISH} "A simple plugin implementing HTTP/FTP facilities."
+LangString DESC_HTTPPLUGIN ${LANG_ENGLISH} "A simple plugin implementing HTTP facilities."
 LangString DESC_TORRENTPLUGIN ${LANG_ENGLISH} "A simple plugin implementing BitTorrent protocol."
 LangString DESC_REMOTERPLUGIN ${LANG_ENGLISH} "Provides remote access to plugins supporting this feature."
 LangString DESC_BATCHERPLUGIN ${LANG_ENGLISH} "Batch job manager."
 LangString DESC_CRONPLUGIN ${LANG_ENGLISH} "Job scheduler."
 LangString DESC_MAILPLUGIN ${LANG_ENGLISH} "POP3 mail backuper."
+LangString DESC_AGGREGATORPLUGIN ${LANG_ENGLISH} "RSS/Atom feed aggregator."
 
 LangString DESC_QT4RUNTIME ${LANG_RUSSIAN} "Библиотеки Qt4."
 LangString DESC_MAINFILES ${LANG_RUSSIAN} "Сам LeechCraft и его вспомогательные бИблиотеки."
-LangString DESC_HTTPPLUGIN ${LANG_RUSSIAN} "Простой HTTP/FTP-модуль."
+LangString DESC_HTTPPLUGIN ${LANG_RUSSIAN} "Простой HTTP-модуль."
 LangString DESC_TORRENTPLUGIN ${LANG_RUSSIAN} "Простейший Torrent-клиент."
 LangString DESC_REMOTERPLUGIN ${LANG_RUSSIAN} "Предоставляет возможность удаленного администрирования плагинов."
 LangString DESC_BATCHERPLUGIN ${LANG_RUSSIAN} "Менеджер пакетных заданий."
 LangString DESC_CRONPLUGIN ${LANG_RUSSIAN} "Планировщик заданий."
 LangString DESC_MAILPLUGIN ${LANG_RUSSIAN} "Выкачиватель почтовых ящиков по POP3."
+LangString DESC_AGGREGATORPLUGIN ${LANG_RUSSIAN} "Агрегатор RSS/Atom-лент."
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
 	!insertmacro MUI_DESCRIPTION_TEXT ${QT4RUNTIME} $(DESC_QT4RUNTIME)
