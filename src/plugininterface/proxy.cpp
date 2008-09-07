@@ -1,5 +1,4 @@
 #include <QCoreApplication>
-#include "../mainwindow.h"
 #include "proxy.h"
 
 Proxy *Proxy::Instance_ = 0;
@@ -109,10 +108,5 @@ QTime Proxy::MakeTimeFromLong (ulong time) const
     int m = (time - h * 3600) / 60;
     int s = time - h * 3600 - m * 60;
     return QTime (h, m, s);
-}
-
-void Proxy::SetMainWindow (Main::MainWindow *w)
-{
-    Window_ = w;
 }
 

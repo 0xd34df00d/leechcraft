@@ -2,6 +2,7 @@
 #define GRAPHWIDGET_H
 #include <QWidget>
 #include <QList>
+#include "config.h"
 
 class GraphWidget : public QWidget
 {
@@ -10,9 +11,9 @@ class GraphWidget : public QWidget
     QList<quint64> Speeds_;
     QColor Color_;
 public:
-    GraphWidget (const QColor&, QWidget *parent = 0);
+    LEECHCRAFT_API GraphWidget (const QColor&, QWidget *parent = 0);
 
-    void PushSpeed (quint64);
+    LEECHCRAFT_API void PushSpeed (quint64);
 protected:
     virtual void paintEvent (QPaintEvent*);
 };

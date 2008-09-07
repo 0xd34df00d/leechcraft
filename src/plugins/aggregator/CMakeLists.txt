@@ -73,12 +73,13 @@ QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-ADD_CUSTOM_COMMAND (OUTPUT ${TRANSLATIONS}
-	COMMAND "lrelease" ARGS "leechcraft_aggregator_ru_RU.ts" "leechcraft_aggregator_uk_UA.ts"
+ADD_CUSTOM_TARGET (aggregator_translations
+	COMMAND "lrelease" "leechcraft_aggregator_ru_RU.ts" "leechcraft_aggregator_uk_UA.ts"
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	)
 
-ADD_LIBRARY (leechcraft_aggregator SHARED ${SRCS} ${MOC_SRCS} ${UIS_H} ${RCCS} ${TRANSLATIONS})
+ADD_LIBRARY (leechcraft_aggregator SHARED ${SRCS} ${MOC_SRCS} ${UIS_H} ${RCCS})
+ADD_DEPENDENCIES (leechcraft_aggregator aggregator_translations)
 LINK_DIRECTORIES (${Boost_LIBRARY_DIR})
 TARGET_LINK_LIBRARIES (leechcraft_aggregator
                         ${QT_LIBRARIES}

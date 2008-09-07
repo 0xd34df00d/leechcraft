@@ -1,6 +1,7 @@
 #include <QStringList>
 #include <QTemporaryFile>
 #include <QUrl>
+#include <QSettings>
 #include <QtConcurrentRun>
 #include <interfaces/interfaces.h>
 #include <plugininterface/proxy.h>

@@ -15,8 +15,8 @@ SET (TRANSLATIONS
 	leechcraft_batcher_uk_UA.qm
 	)
 
-ADD_CUSTOM_COMMAND (OUTPUT ${TRANSLATIONS}
-	COMMAND "lrelease" ARGS "leechcraft_batcher_ru_RU.ts" "leechcraft_batcher_uk_UA.ts"
+ADD_CUSTOM_TARGET (batcher_translations
+	COMMAND "lrelease" "leechcraft_batcher_ru_RU.ts" "leechcraft_batcher_uk_UA.ts"
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	)
 
@@ -28,10 +28,10 @@ ADD_DEFINITIONS(-DQT_GUI_LIB)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
-ADD_LIBRARY (leechcraft_batcher SHARED ${SRCS} ${MOC_SRCS} ${UIS_H} ${RCCS} ${TRANSLATIONS})
+ADD_LIBRARY (leechcraft_batcher SHARED ${SRCS} ${MOC_SRCS} ${UIS_H} ${RCCS})
+ADD_DEPENDENCIES (leechcraft_batcher batcher_translations)
 TARGET_LINK_LIBRARIES (leechcraft_batcher
                         ${QT_LIBRARIES}
                         plugininterface
-                        exceptions
-                        settingsdialog)
+                        exceptions)
 INSTALL (TARGETS leechcraft_batcher DESTINATION ${LC_PLUGINS_DEST})

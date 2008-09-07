@@ -17,6 +17,7 @@
 #include <QMap>
 #include <QVariant>
 #include <boost/shared_ptr.hpp>
+#include "config.h"
 
 class QStackedWidget;
 class QListWidget;
@@ -44,11 +45,11 @@ class XmlSettingsDialog : public QDialog
         QPair<bool, QString> Suffix_;
     };
 public:
-    XmlSettingsDialog (QWidget *parent = 0);
-	virtual ~XmlSettingsDialog ();
-    void RegisterObject (QObject*, const QString&);
-	QString GetXml () const;
-	void MergeXml (const QByteArray&);
+    LEECHCRAFT_API XmlSettingsDialog (QWidget *parent = 0);
+	LEECHCRAFT_API virtual ~XmlSettingsDialog ();
+    LEECHCRAFT_API void RegisterObject (QObject*, const QString&);
+	LEECHCRAFT_API QString GetXml () const;
+	LEECHCRAFT_API void MergeXml (const QByteArray&);
 private:
     void HandleDeclaration (const QDomElement&);
     void ParsePage (const QDomElement&);

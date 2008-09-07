@@ -1,6 +1,7 @@
 #ifndef NOTIMPLEMENTED_H
 #define NOTIMPLEMENTED_H
 #include "generic.h"
+#include "config.h"
 
 namespace Exceptions
 {
@@ -13,11 +14,11 @@ namespace Exceptions
      *
      * @sa Generic
      */
-    class NotImplemented : public Generic
+    class LEECHCRAFT_API NotImplemented : public Generic
     {
     public:
-    NotImplemented (const std::string& reason = std::string ()) throw ();
-    virtual ~NotImplemented () throw ();
+		LEECHCRAFT_API NotImplemented (const std::string& reason = std::string ()) throw ();
+		LEECHCRAFT_API virtual ~NotImplemented () throw ();
     };
 };
 

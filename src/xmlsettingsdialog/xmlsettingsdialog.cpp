@@ -10,6 +10,7 @@
  *                                                                         *
  ***************************************************************************
 */
+
 #include <QFile>
 #include <QtGui/QtGui>
 #include <QtXml/QtXml>
@@ -368,7 +369,8 @@ QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject
 	}
 
     if (type == "lineedit" ||
-			type == "spinbox")
+			type == "spinbox" ||
+			type == "doublespinbox")
 		return value;
     else if (type == "checkbox" ||
 			(type == "groupbox" && item.attribute ("checkable") == "true"))
@@ -522,7 +524,7 @@ void XmlSettingsDialog::DoDoubleSpinbox (const QDomElement& item, QFormLayout *l
 	QVariant value = GetValue (item);
 
     box->setValue (value.toDouble ());
-    connect (box, SIGNAL (valueChanged (int)), this, SLOT (updatePreferences ()));
+    connect (box, SIGNAL (valueChanged (double)), this, SLOT (updatePreferences ()));
 
 	lay->addRow (label, box);
 }

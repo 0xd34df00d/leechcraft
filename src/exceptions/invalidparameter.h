@@ -1,6 +1,7 @@
 #ifndef INVALIDPARAMETER_H
 #define INVALIDPARAMETER_H
 #include "logic.h"
+#include "config.h"
 
 namespace Exceptions
 {
@@ -14,11 +15,11 @@ namespace Exceptions
      *
      * @sa Logic, OutOfBounds
      */
-    class InvalidParameter : public Logic
+    class LEECHCRAFT_API InvalidParameter : public Logic
     {
     public:
-    InvalidParameter (const std::string& reason = std::string ()) throw ();
-    virtual ~InvalidParameter () throw ();
+		LEECHCRAFT_API InvalidParameter (const std::string& reason = std::string ()) throw ();
+		LEECHCRAFT_API virtual ~InvalidParameter () throw ();
     };
 };
 

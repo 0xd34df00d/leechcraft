@@ -2,72 +2,73 @@
 #define SOCKETEXCEPTIONS_H
 #include <exceptions/logic.h>
 #include <QString>
+#include "config.h"
 
 namespace Exceptions
 {
     namespace Socket
     {
-        struct BaseSocket : Logic
+        struct LEECHCRAFT_API BaseSocket : Logic
         {
-            BaseSocket (const QString& reason = QString ());
-            BaseSocket (const std::string& reason = std::string ());
-            virtual ~BaseSocket () throw ();
+            LEECHCRAFT_API BaseSocket (const QString& reason = QString ());
+            LEECHCRAFT_API BaseSocket (const std::string& reason = std::string ());
+            LEECHCRAFT_API virtual ~BaseSocket () throw ();
         };
-        struct ConnectionRefused : BaseSocket
+        struct LEECHCRAFT_API ConnectionRefused : BaseSocket
         {
-            ConnectionRefused (const QString& reason = QString ());
+            LEECHCRAFT_API ConnectionRefused (const QString& reason = QString ());
         };
-        struct RemoteHostClosed : BaseSocket
+        struct LEECHCRAFT_API RemoteHostClosed : BaseSocket
         {
-            RemoteHostClosed (const QString& reason = QString ());
+            LEECHCRAFT_API RemoteHostClosed (const QString& reason = QString ());
         };
-        struct HostNotFound : BaseSocket
+        struct LEECHCRAFT_API HostNotFound : BaseSocket
         {
-            HostNotFound (const QString& reason = QString ());
+            LEECHCRAFT_API HostNotFound (const QString& reason = QString ());
         };
-        struct SocketAccess : BaseSocket
+        struct LEECHCRAFT_API SocketAccess : BaseSocket
         {
-            SocketAccess (const QString& reason = QString ());
+            LEECHCRAFT_API SocketAccess (const QString& reason = QString ());
         };
-        struct SocketResource : BaseSocket
+        struct LEECHCRAFT_API SocketResource : BaseSocket
         {
-            SocketResource (const QString& reason = QString ());
+            LEECHCRAFT_API SocketResource (const QString& reason = QString ());
         };
-        struct SocketTimeout : BaseSocket
+        struct LEECHCRAFT_API SocketTimeout : BaseSocket
         {
-            SocketTimeout (const QString& reason = QString ());
+            LEECHCRAFT_API SocketTimeout (const QString& reason = QString ());
         };
-        struct DatagramTooLarge : BaseSocket
+        struct LEECHCRAFT_API DatagramTooLarge : BaseSocket
         {
-            DatagramTooLarge (const QString& reason = QString ());
+            LEECHCRAFT_API DatagramTooLarge (const QString& reason = QString ());
         };
-        struct Network : BaseSocket
+        struct LEECHCRAFT_API Network : BaseSocket
         {
-            Network (const QString& reason = QString ());
+            LEECHCRAFT_API Network (const QString& reason = QString ());
         };
-        struct AddressInUse : BaseSocket
+        struct LEECHCRAFT_API AddressInUse : BaseSocket
         {
-            AddressInUse (const QString& reason = QString ());
+            LEECHCRAFT_API AddressInUse (const QString& reason = QString ());
         };
-        struct SocketAddressNotAvailable : BaseSocket
+        struct LEECHCRAFT_API SocketAddressNotAvailable : BaseSocket
         {
-            SocketAddressNotAvailable (const QString& reason = QString ());
+            LEECHCRAFT_API SocketAddressNotAvailable (const QString& reason = QString ());
         };
-        struct UnsupportedSocketOperation : BaseSocket
+        struct LEECHCRAFT_API UnsupportedSocketOperation : BaseSocket
         {
-            UnsupportedSocketOperation (const QString& reason = QString ());
+            LEECHCRAFT_API UnsupportedSocketOperation (const QString& reason = QString ());
         };
-        struct ProxyAuthenticationRequired : BaseSocket
+        struct LEECHCRAFT_API ProxyAuthenticationRequired : BaseSocket
         {
-            ProxyAuthenticationRequired (const QString& reason = QString ());
+            LEECHCRAFT_API ProxyAuthenticationRequired (const QString& reason = QString ());
         };
-        struct UnfinishedSocketOperation : BaseSocket
+        struct LEECHCRAFT_API UnfinishedSocketOperation : BaseSocket
         {
-            UnfinishedSocketOperation (const QString& reason = QString ());
+            LEECHCRAFT_API UnfinishedSocketOperation (const QString& reason = QString ());
         };
-        struct GenericSocket : BaseSocket
+        struct LEECHCRAFT_API GenericSocket : BaseSocket
         {
-            GenericSocket (const QString& reason = QString ());
+            LEECHCRAFT_API GenericSocket (const QString& reason = QString ());
         };
     };
 };

@@ -28,7 +28,7 @@
      <x>0</x>
      <y>0</y>
      <width>599</width>
-     <height>446</height>
+     <height>447</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -511,19 +511,19 @@
      <x>0</x>
      <y>0</y>
      <width>599</width>
-     <height>446</height>
+     <height>447</height>
     </rect>
    </property>
    <attribute name="title" >
     <string>Torrent settings</string>
    </attribute>
-   <layout class="QGridLayout" >
+   <layout class="QGridLayout" name="gridLayout_2" >
     <item row="0" column="0" >
      <widget class="QGroupBox" name="groupBox_2" >
       <property name="title" >
        <string>Settings</string>
       </property>
-      <layout class="QGridLayout" >
+      <layout class="QFormLayout" name="formLayout_2" >
        <item row="0" column="0" >
         <widget class="QLabel" name="label_34" >
          <property name="text" >
@@ -596,9 +596,6 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="1" >
-        <widget class="TagsLineEdit" native="1" name="TorrentTags_" />
-       </item>
        <item row="3" column="0" >
         <widget class="QLabel" name="label_44" >
          <property name="text" >
@@ -606,31 +603,43 @@
          </property>
         </widget>
        </item>
+       <item row="3" column="1" >
+        <widget class="TagsLineEdit" native="1" name="TorrentTags_" />
+       </item>
+       <item row="4" column="0" >
+        <widget class="QCheckBox" name="checkBox" >
+         <property name="text" >
+          <string>Managed</string>
+         </property>
+         <property name="checked" >
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
     <item row="0" column="1" >
-     <spacer>
-      <property name="orientation" >
-       <enum>Qt::Horizontal</enum>
+     <widget class="QGroupBox" name="groupBox_3" >
+      <property name="title" >
+       <string>Trackers</string>
       </property>
-      <property name="sizeHint" stdset="0" >
-       <size>
-        <width>40</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
+      <layout class="QGridLayout" name="gridLayout" >
+       <item row="0" column="0" >
+        <widget class="QPlainTextEdit" name="plainTextEdit" />
+       </item>
+      </layout>
+     </widget>
     </item>
     <item row="1" column="0" >
-     <spacer>
+     <spacer name="verticalSpacer" >
       <property name="orientation" >
        <enum>Qt::Vertical</enum>
       </property>
       <property name="sizeHint" stdset="0" >
        <size>
         <width>20</width>
-        <height>40</height>
+        <height>186</height>
        </size>
       </property>
      </spacer>
@@ -643,7 +652,7 @@
      <x>0</x>
      <y>0</y>
      <width>599</width>
-     <height>446</height>
+     <height>447</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -1172,7 +1181,7 @@
      <x>0</x>
      <y>0</y>
      <width>599</width>
-     <height>446</height>
+     <height>447</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -1198,7 +1207,7 @@
      <x>0</x>
      <y>0</y>
      <width>599</width>
-     <height>446</height>
+     <height>447</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -1226,7 +1235,7 @@
      <x>0</x>
      <y>0</y>
      <width>599</width>
-     <height>446</height>
+     <height>447</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -1251,7 +1260,7 @@
      <x>0</x>
      <y>0</y>
      <width>599</width>
-     <height>446</height>
+     <height>447</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -1293,7 +1302,7 @@
      <x>0</x>
      <y>0</y>
      <width>599</width>
-     <height>446</height>
+     <height>447</height>
     </rect>
    </property>
    <attribute name="title" >

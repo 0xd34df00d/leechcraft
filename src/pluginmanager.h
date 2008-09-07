@@ -8,7 +8,7 @@
 
 namespace Main
 {
-    class MainWindow;
+	class MainWindow;
     class PluginManager : public QAbstractItemModel
     {
         Q_OBJECT
@@ -43,12 +43,12 @@ namespace Main
             for (PluginsContainer_t::const_iterator i = Plugins_.begin (); i != Plugins_.end (); ++i)
             {
                 QObject *instance = (*i)->instance ();
-                if (dynamic_cast<T> (instance))
+                if (qobject_cast<T> (instance))
                     result << instance;
             }
             return result;
         }
-        void InitializePlugins (const MainWindow*);
+        void InitializePlugins (const Main::MainWindow*);
         void CalculateDependencies ();
     private:
         void FindPlugins ();

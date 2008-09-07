@@ -8,21 +8,11 @@
 #ifndef NOGUI
 #include <QIcon>
 #endif
-#include "../settingsdialog/settingsiteminfo.h"
 #include "structures.h"
 
-class Proxy;
-class MainWindow;
 class QAbstractItemModel;
 class QAbstractItemDelegate;
 class QModelIndex;
-
-class ISettings
-{
-public:
-    virtual SettingsItemInfo GetInfoFor (const QString&) const = 0;
-    virtual ~ISettings () {}
-};
 
 // Plugin-related
 
@@ -147,7 +137,6 @@ public:
 	virtual void SetTags (int, const QStringList&) = 0;
 };
 
-Q_DECLARE_INTERFACE (ISettings, "org.Deviant.LeechCraft.ISettings/1.0");
 Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
 #ifndef NOGUI
 Q_DECLARE_INTERFACE (IWindow, "org.Deviant.LeechCraft.IWindow/1.0");

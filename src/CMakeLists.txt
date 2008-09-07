@@ -5,12 +5,13 @@ ENDIF (COMMAND cmake_policy)
 PROJECT (leechcraft)
 SET (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 SET (CMAKE_BUILD_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-SET (CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+SET (CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 LIST (APPEND CMAKE_MODULE_PATH "cmake")
 SET (QT_USE_QTNETWORK true)
 SET (QT_USE_QTXML true)
 SET (QT_USE_QTWEBKIT true)
 SET (QT_USE_QTXMLPATTERNS true)
+SET (CMAKE_CXX_FLAGS "-fvisibility=hidden")
 SET (LC_PLUGINS_DEST "lib/leechcraft/plugins")
 FIND_PACKAGE (Boost REQUIRED COMPONENTS date_time filesystem system thread)
 FIND_PACKAGE (Qt4 REQUIRED)
@@ -72,7 +73,6 @@ INCLUDE_DIRECTORIES (${QT_QTGUI_INCLUDE_DIR}
 	plugininterface/)
 ADD_SUBDIRECTORY (exceptions)
 ADD_SUBDIRECTORY (plugininterface)
-ADD_SUBDIRECTORY (settingsdialog)
 ADD_SUBDIRECTORY (xmlsettingsdialog)
 IF (NOT ENABLE_CONFIGURABLE)
 	ADD_SUBDIRECTORY(plugins/cstp)
@@ -101,6 +101,7 @@ ELSE (NOT ENABLE_CONFIGURABLE)
 		ADD_SUBDIRECTORY(plugins/chatter)
 	ENDIF (ENABLE_CHATTER)
 ENDIF (NOT ENABLE_CONFIGURABLE)
+
 
 SET (SRCS
 	mainwindow.cpp
@@ -142,19 +143,20 @@ QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCC ${RESOURCES})
 
-ADD_CUSTOM_COMMAND (OUTPUT ${TRANSLATIONS}
-	COMMAND "lrelease" ARGS "leechcraft_ru_RU.ts" "leechcraft_uk_UA.ts"
+ADD_CUSTOM_TARGET (core_translations
+	COMMAND "lrelease" "leechcraft_ru_RU.ts" "leechcraft_uk_UA.ts"
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	)
 
-ADD_EXECUTABLE (leechcraft WIN32 ${SRCS} ${MOC_SRCS} ${UIS_H} ${RCC}
-	${TRANSLATIONS})
+ADD_EXECUTABLE (leechcraft WIN32 ${SRCS} ${MOC_SRCS} ${UIS_H} ${RCC})	
+ADD_DEPENDENCIES (leechcraft core_translations)
 TARGET_LINK_LIBRARIES(leechcraft
 						${QT_LIBRARIES}
 						plugininterface
 						exceptions
 						xmlsettingsdialog)
 INSTALL (TARGETS leechcraft DESTINATION bin)
+
 IF (UNIX)
 	INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor
 		PATTERN ".svn" EXCLUDE)

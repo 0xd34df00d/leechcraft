@@ -3,7 +3,7 @@
 #include <QObject>
 #include <QStringList>
 #include <QTime>
-#include "../mainwindow.h"
+#include "config.h"
 
 /*! @brief Provides some common features.
  *
@@ -19,20 +19,15 @@ class Proxy : public QObject
     Proxy ();
     ~Proxy ();
 
-    Main::MainWindow *Window_;
-
     static Proxy *Instance_;
     QStringList Strings_;
-    friend class Main::MainWindow;
 public:
-    static Proxy *Instance ();
-    void SetStrings (const QStringList&);
-    QString GetApplicationName () const;
-    QString GetOrganizationName () const;
-    QString MakePrettySize (qint64) const;
-    QTime MakeTimeFromLong (ulong) const;
-private:
-    void SetMainWindow (Main::MainWindow*);
+    LEECHCRAFT_API static Proxy *Instance ();
+    LEECHCRAFT_API void SetStrings (const QStringList&);
+    LEECHCRAFT_API QString GetApplicationName () const;
+    LEECHCRAFT_API QString GetOrganizationName () const;
+    LEECHCRAFT_API QString MakePrettySize (qint64) const;
+    LEECHCRAFT_API QTime MakeTimeFromLong (ulong) const;
 };
 
 #endif

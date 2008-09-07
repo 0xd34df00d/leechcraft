@@ -88,7 +88,8 @@ void Chatter::PushMainWindowExternals (const MainWindowExternals&)
 
 void Chatter::Release ()
 {
-    QSettings settings (Proxy_->GetOrganizationName (), Proxy_->GetApplicationName ());
+    QSettings settings (Proxy::Instance ()->GetOrganizationName (),
+			Proxy::Instance ()->GetApplicationName ());
     settings.beginGroup (GetName ());
     settings.beginGroup ("geometry");
     settings.setValue ("pos", pos ());

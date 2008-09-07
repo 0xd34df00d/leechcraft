@@ -33,8 +33,6 @@ class Chatter : public QMainWindow
 
     ID_t ID_;
     bool IsShown_;
-
-    Proxy *Proxy_;
 public:
     virtual void Init ();
     QMap<QString, QObject*> Providers_;

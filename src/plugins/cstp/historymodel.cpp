@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include <QTimer>
+#include <QSettings>
 #include <QDataStream>
 #include <QtDebug>
 #include <plugininterface/proxy.h>

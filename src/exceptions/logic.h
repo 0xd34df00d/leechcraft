@@ -1,6 +1,7 @@
 #ifndef LOGIC_H
 #define LOGIC_H
 #include "generic.h"
+#include "config.h"
 
 namespace Exceptions
 {
@@ -15,20 +16,20 @@ namespace Exceptions
      *
      * @sa Generic, OutOfBounds, InvalidParameter
      */
-    class Logic : public Generic
+    class LEECHCRAFT_API Logic : public Generic
     {
-    /** @brief Correction variants  representation.
-     * Keeps the message with the correction variants.
-     *
-     * @sa SetCorrections ), GetCorrections()
-     */
-    std::string Corrections_;
+		/** @brief Correction variants  representation.
+		 * Keeps the message with the correction variants.
+		 *
+		 * @sa SetCorrections ), GetCorrections()
+		 */
+		std::string Corrections_;
     public:
-    Logic (const std::string& reason = std::string ()) throw ();
-    virtual ~Logic () throw ();
+		LEECHCRAFT_API Logic (const std::string& reason = std::string ()) throw ();
+		LEECHCRAFT_API virtual ~Logic () throw ();
 
-    virtual Logic& SetCorrections (const std::string&) throw ();
-    virtual const std::string& GetCorrections () const throw ();
+		LEECHCRAFT_API virtual Logic& SetCorrections (const std::string&) throw ();
+		LEECHCRAFT_API virtual const std::string& GetCorrections () const throw ();
     };
 };
 

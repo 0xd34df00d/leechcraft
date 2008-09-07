@@ -48,8 +48,8 @@ QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-ADD_CUSTOM_COMMAND (OUTPUT ${TRANSLATIONS}
-	COMMAND "lrelease" ARGS "leechcraft_cstp_ru_RU.ts" "leechcraft_cstp_uk_UA.ts"
+ADD_CUSTOM_TARGET (cstp_translations
+	COMMAND "lrelease" "leechcraft_cstp_ru_RU.ts" "leechcraft_cstp_uk_UA.ts"
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	)
 
@@ -57,8 +57,8 @@ ADD_LIBRARY (leechcraft_cstp SHARED
 	${SRCS}
 	${MOC_SRCS}
 	${UIS_H}
-	${RCCS}
-	${TRANSLATIONS})
+	${RCCS})
+ADD_DEPENDENCIES (leechcraft_cstp cstp_translations)
 LINK_DIRECTORIES (${Boost_LIBRARY_DIR})
 TARGET_LINK_LIBRARIES (leechcraft_cstp
                         ${QT_LIBRARIES}

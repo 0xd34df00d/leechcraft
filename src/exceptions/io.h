@@ -1,14 +1,15 @@
 #ifndef IO_H
 #define IO_H
 #include "generic.h"
+#include "config.h"
 
 namespace Exceptions
 {
-    class IO : public Generic
+    class LEECHCRAFT_API IO : public Generic
     {
     public:
-        IO (const std::string& reason = std::string ()) throw ();
-        virtual ~IO () throw ();
+        LEECHCRAFT_API IO (const std::string& reason = std::string ()) throw ();
+        LEECHCRAFT_API virtual ~IO () throw ();
     };
 };
 

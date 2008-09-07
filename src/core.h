@@ -3,6 +3,7 @@
 #include <memory>
 #include <QObject>
 #include <QString>
+#include <QPair>
 #include "common.h"
 #include "pluginmanager.h"
 #include "interfaces/interfaces.h"
@@ -16,13 +17,13 @@ class FilterModel;
 
 namespace Main
 {
-    class MainWindow;
+	class MainWindow;
     class Core : public QObject
     {
         Q_OBJECT
 
         PluginManager *PluginManager_;
-        MainWindow *ReallyMainWindow_;
+		MainWindow *ReallyMainWindow_;
         QTimer *ClipboardWatchdog_;
         QString PreviousClipboardContents_;
 		std::auto_ptr<QLocalServer> Server_;
@@ -47,8 +48,7 @@ namespace Main
 		static Core& Instance ();
         void Release ();
 
-        void SetReallyMainWindow (MainWindow*);
-        MainWindow* GetReallyMainWindow ();
+		void SetReallyMainWindow (Main::MainWindow*);
 
 		QAbstractItemModel* GetPluginsModel () const;
 		QAbstractProxyModel* GetTasksModel () const;

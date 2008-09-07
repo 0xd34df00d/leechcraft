@@ -65,11 +65,6 @@ void Main::Core::SetReallyMainWindow (Main::MainWindow *win)
     ReallyMainWindow_ = win;
 }
 
-Main::MainWindow* Main::Core::GetReallyMainWindow ()
-{
-    return ReallyMainWindow_;
-}
-
 QAbstractItemModel* Main::Core::GetPluginsModel () const
 {
 	return PluginManager_;
@@ -84,8 +79,8 @@ QWidget* Main::Core::GetControls (const QModelIndex& index) const
 {
 	QAbstractItemModel *model = *MergeModel_->
 		GetModelForRow (FilterModel_->mapToSource (index).row ());
-	const IJobHolder *ijh =
-		dynamic_cast<const IJobHolder*> (Representation2Object_ [model]);
+	IJobHolder *ijh =
+		qobject_cast<IJobHolder*> (Representation2Object_ [model]);
 
 	return ijh->GetControls ();
 }
@@ -94,8 +89,8 @@ QWidget* Main::Core::GetAdditionalInfo (const QModelIndex& index) const
 {
 	QAbstractItemModel *model = *MergeModel_->
 		GetModelForRow (FilterModel_->mapToSource (index).row ());
-	const IJobHolder *ijh =
-		dynamic_cast<const IJobHolder*> (Representation2Object_ [model]);
+	IJobHolder *ijh =
+		qobject_cast<IJobHolder*> (Representation2Object_ [model]);
 
 	return ijh->GetAdditionalInfo ();
 }
@@ -103,8 +98,8 @@ QWidget* Main::Core::GetAdditionalInfo (const QModelIndex& index) const
 QStringList Main::Core::GetTagsForIndex (int index) const
 {
 	MergeModel::const_iterator modIter = MergeModel_->GetModelForRow (index);
-	const ITaggableJobs *ijh =
-	   dynamic_cast<const ITaggableJobs*> (Representation2Object_ [*modIter]);
+	ITaggableJobs *ijh =
+	   qobject_cast<ITaggableJobs*> (Representation2Object_ [*modIter]);
 
 	if (!ijh)
 		return QStringList ();
@@ -127,8 +122,8 @@ void Main::Core::DelayedInit ()
     foreach (QObject *plugin, plugins)
     {
         connect (this, SIGNAL (hidePlugins ()), plugin, SLOT (handleHidePlugins ()));
-        IDownload *download = dynamic_cast<IDownload*> (plugin);
-		IJobHolder *ijh = dynamic_cast<IJobHolder*> (plugin);
+        IDownload *download = qobject_cast<IDownload*> (plugin);
+		IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
 
 		const QMetaObject *qmo = plugin->metaObject ();
 
@@ -198,14 +193,15 @@ void Main::Core::TryToAddJob (const QString& name, const QString& where)
     QObjectList plugins = PluginManager_->GetAllPlugins ();
     foreach (QObject *plugin, plugins)
     {
-		IInfo *ii = dynamic_cast<IInfo*> (plugin);
-        IDownload *di = dynamic_cast<IDownload*> (plugin);
+		IInfo *ii = qobject_cast<IInfo*> (plugin);
+        IDownload *di = qobject_cast<IDownload*> (plugin);
 		LeechCraft::TaskParameters tp = LeechCraft::FromCommonDialog | LeechCraft::Autostart;
+		qDebug () << ii << di;
         if (di && di->CouldDownload (name, tp))
         {
-			IDirectDownload *idd = dynamic_cast<IDirectDownload*> (plugin);
+			IDirectDownload *idd = qobject_cast<IDirectDownload*> (plugin);
 			IPeer2PeerDownload *ip2p =
-				dynamic_cast<IPeer2PeerDownload*> (plugin);
+				qobject_cast<IPeer2PeerDownload*> (plugin);
 
 			if (idd)
 			{
@@ -231,7 +227,7 @@ void Main::Core::SetNewRow (const QModelIndex& index)
 	MergeModel::const_iterator modIter = MergeModel_->GetModelForRow (mapped.row ());
 	QObject *plugin = Representation2Object_ [*modIter];
 
-	IEmbedModel *iee = dynamic_cast<IEmbedModel*> (plugin);
+	IEmbedModel *iee = qobject_cast<IEmbedModel*> (plugin);
 	if (iee)
 		iee->ItemSelected (MergeModel_->mapToSource (mapped));
 }
@@ -269,7 +265,7 @@ QPair<qint64, qint64> Main::Core::GetSpeeds () const
     QObjectList plugins = PluginManager_->GetAllPlugins ();
     foreach (QObject *plugin, plugins)
     {
-        IDownload *di = dynamic_cast<IDownload*> (plugin);
+        IDownload *di = qobject_cast<IDownload*> (plugin);
         if (di)
         {
             download += di->GetDownloadSpeed ();
@@ -309,7 +305,7 @@ void Main::Core::handleProxySettings () const
 
 void Main::Core::handlePluginAction ()
 {
-	QAction *source = dynamic_cast<QAction*> (sender ());
+	QAction *source = qobject_cast<QAction*> (sender ());
 	QString slot = source->property ("Slot").toString ();
 	QString signal = source->property ("Signal").toString ();
 
@@ -367,8 +363,8 @@ void Main::Core::handleFileDownload (const QString& file, bool fromBuffer)
     QObjectList plugins = PluginManager_->GetAllCastableTo<IDownload*> ();
     for (int i = 0; i < plugins.size (); ++i)
     {
-        IDownload *id = dynamic_cast<IDownload*> (plugins.at (i));
-        IInfo *ii = dynamic_cast<IInfo*> (plugins.at (i));
+        IDownload *id = qobject_cast<IDownload*> (plugins.at (i));
+        IInfo *ii = qobject_cast<IInfo*> (plugins.at (i));
 		LeechCraft::TaskParameters tp = LeechCraft::Autostart | LeechCraft::FromAnother;
         if (id->CouldDownload (file, tp))
         {

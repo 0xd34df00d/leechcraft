@@ -89,7 +89,6 @@ namespace Main
 		statusBar ()->addPermanentWidget (DownloadSpeed_);
 		statusBar ()->addPermanentWidget (UploadSpeed_);
 		ReadSettings ();
-		Proxy::Instance ()->SetMainWindow (this);
 
 		splash.showMessage (tr ("Initializing core and plugins..."));
 		connect (&Core::Instance (),

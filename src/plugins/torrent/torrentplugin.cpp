@@ -17,7 +17,6 @@
 #include "addtorrent.h"
 #include "addmultipletorrents.h"
 #include "newtorrentwizard.h"
-#include "trackerschanger.h"
 #include "xmlsettingsmanager.h"
 #include "piecesmodel.h"
 #include "peersmodel.h"
@@ -406,18 +405,6 @@ void TorrentPlugin::on_ForceRecheck__triggered (int row)
 	Core::Instance ()->ForceRecheck (row);
 }
 
-void TorrentPlugin::on_ChangeTrackers__triggered (int row)
-{
-    QStringList trackers = Core::Instance ()->GetTrackers (row);
-    TrackersChanger changer;
-    changer.SetTrackers (trackers);
-    if (changer.exec () == QDialog::Accepted)
-    {
-        QStringList newTrackers = changer.GetTrackers ();
-        Core::Instance ()->SetTrackers (row, newTrackers);
-    }
-}
-
 void TorrentPlugin::on_Preferences__triggered ()
 {
     XmlSettingsDialog_->show ();
@@ -506,7 +493,6 @@ void TorrentPlugin::setActionsEnabled ()
     Stop_->setEnabled (isValid);
     Resume_->setEnabled (isValid);
     ForceReannounce_->setEnabled (isValid);
-    ChangeTrackers_->setEnabled (isValid);
 }
 
 void TorrentPlugin::showError (QString e)
@@ -529,6 +515,7 @@ void TorrentPlugin::updateTorrentStats ()
 			updateOverallStats ();
 			break;
 		case 1:
+			UpdateTorrentControl ();
 			break;
 		case 2:
 			UpdateTorrentPage ();
@@ -597,6 +584,15 @@ void TorrentPlugin::addToHistory (const QString& name, const QString& where, qui
 }
 
 void TorrentPlugin::UpdateDashboard ()
+{
+    Ui_.OverallDownloadRateController_->setValue (Core::Instance ()->GetOverallDownloadRate ());
+    Ui_.OverallUploadRateController_->setValue (Core::Instance ()->GetOverallUploadRate ());
+    Ui_.DownloadingTorrents_->setValue (Core::Instance ()->GetMaxDownloadingTorrents ());
+    Ui_.UploadingTorrents_->setValue (Core::Instance ()->GetMaxUploadingTorrents ());
+    Ui_.DesiredRating_->setValue (Core::Instance ()->GetDesiredRating ());
+}
+
+void TorrentPlugin::UpdateTorrentControl ()
 {
 	Ui_.TorrentDownloadRateController_->setValue (Core::Instance ()->GetTorrentDownloadRate ());
 	Ui_.TorrentUploadRateController_->setValue (Core::Instance ()->GetTorrentUploadRate ());
@@ -790,11 +786,7 @@ void TorrentPlugin::SetupStuff ()
     Ui_.PeersView_->setModel (peersSorter);
 
     IgnoreTimer_ = true;
-    Ui_.OverallDownloadRateController_->setValue (Core::Instance ()->GetOverallDownloadRate ());
-    Ui_.OverallUploadRateController_->setValue (Core::Instance ()->GetOverallUploadRate ());
-    Ui_.DownloadingTorrents_->setValue (Core::Instance ()->GetMaxDownloadingTorrents ());
-    Ui_.UploadingTorrents_->setValue (Core::Instance ()->GetMaxUploadingTorrents ());
-    Ui_.DesiredRating_->setValue (Core::Instance ()->GetDesiredRating ());
+	UpdateDashboard ();
     
     OverallStatsUpdateTimer_.reset (new QTimer (this));
     connect (OverallStatsUpdateTimer_.get (), SIGNAL (timeout ()), this, SLOT (updateOverallStats ()));
@@ -874,12 +866,6 @@ void TorrentPlugin::SetupActions ()
 	ForceRecheck_->setProperty ("Slot", "on_ForceRecheck__triggered");
 	ForceRecheck_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
 
-	ChangeTrackers_.reset (new QAction (tr ("Change trackers..."),
-				Toolbar_.get ()));
-	ChangeTrackers_->setShortcut (tr ("C"));
-	ChangeTrackers_->setProperty ("Slot", "on_ChangeTrackers__triggered");
-	ChangeTrackers_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
-
 	MoveFiles_.reset (new QAction (tr ("Move files..."),
 				Toolbar_.get ()));
 	MoveFiles_->setShortcut (tr ("M"));
@@ -895,7 +881,6 @@ void TorrentPlugin::SetupActions ()
 	Toolbar_->addAction (Stop_.get ());
 	Toolbar_->addAction (ForceReannounce_.get ());
 	Toolbar_->addAction (ForceRecheck_.get ());
-	Toolbar_->addAction (ChangeTrackers_.get ());
 	Toolbar_->addAction (MoveFiles_.get ());
 	Toolbar_->addSeparator ();
 	Toolbar_->addAction (Preferences_.get ());

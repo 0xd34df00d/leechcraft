@@ -4,6 +4,7 @@
 #include <QVector>
 #include <QMap>
 #include <QVariant>
+#include "config.h"
 
 class TreeItem
 {
@@ -11,20 +12,20 @@ class TreeItem
     QMap<int, QVector<QVariant> > Data_;
     TreeItem *Parent_;
 public:
-    TreeItem (const QList<QVariant>&, TreeItem *parent = 0);
-    ~TreeItem ();
+    LEECHCRAFT_API TreeItem (const QList<QVariant>&, TreeItem *parent = 0);
+    LEECHCRAFT_API ~TreeItem ();
 
-    void AppendChild (TreeItem*);
-    void PrependChild (TreeItem*);
-    int ChildPosition (TreeItem*);
-    void RemoveChild (int);
-    TreeItem* Child (int);
-    int ChildCount () const;
-    int ColumnCount (int role = Qt::DisplayRole) const;
-    QVariant Data (int, int role = Qt::DisplayRole) const;
-    void ModifyData (int, const QVariant&, int role = Qt::DisplayRole);
-    TreeItem* Parent ();
-    int Row () const;
+    LEECHCRAFT_API void AppendChild (TreeItem*);
+    LEECHCRAFT_API void PrependChild (TreeItem*);
+    LEECHCRAFT_API int ChildPosition (TreeItem*);
+    LEECHCRAFT_API void RemoveChild (int);
+    LEECHCRAFT_API TreeItem* Child (int);
+    LEECHCRAFT_API int ChildCount () const;
+    LEECHCRAFT_API int ColumnCount (int = Qt::DisplayRole) const;
+    LEECHCRAFT_API QVariant Data (int, int = Qt::DisplayRole) const;
+    LEECHCRAFT_API void ModifyData (int, const QVariant&, int = Qt::DisplayRole);
+    LEECHCRAFT_API TreeItem* Parent ();
+    LEECHCRAFT_API int Row () const;
 };
 
 #endif

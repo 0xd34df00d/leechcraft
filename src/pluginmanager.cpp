@@ -43,7 +43,8 @@ QVariant PluginManager::data (const QModelIndex& index, int role) const
 					return qobject_cast<IInfo*> (Plugins_.at (index.row ())->
 							instance ())->GetName ();
 				case Qt::DecorationRole:
-					return qobject_cast<IInfo*> (Plugins_.at (index.row ())->instance ())->GetIcon ();
+					return qobject_cast<IInfo*> (Plugins_.at (index.row ())->
+							instance ())->GetIcon ();
 				default:
 					return QVariant ();
 			}

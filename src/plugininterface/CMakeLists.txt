@@ -2,7 +2,6 @@ INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR} ${QT_QTCORE_INCLUDE_DIR}
     ${QT_QTGUI_INCLUDE_DIR} ${QT_QTNETWORK_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ../..)
 
 SET (SRCS
-  addressparser.cpp
   proxy.cpp
   socketexceptions.cpp
   tagscompleter.cpp
@@ -13,7 +12,6 @@ SET (SRCS
   util.cpp
   )
 SET (HEADERS
-  addressparser.h
   proxy.h
   socketexceptions.h
   tagscompleter.h

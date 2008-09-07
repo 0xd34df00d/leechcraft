@@ -1,14 +1,15 @@
 #ifndef SITUATIVE_H
 #define SITUATIVE_H
 #include "logic.h"
+#include "config.h"
 
 namespace Exceptions
 {
-    class Situative : public Logic
+    class LEECHCRAFT_API Situative : public Logic
     {
     public:
-        Situative (const std::string& reason = std::string ()) throw ();
-        virtual ~Situative () throw ();
+        LEECHCRAFT_API Situative (const std::string& reason = std::string ()) throw ();
+        LEECHCRAFT_API virtual ~Situative () throw ();
     };
 };
 
