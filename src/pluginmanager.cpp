@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include <QApplication>
 #include <QPluginLoader>
 #include <QDir>
@@ -5,8 +6,6 @@
 #include <QtDebug>
 #include <QMessageBox>
 #include <QMainWindow>
-#include <exceptions/outofbounds.h>
-#include <exceptions/logic.h>
 #include <plugininterface/proxy.h>
 #include "core.h"
 #include "pluginmanager.h"
@@ -110,7 +109,7 @@ void PluginManager::Release ()
 void PluginManager::Release (PluginManager::Size_t position)
 {
     if (position >= GetSize ())
-        throw Exceptions::OutOfBounds ("PluginManager::Release(): position is out of bounds.");
+        throw std::runtime_error ("PluginManager::Release(): position is out of bounds.");
 
     if (Plugins_ [position] && Plugins_ [position]->isLoaded ())
         qobject_cast<IInfo*> (Plugins_ [position]->instance ())->Release ();

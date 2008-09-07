@@ -71,7 +71,6 @@ INCLUDE_DIRECTORIES (${QT_QTGUI_INCLUDE_DIR}
                      ${CMAKE_CURRENT_BINARY_DIR} .
                      ${Boost_INCLUDE_DIR}
 	plugininterface/)
-ADD_SUBDIRECTORY (exceptions)
 ADD_SUBDIRECTORY (plugininterface)
 ADD_SUBDIRECTORY (xmlsettingsdialog)
 IF (NOT ENABLE_CONFIGURABLE)

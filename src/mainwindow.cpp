@@ -5,7 +5,6 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "plugininterface/proxy.h"
 #include "plugininterface/graphwidget.h"
-#include "exceptions/notimplemented.h"
 #include "mainwindow.h"
 #include "view.h"
 #include "core.h"

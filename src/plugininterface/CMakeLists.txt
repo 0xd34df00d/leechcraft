@@ -3,7 +3,6 @@ INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR} ${QT_QTCORE_INCLUDE_DIR}
 
 SET (SRCS
   proxy.cpp
-  socketexceptions.cpp
   tagscompleter.cpp
   tagscompletionmodel.cpp
   treeitem.cpp
@@ -13,7 +12,6 @@ SET (SRCS
   )
 SET (HEADERS
   proxy.h
-  socketexceptions.h
   tagscompleter.h
   tagscompletionmodel.h
   treeitem.h

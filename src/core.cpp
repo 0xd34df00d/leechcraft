@@ -14,8 +14,6 @@
 #include "mainwindow.h"
 #include "pluginmanager.h"
 #include "core.h"
-#include "exceptions/logic.h"
-#include "exceptions/outofbounds.h"
 #include "xmlsettingsmanager.h"
 #include "mergemodel.h"
 #include "filtermodel.h"
