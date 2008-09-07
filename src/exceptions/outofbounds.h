@@ -30,9 +30,9 @@ namespace Exceptions
 		 * entity.
 		 * @sa OverrideName()
 		 */
-		LEECHCRAFT_API OutOfBounds (const std::string& reason = std::string ()) throw ();
+		OutOfBounds (const std::string& reason = std::string ()) throw ();
 		/** Destructor */
-		LEECHCRAFT_API virtual ~OutOfBounds () throw ();
+		virtual ~OutOfBounds () throw ();
 	};
 };
 

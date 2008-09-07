@@ -17,8 +17,8 @@ namespace Exceptions
     class LEECHCRAFT_API NotImplemented : public Generic
     {
     public:
-		LEECHCRAFT_API NotImplemented (const std::string& reason = std::string ()) throw ();
-		LEECHCRAFT_API virtual ~NotImplemented () throw ();
+		NotImplemented (const std::string& reason = std::string ()) throw ();
+		virtual ~NotImplemented () throw ();
     };
 };
 

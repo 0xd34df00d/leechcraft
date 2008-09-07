@@ -30,12 +30,12 @@ namespace Exceptions
 		/** Reason of the exception */
 		std::string Reason_;
 	public:
-		LEECHCRAFT_API Generic (const std::string& name = std::string (), const std::string& reason = std::string ()) throw ();
-		LEECHCRAFT_API virtual ~Generic () throw ();
+		Generic (const std::string& name = std::string (), const std::string& reason = std::string ()) throw ();
+		virtual ~Generic () throw ();
 
-		LEECHCRAFT_API virtual const std::string& GetName () const throw ();
-		LEECHCRAFT_API virtual const std::string& GetReason () const throw ();
-		LEECHCRAFT_API virtual const char* what () const throw ();
+		virtual const std::string& GetName () const throw ();
+		virtual const std::string& GetReason () const throw ();
+		virtual const char* what () const throw ();
 	protected:
 		virtual Generic& OverrideName (const std::string& name) throw ();
     };

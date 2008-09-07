@@ -8,8 +8,8 @@ namespace Exceptions
     class LEECHCRAFT_API Situative : public Logic
     {
     public:
-        LEECHCRAFT_API Situative (const std::string& reason = std::string ()) throw ();
-        LEECHCRAFT_API virtual ~Situative () throw ();
+        Situative (const std::string& reason = std::string ()) throw ();
+        virtual ~Situative () throw ();
     };
 };
 

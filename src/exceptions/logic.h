@@ -25,11 +25,11 @@ namespace Exceptions
 		 */
 		std::string Corrections_;
     public:
-		LEECHCRAFT_API Logic (const std::string& reason = std::string ()) throw ();
-		LEECHCRAFT_API virtual ~Logic () throw ();
+		Logic (const std::string& reason = std::string ()) throw ();
+		virtual ~Logic () throw ();
 
-		LEECHCRAFT_API virtual Logic& SetCorrections (const std::string&) throw ();
-		LEECHCRAFT_API virtual const std::string& GetCorrections () const throw ();
+		virtual Logic& SetCorrections (const std::string&) throw ();
+		virtual const std::string& GetCorrections () const throw ();
     };
 };
 

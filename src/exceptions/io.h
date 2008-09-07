@@ -8,8 +8,8 @@ namespace Exceptions
     class LEECHCRAFT_API IO : public Generic
     {
     public:
-        LEECHCRAFT_API IO (const std::string& reason = std::string ()) throw ();
-        LEECHCRAFT_API virtual ~IO () throw ();
+        IO (const std::string& reason = std::string ()) throw ();
+        virtual ~IO () throw ();
     };
 };
 

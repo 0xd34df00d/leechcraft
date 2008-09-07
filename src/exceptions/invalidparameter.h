@@ -18,8 +18,8 @@ namespace Exceptions
     class LEECHCRAFT_API InvalidParameter : public Logic
     {
     public:
-		LEECHCRAFT_API InvalidParameter (const std::string& reason = std::string ()) throw ();
-		LEECHCRAFT_API virtual ~InvalidParameter () throw ();
+		InvalidParameter (const std::string& reason = std::string ()) throw ();
+		virtual ~InvalidParameter () throw ();
     };
 };
 
