@@ -29,7 +29,6 @@ ADD_LIBRARY (leechcraft_remoter SHARED ${SRCS} ${MOC_SRCS} ${UIS_H} ${RCCS})
 TARGET_LINK_LIBRARIES (leechcraft_remoter
 	${QT_LIBRARIES}
 	plugininterface
-	exceptions
 	xmlsettingsdialog
 	)
 INSTALL (TARGETS leechcraft_remoter DESTINATION ${LC_PLUGINS_DEST})

@@ -152,7 +152,6 @@ ADD_DEPENDENCIES (leechcraft core_translations)
 TARGET_LINK_LIBRARIES(leechcraft
 						${QT_LIBRARIES}
 						plugininterface
-						exceptions
 						xmlsettingsdialog)
 INSTALL (TARGETS leechcraft DESTINATION bin)
 

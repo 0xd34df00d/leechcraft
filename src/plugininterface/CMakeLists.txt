@@ -29,5 +29,5 @@ QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ADD_LIBRARY (plugininterface SHARED ${SRCS} ${MOC_SRCS})
 TARGET_LINK_LIBRARIES (plugininterface
                         ${QT_LIBRARIES}
-                        exceptions)
+						)
 INSTALL (TARGETS plugininterface DESTINATION lib)

@@ -99,7 +99,6 @@ IF (WIN32)
 TARGET_LINK_LIBRARIES (leechcraft_torrent
 ${QT_LIBRARIES}
 plugininterface
-exceptions
 xmlsettingsdialog
 ${Boost_DATE_TIME_LIBRARY}
 torrent
@@ -108,7 +107,6 @@ ELSE (WIN32)
 TARGET_LINK_LIBRARIES (leechcraft_torrent
 ${QT_LIBRARIES}
 plugininterface
-exceptions
 xmlsettingsdialog
 torrent-rasterbar
 )

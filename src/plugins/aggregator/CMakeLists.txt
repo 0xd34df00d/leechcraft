@@ -84,6 +84,5 @@ LINK_DIRECTORIES (${Boost_LIBRARY_DIR})
 TARGET_LINK_LIBRARIES (leechcraft_aggregator
                         ${QT_LIBRARIES}
                         plugininterface
-                        exceptions
                         xmlsettingsdialog)
 INSTALL (TARGETS leechcraft_aggregator DESTINATION ${LC_PLUGINS_DEST})

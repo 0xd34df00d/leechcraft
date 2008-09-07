@@ -33,5 +33,5 @@ ADD_DEPENDENCIES (leechcraft_batcher batcher_translations)
 TARGET_LINK_LIBRARIES (leechcraft_batcher
                         ${QT_LIBRARIES}
                         plugininterface
-                        exceptions)
+						)
 INSTALL (TARGETS leechcraft_batcher DESTINATION ${LC_PLUGINS_DEST})
