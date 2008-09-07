@@ -32,17 +32,17 @@
 <context>
     <name>Aggregator</name>
     <message>
-        <location filename="aggregator.cpp" line="117"/>
+        <location filename="aggregator.cpp" line="138"/>
         <source>RSS 2.0, Atom 1.0 feed reader.</source>
         <translation>RSS 2.0, Atom 1.0 агрегатор.</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="196"/>
+        <location filename="aggregator.cpp" line="217"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="214"/>
+        <location filename="aggregator.cpp" line="235"/>
         <source>: Preferences</source>
         <translation>: Настройки</translation>
     </message>
@@ -146,67 +146,74 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="25"/>
+        <location filename="core.cpp" line="27"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="25"/>
+        <location filename="core.cpp" line="27"/>
         <source>Date</source>
         <translation>Дата</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="95"/>
+        <location filename="core.cpp" line="97"/>
         <source>This feed is already added</source>
         <translation>Эта лента уже добавлена</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="678"/>
+        <location filename="core.cpp" line="763"/>
         <source>Strange, but no suitable provider found</source>
         <translation>Странно, но не найден ни один подходящий провайдер</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="683"/>
+        <location filename="core.cpp" line="768"/>
         <source>Could not handle URL %1</source>
         <translation>Не могу обработать URL %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="265"/>
+        <location filename="core.cpp" line="340"/>
         <source>&lt;empty&gt;</source>
         <translation>&lt;пусто&gt;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="443"/>
+        <location filename="core.cpp" line="543"/>
         <source>Downloaded file has null size!</source>
         <translation>Скачанный файл имеет нулевой размер!</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="448"/>
+        <location filename="core.cpp" line="548"/>
         <source>Feed with url %1 not found.</source>
         <translation>Лента с URL %1 не найдена.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="460"/>
+        <location filename="core.cpp" line="560"/>
         <source>XML file parse error: %1, line %2, column %3, filename %4</source>
         <translation>Ошибка парсинга XML-файла: %1, строка %2, столбец %3, файл %4</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="473"/>
+        <location filename="core.cpp" line="567"/>
         <source>Could not find parser to parse file %1</source>
         <translation>Не могу найти парсер для обработки файла %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="532"/>
+        <location filename="core.cpp" line="610"/>
         <source>Added channel &quot;%1&quot; (has %2 items)<byte value="xd"/>
 </source>
         <translation>Добавлен канал &quot;%1&quot; (%2 статей)
 </translation>
     </message>
     <message>
-        <location filename="core.cpp" line="538"/>
+        <location filename="core.cpp" line="617"/>
         <source>Updated channel &quot;%1&quot; (%2 new items)<byte value="xd"/>
 </source>
         <translation>Обновлен канал &quot;%1&quot; (%2 новых статей)
+</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="702"/>
+        <source>Aggregator updated:<byte value="xd"/>
+</source>
+        <translation>Обновлены статьи:
 </translation>
     </message>
 </context>
@@ -239,57 +246,57 @@
         <translation>Агрегатор</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="82"/>
+        <location filename="mainwindow.ui" line="146"/>
         <source>Tags:</source>
         <translation>Тэги:</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="69"/>
+        <location filename="mainwindow.ui" line="137"/>
         <source>Channel dashboard</source>
         <translation>Управление каналом</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="75"/>
+        <location filename="mainwindow.ui" line="218"/>
         <source>&lt;channel image&gt;</source>
         <translation>&lt;картинка&gt;</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="92"/>
+        <location filename="mainwindow.ui" line="170"/>
         <source>Description:</source>
         <translation>Описание:</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="99"/>
         <source>&lt;description&gt;</source>
-        <translation>&lt;описание&gt;</translation>
+        <translation type="obsolete">&lt;описание&gt;</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="109"/>
+        <location filename="mainwindow.ui" line="190"/>
         <source>Author:</source>
         <translation>Автор:</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="116"/>
         <source>&lt;author&gt;</source>
-        <translation>&lt;автор&gt;</translation>
+        <translation type="obsolete">&lt;автор&gt;</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="123"/>
+        <location filename="mainwindow.ui" line="204"/>
         <source>Language:</source>
         <translation>Язык:</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="130"/>
         <source>&lt;language&gt;</source>
-        <translation>&lt;язык&gt;</translation>
+        <translation type="obsolete">&lt;язык&gt;</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="137"/>
         <source>&lt;url&gt;</source>
-        <translation>&lt;url&gt;</translation>
+        <translation type="obsolete">&lt;url&gt;</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="147"/>
+        <location filename="mainwindow.ui" line="156"/>
         <source>Link:</source>
         <translation>Ссылка:</translation>
     </message>
@@ -314,52 +321,52 @@
         <translation type="obsolete">Действия</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="236"/>
+        <location filename="mainwindow.ui" line="321"/>
         <source>toolBar</source>
         <translation>Тулбар</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="260"/>
+        <location filename="mainwindow.ui" line="389"/>
         <source>Add feed...</source>
         <translation>Добавить ленту...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="269"/>
+        <location filename="mainwindow.ui" line="398"/>
         <source>Preferences</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="278"/>
+        <location filename="mainwindow.ui" line="407"/>
         <source>Update feeds</source>
         <translation>Обновить ленты</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="287"/>
+        <location filename="mainwindow.ui" line="416"/>
         <source>Remove feed</source>
         <translation>Удалить ленту</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="292"/>
+        <location filename="mainwindow.ui" line="421"/>
         <source>Mark item as unread</source>
         <translation>Отметить статью как непрочитанную</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="297"/>
+        <location filename="mainwindow.ui" line="426"/>
         <source>Mark channel as read</source>
         <translation>Отметить канал как прочитанный</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="302"/>
+        <location filename="mainwindow.ui" line="431"/>
         <source>Mark channel as unread</source>
         <translation>Отметить канал как непрочитанный</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="185"/>
+        <location filename="mainwindow.ui" line="270"/>
         <source>Case sensitive</source>
         <translation>Учитывать регистр</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="311"/>
+        <location filename="mainwindow.ui" line="440"/>
         <source>Update selected feed</source>
         <translation>Обновить выделенную ленту</translation>
     </message>
@@ -394,45 +401,75 @@
         <translation type="obsolete">Перезагрузить</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="167"/>
+        <location filename="mainwindow.ui" line="252"/>
         <source>Fixed string</source>
         <translation>Фиксированная строка</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="172"/>
+        <location filename="mainwindow.ui" line="257"/>
         <source>Wildcard</source>
         <translation>Маска</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="177"/>
+        <location filename="mainwindow.ui" line="262"/>
         <source>Regexp</source>
         <translation>Регулярное выражение</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="316"/>
+        <location filename="mainwindow.ui" line="445"/>
         <source>Add to item bucket</source>
         <translation>Положить в долгий ящик</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="321"/>
+        <location filename="mainwindow.ui" line="454"/>
         <source>Item bucket...</source>
         <translation>Долгий ящик...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="326"/>
+        <location filename="mainwindow.ui" line="459"/>
         <source>Regexp matcher...</source>
         <translation>Сито...</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="63"/>
+        <source>Item info</source>
+        <translation>Информация о статье</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="97"/>
+        <source>Category:</source>
+        <translation>Категория:</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="111"/>
+        <source>Publication date:</source>
+        <translation>Дата публикации:</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="344"/>
+        <source>toolBar_2</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="367"/>
+        <source>toolBar_3</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="475"/>
+        <source>Show/hide read items</source>
+        <translation>Показывать/скрывать прочитанные сообщения</translation>
     </message>
 </context>
 <context>
     <name>RegexpMatcherManager</name>
     <message>
-        <location filename="regexpmatchermanager.cpp" line="12"/>
+        <location filename="regexpmatchermanager.cpp" line="55"/>
         <source>Title matcher</source>
         <translation>Сито заголовков</translation>
     </message>
     <message>
-        <location filename="regexpmatchermanager.cpp" line="12"/>
+        <location filename="regexpmatchermanager.cpp" line="55"/>
         <source>Body extractor</source>
         <translation>Сито тел</translation>
     </message>

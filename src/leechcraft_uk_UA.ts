@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="uk_UA">
-<defaultcodec></defaultcodec>
 <context>
     <name>@default</name>
     <message>
         <location filename="config.h" line="7"/>
         <source>Leechcraft user</source>
-        <translation>Користувач Leechcraft</translation>
+        <translation type="obsolete">Користувач Leechcraft</translation>
     </message>
     <message>
         <location filename="config.h" line="11"/>
         <source>VERSION Leechcraft Chatter v%1, using Qt v %2</source>
-        <translation type="unfinished">ВЕРСІЯ Співрозмовник з Д</translation>
+        <translation type="obsolete">ВЕРСІЯ Співрозмовник з Д</translation>
     </message>
     <message>
         <location filename="config.h" line="15"/>
         <source>STOP DRINKING COGNAC ON MORNINGS!</source>
-        <translation>ПРИПИНІТЬ ПИТИ КОНЬЯК ЗРАНКУ!</translation>
+        <translation type="obsolete">ПРИПИНІТЬ ПИТИ КОНЬЯК ЗРАНКУ!</translation>
     </message>
 </context>
 <context>
@@ -60,77 +59,102 @@
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="168"/>
+        <location filename="leechcraft.ui" line="214"/>
         <source>Add task</source>
         <translation>Додати задачу</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="171"/>
+        <location filename="leechcraft.ui" line="217"/>
         <source>Adds job to a supporting plugin</source>
         <translation>Додати задачу у відповідний плагін</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="180"/>
+        <location filename="leechcraft.ui" line="226"/>
         <source>Settings</source>
         <translation>Налаштування</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="185"/>
+        <location filename="leechcraft.ui" line="231"/>
         <source>Quit</source>
         <translation>Вийти</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="190"/>
+        <location filename="leechcraft.ui" line="236"/>
         <source>About LeechCraft...</source>
         <translation>Про LeechCraft...</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="195"/>
+        <location filename="leechcraft.ui" line="241"/>
         <source>About Qt...</source>
         <translation>Про Qt...</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="101"/>
+        <location filename="leechcraft.ui" line="147"/>
         <source>Actions</source>
         <translation>Дії</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="116"/>
+        <location filename="leechcraft.ui" line="162"/>
         <source>Help</source>
         <translation>Довідка</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="123"/>
+        <location filename="leechcraft.ui" line="169"/>
         <source>Plugins</source>
         <translation>Плагіни</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="151"/>
+        <location filename="leechcraft.ui" line="197"/>
         <source>toolBar</source>
         <translation>Панель інструментів</translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="78"/>
+        <source>Fixed string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="83"/>
+        <source>Wildcard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="88"/>
+        <source>Regexp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="93"/>
+        <source>Tags</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="101"/>
+        <source>Case sensitive</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Main::Core</name>
     <message>
-        <location filename="core.cpp" line="158"/>
+        <location filename="core.cpp" line="216"/>
         <source>No plugins are able to download &quot;%1&quot;</source>
         <translation>Жоден з плагінів не може завантажити &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="225"/>
+        <location filename="core.cpp" line="372"/>
         <source>Question</source>
         <translation>Запитання</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="226"/>
+        <location filename="core.cpp" line="373"/>
         <source>File %1 could be handled by plugin %2, would you like to?</source>
         <translation>Файл %1 може бути оброблено за допомогою плагіну %2. Хочете це зробити?</translation>
     </message>
     <message>
         <location filename="core.cpp" line="272"/>
         <source>Name</source>
-        <translation>Ім&apos;я</translation>
+        <translation type="obsolete">Ім&apos;я</translation>
     </message>
 </context>
 <context>
@@ -141,65 +165,88 @@
         <translation>Ініціалізація інтерфейсу...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="67"/>
+        <location filename="mainwindow.cpp" line="93"/>
         <source>Initializing core and plugins...</source>
         <translation>Ініціалізація ядра і плагінів...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="100"/>
+        <location filename="mainwindow.cpp" line="142"/>
         <source>Error</source>
         <translation>Помилка</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="113"/>
+        <location filename="mainwindow.cpp" line="178"/>
         <source>Show/hide main</source>
         <translation>Показати/приховати головне вікно</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="114"/>
+        <location filename="mainwindow.cpp" line="179"/>
         <source>Hide all</source>
         <translation>Приховати все</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="118"/>
+        <location filename="mainwindow.cpp" line="183"/>
         <source>Quit</source>
         <translation>Вийти</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="154"/>
+        <location filename="mainwindow.cpp" line="219"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="161"/>
+        <location filename="mainwindow.cpp" line="226"/>
         <source>Information</source>
         <translation>Інформація</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="169"/>
+        <location filename="mainwindow.cpp" line="234"/>
         <source>&lt;img src=&quot;:/resources/images/mainapp.png&quot; /&gt;&lt;h1&gt;LeechCraft 0.3.0_pre&lt;/h1&gt;LeechCraft is a cross-platform extensible download manager. Currently it offers full-featured BitTorrent client, feed reader, HTTP support, Remote access and much more. It also aims to be resource-efficient working quite well on even old computers.&lt;br /&gt;&lt;br /&gt;Here are some useful links for you:&lt;br /&gt;&lt;a href=&quot;http://bugs.deviant-soft.ws&quot;&gt;Bugtracker and feature request tracker&lt;/a&gt;&lt;br /&gt;&lt;a href=&quot;http://sourceforge.net/project/showfiles.php?group_id=161819&quot;&gt;Latest file releases&lt;/a&gt;&lt;br /&gt;&lt;a href=&quot;http://deviant-soft.ws&quot;&gt;LeechCraft&apos;s Site&lt;/a&gt;&lt;br /&gt;&lt;a href=&quot;http://sourceforge.net/projects/leechcraft&quot;&gt;LeechCraft&apos;s site at sourceforge.net&lt;/a&gt;&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="212"/>
+        <location filename="mainwindow.cpp" line="277"/>
         <source>Download finished</source>
         <translation>Завантаження заваршено</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="218"/>
+        <location filename="mainwindow.cpp" line="283"/>
         <source>: Preferences</source>
         <translation>: Параметри</translation>
     </message>
 </context>
 <context>
+    <name>MergeModel</name>
+    <message>
+        <location filename="mergemodel.cpp" line="9"/>
+        <source>Name</source>
+        <translation type="unfinished">Ім&apos;я</translation>
+    </message>
+    <message>
+        <location filename="mergemodel.cpp" line="10"/>
+        <source>State</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mergemodel.cpp" line="11"/>
+        <source>Progress</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mergemodel.cpp" line="11"/>
+        <source>Speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>PluginManager</name>
     <message>
-        <location filename="pluginmanager.cpp" line="110"/>
+        <location filename="pluginmanager.cpp" line="104"/>
         <source>No exit here</source>
         <translation>Виходу немає</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="110"/>
+        <location filename="pluginmanager.cpp" line="104"/>
         <source>Release of one or more plugins failed. OS would cleanup after us, but it isn&apos;t good anyway, as this failed plugin could fail to save it&apos;s state.</source>
         <translation>Не можливо відключити один або більше плагінів. Ресурсы, що ним використовувались, будуть звільнені операційною системоую, але його робота не буде завершена коректно.</translation>
     </message>
@@ -207,22 +254,22 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="main.cpp" line="97"/>
+        <location filename="main.cpp" line="89"/>
         <source>bytes</source>
         <translation>байт</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="98"/>
+        <location filename="main.cpp" line="90"/>
         <source>KB</source>
         <translation>КБ</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="99"/>
+        <location filename="main.cpp" line="91"/>
         <source>MB</source>
         <translation>МБ</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="100"/>
+        <location filename="main.cpp" line="92"/>
         <source>GB</source>
         <translation>ГБ</translation>
     </message>

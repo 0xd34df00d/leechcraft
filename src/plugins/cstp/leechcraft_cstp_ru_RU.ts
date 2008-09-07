@@ -4,32 +4,32 @@
 <context>
     <name>AddTask</name>
     <message>
-        <location filename="addtask.cpp" line="70"/>
+        <location filename="addtask.cpp" line="84"/>
         <source>Directory %1 doesn&apos;t exist, would you like to select another?</source>
         <translation>Директория %1 не существует, хочешь выбрать другую?</translation>
     </message>
     <message>
-        <location filename="addtask.cpp" line="73"/>
+        <location filename="addtask.cpp" line="87"/>
         <source>Directory %1 isn&apos;t readable, would you like to select another?</source>
         <translation>Директория %1 недоступна для чтения, хочешь выбрать другую?</translation>
     </message>
     <message>
-        <location filename="addtask.cpp" line="76"/>
+        <location filename="addtask.cpp" line="90"/>
         <source>Directory %1 isn&apos;t writable, would you like to select another?</source>
         <translation>Директория %1 недоступна для записи, хочешь выбрать другую?</translation>
     </message>
     <message>
-        <location filename="addtask.cpp" line="79"/>
+        <location filename="addtask.cpp" line="93"/>
         <source>%1 isn&apos;t a directory at all, would you like to select another?</source>
         <translation>Директория %1 вообще не директория, хочешь выбрать другую?</translation>
     </message>
     <message>
-        <location filename="addtask.cpp" line="87"/>
+        <location filename="addtask.cpp" line="101"/>
         <source>Question</source>
         <translation>Вопрос</translation>
     </message>
     <message>
-        <location filename="addtask.cpp" line="119"/>
+        <location filename="addtask.cpp" line="133"/>
         <source>Select directory</source>
         <translation>Выбор директории</translation>
     </message>
@@ -69,128 +69,138 @@
     <message>
         <location filename="cstp.ui" line="172"/>
         <source>Remove task</source>
-        <translation>Удалить задачу</translation>
+        <translation type="obsolete">Удалить задачу</translation>
     </message>
     <message>
-        <location filename="cstp.ui" line="177"/>
+        <location filename="cstp.cpp" line="263"/>
         <source>Start</source>
         <translation>Старт</translation>
     </message>
     <message>
-        <location filename="cstp.ui" line="186"/>
+        <location filename="cstp.cpp" line="269"/>
         <source>Stop</source>
         <translation>Стоп</translation>
     </message>
     <message>
-        <location filename="cstp.ui" line="191"/>
+        <location filename="cstp.cpp" line="256"/>
         <source>Remove all</source>
         <translation>Удалить все</translation>
     </message>
     <message>
-        <location filename="cstp.ui" line="196"/>
+        <location filename="cstp.cpp" line="274"/>
         <source>Start all</source>
         <translation>Стартовать все</translation>
     </message>
     <message>
-        <location filename="cstp.ui" line="201"/>
+        <location filename="cstp.cpp" line="279"/>
         <source>Stop all</source>
         <translation>Остановить все</translation>
     </message>
     <message>
         <location filename="cstp.ui" line="138"/>
         <source>CSTP</source>
-        <translation>CSTP</translation>
+        <translation type="obsolete">CSTP</translation>
     </message>
     <message>
         <location filename="cstp.ui" line="163"/>
         <source>Add task...</source>
-        <translation>Добавить задание...</translation>
+        <translation type="obsolete">Добавить задание...</translation>
     </message>
     <message>
         <location filename="cstp.ui" line="210"/>
         <source>Preferences...</source>
-        <translation>Настройки...</translation>
+        <translation type="obsolete">Настройки...</translation>
     </message>
     <message>
         <location filename="cstp.cpp" line="264"/>
         <source>Error</source>
-        <translation>Ошибка</translation>
+        <translation type="obsolete">Ошибка</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="271"/>
+        <location filename="cstp.cpp" line="301"/>
         <source>File exists</source>
         <translation>Файл существует</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="271"/>
+        <location filename="cstp.cpp" line="301"/>
         <source>File %1 already exists, continue download?</source>
         <translation>Файл %1 уже существует, продолжить закачку?</translation>
     </message>
     <message>
         <location filename="cstp.ui" line="59"/>
         <source>Dashboard</source>
-        <translation>Контрольная панель</translation>
+        <translation type="obsolete">Контрольная панель</translation>
     </message>
     <message>
         <location filename="cstp.ui" line="72"/>
         <source>History</source>
-        <translation>История</translation>
+        <translation type="obsolete">История</translation>
     </message>
     <message>
         <location filename="cstp.ui" line="106"/>
         <source>Log</source>
-        <translation>Лог</translation>
+        <translation type="obsolete">Лог</translation>
     </message>
     <message>
         <location filename="cstp.ui" line="215"/>
         <source>Remove item</source>
-        <translation>Удалить пункт</translation>
+        <translation type="obsolete">Удалить пункт</translation>
+    </message>
+    <message>
+        <location filename="cstp.cpp" line="251"/>
+        <source>Remove</source>
+        <translation>Удалить</translation>
+    </message>
+    <message>
+        <location filename="cstp.cpp" line="287"/>
+        <source>Settings</source>
+        <translation>Настройки</translation>
     </message>
 </context>
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="18"/>
+        <location filename="core.cpp" line="22"/>
         <source>State</source>
         <translation>Состояние</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="19"/>
+        <location filename="core.cpp" line="21"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="20"/>
+        <location filename="core.cpp" line="23"/>
         <source>Progress</source>
         <translation>Прогресс</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="21"/>
+        <location filename="core.cpp" line="24"/>
         <source>Speed</source>
         <translation>Скорость</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="22"/>
+        <location filename="core.cpp" line="25"/>
         <source>ETA</source>
         <translation>ОВП</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="22"/>
+        <location filename="core.cpp" line="25"/>
         <source>DTA</source>
         <translation>ВП</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="77"/>
+        <location filename="core.cpp" line="85"/>
         <source>Could not truncate file </source>
         <translation>Не могу сократить файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="137"/>
+        <location filename="core.cpp" line="276"/>
         <source>Could not open file </source>
         <translation>Не могу открыть файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="242"/>
+        <location filename="core.cpp" line="193"/>
         <source>/s</source>
         <translation>/c</translation>
     </message>
@@ -198,22 +208,22 @@
 <context>
     <name>HistoryModel</name>
     <message>
-        <location filename="historymodel.cpp" line="13"/>
+        <location filename="historymodel.cpp" line="14"/>
         <source>Filename</source>
         <translation>Имя файла</translation>
     </message>
     <message>
-        <location filename="historymodel.cpp" line="13"/>
+        <location filename="historymodel.cpp" line="14"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="historymodel.cpp" line="13"/>
+        <location filename="historymodel.cpp" line="14"/>
         <source>Size</source>
         <translation>Размер</translation>
     </message>
     <message>
-        <location filename="historymodel.cpp" line="13"/>
+        <location filename="historymodel.cpp" line="14"/>
         <source>Date</source>
         <translation>Дата</translation>
     </message>
@@ -224,6 +234,29 @@
         <location filename="mainviewdelegate.cpp" line="47"/>
         <source>Idle</source>
         <translation>Бездействующий</translation>
+    </message>
+</context>
+<context>
+    <name>TabWidget</name>
+    <message>
+        <location filename="tabwidget.ui" line="13"/>
+        <source>Form</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="28"/>
+        <source>History</source>
+        <translation>История</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="54"/>
+        <source>Log</source>
+        <translation>Лог</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="64"/>
+        <source>Remove item</source>
+        <translation>Удалить</translation>
     </message>
 </context>
 <context>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="uk_UA">
-<defaultcodec></defaultcodec>
 <context>
     <name>AddFeed</name>
     <message>
@@ -32,17 +31,17 @@
 <context>
     <name>Aggregator</name>
     <message>
-        <location filename="aggregator.cpp" line="132"/>
+        <location filename="aggregator.cpp" line="138"/>
         <source>RSS 2.0, Atom 1.0 feed reader.</source>
         <translation>RSS 2.0, Atom 1.0 агрегатор.</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="211"/>
+        <location filename="aggregator.cpp" line="217"/>
         <source>Error</source>
         <translation>Помилка</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="229"/>
+        <location filename="aggregator.cpp" line="235"/>
         <source>: Preferences</source>
         <translation>:Параметри</translation>
     </message>

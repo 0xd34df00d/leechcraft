@@ -1,40 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="uk_UA">
-<defaultcodec></defaultcodec>
 <context>
     <name>Batcher</name>
     <message>
-        <location filename="batcher.cpp" line="38"/>
+        <location filename="batcher.cpp" line="33"/>
         <source>Batch job adder.</source>
         <translation>Менеджер пакетних завдань.</translation>
     </message>
     <message>
-        <location filename="batcher.cpp" line="140"/>
+        <location filename="batcher.cpp" line="135"/>
         <source>Warning</source>
         <translation>Увага</translation>
     </message>
     <message>
-        <location filename="batcher.cpp" line="140"/>
+        <location filename="batcher.cpp" line="135"/>
         <source>Because the specified directory doesn&apos;t exist, files will be downloaded to %1.</source>
         <translation>Файл буде завантажено до %1, так як вказана тека не існує.</translation>
     </message>
     <message>
-        <location filename="batcher.cpp" line="163"/>
+        <location filename="batcher.cpp" line="158"/>
         <source>Finished</source>
         <translation>Завершено</translation>
     </message>
     <message>
-        <location filename="batcher.cpp" line="161"/>
+        <location filename="batcher.cpp" line="156"/>
         <source>%1 jobs successfully added.</source>
         <translation>%1 завдань успішно додано.</translation>
     </message>
     <message>
-        <location filename="batcher.cpp" line="163"/>
+        <location filename="batcher.cpp" line="158"/>
         <source>No jobs were added. Check your pattern string or boundaries.</source>
         <translation>Жодного завадання не було додано. Перевірте Ваш шаблон або межі.</translation>
     </message>
     <message>
-        <location filename="batcher.cpp" line="168"/>
+        <location filename="batcher.cpp" line="163"/>
         <source>Select base path</source>
         <translation>Оберіть теку</translation>
     </message>
