@@ -67,6 +67,8 @@ private:
 
 	std::list<quint16> IDPool_;
 
+	QString ExternalAddress_;
+
     Core ();
 public:
     enum Columns
@@ -156,9 +158,16 @@ public:
     bool MoveTorrentFiles (const QString&);
     void SetCurrentTorrent (int);
 	int GetCurrentTorrent () const;
+	bool IsTorrentManaged () const;
+	void SetTorrentManaged (bool);
+	bool IsTorrentSequentialDownload () const;
+	void SetTorrentSequentialDownload (bool);
 
     void MakeTorrent (NewTorrentParams) const;
     void LogMessage (const QString&);
+
+	void SetExternalAddress (const QString&);
+	QString GetExternalAddress () const;
 
 	void ImportData (const QByteArray&);
 	QByteArray ExportData () const;

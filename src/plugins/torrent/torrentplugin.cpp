@@ -441,6 +441,16 @@ void TorrentPlugin::on_TorrentDesiredRating__valueChanged (double val)
     Core::Instance ()->SetTorrentDesiredRating (val);
 }
 
+void TorrentPlugin::on_TorrentManaged__stateChanged (int state)
+{
+	Core::Instance ()->SetTorrentManaged (state == Qt::Checked);
+}
+
+void TorrentPlugin::on_TorrentSequentialDownload__stateChanged (int state)
+{
+	Core::Instance ()->SetTorrentSequentialDownload (state == Qt::Checked);
+}
+
 void TorrentPlugin::on_CaseSensitiveSearch__stateChanged (int state)
 {
     FilterModel_->setFilterCaseSensitivity (state ? Qt::CaseSensitive : Qt::CaseInsensitive);
@@ -550,6 +560,7 @@ void TorrentPlugin::updateOverallStats ()
     Ui_.LabelSessionRating_->setText (QString::number (stats.SessionUpload_ / static_cast<double> (stats.SessionDownload_), 'g', 4));
 	Ui_.LabelTotalFailedData_->setText (Proxy::Instance ()->MakePrettySize (stats.TotalFailedData_));
 	Ui_.LabelTotalRedundantData_->setText (Proxy::Instance ()->MakePrettySize (stats.TotalRedundantData_));
+	Ui_.LabelExternalAddress_->setText (Core::Instance ()->GetExternalAddress ());
 
 	libtorrent::cache_status cs = Core::Instance ()->GetCacheStats ();
 	Ui_.BlocksWritten_->setText (QString::number (cs.blocks_written));
@@ -597,6 +608,7 @@ void TorrentPlugin::UpdateTorrentControl ()
 	Ui_.TorrentDownloadRateController_->setValue (Core::Instance ()->GetTorrentDownloadRate ());
 	Ui_.TorrentUploadRateController_->setValue (Core::Instance ()->GetTorrentUploadRate ());
 	Ui_.TorrentDesiredRating_->setValue (Core::Instance ()->GetTorrentDesiredRating ());
+	Ui_.TorrentManaged_->setCheckState (Core::Instance ()->IsTorrentManaged () ? Qt::Checked : Qt::Unchecked);
 }
 
 void TorrentPlugin::UpdateTorrentPage ()
@@ -690,6 +702,14 @@ void TorrentPlugin::SetupTabWidget ()
 			SIGNAL (valueChanged (double)),
 			this,
 			SLOT (on_TorrentDesiredRating__valueChanged (double)));
+	connect (Ui_.TorrentManaged_,
+			SIGNAL (stateChanged (int)),
+			this,
+			SLOT (on_TorrentManaged__stateChanged (int)));
+	connect (Ui_.TorrentSequentialDownload_,
+			SIGNAL (stateChanged (int)),
+			this,
+			SLOT (on_TorrentSequentialDownload__stateChanged (int)));
 	connect (Ui_.DownloadingTorrents_,
 			SIGNAL (valueChanged (int)),
 			this,

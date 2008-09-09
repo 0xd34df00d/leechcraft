@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>603</width>
-    <height>474</height>
+    <width>588</width>
+    <height>497</height>
    </rect>
   </property>
   <property name="tabPosition" >
@@ -27,8 +27,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>599</width>
-     <height>447</height>
+     <width>584</width>
+     <height>469</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -498,6 +498,20 @@
            </property>
           </widget>
          </item>
+         <item row="7" column="0" >
+          <widget class="QLabel" name="label_61" >
+           <property name="text" >
+            <string>External address:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="1" >
+          <widget class="QLabel" name="LabelExternalAddress_" >
+           <property name="text" >
+            <string/>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
       </layout>
@@ -510,8 +524,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>599</width>
-     <height>447</height>
+     <width>584</width>
+     <height>469</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -523,96 +537,107 @@
       <property name="title" >
        <string>Settings</string>
       </property>
-      <layout class="QFormLayout" name="formLayout_2" >
-       <item row="0" column="0" >
-        <widget class="QLabel" name="label_34" >
+      <layout class="QVBoxLayout" name="verticalLayout_4" >
+       <item>
+        <layout class="QFormLayout" name="formLayout_2" >
+         <item row="0" column="0" >
+          <widget class="QLabel" name="label_34" >
+           <property name="text" >
+            <string>Download rate:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1" >
+          <widget class="QSpinBox" name="TorrentDownloadRateController_" >
+           <property name="specialValueText" >
+            <string>Unlimited</string>
+           </property>
+           <property name="accelerated" >
+            <bool>true</bool>
+           </property>
+           <property name="suffix" >
+            <string> kb/s</string>
+           </property>
+           <property name="maximum" >
+            <number>10000</number>
+           </property>
+           <property name="singleStep" >
+            <number>100</number>
+           </property>
+           <property name="value" >
+            <number>0</number>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" >
+          <widget class="QLabel" name="label_35" >
+           <property name="text" >
+            <string>Upload rate:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1" >
+          <widget class="QSpinBox" name="TorrentUploadRateController_" >
+           <property name="specialValueText" >
+            <string>Unlimited</string>
+           </property>
+           <property name="suffix" >
+            <string> kb/s</string>
+           </property>
+           <property name="maximum" >
+            <number>10000</number>
+           </property>
+           <property name="singleStep" >
+            <number>100</number>
+           </property>
+           <property name="value" >
+            <number>0</number>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0" >
+          <widget class="QLabel" name="label_36" >
+           <property name="text" >
+            <string>Desired rating:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1" >
+          <widget class="QDoubleSpinBox" name="TorrentDesiredRating_" >
+           <property name="specialValueText" >
+            <string>Infinite</string>
+           </property>
+           <property name="accelerated" >
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0" >
+          <widget class="QLabel" name="label_44" >
+           <property name="text" >
+            <string>Tags:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1" >
+          <widget class="TagsLineEdit" native="1" name="TorrentTags_" />
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="TorrentManaged_" >
          <property name="text" >
-          <string>Download rate:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1" >
-        <widget class="QSpinBox" name="TorrentDownloadRateController_" >
-         <property name="specialValueText" >
-          <string>Unlimited</string>
-         </property>
-         <property name="accelerated" >
-          <bool>true</bool>
-         </property>
-         <property name="suffix" >
-          <string> kb/s</string>
-         </property>
-         <property name="maximum" >
-          <number>10000</number>
-         </property>
-         <property name="singleStep" >
-          <number>100</number>
-         </property>
-         <property name="value" >
-          <number>0</number>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0" >
-        <widget class="QLabel" name="label_35" >
-         <property name="text" >
-          <string>Upload rate:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1" >
-        <widget class="QSpinBox" name="TorrentUploadRateController_" >
-         <property name="specialValueText" >
-          <string>Unlimited</string>
-         </property>
-         <property name="suffix" >
-          <string> kb/s</string>
-         </property>
-         <property name="maximum" >
-          <number>10000</number>
-         </property>
-         <property name="singleStep" >
-          <number>100</number>
-         </property>
-         <property name="value" >
-          <number>0</number>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0" >
-        <widget class="QLabel" name="label_36" >
-         <property name="text" >
-          <string>Desired rating:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1" >
-        <widget class="QDoubleSpinBox" name="TorrentDesiredRating_" >
-         <property name="specialValueText" >
-          <string>Infinite</string>
-         </property>
-         <property name="accelerated" >
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0" >
-        <widget class="QLabel" name="label_44" >
-         <property name="text" >
-          <string>Tags:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1" >
-        <widget class="TagsLineEdit" native="1" name="TorrentTags_" />
-       </item>
-       <item row="4" column="0" >
-        <widget class="QCheckBox" name="checkBox" >
-         <property name="text" >
-          <string>Managed</string>
+          <string>Auto managed</string>
          </property>
          <property name="checked" >
           <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="TorrentSequentialDownload_" >
+         <property name="text" >
+          <string>Sequential download</string>
          </property>
         </widget>
        </item>
@@ -651,8 +676,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>599</width>
-     <height>447</height>
+     <width>584</width>
+     <height>469</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -1180,8 +1205,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>599</width>
-     <height>447</height>
+     <width>584</width>
+     <height>469</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -1206,8 +1231,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>599</width>
-     <height>447</height>
+     <width>584</width>
+     <height>469</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -1234,8 +1259,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>599</width>
-     <height>447</height>
+     <width>584</width>
+     <height>469</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -1259,8 +1284,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>599</width>
-     <height>447</height>
+     <width>584</width>
+     <height>469</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -1301,8 +1326,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>599</width>
-     <height>447</height>
+     <width>584</width>
+     <height>469</height>
     </rect>
    </property>
    <attribute name="title" >
