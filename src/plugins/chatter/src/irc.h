@@ -20,97 +20,119 @@
 #ifndef IRC_H
 #define IRC_H
 
-#include <QObject>
-#include <QTcpSocket>
-#include <QHash>
-#include <QRegExp>
-#include <QStringList>
-#include <QTextCodec>
+#include <QtCore/QObject>
+#include <QtNetwork/QTcpSocket>
+#include <QtCore/QHash>
+#include <QtCore/QRegExp>
+#include <QtCore/QStringList>
+#include <QtCore/QTextCodec>
 
-class ircLayer : public QObject
+#include "config.h"
+#include "ircserver.h"
+
+
+class IrcLayer : public QObject
 {
-	Q_OBJECT
-	public:
-		ircLayer(QObject * parent);
-		~ircLayer();
-		void ircConnect(QString server, int port=6667);
-		void ircThrow(QString what);
-		void ircMsg(QString what, QString where);
-		void ircJoin(QString channel);
-		void ircQuit(QString message);
-		void ircPart(QString channel, QString message="...");
-		void ircKick(QString whom, QString reason=tr("See ya in hell!"));
-		void ircMode(QString modes);
-		void ircNotice(QString what, QString where);
-		void ircNs(QString what);
-		void ircCs(QString what);
-		void ircMs(QString what);
-		// property handling
-		void ircSetNick(QString nick);
-		QString ircUseUri(QString uri);
-		QString getIrcUri();
-		QString nick();
-		QString ident();
-		QString realname();
-		QString channel();
-		QString server();
-		QByteArray encoding();
-		int port();
-		int connected();
-		int isJoined();
-		int setEncoding(QString enc);
-		//! int nickChanged: 0 if user have not set nick; 1 otherwise.
-		int nickChanged;
-		QHash<QString, QString> chewIrcUri(QString uri);
-	private:
-		QString ircNick;
-		QString ircIdent;
-		QString ircRealname;
-		QString ircChannel;
-		QString ircServer;
-		QByteArray ircEncoding;
-		int ircPort;
-		//! int joined: 0 if not on channel; 1 otherwise.
-		int joined;
-		QTcpSocket *ircSocket;
-		QTextCodec *ircCodec;
-		QHash<QString, QRegExp> prRegexes;
-		QRegExp * ircUriRgx;
-		QRegExp * ircUriPortRgx;
-		QRegExp * chanPrefix;
-		QRegExp * mircColors;
-		QRegExp * mircShit;
-		QRegExp * genError;
-		// methods
-		void infMsg(QString message);
-		void errMsg(QString message);
-		void parseCtcp(QString type, QString arg, QHash<QString, QString> data);
-		void parseCmd(QString cmd, QHash<QString, QString> data);
-		void parseResp(int code, QString args, QHash<QString, QString> data);
-		void initRegexes();
-	signals:
-		void gotMsg(QHash<QString, QString> data);
-		void gotChannelMsg(QHash<QString, QString> data);
-		void gotPrivMsg(QHash<QString, QString> data);
-		void gotNotice(QHash<QString, QString>);
-		void gotInfo(QString message);
-		void gotError(QString message);
-		void gotAction(QHash<QString, QString> data);
-		void gotNames(QStringList data);
-		void gotTopic(QStringList data);
-		void gotNick(QHash<QString, QString>);
-		void gotJoin(QHash<QString, QString>);
-		void gotPart(QHash<QString, QString>);
-		void gotQuit(QHash<QString, QString>);
-		void gotMode(QHash<QString, QString>);
-		void gotKick(QHash<QString, QString>);
+Q_OBJECT
+public:
+	IrcLayer(QObject * parent, QString ircUri);
+	~IrcLayer();
+	void ircConnect();
+	void ircThrow(QString what);
+	void ircMsg(QString what, QString where);
+	void ircJoin(QString channel);
+	void ircQuit(QString message);
+	void ircPart(QString channel, QString message="...");
+	void ircKick(QString whom, QString where, QString reason=tr("See ya in hell!"));
+	void ircMode(QString modes);
+	void ircNotice(QString what, QString where);
+	void ircNs(QString what);
+	void ircCs(QString what);
+	void ircMs(QString what);
+	// property handling
+	void ircSetNick(QString nick);
+	QString ircUseUri(QString uri);
+	QString getIrcUri();
+	QString nick();
+	QString ident();
+	QString realname();
+	QString channel();
+	QString server();
+	QByteArray encoding();
+	QString port();
+	int setEncoding(const QString theValue);
+	QByteArray encoding() const;
+	void contactServer();
+	int connected();
+	QHash<QString, QString> chewIrcUri(QString uri);
+	static QString composeIrcUri(QHash<QString, QString> data);
+	enum {ChannelMode, PrivateMode};
+	static bool isIrcUri(QString uri);
+	static QString cleanUri(QString);
+	void setNickChanged(bool theValue);
+	bool nickChanged() const;
+	QString target() const;
+	int joined() const;
+	int targetMode() const;
+	void say(QString msg);
+	QStringList users() const;
 
-	protected slots:
-		void ircLogon();
-		void getData();
-		void ircParse(QString line);
-		//void gotError();
-		void gotDisconnected();
-		void checkKicked(QHash<QString, QString>);
+private:
+	void setJoined(int theValue);
+	void setTarget(const QString& theValue);
+	void setTargetMode(int theValue);
+	int m_joined;
+	IrcServer * m_ircServer;
+	static QHash<QString, IrcServer *> m_servers;
+	IrcServer * getServer(QString host, QString port="6667");
+	void ircSaveNames();
+	QString m_ident;
+	QString m_realname;
+	QString m_server;
+	QString m_target;
+	QStringList m_users;
+	QStringList m_usersTemp; // Used for temporary saving of users' names during long NAMREPLies
+	int m_targetMode;
+	QString m_port;
+	//! int joined: 0 if not on channel; 1 otherwise.
+	QTextCodec * m_codec;
+	QByteArray m_encoding;
+	QHash<QString, QRegExp> prRegexes;
+	QRegExp * ircUriRgx;
+	QRegExp * ircUriPortRgx;
+	QRegExp * chanPrefix;
+	QRegExp * mircColors;
+	QRegExp * mircShit;
+	QRegExp * genError;
+	// methods
+	void parseCmd(QString cmd, QHash<QString, QString> data);
+	void parseResp(int code, QString args, QHash<QString, QString> data);
+	void initRegexes();
+signals:
+	void gotMsg(QHash<QString, QString>);
+	void gotChannelMsg(QHash<QString, QString>);
+	void gotPrivMsg(QHash<QString, QString>);
+	void gotNotice(QHash<QString, QString>);
+	void gotInfo(QString);
+	void gotError(QString);
+	void gotAction(QHash<QString, QString>);
+	void gotNames(QStringList);
+	void gotTopic(QStringList);
+	void gotNick(QHash<QString, QString>);
+	void gotJoin(QHash<QString, QString>);
+	void gotPart(QHash<QString, QString>);
+	void gotQuit(QHash<QString, QString>);
+	void gotMode(QHash<QString, QString>);
+	void gotKick(QHash<QString, QString>);
+protected slots:
+	void ircParse(QByteArray data);
+	//void gotError();
+	void ircLogon();
+	void infMsg(QString message);
+	void errMsg(QString message);
+	void gotDisconnected();
+	void checkKicked(QHash<QString, QString>);
+	void addNames(QStringList);
 };
+
 #endif

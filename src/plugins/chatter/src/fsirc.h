@@ -20,12 +20,9 @@
 #ifndef FSIRC_H
 #define FSIRC_H
 
-#include <QDialog>
-#include <QTimer>
-#include <QDebug>
-#include <QHash>
-#include <QCompleter>
-#include <QSystemTrayIcon>
+#include <QtGui/QDialog>
+#include <QtCore/QUrl>
+#include <QtCore/QList>
 
 #include "fsettings.h"
 #include "fscmdedit.h"
@@ -33,54 +30,36 @@
 #include "ui_fsmain.h"
 #include "irc.h"
 
-class fsirc : public QDialog, public Ui::fsMainWindow
+class QTimer;
+class QToolBar;
+class FsIrcView;
+
+class fsirc : public QDialog, Ui::fsMainWindow
 {
 	Q_OBJECT
 	public:
 		fsirc(QWidget *parent= 0);
 		~fsirc();
-		void fsEcho(QString message, QString style=QString());
-		void fsExec(QString cmd, QString arg="");
-		QRegExp * mArg;
-		QRegExp * linkRegexp;
-		// Dropdown actions
-		enum {ACT_URI, ACT_NICK, ACT_ENCODING, ACT_QUIT};
+		static int findTab(QString);
 	private:
-		ircLayer *irc;
-		QHash<int, QStringList> completeLists;
-		QHash<int, QCompleter *> actionCompleters;
-		void initCompleters();
 		void initConnections();
 		void addTrayIcon();
-		void nickToHistory(QString nick);
 		fsTrayIcon * trayIcon;
 		QTimer * ticker;
-		QHash<QString,QString> msgColors;
+		QPushButton * closeTabButton;
+		QPushButton * newTabButton;
+		QToolBar * cornerButtons;
+		static QList<FsIrcView *> ircList;
+	public slots:
+		void toggleShow();
+		void checkIfTop();
 	private slots:
-		void gotChannelMsg(QHash<QString, QString> data);
-		void gotPrivMsg(QHash<QString, QString> data);
-		void gotNotice(QHash<QString, QString> data);
-		void gotAction(QHash<QString, QString> data);
-		void gotInfo(QString message);
-		void gotError(QString message);
-		void gotNames(QStringList data);
-		void gotTopic(QStringList data);
-		void gotNick(QHash<QString, QString> data);
-		void gotJoin(QHash<QString, QString> data);
-		void gotPart(QHash<QString, QString> data);
-		void gotQuit(QHash<QString, QString> data);
-		void gotMode(QHash<QString, QString> data);
-		void gotKick(QHash<QString, QString> data);
 		void gotSomeMsg();
 		void gotHlite();
 		void anchorClicked(QUrl url);
-	public slots:
-		void fsQuit();
-		void sayHere();
-		void pickAction();
-		void takeAction();
-		void toggleShow();
-		void checkIfTop();
+		void closeCurrentTab();
+		void newTab(QString uri=QString());
+		void refreshTabNames();
 	signals:
 		void gotLink(QString);
 };

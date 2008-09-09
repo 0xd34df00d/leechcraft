@@ -20,8 +20,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 // Fsirc settings storage — abstraction layer
-#include <QSettings>
-#include <QStringList>
+
+#include <QtCore/QSettings>
+#include <QtCore/QStringList>
 
 class fSettings : public QSettings
 {

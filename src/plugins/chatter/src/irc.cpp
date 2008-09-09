@@ -18,55 +18,77 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <ctime>
-#include <QRegExp>
-#include <QStringList>
+#include <QtCore/QRegExp>
+#include <QtCore/QStringList>
+#include <QtCore/QDebug>
 
 #include "irc.h"
 #include "config.h"
 #include "fsettings.h"
 #include "ircdefs.h"
 
-ircLayer::ircLayer(QObject * parent=0) : QObject(parent)
+QHash<QString, IrcServer *> IrcLayer::m_servers;
+
+IrcLayer::IrcLayer(QObject * parent, QString ircUri) : QObject(parent)
 {
+	qDebug() << "Creating new IRC layer" << ircUri;
 	fSettings settings;
-	qsrand(std::time(NULL));
-	nickChanged=0;
 	// Protocol regexes
 	initRegexes();
-	ircNick = QString(FS_NICK).arg( (int)(qrand()*(9999.0/RAND_MAX)) ) ;
-	ircSocket = new QTcpSocket(this);
-	ircRealname = FS_REALNAME;
-	ircIdent = FS_IDENT;
-	QHash<QString,QString> uriData = chewIrcUri(FS_IRC_URI);
-	ircServer = uriData["server"];
-	uriData.contains("port") ? ircPort = uriData["port"].toInt() : ircPort = 6667;
-	ircChannel = uriData["channel"];
-	joined=0;
-	ircEncoding = "UTF-8";
-	ircCodec = QTextCodec::codecForName(ircEncoding);
-	connect(ircSocket, SIGNAL(connected()), this, SLOT(ircLogon()));
-	connect(ircSocket, SIGNAL(readyRead()), this, SLOT(getData()));
-	connect(ircSocket, SIGNAL(disconnected()), this, SLOT(gotDisconnected()));
+	m_encoding = "UTF-8";
+	m_ircServer=0;
+	m_joined=0;
+	m_codec = QTextCodec::codecForName(m_encoding);
+	ircUseUri(ircUri);
 	connect(this, SIGNAL(gotKick(QHash<QString, QString>)), this, SLOT(checkKicked(QHash<QString, QString>)));
-//	connect(ircSocket, SIGNAL(error()), this, SLOT(gotError()));
+	connect(this, SIGNAL(gotNames(QStringList)), this, SLOT(addNames(QStringList)));
+//	connect(m_socket, SIGNAL(error()), this, SLOT(gotError()));
 }
 
-ircLayer::~ircLayer()
+void IrcLayer::ircConnect()
 {
-
+	if (!m_ircServer->contact())
+	{
+		//qDebug("We are connected! Joining...");
+		if(targetMode()==ChannelMode)
+		{
+			//qDebug() << "Joining " << m_target << __LINE__;
+			ircJoin(target());
+		}
+	}
+	else
+	{
+		//qDebug("No we aren't");
+		infMsg(tr("Contacting IRC server..."));
+	}
+	connect(m_ircServer, SIGNAL(connected()), this, SLOT(ircLogon()));
+	connect(m_ircServer, SIGNAL(gotLine(QByteArray)), this, SLOT(ircParse(QByteArray)));
+	connect(m_ircServer, SIGNAL(disconnected()), this, SLOT(gotDisconnected()));
 }
 
-void ircLayer::initRegexes()
+void IrcLayer::contactServer()
+{
+	if(m_ircServer) m_ircServer->decRefCount();
+	m_ircServer = getServer(m_server, m_port);
+	connect(m_ircServer, SIGNAL(errMsg(QString)), this, SLOT(errMsg(QString)));
+	connect(m_ircServer, SIGNAL(infMsg(QString)), this, SLOT(infMsg(QString)));
+}
+
+IrcLayer::~IrcLayer()
+{
+	qDebug() << "IrcLayer" << getIrcUri() << "is being deleted";
+	m_ircServer->decRefCount();
+	if(m_targetMode==ChannelMode && joined())
+		ircPart(target());
+}
+
+void IrcLayer::initRegexes()
 {
 	// These should be used only on "response"/"command" lines
 	prRegexes["privmsg"] = QRegExp("^PRIVMSG (\\S+) :(.+)$");
 	prRegexes["notice"] = QRegExp("^NOTICE (\\S+) :(.+)$");
-	prRegexes["ping"] = QRegExp("^PING :([_a-zA-Z0-9\\.\\-]+)$");
-	prRegexes["ctcp"] = QRegExp("^\x01([A-Z]+)(?: (.+))?\x01$");
 	prRegexes["names"] = QRegExp("^= (\\S+) :(?:(.+)\\s?)+$");
 	prRegexes["topic"] = QRegExp("^(\\S+) :(.+)$");
-	prRegexes["nick"] = QRegExp("^NICK :(\\S+)$");
 	prRegexes["part"] = QRegExp("^PART (\\S+) :(.+)?$");
 	prRegexes["join"] = QRegExp("^JOIN :(\\S+)$");
 	prRegexes["quit"] = QRegExp("^QUIT :(.+)?$");
@@ -77,133 +99,98 @@ void ircLayer::initRegexes()
 	prRegexes["cmd"] = QRegExp("^:(\\S+)!(\\S+)@(\\S+) (.+)$");
 	//"[(\x03([0-9]*(,[0-9]+)?)?)\x37\x02\x26\x22\x21]"
 	// etc
-	prRegexes["ircUri"] = QRegExp("^irc://([_a-zA-Z0-9\\.\\-]+)/(\\S+)$");
-	prRegexes["ircUriPort"] = QRegExp("^irc://([_a-zA-Z0-9\\.\\-]+):([0-9]+)/(\\S+)$");
+	prRegexes["ircUri"] = QRegExp("^irc://([a-zA-Z0-9\\.\\-]+)/(\\S+)$");
+	prRegexes["ircUriPort"] = QRegExp("^irc://([a-zA-Z0-9\\.\\-]+):([0-9]+)/(\\S+)$");
 	prRegexes["lineBr"] = QRegExp("[\r\n]");
+	prRegexes["uPrefix"] = QRegExp("^[@+&].*"); // Possible username prefixes
 	mircColors = new QRegExp("\x03(\\,([0-9][0-5]?|)|([0-9][0-5]?)(\\,([0-9][0-5]?|)|)|\\,|)");
 	mircShit = new QRegExp("[]");
 	chanPrefix = new QRegExp("^[#&\\+]\\S*$");
 	genError= new QRegExp("^(\\S+ )?:(.+)$");
+
 }
 
-QString ircLayer::getIrcUri()
+QString IrcLayer::getIrcUri()
 {
 	QString pick;
-	pick="irc://"+ircServer;
-	if(ircPort!=6667) pick +=":"+ircPort;
-	pick+="/"+ircChannel;
+	pick="irc://"+m_server;
+	if(m_port!="6667") pick +=":"+m_port;
+	pick+="/"+m_target;
 	return pick;
 }
 
-void ircLayer::ircConnect(QString server, int port)
-{
-	if(ircSocket->isOpen())
-	{
-		ircSocket->disconnectFromHost();
-		if(connected())
-			ircSocket->waitForDisconnected();
-	}
-	infMsg(tr("Connecting to IRC"));
-	if(!server.isEmpty()) ircServer=server;
-	ircPort=port;
-	ircSocket->connectToHost(ircServer,ircPort);
-	if(ircSocket->waitForConnected())
-		infMsg(tr("Please stand by."));
-}
-
-void ircLayer::infMsg(QString message)
+void IrcLayer::infMsg(QString message)
 {
 	emit gotInfo(message);
 }
 
-void ircLayer::errMsg(QString message)
+void IrcLayer::errMsg(QString message)
 {
 	emit gotError(message);
 }
 
-void ircLayer::ircLogon()
+void IrcLayer::ircThrow(QString what)
 {
-	infMsg(tr("Logging in..."));
-	ircThrow("USER "+ircIdent+" localhost localhost :"+ircRealname);
-	ircThrow("NICK "+ircNick);
-	ircJoin(ircChannel);
+	//TODO make some kind of auto message splitting by line break
+	m_ircServer->ircThrow(m_codec->fromUnicode(what.remove(prRegexes["lineBr"])));
+	//qDebug() << "RAW THROW: " << what;
 }
 
-void ircLayer::ircThrow(QString what)
-{
-	what+="\r\n";
-	if(ircSocket->isWritable())
-	    ircSocket->write(ircCodec->fromUnicode(what));
-	else
-	    errMsg(tr("Not connected to server!"));
-	// qDebug() << "RAW THROW: " << ircCodec->fromUnicode(what);
-}
-
-void ircLayer::ircMsg(QString what, QString where)
+void IrcLayer::ircMsg(QString what, QString where)
 {
 	ircThrow("PRIVMSG "+where+" :"+what);
 }
 
-void ircLayer::ircNotice(QString what, QString where)
+void IrcLayer::ircNotice(QString what, QString where)
 {
 	ircThrow("NOTICE "+where+" :"+what);
 }
 
-void ircLayer::ircSetNick(QString nick)
+void IrcLayer::ircSetNick(QString nick)
 {
-	if(ircNick!=nick)
+	m_ircServer->setNick(nick);
+}
+
+void IrcLayer::ircLogon()
+{
+	if(m_targetMode==ChannelMode)
 	{
-		if(connected())
-		ircThrow("NICK "+nick);
-		else
-		{
-		    infMsg(tr("Nickname has been set to ")+nick);
-		    ircNick=nick;
-		}
+		//qDebug() << " Joining " << m_target << __LINE__;
+		ircJoin(target());
 	}
 }
 
-void ircLayer::ircMode(QString modes)
+void IrcLayer::ircMode(QString modes)
 {
-	ircThrow("MODE "+ircChannel+" "+modes);
+	ircThrow("MODE "+m_target+" "+modes);
 }
 
-void ircLayer::ircJoin(QString channel)
+void IrcLayer::ircJoin(QString channel)
 {
-	if(joined) ircPart(ircChannel,"...");
+//	if(m_connected) ircPart(m_target,"...");
 	ircThrow("JOIN "+channel);
-	joined=1;
-//	ircChannel=channel;
 }
 
-void ircLayer::ircPart(QString channel, QString message)
+void IrcLayer::ircPart(QString channel, QString message)
 {
 	ircThrow("PART "+channel+" :"+message);
-	if(channel==ircChannel)
-		joined=0;
 }
 
-void ircLayer::ircQuit(QString message)
+void IrcLayer::ircQuit(QString message)
 {
 	ircThrow("QUIT :"+message);
 	if (connected())
-		ircSocket->disconnectFromHost();
+		m_ircServer->breakContact();
 }
 
-void ircLayer::getData()
+void IrcLayer::ircKick(QString whom, QString where, QString reason)
 {
-	while(ircSocket->canReadLine())
-		ircParse(ircCodec->toUnicode(ircSocket->readLine().data()));
+	ircThrow(QString("KICK %1 %2 :%3").arg(where,whom,reason));
 }
 
-void ircLayer::ircKick(QString whom, QString reason)
+void IrcLayer::ircParse(QByteArray data)
 {
-	ircThrow("KICK "+ircChannel+" "+whom+" :"+reason);
-}
-
-void ircLayer::ircParse(QString line)
-{
-	line.remove(prRegexes["lineBr"]);
+	QString line=m_codec->toUnicode(data);
 	line.remove(*mircColors);
 	line.remove(*mircShit);
 	if(prRegexes["cmd"].exactMatch(line))
@@ -220,34 +207,13 @@ void ircLayer::ircParse(QString line)
 		data["target"]=prRegexes["resp"].cap(2);
 		parseResp(prRegexes["resp"].cap(1).toInt(), prRegexes["resp"].cap(3),data);
 	}
-	else
-	if(prRegexes["ping"].exactMatch(line))
-	{
-		ircThrow("PONG :"+prRegexes["ping"].cap(1)); // ping? pong!
-	}
 }
 
-void ircLayer::parseCtcp(QString type, QString arg, QHash<QString, QString> data)
-{
-//	What was that for? Hmmm.
-//	if(data["target"]==ircNick) data["target"]=data["nick"];
-	if(type=="ACTION")
-	{
-		emit gotAction(data);
-	} else if(type=="PING")
-	{
-		QString answer;
-		answer.setNum(std::time(NULL));
-		ircNotice("\x01PING "+answer+"\x01", data["nick"]);
-	} else if(type=="VERSION")
-	{
-		ircNotice("\x01"+FS_VERSION_REPLY+"\x01", data["nick"]);
-	}
-}
 
-void ircLayer::parseResp(int code, QString args, QHash<QString, QString> data)
+void IrcLayer::parseResp(int code, QString args, QHash<QString, QString> data)
 {
 	QStringList argz;
+	QString user;
 	if((code>=ERR_NOSUCHNICK)&&(code<=ERR_USERSDONTMATCH)&&(genError->exactMatch(args)))
 	{
 		argz=genError->capturedTexts();
@@ -257,16 +223,36 @@ void ircLayer::parseResp(int code, QString args, QHash<QString, QString> data)
 		case RPL_NAMREPLY:
 	 	if(prRegexes["names"].exactMatch(args))
 		{
-			emit gotNames(prRegexes["names"].capturedTexts()); // First entry is 	channel, then nicks.
+			if(prRegexes["names"].cap(1)==target())
+			{
+				QStringList users = prRegexes["names"].cap(2).split(" ");
+				QStringList::iterator it;
+				for(it=users.begin(); it!=users.end(); ++it)
+				{
+					if(prRegexes["uPrefix"].exactMatch(*it))
+					{
+						(*it).remove(0,1);
+					}
+				}
+				addNames(users);
+			}
 		}
 		break;
 		case RPL_TOPIC:
 		if(prRegexes["topic"].exactMatch(args))
 		{
-			emit gotTopic(prRegexes["topic"].capturedTexts()); // Channel,topic
+			if(prRegexes["names"].cap(1)==target())
+				emit gotTopic(prRegexes["topic"].capturedTexts()); // Channel,topic
 		}
 		break;
-
+		case RPL_ENDOFNAMES:
+			argz = args.split(" ");
+			if(argz[0]==target())
+			{
+				ircSaveNames();
+				emit gotNames(users());
+			}
+		break;
 	// TODO: Sort this heap out (ones that does not fit into generic error)
 	case ERR_NICKNAMEINUSE:
 	case ERR_NOSUCHSERVER:
@@ -385,7 +371,6 @@ void ircLayer::parseResp(int code, QString args, QHash<QString, QString> data)
 	case RPL_ENDOFWHOWAS:
 	case RPL_LISTEND:
 	case RPL_ENDOFWHO:
-	case RPL_ENDOFNAMES:
 	case RPL_ENDOFBANLIST:
 	case RPL_MOTDSTART:
 	case RPL_MOTD:
@@ -400,182 +385,192 @@ void ircLayer::parseResp(int code, QString args, QHash<QString, QString> data)
 	infMsg(tr("Unhandled: ")+args);
 */	}
 }
-void ircLayer::parseCmd(QString cmd, QHash<QString, QString> data)
+
+void IrcLayer::parseCmd(QString cmd, QHash<QString, QString> data)
 {
 //	qDebug() << "Command=" << cmd << ", cmd=" << cmd;
 	if(prRegexes["privmsg"].exactMatch(cmd))
 	{
 		data["target"]=prRegexes["privmsg"].cap(1); // target
-		if(prRegexes["ctcp"].exactMatch(prRegexes["privmsg"].cap(2)))
-		{
-			data["text"]=prRegexes["ctcp"].cap(2);
-			parseCtcp(prRegexes["ctcp"].cap(1), prRegexes["ctcp"].cap(2), data);
-		} else
-		{
-			data["text"]=prRegexes["privmsg"].cap(2); // text
-			if(chanPrefix->exactMatch(data["target"]))
-				emit gotChannelMsg(data);
-			else
-				emit gotPrivMsg(data);
-			emit gotMsg(data);
-		}
+		data["text"]=prRegexes["privmsg"].cap(2); // text
+		if(data["target"]==target() && targetMode()==ChannelMode)
+			emit gotChannelMsg(data);
+		else if(data["target"]==nick() && targetMode()==PrivateMode)
+			emit gotChannelMsg(data);
+		else emit gotPrivMsg(data);
+		// TODO creation of new query IrcLayer () in case
+		// discovering of already open query failed
+		//emit gotMsg(data);
 	} else
 	if(prRegexes["notice"].exactMatch(cmd))
 	{
 		data["target"]=prRegexes["notice"].cap(1); // target
 		data["text"]=prRegexes["notice"].cap(2); // text
-//		qDebug() << "Target, text=" << data["target"] << data["text"];
-		emit gotNotice(data);
+		if((data["target"]==nick()) || (data["target"]==target()))
+			emit gotNotice(data);
 	} else
 	if(prRegexes["part"].exactMatch(cmd))
 	{
 		data["target"]=prRegexes["part"].cap(1); // target
 		data["text"]=prRegexes["part"].cap(2); // text
-		if((data["target"]==ircChannel)&&(data["nick"]==ircNick))
-			joined=0;
-		emit gotPart(data);
+		if((data["target"]==target())&&(data["nick"]==nick()))
+			setJoined(0);
+		if(data["target"]==target())
+		{
+			m_users.removeOne(data["nick"]);
+			emit gotPart(data);
+		}
 	} else
 	if(prRegexes["quit"].exactMatch(cmd))
 	{
 		data["text"]=prRegexes["quit"].cap(1); // text
-		emit gotQuit(data);
+		if (m_users.contains(data["nick"]))
+		{
+			m_users.removeOne(data["nick"]);
+			emit gotQuit(data);
+		}
 	} else
 	if(prRegexes["join"].exactMatch(cmd))
 	{
 		data["target"]=prRegexes["join"].cap(1); // target
 		// if it's about me
-		if((data["nick"]==ircNick)&&(ircChannel!=data["target"]))
+		if((data["nick"]==nick())&&(target()==data["target"])&&!joined())
 		{
-			ircChannel=data["target"];
-			joined=1;
+		//	qDebug() << "I joined sum" << data
+			setTarget(data["target"]);
+			setJoined(1);
 		}
-		emit gotJoin(data);
+		if(data["target"]==target())
+		{
+			m_users << data["nick"];
+			emit gotJoin(data);
+		}
 	} else
 	if(prRegexes["kick"].exactMatch(cmd))
 	{
 		data["target"]=prRegexes["kick"].cap(1); // target
 		data["subject"]=prRegexes["kick"].cap(2); // whom
 		data["text"]=prRegexes["kick"].cap(3); // reason
-		emit gotKick(data);
+		if(data["target"]==target())
+		{
+			m_users.removeOne(data["subject"]);
+			emit gotKick(data);
+		}
 	} else
 	if(prRegexes["mode"].exactMatch(cmd))
 	{
 		data["target"]=prRegexes["mode"].cap(1); // target
 		data["text"]=prRegexes["mode"].cap(2); // modecmd
 		data["subject"]=prRegexes["mode"].cap(3); // subject
-		emit gotMode(data);
+		if(data["target"]==target())
+			emit gotMode(data);
 	} else
 	if(prRegexes["nick"].exactMatch(cmd))
 	{
 		data["target"]=prRegexes["nick"].cap(1); // target
 		// if it's our nick, change it. Don't want to make slot crap for this.
-		if(data["nick"]==ircNick)
-			ircNick=data["target"];
-		emit gotNick(data);
+		if(data["nick"]==nick())
+			nick()=data["target"];
+		// TODO route this too
+		if(m_users.contains(data["nick"]))
+		{
+			m_users.removeOne(data["nick"]);
+			m_users << data["target"];
+			emit gotNick(data);
+		}
 	}
 }
 
-QString ircLayer::ircUseUri(QString uri)
+QString IrcLayer::composeIrcUri(QHash<QString, QString> data)
 {
-	QString chan;
-	if(prRegexes["ircUri"].exactMatch(uri))
-	{
-		if(!prRegexes["ircUri"].cap(2).isEmpty())
-		{
-			chan=prRegexes["ircUri"].cap(2);
-			if(!chanPrefix->exactMatch(chan))
-				chan.prepend("#");
-		}
-		if((ircServer!=prRegexes["ircUri"].cap(1))||(!ircSocket->isOpen()))
-		{
-			joined=0;
-			ircChannel=chan;
-			ircConnect(prRegexes["ircUri"].cap(1),6667);
-		} else
-		ircJoin(chan);
-		return "irc://"+prRegexes["ircUri"].cap(1)+"/"+chan;
-	}else if(prRegexes["ircUriPort"].exactMatch(uri))
-	{
-		if(!prRegexes["ircUriPort"].cap(3).isEmpty())
-		{
-			chan=prRegexes["ircUriPort"].cap(3);
-			if(!chanPrefix->exactMatch(chan))
-				chan.prepend("#");
-		}
-		if((ircServer!=prRegexes["ircUri"].cap(1))||(ircPort!=prRegexes["ircUriPort"].cap(2).toInt())||(!ircSocket->isOpen()))
-		{
-			joined=0;
-			ircChannel=chan;
-			ircConnect(prRegexes["ircUriPort"].cap(1),prRegexes["ircUriPort"].cap(2).toInt());
-		} else
-		ircJoin(chan);
-		return "irc://"+prRegexes["ircUriPort"].cap(1)+":"+prRegexes["ircUriPort"].cap(2)+"/"+chan;
-	} else
-	{
-		errMsg(tr("Invalid IRC URI"));
-		return "";
-	}
+	if(!(data.contains("server") && data.contains("target")))
+		return QString();
+	if(data.contains("port") && data["port"]!="6667")
+		return QString("irc://%1:%2/%3").arg(data["server"],data["port"],data["target"]);
+	else
+		return QString("irc://%1/%2").arg(data["server"],data["target"]);
 }
 
-void ircLayer::ircNs(QString what)
+QString IrcLayer::ircUseUri(QString uri)
+{
+	QHash<QString, QString> uriData = chewIrcUri(uri);
+	if(uriData.isEmpty()) return uri;
+	m_target=uriData["target"];
+	m_server=uriData["server"];
+	m_port=uriData["port"];
+	setJoined(0);
+	chanPrefix->exactMatch(uriData["target"]) ? m_targetMode=ChannelMode : m_targetMode=PrivateMode;
+	if((m_server!=uriData["server"])||(m_port!=uriData["port"])||(!m_ircServer))
+	{
+		// some real action!
+		contactServer();
+	}
+	else
+	{
+		if (m_targetMode==ChannelMode)
+		{
+			//qDebug() << "Joining " << m_target << __LINE__;
+			ircJoin(m_target);
+		}
+	}
+	return composeIrcUri(uriData);
+}
+
+void IrcLayer::ircNs(QString what)
 {
 	ircThrow("NICKSERV "+what);
 }
 
-void ircLayer::ircCs(QString what)
+void IrcLayer::ircCs(QString what)
 {
 	ircThrow("CHANSERV "+what);
 }
 
-void ircLayer::ircMs(QString what)
+void IrcLayer::ircMs(QString what)
 {
 	ircThrow("MEMOSERV "+what);
 }
 
-void ircLayer::gotDisconnected()
+void IrcLayer::gotDisconnected()
 {
 	errMsg(tr("Disconnected from server."));
 }
 
-QString ircLayer::nick()
+QString IrcLayer::nick()
 {
-	return ircNick;
+	return m_ircServer->nick();
 }
-QString ircLayer::ident()
+QString IrcLayer::ident()
 {
-	return ircIdent;
+	return m_ident;
 }
-QString ircLayer::realname()
+QString IrcLayer::realname()
 {
-	return ircRealname;
+	return m_realname;
 }
-QString ircLayer::channel()
+QString IrcLayer::channel()
 {
-	return ircChannel;
+	return m_target;
 }
-QString ircLayer::server()
+QString IrcLayer::server()
 {
-	return ircServer;
+	return m_server;
 }
-QByteArray ircLayer::encoding()
+QByteArray IrcLayer::encoding()
 {
-	return ircEncoding;
+	return m_encoding;
 }
-int ircLayer::port()
+QString IrcLayer::port()
 {
-	return ircPort;
-}
-int ircLayer::connected()
-{
-	return (ircSocket->state()==QAbstractSocket::ConnectedState);
+	return m_port;
 }
 
-int ircLayer::setEncoding(QString enc)
+int IrcLayer::setEncoding(QString theValue)
 {
-	if(QTextCodec::availableCodecs().contains(enc.toAscii()))
+	if(QTextCodec::availableCodecs().contains(theValue.toAscii()))
 	{
-		ircCodec=QTextCodec::codecForName(enc.toAscii());
-		infMsg(tr("Encoding has been set to ")+enc);
+		m_codec=QTextCodec::codecForName(theValue.toAscii());
+		infMsg(tr("Encoding has been set to %1").arg(theValue));
 		return 1;
 	} else
 	{
@@ -584,34 +579,128 @@ int ircLayer::setEncoding(QString enc)
 	}
 }
 
-QHash<QString, QString> ircLayer::chewIrcUri(QString uri)
+QHash<QString, QString> IrcLayer::chewIrcUri(QString uri)
 {
 	QHash<QString, QString> ret;
 	if(prRegexes["ircUriPort"].exactMatch(uri))
 	{
 		ret["server"]=prRegexes["ircUriPort"].cap(1);
 		ret["port"]=prRegexes["ircUriPort"].cap(2);
-		ret["channel"]=prRegexes["ircUriPort"].cap(3);
+		ret["target"]=prRegexes["ircUriPort"].cap(3);
 	}
 	else if(prRegexes["ircUri"].exactMatch(uri))
 	{
+		ret["port"]="6667";
 		ret["server"]=prRegexes["ircUri"].cap(1);
-		ret["channel"]=prRegexes["ircUri"].cap(2);
-	}
+		ret["target"]=prRegexes["ircUri"].cap(2);
+	} else errMsg(tr("Invalid IRC URI"));
 	return ret;
 }
 
-int ircLayer::isJoined()
+void IrcLayer::checkKicked(QHash<QString, QString> data)
 {
-	return joined;
+	if((data["subject"]==nick())&&(data["target"]==m_target))
+		setJoined(0); // Alas.
 }
 
-void ircLayer::checkKicked(QHash<QString, QString> data)
+QByteArray IrcLayer::encoding() const
 {
-	if((data["subject"]==ircNick)&&(data["target"]==ircChannel))
-		joined=0; // Alas.
+	return m_codec->name();
 }
+
+IrcServer * IrcLayer::getServer(QString host, QString port)
+{
+	QString nameport=QString("%1:%2").arg(host,port);
+	if(!IrcLayer::m_servers.contains(nameport))
+	{
+		IrcLayer::m_servers[nameport]=new IrcServer(host,port);
+	}
+	else IrcLayer::m_servers[nameport]->incRefCount();
+	return IrcLayer::m_servers[nameport];
+}
+
+int IrcLayer::connected()
+{
+	return m_ircServer->isConnected();
+}
+
+bool IrcLayer::isIrcUri(QString uri)
+{
+	return QRegExp("^irc://[a-zA-Z0-9\\.\\-]+(?::[0-9]+)?/\\S+$").exactMatch(uri);
+}
+
+
+bool IrcLayer::nickChanged() const
+{
+	return m_ircServer->nickSet();
+}
+
+void IrcLayer::setNickChanged(bool theValue)
+{
+	// I'm not sure if it's needed
+	m_ircServer->setNickSet(theValue);
+}
+
+int IrcLayer::joined() const
+{
+	return m_joined;
+}
+
+void IrcLayer::setJoined(int theValue)
+{
+	m_joined = theValue;
+}
+
+QString IrcLayer::target() const
+{
+	return m_target;
+}
+
+void IrcLayer::setTarget(const QString& theValue)
+{
+	m_target = theValue;
+}
+
+int IrcLayer::targetMode() const
+{
+	return m_targetMode;
+}
+
+
+void IrcLayer::setTargetMode(int theValue)
+{
+	m_targetMode = theValue;
+}
+
+void IrcLayer::say(QString msg)
+{
+	ircMsg(msg, target());
+}
+
+void IrcLayer::addNames(QStringList names)
+{
+	m_usersTemp << names;
+}
+
+void IrcLayer::ircSaveNames()
+{
+	m_users = m_usersTemp;
+	m_usersTemp = QStringList();
+}
+
+QStringList IrcLayer::users() const
+{
+	return m_users;
+}
+
+
+QString IrcLayer::cleanUri(QString uri)
+{
+	return uri.remove(":6667");
+}
+
 /*
 101
 111
+these are secret self-destruction preventing codes, do not remove
 */

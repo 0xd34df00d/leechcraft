@@ -3,5 +3,7 @@
     <file>data/icon.svg</file>
     <file>data/icon-msg.svg</file>
     <file>data/icon-hlite.svg</file>
+    <file>data/close.svg</file>
+    <file>data/new.svg</file>
  </qresource>
  </RCC>

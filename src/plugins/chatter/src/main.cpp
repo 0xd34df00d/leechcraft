@@ -21,6 +21,7 @@
 
 #include <QApplication>
 #include <QTranslator>
+#include <QLocale>
 
 #include "fsirc.h"
 #include "config.h"
@@ -40,7 +41,6 @@ int main(int argc, char *argv[])
 	transl.load(QString (":/fsirc_") + localeName);
 	fsApp.installTranslator (&transl);
 	fsirc fsIrc;
-	fsApp.connect(&fsApp,SIGNAL(lastWindowClosed()), &fsIrc, SLOT(fsQuit()));
 	fsIrc.show();
 	return fsApp.exec();
 }

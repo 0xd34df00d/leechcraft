@@ -19,8 +19,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <QLineEdit>
-#include <QKeyEvent>
+#include <QtGui/QLineEdit>
+#include <QtGui/QKeyEvent>
 
 class FsCmdEdit : public QLineEdit
 {
