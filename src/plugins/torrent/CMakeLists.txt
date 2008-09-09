@@ -61,7 +61,6 @@ SET (FORMS
 	newtorrentfirststep.ui
 	newtorrentsecondstep.ui
 	newtorrentthirdstep.ui
-	trackerschanger.ui
 	movetorrentfiles.ui)
 SET (RESOURCES resources.qrc)
 

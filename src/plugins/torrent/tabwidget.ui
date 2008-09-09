@@ -28,7 +28,7 @@
      <x>0</x>
      <y>0</y>
      <width>584</width>
-     <height>469</height>
+     <height>470</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -525,7 +525,7 @@
      <x>0</x>
      <y>0</y>
      <width>584</width>
-     <height>469</height>
+     <height>470</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -644,18 +644,6 @@
       </layout>
      </widget>
     </item>
-    <item row="0" column="1" >
-     <widget class="QGroupBox" name="groupBox_3" >
-      <property name="title" >
-       <string>Trackers</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout" >
-       <item row="0" column="0" >
-        <widget class="QPlainTextEdit" name="plainTextEdit" />
-       </item>
-      </layout>
-     </widget>
-    </item>
     <item row="1" column="0" >
      <spacer name="verticalSpacer" >
       <property name="orientation" >
@@ -677,7 +665,7 @@
      <x>0</x>
      <y>0</y>
      <width>584</width>
-     <height>469</height>
+     <height>470</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -1206,7 +1194,7 @@
      <x>0</x>
      <y>0</y>
      <width>584</width>
-     <height>469</height>
+     <height>470</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -1232,7 +1220,7 @@
      <x>0</x>
      <y>0</y>
      <width>584</width>
-     <height>469</height>
+     <height>470</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -1260,7 +1248,7 @@
      <x>0</x>
      <y>0</y>
      <width>584</width>
-     <height>469</height>
+     <height>470</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -1285,14 +1273,14 @@
      <x>0</x>
      <y>0</y>
      <width>584</width>
-     <height>469</height>
+     <height>470</height>
     </rect>
    </property>
    <attribute name="title" >
-    <string>History</string>
+    <string>Logs</string>
    </attribute>
-   <layout class="QGridLayout" >
-    <item row="0" column="0" >
+   <layout class="QVBoxLayout" name="verticalLayout_5" >
+    <item>
      <widget class="QTreeWidget" name="HistoryTree_" >
       <property name="rootIsDecorated" >
        <bool>false</bool>
@@ -1319,22 +1307,7 @@
       </column>
      </widget>
     </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="LogTab_" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>584</width>
-     <height>469</height>
-    </rect>
-   </property>
-   <attribute name="title" >
-    <string>Log</string>
-   </attribute>
-   <layout class="QGridLayout" >
-    <item row="0" column="0" >
+    <item>
      <widget class="QTextEdit" name="LogShower_" >
       <property name="lineWrapMode" >
        <enum>QTextEdit::NoWrap</enum>

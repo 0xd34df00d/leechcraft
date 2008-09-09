@@ -451,6 +451,15 @@ void TorrentPlugin::on_TorrentSequentialDownload__stateChanged (int state)
 	Core::Instance ()->SetTorrentSequentialDownload (state == Qt::Checked);
 }
 
+void TorrentPlugin::on_TorrentTrackers__textChanged ()
+{
+	QString trackers = Ui_.TorrentTrackers_->toPlainText ();
+	QStringList list = trackers.split ('\n');
+	for (int i = 0; i < list.size (); ++i)
+		list [i] = list [i].trimmed ();
+	Core::Instance ()->SetTrackers (list);
+}
+
 void TorrentPlugin::on_CaseSensitiveSearch__stateChanged (int state)
 {
     FilterModel_->setFilterCaseSensitivity (state ? Qt::CaseSensitive : Qt::CaseInsensitive);
@@ -609,12 +618,14 @@ void TorrentPlugin::UpdateTorrentControl ()
 	Ui_.TorrentUploadRateController_->setValue (Core::Instance ()->GetTorrentUploadRate ());
 	Ui_.TorrentDesiredRating_->setValue (Core::Instance ()->GetTorrentDesiredRating ());
 	Ui_.TorrentManaged_->setCheckState (Core::Instance ()->IsTorrentManaged () ? Qt::Checked : Qt::Unchecked);
+	Ui_.TorrentSequentialDownload_->setCheckState (Core::Instance ()->IsTorrentSequentialDownload () ? Qt::Checked : Qt::Unchecked);
+	if (!Ui_.TorrentTrackers_->textCursor ().position ())
+		Ui_.TorrentTrackers_->setPlainText (Core::Instance ()->GetTrackers ().join ("\n"));
 }
 
 void TorrentPlugin::UpdateTorrentPage ()
 {
 	TorrentInfo i = Core::Instance ()->GetTorrentStats ();
-	qDebug () << i.State_;
 	Ui_.LabelState_->setText (i.State_);
 	Ui_.LabelTracker_->setText (i.Tracker_);
 	Ui_.LabelProgress_->setText (QString::number (i.Progress_ * 100) + "%");
@@ -710,6 +721,10 @@ void TorrentPlugin::SetupTabWidget ()
 			SIGNAL (stateChanged (int)),
 			this,
 			SLOT (on_TorrentSequentialDownload__stateChanged (int)));
+	connect (Ui_.TorrentTrackers_,
+			SIGNAL (textChanged ()),
+			this,
+			SLOT (on_TorrentTrackers__textChanged ()));
 	connect (Ui_.DownloadingTorrents_,
 			SIGNAL (valueChanged (int)),
 			this,
