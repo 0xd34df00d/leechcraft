@@ -1,5 +1,4 @@
 #include <QDomDocument>
-#include <QtDebug>
 #include <QDomElement>
 #include <QStringList>
 #include <QLocale>
@@ -10,6 +9,13 @@
 
 RSS20Parser::RSS20Parser ()
 {
+	timezoneOffsets ["GMT"] = timezoneOffsets ["UT"] = timezoneOffsets ["Z"] = 0;
+	timezoneOffsets ["EST"] = -5; timezoneOffsets ["EDT"] = -4;
+	timezoneOffsets ["CST"] = -6; timezoneOffsets ["CDT"] = -5;
+	timezoneOffsets ["MST"] = -7; timezoneOffsets ["MDT"] = -6;
+	timezoneOffsets ["PST"] = -8; timezoneOffsets ["PDT"] = -7;
+	timezoneOffsets ["A"] = -1; timezoneOffsets ["M"] = -12;
+	timezoneOffsets ["N"] = 1; timezoneOffsets ["Y"] = +12;
 }
 
 RSS20Parser& RSS20Parser::Instance ()
@@ -84,7 +90,9 @@ Feed::channels_container_t RSS20Parser::Parse (const QDomDocument& doc) const
         chan->Title_ = channel.firstChildElement ("title").text ();
         chan->Description_ = channel.firstChildElement ("description").text ();
         chan->Link_ = channel.firstChildElement ("link").text ();
-        chan->LastBuild_ = FromRFC822 (channel.firstChildElement ("lastBuildDate").text ());
+        chan->LastBuild_ = rfc822TimeToQDateTime (channel.firstChildElement ("lastBuildDate").text ());
+	if (!chan->LastBuild_.isValid () || chan->LastBuild_.isNull ())
+		chan->LastBuild_ = QDateTime::currentDateTime ();
         chan->Language_ = channel.firstChildElement ("language").text ();
         chan->Author_ = channel.firstChildElement ("managingEditor").text ();
         chan->PixmapURL_ = channel.firstChildElement ("image").attribute ("url");
@@ -109,7 +117,7 @@ Item* RSS20Parser::ParseItem (const QDomElement& item) const
     result->Title_ = UnescapeHTML (item.firstChildElement ("title").text ());
     result->Link_ = UnescapeHTML (item.firstChildElement ("link").text ());
     result->Description_ = UnescapeHTML (item.firstChildElement ("description").text ());
-    result->PubDate_ = FromRFC822 (item.firstChildElement ("pubDate").text ());
+    result->PubDate_ = rfc822TimeToQDateTime (item.firstChildElement ("pubDate").text ());
     if (!result->PubDate_.isValid () || result->PubDate_.isNull ())
         result->PubDate_ = QDateTime::currentDateTime ();
     result->Guid_ = item.firstChildElement ("guid").text ();
@@ -117,14 +125,39 @@ Item* RSS20Parser::ParseItem (const QDomElement& item) const
     return result;
 }
 
-QDateTime RSS20Parser::FromRFC822 (const QString& t) const
+QDateTime RSS20Parser::rfc822TimeToQDateTime (const QString& t) const
 {
-    QString time = t;
-    if (time [3] == ',')
-        time.remove (0, 5);
-    QStringList tmp = time.split (' ');
-    tmp.removeAt (tmp.size () - 1);
-    time = tmp.join (" ");
-    return QLocale::c ().toDateTime (time, "dd MMM yyyy hh:mm:ss");
+	if (t.size () < 20)
+		return QDateTime ();
+	
+	QString time = t.simplified ();
+	short int hoursShift = 0, minutesShift = 0;
+	
+	if (time [3] == ',')
+		time.remove (0, 5);
+	QStringList tmp = time.split (' ');
+	if (tmp.size () != 5)
+		return QDateTime ();
+	QString timezone = tmp.takeAt (tmp.size () -1);
+	if (timezone.size () == 5)
+	{
+		bool ok;
+		int tz = timezone.toInt (&ok);
+		if (ok)
+		{
+			hoursShift = tz / 100;
+			minutesShift = tz % 100;
+		}
+	}
+	else
+		hoursShift = timezoneOffsets.value (timezone,0);
+	time = tmp.join (" ");
+	QDateTime result;
+	if ((tmp.at (2)).size () == 4)
+		result = QLocale::c ().toDateTime(time, "dd MMM yyyy hh:mm:ss");
+	else
+		result = QLocale::c ().toDateTime(time, "dd MMM yy hh:mm:ss");
+	result = result.addSecs (hoursShift*3600*(-1) + minutesShift*60*(-1));
+	result.setTimeSpec(Qt::UTC);
+	return result.toLocalTime ();
 }
-

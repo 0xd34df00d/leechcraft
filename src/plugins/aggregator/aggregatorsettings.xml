@@ -8,7 +8,7 @@
         <groupbox>
             <label lang="en" value="Behavior" />
             <label lang="ru" value="Поведение" />
-			<label lang="uk" value="Поведінка" />
+	    <label lang="uk" value="Поведінка" />
             <item type="checkbox" property="BeSilent" state="off">
                 <label lang="en" value="Be silent" />
                 <label lang="ru" value="Вести себя тихо" />
@@ -53,7 +53,7 @@
                 <label lang="ru" value="Статей в канале:" />
 				<label lang="uk" value="Статей в каналі:" />
             </item>
-            <item type="spinbox" property="ItemsMaxAge" default="30" minimum="1" maximum="365" step="1">
+            <item type="spinbox" property="ItemsMaxAge" default="30" minimum="1" maximum="365">
                 <lang value="en">
                     <label value="Store items for:" />
                     <suffix value=" days" />

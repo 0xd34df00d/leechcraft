@@ -51,7 +51,8 @@ class TorrentPlugin : public QObject
 		ForceReannounce_,
 		ForceRecheck_,
 		OpenMultipleTorrents_,
-		MoveFiles_;
+		MoveFiles_,
+		ChangeTrackers_;
 	std::auto_ptr<QToolBar> Toolbar_;
 public:
     // IInfo
@@ -115,6 +116,7 @@ private slots:
     void on_ForceReannounce__triggered (int);
 	void on_ForceRecheck__triggered (int);
     void on_Preferences__triggered ();
+	void on_ChangeTrackers__triggered ();
     void on_OverallDownloadRateController__valueChanged (int);
     void on_OverallUploadRateController__valueChanged (int);
     void on_DesiredRating__valueChanged (double);
@@ -123,7 +125,6 @@ private slots:
     void on_TorrentDesiredRating__valueChanged (double);
 	void on_TorrentManaged__stateChanged (int);
 	void on_TorrentSequentialDownload__stateChanged (int);
-	void on_TorrentTrackers__textChanged ();
     void on_CaseSensitiveSearch__stateChanged (int);
     void on_DownloadingTorrents__valueChanged (int);
     void on_UploadingTorrents__valueChanged (int);

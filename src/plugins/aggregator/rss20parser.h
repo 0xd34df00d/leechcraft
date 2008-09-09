@@ -2,6 +2,8 @@
 #define RSS20PARSER_H
 #include <QPair>
 #include <QDateTime>
+#include <QMap>
+#include <QString>
 #include "parserfactory.h"
 #include "parser.h"
 
@@ -21,7 +23,8 @@ public:
 private:
 	Feed::channels_container_t Parse (const QDomDocument&) const;
     Item* ParseItem (const QDomElement&) const;
-    QDateTime FromRFC822 (const QString&) const;
+    QDateTime rfc822TimeToQDateTime (const QString&) const;
+	QMap<QString, int> timezoneOffsets;
 };
 
 #endif

@@ -24,6 +24,7 @@
 #include "filesviewdelegate.h"
 #include "movetorrentfiles.h"
 #include "representationmodel.h"
+#include "trackerschanger.h"
 
 void TorrentPlugin::Init ()
 {
@@ -411,6 +412,15 @@ void TorrentPlugin::on_Preferences__triggered ()
     XmlSettingsDialog_->setWindowTitle ("BitTorrent" + tr (": Settings"));
 }
 
+void TorrentPlugin::on_ChangeTrackers__triggered ()
+{
+	QStringList trackers = Core::Instance ()->GetTrackers ();
+	TrackersChanger changer;
+	changer.SetTrackers (trackers);
+	if (changer.exec () == QDialog::Accepted)
+		Core::Instance ()->SetTrackers (changer.GetTrackers ());
+}
+
 void TorrentPlugin::on_OverallDownloadRateController__valueChanged (int val)
 {
     Core::Instance ()->SetOverallDownloadRate (val);
@@ -449,15 +459,6 @@ void TorrentPlugin::on_TorrentManaged__stateChanged (int state)
 void TorrentPlugin::on_TorrentSequentialDownload__stateChanged (int state)
 {
 	Core::Instance ()->SetTorrentSequentialDownload (state == Qt::Checked);
-}
-
-void TorrentPlugin::on_TorrentTrackers__textChanged ()
-{
-	QString trackers = Ui_.TorrentTrackers_->toPlainText ();
-	QStringList list = trackers.split ('\n');
-	for (int i = 0; i < list.size (); ++i)
-		list [i] = list [i].trimmed ();
-	Core::Instance ()->SetTrackers (list);
 }
 
 void TorrentPlugin::on_CaseSensitiveSearch__stateChanged (int state)
@@ -619,8 +620,6 @@ void TorrentPlugin::UpdateTorrentControl ()
 	Ui_.TorrentDesiredRating_->setValue (Core::Instance ()->GetTorrentDesiredRating ());
 	Ui_.TorrentManaged_->setCheckState (Core::Instance ()->IsTorrentManaged () ? Qt::Checked : Qt::Unchecked);
 	Ui_.TorrentSequentialDownload_->setCheckState (Core::Instance ()->IsTorrentSequentialDownload () ? Qt::Checked : Qt::Unchecked);
-	if (!Ui_.TorrentTrackers_->textCursor ().position ())
-		Ui_.TorrentTrackers_->setPlainText (Core::Instance ()->GetTrackers ().join ("\n"));
 }
 
 void TorrentPlugin::UpdateTorrentPage ()
@@ -721,10 +720,6 @@ void TorrentPlugin::SetupTabWidget ()
 			SIGNAL (stateChanged (int)),
 			this,
 			SLOT (on_TorrentSequentialDownload__stateChanged (int)));
-	connect (Ui_.TorrentTrackers_,
-			SIGNAL (textChanged ()),
-			this,
-			SLOT (on_TorrentTrackers__textChanged ()));
 	connect (Ui_.DownloadingTorrents_,
 			SIGNAL (valueChanged (int)),
 			this,
@@ -852,6 +847,14 @@ void TorrentPlugin::SetupActions ()
 			this,
 			SLOT (on_Preferences__triggered ()));
 
+	ChangeTrackers_.reset (new QAction (tr ("Change trackers..."),
+				Toolbar_.get ()));
+	ChangeTrackers_->setShortcut (tr ("C"));
+	connect (ChangeTrackers_.get (),
+			SIGNAL (triggered ()),
+			this,
+			SLOT (on_ChangeTrackers__triggered ()));
+
 	CreateTorrent_.reset (new QAction (QIcon (":/resources/images/torrent_new.png"),
 				tr ("Create torrent..."),
 				Toolbar_.get ()));
@@ -917,6 +920,7 @@ void TorrentPlugin::SetupActions ()
 	Toolbar_->addAction (ForceReannounce_.get ());
 	Toolbar_->addAction (ForceRecheck_.get ());
 	Toolbar_->addAction (MoveFiles_.get ());
+	Toolbar_->addAction (ChangeTrackers_.get ());
 	Toolbar_->addSeparator ();
 	Toolbar_->addAction (Preferences_.get ());
 }

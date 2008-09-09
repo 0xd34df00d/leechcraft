@@ -28,6 +28,7 @@ SET (SRCS
 	filesviewdelegate.cpp
 	movetorrentfiles.cpp
 	representationmodel.cpp
+	trackerschanger.cpp
 	)
 SET (HEADERS
 	torrentplugin.h 
@@ -47,6 +48,7 @@ SET (HEADERS
 	filesviewdelegate.h
 	movetorrentfiles.h
 	representationmodel.h
+	trackerschanger.h
 	newtorrentparams.h
 	overallstats.h
 	torrentinfo.h 
@@ -61,7 +63,9 @@ SET (FORMS
 	newtorrentfirststep.ui
 	newtorrentsecondstep.ui
 	newtorrentthirdstep.ui
-	movetorrentfiles.ui)
+	movetorrentfiles.ui
+	trackerschanger.ui
+	)
 SET (RESOURCES resources.qrc)
 
 SET (TRANSLATIONS

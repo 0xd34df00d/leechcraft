@@ -20,9 +20,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>34</y>
+     <y>39</y>
      <width>800</width>
-     <height>545</height>
+     <height>539</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout" >
@@ -43,7 +43,7 @@
            </widget>
           </item>
           <item>
-           <widget class="TagsLineEdit" name="TagsLine_" />
+           <widget class="TagsLineEdit" native="1" name="TagsLine_" />
           </item>
          </layout>
         </item>
@@ -148,7 +148,7 @@
             </widget>
            </item>
            <item row="1" column="1" >
-            <widget class="TagsLineEdit" name="ChannelTags_" />
+            <widget class="TagsLineEdit" native="1" name="ChannelTags_" />
            </item>
            <item row="2" column="0" >
             <widget class="QLabel" name="label_10" >
@@ -302,9 +302,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>579</y>
+     <y>578</y>
      <width>800</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
@@ -313,8 +313,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>138</width>
-     <height>34</height>
+     <width>155</width>
+     <height>39</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -334,10 +334,10 @@
   <widget class="QToolBar" name="toolBar_2" >
    <property name="geometry" >
     <rect>
-     <x>138</x>
+     <x>155</x>
      <y>0</y>
-     <width>185</width>
-     <height>34</height>
+     <width>123</width>
+     <height>39</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -357,10 +357,10 @@
   <widget class="QToolBar" name="toolBar_3" >
    <property name="geometry" >
     <rect>
-     <x>323</x>
+     <x>278</x>
      <y>0</y>
-     <width>477</width>
-     <height>34</height>
+     <width>522</width>
+     <height>39</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -455,6 +455,10 @@
    </property>
   </action>
   <action name="ActionRegexpMatcher_" >
+   <property name="icon" >
+    <iconset resource="resources.qrc" >
+     <normaloff>:/resources/images/filter.png</normaloff>:/resources/images/filter.png</iconset>
+   </property>
    <property name="text" >
     <string>Regexp matcher...</string>
    </property>
@@ -478,15 +482,15 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>TagsLineEdit</class>
+   <extends>QWidget</extends>
+   <header location="global" >tagslineedit.h</header>
+  </customwidget>
+  <customwidget>
    <class>BrowserWidget</class>
    <extends>QWidget</extends>
    <header>browserwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>TagsLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>../../plugininterface/tagslineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources>

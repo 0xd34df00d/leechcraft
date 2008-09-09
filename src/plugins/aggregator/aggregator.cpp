@@ -66,10 +66,11 @@ void Aggregator::Init ()
 			SIGNAL (currentIndexChanged (int)),
 			this,
 			SLOT (updateItemsFilter ()));
-    QHeaderView *itemsHeader = Ui_.Items_->header ();
-    QFontMetrics fm = fontMetrics ();
-    itemsHeader->resizeSection (0, fm.width ("Average news article size is about this width or maybe bigger, because they are bigger"));
-    itemsHeader->resizeSection (1, fm.width ("_99 Mar 9999 99:99:99_"));
+	QHeaderView *itemsHeader = Ui_.Items_->header ();
+	QFontMetrics fm = fontMetrics ();
+	int dateTimeSize = fm.width (QDateTime::currentDateTime ().toString (Qt::SystemLocaleShortDate)) + fm.width("__");
+	itemsHeader->resizeSection (0, fm.width ("Average news article size is about this width or maybe bigger, because they are bigger"));
+	itemsHeader->resizeSection (1, dateTimeSize);
 
     ChannelsFilterModel_ = new ChannelsFilterModel (this);
     ChannelsFilterModel_->setSourceModel (Core::Instance ().GetChannelsModel ());
@@ -81,7 +82,7 @@ void Aggregator::Init ()
     Ui_.Feeds_->setContextMenuPolicy (Qt::ActionsContextMenu);
     QHeaderView *channelsHeader = Ui_.Feeds_->header ();
     channelsHeader->resizeSection (0, fm.width ("Average channel name"));
-    channelsHeader->resizeSection (1, fm.width ("_99 Mar 9999 99:99:99_"));
+    channelsHeader->resizeSection (1, dateTimeSize);
     channelsHeader->resizeSection (2, fm.width ("_999_"));
     connect (Ui_.TagsLine_,
 			SIGNAL (textChanged (const QString&)),
@@ -119,6 +120,8 @@ void Aggregator::Init ()
 	XmlSettingsManager::Instance ()->RegisterObject ("DefaultFixedFontSize", this, "viewerSettingsChanged");
 	XmlSettingsManager::Instance ()->RegisterObject ("AutoLoadImages", this, "viewerSettingsChanged");
 	XmlSettingsManager::Instance ()->RegisterObject ("AllowJavaScript", this, "viewerSettingsChanged");
+
+	viewerSettingsChanged ();
 }
 
 void Aggregator::Release ()
@@ -341,7 +344,7 @@ void Aggregator::currentItemChanged (const QModelIndex& index)
 	QString shortLink;
 	Ui_.ItemLink_->setToolTip (link);
 	if (link.size () >= 40)
-		shortLink = link.left (15) + "..." + link.right (15);
+		shortLink = link.left (18) + "..." + link.right (18);
 	else
 		shortLink = link;
 	if(QUrl (link).isValid ())
@@ -372,7 +375,7 @@ void Aggregator::currentChannelChanged ()
 	QString shortLink;
 	Ui_.ChannelLink_->setToolTip (link);
 	if (link.size () >= 40)
-        	shortLink = link.left (15) + "..." + link.right (15);
+        	shortLink = link.left (18) + "..." + link.right (18);
 	else
 		shortLink = link;
 	if(QUrl (link).isValid ())
@@ -471,7 +474,7 @@ void Aggregator::viewerSettingsChanged ()
 	Ui_.ItemView_->settings ()->setFontSize (QWebSettings::DefaultFixedFontSize,
 						XmlSettingsManager::Instance ()->property ("DefaultFixedFontSize").toInt ());
 	Ui_.ItemView_->settings ()->setAttribute (QWebSettings::AutoLoadImages,
-						XmlSettingsManager::Instance ()->property ("AutoloadImages").toBool ());
+						XmlSettingsManager::Instance ()->property ("AutoLoadImages").toBool ());
 	Ui_.ItemView_->settings ()->setAttribute (QWebSettings::JavascriptEnabled,
 						XmlSettingsManager::Instance ()->property ("AllowJavaScript").toBool ());
 }
