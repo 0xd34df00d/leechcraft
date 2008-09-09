@@ -77,11 +77,15 @@ public:
 	void say(QString msg);
 	QStringList users() const;
 
+	bool active() const;
+
+
 private:
 	void setJoined(int theValue);
 	void setTarget(const QString& theValue);
 	void setTargetMode(int theValue);
 	int m_joined;
+	bool m_active;
 	IrcServer * m_ircServer;
 	static QHash<QString, IrcServer *> m_servers;
 	IrcServer * getServer(QString host, QString port="6667");

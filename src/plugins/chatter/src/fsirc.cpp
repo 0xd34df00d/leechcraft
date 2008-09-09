@@ -41,10 +41,10 @@ fsirc::fsirc(QWidget *parent) : QDialog(parent)
 	newTabButton = new QPushButton(QIcon(":/fsirc/data/new.svg"),QString(),this);
 	closeTabButton->setFocusPolicy(Qt::NoFocus);
 	newTabButton->setFocusPolicy(Qt::NoFocus);
-	closeTabButton->setDisabled(true);
 	cornerButtons = new QToolBar(ircTabHolder);
 	cornerButtons->addWidget(closeTabButton);
 	cornerButtons->addWidget(newTabButton);
+	closeTabButton->setDisabled(true);
 	ircTabHolder->setCornerWidget(cornerButtons);
 	newTab();
 	setWindowIcon(QIcon(":/fsirc/data/icon.svg"));
@@ -153,13 +153,14 @@ void fsirc::newTab(QString uri)
 	ircTabHolder->setCurrentIndex(ircTabHolder->addTab(ircView,"newtab"));
 
 	refreshTabNames();
-	closeTabButton->setDisabled(false);
+	if(ircTabHolder->count()>1) closeTabButton->setDisabled(false);
 }
 
 void fsirc::refreshTabNames()
 {
 	for(int i=0; i<ircTabHolder->count(); ++i)
 	{
+		qDebug() << "updating names" << i << ircList[i]->ircUri();
 		ircTabHolder->setTabText(i, ircList[i]->ircUri());
 	}
 }

@@ -43,6 +43,7 @@ IrcServer::IrcServer(QString host, QString port)
 	connect(m_socket, SIGNAL(readyRead()), this, SLOT(getData()));
 	connect(m_socket, SIGNAL(connected()), this, SLOT(ircLogon()));
 	connect(m_socket, SIGNAL(disconnected()), this, SIGNAL(disconnected()));
+	connect(m_socket, SIGNAL(disconnected()), this, SLOT(gotDisconnected()));
 }
 
 IrcServer::~IrcServer()
@@ -69,7 +70,7 @@ void IrcServer::ircThrow(QString what)
 	    m_socket->write(what.toAscii());
 	else
 		emit errMsg(tr("Not connected to server!"));
-	//qDebug() << "RAW THROW: " << what;
+//	qDebug() << "RAW THROW: " << what;
 }
 
 void IrcServer::getData()
@@ -86,8 +87,8 @@ bool IrcServer::isConnected() const
 void IrcServer::breakContact()
 {
 	ircThrow("QUIT :"+FS_QUIT_MSG);
-	m_socket->disconnectFromHost();
-	m_socket->waitForDisconnected();
+	if(!m_socket->waitForDisconnected())
+		m_socket->close();
 }
 
 void IrcServer::incRefCount()
@@ -115,7 +116,7 @@ void IrcServer::preParse(QByteArray line)
 	QString str=line.simplified();
 	bool handled=true;
 	// Everything that needs answer here
-
+	qDebug() << "RAW GET:" << str;
 	if(ctcpRegexp->exactMatch(str))
 	{
 		QString type = ctcpRegexp->cap(2);
@@ -139,10 +140,12 @@ void IrcServer::preParse(QByteArray line)
 	{
 		if(nickRegexp->cap(1)==m_nick)
 		{
-			m_nick=nickRegexp->cap(1);
+			m_nick=nickRegexp->cap(2);
 			m_nickSet=true;
-		} else handled=false;
-	} else handled=false;
+		} else qDebug() << str << "is not a NICK." << nickRegexp->pattern();
+		handled=false;
+	} else
+	handled=false;
 	if(!handled) emit gotLine(line.simplified());
 }
 
@@ -178,4 +181,9 @@ void IrcServer::ircLogon()
 void IrcServer::setNickSet(bool theValue)
 {
 	m_nickSet = theValue;
+}
+
+void IrcServer::gotDisconnected()
+{
+	m_socket->close();
 }

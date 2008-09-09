@@ -33,6 +33,7 @@ IrcLayer::IrcLayer(QObject * parent, QString ircUri) : QObject(parent)
 {
 	qDebug() << "Creating new IRC layer" << ircUri;
 	fSettings settings;
+	m_active=0;
 	// Protocol regexes
 	initRegexes();
 	m_encoding = "UTF-8";
@@ -47,6 +48,7 @@ IrcLayer::IrcLayer(QObject * parent, QString ircUri) : QObject(parent)
 
 void IrcLayer::ircConnect()
 {
+	m_active=true;
 	if (!m_ircServer->contact())
 	{
 		//qDebug("We are connected! Joining...");
@@ -92,6 +94,7 @@ void IrcLayer::initRegexes()
 	prRegexes["part"] = QRegExp("^PART (\\S+) :(.+)?$");
 	prRegexes["join"] = QRegExp("^JOIN :(\\S+)$");
 	prRegexes["quit"] = QRegExp("^QUIT :(.+)?$");
+	prRegexes["nick"]=QRegExp("^NICK :(.+)$");
 	prRegexes["kick"] = QRegExp("^KICK (\\S+) (\\S+) :(.+)?$");
 	prRegexes["mode"] = QRegExp("^MODE (\\S+) (\\S+)(?: (\\S+)?(?: (\\S+)?)?)?$");
 	// These two may need tuning
@@ -112,6 +115,7 @@ void IrcLayer::initRegexes()
 
 QString IrcLayer::getIrcUri()
 {
+	if(!active()) return QString();
 	QString pick;
 	pick="irc://"+m_server;
 	if(m_port!="6667") pick +=":"+m_port;
@@ -398,9 +402,6 @@ void IrcLayer::parseCmd(QString cmd, QHash<QString, QString> data)
 		else if(data["target"]==nick() && targetMode()==PrivateMode)
 			emit gotChannelMsg(data);
 		else emit gotPrivMsg(data);
-		// TODO creation of new query IrcLayer () in case
-		// discovering of already open query failed
-		//emit gotMsg(data);
 	} else
 	if(prRegexes["notice"].exactMatch(cmd))
 	{
@@ -424,7 +425,7 @@ void IrcLayer::parseCmd(QString cmd, QHash<QString, QString> data)
 	if(prRegexes["quit"].exactMatch(cmd))
 	{
 		data["text"]=prRegexes["quit"].cap(1); // text
-		if (m_users.contains(data["nick"]))
+		if (m_users.contains(data["nick"]) || data["nick"]==nick())
 		{
 			m_users.removeOne(data["nick"]);
 			emit gotQuit(data);
@@ -436,7 +437,6 @@ void IrcLayer::parseCmd(QString cmd, QHash<QString, QString> data)
 		// if it's about me
 		if((data["nick"]==nick())&&(target()==data["target"])&&!joined())
 		{
-		//	qDebug() << "I joined sum" << data
 			setTarget(data["target"]);
 			setJoined(1);
 		}
@@ -468,17 +468,16 @@ void IrcLayer::parseCmd(QString cmd, QHash<QString, QString> data)
 	if(prRegexes["nick"].exactMatch(cmd))
 	{
 		data["target"]=prRegexes["nick"].cap(1); // target
-		// if it's our nick, change it. Don't want to make slot crap for this.
-		if(data["nick"]==nick())
-			nick()=data["target"];
 		// TODO route this too
-		if(m_users.contains(data["nick"]))
+		qDebug() << data;
+		if(m_users.contains(data["nick"]) || data["target"]==nick())
 		{
 			m_users.removeOne(data["nick"]);
 			m_users << data["target"];
 			emit gotNick(data);
 		}
-	}
+	} else
+		qDebug() << cmd << "is not a NICK." << prRegexes["nick"].pattern();
 }
 
 QString IrcLayer::composeIrcUri(QHash<QString, QString> data)
@@ -534,6 +533,7 @@ void IrcLayer::ircMs(QString what)
 void IrcLayer::gotDisconnected()
 {
 	errMsg(tr("Disconnected from server."));
+	m_active=false;
 }
 
 QString IrcLayer::nick()
@@ -704,3 +704,8 @@ QString IrcLayer::cleanUri(QString uri)
 111
 these are secret self-destruction preventing codes, do not remove
 */
+
+bool IrcLayer::active() const
+{
+	return m_active;
+}

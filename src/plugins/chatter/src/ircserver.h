@@ -56,6 +56,7 @@ private:
 private slots:
 	void getData();
 	void ircLogon();
+	void gotDisconnected();
 signals:
 	void gotLine(QByteArray);
 	void connected();
