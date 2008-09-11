@@ -80,14 +80,7 @@ void Core::DoDelayedInit ()
 				 ver.at (1).digitValue (), 
 				 ver.at (2).digitValue (),
 				 ver.at (3).digitValue ()));
-		Session_->set_alert_mask (libtorrent::alert::error_notification |
-				libtorrent::alert::peer_notification |
-				libtorrent::alert::port_mapping_notification |
-				libtorrent::alert::storage_notification |
-				libtorrent::alert::tracker_notification |
-				libtorrent::alert::status_notification |
-				libtorrent::alert::ip_block_notification |
-				libtorrent::alert::performance_warning);
+		Session_->set_alert_mask (libtorrent::alert::all_categories);
         QList<QVariant> ports = XmlSettingsManager::Instance ()->property ("TCPPortRange").toList ();
         Session_->listen_on (std::make_pair (ports.at (0).toInt (), ports.at (1).toInt ()));
         Session_->add_extension (&libtorrent::create_metadata_plugin);
@@ -96,8 +89,10 @@ void Core::DoDelayedInit ()
 		Session_->add_extension (&libtorrent::create_smart_ban_plugin);
         if (XmlSettingsManager::Instance ()->property ("DHTEnabled").toBool ())
             Session_->start_dht (libtorrent::entry ());
-        Session_->set_max_uploads (XmlSettingsManager::Instance ()->property ("MaxUploads").toInt ());
-        Session_->set_max_connections (XmlSettingsManager::Instance ()->property ("MaxConnections").toInt ());
+        Session_->set_max_uploads (XmlSettingsManager::Instance ()->
+				property ("MaxUploads").toInt ());
+        Session_->set_max_connections (XmlSettingsManager::Instance ()->
+				property ("MaxConnections").toInt ());
         Session_->start_lsd ();
         Session_->start_upnp ();
         Session_->start_natpmp ();
@@ -1524,6 +1519,7 @@ void Core::writeSettings ()
             continue;
 		int oldCurrent = CurrentTorrent_;
 		CurrentTorrent_ = i;
+		Handles_.at (i).save_resume_data ();
         try
         {
             QFile file_info (QDir::homePath () + "/.leechcraft_bittorrent/" + Handles_.at (i).TorrentFileName_);
@@ -1563,6 +1559,8 @@ void Core::writeSettings ()
     }
     settings.endArray ();
     settings.endGroup ();
+
+	queryLibtorrentForWarnings ();
 }
 
 void Core::checkFinished ()
@@ -1858,18 +1856,12 @@ struct SimpleDispatcher : public BaseDispatcher
 			.arg (QString::fromStdString (a.handle.name ()));
 		Log (logstr);
 	}
-
-	void operator() (const libtorrent::alert& a) const
-	{
-		QString logstr = QString ("General alert (%1).")
-			.arg (QString::fromStdString (a.message ()));
-		Log (logstr);
-	}
 };
 
 void Core::queryLibtorrentForWarnings ()
 {
-	std::auto_ptr<libtorrent::alert> a (Session_->pop_alert ());
+	std::auto_ptr<libtorrent::alert> a;
+	a = Session_->pop_alert ();
 	SimpleDispatcher sd;
 	while (a.get ())
 	{
@@ -1902,12 +1894,13 @@ void Core::queryLibtorrentForWarnings ()
 				, libtorrent::scrape_reply_alert
 				, libtorrent::scrape_failed_alert
 				, libtorrent::performance_alert
-				, libtorrent::alert
 				>::handle_alert (a, sd);
 		}
 		catch (const libtorrent::unhandled_alert& e)
 		{
-			qWarning () << Q_FUNC_INFO << "unhandled alert" << QString::fromStdString (a->message ());
+			qWarning () << Q_FUNC_INFO
+				<< "unhandled alert"
+				<< QString::fromStdString (a->message ());
 		}
 		a = Session_->pop_alert ();
 	}
