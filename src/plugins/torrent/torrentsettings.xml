@@ -591,42 +591,94 @@
     <page>
         <label lang="en" value="Local settings" />
         <label lang="ru" value="Локальные настройки" />
-        <groupbox>
-            <label lang="en" value="Local settings" />
-            <label lang="ru" value="Локальные настройки" />
-            <item type="spinbox" property="AutosaveInterval" default="120" minimum="5" maximum="3600" step="15" suffix=" s">
-                <lang value="en">
-                    <label value="Autosave interval:" />
-                    <suffix value=" s" />
-                </lang>
-                <lang value="ru">
-                    <label value="Интервал автосохранения:" />
-                    <suffix value=" с" />
-                </lang>
-            </item>
-        </groupbox>
-        <groupbox>
-            <label lang="en" value="Advanced" />
-            <label lang="ru" value="Расширенные настройки" />
-            <item type="checkbox" property="FreeTorrentHashes" state="on">
-                <label lang="en" value="Unload hashes from memory if seeding" />
-                <label lang="ru" value="Выгружать хэши из памяти при раздаче" />
-            </item>
-            <item type="spinbox" property="MaxOutstandingDiskBytesPerConnection" default="1024" minimum="32" maximum="65536" step="512">
-                <lang value="en">
-                    <label value="Maximum outstanding disk bytes per connection:" />
-                    <suffix value=" KB" />
-                </lang>
-                <lang value="ru">
-                    <label value="Максимально байт в очереди за запись на соединение:" />
-					<suffix value=" КБ" />
-                </lang>
-            </item>
-            <item type="spinbox" property="FilePoolSize" default="40" minimum="5" maximum="1000" step="5">
-                <label lang="en" value="Maximum amount of concurrently open files:" />
-                <label lang="ru" value="Максимальное число одновременно открытых файлов:" />
-            </item>
-        </groupbox>
+		<tab>
+			<label lang="en" value="General" />
+			<label lang="ru" value="Общие" />
+			<groupbox>
+				<label lang="en" value="Local settings" />
+				<label lang="ru" value="Локальные настройки" />
+				<item type="spinbox" property="AutosaveInterval" default="120" minimum="5" maximum="3600" step="15" suffix=" s">
+					<lang value="en">
+						<label value="Autosave interval:" />
+						<suffix value=" s" />
+					</lang>
+					<lang value="ru">
+						<label value="Интервал автосохранения:" />
+						<suffix value=" с" />
+					</lang>
+				</item>
+			</groupbox>
+			<groupbox>
+				<label lang="en" value="Advanced" />
+				<label lang="ru" value="Расширенные настройки" />
+				<item type="checkbox" property="FreeTorrentHashes" state="on">
+					<label lang="en" value="Unload hashes from memory if seeding" />
+					<label lang="ru" value="Выгружать хэши из памяти при раздаче" />
+				</item>
+				<item type="spinbox" property="MaxOutstandingDiskBytesPerConnection" default="1024" minimum="32" maximum="65536" step="512">
+					<lang value="en">
+						<label value="Maximum outstanding disk bytes per connection:" />
+						<suffix value=" KB" />
+					</lang>
+					<lang value="ru">
+						<label value="Максимально байт в очереди за запись на соединение:" />
+						<suffix value=" КБ" />
+					</lang>
+				</item>
+				<item type="spinbox" property="FilePoolSize" default="40" minimum="5" maximum="1000" step="5">
+					<label lang="en" value="Maximum amount of concurrently open files:" />
+					<label lang="ru" value="Максимальное число одновременно открытых файлов:" />
+				</item>
+			</groupbox>
+		</tab>
+		<tab>
+			<label lang="en" value="Logging" />
+			<label lang="ru" value="Протоколирование" />
+			<groupbox>
+				<label lang="en" value="Logging levels" />
+				<label lang="ru" value="События протоколирования" />
+				<item type="checkbox" property="NotificationError" default="on">
+					<label lang="en" value="Error notifications" />
+					<label lang="ru" value="Уведомления об ошибках" />
+				</item>
+				<item type="checkbox" property="NotificationPeer" default="off">
+					<label lang="en" value="Peer events" />
+					<label lang="ru" value="События пиров" />
+				</item>
+				<item type="checkbox" property="NotificationPortMapping" default="on">
+					<label lang="en" value="Port mapping events" />
+					<label lang="ru" value="События назначения портов" />
+				</item>
+				<item type="checkbox" property="NotificationStorage" default="on">
+					<label lang="en" value="Storage events" />
+					<label lang="ru" value="События хранилища" />
+				</item>
+				<item type="checkbox" property="NotificationTracker" default="on">
+					<label lang="en" value="Tracker events" />
+					<label lang="ru" value="События трекера" />
+				</item>
+				<item type="checkbox" property="NotificationDebug" default="off">
+					<label lang="en" value="Debug notifications" />
+					<label lang="ru" value="Уведомления отладки" />
+				</item>
+				<item type="checkbox" property="NotificationStatus" default="on">
+					<label lang="en" value="State change events" />
+					<label lang="ru" value="События изменения статуса" />
+				</item>
+				<item type="checkbox" property="NotificationProgress" default="on">
+					<label lang="en" value="Progress events" />
+					<label lang="ru" value="События хода торрентов" />
+				</item>
+				<item type="checkbox" property="NotificationIPBlock" default="on">
+					<label lang="en" value="IP block events" />
+					<label lang="ru" value="События блокировщика IP" />
+				</item>
+				<item type="checkbox" property="PerformanceWarning" default="on">
+					<label lang="en" value="Performance warnings" />
+					<label lang="ru" value="Предупреждения производительности" />
+				</item>
+			</groupbox>
+		</tab>
     </page>
 </settings>
 

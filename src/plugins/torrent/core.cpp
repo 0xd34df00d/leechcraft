@@ -1,4 +1,3 @@
-#define TORRENT_MAX_ALERT_TYPES 27
 #include "core.h"
 #include <QFile>
 #include <QProgressDialog>
@@ -80,7 +79,7 @@ void Core::DoDelayedInit ()
 				 ver.at (1).digitValue (), 
 				 ver.at (2).digitValue (),
 				 ver.at (3).digitValue ()));
-		Session_->set_alert_mask (libtorrent::alert::all_categories);
+		setLoggingSettings ();
         QList<QVariant> ports = XmlSettingsManager::Instance ()->property ("TCPPortRange").toList ();
         Session_->listen_on (std::make_pair (ports.at (0).toInt (), ports.at (1).toInt ()));
         Session_->add_extension (&libtorrent::create_metadata_plugin);
@@ -1440,6 +1439,27 @@ void Core::ManipulateSettings ()
 	XmlSettingsManager::Instance ()->RegisterObject ("ScrapeEnabled",
 			this, "setScrapeInterval");
 
+	XmlSettingsManager::Instance ()->RegisterObject ("PerformanceWarning",
+			this, "setLoggingSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("NotificationError",
+			this, "setLoggingSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("NotificationPeer",
+			this, "setLoggingSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("NotificationPortMapping",
+			this, "setLoggingSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("NotificationStorage",
+			this, "setLoggingSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("NotificationTracker",
+			this, "setLoggingSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("NotificationDebug",
+			this, "setLoggingSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("NotificationStatus",
+			this, "setLoggingSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("NotificationProgress",
+			this, "setLoggingSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("NotificationIPBlock",
+			this, "setLoggingSettings");
+
     TagsCompletionModel_->UpdateTags (XmlSettingsManager::Instance ()->Property ("TorrentTags", QStringList (tr ("untagged"))).toStringList ());
     RestoreTorrents ();
 }
@@ -1519,7 +1539,7 @@ void Core::writeSettings ()
             continue;
 		int oldCurrent = CurrentTorrent_;
 		CurrentTorrent_ = i;
-		Handles_.at (i).save_resume_data ();
+		Handles_.at (i).Handle_.save_resume_data ();
         try
         {
             QFile file_info (QDir::homePath () + "/.leechcraft_bittorrent/" + Handles_.at (i).TorrentFileName_);
@@ -1627,281 +1647,17 @@ void Core::checkFinished ()
     }
 }
 
-struct BaseDispatcher
-{
-	virtual void Log (const QString& logstr) const
-	{
-		qWarning () << "<libtorrent> " << logstr;
-		Core::Instance ()->LogMessage (QDateTime::currentDateTime ().toString () + " " + logstr);
-	}
-};
-
-struct SimpleDispatcher : public BaseDispatcher
-{
-	void operator() (const libtorrent::listen_failed_alert& a) const
-	{
-		QString logstr = QString ("Failed to open any port for listening (%1).")
-			.arg (QString::fromStdString (a.message ()));
-		Log (logstr);
-	}
-
-	void operator() (const libtorrent::listen_succeeded_alert& a) const
-	{
-		QString logstr = QString ("Listen succeeded %1 (%2).")
-			.arg (QString::fromStdString (a.endpoint.address ().to_string ()))
-			.arg (QString::fromStdString (a.message ()));
-		Log (logstr);
-	}
-
-	void operator() (const libtorrent::portmap_error_alert& a) const
-	{
-		QString logstr = QString ("NAT router was successfully"
-				" found but some port mapping request failed (%1).")
-			.arg (QString::fromStdString (a.message ()));
-		Log (logstr);
-	}
-
-	void operator() (const libtorrent::portmap_alert& a) const
-	{
-		QString logstr = QString ("Port successfully mapped tp %1 on a router of type %2")
-			.arg (a.external_port)
-			.arg (a.type ? "UPnP" : "NAT-PMP");
-		Log (logstr);
-	}
-
-	void operator() (const libtorrent::file_error_alert& a) const
-	{
-		QString logstr = QString ("IO failure. Torrent %1, file %2, error %3.")
-			.arg (QString::fromStdString (a.handle.name ()))
-			.arg (QString::fromStdString (a.file))
-			.arg (QString::fromStdString (a.msg));
-		Log (logstr);
-	}
-
-	void operator() (const libtorrent::tracker_announce_alert& a) const
-	{
-		QString logstr = QString ("Tracker announce, torrent %1, tracker %2.")
-			.arg (QString::fromStdString (a.handle.name ()))
-			.arg (QString::fromStdString (a.url));
-		Log (logstr);
-	}
-
-	void operator() (const libtorrent::tracker_error_alert& a) const
-	{
-		QString logstr = QString ("Tracker error, %1 for %2 times, tracker %3 of torrent %4")
-			.arg (a.status_code)
-			.arg (a.times_in_row)
-			.arg (QString::fromStdString (a.url))
-			.arg (QString::fromStdString (a.handle.name ()));
-		Log (logstr);
-	}
-
-	void operator() (const libtorrent::tracker_reply_alert& a) const
-	{
-		QString logstr = QString ("Tracker reply, %1 peers for torrent %2 by tracker %3.")
-			.arg (a.num_peers)
-			.arg (QString::fromStdString (a.handle.name ()))
-			.arg (QString::fromStdString (a.url));
-		Log (logstr);
-	}
-
-	void operator() (const libtorrent::tracker_warning_alert& a) const
-	{
-		QString logstr = QString ("Tracker reply has warning %1, torrent %2, tracker %3.")
-			.arg (QString::fromStdString (a.msg))
-			.arg (QString::fromStdString (a.url))
-			.arg (QString::fromStdString (a.handle.name ()));
-		Log (logstr);
-	}
-
-	void operator() (const libtorrent::url_seed_alert& a) const
-	{
-		QString logstr = QString ("HTTP seed %1 name lookup failed for torrent %2.")
-			.arg (QString::fromStdString (a.url))
-			.arg (QString::fromStdString (a.handle.name ()));
-		Log (logstr);
-	}
-
-	void operator() (const libtorrent::hash_failed_alert& a) const
-	{
-		QString logstr = QString ("Piece %1 hash check failed for torrent %2.")
-			.arg (a.piece_index)
-			.arg (QString::fromStdString (a.handle.name ()));
-		Log (logstr);
-	}
-
-	void operator() (const libtorrent::peer_ban_alert& a) const
-	{
-		QString logstr = QString ("Peer %1 banned, torrent %2.")
-			.arg (QString::fromStdString (a.ip.address ().to_string ()))
-			.arg (QString::fromStdString (a.handle.name ()));
-		Log (logstr);				
-	}
-	void operator() (const libtorrent::peer_error_alert& a) const
-	{
-		QString logstr = QString ("Peer %1 sent something bad (%2).")
-			.arg (QString::fromStdString (a.ip.address ().to_string ()))
-			.arg (QString::fromStdString (a.message ()));
-		Log (logstr);
-	}
-	void operator() (const libtorrent::invalid_request_alert& a) const
-	{
-		QString logstr = QString ("Invalid incoming piece request by %1, "
-			"piece %2, start %3, length %4 (%5).")
-			.arg (QString ::fromStdString (a.ip.address ().to_string ()))
-			.arg (a.request.piece)
-			.arg (a.request.start)
-			.arg (a.request.length)
-			.arg (QString::fromStdString (a.message ()));
-		Log (logstr);
-	}
-	void operator() (const libtorrent::torrent_finished_alert& a) const
-	{
-		QString logstr = QString ("Torrent finished %1.")
-			.arg (QString::fromStdString (a.handle.name ()));
-		Log (logstr);
-	}
-	void operator() (const libtorrent::metadata_failed_alert& a) const
-	{
-		QString logstr = QString ("Metadata hash failed (%1).")
-			.arg (QString::fromStdString (a.message ()));
-		Log (logstr);
-	}
-	void operator() (const libtorrent::metadata_received_alert& a) const
-	{
-		QString logstr = QString ("Metadata received (%1).")
-			.arg (QString::fromStdString (a.message ()));
-		Log (logstr);
-	}
-	void operator() (const libtorrent::fastresume_rejected_alert& a) const
-	{
-		QString logstr = QString ("Fast resume rejected for torrent %1: %2.")
-			.arg (QString::fromStdString (a.handle.name ()))
-			.arg (QString::fromStdString (a.msg));
-		Log (logstr);
-	}
-	void operator() (const libtorrent::peer_blocked_alert& a) const
-	{
-		QString logstr = QString ("Peer %1 blocked by the IP filter (%2).")
-			.arg (QString::fromStdString (a.ip.to_string ()))
-			.arg (QString::fromStdString (a.message ()));
-		Log (logstr);
-	}
-
-	void operator() (const libtorrent::storage_moved_alert& a) const
-	{
-		QString logstr = QString ("Storage successfully moved for torrent %1.")
-			.arg (QString::fromStdString (a.handle.name ()));
-		Log (logstr);
-	}
-
-	void operator() (const libtorrent::torrent_paused_alert& a) const
-	{
-		QString logstr = QString ("Torrent %1 paused.")
-			.arg (QString::fromStdString (a.handle.name ()));
-		Log (logstr);
-	}
-
-	void operator() (const libtorrent::external_ip_alert& a) const
-	{
-		QString logstr = QString ("Machine's external IP is %1.")
-			.arg (QString::fromStdString (a.external_address.to_string ()));
-		Log (logstr);
-		Core::Instance ()->SetExternalAddress (QString::
-				fromStdString (a.external_address.to_string ()));
-	}
-
-	void operator() (const libtorrent::dht_reply_alert& a) const
-	{
-		QString logstr = QString ("DHT reply, torrent %1, tracker %2, got %3 peers.")
-			.arg (QString::fromStdString (a.handle.name ()))
-			.arg (QString::fromStdString (a.url))
-			.arg (a.num_peers);
-		Log (logstr);
-	}
-
-	void operator() (const libtorrent::scrape_reply_alert& a) const
-	{
-		QString logstr = QString ("Scrape reply, torrent %1, tracker %2, "
-				"%3 complete and %4 incomplete peers.")
-			.arg (QString::fromStdString (a.handle.name ()))
-			.arg (QString::fromStdString (a.url))
-			.arg (a.complete)
-			.arg (a.incomplete);
-		Log (logstr);
-	}
-
-	void operator() (const libtorrent::scrape_failed_alert& a) const
-	{
-		QString logstr = QString ("Scrape request failed, torrent %1, tracker %2: %3.")
-			.arg (QString::fromStdString (a.handle.name ()))
-			.arg (QString::fromStdString (a.url))
-			.arg (QString::fromStdString (a.msg));
-		Log (logstr);
-	}
-
-	void operator() (const libtorrent::performance_alert& a) const
-	{
-		QString logstr;
-		switch (a.warning_code)
-		{
-			case libtorrent::performance_alert::outstanding_disk_buffer_limit_reached:
-				logstr += "Outstanding disk buffer limit reached";
-				break;
-			case libtorrent::performance_alert::outstanding_request_limit_reached:
-				logstr += "Outstanding request limit reached";
-				break;
-		}
-		logstr += QString (" for torrent %1.")
-			.arg (QString::fromStdString (a.handle.name ()));
-		Log (logstr);
-	}
-};
-
 void Core::queryLibtorrentForWarnings ()
 {
 	std::auto_ptr<libtorrent::alert> a;
 	a = Session_->pop_alert ();
-	SimpleDispatcher sd;
 	while (a.get ())
 	{
-		try
-		{
-			libtorrent::handle_alert<
-				libtorrent::listen_failed_alert
-				, libtorrent::listen_succeeded_alert
-				, libtorrent::portmap_error_alert
-				, libtorrent::portmap_alert
-				, libtorrent::file_error_alert
-				, libtorrent::tracker_announce_alert
-				, libtorrent::tracker_error_alert
-				, libtorrent::tracker_reply_alert
-				, libtorrent::tracker_warning_alert
-				, libtorrent::url_seed_alert
-				, libtorrent::hash_failed_alert
-				, libtorrent::peer_ban_alert
-				, libtorrent::peer_error_alert
-				, libtorrent::invalid_request_alert
-				, libtorrent::torrent_finished_alert
-				, libtorrent::metadata_failed_alert
-				, libtorrent::metadata_received_alert
-				, libtorrent::fastresume_rejected_alert
-				, libtorrent::peer_blocked_alert
-				, libtorrent::storage_moved_alert
-				, libtorrent::torrent_paused_alert
-				, libtorrent::external_ip_alert
-				, libtorrent::dht_reply_alert
-				, libtorrent::scrape_reply_alert
-				, libtorrent::scrape_failed_alert
-				, libtorrent::performance_alert
-				>::handle_alert (a, sd);
-		}
-		catch (const libtorrent::unhandled_alert& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "unhandled alert"
-				<< QString::fromStdString (a->message ());
-		}
+		QString logstr = QString::fromStdString (a->message ());
+
+		qWarning () << "<libtorrent> " << logstr;
+		Core::Instance ()->LogMessage (QDateTime::currentDateTime ().toString () + " " + logstr);
+
 		a = Session_->pop_alert ();
 	}
 }
@@ -2152,6 +1908,33 @@ void Core::setDHTSettings ()
     settings.max_fail_count = XmlSettingsManager::Instance ()->property ("MaxDHTFailcount").toInt ();
 
     Session_->set_dht_settings (settings);
+}
+
+void Core::setLoggingSettings ()
+{
+	int mask = 0;
+	if (XmlSettingsManager::Instance ()->property ("PerformanceWarning").toBool ())
+		mask |= libtorrent::alert::performance_warning;
+	if (XmlSettingsManager::Instance ()->property ("NotificationError").toBool ())
+		mask |= libtorrent::alert::error_notification;
+	if (XmlSettingsManager::Instance ()->property ("NotificationPeer").toBool ())
+		mask |= libtorrent::alert::peer_notification;
+	if (XmlSettingsManager::Instance ()->property ("NotificationPortMapping").toBool ())
+		mask |= libtorrent::alert::port_mapping_notification;
+	if (XmlSettingsManager::Instance ()->property ("NotificationStorage").toBool ())
+		mask |= libtorrent::alert::storage_notification;
+	if (XmlSettingsManager::Instance ()->property ("NotificationTracker").toBool ())
+		mask |= libtorrent::alert::tracker_notification;
+	if (XmlSettingsManager::Instance ()->property ("NotificationDebug").toBool ())
+		mask |= libtorrent::alert::debug_notification;
+	if (XmlSettingsManager::Instance ()->property ("NotificationStatus").toBool ())
+		mask |= libtorrent::alert::status_notification;
+	if (XmlSettingsManager::Instance ()->property ("NotificationProgress").toBool ())
+		mask |= libtorrent::alert::progress_notification;
+	if (XmlSettingsManager::Instance ()->property ("NotificationIPBlock").toBool ())
+		mask |= libtorrent::alert::ip_block_notification;
+
+	Session_->set_alert_mask (mask);
 }
 
 void Core::setScrapeInterval ()

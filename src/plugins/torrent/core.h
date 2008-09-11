@@ -203,6 +203,7 @@ public slots:
     void setProxySettings ();
     void setGeneralSettings ();
     void setDHTSettings ();
+	void setLoggingSettings ();
 	void setScrapeInterval ();
 signals:
     void error (QString) const;
