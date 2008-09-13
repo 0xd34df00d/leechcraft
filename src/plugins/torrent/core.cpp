@@ -161,6 +161,7 @@ void Core::DoDelayedInit ()
 
 void Core::Release ()
 {
+	Session_->pause ();
     writeSettings ();
     killTimer (InterfaceUpdateTimer_);
 
@@ -1721,6 +1722,8 @@ struct __LLEECHCRAFT_API SimpleDispatcher
 
 void Core::queryLibtorrentForWarnings ()
 {
+	Session_->wait_for_alert (libtorrent::time_duration (2));
+
 	std::auto_ptr<libtorrent::alert> a (Session_->pop_alert ());
 	SimpleDispatcher sd;
 	while (a.get ())
