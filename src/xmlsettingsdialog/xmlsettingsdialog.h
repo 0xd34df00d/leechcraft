@@ -67,6 +67,7 @@ private:
     void DoPath (const QDomElement&, QFormLayout*);
     void DoRadio (const QDomElement&, QFormLayout*);
     void DoCombobox (const QDomElement&, QFormLayout*);
+	void DoFont (const QDomElement&, QFormLayout*);
 	QList<QImage> GetImages (const QDomElement&) const;
 	void UpdateXml (bool = false);
 	void UpdateSingle (const QString&, const QVariant&, QDomElement&);

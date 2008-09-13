@@ -229,6 +229,8 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
         DoRadio (item, lay);
     else if (type == "combobox")
         DoCombobox (item, lay);
+	else if (type == "font")
+		DoFont (item, lay);
     else
         qWarning () << Q_FUNC_INFO << "unhandled type" << type;
 
@@ -355,9 +357,7 @@ QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject
 
 	QVariant value;
 	if (ignoreObject)
-	{
 		value = item.attribute ("default");
-	}
 	else
 	{
 		value = WorkingObject_->property (property.toLatin1 ().constData ());
@@ -428,6 +428,12 @@ QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject
 				option = option.nextSiblingElement ("option");
 			}
 		}
+	}
+	else if (type == "font")
+	{
+		if (value.isNull () ||
+				!value.canConvert<QFont> ())
+			value = QApplication::font ();
 	}
     else
         qWarning () << Q_FUNC_INFO << "unhandled type" << type;
@@ -638,6 +644,23 @@ void XmlSettingsDialog::DoCombobox (const QDomElement& item, QFormLayout *lay)
 	lay->addRow (label, box);
 }
 
+void XmlSettingsDialog::DoFont (const QDomElement& item, QFormLayout *lay)
+{
+	QFontComboBox *box = new QFontComboBox (this);
+	box->setObjectName (item.attribute ("property"));
+	box->setCurrentFont (GetValue (item).value<QFont> ());
+
+	connect (box,
+			SIGNAL (currentFontChanged (const QFont&)),
+			this,
+			SLOT (updatePreferences ()));
+
+	QLabel *label = new QLabel (GetLabel (item));
+	label->setWordWrap (false);
+
+	lay->addRow (label, box);
+}
+
 QList<QImage> XmlSettingsDialog::GetImages (const QDomElement& item) const
 {
 	QList<QImage> result;
@@ -738,7 +761,8 @@ void XmlSettingsDialog::UpdateSingle (const QString& name,
 		element.setAttribute ("default", vals.at (0) + ':' + vals.at (1));
 	}
 	else if (type == "radio" ||
-			type == "combobox")
+			type == "combobox" ||
+			type == "doublespinbox")
 	{
 		QDomNodeList options = element.elementsByTagName ("option");
 		for (int i = 0; i < options.size (); ++i)
@@ -776,7 +800,10 @@ void XmlSettingsDialog::updatePreferences ()
     FilePicker *picker = qobject_cast<FilePicker*> (sender ());
     RadioGroup *radiogroup = qobject_cast<RadioGroup*> (sender ());
     QComboBox *combobox = qobject_cast<QComboBox*> (sender ());
-    if (edit)
+	QFontComboBox *fontComboBox = qobject_cast<QFontComboBox*> (sender ());
+	if (fontComboBox)
+		value = fontComboBox->currentFont ();
+	else if (edit)
         value = edit->text ();
     else if (checkbox)
         value = checkbox->checkState ();
@@ -832,17 +859,21 @@ void XmlSettingsDialog::reject ()
         QLineEdit *edit = qobject_cast<QLineEdit*> (object);
         QCheckBox *checkbox = qobject_cast<QCheckBox*> (object);
         QSpinBox *spinbox = qobject_cast<QSpinBox*> (object);
+		QDoubleSpinBox *doubleSpinbox = qobject_cast<QDoubleSpinBox*> (object);
         QGroupBox *groupbox = qobject_cast<QGroupBox*> (object);
         RangeWidget *rangeWidget = qobject_cast<RangeWidget*> (object);
         FilePicker *picker = qobject_cast<FilePicker*> (object);
         RadioGroup *radiogroup = qobject_cast<RadioGroup*> (object);
         QComboBox *combobox = qobject_cast<QComboBox*> (object);
+		QFontComboBox *fontComboBox = qobject_cast<QFontComboBox*> (object);
         if (edit)
             edit->setText (oldValue.toString ());
         else if (checkbox)
             checkbox->setCheckState (oldValue.toBool () ? Qt::Checked : Qt::Unchecked);
         else if (spinbox)
             spinbox->setValue (oldValue.toLongLong ());
+		else if (doubleSpinbox)
+			doubleSpinbox->setValue (oldValue.toDouble ());
         else if (groupbox)
             groupbox->setChecked (oldValue.toBool ());
         else if (rangeWidget)
@@ -853,6 +884,8 @@ void XmlSettingsDialog::reject ()
             radiogroup->SetValue (oldValue.toString ());
         else if (combobox)
             combobox->setCurrentIndex (combobox->findText (oldValue.toString ()));
+		else if (fontComboBox)
+			fontComboBox->setCurrentFont (oldValue.value<QFont> ());
         else
         {
             qWarning () << Q_FUNC_INFO << "unhandled object" << object << "for" << i.key ();
