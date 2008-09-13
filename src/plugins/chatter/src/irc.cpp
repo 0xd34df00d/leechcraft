@@ -89,7 +89,7 @@ void IrcLayer::initRegexes()
 	// These should be used only on "response"/"command" lines
 	prRegexes["privmsg"] = QRegExp("^PRIVMSG (\\S+) :(.+)$");
 	prRegexes["notice"] = QRegExp("^NOTICE (\\S+) :(.+)$");
-	prRegexes["names"] = QRegExp("^= (\\S+) :(?:(.+)\\s?)+$");
+	prRegexes["names"] = QRegExp("^(?:=|@) (\\S+) :(?:(.+)\\s?)+$");
 	prRegexes["topic"] = QRegExp("^(\\S+) :(.+)$");
 	prRegexes["part"] = QRegExp("^PART (\\S+) :(.+)?$");
 	prRegexes["join"] = QRegExp("^JOIN :(\\S+)$");
@@ -222,14 +222,17 @@ void IrcLayer::parseResp(int code, QString args, QHash<QString, QString> data)
 	{
 		argz=genError->capturedTexts();
 	}
+	//qDebug() << "parsing repl" << code;
 	switch(code)
 	{
 		case RPL_NAMREPLY:
 	 	if(prRegexes["names"].exactMatch(args))
 		{
+			//qDebug() << "It's NAMES" << prRegexes["names"].capturedTexts();
 			if(prRegexes["names"].cap(1)==target())
 			{
 				QStringList users = prRegexes["names"].cap(2).split(" ");
+				//qDebug() << "users" << users;
 				QStringList::iterator it;
 				for(it=users.begin(); it!=users.end(); ++it)
 				{

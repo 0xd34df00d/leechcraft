@@ -116,7 +116,7 @@ void IrcServer::preParse(QByteArray line)
 	QString str=line.simplified();
 	bool handled=true;
 	// Everything that needs answer here
-	qDebug() << "RAW GET:" << str;
+	//qDebug() << "RAW GET:" << str;
 	if(ctcpRegexp->exactMatch(str))
 	{
 		QString type = ctcpRegexp->cap(2);
@@ -133,6 +133,7 @@ void IrcServer::preParse(QByteArray line)
 	} else
 	if(pingRegexp->exactMatch(str))
 	{
+//		qDebug() << str << "is PING! ";
 		ircThrow("PONG :"+pingRegexp->cap(1)); // ping? pong!
 	}
 	else
@@ -142,10 +143,13 @@ void IrcServer::preParse(QByteArray line)
 		{
 			m_nick=nickRegexp->cap(2);
 			m_nickSet=true;
-		} else qDebug() << str << "is not a NICK." << nickRegexp->pattern();
+		}
 		handled=false;
 	} else
-	handled=false;
+	{
+		handled=false;
+//		qDebug() << str << "is not a PING" << pingRegexp->pattern();
+	}
 	if(!handled) emit gotLine(line.simplified());
 }
 

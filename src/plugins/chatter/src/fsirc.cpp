@@ -39,11 +39,14 @@ fsirc::fsirc(QWidget *parent) : QDialog(parent)
 	setupUi(this);
 	closeTabButton = new QPushButton(QIcon(":/fsirc/data/close.svg"),QString(),this);
 	newTabButton = new QPushButton(QIcon(":/fsirc/data/new.svg"),QString(),this);
+	clearTabButton = new QPushButton(QIcon(":/fsirc/data/clear.svg"), QString(), this);
 	closeTabButton->setFocusPolicy(Qt::NoFocus);
 	newTabButton->setFocusPolicy(Qt::NoFocus);
+	clearTabButton->setFocusPolicy(Qt::NoFocus);
 	cornerButtons = new QToolBar(ircTabHolder);
 	cornerButtons->addWidget(closeTabButton);
 	cornerButtons->addWidget(newTabButton);
+	cornerButtons->addWidget(clearTabButton);
 	closeTabButton->setDisabled(true);
 	ircTabHolder->setCornerWidget(cornerButtons);
 	newTab();
@@ -75,6 +78,7 @@ void fsirc::initConnections()
 {
 	connect(closeTabButton, SIGNAL(released()), this, SLOT(closeCurrentTab()));
 	connect(newTabButton, SIGNAL(released()), this, SLOT(newTab()));
+	connect(clearTabButton, SIGNAL(released()), this, SLOT(clearCurrentTab()));
 }
 
 void fsirc::gotSomeMsg()
@@ -172,4 +176,9 @@ int fsirc::findTab(QString uri)
 		if (ircList[i]->ircUri() == uri) return i;
 	}
 	return -1;
+}
+
+void fsirc::clearCurrentTab()
+{
+	ircList[ircTabHolder->currentIndex()]->clearView();
 }

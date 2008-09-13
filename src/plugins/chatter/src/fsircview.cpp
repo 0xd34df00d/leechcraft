@@ -37,7 +37,7 @@ FsIrcView::FsIrcView(QWidget * parent) : QWidget(parent)
 	m_irc=new IrcLayer(0, FS_IRC_URI);
 	m_mArg = new QRegExp("(\\S+)(?: (.+))+");
 	m_linkRegexp = new QRegExp("([a-zA-Z\\+\\-\\.]+://(?:["+QRegExp::escape("-_.!~*'();/?:@&=+$,%#")+"]|\\w)+)");
-	m_chanRegexp = new QRegExp("(\\s)([#+&]\\S+)\\b");
+	m_chanRegexp = new QRegExp("(\\s)(#\\w+)");
 	initCompleters();
 	initConnections();
 
@@ -62,19 +62,29 @@ FsIrcView::~FsIrcView()
 
 void FsIrcView::fsEcho(QString message, QString style)
 {
+	// Escaping HTML in message
 	message = Qt::escape(message);
+	// Highlighting links
 	message.replace(*m_linkRegexp,QString("<a href='\\1' style='color:%1'>\\1</a>").arg(m_msgColors["link"]));
+	// FIXME hack here!
+	// Highlighting Private/Notice sources
+	if(style==m_msgColors["notice"] || style==m_msgColors["private"])
+		message.replace(
+			QRegExp("^(\\S+): (\\S+):"),
+			QString("\\1: <a href='irc://%1:%2/\\2' style='color:%3'>\\2</a>:").arg(m_irc->server(), m_irc->port(), m_msgColors["nicklink"])
+		);
+	// Highlighting each channel user's name
 	foreach(QString user, m_irc->users())
 	{
-		// FIXME this user prefixes'  list repeats one in IrcLayer
-		//qDebug() << "Capturing" << user << "from" << message << "with" << QRegExp(QString("\\b[@+&]?%1\\b").arg(QRegExp::escape(user))).pattern();
 		message.replace(
-			QRegExp(QString("\\b%1(\\W|\\b)").arg(QRegExp::escape(user))),
-			QString("<a href='irc://%1:%2/%3' style='color:%4'>%3</a>\\1").arg(m_irc->server(), m_irc->port(), user, m_msgColors["nicklink"])
+			QRegExp(QString("([%2]|\\s|^|$)%1(?=[%2]|\\s|^|$)").arg(QRegExp::escape(user), QRegExp::escape(",\"';:.%!\\$#()"))),
+			QString("\\1<a href='irc://%1:%2/%3' style='color:%4'>%3</a>").arg(m_irc->server(), m_irc->port(), user, m_msgColors["nicklink"])
 		);
-		message.replace(*m_chanRegexp,QString("\\1<a href='irc://%1:%2/\\2' style='color:%3'>\\2</a>").arg(m_irc->server(), m_irc->port(), m_msgColors["chanlink"]));
 	}
-	fsOut(QString("<span style='color: %1'>%2</span> <br />").arg(style,message));
+	// Highlighting channel references
+	message.replace(*m_chanRegexp,QString("\\1<a href='irc://%1:%2/\\2' style='color:%3'>\\2</a>").arg(m_irc->server(), m_irc->port(), m_msgColors["chanlink"]));
+	// Phew.
+	fsOut(QString("<span style='color:%1'>%2</span> <br />").arg(style,message));
 }
 
 void FsIrcView::initConnections()
@@ -475,4 +485,9 @@ void FsIrcView::proposeUri(QString uri)
 	fsActionEdit->setText(uri);
 	fsActionCombo->setCurrentIndex(ACT_URI);
 	fsActionEdit->setFocus();
+}
+
+void FsIrcView::clearView()
+{
+	fsChatView->clear();
 }

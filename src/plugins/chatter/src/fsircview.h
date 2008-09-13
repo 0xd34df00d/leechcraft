@@ -68,6 +68,7 @@ public slots:
 	void sayHere();
 	void pickAction();
 	void takeAction();
+	void clearView();
 signals:
 	void gotLink(QString);
 	void errMsg(QString);
