@@ -115,6 +115,12 @@ void Aggregator::Init ()
 			this,
 			SLOT (updatePixmap (int)));
 
+	XmlSettingsManager::Instance ()->RegisterObject ("StandardFont", this, "viewerSettingsChanged");
+	XmlSettingsManager::Instance ()->RegisterObject ("FixedFont", this, "viewerSettingsChanged");
+	XmlSettingsManager::Instance ()->RegisterObject ("SerifFont", this, "viewerSettingsChanged");
+	XmlSettingsManager::Instance ()->RegisterObject ("SansSerifFont", this, "viewerSettingsChanged");
+	XmlSettingsManager::Instance ()->RegisterObject ("CursiveFont", this, "viewerSettingsChanged");
+	XmlSettingsManager::Instance ()->RegisterObject ("FantasyFont", this, "viewerSettingsChanged");
 	XmlSettingsManager::Instance ()->RegisterObject ("MinimumFontSize", this, "viewerSettingsChanged");
 	XmlSettingsManager::Instance ()->RegisterObject ("DefaultFontSize", this, "viewerSettingsChanged");
 	XmlSettingsManager::Instance ()->RegisterObject ("DefaultFixedFontSize", this, "viewerSettingsChanged");
@@ -467,16 +473,29 @@ void Aggregator::updatePixmap (int width)
 
 void Aggregator::viewerSettingsChanged ()
 {
+	Ui_.ItemView_->settings ()->setFontFamily (QWebSettings::StandardFont,
+			XmlSettingsManager::Instance ()->property ("StandardFont").value<QFont> ().family ());
+	Ui_.ItemView_->settings ()->setFontFamily (QWebSettings::FixedFont,
+			XmlSettingsManager::Instance ()->property ("FixedFont").value<QFont> ().family ());
+	Ui_.ItemView_->settings ()->setFontFamily (QWebSettings::SerifFont,
+			XmlSettingsManager::Instance ()->property ("SerifFont").value<QFont> ().family ());
+	Ui_.ItemView_->settings ()->setFontFamily (QWebSettings::SansSerifFont,
+			XmlSettingsManager::Instance ()->property ("SansSerifFont").value<QFont> ().family ());
+	Ui_.ItemView_->settings ()->setFontFamily (QWebSettings::CursiveFont,
+			XmlSettingsManager::Instance ()->property ("CursiveFont").value<QFont> ().family ());
+	Ui_.ItemView_->settings ()->setFontFamily (QWebSettings::FantasyFont,
+			XmlSettingsManager::Instance ()->property ("FantasyFont").value<QFont> ().family ());
+
 	Ui_.ItemView_->settings ()->setFontSize (QWebSettings::MinimumFontSize,
-						XmlSettingsManager::Instance ()->property ("MinimumFontSize").toInt ());
+			XmlSettingsManager::Instance ()->property ("MinimumFontSize").toInt ());
 	Ui_.ItemView_->settings ()->setFontSize (QWebSettings::DefaultFontSize,
-						XmlSettingsManager::Instance ()->property ("DefaultFontSize").toInt ());
+			XmlSettingsManager::Instance ()->property ("DefaultFontSize").toInt ());
 	Ui_.ItemView_->settings ()->setFontSize (QWebSettings::DefaultFixedFontSize,
-						XmlSettingsManager::Instance ()->property ("DefaultFixedFontSize").toInt ());
+			XmlSettingsManager::Instance ()->property ("DefaultFixedFontSize").toInt ());
 	Ui_.ItemView_->settings ()->setAttribute (QWebSettings::AutoLoadImages,
-						XmlSettingsManager::Instance ()->property ("AutoLoadImages").toBool ());
+			XmlSettingsManager::Instance ()->property ("AutoLoadImages").toBool ());
 	Ui_.ItemView_->settings ()->setAttribute (QWebSettings::JavascriptEnabled,
-						XmlSettingsManager::Instance ()->property ("AllowJavaScript").toBool ());
+			XmlSettingsManager::Instance ()->property ("AllowJavaScript").toBool ());
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_aggregator, Aggregator);
