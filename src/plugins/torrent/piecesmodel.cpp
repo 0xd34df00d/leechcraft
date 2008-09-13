@@ -1,3 +1,4 @@
+#define WIN32_LEAN_AND_MEAN
 #include "piecesmodel.h"
 
 bool PiecesModel::Info::operator== (const Info& other) const

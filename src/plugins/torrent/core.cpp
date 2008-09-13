@@ -936,8 +936,9 @@ QStringList Core::GetTrackers (int row) const
 {
 	int old = CurrentTorrent_;
 	CurrentTorrent_ = row;
-	GetTrackers ();
+	QStringList trackers = GetTrackers ();
 	CurrentTorrent_ = old;
+	return trackers;
 }
 
 void Core::SetTrackers (const QStringList& trackers)
@@ -1107,6 +1108,7 @@ void Core::ImportData (const QByteArray& data)
 
 QByteArray Core::ExportData () const
 {
+	return QByteArray ();
 }
 
 QString Core::GetStringForState (libtorrent::torrent_status::state_t state) const

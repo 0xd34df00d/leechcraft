@@ -32,7 +32,7 @@ void ThirdStep::initializePage ()
         it.next ();
     }
 
-	int max = std::log (TotalSize_ / 102400) * 80;
+	int max = std::log (static_cast<long double> (TotalSize_ / 102400)) * 80;
 
 	int pieceSize = 32 * 1024;
 	int shouldIndex = 0;

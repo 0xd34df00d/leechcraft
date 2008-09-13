@@ -9,7 +9,6 @@ namespace LeechCraft
 	namespace Util
 	{
 		template<typename In, typename Out, typename Pred>
-		LEECHCRAFT_API
 		Out copy_if (In first, In last, Out res, Pred p)
 		{
 			while (first != last)

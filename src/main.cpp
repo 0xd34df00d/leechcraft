@@ -58,6 +58,7 @@ bool IsAlreadyRunning ()
 bool ParseCommandLine ()
 {
 	QStringList args = QCoreApplication::arguments ();
+	return false;
 }
 
 int main (int argc, char **argv)

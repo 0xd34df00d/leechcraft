@@ -1,5 +1,6 @@
 #ifndef PIECESMODEL_H
 #define PIECESMODEL_H
+#define WIN32_LEAN_AND_MEAN
 #include <QAbstractItemModel>
 #include <QStringList>
 #include <QList>
