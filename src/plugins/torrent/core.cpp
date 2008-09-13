@@ -1,3 +1,6 @@
+#define TORRENT_BUILDING_SHARED
+#define TORRENT_LINKING_SHARED
+#define NDEBUG
 #include "core.h"
 #include <QFile>
 #include <QProgressDialog>
@@ -38,6 +41,16 @@
 #include "torrentfilesmodel.h"
 #include "torrentplugin.h"
 #include "representationmodel.h"
+
+Core::HandleFinder::HandleFinder (const libtorrent::torrent_handle& h)
+: Handle_ (h)
+{
+}
+
+bool Core::HandleFinder::operator() (const Core::TorrentStruct& ts) const
+{
+	return ts.Handle_ == Handle_;
+}
 
 Core* Core::Instance ()
 {
@@ -290,9 +303,9 @@ QVariant Core::data (const QModelIndex& index, int role) const
         case ColumnUSpeed:
             return Proxy::Instance ()->MakePrettySize (status.upload_payload_rate) + tr ("/s");
         case ColumnUploaded:
-            return Proxy::Instance ()->MakePrettySize (status.total_payload_upload + Handles_.at (row).UploadedBefore_);
+            return Proxy::Instance ()->MakePrettySize (status.total_payload_upload);
         case ColumnRating:
-            return QString::number (static_cast<float> (status.total_payload_upload + Handles_.at (row).UploadedBefore_) / status.total_payload_download, 'g', 2);
+            return QString::number (static_cast<float> (status.total_payload_upload) / status.total_payload_download, 'g', 2);
         case ColumnSP:
 			{
 				QString result = QString ("%1/%2 (%3/%4)")
@@ -417,7 +430,7 @@ TorrentInfo Core::GetTorrentStats () const
     result.Tracker_ = QString::fromStdString (status.current_tracker).left (100);
     result.State_ = status.paused ? tr ("Idle") : GetStringForState (status.state);
     result.Downloaded_ = status.total_done;
-    result.Uploaded_ = status.total_payload_upload + Handles_.at (CurrentTorrent_).UploadedBefore_;
+    result.Uploaded_ = status.total_payload_upload;
     result.TotalSize_ = status.total_wanted;
     result.FailedSize_ = status.total_failed_bytes;
 	result.RedundantBytes_ = status.total_redundant_bytes;
@@ -629,7 +642,7 @@ int Core::AddFile (const QString& filename,
     file.close ();
 
     beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
-    TorrentStruct tmp = { 0, priorities, handle, contents, QFileInfo (filename).fileName (), TSIdle };
+    TorrentStruct tmp = { priorities, handle, contents, QFileInfo (filename).fileName (), TSIdle };
     tmp.Tags_ = tags;
 	tmp.Parameters_ = params;
 	tmp.ID_ = IDPool_.front ();
@@ -1143,7 +1156,15 @@ void Core::RestoreTorrents ()
         torrent.close ();
         if (data.isEmpty ())
             continue;
+
+		QFile resumeDataFile (QDir::homePath () + "/.leechcraft_bittorrent/" +
+				filename + ".resume");
         QByteArray resumed;
+		if (resumeDataFile.open (QIODevice::ReadOnly))
+		{
+			resumed = resumeDataFile.readAll ();
+			resumeDataFile.close ();
+		}
 
         libtorrent::torrent_handle handle = RestoreSingleTorrent (data, resumed, path);
         if (!handle.is_valid ())
@@ -1164,8 +1185,6 @@ void Core::RestoreTorrents ()
             std::fill (priorities.begin (), priorities.end (), 1);
         }
 
-        quint64 ub = settings.value ("UploadedBytes").value<quint64> ();
-
         handle.prioritize_files (priorities);
         QStringList trackers = settings.value ("TrackersOverride").toStringList ();
         if (!trackers.isEmpty ())
@@ -1176,7 +1195,7 @@ void Core::RestoreTorrents ()
             handle.replace_trackers (announces);
         }
 
-        TorrentStruct tmp = { ub, priorities, handle, data, filename };
+        TorrentStruct tmp = { priorities, handle, data, filename };
         tmp.Tags_ = settings.value ("Tags").toStringList ();
 		tmp.ID_ = settings.value ("ID").toInt ();
 		IDPool_.erase (std::find (IDPool_.begin (), IDPool_.end (), tmp.ID_));
@@ -1189,21 +1208,15 @@ void Core::RestoreTorrents ()
     settings.endGroup ();
 }
 
-libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data, const QByteArray& resumeData, const boost::filesystem::path& path)
+libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data,
+		const QByteArray& resumeData, const boost::filesystem::path& path)
 {
     libtorrent::entry e, resume;
 
-    QVector<char> byteData (data.size ())
-        , byteResumeData (resumeData.size ());
-
-    for (int i = 0; i < data.size (); ++i)
-        byteData [i] = data.at (i);
-    for (int i = 0; i < resumeData.size (); ++i)
-        byteResumeData [i] = resumeData [i];
-
     try
     {
-        resume = libtorrent::bdecode (byteData.constBegin (), byteData.constEnd ());
+        resume = libtorrent::bdecode (resumeData.constData (),
+				resumeData.constData () + resumeData.size ());
     }
     catch (const libtorrent::invalid_encoding& e)
     {
@@ -1212,7 +1225,8 @@ libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data, c
 
     try
     {
-        e = libtorrent::bdecode (byteData.constBegin (), byteData.constEnd ());
+        e = libtorrent::bdecode (data.constData (),
+				data.constData () + data.size ());
     }
     catch (const libtorrent::invalid_encoding& e)
     {
@@ -1222,9 +1236,10 @@ libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data, c
     libtorrent::torrent_handle handle;
     try
     {
-		handle = Session_->add_torrent (boost::intrusive_ptr<libtorrent::torrent_info> (new libtorrent::torrent_info (e)),
+		handle = Session_->add_torrent (boost::intrusive_ptr<libtorrent::torrent_info>
+					(new libtorrent::torrent_info (e)),
 				path,
-				libtorrent::entry (),
+				resume,
 				libtorrent::storage_mode_allocate);
     }
     catch (const libtorrent::invalid_torrent_file& e)
@@ -1517,19 +1532,47 @@ void Core::UpdateTagsImpl (const QStringList& tags, int torrent)
     TagsCompletionModel_->UpdateTags (tags);
 }
 
+void Core::SaveResumeData (const libtorrent::save_resume_data_alert& a) const
+{
+	HandleDict_t::const_iterator torrent =
+		std::find_if (Handles_.begin (), Handles_.end (),
+				HandleFinder (a.handle));
+	QFile file (QDir::homePath () +
+			"/.leechcraft_bittorrent/" +
+			torrent->TorrentFileName_ +
+			".resume");
+
+	if (!file.open (QIODevice::WriteOnly))
+	{
+		qWarning () << QString ("Could not open file %1 for write: %2")
+			.arg (file.fileName ())
+			.arg (file.errorString ());
+		return;
+	}
+
+	std::deque<char> outbuf;
+	libtorrent::bencode (std::back_inserter (outbuf), *a.resume_data.get ());
+
+	for (size_t i = 0; i < outbuf.size (); ++i)
+		file.write (&outbuf.at (i), 1);
+}
+
 void Core::writeSettings ()
 {
     QDir home = QDir::home ();
     if (!home.exists (".leechcraft_bittorrent"))
         if (!home.mkdir (".leechcraft_bittorrent"))
         {
-            emit error (tr ("Could not create path %1/.leechcraft_bittorrent").arg (QDir::homePath ()));
+            emit error (tr ("Could not create path %1/.leechcraft_bittorrent")
+					.arg (QDir::homePath ()));
             return;
         }
 
-    XmlSettingsManager::Instance ()->setProperty ("TorrentTags", TagsCompletionModel_->GetTags ());
+    XmlSettingsManager::Instance ()->setProperty ("TorrentTags",
+			TagsCompletionModel_->GetTags ());
 
-    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Torrent");
+    QSettings settings (Proxy::Instance ()->GetOrganizationName (),
+			Proxy::Instance ()->GetApplicationName () + "_Torrent");
     settings.beginGroup ("Core");
     settings.beginWriteArray ("AddedTorrents");
     for (int i = 0; i < Handles_.size (); ++i)
@@ -1539,10 +1582,11 @@ void Core::writeSettings ()
             continue;
 		int oldCurrent = CurrentTorrent_;
 		CurrentTorrent_ = i;
-		Handles_.at (i).Handle_.save_resume_data ();
         try
         {
-            QFile file_info (QDir::homePath () + "/.leechcraft_bittorrent/" + Handles_.at (i).TorrentFileName_);
+            QFile file_info (QDir::homePath () +
+					"/.leechcraft_bittorrent/" +
+					Handles_.at (i).TorrentFileName_);
             if (!file_info.open (QIODevice::WriteOnly))
             {
                 emit error ("Cannot write settings! Cannot open files for write!");
@@ -1551,8 +1595,10 @@ void Core::writeSettings ()
             file_info.write (Handles_.at (i).TorrentFileContents_);
             file_info.close ();
 
-            settings.setValue ("SavePath", QString::fromStdString (Handles_.at (i).Handle_.save_path ().string ()));
-            settings.setValue ("UploadedBytes", Handles_.at (i).UploadedBefore_ + Handles_.at (i).Handle_.status ().total_upload);
+			Handles_.at (i).Handle_.save_resume_data ();
+
+            settings.setValue ("SavePath",
+					QString::fromStdString (Handles_.at (i).Handle_.save_path ().string ()));
             settings.setValue ("Filename", Handles_.at (i).TorrentFileName_);
             settings.setValue ("TrackersOverride", GetTrackers ());
             settings.setValue ("Tags", Handles_.at (i).Tags_);
@@ -1647,17 +1693,52 @@ void Core::checkFinished ()
     }
 }
 
+#if defined(Q_CC_GNU)
+# define __LLEECHCRAFT_API __attribute__ ((visibility("default")))
+#elif defined(Q_CC_MSVC)
+# define __LLEECHCRAFT_API __declspec(dllexport)
+#else
+# define __LLEECHCRAFT_API
+#endif
+
+struct __LLEECHCRAFT_API SimpleDispatcher
+{
+	void operator() (const libtorrent::external_ip_alert& a) const
+	{
+		Core::Instance ()->SetExternalAddress (QString::
+				fromStdString (a.external_address.to_string ()));
+	}
+
+	void operator() (const libtorrent::save_resume_data_alert& a) const
+	{
+		Core::Instance ()->SaveResumeData (a);
+	}
+};
+
+#undef __LLEECHCRAFT_API
+
 void Core::queryLibtorrentForWarnings ()
 {
-	std::auto_ptr<libtorrent::alert> a;
-	a = Session_->pop_alert ();
+	std::auto_ptr<libtorrent::alert> a (Session_->pop_alert ());
+	SimpleDispatcher sd;
 	while (a.get ())
 	{
-		QString logstr = QString::fromStdString (a->message ());
+		try
+		{
+			libtorrent::handle_alert<
+				libtorrent::external_ip_alert
+				, libtorrent::save_resume_data_alert
+				>::handle_alert (a, sd);
+		}
+		catch (const libtorrent::unhandled_alert& e)
+		{
+		}
+		QString logmsg = QString::fromStdString (a->message ());
+		Core::Instance ()->LogMessage (QDateTime::currentDateTime ().toString () + " " + logmsg);
 
-		qWarning () << "<libtorrent> " << logstr;
-		Core::Instance ()->LogMessage (QDateTime::currentDateTime ().toString () + " " + logstr);
+		qDebug () << "<libtorrent>" << logmsg;
 
+		a.reset ();
 		a = Session_->pop_alert ();
 	}
 }

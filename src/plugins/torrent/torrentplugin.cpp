@@ -8,6 +8,7 @@
 #include <QTimer>
 #include <QToolBar>
 #include <QSortFilterProxyModel>
+#include <libtorrent/session.hpp>
 #include <plugininterface/proxy.h>
 #include <plugininterface/tagscompleter.h>
 #include <plugininterface/tagscompletionmodel.h>

@@ -8,7 +8,6 @@
 #include <QVector>
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/torrent_handle.hpp>
-#include <libtorrent/session.hpp>
 #include <interfaces/interfaces.h>
 #include "torrentinfo.h"
 #include "overallstats.h"
@@ -22,6 +21,13 @@ class PeersModel;
 class TagsCompletionModel;
 class TorrentFilesModel;
 class RepresentationModel;
+
+namespace libtorrent
+{
+	class save_resume_data_alert;
+	class cache_status;
+	class session;
+};
 
 class Core : public QAbstractItemModel
 {
@@ -40,7 +46,6 @@ private:
 
     struct TorrentStruct
     {
-        quint64 UploadedBefore_;
         std::vector<int> FilePriorities_;
         libtorrent::torrent_handle Handle_;
         QByteArray TorrentFileContents_;
@@ -52,6 +57,14 @@ private:
 		int ID_;
 		LeechCraft::TaskParameters Parameters_;
     };
+
+	struct HandleFinder
+	{
+		const libtorrent::torrent_handle& Handle_;
+
+		HandleFinder (const libtorrent::torrent_handle&);
+		bool operator() (const TorrentStruct&) const;
+	};
 
     libtorrent::session *Session_;
     typedef QList<TorrentStruct> HandleDict_t;
@@ -173,6 +186,7 @@ public:
 	QByteArray ExportData () const;
 
     bool CheckValidity (int) const;
+	void SaveResumeData (const libtorrent::save_resume_data_alert&) const;
 private:
     QString GetStringForState (libtorrent::torrent_status::state_t) const;
     void ReadSettings ();
