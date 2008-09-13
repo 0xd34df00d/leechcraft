@@ -696,11 +696,9 @@ void XmlSettingsDialog::UpdateXml (bool whole)
 		{
 			QDomElement element;
 			QString name = i.key ();
-			qDebug () << nodes.size ();
 			for (int j = 0, size = nodes.size (); j < size; ++j)
 			{
 				QDomElement e = nodes.at (j).toElement ();
-				qDebug () << e.tagName ();
 				if (e.isNull ())
 					continue;
 				if (e.attribute ("property") == name)
