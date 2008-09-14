@@ -64,8 +64,8 @@ Core::Core ()
 , FinishedTimer_ (new QTimer ())
 , WarningWatchdog_ (new QTimer ())
 , ScrapeTimer_ (new QTimer ())
-, PeersModel_ (new PeersModel ())
 , PiecesModel_ (new PiecesModel ())
+, PeersModel_ (new PeersModel ())
 , TagsCompletionModel_ (new TagsCompletionModel)
 , TorrentFilesModel_ (new TorrentFilesModel (false))
 {
@@ -289,11 +289,7 @@ QVariant Core::data (const QModelIndex& index, int role) const
         case ColumnName:
             return QString::fromUtf8 (h.name ().c_str ());
         case ColumnState:
-            if (Handles_.at (row).State_ == TSWaiting2Download ||
-                Handles_.at (row).State_ == TSWaiting2Seed)
-                return tr ("Waiting in queue");
-            else
-                return status.paused ? tr ("Idle") : GetStringForState (status.state);
+			return status.paused ? tr ("Idle") : GetStringForState (status.state);
         case ColumnProgress:
             return QString ("%1% (%2 of %3)")
 				.arg (status.progress * 100, 0, 'f', 2)
@@ -642,6 +638,8 @@ int Core::AddFile (const QString& filename,
     QByteArray contents = file.readAll ();
     file.close ();
 
+	handle.auto_managed (true);
+
     beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
     TorrentStruct tmp = { priorities, handle, contents, QFileInfo (filename).fileName (), TSIdle };
     tmp.Tags_ = tags;
@@ -670,9 +668,6 @@ void Core::RemoveTorrent (int pos)
 
     QTimer::singleShot (3000, this, SLOT (writeSettings ()));
 	emit taskRemoved (id);
-
-	CheckUploadQueue ();
-	CheckDownloadQueue ();
 }
 
 void Core::PauseTorrent (int pos)
@@ -732,81 +727,17 @@ void Core::SetOverallUploadRate (int val)
 void Core::SetMaxDownloadingTorrents (int val)
 {
     XmlSettingsManager::Instance ()->setProperty ("MaxDownloadingTorrents", val);
-    if (val)
-    {
-        int difference = val - GetCurrentlyDownloading ();
-        if (difference > 0)
-        {
-            for (int i = 0; i < Handles_.size (); ++i)
-            {
-                if (Handles_.at (i).State_ == TSWaiting2Download)
-                {
-                    ResumeTorrent (i);
-                    --difference;
-                }
-                if (!difference)
-                    break;
-            }
-        }
-        else if (difference < 0)
-        {
-            for (int i = 0; i < Handles_.size (); ++i)
-            {
-                if (Handles_.at (i).State_ == TSDownloading)
-                {
-                    Handles_.at (i).Handle_.pause ();
-                    Handles_ [i].State_ = TSWaiting2Download;
-                    ++difference;
-                }
-                if (!difference)
-                    break;
-            }
-        }
-    }
-    else
-        for (int i = 0; i < Handles_.size (); ++i)
-            if (Handles_.at (i).State_ == TSWaiting2Download)
-                ResumeTorrent (i);
+	libtorrent::session_settings settings = Session_->settings ();
+	settings.active_downloads = val;
+	Session_->set_settings (settings);
 }
 
 void Core::SetMaxUploadingTorrents (int val)
 {
     XmlSettingsManager::Instance ()->setProperty ("MaxUploadingTorrents", val);
-    if (val)
-    {
-        int difference = val - GetCurrentlySeeding ();
-        if (difference > 0)
-        {
-            for (int i = 0; i < Handles_.size (); ++i)
-            {
-                if (Handles_.at (i).State_ == TSWaiting2Seed)
-                {
-                    ResumeTorrent (i);
-                    --difference;
-                }
-                if (!difference)
-                    break;
-            }
-        }
-        else if (difference < 0)
-        {
-            for (int i = 0; i < Handles_.size (); ++i)
-            {
-                if (Handles_.at (i).State_ == TSSeeding)
-                {
-                    Handles_.at (i).Handle_.pause ();
-                    Handles_ [i].State_ = TSWaiting2Seed;
-                    ++difference;
-                }
-                if (!difference)
-                    break;
-            }
-        }
-    }
-    else
-        for (int i = 0; i < Handles_.size (); ++i)
-            if (Handles_.at (i).State_ == TSWaiting2Seed)
-                ResumeTorrent (i);
+	libtorrent::session_settings settings = Session_->settings ();
+	settings.active_seeds = val + XmlSettingsManager::Instance ()->property ("MaxDownloadingTorrents").toInt ();
+	Session_->set_settings (settings);
 }
 
 void Core::SetDesiredRating (double val)
@@ -1030,9 +961,9 @@ namespace
 		return true;
 	}
 
-	void UpdateProgress (int i, int num, const QProgressDialog *pd)
+	void UpdateProgress (int i, QProgressDialog *pd)
 	{
-		qDebug () << Q_FUNC_INFO << i << num;
+		pd->setValue (i);
 	}
 }
 
@@ -1065,8 +996,11 @@ void Core::MakeTorrent (NewTorrentParams params) const
 	boost::filesystem::path fullPath =
 		boost::filesystem::complete (params.Path_.toUtf8 ().constData ());
 	libtorrent::add_files (fs, fullPath, FileFilter);
+
+	pd->setMaximum (ct.num_pieces ());
+
 	libtorrent::set_piece_hashes (ct, fullPath.branch_path (),
-			boost::bind (&UpdateProgress, _1, ct.num_pieces (), pd.get ()));
+			boost::bind (&UpdateProgress, _1, pd.get ()));
 
 	libtorrent::entry e = ct.generate ();
 	std::deque<char> outbuf;
@@ -1282,22 +1216,6 @@ void Core::HandleSingleFinished (int i)
 	emit taskFinished (torrent.ID_);
 }
 
-int Core::GetCurrentlyDownloading () const
-{
-    int result = 0;
-    for (int i = 0; i < Handles_.size (); ++i)
-        result += (Handles_.at (i).State_ == TSDownloading);
-    return result;
-}
-
-int Core::GetCurrentlySeeding () const
-{
-    int result = 0;
-    for (int i = 0; i < Handles_.size (); ++i)
-        result += (Handles_.at (i).State_ == TSSeeding);
-    return result;
-}
-
 void Core::ManipulateSettings ()
 {
     SetOverallDownloadRate (XmlSettingsManager::Instance ()->
@@ -1482,42 +1400,6 @@ void Core::ManipulateSettings ()
     RestoreTorrents ();
 }
 
-void Core::CheckDownloadQueue ()
-{
-	int mdt = XmlSettingsManager::Instance ()->property ("MaxDownloadingTorrents").toInt ();
-	while (GetCurrentlyDownloading () < mdt)
-	{
-		HandleDict_t::iterator i = Handles_.begin ();
-		for (HandleDict_t::iterator end = Handles_.end ();
-				i != end; ++i)
-			if (i->State_ == TSWaiting2Download)
-				break;
-
-		if (i == Handles_.end ())
-			break;
-		else
-			ResumeTorrent (std::distance (Handles_.begin (), i));
-	}
-}
-
-void Core::CheckUploadQueue ()
-{
-	int mdt = XmlSettingsManager::Instance ()->property ("MaxDownloadingTorrents").toInt ();
-	while (GetCurrentlySeeding () < mdt)
-	{
-		HandleDict_t::iterator i = Handles_.begin ();
-		for (HandleDict_t::iterator end = Handles_.end ();
-				i != end; ++i)
-			if (i->State_ == TSWaiting2Seed)
-				break;
-
-		if (i == Handles_.end ())
-			break;
-		else
-			ResumeTorrent (std::distance (Handles_.begin (), i));
-	}
-}
-
 QStringList Core::GetTagsForIndexImpl (int torrent) const
 {
 	if (!CheckValidity (torrent))
@@ -1629,6 +1511,8 @@ void Core::writeSettings ()
     settings.endArray ();
     settings.endGroup ();
 
+	Session_->wait_for_alert (libtorrent::time_duration (5));
+
 	queryLibtorrentForWarnings ();
 }
 
@@ -1642,10 +1526,6 @@ void Core::checkFinished ()
         libtorrent::torrent_status status = Handles_.at (i).Handle_.status ();
         libtorrent::torrent_status::state_t state = status.state;
 
-        if (Handles_.at (i).State_ == TSWaiting2Download ||
-            Handles_.at (i).State_ == TSWaiting2Seed)
-            continue;
-
         if (status.paused)
         {
             Handles_ [i].State_ = TSIdle;
@@ -1657,40 +1537,19 @@ void Core::checkFinished ()
             case libtorrent::torrent_status::queued_for_checking:
             case libtorrent::torrent_status::checking_files:
             case libtorrent::torrent_status::allocating:
+			case libtorrent::torrent_status::downloading_metadata:
                 Handles_ [i].State_ = TSPreparing;
                 break;
             case libtorrent::torrent_status::downloading:
-                if (Handles_ [i].State_ != TSDownloading)
-                {
-					int mdt = XmlSettingsManager::Instance ()->property ("MaxDownloadingTorrents").toInt ();
-                    if (!mdt || GetCurrentlyDownloading () < mdt)
-                        Handles_ [i].State_ = TSDownloading;
-                    else
-                    {
-                        Handles_ [i].State_ = TSWaiting2Download;
-                        Handles_ [i].Handle_.pause ();
-                    }
-                }
+				Handles_ [i].State_ = TSDownloading;
                 break;
-			case libtorrent::torrent_status::downloading_metadata:
 				break;
             case libtorrent::torrent_status::finished:
             case libtorrent::torrent_status::seeding:
                 TorrentState oldState = Handles_ [i].State_;
                 Handles_ [i].State_ = TSSeeding;
                 if (oldState == TSDownloading)
-                {
-					int mut = XmlSettingsManager::Instance ()->property ("MaxUploadingTorrents").toInt ();
-					if (mut && GetCurrentlySeeding () >= mut)
-					{
-						Handles_.at (i).Handle_.pause ();
-						Handles_ [i].State_ = TSWaiting2Seed;
-					}
-
-					CheckDownloadQueue ();
-
 					HandleSingleFinished (i);
-                }
                 break;
         }
     }
@@ -1722,8 +1581,6 @@ struct __LLEECHCRAFT_API SimpleDispatcher
 
 void Core::queryLibtorrentForWarnings ()
 {
-	Session_->wait_for_alert (libtorrent::time_duration (2));
-
 	std::auto_ptr<libtorrent::alert> a (Session_->pop_alert ());
 	SimpleDispatcher sd;
 	while (a.get ())

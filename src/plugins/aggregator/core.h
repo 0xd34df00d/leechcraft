@@ -46,7 +46,6 @@ class Core : public QAbstractItemModel
         {
             TImage
             , TIcon
-            , TEmbeddedObject
         } Type_;
         boost::shared_ptr<Channel> RelatedChannel_;
         boost::shared_ptr<Feed> RelatedFeed_;

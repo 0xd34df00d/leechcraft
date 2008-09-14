@@ -31,7 +31,6 @@ ItemBucket& ItemBucket::Instance ()
 
 void ItemBucket::Release ()
 {
-	qDebug () << Q_FUNC_INFO;
 	Model_->saveSettings ();
 	delete Ui_;
 	delete Model_;

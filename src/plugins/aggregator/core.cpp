@@ -267,7 +267,7 @@ void Core::MarkItemAsUnread (const QModelIndex& i)
 bool Core::IsItemRead (int item) const
 {
 	if (!ActivatedChannel_ ||
-			ActivatedChannel_->Items_.size () <= item)
+			static_cast<int> (ActivatedChannel_->Items_.size ()) <= item)
 		return true;
 	else
 		return !ActivatedChannel_->Items_ [item]->Unread_;
@@ -867,6 +867,9 @@ void Core::HandleExternalData (const QString& url, const QFile& file)
 			case ExternalData::TImage:
 				data.RelatedChannel_->Pixmap_ = QPixmap::fromImage (QImage (file.fileName ()));
 				ChannelsModel_->UpdateChannelData (data.RelatedChannel_);
+				break;
+			case ExternalData::TIcon:
+				// TODO handle favicon.ico
 				break;
 		}
 	}

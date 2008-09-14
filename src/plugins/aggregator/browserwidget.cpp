@@ -77,25 +77,21 @@ void BrowserWidget::loadProgress (int progress)
 
 void BrowserWidget::back ()
 {
-	qDebug () << Q_FUNC_INFO;
 	Ui_.ItemView_->back ();
 }
 
 void BrowserWidget::forward ()
 {
-	qDebug () << Q_FUNC_INFO;
 	Ui_.ItemView_->forward ();
 }
 
 void BrowserWidget::stop ()
 {
-	qDebug () << Q_FUNC_INFO;
 	Ui_.ItemView_->stop ();
 }
 
 void BrowserWidget::reload ()
 {
-	qDebug () << Q_FUNC_INFO;
 	Ui_.ItemView_->reload ();
 }
 QWebSettings *BrowserWidget::settings () const

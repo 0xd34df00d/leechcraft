@@ -228,6 +228,12 @@ void TorrentFilesModel::UpdateFiles (const QList<FileInfo>& infos)
     for (int i = 0; i < infos.size (); ++i)
     {
         FileInfo fi = infos.at (i);
+		if (!Path2TreeItem_.contains (fi.Path_))
+		{
+			Path2TreeItem_.clear ();
+			ResetFiles (infos);
+		}
+
         TreeItem *item = Path2TreeItem_ [fi.Path_];
         item->ModifyData (3, QString::number (fi.Progress_, 'f', 3));
     }

@@ -361,7 +361,7 @@ QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject
 	else
 	{
 		value = WorkingObject_->property (property.toLatin1 ().constData ());
-		if (!value.isValid () || value.isNull () && item.hasAttribute ("default"))
+		if ((!value.isValid () || value.isNull ()) && item.hasAttribute ("default"))
 		{
 			value = item.attribute ("default");
 			WorkingObject_->setProperty (property.toLatin1 ().constData (), value);

@@ -33,12 +33,9 @@ class Core : public QAbstractItemModel
 {
     Q_OBJECT
 
-private:
     enum TorrentState
     {
         TSIdle
-        , TSWaiting2Download
-        , TSWaiting2Seed
         , TSPreparing
         , TSDownloading
         , TSSeeding

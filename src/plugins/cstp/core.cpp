@@ -13,9 +13,9 @@
 #include "representationmodel.h"
 
 Core::Core ()
-: SaveScheduled_ (false)
-, HistoryModel_ (new HistoryModel ())
+: HistoryModel_ (new HistoryModel ())
 , RepresentationModel_ (new RepresentationModel ())
+, SaveScheduled_ (false)
 {
 	Headers_ << tr ("URL")
 		<< tr ("State")
@@ -438,6 +438,8 @@ struct _Local::ObjectFinder
 		{
 			case TObject:
 				return Pred_ == td.Task_.get ();
+			default:
+				return false;
 		}
 	}
 };
@@ -487,7 +489,7 @@ QNetworkProxy Core::GetProxySettings () const
 		pr.setUser (XmlSettingsManager::Instance ().property ("ProxyLogin").toString ());
 		pr.setPassword (XmlSettingsManager::Instance ().property ("ProxyPassword").toString ());
 		QString type = XmlSettingsManager::Instance ().property ("ProxyType").toString ();
-		QNetworkProxy::ProxyType pt;
+		QNetworkProxy::ProxyType pt = QNetworkProxy::HttpProxy;
 		if (type == "socks5")
 			pt = QNetworkProxy::Socks5Proxy;
 		else if (type == "tphttp")

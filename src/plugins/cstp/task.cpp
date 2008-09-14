@@ -62,7 +62,7 @@ void Task::Start (const boost::shared_ptr<QFile>& tof)
 	QFile *to = tof.get ();
 	if (Type_ == THttp || Type_ == THttps)
 	{
-		QHttp::ConnectionMode mode;
+		QHttp::ConnectionMode mode = QHttp::ConnectionModeHttp;
 		if (Type_ == THttp)
 			mode = QHttp::ConnectionModeHttp;
 		else if (Type_ == THttps)
@@ -254,7 +254,11 @@ QString Task::GetErrorString () const
 				return tr ("The web server requires authentication to complete the request.");
 			case QHttp::UnknownError:
 				return tr ("An error other than those specified above occurred.");
+			default:
+				return tr ("Unknown");
 		}
+	else
+		return tr ("FTP shall be eliminated");
 }
 
 void Task::SetProxy (const QNetworkProxy& proxy)
@@ -415,6 +419,8 @@ QString Task::GetHTTPState () const
 			return tr ("Connection is idle");
 		case QHttp::Closing:
 			return tr ("Closing");
+		default:
+			return tr ("Unknown");
 	}
 }
 
@@ -436,6 +442,8 @@ QString Task::GetFTPState () const
 			return tr ("Logged in");
 		case QFtp::Closing:
 			return tr ("Closing");
+		default:
+			return tr ("Unknown");
 	}
 }
 

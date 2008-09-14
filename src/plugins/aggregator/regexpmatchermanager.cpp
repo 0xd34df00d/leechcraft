@@ -156,7 +156,7 @@ void RegexpMatcherManager::Modify (const QString& title, const QString& newBody)
 RegexpMatcherManager::titlebody_t RegexpMatcherManager::GetTitleBody (const QModelIndex& index) const
 {
 	titlebody_t result;
-	if (index.row () >= Items_.size ())
+	if (index.row () >= static_cast<int> (Items_.size ()))
 		return result;
 
 	result.first = Items_ [index.row ()].Title_;

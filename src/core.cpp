@@ -191,10 +191,8 @@ void Main::Core::TryToAddJob (const QString& name, const QString& where)
     QObjectList plugins = PluginManager_->GetAllPlugins ();
     foreach (QObject *plugin, plugins)
     {
-		IInfo *ii = qobject_cast<IInfo*> (plugin);
         IDownload *di = qobject_cast<IDownload*> (plugin);
 		LeechCraft::TaskParameters tp = LeechCraft::FromCommonDialog | LeechCraft::Autostart;
-		qDebug () << ii << di;
         if (di && di->CouldDownload (name, tp))
         {
 			IDirectDownload *idd = qobject_cast<IDirectDownload*> (plugin);
@@ -285,7 +283,7 @@ void Main::Core::handleProxySettings () const
 		pr.setUser (XmlSettingsManager::Instance ()->property ("ProxyLogin").toString ());
 		pr.setPassword (XmlSettingsManager::Instance ()->property ("ProxyPassword").toString ());
 		QString type = XmlSettingsManager::Instance ()->property ("ProxyType").toString ();
-		QNetworkProxy::ProxyType pt;
+		QNetworkProxy::ProxyType pt = QNetworkProxy::HttpProxy;
 		if (type == "socks5")
 			pt = QNetworkProxy::Socks5Proxy;
 		else if (type == "tphttp")
