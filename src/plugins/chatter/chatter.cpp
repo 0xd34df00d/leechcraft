@@ -35,7 +35,6 @@ void Chatter::Init ()
     IsShown_ = false;
 	ircClient = new fsirc();
 	connect(ircClient, SIGNAL(gotLink(QString)), this, SIGNAL(gotEntity(QString)));
-    connect(ircClient,SIGNAL(lastWindowClosed()), ircClient, SLOT(fsQuit()));
     setCentralWidget (ircClient);
 }
 
