@@ -3,6 +3,7 @@
 #include "config.h"
 
 class QString;
+class QTranslator;
 
 namespace LeechCraft
 {
@@ -20,7 +21,7 @@ namespace LeechCraft
 			return res;
 		}
 
-		LEECHCRAFT_API void InstallTranslator (const QString&);
+		LEECHCRAFT_API QTranslator* InstallTranslator (const QString&);
 	};
 };
 

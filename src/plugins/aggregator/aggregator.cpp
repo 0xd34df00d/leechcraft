@@ -21,15 +21,22 @@
 #include "regexpmatcherui.h"
 #include "regexpmatchermanager.h"
 
+Aggregator::~Aggregator ()
+{
+}
+
 void Aggregator::Init ()
 {
-	LeechCraft::Util::InstallTranslator ("aggregator");
+	Translator_.reset (LeechCraft::Util::InstallTranslator ("aggregator"));
     Ui_.setupUi (this);
     IsShown_ = false;
 
-    TrayIcon_ = new QSystemTrayIcon (this);
+    TrayIcon_.reset (new QSystemTrayIcon (this));
     TrayIcon_->hide ();
-    connect (TrayIcon_, SIGNAL (activated (QSystemTrayIcon::ActivationReason)), this, SLOT (trayIconActivated ()));
+    connect (TrayIcon_.get (),
+			SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
+			this,
+			SLOT (trayIconActivated ()));
 
 	Plugins_->addAction (Ui_.ActionAddFeed_);
 	connect (&Core::Instance (),
@@ -45,16 +52,16 @@ void Aggregator::Init ()
 			this,
 			SLOT (unreadNumberChanged (int)));
 
-    XmlSettingsDialog_ = new XmlSettingsDialog (this);
+    XmlSettingsDialog_.reset (new XmlSettingsDialog (this));
     XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/aggregatorsettings.xml");
 
     Core::Instance ().DoDelayedInit ();
-    ItemsFilterModel_ = new ItemsFilterModel (this);
+    ItemsFilterModel_.reset (new ItemsFilterModel (this));
     ItemsFilterModel_->setSourceModel (&Core::Instance ());
     ItemsFilterModel_->setFilterKeyColumn (0);
     ItemsFilterModel_->setDynamicSortFilter (true);
     ItemsFilterModel_->setFilterCaseSensitivity (Qt::CaseInsensitive);
-    Ui_.Items_->setModel (ItemsFilterModel_);
+    Ui_.Items_->setModel (ItemsFilterModel_.get ());
     Ui_.Items_->addAction (Ui_.ActionMarkItemAsUnread_);
 	Ui_.Items_->addAction (Ui_.ActionAddToItemBucket_);
     Ui_.Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
@@ -72,11 +79,11 @@ void Aggregator::Init ()
 	itemsHeader->resizeSection (0, fm.width ("Average news article size is about this width or maybe bigger, because they are bigger"));
 	itemsHeader->resizeSection (1, dateTimeSize);
 
-    ChannelsFilterModel_ = new ChannelsFilterModel (this);
+    ChannelsFilterModel_.reset (new ChannelsFilterModel (this));
     ChannelsFilterModel_->setSourceModel (Core::Instance ().GetChannelsModel ());
     ChannelsFilterModel_->setFilterKeyColumn (0);
     ChannelsFilterModel_->setDynamicSortFilter (true);
-    Ui_.Feeds_->setModel (ChannelsFilterModel_);
+    Ui_.Feeds_->setModel (ChannelsFilterModel_.get ());
     Ui_.Feeds_->addAction (Ui_.ActionMarkChannelAsRead_);
     Ui_.Feeds_->addAction (Ui_.ActionMarkChannelAsUnread_);
     Ui_.Feeds_->setContextMenuPolicy (Qt::ActionsContextMenu);
@@ -86,7 +93,7 @@ void Aggregator::Init ()
     channelsHeader->resizeSection (2, fm.width ("_999_"));
     connect (Ui_.TagsLine_,
 			SIGNAL (textChanged (const QString&)),
-			ChannelsFilterModel_,
+			ChannelsFilterModel_.get (),
 			SLOT (setFilterFixedString (const QString&)));
     connect (Ui_.Feeds_->selectionModel (),
 			SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
@@ -98,8 +105,8 @@ void Aggregator::Init ()
 			SLOT (currentItemChanged (const QModelIndex&)));
     connect (Ui_.ActionUpdateFeeds_, SIGNAL (triggered ()), &Core::Instance (), SLOT (updateFeeds ()));
 
-    TagsLineCompleter_ = new TagsCompleter (Ui_.TagsLine_, this);
-    ChannelTagsCompleter_ = new TagsCompleter (Ui_.ChannelTags_, this);
+    TagsLineCompleter_.reset (new TagsCompleter (Ui_.TagsLine_));
+    ChannelTagsCompleter_.reset (new TagsCompleter (Ui_.ChannelTags_));
     TagsLineCompleter_->setModel (Core::Instance ().GetTagsCompletionModel ());
     ChannelTagsCompleter_->setModel (Core::Instance ().GetTagsCompletionModel ());
 
@@ -133,7 +140,6 @@ void Aggregator::Init ()
 void Aggregator::Release ()
 {
     Core::Instance ().Release ();
-    delete XmlSettingsDialog_;
     TrayIcon_->hide ();
 }
 

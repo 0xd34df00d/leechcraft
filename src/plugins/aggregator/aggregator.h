@@ -1,5 +1,6 @@
 #ifndef AGGREGATOR_H
 #define AGGREGATOR_H
+#include <memory>
 #include <interfaces/interfaces.h>
 #include "ui_mainwindow.h"
 
@@ -8,6 +9,7 @@ class ItemsFilterModel;
 class ChannelsFilterModel;
 class TagsCompleter;
 class QSystemTrayIcon;
+class QTranslator;
 
 class Aggregator : public QMainWindow
                  , public IInfo
@@ -21,12 +23,14 @@ class Aggregator : public QMainWindow
     bool IsShown_;
 
     QMenu *Plugins_;
-    XmlSettingsDialog *XmlSettingsDialog_;
-    ItemsFilterModel *ItemsFilterModel_;
-    ChannelsFilterModel *ChannelsFilterModel_;
-    TagsCompleter *TagsLineCompleter_, *ChannelTagsCompleter_;
-    QSystemTrayIcon *TrayIcon_;
+	std::auto_ptr<XmlSettingsDialog> XmlSettingsDialog_;
+	std::auto_ptr<ItemsFilterModel> ItemsFilterModel_;
+	std::auto_ptr<ChannelsFilterModel> ChannelsFilterModel_;
+	std::auto_ptr<TagsCompleter> TagsLineCompleter_, ChannelTagsCompleter_;
+	std::auto_ptr<QSystemTrayIcon> TrayIcon_;
+	std::auto_ptr<QTranslator> Translator_;
 public:
+	virtual ~Aggregator ();
     void Init ();
     void Release ();
     QString GetName () const;

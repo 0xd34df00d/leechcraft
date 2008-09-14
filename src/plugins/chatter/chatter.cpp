@@ -25,6 +25,10 @@
 #include "chatter.h"
 #include "fsirc.h"
 
+Chatter::~Chatter ()
+{
+}
+
 void Chatter::Init ()
 {
     setWindowTitle ("Chatter");
@@ -95,6 +99,11 @@ void Chatter::Release ()
     settings.setValue ("pos", pos ());
     settings.endGroup ();
     settings.endGroup ();
+
+	fsirc::finalizeIrcList ();
+	delete ircClient;
+
+	IrcLayer::finalizeServers ();
 }
 
 QIcon Chatter::GetIcon () const

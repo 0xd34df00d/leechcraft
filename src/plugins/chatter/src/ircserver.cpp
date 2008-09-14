@@ -49,6 +49,9 @@ IrcServer::IrcServer(QString host, QString port)
 IrcServer::~IrcServer()
 {
 	qDebug() << "IrcServer" << m_host << m_port << "is being deleted";
+	delete pingRegexp;
+	delete ctcpRegexp;
+	delete nickRegexp;
 }
 
 int IrcServer::contact()

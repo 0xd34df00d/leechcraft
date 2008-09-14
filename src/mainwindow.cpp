@@ -124,6 +124,7 @@ namespace Main
 
 	MainWindow::~MainWindow ()
 	{
+		delete Ui_;
 	}
 
 	QMenu* MainWindow::GetRootPluginsMenu () const
@@ -173,7 +174,9 @@ namespace Main
 
 	void MainWindow::SetTrayIcon ()
 	{
-		QMenu *iconMenu = new QMenu;
+		TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/mainapp.png"), this);
+
+		QMenu *iconMenu = new QMenu (this);
 		iconMenu->addAction (tr ("Show/hide main"), this, SLOT (showHideMain ()));
 		iconMenu->addAction (tr ("Hide all"), this, SLOT (hideAll ()));
 		iconMenu->addSeparator ();
@@ -181,7 +184,6 @@ namespace Main
 		iconMenu->addSeparator ();
 		iconMenu->addAction (tr ("Quit"), qApp, SLOT (quit ()));
 
-		TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/mainapp.png"), this);
 		TrayIcon_->setContextMenu (iconMenu);
 		TrayIcon_->show ();
 		connect (TrayIcon_,
@@ -293,14 +295,17 @@ namespace Main
 
 	void MainWindow::cleanUp ()
 	{
-		TrayIcon_->hide ();
 		WriteSettings ();
 		Core::Instance ().Release ();
+
+		TrayIcon_->hide ();
+		delete TrayIcon_;
 		qDebug () << "Releasing XmlSettingsManager";
+		delete XmlSettingsDialog_;
 		XmlSettingsManager::Instance ()->Release ();
+		delete Ui_;
 		Ui_ = 0;
 		qDebug () << "Destroyed fine";
-		delete Ui_;
 	}
 
 	void MainWindow::on_PluginsTree__activated (const QModelIndex& index)

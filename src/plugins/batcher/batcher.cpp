@@ -5,12 +5,16 @@
 #include "parser.h"
 #include "globals.h"
 
+Batcher::~Batcher ()
+{
+}
+
 void Batcher::Init ()
 {
-	LeechCraft::Util::InstallTranslator ("batcher");
+	Translator_.reset (LeechCraft::Util::InstallTranslator ("batcher"));
 
     IsShown_ = false;
-    Parser_ = new Parser (this);
+    Parser_.reset (new Parser (this));
 
     setupUi (this);
 

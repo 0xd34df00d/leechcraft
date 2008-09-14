@@ -82,6 +82,11 @@ IrcLayer::~IrcLayer()
 	m_ircServer->decRefCount();
 	if(m_targetMode==ChannelMode && joined())
 		ircPart(target());
+
+	delete chanPrefix;
+	delete mircColors;
+	delete mircShit;
+	delete genError;
 }
 
 void IrcLayer::initRegexes()
@@ -712,3 +717,9 @@ bool IrcLayer::active() const
 {
 	return m_active;
 }
+
+void IrcLayer::finalizeServers ()
+{
+	qDeleteAll (m_servers);
+}
+

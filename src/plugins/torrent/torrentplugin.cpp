@@ -5,6 +5,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QTabWidget>
+#include <QTranslator>
 #include <QTimer>
 #include <QToolBar>
 #include <QSortFilterProxyModel>
@@ -29,8 +30,7 @@
 
 void TorrentPlugin::Init ()
 {
-	LeechCraft::Util::InstallTranslator ("torrent");
-
+	Translator_.reset (LeechCraft::Util::InstallTranslator ("torrent"));
     SetupCore ();
     SetupTorrentView ();
 	SetupActions ();

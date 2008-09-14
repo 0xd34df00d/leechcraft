@@ -14,6 +14,7 @@ class QSortFilterProxyModel;
 class QTabWidget;
 class RepresentationModel;
 class TagsCompleter;
+class QTranslator;
 
 class TorrentPlugin : public QObject
                     , public IInfo
@@ -42,6 +43,7 @@ class TorrentPlugin : public QObject
 		TagsAddDiaCompleter_;
 	std::auto_ptr<QTabWidget> TabWidget_;
 	Ui::TabWidget Ui_;
+	std::auto_ptr<QToolBar> Toolbar_;
 	std::auto_ptr<QAction> OpenTorrent_,
 		RemoveTorrent_,
 		Preferences_,
@@ -53,7 +55,7 @@ class TorrentPlugin : public QObject
 		OpenMultipleTorrents_,
 		MoveFiles_,
 		ChangeTrackers_;
-	std::auto_ptr<QToolBar> Toolbar_;
+	std::auto_ptr<QTranslator> Translator_;
 public:
     // IInfo
     void Init ();

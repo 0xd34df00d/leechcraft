@@ -39,8 +39,9 @@ class fsirc : public QDialog, Ui::fsMainWindow
 	Q_OBJECT
 	public:
 		fsirc(QWidget *parent= 0);
-		~fsirc();
+		virtual ~fsirc();
 		static int findTab(QString);
+		static void finalizeIrcList();
 	private:
 		void initConnections();
 		void addTrayIcon();

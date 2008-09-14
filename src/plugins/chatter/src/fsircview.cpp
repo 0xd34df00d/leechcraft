@@ -57,7 +57,10 @@ FsIrcView::FsIrcView(QWidget * parent) : QWidget(parent)
 
 FsIrcView::~FsIrcView()
 {
-	if(m_irc) delete m_irc;
+	delete m_irc;
+	delete m_mArg;
+	delete m_linkRegexp;
+	delete m_chanRegexp;
 }
 
 void FsIrcView::fsEcho(QString message, QString style)

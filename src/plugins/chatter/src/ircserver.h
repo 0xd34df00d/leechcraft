@@ -29,7 +29,7 @@ class IrcServer : public QObject
 	Q_OBJECT
 public:
 	IrcServer(QString host, QString port="6667");
-	~IrcServer();
+	virtual ~IrcServer();
 	void breakContact();
 	void ircThrow(QString what);
 	bool isConnected() const;

@@ -1,9 +1,11 @@
 #ifndef BATCHER_H
 #define BATCHER_H
+#include <memory>
 #include <QMainWindow>
 #include <interfaces/interfaces.h>
 #include "ui_mainwindow.h"
 
+class QTranslator;
 class Parser;
 
 class Batcher : public QMainWindow
@@ -17,8 +19,10 @@ class Batcher : public QMainWindow
     ID_t ID_;
     bool IsShown_;
     QMap<QString, QObject*> Providers_;
-    Parser *Parser_;
+	std::auto_ptr<Parser> Parser_;
+	std::auto_ptr<QTranslator> Translator_;
 public:
+	virtual ~Batcher ();
     virtual void Init ();
     virtual QString GetName () const;
     virtual QString GetInfo () const;

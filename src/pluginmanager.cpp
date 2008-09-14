@@ -112,7 +112,11 @@ void PluginManager::Release (PluginManager::Size_t position)
         throw std::runtime_error ("PluginManager::Release(): position is out of bounds.");
 
     if (Plugins_ [position] && Plugins_ [position]->isLoaded ())
+	{
         qobject_cast<IInfo*> (Plugins_ [position]->instance ())->Release ();
+		delete Plugins_ [position]->instance ();
+		delete Plugins_ [position];
+	}
 }
 
 QString PluginManager::Name (const PluginManager::Size_t& pos) const

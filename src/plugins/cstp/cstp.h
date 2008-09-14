@@ -8,6 +8,7 @@ class Core;
 class QTabWidget;
 class QToolBar;
 class QModelIndex;
+class QTranslator;
 
 namespace boost
 {
@@ -33,12 +34,12 @@ class CSTP : public QObject
 
 	unsigned long int ID_;
 	QMenu *Plugins_;
-	XmlSettingsDialog *XmlSettingsDialog_;
+	std::auto_ptr<QTranslator> Translator_;
+	std::auto_ptr<XmlSettingsDialog> XmlSettingsDialog_;
 	std::auto_ptr<Ui::TabWidget> UiTabWidget_;
 	std::auto_ptr<QTabWidget> TabWidget_;
 	std::auto_ptr<QToolBar> Toolbar_;
 public:
-	explicit CSTP ();
 	virtual ~CSTP ();
 	void Init ();
 	void Release ();

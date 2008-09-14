@@ -36,7 +36,7 @@ class IrcLayer : public QObject
 Q_OBJECT
 public:
 	IrcLayer(QObject * parent, QString ircUri);
-	~IrcLayer();
+	virtual ~IrcLayer();
 	void ircConnect();
 	void ircThrow(QString what);
 	void ircMsg(QString what, QString where);
@@ -79,7 +79,7 @@ public:
 
 	bool active() const;
 
-
+	static void finalizeServers ();
 private:
 	void setJoined(int theValue);
 	void setTarget(const QString& theValue);
@@ -102,8 +102,6 @@ private:
 	QTextCodec * m_codec;
 	QByteArray m_encoding;
 	QHash<QString, QRegExp> prRegexes;
-	QRegExp * ircUriRgx;
-	QRegExp * ircUriPortRgx;
 	QRegExp * chanPrefix;
 	QRegExp * mircColors;
 	QRegExp * mircShit;

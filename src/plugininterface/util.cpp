@@ -6,7 +6,7 @@
 #include <QFile>
 #include <QtDebug>
 
-void LeechCraft::Util::InstallTranslator (const QString& baseName)
+QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName)
 {
 	QTranslator *transl = new QTranslator;
 	QString localeName = QString(::getenv ("LANG"));
@@ -22,8 +22,10 @@ void LeechCraft::Util::InstallTranslator (const QString& baseName)
 	if (!transl->load (filename))
 	{
 		qWarning () << Q_FUNC_INFO << "could not load translation file for locale" << localeName << filename;
-		return;
+		return 0;
 	}
 	qApp->installTranslator (transl);
+
+	return transl;
 }
 

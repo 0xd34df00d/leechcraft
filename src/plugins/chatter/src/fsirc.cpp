@@ -62,9 +62,9 @@ fsirc::fsirc(QWidget *parent) : QDialog(parent)
 #endif
 }
 
-fsirc::~fsirc()
+fsirc::~fsirc ()
 {
-
+	delete ticker;
 }
 
 void fsirc::addTrayIcon()
@@ -132,7 +132,7 @@ void fsirc::closeCurrentTab()
 {
 	if (ircTabHolder->count()>1)
 	{
-		ircList.removeAt(ircTabHolder->currentIndex());
+		delete ircList.takeAt(ircTabHolder->currentIndex());
 		delete ircTabHolder->currentWidget();
 	}
 	if(ircTabHolder->count()==1)
@@ -176,6 +176,11 @@ int fsirc::findTab(QString uri)
 		if (ircList[i]->ircUri() == uri) return i;
 	}
 	return -1;
+}
+
+void fsirc::finalizeIrcList()
+{
+	qDeleteAll (ircList);
 }
 
 void fsirc::clearCurrentTab()

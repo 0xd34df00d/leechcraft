@@ -11,6 +11,7 @@
 #include <QModelIndex>
 #include <QDir>
 #include <QUrl>
+#include <QTranslator>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/util.h>
 #include "core.h"
@@ -19,19 +20,15 @@
 #include "mainviewdelegate.h"
 #include "ui_tabwidget.h"
 
-CSTP::CSTP ()
-{
-}
-
 CSTP::~CSTP ()
 {
 }
 
 void CSTP::Init ()
 {
-	LeechCraft::Util::InstallTranslator ("cstp");
+	Translator_.reset (LeechCraft::Util::InstallTranslator ("cstp"));
 
-	XmlSettingsDialog_ = new XmlSettingsDialog ();
+	XmlSettingsDialog_.reset (new XmlSettingsDialog ());
 	XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (), ":/cstpsettings.xml");
 
 	SetupTabWidget ();
@@ -67,8 +64,6 @@ void CSTP::Release ()
 {
 	Core::Instance ().Release ();
 	XmlSettingsManager::Instance ().Release ();
-	delete XmlSettingsDialog_;
-	XmlSettingsDialog_ = 0;
 }
 
 QString CSTP::GetName () const

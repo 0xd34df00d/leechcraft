@@ -34,6 +34,7 @@ class Chatter : public QMainWindow
     ID_t ID_;
     bool IsShown_;
 public:
+	virtual ~Chatter ();
     virtual void Init ();
     QMap<QString, QObject*> Providers_;
     virtual QString GetName () const;

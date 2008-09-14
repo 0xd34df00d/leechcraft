@@ -82,7 +82,7 @@ int main (int argc, char **argv)
     QCoreApplication::setApplicationName ("Leechcraft");
     QCoreApplication::setOrganizationName ("Deviant");
 
-	LeechCraft::Util::InstallTranslator ("");
+	std::auto_ptr<QTranslator> translator (LeechCraft::Util::InstallTranslator (""));
 
     qRegisterMetaType<QModelIndex> ("QModelIndex");
     qRegisterMetaType<QModelIndex*> ("QModelIndexStar");
@@ -94,6 +94,5 @@ int main (int argc, char **argv)
 
 	std::auto_ptr<Main::MainWindow> mw (new Main::MainWindow ());
     return app.exec ();
-	return 0;
 }
 
