@@ -1,6 +1,7 @@
 #include <QtDebug>
 #include <QImage>
 #include <QSettings>
+#include <QDir>
 #include <QDesktopServices>
 #include <QUrl>
 #include <QTemporaryFile>
@@ -557,6 +558,7 @@ void Core::handleJobFinished (int id)
 		int errorLine, errorColumn;
 		if (!doc.setContent (data, true, &errorMsg, &errorLine, &errorColumn))
 		{
+			file.copy (QDir::tempPath () + "/failedFile.xml");
 			emit error (tr ("XML file parse error: %1, line %2, column %3, filename %4").arg (errorMsg).arg (errorLine).arg (errorColumn).arg (pj.Filename_));
 			return;
 		}
@@ -564,6 +566,7 @@ void Core::handleJobFinished (int id)
 		Parser *parser = ParserFactory::Instance ().Return (doc);
 		if (!parser)
 		{
+			file.copy (QDir::tempPath () + "/failedFile.xml");
 			emit error (tr ("Could not find parser to parse file %1").arg (pj.Filename_));
 			return;
 		}

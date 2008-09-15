@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QUrl>
 #include <QTime>
+#include <QHttp>
 
 class QHttp;
 class QFtp;
@@ -13,6 +14,7 @@ class Hook;
 class QAuthenticator;
 class QNetworkProxy;
 class QFile;
+class QIODevice;
 
 class Task : public QObject
 {
@@ -51,7 +53,7 @@ private:
 	cmd_t CurrentCmd_;
 
 	std::list<Hook> Hooks_;
-	qint64 Done_, Total_;
+	qint64 Done_, Total_, FileSizeAtStart_;
 	double Speed_;
 public:
 	explicit Task (const QString& = QString ());
@@ -74,6 +76,7 @@ public:
 	QString GetErrorString () const;
 	void SetProxy (const QNetworkProxy&);
 private:
+	void Start (QIODevice*);
 	void Reset ();
 	void Construct ();
 	void ConstructFTP (const QString& = QString ("ftp"));
@@ -87,6 +90,8 @@ private slots:
 	void handleRequestFinish (int, bool);
 	void handleDataTransferProgress (qint64, qint64);
 	void handleDataTransferProgress (int, int);
+	void responseHeaderReceived (const QHttpResponseHeader&);
+	void redirectedConstruction (QIODevice*, const QHttpResponseHeader&);
 signals:
 	void authenticationRequired (const QString&, quint16,
 			QAuthenticator*);

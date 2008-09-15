@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QDir>
 #include <QTimer>
+#include <QMetaType>
 #include <QtDebug>
 #include <plugininterface/proxy.h>
 #include "task.h"
@@ -17,6 +18,9 @@ Core::Core ()
 , RepresentationModel_ (new RepresentationModel ())
 , SaveScheduled_ (false)
 {
+	qRegisterMetaType<QIODevice*> ("QIODevice*");
+	qRegisterMetaType<QHttpResponseHeader> ("QHttpResponseHeader");
+
 	Headers_ << tr ("URL")
 		<< tr ("State")
 		<< tr ("Progress")
@@ -309,9 +313,11 @@ void Core::done (bool err)
 		return;
 
 	QString filename = taskdscr->File_->fileName ();
+	QString url = taskdscr->Task_->GetURL ();
+	QString errorStr = taskdscr->Task_->GetErrorString ();
 
 	taskdscr->File_->close ();
-	
+
 	if (!err)
 	{
 		if (!(taskdscr->Parameters_ & LeechCraft::DoNotSaveInHistory))
@@ -320,13 +326,13 @@ void Core::done (bool err)
 		emit fileDownloaded (filename);
 		if (!(taskdscr->Parameters_ & LeechCraft::DoNotNotifyUser))
 			emit downloadFinished (filename +
-					QString ("\n") + taskdscr->Task_->GetURL ());
+					QString ("\n") + url);
 		Remove (taskdscr);
 	}
 	else
 	{
 		taskdscr->ErrorFlag_ = true;
-		emit error (taskdscr->Task_->GetErrorString ());
+		emit error (errorStr);
 		emit taskError (taskdscr->ID_, IDirectDownload::ErrorOther);
 	}
 	ScheduleSave ();

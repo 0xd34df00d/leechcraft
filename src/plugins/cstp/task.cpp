@@ -18,6 +18,7 @@ Task::Task (const QString& str)
 , CurrentCmd_ (cmd_t (0, CInvalid))
 , Done_ (0)
 , Total_ (0)
+, FileSizeAtStart_ (-1)
 , Speed_ (0)
 {
 	StartTime_.start ();
@@ -58,79 +59,8 @@ void Task::RemoveHook (const Hook& hook)
 
 void Task::Start (const boost::shared_ptr<QFile>& tof)
 {
-	StartTime_.restart ();
-	QFile *to = tof.get ();
-	if (Type_ == THttp || Type_ == THttps)
-	{
-		QHttp::ConnectionMode mode = QHttp::ConnectionModeHttp;
-		if (Type_ == THttp)
-			mode = QHttp::ConnectionModeHttp;
-		else if (Type_ == THttps)
-			mode = QHttp::ConnectionModeHttps;
-
-		int id = Http_->setHost (URL_.host (),
-				mode,
-				(URL_.port () == -1) ? 0 : URL_.port ());
-		Commands_.push_back (cmd_t (id, CConnect));
-
-		QString ua = XmlSettingsManager::Instance ()
-			.property ("UserUserAgent").toString ();
-		if (ua.isEmpty ())
-			ua = XmlSettingsManager::Instance ()
-				.property ("PredefinedUserAgent").toString ();
-		
-		QHttpRequestHeader header ("GET", URL_.path () + '?' + URL_.encodedQuery ());
-		header.setValue ("Host", URL_.host ());
-		header.setValue ("Range", QString ("bytes=%1-").arg (to->size ()));
-		header.setValue ("Accept", "*/*");
-		header.setValue ("User-Agent", ua);
-		header.setValue ("Referer", QString ("http://") + URL_.host ());
-		id = Http_->request (header, 0, to);
-		Commands_.push_back (cmd_t (id, CTransfer));
-	}
-	else if (Type_ == TFtp)
-	{
-		int id = Ftp_->connectToHost (URL_.host (),
-				URL_.port () == -1 ? 21 : URL_.port ());
-		Commands_.push_back (cmd_t (id, CConnect));
-
-		QString login = URL_.userName ();
-		QString password = URL_.password ();
-		if (login.isEmpty ())
-			login = XmlSettingsManager::Instance ()
-				.property ("FTPLogin").toString ();
-		if (password.isEmpty ())
-			password = XmlSettingsManager::Instance ()
-				.property ("FTPPassword").toString ();
-		id = Ftp_->login (login, password);
-		Commands_.push_back (cmd_t (id, CLogin));
-
-		id = Ftp_->rawCommand ("TYPE I\r\n");
-		Commands_.push_back (cmd_t (id, CTypeI));
-
-		id = Ftp_->rawCommand ("REST " + QString::number (to->size ()));
-		Commands_.push_back (cmd_t (id, CRest));
-
-		QStringList exts = XmlSettingsManager::Instance ()
-			.property ("TextTransferMode").toString ()
-			.split (' ', QString::SkipEmptyParts);
-		QFtp::TransferType ftt;
-		if (exts.contains (QFileInfo (URL_.path ()).suffix ()))
-			ftt = QFtp::Ascii;
-		else
-			ftt = QFtp::Binary;
-
-		QFileInfo fi = QFileInfo (URL_.path ());
-
-		id = Ftp_->cd (fi.dir ().path ());
-		Commands_.push_back (cmd_t (id, CCD));
-
-		id = Ftp_->get (fi.fileName (), to, ftt);
-		Commands_.push_back (cmd_t (id, CTransfer));
-
-		id = Ftp_->close ();
-		Commands_.push_back (cmd_t (id, CDisconnect));
-	}
+	FileSizeAtStart_ = tof->size ();
+	Start (tof.get ());
 }
 
 void Task::Stop ()
@@ -277,11 +207,89 @@ void Task::SetProxy (const QNetworkProxy& proxy)
 	}
 }
 
+void Task::Start (QIODevice *to)
+{
+	StartTime_.restart ();
+	if (Type_ == THttp || Type_ == THttps)
+	{
+		QHttp::ConnectionMode mode = QHttp::ConnectionModeHttp;
+		if (Type_ == THttp)
+			mode = QHttp::ConnectionModeHttp;
+		else if (Type_ == THttps)
+			mode = QHttp::ConnectionModeHttps;
+
+		int id = Http_->setHost (URL_.host (),
+				mode,
+				(URL_.port () == -1) ? 0 : URL_.port ());
+		Commands_.push_back (cmd_t (id, CConnect));
+
+		QString ua = XmlSettingsManager::Instance ()
+			.property ("UserUserAgent").toString ();
+		if (ua.isEmpty ())
+			ua = XmlSettingsManager::Instance ()
+				.property ("PredefinedUserAgent").toString ();
+		
+		QHttpRequestHeader header ("GET", URL_.path () + '?' + URL_.encodedQuery ());
+		header.setValue ("Host", URL_.host ());
+		header.setValue ("Range", QString ("bytes=%1-").arg (to->size ()));
+		header.setValue ("Accept", "*/*");
+		header.setValue ("User-Agent", ua);
+		header.setValue ("Referer", QString ("http://") + URL_.host ());
+		id = Http_->request (header, 0, to);
+		Commands_.push_back (cmd_t (id, CTransfer));
+	}
+	else if (Type_ == TFtp)
+	{
+		int id = Ftp_->connectToHost (URL_.host (),
+				URL_.port () == -1 ? 21 : URL_.port ());
+		Commands_.push_back (cmd_t (id, CConnect));
+
+		QString login = URL_.userName ();
+		QString password = URL_.password ();
+		if (login.isEmpty ())
+			login = XmlSettingsManager::Instance ()
+				.property ("FTPLogin").toString ();
+		if (password.isEmpty ())
+			password = XmlSettingsManager::Instance ()
+				.property ("FTPPassword").toString ();
+		id = Ftp_->login (login, password);
+		Commands_.push_back (cmd_t (id, CLogin));
+
+		id = Ftp_->rawCommand ("TYPE I\r\n");
+		Commands_.push_back (cmd_t (id, CTypeI));
+
+		id = Ftp_->rawCommand ("REST " + QString::number (to->size ()));
+		Commands_.push_back (cmd_t (id, CRest));
+
+		QStringList exts = XmlSettingsManager::Instance ()
+			.property ("TextTransferMode").toString ()
+			.split (' ', QString::SkipEmptyParts);
+		QFtp::TransferType ftt;
+		if (exts.contains (QFileInfo (URL_.path ()).suffix ()))
+			ftt = QFtp::Ascii;
+		else
+			ftt = QFtp::Binary;
+
+		QFileInfo fi = QFileInfo (URL_.path ());
+
+		id = Ftp_->cd (fi.dir ().path ());
+		Commands_.push_back (cmd_t (id, CCD));
+
+		id = Ftp_->get (fi.fileName (), to, ftt);
+		Commands_.push_back (cmd_t (id, CTransfer));
+
+		id = Ftp_->close ();
+		Commands_.push_back (cmd_t (id, CDisconnect));
+	}
+}
+
 void Task::Reset ()
 {
+	Commands_.clear ();
 	Done_ = 0;
 	Total_ = 0;
 	Speed_ = 0;
+	FileSizeAtStart_ = -1;
 	Type_ = TInvalid;
 	Http_.reset ();
 	Ftp_.reset ();
@@ -361,6 +369,11 @@ void Task::ConstructHTTP (const QString& scheme)
 			SIGNAL (requestFinished (int, bool)),
 			this,
 			SLOT (handleRequestFinish (int, bool)));
+	connect (Http_.get (),
+			SIGNAL (responseHeaderReceived (const QHttpResponseHeader&)),
+			this,
+			SLOT (responseHeaderReceived (const QHttpResponseHeader&)));
+
 	if (Type_ == THttps)
 		connect (Http_.get (),
 				SIGNAL (sslErrors (const QList<QSslError>&)),
@@ -473,5 +486,50 @@ void Task::handleDataTransferProgress (int done, int total)
 {
 	handleDataTransferProgress (static_cast<qint64> (done),
 			static_cast<qint64> (total));
+}
+
+void Task::responseHeaderReceived (const QHttpResponseHeader& response)
+{
+	if (response.statusCode () == 301)
+	{
+		if (!response.hasKey ("Location"))
+			return;
+		if (!QUrl (response.value ("Location")).isValid ())
+			return;
+
+		QIODevice *to = Http_->currentDestinationDevice ();
+
+		Type_ = TInvalid;
+
+		Http_->disconnect ();
+		Http_->blockSignals (true);
+		Http_->abort ();
+		Http_.release ()->deleteLater ();
+
+		qDebug () << QMetaObject::invokeMethod (this,
+				"redirectedConstruction",
+				Qt::QueuedConnection,
+				Q_ARG (QIODevice*, to),
+				Q_ARG (QHttpResponseHeader, response));
+
+	}
+}
+
+void Task::redirectedConstruction (QIODevice *to, const QHttpResponseHeader& response)
+{
+	QFile *file = dynamic_cast<QFile*> (to);
+	qDebug () << FileSizeAtStart_;
+	if (file && FileSizeAtStart_ >= 0)
+	{
+		file->close ();
+		int size = file->size ();
+		bool resize = file->resize (FileSizeAtStart_);
+		qDebug () << resize << size;
+		file->open (QIODevice::ReadWrite);
+	}
+
+	URL_ = response.value ("Location");
+	Construct ();
+	Start (file);
 }
 
