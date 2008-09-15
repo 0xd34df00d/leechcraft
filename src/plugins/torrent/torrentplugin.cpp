@@ -956,10 +956,11 @@ void TorrentPlugin::SetupActions ()
 	MoveFiles_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
 
 	Toolbar_->addAction (CreateTorrent_.get ());
+	Toolbar_->addSeparator ();
 	Toolbar_->addAction (OpenTorrent_.get ());
+	Toolbar_->addAction (RemoveTorrent_.get ());
 	Toolbar_->addAction (OpenMultipleTorrents_.get ());
 	Toolbar_->addSeparator ();
-	Toolbar_->addAction (RemoveTorrent_.get ());
 	Toolbar_->addAction (Resume_.get ());
 	Toolbar_->addAction (Stop_.get ());
 	Toolbar_->addSeparator ();
