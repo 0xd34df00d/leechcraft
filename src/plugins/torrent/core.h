@@ -113,14 +113,14 @@ public:
 	void UpdateFiles ();
 	void ResetFiles ();
 
-    virtual int columnCount (const QModelIndex&) const;
-    virtual QVariant data (const QModelIndex&, int role = Qt::DisplayRole) const;
+    virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
+    virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
     virtual Qt::ItemFlags flags (const QModelIndex&) const;
     virtual bool hasChildren (const QModelIndex&) const;
-    virtual QVariant headerData (int, Qt::Orientation, int role = Qt::DisplayRole) const;
-    virtual QModelIndex index (int, int, const QModelIndex& parent = QModelIndex ()) const;
+    virtual QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
+    virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
     virtual QModelIndex parent (const QModelIndex&) const;
-    virtual int rowCount (const QModelIndex& parent = QModelIndex ()) const;
+    virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 
     libtorrent::torrent_info GetTorrentInfo (const QString&);
     libtorrent::torrent_info GetTorrentInfo (const QByteArray&);
@@ -172,18 +172,18 @@ public:
 	void SetTorrentManaged (bool);
 	bool IsTorrentSequentialDownload () const;
 	void SetTorrentSequentialDownload (bool);
-
     void MakeTorrent (NewTorrentParams) const;
     void LogMessage (const QString&);
-
 	void SetExternalAddress (const QString&);
 	QString GetExternalAddress () const;
-
 	void ImportData (const QByteArray&);
 	QByteArray ExportData () const;
-
     bool CheckValidity (int) const;
 	void SaveResumeData (const libtorrent::save_resume_data_alert&) const;
+	void MoveUp (int);
+	void MoveDown (int);
+	void MoveToTop (int);
+	void MoveToBottom (int);
 private:
     QString GetStringForState (libtorrent::torrent_status::state_t) const;
     void ReadSettings ();

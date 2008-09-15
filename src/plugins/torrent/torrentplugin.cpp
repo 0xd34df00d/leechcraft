@@ -397,6 +397,26 @@ void TorrentPlugin::on_Stop__triggered (int row)
     setActionsEnabled ();
 }
 
+void TorrentPlugin::on_MoveUp__triggered (int row)
+{
+	Core::Instance ()->MoveUp (row);
+}
+
+void TorrentPlugin::on_MoveDown__triggered (int row)
+{
+	Core::Instance ()->MoveDown (row);
+}
+
+void TorrentPlugin::on_MoveToTop__triggered (int row)
+{
+	Core::Instance ()->MoveToTop (row);
+}
+
+void TorrentPlugin::on_MoveToBottom__triggered (int row)
+{
+	Core::Instance ()->MoveToBottom (row);
+}
+
 void TorrentPlugin::on_ForceReannounce__triggered (int row)
 {
     Core::Instance ()->ForceReannounce (row);
@@ -893,6 +913,30 @@ void TorrentPlugin::SetupActions ()
 	Stop_->setProperty ("Slot", "on_Stop__triggered");
 	Stop_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
 
+	MoveUp_.reset (new QAction (tr ("Move up"),
+				Toolbar_.get ()));
+	MoveUp_->setShortcut (Qt::CTRL + Qt::Key_Up);
+	MoveUp_->setProperty ("Slot", "on_MoveUp__triggered");
+	MoveUp_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
+
+	MoveDown_.reset (new QAction (tr ("Move down"),
+				Toolbar_.get ()));
+	MoveDown_->setShortcut (Qt::CTRL + Qt::Key_Down);
+	MoveDown_->setProperty ("Slot", "on_MoveDown__triggered");
+	MoveDown_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
+
+	MoveToTop_.reset (new QAction (tr ("Move to top"),
+				Toolbar_.get ()));
+	MoveToTop_->setShortcut (Qt::CTRL + Qt::SHIFT + Qt::Key_Up);
+	MoveToTop_->setProperty ("Slot", "on_MoveToTop__triggered");
+	MoveToTop_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
+
+	MoveToBottom_.reset (new QAction (tr ("Move to bottom"),
+				Toolbar_.get ()));
+	MoveToBottom_->setShortcut (Qt::CTRL + Qt::SHIFT + Qt::Key_Down);
+	MoveToBottom_->setProperty ("Slot", "on_MoveToBottom__triggered");
+	MoveToBottom_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
+
 	ForceReannounce_.reset (new QAction (QIcon (":/resources/images/torrent_reannounce.png"),
 				tr ("Reannounce"),
 				Toolbar_.get ()));
@@ -918,6 +962,12 @@ void TorrentPlugin::SetupActions ()
 	Toolbar_->addAction (RemoveTorrent_.get ());
 	Toolbar_->addAction (Resume_.get ());
 	Toolbar_->addAction (Stop_.get ());
+	Toolbar_->addSeparator ();
+	Toolbar_->addAction (MoveUp_.get ());
+	Toolbar_->addAction (MoveDown_.get ());
+	Toolbar_->addAction (MoveToTop_.get ());
+	Toolbar_->addAction (MoveToBottom_.get ());
+	Toolbar_->addSeparator ();
 	Toolbar_->addAction (ForceReannounce_.get ());
 	Toolbar_->addAction (ForceRecheck_.get ());
 	Toolbar_->addAction (MoveFiles_.get ());

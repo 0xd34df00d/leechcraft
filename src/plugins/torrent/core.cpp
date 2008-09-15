@@ -426,7 +426,7 @@ TorrentInfo Core::GetTorrentStats () const
     TorrentInfo result;
     result.Tracker_ = QString::fromStdString (status.current_tracker).left (100);
     result.State_ = status.paused ? tr ("Idle") : GetStringForState (status.state);
-    result.Downloaded_ = status.total_done;
+    result.Downloaded_ = status.total_wanted_done;
     result.Uploaded_ = status.total_payload_upload;
     result.TotalSize_ = status.total_wanted;
     result.FailedSize_ = status.total_failed_bytes;
@@ -1046,6 +1046,89 @@ QByteArray Core::ExportData () const
 	return QByteArray ();
 }
 
+void Core::SaveResumeData (const libtorrent::save_resume_data_alert& a) const
+{
+	HandleDict_t::const_iterator torrent =
+		std::find_if (Handles_.begin (), Handles_.end (),
+				HandleFinder (a.handle));
+	QFile file (QDir::homePath () +
+			"/.leechcraft_bittorrent/" +
+			torrent->TorrentFileName_ +
+			".resume");
+
+	if (!file.open (QIODevice::WriteOnly))
+	{
+		qWarning () << QString ("Could not open file %1 for write: %2")
+			.arg (file.fileName ())
+			.arg (file.errorString ());
+		return;
+	}
+
+	std::deque<char> outbuf;
+	libtorrent::bencode (std::back_inserter (outbuf), *a.resume_data.get ());
+
+	for (size_t i = 0; i < outbuf.size (); ++i)
+		file.write (&outbuf.at (i), 1);
+}
+
+void Core::MoveUp (int row)
+{
+	if (row <= 0 || !CheckValidity (row))
+		return;
+
+	Handles_.at (row).Handle_.queue_position_up ();
+	std::swap (Handles_ [row], Handles_ [row - 1]);
+
+	emit dataChanged (index (row, 0),
+			index (row, columnCount () - 1));
+	emit dataChanged (index (row - 1, 0),
+			index (row - 1, columnCount () - 1));
+}
+
+void Core::MoveDown (int row)
+{
+	if (row >= Handles_.size () - 1 || !CheckValidity (row))
+		return;
+
+	Handles_.at (row).Handle_.queue_position_down ();
+	std::swap (Handles_ [row], Handles_ [row + 1]);
+
+	emit dataChanged (index (row, 0),
+			index (row, columnCount () - 1));
+	emit dataChanged (index (row + 1, 0),
+			index (row + 1, columnCount () - 1));
+}
+
+void Core::MoveToTop (int row)
+{
+	if (row <= 0 || !CheckValidity (row))
+		return;
+
+	Handles_.at (row).Handle_.queue_position_top ();
+
+	TorrentStruct torrent = Handles_.at (row);
+	for (int i = row; i; --i)
+		Handles_ [row] = Handles_ [row - 1];
+	Handles_ [0] = torrent;
+	emit dataChanged (index (0, 0),
+			index (row, columnCount () - 1));
+}
+
+void Core::MoveToBottom (int row)
+{
+	if (row >= Handles_.size () - 1 || !CheckValidity (row))
+		return;
+
+	Handles_.at (row).Handle_.queue_position_bottom ();
+
+	TorrentStruct torrent = Handles_.at (row);
+	for (int i = row; i < Handles_.size () - 2; ++i)
+		Handles_ [row] = Handles_ [row + 1];
+	Handles_ [Handles_.size () - 1] = torrent;
+	emit dataChanged (index (row, 0),
+			index (Handles_.size () - 1, columnCount () - 1));
+}
+
 QString Core::GetStringForState (libtorrent::torrent_status::state_t state) const
 {
     switch (state)
@@ -1415,31 +1498,6 @@ void Core::UpdateTagsImpl (const QStringList& tags, int torrent)
 
     Handles_ [torrent].Tags_ = tags;
     TagsCompletionModel_->UpdateTags (tags);
-}
-
-void Core::SaveResumeData (const libtorrent::save_resume_data_alert& a) const
-{
-	HandleDict_t::const_iterator torrent =
-		std::find_if (Handles_.begin (), Handles_.end (),
-				HandleFinder (a.handle));
-	QFile file (QDir::homePath () +
-			"/.leechcraft_bittorrent/" +
-			torrent->TorrentFileName_ +
-			".resume");
-
-	if (!file.open (QIODevice::WriteOnly))
-	{
-		qWarning () << QString ("Could not open file %1 for write: %2")
-			.arg (file.fileName ())
-			.arg (file.errorString ());
-		return;
-	}
-
-	std::deque<char> outbuf;
-	libtorrent::bencode (std::back_inserter (outbuf), *a.resume_data.get ());
-
-	for (size_t i = 0; i < outbuf.size (); ++i)
-		file.write (&outbuf.at (i), 1);
 }
 
 void Core::writeSettings ()
