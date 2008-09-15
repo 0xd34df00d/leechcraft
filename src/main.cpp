@@ -17,26 +17,28 @@ QMutex G_DbgMutex;
 
 void debugMessageHandler (QtMsgType type, const char *message)
 {
-    std::string name;
+	QString name (QDir::homePath ());
+	name += ("/.leechcraft/");
     switch (type)
     {
         case QtDebugMsg:
-            name = "debug.log";
+            name += "debug.log";
             break;
         case QtWarningMsg:
-            name = "warning.log";
+            name += "warning.log";
             break;
         case QtCriticalMsg:
-            name = "critical.log";
+            name += "critical.log";
             break;
         case QtFatalMsg:
-            name = "fatal.log";
+            name += "fatal.log";
             break;
     }
     std::ofstream ostr;
     G_DbgMutex.lock ();
-    ostr.open (name.c_str (), std::ios::app);
-    ostr << "[" << QTime::currentTime ().toString ("HH:mm:ss.zzz").toStdString () << "] [thr " << QThread::currentThread () << "] ";
+    ostr.open (QDir::toNativeSeparators (name).toStdString ().c_str (), std::ios::app);
+    ostr << "[" << QDateTime::currentDateTime ().toString ("dd.MM.yyyy HH:mm:ss.zzz").toStdString ()
+	<< "] [thr " << QThread::currentThread () << "] ";
     ostr << message << std::endl;
     ostr.close ();
     G_DbgMutex.unlock ();
@@ -70,11 +72,21 @@ int main (int argc, char **argv)
 
 	if (IsAlreadyRunning ())
 	{
-		QMessageBox::critical (0, "Critical failure",
-				"LeechCraft is alread running, please close another "
-				"instance before starting it.");
+		QMessageBox::critical (0, QObject::tr ("Critical failure"),
+				QObject::tr ("LeechCraft is alread running, please close another ")+
+				QObject::tr ("instance before starting it."));
 		return 1;
 	}
+
+	QDir home = QDir::home ();
+	if (!home.exists (".leechcraft"))
+		if (!home.mkdir (".leechcraft"))
+		{
+			QMessageBox::critical (0, QObject::tr ("Critical failure"),
+					QDir::toNativeSeparators (QObject::tr ("Could not create path %1/.leechcraft")
+					.arg (QDir::homePath ())));
+			return 2;
+		}
 
     qDebug () << "======APPLICATION STARTUP======";
     qWarning () << "======APPLICATION STARTUP======";

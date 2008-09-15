@@ -308,6 +308,8 @@ void Core::done (bool err)
 	if (taskdscr == ActiveTasks_.end ())
 		return;
 
+	QString filename = taskdscr->File_->fileName ();
+
 	taskdscr->File_->close ();
 	
 	if (!err)
@@ -315,9 +317,9 @@ void Core::done (bool err)
 		if (!(taskdscr->Parameters_ & LeechCraft::DoNotSaveInHistory))
 			AddToHistory (taskdscr);
 		emit taskFinished (taskdscr->ID_);
-		emit fileDownloaded (taskdscr->File_->fileName ());
+		emit fileDownloaded (filename);
 		if (!(taskdscr->Parameters_ & LeechCraft::DoNotNotifyUser))
-			emit downloadFinished (taskdscr->File_->fileName () +
+			emit downloadFinished (filename +
 					QString ("\n") + taskdscr->Task_->GetURL ());
 		Remove (taskdscr);
 	}

@@ -4,7 +4,6 @@
 #include <QObject>
 #include <QString>
 #include <QPair>
-#include "common.h"
 #include "pluginmanager.h"
 #include "interfaces/interfaces.h"
 

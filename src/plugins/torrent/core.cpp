@@ -1052,7 +1052,7 @@ void Core::SaveResumeData (const libtorrent::save_resume_data_alert& a) const
 		std::find_if (Handles_.begin (), Handles_.end (),
 				HandleFinder (a.handle));
 	QFile file (QDir::homePath () +
-			"/.leechcraft_bittorrent/" +
+			"/.leechcraft/bittorrent/" +
 			torrent->TorrentFileName_ +
 			".resume");
 
@@ -1166,7 +1166,7 @@ void Core::RestoreTorrents ()
         settings.setArrayIndex (i);
         boost::filesystem::path path = settings.value ("SavePath").toString ().toStdString ();
         QString filename = settings.value ("Filename").toString ();
-        QFile torrent (QDir::homePath () + "/.leechcraft_bittorrent/" + filename);
+        QFile torrent (QDir::homePath () + "/.leechcraft/bittorrent/" + filename);
         if (!torrent.open (QIODevice::ReadOnly))
         {
             emit error (tr ("Could not open saved torrent %1 for read.").arg (filename));
@@ -1177,7 +1177,7 @@ void Core::RestoreTorrents ()
         if (data.isEmpty ())
             continue;
 
-		QFile resumeDataFile (QDir::homePath () + "/.leechcraft_bittorrent/" +
+		QFile resumeDataFile (QDir::homePath () + "/.leechcraft/bittorrent/" +
 				filename + ".resume");
         QByteArray resumed;
 		if (resumeDataFile.open (QIODevice::ReadOnly))
@@ -1503,11 +1503,11 @@ void Core::UpdateTagsImpl (const QStringList& tags, int torrent)
 void Core::writeSettings ()
 {
     QDir home = QDir::home ();
-    if (!home.exists (".leechcraft_bittorrent"))
-        if (!home.mkdir (".leechcraft_bittorrent"))
+    if (!home.exists (".leechcraft/bittorrent"))
+        if (!home.mkdir (".leechcraft/bittorrent"))
         {
-            emit error (tr ("Could not create path %1/.leechcraft_bittorrent")
-					.arg (QDir::homePath ()));
+            emit error (QDir::toNativeSeparators (tr ("Could not create path %1/.leechcraft/bittorrent"))
+					.arg (QDir::toNativeSeparators (QDir::homePath ())));
             return;
         }
 
@@ -1528,7 +1528,7 @@ void Core::writeSettings ()
         try
         {
             QFile file_info (QDir::homePath () +
-					"/.leechcraft_bittorrent/" +
+					"/.leechcraft/bittorrent/" +
 					Handles_.at (i).TorrentFileName_);
             if (!file_info.open (QIODevice::WriteOnly))
             {

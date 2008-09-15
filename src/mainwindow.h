@@ -6,7 +6,6 @@
 #include <QSystemTrayIcon>
 #include <QList>
 #include <QModelIndex>
-#include "common.h"
 
 class QMenu;
 class QMenuBar;
