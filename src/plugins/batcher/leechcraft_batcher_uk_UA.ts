@@ -3,37 +3,37 @@
 <context>
     <name>Batcher</name>
     <message>
-        <location filename="batcher.cpp" line="33"/>
+        <location filename="batcher.cpp" line="37"/>
         <source>Batch job adder.</source>
         <translation>Менеджер пакетних завдань.</translation>
     </message>
     <message>
-        <location filename="batcher.cpp" line="135"/>
+        <location filename="batcher.cpp" line="139"/>
         <source>Warning</source>
         <translation>Увага</translation>
     </message>
     <message>
-        <location filename="batcher.cpp" line="135"/>
+        <location filename="batcher.cpp" line="139"/>
         <source>Because the specified directory doesn&apos;t exist, files will be downloaded to %1.</source>
         <translation>Файл буде завантажено до %1, так як вказана тека не існує.</translation>
     </message>
     <message>
-        <location filename="batcher.cpp" line="158"/>
+        <location filename="batcher.cpp" line="162"/>
         <source>Finished</source>
         <translation>Завершено</translation>
     </message>
     <message>
-        <location filename="batcher.cpp" line="156"/>
+        <location filename="batcher.cpp" line="160"/>
         <source>%1 jobs successfully added.</source>
         <translation>%1 завдань успішно додано.</translation>
     </message>
     <message>
-        <location filename="batcher.cpp" line="158"/>
+        <location filename="batcher.cpp" line="162"/>
         <source>No jobs were added. Check your pattern string or boundaries.</source>
         <translation>Жодного завадання не було додано. Перевірте Ваш шаблон або межі.</translation>
     </message>
     <message>
-        <location filename="batcher.cpp" line="163"/>
+        <location filename="batcher.cpp" line="167"/>
         <source>Select base path</source>
         <translation>Оберіть теку</translation>
     </message>

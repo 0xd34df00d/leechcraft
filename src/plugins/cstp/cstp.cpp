@@ -255,7 +255,8 @@ void CSTP::SetupToolbar ()
 
 	Toolbar_->addSeparator ();
 
-	QAction *start = Toolbar_->addAction (tr ("Start"));
+	QAction *start = Toolbar_->addAction (QIcon (":/resources/images/start.png"),
+			tr ("Start"));
 	start->setProperty ("Slot", "startTriggered");
 	start->setProperty ("Object",
 			QVariant::fromValue<QObject*> (&Core::Instance ()));

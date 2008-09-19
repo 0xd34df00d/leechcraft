@@ -55,6 +55,7 @@ private:
 	std::list<Hook> Hooks_;
 	qint64 Done_, Total_, FileSizeAtStart_;
 	double Speed_;
+	QStringList RedirectHistory_;
 public:
 	explicit Task (const QString& = QString ());
 	virtual ~Task ();
@@ -91,7 +92,7 @@ private slots:
 	void handleDataTransferProgress (qint64, qint64);
 	void handleDataTransferProgress (int, int);
 	void responseHeaderReceived (const QHttpResponseHeader&);
-	void redirectedConstruction (QIODevice*, const QHttpResponseHeader&);
+	void redirectedConstruction (QIODevice*, const QString&);
 signals:
 	void authenticationRequired (const QString&, quint16,
 			QAuthenticator*);

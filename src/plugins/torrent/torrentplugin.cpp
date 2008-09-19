@@ -397,24 +397,24 @@ void TorrentPlugin::on_Stop__triggered (int row)
     setActionsEnabled ();
 }
 
-void TorrentPlugin::on_MoveUp__triggered (int row)
+void TorrentPlugin::on_MoveUp__triggered (const std::deque<int>& selections)
 {
-	Core::Instance ()->MoveUp (row);
+	Core::Instance ()->MoveUp (selections);
 }
 
-void TorrentPlugin::on_MoveDown__triggered (int row)
+void TorrentPlugin::on_MoveDown__triggered (const std::deque<int>& selections)
 {
-	Core::Instance ()->MoveDown (row);
+	Core::Instance ()->MoveDown (selections);
 }
 
-void TorrentPlugin::on_MoveToTop__triggered (int row)
+void TorrentPlugin::on_MoveToTop__triggered (const std::deque<int>& selections)
 {
-	Core::Instance ()->MoveToTop (row);
+	Core::Instance ()->MoveToTop (selections);
 }
 
-void TorrentPlugin::on_MoveToBottom__triggered (int row)
+void TorrentPlugin::on_MoveToBottom__triggered (const std::deque<int>& selections)
 {
-	Core::Instance ()->MoveToBottom (row);
+	Core::Instance ()->MoveToBottom (selections);
 }
 
 void TorrentPlugin::on_ForceReannounce__triggered (int row)
@@ -654,31 +654,38 @@ void TorrentPlugin::UpdateTorrentPage ()
 	Ui_.LabelUploaded_->setText (Proxy::Instance ()->MakePrettySize (i.Uploaded_));
 	Ui_.LabelTotalSize_->setText (Proxy::Instance ()->MakePrettySize (i.TotalSize_));
 	Ui_.LabelFailed_->setText (Proxy::Instance ()->MakePrettySize (i.FailedSize_));
-	Ui_.LabelConnectedPeers_->setText (QString::number (i.ConnectedPeers_));
-	Ui_.LabelConnectedSeeds_->setText (QString::number (i.ConnectedSeeds_));
+	Ui_.LabelConnectedPeers_->setText (QString::number (i.ConnectedPeers_) + "/" +
+			QString::number (i.ConnectedSeeds_));
 	Ui_.LabelNextAnnounce_->setText (i.NextAnnounce_.toString ());
 	Ui_.LabelAnnounceInterval_->setText (i.AnnounceInterval_.toString ());
 	Ui_.LabelTotalPieces_->setText (QString::number (i.TotalPieces_));
 	Ui_.LabelDownloadedPieces_->setText (QString::number (i.DownloadedPieces_));
-	Ui_.LabelPieceSize_->setText (Proxy::Instance ()->MakePrettySize (i.PieceSize_));
+	Ui_.LabelPieceSize_->setText (Proxy::Instance ()->MakePrettySize (i.PieceSize_) + "; " +
+			Proxy::Instance ()->MakePrettySize (i.BlockSize_));
 	Ui_.LabelDownloadRate_->setText (Proxy::Instance ()->MakePrettySize (i.DownloadRate_) + tr ("/s"));
 	Ui_.LabelUploadRate_->setText (Proxy::Instance ()->MakePrettySize (i.UploadRate_) + tr ("/s"));
 	Ui_.LabelTorrentRating_->setText (QString::number (i.Uploaded_ / static_cast<double> (i.Downloaded_), 'g', 4));
-	Ui_.LabelDistributedCopies_->setText (i.DistributedCopies_ == -1 ? tr ("Not tracking") : QString::number (i.DistributedCopies_));
+	Ui_.LabelDistributedCopies_->setText (i.DistributedCopies_ == -1 ?
+			tr ("Not tracking") : QString::number (i.DistributedCopies_));
 	Ui_.LabelRedundantData_->setText (Proxy::Instance ()->MakePrettySize (i.RedundantBytes_));
-	Ui_.LabelPeersInList_->setText (QString::number (i.PeersInList_));
-	Ui_.LabelSeedsInList_->setText (QString::number (i.SeedsInList_));
-	Ui_.LabelPeersInSwarm_->setText (i.PeersInSwarm_ == -1 ? tr ("Unknown") : QString::number (i.PeersInSwarm_));
-	Ui_.LabelSeedsInSwarm_->setText (i.SeedsInSwarm_ == -1 ? tr ("Unknown") : QString::number (i.SeedsInSwarm_));
+	Ui_.LabelPeersInList_->setText (QString::number (i.PeersInList_) + "/" +
+			QString::number (i.SeedsInList_));
+	Ui_.LabelPeersInSwarm_->setText ((i.PeersInSwarm_ == -1 ?
+				tr ("Unknown") : QString::number (i.PeersInSwarm_)) + "/" +
+			(i.SeedsInSwarm_ == -1 ?
+			  tr ("Unknown") : QString::number (i.SeedsInSwarm_)));
 	Ui_.LabelConnectCandidates_->setText (QString::number (i.ConnectCandidates_));
-	Ui_.LabelBlockSize_->setText (Proxy::Instance ()->MakePrettySize (i.BlockSize_));
-	Ui_.LabelUpBandwidthQueue_->setText (QString::number (i.UpBandwidthQueue_));
-	Ui_.LabelDownBandwidthQueue_->setText (QString::number (i.DownBandwidthQueue_));
+	Ui_.LabelUpBandwidthQueue_->setText (QString::number (i.UpBandwidthQueue_) + "/" + 
+			QString::number (i.DownBandwidthQueue_));
 	Ui_.LabelLastScrape_->setText (Proxy::Instance ()->MakeTimeFromLong (i.LastScrape_).toString ());
 	Ui_.LabelActiveTime_->setText (Proxy::Instance ()->MakeTimeFromLong (i.ActiveTime_).toString ());
 	Ui_.LabelSeedingTime_->setText (Proxy::Instance ()->MakeTimeFromLong (i.SeedingTime_).toString ());
 	Ui_.LabelSeedRank_->setText (QString::number (i.SeedRank_));
 	Ui_.PiecesWidget_->setPieceMap (i.Pieces_);
+	Ui_.LabelWantedDownloaded_->setText (Proxy::Instance ()->MakePrettySize (i.WantedDownload_));
+	Ui_.LabelUploadedTotal_->setText (Proxy::Instance ()->MakePrettySize (i.UploadedTotal_));
+	Ui_.LabelProtocolOverhead_->setText (Proxy::Instance ()->MakePrettySize (i.DownloadOverhead_) + "/" +
+			Proxy::Instance ()->MakePrettySize (i.UploadOverhead_));
 }
 
 void TorrentPlugin::UpdateFilesPage ()
@@ -913,28 +920,36 @@ void TorrentPlugin::SetupActions ()
 	Stop_->setProperty ("Slot", "on_Stop__triggered");
 	Stop_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
 
-	MoveUp_.reset (new QAction (tr ("Move up"),
+	MoveUp_.reset (new QAction (QIcon (":/resources/images/torrent_moveup.png"),
+				tr ("Move up"),
 				Toolbar_.get ()));
 	MoveUp_->setShortcut (Qt::CTRL + Qt::Key_Up);
 	MoveUp_->setProperty ("Slot", "on_MoveUp__triggered");
+	MoveUp_->setProperty ("WholeSelection", true);
 	MoveUp_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
 
-	MoveDown_.reset (new QAction (tr ("Move down"),
+	MoveDown_.reset (new QAction (QIcon (":/resources/images/torrent_movedown.png"),
+				tr ("Move down"),
 				Toolbar_.get ()));
 	MoveDown_->setShortcut (Qt::CTRL + Qt::Key_Down);
 	MoveDown_->setProperty ("Slot", "on_MoveDown__triggered");
+	MoveDown_->setProperty ("WholeSelection", true);
 	MoveDown_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
 
-	MoveToTop_.reset (new QAction (tr ("Move to top"),
+	MoveToTop_.reset (new QAction (QIcon (":/resources/images/torrent_movetop.png"),
+				tr ("Move to top"),
 				Toolbar_.get ()));
 	MoveToTop_->setShortcut (Qt::CTRL + Qt::SHIFT + Qt::Key_Up);
 	MoveToTop_->setProperty ("Slot", "on_MoveToTop__triggered");
+	MoveToTop_->setProperty ("WholeSelection", true);
 	MoveToTop_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
 
-	MoveToBottom_.reset (new QAction (tr ("Move to bottom"),
+	MoveToBottom_.reset (new QAction (QIcon (":/resources/images/torrent_movebottom.png"),
+				tr ("Move to bottom"),
 				Toolbar_.get ()));
 	MoveToBottom_->setShortcut (Qt::CTRL + Qt::SHIFT + Qt::Key_Down);
 	MoveToBottom_->setProperty ("Slot", "on_MoveToBottom__triggered");
+	MoveToBottom_->setProperty ("WholeSelection", true);
 	MoveToBottom_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
 
 	ForceReannounce_.reset (new QAction (QIcon (":/resources/images/torrent_reannounce.png"),

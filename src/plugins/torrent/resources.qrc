@@ -9,6 +9,8 @@
         <file>resources/images/torrent_local.png</file>
         <file>resources/images/torrent_movedown.png</file>
         <file>resources/images/torrent_moveup.png</file>
+        <file>resources/images/torrent_movebottom.png</file>
+        <file>resources/images/torrent_movetop.png</file>
         <file>resources/images/torrent_network.png</file>
         <file>resources/images/torrent_new.png</file>
         <file>resources/images/torrent_preferences.png</file>

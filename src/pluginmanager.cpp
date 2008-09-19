@@ -100,7 +100,9 @@ void PluginManager::Release ()
         }
         catch (...)
         {
-            QMessageBox::warning (0, tr ("No exit here"), tr ("Release of one or more plugins failed. OS would cleanup after us, but it isn't good anyway, as this failed plugin could fail to save it's state."));
+            QMessageBox::warning (0,
+					tr ("No exit here"),
+					tr ("Release of one or more plugins failed."));
         }
         Plugins_.removeAt (Plugins_.size () - 1);
     }

@@ -241,7 +241,11 @@ void Aggregator::on_ActionAddFeed__triggered ()
 
 void Aggregator::on_ActionRemoveFeed__triggered ()
 {
-    Core::Instance ().RemoveFeed (ChannelsFilterModel_->mapToSource (Ui_.Feeds_->selectionModel ()->currentIndex ()));
+	QMessageBox mb (QMessageBox::Warning, tr ("Warning"), tr ("You are going to permanently remove this feed.", "Feed removing attempt") + QString ("\n") +
+				tr ("Are you are really sure that you want to do this?", "Feed removing confirmation"), QMessageBox::Ok | QMessageBox::Cancel, this);
+	mb.setWindowModality (Qt::WindowModal);
+	if (mb.exec () == QMessageBox::Ok)
+		Core::Instance ().RemoveFeed (ChannelsFilterModel_->mapToSource (Ui_.Feeds_->selectionModel ()->currentIndex ()));
 }
 
 void Aggregator::on_ActionPreferences__triggered ()

@@ -299,11 +299,38 @@ void Main::Core::handleProxySettings () const
 	QNetworkProxy::setApplicationProxy (pr);
 }
 
+namespace
+{
+	void PassSelectionsByOne (QObject *object,
+			const QModelIndexList& selected,
+			int startingRow,
+			int endingRow,
+			const QByteArray& function)
+	{
+		for (QModelIndexList::const_iterator i = selected.begin (),
+				end = selected.end (); i != end; ++i)
+		{
+			if (i->row () < startingRow)
+				continue;
+			if (i->row () >= endingRow)
+				break;
+
+			QMetaObject::invokeMethod (object,
+					function,
+					Q_ARG (int, i->row ()));
+		}
+	}
+};
+
 void Main::Core::handlePluginAction ()
 {
 	QAction *source = qobject_cast<QAction*> (sender ());
 	QString slot = source->property ("Slot").toString ();
 	QString signal = source->property ("Signal").toString ();
+	QVariant varWhole = source->property ("WholeSelection");
+	bool whole = false;
+	if (varWhole.isValid ())
+		whole = varWhole.toBool ();
 
 	if (slot.isEmpty () && signal.isEmpty ())
 		return;
@@ -319,8 +346,9 @@ void Main::Core::handlePluginAction ()
 	QAbstractItemModel *model = Action2Model_ [source];
 	int startingRow = MergeModel_->GetStartingRow (MergeModel_->FindModel (model));
 	int endingRow = startingRow + model->rowCount ();
-	if (!slot.isEmpty ())
+	if (whole)
 	{
+		std::deque<int> selections;
 		for (QModelIndexList::const_iterator i = selected.begin (),
 				end = selected.end (); i != end; ++i)
 		{
@@ -328,26 +356,25 @@ void Main::Core::handlePluginAction ()
 				continue;
 			if (i->row () >= endingRow)
 				break;
+			selections.push_back (i->row ());
+		}
 
+		if (!slot.isEmpty ())
 			QMetaObject::invokeMethod (object,
 					slot.toLatin1 (),
-					Q_ARG (int, i->row ()));
-		}
-	}
-	if (!signal.isEmpty ())
-	{
-		for (QModelIndexList::const_iterator i = selected.begin (),
-				end = selected.end (); i != end; ++i)
-		{
-			if (i->row () < startingRow)
-				continue;
-			if (i->row () >= endingRow)
-				break;
+					Q_ARG (std::deque<int>, selections));
 
+		if (!signal.isEmpty ())
 			QMetaObject::invokeMethod (object,
 					signal.toLatin1 (),
-					Q_ARG (int, i->row ()));
-		}
+					Q_ARG (std::deque<int>, selections));
+	}
+	else
+	{
+		if (!slot.isEmpty ())
+			PassSelectionsByOne (object, selected, startingRow, endingRow, slot.toLatin1 ());
+		if (!signal.isEmpty ())
+			PassSelectionsByOne (object, selected, startingRow, endingRow, signal.toLatin1 ());
 	}
 }
 

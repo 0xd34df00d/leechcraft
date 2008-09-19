@@ -113,16 +113,16 @@ Feed::channels_container_t RSS20Parser::Parse (const QDomDocument& doc) const
 
 Item* RSS20Parser::ParseItem (const QDomElement& item) const
 {
-    Item *result = new Item;
-    result->Title_ = UnescapeHTML (item.firstChildElement ("title").text ());
-    result->Link_ = UnescapeHTML (item.firstChildElement ("link").text ());
-    result->Description_ = UnescapeHTML (item.firstChildElement ("description").text ());
-    result->PubDate_ = rfc822TimeToQDateTime (item.firstChildElement ("pubDate").text ());
-    if (!result->PubDate_.isValid () || result->PubDate_.isNull ())
-        result->PubDate_ = QDateTime::currentDateTime ();
-    result->Guid_ = item.firstChildElement ("guid").text ();
-    result->Unread_ = true;
-    return result;
+	Item *result = new Item;
+	result->Title_ = item.firstChildElement ("title").text ();
+	result->Link_ = item.firstChildElement ("link").text ();
+	result->Description_ = item.firstChildElement ("description").text ();
+	result->PubDate_ = rfc822TimeToQDateTime (item.firstChildElement ("pubDate").text ());
+	if (!result->PubDate_.isValid () || result->PubDate_.isNull ())
+		result->PubDate_ = QDateTime::currentDateTime ();
+	result->Guid_ = item.firstChildElement ("guid").text ();
+	result->Unread_ = true;
+	return result;
 }
 
 QDateTime RSS20Parser::rfc822TimeToQDateTime (const QString& t) const

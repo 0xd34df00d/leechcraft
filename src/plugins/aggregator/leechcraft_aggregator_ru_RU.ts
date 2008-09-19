@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="ru_RU">
-<defaultcodec></defaultcodec>
 <context>
     <name>AddFeed</name>
     <message>
@@ -32,17 +31,17 @@
 <context>
     <name>Aggregator</name>
     <message>
-        <location filename="aggregator.cpp" line="138"/>
+        <location filename="aggregator.cpp" line="153"/>
         <source>RSS 2.0, Atom 1.0 feed reader.</source>
         <translation>RSS 2.0, Atom 1.0 агрегатор.</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="217"/>
+        <location filename="aggregator.cpp" line="232"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="235"/>
+        <location filename="aggregator.cpp" line="250"/>
         <source>: Preferences</source>
         <translation>: Настройки</translation>
     </message>
@@ -100,22 +99,22 @@
         <translation>Перезагрузить</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="46"/>
+        <location filename="browserwidget.cpp" line="58"/>
         <source>Loading...</source>
         <translation>Загружается...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="54"/>
+        <location filename="browserwidget.cpp" line="66"/>
         <source>Loaded</source>
         <translation>Загружено</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="55"/>
+        <location filename="browserwidget.cpp" line="67"/>
         <source> (with errors)</source>
         <translation>(с ошибками)</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="62"/>
+        <location filename="browserwidget.cpp" line="74"/>
         <source>Loading (%p)</source>
         <translation>Загружается (%p)</translation>
     </message>
@@ -146,71 +145,71 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="27"/>
+        <location filename="core.cpp" line="28"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="27"/>
+        <location filename="core.cpp" line="28"/>
         <source>Date</source>
         <translation>Дата</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="97"/>
+        <location filename="core.cpp" line="98"/>
         <source>This feed is already added</source>
         <translation>Эта лента уже добавлена</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="763"/>
+        <location filename="core.cpp" line="766"/>
         <source>Strange, but no suitable provider found</source>
         <translation>Странно, но не найден ни один подходящий провайдер</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="768"/>
+        <location filename="core.cpp" line="771"/>
         <source>Could not handle URL %1</source>
         <translation>Не могу обработать URL %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="340"/>
+        <location filename="core.cpp" line="341"/>
         <source>&lt;empty&gt;</source>
         <translation>&lt;пусто&gt;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="543"/>
+        <location filename="core.cpp" line="544"/>
         <source>Downloaded file has null size!</source>
         <translation>Скачанный файл имеет нулевой размер!</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="548"/>
+        <location filename="core.cpp" line="549"/>
         <source>Feed with url %1 not found.</source>
         <translation>Лента с URL %1 не найдена.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="560"/>
+        <location filename="core.cpp" line="562"/>
         <source>XML file parse error: %1, line %2, column %3, filename %4</source>
         <translation>Ошибка парсинга XML-файла: %1, строка %2, столбец %3, файл %4</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="567"/>
+        <location filename="core.cpp" line="570"/>
         <source>Could not find parser to parse file %1</source>
         <translation>Не могу найти парсер для обработки файла %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="610"/>
+        <location filename="core.cpp" line="613"/>
         <source>Added channel &quot;%1&quot; (has %2 items)<byte value="xd"/>
 </source>
         <translation>Добавлен канал &quot;%1&quot; (%2 статей)
 </translation>
     </message>
     <message>
-        <location filename="core.cpp" line="617"/>
+        <location filename="core.cpp" line="620"/>
         <source>Updated channel &quot;%1&quot; (%2 new items)<byte value="xd"/>
 </source>
         <translation>Обновлен канал &quot;%1&quot; (%2 новых статей)
 </translation>
     </message>
     <message>
-        <location filename="core.cpp" line="702"/>
+        <location filename="core.cpp" line="705"/>
         <source>Aggregator updated:<byte value="xd"/>
 </source>
         <translation>Обновлены статьи:
@@ -426,7 +425,7 @@
         <translation>Долгий ящик...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="459"/>
+        <location filename="mainwindow.ui" line="463"/>
         <source>Regexp matcher...</source>
         <translation>Сито...</translation>
     </message>
@@ -456,7 +455,7 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="475"/>
+        <location filename="mainwindow.ui" line="479"/>
         <source>Show/hide read items</source>
         <translation>Показывать/скрывать прочитанные сообщения</translation>
     </message>

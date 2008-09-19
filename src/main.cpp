@@ -73,8 +73,8 @@ int main (int argc, char **argv)
 	if (IsAlreadyRunning ())
 	{
 		QMessageBox::critical (0, QObject::tr ("Critical failure"),
-				QObject::tr ("LeechCraft is alread running, please close another ")+
-				QObject::tr ("instance before starting it."));
+				QObject::tr ("LeechCraft is alread running, please close another "
+				"instance before starting it."));
 		return 1;
 	}
 

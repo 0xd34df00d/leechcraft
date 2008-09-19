@@ -1,6 +1,7 @@
 #ifndef TORRENTPLUIGN_H
 #define TORRENTPLUIGN_H
 #include <memory>
+#include <deque>
 #include <QMainWindow>
 #include <interfaces/interfaces.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -119,10 +120,10 @@ private slots:
     void on_RemoveTorrent__triggered (int);
     void on_Resume__triggered (int);
     void on_Stop__triggered (int);
-	void on_MoveUp__triggered (int);
-	void on_MoveDown__triggered (int);
-	void on_MoveToTop__triggered (int);
-	void on_MoveToBottom__triggered (int);
+	void on_MoveUp__triggered (const std::deque<int>&);
+	void on_MoveDown__triggered (const std::deque<int>&);
+	void on_MoveToTop__triggered (const std::deque<int>&);
+	void on_MoveToBottom__triggered (const std::deque<int>&);
     void on_ForceReannounce__triggered (int);
 	void on_ForceRecheck__triggered (int);
     void on_Preferences__triggered ();

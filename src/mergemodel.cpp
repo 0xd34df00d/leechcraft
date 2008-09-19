@@ -124,7 +124,6 @@ QModelIndex MergeModel::mapToSource (const QModelIndex& proxyIndex) const
 
 void MergeModel::setSourceModel (QAbstractItemModel*)
 {
-	qWarning () << Q_FUNC_INFO << "never call this";
 	QAbstractProxyModel::setSourceModel (0);
 }
 

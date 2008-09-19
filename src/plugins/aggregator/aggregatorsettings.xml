@@ -76,7 +76,7 @@
 		<groupbox>
 			<label lang="en" value="Behaviour" />
 			<label lang="uk" value="Поведінка" />
-			<item type="checkbox" property="AutoloadImages" state="on">
+			<item type="checkbox" property="AutoLoadImages" state="on">
 				<label lang="en" value="Load images automatically" />
 				<label lang="ru" value="Автоматически загружать изображения" />
 				<label lang="uk" value="Автоматично завантажувати зображення" />
@@ -94,26 +94,32 @@
 			<item type="font" property="StandardFont">
 				<label lang="en" value="Standard font:" />
 				<label lang="ru" value="Стандартный шрифт:" />
+				<label lang="uk" value="Стандартний шрифт:" />
 			</item>
 			<item type="font" property="FixedFont">
 				<label lang="en" value="Fixed font:" />
 				<label lang="ru" value="Моноширинный шрифт:" />
+				<label lang="uk" value="Моноширинний шрифт:" />
 			</item>
 			<item type="font" property="SerifFont">
 				<label lang="en" value="Serif font:" />
 				<label lang="ru" value="Шрифт с засечками:" />
+				<label lang="uk" value="Шрифт з зарубками:" />
 			</item>
 			<item type="font" property="SansSerifFont">
 				<label lang="en" value="SansSerif font:" />
 				<label lang="ru" value="Шрифт без засечек:" />
+				<label lang="uk" value="Шрифт без зарубок:" />
 			</item>
 			<item type="font" property="CursiveFont">
 				<label lang="en" value="Cursive font:" />
 				<label lang="ru" value="Курсивный шрифт:" />
+				<label lang="uk" value="Курсивний шрифт:" />
 			</item>
 			<item type="font" property="FantasyFont">
 				<label lang="en" value="Fantasy font:" />
 				<label lang="ru" value="Fantasy-шрифт:" />
+				<label lang="uk" value="Fantasy-шрифт:" />
 			</item>
 			<item type="spinbox" property="MinimumFontSize" default="9" minimum="5" maximum="40" step="1">
 				<label lang="en" value="Minimum font size:" />

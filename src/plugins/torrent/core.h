@@ -1,6 +1,7 @@
 #ifndef CORE_H
 #define CORE_H
 #include <list>
+#include <deque>
 #include <memory>
 #include <QAbstractItemModel>
 #include <QPair>
@@ -180,11 +181,13 @@ public:
 	QByteArray ExportData () const;
     bool CheckValidity (int) const;
 	void SaveResumeData (const libtorrent::save_resume_data_alert&) const;
-	void MoveUp (int);
-	void MoveDown (int);
+	void MoveUp (const std::deque<int>&);
+	void MoveDown (const std::deque<int>&);
+	void MoveToTop (const std::deque<int>&);
+	void MoveToBottom (const std::deque<int>&);
+private:
 	void MoveToTop (int);
 	void MoveToBottom (int);
-private:
     QString GetStringForState (libtorrent::torrent_status::state_t) const;
     void ReadSettings ();
     void RestoreTorrents ();

@@ -426,9 +426,11 @@ TorrentInfo Core::GetTorrentStats () const
     TorrentInfo result;
     result.Tracker_ = QString::fromStdString (status.current_tracker).left (100);
     result.State_ = status.paused ? tr ("Idle") : GetStringForState (status.state);
-    result.Downloaded_ = status.total_wanted_done;
+    result.Downloaded_ = status.total_done;
+	result.WantedDownload_ = status.total_wanted_done;
     result.Uploaded_ = status.total_payload_upload;
     result.TotalSize_ = status.total_wanted;
+	result.TorrentSize_ = info.total_size ();
     result.FailedSize_ = status.total_failed_bytes;
 	result.RedundantBytes_ = status.total_redundant_bytes;
     result.DHTNodesCount_ = info.nodes ().size ();
@@ -459,7 +461,10 @@ TorrentInfo Core::GetTorrentStats () const
     result.AnnounceInterval_ = QTime (status.announce_interval.hours (),
                                       status.announce_interval.minutes (),
                                       status.announce_interval.seconds ());
+	result.DownloadOverhead_ = status.total_download - status.total_payload_download;
+	result.UploadOverhead_ = status.total_upload - status.total_payload_upload;
     result.Pieces_ = status.pieces;
+	result.UploadedTotal_ = status.all_time_upload;
     return result;
 }
 
@@ -1071,60 +1076,97 @@ void Core::SaveResumeData (const libtorrent::save_resume_data_alert& a) const
 		file.write (&outbuf.at (i), 1);
 }
 
-void Core::MoveUp (int row)
+void Core::MoveUp (const std::deque<int>& selections)
 {
-	if (row <= 0 || !CheckValidity (row))
+	if (!selections.size ())
 		return;
 
-	Handles_.at (row).Handle_.queue_position_up ();
-	std::swap (Handles_ [row], Handles_ [row - 1]);
+	for (std::deque<int>::const_iterator i = selections.begin (),
+			end = selections.end (); i != end; ++i)
+		if (*i <= 0 || !CheckValidity (*i))
+			return;
 
-	emit dataChanged (index (row, 0),
-			index (row, columnCount () - 1));
-	emit dataChanged (index (row - 1, 0),
-			index (row - 1, columnCount () - 1));
+	for (std::deque<int>::const_iterator i = selections.begin (),
+			end = selections.end (); i != end; ++i)
+	{
+		Handles_.at (*i).Handle_.queue_position_up ();
+		std::swap (Handles_ [*i],
+				Handles_ [*i - 1]);
+
+		emit dataChanged (index (*i - 1, 0),
+				index (*i, columnCount () - 1));
+	}
 }
 
-void Core::MoveDown (int row)
+void Core::MoveDown (const std::deque<int>& selections)
 {
-	if (row >= Handles_.size () - 1 || !CheckValidity (row))
+	if (!selections.size ())
 		return;
 
-	Handles_.at (row).Handle_.queue_position_down ();
-	std::swap (Handles_ [row], Handles_ [row + 1]);
+	for (std::deque<int>::const_iterator i = selections.begin (),
+			end = selections.end (); i != end; ++i)
+		if (*i <= 0 || !CheckValidity (*i))
+			return;
 
-	emit dataChanged (index (row, 0),
-			index (row, columnCount () - 1));
-	emit dataChanged (index (row + 1, 0),
-			index (row + 1, columnCount () - 1));
+	for (std::deque<int>::const_reverse_iterator i = selections.rbegin (),
+			end = selections.rend (); i != end; ++i)
+	{
+		Handles_.at (*i).Handle_.queue_position_down ();
+		std::swap (Handles_ [*i],
+				Handles_ [*i + 1]);
+
+		emit dataChanged (index (*i, 0),
+				index (*i + 1, columnCount () - 1));
+	}
+}
+
+void Core::MoveToTop (const std::deque<int>& selections)
+{
+	if (!selections.size ())
+		return;
+
+	for (std::deque<int>::const_iterator i = selections.begin (),
+			end = selections.end (); i != end; ++i)
+		if (*i <= 0 || !CheckValidity (*i))
+			return;
+
+	for (std::deque<int>::const_reverse_iterator i = selections.rbegin (),
+			end = selections.rend (); i != end; ++i)
+		MoveToTop (*i);
+}
+
+void Core::MoveToBottom (const std::deque<int>& selections)
+{
+	if (!selections.size ())
+		return;
+
+	for (std::deque<int>::const_iterator i = selections.begin (),
+			end = selections.end (); i != end; ++i)
+		if (*i <= 0 || !CheckValidity (*i))
+			return;
+
+	for (std::deque<int>::const_iterator i = selections.begin (),
+			end = selections.end (); i != end; ++i)
+		MoveToBottom (*i);
 }
 
 void Core::MoveToTop (int row)
 {
-	if (row <= 0 || !CheckValidity (row))
-		return;
-
 	Handles_.at (row).Handle_.queue_position_top ();
+	for (int i = row; i > 0; ++i)
+		std::swap (Handles_ [i], Handles_ [i - 1]);
 
-	TorrentStruct torrent = Handles_.at (row);
-	for (int i = row; i; --i)
-		Handles_ [row] = Handles_ [row - 1];
-	Handles_ [0] = torrent;
 	emit dataChanged (index (0, 0),
 			index (row, columnCount () - 1));
 }
 
 void Core::MoveToBottom (int row)
 {
-	if (row >= Handles_.size () - 1 || !CheckValidity (row))
-		return;
-
 	Handles_.at (row).Handle_.queue_position_bottom ();
+	for (int i = row, size = Handles_.size ();
+			i < size - 1; ++i)
+		std::swap (Handles_ [i], Handles_ [i + 1]);
 
-	TorrentStruct torrent = Handles_.at (row);
-	for (int i = row; i < Handles_.size () - 2; ++i)
-		Handles_ [row] = Handles_ [row + 1];
-	Handles_ [Handles_.size () - 1] = torrent;
 	emit dataChanged (index (row, 0),
 			index (Handles_.size () - 1, columnCount () - 1));
 }

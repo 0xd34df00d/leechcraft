@@ -494,9 +494,16 @@ void Task::responseHeaderReceived (const QHttpResponseHeader& response)
 	{
 		if (!response.hasKey ("Location"))
 			return;
-		if (!QUrl (response.value ("Location")).isValid ())
-			return;
 
+		QString newUrl (response.value ("Location"));
+		if (!QUrl (newUrl).isValid ())
+			return;
+		//Trying not to get into redirection loop
+		if (RedirectHistory_.contains (newUrl, Qt::CaseInsensitive)) 
+			return;
+		else
+			RedirectHistory_ << newUrl;
+		
 		QIODevice *to = Http_->currentDestinationDevice ();
 
 		Type_ = TInvalid;
@@ -510,12 +517,12 @@ void Task::responseHeaderReceived (const QHttpResponseHeader& response)
 				"redirectedConstruction",
 				Qt::QueuedConnection,
 				Q_ARG (QIODevice*, to),
-				Q_ARG (QHttpResponseHeader, response));
+				Q_ARG (QString, newUrl));
 
 	}
 }
 
-void Task::redirectedConstruction (QIODevice *to, const QHttpResponseHeader& response)
+void Task::redirectedConstruction (QIODevice *to, const QString& newUrl)
 {
 	QFile *file = dynamic_cast<QFile*> (to);
 	qDebug () << FileSizeAtStart_;
@@ -528,7 +535,7 @@ void Task::redirectedConstruction (QIODevice *to, const QHttpResponseHeader& res
 		file->open (QIODevice::ReadWrite);
 	}
 
-	URL_ = response.value ("Location");
+	URL_ = newUrl;
 	Construct ();
 	Start (file);
 }
