@@ -6,6 +6,7 @@
 # RBTorrent_FOUND
 
 # Copyright (c) 2008 Voker57 (voker57@gmail.com)
+IF(NOT DEFINED RBTorrent_INCLUDE_DIR AND NOT DEFINED RBTorrent_LIBRARY)
 
 FIND_PATH(RBTorrent_INCLUDE_DIR NAMES libtorrent/torrent.hpp PATH ENV)
 IF(RBTorrent_INCLUDE_DIR)
@@ -25,3 +26,5 @@ ELSE(RBTorrent_FOUND)
 		MESSAGE(STATUS "Could NOT find libtorrent-rasterbar")
 	ENDIF(RBTorrent_FIND_REQUIRED)
 ENDIF(RBTorrent_FOUND)
+
+ENDIF(NOT DEFINED RBTorrent_INCLUDE_DIR AND NOT DEFINED RBTorrent_LIBRARY)
