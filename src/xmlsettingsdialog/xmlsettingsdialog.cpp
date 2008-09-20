@@ -678,6 +678,9 @@ QList<QImage> XmlSettingsDialog::GetImages (const QDomElement& item) const
 					<< binary.text ()
 					<< ", because"
 					<< file.errorString ();
+
+				binary = binary.nextSiblingElement ("binary");
+
 				continue;
 			}
 			data = file.readAll ();

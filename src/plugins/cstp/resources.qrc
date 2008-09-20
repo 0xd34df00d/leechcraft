@@ -5,6 +5,14 @@
     <file>resources/images/stop.png</file>
     <file>resources/images/start.png</file>
     <file>resources/images/add.png</file>
+    <file>resources/images/clients/firefox.png</file>
+    <file>resources/images/clients/ie2.png</file>
+    <file>resources/images/clients/ie4.png</file>
+    <file>resources/images/clients/ie7.png</file>
+    <file>resources/images/clients/seamonkey.png</file>
+    <file>resources/images/clients/opera.png</file>
+    <file>resources/images/clients/console.png</file>
+    <file>resources/images/clients/konqueror4.png</file>
 	<file>leechcraft_cstp_ru_RU.qm</file>
 	<file>leechcraft_cstp_uk_UA.qm</file>
 	<file>cstpsettings.xml</file>
