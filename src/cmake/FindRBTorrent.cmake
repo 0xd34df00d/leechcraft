@@ -9,7 +9,7 @@
 
 FIND_PATH(RBTorrent_INCLUDE_DIR NAMES libtorrent/torrent.hpp PATH ENV)
 IF(RBTorrent_INCLUDE_DIR)
-	FIND_LIBRARY(RBTorrent_LIBRARY NAMES libtorrent-rasterbar)
+	FIND_LIBRARY(RBTorrent_LIBRARY NAMES torrent-rasterbar)
 	IF(RBTorrent_LIBRARY)
 		SET(RBTorrent_FOUND 1)
 	ENDIF(RBTorrent_LIBRARY)
