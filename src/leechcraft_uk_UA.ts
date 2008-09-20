@@ -1,24 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="uk_UA">
 <context>
-    <name>@default</name>
-    <message>
-        <location filename="config.h" line="7"/>
-        <source>Leechcraft user</source>
-        <translation type="obsolete">Користувач Leechcraft</translation>
-    </message>
-    <message>
-        <location filename="config.h" line="11"/>
-        <source>VERSION Leechcraft Chatter v%1, using Qt v %2</source>
-        <translation type="obsolete">ВЕРСІЯ Співрозмовник Leechcraft версії %1 використовує Qt версії %2</translation>
-    </message>
-    <message>
-        <location filename="config.h" line="15"/>
-        <source>STOP DRINKING COGNAC ON MORNINGS!</source>
-        <translation type="obsolete">ПРИПИНІТЬ ПИТИ КОНЬЯК ЗРАНКУ!</translation>
-    </message>
-</context>
-<context>
     <name>CommonJobAdder</name>
     <message>
         <location filename="commonjobadder.cpp" line="47"/>
@@ -241,14 +223,30 @@
         <translation>Виходу немає</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="103"/>
-        <source>Release of one or more plugins failed. OS would cleanup after us, but it isn&apos;t good anyway, as this failed plugin could fail to save it&apos;s state.</source>
-        <translation type="obsolete">Не можливо відключити один або більше плагінів. Ресурсы, що ним використовувались, будуть звільнені операційною системоую, але його робота не буде завершена коректно.</translation>
-    </message>
-    <message>
         <location filename="pluginmanager.cpp" line="105"/>
         <source>Release of one or more plugins failed.</source>
         <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Proxy</name>
+    <message numerus="yes">
+        <location filename="plugininterface/proxy.cpp" line="118"/>
+        <source>%n month(es),</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="plugininterface/proxy.cpp" line="120"/>
+        <source>%n day(s),</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -282,11 +280,6 @@
         <location filename="main.cpp" line="77"/>
         <source>LeechCraft is alread running, please close another instance before starting it.</source>
         <translation type="unfinished">LeechCraft вже запущено. Будь ласка, закрийте його</translation>
-    </message>
-    <message>
-        <location filename="main.cpp" line="77"/>
-        <source>instance before starting it.</source>
-        <translation type="obsolete">перед тим, як запускати</translation>
     </message>
     <message>
         <location filename="main.cpp" line="87"/>

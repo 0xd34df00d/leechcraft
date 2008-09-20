@@ -306,10 +306,9 @@ void TorrentPlugin::ItemSelected (const QModelIndex& item)
 	if (mapped.isValid ())
 	{
 		TorrentSelectionChanged_ = true;
+		restartTimers ();
+		updateTorrentStats ();
 	}
-
-    restartTimers ();
-    updateTorrentStats ();
 }
 
 QStringList TorrentPlugin::GetTags (int torrent) const
@@ -677,9 +676,9 @@ void TorrentPlugin::UpdateTorrentPage ()
 	Ui_.LabelConnectCandidates_->setText (QString::number (i.ConnectCandidates_));
 	Ui_.LabelUpBandwidthQueue_->setText (QString::number (i.UpBandwidthQueue_) + "/" + 
 			QString::number (i.DownBandwidthQueue_));
-	Ui_.LabelLastScrape_->setText (Proxy::Instance ()->MakeTimeFromLong (i.LastScrape_).toString ());
-	Ui_.LabelActiveTime_->setText (Proxy::Instance ()->MakeTimeFromLong (i.ActiveTime_).toString ());
-	Ui_.LabelSeedingTime_->setText (Proxy::Instance ()->MakeTimeFromLong (i.SeedingTime_).toString ());
+	Ui_.LabelLastScrape_->setText (Proxy::Instance ()->MakeTimeFromLong (i.LastScrape_));
+	Ui_.LabelActiveTime_->setText (Proxy::Instance ()->MakeTimeFromLong (i.ActiveTime_));
+	Ui_.LabelSeedingTime_->setText (Proxy::Instance ()->MakeTimeFromLong (i.SeedingTime_));
 	Ui_.LabelSeedRank_->setText (QString::number (i.SeedRank_));
 	Ui_.PiecesWidget_->setPieceMap (i.Pieces_);
 	Ui_.LabelWantedDownloaded_->setText (Proxy::Instance ()->MakePrettySize (i.WantedDownload_));

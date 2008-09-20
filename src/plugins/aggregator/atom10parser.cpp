@@ -59,6 +59,8 @@ Feed::channels_container_t Atom10Parser::Parse (const QDomDocument& doc) const
 
     QDomElement root = doc.documentElement ();
     chan->Title_ = root.firstChildElement ("title").text ();
+	if (chan->Title_.isEmpty ())
+		chan->Title_ = tr ("(No title)");
     chan->LastBuild_ = FromRFC3339 (root.firstChildElement ("updated").text ());
     chan->Link_ = GetLink (root);
     chan->Description_ = root.firstChildElement ("subtitle").text ();

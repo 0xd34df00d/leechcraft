@@ -44,6 +44,7 @@ Feed::channels_container_t RSS20Parser::Parse (const Feed::channels_container_t&
                 position = j;
                 break;
             }
+
         if (position == -1)
             result.push_back (newChannel);
         else if (!channels [position]->Items_.size ())
@@ -57,6 +58,7 @@ Feed::channels_container_t RSS20Parser::Parse (const Feed::channels_container_t&
             boost::shared_ptr<Channel> oldChannel = channels [position];
             boost::shared_ptr<Channel> toInsert (new Channel ());
 			toInsert->Equalify (*oldChannel);
+			toInsert->LastBuild_ = newChannel->LastBuild_;
 
             for (size_t j = 0; j < newChannel->Items_.size (); ++j)
             {
@@ -91,13 +93,13 @@ Feed::channels_container_t RSS20Parser::Parse (const QDomDocument& doc) const
         chan->Description_ = channel.firstChildElement ("description").text ();
         chan->Link_ = channel.firstChildElement ("link").text ();
         chan->LastBuild_ = rfc822TimeToQDateTime (channel.firstChildElement ("lastBuildDate").text ());
-	if (!chan->LastBuild_.isValid () || chan->LastBuild_.isNull ())
-		chan->LastBuild_ = QDateTime::currentDateTime ();
+		if (!chan->LastBuild_.isValid () || chan->LastBuild_.isNull ())
+			chan->LastBuild_ = QDateTime::currentDateTime ();
         chan->Language_ = channel.firstChildElement ("language").text ();
         chan->Author_ = channel.firstChildElement ("managingEditor").text ();
-        chan->PixmapURL_ = channel.firstChildElement ("image").attribute ("url");
         if (chan->Author_.isEmpty ())
             chan->Author_ = channel.firstChildElement ("webMaster").text ();
+        chan->PixmapURL_ = channel.firstChildElement ("image").attribute ("url");
 
         QDomElement item = channel.firstChildElement ("item");
         while (!item.isNull ())
@@ -114,7 +116,7 @@ Feed::channels_container_t RSS20Parser::Parse (const QDomDocument& doc) const
 Item* RSS20Parser::ParseItem (const QDomElement& item) const
 {
 	Item *result = new Item;
-	result->Title_ = item.firstChildElement ("title").text ();
+	result->Title_ = UnescapeHTML (item.firstChildElement ("title").text ());
 	result->Link_ = item.firstChildElement ("link").text ();
 	result->Description_ = item.firstChildElement ("description").text ();
 	result->PubDate_ = rfc822TimeToQDateTime (item.firstChildElement ("pubDate").text ());

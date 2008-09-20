@@ -120,12 +120,7 @@ void Core::DoDelayedInit ()
     Headers_ << tr ("Name")
 		<< tr ("State")
 		<< tr ("Progress")
-		<< tr ("Drate")
-		<< tr ("Urate")
-		<< tr ("Uploaded")
-		<< tr ("Rating")
-		<< tr ("Seeds/peers")
-		<< tr ("Remaining");
+		<< tr ("Downloading rate");
 
     ReadSettings ();
     InterfaceUpdateTimer_ = startTimer (1000);
@@ -297,28 +292,6 @@ QVariant Core::data (const QModelIndex& index, int role) const
 				.arg (Proxy::Instance ()->MakePrettySize (status.total_wanted));
         case ColumnDSpeed:
             return Proxy::Instance ()->MakePrettySize (status.download_payload_rate) + tr ("/s");
-        case ColumnUSpeed:
-            return Proxy::Instance ()->MakePrettySize (status.upload_payload_rate) + tr ("/s");
-        case ColumnUploaded:
-            return Proxy::Instance ()->MakePrettySize (status.total_payload_upload);
-        case ColumnRating:
-            return QString::number (static_cast<float> (status.total_payload_upload) / status.total_payload_download, 'g', 2);
-        case ColumnSP:
-			{
-				QString result = QString ("%1/%2 (%3/%4)")
-					.arg (status.num_seeds)
-					.arg (status.num_peers)
-					.arg (status.list_seeds)
-					.arg (status.list_peers);
-
-				if (status.num_complete != -1 && status.num_incomplete != -1)
-					result += QString (" [%1/%2]")
-						.arg (status.num_complete)
-						.arg (status.num_incomplete);
-				return result;
-			}
-        case ColumnRemaining:
-            return Proxy::Instance ()->MakeTimeFromLong ((status.total_wanted - status.total_wanted_done) / status.download_payload_rate).toString ();
         default:
             return QVariant ();
     }
@@ -1715,10 +1688,7 @@ void Core::scrape ()
 bool Core::CheckValidity (int pos) const
 {
     if (pos >= Handles_.size () || pos < 0)
-    {
-        qWarning () << QString ("Torrent with position %1 doesn't exist in The List").arg (pos);
         return false;
-    }
     if (!Handles_.at (pos).Handle_.is_valid ())
     {
         qWarning () << QString ("Torrent with position %1 found in The List, but is invalid").arg (pos);

@@ -1,4 +1,5 @@
 #include <QCoreApplication>
+#include <QtDebug>
 #include "proxy.h"
 
 Proxy *Proxy::Instance_ = 0;
@@ -98,15 +99,26 @@ QString Proxy::MakePrettySize (qint64 sourcesize) const
  * Converts, for example 256 to 00:04:16.
  *
  * @param[in] time Time interval in seconds.
- * @return Formatted string.
+ * @return DateTime object.
  *
  * @sa MakePrettySize
  */
-QTime Proxy::MakeTimeFromLong (ulong time) const
+QString Proxy::MakeTimeFromLong (ulong time) const
 {
-    int h = time / 3600;
-    int m = (time - h * 3600) / 60;
-    int s = time - h * 3600 - m * 60;
-    return QTime (h, m, s);
+	int d = time / 86400;
+	time -= d * 86400;
+	QDateTime object;
+	object = object.addDays (d).addSecs (time);
+	QDate datePart = object.date ();
+	QTime timePart = object.time ();
+	int day = datePart.day () - 1;
+	int month = datePart.month () - 1;
+	QString result;
+	if (month)
+		result += tr ("%n month(es),", "", month) += " ";
+	if (day)
+		result += tr ("%n day(s),", "", day) += " ";
+	result += timePart.toString ();
+    return result;
 }
 

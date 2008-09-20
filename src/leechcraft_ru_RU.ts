@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="ru">
+<defaultcodec></defaultcodec>
 <context>
     <name>CommonJobAdder</name>
     <message>
@@ -133,11 +134,6 @@
         <source>File %1 could be handled by plugin %2, would you like to?</source>
         <translation>Файл %1 может быть обработан плагином %2, ты хочешь?</translation>
     </message>
-    <message>
-        <location filename="core.cpp" line="272"/>
-        <source>Name</source>
-        <translation type="obsolete">Имя</translation>
-    </message>
 </context>
 <context>
     <name>Main::MainWindow</name>
@@ -228,14 +224,30 @@
         <translation>Нет выхода</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="104"/>
-        <source>Release of one or more plugins failed. OS would cleanup after us, but it isn&apos;t good anyway, as this failed plugin could fail to save it&apos;s state.</source>
-        <translation type="obsolete">Освобождение одного или нескольких плагинов не удалось. ОС почистит за нами, но это все равно нехорошо.</translation>
-    </message>
-    <message>
         <location filename="pluginmanager.cpp" line="105"/>
         <source>Release of one or more plugins failed.</source>
         <translation>Освобождение одного или нескольких плагинов не удалось.</translation>
+    </message>
+</context>
+<context>
+    <name>Proxy</name>
+    <message numerus="yes">
+        <location filename="plugininterface/proxy.cpp" line="118"/>
+        <source>%n month(es),</source>
+        <translation>
+            <numerusform>%n месяц,</numerusform>
+            <numerusform>%n месяца,</numerusform>
+            <numerusform>%n месяцев,</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="plugininterface/proxy.cpp" line="120"/>
+        <source>%n day(s),</source>
+        <translation>
+            <numerusform>%n день,</numerusform>
+            <numerusform>%n дня,</numerusform>
+            <numerusform>%n дней,</numerusform>
+        </translation>
     </message>
 </context>
 <context>

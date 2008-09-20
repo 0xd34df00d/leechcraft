@@ -27,7 +27,7 @@ public:
     LEECHCRAFT_API QString GetApplicationName () const;
     LEECHCRAFT_API QString GetOrganizationName () const;
     LEECHCRAFT_API QString MakePrettySize (qint64) const;
-    LEECHCRAFT_API QTime MakeTimeFromLong (ulong) const;
+    LEECHCRAFT_API QString MakeTimeFromLong (ulong) const;
 };
 
 #endif
