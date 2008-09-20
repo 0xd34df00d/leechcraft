@@ -647,6 +647,7 @@ void TorrentPlugin::UpdateTorrentPage ()
 	TorrentInfo i = Core::Instance ()->GetTorrentStats ();
 	Ui_.LabelState_->setText (i.State_);
 	Ui_.LabelTracker_->setText (i.Tracker_);
+	Ui_.LabelDestination_->setText (i.Destination_);
 	Ui_.LabelProgress_->setText (QString::number (i.Progress_ * 100) + "%");
 	Ui_.LabelDHTNodesCount_->setText (QString::number (i.DHTNodesCount_));
 	Ui_.LabelDownloaded_->setText (Proxy::Instance ()->MakePrettySize (i.Downloaded_));

@@ -264,37 +264,58 @@ int Core::columnCount (const QModelIndex&) const
 
 QVariant Core::data (const QModelIndex& index, int role) const
 {
-    if (role != Qt::DisplayRole)
-        return QVariant ();
-
     int row = index.row (),
         column = index.column ();
 
-    libtorrent::torrent_handle h = Handles_.at (row).Handle_;
-    if (!h.is_valid ())
-    {
-        emit const_cast<Core*> (this)->error (tr ("%1: for row %2 torrent handle is invalid").arg (Q_FUNC_INFO).arg (row));
-        return QVariant ();
-    }
+	if (!CheckValidity (row))
+		return QVariant ();
 
+	libtorrent::torrent_handle h = Handles_.at (row).Handle_;
     libtorrent::torrent_status status = h.status ();
     libtorrent::torrent_info info = h.get_torrent_info ();
-    switch (column)
-    {
-        case ColumnName:
-            return QString::fromUtf8 (h.name ().c_str ());
-        case ColumnState:
-			return status.paused ? tr ("Idle") : GetStringForState (status.state);
-        case ColumnProgress:
-            return QString ("%1% (%2 of %3)")
-				.arg (status.progress * 100, 0, 'f', 2)
-				.arg (Proxy::Instance ()->MakePrettySize (status.total_done))
-				.arg (Proxy::Instance ()->MakePrettySize (status.total_wanted));
-        case ColumnDSpeed:
-            return Proxy::Instance ()->MakePrettySize (status.download_payload_rate) + tr ("/s");
-        default:
-            return QVariant ();
-    }
+
+	switch (role)
+	{
+		case Qt::DisplayRole:
+			switch (column)
+			{
+				case ColumnName:
+					return QString::fromUtf8 (h.name ().c_str ());
+				case ColumnState:
+					return status.paused ? tr ("Idle") : GetStringForState (status.state);
+				case ColumnProgress:
+					return QString (tr ("%1% (%2 of %3)")
+							.arg (status.progress * 100, 0, 'f', 2)
+							.arg (Proxy::Instance ()->MakePrettySize (status.total_done))
+							.arg (Proxy::Instance ()->MakePrettySize (status.total_wanted)));
+				case ColumnDSpeed:
+					return Proxy::Instance ()->MakePrettySize (status.download_payload_rate) + tr ("/s");
+				default:
+					return QVariant ();
+			}
+		case Qt::ToolTipRole:
+			{
+				QString result;
+				result += tr ("Name:") + " " + QString::fromUtf8 (h.name ().c_str ()) + "\n";
+				result += tr ("Destination:") + " " +
+					QString::fromUtf8 (h.save_path ().directory_string ().c_str ()) + "\n";
+				result += tr ("Progress:") + " " +
+					QString (tr ("%1% (%2 of %3)")
+							.arg (status.progress * 100, 0, 'f', 2)
+							.arg (Proxy::Instance ()->MakePrettySize (status.total_done))
+							.arg (Proxy::Instance ()->MakePrettySize (status.total_wanted))) +
+					tr ("; status:") + " " +
+					(status.paused ? tr ("Idle") : GetStringForState (status.state)) + "\n";
+				result += tr ("Downloading speed:") + " " +
+					Proxy::Instance ()->MakePrettySize (status.download_payload_rate) + tr ("/s") +
+					tr ("; uploading speed:") + " " +
+					Proxy::Instance ()->MakePrettySize (status.upload_payload_rate) + tr ("/s") + "\n";
+				result += tr ("Peers/seeds: %1/%2").arg (status.num_peers).arg (status.num_seeds);
+				return result;
+			}
+		default:
+			return QVariant ();
+	}
 }
 
 Qt::ItemFlags Core::flags (const QModelIndex&) const
@@ -398,6 +419,7 @@ TorrentInfo Core::GetTorrentStats () const
 
     TorrentInfo result;
     result.Tracker_ = QString::fromStdString (status.current_tracker).left (100);
+	result.Destination_ = QString::fromUtf8 (handle.save_path ().directory_string ().c_str ());
     result.State_ = status.paused ? tr ("Idle") : GetStringForState (status.state);
     result.Downloaded_ = status.total_done;
 	result.WantedDownload_ = status.total_wanted_done;

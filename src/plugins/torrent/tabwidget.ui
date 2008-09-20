@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>715</width>
-    <height>425</height>
+    <width>662</width>
+    <height>446</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -30,8 +30,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>711</width>
-     <height>398</height>
+     <width>658</width>
+     <height>419</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -554,8 +554,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>711</width>
-     <height>398</height>
+     <width>658</width>
+     <height>419</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -694,8 +694,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>711</width>
-     <height>398</height>
+     <width>658</width>
+     <height>419</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -717,6 +717,50 @@
          <string/>
         </property>
        </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2" >
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_8" >
+      <item>
+       <widget class="QLabel" name="label_37" >
+        <property name="text" >
+         <string>Destination:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="LabelDestination_" >
+        <property name="text" >
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer" >
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </item>
@@ -1225,8 +1269,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>711</width>
-     <height>398</height>
+     <width>658</width>
+     <height>419</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -1251,8 +1295,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>711</width>
-     <height>398</height>
+     <width>658</width>
+     <height>419</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -1279,8 +1323,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>711</width>
-     <height>398</height>
+     <width>658</width>
+     <height>419</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -1304,8 +1348,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>711</width>
-     <height>398</height>
+     <width>658</width>
+     <height>419</height>
     </rect>
    </property>
    <attribute name="title" >

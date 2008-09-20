@@ -6,6 +6,7 @@
 struct TorrentInfo
 {
     QString Tracker_,
+			Destination_,
             State_;
     quint64 Downloaded_,
 			WantedDownload_,
