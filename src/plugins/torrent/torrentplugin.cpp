@@ -664,6 +664,7 @@ void TorrentPlugin::UpdateTorrentPage ()
 	Ui_.LabelDownloadRate_->setText (Proxy::Instance ()->MakePrettySize (i.DownloadRate_) + tr ("/s"));
 	Ui_.LabelUploadRate_->setText (Proxy::Instance ()->MakePrettySize (i.UploadRate_) + tr ("/s"));
 	Ui_.LabelTorrentRating_->setText (QString::number (i.Uploaded_ / static_cast<double> (i.Downloaded_), 'g', 4));
+	Ui_.LabelTorrentOverallRating_->setText (QString::number (i.UploadedTotal_ / static_cast<double> (i.Downloaded_), 'g', 4));
 	Ui_.LabelDistributedCopies_->setText (i.DistributedCopies_ == -1 ?
 			tr ("Not tracking") : QString::number (i.DistributedCopies_));
 	Ui_.LabelRedundantData_->setText (Proxy::Instance ()->MakePrettySize (i.RedundantBytes_));
