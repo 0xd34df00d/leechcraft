@@ -149,7 +149,7 @@ void XmlSettingsDialog::ParsePage (const QDomElement& page)
     QWidget *baseWidget = new QWidget;
     Pages_->addWidget (baseWidget);
     QFormLayout *lay = new QFormLayout;
-	lay->setRowWrapPolicy (QFormLayout::WrapLongRows);
+	lay->setRowWrapPolicy (QFormLayout::DontWrapRows);
 	lay->setFieldGrowthPolicy (QFormLayout::FieldsStayAtSizeHint);
     baseWidget->setLayout (lay);
 
@@ -170,7 +170,7 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
     {
         QGroupBox *box = new QGroupBox (GetLabel (gbox));
 		QFormLayout *groupLayout = new QFormLayout ();
-		groupLayout->setRowWrapPolicy (QFormLayout::WrapLongRows);
+		groupLayout->setRowWrapPolicy (QFormLayout::DontWrapRows);
 		groupLayout->setFieldGrowthPolicy (QFormLayout::FieldsStayAtSizeHint);
 		box->setLayout (groupLayout);
         ParseEntity (gbox, box);
@@ -191,7 +191,7 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
         {
             QWidget *page = new QWidget;
             QFormLayout *widgetLay = new QFormLayout;
-			widgetLay->setRowWrapPolicy (QFormLayout::WrapLongRows);
+			widgetLay->setRowWrapPolicy (QFormLayout::DontWrapRows);
 			widgetLay->setFieldGrowthPolicy (QFormLayout::FieldsStayAtSizeHint);
             page->setLayout (widgetLay);
             tabs->addTab (page, GetLabel (tab));
@@ -540,7 +540,7 @@ void XmlSettingsDialog::DoGroupbox (const QDomElement& item, QFormLayout *lay)
     QGroupBox *box = new QGroupBox (GetLabel (item));
     box->setObjectName (item.attribute ("property"));
 	QFormLayout *groupLayout = new QFormLayout ();
-	groupLayout->setRowWrapPolicy (QFormLayout::WrapLongRows);
+	groupLayout->setRowWrapPolicy (QFormLayout::DontWrapRows);
 	groupLayout->setFieldGrowthPolicy (QFormLayout::FieldsStayAtSizeHint);
     box->setLayout (groupLayout);
     box->setCheckable (true);
