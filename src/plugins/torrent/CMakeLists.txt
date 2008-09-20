@@ -7,13 +7,14 @@ INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR}
 					 ${Boost_INCLUDE_DIR}
 					 ../..
 					 .
-					 zlib/)
+					 zlib/
+					 ${RBTorrent_INCLUDE_DIR})
 LINK_DIRECTORIES (${Boost_LINK_DIRS} /usr/local/lib ../..)
 
 SET (SRCS
-	torrentplugin.cpp 
-	core.cpp 
-	addtorrent.cpp 
+	torrentplugin.cpp
+	core.cpp
+	addtorrent.cpp
 	newtorrentwizard.cpp
 	intropage.cpp
 	firststep.cpp
@@ -31,9 +32,9 @@ SET (SRCS
 	trackerschanger.cpp
 	)
 SET (HEADERS
-	torrentplugin.h 
-	core.h 
-	addtorrent.h 
+	torrentplugin.h
+	core.h
+	addtorrent.h
 	newtorrentwizard.h
 	intropage.h
 	firststep.h
@@ -51,7 +52,7 @@ SET (HEADERS
 	trackerschanger.h
 	newtorrentparams.h
 	overallstats.h
-	torrentinfo.h 
+	torrentinfo.h
 	fileinfo.h
 	peerinfo.h
 	../../xmlsettingsdialog/basesettingsmanager.h
@@ -111,7 +112,7 @@ TARGET_LINK_LIBRARIES (leechcraft_torrent
 ${QT_LIBRARIES}
 plugininterface
 xmlsettingsdialog
-torrent-rasterbar
+${RBTorrent_LIBRARY}
 )
 ENDIF (WIN32)
 

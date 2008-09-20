@@ -21,6 +21,7 @@ SET (LC_PLUGINS_DEST "lib/leechcraft/plugins")
 FIND_PACKAGE (Boost REQUIRED COMPONENTS date_time filesystem system thread)
 FIND_PACKAGE (Qt4 REQUIRED)
 FIND_PACKAGE (Threads REQUIRED)
+FIND_PACKAGE (RBTorrent)
 
 IF (ENABLE_PACK)
 	INCLUDE (InstallRequiredSystemLibraries)
@@ -81,7 +82,9 @@ ADD_SUBDIRECTORY (xmlsettingsdialog)
 IF (NOT ENABLE_CONFIGURABLE)
 	ADD_SUBDIRECTORY(plugins/cstp)
 	ADD_SUBDIRECTORY(plugins/batcher)
+	IF(RBTorrent_FOUND)
    	ADD_SUBDIRECTORY(plugins/torrent)
+   	ENDIF(RBTorrent_FOUND)
 	ADD_SUBDIRECTORY(plugins/remoter)
 	ADD_SUBDIRECTORY(plugins/aggregator)
 	ADD_SUBDIRECTORY(plugins/chatter)
@@ -152,7 +155,7 @@ ADD_CUSTOM_TARGET (core_translations
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	)
 
-ADD_EXECUTABLE (leechcraft WIN32 ${SRCS} ${MOC_SRCS} ${UIS_H} ${RCC})	
+ADD_EXECUTABLE (leechcraft WIN32 ${SRCS} ${MOC_SRCS} ${UIS_H} ${RCC})
 ADD_DEPENDENCIES (leechcraft core_translations)
 TARGET_LINK_LIBRARIES(leechcraft
 						${QT_LIBRARIES}
