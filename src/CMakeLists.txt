@@ -18,6 +18,8 @@ ELSE (MSVC)
 	SET (CMAKE_CXX_FLAGS "-fvisibility=hidden -Wall")
 ENDIF (MSVC)
 SET (LC_PLUGINS_DEST "lib/leechcraft/plugins")
+# Check modules first in local dir
+SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 FIND_PACKAGE (Boost REQUIRED COMPONENTS date_time filesystem system thread)
 FIND_PACKAGE (Qt4 REQUIRED)
 FIND_PACKAGE (Threads REQUIRED)
