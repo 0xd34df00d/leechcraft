@@ -7,7 +7,7 @@
 #include <boost/shared_ptr.hpp>
 #include <deque>
 
-class Channel;
+struct Channel;
 
 struct Feed
 {

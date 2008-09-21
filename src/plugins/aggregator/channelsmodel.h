@@ -5,7 +5,7 @@
 #include "feed.h"
 
 class TreeItem;
-class Channel;
+struct Channel;
 
 class ChannelsModel : public QAbstractItemModel
 {

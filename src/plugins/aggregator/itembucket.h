@@ -4,7 +4,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
 
-class Item;
+struct Item;
 class ItemModel;
 class QModelIndex;
 

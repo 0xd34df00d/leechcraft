@@ -5,7 +5,7 @@
 #include "parserfactory.h"
 #include "parser.h"
 
-class Item;
+struct Item;
 
 class Atom10Parser : public Parser
 {

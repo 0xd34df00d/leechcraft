@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <boost/shared_ptr.hpp>
 
-class Item;
+struct Item;
 
 class RegexpMatcherManager : public QAbstractItemModel
 {

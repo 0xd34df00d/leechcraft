@@ -7,7 +7,7 @@
 #include "parserfactory.h"
 #include "parser.h"
 
-class Item;
+struct Item;
 
 class RSS20Parser : public Parser
 {

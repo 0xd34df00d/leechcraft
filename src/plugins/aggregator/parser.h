@@ -6,7 +6,7 @@
 #include <boost/shared_ptr.hpp>
 #include "feed.h"
 
-class Channel;
+struct Channel;
 
 class Parser : public QObject
 {

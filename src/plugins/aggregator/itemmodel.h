@@ -5,7 +5,7 @@
 #include <deque>
 #include <boost/shared_ptr.hpp>
 
-class Item;
+struct Item;
 
 class ItemModel : public QAbstractItemModel
 {
