@@ -3,7 +3,7 @@
     <page>
         <label lang="en" value="Behavior" />
         <label lang="ru" value="Поведение" />
-	<label lang="uk" value="Поведінка" />
+		<label lang="uk" value="Поведінка" />
         <item type="checkbox" property="WatchClipboard" state="on">
             <label lang="en" value="Watch clipboard for addable task" />
             <label lang="ru" value="Следить за буфером обмена" />

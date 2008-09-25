@@ -35,6 +35,8 @@ QVariant ChannelsModel::data (const QModelIndex& index, int role) const
 
     if (role == Qt::DisplayRole)
         return static_cast<TreeItem*> (index.internalPointer ())->Data (index.column ());
+	else if (role == Qt::DecorationRole)
+		return static_cast<TreeItem*> (index.internalPointer ())->Data (index.column (), Qt::DecorationRole);
     else if (role == Qt::ForegroundRole)
         return static_cast<TreeItem*> (index.internalPointer ())->Data (2).toInt () ? Qt::red : Qt::black;
     else if (role == Qt::FontRole)
@@ -169,6 +171,7 @@ void ChannelsModel::UpdateChannelData (const Channel* channel)
         return;
     
     TreeItem *item = position.value ();
+	item->ModifyData (0, channel->Favicon_, Qt::DecorationRole);
     item->ModifyData (1, channel->LastBuild_);
     item->ModifyData (2, channel->CountUnreadItems ());
     int pos = RootItem_->ChildPosition (item);

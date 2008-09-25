@@ -58,6 +58,7 @@ QDataStream& operator<< (QDataStream& out, const Channel& chan)
         << chan.Language_
         << chan.Author_
         << chan.Pixmap_
+		<< chan.Favicon_
         << static_cast<quint32> (chan.Items_.size ());
     for (size_t i = 0; i < chan.Items_.size (); ++i)
         out << *chan.Items_ [i];
@@ -74,7 +75,8 @@ QDataStream& operator>> (QDataStream& in, Channel& chan)
         >> chan.LastBuild_
         >> chan.Language_
         >> chan.Author_
-        >> chan.Pixmap_;
+        >> chan.Pixmap_
+		>> chan.Favicon_;
     in >> size;
     for (size_t i = 0; i < size; ++i)
     {

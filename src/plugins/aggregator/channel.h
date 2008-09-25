@@ -21,6 +21,7 @@ struct Channel
     QString Author_;
     QString PixmapURL_;
     QPixmap Pixmap_;
+	QPixmap Favicon_;
 	typedef std::deque<boost::shared_ptr<Item> > items_container_t;
     items_container_t Items_;
 

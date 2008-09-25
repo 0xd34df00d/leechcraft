@@ -118,6 +118,7 @@ private:
     QString FindFeedForChannel (const boost::shared_ptr<Channel>&) const;
     void UpdateUnreadItemsNumber () const;
 	void FetchPixmap (const boost::shared_ptr<Channel>&);
+	void FetchFavicon (const boost::shared_ptr<Channel>&);
 	void HandleExternalData (const QString&, const QFile&);
 signals:
     void error (const QString&);

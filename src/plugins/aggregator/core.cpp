@@ -559,7 +559,11 @@ void Core::handleJobFinished (int id)
 		if (!doc.setContent (data, true, &errorMsg, &errorLine, &errorColumn))
 		{
 			file.copy (QDir::tempPath () + "/failedFile.xml");
-			emit error (tr ("XML file parse error: %1, line %2, column %3, filename %4").arg (errorMsg).arg (errorLine).arg (errorColumn).arg (pj.Filename_));
+			emit error (tr ("XML file parse error: %1, line %2, column %3, filename %4")
+					.arg (errorMsg)
+					.arg (errorLine)
+					.arg (errorColumn)
+					.arg (pj.Filename_));
 			return;
 		}
 
@@ -588,6 +592,7 @@ void Core::handleJobFinished (int id)
 		{
 			channels [i]->Tags_ = pj.Tags_;
 			FetchPixmap (channels [i]);
+			FetchFavicon (channels [i]);
 		}
 		ChannelsModel_->AddFeed (Feeds_ [pj.URL_]);
 		TagsCompletionModel_->UpdateTags (pj.Tags_);
@@ -620,7 +625,8 @@ void Core::handleJobFinished (int id)
 						.arg (channels [i]->Title_)
 						.arg (channels [i]->Items_.size ());
 
-				bool insertedRows = (ActivatedChannel_ == Feeds_ [pj.URL_].Channels_ [position].get ());
+				bool insertedRows = (ActivatedChannel_ ==
+						Feeds_ [pj.URL_].Channels_ [position].get ());
 
 				Feed &cfeed = Feeds_ [pj.URL_];
 				boost::shared_ptr<Channel> &cchannel = cfeed.Channels_ [position];
@@ -657,11 +663,13 @@ void Core::handleJobFinished (int id)
 					cchannel->LastBuild_ = cchannel->Items_ [0]->PubDate_;
 				ChannelsModel_->UpdateChannelData (cchannel);
 
-				size_t ipc = XmlSettingsManager::Instance ()->property ("ItemsPerChannel").value<size_t> ();
+				size_t ipc = XmlSettingsManager::Instance ()->
+					property ("ItemsPerChannel").value<size_t> ();
 				if (cchannel->Items_.size () > ipc)
 				{
 					if (ActivatedChannel_ == cchannel.get ())
-						beginRemoveRows (QModelIndex (), ipc, ActivatedChannel_->Items_.size ());
+						beginRemoveRows (QModelIndex (), ipc,
+								ActivatedChannel_->Items_.size ());
 					cchannel->Items_.erase (cchannel->Items_.begin () + ipc,
 							cchannel->Items_.end ());
 					if (ActivatedChannel_ == cchannel.get ())
@@ -670,7 +678,8 @@ void Core::handleJobFinished (int id)
 					ChannelsModel_->UpdateChannelData (cchannel);
 				}
 
-				int days = XmlSettingsManager::Instance ()->property ("ItemsMaxAge").toInt ();
+				int days = XmlSettingsManager::Instance ()->
+					property ("ItemsMaxAge").toInt ();
 				QDateTime current = QDateTime::currentDateTime ();
 				int removeFrom = -1;
 				for (size_t j = 0; j < cchannel->Items_.size (); ++j)
@@ -686,7 +695,8 @@ void Core::handleJobFinished (int id)
 				if (removeFrom > 0)
 				{
 					if (ActivatedChannel_ == cchannel.get ())
-						beginRemoveRows (QModelIndex (), removeFrom, ActivatedChannel_->Items_.size ());
+						beginRemoveRows (QModelIndex (), removeFrom,
+								ActivatedChannel_->Items_.size ());
 					cchannel->Items_.erase (cchannel->Items_.begin () + removeFrom,
 							cchannel->Items_.end ());
 					if (ActivatedChannel_ == cchannel.get ())
@@ -860,6 +870,35 @@ void Core::FetchPixmap (const boost::shared_ptr<Channel>& channel)
 	}
 }
 
+void Core::FetchFavicon (const boost::shared_ptr<Channel>& channel)
+{
+	QUrl oldUrl (channel->Link_);
+	oldUrl.setPath ("/favicon.ico");
+	QString iconUrl = oldUrl.toString ();
+
+	ExternalData iconData;
+	iconData.Type_ = ExternalData::TIcon;
+	iconData.RelatedChannel_ = channel;
+	QString exFName;
+	{
+		QTemporaryFile file;
+		file.open ();
+		exFName = file.fileName ();
+		file.close ();
+		file.remove ();
+	}
+	try
+	{
+		fetchExternalFile (iconUrl, exFName);
+	}
+	catch (const std::runtime_error& e)
+	{
+		qWarning () << Q_FUNC_INFO << e.what ();
+		return;
+	}
+	PendingJob2ExternalData_ [iconUrl] = iconData;
+}
+
 void Core::HandleExternalData (const QString& url, const QFile& file)
 {
 	ExternalData data = PendingJob2ExternalData_.take (url);
@@ -872,7 +911,8 @@ void Core::HandleExternalData (const QString& url, const QFile& file)
 				ChannelsModel_->UpdateChannelData (data.RelatedChannel_);
 				break;
 			case ExternalData::TIcon:
-				// TODO handle favicon.ico
+				data.RelatedChannel_->Favicon_ = QPixmap::fromImage (QImage (file.fileName ()));
+				ChannelsModel_->UpdateChannelData (data.RelatedChannel_);
 				break;
 		}
 	}
