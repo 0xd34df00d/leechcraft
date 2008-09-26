@@ -129,6 +129,7 @@ void ChannelsModel::AddFeed (const Feed& feed)
         const boost::shared_ptr<Channel>& current = channels.at (i);
         data << current->Title_ << current->LastBuild_ << current->CountUnreadItems ();
         TreeItem *channelItem = new TreeItem (data, RootItem_);
+		channelItem->ModifyData (0, current->Favicon_, Qt::DecorationRole);
         RootItem_->AppendChild (channelItem);
         Channel2TreeItem_ [current] = channelItem;
         TreeItem2Channel_ [channelItem] = current;

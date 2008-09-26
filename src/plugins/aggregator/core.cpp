@@ -911,7 +911,7 @@ void Core::HandleExternalData (const QString& url, const QFile& file)
 				ChannelsModel_->UpdateChannelData (data.RelatedChannel_);
 				break;
 			case ExternalData::TIcon:
-				data.RelatedChannel_->Favicon_ = QPixmap::fromImage (QImage (file.fileName ()));
+				data.RelatedChannel_->Favicon_ = QPixmap::fromImage (QImage (file.fileName ())).scaled (16, 16);;
 				ChannelsModel_->UpdateChannelData (data.RelatedChannel_);
 				break;
 		}
