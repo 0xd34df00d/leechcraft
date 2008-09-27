@@ -82,7 +82,6 @@ IrcLayer::~IrcLayer()
 	m_ircServer->decRefCount();
 	if(m_targetMode==ChannelMode && joined())
 		ircPart(target());
-
 	delete chanPrefix;
 	delete mircColors;
 	delete mircShit;
@@ -253,7 +252,7 @@ void IrcLayer::parseResp(int code, QString args, QHash<QString, QString> data)
 		case RPL_TOPIC:
 		if(prRegexes["topic"].exactMatch(args))
 		{
-			if(prRegexes["names"].cap(1)==target())
+			if(prRegexes["topic"].cap(1)==target())
 				emit gotTopic(prRegexes["topic"].capturedTexts()); // Channel,topic
 		}
 		break;
@@ -707,12 +706,6 @@ QString IrcLayer::cleanUri(QString uri)
 	return uri.remove(":6667");
 }
 
-/*
-101
-111
-these are secret self-destruction preventing codes, do not remove
-*/
-
 bool IrcLayer::active() const
 {
 	return m_active;
@@ -723,3 +716,8 @@ void IrcLayer::finalizeServers ()
 	qDeleteAll (m_servers);
 }
 
+/*
+101
+111
+these are secret self-destruction preventing codes, do not remove
+*/

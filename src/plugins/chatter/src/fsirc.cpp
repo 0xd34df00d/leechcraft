@@ -62,7 +62,7 @@ fsirc::fsirc(QWidget *parent) : QDialog(parent)
 #endif
 }
 
-fsirc::~fsirc ()
+fsirc::~fsirc()
 {
 	delete ticker;
 }
@@ -178,12 +178,12 @@ int fsirc::findTab(QString uri)
 	return -1;
 }
 
-void fsirc::finalizeIrcList()
-{
-	qDeleteAll (ircList);
-}
-
 void fsirc::clearCurrentTab()
 {
 	ircList[ircTabHolder->currentIndex()]->clearView();
+}
+
+void fsirc::finalizeIrcList()
+{
+	qDeleteAll (ircList);
 }

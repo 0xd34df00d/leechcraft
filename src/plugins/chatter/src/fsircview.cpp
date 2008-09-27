@@ -37,7 +37,7 @@ FsIrcView::FsIrcView(QWidget * parent) : QWidget(parent)
 	m_irc=new IrcLayer(0, FS_IRC_URI);
 	m_mArg = new QRegExp("(\\S+)(?: (.+))+");
 	m_linkRegexp = new QRegExp("([a-zA-Z\\+\\-\\.]+://(?:["+QRegExp::escape("-_.!~*'();/?:@&=+$,%#")+"]|\\w)+)");
-	m_chanRegexp = new QRegExp("(\\s)(#\\w+)");
+	m_chanRegexp = new QRegExp("(\\s)(#(?:\\w|[\\.\\-\\[\\]\\(\\)@\"'`\\^\\$<>&~=#\\*])+)");
 	initCompleters();
 	initConnections();
 
@@ -197,7 +197,7 @@ void FsIrcView::gotPrivMsg(QHash<QString, QString> data)
 {
 	// Private message
 	qDebug() << "Receiving PrivMsg" << ircUri() << hasFocus() << isVisible() << isHidden();
-	if(fsirc::findTab(ircUri().replace(QRegExp("/[^/]+$"),"/"+data["nick"]))<0 && !isHidden())
+	if(fsirc::findTab(ircUri().replace(QRegExp("/[^/]+$"),"/"+data["nick"]))<0 && fsirc::findTab(ircUri().replace(QRegExp("/[^/]+$"),"/"+data["target"]))<0 && !isHidden())
 		fsEcho(tr("Private: ")+data["nick"]+": "+data["text"], m_msgColors["private"]);
 }
 
@@ -407,8 +407,12 @@ void FsIrcView::pickAction()
 	switch (fsActionCombo->currentIndex())
 	{
 		case ACT_URI: //IRC URI, paste last one / current one
-
-			ircUri().isEmpty() ? pick=settings.value("lasturi").toString() : pick=ircUri();
+			if(ircUri().isEmpty())
+			{
+				settings.value("lasturi").toString().isEmpty() ? pick = QString(FS_IRC_URI) : pick=settings.value("lasturi").toString();
+			}
+			else
+			pick=ircUri();
 			break;
 		case ACT_NICK: // nick, current one
 			pick=m_irc->nick();

@@ -40,8 +40,8 @@ class fsirc : public QDialog, Ui::fsMainWindow
 	public:
 		fsirc(QWidget *parent= 0);
 		virtual ~fsirc();
-		static int findTab(QString);
 		static void finalizeIrcList();
+		static int findTab(QString);
 	private:
 		void initConnections();
 		void addTrayIcon();

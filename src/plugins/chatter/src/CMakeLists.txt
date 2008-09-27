@@ -5,7 +5,8 @@ INCLUDE_DIRECTORIES(
    src
 )
 
-CONFIGURE_FILE(src/config.cmake src/config.h)
+FILE(TO_NATIVE_PATH "src/config.h" CONFIG_H)
+CONFIGURE_FILE(src/config.cmake ${CONFIG_H})
 
 SET(fsirc_SRCS
 src/fsirc.cpp
