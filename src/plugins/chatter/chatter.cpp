@@ -45,12 +45,12 @@ QString Chatter::GetName () const
 
 QString Chatter::GetInfo () const
 {
-    return tr("A fucking simple irc client");
+    return tr("A f^W very simple irc client");
 }
 
 QString Chatter::GetStatusbarMessage () const
 {
-    return tr("what the fuck is status?");
+    return tr("what's is status?");
 }
 
 IInfo& Chatter::SetID (IInfo::ID_t id)
@@ -85,7 +85,6 @@ void Chatter::SetProvider (QObject *obj, const QString& feature)
 }
 
 void Chatter::PushMainWindowExternals (const MainWindowExternals&)
-{
 
 }
 
