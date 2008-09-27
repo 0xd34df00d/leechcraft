@@ -50,7 +50,7 @@ QString Chatter::GetInfo () const
 
 QString Chatter::GetStatusbarMessage () const
 {
-    return tr("what's is status?");
+    return tr("what's the status?");
 }
 
 IInfo& Chatter::SetID (IInfo::ID_t id)
