@@ -85,6 +85,7 @@ void Chatter::SetProvider (QObject *obj, const QString& feature)
 }
 
 void Chatter::PushMainWindowExternals (const MainWindowExternals&)
+{
 
 }
 
