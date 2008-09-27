@@ -765,12 +765,12 @@ int Core::GetOverallUploadRate () const
 
 int Core::GetMaxDownloadingTorrents () const
 {
-    return XmlSettingsManager::Instance ()->property ("MaxDownloadingTorrents").toInt ();
+    return XmlSettingsManager::Instance ()->Property ("MaxDownloadingTorrents", -1).toInt ();
 }
 
 int Core::GetMaxUploadingTorrents () const
 {
-    return XmlSettingsManager::Instance ()->property ("MaxUploadingTorrents").toInt ();
+    return XmlSettingsManager::Instance ()->Property ("MaxUploadingTorrents", -1).toInt ();
 }
 
 double Core::GetDesiredRating () const
@@ -1644,7 +1644,10 @@ void Core::checkFinished ()
                 TorrentState oldState = Handles_ [i].State_;
                 Handles_ [i].State_ = TSSeeding;
                 if (oldState == TSDownloading)
+				{
 					HandleSingleFinished (i);
+					QTimer::singleShot (5000, this, SLOT (writeSettings ()));
+				}
                 break;
         }
     }
