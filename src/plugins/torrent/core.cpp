@@ -1690,12 +1690,22 @@ void Core::queryLibtorrentForWarnings ()
 		catch (const libtorrent::unhandled_alert& e)
 		{
 		}
-		QString logmsg = QString::fromStdString (a->message ());
-		Core::Instance ()->LogMessage (QDateTime::currentDateTime ().toString () + " " + logmsg);
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO << typeid (e).name ();
+		}
+		try
+		{
+			QString logmsg = QString::fromStdString (a->message ());
+			Core::Instance ()->LogMessage (QDateTime::currentDateTime ().toString () + " " + logmsg);
 
-		qDebug () << "<libtorrent>" << logmsg;
+			qDebug () << "<libtorrent>" << logmsg;
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO << typeid (e).name ();
+		}
 
-		a.reset ();
 		a = Session_->pop_alert ();
 	}
 }
