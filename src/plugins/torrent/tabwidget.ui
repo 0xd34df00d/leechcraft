@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>662</width>
-    <height>446</height>
+    <height>457</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -20,7 +20,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex" >
-   <number>0</number>
+   <number>2</number>
   </property>
   <property name="elideMode" >
    <enum>Qt::ElideRight</enum>
@@ -556,6 +556,19 @@
       </layout>
      </widget>
     </item>
+    <item>
+     <spacer name="verticalSpacer_2" >
+      <property name="orientation" >
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0" >
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
    </layout>
   </widget>
   <widget class="QWidget" name="TorrentControlTab_" >
@@ -707,7 +720,7 @@
      <x>0</x>
      <y>0</y>
      <width>658</width>
-     <height>419</height>
+     <height>430</height>
     </rect>
    </property>
    <attribute name="title" >
@@ -1285,6 +1298,19 @@
        </item>
       </layout>
      </widget>
+    </item>
+    <item>
+     <spacer name="verticalSpacer_3" >
+      <property name="orientation" >
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0" >
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>
