@@ -12,6 +12,10 @@
   <property name="windowTitle" >
    <string>Item Bucket</string>
   </property>
+  <property name="windowIcon" >
+   <iconset resource="resources.qrc" >
+    <normaloff>:/resources/images/aggregator.png</normaloff>:/resources/images/aggregator.png</iconset>
+  </property>
   <layout class="QGridLayout" name="gridLayout" >
    <item row="0" column="0" >
     <widget class="QSplitter" name="splitter" >
@@ -44,6 +48,8 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="resources.qrc" />
+ </resources>
  <connections/>
 </ui>

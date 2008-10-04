@@ -69,6 +69,8 @@ private slots:
 	void on_ActionItemBucket__triggered ();
 	void on_ActionRegexpMatcher__triggered ();
 	void on_ActionHideReadItems__triggered ();
+	void on_ActionImportOPML__triggered ();
+	void on_ActionExportOPML__triggered ();
     void currentItemChanged (const QModelIndex&);
     void currentChannelChanged ();
     void unreadNumberChanged (int);

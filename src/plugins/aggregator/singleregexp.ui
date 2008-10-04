@@ -12,6 +12,10 @@
   <property name="windowTitle" >
    <string>Regexp modifier</string>
   </property>
+  <property name="windowIcon" >
+   <iconset resource="resources.qrc" >
+    <normaloff>:/resources/images/aggregator.png</normaloff>:/resources/images/aggregator.png</iconset>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
     <layout class="QFormLayout" name="formLayout" >
@@ -49,7 +53,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc" />
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

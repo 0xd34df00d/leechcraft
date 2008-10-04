@@ -28,6 +28,8 @@ SET (SRCS
 	singleregexp.cpp
 	regexpmatchermanager.cpp
 	itemsfiltermodel.cpp
+	opmlparser.cpp
+	importopml.cpp
 	)
 SET (HEADERS
     aggregator.h
@@ -53,6 +55,9 @@ SET (HEADERS
 	singleregexp.h
 	regexpmatchermanager.h
 	itemsfiltermodel.h
+	opmlparser.h
+	importopml.h
+	opmlitem.h
 	../../xmlsettingsdialog/basesettingsmanager.h
 	)
 SET (FORMS
@@ -61,7 +66,9 @@ SET (FORMS
 	browserwidget.ui
 	itembucket.ui
 	regexpmatcherui.ui
-	singleregexp.ui)
+	singleregexp.ui
+	importopml.ui
+	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS
 	leechcraft_aggregator_ru_RU.qm

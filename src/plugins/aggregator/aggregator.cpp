@@ -20,6 +20,7 @@
 #include "itembucket.h"
 #include "regexpmatcherui.h"
 #include "regexpmatchermanager.h"
+#include "importopml.h"
 
 Aggregator::~Aggregator ()
 {
@@ -341,6 +342,21 @@ void Aggregator::on_ActionHideReadItems__triggered ()
 	ItemsFilterModel_->SetHideRead (Ui_.ActionHideReadItems_->isChecked ());
 }
 
+void Aggregator::on_ActionImportOPML__triggered ()
+{
+	ImportOPML importDialog;
+	if (importDialog.exec () == QDialog::Rejected)
+		return;
+
+	Core::Instance ().AddFromOPML (importDialog.GetFilename (),
+			importDialog.GetTags (),
+			importDialog.GetMask ());
+}
+
+void Aggregator::on_ActionExportOPML__triggered ()
+{
+}
+
 void Aggregator::currentItemChanged (const QModelIndex& index)
 {
 	QModelIndex sindex = ItemsFilterModel_->mapToSource (index);
@@ -391,14 +407,15 @@ void Aggregator::currentChannelChanged ()
 	QModelIndex mapped = ChannelsFilterModel_->mapToSource (index);
 	Core::Instance ().currentChannelChanged (mapped);
 	Ui_.ChannelTags_->setText (Core::Instance ().GetTagsForIndex (mapped.row ()).join (" "));
-	QString link = Core::Instance ().GetChannelLink (mapped);
+	Core::ChannelInfo ci = Core::Instance ().GetChannelInfo (mapped);
+	QString link = ci.Link_;
 	QString shortLink;
 	Ui_.ChannelLink_->setToolTip (link);
 	if (link.size () >= 40)
-        	shortLink = link.left (18) + "..." + link.right (18);
+		shortLink = link.left (18) + "..." + link.right (18);
 	else
 		shortLink = link;
-	if(QUrl (link).isValid ())
+	if (QUrl (link).isValid ())
 	{
 		link.insert (0,"<a href=\"");
 		link.append ("\">" + shortLink + "</a>");
@@ -410,9 +427,8 @@ void Aggregator::currentChannelChanged ()
 		Ui_.ChannelLink_->setOpenExternalLinks (false);
 		Ui_.ChannelLink_->setText (shortLink);
 	}
-	Ui_.ChannelDescription_->setText (Core::Instance ().GetChannelDescription (mapped));
-	Ui_.ChannelAuthor_->setText (Core::Instance ().GetChannelAuthor (mapped));
-	Ui_.ChannelLanguage_->setText (Core::Instance ().GetChannelLanguage (mapped));
+	Ui_.ChannelDescription_->setText (ci.Description_);
+	Ui_.ChannelAuthor_->setText (ci.Author_);
 	Ui_.ItemView_->setHtml ("");
 
 	updatePixmap (Ui_.MainSplitter_->sizes ().at (0));

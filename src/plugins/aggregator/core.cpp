@@ -20,6 +20,7 @@
 #include "atom03parser.h"
 #include "channelsmodel.h"
 #include "itembucket.h"
+#include "opmlparser.h"
 
 Core::Core ()
 {
@@ -307,40 +308,17 @@ QStringList Core::GetTagsForIndex (int i) const
 		return QStringList ();
 }
 
-QString Core::GetChannelLink (const QModelIndex& i) const
+Core::ChannelInfo Core::GetChannelInfo (const QModelIndex& i) const
 {
 	boost::shared_ptr<Channel> channel = ChannelsModel_->GetChannelForIndex (i);
+	ChannelInfo ci;
 	if (channel)
-		return channel->Link_;
-	else
-		return tr ("<empty>");
-}
-
-QString Core::GetChannelDescription (const QModelIndex& i) const
-{
-	boost::shared_ptr<Channel> channel = ChannelsModel_->GetChannelForIndex (i);
-	if (channel)
-		return channel->Description_;
-	else
-		return tr ("<empty>");
-}
-
-QString Core::GetChannelAuthor (const QModelIndex& i) const
-{
-	boost::shared_ptr<Channel> channel = ChannelsModel_->GetChannelForIndex (i);
-	if (channel)
-		return channel->Author_;
-	else
-		return tr ("<empty>");
-}
-
-QString Core::GetChannelLanguage (const QModelIndex& i) const
-{
-	boost::shared_ptr<Channel> channel = ChannelsModel_->GetChannelForIndex (i);
-	if (channel)
-		return channel->Language_;
-	else
-		return tr ("<empty>");
+	{
+		ci.Link_ = channel->Link_;
+		ci.Description_ = channel->Description_;
+		ci.Author_ = channel->Author_;
+	}
+	return ci;
 }
 
 QPixmap Core::GetChannelPixmap (const QModelIndex& i) const
@@ -408,6 +386,63 @@ void Core::AddToItemBucket (const QModelIndex& index) const
 		return;
 
 	ItemBucket::Instance ().AddItem (ActivatedChannel_->Items_ [index.row ()]);
+}
+
+void Core::AddFromOPML (const QString& filename,
+		const QString& tags,
+		const std::vector<bool>& mask)
+{
+	QFile file (filename);
+	if (!file.open (QIODevice::ReadOnly))
+	{
+		emit error (tr ("Could not open file %1 for reading.")
+					.arg (filename));
+		return;
+	}
+
+	QByteArray data = file.readAll ();
+	file.close ();
+
+	QString errorMsg;
+	int errorLine, errorColumn;
+	QDomDocument document;
+	if (!document.setContent (data,
+				true,
+				&errorMsg,
+				&errorLine,
+				&errorColumn))
+	{
+		emit error (tr ("XML error, file %1, line %2, column %3, error:<br />%4")
+					.arg (filename)
+					.arg (errorLine)
+					.arg (errorColumn)
+					.arg (errorMsg));
+		return;
+	}
+
+	OPMLParser parser (document);
+	if (!parser.IsValid ())
+	{
+		emit error (tr ("OPML from file %1 is not valid.")
+					.arg (filename));
+		return;
+	}
+
+	OPMLParser::items_container_t items = parser.Parse ();
+	for (std::vector<bool>::const_iterator begin = mask.begin (),
+			i = mask.end () - 1; i >= begin; --i)
+		if (!*i)
+		{
+			size_t distance = std::distance (mask.begin (), i);
+			OPMLParser::items_container_t::iterator eraser = items.begin ();
+			std::advance (eraser, distance);
+			items.erase (eraser);
+		}
+
+	QStringList tagsList = tags.split (" ", QString::SkipEmptyParts);
+	for (OPMLParser::items_container_t::const_iterator i = items.begin (),
+			end = items.end (); i != end; ++i)
+		AddFeed (i->URL_, tagsList);
 }
 
 int Core::columnCount (const QModelIndex& parent) const
@@ -600,121 +635,7 @@ void Core::handleJobFinished (int id)
 		TagsCompletionModel_->UpdateTags (pj.Tags_);
 	}
 	else if (pj.Role_ == PendingJob::RFeedUpdated)
-	{
-		ChannelsModel_->Update (channels);
-		for (size_t i = 0; i < channels.size (); ++i)
-		{
-			int position = -1;
-			for (size_t j = 0; j < Feeds_ [pj.URL_].Channels_.size (); ++j)
-				if (*Feeds_ [pj.URL_].Channels_ [j] == *channels [i])
-				{
-					position = j;
-					break;
-				}
-
-
-			if (position == -1)
-			{
-				Feeds_ [pj.URL_].Channels_.push_back (channels [i]);
-				emitString += tr ("Added channel \"%1\" (has %2 items)\r\n")
-					.arg (channels [i]->Title_)
-					.arg (channels [i]->Items_.size ());
-			}
-			else
-			{
-				if (channels [i]->Items_.size ())
-					emitString += tr ("Updated channel \"%1\" (%2 new items)\r\n")
-						.arg (channels [i]->Title_)
-						.arg (channels [i]->Items_.size ());
-
-				bool insertedRows = (ActivatedChannel_ ==
-						Feeds_ [pj.URL_].Channels_ [position].get ());
-
-				Feed &cfeed = Feeds_ [pj.URL_];
-				boost::shared_ptr<Channel> &cchannel = cfeed.Channels_ [position];
-
-				// Okay, this item is new, let's find where to place
-				// it. We should place it before the first found item
-				// with earlier datetime.
-				for (Channel::items_container_t::const_iterator j =
-						channels.at (i)->Items_.begin (),
-						newsize = channels.at (i)->Items_.end ();
-						j != newsize; ++j)
-				{
-					Channel::items_container_t::iterator item =
-						std::find_if (cchannel->Items_.begin (),
-								cchannel->Items_.end (),
-								IsDateSuitable ((*j)->PubDate_));
-					size_t pos = std::distance (cchannel->Items_.begin (), item);
-					if (insertedRows)
-						beginInsertRows (QModelIndex (), pos, pos);
-					cchannel->Items_.insert (item, *j);
-					if (insertedRows)
-						endInsertRows ();
-				}
-
-				std::for_each (channels.at (i)->Items_.begin (),
-						channels.at (i)->Items_.end (),
-						boost::bind (&RegexpMatcherManager::HandleItem,
-							&RegexpMatcherManager::Instance (),
-							_1));
-
-				if (channels.at (i)->LastBuild_.isValid ())
-					cchannel->LastBuild_ = channels.at (i)->LastBuild_;
-				else if (cchannel->Items_.size ())
-					cchannel->LastBuild_ = cchannel->Items_ [0]->PubDate_;
-				ChannelsModel_->UpdateChannelData (cchannel);
-
-				size_t ipc = XmlSettingsManager::Instance ()->
-					property ("ItemsPerChannel").value<size_t> ();
-				if (cchannel->Items_.size () > ipc)
-				{
-					qDebug () << cchannel->Title_ << cchannel->Items_.size () << ipc;
-					if (ActivatedChannel_ == cchannel.get ())
-						beginRemoveRows (QModelIndex (), ipc,
-								ActivatedChannel_->Items_.size ());
-					cchannel->Items_.erase (cchannel->Items_.begin () + ipc,
-							cchannel->Items_.end ());
-					if (ActivatedChannel_ == cchannel.get ())
-						endRemoveRows ();
-
-					ChannelsModel_->UpdateChannelData (cchannel);
-				}
-
-				int days = XmlSettingsManager::Instance ()->
-					property ("ItemsMaxAge").toInt ();
-				QDateTime current = QDateTime::currentDateTime ();
-				int removeFrom = -1;
-				for (size_t j = 0; j < cchannel->Items_.size (); ++j)
-				{
-					if (cchannel->Items_ [j]->PubDate_.daysTo (current) > days)
-					{
-						qDebug () << cchannel->Title_
-							<< cchannel->Items_ [j]->PubDate_
-							<< current
-							<< days
-							<< cchannel->Items_ [j]->PubDate_.daysTo (current);
-						removeFrom = j;
-						break;
-					}
-				}
-				if (removeFrom == 0)
-					removeFrom = 1;
-				if (removeFrom > 0)
-				{
-					if (ActivatedChannel_ == cchannel.get ())
-						beginRemoveRows (QModelIndex (), removeFrom,
-								ActivatedChannel_->Items_.size ());
-					cchannel->Items_.erase (cchannel->Items_.begin () + removeFrom,
-							cchannel->Items_.end ());
-					if (ActivatedChannel_ == cchannel.get ())
-						endRemoveRows ();
-
-					ChannelsModel_->UpdateChannelData (cchannel);
-				}
-			}
-		}
-	}
+		emitString += HandleFeedUpdated (channels, pj);
 	else if (pj.Role_ == PendingJob::RFeedExternalData)
 		HandleExternalData (pj.URL_, file);
 	UpdateUnreadItemsNumber ();
@@ -927,5 +848,127 @@ void Core::HandleExternalData (const QString& url, const QFile& file)
 	else if (data.RelatedFeed_)
 	{
 	}
+}
+
+QString Core::HandleFeedUpdated (const Feed::channels_container_t& channels,
+		const Core::PendingJob& pj)
+{
+	QString emitString;
+
+	ChannelsModel_->Update (channels);
+	for (size_t i = 0; i < channels.size (); ++i)
+	{
+		int position = -1;
+		for (size_t j = 0; j < Feeds_ [pj.URL_].Channels_.size (); ++j)
+			if (*Feeds_ [pj.URL_].Channels_ [j] == *channels [i])
+			{
+				position = j;
+				break;
+			}
+
+
+		if (position == -1)
+		{
+			Feeds_ [pj.URL_].Channels_.push_back (channels [i]);
+			emitString += tr ("Added channel \"%1\" (has %2 items)\r\n")
+				.arg (channels [i]->Title_)
+				.arg (channels [i]->Items_.size ());
+		}
+		else
+		{
+			if (channels [i]->Items_.size ())
+				emitString += tr ("Updated channel \"%1\" (%2 new items)\r\n")
+					.arg (channels [i]->Title_)
+					.arg (channels [i]->Items_.size ());
+
+			bool insertedRows = (ActivatedChannel_ ==
+					Feeds_ [pj.URL_].Channels_ [position].get ());
+
+			Feed &cfeed = Feeds_ [pj.URL_];
+			boost::shared_ptr<Channel> &cchannel = cfeed.Channels_ [position];
+
+			// Okay, this item is new, let's find where to place
+			// it. We should place it before the first found item
+			// with earlier datetime.
+			for (Channel::items_container_t::const_iterator j =
+					channels.at (i)->Items_.begin (),
+					newsize = channels.at (i)->Items_.end ();
+					j != newsize; ++j)
+			{
+				Channel::items_container_t::iterator item =
+					std::find_if (cchannel->Items_.begin (),
+							cchannel->Items_.end (),
+							IsDateSuitable ((*j)->PubDate_));
+				size_t pos = std::distance (cchannel->Items_.begin (), item);
+				if (insertedRows)
+					beginInsertRows (QModelIndex (), pos, pos);
+				cchannel->Items_.insert (item, *j);
+				if (insertedRows)
+					endInsertRows ();
+			}
+
+			std::for_each (channels.at (i)->Items_.begin (),
+					channels.at (i)->Items_.end (),
+					boost::bind (&RegexpMatcherManager::HandleItem,
+						&RegexpMatcherManager::Instance (),
+						_1));
+
+			if (channels.at (i)->LastBuild_.isValid ())
+				cchannel->LastBuild_ = channels.at (i)->LastBuild_;
+			else if (cchannel->Items_.size ())
+				cchannel->LastBuild_ = cchannel->Items_ [0]->PubDate_;
+			ChannelsModel_->UpdateChannelData (cchannel);
+
+			size_t ipc = XmlSettingsManager::Instance ()->
+				property ("ItemsPerChannel").value<size_t> ();
+			if (cchannel->Items_.size () > ipc)
+			{
+				qDebug () << cchannel->Title_ << cchannel->Items_.size () << ipc;
+				if (ActivatedChannel_ == cchannel.get ())
+					beginRemoveRows (QModelIndex (), ipc,
+							ActivatedChannel_->Items_.size ());
+				cchannel->Items_.erase (cchannel->Items_.begin () + ipc,
+						cchannel->Items_.end ());
+				if (ActivatedChannel_ == cchannel.get ())
+					endRemoveRows ();
+
+				ChannelsModel_->UpdateChannelData (cchannel);
+			}
+
+			int days = XmlSettingsManager::Instance ()->
+				property ("ItemsMaxAge").toInt ();
+			QDateTime current = QDateTime::currentDateTime ();
+			int removeFrom = -1;
+			for (size_t j = 0; j < cchannel->Items_.size (); ++j)
+			{
+				if (cchannel->Items_ [j]->PubDate_.daysTo (current) > days)
+				{
+					qDebug () << cchannel->Title_
+						<< cchannel->Items_ [j]->PubDate_
+						<< current
+						<< days
+						<< cchannel->Items_ [j]->PubDate_.daysTo (current);
+					removeFrom = j;
+					break;
+				}
+			}
+			if (removeFrom == 0)
+				removeFrom = 1;
+			if (removeFrom > 0)
+			{
+				if (ActivatedChannel_ == cchannel.get ())
+					beginRemoveRows (QModelIndex (), removeFrom,
+							ActivatedChannel_->Items_.size ());
+				cchannel->Items_.erase (cchannel->Items_.begin () + removeFrom,
+						cchannel->Items_.end ());
+				if (ActivatedChannel_ == cchannel.get ())
+					endRemoveRows ();
+
+				ChannelsModel_->UpdateChannelData (cchannel);
+			}
+		}
+	}
+
+	return emitString;
 }
 

@@ -61,6 +61,13 @@ class Core : public QAbstractItemModel
     QTimer *UpdateTimer_;
     bool SaveScheduled_;
 public:
+	struct ChannelInfo
+	{
+		QString Link_;
+		QString Description_;
+		QString Author_;
+	};
+
     static Core& Instance ();
     void Release ();
     void DoDelayedInit ();
@@ -82,24 +89,27 @@ public:
     void MarkChannelAsRead (const QModelIndex&);
     void MarkChannelAsUnread (const QModelIndex&);
     QStringList GetTagsForIndex (int) const;
-    QString GetChannelLink (const QModelIndex&) const;
-    QString GetChannelDescription (const QModelIndex&) const;
-    QString GetChannelAuthor (const QModelIndex&) const;
-    QString GetChannelLanguage (const QModelIndex&) const;
-    QPixmap GetChannelPixmap (const QModelIndex&) const;
+	ChannelInfo GetChannelInfo (const QModelIndex&) const;
+	QPixmap GetChannelPixmap (const QModelIndex&) const;
     void SetTagsForIndex (const QString&, const QModelIndex&);
     void UpdateFeed (const QModelIndex&);
     QModelIndex GetUnreadChannelIndex ();
 	void AddToItemBucket (const QModelIndex&) const;
+	void AddFromOPML (const QString&,
+			const QString&,
+			const std::vector<bool>&);
 
-    virtual int columnCount (const QModelIndex& parent = QModelIndex ()) const;
-    virtual QVariant data (const QModelIndex&, int role = Qt::DisplayRole) const;
+    virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
+    virtual QVariant data (const QModelIndex&,
+			int = Qt::DisplayRole) const;
     virtual Qt::ItemFlags flags (const QModelIndex&) const;
     virtual bool hasChildren (const QModelIndex&) const;
-    virtual QVariant headerData (int, Qt::Orientation, int role = Qt::DisplayRole) const;
-    virtual QModelIndex index (int, int, const QModelIndex& parent = QModelIndex()) const;
+    virtual QVariant headerData (int, Qt::Orientation,
+			int = Qt::DisplayRole) const;
+    virtual QModelIndex index (int, int,
+			const QModelIndex& = QModelIndex()) const;
     virtual QModelIndex parent (const QModelIndex&) const;
-    virtual int rowCount (const QModelIndex& parent = QModelIndex ()) const;
+    virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 public slots:
     void currentChannelChanged (const QModelIndex&);
     void updateFeeds ();
@@ -120,6 +130,8 @@ private:
 	void FetchPixmap (const boost::shared_ptr<Channel>&);
 	void FetchFavicon (const boost::shared_ptr<Channel>&);
 	void HandleExternalData (const QString&, const QFile&);
+	QString HandleFeedUpdated (const Feed::channels_container_t&,
+			const PendingJob&);
 signals:
     void error (const QString&);
     void showDownloadMessage (const QString&);

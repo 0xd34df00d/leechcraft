@@ -123,6 +123,7 @@ Item* RSS20Parser::ParseItem (const QDomElement& item) const
 	if (!result->PubDate_.isValid () || result->PubDate_.isNull ())
 		result->PubDate_ = QDateTime::currentDateTime ();
 	result->Guid_ = item.firstChildElement ("guid").text ();
+	result->Category_ = item.firstChildElement ("category").text ();
 	result->Unread_ = true;
 	return result;
 }

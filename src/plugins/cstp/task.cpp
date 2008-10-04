@@ -490,7 +490,8 @@ void Task::handleDataTransferProgress (int done, int total)
 
 void Task::responseHeaderReceived (const QHttpResponseHeader& response)
 {
-	if (response.statusCode () == 301)
+	if (response.statusCode () == 301 ||
+			response.statusCode () == 302)
 	{
 		if (!response.hasKey ("Location"))
 			return;
