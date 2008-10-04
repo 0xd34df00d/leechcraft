@@ -2,7 +2,7 @@
 #define AGGREGATOR_H
 #include <memory>
 #include <interfaces/interfaces.h>
-#include "ui_mainwindow.h"
+#include "ui_mainwidget.h"
 
 class XmlSettingsDialog;
 class ItemsFilterModel;
@@ -10,19 +10,35 @@ class ChannelsFilterModel;
 class TagsCompleter;
 class QSystemTrayIcon;
 class QTranslator;
+class QToolBar;
 
-class Aggregator : public QMainWindow
+class Aggregator : public QWidget
                  , public IInfo
-                 , public IWindow
+                 , public IEmbedTab
 {
     Q_OBJECT
-    Q_INTERFACES (IInfo IWindow)
+    Q_INTERFACES (IInfo IEmbedTab)
 
-    Ui::MainWindow Ui_;
+    Ui::MainWidget Ui_;
     unsigned long int ID_;
-    bool IsShown_;
 
     QMenu *Plugins_;
+	QToolBar *ToolBar_;
+    QAction *ActionAddFeed_;
+    QAction *ActionPreferences_;
+    QAction *ActionUpdateFeeds_;
+    QAction *ActionRemoveFeed_;
+    QAction *ActionMarkItemAsUnread_;
+    QAction *ActionMarkChannelAsRead_;
+    QAction *ActionMarkChannelAsUnread_;
+    QAction *ActionUpdateSelectedFeed_;
+    QAction *ActionAddToItemBucket_;
+    QAction *ActionItemBucket_;
+    QAction *ActionRegexpMatcher_;
+    QAction *ActionHideReadItems_;
+    QAction *ActionImportOPML_;
+    QAction *ActionExportOPML_;
+
 	std::auto_ptr<XmlSettingsDialog> XmlSettingsDialog_;
 	std::auto_ptr<ItemsFilterModel> ItemsFilterModel_;
 	std::auto_ptr<ChannelsFilterModel> ChannelsFilterModel_;
@@ -44,13 +60,9 @@ public:
     void SetProvider (QObject*, const QString&);
     void PushMainWindowExternals (const MainWindowExternals&);
     QIcon GetIcon () const;
-    void SetParent (QWidget*);
-    void ShowWindow ();
-    void ShowBalloonTip ();
-protected:
-    virtual void closeEvent (QCloseEvent*);
-public slots:
-    void handleHidePlugins ();
+	QWidget* GetTabContents ();
+private:
+	void SetupMenuBar ();
 private slots:
     void showError (const QString&);
     void on_ActionAddFeed__triggered ();
@@ -81,6 +93,7 @@ private slots:
 signals:
     void downloadFinished (const QString&);
 	void fileDownloaded (const QString&);
+	void bringToFront ();
 };
 
 #endif

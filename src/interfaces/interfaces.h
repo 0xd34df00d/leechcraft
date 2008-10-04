@@ -135,6 +135,22 @@ class ITaggableJobs
 public:
 	virtual QStringList GetTags (int) const = 0;
 	virtual void SetTags (int, const QStringList&) = 0;
+
+	virtual ~ITaggableJobs () {}
+};
+
+class IEmbedTab
+{
+public:
+	virtual QWidget* GetTabContents () = 0;
+
+	virtual ~IEmbedTab () {}
+};
+
+class IMultiTabs
+{
+public:
+	virtual ~IMultiTabs () {}
 };
 
 Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
@@ -149,6 +165,8 @@ Q_DECLARE_INTERFACE (IJobHolder, "org.Deviant.LeechCraft.IJobHolder/1.0");
 Q_DECLARE_INTERFACE (IImportExport, "org.Deviant.LeechCraft.IImportExport/1.0");
 Q_DECLARE_INTERFACE (IEmbedModel, "org.Deviant.LeechCraft.IEmbedModel/1.0");
 Q_DECLARE_INTERFACE (ITaggableJobs, "org.Deviant.LeechCraft.ITaggableJobs/1.0");
+Q_DECLARE_INTERFACE (IEmbedTab, "org.Deviant.LeechCraft.IEmbedTab/1.0");
+Q_DECLARE_INTERFACE (IMultiTabs, "org.Deviant.LeechCraft.IMultiTabs/1.0");
 
 #endif
 

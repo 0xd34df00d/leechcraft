@@ -6,6 +6,7 @@
 #include <QSystemTrayIcon>
 #include <QPainter>
 #include <QMenu>
+#include <QToolBar>
 #include <QtWebKit>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/tagscompletionmodel.h>
@@ -30,7 +31,7 @@ void Aggregator::Init ()
 {
 	Translator_.reset (LeechCraft::Util::InstallTranslator ("aggregator"));
     Ui_.setupUi (this);
-    IsShown_ = false;
+	SetupMenuBar ();
 
     TrayIcon_.reset (new QSystemTrayIcon (this));
     TrayIcon_->hide ();
@@ -39,7 +40,7 @@ void Aggregator::Init ()
 			this,
 			SLOT (trayIconActivated ()));
 
-	Plugins_->addAction (Ui_.ActionAddFeed_);
+	Plugins_->addAction (ActionAddFeed_);
 	connect (&Core::Instance (),
 			SIGNAL (error (const QString&)),
 			this,
@@ -63,8 +64,8 @@ void Aggregator::Init ()
     ItemsFilterModel_->setDynamicSortFilter (true);
     ItemsFilterModel_->setFilterCaseSensitivity (Qt::CaseInsensitive);
     Ui_.Items_->setModel (ItemsFilterModel_.get ());
-    Ui_.Items_->addAction (Ui_.ActionMarkItemAsUnread_);
-	Ui_.Items_->addAction (Ui_.ActionAddToItemBucket_);
+    Ui_.Items_->addAction (ActionMarkItemAsUnread_);
+	Ui_.Items_->addAction (ActionAddToItemBucket_);
     Ui_.Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
     connect (Ui_.SearchLine_,
 			SIGNAL (textChanged (const QString&)),
@@ -77,16 +78,18 @@ void Aggregator::Init ()
 	QHeaderView *itemsHeader = Ui_.Items_->header ();
 	QFontMetrics fm = fontMetrics ();
 	int dateTimeSize = fm.width (QDateTime::currentDateTime ().toString (Qt::SystemLocaleShortDate)) + fm.width("__");
-	itemsHeader->resizeSection (0, fm.width ("Average news article size is about this width or maybe bigger, because they are bigger"));
-	itemsHeader->resizeSection (1, dateTimeSize);
+	itemsHeader->resizeSection (0,
+			fm.width ("Average news article size is about this width or maybe bigger, because they are bigger"));
+	itemsHeader->resizeSection (1,
+			dateTimeSize);
 
     ChannelsFilterModel_.reset (new ChannelsFilterModel (this));
     ChannelsFilterModel_->setSourceModel (Core::Instance ().GetChannelsModel ());
     ChannelsFilterModel_->setFilterKeyColumn (0);
     ChannelsFilterModel_->setDynamicSortFilter (true);
     Ui_.Feeds_->setModel (ChannelsFilterModel_.get ());
-    Ui_.Feeds_->addAction (Ui_.ActionMarkChannelAsRead_);
-    Ui_.Feeds_->addAction (Ui_.ActionMarkChannelAsUnread_);
+    Ui_.Feeds_->addAction (ActionMarkChannelAsRead_);
+    Ui_.Feeds_->addAction (ActionMarkChannelAsUnread_);
     Ui_.Feeds_->setContextMenuPolicy (Qt::ActionsContextMenu);
     QHeaderView *channelsHeader = Ui_.Feeds_->header ();
     channelsHeader->resizeSection (0, fm.width ("Average channel name"));
@@ -104,7 +107,10 @@ void Aggregator::Init ()
 			SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
 			this,
 			SLOT (currentItemChanged (const QModelIndex&)));
-    connect (Ui_.ActionUpdateFeeds_, SIGNAL (triggered ()), &Core::Instance (), SLOT (updateFeeds ()));
+    connect (ActionUpdateFeeds_,
+			SIGNAL (triggered ()),
+			&Core::Instance (),
+			SLOT (updateFeeds ()));
 
     TagsLineCompleter_.reset (new TagsCompleter (Ui_.TagsLine_));
     ChannelTagsCompleter_.reset (new TagsCompleter (Ui_.ChannelTags_));
@@ -200,30 +206,99 @@ QIcon Aggregator::GetIcon () const
     return windowIcon ();
 }
 
-void Aggregator::SetParent (QWidget *parent)
+QWidget* Aggregator::GetTabContents ()
 {
-    setParent (parent);
+	return this;
 }
 
-void Aggregator::ShowWindow ()
+void Aggregator::SetupMenuBar ()
 {
-    IsShown_ = 1 - IsShown_;
-    IsShown_ ? show () : hide ();
-}
+	ToolBar_ = new QToolBar (this);
+	dynamic_cast<QVBoxLayout*> (layout ())->insertWidget (0, ToolBar_);
 
-void Aggregator::ShowBalloonTip ()
-{
-}
+	ActionAddFeed_ = new QAction (QIcon (":/resources/images/rss-feed.png"),
+			tr ("Add feed..."),
+			this);
+	ActionAddFeed_->setObjectName ("ActionAddFeed_");
 
-void Aggregator::closeEvent (QCloseEvent*)
-{
-    IsShown_ = false;
-}
+	ActionPreferences_ = new QAction (QIcon (":/resources/images/preferences.png"),
+			tr ("Preferences..."),
+			this);
+	ActionPreferences_->setObjectName ("ActionPreferences_");
 
-void Aggregator::handleHidePlugins ()
-{
-    IsShown_ = false;
-    hide ();
+	ActionUpdateFeeds_ = new QAction (QIcon (":/resources/images/updateallfeeds.png"),
+			tr ("Update all feeds"),
+			this);
+
+	ActionRemoveFeed_ = new QAction (QIcon (":/resources/images/removefeed.png"),
+			tr ("Remove feed"),
+			this);
+	ActionRemoveFeed_->setObjectName ("ActionRemoveFeed_");
+
+	ActionMarkItemAsUnread_ = new QAction (tr ("Mark item as unread"),
+			this);
+	ActionMarkItemAsUnread_->setObjectName ("ActionMarkItemAsUnread_");
+
+	ActionMarkChannelAsRead_ = new QAction (tr ("Mark channel as read"),
+			this);
+	ActionMarkChannelAsRead_->setObjectName ("ActionMarkChannelAsRead_");
+
+	ActionMarkChannelAsUnread_ = new QAction (tr ("Mark channel as unread"),
+			this);
+	ActionMarkChannelAsUnread_->setObjectName ("ActionMarkChannelAsUnread_");
+
+	ActionUpdateSelectedFeed_ = new QAction (QIcon (":/resources/images/updateselectedfeed.png"),
+			tr ("Update selected feed"),
+			this);
+	ActionUpdateSelectedFeed_->setObjectName ("ActionUpdateSelectedFeed_");
+
+	ActionAddToItemBucket_ = new QAction (tr ("Add to item bucket"),
+			this);
+	ActionAddToItemBucket_->setObjectName ("ActionAddToItemBucket_");
+
+	ActionItemBucket_ = new QAction (QIcon (":/resources/images/favorites.png"),
+			tr ("Item bucket..."),
+			this);
+	ActionItemBucket_->setObjectName ("ActionItemBucket_");
+
+	ActionRegexpMatcher_ = new QAction (QIcon (":/resources/images/filter.png"),
+			tr ("Regexp matcher..."),
+			this);
+	ActionRegexpMatcher_->setObjectName ("ActionRegexpMatcher_");
+
+	ActionHideReadItems_ = new QAction (tr ("Hide read items"),
+			this);
+	ActionHideReadItems_->setObjectName ("ActionHideReadItems_");
+	ActionHideReadItems_->setCheckable (true);
+	QIcon icon;
+	icon.addPixmap (QPixmap (":/resources/images/rss-show.png"), QIcon::Normal, QIcon::Off);
+	icon.addPixmap (QPixmap (":/resources/images/rss-hide.png"), QIcon::Normal, QIcon::On);
+	ActionHideReadItems_->setIcon (icon);
+
+	ActionImportOPML_ = new QAction (tr ("Import OPML..."),
+			this);
+	ActionImportOPML_->setObjectName ("ActionImportOPML_");
+
+	ActionExportOPML_ = new QAction (tr ("Export OPML..."),
+			this);
+	ActionExportOPML_->setObjectName ("ActionExportOPML_");
+
+    ToolBar_->addAction(ActionAddFeed_);
+    ToolBar_->addAction(ActionRemoveFeed_);
+    ToolBar_->addAction(ActionUpdateSelectedFeed_);
+    ToolBar_->addAction(ActionUpdateFeeds_);
+    ToolBar_->addSeparator();
+    ToolBar_->addAction(ActionItemBucket_);
+    ToolBar_->addAction(ActionRegexpMatcher_);
+    ToolBar_->addSeparator();
+    ToolBar_->addAction(ActionImportOPML_);
+    ToolBar_->addAction(ActionExportOPML_);
+    ToolBar_->addSeparator();
+    ToolBar_->addAction(ActionHideReadItems_);
+    ToolBar_->addSeparator();
+    ToolBar_->addAction(ActionPreferences_);
+
+    QMetaObject::connectSlotsByName (this);
 }
 
 void Aggregator::showError (const QString& msg)
@@ -337,9 +412,9 @@ void Aggregator::on_ActionRegexpMatcher__triggered ()
 
 void Aggregator::on_ActionHideReadItems__triggered ()
 {
-	if (Ui_.ActionHideReadItems_->isChecked ())
+	if (ActionHideReadItems_->isChecked ())
 		Ui_.Items_->selectionModel ()->reset ();
-	ItemsFilterModel_->SetHideRead (Ui_.ActionHideReadItems_->isChecked ());
+	ItemsFilterModel_->SetHideRead (ActionHideReadItems_->isChecked ());
 }
 
 void Aggregator::on_ActionImportOPML__triggered ()
@@ -462,8 +537,7 @@ void Aggregator::unreadNumberChanged (int number)
 
 void Aggregator::trayIconActivated ()
 {
-    show ();
-    IsShown_ = true;
+	emit bringToFront ();
 	QModelIndex unread = Core::Instance ().GetUnreadChannelIndex ();
 	if (unread.isValid ())
 		Ui_.Feeds_->setCurrentIndex (ChannelsFilterModel_->mapFromSource (unread));

@@ -25,11 +25,11 @@
 class fsirc;
 
 class Chatter : public QMainWindow
-                 , public IInfo
-              , public IWindow
+              , public IInfo
+              , public IEmbedTab
 {
     Q_OBJECT;
-	Q_INTERFACES (IInfo IWindow);
+	Q_INTERFACES (IInfo IEmbedTab);
 
     ID_t ID_;
     bool IsShown_;
@@ -49,14 +49,8 @@ public:
     virtual void PushMainWindowExternals (const MainWindowExternals&);
     virtual void Release ();
     virtual QIcon GetIcon () const;
-    virtual void SetParent (QWidget*);
-    virtual void ShowWindow ();
-    virtual void ShowBalloonTip ();
-protected:
-	virtual void closeEvent (QCloseEvent*);
+	virtual QWidget* GetTabContents ();
 	fsirc * ircClient;
-public slots:
-	void handleHidePlugins ();
 signals:
 	void gotEntity(QString);
 };

@@ -110,30 +110,9 @@ QIcon Chatter::GetIcon () const
     return QIcon (":/fsirc/data/icon.svg");
 }
 
-void Chatter::SetParent (QWidget *parent)
+QWidget* Chatter::GetTabContents ()
 {
-    setParent (parent);
-}
-
-void Chatter::ShowWindow ()
-{
-    IsShown_ ? hide () : show ();
-    IsShown_ = 1 - IsShown_;
-}
-
-void Chatter::ShowBalloonTip ()
-{
-}
-
-void Chatter::closeEvent (QCloseEvent*)
-{
-	IsShown_ = false;
-}
-
-void Chatter::handleHidePlugins ()
-{
-	IsShown_ = false;
-	hide ();
+	return ircClient;
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_chatter, Chatter);

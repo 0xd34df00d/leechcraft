@@ -72,6 +72,9 @@ namespace Main
     private slots:
         void handleFileDownload (const QString&, bool = false);
         void handleClipboardTimer ();
+		void embeddedTabWantsToFront ();
+	private:
+		int FindTabForWidget (QWidget*) const;
     signals:
         void error (QString);
         void hidePlugins ();

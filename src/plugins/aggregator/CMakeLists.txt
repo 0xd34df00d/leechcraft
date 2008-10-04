@@ -61,7 +61,7 @@ SET (HEADERS
 	../../xmlsettingsdialog/basesettingsmanager.h
 	)
 SET (FORMS
-    mainwindow.ui
+    mainwidget.ui
     addfeed.ui
 	browserwidget.ui
 	itembucket.ui

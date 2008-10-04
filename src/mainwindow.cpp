@@ -137,6 +137,11 @@ namespace Main
 		return Ui_->PluginsTasksTree_->selectionModel ()->selectedRows ();
 	}
 
+	QTabWidget* MainWindow::GetTabWidget () const
+	{
+		return Ui_->MainTabWidget_;
+	}
+
 	void MainWindow::catchError (QString message)
 	{
 		QMessageBox::critical (this, tr ("Error"), message);

@@ -35,6 +35,15 @@ Main::Core::Core ()
     ClipboardWatchdog_->start (2000);
 
 	Server_->listen ("LeechCraft local socket");
+
+	XmlSettingsManager::Instance ()->RegisterObject ("ProxyEnabled", this, "handleProxySettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("ProxyHost", this, "handleProxySettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("ProxyPort", this, "handleProxySettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("ProxyLogin", this, "handleProxySettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("ProxyPassword", this, "handleProxySettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("ProxyType", this, "handleProxySettings");
+
+	handleProxySettings ();
 }
 
 Main::Core::~Core ()
@@ -120,8 +129,10 @@ void Main::Core::DelayedInit ()
     foreach (QObject *plugin, plugins)
     {
         connect (this, SIGNAL (hidePlugins ()), plugin, SLOT (handleHidePlugins ()));
+		IInfo *ii = qobject_cast<IInfo*> (plugin);
         IDownload *download = qobject_cast<IDownload*> (plugin);
 		IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
+		IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
 
 		const QMetaObject *qmo = plugin->metaObject ();
 
@@ -156,16 +167,17 @@ void Main::Core::DelayedInit ()
 				Action2Model_ [*i] = model;
 			}
 		}
+
+		if (iet)
+		{
+			ReallyMainWindow_->GetTabWidget ()->addTab (iet->GetTabContents (),
+					ii->GetName ());
+			connect (plugin,
+					SIGNAL (bringToFront ()),
+					this,
+					SLOT (embeddedTabWantsToFront ()));
+		}
     }
-
-	XmlSettingsManager::Instance ()->RegisterObject ("ProxyEnabled", this, "handleProxySettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("ProxyHost", this, "handleProxySettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("ProxyPort", this, "handleProxySettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("ProxyLogin", this, "handleProxySettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("ProxyPassword", this, "handleProxySettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("ProxyType", this, "handleProxySettings");
-
-	handleProxySettings ();
 }
 
 bool Main::Core::ShowPlugin (IInfo::ID_t id)
@@ -422,5 +434,24 @@ void Main::Core::handleClipboardTimer ()
 
     if (XmlSettingsManager::Instance ()->property ("WatchClipboard").toBool ())
         handleFileDownload (text, true);
+}
+
+void Main::Core::embeddedTabWantsToFront ()
+{
+	IEmbedTab *iet = qobject_cast<IEmbedTab*> (sender ());
+	if (!iet)
+		return;
+
+	ReallyMainWindow_->show ();
+	ReallyMainWindow_->GetTabWidget ()->setCurrentWidget (iet->GetTabContents ());
+}
+
+int Main::Core::FindTabForWidget (QWidget *widget) const
+{
+	QTabWidget *tabWidget = ReallyMainWindow_->GetTabWidget ();
+	for (int i = 0; i < tabWidget->count (); ++i)
+		if (tabWidget->widget (i) == widget)
+			return i;
+	return -1;
 }
 

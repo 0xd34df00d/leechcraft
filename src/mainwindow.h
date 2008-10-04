@@ -21,6 +21,7 @@ class XmlSettingsDialog;
 class QVBoxLayout;
 class GraphWidget;
 class QDockWidget;
+class QTabWidget;
 class QModelIndex;
 
 namespace Ui
@@ -51,6 +52,7 @@ namespace Main
         virtual ~MainWindow ();
         QMenu* GetRootPluginsMenu () const;
 		QModelIndexList GetSelectedRows () const;
+		QTabWidget* GetTabWidget () const;
     public slots:
         void catchError (QString);
     protected:
