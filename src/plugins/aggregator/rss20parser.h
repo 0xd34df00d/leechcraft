@@ -11,8 +11,6 @@ struct Item;
 
 class RSS20Parser : public Parser
 {
-    Q_OBJECT
-
     friend class ParserFactory;
 
     RSS20Parser ();

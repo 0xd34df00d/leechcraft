@@ -4,29 +4,29 @@
 #include <QtDebug>
 #include "channel.h"
 #include "item.h"
-#include "atom10parser.h"
+#include "atom03parser.h"
 
-Atom10Parser::Atom10Parser ()
+Atom03Parser::Atom03Parser ()
 {
 }
 
-Atom10Parser& Atom10Parser::Instance ()
+Atom03Parser& Atom03Parser::Instance ()
 {
-    static Atom10Parser inst;
+    static Atom03Parser inst;
     return inst;
 }
 
-bool Atom10Parser::CouldParse (const QDomDocument& doc) const
+bool Atom03Parser::CouldParse (const QDomDocument& doc) const
 {
     QDomElement root = doc.documentElement ();
 	if (root.tagName () != "feed")
 		return false;
-	if (root.hasAttribute ("version") && root.attribute ("version") != "1.0")
-		return false;
-    return true;
+	if (root.hasAttribute ("version") && root.attribute ("version") == "0.3")
+		return true;
+    return false;
 }
 
-Feed::channels_container_t Atom10Parser::Parse (const QDomDocument& doc) const
+Feed::channels_container_t Atom03Parser::Parse (const QDomDocument& doc) const
 {
 	Feed::channels_container_t channels;
     boost::shared_ptr<Channel> chan (new Channel);
@@ -38,9 +38,7 @@ Feed::channels_container_t Atom10Parser::Parse (const QDomDocument& doc) const
 		chan->Title_ = QObject::tr ("(No title)");
     chan->LastBuild_ = FromRFC3339 (root.firstChildElement ("updated").text ());
     chan->Link_ = GetLink (root);
-    chan->Description_ = root.firstChildElement ("subtitle").text ();
-    QDomElement author = root.firstChildElement ("author");
-    chan->Author_ = author.firstChildElement ("name").text () + " (" + author.firstChildElement ("email").text () + ")";
+    chan->Description_ = root.firstChildElement ("tagline").text ();
     chan->Language_ = "<>";
 
     QDomElement entry = root.firstChildElement ("entry");
@@ -53,20 +51,29 @@ Feed::channels_container_t Atom10Parser::Parse (const QDomDocument& doc) const
     return channels;
 }
 
-Item* Atom10Parser::ParseItem (const QDomElement& entry) const
+Item* Atom03Parser::ParseItem (const QDomElement& entry) const
 {
     Item *item = new Item;
 
-    item->Title_ = entry.firstChildElement ("title").text ();
+    item->Title_ = ParseEscapeAware (entry.firstChildElement ("title"));
     item->Link_ = GetLink (entry);
     item->Guid_ = entry.firstChildElement ("id").text ();
-    item->PubDate_ = FromRFC3339 (entry.firstChildElement ("updated").text ());
     item->Unread_ = true;
+
+	QDomElement date = entry.firstChildElement ("modified");
+	if (date.isNull ())
+		date = entry.firstChildElement ("issued");
+    item->PubDate_ = FromRFC3339 (date.text ());
 
     QDomElement summary = entry.firstChildElement ("content");
     if (summary.isNull ())
         summary = entry.firstChildElement ("summary");
 	item->Description_ = ParseEscapeAware (summary);
+
+	QStringList dcs = GetDCCategories (entry);
+
+	if (dcs.size ())
+		item->Category_ = dcs.join ("; ");
 
     return item;
 }

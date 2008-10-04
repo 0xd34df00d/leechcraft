@@ -1,17 +1,17 @@
-#ifndef ATOM10PARSER_H
-#define ATOM10PARSER_H
+#ifndef ATOM03PARSER_H
+#define ATOM03PARSER_H
 #include <QPair>
 #include <QDateTime>
 #include "parserfactory.h"
 #include "atomparser.h"
 
-class Atom10Parser : public AtomParser
+class Atom03Parser : public AtomParser
 {
     friend class ParserFactory;
 
-    Atom10Parser ();
+    Atom03Parser ();
 public:
-    static Atom10Parser& Instance ();
+    static Atom03Parser& Instance ();
     virtual bool CouldParse (const QDomDocument&) const;
 private:
 	Feed::channels_container_t Parse (const QDomDocument&) const;

@@ -11,7 +11,9 @@ SET (SRCS
     addfeed.cpp
     parserfactory.cpp
     rss20parser.cpp
+	atomparser.cpp
     atom10parser.cpp
+    atom03parser.cpp
     parser.cpp
     item.cpp
     channel.cpp
@@ -38,7 +40,9 @@ SET (HEADERS
     parserfactory.h
     parser.h
     rss20parser.h
+	atomparser.h
     atom10parser.h
+    atom03parser.h
     channelsmodel.h
     xmlsettingsmanager.h
     channelsfiltermodel.h

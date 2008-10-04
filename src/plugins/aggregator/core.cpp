@@ -17,6 +17,7 @@
 #include "parserfactory.h"
 #include "rss20parser.h"
 #include "atom10parser.h"
+#include "atom03parser.h"
 #include "channelsmodel.h"
 #include "itembucket.h"
 
@@ -25,6 +26,7 @@ Core::Core ()
 	SaveScheduled_ = false;
 	ParserFactory::Instance ().Register (&RSS20Parser::Instance ());
 	ParserFactory::Instance ().Register (&Atom10Parser::Instance ());
+	ParserFactory::Instance ().Register (&Atom03Parser::Instance ());
 	ItemHeaders_ << tr ("Name") << tr ("Date");
 
 	qRegisterMetaTypeStreamOperators<Feed> ("Feed");

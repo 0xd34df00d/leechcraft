@@ -1,6 +1,5 @@
 #ifndef PARSER_H
 #define PARSER_H
-#include <QObject>
 #include <QDomDocument>
 #include <vector>
 #include <boost/shared_ptr.hpp>
@@ -8,20 +7,17 @@
 
 struct Channel;
 
-class Parser : public QObject
+class Parser
 {
-    Q_OBJECT
 public:
     virtual bool CouldParse (const QDomDocument&) const = 0;
-    virtual Feed::channels_container_t Parse (const Feed::channels_container_t&, const QDomDocument&) const = 0;
-	Feed::channels_container_t Parse (const Feed::channels_container_t& o, const QByteArray& n)
-    {
-        QDomDocument newd;
-        newd.setContent (n);
-        return Parse (o, newd);
-    }
+    virtual Feed::channels_container_t Parse (const Feed::channels_container_t&,
+			const QDomDocument&) const = 0;
+	Feed::channels_container_t Parse (const Feed::channels_container_t&,
+			const QByteArray&);
 protected:
     QString UnescapeHTML (const QString&) const;
+	QStringList GetDCCategories (const QDomElement&) const;
 };
 
 #endif
