@@ -60,6 +60,16 @@ bool IsAlreadyRunning ()
 bool ParseCommandLine ()
 {
 	QStringList args = QCoreApplication::arguments ();
+	if (args.contains ("-logToConsole"))
+		qInstallMsgHandler (0);
+	if (args.contains ("-help"))
+	{
+		std::cout << "Usage: leechcraft [arguments]" << std::endl << std::endl;
+		std::cout << "Where arguments could be:" << std::endl;
+		std::cout << "-logToConsole    Logs all output to console instead of log files" << std::endl;
+		std::cout << "-help            Show this help message and exit" << std::endl;
+		return true;
+	}
 	return false;
 }
 
@@ -69,6 +79,9 @@ int main (int argc, char **argv)
 
     qInstallMsgHandler (debugMessageHandler);
     QApplication app (argc, argv);
+
+	if (ParseCommandLine ())
+		return 0;
 
 	if (IsAlreadyRunning ())
 	{
