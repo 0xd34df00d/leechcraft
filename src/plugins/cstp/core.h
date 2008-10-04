@@ -1,6 +1,5 @@
 #ifndef CORE_H
 #define CORE_H
-#include <deque>
 #include <list>
 #include <boost/shared_ptr.hpp>
 #include <QAbstractItemModel>
@@ -44,7 +43,7 @@ class Core : public QAbstractItemModel
 		LeechCraft::TaskParameters Parameters_;
 		quint32 ID_;
 	};
-	typedef std::deque<TaskDescr> tasks_t;
+	typedef std::list<TaskDescr> tasks_t;
 	tasks_t ActiveTasks_;
 	HistoryModel *HistoryModel_;
 	RepresentationModel *RepresentationModel_;
@@ -107,6 +106,8 @@ private:
 	tasks_t::iterator Remove (tasks_t::iterator);
 	void AddToHistory (tasks_t::const_iterator);
 	QNetworkProxy GetProxySettings () const;
+	tasks_t::const_reference TaskAt (int) const;
+	tasks_t::reference TaskAt (int);
 signals:
 	void taskFinished (int);
 	void taskRemoved (int);

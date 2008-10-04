@@ -667,6 +667,7 @@ void Core::handleJobFinished (int id)
 					property ("ItemsPerChannel").value<size_t> ();
 				if (cchannel->Items_.size () > ipc)
 				{
+					qDebug () << cchannel->Title_ << cchannel->Items_.size () << ipc;
 					if (ActivatedChannel_ == cchannel.get ())
 						beginRemoveRows (QModelIndex (), ipc,
 								ActivatedChannel_->Items_.size ());
@@ -686,6 +687,11 @@ void Core::handleJobFinished (int id)
 				{
 					if (cchannel->Items_ [j]->PubDate_.daysTo (current) > days)
 					{
+						qDebug () << cchannel->Title_
+							<< cchannel->Items_ [j]->PubDate_
+							<< current
+							<< days
+							<< cchannel->Items_ [j]->PubDate_.daysTo (current);
 						removeFrom = j;
 						break;
 					}

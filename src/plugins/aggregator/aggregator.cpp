@@ -228,7 +228,7 @@ void Aggregator::handleHidePlugins ()
 void Aggregator::showError (const QString& msg)
 {
     qWarning () << Q_FUNC_INFO << msg;
-    if (!XmlSettingsManager::Instance ()->property ("Silent").toBool ())
+    if (!XmlSettingsManager::Instance ()->property ("BeSilent").toBool ())
         QMessageBox::warning (0, tr ("Error"), msg);
 }
 
@@ -241,8 +241,12 @@ void Aggregator::on_ActionAddFeed__triggered ()
 
 void Aggregator::on_ActionRemoveFeed__triggered ()
 {
-	QMessageBox mb (QMessageBox::Warning, tr ("Warning"), tr ("You are going to permanently remove this feed.", "Feed removing attempt") + QString ("\n") +
-				tr ("Are you are really sure that you want to do this?", "Feed removing confirmation"), QMessageBox::Ok | QMessageBox::Cancel, this);
+	QMessageBox mb (QMessageBox::Warning,
+			tr ("Warning"),
+			tr ("You are going to permanently remove this feed. "
+				"Are you are really sure that you want to do this?", "Feed removing confirmation"),
+			QMessageBox::Ok | QMessageBox::Cancel,
+			this);
 	mb.setWindowModality (Qt::WindowModal);
 	if (mb.exec () == QMessageBox::Ok)
 		Core::Instance ().RemoveFeed (ChannelsFilterModel_->mapToSource (Ui_.Feeds_->selectionModel ()->currentIndex ()));

@@ -118,17 +118,17 @@ void Core::RemoveFromHistory (const QModelIndex& index)
 
 qint64 Core::GetDone (int pos) const
 {
-	return ActiveTasks_.at (pos).Task_->GetDone ();
+	return TaskAt (pos).Task_->GetDone ();
 }
 
 qint64 Core::GetTotal (int pos) const
 {
-	return ActiveTasks_.at (pos).Task_->GetTotal ();
+	return TaskAt (pos).Task_->GetTotal ();
 }
 
 bool Core::IsRunning (int pos) const
 {
-	return ActiveTasks_.at (pos).Task_->IsRunning ();
+	return TaskAt (pos).Task_->IsRunning ();
 }
 
 namespace _Local
@@ -174,7 +174,7 @@ QVariant Core::data (const QModelIndex& index, int role) const
 
     if (role == Qt::DisplayRole)
 	{
-		boost::shared_ptr<Task> task = ActiveTasks_ [index.row ()]
+		boost::shared_ptr<Task> task = TaskAt (index.row ())
 			.Task_;
 		switch (index.column ())
 		{
@@ -260,7 +260,9 @@ int Core::rowCount (const QModelIndex& parent) const
 void Core::removeTriggered (int i)
 {
 	stopTriggered (i);
-	Remove (ActiveTasks_.begin () + i);
+	tasks_t::iterator it = ActiveTasks_.begin ();
+	std::advance (it, i);
+	Remove (it);
 }
 
 void Core::removeAllTriggered (int)
@@ -271,7 +273,7 @@ void Core::removeAllTriggered (int)
 
 void Core::startTriggered (int i)
 {
-	TaskDescr selected = ActiveTasks_.at (i);
+	TaskDescr selected = TaskAt (i);
 	if (selected.Task_->IsRunning ())
 		return;
 	if (!selected.File_->open (QIODevice::ReadWrite))
@@ -287,7 +289,7 @@ void Core::startTriggered (int i)
 
 void Core::stopTriggered (int i)
 {
-	TaskDescr selected = ActiveTasks_.at (i);
+	TaskDescr selected = TaskAt (i);
 	if (!selected.Task_->IsRunning ())
 		return;
 	selected.Task_->Stop ();
@@ -511,5 +513,19 @@ QNetworkProxy Core::GetProxySettings () const
 	else
 		pr.setType (QNetworkProxy::NoProxy);
 	return pr;
+}
+
+Core::tasks_t::const_reference Core::TaskAt (int pos) const
+{
+	tasks_t::const_iterator begin = ActiveTasks_.begin ();
+	std::advance (begin, pos);
+	return *begin;
+}
+
+Core::tasks_t::reference Core::TaskAt (int pos)
+{
+	tasks_t::iterator begin = ActiveTasks_.begin ();
+	std::advance (begin, pos);
+	return *begin;
 }
 
