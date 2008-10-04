@@ -133,7 +133,6 @@ void fsirc::closeCurrentTab()
 	if (ircTabHolder->count()>1)
 	{
 		delete ircList.takeAt(ircTabHolder->currentIndex());
-		delete ircTabHolder->currentWidget();
 	}
 	if(ircTabHolder->count()==1)
 		closeTabButton->setDisabled(true);

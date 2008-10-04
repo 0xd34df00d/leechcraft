@@ -127,6 +127,7 @@ signals:
 	void gotQuit(QHash<QString, QString>);
 	void gotMode(QHash<QString, QString>);
 	void gotKick(QHash<QString, QString>);
+	void gotPrivAction(QHash<QString, QString>);
 protected slots:
 	void ircParse(QByteArray data);
 	//void gotError();

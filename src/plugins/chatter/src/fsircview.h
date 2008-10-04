@@ -63,6 +63,7 @@ private slots:
 	void gotQuit(QHash<QString, QString> data);
 	void gotMode(QHash<QString, QString> data);
 	void gotKick(QHash<QString, QString> data);
+	void gotPrivAction(QHash<QString, QString>);
 public slots:
 	void fsQuit();
 	void sayHere();

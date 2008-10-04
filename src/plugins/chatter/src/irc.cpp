@@ -110,6 +110,7 @@ void IrcLayer::initRegexes()
 	prRegexes["ircUriPort"] = QRegExp("^irc://([a-zA-Z0-9\\.\\-]+):([0-9]+)/(\\S+)$");
 	prRegexes["lineBr"] = QRegExp("[\r\n]");
 	prRegexes["uPrefix"] = QRegExp("^[@+&].*"); // Possible username prefixes
+	prRegexes["action"]=QRegExp("^\x01" "ACTION (.*)" "\x01$");
 	mircColors = new QRegExp("\x03(\\,([0-9][0-5]?|)|([0-9][0-5]?)(\\,([0-9][0-5]?|)|)|\\,|)");
 	mircShit = new QRegExp("[]");
 	chanPrefix = new QRegExp("^[#&\\+]\\S*$");
@@ -402,13 +403,19 @@ void IrcLayer::parseCmd(QString cmd, QHash<QString, QString> data)
 //	qDebug() << "Command=" << cmd << ", cmd=" << cmd;
 	if(prRegexes["privmsg"].exactMatch(cmd))
 	{
+		bool isAction=false;
 		data["target"]=prRegexes["privmsg"].cap(1); // target
 		data["text"]=prRegexes["privmsg"].cap(2); // text
-		if(data["target"]==target() && targetMode()==ChannelMode)
-			emit gotChannelMsg(data);
-		else if(data["target"]==nick() && targetMode()==PrivateMode)
-			emit gotChannelMsg(data);
-		else emit gotPrivMsg(data);
+		if(prRegexes["action"].exactMatch(data["text"]))
+		{
+			data["text"]=prRegexes["action"].cap(1);
+			isAction = true;
+		}
+		if((data["target"]==target() && targetMode()==ChannelMode) || (data["target"]==nick() && targetMode()==PrivateMode))
+		{
+			isAction ? emit gotAction(data) : emit gotChannelMsg(data);
+		}
+		else	emit gotPrivAction(data);
 	} else
 	if(prRegexes["notice"].exactMatch(cmd))
 	{
@@ -425,7 +432,7 @@ void IrcLayer::parseCmd(QString cmd, QHash<QString, QString> data)
 			setJoined(0);
 		if(data["target"]==target())
 		{
-			m_users.removeOne(data["nick"]);
+			if(int i=m_users.indexOf(data["nick"]) != -1) m_users.removeAt(i);
 			emit gotPart(data);
 		}
 	} else
@@ -434,7 +441,7 @@ void IrcLayer::parseCmd(QString cmd, QHash<QString, QString> data)
 		data["text"]=prRegexes["quit"].cap(1); // text
 		if (m_users.contains(data["nick"]) || data["nick"]==nick())
 		{
-			m_users.removeOne(data["nick"]);
+			if(int i=m_users.indexOf(data["nick"]) != -1) m_users.removeAt(i);
 			emit gotQuit(data);
 		}
 	} else
@@ -460,7 +467,7 @@ void IrcLayer::parseCmd(QString cmd, QHash<QString, QString> data)
 		data["text"]=prRegexes["kick"].cap(3); // reason
 		if(data["target"]==target())
 		{
-			m_users.removeOne(data["subject"]);
+			if(int i=m_users.indexOf(data["nick"]) != -1) m_users.removeAt(i);
 			emit gotKick(data);
 		}
 	} else
@@ -479,7 +486,7 @@ void IrcLayer::parseCmd(QString cmd, QHash<QString, QString> data)
 		qDebug() << data;
 		if(m_users.contains(data["nick"]) || data["target"]==nick())
 		{
-			m_users.removeOne(data["nick"]);
+			if(int i=m_users.indexOf(data["nick"]) != -1) m_users.removeAt(i);
 			m_users << data["target"];
 			emit gotNick(data);
 		}

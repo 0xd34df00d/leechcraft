@@ -32,7 +32,9 @@ int main(int argc, char *argv[])
 //	Q_INIT_RESOURCE(i18n);
      QApplication fsApp(argc, argv);
 	fsApp.setApplicationName("fsirc");
+#if QT_VERSION >= 0x040400
 	fsApp.setApplicationVersion(FS_VERSION);
+#endif
 	fsApp.setOrganizationName("NBL");
 	QTranslator transl;
 	QString localeName = QString(::getenv ("LANG")).left (2);

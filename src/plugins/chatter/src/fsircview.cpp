@@ -446,6 +446,7 @@ void FsIrcView::openIrc(QString uri)
 	connect(m_irc, SIGNAL(gotInfo(QString)), this, SLOT(gotInfo(QString)));
 	connect(m_irc, SIGNAL(gotError(QString)), this, SLOT(gotError(QString)));
 	connect(m_irc, SIGNAL(gotAction(QHash<QString, QString>)), this, SLOT(gotAction(QHash<QString, QString>)));
+	connect(m_irc, SIGNAL(gotPrivAction(QHash<QString, QString>)), this, SLOT(gotPrivAction(QHash<QString, QString>)));
 	connect(m_irc, SIGNAL(gotNames(QStringList)), this, SLOT(gotNames(QStringList)));
 	connect(m_irc, SIGNAL(gotTopic(QStringList)), this, SLOT(gotTopic(QStringList)));
 	connect(m_irc, SIGNAL(gotNick(QHash<QString, QString>)), this, SLOT(gotNick(QHash<QString, QString>)));
@@ -497,4 +498,12 @@ void FsIrcView::proposeUri(QString uri)
 void FsIrcView::clearView()
 {
 	fsChatView->clear();
+}
+
+void FsIrcView::gotPrivAction(QHash< QString, QString > data)
+{
+		// Private message
+	qDebug() << "Receiving PrivMsg" << ircUri() << hasFocus() << isVisible() << isHidden();
+	if(fsirc::findTab(ircUri().replace(QRegExp("/[^/]+$"),"/"+data["nick"]))<0 && fsirc::findTab(ircUri().replace(QRegExp("/[^/]+$"),"/"+data["target"]))<0 && !isHidden())
+		fsEcho(tr("Private: * %1 %2").arg(data["nick"],data["text"]), m_msgColors["private"]);
 }
