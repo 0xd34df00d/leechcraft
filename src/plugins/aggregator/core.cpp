@@ -442,7 +442,7 @@ void Core::AddFromOPML (const QString& filename,
 	QStringList tagsList = tags.split (" ", QString::SkipEmptyParts);
 	for (OPMLParser::items_container_t::const_iterator i = items.begin (),
 			end = items.end (); i != end; ++i)
-		AddFeed (i->URL_, tagsList);
+		AddFeed (i->URL_, tagsList + i->Categories_);
 }
 
 int Core::columnCount (const QModelIndex& parent) const
