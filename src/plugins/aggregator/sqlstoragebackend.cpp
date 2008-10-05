@@ -24,17 +24,17 @@ SQLStorageBackend::SQLStorageBackend ()
 	FeedFinderByURL_.prepare ("SELECT last_update FROM feeds WHERE url = :url");
 
 	ChannelFinder_ = QSqlQuery ();
-	ChannelFinder_.prepare ("SELECT description FROM channels WHERE "
-			"parent_feed_url = :parent_feed_url AND "
-			"title = :title AND "
-			"url = :url");
+	ChannelFinder_.prepare ("SELECT description FROM channels "
+			"WHERE parent_feed_url = :parent_feed_url "
+			"AND title = :title "
+			"AND url = :url");
 
 	ItemFinder_ = QSqlQuery ();
-	ItemFinder_.prepare ("SELECT title FROM items WHERE "
-			"parents_hash = :parents_hash AND "
-			"title = :title AND "
-			"url = :url AND "
-			"guid = :guid");
+	ItemFinder_.prepare ("SELECT title FROM items "
+			"WHERE parents_hash = :parents_hash "
+			"AND title = :title "
+			"AND url = :url "
+			"AND guid = :guid");
 
 	InsertFeed_ = QSqlQuery ();
 	InsertFeed_.prepare ("INSERT INTO feeds ("
@@ -95,9 +95,6 @@ SQLStorageBackend::SQLStorageBackend ()
 			":unread"
 			")");
 
-	UpdateFeed_ = QSqlQuery ();
-	UpdateFeed_.prepare ("UPDATE feeds SET last_update = :last_update WHERE url = :url");
-
 	UpdateChannel_ = QSqlQuery ();
 	UpdateChannel_.prepare ("UPDATE channels SET "
 			"description = :description, "
@@ -108,7 +105,9 @@ SQLStorageBackend::SQLStorageBackend ()
 			"pixmap_url = :pixmap_url, "
 			"pixmap = :pixmap, "
 			"favicon = :favicon "
-			"WHERE parent_feed_url = :parent_feed_url AND url = :url AND title = :title");
+			"WHERE parent_feed_url = :parent_feed_url "
+			"AND url = :url "
+			"AND title = :title");
 
 	UpdateItem_ = QSqlQuery ();
 	UpdateItem_.prepare ("UPDATE items SET "
@@ -117,7 +116,25 @@ SQLStorageBackend::SQLStorageBackend ()
 			"category = :category, "
 			"pub_date = :pub_date, "
 			"unread = :unread "
-			"WHERE parents_hash = :parents_hash AND title = :title AND url = :url AND guid = :guid");
+			"WHERE parents_hash = :parents_hash "
+			"AND title = :title "
+			"AND url = :url "
+			"AND guid = :guid");
+
+	RemoveFeed_ = QSqlQuery ();
+	RemoveFeed_.prepare ("DELETE FROM feeds "
+			"WHERE url = :url");
+
+	RemoveChannel_ = QSqlQuery ();
+	RemoveChannel_.prepare ("DELETE FROM channels "
+			"WHERE parent_feed_url = :parent_feed_url");
+
+	RemoveItem_ = QSqlQuery ();
+	RemoveItem_.prepare ("DELETE FROM items "
+			"WHERE parents_hash = :parents_hash "
+			"AND title = :title "
+			"AND url = :url "
+			"AND guid = :guid");
 }
 
 SQLStorageBackend::~SQLStorageBackend ()
@@ -277,68 +294,6 @@ void SQLStorageBackend::AddFeed (Feed_ptr feed)
 	}
 }
 
-void SQLStorageBackend::UpdateFeed (Feed_ptr feed)
-{
-	FeedFinderByURL_.bindValue (":url", feed->URL_);
-	if (!FeedFinderByURL_.exec ())
-	{
-		DumpError (FeedFinderByURL_);
-		return;
-	}
-	FeedFinderByURL_.next ();
-
-	if (!FeedFinderByURL_.isValid ())
-	{
-		AddFeed (feed);
-		return;
-	}
-	FeedFinderByURL_.finish ();
-
-
-	if (!DB_.transaction ())
-	{
-		DumpError (DB_.lastError ());
-		qWarning () << Q_FUNC_INFO << "failed to start transaction";
-		return;
-	}
-	UpdateFeed_.bindValue (":url", feed->URL_);
-	UpdateFeed_.bindValue (":last_update", feed->LastUpdate_);
-	if (!UpdateFeed_.exec ())
-	{
-		DumpError (UpdateFeed_);
-		if (!DB_.rollback ())
-		{
-			DumpError (DB_.lastError ());
-			qWarning () << Q_FUNC_INFO << "failed to rollback";
-		}
-		return;
-	}
-	UpdateFeed_.finish ();
-	try
-	{
-		std::for_each (feed->Channels_.begin (), feed->Channels_.end (),
-			   boost::bind (&SQLStorageBackend::UpdateChannel,
-				   this,
-				   _1, feed->URL_));
-	}
-	catch (const std::runtime_error& e)
-	{
-		qWarning () << Q_FUNC_INFO << e.what ();
-		if (!DB_.rollback ())
-		{
-			DumpError (DB_.lastError ());
-			qWarning () << Q_FUNC_INFO << "failed to rollback";
-		}
-		return;
-	}
-
-	if (!DB_.commit ())
-	{
-		DumpError (DB_.lastError ());
-		qWarning () << Q_FUNC_INFO << "failed to commit";
-	}
-}
-
 void SQLStorageBackend::UpdateChannel (Channel_ptr channel, const QString& parent)
 {
 	ChannelFinder_.bindValue (":parent_feed_url", parent);
@@ -374,11 +329,6 @@ void SQLStorageBackend::UpdateChannel (Channel_ptr channel, const QString& paren
 		DumpError (UpdateChannel_);
 		throw std::runtime_error ("failed to save channel");
 	}
-
-	std::for_each (channel->Items_.begin (), channel->Items_.end (),
-		   boost::bind (&SQLStorageBackend::UpdateItem,
-			   this,
-			   _1, channel->Link_ + channel->Title_));
 }
 
 void SQLStorageBackend::UpdateItem (Item_ptr item, const QString& parent)
@@ -462,6 +412,84 @@ void SQLStorageBackend::AddItem (Item_ptr item, const QString& parent)
 	}
 }
 
+void SQLStorageBackend::RemoveItem (Item_ptr item, const QString& parent)
+{
+	if (!DB_.transaction ())
+	{
+		qWarning () << Q_FUNC_INFO << "failed to start transaction";
+		DumpError (DB_.lastError ());
+		return;
+	}
+
+	bool error = false;
+
+	RemoveItem_.bindValue (":parents_hash", parent);
+	RemoveItem_.bindValue (":title", item->Title_);
+	RemoveItem_.bindValue (":url", item->Link_);
+	RemoveItem_.bindValue (":guid", item->Guid_);
+
+	if (!RemoveItem_.exec ())
+	{
+		error = true;
+		DumpError (RemoveItem_);
+	}
+
+	if (!(error ? DB_.rollback () : DB_.commit ()))
+	{
+		qWarning () << Q_FUNC_INFO << "failed to" << (error ? "rollback" : "commit");
+		DumpError (DB_.lastError ());
+	}
+}
+
+void SQLStorageBackend::RemoveFeed (Feed_ptr feed)
+{
+	if (!DB_.transaction ())
+	{
+		qWarning () << Q_FUNC_INFO << "failed to start transaction";
+		DumpError (DB_.lastError ());
+		return;
+	}
+
+	bool error = false;
+
+	for (channels_container_t::iterator i = feed->Channels_.begin (),
+			end = feed->Channels_.end (); i != end; ++i)
+	{
+		QSqlQuery removeItem;
+		removeItem.prepare ("DELETE FROM items "
+				"WHERE parents_hash = :parents_hash");
+		removeItem.bindValue (":parents_hash", (*i)->Link_ + (*i)->Title_);
+
+		if (!removeItem.exec ())
+		{
+			DumpError (removeItem);
+			error = true;
+			break;
+		}
+
+		RemoveChannel_.bindValue (":parent_feed_url", feed->URL_);
+		if (!RemoveChannel_.exec ())
+		{
+			DumpError (RemoveChannel_);
+			error = true;
+			break;
+		}
+	}
+
+	RemoveFeed_.bindValue (":url", feed->URL_);
+	if (!RemoveFeed_.exec ())
+	{
+		DumpError (RemoveFeed_);
+		error = true;
+	}
+
+	if (!(error ? DB_.rollback () : DB_.commit ()))
+	{
+		qWarning () << Q_FUNC_INFO << "failed to" << (error ? "rollback" : "commit");
+		DumpError (DB_.lastError ());
+	}
+}
+
 bool SQLStorageBackend::InitializeTables ()
 {
 	QSqlQuery query;
@@ -535,7 +563,7 @@ bool SQLStorageBackend::InitializeTables ()
 
 void SQLStorageBackend::DumpError (const QSqlError& lastError) const
 {
-	qDebug () << lastError.text () << "|"
+	qWarning () << lastError.text () << "|"
 		<< lastError.databaseText () << "|"
 		<< lastError.driverText () << "|"
 		<< lastError.type () << "|"
@@ -544,7 +572,7 @@ void SQLStorageBackend::DumpError (const QSqlError& lastError) const
 
 void SQLStorageBackend::DumpError (const QSqlQuery& lastQuery) const
 {
-	qDebug () << lastQuery.lastQuery ();
+	qWarning () << lastQuery.lastQuery ();
 	DumpError (lastQuery.lastError ());
 }
 

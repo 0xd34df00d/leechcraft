@@ -13,9 +13,11 @@ class SQLStorageBackend : public StorageBackend
 			  InsertFeed_,
 			  InsertChannel_,
 			  InsertItem_,
-			  UpdateFeed_,
 			  UpdateChannel_,
-			  UpdateItem_;
+			  UpdateItem_,
+			  RemoveFeed_,
+			  RemoveChannel_,
+			  RemoveItem_;
 public:
 	SQLStorageBackend ();
 	virtual ~SQLStorageBackend ();
@@ -23,14 +25,16 @@ public:
 	virtual void GetFeeds (feeds_container_t&) const;
 
 	virtual void AddFeed (Feed_ptr);
-	virtual void UpdateFeed (Feed_ptr);
 	virtual void UpdateChannel (Channel_ptr, const QString&);
 	virtual void UpdateItem (Item_ptr, const QString&);
+	virtual void AddChannel (Channel_ptr, const QString&);
+	virtual void AddItem (Item_ptr, const QString&);
+	virtual void RemoveItem (Item_ptr,
+			const QString&);
+	virtual void RemoveFeed (Feed_ptr);
 private:
 	void GetChannels (Feed_ptr) const;
 	void GetItems (Channel_ptr) const;
-	void AddChannel (Channel_ptr, const QString&);
-	void AddItem (Item_ptr, const QString&);
 	bool InitializeTables ();
 	void DumpError (const QSqlError&) const;
 	void DumpError (const QSqlQuery&) const;

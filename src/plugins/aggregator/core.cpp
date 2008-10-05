@@ -40,7 +40,6 @@ Core::Core ()
 
 	TagsCompletionModel_ = new TagsCompletionModel (this);
 
-	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Aggregator");
 	feeds_container_t feeds;
 	StorageBackend_->GetFeeds (feeds);
 	for (feeds_container_t::const_iterator i = feeds.begin (),
@@ -49,6 +48,8 @@ Core::Core ()
 		Feeds_ [(*i)->URL_] = *i;
 		ChannelsModel_->AddFeed (*i);
 	}
+
+	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Aggregator");
 	TagsCompletionModel_->UpdateTags (settings.value ("GlobalTags",
 			QStringList ("untagged")).toStringList ());
 
@@ -90,9 +91,18 @@ void Core::SetProvider (QObject *provider, const QString& feature)
 	Providers_ [feature] = provider;
 	if (feature == "http")
 	{
-		connect (provider, SIGNAL (jobFinished (int)), this, SLOT (handleJobFinished (int)));
-		connect (provider, SIGNAL (jobRemoved (int)), this, SLOT (handleJobRemoved (int)));
-		connect (provider, SIGNAL (jobError (int, IDirectDownload::Error)), this, SLOT (handleJobError (int, IDirectDownload::Error)));
+		connect (provider,
+				SIGNAL (jobFinished (int)),
+				this,
+				SLOT (handleJobFinished (int)));
+		connect (provider,
+				SIGNAL (jobRemoved (int)),
+				this,
+				SLOT (handleJobRemoved (int)));
+		connect (provider,
+				SIGNAL (jobError (int, IDirectDownload::Error)),
+				this,
+				SLOT (handleJobError (int, IDirectDownload::Error)));
 	}
 }
 
@@ -148,6 +158,7 @@ void Core::RemoveFeed (const QModelIndex& index)
 
 	for (size_t i = 0, size = Feeds_ [feedURL]->Channels_.size (); i < size; ++i)
 		ChannelsModel_->RemoveChannel (Feeds_ [feedURL]->Channels_ [i]);
+	StorageBackend_->RemoveFeed (Feeds_ [feedURL]);
 	Feeds_.remove (feedURL);
 
 	if (channel.get () == ActivatedChannel_)
@@ -635,6 +646,7 @@ void Core::handleJobFinished (int id)
 		}
 		ChannelsModel_->AddFeed (Feeds_ [pj.URL_]);
 		TagsCompletionModel_->UpdateTags (pj.Tags_);
+		StorageBackend_->AddFeed (Feeds_ [pj.URL_]);
 	}
 	else if (pj.Role_ == PendingJob::RFeedUpdated)
 		emitString += HandleFeedUpdated (channels, pj);
@@ -725,9 +737,6 @@ void Core::saveSettings ()
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Aggregator");
 	settings.setValue ("GlobalTags", TagsCompletionModel_->GetTags ());
 
-	QList<Feed_ptr> feeds = Feeds_.values ();
-	for (int i = 0; i < feeds.size (); ++i)
-		StorageBackend_->UpdateFeed (feeds.at (i));
 	SaveScheduled_ = false;
 }
 
@@ -876,12 +885,14 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 		if (position == -1)
 		{
 			Feeds_ [pj.URL_]->Channels_.push_back (channels [i]);
+			StorageBackend_->AddChannel (channels [i], pj.URL_);
 			emitString += tr ("Added channel \"%1\" (has %2 items)\r\n")
 				.arg (channels [i]->Title_)
 				.arg (channels [i]->Items_.size ());
 		}
 		else
 		{
+			StorageBackend_->UpdateChannel (channels [i], pj.URL_);
 			if (channels [i]->Items_.size ())
 				emitString += tr ("Updated channel \"%1\" (%2 new items)\r\n")
 					.arg (channels [i]->Title_)
@@ -901,6 +912,7 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 					newsize = channels.at (i)->Items_.end ();
 					j != newsize; ++j)
 			{
+				StorageBackend_->AddItem (*j, channels [i]->Link_ + channels [i]->Title_);
 				items_container_t::iterator item =
 					std::find_if (cchannel->Items_.begin (),
 							cchannel->Items_.end (),
@@ -933,6 +945,11 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 				if (ActivatedChannel_ == cchannel.get ())
 					beginRemoveRows (QModelIndex (), ipc,
 							ActivatedChannel_->Items_.size ());
+				std::for_each (cchannel->Items_.begin () + ipc,
+						cchannel->Items_.end (),
+						boost::bind (&StorageBackend::RemoveItem,
+							StorageBackend_.get (),
+							_1, cchannel->Link_ + cchannel->Title_));
 				cchannel->Items_.erase (cchannel->Items_.begin () + ipc,
 						cchannel->Items_.end ());
 				if (ActivatedChannel_ == cchannel.get ())
@@ -967,6 +984,11 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 							ActivatedChannel_->Items_.size ());
 				cchannel->Items_.erase (cchannel->Items_.begin () + removeFrom,
 						cchannel->Items_.end ());
+				std::for_each (cchannel->Items_.begin () + removeFrom,
+						cchannel->Items_.end (),
+						boost::bind (&StorageBackend::RemoveItem,
+							StorageBackend_.get (),
+							_1, cchannel->Link_ + cchannel->Title_));
 				if (ActivatedChannel_ == cchannel.get ())
 					endRemoveRows ();
 
