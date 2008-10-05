@@ -1,6 +1,7 @@
 #include "atomparser.h"
 #include <QDomDocument>
 #include <QString>
+#include <QtDebug>
 
 channels_container_t AtomParser::Parse (const channels_container_t& old,
 		const QDomDocument& recent) const

@@ -41,6 +41,11 @@ void Channel::Equalify (const Channel& channel)
     Description_ = channel.Description_;
     LastBuild_ = channel.LastBuild_;
     Tags_ = channel.Tags_;
+	Language_ = channel.Language_;
+	Author_ = channel.Author_;
+	PixmapURL_ = channel.PixmapURL_;
+	Pixmap_ = channel.Pixmap_;
+	Favicon_ = channel.Favicon_;
 }
 
 bool operator== (const Channel& c1, const Channel& c2)

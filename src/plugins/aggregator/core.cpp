@@ -926,7 +926,6 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 		}
 		else
 		{
-			StorageBackend_->UpdateChannel (channels [i], pj.URL_);
 			if (channels [i]->Items_.size ())
 				emitString += tr ("Updated channel \"%1\" (%2 new items)\r\n")
 					.arg (channels [i]->Title_)
@@ -937,6 +936,7 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 
 			Feed_ptr cfeed = Feeds_ [pj.URL_];
 			Channel_ptr cchannel = cfeed->Channels_ [position];
+			StorageBackend_->UpdateChannel (cchannel, pj.URL_);
 
 			// Okay, this item is new, let's find where to place
 			// it. We should place it before the first found item
