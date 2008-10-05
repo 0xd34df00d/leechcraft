@@ -29,18 +29,12 @@ SQLStorageBackend::SQLStorageBackend ()
 			"title = :title AND "
 			"url = :url");
 
-	ChannelFinderByFeed_ = QSqlQuery ();
-	ChannelFinderByFeed_.prepare ("SELECT title FROM channels WHERE parent_feed_url = :parent_feed_url");
-
 	ItemFinder_ = QSqlQuery ();
 	ItemFinder_.prepare ("SELECT title FROM items WHERE "
 			"parents_hash = :parents_hash AND "
 			"title = :title AND "
 			"url = :url AND "
 			"guid = :guid");
-
-	ItemFinderByChannel_ = QSqlQuery ();
-	ItemFinderByChannel_.prepare ("SELECT title FROM items WHERE parent_feed_url = :parent_feed_url");
 
 	InsertFeed_ = QSqlQuery ();
 	InsertFeed_.prepare ("INSERT INTO feeds ("
@@ -133,16 +127,108 @@ SQLStorageBackend::~SQLStorageBackend ()
 
 void SQLStorageBackend::GetFeeds (feeds_container_t& result) const
 {
+	QSqlQuery feedSelector;
+	if (!feedSelector.exec ("SELECT url, last_update FROM feeds"))
+	{
+		DumpError (feedSelector);
+		return;
+	}
+
+	while (feedSelector.next ())
+	{
+		Feed_ptr feed (new Feed);
+		feed->URL_ = feedSelector.value (0).toString ();
+		feed->LastUpdate_ = feedSelector.value (1).toDateTime ();
+		GetChannels (feed);
+		result.push_back (feed);
+	}
 }
 
-void SQLStorageBackend::GetChannels (Feed_ptr feed,
-		channels_container_t& result) const
+void SQLStorageBackend::GetChannels (Feed_ptr feed) const
 {
+	QSqlQuery channelsSelector;
+	channelsSelector.prepare ("SELECT "
+			"url, "
+			"title, "
+			"description, "
+			"last_build, "
+			"tags, "
+			"language, "
+			"author, "
+			"pixmap_url, "
+			"pixmap, "
+			"favicon "
+			"FROM channels "
+			"WHERE parent_feed_url = :parent_feed_url "
+			"ORDER BY title");
+	channelsSelector.bindValue (":parent_feed_url", feed->URL_);
+	if (!channelsSelector.exec ())
+	{
+		DumpError (channelsSelector);
+		return;
+	}
+
+	while (channelsSelector.next ())
+	{
+		Channel_ptr channel (new Channel);
+
+		channel->Link_ = channelsSelector.value (0).toString ();
+		channel->Title_ = channelsSelector.value (1).toString ();
+		channel->Description_ = channelsSelector.value (2).toString ();
+		channel->LastBuild_ = channelsSelector.value (3).toDateTime ();
+		channel->Tags_ = channelsSelector.value (4).toString ().split (' ',
+				QString::SkipEmptyParts);
+		channel->Language_ = channelsSelector.value (5).toString ();
+		channel->Author_ = channelsSelector.value (6).toString ();
+		channel->PixmapURL_ = channelsSelector.value (7).toString ();
+		channel->Pixmap_ = UnserializePixmap (channelsSelector
+				.value (8).toByteArray ());
+		channel->Favicon_ = UnserializePixmap (channelsSelector
+				.value (9).toByteArray ());
+
+		GetItems (channel);
+
+		feed->Channels_.push_back (channel);
+	}
 }
 
-void SQLStorageBackend::GetItems (Channel_ptr channel,
-		items_container_t& result) const
+void SQLStorageBackend::GetItems (Channel_ptr channel) const
 {
+	QSqlQuery itemsSelector;
+	itemsSelector.prepare ("SELECT "
+			"title, "
+			"url, "
+			"description, "
+			"author, "
+			"category, "
+			"guid, "
+			"pub_date, "
+			"unread "
+			"FROM items "
+			"WHERE parents_hash = :parents_hash "
+			"ORDER BY pub_date DESC");
+	itemsSelector.bindValue (":parents_hash", channel->Link_ + channel->Title_);
+	if (!itemsSelector.exec ())
+	{
+		DumpError (itemsSelector);
+		return;
+	}
+
+	while (itemsSelector.next ())
+	{
+		Item_ptr item (new Item);
+
+		item->Title_ = itemsSelector.value (0).toString ();
+		item->Link_ = itemsSelector.value (1).toString ();
+		item->Description_ = itemsSelector.value (2).toString ();
+		item->Author_ = itemsSelector.value (3).toString ();
+		item->Category_ = itemsSelector.value (4).toString ();
+		item->Guid_ = itemsSelector.value (5).toString ();
+		item->PubDate_ = itemsSelector.value (6).toDateTime ();
+		item->Unread_ = itemsSelector.value (7).toBool ();
+
+		channel->Items_.push_back (item);
+	}
 }
 
 void SQLStorageBackend::AddFeed (Feed_ptr feed)
@@ -359,7 +445,6 @@ void SQLStorageBackend::AddChannel (Channel_ptr channel, const QString& url)
 
 void SQLStorageBackend::AddItem (Item_ptr item, const QString& parent)
 {
-	qDebug () << Q_FUNC_INFO << parent << item->Title_;
 	InsertItem_.bindValue (":parents_hash", parent);
 	InsertItem_.bindValue (":title", item->Title_);
 	InsertItem_.bindValue (":url", item->Link_);

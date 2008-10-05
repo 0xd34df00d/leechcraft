@@ -41,16 +41,16 @@ Core::Core ()
 	TagsCompletionModel_ = new TagsCompletionModel (this);
 
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Aggregator");
-	int numFeeds = settings.beginReadArray ("Feeds");
-	for (int i = 0; i < numFeeds; ++i)
+	feeds_container_t feeds;
+	StorageBackend_->GetFeeds (feeds);
+	for (feeds_container_t::const_iterator i = feeds.begin (),
+			end = feeds.end (); i < end; ++i)
 	{
-		settings.setArrayIndex (i);
-		Feed_ptr feed (new Feed (settings.value ("Feed").value<Feed> ()));
-		Feeds_ [feed->URL_] = feed;
-		ChannelsModel_->AddFeed (feed);
+		Feeds_ [(*i)->URL_] = *i;
+		ChannelsModel_->AddFeed (*i);
 	}
-	settings.endArray ();
-	TagsCompletionModel_->UpdateTags (settings.value ("GlobalTags", QStringList ("untagged")).toStringList ());
+	TagsCompletionModel_->UpdateTags (settings.value ("GlobalTags",
+			QStringList ("untagged")).toStringList ());
 
 	ActivatedChannel_ = 0;
 }
@@ -723,10 +723,11 @@ void Core::fetchExternalFile (const QString& url, const QString& where)
 void Core::saveSettings ()
 {
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Aggregator");
+	settings.setValue ("GlobalTags", TagsCompletionModel_->GetTags ());
+
 	QList<Feed_ptr> feeds = Feeds_.values ();
 	for (int i = 0; i < feeds.size (); ++i)
 		StorageBackend_->UpdateFeed (feeds.at (i));
-	settings.setValue ("GlobalTags", TagsCompletionModel_->GetTags ());
 	SaveScheduled_ = false;
 }
 
