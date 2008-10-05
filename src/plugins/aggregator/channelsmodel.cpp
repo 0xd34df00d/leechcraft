@@ -116,9 +116,9 @@ int ChannelsModel::rowCount (const QModelIndex& parent) const
     return parentItem->ChildCount ();
 }
 
-void ChannelsModel::AddFeed (const Feed& feed)
+void ChannelsModel::AddFeed (Feed_ptr feed)
 {
-    const channels_container_t& channels = feed.Channels_;
+    const channels_container_t& channels = feed->Channels_;
     if (!channels.size ())
         return;
 

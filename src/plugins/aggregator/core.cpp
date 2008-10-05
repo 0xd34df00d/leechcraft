@@ -45,8 +45,8 @@ Core::Core ()
 	for (int i = 0; i < numFeeds; ++i)
 	{
 		settings.setArrayIndex (i);
-		Feed feed = settings.value ("Feed").value<Feed> ();
-		Feeds_ [feed.URL_] = feed;
+		Feed_ptr feed (new Feed (settings.value ("Feed").value<Feed> ()));
+		Feeds_ [feed->URL_] = feed;
 		ChannelsModel_->AddFeed (feed);
 	}
 	settings.endArray ();
@@ -146,8 +146,8 @@ void Core::RemoveFeed (const QModelIndex& index)
 		return;
 	}
 
-	for (size_t i = 0, size = Feeds_ [feedURL].Channels_.size (); i < size; ++i)
-		ChannelsModel_->RemoveChannel (Feeds_ [feedURL].Channels_ [i]);
+	for (size_t i = 0, size = Feeds_ [feedURL]->Channels_.size (); i < size; ++i)
+		ChannelsModel_->RemoveChannel (Feeds_ [feedURL]->Channels_ [i]);
 	Feeds_.remove (feedURL);
 
 	if (channel.get () == ActivatedChannel_)
@@ -616,17 +616,17 @@ void Core::handleJobFinished (int id)
 
 		if (pj.Role_ == PendingJob::RFeedAdded)
 		{
-			Feed feed;
-			feed.URL_ = pj.URL_;
+			Feed_ptr feed (new Feed);
+			feed->URL_ = pj.URL_;
 			Feeds_ [pj.URL_] = feed;
 		}
 
-		channels = parser->Parse (Feeds_ [pj.URL_].Channels_, data);
+		channels = parser->Parse (Feeds_ [pj.URL_]->Channels_, data);
 	}
 	QString emitString;
 	if (pj.Role_ == PendingJob::RFeedAdded)
 	{
-		Feeds_ [pj.URL_].Channels_ = channels;
+		Feeds_ [pj.URL_]->Channels_ = channels;
 		for (size_t i = 0; i < channels.size (); ++i)
 		{
 			channels [i]->Tags_ = pj.Tags_;
@@ -723,15 +723,9 @@ void Core::fetchExternalFile (const QString& url, const QString& where)
 void Core::saveSettings ()
 {
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Aggregator");
-	settings.beginWriteArray ("Feeds");
-	settings.remove ("");
-	QList<Feed> feeds = Feeds_.values ();
+	QList<Feed_ptr> feeds = Feeds_.values ();
 	for (int i = 0; i < feeds.size (); ++i)
-	{
-		settings.setArrayIndex (i);
-		settings.setValue ("Feed", qVariantFromValue<Feed> (feeds.at (i)));
-	}
-	settings.endArray ();
+		StorageBackend_->UpdateFeed (feeds.at (i));
 	settings.setValue ("GlobalTags", TagsCompletionModel_->GetTags ());
 	SaveScheduled_ = false;
 }
@@ -753,13 +747,13 @@ void Core::handleSslError (QNetworkReply *reply)
 
 QString Core::FindFeedForChannel (const Channel_ptr& channel) const
 {
-	for (QMap<QString, Feed>::const_iterator i = Feeds_.begin ();
+	for (QMap<QString, Feed_ptr>::const_iterator i = Feeds_.begin ();
 			i != Feeds_.end (); ++i)
 	{
 		channels_container_t::const_iterator j =
-			std::find (i.value ().Channels_.begin (),
-					i.value ().Channels_.end (), channel);
-		if (j != i.value ().Channels_.end ())
+			std::find (i.value ()->Channels_.begin (),
+					i.value ()->Channels_.end (), channel);
+		if (j != i.value ()->Channels_.end ())
 			return i.key ();
 	}
 	return QString ();
@@ -768,10 +762,14 @@ QString Core::FindFeedForChannel (const Channel_ptr& channel) const
 void Core::UpdateUnreadItemsNumber () const
 {
 	int result = 0;
-	for (QMap<QString, Feed>::const_iterator i = Feeds_.begin (); i != Feeds_.end (); ++i)
-		for (size_t j = 0; j < i.value ().Channels_.size (); ++j)
-			for (size_t k = 0; k < i.value ().Channels_ [j]->Items_.size (); ++k)
-				result += i.value ().Channels_ [j]->Items_ [k]->Unread_;
+	for (QMap<QString, Feed_ptr>::const_iterator i = Feeds_.begin ();
+			i != Feeds_.end (); ++i)
+		for (size_t j = 0, endJSize = i.value ()->Channels_.size ();
+				j < endJSize; ++j)
+			for (size_t k = 0,
+					endKSize = i.value ()->Channels_ [j]->Items_.size ();
+				   k < endKSize; ++k)
+				result += i.value ()->Channels_ [j]->Items_ [k]->Unread_;
 	emit unreadNumberChanged (result);
 }
 
@@ -864,8 +862,10 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 	for (size_t i = 0; i < channels.size (); ++i)
 	{
 		int position = -1;
-		for (size_t j = 0; j < Feeds_ [pj.URL_].Channels_.size (); ++j)
-			if (*Feeds_ [pj.URL_].Channels_ [j] == *channels [i])
+		for (size_t j = 0,
+				endJSize = Feeds_ [pj.URL_]->Channels_.size ();
+				j < endJSize; ++j)
+			if (*Feeds_ [pj.URL_]->Channels_ [j] == *channels [i])
 			{
 				position = j;
 				break;
@@ -874,7 +874,7 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 
 		if (position == -1)
 		{
-			Feeds_ [pj.URL_].Channels_.push_back (channels [i]);
+			Feeds_ [pj.URL_]->Channels_.push_back (channels [i]);
 			emitString += tr ("Added channel \"%1\" (has %2 items)\r\n")
 				.arg (channels [i]->Title_)
 				.arg (channels [i]->Items_.size ());
@@ -887,10 +887,10 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 					.arg (channels [i]->Items_.size ());
 
 			bool insertedRows = (ActivatedChannel_ ==
-					Feeds_ [pj.URL_].Channels_ [position].get ());
+					Feeds_ [pj.URL_]->Channels_ [position].get ());
 
-			Feed &cfeed = Feeds_ [pj.URL_];
-			Channel_ptr &cchannel = cfeed.Channels_ [position];
+			Feed_ptr cfeed = Feeds_ [pj.URL_];
+			Channel_ptr cchannel = cfeed->Channels_ [position];
 
 			// Okay, this item is new, let's find where to place
 			// it. We should place it before the first found item

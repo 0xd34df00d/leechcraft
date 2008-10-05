@@ -28,7 +28,7 @@ public:
     virtual QModelIndex parent (const QModelIndex&) const;
     virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 
-    void AddFeed (const Feed&);
+    void AddFeed (Feed_ptr);
     void Update (const channels_container_t&);
     void UpdateChannelData (const Channel*);
     void UpdateChannelData (const Channel_ptr&);

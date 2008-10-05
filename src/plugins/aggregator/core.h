@@ -55,7 +55,7 @@ class Core : public QAbstractItemModel
     QMap<int, PendingJob> PendingJobs_;
     QMap<QString, ExternalData> PendingJob2ExternalData_;
 
-    QMap<QString, Feed> Feeds_;
+    QMap<QString, Feed_ptr> Feeds_;
     Channel *ActivatedChannel_;
     QStringList ItemHeaders_;
     ChannelsModel *ChannelsModel_;
