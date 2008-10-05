@@ -180,6 +180,7 @@ void Core::Activated (const QModelIndex& index)
 
 	QString URL = item->Link_;
 	item->Unread_ = false;
+	StorageBackend_->UpdateItem (item, ActivatedChannel_->Link_ + ActivatedChannel_->Title_);
 	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
 	UpdateUnreadItemsNumber ();
 	QDesktopServices::openUrl (QUrl (URL));
@@ -195,9 +196,10 @@ QString Core::GetDescription (const QModelIndex& index)
 	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
 		return QString ();
 
-	Item_ptr& item = ActivatedChannel_->Items_ [index.row ()];
+	Item_ptr item = ActivatedChannel_->Items_ [index.row ()];
 
 	item->Unread_ = false;
+	StorageBackend_->UpdateItem (item, ActivatedChannel_->Link_ + ActivatedChannel_->Title_);
 	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
 	UpdateUnreadItemsNumber ();
 	return item->Description_;
@@ -208,9 +210,10 @@ QString Core::GetAuthor (const QModelIndex& index)
 	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
 		return QString ();
 
-	Item_ptr& item = ActivatedChannel_->Items_ [index.row ()];
+	Item_ptr item = ActivatedChannel_->Items_ [index.row ()];
 
 	item->Unread_ = false;
+	StorageBackend_->UpdateItem (item, ActivatedChannel_->Link_ + ActivatedChannel_->Title_);
 	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
 	UpdateUnreadItemsNumber ();
 	return item->Author_;
@@ -221,9 +224,10 @@ QString Core::GetCategory (const QModelIndex& index)
 	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
 		return QString ();
 
-	Item_ptr& item = ActivatedChannel_->Items_ [index.row ()];
+	Item_ptr item = ActivatedChannel_->Items_ [index.row ()];
 
 	item->Unread_ = false;
+	StorageBackend_->UpdateItem (item, ActivatedChannel_->Link_ + ActivatedChannel_->Title_);
 	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
 	UpdateUnreadItemsNumber ();
 	return item->Category_;
@@ -234,9 +238,10 @@ QString Core::GetLink (const QModelIndex& index)
 	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
 		return QString ();
 
-	Item_ptr& item = ActivatedChannel_->Items_ [index.row ()];
+	Item_ptr item = ActivatedChannel_->Items_ [index.row ()];
 
 	item->Unread_ = false;
+	StorageBackend_->UpdateItem (item, ActivatedChannel_->Link_ + ActivatedChannel_->Title_);
 	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
 	UpdateUnreadItemsNumber ();
 	return item->Link_;
@@ -247,9 +252,10 @@ QDateTime Core::GetPubDate (const QModelIndex& index)
 	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
 		return QDateTime ();
 
-	Item_ptr& item = ActivatedChannel_->Items_ [index.row ()];
+	Item_ptr item = ActivatedChannel_->Items_ [index.row ()];
 
 	item->Unread_ = false;
+	StorageBackend_->UpdateItem (item, ActivatedChannel_->Link_ + ActivatedChannel_->Title_);
 	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
 	UpdateUnreadItemsNumber ();
 	return item->PubDate_;
@@ -276,6 +282,8 @@ void Core::MarkItemAsUnread (const QModelIndex& i)
 		return;
 
 	ActivatedChannel_->Items_ [i.row ()]->Unread_ = true;
+	StorageBackend_->UpdateItem (ActivatedChannel_->Items_ [i.row ()],
+			ActivatedChannel_->Link_ + ActivatedChannel_->Title_);
 	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
 	emit dataChanged (index (i.row (), 0), index (i.row (), 1));
 	UpdateUnreadItemsNumber ();
@@ -298,6 +306,15 @@ void Core::MarkChannelAsRead (const QModelIndex& i)
 	ChannelsModel_->MarkChannelAsRead (i);
 	if (ChannelsModel_->GetChannelForIndex (i).get () == ActivatedChannel_)
 		emit dataChanged (index (0, 0), index (ActivatedChannel_->Items_.size () - 1, 1));
+
+	QString hash = ChannelsModel_->GetChannelForIndex (i)->Link_ +
+		ChannelsModel_->GetChannelForIndex (i)->Title_;
+	for (items_container_t::const_iterator item =
+			ChannelsModel_->GetChannelForIndex (i)->Items_.begin (),
+			end = ChannelsModel_->GetChannelForIndex (i)->Items_.end ();
+			item != end; ++item)
+		StorageBackend_->UpdateItem (*item, hash);
+
 	UpdateUnreadItemsNumber ();
 }
 
@@ -309,6 +326,15 @@ void Core::MarkChannelAsUnread (const QModelIndex& i)
 	ChannelsModel_->MarkChannelAsUnread (i);
 	if (ChannelsModel_->GetChannelForIndex (i).get () == ActivatedChannel_)
 		emit dataChanged (index (0, 0), index (ActivatedChannel_->Items_.size () - 1, 1));
+
+	QString hash = ChannelsModel_->GetChannelForIndex (i)->Link_ +
+		ChannelsModel_->GetChannelForIndex (i)->Title_;
+	for (items_container_t::const_iterator item =
+			ChannelsModel_->GetChannelForIndex (i)->Items_.begin (),
+			end = ChannelsModel_->GetChannelForIndex (i)->Items_.end ();
+			item != end; ++item)
+		StorageBackend_->UpdateItem (*item, hash);
+
 	UpdateUnreadItemsNumber ();
 }
 
@@ -347,6 +373,7 @@ void Core::SetTagsForIndex (const QString& tags, const QModelIndex& index)
 {
 	Channel_ptr channel = ChannelsModel_->GetChannelForIndex (index);
 	channel->Tags_ = tags.split (' ');
+	StorageBackend_->UpdateChannel (channel, FindFeedForChannel (channel));
 }
 
 void Core::UpdateFeed (const QModelIndex& index)
@@ -849,14 +876,18 @@ void Core::HandleExternalData (const QString& url, const QFile& file)
 		switch (data.Type_)
 		{
 			case ExternalData::TImage:
-				data.RelatedChannel_->Pixmap_ = QPixmap::fromImage (QImage (file.fileName ()));
+				data.RelatedChannel_->Pixmap_ =
+					QPixmap::fromImage (QImage (file.fileName ()));
 				ChannelsModel_->UpdateChannelData (data.RelatedChannel_);
 				break;
 			case ExternalData::TIcon:
-				data.RelatedChannel_->Favicon_ = QPixmap::fromImage (QImage (file.fileName ())).scaled (16, 16);;
+				data.RelatedChannel_->Favicon_ =
+					QPixmap::fromImage (QImage (file.fileName ())).scaled (16, 16);;
 				ChannelsModel_->UpdateChannelData (data.RelatedChannel_);
 				break;
 		}
+		StorageBackend_->UpdateChannel (data.RelatedChannel_,
+				FindFeedForChannel (data.RelatedChannel_));
 	}
 	else if (data.RelatedFeed_)
 	{
