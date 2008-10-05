@@ -1,24 +1,22 @@
 #ifndef ITEMMODEL_H
 #define ITEMMODEL_H
+#include <deque>
 #include <QAbstractItemModel>
 #include <QStringList>
-#include <deque>
-#include <boost/shared_ptr.hpp>
-
-struct Item;
+#include "item.h"
 
 class ItemModel : public QAbstractItemModel
 {
 	Q_OBJECT
 
-	std::deque<boost::shared_ptr<Item> > Items_;
+	std::deque<Item_ptr> Items_;
 	QStringList ItemHeaders_;
 	bool SaveScheduled_;
 public:
 	ItemModel (QObject* = 0);
 	virtual ~ItemModel ();
 
-	void AddItem (const boost::shared_ptr<Item>&);
+	void AddItem (const Item_ptr&);
 	void RemoveItem (const QModelIndex&);
 	void Activated (const QModelIndex&) const;
 	QString GetDescription (const QModelIndex&) const;

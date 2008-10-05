@@ -1,8 +1,10 @@
 #ifndef ITEM_H
 #define ITEM_H
+#include <vector>
 #include <QString>
 #include <QDateTime>
 #include <QMetaType>
+#include <boost/shared_ptr.hpp>
 
 struct Item
 {
@@ -16,6 +18,9 @@ struct Item
     QDateTime PubDate_;
     bool Unread_;
 };
+
+typedef boost::shared_ptr<Item> Item_ptr;
+typedef std::vector<Item_ptr> items_container_t;
 
 Q_DECLARE_METATYPE (Item);
 

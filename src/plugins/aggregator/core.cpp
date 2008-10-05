@@ -135,7 +135,7 @@ void Core::RemoveFeed (const QModelIndex& index)
 {
 	if (!index.isValid ())
 		return;
-	boost::shared_ptr<Channel> channel = ChannelsModel_->GetChannelForIndex (index);
+	Channel_ptr channel = ChannelsModel_->GetChannelForIndex (index);
 
 	QString feedURL = FindFeedForChannel (channel);
 	if (feedURL.isEmpty ())
@@ -163,7 +163,7 @@ void Core::Activated (const QModelIndex& index)
 	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
 		return;
 
-	boost::shared_ptr<Item> item = ActivatedChannel_->Items_ [index.row ()];
+	Item_ptr item = ActivatedChannel_->Items_ [index.row ()];
 
 	QString URL = item->Link_;
 	item->Unread_ = false;
@@ -182,7 +182,7 @@ QString Core::GetDescription (const QModelIndex& index)
 	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
 		return QString ();
 
-	boost::shared_ptr<Item>& item = ActivatedChannel_->Items_ [index.row ()];
+	Item_ptr& item = ActivatedChannel_->Items_ [index.row ()];
 
 	item->Unread_ = false;
 	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
@@ -195,7 +195,7 @@ QString Core::GetAuthor (const QModelIndex& index)
 	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
 		return QString ();
 
-	boost::shared_ptr<Item>& item = ActivatedChannel_->Items_ [index.row ()];
+	Item_ptr& item = ActivatedChannel_->Items_ [index.row ()];
 
 	item->Unread_ = false;
 	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
@@ -208,7 +208,7 @@ QString Core::GetCategory (const QModelIndex& index)
 	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
 		return QString ();
 
-	boost::shared_ptr<Item>& item = ActivatedChannel_->Items_ [index.row ()];
+	Item_ptr& item = ActivatedChannel_->Items_ [index.row ()];
 
 	item->Unread_ = false;
 	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
@@ -221,7 +221,7 @@ QString Core::GetLink (const QModelIndex& index)
 	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
 		return QString ();
 
-	boost::shared_ptr<Item>& item = ActivatedChannel_->Items_ [index.row ()];
+	Item_ptr& item = ActivatedChannel_->Items_ [index.row ()];
 
 	item->Unread_ = false;
 	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
@@ -234,7 +234,7 @@ QDateTime Core::GetPubDate (const QModelIndex& index)
 	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
 		return QDateTime ();
 
-	boost::shared_ptr<Item>& item = ActivatedChannel_->Items_ [index.row ()];
+	Item_ptr& item = ActivatedChannel_->Items_ [index.row ()];
 
 	item->Unread_ = false;
 	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
@@ -301,7 +301,7 @@ void Core::MarkChannelAsUnread (const QModelIndex& i)
 
 QStringList Core::GetTagsForIndex (int i) const
 {
-	boost::shared_ptr<Channel> channel = ChannelsModel_->GetChannelForIndex (ChannelsModel_->index (i, 0));
+	Channel_ptr channel = ChannelsModel_->GetChannelForIndex (ChannelsModel_->index (i, 0));
 	if (channel)
 		return channel->Tags_;
 	else
@@ -310,7 +310,7 @@ QStringList Core::GetTagsForIndex (int i) const
 
 Core::ChannelInfo Core::GetChannelInfo (const QModelIndex& i) const
 {
-	boost::shared_ptr<Channel> channel = ChannelsModel_->GetChannelForIndex (i);
+	Channel_ptr channel = ChannelsModel_->GetChannelForIndex (i);
 	ChannelInfo ci;
 	if (channel)
 	{
@@ -323,7 +323,7 @@ Core::ChannelInfo Core::GetChannelInfo (const QModelIndex& i) const
 
 QPixmap Core::GetChannelPixmap (const QModelIndex& i) const
 {
-	boost::shared_ptr<Channel> channel = ChannelsModel_->GetChannelForIndex (i);
+	Channel_ptr channel = ChannelsModel_->GetChannelForIndex (i);
 	if (channel)
 		return channel->Pixmap_;
 	else
@@ -332,13 +332,13 @@ QPixmap Core::GetChannelPixmap (const QModelIndex& i) const
 
 void Core::SetTagsForIndex (const QString& tags, const QModelIndex& index)
 {
-	boost::shared_ptr<Channel> channel = ChannelsModel_->GetChannelForIndex (index);
+	Channel_ptr channel = ChannelsModel_->GetChannelForIndex (index);
 	channel->Tags_ = tags.split (' ');
 }
 
 void Core::UpdateFeed (const QModelIndex& index)
 {
-	boost::shared_ptr<Channel> channel = ChannelsModel_->GetChannelForIndex (index);
+	Channel_ptr channel = ChannelsModel_->GetChannelForIndex (index);
 	QString url = FindFeedForChannel (channel);
 	if (url.isEmpty ())
 	{
@@ -514,7 +514,7 @@ int Core::rowCount (const QModelIndex& parent) const
 
 void Core::currentChannelChanged (const QModelIndex& index)
 {
-	boost::shared_ptr<Channel> ch = ChannelsModel_->GetChannelForIndex (index);
+	Channel_ptr ch = ChannelsModel_->GetChannelForIndex (index);
 	if (!ch)
 		return;
 	ActivatedChannel_ = ch.get ();
@@ -532,7 +532,7 @@ void Core::scheduleSave ()
 namespace
 {
 	struct IsDateSuitable : public std::unary_function<
-							Channel::items_container_t::value_type,
+							items_container_t::value_type,
 							bool>
 	{
 		QDateTime DateTime_;
@@ -542,7 +542,7 @@ namespace
 		{
 		}
 
-		bool operator() (const Channel::items_container_t::value_type& it)
+		bool operator() (const items_container_t::value_type& it)
 		{
 			return it->PubDate_ < DateTime_;
 		}
@@ -586,7 +586,7 @@ void Core::handleJobFinished (int id)
 		emit error (tr ("Feed with url %1 not found.").arg (pj.URL_));
 		return;
 	}
-	Feed::channels_container_t channels;
+	channels_container_t channels;
 	if (pj.Role_ != PendingJob::RFeedExternalData)
 	{
 		QByteArray data = file.readAll ();
@@ -749,11 +749,14 @@ void Core::handleSslError (QNetworkReply *reply)
 	reply->ignoreSslErrors ();
 }
 
-QString Core::FindFeedForChannel (const boost::shared_ptr<Channel>& channel) const
+QString Core::FindFeedForChannel (const Channel_ptr& channel) const
 {
-	for (QMap<QString, Feed>::const_iterator i = Feeds_.begin (); i != Feeds_.end (); ++i)
+	for (QMap<QString, Feed>::const_iterator i = Feeds_.begin ();
+			i != Feeds_.end (); ++i)
 	{
-		Feed::channels_container_t::const_iterator j = std::find (i.value ().Channels_.begin (), i.value ().Channels_.end (), channel);
+		channels_container_t::const_iterator j =
+			std::find (i.value ().Channels_.begin (),
+					i.value ().Channels_.end (), channel);
 		if (j != i.value ().Channels_.end ())
 			return i.key ();
 	}
@@ -770,7 +773,7 @@ void Core::UpdateUnreadItemsNumber () const
 	emit unreadNumberChanged (result);
 }
 
-void Core::FetchPixmap (const boost::shared_ptr<Channel>& channel)
+void Core::FetchPixmap (const Channel_ptr& channel)
 {
 	if (QUrl (channel->PixmapURL_).isValid () &&
 			!QUrl (channel->PixmapURL_).isRelative ())
@@ -799,7 +802,7 @@ void Core::FetchPixmap (const boost::shared_ptr<Channel>& channel)
 	}
 }
 
-void Core::FetchFavicon (const boost::shared_ptr<Channel>& channel)
+void Core::FetchFavicon (const Channel_ptr& channel)
 {
 	QUrl oldUrl (channel->Link_);
 	oldUrl.setPath ("/favicon.ico");
@@ -850,7 +853,7 @@ void Core::HandleExternalData (const QString& url, const QFile& file)
 	}
 }
 
-QString Core::HandleFeedUpdated (const Feed::channels_container_t& channels,
+QString Core::HandleFeedUpdated (const channels_container_t& channels,
 		const Core::PendingJob& pj)
 {
 	QString emitString;
@@ -885,17 +888,17 @@ QString Core::HandleFeedUpdated (const Feed::channels_container_t& channels,
 					Feeds_ [pj.URL_].Channels_ [position].get ());
 
 			Feed &cfeed = Feeds_ [pj.URL_];
-			boost::shared_ptr<Channel> &cchannel = cfeed.Channels_ [position];
+			Channel_ptr &cchannel = cfeed.Channels_ [position];
 
 			// Okay, this item is new, let's find where to place
 			// it. We should place it before the first found item
 			// with earlier datetime.
-			for (Channel::items_container_t::const_iterator j =
+			for (items_container_t::const_iterator j =
 					channels.at (i)->Items_.begin (),
 					newsize = channels.at (i)->Items_.end ();
 					j != newsize; ++j)
 			{
-				Channel::items_container_t::iterator item =
+				items_container_t::iterator item =
 					std::find_if (cchannel->Items_.begin (),
 							cchannel->Items_.end (),
 							IsDateSuitable ((*j)->PubDate_));

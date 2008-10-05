@@ -1,10 +1,8 @@
 #ifndef ITEMBUCKET_H
 #define ITEMBUCKET_H
 #include <QDialog>
-#include <boost/shared_ptr.hpp>
-#include <boost/scoped_ptr.hpp>
+#include "item.h"
 
-struct Item;
 class ItemModel;
 class QModelIndex;
 
@@ -25,7 +23,7 @@ public:
 	virtual ~ItemBucket ();
 	static ItemBucket& Instance ();
 	void Release ();
-	void AddItem (const boost::shared_ptr<Item>&);
+	void AddItem (const Item_ptr&);
 private slots:
 	void on_Items__activated (const QModelIndex&);
 	void on_ActionDeleteItem__triggered ();

@@ -47,8 +47,8 @@ class Core : public QAbstractItemModel
             TImage
             , TIcon
         } Type_;
-        boost::shared_ptr<Channel> RelatedChannel_;
-        boost::shared_ptr<Feed> RelatedFeed_;
+        Channel_ptr RelatedChannel_;
+        Feed_ptr RelatedFeed_;
     };
     QMap<int, PendingJob> PendingJobs_;
     QMap<QString, ExternalData> PendingJob2ExternalData_;
@@ -125,12 +125,12 @@ public slots:
     void showIconInTrayChanged ();
     void handleSslError (QNetworkReply*);
 private:
-    QString FindFeedForChannel (const boost::shared_ptr<Channel>&) const;
+    QString FindFeedForChannel (const Channel_ptr&) const;
     void UpdateUnreadItemsNumber () const;
-	void FetchPixmap (const boost::shared_ptr<Channel>&);
-	void FetchFavicon (const boost::shared_ptr<Channel>&);
+	void FetchPixmap (const Channel_ptr&);
+	void FetchFavicon (const Channel_ptr&);
 	void HandleExternalData (const QString&, const QFile&);
-	QString HandleFeedUpdated (const Feed::channels_container_t&,
+	QString HandleFeedUpdated (const channels_container_t&,
 			const PendingJob&);
 signals:
     void error (const QString&);

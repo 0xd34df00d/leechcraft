@@ -1,7 +1,10 @@
-INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR} ${QT_QTCORE_INCLUDE_DIR}
-    ${QT_QTGUI_INCLUDE_DIR} ${QT_QTNETWORK_INCLUDE_DIR}
+INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR}
+	${QT_QTCORE_INCLUDE_DIR}
+    ${QT_QTGUI_INCLUDE_DIR}
+	${QT_QTNETWORK_INCLUDE_DIR}
     ${QT_QTXML_INCLUDE_DIR}
     ${QT_QTWEBKIT_INCLUDE_DIR}
+	${QT_QTSQL_INCLUDE_DIR}
     ${Boost_INCLUDE_DIRS}
 	${CMAKE_CURRENT_BINARY_DIR} ../.. .)
 
@@ -30,6 +33,7 @@ SET (SRCS
 	itemsfiltermodel.cpp
 	opmlparser.cpp
 	importopml.cpp
+	storagebackend.cpp
 	)
 SET (HEADERS
     aggregator.h
@@ -57,6 +61,7 @@ SET (HEADERS
 	itemsfiltermodel.h
 	opmlparser.h
 	importopml.h
+	storagebackend.h
 	opmlitem.h
 	../../xmlsettingsdialog/basesettingsmanager.h
 	)

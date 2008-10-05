@@ -36,7 +36,7 @@ void ItemBucket::Release ()
 	delete Model_;
 }
 
-void ItemBucket::AddItem (const boost::shared_ptr<Item>& item)
+void ItemBucket::AddItem (const Item_ptr& item)
 {
 	Model_->AddItem (item);
 }

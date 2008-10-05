@@ -12,8 +12,8 @@ class ChannelsModel : public QAbstractItemModel
     Q_OBJECT
 
     TreeItem *RootItem_;
-    typedef QMap<boost::shared_ptr<Channel>, TreeItem*> Channel2TreeItemDictionary_t;
-    typedef QMap<TreeItem*, boost::shared_ptr<Channel> > TreeItem2ChannelDictionary_t;
+    typedef QMap<Channel_ptr, TreeItem*> Channel2TreeItemDictionary_t;
+    typedef QMap<TreeItem*, Channel_ptr > TreeItem2ChannelDictionary_t;
     Channel2TreeItemDictionary_t Channel2TreeItem_;
     TreeItem2ChannelDictionary_t TreeItem2Channel_;
 public:
@@ -29,11 +29,11 @@ public:
     virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 
     void AddFeed (const Feed&);
-    void Update (const Feed::channels_container_t&);
+    void Update (const channels_container_t&);
     void UpdateChannelData (const Channel*);
-    void UpdateChannelData (const boost::shared_ptr<Channel>&);
-    boost::shared_ptr<Channel>& GetChannelForIndex (const QModelIndex&);
-    void RemoveChannel (const boost::shared_ptr<Channel>&);
+    void UpdateChannelData (const Channel_ptr&);
+    Channel_ptr& GetChannelForIndex (const QModelIndex&);
+    void RemoveChannel (const Channel_ptr&);
     void MarkChannelAsRead (const QModelIndex&);
     void MarkChannelAsUnread (const QModelIndex&);
     QModelIndex GetUnreadChannelIndex ();

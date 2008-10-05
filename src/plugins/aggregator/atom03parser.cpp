@@ -26,10 +26,10 @@ bool Atom03Parser::CouldParse (const QDomDocument& doc) const
     return false;
 }
 
-Feed::channels_container_t Atom03Parser::Parse (const QDomDocument& doc) const
+channels_container_t Atom03Parser::Parse (const QDomDocument& doc) const
 {
-	Feed::channels_container_t channels;
-    boost::shared_ptr<Channel> chan (new Channel);
+	channels_container_t channels;
+    Channel_ptr chan (new Channel);
     channels.push_back (chan);
 
     QDomElement root = doc.documentElement ();
@@ -44,7 +44,7 @@ Feed::channels_container_t Atom03Parser::Parse (const QDomDocument& doc) const
     QDomElement entry = root.firstChildElement ("entry");
     while (!entry.isNull ())
     {
-        chan->Items_.push_back (boost::shared_ptr<Item> (ParseItem (entry)));
+        chan->Items_.push_back (Item_ptr (ParseItem (entry)));
         entry = entry.nextSiblingElement ("entry");
     }
 

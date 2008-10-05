@@ -19,7 +19,7 @@ ItemModel::ItemModel (QObject *parent)
     for (int i = 0; i < numItems; ++i)
     {
         settings.setArrayIndex (i);
-		Items_.push_back (boost::shared_ptr<Item> (new Item (settings.value ("Item").value<Item> ())));
+		Items_.push_back (Item_ptr (new Item (settings.value ("Item").value<Item> ())));
     }
     settings.endArray ();
 }
@@ -28,9 +28,9 @@ ItemModel::~ItemModel ()
 {
 }
 
-void ItemModel::AddItem (const boost::shared_ptr<Item>& item)
+void ItemModel::AddItem (const Item_ptr& item)
 {
-	boost::shared_ptr<Item> local (new Item (*item));
+	Item_ptr local (new Item (*item));
 	local->Unread_ = false;
 	beginInsertRows (QModelIndex (), rowCount (), rowCount ());
 	Items_.push_front (local);

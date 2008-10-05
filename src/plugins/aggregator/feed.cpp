@@ -45,7 +45,7 @@ QDataStream& operator>> (QDataStream& in, Feed& feed)
         >> size;
     for (quint32 i = 0; i < size; ++i)
     {
-		boost::shared_ptr<Channel> chan (new Channel);
+		Channel_ptr chan (new Channel);
         in >> *chan;
         feed.Channels_.push_back (chan);
     }

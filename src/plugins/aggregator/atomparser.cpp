@@ -1,22 +1,21 @@
 #include "atomparser.h"
 #include <QDomDocument>
 #include <QString>
-#include "channel.h"
-#include "item.h"
 
-Feed::channels_container_t AtomParser::Parse (const Feed::channels_container_t& old, const QDomDocument& recent) const
+channels_container_t AtomParser::Parse (const channels_container_t& old,
+		const QDomDocument& recent) const
 {
-	Feed::channels_container_t newes = Parse (recent),
+	channels_container_t newes = Parse (recent),
         result;
     if (!newes.size ())
-        return Feed::channels_container_t ();
+        return channels_container_t ();
     else if (!old.size ())
         return newes;
     else
     {
-        boost::shared_ptr<Channel> toInsert (new Channel ());
+        Channel_ptr toInsert (new Channel ());
         toInsert->Equalify (*old [0]);
-        boost::shared_ptr<Item> lastItemWeHave = old [0]->Items_ [0];
+        Item_ptr lastItemWeHave = old [0]->Items_ [0];
         int index = newes [0]->Items_.size ();
         for (size_t j = 0, size = newes [0]->Items_.size (); j < size; ++j)
             if (*newes [0]->Items_ [j] == *lastItemWeHave)

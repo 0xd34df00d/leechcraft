@@ -80,7 +80,7 @@ QDataStream& operator>> (QDataStream& in, Channel& chan)
     in >> size;
     for (size_t i = 0; i < size; ++i)
     {
-        boost::shared_ptr<Item> it (new Item);
+        Item_ptr it (new Item);
         in >> *it;
         chan.Items_.push_back (it);
     }

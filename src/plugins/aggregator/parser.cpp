@@ -3,7 +3,7 @@
 #include <QStringList>
 #include <QtDebug>
 
-Feed::channels_container_t Parser::Parse (const Feed::channels_container_t& o, const QByteArray& n)
+channels_container_t Parser::Parse (const channels_container_t& o, const QByteArray& n)
 {
 	QDomDocument newd;
 	newd.setContent (n, true);

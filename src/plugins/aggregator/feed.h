@@ -5,21 +5,22 @@
 #include <QList>
 #include <QMetaType>
 #include <boost/shared_ptr.hpp>
-#include <deque>
-
-struct Channel;
+#include <vector>
+#include "channel.h"
 
 struct Feed
 {
     QString URL_;
     QDateTime LastUpdate_;
-	typedef std::deque<boost::shared_ptr<Channel> > channels_container_t;
 	channels_container_t Channels_;
 
     Feed ();
     Feed (const Feed&);
     Feed& operator= (const Feed&);
 };
+
+typedef boost::shared_ptr<Feed> Feed_ptr;
+typedef std::vector<Feed_ptr> feeds_container_t;
 
 Q_DECLARE_METATYPE (Feed);
 

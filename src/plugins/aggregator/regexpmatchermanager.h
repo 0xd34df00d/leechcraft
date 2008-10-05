@@ -1,10 +1,10 @@
 #ifndef REGEXPMATCHERMANAGER_H
 #define REGEXPMATCHERMANAGER_H
+#include <deque>
 #include <QAbstractItemModel>
 #include <QStringList>
-#include <deque>
 #include <stdexcept>
-#include <boost/shared_ptr.hpp>
+#include "item.h"
 
 struct Item;
 
@@ -70,7 +70,7 @@ public:
 	void Remove (const QModelIndex&);
 	void Modify (const QString&, const QString&);
 	titlebody_t GetTitleBody (const QModelIndex&) const;
-	void HandleItem (const boost::shared_ptr<Item>&) const;
+	void HandleItem (const Item_ptr&) const;
 
     virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
     virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;

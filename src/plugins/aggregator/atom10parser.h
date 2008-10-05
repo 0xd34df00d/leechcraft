@@ -14,7 +14,7 @@ public:
     static Atom10Parser& Instance ();
     virtual bool CouldParse (const QDomDocument&) const;
 private:
-	Feed::channels_container_t Parse (const QDomDocument&) const;
+	channels_container_t Parse (const QDomDocument&) const;
     Item* ParseItem (const QDomElement&) const;
 };
 

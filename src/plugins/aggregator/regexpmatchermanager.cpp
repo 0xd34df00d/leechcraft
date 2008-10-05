@@ -214,7 +214,7 @@ namespace
 	};
 };
 
-void RegexpMatcherManager::HandleItem (const boost::shared_ptr<Item>& item) const
+void RegexpMatcherManager::HandleItem (const Item_ptr& item) const
 {
 	std::deque<RegexpItem> matchingTitles;
 
