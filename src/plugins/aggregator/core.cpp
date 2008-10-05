@@ -636,11 +636,12 @@ void Core::handleJobFinished (int id)
 		if (!doc.setContent (data, true, &errorMsg, &errorLine, &errorColumn))
 		{
 			file.copy (QDir::tempPath () + "/failedFile.xml");
-			emit error (tr ("XML file parse error: %1, line %2, column %3, filename %4")
+			emit error (tr ("XML file parse error: %1, line %2, column %3, filename %4, from %5")
 					.arg (errorMsg)
 					.arg (errorLine)
 					.arg (errorColumn)
-					.arg (pj.Filename_));
+					.arg (pj.Filename_)
+					.arg (pj.URL_));
 			return;
 		}
 
@@ -648,7 +649,9 @@ void Core::handleJobFinished (int id)
 		if (!parser)
 		{
 			file.copy (QDir::tempPath () + "/failedFile.xml");
-			emit error (tr ("Could not find parser to parse file %1").arg (pj.Filename_));
+			emit error (tr ("Could not find parser to parse file %1 from %2")
+					.arg (pj.Filename_)
+					.arg (pj.URL_));
 			return;
 		}
 
