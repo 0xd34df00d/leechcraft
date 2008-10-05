@@ -8,9 +8,16 @@ class SQLStorageBackend : public StorageBackend
 {
 	QSqlDatabase DB_;
 	QSqlQuery FeedFinderByURL_,
+			  ChannelFinder_,
+			  ChannelFinderByFeed_,
+			  ItemFinder_,
+			  ItemFinderByChannel_,
 			  InsertFeed_,
 			  InsertChannel_,
-			  InsertItem_;
+			  InsertItem_,
+			  UpdateFeed_,
+			  UpdateChannel_,
+			  UpdateItem_;
 public:
 	SQLStorageBackend ();
 	virtual ~SQLStorageBackend ();
@@ -23,7 +30,8 @@ public:
 
 	virtual void AddFeed (Feed_ptr);
 	virtual void UpdateFeed (Feed_ptr);
-	virtual void UpdateItem (Item_ptr);
+	virtual void UpdateChannel (Channel_ptr, const QString&);
+	virtual void UpdateItem (Item_ptr, const QString&);
 private:
 	void AddChannel (Channel_ptr, const QString&);
 	void AddItem (Item_ptr, const QString&);

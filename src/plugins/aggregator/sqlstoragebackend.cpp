@@ -23,6 +23,25 @@ SQLStorageBackend::SQLStorageBackend ()
 	FeedFinderByURL_ = QSqlQuery ();
 	FeedFinderByURL_.prepare ("SELECT last_update FROM feeds WHERE url = :url");
 
+	ChannelFinder_ = QSqlQuery ();
+	ChannelFinder_.prepare ("SELECT description FROM channels WHERE "
+			"parent_feed_url = :parent_feed_url AND "
+			"title = :title AND "
+			"url = :url");
+
+	ChannelFinderByFeed_ = QSqlQuery ();
+	ChannelFinderByFeed_.prepare ("SELECT title FROM channels WHERE parent_feed_url = :parent_feed_url");
+
+	ItemFinder_ = QSqlQuery ();
+	ItemFinder_.prepare ("SELECT title FROM items WHERE "
+			"parents_hash = :parents_hash AND "
+			"title = :title AND "
+			"url = :url AND "
+			"guid = :guid");
+
+	ItemFinderByChannel_ = QSqlQuery ();
+	ItemFinderByChannel_.prepare ("SELECT title FROM items WHERE parent_feed_url = :parent_feed_url");
+
 	InsertFeed_ = QSqlQuery ();
 	InsertFeed_.prepare ("INSERT INTO feeds ("
 			"url, "
@@ -81,6 +100,30 @@ SQLStorageBackend::SQLStorageBackend ()
 			":pub_date, "
 			":unread"
 			")");
+
+	UpdateFeed_ = QSqlQuery ();
+	UpdateFeed_.prepare ("UPDATE feeds SET last_update = :last_update WHERE url = :url");
+
+	UpdateChannel_ = QSqlQuery ();
+	UpdateChannel_.prepare ("UPDATE channels SET "
+			"description = :description, "
+			"last_build = :last_build, "
+			"tags = :tags, "
+			"language = :language, "
+			"author = :author, "
+			"pixmap_url = :pixmap_url, "
+			"pixmap = :pixmap, "
+			"favicon = :favicon "
+			"WHERE parent_feed_url = :parent_feed_url AND url = :url AND title = :title");
+
+	UpdateItem_ = QSqlQuery ();
+	UpdateItem_.prepare ("UPDATE items SET "
+			"description = :description, "
+			"author = :author, "
+			"category = :category, "
+			"pub_date = :pub_date, "
+			"unread = :unread "
+			"WHERE parents_hash = :parents_hash AND title = :title AND url = :url AND guid = :guid");
 }
 
 SQLStorageBackend::~SQLStorageBackend ()
@@ -150,21 +193,142 @@ void SQLStorageBackend::AddFeed (Feed_ptr feed)
 
 void SQLStorageBackend::UpdateFeed (Feed_ptr feed)
 {
-	QString url = feed->URL_;
-
-	FeedFinderByURL_.bindValue (":url", url);
+	FeedFinderByURL_.bindValue (":url", feed->URL_);
 	if (!FeedFinderByURL_.exec ())
 	{
 		DumpError (FeedFinderByURL_);
 		return;
 	}
 	FeedFinderByURL_.next ();
+
 	if (!FeedFinderByURL_.isValid ())
+	{
 		AddFeed (feed);
+		return;
+	}
+	FeedFinderByURL_.finish ();
+
+
+	if (!DB_.transaction ())
+	{
+		DumpError (DB_.lastError ());
+		qWarning () << Q_FUNC_INFO << "failed to start transaction";
+		return;
+	}
+	UpdateFeed_.bindValue (":url", feed->URL_);
+	UpdateFeed_.bindValue (":last_update", feed->LastUpdate_);
+	if (!UpdateFeed_.exec ())
+	{
+		DumpError (UpdateFeed_);
+		if (!DB_.rollback ())
+		{
+			DumpError (DB_.lastError ());
+			qWarning () << Q_FUNC_INFO << "failed to rollback";
+		}
+		return;
+	}
+	UpdateFeed_.finish ();
+	try
+	{
+		std::for_each (feed->Channels_.begin (), feed->Channels_.end (),
+			   boost::bind (&SQLStorageBackend::UpdateChannel,
+				   this,
+				   _1, feed->URL_));
+	}
+	catch (const std::runtime_error& e)
+	{
+		qWarning () << Q_FUNC_INFO << e.what ();
+		if (!DB_.rollback ())
+		{
+			DumpError (DB_.lastError ());
+			qWarning () << Q_FUNC_INFO << "failed to rollback";
+		}
+		return;
+	}
+
+	if (!DB_.commit ())
+	{
+		DumpError (DB_.lastError ());
+		qWarning () << Q_FUNC_INFO << "failed to commit";
+	}
 }
 
-void SQLStorageBackend::UpdateItem (Item_ptr item)
+void SQLStorageBackend::UpdateChannel (Channel_ptr channel, const QString& parent)
 {
+	ChannelFinder_.bindValue (":parent_feed_url", parent);
+	ChannelFinder_.bindValue (":title", channel->Title_);
+	ChannelFinder_.bindValue (":url", channel->Link_);
+	if (!ChannelFinder_.exec ())
+	{
+		DumpError (ChannelFinder_);
+		throw std::runtime_error ("Unable to execute channel finder query");
+	}
+	ChannelFinder_.next ();
+	if (!ChannelFinder_.isValid ())
+	{
+		AddChannel (channel, parent);
+		return;
+	}
+	ChannelFinder_.finish ();
+
+	UpdateChannel_.bindValue (":parent_feed_url", parent);
+	UpdateChannel_.bindValue (":url", channel->Link_);
+	UpdateChannel_.bindValue (":title", channel->Title_);
+	UpdateChannel_.bindValue (":description", channel->Description_);
+	UpdateChannel_.bindValue (":last_build", channel->LastBuild_);
+	UpdateChannel_.bindValue (":tags", channel->Tags_.join (" "));
+	UpdateChannel_.bindValue (":language", channel->Language_);
+	UpdateChannel_.bindValue (":author", channel->Author_);
+	UpdateChannel_.bindValue (":pixmap_url", channel->PixmapURL_);
+	UpdateChannel_.bindValue (":pixmap", SerializePixmap (channel->Pixmap_));
+	UpdateChannel_.bindValue (":favicon", SerializePixmap (channel->Favicon_));
+
+	if (!UpdateChannel_.exec ())
+	{
+		DumpError (UpdateChannel_);
+		throw std::runtime_error ("failed to save channel");
+	}
+
+	std::for_each (channel->Items_.begin (), channel->Items_.end (),
+		   boost::bind (&SQLStorageBackend::UpdateItem,
+			   this,
+			   _1, channel->Link_ + channel->Title_));
+}
+
+void SQLStorageBackend::UpdateItem (Item_ptr item, const QString& parent)
+{
+	ItemFinder_.bindValue (":parents_hash", parent);
+	ItemFinder_.bindValue (":guid", item->Guid_);
+	ItemFinder_.bindValue (":title", item->Title_);
+	ItemFinder_.bindValue (":url", item->Link_);
+	if (!ItemFinder_.exec ())
+	{
+		DumpError (ItemFinder_);
+		throw std::runtime_error ("Unable to execute item finder query");
+	}
+	ItemFinder_.next ();
+	if (!ItemFinder_.isValid ())
+	{
+		AddItem (item, parent);
+		return;
+	}
+	ItemFinder_.finish ();
+
+	UpdateItem_.bindValue (":parents_hash", parent);
+	UpdateItem_.bindValue (":title", item->Title_);
+	UpdateItem_.bindValue (":url", item->Link_);
+	UpdateItem_.bindValue (":description", item->Description_);
+	UpdateItem_.bindValue (":author", item->Author_);
+	UpdateItem_.bindValue (":category", item->Category_);
+	UpdateItem_.bindValue (":guid", item->Guid_);
+	UpdateItem_.bindValue (":pub_date", item->PubDate_);
+	UpdateItem_.bindValue (":unread", item->Unread_);
+
+	if (!UpdateItem_.exec ())
+	{
+		DumpError (UpdateItem_);
+		throw std::runtime_error ("failed to save item");
+	}
 }
 
 void SQLStorageBackend::AddChannel (Channel_ptr channel, const QString& url)
@@ -195,6 +359,7 @@ void SQLStorageBackend::AddChannel (Channel_ptr channel, const QString& url)
 
 void SQLStorageBackend::AddItem (Item_ptr item, const QString& parent)
 {
+	qDebug () << Q_FUNC_INFO << parent << item->Title_;
 	InsertItem_.bindValue (":parents_hash", parent);
 	InsertItem_.bindValue (":title", item->Title_);
 	InsertItem_.bindValue (":url", item->Link_);

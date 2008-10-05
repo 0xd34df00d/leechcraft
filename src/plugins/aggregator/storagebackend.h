@@ -15,7 +15,10 @@ public:
 
 	virtual void AddFeed (Feed_ptr) = 0;
 	virtual void UpdateFeed (Feed_ptr) = 0;
-	virtual void UpdateItem (Item_ptr) = 0;
+	virtual void UpdateChannel (Channel_ptr,
+			const QString&) = 0;
+	virtual void UpdateItem (Item_ptr,
+			const QString&) = 0;
 };
 
 #endif
