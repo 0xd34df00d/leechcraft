@@ -66,7 +66,6 @@ namespace Main
         void updateSpeedIndicators ();
         void showAboutInfo ();
         void showHideMain ();
-        void hideAll ();
         void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
         void addJob ();
         void handleDownloadFinished (const QString&);

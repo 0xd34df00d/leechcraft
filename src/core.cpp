@@ -128,7 +128,6 @@ void Main::Core::DelayedInit ()
     QObjectList plugins = PluginManager_->GetAllPlugins ();
     foreach (QObject *plugin, plugins)
     {
-        connect (this, SIGNAL (hidePlugins ()), plugin, SLOT (handleHidePlugins ()));
 		IInfo *ii = qobject_cast<IInfo*> (plugin);
         IDownload *download = qobject_cast<IDownload*> (plugin);
 		IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
@@ -191,11 +190,6 @@ bool Main::Core::ShowPlugin (IInfo::ID_t id)
     }
     else
         return false;
-}
-
-void Main::Core::HideAll ()
-{
-    emit hidePlugins ();
 }
 
 void Main::Core::TryToAddJob (const QString& name, const QString& where)

@@ -182,8 +182,7 @@ namespace Main
 		TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/mainapp.png"), this);
 
 		QMenu *iconMenu = new QMenu (this);
-		iconMenu->addAction (tr ("Show/hide main"), this, SLOT (showHideMain ()));
-		iconMenu->addAction (tr ("Hide all"), this, SLOT (hideAll ()));
+		iconMenu->addAction (tr ("Show/hide"), this, SLOT (showHideMain ()));
 		iconMenu->addSeparator ();
 		iconMenu->addAction (Ui_->ActionAddTask_);
 		iconMenu->addSeparator ();
@@ -246,11 +245,6 @@ namespace Main
 		IsShown_ ? show () : hide ();
 	}
 
-	void MainWindow::hideAll ()
-	{
-		Core::Instance ().HideAll ();
-	}
-
 	void MainWindow::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason)
 	{
 		switch (reason)
@@ -280,7 +274,10 @@ namespace Main
 	void MainWindow::handleDownloadFinished (const QString& string)
 	{
 		if (XmlSettingsManager::Instance ()->property ("ShowFinishedDownloadMessages").toBool ())
-			TrayIcon_->showMessage (tr ("Download finished"), string, QSystemTrayIcon::Information, XmlSettingsManager::Instance ()->property ("FinishedDownloadMessageTimeout").toInt () * 1000);
+			TrayIcon_->showMessage (tr ("Download finished"),
+					string,
+					QSystemTrayIcon::Information,
+					XmlSettingsManager::Instance ()->property ("FinishedDownloadMessageTimeout").toInt () * 1000);
 	}
 
 	void MainWindow::showSettings ()

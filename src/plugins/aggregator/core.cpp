@@ -21,10 +21,12 @@
 #include "channelsmodel.h"
 #include "itembucket.h"
 #include "opmlparser.h"
+#include "sqlstoragebackend.h"
 
 Core::Core ()
+: SaveScheduled_ (false)
+, StorageBackend_ (new SQLStorageBackend ())
 {
-	SaveScheduled_ = false;
 	ParserFactory::Instance ().Register (&RSS20Parser::Instance ());
 	ParserFactory::Instance ().Register (&Atom10Parser::Instance ());
 	ParserFactory::Instance ().Register (&Atom03Parser::Instance ());

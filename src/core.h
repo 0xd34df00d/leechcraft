@@ -58,7 +58,6 @@ namespace Main
 
         void DelayedInit ();
         bool ShowPlugin (IInfo::ID_t);
-        void HideAll ();
         void TryToAddJob (const QString&, const QString&);
 
 		void Activated (const QModelIndex&);
@@ -77,7 +76,6 @@ namespace Main
 		int FindTabForWidget (QWidget*) const;
     signals:
         void error (QString);
-        void hidePlugins ();
         void downloadFinished (const QString&);
     };
 };

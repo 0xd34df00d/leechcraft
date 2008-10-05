@@ -33,6 +33,7 @@ SET (SRCS
 	itemsfiltermodel.cpp
 	opmlparser.cpp
 	importopml.cpp
+	sqlstoragebackend.cpp
 	storagebackend.cpp
 	)
 SET (HEADERS
@@ -61,6 +62,7 @@ SET (HEADERS
 	itemsfiltermodel.h
 	opmlparser.h
 	importopml.h
+	sqlstoragebackend.h
 	storagebackend.h
 	opmlitem.h
 	../../xmlsettingsdialog/basesettingsmanager.h

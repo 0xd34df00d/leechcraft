@@ -1,5 +1,6 @@
 #ifndef CORE_H
 #define CORE_H
+#include <memory>
 #include <QAbstractItemModel>
 #include <QString>
 #include <QMap>
@@ -15,6 +16,7 @@ class TagsCompletionModel;
 class QTimer;
 class QNetworkReply;
 class QFile;
+class StorageBackend;
 
 class Core : public QAbstractItemModel
 {
@@ -60,6 +62,7 @@ class Core : public QAbstractItemModel
     TagsCompletionModel *TagsCompletionModel_;
     QTimer *UpdateTimer_;
     bool SaveScheduled_;
+	std::auto_ptr<StorageBackend> StorageBackend_;
 public:
 	struct ChannelInfo
 	{
