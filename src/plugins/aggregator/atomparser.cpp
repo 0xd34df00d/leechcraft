@@ -66,19 +66,6 @@ QDateTime AtomParser::FromRFC3339 (const QString& t) const
 	return result.toLocalTime ();
 }
 
-QString AtomParser::GetLink (const QDomElement& parent) const
-{
-    QString result;
-    QDomElement link = parent.firstChildElement ("link");
-    while (!link.isNull ())
-    {
-        if (!link.hasAttribute ("rel") || link.attribute ("rel") == "alternate")
-            result = link.attribute ("href");
-        link = link.nextSiblingElement ("link");
-    }
-    return result;
-}
-
 QString AtomParser::ParseEscapeAware (const QDomElement& parent) const
 {
 	QString result;

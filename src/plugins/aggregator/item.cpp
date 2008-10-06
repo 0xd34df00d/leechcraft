@@ -20,7 +20,7 @@ QDataStream& operator<< (QDataStream& out, const Item& item)
         << item.Link_
         << item.Description_
         << item.Author_
-        << item.Category_
+        << item.Categories_
         << item.Comments_
         << item.Guid_
         << item.PubDate_
@@ -34,7 +34,7 @@ QDataStream& operator>> (QDataStream& in, Item& item)
         >> item.Link_
         >> item.Description_
         >> item.Author_
-        >> item.Category_
+        >> item.Categories_
         >> item.Comments_
         >> item.Guid_
         >> item.PubDate_

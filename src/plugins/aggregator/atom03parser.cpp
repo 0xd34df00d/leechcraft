@@ -40,6 +40,7 @@ channels_container_t Atom03Parser::Parse (const QDomDocument& doc) const
     chan->Link_ = GetLink (root);
     chan->Description_ = root.firstChildElement ("tagline").text ();
     chan->Language_ = "<>";
+	chan->Author_ = GetAuthor (root);
 
     QDomElement entry = root.firstChildElement ("entry");
     while (!entry.isNull ())
@@ -70,10 +71,8 @@ Item* Atom03Parser::ParseItem (const QDomElement& entry) const
         summary = entry.firstChildElement ("summary");
 	item->Description_ = ParseEscapeAware (summary);
 
-	QStringList dcs = GetDCCategories (entry);
-
-	if (dcs.size ())
-		item->Category_ = dcs.join ("; ");
+	item->Categories_ += GetAllCategories (entry);
+	item->Author_ = GetAuthor (entry);
 
     return item;
 }

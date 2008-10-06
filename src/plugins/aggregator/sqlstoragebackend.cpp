@@ -239,7 +239,7 @@ void SQLStorageBackend::GetItems (Channel_ptr channel) const
 		item->Link_ = itemsSelector.value (1).toString ();
 		item->Description_ = itemsSelector.value (2).toString ();
 		item->Author_ = itemsSelector.value (3).toString ();
-		item->Category_ = itemsSelector.value (4).toString ();
+		item->Categories_ = itemsSelector.value (4).toString ().split ("<<<");
 		item->Guid_ = itemsSelector.value (5).toString ();
 		item->PubDate_ = itemsSelector.value (6).toDateTime ();
 		item->Unread_ = itemsSelector.value (7).toBool ();
@@ -355,7 +355,7 @@ void SQLStorageBackend::UpdateItem (Item_ptr item, const QString& parent)
 	UpdateItem_.bindValue (":url", item->Link_);
 	UpdateItem_.bindValue (":description", item->Description_);
 	UpdateItem_.bindValue (":author", item->Author_);
-	UpdateItem_.bindValue (":category", item->Category_);
+	UpdateItem_.bindValue (":category", item->Categories_.join ("<<<"));
 	UpdateItem_.bindValue (":guid", item->Guid_);
 	UpdateItem_.bindValue (":pub_date", item->PubDate_);
 	UpdateItem_.bindValue (":unread", item->Unread_);
@@ -400,7 +400,7 @@ void SQLStorageBackend::AddItem (Item_ptr item, const QString& parent)
 	InsertItem_.bindValue (":url", item->Link_);
 	InsertItem_.bindValue (":description", item->Description_);
 	InsertItem_.bindValue (":author", item->Author_);
-	InsertItem_.bindValue (":category", item->Category_);
+	InsertItem_.bindValue (":category", item->Categories_.join ("<<<"));
 	InsertItem_.bindValue (":guid", item->Guid_);
 	InsertItem_.bindValue (":pub_date", item->PubDate_);
 	InsertItem_.bindValue (":unread", item->Unread_);

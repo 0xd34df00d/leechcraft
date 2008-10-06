@@ -14,8 +14,18 @@ public:
 	channels_container_t Parse (const channels_container_t&,
 			const QByteArray&);
 protected:
-    QString UnescapeHTML (const QString&) const;
+	static const QString DC_;
+	static const QString WFW_;
+	static const QString Atom_;
+
+	QString GetLink (const QDomElement&) const;
+	QString GetAuthor (const QDomElement&) const;
+	QString GetCommentsRSS (const QDomElement&) const;
+	QStringList GetAllCategories (const QDomElement&) const;
 	QStringList GetDCCategories (const QDomElement&) const;
+	QStringList GetPlainCategories (const QDomElement&) const;
+
+    QString UnescapeHTML (const QString&) const;
 };
 
 #endif

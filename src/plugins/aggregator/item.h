@@ -2,6 +2,7 @@
 #define ITEM_H
 #include <vector>
 #include <QString>
+#include <QStringList>
 #include <QDateTime>
 #include <QMetaType>
 #include <boost/shared_ptr.hpp>
@@ -12,7 +13,7 @@ struct Item
     QString Link_;
     QString Description_;
     QString Author_;
-    QString Category_;
+    QStringList Categories_;
     QString Comments_;
     QString Guid_;
     QDateTime PubDate_;

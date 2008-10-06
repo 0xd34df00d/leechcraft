@@ -1,8 +1,9 @@
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QStringList>
 #include <QLocale>
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include <QtDebug>
 #include "rss20parser.h"
 
 RSS20Parser::RSS20Parser ()
@@ -90,12 +91,14 @@ channels_container_t RSS20Parser::Parse (const QDomDocument& doc) const
         Channel_ptr chan (new Channel);
         chan->Title_ = channel.firstChildElement ("title").text ();
         chan->Description_ = channel.firstChildElement ("description").text ();
-        chan->Link_ = channel.firstChildElement ("link").text ();
+        chan->Link_ = GetLink (channel);
         chan->LastBuild_ = rfc822TimeToQDateTime (channel.firstChildElement ("lastBuildDate").text ());
 		if (!chan->LastBuild_.isValid () || chan->LastBuild_.isNull ())
 			chan->LastBuild_ = QDateTime::currentDateTime ();
         chan->Language_ = channel.firstChildElement ("language").text ();
-        chan->Author_ = channel.firstChildElement ("managingEditor").text ();
+		chan->Author_ = GetAuthor (channel);
+        if (chan->Author_.isEmpty ())
+			chan->Author_ = channel.firstChildElement ("managingEditor").text ();
         if (chan->Author_.isEmpty ())
             chan->Author_ = channel.firstChildElement ("webMaster").text ();
         chan->PixmapURL_ = channel.firstChildElement ("image").attribute ("url");
@@ -122,8 +125,9 @@ Item* RSS20Parser::ParseItem (const QDomElement& item) const
 	if (!result->PubDate_.isValid () || result->PubDate_.isNull ())
 		result->PubDate_ = QDateTime::currentDateTime ();
 	result->Guid_ = item.firstChildElement ("guid").text ();
-	result->Category_ = item.firstChildElement ("category").text ();
+	result->Categories_ = GetAllCategories (item);
 	result->Unread_ = true;
+	result->Author_ = GetAuthor (item);
 	return result;
 }
 

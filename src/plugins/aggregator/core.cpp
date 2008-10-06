@@ -230,7 +230,7 @@ QString Core::GetCategory (const QModelIndex& index)
 	StorageBackend_->UpdateItem (item, ActivatedChannel_->Link_ + ActivatedChannel_->Title_);
 	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
 	UpdateUnreadItemsNumber ();
-	return item->Category_;
+	return item->Categories_.join ("; ");
 }
 
 QString Core::GetLink (const QModelIndex& index)

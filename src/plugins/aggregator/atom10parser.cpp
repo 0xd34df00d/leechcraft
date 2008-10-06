@@ -37,8 +37,12 @@ channels_container_t Atom10Parser::Parse (const QDomDocument& doc) const
     chan->LastBuild_ = FromRFC3339 (root.firstChildElement ("updated").text ());
     chan->Link_ = GetLink (root);
     chan->Description_ = root.firstChildElement ("subtitle").text ();
-    QDomElement author = root.firstChildElement ("author");
-    chan->Author_ = author.firstChildElement ("name").text () + " (" + author.firstChildElement ("email").text () + ")";
+	chan->Author_ = GetAuthor (root);
+	if (chan->Author_.isEmpty ())
+	{
+		QDomElement author = root.firstChildElement ("author");
+		chan->Author_ = author.firstChildElement ("name").text () + " (" + author.firstChildElement ("email").text () + ")";
+	}
     chan->Language_ = "<>";
 
     QDomElement entry = root.firstChildElement ("entry");
@@ -60,6 +64,8 @@ Item* Atom10Parser::ParseItem (const QDomElement& entry) const
     item->Guid_ = entry.firstChildElement ("id").text ();
     item->PubDate_ = FromRFC3339 (entry.firstChildElement ("updated").text ());
     item->Unread_ = true;
+	item->Categories_ = GetAllCategories (entry);
+	item->Author_ = GetAuthor (entry);
 
     QDomElement summary = entry.firstChildElement ("content");
     if (summary.isNull ())
