@@ -938,6 +938,9 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 			Channel_ptr cchannel = cfeed->Channels_ [position];
 			StorageBackend_->UpdateChannel (cchannel, pj.URL_);
 
+			bool nru = XmlSettingsManager::Instance ()->
+				property ("NeverRemoveUnread").toBool ();
+
 			// Okay, this item is new, let's find where to place
 			// it. We should place it before the first found item
 			// with earlier datetime.
@@ -975,7 +978,6 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 				property ("ItemsPerChannel").value<size_t> ();
 			if (cchannel->Items_.size () > ipc)
 			{
-				qDebug () << cchannel->Title_ << cchannel->Items_.size () << ipc;
 				if (ActivatedChannel_ == cchannel.get ())
 					beginRemoveRows (QModelIndex (), ipc,
 							ActivatedChannel_->Items_.size ());
@@ -1000,11 +1002,6 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 			{
 				if (cchannel->Items_ [j]->PubDate_.daysTo (current) > days)
 				{
-					qDebug () << cchannel->Title_
-						<< cchannel->Items_ [j]->PubDate_
-						<< current
-						<< days
-						<< cchannel->Items_ [j]->PubDate_.daysTo (current);
 					removeFrom = j;
 					break;
 				}

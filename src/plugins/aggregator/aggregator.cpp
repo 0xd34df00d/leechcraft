@@ -117,6 +117,8 @@ void Aggregator::Init ()
     TagsLineCompleter_->setModel (Core::Instance ().GetTagsCompletionModel ());
     ChannelTagsCompleter_->setModel (Core::Instance ().GetTagsCompletionModel ());
 
+	Ui_.ChannelSplitter_->setStretchFactor (0, 5);
+	Ui_.ChannelSplitter_->setStretchFactor (1, 2);
     Ui_.MainSplitter_->setStretchFactor (0, 5);
     Ui_.MainSplitter_->setStretchFactor (1, 9);
 
@@ -502,7 +504,7 @@ void Aggregator::currentChannelChanged ()
 		Ui_.ChannelLink_->setOpenExternalLinks (false);
 		Ui_.ChannelLink_->setText (shortLink);
 	}
-	Ui_.ChannelDescription_->setText (ci.Description_);
+	Ui_.ChannelDescription_->setHtml (ci.Description_);
 	Ui_.ChannelAuthor_->setText (ci.Author_);
 	Ui_.ItemView_->setHtml ("");
 

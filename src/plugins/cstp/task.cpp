@@ -493,15 +493,17 @@ void Task::responseHeaderReceived (const QHttpResponseHeader& response)
 	if (response.statusCode () == 301 ||
 			response.statusCode () == 302)
 	{
-		if (!response.hasKey ("Location"))
-			return;
-
 		QString newUrl (response.value ("Location"));
-		if (!QUrl (newUrl).isValid ())
+		if (!QUrl (newUrl).isValid () ||
+				RedirectHistory_.contains (newUrl, Qt::CaseInsensitive))
+		{
+			Http_->disconnect ();
+			Http_->blockSignals (true);
+			Http_->abort ();
+			Http_.release ()->deleteLater ();
 			return;
+		}
 		//Trying not to get into redirection loop
-		if (RedirectHistory_.contains (newUrl, Qt::CaseInsensitive)) 
-			return;
 		else
 			RedirectHistory_ << newUrl;
 		
@@ -514,25 +516,32 @@ void Task::responseHeaderReceived (const QHttpResponseHeader& response)
 		Http_->abort ();
 		Http_.release ()->deleteLater ();
 
-		qDebug () << QMetaObject::invokeMethod (this,
+		QMetaObject::invokeMethod (this,
 				"redirectedConstruction",
 				Qt::QueuedConnection,
 				Q_ARG (QIODevice*, to),
 				Q_ARG (QString, newUrl));
 
 	}
+	else if (response.statusCode () == 504)
+	{
+		Http_->disconnect ();
+		Http_->blockSignals (true);
+		Http_->abort ();
+		Http_.release ()->deleteLater ();
+		Type_ = TInvalid;
+		emit done (true);
+	}
 }
 
 void Task::redirectedConstruction (QIODevice *to, const QString& newUrl)
 {
 	QFile *file = dynamic_cast<QFile*> (to);
-	qDebug () << FileSizeAtStart_;
 	if (file && FileSizeAtStart_ >= 0)
 	{
 		file->close ();
-		int size = file->size ();
-		bool resize = file->resize (FileSizeAtStart_);
-		qDebug () << resize << size;
+		file->size ();
+		file->resize (FileSizeAtStart_);
 		file->open (QIODevice::ReadWrite);
 	}
 

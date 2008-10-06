@@ -16,14 +16,14 @@
    <iconset resource="resources.qrc" >
     <normaloff>:/resources/images/aggregator.png</normaloff>:/resources/images/aggregator.png</iconset>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout_4" >
    <item>
     <widget class="QSplitter" name="MainSplitter_" >
      <property name="orientation" >
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="layoutWidget" >
-      <layout class="QVBoxLayout" >
+     <widget class="QWidget" name="" >
+      <layout class="QVBoxLayout" name="verticalLayout_3" >
        <item>
         <layout class="QHBoxLayout" name="_2" >
          <item>
@@ -39,187 +39,110 @@
         </layout>
        </item>
        <item>
-        <widget class="QTreeView" name="Feeds_" >
-         <property name="iconSize" >
-          <size>
-           <width>16</width>
-           <height>16</height>
-          </size>
+        <widget class="QSplitter" name="ChannelSplitter_" >
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
          </property>
-         <property name="rootIsDecorated" >
-          <bool>false</bool>
-         </property>
-         <property name="itemsExpandable" >
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="ItemInfo_" >
-         <property name="title" >
-          <string>Item info</string>
-         </property>
-         <layout class="QFormLayout" name="formLayout" >
-          <item row="0" column="0" >
-           <widget class="QLabel" name="label_4" >
-            <property name="text" >
-             <string>Link:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" >
-           <widget class="QLabel" name="ItemLink_" >
-            <property name="text" >
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" >
-           <widget class="QLabel" name="label_13" >
-            <property name="text" >
-             <string>Author:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1" >
-           <widget class="QLabel" name="ItemAuthor_" >
-            <property name="text" >
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" >
-           <widget class="QLabel" name="label_15" >
-            <property name="text" >
-             <string>Category:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1" >
-           <widget class="QLabel" name="ItemCategory_" >
-            <property name="text" >
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" >
-           <widget class="QLabel" name="label_17" >
-            <property name="text" >
-             <string>Publication date:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1" >
-           <widget class="QDateTimeEdit" name="ItemPubDate_" >
-            <property name="readOnly" >
-             <bool>true</bool>
-            </property>
-            <property name="calendarPopup" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="ChannelDashboard_" >
-         <property name="minimumSize" >
-          <size>
-           <width>0</width>
-           <height>140</height>
-          </size>
-         </property>
-         <property name="title" >
-          <string>Channel dashboard</string>
-         </property>
-         <layout class="QFormLayout" name="formLayout_2" >
-          <property name="fieldGrowthPolicy" >
-           <enum>QFormLayout::ExpandingFieldsGrow</enum>
+         <widget class="QTreeView" name="Feeds_" >
+          <property name="minimumSize" >
+           <size>
+            <width>250</width>
+            <height>0</height>
+           </size>
           </property>
-          <item row="0" column="1" >
-           <widget class="QLabel" name="ChannelImage_" >
-            <property name="text" >
-             <string>&lt;channel image></string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" >
-           <widget class="QLabel" name="label_5" >
-            <property name="text" >
-             <string>Tags:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1" >
-           <widget class="TagsLineEdit" native="1" name="ChannelTags_" />
-          </item>
-          <item row="2" column="0" >
-           <widget class="QLabel" name="label_10" >
-            <property name="text" >
-             <string>Link:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1" >
-           <widget class="QLabel" name="ChannelLink_" >
-            <property name="openExternalLinks" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" >
-           <widget class="QLabel" name="label_8" >
-            <property name="text" >
-             <string>Description:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1" >
-           <widget class="QLabel" name="ChannelDescription_" >
-            <property name="text" >
-             <string/>
-            </property>
-            <property name="scaledContents" >
-             <bool>true</bool>
-            </property>
-            <property name="wordWrap" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0" >
-           <widget class="QLabel" name="label_6" >
-            <property name="text" >
-             <string>Author:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1" >
-           <widget class="QLabel" name="ChannelAuthor_" >
-            <property name="text" >
-             <string/>
-            </property>
-           </widget>
-          </item>
-         </layout>
-         <zorder>label_5</zorder>
-         <zorder>ChannelTags_</zorder>
-         <zorder>label_8</zorder>
-         <zorder>ChannelDescription_</zorder>
-         <zorder>label_6</zorder>
-         <zorder>ChannelAuthor_</zorder>
-         <zorder>ChannelLink_</zorder>
-         <zorder>label_10</zorder>
-         <zorder>ChannelImage_</zorder>
+          <property name="iconSize" >
+           <size>
+            <width>16</width>
+            <height>16</height>
+           </size>
+          </property>
+          <property name="rootIsDecorated" >
+           <bool>false</bool>
+          </property>
+          <property name="itemsExpandable" >
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QGroupBox" name="ChannelDashboard_" >
+          <property name="minimumSize" >
+           <size>
+            <width>0</width>
+            <height>140</height>
+           </size>
+          </property>
+          <property name="title" >
+           <string>Channel dashboard</string>
+          </property>
+          <layout class="QFormLayout" name="formLayout_2" >
+           <property name="fieldGrowthPolicy" >
+            <enum>QFormLayout::ExpandingFieldsGrow</enum>
+           </property>
+           <item row="1" column="0" >
+            <widget class="QLabel" name="label_5" >
+             <property name="text" >
+              <string>Tags:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1" >
+            <widget class="TagsLineEdit" native="1" name="ChannelTags_" />
+           </item>
+           <item row="2" column="0" >
+            <widget class="QLabel" name="label_10" >
+             <property name="text" >
+              <string>Link:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1" >
+            <widget class="QLabel" name="ChannelLink_" >
+             <property name="openExternalLinks" >
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0" >
+            <widget class="QLabel" name="label_8" >
+             <property name="text" >
+              <string>Description:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1" >
+            <widget class="QTextEdit" name="ChannelDescription_" >
+             <property name="readOnly" >
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0" >
+            <widget class="QLabel" name="label_6" >
+             <property name="text" >
+              <string>Author:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1" >
+            <widget class="QLabel" name="ChannelAuthor_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1" >
+            <widget class="QLabel" name="ChannelImage_" >
+             <property name="text" >
+              <string>&lt;channel image></string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
       </layout>
-      <zorder>Feeds_</zorder>
-      <zorder>ChannelDashboard_</zorder>
-      <zorder>ItemInfo_</zorder>
      </widget>
-     <widget class="QWidget" name="layoutWidget_2" >
+     <widget class="QWidget" name="" >
       <layout class="QVBoxLayout" name="verticalLayout_2" >
        <item>
         <layout class="QGridLayout" name="_3" >
@@ -270,7 +193,83 @@
            <bool>false</bool>
           </property>
          </widget>
-         <widget class="BrowserWidget" native="1" name="ItemView_" />
+         <widget class="QWidget" name="" >
+          <layout class="QVBoxLayout" name="verticalLayout" >
+           <item>
+            <widget class="BrowserWidget" native="1" name="ItemView_" >
+             <zorder>ItemInfo_</zorder>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="ItemInfo_" >
+             <property name="title" >
+              <string>Item info</string>
+             </property>
+             <layout class="QFormLayout" name="formLayout" >
+              <item row="0" column="0" >
+               <widget class="QLabel" name="label_4" >
+                <property name="text" >
+                 <string>Link:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1" >
+               <widget class="QLabel" name="ItemLink_" >
+                <property name="text" >
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0" >
+               <widget class="QLabel" name="label_13" >
+                <property name="text" >
+                 <string>Author:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1" >
+               <widget class="QLabel" name="ItemAuthor_" >
+                <property name="text" >
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0" >
+               <widget class="QLabel" name="label_15" >
+                <property name="text" >
+                 <string>Category:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1" >
+               <widget class="QLabel" name="ItemCategory_" >
+                <property name="text" >
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0" >
+               <widget class="QLabel" name="label_17" >
+                <property name="text" >
+                 <string>Publication date:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1" >
+               <widget class="QDateTimeEdit" name="ItemPubDate_" >
+                <property name="readOnly" >
+                 <bool>true</bool>
+                </property>
+                <property name="calendarPopup" >
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
       </layout>
