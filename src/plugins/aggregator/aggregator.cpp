@@ -30,8 +30,9 @@ Aggregator::~Aggregator ()
 void Aggregator::Init ()
 {
 	Translator_.reset (LeechCraft::Util::InstallTranslator ("aggregator"));
-    Ui_.setupUi (this);
 	SetupMenuBar ();
+    Ui_.setupUi (this);
+	dynamic_cast<QVBoxLayout*> (layout ())->insertWidget (0, ToolBar_);
 
     TrayIcon_.reset (new QSystemTrayIcon (this));
     TrayIcon_->hide ();
@@ -216,7 +217,6 @@ QWidget* Aggregator::GetTabContents ()
 void Aggregator::SetupMenuBar ()
 {
 	ToolBar_ = new QToolBar (this);
-	dynamic_cast<QVBoxLayout*> (layout ())->insertWidget (0, ToolBar_);
 
 	ActionAddFeed_ = new QAction (QIcon (":/resources/images/rss-feed.png"),
 			tr ("Add feed..."),
@@ -299,8 +299,6 @@ void Aggregator::SetupMenuBar ()
     ToolBar_->addAction(ActionHideReadItems_);
     ToolBar_->addSeparator();
     ToolBar_->addAction(ActionPreferences_);
-
-    QMetaObject::connectSlotsByName (this);
 }
 
 void Aggregator::showError (const QString& msg)

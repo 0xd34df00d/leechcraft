@@ -938,9 +938,6 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 			Channel_ptr cchannel = cfeed->Channels_ [position];
 			StorageBackend_->UpdateChannel (cchannel, pj.URL_);
 
-			bool nru = XmlSettingsManager::Instance ()->
-				property ("NeverRemoveUnread").toBool ();
-
 			// Okay, this item is new, let's find where to place
 			// it. We should place it before the first found item
 			// with earlier datetime.
