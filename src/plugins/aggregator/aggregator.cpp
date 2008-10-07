@@ -572,9 +572,8 @@ void Aggregator::updatePixmap (int width)
 	QModelIndex mapped = ChannelsFilterModel_->mapToSource (index);
 
 	QPixmap pixmap = Core::Instance ().GetChannelPixmap (mapped);
-	if (!pixmap.isNull ())
-		Ui_.ChannelImage_->setPixmap (pixmap.scaledToWidth (width,
-					Qt::SmoothTransformation));
+	Ui_.ChannelImage_->setPixmap (pixmap.scaledToWidth (width,
+				Qt::SmoothTransformation));
 }
 
 void Aggregator::viewerSettingsChanged ()

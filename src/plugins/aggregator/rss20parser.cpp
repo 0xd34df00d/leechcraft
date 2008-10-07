@@ -119,12 +119,16 @@ Item* RSS20Parser::ParseItem (const QDomElement& item) const
 {
 	Item *result = new Item;
 	result->Title_ = UnescapeHTML (item.firstChildElement ("title").text ());
+	if (result->Title_.isEmpty ())
+		result->Title_ = "<>";
 	result->Link_ = item.firstChildElement ("link").text ();
 	result->Description_ = item.firstChildElement ("description").text ();
 	result->PubDate_ = rfc822TimeToQDateTime (item.firstChildElement ("pubDate").text ());
 	if (!result->PubDate_.isValid () || result->PubDate_.isNull ())
 		result->PubDate_ = QDateTime::currentDateTime ();
 	result->Guid_ = item.firstChildElement ("guid").text ();
+	if (result->Guid_.isEmpty ())
+		result->Guid_ = "empty";
 	result->Categories_ = GetAllCategories (item);
 	result->Unread_ = true;
 	result->Author_ = GetAuthor (item);
