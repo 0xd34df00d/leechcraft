@@ -22,6 +22,7 @@
 #include "regexpmatcherui.h"
 #include "regexpmatchermanager.h"
 #include "importopml.h"
+#include "exportopml.h"
 
 Aggregator::~Aggregator ()
 {
@@ -430,6 +431,11 @@ void Aggregator::on_ActionImportOPML__triggered ()
 
 void Aggregator::on_ActionExportOPML__triggered ()
 {
+	ExportOPML exportDialog;
+	if (exportDialog.exec () == QDialog::Rejected)
+		return;
+
+	Core::Instance ().ExportToOPML (exportDialog.GetDestination ());
 }
 
 void Aggregator::currentItemChanged (const QModelIndex& index)

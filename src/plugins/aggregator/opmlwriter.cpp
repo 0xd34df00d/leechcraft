@@ -1,0 +1,94 @@
+#include "opmlwriter.h"
+#include <QByteArray>
+#include <QStringList>
+#include <QDomDocument>
+#include <QDomElement>
+
+OPMLWriter::OPMLWriter (QByteArray *data)
+: Data_ (data)
+{
+}
+
+OPMLWriter::~OPMLWriter ()
+{
+}
+
+void OPMLWriter::Write (const feeds_container_t& feeds) const
+{
+	QDomDocument doc ("opml");
+	QDomElement root = doc.createElement ("opml");
+	doc.appendChild (root);
+	WriteHead (root, doc);
+	WriteBody (root, doc, feeds);
+
+	*Data_ = doc.toByteArray ();
+}
+
+void OPMLWriter::WriteHead (QDomElement& root, QDomDocument& doc) const
+{
+	QDomElement head = doc.createElement ("head");
+	QDomElement text = doc.createElement ("text");
+	head.appendChild (text);
+	root.appendChild (head);
+}
+
+void OPMLWriter::WriteBody (QDomElement& root,
+		QDomDocument& doc,
+		const feeds_container_t& feeds) const
+{
+	QDomElement body = doc.createElement ("body");
+	for (feeds_container_t::const_iterator i = feeds.begin (),
+			end = feeds.end (); i != end; ++i)
+		for (channels_container_t::const_iterator j = (*i)->Channels_.begin (),
+				chend = (*i)->Channels_.end (); j != chend; ++j)
+		{
+			QStringList tags = (*j)->Tags_;
+			tags.sort ();
+
+			QDomElement inserter = GetElementForTags (tags, body, doc);
+			QDomElement item = doc.createElement ("outline");
+			item.setAttribute ("title", (*j)->Title_);
+			item.setAttribute ("description", (*j)->Description_);
+			item.setAttribute ("xmlUrl", (*i)->URL_);
+			item.setAttribute ("htmlUrl", (*j)->Link_);
+			inserter.appendChild (item);
+		}
+
+	root.appendChild (body);
+}
+
+QDomElement OPMLWriter::GetElementForTags (const QStringList& tags,
+		QDomNode& node, QDomDocument& document) const
+{
+	QDomNodeList elements = node.childNodes ();
+	for (int i = 0; i < elements.size (); ++i)
+	{
+		QDomElement elem = elements.at (i).toElement ();
+		if (elem.attribute ("text") == tags.at (0) &&
+				!elem.hasAttribute ("xmlUrl"))
+		{
+			if (tags.size () > 1)
+			{
+				QStringList childTags = tags;
+				childTags.removeAt (1);
+				return GetElementForTags (childTags, elem, document);
+			}
+			else
+				return elem;
+		}
+	}
+
+	QDomElement result = document.createElement ("outline");
+	result.setAttribute ("text", tags.at (0));
+	result.setAttribute ("isOpen", "true");
+	node.appendChild (result);
+	if (tags.size () > 1)
+	{
+		QStringList childTags = tags;
+		childTags.removeAt (1);
+		return GetElementForTags (childTags, result, document);
+	}
+	else
+		return result;
+}
+

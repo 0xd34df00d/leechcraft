@@ -13,7 +13,7 @@ AddFeed::AddFeed (QWidget *parent)
 
 QString AddFeed::GetURL () const
 {
-    return URL_->text ();
+    return URL_->text ().simplified ();
 }
 
 QStringList AddFeed::GetTags () const

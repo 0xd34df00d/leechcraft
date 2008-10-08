@@ -55,7 +55,9 @@ void ImportOPML::on_Browse__released ()
 	QString filename = QFileDialog::getOpenFileName (this,
 			tr ("Select OPML file"),
 			QDir::homePath (),
-			tr ("OPML files (*.opml);;XML files (*.xml);;All files (*.*)"));
+			tr ("OPML files (*.opml);;"
+				"XML files (*.xml);;"
+				"All files (*.*)"));
 
 	if (filename.isEmpty ())
 		return;

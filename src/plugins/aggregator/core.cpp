@@ -23,6 +23,7 @@
 #include "channelsmodel.h"
 #include "itembucket.h"
 #include "opmlparser.h"
+#include "opmlwriter.h"
 #include "sqlstoragebackend.h"
 
 Core::Core ()
@@ -488,6 +489,16 @@ void Core::AddFromOPML (const QString& filename,
 	for (OPMLParser::items_container_t::const_iterator i = items.begin (),
 			end = items.end (); i != end; ++i)
 		AddFeed (i->URL_, tagsList + i->Categories_);
+}
+
+void Core::ExportToOPML (const QString& where) const
+{
+	QByteArray data;
+	{
+		OPMLWriter writer (&data);
+		writer.Write (Feeds_.values ().toVector ().toStdVector ());
+	}
+	qDebug () << data;
 }
 
 int Core::columnCount (const QModelIndex& parent) const

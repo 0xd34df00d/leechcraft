@@ -101,7 +101,12 @@ QDateTime RSSParser::RFC822TimeToQDateTime (const QString& t) const
 	}
 	else
 		hoursShift = TimezoneOffsets_.value (timezone, 0);
+
+	if (tmp.at (0).size () == 1)
+		tmp[0].prepend ("0");
+
 	time = tmp.join (" ");
+
 	QDateTime result;
 	if (tmp.at (2).size () == 4)
 		result = QLocale::c ().toDateTime(time, "dd MMM yyyy hh:mm:ss");

@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="uk_UA">
+<defaultcodec></defaultcodec>
+<context>
+    <name>@default</name>
+    <message>
+        <location filename="config.h" line="7"/>
+        <source>Leechcraft user</source>
+        <translation>Користувач Leechcraft</translation>
+    </message>
+    <message>
+        <location filename="config.h" line="11"/>
+        <source>VERSION Leechcraft Chatter v%1, using Qt v %2</source>
+        <translation>ВЕСІЯ Leechcraft Співрозмовние v %1, використовує Qt v %2</translation>
+    </message>
+    <message>
+        <location filename="config.h" line="15"/>
+        <source>STOP DRINKING COGNAC ON MORNINGS!</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
 <context>
     <name>CommonJobAdder</name>
     <message>
@@ -118,7 +137,7 @@
     <message>
         <location filename="leechcraft.ui" line="61"/>
         <source>Downloaders</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантажувачі</translation>
     </message>
 </context>
 <context>
@@ -157,16 +176,6 @@
         <translation>Помилка</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="180"/>
-        <source>Show/hide main</source>
-        <translation type="obsolete">Показати/приховати головне вікно</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="181"/>
-        <source>Hide all</source>
-        <translation type="obsolete">Приховати все</translation>
-    </message>
-    <message>
         <location filename="mainwindow.cpp" line="189"/>
         <source>Quit</source>
         <translation>Вийти</translation>
@@ -199,7 +208,7 @@
     <message>
         <location filename="mainwindow.cpp" line="185"/>
         <source>Show/hide</source>
-        <translation type="unfinished"></translation>
+        <translation>Показати/приховати</translation>
     </message>
 </context>
 <context>
@@ -235,11 +244,29 @@
     <message>
         <location filename="pluginmanager.cpp" line="105"/>
         <source>Release of one or more plugins failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося вивантажити один або декілька плагінів.</translation>
     </message>
 </context>
 <context>
     <name>Proxy</name>
+    <message numerus="yes">
+        <location filename="plugininterface/proxy.cpp" line="118"/>
+        <source>%n month(es),</source>
+        <translation>
+            <numerusform>%n місяць,</numerusform>
+            <numerusform>%n місяці,</numerusform>
+            <numerusform>%n місяців,</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="plugininterface/proxy.cpp" line="120"/>
+        <source>%n day(s),</source>
+        <translation>
+            <numerusform>%n день,</numerusform>
+            <numerusform>%n дені,</numerusform>
+            <numerusform>%n денів,</numerusform>
+        </translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -271,7 +298,7 @@
     <message>
         <location filename="main.cpp" line="90"/>
         <source>LeechCraft is alread running, please close another instance before starting it.</source>
-        <translation type="unfinished">LeechCraft вже запущено. Будь ласка, закрийте його</translation>
+        <translation>LeechCraft вже запущено. Будь ласка, закрийте його.</translation>
     </message>
     <message>
         <location filename="main.cpp" line="100"/>

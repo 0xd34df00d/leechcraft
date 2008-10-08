@@ -35,7 +35,9 @@ SET (SRCS
 	regexpmatchermanager.cpp
 	itemsfiltermodel.cpp
 	opmlparser.cpp
+	opmlwriter.cpp
 	importopml.cpp
+	exportopml.cpp
 	sqlstoragebackend.cpp
 	storagebackend.cpp
 	)
@@ -67,7 +69,9 @@ SET (HEADERS
 	regexpmatchermanager.h
 	itemsfiltermodel.h
 	opmlparser.h
+	opmlwriter.h
 	importopml.h
+	exportopml.h
 	sqlstoragebackend.h
 	storagebackend.h
 	opmlitem.h
@@ -81,6 +85,7 @@ SET (FORMS
 	regexpmatcherui.ui
 	singleregexp.ui
 	importopml.ui
+	exportopml.ui
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS
