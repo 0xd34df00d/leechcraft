@@ -17,14 +17,17 @@ protected:
 	static const QString DC_;
 	static const QString WFW_;
 	static const QString Atom_;
+	static const QString RDF_;
 
 	QString GetLink (const QDomElement&) const;
 	QString GetAuthor (const QDomElement&) const;
 	QString GetCommentsRSS (const QDomElement&) const;
+	QDateTime GetDCDateTime (const QDomElement&) const;
 	QStringList GetAllCategories (const QDomElement&) const;
 	QStringList GetDCCategories (const QDomElement&) const;
 	QStringList GetPlainCategories (const QDomElement&) const;
 
+	QDateTime FromRFC3339 (const QString&) const;
     QString UnescapeHTML (const QString&) const;
 };
 

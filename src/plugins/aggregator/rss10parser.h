@@ -1,14 +1,14 @@
-#ifndef RSS20PARSER_H
-#define RSS20PARSER_H
+#ifndef RSS10PARSER_H
+#define RSS10PARSER_H
 #include "rssparser.h"
 #include "channel.h"
 
-class RSS20Parser : public RSSParser
+class RSS10Parser : public RSSParser
 {
-    RSS20Parser ();
+	RSS10Parser ();
 public:
-	virtual ~RSS20Parser ();
-    static RSS20Parser& Instance ();
+	virtual ~RSS10Parser ();
+    static RSS10Parser& Instance ();
     virtual bool CouldParse (const QDomDocument&) const;
 private:
 	channels_container_t Parse (const QDomDocument&) const;

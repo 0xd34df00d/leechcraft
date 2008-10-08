@@ -15,6 +15,7 @@ SET (SRCS
     parserfactory.cpp
 	rssparser.cpp
     rss20parser.cpp
+	rss10parser.cpp
 	rss091parser.cpp
 	atomparser.cpp
     atom10parser.cpp
@@ -50,6 +51,7 @@ SET (HEADERS
     parser.h
 	rssparser.h
     rss20parser.h
+	rss10parser.h
 	rss091parser.h
 	atomparser.h
     atom10parser.h

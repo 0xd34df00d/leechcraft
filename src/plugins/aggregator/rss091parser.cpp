@@ -17,7 +17,8 @@ RSS091Parser& RSS091Parser::Instance ()
 bool RSS091Parser::CouldParse (const QDomDocument& doc) const
 {
     QDomElement root = doc.documentElement ();
-    return root.tagName () == "rss" && root.attribute ("version") == "0.91";
+    return root.tagName () == "rss" &&
+		root.attribute ("version") == "0.91";
 }
 
 channels_container_t RSS091Parser::Parse (const QDomDocument& doc) const

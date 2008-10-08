@@ -13,7 +13,6 @@ public:
 			const QDomDocument&) const;
 protected:
 	virtual channels_container_t Parse (const QDomDocument&) const = 0;
-	QDateTime FromRFC3339 (const QString&) const;
 	virtual QString ParseEscapeAware (const QDomElement&) const;
 };
 

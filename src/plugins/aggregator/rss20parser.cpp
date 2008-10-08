@@ -22,7 +22,8 @@ RSS20Parser& RSS20Parser::Instance ()
 bool RSS20Parser::CouldParse (const QDomDocument& doc) const
 {
     QDomElement root = doc.documentElement ();
-    return root.tagName () == "rss" && root.attribute ("version") == "2.0";
+    return root.tagName () == "rss" &&
+		root.attribute ("version") == "2.0";
 }
 
 channels_container_t RSS20Parser::Parse (const QDomDocument& doc) const

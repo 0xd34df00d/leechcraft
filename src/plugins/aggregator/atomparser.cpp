@@ -32,40 +32,6 @@ channels_container_t AtomParser::Parse (const channels_container_t& old,
     return result;
 }
 
-QDateTime AtomParser::FromRFC3339 (const QString& t) const
-{
-	int hoursShift = 0, minutesShift = 0;
-	if (t.size () < 19)
-		return QDateTime ();
-	QDateTime result = QDateTime::fromString (t.left (19).toUpper (), "yyyy-MM-ddTHH:mm:ss");
-	QRegExp fractionalSeconds ("(\\.)(\\d+)");
-	if (fractionalSeconds.indexIn (t) > -1)
-	{
-		bool ok;
-		int fractional = fractionalSeconds.cap (2).toInt (&ok);
-		if (ok)
-		{
-			if (fractional < 100)
-				fractional *= 10;
-			if (fractional <10) 
-				fractional *= 100;
-			result.addMSecs (fractional);
-		}
-	}
-	QRegExp timeZone ("(\\+|\\-)(\\d\\d)(:)(\\d\\d)$");
-	if (timeZone.indexIn (t) > -1)
-	{
-		short int multiplier = -1;
-		if (timeZone.cap (1) == "-")
-			multiplier = 1;
-		hoursShift = timeZone.cap (2).toInt ();
-		minutesShift = timeZone.cap (4).toInt ();
-		result = result.addSecs (hoursShift * 3600 * multiplier + minutesShift * 60 * multiplier);
-	}
-	result.setTimeSpec (Qt::UTC);
-	return result.toLocalTime ();
-}
-
 QString AtomParser::ParseEscapeAware (const QDomElement& parent) const
 {
 	QString result;
