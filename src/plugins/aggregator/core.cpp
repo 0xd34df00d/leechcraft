@@ -16,6 +16,7 @@
 #include "xmlsettingsmanager.h"
 #include "parserfactory.h"
 #include "rss20parser.h"
+#include "rss10parser.h"
 #include "rss091parser.h"
 #include "atom10parser.h"
 #include "atom03parser.h"
@@ -32,6 +33,7 @@ Core::Core ()
 	ParserFactory::Instance ().Register (&Atom10Parser::Instance ());
 	ParserFactory::Instance ().Register (&RSS091Parser::Instance ());
 	ParserFactory::Instance ().Register (&Atom03Parser::Instance ());
+	ParserFactory::Instance ().Register (&RSS10Parser::Instance ());
 	ItemHeaders_ << tr ("Name") << tr ("Date");
 
 	qRegisterMetaTypeStreamOperators<Feed> ("Feed");
