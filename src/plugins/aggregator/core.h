@@ -10,13 +10,13 @@
 #include "item.h"
 #include "channel.h"
 #include "feed.h"
+#include "storagebackend.h"
 
 class ChannelsModel;
 class TagsCompletionModel;
 class QTimer;
 class QNetworkReply;
 class QFile;
-class StorageBackend;
 
 class Core : public QAbstractItemModel
 {

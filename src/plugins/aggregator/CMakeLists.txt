@@ -13,7 +13,9 @@ SET (SRCS
     core.cpp
     addfeed.cpp
     parserfactory.cpp
+	rssparser.cpp
     rss20parser.cpp
+	rss091parser.cpp
 	atomparser.cpp
     atom10parser.cpp
     atom03parser.cpp
@@ -46,7 +48,9 @@ SET (HEADERS
     enclosure.h
     parserfactory.h
     parser.h
+	rssparser.h
     rss20parser.h
+	rss091parser.h
 	atomparser.h
     atom10parser.h
     atom03parser.h

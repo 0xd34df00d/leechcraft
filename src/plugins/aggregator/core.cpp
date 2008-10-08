@@ -16,6 +16,7 @@
 #include "xmlsettingsmanager.h"
 #include "parserfactory.h"
 #include "rss20parser.h"
+#include "rss091parser.h"
 #include "atom10parser.h"
 #include "atom03parser.h"
 #include "channelsmodel.h"
@@ -29,6 +30,7 @@ Core::Core ()
 {
 	ParserFactory::Instance ().Register (&RSS20Parser::Instance ());
 	ParserFactory::Instance ().Register (&Atom10Parser::Instance ());
+	ParserFactory::Instance ().Register (&RSS091Parser::Instance ());
 	ParserFactory::Instance ().Register (&Atom03Parser::Instance ());
 	ItemHeaders_ << tr ("Name") << tr ("Date");
 
@@ -67,6 +69,7 @@ void Core::Release ()
 	saveSettings ();
 	ItemBucket::Instance ().Release ();
 	XmlSettingsManager::Instance ()->Release ();
+	StorageBackend_.reset (0);
 }
 
 void Core::DoDelayedInit ()

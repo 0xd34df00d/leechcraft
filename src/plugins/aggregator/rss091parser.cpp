@@ -1,49 +1,37 @@
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include <QDomDocument>
-#include <QDomElement>
-#include <QStringList>
-#include <QtDebug>
-#include "rss20parser.h"
+#include "rss091parser.h"
 
-RSS20Parser::RSS20Parser ()
+RSS091Parser::RSS091Parser ()
 {
 }
 
-RSS20Parser::~RSS20Parser ()
+RSS091Parser::~RSS091Parser ()
 {
 }
 
-RSS20Parser& RSS20Parser::Instance ()
+RSS091Parser& RSS091Parser::Instance ()
 {
-    static RSS20Parser inst;
-    return inst;
+	static RSS091Parser inst;
+	return inst;
 }
 
-bool RSS20Parser::CouldParse (const QDomDocument& doc) const
+bool RSS091Parser::CouldParse (const QDomDocument& doc) const
 {
     QDomElement root = doc.documentElement ();
-    return root.tagName () == "rss" && root.attribute ("version") == "2.0";
+    return root.tagName () == "rss" && root.attribute ("version") == "0.91";
 }
 
-channels_container_t RSS20Parser::Parse (const QDomDocument& doc) const
+channels_container_t RSS091Parser::Parse (const QDomDocument& doc) const
 {
 	channels_container_t channels;
     QDomElement root = doc.documentElement ();
     QDomElement channel = root.firstChildElement ("channel");
-    while (!channel.isNull ())
-    {
+	while (!channel.isNull ())
+	{
         Channel_ptr chan (new Channel);
-        chan->Title_ = channel.firstChildElement ("title").text ();
-        chan->Description_ = channel.firstChildElement ("description").text ();
-        chan->Link_ = GetLink (channel);
-        chan->LastBuild_ = RFC822TimeToQDateTime (channel.firstChildElement ("lastBuildDate").text ());
-        chan->Language_ = channel.firstChildElement ("language").text ();
-		chan->Author_ = GetAuthor (channel);
-        if (chan->Author_.isEmpty ())
-			chan->Author_ = channel.firstChildElement ("managingEditor").text ();
-        if (chan->Author_.isEmpty ())
-            chan->Author_ = channel.firstChildElement ("webMaster").text ();
-        chan->PixmapURL_ = channel.firstChildElement ("image").attribute ("url");
+
+		chan->Title_ = channel.firstChildElement ("title").text ();
+		chan->Description_ = channel.firstChildElement ("description").text ();
+		chan->Link_ = channel.firstChildElement ("link").text ();
 
         QDomElement item = channel.firstChildElement ("item");
         while (!item.isNull ())
@@ -58,13 +46,14 @@ channels_container_t RSS20Parser::Parse (const QDomDocument& doc) const
 			else
 				chan->LastBuild_ = QDateTime::currentDateTime ();
 		}
+
         channels.push_back (chan);
-        channel = channel.nextSiblingElement ("channel");
-    }
-    return channels;
+		channel = channel.nextSiblingElement ("channel");
+	}
+	return channels;
 }
 
-Item* RSS20Parser::ParseItem (const QDomElement& item) const
+Item* RSS091Parser::ParseItem (const QDomElement& item) const
 {
 	Item *result = new Item;
 	result->Title_ = UnescapeHTML (item.firstChildElement ("title").text ());
