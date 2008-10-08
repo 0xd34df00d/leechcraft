@@ -92,9 +92,10 @@ void IrcLayer::initRegexes()
 {
 	// These should be used only on "response"/"command" lines
 	prRegexes["privmsg"] = QRegExp("^PRIVMSG (\\S+) :(.+)$");
+	prRegexes["topic"] = QRegExp("^TOPIC (\\S+) :(.+)$");
 	prRegexes["notice"] = QRegExp("^NOTICE (\\S+) :(.+)$");
 	prRegexes["names"] = QRegExp("^(?:=|@) (\\S+) :(?:(.+)\\s?)+$");
-	prRegexes["topic"] = QRegExp("^(\\S+) :(.+)$");
+	prRegexes["rpltopic"] = QRegExp("^(\\S+) :(.+)$");
 	prRegexes["part"] = QRegExp("^PART (\\S+) :(.+)?$");
 	prRegexes["join"] = QRegExp("^JOIN :(\\S+)$");
 	prRegexes["quit"] = QRegExp("^QUIT :(.+)?$");
@@ -234,7 +235,7 @@ void IrcLayer::parseResp(int code, QString args, QHash<QString, QString> data)
 	 	if(prRegexes["names"].exactMatch(args))
 		{
 			//qDebug() << "It's NAMES" << prRegexes["names"].capturedTexts();
-			if(prRegexes["names"].cap(1)==target())
+			if(!QString::compare(prRegexes["names"].cap(1), target(), Qt::CaseInsensitive))
 			{
 				QStringList users = prRegexes["names"].cap(2).split(" ");
 				//qDebug() << "users" << users;
@@ -251,15 +252,18 @@ void IrcLayer::parseResp(int code, QString args, QHash<QString, QString> data)
 		}
 		break;
 		case RPL_TOPIC:
-		if(prRegexes["topic"].exactMatch(args))
+		if(prRegexes["rpltopic"].exactMatch(args))
 		{
-			if(prRegexes["topic"].cap(1)==target())
-				emit gotTopic(prRegexes["topic"].capturedTexts()); // Channel,topic
+			if(!QString::compare(prRegexes["rpltopic"].cap(1), target(), Qt::CaseInsensitive))
+			{
+				m_topic=prRegexes["rpltopic"].cap(2);
+				emit gotTopic(prRegexes["rpltopic"].capturedTexts()); // Channel,topic
+			}
 		}
 		break;
 		case RPL_ENDOFNAMES:
 			argz = args.split(" ");
-			if(argz[0]==target())
+			if(!QString::compare(argz[0], target(), Qt::CaseInsensitive))
 			{
 				ircSaveNames();
 				emit gotNames(users());
@@ -411,7 +415,7 @@ void IrcLayer::parseCmd(QString cmd, QHash<QString, QString> data)
 			data["text"]=prRegexes["action"].cap(1);
 			isAction = true;
 		}
-		if((data["target"]==target() && targetMode()==ChannelMode) || (data["target"]==nick() && targetMode()==PrivateMode))
+		if((!QString::compare(data["target"], target(), Qt::CaseInsensitive) && targetMode()==ChannelMode) || (!QString::compare(data["target"], nick(), Qt::CaseInsensitive) && targetMode()==PrivateMode))
 		{
 			isAction ? emit gotAction(data) : emit gotChannelMsg(data);
 		}
@@ -421,25 +425,36 @@ void IrcLayer::parseCmd(QString cmd, QHash<QString, QString> data)
 	{
 		data["target"]=prRegexes["notice"].cap(1); // target
 		data["text"]=prRegexes["notice"].cap(2); // text
-		if((data["target"]==nick()) || (data["target"]==target()))
+		if((!QString::compare(data["target"], nick(), Qt::CaseInsensitive)) || (!QString::compare(data["target"], target(), Qt::CaseInsensitive)))
 			emit gotNotice(data);
 	} else
 	if(prRegexes["part"].exactMatch(cmd))
 	{
 		data["target"]=prRegexes["part"].cap(1); // target
 		data["text"]=prRegexes["part"].cap(2); // text
-		if((data["target"]==target())&&(data["nick"]==nick()))
+		if((!QString::compare(data["target"], target(), Qt::CaseInsensitive))&&(!QString::compare(data["nick"], nick(), Qt::CaseInsensitive)))
 			setJoined(0);
-		if(data["target"]==target())
+		if(!QString::compare(data["target"], target(), Qt::CaseInsensitive))
 		{
 			if(int i=m_users.indexOf(data["nick"]) != -1) m_users.removeAt(i);
 			emit gotPart(data);
 		}
 	} else
+	if(prRegexes["topic"].exactMatch(cmd))
+	{
+		if(!QString::compare(prRegexes["topic"].cap(1), target(), Qt::CaseInsensitive))
+		{
+			data["target"]=prRegexes["topic"].cap(1);
+			data["text"]=prRegexes["topic"].cap(2);
+			m_topic=data["text"];
+			emit gotTopic(data);
+		}
+	}
+	else
 	if(prRegexes["quit"].exactMatch(cmd))
 	{
 		data["text"]=prRegexes["quit"].cap(1); // text
-		if (m_users.contains(data["nick"]) || data["nick"]==nick())
+		if (m_users.contains(data["nick"]) || !QString::compare(data["nick"], nick(), Qt::CaseInsensitive))
 		{
 			if(int i=m_users.indexOf(data["nick"]) != -1) m_users.removeAt(i);
 			emit gotQuit(data);
@@ -449,12 +464,12 @@ void IrcLayer::parseCmd(QString cmd, QHash<QString, QString> data)
 	{
 		data["target"]=prRegexes["join"].cap(1); // target
 		// if it's about me
-		if((data["nick"]==nick())&&(target()==data["target"])&&!joined())
+		if((!QString::compare(data["nick"], nick(), Qt::CaseInsensitive)) && (!QString::compare(data["target"],target(),Qt::CaseInsensitive)) && !joined())
 		{
 			setTarget(data["target"]);
 			setJoined(1);
 		}
-		if(data["target"]==target())
+		if(!QString::compare(data["target"], target(), Qt::CaseInsensitive))
 		{
 			m_users << data["nick"];
 			emit gotJoin(data);
@@ -465,7 +480,7 @@ void IrcLayer::parseCmd(QString cmd, QHash<QString, QString> data)
 		data["target"]=prRegexes["kick"].cap(1); // target
 		data["subject"]=prRegexes["kick"].cap(2); // whom
 		data["text"]=prRegexes["kick"].cap(3); // reason
-		if(data["target"]==target())
+		if(!QString::compare(data["target"], target(), Qt::CaseInsensitive))
 		{
 			if(int i=m_users.indexOf(data["nick"]) != -1) m_users.removeAt(i);
 			emit gotKick(data);
@@ -476,7 +491,7 @@ void IrcLayer::parseCmd(QString cmd, QHash<QString, QString> data)
 		data["target"]=prRegexes["mode"].cap(1); // target
 		data["text"]=prRegexes["mode"].cap(2); // modecmd
 		data["subject"]=prRegexes["mode"].cap(3); // subject
-		if(data["target"]==target())
+		if(!QString::compare(data["target"], target(), Qt::CaseInsensitive))
 			emit gotMode(data);
 	} else
 	if(prRegexes["nick"].exactMatch(cmd))
@@ -484,14 +499,13 @@ void IrcLayer::parseCmd(QString cmd, QHash<QString, QString> data)
 		data["target"]=prRegexes["nick"].cap(1); // target
 		// TODO route this too
 		qDebug() << data;
-		if(m_users.contains(data["nick"]) || data["target"]==nick())
+		if(m_users.contains(data["nick"]) || !QString::compare(data["target"],nick(),Qt::CaseInsensitive))
 		{
 			if(int i=m_users.indexOf(data["nick"]) != -1) m_users.removeAt(i);
 			m_users << data["target"];
 			emit gotNick(data);
 		}
-	} else
-		qDebug() << cmd << "is not a NICK." << prRegexes["nick"].pattern();
+	}
 }
 
 QString IrcLayer::composeIrcUri(QHash<QString, QString> data)
@@ -613,7 +627,7 @@ QHash<QString, QString> IrcLayer::chewIrcUri(QString uri)
 
 void IrcLayer::checkKicked(QHash<QString, QString> data)
 {
-	if((data["subject"]==nick())&&(data["target"]==m_target))
+	if((!QString::compare(data["subject"],nick(),Qt::CaseInsensitive))&&(!QString::compare(data["target"],target(),Qt::CaseInsensitive)))
 		setJoined(0); // Alas.
 }
 
@@ -721,6 +735,17 @@ bool IrcLayer::active() const
 void IrcLayer::finalizeServers ()
 {
 	qDeleteAll (m_servers);
+}
+
+QString IrcLayer::topic() const
+{
+	return m_topic;
+}
+
+void IrcLayer::setTopic(const QString& theValue)
+{
+	if(connected() && targetMode()==ChannelMode)
+		ircThrow(QString("TOPIC %1 :%2").arg(target(), theValue));
 }
 
 /*

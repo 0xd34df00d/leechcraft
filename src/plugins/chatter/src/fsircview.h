@@ -42,7 +42,6 @@ private:
 	void initConnections();
 	IrcLayer * m_irc;
 	QHash<int, QCompleter *> m_actionCompleters;
-	QRegExp * m_mArg;
 	QRegExp * m_linkRegexp;
 	QRegExp * m_chanRegexp;
 	// Dropdown actions
@@ -57,6 +56,7 @@ private slots:
 	void gotError(QString message);
 	void gotNames(QStringList data);
 	void gotTopic(QStringList data);
+	void gotTopic(QHash<QString, QString> data);
 	void gotNick(QHash<QString, QString> data);
 	void gotJoin(QHash<QString, QString> data);
 	void gotPart(QHash<QString, QString> data);

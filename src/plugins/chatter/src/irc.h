@@ -77,9 +77,9 @@ public:
 	int targetMode() const;
 	void say(QString msg);
 	QStringList users() const;
-
 	bool active() const;
-
+	void setTopic(const QString& theValue);
+	QString topic() const;
 
 private:
 	void setJoined(int theValue);
@@ -95,6 +95,7 @@ private:
 	QString m_realname;
 	QString m_server;
 	QString m_target;
+	QString m_topic;
 	QStringList m_users;
 	QStringList m_usersTemp; // Used for temporary saving of users' names during long NAMREPLies
 	int m_targetMode;
@@ -120,7 +121,10 @@ signals:
 	void gotError(QString);
 	void gotAction(QHash<QString, QString>);
 	void gotNames(QStringList);
+	// RPL_TOPIC
 	void gotTopic(QStringList);
+	// command one
+	void gotTopic(QHash<QString, QString>);
 	void gotNick(QHash<QString, QString>);
 	void gotJoin(QHash<QString, QString>);
 	void gotPart(QHash<QString, QString>);

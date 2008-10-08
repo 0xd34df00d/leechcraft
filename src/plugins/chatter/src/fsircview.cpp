@@ -35,7 +35,6 @@ FsIrcView::FsIrcView(QWidget * parent) : QWidget(parent)
 	setupUi(this);
 	fsChatView->setFocusProxy(cmdEdit);
 	m_irc=new IrcLayer(0, FS_IRC_URI);
-	m_mArg = new QRegExp("(\\S+)(?: (.+))+");
 	m_linkRegexp = new QRegExp("([a-zA-Z\\+\\-\\.]+://(?:["+QRegExp::escape("-_.!~*'();/?:@&=+$,%#")+"]|\\w)+)");
 	m_chanRegexp = new QRegExp("(\\s)(#(?:\\w|[\\.\\-\\[\\]\\(\\)@\"'`\\^\\$<>&~=#\\*])+)");
 	initCompleters();
@@ -58,7 +57,6 @@ FsIrcView::FsIrcView(QWidget * parent) : QWidget(parent)
 FsIrcView::~FsIrcView()
 {
 	delete m_irc;
-	delete m_mArg;
 	delete m_linkRegexp;
 	delete m_chanRegexp;
 }
@@ -69,6 +67,9 @@ void FsIrcView::fsEcho(QString message, QString style)
 	message = Qt::escape(message);
 	// Highlighting links
 	message.replace(*m_linkRegexp,QString("<a href='\\1' style='color:%1'>\\1</a>").arg(m_msgColors["link"]));
+
+	// Workaround to save the links
+	message.replace(QRegExp("&amp;(?![a-z]+;)"),"&");
 	// FIXME hack here!
 	// Highlighting Private/Notice sources
 	if(style==m_msgColors["notice"] || style==m_msgColors["private"])
@@ -315,6 +316,7 @@ void FsIrcView::fsExec(QString cmd, QString arg)
 {
 	fSettings settings;
 	cmd.toLower();
+	QStringList args = arg.split(QRegExp("\\s+"));
 	if (cmd=="encoding")
 	{
 		if (m_irc->setEncoding(arg)==1);
@@ -324,75 +326,78 @@ void FsIrcView::fsExec(QString cmd, QString arg)
 			settings.setValue(m_irc->getIrcUri(), arg);
 			settings.endGroup();
 		}
+		return;
+	}
+	if (cmd=="me")
+	{
+		QString sarg = arg;
+		arg.prepend("ACTION ");
+		arg.prepend('\x01');
+		arg.append('\x01');
+		m_irc->ircMsg(arg, m_irc->channel());
+		fsEcho("* "+m_irc->nick()+" "+sarg, m_msgColors["action"]);
+		return;
+	}
+	if (cmd=="join" || cmd=="j")
+	{
+		m_irc->ircJoin(arg);
+		return;
+	}
+	if (cmd=="nick")
+	{
+		m_irc->setNickChanged(0);
+		m_irc->ircSetNick(arg);
+		if (!m_irc->connected())
+			nickToHistory(arg);
+		return;
+	}
+	if (cmd=="mode")
+	{
+		m_irc->ircMode(arg);
+		return;
+	}
+	if ((cmd=="nickserv")||(cmd=="ns"))
+	{
+		m_irc->ircNs(arg);
+		return;
+	}
+	if ((cmd=="chanserv")||(cmd=="cs"))
+	{
+		m_irc->ircCs(arg);
+		return;
+	}
+	if (cmd=="quit")
+	{
+		m_irc->ircQuit(arg);
+		return;
+	}
+	if ((cmd=="memoserv")||(cmd=="ms"))
+	{
+		m_irc->ircMs(arg);
+		return;
+	}
+	// More-than-one parameters
+	if(cmd=="msg")
+	{
+		m_irc->ircMsg(args[1],args[0]);
+		return;
 	}
 	else
-		if (cmd=="me")
-		{
-			QString sarg = arg;
-			arg.prepend("ACTION ");
-			arg.prepend('\x01');
-			arg.append('\x01');
-			m_irc->ircMsg(arg, m_irc->channel());
-			fsEcho("* "+m_irc->nick()+" "+sarg, m_msgColors["action"]);
-		}
-		else
-			if (cmd=="join" || cmd=="j")
-			{
-				m_irc->ircJoin(arg);
-			}
-			else
-				if (cmd=="nick")
-				{
-					m_irc->setNickChanged(0);
-					m_irc->ircSetNick(arg);
-					if (!m_irc->connected())
-						nickToHistory(arg);
-				}
-				else
-					if (cmd=="mode")
-					{
-						m_irc->ircMode(arg);
-					}
-					else
-						if ((cmd=="nickserv")||(cmd=="ns"))
-						{
-							m_irc->ircNs(arg);
-						}
-						else
-							if ((cmd=="chanserv")||(cmd=="cs"))
-							{
-								m_irc->ircCs(arg);
-							}
-							else
-								if (cmd=="quit")
-								{
-									m_irc->ircQuit(arg);
-								}
-								else
-									if ((cmd=="memoserv")||(cmd=="ms"))
-									{
-										m_irc->ircMs(arg);
-									}
-									else
-										if (m_mArg->exactMatch(arg))
-										{
-											// More-than-one parameters
-											if (cmd=="msg")
-											{
-												m_irc->ircMsg(m_mArg->cap(2), m_mArg->cap(1));
-											}
-											else
-												if (cmd=="kick")
-												{
-													m_irc->ircKick(m_mArg->cap(1), m_mArg->cap(2));
-												}
-										}
-										else
-											//fsEcho(tr("Unknown command: ") + cmd, "red");
-										{
-											m_irc->ircThrow(cmd+" "+arg);
-											fsEcho(tr("RAW -> ")+cmd+" "+arg,m_msgColors["raw"]);
-										}
+	if(cmd=="kick")
+	{
+		m_irc->ircKick(args[0], args[1]);
+		return;
+	}
+	if(cmd=="topic")
+	{
+		m_irc->setTopic(arg);
+		return;
+	}
+	//fsEcho(tr("Unknown command: ") + cmd, "red");
+	{
+		m_irc->ircThrow(cmd+" "+arg);
+		fsEcho(tr("RAW -> ")+cmd+" "+arg,m_msgColors["raw"]);
+	}
 }
 
 void FsIrcView::fsQuit()
@@ -449,6 +454,7 @@ void FsIrcView::openIrc(QString uri)
 	connect(m_irc, SIGNAL(gotPrivAction(QHash<QString, QString>)), this, SLOT(gotPrivAction(QHash<QString, QString>)));
 	connect(m_irc, SIGNAL(gotNames(QStringList)), this, SLOT(gotNames(QStringList)));
 	connect(m_irc, SIGNAL(gotTopic(QStringList)), this, SLOT(gotTopic(QStringList)));
+	connect(m_irc, SIGNAL(gotTopic(QHash<QString, QString>)), this, SLOT(gotTopic(QHash<QString, QString>)));
 	connect(m_irc, SIGNAL(gotNick(QHash<QString, QString>)), this, SLOT(gotNick(QHash<QString, QString>)));
 	connect(m_irc, SIGNAL(gotJoin(QHash<QString, QString>)), this, SLOT(gotJoin(QHash<QString, QString>)));
 	connect(m_irc, SIGNAL(gotPart(QHash<QString, QString>)), this, SLOT(gotPart(QHash<QString, QString>)));
@@ -506,4 +512,9 @@ void FsIrcView::gotPrivAction(QHash< QString, QString > data)
 	qDebug() << "Receiving PrivMsg" << ircUri() << hasFocus() << isVisible() << isHidden();
 	if(fsirc::findTab(ircUri().replace(QRegExp("/[^/]+$"),"/"+data["nick"]))<0 && fsirc::findTab(ircUri().replace(QRegExp("/[^/]+$"),"/"+data["target"]))<0 && !isHidden())
 		fsEcho(tr("Private: * %1 %2").arg(data["nick"],data["text"]), m_msgColors["private"]);
+}
+
+void FsIrcView::gotTopic(QHash< QString, QString > data)
+{
+	fsEcho(tr("%1 sets topic to %2").arg(data["nick"],data["text"]), m_msgColors["event"]);
 }
