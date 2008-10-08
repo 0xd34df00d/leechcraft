@@ -66,9 +66,9 @@ Core& Core::Instance ()
 
 void Core::Release ()
 {
-	saveSettings ();
 	ItemBucket::Instance ().Release ();
 	XmlSettingsManager::Instance ()->Release ();
+	saveSettings ();
 	StorageBackend_.reset (0);
 }
 
