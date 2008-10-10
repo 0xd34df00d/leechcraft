@@ -491,14 +491,31 @@ void Core::AddFromOPML (const QString& filename,
 		AddFeed (i->URL_, tagsList + i->Categories_);
 }
 
-void Core::ExportToOPML (const QString& where) const
+void Core::ExportToOPML (const QString& where,
+		const QString& title,
+		const QString& owner,
+		const QString& ownerEmail,
+		const std::vector<bool>& mask) const
 {
-	QByteArray data;
-	{
-		OPMLWriter writer (&data);
-		writer.Write (Feeds_.values ().toVector ().toStdVector ());
-	}
-	qDebug () << data;
+	feeds_container_t feeds = GetFeeds ();
+
+	for (std::vector<bool>::const_iterator begin = mask.begin (),
+			i = mask.end () - 1; i >= begin; --i)
+		if (!*i)
+		{
+			size_t distance = std::distance (mask.begin (), i);
+			feeds_container_t::iterator eraser = feeds.begin ();
+			std::advance (eraser, distance);
+			feeds.erase (eraser);
+		}
+
+	OPMLWriter writer;
+	qDebug () << writer.Write (feeds, title, owner, ownerEmail);
+}
+
+feeds_container_t Core::GetFeeds () const
+{
+	return Feeds_.values ().toVector ().toStdVector ();
 }
 
 int Core::columnCount (const QModelIndex& parent) const

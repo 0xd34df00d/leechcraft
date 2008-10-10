@@ -101,7 +101,12 @@ public:
 	void AddFromOPML (const QString&,
 			const QString&,
 			const std::vector<bool>&);
-	void ExportToOPML (const QString&) const;
+	void ExportToOPML (const QString&,
+			const QString&,
+			const QString&,
+			const QString&,
+			const std::vector<bool>&) const;
+	feeds_container_t GetFeeds () const;
 
     virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
     virtual QVariant data (const QModelIndex&,

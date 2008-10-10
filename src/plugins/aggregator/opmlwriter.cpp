@@ -3,9 +3,9 @@
 #include <QStringList>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QtDebug>
 
-OPMLWriter::OPMLWriter (QByteArray *data)
-: Data_ (data)
+OPMLWriter::OPMLWriter ()
 {
 }
 
@@ -13,23 +13,50 @@ OPMLWriter::~OPMLWriter ()
 {
 }
 
-void OPMLWriter::Write (const feeds_container_t& feeds) const
+QString OPMLWriter::Write (const feeds_container_t& feeds,
+		const QString& title,
+		const QString& owner,
+		const QString& ownerEmail) const
 {
-	QDomDocument doc ("opml");
+	QDomDocument doc;
 	QDomElement root = doc.createElement ("opml");
 	doc.appendChild (root);
-	WriteHead (root, doc);
+	WriteHead (root, doc, title, owner, ownerEmail);
 	WriteBody (root, doc, feeds);
 
-	*Data_ = doc.toByteArray ();
+	return doc.toString ();
 }
 
-void OPMLWriter::WriteHead (QDomElement& root, QDomDocument& doc) const
+void OPMLWriter::WriteHead (QDomElement& root,
+		QDomDocument& doc,
+		const QString& title,
+		const QString& owner,
+		const QString& ownerEmail) const
 {
 	QDomElement head = doc.createElement ("head");
 	QDomElement text = doc.createElement ("text");
 	head.appendChild (text);
 	root.appendChild (head);
+
+	if (!title.isEmpty ())
+	{
+		QDomText t = doc.createTextNode (title);
+		text.appendChild (t);
+	}
+	if (!owner.isEmpty ())
+	{
+		QDomElement elem = doc.createElement ("owner");
+		QDomText t = doc.createTextNode (owner);
+		elem.appendChild (t);
+		head.appendChild (elem);
+	}
+	if (!ownerEmail.isEmpty ())
+	{
+		QDomElement elem = doc.createElement ("ownerEmail");
+		QDomText t = doc.createTextNode (ownerEmail);
+		elem.appendChild (t);
+		head.appendChild (elem);
+	}
 }
 
 void OPMLWriter::WriteBody (QDomElement& root,
@@ -70,7 +97,7 @@ QDomElement OPMLWriter::GetElementForTags (const QStringList& tags,
 			if (tags.size () > 1)
 			{
 				QStringList childTags = tags;
-				childTags.removeAt (1);
+				childTags.removeAt (0);
 				return GetElementForTags (childTags, elem, document);
 			}
 			else
@@ -85,7 +112,7 @@ QDomElement OPMLWriter::GetElementForTags (const QStringList& tags,
 	if (tags.size () > 1)
 	{
 		QStringList childTags = tags;
-		childTags.removeAt (1);
+		childTags.removeAt (0);
 		return GetElementForTags (childTags, result, document);
 	}
 	else

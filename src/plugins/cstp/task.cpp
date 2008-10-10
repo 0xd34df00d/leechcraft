@@ -528,8 +528,6 @@ void Task::responseHeaderReceived (const QHttpResponseHeader& response)
 		Http_->disconnect ();
 		Http_->blockSignals (true);
 		Http_->abort ();
-		Http_.release ()->deleteLater ();
-		Type_ = TInvalid;
 		emit done (true);
 	}
 }

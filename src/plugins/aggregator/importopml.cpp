@@ -144,7 +144,8 @@ bool ImportOPML::HandleFile (const QString& filename)
 	{
 		QStringList strings;
 		strings << i->Title_ << i->URL_;
-		QTreeWidgetItem *item = new QTreeWidgetItem (Ui_.FeedsToImport_, strings);
+		QTreeWidgetItem *item =
+			new QTreeWidgetItem (Ui_.FeedsToImport_, strings);
 		item->setData (0, Qt::CheckStateRole, Qt::Checked);
 	}
 

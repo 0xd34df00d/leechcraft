@@ -432,10 +432,15 @@ void Aggregator::on_ActionImportOPML__triggered ()
 void Aggregator::on_ActionExportOPML__triggered ()
 {
 	ExportOPML exportDialog;
+	exportDialog.SetFeeds (Core::Instance ().GetFeeds ());
 	if (exportDialog.exec () == QDialog::Rejected)
 		return;
 
-	Core::Instance ().ExportToOPML (exportDialog.GetDestination ());
+	Core::Instance ().ExportToOPML (exportDialog.GetDestination (),
+			exportDialog.GetTitle (),
+			exportDialog.GetOwner (),
+			exportDialog.GetOwnerEmail (),
+			exportDialog.GetSelectedFeeds ());
 }
 
 void Aggregator::currentItemChanged (const QModelIndex& index)

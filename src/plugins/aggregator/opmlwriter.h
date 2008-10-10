@@ -1,8 +1,8 @@
 #ifndef OPMLWRITER_H
 #define OPMLWRITER_H
 #include "feed.h"
+#include <QString>
 
-class QByteArray;
 class QDomElement;
 class QDomDocument;
 class QDomNode;
@@ -10,15 +10,20 @@ class QStringList;
 
 class OPMLWriter
 {
-	QByteArray *Data_;
 public:
-	OPMLWriter (QByteArray*);
+	OPMLWriter ();
 	~OPMLWriter ();
 
-	void Write (const feeds_container_t&) const;
+	QString Write (const feeds_container_t&,
+			const QString&,
+			const QString&,
+			const QString&) const;
 private:
 	void WriteHead (QDomElement&,
-			QDomDocument&) const;
+			QDomDocument&,
+			const QString&,
+			const QString&,
+			const QString&) const;
 	void WriteBody (QDomElement&,
 			QDomDocument&,
 			const feeds_container_t&) const;
