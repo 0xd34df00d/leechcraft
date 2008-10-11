@@ -142,7 +142,7 @@ private:
 	QString HandleFeedUpdated (const channels_container_t&,
 			const PendingJob&);
 signals:
-    void error (const QString&);
+    void error (const QString&) const;
     void showDownloadMessage (const QString&);
     void channelDataUpdated ();
     void unreadNumberChanged (int) const;

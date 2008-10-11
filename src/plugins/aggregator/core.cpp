@@ -510,7 +510,17 @@ void Core::ExportToOPML (const QString& where,
 		}
 
 	OPMLWriter writer;
-	qDebug () << writer.Write (feeds, title, owner, ownerEmail);
+	QString data = writer.Write (feeds, title, owner, ownerEmail);
+
+	QFile f (where);
+	if (!f.open (QIODevice::WriteOnly))
+	{
+		emit error (QString ("Could not open file %1 for write.").arg (where));
+		return;
+	}
+
+	f.write (data.toUtf8 ());
+	f.close ();
 }
 
 feeds_container_t Core::GetFeeds () const
