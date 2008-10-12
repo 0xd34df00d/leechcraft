@@ -219,24 +219,24 @@ void Aggregator::SetupMenuBar ()
 {
 	ToolBar_ = new QToolBar (this);
 
-	ActionAddFeed_ = new QAction (QIcon (":/resources/images/rss-feed.png"),
-			tr ("Add feed..."),
+	ActionAddFeed_ = new QAction (tr ("Add feed..."),
 			this);
 	ActionAddFeed_->setObjectName ("ActionAddFeed_");
+	ActionAddFeed_->setProperty ("actionIcon", "aggregator_add");
 
-	ActionPreferences_ = new QAction (QIcon (":/resources/images/preferences.png"),
-			tr ("Preferences..."),
+	ActionPreferences_ = new QAction (tr ("Preferences..."),
 			this);
 	ActionPreferences_->setObjectName ("ActionPreferences_");
+	ActionPreferences_->setProperty ("actionIcon", "aggregator_preferences");
 
-	ActionUpdateFeeds_ = new QAction (QIcon (":/resources/images/updateallfeeds.png"),
-			tr ("Update all feeds"),
+	ActionUpdateFeeds_ = new QAction (tr ("Update all feeds"),
 			this);
+	ActionUpdateFeeds_->setProperty ("actionIcon", "aggregator_updateallfeeds");
 
-	ActionRemoveFeed_ = new QAction (QIcon (":/resources/images/removefeed.png"),
-			tr ("Remove feed"),
+	ActionRemoveFeed_ = new QAction (tr ("Remove feed"),
 			this);
 	ActionRemoveFeed_->setObjectName ("ActionRemoveFeed_");
+	ActionRemoveFeed_->setProperty ("actionIcon", "aggregator_remove");
 
 	ActionMarkItemAsUnread_ = new QAction (tr ("Mark item as unread"),
 			this);
@@ -250,33 +250,31 @@ void Aggregator::SetupMenuBar ()
 			this);
 	ActionMarkChannelAsUnread_->setObjectName ("ActionMarkChannelAsUnread_");
 
-	ActionUpdateSelectedFeed_ = new QAction (QIcon (":/resources/images/updateselectedfeed.png"),
-			tr ("Update selected feed"),
+	ActionUpdateSelectedFeed_ = new QAction (tr ("Update selected feed"),
 			this);
 	ActionUpdateSelectedFeed_->setObjectName ("ActionUpdateSelectedFeed_");
+	ActionUpdateSelectedFeed_->setProperty ("actionIcon", "aggregator_updateselectedfeed");
 
 	ActionAddToItemBucket_ = new QAction (tr ("Add to item bucket"),
 			this);
 	ActionAddToItemBucket_->setObjectName ("ActionAddToItemBucket_");
 
-	ActionItemBucket_ = new QAction (QIcon (":/resources/images/favorites.png"),
-			tr ("Item bucket..."),
+	ActionItemBucket_ = new QAction (tr ("Item bucket..."),
 			this);
 	ActionItemBucket_->setObjectName ("ActionItemBucket_");
+	ActionItemBucket_->setProperty ("actionIcon", "aggregator_favorites");
 
-	ActionRegexpMatcher_ = new QAction (QIcon (":/resources/images/filter.png"),
-			tr ("Regexp matcher..."),
+	ActionRegexpMatcher_ = new QAction (tr ("Regexp matcher..."),
 			this);
 	ActionRegexpMatcher_->setObjectName ("ActionRegexpMatcher_");
+	ActionRegexpMatcher_->setProperty ("actionIcon", "aggregator_filter");
 
 	ActionHideReadItems_ = new QAction (tr ("Hide read items"),
 			this);
 	ActionHideReadItems_->setObjectName ("ActionHideReadItems_");
 	ActionHideReadItems_->setCheckable (true);
-	QIcon icon;
-	icon.addPixmap (QPixmap (":/resources/images/rss-show.png"), QIcon::Normal, QIcon::Off);
-	icon.addPixmap (QPixmap (":/resources/images/rss-hide.png"), QIcon::Normal, QIcon::On);
-	ActionHideReadItems_->setIcon (icon);
+	ActionHideReadItems_->setProperty ("actionIcon", "aggregator_rssshow");
+	ActionHideReadItems_->setProperty ("actionIconOff", "aggregator_rsshide");
 
 	ActionImportOPML_ = new QAction (tr ("Import OPML..."),
 			this);

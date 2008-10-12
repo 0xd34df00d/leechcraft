@@ -352,12 +352,12 @@ namespace Main
 
 	namespace
 	{
-		QDir GetDirForBase (const QString& base,
+		std::vector<int> GetDirForBase (const QString& base,
 				const QString& iconSet)
 		{
 			QDir baseDir (base);
 			baseDir.cd (iconSet);
-			QList<int> numbers;
+			std::vector<int> numbers;
 			QStringList entries = baseDir.entryList ();
 			for (QStringList::const_iterator i = entries.begin (),
 					end = entries.end (); i != end; ++i)
@@ -366,73 +366,90 @@ namespace Main
 				if (splitted.size () != 2)
 					continue;
 
-				numbers << splitted.at (0).toInt ();
+				numbers.push_back (splitted.at (0).toInt ());
 			}
 
-			if (!numbers.size ())
-				return QDir ("/fdsafdssfsdfas");
-
 			std::sort (numbers.begin (), numbers.end ());
-			QString biggest = QString::number (numbers.last ());
-			baseDir.cd (biggest + 'x' + biggest);
-			return baseDir;
+			return numbers;
 		}
 	};
 
 	void MainWindow::updateIconsSet ()
 	{
-		QString iconSet = XmlSettingsManager::Instance ()->property ("IconSet").toString ();
-		QDir baseDir;
+		QString iconSet = XmlSettingsManager::Instance ()->
+			property ("IconSet").toString ();
+		QMap<QString, QString> iconName2Path;
 #if defined (Q_OS_UNIX)
-		baseDir = GetDirForBase ("/usr/share/icons", iconSet);
-		if (!baseDir.isReadable ())
-			baseDir = GetDirForBase ("/usr/local/share/icons", iconSet);
-		if (!baseDir.isReadable ())
+		std::vector<int> numbers = GetDirForBase ("/usr/share/icons", iconSet);
+		QDir baseDir ("/usr/share/icons");
+		baseDir.cd (iconSet);
+		for (std::vector<int>::const_iterator i = numbers.begin (),
+				end = numbers.end (); i != end; ++i)
 		{
-			catchError (tr ("Could not find directory with icons."));
-			return;
+			QDir current = baseDir;
+			QString number = QString::number (*i);
+			current.cd (number + 'x' + number);
+			current.cd ("actions");
+			QFileInfoList infos =
+				current.entryInfoList (QStringList ("lc_*.png"), QDir::Files | QDir::Readable);
+
+			for (QFileInfoList::const_iterator j = infos.begin (),
+					infoEnd = infos.end (); j != infoEnd; ++j)
+				iconName2Path [j->fileName ()] = j->absoluteFilePath ();
 		}
-		if (!baseDir.cd ("actions"))
+
+		baseDir  = QDir ("/usr/local/share/icons");
+		baseDir.cd (iconSet);
+		for (std::vector<int>::const_iterator i = numbers.begin (),
+				end = numbers.end (); i != end; ++i)
 		{
-			catchError (tr ("Could not find directory with actions"));
-			return;
+			QDir current = baseDir;
+			QString number = QString::number (*i);
+			current.cd (number + 'x' + number);
+			current.cd ("actions");
+			QFileInfoList infos =
+				current.entryInfoList (QStringList ("lc_*.png"), QDir::Files | QDir::Readable);
+
+			for (QFileInfoList::const_iterator j = infos.begin (),
+					infoEnd = infos.end (); j != infoEnd; ++j)
+				iconName2Path [j->fileName ()] = j->absoluteFilePath ();
 		}
 #elif defined (Q_OS_WIN32)
-		baseDir = QApplication::applicationDirPath ();
-		if (!baseDir.cd ("icons"))
+		QDir baseDir = QApplication::applicationDirPath ();
+		baseDir.cd ("icons");
+		baseDir.cd (iconSet);
+		for (std::vector<int>::const_iterator i = numbers.begin (),
+				end = numbers.end (); i != end; ++i)
 		{
-			catchError (tr ("Could not find \"icons\" directory."));
-			return;
-		}
-		if (!baseDir.cd (iconSet))
-		{
-			catchError (tr ("Could not find %1 directory.").arg (iconSet));
-			return;
+			QDir current = baseDir;
+			QString number = QString::number (*i);
+			current.cd (number + 'x' + number);
+			current.cd ("actions");
+			QFileInfoList infos =
+				current.entryInfoList (QStringList ("lc_*.png"), QDir::Files | QDir::Readable);
+
+			for (QFileInfoList::const_iterator j = infos.begin (),
+					infoEnd = infos.end (); j != infoEnd; ++j)
+				iconName2Path [j->fileName ()] = j->absoluteFilePath ();
 		}
 #else
 		qWarning () << "Unknown OS";
 		return;
 #endif
 
-		qDebug () << baseDir.absolutePath ();
-
 		QList<QAction*> actions = findChildren<QAction*> ();
 		for (QList<QAction*>::iterator i = actions.begin (),
 				end = actions.end (); i != end; ++i)
 		{
-			QDir copied = baseDir;
-			copied.cd ((*i)->property ("iconDirectory").toString ());
 			QString icon = QString ("lc_") + (*i)->property ("actionIcon").toString () + ".png";
 
-			QString path = copied.absoluteFilePath (icon);
 			QIcon iconEntity;
-			iconEntity.addPixmap (QPixmap (path), QIcon::Normal, QIcon::On);
-			if ((*i)->property ("iconOff").isValid ())
-				iconEntity.addPixmap (QPixmap (copied
-							.absoluteFilePath (QString ("lc_") +
+			iconEntity.addPixmap (QPixmap (iconName2Path [icon]), QIcon::Normal, QIcon::On);
+			if ((*i)->property ("actionIconOff").isValid ())
+				iconEntity.addPixmap (QPixmap (iconName2Path [QString ("lc_") +
 								(*i)->property ("actionIconOff").toString () +
-								".png")),
-						QIcon::Normal, QIcon::On);
+								".png"]),
+						QIcon::Normal, QIcon::Off);
 			
 			(*i)->setIcon (iconEntity);
 		}
