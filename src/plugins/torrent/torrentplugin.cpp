@@ -859,19 +859,19 @@ void TorrentPlugin::SetupActions ()
 	Toolbar_->setMovable (false);
 	Toolbar_->setFloatable (false);
 
-	OpenTorrent_.reset (new QAction (QIcon (":/resources/images/torrent_addjob.png"),
-				tr ("Open torrent..."),
+	OpenTorrent_.reset (new QAction (tr ("Open torrent..."),
 				Toolbar_.get ()));
 	OpenTorrent_->setShortcut (Qt::Key_Insert);
+	OpenTorrent_->setProperty ("ActionIcon", "torrent_addjob");
 	connect (OpenTorrent_.get (),
 			SIGNAL (triggered ()),
 			this,
 			SLOT (on_OpenTorrent__triggered ()));
 
-	Preferences_.reset (new QAction (QIcon (":/resources/images/torrent_preferences.png"),
-				tr ("Settings..."),
+	Preferences_.reset (new QAction (tr ("Settings..."),
 				Toolbar_.get ()));
 	Preferences_->setShortcut (tr ("Ctrl+Shift+P"));
+	Preferences_->setProperty ("ActionIcon", "torrent_preferences");
 	connect (Preferences_.get (),
 			SIGNAL (triggered ()),
 			this,
@@ -885,10 +885,10 @@ void TorrentPlugin::SetupActions ()
 			this,
 			SLOT (on_ChangeTrackers__triggered ()));
 
-	CreateTorrent_.reset (new QAction (QIcon (":/resources/images/torrent_new.png"),
-				tr ("Create torrent..."),
+	CreateTorrent_.reset (new QAction (tr ("Create torrent..."),
 				Toolbar_.get ()));
 	CreateTorrent_->setShortcut (tr ("N"));
+	CreateTorrent_->setProperty ("ActionIcon", "torrent_create");
 	connect (CreateTorrent_.get (),
 			SIGNAL (triggered ()),
 			this,
@@ -901,76 +901,78 @@ void TorrentPlugin::SetupActions ()
 			this,
 			SLOT (on_OpenMultipleTorrents__triggered ()));
 
-	RemoveTorrent_.reset (new QAction (QIcon (":/resources/images/torrent_deletejob.png"),
-				tr ("Remove"),
+	RemoveTorrent_.reset (new QAction (tr ("Remove"),
 				Toolbar_.get ()));
 	RemoveTorrent_->setShortcut (tr ("Del"));
 	RemoveTorrent_->setProperty ("Slot", "on_RemoveTorrent__triggered");
 	RemoveTorrent_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
+	RemoveTorrent_->setProperty ("ActionIcon", "torrent_deletejob");
 	
-	Resume_.reset (new QAction (QIcon (":/resources/images/torrent_startjob.png"),
-				tr ("Resume"),
+	Resume_.reset (new QAction (tr ("Resume"),
 				Toolbar_.get ()));
 	Resume_->setShortcut (tr ("R"));
 	Resume_->setProperty ("Slot", "on_Resume__triggered");
 	Resume_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
+	Resume_->setProperty ("ActionIcon", "torrent_startjob");
 
-	Stop_.reset (new QAction (QIcon (":/resources/images/torrent_stopjob.png"),
-				tr ("Pause"),
+	Stop_.reset (new QAction (tr ("Pause"),
 				Toolbar_.get ()));
 	Stop_->setShortcut (tr ("S"));
 	Stop_->setProperty ("Slot", "on_Stop__triggered");
 	Stop_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
+	Stop_->setProperty ("ActionIcon", "torrent_stopjob");
 
-	MoveUp_.reset (new QAction (QIcon (":/resources/images/torrent_moveup.png"),
-				tr ("Move up"),
+	MoveUp_.reset (new QAction (tr ("Move up"),
 				Toolbar_.get ()));
 	MoveUp_->setShortcut (Qt::CTRL + Qt::Key_Up);
 	MoveUp_->setProperty ("Slot", "on_MoveUp__triggered");
 	MoveUp_->setProperty ("WholeSelection", true);
 	MoveUp_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
+	MoveUp_->setProperty ("ActionIcon", "torrent_moveup");
 
-	MoveDown_.reset (new QAction (QIcon (":/resources/images/torrent_movedown.png"),
-				tr ("Move down"),
+	MoveDown_.reset (new QAction (tr ("Move down"),
 				Toolbar_.get ()));
 	MoveDown_->setShortcut (Qt::CTRL + Qt::Key_Down);
 	MoveDown_->setProperty ("Slot", "on_MoveDown__triggered");
 	MoveDown_->setProperty ("WholeSelection", true);
 	MoveDown_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
+	MoveDown_->setProperty ("ActionIcon", "torrent_movedown");
 
-	MoveToTop_.reset (new QAction (QIcon (":/resources/images/torrent_movetop.png"),
-				tr ("Move to top"),
+	MoveToTop_.reset (new QAction (tr ("Move to top"),
 				Toolbar_.get ()));
 	MoveToTop_->setShortcut (Qt::CTRL + Qt::SHIFT + Qt::Key_Up);
 	MoveToTop_->setProperty ("Slot", "on_MoveToTop__triggered");
 	MoveToTop_->setProperty ("WholeSelection", true);
 	MoveToTop_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
+	MoveToTop_->setProperty ("ActionIcon", "torrent_movetop");
 
-	MoveToBottom_.reset (new QAction (QIcon (":/resources/images/torrent_movebottom.png"),
-				tr ("Move to bottom"),
+	MoveToBottom_.reset (new QAction (tr ("Move to bottom"),
 				Toolbar_.get ()));
 	MoveToBottom_->setShortcut (Qt::CTRL + Qt::SHIFT + Qt::Key_Down);
 	MoveToBottom_->setProperty ("Slot", "on_MoveToBottom__triggered");
 	MoveToBottom_->setProperty ("WholeSelection", true);
 	MoveToBottom_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
+	MoveToBottom_->setProperty ("ActionIcon", "torrent_movebottom");
 
-	ForceReannounce_.reset (new QAction (QIcon (":/resources/images/torrent_reannounce.png"),
-				tr ("Reannounce"),
+	ForceReannounce_.reset (new QAction (tr ("Reannounce"),
 				Toolbar_.get ()));
 	ForceReannounce_->setShortcut (tr ("F"));
 	ForceReannounce_->setProperty ("Slot", "on_ForceReannounce__triggered");
 	ForceReannounce_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
+	ForceReannounce_->setProperty ("ActionIcon", "torrent_forcereannounce");
 	
 	ForceRecheck_.reset (new QAction (tr ("Recheck"),
 			Toolbar_.get ()));
 	ForceRecheck_->setProperty ("Slot", "on_ForceRecheck__triggered");
 	ForceRecheck_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
+	ForceRecheck_->setProperty ("ActionIcon", "torrent_forcerecheck");
 
 	MoveFiles_.reset (new QAction (tr ("Move files..."),
 				Toolbar_.get ()));
 	MoveFiles_->setShortcut (tr ("M"));
 	MoveFiles_->setProperty ("Slot", "on_MoveFiles__triggered");
 	MoveFiles_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
+	MoveFiles_->setProperty ("ActionIcon", "torrent_movefiles");
 
 	Toolbar_->addAction (CreateTorrent_.get ());
 	Toolbar_->addSeparator ();

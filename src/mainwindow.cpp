@@ -441,13 +441,13 @@ namespace Main
 		for (QList<QAction*>::iterator i = actions.begin (),
 				end = actions.end (); i != end; ++i)
 		{
-			QString icon = QString ("lc_") + (*i)->property ("actionIcon").toString () + ".png";
+			QString icon = QString ("lc_") + (*i)->property ("ActionIcon").toString () + ".png";
 
 			QIcon iconEntity;
 			iconEntity.addPixmap (QPixmap (iconName2Path [icon]), QIcon::Normal, QIcon::On);
-			if ((*i)->property ("actionIconOff").isValid ())
+			if ((*i)->property ("ActionIconOff").isValid ())
 				iconEntity.addPixmap (QPixmap (iconName2Path [QString ("lc_") +
-								(*i)->property ("actionIconOff").toString () +
+								(*i)->property ("ActionIconOff").toString () +
 								".png"]),
 						QIcon::Normal, QIcon::Off);
 			

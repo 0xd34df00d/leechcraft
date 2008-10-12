@@ -3,20 +3,9 @@
         <file>leechcraft_torrent_ru_RU.qm</file>
         <file>leechcraft_torrent_uk_UA.qm</file>
 		<file>torrentsettings.xml</file>
-        <file>resources/images/torrent_addjob.png</file>
         <file>resources/images/torrent_bittorrent.png</file>
-        <file>resources/images/torrent_deletejob.png</file>
         <file>resources/images/torrent_local.png</file>
-        <file>resources/images/torrent_movedown.png</file>
-        <file>resources/images/torrent_moveup.png</file>
-        <file>resources/images/torrent_movebottom.png</file>
-        <file>resources/images/torrent_movetop.png</file>
         <file>resources/images/torrent_network.png</file>
-        <file>resources/images/torrent_new.png</file>
-        <file>resources/images/torrent_preferences.png</file>
-        <file>resources/images/torrent_reannounce.png</file>
-        <file>resources/images/torrent_startjob.png</file>
-        <file>resources/images/torrent_stopjob.png</file>
 		<file>resources/images/clients/ares.png</file>
 		<file>resources/images/clients/azureus.png</file>
 		<file>resources/images/clients/bitcomet.png</file>

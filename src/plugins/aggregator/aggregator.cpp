@@ -225,21 +225,21 @@ void Aggregator::SetupMenuBar ()
 	ActionAddFeed_ = new QAction (tr ("Add feed..."),
 			this);
 	ActionAddFeed_->setObjectName ("ActionAddFeed_");
-	ActionAddFeed_->setProperty ("actionIcon", "aggregator_add");
+	ActionAddFeed_->setProperty ("ActionIcon", "aggregator_add");
 
 	ActionPreferences_ = new QAction (tr ("Preferences..."),
 			this);
 	ActionPreferences_->setObjectName ("ActionPreferences_");
-	ActionPreferences_->setProperty ("actionIcon", "aggregator_preferences");
+	ActionPreferences_->setProperty ("ActionIcon", "aggregator_preferences");
 
 	ActionUpdateFeeds_ = new QAction (tr ("Update all feeds"),
 			this);
-	ActionUpdateFeeds_->setProperty ("actionIcon", "aggregator_updateallfeeds");
+	ActionUpdateFeeds_->setProperty ("ActionIcon", "aggregator_updateallfeeds");
 
 	ActionRemoveFeed_ = new QAction (tr ("Remove feed"),
 			this);
 	ActionRemoveFeed_->setObjectName ("ActionRemoveFeed_");
-	ActionRemoveFeed_->setProperty ("actionIcon", "aggregator_remove");
+	ActionRemoveFeed_->setProperty ("ActionIcon", "aggregator_remove");
 
 	ActionMarkItemAsUnread_ = new QAction (tr ("Mark item as unread"),
 			this);
@@ -256,7 +256,7 @@ void Aggregator::SetupMenuBar ()
 	ActionUpdateSelectedFeed_ = new QAction (tr ("Update selected feed"),
 			this);
 	ActionUpdateSelectedFeed_->setObjectName ("ActionUpdateSelectedFeed_");
-	ActionUpdateSelectedFeed_->setProperty ("actionIcon", "aggregator_updateselectedfeed");
+	ActionUpdateSelectedFeed_->setProperty ("ActionIcon", "aggregator_updateselectedfeed");
 
 	ActionAddToItemBucket_ = new QAction (tr ("Add to item bucket"),
 			this);
@@ -265,19 +265,19 @@ void Aggregator::SetupMenuBar ()
 	ActionItemBucket_ = new QAction (tr ("Item bucket..."),
 			this);
 	ActionItemBucket_->setObjectName ("ActionItemBucket_");
-	ActionItemBucket_->setProperty ("actionIcon", "aggregator_favorites");
+	ActionItemBucket_->setProperty ("ActionIcon", "aggregator_favorites");
 
 	ActionRegexpMatcher_ = new QAction (tr ("Regexp matcher..."),
 			this);
 	ActionRegexpMatcher_->setObjectName ("ActionRegexpMatcher_");
-	ActionRegexpMatcher_->setProperty ("actionIcon", "aggregator_filter");
+	ActionRegexpMatcher_->setProperty ("ActionIcon", "aggregator_filter");
 
 	ActionHideReadItems_ = new QAction (tr ("Hide read items"),
 			this);
 	ActionHideReadItems_->setObjectName ("ActionHideReadItems_");
 	ActionHideReadItems_->setCheckable (true);
-	ActionHideReadItems_->setProperty ("actionIcon", "aggregator_rssshow");
-	ActionHideReadItems_->setProperty ("actionIconOff", "aggregator_rsshide");
+	ActionHideReadItems_->setProperty ("ActionIcon", "aggregator_rssshow");
+	ActionHideReadItems_->setProperty ("ActionIconOff", "aggregator_rsshide");
 
 	ActionImportOPML_ = new QAction (tr ("Import OPML..."),
 			this);

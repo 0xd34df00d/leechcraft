@@ -165,6 +165,9 @@ void Main::Core::DelayedInit ()
 						SLOT (handlePluginAction ()));
 				Action2Model_ [*i] = model;
 			}
+
+			ijh->GetControls ()->setParent (ReallyMainWindow_);
+			ijh->GetAdditionalInfo ()->setParent (ReallyMainWindow_);
 		}
 
 		if (iet)

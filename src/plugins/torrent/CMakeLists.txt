@@ -117,3 +117,7 @@ ${RBTorrent_LIBRARY}
 ENDIF (WIN32)
 
 INSTALL (TARGETS leechcraft_torrent DESTINATION ${LC_PLUGINS_DEST})
+IF (UNIX)
+	INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor
+		PATTERN ".svn" EXCLUDE)
+ENDIF (UNIX)
