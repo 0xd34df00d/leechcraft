@@ -18,9 +18,13 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			this,
 			SLOT (loadProgress (int)));
 	Ui_.BrowserBackButton_->setDefaultAction (Ui_.ActionBrowserBack_);
+	Ui_.ActionBrowserBack_->setProperty ("actionIcon", "aggregator_larrow");
 	Ui_.BrowserForwardButton_->setDefaultAction (Ui_.ActionBrowserForward_);
+	Ui_.ActionBrowserForward_->setProperty ("actionIcon", "aggregator_rarrow");
 	Ui_.BrowserReloadButton_->setDefaultAction (Ui_.ActionBrowserReload_);
+	Ui_.ActionBrowserReload_->setProperty ("actionIcon", "aggregator_refresh");
 	Ui_.BrowserStopButton_->setDefaultAction (Ui_.ActionBrowserStop_);
+	Ui_.ActionBrowserStop_->setProperty ("actionIcon", "aggregator_stop");
 	connect (Ui_.ActionBrowserBack_,
 			SIGNAL (triggered ()),
 			this,

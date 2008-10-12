@@ -33,7 +33,9 @@ void ItemBucket::Release ()
 {
 	Model_->saveSettings ();
 	delete Ui_;
+	Ui_ = 0;
 	delete Model_;
+	Model_ = 0;
 }
 
 void ItemBucket::AddItem (const Item_ptr& item)

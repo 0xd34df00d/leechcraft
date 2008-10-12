@@ -32,6 +32,8 @@ void Aggregator::Init ()
 {
 	Translator_.reset (LeechCraft::Util::InstallTranslator ("aggregator"));
 	SetupMenuBar ();
+	ItemBucket::Instance ().setParent (this);
+	ItemBucket::Instance ().setWindowFlags (Qt::Dialog);
     Ui_.setupUi (this);
 	dynamic_cast<QVBoxLayout*> (layout ())->insertWidget (0, ToolBar_);
 
@@ -151,6 +153,7 @@ void Aggregator::Init ()
 void Aggregator::Release ()
 {
     Core::Instance ().Release ();
+	ItemBucket::Instance ().setParent (0);
     TrayIcon_->hide ();
 }
 
