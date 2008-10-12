@@ -23,6 +23,7 @@ class GraphWidget;
 class QDockWidget;
 class QTabWidget;
 class QModelIndex;
+class QAction;
 
 namespace Ui
 {
@@ -31,50 +32,51 @@ namespace Ui
 
 namespace Main
 {
-    class Core;
-    class PluginInfo;
-    class MainWindow : public QMainWindow
-    {
-        Q_OBJECT
+	class Core;
+	class PluginInfo;
+	class MainWindow : public QMainWindow
+	{
+		Q_OBJECT
 
 		Ui::LeechCraft *Ui_;
 
-        QSystemTrayIcon *TrayIcon_;
-        QLabel *DownloadSpeed_, *UploadSpeed_;
-        GraphWidget *DSpeedGraph_, *USpeedGraph_;
+		QSystemTrayIcon *TrayIcon_;
+		QLabel *DownloadSpeed_, *UploadSpeed_;
+		GraphWidget *DSpeedGraph_, *USpeedGraph_;
 
-        XmlSettingsDialog *XmlSettingsDialog_;
-        QList<QDockWidget*> PluginWidgets_;
+		XmlSettingsDialog *XmlSettingsDialog_;
+		QList<QDockWidget*> PluginWidgets_;
 
-        bool IsShown_;
-    public:
-        MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
-        virtual ~MainWindow ();
-        QMenu* GetRootPluginsMenu () const;
+		bool IsShown_;
+	public:
+		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
+		virtual ~MainWindow ();
+		QMenu* GetRootPluginsMenu () const;
 		QModelIndexList GetSelectedRows () const;
 		QTabWidget* GetTabWidget () const;
-    public slots:
-        void catchError (QString);
-    protected:
-        virtual void closeEvent (QCloseEvent*);
-    private:
-        void SetTrayIcon ();
-        void ReadSettings ();
-        void WriteSettings ();
-    private slots:
+	public slots:
+		void catchError (QString);
+	protected:
+		virtual void closeEvent (QCloseEvent*);
+	private:
+		void SetTrayIcon ();
+		void ReadSettings ();
+		void WriteSettings ();
+	private slots:
 		void updatePanes (const QModelIndex&);
-        void updateSpeedIndicators ();
-        void showAboutInfo ();
-        void showHideMain ();
-        void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
-        void addJob ();
-        void handleDownloadFinished (const QString&);
-        void showSettings ();
-        void handleAggregateJobsChange ();
-        void cleanUp ();
+		void updateSpeedIndicators ();
+		void showAboutInfo ();
+		void showHideMain ();
+		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
+		void addJob ();
+		void handleDownloadFinished (const QString&);
+		void showSettings ();
+		void handleAggregateJobsChange ();
+		void cleanUp ();
 		void on_PluginsTree__activated (const QModelIndex&);
 		void filterParametersChanged ();
-    };
+		void updateIconsSet ();
+	};
 };
 
 #endif

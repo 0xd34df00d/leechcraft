@@ -7,23 +7,23 @@
         <item type="checkbox" property="WatchClipboard" state="on">
             <label lang="en" value="Watch clipboard for addable task" />
             <label lang="ru" value="Следить за буфером обмена" />
-	    <label lang="uk" value="Спостерігати за буфером обміну" />
+			<label lang="uk" value="Спостерігати за буфером обміну" />
         </item>
         <item type="checkbox" property="QueryPluginsToHandleFinished" state="on">
             <label lang="en" value="Query plugins to handle finished downloads" />
             <label lang="ru" value="Опрашивать плагины для обработки заданий при их завершении" />
-	    <label lang="uk" value="Опитувати плагіни для обробки завдань після їх заваршення" />
+			<label lang="uk" value="Опитувати плагіни для обробки завдань після їх заваршення" />
         </item>
         <item type="checkbox" property="AggregateJobs" state="on">
             <label lang="en" value="Aggregate jobs from plugins" />
             <label lang="ru" value="Собирать задания из плагинов и показывать их в главном окне" />
-	    <label lang="uk" value="Збирати завдання від плагінів і показувати їх в головному вікні" />
+			<label lang="uk" value="Збирати завдання від плагінів і показувати їх в головному вікні" />
         </item>
         <item type="groupbox" property="ShowFinishedDownloadMessages" state="on" checkable="true">
             <label lang="en" value="Show messages about finished downloads in tray" />
             <label lang="ru" value="Показывать сообщения о завершенных закачках в трее" />
-	    <label lang="uk" value="Показувати повідомленя про завершені завантаження в треї" />
-            <item type="spinbox" property="FinishedDownloadMessageTimeout" default="10" minimum="1" maximum="15" step="1">
+			<label lang="uk" value="Показувати повідомленя про завершені завантаження в треї" />
+			<item type="spinbox" property="FinishedDownloadMessageTimeout" default="10" minimum="1" maximum="15" step="1">
 				<lang value="en">
 					<label value="Finished download message timeout:" />
 					<suffix value=" s" />
@@ -36,8 +36,12 @@
 					<label value="Відображати повідомлення про заваршене завантаження:" />
 					<suffix value=" с" />
 				</lang>
-            </item>
+			</item>
         </item>
+		<item type="lineedit" property="IconSet" default="hicolor">
+			<label lang="en" value="Icon set" />
+			<label lang="ru" value="Набор иконок" />
+		</item>
     </page>
 	<page>
 		<label lang="en" value="Network" />

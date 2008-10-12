@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 #include <QtGui/QtGui>
 #include <QMutex>
 #include <QModelIndex>
@@ -68,6 +69,8 @@ namespace Main
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/coresettings.xml");
 		XmlSettingsManager::Instance ()->RegisterObject ("AggregateJobs",
 				this, "handleAggregateJobsChange");
+		XmlSettingsManager::Instance ()->RegisterObject ("IconSet",
+				this, "updateIconsSet");
 
 		DownloadSpeed_ = new QLabel;
 		DownloadSpeed_->setText ("0");
@@ -117,6 +120,8 @@ namespace Main
 		connect (speedUpd, SIGNAL (timeout ()), this, SLOT (updateSpeedIndicators ()));
 		speedUpd->start ();
 		qApp->setQuitOnLastWindowClosed (false);
+
+		updateIconsSet ();
 
 		splash.finish (this);
 		show ();
@@ -343,6 +348,85 @@ namespace Main
 		Core::Instance ().UpdateFiltering (Ui_->FilterLine_->text (),
 				ft,
 				caseSensitivity);
+	}
+
+	namespace
+	{
+		QDir GetDirForBase (const QString& base,
+				const QString& iconSet)
+		{
+			QDir baseDir (base);
+			baseDir.cd (iconSet);
+			QList<int> numbers;
+			QStringList entries = baseDir.entryList ();
+			for (QStringList::const_iterator i = entries.begin (),
+					end = entries.end (); i != end; ++i)
+			{
+				QStringList splitted = i->split ('x');
+				if (splitted.size () != 2)
+					continue;
+
+				numbers << splitted.at (0).toInt ();
+			}
+
+			if (!numbers.size ())
+				return QDir ("/fdsafdssfsdfas");
+
+			std::sort (numbers.begin (), numbers.end ());
+			QString biggest = QString::number (numbers.last ());
+			baseDir.cd (biggest + 'x' + biggest);
+			return baseDir;
+		}
+	};
+
+	void MainWindow::updateIconsSet ()
+	{
+		QString iconSet = XmlSettingsManager::Instance ()->property ("IconSet").toString ();
+		QDir baseDir;
+#if defined (Q_OS_UNIX)
+		baseDir = GetDirForBase ("/usr/share/icons", iconSet);
+		if (!baseDir.isReadable ())
+			baseDir = GetDirForBase ("/usr/local/share/icons", iconSet);
+		if (!baseDir.isReadable ())
+		{
+			catchError (tr ("Could not find directory with icons."));
+			return;
+		}
+#elif defined (Q_OS_WIN32)
+		baseDir = QApplication::applicationDirPath ();
+		if (!baseDir.cd ("icons"))
+		{
+			catchError (tr ("Could not find \"icons\" directory."));
+			return;
+		}
+		if (!baseDir.cd (iconSet))
+		{
+			catchError (tr ("Could not find %1 directory.").arg (iconSet));
+			return;
+		}
+#else
+		qWarning () << "Unknown OS";
+		return;
+#endif
+
+		QList<QAction*> actions = findChildren<QAction*> ();
+		for (QList<QAction*>::iterator i = actions.begin (),
+				end = actions.end (); i != end; ++i)
+		{
+			QString icon = QString ("lc_") + (*i)->property ("icon").toString () + ".png";
+
+			QString path = baseDir.absoluteFilePath (icon);
+			QIcon iconEntity;
+			iconEntity.addPixmap (QPixmap (path), QIcon::Normal, QIcon::On);
+			if ((*i)->property ("iconOff").isValid ())
+				iconEntity.addPixmap (QPixmap (baseDir
+							.absoluteFilePath (QString ("lc_") +
+								(*i)->property ("iconOff").toString () +
+								".png")),
+						QIcon::Normal, QIcon::On);
+			
+			(*i)->setIcon (iconEntity);
+		}
 	}
 };
 
