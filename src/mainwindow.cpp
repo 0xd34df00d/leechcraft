@@ -392,6 +392,11 @@ namespace Main
 			catchError (tr ("Could not find directory with icons."));
 			return;
 		}
+		if (!baseDir.cd ("actions"))
+		{
+			catchError (tr ("Could not find directory with actions"));
+			return;
+		}
 #elif defined (Q_OS_WIN32)
 		baseDir = QApplication::applicationDirPath ();
 		if (!baseDir.cd ("icons"))
@@ -409,19 +414,23 @@ namespace Main
 		return;
 #endif
 
+		qDebug () << baseDir.absolutePath ();
+
 		QList<QAction*> actions = findChildren<QAction*> ();
 		for (QList<QAction*>::iterator i = actions.begin (),
 				end = actions.end (); i != end; ++i)
 		{
-			QString icon = QString ("lc_") + (*i)->property ("icon").toString () + ".png";
+			QDir copied = baseDir;
+			copied.cd ((*i)->property ("iconDirectory").toString ());
+			QString icon = QString ("lc_") + (*i)->property ("actionIcon").toString () + ".png";
 
-			QString path = baseDir.absoluteFilePath (icon);
+			QString path = copied.absoluteFilePath (icon);
 			QIcon iconEntity;
 			iconEntity.addPixmap (QPixmap (path), QIcon::Normal, QIcon::On);
 			if ((*i)->property ("iconOff").isValid ())
-				iconEntity.addPixmap (QPixmap (baseDir
+				iconEntity.addPixmap (QPixmap (copied
 							.absoluteFilePath (QString ("lc_") +
-								(*i)->property ("iconOff").toString () +
+								(*i)->property ("actionIconOff").toString () +
 								".png")),
 						QIcon::Normal, QIcon::On);
 			

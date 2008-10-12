@@ -138,7 +138,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>29</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >
@@ -189,7 +189,7 @@
   </widget>
   <action name="ActionAddTask_" >
    <property name="icon" >
-    <iconset resource="mainresources.qrc" >
+    <iconset>
      <normaloff>:/resources/images/main_addjob.png</normaloff>:/resources/images/main_addjob.png</iconset>
    </property>
    <property name="text" >
@@ -198,14 +198,20 @@
    <property name="statusTip" >
     <string>Adds job to a supporting plugin</string>
    </property>
+   <property name="actionIcon" stdset="0" >
+    <string>lc_mainaddjob</string>
+   </property>
   </action>
   <action name="ActionSettings_" >
    <property name="icon" >
-    <iconset resource="mainresources.qrc" >
+    <iconset>
      <normaloff>:/resources/images/main_preferences.png</normaloff>:/resources/images/main_preferences.png</iconset>
    </property>
    <property name="text" >
     <string>Settings</string>
+   </property>
+   <property name="actionIcon" stdset="0" >
+    <string>lc_mainsettings</string>
    </property>
   </action>
   <action name="ActionQuit_" >
