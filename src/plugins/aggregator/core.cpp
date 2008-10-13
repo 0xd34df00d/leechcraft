@@ -25,10 +25,12 @@
 #include "opmlparser.h"
 #include "opmlwriter.h"
 #include "sqlstoragebackend.h"
+#include "itemmodel.h"
 
 Core::Core ()
 : SaveScheduled_ (false)
 , StorageBackend_ (new SQLStorageBackend ())
+, ItemModel_ (new ItemModel)
 {
 	ParserFactory::Instance ().Register (&RSS20Parser::Instance ());
 	ParserFactory::Instance ().Register (&Atom10Parser::Instance ());
@@ -69,7 +71,7 @@ Core& Core::Instance ()
 
 void Core::Release ()
 {
-	ItemBucket::Instance ().Release ();
+	ItemModel_->saveSettings ();
 	XmlSettingsManager::Instance ()->Release ();
 	saveSettings ();
 	StorageBackend_.reset (0);
@@ -431,7 +433,8 @@ void Core::AddToItemBucket (const QModelIndex& index) const
 	if (!index.isValid () || index.row () >= rowCount ())
 		return;
 
-	ItemBucket::Instance ().AddItem (ActivatedChannel_->Items_ [index.row ()]);
+
+	ItemModel_->AddItem (ActivatedChannel_->Items_ [index.row ()]);
 }
 
 void Core::AddFromOPML (const QString& filename,
@@ -526,6 +529,11 @@ void Core::ExportToOPML (const QString& where,
 feeds_container_t Core::GetFeeds () const
 {
 	return Feeds_.values ().toVector ().toStdVector ();
+}
+
+ItemModel* Core::GetItemModel () const
+{
+	return ItemModel_;
 }
 
 int Core::columnCount (const QModelIndex& parent) const

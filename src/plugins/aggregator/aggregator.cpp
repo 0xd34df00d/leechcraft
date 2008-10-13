@@ -23,6 +23,7 @@
 #include "regexpmatchermanager.h"
 #include "importopml.h"
 #include "exportopml.h"
+#include "itembucket.h"
 
 Aggregator::~Aggregator ()
 {
@@ -32,8 +33,7 @@ void Aggregator::Init ()
 {
 	Translator_.reset (LeechCraft::Util::InstallTranslator ("aggregator"));
 	SetupMenuBar ();
-	ItemBucket::Instance ().setParent (this);
-	ItemBucket::Instance ().setWindowFlags (Qt::Dialog);
+    ItemBucket_.reset (new ItemBucket (this));
     Ui_.setupUi (this);
 	dynamic_cast<QVBoxLayout*> (layout ())->insertWidget (0, ToolBar_);
 
@@ -153,7 +153,6 @@ void Aggregator::Init ()
 void Aggregator::Release ()
 {
     Core::Instance ().Release ();
-	ItemBucket::Instance ().setParent (0);
     TrayIcon_->hide ();
 }
 
@@ -404,7 +403,7 @@ void Aggregator::on_ActionAddToItemBucket__triggered ()
 
 void Aggregator::on_ActionItemBucket__triggered ()
 {
-	ItemBucket::Instance ().show ();
+	ItemBucket_->show ();
 }
 
 void Aggregator::on_ActionRegexpMatcher__triggered ()

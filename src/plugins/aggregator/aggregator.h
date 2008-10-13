@@ -11,6 +11,7 @@ class TagsCompleter;
 class QSystemTrayIcon;
 class QTranslator;
 class QToolBar;
+class ItemBucket;
 
 class Aggregator : public QWidget
                  , public IInfo
@@ -45,6 +46,7 @@ class Aggregator : public QWidget
 	std::auto_ptr<TagsCompleter> TagsLineCompleter_, ChannelTagsCompleter_;
 	std::auto_ptr<QSystemTrayIcon> TrayIcon_;
 	std::auto_ptr<QTranslator> Translator_;
+    std::auto_ptr<ItemBucket> ItemBucket_;
 public:
 	virtual ~Aggregator ();
     void Init ();

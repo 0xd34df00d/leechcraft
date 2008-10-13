@@ -17,6 +17,7 @@ class TagsCompletionModel;
 class QTimer;
 class QNetworkReply;
 class QFile;
+class ItemModel;
 
 class Core : public QAbstractItemModel
 {
@@ -63,6 +64,7 @@ class Core : public QAbstractItemModel
     QTimer *UpdateTimer_;
     bool SaveScheduled_;
 	std::auto_ptr<StorageBackend> StorageBackend_;
+    ItemModel *ItemModel_;
 public:
 	struct ChannelInfo
 	{
@@ -107,6 +109,7 @@ public:
 			const QString&,
 			const std::vector<bool>&) const;
 	feeds_container_t GetFeeds () const;
+    ItemModel* GetItemModel () const;
 
     virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
     virtual QVariant data (const QModelIndex&,
