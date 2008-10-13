@@ -1,10 +1,5 @@
 <RCC>
   <qresource prefix="/" >
-    <file>resources/images/preferences.png</file>
-    <file>resources/images/remove.png</file>
-    <file>resources/images/stop.png</file>
-    <file>resources/images/start.png</file>
-    <file>resources/images/add.png</file>
     <file>resources/images/clients/firefox.png</file>
     <file>resources/images/clients/ie2.png</file>
     <file>resources/images/clients/ie4.png</file>

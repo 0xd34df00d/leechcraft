@@ -242,11 +242,11 @@ void CSTP::SetupToolbar ()
 	Toolbar_->setMovable (false);
 	Toolbar_->setFloatable (false);
 
-	QAction *remove = Toolbar_->addAction (QIcon (":/resources/images/remove.png"),
-			tr ("Remove"));
+	QAction *remove = Toolbar_->addAction (tr ("Remove"));
 	remove->setProperty ("Slot", "removeTriggered");
 	remove->setProperty ("Object",
 			QVariant::fromValue<QObject*> (&Core::Instance ()));
+	remove->setProperty ("ActionIcon", "cstp_remove");
 
 	QAction *removeAll = Toolbar_->addAction (tr ("Remove all"));
 	removeAll->setProperty ("Slot", "removeAllTriggered");
@@ -255,17 +255,17 @@ void CSTP::SetupToolbar ()
 
 	Toolbar_->addSeparator ();
 
-	QAction *start = Toolbar_->addAction (QIcon (":/resources/images/start.png"),
-			tr ("Start"));
+	QAction *start = Toolbar_->addAction (tr ("Start"));
 	start->setProperty ("Slot", "startTriggered");
 	start->setProperty ("Object",
 			QVariant::fromValue<QObject*> (&Core::Instance ()));
+	start->setProperty ("ActionIcon", "cstp_start");
 
-	QAction *stop = Toolbar_->addAction (QIcon (":/resources/images/stop.png"),
-			tr ("Stop"));
+	QAction *stop = Toolbar_->addAction (tr ("Stop"));
 	stop->setProperty ("Slot", "stopTriggered");
 	stop->setProperty ("Object",
 			QVariant::fromValue<QObject*> (&Core::Instance ()));
+	stop->setProperty ("ActionIcon", "cstp_stop");
 
 	QAction *startAll = Toolbar_->addAction (tr ("Start all"));
 	startAll->setProperty ("Slot", "startAllTriggered");
@@ -279,11 +279,11 @@ void CSTP::SetupToolbar ()
 
 	Toolbar_->addSeparator ();
 
-	QAction *settings = Toolbar_->addAction (QIcon (":/resources/images/preferences.png"),
-			tr ("Settings"));
+	QAction *settings = Toolbar_->addAction (tr ("Settings"));
 	settings->setProperty ("Slot", "showSettings");
 	settings->setProperty ("Object",
 			QVariant::fromValue<QObject*> (this));
+	settings->setProperty ("ActionIcon", "cstp_preferences");
 }
 
 void CSTP::handleError (const QString& text)
