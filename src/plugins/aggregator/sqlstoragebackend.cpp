@@ -579,6 +579,7 @@ void SQLStorageBackend::DumpError (const QSqlQuery& lastQuery) const
 QByteArray SQLStorageBackend::SerializePixmap (const QPixmap& pixmap) const
 {
 	QByteArray bytes;
+    if (!pixmap.isNull ())
 	{
 		QBuffer buffer (&bytes);
 		buffer.open (QIODevice::WriteOnly);

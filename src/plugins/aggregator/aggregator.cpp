@@ -376,17 +376,14 @@ void Aggregator::on_ActionUpdateSelectedFeed__triggered ()
     Core::Instance ().UpdateFeed (ChannelsFilterModel_->mapToSource (current));
 }
 
-void Aggregator::on_ChannelTags__textChanged (const QString& tags)
+void Aggregator::on_ChannelTags__editingFinished ()
 {
+    QString tags = Ui_.ChannelTags_->text ();
     QModelIndex current = Ui_.Feeds_->selectionModel ()->currentIndex ();
     if (!current.isValid ())
         return;
     Core::Instance ().SetTagsForIndex (tags, ChannelsFilterModel_->mapToSource (current));
-}
-
-void Aggregator::on_ChannelTags__editingFinished ()
-{
-    Core::Instance ().UpdateTags (Ui_.ChannelTags_->text ().split (' '));
+    Core::Instance ().UpdateTags (tags.split (' '));
 }
 
 void Aggregator::on_CaseSensitiveSearch__stateChanged (int state)

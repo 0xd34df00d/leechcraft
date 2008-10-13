@@ -76,7 +76,6 @@ private slots:
     void on_ActionMarkChannelAsRead__triggered ();
     void on_ActionMarkChannelAsUnread__triggered ();
     void on_ActionUpdateSelectedFeed__triggered ();
-    void on_ChannelTags__textChanged (const QString&);
     void on_ChannelTags__editingFinished ();
     void on_CaseSensitiveSearch__stateChanged (int);
 	void on_ActionAddToItemBucket__triggered ();
