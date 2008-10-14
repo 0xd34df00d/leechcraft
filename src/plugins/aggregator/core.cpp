@@ -32,6 +32,38 @@ Core::Core ()
 , StorageBackend_ (new SQLStorageBackend ())
 , ItemModel_ (new ItemModel)
 {
+	const int feedsTable = 1;
+	const int channelsTable = 1;
+	const int itemsTable = 2;
+
+	bool tablesOK = true;
+
+	if (StorageBackend_->UpdateFeedsStorage (XmlSettingsManager::Instance ()->
+			Property ("FeedsTableVersion", feedsTable).toInt (),
+			feedsTable))
+		XmlSettingsManager::Instance ()->setProperty ("FeedsTableVersion",
+				feedsTable);
+	else
+		tablesOK = false;
+
+	if (StorageBackend_->UpdateChannelsStorage (XmlSettingsManager::Instance ()->
+			Property ("ChannelsTableVersion", channelsTable).toInt (),
+			channelsTable))
+		XmlSettingsManager::Instance ()->setProperty ("ChannelsTableVersion",
+				channelsTable);
+	else
+		tablesOK = false;
+
+	if (StorageBackend_->UpdateItemsStorage (XmlSettingsManager::Instance ()->
+			Property ("ItemsTableVersion", itemsTable).toInt (),
+			itemsTable))
+		XmlSettingsManager::Instance ()->setProperty ("ItemsTableVersion",
+				itemsTable);
+	else
+		tablesOK = false;
+
+	StorageBackend_->Prepare ();
+
 	ParserFactory::Instance ().Register (&RSS20Parser::Instance ());
 	ParserFactory::Instance ().Register (&Atom10Parser::Instance ());
 	ParserFactory::Instance ().Register (&RSS091Parser::Instance ());
@@ -43,12 +75,14 @@ Core::Core ()
 	qRegisterMetaTypeStreamOperators<Item> ("Item");
 
 	ChannelsModel_ = new ChannelsModel (this);
-	connect (ChannelsModel_, SIGNAL (channelDataUpdated ()), this, SIGNAL (channelDataUpdated ()));
-
-	TagsCompletionModel_ = new TagsCompletionModel (this);
+	connect (ChannelsModel_,
+			SIGNAL (channelDataUpdated ()),
+			this,
+			SIGNAL (channelDataUpdated ()));
 
 	feeds_container_t feeds;
-	StorageBackend_->GetFeeds (feeds);
+	if (tablesOK)
+		StorageBackend_->GetFeeds (feeds);
 	for (feeds_container_t::const_iterator i = feeds.begin (),
 			end = feeds.end (); i < end; ++i)
 	{
@@ -56,9 +90,9 @@ Core::Core ()
 		ChannelsModel_->AddFeed (*i);
 	}
 
-	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Aggregator");
-	TagsCompletionModel_->UpdateTags (settings.value ("GlobalTags",
-			QStringList ("untagged")).toStringList ());
+	TagsCompletionModel_ = new TagsCompletionModel (this);
+	TagsCompletionModel_->UpdateTags (XmlSettingsManager::Instance ()->
+			Property ("GlobalTags", QStringList ("untagged")).toStringList ());
 
 	ActivatedChannel_ = 0;
 }
@@ -815,9 +849,6 @@ void Core::fetchExternalFile (const QString& url, const QString& where)
 
 void Core::saveSettings ()
 {
-	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Aggregator");
-	settings.setValue ("GlobalTags", TagsCompletionModel_->GetTags ());
-
 	SaveScheduled_ = false;
 }
 

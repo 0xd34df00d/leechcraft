@@ -7,6 +7,8 @@ class StorageBackend
 public:
 	virtual ~StorageBackend ();
 
+	virtual void Prepare () = 0;
+
 	virtual void GetFeeds (feeds_container_t&) const = 0;
 
 	virtual void AddFeed (Feed_ptr) = 0;
@@ -20,6 +22,10 @@ public:
 	virtual void RemoveItem (Item_ptr,
 			const QString&) = 0;
 	virtual void RemoveFeed (Feed_ptr) = 0;
+
+    virtual bool UpdateFeedsStorage (int, int) = 0;
+    virtual bool UpdateChannelsStorage (int, int) = 0;
+    virtual bool UpdateItemsStorage (int, int) = 0;
 };
 
 #endif

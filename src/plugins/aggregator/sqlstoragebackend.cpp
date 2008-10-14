@@ -19,7 +19,10 @@ SQLStorageBackend::SQLStorageBackend ()
 
 	if (!DB_.tables ().contains ("feeds"))
 		InitializeTables ();
+}
 
+void SQLStorageBackend::Prepare ()
+{
 	FeedFinderByURL_ = QSqlQuery ();
 	FeedFinderByURL_.prepare ("SELECT last_update FROM feeds WHERE url = :url");
 
@@ -82,7 +85,9 @@ SQLStorageBackend::SQLStorageBackend ()
 			"category, "
 			"guid, "
 			"pub_date, "
-			"unread"
+			"unread, "
+			"num_comments, "
+			"comments_url"
 			") VALUES ("
 			":parents_hash, "
 			":title, "
@@ -92,7 +97,9 @@ SQLStorageBackend::SQLStorageBackend ()
 			":category, "
 			":guid, "
 			":pub_date, "
-			":unread"
+			":unread, "
+			":num_comments, "
+			":comments_url"
 			")");
 
 	UpdateChannel_ = QSqlQuery ();
@@ -115,7 +122,9 @@ SQLStorageBackend::SQLStorageBackend ()
 			"author = :author, "
 			"category = :category, "
 			"pub_date = :pub_date, "
-			"unread = :unread "
+			"unread = :unread, "
+			"num_comments = :num_comments, "
+			"comments_url = :comments_url "
 			"WHERE parents_hash = :parents_hash "
 			"AND title = :title "
 			"AND url = :url "
@@ -220,7 +229,9 @@ void SQLStorageBackend::GetItems (Channel_ptr channel) const
 			"category, "
 			"guid, "
 			"pub_date, "
-			"unread "
+			"unread, "
+			"num_comments, "
+			"comments_url "
 			"FROM items "
 			"WHERE parents_hash = :parents_hash "
 			"ORDER BY pub_date DESC");
@@ -243,6 +254,8 @@ void SQLStorageBackend::GetItems (Channel_ptr channel) const
 		item->Guid_ = itemsSelector.value (5).toString ();
 		item->PubDate_ = itemsSelector.value (6).toDateTime ();
 		item->Unread_ = itemsSelector.value (7).toBool ();
+		item->NumComments_ = itemsSelector.value (8).toInt ();
+		item->CommentsLink_ = itemsSelector.value (9).toString ();
 
 		channel->Items_.push_back (item);
 	}
@@ -359,6 +372,8 @@ void SQLStorageBackend::UpdateItem (Item_ptr item, const QString& parent)
 	UpdateItem_.bindValue (":guid", item->Guid_);
 	UpdateItem_.bindValue (":pub_date", item->PubDate_);
 	UpdateItem_.bindValue (":unread", item->Unread_);
+	UpdateItem_.bindValue (":num_comments", item->NumComments_);
+	UpdateItem_.bindValue (":comments_url", item->CommentsLink_);
 
 	if (!UpdateItem_.exec ())
 	{
@@ -404,6 +419,8 @@ void SQLStorageBackend::AddItem (Item_ptr item, const QString& parent)
 	InsertItem_.bindValue (":guid", item->Guid_);
 	InsertItem_.bindValue (":pub_date", item->PubDate_);
 	InsertItem_.bindValue (":unread", item->Unread_);
+	InsertItem_.bindValue (":num_comments", item->NumComments_);
+	InsertItem_.bindValue (":comments_url", item->CommentsLink_);
 
 	if (!InsertItem_.exec ())
 	{
@@ -490,6 +507,30 @@ void SQLStorageBackend::RemoveFeed (Feed_ptr feed)
 	}
 }
 
+bool SQLStorageBackend::UpdateFeedsStorage (int oldV, int newV)
+{
+    return true;
+}
+
+bool SQLStorageBackend::UpdateChannelsStorage (int oldV, int newV)
+{
+    return true;
+}
+
+bool SQLStorageBackend::UpdateItemsStorage (int oldV, int newV)
+{
+	qDebug () << Q_FUNC_INFO << oldV << newV;
+    bool success = true;
+    while (oldV < newV)
+    {
+        success = RollItemsStorage (++oldV);
+        if (!success)
+            break;
+    }
+
+    return success;
+}
+
 bool SQLStorageBackend::InitializeTables ()
 {
 	QSqlQuery query;
@@ -529,7 +570,9 @@ bool SQLStorageBackend::InitializeTables ()
 			"category TEXT, "
 			"guid TEXT, "
 			"pub_date TIMESTAMP, "
-			"unread TINYINT "
+			"unread TINYINT, "
+			"num_comments SMALLINT, "
+			"comments_url TEXT "
 			");"))
 	{
 		DumpError (query.lastError ());
@@ -593,5 +636,51 @@ QPixmap SQLStorageBackend::UnserializePixmap (const QByteArray& bytes) const
 	QPixmap result;
 	result.loadFromData (bytes, "PNG");
 	return result;
+}
+
+bool SQLStorageBackend::RollItemsStorage (int version)
+{
+	qDebug () << Q_FUNC_INFO << version;
+	if (!DB_.transaction ())
+	{
+		DumpError (DB_.lastError ());
+		qWarning () << Q_FUNC_INFO << "failed to start transaction";
+		return false;
+	}
+
+	bool success = true;
+
+	if (version == 2)
+	{
+		QSqlQuery updateQuery = QSqlQuery ();
+		success = updateQuery.exec ("ALTER TABLE items "
+				"ADD num_comments SMALLINT");
+
+		if (!success)
+			DumpError (updateQuery);
+		else
+			success = updateQuery.exec ("ALTER TABLE items "
+					"ADD comments_url TEXT");
+
+		if (!success)
+			DumpError (updateQuery);
+		else
+			success = updateQuery.exec ("UPDATE items "
+					"SET num_comments = -1");
+
+		if (!success)
+			DumpError (updateQuery);
+	}
+
+	if (!(success ? DB_.commit () : DB_.rollback ()))
+	{
+		DumpError (DB_.lastError ());
+		qWarning () << Q_FUNC_INFO << "failed to" << (success ? "commit" : "rollback");
+		success = false;
+	}
+
+	qDebug () << Q_FUNC_INFO <<success ;
+
+	return success ;
 }
 

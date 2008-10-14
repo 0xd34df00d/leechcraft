@@ -33,8 +33,9 @@ void Aggregator::Init ()
 {
 	Translator_.reset (LeechCraft::Util::InstallTranslator ("aggregator"));
 	SetupMenuBar ();
-    ItemBucket_.reset (new ItemBucket (this));
     Ui_.setupUi (this);
+
+    ItemBucket_.reset (new ItemBucket (this));
 	dynamic_cast<QVBoxLayout*> (layout ())->insertWidget (0, ToolBar_);
 
     TrayIcon_.reset (new QSystemTrayIcon (this));

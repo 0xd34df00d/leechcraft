@@ -21,6 +21,8 @@ class SQLStorageBackend : public StorageBackend
 public:
 	SQLStorageBackend ();
 	virtual ~SQLStorageBackend ();
+	
+	virtual void Prepare ();
 
 	virtual void GetFeeds (feeds_container_t&) const;
 
@@ -32,6 +34,9 @@ public:
 	virtual void RemoveItem (Item_ptr,
 			const QString&);
 	virtual void RemoveFeed (Feed_ptr);
+    virtual bool UpdateFeedsStorage (int, int);
+    virtual bool UpdateChannelsStorage (int, int);
+    virtual bool UpdateItemsStorage (int, int);
 private:
 	void GetChannels (Feed_ptr) const;
 	void GetItems (Channel_ptr) const;
@@ -40,6 +45,7 @@ private:
 	void DumpError (const QSqlQuery&) const;
 	QByteArray SerializePixmap (const QPixmap&) const;
 	QPixmap UnserializePixmap (const QByteArray&) const;
+    bool RollItemsStorage (int);
 };
 
 #endif

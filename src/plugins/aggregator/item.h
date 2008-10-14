@@ -18,6 +18,8 @@ struct Item
     QString Guid_;
     QDateTime PubDate_;
     bool Unread_;
+	int NumComments_;
+	QString CommentsLink_;
 };
 
 typedef boost::shared_ptr<Item> Item_ptr;

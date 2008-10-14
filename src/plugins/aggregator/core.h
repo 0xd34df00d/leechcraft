@@ -28,7 +28,8 @@ class Core : public QAbstractItemModel
 
     enum Columns
     {
-        ColumnName = 0 , ColumnDate = 1
+        ColumnName = 0
+        , ColumnDate = 1
     };
 
     struct PendingJob

@@ -24,7 +24,8 @@ QDataStream& operator<< (QDataStream& out, const Item& item)
         << item.Comments_
         << item.Guid_
         << item.PubDate_
-        << item.Unread_;
+        << item.Unread_
+		<< item.NumComments_;
     return out;
 }
 
@@ -38,7 +39,8 @@ QDataStream& operator>> (QDataStream& in, Item& item)
         >> item.Comments_
         >> item.Guid_
         >> item.PubDate_
-        >> item.Unread_;
+        >> item.Unread_
+		>> item.NumComments_;
     return in;
 }
 
