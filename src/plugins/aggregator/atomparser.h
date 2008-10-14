@@ -10,6 +10,7 @@ class AtomParser : public Parser
 {
 public:
 	virtual channels_container_t Parse (const channels_container_t&,
+			channels_container_t&,
 			const QDomDocument&) const;
 protected:
 	virtual channels_container_t Parse (const QDomDocument&) const = 0;

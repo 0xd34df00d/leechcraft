@@ -24,6 +24,7 @@ RSSParser::~RSSParser ()
 }
 
 channels_container_t RSSParser::Parse (const channels_container_t& channels,
+		channels_container_t& modified,
 		const QDomDocument& recent) const
 {
 	channels_container_t newes = Parse (recent),
@@ -51,25 +52,30 @@ channels_container_t RSSParser::Parse (const channels_container_t& channels,
         {
             Channel_ptr oldChannel = channels [position];
             Channel_ptr toInsert (new Channel ());
+			Channel_ptr modifiedContainer (new Channel ());
 			toInsert->Equalify (*oldChannel);
 			toInsert->LastBuild_ = newChannel->LastBuild_;
+			modifiedContainer->Equalify (*oldChannel);
 
             for (size_t j = 0; j < newChannel->Items_.size (); ++j)
             {
                 bool found = false;
-				size_t h = 0;
                 // Check if that item already exists
-                for (size_t size = oldChannel->Items_.size (); h < size; ++h)
+                for (size_t h = 0, size = oldChannel->Items_.size ();
+						h < size; ++h)
                     if (*oldChannel->Items_ [h] == *newChannel->Items_ [j])
                     {
                         found = true;
                         break;
                     }
 
-                if (!found)
+                if (found)
+					modifiedContainer->Items_.push_back (newChannel->Items_ [j]);
+				else
 					toInsert->Items_.push_back (newChannel->Items_ [j]);
             }
             result.push_back (toInsert);
+			modified.push_back (modifiedContainer);
         }
     }
     return result;

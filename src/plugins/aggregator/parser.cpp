@@ -7,14 +7,7 @@ const QString Parser::DC_ = "http://purl.org/dc/elements/1.1/";
 const QString Parser::WFW_ = "http://wellformedweb.org/CommentAPI/";
 const QString Parser::Atom_ = "http://www.w3.org/2005/Atom";
 const QString Parser::RDF_ = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-
-channels_container_t Parser::Parse (const channels_container_t& o,
-		const QByteArray& n)
-{
-	QDomDocument newd;
-	newd.setContent (n, true);
-	return Parse (o, newd);
-}
+const QString Parser::Slash_ = "http://purl.org/rss/1.0/modules/slash/";
 
 QString Parser::GetLink (const QDomElement& parent) const
 {
@@ -52,6 +45,16 @@ QString Parser::GetCommentsRSS (const QDomElement& parent) const
 			"commentRss");
 	if (nodes.size ())
 		result = nodes.at (0).toElement ().text ();
+	return result;
+}
+
+int Parser::GetNumComments (const QDomElement& parent) const
+{
+	int result = -1;
+	QDomNodeList nodes = parent.elementsByTagNameNS (Slash_,
+			"comments");
+	if (nodes.size ())
+		result = nodes.at (0).toElement ().text ().toInt ();
 	return result;
 }
 

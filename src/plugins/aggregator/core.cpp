@@ -711,7 +711,7 @@ void Core::handleJobFinished (int id)
 		emit error (tr ("Feed with url %1 not found.").arg (pj.URL_));
 		return;
 	}
-	channels_container_t channels;
+	channels_container_t channels, modifiedItems;
 	if (pj.Role_ != PendingJob::RFeedExternalData)
 	{
 		QByteArray data = file.readAll ();
@@ -747,7 +747,8 @@ void Core::handleJobFinished (int id)
 			Feeds_ [pj.URL_] = feed;
 		}
 
-		channels = parser->Parse (Feeds_ [pj.URL_]->Channels_, data);
+		channels = parser->Parse (Feeds_ [pj.URL_]->Channels_,
+				modifiedItems, doc);
 	}
 	QString emitString;
 	if (pj.Role_ == PendingJob::RFeedAdded)
@@ -764,7 +765,7 @@ void Core::handleJobFinished (int id)
 		StorageBackend_->AddFeed (Feeds_ [pj.URL_]);
 	}
 	else if (pj.Role_ == PendingJob::RFeedUpdated)
-		emitString += HandleFeedUpdated (channels, pj);
+		emitString += HandleFeedUpdated (channels, modifiedItems, pj);
 	else if (pj.Role_ == PendingJob::RFeedExternalData)
 		HandleExternalData (pj.URL_, file);
 	UpdateUnreadItemsNumber ();
@@ -980,6 +981,7 @@ void Core::HandleExternalData (const QString& url, const QFile& file)
 }
 
 QString Core::HandleFeedUpdated (const channels_container_t& channels,
+		const channels_container_t& modifiedChannels,
 		const Core::PendingJob& pj)
 {
 	QString emitString;

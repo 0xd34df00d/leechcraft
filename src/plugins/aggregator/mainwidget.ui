@@ -22,7 +22,7 @@
      <property name="orientation" >
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="" >
+     <widget class="QWidget" name="layoutWidget" >
       <layout class="QVBoxLayout" name="verticalLayout_3" >
        <item>
         <layout class="QHBoxLayout" name="_2" >
@@ -142,7 +142,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="" >
+     <widget class="QWidget" name="layoutWidget" >
       <layout class="QVBoxLayout" name="verticalLayout_2" >
        <item>
         <layout class="QGridLayout" name="_3" >
@@ -193,12 +193,10 @@
            <bool>false</bool>
           </property>
          </widget>
-         <widget class="QWidget" name="" >
+         <widget class="QWidget" name="layoutWidget" >
           <layout class="QVBoxLayout" name="verticalLayout" >
            <item>
-            <widget class="BrowserWidget" native="1" name="ItemView_" >
-             <zorder>ItemInfo_</zorder>
-            </widget>
+            <widget class="BrowserWidget" native="1" name="ItemView_" />
            </item>
            <item>
             <widget class="QGroupBox" name="ItemInfo_" >
@@ -207,7 +205,7 @@
              </property>
              <layout class="QFormLayout" name="formLayout" >
               <item row="0" column="0" >
-               <widget class="QLabel" name="label_4" >
+               <widget class="QLabel" name="ItemLinkLabel_" >
                 <property name="text" >
                  <string>Link:</string>
                 </property>
@@ -221,7 +219,7 @@
                </widget>
               </item>
               <item row="1" column="0" >
-               <widget class="QLabel" name="label_13" >
+               <widget class="QLabel" name="ItemAuthorLabel_" >
                 <property name="text" >
                  <string>Author:</string>
                 </property>
@@ -235,7 +233,7 @@
                </widget>
               </item>
               <item row="2" column="0" >
-               <widget class="QLabel" name="label_15" >
+               <widget class="QLabel" name="ItemCategoryLabel_" >
                 <property name="text" >
                  <string>Category:</string>
                 </property>
@@ -249,7 +247,7 @@
                </widget>
               </item>
               <item row="3" column="0" >
-               <widget class="QLabel" name="label_17" >
+               <widget class="QLabel" name="ItemPubDateLabel_" >
                 <property name="text" >
                  <string>Publication date:</string>
                 </property>

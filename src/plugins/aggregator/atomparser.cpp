@@ -4,6 +4,7 @@
 #include <QtDebug>
 
 channels_container_t AtomParser::Parse (const channels_container_t& old,
+		channels_container_t& modified,
 		const QDomDocument& recent) const
 {
 	channels_container_t newes = Parse (recent),
@@ -15,7 +16,9 @@ channels_container_t AtomParser::Parse (const channels_container_t& old,
     else
     {
         Channel_ptr toInsert (new Channel ());
+		Channel_ptr modifiedContainer (new Channel ());
         toInsert->Equalify (*old [0]);
+		modifiedContainer->Equalify (*old [0]);
         Item_ptr lastItemWeHave = old [0]->Items_ [0];
         int index = newes [0]->Items_.size ();
         for (size_t j = 0, size = newes [0]->Items_.size (); j < size; ++j)
@@ -24,10 +27,13 @@ channels_container_t AtomParser::Parse (const channels_container_t& old,
                 index = j - 1;
                 break;
             }
-        for (int j = index; j >= 0; --j)
-            toInsert->Items_.insert (toInsert->Items_.begin (), newes [0]->Items_ [j]);
+        for (int j = 0; j <= index; --j)
+            toInsert->Items_.push_back (newes [0]->Items_ [j]);
+		for (int j = newes [0]->Items_.size (); j > index; --j)
+			modifiedContainer->Items_.push_back (newes [0]->Items_ [j]);
 
         result.push_back (toInsert);
+		modified.push_back (modifiedContainer);
     }
     return result;
 }

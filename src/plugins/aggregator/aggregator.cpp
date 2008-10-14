@@ -447,19 +447,48 @@ void Aggregator::currentItemChanged (const QModelIndex& index)
 	if (!sindex.isValid ())
 	{
 		Ui_.ItemView_->setHtml ("");
-		Ui_.ItemAuthor_->setText ("");
-		Ui_.ItemCategory_->setText ("");
+		Ui_.ItemAuthor_->hide ();
+		Ui_.ItemAuthorLabel_->hide ();
+		Ui_.ItemCategory_->hide ();
+		Ui_.ItemCategoryLabel_->hide ();
 		Ui_.ItemLink_->setText ("");
-		Ui_.ItemPubDate_->setDateTime (QDateTime ());
+		Ui_.ItemPubDate_->hide ();
+		Ui_.ItemPubDateLabel_->hide ();
 		return;
 	}
+
 	Ui_.ItemView_->setHtml (Core::Instance ().GetDescription (sindex));
 	connect (Ui_.ItemView_->page ()->networkAccessManager (),
 			SIGNAL (sslErrors (QNetworkReply*, const QList<QSslError>&)),
 			&Core::Instance (),
 			SLOT (handleSslError (QNetworkReply*)));
-	Ui_.ItemAuthor_->setText (Core::Instance ().GetAuthor (sindex));
-	Ui_.ItemCategory_->setText (Core::Instance ().GetCategory (sindex));
+
+	QString itemAuthor = Core::Instance ().GetAuthor (sindex);
+	if (itemAuthor.isEmpty ())
+	{
+		Ui_.ItemAuthor_->hide ();
+		Ui_.ItemAuthorLabel_->hide ();
+	}
+	else
+	{
+		Ui_.ItemAuthor_->setText (Core::Instance ().GetAuthor (sindex));
+		Ui_.ItemAuthor_->show ();
+		Ui_.ItemAuthorLabel_->show ();
+	}
+
+	QString category = Core::Instance ().GetCategory (sindex);
+	if (category.isEmpty ())
+	{
+		Ui_.ItemCategory_->hide ();
+		Ui_.ItemCategoryLabel_->hide ();
+	}
+	else
+	{
+		Ui_.ItemCategory_->setText (Core::Instance ().GetCategory (sindex));
+		Ui_.ItemCategory_->show ();
+		Ui_.ItemCategoryLabel_->show ();
+	}
+
 	QString link = Core::Instance ().GetLink (sindex);
 	QString shortLink;
 	Ui_.ItemLink_->setToolTip (link);
@@ -467,7 +496,7 @@ void Aggregator::currentItemChanged (const QModelIndex& index)
 		shortLink = link.left (18) + "..." + link.right (18);
 	else
 		shortLink = link;
-	if(QUrl (link).isValid ())
+	if (QUrl (link).isValid ())
 	{
 		link.insert (0,"<a href=\"");
 		link.append ("\">" + shortLink + "</a>");
@@ -479,11 +508,24 @@ void Aggregator::currentItemChanged (const QModelIndex& index)
 		Ui_.ItemLink_->setOpenExternalLinks (false);
 		Ui_.ItemLink_->setText (shortLink);
 	}
-	Ui_.ItemPubDate_->setDateTime (Core::Instance ().GetPubDate (sindex));
+
+	QDateTime pubDate = Core::Instance ().GetPubDate (sindex);
+	if (pubDate.isValid ())
+	{
+		Ui_.ItemPubDate_->setDateTime (Core::Instance ().GetPubDate (sindex));
+		Ui_.ItemPubDate_->show ();
+		Ui_.ItemPubDateLabel_->show ();
+	}
+	else
+	{
+		Ui_.ItemPubDate_->hide ();
+		Ui_.ItemPubDateLabel_->hide ();
+	}
 }
 
 void Aggregator::currentChannelChanged ()
 {
+	currentItemChanged (QModelIndex ());
     QModelIndex index = Ui_.Feeds_->selectionModel ()->currentIndex ();
 	if (!index.isValid ())
 		return;

@@ -82,6 +82,8 @@ Item* RSS20Parser::ParseItem (const QDomElement& item) const
 	result->Categories_ = GetAllCategories (item);
 	result->Unread_ = true;
 	result->Author_ = GetAuthor (item);
+	result->NumComments_ = GetNumComments (item);
+	result->CommentsLink_ = GetCommentsRSS (item);
 	return result;
 }
 

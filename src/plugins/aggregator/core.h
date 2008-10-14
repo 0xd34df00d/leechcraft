@@ -144,6 +144,7 @@ private:
 	void FetchFavicon (const Channel_ptr&);
 	void HandleExternalData (const QString&, const QFile&);
 	QString HandleFeedUpdated (const channels_container_t&,
+			const channels_container_t&,
 			const PendingJob&);
 signals:
     void error (const QString&) const;
