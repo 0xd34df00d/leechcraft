@@ -2,6 +2,16 @@
 #include <QDataStream>
 #include "item.h"
 
+ItemComparator::ItemComparator (const Item_ptr& item)
+: Item_ (item)
+{
+}
+
+bool ItemComparator::operator() (const Item_ptr& item)
+{
+	return *Item_ == *item;
+}
+
 bool operator== (const Item& i1, const Item& i2)
 {
     return i1.Title_ == i2.Title_ &&
@@ -21,7 +31,6 @@ QDataStream& operator<< (QDataStream& out, const Item& item)
         << item.Description_
         << item.Author_
         << item.Categories_
-        << item.Comments_
         << item.Guid_
         << item.PubDate_
         << item.Unread_
@@ -36,7 +45,6 @@ QDataStream& operator>> (QDataStream& in, Item& item)
         >> item.Description_
         >> item.Author_
         >> item.Categories_
-        >> item.Comments_
         >> item.Guid_
         >> item.PubDate_
         >> item.Unread_

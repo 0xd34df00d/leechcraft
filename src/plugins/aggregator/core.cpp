@@ -675,18 +675,16 @@ void Core::scheduleSave ()
 
 namespace
 {
-	struct IsDateSuitable : public std::unary_function<
-							items_container_t::value_type,
-							bool>
+	struct IsDateSuitable
 	{
 		QDateTime DateTime_;
 
 		IsDateSuitable (const QDateTime& dt)
-			: DateTime_ (dt)
+		: DateTime_ (dt)
 		{
 		}
 
-		bool operator() (const items_container_t::value_type& it)
+		bool operator() (const Item_ptr& it)
 		{
 			return it->PubDate_ < DateTime_;
 		}
@@ -1006,6 +1004,45 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 	QString emitString;
 
 	ChannelsModel_->Update (channels);
+	for (channels_container_t::const_iterator i = modifiedChannels.begin (),
+			end = modifiedChannels.end (); i != end; ++i)
+	{
+		int position = -1;
+		for (size_t j = 0,
+				endJSize = Feeds_ [pj.URL_]->Channels_.size ();
+				j < endJSize; ++j)
+			if (*Feeds_ [pj.URL_]->Channels_ [j] == *(*i))
+			{
+				position = j;
+				break;
+			}
+
+		if (position == -1)
+			continue;
+		Channel_ptr ourChannel = Feeds_ [pj.URL_]->Channels_ [position];
+
+		for (items_container_t::const_iterator item = (*i)->Items_.begin (),
+				itemEnd = (*i)->Items_.end (); item != itemEnd; ++item)
+		{
+			items_container_t::iterator ourItem =
+				std::find_if (ourChannel->Items_.begin (),
+						ourChannel->Items_.end (),
+						ItemComparator (*item));
+			if (ourItem == ourChannel->Items_.end ())
+			{
+				qWarning () << Q_FUNC_INFO << "not found modified item";
+				continue;
+			}
+
+			(*ourItem)->Categories_ = (*item)->Categories_;
+			(*ourItem)->NumComments_ = (*item)->NumComments_;
+			(*ourItem)->CommentsLink_ = (*item)->CommentsLink_;
+
+			StorageBackend_->UpdateItem ((*ourItem),
+					ourChannel->Link_ + ourChannel->Title_);
+		}
+	}
+
 	for (size_t i = 0; i < channels.size (); ++i)
 	{
 		int position = -1;

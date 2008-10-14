@@ -59,20 +59,15 @@ channels_container_t RSSParser::Parse (const channels_container_t& channels,
 
             for (size_t j = 0; j < newChannel->Items_.size (); ++j)
             {
-                bool found = false;
-                // Check if that item already exists
-                for (size_t h = 0, size = oldChannel->Items_.size ();
-						h < size; ++h)
-                    if (*oldChannel->Items_ [h] == *newChannel->Items_ [j])
-                    {
-                        found = true;
-                        break;
-                    }
+				items_container_t::const_iterator place =
+					std::find_if (oldChannel->Items_.begin (),
+							oldChannel->Items_.end (),
+							ItemComparator (newChannel->Items_ [j]));
 
-                if (found)
-					modifiedContainer->Items_.push_back (newChannel->Items_ [j]);
-				else
+                if (place == oldChannel->Items_.end ())
 					toInsert->Items_.push_back (newChannel->Items_ [j]);
+				else
+					modifiedContainer->Items_.push_back (newChannel->Items_ [j]);
             }
             result.push_back (toInsert);
 			modified.push_back (modifiedContainer);

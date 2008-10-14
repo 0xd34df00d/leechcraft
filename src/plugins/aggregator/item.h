@@ -14,7 +14,6 @@ struct Item
     QString Description_;
     QString Author_;
     QStringList Categories_;
-    QString Comments_;
     QString Guid_;
     QDateTime PubDate_;
     bool Unread_;
@@ -24,6 +23,14 @@ struct Item
 
 typedef boost::shared_ptr<Item> Item_ptr;
 typedef std::vector<Item_ptr> items_container_t;
+
+struct ItemComparator
+{
+	Item_ptr Item_;
+
+	ItemComparator (const Item_ptr&);
+	bool operator() (const Item_ptr&);
+};
 
 Q_DECLARE_METATYPE (Item);
 

@@ -20,17 +20,17 @@ channels_container_t AtomParser::Parse (const channels_container_t& old,
         toInsert->Equalify (*old [0]);
 		modifiedContainer->Equalify (*old [0]);
         Item_ptr lastItemWeHave = old [0]->Items_ [0];
-        int index = newes [0]->Items_.size ();
-        for (size_t j = 0, size = newes [0]->Items_.size (); j < size; ++j)
-            if (*newes [0]->Items_ [j] == *lastItemWeHave)
-            {
-                index = j - 1;
-                break;
-            }
-        for (int j = 0; j <= index; --j)
-            toInsert->Items_.push_back (newes [0]->Items_ [j]);
-		for (int j = newes [0]->Items_.size (); j > index; --j)
-			modifiedContainer->Items_.push_back (newes [0]->Items_ [j]);
+
+		items_container_t::iterator itemPosition =
+			std::find_if (newes [0]->Items_.begin (), newes [0]->Items_.end (),
+					ItemComparator (lastItemWeHave));
+
+		toInsert->Items_.insert (toInsert->Items_.end (),
+				newes [0]->Items_.begin (), itemPosition);
+
+		if (itemPosition != newes [0]->Items_.end ())
+			modifiedContainer->Items_.insert (modifiedContainer->Items_.end (),
+					itemPosition + 1, newes [0]->Items_.end ());
 
         result.push_back (toInsert);
 		modified.push_back (modifiedContainer);
