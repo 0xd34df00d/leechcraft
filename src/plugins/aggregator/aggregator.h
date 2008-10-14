@@ -84,6 +84,7 @@ private slots:
 	void on_ActionHideReadItems__triggered ();
 	void on_ActionImportOPML__triggered ();
 	void on_ActionExportOPML__triggered ();
+	void on_ItemComments__linkActivated ();
     void currentItemChanged (const QModelIndex&);
     void currentChannelChanged ();
     void unreadNumberChanged (int);

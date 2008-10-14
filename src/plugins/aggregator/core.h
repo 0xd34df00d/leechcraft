@@ -82,11 +82,14 @@ public:
     void RemoveFeed (const QModelIndex&);
     void Activated (const QModelIndex&);
     void FeedActivated (const QModelIndex&);
-    QString GetDescription (const QModelIndex&);
-	QString GetAuthor (const QModelIndex&);
-	QString GetCategory (const QModelIndex&);
-	QString GetLink (const QModelIndex&);
-	QDateTime GetPubDate (const QModelIndex&);
+	void Selected (const QModelIndex&);
+    QString GetDescription (const QModelIndex&) const;
+	QString GetAuthor (const QModelIndex&) const;
+	QString GetCategory (const QModelIndex&) const;
+	QString GetLink (const QModelIndex&) const;
+	QDateTime GetPubDate (const QModelIndex&) const;
+	int GetCommentsNumber (const QModelIndex&) const;
+	QString GetCommentsRSS (const QModelIndex&) const;
     QAbstractItemModel* GetChannelsModel ();
     TagsCompletionModel* GetTagsCompletionModel ();
     void UpdateTags (const QStringList&);
@@ -111,6 +114,7 @@ public:
 			const std::vector<bool>&) const;
 	feeds_container_t GetFeeds () const;
     ItemModel* GetItemModel () const;
+	void SubscribeToComments (const QModelIndex&);
 
     virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
     virtual QVariant data (const QModelIndex&,

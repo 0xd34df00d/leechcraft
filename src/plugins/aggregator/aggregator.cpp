@@ -441,6 +441,13 @@ void Aggregator::on_ActionExportOPML__triggered ()
 			exportDialog.GetSelectedFeeds ());
 }
 
+void Aggregator::on_ItemComments__linkActivated ()
+{
+    QModelIndex selected = Ui_.Items_->selectionModel ()->currentIndex ();
+	Core::Instance ().SubscribeToComments (ItemsFilterModel_->
+			mapToSource (selected));
+}
+
 void Aggregator::currentItemChanged (const QModelIndex& index)
 {
 	QModelIndex sindex = ItemsFilterModel_->mapToSource (index);
@@ -454,8 +461,12 @@ void Aggregator::currentItemChanged (const QModelIndex& index)
 		Ui_.ItemLink_->setText ("");
 		Ui_.ItemPubDate_->hide ();
 		Ui_.ItemPubDateLabel_->hide ();
+		Ui_.ItemComments_->hide ();
+		Ui_.ItemCommentsLabel_->hide ();
 		return;
 	}
+
+	Core::Instance ().Selected (sindex);
 
 	Ui_.ItemView_->setHtml (Core::Instance ().GetDescription (sindex));
 	connect (Ui_.ItemView_->page ()->networkAccessManager (),
@@ -520,6 +531,29 @@ void Aggregator::currentItemChanged (const QModelIndex& index)
 	{
 		Ui_.ItemPubDate_->hide ();
 		Ui_.ItemPubDateLabel_->hide ();
+	}
+
+	int numComments = Core::Instance ().GetCommentsNumber (sindex);
+	QString commentsRSS = Core::Instance ().GetCommentsRSS (sindex);
+	if (numComments >= 0 || !commentsRSS.isEmpty ())
+	{
+		Ui_.ItemComments_->show ();
+		Ui_.ItemCommentsLabel_->show ();
+
+		QString text;
+		if (numComments >= 0 && commentsRSS.isEmpty ())
+			text = QString::number (numComments);
+		else if (numComments < 0 && !commentsRSS.isEmpty ())
+			text = QString ("<a href=\"#subscribe\">%1</a>").arg (tr ("Subscribe"));
+		else
+			text = QString ("<a href=\"#subscribe\">%1</a>").arg (numComments);
+
+		Ui_.ItemComments_->setText (text);
+	}
+	else
+	{
+		Ui_.ItemComments_->hide ();
+		Ui_.ItemCommentsLabel_->hide ();
 	}
 }
 

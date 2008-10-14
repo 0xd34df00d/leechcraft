@@ -233,74 +233,79 @@ void Core::FeedActivated (const QModelIndex& index)
 	QDesktopServices::openUrl (QUrl (ChannelsModel_->GetChannelForIndex (index)->Link_));
 }
 
-QString Core::GetDescription (const QModelIndex& index)
+void Core::Selected (const QModelIndex& index)
+{
+	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
+		return;
+
+	Item_ptr item = ActivatedChannel_->Items_ [index.row ()];
+	item->Unread_ = false;
+	StorageBackend_->UpdateItem (item, ActivatedChannel_->Link_ + ActivatedChannel_->Title_);
+	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
+	UpdateUnreadItemsNumber ();
+}
+
+QString Core::GetDescription (const QModelIndex& index) const
 {
 	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
 		return QString ();
 
 	Item_ptr item = ActivatedChannel_->Items_ [index.row ()];
-
-	item->Unread_ = false;
-	StorageBackend_->UpdateItem (item, ActivatedChannel_->Link_ + ActivatedChannel_->Title_);
-	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
-	UpdateUnreadItemsNumber ();
 	return item->Description_;
 }
 
-QString Core::GetAuthor (const QModelIndex& index)
+QString Core::GetAuthor (const QModelIndex& index) const
 {
 	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
 		return QString ();
 
 	Item_ptr item = ActivatedChannel_->Items_ [index.row ()];
-
-	item->Unread_ = false;
-	StorageBackend_->UpdateItem (item, ActivatedChannel_->Link_ + ActivatedChannel_->Title_);
-	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
-	UpdateUnreadItemsNumber ();
 	return item->Author_;
 }
 
-QString Core::GetCategory (const QModelIndex& index)
+QString Core::GetCategory (const QModelIndex& index) const
 {
 	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
 		return QString ();
 
 	Item_ptr item = ActivatedChannel_->Items_ [index.row ()];
-
-	item->Unread_ = false;
-	StorageBackend_->UpdateItem (item, ActivatedChannel_->Link_ + ActivatedChannel_->Title_);
-	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
-	UpdateUnreadItemsNumber ();
 	return item->Categories_.join ("; ");
 }
 
-QString Core::GetLink (const QModelIndex& index)
+QString Core::GetLink (const QModelIndex& index) const
 {
 	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
 		return QString ();
 
 	Item_ptr item = ActivatedChannel_->Items_ [index.row ()];
-
-	item->Unread_ = false;
-	StorageBackend_->UpdateItem (item, ActivatedChannel_->Link_ + ActivatedChannel_->Title_);
-	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
-	UpdateUnreadItemsNumber ();
 	return item->Link_;
 }
 
-QDateTime Core::GetPubDate (const QModelIndex& index)
+QDateTime Core::GetPubDate (const QModelIndex& index) const
 {
 	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
 		return QDateTime ();
 
 	Item_ptr item = ActivatedChannel_->Items_ [index.row ()];
-
-	item->Unread_ = false;
-	StorageBackend_->UpdateItem (item, ActivatedChannel_->Link_ + ActivatedChannel_->Title_);
-	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
-	UpdateUnreadItemsNumber ();
 	return item->PubDate_;
+}
+
+int Core::GetCommentsNumber (const QModelIndex& index) const
+{
+	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
+		return -1;
+
+	Item_ptr item = ActivatedChannel_->Items_ [index.row ()];
+	return item->NumComments_;
+}
+
+QString Core::GetCommentsRSS (const QModelIndex& index) const
+{
+	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
+		return QString ();
+
+	Item_ptr item = ActivatedChannel_->Items_ [index.row ()];
+	return item->CommentsLink_;
 }
 
 QAbstractItemModel* Core::GetChannelsModel ()
@@ -568,6 +573,20 @@ feeds_container_t Core::GetFeeds () const
 ItemModel* Core::GetItemModel () const
 {
 	return ItemModel_;
+}
+
+void Core::SubscribeToComments (const QModelIndex& index)
+{
+	QString commentRSS = GetCommentsRSS (index);
+	QStringList tags = ActivatedChannel_->Tags_;
+
+	QStringList addTags = XmlSettingsManager::Instance ()->
+		property ("CommentsTags").toString ().split (' ',
+				QString::SkipEmptyParts);
+	if (addTags.size ())
+		AddFeed (commentRSS, tags + addTags);
+	else
+		AddFeed (commentRSS, tags);
 }
 
 int Core::columnCount (const QModelIndex& parent) const
