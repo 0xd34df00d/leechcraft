@@ -559,6 +559,7 @@ void Aggregator::currentItemChanged (const QModelIndex& index)
 
 void Aggregator::currentChannelChanged ()
 {
+	Ui_.Items_->scrollToTop ();
 	currentItemChanged (QModelIndex ());
     QModelIndex index = Ui_.Feeds_->selectionModel ()->currentIndex ();
 	if (!index.isValid ())

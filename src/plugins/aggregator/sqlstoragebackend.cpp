@@ -519,7 +519,6 @@ bool SQLStorageBackend::UpdateChannelsStorage (int oldV, int newV)
 
 bool SQLStorageBackend::UpdateItemsStorage (int oldV, int newV)
 {
-	qDebug () << Q_FUNC_INFO << oldV << newV;
     bool success = true;
     while (oldV < newV)
     {
