@@ -34,6 +34,7 @@ namespace Main
 {
 	class Core;
 	class PluginInfo;
+	class PluginManagerDialog;
 	class MainWindow : public QMainWindow
 	{
 		Q_OBJECT
@@ -46,6 +47,8 @@ namespace Main
 
 		XmlSettingsDialog *XmlSettingsDialog_;
 		QList<QDockWidget*> PluginWidgets_;
+
+		PluginManagerDialog *PluginManagerDialog_;
 
 		bool IsShown_;
 	public:
@@ -73,9 +76,9 @@ namespace Main
 		void showSettings ();
 		void handleAggregateJobsChange ();
 		void cleanUp ();
-		void on_PluginsTree__activated (const QModelIndex&);
 		void filterParametersChanged ();
 		void updateIconsSet ();
+		void on_ActionPluginManager__triggered ();
 	};
 };
 

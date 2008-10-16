@@ -121,6 +121,7 @@ SET (SRCS
 	xmlsettingsmanager.cpp
 	mergemodel.cpp
 	filtermodel.cpp
+	pluginmanagerdialog.cpp
 	)
 
 SET (HEADERS
@@ -131,6 +132,7 @@ SET (HEADERS
 	xmlsettingsmanager.h
 	mergemodel.h
 	filtermodel.h
+	pluginmanagerdialog.h
 	interfaces/interfaces.h
 	interfaces/structures.h
 	)
@@ -138,6 +140,7 @@ SET (HEADERS
 SET (FORMS
 	commonjobadder.ui
 	leechcraft.ui
+	pluginmanagerdialog.ui
 	)
 SET (RESOURCES mainresources.qrc)
 SET (TRANSLATIONS

@@ -11,6 +11,7 @@
 #include "core.h"
 #include "commonjobadder.h"
 #include "xmlsettingsmanager.h"
+#include "pluginmanagerdialog.h"
 #include "ui_leechcraft.h"
 
 namespace Main
@@ -27,7 +28,6 @@ namespace Main
 
 		Ui_ = new Ui::LeechCraft;
 		Ui_->setupUi (this);
-		Ui_->MainSplitter_->setStretchFactor (1, 4);
 
 		connect (Ui_->ActionAddTask_,
 				SIGNAL (triggered ()),
@@ -92,6 +92,8 @@ namespace Main
 		statusBar ()->addPermanentWidget (UploadSpeed_);
 		ReadSettings ();
 
+		PluginManagerDialog_ = new PluginManagerDialog (this);
+
 		splash.showMessage (tr ("Initializing core and plugins..."));
 		connect (&Core::Instance (),
 				SIGNAL (downloadFinished (const QString&)),
@@ -102,7 +104,6 @@ namespace Main
 
 		Core::Instance ().DelayedInit ();
 
-		Ui_->PluginsTree_->setModel (Core::Instance ().GetPluginsModel ());
 		QAbstractItemModel *tasksModel = Core::Instance ().GetTasksModel ();
 		Ui_->PluginsTasksTree_->setModel (tasksModel);
 
@@ -315,10 +316,6 @@ namespace Main
 		qDebug () << "Destroyed fine";
 	}
 
-	void MainWindow::on_PluginsTree__activated (const QModelIndex& index)
-	{
-		Core::Instance ().Activated (index);
-	}
 
 	void MainWindow::filterParametersChanged ()
 	{
@@ -453,6 +450,11 @@ namespace Main
 			
 			(*i)->setIcon (iconEntity);
 		}
+	}
+
+	void MainWindow::on_ActionPluginManager__triggered ()
+	{
+		PluginManagerDialog_->show ();
 	}
 };
 

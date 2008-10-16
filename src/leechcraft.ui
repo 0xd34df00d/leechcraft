@@ -17,116 +17,82 @@
     <normaloff>:/resources/images/mainapp.png</normaloff>:/resources/images/mainapp.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget" >
-   <layout class="QVBoxLayout" name="verticalLayout_2" >
+   <layout class="QVBoxLayout" name="verticalLayout" >
     <item>
-     <widget class="QSplitter" name="MainSplitter_" >
-      <property name="orientation" >
-       <enum>Qt::Horizontal</enum>
+     <widget class="QTabWidget" name="MainTabWidget_" >
+      <property name="currentIndex" >
+       <number>0</number>
       </property>
-      <widget class="QTreeView" name="PluginsTree_" >
-       <property name="minimumSize" >
-        <size>
-         <width>120</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="editTriggers" >
-        <set>QAbstractItemView::NoEditTriggers</set>
-       </property>
-       <property name="alternatingRowColors" >
-        <bool>true</bool>
-       </property>
-       <property name="rootIsDecorated" >
-        <bool>false</bool>
-       </property>
-       <property name="itemsExpandable" >
-        <bool>false</bool>
-       </property>
-       <property name="sortingEnabled" >
-        <bool>true</bool>
-       </property>
-       <property name="headerHidden" >
-        <bool>true</bool>
-       </property>
-       <property name="expandsOnDoubleClick" >
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QTabWidget" name="MainTabWidget_" >
-       <property name="currentIndex" >
-        <number>0</number>
-       </property>
-       <widget class="QWidget" name="DownloadersTab_" >
-        <attribute name="title" >
-         <string>Downloaders</string>
-        </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout" >
-         <item>
-          <layout class="QVBoxLayout" name="PluginsStuff_" >
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout" >
-             <item>
-              <widget class="QLineEdit" name="FilterLine_" />
-             </item>
-             <item>
-              <widget class="QComboBox" name="FilterType_" >
-               <item>
-                <property name="text" >
-                 <string>Fixed string</string>
-                </property>
-               </item>
-               <item>
-                <property name="text" >
-                 <string>Wildcard</string>
-                </property>
-               </item>
-               <item>
-                <property name="text" >
-                 <string>Regexp</string>
-                </property>
-               </item>
-               <item>
-                <property name="text" >
-                 <string>Tags</string>
-                </property>
-               </item>
-              </widget>
-             </item>
-             <item>
-              <widget class="QCheckBox" name="FilterCaseSensitivity_" >
+      <widget class="QWidget" name="DownloadersTab_" >
+       <attribute name="title" >
+        <string>Downloaders</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_2" >
+        <item>
+         <layout class="QVBoxLayout" name="PluginsStuff_" >
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout" >
+            <item>
+             <widget class="QLineEdit" name="FilterLine_" />
+            </item>
+            <item>
+             <widget class="QComboBox" name="FilterType_" >
+              <item>
                <property name="text" >
-                <string>Case sensitive</string>
+                <string>Fixed string</string>
                </property>
-               <property name="checked" >
-                <bool>true</bool>
+              </item>
+              <item>
+               <property name="text" >
+                <string>Wildcard</string>
                </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="QTreeView" name="PluginsTasksTree_" >
-             <property name="minimumSize" >
-              <size>
-               <width>250</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="rootIsDecorated" >
-              <bool>false</bool>
-             </property>
-             <property name="itemsExpandable" >
-              <bool>false</bool>
-             </property>
-             <property name="expandsOnDoubleClick" >
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </widget>
+              </item>
+              <item>
+               <property name="text" >
+                <string>Regexp</string>
+               </property>
+              </item>
+              <item>
+               <property name="text" >
+                <string>Tags</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="FilterCaseSensitivity_" >
+              <property name="text" >
+               <string>Case sensitive</string>
+              </property>
+              <property name="checked" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QTreeView" name="PluginsTasksTree_" >
+            <property name="minimumSize" >
+             <size>
+              <width>250</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="rootIsDecorated" >
+             <bool>false</bool>
+            </property>
+            <property name="itemsExpandable" >
+             <bool>false</bool>
+            </property>
+            <property name="expandsOnDoubleClick" >
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
@@ -154,6 +120,7 @@
     <property name="title" >
      <string>Settings</string>
     </property>
+    <addaction name="ActionPluginManager_" />
     <addaction name="ActionSettings_" />
    </widget>
    <widget class="QMenu" name="menuHelp" >
@@ -185,6 +152,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="ActionAddTask_" />
+   <addaction name="ActionPluginManager_" />
    <addaction name="ActionSettings_" />
   </widget>
   <action name="ActionAddTask_" >
@@ -227,6 +195,11 @@
   <action name="ActionAboutQt_" >
    <property name="text" >
     <string>About Qt...</string>
+   </property>
+  </action>
+  <action name="ActionPluginManager_" >
+   <property name="text" >
+    <string>Plugin manager</string>
    </property>
   </action>
  </widget>
