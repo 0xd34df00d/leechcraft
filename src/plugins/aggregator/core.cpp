@@ -30,8 +30,10 @@
 Core::Core ()
 : SaveScheduled_ (false)
 , StorageBackend_ (new SQLStorageBackend ())
-, ItemModel_ (new ItemModel)
 {
+	qRegisterMetaTypeStreamOperators<Feed> ("Feed");
+	qRegisterMetaTypeStreamOperators<Item> ("Item");
+
 	const int feedsTable = 1;
 	const int channelsTable = 1;
 	const int itemsTable = 2;
@@ -71,8 +73,7 @@ Core::Core ()
 	ParserFactory::Instance ().Register (&RSS10Parser::Instance ());
 	ItemHeaders_ << tr ("Name") << tr ("Date");
 
-	qRegisterMetaTypeStreamOperators<Feed> ("Feed");
-	qRegisterMetaTypeStreamOperators<Item> ("Item");
+	ItemModel_ = new ItemModel ();
 
 	ChannelsModel_ = new ChannelsModel (this);
 	connect (ChannelsModel_,
