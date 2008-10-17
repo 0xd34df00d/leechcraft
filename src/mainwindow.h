@@ -35,6 +35,8 @@ namespace Main
 	class Core;
 	class PluginInfo;
 	class PluginManagerDialog;
+	class FancyPopupManager;
+
 	class MainWindow : public QMainWindow
 	{
 		Q_OBJECT
@@ -49,6 +51,7 @@ namespace Main
 		QList<QDockWidget*> PluginWidgets_;
 
 		PluginManagerDialog *PluginManagerDialog_;
+		FancyPopupManager *FancyPopupManager_;
 
 		bool IsShown_;
 	public:

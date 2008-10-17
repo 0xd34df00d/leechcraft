@@ -122,6 +122,8 @@ SET (SRCS
 	mergemodel.cpp
 	filtermodel.cpp
 	pluginmanagerdialog.cpp
+	fancypopup.cpp
+	fancypopupmanager.cpp
 	)
 
 SET (HEADERS
@@ -133,6 +135,8 @@ SET (HEADERS
 	mergemodel.h
 	filtermodel.h
 	pluginmanagerdialog.h
+	fancypopup.h
+	fancypopupmanager.h
 	interfaces/interfaces.h
 	interfaces/structures.h
 	)
@@ -141,6 +145,7 @@ SET (FORMS
 	commonjobadder.ui
 	leechcraft.ui
 	pluginmanagerdialog.ui
+	fancypopup.ui
 	)
 SET (RESOURCES mainresources.qrc)
 SET (TRANSLATIONS
