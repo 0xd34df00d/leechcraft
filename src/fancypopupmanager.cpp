@@ -80,6 +80,7 @@ void Main::FancyPopupManager::timerTimeout ()
 
 			Popups_.erase (position);
 			Dates_.erase (i++);
+			--i;
 			delete popUp;
 			popUp = 0;
 		}
