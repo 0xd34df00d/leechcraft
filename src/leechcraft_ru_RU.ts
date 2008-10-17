@@ -42,118 +42,141 @@
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="146"/>
+        <location filename="leechcraft.ui" line="112"/>
         <source>Actions</source>
         <translation>Действия</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="208"/>
+        <location filename="leechcraft.ui" line="179"/>
         <source>Settings</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="161"/>
+        <location filename="leechcraft.ui" line="128"/>
         <source>Help</source>
         <translation>Помощь</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="168"/>
+        <location filename="leechcraft.ui" line="135"/>
         <source>Plugins</source>
         <translation>Плагины</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="179"/>
+        <location filename="leechcraft.ui" line="146"/>
         <source>toolBar</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="196"/>
+        <location filename="leechcraft.ui" line="164"/>
         <source>Add task</source>
         <translation>Добавить задачу</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="199"/>
+        <location filename="leechcraft.ui" line="167"/>
         <source>Adds job to a supporting plugin</source>
         <translation>Добавляет задачу в поддерживающий плагин</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="213"/>
+        <location filename="leechcraft.ui" line="187"/>
         <source>Quit</source>
         <translation>Выход</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="218"/>
+        <location filename="leechcraft.ui" line="192"/>
         <source>About LeechCraft...</source>
         <translation>О LeechCraft...</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="223"/>
+        <location filename="leechcraft.ui" line="197"/>
         <source>About Qt...</source>
         <translation>О Qt...</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="75"/>
+        <location filename="leechcraft.ui" line="42"/>
         <source>Fixed string</source>
         <translation>Строка</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="80"/>
+        <location filename="leechcraft.ui" line="47"/>
         <source>Wildcard</source>
         <translation>Маска</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="85"/>
+        <location filename="leechcraft.ui" line="52"/>
         <source>Regexp</source>
         <translation>Регулярное выражение</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="90"/>
+        <location filename="leechcraft.ui" line="57"/>
         <source>Tags</source>
         <translation>Метки</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="98"/>
+        <location filename="leechcraft.ui" line="65"/>
         <source>Case sensitive</source>
         <translation>Учитывать регистр</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="61"/>
+        <location filename="leechcraft.ui" line="28"/>
         <source>Downloaders</source>
         <translation>Качальщики</translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="170"/>
+        <source>mainaddjob</source>
+        <translation>mainaddjob</translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="182"/>
+        <source>mainsettings</source>
+        <translation>mansettings</translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="202"/>
+        <source>Plugin manager</source>
+        <translation>Менеджер плагинов</translation>
     </message>
 </context>
 <context>
     <name>Main::Core</name>
     <message>
-        <location filename="core.cpp" line="218"/>
+        <location filename="core.cpp" line="221"/>
         <source>No plugins are able to download &quot;%1&quot;</source>
         <translation>Нет плагинов, способных скачать &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="401"/>
+        <location filename="core.cpp" line="404"/>
         <source>Question</source>
         <translation>Вопрос</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="402"/>
+        <location filename="core.cpp" line="405"/>
         <source>File %1 could be handled by plugin %2, would you like to?</source>
         <translation>Файл %1 может быть обработан плагином %2, ты хочешь?</translation>
     </message>
 </context>
 <context>
+    <name>Main::FancyPopupManager</name>
+    <message>
+        <location filename="fancypopupmanager.cpp" line="68"/>
+        <source>LeechCraft Notification</source>
+        <translation>Оповещение LeechCraft</translation>
+    </message>
+</context>
+<context>
     <name>Main::MainWindow</name>
     <message>
-        <location filename="mainwindow.cpp" line="25"/>
+        <location filename="mainwindow.cpp" line="28"/>
         <source>Initializing interface...</source>
         <translation>Инициализирую интерфейс...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="92"/>
+        <location filename="mainwindow.cpp" line="101"/>
         <source>Initializing core and plugins...</source>
         <translation>Инициализирую ядро и плагины...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="147"/>
+        <location filename="mainwindow.cpp" line="157"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
@@ -168,37 +191,37 @@
         <translation type="obsolete">Скрыть все</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="189"/>
+        <location filename="mainwindow.cpp" line="199"/>
         <source>Quit</source>
         <translation>Выход</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="224"/>
+        <location filename="mainwindow.cpp" line="234"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="231"/>
+        <location filename="mainwindow.cpp" line="241"/>
         <source>Information</source>
         <translation>Информация</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="239"/>
+        <location filename="mainwindow.cpp" line="249"/>
         <source>&lt;img src=&quot;:/resources/images/mainapp.png&quot; /&gt;&lt;h1&gt;LeechCraft 0.3.0_pre&lt;/h1&gt;LeechCraft is a cross-platform extensible download manager. Currently it offers full-featured BitTorrent client, feed reader, HTTP support, Remote access and much more. It also aims to be resource-efficient working quite well on even old computers.&lt;br /&gt;&lt;br /&gt;Here are some useful links for you:&lt;br /&gt;&lt;a href=&quot;http://bugs.deviant-soft.ws&quot;&gt;Bugtracker and feature request tracker&lt;/a&gt;&lt;br /&gt;&lt;a href=&quot;http://sourceforge.net/project/showfiles.php?group_id=161819&quot;&gt;Latest file releases&lt;/a&gt;&lt;br /&gt;&lt;a href=&quot;http://deviant-soft.ws&quot;&gt;LeechCraft&apos;s Site&lt;/a&gt;&lt;br /&gt;&lt;a href=&quot;http://sourceforge.net/projects/leechcraft&quot;&gt;LeechCraft&apos;s site at sourceforge.net&lt;/a&gt;&lt;br /&gt;</source>
         <translation>&lt;img src=&quot;:/resources/images/mainapp.png&quot; /&gt;&lt;h1&gt;LeechCraft 0.3.0_pre&lt;/h1&gt;LeechCraft — кроссплатформенный расширяемый интернет-клиент. В настоящее время он предлагает полнофункциональный BitTorrent-клиент, агрегатор лент новостей, HTTP-клиент, удаленный доступ и многое другое. Он также стремится потреблять мало ресурсов и работать на старых компьютерах.&lt;br /&gt;&lt;br /&gt;Вот несколько полезных ссылок:&lt;br /&gt;&lt;a href=&quot;http://bugs.deviant-soft.ws&quot;&gt;Багтрекер&lt;/a&gt;&lt;br /&gt;&lt;a href=&quot;http://sourceforge.net/project/showfiles.php?group_id=161819&quot;&gt;Последние релизы&lt;/a&gt;&lt;br /&gt;&lt;a href=&quot;http://deviant-soft.ws&quot;&gt;Сайт LeechCraft&apos;а&lt;/a&gt;&lt;br /&gt;&lt;a href=&quot;http://sourceforge.net/projects/leechcraft&quot;&gt;Сайт LeechCraft&apos;а на SourceForge.net&lt;/a&gt;&lt;br /&gt;</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="277"/>
         <source>Download finished</source>
-        <translation>Закачка завершена</translation>
+        <translation type="obsolete">Закачка завершена</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="286"/>
+        <location filename="mainwindow.cpp" line="294"/>
         <source>: Preferences</source>
         <translation>: Настройки</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="185"/>
+        <location filename="mainwindow.cpp" line="195"/>
         <source>Show/hide</source>
         <translation>Показать/скрыть</translation>
     </message>
@@ -237,6 +260,14 @@
         <location filename="pluginmanager.cpp" line="105"/>
         <source>Release of one or more plugins failed.</source>
         <translation>Освобождение одного или нескольких плагинов не удалось.</translation>
+    </message>
+</context>
+<context>
+    <name>PluginManagerDialog</name>
+    <message>
+        <location filename="pluginmanagerdialog.ui" line="13"/>
+        <source>Plugin Manager</source>
+        <translation>Менеджер плагинов</translation>
     </message>
 </context>
 <context>

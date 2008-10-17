@@ -788,10 +788,7 @@ void Core::handleJobFinished (int id)
 		HandleExternalData (pj.URL_, file);
 	UpdateUnreadItemsNumber ();
 	if (!emitString.isEmpty ())
-	{
-		emitString.prepend (tr("Aggregator updated:\r\n"));
 		emit showDownloadMessage (emitString);
-	}
 	scheduleSave ();
 }
 
@@ -1061,14 +1058,14 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 		{
 			Feeds_ [pj.URL_]->Channels_.push_back (channels [i]);
 			StorageBackend_->AddChannel (channels [i], pj.URL_);
-			emitString += tr ("Added channel \"%1\" (has %2 items)\r\n")
+			emitString += tr ("Added channel \"%1\" (has %2 items)")
 				.arg (channels [i]->Title_)
 				.arg (channels [i]->Items_.size ());
 		}
 		else
 		{
 			if (channels [i]->Items_.size ())
-				emitString += tr ("Updated channel \"%1\" (%2 new items)\r\n")
+				emitString += tr ("Updated channel \"%1\" (%2 new items)")
 					.arg (channels [i]->Title_)
 					.arg (channels [i]->Items_.size ());
 

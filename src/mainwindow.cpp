@@ -30,8 +30,6 @@ namespace Main
 		Ui_ = new Ui::LeechCraft;
 		Ui_->setupUi (this);
 
-		FancyPopupManager_ = new FancyPopupManager (this);
-
 		connect (Ui_->ActionAddTask_,
 				SIGNAL (triggered ()),
 				this,
@@ -68,8 +66,11 @@ namespace Main
 
 		SetTrayIcon ();
 
+		FancyPopupManager_ = new FancyPopupManager (TrayIcon_, this);
+
 		XmlSettingsDialog_ = new XmlSettingsDialog (this);
-		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/coresettings.xml");
+		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+				":/coresettings.xml");
 		XmlSettingsManager::Instance ()->RegisterObject ("AggregateJobs",
 				this, "handleAggregateJobsChange");
 		XmlSettingsManager::Instance ()->RegisterObject ("IconSet",
@@ -282,9 +283,9 @@ namespace Main
 
 	void MainWindow::handleDownloadFinished (const QString& string)
 	{
+		qDebug () << string;
 		if (XmlSettingsManager::Instance ()->property ("ShowFinishedDownloadMessages").toBool ())
-			FancyPopupManager_->ShowMessage (tr ("Download finished"),
-					string);
+			FancyPopupManager_->ShowMessage (string);
 	}
 
 	void MainWindow::showSettings ()

@@ -21,6 +21,23 @@ namespace LeechCraft
 			return res;
 		}
 
+		template<typename T>
+		struct ValueFinder 
+		{
+			typedef typename T::data_type data_type;
+			data_type Object_;
+			
+			ValueFinder (data_type data)
+			: Object_ (data)
+			{
+			}
+
+			bool operator() (typename T::value_type i)
+			{
+				return i.second == Object_;
+			}
+		};
+
 		LEECHCRAFT_API QTranslator* InstallTranslator (const QString&);
 	};
 };
