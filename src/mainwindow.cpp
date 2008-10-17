@@ -29,6 +29,8 @@ namespace Main
 
 		Ui_ = new Ui::LeechCraft;
 		Ui_->setupUi (this);
+		Ui_->ActionAddTask_->setProperty ("ActionIcon", "mainaddjob");
+		Ui_->ActionSettings_->setProperty ("ActionIcon", "mainsettings");
 
 		connect (Ui_->ActionAddTask_,
 				SIGNAL (triggered ()),

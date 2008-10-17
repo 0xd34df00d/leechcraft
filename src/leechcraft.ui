@@ -166,9 +166,6 @@
    <property name="statusTip" >
     <string>Adds job to a supporting plugin</string>
    </property>
-   <property name="ActionIcon" stdset="0" >
-    <string>mainaddjob</string>
-   </property>
   </action>
   <action name="ActionSettings_" >
    <property name="icon" >
@@ -177,9 +174,6 @@
    </property>
    <property name="text" >
     <string>Settings</string>
-   </property>
-   <property name="ActionIcon" stdset="0" >
-    <string>mainsettings</string>
    </property>
   </action>
   <action name="ActionQuit_" >
