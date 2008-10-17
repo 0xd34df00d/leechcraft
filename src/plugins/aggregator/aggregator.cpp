@@ -122,6 +122,8 @@ void Aggregator::Init ()
     TagsLineCompleter_->setModel (Core::Instance ().GetTagsCompletionModel ());
     ChannelTagsCompleter_->setModel (Core::Instance ().GetTagsCompletionModel ());
 
+	Ui_.TagsLine_->AddSelector ();
+
 	Ui_.ChannelSplitter_->setStretchFactor (0, 5);
 	Ui_.ChannelSplitter_->setStretchFactor (1, 2);
     Ui_.MainSplitter_->setStretchFactor (0, 5);

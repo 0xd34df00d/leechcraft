@@ -61,6 +61,8 @@ void TagsCompletionModel::UpdateTags (const QStringList& newTags)
     for (int i = 0; i < newTags.size (); ++i)
         if (!Tags_.contains (newTags.at (i)))
             Tags_.append (newTags.at (i));
+
+	emit tagsUpdated (Tags_);
 }
 
 QStringList TagsCompletionModel::GetTags () const

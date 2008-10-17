@@ -4,8 +4,6 @@
 #include <QStringList>
 #include "config.h"
 
-class QLineEdit;
-
 class TagsCompletionModel : public QAbstractItemModel
 {
     Q_OBJECT
@@ -25,6 +23,8 @@ public:
 
     LEECHCRAFT_API void UpdateTags (const QStringList&);
     LEECHCRAFT_API QStringList GetTags () const;
+signals:
+	LEECHCRAFT_API void tagsUpdated (const QStringList&);
 };
 
 #endif

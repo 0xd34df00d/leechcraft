@@ -1,10 +1,32 @@
 #include <QtDebug>
 #include <QCompleter>
+#include <QContextMenuEvent>
+#include <QHBoxLayout>
+#include <QPushButton>
 #include "tagslineedit.h"
+#include "tagscompletionmodel.h"
 
-TagsLineEdit::TagsLineEdit (QWidget* parent)
+TagsLineEdit::TagsLineEdit (QWidget *parent)
 : QLineEdit (parent)
 {
+}
+
+void TagsLineEdit::AddSelector ()
+{
+	CategorySelector_.reset (new CategorySelector (parentWidget ()));
+	CategorySelector_->hide ();
+	connect (completer ()->completionModel (),
+			SIGNAL (tagsUpdated (const QStringList&)),
+			this,
+			SLOT (handleTagsUpdated (const QStringList&)));
+
+	QAbstractItemModel *model = completer ()->model ();
+	handleTagsUpdated (qobject_cast<TagsCompletionModel*> (model)->GetTags ());
+
+	connect (CategorySelector_.get (),
+			SIGNAL (selectionChanged (const QStringList&)),
+			this,
+			SLOT (handleSelectionChanged (const QStringList&)));
 }
 
 void TagsLineEdit::complete (const QString& completion)
@@ -18,6 +40,16 @@ void TagsLineEdit::complete (const QString& completion)
     setText (wtext);
 }
 
+void TagsLineEdit::handleTagsUpdated (const QStringList& tags)
+{
+	CategorySelector_->SetPossibleSelections (tags);
+}
+
+void TagsLineEdit::handleSelectionChanged (const QStringList& tags)
+{
+	setText (tags.join (" "));
+}
+
 void TagsLineEdit::focusInEvent (QFocusEvent *e)
 {
     QLineEdit::focusInEvent (e);
@@ -27,5 +59,17 @@ void TagsLineEdit::focusInEvent (QFocusEvent *e)
         disconnect (completer (), SIGNAL (highlighted (const QString&)), this, 0);
         connect (completer (), SIGNAL (highlighted (const QString&)), this, SLOT (complete (const QString&)));
     }
+}
+
+void TagsLineEdit::contextMenuEvent (QContextMenuEvent *e)
+{
+	if (!CategorySelector_.get ())
+	{
+		QLineEdit::contextMenuEvent (e);
+		return;
+	}
+
+	CategorySelector_->move (e->globalPos ());
+	CategorySelector_->show ();
 }
 

@@ -9,6 +9,7 @@ SET (SRCS
   tagslineedit.cpp
   graphwidget.cpp
   util.cpp
+  categoryselector.cpp
   )
 SET (HEADERS
   proxy.h
@@ -18,6 +19,7 @@ SET (HEADERS
   tagslineedit.h
   graphwidget.h
   util.h
+  categoryselector.h
   )
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})
