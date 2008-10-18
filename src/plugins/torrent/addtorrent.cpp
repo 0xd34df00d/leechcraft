@@ -95,7 +95,7 @@ QStringList AddTorrent::GetDefaultTags () const
     return TagsEdit_->text ().split (' ', QString::SkipEmptyParts);
 }
 
-QLineEdit* AddTorrent::GetEdit ()
+TagsLineEdit* AddTorrent::GetEdit ()
 {
     return TagsEdit_;
 }

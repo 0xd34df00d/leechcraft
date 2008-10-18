@@ -736,7 +736,7 @@ void Core::SetMaxUploadingTorrents (int val)
 {
     XmlSettingsManager::Instance ()->setProperty ("MaxUploadingTorrents", val);
 	libtorrent::session_settings settings = Session_->settings ();
-	settings.active_seeds = val + XmlSettingsManager::Instance ()->property ("MaxDownloadingTorrents").toInt ();
+	settings.active_seeds = val;
 	Session_->set_settings (settings);
 }
 

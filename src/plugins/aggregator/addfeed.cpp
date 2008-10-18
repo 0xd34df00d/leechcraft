@@ -9,6 +9,7 @@ AddFeed::AddFeed (QWidget *parent)
     setupUi (this);
     TagsCompleter *comp = new TagsCompleter (Tags_, this);
     comp->setModel (Core::Instance ().GetTagsCompletionModel ());
+	Tags_->AddSelector ();
 }
 
 QString AddFeed::GetURL () const

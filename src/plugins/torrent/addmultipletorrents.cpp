@@ -33,7 +33,7 @@ Core::AddType AddMultipleTorrents::GetAddType () const
 	}
 }
 
-QLineEdit* AddMultipleTorrents::GetEdit ()
+TagsLineEdit* AddMultipleTorrents::GetEdit ()
 {
 	return TagsEdit_;
 }

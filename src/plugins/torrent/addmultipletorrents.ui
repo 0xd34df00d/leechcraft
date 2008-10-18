@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>415</width>
-    <height>176</height>
+    <height>187</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -68,13 +68,6 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1" >
-      <widget class="QLineEdit" name="TagsEdit_" >
-       <property name="text" >
-        <string>untagged</string>
-       </property>
-      </widget>
-     </item>
      <item row="3" column="0" >
       <widget class="QLabel" name="label_4" >
        <property name="text" >
@@ -95,6 +88,9 @@
         </property>
        </item>
       </widget>
+     </item>
+     <item row="2" column="1" >
+      <widget class="TagsLineEdit" native="1" name="TagsEdit_" />
      </item>
     </layout>
    </item>
@@ -123,6 +119,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TagsLineEdit</class>
+   <extends>QWidget</extends>
+   <header location="global" >tagslineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="resources.qrc" />
  </resources>

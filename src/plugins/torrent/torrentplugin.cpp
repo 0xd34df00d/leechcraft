@@ -344,6 +344,7 @@ void TorrentPlugin::on_OpenMultipleTorrents__triggered ()
     AddMultipleTorrents dialog;
 	std::auto_ptr<TagsCompleter> completer (new TagsCompleter (dialog.GetEdit (), this));
     completer->setModel (Core::Instance ()->GetTagsCompletionModel ());
+	dialog.GetEdit ()->AddSelector ();
 
     if (dialog.exec () == QDialog::Rejected)
         return;
@@ -833,6 +834,7 @@ void TorrentPlugin::SetupStuff ()
     TagsAddDiaCompleter_.reset (new TagsCompleter (AddTorrentDialog_->GetEdit ()));
     TagsChangeCompleter_->setModel (Core::Instance ()->GetTagsCompletionModel ());
     TagsAddDiaCompleter_->setModel (Core::Instance ()->GetTagsCompletionModel ());
+	AddTorrentDialog_->GetEdit ()->AddSelector ();
 
     Ui_.PiecesView_->setModel (Core::Instance ()->GetPiecesModel ());
 

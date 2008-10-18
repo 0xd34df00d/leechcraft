@@ -5,8 +5,8 @@
 #include "ui_addtorrent.h"
 #include "core.h"
 
-class QCompleter;
 class TorrentFilesModel;
+class TagsLineEdit;
 
 class AddTorrent : public QDialog, private Ui::AddTorrent
 {
@@ -24,7 +24,7 @@ public:
 	Core::AddType GetAddType () const;
     QStringList GetTags () const;
 	QStringList GetDefaultTags () const;
-    QLineEdit* GetEdit ();
+    TagsLineEdit* GetEdit ();
 private slots:
     void on_TorrentBrowse__released ();
     void on_DestinationBrowse__released ();

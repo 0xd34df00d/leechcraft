@@ -113,6 +113,7 @@ ${QT_LIBRARIES}
 plugininterface
 xmlsettingsdialog
 ${RBTorrent_LIBRARY}
+${Boost_DATE_TIME_LIBRARY}
 )
 ENDIF (WIN32)
 

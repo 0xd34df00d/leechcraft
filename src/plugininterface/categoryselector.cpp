@@ -18,6 +18,9 @@ void CategorySelector::SetPossibleSelections (const QStringList& tags)
 	for (QStringList::const_iterator i = tags.begin (),
 			end = tags.end (); i != end; ++i)
 	{
+		if (i->isEmpty ())
+			continue;
+
 		QCheckBox *box = new QCheckBox (*i, this);
 		layout ()->addWidget (box);
 		box->setCheckState (Qt::Unchecked);
