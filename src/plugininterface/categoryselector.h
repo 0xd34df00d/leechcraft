@@ -4,6 +4,7 @@
 #include "config.h"
 
 class QStringList;
+class QString;
 
 class CategorySelector : public QWidget
 {
@@ -13,6 +14,8 @@ public:
 
 	LEECHCRAFT_API void SetPossibleSelections (const QStringList&);
 	LEECHCRAFT_API QStringList GetSelections ();
+public slots:
+	void lineTextChanged (const QString&);
 private slots:
 	void buttonToggled ();
 signals:

@@ -1,4 +1,5 @@
 #include "categoryselector.h"
+#include <algorithm>
 #include <QStringList>
 #include <QCheckBox>
 #include <QVariant>
@@ -44,6 +45,24 @@ QStringList CategorySelector::GetSelections ()
 			tags += (*i)->property ("Tag").toString ();
 
 	return tags;
+}
+
+void CategorySelector::lineTextChanged (const QString& text)
+{
+	QList<QCheckBox*> boxes = findChildren<QCheckBox*> ();
+
+	QStringList tags = text.split (" ", QString::SkipEmptyParts);
+	for (QList<QCheckBox*>::iterator box = boxes.begin (),
+			end = boxes.end (); box != end; ++box)
+	{
+		QStringList::const_iterator tag = std::find (tags.begin (),
+				tags.end (), (*box)->property ("Tag").toString ());
+
+		if (tag == tags.end ())
+			(*box)->setCheckState (Qt::Unchecked);
+		else
+			(*box)->setCheckState (Qt::Checked);
+	}
 }
 
 void CategorySelector::buttonToggled ()

@@ -27,6 +27,11 @@ void TagsLineEdit::AddSelector ()
 			SIGNAL (selectionChanged (const QStringList&)),
 			this,
 			SLOT (handleSelectionChanged (const QStringList&)));
+
+	connect (this,
+			SIGNAL (textChanged (const QString&)),
+			CategorySelector_.get (),
+			SLOT (lineTextChanged (const QString&)));
 }
 
 void TagsLineEdit::complete (const QString& completion)
