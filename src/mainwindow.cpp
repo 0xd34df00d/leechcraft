@@ -399,7 +399,7 @@ namespace Main
 				iconName2Path [j->fileName ()] = j->absoluteFilePath ();
 		}
 
-		baseDir  = QDir ("/usr/local/share/icons");
+		baseDir = QDir ("/usr/local/share/icons");
 		baseDir.cd (iconSet);
 		for (std::vector<int>::const_iterator i = numbers.begin (),
 				end = numbers.end (); i != end; ++i)
@@ -418,6 +418,7 @@ namespace Main
 #elif defined (Q_OS_WIN32)
 		QDir baseDir = QApplication::applicationDirPath ();
 		baseDir.cd ("icons");
+		std::vector<int> numbers = GetDirForBase (baseDir.absolutePath (), iconSet);
 		baseDir.cd (iconSet);
 		for (std::vector<int>::const_iterator i = numbers.begin (),
 				end = numbers.end (); i != end; ++i)

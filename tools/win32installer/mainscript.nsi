@@ -1,6 +1,6 @@
 !include "MUI.nsh"
 
-OutFile ../lcinstall-0.2.0.exe
+OutFile ../lcinstall-0.2.814.exe
 Name "Deviant LeechCraft"
 SetCompressor /SOLID lzma
 InstallDir "$PROGRAMFILES\Deviant\LeechCraft"
@@ -37,29 +37,24 @@ Var STARTMENU_FOLDER
 InstType "Full"
 InstType "Minimal"
 
-Section "Qt4 Runtime" QT4RUNTIME
+Section "Main LeechCraft Files" MAINFILES
 	SetOutPath $INSTDIR
+	File plugininterface.dll
+	File xmlsettingsdialog.dll
 	File QtGui4.dll
 	File QtNetwork4.dll
 	File QtCore4.dll
 	File QtXml4.dll
 	File QtWebkit4.dll
-	File QtSvg4.dll
-	SectionIn 1 2
-SectionEnd
-
-Section "Main LeechCraft Files" MAINFILES
-	SetOutPath $INSTDIR
-	File libexceptions.dll
-	File libplugininterface.dll
-	File libsettingsdialog.dll
-	File libxmlsettingsdialog.dll
-	File mingwm10.dll
+	File QtSql4.dll
+	File msvcp90.dll
+	File msvcr90.dll
 	File leechcraft.exe
 	File icon64.ico
 	File icon32.ico
 	File icon24.ico
 	File icon16.ico
+	File /r icons
 	
 	WriteRegStr HKCU "Software\Deviant\LeechCraft" "" $INSTDIR
 	WriteUninstaller "$INSTDIR\Uninstall.exe"
@@ -77,38 +72,37 @@ SectionGroup "Plugins"
 	Section "BitTorrent" TORRENTPLUGIN
 		SetOutPath $INSTDIR
 		File torrent.dll
-		File boost_date_time-mgw43-mt-1_36.dll
-		File boost_filesystem-mgw43-mt-1_36.dll
-		File boost_thread-mgw43-mt-1_36.dll
-		File boost_system-mgw43-mt-1_36.dll
-		File zlib1.dll
+		File boost_date_time-vc90-mt-1_36.dll
+		File boost_filesystem-vc90-mt-1_36.dll
+		File boost_thread-vc90-mt-1_36.dll
+		File boost_system-vc90-mt-1_36.dll
 		SetOutPath $INSTDIR\plugins\bin
-		File libleechcraft_torrent.dll
+		File leechcraft_torrent.dll
 		SectionIn 1
 	SectionEnd
 	Section "Aggregator" AGGREGATORPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
-		File libleechcraft_aggregator.dll
+		File leechcraft_aggregator.dll
 		SectionIn 1
 	SectionEnd
 	Section "CSTP" HTTPPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
-		File libleechcraft_cstp.dll
+		File leechcraft_cstp.dll
 		SectionIn 1
 	SectionEnd
 	Section "Remoter" REMOTERPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
-		File libleechcraft_remoter.dll
+		File leechcraft_remoter.dll
 		SectionIn 1
 	SectionEnd
 	Section "Batcher" BATCHERPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
-		File libleechcraft_batcher.dll
+		File leechcraft_batcher.dll
 		SectionIn 1
 	SectionEnd
-	Section "Chatter" BATCHERPLUGIN
+	Section "Chatter" CHATTERPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
-		File libleechcraft_chatter.dll
+		File leechcraft_chatter.dll
 		SectionIn 1
 	SectionEnd
 SectionGroupEnd
@@ -116,47 +110,7 @@ SectionGroupEnd
 Var MUI_TEMP
 
 Section "Uninstall"
-	Delete "$INSTDIR\Uninstall.exe"
-	Delete "$INSTDIR\libexceptions.dll"
-	Delete "$INSTDIR\libplugininterface.dll"
-	Delete "$INSTDIR\libsettingsdialog.dll"
-	Delete "$INSTDIR\libxmlsettingsdialog.dll"
-	Delete "$INSTDIR\leechcraft.exe"
-	Delete "$INSTDIR\QtCore4.dll"
-	Delete "$INSTDIR\QtNetwork4.dll"
-	Delete "$INSTDIR\QtGui4.dll"
-	Delete "$INSTDIR\QtXml4.dll"
-	Delete "$INSTDIR\QtWebKit4.dll"
-	Delete "$INSTDIR\QtSvg4.dll"
-	Delete "$INSTDIR\mingwm10.dll"
-	Delete "$INSTDIR\torrent.dll"
-	Delete "$INSTDIR\zlib1.dll"
-	Delete "$INSTDIR\boost_date_time-mgw42-mt-1_35.dll"
-	Delete "$INSTDIR\boost_filesystem-mgw42-mt-1_35.dll"
-	Delete "$INSTDIR\boost_thread-mgw42-mt-1_35.dll"
-	Delete "$INSTDIR\boost_system-mgw42-mt-1_35.dll"
-	Delete "$INSTDIR\plugins\bin\libleechcraft_cstp.dll"
-	Delete "$INSTDIR\plugins\bin\libleechcraft_torrent.dll"
-	Delete "$INSTDIR\plugins\bin\libleechcraft_remoter.dll"
-	Delete "$INSTDIR\plugins\bin\libleechcraft_batcher.dll"
-	Delete "$INSTDIR\plugins\bin\libleechcraft_chatter.dll"
-	Delete "$INSTDIR\plugins\bin\libleechcraft_aggregator.dll"
-	Delete "$INSTDIR\plugins\bin\warning.log"
-	Delete "$INSTDIR\plugins\bin\debug.log"
-	Delete "$INSTDIR\plugins\bin\critical.log"
-	Delete "$INSTDIR\plugins\bin\fatal.log"
-	Delete "$INSTDIR\warning.log"
-	Delete "$INSTDIR\debug.log"
-	Delete "$INSTDIR\critical.log"
-	Delete "$INSTDIR\fatal.log"
-	Delete "$INSTDIR\icon64.ico"
-	Delete "$INSTDIR\icon32.ico"
-	Delete "$INSTDIR\icon24.ico"
-	Delete "$INSTDIR\icon16.ico"
-
-	RMDir "$INSTDIR\plugins\bin"
-	RMDir "$INSTDIR\plugins"
-	RMDir "$INSTDIR"
+	RMDir /r "$INSTDIR"
 		
 	!insertmacro MUI_STARTMENU_GETFOLDER Deviant $MUI_TEMP
 	Delete "$SMPROGRAMS\$MUI_TEMP\Leechcraft.lnk"
@@ -176,35 +130,30 @@ Section "Uninstall"
 	DeleteRegKey /ifempty HKCU "Software\Deviant\LeechCraft"
 SectionEnd
 
-LangString DESC_QT4RUNTIME ${LANG_ENGLISH} "Qt4 library core files and MinGW support library."
 LangString DESC_MAINFILES ${LANG_ENGLISH} "LeechCraft executable and support libraries."
 LangString DESC_HTTPPLUGIN ${LANG_ENGLISH} "A simple plugin implementing HTTP facilities."
-LangString DESC_TORRENTPLUGIN ${LANG_ENGLISH} "A simple plugin implementing BitTorrent protocol."
+LangString DESC_TORRENTPLUGIN ${LANG_ENGLISH} "A sophisticated feature-rich BitTorrent client."
 LangString DESC_REMOTERPLUGIN ${LANG_ENGLISH} "Provides remote access to plugins supporting this feature."
 LangString DESC_BATCHERPLUGIN ${LANG_ENGLISH} "Batch job manager."
-LangString DESC_CRONPLUGIN ${LANG_ENGLISH} "Job scheduler."
-LangString DESC_MAILPLUGIN ${LANG_ENGLISH} "POP3 mail backuper."
+LangString DESC_CHATTERPLUGIN ${LANG_ENGLISH} "IRC client."
 LangString DESC_AGGREGATORPLUGIN ${LANG_ENGLISH} "RSS/Atom feed aggregator."
 
-LangString DESC_QT4RUNTIME ${LANG_RUSSIAN} "Библиотеки Qt4."
 LangString DESC_MAINFILES ${LANG_RUSSIAN} "Сам LeechCraft и его вспомогательные бИблиотеки."
 LangString DESC_HTTPPLUGIN ${LANG_RUSSIAN} "Простой HTTP-модуль."
-LangString DESC_TORRENTPLUGIN ${LANG_RUSSIAN} "Простейший Torrent-клиент."
+LangString DESC_TORRENTPLUGIN ${LANG_RUSSIAN} "Полнофункциональный Torrent-клиент."
 LangString DESC_REMOTERPLUGIN ${LANG_RUSSIAN} "Предоставляет возможность удаленного администрирования плагинов."
 LangString DESC_BATCHERPLUGIN ${LANG_RUSSIAN} "Менеджер пакетных заданий."
-LangString DESC_CRONPLUGIN ${LANG_RUSSIAN} "Планировщик заданий."
-LangString DESC_MAILPLUGIN ${LANG_RUSSIAN} "Выкачиватель почтовых ящиков по POP3."
+LangString DESC_CHATTERPLUGIN ${LANG_RUSSIAN} "Клиент IRC."
 LangString DESC_AGGREGATORPLUGIN ${LANG_RUSSIAN} "Агрегатор RSS/Atom-лент."
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-	!insertmacro MUI_DESCRIPTION_TEXT ${QT4RUNTIME} $(DESC_QT4RUNTIME)
 	!insertmacro MUI_DESCRIPTION_TEXT ${MAINFILES} $(DESC_MAINFILES)
 	!insertmacro MUI_DESCRIPTION_TEXT ${HTTPPLUGIN} $(DESC_HTTPPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${AGGREGATORPLUGIN} $(DESC_AGGREGATORPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${TORRENTPLUGIN} $(DESC_TORRENTPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${REMOTERPLUGIN} $(DESC_REMOTERPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${BATCHERPLUGIN} $(DESC_BATCHERPLUGIN)
-	!insertmacro MUI_DESCRIPTION_TEXT ${CRONPLUGIN} $(DESC_CRONPLUGIN)
-	!insertmacro MUI_DESCRIPTION_TEXT ${MAILPLUGIN} $(DESC_MAILPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${CHATTERPLUGIN} $(DESC_CHATTERPLUGIN)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Function .onInit
