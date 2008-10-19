@@ -1876,7 +1876,7 @@ void Core::setGeneralSettings ()
 		property ("InactivityTimeout").toInt ();
     settings.unchoke_interval = XmlSettingsManager::Instance ()->
 		property ("UnchokeInterval").toInt ();
-    settings.optimistic_unchoke_multiplier = XmlSettingsManager::Instance ()->
+    settings.optimistic_unchoke_interval = XmlSettingsManager::Instance ()->
 		property ("OptimisticUnchokeMultiplier").toInt ();
     try
     {
