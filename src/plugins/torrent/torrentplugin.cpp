@@ -1,4 +1,5 @@
 #define WIN32_LEAN_AND_MEAN
+#include "torrentplugin.h"
 #include <QMessageBox>
 #include <QTemporaryFile>
 #include <QtDebug>
@@ -15,7 +16,6 @@
 #include <plugininterface/tagscompleter.h>
 #include <plugininterface/tagscompletionmodel.h>
 #include <plugininterface/util.h>
-#include "torrentplugin.h"
 #include "core.h"
 #include "addtorrent.h"
 #include "addmultipletorrents.h"
@@ -28,6 +28,10 @@
 #include "movetorrentfiles.h"
 #include "representationmodel.h"
 #include "trackerschanger.h"
+
+#ifdef AddJob
+#undef AddJob
+#endif
 
 void TorrentPlugin::Init ()
 {
