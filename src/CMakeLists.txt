@@ -170,8 +170,8 @@ TARGET_LINK_LIBRARIES(leechcraft
 						xmlsettingsdialog)
 INSTALL (TARGETS leechcraft DESTINATION bin)
 
+INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor
+	PATTERN ".svn" EXCLUDE)
 IF (UNIX)
-	INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor
-		PATTERN ".svn" EXCLUDE)
 	INSTALL (FILES freedesktop/leechcraft.desktop DESTINATION share/applications)
 ENDIF (UNIX)
