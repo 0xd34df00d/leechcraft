@@ -721,7 +721,7 @@ void Core::handleJobFinished (int id)
 	}
 	if (!file.size ())
 	{
-		emit error (tr ("Downloaded file has null size!"));
+		emit error (tr ("Downloaded file from url %1 has null size!").arg (pj.URL_));
 		return;
 	}
 	if (pj.Role_ == PendingJob::RFeedUpdated && !Feeds_.contains (pj.URL_))
