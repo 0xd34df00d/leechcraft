@@ -26,6 +26,7 @@ public:
     virtual bool UpdateFeedsStorage (int, int) = 0;
     virtual bool UpdateChannelsStorage (int, int) = 0;
     virtual bool UpdateItemsStorage (int, int) = 0;
+	virtual void ToggleChannelUnread (const QString&, bool) = 0;
 };
 
 #endif

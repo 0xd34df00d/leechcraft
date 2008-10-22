@@ -10,17 +10,18 @@
  *                                                                         *
  ***************************************************************************
 */
-
+#include "xmlsettingsdialog.h"
 #include <QFile>
 #include <QtGui/QtGui>
 #include <QtXml/QtXml>
 #include <QtDebug>
 #include <QUrl>
 #include <QDomNodeList>
-#include "xmlsettingsdialog.h"
+#include <QtScript>
 #include "rangewidget.h"
 #include "filepicker.h"
 #include "radiogroup.h"
+#include "scripter.h"
 
 XmlSettingsDialog::XmlSettingsDialog (QWidget *parent)
 : QDialog (parent)
@@ -366,6 +367,7 @@ QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject
 			value = item.attribute ("default");
 			WorkingObject_->setProperty (property.toLatin1 ().constData (), value);
 		}
+		return value;
 	}
 
     if (type == "lineedit" ||
@@ -415,7 +417,9 @@ QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject
 			type == "combobox")
 	{
 		if (value.isNull () ||
-				value.toString ().isEmpty ())
+				value.toString ().isEmpty () ||
+				(item.hasAttribute ("default") &&
+				 value == item.attribute ("default")))
 		{
 			QDomElement option = item.firstChildElement ("option");
 			while (!option.isNull ())
@@ -637,6 +641,18 @@ void XmlSettingsDialog::DoCombobox (const QDomElement& item, QFormLayout *lay)
         option = option.nextSiblingElement ("option");
     }
     connect (box, SIGNAL (currentIndexChanged (int)), this, SLOT (updatePreferences ()));
+
+	QDomElement scriptContainer = item.firstChildElement ("scripts");
+	if (!scriptContainer.isNull ())
+	{
+		Scripter scripter (scriptContainer);
+
+		QStringList fromScript = scripter.GetOptions ();
+		for (QStringList::const_iterator i = fromScript.begin (),
+				end = fromScript.end (); i != end; ++i)
+			box->addItem (scripter.HumanReadableOption (*i),
+					*i);
+	}
 
     QLabel *label = new QLabel (GetLabel (item));
 	label->setWordWrap (false);

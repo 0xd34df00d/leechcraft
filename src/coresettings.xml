@@ -38,7 +38,10 @@
 				</lang>
 			</item>
         </item>
-		<item type="lineedit" property="IconSet" default="hicolor">
+		<item type="combobox" property="IconSet" default="hicolor">
+			<scripts>
+				<valueGenerator place="file">:/resources/scripts/iconfinder.qs</valueGenerator>
+			</scripts>
 			<label lang="en" value="Icon set" />
 			<label lang="ru" value="Набор иконок" />
 		</item>

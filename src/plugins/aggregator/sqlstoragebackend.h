@@ -15,6 +15,7 @@ class SQLStorageBackend : public StorageBackend
 			  InsertItem_,
 			  UpdateChannel_,
 			  UpdateItem_,
+			  ToggleChannelUnread_,
 			  RemoveFeed_,
 			  RemoveChannel_,
 			  RemoveItem_;
@@ -37,6 +38,7 @@ public:
     virtual bool UpdateFeedsStorage (int, int);
     virtual bool UpdateChannelsStorage (int, int);
     virtual bool UpdateItemsStorage (int, int);
+	virtual void ToggleChannelUnread (const QString&, bool);
 private:
 	void GetChannels (Feed_ptr) const;
 	void GetItems (Channel_ptr) const;

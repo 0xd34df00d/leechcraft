@@ -357,11 +357,7 @@ void Core::MarkChannelAsRead (const QModelIndex& i)
 
 	QString hash = ChannelsModel_->GetChannelForIndex (i)->Link_ +
 		ChannelsModel_->GetChannelForIndex (i)->Title_;
-	for (items_container_t::const_iterator item =
-			ChannelsModel_->GetChannelForIndex (i)->Items_.begin (),
-			end = ChannelsModel_->GetChannelForIndex (i)->Items_.end ();
-			item != end; ++item)
-		StorageBackend_->UpdateItem (*item, hash);
+	StorageBackend_->ToggleChannelUnread (hash, false);
 
 	UpdateUnreadItemsNumber ();
 }
@@ -377,11 +373,7 @@ void Core::MarkChannelAsUnread (const QModelIndex& i)
 
 	QString hash = ChannelsModel_->GetChannelForIndex (i)->Link_ +
 		ChannelsModel_->GetChannelForIndex (i)->Title_;
-	for (items_container_t::const_iterator item =
-			ChannelsModel_->GetChannelForIndex (i)->Items_.begin (),
-			end = ChannelsModel_->GetChannelForIndex (i)->Items_.end ();
-			item != end; ++item)
-		StorageBackend_->UpdateItem (*item, hash);
+	StorageBackend_->ToggleChannelUnread (hash, true);
 
 	UpdateUnreadItemsNumber ();
 }

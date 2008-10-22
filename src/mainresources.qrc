@@ -5,5 +5,6 @@
 		<file>coresettings.xml</file>
         <file>resources/images/mainapp.png</file>
         <file>resources/images/splashscreen.png</file>
+        <file>resources/scripts/iconfinder.qs</file>
     </qresource>
 </RCC>

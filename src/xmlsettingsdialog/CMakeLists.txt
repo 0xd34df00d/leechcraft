@@ -9,12 +9,19 @@ SET (SRCS
     xmlsettingsdialog.cpp
 	rangewidget.cpp
 	filepicker.cpp
-	radiogroup.cpp)
+	radiogroup.cpp
+	scripter.cpp
+	typeregister.cpp
+	dir.cpp
+	)
 SET (HEADERS
     xmlsettingsdialog.h
 	rangewidget.h
 	filepicker.h
 	radiogroup.h
+	scripter.h
+	typeregister.h
+	dir.h
 	basesettingsmanager.h
 	)
 ADD_DEFINITIONS(${QT_DEFINITIONS})

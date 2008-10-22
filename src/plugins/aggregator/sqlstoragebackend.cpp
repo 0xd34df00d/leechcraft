@@ -130,6 +130,12 @@ void SQLStorageBackend::Prepare ()
 			"AND url = :url "
 			"AND guid = :guid");
 
+	ToggleChannelUnread_ = QSqlQuery ();
+	ToggleChannelUnread_.prepare ("UPDATE items SET "
+			"unread = :unread "
+			"WHERE parents_hash = :parents_hash");
+
+
 	RemoveFeed_ = QSqlQuery ();
 	RemoveFeed_.prepare ("DELETE FROM feeds "
 			"WHERE url = :url");
@@ -504,6 +510,18 @@ void SQLStorageBackend::RemoveFeed (Feed_ptr feed)
 	{
 		qWarning () << Q_FUNC_INFO << "failed to" << (error ? "rollback" : "commit");
 		DumpError (DB_.lastError ());
+	}
+}
+
+void SQLStorageBackend::ToggleChannelUnread (const QString& hash, bool state)
+{
+	ToggleChannelUnread_.bindValue (":parents_hash", hash);
+	ToggleChannelUnread_.bindValue (":unread", state);
+
+	if (!ToggleChannelUnread_.exec ())
+	{
+		DumpError (ToggleChannelUnread_);
+		throw std::runtime_error ("failed to toggle item");
 	}
 }
 
