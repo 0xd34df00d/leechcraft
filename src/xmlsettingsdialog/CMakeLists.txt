@@ -13,6 +13,7 @@ SET (SRCS
 	scripter.cpp
 	typeregister.cpp
 	dir.cpp
+	file.cpp
 	)
 SET (HEADERS
     xmlsettingsdialog.h
@@ -22,6 +23,7 @@ SET (HEADERS
 	scripter.h
 	typeregister.h
 	dir.h
+	file.h
 	basesettingsmanager.h
 	)
 ADD_DEFINITIONS(${QT_DEFINITIONS})

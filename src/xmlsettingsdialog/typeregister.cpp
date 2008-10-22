@@ -34,7 +34,7 @@ QScriptValue TypeRegister::GetValueForName (const QString& name,
 	if (name == "Dir")
 		return e->scriptValueFromQMetaObject<Dir> ();
 	else if (name == "File")
-		return e->scriptValueFromQMetaObject<QFile> ();
+		return e->scriptValueFromQMetaObject<File> ();
 	else
 		return QScriptValue ();
 }
