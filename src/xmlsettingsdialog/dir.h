@@ -36,15 +36,15 @@ public slots:
 	uint count () const;
 	QString dirName () const;
 	QFileInfoList entryInfoList (const QStringList&,
-			QDir::Filters,
-			QDir::SortFlags) const;
-	QFileInfoList entryInfoList (QDir::Filters,
-			QDir::SortFlags) const;
+			QDir::Filters = QDir::NoFilter,
+			QDir::SortFlags = QDir::NoSort) const;
+	QFileInfoList entryInfoList (QDir::Filters = QDir::NoFilter,
+			QDir::SortFlags = QDir::NoSort) const;
 	QStringList entryList (const QStringList&,
-			QDir::Filters,
-			QDir::SortFlags) const;
-	QStringList entryList (QDir::Filters,
-			QDir::SortFlags) const;
+			QDir::Filters = QDir::NoFilter,
+			QDir::SortFlags = QDir::NoSort) const;
+	QStringList entryList (QDir::Filters = QDir::NoFilter,
+			QDir::SortFlags = QDir::NoSort) const;
 	bool exists (const QString&) const;
 	bool exists () const;
 	QString filePath (const QString&) const;
@@ -64,6 +64,16 @@ public slots:
 	bool rename (const QString&, const QString&);
 	bool rmdir (const QString&) const;
 	bool rmpath (const QString&) const;
+	void setFilter (QDir::Filters);
+	void setNameFilters (const QStringList&);
+	void setPath (const QString&);
+	void setSorting (QDir::SortFlags);
+	QDir::SortFlags sorting () const;
+public:
+	Q_INVOKABLE bool operator!= (const Dir&) const;
+	Q_INVOKABLE Dir& operator= (const Dir&);
+	Q_INVOKABLE bool operator== (const Dir&) const;
+	Q_INVOKABLE QString operator[] (int) const;
 };
 
 Q_DECLARE_METATYPE (Dir);

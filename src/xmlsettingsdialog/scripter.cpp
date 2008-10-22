@@ -50,10 +50,9 @@ QStringList Scripter::GetOptions ()
 
 	QScriptValue global = Engine_->globalObject ();
 
-	QString options = global.property ("GetOptions").call ().toString ();
-	qDebug () << options;
+	QVariant options = global.property ("GetOptions").call ().toVariant ();
 
-	result = options.split (" ", QString::KeepEmptyParts);
+	result = options.toString ().split (",", QString::KeepEmptyParts);
 	return result;
 }
 

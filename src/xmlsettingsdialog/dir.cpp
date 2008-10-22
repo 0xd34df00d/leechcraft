@@ -181,3 +181,49 @@ bool Dir::rmpath (const QString& path) const
 	return Imp_->rmpath (path);
 }
 
+void Dir::setFilter (QDir::Filters filters)
+{
+	Imp_->setFilter (filters);
+}
+
+void Dir::setNameFilters (const QStringList& filters)
+{
+	Imp_->setNameFilters (filters);
+}
+
+void Dir::setPath (const QString& path)
+{
+	Imp_->setPath (path);
+}
+
+void Dir::setSorting (QDir::SortFlags sorts)
+{
+	Imp_->setSorting (sorts);
+}
+
+QDir::SortFlags Dir::sorting () const
+{
+	return Imp_->sorting ();
+}
+
+bool Dir::operator!= (const Dir& other) const
+{
+	return *Imp_ != *other.Imp_;
+}
+
+Dir& Dir::operator= (const Dir& other)
+{
+	*Imp_ = *other.Imp_;
+	return *this;
+}
+
+bool Dir::operator== (const Dir& other) const
+{
+	return *Imp_ == *other.Imp_;
+}
+
+QString Dir::operator[] (int pos) const
+{
+	return (*Imp_) [pos];
+}
+
