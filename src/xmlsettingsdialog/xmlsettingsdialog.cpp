@@ -362,12 +362,8 @@ QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject
 	else
 	{
 		value = WorkingObject_->property (property.toLatin1 ().constData ());
-		if ((!value.isValid () || value.isNull ()) && item.hasAttribute ("default"))
-		{
-			value = item.attribute ("default");
-			WorkingObject_->setProperty (property.toLatin1 ().constData (), value);
-		}
-		return value;
+		if (value.isValid ())
+			return value;
 	}
 
     if (type == "lineedit" ||
@@ -417,19 +413,22 @@ QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject
 			type == "combobox")
 	{
 		if (value.isNull () ||
-				value.toString ().isEmpty () ||
-				(item.hasAttribute ("default") &&
-				 value == item.attribute ("default")))
+				value.toString ().isEmpty ())
 		{
-			QDomElement option = item.firstChildElement ("option");
-			while (!option.isNull ())
+			if (item.hasAttribute ("default"))
+				value = item.attribute ("default");
+			else
 			{
-				if (option.attribute ("default") == "true")
+				QDomElement option = item.firstChildElement ("option");
+				while (!option.isNull ())
 				{
-					value = option.attribute ("name");
-					break;
+					if (option.attribute ("default") == "true")
+					{
+						value = option.attribute ("name");
+						break;
+					}
+					option = option.nextSiblingElement ("option");
 				}
-				option = option.nextSiblingElement ("option");
 			}
 		}
 	}

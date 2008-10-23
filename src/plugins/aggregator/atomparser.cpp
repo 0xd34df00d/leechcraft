@@ -19,7 +19,11 @@ channels_container_t AtomParser::Parse (const channels_container_t& old,
 		Channel_ptr modifiedContainer (new Channel ());
         toInsert->Equalify (*old [0]);
 		modifiedContainer->Equalify (*old [0]);
-        Item_ptr lastItemWeHave = old [0]->Items_ [0];
+        Item_ptr lastItemWeHave;
+		if (old [0]->Items_.size ())
+			lastItemWeHave = old [0]->Items_ [0];
+		else
+			lastItemWeHave.reset (new Item);
 
 		items_container_t::iterator itemPosition =
 			std::find_if (newes [0]->Items_.begin (), newes [0]->Items_.end (),
