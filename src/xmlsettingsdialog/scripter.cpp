@@ -17,6 +17,8 @@
 #include <QFile>
 #include <typeinfo>
 #include "typeregister.h"
+#include "file.h"
+#include "settings.h"
 
 Scripter::Scripter (const QDomElement& elem)
 : Container_ (elem)
@@ -105,6 +107,9 @@ void Scripter::FeedRequiredClasses () const
 		global.setProperty (*i,
 				TypeRegister::Instance ().GetValueForName (*i,
 					Engine_.get ()));
+
+	global.setProperty ("Settings", Engine_->newQObject (new Settings));
+	qScriptRegisterMetaType (Engine_.get (), toScriptValue, fromScriptValue);
 }
 
 void Scripter::Reset ()

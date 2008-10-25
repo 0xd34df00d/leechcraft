@@ -15,6 +15,7 @@
 #include <memory>
 #include <QScriptEngine>
 #include <QFile>
+#include "bytearray.h"
 
 class File : public QObject
 {
@@ -44,15 +45,15 @@ public slots:
 	bool isTextModeEnabled () const;
 	bool isWritable () const;
 	bool link (const QString&);
-	bool open (QFile::OpenMode);
+	bool open (QIODevice::OpenMode = QIODevice::ReadOnly);
 	QFile::OpenMode openMode () const;
-	QByteArray peek (qint64);
+	ByteArray peek (qint64);
 	QFile::Permissions permissions () const;
 	qint64 pos () const;
 	bool putChar (char);
-	QByteArray read (qint64);
-	QByteArray readAll ();
-	QByteArray readLine (qint64);
+	ByteArray read (qint64);
+	ByteArray readAll ();
+	ByteArray readLine (qint64);
 	bool remove ();
 	bool rename (const QString&);
 	bool reset ();
@@ -66,11 +67,15 @@ public slots:
 	void unsetError ();
 	bool waitForBytesWritten (int);
 	bool waitForReadyRead (int);
-	qint64 write (const QByteArray&);
+	qint64 write (const ByteArray&);
 };
 
 Q_DECLARE_METATYPE (File);
+Q_DECLARE_METATYPE (QIODevice::OpenMode);
 Q_SCRIPT_DECLARE_QMETAOBJECT (File, QObject*);
+
+QScriptValue toScriptValue (QScriptEngine*, const QIODevice::OpenMode&);
+void fromScriptValue (const QScriptValue&, QIODevice::OpenMode&);
 
 #endif
 

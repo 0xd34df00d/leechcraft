@@ -401,6 +401,10 @@
 					<label lang="en" value="Close redundant connections" />
 					<label lang="ru" value="Закрывать ненужные соединения" />
 				</item>
+				<item type="checkbox" property="PrioritizePartialPieces">
+					<label lang="en" value="Prioritize partial pieces" />
+					<label lang="ru" value="Повышать приоритет неполных кусков" />
+				</item>
 			</groupbox>
         </tab>
 		<tab>
@@ -526,6 +530,16 @@
 					</lang>
 					<lang value="ru">
 						<label value="Минимальный интервал announce:" />
+						<suffix value=" с" />
+					</lang>
+				</item>
+				<item type="spinbox" property="AutoManageStartup" default="120" minimum="10" maximum="16300" step="10">
+					<lang value="en">
+						<label value="Automanage startup wait:" />
+						<suffix value=" s" />
+					</lang>
+					<lang value="ru">
+						<label value="Ожидание начала торрента для автоуправления:" />
 						<suffix value=" с" />
 					</lang>
 				</item>

@@ -14,6 +14,8 @@ SET (SRCS
 	typeregister.cpp
 	dir.cpp
 	file.cpp
+	bytearray.cpp
+	settings.cpp
 	)
 SET (HEADERS
     xmlsettingsdialog.h
@@ -24,6 +26,8 @@ SET (HEADERS
 	typeregister.h
 	dir.h
 	file.h
+	bytearray.h
+	settings.h
 	basesettingsmanager.h
 	)
 ADD_DEFINITIONS(${QT_DEFINITIONS})

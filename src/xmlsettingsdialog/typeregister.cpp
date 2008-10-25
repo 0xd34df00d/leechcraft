@@ -16,10 +16,13 @@
 #include <QtDebug>
 #include "dir.h"
 #include "file.h"
+#include "bytearray.h"
 
 TypeRegister::TypeRegister ()
 {
 	qRegisterMetaType<Dir> ("Dir");
+	qRegisterMetaType<File> ("File");
+	qRegisterMetaType<ByteArray> ("ByteArray");
 }
 
 TypeRegister& TypeRegister::Instance ()
@@ -35,6 +38,8 @@ QScriptValue TypeRegister::GetValueForName (const QString& name,
 		return e->scriptValueFromQMetaObject<Dir> ();
 	else if (name == "File")
 		return e->scriptValueFromQMetaObject<File> ();
+	else if (name == "ByteArray")
+		return e->scriptValueFromQMetaObject<ByteArray> ();
 	else
 		return QScriptValue ();
 }

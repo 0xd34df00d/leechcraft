@@ -118,17 +118,17 @@ bool File::link (const QString& link)
 	return Imp_->link (link);
 }
 
-bool File::open (QFile::OpenMode mode)
+bool File::open (QIODevice::OpenMode mode)
 {
 	return Imp_->open (mode);
 }
 
-QFile::OpenMode File::openMode () const
+QIODevice::OpenMode File::openMode () const
 {
 	return Imp_->openMode ();
 }
 
-QByteArray File::peek (qint64 size)
+ByteArray File::peek (qint64 size)
 {
 	return Imp_->peek (size);
 }
@@ -148,17 +148,17 @@ bool File::putChar (char c)
 	return Imp_->putChar (c);
 }
 
-QByteArray File::read (qint64 size)
+ByteArray File::read (qint64 size)
 {
 	return Imp_->read (size);
 }
 
-QByteArray File::readAll ()
+ByteArray File::readAll ()
 {
 	return Imp_->readAll ();
 }
 
-QByteArray File::readLine (qint64 size)
+ByteArray File::readLine (qint64 size)
 {
 	return Imp_->readLine (size);
 }
@@ -228,8 +228,20 @@ bool File::waitForReadyRead (int m)
 	return Imp_->waitForReadyRead (m);
 }
 
-qint64 File::write (const QByteArray& data)
+qint64 File::write (const ByteArray& data)
 {
 	return Imp_->write (data);
+}
+
+QScriptValue toScriptValue (QScriptEngine *e, const QIODevice::OpenMode& om)
+{
+	QScriptValue obj = e->newObject ();
+	obj.setProperty ("OpenMode", QScriptValue (e, om));
+	return obj;
+}
+
+void fromScriptValue (const QScriptValue& sv, QIODevice::OpenMode& om)
+{
+	om = static_cast<QIODevice::OpenMode> (sv.property ("OpenMode").toInt32 ());
 }
 

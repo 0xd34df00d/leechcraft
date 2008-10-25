@@ -1942,6 +1942,12 @@ void Core::setGeneralSettings ()
 		property ("MaxPeerListSize").toInt ();
 	settings.min_announce_interval = XmlSettingsManager::Instance ()->
 		property ("MinAnnounceInterval").toInt ();
+	settings.prioritize_partial_pieces = XmlSettingsManager::Instance ()->
+		property ("PrioritizePartialPieces").toBool ();
+	settings.auto_manage_startup = XmlSettingsManager::Instance ()->
+		property ("AutoManageStartup").toInt ();
+
+	settings.active_limit = 16384;
 
     Session_->set_settings (settings);
 }
