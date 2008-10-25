@@ -52,3 +52,16 @@ QDataStream& operator>> (QDataStream& in, Item& item)
     return in;
 }
 
+bool IsModified (Item_ptr i1, Item_ptr i2)
+{
+	return !(i1->Title_ == i2->Title_ &&
+			i1->Link_ == i2->Link_ &&
+			i1->Description_ == i2->Description_ &&
+			i1->Author_ == i2->Author_ &&
+			i1->Categories_ == i2->Categories_ &&
+			i1->Guid_ == i2->Guid_ &&
+			i1->PubDate_ == i2->PubDate_ &&
+			i1->NumComments_ == i2->NumComments_ &&
+			i1->CommentsLink_ == i2->CommentsLink_);
+}
+

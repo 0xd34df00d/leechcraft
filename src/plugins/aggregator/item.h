@@ -39,5 +39,7 @@ bool operator< (const Item&, const Item&);
 QDataStream& operator<< (QDataStream&, const Item&);
 QDataStream& operator>> (QDataStream&, Item&);
 
+bool IsModified (Item_ptr, Item_ptr);
+
 #endif
 

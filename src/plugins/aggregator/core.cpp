@@ -1024,6 +1024,9 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 				continue;
 			}
 
+			if (!IsModified (*ourItem, *item))
+				continue;
+
 			(*ourItem)->Categories_ = (*item)->Categories_;
 			(*ourItem)->NumComments_ = (*item)->NumComments_;
 			(*ourItem)->CommentsLink_ = (*item)->CommentsLink_;
