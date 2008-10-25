@@ -1,7 +1,9 @@
 #include "dbusmanager.h"
+#include "core.h"
 
 void DBusManager::Init ()
 {
+	Core::Instance ();
 }
 
 void DBusManager::Release ()
@@ -45,6 +47,10 @@ QStringList DBusManager::Needs () const
 }
 
 void DBusManager::SetProvider (QObject*, const QString&)
+{
+}
+
+void DBusManager::PushMainWindowExternals (const MainWindowExternals&)
 {
 }
 

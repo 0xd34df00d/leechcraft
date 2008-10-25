@@ -9,10 +9,14 @@ INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR}
 
 SET (SRCS
 	dbusmanager.cpp
+	core.cpp
+	adaptor.cpp
 	)
 
 SET (HEADERS
 	dbusmanager.h
+	core.h
+	adaptor.h
 	)
 
 SET (FORMS
