@@ -39,7 +39,6 @@ void Core::Release ()
 
 void Core::SetPort (int port)
 {
-    qWarning () << Q_FUNC_INFO << Q_FUNC_INFO << "Currently setting port requires restart.";
 //    emit bindSuccessful (Server::Instance ().Listen (port));
 }
 

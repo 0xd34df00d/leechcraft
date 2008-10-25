@@ -1,9 +1,9 @@
+#include "tagslineedit.h"
 #include <QtDebug>
 #include <QCompleter>
 #include <QContextMenuEvent>
 #include <QHBoxLayout>
 #include <QPushButton>
-#include "tagslineedit.h"
 #include "tagscompletionmodel.h"
 
 TagsLineEdit::TagsLineEdit (QWidget *parent)
@@ -15,10 +15,12 @@ void TagsLineEdit::AddSelector ()
 {
 	CategorySelector_.reset (new CategorySelector (parentWidget ()));
 	CategorySelector_->hide ();
-	connect (completer ()->completionModel (),
-			SIGNAL (tagsUpdated (const QStringList&)),
-			this,
-			SLOT (handleTagsUpdated (const QStringList&)));
+	TagsCompletionModel *cmodel = dynamic_cast<TagsCompletionModel*> (completer ()->completionModel ());
+	if (cmodel)
+		connect (cmodel,
+				SIGNAL (tagsUpdated (const QStringList&)),
+				this,
+				SLOT (handleTagsUpdated (const QStringList&)));
 
 	QAbstractItemModel *model = completer ()->model ();
 	handleTagsUpdated (qobject_cast<TagsCompletionModel*> (model)->GetTags ());

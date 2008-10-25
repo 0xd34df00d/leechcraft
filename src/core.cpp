@@ -120,7 +120,7 @@ void Main::Core::DelayedInit ()
 {
 	connect (this,
 			SIGNAL (error (QString)),
-			parent (),
+			ReallyMainWindow_,
 			SLOT (catchError (QString)));
 
     PluginManager_->InitializePlugins (ReallyMainWindow_);
