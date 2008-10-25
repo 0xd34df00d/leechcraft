@@ -1,4 +1,3 @@
-SET (QT_USE_QTNETWORK true)
 INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR}
 					 ${QT_QTCORE_INCLUDE_DIR}
 					 ${QT_QTGUI_INCLUDE_DIR}
@@ -100,21 +99,21 @@ ADD_LIBRARY (leechcraft_torrent SHARED
 ADD_DEPENDENCIES (leechcraft_torrent torrent_translations)
 
 IF (WIN32)
-TARGET_LINK_LIBRARIES (leechcraft_torrent
-${QT_LIBRARIES}
-plugininterface
-xmlsettingsdialog
-${Boost_DATE_TIME_LIBRARY}
-torrent
-)
+	TARGET_LINK_LIBRARIES (leechcraft_torrent
+		${QT_LIBRARIES}
+		plugininterface
+		xmlsettingsdialog
+		${Boost_DATE_TIME_LIBRARY}
+		torrent
+	)
 ELSE (WIN32)
-TARGET_LINK_LIBRARIES (leechcraft_torrent
-${QT_LIBRARIES}
-plugininterface
-xmlsettingsdialog
-${RBTorrent_LIBRARY}
-${Boost_DATE_TIME_LIBRARY}
-)
+	TARGET_LINK_LIBRARIES (leechcraft_torrent
+		${QT_LIBRARIES}
+		plugininterface
+		xmlsettingsdialog
+		${RBTorrent_LIBRARY}
+		${Boost_DATE_TIME_LIBRARY}
+	)
 ENDIF (WIN32)
 
 INSTALL (TARGETS leechcraft_torrent DESTINATION ${LC_PLUGINS_DEST})

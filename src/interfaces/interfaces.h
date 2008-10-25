@@ -24,7 +24,6 @@ public:
     virtual void Init () = 0;
     virtual QString GetName () const = 0;
     virtual QString GetInfo () const = 0;
-    virtual QString GetStatusbarMessage () const = 0;
     virtual IInfo& SetID (ID_t) = 0;
     virtual ID_t GetID () const = 0;
     virtual QStringList Provides () const = 0;
