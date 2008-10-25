@@ -440,7 +440,6 @@ namespace Main
 		return;
 #endif
 
-		qDebug () << iconName2Path;
 		QList<QAction*> actions = findChildren<QAction*> ();
 		for (QList<QAction*>::iterator i = actions.begin (),
 				end = actions.end (); i != end; ++i)

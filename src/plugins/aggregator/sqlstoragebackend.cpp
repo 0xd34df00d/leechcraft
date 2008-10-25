@@ -23,6 +23,16 @@ SQLStorageBackend::SQLStorageBackend ()
 
 void SQLStorageBackend::Prepare ()
 {
+	QSqlQuery pragma;
+	if (!pragma.exec ("PRAGMA cache_size = 6000;"))
+		DumpError (pragma);
+	if (!pragma.exec ("PRAGMA journal_mode = TRUNCATE;"))
+		DumpError (pragma);
+	if (!pragma.exec ("PRAGMA synchronous = OFF;"))
+		DumpError (pragma);
+	if (!pragma.exec ("PRAGMA temp_store = MEMORY;"))
+		DumpError (pragma);
+
 	FeedFinderByURL_ = QSqlQuery ();
 	FeedFinderByURL_.prepare ("SELECT last_update FROM feeds WHERE url = :url");
 
