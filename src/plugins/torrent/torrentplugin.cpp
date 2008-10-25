@@ -902,6 +902,7 @@ void TorrentPlugin::SetupActions ()
 
 	OpenMultipleTorrents_.reset (new QAction (tr ("Open multiple torrents..."),
 			Toolbar_.get ()));
+	OpenMultipleTorrents_->setProperty ("ActionIcon", "torrent_addmulti");
 	connect (OpenMultipleTorrents_.get (),
 			SIGNAL (triggered ()),
 			this,

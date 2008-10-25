@@ -400,6 +400,7 @@ namespace Main
 		}
 
 		baseDir = QDir ("/usr/local/share/icons");
+		numbers = GetDirForBase ("/usr/local/share/icons", iconSet);
 		baseDir.cd (iconSet);
 		for (std::vector<int>::const_iterator i = numbers.begin (),
 				end = numbers.end (); i != end; ++i)
@@ -439,6 +440,7 @@ namespace Main
 		return;
 #endif
 
+		qDebug () << iconName2Path;
 		QList<QAction*> actions = findChildren<QAction*> ();
 		for (QList<QAction*>::iterator i = actions.begin (),
 				end = actions.end (); i != end; ++i)
