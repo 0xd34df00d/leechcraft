@@ -635,8 +635,6 @@ void XmlSettingsDialog::DoCombobox (const QDomElement& item, QFormLayout *lay)
 		else
 			box->addItem (GetLabel (option), option.attribute ("name"));
 
-        if (option.attribute ("default") == "true")
-            box->setCurrentIndex (box->count () - 1);
         option = option.nextSiblingElement ("option");
     }
     connect (box, SIGNAL (currentIndexChanged (int)), this, SLOT (updatePreferences ()));
@@ -652,6 +650,10 @@ void XmlSettingsDialog::DoCombobox (const QDomElement& item, QFormLayout *lay)
 			box->addItem (scripter.HumanReadableOption (*i),
 					*i);
 	}
+
+	int pos = box->findData (GetValue (item));
+	if (pos != -1)
+		box->setCurrentIndex (pos);
 
     QLabel *label = new QLabel (GetLabel (item));
 	label->setWordWrap (false);
