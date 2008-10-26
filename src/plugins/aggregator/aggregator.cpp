@@ -87,7 +87,7 @@ void Aggregator::Init ()
 			fm.width ("Average news article size is about this width or maybe bigger, because they are bigger"));
 	itemsHeader->resizeSection (1,
 			dateTimeSize);
-
+	connect (Ui_.Items_->header (), SIGNAL (sectionClicked (int)), this, SLOT (makeCurrentItemVisible ()));
     ChannelsFilterModel_.reset (new ChannelsFilterModel (this));
     ChannelsFilterModel_->setSourceModel (Core::Instance ().GetChannelsModel ());
     ChannelsFilterModel_->setFilterKeyColumn (0);
@@ -108,10 +108,10 @@ void Aggregator::Init ()
 			SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
 			this,
 			SLOT (currentChannelChanged ()));
-    connect (Ui_.Items_->selectionModel (),
-			SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
+	connect (Ui_.Items_->selectionModel (),
+			SIGNAL (selectionChanged (const QItemSelection&, const QItemSelection&)),
 			this,
-			SLOT (currentItemChanged (const QModelIndex&)));
+			SLOT (currentItemChanged (const QItemSelection&)));
     connect (ActionUpdateFeeds_,
 			SIGNAL (triggered ()),
 			&Core::Instance (),
@@ -450,9 +450,13 @@ void Aggregator::on_ItemComments__linkActivated ()
 			mapToSource (selected));
 }
 
-void Aggregator::currentItemChanged (const QModelIndex& index)
+void Aggregator::currentItemChanged (const QItemSelection& selection)
 {
-	QModelIndex sindex = ItemsFilterModel_->mapToSource (index);
+	QModelIndexList indexes = selection.indexes ();
+	if (indexes.size () != 2)
+		return;
+
+	QModelIndex sindex = ItemsFilterModel_->mapToSource (indexes.at (0));
 	if (!sindex.isValid ())
 	{
 		Ui_.ItemView_->setHtml ("");
@@ -562,7 +566,6 @@ void Aggregator::currentItemChanged (const QModelIndex& index)
 void Aggregator::currentChannelChanged ()
 {
 	Ui_.Items_->scrollToTop ();
-	currentItemChanged (QModelIndex ());
     QModelIndex index = Ui_.Feeds_->selectionModel ()->currentIndex ();
 	if (!index.isValid ())
 		return;
@@ -687,6 +690,13 @@ void Aggregator::viewerSettingsChanged ()
 			XmlSettingsManager::Instance ()->property ("AutoLoadImages").toBool ());
 	Ui_.ItemView_->settings ()->setAttribute (QWebSettings::JavascriptEnabled,
 			XmlSettingsManager::Instance ()->property ("AllowJavaScript").toBool ());
+}
+
+void Aggregator::makeCurrentItemVisible ()
+{
+	QModelIndex item = Ui_.Items_->selectionModel ()->currentIndex ();
+	if (item.isValid ())
+		Ui_.Items_->scrollTo (item);
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_aggregator, Aggregator);

@@ -11,12 +11,14 @@ SET (SRCS
 	dbusmanager.cpp
 	core.cpp
 	adaptor.cpp
+	iinfoadaptor.cpp
 	)
 
 SET (HEADERS
 	dbusmanager.h
 	core.h
 	adaptor.h
+	iinfoadaptor.h
 	)
 
 SET (FORMS

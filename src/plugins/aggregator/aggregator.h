@@ -85,13 +85,14 @@ private slots:
 	void on_ActionImportOPML__triggered ();
 	void on_ActionExportOPML__triggered ();
 	void on_ItemComments__linkActivated ();
-    void currentItemChanged (const QModelIndex&);
+    void currentItemChanged (const QItemSelection&);
     void currentChannelChanged ();
     void unreadNumberChanged (int);
     void trayIconActivated ();
 	void updateItemsFilter ();
 	void updatePixmap (int);
 	void viewerSettingsChanged ();
+	void makeCurrentItemVisible ();
 signals:
     void downloadFinished (const QString&);
 	void fileDownloaded (const QString&);

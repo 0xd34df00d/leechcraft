@@ -3,6 +3,7 @@
 #include <QDBusAbstractAdaptor>
 
 class Core;
+class QDBusMessage;
 
 class Adaptor : public QDBusAbstractAdaptor
 {
@@ -19,7 +20,7 @@ public:
 	QString GetOrganizationName () const;
 	QString GetApplicationName () const;
 public slots:
-	void Greeter (const QString&);
+	QString Greeter (const QString&, const QDBusMessage&, QString&);
 signals:
 	void aboutToQuit ();
 };

@@ -22,8 +22,12 @@ QString Adaptor::GetApplicationName () const
 	return Proxy::Instance ()->GetApplicationName ();
 }
 
-void Adaptor::Greeter (const QString& msg)
+QString Adaptor::Greeter (const QString& msg,
+		const QDBusMessage&,
+		QString& reply)
 {
 	Core_->Greeter (msg);
+	reply = "shit";
+	return "Reply from LeechCraft!";
 }
 

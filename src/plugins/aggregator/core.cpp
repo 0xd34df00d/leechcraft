@@ -115,10 +115,17 @@ void Core::Release ()
 void Core::DoDelayedInit ()
 {
 	UpdateTimer_ = new QTimer (this);
-	UpdateTimer_->start (XmlSettingsManager::Instance ()->property ("UpdateInterval").toInt () * 60 * 1000);
+	UpdateTimer_->setSingleShot (true);
+	QDateTime currentDateTime = QDateTime::currentDateTime ();
+	QDateTime lastUpdated = XmlSettingsManager::Instance ()->Property ("LastUpdateDateTime", currentDateTime).toDateTime ();
 	connect (UpdateTimer_, SIGNAL (timeout ()), this, SLOT (updateFeeds ()));
-	if (XmlSettingsManager::Instance ()->property ("UpdateOnStartup").toBool ())
-		QTimer::singleShot (2000, this, SLOT (updateFeeds ()));
+
+	int updateDiff = lastUpdated.secsTo (currentDateTime);
+	if ((XmlSettingsManager::Instance ()->property ("UpdateOnStartup").toBool ()) ||
+		(updateDiff > XmlSettingsManager::Instance ()->property ("UpdateInterval").toInt () * 60))
+			QTimer::singleShot (2000, this, SLOT (updateFeeds ()));
+	else
+		UpdateTimer_->start (updateDiff * 1000);
 
 	QTimer *saveTimer = new QTimer (this);
 	saveTimer->start (60 * 1000);
@@ -830,6 +837,8 @@ void Core::updateFeeds ()
 				LeechCraft::DoNotNotifyUser | LeechCraft::DoNotSaveInHistory);
 		PendingJobs_ [id] = pj;
 	}
+	XmlSettingsManager::Instance ()->setProperty ("LastUpdateDateTime", QDateTime::currentDateTime ());
+	UpdateTimer_->start (XmlSettingsManager::Instance ()->property ("UpdateInterval").toInt () * 60 * 1000);
 }
 
 void Core::fetchExternalFile (const QString& url, const QString& where)

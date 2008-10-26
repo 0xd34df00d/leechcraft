@@ -192,6 +192,9 @@
           <property name="itemsExpandable" >
            <bool>false</bool>
           </property>
+          <property name="sortingEnabled" >
+           <bool>true</bool>
+          </property>
          </widget>
          <widget class="QWidget" name="layoutWidget" >
           <layout class="QVBoxLayout" name="verticalLayout" >
