@@ -150,9 +150,9 @@ void Core::SetProvider (QObject *provider, const QString& feature)
 				this,
 				SLOT (handleJobRemoved (int)));
 		connect (provider,
-				SIGNAL (jobError (int, IDirectDownload::Error)),
+				SIGNAL (jobError (int, IDownload::Error)),
 				this,
-				SLOT (handleJobError (int, IDirectDownload::Error)));
+				SLOT (handleJobError (int, IDownload::Error)));
 	}
 }
 

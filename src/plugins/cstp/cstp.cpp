@@ -43,9 +43,9 @@ void CSTP::Init ()
 			this,
 			SIGNAL (jobRemoved (int)));
 	connect (&Core::Instance (),
-			SIGNAL (taskError (int, IDirectDownload::Error)),
+			SIGNAL (taskError (int, IDownload::Error)),
 			this,
-			SIGNAL (jobError (int, IDirectDownload::Error)));
+			SIGNAL (jobError (int, IDownload::Error)));
 	connect (&Core::Instance (),
 			SIGNAL (fileDownloaded (const QString&)),
 			this,

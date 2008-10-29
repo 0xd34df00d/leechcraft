@@ -276,7 +276,7 @@ namespace Main
 	void MainWindow::addJob ()
 	{
 		CommonJobAdder adder (this);
-		if (adder.exec () == QDialog::Accepted)
+		if (adder.exec () != QDialog::Accepted)
 			return;
 
 		QString name = adder.GetString ();

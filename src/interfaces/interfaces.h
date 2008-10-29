@@ -278,8 +278,7 @@ public:
 	 * @param[in] entity Entity.
 	 * @param[in] parameters Task parameters.
 	 *
-	 * @sa IDirectDownload::AddJob
-	 * @sa IPeer2PeerDownload::AddJob
+	 * @sa AddJob
 	 * @sa LeechCraft::TaskParameters
 	 */
     virtual bool CouldDownload (const QString& entity,

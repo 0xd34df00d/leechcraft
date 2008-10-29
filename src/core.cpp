@@ -206,6 +206,7 @@ void Main::Core::TryToAddJob (const QString& name, const QString& where)
         {
 			LeechCraft::DownloadParams ddp = { name, where };
 			di->AddJob (ddp, tp);
+			return;
         }
     }
     emit error (tr ("No plugins are able to download \"%1\"").arg (name));
