@@ -364,6 +364,11 @@ public:
 	 * @sa GetControls
 	 */
 	virtual QWidget* GetAdditionalInfo () const = 0;
+	/** @brief Notifies plugin about item selection.
+	 * 
+	 * @param item Selected item.
+	 */
+	virtual void ItemSelected (const QModelIndex& item) = 0;
 
 	/** @brief Virtual destructor.
 	 */

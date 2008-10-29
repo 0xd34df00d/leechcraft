@@ -68,7 +68,6 @@ class Core : public QAbstractItemModel
     typedef QList<TorrentStruct> HandleDict_t;
     HandleDict_t Handles_;
     QList<QString> Headers_;
-    int InterfaceUpdateTimer_;
 	mutable int CurrentTorrent_;
 	std::auto_ptr<QTimer> SettingsSaveTimer_, FinishedTimer_, WarningWatchdog_, ScrapeTimer_;
 	std::auto_ptr<PiecesModel> PiecesModel_;
@@ -206,8 +205,6 @@ private slots:
     void checkFinished ();
     void queryLibtorrentForWarnings ();
 	void scrape ();
-protected:
-    virtual void timerEvent (QTimerEvent*);
 public slots:
     void tcpPortRangeChanged ();
     void dhtStateChanged ();

@@ -63,6 +63,7 @@ public:
 	QAbstractItemModel* GetRepresentation () const;
 	QWidget* GetControls () const;
 	QWidget* GetAdditionalInfo () const;
+	void ItemSelected (const QModelIndex&);
 public slots:
 	void on_ActionRemoveItemFromHistory__triggered ();
 	void showSettings (int = -1);

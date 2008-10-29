@@ -216,6 +216,22 @@ QWidget* TorrentPlugin::GetAdditionalInfo () const
 	return TabWidget_.get ();
 }
 
+void TorrentPlugin::ItemSelected (const QModelIndex& item)
+{
+	qDebug () << Q_FUNC_INFO;
+	QModelIndex mapped = FilterModel_->mapToSource (item);
+	Core::Instance ()->SetCurrentTorrent (mapped.row ());
+	Ui_.TorrentTags_->setText (Core::Instance ()->GetTagsForIndex ().join (" "));
+	if (mapped.isValid ())
+	{
+		TorrentSelectionChanged_ = true;
+		restartTimers ();
+		updateTorrentStats ();
+	}
+
+	setActionsEnabled ();
+}
+
 void TorrentPlugin::ImportSettings (const QByteArray& settings)
 {
 	XmlSettingsDialog_->MergeXml (settings);
@@ -302,7 +318,10 @@ void TorrentPlugin::on_CreateTorrent__triggered ()
 
 void TorrentPlugin::on_RemoveTorrent__triggered (int row)
 {
-    if (QMessageBox::question (0, tr ("Question"), tr ("Do you really want to delete the torrent?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    if (QMessageBox::question (0,
+				tr ("Question"),
+				tr ("Do you really want to delete the torrent?"),
+				QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
         return;
 
     Core::Instance ()->RemoveTorrent (row);
@@ -779,7 +798,14 @@ void TorrentPlugin::SetupStuff ()
 	UpdateDashboard ();
     
     OverallStatsUpdateTimer_.reset (new QTimer (this));
-    connect (OverallStatsUpdateTimer_.get (), SIGNAL (timeout ()), this, SLOT (updateOverallStats ()));
+    connect (OverallStatsUpdateTimer_.get (),
+			SIGNAL (timeout ()),
+			this,
+			SLOT (updateOverallStats ()));
+    connect (OverallStatsUpdateTimer_.get (),
+			SIGNAL (timeout ()),
+			FilterModel_.get (),
+			SLOT (invalidate ()));
     OverallStatsUpdateTimer_->start (500);
 }
 

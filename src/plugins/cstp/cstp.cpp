@@ -196,6 +196,10 @@ QWidget* CSTP::GetAdditionalInfo () const
 	return TabWidget_.get ();
 }
 
+void CSTP::ItemSelected (const QModelIndex&)
+{
+}
+
 void CSTP::on_ActionRemoveItemFromHistory__triggered ()
 {
 	ApplyCore2Selection (&Core::RemoveFromHistory, UiTabWidget_->HistoryView_);

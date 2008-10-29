@@ -183,6 +183,8 @@ namespace Main
 
 		if (newIndex.isValid ())
 		{
+			Core::Instance ().SetNewRow (newIndex);
+
 			QWidget *controls = Core::Instance ()
 						.GetControls (newIndex),
 					*addiInfo = Core::Instance ()

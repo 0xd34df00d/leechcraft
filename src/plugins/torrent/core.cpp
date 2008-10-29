@@ -123,7 +123,6 @@ void Core::DoDelayedInit ()
 		<< tr ("Downloading rate");
 
     ReadSettings ();
-    InterfaceUpdateTimer_ = startTimer (1000);
 	connect (SettingsSaveTimer_.get (),
 			SIGNAL (timeout ()),
 			this,
@@ -158,7 +157,6 @@ void Core::Release ()
 {
 	Session_->pause ();
     writeSettings ();
-    killTimer (InterfaceUpdateTimer_);
 
 	SettingsSaveTimer_.reset ();
 	FinishedTimer_.reset ();
@@ -1730,12 +1728,6 @@ bool Core::CheckValidity (int pos) const
         return false;
     }
     return true;
-}
-
-void Core::timerEvent (QTimerEvent *e)
-{
-    if (e->timerId () == InterfaceUpdateTimer_)
-        emit dataChanged (index (0, 0), index (Handles_.size (), columnCount (QModelIndex ())));
 }
 
 void Core::tcpPortRangeChanged ()

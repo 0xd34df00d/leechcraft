@@ -217,6 +217,17 @@ void Main::Core::Activated (const QModelIndex& index)
 	ShowPlugin (index.row ());
 }
 
+void Main::Core::SetNewRow (const QModelIndex& index)
+{
+	QModelIndex mapped = FilterModel_->mapToSource (index);
+	MergeModel::const_iterator modIter = MergeModel_->GetModelForRow (mapped.row ());
+	QObject *plugin = Representation2Object_ [*modIter];
+
+	IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
+	if (ijh)
+		ijh->ItemSelected (MergeModel_->mapToSource (mapped));
+}
+
 void Main::Core::UpdateFiltering (const QString& text, Main::Core::FilterType ft, bool caseSensitive)
 {
 	FilterModel_->setFilterCaseSensitivity (caseSensitive ?
