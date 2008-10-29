@@ -70,10 +70,6 @@ void Remoter::SetProvider (QObject *provider, const QString& feature)
     Core::Instance ().AddObject (provider, feature);
 }
 
-void Remoter::PushMainWindowExternals (const MainWindowExternals&)
-{
-}
-
 QIcon Remoter::GetIcon () const
 {
     return windowIcon ();

@@ -335,7 +335,7 @@ void Core::done (bool err)
 	{
 		taskdscr->ErrorFlag_ = true;
 		emit error (errorStr);
-		emit taskError (taskdscr->ID_, IDirectDownload::ErrorOther);
+		emit taskError (taskdscr->ID_, IDownload::EUnknown);
 	}
 	ScheduleSave ();
 }

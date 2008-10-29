@@ -74,7 +74,5 @@ const QString& Core::GetPassword () const
 
 void Core::AddObject (QObject *object, const QString& feature)
 {
-    if (feature == "remoteable" && qobject_cast<IRemoteable*> (object) && qobject_cast<IInfo*> (object))
-        Objects_.append (object);
 }
 

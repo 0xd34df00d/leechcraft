@@ -111,7 +111,7 @@ private:
 signals:
 	void taskFinished (int);
 	void taskRemoved (int);
-	void taskError (int, IDirectDownload::Error);
+	void taskError (int, IDownload::Error);
 	void fileDownloaded (const QString&);
 	void downloadFinished (const QString&);
 	void error (const QString&);

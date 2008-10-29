@@ -46,7 +46,6 @@ public:
     virtual QStringList Uses () const;
     virtual QStringList Needs () const;
     virtual void SetProvider (QObject*, const QString&);
-    virtual void PushMainWindowExternals (const MainWindowExternals&);
     virtual void Release ();
     virtual QIcon GetIcon () const;
 	virtual QWidget* GetTabContents ();

@@ -23,7 +23,6 @@ class Aggregator : public QWidget
     Ui::MainWidget Ui_;
     unsigned long int ID_;
 
-    QMenu *Plugins_;
 	QToolBar *ToolBar_;
     QAction *ActionAddFeed_;
     QAction *ActionPreferences_;
@@ -60,7 +59,6 @@ public:
     QStringList Needs () const;
     QStringList Uses () const;
     void SetProvider (QObject*, const QString&);
-    void PushMainWindowExternals (const MainWindowExternals&);
     QIcon GetIcon () const;
 	QWidget* GetTabContents ();
 private:

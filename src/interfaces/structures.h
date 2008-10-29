@@ -3,30 +3,55 @@
 
 class QMenu;
 
-struct DirectDownloadParams
-{
-    QString Resource_;
-    QString Location_;
-};
-
-struct MainWindowExternals
-{
-    QMenu *RootMenu_;
-};
-
 namespace LeechCraft
 {
+	/** @brief Describes parameters of a download job.
+	 *
+	 * Describes where and what should be saved.
+	 *
+	 * @sa LeechCraft::TaskParameter
+	 */
+	struct DownloadParams
+	{
+		/** @brief What the user wants to download - this could be
+		 * anything from URL to Magnet hash to local torrent file.
+		 */
+		QString Resource_;
+		/** @brief Where it wants the data to be saved.
+		 */
+		QString Location_;
+	};
+
+	/** @brief Describes single task parameter.
+	 */
 	enum TaskParameter
 	{
+		/** Use default parameters.
+		 */
 		NoParameters = 0,
+		/** Task should be started automatically after addition.
+		 */
 		Autostart = 1,
+		/** Task should not be saved in history.
+		 */
 		DoNotSaveInHistory = 2,
+		/** Task is fetched from the clipboard.
+		 */
 		FromClipboard = 4,
+		/** Task is fetched from common job addition dialog.
+		 */
 		FromCommonDialog = 8,
+		/** Task is automatically generated, for example, this is a
+		 * request from another plugin.
+		 */
 		FromAutomatic = 16,
+		/** User should not be notified about task finish.
+		 */
 		DoNotNotifyUser = 32,
-		FromAnother = 64,
-		Internal = 128
+		/** Task is used internally and would not be visible to the user
+		 * at all.
+		 */
+		Internal = 64
 	};
 
 	Q_DECLARE_FLAGS (TaskParameters, TaskParameter);

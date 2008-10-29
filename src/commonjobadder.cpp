@@ -43,7 +43,7 @@ void CommonJobAdder::on_Browse__released ()
 
 void CommonJobAdder::on_BrowseWhere__released ()
 {
-    QString name = QFileDialog::getOpenFileName (this,
+    QString name = QFileDialog::getExistingDirectory (this,
 			tr ("Select file"),
 			Main::XmlSettingsManager::Instance ()->Property ("LastWhereFolder",
 				QDir::homePath ()).toString ());

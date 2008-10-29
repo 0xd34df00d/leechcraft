@@ -135,7 +135,7 @@ private slots:
     void scheduleSave ();
     void handleJobFinished (int);
     void handleJobRemoved (int);
-    void handleJobError (int, IDirectDownload::Error);
+    void handleJobError (int, IDownload::Error);
     void saveSettings ();
 public slots:
     void updateIntervalChanged ();

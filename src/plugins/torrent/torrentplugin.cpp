@@ -41,17 +41,12 @@ void TorrentPlugin::Init ()
 	SetupActions ();
     SetupStuff ();
 
-    Plugins_->addAction (OpenTorrent_.get ());
-    Plugins_->addAction (OpenMultipleTorrents_.get ());
-    Plugins_->addAction (CreateTorrent_.get ());
-    Plugins_->addSeparator ();
-    Plugins_->addAction (Preferences_.get ());
-
     setActionsEnabled ();
 
     Ui_.LogShower_->setPlainText ("BitTorrent initialized");
 
-    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Torrent");
+    QSettings settings (Proxy::Instance ()->GetOrganizationName (),
+			Proxy::Instance ()->GetApplicationName () + "_Torrent");
     int max = settings.beginReadArray ("History");
     for (int i = 0; i < max; ++i)
     {
@@ -114,11 +109,6 @@ void TorrentPlugin::SetProvider (QObject*, const QString&)
 {
 }
 
-void TorrentPlugin::PushMainWindowExternals (const MainWindowExternals& ex)
-{
-    Plugins_ = ex.RootMenu_->addMenu (tr ("&BitTorrent"));
-}
-
 void TorrentPlugin::Release ()
 {
     Core::Instance ()->Release ();
@@ -177,10 +167,10 @@ bool TorrentPlugin::CouldDownload (const QString& string, LeechCraft::TaskParame
     return Core::Instance ()->IsValidTorrent (file.readAll ());
 }
 
-int TorrentPlugin::AddJob (const QString& name, LeechCraft::TaskParameters parameters)
+int TorrentPlugin::AddJob (const LeechCraft::DownloadParams& dp, LeechCraft::TaskParameters parameters)
 {
     AddTorrentDialog_->Reinit ();
-    AddTorrentDialog_->SetFilename (name);
+    AddTorrentDialog_->SetFilename (dp.Resource_);
 
 	QString path;
 	QStringList tags;
@@ -188,7 +178,7 @@ int TorrentPlugin::AddJob (const QString& name, LeechCraft::TaskParameters param
 	QString fname;
 	if (parameters & LeechCraft::FromAutomatic)
 	{
-		fname = name;
+		fname = dp.Resource_;
 		path = AddTorrentDialog_->GetDefaultSavePath ();
 		tags = AddTorrentDialog_->GetDefaultTags ();
 	}
@@ -209,61 +199,6 @@ int TorrentPlugin::AddJob (const QString& name, LeechCraft::TaskParameters param
 	int result = Core::Instance ()->AddFile (fname, path, tags, files, parameters);
     setActionsEnabled ();
 	return result;
-}
-
-QList<QVariantList> TorrentPlugin::GetAll () const
-{
-    QList<QVariantList> result;
-
-    QVariantList t;
-    for (int i = 0; i < Core::Instance ()->columnCount (QModelIndex ()); ++i)
-        t << Core::Instance ()->headerData (i, Qt::Horizontal);
-    result << t;
-
-    for (int i = 0; i < Core::Instance ()->rowCount (); ++i)
-    {
-        QVariantList tmp;
-        for (int j = 0; j < Core::Instance ()->columnCount (QModelIndex ()); ++j)
-            tmp << Core::Instance ()->data (Core::Instance ()->index (i, j));
-        result << tmp;
-    }
-    return result;
-}
-
-IRemoteable::AddJobType TorrentPlugin::GetAddJobType () const
-{
-    return AJTFile;
-}
-
-void TorrentPlugin::AddJob (const QByteArray& data, const QString& where)
-{
-    QVector<bool> files (true);
-    QTemporaryFile file ("lc.remoteadded.XXXXXX");
-    if (!file.open ())
-    {
-        showError ("Could not open temporary file to add the interface-added job");
-    }
-    file.write (data);
-    Core::Instance ()->AddFile (file.fileName (), where, QStringList (tr ("untagged")), files);
-    setActionsEnabled ();
-}
-
-void TorrentPlugin::StartAt (int pos)
-{
-    Core::Instance ()->ResumeTorrent (pos);
-    setActionsEnabled ();
-}
-
-void TorrentPlugin::StopAt (int pos)
-{
-    Core::Instance ()->PauseTorrent (pos);
-    setActionsEnabled ();
-}
-
-void TorrentPlugin::DeleteAt (int pos)
-{
-    Core::Instance ()->RemoveTorrent (pos);
-    setActionsEnabled ();
 }
 
 QAbstractItemModel* TorrentPlugin::GetRepresentation () const
@@ -299,21 +234,6 @@ QByteArray TorrentPlugin::ExportSettings () const
 QByteArray TorrentPlugin::ExportData () const
 {
 	return Core::Instance ()->ExportData ();
-}
-
-void TorrentPlugin::ItemSelected (const QModelIndex& item)
-{
-    setActionsEnabled ();
-
-	QModelIndex mapped = FilterModel_->mapToSource (item);
-	Core::Instance ()->SetCurrentTorrent (mapped.row ());
-	Ui_.TorrentTags_->setText (Core::Instance ()->GetTagsForIndex ().join (" "));
-	if (mapped.isValid ())
-	{
-		TorrentSelectionChanged_ = true;
-		restartTimers ();
-		updateTorrentStats ();
-	}
 }
 
 QStringList TorrentPlugin::GetTags (int torrent) const

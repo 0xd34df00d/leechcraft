@@ -169,9 +169,7 @@ void PluginManager::InitializePlugins (const MainWindow* win)
             Plugins_.removeAt (i--);
             continue;
         }
-        MainWindowExternals ex = { win->GetRootPluginsMenu () };
         info->SetID (i);
-        info->PushMainWindowExternals (ex);
         info->Init ();
     }
 }

@@ -73,10 +73,6 @@ void Batcher::SetProvider (QObject *obj, const QString& feature)
     Providers_ [feature] = obj;
 }
 
-void Batcher::PushMainWindowExternals (const MainWindowExternals&)
-{
-}
-
 void Batcher::Release ()
 {
 }
@@ -95,10 +91,6 @@ void Batcher::ShowWindow ()
 {
     IsShown_ = 1 - IsShown_;
     IsShown_ ? show () : hide ();
-}
-
-void Batcher::ShowBalloonTip ()
-{
 }
 
 void Batcher::handleHidePlugins ()
@@ -151,9 +143,9 @@ void Batcher::sendJobs ()
             continue;
         if (!provider)
             continue;
-        DirectDownloadParams ddd = { text, localDir + QFileInfo (text).fileName () };
-        IDirectDownload *idd = qobject_cast<IDirectDownload*> (provider);
-		idd->AddJob (ddd, LeechCraft::Autostart);
+		LeechCraft::DownloadParams ddd = { text, localDir + QFileInfo (text).fileName () };
+        IDownload *id = qobject_cast<IDownload*> (provider);
+		id->AddJob (ddd, LeechCraft::Autostart);
         ++count;
     }
     if (count)

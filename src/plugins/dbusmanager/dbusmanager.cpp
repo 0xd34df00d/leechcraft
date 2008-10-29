@@ -50,10 +50,6 @@ void DBusManager::SetProvider (QObject*, const QString&)
 {
 }
 
-void DBusManager::PushMainWindowExternals (const MainWindowExternals&)
-{
-}
-
 QIcon DBusManager::GetIcon () const
 {
 	return QIcon ();

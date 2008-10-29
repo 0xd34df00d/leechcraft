@@ -166,8 +166,7 @@ void Core::AddFeed (const QString& url, const QStringList& tags)
 
 	QObject *provider = Providers_ ["http"];
 	IDownload *iid = qobject_cast<IDownload*> (provider);
-	IDirectDownload *idd = qobject_cast<IDirectDownload*> (provider);
-	if (!provider || !idd || !iid)
+	if (!provider || !iid)
 	{
 		emit error (tr ("Strange, but no suitable provider found"));
 		return;
@@ -186,9 +185,9 @@ void Core::AddFeed (const QString& url, const QStringList& tags)
 		file.close ();
 		file.remove ();
 	}
-	DirectDownloadParams params = { url, name };
+	LeechCraft::DownloadParams params = { url, name };
 	PendingJob pj = { PendingJob::RFeedAdded, url, name, tags };
-	int id = idd->AddJob (params, LeechCraft::Internal | LeechCraft::Autostart |
+	int id = iid->AddJob (params, LeechCraft::Internal | LeechCraft::Autostart |
 			LeechCraft::DoNotNotifyUser | LeechCraft::DoNotSaveInHistory);
 	PendingJobs_ [id] = pj;
 }
@@ -435,8 +434,7 @@ void Core::UpdateFeed (const QModelIndex& index)
 
 	QObject *provider = Providers_ ["http"];
 	IDownload *isd = qobject_cast<IDownload*> (provider);
-	IDirectDownload *idd = qobject_cast<IDirectDownload*> (provider);
-	if (!provider || !idd || !isd)
+	if (!provider || !isd)
 	{
 		emit error (tr ("Strange, but no suitable provider found"));
 		return;
@@ -455,9 +453,9 @@ void Core::UpdateFeed (const QModelIndex& index)
 		file.close ();
 		file.remove ();
 	}
-	DirectDownloadParams params = { url, name };
+	LeechCraft::DownloadParams params = { url, name };
 	PendingJob pj = { PendingJob::RFeedUpdated, url, name };
-	int id = idd->AddJob (params, LeechCraft::Internal | LeechCraft::Autostart |
+	int id = isd->AddJob (params, LeechCraft::Internal | LeechCraft::Autostart |
 			LeechCraft::DoNotNotifyUser | LeechCraft::DoNotSaveInHistory);
 	PendingJobs_ [id] = pj;
 }
@@ -797,7 +795,7 @@ void Core::handleJobRemoved (int id)
 		PendingJobs_.remove (id);
 }
 
-void Core::handleJobError (int id, IDirectDownload::Error)
+void Core::handleJobError (int id, IDownload::Error)
 {
 	if (!PendingJobs_.contains (id))
 		return;
@@ -808,8 +806,7 @@ void Core::updateFeeds ()
 {
 	QObject *provider = Providers_ ["http"];
 	IDownload *isd = qobject_cast<IDownload*> (provider);
-	IDirectDownload *idd = qobject_cast<IDirectDownload*> (provider);
-	if (!provider || !idd || !isd)
+	if (!provider || !isd)
 	{
 		emit error (tr ("Strange, but no suitable provider found"));
 		return;
@@ -831,9 +828,9 @@ void Core::updateFeeds ()
 			file.close ();
 			file.remove ();
 		}
-		DirectDownloadParams params = { urls.at (i), filename };
+		LeechCraft::DownloadParams params = { urls.at (i), filename };
 		PendingJob pj = { PendingJob::RFeedUpdated, urls.at (i), filename };
-		int id = idd->AddJob (params, LeechCraft::Internal | LeechCraft::Autostart |
+		int id = isd->AddJob (params, LeechCraft::Internal | LeechCraft::Autostart |
 				LeechCraft::DoNotNotifyUser | LeechCraft::DoNotSaveInHistory);
 		PendingJobs_ [id] = pj;
 	}
@@ -845,8 +842,7 @@ void Core::fetchExternalFile (const QString& url, const QString& where)
 {
 	QObject *provider = Providers_ ["http"];
 	IDownload *isd = qobject_cast<IDownload*> (provider);
-	IDirectDownload *idd = qobject_cast<IDirectDownload*> (provider);
-	if (!provider || !idd || !isd)
+	if (!provider || !isd)
 	{
 		emit error (tr ("Strange, but no suitable provider found"));
 		throw std::runtime_error ("no suitable provider");
@@ -857,9 +853,9 @@ void Core::fetchExternalFile (const QString& url, const QString& where)
 		throw std::runtime_error ("could not handle URL");
 	}
 
-	DirectDownloadParams params = { url, where };
+	LeechCraft::DownloadParams params = { url, where };
 	PendingJob pj = { PendingJob::RFeedExternalData, url, where };
-	int id = idd->AddJob (params, LeechCraft::Internal | LeechCraft::Autostart |
+	int id = isd->AddJob (params, LeechCraft::Internal | LeechCraft::Autostart |
 			LeechCraft::DoNotNotifyUser | LeechCraft::DoNotSaveInHistory);
 	PendingJobs_ [id] = pj;
 }

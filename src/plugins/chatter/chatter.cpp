@@ -84,11 +84,6 @@ void Chatter::SetProvider (QObject *obj, const QString& feature)
     Providers_ [feature] = obj;
 }
 
-void Chatter::PushMainWindowExternals (const MainWindowExternals&)
-{
-
-}
-
 void Chatter::Release ()
 {
     QSettings settings (Proxy::Instance ()->GetOrganizationName (),

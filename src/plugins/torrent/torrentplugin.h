@@ -20,16 +20,13 @@ class QTranslator;
 class TorrentPlugin : public QObject
                     , public IInfo
 					, public IDownload
-                    , public IPeer2PeerDownload
-                    , public IRemoteable
                     , public IJobHolder
 					, public IImportExport
-					, public IEmbedModel
 					, public ITaggableJobs
 {
     Q_OBJECT
 
-    Q_INTERFACES (IInfo IDownload IPeer2PeerDownload IRemoteable IJobHolder IImportExport IEmbedModel ITaggableJobs);
+    Q_INTERFACES (IInfo IDownload IJobHolder IImportExport ITaggableJobs);
 
     ID_t ID_;
     std::auto_ptr<XmlSettingsDialog> XmlSettingsDialog_;
@@ -37,7 +34,6 @@ class TorrentPlugin : public QObject
 	std::auto_ptr<QTimer> OverallStatsUpdateTimer_;
 	std::auto_ptr<QTime> LastPeersUpdate_;
 	std::auto_ptr<RepresentationModel> FilterModel_;
-    QMenu *Plugins_;
     bool IgnoreTimer_;
     bool TorrentSelectionChanged_;
 	std::auto_ptr<TagsCompleter> TagsChangeCompleter_,
@@ -74,7 +70,6 @@ public:
     QStringList Needs () const;
     QStringList Uses () const;
     void SetProvider (QObject*, const QString&);
-    void PushMainWindowExternals (const MainWindowExternals&);
     void Release ();
     QIcon GetIcon () const;
 
@@ -84,15 +79,7 @@ public:
     void StartAll ();
     void StopAll ();
 	bool CouldDownload (const QString&, LeechCraft::TaskParameters) const;
-	int AddJob (const QString&, LeechCraft::TaskParameters);
-
-    // IRemoteable
-    QList<QVariantList> GetAll () const;
-    AddJobType GetAddJobType () const;
-    void AddJob (const QByteArray&, const QString&);
-    void StartAt (int);
-    void StopAt (int);
-    void DeleteAt (int);
+	int AddJob (const LeechCraft::DownloadParams&, LeechCraft::TaskParameters);
 
     // IJobHolder
     QAbstractItemModel* GetRepresentation () const;
@@ -104,9 +91,6 @@ public:
 	void ImportData (const QByteArray&);
 	QByteArray ExportSettings () const;
 	QByteArray ExportData () const;
-
-	// IEmbedModel
-	void ItemSelected (const QModelIndex&);
 
 	// ITaggableJobs
 	QStringList GetTags (int) const;

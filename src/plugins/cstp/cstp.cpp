@@ -111,11 +111,6 @@ void CSTP::SetProvider (QObject*, const QString&)
 {
 }
 
-void CSTP::PushMainWindowExternals (const MainWindowExternals& externals)
-{
-	Plugins_ = externals.RootMenu_->addMenu ("&CSTP");
-}
-
 QIcon CSTP::GetIcon () const
 {
 	return QIcon ();
@@ -146,7 +141,7 @@ bool CSTP::CouldDownload (const QString& url, LeechCraft::TaskParameters tp) con
 	return Core::Instance ().CouldDownload (url, tp);
 }
 
-int CSTP::AddJob (const DirectDownloadParams& ddp, LeechCraft::TaskParameters tp)
+int CSTP::AddJob (const LeechCraft::DownloadParams& ddp, LeechCraft::TaskParameters tp)
 {
 	if (tp & LeechCraft::FromCommonDialog)
 	{

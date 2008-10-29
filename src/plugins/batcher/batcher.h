@@ -33,18 +33,16 @@ public:
     virtual QStringList Needs () const;
     virtual QStringList Uses () const;
     virtual void SetProvider (QObject*, const QString&);
-    virtual void PushMainWindowExternals (const MainWindowExternals&);
     virtual void Release ();
     virtual QIcon GetIcon () const;
     virtual void SetParent (QWidget*);
     virtual void ShowWindow ();
-    virtual void ShowBalloonTip ();
 public slots:
     void handleHidePlugins ();
 protected:
     virtual void closeEvent (QCloseEvent*);
 signals:
-    void addDownload (DirectDownloadParams);
+    void addDownload (LeechCraft::DownloadParams);
 private slots:
     void collectDataAndParse ();
     void sendJobs ();

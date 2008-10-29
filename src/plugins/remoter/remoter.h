@@ -28,7 +28,6 @@ public:
     QStringList Needs () const;
     QStringList Uses () const;
     void SetProvider (QObject*, const QString&);
-    void PushMainWindowExternals (const MainWindowExternals&);
     QIcon GetIcon () const;
     void SetParent (QWidget*);
     void ShowWindow ();

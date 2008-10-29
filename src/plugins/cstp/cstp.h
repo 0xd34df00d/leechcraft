@@ -26,11 +26,10 @@ namespace Ui
 class CSTP : public QObject
 			 , public IInfo
 			 , public IDownload
-			 , public IDirectDownload
 			 , public IJobHolder
 {
 	Q_OBJECT
-	Q_INTERFACES (IInfo IDownload IDirectDownload IJobHolder)
+	Q_INTERFACES (IInfo IDownload IJobHolder)
 
 	unsigned long int ID_;
 	QMenu *Plugins_;
@@ -52,7 +51,6 @@ public:
     QStringList Needs () const;
     QStringList Uses () const;
     void SetProvider (QObject*, const QString&);
-    void PushMainWindowExternals (const MainWindowExternals&);
     QIcon GetIcon () const;
 
 	qint64 GetDownloadSpeed () const;
@@ -60,7 +58,7 @@ public:
 	void StartAll ();
 	void StopAll ();
 	bool CouldDownload (const QString&, LeechCraft::TaskParameters) const;
-	int AddJob (const DirectDownloadParams&, LeechCraft::TaskParameters);
+	int AddJob (const LeechCraft::DownloadParams&, LeechCraft::TaskParameters);
 
 	QAbstractItemModel* GetRepresentation () const;
 	QWidget* GetControls () const;
@@ -78,7 +76,7 @@ private slots:
 signals:
 	void jobFinished (int);
 	void jobRemoved (int);
-	void jobError (int, IDirectDownload::Error);
+	void jobError (int, IDownload::Error);
 	void fileDownloaded (const QString&);
 	void downloadFinished (const QString&);
 };

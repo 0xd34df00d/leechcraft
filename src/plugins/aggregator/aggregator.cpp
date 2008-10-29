@@ -45,7 +45,6 @@ void Aggregator::Init ()
 			this,
 			SLOT (trayIconActivated ()));
 
-	Plugins_->addAction (ActionAddFeed_);
 	connect (&Core::Instance (),
 			SIGNAL (error (const QString&)),
 			this,
@@ -87,7 +86,10 @@ void Aggregator::Init ()
 			fm.width ("Average news article size is about this width or maybe bigger, because they are bigger"));
 	itemsHeader->resizeSection (1,
 			dateTimeSize);
-	connect (Ui_.Items_->header (), SIGNAL (sectionClicked (int)), this, SLOT (makeCurrentItemVisible ()));
+	connect (Ui_.Items_->header (),
+			SIGNAL (sectionClicked (int)),
+			this,
+			SLOT (makeCurrentItemVisible ()));
     ChannelsFilterModel_.reset (new ChannelsFilterModel (this));
     ChannelsFilterModel_->setSourceModel (Core::Instance ().GetChannelsModel ());
     ChannelsFilterModel_->setFilterKeyColumn (0);
@@ -203,11 +205,6 @@ QStringList Aggregator::Uses () const
 void Aggregator::SetProvider (QObject* object, const QString& feature)
 {
     Core::Instance ().SetProvider (object, feature);
-}
-
-void Aggregator::PushMainWindowExternals (const MainWindowExternals& externals)
-{
-    Plugins_ = externals.RootMenu_->addMenu ("&Aggregator");
 }
 
 QIcon Aggregator::GetIcon () const

@@ -29,6 +29,9 @@ namespace Main
 
 		Ui_ = new Ui::LeechCraft;
 		Ui_->setupUi (this);
+
+		Ui_->AddTaskButton_->setDefaultAction (Ui_->ActionAddTask_);
+
 		Ui_->ActionAddTask_->setProperty ("ActionIcon", "mainaddjob");
 		Ui_->ActionSettings_->setProperty ("ActionIcon", "mainsettings");
 
@@ -169,8 +172,6 @@ namespace Main
 
 		if (newIndex.isValid ())
 		{
-			Core::Instance ().SetNewRow (newIndex);
-
 			QWidget *controls = Core::Instance ()
 						.GetControls (newIndex),
 					*addiInfo = Core::Instance ()
@@ -276,16 +277,15 @@ namespace Main
 	{
 		CommonJobAdder adder (this);
 		if (adder.exec () == QDialog::Accepted)
-		{
-			QString name = adder.GetString ();
-			if (!name.isEmpty ())
-				Core::Instance ().TryToAddJob (name, adder.GetWhere ());
-		}
+			return;
+
+		QString name = adder.GetString ();
+		if (!name.isEmpty ())
+			Core::Instance ().TryToAddJob (name, adder.GetWhere ());
 	}
 
 	void MainWindow::handleDownloadFinished (const QString& string)
 	{
-		qDebug () << string;
 		if (XmlSettingsManager::Instance ()->property ("ShowFinishedDownloadMessages").toBool ())
 			FancyPopupManager_->ShowMessage (string);
 	}

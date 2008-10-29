@@ -204,18 +204,8 @@ void Main::Core::TryToAddJob (const QString& name, const QString& where)
 		LeechCraft::TaskParameters tp = LeechCraft::FromCommonDialog | LeechCraft::Autostart;
         if (di && di->CouldDownload (name, tp))
         {
-			IDirectDownload *idd = qobject_cast<IDirectDownload*> (plugin);
-			IPeer2PeerDownload *ip2p =
-				qobject_cast<IPeer2PeerDownload*> (plugin);
-
-			if (idd)
-			{
-				DirectDownloadParams ddp = { name, where };
-				idd->AddJob (ddp, tp);
-			}
-			else if (ip2p)
-				ip2p->AddJob (name, tp);
-            return;
+			LeechCraft::DownloadParams ddp = { name, where };
+			di->AddJob (ddp, tp);
         }
     }
     emit error (tr ("No plugins are able to download \"%1\"").arg (name));
@@ -224,17 +214,6 @@ void Main::Core::TryToAddJob (const QString& name, const QString& where)
 void Main::Core::Activated (const QModelIndex& index)
 {
 	ShowPlugin (index.row ());
-}
-
-void Main::Core::SetNewRow (const QModelIndex& index)
-{
-	QModelIndex mapped = FilterModel_->mapToSource (index);
-	MergeModel::const_iterator modIter = MergeModel_->GetModelForRow (mapped.row ());
-	QObject *plugin = Representation2Object_ [*modIter];
-
-	IEmbedModel *iee = qobject_cast<IEmbedModel*> (plugin);
-	if (iee)
-		iee->ItemSelected (MergeModel_->mapToSource (mapped));
 }
 
 void Main::Core::UpdateFiltering (const QString& text, Main::Core::FilterType ft, bool caseSensitive)
@@ -397,7 +376,7 @@ void Main::Core::handleFileDownload (const QString& file, bool fromBuffer)
     {
         IDownload *id = qobject_cast<IDownload*> (plugins.at (i));
         IInfo *ii = qobject_cast<IInfo*> (plugins.at (i));
-		LeechCraft::TaskParameters tp = LeechCraft::Autostart | LeechCraft::FromAnother;
+		LeechCraft::TaskParameters tp = LeechCraft::Autostart | LeechCraft::FromAutomatic;
         if (id->CouldDownload (file, tp))
         {
             if (QMessageBox::question (qobject_cast<QWidget*> (qobject_cast<QObject*> (this)->parent ()),
@@ -405,18 +384,9 @@ void Main::Core::handleFileDownload (const QString& file, bool fromBuffer)
                 tr ("File %1 could be handled by plugin %2, would you like to?").arg (file).arg (ii->GetName ()),
                 QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
                 continue;
-			IDirectDownload *idd = qobject_cast<IDirectDownload*>
-				(plugins.at (i));
-			IPeer2PeerDownload *ip2p = qobject_cast<IPeer2PeerDownload*>
-				(plugins.at (i));
 
-			if (idd)
-			{
-				DirectDownloadParams ddp = { file, "" };
-				idd->AddJob (ddp, tp);
-			}
-			else if (ip2p)
-				ip2p->AddJob (file, tp);
+			LeechCraft::DownloadParams ddp = { file, "" };
+			id->AddJob (ddp, tp);
         }
     }
 }
