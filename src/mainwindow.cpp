@@ -125,6 +125,17 @@ namespace Main
 				this,
 				SLOT (updatePanes (const QModelIndex&)));
 
+		QHeaderView *itemsHeader = Ui_->PluginsTasksTree_->header ();
+		QFontMetrics fm = fontMetrics ();
+		itemsHeader->resizeSection (0,
+				fm.width ("Average download job or torrent name is just like this one maybe."));
+		itemsHeader->resizeSection (1,
+				fm.width ("State of the download."));
+		itemsHeader->resizeSection (2,
+				fm.width ("99.99% (1234.56 kb from 2345.67 kb)"));
+		itemsHeader->resizeSection (3,
+				fm.width (" 1234.56 kb/s "));
+
 		QTimer *speedUpd = new QTimer (this);
 		speedUpd->setInterval (1000);
 		connect (speedUpd, SIGNAL (timeout ()), this, SLOT (updateSpeedIndicators ()));
