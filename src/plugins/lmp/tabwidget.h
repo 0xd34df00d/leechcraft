@@ -10,6 +10,7 @@ class TabWidget : public QWidget
 	Ui::TabWidget Ui_;
 public:
 	TabWidget (QWidget* = 0);
+	Phonon::VideoWidget* GetVideoOutput () const;
 };
 
 #endif

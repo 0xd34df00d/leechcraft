@@ -3,12 +3,16 @@
 #include <QWidget>
 #include <interfaces/interfaces.h>
 
+class TabWidget;
+
 class LMP : public QObject
 		  , public IInfo
 		  , public IEmbedTab
 {
     Q_OBJECT
     Q_INTERFACES (IInfo IEmbedTab)
+
+	TabWidget *TabWidget_;
 public:
 	void Init ();
 	void Release ();

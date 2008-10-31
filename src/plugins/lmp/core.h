@@ -1,21 +1,25 @@
 #ifndef CORE_H
 #define CORE_H
+#include <memory>
 #include <QObject>
-
-namespace Phonon
-{
-	class MediaObject;
-};
+#include <MediaObject>
+#include <AudioOutput>
 
 class Core : public QObject
 {
 	Q_OBJECT
 
+	std::auto_ptr<Phonon::MediaObject> MediaObject_;
+	std::auto_ptr<Phonon::AudioOutput> AudioOutput_;
+
 	Core ();
 public:
 	static Core& Instance ();
 	void Release ();
-	Phonon::MediaObject* CreateObject (const QString&);
+
+	void Reinitialize (const QString&);
+	Phonon::MediaObject* GetMediaObject () const;
+	Phonon::AudioOutput* GetAudioOutput () const;
 };
 
 #endif
