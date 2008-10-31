@@ -228,8 +228,12 @@ void Task::Start (QIODevice *to)
 		if (ua.isEmpty ())
 			ua = XmlSettingsManager::Instance ()
 				.property ("PredefinedUserAgent").toString ();
+
+		QString qSep;
+		if (URL_.encodedQuery ().size ())
+			qSep = "?";
 		
-		QHttpRequestHeader header ("GET", URL_.path () + '?' + URL_.encodedQuery ());
+		QHttpRequestHeader header ("GET", URL_.path () + qSep + URL_.encodedQuery ());
 		header.setValue ("Host", URL_.host ());
 		header.setValue ("Range", QString ("bytes=%1-").arg (to->size ()));
 		header.setValue ("Accept", "*/*");
@@ -493,6 +497,8 @@ void Task::responseHeaderReceived (const QHttpResponseHeader& response)
 	if (response.statusCode () == 301 ||
 			response.statusCode () == 302)
 	{
+		Type_ = TInvalid;
+
 		QString newUrl (response.value ("Location"));
 		if (!QUrl (newUrl).isValid () ||
 				RedirectHistory_.contains (newUrl, Qt::CaseInsensitive))
@@ -501,6 +507,7 @@ void Task::responseHeaderReceived (const QHttpResponseHeader& response)
 			Http_->blockSignals (true);
 			Http_->abort ();
 			Http_.release ()->deleteLater ();
+			qWarning () << Q_FUNC_INFO << "redirection failed, possibly a loop detected" << newUrl;
 			return;
 		}
 		//Trying not to get into redirection loop
@@ -508,8 +515,6 @@ void Task::responseHeaderReceived (const QHttpResponseHeader& response)
 			RedirectHistory_ << newUrl;
 		
 		QIODevice *to = Http_->currentDestinationDevice ();
-
-		Type_ = TInvalid;
 
 		Http_->disconnect ();
 		Http_->blockSignals (true);
