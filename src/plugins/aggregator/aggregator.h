@@ -21,7 +21,6 @@ class Aggregator : public QWidget
     Q_INTERFACES (IInfo IEmbedTab)
 
     Ui::MainWidget Ui_;
-    unsigned long int ID_;
 
 	QToolBar *ToolBar_;
     QAction *ActionAddFeed_;
@@ -52,9 +51,6 @@ public:
     void Release ();
     QString GetName () const;
     QString GetInfo () const;
-    QString GetStatusbarMessage () const;
-    IInfo& SetID (long unsigned int);
-    unsigned long int GetID () const;
     QStringList Provides () const;
     QStringList Needs () const;
     QStringList Uses () const;

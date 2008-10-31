@@ -44,6 +44,8 @@ QVariant PluginManager::data (const QModelIndex& index, int role) const
 				case Qt::DecorationRole:
 					return qobject_cast<IInfo*> (Plugins_.at (index.row ())->
 							instance ())->GetIcon ();
+				case 45:
+					return Plugins_.at (index.row ())->instance ();
 				default:
 					return QVariant ();
 			}
@@ -131,14 +133,6 @@ QString PluginManager::Info (const PluginManager::Size_t& pos) const
     return qobject_cast<IInfo*> (Plugins_ [pos]->instance ())->GetInfo ();
 }
 
-QObject* PluginManager::FindByID (IInfo::ID_t id) const
-{
-    for (PluginsContainer_t::const_iterator i = Plugins_.begin (); i != Plugins_.end (); ++i)
-        if (qobject_cast<IInfo*> ((*i)->instance ())->GetID () == id)
-            return (*i)->instance ();
-    return 0;
-}
-
 QObjectList PluginManager::GetAllPlugins () const
 {
     QObjectList result;
@@ -169,7 +163,6 @@ void PluginManager::InitializePlugins (const MainWindow* win)
             Plugins_.removeAt (i--);
             continue;
         }
-        info->SetID (i);
         info->Init ();
     }
 }

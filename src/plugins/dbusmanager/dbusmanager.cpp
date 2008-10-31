@@ -20,17 +20,6 @@ QString DBusManager::GetInfo () const
 	return "DBus server application for LeechCraft";
 }
 
-IInfo& DBusManager::SetID (unsigned long id)
-{
-	ID_ = id;
-	return *this;
-}
-
-unsigned long DBusManager::GetID () const
-{
-	return ID_;
-}
-
 QStringList DBusManager::Provides () const
 {
 	return QStringList ("dbus");

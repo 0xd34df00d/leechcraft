@@ -28,7 +28,6 @@ class TorrentPlugin : public QObject
 
     Q_INTERFACES (IInfo IDownload IJobHolder IImportExport ITaggableJobs);
 
-    ID_t ID_;
     std::auto_ptr<XmlSettingsDialog> XmlSettingsDialog_;
 	std::auto_ptr<AddTorrent> AddTorrentDialog_;
 	std::auto_ptr<QTimer> OverallStatsUpdateTimer_;
@@ -63,9 +62,6 @@ public:
 	virtual ~TorrentPlugin ();
     QString GetName () const;
     QString GetInfo () const;
-    QString GetStatusbarMessage () const;
-    IInfo& SetID (ID_t);
-    ID_t GetID () const;
     QStringList Provides () const;
     QStringList Needs () const;
     QStringList Uses () const;

@@ -31,7 +31,6 @@ class Chatter : public QMainWindow
     Q_OBJECT;
 	Q_INTERFACES (IInfo IEmbedTab);
 
-    ID_t ID_;
     bool IsShown_;
 public:
 	virtual ~Chatter ();
@@ -39,9 +38,6 @@ public:
     QMap<QString, QObject*> Providers_;
     virtual QString GetName () const;
     virtual QString GetInfo () const;
-    virtual QString GetStatusbarMessage () const;
-    virtual IInfo& SetID (ID_t);
-    virtual ID_t GetID () const;
     virtual QStringList Provides () const;
     virtual QStringList Uses () const;
     virtual QStringList Needs () const;

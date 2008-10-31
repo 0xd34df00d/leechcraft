@@ -23,8 +23,6 @@ class QModelIndex;
 class IInfo
 {
 public:
-    typedef unsigned long int ID_t;
-
 	/** @brief Initializes the plugin.
 	 *
 	 * Init is called by the LeechCraft when it has finished
@@ -54,36 +52,6 @@ public:
 	 * @sa GetInfo
 	 */
     virtual QString GetInfo () const = 0;
-	/** @brief Sets the ID of the plugin.
-	 *
-	 * This function is called by LeechCraft to inform the plugin about
-	 * its ID.The ID is used internally by LeechCraft to distinguish 
-	 * between different plugins. So the passed value id should be
-	 * stored by the plugin and returned by the subsequent calls to
-	 * GetID().
-	 *
-	 * This function is deprecated and will be removed as soon as I'd
-	 * implement ID-less identification.
-	 *
-	 * @param[in] id Identification number.
-	 *
-	 * @sa GetID
-	 */
-    virtual IInfo& SetID (ID_t id) = 0;
-	/** @brief Returns the ID of the plugin.
-	 *
-	 * The return value of this function should be the same as the one
-	 * passed to previous call to SetID(), it is used by LeechCraft to
-	 * identify the plugin.
-	 *
-	 * This function is deprecated and will be removed as soon as I'd
-	 * implement ID-less identification.
-	 *
-	 * @return Identification number.
-	 *
-	 * @sa SetID
-	 */
-    virtual ID_t GetID () const = 0;
 	/** @brief Returns the list of provided features.
 	 *
 	 * The return value is used by LeechCraft to calculate the

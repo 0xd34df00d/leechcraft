@@ -171,22 +171,6 @@ QString Aggregator::GetInfo () const
     return tr ("RSS 2.0, Atom 1.0 feed reader.");
 }
 
-QString Aggregator::GetStatusbarMessage () const
-{
-    return QString ();
-}
-
-IInfo& Aggregator::SetID (long unsigned int id)
-{
-    ID_ = id;
-    return *this;
-}
-
-unsigned long int Aggregator::GetID () const
-{
-    return ID_;
-}
-
 QStringList Aggregator::Provides () const
 {
     return QStringList ("rss");

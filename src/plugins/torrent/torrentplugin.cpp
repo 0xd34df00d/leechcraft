@@ -74,22 +74,6 @@ QString TorrentPlugin::GetInfo () const
     return tr ("Full-featured BitTorrent client.");
 }
 
-QString TorrentPlugin::GetStatusbarMessage () const
-{
-    return QString ("");
-}
-
-IInfo& TorrentPlugin::SetID (IInfo::ID_t id)
-{
-    ID_ = id;
-    return *this;
-}
-
-IInfo::ID_t TorrentPlugin::GetID () const
-{
-    return ID_;
-}
-
 QStringList TorrentPlugin::Provides () const
 {
     return QStringList ("bittorrent") << "resume" << "remoteable";

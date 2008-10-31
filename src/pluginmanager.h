@@ -35,7 +35,6 @@ namespace Main
         void Release (Size_t);
         QString Name (const Size_t& pos) const;
         QString Info (const Size_t& pos) const;
-        QObject* FindByID (IInfo::ID_t) const;
         QObjectList GetAllPlugins () const;
         template<typename T> QObjectList GetAllCastableTo () const
         {

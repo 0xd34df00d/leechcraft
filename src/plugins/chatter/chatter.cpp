@@ -48,22 +48,6 @@ QString Chatter::GetInfo () const
     return tr("A f^W very simple irc client");
 }
 
-QString Chatter::GetStatusbarMessage () const
-{
-    return tr("what's the status?");
-}
-
-IInfo& Chatter::SetID (IInfo::ID_t id)
-{
-    ID_ = id;
-    return *this;
-}
-
-IInfo::ID_t Chatter::GetID () const
-{
-    return ID_;
-}
-
 QStringList Chatter::Provides () const
 {
     return QStringList ("irc");

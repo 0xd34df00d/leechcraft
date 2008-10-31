@@ -76,22 +76,6 @@ QString CSTP::GetInfo () const
 	return "Common Stream Transfer Protocols";
 }
 
-QString CSTP::GetStatusbarMessage () const
-{
-	return QString ();
-}
-
-IInfo& CSTP::SetID (long unsigned int id)
-{
-	ID_ = id;
-	return *this;
-}
-
-unsigned long int CSTP::GetID () const
-{
-	return ID_;
-}
-
 QStringList CSTP::Provides () const
 {
 	return QStringList ("http") << "https" << "remoteable" << "resume";

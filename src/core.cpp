@@ -182,9 +182,9 @@ void Main::Core::DelayedInit ()
     }
 }
 
-bool Main::Core::ShowPlugin (IInfo::ID_t id)
+bool Main::Core::ShowPlugin (int id)
 {
-    QObject *plugin = PluginManager_->FindByID (id);
+    QObject *plugin = PluginManager_->data (PluginManager_->index (id, 0)).value <QObject*> ();
     IWindow *w = qobject_cast<IWindow*> (plugin);
     if (w)
     {

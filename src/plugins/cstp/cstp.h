@@ -31,7 +31,6 @@ class CSTP : public QObject
 	Q_OBJECT
 	Q_INTERFACES (IInfo IDownload IJobHolder)
 
-	unsigned long int ID_;
 	QMenu *Plugins_;
 	std::auto_ptr<QTranslator> Translator_;
 	std::auto_ptr<XmlSettingsDialog> XmlSettingsDialog_;
@@ -44,9 +43,6 @@ public:
 	void Release ();
     QString GetName () const;
     QString GetInfo () const;
-    QString GetStatusbarMessage () const;
-    IInfo& SetID (long unsigned int);
-    unsigned long int GetID () const;
     QStringList Provides () const;
     QStringList Needs () const;
     QStringList Uses () const;

@@ -34,22 +34,6 @@ QString Remoter::GetInfo () const
     return tr ("Server providing remote access to other plugins."); 
 }
 
-QString Remoter::GetStatusbarMessage () const
-{
-    return QString ();
-}
-
-IInfo& Remoter::SetID (long unsigned int id)
-{
-    ID_ = id;
-    return *this;
-}
-
-unsigned long int Remoter::GetID () const
-{
-    return ID_;
-}
-
 QStringList Remoter::Provides () const
 {
     return QStringList ("remoteaccess");

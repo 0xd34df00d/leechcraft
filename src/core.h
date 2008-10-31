@@ -57,7 +57,7 @@ namespace Main
 		QStringList GetTagsForIndex (int) const;
 
         void DelayedInit ();
-        bool ShowPlugin (IInfo::ID_t);
+        bool ShowPlugin (int);
         void TryToAddJob (const QString&, const QString&);
 
 		void Activated (const QModelIndex&);

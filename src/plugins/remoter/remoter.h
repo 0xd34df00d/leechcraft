@@ -12,7 +12,6 @@ class Remoter : public QMainWindow
     Q_INTERFACES (IInfo IWindow);
 
     Ui::MainWindow Ui_;
-    unsigned long int ID_;
     bool IsShown_;
 
     QObjectList Objects_;
@@ -21,9 +20,6 @@ public:
     void Release ();
     QString GetName () const;
     QString GetInfo () const;
-    QString GetStatusbarMessage () const;
-    IInfo& SetID (long unsigned int);
-    unsigned long int GetID () const;    
     QStringList Provides () const;
     QStringList Needs () const;
     QStringList Uses () const;
