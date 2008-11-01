@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/" >
+    <file>leechcraft_lmp_ru_RU.qm</file>
+    <file>leechcraft_lmp_uk_UA.qm</file>
+  </qresource>
+</RCC>

@@ -1,18 +1,20 @@
 #ifndef LMP_H
 #define LMP_H
+#include <memory>
 #include <QWidget>
+#include <QTranslator>
 #include <interfaces/interfaces.h>
+#include "ui_tabwidget.h"
 
-class TabWidget;
-
-class LMP : public QObject
+class LMP : public QWidget
 		  , public IInfo
 		  , public IEmbedTab
 {
     Q_OBJECT
     Q_INTERFACES (IInfo IEmbedTab)
 
-	TabWidget *TabWidget_;
+	Ui::TabWidget Ui_;
+	std::auto_ptr<QTranslator> Translator_;
 public:
 	void Init ();
 	void Release ();
@@ -24,6 +26,8 @@ public:
 	void SetProvider (QObject*, const QString&);
 	QIcon GetIcon () const;
 	QWidget *GetTabContents ();
+public slots:
+	void handleStateUpdated (const QString&);
 };
 
 #endif

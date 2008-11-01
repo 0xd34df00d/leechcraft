@@ -12,6 +12,8 @@ class Core : public QObject
 	std::auto_ptr<Phonon::MediaObject> MediaObject_;
 	std::auto_ptr<Phonon::AudioOutput> AudioOutput_;
 
+	bool TotalTimeAvailable_;
+
 	Core ();
 public:
 	static Core& Instance ();
@@ -20,6 +22,11 @@ public:
 	void Reinitialize (const QString&);
 	Phonon::MediaObject* GetMediaObject () const;
 	Phonon::AudioOutput* GetAudioOutput () const;
+private slots:
+	void updateState ();
+	void totalTimeChanged ();
+signals:
+	void stateUpdated (const QString&);
 };
 
 #endif
