@@ -62,6 +62,7 @@ namespace Main
 
 		void Activated (const QModelIndex&);
 		void SetNewRow (const QModelIndex&);
+		bool SameModel (const QModelIndex&, const QModelIndex&) const;
 		void UpdateFiltering (const QString&, FilterType, bool);
         
         QPair<qint64, qint64> GetSpeeds () const;

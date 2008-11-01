@@ -5,6 +5,11 @@
 #include <MediaObject>
 #include <AudioOutput>
 
+namespace Phonon
+{
+	class VideoWidget;
+};
+
 class Core : public QObject
 {
 	Q_OBJECT
@@ -14,6 +19,8 @@ class Core : public QObject
 
 	bool TotalTimeAvailable_;
 
+	Phonon::VideoWidget *VideoWidget_;
+
 	Core ();
 public:
 	static Core& Instance ();
@@ -21,7 +28,12 @@ public:
 
 	void Reinitialize (const QString&);
 	Phonon::MediaObject* GetMediaObject () const;
-	Phonon::AudioOutput* GetAudioOutput () const;
+	void SetVideoWidget (Phonon::VideoWidget*);
+public slots:
+	void changeVolume (int);
+	void play ();
+	void pause ();
+	void setSource (const QString&);
 private slots:
 	void updateState ();
 	void totalTimeChanged ();

@@ -1,0 +1,15 @@
+torrent_startjob lc_start
+cstp_start lc_start
+torrent_addjob lc_addjob
+main_addjob lc_addjob
+cstp_add lc_addjob
+aggregator_add lc_addjob
+torrent_preferences lc_settings
+mainpreferences lc_settings
+cstp_preferences lc_settings
+aggregator_preferences lc_settings
+cstp_stop lc_stop
+torrent_stopjob lc_stop
+cstp_remove lc_deletejob
+torrent_deletejob lc_deletejob
+aggregator_remove lc_deletejob

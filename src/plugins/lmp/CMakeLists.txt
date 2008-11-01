@@ -11,10 +11,12 @@ INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR}
 SET (SRCS
 	lmp.cpp
 	core.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (HEADERS
 	lmp.h
 	core.h
+	xmlsettingsmanager.h
 	)
 SET (FORMS
     tabwidget.ui

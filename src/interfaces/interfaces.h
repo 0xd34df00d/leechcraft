@@ -5,9 +5,7 @@
 #include <QVariantList>
 #include <QtPlugin>
 #include <QFlags>
-#ifndef NOGUI
 #include <QIcon>
-#endif
 #include "structures.h"
 
 class QAbstractItemModel;
@@ -146,7 +144,6 @@ public:
     virtual ~IInfo () {}
 };
 
-#ifndef NOGUI
 /** @brief Interface for plugins with their own main windows.
  *
  * If a plugin creates a main window and wants to show it upon some user
@@ -176,7 +173,6 @@ public:
 	 */
     virtual ~IWindow () {}
 };
-#endif
 
 /** @brief Common interface for all the downloaders.
  *
@@ -491,16 +487,36 @@ public:
 	virtual ~IMultiTabs () {}
 };
 
+/** @brief Interface for plugins providing custom facilities.
+ *
+ * This interface should be used by plugins which provide custom
+ * abilities not related to LeechCraft and not accounted by other
+ * interfaces. All communication goes via signal/slot connections.
+ */
+class ICustomProvider
+{
+public:
+	/** @brief Queries the plugin whether it implements a given feature.
+	 *
+	 * @param[in] feature Queried feature.
+	 * @return Query result.
+	 */
+	bool ImplementsFeature (const QString& feature) const;
+
+	/** @brief Virtual destructor.
+	 */
+	virtual ~ICustomProvider () {}
+};
+
 Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
-#ifndef NOGUI
 Q_DECLARE_INTERFACE (IWindow, "org.Deviant.LeechCraft.IWindow/1.0");
-#endif
 Q_DECLARE_INTERFACE (IDownload, "org.Deviant.LeechCraft.IDownload/1.0");
 Q_DECLARE_INTERFACE (IJobHolder, "org.Deviant.LeechCraft.IJobHolder/1.0");
 Q_DECLARE_INTERFACE (IImportExport, "org.Deviant.LeechCraft.IImportExport/1.0");
 Q_DECLARE_INTERFACE (ITaggableJobs, "org.Deviant.LeechCraft.ITaggableJobs/1.0");
 Q_DECLARE_INTERFACE (IEmbedTab, "org.Deviant.LeechCraft.IEmbedTab/1.0");
 Q_DECLARE_INTERFACE (IMultiTabs, "org.Deviant.LeechCraft.IMultiTabs/1.0");
+Q_DECLARE_INTERFACE (ICustomProvider, "org.Deviant.LeechCraft.ICustomProvider/1.0");
 
 #endif
 

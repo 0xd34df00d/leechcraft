@@ -235,6 +235,7 @@ void CSTP::SetupToolbar ()
 	removeAll->setProperty ("Slot", "removeAllTriggered");
 	removeAll->setProperty ("Object",
 			QVariant::fromValue<QObject*> (&Core::Instance ()));
+	remove->setProperty ("ActionIcon", "cstp_removeall");
 
 	Toolbar_->addSeparator ();
 
@@ -254,11 +255,13 @@ void CSTP::SetupToolbar ()
 	startAll->setProperty ("Slot", "startAllTriggered");
 	startAll->setProperty ("Object",
 			QVariant::fromValue<QObject*> (&Core::Instance ()));
+	startAll->setProperty ("ActionIcon", "cstp_startall");
 
 	QAction *stopAll = Toolbar_->addAction (tr ("Stop all"));
 	stopAll->setProperty ("Slot", "stopAllTriggered");
 	stopAll->setProperty ("Object",
 			QVariant::fromValue<QObject*> (&Core::Instance ()));
+	startAll->setProperty ("ActionIcon", "cstp_stopall");
 
 	Toolbar_->addSeparator ();
 

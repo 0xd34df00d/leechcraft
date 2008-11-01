@@ -190,4 +190,5 @@ INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor
 	PATTERN ".svn" EXCLUDE)
 IF (UNIX)
 	INSTALL (FILES freedesktop/leechcraft.desktop DESTINATION share/applications)
+	INSTALL (FILES hicolor.mapping DESTINATION share/leechcraft/icons)
 ENDIF (UNIX)

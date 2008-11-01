@@ -228,6 +228,17 @@ void Main::Core::SetNewRow (const QModelIndex& index)
 		ijh->ItemSelected (MergeModel_->mapToSource (mapped));
 }
 
+bool Main::Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) const
+{
+	QModelIndex mapped1 = FilterModel_->mapToSource (i1);
+	MergeModel::const_iterator modIter1 = MergeModel_->GetModelForRow (mapped1.row ());
+
+	QModelIndex mapped2 = FilterModel_->mapToSource (i2);
+	MergeModel::const_iterator modIter2 = MergeModel_->GetModelForRow (mapped2.row ());
+
+	return modIter1 == modIter2;
+}
+
 void Main::Core::UpdateFiltering (const QString& text, Main::Core::FilterType ft, bool caseSensitive)
 {
 	FilterModel_->setFilterCaseSensitivity (caseSensitive ?

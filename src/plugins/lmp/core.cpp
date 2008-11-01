@@ -1,8 +1,10 @@
 #include "core.h"
 #include <QUrl>
+#include <VideoWidget>
 
 Core::Core ()
 : TotalTimeAvailable_ (false)
+, VideoWidget_ (0)
 {
 }
 
@@ -39,7 +41,16 @@ void Core::Reinitialize (const QString& entity)
 
 	MediaObject_->setCurrentSource (entity);
 
+	qreal oldVolume = 1;
+	if (AudioOutput_.get ())
+		oldVolume = AudioOutput_->volume ();
 	AudioOutput_.reset (new Phonon::AudioOutput (Phonon::MusicCategory, this));
+	AudioOutput_->setVolume (oldVolume);
+
+	Phonon::createPath (Core::Instance ().GetMediaObject (),
+			VideoWidget_);
+	Phonon::createPath (Core::Instance ().GetMediaObject (),
+			AudioOutput_.get ());
 }
 
 Phonon::MediaObject* Core::GetMediaObject () const
@@ -47,9 +58,34 @@ Phonon::MediaObject* Core::GetMediaObject () const
 	return MediaObject_.get ();
 }
 
-Phonon::AudioOutput* Core::GetAudioOutput () const
+void Core::SetVideoWidget (Phonon::VideoWidget *widget)
 {
-	return AudioOutput_.get ();
+	VideoWidget_ = widget;
+}
+
+void Core::changeVolume (int volume)
+{
+	if (!AudioOutput_.get ())
+		return;
+
+	AudioOutput_->setVolume (static_cast<qreal> (volume) / 100);
+}
+
+void Core::play ()
+{
+	if (MediaObject_.get ())
+		MediaObject_->play ();
+}
+
+void Core::pause ()
+{
+	if (MediaObject_.get ())
+		MediaObject_->pause ();
+}
+
+void Core::setSource (const QString& filename)
+{
+	MediaObject_->setCurrentSource (filename);
 }
 
 void Core::updateState ()

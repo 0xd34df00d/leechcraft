@@ -69,7 +69,7 @@ namespace Main
 		void ReadSettings ();
 		void WriteSettings ();
 	private slots:
-		void updatePanes (const QModelIndex&);
+		void updatePanes (const QModelIndex&, const QModelIndex&);
 		void updateSpeedIndicators ();
 		void showAboutInfo ();
 		void showHideMain ();

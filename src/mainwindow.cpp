@@ -32,8 +32,8 @@ namespace Main
 
 		Ui_->AddTaskButton_->setDefaultAction (Ui_->ActionAddTask_);
 
-		Ui_->ActionAddTask_->setProperty ("ActionIcon", "mainaddjob");
-		Ui_->ActionSettings_->setProperty ("ActionIcon", "mainsettings");
+		Ui_->ActionAddTask_->setProperty ("ActionIcon", "addjob");
+		Ui_->ActionSettings_->setProperty ("ActionIcon", "settings");
 
 		connect (Ui_->ActionAddTask_,
 				SIGNAL (triggered ()),
@@ -117,13 +117,11 @@ namespace Main
 		Ui_->PluginsTasksTree_->setModel (tasksModel);
 
 		connect (Ui_->PluginsTasksTree_->selectionModel (),
-				SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
+				SIGNAL (currentRowChanged (const QModelIndex&,
+						const QModelIndex&)),
 				this,
-				SLOT (updatePanes (const QModelIndex&)));
-		connect (Ui_->PluginsTasksTree_,
-				SIGNAL (clicked (const QModelIndex&)),
-				this,
-				SLOT (updatePanes (const QModelIndex&)));
+				SLOT (updatePanes (const QModelIndex&,
+						const QModelIndex&)));
 
 		QHeaderView *itemsHeader = Ui_->PluginsTasksTree_->header ();
 		QFontMetrics fm = fontMetrics ();
@@ -173,8 +171,14 @@ namespace Main
 		QMessageBox::critical (this, tr ("Error"), message);
 	}
 
-	void MainWindow::updatePanes (const QModelIndex& newIndex)
+	void MainWindow::updatePanes (const QModelIndex& newIndex,
+			const QModelIndex& oldIndex)
 	{
+		Core::Instance ().SetNewRow (newIndex);
+
+		if (Core::Instance ().SameModel (newIndex, oldIndex))
+			return;
+
 		if (Ui_->PluginsStuff_->count () == 4)
 		{
 			Ui_->PluginsStuff_->takeAt (3)->widget ()->hide ();
@@ -183,8 +187,6 @@ namespace Main
 
 		if (newIndex.isValid ())
 		{
-			Core::Instance ().SetNewRow (newIndex);
-
 			QWidget *controls = Core::Instance ()
 						.GetControls (newIndex),
 					*addiInfo = Core::Instance ()
@@ -393,6 +395,35 @@ namespace Main
 		QString iconSet = XmlSettingsManager::Instance ()->
 			property ("IconSet").toString ();
 		QMap<QString, QString> iconName2Path;
+		QMap<QString, QString> iconName2FileName;
+#if defined (Q_OS_UNIX)
+		QDir dir ("/usr/share/leechcraft/icons");
+		if (!dir.exists ())
+			dir = "/usr/local/share/leechcraft/icons";
+#elif defined (Q_OS_WIN32)
+		QDir dir = QApplication::applicationDirPath ();
+		dir.cd ("icons");
+#endif
+		if (dir.exists (iconSet + ".mapping"))
+		{
+			QFile mappingFile (dir.filePath (iconSet + ".mapping"));
+			if (mappingFile.open (QIODevice::ReadOnly))
+			{
+				QByteArray lineData = mappingFile.readLine ();
+				while (!lineData.isEmpty ())
+				{
+					QStringList pair = QString::fromUtf8 (lineData)
+						.split (' ', QString::SkipEmptyParts);
+					if (pair.size () != 2)
+						continue;
+
+					iconName2FileName [pair.at (0).simplified ()] = pair.at (1).simplified ();
+
+					lineData = mappingFile.readLine ();
+				}
+			}
+		}
+
 #if defined (Q_OS_UNIX)
 		std::vector<int> numbers = GetDirForBase ("/usr/share/icons", iconSet);
 		QDir baseDir ("/usr/share/icons");
@@ -405,7 +436,8 @@ namespace Main
 			current.cd (number + 'x' + number);
 			current.cd ("actions");
 			QFileInfoList infos =
-				current.entryInfoList (QStringList ("lc_*.png"), QDir::Files | QDir::Readable);
+				current.entryInfoList (QStringList ("lc_*.png"),
+						QDir::Files | QDir::Readable);
 
 			for (QFileInfoList::const_iterator j = infos.begin (),
 					infoEnd = infos.end (); j != infoEnd; ++j)
@@ -423,7 +455,8 @@ namespace Main
 			current.cd (number + 'x' + number);
 			current.cd ("actions");
 			QFileInfoList infos =
-				current.entryInfoList (QStringList ("lc_*.png"), QDir::Files | QDir::Readable);
+				current.entryInfoList (QStringList ("lc_*.png"),
+						QDir::Files | QDir::Readable);
 
 			for (QFileInfoList::const_iterator j = infos.begin (),
 					infoEnd = infos.end (); j != infoEnd; ++j)
@@ -442,30 +475,43 @@ namespace Main
 			current.cd (number + 'x' + number);
 			current.cd ("actions");
 			QFileInfoList infos =
-				current.entryInfoList (QStringList ("lc_*.png"), QDir::Files | QDir::Readable);
+				current.entryInfoList (QStringList ("lc_*.png"),
+						QDir::Files | QDir::Readable);
 
 			for (QFileInfoList::const_iterator j = infos.begin (),
 					infoEnd = infos.end (); j != infoEnd; ++j)
 				iconName2Path [j->fileName ()] = j->absoluteFilePath ();
 		}
-#else
-		qWarning () << "Unknown OS";
-		return;
 #endif
 
 		QList<QAction*> actions = findChildren<QAction*> ();
 		for (QList<QAction*>::iterator i = actions.begin (),
 				end = actions.end (); i != end; ++i)
 		{
-			QString icon = QString ("lc_") + (*i)->property ("ActionIcon").toString () + ".png";
+			if (!(*i)->property ("ActionIcon").isValid ())
+				continue;
+			QString actionIcon = (*i)->property ("ActionIcon").toString ();
+			QString actionIconOff = (*i)->property ("ActionIconOff").toString ();
+			QString icon;
+			if (iconName2FileName.contains (actionIcon))
+				icon = iconName2FileName [actionIcon] + ".png";
+			else
+				icon = QString ("lc_") + actionIcon + ".png";
 
 			QIcon iconEntity;
-			iconEntity.addPixmap (QPixmap (iconName2Path [icon]), QIcon::Normal, QIcon::On);
-			if ((*i)->property ("ActionIconOff").isValid ())
-				iconEntity.addPixmap (QPixmap (iconName2Path [QString ("lc_") +
-								(*i)->property ("ActionIconOff").toString () +
-								".png"]),
-						QIcon::Normal, QIcon::Off);
+			iconEntity.addPixmap (QPixmap (iconName2Path [icon]),
+					QIcon::Normal,
+					QIcon::On);
+
+			if (actionIconOff.size ())
+			{
+				QString offIcon;
+				if (iconName2FileName.contains (actionIconOff))
+					icon = iconName2FileName [actionIconOff] + ".png";
+				else
+					icon = QString ("lc_") + actionIconOff + ".png";
+				iconEntity.addPixmap (icon, QIcon::Normal, QIcon::Off);
+			}
 			
 			(*i)->setIcon (iconEntity);
 		}
