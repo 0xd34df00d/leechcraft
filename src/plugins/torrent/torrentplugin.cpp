@@ -28,6 +28,7 @@
 #include "movetorrentfiles.h"
 #include "representationmodel.h"
 #include "trackerschanger.h"
+#include "historymodel.h"
 
 #ifdef AddJob
 #undef AddJob
@@ -44,20 +45,6 @@ void TorrentPlugin::Init ()
     setActionsEnabled ();
 
     Ui_.LogShower_->setPlainText ("BitTorrent initialized");
-
-    QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-			Proxy::Instance ()->GetApplicationName () + "_Torrent");
-    int max = settings.beginReadArray ("History");
-    for (int i = 0; i < max; ++i)
-    {
-        settings.setArrayIndex (i);
-        QTreeWidgetItem *item = new QTreeWidgetItem (Ui_.HistoryTree_);
-        item->setText (0, settings.value ("Name").toString ());
-        item->setText (1, settings.value ("Where").toString ());
-        item->setText (2, settings.value ("TorrentSize").toString ());
-        item->setText (3, settings.value ("Date").toString ());
-    }
-    settings.endArray ();
 }
 
 TorrentPlugin::~TorrentPlugin ()
@@ -97,17 +84,6 @@ void TorrentPlugin::Release ()
 {
     Core::Instance ()->Release ();
     XmlSettingsManager::Instance ()->Release ();
-    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Torrent");
-    settings.beginWriteArray ("History");
-    for (int i = 0; i < Ui_.HistoryTree_->topLevelItemCount (); ++i)
-    {
-        settings.setArrayIndex (i);
-        settings.setValue ("Name", Ui_.HistoryTree_->topLevelItem (i)->text (0));
-        settings.setValue ("Where", Ui_.HistoryTree_->topLevelItem (i)->text (1));
-        settings.setValue ("TorrentSize", Ui_.HistoryTree_->topLevelItem (i)->text (2));
-        settings.setValue ("Date", Ui_.HistoryTree_->topLevelItem (i)->text (3));
-    }
-    settings.endArray ();
 }
 
 QIcon TorrentPlugin::GetIcon () const
@@ -190,6 +166,11 @@ QAbstractItemModel* TorrentPlugin::GetRepresentation () const
     return FilterModel_.get ();
 }
 
+LeechCraft::HistoryModel* TorrentPlugin::GetHistory () const
+{
+	return Core::Instance ()->GetHistoryModel ();
+}
+
 QWidget* TorrentPlugin::GetControls () const
 {
 	return Toolbar_.get ();
@@ -202,7 +183,6 @@ QWidget* TorrentPlugin::GetAdditionalInfo () const
 
 void TorrentPlugin::ItemSelected (const QModelIndex& item)
 {
-	qDebug () << Q_FUNC_INFO;
 	QModelIndex mapped = FilterModel_->mapToSource (item);
 	Core::Instance ()->SetCurrentTorrent (mapped.row ());
 	Ui_.TorrentTags_->setText (Core::Instance ()->GetTagsForIndex ().join (" "));
@@ -239,6 +219,14 @@ QByteArray TorrentPlugin::ExportData () const
 QStringList TorrentPlugin::GetTags (int torrent) const
 {
 	return Core::Instance ()->GetTagsForIndex (torrent);
+}
+
+QStringList TorrentPlugin::GetHistoryTags (int historyRow) const
+{
+	QModelIndex index = Core::Instance ()->
+		GetHistoryModel ()->index (historyRow, 0);
+	return Core::Instance ()->GetHistoryModel ()->
+		data (index, HistoryModel::TagsRole).toStringList ();
 }
 
 void TorrentPlugin::SetTags (int torrent, const QStringList& tags)
@@ -541,18 +529,12 @@ void TorrentPlugin::doLogMessage (const QString& msg)
     Ui_.LogShower_->append (msg.trimmed ());
 }
 
-void TorrentPlugin::addToHistory (const QString& name, const QString& where, quint64 size, QDateTime when)
+void TorrentPlugin::addToHistory (const QString& name,
+		const QString& where, quint64 size, const QDateTime& when,
+		const QStringList& tags)
 {
-    QList<QTreeWidgetItem*> items = Ui_.HistoryTree_->findItems (name, Qt::MatchExactly);
-    for (int i = 0; i < items.size (); ++i)
-        if (items.at (i)->text (1) == where)
-            return;
-
-    QTreeWidgetItem *item = new QTreeWidgetItem (Ui_.HistoryTree_);
-    item->setText (0, name);
-    item->setText (1, where);
-    item->setText (2, Proxy::Instance ()->MakePrettySize (size));
-    item->setText (3, when.toString ());
+	HistoryModel::HistoryItem item = { name, where, size, when, tags };
+	Core::Instance ()->GetHistoryModel ()->AddItem (item);
 }
 
 void TorrentPlugin::UpdateDashboard ()
@@ -728,10 +710,10 @@ void TorrentPlugin::SetupCore ()
 			SLOT (updateTorrentStats ()));
 	connect (Core::Instance (),
 			SIGNAL (addToHistory (const QString&, const QString&,
-					quint64, QDateTime)),
+					quint64, const QDateTime&, const QStringList&)),
 			this,
 			SLOT (addToHistory (const QString&, const QString&,
-					quint64, QDateTime)));
+					quint64, const QDateTime&, const QStringList&)));
 	connect (TabWidget_.get (),
 			SIGNAL (currentChanged (int)),
 			this,

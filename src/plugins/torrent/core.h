@@ -15,6 +15,7 @@
 #include "fileinfo.h"
 #include "peerinfo.h"
 #include "newtorrentparams.h"
+#include "historymodel.h"
 
 class QTimer;
 class PiecesModel;
@@ -74,6 +75,7 @@ class Core : public QAbstractItemModel
 	std::auto_ptr<PeersModel> PeersModel_;
 	std::auto_ptr<TagsCompletionModel> TagsCompletionModel_;
 	std::auto_ptr<TorrentFilesModel> TorrentFilesModel_;
+	std::auto_ptr<HistoryModel> HistoryModel_;
 
 	std::list<quint16> IDPool_;
 
@@ -184,6 +186,7 @@ public:
 	void MoveDown (const std::deque<int>&);
 	void MoveToTop (const std::deque<int>&);
 	void MoveToBottom (const std::deque<int>&);
+	HistoryModel* GetHistoryModel () const;
 private:
 	void MoveToTop (int);
 	void MoveToBottom (int);
@@ -221,7 +224,8 @@ signals:
     void logMessage (const QString&);
     void torrentFinished (const QString&);
     void fileFinished (const QString&);
-    void addToHistory (const QString&, const QString&, quint64, QDateTime);
+    void addToHistory (const QString&, const QString&, quint64,
+			const QDateTime&, const QStringList&);
 	void taskFinished (int);
 	void taskRemoved (int);
 };

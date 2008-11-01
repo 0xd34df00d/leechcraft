@@ -79,6 +79,7 @@ public:
 
     // IJobHolder
     QAbstractItemModel* GetRepresentation () const;
+	LeechCraft::HistoryModel* GetHistory () const;
 	QWidget* GetControls () const;
 	QWidget* GetAdditionalInfo () const;
 	void ItemSelected (const QModelIndex&);
@@ -91,6 +92,7 @@ public:
 
 	// ITaggableJobs
 	QStringList GetTags (int) const;
+	QStringList GetHistoryTags (int) const;
 	void SetTags (int, const QStringList&);
 public slots:
     void updateTorrentStats ();
@@ -127,7 +129,8 @@ private slots:
     void updateOverallStats ();
     void restartTimers ();
     void doLogMessage (const QString&);
-    void addToHistory (const QString&, const QString&, quint64, QDateTime);
+    void addToHistory (const QString&, const QString&, quint64,
+			const QDateTime&, const QStringList&);
 private:
     void UpdateDashboard ();
 	void UpdateTorrentControl ();

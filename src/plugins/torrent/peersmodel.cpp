@@ -26,7 +26,7 @@ PeersModel::~PeersModel ()
 {
 }
 
-int PeersModel::columnCount (const QModelIndex& index) const
+int PeersModel::columnCount (const QModelIndex&) const
 {
     return Headers_.size ();
 }

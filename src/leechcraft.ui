@@ -21,7 +21,7 @@
     <item>
      <widget class="QTabWidget" name="MainTabWidget_" >
       <property name="currentIndex" >
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="DownloadersTab_" >
        <attribute name="title" >
@@ -101,6 +101,57 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tab" >
+       <attribute name="title" >
+        <string>Download history</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_3" >
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2" >
+          <item>
+           <widget class="QLineEdit" name="HistoryFilterLine_" />
+          </item>
+          <item>
+           <widget class="QComboBox" name="HistoryFilterType_" >
+            <item>
+             <property name="text" >
+              <string>Fixed string</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>Wildcard</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>Regexp</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>Tags</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="HistoryFilterCaseSensitivity_" >
+            <property name="text" >
+             <string>Case sensitive</string>
+            </property>
+            <property name="checked" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTreeView" name="HistoryView_" />
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -111,7 +162,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>30</height>
+     <height>28</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >

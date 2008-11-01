@@ -10,6 +10,10 @@
 
 class QAbstractItemModel;
 class QModelIndex;
+namespace LeechCraft
+{
+	class HistoryModel;
+};
 
 /** @brief Required interface for every plugin.
  *
@@ -294,10 +298,23 @@ public:
 	 *
 	 * @return Representation model.
 	 *
+	 * @sa GetHistory
+	 * @sa GetControls
 	 * @sa GetAdditionalInfo
-	 * @sa GetRepresentation
 	 */
     virtual QAbstractItemModel* GetRepresentation () const = 0;
+	/** @brief Returns the history model.
+	 *
+	 * If the returned value is 0, it is ignored. Otherwise it would be
+	 * merged with other history models in LeechCraft's History tab.
+	 *
+	 * @return History model.
+	 *
+	 * @sa GetRepresentation
+	 * @sa GetControls
+	 * @sa GetAdditionalInfo
+	 */
+	virtual LeechCraft::HistoryModel* GetHistory () const = 0;
 	/** @brief Returns the widget with controls.
 	 *
 	 * Returned widget would be placed above the view with the jobs, so
@@ -310,6 +327,7 @@ public:
 	 * @return Widget with controls.
 	 *
 	 * @sa GetRepresentation
+	 * @sa GetHistory
 	 * @sa GetAdditionalInfo
 	 */
 	virtual QWidget* GetControls () const = 0;
@@ -325,6 +343,7 @@ public:
 	 * @return Widget with additional info.
 	 *
 	 * @sa GetRepresentation
+	 * @sa GetHistory
 	 * @sa GetControls
 	 */
 	virtual QWidget* GetAdditionalInfo () const = 0;
@@ -426,9 +445,24 @@ public:
 	 * @param[in] jobRow Row with the job.
 	 * @return List with tags.
 	 * 
+	 * @sa GetHistoryTags
 	 * @sa SetTags
 	 */
 	virtual QStringList GetTags (int jobRow) const = 0;
+	/** @brief Returns the list with tags for a history item.
+	 *
+	 * This function should return the list with tags for a history item
+	 * which is in jobRow in the model returned by
+	 * IJobHolder::GetHistory(). If the history model returned by
+	 * IJobHolder::GetHistory() is 0, the returned value could be
+	 * anything as this funtion would be never called.
+	 *
+	 * @param[in] jobRow Row with the job.
+	 * @return List with tags.
+	 *
+	 * @sa GetTags
+	 */
+	virtual QStringList GetHistoryTags (int jobRow) const = 0;
 	/** @brief Sets the list with tags for a job.
 	 *
 	 * This function should replace the list with tags for a job which

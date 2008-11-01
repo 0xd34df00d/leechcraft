@@ -35,12 +35,14 @@
 #include <boost/filesystem/fstream.hpp>
 #include <plugininterface/proxy.h>
 #include <plugininterface/tagscompletionmodel.h>
+#include <plugininterface/historymodel.h>
 #include "xmlsettingsmanager.h"
 #include "piecesmodel.h"
 #include "peersmodel.h"
 #include "torrentfilesmodel.h"
 #include "torrentplugin.h"
 #include "representationmodel.h"
+#include "historymodel.h"
 
 Core::HandleFinder::HandleFinder (const libtorrent::torrent_handle& h)
 : Handle_ (h)
@@ -68,6 +70,7 @@ Core::Core ()
 , PeersModel_ (new PeersModel ())
 , TagsCompletionModel_ (new TagsCompletionModel)
 , TorrentFilesModel_ (new TorrentFilesModel (false))
+, HistoryModel_ (new HistoryModel)
 {
 	ExternalAddress_ = tr ("Unknown");
 	for (quint16 i = 0; i < 65535; ++i)
@@ -166,6 +169,7 @@ void Core::Release ()
 	PeersModel_.reset ();
 	TagsCompletionModel_.reset ();
 	TorrentFilesModel_.reset ();
+	HistoryModel_.reset ();
 
 	QObjectList kids = children ();
 	for (int i = 0; i < kids.size (); ++i)
@@ -1143,6 +1147,11 @@ void Core::MoveToBottom (const std::deque<int>& selections)
 		MoveToBottom (*i);
 }
 
+HistoryModel* Core::GetHistoryModel () const
+{
+	return HistoryModel_.get ();
+}
+
 void Core::MoveToTop (int row)
 {
 	Handles_.at (row).Handle_.queue_position_top ();
@@ -1329,7 +1338,8 @@ void Core::HandleSingleFinished (int i)
 		emit addToHistory (QString::fromStdString (info.name ()),
 				where,
 				info.total_size (),
-				QDateTime::currentDateTime ());
+				QDateTime::currentDateTime (),
+				torrent.Tags_);
 
 	emit taskFinished (torrent.ID_);
 }

@@ -27,9 +27,12 @@ namespace Main
         QString PreviousClipboardContents_;
 		std::auto_ptr<QLocalServer> Server_;
 		std::auto_ptr<MergeModel> MergeModel_;
+		std::auto_ptr<MergeModel> HistoryMergeModel_;
 		std::auto_ptr<FilterModel> FilterModel_;
+		std::auto_ptr<FilterModel> HistoryFilterModel_;
 		typedef std::map<const QAbstractItemModel*, QObject*> repres2object_t;
 		mutable repres2object_t Representation2Object_;
+		mutable repres2object_t History2Object_;
 		typedef std::map<const QAction*, QAbstractItemModel*> action2model_t;
 		mutable action2model_t Action2Model_;
 
@@ -51,10 +54,11 @@ namespace Main
 
 		QAbstractItemModel* GetPluginsModel () const;
 		QAbstractProxyModel* GetTasksModel () const;
+		QAbstractProxyModel* GetHistoryModel () const;
 		QWidget* GetControls (const QModelIndex&) const;
 		QWidget* GetAdditionalInfo (const QModelIndex&) const;
 
-		QStringList GetTagsForIndex (int) const;
+		QStringList GetTagsForIndex (int, QAbstractItemModel*) const;
 
         void DelayedInit ();
         bool ShowPlugin (int);
@@ -63,7 +67,8 @@ namespace Main
 		void Activated (const QModelIndex&);
 		void SetNewRow (const QModelIndex&);
 		bool SameModel (const QModelIndex&, const QModelIndex&) const;
-		void UpdateFiltering (const QString&, FilterType, bool);
+		void UpdateFiltering (const QString&, FilterType, bool, bool = false);
+		void HistoryActivated (int);
         
         QPair<qint64, qint64> GetSpeeds () const;
 	public slots:

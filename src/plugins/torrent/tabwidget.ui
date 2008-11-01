@@ -1250,18 +1250,16 @@
           </widget>
          </item>
         </layout>
-        <zorder>label_12</zorder>
-        <zorder>LabelDownloaded_</zorder>
-        <zorder>label_64</zorder>
-        <zorder>LabelWantedDownloaded_</zorder>
-        <zorder>label_19</zorder>
-        <zorder>LabelUploaded_</zorder>
-        <zorder>label_42</zorder>
-        <zorder>LabelUploadedTotal_</zorder>
+        <zorder>label_11</zorder>
+        <zorder>LabelFailed_</zorder>
+        <zorder>label_78</zorder>
+        <zorder>LabelRedundantData_</zorder>
+        <zorder>label_6</zorder>
+        <zorder>LabelDHTNodesCount_</zorder>
+        <zorder>label_40</zorder>
+        <zorder>LabelDistributedCopies_</zorder>
         <zorder>label_65</zorder>
         <zorder>LabelProtocolOverhead_</zorder>
-        <zorder>layoutWidget</zorder>
-        <zorder>label_4</zorder>
        </widget>
       </item>
      </layout>
@@ -1341,33 +1339,6 @@
     <string>Logs</string>
    </attribute>
    <layout class="QVBoxLayout" name="verticalLayout_5" >
-    <item>
-     <widget class="QTreeWidget" name="HistoryTree_" >
-      <property name="rootIsDecorated" >
-       <bool>false</bool>
-      </property>
-      <column>
-       <property name="text" >
-        <string>Torrent name</string>
-       </property>
-      </column>
-      <column>
-       <property name="text" >
-        <string>Path</string>
-       </property>
-      </column>
-      <column>
-       <property name="text" >
-        <string>Size</string>
-       </property>
-      </column>
-      <column>
-       <property name="text" >
-        <string>Date</string>
-       </property>
-      </column>
-     </widget>
-    </item>
     <item>
      <widget class="QTextEdit" name="LogShower_" >
       <property name="lineWrapMode" >

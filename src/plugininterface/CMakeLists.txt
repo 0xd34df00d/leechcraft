@@ -2,25 +2,27 @@ INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR} ${QT_QTCORE_INCLUDE_DIR}
     ${QT_QTGUI_INCLUDE_DIR} ${QT_QTNETWORK_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ../..)
 
 SET (SRCS
-  proxy.cpp
-  tagscompleter.cpp
-  tagscompletionmodel.cpp
-  treeitem.cpp
-  tagslineedit.cpp
-  graphwidget.cpp
-  util.cpp
-  categoryselector.cpp
-  )
+	proxy.cpp
+	tagscompleter.cpp
+	tagscompletionmodel.cpp
+	treeitem.cpp
+	tagslineedit.cpp
+	graphwidget.cpp
+	util.cpp
+	categoryselector.cpp
+	historymodel.cpp
+	)
 SET (HEADERS
-  proxy.h
-  tagscompleter.h
-  tagscompletionmodel.h
-  treeitem.h
-  tagslineedit.h
-  graphwidget.h
-  util.h
-  categoryselector.h
-  )
+	proxy.h
+	tagscompleter.h
+	tagscompletionmodel.h
+	treeitem.h
+	tagslineedit.h
+	graphwidget.h
+	util.h
+	categoryselector.h
+	historymodel.h
+	)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 ADD_DEFINITIONS(-DQT_PLUGIN)

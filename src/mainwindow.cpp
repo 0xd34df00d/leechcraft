@@ -69,6 +69,19 @@ namespace Main
 				this,
 				SLOT (filterParametersChanged ()));
 
+		connect (Ui_->HistoryFilterCaseSensitivity_,
+				SIGNAL (stateChanged (int)),
+				this,
+				SLOT (historyFilterParametersChanged ()));
+		connect (Ui_->HistoryFilterLine_,
+				SIGNAL (textEdited (const QString&)),
+				this,
+				SLOT (historyFilterParametersChanged ()));
+		connect (Ui_->HistoryFilterType_,
+				SIGNAL (currentIndexChanged (int)),
+				this,
+				SLOT (historyFilterParametersChanged ()));
+
 		SetTrayIcon ();
 
 		FancyPopupManager_ = new FancyPopupManager (TrayIcon_, this);
@@ -109,12 +122,18 @@ namespace Main
 				this,
 				SLOT (handleDownloadFinished (const QString&)));
 		connect (qApp, SIGNAL (aboutToQuit ()), this, SLOT (cleanUp ()));
-		Core::Instance ().SetReallyMainWindow (this);
 
+		Core::Instance ().SetReallyMainWindow (this);
 		Core::Instance ().DelayedInit ();
 
 		QAbstractItemModel *tasksModel = Core::Instance ().GetTasksModel ();
 		Ui_->PluginsTasksTree_->setModel (tasksModel);
+
+		Ui_->HistoryView_->setModel (Core::Instance ().GetHistoryModel ());
+		connect (Ui_->HistoryView_,
+				SIGNAL (activated (const QModelIndex&)),
+				this,
+				SLOT (historyActivated (const QModelIndex&)));
 
 		connect (Ui_->PluginsTasksTree_->selectionModel (),
 				SIGNAL (currentRowChanged (const QModelIndex&,
@@ -133,6 +152,16 @@ namespace Main
 				fm.width ("99.99% (1234.56 kb from 2345.67 kb)"));
 		itemsHeader->resizeSection (3,
 				fm.width (" 1234.56 kb/s "));
+
+		itemsHeader = Ui_->HistoryView_->header ();
+		itemsHeader->resize (0,
+				fm.width ("Average filename or torrent name is about this width or something."));
+		itemsHeader->resize (1,
+				fm.width ("/home/this/is/some/path/for/downloaded/file/"));
+		itemsHeader->resize (2,
+				fm.width (" 1234.56 kb "));
+		itemsHeader->resize (3,
+				fm.width (QDateTime::currentDateTime ().toString ()));
 
 		QTimer *speedUpd = new QTimer (this);
 		speedUpd->setInterval (1000);
@@ -256,7 +285,8 @@ namespace Main
 
 	void MainWindow::showAboutInfo ()
 	{
-		QMessageBox::information (this, tr ("Information"), tr ("<img src=\":/resources/images/mainapp.png\" /><h1>LeechCraft 0.3.0_pre</h1>"
+		QMessageBox::information (this, tr ("Information"),
+				tr ("<img src=\":/resources/images/mainapp.png\" /><h1>LeechCraft 0.3.0_pre</h1>"
 					"LeechCraft is a cross-platform extensible download manager. Currently it offers "
 					"full-featured BitTorrent client, feed reader, HTTP support, Remote access "
 					"and much more. It also aims to be resource-efficient working quite well on "
@@ -362,8 +392,37 @@ namespace Main
 
 		bool caseSensitivity = (Ui_->FilterCaseSensitivity_->checkState () == Qt::Checked);
 		Core::Instance ().UpdateFiltering (Ui_->FilterLine_->text (),
-				ft,
-				caseSensitivity);
+				ft, caseSensitivity);
+	}
+
+	void MainWindow::historyFilterParametersChanged ()
+	{
+		Core::FilterType ft;
+		switch (Ui_->HistoryFilterType_->currentIndex ())
+		{
+			case 0:
+				ft = Core::FTFixedString;
+				break;
+			case 1:
+				ft = Core::FTWildcard;
+				break;
+			case 2:
+				ft = Core::FTRegexp;
+				break;
+			case 3:
+				ft = Core::FTTags;
+				break;
+			default:
+				qWarning () << Q_FUNC_INFO
+					<< "unhandled ft"
+					<< Ui_->HistoryFilterType_->currentIndex ();
+				return;
+		}
+
+		bool caseSensitivity =
+			(Ui_->HistoryFilterCaseSensitivity_->checkState () == Qt::Checked);
+		Core::Instance ().UpdateFiltering (Ui_->HistoryFilterLine_->text (),
+				ft, caseSensitivity, true);
 	}
 
 	namespace
@@ -520,6 +579,11 @@ namespace Main
 	void MainWindow::on_ActionPluginManager__triggered ()
 	{
 		PluginManagerDialog_->show ();
+	}
+
+	void MainWindow::historyActivated (const QModelIndex& index)
+	{
+		Core::Instance ().HistoryActivated (index.row ());
 	}
 };
 

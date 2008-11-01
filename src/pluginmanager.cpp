@@ -177,9 +177,16 @@ void PluginManager::CalculateDependencies ()
                     uses = info->Uses ();
         DependenciesMet_ [i] = true;
 
+		QStringList provides = info->Provides ();
+		
+		for (QStringList::const_iterator j = provides.begin (),
+				end = provides.end (); j != end; ++j)
+			FeatureProviders_ [*j] = i;
+
         if (!needs.isEmpty ())
         {
-            for (PluginsContainer_t::const_iterator j = Plugins_.begin (); j != Plugins_.end (); ++j)
+            for (PluginsContainer_t::const_iterator j = Plugins_.begin ();
+					j != Plugins_.end (); ++j)
             {
                 if (j == i)
                     continue;
@@ -198,7 +205,11 @@ void PluginManager::CalculateDependencies ()
             {
                 DependenciesMet_ [i] = false;
                 FailedDependencies_ [i] = needs;
-                qWarning () << Q_FUNC_INFO << "not all plugins providing needs of" << info->GetName () << "are found. The remaining ones are:" << needs;
+                qWarning () << Q_FUNC_INFO
+					<< "not all plugins providing needs of"
+				   	<< info->GetName () 
+					<< "are found. The remaining ones are:"
+				   	<< needs;
             }
         }
         if (!uses.isEmpty ())
@@ -207,7 +218,8 @@ void PluginManager::CalculateDependencies ()
             for (int j = 0; j < uses.size (); ++j)
                 usesMet [uses.at (j)] = false;
 
-            for (PluginsContainer_t::const_iterator j = Plugins_.begin (); j != Plugins_.end (); ++j)
+            for (PluginsContainer_t::const_iterator j = Plugins_.begin ();
+					j != Plugins_.end (); ++j)
             {
                 if (j == i)
                     continue;
@@ -224,6 +236,13 @@ void PluginManager::CalculateDependencies ()
             }
         }
     }
+}
+
+QObject* PluginManager::GetProvider (const QString& feature) const
+{
+	if (!FeatureProviders_.contains (feature))
+		return 0;
+	return (*FeatureProviders_ [feature])->instance ();
 }
 
 void PluginManager::FindPlugins ()

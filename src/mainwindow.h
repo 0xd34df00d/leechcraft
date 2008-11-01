@@ -80,8 +80,10 @@ namespace Main
 		void handleAggregateJobsChange ();
 		void cleanUp ();
 		void filterParametersChanged ();
+		void historyFilterParametersChanged ();
 		void updateIconsSet ();
 		void on_ActionPluginManager__triggered ();
+		void historyActivated (const QModelIndex&);
 	};
 };
 

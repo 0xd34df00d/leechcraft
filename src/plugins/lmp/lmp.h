@@ -37,6 +37,8 @@ public:
 	bool ImplementsFeature (const QString&) const;
 public slots:
 	void handleStateUpdated (const QString&);
+	void setFile (const QString&);
+	void play ();
 private slots:
 	void selectFile ();
 };

@@ -138,6 +138,16 @@ void LMP::handleStateUpdated (const QString& state)
 	Ui_.State_->setText (state);
 }
 
+void LMP::setFile (const QString& file)
+{
+	Core::Instance ().setSource (file);
+}
+
+void LMP::play ()
+{
+	Core::Instance ().play ();
+}
+
 void LMP::selectFile ()
 {
 	QString oldDir = XmlSettingsManager::Instance ()->
@@ -146,8 +156,7 @@ void LMP::selectFile ()
 	QString filename = QFileDialog::getOpenFileName (this,
 			tr ("Select media file"),
 			oldDir,
-			tr ("Video (*.avi *.mkv *.ogg *.mpeg *.mpg *.divx *.mov *.swf);;"
-				"Uncompressed lossless audio (*.aiff *.au *.cdda *.raw *.wav);;"
+			tr ("Video (*.avi *.mkv *.ogg *.mpeg *.mpg *.divx *.mov *.swf);;" "Uncompressed lossless audio (*.aiff *.au *.cdda *.raw *.wav);;"
 				"Compressed lossless audio (*.flac *.wv *.m4a *.tta *.ape *.la *.pac);;"
 				"Lossy audio (*.mp3 *.ogg *.wma *.aac *.mpc *.ra *.rm *.ots *.swa);;"
 				"All files (*.*)"));

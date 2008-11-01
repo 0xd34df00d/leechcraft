@@ -17,15 +17,19 @@
 #include "xmlsettingsmanager.h"
 #include "mergemodel.h"
 #include "filtermodel.h"
+#include "historymodel.h"
 
 Main::Core::Core ()
 : Server_ (new QLocalServer)
 , MergeModel_ (new MergeModel)
+, HistoryMergeModel_ (new MergeModel)
 , FilterModel_ (new FilterModel)
+, HistoryFilterModel_ (new FilterModel)
 {
 	PluginManager_ = new Main::PluginManager (this);
 
 	FilterModel_->setSourceModel (MergeModel_.get ());
+	HistoryFilterModel_->setSourceModel (HistoryMergeModel_.get ());
 
     ClipboardWatchdog_ = new QTimer (this);
     connect (ClipboardWatchdog_,
@@ -82,6 +86,11 @@ QAbstractProxyModel* Main::Core::GetTasksModel () const
 	return FilterModel_.get ();
 }
 
+QAbstractProxyModel* Main::Core::GetHistoryModel () const
+{
+	return HistoryFilterModel_.get ();
+}
+
 QWidget* Main::Core::GetControls (const QModelIndex& index) const
 {
 	QAbstractItemModel *model = *MergeModel_->
@@ -102,18 +111,29 @@ QWidget* Main::Core::GetAdditionalInfo (const QModelIndex& index) const
 	return ijh->GetAdditionalInfo ();
 }
 
-QStringList Main::Core::GetTagsForIndex (int index) const
+QStringList Main::Core::GetTagsForIndex (int index,
+		QAbstractItemModel *model) const
 {
-	MergeModel::const_iterator modIter = MergeModel_->GetModelForRow (index);
-	ITaggableJobs *ijh =
-	   qobject_cast<ITaggableJobs*> (Representation2Object_ [*modIter]);
+	MergeModel::const_iterator modIter =
+		dynamic_cast<MergeModel*> (model)->GetModelForRow (index);
 
-	if (!ijh)
+	int starting = dynamic_cast<MergeModel*> (model)->
+		GetStartingRow (modIter);
+
+	if (Representation2Object_.find (model) != Representation2Object_.end ())
+	{
+		ITaggableJobs *itj =
+			qobject_cast<ITaggableJobs*> (Representation2Object_ [*modIter]);
+		return itj->GetTags (index - starting);
+	}
+	else if (History2Object_.find (model) != History2Object_.end ())
+	{
+		ITaggableJobs *itj =
+			qobject_cast<ITaggableJobs*> (History2Object_ [*modIter]);
+		return itj->GetHistoryTags (index - starting);
+	}
+	else
 		return QStringList ();
-
-	int starting = MergeModel_->GetStartingRow (modIter);
-
-	return ijh->GetTags (index - starting);
 }
 
 void Main::Core::DelayedInit ()
@@ -168,6 +188,13 @@ void Main::Core::DelayedInit ()
 
 			ijh->GetControls ()->setParent (ReallyMainWindow_);
 			ijh->GetAdditionalInfo ()->setParent (ReallyMainWindow_);
+
+			QAbstractItemModel *historyModel = ijh->GetHistory ();
+			if (historyModel)
+			{
+				History2Object_ [historyModel] = plugin;
+				HistoryMergeModel_->AddModel (historyModel);
+			}
 		}
 
 		if (iet)
@@ -239,30 +266,94 @@ bool Main::Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) const
 	return modIter1 == modIter2;
 }
 
-void Main::Core::UpdateFiltering (const QString& text, Main::Core::FilterType ft, bool caseSensitive)
+void Main::Core::UpdateFiltering (const QString& text,
+		Main::Core::FilterType ft, bool caseSensitive, bool history)
 {
-	FilterModel_->setFilterCaseSensitivity (caseSensitive ?
-			Qt::CaseSensitive : Qt::CaseInsensitive);
+	if (!history)
+		FilterModel_->setFilterCaseSensitivity (caseSensitive ?
+				Qt::CaseSensitive : Qt::CaseInsensitive);
+	else
+		HistoryFilterModel_->setFilterCaseSensitivity (caseSensitive ?
+				Qt::CaseSensitive : Qt::CaseInsensitive);
 
 	switch (ft)
 	{
 		case FTFixedString:
-			FilterModel_->SetTagsMode (false);
-			FilterModel_->setFilterFixedString (text);
+			if (!history)
+			{
+				FilterModel_->SetTagsMode (false);
+				FilterModel_->setFilterFixedString (text);
+			}
+			else
+			{
+				HistoryFilterModel_->SetTagsMode (false);
+				HistoryFilterModel_->setFilterFixedString (text);
+			}
 			break;
 		case FTWildcard:
-			FilterModel_->SetTagsMode (false);
-			FilterModel_->setFilterWildcard (text);
+			if (!history)
+			{
+				FilterModel_->SetTagsMode (false);
+				FilterModel_->setFilterWildcard (text);
+			}
+			else
+			{
+				HistoryFilterModel_->SetTagsMode (false);
+				HistoryFilterModel_->setFilterWildcard (text);
+			}
 			break;
 		case FTRegexp:
-			FilterModel_->SetTagsMode (false);
-			FilterModel_->setFilterRegExp (text);
+			if (!history)
+			{
+				FilterModel_->SetTagsMode (false);
+				FilterModel_->setFilterRegExp (text);
+			}
+			else
+			{
+				HistoryFilterModel_->SetTagsMode (false);
+				HistoryFilterModel_->setFilterRegExp (text);
+			}
 			break;
 		case FTTags:
-			FilterModel_->SetTagsMode (true);
-			FilterModel_->setFilterFixedString (text);
+			if (!history)
+			{
+				FilterModel_->SetTagsMode (true);
+				FilterModel_->setFilterFixedString (text);
+			}
+			else
+			{
+				HistoryFilterModel_->SetTagsMode (true);
+				HistoryFilterModel_->setFilterFixedString (text);
+			}
 			break;
 	}
+}
+
+void Main::Core::HistoryActivated (int historyRow)
+{
+	QString name = HistoryFilterModel_->index (historyRow, 0).data ().toString ();
+	QString path = HistoryFilterModel_->index (historyRow, 1).data ().toString ();
+
+	QFileInfo pathInfo (path);
+	QString file;
+	if (pathInfo.isDir ())
+	{
+		QDir dir (path);
+		if (!dir.exists (name))
+			return;
+		file = dir.filePath (name);
+	}
+	else if (pathInfo.isFile ())
+		file = path;
+	else
+		return;
+
+	QObject *videoProvider = PluginManager_->GetProvider ("media");
+	if (!videoProvider)
+		return;
+
+	QMetaObject::invokeMethod (videoProvider, "setFile", Q_ARG (QString, file));
+	QMetaObject::invokeMethod (videoProvider, "play");
 }
 
 QPair<qint64, qint64> Main::Core::GetSpeeds () const
