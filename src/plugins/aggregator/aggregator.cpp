@@ -265,10 +265,12 @@ void Aggregator::SetupMenuBar ()
 	ActionImportOPML_ = new QAction (tr ("Import OPML..."),
 			this);
 	ActionImportOPML_->setObjectName ("ActionImportOPML_");
+	ActionImportOPML_->setProperty ("ActionIcon", "aggregator_importopml");
 
 	ActionExportOPML_ = new QAction (tr ("Export OPML..."),
 			this);
 	ActionExportOPML_->setObjectName ("ActionExportOPML_");
+	ActionExportOPML_->setProperty ("ActionIcon", "aggregator_exportopml");
 
     ToolBar_->addAction(ActionAddFeed_);
     ToolBar_->addAction(ActionRemoveFeed_);

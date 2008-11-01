@@ -820,6 +820,7 @@ void TorrentPlugin::SetupActions ()
 	ChangeTrackers_.reset (new QAction (tr ("Change trackers..."),
 				Toolbar_.get ()));
 	ChangeTrackers_->setShortcut (tr ("C"));
+	ChangeTrackers_->setProperty ("ActionIcon", "torrent_changetrackers");
 	connect (ChangeTrackers_.get (),
 			SIGNAL (triggered ()),
 			this,
