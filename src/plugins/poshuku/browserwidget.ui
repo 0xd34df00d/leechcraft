@@ -1,0 +1,41 @@
+<ui version="4.0" >
+ <class>BrowserWidget</class>
+ <widget class="QWidget" name="BrowserWidget" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Browser widget</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <item>
+    <widget class="QLineEdit" name="URLEdit_" />
+   </item>
+   <item>
+    <widget class="CustomWebView" native="1" name="WebView_" />
+   </item>
+   <item>
+    <widget class="QProgressBar" name="LoadProgress_" >
+     <property name="value" >
+      <number>24</number>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CustomWebView</class>
+   <extends>QWidget</extends>
+   <header>customwebview.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

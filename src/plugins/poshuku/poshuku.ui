@@ -12,6 +12,152 @@
   <property name="windowTitle" >
    <string>Poshuku</string>
   </property>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <item>
+    <widget class="QLineEdit" name="AddressLine_" >
+     <property name="text" >
+      <string>http://linux.org.ru/</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QToolButton" name="SettingsButton_" >
+     <property name="text" >
+      <string>Settings...</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QToolBox" name="MainToolbox_" >
+     <property name="currentIndex" >
+      <number>1</number>
+     </property>
+     <widget class="QWidget" name="HistoryPage_" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>382</width>
+        <height>154</height>
+       </rect>
+      </property>
+      <attribute name="label" >
+       <string>History</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3" >
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout" >
+         <item>
+          <widget class="QLineEdit" name="HistoryFilterLine_" />
+         </item>
+         <item>
+          <widget class="QComboBox" name="HistoryFilterType_" >
+           <item>
+            <property name="text" >
+             <string>Fixed string</string>
+            </property>
+           </item>
+           <item>
+            <property name="text" >
+             <string>Wildcard</string>
+            </property>
+           </item>
+           <item>
+            <property name="text" >
+             <string>Regexp</string>
+            </property>
+           </item>
+           <item>
+            <property name="text" >
+             <string>Tags</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="HistoryFilterCaseSensitivity_" >
+           <property name="text" >
+            <string>Case sensitive</string>
+           </property>
+           <property name="checked" >
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QTreeView" name="treeView" />
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="FavoritesPage_" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>382</width>
+        <height>154</height>
+       </rect>
+      </property>
+      <attribute name="label" >
+       <string>Favorites</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2" >
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2" >
+         <item>
+          <widget class="QLineEdit" name="FilterLine_1" />
+         </item>
+         <item>
+          <widget class="QComboBox" name="FilterType_1" >
+           <item>
+            <property name="text" >
+             <string>Fixed string</string>
+            </property>
+           </item>
+           <item>
+            <property name="text" >
+             <string>Wildcard</string>
+            </property>
+           </item>
+           <item>
+            <property name="text" >
+             <string>Regexp</string>
+            </property>
+           </item>
+           <item>
+            <property name="text" >
+             <string>Tags</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="FilterCaseSensitivity_1" >
+           <property name="text" >
+            <string>Case sensitive</string>
+           </property>
+           <property name="checked" >
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QTreeView" name="treeView_2" />
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+  <action name="ActionSettings_" >
+   <property name="text" >
+    <string>Settings...</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

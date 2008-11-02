@@ -508,7 +508,16 @@ public:
 /** @brief Interface for plugins having (and opening/closing) multiple
  * tabs.
  *
- * As this architecture isn't worked yet, there are no docs yet as well.
+ * When a plugin wants to add a new tab into LeechCraft, it emits the
+ * addNewTab(const QString&, QWidget*) signal, where the first parameter
+ * is the name of the new tab, and the second one is the pointer to the
+ * widget with tab contents. Newly added widget would be reparented by
+ * LeechCraft.
+ * To remove a tab, it emits removeTab(QWidget*), where the parameter is
+ * the pointer to a previously added tab's widget.
+ * To change tab's name, plugin emits changeTabName(QWidget*, const
+ * QString&), where the first parameter is the new name, the second -
+ * pointer to previously inserted tab.
  *
  * @sa IEmbedTab
  * @sa IWindow

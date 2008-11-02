@@ -10,9 +10,10 @@
 class Poshuku : public QWidget
 			  , public IInfo
 			  , public IEmbedTab
+			  , public IMultiTabs
 {
     Q_OBJECT
-    Q_INTERFACES (IInfo IEmbedTab)
+    Q_INTERFACES (IInfo IEmbedTab IMultiTabs)
 
 	Ui::Poshuku Ui_;
 public:
@@ -26,6 +27,13 @@ public:
 	void SetProvider (QObject*, const QString&);
 	QIcon GetIcon () const;
 	QWidget* GetTabContents ();
+private slots:
+	void on_AddressLine__returnPressed ();
+signals:
+	void bringToFront ();
+	void addNewTab (const QString&, QWidget*);
+	void removeTab (QWidget*);
+	void changeTabName (QWidget*, const QString&);
 };
 
 #endif

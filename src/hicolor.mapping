@@ -8,6 +8,7 @@ torrent_preferences lc_settings
 mainpreferences lc_settings
 cstp_preferences lc_settings
 aggregator_preferences lc_settings
+poshuku_preferences lc_settings
 cstp_stop lc_stop
 torrent_stopjob lc_stop
 cstp_remove lc_deletejob

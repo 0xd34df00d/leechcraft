@@ -4,15 +4,25 @@ INCLUDE_DIRECTORIES (
 	${QT_QTGUI_INCLUDE_DIR}
 	${QT_QTWEBKIT_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
 	)
 SET (SRCS
 	poshuku.cpp
+	xmlsettingsmanager.cpp
+	core.cpp
+	browserwidget.cpp
+	customwebview.cpp
 	)
 SET (HEADERS
 	poshuku.h
+	xmlsettingsmanager.h
+	core.h
+	browserwidget.h
+	customwebview.h
 	)
 SET (FORMS
 	poshuku.ui
+	browserwidget.ui
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS

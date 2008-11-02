@@ -160,6 +160,7 @@ void Main::Core::DelayedInit ()
         IDownload *download = qobject_cast<IDownload*> (plugin);
 		IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
 		IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
+		IMultiTabs *imt = qobject_cast<IMultiTabs*> (plugin);
 
 		const QMetaObject *qmo = plugin->metaObject ();
 
@@ -213,6 +214,22 @@ void Main::Core::DelayedInit ()
 					SIGNAL (bringToFront ()),
 					this,
 					SLOT (embeddedTabWantsToFront ()));
+		}
+
+		if (imt)
+		{
+			connect (plugin,
+					SIGNAL (addNewTab (const QString&, QWidget*)),
+					this,
+					SLOT (handleNewTab (const QString&, QWidget*)));
+			connect (plugin,
+					SIGNAL (removeTab (QWidget*)),
+					this,
+					SLOT (handleRemoveTab (QWidget*)));
+			connect (plugin,
+					SIGNAL (changeTabName (QWidget*, const QString&)),
+					this,
+					SLOT (handleChangeTabName (QWidget*, const QString&)));
 		}
     }
 }
@@ -533,6 +550,28 @@ void Main::Core::embeddedTabWantsToFront ()
 
 	ReallyMainWindow_->show ();
 	ReallyMainWindow_->GetTabWidget ()->setCurrentWidget (iet->GetTabContents ());
+}
+
+void Main::Core::handleNewTab (const QString& name, QWidget *contents)
+{
+	QTabWidget *tabWidget = ReallyMainWindow_->GetTabWidget ();
+	tabWidget->addTab (contents, name);
+}
+
+void Main::Core::handleRemoveTab (QWidget *contents)
+{
+	int tabNumber = FindTabForWidget (contents);
+	if (tabNumber == -1)
+		return;
+	ReallyMainWindow_->GetTabWidget ()->removeTab (tabNumber);
+}
+
+void Main::Core::handleChangeTabName (QWidget *contents, const QString& title)
+{
+	int tabNumber = FindTabForWidget (contents);
+	if (tabNumber == -1)
+		return;
+	ReallyMainWindow_->GetTabWidget ()->setTabText (tabNumber, title);
 }
 
 int Main::Core::FindTabForWidget (QWidget *widget) const

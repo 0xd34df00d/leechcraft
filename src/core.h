@@ -78,6 +78,9 @@ namespace Main
         void handleFileDownload (const QString&, bool = false);
         void handleClipboardTimer ();
 		void embeddedTabWantsToFront ();
+		void handleNewTab (const QString&, QWidget*);
+		void handleRemoveTab (QWidget*);
+		void handleChangeTabName (QWidget*, const QString&);
 	private:
 		int FindTabForWidget (QWidget*) const;
     signals:
