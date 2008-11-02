@@ -57,7 +57,6 @@ namespace Main
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
 		virtual ~MainWindow ();
-		QMenu* GetRootPluginsMenu () const;
 		QModelIndexList GetSelectedRows () const;
 		QTabWidget* GetTabWidget () const;
 	public slots:

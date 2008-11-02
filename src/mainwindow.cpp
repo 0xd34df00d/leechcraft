@@ -177,12 +177,6 @@ namespace Main
 
 	MainWindow::~MainWindow ()
 	{
-		delete Ui_;
-	}
-
-	QMenu* MainWindow::GetRootPluginsMenu () const
-	{
-		return Ui_->PluginsMenu_;
 	}
 
 	QModelIndexList MainWindow::GetSelectedRows () const
@@ -352,6 +346,8 @@ namespace Main
 
 	void MainWindow::cleanUp ()
 	{
+		delete Ui_;
+		Ui_ = 0;
 		WriteSettings ();
 		Core::Instance ().Release ();
 
@@ -360,8 +356,6 @@ namespace Main
 		qDebug () << "Releasing XmlSettingsManager";
 		delete XmlSettingsDialog_;
 		XmlSettingsManager::Instance ()->Release ();
-		delete Ui_;
-		Ui_ = 0;
 		qDebug () << "Destroyed fine";
 	}
 

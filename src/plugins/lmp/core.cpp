@@ -1,6 +1,8 @@
 #include "core.h"
 #include <QUrl>
 #include <VideoWidget>
+#include <SeekSlider>
+#include <VolumeSlider>
 
 Core::Core ()
 : TotalTimeAvailable_ (false)
@@ -19,7 +21,7 @@ void Core::Release ()
 	MediaObject_.reset ();
 }
 
-void Core::Reinitialize (const QString& entity)
+void Core::Reinitialize ()
 {
 	TotalTimeAvailable_ = false;
 
@@ -38,8 +40,10 @@ void Core::Reinitialize (const QString& entity)
 					Phonon::State)),
 			this,
 			SLOT (updateState ()));
-
-	MediaObject_->setCurrentSource (entity);
+	connect (MediaObject_.get (),
+			SIGNAL (hasVideoChanged (bool)),
+			this,
+			SLOT (handleHasVideoChanged (bool)));
 
 	qreal oldVolume = 1;
 	if (AudioOutput_.get ())
@@ -51,6 +55,9 @@ void Core::Reinitialize (const QString& entity)
 			VideoWidget_);
 	Phonon::createPath (Core::Instance ().GetMediaObject (),
 			AudioOutput_.get ());
+
+	SeekSlider_->setMediaObject (MediaObject_.get ());
+	VolumeSlider_->setAudioOutput (AudioOutput_.get ());
 }
 
 Phonon::MediaObject* Core::GetMediaObject () const
@@ -63,12 +70,14 @@ void Core::SetVideoWidget (Phonon::VideoWidget *widget)
 	VideoWidget_ = widget;
 }
 
-void Core::changeVolume (int volume)
+void Core::SetSeekSlider (Phonon::SeekSlider *slider)
 {
-	if (!AudioOutput_.get ())
-		return;
+	SeekSlider_ = slider;
+}
 
-	AudioOutput_->setVolume (static_cast<qreal> (volume) / 100);
+void Core::SetVolumeSlider (Phonon::VolumeSlider *slider)
+{
+	VolumeSlider_ = slider;
 }
 
 void Core::play ()
@@ -167,5 +176,9 @@ void Core::updateState ()
 void Core::totalTimeChanged ()
 {
 	TotalTimeAvailable_ = true;
+}
+
+void Core::handleHasVideoChanged (bool hasVideo)
+{
 }
 

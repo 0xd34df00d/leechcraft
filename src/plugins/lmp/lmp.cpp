@@ -3,6 +3,8 @@
 #include <QSlider>
 #include <QFileDialog>
 #include <QDir>
+#include <SeekSlider>
+#include <VolumeSlider>
 #include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
@@ -20,11 +22,7 @@ void LMP::Init ()
 			SLOT (handleStateUpdated (const QString&)));
 
 	Core::Instance ().SetVideoWidget (Ui_.VideoWidget_);
-
-	Core::Instance ()
-		.Reinitialize ("/home/d34df00d/2008.avi");
-
-	Core::Instance ().GetMediaObject ()->play ();
+	Core::Instance ().Reinitialize ();
 }
 
 void LMP::Release ()
@@ -102,24 +100,19 @@ QToolBar* LMP::SetupToolbar ()
 			&Core::Instance (),
 			SLOT (pause ()));
 
-	QSlider *slider = new QSlider (Qt::Horizontal, this);
-	slider->setRange (0, 100);
-	slider->setTickPosition (QSlider::TicksBelow);
-	slider->setTickInterval (10);
-	slider->setValue (100);
-	slider->setSingleStep (10);
-	
-	connect (slider,
-			SIGNAL (valueChanged (int)),
-			&Core::Instance (),
-			SLOT (changeVolume (int)));
+	Phonon::VolumeSlider *volumeSlider = new Phonon::VolumeSlider (this);
+	Phonon::SeekSlider *seekSlider = new Phonon::SeekSlider (this);
+	Core::Instance ().SetSeekSlider (seekSlider);
+	Core::Instance ().SetVolumeSlider (volumeSlider);
 
 	bar->addAction (Open_.get ());
 	bar->addSeparator ();
 	bar->addAction (Play_.get ());
 	bar->addAction (Pause_.get ());
 	bar->addSeparator ();
-	bar->addWidget (slider);
+	bar->addWidget (volumeSlider);
+	bar->addSeparator ();
+	bar->addWidget (seekSlider);
 
 	return bar;
 }

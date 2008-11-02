@@ -8,6 +8,8 @@
 namespace Phonon
 {
 	class VideoWidget;
+	class SeekSlider;
+	class VolumeSlider;
 };
 
 class Core : public QObject
@@ -20,23 +22,27 @@ class Core : public QObject
 	bool TotalTimeAvailable_;
 
 	Phonon::VideoWidget *VideoWidget_;
+	Phonon::SeekSlider *SeekSlider_;
+	Phonon::VolumeSlider *VolumeSlider_;
 
 	Core ();
 public:
 	static Core& Instance ();
 	void Release ();
 
-	void Reinitialize (const QString&);
+	void Reinitialize ();
 	Phonon::MediaObject* GetMediaObject () const;
 	void SetVideoWidget (Phonon::VideoWidget*);
+	void SetSeekSlider (Phonon::SeekSlider*);
+	void SetVolumeSlider (Phonon::VolumeSlider*);
 public slots:
-	void changeVolume (int);
 	void play ();
 	void pause ();
 	void setSource (const QString&);
 private slots:
 	void updateState ();
 	void totalTimeChanged ();
+	void handleHasVideoChanged (bool);
 signals:
 	void stateUpdated (const QString&);
 };

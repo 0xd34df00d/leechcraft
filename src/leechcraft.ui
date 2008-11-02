@@ -21,7 +21,7 @@
     <item>
      <widget class="QTabWidget" name="MainTabWidget_" >
       <property name="currentIndex" >
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="DownloadersTab_" >
        <attribute name="title" >
@@ -148,7 +148,17 @@
          </layout>
         </item>
         <item>
-         <widget class="QTreeView" name="HistoryView_" />
+         <widget class="QTreeView" name="HistoryView_" >
+          <property name="rootIsDecorated" >
+           <bool>false</bool>
+          </property>
+          <property name="itemsExpandable" >
+           <bool>false</bool>
+          </property>
+          <property name="expandsOnDoubleClick" >
+           <bool>false</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -188,13 +198,7 @@
     <addaction name="ActionAboutLeechCraft_" />
     <addaction name="ActionAboutQt_" />
    </widget>
-   <widget class="QMenu" name="PluginsMenu_" >
-    <property name="title" >
-     <string>Plugins</string>
-    </property>
-   </widget>
    <addaction name="menuFile" />
-   <addaction name="PluginsMenu_" />
    <addaction name="menuSettings" />
    <addaction name="menuHelp" />
   </widget>

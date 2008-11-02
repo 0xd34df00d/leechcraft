@@ -62,13 +62,15 @@ Main::Core& Main::Core::Instance ()
 
 void Main::Core::Release ()
 {
+	MergeModel_.reset ();
+	HistoryMergeModel_.reset ();
+
     PluginManager_->Release ();
     delete PluginManager_;
     ClipboardWatchdog_->stop ();
     delete ClipboardWatchdog_;
 
 	Server_.reset ();
-	MergeModel_.reset ();
 }
 
 void Main::Core::SetReallyMainWindow (Main::MainWindow *win)
