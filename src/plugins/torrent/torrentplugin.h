@@ -33,7 +33,6 @@ class TorrentPlugin : public QObject
 	std::auto_ptr<QTimer> OverallStatsUpdateTimer_;
 	std::auto_ptr<QTime> LastPeersUpdate_;
 	std::auto_ptr<RepresentationModel> FilterModel_;
-    bool IgnoreTimer_;
     bool TorrentSelectionChanged_;
 	std::auto_ptr<TagsCompleter> TagsChangeCompleter_,
 		TagsAddDiaCompleter_;
@@ -127,7 +126,6 @@ private slots:
     void setActionsEnabled ();
     void showError (QString);
     void updateOverallStats ();
-    void restartTimers ();
     void doLogMessage (const QString&);
     void addToHistory (const QString&, const QString&, quint64,
 			const QDateTime&, const QStringList&);

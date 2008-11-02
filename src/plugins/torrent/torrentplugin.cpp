@@ -189,7 +189,6 @@ void TorrentPlugin::ItemSelected (const QModelIndex& item)
 	if (mapped.isValid ())
 	{
 		TorrentSelectionChanged_ = true;
-		restartTimers ();
 		updateTorrentStats ();
 	}
 
@@ -456,11 +455,6 @@ void TorrentPlugin::showError (QString e)
 {
     qWarning () << e;
     QMessageBox::warning (0, tr ("Error!"), e);
-}
-
-void TorrentPlugin::restartTimers ()
-{
-    IgnoreTimer_ = true;
 }
 
 void TorrentPlugin::updateTorrentStats ()
@@ -760,14 +754,13 @@ void TorrentPlugin::SetupStuff ()
     peersSorter->setSortRole (PeersModel::SortRole);
     Ui_.PeersView_->setModel (peersSorter);
 
-    IgnoreTimer_ = true;
 	UpdateDashboard ();
     
     OverallStatsUpdateTimer_.reset (new QTimer (this));
     connect (OverallStatsUpdateTimer_.get (),
 			SIGNAL (timeout ()),
 			this,
-			SLOT (updateOverallStats ()));
+			SLOT (updateTorrentStats ()));
     connect (OverallStatsUpdateTimer_.get (),
 			SIGNAL (timeout ()),
 			FilterModel_.get (),
