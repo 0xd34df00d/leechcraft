@@ -198,7 +198,6 @@ void Main::Core::DelayedInit ()
 			ijh->GetAdditionalInfo ()->setParent (ReallyMainWindow_);
 
 			QAbstractItemModel *historyModel = ijh->GetHistory ();
-			qDebug () << historyModel << ii->GetName ();
 			if (historyModel)
 			{
 				History2Object_ [historyModel] = plugin;

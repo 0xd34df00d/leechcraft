@@ -88,6 +88,15 @@ QWidget* LMP::GetTabContents ()
 	return this;
 }
 
+bool LMP::ImplementsFeature (const QString& feature) const
+{
+	if (feature == "videoplayer" ||
+			feature == "audioplayer")
+		return true;
+	else
+		return false;
+}
+
 QToolBar* LMP::SetupToolbar ()
 {
 	QToolBar *bar = new QToolBar;
@@ -145,15 +154,6 @@ QToolBar* LMP::SetupToolbar ()
 	bar->addWidget (seekSlider);
 
 	return bar;
-}
-
-bool LMP::ImplementsFeature (const QString& feature) const
-{
-	if (feature == "videoplayer" ||
-			feature == "audioplayer")
-		return true;
-	else
-		return false;
 }
 
 void LMP::ApplyVideoSettings (qreal b, qreal c, qreal h, qreal s)

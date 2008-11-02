@@ -34,9 +34,9 @@ public:
 	void SetProvider (QObject*, const QString&);
 	QIcon GetIcon () const;
 	QWidget* GetTabContents ();
-	QToolBar* SetupToolbar ();
 	bool ImplementsFeature (const QString&) const;
 private:
+	QToolBar* SetupToolbar ();
 	void ApplyVideoSettings (qreal, qreal, qreal, qreal);
 public slots:
 	void handleStateUpdated (const QString&);
