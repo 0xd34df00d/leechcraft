@@ -36,7 +36,7 @@
   <customwidget>
    <class>Phonon::VideoWidget</class>
    <extends>QWidget</extends>
-   <header>VideoWidget</header>
+   <header location="global" >VideoWidget</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

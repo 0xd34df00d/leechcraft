@@ -12,11 +12,13 @@ SET (SRCS
 	lmp.cpp
 	core.cpp
 	xmlsettingsmanager.cpp
+	keyinterceptor.cpp
 	)
 SET (HEADERS
 	lmp.h
 	core.h
 	xmlsettingsmanager.h
+	keyinterceptor.h
 	)
 SET (FORMS
     tabwidget.ui

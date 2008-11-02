@@ -1,0 +1,22 @@
+#ifndef KEYINTERCEPTOR_H
+#define KEYINTERCEPTOR_H
+#include <QObject>
+
+class QEvent;
+class QKeyEvent;
+
+class KeyInterceptor : public QObject
+{
+	Q_OBJECT
+public:
+	KeyInterceptor (QObject* = 0);
+	virtual ~KeyInterceptor ();
+protected:
+	virtual bool eventFilter (QObject*, QEvent*);
+
+	void keyPressEvent (QKeyEvent*);
+	void keyReleaseEvent (QKeyEvent*);
+};
+
+#endif
+

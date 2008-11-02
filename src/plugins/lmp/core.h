@@ -27,6 +27,13 @@ class Core : public QObject
 
 	Core ();
 public:
+	enum SkipAmount
+	{
+		SkipLittle = 10
+		, SkipMedium = 60
+		, SkipALot = 600
+	};
+
 	static Core& Instance ();
 	void Release ();
 
@@ -35,6 +42,12 @@ public:
 	void SetVideoWidget (Phonon::VideoWidget*);
 	void SetSeekSlider (Phonon::SeekSlider*);
 	void SetVolumeSlider (Phonon::VolumeSlider*);
+	void IncrementVolume ();
+	void DecrementVolume ();
+	void ToggleFullScreen ();
+	void TogglePause ();
+	void Forward (SkipAmount);
+	void Rewind (SkipAmount);
 public slots:
 	void play ();
 	void pause ();
@@ -45,6 +58,7 @@ private slots:
 	void handleHasVideoChanged (bool);
 signals:
 	void stateUpdated (const QString&);
+	void bringToFront ();
 };
 
 #endif

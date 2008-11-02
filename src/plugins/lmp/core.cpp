@@ -80,10 +80,59 @@ void Core::SetVolumeSlider (Phonon::VolumeSlider *slider)
 	VolumeSlider_ = slider;
 }
 
+void Core::IncrementVolume ()
+{
+	qreal nv = AudioOutput_->volume ();
+	nv += 0.1;
+	if (nv > 1)
+		nv = 1;
+	AudioOutput_->setVolume (nv);
+}
+
+void Core::DecrementVolume ()
+{
+	qreal nv = AudioOutput_->volume ();
+	nv -= 0.1;
+	if (nv < 0)
+		nv = 0;
+	AudioOutput_->setVolume (nv);
+}
+
+void Core::ToggleFullScreen ()
+{
+	VideoWidget_->setFullScreen (1 - VideoWidget_->isFullScreen ());
+}
+
+void Core::TogglePause ()
+{
+	if (MediaObject_.get ())
+	{
+		if (MediaObject_->state () == Phonon::PausedState)
+			play ();
+		else
+			pause ();
+	}
+}
+
+void Core::Forward (SkipAmount a)
+{
+	if (MediaObject_.get ())
+		MediaObject_->seek (MediaObject_->currentTime () + a * 1000);
+}
+
+void Core::Rewind (SkipAmount a)
+{
+	if (MediaObject_.get ())
+		MediaObject_->seek (MediaObject_->currentTime () - a * 1000);
+}
+
 void Core::play ()
 {
 	if (MediaObject_.get ())
+	{
 		MediaObject_->play ();
+		emit bringToFront ();
+	}
 }
 
 void Core::pause ()

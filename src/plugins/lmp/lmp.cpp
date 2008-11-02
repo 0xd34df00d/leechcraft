@@ -8,6 +8,7 @@
 #include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
+#include "keyinterceptor.h"
 
 void LMP::Init ()
 {
@@ -20,9 +21,19 @@ void LMP::Init ()
 			SIGNAL (stateUpdated (const QString&)),
 			this,
 			SLOT (handleStateUpdated (const QString&)));
+	connect (&Core::Instance (),
+			SIGNAL (bringToFront ()),
+			this,
+			SLOT (bringToFront ()));
 
 	Core::Instance ().SetVideoWidget (Ui_.VideoWidget_);
 	Core::Instance ().Reinitialize ();
+
+	KeyInterceptor *ki = new KeyInterceptor (this);
+	QList<QWidget*> children = findChildren<QWidget*> ();
+	for (QList<QWidget*>::iterator i = children.begin (),
+			end = children.end (); i != end; ++i)
+		(*i)->installEventFilter (ki);
 }
 
 void LMP::Release ()

@@ -41,6 +41,8 @@ public slots:
 	void play ();
 private slots:
 	void selectFile ();
+signals:
+	void bringToFront ();
 };
 
 #endif
