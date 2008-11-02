@@ -2,13 +2,10 @@
 #include <QtDebug>
 #include "mergemodel.h"
 
-MergeModel::MergeModel (QObject *parent)
+MergeModel::MergeModel (const QStringList& headers, QObject *parent)
 : QAbstractProxyModel (parent)
+, Headers_ (headers)
 {
-	Headers_ << tr ("Name")
-		<< tr ("State")
-		<< tr ("Progress")
-		<< tr ("Speed");
 }
 
 MergeModel::~MergeModel ()

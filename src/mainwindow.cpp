@@ -154,13 +154,13 @@ namespace Main
 				fm.width (" 1234.56 kb/s "));
 
 		itemsHeader = Ui_->HistoryView_->header ();
-		itemsHeader->resize (0,
+		itemsHeader->resizeSection (0,
 				fm.width ("Average filename or torrent name is about this width or something."));
-		itemsHeader->resize (1,
-				fm.width ("/home/this/is/some/path/for/downloaded/file/"));
-		itemsHeader->resize (2,
+		itemsHeader->resizeSection (1,
+				fm.width ("this is some path for downloaded file with extension"));
+		itemsHeader->resizeSection (2,
 				fm.width (" 1234.56 kb "));
-		itemsHeader->resize (3,
+		itemsHeader->resizeSection (3,
 				fm.width (QDateTime::currentDateTime ().toString ()));
 
 		QTimer *speedUpd = new QTimer (this);

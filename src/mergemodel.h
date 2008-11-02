@@ -16,7 +16,7 @@ public:
 	typedef models_t::iterator iterator;
 	typedef models_t::const_iterator const_iterator;
 
-	MergeModel (QObject* = 0);
+	MergeModel (const QStringList&, QObject* = 0);
 	virtual ~MergeModel ();
 
 	virtual int columnCount (const QModelIndex& = QModelIndex ()) const;

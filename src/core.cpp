@@ -21,8 +21,14 @@
 
 Main::Core::Core ()
 : Server_ (new QLocalServer)
-, MergeModel_ (new MergeModel)
-, HistoryMergeModel_ (new MergeModel)
+, MergeModel_ (new MergeModel (QStringList (tr ("Name"))
+			<< tr ("State")
+			<< tr ("Progress")
+			<< tr ("Speed")))
+, HistoryMergeModel_ (new MergeModel (QStringList (tr ("Filename"))
+			<< tr ("Path")
+			<< tr ("Size")
+			<< tr ("Date")))
 , FilterModel_ (new FilterModel)
 , HistoryFilterModel_ (new FilterModel)
 {
@@ -192,6 +198,7 @@ void Main::Core::DelayedInit ()
 			ijh->GetAdditionalInfo ()->setParent (ReallyMainWindow_);
 
 			QAbstractItemModel *historyModel = ijh->GetHistory ();
+			qDebug () << historyModel << ii->GetName ();
 			if (historyModel)
 			{
 				History2Object_ [historyModel] = plugin;
