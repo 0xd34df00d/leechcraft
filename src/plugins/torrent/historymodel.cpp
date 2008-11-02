@@ -56,7 +56,7 @@ QVariant HistoryModel::data (const QModelIndex& index, int role) const
 				case 1:
 					return Items_ [index.row ()].Where_;
 				case 2:
-					return Items_ [index.row ()].TorrentSize_;
+					return Proxy::Instance ()->MakePrettySize (Items_ [index.row ()].TorrentSize_);
 				case 3:
 					return Items_ [index.row ()].DateTime_.toString ();
 				default:
@@ -90,7 +90,7 @@ bool operator== (const HistoryModel::HistoryItem& hi1,
 
 void HistoryModel::AddItem (const HistoryModel::HistoryItem& item)
 {
-	if (std::find (Items_.begin (), Items_.end (), item) == Items_.end ())
+	if (std::find (Items_.begin (), Items_.end (), item) != Items_.end ())
 		return;
 
 	beginInsertRows (QModelIndex (), Items_.size (), Items_.size ());

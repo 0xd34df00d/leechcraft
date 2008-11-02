@@ -523,14 +523,6 @@ void TorrentPlugin::doLogMessage (const QString& msg)
     Ui_.LogShower_->append (msg.trimmed ());
 }
 
-void TorrentPlugin::addToHistory (const QString& name,
-		const QString& where, quint64 size, const QDateTime& when,
-		const QStringList& tags)
-{
-	HistoryModel::HistoryItem item = { name, where, size, when, tags };
-	Core::Instance ()->GetHistoryModel ()->AddItem (item);
-}
-
 void TorrentPlugin::UpdateDashboard ()
 {
     Ui_.OverallDownloadRateController_->setValue (Core::Instance ()->GetOverallDownloadRate ());
@@ -702,12 +694,6 @@ void TorrentPlugin::SetupCore ()
 					const QModelIndex&)),
 			this,
 			SLOT (updateTorrentStats ()));
-	connect (Core::Instance (),
-			SIGNAL (addToHistory (const QString&, const QString&,
-					quint64, const QDateTime&, const QStringList&)),
-			this,
-			SLOT (addToHistory (const QString&, const QString&,
-					quint64, const QDateTime&, const QStringList&)));
 	connect (TabWidget_.get (),
 			SIGNAL (currentChanged (int)),
 			this,

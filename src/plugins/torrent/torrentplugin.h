@@ -127,8 +127,6 @@ private slots:
     void showError (QString);
     void updateOverallStats ();
     void doLogMessage (const QString&);
-    void addToHistory (const QString&, const QString&, quint64,
-			const QDateTime&, const QStringList&);
 private:
     void UpdateDashboard ();
 	void UpdateTorrentControl ();

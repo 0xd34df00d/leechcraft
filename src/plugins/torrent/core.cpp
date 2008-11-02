@@ -1335,11 +1335,17 @@ void Core::HandleSingleFinished (int i)
         emit fileFinished (QString::fromUtf8 (i->path.string ().c_str ()));
 
 	if (!(torrent.Parameters_ & LeechCraft::DoNotSaveInHistory))
-		emit addToHistory (QString::fromStdString (info.name ()),
-				where,
-				info.total_size (),
-				QDateTime::currentDateTime (),
-				torrent.Tags_);
+	{
+		HistoryModel::HistoryItem item =
+		{
+			QString::fromStdString (info.name ()),
+			where,
+			info.total_size (),
+			QDateTime::currentDateTime (),
+			torrent.Tags_
+		};
+		HistoryModel_->AddItem (item);
+	}
 
 	emit taskFinished (torrent.ID_);
 }
