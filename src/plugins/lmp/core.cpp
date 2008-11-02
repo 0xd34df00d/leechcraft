@@ -3,6 +3,7 @@
 #include <VideoWidget>
 #include <SeekSlider>
 #include <VolumeSlider>
+#include "xmlsettingsmanager.h"
 
 Core::Core ()
 : TotalTimeAvailable_ (false)
@@ -18,6 +19,8 @@ Core& Core::Instance ()
 
 void Core::Release ()
 {
+	if (AudioOutput_.get ())
+		XmlSettingsManager::Instance ()->setProperty ("Volume", AudioOutput_->volume ());
 	MediaObject_.reset ();
 }
 
@@ -45,7 +48,7 @@ void Core::Reinitialize ()
 			this,
 			SLOT (handleHasVideoChanged (bool)));
 
-	qreal oldVolume = 1;
+	qreal oldVolume = XmlSettingsManager::Instance ()->Property ("Volume", 1).value<qreal> ();
 	if (AudioOutput_.get ())
 		oldVolume = AudioOutput_->volume ();
 	AudioOutput_.reset (new Phonon::AudioOutput (Phonon::MusicCategory, this));

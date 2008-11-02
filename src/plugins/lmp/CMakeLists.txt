@@ -13,15 +13,18 @@ SET (SRCS
 	core.cpp
 	xmlsettingsmanager.cpp
 	keyinterceptor.cpp
+	videosettings.cpp
 	)
 SET (HEADERS
 	lmp.h
 	core.h
 	xmlsettingsmanager.h
 	keyinterceptor.h
+	videosettings.h
 	)
 SET (FORMS
     tabwidget.ui
+	videosettings.ui
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS

@@ -22,6 +22,7 @@ class LMP : public QWidget
 	std::auto_ptr<QAction> Open_;
 	std::auto_ptr<QAction> Play_;
 	std::auto_ptr<QAction> Pause_;
+	std::auto_ptr<QAction> ViewerSettings_;
 public:
 	void Init ();
 	void Release ();
@@ -35,12 +36,15 @@ public:
 	QWidget* GetTabContents ();
 	QToolBar* SetupToolbar ();
 	bool ImplementsFeature (const QString&) const;
+private:
+	void ApplyVideoSettings (qreal, qreal, qreal, qreal);
 public slots:
 	void handleStateUpdated (const QString&);
 	void setFile (const QString&);
 	void play ();
 private slots:
 	void selectFile ();
+	void changeViewerSettings ();
 signals:
 	void bringToFront ();
 };
