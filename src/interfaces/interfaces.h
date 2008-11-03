@@ -516,8 +516,11 @@ public:
  * To remove a tab, it emits removeTab(QWidget*), where the parameter is
  * the pointer to a previously added tab's widget.
  * To change tab's name, plugin emits changeTabName(QWidget*, const
- * QString&), where the first parameter is the new name, the second -
- * pointer to previously inserted tab.
+ * QString&), where the first parameter is the pointer to previously
+ * inserted tab and the second one is the new name.
+ * To change tab's icon, plugin emits changeTabIcon(QWidget*, const
+ * QIcon&), where the first parameter is the pointer to previously
+ * inserted tab and the seocnd one is the new icon.
  *
  * @sa IEmbedTab
  * @sa IWindow

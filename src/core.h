@@ -81,6 +81,7 @@ namespace Main
 		void handleNewTab (const QString&, QWidget*);
 		void handleRemoveTab (QWidget*);
 		void handleChangeTabName (QWidget*, const QString&);
+		void handleChangeTabIcon (QWidget*, const QIcon&);
 	private:
 		int FindTabForWidget (QWidget*) const;
     signals:

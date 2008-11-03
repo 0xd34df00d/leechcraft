@@ -230,6 +230,10 @@ void Main::Core::DelayedInit ()
 					SIGNAL (changeTabName (QWidget*, const QString&)),
 					this,
 					SLOT (handleChangeTabName (QWidget*, const QString&)));
+			connect (plugin,
+					SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
+					this,
+					SLOT (handleChangeTabIcon (QWidget*, const QIcon&)));
 		}
     }
 }
@@ -507,7 +511,9 @@ void Main::Core::handlePluginAction ()
 
 void Main::Core::handleFileDownload (const QString& file, bool fromBuffer)
 {
-    if (!fromBuffer && !XmlSettingsManager::Instance ()->property ("QueryPluginsToHandleFinished").toBool ())
+    if (!fromBuffer &&
+			!XmlSettingsManager::Instance ()->
+			property ("QueryPluginsToHandleFinished").toBool ())
         return;
 
     QObjectList plugins = PluginManager_->GetAllCastableTo<IDownload*> ();
@@ -518,10 +524,14 @@ void Main::Core::handleFileDownload (const QString& file, bool fromBuffer)
 		LeechCraft::TaskParameters tp = LeechCraft::Autostart | LeechCraft::FromAutomatic;
         if (id->CouldDownload (file, tp))
         {
-            if (QMessageBox::question (qobject_cast<QWidget*> (qobject_cast<QObject*> (this)->parent ()),
-                tr ("Question"),
-                tr ("File %1 could be handled by plugin %2, would you like to?").arg (file).arg (ii->GetName ()),
-                QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+            if (QMessageBox::question (
+						qobject_cast<QWidget*> (qobject_cast<QObject*> (this)->parent ()),
+						tr ("Question"),
+						tr ("File %1 could be handled by plugin %2, would you like to?")
+							.arg (file).arg (ii->GetName ()),
+						QMessageBox::Yes | QMessageBox::No
+						)
+				   == QMessageBox::No)
                 continue;
 
 			LeechCraft::DownloadParams ddp = { file, "" };
@@ -572,6 +582,14 @@ void Main::Core::handleChangeTabName (QWidget *contents, const QString& title)
 	if (tabNumber == -1)
 		return;
 	ReallyMainWindow_->GetTabWidget ()->setTabText (tabNumber, title);
+}
+
+void Main::Core::handleChangeTabIcon (QWidget *contents, const QIcon& icon)
+{
+	int tabNumber = FindTabForWidget (contents);
+	if (tabNumber == -1)
+		return;
+	ReallyMainWindow_->GetTabWidget ()->setTabIcon (tabNumber, icon);
 }
 
 int Main::Core::FindTabForWidget (QWidget *widget) const

@@ -14,8 +14,16 @@ public:
 
 	CustomWebView* GetView () const;
 	void SetURL (const QUrl&);
+protected:
+	void keyReleaseEvent (QKeyEvent*);
+private slots:
+	void handleIconChanged ();
+	void handleStatusBarMessage (const QString&);
 signals:
 	void titleChanged (const QString&);
+	void urlChanged (const QString&);
+	void iconChanged (const QIcon&);
+	void needToClose ();
 };
 
 #endif

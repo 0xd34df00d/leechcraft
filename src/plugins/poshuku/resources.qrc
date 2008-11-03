@@ -2,5 +2,6 @@
   <qresource prefix="/" >
     <file>leechcraft_poshuku_ru_RU.qm</file>
     <file>leechcraft_poshuku_uk_UA.qm</file>
+	<file>poshukusettings.xml</file>
   </qresource>
 </RCC>

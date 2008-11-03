@@ -5,6 +5,7 @@
 #include <QTranslator>
 #include <QWidget>
 #include <interfaces/interfaces.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "ui_poshuku.h"
 
 class Poshuku : public QWidget
@@ -16,6 +17,9 @@ class Poshuku : public QWidget
     Q_INTERFACES (IInfo IEmbedTab IMultiTabs)
 
 	Ui::Poshuku Ui_;
+
+	std::auto_ptr<QTranslator> Translator_;
+	std::auto_ptr<XmlSettingsDialog> XmlSettingsDialog_;
 public:
 	void Init ();
 	void Release ();
@@ -29,11 +33,14 @@ public:
 	QWidget* GetTabContents ();
 private slots:
 	void on_AddressLine__returnPressed ();
+	void on_ActionSettings__triggered ();
+	void viewerSettingsChanged ();
 signals:
 	void bringToFront ();
 	void addNewTab (const QString&, QWidget*);
 	void removeTab (QWidget*);
 	void changeTabName (QWidget*, const QString&);
+	void changeTabIcon (QWidget*, const QIcon&);
 };
 
 #endif
