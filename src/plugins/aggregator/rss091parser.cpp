@@ -1,4 +1,5 @@
 #include "rss091parser.h"
+#include <QDebug>
 
 RSS091Parser::RSS091Parser ()
 {
@@ -64,7 +65,10 @@ Item* RSS091Parser::ParseItem (const QDomElement& item) const
 	result->Description_ = item.firstChildElement ("description").text ();
 	result->PubDate_ = RFC822TimeToQDateTime (item.firstChildElement ("pubDate").text ());
 	if (!result->PubDate_.isValid () || result->PubDate_.isNull ())
+	{
+		qDebug () << "Aggregator RSS 0.91: Can't parse item pubDate: " << item.firstChildElement ("pubDate").text ();
 		result->PubDate_ = QDateTime::currentDateTime ();
+	}
 	result->Guid_ = item.firstChildElement ("guid").text ();
 	if (result->Guid_.isEmpty ())
 		result->Guid_ = "empty";

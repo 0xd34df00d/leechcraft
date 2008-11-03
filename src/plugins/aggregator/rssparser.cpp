@@ -84,9 +84,11 @@ QDateTime RSSParser::RFC822TimeToQDateTime (const QString& t) const
 	QString time = t.simplified ();
 	short int hoursShift = 0, minutesShift = 0;
 	
-	if (time [3] == ',')
-		time.remove (0, 5);
 	QStringList tmp = time.split (' ');
+	if (tmp.isEmpty ())
+		return QDateTime ();
+	if (tmp. at (0).contains (QRegExp ("\\D")))
+		tmp.removeFirst ();
 	if (tmp.size () != 5)
 		return QDateTime ();
 	QString timezone = tmp.takeAt (tmp.size () -1);
@@ -103,8 +105,12 @@ QDateTime RSSParser::RFC822TimeToQDateTime (const QString& t) const
 	else
 		hoursShift = TimezoneOffsets_.value (timezone, 0);
 
+ 	//HACK: This we don't need this according to rfc, but we added it
+ 	//	to be compatible with some buggy rss generators
 	if (tmp.at (0).size () == 1)
 		tmp[0].prepend ("0");
+ 	tmp [1].truncate (3);
+ 	//HACK
 
 	time = tmp.join (" ");
 
@@ -113,6 +119,8 @@ QDateTime RSSParser::RFC822TimeToQDateTime (const QString& t) const
 		result = QLocale::c ().toDateTime(time, "dd MMM yyyy hh:mm:ss");
 	else
 		result = QLocale::c ().toDateTime(time, "dd MMM yy hh:mm:ss");
+	if (result.isNull () || !result.isValid ())
+		return QDateTime ();
 	result = result.addSecs (hoursShift * 3600 * (-1) + minutesShift *60 * (-1));
 	result.setTimeSpec (Qt::UTC);
 	return result.toLocalTime ();
