@@ -19,6 +19,7 @@ protected:
 private slots:
 	void handleIconChanged ();
 	void handleStatusBarMessage (const QString&);
+	void on_URLEdit__returnPressed ();
 signals:
 	void titleChanged (const QString&);
 	void urlChanged (const QString&);

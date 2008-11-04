@@ -194,7 +194,7 @@ QStringList Aggregator::Needs () const
 
 QStringList Aggregator::Uses () const
 {
-    return QStringList ();
+    return QStringList ("webbrowser");
 }
 
 void Aggregator::SetProvider (QObject* object, const QString& feature)

@@ -1,6 +1,7 @@
 #include "browserwidget.h"
 #include <QKeyEvent>
 #include <QtDebug>
+#include "core.h"
 
 BrowserWidget::BrowserWidget (QWidget *parent)
 : QWidget (parent)
@@ -21,7 +22,7 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			SLOT (setText (const QString&)));
 	connect (Ui_.WebView_,
 			SIGNAL (loadProgress (int)),
-			Ui_.LoadProgress_,
+			Ui_.URLEdit_,
 			SLOT (setValue (int)));
 	connect (Ui_.WebView_,
 			SIGNAL (iconChanged ()),
@@ -65,6 +66,15 @@ void BrowserWidget::handleIconChanged ()
 
 void BrowserWidget::handleStatusBarMessage (const QString& str)
 {
-	Ui_.LoadProgress_->setFormat (str + " (%p)");
+//	Ui_.LoadProgress_->setFormat (str + " (%p)");
+}
+
+void BrowserWidget::on_URLEdit__returnPressed ()
+{
+	QString url = Ui_.URLEdit_->text ();
+	if (!Core::Instance ().IsValidURL (url))
+		return;
+
+	Ui_.WebView_->load (QUrl (url));
 }
 

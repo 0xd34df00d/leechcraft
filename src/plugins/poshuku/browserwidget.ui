@@ -14,17 +14,17 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
-    <widget class="QLineEdit" name="URLEdit_" />
+    <widget class="ProgressLineEdit" name="URLEdit_" >
+     <property name="styleSheet" >
+      <string notr="true" >QLineEdit { background-color: qlineargradient(spread:pad, x1:0, y1:1, x2:1, y2:1, stop:-1.001 rgba(0, 120, 0, 180), stop:1 rgba(255, 255, 255, 255)) }</string>
+     </property>
+     <property name="text" >
+      <string/>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="CustomWebView" native="1" name="WebView_" />
-   </item>
-   <item>
-    <widget class="QProgressBar" name="LoadProgress_" >
-     <property name="value" >
-      <number>24</number>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>
@@ -34,6 +34,11 @@
    <extends>QWidget</extends>
    <header>customwebview.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ProgressLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>progresslineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
