@@ -5,6 +5,7 @@
 #include <plugininterface/util.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "customwebview.h"
 
 void Poshuku::Init ()
 {
@@ -103,6 +104,16 @@ QIcon Poshuku::GetIcon () const
 QWidget* Poshuku::GetTabContents ()
 {
 	return this;
+}
+
+void Poshuku::openURL (const QString& url)
+{
+	Core::Instance ().NewURL (url);
+}
+
+QWebView* Poshuku::createWindow ()
+{
+	return Core::Instance ().MakeWebView ();
 }
 
 void Poshuku::on_AddressLine__returnPressed ()

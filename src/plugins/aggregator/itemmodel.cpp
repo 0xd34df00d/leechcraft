@@ -1,4 +1,4 @@
-#include <QDesktopServices>
+#include "itemmodel.h"
 #include <QSettings>
 #include <QUrl>
 #include <QTimer>
@@ -6,7 +6,7 @@
 #include <QtDebug>
 #include <plugininterface/proxy.h>
 #include "item.h"
-#include "itemmodel.h"
+#include "core.h"
 
 ItemModel::ItemModel (QObject *parent)
 : QAbstractItemModel (parent)
@@ -56,7 +56,7 @@ void ItemModel::Activated (const QModelIndex& index) const
 	if (!index.isValid () || index.row () >= rowCount ())
 		return;
 
-    QDesktopServices::openUrl (QUrl (Items_ [index.row ()]->Link_));
+	Core::Instance ().OpenLink (Items_ [index.row ()]->Link_);
 }
 
 QString ItemModel::GetDescription (const QModelIndex& index) const

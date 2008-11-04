@@ -40,6 +40,7 @@ SET (SRCS
 	exportopml.cpp
 	sqlstoragebackend.cpp
 	storagebackend.cpp
+	customwebview.cpp
 	)
 SET (HEADERS
     aggregator.h
@@ -74,6 +75,7 @@ SET (HEADERS
 	exportopml.h
 	sqlstoragebackend.h
 	storagebackend.h
+	customwebview.h
 	opmlitem.h
 	../../xmlsettingsdialog/basesettingsmanager.h
 	)

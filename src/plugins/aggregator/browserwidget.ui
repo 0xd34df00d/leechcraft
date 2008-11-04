@@ -59,11 +59,12 @@
     </layout>
    </item>
    <item>
-    <widget class="QWebView" name="ItemView_" >
-     <property name="url" >
-      <url>
-       <string>about:blank</string>
-      </url>
+    <widget class="CustomWebView" native="1" name="ItemView_" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
     </widget>
    </item>
@@ -91,78 +92,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QWebView</class>
+   <class>CustomWebView</class>
    <extends>QWidget</extends>
-   <header>QtWebKit/QWebView</header>
+   <header>customwebview.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>
   <include location="resources.qrc" />
  </resources>
- <connections>
-  <connection>
-   <sender>ActionBrowserBack_</sender>
-   <signal>triggered()</signal>
-   <receiver>ItemView_</receiver>
-   <slot>back()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>199</x>
-     <y>165</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>ActionBrowserForward_</sender>
-   <signal>triggered()</signal>
-   <receiver>ItemView_</receiver>
-   <slot>forward()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>199</x>
-     <y>165</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>ActionBrowserReload_</sender>
-   <signal>triggered()</signal>
-   <receiver>ItemView_</receiver>
-   <slot>reload()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>199</x>
-     <y>165</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>ActionBrowserStop_</sender>
-   <signal>triggered()</signal>
-   <receiver>ItemView_</receiver>
-   <slot>stop()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>199</x>
-     <y>165</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

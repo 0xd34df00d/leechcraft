@@ -232,12 +232,12 @@ void Core::Activated (const QModelIndex& index)
 	StorageBackend_->UpdateItem (item, ActivatedChannel_->Link_ + ActivatedChannel_->Title_);
 	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
 	UpdateUnreadItemsNumber ();
-	QDesktopServices::openUrl (QUrl (URL));
+	OpenLink (URL);
 }
 
 void Core::FeedActivated (const QModelIndex& index)
 {
-	QDesktopServices::openUrl (QUrl (ChannelsModel_->GetChannelForIndex (index)->Link_));
+	OpenLink (ChannelsModel_->GetChannelForIndex (index)->Link_);
 }
 
 void Core::Selected (const QModelIndex& index)
@@ -585,6 +585,31 @@ void Core::SubscribeToComments (const QModelIndex& index)
 		AddFeed (commentRSS, tags + addTags);
 	else
 		AddFeed (commentRSS, tags);
+}
+
+void Core::OpenLink (const QString& url)
+{
+	if (!Providers_.contains ("webbrowser"))
+	{
+		QDesktopServices::openUrl (QUrl (url));
+		return;
+	}
+	QObject *provider = Providers_ ["webbrowser"];
+	QMetaObject::invokeMethod (provider,
+			"openURL", Q_ARG (QString, url));
+}
+
+QWebView* Core::CreateWindow ()
+{
+	if (!Providers_.contains ("webbrowser"))
+		return 0;
+
+	QWebView *result;
+	QObject *provider = Providers_ ["webbrowser"];
+	QMetaObject::invokeMethod (provider,
+			"createWindow", Q_RETURN_ARG (QWebView*, result));
+
+	return result;
 }
 
 int Core::columnCount (const QModelIndex& parent) const

@@ -18,6 +18,7 @@ class QTimer;
 class QNetworkReply;
 class QFile;
 class ItemModel;
+class QWebView;
 
 class Core : public QAbstractItemModel
 {
@@ -115,6 +116,8 @@ public:
 	feeds_container_t GetFeeds () const;
     ItemModel* GetItemModel () const;
 	void SubscribeToComments (const QModelIndex&);
+	void OpenLink (const QString&);
+	QWebView* CreateWindow ();
 
     virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
     virtual QVariant data (const QModelIndex&,

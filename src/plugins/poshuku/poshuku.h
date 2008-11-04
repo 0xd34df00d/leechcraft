@@ -8,6 +8,8 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "ui_poshuku.h"
 
+class QWebView;
+
 class Poshuku : public QWidget
 			  , public IInfo
 			  , public IEmbedTab
@@ -31,6 +33,9 @@ public:
 	void SetProvider (QObject*, const QString&);
 	QIcon GetIcon () const;
 	QWidget* GetTabContents ();
+public slots:
+	void openURL (const QString&);
+	QWebView* createWindow ();
 private slots:
 	void on_AddressLine__returnPressed ();
 	void on_ActionSettings__triggered ();
