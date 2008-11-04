@@ -15,9 +15,6 @@
   <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
     <widget class="ProgressLineEdit" name="URLEdit_" >
-     <property name="styleSheet" >
-      <string notr="true" >QLineEdit { background-color: qlineargradient(spread:pad, x1:0, y1:1, x2:1, y2:1, stop:-1.001 rgba(0, 120, 0, 180), stop:1 rgba(255, 255, 255, 255)) }</string>
-     </property>
      <property name="text" >
       <string/>
      </property>

@@ -12,14 +12,14 @@ ProgressLineEdit::~ProgressLineEdit ()
 
 void ProgressLineEdit::setValue (int value)
 {
-	double sv = static_cast<double> (value * 2) / 100;
-	sv -= 1.001;
+	double sv = static_cast<double> (value) / 100;
 	QString ss = QString ("QLineEdit { "
 			"background-color: qlineargradient(spread:pad, "
 			"x1:0, y1:1, x2:1, y2:1, "
 			"stop:%1 rgba(0, 120, 0, 180), "
-			"stop:1 rgba(255, 255, 255, 255)) }")
-		.arg (sv);
+			"stop:%2 rgba(255, 255, 255, 255)) }")
+		.arg (sv)
+		.arg (sv + 0.05);
 
 	setStyleSheet (ss);
 }
