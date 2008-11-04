@@ -437,7 +437,7 @@ void Aggregator::on_ActionExportOPML__triggered ()
 			exportDialog.GetSelectedFeeds ());
 }
 
-void Aggregator::on_ItemComments__linkActivated ()
+void Aggregator::on_ItemCommentsSubscribe__released ()
 {
     QModelIndex selected = Ui_.Items_->selectionModel ()->currentIndex ();
 	Core::Instance ().SubscribeToComments (ItemsFilterModel_->
@@ -542,11 +542,17 @@ void Aggregator::currentItemChanged (const QItemSelection& selection)
 
 		QString text;
 		if (numComments >= 0 && commentsRSS.isEmpty ())
+		{
 			text = QString::number (numComments);
+			Ui_.ItemCommentsSubscribe_->hide ();
+		}
 		else if (numComments < 0 && !commentsRSS.isEmpty ())
-			text = QString ("<a href=\"#subscribe\">%1</a>").arg (tr ("Subscribe"));
+			Ui_.ItemCommentsSubscribe_->show ();
 		else
-			text = QString ("<a href=\"#subscribe\">%1</a>").arg (numComments);
+		{
+			text = QString::number (numComments);
+			Ui_.ItemCommentsSubscribe_->show ();
+		}
 
 		Ui_.ItemComments_->setText (text);
 	}
@@ -554,6 +560,7 @@ void Aggregator::currentItemChanged (const QItemSelection& selection)
 	{
 		Ui_.ItemComments_->hide ();
 		Ui_.ItemCommentsLabel_->hide ();
+		Ui_.ItemCommentsSubscribe_->hide ();
 	}
 }
 

@@ -78,7 +78,7 @@ private slots:
 	void on_ActionHideReadItems__triggered ();
 	void on_ActionImportOPML__triggered ();
 	void on_ActionExportOPML__triggered ();
-	void on_ItemComments__linkActivated ();
+	void on_ItemCommentsSubscribe__released ();
     void currentItemChanged (const QItemSelection&);
     void currentChannelChanged ();
     void unreadNumberChanged (int);
