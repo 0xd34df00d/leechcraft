@@ -27,21 +27,7 @@ HistoryModel::HistoryModel (QObject *parent)
 
 HistoryModel::~HistoryModel ()
 {
-    QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-			Proxy::Instance ()->GetApplicationName () + "_Torrent");
-    settings.beginWriteArray ("History");
-    for (items_t::const_iterator i = Items_.begin (),
-			begin = Items_.begin (), end = Items_.end ();
-			i != end; ++i)
-    {
-        settings.setArrayIndex (std::distance (begin, i));
-        settings.setValue ("Name", i->Name_);
-        settings.setValue ("Where", i->Where_);
-        settings.setValue ("TorrentSize", i->TorrentSize_);
-        settings.setValue ("Date", i->DateTime_);
-		settings.setValue ("Tags", i->Tags_);
-    }
-    settings.endArray ();
+	SaveSettings ();
 }
 
 QVariant HistoryModel::data (const QModelIndex& index, int role) const
@@ -79,6 +65,8 @@ void HistoryModel::RemoveItem (const QModelIndex& index)
 	beginRemoveRows (QModelIndex (), index.row (), index.row ());
 	Items_.erase (Items_.begin () + index.row ());
 	endRemoveRows ();
+
+	SaveSettings ();
 }
 
 bool operator== (const HistoryModel::HistoryItem& hi1,
@@ -96,5 +84,26 @@ void HistoryModel::AddItem (const HistoryModel::HistoryItem& item)
 	beginInsertRows (QModelIndex (), Items_.size (), Items_.size ());
 	Items_.push_back (item);
 	endInsertRows ();
+
+	SaveSettings ();
+}
+
+void HistoryModel::SaveSettings ()
+{
+    QSettings settings (Proxy::Instance ()->GetOrganizationName (),
+			Proxy::Instance ()->GetApplicationName () + "_Torrent");
+    settings.beginWriteArray ("History");
+    for (items_t::const_iterator i = Items_.begin (),
+			begin = Items_.begin (), end = Items_.end ();
+			i != end; ++i)
+    {
+        settings.setArrayIndex (std::distance (begin, i));
+        settings.setValue ("Name", i->Name_);
+        settings.setValue ("Where", i->Where_);
+        settings.setValue ("TorrentSize", i->TorrentSize_);
+        settings.setValue ("Date", i->DateTime_);
+		settings.setValue ("Tags", i->Tags_);
+    }
+    settings.endArray ();
 }
 

@@ -32,6 +32,8 @@ public:
 	void RemoveItem (const QModelIndex&);
 
 	void AddItem (const HistoryItem&);
+private:
+	void SaveSettings ();
 };
 
 #endif

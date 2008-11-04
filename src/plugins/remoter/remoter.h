@@ -27,15 +27,10 @@ public:
     QIcon GetIcon () const;
     void SetParent (QWidget*);
     void ShowWindow ();
-    void ShowBalloonTip ();
 protected:
     virtual void closeEvent (QCloseEvent*);
 public slots:
     void handleHidePlugins ();
-protected slots:
-    virtual void on_Port__valueChanged (int);
-    virtual void on_Login__textEdited (const QString&);
-    virtual void on_Password__textEdited (const QString&);
 };
 
 #endif
