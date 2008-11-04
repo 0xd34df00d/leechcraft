@@ -472,7 +472,7 @@ void Main::Core::handlePluginAction ()
 	QModelIndexList selected;
 	for (QModelIndexList::const_iterator i = origSelection.begin (),
 			end = origSelection.end (); i != end; ++i)
-		selected.push_back (FilterModel_->mapToSource (*i));
+		selected.push_back (MapToSource (*i));
 
 	QAbstractItemModel *model = Action2Model_ [source];
 	int startingRow = MergeModel_->GetStartingRow (MergeModel_->FindModel (model));
@@ -599,5 +599,10 @@ int Main::Core::FindTabForWidget (QWidget *widget) const
 		if (tabWidget->widget (i) == widget)
 			return i;
 	return -1;
+}
+
+QModelIndex Main::Core::MapToSource (const QModelIndex& index)
+{
+	return MergeModel_->mapToSource (FilterModel_->mapToSource (index));
 }
 

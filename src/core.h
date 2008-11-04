@@ -84,6 +84,7 @@ namespace Main
 		void handleChangeTabIcon (QWidget*, const QIcon&);
 	private:
 		int FindTabForWidget (QWidget*) const;
+		QModelIndex MapToSource (const QModelIndex&) const;
     signals:
         void error (QString);
         void downloadFinished (const QString&);
