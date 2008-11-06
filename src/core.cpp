@@ -601,7 +601,7 @@ int Main::Core::FindTabForWidget (QWidget *widget) const
 	return -1;
 }
 
-QModelIndex Main::Core::MapToSource (const QModelIndex& index)
+QModelIndex Main::Core::MapToSource (const QModelIndex& index) const
 {
 	return MergeModel_->mapToSource (FilterModel_->mapToSource (index));
 }

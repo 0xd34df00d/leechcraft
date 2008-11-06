@@ -18,7 +18,7 @@ public:
 	{
 	}
 
-	virtual State validate (QString& input, int& pos) const
+	virtual State validate (QString& input, int&) const
 	{
 		if (QUrl (input).isValid () || input.isEmpty ())
 			return Acceptable;

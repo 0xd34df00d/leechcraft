@@ -469,7 +469,7 @@ void Task::handleRequestStart (int id)
 	CurrentCmd_ = FindCommand (id);
 }
 
-void Task::handleRequestFinish (int id, bool result)
+void Task::handleRequestFinish (int id, bool)
 {
 	std::remove_if (Commands_.begin (),
 			Commands_.end (),

@@ -7,7 +7,7 @@ TagsCompletionModel::TagsCompletionModel (QObject *parent)
 {
 }
 
-int TagsCompletionModel::columnCount (const QModelIndex& parent) const
+int TagsCompletionModel::columnCount (const QModelIndex&) const
 {
     return 1;
 }
@@ -23,7 +23,7 @@ QVariant TagsCompletionModel::data (const QModelIndex& index, int role) const
         return QVariant ();
 }
 
-Qt::ItemFlags TagsCompletionModel::flags (const QModelIndex& index) const
+Qt::ItemFlags TagsCompletionModel::flags (const QModelIndex&) const
 {
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
@@ -33,7 +33,7 @@ bool TagsCompletionModel::hasChildren (const QModelIndex& index) const
     return !index.isValid ();
 }
 
-QVariant TagsCompletionModel::headerData (int, Qt::Orientation, int role) const
+QVariant TagsCompletionModel::headerData (int, Qt::Orientation, int) const
 {
     return QVariant ();
 }

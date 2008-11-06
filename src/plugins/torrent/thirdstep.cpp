@@ -32,11 +32,11 @@ void ThirdStep::initializePage ()
         it.next ();
     }
 
-	int max = std::log (static_cast<long double> (TotalSize_ / 102400)) * 80;
+	quint64 max = std::log (static_cast<long double> (TotalSize_ / 102400)) * 80;
 
 	int pieceSize = 32 * 1024;
 	int shouldIndex = 0;
-	for (; TotalSize_ / pieceSize >= max; pieceSize *= 2, ++shouldIndex);
+	for (; TotalSize_ / pieceSize >= max; pieceSize *= 2, ++shouldIndex) ;
 
 	if (shouldIndex > PieceSize_->count () - 1)
 		shouldIndex = PieceSize_->count () - 1;

@@ -16,7 +16,7 @@ PiecesModel::~PiecesModel ()
 {
 }
 
-int PiecesModel::columnCount (const QModelIndex& index) const
+int PiecesModel::columnCount (const QModelIndex&) const
 {
     return Headers_.size ();
 }

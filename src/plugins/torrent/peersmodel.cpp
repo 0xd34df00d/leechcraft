@@ -135,7 +135,7 @@ QModelIndex PeersModel::parent (const QModelIndex&) const
     return QModelIndex ();
 }
 
-int PeersModel::rowCount (const QModelIndex& index) const
+int PeersModel::rowCount (const QModelIndex&) const
 {
     return Peers_.size ();
 }

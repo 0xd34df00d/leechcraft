@@ -1,6 +1,7 @@
 #include "rssparser.h"
 #include <QDomDocument>
 #include <QLocale>
+#include <QtDebug>
 
 RSSParser::RSSParser ()
 {

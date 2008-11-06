@@ -23,7 +23,7 @@ PluginManager::~PluginManager ()
 {
 }
 
-int PluginManager::columnCount (const QModelIndex& parent) const
+int PluginManager::columnCount (const QModelIndex&) const
 {
 	return 1;
 }
@@ -141,7 +141,7 @@ QObjectList PluginManager::GetAllPlugins () const
     return result;
 }
 
-void PluginManager::InitializePlugins (const MainWindow* win)
+void PluginManager::InitializePlugins (const MainWindow*)
 {
     for (int i = 0; i < Plugins_.size (); ++i)
     {

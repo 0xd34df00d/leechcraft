@@ -319,7 +319,7 @@ void FsIrcView::fsExec(QString cmd, QString arg)
 	QStringList args = arg.split(QRegExp("\\s+"));
 	if (cmd=="encoding")
 	{
-		if (m_irc->setEncoding(arg)==1);
+		if (m_irc->setEncoding(arg)==1)
 		{
 			// Good one, gotta save this
 			settings.beginGroup("encodings");

@@ -230,7 +230,7 @@ void Core::totalTimeChanged ()
 	TotalTimeAvailable_ = true;
 }
 
-void Core::handleHasVideoChanged (bool hasVideo)
+void Core::handleHasVideoChanged (bool)
 {
 }
 

@@ -51,7 +51,11 @@ namespace LeechCraft
 		/** Task is used internally and would not be visible to the user
 		 * at all.
 		 */
-		Internal = 64
+		Internal = 64,
+		/** Task should not be saved as it would have no meaning after
+		 * next start.
+		 */
+		NotPersistent = 128
 	};
 
 	Q_DECLARE_FLAGS (TaskParameters, TaskParameter);

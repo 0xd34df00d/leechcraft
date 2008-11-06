@@ -535,12 +535,12 @@ void SQLStorageBackend::ToggleChannelUnread (const QString& hash, bool state)
 	}
 }
 
-bool SQLStorageBackend::UpdateFeedsStorage (int oldV, int newV)
+bool SQLStorageBackend::UpdateFeedsStorage (int, int)
 {
     return true;
 }
 
-bool SQLStorageBackend::UpdateChannelsStorage (int oldV, int newV)
+bool SQLStorageBackend::UpdateChannelsStorage (int, int)
 {
     return true;
 }

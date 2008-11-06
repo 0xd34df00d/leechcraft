@@ -187,8 +187,12 @@ void Core::AddFeed (const QString& url, const QStringList& tags)
 	}
 	LeechCraft::DownloadParams params = { url, name };
 	PendingJob pj = { PendingJob::RFeedAdded, url, name, tags };
-	int id = iid->AddJob (params, LeechCraft::Internal | LeechCraft::Autostart |
-			LeechCraft::DoNotNotifyUser | LeechCraft::DoNotSaveInHistory);
+	int id = iid->AddJob (params,
+			LeechCraft::Internal |
+			LeechCraft::Autostart |
+			LeechCraft::DoNotNotifyUser |
+			LeechCraft::DoNotSaveInHistory |
+			LeechCraft::NotPersistent);
 	PendingJobs_ [id] = pj;
 }
 
@@ -454,9 +458,18 @@ void Core::UpdateFeed (const QModelIndex& index)
 		file.remove ();
 	}
 	LeechCraft::DownloadParams params = { url, name };
-	PendingJob pj = { PendingJob::RFeedUpdated, url, name };
-	int id = isd->AddJob (params, LeechCraft::Internal | LeechCraft::Autostart |
-			LeechCraft::DoNotNotifyUser | LeechCraft::DoNotSaveInHistory);
+	PendingJob pj = {
+		PendingJob::RFeedUpdated,
+		url,
+		name,
+		QStringList ()
+	};
+	int id = isd->AddJob (params,
+			LeechCraft::Internal |
+			LeechCraft::Autostart |
+			LeechCraft::DoNotNotifyUser |
+			LeechCraft::DoNotSaveInHistory |
+			LeechCraft::NotPersistent);
 	PendingJobs_ [id] = pj;
 }
 
@@ -612,7 +625,7 @@ QWebView* Core::CreateWindow ()
 	return result;
 }
 
-int Core::columnCount (const QModelIndex& parent) const
+int Core::columnCount (const QModelIndex&) const
 {
 	return ItemHeaders_.size ();
 }
@@ -640,7 +653,7 @@ QVariant Core::data (const QModelIndex& index, int role) const
 		return QVariant ();
 }
 
-Qt::ItemFlags Core::flags (const QModelIndex& index) const
+Qt::ItemFlags Core::flags (const QModelIndex&) const
 {
 	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
@@ -666,7 +679,7 @@ QModelIndex Core::index (int row, int column, const QModelIndex& parent) const
 	return createIndex (row, column);
 }
 
-QModelIndex Core::parent (const QModelIndex& index) const
+QModelIndex Core::parent (const QModelIndex&) const
 {
 	return QModelIndex ();
 }
@@ -853,10 +866,22 @@ void Core::updateFeeds ()
 			file.close ();
 			file.remove ();
 		}
-		LeechCraft::DownloadParams params = { urls.at (i), filename };
-		PendingJob pj = { PendingJob::RFeedUpdated, urls.at (i), filename };
-		int id = isd->AddJob (params, LeechCraft::Internal | LeechCraft::Autostart |
-				LeechCraft::DoNotNotifyUser | LeechCraft::DoNotSaveInHistory);
+		LeechCraft::DownloadParams params = {
+			urls.at (i),
+			filename
+		};
+		PendingJob pj = {
+			PendingJob::RFeedUpdated,
+			urls.at (i),
+			filename,
+			QStringList ()
+		};
+		int id = isd->AddJob (params,
+				LeechCraft::Internal |
+				LeechCraft::Autostart |
+				LeechCraft::DoNotNotifyUser |
+				LeechCraft::DoNotSaveInHistory |
+				LeechCraft::NotPersistent);
 		PendingJobs_ [id] = pj;
 	}
 	XmlSettingsManager::Instance ()->setProperty ("LastUpdateDateTime", QDateTime::currentDateTime ());
@@ -878,10 +903,22 @@ void Core::fetchExternalFile (const QString& url, const QString& where)
 		throw std::runtime_error ("could not handle URL");
 	}
 
-	LeechCraft::DownloadParams params = { url, where };
-	PendingJob pj = { PendingJob::RFeedExternalData, url, where };
-	int id = isd->AddJob (params, LeechCraft::Internal | LeechCraft::Autostart |
-			LeechCraft::DoNotNotifyUser | LeechCraft::DoNotSaveInHistory);
+	LeechCraft::DownloadParams params = {
+		url,
+		where
+	};
+	PendingJob pj = {
+		PendingJob::RFeedExternalData,
+		url,
+		where,
+		QStringList ()
+	};
+	int id = isd->AddJob (params,
+			LeechCraft::Internal |
+			LeechCraft::Autostart |
+			LeechCraft::DoNotNotifyUser |
+			LeechCraft::DoNotSaveInHistory |
+			LeechCraft::NotPersistent);
 	PendingJobs_ [id] = pj;
 }
 

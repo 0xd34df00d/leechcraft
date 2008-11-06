@@ -643,10 +643,17 @@ int Core::AddFile (const QString& filename,
 	handle.auto_managed (true);
 
     beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
-    TorrentStruct tmp = { priorities, handle, contents, QFileInfo (filename).fileName (), TSIdle };
-    tmp.Tags_ = tags;
-	tmp.Parameters_ = params;
-	tmp.ID_ = IDPool_.front ();
+    TorrentStruct tmp = {
+		priorities,
+		handle,
+		contents,
+		QFileInfo (filename).fileName (),
+		TSIdle,
+   		0,
+		tags,
+		IDPool_.front (),
+		params
+	};
 	IDPool_.pop_front ();
     Handles_.append (tmp);
     endInsertRows ();
@@ -1039,7 +1046,7 @@ QString Core::GetExternalAddress () const
 	return ExternalAddress_;
 }
 
-void Core::ImportData (const QByteArray& data)
+void Core::ImportData (const QByteArray&)
 {
 }
 
@@ -1259,11 +1266,17 @@ void Core::RestoreTorrents ()
             handle.replace_trackers (announces);
         }
 
-        TorrentStruct tmp = { priorities, handle, data, filename };
-        tmp.Tags_ = settings.value ("Tags").toStringList ();
-		tmp.ID_ = settings.value ("ID").toInt ();
+        TorrentStruct tmp = {
+			priorities,
+			handle,
+			data,
+			filename,
+			TSIdle,
+			0,
+			settings.value ("Tags").toStringList (),
+			static_cast<LeechCraft::TaskParameters> (settings.value ("Parameters").toInt ())
+	   	};
 		IDPool_.erase (std::find (IDPool_.begin (), IDPool_.end (), tmp.ID_));
-		tmp.Parameters_ = static_cast<LeechCraft::TaskParameters> (settings.value ("Parameters").toInt ());
         beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
         Handles_.append (tmp);
         endInsertRows ();

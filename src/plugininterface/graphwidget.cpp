@@ -21,7 +21,7 @@ void GraphWidget::PushSpeed (quint64 speed)
     update ();
 }
 
-void GraphWidget::paintEvent (QPaintEvent *e)
+void GraphWidget::paintEvent (QPaintEvent*)
 {
     quint64 max = 0;
     for (int i = 0; i < Speeds_.size (); ++i)

@@ -67,7 +67,7 @@ QString ItemModel::GetDescription (const QModelIndex& index) const
     return Items_ [index.row ()]->Description_;
 }
 
-int ItemModel::columnCount (const QModelIndex& parent) const
+int ItemModel::columnCount (const QModelIndex&) const
 {
 	return ItemHeaders_.size ();
 }
@@ -86,7 +86,7 @@ QVariant ItemModel::data (const QModelIndex& index, int role) const
 	}
 }
 
-Qt::ItemFlags ItemModel::flags (const QModelIndex& index) const
+Qt::ItemFlags ItemModel::flags (const QModelIndex&) const
 {
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
@@ -112,12 +112,12 @@ QModelIndex ItemModel::index (int row, int column, const QModelIndex& parent) co
     return createIndex (row, column);
 }
 
-QModelIndex ItemModel::parent (const QModelIndex& index) const
+QModelIndex ItemModel::parent (const QModelIndex&) const
 {
     return QModelIndex ();
 }
 
-int ItemModel::rowCount (const QModelIndex& parent) const
+int ItemModel::rowCount (const QModelIndex&) const
 {
 	return Items_.size ();
 }

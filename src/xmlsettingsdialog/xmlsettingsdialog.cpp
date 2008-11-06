@@ -361,15 +361,15 @@ QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject
 		value = item.attribute ("default");
 	else
 	{
-		value = WorkingObject_->property (property.toLatin1 ().constData ());
-		if (value.isValid ())
-			return value;
+		QVariant tmpValue = WorkingObject_->property (property.toLatin1 ().constData ());
+		if (tmpValue.isValid ())
+			return tmpValue;
 	}
 
     if (type == "lineedit" ||
 			type == "spinbox" ||
 			type == "doublespinbox")
-		return value;
+		return item.attribute ("default");
     else if (type == "checkbox" ||
 			(type == "groupbox" && item.attribute ("checkable") == "true"))
 	{

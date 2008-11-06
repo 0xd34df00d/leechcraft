@@ -59,7 +59,7 @@ QModelIndex MergeModel::index (int row, int column, const QModelIndex& parent) c
 		return createIndex (row, column);
 }
 
-QModelIndex MergeModel::parent (const QModelIndex& index) const
+QModelIndex MergeModel::parent (const QModelIndex&) const
 {
 	// here goes blocker for hierarchical #1
 	return QModelIndex ();

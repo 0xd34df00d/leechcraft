@@ -12,7 +12,7 @@ namespace
         return settings;
     }
 
-    void torrentEndSettings (QSettings *settings)
+    void torrentEndSettings (QSettings*)
     {
     }
 };

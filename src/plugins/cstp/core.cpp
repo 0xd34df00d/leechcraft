@@ -162,7 +162,7 @@ QAbstractItemModel* Core::GetRepresentationModel ()
 	return RepresentationModel_;
 }
 
-int Core::columnCount (const QModelIndex& parent) const
+int Core::columnCount (const QModelIndex&) const
 {
 	return Headers_.size ();
 }
@@ -221,7 +221,7 @@ QVariant Core::data (const QModelIndex& index, int role) const
         return QVariant ();
 }
 
-Qt::ItemFlags Core::flags (const QModelIndex& index) const
+Qt::ItemFlags Core::flags (const QModelIndex&) const
 {
 	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
@@ -247,7 +247,7 @@ QModelIndex Core::index (int row, int column, const QModelIndex& parent) const
 	return createIndex (row, column);
 }
 
-QModelIndex Core::parent (const QModelIndex& index) const
+QModelIndex Core::parent (const QModelIndex&) const
 {
 	return QModelIndex ();
 }
@@ -357,11 +357,15 @@ void Core::writeSettings ()
 			Proxy::Instance ()->GetApplicationName () + "_CSTP");
 	settings.beginWriteArray ("ActiveTasks");
 	settings.remove ("");
+	int taskIndex = 0;
 	for (tasks_t::const_iterator i = ActiveTasks_.begin (),
 			begin = ActiveTasks_.begin (),
 			end = ActiveTasks_.end (); i != end; ++i)
 	{
-		settings.setArrayIndex (std::distance (begin, i));
+		if (i->Parameters_ & LeechCraft::NotPersistent)
+			continue;
+
+		settings.setArrayIndex (taskIndex++);
 		settings.setValue ("Task", i->Task_->Serialize ());
 		settings.setValue ("Filename", i->File_->fileName ());
 		settings.setValue ("Comment", i->Comment_);

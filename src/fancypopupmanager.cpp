@@ -1,6 +1,7 @@
 #include "fancypopupmanager.h"
 #include <numeric>
 #include <algorithm>
+#include <iterator>
 #include <QTimer>
 #include <QApplication>
 #include <QDesktopWidget>
@@ -57,16 +58,20 @@ void Main::FancyPopupManager::UpdateMessage ()
 {
 	QString message;
 	for (popups_t::const_iterator i = Popups_.begin (),
+			begin = Popups_.begin (),
 			end = Popups_.end (); i != end; ++i)
 	{
 		message += *i;
 		message += "\r\n";
+		if (std::distance (begin, i) >= 12)
+			break;
 	}
 
 	if (!message.isEmpty ())
-	{
 		TrayIcon_->showMessage (tr ("LeechCraft Notification"),
-				message);
-	}
+				message,
+				QSystemTrayIcon::Information,
+				XmlSettingsManager::Instance ()->
+				property ("FinishedDownloadMessageTimeout").toInt () * 1000);
 }
 

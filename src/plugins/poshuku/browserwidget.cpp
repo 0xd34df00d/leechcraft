@@ -64,7 +64,7 @@ void BrowserWidget::handleIconChanged ()
 	emit iconChanged (Ui_.WebView_->icon ());
 }
 
-void BrowserWidget::handleStatusBarMessage (const QString& str)
+void BrowserWidget::handleStatusBarMessage (const QString&)
 {
 //	Ui_.LoadProgress_->setFormat (str + " (%p)");
 }

@@ -84,7 +84,7 @@ channels_container_t RSS10Parser::Parse (const QDomDocument& doc) const
 	return result;
 }
 
-Item* RSS10Parser::ParseItem (const QDomElement& entry) const
+Item* RSS10Parser::ParseItem (const QDomElement&) const
 {
 	Item *item = new Item;
 	return item;

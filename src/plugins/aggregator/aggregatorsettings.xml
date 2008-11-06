@@ -28,7 +28,7 @@
 			<label lang="en" value="Updates" />
 			<label lang="ru" value="Обновления" />
 			<label lang="uk" value="Оновлення" />
-			<item type="checkbox" property="UpdateOnStartup" state="on">
+			<item type="checkbox" property="UpdateOnStartup" state="off">
 				<label lang="en" value="Update feeds on startup" />
 				<label lang="ru" value="Обновлять ленты при запуске" />
 				<label lang="uk" value="Оновлювати стрічки під час запуску" />

@@ -39,7 +39,7 @@ void HistoryModel::Remove (const QModelIndex& index)
 	ScheduleSave ();
 }
 
-int HistoryModel::columnCount (const QModelIndex& parent) const
+int HistoryModel::columnCount (const QModelIndex&) const
 {
 	return Headers_.size ();
 }
@@ -66,9 +66,11 @@ QVariant HistoryModel::data (const QModelIndex& index, int role) const
 	}
     else
         return QVariant ();
+
+	return QVariant ();
 }
 
-Qt::ItemFlags HistoryModel::flags (const QModelIndex& index) const
+Qt::ItemFlags HistoryModel::flags (const QModelIndex&) const
 {
 	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
@@ -94,7 +96,7 @@ QModelIndex HistoryModel::index (int row, int column, const QModelIndex& parent)
 	return createIndex (row, column);
 }
 
-QModelIndex HistoryModel::parent (const QModelIndex& index) const
+QModelIndex HistoryModel::parent (const QModelIndex&) const
 {
 	return QModelIndex ();
 }

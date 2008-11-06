@@ -231,7 +231,7 @@ void RegexpMatcherManager::HandleItem (const Item_ptr& item) const
 		emit gotLink (*i);
 }
 
-int RegexpMatcherManager::columnCount (const QModelIndex& parent) const
+int RegexpMatcherManager::columnCount (const QModelIndex&) const
 {
 	return ItemHeaders_.size ();
 }
@@ -254,7 +254,7 @@ QVariant RegexpMatcherManager::data (const QModelIndex& index, int role) const
 	}
 }
 
-Qt::ItemFlags RegexpMatcherManager::flags (const QModelIndex& index) const
+Qt::ItemFlags RegexpMatcherManager::flags (const QModelIndex&) const
 {
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
@@ -275,7 +275,7 @@ QModelIndex RegexpMatcherManager::index (int row, int column, const QModelIndex&
     return createIndex (row, column);
 }
 
-QModelIndex RegexpMatcherManager::parent (const QModelIndex& index) const
+QModelIndex RegexpMatcherManager::parent (const QModelIndex&) const
 {
     return QModelIndex ();
 }

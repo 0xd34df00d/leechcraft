@@ -62,7 +62,7 @@ void ExportOPML::SetFeeds (const feeds_container_t& feeds)
 		}
 }
 
-void ExportOPML::on_File__textEdited (const QString& newFilename)
+void ExportOPML::on_File__textEdited (const QString&)
 {
 }
 

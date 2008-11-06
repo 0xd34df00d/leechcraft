@@ -10,7 +10,7 @@ namespace
         return settings;
     }
 
-    void torrentEndSettings (QSettings *settings)
+    void torrentEndSettings (QSettings*)
     {
     }
 };
@@ -34,7 +34,7 @@ QSettings* XmlSettingsManager::BeginSettings () const
     return torrentBeginSettings ();
 }
 
-void XmlSettingsManager::EndSettings (QSettings* settings) const
+void XmlSettingsManager::EndSettings (QSettings *settings) const
 {
     return torrentEndSettings (settings);
 }

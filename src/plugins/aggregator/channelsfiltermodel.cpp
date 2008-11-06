@@ -8,7 +8,7 @@ ChannelsFilterModel::ChannelsFilterModel (QObject *parent)
 {
 }
 
-bool ChannelsFilterModel::filterAcceptsRow (int source_row, const QModelIndex& source_parent) const
+bool ChannelsFilterModel::filterAcceptsRow (int source_row, const QModelIndex&) const
 {
     QStringList itemTags = Core::Instance ().GetTagsForIndex (source_row),
                 filterTags = filterRegExp ().pattern ().split (' ', QString::SkipEmptyParts);
