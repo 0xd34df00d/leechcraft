@@ -8,10 +8,6 @@
 
 Core::Core ()
 {
-	connect (qApp,
-			SIGNAL (aboutToQuit ()),
-			this,
-			SIGNAL (aboutToQuit ()));
 	new Adaptor (this);
 
 	QDBusConnection::sessionBus ().registerService ("org.LeechCraft.DBus");
@@ -24,9 +20,15 @@ Core& Core::Instance ()
 	return core;
 }
 
+void Core::Release ()
+{
+	emit aboutToQuit ();
+}
+
 void Core::Greeter (const QString& msg)
 {
 	qDebug () << Q_FUNC_INFO << msg;
+	emit someEventHappened ("Oh, really?");
 }
 
 void Core::DumpError ()

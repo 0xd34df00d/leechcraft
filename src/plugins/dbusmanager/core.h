@@ -16,12 +16,14 @@ class Core : public QObject
 	Core ();
 public:
 	static Core& Instance ();
+	void Release ();
 public slots:
 	void Greeter (const QString&);
 private:
 	void DumpError ();
 signals:
 	void aboutToQuit ();
+	void someEventHappened (const QString&);
 };
 
 #endif

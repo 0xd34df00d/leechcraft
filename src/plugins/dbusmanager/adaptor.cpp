@@ -10,6 +10,10 @@ Adaptor::Adaptor (Core *parent)
 			SIGNAL (aboutToQuit ()),
 			this,
 			SIGNAL (aboutToQuit ()));
+	connect (parent,
+			SIGNAL (someEventHappened (const QString&)),
+			this,
+			SIGNAL (someEventHappened (const QString&)));
 }
 
 QString Adaptor::GetOrganizationName () const
@@ -23,11 +27,9 @@ QString Adaptor::GetApplicationName () const
 }
 
 QString Adaptor::Greeter (const QString& msg,
-		const QDBusMessage&,
-		QString& reply)
+		const QDBusMessage&)
 {
 	Core_->Greeter (msg);
-	reply = "shit";
 	return "Reply from LeechCraft!";
 }
 

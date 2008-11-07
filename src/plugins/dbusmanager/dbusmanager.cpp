@@ -8,6 +8,7 @@ void DBusManager::Init ()
 
 void DBusManager::Release ()
 {
+	Core::Instance ().Release ();
 }
 
 QString DBusManager::GetName () const

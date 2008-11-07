@@ -9,7 +9,7 @@ class Adaptor : public QDBusAbstractAdaptor
 {
 	Q_OBJECT
 
-	Q_CLASSINFO ("D-Bus Interface", "org.leechcraft.DBus.Manager");
+	Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.DBus.Manager");
 	Q_PROPERTY (QString OrganizationName READ GetOrganizationName);
 	Q_PROPERTY (QString ApplicationName READ GetApplicationName);
 
@@ -20,9 +20,10 @@ public:
 	QString GetOrganizationName () const;
 	QString GetApplicationName () const;
 public slots:
-	QString Greeter (const QString&, const QDBusMessage&, QString&);
+	QString Greeter (const QString&, const QDBusMessage&);
 signals:
 	void aboutToQuit ();
+	void someEventHappened (const QString&);
 };
 
 #endif
