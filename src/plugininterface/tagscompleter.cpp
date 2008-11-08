@@ -12,10 +12,6 @@ TagsCompleter::TagsCompleter (QLineEdit *toComplete, QObject *parent)
 			SIGNAL (activated (const QString&)),
 			toComplete,
 			SLOT (complete (const QString&)));
-	connect (this,
-			SIGNAL (highlighted (const QString&)),
-			toComplete,
-			SLOT (complete (const QString&)));
 }
 
 QStringList TagsCompleter::splitPath (const QString& path) const
