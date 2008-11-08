@@ -25,10 +25,14 @@ void Core::Release ()
 	emit aboutToQuit ();
 }
 
-void Core::Greeter (const QString& msg)
+QString Core::Greeter (const QString& msg)
 {
-	qDebug () << Q_FUNC_INFO << msg;
-	emit someEventHappened ("Oh, really?");
+	return "LeechCraft D-Bus connector development version";
+}
+
+QStringList Core::GetLoadedPlugins ()
+{
+	return QStringList ("Not implemented");
 }
 
 void Core::DumpError ()

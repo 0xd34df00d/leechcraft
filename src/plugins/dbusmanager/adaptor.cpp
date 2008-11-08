@@ -29,7 +29,11 @@ QString Adaptor::GetApplicationName () const
 QString Adaptor::Greeter (const QString& msg,
 		const QDBusMessage&)
 {
-	Core_->Greeter (msg);
-	return "Reply from LeechCraft!";
+	return Core_->Greeter (msg);
+}
+
+QStringList Adaptor::GetLoadedPlugins ()
+{
+	return Core_->GetLoadedPlugins ();
 }
 

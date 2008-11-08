@@ -1,6 +1,7 @@
 #ifndef ADAPTOR_H
 #define ADAPTOR_H
 #include <QDBusAbstractAdaptor>
+#include <QStringList>
 
 class Core;
 class QDBusMessage;
@@ -21,6 +22,7 @@ public:
 	QString GetApplicationName () const;
 public slots:
 	QString Greeter (const QString&, const QDBusMessage&);
+	QStringList GetLoadedPlugins ();
 signals:
 	void aboutToQuit ();
 	void someEventHappened (const QString&);

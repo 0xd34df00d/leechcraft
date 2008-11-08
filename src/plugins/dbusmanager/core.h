@@ -3,22 +3,20 @@
 #include <memory>
 #include <QObject>
 #include <QDBusConnection>
-
-class Adaptor;
+#include <QStringList>
 
 class Core : public QObject
 {
 	Q_OBJECT
 
-	Adaptor *Adaptor_;
 	std::auto_ptr<QDBusConnection> Connection_;
 
 	Core ();
 public:
 	static Core& Instance ();
 	void Release ();
-public slots:
-	void Greeter (const QString&);
+	QString Greeter (const QString&);
+	QStringList GetLoadedPlugins ();
 private:
 	void DumpError ();
 signals:

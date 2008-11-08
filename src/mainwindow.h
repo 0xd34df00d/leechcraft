@@ -36,6 +36,7 @@ namespace Main
 	class PluginInfo;
 	class PluginManagerDialog;
 	class FancyPopupManager;
+	class SkinEngine;
 
 	class MainWindow : public QMainWindow
 	{
@@ -52,6 +53,8 @@ namespace Main
 
 		PluginManagerDialog *PluginManagerDialog_;
 		FancyPopupManager *FancyPopupManager_;
+
+		SkinEngine *SkinEngine_;
 
 		bool IsShown_;
 	public:
