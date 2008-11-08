@@ -5,6 +5,7 @@
 #include <QUrl>
 #include <QWidget>
 #include <QIcon>
+#include <QtDebug>
 #include <plugininterface/tagscompletionmodel.h>
 #include "browserwidget.h"
 #include "customwebview.h"

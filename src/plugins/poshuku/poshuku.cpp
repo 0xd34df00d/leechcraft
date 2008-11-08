@@ -1,6 +1,7 @@
 #include "poshuku.h"
 #include <QMessageBox>
 #include <QWebSettings>
+#include <QHeaderView>
 #include <QUrl>
 #include <plugininterface/util.h>
 #include <plugininterface/tagscompletionmodel.h>
@@ -8,11 +9,15 @@
 #include "xmlsettingsmanager.h"
 #include "customwebview.h"
 #include "filtermodel.h"
+#include "favoritesdelegate.h"
 
 void Poshuku::Init ()
 {
 	Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku"));
 	Ui_.setupUi (this);
+
+	RegisterSettings ();
+
 	Ui_.ActionSettings_->setProperty ("ActionIcon", "poshuku_preferences");
 	Ui_.SettingsButton_->setDefaultAction (Ui_.ActionSettings_);
 
@@ -37,32 +42,8 @@ void Poshuku::Init ()
 			this,
 			SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
 
-	XmlSettingsManager::Instance ()->RegisterObject ("StandardFont",
-			this, "viewerSettingsChanged");
-	XmlSettingsManager::Instance ()->RegisterObject ("FixedFont",
-			this, "viewerSettingsChanged");
-	XmlSettingsManager::Instance ()->RegisterObject ("SerifFont",
-			this, "viewerSettingsChanged");
-	XmlSettingsManager::Instance ()->RegisterObject ("SansSerifFont",
-			this, "viewerSettingsChanged");
-	XmlSettingsManager::Instance ()->RegisterObject ("CursiveFont",
-			this, "viewerSettingsChanged");
-	XmlSettingsManager::Instance ()->RegisterObject ("FantasyFont",
-			this, "viewerSettingsChanged");
-	XmlSettingsManager::Instance ()->RegisterObject ("MinimumFontSize",
-			this, "viewerSettingsChanged");
-	XmlSettingsManager::Instance ()->RegisterObject ("DefaultFontSize",
-			this, "viewerSettingsChanged");
-	XmlSettingsManager::Instance ()->RegisterObject ("DefaultFixedFontSize",
-			this, "viewerSettingsChanged");
-	XmlSettingsManager::Instance ()->RegisterObject ("AutoLoadImages",
-			this, "viewerSettingsChanged");
-	XmlSettingsManager::Instance ()->RegisterObject ("AllowJavaScript",
-			this, "viewerSettingsChanged");
-	XmlSettingsManager::Instance ()->RegisterObject ("UserStyleSheet",
-			this, "viewerSettingsChanged");
-
 	Ui_.FavoritesView_->setModel (Core::Instance ().GetFavoritesModel ());
+	Ui_.FavoritesView_->setItemDelegate (new FavoritesDelegate (this));
 
 	FavoritesFilterLineCompleter_.reset (new TagsCompleter (Ui_.FavoritesFilterLine_, this));
 	FavoritesFilterLineCompleter_->
@@ -80,6 +61,15 @@ void Poshuku::Init ()
 			SIGNAL (stateChanged (int)),
 			this,
 			SLOT (updateFavoritesFilter ()));
+
+	QHeaderView *itemsHeader = Ui_.FavoritesView_->header ();
+	QFontMetrics fm = fontMetrics ();
+	itemsHeader->resizeSection (0,
+			fm.width ("Average site title can be very big, it's also the most important part, so it's priority is the biggest."));
+	itemsHeader->resizeSection (1,
+			fm.width ("Average URL could be very very long, but we don't account this."));
+	itemsHeader->resizeSection (2,
+			fm.width ("Average tags list size should be like this."));
 }
 
 void Poshuku::Release ()
@@ -125,6 +115,34 @@ QIcon Poshuku::GetIcon () const
 QWidget* Poshuku::GetTabContents ()
 {
 	return this;
+}
+
+void Poshuku::RegisterSettings ()
+{
+	XmlSettingsManager::Instance ()->RegisterObject ("StandardFont",
+			this, "viewerSettingsChanged");
+	XmlSettingsManager::Instance ()->RegisterObject ("FixedFont",
+			this, "viewerSettingsChanged");
+	XmlSettingsManager::Instance ()->RegisterObject ("SerifFont",
+			this, "viewerSettingsChanged");
+	XmlSettingsManager::Instance ()->RegisterObject ("SansSerifFont",
+			this, "viewerSettingsChanged");
+	XmlSettingsManager::Instance ()->RegisterObject ("CursiveFont",
+			this, "viewerSettingsChanged");
+	XmlSettingsManager::Instance ()->RegisterObject ("FantasyFont",
+			this, "viewerSettingsChanged");
+	XmlSettingsManager::Instance ()->RegisterObject ("MinimumFontSize",
+			this, "viewerSettingsChanged");
+	XmlSettingsManager::Instance ()->RegisterObject ("DefaultFontSize",
+			this, "viewerSettingsChanged");
+	XmlSettingsManager::Instance ()->RegisterObject ("DefaultFixedFontSize",
+			this, "viewerSettingsChanged");
+	XmlSettingsManager::Instance ()->RegisterObject ("AutoLoadImages",
+			this, "viewerSettingsChanged");
+	XmlSettingsManager::Instance ()->RegisterObject ("AllowJavaScript",
+			this, "viewerSettingsChanged");
+	XmlSettingsManager::Instance ()->RegisterObject ("UserStyleSheet",
+			this, "viewerSettingsChanged");
 }
 
 void Poshuku::openURL (const QString& url)

@@ -38,16 +38,19 @@ QVariant FavoritesModel::data (const QModelIndex& index, int role) const
 				default:
 					return QVariant ();
 			}
-		case FilterModel::TagsRole:
+		case TagsRole:
 			return Items_ [index.row ()].Tags_;
 		default:
 			return QVariant ();
 	}
 }
 
-Qt::ItemFlags FavoritesModel::flags (const QModelIndex&) const
+Qt::ItemFlags FavoritesModel::flags (const QModelIndex& index) const
 {
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+	Qt::ItemFlags result = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+	if (index.column () == ColumnTags)
+		result |= Qt::ItemIsEditable;
+	return result;
 }
 
 QVariant FavoritesModel::headerData (int column, Qt::Orientation orient, int role) const
@@ -76,6 +79,18 @@ int FavoritesModel::rowCount (const QModelIndex& index) const
 	return index.isValid () ? 0 : Items_.size ();
 }
 
+bool FavoritesModel::setData (const QModelIndex& index,
+		const QVariant& value, int role)
+{
+	if (index.column () != ColumnTags)
+		return false;
+
+	Items_ [index.row ()].Tags_ = value.toStringList ();
+	emit dataChanged (index, index);
+	SaveData ();
+	return true;
+}
+
 void FavoritesModel::AddItem (const QString& title, const QString& url,
 	   const QStringList& tags)
 {
@@ -88,10 +103,10 @@ void FavoritesModel::AddItem (const QString& title, const QString& url,
 	SaveData ();
 }
 
-void FavoritesModel::RemoveItem (int position)
+void FavoritesModel::RemoveItem (const QModelIndex& index)
 {
-	beginRemoveRows (QModelIndex (), position, position);
-	Items_.erase (Items_.begin () + position);
+	beginRemoveRows (QModelIndex (), index.row (), index.row ());
+	Items_.erase (Items_.begin () + index.row ());
 	endRemoveRows ();
 
 	SaveData ();

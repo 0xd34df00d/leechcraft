@@ -35,6 +35,8 @@ public:
 	void SetProvider (QObject*, const QString&);
 	QIcon GetIcon () const;
 	QWidget* GetTabContents ();
+private:
+	void RegisterSettings ();
 public slots:
 	void openURL (const QString&);
 	QWebView* createWindow ();
