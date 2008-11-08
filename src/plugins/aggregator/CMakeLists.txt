@@ -49,7 +49,6 @@ SET (HEADERS
     item.h
     channel.h
     feed.h
-    enclosure.h
     parserfactory.h
     parser.h
 	rssparser.h

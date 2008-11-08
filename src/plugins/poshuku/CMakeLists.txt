@@ -15,6 +15,7 @@ SET (SRCS
 	progresslineedit.cpp
 	favoritesmodel.cpp
 	addtofavoritesdialog.cpp
+	filtermodel.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -25,6 +26,7 @@ SET (HEADERS
 	progresslineedit.h
 	favoritesmodel.h
 	addtofavoritesdialog.h
+	filtermodel.h
 	)
 SET (FORMS
 	poshuku.ui

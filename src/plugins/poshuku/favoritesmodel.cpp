@@ -1,6 +1,7 @@
 #include "favoritesmodel.h"
 #include <QSettings>
 #include <plugininterface/proxy.h>
+#include "filtermodel.h"
 
 FavoritesModel::FavoritesModel (QObject *parent)
 : QAbstractItemModel (parent)
@@ -20,17 +21,25 @@ int FavoritesModel::columnCount (const QModelIndex&) const
 
 QVariant FavoritesModel::data (const QModelIndex& index, int role) const
 {
-    if (!index.isValid () || index.row () >= rowCount () || role != Qt::DisplayRole)
+    if (!index.isValid ())
         return QVariant ();
 
-	switch (index.column ())
+	switch (role)
 	{
-		case 0:
-			return Items_ [index.row ()].Title_;
-		case 1:
-			return Items_ [index.row ()].URL_;
-		case 2:
-			return Items_ [index.row ()].Tags_.join (" ");
+		case Qt::DisplayRole:
+			switch (index.column ())
+			{
+				case 0:
+					return Items_ [index.row ()].Title_;
+				case 1:
+					return Items_ [index.row ()].URL_;
+				case 2:
+					return Items_ [index.row ()].Tags_.join (" ");
+				default:
+					return QVariant ();
+			}
+		case FilterModel::TagsRole:
+			return Items_ [index.row ()].Tags_;
 		default:
 			return QVariant ();
 	}

@@ -3,9 +3,11 @@
 #include <QWebSettings>
 #include <QUrl>
 #include <plugininterface/util.h>
+#include <plugininterface/tagscompletionmodel.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "customwebview.h"
+#include "filtermodel.h"
 
 void Poshuku::Init ()
 {
@@ -61,6 +63,23 @@ void Poshuku::Init ()
 			this, "viewerSettingsChanged");
 
 	Ui_.FavoritesView_->setModel (Core::Instance ().GetFavoritesModel ());
+
+	FavoritesFilterLineCompleter_.reset (new TagsCompleter (Ui_.FavoritesFilterLine_, this));
+	FavoritesFilterLineCompleter_->
+		setModel (Core::Instance ().GetFavoritesTagsCompletionModel ());
+	Ui_.FavoritesFilterLine_->AddSelector ();
+	connect (Ui_.FavoritesFilterLine_,
+			SIGNAL (textChanged (const QString&)),
+			this,
+			SLOT (updateFavoritesFilter ()));
+	connect (Ui_.FavoritesFilterType_,
+			SIGNAL (currentIndexChanged (int)),
+			this,
+			SLOT (updateFavoritesFilter ()));
+	connect (Ui_.FavoritesFilterCaseSensitivity_,
+			SIGNAL (stateChanged (int)),
+			this,
+			SLOT (updateFavoritesFilter ()));
 }
 
 void Poshuku::Release ()
@@ -164,6 +183,37 @@ void Poshuku::viewerSettingsChanged ()
 			XmlSettingsManager::Instance ()->property ("AllowJavaScript").toBool ());
 	QWebSettings::globalSettings ()->setUserStyleSheetUrl (QUrl (XmlSettingsManager::
 				Instance ()->property ("UserStyleSheet").toString ()));
+}
+
+void Poshuku::updateFavoritesFilter ()
+{
+	int section = Ui_.FavoritesFilterType_->currentIndex ();
+	QString text = Ui_.FavoritesFilterLine_->text ();
+
+	switch (section)
+	{
+		case 1:
+			Core::Instance ().GetFavoritesModel ()->setTagsMode (false);
+			Core::Instance ().GetFavoritesModel ()->setFilterWildcard (text);
+			break;
+		case 2:
+			Core::Instance ().GetFavoritesModel ()->setTagsMode (false);
+			Core::Instance ().GetFavoritesModel ()->setFilterRegExp (text);
+			break;
+		case 3:
+			Core::Instance ().GetFavoritesModel ()->setTagsMode (true);
+			Core::Instance ().GetFavoritesModel ()->setFilterFixedString (text);
+			break;
+		default:
+			Core::Instance ().GetFavoritesModel ()->setTagsMode (false);
+			Core::Instance ().GetFavoritesModel ()->setFilterFixedString (text);
+			break;
+	}
+
+	Core::Instance ().GetFavoritesModel ()->
+		setFilterCaseSensitivity ((Ui_.FavoritesFilterCaseSensitivity_->
+					checkState () == Qt::Checked) ? Qt::CaseSensitive :
+				Qt::CaseInsensitive);
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_poshuku, Poshuku);

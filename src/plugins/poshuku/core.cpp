@@ -5,14 +5,30 @@
 #include <QUrl>
 #include <QWidget>
 #include <QIcon>
+#include <plugininterface/tagscompletionmodel.h>
 #include "browserwidget.h"
 #include "customwebview.h"
 #include "favoritesmodel.h"
 #include "addtofavoritesdialog.h"
+#include "xmlsettingsmanager.h"
+#include "filtermodel.h"
 
 Core::Core ()
 {
 	FavoritesModel_ = new FavoritesModel (this);
+
+	FavoritesFilterModel_ = new FilterModel (this);
+	FavoritesFilterModel_->setSourceModel (FavoritesModel_);
+	FavoritesFilterModel_->setDynamicSortFilter (true);
+
+	FavoriteTagsCompletionModel_ = new TagsCompletionModel (this);
+	FavoriteTagsCompletionModel_->
+		UpdateTags (XmlSettingsManager::Instance ()->
+				Property ("FavoriteTags", tr ("untagged")).toStringList ());
+	connect (FavoriteTagsCompletionModel_,
+			SIGNAL (tagsUpdated (const QStringList&)),
+			this,
+			SLOT (favoriteTagsUpdated (const QStringList&)));
 }
 
 Core& Core::Instance ()
@@ -63,9 +79,14 @@ CustomWebView* Core::MakeWebView ()
 	return NewURL ("")->GetView ();
 }
 
-QAbstractItemModel* Core::GetFavoritesModel () const
+FilterModel* Core::GetFavoritesModel () const
 {
-	return FavoritesModel_;
+	return FavoritesFilterModel_;
+}
+
+TagsCompletionModel* Core::GetFavoritesTagsCompletionModel () const
+{
+	return FavoriteTagsCompletionModel_;
 }
 
 void Core::handleTitleChanged (const QString& newTitle)
@@ -90,10 +111,18 @@ void Core::handleNeedToClose ()
 void Core::handleAddToFavorites (const QString& title, const QString& url)
 {
 	std::auto_ptr<AddToFavoritesDialog> dia (new AddToFavoritesDialog (title,
-				url, qApp->activeWindow ()));
+				url,
+				GetFavoritesTagsCompletionModel (),
+				qApp->activeWindow ()));
 	if (dia->exec () == QDialog::Rejected)
 		return;
 
 	FavoritesModel_->AddItem (dia->GetTitle (), url, dia->GetTags ());
+	FavoriteTagsCompletionModel_->UpdateTags (dia->GetTags ());
+}
+
+void Core::favoriteTagsUpdated (const QStringList& tags)
+{
+	XmlSettingsManager::Instance ()->setProperty ("FavoriteTags", tags);
 }
 

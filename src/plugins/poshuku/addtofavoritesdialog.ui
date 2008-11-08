@@ -47,7 +47,7 @@
       </widget>
      </item>
      <item row="2" column="1" >
-      <widget class="QLineEdit" name="TagsEdit_" />
+      <widget class="TagsLineEdit" name="TagsEdit_" />
      </item>
     </layout>
    </item>
@@ -63,6 +63,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TagsLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global" >plugininterface/tagslineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

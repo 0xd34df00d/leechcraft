@@ -5,6 +5,13 @@
 #include "config.h"
 #include "categoryselector.h"
 
+/** @brief A line edit class suitable for use with TagsCompleter.
+ *
+ * One would need this extra class because of custom behavior of both
+ * tags completer and line edit semantics.
+ *
+ * @sa TagsCompleter
+ */
 class TagsLineEdit : public QLineEdit
 {
     Q_OBJECT

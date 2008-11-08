@@ -1,12 +1,20 @@
 #include "addtofavoritesdialog.h"
+#include <plugininterface/tagscompletionmodel.h>
 
 AddToFavoritesDialog::AddToFavoritesDialog (const QString& title,
-		const QString& url, QWidget *parent)
+		const QString& url,
+		TagsCompletionModel *model,
+		QWidget *parent)
 : QDialog (parent)
 {
 	Ui_.setupUi (this);
 	Ui_.URLLabel_->setText (url);
 	Ui_.TitleEdit_->setText (title);
+	Ui_.TagsEdit_->setText (tr ("untagged"));
+
+	TagsCompleter_.reset (new TagsCompleter (Ui_.TagsEdit_));
+	TagsCompleter_->setModel (model);
+	Ui_.TagsEdit_->AddSelector ();
 }
 
 AddToFavoritesDialog::~AddToFavoritesDialog ()

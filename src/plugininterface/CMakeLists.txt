@@ -7,6 +7,7 @@ SET (SRCS
 	tagscompletionmodel.cpp
 	treeitem.cpp
 	tagslineedit.cpp
+	tagsfiltermodel.cpp
 	graphwidget.cpp
 	util.cpp
 	categoryselector.cpp
@@ -18,6 +19,7 @@ SET (HEADERS
 	tagscompletionmodel.h
 	treeitem.h
 	tagslineedit.h
+	tagsfiltermodel.h
 	graphwidget.h
 	util.h
 	categoryselector.h

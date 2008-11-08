@@ -1,14 +1,14 @@
 #ifndef CHANNELSFILTERMODEL_H
 #define CHANNELSFILTERMODEL_H
-#include <QSortFilterProxyModel>
+#include <plugininterface/tagsfiltermodel.h>
 
-class ChannelsFilterModel : public QSortFilterProxyModel
+class ChannelsFilterModel : public TagsFilterModel
 {
     Q_OBJECT
 public:
     ChannelsFilterModel (QObject *parent = 0);
 protected:
-    virtual bool filterAcceptsRow (int, const QModelIndex&) const;
+	virtual QStringList GetTagsForIndex (int) const;
 };
 
 #endif

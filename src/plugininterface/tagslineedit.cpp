@@ -15,14 +15,14 @@ void TagsLineEdit::AddSelector ()
 {
 	CategorySelector_.reset (new CategorySelector (parentWidget ()));
 	CategorySelector_->hide ();
-	TagsCompletionModel *cmodel = dynamic_cast<TagsCompletionModel*> (completer ()->completionModel ());
-	if (cmodel)
-		connect (cmodel,
-				SIGNAL (tagsUpdated (const QStringList&)),
-				this,
-				SLOT (handleTagsUpdated (const QStringList&)));
 
 	QAbstractItemModel *model = completer ()->model ();
+
+	connect (qobject_cast<TagsCompletionModel*> (model),
+			SIGNAL (tagsUpdated (const QStringList&)),
+			this,
+			SLOT (handleTagsUpdated (const QStringList&)));
+
 	handleTagsUpdated (qobject_cast<TagsCompletionModel*> (model)->GetTags ());
 
 	connect (CategorySelector_.get (),

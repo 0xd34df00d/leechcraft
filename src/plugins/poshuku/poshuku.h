@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <interfaces/interfaces.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <plugininterface/tagscompleter.h>
 #include "ui_poshuku.h"
 
 class QWebView;
@@ -21,6 +22,7 @@ class Poshuku : public QWidget
 	Ui::Poshuku Ui_;
 
 	std::auto_ptr<QTranslator> Translator_;
+	std::auto_ptr<TagsCompleter> FavoritesFilterLineCompleter_;
 	std::auto_ptr<XmlSettingsDialog> XmlSettingsDialog_;
 public:
 	void Init ();
@@ -40,6 +42,7 @@ private slots:
 	void on_AddressLine__returnPressed ();
 	void on_ActionSettings__triggered ();
 	void viewerSettingsChanged ();
+	void updateFavoritesFilter ();
 signals:
 	void bringToFront ();
 	void addNewTab (const QString&, QWidget*);
