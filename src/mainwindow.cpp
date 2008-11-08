@@ -1,8 +1,8 @@
 #include <iostream>
 #include <algorithm>
 #include <QtGui/QtGui>
-#include <QMutex>
 #include <QModelIndex>
+#include <QChildEvent>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "plugininterface/proxy.h"
 #include "plugininterface/graphwidget.h"
@@ -14,6 +14,7 @@
 #include "pluginmanagerdialog.h"
 #include "fancypopupmanager.h"
 #include "skinengine.h"
+#include "childactioneventfilter.h"
 #include "ui_leechcraft.h"
 
 namespace Main
@@ -28,7 +29,7 @@ namespace Main
 		splash.show ();
 		splash.showMessage (tr ("Initializing interface..."));
 
-		SkinEngine_ = new Main::SkinEngine (this);
+		installEventFilter (new ChildActionEventFilter (this));
 
 		Ui_ = new Ui::LeechCraft;
 		Ui_->setupUi (this);
@@ -95,7 +96,7 @@ namespace Main
 		XmlSettingsManager::Instance ()->RegisterObject ("AggregateJobs",
 				this, "handleAggregateJobsChange");
 		XmlSettingsManager::Instance ()->RegisterObject ("IconSet",
-				this, "updateIconsSet");
+				this, "updateIconSet");
 
 		DownloadSpeed_ = new QLabel;
 		DownloadSpeed_->setText ("0");
@@ -172,7 +173,7 @@ namespace Main
 		speedUpd->start ();
 		qApp->setQuitOnLastWindowClosed (false);
 
-		updateIconsSet ();
+		updateIconSet ();
 
 		splash.finish (this);
 		show ();
@@ -422,9 +423,9 @@ namespace Main
 				ft, caseSensitivity, true);
 	}
 
-	void MainWindow::updateIconsSet ()
+	void MainWindow::updateIconSet ()
 	{
-		SkinEngine_->updateIconSet (findChildren<QAction*> ());
+		SkinEngine::Instance ().updateIconSet (findChildren<QAction*> ());
 	}
 
 	void MainWindow::on_ActionPluginManager__triggered ()

@@ -7,23 +7,13 @@
 #include <QList>
 #include <QModelIndex>
 
-class QMenu;
-class QMenuBar;
-class QAction;
-class QToolbar;
-class QSplitter;
-class QTreeWidget;
-class QTreeWidgetItem;
 class QLabel;
 class QSplashScreen;
-class QMutex;
 class XmlSettingsDialog;
-class QVBoxLayout;
 class GraphWidget;
 class QDockWidget;
 class QTabWidget;
 class QModelIndex;
-class QAction;
 
 namespace Ui
 {
@@ -36,7 +26,6 @@ namespace Main
 	class PluginInfo;
 	class PluginManagerDialog;
 	class FancyPopupManager;
-	class SkinEngine;
 
 	class MainWindow : public QMainWindow
 	{
@@ -53,8 +42,6 @@ namespace Main
 
 		PluginManagerDialog *PluginManagerDialog_;
 		FancyPopupManager *FancyPopupManager_;
-
-		SkinEngine *SkinEngine_;
 
 		bool IsShown_;
 	public:
@@ -83,7 +70,7 @@ namespace Main
 		void cleanUp ();
 		void filterParametersChanged ();
 		void historyFilterParametersChanged ();
-		void updateIconsSet ();
+		void updateIconSet ();
 		void on_ActionPluginManager__triggered ();
 		void historyActivated (const QModelIndex&);
 	};

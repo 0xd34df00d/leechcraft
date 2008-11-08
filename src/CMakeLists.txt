@@ -151,6 +151,7 @@ SET (SRCS
 	pluginmanagerdialog.cpp
 	fancypopupmanager.cpp
 	skinengine.cpp
+	childactioneventfilter.cpp
 	)
 
 SET (HEADERS
@@ -164,6 +165,7 @@ SET (HEADERS
 	pluginmanagerdialog.h
 	fancypopupmanager.h
 	skinengine.h
+	childactioneventfilter.h
 	interfaces/interfaces.h
 	interfaces/structures.h
 	)

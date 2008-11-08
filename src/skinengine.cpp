@@ -4,11 +4,17 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfoList>
+#include <QtDebug>
 #include "xmlsettingsmanager.h"
 
-Main::SkinEngine::SkinEngine (QObject *parent)
-: QObject (parent)
+Main::SkinEngine::SkinEngine ()
 {
+}
+
+Main::SkinEngine& Main::SkinEngine::Instance ()
+{
+	static SkinEngine e;
+	return e;
 }
 
 Main::SkinEngine::~SkinEngine ()
@@ -20,13 +26,11 @@ void Main::SkinEngine::FindIcons ()
 	QString iconSet = XmlSettingsManager::Instance ()->
 		property ("IconSet").toString ();
 
-	if (iconSet == OldIconSet_)
+	if (iconSet != OldIconSet_)
 	{
 		IconName2Path_.clear ();
 		IconName2FileName_.clear ();
-	}
-	else
-	{
+
 		OldIconSet_ = iconSet;
 
 #if defined (Q_OS_UNIX)
@@ -142,6 +146,7 @@ std::vector<int> Main::SkinEngine::GetDirForBase (const QString& base,
 
 void Main::SkinEngine::updateIconSet (const QList<QAction*>& actions)
 {
+	qDebug () << actions.size ();
 	FindIcons ();
 
 	for (QList<QAction*>::const_iterator i = actions.begin (),

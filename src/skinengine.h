@@ -15,8 +15,10 @@ namespace Main
 		QString OldIconSet_;
 		QMap<QString, QString> IconName2Path_;
 		QMap<QString, QString> IconName2FileName_;
+
+		SkinEngine ();
 	public:
-		SkinEngine (QObject* = 0);
+		static SkinEngine& Instance ();
 		virtual ~SkinEngine ();
 	private:
 		void FindIcons ();
