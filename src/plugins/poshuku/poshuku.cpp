@@ -8,7 +8,6 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "customwebview.h"
-#include "filtermodel.h"
 #include "favoritesdelegate.h"
 
 void Poshuku::Init ()
@@ -42,8 +41,15 @@ void Poshuku::Init ()
 			this,
 			SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
 
-	Ui_.FavoritesView_->setModel (Core::Instance ().GetFavoritesModel ());
+	FavoritesFilterModel_.reset (new FilterModel (this));
+	FavoritesFilterModel_->setSourceModel (Core::Instance ().GetFavoritesModel ());
+	FavoritesFilterModel_->setDynamicSortFilter (true);
+	Ui_.FavoritesView_->setModel (FavoritesFilterModel_.get ());
 	Ui_.FavoritesView_->setItemDelegate (new FavoritesDelegate (this));
+	connect (Ui_.FavoritesView_,
+			SIGNAL (deleteSelected (const QModelIndex&)),
+			Core::Instance ().GetFavoritesModel (),
+			SLOT (removeItem (const QModelIndex&)));
 
 	FavoritesFilterLineCompleter_.reset (new TagsCompleter (Ui_.FavoritesFilterLine_, this));
 	FavoritesFilterLineCompleter_->
@@ -76,6 +82,8 @@ void Poshuku::Release ()
 {
 	Core::Instance ().Release ();
 	XmlSettingsDialog_.reset ();
+	FavoritesFilterLineCompleter_.reset ();
+	FavoritesFilterModel_.reset ();
 }
 
 QString Poshuku::GetName () const
@@ -211,24 +219,24 @@ void Poshuku::updateFavoritesFilter ()
 	switch (section)
 	{
 		case 1:
-			Core::Instance ().GetFavoritesModel ()->setTagsMode (false);
-			Core::Instance ().GetFavoritesModel ()->setFilterWildcard (text);
+			FavoritesFilterModel_->setTagsMode (false);
+			FavoritesFilterModel_->setFilterWildcard (text);
 			break;
 		case 2:
-			Core::Instance ().GetFavoritesModel ()->setTagsMode (false);
-			Core::Instance ().GetFavoritesModel ()->setFilterRegExp (text);
+			FavoritesFilterModel_->setTagsMode (false);
+			FavoritesFilterModel_->setFilterRegExp (text);
 			break;
 		case 3:
-			Core::Instance ().GetFavoritesModel ()->setTagsMode (true);
-			Core::Instance ().GetFavoritesModel ()->setFilterFixedString (text);
+			FavoritesFilterModel_->setTagsMode (true);
+			FavoritesFilterModel_->setFilterFixedString (text);
 			break;
 		default:
-			Core::Instance ().GetFavoritesModel ()->setTagsMode (false);
-			Core::Instance ().GetFavoritesModel ()->setFilterFixedString (text);
+			FavoritesFilterModel_->setTagsMode (false);
+			FavoritesFilterModel_->setFilterFixedString (text);
 			break;
 	}
 
-	Core::Instance ().GetFavoritesModel ()->
+	FavoritesFilterModel_->
 		setFilterCaseSensitivity ((Ui_.FavoritesFilterCaseSensitivity_->
 					checkState () == Qt::Checked) ? Qt::CaseSensitive :
 				Qt::CaseInsensitive);

@@ -17,6 +17,7 @@ SET (SRCS
 	addtofavoritesdialog.cpp
 	filtermodel.cpp
 	favoritesdelegate.cpp
+	favoritestreeview.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -29,6 +30,7 @@ SET (HEADERS
 	addtofavoritesdialog.h
 	filtermodel.h
 	favoritesdelegate.h
+	favoritestreeview.h
 	)
 SET (FORMS
 	poshuku.ui

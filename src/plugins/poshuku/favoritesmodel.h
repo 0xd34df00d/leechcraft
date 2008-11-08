@@ -43,7 +43,8 @@ public:
 			int = Qt::EditRole);
 
 	void AddItem (const QString&, const QString&, const QStringList&);
-	void RemoveItem (const QModelIndex&);
+public slots:
+	void removeItem (const QModelIndex&);
 private:
 	void SaveData ();
 	void LoadData ();

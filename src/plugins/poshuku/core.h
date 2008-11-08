@@ -1,7 +1,10 @@
 #ifndef CORE_H
 #define CORE_H
+#include <memory>
 #include <vector>
 #include <QObject>
+#include <plugininterface/tagscompletionmodel.h>
+#include "favoritesmodel.h"
 
 class QString;
 class QWidget;
@@ -9,9 +12,6 @@ class QIcon;
 class CustomWebView;
 class BrowserWidget;
 class QAbstractItemModel;
-class FavoritesModel;
-class TagsCompletionModel;
-class FilterModel;
 
 class Core : public QObject
 {
@@ -19,9 +19,8 @@ class Core : public QObject
 
 	std::vector<BrowserWidget*> Widgets_;
 
-	FavoritesModel *FavoritesModel_;
-	FilterModel *FavoritesFilterModel_;
-	TagsCompletionModel *FavoriteTagsCompletionModel_;
+	std::auto_ptr<FavoritesModel> FavoritesModel_;
+	std::auto_ptr<TagsCompletionModel> FavoriteTagsCompletionModel_;
 
 	Core ();
 public:
@@ -31,7 +30,7 @@ public:
 	bool IsValidURL (const QString&) const;
 	BrowserWidget* NewURL (const QString&);
 	CustomWebView* MakeWebView ();
-	FilterModel* GetFavoritesModel () const;
+	FavoritesModel* GetFavoritesModel () const;
 	TagsCompletionModel* GetFavoritesTagsCompletionModel () const;
 private slots:
 	void handleTitleChanged (const QString&);

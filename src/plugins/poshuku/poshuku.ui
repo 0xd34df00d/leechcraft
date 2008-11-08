@@ -14,23 +14,30 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
-    <widget class="QLineEdit" name="AddressLine_" >
-     <property name="text" >
-      <string>http://linux.org.ru/</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QToolButton" name="SettingsButton_" >
-     <property name="text" >
-      <string>Settings...</string>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout_3" >
+     <item>
+      <widget class="QToolButton" name="SettingsButton_" >
+       <property name="text" >
+        <string>Settings...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="AddressLine_" >
+       <property name="text" >
+        <string>http://linux.org.ru/</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QToolBox" name="MainToolbox_" >
      <property name="currentIndex" >
       <number>1</number>
+     </property>
+     <property name="tabSpacing" >
+      <number>0</number>
      </property>
      <widget class="QWidget" name="HistoryPage_" >
       <property name="geometry" >
@@ -38,7 +45,7 @@
         <x>0</x>
         <y>0</y>
         <width>382</width>
-        <height>154</height>
+        <height>166</height>
        </rect>
       </property>
       <attribute name="label" >
@@ -97,7 +104,7 @@
         <x>0</x>
         <y>0</y>
         <width>382</width>
-        <height>154</height>
+        <height>195</height>
        </rect>
       </property>
       <attribute name="label" >
@@ -146,7 +153,7 @@
         </layout>
        </item>
        <item>
-        <widget class="QTreeView" name="FavoritesView_" >
+        <widget class="FavoritesTreeView" name="FavoritesView_" >
          <property name="rootIsDecorated" >
           <bool>false</bool>
          </property>
@@ -174,6 +181,11 @@
    <class>TagsLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global" >plugininterface/tagslineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>FavoritesTreeView</class>
+   <extends>QTreeView</extends>
+   <header>favoritestreeview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

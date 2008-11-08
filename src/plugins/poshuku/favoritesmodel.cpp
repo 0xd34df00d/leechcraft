@@ -80,7 +80,7 @@ int FavoritesModel::rowCount (const QModelIndex& index) const
 }
 
 bool FavoritesModel::setData (const QModelIndex& index,
-		const QVariant& value, int role)
+		const QVariant& value, int)
 {
 	if (index.column () != ColumnTags)
 		return false;
@@ -103,7 +103,7 @@ void FavoritesModel::AddItem (const QString& title, const QString& url,
 	SaveData ();
 }
 
-void FavoritesModel::RemoveItem (const QModelIndex& index)
+void FavoritesModel::removeItem (const QModelIndex& index)
 {
 	beginRemoveRows (QModelIndex (), index.row (), index.row ());
 	Items_.erase (Items_.begin () + index.row ());

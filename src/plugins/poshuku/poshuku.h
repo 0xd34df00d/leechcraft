@@ -7,6 +7,7 @@
 #include <interfaces/interfaces.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/tagscompleter.h>
+#include "filtermodel.h"
 #include "ui_poshuku.h"
 
 class QWebView;
@@ -24,6 +25,7 @@ class Poshuku : public QWidget
 	std::auto_ptr<QTranslator> Translator_;
 	std::auto_ptr<TagsCompleter> FavoritesFilterLineCompleter_;
 	std::auto_ptr<XmlSettingsDialog> XmlSettingsDialog_;
+	std::auto_ptr<FilterModel> FavoritesFilterModel_;
 public:
 	void Init ();
 	void Release ();

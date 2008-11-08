@@ -6,27 +6,20 @@
 #include <QWidget>
 #include <QIcon>
 #include <QtDebug>
-#include <plugininterface/tagscompletionmodel.h>
 #include "browserwidget.h"
 #include "customwebview.h"
-#include "favoritesmodel.h"
 #include "addtofavoritesdialog.h"
 #include "xmlsettingsmanager.h"
-#include "filtermodel.h"
 
 Core::Core ()
 {
-	FavoritesModel_ = new FavoritesModel (this);
+	FavoritesModel_.reset (new FavoritesModel (this));
 
-	FavoritesFilterModel_ = new FilterModel (this);
-	FavoritesFilterModel_->setSourceModel (FavoritesModel_);
-	FavoritesFilterModel_->setDynamicSortFilter (true);
-
-	FavoriteTagsCompletionModel_ = new TagsCompletionModel (this);
+	FavoriteTagsCompletionModel_.reset (new TagsCompletionModel (this));
 	FavoriteTagsCompletionModel_->
 		UpdateTags (XmlSettingsManager::Instance ()->
 				Property ("FavoriteTags", tr ("untagged")).toStringList ());
-	connect (FavoriteTagsCompletionModel_,
+	connect (FavoriteTagsCompletionModel_.get (),
 			SIGNAL (tagsUpdated (const QStringList&)),
 			this,
 			SLOT (favoriteTagsUpdated (const QStringList&)));
@@ -40,6 +33,8 @@ Core& Core::Instance ()
 
 void Core::Release ()
 {
+	FavoritesModel_.reset ();
+	FavoriteTagsCompletionModel_.reset ();
 }
 
 bool Core::IsValidURL (const QString& url) const
@@ -80,14 +75,14 @@ CustomWebView* Core::MakeWebView ()
 	return NewURL ("")->GetView ();
 }
 
-FilterModel* Core::GetFavoritesModel () const
+FavoritesModel* Core::GetFavoritesModel () const
 {
-	return FavoritesFilterModel_;
+	return FavoritesModel_.get ();
 }
 
 TagsCompletionModel* Core::GetFavoritesTagsCompletionModel () const
 {
-	return FavoriteTagsCompletionModel_;
+	return FavoriteTagsCompletionModel_.get ();
 }
 
 void Core::handleTitleChanged (const QString& newTitle)
