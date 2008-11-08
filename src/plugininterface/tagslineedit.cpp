@@ -40,10 +40,7 @@ void TagsLineEdit::complete (const QString& completion)
 {
     QString wtext = text ();
     int pos = wtext.lastIndexOf (' ');
-    if (pos == -1)
-        wtext = completion;
-    else
-        wtext = wtext.left (pos).append (' ').append (completion);
+	wtext = wtext.left (pos).append (' ').append (completion);
     setText (wtext);
 }
 
