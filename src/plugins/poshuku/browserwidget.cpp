@@ -39,6 +39,27 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 
 	dynamic_cast<QVBoxLayout*> (layout ())->insertWidget (0, bar);
 
+	connect (back,
+			SIGNAL (triggered ()),
+			Ui_.WebView_,
+			SLOT (back ()));
+	connect (forward,
+			SIGNAL (triggered ()),
+			Ui_.WebView_,
+			SLOT (forward ()));
+	connect (reload,
+			SIGNAL (triggered ()),
+			Ui_.WebView_,
+			SLOT (reload ()));
+	connect (stop,
+			SIGNAL (triggered ()),
+			Ui_.WebView_,
+			SLOT (stop ()));
+	connect (add2Favorites,
+			SIGNAL (triggered ()),
+			this,
+			SLOT (handleAdd2Favorites ()));
+
 	connect (Ui_.WebView_,
 			SIGNAL (titleChanged (const QString&)),
 			this,
@@ -107,5 +128,11 @@ void BrowserWidget::on_URLEdit__returnPressed ()
 		return;
 
 	Ui_.WebView_->load (QUrl (url));
+}
+
+void BrowserWidget::handleAdd2Favorites ()
+{
+	emit addToFavorites (Ui_.WebView_->url ().toString (),
+			Ui_.WebView_->title ());
 }
 

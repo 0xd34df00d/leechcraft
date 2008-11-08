@@ -8,12 +8,16 @@ class QWidget;
 class QIcon;
 class CustomWebView;
 class BrowserWidget;
+class QAbstractItemModel;
+class FavoritesModel;
 
 class Core : public QObject
 {
 	Q_OBJECT
 
 	std::vector<BrowserWidget*> Widgets_;
+
+	FavoritesModel *FavoritesModel_;
 
 	Core ();
 public:
@@ -23,10 +27,12 @@ public:
 	bool IsValidURL (const QString&) const;
 	BrowserWidget* NewURL (const QString&);
 	CustomWebView* MakeWebView ();
+	QAbstractItemModel* GetFavoritesModel () const;
 private slots:
 	void handleTitleChanged (const QString&);
 	void handleIconChanged (const QIcon&);
 	void handleNeedToClose ();
+	void handleAddToFavorites (const QString&, const QString&);
 signals:
 	void addNewTab (const QString&, QWidget*);
 	void removeTab (QWidget*);

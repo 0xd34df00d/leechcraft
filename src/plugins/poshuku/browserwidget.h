@@ -20,11 +20,13 @@ private slots:
 	void handleIconChanged ();
 	void handleStatusBarMessage (const QString&);
 	void on_URLEdit__returnPressed ();
+	void handleAdd2Favorites ();
 signals:
 	void titleChanged (const QString&);
 	void urlChanged (const QString&);
 	void iconChanged (const QIcon&);
 	void needToClose ();
+	void addToFavorites (const QString&, const QString&);
 };
 
 #endif

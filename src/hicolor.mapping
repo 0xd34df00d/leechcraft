@@ -23,4 +23,4 @@ poshuku_back lc_larrow
 poshuku_forward lc_rarrow
 poshuku_reload lc_refresh
 poshuku_stop lc_stopprocess
-poshuku_favorites lc_favorites
+poshuku_addtofavorites lc_favorites

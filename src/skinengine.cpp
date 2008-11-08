@@ -146,7 +146,6 @@ std::vector<int> Main::SkinEngine::GetDirForBase (const QString& base,
 
 void Main::SkinEngine::updateIconSet (const QList<QAction*>& actions)
 {
-	qDebug () << actions.size ();
 	FindIcons ();
 
 	for (QList<QAction*>::const_iterator i = actions.begin (),

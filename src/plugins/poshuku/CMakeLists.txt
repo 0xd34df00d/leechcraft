@@ -13,6 +13,7 @@ SET (SRCS
 	browserwidget.cpp
 	customwebview.cpp
 	progresslineedit.cpp
+	favoritesmodel.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -21,6 +22,7 @@ SET (HEADERS
 	browserwidget.h
 	customwebview.h
 	progresslineedit.h
+	favoritesmodel.h
 	)
 SET (FORMS
 	poshuku.ui

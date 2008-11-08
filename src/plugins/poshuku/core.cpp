@@ -6,9 +6,11 @@
 #include <QIcon>
 #include "browserwidget.h"
 #include "customwebview.h"
+#include "favoritesmodel.h"
 
 Core::Core ()
 {
+	FavoritesModel_ = new FavoritesModel (this);
 }
 
 Core& Core::Instance ()
@@ -43,6 +45,10 @@ BrowserWidget* Core::NewURL (const QString& url)
 			SIGNAL (needToClose ()),
 			this,
 			SLOT (handleNeedToClose ()));
+	connect (widget,
+			SIGNAL (addToFavorites (const QString&, const QString&)),
+			this,
+			SLOT (handleAddToFavorites (const QString&, const QString&)));
 
 	Widgets_.push_back (widget);
 
@@ -53,6 +59,11 @@ BrowserWidget* Core::NewURL (const QString& url)
 CustomWebView* Core::MakeWebView ()
 {
 	return NewURL ("")->GetView ();
+}
+
+QAbstractItemModel* Core::GetFavoritesModel () const
+{
+	return FavoritesModel_;
 }
 
 void Core::handleTitleChanged (const QString& newTitle)
@@ -72,5 +83,10 @@ void Core::handleNeedToClose ()
 
 	std::remove (Widgets_.begin (), Widgets_.end (), w);
 	w->deleteLater ();
+}
+
+void Core::handleAddToFavorites (const QString& title, const QString& url)
+{
+	FavoritesModel_->AddItem (title, url, QStringList ());
 }
 

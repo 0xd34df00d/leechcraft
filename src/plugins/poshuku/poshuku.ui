@@ -146,7 +146,7 @@
         </layout>
        </item>
        <item>
-        <widget class="QTreeView" name="treeView_2" />
+        <widget class="QTreeView" name="FavoritesView_" />
        </item>
       </layout>
      </widget>

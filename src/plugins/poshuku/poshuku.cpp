@@ -59,6 +59,8 @@ void Poshuku::Init ()
 			this, "viewerSettingsChanged");
 	XmlSettingsManager::Instance ()->RegisterObject ("UserStyleSheet",
 			this, "viewerSettingsChanged");
+
+	Ui_.FavoritesView_->setModel (Core::Instance ().GetFavoritesModel ());
 }
 
 void Poshuku::Release ()
