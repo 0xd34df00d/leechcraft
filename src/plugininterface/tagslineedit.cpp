@@ -39,8 +39,11 @@ void TagsLineEdit::AddSelector ()
 void TagsLineEdit::complete (const QString& completion)
 {
     QString wtext = text ();
+	if (completion.startsWith (wtext))
+		wtext.clear ();
     int pos = wtext.lastIndexOf (' ');
 	wtext = wtext.left (pos).append (' ').append (completion);
+	wtext = wtext.simplified ();
     setText (wtext);
 }
 
