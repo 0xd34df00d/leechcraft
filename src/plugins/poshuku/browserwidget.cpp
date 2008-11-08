@@ -132,7 +132,7 @@ void BrowserWidget::on_URLEdit__returnPressed ()
 
 void BrowserWidget::handleAdd2Favorites ()
 {
-	emit addToFavorites (Ui_.WebView_->url ().toString (),
-			Ui_.WebView_->title ());
+	emit addToFavorites (Ui_.WebView_->title (),
+			Ui_.WebView_->url ().toString ());
 }
 

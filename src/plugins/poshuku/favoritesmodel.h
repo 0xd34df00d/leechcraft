@@ -32,6 +32,9 @@ public:
 
 	void AddItem (const QString&, const QString&, const QStringList&);
 	void RemoveItem (int);
+private:
+	void SaveData ();
+	void LoadData ();
 };
 
 #endif
