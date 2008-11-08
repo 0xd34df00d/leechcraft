@@ -14,6 +14,7 @@ SET (SRCS
 	customwebview.cpp
 	progresslineedit.cpp
 	favoritesmodel.cpp
+	addtofavoritesdialog.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -23,10 +24,12 @@ SET (HEADERS
 	customwebview.h
 	progresslineedit.h
 	favoritesmodel.h
+	addtofavoritesdialog.h
 	)
 SET (FORMS
 	poshuku.ui
 	browserwidget.ui
+	addtofavoritesdialog.ui
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS

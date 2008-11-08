@@ -1,5 +1,6 @@
 #include "core.h"
 #include <algorithm>
+#include <memory>
 #include <QString>
 #include <QUrl>
 #include <QWidget>
@@ -7,6 +8,7 @@
 #include "browserwidget.h"
 #include "customwebview.h"
 #include "favoritesmodel.h"
+#include "addtofavoritesdialog.h"
 
 Core::Core ()
 {
@@ -87,6 +89,11 @@ void Core::handleNeedToClose ()
 
 void Core::handleAddToFavorites (const QString& title, const QString& url)
 {
-	FavoritesModel_->AddItem (title, url, QStringList ());
+	std::auto_ptr<AddToFavoritesDialog> dia (new AddToFavoritesDialog (title,
+				url, qApp->activeWindow ()));
+	if (dia->exec () == QDialog::Rejected)
+		return;
+
+	FavoritesModel_->AddItem (dia->GetTitle (), url, dia->GetTags ());
 }
 
