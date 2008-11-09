@@ -11,8 +11,17 @@ class SslErrorsDialog : public QDialog
 
 	Ui::SslErrorsDialog Ui_;
 public:
+	enum RememberChoice
+	{
+		RCNot
+		, RCFile
+		, RCHost
+	};
+
 	SslErrorsDialog (const QString&, const QList<QSslError>&, QWidget* = 0);
 	virtual ~SslErrorsDialog ();
+
+	RememberChoice GetRememberChoice () const;
 private:
 	void PopulateTree (const QSslError&);
 };

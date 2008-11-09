@@ -18,6 +18,16 @@ SslErrorsDialog::~SslErrorsDialog ()
 {
 }
 
+SslErrorsDialog::RememberChoice SslErrorsDialog::GetRememberChoice () const
+{
+	if (Ui_.RememberNot_->isChecked ())
+		return RCNot;
+	else if (Ui_.RememberFile_->isChecked ())
+		return RCFile;
+	else
+		return RCHost;
+}
+
 void SslErrorsDialog::PopulateTree (const QSslError& error)
 {
 	QTreeWidgetItem *item = new QTreeWidgetItem (Ui_.Errors_,

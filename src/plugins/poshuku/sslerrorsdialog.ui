@@ -35,6 +35,39 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string/>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2" >
+      <item>
+       <widget class="QRadioButton" name="RememberNot_" >
+        <property name="text" >
+         <string>Don't remember my choice</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="RememberFile_" >
+        <property name="text" >
+         <string>Remember my choice for the file</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="RememberHost_" >
+        <property name="text" >
+         <string>Remember my choice for the whole host</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QDialogButtonBox" name="buttonBox" >
      <property name="orientation" >
       <enum>Qt::Horizontal</enum>

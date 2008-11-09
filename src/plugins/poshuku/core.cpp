@@ -12,6 +12,7 @@
 #include <QAuthenticator>
 #include <QNetworkProxy>
 #include <QtDebug>
+#include <plugininterface/proxy.h>
 #include "browserwidget.h"
 #include "customwebview.h"
 #include "addtofavoritesdialog.h"
@@ -232,17 +233,48 @@ void Core::handleProxyAuthentication (const QNetworkProxy& proxy, QAuthenticator
 
 void Core::handleSslErrors (QNetworkReply *reply, const QList<QSslError>& errors)
 {
-	qDebug () << Q_FUNC_INFO << errors.size ();
-	QString msg = tr ("The URL<br /><code>%1</code><br />has SSL errors."
-			" What do you want to do?")
-		.arg (reply->url ().toString ());
-	std::auto_ptr<SslErrorsDialog> dia (
-			new SslErrorsDialog (msg,
-				errors,
-				qApp->activeWindow ())
-			);
-	if (dia->exec () == QDialog::Accepted)
-		reply->ignoreSslErrors ();
+	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
+			Proxy::Instance ()->GetApplicationName () + "_Poshuku");
+	settings.beginGroup ("SSL exceptions");
+	QStringList keys = settings.allKeys ();
+	if (keys.contains (reply->url ().toString ())) 
+	{
+		if (settings.value (reply->url ().toString ()).toBool ())
+			reply->ignoreSslErrors ();
+	}
+	else if (keys.contains (reply->url ().host ()))
+	{
+		if (settings.value (reply->url ().host ()).toBool ())
+			reply->ignoreSslErrors ();
+	}
+	else
+	{
+		QString msg = tr ("The URL<br /><code>%1</code><br />has SSL errors."
+				" What do you want to do?")
+			.arg (reply->url ().toString ());
+		std::auto_ptr<SslErrorsDialog> dia (
+				new SslErrorsDialog (msg,
+					errors,
+					qApp->activeWindow ())
+				);
+
+		bool ignore = (dia->exec () == QDialog::Accepted);
+		if (ignore)
+			reply->ignoreSslErrors ();
+
+		SslErrorsDialog::RememberChoice choice;
+
+		if (choice != SslErrorsDialog::RCNot)
+		{
+			if (choice == SslErrorsDialog::RCFile)
+				settings.setValue (reply->url ().toString (),
+						ignore);
+			else
+				settings.setValue (reply->url ().host (),
+						ignore);
+		}
+	}
+	settings.endGroup ();
 }
 
 void Core::favoriteTagsUpdated (const QStringList& tags)
