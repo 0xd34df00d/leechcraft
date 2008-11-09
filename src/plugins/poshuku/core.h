@@ -4,6 +4,7 @@
 #include <vector>
 #include <QObject>
 #include <QNetworkAccessManager>
+#include <QTimer>
 #include <plugininterface/tagscompletionmodel.h>
 #include "favoritesmodel.h"
 
@@ -23,6 +24,7 @@ class Core : public QObject
 	std::auto_ptr<FavoritesModel> FavoritesModel_;
 	std::auto_ptr<TagsCompletionModel> FavoriteTagsCompletionModel_;
 	std::auto_ptr<QNetworkAccessManager> NetworkAccessManager_;
+	std::auto_ptr<QTimer> CookieSaveTimer_;
 
 	Core ();
 public:
@@ -35,13 +37,14 @@ public:
 	FavoritesModel* GetFavoritesModel () const;
 	TagsCompletionModel* GetFavoritesTagsCompletionModel () const;
 	QNetworkAccessManager* GetNetworkAccessManager () const;
-private:
-	void SaveCookies () const;
 private slots:
+	void saveCookies () const;
 	void handleTitleChanged (const QString&);
 	void handleIconChanged (const QIcon&);
 	void handleNeedToClose ();
 	void handleAddToFavorites (const QString&, const QString&);
+	void handleAuthentication (QNetworkReply*, QAuthenticator*);
+	void handleProxyAuthentication (QNetworkReply*, QAuthenticator*);
 	void favoriteTagsUpdated (const QStringList&);
 signals:
 	void addNewTab (const QString&, QWidget*);

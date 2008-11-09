@@ -20,6 +20,7 @@ SET (SRCS
 	favoritestreeview.cpp
 	customwebpage.cpp
 	customcookiejar.cpp
+	authenticationdialog.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -35,11 +36,13 @@ SET (HEADERS
 	favoritestreeview.h
 	customwebpage.h
 	customcookiejar.h
+	authenticationdialog.h
 	)
 SET (FORMS
 	poshuku.ui
 	browserwidget.ui
 	addtofavoritesdialog.ui
+	authenticationdialog.ui
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS

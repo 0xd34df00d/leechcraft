@@ -8,14 +8,18 @@
 #include <QFile>
 #include <QNetworkCookieJar>
 #include <QDir>
+#include <QNetworkReply>
+#include <QAuthenticator>
 #include <QtDebug>
 #include "browserwidget.h"
 #include "customwebview.h"
 #include "addtofavoritesdialog.h"
 #include "xmlsettingsmanager.h"
 #include "customcookiejar.h"
+#include "authenticationdialog.h"
 
 Core::Core ()
+: CookieSaveTimer_ (new QTimer ())
 {
 	NetworkAccessManager_.reset (new QNetworkAccessManager (this));
 	QFile file (QDir::homePath () +
@@ -26,6 +30,24 @@ Core::Core ()
 		jar->Load (file.readAll ());
 		NetworkAccessManager_->setCookieJar (jar);
 	}
+
+	connect (NetworkAccessManager_.get (),
+			SIGNAL (authenticationRequired (QNetworkReply*,
+					QAuthenticator*)),
+			this,
+			SLOT (handleAuthentication (QNetworkReply*, QAuthenticator*)));
+	connect (NetworkAccessManager_.get (),
+			SIGNAL (proxyAuthenticationRequired (QNetworkReply*,
+					QAuthenticator*)),
+			this,
+			SLOT (handleProxyAuthentication (QNetworkReply*,
+					QAuthenticator*)));
+
+	connect (CookieSaveTimer_.get (),
+			SIGNAL (timeout ()),
+			this,
+			SLOT (saveCookies ()));
+	CookieSaveTimer_->start (10000);
 
 	FavoritesModel_.reset (new FavoritesModel (this));
 
@@ -47,7 +69,9 @@ Core& Core::Instance ()
 
 void Core::Release ()
 {
-	SaveCookies ();
+	CookieSaveTimer_.reset ();
+
+	saveCookies ();
 
 	NetworkAccessManager_.reset ();
 	FavoritesModel_.reset ();
@@ -109,7 +133,7 @@ QNetworkAccessManager* Core::GetNetworkAccessManager () const
 	return NetworkAccessManager_.get ();
 }
 
-void Core::SaveCookies () const
+void Core::saveCookies () const
 {
 	QDir dir = QDir::home ();
 	dir.cd (".leechcraft");
@@ -158,6 +182,46 @@ void Core::handleAddToFavorites (const QString& title, const QString& url)
 
 	FavoritesModel_->AddItem (dia->GetTitle (), url, dia->GetTags ());
 	FavoriteTagsCompletionModel_->UpdateTags (dia->GetTags ());
+}
+
+void Core::handleAuthentication (QNetworkReply *reply, QAuthenticator *authen)
+{
+	QString msg = tr ("The URL<br /><code>%1</code><br />with "
+			"realm<br /><em>%2</em><br />requires authentication.")
+		.arg (reply->url ().toString ())
+		.arg (authen->realm ());
+	msg = msg.left (200);
+	std::auto_ptr<AuthenticationDialog> dia (
+			new AuthenticationDialog (msg,
+				authen->user (),
+				authen->password (),
+				qApp->activeWindow ())
+			);
+	if (dia->exec () == QDialog::Rejected)
+		return;
+
+	authen->setUser (dia->GetLogin ());
+	authen->setPassword (dia->GetPassword ());
+}
+
+void Core::handleProxyAuthentication (QNetworkReply *reply, QAuthenticator *authen)
+{
+	QString msg = tr ("Proxy for URL<br /><code>%1</code><br />with "
+			"realm<br /><em>%2</em><br />requires authentication.")
+		.arg (reply->url ().toString ())
+		.arg (authen->realm ());
+	msg = msg.left (200);
+	std::auto_ptr<AuthenticationDialog> dia (
+			new AuthenticationDialog (msg,
+				authen->user (),
+				authen->password (),
+				qApp->activeWindow ())
+			);
+	if (dia->exec () == QDialog::Rejected)
+		return;
+
+	authen->setUser (dia->GetLogin ());
+	authen->setPassword (dia->GetPassword ());
 }
 
 void Core::favoriteTagsUpdated (const QStringList& tags)
