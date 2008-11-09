@@ -1,6 +1,9 @@
 #include <WServer>
 #include "core.h"
+#include <WText>
+#include <WContainerWidget>
 #include <WApplication>
+#include <WTabWidget>
 #include <QStringList>
 #include <QCoreApplication>
 #include <QTemporaryFile>
@@ -12,7 +15,7 @@
 
 Wt::WApplication* CreateApplication (const Wt::WEnvironment& e)
 {
-	return 0;
+	return Core::Instance ().CreateApplication (e);;
 }
 
 Core::Core ()
@@ -42,10 +45,22 @@ void Core::Release ()
 		qWarning () << Q_FUNC_INFO << e.what ();
 	}
 	delete Server_;
+	Server_ = 0;
 }
 
 void Core::AddObject (QObject *object, const QString& feature)
 {
+}
+
+Wt::WApplication* Core::CreateApplication (const Wt::WEnvironment& e)
+{
+	Wt::WApplication *result = new Wt::WApplication (e);
+	Wt::WTabWidget *tabWidget = new Wt::WTabWidget (result->root ());
+	tabWidget->addTab (new Wt::WText ("Here go the downloaders"),
+			"Downloaders");
+	tabWidget->addTab (new Wt::WText ("Here goes the download history"),
+			"Download history");
+	return result;
 }
 
 void Core::InitializeServer ()
@@ -60,6 +75,8 @@ void Core::InitializeServer ()
 	if (!args.contains ("--docroot"))
 		delta += 2;
 	if (!args.contains ("--http-address"))
+		delta += 2;
+	if (!args.contains ("--http-port"))
 		delta += 2;
 
 	int argc = args.size ();
@@ -81,6 +98,12 @@ void Core::InitializeServer ()
 	{
 		argv [argc + allocDelta - 2] = "--http-address";
 		argv [argc + allocDelta - 1] = "127.0.0.1";
+		allocDelta -= 2;
+	}
+	if (!args.contains ("--http-port"))
+	{
+		argv [argc + allocDelta - 2] = "--http-port";
+		argv [argc + allocDelta - 1] = "14600";
 	}
 
 	try
@@ -92,6 +115,7 @@ void Core::InitializeServer ()
 		qWarning () << Q_FUNC_INFO << "could not set server's configuration:";
 		qWarning () << e.what ();
 		delete Server_;
+		Server_ = 0;
 		return;
 	}
 
@@ -100,7 +124,7 @@ void Core::InitializeServer ()
 		delete [] argv [i];
 	delete [] argv;
 
-	Server_->addEntryPoint (Wt::WServer::Application, &CreateApplication);
+	Server_->addEntryPoint (Wt::WServer::Application, &::CreateApplication);
 	try
 	{
 		if (!Server_->start ())
@@ -110,13 +134,17 @@ void Core::InitializeServer ()
 	}
 	catch (const Wt::WServer::Exception& e)
 	{
-		qWarning () << Q_FUNC_INFO << e.what ();
+		qWarning () << Q_FUNC_INFO << "Failed to start server:";
+		qWarning () << e.what ();
 		delete Server_;
+		Server_ = 0;
 	}
 	catch (const std::exception& e)
 	{
-		qWarning () << Q_FUNC_INFO << e.what ();
+		qWarning () << Q_FUNC_INFO << "Failed to start server:";
+		qWarning () << e.what ();
 		delete Server_;
+		Server_ = 0;
 	}
 }
 

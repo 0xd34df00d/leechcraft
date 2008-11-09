@@ -13,6 +13,8 @@ class QStringList;
 namespace Wt
 {
 	class WServer;
+	class WEnvironment;
+	class WApplication;
 };
 
 class Core : public QObject
@@ -28,6 +30,7 @@ public:
     static Core& Instance ();
     void Release ();
     void AddObject (QObject*, const QString& feature);
+	Wt::WApplication* CreateApplication (const Wt::WEnvironment&);
 private:
 	void InitializeServer ();
 signals:
