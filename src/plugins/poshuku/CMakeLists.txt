@@ -21,6 +21,7 @@ SET (SRCS
 	customwebpage.cpp
 	customcookiejar.cpp
 	authenticationdialog.cpp
+	sslerrorsdialog.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -37,12 +38,14 @@ SET (HEADERS
 	customwebpage.h
 	customcookiejar.h
 	authenticationdialog.h
+	sslerrorsdialog.h
 	)
 SET (FORMS
 	poshuku.ui
 	browserwidget.ui
 	addtofavoritesdialog.ui
 	authenticationdialog.ui
+	sslerrorsdialog.ui
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS

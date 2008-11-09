@@ -37,6 +37,8 @@ public:
 	FavoritesModel* GetFavoritesModel () const;
 	TagsCompletionModel* GetFavoritesTagsCompletionModel () const;
 	QNetworkAccessManager* GetNetworkAccessManager () const;
+private:
+	void DoCommonAuth (const QString&, QAuthenticator*);
 private slots:
 	void saveCookies () const;
 	void handleTitleChanged (const QString&);
@@ -44,7 +46,8 @@ private slots:
 	void handleNeedToClose ();
 	void handleAddToFavorites (const QString&, const QString&);
 	void handleAuthentication (QNetworkReply*, QAuthenticator*);
-	void handleProxyAuthentication (QNetworkReply*, QAuthenticator*);
+	void handleProxyAuthentication (const QNetworkProxy&, QAuthenticator*);
+	void handleSslErrors (QNetworkReply*, const QList<QSslError>&);
 	void favoriteTagsUpdated (const QStringList&);
 signals:
 	void addNewTab (const QString&, QWidget*);

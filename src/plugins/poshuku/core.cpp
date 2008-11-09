@@ -10,6 +10,7 @@
 #include <QDir>
 #include <QNetworkReply>
 #include <QAuthenticator>
+#include <QNetworkProxy>
 #include <QtDebug>
 #include "browserwidget.h"
 #include "customwebview.h"
@@ -17,6 +18,7 @@
 #include "xmlsettingsmanager.h"
 #include "customcookiejar.h"
 #include "authenticationdialog.h"
+#include "sslerrorsdialog.h"
 
 Core::Core ()
 : CookieSaveTimer_ (new QTimer ())
@@ -35,13 +37,20 @@ Core::Core ()
 			SIGNAL (authenticationRequired (QNetworkReply*,
 					QAuthenticator*)),
 			this,
-			SLOT (handleAuthentication (QNetworkReply*, QAuthenticator*)));
+			SLOT (handleAuthentication (QNetworkReply*,
+					QAuthenticator*)));
 	connect (NetworkAccessManager_.get (),
-			SIGNAL (proxyAuthenticationRequired (QNetworkReply*,
+			SIGNAL (proxyAuthenticationRequired (const QNetworkProxy&,
 					QAuthenticator*)),
 			this,
-			SLOT (handleProxyAuthentication (QNetworkReply*,
+			SLOT (handleProxyAuthentication (const QNetworkProxy&,
 					QAuthenticator*)));
+	connect (NetworkAccessManager_.get (),
+			SIGNAL (sslErrors (QNetworkReply*,
+					const QList<QSslError>&)),
+			this,
+			SLOT (handleSslErrors (QNetworkReply*,
+					const QList<QSslError>&)));
 
 	connect (CookieSaveTimer_.get (),
 			SIGNAL (timeout ()),
@@ -133,6 +142,21 @@ QNetworkAccessManager* Core::GetNetworkAccessManager () const
 	return NetworkAccessManager_.get ();
 }
 
+void Core::DoCommonAuth (const QString& msg, QAuthenticator *authen)
+{
+	std::auto_ptr<AuthenticationDialog> dia (
+			new AuthenticationDialog (msg,
+				authen->user (),
+				authen->password (),
+				qApp->activeWindow ())
+			);
+	if (dia->exec () == QDialog::Rejected)
+		return;
+
+	authen->setUser (dia->GetLogin ());
+	authen->setPassword (dia->GetPassword ());
+}
+
 void Core::saveCookies () const
 {
 	QDir dir = QDir::home ();
@@ -191,37 +215,34 @@ void Core::handleAuthentication (QNetworkReply *reply, QAuthenticator *authen)
 		.arg (reply->url ().toString ())
 		.arg (authen->realm ());
 	msg = msg.left (200);
-	std::auto_ptr<AuthenticationDialog> dia (
-			new AuthenticationDialog (msg,
-				authen->user (),
-				authen->password (),
-				qApp->activeWindow ())
-			);
-	if (dia->exec () == QDialog::Rejected)
-		return;
 
-	authen->setUser (dia->GetLogin ());
-	authen->setPassword (dia->GetPassword ());
+	DoCommonAuth (msg, authen);
 }
 
-void Core::handleProxyAuthentication (QNetworkReply *reply, QAuthenticator *authen)
+void Core::handleProxyAuthentication (const QNetworkProxy& proxy, QAuthenticator *authen)
 {
-	QString msg = tr ("Proxy for URL<br /><code>%1</code><br />with "
+	QString msg = tr ("The proxy <br /><code>%1</code><br />with "
 			"realm<br /><em>%2</em><br />requires authentication.")
-		.arg (reply->url ().toString ())
+		.arg (proxy.hostName () + ":" + QString::number (proxy.port ()))
 		.arg (authen->realm ());
 	msg = msg.left (200);
-	std::auto_ptr<AuthenticationDialog> dia (
-			new AuthenticationDialog (msg,
-				authen->user (),
-				authen->password (),
+
+	DoCommonAuth (msg, authen);
+}
+
+void Core::handleSslErrors (QNetworkReply *reply, const QList<QSslError>& errors)
+{
+	qDebug () << Q_FUNC_INFO << errors.size ();
+	QString msg = tr ("The URL<br /><code>%1</code><br />has SSL errors."
+			" What do you want to do?")
+		.arg (reply->url ().toString ());
+	std::auto_ptr<SslErrorsDialog> dia (
+			new SslErrorsDialog (msg,
+				errors,
 				qApp->activeWindow ())
 			);
-	if (dia->exec () == QDialog::Rejected)
-		return;
-
-	authen->setUser (dia->GetLogin ());
-	authen->setPassword (dia->GetPassword ());
+	if (dia->exec () == QDialog::Accepted)
+		reply->ignoreSslErrors ();
 }
 
 void Core::favoriteTagsUpdated (const QStringList& tags)
