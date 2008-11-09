@@ -47,6 +47,7 @@ private slots:
 	void on_ActionSettings__triggered ();
 	void viewerSettingsChanged ();
 	void updateFavoritesFilter ();
+	void handleError (const QString&);
 signals:
 	void bringToFront ();
 	void addNewTab (const QString&, QWidget*);

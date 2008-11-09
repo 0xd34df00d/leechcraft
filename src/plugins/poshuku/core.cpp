@@ -5,14 +5,28 @@
 #include <QUrl>
 #include <QWidget>
 #include <QIcon>
+#include <QFile>
+#include <QNetworkCookieJar>
+#include <QDir>
 #include <QtDebug>
 #include "browserwidget.h"
 #include "customwebview.h"
 #include "addtofavoritesdialog.h"
 #include "xmlsettingsmanager.h"
+#include "customcookiejar.h"
 
 Core::Core ()
 {
+	NetworkAccessManager_.reset (new QNetworkAccessManager (this));
+	QFile file (QDir::homePath () +
+			"/.leechcraft/poshuku/cookies.txt");
+	if (file.open (QIODevice::ReadOnly))
+	{
+		CustomCookieJar *jar = new CustomCookieJar (this);
+		jar->Load (file.readAll ());
+		NetworkAccessManager_->setCookieJar (jar);
+	}
+
 	FavoritesModel_.reset (new FavoritesModel (this));
 
 	FavoriteTagsCompletionModel_.reset (new TagsCompletionModel (this));
@@ -33,6 +47,9 @@ Core& Core::Instance ()
 
 void Core::Release ()
 {
+	SaveCookies ();
+
+	NetworkAccessManager_.reset ();
 	FavoritesModel_.reset ();
 	FavoriteTagsCompletionModel_.reset ();
 }
@@ -45,6 +62,8 @@ bool Core::IsValidURL (const QString& url) const
 BrowserWidget* Core::NewURL (const QString& url)
 {
 	BrowserWidget *widget = new BrowserWidget;
+	widget->GetView ()->page ()->
+		setNetworkAccessManager (GetNetworkAccessManager ());
 	widget->SetURL (QUrl (url));
 
 	connect (widget,
@@ -83,6 +102,30 @@ FavoritesModel* Core::GetFavoritesModel () const
 TagsCompletionModel* Core::GetFavoritesTagsCompletionModel () const
 {
 	return FavoriteTagsCompletionModel_.get ();
+}
+
+QNetworkAccessManager* Core::GetNetworkAccessManager () const
+{
+	return NetworkAccessManager_.get ();
+}
+
+void Core::SaveCookies () const
+{
+	QDir dir = QDir::home ();
+	dir.cd (".leechcraft");
+	if (!dir.exists ("poshuku") &&
+			!dir.mkdir ("poshuku"))
+	{
+		emit error (tr ("Could not create Poshuku directory."));
+		return;
+	}
+
+	QFile file (QDir::homePath () +
+			"/.leechcraft/poshuku/cookies.txt");
+	if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
+		emit error (tr ("Could not save cookies, error opening cookie file."));
+	else
+		file.write (static_cast<CustomCookieJar*> (NetworkAccessManager_->cookieJar ())->Save ());
 }
 
 void Core::handleTitleChanged (const QString& newTitle)

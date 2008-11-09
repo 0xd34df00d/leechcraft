@@ -18,6 +18,8 @@ SET (SRCS
 	filtermodel.cpp
 	favoritesdelegate.cpp
 	favoritestreeview.cpp
+	customwebpage.cpp
+	customcookiejar.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -31,6 +33,8 @@ SET (HEADERS
 	filtermodel.h
 	favoritesdelegate.h
 	favoritestreeview.h
+	customwebpage.h
+	customcookiejar.h
 	)
 SET (FORMS
 	poshuku.ui

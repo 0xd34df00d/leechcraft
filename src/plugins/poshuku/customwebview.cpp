@@ -1,5 +1,6 @@
 #include "customwebview.h"
 #include "core.h"
+#include "customwebpage.h"
 
 CustomWebView::CustomWebView (QWidget *parent)
 : QWebView (parent)
@@ -8,6 +9,7 @@ CustomWebView::CustomWebView (QWidget *parent)
 			SIGNAL (urlChanged (const QUrl&)),
 			this,
 			SLOT (remakeURL (const QUrl&)));
+	setPage (new CustomWebPage (this));
 }
 
 CustomWebView::~CustomWebView ()

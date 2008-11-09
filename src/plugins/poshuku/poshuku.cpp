@@ -40,6 +40,10 @@ void Poshuku::Init ()
 			SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
 			this,
 			SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
+	connect (&Core::Instance (),
+			SIGNAL (error (const QString&)),
+			this,
+			SLOT (handleError (const QString&)));
 
 	FavoritesFilterModel_.reset (new FilterModel (this));
 	FavoritesFilterModel_->setSourceModel (Core::Instance ().GetFavoritesModel ());
@@ -240,6 +244,11 @@ void Poshuku::updateFavoritesFilter ()
 		setFilterCaseSensitivity ((Ui_.FavoritesFilterCaseSensitivity_->
 					checkState () == Qt::Checked) ? Qt::CaseSensitive :
 				Qt::CaseInsensitive);
+}
+
+void Poshuku::handleError (const QString& msg)
+{
+	QMessageBox::warning (this, tr ("Error"), msg);
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_poshuku, Poshuku);

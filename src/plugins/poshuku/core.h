@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 #include <QObject>
+#include <QNetworkAccessManager>
 #include <plugininterface/tagscompletionmodel.h>
 #include "favoritesmodel.h"
 
@@ -21,6 +22,7 @@ class Core : public QObject
 
 	std::auto_ptr<FavoritesModel> FavoritesModel_;
 	std::auto_ptr<TagsCompletionModel> FavoriteTagsCompletionModel_;
+	std::auto_ptr<QNetworkAccessManager> NetworkAccessManager_;
 
 	Core ();
 public:
@@ -32,6 +34,9 @@ public:
 	CustomWebView* MakeWebView ();
 	FavoritesModel* GetFavoritesModel () const;
 	TagsCompletionModel* GetFavoritesTagsCompletionModel () const;
+	QNetworkAccessManager* GetNetworkAccessManager () const;
+private:
+	void SaveCookies () const;
 private slots:
 	void handleTitleChanged (const QString&);
 	void handleIconChanged (const QIcon&);
@@ -43,6 +48,7 @@ signals:
 	void removeTab (QWidget*);
 	void changeTabName (QWidget*, const QString&);
 	void changeTabIcon (QWidget*, const QIcon&);
+	void error (const QString&) const;
 };
 
 #endif
