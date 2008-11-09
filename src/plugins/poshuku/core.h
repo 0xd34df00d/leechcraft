@@ -19,12 +19,16 @@ class Core : public QObject
 {
 	Q_OBJECT
 
-	std::vector<BrowserWidget*> Widgets_;
+	typedef std::vector<BrowserWidget*> Widgets_t;
+	Widgets_t Widgets_;
 
 	std::auto_ptr<FavoritesModel> FavoritesModel_;
 	std::auto_ptr<TagsCompletionModel> FavoriteTagsCompletionModel_;
 	std::auto_ptr<QNetworkAccessManager> NetworkAccessManager_;
 	std::auto_ptr<QTimer> CookieSaveTimer_;
+
+	bool SaveSessionScheduled_;
+	QStringList RestoredURLs_;
 
 	Core ();
 public:
@@ -39,9 +43,12 @@ public:
 	QNetworkAccessManager* GetNetworkAccessManager () const;
 private:
 	void DoCommonAuth (const QString&, QAuthenticator*);
+	void RestoreSession (bool);
+	void ScheduleSaveSession ();
 private slots:
 	void saveCookies () const;
 	void handleTitleChanged (const QString&);
+	void handleURLChanged (const QString&);
 	void handleIconChanged (const QIcon&);
 	void handleNeedToClose ();
 	void handleAddToFavorites (const QString&, const QString&);
@@ -49,6 +56,8 @@ private slots:
 	void handleProxyAuthentication (const QNetworkProxy&, QAuthenticator*);
 	void handleSslErrors (QNetworkReply*, const QList<QSslError>&);
 	void favoriteTagsUpdated (const QStringList&);
+	void saveSession ();
+	void restorePages ();
 signals:
 	void addNewTab (const QString&, QWidget*);
 	void removeTab (QWidget*);

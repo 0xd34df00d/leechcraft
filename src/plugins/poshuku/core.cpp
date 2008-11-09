@@ -20,10 +20,16 @@
 #include "customcookiejar.h"
 #include "authenticationdialog.h"
 #include "sslerrorsdialog.h"
+#include "restoresessiondialog.h"
 
 Core::Core ()
 : CookieSaveTimer_ (new QTimer ())
+, SaveSessionScheduled_ (false)
 {
+	bool cleanShutdown = XmlSettingsManager::Instance ()->
+		Property ("CleanShutdown", true).toBool ();
+	XmlSettingsManager::Instance ()->setProperty ("CleanShutdown", false);
+
 	NetworkAccessManager_.reset (new QNetworkAccessManager (this));
 	QFile file (QDir::homePath () +
 			"/.leechcraft/poshuku/cookies.txt");
@@ -69,6 +75,12 @@ Core::Core ()
 			SIGNAL (tagsUpdated (const QStringList&)),
 			this,
 			SLOT (favoriteTagsUpdated (const QStringList&)));
+
+	if (!cleanShutdown)
+		RestoreSession (true);
+	else if (XmlSettingsManager::Instance ()->
+			property ("RestorePreviousSession").toBool ())
+		RestoreSession (false);
 }
 
 Core& Core::Instance ()
@@ -86,6 +98,9 @@ void Core::Release ()
 	NetworkAccessManager_.reset ();
 	FavoritesModel_.reset ();
 	FavoriteTagsCompletionModel_.reset ();
+
+	XmlSettingsManager::Instance ()->setProperty ("CleanShutdown", true);
+	XmlSettingsManager::Instance ()->Release ();
 }
 
 bool Core::IsValidURL (const QString& url) const
@@ -116,6 +131,10 @@ BrowserWidget* Core::NewURL (const QString& url)
 			SIGNAL (addToFavorites (const QString&, const QString&)),
 			this,
 			SLOT (handleAddToFavorites (const QString&, const QString&)));
+	connect (widget,
+			SIGNAL (urlChanged (const QString&)),
+			this,
+			SLOT (handleURLChanged (const QString&)));
 
 	Widgets_.push_back (widget);
 
@@ -158,6 +177,51 @@ void Core::DoCommonAuth (const QString& msg, QAuthenticator *authen)
 	authen->setPassword (dia->GetPassword ());
 }
 
+void Core::RestoreSession (bool ask)
+{
+	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
+			Proxy::Instance ()->GetApplicationName () + "_Poshuku");
+	int size = settings.beginReadArray ("Saved session");
+	if (!size) ;
+	else if (ask)
+	{
+		std::auto_ptr<RestoreSessionDialog> dia (new RestoreSessionDialog ());
+		for (int i = 0; i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+			QString title = settings.value ("Title").toString ();
+			QString url = settings.value ("URL").toString ();
+			dia->AddPair (title, url);
+		}
+
+		if (dia->exec () == QDialog::Accepted)
+		{
+			RestoredURLs_ = dia->GetSelectedURLs ();
+			QTimer::singleShot (5000, this, SLOT (restorePages ()));
+		}
+	}
+	else
+	{
+		for (int i = 0; i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+			RestoredURLs_ << settings.value ("URL").toString ();
+		}
+		QTimer::singleShot (5000, this, SLOT (restorePages ()));
+	}
+	settings.endArray ();
+}
+
+void Core::ScheduleSaveSession ()
+{
+	if (SaveSessionScheduled_)
+		return;
+
+	QTimer::singleShot (1000, this, SLOT (saveSession ()));
+
+	SaveSessionScheduled_ = true;
+}
+
 void Core::saveCookies () const
 {
 	QDir dir = QDir::home ();
@@ -180,6 +244,16 @@ void Core::saveCookies () const
 void Core::handleTitleChanged (const QString& newTitle)
 {
 	emit changeTabName (dynamic_cast<QWidget*> (sender ()), newTitle);
+
+	ScheduleSaveSession ();
+}
+
+void Core::handleURLChanged (const QString& newURL)
+{
+	emit changeTabName (dynamic_cast<QWidget*> (sender ()),
+			tr ("Loading %1").arg (QUrl (newURL).host ()));
+
+	ScheduleSaveSession ();
 }
 
 void Core::handleIconChanged (const QIcon& newIcon)
@@ -280,5 +354,31 @@ void Core::handleSslErrors (QNetworkReply *reply, const QList<QSslError>& errors
 void Core::favoriteTagsUpdated (const QStringList& tags)
 {
 	XmlSettingsManager::Instance ()->setProperty ("FavoriteTags", tags);
+}
+
+void Core::saveSession ()
+{
+	int pos = 0;
+	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
+			Proxy::Instance ()->GetApplicationName () + "_Poshuku");
+	settings.beginWriteArray ("Saved session");
+	settings.remove ("");
+	for (Widgets_t::const_iterator i = Widgets_.begin (),
+			end = Widgets_.end (); i != end; ++i)
+	{
+		settings.setArrayIndex (pos++);
+		settings.setValue ("Title", (*i)->GetView ()->title ());
+		settings.setValue ("URL", (*i)->GetView ()->url ().toString ());
+	}
+	settings.endArray ();
+
+	SaveSessionScheduled_ = false;
+}
+
+void Core::restorePages ()
+{
+	for (QStringList::const_iterator i = RestoredURLs_.begin (),
+			end = RestoredURLs_.end (); i != end; ++i)
+		NewURL (*i);
 }
 

@@ -2,6 +2,18 @@
 <settings>
 	<declare defaultlang="en" />
 	<page>
+		<label lang="en" value="Browser settings" />
+		<label lang="ru" value="Параметры браузера" />
+		<tab>
+			<label lang="en" value="Startup" />
+			<label lang="ru" value="Запуск" />
+			<item type="checkbox" property="RestorePreviousSession" state="on">
+				<label lang="en" value="Restore previous session" />
+				<label lang="ru" value="Восстанавливать предыдущую сессию" />
+			</item>
+		</tab>
+	</page>
+	<page>
 		<label lang="en" value="Viewer settings" />
 		<label lang="ru" value="Параметры просмотрщика" />
 		<label lang="uk" value="Параметри переглядача" />
