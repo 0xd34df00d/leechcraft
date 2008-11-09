@@ -28,6 +28,8 @@ public:
     static Core& Instance ();
     void Release ();
     void AddObject (QObject*, const QString& feature);
+private:
+	void InitializeServer ();
 signals:
 };
 

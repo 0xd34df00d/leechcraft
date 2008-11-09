@@ -1,5 +1,5 @@
-#include <QTranslator>
 #include "remoter.h"
+#include <QTranslator>
 #include "core.h"
 
 void Remoter::Init ()
