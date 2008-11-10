@@ -29,6 +29,7 @@ public:
 	int rowCount (const Wt::WModelIndex& = Wt::WModelIndex ()) const;
 	Wt::WModelIndex parent (const Wt::WModelIndex&) const;
 	boost::any data (const Wt::WModelIndex&, int = Wt::DisplayRole) const;
+	boost::any headerData (int, Wt::Orientation, int) const;
 	Wt::WModelIndex index (int, int,
 			const Wt::WModelIndex& = Wt::WModelIndex ()) const;
 private:

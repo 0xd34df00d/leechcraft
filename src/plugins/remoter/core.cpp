@@ -177,10 +177,10 @@ void Core::BuildInterface (Wt::WContainerWidget *root, const Wt::WEnvironment& e
 
 	Wt::WTabWidget *tabWidget = new Wt::WTabWidget (root);
 
-	Wt::WTreeView *downloadersView = new Wt::WTreeView (root);
+	Wt::WTreeView *downloadersView = new Wt::WTreeView (0);
 	SetupDownloadersView (downloadersView);
 
-	Wt::WTreeView *historyView = new Wt::WTreeView (root);
+	Wt::WTreeView *historyView = new Wt::WTreeView (0);
 	SetupHistoryView (historyView);
 
 	tabWidget->addTab (downloadersView,

@@ -2,6 +2,7 @@
 #include <QDate>
 #include <WDate>
 #include <QUrl>
+#include <QtDebug>
 #include <plugininterface/treeitem.h>
 
 QToWAbstractItemModelAdaptor::QToWAbstractItemModelAdaptor (QAbstractItemModel *model,
@@ -57,6 +58,34 @@ boost::any QToWAbstractItemModelAdaptor::data (const Wt::WModelIndex& i, int rol
 	return Convert (Model_->data (Convert (i), idr));
 }
 
+boost::any QToWAbstractItemModelAdaptor::headerData (int section,
+		Wt::Orientation orient, int role) const
+{
+	Qt::ItemDataRole idr;
+	switch (static_cast<Wt::ItemDataRole> (role))
+	{
+		case Wt::DisplayRole:
+			idr = Qt::DisplayRole;
+			break;
+		case Wt::EditRole:
+			idr = Qt::EditRole;
+			break;
+		case Wt::CheckStateRole:
+			idr = Qt::CheckStateRole;
+			break;
+		case Wt::ToolTipRole:
+			idr = Qt::ToolTipRole;
+			break;
+		// TODO implement on-the-fly icon rewriting.
+		default:
+			return boost::any ();
+	}
+
+	return Convert (Model_->headerData (section,
+				(orient == Wt::Horizontal ? Qt::Horizontal : Qt::Vertical),
+				idr));
+}
+
 Wt::WModelIndex QToWAbstractItemModelAdaptor::index (int row, int column,
 		const Wt::WModelIndex& pi) const
 {
@@ -82,7 +111,10 @@ boost::any QToWAbstractItemModelAdaptor::Convert (const QVariant& var) const
 			return boost::any (var.toBool ());
 		case QVariant::Char:
 		case QVariant::String:
-			return boost::any (Wt::WString::fromUTF8 (var.toString ().toStdString ()).narrow ());
+			{
+				std::string str = var.toString ().toUtf8 ().constData ();
+				return boost::any (str);
+			}
 		case QVariant::Date:
 			{
 				QDate date = var.toDate ();
