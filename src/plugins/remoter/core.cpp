@@ -16,6 +16,7 @@
 #include <interfaces/interfaces.h>
 #include <plugininterface/proxy.h>
 #include <plugininterface/mergemodel.h>
+#include "qtowabstractitemmodeladaptor.h"
 
 Wt::WApplication* CreateApplication (const Wt::WEnvironment& e)
 {
@@ -201,9 +202,15 @@ void Core::BuildInterface (Wt::WContainerWidget *root, const Wt::WEnvironment& e
 
 void Core::SetupDownloadersView (Wt::WTreeView *view)
 {
+	QToWAbstractItemModelAdaptor *adaptor =
+		new QToWAbstractItemModelAdaptor (TasksModel_, view);
+	view->setModel (adaptor);
 }
 
 void Core::SetupHistoryView (Wt::WTreeView *view)
 {
+	QToWAbstractItemModelAdaptor *adaptor =
+		new QToWAbstractItemModelAdaptor (HistoryModel_, view);
+	view->setModel (adaptor);
 }
 

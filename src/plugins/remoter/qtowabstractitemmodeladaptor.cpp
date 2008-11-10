@@ -2,12 +2,15 @@
 #include <QDate>
 #include <WDate>
 #include <QUrl>
+#include <plugininterface/treeitem.h>
 
 QToWAbstractItemModelAdaptor::QToWAbstractItemModelAdaptor (QAbstractItemModel *model,
 		WObject *parent)
 : Wt::WAbstractItemModel (parent)
 , Model_ (model)
+, Root_ (new TreeItem (QVariantList ()))
 {
+	Indexes_ [Root_] = Wt::WModelIndex ();
 }
 
 QToWAbstractItemModelAdaptor::~QToWAbstractItemModelAdaptor ()
@@ -26,7 +29,7 @@ int QToWAbstractItemModelAdaptor::rowCount (const Wt::WModelIndex& parent) const
 
 Wt::WModelIndex QToWAbstractItemModelAdaptor::parent (const Wt::WModelIndex& i) const
 {
-	return Convert (Model_->parent (Convert (i)));
+	return Indexes_ [static_cast<TreeItem*> (i.internalPointer ())->Parent ()];
 }
 
 boost::any QToWAbstractItemModelAdaptor::data (const Wt::WModelIndex& i, int role) const
@@ -54,6 +57,23 @@ boost::any QToWAbstractItemModelAdaptor::data (const Wt::WModelIndex& i, int rol
 	return Convert (Model_->data (Convert (i), idr));
 }
 
+Wt::WModelIndex QToWAbstractItemModelAdaptor::index (int row, int column,
+		const Wt::WModelIndex& pi) const
+{
+	TreeItem *parent;
+	if (pi.isValid ())
+		parent = static_cast<TreeItem*> (pi.internalPointer ());
+	else
+		parent = Root_;
+
+	TreeItem *item = new TreeItem (QVariantList (), parent);
+	parent->AppendChild (item);
+
+	Wt::WModelIndex result = createIndex (row, column, item);
+	Indexes_ [item] = result;
+	return result;
+}
+
 boost::any QToWAbstractItemModelAdaptor::Convert (const QVariant& var) const
 {
 	switch (var.type ())
@@ -62,7 +82,7 @@ boost::any QToWAbstractItemModelAdaptor::Convert (const QVariant& var) const
 			return boost::any (var.toBool ());
 		case QVariant::Char:
 		case QVariant::String:
-			return boost::any (var.toString ().toStdString ());
+			return boost::any (Wt::WString::fromUTF8 (var.toString ().toStdString ()).narrow ());
 		case QVariant::Date:
 			{
 				QDate date = var.toDate ();
@@ -121,7 +141,6 @@ boost::any QToWAbstractItemModelAdaptor::Convert (const QVariant& var) const
 		case QVariant::LastType:
 			return boost::any ();
 	}
-	return boost::any ();
 }
 
 QVariant QToWAbstractItemModelAdaptor::Convert (const boost::any& a) const
@@ -153,7 +172,8 @@ QVariant QToWAbstractItemModelAdaptor::Convert (const boost::any& a) const
 	else if (a.type () == typeid (unsigned long long) ||
 			a.type () == typeid (unsigned long))
 		return QVariant (boost::any_cast<unsigned long long> (a));
-	return QVariant ();
+	else
+		return boost::any_cast<QVariant> (a);
 }
 
 QModelIndex QToWAbstractItemModelAdaptor::Convert (const Wt::WModelIndex& wmi) const
