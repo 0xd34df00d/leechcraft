@@ -12,10 +12,12 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
     remoter.cpp
     core.cpp
+	qtowabstractitemmodeladaptor.cpp
 	)
 SET (HEADERS
     remoter.h
     core.h
+	qtowabstractitemmodeladaptor.h
 	)
 SET (FORMS
     mainwindow.ui)
