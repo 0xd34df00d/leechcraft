@@ -266,7 +266,7 @@ void Core::handleNeedToClose ()
 	BrowserWidget *w = dynamic_cast<BrowserWidget*> (sender ());
 	emit removeTab (w);
 
-	std::remove (Widgets_.begin (), Widgets_.end (), w);
+	Widgets_.erase (std::find (Widgets_.begin (), Widgets_.end (), w));
 	w->deleteLater ();
 
 	ScheduleSaveSession ();

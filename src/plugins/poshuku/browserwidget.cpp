@@ -37,7 +37,7 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	bar->addAction (stop);
 	bar->addAction (add2Favorites);
 
-	dynamic_cast<QVBoxLayout*> (layout ())->insertWidget (0, bar);
+	static_cast<QVBoxLayout*> (layout ())->insertWidget (0, bar);
 
 	connect (back,
 			SIGNAL (triggered ()),
