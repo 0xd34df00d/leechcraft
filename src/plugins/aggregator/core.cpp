@@ -233,7 +233,8 @@ void Core::Activated (const QModelIndex& index)
 
 	QString URL = item->Link_;
 	item->Unread_ = false;
-	StorageBackend_->UpdateItem (item, ActivatedChannel_->Link_ + ActivatedChannel_->Title_);
+	StorageBackend_->UpdateItem (item,
+			FindFeedForChannel (ActivatedChannel_) + ActivatedChannel_->Title_);
 	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
 	UpdateUnreadItemsNumber ();
 	OpenLink (URL);
@@ -251,7 +252,8 @@ void Core::Selected (const QModelIndex& index)
 
 	Item_ptr item = ActivatedChannel_->Items_ [index.row ()];
 	item->Unread_ = false;
-	StorageBackend_->UpdateItem (item, ActivatedChannel_->Link_ + ActivatedChannel_->Title_);
+	StorageBackend_->UpdateItem (item,
+			FindFeedForChannel (ActivatedChannel_) + ActivatedChannel_->Title_);
 	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
 	UpdateUnreadItemsNumber ();
 }
@@ -341,7 +343,7 @@ void Core::MarkItemAsUnread (const QModelIndex& i)
 
 	ActivatedChannel_->Items_ [i.row ()]->Unread_ = true;
 	StorageBackend_->UpdateItem (ActivatedChannel_->Items_ [i.row ()],
-			ActivatedChannel_->Link_ + ActivatedChannel_->Title_);
+			FindFeedForChannel (ActivatedChannel_) + ActivatedChannel_->Title_);
 	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
 	emit dataChanged (index (i.row (), 0), index (i.row (), 1));
 	UpdateUnreadItemsNumber ();
@@ -956,6 +958,39 @@ QString Core::FindFeedForChannel (const Channel_ptr& channel) const
 	return QString ();
 }
 
+namespace
+{
+	struct RawChannelFinder
+	{
+		const Channel *Channel_;
+
+		RawChannelFinder (const Channel *ch)
+		: Channel_ (ch)
+		{
+		}
+
+		bool operator() (const Channel_ptr& ch)
+		{
+			return Channel_ == ch.get ();
+		}
+	};
+};
+
+QString Core::FindFeedForChannel (const Channel* channel) const
+{
+	for (QMap<QString, Feed_ptr>::const_iterator i = Feeds_.begin ();
+			i != Feeds_.end (); ++i)
+	{
+		channels_container_t::const_iterator j =
+			std::find_if (i.value ()->Channels_.begin (),
+					i.value ()->Channels_.end (),
+					RawChannelFinder (channel));
+		if (j != i.value ()->Channels_.end ())
+			return i.key ();
+	}
+	return QString ();
+}
+
 void Core::UpdateUnreadItemsNumber () const
 {
 	int result = 0;
@@ -1099,7 +1134,7 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 			(*ourItem)->CommentsLink_ = (*item)->CommentsLink_;
 
 			StorageBackend_->UpdateItem ((*ourItem),
-					ourChannel->Link_ + ourChannel->Title_);
+					FindFeedForChannel (ourChannel) + ourChannel->Title_);
 		}
 	}
 
@@ -1146,7 +1181,7 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 					newsize = channels.at (i)->Items_.end ();
 					j != newsize; ++j)
 			{
-				StorageBackend_->AddItem (*j, channels [i]->Link_ + channels [i]->Title_);
+				StorageBackend_->AddItem (*j, pj.URL_ + channels [i]->Title_);
 				items_container_t::iterator item =
 					std::find_if (cchannel->Items_.begin (),
 							cchannel->Items_.end (),
@@ -1182,7 +1217,7 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 						cchannel->Items_.end (),
 						boost::bind (&StorageBackend::RemoveItem,
 							StorageBackend_.get (),
-							_1, cchannel->Link_ + cchannel->Title_));
+							_1, pj.URL_ + cchannel->Title_));
 				cchannel->Items_.erase (cchannel->Items_.begin () + ipc,
 						cchannel->Items_.end ());
 				if (ActivatedChannel_ == cchannel.get ())
@@ -1216,7 +1251,7 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 						cchannel->Items_.end (),
 						boost::bind (&StorageBackend::RemoveItem,
 							StorageBackend_.get (),
-							_1, cchannel->Link_ + cchannel->Title_));
+							_1, pj.URL_ + cchannel->Title_));
 				if (ActivatedChannel_ == cchannel.get ())
 					endRemoveRows ();
 

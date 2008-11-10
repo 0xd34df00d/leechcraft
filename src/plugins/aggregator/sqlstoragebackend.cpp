@@ -228,13 +228,13 @@ void SQLStorageBackend::GetChannels (Feed_ptr feed) const
 		channel->Favicon_ = UnserializePixmap (channelsSelector
 				.value (9).toByteArray ());
 
-		GetItems (channel);
+		GetItems (channel, feed->URL_);
 
 		feed->Channels_.push_back (channel);
 	}
 }
 
-void SQLStorageBackend::GetItems (Channel_ptr channel) const
+void SQLStorageBackend::GetItems (Channel_ptr channel, const QString& url) const
 {
 	QSqlQuery itemsSelector;
 	itemsSelector.prepare ("SELECT "
@@ -251,7 +251,7 @@ void SQLStorageBackend::GetItems (Channel_ptr channel) const
 			"FROM items "
 			"WHERE parents_hash = :parents_hash "
 			"ORDER BY pub_date DESC");
-	itemsSelector.bindValue (":parents_hash", channel->Link_ + channel->Title_);
+	itemsSelector.bindValue (":parents_hash", url + channel->Title_);
 	if (!itemsSelector.exec ())
 	{
 		DumpError (itemsSelector);
@@ -421,7 +421,7 @@ void SQLStorageBackend::AddChannel (Channel_ptr channel, const QString& url)
 	std::for_each (channel->Items_.begin (), channel->Items_.end (),
 		   boost::bind (&SQLStorageBackend::AddItem,
 			   this,
-			   _1, channel->Link_ + channel->Title_));
+			   _1, url + channel->Title_));
 }
 
 void SQLStorageBackend::AddItem (Item_ptr item, const QString& parent)

@@ -41,7 +41,7 @@ public:
 	virtual void ToggleChannelUnread (const QString&, bool);
 private:
 	void GetChannels (Feed_ptr) const;
-	void GetItems (Channel_ptr) const;
+	void GetItems (Channel_ptr, const QString&) const;
 	bool InitializeTables ();
 	void DumpError (const QSqlError&) const;
 	void DumpError (const QSqlQuery&) const;

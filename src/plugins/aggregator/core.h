@@ -146,6 +146,7 @@ public slots:
     void handleSslError (QNetworkReply*);
 private:
     QString FindFeedForChannel (const Channel_ptr&) const;
+	QString FindFeedForChannel (const Channel*) const;
     void UpdateUnreadItemsNumber () const;
 	void FetchPixmap (const Channel_ptr&);
 	void FetchFavicon (const Channel_ptr&);
