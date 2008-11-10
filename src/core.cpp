@@ -99,6 +99,16 @@ QAbstractProxyModel* Main::Core::GetHistoryModel () const
 	return HistoryFilterModel_.get ();
 }
 
+MergeModel* Main::Core::GetUnfilteredTasksModel () const
+{
+	return MergeModel_.get ();
+}
+
+MergeModel* Main::Core::GetUnfilteredHistoryModel () const
+{
+	return HistoryMergeModel_.get ();
+}
+
 QWidget* Main::Core::GetControls (const QModelIndex& index) const
 {
 	QAbstractItemModel *model = *MergeModel_->

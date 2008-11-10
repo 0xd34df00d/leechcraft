@@ -4,6 +4,8 @@
 #include <interfaces/interfaces.h>
 #include "ui_mainwindow.h"
 
+class MergeModel;
+
 class Remoter : public QMainWindow
               , public IInfo
               , public IWindow
@@ -13,8 +15,6 @@ class Remoter : public QMainWindow
 
     Ui::MainWindow Ui_;
     bool IsShown_;
-
-    QObjectList Objects_;
 public:
     void Init ();
     void Release ();
@@ -29,8 +29,10 @@ public:
     void ShowWindow ();
 protected:
     virtual void closeEvent (QCloseEvent*);
-public slots:
+public Q_SLOTS:
     void handleHidePlugins ();
+	void pushHistoryModel (MergeModel*) const;
+	void pushDownloadersModel (MergeModel*) const;
 };
 
 #endif

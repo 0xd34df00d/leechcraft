@@ -55,6 +55,8 @@ namespace Main
 		QAbstractItemModel* GetPluginsModel () const;
 		QAbstractProxyModel* GetTasksModel () const;
 		QAbstractProxyModel* GetHistoryModel () const;
+		MergeModel* GetUnfilteredTasksModel () const;
+		MergeModel* GetUnfilteredHistoryModel () const;
 		QWidget* GetControls (const QModelIndex&) const;
 		QWidget* GetAdditionalInfo (const QModelIndex&) const;
 

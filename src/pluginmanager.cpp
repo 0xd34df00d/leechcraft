@@ -185,32 +185,66 @@ void PluginManager::CalculateDependencies ()
 
         if (!needs.isEmpty ())
         {
-            for (PluginsContainer_t::const_iterator j = Plugins_.begin ();
-					j != Plugins_.end (); ++j)
-            {
-                if (j == i)
-                    continue;
+			if (needs.contains ("services::historyModel"))
+			{
+				QMetaObject::invokeMethod (pEntity,
+						"pushHistoryModel",
+						Q_ARG (MergeModel*,
+							Core::Instance ().GetUnfilteredHistoryModel ()));
+				needs.removeAll ("services::historyModel");
+			}
 
-                QObject *qpEntity = (*j)->instance ();
-                IInfo *qinfo = qobject_cast<IInfo*> (qpEntity);
-                QStringList qprovides = qinfo->Provides ();
-                for (int k = 0; k < needs.size (); ++k)
-                    if (qprovides.contains (needs [k]))
-                    {
-                        info->SetProvider (qpEntity, needs [k]);
-                        needs.removeAt (k--);
-                    }
-            }
-            if (!needs.isEmpty ())
-            {
-                DependenciesMet_ [i] = false;
-                FailedDependencies_ [i] = needs;
-                qWarning () << Q_FUNC_INFO
-					<< "not all plugins providing needs of"
-				   	<< info->GetName () 
-					<< "are found. The remaining ones are:"
-				   	<< needs;
-            }
+			if (needs.contains ("services::downloadersModel"))
+			{
+				QMetaObject::invokeMethod (pEntity,
+						"pushDownloadersModel",
+						Q_ARG (MergeModel*,
+							Core::Instance ().GetUnfilteredTasksModel ()));
+				needs.removeAll ("services::downloadersModel");
+			}
+
+			if (needs.contains ("*"))
+			{
+				for (PluginsContainer_t::const_iterator j = Plugins_.begin ();
+						j != Plugins_.end (); ++j)
+				{
+					if (j == i)
+						continue;
+
+					QObject *qpEntity = (*j)->instance ();
+					info->SetProvider (qpEntity, "*");
+				}
+				needs.removeAll ("*");
+			}
+			else
+			{
+				for (PluginsContainer_t::const_iterator j = Plugins_.begin ();
+						j != Plugins_.end (); ++j)
+				{
+					if (j == i)
+						continue;
+
+					QObject *qpEntity = (*j)->instance ();
+					IInfo *qinfo = qobject_cast<IInfo*> (qpEntity);
+					QStringList qprovides = qinfo->Provides ();
+					for (int k = 0; k < needs.size (); ++k)
+						if (qprovides.contains (needs [k]))
+						{
+							info->SetProvider (qpEntity, needs [k]);
+							needs.removeAt (k--);
+						}
+				}
+				if (!needs.isEmpty ())
+				{
+					DependenciesMet_ [i] = false;
+					FailedDependencies_ [i] = needs;
+					qWarning () << Q_FUNC_INFO
+						<< "not all plugins providing needs of"
+						<< info->GetName () 
+						<< "are found. The remaining ones are:"
+						<< needs;
+				}
+			}
         }
         if (!uses.isEmpty ())
         {

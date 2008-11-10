@@ -79,6 +79,16 @@ public:
 	 * the returned list should mention those features that plugin can't
 	 * live without and would not work at all.
 	 *
+	 * There are also some special values:
+	 * - *
+	 *   Passes all plugins to the plugin.
+	 * - services::historyModel
+	 *   Pushes the pointer to merged but not filtered history model
+	 *   into the plugin via pushHistoryModel(MergeModel*) slot.
+	 * - services::downloadersModel
+	 *   Pushes the pointer to merged but not filtered downloaders model
+	 *   into the plugin via pushDownloadersModel(MergeModel*) slot.
+	 *
 	 * @return List of needed features.
 	 *
 	 * @sa Provides

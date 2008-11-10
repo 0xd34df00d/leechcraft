@@ -146,7 +146,6 @@ SET (SRCS
 	main.cpp
 	pluginmanager.cpp
 	xmlsettingsmanager.cpp
-	mergemodel.cpp
 	filtermodel.cpp
 	pluginmanagerdialog.cpp
 	fancypopupmanager.cpp
@@ -160,7 +159,6 @@ SET (HEADERS
 	core.h
 	pluginmanager.h
 	xmlsettingsmanager.h
-	mergemodel.h
 	filtermodel.h
 	pluginmanagerdialog.h
 	fancypopupmanager.h

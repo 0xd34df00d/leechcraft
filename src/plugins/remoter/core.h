@@ -9,31 +9,38 @@
 #include <QPair>
 
 class QStringList;
+class MergeModel;
 
 namespace Wt
 {
 	class WServer;
 	class WEnvironment;
 	class WApplication;
+	class WContainerWidget;
+	class WTreeView;
 };
 
 class Core : public QObject
 {
     Q_OBJECT
 
-    Core ();
-
 	Wt::WServer *Server_;
+	MergeModel *TasksModel_, *HistoryModel_;
+	QObjectList Objects_;
 
-    bool Initialized_;
+    Core ();
 public:
     static Core& Instance ();
     void Release ();
+	void SetHistoryModel (MergeModel*);
+	void SetDownloadersModel (MergeModel*);
     void AddObject (QObject*, const QString& feature);
 	Wt::WApplication* CreateApplication (const Wt::WEnvironment&);
 private:
 	void InitializeServer ();
-signals:
+	void BuildInterface (Wt::WContainerWidget*, const Wt::WEnvironment&);
+	void SetupDownloadersView (Wt::WTreeView*);
+	void SetupHistoryView (Wt::WTreeView*);
 };
 
 #endif

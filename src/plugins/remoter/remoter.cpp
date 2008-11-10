@@ -1,16 +1,12 @@
 #include "remoter.h"
 #include <QTranslator>
+#include <plugininterface/mergemodel.h>
+#include <plugininterface/util.h>
 #include "core.h"
 
 void Remoter::Init ()
 {
-    Q_INIT_RESOURCE (resources);
-    QTranslator *transl = new QTranslator (this);
-    QString localeName = QString(::getenv ("LANG")).left (2);
-    if (localeName.isNull () || localeName.isEmpty ())
-        localeName = QLocale::system ().name ();
-    transl->load (QString (":/leechcraft_remoter_") + localeName);
-    qApp->installTranslator (transl);
+	LeechCraft::Util::InstallTranslator ("remoter");
 
     IsShown_ = false;
     Ui_.setupUi (this);
@@ -38,7 +34,7 @@ QStringList Remoter::Provides () const
 
 QStringList Remoter::Needs () const
 {
-    return QStringList ();
+    return QStringList ("*") << "services::historyModel" << "services::downloadersModel";
 }
 
 QStringList Remoter::Uses () const
@@ -76,6 +72,16 @@ void Remoter::handleHidePlugins ()
 {
     IsShown_ = false;
     hide ();
+}
+
+void Remoter::pushHistoryModel (MergeModel *model) const
+{
+	Core::Instance ().SetHistoryModel (model);
+}
+
+void Remoter::pushDownloadersModel (MergeModel *model) const
+{
+	Core::Instance ().SetDownloadersModel (model);
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_remoter, Remoter);

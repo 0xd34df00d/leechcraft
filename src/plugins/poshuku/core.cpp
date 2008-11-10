@@ -268,6 +268,8 @@ void Core::handleNeedToClose ()
 
 	std::remove (Widgets_.begin (), Widgets_.end (), w);
 	w->deleteLater ();
+
+	ScheduleSaveSession ();
 }
 
 void Core::handleAddToFavorites (const QString& title, const QString& url)

@@ -3,8 +3,9 @@
 #include <deque>
 #include <QAbstractProxyModel>
 #include <QStringList>
+#include "config.h"
 
-class MergeModel : public QAbstractProxyModel
+class LEECHCRAFT_API MergeModel : public QAbstractProxyModel
 {
 	Q_OBJECT
 
@@ -39,7 +40,7 @@ public:
 	int GetStartingRow (const_iterator) const;
 	const_iterator GetModelForRow (int) const;
 	iterator GetModelForRow (int);
-public slots:
+public Q_SLOTS:
 	void handleColumnsAboutToBeInserted (const QModelIndex&, int, int);
 	void handleColumnsAboutToBeRemoved (const QModelIndex&, int, int);
 	void handleColumnsInserted (const QModelIndex&, int, int);
