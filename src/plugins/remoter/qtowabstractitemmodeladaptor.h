@@ -1,8 +1,8 @@
 #ifndef QTOWABSTRACTITEMMODELADAPTOR_H
 #define QTOWABSTRACTITEMMODELADAPTOR_H
 #include <map>
-#include <QAbstractItemModel>
 #include <WAbstractItemModel>
+#include <QAbstractItemModel>
 
 class TreeItem;
 
@@ -32,6 +32,21 @@ public:
 	boost::any headerData (int, Wt::Orientation, int) const;
 	Wt::WModelIndex index (int, int,
 			const Wt::WModelIndex& = Wt::WModelIndex ()) const;
+private Q_SLOTS:
+	void reColumnsAboutToBeInserted (const QModelIndex&, int, int);
+	void reColumnsAboutToBeRemoved (const QModelIndex&, int, int);
+	void reColumnsInserted (const QModelIndex&, int, int);
+	void reColumnsRemoved (const QModelIndex&, int, int);
+	void reDataChanged (const QModelIndex&, const QModelIndex&);
+	void reHeaderDataChanged (Qt::Orientation, int, int);
+	void reLayoutAboutToBeChanged ();
+	void reLayoutChanged ();
+	void reModelAboutToBeReset ();
+	void reModelReset ();
+	void reRowsAboutToBeInserted (const QModelIndex&, int, int);
+	void reRowsAboutToBeRemoved (const QModelIndex&, int, int);
+	void reRowsInserted (const QModelIndex&, int, int);
+	void reRowsRemoved (const QModelIndex&, int, int);
 private:
 	boost::any Convert (const QVariant&) const;
 	QVariant Convert (const boost::any&) const;
