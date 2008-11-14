@@ -35,7 +35,7 @@ struct Channel
 struct ChannelShort
 {
 	QString Title_;
-	QString Tags_;
+	QStringList Tags_;
 	QDateTime LastBuild_;
 	int Unread_;
 };

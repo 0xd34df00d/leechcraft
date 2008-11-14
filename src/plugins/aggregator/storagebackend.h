@@ -25,15 +25,6 @@ public:
 
 	/** @brief Get all the feeds in the storage.
 	 *
-	 * Puts all the information about each feed in the storage into the
-	 * passed container.
-	 *
-	 * @param[out] feeds The container with feeds. The feeds would be
-	 * appended to the container.
-	 */
-	virtual void GetFeeds (feeds_container_t& feeds) const = 0;
-	/** @brief Get all the feeds in the storage.
-	 *
 	 * Puts URLs of all the feeds in the storage into the passed
 	 * container.
 	 *

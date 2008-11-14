@@ -24,7 +24,7 @@ struct Item
 struct ItemShort
 {
 	QString Title_;
-	QString Link_;
+	QString URL_;
 	QDateTime PubDate_;
 	bool Unread_;
 };

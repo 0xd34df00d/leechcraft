@@ -34,16 +34,78 @@ void SQLStorageBackend::Prepare ()
 		DumpError (pragma);
 
 	FeedFinderByURL_ = QSqlQuery ();
-	FeedFinderByURL_.prepare ("SELECT last_update FROM feeds WHERE url = :url");
+	FeedFinderByURL_.prepare ("SELECT last_update "
+			"FROM feeds "
+			"WHERE url = :url");
+
+	ChannelsShortSelector_ = QSqlQuery ();
+	ChannelsShortSelector_.prepare ("SELECT "
+			"title, "
+			"tags, "
+			"last_build "
+			"FROM channels "
+			"WHERE parent_feed_url = :parent_feed_url "
+			"ORDER BY title");
+
+	ChannelsFullSelector_ = QSqlQuery ();
+	ChannelsFullSelector_.prepare ("SELECT "
+			"url, "
+			"description, "
+			"last_build, "
+			"tags, "
+			"language, "
+			"author, "
+			"pixmap_url, "
+			"pixmap, "
+			"favicon "
+			"FROM channels "
+			"WHERE parent_feed_url = :parent_feed_url "
+			"AND title = :title "
+			"ORDER BY title");
+
+	UnreadItemsCounter_ = QSqlQuery ();
+	UnreadItemsCounter_.prepare ("SELECT COUNT (unread) "
+			"FROM items "
+			"WHERE parents_hash = :parents_hash");
+
+	ItemsShortSelector_ = QSqlQuery ();
+	ItemsShortSelector_.prepare ("SELECT "
+			"title, "
+			"url, "
+			"pub_date, "
+			"unread "
+			"FROM items "
+			"WHERE parents_hash = :parents_hash "
+			"ORDER BY pub_date DESC");
+
+	ItemsFullSelector_ = QSqlQuery ();
+	ItemsFullSelector_.prepare ("SELECT "
+			"title, "
+			"url, "
+			"description, "
+			"author, "
+			"category, "
+			"guid, "
+			"pub_date, "
+			"unread, "
+			"num_comments, "
+			"comments_url "
+			"FROM items "
+			"WHERE parents_hash = :parents_hash "
+			"AND title = :title "
+			"AND url = :url "
+			"ORDER BY pub_date DESC");
 
 	ChannelFinder_ = QSqlQuery ();
-	ChannelFinder_.prepare ("SELECT description FROM channels "
+	ChannelFinder_.prepare ("SELECT description "
+			"FROM channels "
 			"WHERE parent_feed_url = :parent_feed_url "
 			"AND title = :title "
 			"AND url = :url");
 
 	ItemFinder_ = QSqlQuery ();
-	ItemFinder_.prepare ("SELECT title FROM items "
+	ItemFinder_.prepare ("SELECT title "
+			"FROM items "
 			"WHERE parents_hash = :parents_hash "
 			"AND title = :title "
 			"AND url = :url "
@@ -167,114 +229,132 @@ SQLStorageBackend::~SQLStorageBackend ()
 	DB_.close ();
 }
 
-void SQLStorageBackend::GetFeeds (feeds_container_t& result) const
+void SQLStorageBackend::GetFeedsURLs (feeds_urls_t& result) const
 {
 	QSqlQuery feedSelector;
-	if (!feedSelector.exec ("SELECT url, last_update FROM feeds"))
+	if (!feedSelector.exec ("SELECT url FROM feeds"))
 	{
 		DumpError (feedSelector);
 		return;
 	}
 
 	while (feedSelector.next ())
-	{
-		Feed_ptr feed (new Feed);
-		feed->URL_ = feedSelector.value (0).toString ();
-		feed->LastUpdate_ = feedSelector.value (1).toDateTime ();
-		GetChannels (feed);
-		result.push_back (feed);
-	}
+		result.push_back (feedSelector.value (0).toString ());
 }
 
-void SQLStorageBackend::GetChannels (Feed_ptr feed) const
+void SQLStorageBackend::GetChannels (channels_shorts_t& shorts,
+		const QString& feedURL) const
 {
-	QSqlQuery channelsSelector;
-	channelsSelector.prepare ("SELECT "
-			"url, "
-			"title, "
-			"description, "
-			"last_build, "
-			"tags, "
-			"language, "
-			"author, "
-			"pixmap_url, "
-			"pixmap, "
-			"favicon "
-			"FROM channels "
-			"WHERE parent_feed_url = :parent_feed_url "
-			"ORDER BY title");
-	channelsSelector.bindValue (":parent_feed_url", feed->URL_);
-	if (!channelsSelector.exec ())
+	ChannelsShortSelector_.bindValue (":parent_feed_url", feedURL);
+	if (!ChannelsShortSelector_.exec ())
 	{
-		DumpError (channelsSelector);
+		DumpError (ChannelsShortSelector_);
 		return;
 	}
 
-	while (channelsSelector.next ())
+	while (ChannelsShortSelector_.next ())
 	{
-		Channel_ptr channel (new Channel);
+		int unread = 0;
+		QString title = ChannelsShortSelector_.value (0).toString ();
 
-		channel->Link_ = channelsSelector.value (0).toString ();
-		channel->Title_ = channelsSelector.value (1).toString ();
-		channel->Description_ = channelsSelector.value (2).toString ();
-		channel->LastBuild_ = channelsSelector.value (3).toDateTime ();
-		channel->Tags_ = channelsSelector.value (4).toString ().split (' ',
-				QString::SkipEmptyParts);
-		channel->Language_ = channelsSelector.value (5).toString ();
-		channel->Author_ = channelsSelector.value (6).toString ();
-		channel->PixmapURL_ = channelsSelector.value (7).toString ();
-		channel->Pixmap_ = UnserializePixmap (channelsSelector
-				.value (8).toByteArray ());
-		channel->Favicon_ = UnserializePixmap (channelsSelector
-				.value (9).toByteArray ());
+		UnreadItemsCounter_.bindValue (":parents_hash", feedURL + title);
+		if (!UnreadItemsCounter_.exec () || !UnreadItemsCounter_.next ())
+			DumpError (UnreadItemsCounter_);
+		else
+			unread = UnreadItemsCounter_.value (0).toInt ();
 
-		GetItems (channel, feed->URL_);
-
-		feed->Channels_.push_back (channel);
+		ChannelShort sh =
+		{
+			title,
+			ChannelsShortSelector_.value (1).toString ().split (' ',
+					QString::SkipEmptyParts),
+			ChannelsShortSelector_.value (2).toDateTime (),
+			unread
+		};
+		shorts.push_back (sh);
 	}
 }
 
-void SQLStorageBackend::GetItems (Channel_ptr channel, const QString& url) const
+Channel_ptr SQLStorageBackend::GetChannel (const QString& title,
+		const QString& feedParent) const
 {
-	QSqlQuery itemsSelector;
-	itemsSelector.prepare ("SELECT "
-			"title, "
-			"url, "
-			"description, "
-			"author, "
-			"category, "
-			"guid, "
-			"pub_date, "
-			"unread, "
-			"num_comments, "
-			"comments_url "
-			"FROM items "
-			"WHERE parents_hash = :parents_hash "
-			"ORDER BY pub_date DESC");
-	itemsSelector.bindValue (":parents_hash", url + channel->Title_);
-	if (!itemsSelector.exec ())
+	ChannelsFullSelector_.bindValue (":title", title);
+	ChannelsFullSelector_.bindValue (":parent_feed_url", feedParent);
+	if (ChannelsFullSelector_.exec () || !ChannelsFullSelector_.next ())
 	{
-		DumpError (itemsSelector);
+		DumpError (ChannelsFullSelector_);
+		return Channel_ptr ();
+	}
+
+	Channel_ptr channel (new Channel);
+
+	channel->Link_ = ChannelsFullSelector_.value (0).toString ();
+	channel->Title_ = ChannelsFullSelector_.value (1).toString ();
+	channel->Description_ = ChannelsFullSelector_.value (2).toString ();
+	channel->LastBuild_ = ChannelsFullSelector_.value (3).toDateTime ();
+	channel->Tags_ = ChannelsFullSelector_.value (4).toString ().split (' ',
+			QString::SkipEmptyParts);
+	channel->Language_ = ChannelsFullSelector_.value (5).toString ();
+	channel->Author_ = ChannelsFullSelector_.value (6).toString ();
+	channel->PixmapURL_ = ChannelsFullSelector_.value (7).toString ();
+	channel->Pixmap_ = UnserializePixmap (ChannelsFullSelector_
+			.value (8).toByteArray ());
+	channel->Favicon_ = UnserializePixmap (ChannelsFullSelector_
+			.value (9).toByteArray ());
+
+	return channel;
+}
+
+void SQLStorageBackend::GetItems (items_shorts_t& shorts, const QString& parentsHash) const
+{
+	ItemsShortSelector_.bindValue (":parents_hash", parentsHash);
+
+	if (!ItemsShortSelector_.exec ())
+	{
+		DumpError (ItemsShortSelector_);
 		return;
 	}
 
-	while (itemsSelector.next ())
+	while (ItemsShortSelector_.next ())
 	{
-		Item_ptr item (new Item);
+		ItemShort sh =
+		{
+			ItemsShortSelector_.value (0).toString (),
+			ItemsShortSelector_.value (1).toString (),
+			ItemsShortSelector_.value (2).toDateTime (),
+			ItemsShortSelector_.value (3).toBool ()
+		};
 
-		item->Title_ = itemsSelector.value (0).toString ();
-		item->Link_ = itemsSelector.value (1).toString ();
-		item->Description_ = itemsSelector.value (2).toString ();
-		item->Author_ = itemsSelector.value (3).toString ();
-		item->Categories_ = itemsSelector.value (4).toString ().split ("<<<");
-		item->Guid_ = itemsSelector.value (5).toString ();
-		item->PubDate_ = itemsSelector.value (6).toDateTime ();
-		item->Unread_ = itemsSelector.value (7).toBool ();
-		item->NumComments_ = itemsSelector.value (8).toInt ();
-		item->CommentsLink_ = itemsSelector.value (9).toString ();
-
-		channel->Items_.push_back (item);
+		shorts.push_back (sh);
 	}
+}
+
+Item_ptr SQLStorageBackend::GetItem (const QString& title,
+		const QString& link, const QString& hash) const
+{
+	ItemsFullSelector_.bindValue (":parents_hash", hash);
+	ItemsFullSelector_.bindValue (":title", title);
+	ItemsFullSelector_.bindValue (":link", link);
+	if (!ItemsFullSelector_.exec () || !ItemsFullSelector_.next ())
+	{
+		DumpError (ItemsFullSelector_);
+		return Item_ptr ();
+	}
+
+	Item_ptr item (new Item);
+
+	item->Title_ = ItemsFullSelector_.value (0).toString ();
+	item->Link_ = ItemsFullSelector_.value (1).toString ();
+	item->Description_ = ItemsFullSelector_.value (2).toString ();
+	item->Author_ = ItemsFullSelector_.value (3).toString ();
+	item->Categories_ = ItemsFullSelector_.value (4).toString ().split ("<<<");
+	item->Guid_ = ItemsFullSelector_.value (5).toString ();
+	item->PubDate_ = ItemsFullSelector_.value (6).toDateTime ();
+	item->Unread_ = ItemsFullSelector_.value (7).toBool ();
+	item->NumComments_ = ItemsFullSelector_.value (8).toInt ();
+	item->CommentsLink_ = ItemsFullSelector_.value (9).toString ();
+
+	return item;
 }
 
 void SQLStorageBackend::AddFeed (Feed_ptr feed)
