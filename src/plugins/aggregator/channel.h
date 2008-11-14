@@ -21,7 +21,7 @@ struct Channel
     QString PixmapURL_;
     QPixmap Pixmap_;
 	QPixmap Favicon_;
-    items_container_t Items_;
+	items_container_t Items_;
 
     Channel ();
     Channel (const Channel&);
@@ -32,8 +32,17 @@ struct Channel
 	void Equalify (const Channel&);
 };
 
+struct ChannelShort
+{
+	QString Title_;
+	QString Tags_;
+	QDateTime LastBuild_;
+	int Unread_;
+};
+
 typedef boost::shared_ptr<Channel> Channel_ptr;
 typedef std::vector<Channel_ptr> channels_container_t;
+typedef std::vector<ChannelShort> channels_shorts_t;
 
 bool operator== (const Channel&, const Channel&);
 QDataStream& operator<< (QDataStream&, const Channel&);

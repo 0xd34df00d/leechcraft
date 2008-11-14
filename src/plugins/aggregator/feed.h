@@ -21,6 +21,7 @@ struct Feed
 
 typedef boost::shared_ptr<Feed> Feed_ptr;
 typedef std::vector<Feed_ptr> feeds_container_t;
+typedef std::vector<QString> feeds_urls_t;
 
 Q_DECLARE_METATYPE (Feed);
 

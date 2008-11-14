@@ -21,8 +21,17 @@ struct Item
 	QString CommentsLink_;
 };
 
+struct ItemShort
+{
+	QString Title_;
+	QString Link_;
+	QDateTime PubDate_;
+	bool Unread_;
+};
+
 typedef boost::shared_ptr<Item> Item_ptr;
 typedef std::vector<Item_ptr> items_container_t;
+typedef std::vector<ItemShort> items_shorts_t;
 
 struct ItemComparator
 {
