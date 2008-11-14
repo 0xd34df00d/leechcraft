@@ -85,6 +85,24 @@ int QToWAbstractItemModelAdaptor::rowCount (const Wt::WModelIndex& parent) const
 	return Model_->rowCount (Convert (parent));
 }
 
+int QToWAbstractItemModelAdaptor::flags (const Wt::WModelIndex& index) const
+{
+	Qt::ItemFlags flags = Model_->flags (Convert (index));
+	Wt::ItemFlag result;
+	if (flags & Qt::ItemIsSelectable)
+		result = static_cast<Wt::ItemFlag> (result | Wt::ItemIsSelectable);
+	if (flags & Qt::ItemIsEditable)
+		result = static_cast<Wt::ItemFlag> (result | Wt::ItemIsEditable);
+	if (flags & Qt::ItemIsUserCheckable)
+		result = static_cast<Wt::ItemFlag> (result | Wt::ItemIsUserCheckable);
+	return result;
+}
+
+bool QToWAbstractItemModelAdaptor::hasChildren (const Wt::WModelIndex& index) const
+{
+	return Model_->hasChildren (Convert (index));
+}
+
 Wt::WModelIndex QToWAbstractItemModelAdaptor::parent (const Wt::WModelIndex& i) const
 {
 	return Indexes_ [static_cast<TreeItem*> (i.internalPointer ())->Parent ()];

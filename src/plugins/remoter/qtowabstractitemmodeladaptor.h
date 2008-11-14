@@ -27,6 +27,8 @@ public:
 
 	int columnCount (const Wt::WModelIndex& = Wt::WModelIndex ()) const;
 	int rowCount (const Wt::WModelIndex& = Wt::WModelIndex ()) const;
+	int flags (const Wt::WModelIndex&) const;
+	bool hasChildren (const Wt::WModelIndex&) const;
 	Wt::WModelIndex parent (const Wt::WModelIndex&) const;
 	boost::any data (const Wt::WModelIndex&, int = Wt::DisplayRole) const;
 	boost::any headerData (int, Wt::Orientation, int) const;
