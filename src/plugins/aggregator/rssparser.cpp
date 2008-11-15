@@ -35,7 +35,8 @@ channels_container_t RSSParser::Parse (const channels_container_t& channels,
         Channel_ptr newChannel = newes [i];
         int position = -1;
         for (size_t j = 0; j < channels.size (); ++j)
-            if (*channels [j] == *newChannel)
+            if (channels [j]->Title_ == newChannel->Title_ &&
+					channels [j]->Link_ == newChannel->Link_)
             {
                 position = j;
                 break;

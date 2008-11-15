@@ -1,3 +1,6 @@
+#include <stdexcept>
+#include <numeric>
+#include <boost/bind.hpp>
 #include <QtDebug>
 #include <QImage>
 #include <QSettings>
@@ -7,8 +10,6 @@
 #include <QTemporaryFile>
 #include <QTimer>
 #include <QNetworkReply>
-#include <stdexcept>
-#include <boost/bind.hpp>
 #include <plugininterface/proxy.h>
 #include <plugininterface/tagscompletionmodel.h>
 #include "core.h"
@@ -744,7 +745,7 @@ void Core::handleJobFinished (int id)
 			StorageBackend_->GetItems (itemShorts,
 					pj.URL_ + channel2push->Title_);
 			for (items_shorts_t::const_iterator j = itemShorts.begin (),
-					endJ = itemShorts.end (); i != end; ++i)
+					endJ = itemShorts.end (); j != endJ; ++j)
 				channel2push->Items_.push_back (StorageBackend_->GetItem (j->Title_,
 							j->URL_, pj.URL_ + channel2push->Title_));
 
@@ -752,6 +753,8 @@ void Core::handleJobFinished (int id)
 		}
 
 		channels = parser->Parse (ourChannels, modifiedItems, doc);
+		qDebug () << ourChannels [0]->Items_.size ()
+				<< channels [0]->Items_.size ();
 		for (size_t i = 0; i < channels.size (); ++i)
 			channels [i]->ParentURL_ = pj.URL_;
 	}
@@ -889,6 +892,17 @@ void Core::saveSettings ()
 	SaveScheduled_ = false;
 }
 
+namespace
+{
+	struct UnreadAccumulator
+	{
+		int operator() (int i, const ItemShort& cs)
+		{
+			return cs.Unread_ ? i + 1: i;
+		}
+	};
+};
+
 void Core::handleChannelDataUpdated (Channel_ptr channel)
 {
 	ChannelShort cs = channel->ToShort ();
@@ -898,6 +912,8 @@ void Core::handleChannelDataUpdated (Channel_ptr channel)
 	{
 		CurrentItems_.clear ();
 		StorageBackend_->GetItems (CurrentItems_, cs.ParentURL_ + cs.Title_);
+		cs.Unread_ = std::accumulate (CurrentItems_.begin (),
+				CurrentItems_.end (), 0, UnreadAccumulator ());
 		ChannelsModel_->UpdateChannelData (cs);
 		emit dataChanged (index (0, 0), index (CurrentItems_.size (), 1));
 		UpdateUnreadItemsNumber ();
@@ -1056,7 +1072,6 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 {
 	QString emitString;
 
-	// Now handle what's modified
 	for (channels_container_t::const_iterator i = modifiedChannels.begin (),
 			end = modifiedChannels.end (); i != end; ++i)
 	{

@@ -698,6 +698,9 @@ void SQLStorageBackend::RemoveFeed (const QString& url)
 		error = true;
 	}
 
+	RemoveFeed_.finish ();
+	RemoveChannel_.finish ();
+
 	if (!(error ? DB_.rollback () : DB_.commit ()))
 	{
 		qWarning () << Q_FUNC_INFO << "failed to" << (error ? "rollback" : "commit");
@@ -906,7 +909,7 @@ bool SQLStorageBackend::RollItemsStorage (int version)
 		success = false;
 	}
 
-	qDebug () << Q_FUNC_INFO <<success ;
+	qDebug () << Q_FUNC_INFO << success;
 
 	return success ;
 }

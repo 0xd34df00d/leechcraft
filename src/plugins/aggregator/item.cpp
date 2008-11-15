@@ -27,13 +27,7 @@ bool ItemComparator::operator() (const Item_ptr& item)
 bool operator== (const Item& i1, const Item& i2)
 {
     return i1.Title_ == i2.Title_ &&
-        i1.Link_ == i2.Link_ &&
-        i1.Guid_ == i2.Guid_;
-}
-
-bool operator< (const Item& i1, const Item& i2)
-{
-    return i1.Guid_ < i2.Guid_;
+        i1.Link_ == i2.Link_;
 }
 
 QDataStream& operator<< (QDataStream& out, const Item& item)

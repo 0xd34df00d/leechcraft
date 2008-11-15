@@ -64,6 +64,10 @@ void Aggregator::Init ()
     Core::Instance ().DoDelayedInit ();
     ItemsFilterModel_.reset (new ItemsFilterModel (this));
     ItemsFilterModel_->setSourceModel (&Core::Instance ());
+	connect (&Core::Instance (),
+			SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
+			ItemsFilterModel_.get (),
+			SLOT (invalidate ()));
     ItemsFilterModel_->setFilterKeyColumn (0);
     ItemsFilterModel_->setDynamicSortFilter (true);
     ItemsFilterModel_->setFilterCaseSensitivity (Qt::CaseInsensitive);
