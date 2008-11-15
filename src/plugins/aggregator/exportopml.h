@@ -2,7 +2,7 @@
 #define EXPORTOPML_H
 #include <QDialog>
 #include "ui_exportopml.h"
-#include "feed.h"
+#include "channel.h"
 
 class ExportOPML : public QDialog
 {
@@ -19,7 +19,7 @@ public:
 	QString GetOwnerEmail () const;
 	std::vector<bool> GetSelectedFeeds () const;
 
-	void SetFeeds (const feeds_container_t&);
+	void SetFeeds (const channels_shorts_t&);
 private slots:
 	void on_File__textEdited (const QString&);
 	void on_Browse__released ();

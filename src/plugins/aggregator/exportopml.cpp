@@ -44,22 +44,18 @@ std::vector<bool> ExportOPML::GetSelectedFeeds () const
 	return result;
 }
 
-void ExportOPML::SetFeeds (const feeds_container_t& feeds)
+void ExportOPML::SetFeeds (const channels_shorts_t& channels)
 {
-	for (feeds_container_t::const_iterator feed = feeds.begin (),
-			feedsEnd = feeds.end (); feed != feedsEnd; ++feed)
-		for (channels_container_t::const_iterator channel =
-				(*feed)->Channels_.begin (),
-				chEnd = (*feed)->Channels_.end ();
-				channel != chEnd; ++channel)
-		{
-			QStringList strings;
-			strings << (*channel)->Title_ << (*feed)->URL_;
+	for (channels_shorts_t::const_iterator i = channels.begin (),
+			end = channels.end (); i != end; ++i)
+	{
+		QStringList strings;
+		strings << i->Title_ << i->ParentURL_;
 
-			QTreeWidgetItem *item =
-				new QTreeWidgetItem (Ui_.Channels_, strings);
-			item->setData (0, Qt::CheckStateRole, Qt::Checked);
-		}
+		QTreeWidgetItem *item =
+			new QTreeWidgetItem (Ui_.Channels_, strings);
+		item->setData (0, Qt::CheckStateRole, Qt::Checked);
+	}
 }
 
 void ExportOPML::on_File__textEdited (const QString&)

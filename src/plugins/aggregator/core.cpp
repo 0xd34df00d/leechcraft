@@ -66,6 +66,11 @@ Core::Core ()
 
 	StorageBackend_->Prepare ();
 
+	connect (StorageBackend_.get (),
+			SIGNAL (channelDataUpdated (Channel_ptr)),
+			this,
+			SLOT (handleChannelDataUpdated (Channel_ptr)));
+
 	ParserFactory::Instance ().Register (&RSS20Parser::Instance ());
 	ParserFactory::Instance ().Register (&Atom10Parser::Instance ());
 	ParserFactory::Instance ().Register (&RSS091Parser::Instance ());
@@ -81,21 +86,23 @@ Core::Core ()
 			this,
 			SIGNAL (channelDataUpdated ()));
 
-	feeds_container_t feeds;
+	feeds_urls_t feeds;
 	if (tablesOK)
-		StorageBackend_->GetFeeds (feeds);
-	for (feeds_container_t::const_iterator i = feeds.begin (),
-			end = feeds.end (); i < end; ++i)
+		StorageBackend_->GetFeedsURLs (feeds);
+	for (feeds_urls_t::const_iterator i = feeds.begin (),
+			end = feeds.end (); i != end; ++i)
 	{
-		Feeds_ [(*i)->URL_] = *i;
-		ChannelsModel_->AddFeed (*i);
+		channels_shorts_t channels;
+		StorageBackend_->GetChannels (channels, *i);
+		std::for_each (channels.begin (), channels.end (),
+				boost::bind (&ChannelsModel::AddChannel,
+					ChannelsModel_,
+					_1));
 	}
 
 	TagsCompletionModel_ = new TagsCompletionModel (this);
 	TagsCompletionModel_->UpdateTags (XmlSettingsManager::Instance ()->
 			Property ("GlobalTags", QStringList ("untagged")).toStringList ());
-
-	ActivatedChannel_ = 0;
 }
 
 Core& Core::Instance ()
@@ -158,7 +165,11 @@ void Core::SetProvider (QObject *provider, const QString& feature)
 
 void Core::AddFeed (const QString& url, const QStringList& tags)
 {
-	if (Feeds_.contains (url))
+	feeds_urls_t feeds;
+	StorageBackend_->GetFeedsURLs (feeds);
+	feeds_urls_t::const_iterator pos =
+		std::find (feeds.begin (), feeds.end (), url);
+	if (pos != feeds.end ())
 	{
 		emit error (tr ("This feed is already added"));
 		return;
@@ -185,8 +196,18 @@ void Core::AddFeed (const QString& url, const QStringList& tags)
 		file.close ();
 		file.remove ();
 	}
-	LeechCraft::DownloadParams params = { url, name };
-	PendingJob pj = { PendingJob::RFeedAdded, url, name, tags };
+	LeechCraft::DownloadParams params =
+	{
+		url,
+		name
+	};
+	PendingJob pj =
+	{
+		PendingJob::RFeedAdded,
+		url,
+		name,
+		tags
+	};
 	int id = iid->AddJob (params,
 			LeechCraft::Internal |
 			LeechCraft::Autostart |
@@ -200,125 +221,53 @@ void Core::RemoveFeed (const QModelIndex& index)
 {
 	if (!index.isValid ())
 		return;
-	Channel_ptr channel = ChannelsModel_->GetChannelForIndex (index);
+	ChannelShort channel = ChannelsModel_->GetChannelForIndex (index);
 
-	QString feedURL = FindFeedForChannel (channel);
+	QString feedURL = channel.ParentURL_;
 	if (feedURL.isEmpty ())
 	{
 		qWarning () << Q_FUNC_INFO << "could not find feed for channel" ;
 		return;
 	}
 
-	for (size_t i = 0, size = Feeds_ [feedURL]->Channels_.size (); i < size; ++i)
-		ChannelsModel_->RemoveChannel (Feeds_ [feedURL]->Channels_ [i]);
-	StorageBackend_->RemoveFeed (Feeds_ [feedURL]);
-	Feeds_.remove (feedURL);
+	channels_shorts_t shorts;
+	StorageBackend_->GetChannels (shorts, feedURL);
 
-	if (channel.get () == ActivatedChannel_)
+	for (size_t i = 0, size = shorts.size (); i < size; ++i)
+		ChannelsModel_->RemoveChannel (shorts [i]);
+	StorageBackend_->RemoveFeed (feedURL);
+
+	if (channel.Link_ == CurrentChannelHash_.first && 
+			channel.Title_ == CurrentChannelHash_.second)
 	{
-		ActivatedChannel_ = 0;
+		CurrentChannelHash_ = qMakePair (QString (), QString ());
 		reset ();
 	}
-
-	UpdateUnreadItemsNumber ();
-	scheduleSave ();
 }
 
 void Core::Activated (const QModelIndex& index)
 {
-	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
-		return;
-
-	Item_ptr item = ActivatedChannel_->Items_ [index.row ()];
-
-	QString URL = item->Link_;
-	item->Unread_ = false;
-	StorageBackend_->UpdateItem (item,
-			FindFeedForChannel (ActivatedChannel_) + ActivatedChannel_->Title_);
-	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
-	UpdateUnreadItemsNumber ();
-	OpenLink (URL);
+	OpenLink (CurrentItems_ [index.row ()].URL_);
 }
 
 void Core::FeedActivated (const QModelIndex& index)
 {
-	OpenLink (ChannelsModel_->GetChannelForIndex (index)->Link_);
+	OpenLink (ChannelsModel_->GetChannelForIndex (index).Link_);
 }
 
 void Core::Selected (const QModelIndex& index)
 {
-	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
-		return;
-
-	Item_ptr item = ActivatedChannel_->Items_ [index.row ()];
-	item->Unread_ = false;
+	ItemShort item = CurrentItems_ [index.row ()];
+	item.Unread_ = false;
 	StorageBackend_->UpdateItem (item,
-			FindFeedForChannel (ActivatedChannel_) + ActivatedChannel_->Title_);
-	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
-	UpdateUnreadItemsNumber ();
+			CurrentChannelHash_.first + CurrentChannelHash_.second);
 }
 
-QString Core::GetDescription (const QModelIndex& index) const
+Item_ptr Core::GetItem (const QModelIndex& index) const
 {
-	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
-		return QString ();
-
-	Item_ptr item = ActivatedChannel_->Items_ [index.row ()];
-	return item->Description_;
-}
-
-QString Core::GetAuthor (const QModelIndex& index) const
-{
-	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
-		return QString ();
-
-	Item_ptr item = ActivatedChannel_->Items_ [index.row ()];
-	return item->Author_;
-}
-
-QString Core::GetCategory (const QModelIndex& index) const
-{
-	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
-		return QString ();
-
-	Item_ptr item = ActivatedChannel_->Items_ [index.row ()];
-	return item->Categories_.join ("; ");
-}
-
-QString Core::GetLink (const QModelIndex& index) const
-{
-	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
-		return QString ();
-
-	Item_ptr item = ActivatedChannel_->Items_ [index.row ()];
-	return item->Link_;
-}
-
-QDateTime Core::GetPubDate (const QModelIndex& index) const
-{
-	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
-		return QDateTime ();
-
-	Item_ptr item = ActivatedChannel_->Items_ [index.row ()];
-	return item->PubDate_;
-}
-
-int Core::GetCommentsNumber (const QModelIndex& index) const
-{
-	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
-		return -1;
-
-	Item_ptr item = ActivatedChannel_->Items_ [index.row ()];
-	return item->NumComments_;
-}
-
-QString Core::GetCommentsRSS (const QModelIndex& index) const
-{
-	if (!ActivatedChannel_ || static_cast<int> (ActivatedChannel_->Items_.size ()) <= index.row ())
-		return QString ();
-
-	Item_ptr item = ActivatedChannel_->Items_ [index.row ()];
-	return item->CommentsLink_;
+	ItemShort item = CurrentItems_ [index.row ()];
+	return StorageBackend_->GetItem (item.Title_, item.URL_,
+			CurrentChannelHash_.first + CurrentChannelHash_.second);
 }
 
 QAbstractItemModel* Core::GetChannelsModel ()
@@ -338,100 +287,66 @@ void Core::UpdateTags (const QStringList& tags)
 
 void Core::MarkItemAsUnread (const QModelIndex& i)
 {
-	if (!ActivatedChannel_ || !i.isValid ())
-		return;
-
-	ActivatedChannel_->Items_ [i.row ()]->Unread_ = true;
-	StorageBackend_->UpdateItem (ActivatedChannel_->Items_ [i.row ()],
-			FindFeedForChannel (ActivatedChannel_) + ActivatedChannel_->Title_);
-	ChannelsModel_->UpdateChannelData (ActivatedChannel_);
-	emit dataChanged (index (i.row (), 0), index (i.row (), 1));
-	UpdateUnreadItemsNumber ();
+	ItemShort is = CurrentItems_ [i.row ()];
+	is.Unread_ = true;
+	StorageBackend_->UpdateItem (CurrentItems_ [i.row ()],
+			CurrentChannelHash_.first + CurrentChannelHash_.second);
 }
 
 bool Core::IsItemRead (int item) const
 {
-	if (!ActivatedChannel_ ||
-			static_cast<int> (ActivatedChannel_->Items_.size ()) <= item)
-		return true;
-	else
-		return !ActivatedChannel_->Items_ [item]->Unread_;
+	return !CurrentItems_ [item].Unread_;
 }
 
 void Core::MarkChannelAsRead (const QModelIndex& i)
 {
-	if (!ActivatedChannel_ || !i.isValid ())
-		return;
-
-	ChannelsModel_->MarkChannelAsRead (i);
-	if (ChannelsModel_->GetChannelForIndex (i).get () == ActivatedChannel_)
-		emit dataChanged (index (0, 0), index (ActivatedChannel_->Items_.size () - 1, 1));
-
-	QString hash = ChannelsModel_->GetChannelForIndex (i)->Link_ +
-		ChannelsModel_->GetChannelForIndex (i)->Title_;
-	StorageBackend_->ToggleChannelUnread (hash, false);
-
-	UpdateUnreadItemsNumber ();
+	MarkChannel (i, false);
 }
 
 void Core::MarkChannelAsUnread (const QModelIndex& i)
 {
-	if (!ActivatedChannel_ || !i.isValid ())
-		return;
-
-	ChannelsModel_->MarkChannelAsUnread (i);
-	if (ChannelsModel_->GetChannelForIndex (i).get () == ActivatedChannel_)
-		emit dataChanged (index (0, 0), index (ActivatedChannel_->Items_.size () - 1, 1));
-
-	QString hash = ChannelsModel_->GetChannelForIndex (i)->Link_ +
-		ChannelsModel_->GetChannelForIndex (i)->Title_;
-	StorageBackend_->ToggleChannelUnread (hash, true);
-
-	UpdateUnreadItemsNumber ();
+	MarkChannel (i, true);
 }
 
 QStringList Core::GetTagsForIndex (int i) const
 {
-	Channel_ptr channel = ChannelsModel_->GetChannelForIndex (ChannelsModel_->index (i, 0));
-	if (channel)
-		return channel->Tags_;
-	else
-		return QStringList ();
+	return ChannelsModel_->
+		GetChannelForIndex (ChannelsModel_->index (i, 0)).Tags_;
 }
 
 Core::ChannelInfo Core::GetChannelInfo (const QModelIndex& i) const
 {
-	Channel_ptr channel = ChannelsModel_->GetChannelForIndex (i);
+	ChannelShort channel = ChannelsModel_->GetChannelForIndex (i);
 	ChannelInfo ci;
-	if (channel)
-	{
-		ci.Link_ = channel->Link_;
-		ci.Description_ = channel->Description_;
-		ci.Author_ = channel->Author_;
-	}
+	ci.Link_ = channel.Link_;
+
+	Channel_ptr rc = StorageBackend_->
+		GetChannel (channel.Title_, channel.ParentURL_);
+	ci.Description_ = rc->Description_;
+	ci.Author_ = rc->Author_;
 	return ci;
 }
 
 QPixmap Core::GetChannelPixmap (const QModelIndex& i) const
 {
-	Channel_ptr channel = ChannelsModel_->GetChannelForIndex (i);
-	if (channel)
-		return channel->Pixmap_;
-	else
-		return QPixmap ();
+	ChannelShort channel = ChannelsModel_->GetChannelForIndex (i);
+
+	Channel_ptr rc = StorageBackend_->
+		GetChannel (channel.Title_, channel.ParentURL_);
+	return rc->Pixmap_;
 }
 
 void Core::SetTagsForIndex (const QString& tags, const QModelIndex& index)
 {
-	Channel_ptr channel = ChannelsModel_->GetChannelForIndex (index);
-	channel->Tags_ = tags.split (' ');
-	StorageBackend_->UpdateChannel (channel, FindFeedForChannel (channel));
+	ChannelShort channel = ChannelsModel_->GetChannelForIndex (index);
+	channel.Tags_ = tags.split (' ');
+	StorageBackend_->UpdateChannel (channel, channel.ParentURL_);
 }
 
 void Core::UpdateFeed (const QModelIndex& index)
 {
-	Channel_ptr channel = ChannelsModel_->GetChannelForIndex (index);
-	QString url = FindFeedForChannel (channel);
+	ChannelShort channel = ChannelsModel_->GetChannelForIndex (index);
+	QString url = channel.ParentURL_;
 	if (url.isEmpty ())
 	{
 		qWarning () << Q_FUNC_INFO << "could not found feed for index" << index;
@@ -485,8 +400,9 @@ void Core::AddToItemBucket (const QModelIndex& index) const
 	if (!index.isValid () || index.row () >= rowCount ())
 		return;
 
-
-	ItemModel_->AddItem (ActivatedChannel_->Items_ [index.row ()]);
+	ItemShort is = CurrentItems_ [index.row ()];
+	ItemModel_->AddItem (StorageBackend_->GetItem (is.Title_, is.URL_,
+				CurrentChannelHash_.first + CurrentChannelHash_.second));
 }
 
 void Core::AddFromOPML (const QString& filename,
@@ -552,19 +468,21 @@ void Core::ExportToOPML (const QString& where,
 		const QString& ownerEmail,
 		const std::vector<bool>& mask) const
 {
-	feeds_container_t feeds = GetFeeds ();
+	channels_shorts_t channels;
+	GetChannels (channels);
 
 	for (std::vector<bool>::const_iterator begin = mask.begin (),
 			i = mask.end () - 1; i >= begin; --i)
 		if (!*i)
 		{
 			size_t distance = std::distance (mask.begin (), i);
-			feeds_container_t::iterator eraser = feeds.begin ();
+			channels_shorts_t::iterator eraser = channels.begin ();
 			std::advance (eraser, distance);
-			feeds.erase (eraser);
+			channels.erase (eraser);
 		}
 
 	OPMLWriter writer;
+	/*
 	QString data = writer.Write (feeds, title, owner, ownerEmail);
 
 	QFile f (where);
@@ -576,11 +494,7 @@ void Core::ExportToOPML (const QString& where,
 
 	f.write (data.toUtf8 ());
 	f.close ();
-}
-
-feeds_container_t Core::GetFeeds () const
-{
-	return Feeds_.values ().toVector ().toStdVector ();
+	*/
 }
 
 ItemModel* Core::GetItemModel () const
@@ -590,16 +504,14 @@ ItemModel* Core::GetItemModel () const
 
 void Core::SubscribeToComments (const QModelIndex& index)
 {
-	QString commentRSS = GetCommentsRSS (index);
-	QStringList tags = ActivatedChannel_->Tags_;
+	Item_ptr it = GetItem (index);
+	QString commentRSS = it->CommentsLink_;
+	QStringList tags = it->Categories_;
 
 	QStringList addTags = XmlSettingsManager::Instance ()->
 		property ("CommentsTags").toString ().split (' ',
 				QString::SkipEmptyParts);
-	if (addTags.size ())
-		AddFeed (commentRSS, tags + addTags);
-	else
-		AddFeed (commentRSS, tags);
+	AddFeed (commentRSS, tags + addTags);
 }
 
 void Core::OpenLink (const QString& url)
@@ -627,6 +539,17 @@ QWebView* Core::CreateWindow ()
 	return result;
 }
 
+void Core::GetChannels (channels_shorts_t& channels) const
+{
+	feeds_urls_t urls;
+	StorageBackend_->GetFeedsURLs (urls);
+	std::for_each (urls.begin (), urls.end (),
+			boost::bind (&StorageBackend::GetChannels,
+				StorageBackend_.get (),
+				channels,
+				_1));
+}
+
 int Core::columnCount (const QModelIndex&) const
 {
 	return ItemHeaders_.size ();
@@ -634,7 +557,7 @@ int Core::columnCount (const QModelIndex&) const
 
 QVariant Core::data (const QModelIndex& index, int role) const
 {
-	if (!index.isValid () || !ActivatedChannel_ || index.row () >= rowCount ())
+	if (!index.isValid () || index.row () >= rowCount ())
 		return QVariant ();
 
 	if (role == Qt::DisplayRole)
@@ -642,15 +565,15 @@ QVariant Core::data (const QModelIndex& index, int role) const
 		switch (index.column ())
 		{
 			case 0:
-				return ActivatedChannel_->Items_ [index.row ()]->Title_;
+				return CurrentItems_ [index.row ()].Title_;
 			case 1:
-				return ActivatedChannel_->Items_ [index.row ()]->PubDate_;
+				return CurrentItems_ [index.row ()].PubDate_;
 			default:
 				return QVariant ();
 		}
 	}
 	else if (role == Qt::ForegroundRole)
-		return ActivatedChannel_->Items_ [index.row ()]->Unread_ ? Qt::red : Qt::black;
+		return CurrentItems_ [index.row ()].Unread_ ? Qt::red : Qt::black;
 	else
 		return QVariant ();
 }
@@ -688,18 +611,14 @@ QModelIndex Core::parent (const QModelIndex&) const
 
 int Core::rowCount (const QModelIndex& parent) const
 {
-	if (ActivatedChannel_ && !parent.isValid ())
-		return ActivatedChannel_->Items_.size ();
-	else
-		return 0;
+	return CurrentItems_.size ();
 }
 
 void Core::currentChannelChanged (const QModelIndex& index)
 {
-	Channel_ptr ch = ChannelsModel_->GetChannelForIndex (index);
-	if (!ch)
-		return;
-	ActivatedChannel_ = ch.get ();
+	ChannelShort ch = ChannelsModel_->GetChannelForIndex (index);
+	CurrentChannelHash_ = qMakePair<QString, QString> (ch.ParentURL_,
+			ch.Title_);
 	reset ();
 }
 
@@ -750,6 +669,7 @@ void Core::handleJobFinished (int id)
 		return;
 	PendingJob pj = PendingJobs_ [id];
 	PendingJobs_.remove (id);
+
 	FileRemoval file (pj.Filename_);
 	if (!file.open (QIODevice::ReadOnly))
 	{
@@ -761,12 +681,20 @@ void Core::handleJobFinished (int id)
 		emit error (tr ("Downloaded file from url %1 has null size!").arg (pj.URL_));
 		return;
 	}
-	if (pj.Role_ == PendingJob::RFeedUpdated && !Feeds_.contains (pj.URL_))
+
+	feeds_urls_t feeds;
+	StorageBackend_->GetFeedsURLs (feeds);
+	feeds_urls_t::const_iterator pos =
+		std::find (feeds.begin (), feeds.end (), pj.URL_);
+
+	if (pj.Role_ == PendingJob::RFeedUpdated &&
+			pos == feeds.end ())
 	{
 		emit error (tr ("Feed with url %1 not found.").arg (pj.URL_));
 		return;
 	}
-	channels_container_t channels, modifiedItems;
+
+	channels_container_t channels, modifiedItems, ourChannels;
 	if (pj.Role_ != PendingJob::RFeedExternalData)
 	{
 		QByteArray data = file.readAll ();
@@ -794,33 +722,51 @@ void Core::handleJobFinished (int id)
 					.arg (pj.URL_));
 			return;
 		}
-
-		if (pj.Role_ == PendingJob::RFeedAdded)
+		
+		// We should form the list of already existing channels
+		channels_shorts_t shorts;
+		StorageBackend_->GetChannels (shorts, pj.URL_);
+		for (channels_shorts_t::const_iterator i = shorts.begin (),
+				end = shorts.end (); i != end; ++i)
 		{
-			Feed_ptr feed (new Feed);
-			feed->URL_ = pj.URL_;
-			Feeds_ [pj.URL_] = feed;
+			Channel_ptr channel2push = StorageBackend_->
+				GetChannel (i->Title_, pj.URL_);
+			// And we shouldn't forget about their items.
+			items_shorts_t itemShorts;
+			StorageBackend_->GetItems (itemShorts,
+					pj.URL_ + channel2push->Title_);
+			for (items_shorts_t::const_iterator j = itemShorts.begin (),
+					endJ = itemShorts.end (); i != end; ++i)
+				channel2push->Items_.push_back (StorageBackend_->GetItem (j->Title_,
+							j->URL_, pj.URL_ + channel2push->Title_));
+
+			ourChannels.push_back (channel2push);
 		}
 
-		channels = parser->Parse (Feeds_ [pj.URL_]->Channels_,
-				modifiedItems, doc);
+		channels = parser->Parse (ourChannels, modifiedItems, doc);
+		for (size_t i = 0; i < channels.size (); ++i)
+			channels [i]->ParentURL_ = pj.URL_;
 	}
 	QString emitString;
 	if (pj.Role_ == PendingJob::RFeedAdded)
 	{
-		Feeds_ [pj.URL_]->Channels_ = channels;
 		for (size_t i = 0; i < channels.size (); ++i)
 		{
 			channels [i]->Tags_ = pj.Tags_;
 			FetchPixmap (channels [i]);
 			FetchFavicon (channels [i]);
+			ChannelsModel_->AddChannel (channels [i]->ToShort ());
 		}
-		ChannelsModel_->AddFeed (Feeds_ [pj.URL_]);
+
+		Feed_ptr feed (new Feed ());
+		feed->Channels_ = channels;
+		feed->URL_ = pj.URL_;
 		TagsCompletionModel_->UpdateTags (pj.Tags_);
-		StorageBackend_->AddFeed (Feeds_ [pj.URL_]);
+		StorageBackend_->AddFeed (feed);
 	}
 	else if (pj.Role_ == PendingJob::RFeedUpdated)
-		emitString += HandleFeedUpdated (channels, modifiedItems, pj);
+		emitString += HandleFeedUpdated (channels, modifiedItems,
+				ourChannels, pj);
 	else if (pj.Role_ == PendingJob::RFeedExternalData)
 		HandleExternalData (pj.URL_, file);
 	UpdateUnreadItemsNumber ();
@@ -851,12 +797,14 @@ void Core::updateFeeds ()
 		emit error (tr ("Strange, but no suitable provider found"));
 		return;
 	}
-	QList<QString> urls = Feeds_.keys ();
-	for (int i = 0; i < urls.size (); ++i)
+	feeds_urls_t urls;
+	StorageBackend_->GetFeedsURLs (urls);
+	for (feeds_urls_t::const_iterator i = urls.begin (),
+			end = urls.end (); i != end; ++i)
 	{
-		if (!isd->CouldDownload (urls.at (i), LeechCraft::Autostart))
+		if (!isd->CouldDownload (*i, LeechCraft::Autostart))
 		{
-			emit error (tr ("Could not handle URL %1").arg (urls.at (i)));
+			emit error (tr ("Could not handle URL %1").arg (*i));
 			continue;
 		}
 
@@ -868,13 +816,15 @@ void Core::updateFeeds ()
 			file.close ();
 			file.remove ();
 		}
-		LeechCraft::DownloadParams params = {
-			urls.at (i),
+		LeechCraft::DownloadParams params =
+		{
+			*i,
 			filename
 		};
-		PendingJob pj = {
+		PendingJob pj =
+		{
 			PendingJob::RFeedUpdated,
-			urls.at (i),
+			*i,
 			filename,
 			QStringList ()
 		};
@@ -929,6 +879,23 @@ void Core::saveSettings ()
 	SaveScheduled_ = false;
 }
 
+void Core::handleChannelDataUpdated (Channel_ptr channel)
+{
+	ChannelShort cs = channel->ToShort ();
+
+	items_shorts_t items;
+	StorageBackend_->GetItems (items, cs.ParentURL_ + cs.Title_);
+
+	if (cs.ParentURL_ == CurrentChannelHash_.first &&
+			cs.Title_ == CurrentChannelHash_.second)
+		emit dataChanged (index (0, 0),
+				index (items.size (), 1));
+
+	ChannelsModel_->UpdateChannelData (channel->ToShort ());
+
+	UpdateUnreadItemsNumber ();
+}
+
 void Core::updateIntervalChanged ()
 {
 	UpdateTimer_->setInterval (XmlSettingsManager::Instance ()->property ("UpdateInterval").toInt () * 60 * 1000);
@@ -944,65 +911,9 @@ void Core::handleSslError (QNetworkReply *reply)
 	reply->ignoreSslErrors ();
 }
 
-QString Core::FindFeedForChannel (const Channel_ptr& channel) const
-{
-	for (QMap<QString, Feed_ptr>::const_iterator i = Feeds_.begin ();
-			i != Feeds_.end (); ++i)
-	{
-		channels_container_t::const_iterator j =
-			std::find (i.value ()->Channels_.begin (),
-					i.value ()->Channels_.end (), channel);
-		if (j != i.value ()->Channels_.end ())
-			return i.key ();
-	}
-	return QString ();
-}
-
-namespace
-{
-	struct RawChannelFinder
-	{
-		const Channel *Channel_;
-
-		RawChannelFinder (const Channel *ch)
-		: Channel_ (ch)
-		{
-		}
-
-		bool operator() (const Channel_ptr& ch)
-		{
-			return Channel_ == ch.get ();
-		}
-	};
-};
-
-QString Core::FindFeedForChannel (const Channel* channel) const
-{
-	for (QMap<QString, Feed_ptr>::const_iterator i = Feeds_.begin ();
-			i != Feeds_.end (); ++i)
-	{
-		channels_container_t::const_iterator j =
-			std::find_if (i.value ()->Channels_.begin (),
-					i.value ()->Channels_.end (),
-					RawChannelFinder (channel));
-		if (j != i.value ()->Channels_.end ())
-			return i.key ();
-	}
-	return QString ();
-}
-
 void Core::UpdateUnreadItemsNumber () const
 {
-	int result = 0;
-	for (QMap<QString, Feed_ptr>::const_iterator i = Feeds_.begin ();
-			i != Feeds_.end (); ++i)
-		for (size_t j = 0, endJSize = i.value ()->Channels_.size ();
-				j < endJSize; ++j)
-			for (size_t k = 0,
-					endKSize = i.value ()->Channels_ [j]->Items_.size ();
-				   k < endKSize; ++k)
-				result += i.value ()->Channels_ [j]->Items_ [k]->Unread_;
-	emit unreadNumberChanged (result);
+	emit unreadNumberChanged (StorageBackend_->GetUnreadItemsNumber ());
 }
 
 void Core::FetchPixmap (const Channel_ptr& channel)
@@ -1073,54 +984,65 @@ void Core::HandleExternalData (const QString& url, const QFile& file)
 			case ExternalData::TImage:
 				data.RelatedChannel_->Pixmap_ =
 					QPixmap::fromImage (QImage (file.fileName ()));
-				ChannelsModel_->UpdateChannelData (data.RelatedChannel_);
 				break;
 			case ExternalData::TIcon:
 				data.RelatedChannel_->Favicon_ =
-					QPixmap::fromImage (QImage (file.fileName ())).scaled (16, 16);;
-				ChannelsModel_->UpdateChannelData (data.RelatedChannel_);
+					QPixmap::fromImage (QImage (file.fileName ()))
+					.scaled (16, 16);;
 				break;
 		}
 		StorageBackend_->UpdateChannel (data.RelatedChannel_,
-				FindFeedForChannel (data.RelatedChannel_));
+				data.RelatedChannel_->ParentURL_);
 	}
 	else if (data.RelatedFeed_)
 	{
 	}
 }
 
+namespace
+{
+	struct ChannelFinder
+	{
+		const Channel_ptr& Channel_;
+
+		ChannelFinder (const Channel_ptr& channel)
+		: Channel_ (channel)
+		{
+		}
+
+		bool operator() (const Channel_ptr& obj)
+		{
+			return *Channel_ == *obj;
+		}
+	};
+};
+
 QString Core::HandleFeedUpdated (const channels_container_t& channels,
 		const channels_container_t& modifiedChannels,
+		const channels_container_t& ourChannels,
 		const Core::PendingJob& pj)
 {
 	QString emitString;
 
-	ChannelsModel_->Update (channels);
+	// Now handle what's modified
 	for (channels_container_t::const_iterator i = modifiedChannels.begin (),
 			end = modifiedChannels.end (); i != end; ++i)
 	{
-		int position = -1;
-		for (size_t j = 0,
-				endJSize = Feeds_ [pj.URL_]->Channels_.size ();
-				j < endJSize; ++j)
-			if (*Feeds_ [pj.URL_]->Channels_ [j] == *(*i))
-			{
-				position = j;
-				break;
-			}
+		channels_container_t::const_iterator position =
+			std::find_if (ourChannels.begin (), ourChannels.end (),
+					ChannelFinder (*i));
 
-		if (position == -1)
+		if (position == ourChannels.end ())
 			continue;
-		Channel_ptr ourChannel = Feeds_ [pj.URL_]->Channels_ [position];
 
 		for (items_container_t::const_iterator item = (*i)->Items_.begin (),
 				itemEnd = (*i)->Items_.end (); item != itemEnd; ++item)
 		{
 			items_container_t::iterator ourItem =
-				std::find_if (ourChannel->Items_.begin (),
-						ourChannel->Items_.end (),
+				std::find_if ((*position)->Items_.begin (),
+						(*position)->Items_.end (),
 						ItemComparator (*item));
-			if (ourItem == ourChannel->Items_.end ())
+			if (ourItem == (*position)->Items_.end ())
 			{
 				qWarning () << Q_FUNC_INFO << "not found modified item";
 				continue;
@@ -1134,132 +1056,89 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 			(*ourItem)->CommentsLink_ = (*item)->CommentsLink_;
 
 			StorageBackend_->UpdateItem ((*ourItem),
-					FindFeedForChannel (ourChannel) + ourChannel->Title_);
+					(*position)->ParentURL_ + (*position)->Title_);
 		}
 	}
 
-	for (size_t i = 0; i < channels.size (); ++i)
+	for (channels_container_t::const_iterator i = channels.begin (),
+			end = channels.end (); i != end; ++i)
 	{
-		int position = -1;
-		for (size_t j = 0,
-				endJSize = Feeds_ [pj.URL_]->Channels_.size ();
-				j < endJSize; ++j)
-			if (*Feeds_ [pj.URL_]->Channels_ [j] == *channels [i])
-			{
-				position = j;
-				break;
-			}
+		channels_container_t::const_iterator position =
+			std::find_if (ourChannels.begin (), ourChannels.end (),
+					ChannelFinder (*i));
 
+		std::for_each ((*i)->Items_.begin (), (*i)->Items_.end (),
+				boost::bind (&RegexpMatcherManager::HandleItem,
+					&RegexpMatcherManager::Instance (),
+					_1));
 
-		if (position == -1)
+		if (position == ourChannels.end ())
 		{
-			Feeds_ [pj.URL_]->Channels_.push_back (channels [i]);
-			StorageBackend_->AddChannel (channels [i], pj.URL_);
+			ChannelsModel_->AddChannel ((*i)->ToShort ());
+			StorageBackend_->AddChannel (*i, pj.URL_);
 			emitString += tr ("Added channel \"%1\" (has %2 items)")
-				.arg (channels [i]->Title_)
-				.arg (channels [i]->Items_.size ());
+				.arg ((*i)->Title_)
+				.arg ((*i)->Items_.size ());
 		}
 		else
 		{
-			if (channels [i]->Items_.size ())
+			if ((*i)->Items_.size ())
 				emitString += tr ("Updated channel \"%1\" (%2 new items)")
-					.arg (channels [i]->Title_)
-					.arg (channels [i]->Items_.size ());
+					.arg ((*i)->Title_)
+					.arg ((*i)->Items_.size ());
 
-			bool insertedRows = (ActivatedChannel_ ==
-					Feeds_ [pj.URL_]->Channels_ [position].get ());
-
-			Feed_ptr cfeed = Feeds_ [pj.URL_];
-			Channel_ptr cchannel = cfeed->Channels_ [position];
-			StorageBackend_->UpdateChannel (cchannel, pj.URL_);
-
-			// Okay, this item is new, let's find where to place
-			// it. We should place it before the first found item
-			// with earlier datetime.
 			for (items_container_t::const_iterator j =
-					channels.at (i)->Items_.begin (),
-					newsize = channels.at (i)->Items_.end ();
-					j != newsize; ++j)
-			{
-				StorageBackend_->AddItem (*j, pj.URL_ + channels [i]->Title_);
-				items_container_t::iterator item =
-					std::find_if (cchannel->Items_.begin (),
-							cchannel->Items_.end (),
-							IsDateSuitable ((*j)->PubDate_));
-				size_t pos = std::distance (cchannel->Items_.begin (), item);
-				if (insertedRows)
-					beginInsertRows (QModelIndex (), pos, pos);
-				cchannel->Items_.insert (item, *j);
-				if (insertedRows)
-					endInsertRows ();
-			}
+					(*i)->Items_.begin (), end = (*i)->Items_.end ();
+					j != end; ++j)
+				StorageBackend_->AddItem (*j, pj.URL_ + (*i)->Title_);
 
-			std::for_each (channels.at (i)->Items_.begin (),
-					channels.at (i)->Items_.end (),
-					boost::bind (&RegexpMatcherManager::HandleItem,
-						&RegexpMatcherManager::Instance (),
-						_1));
+			if ((*i)->LastBuild_.isValid ())
+				(*position)->LastBuild_ = (*i)->LastBuild_;
+			else 
+				(*position)->LastBuild_ = QDateTime::currentDateTime ();
 
-			if (channels.at (i)->LastBuild_.isValid ())
-				cchannel->LastBuild_ = channels.at (i)->LastBuild_;
-			else if (cchannel->Items_.size ())
-				cchannel->LastBuild_ = cchannel->Items_ [0]->PubDate_;
-			ChannelsModel_->UpdateChannelData (cchannel);
-
-			size_t ipc = XmlSettingsManager::Instance ()->
+			// Now cut off old and overwhelming items.
+			XmlSettingsManager::Instance ()->
 				property ("ItemsPerChannel").value<size_t> ();
-			if (cchannel->Items_.size () > ipc)
-			{
-				if (ActivatedChannel_ == cchannel.get ())
-					beginRemoveRows (QModelIndex (), ipc,
-							ActivatedChannel_->Items_.size ());
-				std::for_each (cchannel->Items_.begin () + ipc,
-						cchannel->Items_.end (),
-						boost::bind (&StorageBackend::RemoveItem,
-							StorageBackend_.get (),
-							_1, pj.URL_ + cchannel->Title_));
-				cchannel->Items_.erase (cchannel->Items_.begin () + ipc,
-						cchannel->Items_.end ());
-				if (ActivatedChannel_ == cchannel.get ())
-					endRemoveRows ();
-
-				ChannelsModel_->UpdateChannelData (cchannel);
-			}
-
-			int days = XmlSettingsManager::Instance ()->
-				property ("ItemsMaxAge").toInt ();
 			QDateTime current = QDateTime::currentDateTime ();
 			int removeFrom = -1;
-			for (size_t j = 0; j < cchannel->Items_.size (); ++j)
-			{
-				if (cchannel->Items_ [j]->PubDate_.daysTo (current) > days)
+			int days = XmlSettingsManager::Instance ()->
+				property ("ItemsMaxAge").toInt ();
+			for (size_t j = 0; j < (*position)->Items_.size (); ++j)
+				if ((*position)->Items_ [j]->PubDate_.daysTo (current) > days)
 				{
 					removeFrom = j;
 					break;
 				}
-			}
 			if (removeFrom == 0)
 				removeFrom = 1;
-			if (removeFrom > 0)
-			{
-				if (ActivatedChannel_ == cchannel.get ())
-					beginRemoveRows (QModelIndex (), removeFrom,
-							ActivatedChannel_->Items_.size ());
-				cchannel->Items_.erase (cchannel->Items_.begin () + removeFrom,
-						cchannel->Items_.end ());
-				std::for_each (cchannel->Items_.begin () + removeFrom,
-						cchannel->Items_.end (),
+
+			removeFrom = std::min (removeFrom,
+					XmlSettingsManager::Instance ()->
+					property ("ItemsPerChannel").toInt ());
+
+			if ((*position)->Items_.size () > removeFrom)
+				std::for_each ((*position)->Items_.begin () + removeFrom,
+						(*position)->Items_.end (),
 						boost::bind (&StorageBackend::RemoveItem,
 							StorageBackend_.get (),
-							_1, pj.URL_ + cchannel->Title_));
-				if (ActivatedChannel_ == cchannel.get ())
-					endRemoveRows ();
+							_1,
+							pj.URL_ + (*position)->Title_,
+							(*position)->Title_,
+							pj.URL_));
 
-				ChannelsModel_->UpdateChannelData (cchannel);
-			}
+			StorageBackend_->UpdateChannel ((*position), pj.URL_);
 		}
 	}
 
 	return emitString;
+}
+
+void Core::MarkChannel (const QModelIndex& i, bool state)
+{
+	ChannelShort cs = ChannelsModel_->GetChannelForIndex (i);
+
+	QString hash = cs.ParentURL_ + cs.Title_;
+	StorageBackend_->ToggleChannelUnread (hash, state);
 }
 

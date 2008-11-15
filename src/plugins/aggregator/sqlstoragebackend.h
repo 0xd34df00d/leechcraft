@@ -6,6 +6,8 @@
 
 class SQLStorageBackend : public StorageBackend
 {
+	Q_OBJECT
+
 	QSqlDatabase DB_;
 					  /** Returns:
 					   * - last_update
@@ -16,8 +18,10 @@ class SQLStorageBackend : public StorageBackend
 	mutable QSqlQuery FeedFinderByURL_,
 					  /** Returns:
 					   * - title
+					   * - url
 					   * - tags
 					   * - last_build
+					   * - favicon
 					   *
 					   * Binds:
 					   * - parent_feed_url
@@ -127,6 +131,14 @@ class SQLStorageBackend : public StorageBackend
 					   */
 					  InsertItem_,
 					  /** Binds:
+					   * - title
+					   * - url
+					   * - tags
+					   * - last_build
+					   * - parent_feed_url
+					   */
+					  UpdateShortChannel_,
+					  /** Binds:
 					   * - description
 					   * - last_build
 					   * - tags
@@ -140,6 +152,13 @@ class SQLStorageBackend : public StorageBackend
 					   * - title
 					   */
 					  UpdateChannel_,
+					  /** Binds:
+					   * - unread
+					   * - parents_hash
+					   * - title
+					   * - url
+					   */
+					  UpdateShortItem_,
 					  /** Binds:
 					   * - description
 					   * - author
@@ -190,16 +209,22 @@ public:
 
 	virtual void AddFeed (Feed_ptr);
 	virtual void UpdateChannel (Channel_ptr, const QString&);
+	virtual void UpdateChannel (const ChannelShort&,
+			const QString&);
 	virtual void UpdateItem (Item_ptr, const QString&);
+	virtual void UpdateItem (const ItemShort&, const QString&);
 	virtual void AddChannel (Channel_ptr, const QString&);
 	virtual void AddItem (Item_ptr, const QString&);
 	virtual void RemoveItem (Item_ptr,
+			const QString&,
+			const QString&,
 			const QString&);
-	virtual void RemoveFeed (Feed_ptr);
+	virtual void RemoveFeed (const QString&);
     virtual bool UpdateFeedsStorage (int, int);
     virtual bool UpdateChannelsStorage (int, int);
     virtual bool UpdateItemsStorage (int, int);
 	virtual void ToggleChannelUnread (const QString&, bool);
+	virtual int GetUnreadItemsNumber () const;
 private:
 	bool InitializeTables ();
 	void DumpError (const QSqlError&) const;

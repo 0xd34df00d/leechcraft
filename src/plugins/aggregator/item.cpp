@@ -2,6 +2,18 @@
 #include <QDataStream>
 #include "item.h"
 
+ItemShort Item::ToShort () const
+{
+	ItemShort is =
+	{
+		Title_,
+		Link_,
+		PubDate_,
+		Unread_
+	};
+	return is;
+}
+
 ItemComparator::ItemComparator (const Item_ptr& item)
 : Item_ (item)
 {

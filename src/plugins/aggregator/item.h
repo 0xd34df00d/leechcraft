@@ -7,6 +7,14 @@
 #include <QMetaType>
 #include <boost/shared_ptr.hpp>
 
+struct ItemShort
+{
+	QString Title_;
+	QString URL_;
+	QDateTime PubDate_;
+	bool Unread_;
+};
+
 struct Item
 {
     QString Title_;
@@ -19,14 +27,8 @@ struct Item
     bool Unread_;
 	int NumComments_;
 	QString CommentsLink_;
-};
 
-struct ItemShort
-{
-	QString Title_;
-	QString URL_;
-	QDateTime PubDate_;
-	bool Unread_;
+	ItemShort ToShort () const;
 };
 
 typedef boost::shared_ptr<Item> Item_ptr;

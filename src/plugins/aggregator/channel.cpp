@@ -46,11 +46,53 @@ void Channel::Equalify (const Channel& channel)
 	PixmapURL_ = channel.PixmapURL_;
 	Pixmap_ = channel.Pixmap_;
 	Favicon_ = channel.Favicon_;
+	ParentURL_ = channel.ParentURL_;
+}
+
+ChannelShort Channel::ToShort () const
+{
+	ChannelShort cs =
+	{
+		Title_,
+		Link_,
+		Tags_,
+		LastBuild_,
+		Favicon_,
+		CountUnreadItems (),
+		ParentURL_
+	};
+	return cs;
+}
+
+bool operator< (const ChannelShort& cs1, const ChannelShort& cs2)
+{
+	return (cs1.Title_ + cs1.Link_) < (cs2.Title_ + cs2.Link_);
+}
+
+bool operator== (const ChannelShort& cs1, const ChannelShort& cs2)
+{
+	return cs1.Title_ == cs2.Title_ &&
+		cs1.Link_ == cs2.Link_ &&
+		cs1.ParentURL_ == cs2.ParentURL_;
+}
+
+bool operator== (const Channel_ptr& ch, const ChannelShort& cs)
+{
+	return ch->Title_ == cs.Title_ &&
+		ch->Link_ == cs.Link_ &&
+		ch->ParentURL_ == cs.ParentURL_;
+}
+
+bool operator== (const ChannelShort& cs, const Channel_ptr& ch)
+{
+	return ch == cs;
 }
 
 bool operator== (const Channel& c1, const Channel& c2)
 {
-    return c1.Title_ == c2.Title_ && c1.Link_ == c2.Link_;
+    return c1.Title_ == c2.Title_ &&
+		c1.Link_ == c2.Link_ &&
+		c1.ParentURL_ == c2.ParentURL_;
 }
 
 QDataStream& operator<< (QDataStream& out, const Channel& chan)
@@ -64,6 +106,7 @@ QDataStream& operator<< (QDataStream& out, const Channel& chan)
         << chan.Author_
         << chan.Pixmap_
 		<< chan.Favicon_
+		<< chan.ParentURL_
         << static_cast<quint32> (chan.Items_.size ());
     for (size_t i = 0; i < chan.Items_.size (); ++i)
         out << *chan.Items_ [i];
@@ -81,7 +124,8 @@ QDataStream& operator>> (QDataStream& in, Channel& chan)
         >> chan.Language_
         >> chan.Author_
         >> chan.Pixmap_
-		>> chan.Favicon_;
+		>> chan.Favicon_
+		>> chan.ParentURL_;
     in >> size;
     for (size_t i = 0; i < size; ++i)
     {

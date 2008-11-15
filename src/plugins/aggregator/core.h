@@ -4,6 +4,7 @@
 #include <QAbstractItemModel>
 #include <QString>
 #include <QMap>
+#include <QPair>
 #include <QDateTime>
 #include <interfaces/interfaces.h>
 #include <boost/shared_ptr.hpp>
@@ -24,7 +25,6 @@ class Core : public QAbstractItemModel
 {
     Q_OBJECT
 
-    Core ();
     QMap<QString, QObject*> Providers_;
 
     enum Columns
@@ -58,8 +58,9 @@ class Core : public QAbstractItemModel
     QMap<int, PendingJob> PendingJobs_;
     QMap<QString, ExternalData> PendingJob2ExternalData_;
 
-    QMap<QString, Feed_ptr> Feeds_;
-    Channel *ActivatedChannel_;
+	// First is ParentURL_ and second is Title_
+	QPair<QString, QString> CurrentChannelHash_;
+	items_shorts_t CurrentItems_;
     QStringList ItemHeaders_;
     ChannelsModel *ChannelsModel_;
     TagsCompletionModel *TagsCompletionModel_;
@@ -67,6 +68,8 @@ class Core : public QAbstractItemModel
     bool SaveScheduled_;
 	std::auto_ptr<StorageBackend> StorageBackend_;
     ItemModel *ItemModel_;
+
+    Core ();
 public:
 	struct ChannelInfo
 	{
@@ -84,13 +87,7 @@ public:
     void Activated (const QModelIndex&);
     void FeedActivated (const QModelIndex&);
 	void Selected (const QModelIndex&);
-    QString GetDescription (const QModelIndex&) const;
-	QString GetAuthor (const QModelIndex&) const;
-	QString GetCategory (const QModelIndex&) const;
-	QString GetLink (const QModelIndex&) const;
-	QDateTime GetPubDate (const QModelIndex&) const;
-	int GetCommentsNumber (const QModelIndex&) const;
-	QString GetCommentsRSS (const QModelIndex&) const;
+    Item_ptr GetItem (const QModelIndex&) const;
     QAbstractItemModel* GetChannelsModel ();
     TagsCompletionModel* GetTagsCompletionModel ();
     void UpdateTags (const QStringList&);
@@ -113,11 +110,11 @@ public:
 			const QString&,
 			const QString&,
 			const std::vector<bool>&) const;
-	feeds_container_t GetFeeds () const;
     ItemModel* GetItemModel () const;
 	void SubscribeToComments (const QModelIndex&);
 	void OpenLink (const QString&);
 	QWebView* CreateWindow ();
+	void GetChannels (channels_shorts_t&) const;
 
     virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
     virtual QVariant data (const QModelIndex&,
@@ -133,6 +130,9 @@ public:
 public slots:
     void currentChannelChanged (const QModelIndex&);
     void updateFeeds ();
+    void updateIntervalChanged ();
+    void showIconInTrayChanged ();
+    void handleSslError (QNetworkReply*);
 private slots:
     void fetchExternalFile (const QString&, const QString&);
     void scheduleSave ();
@@ -140,20 +140,17 @@ private slots:
     void handleJobRemoved (int);
     void handleJobError (int, IDownload::Error);
     void saveSettings ();
-public slots:
-    void updateIntervalChanged ();
-    void showIconInTrayChanged ();
-    void handleSslError (QNetworkReply*);
+	void handleChannelDataUpdated (Channel_ptr);
 private:
-    QString FindFeedForChannel (const Channel_ptr&) const;
-	QString FindFeedForChannel (const Channel*) const;
     void UpdateUnreadItemsNumber () const;
 	void FetchPixmap (const Channel_ptr&);
 	void FetchFavicon (const Channel_ptr&);
 	void HandleExternalData (const QString&, const QFile&);
 	QString HandleFeedUpdated (const channels_container_t&,
 			const channels_container_t&,
+			const channels_container_t&,
 			const PendingJob&);
+	void MarkChannel (const QModelIndex&, bool);
 signals:
     void error (const QString&) const;
     void showDownloadMessage (const QString&);

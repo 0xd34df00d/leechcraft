@@ -3,8 +3,6 @@
 #include <QFont>
 #include <plugininterface/treeitem.h>
 #include "channelsmodel.h"
-#include "channel.h"
-#include "feed.h"
 #include "item.h"
 
 ChannelsModel::ChannelsModel (QObject *parent)
@@ -116,53 +114,60 @@ int ChannelsModel::rowCount (const QModelIndex& parent) const
     return parentItem->ChildCount ();
 }
 
-void ChannelsModel::AddFeed (Feed_ptr feed)
+void ChannelsModel::AddChannel (const ChannelShort& channel)
 {
-    const channels_container_t& channels = feed->Channels_;
-    if (!channels.size ())
-        return;
+    beginInsertRows (QModelIndex (), rowCount (), rowCount ());
 
-    beginInsertRows (QModelIndex (), rowCount (), rowCount () + channels.size () - 1);
-    for (size_t i = 0; i < channels.size (); ++i)
-    {
-        QList<QVariant> data;
-        const Channel_ptr& current = channels.at (i);
-        data << current->Title_ << current->LastBuild_ << current->CountUnreadItems ();
-        TreeItem *channelItem = new TreeItem (data, RootItem_);
-		channelItem->ModifyData (0, current->Favicon_, Qt::DecorationRole);
-        RootItem_->AppendChild (channelItem);
-        Channel2TreeItem_ [current] = channelItem;
-        TreeItem2Channel_ [channelItem] = current;
-    }
+	QList<QVariant> data;
+	data << channel.Title_ << channel.LastBuild_ << channel.Unread_;
+
+	TreeItem *channelItem = new TreeItem (data, RootItem_);
+	channelItem->ModifyData (0, channel.Favicon_, Qt::DecorationRole);
+
+	RootItem_->AppendChild (channelItem);
+
+	Channel2TreeItem_ [channel] = channelItem;
+	TreeItem2Channel_ [channelItem] = channel;
+
     endInsertRows ();
 }
 
 void ChannelsModel::Update (const channels_container_t& channels)
 {
-    QList<Channel_ptr > channelswh = Channel2TreeItem_.keys ();
+    QList<ChannelShort> channelswh = Channel2TreeItem_.keys ();
     for (size_t i = 0; i < channels.size (); ++i)
     {
         bool found = false;
         for (int j = 0; j < channelswh.size (); ++j)
-            if (*channels.at (i) == *channelswh.at (j))
+            if (channels.at (i)->ToShort () == channelswh.at (j))
+			{
                 found = true;
+				break;
+			}
         if (found)
             continue;
+
         QList<QVariant> data;
         Channel_ptr current = channels.at (i);
         data << current->Title_ << current->LastBuild_ << current->CountUnreadItems ();
+
         TreeItem *channelItem = new TreeItem (data, RootItem_);
         RootItem_->AppendChild (channelItem);
-        Channel2TreeItem_ [current] = channelItem;
-        TreeItem2Channel_ [channelItem] = current;
+
+		ChannelShort cs = current->ToShort ();
+
+        Channel2TreeItem_ [cs] = channelItem;
+        TreeItem2Channel_ [channelItem] = cs;
     }
 }
 
-void ChannelsModel::UpdateChannelData (const Channel* channel)
+void ChannelsModel::UpdateChannelData (const ChannelShort& cs)
 {
     Channel2TreeItemDictionary_t::const_iterator position = Channel2TreeItem_.end ();
-    for (Channel2TreeItemDictionary_t::const_iterator i = Channel2TreeItem_.begin (); i != Channel2TreeItem_.end (); ++i)
-        if (i.key ().get () == channel)
+    for (Channel2TreeItemDictionary_t::const_iterator i =
+			Channel2TreeItem_.begin (), end = Channel2TreeItem_.end ();
+			i != end; ++i)
+        if (i.key () == cs)
         {
             position = i;
             break;
@@ -172,25 +177,20 @@ void ChannelsModel::UpdateChannelData (const Channel* channel)
         return;
     
     TreeItem *item = position.value ();
-	item->ModifyData (0, channel->Favicon_, Qt::DecorationRole);
-    item->ModifyData (1, channel->LastBuild_);
-    item->ModifyData (2, channel->CountUnreadItems ());
+	item->ModifyData (0, cs.Favicon_, Qt::DecorationRole);
+    item->ModifyData (1, cs.LastBuild_);
+    item->ModifyData (2, cs.Unread_);
     int pos = RootItem_->ChildPosition (item);
     emit dataChanged (index (pos, 1), index (pos, 2));
     emit channelDataUpdated ();
 }
 
-void ChannelsModel::UpdateChannelData (const Channel_ptr& channel)
-{
-    UpdateChannelData (channel.get ());
-}
-
-Channel_ptr& ChannelsModel::GetChannelForIndex (const QModelIndex& index)
+ChannelShort& ChannelsModel::GetChannelForIndex (const QModelIndex& index)
 {
 	return TreeItem2Channel_ [static_cast<TreeItem*> (index.internalPointer ())];
 }
 
-void ChannelsModel::RemoveChannel (const Channel_ptr& channel)
+void ChannelsModel::RemoveChannel (const ChannelShort& channel)
 {
     if (!Channel2TreeItem_.contains (channel))
         return;
@@ -205,33 +205,13 @@ void ChannelsModel::RemoveChannel (const Channel_ptr& channel)
     endRemoveRows ();
 }
 
-void ChannelsModel::MarkChannelAsRead (const QModelIndex& index)
-{
-    TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
-    Channel_ptr channel = TreeItem2Channel_ [item];
-    for (size_t i = 0; i < channel->Items_.size (); ++i)
-        channel->Items_ [i]->Unread_ = false;
-
-    UpdateChannelData (channel);
-}
-
-void ChannelsModel::MarkChannelAsUnread (const QModelIndex& index)
-{
-    TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
-    Channel_ptr channel = TreeItem2Channel_ [item];
-    for (size_t i = 0; i < channel->Items_.size (); ++i)
-        channel->Items_ [i]->Unread_ = true;
-
-    UpdateChannelData (channel);
-}
-
 QModelIndex ChannelsModel::GetUnreadChannelIndex ()
 {
     for (int i = 0; i < RootItem_->ChildCount (); ++i)
     {
         TreeItem *item = RootItem_->Child (i);
-        Channel_ptr channel = TreeItem2Channel_ [item];
-        if (channel->CountUnreadItems ())
+        ChannelShort channel = TreeItem2Channel_ [item];
+        if (channel.Unread_)
             return index (i, 0);
     }
     return QModelIndex ();

@@ -426,7 +426,9 @@ void Aggregator::on_ActionImportOPML__triggered ()
 void Aggregator::on_ActionExportOPML__triggered ()
 {
 	ExportOPML exportDialog;
-	exportDialog.SetFeeds (Core::Instance ().GetFeeds ());
+	channels_shorts_t channels;
+	Core::Instance ().GetChannels (channels);
+	exportDialog.SetFeeds (channels);
 	if (exportDialog.exec () == QDialog::Rejected)
 		return;
 
@@ -468,13 +470,15 @@ void Aggregator::currentItemChanged (const QItemSelection& selection)
 
 	Core::Instance ().Selected (sindex);
 
-	Ui_.ItemView_->setHtml (Core::Instance ().GetDescription (sindex));
+	Item_ptr item = Core::Instance ().GetItem (sindex);
+
+	Ui_.ItemView_->setHtml (item->Description_);
 	connect (Ui_.ItemView_->page ()->networkAccessManager (),
 			SIGNAL (sslErrors (QNetworkReply*, const QList<QSslError>&)),
 			&Core::Instance (),
 			SLOT (handleSslError (QNetworkReply*)));
 
-	QString itemAuthor = Core::Instance ().GetAuthor (sindex);
+	QString itemAuthor = item->Author_;
 	if (itemAuthor.isEmpty ())
 	{
 		Ui_.ItemAuthor_->hide ();
@@ -482,12 +486,12 @@ void Aggregator::currentItemChanged (const QItemSelection& selection)
 	}
 	else
 	{
-		Ui_.ItemAuthor_->setText (Core::Instance ().GetAuthor (sindex));
+		Ui_.ItemAuthor_->setText (itemAuthor);
 		Ui_.ItemAuthor_->show ();
 		Ui_.ItemAuthorLabel_->show ();
 	}
 
-	QString category = Core::Instance ().GetCategory (sindex);
+	QString category = item->Categories_.join ("; ");
 	if (category.isEmpty ())
 	{
 		Ui_.ItemCategory_->hide ();
@@ -495,12 +499,12 @@ void Aggregator::currentItemChanged (const QItemSelection& selection)
 	}
 	else
 	{
-		Ui_.ItemCategory_->setText (Core::Instance ().GetCategory (sindex));
+		Ui_.ItemCategory_->setText (category);
 		Ui_.ItemCategory_->show ();
 		Ui_.ItemCategoryLabel_->show ();
 	}
 
-	QString link = Core::Instance ().GetLink (sindex);
+	QString link = item->Link_;
 	QString shortLink;
 	Ui_.ItemLink_->setToolTip (link);
 	if (link.size () >= 40)
@@ -520,10 +524,10 @@ void Aggregator::currentItemChanged (const QItemSelection& selection)
 		Ui_.ItemLink_->setText (shortLink);
 	}
 
-	QDateTime pubDate = Core::Instance ().GetPubDate (sindex);
+	QDateTime pubDate = item->PubDate_;
 	if (pubDate.isValid ())
 	{
-		Ui_.ItemPubDate_->setDateTime (Core::Instance ().GetPubDate (sindex));
+		Ui_.ItemPubDate_->setDateTime (pubDate);
 		Ui_.ItemPubDate_->show ();
 		Ui_.ItemPubDateLabel_->show ();
 	}
@@ -533,8 +537,8 @@ void Aggregator::currentItemChanged (const QItemSelection& selection)
 		Ui_.ItemPubDateLabel_->hide ();
 	}
 
-	int numComments = Core::Instance ().GetCommentsNumber (sindex);
-	QString commentsRSS = Core::Instance ().GetCommentsRSS (sindex);
+	int numComments = item->NumComments_;
+	QString commentsRSS = item->CommentsLink_;
 	if (numComments >= 0 || !commentsRSS.isEmpty ())
 	{
 		Ui_.ItemComments_->show ();

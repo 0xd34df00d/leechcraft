@@ -237,6 +237,7 @@ void Task::Start (QIODevice *to)
 		header.setValue ("Host", URL_.host ());
 		header.setValue ("Range", QString ("bytes=%1-").arg (to->size ()));
 		header.setValue ("Accept", "*/*");
+		header.setValue ("Accept-Encoding", "gzip;q=0");
 		header.setValue ("User-Agent", ua);
 		header.setValue ("Referer", QString ("http://") + URL_.host ());
 		id = Http_->request (header, 0, to);
