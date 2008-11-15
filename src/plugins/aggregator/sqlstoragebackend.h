@@ -94,7 +94,6 @@ class SQLStorageBackend : public StorageBackend
 					   * - parents_hash
 					   * - title
 					   * - url
-					   * - guid
 					   */
 					  ItemFinder_,
 					  /** Binds:
@@ -223,7 +222,7 @@ public:
     virtual bool UpdateFeedsStorage (int, int);
     virtual bool UpdateChannelsStorage (int, int);
     virtual bool UpdateItemsStorage (int, int);
-	virtual void ToggleChannelUnread (const QString&, bool);
+	virtual void ToggleChannelUnread (const QString&, const QString&, bool);
 	virtual int GetUnreadItemsNumber () const;
 private:
 	bool InitializeTables ();

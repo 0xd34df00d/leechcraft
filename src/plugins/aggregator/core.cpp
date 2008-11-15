@@ -70,6 +70,10 @@ Core::Core ()
 			SIGNAL (channelDataUpdated (Channel_ptr)),
 			this,
 			SLOT (handleChannelDataUpdated (Channel_ptr)));
+	connect (StorageBackend_.get (),
+			SIGNAL (itemDataUpdated (Item_ptr)),
+			this,
+			SLOT (handleItemDataUpdated (Item_ptr)));
 
 	ParserFactory::Instance ().Register (&RSS20Parser::Instance ());
 	ParserFactory::Instance ().Register (&Atom10Parser::Instance ());
@@ -86,18 +90,20 @@ Core::Core ()
 			this,
 			SIGNAL (channelDataUpdated ()));
 
-	feeds_urls_t feeds;
 	if (tablesOK)
-		StorageBackend_->GetFeedsURLs (feeds);
-	for (feeds_urls_t::const_iterator i = feeds.begin (),
-			end = feeds.end (); i != end; ++i)
 	{
-		channels_shorts_t channels;
-		StorageBackend_->GetChannels (channels, *i);
-		std::for_each (channels.begin (), channels.end (),
-				boost::bind (&ChannelsModel::AddChannel,
-					ChannelsModel_,
-					_1));
+		feeds_urls_t feeds;
+		StorageBackend_->GetFeedsURLs (feeds);
+		for (feeds_urls_t::const_iterator i = feeds.begin (),
+				end = feeds.end (); i != end; ++i)
+		{
+			channels_shorts_t channels;
+			StorageBackend_->GetChannels (channels, *i);
+			std::for_each (channels.begin (), channels.end (),
+					boost::bind (&ChannelsModel::AddChannel,
+						ChannelsModel_,
+						_1));
+		}
 	}
 
 	TagsCompletionModel_ = new TagsCompletionModel (this);
@@ -619,6 +625,8 @@ void Core::currentChannelChanged (const QModelIndex& index)
 	ChannelShort ch = ChannelsModel_->GetChannelForIndex (index);
 	CurrentChannelHash_ = qMakePair<QString, QString> (ch.ParentURL_,
 			ch.Title_);
+	CurrentItems_.clear ();
+	StorageBackend_->GetItems (CurrentItems_, ch.ParentURL_ + ch.Title_);
 	reset ();
 }
 
@@ -855,11 +863,13 @@ void Core::fetchExternalFile (const QString& url, const QString& where)
 		throw std::runtime_error ("could not handle URL");
 	}
 
-	LeechCraft::DownloadParams params = {
+	LeechCraft::DownloadParams params =
+	{
 		url,
 		where
 	};
-	PendingJob pj = {
+	PendingJob pj =
+	{
 		PendingJob::RFeedExternalData,
 		url,
 		where,
@@ -883,17 +893,39 @@ void Core::handleChannelDataUpdated (Channel_ptr channel)
 {
 	ChannelShort cs = channel->ToShort ();
 
-	items_shorts_t items;
-	StorageBackend_->GetItems (items, cs.ParentURL_ + cs.Title_);
-
 	if (cs.ParentURL_ == CurrentChannelHash_.first &&
 			cs.Title_ == CurrentChannelHash_.second)
-		emit dataChanged (index (0, 0),
-				index (items.size (), 1));
+	{
+		CurrentItems_.clear ();
+		StorageBackend_->GetItems (CurrentItems_, cs.ParentURL_ + cs.Title_);
+		ChannelsModel_->UpdateChannelData (cs);
+		emit dataChanged (index (0, 0), index (CurrentItems_.size (), 1));
+		UpdateUnreadItemsNumber ();
+	}
+}
 
-	ChannelsModel_->UpdateChannelData (channel->ToShort ());
+void Core::handleItemDataUpdated (Item_ptr item)
+{
+	ItemShort is = item->ToShort ();
 
-	UpdateUnreadItemsNumber ();
+	items_shorts_t::iterator pos = CurrentItems_.end ();
+
+	for (items_shorts_t::iterator i = CurrentItems_.begin (),
+			end = CurrentItems_.end (); i != end; ++i)
+		if (is.Title_ == i->Title_ &&
+				is.URL_ == i->URL_)
+		{
+			pos = i;
+			break;
+		}
+
+	if (pos == CurrentItems_.end ())
+		return;
+
+	*pos = is;
+
+	int distance = std::distance (CurrentItems_.begin (), pos);
+	emit dataChanged (index (distance, 0), index (distance, 1));
 }
 
 void Core::updateIntervalChanged ()
@@ -1139,6 +1171,6 @@ void Core::MarkChannel (const QModelIndex& i, bool state)
 	ChannelShort cs = ChannelsModel_->GetChannelForIndex (i);
 
 	QString hash = cs.ParentURL_ + cs.Title_;
-	StorageBackend_->ToggleChannelUnread (hash, state);
+	StorageBackend_->ToggleChannelUnread (cs.ParentURL_, cs.Title_, state);
 }
 

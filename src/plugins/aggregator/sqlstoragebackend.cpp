@@ -69,7 +69,7 @@ void SQLStorageBackend::Prepare ()
 	UnreadItemsCounter_.prepare ("SELECT COUNT (unread) "
 			"FROM items "
 			"WHERE parents_hash = :parents_hash "
-			"AND unread = 1");
+			"AND unread = \"true\"");
 
 	ItemsShortSelector_ = QSqlQuery ();
 	ItemsShortSelector_.prepare ("SELECT "
@@ -111,8 +111,7 @@ void SQLStorageBackend::Prepare ()
 			"FROM items "
 			"WHERE parents_hash = :parents_hash "
 			"AND title = :title "
-			"AND url = :url "
-			"AND guid = :guid");
+			"AND url = :url");
 
 	InsertFeed_ = QSqlQuery ();
 	InsertFeed_.prepare ("INSERT INTO feeds ("
@@ -180,7 +179,7 @@ void SQLStorageBackend::Prepare ()
 	UpdateShortChannel_ = QSqlQuery ();
 	UpdateShortChannel_.prepare ("UPDATE channels SET "
 			"tags = :tags, "
-			"favicon = :favicon "
+			"last_build = :last_build "
 			"WHERE parent_feed_url = :parent_feed_url "
 			"AND url = :url "
 			"AND title = :title");
@@ -304,7 +303,7 @@ Channel_ptr SQLStorageBackend::GetChannel (const QString& title,
 {
 	ChannelsFullSelector_.bindValue (":title", title);
 	ChannelsFullSelector_.bindValue (":parent_feed_url", feedParent);
-	if (ChannelsFullSelector_.exec () || !ChannelsFullSelector_.next ())
+	if (!ChannelsFullSelector_.exec () || !ChannelsFullSelector_.next ())
 	{
 		DumpError (ChannelsFullSelector_);
 		return Channel_ptr (new Channel);
@@ -313,18 +312,18 @@ Channel_ptr SQLStorageBackend::GetChannel (const QString& title,
 	Channel_ptr channel (new Channel);
 
 	channel->Link_ = ChannelsFullSelector_.value (0).toString ();
-	channel->Title_ = ChannelsFullSelector_.value (1).toString ();
-	channel->Description_ = ChannelsFullSelector_.value (2).toString ();
-	channel->LastBuild_ = ChannelsFullSelector_.value (3).toDateTime ();
-	channel->Tags_ = ChannelsFullSelector_.value (4).toString ().split (' ',
+	channel->Title_ = title;
+	channel->Description_ = ChannelsFullSelector_.value (1).toString ();
+	channel->LastBuild_ = ChannelsFullSelector_.value (2).toDateTime ();
+	channel->Tags_ = ChannelsFullSelector_.value (3).toString ().split (' ',
 			QString::SkipEmptyParts);
-	channel->Language_ = ChannelsFullSelector_.value (5).toString ();
-	channel->Author_ = ChannelsFullSelector_.value (6).toString ();
-	channel->PixmapURL_ = ChannelsFullSelector_.value (7).toString ();
+	channel->Language_ = ChannelsFullSelector_.value (4).toString ();
+	channel->Author_ = ChannelsFullSelector_.value (5).toString ();
+	channel->PixmapURL_ = ChannelsFullSelector_.value (6).toString ();
 	channel->Pixmap_ = UnserializePixmap (ChannelsFullSelector_
-			.value (8).toByteArray ());
+			.value (7).toByteArray ());
 	channel->Favicon_ = UnserializePixmap (ChannelsFullSelector_
-			.value (9).toByteArray ());
+			.value (8).toByteArray ());
 	channel->ParentURL_ = feedParent;
 
 	return channel;
@@ -503,7 +502,6 @@ void SQLStorageBackend::UpdateChannel (const ChannelShort& channel,
 void SQLStorageBackend::UpdateItem (Item_ptr item, const QString& parent)
 {
 	ItemFinder_.bindValue (":parents_hash", parent);
-	ItemFinder_.bindValue (":guid", item->Guid_);
 	ItemFinder_.bindValue (":title", item->Title_);
 	ItemFinder_.bindValue (":url", item->Link_);
 	if (!ItemFinder_.exec ())
@@ -544,7 +542,6 @@ void SQLStorageBackend::UpdateItem (const ItemShort& item,
 		const QString& parent)
 {
 	ItemFinder_.bindValue (":parents_hash", parent);
-	ItemFinder_.bindValue (":guid", "");
 	ItemFinder_.bindValue (":title", item.Title_);
 	ItemFinder_.bindValue (":url", item.URL_);
 	if (!ItemFinder_.exec ())
@@ -563,9 +560,9 @@ void SQLStorageBackend::UpdateItem (const ItemShort& item,
 	UpdateShortItem_.bindValue (":title", item.Title_);
 	UpdateShortItem_.bindValue (":url", item.URL_);
 
-	if (!UpdateItem_.exec ())
+	if (!UpdateShortItem_.exec ())
 	{
-		DumpError (UpdateItem_);
+		DumpError (UpdateShortItem_);
 		throw std::runtime_error ("failed to save item");
 	}
 
@@ -617,6 +614,8 @@ void SQLStorageBackend::AddItem (Item_ptr item, const QString& parent)
 		DumpError (InsertItem_);
 		throw std::runtime_error ("failed to save item");
 	}
+
+	emit itemDataUpdated (item);
 }
 
 void SQLStorageBackend::RemoveItem (Item_ptr item,
@@ -651,10 +650,14 @@ void SQLStorageBackend::RemoveItem (Item_ptr item,
 	}
 
 	emit channelDataUpdated (GetChannel (parentHash, feedURL));
+	emit itemDataUpdated (item);
 }
 
 void SQLStorageBackend::RemoveFeed (const QString& url)
 {
+	channels_shorts_t shorts;
+	GetChannels (shorts, url);
+
 	if (!DB_.transaction ())
 	{
 		qWarning () << Q_FUNC_INFO << "failed to start transaction";
@@ -663,9 +666,6 @@ void SQLStorageBackend::RemoveFeed (const QString& url)
 	}
 
 	bool error = false;
-
-	channels_shorts_t shorts;
-	GetChannels (shorts, url);
 
 	for (channels_shorts_t::iterator i = shorts.begin (),
 			end = shorts.end (); i != end; ++i)
@@ -705,9 +705,11 @@ void SQLStorageBackend::RemoveFeed (const QString& url)
 	}
 }
 
-void SQLStorageBackend::ToggleChannelUnread (const QString& hash, bool state)
+void SQLStorageBackend::ToggleChannelUnread (const QString& purl,
+		const QString& title,
+		bool state)
 {
-	ToggleChannelUnread_.bindValue (":parents_hash", hash);
+	ToggleChannelUnread_.bindValue (":parents_hash", purl + title);
 	ToggleChannelUnread_.bindValue (":unread", state);
 
 	if (!ToggleChannelUnread_.exec ())
@@ -715,13 +717,15 @@ void SQLStorageBackend::ToggleChannelUnread (const QString& hash, bool state)
 		DumpError (ToggleChannelUnread_);
 		throw std::runtime_error ("failed to toggle item");
 	}
+
+	emit channelDataUpdated (GetChannel (title, purl));
 }
 
 int SQLStorageBackend::GetUnreadItemsNumber () const
 {
 	QSqlQuery query ("SELECT COUNT (unread) "
 			"FROM items "
-			"WHERE unread = 1");
+			"WHERE unread = \"true\"");
 	if (!query.exec () || !query.next ())
 	{
 		DumpError (query);

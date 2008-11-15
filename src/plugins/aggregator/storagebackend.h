@@ -150,8 +150,7 @@ public:
 	 * inserted to the storage, so this function should behave like
 	 * AddItem() in this case.
 	 *
-	 * This function would emit channelDataUpdated() signal after it
-	 * finishes. It would also emit itemDataUpdated() signal after it
+	 * This function would emit itemDataUpdated() signal after it
 	 * finishes.
 	 *
 	 * @param[in] item Pointer to the new version of the item that
@@ -233,10 +232,13 @@ public:
 	 *
 	 * Changes state of all the items matching the passed hash.
 	 *
-	 * @param[in] hash Hash identifying the item.
+	 * @param[in] purl Parent feed's URL.
+	 * @param[in] title Parent channel's title.
 	 * @param[in] state New state of the items.
 	 */
-	virtual void ToggleChannelUnread (const QString& hash, bool state) = 0;
+	virtual void ToggleChannelUnread (const QString& purl,
+			const QString& title,
+			bool state) = 0;
 	/** @brief Count unread items number.
 	 *
 	 * Counts how much unread items are there in the storage.
