@@ -76,7 +76,6 @@ SET (HEADERS
 	storagebackend.h
 	customwebview.h
 	opmlitem.h
-	../../xmlsettingsdialog/basesettingsmanager.h
 	)
 SET (FORMS
     mainwidget.ui

@@ -16,6 +16,7 @@ SET (SRCS
 	file.cpp
 	bytearray.cpp
 	settings.cpp
+	basesettingsmanager.cpp
 	)
 SET (HEADERS
     xmlsettingsdialog.h

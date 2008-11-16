@@ -28,7 +28,6 @@ SET (HEADERS
 	historymodel.h
 	representationmodel.h
 	morphfile.h
-	../../xmlsettingsdialog/basesettingsmanager.h
 	)
 SET (FORMS
 	addtask.ui

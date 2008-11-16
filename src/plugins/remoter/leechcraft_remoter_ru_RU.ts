@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="ru_RU">
-<defaultcodec></defaultcodec>
+<context>
+    <name>Core</name>
+    <message>
+        <location filename="core.cpp" line="174"/>
+        <source>LeechCraft::Remoter isn&apos;t initialized yet, sorry. Please try again in a couple of seconds.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="187"/>
+        <source>Downloaders</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="189"/>
+        <source>Download history</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
 <context>
     <name>MainWindow</name>
     <message>
@@ -37,12 +54,12 @@
 <context>
     <name>Remoter</name>
     <message>
-        <location filename="remoter.cpp" line="27"/>
+        <location filename="remoter.cpp" line="22"/>
         <source>Remoter</source>
         <translation>Remoter</translation>
     </message>
     <message>
-        <location filename="remoter.cpp" line="32"/>
+        <location filename="remoter.cpp" line="27"/>
         <source>Server providing remote access to other plugins.</source>
         <translation>Сервер, обеспечивающий удаленный доступ к другим плагинам.</translation>
     </message>

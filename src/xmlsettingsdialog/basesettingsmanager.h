@@ -18,6 +18,7 @@
 #include <QSettings>
 #include <QStringList>
 #include <QDynamicPropertyChangeEvent>
+#include "config.h"
 
 #define PROP2CHAR(a) (a.toLatin1 ().constData ())
 
@@ -26,47 +27,31 @@
  * Facilitates creation of settings managers due to providing some
  * frequently used features.
  */
-class BaseSettingsManager : public QObject
+class LEECHCRAFT_API BaseSettingsManager : public QObject
 {
+	Q_OBJECT
+
     QMap<QByteArray, QPair<QObject*, QByteArray> > Properties2Object_;
     bool Initializing_;
     QSettings *Settings_;
 public:
- /*! @brief Initalizes the settings manager.
+ /** @brief Initalizes the settings manager.
   *
   * Loads all settings from the QSettings created by BeginSettings and
   * creates dynamic properties for them.
   *
   * @sa Release
   */
-    void Init ()
-    {
-        Settings_ = BeginSettings ();
-        QStringList properties = Settings_->childKeys ();
-        Initializing_ = true;
-        for (int i = 0; i < properties.size (); ++i)
-            setProperty (PROP2CHAR (properties.at (i)), Settings_->value (properties.at (i), QVariant ()));
-        Initializing_ = false;
-    }
-
- /*! @brief Prepares the settings manager for deletion.
+    void Init ();
+ /** @brief Prepares the settings manager for deletion.
   *
   * Flushes all settigns to the QSettings created by BeginSettings
   * to prepare settings manager object for the deletion.
   *
   * @sa Init
   */
-    void Release ()
-    {
-        QList<QByteArray> dProperties = dynamicPropertyNames ();
-        for (int i = 0; i < dProperties.size (); ++i)
-            Settings_->setValue (dProperties.at (i), property (dProperties.at (i).constData ()));
-        EndSettings (Settings_);
-        delete Settings_;
-        Settings_ = 0;
-    }
-
- /*! @brief Subscribes object to property changes.
+    void Release ();
+ /** @brief Subscribes object to property changes.
   *
   * When a property changes, a specified object is called to notify
   * it that the property has changed.
@@ -79,12 +64,9 @@ public:
   * Note that it should be known to the Qt's metaobject system, so
   * it should be a (public) slot.
   */
-    void RegisterObject (const QByteArray& propName, QObject* object, const QByteArray& funcName)
-    {
-        Properties2Object_.insert (propName, qMakePair (object, funcName));
-    }
-
- /*! @brief Gets a property with default value.
+void RegisterObject (const QByteArray& propName,
+		QObject* object, const QByteArray& funcName);
+ /** @brief Gets a property with default value.
   *
   * This is a wrapper around standart QObject::property() function.
   * It checks whether specified property exists, and if so, it
@@ -96,38 +78,9 @@ public:
   * @param[in] def Default value of the property.
   * @return Resulting value of the property.
   */
-    QVariant Property (const QString& propName, const QVariant& def)
-    {
-        QVariant result = property (PROP2CHAR (propName));
-        if (!result.isValid ())
-        {
-            result = def;
-            setProperty (PROP2CHAR (propName), def);
-        }
-
-        return result;
-    }
+    QVariant Property (const QString& propName, const QVariant& def);
 protected:
-    virtual bool event (QEvent *e)
-    {
-        if (e->type () != QEvent::DynamicPropertyChange)
-            return false;
-
-        QDynamicPropertyChangeEvent *event = dynamic_cast<QDynamicPropertyChangeEvent*> (e);
-
-        QByteArray name = event->propertyName ();
-        Settings_->setValue (name, property (name));
-
-        if (Properties2Object_.contains (name))
-        {
-            QPair<QObject*, QByteArray> object = Properties2Object_ [name];
-            object.first->metaObject ()->invokeMethod (object.first, object.second);
-        }
-
-        event->accept ();
-        return true;
-    }
-
+    virtual bool event (QEvent*);
  /*! @brief Allocates and returns a QSettings object suitable for
   * use.
   *

@@ -7,6 +7,52 @@
 #include <QSqlError>
 #include <QVariant>
 
+SQLStorageBackend::DBLock::DBLock (QSqlDatabase& database)
+: Database_ (database)
+, Good_ (false)
+, Initialized_ (false)
+{
+}
+
+SQLStorageBackend::DBLock::~DBLock ()
+{
+	if (!Initialized_)
+		return;
+
+	if (Good_ ? !Database_.commit () : !Database_.rollback ())
+		DumpError (Database_.lastError ());
+}
+
+void SQLStorageBackend::DBLock::Init ()
+{
+	if (!Database_.transaction ())
+	{
+		DumpError (Database_.lastError ());
+		throw std::runtime_error ("Could not start transaction");
+	}
+	Initialized_ = true;
+}
+
+void SQLStorageBackend::DBLock::Good ()
+{
+	Good_ = true;
+}
+
+void SQLStorageBackend::DBLock::DumpError (const QSqlError& lastError)
+{
+	qWarning () << lastError.text () << "|"
+		<< lastError.databaseText () << "|"
+		<< lastError.driverText () << "|"
+		<< lastError.type () << "|"
+		<< lastError.number ();
+}
+
+void SQLStorageBackend::DBLock::DumpError (const QSqlQuery& lastQuery)
+{
+	qWarning () << lastQuery.lastQuery ();
+	DumpError (lastQuery.lastError ());
+}
+
 SQLStorageBackend::SQLStorageBackend ()
 : DB_ (QSqlDatabase::addDatabase ("QSQLITE"))
 {
@@ -15,7 +61,7 @@ SQLStorageBackend::SQLStorageBackend ()
 
 	DB_.setDatabaseName (dir.filePath ("aggregator.db"));
 	if (!DB_.open ())
-		DumpError (DB_.lastError ());
+		DBLock::DumpError (DB_.lastError ());
 
 	if (!DB_.tables ().contains ("feeds"))
 		InitializeTables ();
@@ -25,13 +71,13 @@ void SQLStorageBackend::Prepare ()
 {
 	QSqlQuery pragma;
 	if (!pragma.exec ("PRAGMA cache_size = 6000;"))
-		DumpError (pragma);
+		DBLock::DumpError (pragma);
 	if (!pragma.exec ("PRAGMA journal_mode = TRUNCATE;"))
-		DumpError (pragma);
+		DBLock::DumpError (pragma);
 	if (!pragma.exec ("PRAGMA synchronous = OFF;"))
-		DumpError (pragma);
+		DBLock::DumpError (pragma);
 	if (!pragma.exec ("PRAGMA temp_store = MEMORY;"))
-		DumpError (pragma);
+		DBLock::DumpError (pragma);
 
 	FeedFinderByURL_ = QSqlQuery ();
 	FeedFinderByURL_.prepare ("SELECT last_update "
@@ -253,7 +299,7 @@ void SQLStorageBackend::GetFeedsURLs (feeds_urls_t& result) const
 				"FROM feeds "
 				"ORDER BY url"))
 	{
-		DumpError (feedSelector);
+		DBLock::DumpError (feedSelector);
 		return;
 	}
 
@@ -267,7 +313,7 @@ void SQLStorageBackend::GetChannels (channels_shorts_t& shorts,
 	ChannelsShortSelector_.bindValue (":parent_feed_url", feedURL);
 	if (!ChannelsShortSelector_.exec ())
 	{
-		DumpError (ChannelsShortSelector_);
+		DBLock::DumpError (ChannelsShortSelector_);
 		return;
 	}
 
@@ -278,7 +324,7 @@ void SQLStorageBackend::GetChannels (channels_shorts_t& shorts,
 
 		UnreadItemsCounter_.bindValue (":parents_hash", feedURL + title);
 		if (!UnreadItemsCounter_.exec () || !UnreadItemsCounter_.next ())
-			DumpError (UnreadItemsCounter_);
+			DBLock::DumpError (UnreadItemsCounter_);
 		else
 			unread = UnreadItemsCounter_.value (0).toInt ();
 
@@ -305,7 +351,7 @@ Channel_ptr SQLStorageBackend::GetChannel (const QString& title,
 	ChannelsFullSelector_.bindValue (":parent_feed_url", feedParent);
 	if (!ChannelsFullSelector_.exec () || !ChannelsFullSelector_.next ())
 	{
-		DumpError (ChannelsFullSelector_);
+		DBLock::DumpError (ChannelsFullSelector_);
 		return Channel_ptr (new Channel);
 	}
 
@@ -335,7 +381,7 @@ void SQLStorageBackend::GetItems (items_shorts_t& shorts, const QString& parents
 
 	if (!ItemsShortSelector_.exec ())
 	{
-		DumpError (ItemsShortSelector_);
+		DBLock::DumpError (ItemsShortSelector_);
 		return;
 	}
 
@@ -361,7 +407,7 @@ Item_ptr SQLStorageBackend::GetItem (const QString& title,
 	ItemsFullSelector_.bindValue (":link", link);
 	if (!ItemsFullSelector_.exec () || !ItemsFullSelector_.next ())
 	{
-		DumpError (ItemsFullSelector_);
+		DBLock::DumpError (ItemsFullSelector_);
 		return Item_ptr ();
 	}
 
@@ -383,22 +429,22 @@ Item_ptr SQLStorageBackend::GetItem (const QString& title,
 
 void SQLStorageBackend::AddFeed (Feed_ptr feed)
 {
-	if (!DB_.transaction ())
+	DBLock lock (DB_);
+	try
 	{
-		DumpError (DB_.lastError ());
-		qWarning () << Q_FUNC_INFO << "failed to start transaction";
+		lock.Init ();
+	}
+	catch (const std::runtime_error& e)
+	{
+		qWarning () << Q_FUNC_INFO << e.what ();
 		return;
 	}
+
 	InsertFeed_.bindValue (":url", feed->URL_);
 	InsertFeed_.bindValue (":last_update", feed->LastUpdate_);
 	if (!InsertFeed_.exec ())
 	{
-		DumpError (InsertFeed_);
-		if (!DB_.rollback ())
-		{
-			DumpError (DB_.lastError ());
-			qWarning () << Q_FUNC_INFO << "failed to rollback";
-		}
+		DBLock::DumpError (InsertFeed_);
 		return;
 	}
 
@@ -412,19 +458,10 @@ void SQLStorageBackend::AddFeed (Feed_ptr feed)
 	catch (const std::runtime_error& e)
 	{
 		qWarning () << Q_FUNC_INFO << e.what ();
-		if (!DB_.rollback ())
-		{
-			DumpError (DB_.lastError ());
-			qWarning () << Q_FUNC_INFO << "failed to rollback";
-		}
 		return;
 	}
 
-	if (!DB_.commit ())
-	{
-		DumpError (DB_.lastError ());
-		qWarning () << Q_FUNC_INFO << "failed to commit";
-	}
+	lock.Good ();
 }
 
 void SQLStorageBackend::UpdateChannel (Channel_ptr channel, const QString& parent)
@@ -434,7 +471,7 @@ void SQLStorageBackend::UpdateChannel (Channel_ptr channel, const QString& paren
 	ChannelFinder_.bindValue (":url", channel->Link_);
 	if (!ChannelFinder_.exec ())
 	{
-		DumpError (ChannelFinder_);
+		DBLock::DumpError (ChannelFinder_);
 		throw std::runtime_error ("Unable to execute channel finder query");
 	}
 	ChannelFinder_.next ();
@@ -459,7 +496,7 @@ void SQLStorageBackend::UpdateChannel (Channel_ptr channel, const QString& paren
 
 	if (!UpdateChannel_.exec ())
 	{
-		DumpError (UpdateChannel_);
+		DBLock::DumpError (UpdateChannel_);
 		throw std::runtime_error ("failed to save channel");
 	}
 
@@ -474,7 +511,7 @@ void SQLStorageBackend::UpdateChannel (const ChannelShort& channel,
 	ChannelFinder_.bindValue (":url", channel.Link_);
 	if (!ChannelFinder_.exec ())
 	{
-		DumpError (ChannelFinder_);
+		DBLock::DumpError (ChannelFinder_);
 		throw std::runtime_error ("Unable to execute channel finder query");
 	}
 	ChannelFinder_.next ();
@@ -492,7 +529,7 @@ void SQLStorageBackend::UpdateChannel (const ChannelShort& channel,
 
 	if (!UpdateShortChannel_.exec ())
 	{
-		DumpError (UpdateShortChannel_);
+		DBLock::DumpError (UpdateShortChannel_);
 		throw std::runtime_error ("failed to save channel");
 	}
 
@@ -506,7 +543,7 @@ void SQLStorageBackend::UpdateItem (Item_ptr item, const QString& parent)
 	ItemFinder_.bindValue (":url", item->Link_);
 	if (!ItemFinder_.exec ())
 	{
-		DumpError (ItemFinder_);
+		DBLock::DumpError (ItemFinder_);
 		throw std::runtime_error ("Unable to execute item finder query");
 	}
 	ItemFinder_.next ();
@@ -531,7 +568,7 @@ void SQLStorageBackend::UpdateItem (Item_ptr item, const QString& parent)
 
 	if (!UpdateItem_.exec ())
 	{
-		DumpError (UpdateItem_);
+		DBLock::DumpError (UpdateItem_);
 		throw std::runtime_error ("failed to save item");
 	}
 
@@ -546,7 +583,7 @@ void SQLStorageBackend::UpdateItem (const ItemShort& item,
 	ItemFinder_.bindValue (":url", item.URL_);
 	if (!ItemFinder_.exec ())
 	{
-		DumpError (ItemFinder_);
+		DBLock::DumpError (ItemFinder_);
 		throw std::runtime_error ("Unable to execute item finder query");
 	}
 	ItemFinder_.next ();
@@ -562,7 +599,7 @@ void SQLStorageBackend::UpdateItem (const ItemShort& item,
 
 	if (!UpdateShortItem_.exec ())
 	{
-		DumpError (UpdateShortItem_);
+		DBLock::DumpError (UpdateShortItem_);
 		throw std::runtime_error ("failed to save item");
 	}
 
@@ -585,7 +622,7 @@ void SQLStorageBackend::AddChannel (Channel_ptr channel, const QString& url)
 
 	if (!InsertChannel_.exec ())
 	{
-		DumpError (InsertChannel_);
+		DBLock::DumpError (InsertChannel_);
 		throw std::runtime_error ("failed to save channel");
 	}
 
@@ -611,7 +648,7 @@ void SQLStorageBackend::AddItem (Item_ptr item, const QString& parent)
 
 	if (!InsertItem_.exec ())
 	{
-		DumpError (InsertItem_);
+		DBLock::DumpError (InsertItem_);
 		throw std::runtime_error ("failed to save item");
 	}
 
@@ -623,15 +660,6 @@ void SQLStorageBackend::RemoveItem (Item_ptr item,
 		const QString& parentHash,
 		const QString& feedURL)
 {
-	if (!DB_.transaction ())
-	{
-		qWarning () << Q_FUNC_INFO << "failed to start transaction";
-		DumpError (DB_.lastError ());
-		return;
-	}
-
-	bool error = false;
-
 	RemoveItem_.bindValue (":parents_hash", hash);
 	RemoveItem_.bindValue (":title", item->Title_);
 	RemoveItem_.bindValue (":url", item->Link_);
@@ -639,14 +667,8 @@ void SQLStorageBackend::RemoveItem (Item_ptr item,
 
 	if (!RemoveItem_.exec ())
 	{
-		error = true;
-		DumpError (RemoveItem_);
-	}
-
-	if (!(error ? DB_.rollback () : DB_.commit ()))
-	{
-		qWarning () << Q_FUNC_INFO << "failed to" << (error ? "rollback" : "commit");
-		DumpError (DB_.lastError ());
+		DBLock::DumpError (RemoveItem_);
+		return;
 	}
 
 	emit channelDataUpdated (GetChannel (parentHash, feedURL));
@@ -658,14 +680,16 @@ void SQLStorageBackend::RemoveFeed (const QString& url)
 	channels_shorts_t shorts;
 	GetChannels (shorts, url);
 
-	if (!DB_.transaction ())
+	DBLock lock (DB_);
+	try
 	{
-		qWarning () << Q_FUNC_INFO << "failed to start transaction";
-		DumpError (DB_.lastError ());
+		lock.Init ();
+	}
+	catch (const std::runtime_error& e)
+	{
+		qWarning () << Q_FUNC_INFO << e.what ();
 		return;
 	}
-
-	bool error = false;
 
 	for (channels_shorts_t::iterator i = shorts.begin (),
 			end = shorts.end (); i != end; ++i)
@@ -677,35 +701,26 @@ void SQLStorageBackend::RemoveFeed (const QString& url)
 
 		if (!removeItem.exec ())
 		{
-			DumpError (removeItem);
-			error = true;
-			break;
+			DBLock::DumpError (removeItem);
+			return;
 		}
 
 		RemoveChannel_.bindValue (":parent_feed_url", url);
 		if (!RemoveChannel_.exec ())
 		{
-			DumpError (RemoveChannel_);
-			error = true;
-			break;
+			DBLock::DumpError (RemoveChannel_);
+			return;
 		}
 	}
 
 	RemoveFeed_.bindValue (":url", url);
 	if (!RemoveFeed_.exec ())
 	{
-		DumpError (RemoveFeed_);
-		error = true;
+		DBLock::DumpError (RemoveFeed_);
+		return;
 	}
 
-	RemoveFeed_.finish ();
-	RemoveChannel_.finish ();
-
-	if (!(error ? DB_.rollback () : DB_.commit ()))
-	{
-		qWarning () << Q_FUNC_INFO << "failed to" << (error ? "rollback" : "commit");
-		DumpError (DB_.lastError ());
-	}
+	lock.Good ();
 }
 
 void SQLStorageBackend::ToggleChannelUnread (const QString& purl,
@@ -717,7 +732,7 @@ void SQLStorageBackend::ToggleChannelUnread (const QString& purl,
 
 	if (!ToggleChannelUnread_.exec ())
 	{
-		DumpError (ToggleChannelUnread_);
+		DBLock::DumpError (ToggleChannelUnread_);
 		throw std::runtime_error ("failed to toggle item");
 	}
 
@@ -731,7 +746,7 @@ int SQLStorageBackend::GetUnreadItemsNumber () const
 			"WHERE unread = \"true\"");
 	if (!query.exec () || !query.next ())
 	{
-		DumpError (query);
+		DBLock::DumpError (query);
 		return 0;
 	}
 
@@ -769,7 +784,7 @@ bool SQLStorageBackend::InitializeTables ()
 			"last_update TIMESTAMP "
 			");"))
 	{
-		DumpError (query.lastError ());
+		DBLock::DumpError (query.lastError ());
 		return false;
 	}
 
@@ -787,7 +802,7 @@ bool SQLStorageBackend::InitializeTables ()
 			"favicon BLOB "
 			");"))
 	{
-		DumpError (query.lastError ());
+		DBLock::DumpError (query.lastError ());
 		return false;
 	}
 
@@ -805,16 +820,16 @@ bool SQLStorageBackend::InitializeTables ()
 			"comments_url TEXT "
 			");"))
 	{
-		DumpError (query.lastError ());
+		DBLock::DumpError (query.lastError ());
 		return false;
 	}
 
 	if (!query.exec ("CREATE UNIQUE INDEX feeds_url ON feeds (url);"))
-		DumpError (query.lastError ());
+		DBLock::DumpError (query.lastError ());
 	if (!query.exec ("CREATE INDEX channels_parent_url ON channels (parent_feed_url);"))
-		DumpError (query.lastError ());
+		DBLock::DumpError (query.lastError ());
 	if (!query.exec ("CREATE INDEX items_parents_hash ON items (parents_hash);"))
-		DumpError (query.lastError ());
+		DBLock::DumpError (query.lastError ());
 
 	if (!query.exec ("CREATE TABLE item_bucket ("
 			"title TEXT, "
@@ -827,26 +842,11 @@ bool SQLStorageBackend::InitializeTables ()
 			"unread TINYINT "
 			");"))
 	{
-		DumpError (query.lastError ());
+		DBLock::DumpError (query.lastError ());
 		return false;
 	}
 
 	return true;
-}
-
-void SQLStorageBackend::DumpError (const QSqlError& lastError) const
-{
-	qWarning () << lastError.text () << "|"
-		<< lastError.databaseText () << "|"
-		<< lastError.driverText () << "|"
-		<< lastError.type () << "|"
-		<< lastError.number ();
-}
-
-void SQLStorageBackend::DumpError (const QSqlQuery& lastQuery) const
-{
-	qWarning () << lastQuery.lastQuery ();
-	DumpError (lastQuery.lastError ());
 }
 
 QByteArray SQLStorageBackend::SerializePixmap (const QPixmap& pixmap) const
@@ -870,47 +870,43 @@ QPixmap SQLStorageBackend::UnserializePixmap (const QByteArray& bytes) const
 
 bool SQLStorageBackend::RollItemsStorage (int version)
 {
-	qDebug () << Q_FUNC_INFO << version;
-	if (!DB_.transaction ())
+	DBLock lock (DB_);
+	try
 	{
-		DumpError (DB_.lastError ());
-		qWarning () << Q_FUNC_INFO << "failed to start transaction";
+		lock.Init ();
+	}
+	catch (const std::runtime_error& e)
+	{
+		qWarning () << Q_FUNC_INFO << e.what ();
 		return false;
 	}
-
-	bool success = true;
 
 	if (version == 2)
 	{
 		QSqlQuery updateQuery = QSqlQuery ();
-		success = updateQuery.exec ("ALTER TABLE items "
-				"ADD num_comments SMALLINT");
+		if (!updateQuery.exec ("ALTER TABLE items "
+				"ADD num_comments SMALLINT"))
+		{
+			DBLock::DumpError (updateQuery);
+			return false;
+		}
 
-		if (!success)
-			DumpError (updateQuery);
-		else
-			success = updateQuery.exec ("ALTER TABLE items "
-					"ADD comments_url TEXT");
+		if (!updateQuery.exec ("ALTER TABLE items "
+					"ADD comments_url TEXT"))
+		{
+			DBLock::DumpError (updateQuery);
+			return false;
+		}
 
-		if (!success)
-			DumpError (updateQuery);
-		else
-			success = updateQuery.exec ("UPDATE items "
-					"SET num_comments = -1");
-
-		if (!success)
-			DumpError (updateQuery);
+		if (!updateQuery.exec ("UPDATE items "
+					"SET num_comments = -1"))
+		{
+			DBLock::DumpError (updateQuery);
+			return false;
+		}
 	}
 
-	if (!(success ? DB_.commit () : DB_.rollback ()))
-	{
-		DumpError (DB_.lastError ());
-		qWarning () << Q_FUNC_INFO << "failed to" << (success ? "commit" : "rollback");
-		success = false;
-	}
-
-	qDebug () << Q_FUNC_INFO << success;
-
-	return success ;
+	lock.Good ();
+	return true;
 }
 
