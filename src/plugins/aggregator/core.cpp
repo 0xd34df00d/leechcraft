@@ -753,8 +753,6 @@ void Core::handleJobFinished (int id)
 		}
 
 		channels = parser->Parse (ourChannels, modifiedItems, doc);
-		qDebug () << ourChannels [0]->Items_.size ()
-				<< channels [0]->Items_.size ();
 		for (size_t i = 0; i < channels.size (); ++i)
 			channels [i]->ParentURL_ = pj.URL_;
 	}
