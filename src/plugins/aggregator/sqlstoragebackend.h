@@ -232,8 +232,10 @@ public:
 	virtual void UpdateChannel (Channel_ptr, const QString&);
 	virtual void UpdateChannel (const ChannelShort&,
 			const QString&);
-	virtual void UpdateItem (Item_ptr, const QString&);
-	virtual void UpdateItem (const ItemShort&, const QString&);
+	virtual void UpdateItem (Item_ptr,
+			const QString&, const QString&);
+	virtual void UpdateItem (const ItemShort&,
+			const QString&, const QString&);
 	virtual void AddChannel (Channel_ptr, const QString&);
 	virtual void AddItem (Item_ptr, const QString&);
 	virtual void RemoveItem (Item_ptr,

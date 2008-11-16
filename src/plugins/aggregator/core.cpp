@@ -267,7 +267,7 @@ void Core::Selected (const QModelIndex& index)
 	ItemShort item = CurrentItems_ [index.row ()];
 	item.Unread_ = false;
 	StorageBackend_->UpdateItem (item,
-			CurrentChannelHash_.first + CurrentChannelHash_.second);
+			CurrentChannelHash_.first, CurrentChannelHash_.second);
 }
 
 Item_ptr Core::GetItem (const QModelIndex& index) const
@@ -296,8 +296,8 @@ void Core::MarkItemAsUnread (const QModelIndex& i)
 {
 	ItemShort is = CurrentItems_ [i.row ()];
 	is.Unread_ = true;
-	StorageBackend_->UpdateItem (CurrentItems_ [i.row ()],
-			CurrentChannelHash_.first + CurrentChannelHash_.second);
+	StorageBackend_->UpdateItem (is,
+			CurrentChannelHash_.first, CurrentChannelHash_.second);
 }
 
 bool Core::IsItemRead (int item) const
@@ -1103,7 +1103,7 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 			(*ourItem)->CommentsLink_ = (*item)->CommentsLink_;
 
 			StorageBackend_->UpdateItem ((*ourItem),
-					(*position)->ParentURL_ + (*position)->Title_);
+					(*position)->ParentURL_, (*position)->Title_);
 		}
 	}
 

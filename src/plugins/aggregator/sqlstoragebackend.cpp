@@ -536,9 +536,10 @@ void SQLStorageBackend::UpdateChannel (const ChannelShort& channel,
 	emit channelDataUpdated (GetChannel (channel.Title_, parent));
 }
 
-void SQLStorageBackend::UpdateItem (Item_ptr item, const QString& parent)
+void SQLStorageBackend::UpdateItem (Item_ptr item,
+		const QString& parentUrl, const QString& parentTitle)
 {
-	ItemFinder_.bindValue (":parents_hash", parent);
+	ItemFinder_.bindValue (":parents_hash", parentUrl + parentTitle);
 	ItemFinder_.bindValue (":title", item->Title_);
 	ItemFinder_.bindValue (":url", item->Link_);
 	if (!ItemFinder_.exec ())
@@ -549,12 +550,12 @@ void SQLStorageBackend::UpdateItem (Item_ptr item, const QString& parent)
 	ItemFinder_.next ();
 	if (!ItemFinder_.isValid ())
 	{
-		AddItem (item, parent);
+		AddItem (item, parentUrl + parentTitle);
 		return;
 	}
 	ItemFinder_.finish ();
 
-	UpdateItem_.bindValue (":parents_hash", parent);
+	UpdateItem_.bindValue (":parents_hash", parentUrl + parentTitle);
 	UpdateItem_.bindValue (":title", item->Title_);
 	UpdateItem_.bindValue (":url", item->Link_);
 	UpdateItem_.bindValue (":description", item->Description_);
@@ -573,12 +574,13 @@ void SQLStorageBackend::UpdateItem (Item_ptr item, const QString& parent)
 	}
 
 	emit itemDataUpdated (item);
+	emit channelDataUpdated (GetChannel (parentTitle, parentUrl));
 }
 
 void SQLStorageBackend::UpdateItem (const ItemShort& item,
-		const QString& parent)
+		const QString& parentUrl, const QString& parentTitle)
 {
-	ItemFinder_.bindValue (":parents_hash", parent);
+	ItemFinder_.bindValue (":parents_hash", parentUrl + parentTitle);
 	ItemFinder_.bindValue (":title", item.Title_);
 	ItemFinder_.bindValue (":url", item.URL_);
 	if (!ItemFinder_.exec ())
@@ -592,7 +594,7 @@ void SQLStorageBackend::UpdateItem (const ItemShort& item,
 				"couldn't add it because there isn't enough info");
 	ItemFinder_.finish ();
 
-	UpdateShortItem_.bindValue (":parents_hash", parent);
+	UpdateShortItem_.bindValue (":parents_hash", parentUrl + parentTitle);
 	UpdateShortItem_.bindValue (":unread", item.Unread_);
 	UpdateShortItem_.bindValue (":title", item.Title_);
 	UpdateShortItem_.bindValue (":url", item.URL_);
@@ -603,7 +605,8 @@ void SQLStorageBackend::UpdateItem (const ItemShort& item,
 		throw std::runtime_error ("failed to save item");
 	}
 
-	emit itemDataUpdated (GetItem (item.Title_, item.URL_, parent));
+	emit itemDataUpdated (GetItem (item.Title_, item.URL_, parentUrl + parentTitle));
+	emit channelDataUpdated (GetChannel (parentTitle, parentUrl));
 }
 
 void SQLStorageBackend::AddChannel (Channel_ptr channel, const QString& url)

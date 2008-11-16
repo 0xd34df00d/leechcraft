@@ -155,19 +155,21 @@ public:
 	 *
 	 * @param[in] item Pointer to the new version of the item that
 	 * should be updated.
-	 * @param[in] hash Hash identifying the item.
+	 * @param[in] parentUrl Parent feed's URL.
+	 * @param[in] parentTitle parent channel's title.
 	 */
 	virtual void UpdateItem (Item_ptr item,
-			const QString& hash) = 0;
+			const QString& parentUrl, const QString& parentTitle) = 0;
 	/** @brief Updates an already existing item.
 	 *
 	 * This is an overloaded function provided for convenience.
 	 *
 	 * @param[in] item Short new version of the item.
-	 * @param[in] hash Hash identifying the item.
+	 * @param[in] parentUrl Parent feed's URL.
+	 * @param[in] parentTitle parent channel's title.
 	 */
 	virtual void UpdateItem (const ItemShort& item,
-			const QString& hash) = 0;
+			const QString& parentUrl, const QString& parentTitle) = 0;
 
 	/** @brief Removes an already existing item.
 	 *
