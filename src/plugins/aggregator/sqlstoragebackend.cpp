@@ -20,7 +20,10 @@ SQLStorageBackend::DBLock::~DBLock ()
 		return;
 
 	if (Good_ ? !Database_.commit () : !Database_.rollback ())
+	{
 		DumpError (Database_.lastError ());
+		Good_ /= 0;
+	}
 }
 
 void SQLStorageBackend::DBLock::Init ()
@@ -328,6 +331,8 @@ void SQLStorageBackend::GetChannels (channels_shorts_t& shorts,
 		else
 			unread = UnreadItemsCounter_.value (0).toInt ();
 
+		UnreadItemsCounter_.finish ();
+
 		ChannelShort sh =
 		{
 			title,
@@ -342,6 +347,8 @@ void SQLStorageBackend::GetChannels (channels_shorts_t& shorts,
 		};
 		shorts.push_back (sh);
 	}
+
+	ChannelsShortSelector_.finish ();
 }
 
 Channel_ptr SQLStorageBackend::GetChannel (const QString& title,
@@ -372,6 +379,8 @@ Channel_ptr SQLStorageBackend::GetChannel (const QString& title,
 			.value (8).toByteArray ());
 	channel->ParentURL_ = feedParent;
 
+	ChannelsFullSelector_.finish ();
+
 	return channel;
 }
 
@@ -397,6 +406,8 @@ void SQLStorageBackend::GetItems (items_shorts_t& shorts, const QString& parents
 
 		shorts.push_back (sh);
 	}
+
+	ItemsShortSelector_.finish ();
 }
 
 Item_ptr SQLStorageBackend::GetItem (const QString& title,
@@ -423,6 +434,8 @@ Item_ptr SQLStorageBackend::GetItem (const QString& title,
 	item->Unread_ = ItemsFullSelector_.value (7).toBool ();
 	item->NumComments_ = ItemsFullSelector_.value (8).toInt ();
 	item->CommentsLink_ = ItemsFullSelector_.value (9).toString ();
+
+	ItemsFullSelector_.finish ();
 
 	return item;
 }
@@ -460,6 +473,8 @@ void SQLStorageBackend::AddFeed (Feed_ptr feed)
 		qWarning () << Q_FUNC_INFO << e.what ();
 		return;
 	}
+
+	InsertFeed_.finish ();
 
 	lock.Good ();
 }
@@ -500,6 +515,8 @@ void SQLStorageBackend::UpdateChannel (Channel_ptr channel, const QString& paren
 		throw std::runtime_error ("failed to save channel");
 	}
 
+	UpdateChannel_.finish ();
+
 	emit channelDataUpdated (channel);
 }
 
@@ -532,6 +549,8 @@ void SQLStorageBackend::UpdateChannel (const ChannelShort& channel,
 		DBLock::DumpError (UpdateShortChannel_);
 		throw std::runtime_error ("failed to save channel");
 	}
+
+	UpdateShortChannel_.finish ();
 
 	emit channelDataUpdated (GetChannel (channel.Title_, parent));
 }
@@ -573,6 +592,8 @@ void SQLStorageBackend::UpdateItem (Item_ptr item,
 		throw std::runtime_error ("failed to save item");
 	}
 
+	UpdateItem_.finish ();
+
 	emit itemDataUpdated (item);
 	emit channelDataUpdated (GetChannel (parentTitle, parentUrl));
 }
@@ -605,6 +626,8 @@ void SQLStorageBackend::UpdateItem (const ItemShort& item,
 		throw std::runtime_error ("failed to save item");
 	}
 
+	UpdateShortItem_.finish ();
+
 	emit itemDataUpdated (GetItem (item.Title_, item.URL_, parentUrl + parentTitle));
 	emit channelDataUpdated (GetChannel (parentTitle, parentUrl));
 }
@@ -628,6 +651,8 @@ void SQLStorageBackend::AddChannel (Channel_ptr channel, const QString& url)
 		DBLock::DumpError (InsertChannel_);
 		throw std::runtime_error ("failed to save channel");
 	}
+
+	InsertChannel_.finish ();
 
 	std::for_each (channel->Items_.begin (), channel->Items_.end (),
 		   boost::bind (&SQLStorageBackend::AddItem,
@@ -655,6 +680,8 @@ void SQLStorageBackend::AddItem (Item_ptr item, const QString& parent)
 		throw std::runtime_error ("failed to save item");
 	}
 
+	InsertItem_.finish ();
+
 	emit itemDataUpdated (item);
 }
 
@@ -673,6 +700,8 @@ void SQLStorageBackend::RemoveItem (Item_ptr item,
 		DBLock::DumpError (RemoveItem_);
 		return;
 	}
+
+	RemoveItem_.finish ();
 
 	emit channelDataUpdated (GetChannel (parentHash, feedURL));
 	emit itemDataUpdated (item);
@@ -714,6 +743,8 @@ void SQLStorageBackend::RemoveFeed (const QString& url)
 			DBLock::DumpError (RemoveChannel_);
 			return;
 		}
+
+		RemoveChannel_.finish ();
 	}
 
 	RemoveFeed_.bindValue (":url", url);
@@ -722,6 +753,8 @@ void SQLStorageBackend::RemoveFeed (const QString& url)
 		DBLock::DumpError (RemoveFeed_);
 		return;
 	}
+
+	RemoveFeed_.finish ();
 
 	lock.Good ();
 }
@@ -738,6 +771,8 @@ void SQLStorageBackend::ToggleChannelUnread (const QString& purl,
 		DBLock::DumpError (ToggleChannelUnread_);
 		throw std::runtime_error ("failed to toggle item");
 	}
+
+	ToggleChannelUnread_.finish ();
 
 	emit channelDataUpdated (GetChannel (title, purl));
 }
