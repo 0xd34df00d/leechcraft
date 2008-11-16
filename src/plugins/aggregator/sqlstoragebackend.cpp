@@ -289,7 +289,7 @@ void SQLStorageBackend::GetChannels (channels_shorts_t& shorts,
 			ChannelsShortSelector_.value (2).toString ().split (' ',
 					QString::SkipEmptyParts),
 			ChannelsShortSelector_.value (3).toDateTime (),
-			UnserializePixmap (ItemsShortSelector_
+			UnserializePixmap (ChannelsShortSelector_
 					.value (4).toByteArray ()),
 			unread,
 			feedURL

@@ -163,8 +163,8 @@ void ChannelsModel::Update (const channels_container_t& channels)
 
 void ChannelsModel::UpdateChannelData (const ChannelShort& cs)
 {
-    Channel2TreeItemDictionary_t::const_iterator position = Channel2TreeItem_.end ();
-    for (Channel2TreeItemDictionary_t::const_iterator i =
+    Channel2TreeItemDictionary_t::iterator position = Channel2TreeItem_.end ();
+    for (Channel2TreeItemDictionary_t::iterator i =
 			Channel2TreeItem_.begin (), end = Channel2TreeItem_.end ();
 			i != end; ++i)
         if (i.key () == cs)
@@ -175,13 +175,16 @@ void ChannelsModel::UpdateChannelData (const ChannelShort& cs)
 
     if (position == Channel2TreeItem_.end ())
         return;
-    
+
     TreeItem *item = position.value ();
+
+	TreeItem2Channel_ [item] = cs;
+
 	item->ModifyData (0, cs.Favicon_, Qt::DecorationRole);
     item->ModifyData (1, cs.LastBuild_);
     item->ModifyData (2, cs.Unread_);
     int pos = RootItem_->ChildPosition (item);
-    emit dataChanged (index (pos, 1), index (pos, 2));
+    emit dataChanged (index (pos, 0), index (pos, 2));
     emit channelDataUpdated ();
 }
 

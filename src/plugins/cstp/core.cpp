@@ -2,7 +2,6 @@
 #include <stdexcept>
 #include <numeric>
 #include <boost/logic/tribool.hpp>
-#include <QFile>
 #include <QDir>
 #include <QTimer>
 #include <QMetaType>
@@ -12,6 +11,7 @@
 #include "historymodel.h"
 #include "xmlsettingsmanager.h"
 #include "representationmodel.h"
+#include "morphfile.h"
 
 Core::Core ()
 : HistoryModel_ (new HistoryModel ())
@@ -69,7 +69,7 @@ int Core::AddTask (const QString& url,
 	td.Task_ = boost::shared_ptr<Task> (new Task (url));
 	td.Task_->SetProxy (GetProxySettings ());
 	QDir dir (path);
-	td.File_ = boost::shared_ptr<QFile> (new QFile (QDir::cleanPath (dir
+	td.File_ = boost::shared_ptr<MorphFile> (new MorphFile (QDir::cleanPath (dir
 					.filePath (filename))));
 	td.Comment_ = comment;
 	td.ErrorFlag_ = false;
@@ -410,7 +410,7 @@ void Core::ReadSettings ()
 				SLOT (updateInterface ()));
 
 		QString filename = settings.value ("Filename").toString ();
-		td.File_ = boost::shared_ptr<QFile> (new QFile (filename));
+		td.File_ = boost::shared_ptr<MorphFile> (new MorphFile (filename));
 
 		td.Comment_ = settings.value ("Comment").toString ();
 		td.ErrorFlag_ = settings.value ("ErrorFlag").toBool ();

@@ -15,6 +15,7 @@ SET (SRCS
 	mainviewdelegate.cpp
 	historymodel.cpp
 	representationmodel.cpp
+	morphfile.cpp
 	)
 SET (HEADERS
 	cstp.h
@@ -26,6 +27,7 @@ SET (HEADERS
 	mainviewdelegate.h
 	historymodel.h
 	representationmodel.h
+	morphfile.h
 	../../xmlsettingsdialog/basesettingsmanager.h
 	)
 SET (FORMS

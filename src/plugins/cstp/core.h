@@ -11,6 +11,7 @@ class Task;
 class QFile;
 class HistoryModel;
 class RepresentationModel;
+class MorphFile;
 
 namespace boost
 {
@@ -37,7 +38,7 @@ class Core : public QAbstractItemModel
 	struct TaskDescr
 	{
 		boost::shared_ptr<Task> Task_;
-		boost::shared_ptr<QFile> File_;
+		boost::shared_ptr<MorphFile> File_;
 		QString Comment_;
 		bool ErrorFlag_;
 		LeechCraft::TaskParameters Parameters_;
