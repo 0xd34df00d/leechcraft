@@ -65,6 +65,7 @@ Core::Core ()
 			SLOT (saveCookies ()));
 	CookieSaveTimer_->start (10000);
 
+	HistoryModel_.reset (new HistoryModel (this));
 	FavoritesModel_.reset (new FavoritesModel (this));
 
 	FavoriteTagsCompletionModel_.reset (new TagsCompletionModel (this));
@@ -96,6 +97,7 @@ void Core::Release ()
 	saveCookies ();
 
 	NetworkAccessManager_.reset ();
+	HistoryModel_.reset ();
 	FavoritesModel_.reset ();
 	FavoriteTagsCompletionModel_.reset ();
 
@@ -150,6 +152,11 @@ CustomWebView* Core::MakeWebView ()
 FavoritesModel* Core::GetFavoritesModel () const
 {
 	return FavoritesModel_.get ();
+}
+
+HistoryModel* Core::GetHistoryModel () const
+{
+	return HistoryModel_.get ();
 }
 
 TagsCompletionModel* Core::GetFavoritesTagsCompletionModel () const
@@ -222,6 +229,15 @@ void Core::ScheduleSaveSession ()
 	SaveSessionScheduled_ = true;
 }
 
+void Core::HandleHistory (QWebView *view)
+{
+	QString url = view->url ().isValid () ?
+		view->url ().toString () : tr ("Unknown");
+
+	HistoryModel_->AddItem (view->title (),
+			url, QDateTime::currentDateTime ());
+}
+
 void Core::saveCookies () const
 {
 	QDir dir = QDir::home ();
@@ -252,6 +268,7 @@ void Core::handleURLChanged (const QString& newURL)
 {
 	emit changeTabName (dynamic_cast<QWidget*> (sender ()),
 			tr ("Loading %1").arg (QUrl (newURL).host ()));
+	HandleHistory (dynamic_cast<BrowserWidget*> (sender ())->GetView ());
 
 	ScheduleSaveSession ();
 }

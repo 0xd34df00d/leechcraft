@@ -1,34 +1,34 @@
-#ifndef FAVORITESMODEL_H
-#define FAVORITESMODEL_H
-#include <vector>
+#ifndef HISTORYMODEL_H
+#define HISTORYMODEL_H
+#include <deque>
 #include <QAbstractItemModel>
 #include <QStringList>
+#include <QDateTime>
 
-class FavoritesModel : public QAbstractItemModel
+class HistoryModel : public QAbstractItemModel
 {
 	Q_OBJECT
-	
+
 	QStringList ItemHeaders_;
 
-	struct FavoritesItem
+	struct HistoryItem
 	{
 		QString Title_;
+		QDateTime DateTime_;
 		QString URL_;
-		QStringList Tags_;
 	};
 
-	std::vector<FavoritesItem> Items_;
+	std::deque<HistoryItem> Items_;
 public:
 	enum Columns
 	{
 		ColumnTitle
+		, ColumnDate
 		, ColumnURL
-		, ColumnTags
 	};
-	enum { TagsRole = 42 };
 
-	FavoritesModel (QObject* = 0);
-	virtual ~FavoritesModel ();
+	HistoryModel (QObject* = 0);
+	virtual ~HistoryModel ();
 
     virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
     virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
@@ -39,12 +39,8 @@ public:
 			const QModelIndex& = QModelIndex()) const;
     virtual QModelIndex parent (const QModelIndex&) const;
     virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
-	virtual bool setData (const QModelIndex&, const QVariant&,
-			int = Qt::EditRole);
 
-	void AddItem (const QString&, const QString&, const QStringList&);
-public slots:
-	void removeItem (const QModelIndex&);
+	void AddItem (const QString&, const QString&, const QDateTime&);
 private:
 	void SaveData () const;
 	void LoadData ();

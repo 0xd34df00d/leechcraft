@@ -45,7 +45,7 @@
         <x>0</x>
         <y>0</y>
         <width>382</width>
-        <height>166</height>
+        <height>195</height>
        </rect>
       </property>
       <attribute name="label" >
@@ -74,11 +74,6 @@
              <string>Regexp</string>
             </property>
            </item>
-           <item>
-            <property name="text" >
-             <string>Tags</string>
-            </property>
-           </item>
           </widget>
          </item>
          <item>
@@ -94,7 +89,17 @@
         </layout>
        </item>
        <item>
-        <widget class="QTreeView" name="treeView" />
+        <widget class="QTreeView" name="HistoryView_" >
+         <property name="rootIsDecorated" >
+          <bool>false</bool>
+         </property>
+         <property name="itemsExpandable" >
+          <bool>false</bool>
+         </property>
+         <property name="expandsOnDoubleClick" >
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

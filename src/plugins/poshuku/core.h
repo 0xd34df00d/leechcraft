@@ -7,11 +7,13 @@
 #include <QTimer>
 #include <plugininterface/tagscompletionmodel.h>
 #include "favoritesmodel.h"
+#include "historymodel.h"
 
 class QString;
 class QWidget;
 class QIcon;
 class CustomWebView;
+class QWebView;
 class BrowserWidget;
 class QAbstractItemModel;
 
@@ -23,6 +25,7 @@ class Core : public QObject
 	Widgets_t Widgets_;
 
 	std::auto_ptr<FavoritesModel> FavoritesModel_;
+	std::auto_ptr<HistoryModel> HistoryModel_;
 	std::auto_ptr<TagsCompletionModel> FavoriteTagsCompletionModel_;
 	std::auto_ptr<QNetworkAccessManager> NetworkAccessManager_;
 	std::auto_ptr<QTimer> CookieSaveTimer_;
@@ -39,12 +42,14 @@ public:
 	BrowserWidget* NewURL (const QString&);
 	CustomWebView* MakeWebView ();
 	FavoritesModel* GetFavoritesModel () const;
+	HistoryModel* GetHistoryModel () const;
 	TagsCompletionModel* GetFavoritesTagsCompletionModel () const;
 	QNetworkAccessManager* GetNetworkAccessManager () const;
 private:
 	void DoCommonAuth (const QString&, QAuthenticator*);
 	void RestoreSession (bool);
 	void ScheduleSaveSession ();
+	void HandleHistory (QWebView*);
 private slots:
 	void saveCookies () const;
 	void handleTitleChanged (const QString&);

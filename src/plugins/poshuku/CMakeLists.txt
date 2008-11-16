@@ -23,6 +23,7 @@ SET (SRCS
 	authenticationdialog.cpp
 	sslerrorsdialog.cpp
 	restoresessiondialog.cpp
+	historymodel.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -41,6 +42,7 @@ SET (HEADERS
 	authenticationdialog.h
 	sslerrorsdialog.h
 	restoresessiondialog.h
+	historymodel.h
 	)
 SET (FORMS
 	poshuku.ui

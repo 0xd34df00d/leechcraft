@@ -45,6 +45,8 @@ void Poshuku::Init ()
 			this,
 			SLOT (handleError (const QString&)));
 
+	Ui_.HistoryView_->setModel (Core::Instance ().GetHistoryModel ());
+
 	FavoritesFilterModel_.reset (new FilterModel (this));
 	FavoritesFilterModel_->setSourceModel (Core::Instance ().GetFavoritesModel ());
 	FavoritesFilterModel_->setDynamicSortFilter (true);

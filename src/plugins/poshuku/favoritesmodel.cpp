@@ -53,7 +53,8 @@ Qt::ItemFlags FavoritesModel::flags (const QModelIndex& index) const
 	return result;
 }
 
-QVariant FavoritesModel::headerData (int column, Qt::Orientation orient, int role) const
+QVariant FavoritesModel::headerData (int column, Qt::Orientation orient,
+		int role) const
 {
     if (orient == Qt::Horizontal && role == Qt::DisplayRole)
         return ItemHeaders_.at (column);
@@ -61,7 +62,8 @@ QVariant FavoritesModel::headerData (int column, Qt::Orientation orient, int rol
         return QVariant ();
 }
 
-QModelIndex FavoritesModel::index (int row, int column, const QModelIndex& parent) const
+QModelIndex FavoritesModel::index (int row, int column,
+		const QModelIndex& parent) const
 {
     if (!hasIndex (row, column, parent))
         return QModelIndex ();
@@ -129,7 +131,7 @@ void FavoritesModel::LoadData ()
 	settings.endArray ();
 }
 
-void FavoritesModel::SaveData ()
+void FavoritesModel::SaveData () const
 {
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
 			Proxy::Instance ()->GetApplicationName () + "_Poshuku");

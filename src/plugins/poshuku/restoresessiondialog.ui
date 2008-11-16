@@ -65,6 +65,11 @@
     </widget>
    </item>
   </layout>
+  <zorder>SelectAll_</zorder>
+  <zorder>SelectNone_</zorder>
+  <zorder></zorder>
+  <zorder>Pages_</zorder>
+  <zorder>buttonBox</zorder>
  </widget>
  <resources/>
  <connections>
