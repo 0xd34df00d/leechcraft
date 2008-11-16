@@ -591,8 +591,9 @@ void SQLStorageBackend::UpdateItem (Item_ptr item,
 
 	UpdateItem_.finish ();
 
-	emit itemDataUpdated (item);
-	emit channelDataUpdated (GetChannel (parentTitle, parentUrl));
+	Channel_ptr channel = GetChannel (parentTitle, parentUrl);
+	emit itemDataUpdated (item, channel);
+	emit channelDataUpdated (channel);
 }
 
 void SQLStorageBackend::UpdateItem (const ItemShort& item,
@@ -625,8 +626,10 @@ void SQLStorageBackend::UpdateItem (const ItemShort& item,
 
 	UpdateShortItem_.finish ();
 
-	emit itemDataUpdated (GetItem (item.Title_, item.URL_, parentUrl + parentTitle));
-	emit channelDataUpdated (GetChannel (parentTitle, parentUrl));
+	Channel_ptr channel = GetChannel (parentTitle, parentUrl);
+	emit itemDataUpdated (GetItem (item.Title_,
+				item.URL_, parentUrl + parentTitle), channel);
+	emit channelDataUpdated (channel);
 }
 
 void SQLStorageBackend::AddChannel (Channel_ptr channel, const QString& url)
@@ -682,14 +685,15 @@ void SQLStorageBackend::AddItem (Item_ptr item,
 
 	InsertItem_.finish ();
 
-	emit itemDataUpdated (item);
-	emit channelDataUpdated (GetChannel (parentTitle, parentUrl));
+	Channel_ptr channel = GetChannel (parentTitle, parentUrl);
+	emit itemDataUpdated (item, channel);
+	emit channelDataUpdated (channel);
 }
 
 void SQLStorageBackend::RemoveItem (Item_ptr item,
 		const QString& hash,
-		const QString& parentHash,
-		const QString& feedURL)
+		const QString& parentTitle,
+		const QString& parentUrl)
 {
 	RemoveItem_.bindValue (":parents_hash", hash);
 	RemoveItem_.bindValue (":title", item->Title_);
@@ -704,8 +708,9 @@ void SQLStorageBackend::RemoveItem (Item_ptr item,
 
 	RemoveItem_.finish ();
 
-	emit channelDataUpdated (GetChannel (parentHash, feedURL));
-	emit itemDataUpdated (item);
+	Channel_ptr channel = GetChannel (parentTitle, parentUrl);
+	emit itemDataUpdated (item, channel);
+	emit channelDataUpdated (channel);
 }
 
 void SQLStorageBackend::RemoveFeed (const QString& url)

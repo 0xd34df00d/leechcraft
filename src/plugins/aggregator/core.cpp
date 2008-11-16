@@ -72,9 +72,9 @@ Core::Core ()
 			this,
 			SLOT (handleChannelDataUpdated (Channel_ptr)));
 	connect (StorageBackend_.get (),
-			SIGNAL (itemDataUpdated (Item_ptr)),
+			SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
 			this,
-			SLOT (handleItemDataUpdated (Item_ptr)));
+			SLOT (handleItemDataUpdated (Item_ptr, Channel_ptr)));
 
 	ParserFactory::Instance ().Register (&RSS20Parser::Instance ());
 	ParserFactory::Instance ().Register (&Atom10Parser::Instance ());
@@ -918,8 +918,12 @@ void Core::handleChannelDataUpdated (Channel_ptr channel)
 	}
 }
 
-void Core::handleItemDataUpdated (Item_ptr item)
+void Core::handleItemDataUpdated (Item_ptr item, Channel_ptr channel)
 {
+	if (channel->ParentURL_ != CurrentChannelHash_.first ||
+			channel->Title_ != CurrentChannelHash_.second)
+		return;
+
 	ItemShort is = item->ToShort ();
 
 	items_shorts_t::iterator pos = CurrentItems_.end ();
@@ -933,13 +937,22 @@ void Core::handleItemDataUpdated (Item_ptr item)
 			break;
 		}
 
-	if (pos == CurrentItems_.end ())
-		return;
+	// Item is new
+	if (pos == CurrentItems_.end () &&
+			CurrentItems_.size ())
+	{
+		beginInsertRows (index (0, 0), index (0, 2));
+		CurrentItems_.insert (is, CurrentItems_.begin ());
+		endInsertRows ();
+	}
+	// Item exists already
+	else
+	{
+		*pos = is;
 
-	*pos = is;
-
-	int distance = std::distance (CurrentItems_.begin (), pos);
-	emit dataChanged (index (distance, 0), index (distance, 1));
+		int distance = std::distance (CurrentItems_.begin (), pos);
+		emit dataChanged (index (distance, 0), index (distance, 1));
+	}
 }
 
 void Core::updateIntervalChanged ()

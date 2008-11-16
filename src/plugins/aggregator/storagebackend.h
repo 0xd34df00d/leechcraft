@@ -262,8 +262,10 @@ signals:
 	 * This signal is emitted when a single item is updated.
 	 *
 	 * @param[out] item Pointer to the updated item.
+	 * @param[out] channel Pointer to the channel containing updated
+	 * item.
 	 */
-	void itemDataUpdated (Item_ptr item) const;
+	void itemDataUpdated (Item_ptr item, Channel_ptr channel) const;
 };
 
 #endif
