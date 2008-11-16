@@ -107,8 +107,7 @@ public:
 	/** @brief Adds a new item to an already existing channel.
 	 *
 	 * Items are differentiated by a hash consisting of parent channel's
-	 * and feed's data and some own data. Storage backend shouldn't rely
-	 * on how exactly the hash is built.
+	 * and feed's data and some own data.
 	 *
 	 * This function would emit channelDataUpdated() signal after it
 	 * finishes.
@@ -117,9 +116,11 @@ public:
 	 * should do nothing.
 	 *
 	 * @param[in] channel Pointer to the item that should be added.
-	 * @param[in] hash The string identifying the item.
+	 * @param[in] parentUrl Parent feed's URL.
+	 * @param[in] parentTitle parent channel's title.
 	 */
-	virtual void AddItem (Item_ptr item, const QString& hash) = 0;
+	virtual void AddItem (Item_ptr item,
+			const QString& parentUrl, const QString& parentTitle) = 0;
 	/** @brief Updates an already existing channel.
 	 *
 	 * If the specified channel doesn't exist in the storage, it should

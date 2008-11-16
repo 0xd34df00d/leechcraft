@@ -20,10 +20,7 @@ SQLStorageBackend::DBLock::~DBLock ()
 		return;
 
 	if (Good_ ? !Database_.commit () : !Database_.rollback ())
-	{
 		DumpError (Database_.lastError ());
-		Good_ /= 0;
-	}
 }
 
 void SQLStorageBackend::DBLock::Init ()
@@ -569,7 +566,7 @@ void SQLStorageBackend::UpdateItem (Item_ptr item,
 	ItemFinder_.next ();
 	if (!ItemFinder_.isValid ())
 	{
-		AddItem (item, parentUrl + parentTitle);
+		AddItem (item, parentUrl, parentTitle);
 		return;
 	}
 	ItemFinder_.finish ();
@@ -657,12 +654,15 @@ void SQLStorageBackend::AddChannel (Channel_ptr channel, const QString& url)
 	std::for_each (channel->Items_.begin (), channel->Items_.end (),
 		   boost::bind (&SQLStorageBackend::AddItem,
 			   this,
-			   _1, url + channel->Title_));
+			   _1,
+			   url,
+			   channel->Title_));
 }
 
-void SQLStorageBackend::AddItem (Item_ptr item, const QString& parent)
+void SQLStorageBackend::AddItem (Item_ptr item,
+		const QString& parentUrl, const QString& parentTitle)
 {
-	InsertItem_.bindValue (":parents_hash", parent);
+	InsertItem_.bindValue (":parents_hash", parentUrl + parentTitle);
 	InsertItem_.bindValue (":title", item->Title_);
 	InsertItem_.bindValue (":url", item->Link_);
 	InsertItem_.bindValue (":description", item->Description_);
@@ -683,6 +683,7 @@ void SQLStorageBackend::AddItem (Item_ptr item, const QString& parent)
 	InsertItem_.finish ();
 
 	emit itemDataUpdated (item);
+	emit channelDataUpdated (GetChannel (parentTitle, parentUrl));
 }
 
 void SQLStorageBackend::RemoveItem (Item_ptr item,

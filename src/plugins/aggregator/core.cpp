@@ -1135,7 +1135,7 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 			for (items_container_t::const_iterator j =
 					(*i)->Items_.begin (), end = (*i)->Items_.end ();
 					j != end; ++j)
-				StorageBackend_->AddItem (*j, pj.URL_ + (*i)->Title_);
+				StorageBackend_->AddItem (*j, pj.URL_, (*i)->Title_);
 
 			if ((*i)->LastBuild_.isValid ())
 				(*position)->LastBuild_ = (*i)->LastBuild_;
