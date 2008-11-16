@@ -918,6 +918,24 @@ void Core::handleChannelDataUpdated (Channel_ptr channel)
 	}
 }
 
+namespace
+{
+	struct FindEarlierDate
+	{
+		QDateTime Pattern_;
+
+		FindEarlierDate (const QDateTime& pattern)
+		: Pattern_ (pattern)
+		{
+		}
+
+		bool operator() (const ItemShort& is)
+		{
+			return Pattern_ > is.PubDate_;
+		}
+	};
+};
+
 void Core::handleItemDataUpdated (Item_ptr item, Channel_ptr channel)
 {
 	if (channel->ParentURL_ != CurrentChannelHash_.first ||
@@ -938,11 +956,16 @@ void Core::handleItemDataUpdated (Item_ptr item, Channel_ptr channel)
 		}
 
 	// Item is new
-	if (pos == CurrentItems_.end () &&
-			CurrentItems_.size ())
+	if (pos == CurrentItems_.end ())
 	{
-		beginInsertRows (index (0, 0), index (0, 2));
-		CurrentItems_.insert (is, CurrentItems_.begin ());
+		items_shorts_t::iterator insertPos =
+			std::find_if (CurrentItems_.begin (), CurrentItems_.end (),
+					FindEarlierDate (item->PubDate_));
+
+		int shift = std::distance (CurrentItems_.begin (), insertPos);
+
+		beginInsertRows (QModelIndex (), shift, shift);
+		CurrentItems_.insert (insertPos, is);
 		endInsertRows ();
 	}
 	// Item exists already
