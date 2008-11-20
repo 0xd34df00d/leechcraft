@@ -30,11 +30,11 @@ QVariant HistoryModel::data (const QModelIndex& index, int role) const
 		case Qt::DisplayRole:
 			switch (index.column ())
 			{
-				case 0:
+				case ColumnTitle:
 					return Items_ [index.row ()].Title_;
-				case 1:
+				case ColumnDate:
 					return Items_ [index.row ()].DateTime_.toString ();
-				case 2:
+				case ColumnURL:
 					return Items_ [index.row ()].URL_;
 				default:
 					return QVariant ();

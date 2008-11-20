@@ -45,6 +45,8 @@ public slots:
 private slots:
 	void on_AddressLine__returnPressed ();
 	void on_ActionSettings__triggered ();
+	void on_HistoryView__activated (const QModelIndex&);
+	void on_FavoritesView__activated (const QModelIndex&);
 	void viewerSettingsChanged ();
 	void updateFavoritesFilter ();
 	void handleError (const QString&);

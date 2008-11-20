@@ -29,11 +29,11 @@ QVariant FavoritesModel::data (const QModelIndex& index, int role) const
 		case Qt::DisplayRole:
 			switch (index.column ())
 			{
-				case 0:
+				case ColumnTitle:
 					return Items_ [index.row ()].Title_;
-				case 1:
+				case ColumnURL:
 					return Items_ [index.row ()].URL_;
-				case 2:
+				case ColumnTags:
 					return Items_ [index.row ()].Tags_.join (" ");
 				default:
 					return QVariant ();

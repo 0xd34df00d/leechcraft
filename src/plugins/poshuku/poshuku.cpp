@@ -3,12 +3,15 @@
 #include <QWebSettings>
 #include <QHeaderView>
 #include <QUrl>
+#include <QtDebug>
 #include <plugininterface/util.h>
 #include <plugininterface/tagscompletionmodel.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "customwebview.h"
 #include "favoritesdelegate.h"
+#include "historymodel.h"
+#include "favoritesmodel.h"
 
 void Poshuku::Init ()
 {
@@ -77,11 +80,21 @@ void Poshuku::Init ()
 	QHeaderView *itemsHeader = Ui_.FavoritesView_->header ();
 	QFontMetrics fm = fontMetrics ();
 	itemsHeader->resizeSection (0,
-			fm.width ("Average site title can be very big, it's also the most important part, so it's priority is the biggest."));
+			fm.width ("Average site title can be very big, it's also the "
+				"most important part, so it's priority is the biggest."));
 	itemsHeader->resizeSection (1,
 			fm.width ("Average URL could be very very long, but we don't account this."));
 	itemsHeader->resizeSection (2,
 			fm.width ("Average tags list size should be like this."));
+
+	itemsHeader = Ui_.HistoryView_->header ();
+	itemsHeader->resizeSection (0,
+			fm.width ("Average site title can be very big, it's also the "
+				"most important part, so it's priority is the biggest."));
+	itemsHeader->resizeSection (1,
+			fm.width (QDateTime::currentDateTime ().toString () + " space"));
+	itemsHeader->resizeSection (2,
+			fm.width ("Average URL could be very very long, but we don't account this."));
 }
 
 void Poshuku::Release ()
@@ -186,6 +199,18 @@ void Poshuku::on_AddressLine__returnPressed ()
 void Poshuku::on_ActionSettings__triggered ()
 {
 	XmlSettingsDialog_->show ();
+}
+
+void Poshuku::on_HistoryView__activated (const QModelIndex& index)
+{
+	Core::Instance ().NewURL (index.sibling (index.row (),
+				HistoryModel::ColumnURL).data ().toString ());
+}
+
+void Poshuku::on_FavoritesView__activated (const QModelIndex& index)
+{
+	Core::Instance ().NewURL (index.sibling (index.row (),
+				FavoritesModel::ColumnURL).data ().toString ());
 }
 
 void Poshuku::viewerSettingsChanged ()
