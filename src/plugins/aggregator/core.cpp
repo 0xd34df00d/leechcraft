@@ -905,16 +905,18 @@ void Core::handleChannelDataUpdated (Channel_ptr channel)
 {
 	ChannelShort cs = channel->ToShort ();
 
+	items_shorts_t channelItems;
+	StorageBackend_->GetItems (channelItems, cs.ParentURL_ + cs.Title_);
+	cs.Unread_ = std::accumulate (channelItems.begin (),
+			channelItems.end (), 0, UnreadAccumulator ());
+	ChannelsModel_->UpdateChannelData (cs);
+	UpdateUnreadItemsNumber ();
+
 	if (cs.ParentURL_ == CurrentChannelHash_.first &&
 			cs.Title_ == CurrentChannelHash_.second)
 	{
-		CurrentItems_.clear ();
-		StorageBackend_->GetItems (CurrentItems_, cs.ParentURL_ + cs.Title_);
-		cs.Unread_ = std::accumulate (CurrentItems_.begin (),
-				CurrentItems_.end (), 0, UnreadAccumulator ());
-		ChannelsModel_->UpdateChannelData (cs);
+		CurrentItems_ = channelItems;
 		emit dataChanged (index (0, 0), index (CurrentItems_.size (), 1));
-		UpdateUnreadItemsNumber ();
 	}
 }
 
@@ -1168,10 +1170,12 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 					.arg ((*i)->Title_)
 					.arg ((*i)->Items_.size ());
 
-			for (items_container_t::const_iterator j =
-					(*i)->Items_.begin (), end = (*i)->Items_.end ();
-					j != end; ++j)
-				StorageBackend_->AddItem (*j, pj.URL_, (*i)->Title_);
+			std::for_each ((*i)->Items_.begin (), (*i)->Items_.end (),
+					boost::bind (&StorageBackend::AddItem,
+						StorageBackend_.get (),
+						_1,
+						pj.URL_,
+						(*i)->Title_));
 
 			if ((*i)->LastBuild_.isValid ())
 				(*position)->LastBuild_ = (*i)->LastBuild_;
