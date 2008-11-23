@@ -1,5 +1,5 @@
-#ifndef UTIL_H
-#define UTIL_H
+#ifndef LEECHCRAFT_UTIL_UTIL_H
+#define LEECHCRAFT_UTIL_UTIL_H
 #include "config.h"
 
 class QString;

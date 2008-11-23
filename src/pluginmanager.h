@@ -18,6 +18,7 @@ namespace Main
         QMap<PluginsContainer_t::const_iterator, bool> DependenciesMet_;
         QMap<PluginsContainer_t::const_iterator, QStringList> FailedDependencies_;
 		QMap<QString, PluginsContainer_t::const_iterator> FeatureProviders_;
+		QObjectList SelectedDownloaderWatchers_;
     public:
         typedef PluginsContainer_t::size_type Size_t;
         PluginManager (QObject *parent = 0);
@@ -51,6 +52,7 @@ namespace Main
         void InitializePlugins (const Main::MainWindow*);
         void CalculateDependencies ();
 		QObject* GetProvider (const QString&) const;
+		QObjectList GetSelectedDownloaderWatchers () const;
     private:
         void FindPlugins ();
     signals:

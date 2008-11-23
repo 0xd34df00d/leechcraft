@@ -41,6 +41,7 @@ private Q_SLOTS:
 	void reColumnsRemoved (const QModelIndex&, int, int);
 	void reDataChanged (const QModelIndex&, const QModelIndex&);
 	void reHeaderDataChanged (Qt::Orientation, int, int);
+	void reInvalidate ();
 	void reLayoutAboutToBeChanged ();
 	void reLayoutChanged ();
 	void reModelAboutToBeReset ();
@@ -50,8 +51,6 @@ private Q_SLOTS:
 	void reRowsInserted (const QModelIndex&, int, int);
 	void reRowsRemoved (const QModelIndex&, int, int);
 private:
-	boost::any Convert (const QVariant&) const;
-	QVariant Convert (const boost::any&) const;
 	QModelIndex Convert (const Wt::WModelIndex&) const;
 	Wt::WModelIndex Convert (const QModelIndex&) const;
 };

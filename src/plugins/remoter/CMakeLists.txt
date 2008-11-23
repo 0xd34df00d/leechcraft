@@ -13,11 +13,19 @@ SET (SRCS
     remoter.cpp
     core.cpp
 	qtowabstractitemmodeladaptor.cpp
+	downloaderswidget.cpp
+	qtowtoolbaradaptor.cpp
+	util.cpp
+	interface.cpp
 	)
 SET (HEADERS
     remoter.h
     core.h
 	qtowabstractitemmodeladaptor.h
+	downloaderswidget.h
+	qtowtoolbaradaptor.h
+	util.h
+	interface.h
 	)
 SET (FORMS
     mainwindow.ui)
@@ -46,6 +54,7 @@ TARGET_LINK_LIBRARIES (leechcraft_remoter
 	${QT_LIBRARIES}
 	${Wt_LIBRARY}
 	${Wt_HTTP_LIBRARY}
+	${Wt_EXT_LIBRARY}
 	plugininterface
 	xmlsettingsdialog
 	)

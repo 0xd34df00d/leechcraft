@@ -136,7 +136,8 @@ QString PluginManager::Info (const PluginManager::Size_t& pos) const
 QObjectList PluginManager::GetAllPlugins () const
 {
     QObjectList result;
-    for (PluginsContainer_t::const_iterator i = Plugins_.begin (); i != Plugins_.end (); ++i)
+    for (PluginsContainer_t::const_iterator i = Plugins_.begin ();
+			i != Plugins_.end (); ++i)
         result << (*i)->instance ();
     return result;
 }
@@ -150,7 +151,10 @@ void PluginManager::InitializePlugins (const MainWindow*)
         loader->load ();
         if (!loader->isLoaded ())
         {
-            qWarning () << "Could not load library: " << loader->fileName () << "; " << loader->errorString ();
+            qWarning () << "Could not load library: "
+				<< loader->fileName ()
+				<< "; "
+				<< loader->errorString ();
             Plugins_.removeAt (i--);
             continue;
         }
@@ -159,7 +163,9 @@ void PluginManager::InitializePlugins (const MainWindow*)
         IInfo *info = qobject_cast<IInfo*> (pluginEntity);
         if (!info)
         {
-            qWarning () << "Library successfully loaded, but it could not be initialized (casting to IInfo failed): " << loader->fileName ();
+            qWarning () << "Library successfully loaded, but it could "
+				"not be initialized (casting to IInfo failed): "
+					<< loader->fileName ();
             Plugins_.removeAt (i--);
             continue;
         }
@@ -169,7 +175,8 @@ void PluginManager::InitializePlugins (const MainWindow*)
 
 void PluginManager::CalculateDependencies ()
 {
-    for (PluginsContainer_t::const_iterator i = Plugins_.begin (); i != Plugins_.end (); ++i)
+    for (PluginsContainer_t::const_iterator i = Plugins_.begin ();
+			i != Plugins_.end (); ++i)
     {
         QObject *pEntity = (*i)->instance ();
         IInfo *info = qobject_cast<IInfo*> (pEntity);
@@ -185,22 +192,37 @@ void PluginManager::CalculateDependencies ()
 
         if (!needs.isEmpty ())
         {
-			if (needs.contains ("services::historyModel"))
+			for (int j = 0; j < needs.size (); ++j)
 			{
-				QMetaObject::invokeMethod (pEntity,
-						"pushHistoryModel",
-						Q_ARG (MergeModel*,
-							Core::Instance ().GetUnfilteredHistoryModel ()));
-				needs.removeAll ("services::historyModel");
-			}
+				QList<QString> parsed = needs.at (j).split ("::",
+						QString::SkipEmptyParts);
+				if (parsed.size () < 2)
+					continue;
 
-			if (needs.contains ("services::downloadersModel"))
-			{
-				QMetaObject::invokeMethod (pEntity,
-						"pushDownloadersModel",
-						Q_ARG (MergeModel*,
-							Core::Instance ().GetUnfilteredTasksModel ()));
-				needs.removeAll ("services::downloadersModel");
+				if (parsed [0] == "services")
+				{
+					if (parsed [1] == "historyModel")
+					{
+						QMetaObject::invokeMethod (pEntity,
+								"pushHistoryModel",
+								Q_ARG (MergeModel*,
+									Core::Instance ().GetUnfilteredHistoryModel ()));
+					}
+					else if (parsed [1] == "downloadersModel")
+					{
+						QMetaObject::invokeMethod (pEntity,
+								"pushDownloadersModel",
+								Q_ARG (MergeModel*,
+									Core::Instance ().GetUnfilteredTasksModel ()));
+					}
+					else if (parsed [1] == "subscriptions" && parsed.size () >= 3)
+					{
+						if (parsed [2] == "selectedDownloaderChanged")
+							SelectedDownloaderWatchers_ << pEntity;
+					}
+				}
+
+				needs.removeAt (j--);
 			}
 
 			if (needs.contains ("*"))
@@ -277,6 +299,11 @@ QObject* PluginManager::GetProvider (const QString& feature) const
 	if (!FeatureProviders_.contains (feature))
 		return 0;
 	return (*FeatureProviders_ [feature])->instance ();
+}
+
+QObjectList PluginManager::GetSelectedDownloaderWatchers () const
+{
+	return SelectedDownloaderWatchers_;
 }
 
 void PluginManager::FindPlugins ()

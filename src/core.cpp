@@ -292,6 +292,12 @@ void Main::Core::SetNewRow (const QModelIndex& index)
 	IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
 	if (ijh)
 		ijh->ItemSelected (MergeModel_->mapToSource (mapped));
+
+	QObjectList watchers = PluginManager_->GetSelectedDownloaderWatchers ();
+	foreach (QObject *pEntity, watchers)
+		QMetaObject::invokeMethod (pEntity,
+				"selectedDownloaderChanged",
+				Q_ARG (QObject*, plugin));
 }
 
 bool Main::Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) const

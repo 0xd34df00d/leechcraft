@@ -34,7 +34,9 @@ QStringList Remoter::Provides () const
 
 QStringList Remoter::Needs () const
 {
-    return QStringList ("*") << "services::historyModel" << "services::downloadersModel";
+    return QStringList ("*")
+		<< "services::historyModel"
+		<< "services::downloadersModel";
 }
 
 QStringList Remoter::Uses () const

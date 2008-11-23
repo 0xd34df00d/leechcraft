@@ -1,22 +1,20 @@
 #include <WServer>
 #include "core.h"
-#include <WText>
-#include <WContainerWidget>
 #include <WApplication>
-#include <WBreak>
-#include <WTabWidget>
-#include <WTreeView>
 #include <WEnvironment>
 #include <QStringList>
 #include <QCoreApplication>
 #include <QTemporaryFile>
 #include <QUrl>
+#include <QToolBar>
 #include <QSettings>
 #include <QtDebug>
 #include <interfaces/interfaces.h>
 #include <plugininterface/proxy.h>
 #include <plugininterface/mergemodel.h>
 #include "qtowabstractitemmodeladaptor.h"
+#include "qtowtoolbaradaptor.h"
+#include "interface.h"
 
 Wt::WApplication* CreateApplication (const Wt::WEnvironment& e)
 {
@@ -75,9 +73,19 @@ Wt::WApplication* Core::CreateApplication (const Wt::WEnvironment& e)
 	Wt::WApplication *result = new Wt::WApplication (e);
 	result->setTitle ("LeechCraft");
 
-	BuildInterface (result->root (), e);
+	Interface *interface = new Interface (result, e);
 
 	return result;
+}
+
+MergeModel* Core::GetTasksModel () const
+{
+	return TasksModel_;
+}
+
+MergeModel* Core::GetHistoryModel () const
+{
+	return HistoryModel_;
 }
 
 void Core::InitializeServer ()
@@ -101,7 +109,7 @@ void Core::InitializeServer ()
 	for (int i = 0; i < argc; ++i)
 	{
 		QByteArray wa = args.at (i).toLocal8Bit ();
-		argv [i] = new char [wa.size ()];
+		argv [i] = new char [wa.size () + 1];
 		std::strcpy (argv [i], wa.constData ());
 	}
 	int allocDelta = delta;
@@ -163,54 +171,5 @@ void Core::InitializeServer ()
 		delete Server_;
 		Server_ = 0;
 	}
-}
-
-void Core::BuildInterface (Wt::WContainerWidget *root, const Wt::WEnvironment& e)
-{
-	if (!TasksModel_ || !HistoryModel_)
-	{
-		new Wt::WText (Wt::WString (tr ("LeechCraft::Remoter isn't "
-						"initialized yet, sorry. Please try again "
-						"in a couple of seconds.").toStdString ()));
-		return;
-	}
-
-	Wt::WTabWidget *tabWidget = new Wt::WTabWidget (root);
-
-	Wt::WTreeView *downloadersView = new Wt::WTreeView (0);
-	SetupDownloadersView (downloadersView);
-
-	Wt::WTreeView *historyView = new Wt::WTreeView (0);
-	SetupHistoryView (historyView);
-
-	tabWidget->addTab (downloadersView,
-			tr ("Downloaders").toStdString ());
-	tabWidget->addTab (historyView,
-			tr ("Download history").toStdString ());
-
-	new Wt::WBreak (root);
-
-	int majVer = 0, minVer = 0, patchVer = 0;
-	e.libraryVersion (majVer, minVer, patchVer);
-
-	new Wt::WText (Wt::WString ("Rendered by Wt {1}.{2}.{3} for LeechCraft")
-			.arg (majVer)
-			.arg (minVer)
-			.arg (patchVer),
-			root);
-}
-
-void Core::SetupDownloadersView (Wt::WTreeView *view)
-{
-	QToWAbstractItemModelAdaptor *adaptor =
-		new QToWAbstractItemModelAdaptor (TasksModel_, view);
-	view->setModel (adaptor);
-}
-
-void Core::SetupHistoryView (Wt::WTreeView *view)
-{
-	QToWAbstractItemModelAdaptor *adaptor =
-		new QToWAbstractItemModelAdaptor (HistoryModel_, view);
-	view->setModel (adaptor);
 }
 
