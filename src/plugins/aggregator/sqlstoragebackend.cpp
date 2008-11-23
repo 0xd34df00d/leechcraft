@@ -121,6 +121,7 @@ void SQLStorageBackend::Prepare ()
 	ItemsShortSelector_.prepare ("SELECT "
 			"title, "
 			"url, "
+			"category, "
 			"pub_date, "
 			"unread "
 			"FROM items "
@@ -397,8 +398,9 @@ void SQLStorageBackend::GetItems (items_shorts_t& shorts, const QString& parents
 		{
 			ItemsShortSelector_.value (0).toString (),
 			ItemsShortSelector_.value (1).toString (),
-			ItemsShortSelector_.value (2).toDateTime (),
-			ItemsShortSelector_.value (3).toBool ()
+			ItemsShortSelector_.value (2).toString ().split ("<<<"),
+			ItemsShortSelector_.value (3).toDateTime (),
+			ItemsShortSelector_.value (4).toBool ()
 		};
 
 		shorts.push_back (sh);

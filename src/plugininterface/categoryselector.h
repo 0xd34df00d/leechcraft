@@ -15,6 +15,8 @@ public:
 	LEECHCRAFT_API void SetPossibleSelections (const QStringList&);
 	LEECHCRAFT_API QStringList GetSelections ();
 public slots:
+	LEECHCRAFT_API void selectAll ();
+	LEECHCRAFT_API void selectNone ();
 	void lineTextChanged (const QString&);
 private slots:
 	void buttonToggled ();

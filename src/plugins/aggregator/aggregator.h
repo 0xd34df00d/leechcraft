@@ -2,11 +2,12 @@
 #define AGGREGATOR_H
 #include <memory>
 #include <interfaces/interfaces.h>
+#include <plugininterface/categoryselector.h>
 #include "ui_mainwidget.h"
+#include "itemsfiltermodel.h"
+#include "channelsfiltermodel.h"
 
 class XmlSettingsDialog;
-class ItemsFilterModel;
-class ChannelsFilterModel;
 class TagsCompleter;
 class QSystemTrayIcon;
 class QTranslator;
@@ -45,6 +46,7 @@ class Aggregator : public QWidget
 	std::auto_ptr<QSystemTrayIcon> TrayIcon_;
 	std::auto_ptr<QTranslator> Translator_;
     std::auto_ptr<ItemBucket> ItemBucket_;
+	std::auto_ptr<CategorySelector> ItemCategorySelector_;
 public:
 	virtual ~Aggregator ();
     void Init ();
@@ -79,6 +81,7 @@ private slots:
 	void on_ActionImportOPML__triggered ();
 	void on_ActionExportOPML__triggered ();
 	void on_ItemCommentsSubscribe__released ();
+	void on_ItemCategoriesButton__released ();
     void currentItemChanged (const QItemSelection&);
     void currentChannelChanged ();
     void unreadNumberChanged (int);

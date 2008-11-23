@@ -8,6 +8,7 @@ ItemShort Item::ToShort () const
 	{
 		Title_,
 		Link_,
+		Categories_,
 		PubDate_,
 		Unread_
 	};

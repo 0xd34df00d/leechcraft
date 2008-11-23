@@ -53,6 +53,7 @@ class SQLStorageBackend : public StorageBackend
 					  /** Returns:
 					   * - title
 					   * - url
+					   * - category
 					   * - pub_date
 					   * - unread
 					   *

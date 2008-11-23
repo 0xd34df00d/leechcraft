@@ -98,7 +98,9 @@ public:
     QStringList GetTagsForIndex (int) const;
 	ChannelInfo GetChannelInfo (const QModelIndex&) const;
 	QPixmap GetChannelPixmap (const QModelIndex&) const;
-    void SetTagsForIndex (const QString&, const QModelIndex&);
+	void SetTagsForIndex (const QString&, const QModelIndex&);
+	QStringList GetCategories (const QModelIndex&) const;
+	QStringList GetItemCategories (int) const;
     void UpdateFeed (const QModelIndex&);
     QModelIndex GetUnreadChannelIndex ();
 	void AddToItemBucket (const QModelIndex&) const;

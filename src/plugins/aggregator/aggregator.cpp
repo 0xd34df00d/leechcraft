@@ -8,6 +8,7 @@
 #include <QMenu>
 #include <QToolBar>
 #include <QtWebKit>
+#include <QCursor>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/tagscompletionmodel.h>
 #include <plugininterface/tagscompleter.h>
@@ -72,6 +73,13 @@ void Aggregator::Init ()
     ItemsFilterModel_->setDynamicSortFilter (true);
     ItemsFilterModel_->setFilterCaseSensitivity (Qt::CaseInsensitive);
     Ui_.Items_->setModel (ItemsFilterModel_.get ());
+
+	ItemCategorySelector_.reset (new CategorySelector ());
+	connect (ItemCategorySelector_.get (),
+			SIGNAL (selectionChanged (const QStringList&)),
+			ItemsFilterModel_.get (),
+			SLOT (categorySelectionChanged (const QStringList&)));
+
     Ui_.Items_->addAction (ActionMarkItemAsUnread_);
 	Ui_.Items_->addAction (ActionAddToItemBucket_);
     Ui_.Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
@@ -168,6 +176,7 @@ void Aggregator::Init ()
 			this, "viewerSettingsChanged");
 
 	viewerSettingsChanged ();
+	currentChannelChanged ();
 }
 
 void Aggregator::Release ()
@@ -450,14 +459,20 @@ void Aggregator::on_ItemCommentsSubscribe__released ()
 			mapToSource (selected));
 }
 
+void Aggregator::on_ItemCategoriesButton__released ()
+{
+	ItemCategorySelector_->move (QCursor::pos ());
+	ItemCategorySelector_->show ();
+}
+
 void Aggregator::currentItemChanged (const QItemSelection& selection)
 {
 	QModelIndexList indexes = selection.indexes ();
-	if (indexes.size () != 2)
+	if (!indexes.size ())
 		return;
 
 	QModelIndex sindex = ItemsFilterModel_->mapToSource (indexes.at (0));
-	if (!sindex.isValid ())
+	if (!sindex.isValid () || indexes.size () != 2)
 	{
 		Ui_.ItemView_->setHtml ("");
 		Ui_.ItemAuthor_->hide ();
@@ -543,37 +558,26 @@ void Aggregator::currentItemChanged (const QItemSelection& selection)
 
 	int numComments = item->NumComments_;
 	QString commentsRSS = item->CommentsLink_;
-	if (numComments >= 0 || !commentsRSS.isEmpty ())
+	Ui_.ItemCommentsSubscribe_->setVisible (!commentsRSS.isEmpty ());
+	if (numComments >= 0)
 	{
 		Ui_.ItemComments_->show ();
 		Ui_.ItemCommentsLabel_->show ();
 
-		QString text;
-		if (numComments >= 0 && commentsRSS.isEmpty ())
-		{
-			text = QString::number (numComments);
-			Ui_.ItemCommentsSubscribe_->hide ();
-		}
-		else if (numComments < 0 && !commentsRSS.isEmpty ())
-			Ui_.ItemCommentsSubscribe_->show ();
-		else
-		{
-			text = QString::number (numComments);
-			Ui_.ItemCommentsSubscribe_->show ();
-		}
-
+		QString text = QString::number (numComments);
 		Ui_.ItemComments_->setText (text);
 	}
 	else
 	{
 		Ui_.ItemComments_->hide ();
 		Ui_.ItemCommentsLabel_->hide ();
-		Ui_.ItemCommentsSubscribe_->hide ();
 	}
 }
 
 void Aggregator::currentChannelChanged ()
 {
+	currentItemChanged (QItemSelection (QModelIndex (), QModelIndex ()));
+
 	Ui_.Items_->scrollToTop ();
     QModelIndex index = Ui_.Feeds_->selectionModel ()->currentIndex ();
 	if (!index.isValid ())
@@ -604,9 +608,12 @@ void Aggregator::currentChannelChanged ()
 	}
 	Ui_.ChannelDescription_->setHtml (ci.Description_);
 	Ui_.ChannelAuthor_->setText (ci.Author_);
-	Ui_.ItemView_->setHtml ("");
 
 	updatePixmap (Ui_.MainSplitter_->sizes ().at (0));
+	QStringList allCategories = Core::Instance ().GetCategories (mapped);
+	ItemCategorySelector_->SetPossibleSelections (allCategories);
+	ItemCategorySelector_->selectAll ();
+	ItemsFilterModel_->categorySelectionChanged (allCategories);
 }
 
 void Aggregator::unreadNumberChanged (int number)

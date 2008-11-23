@@ -11,6 +11,7 @@ struct ItemShort
 {
 	QString Title_;
 	QString URL_;
+	QStringList Categories_;
 	QDateTime PubDate_;
 	bool Unread_;
 };

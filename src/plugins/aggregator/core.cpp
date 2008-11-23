@@ -350,6 +350,31 @@ void Core::SetTagsForIndex (const QString& tags, const QModelIndex& index)
 	StorageBackend_->UpdateChannel (channel, channel.ParentURL_);
 }
 
+QStringList Core::GetCategories (const QModelIndex& index) const
+{
+	ChannelShort cs = ChannelsModel_->GetChannelForIndex (index);
+	items_shorts_t items;
+	StorageBackend_->GetItems (items, cs.ParentURL_ + cs.Title_);
+
+	QStringList result;
+	for (items_shorts_t::const_iterator i = items.begin (),
+			end = items.end (); i != end; ++i)
+	{
+		QStringList categories = i->Categories_;
+		for (QStringList::const_iterator j = categories.begin (),
+				endJ = categories.end (); j != endJ; ++j)
+			if (!result.contains (*j))
+				result << *j;
+	}
+	std::sort (result.begin (), result.end ());
+	return result;
+}
+
+QStringList Core::GetItemCategories (int index) const
+{
+	return CurrentItems_ [index].Categories_;
+}
+
 void Core::UpdateFeed (const QModelIndex& index)
 {
 	ChannelShort channel = ChannelsModel_->GetChannelForIndex (index);

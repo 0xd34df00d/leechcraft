@@ -6,7 +6,7 @@
 #include <QVBoxLayout>
 
 CategorySelector::CategorySelector (QWidget *parent)
-: QWidget (parent, Qt::Dialog)
+: QWidget (parent, Qt::Tool)
 {
 	setLayout (new QVBoxLayout ());
 }
@@ -45,6 +45,24 @@ QStringList CategorySelector::GetSelections ()
 			tags += (*i)->property ("Tag").toString ();
 
 	return tags;
+}
+
+void CategorySelector::selectAll ()
+{
+	QList<QCheckBox*> boxes = findChildren<QCheckBox*> ();
+
+	for (QList<QCheckBox*>::iterator box = boxes.begin (),
+			end = boxes.end (); box != end; ++box)
+		(*box)->setCheckState (Qt::Checked);
+}
+
+void CategorySelector::selectNone ()
+{
+	QList<QCheckBox*> boxes = findChildren<QCheckBox*> ();
+
+	for (QList<QCheckBox*>::iterator box = boxes.begin (),
+			end = boxes.end (); box != end; ++box)
+		(*box)->setCheckState (Qt::Unchecked);
 }
 
 void CategorySelector::lineTextChanged (const QString& text)
