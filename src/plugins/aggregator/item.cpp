@@ -41,7 +41,9 @@ QDataStream& operator<< (QDataStream& out, const Item& item)
         << item.Guid_
         << item.PubDate_
         << item.Unread_
-		<< item.NumComments_;
+		<< item.NumComments_
+		<< item.CommentsLink_
+		<< item.CommentsPageLink_;
     return out;
 }
 
@@ -55,7 +57,9 @@ QDataStream& operator>> (QDataStream& in, Item& item)
         >> item.Guid_
         >> item.PubDate_
         >> item.Unread_
-		>> item.NumComments_;
+		>> item.NumComments_
+		>> item.CommentsLink_
+		>> item.CommentsPageLink_;
     return in;
 }
 
@@ -69,6 +73,7 @@ bool IsModified (Item_ptr i1, Item_ptr i2)
 			i1->Guid_ == i2->Guid_ &&
 			i1->PubDate_ == i2->PubDate_ &&
 			i1->NumComments_ == i2->NumComments_ &&
-			i1->CommentsLink_ == i2->CommentsLink_);
+			i1->CommentsLink_ == i2->CommentsLink_ &&
+			i1->CommentsPageLink_ == i2->CommentsPageLink_);
 }
 

@@ -48,6 +48,15 @@ QString Parser::GetCommentsRSS (const QDomElement& parent) const
 	return result;
 }
 
+QString Parser::GetCommentsLink (const QDomElement& parent) const
+{
+	QString result;
+	QDomNodeList nodes = parent.elementsByTagNameNS ("", "comments");
+	if (nodes.size ())
+		result = nodes.at (0).toElement ().text ();
+	return result;
+}
+
 int Parser::GetNumComments (const QDomElement& parent) const
 {
 	int result = -1;

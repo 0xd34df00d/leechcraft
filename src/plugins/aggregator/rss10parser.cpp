@@ -73,6 +73,7 @@ channels_container_t RSS10Parser::Parse (const QDomDocument& doc) const
             item->Unread_ = true;
 			item->NumComments_ = GetNumComments (itemDescr);
 			item->CommentsLink_ = GetCommentsRSS (itemDescr);
+			item->CommentsPageLink_ = GetCommentsLink (itemDescr);
             if (item->Guid_.isEmpty ())
                 item->Guid_ = "empty";
 

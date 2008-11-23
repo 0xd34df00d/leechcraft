@@ -76,6 +76,7 @@ Item* Atom03Parser::ParseItem (const QDomElement& entry) const
 
 	item->NumComments_ = GetNumComments (entry);
 	item->CommentsLink_ = GetCommentsRSS (entry);
+	item->CommentsPageLink_ = GetCommentsLink (entry);
 
     return item;
 }

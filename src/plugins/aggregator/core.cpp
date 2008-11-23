@@ -37,7 +37,7 @@ Core::Core ()
 
 	const int feedsTable = 1;
 	const int channelsTable = 1;
-	const int itemsTable = 2;
+	const int itemsTable = 3;
 
 	bool tablesOK = true;
 
@@ -1162,6 +1162,7 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 			(*ourItem)->Categories_ = (*item)->Categories_;
 			(*ourItem)->NumComments_ = (*item)->NumComments_;
 			(*ourItem)->CommentsLink_ = (*item)->CommentsLink_;
+			(*ourItem)->CommentsPageLink_ = (*item)->CommentsPageLink_;
 
 			StorageBackend_->UpdateItem ((*ourItem),
 					(*position)->ParentURL_, (*position)->Title_);

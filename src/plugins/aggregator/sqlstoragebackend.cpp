@@ -139,7 +139,8 @@ void SQLStorageBackend::Prepare ()
 			"pub_date, "
 			"unread, "
 			"num_comments, "
-			"comments_url "
+			"comments_url, "
+			"comments_page_url "
 			"FROM items "
 			"WHERE parents_hash = :parents_hash "
 			"AND title = :title "
@@ -208,7 +209,8 @@ void SQLStorageBackend::Prepare ()
 			"pub_date, "
 			"unread, "
 			"num_comments, "
-			"comments_url"
+			"comments_url, "
+			"comments_page_url"
 			") VALUES ("
 			":parents_hash, "
 			":title, "
@@ -220,7 +222,8 @@ void SQLStorageBackend::Prepare ()
 			":pub_date, "
 			":unread, "
 			":num_comments, "
-			":comments_url"
+			":comments_url, "
+			":comments_page_url"
 			")");
 
 	UpdateShortChannel_ = QSqlQuery ();
@@ -260,7 +263,8 @@ void SQLStorageBackend::Prepare ()
 			"pub_date = :pub_date, "
 			"unread = :unread, "
 			"num_comments = :num_comments, "
-			"comments_url = :comments_url "
+			"comments_url = :comments_url, "
+			"comments_page_url = :comments_page_url "
 			"WHERE parents_hash = :parents_hash "
 			"AND title = :title "
 			"AND url = :url "
@@ -433,6 +437,7 @@ Item_ptr SQLStorageBackend::GetItem (const QString& title,
 	item->Unread_ = ItemsFullSelector_.value (7).toBool ();
 	item->NumComments_ = ItemsFullSelector_.value (8).toInt ();
 	item->CommentsLink_ = ItemsFullSelector_.value (9).toString ();
+	item->CommentsPageLink_ = ItemsFullSelector_.value (10).toString ();
 
 	ItemsFullSelector_.finish ();
 
@@ -496,6 +501,17 @@ void SQLStorageBackend::UpdateChannel (Channel_ptr channel, const QString& paren
 	}
 	ChannelFinder_.finish ();
 
+	DBLock lock (DB_);
+	try
+	{
+		lock.Init ();
+	}
+	catch (const std::runtime_error& e)
+	{
+		qWarning () << Q_FUNC_INFO << e.what ();
+		return;
+	}
+
 	UpdateChannel_.bindValue (":parent_feed_url", parent);
 	UpdateChannel_.bindValue (":url", channel->Link_);
 	UpdateChannel_.bindValue (":title", channel->Title_);
@@ -515,6 +531,7 @@ void SQLStorageBackend::UpdateChannel (Channel_ptr channel, const QString& paren
 	}
 
 	UpdateChannel_.finish ();
+	lock.Good ();
 
 	emit channelDataUpdated (channel);
 }
@@ -573,6 +590,17 @@ void SQLStorageBackend::UpdateItem (Item_ptr item,
 	}
 	ItemFinder_.finish ();
 
+	DBLock lock (DB_);
+	try
+	{
+		lock.Init ();
+	}
+	catch (const std::runtime_error& e)
+	{
+		qWarning () << Q_FUNC_INFO << e.what ();
+		return;
+	}
+
 	UpdateItem_.bindValue (":parents_hash", parentUrl + parentTitle);
 	UpdateItem_.bindValue (":title", item->Title_);
 	UpdateItem_.bindValue (":url", item->Link_);
@@ -584,12 +612,15 @@ void SQLStorageBackend::UpdateItem (Item_ptr item,
 	UpdateItem_.bindValue (":unread", item->Unread_);
 	UpdateItem_.bindValue (":num_comments", item->NumComments_);
 	UpdateItem_.bindValue (":comments_url", item->CommentsLink_);
+	UpdateItem_.bindValue (":comments_page_url", item->CommentsPageLink_);
 
 	if (!UpdateItem_.exec ())
 	{
 		DBLock::DumpError (UpdateItem_);
 		throw std::runtime_error ("failed to save item");
 	}
+
+	lock.Good ();
 
 	UpdateItem_.finish ();
 
@@ -678,6 +709,7 @@ void SQLStorageBackend::AddItem (Item_ptr item,
 	InsertItem_.bindValue (":unread", item->Unread_);
 	InsertItem_.bindValue (":num_comments", item->NumComments_);
 	InsertItem_.bindValue (":comments_url", item->CommentsLink_);
+	InsertItem_.bindValue (":comments_page_url", item->CommentsPageLink_);
 
 	if (!InsertItem_.exec ())
 	{
@@ -946,6 +978,16 @@ bool SQLStorageBackend::RollItemsStorage (int version)
 
 		if (!updateQuery.exec ("UPDATE items "
 					"SET num_comments = -1"))
+		{
+			DBLock::DumpError (updateQuery);
+			return false;
+		}
+	}
+	else if (version == 3)
+	{
+		QSqlQuery updateQuery = QSqlQuery ();
+		if (!updateQuery.exec ("ALTER TABLE items "
+					"ADD comments_page_url TEXT"))
 		{
 			DBLock::DumpError (updateQuery);
 			return false;

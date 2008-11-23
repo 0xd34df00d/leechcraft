@@ -72,6 +72,7 @@ class SQLStorageBackend : public StorageBackend
 					   * - unread
 					   * - num_comments
 					   * - comments_url
+					   * - comments_page_url
 					   *
 					   * Binds:
 					   * - parents_hash
@@ -128,6 +129,7 @@ class SQLStorageBackend : public StorageBackend
 					   * - unread
 					   * - num_comments
 					   * - comments_url
+					   * - comments_page_url
 					   */
 					  InsertItem_,
 					  /** Binds:
@@ -167,6 +169,7 @@ class SQLStorageBackend : public StorageBackend
 					   * - unread
 					   * - num_comments
 					   * - comments_url
+					   * - comments_page_url
 					   * - parents_hash
 					   * - title
 					   * - url

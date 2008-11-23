@@ -68,6 +68,7 @@ Item* Atom10Parser::ParseItem (const QDomElement& entry) const
 	item->Author_ = GetAuthor (entry);
 	item->NumComments_ = GetNumComments (entry);
 	item->CommentsLink_ = GetCommentsRSS (entry);
+	item->CommentsPageLink_ = GetCommentsLink (entry);
 
     QDomElement summary = entry.firstChildElement ("content");
     if (summary.isNull ())

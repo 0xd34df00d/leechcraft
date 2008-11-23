@@ -8,18 +8,22 @@
 class Parser
 {
 public:
-    virtual bool CouldParse (const QDomDocument&) const = 0;
+	/** @brief Indicates whether parser could parse the document.
+	 *
+	 * @param[in] doc 
+	 */
+    virtual bool CouldParse (const QDomDocument& doc) const = 0;
 
-	/*! @brief Parses the document
+	/** @brief Parses the document
 	 * 
 	 * Parses the passed XML document, differs it with already existing
 	 * elements passed in old, puts new elements into returned container
 	 * and already existing ones - into modified parameter.
 	 *
-	 * @param[in] old already existing items.
-	 * @param[out] modified modified items.
-	 * @param[in] document byte array with XML document.
-	 * @return channels_container_t with new items.
+	 * @param[in] old Already existing items.
+	 * @param[out] modified Modified items.
+	 * @param[in] document Byte array with XML document.
+	 * @return Container (channels_container_t) with new items.
 	 */
     virtual channels_container_t Parse (const channels_container_t& old,
 			channels_container_t& modified,
@@ -34,6 +38,7 @@ protected:
 	QString GetLink (const QDomElement&) const;
 	QString GetAuthor (const QDomElement&) const;
 	QString GetCommentsRSS (const QDomElement&) const;
+	QString GetCommentsLink (const QDomElement&) const;
 	int GetNumComments (const QDomElement&) const;
 	QDateTime GetDCDateTime (const QDomElement&) const;
 	QStringList GetAllCategories (const QDomElement&) const;
