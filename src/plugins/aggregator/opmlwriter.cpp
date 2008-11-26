@@ -13,7 +13,7 @@ OPMLWriter::~OPMLWriter ()
 {
 }
 
-QString OPMLWriter::Write (const feeds_container_t& feeds,
+QString OPMLWriter::Write (const channels_shorts_t& channels,
 		const QString& title,
 		const QString& owner,
 		const QString& ownerEmail) const
@@ -22,7 +22,7 @@ QString OPMLWriter::Write (const feeds_container_t& feeds,
 	QDomElement root = doc.createElement ("opml");
 	doc.appendChild (root);
 	WriteHead (root, doc, title, owner, ownerEmail);
-	WriteBody (root, doc, feeds);
+	WriteBody (root, doc, channels);
 
 	return doc.toString ();
 }
@@ -61,25 +61,22 @@ void OPMLWriter::WriteHead (QDomElement& root,
 
 void OPMLWriter::WriteBody (QDomElement& root,
 		QDomDocument& doc,
-		const feeds_container_t& feeds) const
+		const channels_shorts_t& channels) const
 {
 	QDomElement body = doc.createElement ("body");
-	for (feeds_container_t::const_iterator i = feeds.begin (),
-			end = feeds.end (); i != end; ++i)
-		for (channels_container_t::const_iterator j = (*i)->Channels_.begin (),
-				chend = (*i)->Channels_.end (); j != chend; ++j)
-		{
-			QStringList tags = (*j)->Tags_;
-			tags.sort ();
+	for (channels_shorts_t::const_iterator i = channels.begin (),
+			end = channels.end (); i != end; ++i)
+	{
+		QStringList tags = i->Tags_;
+		tags.sort ();
 
-			QDomElement inserter = GetElementForTags (tags, body, doc);
-			QDomElement item = doc.createElement ("outline");
-			item.setAttribute ("title", (*j)->Title_);
-			item.setAttribute ("description", (*j)->Description_);
-			item.setAttribute ("xmlUrl", (*i)->URL_);
-			item.setAttribute ("htmlUrl", (*j)->Link_);
-			inserter.appendChild (item);
-		}
+		QDomElement inserter = GetElementForTags (tags, body, doc);
+		QDomElement item = doc.createElement ("outline");
+		item.setAttribute ("title", i->Title_);
+		item.setAttribute ("xmlUrl", i->ParentURL_);
+		item.setAttribute ("htmlUrl", i->Link_);
+		inserter.appendChild (item);
+	}
 
 	root.appendChild (body);
 }

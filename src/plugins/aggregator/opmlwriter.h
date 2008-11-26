@@ -14,7 +14,7 @@ public:
 	OPMLWriter ();
 	~OPMLWriter ();
 
-	QString Write (const feeds_container_t&,
+	QString Write (const channels_shorts_t&,
 			const QString&,
 			const QString&,
 			const QString&) const;
@@ -26,7 +26,7 @@ private:
 			const QString&) const;
 	void WriteBody (QDomElement&,
 			QDomDocument&,
-			const feeds_container_t&) const;
+			const channels_shorts_t&) const;
 	QDomElement GetElementForTags (const QStringList&,
 			QDomNode&,
 			QDomDocument&) const;

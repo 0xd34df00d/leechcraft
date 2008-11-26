@@ -514,8 +514,7 @@ void Core::ExportToOPML (const QString& where,
 		}
 
 	OPMLWriter writer;
-	/*
-	QString data = writer.Write (feeds, title, owner, ownerEmail);
+	QString data = writer.Write (channels, title, owner, ownerEmail);
 
 	QFile f (where);
 	if (!f.open (QIODevice::WriteOnly))
@@ -526,7 +525,6 @@ void Core::ExportToOPML (const QString& where,
 
 	f.write (data.toUtf8 ());
 	f.close ();
-	*/
 }
 
 ItemModel* Core::GetItemModel () const
@@ -575,11 +573,9 @@ void Core::GetChannels (channels_shorts_t& channels) const
 {
 	feeds_urls_t urls;
 	StorageBackend_->GetFeedsURLs (urls);
-	std::for_each (urls.begin (), urls.end (),
-			boost::bind (&StorageBackend::GetChannels,
-				StorageBackend_.get (),
-				channels,
-				_1));
+	for (feeds_urls_t::const_iterator i = urls.begin (),
+			end = urls.end (); i != end; ++i)
+		StorageBackend_->GetChannels (channels, *i);
 }
 
 int Core::columnCount (const QModelIndex&) const
