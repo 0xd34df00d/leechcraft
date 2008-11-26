@@ -32,17 +32,17 @@
 <context>
     <name>Aggregator</name>
     <message>
-        <location filename="aggregator.cpp" line="167"/>
+        <location filename="aggregator.cpp" line="195"/>
         <source>RSS 2.0, Atom 1.0 feed reader.</source>
         <translation>RSS 2.0, Atom 1.0 агрегатор.</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="310"/>
+        <location filename="aggregator.cpp" line="319"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="336"/>
+        <location filename="aggregator.cpp" line="345"/>
         <source>: Preferences</source>
         <translation>: Настройки</translation>
     </message>
@@ -62,82 +62,82 @@
         <translation type="obsolete">Загружается (%p)</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="225"/>
+        <location filename="aggregator.cpp" line="232"/>
         <source>Add feed...</source>
         <translation>Добавить ленту...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="230"/>
+        <location filename="aggregator.cpp" line="237"/>
         <source>Preferences...</source>
         <translation>Настройки...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="235"/>
+        <location filename="aggregator.cpp" line="242"/>
         <source>Update all feeds</source>
         <translation>Обновить все ленты</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="239"/>
+        <location filename="aggregator.cpp" line="246"/>
         <source>Remove feed</source>
         <translation>Удалить ленту</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="244"/>
+        <location filename="aggregator.cpp" line="251"/>
         <source>Mark item as unread</source>
         <translation>Отметить статью как непрочитанную</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="248"/>
+        <location filename="aggregator.cpp" line="255"/>
         <source>Mark channel as read</source>
         <translation>Отметить канал как прочитанный</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="252"/>
+        <location filename="aggregator.cpp" line="259"/>
         <source>Mark channel as unread</source>
         <translation>Отметить канал как непрочитанный</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="256"/>
+        <location filename="aggregator.cpp" line="263"/>
         <source>Update selected feed</source>
         <translation>Обновить выделенную ленту</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="261"/>
+        <location filename="aggregator.cpp" line="268"/>
         <source>Add to item bucket</source>
         <translation>Положить в долгий ящик</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="265"/>
+        <location filename="aggregator.cpp" line="272"/>
         <source>Item bucket...</source>
         <translation>Долгий ящик...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="270"/>
+        <location filename="aggregator.cpp" line="277"/>
         <source>Regexp matcher...</source>
         <translation>Сито...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="275"/>
+        <location filename="aggregator.cpp" line="282"/>
         <source>Hide read items</source>
         <translation>Спрятать прочитанные статьи</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="282"/>
+        <location filename="aggregator.cpp" line="289"/>
         <source>Import OPML...</source>
         <translation>Импортировать OPML...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="286"/>
+        <location filename="aggregator.cpp" line="294"/>
         <source>Export OPML...</source>
         <translation>Экспортировать OPML...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="323"/>
+        <location filename="aggregator.cpp" line="332"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="325"/>
+        <location filename="aggregator.cpp" line="334"/>
         <source>You are going to permanently remove this feed. Are you are really sure that you want to do this?</source>
         <comment>Feed removing confirmation</comment>
         <translation>Ты хочешь навсегда удалить эту ленту. Ты уверен в своих намерениях?</translation>
@@ -145,7 +145,7 @@
     <message>
         <location filename="aggregator.cpp" line="547"/>
         <source>Subscribe</source>
-        <translation>Подписаться</translation>
+        <translation type="obsolete">Подписаться</translation>
     </message>
 </context>
 <context>
@@ -163,25 +163,25 @@
     <message>
         <location filename="browserwidget.ui" line="65"/>
         <source>about:blank</source>
-        <translation>about:blank</translation>
+        <translation type="obsolete">about:blank</translation>
     </message>
     <message>
-        <location filename="browserwidget.ui" line="73"/>
+        <location filename="browserwidget.ui" line="74"/>
         <source>Back</source>
         <translation>Назад</translation>
     </message>
     <message>
-        <location filename="browserwidget.ui" line="78"/>
+        <location filename="browserwidget.ui" line="79"/>
         <source>Forward</source>
         <translation>Вперед</translation>
     </message>
     <message>
-        <location filename="browserwidget.ui" line="83"/>
+        <location filename="browserwidget.ui" line="84"/>
         <source>Stop</source>
         <translation>Стоп</translation>
     </message>
     <message>
-        <location filename="browserwidget.ui" line="88"/>
+        <location filename="browserwidget.ui" line="89"/>
         <source>Reload</source>
         <translation>Перезагрузить</translation>
     </message>
@@ -214,17 +214,17 @@
 <context>
     <name>ChannelsModel</name>
     <message>
-        <location filename="channelsmodel.cpp" line="14"/>
+        <location filename="channelsmodel.cpp" line="12"/>
         <source>Feed</source>
         <translation>Лента</translation>
     </message>
     <message>
-        <location filename="channelsmodel.cpp" line="14"/>
+        <location filename="channelsmodel.cpp" line="12"/>
         <source>Last build</source>
         <translation>Последняя сборка</translation>
     </message>
     <message>
-        <location filename="channelsmodel.cpp" line="14"/>
+        <location filename="channelsmodel.cpp" line="12"/>
         <source>Unread items</source>
         <translation>Непрочитанные</translation>
     </message>
@@ -232,27 +232,27 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="74"/>
+        <location filename="core.cpp" line="84"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="74"/>
+        <location filename="core.cpp" line="84"/>
         <source>Date</source>
         <translation>Дата</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="156"/>
+        <location filename="core.cpp" line="181"/>
         <source>This feed is already added</source>
         <translation>Эта лента уже добавлена</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="850"/>
+        <location filename="core.cpp" line="883"/>
         <source>Strange, but no suitable provider found</source>
         <translation>Странно, но не найден ни один подходящий провайдер</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="855"/>
+        <location filename="core.cpp" line="888"/>
         <source>Could not handle URL %1</source>
         <translation>Не могу обработать URL %1</translation>
     </message>
@@ -264,10 +264,10 @@
     <message>
         <location filename="core.cpp" line="724"/>
         <source>Downloaded file has null size!</source>
-        <translation>Скачанный файл имеет нулевой размер!</translation>
+        <translation type="obsolete">Скачанный файл имеет нулевой размер!</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="729"/>
+        <location filename="core.cpp" line="727"/>
         <source>Feed with url %1 not found.</source>
         <translation>Лента с URL %1 не найдена.</translation>
     </message>
@@ -303,50 +303,55 @@
 </translation>
     </message>
     <message>
-        <location filename="core.cpp" line="488"/>
+        <location filename="core.cpp" line="448"/>
         <source>Could not open file %1 for reading.</source>
         <translation>Не могу открыть файл %1 для чтения.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="505"/>
+        <location filename="core.cpp" line="465"/>
         <source>XML error, file %1, line %2, column %3, error:&lt;br /&gt;%4</source>
         <translation>Ошибка XML, файл %1, строка %2, столбец %3, ошибка:&lt;br /&gt;%4</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="516"/>
+        <location filename="core.cpp" line="476"/>
         <source>OPML from file %1 is not valid.</source>
         <translation>OPML-файл %1 неправильный.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="743"/>
+        <location filename="core.cpp" line="742"/>
         <source>XML file parse error: %1, line %2, column %3, filename %4, from %5</source>
         <translation>Ошибка парсинга XML: %1, строка %2, столбец %3, имя файла %4, от %5</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="756"/>
+        <location filename="core.cpp" line="755"/>
         <source>Could not find parser to parse file %1 from %2</source>
         <translation>Не могу найти парсер для файла %1 из %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1062"/>
+        <location filename="core.cpp" line="1189"/>
         <source>Added channel &quot;%1&quot; (has %2 items)</source>
         <translation>Добавлен канал &quot;%1&quot; (%2 статей)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1069"/>
+        <location filename="core.cpp" line="1196"/>
         <source>Updated channel &quot;%1&quot; (%2 new items)</source>
         <translation>Обновлен канал &quot;%1&quot; (%2 новых статей)</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="715"/>
+        <source>Downloaded file from url %1 has null size!</source>
+        <translation>Скачанный с %1 файл имеет нулевой размер!</translation>
     </message>
 </context>
 <context>
     <name>ExportOPML</name>
     <message>
-        <location filename="exportopml.cpp" line="72"/>
+        <location filename="exportopml.cpp" line="68"/>
         <source>Select OPML save file</source>
         <translation>Выбери файл для сохранения</translation>
     </message>
     <message>
-        <location filename="exportopml.cpp" line="76"/>
+        <location filename="exportopml.cpp" line="72"/>
         <source>OPML files (*.opml);;XML files (*.xml);;All files (*.*)</source>
         <translation>OPML-файлы (*.opml);;XML-файлы (*.xml);;Все файлы (*.*)</translation>
     </message>
@@ -548,7 +553,7 @@
         <translation>Управление каналом</translation>
     </message>
     <message>
-        <location filename="mainwidget.ui" line="213"/>
+        <location filename="mainwidget.ui" line="226"/>
         <source>Link:</source>
         <translation>Ссылка:</translation>
     </message>
@@ -558,7 +563,7 @@
         <translation>Описание:</translation>
     </message>
     <message>
-        <location filename="mainwidget.ui" line="227"/>
+        <location filename="mainwidget.ui" line="314"/>
         <source>Author:</source>
         <translation>Автор:</translation>
     </message>
@@ -588,24 +593,34 @@
         <translation>Учитывать регистр</translation>
     </message>
     <message>
-        <location filename="mainwidget.ui" line="204"/>
+        <location filename="mainwidget.ui" line="218"/>
         <source>Item info</source>
         <translation>Информация о статье</translation>
     </message>
     <message>
-        <location filename="mainwidget.ui" line="241"/>
+        <location filename="mainwidget.ui" line="300"/>
         <source>Category:</source>
         <translation>Категория:</translation>
     </message>
     <message>
-        <location filename="mainwidget.ui" line="262"/>
+        <location filename="mainwidget.ui" line="279"/>
         <source>Publication date:</source>
         <translation>Дата публикации:</translation>
     </message>
     <message>
-        <location filename="mainwidget.ui" line="255"/>
+        <location filename="mainwidget.ui" line="259"/>
         <source>Comments:</source>
         <translation>Комментарии:</translation>
+    </message>
+    <message>
+        <location filename="mainwidget.ui" line="181"/>
+        <source>Categories...</source>
+        <translation>Категории...</translation>
+    </message>
+    <message>
+        <location filename="mainwidget.ui" line="188"/>
+        <source>Subscribe</source>
+        <translation>Подписаться</translation>
     </message>
 </context>
 <context>
