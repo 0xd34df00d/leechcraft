@@ -97,13 +97,16 @@ bool operator== (const Channel& c1, const Channel& c2)
 
 QDataStream& operator<< (QDataStream& out, const Channel& chan)
 {
-    out << chan.Title_
+	int version = 1;
+    out << version
+		<< chan.Title_
         << chan.Link_
         << chan.Description_
-        << chan.Tags_
         << chan.LastBuild_
+        << chan.Tags_
         << chan.Language_
         << chan.Author_
+		<< chan.PixmapURL_
         << chan.Pixmap_
 		<< chan.Favicon_
 		<< chan.ParentURL_
@@ -115,24 +118,34 @@ QDataStream& operator<< (QDataStream& out, const Channel& chan)
 
 QDataStream& operator>> (QDataStream& in, Channel& chan)
 {
+	int version = 0;
     quint32 size;
-    in >> chan.Title_
-        >> chan.Link_
-        >> chan.Description_
-        >> chan.Tags_
-        >> chan.LastBuild_
-        >> chan.Language_
-        >> chan.Author_
-        >> chan.Pixmap_
-		>> chan.Favicon_
-		>> chan.ParentURL_;
-    in >> size;
-    for (size_t i = 0; i < size; ++i)
-    {
-        Item_ptr it (new Item);
-        in >> *it;
-        chan.Items_.push_back (it);
-    }
-    return in;
+	in >> version;
+	if (!version)
+		return in;
+	else if (version == 1)
+	{
+		in >> chan.Title_
+			>> chan.Link_
+			>> chan.Description_
+			>> chan.LastBuild_
+			>> chan.Tags_
+			>> chan.Language_
+			>> chan.Author_
+			>> chan.PixmapURL_
+			>> chan.Pixmap_
+			>> chan.Favicon_
+			>> chan.ParentURL_;
+		in >> size;
+		for (size_t i = 0; i < size; ++i)
+		{
+			Item_ptr it (new Item);
+			in >> *it;
+			chan.Items_.push_back (it);
+		}
+		return in;
+	}
+	else
+		return in;
 }
 

@@ -527,6 +527,54 @@ void Core::ExportToOPML (const QString& where,
 	f.close ();
 }
 
+void Core::ExportToBinary (const QString& where,
+		const QString& title,
+		const QString& owner,
+		const QString& ownerEmail,
+		const std::vector<bool>& mask) const
+{
+	channels_shorts_t channels;
+	GetChannels (channels);
+
+	for (std::vector<bool>::const_iterator begin = mask.begin (),
+			i = mask.end () - 1; i >= begin; --i)
+		if (!*i)
+		{
+			size_t distance = std::distance (mask.begin (), i);
+			channels_shorts_t::iterator eraser = channels.begin ();
+			std::advance (eraser, distance);
+			channels.erase (eraser);
+		}
+
+	QFile f (where);
+	if (!f.open (QIODevice::WriteOnly))
+	{
+		emit error (QString ("Could not open file %1 for write.").arg (where));
+		return;
+	}
+
+	QDataStream data (&f);
+
+	for (channels_shorts_t::const_iterator i = channels.begin (),
+			end = channels.end (); i != end; ++i)
+	{
+		Channel_ptr channel = StorageBackend_->GetChannel (i->Title_,
+				i->ParentURL_);
+		items_shorts_t items;
+
+		QString hash = i->ParentURL_ + i->Title_;
+
+		StorageBackend_->GetItems (items, hash);
+
+		for (items_shorts_t::const_iterator j = items.begin (),
+				endJ = items.end (); j != endJ; ++j)
+			channel->Items_.push_back (StorageBackend_->GetItem (j->Title_,
+						j->URL_, hash));
+
+		data << (*channel);
+	}
+}
+
 ItemModel* Core::GetItemModel () const
 {
 	return ItemModel_;

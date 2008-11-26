@@ -33,7 +33,9 @@ bool operator== (const Item& i1, const Item& i2)
 
 QDataStream& operator<< (QDataStream& out, const Item& item)
 {
-    out << item.Title_
+	int version = 1;
+    out << version
+		<< item.Title_
         << item.Link_
         << item.Description_
         << item.Author_
@@ -49,18 +51,25 @@ QDataStream& operator<< (QDataStream& out, const Item& item)
 
 QDataStream& operator>> (QDataStream& in, Item& item)
 {
-    in >> item.Title_
-        >> item.Link_
-        >> item.Description_
-        >> item.Author_
-        >> item.Categories_
-        >> item.Guid_
-        >> item.PubDate_
-        >> item.Unread_
-		>> item.NumComments_
-		>> item.CommentsLink_
-		>> item.CommentsPageLink_;
-    return in;
+	int version = 0;
+	in >> version;
+	if (version == 1)
+	{
+		in >> item.Title_
+			>> item.Link_
+			>> item.Description_
+			>> item.Author_
+			>> item.Categories_
+			>> item.Guid_
+			>> item.PubDate_
+			>> item.Unread_
+			>> item.NumComments_
+			>> item.CommentsLink_
+			>> item.CommentsPageLink_;
+		return in;
+	}
+	else
+		return in;
 }
 
 bool IsModified (Item_ptr i1, Item_ptr i2)

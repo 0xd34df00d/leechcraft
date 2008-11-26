@@ -112,6 +112,11 @@ public:
 			const QString&,
 			const QString&,
 			const std::vector<bool>&) const;
+	void ExportToBinary (const QString&,
+			const QString&,
+			const QString&,
+			const QString&,
+			const std::vector<bool>&) const;
     ItemModel* GetItemModel () const;
 	void SubscribeToComments (const QModelIndex&);
 	void OpenLink (const QString&);

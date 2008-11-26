@@ -286,15 +286,25 @@ void Aggregator::SetupMenuBar ()
 	ActionHideReadItems_->setProperty ("ActionIcon", "aggregator_rssshow");
 	ActionHideReadItems_->setProperty ("ActionIconOff", "aggregator_rsshide");
 
-	ActionImportOPML_ = new QAction (tr ("Import OPML..."),
+	ActionImportOPML_ = new QAction (tr ("Import from OPML..."),
 			this);
 	ActionImportOPML_->setObjectName ("ActionImportOPML_");
 	ActionImportOPML_->setProperty ("ActionIcon", "aggregator_importopml");
 
-	ActionExportOPML_ = new QAction (tr ("Export OPML..."),
+	ActionExportOPML_ = new QAction (tr ("Export to OPML..."),
 			this);
 	ActionExportOPML_->setObjectName ("ActionExportOPML_");
 	ActionExportOPML_->setProperty ("ActionIcon", "aggregator_exportopml");
+
+	ActionImportBinary_ = new QAction (tr ("Import from binary..."),
+			this);
+	ActionImportBinary_->setObjectName ("ActionImportBinary_");
+	ActionImportBinary_->setProperty ("ActionIcon", "aggregator_importbinary");
+
+	ActionExportBinary_ = new QAction (tr ("Export to binary..."),
+			this);
+	ActionExportBinary_->setObjectName ("ActionExportBinary_");
+	ActionExportBinary_->setProperty ("ActionIcon", "aggregator_exportbinary");
 
     ToolBar_->addAction(ActionAddFeed_);
     ToolBar_->addAction(ActionRemoveFeed_);
@@ -306,6 +316,8 @@ void Aggregator::SetupMenuBar ()
     ToolBar_->addSeparator();
     ToolBar_->addAction(ActionImportOPML_);
     ToolBar_->addAction(ActionExportOPML_);
+    ToolBar_->addAction(ActionImportBinary_);
+    ToolBar_->addAction(ActionExportBinary_);
     ToolBar_->addSeparator();
     ToolBar_->addAction(ActionHideReadItems_);
     ToolBar_->addSeparator();
@@ -446,6 +458,26 @@ void Aggregator::on_ActionExportOPML__triggered ()
 		return;
 
 	Core::Instance ().ExportToOPML (exportDialog.GetDestination (),
+			exportDialog.GetTitle (),
+			exportDialog.GetOwner (),
+			exportDialog.GetOwnerEmail (),
+			exportDialog.GetSelectedFeeds ());
+}
+
+void Aggregator::on_ActionImportBinary__triggered ()
+{
+}
+
+void Aggregator::on_ActionExportBinary__triggered ()
+{
+	ExportOPML exportDialog;
+	channels_shorts_t channels;
+	Core::Instance ().GetChannels (channels);
+	exportDialog.SetFeeds (channels);
+	if (exportDialog.exec () == QDialog::Rejected)
+		return;
+
+	Core::Instance ().ExportToBinary (exportDialog.GetDestination (),
 			exportDialog.GetTitle (),
 			exportDialog.GetOwner (),
 			exportDialog.GetOwnerEmail (),

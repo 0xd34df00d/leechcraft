@@ -38,6 +38,8 @@ class Aggregator : public QWidget
     QAction *ActionHideReadItems_;
     QAction *ActionImportOPML_;
     QAction *ActionExportOPML_;
+	QAction *ActionImportBinary_;
+	QAction *ActionExportBinary_;
 
 	std::auto_ptr<XmlSettingsDialog> XmlSettingsDialog_;
 	std::auto_ptr<ItemsFilterModel> ItemsFilterModel_;
@@ -80,6 +82,8 @@ private slots:
 	void on_ActionHideReadItems__triggered ();
 	void on_ActionImportOPML__triggered ();
 	void on_ActionExportOPML__triggered ();
+	void on_ActionImportBinary__triggered ();
+	void on_ActionExportBinary__triggered ();
 	void on_ItemCommentsSubscribe__released ();
 	void on_ItemCategoriesButton__released ();
     void currentItemChanged (const QItemSelection&);
