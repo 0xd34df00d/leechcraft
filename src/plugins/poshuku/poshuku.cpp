@@ -49,6 +49,8 @@ void Poshuku::Init ()
 			SLOT (handleError (const QString&)));
 
 	Ui_.HistoryView_->setModel (Core::Instance ().GetHistoryModel ());
+	Ui_.AddressLine_->setText (XmlSettingsManager::Instance ()->
+			property ("DefaultPage").toString ());
 
 	FavoritesFilterModel_.reset (new FilterModel (this));
 	FavoritesFilterModel_->setSourceModel (Core::Instance ().GetFavoritesModel ());

@@ -23,6 +23,9 @@
       <property name="currentIndex" >
        <number>0</number>
       </property>
+      <property name="elideMode" >
+       <enum>Qt::ElideRight</enum>
+      </property>
       <widget class="QWidget" name="DownloadersTab_" >
        <attribute name="title" >
         <string>Downloaders</string>
@@ -172,7 +175,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>30</height>
+     <height>32</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >

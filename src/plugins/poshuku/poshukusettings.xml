@@ -7,6 +7,10 @@
 		<tab>
 			<label lang="en" value="Startup" />
 			<label lang="ru" value="Запуск" />
+			<item type="lineedit" property="DefaultPage" default="http://gmail.com">
+				<label lang="en" value="Default page:" />
+				<label lang="ru" value="Страница по умолчанию:" />
+			</item>
 			<item type="checkbox" property="RestorePreviousSession" state="on">
 				<label lang="en" value="Restore previous session" />
 				<label lang="ru" value="Восстанавливать предыдущую сессию" />
