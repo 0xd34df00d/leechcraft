@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="ru_RU">
+<!DOCTYPE TS><TS version="1.1">
 <context>
     <name>MainWindow</name>
     <message>
         <location filename="mainwindow.ui" line="13"/>
         <source>Remoter</source>
-        <translation>Remoter</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="25"/>
         <source>Login:</source>
-        <translation>Логин:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="32"/>
         <source>anonymous</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="39"/>
         <source>Password:</source>
-        <translation>Пароль:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="46"/>
         <source>default</source>
-        <translation>default</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="53"/>
         <source>Port:</source>
-        <translation>Порт:</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -56,12 +56,12 @@
     <message>
         <location filename="remoter.cpp" line="22"/>
         <source>Remoter</source>
-        <translation>Remoter</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="remoter.cpp" line="27"/>
         <source>Server providing remote access to other plugins.</source>
-        <translation>Сервер, обеспечивающий удаленный доступ к другим плагинам.</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

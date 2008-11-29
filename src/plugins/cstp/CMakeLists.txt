@@ -37,8 +37,12 @@ SET (RESOURCES
 	resources.qrc
 	)
 SET (TRANSLATIONS
-	leechcraft_cstp_ru_RU.qm
-	leechcraft_cstp_uk_UA.qm
+	leechcraft_cstp_ru_RU.ts
+	leechcraft_cstp_uk_UA.ts
+	)
+SET (COMPILED_TRANSLATIONS
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_cstp_ru_RU.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_cstp_uk_UA.qm
 	)
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 ADD_DEFINITIONS(-DQT_PLUGIN)
@@ -49,17 +53,18 @@ QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-ADD_CUSTOM_TARGET (cstp_translations
-	COMMAND "lrelease" "leechcraft_cstp_ru_RU.ts" "leechcraft_cstp_uk_UA.ts"
+ADD_CUSTOM_COMMAND (OUTPUT
+	${COMPILED_TRANSLATIONS}
+	COMMAND "lrelease" ${TRANSLATIONS}
+	DEPENDS ${TRANSLATIONS}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	)
-
 ADD_LIBRARY (leechcraft_cstp SHARED
+	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	${UIS_H}
 	${RCCS})
-ADD_DEPENDENCIES (leechcraft_cstp cstp_translations)
 LINK_DIRECTORIES (${Boost_LIBRARY_DIR})
 TARGET_LINK_LIBRARIES (leechcraft_cstp
                         ${QT_LIBRARIES}

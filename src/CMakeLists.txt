@@ -152,7 +152,6 @@ SET (SRCS
 	skinengine.cpp
 	childactioneventfilter.cpp
 	)
-
 SET (HEADERS
 	mainwindow.h
 	commonjobadder.h
@@ -167,7 +166,6 @@ SET (HEADERS
 	interfaces/interfaces.h
 	interfaces/structures.h
 	)
-
 SET (FORMS
 	commonjobadder.ui
 	leechcraft.ui
@@ -175,8 +173,12 @@ SET (FORMS
 	)
 SET (RESOURCES mainresources.qrc)
 SET (TRANSLATIONS
-	leechcraft_ru_RU.qm
-	leechcraft_uk_UA.qm
+	leechcraft_ru_RU.ts
+	leechcraft_uk_UA.ts
+	)
+SET (COMPILED_TRANSLATIONS
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_ru_RU.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_uk_UA.qm
 	)
 
 ADD_DEFINITIONS (-DQT_GUI_LIB)
@@ -186,13 +188,18 @@ QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCC ${RESOURCES})
 
-ADD_CUSTOM_TARGET (core_translations
-	COMMAND "lrelease" "leechcraft_ru_RU.ts" "leechcraft_uk_UA.ts"
+ADD_CUSTOM_COMMAND (OUTPUT
+	${COMPILED_TRANSLATIONS}
+	COMMAND "lrelease" ${TRANSLATIONS}
+	DEPENDS ${TRANSLATIONS}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	)
-
-ADD_EXECUTABLE (leechcraft WIN32 ${SRCS} ${MOC_SRCS} ${UIS_H} ${RCC})
-ADD_DEPENDENCIES (leechcraft core_translations)
+ADD_EXECUTABLE (leechcraft WIN32
+	${COMPILED_TRANSLATIONS}
+	${SRCS}
+	${MOC_SRCS}
+	${UIS_H}
+	${RCC})
 TARGET_LINK_LIBRARIES(leechcraft
 						${QT_LIBRARIES}
 						plugininterface

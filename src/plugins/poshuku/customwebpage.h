@@ -8,6 +8,8 @@ class CustomWebPage : public QWebPage
 public:
 	CustomWebPage (QObject* = 0);
 	virtual ~CustomWebPage ();
+private slots:
+	void handleDownloadRequested (const QNetworkRequest&);
 };
 
 #endif
