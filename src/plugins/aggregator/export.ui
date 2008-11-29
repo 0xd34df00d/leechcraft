@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>ExportOPML</class>
- <widget class="QDialog" name="ExportOPML" >
+ <class>Export</class>
+ <widget class="QDialog" name="Export" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Export to OPML</string>
+   <string>This string is overriden in the source code</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
@@ -106,7 +106,7 @@
   <connection>
    <sender>ButtonBox_</sender>
    <signal>accepted()</signal>
-   <receiver>ExportOPML</receiver>
+   <receiver>Export</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -122,7 +122,7 @@
   <connection>
    <sender>ButtonBox_</sender>
    <signal>rejected()</signal>
-   <receiver>ExportOPML</receiver>
+   <receiver>Export</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel" >

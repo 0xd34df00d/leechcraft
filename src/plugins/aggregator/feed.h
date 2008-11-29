@@ -10,13 +10,13 @@
 
 struct Feed
 {
-    QString URL_;
-    QDateTime LastUpdate_;
+	QString URL_;
+	QDateTime LastUpdate_;
 	channels_container_t Channels_;
 
-    Feed ();
-    Feed (const Feed&);
-    Feed& operator= (const Feed&);
+	Feed ();
+	Feed (const Feed&);
+	Feed& operator= (const Feed&);
 };
 
 typedef boost::shared_ptr<Feed> Feed_ptr;

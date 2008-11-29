@@ -1,38 +1,45 @@
-#include "exportopml.h"
+#include "export.h"
 #include <QFileInfo>
 #include <QFileDialog>
 #include <QDir>
 
-ExportOPML::ExportOPML ()
+Export::Export (const QString& title,
+		const QString& exportTitle,
+		const QString& choices,
+		QWidget *parent)
+: QDialog (parent)
 {
 	Ui_.setupUi (this);
+	setWindowTitle (title);
+	Title_ = exportTitle;
+	Choices_ = choices;
 }
 
-ExportOPML::~ExportOPML ()
+Export::~Export ()
 {
 }
 
-QString ExportOPML::GetDestination () const
+QString Export::GetDestination () const
 {
 	return Ui_.File_->text ();
 }
 
-QString ExportOPML::GetTitle () const
+QString Export::GetTitle () const
 {
 	return Ui_.Title_->text ();
 }
 
-QString ExportOPML::GetOwner () const
+QString Export::GetOwner () const
 {
 	return Ui_.Owner_->text ();
 }
 
-QString ExportOPML::GetOwnerEmail () const
+QString Export::GetOwnerEmail () const
 {
 	return Ui_.OwnerEmail_->text ();
 }
 
-std::vector<bool> ExportOPML::GetSelectedFeeds () const
+std::vector<bool> Export::GetSelectedFeeds () const
 {
 	std::vector<bool> result (Ui_.Channels_->topLevelItemCount ());
 
@@ -44,7 +51,7 @@ std::vector<bool> ExportOPML::GetSelectedFeeds () const
 	return result;
 }
 
-void ExportOPML::SetFeeds (const channels_shorts_t& channels)
+void Export::SetFeeds (const channels_shorts_t& channels)
 {
 	for (channels_shorts_t::const_iterator i = channels.begin (),
 			end = channels.end (); i != end; ++i)
@@ -58,18 +65,16 @@ void ExportOPML::SetFeeds (const channels_shorts_t& channels)
 	}
 }
 
-void ExportOPML::on_File__textEdited (const QString&)
+void Export::on_File__textEdited (const QString&)
 {
 }
 
-void ExportOPML::on_Browse__released ()
+void Export::on_Browse__released ()
 {
 	QString filename = QFileDialog::getSaveFileName (this,
-			tr ("Select OPML save file"),
+			Title_,
 			QDir::homePath (),
-			tr ("OPML files (*.opml);;"
-				"XML files (*.xml);;"
-				"All files (*.*)"));
+			Choices_);
 	if (filename.isEmpty ())
 		return;
 

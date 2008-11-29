@@ -1,17 +1,19 @@
-#ifndef EXPORTOPML_H
-#define EXPORTOPML_H
+#ifndef EXPORT_H
+#define EXPORT_H
 #include <QDialog>
-#include "ui_exportopml.h"
+#include "ui_export.h"
 #include "channel.h"
 
-class ExportOPML : public QDialog
+class Export : public QDialog
 {
 	Q_OBJECT
 
-	Ui::ExportOPML Ui_;
+	Ui::Export Ui_;
+	QString Title_;
+	QString Choices_;
 public:
-	ExportOPML ();
-	virtual ~ExportOPML ();
+	Export (const QString&, const QString&, const QString&, QWidget* = 0);
+	virtual ~Export ();
 
 	QString GetDestination () const;
 	QString GetTitle () const;

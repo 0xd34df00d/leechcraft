@@ -50,8 +50,6 @@ void ImportOPML::on_File__textEdited (const QString& newFilename)
 
 void ImportOPML::on_Browse__released ()
 {
-	Reset ();
-
 	QString filename = QFileDialog::getOpenFileName (this,
 			tr ("Select OPML file"),
 			QDir::homePath (),
@@ -61,6 +59,8 @@ void ImportOPML::on_Browse__released ()
 
 	if (filename.isEmpty ())
 		return;
+
+	Reset ();
 
 	Ui_.File_->setText (filename);
 

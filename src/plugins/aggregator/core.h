@@ -122,6 +122,7 @@ public:
 	void OpenLink (const QString&);
 	QWebView* CreateWindow ();
 	void GetChannels (channels_shorts_t&) const;
+	void AddFeeds (const feeds_container_t&, const QString&);
 
     virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
     virtual QVariant data (const QModelIndex&,

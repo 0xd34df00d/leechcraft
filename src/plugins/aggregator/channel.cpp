@@ -119,12 +119,12 @@ QDataStream& operator<< (QDataStream& out, const Channel& chan)
 QDataStream& operator>> (QDataStream& in, Channel& chan)
 {
 	int version = 0;
-    quint32 size;
 	in >> version;
 	if (!version)
 		return in;
 	else if (version == 1)
 	{
+		quint32 size;
 		in >> chan.Title_
 			>> chan.Link_
 			>> chan.Description_

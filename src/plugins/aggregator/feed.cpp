@@ -39,7 +39,7 @@ QDataStream& operator<< (QDataStream& out, const Feed& feed)
 
 QDataStream& operator>> (QDataStream& in, Feed& feed)
 {
-    quint32 size;
+    quint32 size = 0;
     in >> feed.URL_
         >> feed.LastUpdate_
         >> size;

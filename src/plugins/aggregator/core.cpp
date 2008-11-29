@@ -555,6 +555,10 @@ void Core::ExportToBinary (const QString& where,
 
 	QDataStream data (&f);
 
+	int version = 1;
+	int magic = 0xd34df00d;
+	data << magic << version;
+
 	for (channels_shorts_t::const_iterator i = channels.begin (),
 			end = channels.end (); i != end; ++i)
 	{
@@ -624,6 +628,30 @@ void Core::GetChannels (channels_shorts_t& channels) const
 	for (feeds_urls_t::const_iterator i = urls.begin (),
 			end = urls.end (); i != end; ++i)
 		StorageBackend_->GetChannels (channels, *i);
+}
+
+void Core::AddFeeds (const feeds_container_t& feeds,
+		const QString& tagsString)
+{
+	QStringList tags = tagsString.split (" ", QString::SkipEmptyParts);
+
+	for (feeds_container_t::const_iterator i = feeds.begin (),
+			end = feeds.end (); i != end; ++i)
+	{
+		for (channels_container_t::const_iterator j =
+				(*i)->Channels_.begin (), jEnd = (*i)->Channels_.end ();
+				j != jEnd; ++j)
+		{
+			for (QStringList::const_iterator tag = tags.begin (),
+					tagEnd = tags.end (); tag != tagEnd; ++tag)
+				if (!(*j)->Tags_.contains (*tag))
+					(*j)->Tags_ << *tag;
+
+			ChannelsModel_->AddChannel ((*j)->ToShort ());
+		}
+
+		StorageBackend_->AddFeed (*i);
+	}
 }
 
 int Core::columnCount (const QModelIndex&) const

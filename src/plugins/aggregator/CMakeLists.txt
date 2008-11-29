@@ -37,10 +37,11 @@ SET (SRCS
 	opmlparser.cpp
 	opmlwriter.cpp
 	importopml.cpp
-	exportopml.cpp
+	export.cpp
 	sqlstoragebackend.cpp
 	storagebackend.cpp
 	customwebview.cpp
+	importbinary.cpp
 	)
 SET (HEADERS
     aggregator.h
@@ -71,11 +72,12 @@ SET (HEADERS
 	opmlparser.h
 	opmlwriter.h
 	importopml.h
-	exportopml.h
+	export.h
 	sqlstoragebackend.h
 	storagebackend.h
 	customwebview.h
 	opmlitem.h
+	importbinary.h
 	)
 SET (FORMS
     mainwidget.ui
@@ -85,7 +87,8 @@ SET (FORMS
 	regexpmatcherui.ui
 	singleregexp.ui
 	importopml.ui
-	exportopml.ui
+	export.ui
+	importbinary.ui
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS

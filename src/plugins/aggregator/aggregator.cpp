@@ -23,8 +23,9 @@
 #include "regexpmatcherui.h"
 #include "regexpmatchermanager.h"
 #include "importopml.h"
-#include "exportopml.h"
+#include "export.h"
 #include "itembucket.h"
+#include "importbinary.h"
 
 Aggregator::~Aggregator ()
 {
@@ -450,7 +451,11 @@ void Aggregator::on_ActionImportOPML__triggered ()
 
 void Aggregator::on_ActionExportOPML__triggered ()
 {
-	ExportOPML exportDialog;
+	Export exportDialog (tr ("Export to OPML"),
+			tr ("Select save file"),
+			tr ("OPML files (*.opml);;"
+				"XML files (*.xml);;"
+				"All files (*.*)"), this);
 	channels_shorts_t channels;
 	Core::Instance ().GetChannels (channels);
 	exportDialog.SetFeeds (channels);
@@ -466,11 +471,20 @@ void Aggregator::on_ActionExportOPML__triggered ()
 
 void Aggregator::on_ActionImportBinary__triggered ()
 {
+	ImportBinary import (this);
+	if (import.exec () == QDialog::Rejected)
+		return;
+
+	Core::Instance ().AddFeeds (import.GetSelectedFeeds (),
+			import.GetTags ());
 }
 
 void Aggregator::on_ActionExportBinary__triggered ()
 {
-	ExportOPML exportDialog;
+	Export exportDialog (tr ("Export to binary file"),
+			tr ("Select save file"),
+			tr ("Aggregator exchange files (*.lcae);;"
+				"All files (*.*)"), this);
 	channels_shorts_t channels;
 	Core::Instance ().GetChannels (channels);
 	exportDialog.SetFeeds (channels);
