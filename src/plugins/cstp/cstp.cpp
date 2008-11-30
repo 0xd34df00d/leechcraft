@@ -120,9 +120,9 @@ void CSTP::StopAll ()
 	Core::Instance ().stopAllTriggered ();
 }
 
-bool CSTP::CouldDownload (const QString& url, LeechCraft::TaskParameters tp) const
+bool CSTP::CouldDownload (const QByteArray& url, LeechCraft::TaskParameters tp) const
 {
-	return Core::Instance ().CouldDownload (url, tp);
+	return Core::Instance ().CouldDownload (QString (url), tp);
 }
 
 int CSTP::AddJob (const LeechCraft::DownloadParams& ddp, LeechCraft::TaskParameters tp)

@@ -118,19 +118,34 @@ void TorrentPlugin::StopAll ()
         Core::Instance ()->PauseTorrent (i);
 }
 
-bool TorrentPlugin::CouldDownload (const QString& string, LeechCraft::TaskParameters) const
+bool TorrentPlugin::CouldDownload (const QByteArray& string, LeechCraft::TaskParameters) const
 {
     QFile file (string);
-    if (!file.exists () || !file.open (QIODevice::ReadOnly))
-        return false;
-
-    return Core::Instance ()->IsValidTorrent (file.readAll ());
+    if (file.exists () &&
+			file.open (QIODevice::ReadOnly))
+        return Core::Instance ()->IsValidTorrent (file.readAll ());
+	else
+		return Core::Instance ()->IsValidTorrent (string);
 }
 
 int TorrentPlugin::AddJob (const LeechCraft::DownloadParams& dp, LeechCraft::TaskParameters parameters)
 {
+	QByteArray suggestedFname = dp.Resource_;
+	QFile file (suggestedFname);
+    if ((!file.exists () ||
+			!file.open (QIODevice::ReadOnly)) &&
+			Core::Instance ()->IsValidTorrent (suggestedFname))
+	{
+		QTemporaryFile file ("lctemporarybittorrentfile.XXXXXX");
+		if (!file.open  ())
+			return -1;
+		file.write (suggestedFname);
+		suggestedFname = file.fileName ().toUtf8 ();
+		file.setAutoRemove (false);
+	}
+
     AddTorrentDialog_->Reinit ();
-    AddTorrentDialog_->SetFilename (dp.Resource_);
+    AddTorrentDialog_->SetFilename (suggestedFname);
 
 	QString path;
 	QStringList tags;
@@ -138,7 +153,7 @@ int TorrentPlugin::AddJob (const LeechCraft::DownloadParams& dp, LeechCraft::Tas
 	QString fname;
 	if (parameters & LeechCraft::FromAutomatic)
 	{
-		fname = dp.Resource_;
+		fname = suggestedFname;
 		path = AddTorrentDialog_->GetDefaultSavePath ();
 		tags = AddTorrentDialog_->GetDefaultTags ();
 	}
@@ -158,6 +173,7 @@ int TorrentPlugin::AddJob (const LeechCraft::DownloadParams& dp, LeechCraft::Tas
 	}
 	int result = Core::Instance ()->AddFile (fname, path, tags, files, parameters);
     setActionsEnabled ();
+	file.remove ();
 	return result;
 }
 

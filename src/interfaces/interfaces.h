@@ -259,7 +259,7 @@ public:
 	 * @sa AddJob
 	 * @sa LeechCraft::TaskParameters
 	 */
-    virtual bool CouldDownload (const QString& entity,
+    virtual bool CouldDownload (const QByteArray& entity,
 			LeechCraft::TaskParameters parameters) const = 0;
 
 	/** @brief Adds the job with given parameters.

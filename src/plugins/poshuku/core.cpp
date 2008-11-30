@@ -11,8 +11,11 @@
 #include <QNetworkReply>
 #include <QAuthenticator>
 #include <QNetworkProxy>
+#include <QDesktopServices>
+#include <QFileDialog>
 #include <QtDebug>
 #include <plugininterface/proxy.h>
+#include <interfaces/interfaces.h>
 #include "browserwidget.h"
 #include "customwebview.h"
 #include "addtofavoritesdialog.h"
@@ -103,6 +106,14 @@ void Core::Release ()
 
 	XmlSettingsManager::Instance ()->setProperty ("CleanShutdown", true);
 	XmlSettingsManager::Instance ()->Release ();
+}
+
+void Core::SetProvider (QObject *object, const QString& feature)
+{
+	Providers_ [feature] = object;
+
+	if (qobject_cast<IDownload*> (object))
+		Downloaders_ << object;
 }
 
 bool Core::IsValidURL (const QString& url) const
@@ -236,6 +247,43 @@ void Core::HandleHistory (QWebView *view)
 
 	HistoryModel_->AddItem (view->title (),
 			url, QDateTime::currentDateTime ());
+}
+
+void Core::gotUnsupportedContent ()
+{
+	QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+	QByteArray data = reply->readAll ();
+
+	LeechCraft::TaskParameters parameters = LeechCraft::Autostart;
+
+	for (QObjectList::const_iterator i = Downloaders_.begin (),
+			end = Downloaders_.end (); i != end; ++i)
+	{
+		IDownload *downloader = qobject_cast<IDownload*> (*i);
+		if (downloader->CouldDownload (data, parameters))
+		{
+			QString directory = QFileDialog::getExistingDirectory (0,
+					tr ("Save external data"),
+					XmlSettingsManager::Instance ()->
+						Property ("ExternalDataSaveLocation",
+							QDesktopServices::storageLocation (
+								QDesktopServices::DocumentsLocation))
+								.toString ());
+			if (directory.isEmpty ())
+				return;
+
+			LeechCraft::DownloadParams dParams =
+			{
+				data,
+				directory
+			};
+
+			XmlSettingsManager::Instance ()->setProperty ("ExternalDataSaveLocation", directory);
+
+			downloader->AddJob (dParams, parameters);
+			break;
+		}
+	}
 }
 
 void Core::saveCookies () const

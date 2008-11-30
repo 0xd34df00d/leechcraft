@@ -16,7 +16,7 @@ namespace LeechCraft
 		/** @brief What the user wants to download - this could be
 		 * anything from URL to Magnet hash to local torrent file.
 		 */
-		QString Resource_;
+		QByteArray Resource_;
 		/** @brief Where it wants the data to be saved.
 		 */
 		QString Location_;

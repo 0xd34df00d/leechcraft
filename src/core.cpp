@@ -268,9 +268,13 @@ void Main::Core::TryToAddJob (const QString& name, const QString& where)
     {
         IDownload *di = qobject_cast<IDownload*> (plugin);
 		LeechCraft::TaskParameters tp = LeechCraft::FromCommonDialog | LeechCraft::Autostart;
-        if (di && di->CouldDownload (name, tp))
+        if (di && di->CouldDownload (name.toUtf8 (), tp))
         {
-			LeechCraft::DownloadParams ddp = { name, where };
+			LeechCraft::DownloadParams ddp =
+			{
+				name.toUtf8 (),
+				where
+			};
 			di->AddJob (ddp, tp);
 			return;
         }
@@ -538,7 +542,7 @@ void Main::Core::handleFileDownload (const QString& file, bool fromBuffer)
         IDownload *id = qobject_cast<IDownload*> (plugins.at (i));
         IInfo *ii = qobject_cast<IInfo*> (plugins.at (i));
 		LeechCraft::TaskParameters tp = LeechCraft::Autostart | LeechCraft::FromAutomatic;
-        if (id->CouldDownload (file, tp))
+        if (id->CouldDownload (file.toUtf8 (), tp))
         {
             if (QMessageBox::question (
 						qobject_cast<QWidget*> (qobject_cast<QObject*> (this)->parent ()),
@@ -550,7 +554,11 @@ void Main::Core::handleFileDownload (const QString& file, bool fromBuffer)
 				   == QMessageBox::No)
                 continue;
 
-			LeechCraft::DownloadParams ddp = { file, "" };
+			LeechCraft::DownloadParams ddp =
+			{
+				file.toUtf8 (),
+				""
+			};
 			id->AddJob (ddp, tp);
         }
     }

@@ -124,7 +124,7 @@ QStringList Poshuku::Provides () const
 
 QStringList Poshuku::Needs () const
 {
-	return QStringList ();
+	return QStringList ("*");
 }
 
 QStringList Poshuku::Uses () const
@@ -132,8 +132,9 @@ QStringList Poshuku::Uses () const
 	return QStringList ();
 }
 
-void Poshuku::SetProvider (QObject*, const QString&)
+void Poshuku::SetProvider (QObject *object, const QString& feature)
 {
+	Core::Instance ().SetProvider (object, feature);
 }
 
 QIcon Poshuku::GetIcon () const

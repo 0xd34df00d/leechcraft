@@ -73,7 +73,7 @@ public:
     qint64 GetUploadSpeed () const;
     void StartAll ();
     void StopAll ();
-	bool CouldDownload (const QString&, LeechCraft::TaskParameters) const;
+	bool CouldDownload (const QByteArray&, LeechCraft::TaskParameters) const;
 	int AddJob (const LeechCraft::DownloadParams&, LeechCraft::TaskParameters);
 
     // IJobHolder

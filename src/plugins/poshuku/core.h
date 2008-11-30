@@ -30,6 +30,9 @@ class Core : public QObject
 	std::auto_ptr<QNetworkAccessManager> NetworkAccessManager_;
 	std::auto_ptr<QTimer> CookieSaveTimer_;
 
+	QMap<QString, QObject*> Providers_;
+	QObjectList Downloaders_;
+
 	bool SaveSessionScheduled_;
 	QStringList RestoredURLs_;
 
@@ -37,6 +40,7 @@ class Core : public QObject
 public:
 	static Core& Instance ();
 	void Release ();
+	void SetProvider (QObject*, const QString&);
 
 	bool IsValidURL (const QString&) const;
 	BrowserWidget* NewURL (const QString&);
@@ -50,6 +54,8 @@ private:
 	void RestoreSession (bool);
 	void ScheduleSaveSession ();
 	void HandleHistory (QWebView*);
+public slots:
+	void gotUnsupportedContent ();
 private slots:
 	void saveCookies () const;
 	void handleTitleChanged (const QString&);

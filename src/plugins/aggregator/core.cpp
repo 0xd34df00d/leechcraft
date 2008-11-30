@@ -189,7 +189,7 @@ void Core::AddFeed (const QString& url, const QStringList& tags)
 		emit error (tr ("Strange, but no suitable provider found"));
 		return;
 	}
-	if (!iid->CouldDownload (url, LeechCraft::Autostart))
+	if (!iid->CouldDownload (url.toUtf8 (), LeechCraft::Autostart))
 	{
 		emit error (tr ("Could not handle URL %1").arg (url));
 		return;
@@ -205,7 +205,7 @@ void Core::AddFeed (const QString& url, const QStringList& tags)
 	}
 	LeechCraft::DownloadParams params =
 	{
-		url,
+		url.toUtf8 (),
 		name
 	};
 	PendingJob pj =
@@ -392,7 +392,7 @@ void Core::UpdateFeed (const QModelIndex& index)
 		emit error (tr ("Strange, but no suitable provider found"));
 		return;
 	}
-	if (!isd->CouldDownload (url, LeechCraft::Autostart))
+	if (!isd->CouldDownload (url.toUtf8 (), LeechCraft::Autostart))
 	{
 		emit error (tr ("Could not handle URL %1").arg (url));
 		return;
@@ -406,7 +406,11 @@ void Core::UpdateFeed (const QModelIndex& index)
 		file.close ();
 		file.remove ();
 	}
-	LeechCraft::DownloadParams params = { url, name };
+	LeechCraft::DownloadParams params =
+	{
+		url.toUtf8 (),
+		name
+	};
 	PendingJob pj = {
 		PendingJob::RFeedUpdated,
 		url,
@@ -557,7 +561,12 @@ void Core::ExportToBinary (const QString& where,
 
 	int version = 1;
 	int magic = 0xd34df00d;
-	data << magic << version;
+	data <<
+		magic <<
+		version <<
+		title <<
+		owner <<
+		ownerEmail;
 
 	for (channels_shorts_t::const_iterator i = channels.begin (),
 			end = channels.end (); i != end; ++i)
@@ -715,7 +724,7 @@ QModelIndex Core::parent (const QModelIndex&) const
 
 int Core::rowCount (const QModelIndex& parent) const
 {
-	return CurrentItems_.size ();
+	return parent.isValid () ? 0 : CurrentItems_.size ();
 }
 
 void Core::currentChannelChanged (const QModelIndex& index)
@@ -908,7 +917,7 @@ void Core::updateFeeds ()
 	for (feeds_urls_t::const_iterator i = urls.begin (),
 			end = urls.end (); i != end; ++i)
 	{
-		if (!isd->CouldDownload (*i, LeechCraft::Autostart))
+		if (!isd->CouldDownload (i->toUtf8 (), LeechCraft::Autostart))
 		{
 			emit error (tr ("Could not handle URL %1").arg (*i));
 			continue;
@@ -924,7 +933,7 @@ void Core::updateFeeds ()
 		}
 		LeechCraft::DownloadParams params =
 		{
-			*i,
+			i->toUtf8 (),
 			filename
 		};
 		PendingJob pj =
@@ -955,7 +964,7 @@ void Core::fetchExternalFile (const QString& url, const QString& where)
 		emit error (tr ("Strange, but no suitable provider found"));
 		throw std::runtime_error ("no suitable provider");
 	}
-	if (!isd->CouldDownload (url, LeechCraft::Autostart))
+	if (!isd->CouldDownload (url.toUtf8 (), LeechCraft::Autostart))
 	{
 		emit error (tr ("Could not handle URL %1").arg (url));
 		throw std::runtime_error ("could not handle URL");
@@ -963,7 +972,7 @@ void Core::fetchExternalFile (const QString& url, const QString& where)
 
 	LeechCraft::DownloadParams params =
 	{
-		url,
+		url.toUtf8 (),
 		where
 	};
 	PendingJob pj =

@@ -141,6 +141,9 @@ bool ImportBinary::HandleFile (const QString& filename)
 				.arg (version));
 	}
 
+	QString title, owner, ownerEmail;
+	stream >> title >> owner >> ownerEmail;
+
 	while (stream.status () == QDataStream::Ok)
 	{
 		Channel_ptr channel (new Channel ());
