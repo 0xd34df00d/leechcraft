@@ -17,6 +17,7 @@ public:
 
 	QString GetLogin () const;
 	QString GetPassword () const;
+	bool ShouldSave () const;
 };
 
 #endif

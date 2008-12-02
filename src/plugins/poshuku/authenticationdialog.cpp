@@ -26,3 +26,8 @@ QString AuthenticationDialog::GetPassword () const
 	return Ui_.PasswordEdit_->text ();
 }
 
+bool AuthenticationDialog::ShouldSave () const
+{
+	return Ui_.SaveCredentials_->checkState () == Qt::Checked;
+}
+
