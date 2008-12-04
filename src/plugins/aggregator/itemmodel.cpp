@@ -56,7 +56,7 @@ void ItemModel::Activated (const QModelIndex& index) const
 	if (!index.isValid () || index.row () >= rowCount ())
 		return;
 
-	Core::Instance ().OpenLink (Items_ [index.row ()]->Link_);
+	Core::Instance ().openLink (Items_ [index.row ()]->Link_);
 }
 
 QString ItemModel::GetDescription (const QModelIndex& index) const

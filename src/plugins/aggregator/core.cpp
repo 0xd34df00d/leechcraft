@@ -254,12 +254,12 @@ void Core::RemoveFeed (const QModelIndex& index)
 
 void Core::Activated (const QModelIndex& index)
 {
-	OpenLink (CurrentItems_ [index.row ()].URL_);
+	openLink (CurrentItems_ [index.row ()].URL_);
 }
 
 void Core::FeedActivated (const QModelIndex& index)
 {
-	OpenLink (ChannelsModel_->GetChannelForIndex (index).Link_);
+	openLink (ChannelsModel_->GetChannelForIndex (index).Link_);
 }
 
 void Core::Selected (const QModelIndex& index)
@@ -605,18 +605,6 @@ void Core::SubscribeToComments (const QModelIndex& index)
 	AddFeed (commentRSS, tags + addTags);
 }
 
-void Core::OpenLink (const QString& url)
-{
-	if (!Providers_.contains ("webbrowser"))
-	{
-		QDesktopServices::openUrl (QUrl (url));
-		return;
-	}
-	QObject *provider = Providers_ ["webbrowser"];
-	QMetaObject::invokeMethod (provider,
-			"openURL", Q_ARG (QString, url));
-}
-
 QWebView* Core::CreateWindow ()
 {
 	if (!Providers_.contains ("webbrowser"))
@@ -725,6 +713,18 @@ QModelIndex Core::parent (const QModelIndex&) const
 int Core::rowCount (const QModelIndex& parent) const
 {
 	return parent.isValid () ? 0 : CurrentItems_.size ();
+}
+
+void Core::openLink (const QString& url)
+{
+	if (!Providers_.contains ("webbrowser"))
+	{
+		QDesktopServices::openUrl (QUrl (url));
+		return;
+	}
+	QObject *provider = Providers_ ["webbrowser"];
+	QMetaObject::invokeMethod (provider,
+			"openURL", Q_ARG (QString, url));
 }
 
 void Core::currentChannelChanged (const QModelIndex& index)

@@ -96,7 +96,8 @@ void Aggregator::Init ()
 	QFontMetrics fm = fontMetrics ();
 	int dateTimeSize = fm.width (QDateTime::currentDateTime ().toString (Qt::SystemLocaleShortDate)) + fm.width("__");
 	itemsHeader->resizeSection (0,
-			fm.width ("Average news article size is about this width or maybe bigger, because they are bigger"));
+			fm.width ("Average news article size is about this width or "
+				"maybe bigger, because they are bigger"));
 	itemsHeader->resizeSection (1,
 			dateTimeSize);
 	connect (Ui_.Items_->header (),
@@ -143,6 +144,15 @@ void Aggregator::Init ()
 	Ui_.ChannelSplitter_->setStretchFactor (1, 2);
     Ui_.MainSplitter_->setStretchFactor (0, 5);
     Ui_.MainSplitter_->setStretchFactor (1, 9);
+
+	connect (Ui_.ItemLink_,
+			SIGNAL (linkActivated (const QString&)),
+			&Core::Instance (),
+			SLOT (openLink (const QString&)));
+	connect (Ui_.ChannelLink_,
+			SIGNAL (linkActivated (const QString&)),
+			&Core::Instance (),
+			SLOT (openLink (const QString&)));
 
 	connect (&RegexpMatcherManager::Instance (),
 			SIGNAL (gotLink (const QString&)),
@@ -581,13 +591,9 @@ void Aggregator::currentItemChanged (const QItemSelection& selection)
 		link.insert (0,"<a href=\"");
 		link.append ("\">" + shortLink + "</a>");
 		Ui_.ItemLink_->setText (link);
-		Ui_.ItemLink_->setOpenExternalLinks (true);
 	}
 	else
-	{
-		Ui_.ItemLink_->setOpenExternalLinks (false);
 		Ui_.ItemLink_->setText (shortLink);
-	}
 
 	QDateTime pubDate = item->PubDate_;
 	if (pubDate.isValid ())
@@ -645,13 +651,10 @@ void Aggregator::currentChannelChanged ()
 		link.insert (0,"<a href=\"");
 		link.append ("\">" + shortLink + "</a>");
 		Ui_.ChannelLink_->setText (link);
-		Ui_.ChannelLink_->setOpenExternalLinks (true);
 	}
 	else
-	{
-		Ui_.ChannelLink_->setOpenExternalLinks (false);
 		Ui_.ChannelLink_->setText (shortLink);
-	}
+
 	Ui_.ChannelDescription_->setHtml (ci.Description_);
 	Ui_.ChannelAuthor_->setText (ci.Author_);
 

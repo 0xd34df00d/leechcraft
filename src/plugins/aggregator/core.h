@@ -119,7 +119,6 @@ public:
 			const std::vector<bool>&) const;
     ItemModel* GetItemModel () const;
 	void SubscribeToComments (const QModelIndex&);
-	void OpenLink (const QString&);
 	QWebView* CreateWindow ();
 	void GetChannels (channels_shorts_t&) const;
 	void AddFeeds (const feeds_container_t&, const QString&);
@@ -136,6 +135,7 @@ public:
     virtual QModelIndex parent (const QModelIndex&) const;
     virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 public slots:
+	void openLink (const QString&);
     void currentChannelChanged (const QModelIndex&);
     void updateFeeds ();
     void updateIntervalChanged ();
