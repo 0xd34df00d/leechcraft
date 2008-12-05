@@ -674,7 +674,8 @@ QVariant Core::data (const QModelIndex& index, int role) const
 		}
 	}
 	else if (role == Qt::ForegroundRole)
-		return CurrentItems_ [index.row ()].Unread_ ? Qt::red : Qt::black;
+		return CurrentItems_ [index.row ()].Unread_ ?
+		   	Qt::red : QApplication::palette ().color (QPalette::Text);
 	else
 		return QVariant ();
 }

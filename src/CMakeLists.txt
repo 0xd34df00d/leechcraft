@@ -151,6 +151,7 @@ SET (SRCS
 	fancypopupmanager.cpp
 	skinengine.cpp
 	childactioneventfilter.cpp
+	zombitechstyle.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -163,6 +164,7 @@ SET (HEADERS
 	fancypopupmanager.h
 	skinengine.h
 	childactioneventfilter.h
+	zombitechstyle.h
 	interfaces/interfaces.h
 	interfaces/structures.h
 	)

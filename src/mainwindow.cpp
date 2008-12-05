@@ -16,6 +16,7 @@
 #include "skinengine.h"
 #include "childactioneventfilter.h"
 #include "ui_leechcraft.h"
+#include "zombitechstyle.h"
 
 namespace Main
 {
@@ -29,6 +30,8 @@ namespace Main
 		splash.show ();
 		splash.showMessage (tr ("Initializing interface..."));
 
+		if (QApplication::arguments ().contains ("-zombie"))
+			QApplication::setStyle (new ZombiTechStyle ());
 		installEventFilter (new ChildActionEventFilter (this));
 
 		Ui_ = new Ui::LeechCraft;

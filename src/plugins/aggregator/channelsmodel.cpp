@@ -1,6 +1,7 @@
 #include <QtDebug>
 #include <QApplication>
 #include <QFont>
+#include <QPalette>
 #include <plugininterface/treeitem.h>
 #include "channelsmodel.h"
 #include "item.h"
@@ -36,7 +37,8 @@ QVariant ChannelsModel::data (const QModelIndex& index, int role) const
 	else if (role == Qt::DecorationRole)
 		return static_cast<TreeItem*> (index.internalPointer ())->Data (index.column (), Qt::DecorationRole);
     else if (role == Qt::ForegroundRole)
-        return static_cast<TreeItem*> (index.internalPointer ())->Data (2).toInt () ? Qt::red : Qt::black;
+        return static_cast<TreeItem*> (index.internalPointer ())->Data (2).toInt () ?
+		   	Qt::red : QApplication::palette ().color (QPalette::Text);
     else if (role == Qt::FontRole)
     {
         if (static_cast<TreeItem*> (index.internalPointer ())->Data (2).toInt ())
