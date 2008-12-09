@@ -116,7 +116,8 @@ bool ImportBinary::HandleFile (const QString& filename)
 		return false;
 	}
 
-	QDataStream stream (&file);
+	QByteArray buffer = qUncompress (file.readAll ());
+	QDataStream stream (&buffer, QIODevice::ReadOnly);
 
 	int magic = 0;
 	stream >> magic;

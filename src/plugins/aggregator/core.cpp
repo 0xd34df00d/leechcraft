@@ -567,7 +567,8 @@ void Core::ExportToBinary (const QString& where,
 		return;
 	}
 
-	QDataStream data (&f);
+	QByteArray buffer;
+	QDataStream data (&buffer, QIODevice::WriteOnly);
 
 	int version = 1;
 	int magic = 0xd34df00d;
@@ -596,6 +597,8 @@ void Core::ExportToBinary (const QString& where,
 
 		data << (*channel);
 	}
+
+	f.write (qCompress (buffer, 9));
 }
 
 ItemModel* Core::GetItemModel () const
