@@ -24,6 +24,7 @@
 #include "authenticationdialog.h"
 #include "sslerrorsdialog.h"
 #include "restoresessiondialog.h"
+#include "sqlstoragebackend.h"
 
 Core::Core ()
 : CookieSaveTimer_ (new QTimer ())
@@ -32,6 +33,18 @@ Core::Core ()
 	bool cleanShutdown = XmlSettingsManager::Instance ()->
 		Property ("CleanShutdown", true).toBool ();
 	XmlSettingsManager::Instance ()->setProperty ("CleanShutdown", false);
+
+	QDir dir = QDir::home ();
+	if (!dir.cd (".leechcraft/poshuku") &&
+			!dir.mkpath (".leechcraft/poshuku"))
+	{
+		qCritical () << Q_FUNC_INFO << "could not create neccessary "
+			"directories for Poshuku";
+		return;
+	}
+
+	StorageBackend_.reset (new SQLStorageBackend);
+	StorageBackend_->Prepare ();
 
 	NetworkAccessManager_.reset (new QNetworkAccessManager (this));
 	QFile file (QDir::homePath () +
@@ -69,6 +82,11 @@ Core::Core ()
 	CookieSaveTimer_->start (10000);
 
 	HistoryModel_.reset (new HistoryModel (this));
+	connect (StorageBackend_.get (),
+			SIGNAL (added (const HistoryModel::HistoryItem&)),
+			HistoryModel_.get (),
+			SLOT (handleItemAdded (const HistoryModel::HistoryItem&)));
+
 	FavoritesModel_.reset (new FavoritesModel (this));
 
 	FavoriteTagsCompletionModel_.reset (new TagsCompletionModel (this));
@@ -178,6 +196,11 @@ TagsCompletionModel* Core::GetFavoritesTagsCompletionModel () const
 QNetworkAccessManager* Core::GetNetworkAccessManager () const
 {
 	return NetworkAccessManager_.get ();
+}
+
+StorageBackend* Core::GetStorageBackend () const
+{
+	return StorageBackend_.get ();
 }
 
 void Core::DoCommonAuth (const QString& msg, QAuthenticator *authen)

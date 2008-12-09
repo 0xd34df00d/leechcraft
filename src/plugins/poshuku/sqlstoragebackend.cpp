@@ -5,7 +5,7 @@
 #include <plugininterface/dblock.h>
 
 SQLStorageBackend::SQLStorageBackend ()
-: DB_ (QSqlDatabase::addDatabase ("QSQLITE"))
+: DB_ (QSqlDatabase::addDatabase ("QSQLITE", "PoshukuConnection"))
 {
 	QDir dir = QDir::home ();
 	dir.cd (".leechcraft");
@@ -22,9 +22,76 @@ SQLStorageBackend::~SQLStorageBackend ()
 {
 }
 
+void SQLStorageBackend::Prepare ()
+{
+	QSqlQuery pragma (DB_);
+	if (!pragma.exec ("PRAGMA journal_mode = TRUNCATE;"))
+		LeechCraft::Util::DBLock::DumpError (pragma);
+	if (!pragma.exec ("PRAGMA synchronous = OFF;"))
+		LeechCraft::Util::DBLock::DumpError (pragma);
+	if (!pragma.exec ("PRAGMA temp_store = MEMORY;"))
+		LeechCraft::Util::DBLock::DumpError (pragma);
+
+	HistoryLoader_ = QSqlQuery (DB_);
+	HistoryLoader_.prepare ("SELECT "
+			"title, "
+			"date, "
+			"url "
+			"FROM history "
+			"ORDER BY date DESC");
+
+	HistoryAdder_ = QSqlQuery (DB_);
+	HistoryAdder_.prepare ("INSERT INTO history ("
+			"date, "
+			"title, "
+			"url "
+			") VALUES ("
+			":date, "
+			":title, "
+			":url"
+			")");
+}
+
+void SQLStorageBackend::LoadHistory (
+		std::vector<HistoryModel::HistoryItem>& items
+		) const
+{
+	if (!HistoryLoader_.exec ())
+	{
+		LeechCraft::Util::DBLock::DumpError (HistoryLoader_);
+		return;
+	}
+
+	while (HistoryLoader_.next ())
+	{
+		HistoryModel::HistoryItem item =
+		{
+			HistoryLoader_.value (0).toString (),
+			HistoryLoader_.value (1).toDateTime (),
+			HistoryLoader_.value (2).toString ()
+		};
+		items.push_back (item);
+	}
+}
+
+void SQLStorageBackend::AddToHistory (const HistoryModel::HistoryItem& item)
+{
+	HistoryAdder_.bindValue (":title", item.Title_);
+	HistoryAdder_.bindValue (":date", item.DateTime_);
+	HistoryAdder_.bindValue (":url", item.URL_);
+
+	if (!HistoryAdder_.exec ())
+	{
+		LeechCraft::Util::DBLock::DumpError (HistoryLoader_);
+		return;
+	}
+
+	emit added (item);
+}
+
 void SQLStorageBackend::InitializeTables ()
 {
-	QSqlQuery query;
+	QSqlQuery query (DB_);
 
 	if (!query.exec ("CREATE TABLE history ("
 				"date TIMESTAMP PRIMARY KEY, "

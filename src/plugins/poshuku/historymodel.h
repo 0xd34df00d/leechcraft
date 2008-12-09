@@ -11,13 +11,14 @@ class HistoryModel : public QAbstractItemModel
 
 	QStringList ItemHeaders_;
 
+public:
 	struct HistoryItem
 	{
 		QString Title_;
 		QDateTime DateTime_;
 		QString URL_;
 	};
-
+private:
 	std::deque<HistoryItem> Items_;
 public:
 	enum Columns
@@ -41,9 +42,9 @@ public:
     virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 
 	void AddItem (const QString&, const QString&, const QDateTime&);
-private:
-	void SaveData () const;
-	void LoadData ();
+private slots:
+	void loadData ();
+	void handleItemAdded (const HistoryModel::HistoryItem&);
 };
 
 #endif

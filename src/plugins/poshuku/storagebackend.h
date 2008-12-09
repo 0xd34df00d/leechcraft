@@ -1,6 +1,8 @@
 #ifndef STORAGEBACKEND_H
 #define STORAGEBACKEND_H
+#include <vector>
 #include <QObject>
+#include "historymodel.h"
 
 /** @brief Abstract base class for storage backends.
  *
@@ -13,6 +15,12 @@ class StorageBackend : public QObject
 public:
 	StorageBackend (QObject* = 0);
 	virtual ~StorageBackend ();
+
+	virtual void Prepare () = 0;
+	virtual void LoadHistory (std::vector<HistoryModel::HistoryItem>& items) const = 0;
+	virtual void AddToHistory (const HistoryModel::HistoryItem& item) = 0;
+signals:
+	void added (const HistoryModel::HistoryItem&);
 };
 
 #endif

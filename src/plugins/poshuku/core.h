@@ -8,6 +8,7 @@
 #include <plugininterface/tagscompletionmodel.h>
 #include "favoritesmodel.h"
 #include "historymodel.h"
+#include "storagebackend.h"
 
 class QString;
 class QWidget;
@@ -29,6 +30,7 @@ class Core : public QObject
 	std::auto_ptr<TagsCompletionModel> FavoriteTagsCompletionModel_;
 	std::auto_ptr<QNetworkAccessManager> NetworkAccessManager_;
 	std::auto_ptr<QTimer> CookieSaveTimer_;
+	std::auto_ptr<StorageBackend> StorageBackend_;
 
 	QMap<QString, QObject*> Providers_;
 	QObjectList Downloaders_;
@@ -49,6 +51,7 @@ public:
 	HistoryModel* GetHistoryModel () const;
 	TagsCompletionModel* GetFavoritesTagsCompletionModel () const;
 	QNetworkAccessManager* GetNetworkAccessManager () const;
+	StorageBackend* GetStorageBackend () const;
 private:
 	void DoCommonAuth (const QString&, QAuthenticator*);
 	void RestoreSession (bool);

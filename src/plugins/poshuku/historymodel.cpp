@@ -1,6 +1,8 @@
 #include "historymodel.h"
 #include <QSettings>
+#include <QTimer>
 #include <plugininterface/proxy.h>
+#include "core.h"
 
 HistoryModel::HistoryModel (QObject *parent)
 : QAbstractItemModel (parent)
@@ -8,7 +10,7 @@ HistoryModel::HistoryModel (QObject *parent)
 	ItemHeaders_ << tr ("Title")
 		<< tr ("Date")
 		<< tr ("URL");
-	LoadData ();
+	QTimer::singleShot (0, this, SLOT (loadData ()));
 }
 
 HistoryModel::~HistoryModel ()
@@ -86,45 +88,28 @@ void HistoryModel::AddItem (const QString& title, const QString& url,
 		date,
 		url
 	};
+	Core::Instance ().GetStorageBackend ()->AddToHistory (item);
+}
+
+void HistoryModel::loadData ()
+{
+	std::vector<HistoryItem> items;
+	Core::Instance ().GetStorageBackend ()->LoadHistory (items);
+
+	if (!items.size ())
+		return;
+
+	beginInsertRows (QModelIndex (), 0, items.size () - 1);
+	for (std::vector<HistoryItem>::const_reverse_iterator i = items.rbegin (),
+			end = items.rend (); i != end; ++i)
+		Items_.push_front (*i);
+	endInsertRows ();
+}
+
+void HistoryModel::handleItemAdded (const HistoryModel::HistoryItem& item)
+{
 	beginInsertRows (QModelIndex (), 0, 0);
 	Items_.push_front (item);
 	endInsertRows ();
-
-	SaveData ();
-}
-
-void HistoryModel::LoadData ()
-{
-	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-			Proxy::Instance ()->GetApplicationName () + "_Poshuku");
-	int size = settings.beginReadArray ("History");
-	for (int i = 0; i < size; ++i)
-	{
-		settings.setArrayIndex (i);
-		HistoryItem item =
-		{
-			settings.value ("Title").toString (),
-			settings.value ("Date").toDateTime (),
-			settings.value ("URL").toString ()
-		};
-		Items_.push_back (item);
-	}
-	settings.endArray ();
-}
-
-void HistoryModel::SaveData () const
-{
-	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-			Proxy::Instance ()->GetApplicationName () + "_Poshuku");
-	settings.beginWriteArray ("History");
-	settings.remove ("");
-	for (size_t i = 0; i < Items_.size (); ++i)
-	{
-		settings.setArrayIndex (i);
-		settings.setValue ("Title", Items_ [i].Title_);
-		settings.setValue ("Date", Items_ [i].DateTime_);
-		settings.setValue ("URL", Items_ [i].URL_);
-	}
-	settings.endArray ();
 }
 

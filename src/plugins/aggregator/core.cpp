@@ -37,7 +37,11 @@ Core::Core ()
 	QDir dir = QDir::home ();
 	if (!dir.cd (".leechcraft/aggregator") &&
 			!dir.mkpath (".leechcraft/aggregator"))
+	{
+		qCritical () << Q_FUNC_INFO << "could not create neccessary "
+			"directories for Aggregator";
 		return;
+	}
 
 	StorageBackend_.reset (new SQLStorageBackend);
 

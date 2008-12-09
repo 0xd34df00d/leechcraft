@@ -9,7 +9,7 @@
 #include "plugininterface/dblock.h"
 
 SQLStorageBackend::SQLStorageBackend ()
-: DB_ (QSqlDatabase::addDatabase ("QSQLITE"))
+: DB_ (QSqlDatabase::addDatabase ("QSQLITE", "AggregatorConnection"))
 {
 	QDir dir = QDir::home ();
 	dir.cd (".leechcraft");
@@ -24,9 +24,7 @@ SQLStorageBackend::SQLStorageBackend ()
 
 void SQLStorageBackend::Prepare ()
 {
-	QSqlQuery pragma;
-	if (!pragma.exec ("PRAGMA cache_size = 6000;"))
-		LeechCraft::Util::DBLock::DumpError (pragma);
+	QSqlQuery pragma (DB_);
 	if (!pragma.exec ("PRAGMA journal_mode = TRUNCATE;"))
 		LeechCraft::Util::DBLock::DumpError (pragma);
 	if (!pragma.exec ("PRAGMA synchronous = OFF;"))
@@ -34,12 +32,12 @@ void SQLStorageBackend::Prepare ()
 	if (!pragma.exec ("PRAGMA temp_store = MEMORY;"))
 		LeechCraft::Util::DBLock::DumpError (pragma);
 
-	FeedFinderByURL_ = QSqlQuery ();
+	FeedFinderByURL_ = QSqlQuery (DB_);
 	FeedFinderByURL_.prepare ("SELECT last_update "
 			"FROM feeds "
 			"WHERE url = :url");
 
-	ChannelsShortSelector_ = QSqlQuery ();
+	ChannelsShortSelector_ = QSqlQuery (DB_);
 	ChannelsShortSelector_.prepare ("SELECT "
 			"title, "
 			"url, "
@@ -50,7 +48,7 @@ void SQLStorageBackend::Prepare ()
 			"WHERE parent_feed_url = :parent_feed_url "
 			"ORDER BY title");
 
-	ChannelsFullSelector_ = QSqlQuery ();
+	ChannelsFullSelector_ = QSqlQuery (DB_);
 	ChannelsFullSelector_.prepare ("SELECT "
 			"url, "
 			"description, "
@@ -66,13 +64,13 @@ void SQLStorageBackend::Prepare ()
 			"AND title = :title "
 			"ORDER BY title");
 
-	UnreadItemsCounter_ = QSqlQuery ();
+	UnreadItemsCounter_ = QSqlQuery (DB_);
 	UnreadItemsCounter_.prepare ("SELECT COUNT (unread) "
 			"FROM items "
 			"WHERE parents_hash = :parents_hash "
 			"AND unread = \"true\"");
 
-	ItemsShortSelector_ = QSqlQuery ();
+	ItemsShortSelector_ = QSqlQuery (DB_);
 	ItemsShortSelector_.prepare ("SELECT "
 			"title, "
 			"url, "
@@ -83,7 +81,7 @@ void SQLStorageBackend::Prepare ()
 			"WHERE parents_hash = :parents_hash "
 			"ORDER BY pub_date DESC");
 
-	ItemsFullSelector_ = QSqlQuery ();
+	ItemsFullSelector_ = QSqlQuery (DB_);
 	ItemsFullSelector_.prepare ("SELECT "
 			"title, "
 			"url, "
@@ -102,21 +100,21 @@ void SQLStorageBackend::Prepare ()
 			"AND url = :url "
 			"ORDER BY pub_date DESC");
 
-	ChannelFinder_ = QSqlQuery ();
+	ChannelFinder_ = QSqlQuery (DB_);
 	ChannelFinder_.prepare ("SELECT description "
 			"FROM channels "
 			"WHERE parent_feed_url = :parent_feed_url "
 			"AND title = :title "
 			"AND url = :url");
 
-	ItemFinder_ = QSqlQuery ();
+	ItemFinder_ = QSqlQuery (DB_);
 	ItemFinder_.prepare ("SELECT title "
 			"FROM items "
 			"WHERE parents_hash = :parents_hash "
 			"AND title = :title "
 			"AND url = :url");
 
-	InsertFeed_ = QSqlQuery ();
+	InsertFeed_ = QSqlQuery (DB_);
 	InsertFeed_.prepare ("INSERT INTO feeds ("
 			"url, "
 			"last_update"
@@ -125,7 +123,7 @@ void SQLStorageBackend::Prepare ()
 			":last_update"
 			")");
 
-	InsertChannel_ = QSqlQuery ();
+	InsertChannel_ = QSqlQuery (DB_);
 	InsertChannel_.prepare ("INSERT INTO channels ("
 			"parent_feed_url, "
 			"url, "
@@ -152,7 +150,7 @@ void SQLStorageBackend::Prepare ()
 			":favicon"
 			")");
 
-	InsertItem_ = QSqlQuery ();
+	InsertItem_ = QSqlQuery (DB_);
 	InsertItem_.prepare ("INSERT INTO items ("
 			"parents_hash, "
 			"title, "
@@ -181,7 +179,7 @@ void SQLStorageBackend::Prepare ()
 			":comments_page_url"
 			")");
 
-	UpdateShortChannel_ = QSqlQuery ();
+	UpdateShortChannel_ = QSqlQuery (DB_);
 	UpdateShortChannel_.prepare ("UPDATE channels SET "
 			"tags = :tags, "
 			"last_build = :last_build "
@@ -189,7 +187,7 @@ void SQLStorageBackend::Prepare ()
 			"AND url = :url "
 			"AND title = :title");
 
-	UpdateChannel_ = QSqlQuery ();
+	UpdateChannel_ = QSqlQuery (DB_);
 	UpdateChannel_.prepare ("UPDATE channels SET "
 			"description = :description, "
 			"last_build = :last_build, "
@@ -203,14 +201,14 @@ void SQLStorageBackend::Prepare ()
 			"AND url = :url "
 			"AND title = :title");
 
-	UpdateShortItem_ = QSqlQuery ();
+	UpdateShortItem_ = QSqlQuery (DB_);
 	UpdateShortItem_.prepare ("UPDATE items SET "
 			"unread = :unread "
 			"WHERE parents_hash = :parents_hash "
 			"AND title = :title "
 			"AND url = :url");
 
-	UpdateItem_ = QSqlQuery ();
+	UpdateItem_ = QSqlQuery (DB_);
 	UpdateItem_.prepare ("UPDATE items SET "
 			"description = :description, "
 			"author = :author, "
@@ -225,21 +223,21 @@ void SQLStorageBackend::Prepare ()
 			"AND url = :url "
 			"AND guid = :guid");
 
-	ToggleChannelUnread_ = QSqlQuery ();
+	ToggleChannelUnread_ = QSqlQuery (DB_);
 	ToggleChannelUnread_.prepare ("UPDATE items SET "
 			"unread = :unread "
 			"WHERE parents_hash = :parents_hash");
 
 
-	RemoveFeed_ = QSqlQuery ();
+	RemoveFeed_ = QSqlQuery (DB_);
 	RemoveFeed_.prepare ("DELETE FROM feeds "
 			"WHERE url = :url");
 
-	RemoveChannel_ = QSqlQuery ();
+	RemoveChannel_ = QSqlQuery (DB_);
 	RemoveChannel_.prepare ("DELETE FROM channels "
 			"WHERE parent_feed_url = :parent_feed_url");
 
-	RemoveItem_ = QSqlQuery ();
+	RemoveItem_ = QSqlQuery (DB_);
 	RemoveItem_.prepare ("DELETE FROM items "
 			"WHERE parents_hash = :parents_hash "
 			"AND title = :title "
@@ -254,7 +252,7 @@ SQLStorageBackend::~SQLStorageBackend ()
 
 void SQLStorageBackend::GetFeedsURLs (feeds_urls_t& result) const
 {
-	QSqlQuery feedSelector;
+	QSqlQuery feedSelector (DB_);
 	if (!feedSelector.exec ("SELECT url "
 				"FROM feeds "
 				"ORDER BY url"))
@@ -721,7 +719,7 @@ void SQLStorageBackend::RemoveFeed (const QString& url)
 	for (channels_shorts_t::iterator i = shorts.begin (),
 			end = shorts.end (); i != end; ++i)
 	{
-		QSqlQuery removeItem;
+		QSqlQuery removeItem (DB_);
 		removeItem.prepare ("DELETE FROM items "
 				"WHERE parents_hash = :parents_hash");
 		removeItem.bindValue (":parents_hash", url + i->Title_);
@@ -776,7 +774,7 @@ int SQLStorageBackend::GetUnreadItemsNumber () const
 {
 	QSqlQuery query ("SELECT COUNT (unread) "
 			"FROM items "
-			"WHERE unread = \"true\"");
+			"WHERE unread = \"true\"", DB_);
 	if (!query.exec () || !query.next ())
 	{
 		LeechCraft::Util::DBLock::DumpError (query);
@@ -811,7 +809,7 @@ bool SQLStorageBackend::UpdateItemsStorage (int oldV, int newV)
 
 bool SQLStorageBackend::InitializeTables ()
 {
-	QSqlQuery query;
+	QSqlQuery query (DB_);
 	if (!query.exec ("CREATE TABLE feeds ("
 			"url TEXT PRIMARY KEY, "
 			"last_update TIMESTAMP "
@@ -916,7 +914,7 @@ bool SQLStorageBackend::RollItemsStorage (int version)
 
 	if (version == 2)
 	{
-		QSqlQuery updateQuery = QSqlQuery ();
+		QSqlQuery updateQuery = QSqlQuery (DB_);
 		if (!updateQuery.exec ("ALTER TABLE items "
 				"ADD num_comments SMALLINT"))
 		{
@@ -940,7 +938,7 @@ bool SQLStorageBackend::RollItemsStorage (int version)
 	}
 	else if (version == 3)
 	{
-		QSqlQuery updateQuery = QSqlQuery ();
+		QSqlQuery updateQuery = QSqlQuery (DB_);
 		if (!updateQuery.exec ("ALTER TABLE items "
 					"ADD comments_page_url TEXT"))
 		{
