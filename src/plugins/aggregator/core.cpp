@@ -1269,8 +1269,24 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 					&RegexpMatcherManager::Instance (),
 					_1));
 
+		const int days = XmlSettingsManager::Instance ()->
+				property ("ItemsMaxAge").toInt ();
+		const QDateTime current = QDateTime::currentDateTime ();
+		const unsigned ItemsPerChannel = XmlSettingsManager::Instance ()->
+					property ("ItemsPerChannel").value<unsigned> ();
+
 		if (position == ourChannels.end ())
 		{
+			size_t truncateAt = ((*i)->Items_.size () <= ItemsPerChannel) ?
+				(*i)->Items_.size () : ItemsPerChannel;
+			for (size_t j = 0; j < (*i)->Items_.size (); j++)
+				if ((*i)->Items_ [j]->PubDate_.daysTo (current) > days)
+				{
+ 					truncateAt = std::min (j, truncateAt);
+					break;
+				}
+			(*i)->Items_.resize (truncateAt);
+
 			ChannelsModel_->AddChannel ((*i)->ToShort ());
 			StorageBackend_->AddChannel (*i, pj.URL_);
 			emitString += tr ("Added channel \"%1\" (has %2 items)")
@@ -1279,6 +1295,18 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 		}
 		else
 		{
+			if ((*i)->LastBuild_.isValid ())
+				(*position)->LastBuild_ = (*i)->LastBuild_;
+			else 
+				(*position)->LastBuild_ = QDateTime::currentDateTime ();
+
+			for (size_t j = 0; j < (*i)->Items_.size (); j++)
+				if ((*i)->Items_ [j]->PubDate_.daysTo (current) > days)
+				{
+ 					(*i)->Items_.resize (j);
+					break;
+				}
+
 			if ((*i)->Items_.size ())
 				emitString += tr ("Updated channel \"%1\" (%2 new items)")
 					.arg ((*i)->Title_)
@@ -1291,31 +1319,19 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 						pj.URL_,
 						(*i)->Title_));
 
-			if ((*i)->LastBuild_.isValid ())
-				(*position)->LastBuild_ = (*i)->LastBuild_;
-			else 
-				(*position)->LastBuild_ = QDateTime::currentDateTime ();
-
 			// Now cut off old and overwhelming items.
-			XmlSettingsManager::Instance ()->
-				property ("ItemsPerChannel").value<size_t> ();
-			QDateTime current = QDateTime::currentDateTime ();
-			int removeFrom = -1;
-			int days = XmlSettingsManager::Instance ()->
-				property ("ItemsMaxAge").toInt ();
+			unsigned removeFrom = (*position)->Items_.size ();
 			for (size_t j = 0; j < (*position)->Items_.size (); ++j)
 				if ((*position)->Items_ [j]->PubDate_.daysTo (current) > days)
 				{
 					removeFrom = j;
 					break;
 				}
-			if (removeFrom == 0)
-				removeFrom = 1;
+			/*if (removeFrom == 0)
+				removeFrom = 1;*/
 
-			removeFrom = std::min (removeFrom,
-					XmlSettingsManager::Instance ()->
-					property ("ItemsPerChannel").toInt ());
-
+			removeFrom = std::min (removeFrom, ItemsPerChannel);
+			
 			if ((*position)->Items_.size () > removeFrom)
 				std::for_each ((*position)->Items_.begin () + removeFrom,
 						(*position)->Items_.end (),
