@@ -1,5 +1,4 @@
 #include "historymodel.h"
-#include <QSettings>
 #include <QTimer>
 #include <plugininterface/proxy.h>
 #include "core.h"

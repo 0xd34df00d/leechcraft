@@ -3,6 +3,7 @@
 #include <vector>
 #include <QObject>
 #include "historymodel.h"
+#include "favoritesmodel.h"
 
 /** @brief Abstract base class for storage backends.
  *
@@ -19,8 +20,15 @@ public:
 	virtual void Prepare () = 0;
 	virtual void LoadHistory (std::vector<HistoryModel::HistoryItem>& items) const = 0;
 	virtual void AddToHistory (const HistoryModel::HistoryItem& item) = 0;
+	virtual void LoadFavorites (std::vector<FavoritesModel::FavoritesItem>& items) const = 0;
+	virtual void AddToFavorites (const FavoritesModel::FavoritesItem& item) = 0;
+	virtual void RemoveFromFavorites (const FavoritesModel::FavoritesItem& item) = 0;
+	virtual void UpdateFavorites (const FavoritesModel::FavoritesItem& item) = 0;
 signals:
 	void added (const HistoryModel::HistoryItem&);
+	void added (const FavoritesModel::FavoritesItem&);
+	void updated (const FavoritesModel::FavoritesItem&);
+	void removed (const FavoritesModel::FavoritesItem&);
 };
 
 #endif

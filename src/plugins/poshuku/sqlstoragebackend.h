@@ -21,7 +21,29 @@ class SQLStorageBackend : public StorageBackend
 			 * - title
 			 * - url
 			 */
-			HistoryAdder_;
+			HistoryAdder_,
+			/** Returns:
+			 * - title
+			 * - url
+			 * - tags
+			 */
+			FavoritesLoader_,
+			/** Binds:
+			 * - title
+			 * - url
+			 * - tags
+			 */
+			FavoritesAdder_,
+			/** Binds:
+			 * - title
+			 * - url
+			 * - tags
+			 */
+			FavoritesUpdater_,
+			/** Binds:
+			 * - url
+			 */
+			FavoritesRemover_;
 public:
 	SQLStorageBackend ();
 	virtual ~SQLStorageBackend ();
@@ -30,6 +52,10 @@ public:
 
 	virtual void LoadHistory (std::vector<HistoryModel::HistoryItem>&) const;
 	virtual void AddToHistory (const HistoryModel::HistoryItem&);
+	virtual void LoadFavorites (std::vector<FavoritesModel::FavoritesItem>&) const;
+	virtual void AddToFavorites (const FavoritesModel::FavoritesItem&);
+	virtual void RemoveFromFavorites (const FavoritesModel::FavoritesItem&);
+	virtual void UpdateFavorites (const FavoritesModel::FavoritesItem&);
 private:
 	void InitializeTables ();
 };

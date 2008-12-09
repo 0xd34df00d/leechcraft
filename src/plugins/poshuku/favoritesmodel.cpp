@@ -1,13 +1,25 @@
 #include "favoritesmodel.h"
-#include <QSettings>
+#include <algorithm>
+#include <QTimer>
+#include <QtDebug>
 #include <plugininterface/proxy.h>
 #include "filtermodel.h"
+#include "core.h"
+
+bool FavoritesModel::FavoritesItem::operator== (const FavoritesModel::FavoritesItem& item) const
+{
+	return Title_ == item.Title_ &&
+		URL_ == item.URL_ &&
+		Tags_ == item.Tags_;
+}
 
 FavoritesModel::FavoritesModel (QObject *parent)
 : QAbstractItemModel (parent)
 {
-	ItemHeaders_ << tr ("Title") << tr ("URL") << tr ("Tags");
-	LoadData ();
+	ItemHeaders_ << tr ("Title")
+		<< tr ("URL")
+		<< tr ("Tags");
+	QTimer::singleShot (0, this, SLOT (loadData ()));
 }
 
 FavoritesModel::~FavoritesModel ()
@@ -88,62 +100,98 @@ bool FavoritesModel::setData (const QModelIndex& index,
 		return false;
 
 	Items_ [index.row ()].Tags_ = value.toStringList ();
-	emit dataChanged (index, index);
-	SaveData ();
+	Core::Instance ().GetStorageBackend ()->UpdateFavorites (Items_ [index.row ()]);
 	return true;
 }
 
 void FavoritesModel::AddItem (const QString& title, const QString& url,
 	   const QStringList& tags)
 {
-	FavoritesItem item = { title, url, tags };
+	FavoritesItem item =
+	{
+		title,
+		url,
+		tags
+	};
 
-	beginInsertRows (QModelIndex (), rowCount (), rowCount ());
-	Items_.push_back (item);
-	endInsertRows ();
-
-	SaveData ();
+	Core::Instance ().GetStorageBackend ()->AddToFavorites (item);
 }
 
 void FavoritesModel::removeItem (const QModelIndex& index)
 {
-	beginRemoveRows (QModelIndex (), index.row (), index.row ());
-	Items_.erase (Items_.begin () + index.row ());
+	Core::Instance ().GetStorageBackend ()->RemoveFromFavorites (Items_ [index.row ()]);
+}
+
+void FavoritesModel::handleItemAdded (const FavoritesModel::FavoritesItem& item)
+{
+	beginInsertRows (QModelIndex (), 0, 0);
+	Items_.push_back (item);
+	endInsertRows ();
+}
+
+namespace
+{
+	struct ItemFinder
+	{
+		const QString& URL_;
+
+		ItemFinder (const QString& url)
+		: URL_ (url)
+		{
+		}
+
+		bool operator() (const FavoritesModel::FavoritesItem& item) const
+		{
+			return item.URL_ == URL_;
+		}
+	};
+};
+
+void FavoritesModel::handleItemUpdated (const FavoritesModel::FavoritesItem& item)
+{
+	items_t::iterator pos =
+		std::find_if (Items_.begin (), Items_.end (), ItemFinder (item.URL_));
+	if (pos == Items_.end ())
+	{
+		qWarning () << Q_FUNC_INFO << "not found updated item";
+		return;
+	}
+
+	*pos = item;
+
+	int n = std::distance (Items_.begin (), pos);
+
+	emit dataChanged (index (n, 2), index (n, 2));
+}
+
+void FavoritesModel::handleItemRemoved (const FavoritesModel::FavoritesItem& item)
+{
+	items_t::iterator pos =
+		std::find (Items_.begin (), Items_.end (), item);
+	if (pos == Items_.end ())
+	{
+		qWarning () << Q_FUNC_INFO << "not found removed item";
+		return;
+	}
+
+	int n = std::distance (Items_.begin (), pos);
+	beginRemoveRows (QModelIndex (), n, n);
+	Items_.erase (pos);
 	endRemoveRows ();
-
-	SaveData ();
 }
 
-void FavoritesModel::LoadData ()
+void FavoritesModel::loadData ()
 {
-	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-			Proxy::Instance ()->GetApplicationName () + "_Poshuku");
-	int size = settings.beginReadArray ("Favorites");
-	for (int i = 0; i < size; ++i)
-	{
-		settings.setArrayIndex (i);
-		FavoritesItem item;
-		item.Title_ = settings.value ("Title").toString ();
-		item.URL_ = settings.value ("URL").toString ();
-		item.Tags_ = settings.value ("Tags").toStringList ();
-		Items_.push_back (item);
-	}
-	settings.endArray ();
-}
+	items_t items;
+	Core::Instance ().GetStorageBackend ()->LoadFavorites (items);
 
-void FavoritesModel::SaveData () const
-{
-	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-			Proxy::Instance ()->GetApplicationName () + "_Poshuku");
-	settings.beginWriteArray ("Favorites");
-	settings.remove ("");
-	for (size_t i = 0; i < Items_.size (); ++i)
-	{
-		settings.setArrayIndex (i);
-		settings.setValue ("Title", Items_ [i].Title_);
-		settings.setValue ("URL", Items_ [i].URL_);
-		settings.setValue ("Tags", Items_ [i].Tags_);
-	}
-	settings.endArray ();
+	if (!items.size ())
+		return;
+
+	beginInsertRows (QModelIndex (), 0, items.size () - 1);
+	for (items_t::const_reverse_iterator i = items.rbegin (),
+			end = items.rend (); i != end; ++i)
+		Items_.push_back (*i);
+	endInsertRows ();
 }
 

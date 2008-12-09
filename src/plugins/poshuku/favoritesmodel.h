@@ -9,15 +9,18 @@ class FavoritesModel : public QAbstractItemModel
 	Q_OBJECT
 	
 	QStringList ItemHeaders_;
-
+public:
 	struct FavoritesItem
 	{
 		QString Title_;
 		QString URL_;
 		QStringList Tags_;
-	};
 
-	std::vector<FavoritesItem> Items_;
+		bool operator== (const FavoritesItem&) const;
+	};
+private:
+	typedef std::vector<FavoritesItem> items_t;
+	items_t Items_;
 public:
 	enum Columns
 	{
@@ -45,9 +48,11 @@ public:
 	void AddItem (const QString&, const QString&, const QStringList&);
 public slots:
 	void removeItem (const QModelIndex&);
-private:
-	void SaveData () const;
-	void LoadData ();
+	void handleItemAdded (const FavoritesModel::FavoritesItem&);
+	void handleItemUpdated (const FavoritesModel::FavoritesItem&);
+	void handleItemRemoved (const FavoritesModel::FavoritesItem&);
+private slots:
+	void loadData ();
 };
 
 #endif

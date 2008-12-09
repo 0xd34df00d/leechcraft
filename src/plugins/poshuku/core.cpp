@@ -30,10 +30,6 @@ Core::Core ()
 : CookieSaveTimer_ (new QTimer ())
 , SaveSessionScheduled_ (false)
 {
-	bool cleanShutdown = XmlSettingsManager::Instance ()->
-		Property ("CleanShutdown", true).toBool ();
-	XmlSettingsManager::Instance ()->setProperty ("CleanShutdown", false);
-
 	QDir dir = QDir::home ();
 	if (!dir.cd (".leechcraft/poshuku") &&
 			!dir.mkpath (".leechcraft/poshuku"))
@@ -88,6 +84,18 @@ Core::Core ()
 			SLOT (handleItemAdded (const HistoryModel::HistoryItem&)));
 
 	FavoritesModel_.reset (new FavoritesModel (this));
+	connect (StorageBackend_.get (),
+			SIGNAL (added (const FavoritesModel::FavoritesItem&)),
+			FavoritesModel_.get (),
+			SLOT (handleItemAdded (const FavoritesModel::FavoritesItem&)));
+	connect (StorageBackend_.get (),
+			SIGNAL (updated (const FavoritesModel::FavoritesItem&)),
+			FavoritesModel_.get (),
+			SLOT (handleItemUpdated (const FavoritesModel::FavoritesItem&)));
+	connect (StorageBackend_.get (),
+			SIGNAL (removed (const FavoritesModel::FavoritesItem&)),
+			FavoritesModel_.get (),
+			SLOT (handleItemRemoved (const FavoritesModel::FavoritesItem&)));
 
 	FavoriteTagsCompletionModel_.reset (new TagsCompletionModel (this));
 	FavoriteTagsCompletionModel_->
@@ -98,11 +106,7 @@ Core::Core ()
 			this,
 			SLOT (favoriteTagsUpdated (const QStringList&)));
 
-	if (!cleanShutdown)
-		RestoreSession (true);
-	else if (XmlSettingsManager::Instance ()->
-			property ("RestorePreviousSession").toBool ())
-		RestoreSession (false);
+	QTimer::singleShot (200, this, SLOT (postConstruct ()));
 }
 
 Core& Core::Instance ()
@@ -272,7 +276,7 @@ void Core::RestoreSession (bool ask)
 		if (dia->exec () == QDialog::Accepted)
 		{
 			RestoredURLs_ = dia->GetSelectedURLs ();
-			QTimer::singleShot (5000, this, SLOT (restorePages ()));
+			QTimer::singleShot (2000, this, SLOT (restorePages ()));
 		}
 	}
 	else
@@ -282,7 +286,7 @@ void Core::RestoreSession (bool ask)
 			settings.setArrayIndex (i);
 			RestoredURLs_ << settings.value ("URL").toString ();
 		}
-		QTimer::singleShot (5000, this, SLOT (restorePages ()));
+		QTimer::singleShot (2000, this, SLOT (restorePages ()));
 	}
 	settings.endArray ();
 }
@@ -504,5 +508,18 @@ void Core::restorePages ()
 	for (QStringList::const_iterator i = RestoredURLs_.begin (),
 			end = RestoredURLs_.end (); i != end; ++i)
 		NewURL (*i);
+}
+
+void Core::postConstruct ()
+{
+	bool cleanShutdown = XmlSettingsManager::Instance ()->
+		Property ("CleanShutdown", true).toBool ();
+	XmlSettingsManager::Instance ()->setProperty ("CleanShutdown", false);
+
+	if (!cleanShutdown)
+		RestoreSession (true);
+	else if (XmlSettingsManager::Instance ()->
+			property ("RestorePreviousSession").toBool ())
+		RestoreSession (false);
 }
 

@@ -38,6 +38,8 @@ class Core : public QObject
 	bool SaveSessionScheduled_;
 	QStringList RestoredURLs_;
 
+	QMap<QString, QString> SavedSession_;
+
 	Core ();
 public:
 	static Core& Instance ();
@@ -72,6 +74,7 @@ private slots:
 	void favoriteTagsUpdated (const QStringList&);
 	void saveSession ();
 	void restorePages ();
+	void postConstruct ();
 signals:
 	void addNewTab (const QString&, QWidget*);
 	void removeTab (QWidget*);

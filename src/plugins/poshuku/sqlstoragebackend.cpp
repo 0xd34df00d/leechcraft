@@ -50,6 +50,35 @@ void SQLStorageBackend::Prepare ()
 			":title, "
 			":url"
 			")");
+
+	FavoritesLoader_ = QSqlQuery (DB_);
+	FavoritesLoader_.prepare ("SELECT "
+			"title, "
+			"url, "
+			"tags "
+			"FROM favorites "
+			"ORDER BY title");
+
+	FavoritesAdder_ = QSqlQuery (DB_);
+	FavoritesAdder_.prepare ("INSERT INTO favorites ("
+			"title, "
+			"url, "
+			"tags "
+			") VALUES ("
+			":title, "
+			":url, "
+			":tags"
+			")");
+
+	FavoritesUpdater_ = QSqlQuery (DB_);
+	FavoritesUpdater_.prepare ("UPDATE favorites SET "
+			"title = :title, "
+			"tags = :tags "
+			"WHERE url = :url");
+
+	FavoritesRemover_ = QSqlQuery (DB_);
+	FavoritesRemover_.prepare ("DELETE FROM favorites "
+			"WHERE url = :url");
 }
 
 void SQLStorageBackend::LoadHistory (
@@ -87,6 +116,71 @@ void SQLStorageBackend::AddToHistory (const HistoryModel::HistoryItem& item)
 	}
 
 	emit added (item);
+}
+
+void SQLStorageBackend::LoadFavorites (
+		std::vector<FavoritesModel::FavoritesItem>& items
+		) const
+{
+	if (!FavoritesLoader_.exec ())
+	{
+		LeechCraft::Util::DBLock::DumpError (FavoritesLoader_);
+		return;
+	}
+
+	while (FavoritesLoader_.next ())
+	{
+		FavoritesModel::FavoritesItem item =
+		{
+			FavoritesLoader_.value (0).toString (),
+			FavoritesLoader_.value (1).toString (),
+			FavoritesLoader_.value (2).toString ().split (" ",
+					QString::SkipEmptyParts)
+		};
+		items.push_back (item);
+	}
+}
+
+void SQLStorageBackend::AddToFavorites (const FavoritesModel::FavoritesItem& item)
+{
+	FavoritesAdder_.bindValue (":title", item.Title_);
+	FavoritesAdder_.bindValue (":url", item.URL_);
+	FavoritesAdder_.bindValue (":tags", item.Tags_.join (" "));
+
+	if (!FavoritesAdder_.exec ())
+	{
+		LeechCraft::Util::DBLock::DumpError (FavoritesAdder_);
+		return;
+	}
+
+	emit added (item);
+}
+
+void SQLStorageBackend::RemoveFromFavorites (const FavoritesModel::FavoritesItem& item)
+{
+	FavoritesRemover_.bindValue (":url", item.URL_);
+	if (!FavoritesRemover_.exec ())
+	{
+		LeechCraft::Util::DBLock::DumpError (FavoritesRemover_);
+		return;
+	}
+
+	emit removed (item);
+}
+
+void SQLStorageBackend::UpdateFavorites (const FavoritesModel::FavoritesItem& item)
+{
+	FavoritesUpdater_.bindValue (":title", item.Title_);
+	FavoritesUpdater_.bindValue (":url", item.URL_);
+	FavoritesUpdater_.bindValue (":tags", item.Tags_.join (" "));
+
+	if (!FavoritesUpdater_.exec ())
+	{
+		LeechCraft::Util::DBLock::DumpError (FavoritesUpdater_);
+		return;
+	}
+
+	emit updated (item);
 }
 
 void SQLStorageBackend::InitializeTables ()
