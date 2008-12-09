@@ -13,6 +13,7 @@ SET (SRCS
 	categoryselector.cpp
 	historymodel.cpp
 	mergemodel.cpp
+	dblock.cpp
 	)
 SET (HEADERS
 	proxy.h
@@ -26,6 +27,7 @@ SET (HEADERS
 	categoryselector.h
 	historymodel.h
 	mergemodel.h
+	dblock.h
 	)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})

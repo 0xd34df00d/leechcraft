@@ -6,62 +6,17 @@
 #include <QBuffer>
 #include <QSqlError>
 #include <QVariant>
-
-SQLStorageBackend::DBLock::DBLock (QSqlDatabase& database)
-: Database_ (database)
-, Good_ (false)
-, Initialized_ (false)
-{
-}
-
-SQLStorageBackend::DBLock::~DBLock ()
-{
-	if (!Initialized_)
-		return;
-
-	if (Good_ ? !Database_.commit () : !Database_.rollback ())
-		DumpError (Database_.lastError ());
-}
-
-void SQLStorageBackend::DBLock::Init ()
-{
-	if (!Database_.transaction ())
-	{
-		DumpError (Database_.lastError ());
-		throw std::runtime_error ("Could not start transaction");
-	}
-	Initialized_ = true;
-}
-
-void SQLStorageBackend::DBLock::Good ()
-{
-	Good_ = true;
-}
-
-void SQLStorageBackend::DBLock::DumpError (const QSqlError& lastError)
-{
-	qWarning () << lastError.text () << "|"
-		<< lastError.databaseText () << "|"
-		<< lastError.driverText () << "|"
-		<< lastError.type () << "|"
-		<< lastError.number ();
-}
-
-void SQLStorageBackend::DBLock::DumpError (const QSqlQuery& lastQuery)
-{
-	qWarning () << lastQuery.lastQuery ();
-	DumpError (lastQuery.lastError ());
-}
+#include "plugininterface/dblock.h"
 
 SQLStorageBackend::SQLStorageBackend ()
 : DB_ (QSqlDatabase::addDatabase ("QSQLITE"))
 {
 	QDir dir = QDir::home ();
 	dir.cd (".leechcraft");
-
+	dir.cd ("aggregator");
 	DB_.setDatabaseName (dir.filePath ("aggregator.db"));
 	if (!DB_.open ())
-		DBLock::DumpError (DB_.lastError ());
+		LeechCraft::Util::DBLock::DumpError (DB_.lastError ());
 
 	if (!DB_.tables ().contains ("feeds"))
 		InitializeTables ();
@@ -71,13 +26,13 @@ void SQLStorageBackend::Prepare ()
 {
 	QSqlQuery pragma;
 	if (!pragma.exec ("PRAGMA cache_size = 6000;"))
-		DBLock::DumpError (pragma);
+		LeechCraft::Util::DBLock::DumpError (pragma);
 	if (!pragma.exec ("PRAGMA journal_mode = TRUNCATE;"))
-		DBLock::DumpError (pragma);
+		LeechCraft::Util::DBLock::DumpError (pragma);
 	if (!pragma.exec ("PRAGMA synchronous = OFF;"))
-		DBLock::DumpError (pragma);
+		LeechCraft::Util::DBLock::DumpError (pragma);
 	if (!pragma.exec ("PRAGMA temp_store = MEMORY;"))
-		DBLock::DumpError (pragma);
+		LeechCraft::Util::DBLock::DumpError (pragma);
 
 	FeedFinderByURL_ = QSqlQuery ();
 	FeedFinderByURL_.prepare ("SELECT last_update "
@@ -304,7 +259,7 @@ void SQLStorageBackend::GetFeedsURLs (feeds_urls_t& result) const
 				"FROM feeds "
 				"ORDER BY url"))
 	{
-		DBLock::DumpError (feedSelector);
+		LeechCraft::Util::DBLock::DumpError (feedSelector);
 		return;
 	}
 
@@ -318,7 +273,7 @@ void SQLStorageBackend::GetChannels (channels_shorts_t& shorts,
 	ChannelsShortSelector_.bindValue (":parent_feed_url", feedURL);
 	if (!ChannelsShortSelector_.exec ())
 	{
-		DBLock::DumpError (ChannelsShortSelector_);
+		LeechCraft::Util::DBLock::DumpError (ChannelsShortSelector_);
 		return;
 	}
 
@@ -329,7 +284,7 @@ void SQLStorageBackend::GetChannels (channels_shorts_t& shorts,
 
 		UnreadItemsCounter_.bindValue (":parents_hash", feedURL + title);
 		if (!UnreadItemsCounter_.exec () || !UnreadItemsCounter_.next ())
-			DBLock::DumpError (UnreadItemsCounter_);
+			LeechCraft::Util::DBLock::DumpError (UnreadItemsCounter_);
 		else
 			unread = UnreadItemsCounter_.value (0).toInt ();
 
@@ -360,7 +315,7 @@ Channel_ptr SQLStorageBackend::GetChannel (const QString& title,
 	ChannelsFullSelector_.bindValue (":parent_feed_url", feedParent);
 	if (!ChannelsFullSelector_.exec () || !ChannelsFullSelector_.next ())
 	{
-		DBLock::DumpError (ChannelsFullSelector_);
+		LeechCraft::Util::DBLock::DumpError (ChannelsFullSelector_);
 		return Channel_ptr (new Channel);
 	}
 
@@ -392,7 +347,7 @@ void SQLStorageBackend::GetItems (items_shorts_t& shorts, const QString& parents
 
 	if (!ItemsShortSelector_.exec ())
 	{
-		DBLock::DumpError (ItemsShortSelector_);
+		LeechCraft::Util::DBLock::DumpError (ItemsShortSelector_);
 		return;
 	}
 
@@ -421,7 +376,7 @@ Item_ptr SQLStorageBackend::GetItem (const QString& title,
 	ItemsFullSelector_.bindValue (":link", link);
 	if (!ItemsFullSelector_.exec () || !ItemsFullSelector_.next ())
 	{
-		DBLock::DumpError (ItemsFullSelector_);
+		LeechCraft::Util::DBLock::DumpError (ItemsFullSelector_);
 		return Item_ptr ();
 	}
 
@@ -446,7 +401,7 @@ Item_ptr SQLStorageBackend::GetItem (const QString& title,
 
 void SQLStorageBackend::AddFeed (Feed_ptr feed)
 {
-	DBLock lock (DB_);
+	LeechCraft::Util::DBLock lock (DB_);
 	try
 	{
 		lock.Init ();
@@ -461,7 +416,7 @@ void SQLStorageBackend::AddFeed (Feed_ptr feed)
 	InsertFeed_.bindValue (":last_update", feed->LastUpdate_);
 	if (!InsertFeed_.exec ())
 	{
-		DBLock::DumpError (InsertFeed_);
+		LeechCraft::Util::DBLock::DumpError (InsertFeed_);
 		return;
 	}
 
@@ -490,7 +445,7 @@ void SQLStorageBackend::UpdateChannel (Channel_ptr channel, const QString& paren
 	ChannelFinder_.bindValue (":url", channel->Link_);
 	if (!ChannelFinder_.exec ())
 	{
-		DBLock::DumpError (ChannelFinder_);
+		LeechCraft::Util::DBLock::DumpError (ChannelFinder_);
 		throw std::runtime_error ("Unable to execute channel finder query");
 	}
 	ChannelFinder_.next ();
@@ -501,7 +456,7 @@ void SQLStorageBackend::UpdateChannel (Channel_ptr channel, const QString& paren
 	}
 	ChannelFinder_.finish ();
 
-	DBLock lock (DB_);
+	LeechCraft::Util::DBLock lock (DB_);
 	try
 	{
 		lock.Init ();
@@ -526,7 +481,7 @@ void SQLStorageBackend::UpdateChannel (Channel_ptr channel, const QString& paren
 
 	if (!UpdateChannel_.exec ())
 	{
-		DBLock::DumpError (UpdateChannel_);
+		LeechCraft::Util::DBLock::DumpError (UpdateChannel_);
 		throw std::runtime_error ("failed to save channel");
 	}
 
@@ -544,7 +499,7 @@ void SQLStorageBackend::UpdateChannel (const ChannelShort& channel,
 	ChannelFinder_.bindValue (":url", channel.Link_);
 	if (!ChannelFinder_.exec ())
 	{
-		DBLock::DumpError (ChannelFinder_);
+		LeechCraft::Util::DBLock::DumpError (ChannelFinder_);
 		throw std::runtime_error ("Unable to execute channel finder query");
 	}
 	ChannelFinder_.next ();
@@ -562,7 +517,7 @@ void SQLStorageBackend::UpdateChannel (const ChannelShort& channel,
 
 	if (!UpdateShortChannel_.exec ())
 	{
-		DBLock::DumpError (UpdateShortChannel_);
+		LeechCraft::Util::DBLock::DumpError (UpdateShortChannel_);
 		throw std::runtime_error ("failed to save channel");
 	}
 
@@ -579,7 +534,7 @@ void SQLStorageBackend::UpdateItem (Item_ptr item,
 	ItemFinder_.bindValue (":url", item->Link_);
 	if (!ItemFinder_.exec ())
 	{
-		DBLock::DumpError (ItemFinder_);
+		LeechCraft::Util::DBLock::DumpError (ItemFinder_);
 		throw std::runtime_error ("Unable to execute item finder query");
 	}
 	ItemFinder_.next ();
@@ -590,7 +545,7 @@ void SQLStorageBackend::UpdateItem (Item_ptr item,
 	}
 	ItemFinder_.finish ();
 
-	DBLock lock (DB_);
+	LeechCraft::Util::DBLock lock (DB_);
 	try
 	{
 		lock.Init ();
@@ -616,7 +571,7 @@ void SQLStorageBackend::UpdateItem (Item_ptr item,
 
 	if (!UpdateItem_.exec ())
 	{
-		DBLock::DumpError (UpdateItem_);
+		LeechCraft::Util::DBLock::DumpError (UpdateItem_);
 		throw std::runtime_error ("failed to save item");
 	}
 
@@ -637,7 +592,7 @@ void SQLStorageBackend::UpdateItem (const ItemShort& item,
 	ItemFinder_.bindValue (":url", item.URL_);
 	if (!ItemFinder_.exec ())
 	{
-		DBLock::DumpError (ItemFinder_);
+		LeechCraft::Util::DBLock::DumpError (ItemFinder_);
 		throw std::runtime_error ("Unable to execute item finder query");
 	}
 	ItemFinder_.next ();
@@ -653,7 +608,7 @@ void SQLStorageBackend::UpdateItem (const ItemShort& item,
 
 	if (!UpdateShortItem_.exec ())
 	{
-		DBLock::DumpError (UpdateShortItem_);
+		LeechCraft::Util::DBLock::DumpError (UpdateShortItem_);
 		throw std::runtime_error ("failed to save item");
 	}
 
@@ -681,7 +636,7 @@ void SQLStorageBackend::AddChannel (Channel_ptr channel, const QString& url)
 
 	if (!InsertChannel_.exec ())
 	{
-		DBLock::DumpError (InsertChannel_);
+		LeechCraft::Util::DBLock::DumpError (InsertChannel_);
 		throw std::runtime_error ("failed to save channel");
 	}
 
@@ -713,7 +668,7 @@ void SQLStorageBackend::AddItem (Item_ptr item,
 
 	if (!InsertItem_.exec ())
 	{
-		DBLock::DumpError (InsertItem_);
+		LeechCraft::Util::DBLock::DumpError (InsertItem_);
 		throw std::runtime_error ("failed to save item");
 	}
 
@@ -736,7 +691,7 @@ void SQLStorageBackend::RemoveItem (Item_ptr item,
 
 	if (!RemoveItem_.exec ())
 	{
-		DBLock::DumpError (RemoveItem_);
+		LeechCraft::Util::DBLock::DumpError (RemoveItem_);
 		return;
 	}
 
@@ -752,7 +707,7 @@ void SQLStorageBackend::RemoveFeed (const QString& url)
 	channels_shorts_t shorts;
 	GetChannels (shorts, url);
 
-	DBLock lock (DB_);
+	LeechCraft::Util::DBLock lock (DB_);
 	try
 	{
 		lock.Init ();
@@ -773,14 +728,14 @@ void SQLStorageBackend::RemoveFeed (const QString& url)
 
 		if (!removeItem.exec ())
 		{
-			DBLock::DumpError (removeItem);
+			LeechCraft::Util::DBLock::DumpError (removeItem);
 			return;
 		}
 
 		RemoveChannel_.bindValue (":parent_feed_url", url);
 		if (!RemoveChannel_.exec ())
 		{
-			DBLock::DumpError (RemoveChannel_);
+			LeechCraft::Util::DBLock::DumpError (RemoveChannel_);
 			return;
 		}
 
@@ -790,7 +745,7 @@ void SQLStorageBackend::RemoveFeed (const QString& url)
 	RemoveFeed_.bindValue (":url", url);
 	if (!RemoveFeed_.exec ())
 	{
-		DBLock::DumpError (RemoveFeed_);
+		LeechCraft::Util::DBLock::DumpError (RemoveFeed_);
 		return;
 	}
 
@@ -808,7 +763,7 @@ void SQLStorageBackend::ToggleChannelUnread (const QString& purl,
 
 	if (!ToggleChannelUnread_.exec ())
 	{
-		DBLock::DumpError (ToggleChannelUnread_);
+		LeechCraft::Util::DBLock::DumpError (ToggleChannelUnread_);
 		throw std::runtime_error ("failed to toggle item");
 	}
 
@@ -824,7 +779,7 @@ int SQLStorageBackend::GetUnreadItemsNumber () const
 			"WHERE unread = \"true\"");
 	if (!query.exec () || !query.next ())
 	{
-		DBLock::DumpError (query);
+		LeechCraft::Util::DBLock::DumpError (query);
 		return 0;
 	}
 
@@ -862,7 +817,7 @@ bool SQLStorageBackend::InitializeTables ()
 			"last_update TIMESTAMP "
 			");"))
 	{
-		DBLock::DumpError (query.lastError ());
+		LeechCraft::Util::DBLock::DumpError (query.lastError ());
 		return false;
 	}
 
@@ -880,7 +835,7 @@ bool SQLStorageBackend::InitializeTables ()
 			"favicon BLOB "
 			");"))
 	{
-		DBLock::DumpError (query.lastError ());
+		LeechCraft::Util::DBLock::DumpError (query.lastError ());
 		return false;
 	}
 
@@ -898,16 +853,16 @@ bool SQLStorageBackend::InitializeTables ()
 			"comments_url TEXT "
 			");"))
 	{
-		DBLock::DumpError (query.lastError ());
+		LeechCraft::Util::DBLock::DumpError (query.lastError ());
 		return false;
 	}
 
 	if (!query.exec ("CREATE UNIQUE INDEX feeds_url ON feeds (url);"))
-		DBLock::DumpError (query.lastError ());
+		LeechCraft::Util::DBLock::DumpError (query.lastError ());
 	if (!query.exec ("CREATE INDEX channels_parent_url ON channels (parent_feed_url);"))
-		DBLock::DumpError (query.lastError ());
+		LeechCraft::Util::DBLock::DumpError (query.lastError ());
 	if (!query.exec ("CREATE INDEX items_parents_hash ON items (parents_hash);"))
-		DBLock::DumpError (query.lastError ());
+		LeechCraft::Util::DBLock::DumpError (query.lastError ());
 
 	if (!query.exec ("CREATE TABLE item_bucket ("
 			"title TEXT, "
@@ -920,7 +875,7 @@ bool SQLStorageBackend::InitializeTables ()
 			"unread TINYINT "
 			");"))
 	{
-		DBLock::DumpError (query.lastError ());
+		LeechCraft::Util::DBLock::DumpError (query.lastError ());
 		return false;
 	}
 
@@ -948,7 +903,7 @@ QPixmap SQLStorageBackend::UnserializePixmap (const QByteArray& bytes) const
 
 bool SQLStorageBackend::RollItemsStorage (int version)
 {
-	DBLock lock (DB_);
+	LeechCraft::Util::DBLock lock (DB_);
 	try
 	{
 		lock.Init ();
@@ -965,21 +920,21 @@ bool SQLStorageBackend::RollItemsStorage (int version)
 		if (!updateQuery.exec ("ALTER TABLE items "
 				"ADD num_comments SMALLINT"))
 		{
-			DBLock::DumpError (updateQuery);
+			LeechCraft::Util::DBLock::DumpError (updateQuery);
 			return false;
 		}
 
 		if (!updateQuery.exec ("ALTER TABLE items "
 					"ADD comments_url TEXT"))
 		{
-			DBLock::DumpError (updateQuery);
+			LeechCraft::Util::DBLock::DumpError (updateQuery);
 			return false;
 		}
 
 		if (!updateQuery.exec ("UPDATE items "
 					"SET num_comments = -1"))
 		{
-			DBLock::DumpError (updateQuery);
+			LeechCraft::Util::DBLock::DumpError (updateQuery);
 			return false;
 		}
 	}
@@ -989,7 +944,7 @@ bool SQLStorageBackend::RollItemsStorage (int version)
 		if (!updateQuery.exec ("ALTER TABLE items "
 					"ADD comments_page_url TEXT"))
 		{
-			DBLock::DumpError (updateQuery);
+			LeechCraft::Util::DBLock::DumpError (updateQuery);
 			return false;
 		}
 	}

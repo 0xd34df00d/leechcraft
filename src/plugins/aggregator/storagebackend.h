@@ -12,6 +12,7 @@ class StorageBackend : public QObject
 {
 	Q_OBJECT
 public:
+	StorageBackend (QObject* = 0);
 	virtual ~StorageBackend ();
 
 	/** @brief Do post-initialization.

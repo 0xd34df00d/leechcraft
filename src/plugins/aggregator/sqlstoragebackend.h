@@ -196,28 +196,6 @@ class SQLStorageBackend : public StorageBackend
 					   * - guid
 					   */
 					  RemoveItem_;
-
-	class DBLock
-	{
-		QSqlDatabase &Database_;
-
-		bool Good_;
-		bool Initialized_;
-
-		DBLock (const DBLock&);
-		DBLock& operator= (const DBLock&);
-	public:
-		DBLock (QSqlDatabase& database);
-		~DBLock ();
-
-		void Init ();
-		void Good ();
-
-		static void DumpError (const QSqlError&);
-		static void DumpError (const QSqlQuery&);
-	};
-
-	friend class DBLock;
 public:
 	SQLStorageBackend ();
 	virtual ~SQLStorageBackend ();

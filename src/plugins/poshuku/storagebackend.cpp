@@ -8,3 +8,4 @@ StorageBackend::StorageBackend (QObject *parent)
 StorageBackend::~StorageBackend ()
 {
 }
+
