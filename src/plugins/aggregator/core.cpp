@@ -30,10 +30,16 @@
 
 Core::Core ()
 : SaveScheduled_ (false)
-, StorageBackend_ (new SQLStorageBackend ())
 {
 	qRegisterMetaTypeStreamOperators<Feed> ("Feed");
 	qRegisterMetaTypeStreamOperators<Item> ("Item");
+
+	QDir dir = QDir::home ();
+	if (!dir.cd (".leechcraft/aggregator") &&
+			!dir.mkpath (".leechcraft/aggregator"))
+		return;
+
+	StorageBackend_.reset (new SQLStorageBackend);
 
 	const int feedsTable = 1;
 	const int channelsTable = 1;
