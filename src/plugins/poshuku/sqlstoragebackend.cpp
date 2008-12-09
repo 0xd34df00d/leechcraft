@@ -44,7 +44,7 @@ void SQLStorageBackend::Prepare ()
 	HistoryAdder_.prepare ("INSERT INTO history ("
 			"date, "
 			"title, "
-			"url "
+			"url"
 			") VALUES ("
 			":date, "
 			":title, "
@@ -63,7 +63,7 @@ void SQLStorageBackend::Prepare ()
 	FavoritesAdder_.prepare ("INSERT INTO favorites ("
 			"title, "
 			"url, "
-			"tags "
+			"tags"
 			") VALUES ("
 			":title, "
 			":url, "
@@ -79,6 +79,30 @@ void SQLStorageBackend::Prepare ()
 	FavoritesRemover_ = QSqlQuery (DB_);
 	FavoritesRemover_.prepare ("DELETE FROM favorites "
 			"WHERE url = :url");
+
+	AuthGetter_ = QSqlQuery (DB_);
+	AuthGetter_.prepare ("SELECT "
+			"login, "
+			"password "
+			"FROM auth "
+			"WHERE realm = :realm");
+
+	AuthInserter_ = QSqlQuery (DB_);
+	AuthInserter_.prepare ("INSERT INTO auth ("
+			"realm, "
+			"login, "
+			"password"
+			") VALUES ("
+			":realm, "
+			":login, "
+			":password"
+			")");
+
+	AuthUpdater_ = QSqlQuery (DB_);
+	AuthUpdater_.prepare ("UPDATE auth SET "
+			"login = :login, "
+			"password = :password "
+			"WHERE realm = :realm");
 }
 
 void SQLStorageBackend::LoadHistory (
@@ -181,6 +205,56 @@ void SQLStorageBackend::UpdateFavorites (const FavoritesModel::FavoritesItem& it
 	}
 
 	emit updated (item);
+}
+
+void SQLStorageBackend::GetAuth (const QString& realm,
+		QString& login, QString& password) const
+{
+	AuthGetter_.bindValue (":realm", realm);
+
+	if (!AuthGetter_.exec () || !AuthGetter_.next ())
+	{
+		LeechCraft::Util::DBLock::DumpError (AuthGetter_);
+		return;
+	}
+
+	login = AuthGetter_.value (0).toString ();
+	password = AuthGetter_.value (1).toString ();
+}
+
+void SQLStorageBackend::SetAuth (const QString& realm,
+		const QString& login, const QString& password)
+{
+	AuthGetter_.bindValue (":realm", realm);
+
+	if (!AuthGetter_.exec ())
+	{
+		LeechCraft::Util::DBLock::DumpError (AuthGetter_);
+		return;
+	}
+
+	if (!AuthGetter_.size ())
+	{
+		AuthInserter_.bindValue (":realm", realm);
+		AuthInserter_.bindValue (":login", login);
+		AuthInserter_.bindValue (":password", password);
+		if (!AuthInserter_.exec ())
+		{
+			LeechCraft::Util::DBLock::DumpError (AuthInserter_);
+			return;
+		}
+	}
+	else
+	{
+		AuthUpdater_.bindValue (":realm", realm);
+		AuthUpdater_.bindValue (":login", login);
+		AuthUpdater_.bindValue (":password", password);
+		if (!AuthUpdater_.exec ())
+		{
+			LeechCraft::Util::DBLock::DumpError (AuthUpdater_);
+			return;
+		}
+	}
 }
 
 void SQLStorageBackend::InitializeTables ()

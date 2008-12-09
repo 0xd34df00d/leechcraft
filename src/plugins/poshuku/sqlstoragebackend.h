@@ -43,7 +43,26 @@ class SQLStorageBackend : public StorageBackend
 			/** Binds:
 			 * - url
 			 */
-			FavoritesRemover_;
+			FavoritesRemover_,
+			/** Binds:
+			 * - realm
+			 * Returns:
+			 * - login
+			 * - password
+			 */
+			AuthGetter_,
+			/** Binds:
+			 * - realm
+			 * - login
+			 * - password
+			 */
+			AuthInserter_,
+			/** Binds:
+			 * - realm
+			 * - login
+			 * - password
+			 */
+			AuthUpdater_;
 public:
 	SQLStorageBackend ();
 	virtual ~SQLStorageBackend ();
@@ -56,6 +75,8 @@ public:
 	virtual void AddToFavorites (const FavoritesModel::FavoritesItem&);
 	virtual void RemoveFromFavorites (const FavoritesModel::FavoritesItem&);
 	virtual void UpdateFavorites (const FavoritesModel::FavoritesItem&);
+	virtual void GetAuth (const QString&, QString&, QString&) const;
+	virtual void SetAuth (const QString&, const QString&, const QString&);
 private:
 	void InitializeTables ();
 };

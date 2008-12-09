@@ -214,21 +214,8 @@ void Core::DoCommonAuth (const QString& msg, QAuthenticator *authen)
 	QString suggestedUser = authen->user ();
 	QString suggestedPassword = authen->password ();
 
-	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-			Proxy::Instance ()->GetApplicationName () + "_Poshuku");
-	settings.beginGroup (realm);
 	if (suggestedUser.isEmpty ())
-	{
-		suggestedUser = QString ()
-			.append (QByteArray::fromBase64 (settings
-						.value ("User").toByteArray ()));
-		suggestedUser.replace (realm, "");
-
-		suggestedPassword = QString ()
-			.append (QByteArray::fromBase64 (settings
-						.value ("Password").toByteArray ()));
-		suggestedPassword.replace (realm, "");
-	}
+		StorageBackend_->GetAuth (realm, suggestedUser, suggestedPassword);
 
 	std::auto_ptr<AuthenticationDialog> dia (
 			new AuthenticationDialog (msg,
@@ -245,15 +232,7 @@ void Core::DoCommonAuth (const QString& msg, QAuthenticator *authen)
 	authen->setPassword (password);
 
 	if (dia->ShouldSave ())
-	{
-		int position = qrand () % login.size ();
-		QString scrambledLogin = login.insert (position, realm);
-		position = qrand () % password.size ();
-		QString scrambledPassword = password.insert (position, realm);
-		settings.setValue ("User", scrambledLogin.toUtf8 ().toBase64 ());
-		settings.setValue ("Password", scrambledPassword.toUtf8 ().toBase64 ());
-	}
-	settings.endGroup ();
+		StorageBackend_->SetAuth (realm, login, password);
 }
 
 void Core::RestoreSession (bool ask)

@@ -24,6 +24,10 @@ public:
 	virtual void AddToFavorites (const FavoritesModel::FavoritesItem& item) = 0;
 	virtual void RemoveFromFavorites (const FavoritesModel::FavoritesItem& item) = 0;
 	virtual void UpdateFavorites (const FavoritesModel::FavoritesItem& item) = 0;
+	virtual void GetAuth (const QString& realm,
+			QString& login, QString& password) const = 0;
+	virtual void SetAuth (const QString& realm,
+			const QString& login, const QString& password) = 0;
 signals:
 	void added (const HistoryModel::HistoryItem&);
 	void added (const FavoritesModel::FavoritesItem&);
