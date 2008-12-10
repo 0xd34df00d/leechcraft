@@ -48,6 +48,7 @@ public:
 	fsirc * ircClient;
 signals:
 	void gotEntity(QString);
+	void bringToFront ();
 };
 
 #endif
