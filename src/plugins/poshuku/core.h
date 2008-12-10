@@ -22,8 +22,8 @@ class Core : public QObject
 {
 	Q_OBJECT
 
-	typedef std::vector<BrowserWidget*> Widgets_t;
-	Widgets_t Widgets_;
+	typedef std::vector<BrowserWidget*> widgets_t;
+	widgets_t Widgets_;
 
 	std::auto_ptr<FavoritesModel> FavoritesModel_;
 	std::auto_ptr<HistoryModel> HistoryModel_;
@@ -54,6 +54,7 @@ public:
 	TagsCompletionModel* GetFavoritesTagsCompletionModel () const;
 	QNetworkAccessManager* GetNetworkAccessManager () const;
 	StorageBackend* GetStorageBackend () const;
+	void Unregister (BrowserWidget*);
 private:
 	void DoCommonAuth (const QString&, QAuthenticator*);
 	void RestoreSession (bool);

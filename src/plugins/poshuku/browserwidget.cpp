@@ -88,6 +88,7 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 
 BrowserWidget::~BrowserWidget ()
 {
+	Core::Instance ().Unregister (this);
 }
 
 CustomWebView* BrowserWidget::GetView () const
@@ -98,16 +99,6 @@ CustomWebView* BrowserWidget::GetView () const
 void BrowserWidget::SetURL (const QUrl& url)
 {
 	Ui_.WebView_->load (url);
-}
-
-void BrowserWidget::keyReleaseEvent (QKeyEvent *e)
-{
-	if (e->key () == Qt::Key_W &&
-			e->modifiers () & Qt::ControlModifier)
-	{
-		emit needToClose ();
-		e->accept ();
-	}
 }
 
 void BrowserWidget::handleIconChanged ()

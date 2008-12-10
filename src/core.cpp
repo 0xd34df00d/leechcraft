@@ -8,6 +8,7 @@
 #include <QNetworkProxy>
 #include <QApplication>
 #include <QAction>
+#include <QKeyEvent>
 #include <QClipboard>
 #include <QDir>
 #include <QLocalServer>
@@ -82,6 +83,7 @@ void Main::Core::Release ()
 void Main::Core::SetReallyMainWindow (Main::MainWindow *win)
 {
     ReallyMainWindow_ = win;
+	ReallyMainWindow_->GetTabWidget ()->installEventFilter (this);
 }
 
 QAbstractItemModel* Main::Core::GetPluginsModel () const
@@ -423,6 +425,31 @@ QPair<qint64, qint64> Main::Core::GetSpeeds () const
     return QPair<qint64, qint64> (download, upload);
 }
 
+bool Main::Core::eventFilter (QObject *watched, QEvent *e)
+{
+	if (ReallyMainWindow_ &&
+			watched == ReallyMainWindow_->GetTabWidget ())
+	{
+		if (e->type () == QEvent::KeyRelease)
+		{
+			QKeyEvent *key = static_cast<QKeyEvent*> (e);
+			if (key->key () == Qt::Key_W &&
+					key->modifiers () & Qt::ControlModifier)
+			{
+				int index = ReallyMainWindow_->GetTabWidget ()->currentIndex ();
+				if (index < PluginManager_->GetAllCastableTo<IEmbedTab*> ().size ())
+					return false;
+				else
+				{
+					handleRemoveTab (index);
+					return true;
+				}
+			}
+		}
+	}
+	return QObject::eventFilter (watched, e);
+}
+
 void Main::Core::handleProxySettings () const
 {
 	bool enabled = XmlSettingsManager::Instance ()->property ("ProxyEnabled").toBool ();
@@ -598,6 +625,13 @@ void Main::Core::handleRemoveTab (QWidget *contents)
 	if (tabNumber == -1)
 		return;
 	ReallyMainWindow_->GetTabWidget ()->removeTab (tabNumber);
+}
+
+void Main::Core::handleRemoveTab (int position)
+{
+	QWidget *contents = ReallyMainWindow_->GetTabWidget ()->widget (position);
+	ReallyMainWindow_->GetTabWidget ()->removeTab (position);
+	delete contents;
 }
 
 void Main::Core::handleChangeTabName (QWidget *contents, const QString& title)

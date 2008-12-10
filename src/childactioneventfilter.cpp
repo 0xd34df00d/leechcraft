@@ -14,11 +14,18 @@ ChildActionEventFilter::~ChildActionEventFilter ()
 bool ChildActionEventFilter::eventFilter (QObject *obj, QEvent *e)
 {
 	if (e->type () == QEvent::ChildAdded)
+	{
 		dynamic_cast<QChildEvent*> (e)->child ()->installEventFilter (this);
+		return false;
+	}
 	else if (e->type () == QEvent::ChildPolished)
+	{
 		Main::SkinEngine::Instance ()
 			.updateIconSet (dynamic_cast<QChildEvent*> (e)->child ()->
 					findChildren<QAction*> ());
-	return QObject::eventFilter (obj, e);
+		return false;
+	}
+	else
+		return QObject::eventFilter (obj, e);
 }
 

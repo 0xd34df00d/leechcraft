@@ -73,6 +73,8 @@ namespace Main
 		void HistoryActivated (int);
         
         QPair<qint64, qint64> GetSpeeds () const;
+
+		virtual bool eventFilter (QObject*, QEvent*);
 	public slots:
 		void handleProxySettings () const;
 		void handlePluginAction ();
@@ -82,6 +84,7 @@ namespace Main
 		void embeddedTabWantsToFront ();
 		void handleNewTab (const QString&, QWidget*);
 		void handleRemoveTab (QWidget*);
+		void handleRemoveTab (int);
 		void handleChangeTabName (QWidget*, const QString&);
 		void handleChangeTabIcon (QWidget*, const QIcon&);
 	private:

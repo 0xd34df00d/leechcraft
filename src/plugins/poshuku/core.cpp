@@ -207,6 +207,16 @@ StorageBackend* Core::GetStorageBackend () const
 	return StorageBackend_.get ();
 }
 
+void Core::Unregister (BrowserWidget *widget)
+{
+	widgets_t::iterator pos =
+		std::find (Widgets_.begin (), Widgets_.end (), widget);
+	if (pos == Widgets_.end ())
+		return;
+
+	Widgets_.erase (pos);
+}
+
 void Core::DoCommonAuth (const QString& msg, QAuthenticator *authen)
 {
 	QString realm = authen->realm ();
@@ -470,7 +480,7 @@ void Core::saveSession ()
 			Proxy::Instance ()->GetApplicationName () + "_Poshuku");
 	settings.beginWriteArray ("Saved session");
 	settings.remove ("");
-	for (Widgets_t::const_iterator i = Widgets_.begin (),
+	for (widgets_t::const_iterator i = Widgets_.begin (),
 			end = Widgets_.end (); i != end; ++i)
 	{
 		settings.setArrayIndex (pos++);

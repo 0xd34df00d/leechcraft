@@ -32,6 +32,7 @@ namespace Main
 
 		if (QApplication::arguments ().contains ("-zombie"))
 			QApplication::setStyle (new ZombiTechStyle ());
+
 		installEventFilter (new ChildActionEventFilter (this));
 
 		Ui_ = new Ui::LeechCraft;
