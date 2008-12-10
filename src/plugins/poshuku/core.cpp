@@ -121,6 +121,9 @@ void Core::Release ()
 
 	saveCookies ();
 
+	qDeleteAll (Widgets_);
+	Widgets_.clear ();
+
 	NetworkAccessManager_.reset ();
 	HistoryModel_.reset ();
 	FavoritesModel_.reset ();
@@ -173,7 +176,7 @@ BrowserWidget* Core::NewURL (const QString& url)
 
 	Widgets_.push_back (widget);
 
-	emit addNewTab (tr ("Loading..."), widget);
+	emit addNewTab (tr (""), widget);
 	return widget;
 }
 
@@ -215,6 +218,8 @@ void Core::Unregister (BrowserWidget *widget)
 		return;
 
 	Widgets_.erase (pos);
+
+	ScheduleSaveSession ();
 }
 
 void Core::DoCommonAuth (const QString& msg, QAuthenticator *authen)

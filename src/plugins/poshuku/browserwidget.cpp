@@ -101,6 +101,15 @@ void BrowserWidget::SetURL (const QUrl& url)
 	Ui_.WebView_->load (url);
 }
 
+void BrowserWidget::keyReleaseEvent (QKeyEvent *e)
+{
+	if (e->key () == Qt::Key_T &&
+			e->modifiers () & Qt::ControlModifier)
+		Core::Instance ().NewURL ("");
+	else
+		QWidget::keyReleaseEvent (e);
+}
+
 void BrowserWidget::handleIconChanged ()
 {
 	qDebug () << Q_FUNC_INFO << Ui_.WebView_->icon ();

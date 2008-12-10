@@ -6,6 +6,7 @@
 #include <QSystemTrayIcon>
 #include <QList>
 #include <QModelIndex>
+#include "ui_leechcraft.h"
 
 class QLabel;
 class QSplashScreen;
@@ -14,11 +15,6 @@ class GraphWidget;
 class QDockWidget;
 class QTabWidget;
 class QModelIndex;
-
-namespace Ui
-{
-	class LeechCraft;
-};
 
 namespace Main
 {
@@ -31,7 +27,7 @@ namespace Main
 	{
 		Q_OBJECT
 
-		Ui::LeechCraft *Ui_;
+		Ui::LeechCraft Ui_;
 
 		QSystemTrayIcon *TrayIcon_;
 		QLabel *DownloadSpeed_, *UploadSpeed_;
@@ -67,7 +63,7 @@ namespace Main
 		void handleDownloadFinished (const QString&);
 		void showSettings ();
 		void handleAggregateJobsChange ();
-		void cleanUp ();
+		void quit ();
 		void filterParametersChanged ();
 		void historyFilterParametersChanged ();
 		void updateIconSet ();

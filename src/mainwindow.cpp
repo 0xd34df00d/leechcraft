@@ -15,7 +15,6 @@
 #include "fancypopupmanager.h"
 #include "skinengine.h"
 #include "childactioneventfilter.h"
-#include "ui_leechcraft.h"
 #include "zombitechstyle.h"
 
 namespace Main
@@ -35,57 +34,56 @@ namespace Main
 
 		installEventFilter (new ChildActionEventFilter (this));
 
-		Ui_ = new Ui::LeechCraft;
-		Ui_->setupUi (this);
+		Ui_.setupUi (this);
 
-		Ui_->AddTaskButton_->setDefaultAction (Ui_->ActionAddTask_);
+		Ui_.AddTaskButton_->setDefaultAction (Ui_.ActionAddTask_);
 
-		Ui_->ActionAddTask_->setProperty ("ActionIcon", "addjob");
-		Ui_->ActionSettings_->setProperty ("ActionIcon", "settings");
+		Ui_.ActionAddTask_->setProperty ("ActionIcon", "addjob");
+		Ui_.ActionSettings_->setProperty ("ActionIcon", "settings");
 
-		connect (Ui_->ActionAddTask_,
+		connect (Ui_.ActionAddTask_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (addJob ()));
-		connect (Ui_->ActionQuit_,
+		connect (Ui_.ActionQuit_,
 				SIGNAL (triggered ()),
-				qApp,
+				this,
 				SLOT (quit ()));
-		connect (Ui_->ActionSettings_,
+		connect (Ui_.ActionSettings_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (showSettings ()));
-		connect (Ui_->ActionAboutQt_,
+		connect (Ui_.ActionAboutQt_,
 				SIGNAL (triggered ()),
 				qApp,
 				SLOT (aboutQt ()));
-		connect (Ui_->ActionAboutLeechCraft_,
+		connect (Ui_.ActionAboutLeechCraft_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (showAboutInfo ()));
 		
-		connect (Ui_->FilterCaseSensitivity_,
+		connect (Ui_.FilterCaseSensitivity_,
 				SIGNAL (stateChanged (int)),
 				this,
 				SLOT (filterParametersChanged ()));
-		connect (Ui_->FilterLine_,
+		connect (Ui_.FilterLine_,
 				SIGNAL (textEdited (const QString&)),
 				this,
 				SLOT (filterParametersChanged ()));
-		connect (Ui_->FilterType_,
+		connect (Ui_.FilterType_,
 				SIGNAL (currentIndexChanged (int)),
 				this,
 				SLOT (filterParametersChanged ()));
 
-		connect (Ui_->HistoryFilterCaseSensitivity_,
+		connect (Ui_.HistoryFilterCaseSensitivity_,
 				SIGNAL (stateChanged (int)),
 				this,
 				SLOT (historyFilterParametersChanged ()));
-		connect (Ui_->HistoryFilterLine_,
+		connect (Ui_.HistoryFilterLine_,
 				SIGNAL (textEdited (const QString&)),
 				this,
 				SLOT (historyFilterParametersChanged ()));
-		connect (Ui_->HistoryFilterType_,
+		connect (Ui_.HistoryFilterType_,
 				SIGNAL (currentIndexChanged (int)),
 				this,
 				SLOT (historyFilterParametersChanged ()));
@@ -129,28 +127,27 @@ namespace Main
 				SIGNAL (downloadFinished (const QString&)),
 				this,
 				SLOT (handleDownloadFinished (const QString&)));
-		connect (qApp, SIGNAL (aboutToQuit ()), this, SLOT (cleanUp ()));
 
 		Core::Instance ().SetReallyMainWindow (this);
 		Core::Instance ().DelayedInit ();
 
 		QAbstractItemModel *tasksModel = Core::Instance ().GetTasksModel ();
-		Ui_->PluginsTasksTree_->setModel (tasksModel);
+		Ui_.PluginsTasksTree_->setModel (tasksModel);
 
-		Ui_->HistoryView_->setModel (Core::Instance ().GetHistoryModel ());
-		connect (Ui_->HistoryView_,
+		Ui_.HistoryView_->setModel (Core::Instance ().GetHistoryModel ());
+		connect (Ui_.HistoryView_,
 				SIGNAL (activated (const QModelIndex&)),
 				this,
 				SLOT (historyActivated (const QModelIndex&)));
 
-		connect (Ui_->PluginsTasksTree_->selectionModel (),
+		connect (Ui_.PluginsTasksTree_->selectionModel (),
 				SIGNAL (currentRowChanged (const QModelIndex&,
 						const QModelIndex&)),
 				this,
 				SLOT (updatePanes (const QModelIndex&,
 						const QModelIndex&)));
 
-		QHeaderView *itemsHeader = Ui_->PluginsTasksTree_->header ();
+		QHeaderView *itemsHeader = Ui_.PluginsTasksTree_->header ();
 		QFontMetrics fm = fontMetrics ();
 		itemsHeader->resizeSection (0,
 				fm.width ("Average download job or torrent name is just like this one maybe."));
@@ -161,7 +158,7 @@ namespace Main
 		itemsHeader->resizeSection (3,
 				fm.width (" 1234.56 kb/s "));
 
-		itemsHeader = Ui_->HistoryView_->header ();
+		itemsHeader = Ui_.HistoryView_->header ();
 		itemsHeader->resizeSection (0,
 				fm.width ("Average filename or torrent name is about this width or something."));
 		itemsHeader->resizeSection (1,
@@ -189,12 +186,12 @@ namespace Main
 
 	QModelIndexList MainWindow::GetSelectedRows () const
 	{
-		return Ui_->PluginsTasksTree_->selectionModel ()->selectedRows ();
+		return Ui_.PluginsTasksTree_->selectionModel ()->selectedRows ();
 	}
 
 	QTabWidget* MainWindow::GetTabWidget () const
 	{
-		return Ui_->MainTabWidget_;
+		return Ui_.MainTabWidget_;
 	}
 
 	void MainWindow::catchError (QString message)
@@ -210,10 +207,10 @@ namespace Main
 		if (Core::Instance ().SameModel (newIndex, oldIndex))
 			return;
 
-		if (Ui_->PluginsStuff_->count () == 4)
+		if (Ui_.PluginsStuff_->count () == 4)
 		{
-			Ui_->PluginsStuff_->takeAt (3)->widget ()->hide ();
-			Ui_->PluginsStuff_->takeAt (1)->widget ()->hide ();
+			Ui_.PluginsStuff_->takeAt (3)->widget ()->hide ();
+			Ui_.PluginsStuff_->takeAt (1)->widget ()->hide ();
 		}
 
 		if (newIndex.isValid ())
@@ -222,8 +219,8 @@ namespace Main
 						.GetControls (newIndex),
 					*addiInfo = Core::Instance ()
 						.GetAdditionalInfo (newIndex);
-			Ui_->PluginsStuff_->insertWidget (1, controls);
-			Ui_->PluginsStuff_->addWidget (addiInfo);
+			Ui_.PluginsStuff_->insertWidget (1, controls);
+			Ui_.PluginsStuff_->addWidget (addiInfo);
 			controls->show ();
 			addiInfo->show ();
 		}
@@ -243,9 +240,9 @@ namespace Main
 		QMenu *iconMenu = new QMenu (this);
 		iconMenu->addAction (tr ("Show/hide"), this, SLOT (showHideMain ()));
 		iconMenu->addSeparator ();
-		iconMenu->addAction (Ui_->ActionAddTask_);
+		iconMenu->addAction (Ui_.ActionAddTask_);
 		iconMenu->addSeparator ();
-		iconMenu->addAction (tr ("Quit"), qApp, SLOT (quit ()));
+		iconMenu->addAction (tr ("Quit"), this, SLOT (quit ()));
 
 		TrayIcon_->setContextMenu (iconMenu);
 		TrayIcon_->show ();
@@ -352,10 +349,8 @@ namespace Main
 			split->widget (1)->hide ();
 	}
 
-	void MainWindow::cleanUp ()
+	void MainWindow::quit ()
 	{
-		delete Ui_;
-		Ui_ = 0;
 		WriteSettings ();
 		Core::Instance ().Release ();
 
@@ -365,13 +360,14 @@ namespace Main
 		delete XmlSettingsDialog_;
 		XmlSettingsManager::Instance ()->Release ();
 		qDebug () << "Destroyed fine";
-	}
 
+		qApp->quit ();
+	}
 
 	void MainWindow::filterParametersChanged ()
 	{
 		Core::FilterType ft;
-		switch (Ui_->FilterType_->currentIndex ())
+		switch (Ui_.FilterType_->currentIndex ())
 		{
 			case 0:
 				ft = Core::FTFixedString;
@@ -388,19 +384,19 @@ namespace Main
 			default:
 				qWarning () << Q_FUNC_INFO
 					<< "unhandled ft"
-					<< Ui_->FilterType_->currentIndex ();
+					<< Ui_.FilterType_->currentIndex ();
 				return;
 		}
 
-		bool caseSensitivity = (Ui_->FilterCaseSensitivity_->checkState () == Qt::Checked);
-		Core::Instance ().UpdateFiltering (Ui_->FilterLine_->text (),
+		bool caseSensitivity = (Ui_.FilterCaseSensitivity_->checkState () == Qt::Checked);
+		Core::Instance ().UpdateFiltering (Ui_.FilterLine_->text (),
 				ft, caseSensitivity);
 	}
 
 	void MainWindow::historyFilterParametersChanged ()
 	{
 		Core::FilterType ft;
-		switch (Ui_->HistoryFilterType_->currentIndex ())
+		switch (Ui_.HistoryFilterType_->currentIndex ())
 		{
 			case 0:
 				ft = Core::FTFixedString;
@@ -417,13 +413,13 @@ namespace Main
 			default:
 				qWarning () << Q_FUNC_INFO
 					<< "unhandled ft"
-					<< Ui_->HistoryFilterType_->currentIndex ();
+					<< Ui_.HistoryFilterType_->currentIndex ();
 				return;
 		}
 
 		bool caseSensitivity =
-			(Ui_->HistoryFilterCaseSensitivity_->checkState () == Qt::Checked);
-		Core::Instance ().UpdateFiltering (Ui_->HistoryFilterLine_->text (),
+			(Ui_.HistoryFilterCaseSensitivity_->checkState () == Qt::Checked);
+		Core::Instance ().UpdateFiltering (Ui_.HistoryFilterLine_->text (),
 				ft, caseSensitivity, true);
 	}
 

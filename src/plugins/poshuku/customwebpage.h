@@ -11,7 +11,6 @@ public:
 private slots:
 	void handleDownloadRequested (const QNetworkRequest&);
 	void handleUnsupportedContent (QNetworkReply*);
-	void gotUnsupportedContent ();
 };
 
 #endif

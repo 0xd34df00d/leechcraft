@@ -432,16 +432,37 @@ bool Main::Core::eventFilter (QObject *watched, QEvent *e)
 	{
 		if (e->type () == QEvent::KeyRelease)
 		{
+			QTabWidget *tabWidget = ReallyMainWindow_->GetTabWidget ();
 			QKeyEvent *key = static_cast<QKeyEvent*> (e);
-			if (key->key () == Qt::Key_W &&
-					key->modifiers () & Qt::ControlModifier)
+			int index = tabWidget->currentIndex ();
+
+			if (key->modifiers () & Qt::ControlModifier)
 			{
-				int index = ReallyMainWindow_->GetTabWidget ()->currentIndex ();
-				if (index < PluginManager_->GetAllCastableTo<IEmbedTab*> ().size ())
-					return false;
-				else
+				if (key->key () == Qt::Key_W)
 				{
-					handleRemoveTab (index);
+					// + 2 because of tabs with downloaders and history
+					if (index < PluginManager_->GetAllCastableTo<IEmbedTab*> ().size () + 2)
+						return false;
+					else
+					{
+						handleRemoveTab (index);
+						return true;
+					}
+				}
+				else if (key->key () == Qt::Key_BracketLeft)
+				{
+					if (index)
+						tabWidget->setCurrentIndex (index - 1);
+					else
+						tabWidget->setCurrentIndex (tabWidget->count () - 1);
+					return true;
+				}
+				else if (key->key () == Qt::Key_BracketRight)
+				{
+					if (index < tabWidget->count () - 1)
+						tabWidget->setCurrentIndex (index + 1);
+					else
+						tabWidget->setCurrentIndex (0);
 					return true;
 				}
 			}
@@ -631,7 +652,7 @@ void Main::Core::handleRemoveTab (int position)
 {
 	QWidget *contents = ReallyMainWindow_->GetTabWidget ()->widget (position);
 	ReallyMainWindow_->GetTabWidget ()->removeTab (position);
-	delete contents;
+	contents->deleteLater ();
 }
 
 void Main::Core::handleChangeTabName (QWidget *contents, const QString& title)

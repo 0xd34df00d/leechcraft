@@ -18,8 +18,8 @@ void ProgressLineEdit::setValue (int value)
 			"x1:0, y1:1, x2:1, y2:1, "
 			"stop:%1 rgba(160, 160, 160, 200), "
 			"stop:%2 rgba(255, 255, 255, 255)) }")
-		.arg (sv)
-		.arg (sv + 0.05);
+		.arg (std::max (sv - 0.001, 0.))
+		.arg (std::min (sv + 0.05, 1.));
 
 	setStyleSheet (ss);
 }
