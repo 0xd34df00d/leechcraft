@@ -53,7 +53,9 @@ class TorrentPlugin : public QObject
 		ForceRecheck_,
 		OpenMultipleTorrents_,
 		MoveFiles_,
-		ChangeTrackers_;
+		ChangeTrackers_,
+		Import_,
+		Export_;
 	std::auto_ptr<QTranslator> Translator_;
 public:
     // IInfo
@@ -123,6 +125,8 @@ private slots:
     void on_UploadingTorrents__valueChanged (int);
     void on_TorrentTags__editingFinished ();
     void on_MoveFiles__triggered (int = 0);
+	void on_Import__triggered ();
+	void on_Export__triggered ();
     void setActionsEnabled ();
     void showError (QString);
     void updateOverallStats ();

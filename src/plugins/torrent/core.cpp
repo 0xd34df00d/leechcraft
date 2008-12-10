@@ -2,6 +2,7 @@
 #define TORRENT_LINKING_SHARED
 #define NDEBUG
 #include "core.h"
+#include <memory>
 #include <QFile>
 #include <QProgressDialog>
 #include <QDir>
@@ -16,7 +17,7 @@
 #include <QThreadPool>
 #include <QApplication>
 #include <QRunnable>
-#include <memory>
+#include <QXmlStreamWriter>
 #include <libtorrent/alert.hpp>
 #include <libtorrent/bencode.hpp>
 #include <libtorrent/entry.hpp>
@@ -125,7 +126,6 @@ void Core::DoDelayedInit ()
 		<< tr ("Progress")
 		<< tr ("Downloading rate");
 
-    ReadSettings ();
 	connect (SettingsSaveTimer_.get (),
 			SIGNAL (timeout ()),
 			this,
@@ -604,7 +604,8 @@ int Core::AddFile (const QString& filename,
     }
     catch (const libtorrent::duplicate_torrent& e)
     {
-        emit error (tr ("The torrent %1 with save path %2 already exists in the session").arg (filename).arg (path));
+		emit error (tr ("The torrent %1 with save path %2 already exists"
+					" in the session").arg (filename).arg (path));
         return -1;
     }
     catch (const libtorrent::invalid_encoding& e)
@@ -643,7 +644,8 @@ int Core::AddFile (const QString& filename,
 	handle.auto_managed (true);
 
     beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
-    TorrentStruct tmp = {
+    TorrentStruct tmp =
+	{
 		priorities,
 		handle,
 		contents,
@@ -651,6 +653,7 @@ int Core::AddFile (const QString& filename,
 		TSIdle,
    		0,
 		tags,
+		true,
 		IDPool_.front (),
 		params
 	};
@@ -685,6 +688,7 @@ void Core::PauseTorrent (int pos)
         return;
 
     Handles_.at (pos).Handle_.pause ();
+	Handles_.at (pos).Handle_.auto_managed (false);
     checkFinished ();
 }
 
@@ -695,6 +699,7 @@ void Core::ResumeTorrent (int pos)
 
     Handles_.at (pos).Handle_.resume ();
     Handles_ [pos].State_ = TSIdle;
+	Handles_.at (pos).Handle_.auto_managed (Handles_.at (pos).AutoManaged_);
     checkFinished ();
 }
 
@@ -1046,13 +1051,152 @@ QString Core::GetExternalAddress () const
 	return ExternalAddress_;
 }
 
-void Core::ImportData (const QByteArray&)
+void Core::Import ()
 {
 }
 
-QByteArray Core::ExportData () const
+void Core::Export (const QString& filename, bool, bool) const
 {
-	return QByteArray ();
+	QFile file (filename);
+	if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
+	{
+		emit error (tr ("Could not open file %1 for write").arg (filename));
+		return;
+	}
+
+	QByteArray result;
+
+	QXmlStreamWriter writer (&result);
+	writer.setAutoFormatting (true);
+	writer.writeStartDocument ();
+	writer.writeStartElement ("storage");
+	writer.writeAttribute ("version", "1");
+	for (HandleDict_t::const_iterator i = Handles_.begin (),
+			end = Handles_.end (); i != end; ++i)
+	{
+		writer.writeStartElement ("torrent");
+
+			QString state;
+			switch (i->State_)
+			{
+				case TSIdle:
+					state = "idle";
+					break;
+				case TSPreparing:
+					state = "preparing";
+					break;
+				case TSDownloading:
+					state = "downloading";
+					break;
+				case TSSeeding:
+					state = "seeding";
+					break;
+			}
+			writer.writeAttribute ("state",
+					state);
+			writer.writeAttribute ("filename",
+					i->TorrentFileName_);
+			writer.writeAttribute ("ratio",
+					QString::number (i->Ratio_));
+			writer.writeAttribute ("sequential",
+					i->Handle_.is_sequential_download () ? "1" : "0");
+			writer.writeAttribute ("managed",
+					i->AutoManaged_ ? "1" : "0");
+			writer.writeAttribute ("uploadlimit",
+					QString::number (i->Handle_.upload_limit ()));
+			writer.writeAttribute ("downloadlimit",
+					QString::number (i->Handle_.download_limit ()));
+
+			writer.writeStartElement ("trackers");
+				QStringList trackers =
+					GetTrackers (std::distance (Handles_.begin (), i));
+				for (QStringList::const_iterator tracker = trackers.begin (),
+						trackerEnd = trackers.end ();
+						tracker != trackerEnd; ++tracker)
+				{
+					writer.writeStartElement ("tracker");
+					writer.writeCharacters (*tracker);
+					writer.writeEndElement ();
+				}
+			writer.writeEndElement ();
+
+			writer.writeStartElement ("tags");
+				for (QStringList::const_iterator tag = i->Tags_.begin (),
+						tagEnd = i->Tags_.end (); tag != tagEnd; ++tag)
+				{
+					writer.writeStartElement ("tag");
+					writer.writeCharacters (*tag);
+					writer.writeEndElement ();
+				}
+			writer.writeEndElement ();
+
+			writer.writeStartElement ("prioritites");
+				for (std::vector<int>::const_iterator prio = i->FilePriorities_.begin (),
+						prioEnd = i->FilePriorities_.end (); prio != prioEnd; ++prio)
+					writer.writeCharacters (QString::number (*prio));
+			writer.writeEndElement ();
+
+			writer.writeStartElement ("bencoded");
+				writer.writeCharacters (i->TorrentFileContents_);
+			writer.writeEndElement ();
+
+			writer.writeStartElement ("parameters");
+				if (i->Parameters_ & LeechCraft::Autostart)
+				{
+					writer.writeStartElement ("parameter");
+					writer.writeCharacters ("autostart");
+					writer.writeEndElement ();
+				}
+				if (i->Parameters_ & LeechCraft::DoNotSaveInHistory)
+				{
+					writer.writeStartElement ("parameter");
+					writer.writeCharacters ("donotsaveinhistory");
+					writer.writeEndElement ();
+				}
+				if (i->Parameters_ & LeechCraft::FromClipboard)
+				{
+					writer.writeStartElement ("parameter");
+					writer.writeCharacters ("fromclipboard");
+					writer.writeEndElement ();
+				}
+				if (i->Parameters_ & LeechCraft::FromCommonDialog)
+				{
+					writer.writeStartElement ("parameter");
+					writer.writeCharacters ("fromcommondialog");
+					writer.writeEndElement ();
+				}
+				if (i->Parameters_ & LeechCraft::FromAutomatic)
+				{
+					writer.writeStartElement ("parameter");
+					writer.writeCharacters ("fromautomatic");
+					writer.writeEndElement ();
+				}
+				if (i->Parameters_ & LeechCraft::DoNotNotifyUser)
+				{
+					writer.writeStartElement ("parameter");
+					writer.writeCharacters ("donotnotifyuser");
+					writer.writeEndElement ();
+				}
+				if (i->Parameters_ & LeechCraft::Internal)
+				{
+					writer.writeStartElement ("parameter");
+					writer.writeCharacters ("internal");
+					writer.writeEndElement ();
+				}
+				if (i->Parameters_ & LeechCraft::NotPersistent)
+				{
+					writer.writeStartElement ("parameter");
+					writer.writeCharacters ("notpersistent");
+					writer.writeEndElement ();
+				}
+			writer.writeEndElement ();
+
+		writer.writeEndElement ();
+	}
+	writer.writeEndElement ();
+	writer.writeEndDocument ();
+
+	file.write (result);
 }
 
 void Core::SaveResumeData (const libtorrent::save_resume_data_alert& a) const
@@ -1202,10 +1346,6 @@ QString Core::GetStringForState (libtorrent::torrent_status::state_t state) cons
     return "Uninitialized?!";
 }
 
-void Core::ReadSettings ()
-{
-}
-
 void Core::RestoreTorrents ()
 {
     QSettings settings (Proxy::Instance ()->GetOrganizationName (),
@@ -1266,7 +1406,8 @@ void Core::RestoreTorrents ()
             handle.replace_trackers (announces);
         }
 
-        TorrentStruct tmp = {
+        TorrentStruct tmp =
+		{
 			priorities,
 			handle,
 			data,
@@ -1274,6 +1415,8 @@ void Core::RestoreTorrents ()
 			TSIdle,
 			0,
 			settings.value ("Tags").toStringList (),
+			settings.value ("AutoManaged", true).toBool (),
+			i,
 			static_cast<LeechCraft::TaskParameters> (settings.value ("Parameters").toInt ())
 	   	};
 		IDPool_.erase (std::find (IDPool_.begin (), IDPool_.end (), tmp.ID_));
@@ -1611,6 +1754,7 @@ void Core::writeSettings ()
             settings.setValue ("Tags", Handles_.at (i).Tags_);
 			settings.setValue ("ID", Handles_.at (i).ID_);
 			settings.setValue ("Parameters", static_cast<int> (Handles_.at (i).Parameters_));
+			settings.setValue ("AutoManaged", Handles_.at (i).AutoManaged_);
 
             settings.beginWriteArray ("Priorities");
             for (size_t j = 0; j < Handles_.at (i).FilePriorities_.size (); ++j)

@@ -30,6 +30,7 @@ SET (SRCS
 	representationmodel.cpp
 	trackerschanger.cpp
 	historymodel.cpp
+	exportdialog.cpp
 	)
 SET (HEADERS
 	torrentplugin.h
@@ -51,6 +52,7 @@ SET (HEADERS
 	representationmodel.h
 	trackerschanger.h
 	historymodel.h
+	exportdialog.h
 	newtorrentparams.h
 	overallstats.h
 	torrentinfo.h
@@ -66,6 +68,7 @@ SET (FORMS
 	newtorrentthirdstep.ui
 	movetorrentfiles.ui
 	trackerschanger.ui
+	exportdialog.ui
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS

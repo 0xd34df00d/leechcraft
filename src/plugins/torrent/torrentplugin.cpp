@@ -29,6 +29,7 @@
 #include "representationmodel.h"
 #include "trackerschanger.h"
 #include "historymodel.h"
+#include "exportdialog.h"
 
 #ifdef AddJob
 #undef AddJob
@@ -218,7 +219,6 @@ void TorrentPlugin::ImportSettings (const QByteArray& settings)
 
 void TorrentPlugin::ImportData (const QByteArray& data)
 {
-	Core::Instance ()->ImportData (data);
 }
 
 QByteArray TorrentPlugin::ExportSettings () const
@@ -228,7 +228,7 @@ QByteArray TorrentPlugin::ExportSettings () const
 
 QByteArray TorrentPlugin::ExportData () const
 {
-	return Core::Instance ()->ExportData ();
+	return QByteArray ();
 }
 
 QStringList TorrentPlugin::GetTags (int torrent) const
@@ -453,6 +453,23 @@ void TorrentPlugin::on_MoveFiles__triggered (int)
                 tr ("Failed to move torrent's files from %1 to %2").
                 arg (oldDir).
                 arg (newDir));
+}
+
+void TorrentPlugin::on_Import__triggered ()
+{
+}
+
+void TorrentPlugin::on_Export__triggered ()
+{
+	ExportDialog dia;
+	if (dia.exec () == QDialog::Rejected)
+		return;
+
+	bool settings = dia.GetSettings ();
+	bool active = dia.GetActive ();
+	QString where = dia.GetLocation ();
+
+	Core::Instance ()->Export (where, settings, active);
 }
 
 void TorrentPlugin::setActionsEnabled ()
@@ -893,6 +910,22 @@ void TorrentPlugin::SetupActions ()
 	MoveFiles_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
 	MoveFiles_->setProperty ("ActionIcon", "torrent_movefiles");
 
+	Import_.reset (new QAction (tr ("Import..."),
+				Toolbar_.get ()));
+	connect (Import_.get (),
+			SIGNAL (triggered ()),
+			this,
+			SLOT (on_Import__triggered ()));
+	Import_->setProperty ("Import", "torrent_import");
+
+	Export_.reset (new QAction (tr ("Export..."),
+				Toolbar_.get ()));
+	connect (Export_.get (),
+			SIGNAL (triggered ()),
+			this,
+			SLOT (on_Export__triggered ()));
+	Export_->setProperty ("Export", "torrent_export");
+
 	Toolbar_->addAction (CreateTorrent_.get ());
 	Toolbar_->addSeparator ();
 	Toolbar_->addAction (OpenTorrent_.get ());
@@ -911,6 +944,9 @@ void TorrentPlugin::SetupActions ()
 	Toolbar_->addAction (ForceRecheck_.get ());
 	Toolbar_->addAction (MoveFiles_.get ());
 	Toolbar_->addAction (ChangeTrackers_.get ());
+	Toolbar_->addSeparator ();
+	Toolbar_->addAction (Import_.get ());
+	Toolbar_->addAction (Export_.get ());
 	Toolbar_->addSeparator ();
 	Toolbar_->addAction (Preferences_.get ());
 }

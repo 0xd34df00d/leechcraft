@@ -52,6 +52,7 @@ class Core : public QAbstractItemModel
         TorrentState State_;
         double Ratio_;
         QStringList Tags_;
+		bool AutoManaged_;
 
 		int ID_;
 		LeechCraft::TaskParameters Parameters_;
@@ -178,8 +179,8 @@ public:
     void LogMessage (const QString&);
 	void SetExternalAddress (const QString&);
 	QString GetExternalAddress () const;
-	void ImportData (const QByteArray&);
-	QByteArray ExportData () const;
+	void Import ();
+	void Export (const QString&, bool, bool) const;
     bool CheckValidity (int) const;
 	void SaveResumeData (const libtorrent::save_resume_data_alert&) const;
 	void MoveUp (const std::deque<int>&);
@@ -191,7 +192,6 @@ private:
 	void MoveToTop (int);
 	void MoveToBottom (int);
     QString GetStringForState (libtorrent::torrent_status::state_t) const;
-    void ReadSettings ();
     void RestoreTorrents ();
     libtorrent::torrent_handle RestoreSingleTorrent (const QByteArray&,
 			const QByteArray&, const boost::filesystem::path&);
