@@ -61,6 +61,8 @@ public:
     void SetProvider (QObject*, const QString&);
     QIcon GetIcon () const;
 	QWidget* GetTabContents ();
+protected:
+	virtual void keyPressEvent (QKeyEvent*);
 private:
 	void SetupMenuBar ();
 private slots:

@@ -9,6 +9,7 @@
 #include <QToolBar>
 #include <QtWebKit>
 #include <QCursor>
+#include <QKeyEvent>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/tagscompletionmodel.h>
 #include <plugininterface/tagscompleter.h>
@@ -234,6 +235,74 @@ QIcon Aggregator::GetIcon () const
 QWidget* Aggregator::GetTabContents ()
 {
 	return this;
+}
+
+void Aggregator::keyPressEvent (QKeyEvent *e)
+{
+	if (e->modifiers () & Qt::ControlModifier)
+	{
+		QItemSelectionModel *channelSM = Ui_.Feeds_->selectionModel ();
+		QModelIndex currentChannel = channelSM->currentIndex ();
+		int numChannels = Ui_.Feeds_->model ()->rowCount ();
+
+		QItemSelectionModel::SelectionFlags chanSF =
+			QItemSelectionModel::Select |
+			QItemSelectionModel::Clear |
+			QItemSelectionModel::Rows;
+		if (e->key () == Qt::Key_Less &&
+				currentChannel.isValid () &&
+				numChannels)
+		{
+			if (currentChannel.row () > 0)
+			{
+				QModelIndex next = currentChannel
+					.sibling (currentChannel.row () - 1,
+								currentChannel.column ());
+				channelSM->select (next, chanSF);
+				channelSM->setCurrentIndex (next, chanSF);
+			}
+			else
+			{
+				QModelIndex next = currentChannel.sibling (numChannels - 1,
+								currentChannel.column ());
+				channelSM->select (next, chanSF);
+				channelSM->setCurrentIndex (next, chanSF);
+			}
+			return;
+		}
+		else if (e->key () == Qt::Key_Greater &&
+				currentChannel.isValid () &&
+				numChannels)
+		{
+			if (currentChannel.row () < numChannels - 1)
+			{
+				QModelIndex next = currentChannel
+					.sibling (currentChannel.row () + 1,
+								currentChannel.column ());
+				channelSM->select (next, chanSF);
+				channelSM->setCurrentIndex (next, chanSF);
+			}
+			else
+			{
+				QModelIndex next = currentChannel.sibling (0,
+								currentChannel.column ());
+				channelSM->select (next, chanSF);
+				channelSM->setCurrentIndex (next, chanSF);
+			}
+			return;
+		}
+		else if ((e->key () == Qt::Key_Greater ||
+				e->key () == Qt::Key_Less) &&
+				numChannels &&
+				!currentChannel.isValid ())
+		{
+			qDebug () << Q_FUNC_INFO;
+			QModelIndex next = Ui_.Feeds_->model ()->index (0, 0);
+			channelSM->select (next, chanSF);
+			channelSM->setCurrentIndex (next, chanSF);
+		}
+	}
+	e->ignore ();
 }
 
 void Aggregator::SetupMenuBar ()
