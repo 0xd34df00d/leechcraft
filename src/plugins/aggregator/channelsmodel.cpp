@@ -210,7 +210,7 @@ void ChannelsModel::RemoveChannel (const ChannelShort& channel)
     endRemoveRows ();
 }
 
-QModelIndex ChannelsModel::GetUnreadChannelIndex ()
+QModelIndex ChannelsModel::GetUnreadChannelIndex () const
 {
     for (int i = 0; i < RootItem_->ChildCount (); ++i)
     {
@@ -220,5 +220,17 @@ QModelIndex ChannelsModel::GetUnreadChannelIndex ()
             return index (i, 0);
     }
     return QModelIndex ();
+}
+
+int ChannelsModel::GetUnreadItemsNumber () const
+{
+	int result = 0;
+    for (int i = 0; i < RootItem_->ChildCount (); ++i)
+    {
+        TreeItem *item = RootItem_->Child (i);
+        ChannelShort channel = TreeItem2Channel_ [item];
+		result += channel.Unread_;
+    }
+	return result;
 }
 

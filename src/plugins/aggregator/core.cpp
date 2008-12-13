@@ -1010,32 +1010,19 @@ void Core::saveSettings ()
 	SaveScheduled_ = false;
 }
 
-namespace
-{
-	struct UnreadAccumulator
-	{
-		int operator() (int i, const ItemShort& cs)
-		{
-			return cs.Unread_ ? i + 1: i;
-		}
-	};
-};
-
 void Core::handleChannelDataUpdated (Channel_ptr channel)
 {
 	ChannelShort cs = channel->ToShort ();
 
-	items_shorts_t channelItems;
-	StorageBackend_->GetItems (channelItems, cs.ParentURL_ + cs.Title_);
-	cs.Unread_ = std::accumulate (channelItems.begin (),
-			channelItems.end (), 0, UnreadAccumulator ());
+	cs.Unread_ = StorageBackend_->GetUnreadItems (cs.ParentURL_, cs.Title_);
 	ChannelsModel_->UpdateChannelData (cs);
 	UpdateUnreadItemsNumber ();
 
 	if (cs.ParentURL_ == CurrentChannelHash_.first &&
 			cs.Title_ == CurrentChannelHash_.second)
 	{
-		CurrentItems_ = channelItems;
+		CurrentItems_.clear ();
+		StorageBackend_->GetItems (CurrentItems_, cs.ParentURL_ + cs.Title_);
 		emit dataChanged (index (0, 0), index (CurrentItems_.size (), 1));
 	}
 }
@@ -1117,7 +1104,7 @@ void Core::handleSslError (QNetworkReply *reply)
 
 void Core::UpdateUnreadItemsNumber () const
 {
-	emit unreadNumberChanged (StorageBackend_->GetUnreadItemsNumber ());
+	emit unreadNumberChanged (ChannelsModel_->GetUnreadItemsNumber ());
 }
 
 void Core::FetchPixmap (const Channel_ptr& channel)

@@ -207,6 +207,7 @@ public:
 	virtual Channel_ptr GetChannel (const QString&,
 			const QString&) const;
 	virtual void GetItems (items_shorts_t&, const QString&) const;
+	virtual int GetUnreadItems (const QString&, const QString&) const;
 	virtual Item_ptr GetItem (const QString&, const QString&,
 			const QString&) const;
 
@@ -229,7 +230,6 @@ public:
     virtual bool UpdateChannelsStorage (int, int);
     virtual bool UpdateItemsStorage (int, int);
 	virtual void ToggleChannelUnread (const QString&, const QString&, bool);
-	virtual int GetUnreadItemsNumber () const;
 private:
 	bool InitializeTables ();
 	QByteArray SerializePixmap (const QPixmap&) const;

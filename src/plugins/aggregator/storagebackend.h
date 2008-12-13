@@ -70,6 +70,17 @@ public:
 	 */
 	virtual void GetItems (items_shorts_t& items,
 			const QString& hash) const = 0;
+	/** @brief Counts unread items number in a given channel.
+	 *
+	 * A possibly optimized version of getting items via GetItems() and
+	 * counting unread items by hand.
+	 *
+	 * @param[in] purl Parent's feed url.
+	 * @param[in] title Channel's title.
+	 * @return Unread items count.
+	 */
+	virtual int GetUnreadItems (const QString& purl,
+			const QString& title) const = 0;
 	/** @brief Returns full information about an item.
 	 *
 	 * Returns full information about the item identified by its title,
@@ -243,13 +254,6 @@ public:
 	virtual void ToggleChannelUnread (const QString& purl,
 			const QString& title,
 			bool state) = 0;
-	/** @brief Count unread items number.
-	 *
-	 * Counts how much unread items are there in the storage.
-	 *
-	 * @return Number of unread items.
-	 */
-	virtual int GetUnreadItemsNumber () const = 0;
 signals:
 	/** @brief Notifies about updated channel information.
 	 *

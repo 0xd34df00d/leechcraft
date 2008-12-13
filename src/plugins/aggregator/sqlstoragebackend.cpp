@@ -366,6 +366,19 @@ void SQLStorageBackend::GetItems (items_shorts_t& shorts, const QString& parents
 	ItemsShortSelector_.finish ();
 }
 
+int SQLStorageBackend::GetUnreadItems (const QString& purl, const QString& title) const
+{
+	int unread = 0;
+	UnreadItemsCounter_.bindValue (":parents_hash", purl + title);
+	if (!UnreadItemsCounter_.exec () || !UnreadItemsCounter_.next ())
+		LeechCraft::Util::DBLock::DumpError (UnreadItemsCounter_);
+	else
+		unread = UnreadItemsCounter_.value (0).toInt ();
+
+	UnreadItemsCounter_.finish ();
+	return unread;
+}
+
 Item_ptr SQLStorageBackend::GetItem (const QString& title,
 		const QString& link, const QString& hash) const
 {
@@ -768,20 +781,6 @@ void SQLStorageBackend::ToggleChannelUnread (const QString& purl,
 	ToggleChannelUnread_.finish ();
 
 	emit channelDataUpdated (GetChannel (title, purl));
-}
-
-int SQLStorageBackend::GetUnreadItemsNumber () const
-{
-	QSqlQuery query ("SELECT COUNT (unread) "
-			"FROM items "
-			"WHERE unread = \"true\"", DB_);
-	if (!query.exec () || !query.next ())
-	{
-		LeechCraft::Util::DBLock::DumpError (query);
-		return 0;
-	}
-
-	return query.value (0).toInt ();
 }
 
 bool SQLStorageBackend::UpdateFeedsStorage (int, int)
