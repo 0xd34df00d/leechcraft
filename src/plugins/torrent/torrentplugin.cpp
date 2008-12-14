@@ -413,6 +413,11 @@ void TorrentPlugin::on_TorrentSequentialDownload__stateChanged (int state)
 	Core::Instance ()->SetTorrentSequentialDownload (state == Qt::Checked);
 }
 
+void TorrentPlugin::on_TorrentSuperSeeding__stateChanged (int state)
+{
+	Core::Instance ()->SetTorrentSuperSeeding (state == Qt::Checked);
+}
+
 void TorrentPlugin::on_CaseSensitiveSearch__stateChanged (int state)
 {
     FilterModel_->setFilterCaseSensitivity (state ? Qt::CaseSensitive : Qt::CaseInsensitive);
@@ -567,11 +572,18 @@ void TorrentPlugin::UpdateDashboard ()
 
 void TorrentPlugin::UpdateTorrentControl ()
 {
-	Ui_.TorrentDownloadRateController_->setValue (Core::Instance ()->GetTorrentDownloadRate ());
-	Ui_.TorrentUploadRateController_->setValue (Core::Instance ()->GetTorrentUploadRate ());
-	Ui_.TorrentDesiredRating_->setValue (Core::Instance ()->GetTorrentDesiredRating ());
-	Ui_.TorrentManaged_->setCheckState (Core::Instance ()->IsTorrentManaged () ? Qt::Checked : Qt::Unchecked);
-	Ui_.TorrentSequentialDownload_->setCheckState (Core::Instance ()->IsTorrentSequentialDownload () ? Qt::Checked : Qt::Unchecked);
+	Ui_.TorrentDownloadRateController_->
+		setValue (Core::Instance ()->GetTorrentDownloadRate ());
+	Ui_.TorrentUploadRateController_->setValue (Core::Instance ()->
+			GetTorrentUploadRate ());
+	Ui_.TorrentDesiredRating_->setValue (Core::Instance ()->
+			GetTorrentDesiredRating ());
+	Ui_.TorrentManaged_->setCheckState (Core::Instance ()->
+			IsTorrentManaged () ? Qt::Checked : Qt::Unchecked);
+	Ui_.TorrentSequentialDownload_->setCheckState (Core::Instance ()->
+			IsTorrentSequentialDownload () ? Qt::Checked : Qt::Unchecked);
+	Ui_.TorrentSuperSeeding_->setCheckState (Core::Instance ()->
+			IsTorrentSuperSeeding () ? Qt::Checked : Qt::Unchecked);
 
 	TorrentInfo i = Core::Instance ()->GetTorrentStats ();
 	Ui_.LabelDownloadRate_->setText (Proxy::Instance ()->MakePrettySize (i.DownloadRate_) + tr ("/s"));
@@ -583,12 +595,14 @@ void TorrentPlugin::UpdateTorrentControl ()
 	Ui_.LabelUploaded_->setText (Proxy::Instance ()->MakePrettySize (i.Uploaded_));
 	Ui_.LabelWantedDownloaded_->setText (Proxy::Instance ()->MakePrettySize (i.WantedDownload_));
 	Ui_.LabelUploadedTotal_->setText (Proxy::Instance ()->MakePrettySize (i.UploadedTotal_));
-	Ui_.LabelTorrentOverallRating_->setText (QString::number (i.UploadedTotal_ / static_cast<double> (i.Downloaded_), 'g', 4));
+	Ui_.LabelTorrentOverallRating_->
+		setText (QString::number (i.UploadedTotal_ / static_cast<double> (i.Downloaded_), 'g', 4));
 	Ui_.LabelActiveTime_->setText (Proxy::Instance ()->MakeTimeFromLong (i.ActiveTime_));
 	Ui_.LabelSeedingTime_->setText (Proxy::Instance ()->MakeTimeFromLong (i.SeedingTime_));
 	Ui_.LabelSeedRank_->setText (QString::number (i.SeedRank_));
 	Ui_.LabelLastScrape_->setText (Proxy::Instance ()->MakeTimeFromLong (i.LastScrape_));
-	Ui_.LabelTorrentRating_->setText (QString::number (i.Uploaded_ / static_cast<double> (i.Downloaded_), 'g', 4));
+	Ui_.LabelTorrentRating_->
+		setText (QString::number (i.Uploaded_ / static_cast<double> (i.Downloaded_), 'g', 4));
 	Ui_.PiecesWidget_->setPieceMap (i.Pieces_);
 }
 
@@ -683,6 +697,10 @@ void TorrentPlugin::SetupTabWidget ()
 			SIGNAL (stateChanged (int)),
 			this,
 			SLOT (on_TorrentSequentialDownload__stateChanged (int)));
+	connect (Ui_.TorrentSuperSeeding_,
+			SIGNAL (stateChanged (int)),
+			this,
+			SLOT (on_TorrentSuperSeeding__stateChanged (int)));
 	connect (Ui_.DownloadingTorrents_,
 			SIGNAL (valueChanged (int)),
 			this,

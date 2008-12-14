@@ -7,11 +7,13 @@
 struct PeerInfo
 {
     QString IP_;
-    quint64 DSpeed_, USpeed_;
-    quint64 Downloaded_, Uploaded_;
+    quint64 DSpeed_,
+			USpeed_;
+    quint64 Downloaded_,
+			Uploaded_;
     QString Client_;
-	libtorrent::bitfield Pieces_;
-    std::size_t LoadBalancing_;
+	int NumPieces_;
+	int RemoteHas_;
     QTime LastActive_;
     int Hashfails_;
     int Failcount_;

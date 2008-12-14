@@ -120,6 +120,7 @@ private slots:
     void on_TorrentDesiredRating__valueChanged (double);
 	void on_TorrentManaged__stateChanged (int);
 	void on_TorrentSequentialDownload__stateChanged (int);
+	void on_TorrentSuperSeeding__stateChanged (int);
     void on_CaseSensitiveSearch__stateChanged (int);
     void on_DownloadingTorrents__valueChanged (int);
     void on_UploadingTorrents__valueChanged (int);

@@ -23,6 +23,7 @@ class PeersModel;
 class TagsCompletionModel;
 class TorrentFilesModel;
 class RepresentationModel;
+class QDomElement;
 
 namespace libtorrent
 {
@@ -129,7 +130,6 @@ public:
     libtorrent::torrent_info GetTorrentInfo (const QByteArray&);
     bool IsValidTorrent (const QByteArray&) const;
     TorrentInfo GetTorrentStats () const;
-	libtorrent::bitfield GetLocalPieces () const;
     OverallStats GetOverallStats () const;
 	libtorrent::cache_status GetCacheStats () const;
     QList<FileInfo> GetTorrentFiles () const;
@@ -175,11 +175,13 @@ public:
 	void SetTorrentManaged (bool);
 	bool IsTorrentSequentialDownload () const;
 	void SetTorrentSequentialDownload (bool);
+	bool IsTorrentSuperSeeding () const;
+	void SetTorrentSuperSeeding (bool);
     void MakeTorrent (NewTorrentParams) const;
     void LogMessage (const QString&);
 	void SetExternalAddress (const QString&);
 	QString GetExternalAddress () const;
-	void Import ();
+	void Import (const QString&);
 	void Export (const QString&, bool, bool) const;
     bool CheckValidity (int) const;
 	void SaveResumeData (const libtorrent::save_resume_data_alert&) const;
@@ -203,6 +205,7 @@ private:
 	void CheckUploadQueue ();
 	QStringList GetTagsForIndexImpl (int) const;
 	void UpdateTagsImpl (const QStringList&, int);
+	void ParseStorage (const QDomElement&);
 private slots:
     void writeSettings ();
     void checkFinished ();

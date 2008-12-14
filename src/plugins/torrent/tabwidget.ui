@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>654</width>
-    <height>481</height>
+    <width>850</width>
+    <height>374</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -20,7 +20,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex" >
-   <number>0</number>
+   <number>1</number>
   </property>
   <property name="elideMode" >
    <enum>Qt::ElideRight</enum>
@@ -529,7 +529,6 @@
         </layout>
        </item>
       </layout>
-      <zorder></zorder>
      </widget>
     </item>
     <item>
@@ -559,12 +558,9 @@
         <property name="title" >
          <string>Settings</string>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_4" >
+        <layout class="QHBoxLayout" name="horizontalLayout_10" >
          <item>
           <layout class="QFormLayout" name="formLayout_2" >
-           <property name="fieldGrowthPolicy" >
-            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-           </property>
            <item row="0" column="0" >
             <widget class="QLabel" name="label_34" >
              <property name="text" >
@@ -650,21 +646,58 @@
           </layout>
          </item>
          <item>
-          <widget class="QCheckBox" name="TorrentManaged_" >
-           <property name="text" >
-            <string>Auto managed</string>
+          <spacer name="horizontalSpacer_3" >
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
            </property>
-           <property name="checked" >
-            <bool>true</bool>
+           <property name="sizeHint" stdset="0" >
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
            </property>
-          </widget>
+          </spacer>
          </item>
          <item>
-          <widget class="QCheckBox" name="TorrentSequentialDownload_" >
-           <property name="text" >
-            <string>Sequential download</string>
-           </property>
-          </widget>
+          <layout class="QVBoxLayout" name="verticalLayout_4" >
+           <item>
+            <widget class="QCheckBox" name="TorrentManaged_" >
+             <property name="text" >
+              <string>Auto managed</string>
+             </property>
+             <property name="checked" >
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="TorrentSequentialDownload_" >
+             <property name="text" >
+              <string>Sequential download</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="TorrentSuperSeeding_" >
+             <property name="text" >
+              <string>Super seeding</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_4" >
+             <property name="orientation" >
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0" >
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
          </item>
         </layout>
        </widget>
@@ -755,7 +788,23 @@
             </layout>
            </item>
            <item>
+            <spacer name="horizontalSpacer_4" >
+             <property name="orientation" >
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0" >
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
             <layout class="QFormLayout" name="formLayout_13" >
+             <property name="fieldGrowthPolicy" >
+              <enum>QFormLayout::ExpandingFieldsGrow</enum>
+             </property>
              <item row="0" column="0" >
               <widget class="QLabel" name="label_12" >
                <property name="text" >
@@ -827,6 +876,19 @@
               </widget>
              </item>
             </layout>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_5" >
+             <property name="orientation" >
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0" >
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
            </item>
            <item>
             <layout class="QFormLayout" name="formLayout_6" >
@@ -918,6 +980,8 @@
           </widget>
          </item>
         </layout>
+        <zorder>PiecesWidget_</zorder>
+        <zorder>groupBox_2</zorder>
        </widget>
       </item>
      </layout>
@@ -930,7 +994,7 @@
       <property name="sizeHint" stdset="0" >
        <size>
         <width>20</width>
-        <height>113</height>
+        <height>40</height>
        </size>
       </property>
      </spacer>

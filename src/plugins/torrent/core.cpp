@@ -17,6 +17,8 @@
 #include <QThreadPool>
 #include <QApplication>
 #include <QRunnable>
+#include <QDomElement>
+#include <QDomDocument>
 #include <QXmlStreamWriter>
 #include <libtorrent/alert.hpp>
 #include <libtorrent/bencode.hpp>
@@ -465,13 +467,6 @@ TorrentInfo Core::GetTorrentStats () const
     return result;
 }
 
-libtorrent::bitfield Core::GetLocalPieces () const
-{
-    if (!CheckValidity (CurrentTorrent_))
-        return 0;
-    return Handles_.at (CurrentTorrent_).Handle_.status ().pieces;
-}
-
 OverallStats Core::GetOverallStats () const
 {
     OverallStats result;
@@ -531,26 +526,36 @@ QList<PeerInfo> Core::GetPeers () const
     std::vector<libtorrent::peer_info> peerInfos;
     Handles_.at (CurrentTorrent_).Handle_.get_peer_info (peerInfos);
 
+	libtorrent::bitfield localPieces = Handles_.at (CurrentTorrent_).Handle_.status ().pieces;
+
     for (size_t i = 0; i < peerInfos.size (); ++i)
     {
         libtorrent::peer_info pi = peerInfos [i];
-        PeerInfo ppi;
-        ppi.IP_ = QString::fromStdString (pi.ip.address ().to_string ());
-        ppi.DSpeed_ = pi.down_speed;
-        ppi.USpeed_ = pi.up_speed;
-        ppi.Downloaded_ = pi.total_download;
-        ppi.Uploaded_ = pi.total_upload;
-        ppi.Client_ = QString::fromUtf8 (pi.client.c_str ());
-        ppi.Pieces_ = pi.pieces;
-        ppi.LoadBalancing_ = pi.load_balancing;
-        ppi.LastActive_ = QTime (0, 0, 0);
-        ppi.LastActive_.addMSecs (libtorrent::total_milliseconds (pi.last_active));
-        ppi.Hashfails_ = pi.num_hashfails;
-        ppi.Failcount_ = pi.failcount;
-        ppi.DownloadingPiece_ = pi.downloading_piece_index;
-        ppi.DownloadingBlock_ = pi.downloading_block_index;
-        ppi.DownloadingProgress_ = pi.downloading_progress;
-        ppi.DownloadingTotal_ = pi.downloading_total;
+
+		QTime time (0, 0, 0);
+        time.addMSecs (libtorrent::total_milliseconds (pi.last_active));
+		int interesting = 0;
+		for (size_t j = 0; j < localPieces.size (); ++j)
+			interesting += (pi.pieces [j] && !localPieces [j]);
+
+        PeerInfo ppi =
+		{
+			QString::fromStdString (pi.ip.address ().to_string ()),
+			pi.down_speed,
+			pi.up_speed,
+			pi.total_download,
+			pi.total_upload,
+			QString::fromUtf8 (pi.client.c_str ()),
+			pi.num_pieces,
+			interesting,
+			time,
+			pi.num_hashfails,
+			pi.failcount,
+			pi.downloading_piece_index,
+			pi.downloading_block_index,
+			pi.downloading_progress,
+			pi.downloading_total
+		};
         result << ppi;
     }
 
@@ -966,6 +971,22 @@ void Core::SetTorrentSequentialDownload (bool seq)
 	Handles_.at (CurrentTorrent_).Handle_.set_sequential_download (seq);
 }
 
+bool Core::IsTorrentSuperSeeding () const
+{
+	if (!CheckValidity (CurrentTorrent_))
+		return false;
+
+	return Handles_.at (CurrentTorrent_).Handle_.super_seeding ();
+}
+
+void Core::SetTorrentSuperSeeding (bool sup)
+{
+	if (!CheckValidity (CurrentTorrent_))
+		return;
+	
+	Handles_.at (CurrentTorrent_).Handle_.super_seeding (sup);
+}
+
 namespace
 {
 	bool FileFilter (const boost::filesystem::path& filename)
@@ -1051,8 +1072,49 @@ QString Core::GetExternalAddress () const
 	return ExternalAddress_;
 }
 
-void Core::Import ()
+void Core::Import (const QString& filename)
 {
+	QFile file (filename);
+	if (!file.open (QIODevice::ReadOnly))
+	{
+		emit error (tr ("Could not open file %1 for reading").arg (filename));
+		return;
+	}
+
+	QString errorString;
+	int line, column;
+	QDomDocument document;
+	if (!document.setContent (file.readAll (), false, &errorString, &line, &column))
+	{
+		emit error (tr ("Could not parse document from file %1.<br />"
+					"%1 at %2:%3").arg (errorString).arg (line).arg (column));
+		return;
+	}
+
+	QDomElement root = document.documentElement ();
+	QDomNodeList storages = root.elementsByTagName ("storage");
+	if (storages.size ())
+	{
+		if (storages.size () > 1)
+			emit error (tr ("There should be only one storage section."));
+		else
+			ParseStorage (storages.at (0).toElement ());
+	}
+}
+
+void Core::ParseStorage (const QDomElement& storage)
+{
+	if (storage.attribute ("version") == "1")
+	{
+		QDomNodeList torrents = storage.elementsByTagName ("torrent");
+		for (int i = 0; i < torrents.size (); ++i)
+		{
+			QDomElement torrent = torrents.at (i).toElement ();
+			QString filename = torrent.attribute ("filename");
+		}
+	}
+	else
+		emit error (tr ("Unknown storage version"));
 }
 
 void Core::Export (const QString& filename, bool, bool) const
@@ -1060,7 +1122,7 @@ void Core::Export (const QString& filename, bool, bool) const
 	QFile file (filename);
 	if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
 	{
-		emit error (tr ("Could not open file %1 for write").arg (filename));
+		emit error (tr ("Could not open file %1 for writing").arg (filename));
 		return;
 	}
 
@@ -1075,25 +1137,6 @@ void Core::Export (const QString& filename, bool, bool) const
 			end = Handles_.end (); i != end; ++i)
 	{
 		writer.writeStartElement ("torrent");
-
-			QString state;
-			switch (i->State_)
-			{
-				case TSIdle:
-					state = "idle";
-					break;
-				case TSPreparing:
-					state = "preparing";
-					break;
-				case TSDownloading:
-					state = "downloading";
-					break;
-				case TSSeeding:
-					state = "seeding";
-					break;
-			}
-			writer.writeAttribute ("state",
-					state);
 			writer.writeAttribute ("filename",
 					i->TorrentFileName_);
 			writer.writeAttribute ("ratio",

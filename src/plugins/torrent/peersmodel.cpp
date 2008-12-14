@@ -15,7 +15,6 @@ PeersModel::PeersModel (QObject *parent)
         << tr ("Uploaded")
         << tr ("Client")
         << tr ("Available pieces")
-        << tr ("LB")
         << tr ("Last active")
         << tr ("Hashfails")
         << tr ("Failcount")
@@ -36,69 +35,60 @@ QVariant PeersModel::data (const QModelIndex& index, int role) const
     if (!index.isValid () || (role != Qt::DisplayRole && role != SortRole))
         return QVariant ();
 
-	libtorrent::bitfield localPieces = Core::Instance ()->GetLocalPieces ();
-
     int i = index.row ();
+	PeerInfo pi = Peers_.at (i);
 
     switch (index.column ())
     {
         case 0:
-            return Peers_.at (index.row ()).IP_;
+            return pi.IP_;
         case 1:
             if (role == Qt::DisplayRole)
-                return Proxy::Instance ()->MakePrettySize (Peers_.at (i).DSpeed_) + tr ("/s");
+                return Proxy::Instance ()->MakePrettySize (pi.DSpeed_) + tr ("/s");
             else if (role == SortRole)
-                return Peers_.at (i).DSpeed_;
+                return pi.DSpeed_;
             else
                 return QVariant ();
         case 2:
             if (role == Qt::DisplayRole)
-                return Proxy::Instance ()->MakePrettySize (Peers_.at (i).USpeed_) + tr ("/s");
+                return Proxy::Instance ()->MakePrettySize (pi.USpeed_) + tr ("/s");
             else if (role == SortRole)
                 return Peers_.at (i).USpeed_;
             else
                 return QVariant ();
         case 3:
             if (role == Qt::DisplayRole)
-                return Proxy::Instance ()->MakePrettySize (Peers_.at (i).Downloaded_);
+                return Proxy::Instance ()->MakePrettySize (pi.Downloaded_);
             else if (role == SortRole)
-                return Peers_.at (i).Downloaded_;
+                return pi.Downloaded_;
             else
                 return QVariant ();
         case 4:
             if (role == Qt::DisplayRole)
-                return Proxy::Instance ()->MakePrettySize (Peers_.at (i).Uploaded_);
+                return Proxy::Instance ()->MakePrettySize (pi.Uploaded_);
             else if (role == SortRole)
-                return Peers_.at (i).Uploaded_;
+                return pi.Uploaded_;
             else
                 return QVariant ();
         case 5:
             return Peers_.at (i).Client_;
         case 6:
-			{
-				int remoteNum = std::accumulate (Peers_.at (i).Pieces_.begin (), Peers_.at (i).Pieces_.end (), 0),
-					remoteHasWeDont = 0;
-				for (size_t j = 0; j < localPieces.size (); ++j)
-					remoteHasWeDont += (Peers_.at (i).Pieces_ [j] && !localPieces [j]);
-				return tr ("%1, %2 we don't have").arg (remoteNum).arg (remoteHasWeDont);
-			}
+			return tr ("%1, %2 interesting").arg (pi.NumPieces_).arg (pi.RemoteHas_);
         case 7:
-            return static_cast<quint64> (Peers_.at (i).LoadBalancing_);
+            return pi.LastActive_.toString ("mm:ss.zzz");
         case 8:
-            return Peers_.at (i).LastActive_.toString ("mm:ss.zzz");
+            return pi.Hashfails_;
         case 9:
-            return Peers_.at (i).Hashfails_;
+            return pi.Failcount_;
         case 10:
-            return Peers_.at (i).Failcount_;
-        case 11:
-            if (Peers_.at (i).DownloadingPiece_ >= 0)
+            if (pi.DownloadingPiece_ >= 0)
                 return tr ("Piece %1, block %2, %3 of %4 bytes").
-                        arg (Peers_.at (i).DownloadingPiece_).
-                        arg (Peers_.at (i).DownloadingBlock_).
-                        arg (Peers_.at (i).DownloadingProgress_).
-                        arg (Peers_.at (i).DownloadingTotal_);
+                        arg (pi.DownloadingPiece_).
+                        arg (pi.DownloadingBlock_).
+                        arg (pi.DownloadingProgress_).
+                        arg (pi.DownloadingTotal_);
             else
-                return tr ("Not downloading");
+                return tr ("Idle");
         default:
             return "Unhandled column";
     }
