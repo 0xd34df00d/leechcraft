@@ -1617,6 +1617,8 @@ void Core::ManipulateSettings ()
 			this, "setGeneralSettings");
     XmlSettingsManager::Instance ()->RegisterObject ("UrlSeedPipelineSize",
 			this, "setGeneralSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("SeedingPieceQuota",
+			this, "setGeneralSettings");
     XmlSettingsManager::Instance ()->RegisterObject ("UrlSeedWaitRetry",
 			this, "setGeneralSettings");
     XmlSettingsManager::Instance ()->RegisterObject ("FilePoolSize",
@@ -1694,6 +1696,14 @@ void Core::ManipulateSettings ()
 	XmlSettingsManager::Instance ()->RegisterObject ("MaxPeerListSize",
 			this, "setGeneralSettings");
 	XmlSettingsManager::Instance ()->RegisterObject ("MinAnnounceInterval",
+			this, "setGeneralSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("PrioritizePartialPieces",
+			this, "setGeneralSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("AnnounceToAllTrackers",
+			this, "setGeneralSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("PreferUDPTrackers",
+			this, "setGeneralSettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("StrictSuperSeeding",
 			this, "setGeneralSettings");
 
     XmlSettingsManager::Instance ()->RegisterObject ("MaxPeersReply",
@@ -2061,6 +2071,8 @@ void Core::setGeneralSettings ()
 		property ("UrlSeedTimeout").toInt ();
     settings.urlseed_pipeline_size = XmlSettingsManager::Instance ()->
 		property ("UrlSeedPipelineSize").toInt ();
+	settings.seeding_piece_quota = XmlSettingsManager::Instance ()->
+		property ("SeedingPieceQuota").toInt ();
     settings.urlseed_wait_retry = XmlSettingsManager::Instance ()->
 		property ("UrlSeedWaitRetry").toInt ();
     settings.file_pool_size = XmlSettingsManager::Instance ()->

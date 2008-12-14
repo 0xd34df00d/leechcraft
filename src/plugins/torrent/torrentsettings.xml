@@ -377,6 +377,10 @@
 					<label lang="en" value="Strict super seeding" />
 					<label lang="ru" value="Строгий супер-сидинг" />
 				</item>
+				<item type="spinbox" property="SeedingPieceQuota" default="3" minimum="1" maximum="1000">
+					<label lang="en" value="Seeding piece quota:" />
+					<label lang="ru" value="Квота кусков сидирования:" />
+				</item>
 			</groupbox>
 		</tab>
 		<tab>
