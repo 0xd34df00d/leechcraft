@@ -1373,6 +1373,8 @@ QString Core::GetStringForState (libtorrent::torrent_status::state_t state) cons
     {
         case libtorrent::torrent_status::queued_for_checking:
             return tr ("Queued for checking");
+		case libtorrent::torrent_status::checking_resume_data:
+			return tr ("Checking metadata");
         case libtorrent::torrent_status::checking_files:
             return tr ("Checking files");
         case libtorrent::torrent_status::downloading_metadata:
@@ -1720,8 +1722,6 @@ void Core::ManipulateSettings ()
 			this, "setLoggingSettings");
 	XmlSettingsManager::Instance ()->RegisterObject ("NotificationTracker",
 			this, "setLoggingSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("NotificationDebug",
-			this, "setLoggingSettings");
 	XmlSettingsManager::Instance ()->RegisterObject ("NotificationStatus",
 			this, "setLoggingSettings");
 	XmlSettingsManager::Instance ()->RegisterObject ("NotificationProgress",
@@ -1845,6 +1845,7 @@ void Core::checkFinished ()
         {
             case libtorrent::torrent_status::queued_for_checking:
             case libtorrent::torrent_status::checking_files:
+			case libtorrent::torrent_status::checking_resume_data:
             case libtorrent::torrent_status::allocating:
 			case libtorrent::torrent_status::downloading_metadata:
                 Handles_ [i].State_ = TSPreparing;
@@ -2152,6 +2153,12 @@ void Core::setGeneralSettings ()
 		property ("MinAnnounceInterval").toInt ();
 	settings.prioritize_partial_pieces = XmlSettingsManager::Instance ()->
 		property ("PrioritizePartialPieces").toBool ();
+	settings.announce_to_all_trackers = XmlSettingsManager::Instance ()->
+		property ("AnnounceToAllTrackers").toBool ();
+	settings.prefer_udp_trackers = XmlSettingsManager::Instance ()->
+		property ("PreferUDPTrackers").toBool ();
+	settings.strict_super_seeding = XmlSettingsManager::Instance ()->
+		property ("StrictSuperSeeding").toBool ();
 	settings.auto_manage_startup = XmlSettingsManager::Instance ()->
 		property ("AutoManageStartup").toInt ();
 
@@ -2187,8 +2194,6 @@ void Core::setLoggingSettings ()
 		mask |= libtorrent::alert::storage_notification;
 	if (XmlSettingsManager::Instance ()->property ("NotificationTracker").toBool ())
 		mask |= libtorrent::alert::tracker_notification;
-	if (XmlSettingsManager::Instance ()->property ("NotificationDebug").toBool ())
-		mask |= libtorrent::alert::debug_notification;
 	if (XmlSettingsManager::Instance ()->property ("NotificationStatus").toBool ())
 		mask |= libtorrent::alert::status_notification;
 	if (XmlSettingsManager::Instance ()->property ("NotificationProgress").toBool ())
