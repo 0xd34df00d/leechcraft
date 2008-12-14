@@ -58,7 +58,7 @@ IF (ENABLE_PACK)
  in C++. Currently it offers full-featured BitTorrent client, feed
  reader, HTTP/FTP plugin, Remote access and much more. It also aims
  to be resource-efficient, working quite well on even old computers.")
-	SET (CPACK_DEBIAN_PACKAGE_DEPENDS "libqt4-core (>= 4.4.3), libqt4-gui (>= 4.4.3), libqt4-network (>= 4.4.3), libqt4-webkit (>= 4.4.3), libqt4-xml (>= 4.4.3), libqt4-sql (>= 4.4.3), libqt4-script (>= 4.4.3), libtorrent-rasterbar-0.14")
+	SET (CPACK_DEBIAN_PACKAGE_DEPENDS "libqt4-core (>= 4.4.3), libqt4-gui (>= 4.4.3), libqt4-network (>= 4.4.3), libqt4-webkit (>= 4.4.3), libqt4-xml (>= 4.4.3), libqt4-sql (>= 4.4.3), libqt4-script (>= 4.4.3), libphonon4, libtorrent-rasterbar-0.14")
 	SET (CPACK_PACKAGE_DESCRIPTION_FILE	"${CMAKE_CURRENT_SOURCE_DIR}/ReadMe.txt")
 	SET (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/copyright.txt")
 	SET (CPACK_PACKAGE_VERSION_MAJOR "0")
