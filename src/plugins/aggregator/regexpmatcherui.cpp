@@ -45,14 +45,16 @@ void RegexpMatcherUi::on_AddRegexpButton__released ()
 		}
 		catch (const RegexpMatcherManager::AlreadyExists&)
 		{
-			QMessageBox::warning (this, tr ("Warning"), tr ("This title matcher regexp already exists. "
-						"Specify another one or modify existing title matcher regexp's body extractor."));
+			QMessageBox::warning (this, tr ("Warning"), tr ("This title "
+						"matcher regexp already exists. Specify another "
+						"one or modify existing title matcher regexp's "
+						"body extractor."));
 			success = false;
 		}
 		catch (const RegexpMatcherManager::Malformed&)
 		{
-			QMessageBox::warning (this, tr ("Warning"), tr ("Either title matcher or body extractor "
-						"is malformed."));
+			QMessageBox::warning (this, tr ("Warning"), tr ("Either title"
+						" matcher or body extractor is malformed."));
 			success = false;
 		}
 	}
@@ -82,16 +84,18 @@ void RegexpMatcherUi::on_ModifyRegexpButton__released ()
 		{
 			RegexpMatcherManager::Instance ().Modify (title, body);
 		}
-		catch (const RegexpMatcherManager::NotFound&)
+		catch (const RegexpMatcherManager::AlreadyExists&)
 		{
-			QMessageBox::warning (this, tr ("Warning"), tr ("This title matcher regexp already exists. "
-						"Specify another one or modify existing title matcher regexp's body extractor."));
+			QMessageBox::warning (this, tr ("Warning"), tr ("This title "
+						"matcher regexp already exists. Specify another "
+						"one or modify existing title matcher regexp's "
+						"body extractor."));
 			success = false;
 		}
 		catch (const RegexpMatcherManager::Malformed&)
 		{
-			QMessageBox::warning (this, tr ("Warning"), tr ("Either title matcher or body extractor "
-						"is malformed."));
+			QMessageBox::warning (this, tr ("Warning"), tr ("Either title"
+						" matcher or body extractor is malformed."));
 			success = false;
 		}
 	}

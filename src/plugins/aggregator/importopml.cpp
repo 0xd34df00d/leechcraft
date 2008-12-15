@@ -9,6 +9,7 @@ ImportOPML::ImportOPML (QWidget *parent)
 {
 	Ui_.setupUi (this);
 	Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (false);
+	on_Browse__released ();
 }
 
 ImportOPML::~ImportOPML ()
@@ -50,9 +51,13 @@ void ImportOPML::on_File__textEdited (const QString& newFilename)
 
 void ImportOPML::on_Browse__released ()
 {
+	QString startingPath = QFileInfo (Ui_.File_->text ()).path ();
+	if (startingPath.isEmpty ())
+		startingPath = QDir::homePath ();
+
 	QString filename = QFileDialog::getOpenFileName (this,
 			tr ("Select OPML file"),
-			QDir::homePath (),
+			startingPath,
 			tr ("OPML files (*.opml);;"
 				"XML files (*.xml);;"
 				"All files (*.*)"));

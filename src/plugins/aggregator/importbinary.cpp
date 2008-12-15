@@ -87,9 +87,13 @@ void ImportBinary::on_File__textEdited (const QString& newFilename)
 
 void ImportBinary::on_Browse__released ()
 {
+	QString startingPath = QFileInfo (Ui_.File_->text ()).path ();
+	if (startingPath.isEmpty ())
+		startingPath = QDir::homePath ();
+
 	QString filename = QFileDialog::getOpenFileName (this,
 			tr ("Select binary file"),
-			QDir::homePath (),
+			startingPath,
 			tr ("Aggregator exchange files (*.lcae);;"
 				"All files (*.*)"));
 

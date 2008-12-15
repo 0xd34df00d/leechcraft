@@ -13,6 +13,8 @@ Export::Export (const QString& title,
 	setWindowTitle (title);
 	Title_ = exportTitle;
 	Choices_ = choices;
+	Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (false);
+	on_Browse__released ();
 }
 
 Export::~Export ()
@@ -65,19 +67,25 @@ void Export::SetFeeds (const channels_shorts_t& channels)
 	}
 }
 
-void Export::on_File__textEdited (const QString&)
+void Export::on_File__textEdited (const QString& text)
 {
+	Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (!text.isEmpty ());
 }
 
 void Export::on_Browse__released ()
 {
+	QString startingPath = QFileInfo (Ui_.File_->text ()).path ();
+	if (startingPath.isEmpty ())
+		startingPath = QDir::homePath ();
+
 	QString filename = QFileDialog::getSaveFileName (this,
 			Title_,
-			QDir::homePath (),
+			startingPath,
 			Choices_);
 	if (filename.isEmpty ())
 		return;
 
 	Ui_.File_->setText (filename);
+	Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (true);
 }
 

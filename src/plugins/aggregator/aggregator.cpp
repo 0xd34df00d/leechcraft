@@ -740,7 +740,6 @@ void Aggregator::currentChannelChanged ()
 
 	updatePixmap (Ui_.MainSplitter_->sizes ().at (0));
 	QStringList allCategories = Core::Instance ().GetCategories (mapped);
-	qDebug () << Q_FUNC_INFO << allCategories;
 	if (allCategories.size ())
 	{
 		ItemCategorySelector_->SetPossibleSelections (allCategories);
