@@ -593,10 +593,11 @@ void Aggregator::on_ItemCategoriesButton__released ()
 void Aggregator::currentItemChanged (const QItemSelection& selection)
 {
 	QModelIndexList indexes = selection.indexes ();
-	if (!indexes.size ())
-		return;
 
-	QModelIndex sindex = ItemsFilterModel_->mapToSource (indexes.at (0));
+	QModelIndex sindex;
+	if (indexes.size ())
+		sindex = ItemsFilterModel_->mapToSource (indexes.at (0));
+
 	if (!sindex.isValid () || indexes.size () != 2)
 	{
 		Ui_.ItemView_->setHtml ("");
@@ -609,6 +610,7 @@ void Aggregator::currentItemChanged (const QItemSelection& selection)
 		Ui_.ItemPubDateLabel_->hide ();
 		Ui_.ItemComments_->hide ();
 		Ui_.ItemCommentsLabel_->hide ();
+		Ui_.ItemCommentsSubscribe_->hide ();
 		return;
 	}
 
@@ -697,12 +699,21 @@ void Aggregator::currentItemChanged (const QItemSelection& selection)
 
 void Aggregator::currentChannelChanged ()
 {
-	currentItemChanged (QItemSelection (QModelIndex (), QModelIndex ()));
+	currentItemChanged (QItemSelection ());
 
 	Ui_.Items_->scrollToTop ();
     QModelIndex index = Ui_.Feeds_->selectionModel ()->currentIndex ();
 	if (!index.isValid ())
+	{
+		Ui_.ChannelLink_->hide ();
+		Ui_.ItemCategoriesButton_->hide ();
+		Ui_.ChannelTags_->setText ("");
+		Ui_.ChannelDescription_->setHtml ("");
+		Ui_.ChannelAuthor_->setText ("");
 		return;
+	}
+	else
+		Ui_.ChannelLink_->show ();
 
 	QModelIndex mapped = ChannelsFilterModel_->mapToSource (index);
 	Core::Instance ().currentChannelChanged (mapped);
@@ -711,13 +722,13 @@ void Aggregator::currentChannelChanged ()
 	QString link = ci.Link_;
 	QString shortLink;
 	Ui_.ChannelLink_->setToolTip (link);
-	if (link.size () >= 40)
-		shortLink = link.left (18) + "..." + link.right (18);
+	if (link.size () >= 80)
+		shortLink = link.left (38) + "..." + link.right (38);
 	else
 		shortLink = link;
 	if (QUrl (link).isValid ())
 	{
-		link.insert (0,"<a href=\"");
+		link.insert (0, "<a href=\"");
 		link.append ("\">" + shortLink + "</a>");
 		Ui_.ChannelLink_->setText (link);
 	}
@@ -729,8 +740,16 @@ void Aggregator::currentChannelChanged ()
 
 	updatePixmap (Ui_.MainSplitter_->sizes ().at (0));
 	QStringList allCategories = Core::Instance ().GetCategories (mapped);
-	ItemCategorySelector_->SetPossibleSelections (allCategories);
-	ItemCategorySelector_->selectAll ();
+	qDebug () << Q_FUNC_INFO << allCategories;
+	if (allCategories.size ())
+	{
+		ItemCategorySelector_->SetPossibleSelections (allCategories);
+		ItemCategorySelector_->selectAll ();
+		Ui_.ItemCategoriesButton_->show ();
+	}
+	else
+		Ui_.ItemCategoriesButton_->hide ();
+
 	ItemsFilterModel_->categorySelectionChanged (allCategories);
 }
 

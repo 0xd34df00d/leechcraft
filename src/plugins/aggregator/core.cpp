@@ -373,7 +373,7 @@ QStringList Core::GetCategories (const QModelIndex& index) const
 		QStringList categories = i->Categories_;
 		for (QStringList::const_iterator j = categories.begin (),
 				endJ = categories.end (); j != endJ; ++j)
-			if (!result.contains (*j))
+			if (!result.contains (*j) && j->size ())
 				result << *j;
 	}
 	std::sort (result.begin (), result.end ());
