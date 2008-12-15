@@ -190,7 +190,7 @@ void Main::Core::DelayedInit ()
 					this,
 					SIGNAL (downloadFinished (const QString&)));
 
-		if (ijh)
+		if (ijh && ijh->GetControls () && ijh->GetAdditionalInfo ())
 		{
 			QAbstractItemModel *model = ijh->GetRepresentation ();
 			Representation2Object_ [model] = plugin;
