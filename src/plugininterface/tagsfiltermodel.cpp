@@ -5,6 +5,7 @@
 
 TagsFilterModel::TagsFilterModel (QObject *parent)
 : QSortFilterProxyModel (parent)
+, NormalMode_ (true)
 {
 }
 
