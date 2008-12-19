@@ -39,7 +39,8 @@ void Core::Release ()
 {
 	try
 	{
-		Server_->stop ();
+		if (Server_)
+			Server_->stop ();
 	}
 	catch (const Wt::WServer::Exception& e)
 	{
