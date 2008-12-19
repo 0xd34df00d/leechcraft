@@ -48,36 +48,11 @@ void Poshuku::Init ()
 			this,
 			SLOT (handleError (const QString&)));
 
-	Ui_.HistoryView_->setModel (Core::Instance ().GetHistoryModel ());
 	Ui_.AddressLine_->setText (XmlSettingsManager::Instance ()->
 			property ("DefaultPage").toString ());
 
-	FavoritesFilterModel_.reset (new FilterModel (this));
-	FavoritesFilterModel_->setSourceModel (Core::Instance ().GetFavoritesModel ());
-	FavoritesFilterModel_->setDynamicSortFilter (true);
-	Ui_.FavoritesView_->setModel (FavoritesFilterModel_.get ());
-	Ui_.FavoritesView_->setItemDelegate (new FavoritesDelegate (this));
-	connect (Ui_.FavoritesView_,
-			SIGNAL (deleteSelected (const QModelIndex&)),
-			Core::Instance ().GetFavoritesModel (),
-			SLOT (removeItem (const QModelIndex&)));
-
-	FavoritesFilterLineCompleter_.reset (new TagsCompleter (Ui_.FavoritesFilterLine_, this));
-	FavoritesFilterLineCompleter_->
-		setModel (Core::Instance ().GetFavoritesTagsCompletionModel ());
-	Ui_.FavoritesFilterLine_->AddSelector ();
-	connect (Ui_.FavoritesFilterLine_,
-			SIGNAL (textChanged (const QString&)),
-			this,
-			SLOT (updateFavoritesFilter ()));
-	connect (Ui_.FavoritesFilterType_,
-			SIGNAL (currentIndexChanged (int)),
-			this,
-			SLOT (updateFavoritesFilter ()));
-	connect (Ui_.FavoritesFilterCaseSensitivity_,
-			SIGNAL (stateChanged (int)),
-			this,
-			SLOT (updateFavoritesFilter ()));
+	SetupFavoritesFilter ();
+	SetupHistoryFilter ();
 
 	QHeaderView *itemsHeader = Ui_.FavoritesView_->header ();
 	QFontMetrics fm = fontMetrics ();
@@ -173,6 +148,57 @@ void Poshuku::RegisterSettings ()
 			this, "viewerSettingsChanged");
 	XmlSettingsManager::Instance ()->RegisterObject ("UserStyleSheet",
 			this, "viewerSettingsChanged");
+}
+
+void Poshuku::SetupFavoritesFilter ()
+{
+	FavoritesFilterModel_.reset (new FilterModel (this));
+	FavoritesFilterModel_->setSourceModel (Core::Instance ().GetFavoritesModel ());
+	FavoritesFilterModel_->setDynamicSortFilter (true);
+	Ui_.FavoritesView_->setModel (FavoritesFilterModel_.get ());
+	Ui_.FavoritesView_->setItemDelegate (new FavoritesDelegate (this));
+	connect (Ui_.FavoritesView_,
+			SIGNAL (deleteSelected (const QModelIndex&)),
+			Core::Instance ().GetFavoritesModel (),
+			SLOT (removeItem (const QModelIndex&)));
+
+	FavoritesFilterLineCompleter_.reset (new TagsCompleter (Ui_.FavoritesFilterLine_, this));
+	FavoritesFilterLineCompleter_->
+		setModel (Core::Instance ().GetFavoritesTagsCompletionModel ());
+	Ui_.FavoritesFilterLine_->AddSelector ();
+	connect (Ui_.FavoritesFilterLine_,
+			SIGNAL (textChanged (const QString&)),
+			this,
+			SLOT (updateFavoritesFilter ()));
+	connect (Ui_.FavoritesFilterType_,
+			SIGNAL (currentIndexChanged (int)),
+			this,
+			SLOT (updateFavoritesFilter ()));
+	connect (Ui_.FavoritesFilterCaseSensitivity_,
+			SIGNAL (stateChanged (int)),
+			this,
+			SLOT (updateFavoritesFilter ()));
+}
+
+void Poshuku::SetupHistoryFilter ()
+{
+	HistoryFilterModel_.reset (new FilterModel (this));
+	HistoryFilterModel_->setSourceModel (Core::Instance ().GetHistoryModel ());
+	HistoryFilterModel_->setDynamicSortFilter (true);
+	Ui_.HistoryView_->setModel (HistoryFilterModel_.get ());
+
+	connect (Ui_.HistoryFilterLine_,
+			SIGNAL (textChanged (const QString&)),
+			this,
+			SLOT (updateHistoryFilter ()));
+	connect (Ui_.HistoryFilterType_,
+			SIGNAL (currentIndexChanged (int)),
+			this,
+			SLOT (updateHistoryFilter ()));
+	connect (Ui_.HistoryFilterCaseSensitivity_,
+			SIGNAL (stateChanged (int)),
+			this,
+			SLOT (updateHistoryFilter ()));
 }
 
 void Poshuku::openURL (const QString& url)
@@ -272,6 +298,32 @@ void Poshuku::updateFavoritesFilter ()
 
 	FavoritesFilterModel_->
 		setFilterCaseSensitivity ((Ui_.FavoritesFilterCaseSensitivity_->
+					checkState () == Qt::Checked) ? Qt::CaseSensitive :
+				Qt::CaseInsensitive);
+}
+
+void Poshuku::updateHistoryFilter ()
+{
+	int section = Ui_.HistoryFilterType_->currentIndex ();
+	QString text = Ui_.HistoryFilterLine_->text ();
+
+	qDebug () << section << text;
+
+	switch (section)
+	{
+		case 1:
+			HistoryFilterModel_->setFilterWildcard (text);
+			break;
+		case 2:
+			HistoryFilterModel_->setFilterRegExp (text);
+			break;
+		default:
+			HistoryFilterModel_->setFilterFixedString (text);
+			break;
+	}
+
+	HistoryFilterModel_->
+		setFilterCaseSensitivity ((Ui_.HistoryFilterCaseSensitivity_->
 					checkState () == Qt::Checked) ? Qt::CaseSensitive :
 				Qt::CaseInsensitive);
 }

@@ -26,6 +26,7 @@ class Poshuku : public QWidget
 	std::auto_ptr<TagsCompleter> FavoritesFilterLineCompleter_;
 	std::auto_ptr<XmlSettingsDialog> XmlSettingsDialog_;
 	std::auto_ptr<FilterModel> FavoritesFilterModel_;
+	std::auto_ptr<FilterModel> HistoryFilterModel_;
 public:
 	void Init ();
 	void Release ();
@@ -39,6 +40,8 @@ public:
 	QWidget* GetTabContents ();
 private:
 	void RegisterSettings ();
+	void SetupFavoritesFilter ();
+	void SetupHistoryFilter ();
 public slots:
 	void openURL (const QString&);
 	QWebView* createWindow ();
@@ -49,6 +52,7 @@ private slots:
 	void on_FavoritesView__activated (const QModelIndex&);
 	void viewerSettingsChanged ();
 	void updateFavoritesFilter ();
+	void updateHistoryFilter ();
 	void handleError (const QString&);
 signals:
 	void bringToFront ();

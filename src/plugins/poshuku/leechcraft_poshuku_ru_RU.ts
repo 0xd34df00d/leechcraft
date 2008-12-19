@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="ru_RU">
-<defaultcodec></defaultcodec>
 <context>
     <name>AddToFavoritesDialog</name>
     <message>
@@ -93,65 +92,75 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="74"/>
+        <location filename="core.cpp" line="103"/>
         <source>untagged</source>
         <translation>непротеганное</translation>
     </message>
     <message>
         <location filename="core.cpp" line="143"/>
         <source>Loading...</source>
-        <translation>Грузится...</translation>
+        <translation type="obsolete">Грузится...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="235"/>
+        <location filename="core.cpp" line="301"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="248"/>
+        <location filename="core.cpp" line="351"/>
         <source>Could not create Poshuku directory.</source>
         <translation>Не могу создать директорию для Poshuku.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="255"/>
+        <location filename="core.cpp" line="358"/>
         <source>Could not save cookies, error opening cookie file.</source>
         <translation>не могу сохранить кукисы, ошибка открытия файла с кукисами.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="270"/>
+        <location filename="core.cpp" line="373"/>
         <source>Loading %1</source>
         <translation>Грузится %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="309"/>
+        <location filename="core.cpp" line="412"/>
         <source>The URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
         <translation>URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;с реалмом&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;требует аутентификации.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="320"/>
+        <location filename="core.cpp" line="423"/>
         <source>The proxy &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
         <translation>Прокси &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;с реалмом&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;требует аутентификации.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="347"/>
+        <location filename="core.cpp" line="450"/>
         <source>The URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
         <translation>URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;имеет ошибки SSL. Что ты хочешь делать?</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="179"/>
+        <source></source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="321"/>
+        <source>Save external data</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>FavoritesModel</name>
     <message>
-        <location filename="favoritesmodel.cpp" line="9"/>
+        <location filename="favoritesmodel.cpp" line="20"/>
         <source>Title</source>
         <translation>Название</translation>
     </message>
     <message>
-        <location filename="favoritesmodel.cpp" line="9"/>
+        <location filename="favoritesmodel.cpp" line="21"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="favoritesmodel.cpp" line="9"/>
+        <location filename="favoritesmodel.cpp" line="21"/>
         <source>Tags</source>
         <translation>Тэги</translation>
     </message>
@@ -159,17 +168,17 @@
 <context>
     <name>HistoryModel</name>
     <message>
-        <location filename="historymodel.cpp" line="9"/>
+        <location filename="historymodel.cpp" line="10"/>
         <source>Title</source>
         <translation>Название</translation>
     </message>
     <message>
-        <location filename="historymodel.cpp" line="10"/>
+        <location filename="historymodel.cpp" line="11"/>
         <source>Date</source>
         <translation>Дата</translation>
     </message>
     <message>
-        <location filename="historymodel.cpp" line="10"/>
+        <location filename="historymodel.cpp" line="11"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
@@ -182,17 +191,17 @@
         <translation>Poshuku</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="115"/>
+        <location filename="poshuku.cpp" line="117"/>
         <source>Simple yet functional web browser</source>
         <translation>Простой но в то же время функциональный веб-браузер</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="278"/>
+        <location filename="poshuku.cpp" line="281"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="192"/>
+        <location filename="poshuku.cpp" line="195"/>
         <source>The URL you entered could not be opened by Poshuku. Sorry. By the way, you entered:&lt;br /&gt;%1</source>
         <translation>Введенный URL не может быть открыт Poshuku. Сорри. Кстати, ты ввел:&lt;br /&gt;%1</translation>
     </message>
