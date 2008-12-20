@@ -2,7 +2,9 @@
 #include <QKeyEvent>
 #include <QtDebug>
 #include <QToolBar>
+#include <QCompleter>
 #include "core.h"
+#include "historymodel.h"
 
 BrowserWidget::BrowserWidget (QWidget *parent)
 : QWidget (parent)
@@ -84,6 +86,12 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			SIGNAL (statusBarMessage (const QString&)),
 			this,
 			SLOT (handleStatusBarMessage (const QString&)));
+
+	QCompleter *completer = new QCompleter (this);
+	completer->setModel (Core::Instance ().GetHistoryModel ());
+	completer->setCompletionRole (HistoryModel::CompletionRole);
+	completer->setCompletionColumn (HistoryModel::ColumnCompletionName);
+	Ui_.URLEdit_->setCompleter (completer);
 }
 
 BrowserWidget::~BrowserWidget ()

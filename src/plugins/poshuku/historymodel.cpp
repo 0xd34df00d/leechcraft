@@ -23,7 +23,7 @@ int HistoryModel::columnCount (const QModelIndex&) const
 
 QVariant HistoryModel::data (const QModelIndex& index, int role) const
 {
-	if (!index.isValid ())
+	if (!index.isValid () && index.column () != ColumnCompletionName)
 		return QVariant ();
 
 	switch (role)
@@ -37,9 +37,16 @@ QVariant HistoryModel::data (const QModelIndex& index, int role) const
 					return Items_ [index.row ()].DateTime_.toString ();
 				case ColumnURL:
 					return Items_ [index.row ()].URL_;
+				case ColumnCompletionName:
+					return Items_ [index.row ()].Title_ +
+						" (" +
+						Items_ [index.row ()].URL_ +
+						")";
 				default:
 					return QVariant ();
 			}
+		case CompletionRole:
+			return Items_ [index.row ()].URL_;
 		default:
 			return QVariant ();
 	}
@@ -62,7 +69,7 @@ QVariant HistoryModel::headerData (int column, Qt::Orientation orient,
 QModelIndex HistoryModel::index (int row, int column,
 		const QModelIndex& parent) const
 {
-	if (!hasIndex (row, column, parent))
+	if (!hasIndex (row, column, parent) && column != ColumnCompletionName)
 		return QModelIndex ();
 
 	return createIndex (row, column);

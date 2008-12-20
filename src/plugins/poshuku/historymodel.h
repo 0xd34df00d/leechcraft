@@ -21,11 +21,16 @@ public:
 private:
 	std::deque<HistoryItem> Items_;
 public:
+	enum
+	{
+		CompletionRole = 42
+	};
 	enum Columns
 	{
 		ColumnTitle
 		, ColumnDate
 		, ColumnURL
+		, ColumnCompletionName
 	};
 
 	HistoryModel (QObject* = 0);

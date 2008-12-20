@@ -97,7 +97,7 @@ void Core::DoDelayedInit ()
 				 ver.at (0).digitValue (),
 				 ver.at (1).digitValue (), 
 				 ver.at (2).digitValue (),
-				 ver.at (3).digitValue ()));
+				 ver.at (3).digitValue ()), 0);
 		setLoggingSettings ();
         QList<QVariant> ports = XmlSettingsManager::Instance ()->property ("TCPPortRange").toList ();
         Session_->listen_on (std::make_pair (ports.at (0).toInt (), ports.at (1).toInt ()));
@@ -111,9 +111,6 @@ void Core::DoDelayedInit ()
 				property ("MaxUploads").toInt ());
         Session_->set_max_connections (XmlSettingsManager::Instance ()->
 				property ("MaxConnections").toInt ());
-        Session_->start_lsd ();
-        Session_->start_upnp ();
-        Session_->start_natpmp ();
         setProxySettings ();
         setGeneralSettings ();
         setDHTSettings ();

@@ -307,8 +307,6 @@ void Poshuku::updateHistoryFilter ()
 	int section = Ui_.HistoryFilterType_->currentIndex ();
 	QString text = Ui_.HistoryFilterLine_->text ();
 
-	qDebug () << section << text;
-
 	switch (section)
 	{
 		case 1:

@@ -64,7 +64,6 @@ void TagsLineEdit::focusInEvent (QFocusEvent *e)
     {
         disconnect (completer (), SIGNAL (activated (const QString&)), this, SLOT (setText (const QString&)));
         disconnect (completer (), SIGNAL (highlighted (const QString&)), this, 0);
-        connect (completer (), SIGNAL (highlighted (const QString&)), this, SLOT (complete (const QString&)));
     }
 }
 
