@@ -644,7 +644,9 @@ void Core::InitEmbedTab (QObject *plugin)
 {
 	IInfo *ii = qobject_cast<IInfo*> (plugin);
 	IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
-	TabContainer_->Add (iet->GetTabContents (), ii->GetName ());
+	TabContainer_->Add (iet->GetTabContents (),
+			ii->GetName (),
+			ii->GetIcon ());
 	connect (plugin,
 			SIGNAL (bringToFront ()),
 			this,

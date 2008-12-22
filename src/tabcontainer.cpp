@@ -1,6 +1,5 @@
 #include "tabcontainer.h"
 #include <QTabWidget>
-#include <QIcon>
 #include "core.h"
 
 using namespace LeechCraft;
@@ -17,14 +16,16 @@ TabContainer::~TabContainer ()
 {
 }
 
-void TabContainer::Add (QWidget *contents, const QString& name)
+void TabContainer::Add (QWidget *contents, const QString& name,
+		const QIcon& icon)
 {
 	if (TabMode_)
-		TabWidget_->addTab (contents, name);
+		TabWidget_->addTab (contents, icon, name);
 	else
 	{
 		contents->setWindowFlags (Qt::Window);
 		contents->setWindowTitle (name);
+		contents->setWindowIcon (icon);
 		contents->show ();
 		Widgets_.push_front (contents);
 	}

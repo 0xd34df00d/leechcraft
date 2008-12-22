@@ -1,6 +1,7 @@
 #ifndef TABCONTAINER_H
 #define TABCONTAINER_H
 #include <QObject>
+#include <QIcon>
 
 class QTabWidget;
 class QIcon;
@@ -19,7 +20,8 @@ namespace LeechCraft
 		TabContainer (QTabWidget*, QObject* = 0);
 		virtual ~TabContainer ();
 
-		void Add (QWidget*, const QString&);
+		void Add (QWidget*, const QString&,
+				const QIcon& icon = QIcon ());
 		void Remove (QWidget*);
 		void ChangeTabName (QWidget*, const QString&);
 		void ChangeTabIcon (QWidget*, const QIcon&);
