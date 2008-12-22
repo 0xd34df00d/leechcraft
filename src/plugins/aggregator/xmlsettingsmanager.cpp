@@ -1,11 +1,15 @@
 #include <plugininterface/proxy.h>
 #include "xmlsettingsmanager.h"
 
+using LeechCraft::Util::Proxy;
+
 namespace
 {
     QSettings *torrentBeginSettings ()
     {
-        QSettings *settings = new QSettings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Aggregator");
+        QSettings *settings =
+			new QSettings (Proxy::Instance ()->GetOrganizationName (),
+					Proxy::Instance ()->GetApplicationName () + "_Aggregator");
         return settings;
     }
 

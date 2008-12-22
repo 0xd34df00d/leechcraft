@@ -4,6 +4,8 @@
 #include <QtDebug>
 #include "graphwidget.h"
 
+using namespace LeechCraft::Util;
+
 GraphWidget::GraphWidget (const QColor& color, QWidget *parent)
 : QWidget (parent)
 , Color_ (color)

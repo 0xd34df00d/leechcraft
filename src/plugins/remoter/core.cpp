@@ -16,6 +16,8 @@
 #include "qtowtoolbaradaptor.h"
 #include "interface.h"
 
+using LeechCraft::Util::MergeModel;
+
 Wt::WApplication* CreateApplication (const Wt::WEnvironment& e)
 {
 	return Core::Instance ().CreateApplication (e);;

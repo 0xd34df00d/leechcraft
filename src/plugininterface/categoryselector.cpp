@@ -5,6 +5,8 @@
 #include <QVariant>
 #include <QVBoxLayout>
 
+using namespace LeechCraft::Util;
+
 CategorySelector::CategorySelector (QWidget *parent)
 : QWidget (parent, Qt::Tool)
 {

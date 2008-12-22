@@ -70,8 +70,8 @@ void Chatter::SetProvider (QObject *obj, const QString& feature)
 
 void Chatter::Release ()
 {
-    QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-			Proxy::Instance ()->GetApplicationName ());
+    QSettings settings (LeechCraft::Util::Proxy::Instance ()->GetOrganizationName (),
+			LeechCraft::Util::Proxy::Instance ()->GetApplicationName ());
     settings.beginGroup (GetName ());
     settings.beginGroup ("geometry");
     settings.setValue ("pos", pos ());

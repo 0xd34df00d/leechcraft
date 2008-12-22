@@ -7,6 +7,8 @@
 #include <QtDebug>
 #include <plugininterface/proxy.h>
 
+using LeechCraft::Util::Proxy;
+
 HistoryModel::HistoryModel (QObject *parent)
 : QAbstractItemModel (parent)
 , SaveScheduled_ (false)

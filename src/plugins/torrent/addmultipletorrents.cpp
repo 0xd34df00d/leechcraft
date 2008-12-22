@@ -33,7 +33,7 @@ Core::AddType AddMultipleTorrents::GetAddType () const
 	}
 }
 
-TagsLineEdit* AddMultipleTorrents::GetEdit ()
+LeechCraft::Util::TagsLineEdit* AddMultipleTorrents::GetEdit ()
 {
 	return TagsEdit_;
 }

@@ -8,7 +8,7 @@
 
 class QSystemTrayIcon;
 
-namespace Main
+namespace LeechCraft
 {
 	class FancyPopupManager : public QObject
 	{

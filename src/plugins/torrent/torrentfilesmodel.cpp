@@ -5,6 +5,9 @@
 #include "torrentfilesmodel.h"
 #include "core.h"
 
+using LeechCraft::Util::TreeItem;
+using LeechCraft::Util::Proxy;
+
 TorrentFilesModel::TorrentFilesModel (bool addDia, QObject *parent)
 : QAbstractItemModel (parent)
 , AdditionDialog_ (addDia)

@@ -2,6 +2,8 @@
 #include <QtDebug>
 #include "tagscompletionmodel.h"
 
+using namespace LeechCraft::Util;
+
 TagsCompletionModel::TagsCompletionModel (QObject *parent)
 : QAbstractItemModel (parent)
 {

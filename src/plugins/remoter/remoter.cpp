@@ -4,6 +4,8 @@
 #include <plugininterface/util.h>
 #include "core.h"
 
+using LeechCraft::Util::MergeModel;
+
 void Remoter::Init ()
 {
 	LeechCraft::Util::InstallTranslator ("remoter");

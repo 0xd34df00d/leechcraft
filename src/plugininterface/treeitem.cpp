@@ -1,6 +1,8 @@
 #include <QStringList>
 #include "treeitem.h"
 
+using namespace LeechCraft::Util;
+
 TreeItem::TreeItem (const QList<QVariant>& data, TreeItem *parent)
 : Parent_ (parent)
 {

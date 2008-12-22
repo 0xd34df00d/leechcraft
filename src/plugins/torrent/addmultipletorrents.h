@@ -3,7 +3,13 @@
 #include "ui_addmultipletorrents.h"
 #include "core.h"
 
-class TagsLineEdit;
+namespace LeechCraft
+{
+	namespace Util
+	{
+		class TagsLineEdit;
+	};
+};
 
 class AddMultipleTorrents : public QDialog, private Ui::AddMultipleTorrents
 {
@@ -13,7 +19,7 @@ public:
     QString GetOpenDirectory () const;
     QString GetSaveDirectory () const;
 	Core::AddType GetAddType () const;
-	TagsLineEdit* GetEdit ();
+	LeechCraft::Util::TagsLineEdit* GetEdit ();
 	QStringList GetTags () const;
 private slots:
     void on_BrowseOpen__released ();

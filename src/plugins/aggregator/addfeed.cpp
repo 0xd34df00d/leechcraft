@@ -3,6 +3,8 @@
 #include "core.h"
 #include "addfeed.h"
 
+using LeechCraft::Util::TagsCompleter;
+
 AddFeed::AddFeed (QWidget *parent)
 : QDialog (parent)
 {

@@ -1,6 +1,9 @@
 #include "addtofavoritesdialog.h"
 #include <plugininterface/tagscompletionmodel.h>
 
+using LeechCraft::Util::TagsCompleter;
+using LeechCraft::Util::TagsCompletionModel;
+
 AddToFavoritesDialog::AddToFavoritesDialog (const QString& title,
 		const QString& url,
 		TagsCompletionModel *model,

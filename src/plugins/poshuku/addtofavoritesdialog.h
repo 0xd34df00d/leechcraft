@@ -5,7 +5,13 @@
 #include <plugininterface/tagscompleter.h>
 #include "ui_addtofavoritesdialog.h"
 
-class TagsCompletionModel;
+namespace LeechCraft
+{
+	namespace Util
+	{
+		class TagsCompletionModel;
+	};
+};
 
 class AddToFavoritesDialog : public QDialog
 {
@@ -13,10 +19,12 @@ class AddToFavoritesDialog : public QDialog
 
 	Ui::AddToFavoritesDialog Ui_;
 
-	std::auto_ptr<TagsCompleter> TagsCompleter_;
+	std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsCompleter_;
 public:
 	AddToFavoritesDialog (const QString&,
-			const QString&, TagsCompletionModel*, QWidget* = 0);
+			const QString&,
+			LeechCraft::Util::TagsCompletionModel*,
+			QWidget* = 0);
 	virtual ~AddToFavoritesDialog ();
 
 	QString GetTitle () const;

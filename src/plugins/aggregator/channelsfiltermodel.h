@@ -2,7 +2,7 @@
 #define CHANNELSFILTERMODEL_H
 #include <plugininterface/tagsfiltermodel.h>
 
-class ChannelsFilterModel : public TagsFilterModel
+class ChannelsFilterModel : public LeechCraft::Util::TagsFilterModel
 {
     Q_OBJECT
 public:

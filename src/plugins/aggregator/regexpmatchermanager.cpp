@@ -10,6 +10,8 @@
 #include <plugininterface/util.h>
 #include "item.h"
 
+using LeechCraft::Util::Proxy;
+
 RegexpMatcherManager::RegexpItem::RegexpItem (const QString& title,
 		const QString& body)
 : Title_ (title)

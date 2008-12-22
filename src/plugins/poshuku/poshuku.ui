@@ -55,7 +55,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout" >
          <item>
-          <widget class="TagsLineEdit" native="1" name="HistoryFilterLine_" />
+          <widget class="LeechCraft::Util::TagsLineEdit" native="1" name="HistoryFilterLine_" />
          </item>
          <item>
           <widget class="QComboBox" name="HistoryFilterType_" >
@@ -119,7 +119,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2" >
          <item>
-          <widget class="TagsLineEdit" native="1" name="FavoritesFilterLine_" />
+          <widget class="LeechCraft::Util::TagsLineEdit" native="1" name="FavoritesFilterLine_" />
          </item>
          <item>
           <widget class="QComboBox" name="FavoritesFilterType_" >
@@ -183,7 +183,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>TagsLineEdit</class>
+   <class>LeechCraft::Util::TagsLineEdit</class>
    <extends>QWidget</extends>
    <header location="global" >tagslineedit.h</header>
   </customwidget>

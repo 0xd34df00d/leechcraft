@@ -19,18 +19,24 @@ QStringList SecondStep::GetPaths () const
 
 void SecondStep::on_AddPath__released ()
 {
-    QStringList paths = QFileDialog::getOpenFileNames (this, tr ("Select one or more paths to add"), XmlSettingsManager::Instance ()->property ("LastAddDirectory").toString ());
+    QStringList paths = QFileDialog::getOpenFileNames (this,
+			tr ("Select one or more paths to add"),
+			XmlSettingsManager::Instance ()->
+				property ("LastAddDirectory").toString ());
     if (paths.isEmpty ())
         return;
 
-    XmlSettingsManager::Instance ()->setProperty ("LastAddDirectory", paths.at (0));
+    XmlSettingsManager::Instance ()->setProperty ("LastAddDirectory",
+			paths.at (0));
     
     QStringList files = paths;
     for (int i = 0; i < files.size (); ++i)
     {
         QString path = files.at (i);
         QTreeWidgetItem *item = new QTreeWidgetItem (FilesWidget_);
-        item->setText (0, Proxy::Instance ()->MakePrettySize (QFileInfo (path).size ()));
+        item->setText (0,
+				LeechCraft::Util::Proxy::Instance ()->
+				MakePrettySize (QFileInfo (path).size ()));
         item->setText (1, path);
     }
 }

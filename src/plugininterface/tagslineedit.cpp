@@ -6,6 +6,8 @@
 #include <QPushButton>
 #include "tagscompletionmodel.h"
 
+using namespace LeechCraft::Util;
+
 TagsLineEdit::TagsLineEdit (QWidget *parent)
 : QLineEdit (parent)
 {

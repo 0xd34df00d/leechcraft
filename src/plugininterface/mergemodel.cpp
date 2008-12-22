@@ -2,6 +2,8 @@
 #include <QtDebug>
 #include "mergemodel.h"
 
+using namespace LeechCraft::Util;
+
 MergeModel::MergeModel (const QStringList& headers, QObject *parent)
 : QAbstractProxyModel (parent)
 , Headers_ (headers)

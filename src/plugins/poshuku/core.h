@@ -27,7 +27,7 @@ class Core : public QObject
 
 	std::auto_ptr<FavoritesModel> FavoritesModel_;
 	std::auto_ptr<HistoryModel> HistoryModel_;
-	std::auto_ptr<TagsCompletionModel> FavoriteTagsCompletionModel_;
+	std::auto_ptr<LeechCraft::Util::TagsCompletionModel> FavoriteTagsCompletionModel_;
 	std::auto_ptr<QNetworkAccessManager> NetworkAccessManager_;
 	std::auto_ptr<QTimer> CookieSaveTimer_;
 	std::auto_ptr<StorageBackend> StorageBackend_;
@@ -51,7 +51,7 @@ public:
 	CustomWebView* MakeWebView ();
 	FavoritesModel* GetFavoritesModel () const;
 	HistoryModel* GetHistoryModel () const;
-	TagsCompletionModel* GetFavoritesTagsCompletionModel () const;
+	LeechCraft::Util::TagsCompletionModel* GetFavoritesTagsCompletionModel () const;
 	QNetworkAccessManager* GetNetworkAccessManager () const;
 	StorageBackend* GetStorageBackend () const;
 	void Unregister (BrowserWidget*);

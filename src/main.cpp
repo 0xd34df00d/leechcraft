@@ -117,12 +117,12 @@ int main (int argc, char **argv)
     qRegisterMetaType<QModelIndex> ("QModelIndex");
     qRegisterMetaType<QModelIndex*> ("QModelIndexStar");
 
-    Proxy::Instance ()->SetStrings (QStringList (QObject::tr ("bytes")) <<
+	LeechCraft::Util::Proxy::Instance ()->SetStrings (QStringList (QObject::tr ("bytes")) <<
 			QObject::tr ("KB") <<
 			QObject::tr ("MB") <<
 			QObject::tr ("GB"));
 
-	std::auto_ptr<Main::MainWindow> mw (new Main::MainWindow ());
+	std::auto_ptr<LeechCraft::MainWindow> mw (new LeechCraft::MainWindow ());
     return app.exec ();
 }
 

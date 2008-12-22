@@ -6,7 +6,7 @@
 #include <QPluginLoader>
 #include "interfaces/interfaces.h"
 
-namespace Main
+namespace LeechCraft
 {
 	class MainWindow;
     class PluginManager : public QAbstractItemModel
@@ -49,7 +49,7 @@ namespace Main
             }
             return result;
         }
-        void InitializePlugins (const Main::MainWindow*);
+        void InitializePlugins ();
         void CalculateDependencies ();
 		QObject* GetProvider (const QString&) const;
 		QObjectList GetSelectedDownloaderWatchers () const;

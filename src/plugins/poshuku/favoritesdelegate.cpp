@@ -5,6 +5,9 @@
 #include "filtermodel.h"
 #include "favoritesmodel.h"
 
+using LeechCraft::Util::TagsCompleter;
+using LeechCraft::Util::TagsLineEdit;
+
 FavoritesDelegate::FavoritesDelegate (QObject *parent)
 : QItemDelegate (parent)
 {

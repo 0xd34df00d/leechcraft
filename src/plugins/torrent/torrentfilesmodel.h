@@ -4,18 +4,27 @@
 #include <libtorrent/torrent_info.hpp>
 #include "fileinfo.h"
 
-class TreeItem;
+namespace LeechCraft
+{
+	namespace Util
+	{
+		class TreeItem;
+	};
+};
 
 class TorrentFilesModel : public QAbstractItemModel
 {
     Q_OBJECT
 
-    TreeItem *RootItem_;
+    LeechCraft::Util::TreeItem *RootItem_;
     bool AdditionDialog_;
     typedef boost::filesystem::path path_t;
-    QMap<path_t, TreeItem*> Path2TreeItem_;
+    QMap<path_t, LeechCraft::Util::TreeItem*> Path2TreeItem_;
     int FilesInTorrent_;
-    enum { RawDataRole = 46 } ;
+    enum
+	{
+		RawDataRole = 46
+	};
 public:
     TorrentFilesModel (bool, QObject *parent = 0);
     virtual ~TorrentFilesModel ();
@@ -30,7 +39,8 @@ public:
     virtual bool setData (const QModelIndex&, const QVariant&, int = Qt::EditRole);
 
     void Clear ();
-    void ResetFiles (libtorrent::torrent_info::file_iterator, const libtorrent::torrent_info::file_iterator&);
+    void ResetFiles (libtorrent::torrent_info::file_iterator,
+			const libtorrent::torrent_info::file_iterator&);
     void ResetFiles (const QList<FileInfo>&);
     void UpdateFiles (const QList<FileInfo>&);
     QVector<bool> GetSelectedFiles () const;
@@ -40,7 +50,7 @@ public:
     void UnmarkIndexes (const QList<QModelIndex>&);
 private:
     void MkParentIfDoesntExist (const boost::filesystem::path&);
-    void UpdateSizeGraph (TreeItem*);
+    void UpdateSizeGraph (LeechCraft::Util::TreeItem*);
 };
 
 #endif

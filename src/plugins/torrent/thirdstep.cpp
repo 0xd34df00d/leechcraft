@@ -58,6 +58,8 @@ void ThirdStep::on_PieceSize__currentIndexChanged ()
         ++numPieces;
 
     NumPieces_->setText (QString::number (numPieces) +
-			tr (" pieces (%1)").arg (Proxy::Instance ()->MakePrettySize (TotalSize_)));
+			tr (" pieces (%1)")
+			.arg (LeechCraft::Util::Proxy::Instance ()->
+				MakePrettySize (TotalSize_)));
 }
 

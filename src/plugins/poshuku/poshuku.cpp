@@ -13,6 +13,9 @@
 #include "historymodel.h"
 #include "favoritesmodel.h"
 
+using LeechCraft::Util::TagsCompleter;
+using LeechCraft::Util::TagsCompletionModel;
+
 void Poshuku::Init ()
 {
 	Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku"));

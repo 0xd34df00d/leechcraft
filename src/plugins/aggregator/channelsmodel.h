@@ -4,16 +4,22 @@
 #include <boost/shared_ptr.hpp>
 #include "channel.h"
 
-class TreeItem;
+namespace LeechCraft
+{
+	namespace Util
+	{
+		class TreeItem;
+	};
+};
 struct Channel;
 
 class ChannelsModel : public QAbstractItemModel
 {
     Q_OBJECT
 
-    TreeItem *RootItem_;
-    typedef QMap<ChannelShort, TreeItem*> Channel2TreeItemDictionary_t;
-    typedef QMap<TreeItem*, ChannelShort> TreeItem2ChannelDictionary_t;
+    LeechCraft::Util::TreeItem *RootItem_;
+    typedef QMap<ChannelShort, LeechCraft::Util::TreeItem*> Channel2TreeItemDictionary_t;
+    typedef QMap<LeechCraft::Util::TreeItem*, ChannelShort> TreeItem2ChannelDictionary_t;
     Channel2TreeItemDictionary_t Channel2TreeItem_;
     TreeItem2ChannelDictionary_t TreeItem2Channel_;
 public:

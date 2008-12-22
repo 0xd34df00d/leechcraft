@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>415</width>
-    <height>187</height>
+    <height>195</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -90,7 +90,7 @@
       </widget>
      </item>
      <item row="2" column="1" >
-      <widget class="TagsLineEdit" native="1" name="TagsEdit_" />
+      <widget class="LeechCraft::Util::TagsLineEdit" native="1" name="TagsEdit_" />
      </item>
     </layout>
    </item>
@@ -121,7 +121,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>TagsLineEdit</class>
+   <class>LeechCraft::Util::TagsLineEdit</class>
    <extends>QWidget</extends>
    <header location="global" >tagslineedit.h</header>
   </customwidget>

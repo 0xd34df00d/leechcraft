@@ -10,7 +10,13 @@
 #include <plugininterface/guarded.h>
 
 class QStringList;
-class MergeModel;
+namespace LeechCraft
+{
+	namespace Util
+	{
+		class MergeModel;
+	};
+};
 
 namespace Wt
 {
@@ -26,20 +32,21 @@ class Core : public QObject
     Q_OBJECT
 
 	Wt::WServer *Server_;
-	LeechCraft::Util::Guarded<MergeModel*> TasksModel_, HistoryModel_;
+	LeechCraft::Util::Guarded<LeechCraft::Util::MergeModel*> TasksModel_,
+		HistoryModel_;
 	QObjectList Objects_;
 
     Core ();
 public:
     static Core& Instance ();
     void Release ();
-	void SetHistoryModel (MergeModel*);
-	void SetDownloadersModel (MergeModel*);
+	void SetHistoryModel (LeechCraft::Util::MergeModel*);
+	void SetDownloadersModel (LeechCraft::Util::MergeModel*);
 	void SelectedDownloaderChanged (QObject*);
     void AddObject (QObject*, const QString& feature);
 	Wt::WApplication* CreateApplication (const Wt::WEnvironment&);
-	MergeModel* GetTasksModel () const;
-	MergeModel* GetHistoryModel () const;
+	LeechCraft::Util::MergeModel* GetTasksModel () const;
+	LeechCraft::Util::MergeModel* GetHistoryModel () const;
 private:
 	void InitializeServer ();
 };

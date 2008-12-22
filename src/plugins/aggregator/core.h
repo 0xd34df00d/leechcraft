@@ -14,12 +14,19 @@
 #include "storagebackend.h"
 
 class ChannelsModel;
-class TagsCompletionModel;
 class QTimer;
 class QNetworkReply;
 class QFile;
 class ItemModel;
 class QWebView;
+
+namespace LeechCraft
+{
+	namespace Util
+	{
+		class TagsCompletionModel;
+	};
+};
 
 class Core : public QAbstractItemModel
 {
@@ -63,7 +70,7 @@ class Core : public QAbstractItemModel
 	items_shorts_t CurrentItems_;
     QStringList ItemHeaders_;
     ChannelsModel *ChannelsModel_;
-    TagsCompletionModel *TagsCompletionModel_;
+	LeechCraft::Util::TagsCompletionModel *TagsCompletionModel_;
     QTimer *UpdateTimer_;
     bool SaveScheduled_;
 	std::auto_ptr<StorageBackend> StorageBackend_;
@@ -89,7 +96,7 @@ public:
 	void Selected (const QModelIndex&);
     Item_ptr GetItem (const QModelIndex&) const;
     QAbstractItemModel* GetChannelsModel ();
-    TagsCompletionModel* GetTagsCompletionModel ();
+	LeechCraft::Util::TagsCompletionModel* GetTagsCompletionModel ();
     void UpdateTags (const QStringList&);
     void MarkItemAsUnread (const QModelIndex&);
 	bool IsItemRead (int) const;

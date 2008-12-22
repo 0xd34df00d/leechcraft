@@ -4,7 +4,7 @@
 #include <plugininterface/proxy.h>
 #include "xmlsettingsmanager.h"
 
-namespace Main
+namespace LeechCraft
 {
 	XmlSettingsManager::XmlSettingsManager ()
 	{
@@ -23,8 +23,8 @@ namespace Main
 
     QSettings* XmlSettingsManager::BeginSettings () const
     {
-        QSettings *settings = new QSettings (Proxy::Instance ()->GetOrganizationName (),
-				Proxy::Instance ()->GetApplicationName ());
+        QSettings *settings = new QSettings (Util::Proxy::Instance ()->GetOrganizationName (),
+				Util::Proxy::Instance ()->GetApplicationName ());
         return settings;
     }
 

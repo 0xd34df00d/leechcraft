@@ -2,6 +2,8 @@
 #include <QEvent>
 #include "skinengine.h"
 
+using namespace LeechCraft;
+
 ChildActionEventFilter::ChildActionEventFilter (QObject *parent)
 : QObject (parent)
 {
@@ -20,7 +22,7 @@ bool ChildActionEventFilter::eventFilter (QObject *obj, QEvent *e)
 	}
 	else if (e->type () == QEvent::ChildPolished)
 	{
-		Main::SkinEngine::Instance ()
+		SkinEngine::Instance ()
 			.updateIconSet (dynamic_cast<QChildEvent*> (e)->child ()->
 					findChildren<QAction*> ());
 		return false;

@@ -34,7 +34,7 @@
           </widget>
          </item>
          <item>
-          <widget class="TagsLineEdit" native="1" name="TagsLine_" />
+          <widget class="LeechCraft::Util::TagsLineEdit" native="1" name="TagsLine_" />
          </item>
         </layout>
        </item>
@@ -85,7 +85,7 @@
             </widget>
            </item>
            <item row="1" column="1" >
-            <widget class="TagsLineEdit" native="1" name="ChannelTags_" />
+            <widget class="LeechCraft::Util::TagsLineEdit" native="1" name="ChannelTags_" />
            </item>
            <item row="2" column="0" >
             <widget class="QLabel" name="label_10" >
@@ -347,7 +347,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>TagsLineEdit</class>
+   <class>LeechCraft::Util::TagsLineEdit</class>
    <extends>QWidget</extends>
    <header location="global" >tagslineedit.h</header>
   </customwidget>

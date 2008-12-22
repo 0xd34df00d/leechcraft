@@ -3,12 +3,12 @@
 #include <memory>
 #include <interfaces/interfaces.h>
 #include <plugininterface/categoryselector.h>
+#include <plugininterface/tagscompleter.h>
 #include "ui_mainwidget.h"
 #include "itemsfiltermodel.h"
 #include "channelsfiltermodel.h"
 
 class XmlSettingsDialog;
-class TagsCompleter;
 class QSystemTrayIcon;
 class QTranslator;
 class QToolBar;
@@ -44,11 +44,12 @@ class Aggregator : public QWidget
 	std::auto_ptr<XmlSettingsDialog> XmlSettingsDialog_;
 	std::auto_ptr<ItemsFilterModel> ItemsFilterModel_;
 	std::auto_ptr<ChannelsFilterModel> ChannelsFilterModel_;
-	std::auto_ptr<TagsCompleter> TagsLineCompleter_, ChannelTagsCompleter_;
+	std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsLineCompleter_,
+		ChannelTagsCompleter_;
 	std::auto_ptr<QSystemTrayIcon> TrayIcon_;
 	std::auto_ptr<QTranslator> Translator_;
     std::auto_ptr<ItemBucket> ItemBucket_;
-	std::auto_ptr<CategorySelector> ItemCategorySelector_;
+	std::auto_ptr<LeechCraft::Util::CategorySelector> ItemCategorySelector_;
 public:
 	virtual ~Aggregator ();
     void Init ();

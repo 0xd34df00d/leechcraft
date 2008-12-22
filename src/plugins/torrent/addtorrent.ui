@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>497</width>
+    <width>532</width>
     <height>547</height>
    </rect>
   </property>
@@ -196,8 +196,8 @@
        </widget>
       </item>
       <item row="10" column="1" >
-       <widget class="TagsLineEdit" name="TagsEdit_" >
-        <property name="text" >
+       <widget class="LeechCraft::Util::TagsLineEdit" native="1" name="TagsEdit_" >
+        <property name="text" stdset="0" >
          <string>untagged</string>
         </property>
        </widget>
@@ -280,9 +280,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>TagsLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>../../plugininterface/tagslineedit.h</header>
+   <class>LeechCraft::Util::TagsLineEdit</class>
+   <extends>QWidget</extends>
+   <header location="global" >tagslineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources>

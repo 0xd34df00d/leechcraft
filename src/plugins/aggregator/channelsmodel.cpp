@@ -6,6 +6,8 @@
 #include "channelsmodel.h"
 #include "item.h"
 
+using LeechCraft::Util::TreeItem;
+
 ChannelsModel::ChannelsModel (QObject *parent)
 : QAbstractItemModel (parent)
 {

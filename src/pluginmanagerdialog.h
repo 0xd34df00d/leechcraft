@@ -3,7 +3,7 @@
 #include <QDialog>
 #include "ui_pluginmanagerdialog.h"
 
-namespace Main
+namespace LeechCraft
 {
 	class PluginManagerDialog : public QDialog
 	{

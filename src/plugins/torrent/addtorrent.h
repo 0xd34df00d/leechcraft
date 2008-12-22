@@ -6,7 +6,13 @@
 #include "core.h"
 
 class TorrentFilesModel;
-class TagsLineEdit;
+namespace LeechCraft
+{
+	namespace Util
+	{
+		class TagsLineEdit;
+	};
+};
 
 class AddTorrent : public QDialog, private Ui::AddTorrent
 {
@@ -24,7 +30,7 @@ public:
 	Core::AddType GetAddType () const;
     QStringList GetTags () const;
 	QStringList GetDefaultTags () const;
-    TagsLineEdit* GetEdit ();
+	LeechCraft::Util::TagsLineEdit* GetEdit ();
 private slots:
     void on_TorrentBrowse__released ();
     void on_DestinationBrowse__released ();

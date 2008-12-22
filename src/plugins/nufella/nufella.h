@@ -32,7 +32,7 @@ public:
 	bool CouldDownload (const QByteArray&, LeechCraft::TaskParameters) const;
 	int AddJob (const LeechCraft::DownloadParams&, LeechCraft::TaskParameters);
 	QAbstractItemModel* GetRepresentation () const;
-	LeechCraft::HistoryModel* GetHistory () const;
+	LeechCraft::Util::HistoryModel* GetHistory () const;
 	QWidget* GetControls () const;
 	QWidget* GetAdditionalInfo () const;
 	void ItemSelected (const QModelIndex&);

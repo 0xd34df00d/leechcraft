@@ -23,7 +23,7 @@ class Poshuku : public QWidget
 	Ui::Poshuku Ui_;
 
 	std::auto_ptr<QTranslator> Translator_;
-	std::auto_ptr<TagsCompleter> FavoritesFilterLineCompleter_;
+	std::auto_ptr<LeechCraft::Util::TagsCompleter> FavoritesFilterLineCompleter_;
 	std::auto_ptr<XmlSettingsDialog> XmlSettingsDialog_;
 	std::auto_ptr<FilterModel> FavoritesFilterModel_;
 	std::auto_ptr<FilterModel> HistoryFilterModel_;

@@ -28,6 +28,9 @@
 #include "itembucket.h"
 #include "importbinary.h"
 
+using LeechCraft::Util::TagsCompleter;
+using LeechCraft::Util::CategorySelector;
+
 Aggregator::~Aggregator ()
 {
 }

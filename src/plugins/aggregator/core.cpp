@@ -28,6 +28,8 @@
 #include "sqlstoragebackend.h"
 #include "itemmodel.h"
 
+using LeechCraft::Util::TagsCompletionModel;
+
 Core::Core ()
 : SaveScheduled_ (false)
 {

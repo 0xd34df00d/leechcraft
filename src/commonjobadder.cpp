@@ -4,13 +4,15 @@
 #include "commonjobadder.h"
 #include "xmlsettingsmanager.h"
 
+using namespace LeechCraft;
+
 CommonJobAdder::CommonJobAdder (QWidget *parent)
 : QDialog (parent)
 {
     setupUi (this);
-	What_->setText (Main::XmlSettingsManager::Instance ()->Property ("LastWhatFolder",
+	What_->setText (XmlSettingsManager::Instance ()->Property ("LastWhatFolder",
 				QDir::homePath ()).toString ());
-	Where_->setText (Main::XmlSettingsManager::Instance ()->Property ("LastWhereFolder",
+	Where_->setText (XmlSettingsManager::Instance ()->Property ("LastWhereFolder",
 				QDir::homePath ()).toString ());
 }
 
@@ -32,26 +34,26 @@ void CommonJobAdder::on_Browse__released ()
 {
     QString name = QFileDialog::getOpenFileName (this,
 			tr ("Select file"),
-			Main::XmlSettingsManager::Instance ()->Property ("LastWhatFolder",
+			XmlSettingsManager::Instance ()->Property ("LastWhatFolder",
 				QDir::homePath ()).toString ());
     if (name.isEmpty ())
         return;
 
     What_->setText (name);
-    Main::XmlSettingsManager::Instance ()->setProperty ("LastWhatFolder", name);
+    XmlSettingsManager::Instance ()->setProperty ("LastWhatFolder", name);
 }
 
 void CommonJobAdder::on_BrowseWhere__released ()
 {
     QString name = QFileDialog::getExistingDirectory (this,
 			tr ("Select file"),
-			Main::XmlSettingsManager::Instance ()->Property ("LastWhereFolder",
+			XmlSettingsManager::Instance ()->Property ("LastWhereFolder",
 				QDir::homePath ()).toString ());
     if (name.isEmpty ())
         return;
 
     Where_->setText (name);
-    Main::XmlSettingsManager::Instance ()->setProperty ("LastWhereFolder", name);
+    XmlSettingsManager::Instance ()->setProperty ("LastWhereFolder", name);
 }
 
 void CommonJobAdder::on_Paste__released ()

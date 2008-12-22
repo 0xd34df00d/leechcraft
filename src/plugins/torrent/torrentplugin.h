@@ -4,6 +4,7 @@
 #include <deque>
 #include <QMainWindow>
 #include <interfaces/interfaces.h>
+#include <plugininterface/tagscompleter.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "ui_tabwidget.h"
 #include "torrentinfo.h"
@@ -14,7 +15,6 @@ class QToolBar;
 class QSortFilterProxyModel;
 class QTabWidget;
 class RepresentationModel;
-class TagsCompleter;
 class QTranslator;
 
 class TorrentPlugin : public QObject
@@ -34,7 +34,7 @@ class TorrentPlugin : public QObject
 	std::auto_ptr<QTime> LastPeersUpdate_;
 	std::auto_ptr<RepresentationModel> FilterModel_;
     bool TorrentSelectionChanged_;
-	std::auto_ptr<TagsCompleter> TagsChangeCompleter_,
+	std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsChangeCompleter_,
 		TagsAddDiaCompleter_;
 	std::auto_ptr<QTabWidget> TabWidget_;
 	Ui::TabWidget Ui_;
@@ -80,7 +80,7 @@ public:
 
     // IJobHolder
     QAbstractItemModel* GetRepresentation () const;
-	LeechCraft::HistoryModel* GetHistory () const;
+	LeechCraft::Util::HistoryModel* GetHistory () const;
 	QWidget* GetControls () const;
 	QWidget* GetAdditionalInfo () const;
 	void ItemSelected (const QModelIndex&);

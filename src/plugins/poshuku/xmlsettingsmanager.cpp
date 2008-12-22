@@ -1,6 +1,8 @@
 #include <plugininterface/proxy.h>
 #include "xmlsettingsmanager.h"
 
+using LeechCraft::Util::Proxy;
+
 namespace
 {
     QSettings *torrentBeginSettings ()

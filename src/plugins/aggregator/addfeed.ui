@@ -6,14 +6,15 @@
     <x>0</x>
     <y>0</y>
     <width>335</width>
-    <height>102</height>
+    <height>120</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Add feed</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="resources.qrc" >:/resources/images/aggregator.png</iconset>
+   <iconset resource="resources.qrc" >
+    <normaloff>:/resources/images/aggregator.png</normaloff>:/resources/images/aggregator.png</iconset>
   </property>
   <layout class="QVBoxLayout" >
    <item>
@@ -40,7 +41,7 @@
       </widget>
      </item>
      <item row="1" column="1" >
-      <widget class="TagsLineEdit" name="Tags_" >
+      <widget class="LeechCraft::Util::TagsLineEdit" name="Tags_" >
        <property name="text" >
         <string>untagged</string>
        </property>
@@ -54,7 +55,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -62,9 +63,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>TagsLineEdit</class>
+   <class>LeechCraft::Util::TagsLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>../../plugininterface/tagslineedit.h</header>
+   <header>tagslineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources>

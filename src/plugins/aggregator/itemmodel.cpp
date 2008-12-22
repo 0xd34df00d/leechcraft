@@ -8,13 +8,16 @@
 #include "item.h"
 #include "core.h"
 
+using LeechCraft::Util::Proxy;
+
 ItemModel::ItemModel (QObject *parent)
 : QAbstractItemModel (parent)
 , SaveScheduled_ (false)
 {
 	ItemHeaders_ << tr ("Name");
 
-    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Aggregator");
+    QSettings settings (Proxy::Instance ()->GetOrganizationName (),
+			Proxy::Instance ()->GetApplicationName () + "_Aggregator");
     int numItems = settings.beginReadArray ("ItemBucket");
     for (int i = 0; i < numItems; ++i)
     {

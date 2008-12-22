@@ -170,7 +170,7 @@ QAbstractItemModel* CSTP::GetRepresentation () const
 	return Core::Instance ().GetRepresentationModel ();
 }
 
-LeechCraft::HistoryModel* CSTP::GetHistory () const
+LeechCraft::Util::HistoryModel* CSTP::GetHistory () const
 {
 	return 0;
 }

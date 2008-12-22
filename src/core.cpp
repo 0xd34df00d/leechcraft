@@ -20,7 +20,10 @@
 #include "filtermodel.h"
 #include "historymodel.h"
 
-Main::Core::Core ()
+using namespace LeechCraft;
+using namespace LeechCraft::Util;
+
+Core::Core ()
 : Server_ (new QLocalServer)
 , MergeModel_ (new MergeModel (QStringList (tr ("Name"))
 			<< tr ("State")
@@ -33,7 +36,7 @@ Main::Core::Core ()
 , FilterModel_ (new FilterModel)
 , HistoryFilterModel_ (new FilterModel)
 {
-	PluginManager_ = new Main::PluginManager (this);
+	PluginManager_ = new PluginManager (this);
 
 	FilterModel_->setSourceModel (MergeModel_.get ());
 	HistoryFilterModel_->setSourceModel (HistoryMergeModel_.get ());
@@ -57,17 +60,17 @@ Main::Core::Core ()
 	handleProxySettings ();
 }
 
-Main::Core::~Core ()
+Core::~Core ()
 {
 }
 
-Main::Core& Main::Core::Instance ()
+Core& Core::Instance ()
 {
 	static Core core;
 	return core;
 }
 
-void Main::Core::Release ()
+void Core::Release ()
 {
 	MergeModel_.reset ();
 	HistoryMergeModel_.reset ();
@@ -80,38 +83,38 @@ void Main::Core::Release ()
 	Server_.reset ();
 }
 
-void Main::Core::SetReallyMainWindow (Main::MainWindow *win)
+void Core::SetReallyMainWindow (MainWindow *win)
 {
     ReallyMainWindow_ = win;
 	ReallyMainWindow_->GetTabWidget ()->installEventFilter (this);
 }
 
-QAbstractItemModel* Main::Core::GetPluginsModel () const
+QAbstractItemModel* Core::GetPluginsModel () const
 {
 	return PluginManager_;
 }
 
-QAbstractProxyModel* Main::Core::GetTasksModel () const
+QAbstractProxyModel* Core::GetTasksModel () const
 {
 	return FilterModel_.get ();
 }
 
-QAbstractProxyModel* Main::Core::GetHistoryModel () const
+QAbstractProxyModel* Core::GetHistoryModel () const
 {
 	return HistoryFilterModel_.get ();
 }
 
-MergeModel* Main::Core::GetUnfilteredTasksModel () const
+MergeModel* Core::GetUnfilteredTasksModel () const
 {
 	return MergeModel_.get ();
 }
 
-MergeModel* Main::Core::GetUnfilteredHistoryModel () const
+MergeModel* Core::GetUnfilteredHistoryModel () const
 {
 	return HistoryMergeModel_.get ();
 }
 
-QWidget* Main::Core::GetControls (const QModelIndex& index) const
+QWidget* Core::GetControls (const QModelIndex& index) const
 {
 	QAbstractItemModel *model = *MergeModel_->
 		GetModelForRow (FilterModel_->mapToSource (index).row ());
@@ -121,7 +124,7 @@ QWidget* Main::Core::GetControls (const QModelIndex& index) const
 	return ijh->GetControls ();
 }
 
-QWidget* Main::Core::GetAdditionalInfo (const QModelIndex& index) const
+QWidget* Core::GetAdditionalInfo (const QModelIndex& index) const
 {
 	QAbstractItemModel *model = *MergeModel_->
 		GetModelForRow (FilterModel_->mapToSource (index).row ());
@@ -131,7 +134,7 @@ QWidget* Main::Core::GetAdditionalInfo (const QModelIndex& index) const
 	return ijh->GetAdditionalInfo ();
 }
 
-QStringList Main::Core::GetTagsForIndex (int index,
+QStringList Core::GetTagsForIndex (int index,
 		QAbstractItemModel *model) const
 {
 	MergeModel::const_iterator modIter =
@@ -156,19 +159,20 @@ QStringList Main::Core::GetTagsForIndex (int index,
 		return QStringList ();
 }
 
-void Main::Core::DelayedInit ()
+void Core::DelayedInit ()
 {
 	connect (this,
 			SIGNAL (error (QString)),
 			ReallyMainWindow_,
 			SLOT (catchError (QString)));
 
-    PluginManager_->InitializePlugins (ReallyMainWindow_);
+	TabContainer_.reset (new TabContainer (ReallyMainWindow_->GetTabWidget ()));
+
+    PluginManager_->InitializePlugins ();
     PluginManager_->CalculateDependencies ();
     QObjectList plugins = PluginManager_->GetAllPlugins ();
     foreach (QObject *plugin, plugins)
     {
-		IInfo *ii = qobject_cast<IInfo*> (plugin);
         IDownload *download = qobject_cast<IDownload*> (plugin);
 		IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
 		IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
@@ -191,66 +195,17 @@ void Main::Core::DelayedInit ()
 					SIGNAL (downloadFinished (const QString&)));
 
 		if (ijh && ijh->GetControls () && ijh->GetAdditionalInfo ())
-		{
-			QAbstractItemModel *model = ijh->GetRepresentation ();
-			Representation2Object_ [model] = plugin;
-			MergeModel_->AddModel (model);
-
-			QList<QAction*> actions = ijh->GetControls ()->actions ();
-			for (QList<QAction*>::iterator i = actions.begin (),
-					end = actions.end (); i != end; ++i)
-			{
-				connect (*i,
-						SIGNAL (triggered ()),
-						this,
-						SLOT (handlePluginAction ()));
-				Action2Model_ [*i] = model;
-			}
-
-			ijh->GetControls ()->setParent (ReallyMainWindow_);
-			ijh->GetAdditionalInfo ()->setParent (ReallyMainWindow_);
-
-			QAbstractItemModel *historyModel = ijh->GetHistory ();
-			if (historyModel)
-			{
-				History2Object_ [historyModel] = plugin;
-				HistoryMergeModel_->AddModel (historyModel);
-			}
-		}
+			InitJobHolder (plugin);
 
 		if (iet)
-		{
-			ReallyMainWindow_->GetTabWidget ()->addTab (iet->GetTabContents (),
-					ii->GetName ());
-			connect (plugin,
-					SIGNAL (bringToFront ()),
-					this,
-					SLOT (embeddedTabWantsToFront ()));
-		}
+			InitEmbedTab (plugin);
 
 		if (imt)
-		{
-			connect (plugin,
-					SIGNAL (addNewTab (const QString&, QWidget*)),
-					this,
-					SLOT (handleNewTab (const QString&, QWidget*)));
-			connect (plugin,
-					SIGNAL (removeTab (QWidget*)),
-					this,
-					SLOT (handleRemoveTab (QWidget*)));
-			connect (plugin,
-					SIGNAL (changeTabName (QWidget*, const QString&)),
-					this,
-					SLOT (handleChangeTabName (QWidget*, const QString&)));
-			connect (plugin,
-					SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
-					this,
-					SLOT (handleChangeTabIcon (QWidget*, const QIcon&)));
-		}
-    }
+			InitMultiTab (plugin);
+	}
 }
 
-bool Main::Core::ShowPlugin (int id)
+bool Core::ShowPlugin (int id)
 {
     QObject *plugin = PluginManager_->data (PluginManager_->index (id, 0)).value <QObject*> ();
     IWindow *w = qobject_cast<IWindow*> (plugin);
@@ -263,16 +218,16 @@ bool Main::Core::ShowPlugin (int id)
         return false;
 }
 
-void Main::Core::TryToAddJob (const QString& name, const QString& where)
+void Core::TryToAddJob (const QString& name, const QString& where)
 {
     QObjectList plugins = PluginManager_->GetAllPlugins ();
     foreach (QObject *plugin, plugins)
     {
         IDownload *di = qobject_cast<IDownload*> (plugin);
-		LeechCraft::TaskParameters tp = LeechCraft::FromCommonDialog | LeechCraft::Autostart;
+		TaskParameters tp = FromCommonDialog | Autostart;
         if (di && di->CouldDownload (name.toUtf8 (), tp))
         {
-			LeechCraft::DownloadParams ddp =
+			DownloadParams ddp =
 			{
 				name.toUtf8 (),
 				where
@@ -284,12 +239,12 @@ void Main::Core::TryToAddJob (const QString& name, const QString& where)
     emit error (tr ("No plugins are able to download \"%1\"").arg (name));
 }
 
-void Main::Core::Activated (const QModelIndex& index)
+void Core::Activated (const QModelIndex& index)
 {
 	ShowPlugin (index.row ());
 }
 
-void Main::Core::SetNewRow (const QModelIndex& index)
+void Core::SetNewRow (const QModelIndex& index)
 {
 	QModelIndex mapped = FilterModel_->mapToSource (index);
 	MergeModel::const_iterator modIter = MergeModel_->GetModelForRow (mapped.row ());
@@ -306,7 +261,7 @@ void Main::Core::SetNewRow (const QModelIndex& index)
 				Q_ARG (QObject*, plugin));
 }
 
-bool Main::Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) const
+bool Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) const
 {
 	QModelIndex mapped1 = FilterModel_->mapToSource (i1);
 	MergeModel::const_iterator modIter1 = MergeModel_->GetModelForRow (mapped1.row ());
@@ -317,8 +272,8 @@ bool Main::Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) const
 	return modIter1 == modIter2;
 }
 
-void Main::Core::UpdateFiltering (const QString& text,
-		Main::Core::FilterType ft, bool caseSensitive, bool history)
+void Core::UpdateFiltering (const QString& text,
+		Core::FilterType ft, bool caseSensitive, bool history)
 {
 	if (!history)
 		FilterModel_->setFilterCaseSensitivity (caseSensitive ?
@@ -380,7 +335,7 @@ void Main::Core::UpdateFiltering (const QString& text,
 	}
 }
 
-void Main::Core::HistoryActivated (int historyRow)
+void Core::HistoryActivated (int historyRow)
 {
 	QString name = HistoryFilterModel_->index (historyRow, 0).data ().toString ();
 	QString path = HistoryFilterModel_->index (historyRow, 1).data ().toString ();
@@ -407,7 +362,7 @@ void Main::Core::HistoryActivated (int historyRow)
 	QMetaObject::invokeMethod (videoProvider, "play");
 }
 
-QPair<qint64, qint64> Main::Core::GetSpeeds () const
+QPair<qint64, qint64> Core::GetSpeeds () const
 {
     qint64 download = 0;
     qint64 upload = 0;
@@ -425,44 +380,36 @@ QPair<qint64, qint64> Main::Core::GetSpeeds () const
     return QPair<qint64, qint64> (download, upload);
 }
 
-bool Main::Core::eventFilter (QObject *watched, QEvent *e)
+int Core::CountUnremoveableTabs () const
+{
+	// + 2 because of tabs with downloaders and history
+	return PluginManager_->GetAllCastableTo<IEmbedTab*> ().size () + 2;
+}
+
+bool Core::eventFilter (QObject *watched, QEvent *e)
 {
 	if (ReallyMainWindow_ &&
 			watched == ReallyMainWindow_->GetTabWidget ())
 	{
 		if (e->type () == QEvent::KeyRelease)
 		{
-			QTabWidget *tabWidget = ReallyMainWindow_->GetTabWidget ();
 			QKeyEvent *key = static_cast<QKeyEvent*> (e);
-			int index = tabWidget->currentIndex ();
 
 			if (key->modifiers () & Qt::ControlModifier)
 			{
 				if (key->key () == Qt::Key_W)
 				{
-					// + 2 because of tabs with downloaders and history
-					if (index < PluginManager_->GetAllCastableTo<IEmbedTab*> ().size () + 2)
-						return false;
-					else
-					{
-						handleRemoveTab (index);
+					if (TabContainer_->RemoveCurrent ())
 						return true;
-					}
 				}
 				else if (key->key () == Qt::Key_BracketLeft)
 				{
-					if (index)
-						tabWidget->setCurrentIndex (index - 1);
-					else
-						tabWidget->setCurrentIndex (tabWidget->count () - 1);
+					TabContainer_->RotateLeft ();
 					return true;
 				}
 				else if (key->key () == Qt::Key_BracketRight)
 				{
-					if (index < tabWidget->count () - 1)
-						tabWidget->setCurrentIndex (index + 1);
-					else
-						tabWidget->setCurrentIndex (0);
+					TabContainer_->RotateRight ();
 					return true;
 				}
 			}
@@ -471,7 +418,7 @@ bool Main::Core::eventFilter (QObject *watched, QEvent *e)
 	return QObject::eventFilter (watched, e);
 }
 
-void Main::Core::handleProxySettings () const
+void Core::handleProxySettings () const
 {
 	bool enabled = XmlSettingsManager::Instance ()->property ("ProxyEnabled").toBool ();
 	QNetworkProxy pr;
@@ -521,7 +468,7 @@ namespace
 	}
 };
 
-void Main::Core::handlePluginAction ()
+void Core::handlePluginAction ()
 {
 	QAction *source = qobject_cast<QAction*> (sender ());
 	QString slot = source->property ("Slot").toString ();
@@ -577,7 +524,7 @@ void Main::Core::handlePluginAction ()
 	}
 }
 
-void Main::Core::handleFileDownload (const QString& file, bool fromBuffer)
+void Core::handleFileDownload (const QString& file, bool fromBuffer)
 {
     if (!fromBuffer &&
 			!XmlSettingsManager::Instance ()->
@@ -589,7 +536,7 @@ void Main::Core::handleFileDownload (const QString& file, bool fromBuffer)
     {
         IDownload *id = qobject_cast<IDownload*> (plugins.at (i));
         IInfo *ii = qobject_cast<IInfo*> (plugins.at (i));
-		LeechCraft::TaskParameters tp = LeechCraft::Autostart | LeechCraft::FromAutomatic;
+		TaskParameters tp = Autostart | FromAutomatic;
         if (id->CouldDownload (file.toUtf8 (), tp))
         {
             if (QMessageBox::question (
@@ -602,7 +549,7 @@ void Main::Core::handleFileDownload (const QString& file, bool fromBuffer)
 				   == QMessageBox::No)
                 continue;
 
-			LeechCraft::DownloadParams ddp =
+			DownloadParams ddp =
 			{
 				file.toUtf8 (),
 				""
@@ -612,7 +559,7 @@ void Main::Core::handleFileDownload (const QString& file, bool fromBuffer)
     }
 }
 
-void Main::Core::handleClipboardTimer ()
+void Core::handleClipboardTimer ()
 {
     QString text = QApplication::clipboard ()->text ();
     if (text.isEmpty () || text == PreviousClipboardContents_)
@@ -624,64 +571,98 @@ void Main::Core::handleClipboardTimer ()
         handleFileDownload (text, true);
 }
 
-void Main::Core::embeddedTabWantsToFront ()
+void Core::embeddedTabWantsToFront ()
 {
 	IEmbedTab *iet = qobject_cast<IEmbedTab*> (sender ());
 	if (!iet)
 		return;
 
 	ReallyMainWindow_->show ();
-	ReallyMainWindow_->GetTabWidget ()->setCurrentWidget (iet->GetTabContents ());
+	TabContainer_->BringToFront (iet->GetTabContents ());
 }
 
-void Main::Core::handleNewTab (const QString& name, QWidget *contents)
+void Core::handleNewTab (const QString& name, QWidget *contents)
 {
-	QTabWidget *tabWidget = ReallyMainWindow_->GetTabWidget ();
-	tabWidget->addTab (contents, name);
+	TabContainer_->Add (contents, name);
 }
 
-void Main::Core::handleRemoveTab (QWidget *contents)
+void Core::handleRemoveTab (QWidget *contents)
 {
-	int tabNumber = FindTabForWidget (contents);
-	if (tabNumber == -1)
-		return;
-	ReallyMainWindow_->GetTabWidget ()->removeTab (tabNumber);
+	TabContainer_->Remove (contents);
 }
 
-void Main::Core::handleRemoveTab (int position)
+void Core::handleChangeTabName (QWidget *contents, const QString& title)
 {
-	QWidget *contents = ReallyMainWindow_->GetTabWidget ()->widget (position);
-	ReallyMainWindow_->GetTabWidget ()->removeTab (position);
-	contents->deleteLater ();
+	TabContainer_->ChangeTabName (contents, title);
 }
 
-void Main::Core::handleChangeTabName (QWidget *contents, const QString& title)
+void Core::handleChangeTabIcon (QWidget *contents, const QIcon& icon)
 {
-	int tabNumber = FindTabForWidget (contents);
-	if (tabNumber == -1)
-		return;
-	ReallyMainWindow_->GetTabWidget ()->setTabText (tabNumber, title);
+	TabContainer_->ChangeTabIcon (contents, icon);
 }
 
-void Main::Core::handleChangeTabIcon (QWidget *contents, const QIcon& icon)
-{
-	int tabNumber = FindTabForWidget (contents);
-	if (tabNumber == -1)
-		return;
-	ReallyMainWindow_->GetTabWidget ()->setTabIcon (tabNumber, icon);
-}
-
-int Main::Core::FindTabForWidget (QWidget *widget) const
-{
-	QTabWidget *tabWidget = ReallyMainWindow_->GetTabWidget ();
-	for (int i = 0; i < tabWidget->count (); ++i)
-		if (tabWidget->widget (i) == widget)
-			return i;
-	return -1;
-}
-
-QModelIndex Main::Core::MapToSource (const QModelIndex& index) const
+QModelIndex Core::MapToSource (const QModelIndex& index) const
 {
 	return MergeModel_->mapToSource (FilterModel_->mapToSource (index));
+}
+
+void Core::InitJobHolder (QObject *plugin)
+{
+	IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
+	QAbstractItemModel *model = ijh->GetRepresentation ();
+	Representation2Object_ [model] = plugin;
+	MergeModel_->AddModel (model);
+
+	QList<QAction*> actions = ijh->GetControls ()->actions ();
+	for (QList<QAction*>::iterator i = actions.begin (),
+			end = actions.end (); i != end; ++i)
+	{
+		connect (*i,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handlePluginAction ()));
+		Action2Model_ [*i] = model;
+	}
+
+	ijh->GetControls ()->setParent (ReallyMainWindow_);
+	ijh->GetAdditionalInfo ()->setParent (ReallyMainWindow_);
+
+	QAbstractItemModel *historyModel = ijh->GetHistory ();
+	if (historyModel)
+	{
+		History2Object_ [historyModel] = plugin;
+		HistoryMergeModel_->AddModel (historyModel);
+	}
+}
+
+void Core::InitEmbedTab (QObject *plugin)
+{
+	IInfo *ii = qobject_cast<IInfo*> (plugin);
+	IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
+	TabContainer_->Add (iet->GetTabContents (), ii->GetName ());
+	connect (plugin,
+			SIGNAL (bringToFront ()),
+			this,
+			SLOT (embeddedTabWantsToFront ()));
+}
+
+void Core::InitMultiTab (QObject *plugin)
+{
+	connect (plugin,
+			SIGNAL (addNewTab (const QString&, QWidget*)),
+			this,
+			SLOT (handleNewTab (const QString&, QWidget*)));
+	connect (plugin,
+			SIGNAL (removeTab (QWidget*)),
+			this,
+			SLOT (handleRemoveTab (QWidget*)));
+	connect (plugin,
+			SIGNAL (changeTabName (QWidget*, const QString&)),
+			this,
+			SLOT (handleChangeTabName (QWidget*, const QString&)));
+	connect (plugin,
+			SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
+			this,
+			SLOT (handleChangeTabIcon (QWidget*, const QIcon&)));
 }
 

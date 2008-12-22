@@ -6,6 +6,8 @@
 #include <plugininterface/treeitem.h>
 #include "util.h"
 
+using LeechCraft::Util::TreeItem;
+
 QToWAbstractItemModelAdaptor::QToWAbstractItemModelAdaptor (QAbstractItemModel *model,
 		WObject *parent)
 : Wt::WAbstractItemModel (parent)

@@ -4,6 +4,8 @@
 #include <QLineEdit>
 #include "tagscompleter.h"
 
+using namespace LeechCraft::Util;
+
 TagsCompleter::TagsCompleter (QLineEdit *toComplete, QObject *parent)
 : QCompleter (parent)
 {

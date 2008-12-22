@@ -26,6 +26,9 @@
 #include "restoresessiondialog.h"
 #include "sqlstoragebackend.h"
 
+using LeechCraft::Util::Proxy;
+using LeechCraft::Util::TagsCompletionModel;
+
 Core::Core ()
 : CookieSaveTimer_ (new QTimer ())
 , SaveSessionScheduled_ (false)

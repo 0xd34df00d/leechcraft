@@ -4,7 +4,13 @@
 #include <interfaces/interfaces.h>
 #include "ui_mainwindow.h"
 
-class MergeModel;
+namespace LeechCraft
+{
+	namespace Util
+	{
+		class MergeModel;
+	};
+};
 
 class Remoter : public QMainWindow
               , public IInfo
@@ -31,8 +37,8 @@ protected:
     virtual void closeEvent (QCloseEvent*);
 public Q_SLOTS:
     void handleHidePlugins ();
-	void pushHistoryModel (MergeModel*) const;
-	void pushDownloadersModel (MergeModel*) const;
+	void pushHistoryModel (LeechCraft::Util::MergeModel*) const;
+	void pushDownloadersModel (LeechCraft::Util::MergeModel*) const;
 };
 
 #endif

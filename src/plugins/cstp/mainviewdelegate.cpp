@@ -38,8 +38,8 @@ void MainViewDelegate::paint (QPainter *painter,
 		pbo.progress = progress;
 		pbo.text = QString ("%1 (%2 of %3)")
 			.arg (progress)
-			.arg (Proxy::Instance ()->MakePrettySize (done))
-			.arg (Proxy::Instance ()->MakePrettySize (total));
+			.arg (LeechCraft::Util::Proxy::Instance ()->MakePrettySize (done))
+			.arg (LeechCraft::Util::Proxy::Instance ()->MakePrettySize (total));
 	}
 	else
 	{

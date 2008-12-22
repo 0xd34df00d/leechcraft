@@ -641,7 +641,7 @@
             </widget>
            </item>
            <item row="3" column="1" >
-            <widget class="TagsLineEdit" native="1" name="TorrentTags_" />
+            <widget class="LeechCraft::Util::TagsLineEdit" native="1" name="TorrentTags_" />
            </item>
           </layout>
          </item>
@@ -980,8 +980,6 @@
           </widget>
          </item>
         </layout>
-        <zorder>PiecesWidget_</zorder>
-        <zorder>groupBox_2</zorder>
        </widget>
       </item>
      </layout>
@@ -1424,7 +1422,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>TagsLineEdit</class>
+   <class>LeechCraft::Util::TagsLineEdit</class>
    <extends>QWidget</extends>
    <header location="global" >tagslineedit.h</header>
   </customwidget>

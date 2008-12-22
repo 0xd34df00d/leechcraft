@@ -3,6 +3,8 @@
 #include "tagsfiltermodel.h"
 #include "core.h"
 
+using namespace LeechCraft::Util;
+
 TagsFilterModel::TagsFilterModel (QObject *parent)
 : QSortFilterProxyModel (parent)
 , NormalMode_ (true)

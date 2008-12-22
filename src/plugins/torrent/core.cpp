@@ -47,6 +47,9 @@
 #include "representationmodel.h"
 #include "historymodel.h"
 
+using LeechCraft::Util::Proxy;
+using LeechCraft::Util::TagsCompletionModel;
+
 Core::HandleFinder::HandleFinder (const libtorrent::torrent_handle& h)
 : Handle_ (h)
 {

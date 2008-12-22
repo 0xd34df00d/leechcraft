@@ -6,7 +6,7 @@
 #include <QList>
 #include <QAction>
 
-namespace Main
+namespace LeechCraft
 {
 	class SkinEngine : public QObject
 	{

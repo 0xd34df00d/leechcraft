@@ -2,6 +2,8 @@
 #include <plugininterface/proxy.h>
 #include "core.h"
 
+using LeechCraft::Util::Proxy;
+
 Adaptor::Adaptor (Core *parent)
 : QDBusAbstractAdaptor (parent)
 , Core_ (parent)

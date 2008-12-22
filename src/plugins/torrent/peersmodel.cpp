@@ -4,6 +4,8 @@
 #include "core.h"
 #include "peersmodel.h"
 
+using LeechCraft::Util::Proxy;
+
 PeersModel::PeersModel (QObject *parent)
 : QAbstractItemModel (parent)
 , CurrentTorrent_ (-1)

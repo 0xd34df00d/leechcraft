@@ -13,6 +13,8 @@
 #include "representationmodel.h"
 #include "morphfile.h"
 
+using LeechCraft::Util::Proxy;
+
 Core::Core ()
 : HistoryModel_ (new HistoryModel ())
 , RepresentationModel_ (new RepresentationModel ())

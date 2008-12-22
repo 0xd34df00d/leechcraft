@@ -35,6 +35,10 @@
 #undef AddJob
 #endif
 
+using LeechCraft::Util::Proxy;
+using LeechCraft::Util::TagsCompleter;
+using LeechCraft::Util::TagsLineEdit;
+
 void TorrentPlugin::Init ()
 {
 	Translator_.reset (LeechCraft::Util::InstallTranslator ("torrent"));
@@ -183,7 +187,7 @@ QAbstractItemModel* TorrentPlugin::GetRepresentation () const
     return FilterModel_.get ();
 }
 
-LeechCraft::HistoryModel* TorrentPlugin::GetHistory () const
+LeechCraft::Util::HistoryModel* TorrentPlugin::GetHistory () const
 {
 	return Core::Instance ()->GetHistoryModel ();
 }

@@ -5,7 +5,7 @@
 #include <QDateTime>
 #include <plugininterface/historymodel.h>
 
-class HistoryModel : public LeechCraft::HistoryModel
+class HistoryModel : public LeechCraft::Util::HistoryModel
 {
 	Q_OBJECT
 

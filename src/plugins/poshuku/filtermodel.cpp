@@ -3,7 +3,7 @@
 #include "favoritesmodel.h"
 
 FilterModel::FilterModel (QObject *parent)
-: TagsFilterModel (parent)
+: LeechCraft::Util::TagsFilterModel (parent)
 {
 }
 

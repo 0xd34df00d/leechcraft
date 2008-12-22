@@ -77,7 +77,7 @@ QAbstractItemModel* Nufella::GetRepresentation () const
 	return 0;
 }
 
-LeechCraft::HistoryModel* Nufella::GetHistory () const
+LeechCraft::Util::HistoryModel* Nufella::GetHistory () const
 {
 	return 0;
 }

@@ -10,6 +10,7 @@
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/torrent_handle.hpp>
 #include <interfaces/interfaces.h>
+#include <plugininterface/tagscompletionmodel.h>
 #include "torrentinfo.h"
 #include "overallstats.h"
 #include "fileinfo.h"
@@ -20,7 +21,6 @@
 class QTimer;
 class PiecesModel;
 class PeersModel;
-class TagsCompletionModel;
 class TorrentFilesModel;
 class RepresentationModel;
 class QDomElement;
@@ -75,7 +75,7 @@ class Core : public QAbstractItemModel
 	std::auto_ptr<QTimer> SettingsSaveTimer_, FinishedTimer_, WarningWatchdog_, ScrapeTimer_;
 	std::auto_ptr<PiecesModel> PiecesModel_;
 	std::auto_ptr<PeersModel> PeersModel_;
-	std::auto_ptr<TagsCompletionModel> TagsCompletionModel_;
+	std::auto_ptr<LeechCraft::Util::TagsCompletionModel> TagsCompletionModel_;
 	std::auto_ptr<TorrentFilesModel> TorrentFilesModel_;
 	std::auto_ptr<HistoryModel> HistoryModel_;
 
@@ -136,7 +136,7 @@ public:
     QList<PeerInfo> GetPeers () const;
     QStringList GetTagsForIndex (int = -1) const;
     void UpdateTags (const QStringList&, int = -1);
-    TagsCompletionModel* GetTagsCompletionModel () const;
+	LeechCraft::Util::TagsCompletionModel* GetTagsCompletionModel () const;
 	int AddFile (const QString&, const QString&, const QStringList&,
 			const QVector<bool>& = QVector<bool> (),
 			LeechCraft::TaskParameters = LeechCraft::NoParameters);

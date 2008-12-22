@@ -5,8 +5,10 @@
 #include <QtDebug>
 #include <plugininterface/proxy.h>
 
+using LeechCraft::Util::Proxy;
+
 HistoryModel::HistoryModel (QObject *parent)
-: LeechCraft::HistoryModel (parent)
+: LeechCraft::Util::HistoryModel (parent)
 {
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
 			Proxy::Instance ()->GetApplicationName () + "_Torrent");

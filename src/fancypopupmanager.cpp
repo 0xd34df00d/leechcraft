@@ -9,7 +9,7 @@
 #include <QtDebug>
 #include "xmlsettingsmanager.h"
 
-Main::FancyPopupManager::FancyPopupManager (QSystemTrayIcon *icon,
+LeechCraft::FancyPopupManager::FancyPopupManager (QSystemTrayIcon *icon,
 		QObject *parent)
 : QObject (parent)
 , TrayIcon_ (icon)
@@ -23,11 +23,11 @@ Main::FancyPopupManager::FancyPopupManager (QSystemTrayIcon *icon,
 	timer->start (500);
 }
 
-Main::FancyPopupManager::~FancyPopupManager ()
+LeechCraft::FancyPopupManager::~FancyPopupManager ()
 {
 }
 
-void Main::FancyPopupManager::ShowMessage (const QString& message)
+void LeechCraft::FancyPopupManager::ShowMessage (const QString& message)
 {
 	Popups_.push_back (message);
 	Dates_ [QDateTime::currentDateTime ()] = message;
@@ -35,7 +35,7 @@ void Main::FancyPopupManager::ShowMessage (const QString& message)
 	UpdateMessage ();
 }
 
-void Main::FancyPopupManager::timerTimeout ()
+void LeechCraft::FancyPopupManager::timerTimeout ()
 {
 	QDateTime current = QDateTime::currentDateTime ();
 
@@ -54,7 +54,7 @@ void Main::FancyPopupManager::timerTimeout ()
 		}
 }
 
-void Main::FancyPopupManager::UpdateMessage ()
+void LeechCraft::FancyPopupManager::UpdateMessage ()
 {
 	QString message;
 	for (popups_t::const_iterator i = Popups_.begin (),

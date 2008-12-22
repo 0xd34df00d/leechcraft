@@ -3,6 +3,8 @@
 #include "filtermodel.h"
 #include "core.h"
 
+using namespace LeechCraft;
+
 FilterModel::FilterModel (QObject *parent)
 : QSortFilterProxyModel (parent)
 , NormalMode_ (true)
@@ -21,7 +23,7 @@ bool FilterModel::filterAcceptsRow (int source_row, const QModelIndex& source_pa
 		return QSortFilterProxyModel::filterAcceptsRow (source_row, source_parent);
 	else
 	{
-		QStringList itemTags = Main::Core::Instance ().GetTagsForIndex (source_row, sourceModel ()),
+		QStringList itemTags = Core::Instance ().GetTagsForIndex (source_row, sourceModel ()),
 					filterTags = filterRegExp ().pattern ().split (' ', QString::SkipEmptyParts);
 		if (!filterTags.size () || !itemTags.size ())
 			return true;

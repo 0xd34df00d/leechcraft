@@ -95,7 +95,7 @@ QStringList AddTorrent::GetDefaultTags () const
     return TagsEdit_->text ().split (' ', QString::SkipEmptyParts);
 }
 
-TagsLineEdit* AddTorrent::GetEdit ()
+LeechCraft::Util::TagsLineEdit* AddTorrent::GetEdit ()
 {
     return TagsEdit_;
 }
@@ -156,7 +156,7 @@ void AddTorrent::ParseBrowsed ()
     if (!info.is_valid ())
         return;
     TrackerURL_->setText (QString::fromStdString (info.trackers ().at (0).url));
-    Size_->setText (Proxy::Instance ()->MakePrettySize (info.total_size ()));
+    Size_->setText (LeechCraft::Util::Proxy::Instance ()->MakePrettySize (info.total_size ()));
     QString creator = QString::fromStdString (info.creator ()),
             comment = QString::fromStdString (info.comment ());
     QString date = QString::fromStdString (boost::posix_time::to_simple_string (info.creation_date ().get ()));

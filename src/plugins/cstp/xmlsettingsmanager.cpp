@@ -17,8 +17,8 @@ XmlSettingsManager& XmlSettingsManager::Instance ()
 QSettings* XmlSettingsManager::BeginSettings () const
 {
 	QSettings *settings = new QSettings (
-			Proxy::Instance ()->GetOrganizationName (),
-			Proxy::Instance ()->GetApplicationName () + "_CSTP");
+			LeechCraft::Util::Proxy::Instance ()->GetOrganizationName (),
+			LeechCraft::Util::Proxy::Instance ()->GetApplicationName () + "_CSTP");
 	return settings;
 }
 

@@ -4,7 +4,13 @@
 #include <WAbstractItemModel>
 #include <QAbstractItemModel>
 
-class TreeItem;
+namespace LeechCraft
+{
+	namespace Util
+	{
+		class TreeItem;
+	};
+};
 
 /** @brief Adaptor from QAbstractItemModel to Wt::WAbstractItemModel.
  *
@@ -18,9 +24,9 @@ class QToWAbstractItemModelAdaptor : public QObject
 
 	QAbstractItemModel *Model_;
 
-	TreeItem *Root_;
+	LeechCraft::Util::TreeItem *Root_;
 
-	mutable std::map<TreeItem*, Wt::WModelIndex> Indexes_;
+	mutable std::map<LeechCraft::Util::TreeItem*, Wt::WModelIndex> Indexes_;
 public:
 	QToWAbstractItemModelAdaptor (QAbstractItemModel*, WObject* = 0);
 	virtual ~QToWAbstractItemModelAdaptor ();

@@ -1,6 +1,8 @@
 #include "historymodel.h"
 
-LeechCraft::HistoryModel::HistoryModel (QObject *parent)
+using namespace LeechCraft::Util;
+
+HistoryModel::HistoryModel (QObject *parent)
 : QAbstractItemModel (parent)
 {
 	Headers_ << tr ("Filename")
@@ -9,17 +11,17 @@ LeechCraft::HistoryModel::HistoryModel (QObject *parent)
 		<< tr ("Date");
 }
 
-int LeechCraft::HistoryModel::columnCount (const QModelIndex&) const
+int HistoryModel::columnCount (const QModelIndex&) const
 {
 	return Headers_.size ();
 }
 
-Qt::ItemFlags LeechCraft::HistoryModel::flags (const QModelIndex&) const
+Qt::ItemFlags HistoryModel::flags (const QModelIndex&) const
 {
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 }
 
-QModelIndex LeechCraft::HistoryModel::index (int row, int column, const QModelIndex&) const
+QModelIndex HistoryModel::index (int row, int column, const QModelIndex&) const
 {
     if (!hasIndex (row, column))
         return QModelIndex ();
@@ -27,7 +29,7 @@ QModelIndex LeechCraft::HistoryModel::index (int row, int column, const QModelIn
     return createIndex (row, column);
 } 
 
-QVariant LeechCraft::HistoryModel::headerData (int column, Qt::Orientation orient, int role) const
+QVariant HistoryModel::headerData (int column, Qt::Orientation orient, int role) const
 {
     if (role != Qt::DisplayRole || orient != Qt::Horizontal)
         return QVariant ();
@@ -35,12 +37,12 @@ QVariant LeechCraft::HistoryModel::headerData (int column, Qt::Orientation orien
     return Headers_.at (column);
 }
 
-QModelIndex LeechCraft::HistoryModel::parent (const QModelIndex&) const
+QModelIndex HistoryModel::parent (const QModelIndex&) const
 {
     return QModelIndex ();
 }
 
-LeechCraft::HistoryModel::~HistoryModel ()
+HistoryModel::~HistoryModel ()
 {
 }
 

@@ -8,7 +8,7 @@ class FavoritesDelegate : public QItemDelegate
 {
 	Q_OBJECT
 
-	mutable std::auto_ptr<TagsCompleter> TagsCompleter_;
+	mutable std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsCompleter_;
 public:
 	FavoritesDelegate (QObject* = 0);
 

@@ -10,14 +10,18 @@
 
 class QLabel;
 class QSplashScreen;
-class XmlSettingsDialog;
-class GraphWidget;
 class QDockWidget;
 class QTabWidget;
 class QModelIndex;
+class XmlSettingsDialog;
 
-namespace Main
+namespace LeechCraft
 {
+	namespace Util
+	{
+		class GraphWidget;
+	};
+
 	class Core;
 	class PluginInfo;
 	class PluginManagerDialog;
@@ -31,7 +35,7 @@ namespace Main
 
 		QSystemTrayIcon *TrayIcon_;
 		QLabel *DownloadSpeed_, *UploadSpeed_;
-		GraphWidget *DSpeedGraph_, *USpeedGraph_;
+		Util::GraphWidget *DSpeedGraph_, *USpeedGraph_;
 
 		XmlSettingsDialog *XmlSettingsDialog_;
 		QList<QDockWidget*> PluginWidgets_;
@@ -50,6 +54,7 @@ namespace Main
 	protected:
 		virtual void closeEvent (QCloseEvent*);
 	private:
+		void SetStatusBar ();
 		void SetTrayIcon ();
 		void ReadSettings ();
 		void WriteSettings ();

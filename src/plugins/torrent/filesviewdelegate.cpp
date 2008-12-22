@@ -4,6 +4,8 @@
 #include <plugininterface/treeitem.h>
 #include "filesviewdelegate.h"
 
+using LeechCraft::Util::TreeItem;
+
 FilesViewDelegate::FilesViewDelegate (QObject *parent)
 : QItemDelegate (parent)
 {

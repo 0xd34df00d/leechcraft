@@ -7,21 +7,23 @@
 #include <QtDebug>
 #include "xmlsettingsmanager.h"
 
-Main::SkinEngine::SkinEngine ()
+using namespace LeechCraft;
+
+SkinEngine::SkinEngine ()
 {
 }
 
-Main::SkinEngine& Main::SkinEngine::Instance ()
+SkinEngine& SkinEngine::Instance ()
 {
 	static SkinEngine e;
 	return e;
 }
 
-Main::SkinEngine::~SkinEngine ()
+SkinEngine::~SkinEngine ()
 {
 }
 
-void Main::SkinEngine::FindIcons ()
+void SkinEngine::FindIcons ()
 {
 	QString iconSet = XmlSettingsManager::Instance ()->
 		property ("IconSet").toString ();
@@ -123,7 +125,7 @@ void Main::SkinEngine::FindIcons ()
 	}
 }
 
-std::vector<int> Main::SkinEngine::GetDirForBase (const QString& base,
+std::vector<int> SkinEngine::GetDirForBase (const QString& base,
 		const QString& iconSet)
 {
 	QDir baseDir (base);
@@ -144,7 +146,7 @@ std::vector<int> Main::SkinEngine::GetDirForBase (const QString& base,
 	return numbers;
 }
 
-void Main::SkinEngine::updateIconSet (const QList<QAction*>& actions)
+void SkinEngine::updateIconSet (const QList<QAction*>& actions)
 {
 	FindIcons ();
 

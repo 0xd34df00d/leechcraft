@@ -12,7 +12,10 @@ class QAbstractItemModel;
 class QModelIndex;
 namespace LeechCraft
 {
-	class HistoryModel;
+	namespace Util
+	{
+		class HistoryModel;
+	};
 };
 
 /** @brief Required interface for every plugin.
@@ -324,7 +327,7 @@ public:
 	 * @sa GetControls
 	 * @sa GetAdditionalInfo
 	 */
-	virtual LeechCraft::HistoryModel* GetHistory () const = 0;
+	virtual LeechCraft::Util::HistoryModel* GetHistory () const = 0;
 	/** @brief Returns the widget with controls.
 	 *
 	 * Returned widget would be placed above the view with the jobs, so

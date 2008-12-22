@@ -5,17 +5,18 @@
 #include <QString>
 #include <QPair>
 #include "pluginmanager.h"
+#include "tabcontainer.h"
+#include "plugininterface/mergemodel.h"
 #include "interfaces/interfaces.h"
 
 class QTimer;
 class QLocalServer;
 class QAbstractProxyModel;
-class MergeModel;
 class QAction;
-class FilterModel;
 
-namespace Main
+namespace LeechCraft
 {
+	class FilterModel;
 	class MainWindow;
     class Core : public QObject
     {
@@ -26,10 +27,11 @@ namespace Main
         QTimer *ClipboardWatchdog_;
         QString PreviousClipboardContents_;
 		std::auto_ptr<QLocalServer> Server_;
-		std::auto_ptr<MergeModel> MergeModel_;
-		std::auto_ptr<MergeModel> HistoryMergeModel_;
+		std::auto_ptr<Util::MergeModel> MergeModel_;
+		std::auto_ptr<Util::MergeModel> HistoryMergeModel_;
 		std::auto_ptr<FilterModel> FilterModel_;
 		std::auto_ptr<FilterModel> HistoryFilterModel_;
+		std::auto_ptr<TabContainer> TabContainer_;
 		typedef std::map<const QAbstractItemModel*, QObject*> repres2object_t;
 		mutable repres2object_t Representation2Object_;
 		mutable repres2object_t History2Object_;
@@ -50,13 +52,13 @@ namespace Main
 		static Core& Instance ();
         void Release ();
 
-		void SetReallyMainWindow (Main::MainWindow*);
+		void SetReallyMainWindow (MainWindow*);
 
 		QAbstractItemModel* GetPluginsModel () const;
 		QAbstractProxyModel* GetTasksModel () const;
 		QAbstractProxyModel* GetHistoryModel () const;
-		MergeModel* GetUnfilteredTasksModel () const;
-		MergeModel* GetUnfilteredHistoryModel () const;
+		Util::MergeModel* GetUnfilteredTasksModel () const;
+		Util::MergeModel* GetUnfilteredHistoryModel () const;
 		QWidget* GetControls (const QModelIndex&) const;
 		QWidget* GetAdditionalInfo (const QModelIndex&) const;
 
@@ -73,6 +75,7 @@ namespace Main
 		void HistoryActivated (int);
         
         QPair<qint64, qint64> GetSpeeds () const;
+		int CountUnremoveableTabs () const;
 
 		virtual bool eventFilter (QObject*, QEvent*);
 	public slots:
@@ -84,12 +87,13 @@ namespace Main
 		void embeddedTabWantsToFront ();
 		void handleNewTab (const QString&, QWidget*);
 		void handleRemoveTab (QWidget*);
-		void handleRemoveTab (int);
 		void handleChangeTabName (QWidget*, const QString&);
 		void handleChangeTabIcon (QWidget*, const QIcon&);
 	private:
-		int FindTabForWidget (QWidget*) const;
 		QModelIndex MapToSource (const QModelIndex&) const;
+		void InitJobHolder (QObject*);
+		void InitEmbedTab (QObject*);
+		void InitMultiTab (QObject*);
     signals:
         void error (QString);
         void downloadFinished (const QString&);

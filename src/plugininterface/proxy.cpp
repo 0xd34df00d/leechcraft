@@ -2,6 +2,8 @@
 #include <QtDebug>
 #include "proxy.h"
 
+using namespace LeechCraft::Util;
+
 Proxy *Proxy::Instance_ = 0;
 
 Proxy::Proxy ()

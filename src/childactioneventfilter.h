@@ -2,14 +2,17 @@
 #define CHILDACTIONEVENTFILTER_H
 #include <QObject>
 
-class ChildActionEventFilter : public QObject
+namespace LeechCraft
 {
-	Q_OBJECT
-public:
-	ChildActionEventFilter (QObject* = 0);
-	virtual ~ChildActionEventFilter ();
-protected:
-	bool eventFilter (QObject*, QEvent*);
+	class ChildActionEventFilter : public QObject
+	{
+		Q_OBJECT
+	public:
+		ChildActionEventFilter (QObject* = 0);
+		virtual ~ChildActionEventFilter ();
+	protected:
+		bool eventFilter (QObject*, QEvent*);
+	};
 };
 
 #endif

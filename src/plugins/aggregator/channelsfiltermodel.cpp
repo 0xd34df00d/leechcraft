@@ -4,7 +4,7 @@
 #include "core.h"
 
 ChannelsFilterModel::ChannelsFilterModel (QObject *parent)
-: TagsFilterModel (parent)
+: LeechCraft::Util::TagsFilterModel (parent)
 {
 	setTagsMode (true);
 }

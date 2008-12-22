@@ -12,7 +12,10 @@
 #include "pluginmanager.h"
 #include "mainwindow.h"
 
-using namespace Main;
+using namespace LeechCraft;
+using LeechCraft::Util::HistoryModel;
+using LeechCraft::Util::MergeModel;
+using LeechCraft::Util::Proxy;
 
 PluginManager::PluginManager (QObject *parent)
 : QAbstractItemModel (parent)
@@ -143,7 +146,7 @@ QObjectList PluginManager::GetAllPlugins () const
     return result;
 }
 
-void PluginManager::InitializePlugins (const MainWindow*)
+void PluginManager::InitializePlugins ()
 {
 	bool shouldValidate = !QCoreApplication::arguments ().contains ("-nopupcheck");
     for (int i = 0; i < Plugins_.size (); ++i)
