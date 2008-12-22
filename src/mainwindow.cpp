@@ -110,14 +110,14 @@ namespace Main
 		UploadSpeed_->setAlignment (Qt::AlignRight);
 
 		DSpeedGraph_ = new GraphWidget (Qt::green);
-		DSpeedGraph_->setMinimumWidth (100);
+		DSpeedGraph_->setMinimumWidth (250);
 		USpeedGraph_ = new GraphWidget (Qt::yellow);
-		USpeedGraph_->setMinimumWidth (100);
+		USpeedGraph_->setMinimumWidth (250);
 
-		statusBar ()->addPermanentWidget (DSpeedGraph_);
-		statusBar ()->addPermanentWidget (USpeedGraph_);
 		statusBar ()->addPermanentWidget (DownloadSpeed_);
 		statusBar ()->addPermanentWidget (UploadSpeed_);
+		statusBar ()->addPermanentWidget (DSpeedGraph_);
+		statusBar ()->addPermanentWidget (USpeedGraph_);
 		ReadSettings ();
 
 		PluginManagerDialog_ = new PluginManagerDialog (this);
