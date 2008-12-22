@@ -14,6 +14,7 @@ namespace LeechCraft
 
 		QTabWidget *TabWidget_;
 		bool TabMode_;
+		QList<QWidget*> Widgets_;
 	public:
 		TabContainer (QTabWidget*, QObject* = 0);
 		virtual ~TabContainer ();
@@ -27,7 +28,7 @@ namespace LeechCraft
 		bool RemoveCurrent ();
 		void RotateLeft ();
 		void RotateRight ();
-		void SetTabMode (bool);
+		void ToggleMultiwindow ();
 	private:
 		int FindTabForWidget (QWidget*) const;
 	};

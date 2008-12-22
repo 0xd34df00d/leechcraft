@@ -524,6 +524,11 @@ void Core::handlePluginAction ()
 	}
 }
 
+void Core::toggleMultiwindow ()
+{
+	TabContainer_->ToggleMultiwindow ();
+}
+
 void Core::handleFileDownload (const QString& file, bool fromBuffer)
 {
     if (!fromBuffer &&

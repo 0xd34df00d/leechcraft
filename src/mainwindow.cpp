@@ -61,6 +61,10 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			SIGNAL (triggered ()),
 			this,
 			SLOT (showAboutInfo ()));
+	connect (Ui_.ActionMultiwindow_,
+			SIGNAL (triggered ()),
+			&Core::Instance (),
+			SLOT (toggleMultiwindow ()));
 	
 	connect (Ui_.FilterCaseSensitivity_,
 			SIGNAL (stateChanged (int)),

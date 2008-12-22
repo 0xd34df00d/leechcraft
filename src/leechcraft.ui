@@ -193,6 +193,7 @@
     </property>
     <addaction name="ActionPluginManager_" />
     <addaction name="ActionSettings_" />
+    <addaction name="ActionMultiwindow_" />
    </widget>
    <widget class="QMenu" name="menuHelp" >
     <property name="title" >
@@ -226,25 +227,45 @@
    <property name="text" >
     <string>Settings</string>
    </property>
+   <property name="menuRole" >
+    <enum>QAction::PreferencesRole</enum>
+   </property>
   </action>
   <action name="ActionQuit_" >
    <property name="text" >
     <string>Quit</string>
+   </property>
+   <property name="menuRole" >
+    <enum>QAction::QuitRole</enum>
    </property>
   </action>
   <action name="ActionAboutLeechCraft_" >
    <property name="text" >
     <string>About LeechCraft...</string>
    </property>
+   <property name="menuRole" >
+    <enum>QAction::AboutRole</enum>
+   </property>
   </action>
   <action name="ActionAboutQt_" >
    <property name="text" >
     <string>About Qt...</string>
    </property>
+   <property name="menuRole" >
+    <enum>QAction::AboutQtRole</enum>
+   </property>
   </action>
   <action name="ActionPluginManager_" >
    <property name="text" >
     <string>Plugin manager</string>
+   </property>
+  </action>
+  <action name="ActionMultiwindow_" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string> Multiwindow</string>
    </property>
   </action>
  </widget>

@@ -81,6 +81,7 @@ namespace LeechCraft
 	public slots:
 		void handleProxySettings () const;
 		void handlePluginAction ();
+		void toggleMultiwindow ();
     private slots:
         void handleFileDownload (const QString&, bool = false);
         void handleClipboardTimer ();

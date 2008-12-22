@@ -21,6 +21,13 @@ void TabContainer::Add (QWidget *contents, const QString& name)
 {
 	if (TabMode_)
 		TabWidget_->addTab (contents, name);
+	else
+	{
+		contents->setWindowFlags (Qt::Window);
+		contents->setWindowTitle (name);
+		contents->show ();
+		Widgets_.push_front (contents);
+	}
 }
 
 void TabContainer::Remove (QWidget *contents)
@@ -31,6 +38,11 @@ void TabContainer::Remove (QWidget *contents)
 		if (tabNumber == -1)
 			return;
 		TabWidget_->removeTab (tabNumber);
+	}
+	else
+	{
+		Widgets_.removeAll (contents);
+		contents->deleteLater ();
 	}
 }
 
@@ -43,6 +55,8 @@ void TabContainer::ChangeTabName (QWidget *contents, const QString& name)
 			return;
 		TabWidget_->setTabText (tabNumber, name);
 	}
+	else
+		contents->setWindowTitle (name);
 }
 
 void TabContainer::ChangeTabIcon (QWidget *contents, const QIcon& icon)
@@ -54,6 +68,8 @@ void TabContainer::ChangeTabIcon (QWidget *contents, const QIcon& icon)
 			return;
 		TabWidget_->setTabIcon (tabNumber, icon);
 	}
+	else
+		contents->setWindowIcon (icon);
 }
 
 QWidget* TabContainer::GetWidget (int position) const
@@ -68,6 +84,8 @@ void TabContainer::BringToFront (QWidget *widget) const
 {
 	if (TabMode_)
 		TabWidget_->setCurrentWidget (widget);
+	else
+		widget->show ();
 }
 
 bool TabContainer::RemoveCurrent ()
@@ -114,9 +132,34 @@ void TabContainer::RotateRight ()
 	}
 }
 
-void TabContainer::SetTabMode (bool tabMode)
+void TabContainer::ToggleMultiwindow ()
 {
-	TabMode_ = tabMode;
+	TabMode_ = !TabMode_;
+	if (TabMode_)
+	{
+		while (Widgets_.size ())
+		{
+			QWidget *widget = Widgets_.takeLast ();
+			widget->setWindowFlags (Qt::Widget);
+			Add (widget, widget->windowTitle ());
+			TabWidget_->setTabIcon (TabWidget_->count () - 1,
+					widget->windowIcon ());
+		}
+	}
+	else
+	{
+		int count = TabWidget_->count ();
+		for (int i = count - 1; i >= 2; --i)
+		{
+			QWidget *widget = TabWidget_->widget (i);
+			widget->setWindowTitle (TabWidget_->tabText (i));
+			widget->setWindowIcon (TabWidget_->tabIcon (i));
+			TabWidget_->removeTab (i);
+			widget->setWindowFlags (Qt::Window);
+			widget->show ();
+			Widgets_ << widget;
+		}
+	}
 }
 
 int TabContainer::FindTabForWidget (QWidget *widget) const
