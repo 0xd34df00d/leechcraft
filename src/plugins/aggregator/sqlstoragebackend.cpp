@@ -847,7 +847,8 @@ bool SQLStorageBackend::InitializeTables ()
 			"pub_date TIMESTAMP, "
 			"unread TINYINT, "
 			"num_comments SMALLINT, "
-			"comments_url TEXT "
+			"comments_url TEXT, "
+			"comments_page_url TEXT"
 			");"))
 	{
 		LeechCraft::Util::DBLock::DumpError (query.lastError ());
