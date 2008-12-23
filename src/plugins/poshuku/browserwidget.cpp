@@ -3,6 +3,7 @@
 #include <QtDebug>
 #include <QToolBar>
 #include <QCompleter>
+#include <QWidgetAction>
 #include "core.h"
 #include "historymodel.h"
 
@@ -38,6 +39,10 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	bar->addAction (reload);
 	bar->addAction (stop);
 	bar->addAction (add2Favorites);
+
+	QWidgetAction *addressBar = new QWidgetAction (this);
+	addressBar->setDefaultWidget (Ui_.URLEdit_);
+	bar->addAction (addressBar);
 
 	static_cast<QVBoxLayout*> (layout ())->insertWidget (0, bar);
 

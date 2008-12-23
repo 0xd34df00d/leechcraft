@@ -1,4 +1,5 @@
 #include "customwebview.h"
+#include <QtDebug>
 #include "core.h"
 #include "customwebpage.h"
 
