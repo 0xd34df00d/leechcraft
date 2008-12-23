@@ -23,6 +23,7 @@ using namespace LeechCraft::Util;
 MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 : QMainWindow (parent, flags)
 , IsShown_ (true)
+, WasMaximized_ (false)
 {
 	QSplashScreen splash (QPixmap (":/resources/images/splashscreen.png"),
 			Qt::WindowStaysOnTopHint);
@@ -169,33 +170,6 @@ void MainWindow::catchError (QString message)
 	QMessageBox::critical (this, tr ("Error"), message);
 }
 
-void MainWindow::updatePanes (const QModelIndex& newIndex,
-		const QModelIndex& oldIndex)
-{
-	Core::Instance ().SetNewRow (newIndex);
-
-	if (Core::Instance ().SameModel (newIndex, oldIndex))
-		return;
-
-	if (Ui_.PluginsStuff_->count () == 4)
-	{
-		Ui_.PluginsStuff_->takeAt (3)->widget ()->hide ();
-		Ui_.PluginsStuff_->takeAt (1)->widget ()->hide ();
-	}
-
-	if (newIndex.isValid ())
-	{
-		QWidget *controls = Core::Instance ()
-					.GetControls (newIndex),
-				*addiInfo = Core::Instance ()
-					.GetAdditionalInfo (newIndex);
-		Ui_.PluginsStuff_->insertWidget (1, controls);
-		Ui_.PluginsStuff_->addWidget (addiInfo);
-		controls->show ();
-		addiInfo->show ();
-	}
-}
-
 void MainWindow::closeEvent (QCloseEvent *e)
 {
 	e->ignore ();
@@ -252,7 +226,8 @@ void MainWindow::ReadSettings ()
 	settings.beginGroup ("geometry");
 	resize (settings.value ("size", QSize  (750, 550)).toSize ());
 	move   (settings.value ("pos",  QPoint (10, 10)).toPoint ());
-	settings.value ("maximized").toBool () ? showMaximized () : showNormal ();
+	WasMaximized_ = settings.value ("maximized").toBool ();
+	WasMaximized_ ? showMaximized () : showNormal ();
 	settings.endGroup ();
 }
 
@@ -264,16 +239,6 @@ void MainWindow::WriteSettings ()
 	settings.setValue ("pos",  pos ());
 	settings.setValue ("maximized", isMaximized ());
 	settings.endGroup ();
-}
-
-void MainWindow::updateSpeedIndicators ()
-{
-	QPair<qint64, qint64> speeds = Core::Instance ().GetSpeeds ();
-
-	DownloadSpeed_->setText (Proxy::Instance ()->MakePrettySize (speeds.first) + tr ("/s"));
-	UploadSpeed_->setText (Proxy::Instance ()->MakePrettySize (speeds.second) + tr ("/s"));
-	DSpeedGraph_->PushSpeed (speeds.first);
-	USpeedGraph_->PushSpeed (speeds.second);
 }
 
 void MainWindow::on_ActionAboutLeechCraft__triggered ()
@@ -288,6 +253,95 @@ void MainWindow::on_ActionAboutLeechCraft__triggered ()
 				"<a href=\"http://sourceforge.net/project/showfiles.php?group_id=161819\">Latest file releases</a><br />"
 				"<a href=\"http://deviant-soft.ws\">LeechCraft's Site</a><br />"
 				"<a href=\"http://sourceforge.net/projects/leechcraft\">LeechCraft's site at sourceforge.net</a><br />"));
+}
+
+void MainWindow::on_ActionAddTask__triggered ()
+{
+	CommonJobAdder adder (this);
+	if (adder.exec () != QDialog::Accepted)
+		return;
+
+	QString name = adder.GetString ();
+	if (!name.isEmpty ())
+		Core::Instance ().TryToAddJob (name, adder.GetWhere ());
+}
+
+void MainWindow::on_ActionSettings__triggered ()
+{
+	XmlSettingsDialog_->show ();
+	XmlSettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
+}
+
+void MainWindow::on_ActionQuit__triggered ()
+{
+	WriteSettings ();
+	Core::Instance ().Release ();
+
+	TrayIcon_->hide ();
+	delete TrayIcon_;
+	qDebug () << "Releasing XmlSettingsManager";
+	delete XmlSettingsDialog_;
+	XmlSettingsManager::Instance ()->Release ();
+	qDebug () << "Destroyed fine";
+
+	qApp->quit ();
+}
+
+void MainWindow::on_ActionFullscreenMode__triggered (bool full)
+{
+	qDebug () << Q_FUNC_INFO << full << WasMaximized_;
+	if (full)
+	{
+		WasMaximized_ = isMaximized ();
+		showFullScreen ();
+	}
+	else if (WasMaximized_)
+	{
+		showMaximized ();
+		// Because shit happens on X11 otherwise
+		QTimer::singleShot (200,
+				this,
+				SLOT (showMaximized ()));
+	}
+	else
+		showNormal ();
+}
+
+void MainWindow::updatePanes (const QModelIndex& newIndex,
+		const QModelIndex& oldIndex)
+{
+	Core::Instance ().SetNewRow (newIndex);
+
+	if (Core::Instance ().SameModel (newIndex, oldIndex))
+		return;
+
+	if (Ui_.PluginsStuff_->count () == 4)
+	{
+		Ui_.PluginsStuff_->takeAt (3)->widget ()->hide ();
+		Ui_.PluginsStuff_->takeAt (1)->widget ()->hide ();
+	}
+
+	if (newIndex.isValid ())
+	{
+		QWidget *controls = Core::Instance ()
+					.GetControls (newIndex),
+				*addiInfo = Core::Instance ()
+					.GetAdditionalInfo (newIndex);
+		Ui_.PluginsStuff_->insertWidget (1, controls);
+		Ui_.PluginsStuff_->addWidget (addiInfo);
+		controls->show ();
+		addiInfo->show ();
+	}
+}
+
+void MainWindow::updateSpeedIndicators ()
+{
+	QPair<qint64, qint64> speeds = Core::Instance ().GetSpeeds ();
+
+	DownloadSpeed_->setText (Proxy::Instance ()->MakePrettySize (speeds.first) + tr ("/s"));
+	UploadSpeed_->setText (Proxy::Instance ()->MakePrettySize (speeds.second) + tr ("/s"));
+	DSpeedGraph_->PushSpeed (speeds.first);
+	USpeedGraph_->PushSpeed (speeds.second);
 }
 
 void MainWindow::showHideMain ()
@@ -311,42 +365,10 @@ void MainWindow::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reas
 	}
 }
 
-void MainWindow::on_ActionAddTask__triggered ()
-{
-	CommonJobAdder adder (this);
-	if (adder.exec () != QDialog::Accepted)
-		return;
-
-	QString name = adder.GetString ();
-	if (!name.isEmpty ())
-		Core::Instance ().TryToAddJob (name, adder.GetWhere ());
-}
-
 void MainWindow::handleDownloadFinished (const QString& string)
 {
 	if (XmlSettingsManager::Instance ()->property ("ShowFinishedDownloadMessages").toBool ())
 		FancyPopupManager_->ShowMessage (string);
-}
-
-void MainWindow::on_ActionSettings__triggered ()
-{
-	XmlSettingsDialog_->show ();
-	XmlSettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
-}
-
-void MainWindow::on_ActionQuit__triggered ()
-{
-	WriteSettings ();
-	Core::Instance ().Release ();
-
-	TrayIcon_->hide ();
-	delete TrayIcon_;
-	qDebug () << "Releasing XmlSettingsManager";
-	delete XmlSettingsDialog_;
-	XmlSettingsManager::Instance ()->Release ();
-	qDebug () << "Destroyed fine";
-
-	qApp->quit ();
 }
 
 void MainWindow::filterParametersChanged ()

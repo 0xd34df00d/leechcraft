@@ -43,7 +43,7 @@ namespace LeechCraft
 		PluginManagerDialog *PluginManagerDialog_;
 		FancyPopupManager *FancyPopupManager_;
 
-		bool IsShown_;
+		bool IsShown_, WasMaximized_;
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
 		virtual ~MainWindow ();
@@ -59,15 +59,16 @@ namespace LeechCraft
 		void ReadSettings ();
 		void WriteSettings ();
 	private slots:
-		void updatePanes (const QModelIndex&, const QModelIndex&);
-		void updateSpeedIndicators ();
 		void on_ActionAboutLeechCraft__triggered ();
-		void showHideMain ();
-		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
 		void on_ActionAddTask__triggered ();
-		void handleDownloadFinished (const QString&);
 		void on_ActionSettings__triggered ();
 		void on_ActionQuit__triggered ();
+		void on_ActionFullscreenMode__triggered (bool);
+		void updatePanes (const QModelIndex&, const QModelIndex&);
+		void updateSpeedIndicators ();
+		void showHideMain ();
+		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
+		void handleDownloadFinished (const QString&);
 		void filterParametersChanged ();
 		void historyFilterParametersChanged ();
 		void updateIconSet ();

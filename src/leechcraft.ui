@@ -279,9 +279,6 @@
    <property name="shortcut" >
     <string>F11</string>
    </property>
-   <property name="shortcutContext" >
-    <enum>Qt::WidgetWithChildrenShortcut</enum>
-   </property>
   </action>
  </widget>
  <resources>
