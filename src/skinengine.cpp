@@ -170,12 +170,15 @@ void SkinEngine::updateIconSet (const QList<QAction*>& actions)
 
 		if (actionIconOff.size ())
 		{
+			qDebug () << actionIconOff;
 			QString offIcon;
 			if (IconName2FileName_.contains (actionIconOff))
-				icon = IconName2FileName_ [actionIconOff] + ".png";
+				offIcon = IconName2FileName_ [actionIconOff] + ".png";
 			else
-				icon = QString ("lc_") + actionIconOff + ".png";
-			iconEntity.addPixmap (icon, QIcon::Normal, QIcon::Off);
+				offIcon = QString ("lc_") + actionIconOff + ".png";
+			iconEntity.addPixmap (IconName2Path_ [offIcon],
+					QIcon::Normal,
+					QIcon::Off);
 		}
 		
 		(*i)->setIcon (iconEntity);
