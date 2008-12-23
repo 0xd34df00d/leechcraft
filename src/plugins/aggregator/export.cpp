@@ -13,7 +13,7 @@ Export::Export (const QString& title,
 	setWindowTitle (title);
 	Title_ = exportTitle;
 	Choices_ = choices;
-	Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (false);
+	Ui_.ButtonBox_->button (QDialogButtonBox::Save)->setEnabled (false);
 	on_Browse__released ();
 }
 
@@ -69,7 +69,7 @@ void Export::SetFeeds (const channels_shorts_t& channels)
 
 void Export::on_File__textEdited (const QString& text)
 {
-	Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (!text.isEmpty ());
+	Ui_.ButtonBox_->button (QDialogButtonBox::Save)->setEnabled (!text.isEmpty ());
 }
 
 void Export::on_Browse__released ()
@@ -86,6 +86,6 @@ void Export::on_Browse__released ()
 		return;
 
 	Ui_.File_->setText (filename);
-	Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (true);
+	Ui_.ButtonBox_->button (QDialogButtonBox::Save)->setEnabled (true);
 }
 
