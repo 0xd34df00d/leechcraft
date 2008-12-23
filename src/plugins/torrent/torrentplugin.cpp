@@ -938,7 +938,7 @@ void TorrentPlugin::SetupActions ()
 			SIGNAL (triggered ()),
 			this,
 			SLOT (on_Import__triggered ()));
-	Import_->setProperty ("Import", "torrent_import");
+	Import_->setProperty ("ActionIcon", "torrent_import");
 
 	Export_.reset (new QAction (tr ("Export..."),
 				Toolbar_.get ()));
@@ -946,7 +946,7 @@ void TorrentPlugin::SetupActions ()
 			SIGNAL (triggered ()),
 			this,
 			SLOT (on_Export__triggered ()));
-	Export_->setProperty ("Export", "torrent_export");
+	Export_->setProperty ("ActionIcon", "torrent_export");
 
 	Toolbar_->addAction (CreateTorrent_.get ());
 	Toolbar_->addSeparator ();
