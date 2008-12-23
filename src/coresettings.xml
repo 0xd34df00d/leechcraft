@@ -5,7 +5,7 @@
         <label lang="ru" value="Поведение" />
 		<label lang="uk" value="Поведінка" />
         <item type="checkbox" property="WatchClipboard" state="on">
-            <label lang="en" value="Watch clipboard for addable task" />
+            <label lang="en" value="Watch clipboard" />
             <label lang="ru" value="Следить за буфером обмена" />
 			<label lang="uk" value="Спостерігати за буфером обміну" />
         </item>
