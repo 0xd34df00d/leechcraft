@@ -14,11 +14,6 @@
             <label lang="ru" value="Опрашивать плагины для обработки заданий при их завершении" />
 			<label lang="uk" value="Опитувати плагіни для обробки завдань після їх заваршення" />
         </item>
-        <item type="checkbox" property="AggregateJobs" state="on">
-            <label lang="en" value="Aggregate jobs from plugins" />
-            <label lang="ru" value="Собирать задания из плагинов и показывать их в главном окне" />
-			<label lang="uk" value="Збирати завдання від плагінів і показувати їх в головному вікні" />
-        </item>
         <item type="groupbox" property="ShowFinishedDownloadMessages" state="on" checkable="true">
             <label lang="en" value="Show messages about finished downloads in tray" />
             <label lang="ru" value="Показывать сообщения о завершенных закачках в трее" />

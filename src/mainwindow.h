@@ -67,7 +67,6 @@ namespace LeechCraft
 		void addJob ();
 		void handleDownloadFinished (const QString&);
 		void showSettings ();
-		void handleAggregateJobsChange ();
 		void quit ();
 		void filterParametersChanged ();
 		void historyFilterParametersChanged ();

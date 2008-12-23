@@ -99,8 +99,6 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	XmlSettingsDialog_ = new XmlSettingsDialog (this);
 	XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 			":/coresettings.xml");
-	XmlSettingsManager::Instance ()->RegisterObject ("AggregateJobs",
-			this, "handleAggregateJobsChange");
 	XmlSettingsManager::Instance ()->RegisterObject ("IconSet",
 			this, "updateIconSet");
 
@@ -348,15 +346,6 @@ void MainWindow::showSettings ()
 {
 	XmlSettingsDialog_->show ();
 	XmlSettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
-}
-
-void MainWindow::handleAggregateJobsChange ()
-{
-	QSplitter *split = qobject_cast<QSplitter*> (centralWidget ());
-	if (XmlSettingsManager::Instance ()->property ("AggregateJobs").toBool ())
-		split->widget (1)->show ();
-	else
-		split->widget (1)->hide ();
 }
 
 void MainWindow::quit ()
