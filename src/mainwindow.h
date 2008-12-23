@@ -61,13 +61,13 @@ namespace LeechCraft
 	private slots:
 		void updatePanes (const QModelIndex&, const QModelIndex&);
 		void updateSpeedIndicators ();
-		void showAboutInfo ();
+		void on_ActionAboutLeechCraft__triggered ();
 		void showHideMain ();
 		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
-		void addJob ();
+		void on_ActionAddTask__triggered ();
 		void handleDownloadFinished (const QString&);
-		void showSettings ();
-		void quit ();
+		void on_ActionSettings__triggered ();
+		void on_ActionQuit__triggered ();
 		void filterParametersChanged ();
 		void historyFilterParametersChanged ();
 		void updateIconSet ();

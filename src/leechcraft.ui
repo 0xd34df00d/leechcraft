@@ -194,6 +194,7 @@
     <addaction name="ActionPluginManager_" />
     <addaction name="ActionSettings_" />
     <addaction name="ActionMultiwindow_" />
+    <addaction name="ActionFullscreenMode_" />
    </widget>
    <widget class="QMenu" name="menuHelp" >
     <property name="title" >
@@ -265,7 +266,21 @@
     <bool>true</bool>
    </property>
    <property name="text" >
-    <string> Multiwindow</string>
+    <string>Multiwindow</string>
+   </property>
+  </action>
+  <action name="ActionFullscreenMode_" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Fullscreen Mode</string>
+   </property>
+   <property name="shortcut" >
+    <string>F11</string>
+   </property>
+   <property name="shortcutContext" >
+    <enum>Qt::WidgetWithChildrenShortcut</enum>
    </property>
   </action>
  </widget>

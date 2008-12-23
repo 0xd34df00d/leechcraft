@@ -41,26 +41,10 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	Ui_.ActionAddTask_->setProperty ("ActionIcon", "addjob");
 	Ui_.ActionSettings_->setProperty ("ActionIcon", "settings");
 
-	connect (Ui_.ActionAddTask_,
-			SIGNAL (triggered ()),
-			this,
-			SLOT (addJob ()));
-	connect (Ui_.ActionQuit_,
-			SIGNAL (triggered ()),
-			this,
-			SLOT (quit ()));
-	connect (Ui_.ActionSettings_,
-			SIGNAL (triggered ()),
-			this,
-			SLOT (showSettings ()));
 	connect (Ui_.ActionAboutQt_,
 			SIGNAL (triggered ()),
 			qApp,
 			SLOT (aboutQt ()));
-	connect (Ui_.ActionAboutLeechCraft_,
-			SIGNAL (triggered ()),
-			this,
-			SLOT (showAboutInfo ()));
 	connect (Ui_.ActionMultiwindow_,
 			SIGNAL (triggered ()),
 			&Core::Instance (),
@@ -250,7 +234,9 @@ void MainWindow::SetTrayIcon ()
 	iconMenu->addSeparator ();
 	iconMenu->addAction (Ui_.ActionAddTask_);
 	iconMenu->addSeparator ();
-	iconMenu->addAction (tr ("Quit"), this, SLOT (quit ()));
+	iconMenu->addAction (tr ("Quit"),
+			this,
+			SLOT (on_ActionQuit__triggered ()));
 
 	TrayIcon_->setContextMenu (iconMenu);
 	TrayIcon_->show ();
@@ -290,7 +276,7 @@ void MainWindow::updateSpeedIndicators ()
 	USpeedGraph_->PushSpeed (speeds.second);
 }
 
-void MainWindow::showAboutInfo ()
+void MainWindow::on_ActionAboutLeechCraft__triggered ()
 {
 	QMessageBox::information (this, tr ("Information"),
 			tr ("<img src=\":/resources/images/mainapp.png\" /><h1>LeechCraft 0.3.0_pre</h1>"
@@ -325,7 +311,7 @@ void MainWindow::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reas
 	}
 }
 
-void MainWindow::addJob ()
+void MainWindow::on_ActionAddTask__triggered ()
 {
 	CommonJobAdder adder (this);
 	if (adder.exec () != QDialog::Accepted)
@@ -342,13 +328,13 @@ void MainWindow::handleDownloadFinished (const QString& string)
 		FancyPopupManager_->ShowMessage (string);
 }
 
-void MainWindow::showSettings ()
+void MainWindow::on_ActionSettings__triggered ()
 {
 	XmlSettingsDialog_->show ();
 	XmlSettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
 }
 
-void MainWindow::quit ()
+void MainWindow::on_ActionQuit__triggered ()
 {
 	WriteSettings ();
 	Core::Instance ().Release ();
