@@ -733,7 +733,9 @@ int Core::rowCount (const QModelIndex& parent) const
 
 void Core::openLink (const QString& url)
 {
-	if (!Providers_.contains ("webbrowser"))
+	if (!Providers_.contains ("webbrowser") ||
+			XmlSettingsManager::Instance ()->
+				property ("AlwaysUseExternalBrowser").toBool ())
 	{
 		QDesktopServices::openUrl (QUrl (url));
 		return;

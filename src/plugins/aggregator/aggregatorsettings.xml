@@ -19,6 +19,10 @@
 				<label lang="ru" value="Показывать иконку в трее при непрочтенных сообщениях" />
 				<label lang="uk" value="Сповіщати про непрочитані повідомлення" />
 			</item>
+			<item type="checkbox" property="AlwaysUseExternalBrowser" state="off">
+				<label lang="en" value="Always use external browser" />
+				<label lang="ru" value="Всегда использовать внешний браузер" />
+			</item>
 			<item type="lineedit" property="CommentsTags" default="comments">
 				<label lang="en" value="Additional tags for subscribed comments" />
 				<label lang="ru" value="Дополнительные теги для подписанных комментариев" />
