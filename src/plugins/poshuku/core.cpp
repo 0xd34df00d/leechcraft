@@ -86,6 +86,12 @@ Core::Core ()
 			HistoryModel_.get (),
 			SLOT (handleItemAdded (const HistoryModel::HistoryItem&)));
 
+	URLCompletionModel_.reset (new URLCompletionModel (this));
+	connect (StorageBackend_.get (),
+			SIGNAL (added (const HistoryModel::HistoryItem&)),
+			URLCompletionModel_.get (),
+			SLOT (handleItemAdded (const HistoryModel::HistoryItem&)));
+
 	FavoritesModel_.reset (new FavoritesModel (this));
 	connect (StorageBackend_.get (),
 			SIGNAL (added (const FavoritesModel::FavoritesItem&)),
@@ -196,6 +202,11 @@ FavoritesModel* Core::GetFavoritesModel () const
 HistoryModel* Core::GetHistoryModel () const
 {
 	return HistoryModel_.get ();
+}
+
+URLCompletionModel* Core::GetURLCompletionModel () const
+{
+	return URLCompletionModel_.get ();
 }
 
 TagsCompletionModel* Core::GetFavoritesTagsCompletionModel () const

@@ -93,9 +93,7 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			SLOT (handleStatusBarMessage (const QString&)));
 
 	QCompleter *completer = new QCompleter (this);
-	completer->setModel (Core::Instance ().GetHistoryModel ());
-	completer->setCompletionRole (HistoryModel::CompletionRole);
-	completer->setCompletionColumn (HistoryModel::ColumnCompletionName);
+	completer->setModel (Core::Instance ().GetURLCompletionModel ());
 	Ui_.URLEdit_->setCompleter (completer);
 }
 

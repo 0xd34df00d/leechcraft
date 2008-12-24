@@ -9,6 +9,7 @@
 #include "favoritesmodel.h"
 #include "historymodel.h"
 #include "storagebackend.h"
+#include "urlcompletionmodel.h"
 
 class QString;
 class QWidget;
@@ -31,6 +32,7 @@ class Core : public QObject
 	std::auto_ptr<QNetworkAccessManager> NetworkAccessManager_;
 	std::auto_ptr<QTimer> CookieSaveTimer_;
 	std::auto_ptr<StorageBackend> StorageBackend_;
+	std::auto_ptr<URLCompletionModel> URLCompletionModel_;
 
 	QMap<QString, QObject*> Providers_;
 	QObjectList Downloaders_;
@@ -51,6 +53,7 @@ public:
 	CustomWebView* MakeWebView ();
 	FavoritesModel* GetFavoritesModel () const;
 	HistoryModel* GetHistoryModel () const;
+	URLCompletionModel* GetURLCompletionModel () const;
 	LeechCraft::Util::TagsCompletionModel* GetFavoritesTagsCompletionModel () const;
 	QNetworkAccessManager* GetNetworkAccessManager () const;
 	StorageBackend* GetStorageBackend () const;

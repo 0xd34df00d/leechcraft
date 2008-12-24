@@ -26,6 +26,7 @@ SET (SRCS
 	historymodel.cpp
 	storagebackend.cpp
 	sqlstoragebackend.cpp
+	urlcompletionmodel.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -47,6 +48,7 @@ SET (HEADERS
 	historymodel.h
 	storagebackend.h
 	sqlstoragebackend.h
+	urlcompletionmodel.h
 	)
 SET (FORMS
 	poshuku.ui

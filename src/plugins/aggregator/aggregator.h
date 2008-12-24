@@ -71,7 +71,6 @@ private slots:
     void on_ActionAddFeed__triggered ();
     void on_ActionRemoveFeed__triggered ();
     void on_ActionPreferences__triggered ();
-    void on_Feeds__activated (const QModelIndex&);
     void on_ActionMarkItemAsUnread__triggered ();
     void on_ActionMarkChannelAsRead__triggered ();
     void on_ActionMarkChannelAsUnread__triggered ();

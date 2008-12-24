@@ -32,6 +32,16 @@ public:
 	 * appended to the container.
 	 */
 	virtual void LoadHistory (std::vector<HistoryModel::HistoryItem>& items) const = 0;
+	/** @brief Get unique history items from the storage.
+	 *
+	 * Puts unique history items (HistoryModel::HistoryItem) from the
+	 * storage backend into the passed container. Items are differed by
+	 * their title and URL, exact chosen date is undefined.
+	 *
+	 * @param[out] items The container with items. They would be
+	 * appended to the container.
+	 */
+	virtual void LoadUniqueHistory (std::vector<HistoryModel::HistoryItem>& items) const = 0;
 	/** @brief Add an item to history.
 	 *
 	 * Adds the passed item to the storage and emits the added() signal

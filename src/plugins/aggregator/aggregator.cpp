@@ -440,12 +440,6 @@ void Aggregator::on_ActionPreferences__triggered ()
     XmlSettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
 }
 
-void Aggregator::on_Feeds__activated (const QModelIndex& index)
-{
-	if (index.isValid ())
-		Core::Instance ().FeedActivated (ChannelsFilterModel_->mapToSource (index));
-}
-
 void Aggregator::on_ActionMarkItemAsUnread__triggered ()
 {
     QModelIndexList indexes = Ui_.Items_->selectionModel ()->selectedRows ();

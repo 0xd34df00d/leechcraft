@@ -40,6 +40,15 @@ void SQLStorageBackend::Prepare ()
 			"FROM history "
 			"ORDER BY date DESC");
 
+	HistoryUniqueLoader_ = QSqlQuery (DB_);
+	HistoryUniqueLoader_.prepare ("SELECT "
+			"title, "
+			"url, "
+			"COUNT (url) AS cnt "
+			"FROM history "
+			"GROUP BY url "
+			"HAVING cnt = 1");
+
 	HistoryAdder_ = QSqlQuery (DB_);
 	HistoryAdder_.prepare ("INSERT INTO history ("
 			"date, "
@@ -122,6 +131,28 @@ void SQLStorageBackend::LoadHistory (
 			HistoryLoader_.value (0).toString (),
 			HistoryLoader_.value (1).toDateTime (),
 			HistoryLoader_.value (2).toString ()
+		};
+		items.push_back (item);
+	}
+}
+
+void SQLStorageBackend::LoadUniqueHistory (
+		std::vector<HistoryModel::HistoryItem>& items
+		) const
+{
+	if (!HistoryUniqueLoader_.exec ())
+	{
+		LeechCraft::Util::DBLock::DumpError (HistoryUniqueLoader_);
+		return;
+	}
+
+	while (HistoryUniqueLoader_.next ())
+	{
+		HistoryModel::HistoryItem item =
+		{
+			HistoryUniqueLoader_.value (0).toString (),
+			QDateTime (),
+			HistoryUniqueLoader_.value (1).toString ()
 		};
 		items.push_back (item);
 	}
