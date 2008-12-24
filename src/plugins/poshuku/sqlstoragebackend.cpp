@@ -43,11 +43,9 @@ void SQLStorageBackend::Prepare ()
 	HistoryUniqueLoader_ = QSqlQuery (DB_);
 	HistoryUniqueLoader_.prepare ("SELECT "
 			"title, "
-			"url, "
-			"COUNT (url) AS cnt "
+			"url "
 			"FROM history "
-			"GROUP BY url "
-			"HAVING cnt = 1");
+			"GROUP BY url");
 
 	HistoryAdder_ = QSqlQuery (DB_);
 	HistoryAdder_.prepare ("INSERT INTO history ("

@@ -16,7 +16,7 @@
 <context>
     <name>CommonJobAdder</name>
     <message>
-        <location filename="commonjobadder.cpp" line="47"/>
+        <location filename="commonjobadder.cpp" line="49"/>
         <source>Select file</source>
         <translation>Вибрати файл</translation>
     </message>
@@ -47,6 +47,64 @@
     </message>
 </context>
 <context>
+    <name>Core</name>
+    <message>
+        <location filename="core.cpp" line="28"/>
+        <source>Name</source>
+        <translation type="unfinished">Назва</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="30"/>
+        <source>State</source>
+        <translation type="unfinished">Стан</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="31"/>
+        <source>Progress</source>
+        <translation type="unfinished">Прогрес</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="31"/>
+        <source>Speed</source>
+        <translation type="unfinished">Швидкість</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="32"/>
+        <source>Filename</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="34"/>
+        <source>Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="35"/>
+        <source>Size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="35"/>
+        <source>Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="239"/>
+        <source>No plugins are able to download &quot;%1&quot;</source>
+        <translation type="unfinished">Жоден з плагінів не може завантажити &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="549"/>
+        <source>Question</source>
+        <translation type="unfinished">Запитання</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="551"/>
+        <source>File %1 could be handled by plugin %2, would you like to?</source>
+        <translation type="unfinished">Файл %1 може бути оброблено за допомогою плагіну %2. Хочете це зробити?</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft</name>
     <message>
         <location filename="leechcraft.ui" line="13"/>
@@ -54,32 +112,32 @@
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="215"/>
+        <location filename="leechcraft.ui" line="217"/>
         <source>Add task</source>
         <translation>Додати задачу</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="218"/>
+        <location filename="leechcraft.ui" line="220"/>
         <source>Adds job to a supporting plugin</source>
         <translation>Додати задачу у відповідний плагін</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="227"/>
+        <location filename="leechcraft.ui" line="229"/>
         <source>Settings</source>
         <translation>Налаштування</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="232"/>
+        <location filename="leechcraft.ui" line="237"/>
         <source>Quit</source>
         <translation>Вийти</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="237"/>
+        <location filename="leechcraft.ui" line="245"/>
         <source>About LeechCraft...</source>
         <translation>Про LeechCraft...</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="242"/>
+        <location filename="leechcraft.ui" line="253"/>
         <source>About Qt...</source>
         <translation>Про Qt...</translation>
     </message>
@@ -89,7 +147,7 @@
         <translation>Дії</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="199"/>
+        <location filename="leechcraft.ui" line="201"/>
         <source>Help</source>
         <translation>Довідка</translation>
     </message>
@@ -134,7 +192,7 @@
         <translation>Завантажувачі</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="247"/>
+        <location filename="leechcraft.ui" line="261"/>
         <source>Plugin manager</source>
         <translation type="unfinished"></translation>
     </message>
@@ -148,67 +206,24 @@
         <source>Download history</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>Main::Core</name>
     <message>
-        <location filename="core.cpp" line="284"/>
-        <source>No plugins are able to download &quot;%1&quot;</source>
-        <translation>Жоден з плагінів не може завантажити &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="597"/>
-        <source>Question</source>
-        <translation>Запитання</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="599"/>
-        <source>File %1 could be handled by plugin %2, would you like to?</source>
-        <translation>Файл %1 може бути оброблено за допомогою плагіну %2. Хочете це зробити?</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="25"/>
-        <source>Name</source>
-        <translation type="unfinished">Назва</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="27"/>
-        <source>State</source>
-        <translation type="unfinished">Стан</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="28"/>
-        <source>Progress</source>
-        <translation type="unfinished">Прогрес</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="28"/>
-        <source>Speed</source>
-        <translation type="unfinished">Швидкість</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="29"/>
-        <source>Filename</source>
+        <location filename="leechcraft.ui" line="269"/>
+        <source>Multiwindow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="31"/>
-        <source>Path</source>
+        <location filename="leechcraft.ui" line="277"/>
+        <source>Fullscreen Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="32"/>
-        <source>Size</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="32"/>
-        <source>Date</source>
+        <location filename="leechcraft.ui" line="280"/>
+        <source>F11</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>Main::FancyPopupManager</name>
+    <name>LeechCraft::FancyPopupManager</name>
     <message>
         <location filename="fancypopupmanager.cpp" line="71"/>
         <source>LeechCraft Notification</source>
@@ -216,41 +231,77 @@
     </message>
 </context>
 <context>
+    <name>Main::Core</name>
+    <message>
+        <location filename="core.cpp" line="284"/>
+        <source>No plugins are able to download &quot;%1&quot;</source>
+        <translation type="obsolete">Жоден з плагінів не може завантажити &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="597"/>
+        <source>Question</source>
+        <translation type="obsolete">Запитання</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="599"/>
+        <source>File %1 could be handled by plugin %2, would you like to?</source>
+        <translation type="obsolete">Файл %1 може бути оброблено за допомогою плагіну %2. Хочете це зробити?</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="25"/>
+        <source>Name</source>
+        <translation type="obsolete">Назва</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="27"/>
+        <source>State</source>
+        <translation type="obsolete">Стан</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="28"/>
+        <source>Progress</source>
+        <translation type="obsolete">Прогрес</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="28"/>
+        <source>Speed</source>
+        <translation type="obsolete">Швидкість</translation>
+    </message>
+</context>
+<context>
+    <name>Main::FancyPopupManager</name>
+</context>
+<context>
     <name>Main::MainWindow</name>
     <message>
         <location filename="mainwindow.cpp" line="30"/>
         <source>Initializing interface...</source>
-        <translation>Ініціалізація інтерфейсу...</translation>
+        <translation type="obsolete">Ініціалізація інтерфейсу...</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="125"/>
         <source>Initializing core and plugins...</source>
-        <translation>Ініціалізація ядра і плагінів...</translation>
+        <translation type="obsolete">Ініціалізація ядра і плагінів...</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="199"/>
         <source>Error</source>
-        <translation>Помилка</translation>
+        <translation type="obsolete">Помилка</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="245"/>
         <source>Quit</source>
-        <translation>Вийти</translation>
+        <translation type="obsolete">Вийти</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="280"/>
         <source>/s</source>
-        <translation>/с</translation>
+        <translation type="obsolete">/с</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="287"/>
         <source>Information</source>
-        <translation>Інформація</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="296"/>
-        <source>&lt;img src=&quot;:/resources/images/mainapp.png&quot; /&gt;&lt;h1&gt;LeechCraft 0.3.0_pre&lt;/h1&gt;LeechCraft is a cross-platform extensible download manager. Currently it offers full-featured BitTorrent client, feed reader, HTTP support, Remote access and much more. It also aims to be resource-efficient working quite well on even old computers.&lt;br /&gt;&lt;br /&gt;Here are some useful links for you:&lt;br /&gt;&lt;a href=&quot;http://bugs.deviant-soft.ws&quot;&gt;Bugtracker and feature request tracker&lt;/a&gt;&lt;br /&gt;&lt;a href=&quot;http://sourceforge.net/project/showfiles.php?group_id=161819&quot;&gt;Latest file releases&lt;/a&gt;&lt;br /&gt;&lt;a href=&quot;http://deviant-soft.ws&quot;&gt;LeechCraft&apos;s Site&lt;/a&gt;&lt;br /&gt;&lt;a href=&quot;http://sourceforge.net/projects/leechcraft&quot;&gt;LeechCraft&apos;s site at sourceforge.net&lt;/a&gt;&lt;br /&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Інформація</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="277"/>
@@ -260,12 +311,60 @@
     <message>
         <location filename="mainwindow.cpp" line="340"/>
         <source>: Preferences</source>
-        <translation>: Параметри</translation>
+        <translation type="obsolete">: Параметри</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="241"/>
         <source>Show/hide</source>
-        <translation>Показати/приховати</translation>
+        <translation type="obsolete">Показати/приховати</translation>
+    </message>
+</context>
+<context>
+    <name>MainWindow</name>
+    <message>
+        <location filename="mainwindow.cpp" line="31"/>
+        <source>Initializing interface...</source>
+        <translation type="unfinished">Ініціалізація інтерфейсу...</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="96"/>
+        <source>Initializing core and plugins...</source>
+        <translation type="unfinished">Ініціалізація ядра і плагінів...</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="170"/>
+        <source>Error</source>
+        <translation type="unfinished">Помилка</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="207"/>
+        <source>Show/hide</source>
+        <translation type="unfinished">Показати/приховати</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="211"/>
+        <source>Quit</source>
+        <translation type="unfinished">Вийти</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="246"/>
+        <source>Information</source>
+        <translation type="unfinished">Інформація</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="255"/>
+        <source>&lt;img src=&quot;:/resources/images/mainapp.png&quot; /&gt;&lt;h1&gt;LeechCraft 0.3.0_pre&lt;/h1&gt;LeechCraft is a cross-platform extensible download manager. Currently it offers full-featured BitTorrent client, feed reader, HTTP support, Remote access and much more. It also aims to be resource-efficient working quite well on even old computers.&lt;br /&gt;&lt;br /&gt;Here are some useful links for you:&lt;br /&gt;&lt;a href=&quot;http://bugs.deviant-soft.ws&quot;&gt;Bugtracker and feature request tracker&lt;/a&gt;&lt;br /&gt;&lt;a href=&quot;http://sourceforge.net/project/showfiles.php?group_id=161819&quot;&gt;Latest file releases&lt;/a&gt;&lt;br /&gt;&lt;a href=&quot;http://deviant-soft.ws&quot;&gt;LeechCraft&apos;s Site&lt;/a&gt;&lt;br /&gt;&lt;a href=&quot;http://sourceforge.net/projects/leechcraft&quot;&gt;LeechCraft&apos;s site at sourceforge.net&lt;/a&gt;&lt;br /&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="272"/>
+        <source>: Preferences</source>
+        <translation type="unfinished">: Параметри</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="342"/>
+        <source>/s</source>
+        <translation type="unfinished">/с</translation>
     </message>
 </context>
 <context>
@@ -294,32 +393,32 @@
 <context>
     <name>PluginManager</name>
     <message>
-        <location filename="pluginmanager.cpp" line="107"/>
+        <location filename="pluginmanager.cpp" line="110"/>
         <source>No exit here</source>
         <translation>Виходу немає</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="108"/>
+        <location filename="pluginmanager.cpp" line="111"/>
         <source>Release of one or more plugins failed.</source>
         <translation>Не вдалося вивантажити один або декілька плагінів.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="355"/>
+        <location filename="pluginmanager.cpp" line="359"/>
         <source>The plugin %1 found at&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;which describes itself as&lt;br /&gt;&lt;em&gt;%3&lt;/em&gt;&lt;br /&gt;with SHA1 hash&lt;br /&gt;&lt;code&gt;%4&lt;/code&gt;&lt;br /&gt; is found. Would you like to load it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="427"/>
+        <location filename="pluginmanager.cpp" line="431"/>
         <source>Question</source>
         <translation type="unfinished">Запитання</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="389"/>
+        <location filename="pluginmanager.cpp" line="393"/>
         <source>The plugin %1 at&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;previously described itself as&lt;br /&gt;&lt;em&gt;%3&lt;/em&gt;&lt;br /&gt;but now describes as&lt;br /&gt;&lt;em&gt;%4&lt;/em&gt;&lt;br /&gt;It&apos;s SHA1 hash is&lt;br /&gt;&lt;code&gt;%5&lt;/code&gt;&lt;br /&gt;Would you like to load it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="421"/>
+        <location filename="pluginmanager.cpp" line="425"/>
         <source>Plugin %1 at&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;which describes itself as&lt;br /&gt;&lt;em&gt;%3&lt;/em&gt;&lt;br /&gt;has its SHA1 hash changed. Old one:&lt;br /&gt;&lt;code&gt;%4&lt;/code&gt;&lt;br /&gt;new one:&lt;br /&gt;&lt;code&gt;%5&lt;/code&gt;&lt;br /&gt;Do you still want to load it?</source>
         <translation type="unfinished"></translation>
     </message>

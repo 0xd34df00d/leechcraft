@@ -54,12 +54,12 @@
 <context>
     <name>Remoter</name>
     <message>
-        <location filename="remoter.cpp" line="22"/>
+        <location filename="remoter.cpp" line="24"/>
         <source>Remoter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="remoter.cpp" line="27"/>
+        <location filename="remoter.cpp" line="29"/>
         <source>Server providing remote access to other plugins.</source>
         <translation type="unfinished"></translation>
     </message>

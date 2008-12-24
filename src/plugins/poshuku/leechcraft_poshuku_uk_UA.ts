@@ -3,7 +3,7 @@
 <context>
     <name>AddToFavoritesDialog</name>
     <message>
-        <location filename="addtofavoritesdialog.cpp" line="13"/>
+        <location filename="addtofavoritesdialog.cpp" line="16"/>
         <source>untagged</source>
         <translation type="unfinished"></translation>
     </message>
@@ -59,27 +59,27 @@
 <context>
     <name>BrowserWidget</name>
     <message>
-        <location filename="browserwidget.cpp" line="14"/>
+        <location filename="browserwidget.cpp" line="17"/>
         <source>Back</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="18"/>
+        <location filename="browserwidget.cpp" line="21"/>
         <source>Forward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="22"/>
+        <location filename="browserwidget.cpp" line="25"/>
         <source>Reload</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="26"/>
+        <location filename="browserwidget.cpp" line="29"/>
         <source>Stop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="30"/>
+        <location filename="browserwidget.cpp" line="33"/>
         <source>Add to favorites...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -92,53 +92,53 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="103"/>
+        <location filename="core.cpp" line="112"/>
         <source>untagged</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="301"/>
+        <location filename="core.cpp" line="315"/>
         <source>Unknown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="351"/>
+        <location filename="core.cpp" line="365"/>
         <source>Could not create Poshuku directory.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="358"/>
+        <location filename="core.cpp" line="372"/>
         <source>Could not save cookies, error opening cookie file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="373"/>
+        <location filename="core.cpp" line="387"/>
         <source>Loading %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="412"/>
+        <location filename="core.cpp" line="426"/>
         <source>The URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="423"/>
+        <location filename="core.cpp" line="437"/>
         <source>The proxy &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="450"/>
+        <location filename="core.cpp" line="464"/>
         <source>The URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="179"/>
-        <source></source>
+        <location filename="core.cpp" line="335"/>
+        <source>Save external data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="321"/>
-        <source>Save external data</source>
+        <location filename="core.cpp" line="188"/>
+        <source></source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -186,17 +186,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="117"/>
+        <location filename="poshuku.cpp" line="95"/>
         <source>Simple yet functional web browser</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="281"/>
+        <location filename="poshuku.cpp" line="334"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="195"/>
+        <location filename="poshuku.cpp" line="224"/>
         <source>The URL you entered could not be opened by Poshuku. Sorry. By the way, you entered:&lt;br /&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
