@@ -27,6 +27,7 @@ signals:
 	void iconChanged (const QIcon&);
 	void needToClose ();
 	void addToFavorites (const QString&, const QString&);
+	void statusBarChanged (const QString&);
 };
 
 #endif

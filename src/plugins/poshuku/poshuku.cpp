@@ -47,6 +47,10 @@ void Poshuku::Init ()
 			this,
 			SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
 	connect (&Core::Instance (),
+			SIGNAL (statusBarChanged (QWidget*, const QString&)),
+			this,
+			SIGNAL (statusBarChanged (QWidget*, const QString&)));
+	connect (&Core::Instance (),
 			SIGNAL (error (const QString&)),
 			this,
 			SLOT (handleError (const QString&)));

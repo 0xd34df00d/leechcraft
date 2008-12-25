@@ -170,7 +170,6 @@ void SkinEngine::updateIconSet (const QList<QAction*>& actions)
 
 		if (actionIconOff.size ())
 		{
-			qDebug () << actionIconOff;
 			QString offIcon;
 			if (IconName2FileName_.contains (actionIconOff))
 				offIcon = IconName2FileName_ [actionIconOff] + ".png";

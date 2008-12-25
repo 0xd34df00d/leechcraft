@@ -182,6 +182,10 @@ BrowserWidget* Core::NewURL (const QString& url)
 			SIGNAL (urlChanged (const QString&)),
 			this,
 			SLOT (handleURLChanged (const QString&)));
+	connect (widget,
+			SIGNAL (statusBarChanged (const QString&)),
+			this,
+			SLOT (handleStatusBarChanged (const QString&)));
 
 	Widgets_.push_back (widget);
 
@@ -485,6 +489,11 @@ void Core::handleSslErrors (QNetworkReply *reply, const QList<QSslError>& errors
 		}
 	}
 	settings.endGroup ();
+}
+
+void Core::handleStatusBarChanged (const QString& msg)
+{
+	emit statusBarChanged (static_cast<QWidget*> (sender ()), msg);
 }
 
 void Core::favoriteTagsUpdated (const QStringList& tags)

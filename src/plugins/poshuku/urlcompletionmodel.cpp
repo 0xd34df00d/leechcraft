@@ -40,8 +40,7 @@ Qt::ItemFlags URLCompletionModel::flags (const QModelIndex&) const
 	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
-QVariant URLCompletionModel::headerData (int column, Qt::Orientation orient,
-		int role) const
+QVariant URLCompletionModel::headerData (int, Qt::Orientation, int) const
 {
 	return QVariant ();
 }

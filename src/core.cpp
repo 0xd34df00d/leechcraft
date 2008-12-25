@@ -606,6 +606,14 @@ void Core::handleChangeTabIcon (QWidget *contents, const QIcon& icon)
 	TabContainer_->ChangeTabIcon (contents, icon);
 }
 
+void Core::handleStatusBarChanged (QWidget *contents, const QString& msg)
+{
+	if (contents->visibleRegion ().isEmpty ())
+		return;
+
+	ReallyMainWindow_->statusBar ()->showMessage (msg, 30000);
+}
+
 QModelIndex Core::MapToSource (const QModelIndex& index) const
 {
 	return MergeModel_->mapToSource (FilterModel_->mapToSource (index));
@@ -671,5 +679,9 @@ void Core::InitMultiTab (QObject *plugin)
 			SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
 			this,
 			SLOT (handleChangeTabIcon (QWidget*, const QIcon&)));
+	connect (plugin,
+			SIGNAL (statusBarChanged (QWidget*, const QString&)),
+			this,
+			SLOT (handleStatusBarChanged (QWidget*, const QString&)));
 }
 

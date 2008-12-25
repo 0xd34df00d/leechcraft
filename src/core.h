@@ -90,6 +90,7 @@ namespace LeechCraft
 		void handleRemoveTab (QWidget*);
 		void handleChangeTabName (QWidget*, const QString&);
 		void handleChangeTabIcon (QWidget*, const QIcon&);
+		void handleStatusBarChanged (QWidget*, const QString&);
 	private:
 		QModelIndex MapToSource (const QModelIndex&) const;
 		void InitJobHolder (QObject*);

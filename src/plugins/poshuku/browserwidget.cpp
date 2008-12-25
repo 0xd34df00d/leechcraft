@@ -14,20 +14,20 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 
 	QToolBar *bar = new QToolBar ();
 	
-	QAction *back = new QAction (tr ("Back"),
-			this);
+	QAction *back = Ui_.WebView_->pageAction (QWebPage::Back);
+	back->setParent (this);
 	back->setProperty ("ActionIcon", "poshuku_back");
 
-	QAction *forward = new QAction (tr ("Forward"),
-			this);
+	QAction *forward = Ui_.WebView_->pageAction (QWebPage::Forward);
+	forward->setParent (this);
 	forward->setProperty ("ActionIcon", "poshuku_forward");
 
-	QAction *reload = new QAction (tr ("Reload"),
-			this);
+	QAction *reload = Ui_.WebView_->pageAction (QWebPage::Reload);
+	reload->setParent (this);
 	reload->setProperty ("ActionIcon", "poshuku_reload");
 
-	QAction *stop = new QAction (tr ("Stop"),
-			this);
+	QAction *stop = Ui_.WebView_->pageAction (QWebPage::Stop);
+	stop->setParent (this);
 	stop->setProperty ("ActionIcon", "poshuku_stop");
 
 	QAction *add2Favorites = new QAction (tr ("Add to favorites..."),
@@ -46,22 +46,6 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 
 	static_cast<QVBoxLayout*> (layout ())->insertWidget (0, bar);
 
-	connect (back,
-			SIGNAL (triggered ()),
-			Ui_.WebView_,
-			SLOT (back ()));
-	connect (forward,
-			SIGNAL (triggered ()),
-			Ui_.WebView_,
-			SLOT (forward ()));
-	connect (reload,
-			SIGNAL (triggered ()),
-			Ui_.WebView_,
-			SLOT (reload ()));
-	connect (stop,
-			SIGNAL (triggered ()),
-			Ui_.WebView_,
-			SLOT (stop ()));
 	connect (add2Favorites,
 			SIGNAL (triggered ()),
 			this,
@@ -89,6 +73,12 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			SLOT (handleIconChanged ()));
 	connect (Ui_.WebView_,
 			SIGNAL (statusBarMessage (const QString&)),
+			this,
+			SLOT (handleStatusBarMessage (const QString&)));
+	connect (Ui_.WebView_->page (),
+			SIGNAL (linkHovered (const QString&,
+					const QString&,
+					const QString&)),
 			this,
 			SLOT (handleStatusBarMessage (const QString&)));
 
@@ -123,13 +113,12 @@ void BrowserWidget::keyReleaseEvent (QKeyEvent *e)
 
 void BrowserWidget::handleIconChanged ()
 {
-	qDebug () << Q_FUNC_INFO << Ui_.WebView_->icon ();
 	emit iconChanged (Ui_.WebView_->icon ());
 }
 
-void BrowserWidget::handleStatusBarMessage (const QString&)
+void BrowserWidget::handleStatusBarMessage (const QString& msg)
 {
-//	Ui_.LoadProgress_->setFormat (str + " (%p)");
+	emit statusBarChanged (msg);
 }
 
 void BrowserWidget::on_URLEdit__returnPressed ()

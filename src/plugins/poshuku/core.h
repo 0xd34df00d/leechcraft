@@ -75,6 +75,7 @@ private slots:
 	void handleAuthentication (QNetworkReply*, QAuthenticator*);
 	void handleProxyAuthentication (const QNetworkProxy&, QAuthenticator*);
 	void handleSslErrors (QNetworkReply*, const QList<QSslError>&);
+	void handleStatusBarChanged (const QString&);
 	void favoriteTagsUpdated (const QStringList&);
 	void saveSession ();
 	void restorePages ();
@@ -85,6 +86,7 @@ signals:
 	void changeTabName (QWidget*, const QString&);
 	void changeTabIcon (QWidget*, const QIcon&);
 	void error (const QString&) const;
+	void statusBarChanged (QWidget*, const QString&);
 };
 
 #endif

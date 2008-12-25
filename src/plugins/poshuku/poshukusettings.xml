@@ -15,6 +15,10 @@
 				<label lang="en" value="Restore previous session" />
 				<label lang="ru" value="Восстанавливать предыдущую сессию" />
 			</item>
+			<item type="checkbox" property="DifferLocationsByExtension" state="on">
+				<label lang="en" value="Differ download locations by file extension" />
+				<label lang="ru" value="Различать папки для скачивания по расширению файла" />
+			</item>
 		</tab>
 	</page>
 	<page>

@@ -501,6 +501,18 @@ public:
  * name for the tab. If your plugin could open/close multiple tabs, have
  * a look at IMultiTabs.
  *
+ * Plugin is expected to implement following signals:
+ * - addNewTab(const QString&,QWidget*) which adds a new tab with the
+ *   given name and widget contents.
+ * - removeTab(QWidget*) which removes tab with given contents.
+ * - changeTabName(QWidget*,const QString&) which changes tab name of
+ *   the tab with the given widget.
+ * - changeTabIcon(QWidget*,const QIcon&) which changes the icon of the
+ *   tab with the given widget.
+ * - statusBarChanged(QWidget*,const QString&) notifies that the status
+ *   bar message of the given widget is changed. Note that the message
+ *   would be updated only if the given widget is visible.
+ *
  * @sa IMultiTabs
  * @sa IWindow
  */
