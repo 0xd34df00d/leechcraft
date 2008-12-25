@@ -100,7 +100,7 @@ void Core::DoDelayedInit ()
 				 ver.at (0).digitValue (),
 				 ver.at (1).digitValue (), 
 				 ver.at (2).digitValue (),
-				 ver.at (3).digitValue ()), 0);
+				 ver.at (3).digitValue ()));
 		setLoggingSettings ();
         QList<QVariant> ports = XmlSettingsManager::Instance ()->property ("TCPPortRange").toList ();
         Session_->listen_on (std::make_pair (ports.at (0).toInt (), ports.at (1).toInt ()));

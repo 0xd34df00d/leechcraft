@@ -75,6 +75,7 @@ class Core : public QAbstractItemModel
     bool SaveScheduled_;
 	std::auto_ptr<StorageBackend> StorageBackend_;
     ItemModel *ItemModel_;
+	int CurrentRow_;
 
     Core ();
 public:
@@ -100,6 +101,7 @@ public:
     void UpdateTags (const QStringList&);
     void MarkItemAsUnread (const QModelIndex&);
 	bool IsItemRead (int) const;
+	bool IsItemCurrent (int) const;
     void MarkChannelAsRead (const QModelIndex&);
     void MarkChannelAsUnread (const QModelIndex&);
     QStringList GetTagsForIndex (int) const;

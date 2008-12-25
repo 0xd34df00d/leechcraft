@@ -37,7 +37,9 @@ bool ItemsFilterModel::filterAcceptsRow (int sourceRow,
 			return false;
 	}
 
-	if (HideRead_ && Core::Instance ().IsItemRead (sourceRow))
+	if (HideRead_ &&
+			Core::Instance ().IsItemRead (sourceRow) &&
+			!Core::Instance ().IsItemCurrent (sourceRow))
 		return false;
 	else
 		return QSortFilterProxyModel::filterAcceptsRow (sourceRow,

@@ -32,6 +32,7 @@ using LeechCraft::Util::TagsCompletionModel;
 
 Core::Core ()
 : SaveScheduled_ (false)
+, CurrentRow_ (-1)
 {
 	qRegisterMetaTypeStreamOperators<Feed> ("Feed");
 	qRegisterMetaTypeStreamOperators<Item> ("Item");
@@ -276,6 +277,7 @@ void Core::FeedActivated (const QModelIndex& index)
 
 void Core::Selected (const QModelIndex& index)
 {
+	CurrentRow_ = index.row ();
 	ItemShort item = CurrentItems_ [index.row ()];
 	item.Unread_ = false;
 	StorageBackend_->UpdateItem (item,
@@ -315,6 +317,11 @@ void Core::MarkItemAsUnread (const QModelIndex& i)
 bool Core::IsItemRead (int item) const
 {
 	return !CurrentItems_ [item].Unread_;
+}
+
+bool Core::IsItemCurrent (int item) const
+{
+	return CurrentRow_ == item;
 }
 
 void Core::MarkChannelAsRead (const QModelIndex& i)
@@ -750,6 +757,7 @@ void Core::currentChannelChanged (const QModelIndex& index)
 	ChannelShort ch = ChannelsModel_->GetChannelForIndex (index);
 	CurrentChannelHash_ = qMakePair<QString, QString> (ch.ParentURL_,
 			ch.Title_);
+	CurrentRow_ = -1;
 	CurrentItems_.clear ();
 	StorageBackend_->GetItems (CurrentItems_, ch.ParentURL_ + ch.Title_);
 	reset ();
