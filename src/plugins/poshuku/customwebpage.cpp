@@ -24,7 +24,7 @@ CustomWebPage::~CustomWebPage ()
 
 void CustomWebPage::handleDownloadRequested (const QNetworkRequest& request)
 {
-	qDebug () << Q_FUNC_INFO << request.rawHeaderList () << request.url ().toString ();
+	Core::Instance ().GotLink (request.url ().toString ());
 }
 
 void CustomWebPage::handleUnsupportedContent (QNetworkReply *reply)

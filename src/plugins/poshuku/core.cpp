@@ -13,6 +13,7 @@
 #include <QNetworkProxy>
 #include <QDesktopServices>
 #include <QFileDialog>
+#include <QMessageBox>
 #include <QtDebug>
 #include <plugininterface/proxy.h>
 #include <interfaces/interfaces.h>
@@ -329,6 +330,13 @@ void Core::gotUnsupportedContent ()
 
 	LeechCraft::TaskParameters parameters = LeechCraft::Autostart;
 
+	QString propName = "ExternalDataSaveLocation";
+	if (XmlSettingsManager::Instance ()->
+			property ("DifferLocationsByExtension").toBool ())
+		propName += "/External";
+	
+	bool added = false;
+
 	for (QObjectList::const_iterator i = Downloaders_.begin (),
 			end = Downloaders_.end (); i != end; ++i)
 	{
@@ -338,7 +346,7 @@ void Core::gotUnsupportedContent ()
 			QString directory = QFileDialog::getExistingDirectory (0,
 					tr ("Save external data"),
 					XmlSettingsManager::Instance ()->
-						Property ("ExternalDataSaveLocation",
+						Property (propName,
 							QDesktopServices::storageLocation (
 								QDesktopServices::DocumentsLocation))
 								.toString ());
@@ -351,12 +359,84 @@ void Core::gotUnsupportedContent ()
 				directory
 			};
 
-			XmlSettingsManager::Instance ()->setProperty ("ExternalDataSaveLocation", directory);
+			XmlSettingsManager::Instance ()->
+				setProperty (propName.toStdString ().c_str (), directory);
 
 			downloader->AddJob (dParams, parameters);
+
+			added = true;
+
 			break;
 		}
 	}
+
+	if (!added &&
+			XmlSettingsManager::Instance ()->
+				property ("NotifyUnsuccessfulPushes").toBool ())
+		QMessageBox::warning (0,
+				tr ("Error"),
+				tr ("No plugins were found that could download the "
+					"content from URL<br /><code>%1</code>")
+					.arg (reply->url ().toString ()));
+}
+
+void Core::GotLink (const QString& link)
+{
+	LeechCraft::TaskParameters parameters = LeechCraft::Autostart;
+
+	QString propName = "ExternalDataSaveLocation";
+	if (XmlSettingsManager::Instance ()->
+			property ("DifferLocationsByExtension").toBool ())
+	{
+		QString suffix = QFileInfo (link).suffix ();
+		if (suffix.isEmpty ())
+			suffix = "/EmptySuffix";
+		else
+			suffix.prepend ("/");
+	}
+
+	bool added = false;
+
+	for (QObjectList::const_iterator i = Downloaders_.begin (),
+			end = Downloaders_.end (); i != end; ++i)
+	{
+		IDownload *downloader = qobject_cast<IDownload*> (*i);
+		if (downloader->CouldDownload (link.toUtf8 (), parameters))
+		{
+			QString directory = QFileDialog::getExistingDirectory (0,
+					tr ("Save link"),
+					XmlSettingsManager::Instance ()->
+						Property (propName,
+							QDesktopServices::storageLocation (
+								QDesktopServices::DocumentsLocation))
+								.toString ());
+			if (directory.isEmpty ())
+				return;
+
+			LeechCraft::DownloadParams dParams =
+			{
+				link.toUtf8 (),
+				directory
+			};
+
+			XmlSettingsManager::Instance ()->
+				setProperty (propName.toStdString ().c_str (), directory);
+
+			downloader->AddJob (dParams, parameters);
+			
+			added = true;
+
+			break;
+		}
+	}
+
+	if (!added &&
+			XmlSettingsManager::Instance ()->
+				property ("NotifyUnsuccessfulPushes").toBool ())
+		QMessageBox::warning (0,
+				tr ("Error"),
+				tr ("No plugins were found that could download the "
+					"URL<br /><code>%1</code>").arg (link));
 }
 
 void Core::saveCookies () const

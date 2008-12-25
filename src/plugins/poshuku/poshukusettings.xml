@@ -19,6 +19,10 @@
 				<label lang="en" value="Differ download locations by file extension" />
 				<label lang="ru" value="Различать папки для скачивания по расширению файла" />
 			</item>
+			<item type="checkbox" property="NotifyUnsuccessfulPushes" state="off">
+				<label lang="en" value="Notify when there are no plugins to handle requested data" />
+				<label lang="ru" value="Уведомлять при отсутствии плагинов, позволяющих обработать запрошенные данные" />
+			</item>
 		</tab>
 	</page>
 	<page>

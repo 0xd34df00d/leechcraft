@@ -58,6 +58,7 @@ public:
 	QNetworkAccessManager* GetNetworkAccessManager () const;
 	StorageBackend* GetStorageBackend () const;
 	void Unregister (BrowserWidget*);
+	void GotLink (const QString&);
 private:
 	void DoCommonAuth (const QString&, QAuthenticator*);
 	void RestoreSession (bool);
