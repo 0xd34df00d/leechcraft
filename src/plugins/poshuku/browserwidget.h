@@ -16,11 +16,15 @@ public:
 	void SetURL (const QUrl&);
 protected:
 	void keyReleaseEvent (QKeyEvent*);
+private:
+	void PrintImpl (bool);
 private slots:
 	void handleIconChanged ();
 	void handleStatusBarMessage (const QString&);
 	void on_URLEdit__returnPressed ();
 	void handleAdd2Favorites ();
+	void handlePrinting ();
+	void handlePrintingWithPreview ();
 signals:
 	void titleChanged (const QString&);
 	void urlChanged (const QString&);

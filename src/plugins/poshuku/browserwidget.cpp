@@ -4,6 +4,9 @@
 #include <QToolBar>
 #include <QCompleter>
 #include <QWidgetAction>
+#include <QPrinter>
+#include <QPrintDialog>
+#include <QPrintPreviewDialog>
 #include "core.h"
 #include "historymodel.h"
 
@@ -24,21 +27,34 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 
 	QAction *reload = Ui_.WebView_->pageAction (QWebPage::Reload);
 	reload->setParent (this);
+	reload->setShortcut (Qt::Key_F5);
 	reload->setProperty ("ActionIcon", "poshuku_reload");
 
 	QAction *stop = Ui_.WebView_->pageAction (QWebPage::Stop);
 	stop->setParent (this);
+	stop->setShortcut (Qt::Key_Escape);
 	stop->setProperty ("ActionIcon", "poshuku_stop");
 
 	QAction *add2Favorites = new QAction (tr ("Add to favorites..."),
 			this);
 	add2Favorites->setProperty ("ActionIcon", "poshuku_addtofavorites");
 
+	QAction *print = new QAction (tr ("Print..."),
+			this);
+	print->setProperty ("ActionIcon", "poshuku_print");
+
+	QAction *printPreview = new QAction (tr ("Print with preview..."),
+			this);
+	printPreview->setProperty ("ActionIcon", "poshuku_printpreview");
+
 	bar->addAction (back);
 	bar->addAction (forward);
 	bar->addAction (reload);
 	bar->addAction (stop);
+	bar->addSeparator ();
 	bar->addAction (add2Favorites);
+	bar->addAction (print);
+	bar->addAction (printPreview);
 
 	QWidgetAction *addressBar = new QWidgetAction (this);
 	addressBar->setDefaultWidget (Ui_.URLEdit_);
@@ -50,6 +66,14 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			SIGNAL (triggered ()),
 			this,
 			SLOT (handleAdd2Favorites ()));
+	connect (print,
+			SIGNAL (triggered ()),
+			this,
+			SLOT (handlePrinting ()));
+	connect (printPreview,
+			SIGNAL (triggered ()),
+			this,
+			SLOT (handlePrintingWithPreview ()));
 
 	connect (Ui_.WebView_,
 			SIGNAL (titleChanged (const QString&)),
@@ -111,6 +135,34 @@ void BrowserWidget::keyReleaseEvent (QKeyEvent *e)
 		QWidget::keyReleaseEvent (e);
 }
 
+void BrowserWidget::PrintImpl (bool preview)
+{
+	std::auto_ptr<QPrinter> printer (new QPrinter ());
+
+	QPrintDialog *dialog = new QPrintDialog (printer.get (), this);
+	dialog->setWindowTitle (tr ("Print web page"));
+	if (!Ui_.WebView_->selectedText ().isEmpty ())
+		dialog->addEnabledOption (QAbstractPrintDialog::PrintSelection);
+
+	if (dialog->exec () != QDialog::Accepted)
+		return;
+
+	if (preview)
+	{
+		QPrintPreviewDialog *prevDialog =
+			new QPrintPreviewDialog (printer.get (), this);
+		connect (prevDialog,
+				SIGNAL (paintRequested (QPrinter*)),
+				Ui_.WebView_,
+				SLOT (print (QPrinter*)));
+
+		if (prevDialog->exec () != QDialog::Accepted)
+			return;
+	}
+
+	Ui_.WebView_->print (printer.get ());
+}
+
 void BrowserWidget::handleIconChanged ()
 {
 	emit iconChanged (Ui_.WebView_->icon ());
@@ -134,5 +186,15 @@ void BrowserWidget::handleAdd2Favorites ()
 {
 	emit addToFavorites (Ui_.WebView_->title (),
 			Ui_.WebView_->url ().toString ());
+}
+
+void BrowserWidget::handlePrinting ()
+{
+	PrintImpl (false);
+}
+
+void BrowserWidget::handlePrintingWithPreview ()
+{
+	PrintImpl (true);
 }
 
