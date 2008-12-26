@@ -11,11 +11,12 @@
  ***************************************************************************
 */
 #include "settings.h"
+#include <QCoreApplication>
 
 Settings::Settings ()
 {
 #ifdef Q_OS_WIN32
-	ConfigDir_ = QDir::applicationDirPath () + "/leechcraft/";
+	ConfigDir_ = QCoreApplication::applicationDirPath () + "/leechcraft/";
 #else
 	ConfigDir_ = "/etc/leechcraft/";
 #endif

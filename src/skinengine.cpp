@@ -4,6 +4,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfoList>
+#include <QApplication>
 #include <QtDebug>
 #include "xmlsettingsmanager.h"
 
