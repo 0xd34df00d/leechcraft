@@ -23,6 +23,8 @@ private slots:
 	void handleStatusBarMessage (const QString&);
 	void on_URLEdit__returnPressed ();
 	void handleAdd2Favorites ();
+	void handleFind ();
+	void findText (const QString&, QWebPage::FindFlags);
 	void handlePrinting ();
 	void handlePrintingWithPreview ();
 signals:

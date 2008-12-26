@@ -9,6 +9,7 @@
 #include <QPrintPreviewDialog>
 #include "core.h"
 #include "historymodel.h"
+#include "finddialog.h"
 
 BrowserWidget::BrowserWidget (QWidget *parent)
 : QWidget (parent)
@@ -39,6 +40,11 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			this);
 	add2Favorites->setProperty ("ActionIcon", "poshuku_addtofavorites");
 
+	QAction *find = new QAction (tr ("Find..."),
+			this);
+	find->setShortcut (Qt::Key_F3);
+	find->setProperty ("ActionIcon", "poshuku_find");
+
 	QAction *print = new QAction (tr ("Print..."),
 			this);
 	print->setProperty ("ActionIcon", "poshuku_print");
@@ -51,6 +57,8 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	bar->addAction (forward);
 	bar->addAction (reload);
 	bar->addAction (stop);
+	bar->addSeparator ();
+	bar->addAction (find);
 	bar->addSeparator ();
 	bar->addAction (add2Favorites);
 	bar->addAction (print);
@@ -74,6 +82,10 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			SIGNAL (triggered ()),
 			this,
 			SLOT (handlePrintingWithPreview ()));
+	connect (find,
+			SIGNAL (triggered ()),
+			this,
+			SLOT (handleFind ()));
 
 	connect (Ui_.WebView_,
 			SIGNAL (titleChanged (const QString&)),
@@ -186,6 +198,25 @@ void BrowserWidget::handleAdd2Favorites ()
 {
 	emit addToFavorites (Ui_.WebView_->title (),
 			Ui_.WebView_->url ().toString ());
+}
+
+void BrowserWidget::handleFind ()
+{
+	FindDialog *dialog = new FindDialog (this);
+	
+	connect (dialog,
+			SIGNAL (next (const QString&, QWebPage::FindFlags)),
+			this,
+			SLOT (findText (const QString&, QWebPage::FindFlags)));
+
+	dialog->show ();
+}
+
+void BrowserWidget::findText (const QString& text,
+		QWebPage::FindFlags flags)
+{
+	bool found = Ui_.WebView_->page ()->findText (text, flags);
+	static_cast<FindDialog*> (sender ())->SetSuccessful (found);
 }
 
 void BrowserWidget::handlePrinting ()

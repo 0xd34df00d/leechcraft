@@ -27,6 +27,7 @@ SET (SRCS
 	storagebackend.cpp
 	sqlstoragebackend.cpp
 	urlcompletionmodel.cpp
+	finddialog.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -49,6 +50,7 @@ SET (HEADERS
 	storagebackend.h
 	sqlstoragebackend.h
 	urlcompletionmodel.h
+	finddialog.h
 	)
 SET (FORMS
 	poshuku.ui
@@ -57,6 +59,7 @@ SET (FORMS
 	authenticationdialog.ui
 	sslerrorsdialog.ui
 	restoresessiondialog.ui
+	finddialog.ui
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS
