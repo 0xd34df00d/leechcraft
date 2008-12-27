@@ -1396,29 +1396,6 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="tab_2" >
-   <attribute name="title" >
-    <string>Logs</string>
-   </attribute>
-   <layout class="QVBoxLayout" name="verticalLayout_5" >
-    <item>
-     <widget class="QTextEdit" name="LogShower_" >
-      <property name="lineWrapMode" >
-       <enum>QTextEdit::NoWrap</enum>
-      </property>
-      <property name="readOnly" >
-       <bool>true</bool>
-      </property>
-      <property name="tabStopWidth" >
-       <number>100</number>
-      </property>
-      <property name="acceptRichText" >
-       <bool>false</bool>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
  </widget>
  <customwidgets>
   <customwidget>

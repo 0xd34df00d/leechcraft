@@ -48,8 +48,6 @@ void TorrentPlugin::Init ()
     SetupStuff ();
 
     setActionsEnabled ();
-
-    Ui_.LogShower_->setPlainText ("BitTorrent initialized");
 }
 
 TorrentPlugin::~TorrentPlugin ()
@@ -549,7 +547,7 @@ void TorrentPlugin::updateOverallStats ()
 
 void TorrentPlugin::doLogMessage (const QString& msg)
 {
-    Ui_.LogShower_->append (msg.trimmed ());
+	emit log (msg);
 }
 
 void TorrentPlugin::UpdateDashboard ()

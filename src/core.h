@@ -91,6 +91,7 @@ namespace LeechCraft
 		void handleChangeTabName (QWidget*, const QString&);
 		void handleChangeTabIcon (QWidget*, const QIcon&);
 		void handleStatusBarChanged (QWidget*, const QString&);
+		void handleLog (const QString&);
 	private:
 		QModelIndex MapToSource (const QModelIndex&) const;
 		void InitJobHolder (QObject*);
@@ -98,6 +99,7 @@ namespace LeechCraft
 		void InitMultiTab (QObject*);
     signals:
         void error (QString);
+		void log (const QString&);
         void downloadFinished (const QString&);
     };
 };

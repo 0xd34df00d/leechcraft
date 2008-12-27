@@ -157,6 +157,7 @@ SET (SRCS
 	childactioneventfilter.cpp
 	tabcontainer.cpp
 	zombitechstyle.cpp
+	logtoolbox.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -171,6 +172,7 @@ SET (HEADERS
 	childactioneventfilter.h
 	tabcontainer.h
 	zombitechstyle.h
+	logtoolbox.h
 	interfaces/interfaces.h
 	interfaces/structures.h
 	)
@@ -178,6 +180,7 @@ SET (FORMS
 	commonjobadder.ui
 	leechcraft.ui
 	pluginmanagerdialog.ui
+	logtoolbox.ui
 	)
 SET (RESOURCES mainresources.qrc)
 SET (TRANSLATIONS

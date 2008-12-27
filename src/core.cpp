@@ -184,6 +184,13 @@ void Core::DelayedInit ()
 					SIGNAL (downloadFinished (const QString&)),
 					this,
 					SIGNAL (downloadFinished (const QString&)));
+		if (qmo->indexOfSignal (QMetaObject::
+					normalizedSignature ("log (const "
+						"QString&)").constData ()) != -1)
+			connect (plugin,
+					SIGNAL (log (const QString&)),
+					this,
+					SLOT (handleLog (const QString&)));
 
 		if (ijh && ijh->GetControls ())
 			InitJobHolder (plugin);
@@ -603,6 +610,12 @@ void Core::handleStatusBarChanged (QWidget *contents, const QString& msg)
 		return;
 
 	ReallyMainWindow_->statusBar ()->showMessage (msg, 30000);
+}
+
+void Core::handleLog (const QString& message)
+{
+	IInfo *ii = qobject_cast<IInfo*> (sender ());
+	emit log (ii->GetName () + ": " + message);
 }
 
 QModelIndex Core::MapToSource (const QModelIndex& index) const

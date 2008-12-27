@@ -14,6 +14,7 @@ class QDockWidget;
 class QTabWidget;
 class QModelIndex;
 class XmlSettingsDialog;
+class LogToolBox;
 
 namespace LeechCraft
 {
@@ -42,6 +43,7 @@ namespace LeechCraft
 
 		PluginManagerDialog *PluginManagerDialog_;
 		FancyPopupManager *FancyPopupManager_;
+		LogToolBox *LogToolBox_;
 
 		bool IsShown_, WasMaximized_;
 	public:
@@ -64,6 +66,7 @@ namespace LeechCraft
 		void on_ActionSettings__triggered ();
 		void on_ActionQuit__triggered ();
 		void on_ActionFullscreenMode__triggered (bool);
+		void on_ActionLogger__triggered ();
 		void updatePanes (const QModelIndex&, const QModelIndex&);
 		void updateSpeedIndicators ();
 		void showHideMain ();

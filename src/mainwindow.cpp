@@ -16,6 +16,7 @@
 #include "skinengine.h"
 #include "childactioneventfilter.h"
 #include "zombitechstyle.h"
+#include "logtoolbox.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -93,11 +94,17 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 
 	PluginManagerDialog_ = new PluginManagerDialog (this);
 
+	LogToolBox_ = new LogToolBox (this);
+
 	splash.showMessage (tr ("Initializing core and plugins..."));
 	connect (&Core::Instance (),
 			SIGNAL (downloadFinished (const QString&)),
 			this,
 			SLOT (handleDownloadFinished (const QString&)));
+	connect (&Core::Instance (),
+			SIGNAL (log (const QString&)),
+			LogToolBox_,
+			SLOT (log (const QString&)));
 
 	Core::Instance ().SetReallyMainWindow (this);
 	Core::Instance ().DelayedInit ();
@@ -305,6 +312,11 @@ void MainWindow::on_ActionFullscreenMode__triggered (bool full)
 	}
 	else
 		showNormal ();
+}
+
+void MainWindow::on_ActionLogger__triggered ()
+{
+	LogToolBox_->show ();
 }
 
 void MainWindow::updatePanes (const QModelIndex& newIndex,

@@ -147,6 +147,7 @@ signals:
     void fileDownloaded (const QString&);
 	void jobFinished (int);
 	void jobRemoved (int);
+	void log (const QString&);
 };
 
 #endif
