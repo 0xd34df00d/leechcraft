@@ -82,6 +82,7 @@ namespace LeechCraft
 		void handleProxySettings () const;
 		void handlePluginAction ();
 		void toggleMultiwindow ();
+		void deleteSelectedHistory (const QModelIndex&);
     private slots:
         void handleFileDownload (const QString&, bool = false);
         void handleClipboardTimer ();

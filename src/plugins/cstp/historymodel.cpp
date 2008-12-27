@@ -125,7 +125,7 @@ void HistoryModel::ScheduleSave ()
 	if (SaveScheduled_)
 		return;
 
-	QTimer::singleShot (100, this, SLOT (writeSettings ()));
+	QTimer::singleShot (1000, this, SLOT (writeSettings ()));
 	SaveScheduled_ = true;
 }
 

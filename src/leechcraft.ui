@@ -151,12 +151,18 @@
          </layout>
         </item>
         <item>
-         <widget class="QTreeView" name="HistoryView_" >
+         <widget class="HistoryTreeView" name="HistoryView_" >
           <property name="rootIsDecorated" >
            <bool>false</bool>
           </property>
           <property name="itemsExpandable" >
            <bool>false</bool>
+          </property>
+          <property name="sortingEnabled" >
+           <bool>true</bool>
+          </property>
+          <property name="animated" >
+           <bool>true</bool>
           </property>
           <property name="expandsOnDoubleClick" >
            <bool>false</bool>
@@ -289,6 +295,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>HistoryTreeView</class>
+   <extends>QTreeView</extends>
+   <header>historytreeview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="mainresources.qrc" />
  </resources>

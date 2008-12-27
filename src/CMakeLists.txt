@@ -158,6 +158,7 @@ SET (SRCS
 	tabcontainer.cpp
 	zombitechstyle.cpp
 	logtoolbox.cpp
+	historytreeview.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -173,6 +174,7 @@ SET (HEADERS
 	tabcontainer.h
 	zombitechstyle.h
 	logtoolbox.h
+	historytreeview.h
 	interfaces/interfaces.h
 	interfaces/structures.h
 	)

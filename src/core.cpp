@@ -527,6 +527,15 @@ void Core::toggleMultiwindow ()
 	TabContainer_->ToggleMultiwindow ();
 }
 
+void Core::deleteSelectedHistory (const QModelIndex& index)
+{
+	QModelIndex mapped = FilterModel_->mapToSource (index);
+	HistoryModel *model =
+		static_cast<HistoryModel*> (*HistoryMergeModel_->
+				GetModelForRow (mapped.row ()));
+	model->RemoveItem (HistoryMergeModel_->mapToSource (mapped));
+}
+
 void Core::handleFileDownload (const QString& file, bool fromBuffer)
 {
     if (!fromBuffer &&

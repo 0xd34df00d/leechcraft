@@ -96,6 +96,11 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 
 	LogToolBox_ = new LogToolBox (this);
 
+	connect (Ui_.HistoryView_,
+			SIGNAL (deleteSelected (const QModelIndex&)),
+			&Core::Instance (),
+			SLOT (deleteSelectedHistory (const QModelIndex&)));
+
 	splash.showMessage (tr ("Initializing core and plugins..."));
 	connect (&Core::Instance (),
 			SIGNAL (downloadFinished (const QString&)),
