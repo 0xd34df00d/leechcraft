@@ -1,0 +1,125 @@
+<ui version="4.0" >
+ <class>SettingsSink</class>
+ <widget class="QDialog" name="SettingsSink" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Preferences</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="mainresources.qrc" >
+    <normaloff>:/resources/images/mainapp.png</normaloff>:/resources/images/mainapp.png</iconset>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <item>
+    <widget class="QComboBox" name="Combobox_" />
+   </item>
+   <item>
+    <widget class="QStackedWidget" name="Dialogs_" >
+     <widget class="QWidget" name="page_2" />
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="mainresources.qrc" />
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>SettingsSink</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>SettingsSink</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Dialogs_</sender>
+   <signal>currentChanged(int)</signal>
+   <receiver>Combobox_</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>168</x>
+     <y>95</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>92</x>
+     <y>47</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Combobox_</sender>
+   <signal>highlighted(int)</signal>
+   <receiver>Dialogs_</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>38</x>
+     <y>45</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>152</x>
+     <y>145</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Combobox_</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>Dialogs_</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>85</x>
+     <y>47</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>193</x>
+     <y>124</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

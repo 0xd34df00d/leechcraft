@@ -13,6 +13,8 @@
 #include "settings.h"
 #include <QCoreApplication>
 
+using namespace LeechCraft;
+
 Settings::Settings ()
 {
 #ifdef Q_OS_WIN32

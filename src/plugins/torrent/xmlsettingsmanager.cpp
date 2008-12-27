@@ -23,7 +23,7 @@ namespace
 
 XmlSettingsManager::XmlSettingsManager ()
 {
-    BaseSettingsManager::Init ();
+	LeechCraft::Util::BaseSettingsManager::Init ();
 }
 
 XmlSettingsManager* XmlSettingsManager::Instance ()

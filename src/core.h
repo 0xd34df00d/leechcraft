@@ -54,6 +54,7 @@ namespace LeechCraft
 
 		void SetReallyMainWindow (MainWindow*);
 
+		QObjectList GetSettables () const;
 		QAbstractItemModel* GetPluginsModel () const;
 		QAbstractProxyModel* GetTasksModel () const;
 		QAbstractProxyModel* GetHistoryModel () const;

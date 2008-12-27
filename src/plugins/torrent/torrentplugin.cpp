@@ -238,6 +238,11 @@ void TorrentPlugin::SetTags (int torrent, const QStringList& tags)
 	Core::Instance ()->UpdateTags (tags, torrent);
 }
 
+LeechCraft::Util::XmlSettingsDialog* TorrentPlugin::GetSettingsDialog () const
+{
+	return XmlSettingsDialog_.get ();
+}
+
 void TorrentPlugin::on_OpenTorrent__triggered ()
 {
     AddTorrentDialog_->Reinit ();
@@ -345,12 +350,6 @@ void TorrentPlugin::on_ForceReannounce__triggered (int row)
 void TorrentPlugin::on_ForceRecheck__triggered (int row)
 {
 	Core::Instance ()->ForceRecheck (row);
-}
-
-void TorrentPlugin::on_Preferences__triggered ()
-{
-    XmlSettingsDialog_->show ();
-    XmlSettingsDialog_->setWindowTitle ("BitTorrent" + tr (": Settings"));
 }
 
 void TorrentPlugin::on_ChangeTrackers__triggered ()
@@ -710,7 +709,7 @@ void TorrentPlugin::SetupCore ()
     TorrentSelectionChanged_ = true;
     LastPeersUpdate_.reset (new QTime);
     LastPeersUpdate_->start ();
-    XmlSettingsDialog_.reset (new XmlSettingsDialog ());
+    XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
     XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/torrentsettings.xml");
     AddTorrentDialog_.reset (new AddTorrent ());
 	connect (Core::Instance (),
@@ -808,15 +807,6 @@ void TorrentPlugin::SetupActions ()
 			SIGNAL (triggered ()),
 			this,
 			SLOT (on_OpenTorrent__triggered ()));
-
-	Preferences_.reset (new QAction (tr ("Settings..."),
-				Toolbar_.get ()));
-	Preferences_->setShortcut (tr ("Ctrl+Shift+P"));
-	Preferences_->setProperty ("ActionIcon", "torrent_preferences");
-	connect (Preferences_.get (),
-			SIGNAL (triggered ()),
-			this,
-			SLOT (on_Preferences__triggered ()));
 
 	ChangeTrackers_.reset (new QAction (tr ("Change trackers..."),
 				Toolbar_.get ()));
@@ -954,8 +944,6 @@ void TorrentPlugin::SetupActions ()
 	Toolbar_->addSeparator ();
 	Toolbar_->addAction (Import_.get ());
 	Toolbar_->addAction (Export_.get ());
-	Toolbar_->addSeparator ();
-	Toolbar_->addAction (Preferences_.get ());
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_torrent, TorrentPlugin);

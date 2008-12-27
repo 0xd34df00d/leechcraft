@@ -95,6 +95,11 @@ void Core::SetReallyMainWindow (MainWindow *win)
 	ReallyMainWindow_->GetTabWidget ()->installEventFilter (this);
 }
 
+QObjectList Core::GetSettables () const
+{
+	return PluginManager_->GetAllCastableTo<IHaveSettings*> ();
+}
+
 QAbstractItemModel* Core::GetPluginsModel () const
 {
 	return PluginManager_;

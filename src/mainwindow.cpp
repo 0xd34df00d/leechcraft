@@ -17,6 +17,7 @@
 #include "childactioneventfilter.h"
 #include "zombitechstyle.h"
 #include "logtoolbox.h"
+#include "settingssink.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -43,6 +44,10 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 
 	Ui_.ActionAddTask_->setProperty ("ActionIcon", "addjob");
 	Ui_.ActionSettings_->setProperty ("ActionIcon", "settings");
+
+	QWidget *settings = new QWidget ();
+	settings->addAction (Ui_.ActionSettings_);
+	Ui_.MainTabWidget_->setCornerWidget (settings, Qt::TopRightCorner);
 
 	connect (Ui_.ActionAboutQt_,
 			SIGNAL (triggered ()),
@@ -81,20 +86,19 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 
 	SetTrayIcon ();
 
-	FancyPopupManager_ = new FancyPopupManager (TrayIcon_, this);
-
-	XmlSettingsDialog_ = new XmlSettingsDialog (this);
+	XmlSettingsDialog_ = new XmlSettingsDialog ();
 	XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 			":/coresettings.xml");
 	XmlSettingsManager::Instance ()->RegisterObject ("IconSet",
 			this, "updateIconSet");
 
-	SetStatusBar ();
+	SettingsSink_ = new SettingsSink (tr ("LeechCraft"), XmlSettingsDialog_);
 
+	SetStatusBar ();
 	ReadSettings ();
 
+	FancyPopupManager_ = new FancyPopupManager (TrayIcon_, this);
 	PluginManagerDialog_ = new PluginManagerDialog (this);
-
 	LogToolBox_ = new LogToolBox (this);
 
 	connect (Ui_.HistoryView_,
@@ -122,6 +126,7 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 
 	SplashScreen_->showMessage (tr ("Initializing core and plugins..."),
 			Qt::AlignLeft | Qt::AlignBottom);
+
 	QAbstractItemModel *tasksModel = Core::Instance ().GetTasksModel ();
 	Ui_.PluginsTasksTree_->setModel (tasksModel);
 
@@ -164,6 +169,11 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	connect (speedUpd, SIGNAL (timeout ()), this, SLOT (updateSpeedIndicators ()));
 	speedUpd->start ();
 	qApp->setQuitOnLastWindowClosed (false);
+
+	QObjectList settable = Core::Instance ().GetSettables ();
+	for (QObjectList::const_iterator i = settable.begin (),
+			end = settable.end (); i != end; ++i)
+		SettingsSink_->AddDialog (*i);
 
 	updateIconSet ();
 
@@ -288,8 +298,7 @@ void MainWindow::on_ActionAddTask__triggered ()
 
 void MainWindow::on_ActionSettings__triggered ()
 {
-	XmlSettingsDialog_->show ();
-	XmlSettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
+	SettingsSink_->show ();
 }
 
 void MainWindow::on_ActionQuit__triggered ()
@@ -301,6 +310,7 @@ void MainWindow::on_ActionQuit__triggered ()
 	delete TrayIcon_;
 	qDebug () << "Releasing XmlSettingsManager";
 	delete XmlSettingsDialog_;
+	delete SettingsSink_;
 	XmlSettingsManager::Instance ()->Release ();
 	qDebug () << "Destroyed fine";
 

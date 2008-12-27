@@ -20,6 +20,8 @@
 #include "file.h"
 #include "settings.h"
 
+using namespace LeechCraft;
+
 Scripter::Scripter (const QDomElement& elem)
 : Container_ (elem)
 {

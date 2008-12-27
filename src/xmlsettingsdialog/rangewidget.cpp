@@ -15,6 +15,8 @@
 #include <QSpinBox>
 #include "rangewidget.h"
 
+using namespace LeechCraft;
+
 RangeWidget::RangeWidget (QWidget *parent)
 : QWidget (parent)
 {

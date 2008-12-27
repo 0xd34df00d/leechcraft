@@ -2,8 +2,8 @@
 #define CSTP_H
 #include <memory>
 #include <interfaces/interfaces.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 
-class XmlSettingsDialog;
 class Core;
 class QTabWidget;
 class QToolBar;
@@ -28,7 +28,7 @@ class CSTP : public QObject
 
 	QMenu *Plugins_;
 	std::auto_ptr<QTranslator> Translator_;
-	std::auto_ptr<XmlSettingsDialog> XmlSettingsDialog_;
+	std::auto_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 	std::auto_ptr<QToolBar> Toolbar_;
 public:
 	virtual ~CSTP ();
@@ -54,8 +54,6 @@ public:
 	QWidget* GetControls () const;
 	QWidget* GetAdditionalInfo () const;
 	void ItemSelected (const QModelIndex&);
-public slots:
-	void showSettings (int = -1);
 private:
 	template<typename T> void ApplyCore2Selection (void (Core::*) (const QModelIndex&), T);
 	void SetupTabWidget ();

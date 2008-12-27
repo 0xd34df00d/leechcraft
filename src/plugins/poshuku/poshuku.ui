@@ -16,13 +16,6 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3" >
      <item>
-      <widget class="QToolButton" name="SettingsButton_" >
-       <property name="text" >
-        <string>Settings...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QLineEdit" name="AddressLine_" >
        <property name="text" >
         <string>http://linux.org.ru/</string>
@@ -44,8 +37,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>382</width>
-        <height>189</height>
+        <width>265</width>
+        <height>145</height>
        </rect>
       </property>
       <attribute name="label" >
@@ -109,7 +102,7 @@
         <x>0</x>
         <y>0</y>
         <width>382</width>
-        <height>189</height>
+        <height>192</height>
        </rect>
       </property>
       <attribute name="label" >

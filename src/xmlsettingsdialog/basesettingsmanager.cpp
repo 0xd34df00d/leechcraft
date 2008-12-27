@@ -1,5 +1,7 @@
 #include "basesettingsmanager.h"
 
+using namespace LeechCraft::Util;
+
 void BaseSettingsManager::Init ()
 {
 	Settings_ = BeginSettings ();

@@ -12,6 +12,8 @@
 */
 #include "file.h"
 
+using namespace LeechCraft;
+
 File::File (QObject *parent)
 : QObject (parent)
 , Imp_ (new QFile)

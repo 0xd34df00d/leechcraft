@@ -13,6 +13,8 @@
 
 #include "dir.h"
 
+using namespace LeechCraft;
+
 Dir::Dir (QObject *parent)
 : QObject (parent)
 , Imp_ (new QDir)

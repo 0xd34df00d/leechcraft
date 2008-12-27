@@ -17,6 +17,8 @@
 #include <QVBoxLayout>
 #include "radiogroup.h"
 
+using namespace LeechCraft;
+
 RadioGroup::RadioGroup (QWidget *parent)
 : QWidget (parent)
 {

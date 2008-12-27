@@ -13,6 +13,8 @@
 #include "bytearray.h"
 #include <QString>
 
+using namespace LeechCraft;
+
 ByteArray::ByteArray (QObject *parent)
 : QObject (parent)
 , Imp_ (new QByteArray ())

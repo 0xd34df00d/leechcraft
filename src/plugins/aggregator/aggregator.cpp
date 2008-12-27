@@ -10,7 +10,6 @@
 #include <QtWebKit>
 #include <QCursor>
 #include <QKeyEvent>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/tagscompletionmodel.h>
 #include <plugininterface/tagscompleter.h>
 #include <plugininterface/util.h>
@@ -64,7 +63,7 @@ void Aggregator::Init ()
 			this,
 			SLOT (unreadNumberChanged (int)));
 
-    XmlSettingsDialog_.reset (new XmlSettingsDialog (this));
+    XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
     XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/aggregatorsettings.xml");
 
     Core::Instance ().DoDelayedInit ();
@@ -240,6 +239,11 @@ QWidget* Aggregator::GetTabContents ()
 	return this;
 }
 
+LeechCraft::Util::XmlSettingsDialog* Aggregator::GetSettingsDialog () const
+{
+	return XmlSettingsDialog_.get ();
+}
+
 void Aggregator::keyPressEvent (QKeyEvent *e)
 {
 	if (e->modifiers () & Qt::ControlModifier)
@@ -316,11 +320,6 @@ void Aggregator::SetupMenuBar ()
 			this);
 	ActionAddFeed_->setObjectName ("ActionAddFeed_");
 	ActionAddFeed_->setProperty ("ActionIcon", "aggregator_add");
-
-	ActionPreferences_ = new QAction (tr ("Preferences..."),
-			this);
-	ActionPreferences_->setObjectName ("ActionPreferences_");
-	ActionPreferences_->setProperty ("ActionIcon", "aggregator_preferences");
 
 	ActionUpdateFeeds_ = new QAction (tr ("Update all feeds"),
 			this);
@@ -403,8 +402,6 @@ void Aggregator::SetupMenuBar ()
     ToolBar_->addAction(ActionExportBinary_);
     ToolBar_->addSeparator();
     ToolBar_->addAction(ActionHideReadItems_);
-    ToolBar_->addSeparator();
-    ToolBar_->addAction(ActionPreferences_);
 }
 
 void Aggregator::showError (const QString& msg)
@@ -432,12 +429,6 @@ void Aggregator::on_ActionRemoveFeed__triggered ()
 	mb.setWindowModality (Qt::WindowModal);
 	if (mb.exec () == QMessageBox::Ok)
 		Core::Instance ().RemoveFeed (ChannelsFilterModel_->mapToSource (Ui_.Feeds_->selectionModel ()->currentIndex ()));
-}
-
-void Aggregator::on_ActionPreferences__triggered ()
-{
-    XmlSettingsDialog_->show ();
-    XmlSettingsDialog_->setWindowTitle (windowTitle () + tr (": Preferences"));
 }
 
 void Aggregator::on_ActionMarkItemAsUnread__triggered ()

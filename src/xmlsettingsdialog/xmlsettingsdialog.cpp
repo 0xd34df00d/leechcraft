@@ -12,9 +12,22 @@
 */
 #include "xmlsettingsdialog.h"
 #include <QFile>
-#include <QtGui/QtGui>
-#include <QtXml/QtXml>
 #include <QtDebug>
+#include <QGroupBox>
+#include <QLineEdit>
+#include <QSpinBox>
+#include <QDoubleSpinBox>
+#include <QPushButton>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QFontComboBox>
+#include <QVBoxLayout>
+#include <QListWidget>
+#include <QStackedWidget>
+#include <QLabel>
+#include <QFormLayout>
+#include <QRadioButton>
+#include <QApplication>
 #include <QUrl>
 #include <QDomNodeList>
 #include <QtScript>
@@ -23,34 +36,25 @@
 #include "radiogroup.h"
 #include "scripter.h"
 
-XmlSettingsDialog::XmlSettingsDialog (QWidget *parent)
-: QDialog (parent)
-, Document_ (new QDomDocument)
+using namespace LeechCraft;
+using namespace LeechCraft::Util;
+
+XmlSettingsDialog::XmlSettingsDialog ()
+: Document_ (new QDomDocument)
 {
     Pages_ = new QStackedWidget;
     Sections_ = new QListWidget;
     Sections_->setMinimumWidth (100);
     Sections_->setMaximumWidth (150);
 
-    connect (Sections_, SIGNAL (currentRowChanged (int)), Pages_, SLOT (setCurrentIndex (int)));
+    connect (Sections_,
+			SIGNAL (currentRowChanged (int)),
+			Pages_,
+			SLOT (setCurrentIndex (int)));
 
-    OK_ = new QPushButton (tr ("OK"));
-    Cancel_ = new QPushButton (tr ("Cancel"));
-
-    QHBoxLayout *buttons = new QHBoxLayout;
-    buttons->addStretch (1);
-    buttons->addWidget (OK_);
-    buttons->addWidget (Cancel_);
-    connect (OK_, SIGNAL (released ()), this, SLOT (accept ()));
-    connect (Cancel_, SIGNAL (released ()), this, SLOT (reject ()));
-
-    QVBoxLayout *rightLay = new QVBoxLayout;
     QHBoxLayout *mainLay = new QHBoxLayout (this);
     mainLay->addWidget (Sections_);
-    rightLay->addWidget (Pages_);
-    rightLay->addStretch (1);
-    mainLay->addLayout (rightLay);
-    rightLay->addLayout (buttons);
+    mainLay->addWidget (Pages_);
     setLayout (mainLay);
 
     DefaultLang_ = "en";
@@ -801,55 +805,6 @@ void XmlSettingsDialog::UpdateSingle (const QString& name,
 	}
 }
 
-void XmlSettingsDialog::updatePreferences ()
-{
-    QString propertyName = sender ()->objectName ();
-    if (propertyName.isEmpty ())
-    {
-        qWarning () << Q_FUNC_INFO << "property name is empty for object" << sender ();
-        return;
-    }
-    QVariant value;
-
-    QLineEdit *edit = qobject_cast<QLineEdit*> (sender ());
-    QCheckBox *checkbox = qobject_cast<QCheckBox*> (sender ());
-    QSpinBox *spinbox = qobject_cast<QSpinBox*> (sender ());
-	QDoubleSpinBox *doubleSpinbox = qobject_cast<QDoubleSpinBox*> (sender ());
-    QGroupBox *groupbox = qobject_cast<QGroupBox*> (sender ());
-    RangeWidget *rangeWidget = qobject_cast<RangeWidget*> (sender ());
-    FilePicker *picker = qobject_cast<FilePicker*> (sender ());
-    RadioGroup *radiogroup = qobject_cast<RadioGroup*> (sender ());
-    QComboBox *combobox = qobject_cast<QComboBox*> (sender ());
-	QFontComboBox *fontComboBox = qobject_cast<QFontComboBox*> (sender ());
-	if (fontComboBox)
-		value = fontComboBox->currentFont ();
-	else if (edit)
-        value = edit->text ();
-    else if (checkbox)
-        value = checkbox->checkState ();
-    else if (spinbox)
-        value = spinbox->value ();
-	else if (doubleSpinbox)
-		value = doubleSpinbox->value ();
-    else if (groupbox)
-        value = groupbox->isChecked ();
-    else if (rangeWidget)
-        value = rangeWidget->GetRange ();
-    else if (picker)
-        value = picker->GetText ();
-    else if (radiogroup)
-        value = radiogroup->GetValue ();
-    else if (combobox)
-        value = combobox->itemData (combobox->currentIndex ());
-    else
-    {
-        qWarning () << Q_FUNC_INFO << "unhandled sender" << sender ();
-        return;
-    }
-
-    Prop2NewValue_ [propertyName] = value;
-}
-
 void XmlSettingsDialog::accept ()
 {
     for (Property2Value_t::const_iterator i = Prop2NewValue_.begin (),
@@ -859,8 +814,6 @@ void XmlSettingsDialog::accept ()
 	UpdateXml ();
 
 	Prop2NewValue_.clear ();
-
-    QDialog::accept ();
 }
 
 void XmlSettingsDialog::reject ()
@@ -914,7 +867,54 @@ void XmlSettingsDialog::reject ()
     }
 	
 	Prop2NewValue_.clear ();
+}
 
-    QDialog::reject ();
+void XmlSettingsDialog::updatePreferences ()
+{
+    QString propertyName = sender ()->objectName ();
+    if (propertyName.isEmpty ())
+    {
+        qWarning () << Q_FUNC_INFO << "property name is empty for object" << sender ();
+        return;
+    }
+    QVariant value;
+
+    QLineEdit *edit = qobject_cast<QLineEdit*> (sender ());
+    QCheckBox *checkbox = qobject_cast<QCheckBox*> (sender ());
+    QSpinBox *spinbox = qobject_cast<QSpinBox*> (sender ());
+	QDoubleSpinBox *doubleSpinbox = qobject_cast<QDoubleSpinBox*> (sender ());
+    QGroupBox *groupbox = qobject_cast<QGroupBox*> (sender ());
+    RangeWidget *rangeWidget = qobject_cast<RangeWidget*> (sender ());
+    FilePicker *picker = qobject_cast<FilePicker*> (sender ());
+    RadioGroup *radiogroup = qobject_cast<RadioGroup*> (sender ());
+    QComboBox *combobox = qobject_cast<QComboBox*> (sender ());
+	QFontComboBox *fontComboBox = qobject_cast<QFontComboBox*> (sender ());
+	if (fontComboBox)
+		value = fontComboBox->currentFont ();
+	else if (edit)
+        value = edit->text ();
+    else if (checkbox)
+        value = checkbox->checkState ();
+    else if (spinbox)
+        value = spinbox->value ();
+	else if (doubleSpinbox)
+		value = doubleSpinbox->value ();
+    else if (groupbox)
+        value = groupbox->isChecked ();
+    else if (rangeWidget)
+        value = rangeWidget->GetRange ();
+    else if (picker)
+        value = picker->GetText ();
+    else if (radiogroup)
+        value = radiogroup->GetValue ();
+    else if (combobox)
+        value = combobox->itemData (combobox->currentIndex ());
+    else
+    {
+        qWarning () << Q_FUNC_INFO << "unhandled sender" << sender ();
+        return;
+    }
+
+    Prop2NewValue_ [propertyName] = value;
 }
 

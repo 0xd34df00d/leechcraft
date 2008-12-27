@@ -18,19 +18,22 @@
 
 class QScriptEngine;
 
-class Scripter
+namespace LeechCraft
 {
-	std::auto_ptr<QScriptEngine> Engine_;
-	QDomElement Container_;
-public:
-	Scripter (const QDomElement&);
+	class Scripter
+	{
+		std::auto_ptr<QScriptEngine> Engine_;
+		QDomElement Container_;
+	public:
+		Scripter (const QDomElement&);
 
-	QStringList GetOptions ();
-	QString HumanReadableOption (const QString&);
-private:
-	QString GetScript (const QDomElement&) const;
-	void FeedRequiredClasses () const;
-	void Reset ();
+		QStringList GetOptions ();
+		QString HumanReadableOption (const QString&);
+	private:
+		QString GetScript (const QDomElement&) const;
+		void FeedRequiredClasses () const;
+		void Reset ();
+	};
 };
 
 #endif

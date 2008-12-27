@@ -23,6 +23,12 @@
       <property name="currentIndex" >
        <number>0</number>
       </property>
+      <property name="iconSize" >
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
       <property name="elideMode" >
        <enum>Qt::ElideRight</enum>
       </property>

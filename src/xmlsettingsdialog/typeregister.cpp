@@ -18,6 +18,8 @@
 #include "file.h"
 #include "bytearray.h"
 
+using namespace LeechCraft;
+
 TypeRegister::TypeRegister ()
 {
 	qRegisterMetaType<Dir> ("Dir");

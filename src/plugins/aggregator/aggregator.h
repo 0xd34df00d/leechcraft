@@ -4,11 +4,11 @@
 #include <interfaces/interfaces.h>
 #include <plugininterface/categoryselector.h>
 #include <plugininterface/tagscompleter.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "ui_mainwidget.h"
 #include "itemsfiltermodel.h"
 #include "channelsfiltermodel.h"
 
-class XmlSettingsDialog;
 class QSystemTrayIcon;
 class QTranslator;
 class QToolBar;
@@ -17,15 +17,15 @@ class ItemBucket;
 class Aggregator : public QWidget
                  , public IInfo
                  , public IEmbedTab
+				 , public IHaveSettings
 {
     Q_OBJECT
-    Q_INTERFACES (IInfo IEmbedTab)
+    Q_INTERFACES (IInfo IEmbedTab IHaveSettings)
 
     Ui::MainWidget Ui_;
 
 	QToolBar *ToolBar_;
     QAction *ActionAddFeed_;
-    QAction *ActionPreferences_;
     QAction *ActionUpdateFeeds_;
     QAction *ActionRemoveFeed_;
     QAction *ActionMarkItemAsUnread_;
@@ -41,7 +41,7 @@ class Aggregator : public QWidget
 	QAction *ActionImportBinary_;
 	QAction *ActionExportBinary_;
 
-	std::auto_ptr<XmlSettingsDialog> XmlSettingsDialog_;
+	std::auto_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 	std::auto_ptr<ItemsFilterModel> ItemsFilterModel_;
 	std::auto_ptr<ChannelsFilterModel> ChannelsFilterModel_;
 	std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsLineCompleter_,
@@ -62,6 +62,7 @@ public:
     void SetProvider (QObject*, const QString&);
     QIcon GetIcon () const;
 	QWidget* GetTabContents ();
+	LeechCraft::Util::XmlSettingsDialog* GetSettingsDialog () const;
 protected:
 	virtual void keyPressEvent (QKeyEvent*);
 private:
@@ -70,7 +71,6 @@ private slots:
     void showError (const QString&);
     void on_ActionAddFeed__triggered ();
     void on_ActionRemoveFeed__triggered ();
-    void on_ActionPreferences__triggered ();
     void on_ActionMarkItemAsUnread__triggered ();
     void on_ActionMarkChannelAsRead__triggered ();
     void on_ActionMarkChannelAsUnread__triggered ();

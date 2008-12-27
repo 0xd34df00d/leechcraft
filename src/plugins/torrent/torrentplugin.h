@@ -23,12 +23,13 @@ class TorrentPlugin : public QObject
                     , public IJobHolder
 					, public IImportExport
 					, public ITaggableJobs
+					, public IHaveSettings
 {
     Q_OBJECT
 
-    Q_INTERFACES (IInfo IDownload IJobHolder IImportExport ITaggableJobs);
+    Q_INTERFACES (IInfo IDownload IJobHolder IImportExport ITaggableJobs IHaveSettings);
 
-    std::auto_ptr<XmlSettingsDialog> XmlSettingsDialog_;
+    std::auto_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 	std::auto_ptr<AddTorrent> AddTorrentDialog_;
 	std::auto_ptr<QTimer> OverallStatsUpdateTimer_;
 	std::auto_ptr<QTime> LastPeersUpdate_;
@@ -41,7 +42,6 @@ class TorrentPlugin : public QObject
 	std::auto_ptr<QToolBar> Toolbar_;
 	std::auto_ptr<QAction> OpenTorrent_,
 		RemoveTorrent_,
-		Preferences_,
 		Resume_,
 		Stop_,
 		CreateTorrent_,
@@ -93,6 +93,9 @@ public:
 
 	// ITaggableJobs
 	void SetTags (int, const QStringList&);
+
+	// IHaveSettings
+	LeechCraft::Util::XmlSettingsDialog* GetSettingsDialog () const;
 public slots:
     void updateTorrentStats ();
 private slots:
@@ -108,7 +111,6 @@ private slots:
 	void on_MoveToBottom__triggered (const std::deque<int>&);
     void on_ForceReannounce__triggered (int);
 	void on_ForceRecheck__triggered (int);
-    void on_Preferences__triggered ();
 	void on_ChangeTrackers__triggered ();
     void on_OverallDownloadRateController__valueChanged (int);
     void on_OverallUploadRateController__valueChanged (int);

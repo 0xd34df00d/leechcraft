@@ -4,7 +4,7 @@
 
 namespace LeechCraft
 {
-	class XmlSettingsManager : public BaseSettingsManager
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
 

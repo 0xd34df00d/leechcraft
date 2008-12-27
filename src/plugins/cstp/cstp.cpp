@@ -12,7 +12,6 @@
 #include <QDir>
 #include <QUrl>
 #include <QTranslator>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/util.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -27,7 +26,7 @@ void CSTP::Init ()
 {
 	Translator_.reset (LeechCraft::Util::InstallTranslator ("cstp"));
 
-	XmlSettingsDialog_.reset (new XmlSettingsDialog ());
+	XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
 	XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (), ":/cstpsettings.xml");
 
 	SetupTabWidget ();
@@ -188,11 +187,6 @@ void CSTP::ItemSelected (const QModelIndex&)
 {
 }
 
-void CSTP::showSettings (int)
-{
-	XmlSettingsDialog_->show ();
-}
-
 template<typename T>
 void CSTP::ApplyCore2Selection (void (Core::*temp) (const QModelIndex&), T view)
 {
@@ -253,12 +247,6 @@ void CSTP::SetupToolbar ()
 	startAll->setProperty ("ActionIcon", "cstp_stopall");
 
 	Toolbar_->addSeparator ();
-
-	QAction *settings = Toolbar_->addAction (tr ("Settings"));
-	settings->setProperty ("Slot", "showSettings");
-	settings->setProperty ("Object",
-			QVariant::fromValue<QObject*> (this));
-	settings->setProperty ("ActionIcon", "cstp_preferences");
 }
 
 void CSTP::handleFileExists (boost::logic::tribool *remove)

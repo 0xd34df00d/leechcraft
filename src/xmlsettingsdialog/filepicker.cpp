@@ -18,6 +18,8 @@
 #include <QApplication>
 #include "filepicker.h"
 
+using namespace LeechCraft;
+
 FilePicker::FilePicker (QWidget *parent)
 : QWidget (parent)
 {

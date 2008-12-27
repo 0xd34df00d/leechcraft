@@ -23,10 +23,7 @@ void Poshuku::Init ()
 
 	RegisterSettings ();
 
-	Ui_.ActionSettings_->setProperty ("ActionIcon", "poshuku_preferences");
-	Ui_.SettingsButton_->setDefaultAction (Ui_.ActionSettings_);
-
-	XmlSettingsDialog_.reset (new XmlSettingsDialog (this));
+	XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
     XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 			":/poshukusettings.xml");
 
@@ -127,6 +124,11 @@ QIcon Poshuku::GetIcon () const
 QWidget* Poshuku::GetTabContents ()
 {
 	return this;
+}
+
+LeechCraft::Util::XmlSettingsDialog* Poshuku::GetSettingsDialog () const
+{
+	return XmlSettingsDialog_.get ();
 }
 
 void Poshuku::RegisterSettings ()
@@ -230,11 +232,6 @@ void Poshuku::on_AddressLine__returnPressed ()
 	}
 
 	Core::Instance ().NewURL (url);
-}
-
-void Poshuku::on_ActionSettings__triggered ()
-{
-	XmlSettingsDialog_->show ();
 }
 
 void Poshuku::on_HistoryView__activated (const QModelIndex& index)

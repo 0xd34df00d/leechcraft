@@ -159,6 +159,7 @@ SET (SRCS
 	zombitechstyle.cpp
 	logtoolbox.cpp
 	historytreeview.cpp
+	settingssink.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -175,6 +176,7 @@ SET (HEADERS
 	zombitechstyle.h
 	logtoolbox.h
 	historytreeview.h
+	settingssink.h
 	interfaces/interfaces.h
 	interfaces/structures.h
 	)
@@ -183,6 +185,7 @@ SET (FORMS
 	leechcraft.ui
 	pluginmanagerdialog.ui
 	logtoolbox.ui
+	settingssink.ui
 	)
 SET (RESOURCES mainresources.qrc)
 SET (TRANSLATIONS

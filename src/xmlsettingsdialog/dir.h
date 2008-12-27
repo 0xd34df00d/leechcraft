@@ -18,66 +18,69 @@
 #include <QScriptEngine>
 #include <QDir>
 
-class Dir : public QObject
+namespace LeechCraft
 {
-	Q_OBJECT
+	class Dir : public QObject
+	{
+		Q_OBJECT
 
-	std::auto_ptr<QDir> Imp_;
-public:
-	Dir (QObject* = 0);
-	Dir (const Dir&);
-	virtual ~Dir ();
-public slots:
-	QString absoluteFilePath (const QString&) const;
-	QString absolutePath () const;
-	QString canonicalPath () const;
-	bool cd (const QString&);
-	bool cdUp ();
-	uint count () const;
-	QString dirName () const;
-	QFileInfoList entryInfoList (const QStringList&,
-			QDir::Filters = QDir::NoFilter,
-			QDir::SortFlags = QDir::NoSort) const;
-	QFileInfoList entryInfoList (QDir::Filters = QDir::NoFilter,
-			QDir::SortFlags = QDir::NoSort) const;
-	QStringList entryList (const QStringList&,
-			QDir::Filters = QDir::NoFilter,
-			QDir::SortFlags = QDir::NoSort) const;
-	QStringList entryList (QDir::Filters = QDir::NoFilter,
-			QDir::SortFlags = QDir::NoSort) const;
-	bool exists (const QString&) const;
-	bool exists () const;
-	QString filePath (const QString&) const;
-	QDir::Filters filter () const;
-	bool isAbsolute () const;
-	bool isReadable () const;
-	bool isRelative () const;
-	bool isRoot () const;
-	bool makeAbsolute ();
-	bool mkdir (const QString&) const;
-	bool mkpath (const QString&) const;
-	QStringList nameFilters () const;
-	QString path () const;
-	void refresh () const;
-	QString relativeFilePath (const QString&) const;
-	bool remove (const QString&);
-	bool rename (const QString&, const QString&);
-	bool rmdir (const QString&) const;
-	bool rmpath (const QString&) const;
-	void setFilter (QDir::Filters);
-	void setNameFilters (const QStringList&);
-	void setPath (const QString&);
-	void setSorting (QDir::SortFlags);
-	QDir::SortFlags sorting () const;
-public:
-	Q_INVOKABLE bool operator!= (const Dir&) const;
-	Q_INVOKABLE Dir& operator= (const Dir&);
-	Q_INVOKABLE bool operator== (const Dir&) const;
-	Q_INVOKABLE QString operator[] (int) const;
+		std::auto_ptr<QDir> Imp_;
+	public:
+		Dir (QObject* = 0);
+		Dir (const Dir&);
+		virtual ~Dir ();
+	public slots:
+		QString absoluteFilePath (const QString&) const;
+		QString absolutePath () const;
+		QString canonicalPath () const;
+		bool cd (const QString&);
+		bool cdUp ();
+		uint count () const;
+		QString dirName () const;
+		QFileInfoList entryInfoList (const QStringList&,
+				QDir::Filters = QDir::NoFilter,
+				QDir::SortFlags = QDir::NoSort) const;
+		QFileInfoList entryInfoList (QDir::Filters = QDir::NoFilter,
+				QDir::SortFlags = QDir::NoSort) const;
+		QStringList entryList (const QStringList&,
+				QDir::Filters = QDir::NoFilter,
+				QDir::SortFlags = QDir::NoSort) const;
+		QStringList entryList (QDir::Filters = QDir::NoFilter,
+				QDir::SortFlags = QDir::NoSort) const;
+		bool exists (const QString&) const;
+		bool exists () const;
+		QString filePath (const QString&) const;
+		QDir::Filters filter () const;
+		bool isAbsolute () const;
+		bool isReadable () const;
+		bool isRelative () const;
+		bool isRoot () const;
+		bool makeAbsolute ();
+		bool mkdir (const QString&) const;
+		bool mkpath (const QString&) const;
+		QStringList nameFilters () const;
+		QString path () const;
+		void refresh () const;
+		QString relativeFilePath (const QString&) const;
+		bool remove (const QString&);
+		bool rename (const QString&, const QString&);
+		bool rmdir (const QString&) const;
+		bool rmpath (const QString&) const;
+		void setFilter (QDir::Filters);
+		void setNameFilters (const QStringList&);
+		void setPath (const QString&);
+		void setSorting (QDir::SortFlags);
+		QDir::SortFlags sorting () const;
+	public:
+		Q_INVOKABLE bool operator!= (const Dir&) const;
+		Q_INVOKABLE Dir& operator= (const Dir&);
+		Q_INVOKABLE bool operator== (const Dir&) const;
+		Q_INVOKABLE QString operator[] (int) const;
+	};
 };
 
-Q_DECLARE_METATYPE (Dir);
-Q_SCRIPT_DECLARE_QMETAOBJECT (Dir, QObject*);
+Q_DECLARE_METATYPE (LeechCraft::Dir);
+Q_SCRIPT_DECLARE_QMETAOBJECT (LeechCraft::Dir, QObject*);
 
 #endif
 

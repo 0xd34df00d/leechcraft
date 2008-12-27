@@ -16,15 +16,16 @@ class Poshuku : public QWidget
 			  , public IInfo
 			  , public IEmbedTab
 			  , public IMultiTabs
+			  , public IHaveSettings
 {
     Q_OBJECT
-    Q_INTERFACES (IInfo IEmbedTab IMultiTabs)
+    Q_INTERFACES (IInfo IEmbedTab IMultiTabs IHaveSettings)
 
 	Ui::Poshuku Ui_;
 
 	std::auto_ptr<QTranslator> Translator_;
 	std::auto_ptr<LeechCraft::Util::TagsCompleter> FavoritesFilterLineCompleter_;
-	std::auto_ptr<XmlSettingsDialog> XmlSettingsDialog_;
+	std::auto_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 	std::auto_ptr<FilterModel> FavoritesFilterModel_;
 	std::auto_ptr<FilterModel> HistoryFilterModel_;
 public:
@@ -38,6 +39,7 @@ public:
 	void SetProvider (QObject*, const QString&);
 	QIcon GetIcon () const;
 	QWidget* GetTabContents ();
+	LeechCraft::Util::XmlSettingsDialog* GetSettingsDialog () const;
 private:
 	void RegisterSettings ();
 	void SetupFavoritesFilter ();
@@ -47,7 +49,6 @@ public slots:
 	QWebView* createWindow ();
 private slots:
 	void on_AddressLine__returnPressed ();
-	void on_ActionSettings__triggered ();
 	void on_HistoryView__activated (const QModelIndex&);
 	void on_FavoritesView__activated (const QModelIndex&);
 	void viewerSettingsChanged ();

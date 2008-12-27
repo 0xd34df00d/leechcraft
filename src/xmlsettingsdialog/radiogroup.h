@@ -17,21 +17,24 @@
 class QButtonGroup;
 class QRadioButton;
 
-class RadioGroup : public QWidget
+namespace LeechCraft
 {
-    Q_OBJECT
+	class RadioGroup : public QWidget
+	{
+		Q_OBJECT
 
-    QString Value_;
-    QButtonGroup *Group_;
-public:
-    RadioGroup (QWidget *parent = 0);
-    void AddButton (QRadioButton*, bool def = false);
-    QString GetValue () const;
-    void SetValue (const QString&);
-private slots:
-    void handleToggled (bool);
-signals:
-    void valueChanged ();
+		QString Value_;
+		QButtonGroup *Group_;
+	public:
+		RadioGroup (QWidget *parent = 0);
+		void AddButton (QRadioButton*, bool def = false);
+		QString GetValue () const;
+		void SetValue (const QString&);
+	private slots:
+		void handleToggled (bool);
+	signals:
+		void valueChanged ();
+	};
 };
 
 #endif

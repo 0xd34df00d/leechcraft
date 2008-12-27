@@ -23,7 +23,7 @@ Q_GLOBAL_STATIC (XmlSettingsManager, XmlSettingsManagerInstance);
 
 XmlSettingsManager::XmlSettingsManager ()
 {
-    BaseSettingsManager::Init ();
+	LeechCraft::Util::BaseSettingsManager::Init ();
 }
 
 XmlSettingsManager* XmlSettingsManager::Instance ()

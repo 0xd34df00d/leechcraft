@@ -13,7 +13,6 @@ class QSplashScreen;
 class QDockWidget;
 class QTabWidget;
 class QModelIndex;
-class XmlSettingsDialog;
 class LogToolBox;
 
 namespace LeechCraft
@@ -21,12 +20,14 @@ namespace LeechCraft
 	namespace Util
 	{
 		class GraphWidget;
+		class XmlSettingsDialog;
 	};
 
 	class Core;
 	class PluginInfo;
 	class PluginManagerDialog;
 	class FancyPopupManager;
+	class SettingsSink;
 
 	class MainWindow : public QMainWindow
 	{
@@ -38,7 +39,8 @@ namespace LeechCraft
 		QLabel *DownloadSpeed_, *UploadSpeed_;
 		Util::GraphWidget *DSpeedGraph_, *USpeedGraph_;
 
-		XmlSettingsDialog *XmlSettingsDialog_;
+		LeechCraft::Util::XmlSettingsDialog *XmlSettingsDialog_;
+		SettingsSink *SettingsSink_;
 		QList<QDockWidget*> PluginWidgets_;
 
 		PluginManagerDialog *PluginManagerDialog_;

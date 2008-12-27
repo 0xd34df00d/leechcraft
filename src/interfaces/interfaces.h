@@ -15,6 +15,7 @@ namespace LeechCraft
 	namespace Util
 	{
 		class HistoryModel;
+		class XmlSettingsDialog;
 	};
 };
 
@@ -545,7 +546,7 @@ public:
 	 * @param[in] feature Queried feature.
 	 * @return Query result.
 	 */
-	bool ImplementsFeature (const QString& feature) const;
+	virtual bool ImplementsFeature (const QString& feature) const = 0;
 
 	/** @brief Virtual destructor.
 	 */
@@ -555,15 +556,22 @@ public:
 /** @brief Interface for plugins that have user-configurable settings.
  *
  * Plugins that have user-configurable settings should implement this
- * interface if they want LeechCraft to show a button to configure them
- * in the menu.
+ * interface if they want to appear in a common settings configuration
+ * dialog.
  */
 class IHaveSettings
 {
 public:
-	/** @brief Asks plugin to show up its window.
+	/** @brief Gets the settings dialog manager object from the plugin.
+	 *
+	 * The returned XmlSettingsDialog would be integrated into common
+	 * settings dialog where user can configure all the plugins that
+	 * provide this interface.
+	 *
+	 * @return The XmlSettingsDialog object that manages the settings
+	 * dialog of the plugin.
 	 */
-	void ShowSettings ();
+	virtual LeechCraft::Util::XmlSettingsDialog* GetSettingsDialog () const = 0;
 
 	/** @brief Virtual destructor.
 	 */

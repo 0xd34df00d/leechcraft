@@ -2,7 +2,7 @@
 #define XMLSETTINGSMANAGER_H
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-class XmlSettingsManager : public BaseSettingsManager
+class XmlSettingsManager : public LeechCraft::Util::BaseSettingsManager
 {
     Q_OBJECT
 public:

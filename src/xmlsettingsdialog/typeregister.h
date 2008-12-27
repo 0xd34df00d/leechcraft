@@ -17,13 +17,16 @@ class QScriptValue;
 class QScriptEngine;
 class QString;
 
-class TypeRegister
+namespace LeechCraft
 {
-	TypeRegister ();
-public:
-	static TypeRegister& Instance ();
+	class TypeRegister
+	{
+		TypeRegister ();
+	public:
+		static TypeRegister& Instance ();
 
-	QScriptValue GetValueForName (const QString&, QScriptEngine*) const;
+		QScriptValue GetValueForName (const QString&, QScriptEngine*) const;
+	};
 };
 
 #endif

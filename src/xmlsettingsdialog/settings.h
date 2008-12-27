@@ -15,19 +15,22 @@
 #include <QObject>
 #include <QSettings>
 
-class Settings : public QObject
+namespace LeechCraft
 {
-	Q_OBJECT
+	class Settings : public QObject
+	{
+		Q_OBJECT
 
-	QString ConfigDir_;
-	QString ThemesConfigDir_;
+		QString ConfigDir_;
+		QString ThemesConfigDir_;
 
-	Q_PROPERTY (QString ConfigDir READ GetConfigDir);
-	Q_PROPERTY (QString ThemesConfigDir READ GetThemesConfigDir);
-public:
-	Settings ();
-	const QString& GetConfigDir () const;
-	const QString& GetThemesConfigDir () const;
+		Q_PROPERTY (QString ConfigDir READ GetConfigDir);
+		Q_PROPERTY (QString ThemesConfigDir READ GetThemesConfigDir);
+	public:
+		Settings ();
+		const QString& GetConfigDir () const;
+		const QString& GetThemesConfigDir () const;
+	};
 };
 
 #endif

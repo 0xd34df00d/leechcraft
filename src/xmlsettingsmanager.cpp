@@ -8,7 +8,7 @@ namespace LeechCraft
 {
 	XmlSettingsManager::XmlSettingsManager ()
 	{
-		BaseSettingsManager::Init ();
+		Util::BaseSettingsManager::Init ();
 	}
 
 	XmlSettingsManager::~XmlSettingsManager ()
