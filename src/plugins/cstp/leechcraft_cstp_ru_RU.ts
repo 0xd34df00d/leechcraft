@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="ru">
-<defaultcodec></defaultcodec>
 <context>
     <name>AddTask</name>
     <message>
@@ -72,27 +71,27 @@
         <translation type="obsolete">Удалить задачу</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="259"/>
+        <location filename="cstp.cpp" line="225"/>
         <source>Start</source>
         <translation>Старт</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="265"/>
+        <location filename="cstp.cpp" line="231"/>
         <source>Stop</source>
         <translation>Стоп</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="251"/>
+        <location filename="cstp.cpp" line="217"/>
         <source>Remove all</source>
         <translation>Удалить все</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="270"/>
+        <location filename="cstp.cpp" line="237"/>
         <source>Start all</source>
         <translation>Стартовать все</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="275"/>
+        <location filename="cstp.cpp" line="243"/>
         <source>Stop all</source>
         <translation>Остановить все</translation>
     </message>
@@ -117,12 +116,12 @@
         <translation type="obsolete">Ошибка</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="297"/>
+        <location filename="cstp.cpp" line="255"/>
         <source>File exists</source>
         <translation>Файл существует</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="297"/>
+        <location filename="cstp.cpp" line="255"/>
         <source>File %1 already exists, continue download?</source>
         <translation>Файл %1 уже существует, продолжить закачку?</translation>
     </message>
@@ -147,65 +146,65 @@
         <translation type="obsolete">Удалить пункт</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="246"/>
+        <location filename="cstp.cpp" line="211"/>
         <source>Remove</source>
         <translation>Удалить</translation>
     </message>
     <message>
         <location filename="cstp.cpp" line="283"/>
         <source>Settings</source>
-        <translation>Настройки</translation>
+        <translation type="obsolete">Настройки</translation>
     </message>
 </context>
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="26"/>
+        <location filename="core.cpp" line="28"/>
         <source>State</source>
         <translation>Состояние</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="25"/>
+        <location filename="core.cpp" line="27"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="27"/>
+        <location filename="core.cpp" line="29"/>
         <source>Progress</source>
         <translation>Прогресс</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="28"/>
+        <location filename="core.cpp" line="30"/>
         <source>Speed</source>
         <translation>Скорость</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="29"/>
+        <location filename="core.cpp" line="31"/>
         <source>ETA</source>
         <translation>ОВП</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="29"/>
+        <location filename="core.cpp" line="31"/>
         <source>DTA</source>
         <translation>ВП</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="89"/>
+        <location filename="core.cpp" line="91"/>
         <source>Could not truncate file </source>
         <translation>Не могу сократить файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="280"/>
+        <location filename="core.cpp" line="279"/>
         <source>Could not open file </source>
         <translation>Не могу открыть файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="197"/>
+        <location filename="core.cpp" line="194"/>
         <source>/s</source>
         <translation>/c</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="190"/>
+        <location filename="core.cpp" line="187"/>
         <source>%1% (%2 of %3)</source>
         <translation>%1% (%2 из %3)</translation>
     </message>
@@ -215,22 +214,22 @@
     <message>
         <location filename="historymodel.cpp" line="14"/>
         <source>Filename</source>
-        <translation>Имя файла</translation>
+        <translation type="obsolete">Имя файла</translation>
     </message>
     <message>
         <location filename="historymodel.cpp" line="14"/>
         <source>URL</source>
-        <translation>URL</translation>
+        <translation type="obsolete">URL</translation>
     </message>
     <message>
         <location filename="historymodel.cpp" line="14"/>
         <source>Size</source>
-        <translation>Размер</translation>
+        <translation type="obsolete">Размер</translation>
     </message>
     <message>
         <location filename="historymodel.cpp" line="14"/>
         <source>Date</source>
-        <translation>Дата</translation>
+        <translation type="obsolete">Дата</translation>
     </message>
 </context>
 <context>
@@ -244,24 +243,19 @@
 <context>
     <name>TabWidget</name>
     <message>
-        <location filename="tabwidget.ui" line="13"/>
-        <source>Form</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="tabwidget.ui" line="28"/>
         <source>History</source>
-        <translation>История</translation>
+        <translation type="obsolete">История</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="54"/>
         <source>Log</source>
-        <translation>Лог</translation>
+        <translation type="obsolete">Лог</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="64"/>
         <source>Remove item</source>
-        <translation>Удалить</translation>
+        <translation type="obsolete">Удалить</translation>
     </message>
 </context>
 <context>
@@ -272,47 +266,47 @@
         <translation>Неизвестный тип задачи</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="447"/>
+        <location filename="task.cpp" line="451"/>
         <source>Unconnected</source>
         <translation>Не подсоединен</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="449"/>
+        <location filename="task.cpp" line="453"/>
         <source>Hostname lookup</source>
         <translation>Поиск имени хоста</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="451"/>
+        <location filename="task.cpp" line="455"/>
         <source>Connecting</source>
         <translation>Соединение</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="428"/>
+        <location filename="task.cpp" line="432"/>
         <source>Sending request</source>
         <translation>Отправка запроса</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="430"/>
+        <location filename="task.cpp" line="434"/>
         <source>Reading reply</source>
         <translation>Чтение ответа</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="432"/>
+        <location filename="task.cpp" line="436"/>
         <source>Connection is idle</source>
         <translation>Соединение не используется</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="457"/>
+        <location filename="task.cpp" line="461"/>
         <source>Closing</source>
         <translation>Закрытие</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="453"/>
+        <location filename="task.cpp" line="457"/>
         <source>Connected</source>
         <translation>Подключено</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="455"/>
+        <location filename="task.cpp" line="459"/>
         <source>Logged in</source>
         <translation>Логин успешен</translation>
     </message>
@@ -367,7 +361,7 @@
         <translation>Возникла неизвестная ошибка.</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="459"/>
+        <location filename="task.cpp" line="463"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>

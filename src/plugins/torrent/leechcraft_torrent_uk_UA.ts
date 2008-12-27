@@ -194,227 +194,227 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="127"/>
+        <location filename="core.cpp" line="128"/>
         <source>Name</source>
         <translation>Назва</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="129"/>
+        <location filename="core.cpp" line="130"/>
         <source>Progress</source>
         <translation>Прогрес</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="128"/>
+        <location filename="core.cpp" line="129"/>
         <source>State</source>
         <translation>Стан</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="427"/>
+        <location filename="core.cpp" line="430"/>
         <source>Idle</source>
         <translation>Бездіяльність</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="316"/>
+        <location filename="core.cpp" line="317"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="372"/>
+        <location filename="core.cpp" line="375"/>
         <source>Could not open file %1 for read: %2</source>
         <translation>Не можу відкрити файл %1 для читання: %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="618"/>
+        <location filename="core.cpp" line="621"/>
         <source>Bad bencoding in torrent file</source>
         <translation>Неправильний формат торрент-файлу</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="623"/>
+        <location filename="core.cpp" line="626"/>
         <source>Invalid torrent file</source>
         <translation>Неправильний торрент-файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="397"/>
+        <location filename="core.cpp" line="400"/>
         <source>General torrent parsing error</source>
         <translation>Загальна помилка обробки торрент-файлу</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="594"/>
+        <location filename="core.cpp" line="597"/>
         <source>File %1 doesn&apos;t exist or could not be read</source>
         <translation>Файл %1 не існує або не може бути прочитаний</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="613"/>
+        <location filename="core.cpp" line="616"/>
         <source>The torrent %1 with save path %2 already exists in the session</source>
         <translation>Торрент %1, що зберігається в %2, вже існує в цій сесії</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="628"/>
+        <location filename="core.cpp" line="631"/>
         <source>Runtime error</source>
         <translation>Помилка під час виконання</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="722"/>
+        <location filename="core.cpp" line="725"/>
         <source>Torrent %1 could not be reannounced at the moment, try again later.</source>
         <translation>Торрент %1 не може бути повторно анонсований в даний момент. Спробуйте повторити пізніше.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1052"/>
+        <location filename="core.cpp" line="1055"/>
         <source>Could not open file %1 for write!</source>
         <translation>Не можу відкрити файл %1 для запису!</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1375"/>
+        <location filename="core.cpp" line="1378"/>
         <source>Queued for checking</source>
         <translation>Поставлено в чергу на перевірку</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1379"/>
+        <location filename="core.cpp" line="1382"/>
         <source>Checking files</source>
         <translation>Перевіряю файли</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1381"/>
+        <location filename="core.cpp" line="1384"/>
         <source>Downloading metadata</source>
         <translation>Завантажую метадані</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1383"/>
+        <location filename="core.cpp" line="1386"/>
         <source>Downloading</source>
         <translation>Заванажую</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1385"/>
+        <location filename="core.cpp" line="1388"/>
         <source>Finished</source>
         <translation>Закінчено</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1387"/>
+        <location filename="core.cpp" line="1390"/>
         <source>Seeding</source>
         <translation>Розповсюджую</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1389"/>
+        <location filename="core.cpp" line="1392"/>
         <source>Allocating</source>
         <translation>Резервую місце</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1408"/>
+        <location filename="core.cpp" line="1411"/>
         <source>Could not open saved torrent %1 for read.</source>
         <translation>Не можу відкрити збережений торрент %1 для читання.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1498"/>
+        <location filename="core.cpp" line="1501"/>
         <source>Bad bencoding in saved torrent data</source>
         <translation>Збережений торрент має неправильний формат</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1512"/>
+        <location filename="core.cpp" line="1515"/>
         <source>Invalid saved torrent data</source>
         <translation>В збереженому торенті неправильні дані</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1516"/>
+        <location filename="core.cpp" line="1519"/>
         <source>The just restored torrent already exists in the session, that&apos;s strange.</source>
         <translation>Щойно відновлений торрент вже існує в даній сесії - це підозріло.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1531"/>
+        <location filename="core.cpp" line="1534"/>
         <source>Torrent finished: %1</source>
         <translation>Торрент завершено: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1742"/>
+        <location filename="core.cpp" line="1745"/>
         <source>untagged</source>
         <translation>без тегів</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2111"/>
+        <location filename="core.cpp" line="2114"/>
         <source>Wrong announce address %1</source>
         <translation>Неправильна адреса для анонсування %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="81"/>
+        <location filename="core.cpp" line="82"/>
         <source>Unknown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1769"/>
+        <location filename="core.cpp" line="1772"/>
         <source>Could not create path %1/.leechcraft/bittorrent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="129"/>
+        <location filename="core.cpp" line="130"/>
         <source>Downloading rate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="308"/>
+        <location filename="core.cpp" line="309"/>
         <source>%1% (%2 of %3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="303"/>
+        <location filename="core.cpp" line="304"/>
         <source>Name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="317"/>
+        <location filename="core.cpp" line="318"/>
         <source>Peers/seeds: %1/%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="304"/>
+        <location filename="core.cpp" line="305"/>
         <source>Destination:</source>
         <translation type="unfinished">Місце збереження:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="306"/>
+        <location filename="core.cpp" line="307"/>
         <source>Progress:</source>
         <translation type="unfinished">Прогрес:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="311"/>
+        <location filename="core.cpp" line="312"/>
         <source>; status:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="313"/>
+        <location filename="core.cpp" line="314"/>
         <source>Downloading speed:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="315"/>
+        <location filename="core.cpp" line="316"/>
         <source>; uploading speed:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1080"/>
+        <location filename="core.cpp" line="1083"/>
         <source>Could not open file %1 for reading</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1090"/>
+        <location filename="core.cpp" line="1093"/>
         <source>Could not parse document from file %1.&lt;br /&gt;%1 at %2:%3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1099"/>
+        <location filename="core.cpp" line="1102"/>
         <source>There should be only one storage section.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1117"/>
+        <location filename="core.cpp" line="1120"/>
         <source>Unknown storage version</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1125"/>
+        <location filename="core.cpp" line="1128"/>
         <source>Could not open file %1 for writing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1377"/>
+        <location filename="core.cpp" line="1380"/>
         <source>Checking metadata</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1145,11 +1145,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1401"/>
-        <source>Logs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="tabwidget.ui" line="134"/>
         <source>Max down/up torrents:</source>
         <translation type="unfinished"></translation>
@@ -1274,7 +1269,7 @@
 <context>
     <name>TorrentPlugin</name>
     <message>
-        <location filename="torrentplugin.cpp" line="66"/>
+        <location filename="torrentplugin.cpp" line="64"/>
         <source>Full-featured BitTorrent client.</source>
         <translation>Повнофункціональний клієнт для  BitTorrent.</translation>
     </message>
@@ -1284,182 +1279,167 @@
         <translation type="obsolete">без тегів</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="313"/>
+        <location filename="torrentplugin.cpp" line="303"/>
         <source>Question</source>
         <translation>Запитання</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="314"/>
+        <location filename="torrentplugin.cpp" line="304"/>
         <source>Do you really want to delete the torrent?</source>
         <translation>Ви справді хочете видалити торрент?</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="456"/>
+        <location filename="torrentplugin.cpp" line="440"/>
         <source>Information</source>
         <translation>Інформація</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="458"/>
+        <location filename="torrentplugin.cpp" line="442"/>
         <source>Started moving torrent&apos;s files from %1 to %2</source>
         <translation>Розпочалось переміщення торрентів з %1 до %2</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="461"/>
+        <location filename="torrentplugin.cpp" line="445"/>
         <source>Warning</source>
         <translation>Увага</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="463"/>
+        <location filename="torrentplugin.cpp" line="447"/>
         <source>Failed to move torrent&apos;s files from %1 to %2</source>
         <translation>Не можливо перемістити торрент-файли з %1 до %2</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="499"/>
+        <location filename="torrentplugin.cpp" line="483"/>
         <source>Error!</source>
         <translation>Помилка!</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="594"/>
+        <location filename="torrentplugin.cpp" line="578"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="368"/>
-        <source>: Settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="torrentplugin.cpp" line="629"/>
+        <location filename="torrentplugin.cpp" line="613"/>
         <source>Not tracking</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="636"/>
+        <location filename="torrentplugin.cpp" line="620"/>
         <source>Unknown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="818"/>
+        <location filename="torrentplugin.cpp" line="802"/>
         <source>Open torrent...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="827"/>
-        <source>Settings...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="torrentplugin.cpp" line="829"/>
-        <source>Ctrl+Shift+P</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="torrentplugin.cpp" line="845"/>
+        <location filename="torrentplugin.cpp" line="820"/>
         <source>Create torrent...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="847"/>
+        <location filename="torrentplugin.cpp" line="822"/>
         <source>N</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="854"/>
+        <location filename="torrentplugin.cpp" line="829"/>
         <source>Open multiple torrents...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="862"/>
+        <location filename="torrentplugin.cpp" line="837"/>
         <source>Remove</source>
         <translation type="unfinished">Видалити</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="864"/>
+        <location filename="torrentplugin.cpp" line="839"/>
         <source>Del</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="869"/>
+        <location filename="torrentplugin.cpp" line="844"/>
         <source>Resume</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="871"/>
+        <location filename="torrentplugin.cpp" line="846"/>
         <source>R</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="876"/>
+        <location filename="torrentplugin.cpp" line="851"/>
         <source>Pause</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="878"/>
+        <location filename="torrentplugin.cpp" line="853"/>
         <source>S</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="915"/>
+        <location filename="torrentplugin.cpp" line="890"/>
         <source>Reannounce</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="917"/>
+        <location filename="torrentplugin.cpp" line="892"/>
         <source>F</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="922"/>
+        <location filename="torrentplugin.cpp" line="897"/>
         <source>Recheck</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="928"/>
+        <location filename="torrentplugin.cpp" line="903"/>
         <source>Move files...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="930"/>
+        <location filename="torrentplugin.cpp" line="905"/>
         <source>M</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="836"/>
+        <location filename="torrentplugin.cpp" line="811"/>
         <source>Change trackers...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="838"/>
+        <location filename="torrentplugin.cpp" line="813"/>
         <source>C</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="883"/>
+        <location filename="torrentplugin.cpp" line="858"/>
         <source>Move up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="891"/>
+        <location filename="torrentplugin.cpp" line="866"/>
         <source>Move down</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="899"/>
+        <location filename="torrentplugin.cpp" line="874"/>
         <source>Move to top</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="907"/>
+        <location filename="torrentplugin.cpp" line="882"/>
         <source>Move to bottom</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="935"/>
+        <location filename="torrentplugin.cpp" line="910"/>
         <source>Import...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="943"/>
+        <location filename="torrentplugin.cpp" line="918"/>
         <source>Export...</source>
         <translation type="unfinished"></translation>
     </message>

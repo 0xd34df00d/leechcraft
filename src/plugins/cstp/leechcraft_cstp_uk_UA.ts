@@ -66,12 +66,12 @@
 <context>
     <name>CSTP</name>
     <message>
-        <location filename="cstp.cpp" line="297"/>
+        <location filename="cstp.cpp" line="255"/>
         <source>File exists</source>
         <translation>Файл вже існує</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="297"/>
+        <location filename="cstp.cpp" line="255"/>
         <source>File %1 already exists, continue download?</source>
         <translation>Файл %1 вже існує, бажаєте продовжити завантаження?</translation>
     </message>
@@ -86,27 +86,27 @@
         <translation type="obsolete">Видалити завдання</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="259"/>
+        <location filename="cstp.cpp" line="225"/>
         <source>Start</source>
         <translation>Розпочати</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="265"/>
+        <location filename="cstp.cpp" line="231"/>
         <source>Stop</source>
         <translation>Зупинити</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="251"/>
+        <location filename="cstp.cpp" line="217"/>
         <source>Remove all</source>
         <translation>Видалити всі</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="270"/>
+        <location filename="cstp.cpp" line="237"/>
         <source>Start all</source>
         <translation>Розпочати всі</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="275"/>
+        <location filename="cstp.cpp" line="243"/>
         <source>Stop all</source>
         <translation>Зупунити всі</translation>
     </message>
@@ -136,65 +136,65 @@
         <translation type="obsolete">Журнал</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="246"/>
+        <location filename="cstp.cpp" line="211"/>
         <source>Remove</source>
         <translation>Видалити</translation>
     </message>
     <message>
         <location filename="cstp.cpp" line="283"/>
         <source>Settings</source>
-        <translation>Параметри</translation>
+        <translation type="obsolete">Параметри</translation>
     </message>
 </context>
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="26"/>
+        <location filename="core.cpp" line="28"/>
         <source>State</source>
         <translation>Стан</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="25"/>
+        <location filename="core.cpp" line="27"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="27"/>
+        <location filename="core.cpp" line="29"/>
         <source>Progress</source>
         <translation>Прогрес</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="28"/>
+        <location filename="core.cpp" line="30"/>
         <source>Speed</source>
         <translation>Швидкість</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="29"/>
+        <location filename="core.cpp" line="31"/>
         <source>ETA</source>
         <translation>ОЧЗ</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="29"/>
+        <location filename="core.cpp" line="31"/>
         <source>DTA</source>
         <translation>ЧЗ</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="89"/>
+        <location filename="core.cpp" line="91"/>
         <source>Could not truncate file </source>
         <translation>Не можу обрізати файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="280"/>
+        <location filename="core.cpp" line="279"/>
         <source>Could not open file </source>
         <translation>Не можу відкрити файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="197"/>
+        <location filename="core.cpp" line="194"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="190"/>
+        <location filename="core.cpp" line="187"/>
         <source>%1% (%2 of %3)</source>
         <translation>%1% (%2 з %3)</translation>
     </message>
@@ -204,22 +204,22 @@
     <message>
         <location filename="historymodel.cpp" line="14"/>
         <source>Filename</source>
-        <translation>Назва файла</translation>
+        <translation type="obsolete">Назва файла</translation>
     </message>
     <message>
         <location filename="historymodel.cpp" line="14"/>
         <source>URL</source>
-        <translation>URL</translation>
+        <translation type="obsolete">URL</translation>
     </message>
     <message>
         <location filename="historymodel.cpp" line="14"/>
         <source>Size</source>
-        <translation>Розмір</translation>
+        <translation type="obsolete">Розмір</translation>
     </message>
     <message>
         <location filename="historymodel.cpp" line="14"/>
         <source>Date</source>
-        <translation>Дата</translation>
+        <translation type="obsolete">Дата</translation>
     </message>
 </context>
 <context>
@@ -235,22 +235,22 @@
     <message>
         <location filename="tabwidget.ui" line="13"/>
         <source>Form</source>
-        <translation>Форма</translation>
+        <translation type="obsolete">Форма</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="28"/>
         <source>History</source>
-        <translation>Історія</translation>
+        <translation type="obsolete">Історія</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="54"/>
         <source>Log</source>
-        <translation>Журнал</translation>
+        <translation type="obsolete">Журнал</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="64"/>
         <source>Remove item</source>
-        <translation>Видалити елемент</translation>
+        <translation type="obsolete">Видалити елемент</translation>
     </message>
 </context>
 <context>
@@ -311,52 +311,52 @@
         <translation>Сталася невідома помилка.</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="447"/>
+        <location filename="task.cpp" line="451"/>
         <source>Unconnected</source>
         <translation>Не з&apos;єднано</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="449"/>
+        <location filename="task.cpp" line="453"/>
         <source>Hostname lookup</source>
         <translation>Пошук хоста</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="451"/>
+        <location filename="task.cpp" line="455"/>
         <source>Connecting</source>
         <translation>З&apos;єднання</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="428"/>
+        <location filename="task.cpp" line="432"/>
         <source>Sending request</source>
         <translation>Ндсилаю запит</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="430"/>
+        <location filename="task.cpp" line="434"/>
         <source>Reading reply</source>
         <translation>Читаю відповідь</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="432"/>
+        <location filename="task.cpp" line="436"/>
         <source>Connection is idle</source>
         <translation>З&apos;єднання не активне</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="457"/>
+        <location filename="task.cpp" line="461"/>
         <source>Closing</source>
         <translation>Закриваю</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="453"/>
+        <location filename="task.cpp" line="457"/>
         <source>Connected</source>
         <translation>З&apos;єднано</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="455"/>
+        <location filename="task.cpp" line="459"/>
         <source>Logged in</source>
         <translation>Увійшов</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="459"/>
+        <location filename="task.cpp" line="463"/>
         <source>Unknown</source>
         <translation>Невідомо</translation>
     </message>

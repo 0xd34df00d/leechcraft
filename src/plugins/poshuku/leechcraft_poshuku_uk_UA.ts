@@ -59,27 +59,7 @@
 <context>
     <name>BrowserWidget</name>
     <message>
-        <location filename="browserwidget.cpp" line="17"/>
-        <source>Back</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="browserwidget.cpp" line="21"/>
-        <source>Forward</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="browserwidget.cpp" line="25"/>
-        <source>Reload</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="browserwidget.cpp" line="29"/>
-        <source>Stop</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="browserwidget.cpp" line="33"/>
+        <location filename="browserwidget.cpp" line="39"/>
         <source>Add to favorites...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -88,56 +68,96 @@
         <source>Browser widget</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="browserwidget.cpp" line="43"/>
+        <source>Find...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="48"/>
+        <source>Print...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="52"/>
+        <source>Print with preview...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="155"/>
+        <source>Print web page</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="112"/>
+        <location filename="core.cpp" line="113"/>
         <source>untagged</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="315"/>
+        <location filename="core.cpp" line="320"/>
         <source>Unknown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="365"/>
+        <location filename="core.cpp" line="449"/>
         <source>Could not create Poshuku directory.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="372"/>
+        <location filename="core.cpp" line="456"/>
         <source>Could not save cookies, error opening cookie file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="387"/>
+        <location filename="core.cpp" line="471"/>
         <source>Loading %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="426"/>
+        <location filename="core.cpp" line="510"/>
         <source>The URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="437"/>
+        <location filename="core.cpp" line="521"/>
         <source>The proxy &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="464"/>
+        <location filename="core.cpp" line="548"/>
         <source>The URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="335"/>
+        <location filename="core.cpp" line="347"/>
         <source>Save external data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="188"/>
+        <location filename="core.cpp" line="437"/>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="380"/>
+        <source>No plugins were found that could download the content from URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="407"/>
+        <source>Save link</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="439"/>
+        <source>No plugins were found that could download the URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="193"/>
         <source></source>
         <translation type="unfinished"></translation>
     </message>
@@ -157,6 +177,39 @@
     <message>
         <location filename="favoritesmodel.cpp" line="21"/>
         <source>Tags</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>FindDialog</name>
+    <message>
+        <location filename="finddialog.ui" line="63"/>
+        <source>Find</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="finddialog.ui" line="23"/>
+        <source>Find what:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="finddialog.ui" line="35"/>
+        <source>Search backwards</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="finddialog.ui" line="42"/>
+        <source>Match case</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="finddialog.ui" line="49"/>
+        <source>Continue from the beginning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="finddialog.ui" line="70"/>
+        <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -186,62 +239,62 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="95"/>
+        <location filename="poshuku.cpp" line="96"/>
         <source>Simple yet functional web browser</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="334"/>
+        <location filename="poshuku.cpp" line="335"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="224"/>
+        <location filename="poshuku.cpp" line="230"/>
         <source>The URL you entered could not be opened by Poshuku. Sorry. By the way, you entered:&lt;br /&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.ui" line="28"/>
+        <location filename="poshuku.ui" line="21"/>
         <source>http://linux.org.ru/</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.ui" line="180"/>
+        <location filename="poshuku.ui" line="173"/>
         <source>Settings...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.ui" line="52"/>
+        <location filename="poshuku.ui" line="45"/>
         <source>History</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.ui" line="128"/>
+        <location filename="poshuku.ui" line="121"/>
         <source>Fixed string</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.ui" line="133"/>
+        <location filename="poshuku.ui" line="126"/>
         <source>Wildcard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.ui" line="138"/>
+        <location filename="poshuku.ui" line="131"/>
         <source>Regexp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.ui" line="143"/>
+        <location filename="poshuku.ui" line="136"/>
         <source>Tags</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.ui" line="151"/>
+        <location filename="poshuku.ui" line="144"/>
         <source>Case sensitive</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.ui" line="116"/>
+        <location filename="poshuku.ui" line="109"/>
         <source>Favorites</source>
         <translation type="unfinished"></translation>
     </message>
