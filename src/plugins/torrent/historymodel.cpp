@@ -4,6 +4,7 @@
 #include <QSettings>
 #include <QtDebug>
 #include <plugininterface/proxy.h>
+#include <plugininterface/util.h>
 
 using LeechCraft::Util::Proxy;
 
@@ -39,18 +40,20 @@ QVariant HistoryModel::data (const QModelIndex& index, int role) const
 		case Qt::DisplayRole:
 			switch (index.column ())
 			{
-				case 0:
+				case HFilename:
 					return Items_ [index.row ()].Name_;
-				case 1:
+				case HPath:
 					return Items_ [index.row ()].Where_;
-				case 2:
+				case HSize:
 					return Proxy::Instance ()->MakePrettySize (Items_ [index.row ()].TorrentSize_);
-				case 3:
+				case HDate:
 					return Items_ [index.row ()].DateTime_.toString ();
+				case HTags:
+					return Items_ [index.row ()].Tags_.join (" ");
 				default:
 					return "Unknown field";
 			}
-		case TagsRole:
+		case LeechCraft::TagsRole:
 			return Items_ [index.row ()].Tags_;
 		default:
 			return QVariant ();

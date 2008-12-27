@@ -12,6 +12,7 @@
 #include <QClipboard>
 #include <QDir>
 #include <QLocalServer>
+#include <plugininterface/util.h>
 #include "mainwindow.h"
 #include "pluginmanager.h"
 #include "core.h"
@@ -32,7 +33,8 @@ Core::Core ()
 , HistoryMergeModel_ (new MergeModel (QStringList (tr ("Filename"))
 			<< tr ("Path")
 			<< tr ("Size")
-			<< tr ("Date")))
+			<< tr ("Date")
+			<< tr ("Tags")))
 , FilterModel_ (new FilterModel)
 , HistoryFilterModel_ (new FilterModel)
 {
@@ -143,20 +145,9 @@ QStringList Core::GetTagsForIndex (int index,
 	int starting = dynamic_cast<MergeModel*> (model)->
 		GetStartingRow (modIter);
 
-	if (Representation2Object_.find (model) != Representation2Object_.end ())
-	{
-		ITaggableJobs *itj =
-			qobject_cast<ITaggableJobs*> (Representation2Object_ [*modIter]);
-		return itj->GetTags (index - starting);
-	}
-	else if (History2Object_.find (model) != History2Object_.end ())
-	{
-		ITaggableJobs *itj =
-			qobject_cast<ITaggableJobs*> (History2Object_ [*modIter]);
-		return itj->GetHistoryTags (index - starting);
-	}
-	else
-		return QStringList ();
+	return (*modIter)->
+		data ((*modIter)->index (index - starting, 0), LeechCraft::TagsRole)
+		.toStringList ();
 }
 
 void Core::DelayedInit ()
@@ -194,7 +185,7 @@ void Core::DelayedInit ()
 					this,
 					SIGNAL (downloadFinished (const QString&)));
 
-		if (ijh && ijh->GetControls () && ijh->GetAdditionalInfo ())
+		if (ijh && ijh->GetControls ())
 			InitJobHolder (plugin);
 
 		if (iet)
@@ -638,7 +629,8 @@ void Core::InitJobHolder (QObject *plugin)
 	}
 
 	ijh->GetControls ()->setParent (ReallyMainWindow_);
-	ijh->GetAdditionalInfo ()->setParent (ReallyMainWindow_);
+	if (ijh->GetAdditionalInfo ())
+		ijh->GetAdditionalInfo ()->setParent (ReallyMainWindow_);
 
 	QAbstractItemModel *historyModel = ijh->GetHistory ();
 	if (historyModel)

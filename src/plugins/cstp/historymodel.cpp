@@ -10,10 +10,9 @@
 using LeechCraft::Util::Proxy;
 
 HistoryModel::HistoryModel (QObject *parent)
-: QAbstractItemModel (parent)
+: LeechCraft::Util::HistoryModel (parent)
 , SaveScheduled_ (false)
 {
-	Headers_ << tr ("Filename") << tr ("URL") << tr ("Size") << tr ("Date");
 	ReadSettings ();
 }
 
@@ -30,7 +29,7 @@ void HistoryModel::Add (const HistoryModel::Item& item)
 	ScheduleSave ();
 }
 
-void HistoryModel::Remove (const QModelIndex& index)
+void HistoryModel::RemoveItem (const QModelIndex& index)
 {
 	if (!index.isValid ())
 		return;
@@ -39,11 +38,6 @@ void HistoryModel::Remove (const QModelIndex& index)
 	Items_.erase (Items_.begin () + pos);
 	endRemoveRows ();
 	ScheduleSave ();
-}
-
-int HistoryModel::columnCount (const QModelIndex&) const
-{
-	return Headers_.size ();
 }
 
 QVariant HistoryModel::data (const QModelIndex& index, int role) const
@@ -58,49 +52,22 @@ QVariant HistoryModel::data (const QModelIndex& index, int role) const
 		{
 			case HFilename:
 				return item.Filename_;
-			case HURL:
+			case HPath:
 				return item.URL_;
 			case HSize:
 				return Proxy::Instance ()->MakePrettySize (item.Size_);
-			case HDateTime:
+			case HDate:
 				return item.DateTime_.toString ();
+			case HTags:
+				return QStringList ();
+			default:
+				return "Unknown field";
 		}
 	}
     else
         return QVariant ();
 
 	return QVariant ();
-}
-
-Qt::ItemFlags HistoryModel::flags (const QModelIndex&) const
-{
-	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-}
-
-bool HistoryModel::hasChildren (const QModelIndex& index) const
-{
-	return !index.isValid ();
-}
-
-QVariant HistoryModel::headerData (int column, Qt::Orientation orient, int role) const
-{
-    if (orient == Qt::Horizontal && role == Qt::DisplayRole)
-        return Headers_.at (column);
-    else
-        return QVariant ();
-}
-
-QModelIndex HistoryModel::index (int row, int column, const QModelIndex& parent) const
-{
-    if (!hasIndex (row, column, parent))
-        return QModelIndex ();
-
-	return createIndex (row, column);
-}
-
-QModelIndex HistoryModel::parent (const QModelIndex&) const
-{
-	return QModelIndex ();
 }
 
 int HistoryModel::rowCount (const QModelIndex& parent) const

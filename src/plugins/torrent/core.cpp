@@ -39,6 +39,7 @@
 #include <plugininterface/proxy.h>
 #include <plugininterface/tagscompletionmodel.h>
 #include <plugininterface/historymodel.h>
+#include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
 #include "piecesmodel.h"
 #include "peersmodel.h"
@@ -317,6 +318,8 @@ QVariant Core::data (const QModelIndex& index, int role) const
 				result += tr ("Peers/seeds: %1/%2").arg (status.num_peers).arg (status.num_seeds);
 				return result;
 			}
+		case LeechCraft::TagsRole:
+			return Handles_.at (row).Tags_;
 		default:
 			return QVariant ();
 	}

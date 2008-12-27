@@ -72,7 +72,6 @@ public:
 	int AddTask (const QString&, const QString&,
 			const QString&, const QString&,
 			LeechCraft::TaskParameters = LeechCraft::Autostart);
-	void RemoveFromHistory (const QModelIndex&);
 	qint64 GetDone (int) const;
 	qint64 GetTotal (int) const;
 	bool IsRunning (int) const;

@@ -8,7 +8,8 @@ HistoryModel::HistoryModel (QObject *parent)
 	Headers_ << tr ("Filename")
 		<< tr ("Path")
 		<< tr ("Size")
-		<< tr ("Date");
+		<< tr ("Date")
+		<< tr ("Tags");
 }
 
 int HistoryModel::columnCount (const QModelIndex&) const

@@ -31,7 +31,6 @@ SET (HEADERS
 	)
 SET (FORMS
 	addtask.ui
-	tabwidget.ui
 	)
 SET (RESOURCES
 	resources.qrc

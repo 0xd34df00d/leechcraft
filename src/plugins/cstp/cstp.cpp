@@ -18,7 +18,6 @@
 #include "xmlsettingsmanager.h"
 #include "addtask.h"
 #include "mainviewdelegate.h"
-#include "ui_tabwidget.h"
 
 CSTP::~CSTP ()
 {
@@ -57,7 +56,7 @@ void CSTP::Init ()
 	connect (&Core::Instance (),
 			SIGNAL (error (const QString&)),
 			this,
-			SLOT (handleError (const QString&)));
+			SIGNAL (log (const QString&)));
 }
 
 void CSTP::Release ()
@@ -182,16 +181,11 @@ QWidget* CSTP::GetControls () const
 
 QWidget* CSTP::GetAdditionalInfo () const
 {
-	return TabWidget_.get ();
+	return 0;
 }
 
 void CSTP::ItemSelected (const QModelIndex&)
 {
-}
-
-void CSTP::on_ActionRemoveItemFromHistory__triggered ()
-{
-	ApplyCore2Selection (&Core::RemoveFromHistory, UiTabWidget_->HistoryView_);
 }
 
 void CSTP::showSettings (int)
@@ -212,16 +206,6 @@ void CSTP::ApplyCore2Selection (void (Core::*temp) (const QModelIndex&), T view)
 
 void CSTP::SetupTabWidget ()
 {
-	UiTabWidget_.reset (new Ui::TabWidget);
-	TabWidget_.reset (new QTabWidget);
-	UiTabWidget_->setupUi (TabWidget_.get ());
-	UiTabWidget_->HistoryView_->setModel (Core::Instance ().GetHistoryModel ());
-	UiTabWidget_->HistoryView_->addAction (UiTabWidget_->ActionRemoveItemFromHistory_);
-
-	connect (UiTabWidget_->ActionRemoveItemFromHistory_,
-			SIGNAL (triggered ()),
-			this,
-			SLOT (on_ActionRemoveItemFromHistory__triggered ()));
 }
 
 void CSTP::SetupToolbar ()
@@ -275,11 +259,6 @@ void CSTP::SetupToolbar ()
 	settings->setProperty ("Object",
 			QVariant::fromValue<QObject*> (this));
 	settings->setProperty ("ActionIcon", "cstp_preferences");
-}
-
-void CSTP::handleError (const QString& text)
-{
-	UiTabWidget_->Logger_->append (text + QString ("<br />"));
 }
 
 void CSTP::handleFileExists (boost::logic::tribool *remove)

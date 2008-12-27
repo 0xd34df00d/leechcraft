@@ -113,11 +113,6 @@ int Core::AddTask (const QString& url,
 	return td.ID_;
 }
 
-void Core::RemoveFromHistory (const QModelIndex& index)
-{
-	HistoryModel_->Remove (index);
-}
-
 qint64 Core::GetDone (int pos) const
 {
 	return TaskAt (pos).Task_->GetDone ();

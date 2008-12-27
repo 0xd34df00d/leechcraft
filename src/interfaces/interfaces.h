@@ -449,33 +449,6 @@ public:
 class ITaggableJobs
 {
 public:
-	/** @brief Returns the list with tags for a job.
-	 *
-	 * This function should return the list with tags for a job which is
-	 * in jobRow row in the model returned by
-	 * IJobHolder::GetRepresentation().
-	 *
-	 * @param[in] jobRow Row with the job.
-	 * @return List with tags.
-	 * 
-	 * @sa GetHistoryTags
-	 * @sa SetTags
-	 */
-	virtual QStringList GetTags (int jobRow) const = 0;
-	/** @brief Returns the list with tags for a history item.
-	 *
-	 * This function should return the list with tags for a history item
-	 * which is in jobRow in the model returned by
-	 * IJobHolder::GetHistory(). If the history model returned by
-	 * IJobHolder::GetHistory() is 0, the returned value could be
-	 * anything as this funtion would be never called.
-	 *
-	 * @param[in] jobRow Row with the job.
-	 * @return List with tags.
-	 *
-	 * @sa GetTags
-	 */
-	virtual QStringList GetHistoryTags (int jobRow) const = 0;
 	/** @brief Sets the list with tags for a job.
 	 *
 	 * This function should replace the list with tags for a job which

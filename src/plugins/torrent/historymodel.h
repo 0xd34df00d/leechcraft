@@ -22,7 +22,6 @@ private:
 	typedef std::vector<HistoryItem> items_t;
 	std::vector<HistoryItem> Items_;
 public:
-	enum { TagsRole = 46 };
 	HistoryModel (QObject* = 0);
 	virtual ~HistoryModel ();
 

@@ -18,11 +18,6 @@ namespace boost
 	};
 };
 
-namespace Ui
-{
-	class TabWidget;
-};
-
 class CSTP : public QObject
 			 , public IInfo
 			 , public IDownload
@@ -34,8 +29,6 @@ class CSTP : public QObject
 	QMenu *Plugins_;
 	std::auto_ptr<QTranslator> Translator_;
 	std::auto_ptr<XmlSettingsDialog> XmlSettingsDialog_;
-	std::auto_ptr<Ui::TabWidget> UiTabWidget_;
-	std::auto_ptr<QTabWidget> TabWidget_;
 	std::auto_ptr<QToolBar> Toolbar_;
 public:
 	virtual ~CSTP ();
@@ -62,14 +55,12 @@ public:
 	QWidget* GetAdditionalInfo () const;
 	void ItemSelected (const QModelIndex&);
 public slots:
-	void on_ActionRemoveItemFromHistory__triggered ();
 	void showSettings (int = -1);
 private:
 	template<typename T> void ApplyCore2Selection (void (Core::*) (const QModelIndex&), T);
 	void SetupTabWidget ();
 	void SetupToolbar ();
 private slots:
-	void handleError (const QString&);
 	void handleFileExists (boost::logic::tribool*);
 signals:
 	void jobFinished (int);
@@ -77,6 +68,7 @@ signals:
 	void jobError (int, IDownload::Error);
 	void fileDownloaded (const QString&);
 	void downloadFinished (const QString&);
+	void log (const QString&);
 };
 
 #endif

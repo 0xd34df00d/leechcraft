@@ -92,8 +92,6 @@ public:
 	QByteArray ExportData () const;
 
 	// ITaggableJobs
-	QStringList GetTags (int) const;
-	QStringList GetHistoryTags (int) const;
 	void SetTags (int, const QStringList&);
 public slots:
     void updateTorrentStats ();

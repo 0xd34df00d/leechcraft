@@ -13,6 +13,15 @@ namespace LeechCraft
 			Q_OBJECT
 
 			QStringList Headers_;
+		protected:
+			enum Headers
+			{
+				HFilename
+				, HPath
+				, HSize
+				, HDate
+				, HTags
+			};
 		public:
 			HistoryModel (QObject* = 0);
 			virtual ~HistoryModel ();

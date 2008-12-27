@@ -235,19 +235,6 @@ QByteArray TorrentPlugin::ExportData () const
 	return QByteArray ();
 }
 
-QStringList TorrentPlugin::GetTags (int torrent) const
-{
-	return Core::Instance ()->GetTagsForIndex (torrent);
-}
-
-QStringList TorrentPlugin::GetHistoryTags (int historyRow) const
-{
-	QModelIndex index = Core::Instance ()->
-		GetHistoryModel ()->index (historyRow, 0);
-	return Core::Instance ()->GetHistoryModel ()->
-		data (index, HistoryModel::TagsRole).toStringList ();
-}
-
 void TorrentPlugin::SetTags (int torrent, const QStringList& tags)
 {
 	Core::Instance ()->UpdateTags (tags, torrent);

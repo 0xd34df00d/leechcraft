@@ -315,9 +315,10 @@ void MainWindow::updatePanes (const QModelIndex& newIndex,
 	if (Core::Instance ().SameModel (newIndex, oldIndex))
 		return;
 
-	if (Ui_.PluginsStuff_->count () == 4)
+	if (Ui_.PluginsStuff_->count () >= 3)
 	{
-		Ui_.PluginsStuff_->takeAt (3)->widget ()->hide ();
+		if (Ui_.PluginsStuff_->count () == 4)
+			Ui_.PluginsStuff_->takeAt (3)->widget ()->hide ();
 		Ui_.PluginsStuff_->takeAt (1)->widget ()->hide ();
 	}
 
@@ -328,9 +329,12 @@ void MainWindow::updatePanes (const QModelIndex& newIndex,
 				*addiInfo = Core::Instance ()
 					.GetAdditionalInfo (newIndex);
 		Ui_.PluginsStuff_->insertWidget (1, controls);
-		Ui_.PluginsStuff_->addWidget (addiInfo);
 		controls->show ();
-		addiInfo->show ();
+		if (addiInfo)
+		{
+			Ui_.PluginsStuff_->addWidget (addiInfo);
+			addiInfo->show ();
+		}
 	}
 }
 
