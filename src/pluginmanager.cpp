@@ -190,6 +190,8 @@ void PluginManager::InitializePlugins ()
             continue;
 		}
 
+		emit loadProgress (info->GetName ());
+
         info->Init ();
     }
 }

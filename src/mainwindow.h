@@ -44,6 +44,7 @@ namespace LeechCraft
 		PluginManagerDialog *PluginManagerDialog_;
 		FancyPopupManager *FancyPopupManager_;
 		LogToolBox *LogToolBox_;
+		QSplashScreen *SplashScreen_;
 
 		bool IsShown_, WasMaximized_;
 	public:
@@ -77,6 +78,7 @@ namespace LeechCraft
 		void updateIconSet ();
 		void on_ActionPluginManager__triggered ();
 		void historyActivated (const QModelIndex&);
+		void handleLoadProgress (const QString&);
 	};
 };
 

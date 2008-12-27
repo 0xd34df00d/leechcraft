@@ -41,7 +41,10 @@ channels_container_t Atom10Parser::Parse (const QDomDocument& doc) const
 	if (chan->Author_.isEmpty ())
 	{
 		QDomElement author = root.firstChildElement ("author");
-		chan->Author_ = author.firstChildElement ("name").text () + " (" + author.firstChildElement ("email").text () + ")";
+		chan->Author_ = author.firstChildElement ("name").text () +
+			" (" +
+			author.firstChildElement ("email").text () +
+			")";
 	}
     chan->Language_ = "<>";
 

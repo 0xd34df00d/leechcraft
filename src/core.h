@@ -102,6 +102,7 @@ namespace LeechCraft
         void error (QString);
 		void log (const QString&);
         void downloadFinished (const QString&);
+		void loadProgress (const QString&);
     };
 };
 

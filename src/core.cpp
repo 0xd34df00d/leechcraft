@@ -39,6 +39,10 @@ Core::Core ()
 , HistoryFilterModel_ (new FilterModel)
 {
 	PluginManager_ = new PluginManager (this);
+	connect (PluginManager_,
+			SIGNAL (loadProgress (const QString&)),
+			this,
+			SIGNAL (loadProgress (const QString&)));
 
 	FilterModel_->setSourceModel (MergeModel_.get ());
 	HistoryFilterModel_->setSourceModel (HistoryMergeModel_.get ());
@@ -159,11 +163,16 @@ void Core::DelayedInit ()
 
 	TabContainer_.reset (new TabContainer (ReallyMainWindow_->GetTabWidget ()));
 
+	emit loadProgress (tr ("Preinitialization..."));
     PluginManager_->InitializePlugins ();
+	emit loadProgress (tr ("Calculation dependencies..."));
     PluginManager_->CalculateDependencies ();
     QObjectList plugins = PluginManager_->GetAllPlugins ();
     foreach (QObject *plugin, plugins)
     {
+        IInfo *info = qobject_cast<IInfo*> (plugin);
+		emit loadProgress (tr ("Setting up %1...").arg (info->GetName ()));
+
         IDownload *download = qobject_cast<IDownload*> (plugin);
 		IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
 		IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);

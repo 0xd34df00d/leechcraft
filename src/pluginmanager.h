@@ -58,6 +58,7 @@ namespace LeechCraft
         void FindPlugins ();
     signals:
         void downloadFinished (QString);
+		void loadProgress (const QString&);
     };
 };
 

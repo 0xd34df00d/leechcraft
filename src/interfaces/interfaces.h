@@ -552,6 +552,24 @@ public:
 	virtual ~ICustomProvider () {}
 };
 
+/** @brief Interface for plugins that have user-configurable settings.
+ *
+ * Plugins that have user-configurable settings should implement this
+ * interface if they want LeechCraft to show a button to configure them
+ * in the menu.
+ */
+class IHaveSettings
+{
+public:
+	/** @brief Asks plugin to show up its window.
+	 */
+	void ShowSettings ();
+
+	/** @brief Virtual destructor.
+	 */
+	virtual ~IHaveSettings () {}
+};
+
 Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
 Q_DECLARE_INTERFACE (IWindow, "org.Deviant.LeechCraft.IWindow/1.0");
 Q_DECLARE_INTERFACE (IDownload, "org.Deviant.LeechCraft.IDownload/1.0");
@@ -561,6 +579,7 @@ Q_DECLARE_INTERFACE (ITaggableJobs, "org.Deviant.LeechCraft.ITaggableJobs/1.0");
 Q_DECLARE_INTERFACE (IEmbedTab, "org.Deviant.LeechCraft.IEmbedTab/1.0");
 Q_DECLARE_INTERFACE (IMultiTabs, "org.Deviant.LeechCraft.IMultiTabs/1.0");
 Q_DECLARE_INTERFACE (ICustomProvider, "org.Deviant.LeechCraft.ICustomProvider/1.0");
+Q_DECLARE_INTERFACE (IHaveSettings, "org.Deviant.LeechCraft.IHaveSettings/1.0");
 
 #endif
 

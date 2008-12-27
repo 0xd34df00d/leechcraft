@@ -26,10 +26,11 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , IsShown_ (true)
 , WasMaximized_ (false)
 {
-	QSplashScreen splash (QPixmap (":/resources/images/splashscreen.png"),
+	SplashScreen_ = new QSplashScreen (QPixmap (":/resources/images/splashscreen.png"),
 			Qt::WindowStaysOnTopHint);
-	splash.show ();
-	splash.showMessage (tr ("Initializing interface..."));
+	SplashScreen_->show ();
+	SplashScreen_->showMessage (tr ("Initializing interface..."),
+			Qt::AlignLeft | Qt::AlignBottom);
 
 	if (QApplication::arguments ().contains ("-zombie"))
 		QApplication::setStyle (new ZombiTechStyle ());
@@ -101,7 +102,12 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			&Core::Instance (),
 			SLOT (deleteSelectedHistory (const QModelIndex&)));
 
-	splash.showMessage (tr ("Initializing core and plugins..."));
+	SplashScreen_->showMessage (tr ("Initializing core and plugins..."),
+			Qt::AlignLeft | Qt::AlignBottom);
+	connect (&Core::Instance (),
+			SIGNAL (loadProgress (const QString&)),
+			this,
+			SLOT (handleLoadProgress (const QString&)));
 	connect (&Core::Instance (),
 			SIGNAL (downloadFinished (const QString&)),
 			this,
@@ -114,6 +120,8 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	Core::Instance ().SetReallyMainWindow (this);
 	Core::Instance ().DelayedInit ();
 
+	SplashScreen_->showMessage (tr ("Initializing core and plugins..."),
+			Qt::AlignLeft | Qt::AlignBottom);
 	QAbstractItemModel *tasksModel = Core::Instance ().GetTasksModel ();
 	Ui_.PluginsTasksTree_->setModel (tasksModel);
 
@@ -159,7 +167,7 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 
 	updateIconSet ();
 
-	splash.finish (this);
+	SplashScreen_->finish (this);
 	show ();
 }
 
@@ -464,5 +472,12 @@ void MainWindow::on_ActionPluginManager__triggered ()
 void MainWindow::historyActivated (const QModelIndex& index)
 {
 	Core::Instance ().HistoryActivated (index.row ());
+}
+
+void MainWindow::handleLoadProgress (const QString& msg)
+{
+	SplashScreen_->
+		showMessage (tr ("Initializing core and plugins...") + " " + msg,
+				Qt::AlignLeft | Qt::AlignBottom);
 }
 
