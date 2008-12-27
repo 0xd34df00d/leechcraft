@@ -27,6 +27,14 @@ namespace _Local
 	struct SpeedAccumulator;
 };
 
+namespace LeechCraft
+{
+	namespace Util
+	{
+		class HistoryModel;
+	};
+};
+
 class Core : public QAbstractItemModel
 {
 	Q_OBJECT
@@ -67,7 +75,7 @@ public:
 	virtual ~Core ();
 	static Core& Instance ();
 	void Release ();
-	QAbstractItemModel* GetHistoryModel ();
+	LeechCraft::Util::HistoryModel* GetHistoryModel ();
 
 	int AddTask (const QString&, const QString&,
 			const QString&, const QString&,

@@ -171,7 +171,7 @@ QAbstractItemModel* CSTP::GetRepresentation () const
 
 LeechCraft::Util::HistoryModel* CSTP::GetHistory () const
 {
-	return 0;
+	return Core::Instance ().GetHistoryModel ();
 }
 
 QWidget* CSTP::GetControls () const

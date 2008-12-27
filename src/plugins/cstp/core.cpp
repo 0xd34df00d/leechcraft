@@ -56,7 +56,7 @@ void Core::Release ()
 	delete RepresentationModel_;
 }
 
-QAbstractItemModel* Core::GetHistoryModel ()
+LeechCraft::Util::HistoryModel* Core::GetHistoryModel ()
 {
 	return HistoryModel_;
 }
