@@ -49,54 +49,62 @@
 			</item>
 		</tab>
 		<tab>
-			<label lang="en" value="Fonts" />
-			<label lang="ru" value="Шрифты" />
-			<label lang="uk" value="Шрифти" />
-			<item type="font" property="StandardFont">
-				<label lang="en" value="Standard font:" />
-				<label lang="ru" value="Стандартный шрифт:" />
-				<label lang="uk" value="Стандартний шрифт:" />
-			</item>
-			<item type="font" property="FixedFont">
-				<label lang="en" value="Fixed font:" />
-				<label lang="ru" value="Моноширинный шрифт:" />
-				<label lang="uk" value="Моноширинний шрифт:" />
-			</item>
-			<item type="font" property="SerifFont">
-				<label lang="en" value="Serif font:" />
-				<label lang="ru" value="Шрифт с засечками:" />
-				<label lang="uk" value="Шрифт з зарубками:" />
-			</item>
-			<item type="font" property="SansSerifFont">
-				<label lang="en" value="SansSerif font:" />
-				<label lang="ru" value="Шрифт без засечек:" />
-				<label lang="uk" value="Шрифт без зарубок:" />
-			</item>
-			<item type="font" property="CursiveFont">
-				<label lang="en" value="Cursive font:" />
-				<label lang="ru" value="Курсивный шрифт:" />
-				<label lang="uk" value="Курсивний шрифт:" />
-			</item>
-			<item type="font" property="FantasyFont">
-				<label lang="en" value="Fantasy font:" />
-				<label lang="ru" value="Fantasy-шрифт:" />
-				<label lang="uk" value="Fantasy-шрифт:" />
-			</item>
-			<item type="spinbox" property="MinimumFontSize" default="9" minimum="5" maximum="40" step="1">
-				<label lang="en" value="Minimum font size:" />
-				<label lang="ru" value="Минимальный размер шрифта:" />
-				<label lang="uk" value="Мінімальний розмір шрифта:" />
-			</item>
-			<item type="spinbox" property="DefaultFontSize" default="14" minimum="5" maximum="40" step="1">
-				<label lang="en" value="Default font size:" />
-				<label lang="ru" value="Размер шрифта по умолчанию:" />
-				<label lang="uk" value="Розмірш шрифта за заомвчуванням:" />
-			</item>	
-			<item type="spinbox" property="DefaultFixedFontSize" default="14" minimum="5" maximum="40" step="1">
-				<label lang="en" value="Default fixed font size:" />
-				<label lang="ru" value="Размер фиксированного шрифта по умолчанию:" />
-				<label lang="uk" value="Розмір фіксованого шрифта за замовчуванням:" />
-			</item>	
+			<label lang="en" value="Fonts settings" />
+			<label lang="ru" value="Настройки шрифтов" />
+			<tab>
+				<label lang="en" value="Fonts" />
+				<label lang="ru" value="Шрифты" />
+				<label lang="uk" value="Шрифти" />
+				<item type="font" property="StandardFont">
+					<label lang="en" value="Standard font:" />
+					<label lang="ru" value="Стандартный шрифт:" />
+					<label lang="uk" value="Стандартний шрифт:" />
+				</item>
+				<item type="font" property="FixedFont">
+					<label lang="en" value="Fixed font:" />
+					<label lang="ru" value="Моноширинный шрифт:" />
+					<label lang="uk" value="Моноширинний шрифт:" />
+				</item>
+				<item type="font" property="SerifFont">
+					<label lang="en" value="Serif font:" />
+					<label lang="ru" value="Шрифт с засечками:" />
+					<label lang="uk" value="Шрифт з зарубками:" />
+				</item>
+				<item type="font" property="SansSerifFont">
+					<label lang="en" value="SansSerif font:" />
+					<label lang="ru" value="Шрифт без засечек:" />
+					<label lang="uk" value="Шрифт без зарубок:" />
+				</item>
+				<item type="font" property="CursiveFont">
+					<label lang="en" value="Cursive font:" />
+					<label lang="ru" value="Курсивный шрифт:" />
+					<label lang="uk" value="Курсивний шрифт:" />
+				</item>
+				<item type="font" property="FantasyFont">
+					<label lang="en" value="Fantasy font:" />
+					<label lang="ru" value="Fantasy-шрифт:" />
+					<label lang="uk" value="Fantasy-шрифт:" />
+				</item>
+			</tab>
+			<tab>
+				<label lang="en" value="Sizes" />
+				<label lang="ru" value="Размеры" />
+				<item type="spinbox" property="MinimumFontSize" default="9" minimum="5" maximum="40" step="1">
+					<label lang="en" value="Minimum font size:" />
+					<label lang="ru" value="Минимальный размер шрифта:" />
+					<label lang="uk" value="Мінімальний розмір шрифта:" />
+				</item>
+				<item type="spinbox" property="DefaultFontSize" default="14" minimum="5" maximum="40" step="1">
+					<label lang="en" value="Default font size:" />
+					<label lang="ru" value="Размер шрифта по умолчанию:" />
+					<label lang="uk" value="Розмірш шрифта за заомвчуванням:" />
+				</item>	
+				<item type="spinbox" property="DefaultFixedFontSize" default="14" minimum="5" maximum="40" step="1">
+					<label lang="en" value="Default fixed font size:" />
+					<label lang="ru" value="Размер фиксированного шрифта по умолчанию:" />
+					<label lang="uk" value="Розмір фіксованого шрифта за замовчуванням:" />
+				</item>	
+			</tab>
 		</tab>
 	</page>
 </settings>

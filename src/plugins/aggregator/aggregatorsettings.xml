@@ -5,7 +5,7 @@
 		<label lang="en" value="General settings" />
 		<label lang="ru" value="Общие настройки" />
 		<label lang="uk" value="Загальні параметри" />
-		<groupbox>
+		<tab>
 			<label lang="en" value="Behavior" />
 			<label lang="ru" value="Поведение" />
 			<label lang="uk" value="Поведінка" />
@@ -27,66 +27,71 @@
 				<label lang="en" value="Additional tags for subscribed comments" />
 				<label lang="ru" value="Дополнительные теги для подписанных комментариев" />
 			</item>
-		</groupbox>
-		<groupbox>
-			<label lang="en" value="Updates" />
-			<label lang="ru" value="Обновления" />
-			<label lang="uk" value="Оновлення" />
-			<item type="checkbox" property="UpdateOnStartup" state="off">
-				<label lang="en" value="Update feeds on startup" />
-				<label lang="ru" value="Обновлять ленты при запуске" />
-				<label lang="uk" value="Оновлювати стрічки під час запуску" />
-			</item>
-			<item type="spinbox" property="UpdateInterval" default="10" minimum="1" maximum="300" step="5">
-				<lang value="en">
-					<label value="Update interval:" />
-					<suffix value=" min" />
-				</lang>
-				<lang value="ru">
-					<label value="Интервал между обновлениями:" />
-					<suffix value=" мин" />
-				</lang>
-				<lang value="uk">
-					<label value="Інтервал оновлення:" />
-					<suffix value=" хв" />
-				</lang>
-			</item>
-		</groupbox>
-		<groupbox>
-			<label lang="en" value="Store" />
-			<label lang="ru" value="Хранение" />
-			<label lang="uk" value="Зберігання" />
-			<item type="checkbox" property="NeverRemoveUnread" default="off">
-				<label lang="en" value="Never remove unread items on update" />
-				<label lang="ru" value="Не удалять непрочитанные сообщения при обновлении" />
-			</item>
-			<item type="spinbox" property="ItemsPerChannel" default="50" minimum="20" maximum="10000" step="50">
-				<label lang="en" value="Items per channel:" />
-				<label lang="ru" value="Статей в канале:" />
-				<label lang="uk" value="Статей в каналі:" />
-			</item>
-			<item type="spinbox" property="ItemsMaxAge" default="30" minimum="1" maximum="3650">
-				<lang value="en">
-					<label value="Store items for:" />
-					<suffix value=" days" />
-				</lang>
-				<lang value="ru">
-					<label value="Хранить статьи:" />
-					<suffix value=" дней" />
-				</lang>
-				<lang value="uk">
-					<label value="Зберігати статті:" />
-					<suffix value=" днів" />
-				</lang>
-			</item>
-		</groupbox>
+		</tab>
+		<tab>
+			<label lang="en" value="Feeds handling" />
+			<label lang="ru" value="Обработка лент" />
+			<groupbox>
+				<label lang="en" value="Updates" />
+				<label lang="ru" value="Обновления" />
+				<label lang="uk" value="Оновлення" />
+				<item type="checkbox" property="UpdateOnStartup" state="off">
+					<label lang="en" value="Update feeds on startup" />
+					<label lang="ru" value="Обновлять ленты при запуске" />
+					<label lang="uk" value="Оновлювати стрічки під час запуску" />
+				</item>
+				<item type="spinbox" property="UpdateInterval" default="10" minimum="1" maximum="300" step="5">
+					<lang value="en">
+						<label value="Update interval:" />
+						<suffix value=" min" />
+					</lang>
+					<lang value="ru">
+						<label value="Интервал между обновлениями:" />
+						<suffix value=" мин" />
+					</lang>
+					<lang value="uk">
+						<label value="Інтервал оновлення:" />
+						<suffix value=" хв" />
+					</lang>
+				</item>
+			</groupbox>
+			<groupbox>
+				<label lang="en" value="Store" />
+				<label lang="ru" value="Хранение" />
+				<label lang="uk" value="Зберігання" />
+				<item type="checkbox" property="NeverRemoveUnread" default="off">
+					<label lang="en" value="Never remove unread items on update" />
+					<label lang="ru" value="Не удалять непрочитанные сообщения при обновлении" />
+				</item>
+				<item type="spinbox" property="ItemsPerChannel" default="50" minimum="20" maximum="10000" step="50">
+					<label lang="en" value="Items per channel:" />
+					<label lang="ru" value="Статей в канале:" />
+					<label lang="uk" value="Статей в каналі:" />
+				</item>
+				<item type="spinbox" property="ItemsMaxAge" default="30" minimum="1" maximum="3650">
+					<lang value="en">
+						<label value="Store items for:" />
+						<suffix value=" days" />
+					</lang>
+					<lang value="ru">
+						<label value="Хранить статьи:" />
+						<suffix value=" дней" />
+					</lang>
+					<lang value="uk">
+						<label value="Зберігати статті:" />
+						<suffix value=" днів" />
+					</lang>
+				</item>
+			</groupbox>
+		</tab>
 	</page>
 	<page>
 		<label lang="en" value="Viewer settings" />
 		<label lang="ru" value="Параметры просмотрщика" />
 		<label lang="uk" value="Параметри переглядача" />
-		<groupbox>
-			<label lang="en" value="Behaviour" />
+		<tab>
+			<label lang="en" value="Behavior" />
+			<label lang="ru" value="Поведение" />
 			<label lang="uk" value="Поведінка" />
 			<item type="checkbox" property="AutoLoadImages" state="on">
 				<label lang="en" value="Load images automatically" />
@@ -98,56 +103,64 @@
 				<label lang="ru" value="Разрешить JavaScript" />
 				<label lang="uk" value="Дозволити JavaScript" />
 			</item>
-		</groupbox>
-		<groupbox>
-			<label lang="en" value="Fonts" />
-			<label lang="ru" value="Шрифты" />
-			<label lang="uk" value="Шрифти" />
-			<item type="font" property="StandardFont">
-				<label lang="en" value="Standard font:" />
-				<label lang="ru" value="Стандартный шрифт:" />
-				<label lang="uk" value="Стандартний шрифт:" />
-			</item>
-			<item type="font" property="FixedFont">
-				<label lang="en" value="Fixed font:" />
-				<label lang="ru" value="Моноширинный шрифт:" />
-				<label lang="uk" value="Моноширинний шрифт:" />
-			</item>
-			<item type="font" property="SerifFont">
-				<label lang="en" value="Serif font:" />
-				<label lang="ru" value="Шрифт с засечками:" />
-				<label lang="uk" value="Шрифт з зарубками:" />
-			</item>
-			<item type="font" property="SansSerifFont">
-				<label lang="en" value="SansSerif font:" />
-				<label lang="ru" value="Шрифт без засечек:" />
-				<label lang="uk" value="Шрифт без зарубок:" />
-			</item>
-			<item type="font" property="CursiveFont">
-				<label lang="en" value="Cursive font:" />
-				<label lang="ru" value="Курсивный шрифт:" />
-				<label lang="uk" value="Курсивний шрифт:" />
-			</item>
-			<item type="font" property="FantasyFont">
-				<label lang="en" value="Fantasy font:" />
-				<label lang="ru" value="Fantasy-шрифт:" />
-				<label lang="uk" value="Fantasy-шрифт:" />
-			</item>
-			<item type="spinbox" property="MinimumFontSize" default="9" minimum="5" maximum="40" step="1">
-				<label lang="en" value="Minimum font size:" />
-				<label lang="ru" value="Минимальный размер шрифта:" />
-				<label lang="uk" value="Мінімальний розмір шрифта:" />
-			</item>
-			<item type="spinbox" property="DefaultFontSize" default="14" minimum="5" maximum="40" step="1">
-				<label lang="en" value="Default font size:" />
-				<label lang="ru" value="Размер шрифта по умолчанию:" />
-				<label lang="uk" value="Розмірш шрифта за заомвчуванням:" />
-			</item>	
-			<item type="spinbox" property="DefaultFixedFontSize" default="14" minimum="5" maximum="40" step="1">
-				<label lang="en" value="Default fixed font size:" />
-				<label lang="ru" value="Размер фиксированного шрифта по умолчанию:" />
-				<label lang="uk" value="Розмір фіксованого шрифта за замовчуванням:" />
-			</item>	
-		</groupbox>
+		</tab>
+		<tab>
+			<label lang="en" value="Fonts settings" />
+			<label lang="ru" value="Настройки шрифтов" />
+			<tab>
+				<label lang="en" value="Fonts" />
+				<label lang="ru" value="Шрифты" />
+				<label lang="uk" value="Шрифти" />
+				<item type="font" property="StandardFont">
+					<label lang="en" value="Standard font:" />
+					<label lang="ru" value="Стандартный шрифт:" />
+					<label lang="uk" value="Стандартний шрифт:" />
+				</item>
+				<item type="font" property="FixedFont">
+					<label lang="en" value="Fixed font:" />
+					<label lang="ru" value="Моноширинный шрифт:" />
+					<label lang="uk" value="Моноширинний шрифт:" />
+				</item>
+				<item type="font" property="SerifFont">
+					<label lang="en" value="Serif font:" />
+					<label lang="ru" value="Шрифт с засечками:" />
+					<label lang="uk" value="Шрифт з зарубками:" />
+				</item>
+				<item type="font" property="SansSerifFont">
+					<label lang="en" value="SansSerif font:" />
+					<label lang="ru" value="Шрифт без засечек:" />
+					<label lang="uk" value="Шрифт без зарубок:" />
+				</item>
+				<item type="font" property="CursiveFont">
+					<label lang="en" value="Cursive font:" />
+					<label lang="ru" value="Курсивный шрифт:" />
+					<label lang="uk" value="Курсивний шрифт:" />
+				</item>
+				<item type="font" property="FantasyFont">
+					<label lang="en" value="Fantasy font:" />
+					<label lang="ru" value="Fantasy-шрифт:" />
+					<label lang="uk" value="Fantasy-шрифт:" />
+				</item>
+			</tab>
+			<tab>
+				<label lang="en" value="Sizes" />
+				<label lang="ru" value="Размеры" />
+				<item type="spinbox" property="MinimumFontSize" default="9" minimum="5" maximum="40" step="1">
+					<label lang="en" value="Minimum font size:" />
+					<label lang="ru" value="Минимальный размер шрифта:" />
+					<label lang="uk" value="Мінімальний розмір шрифта:" />
+				</item>
+				<item type="spinbox" property="DefaultFontSize" default="14" minimum="5" maximum="40" step="1">
+					<label lang="en" value="Default font size:" />
+					<label lang="ru" value="Размер шрифта по умолчанию:" />
+					<label lang="uk" value="Розмірш шрифта за заомвчуванням:" />
+				</item>	
+				<item type="spinbox" property="DefaultFixedFontSize" default="14" minimum="5" maximum="40" step="1">
+					<label lang="en" value="Default fixed font size:" />
+					<label lang="ru" value="Размер фиксированного шрифта по умолчанию:" />
+					<label lang="uk" value="Розмір фіксованого шрифта за замовчуванням:" />
+				</item>	
+			</tab>
+		</tab>
 	</page>
 </settings>

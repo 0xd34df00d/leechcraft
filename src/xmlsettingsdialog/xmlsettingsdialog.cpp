@@ -641,7 +641,11 @@ void XmlSettingsDialog::DoCombobox (const QDomElement& item, QFormLayout *lay)
 
         option = option.nextSiblingElement ("option");
     }
-    connect (box, SIGNAL (currentIndexChanged (int)), this, SLOT (updatePreferences ()));
+
+    connect (box,
+			SIGNAL (currentIndexChanged (int)),
+			this,
+			SLOT (updatePreferences ()));
 
 	QDomElement scriptContainer = item.firstChildElement ("scripts");
 	if (!scriptContainer.isNull ())
