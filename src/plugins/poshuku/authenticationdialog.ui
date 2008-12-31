@@ -5,12 +5,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>354</width>
-    <height>168</height>
+    <width>358</width>
+    <height>176</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Authentication required</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="resources.qrc" >
+    <normaloff>:/resources/images/poshuku.png</normaloff>:/resources/images/poshuku.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
@@ -67,7 +71,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc" />
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

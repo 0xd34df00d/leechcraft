@@ -39,6 +39,7 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	installEventFilter (new ChildActionEventFilter (this));
 
 	Ui_.setupUi (this);
+	hide ();
 
 	Ui_.AddTaskButton_->setDefaultAction (Ui_.ActionAddTask_);
 
@@ -48,6 +49,7 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	QWidget *settings = new QWidget ();
 	settings->addAction (Ui_.ActionSettings_);
 	Ui_.MainTabWidget_->setCornerWidget (settings, Qt::TopRightCorner);
+	Ui_.MainTabWidget_->setProperty ("TabIcons", "downloaders history");
 
 	connect (Ui_.ActionAboutQt_,
 			SIGNAL (triggered ()),
@@ -471,7 +473,8 @@ void MainWindow::historyFilterParametersChanged ()
 
 void MainWindow::updateIconSet ()
 {
-	SkinEngine::Instance ().updateIconSet (findChildren<QAction*> ());
+	SkinEngine::Instance ().UpdateIconSet (findChildren<QAction*> ());
+	SkinEngine::Instance ().UpdateIconSet (findChildren<QTabWidget*> ());
 }
 
 void MainWindow::on_ActionPluginManager__triggered ()

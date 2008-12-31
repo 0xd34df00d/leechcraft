@@ -12,6 +12,10 @@
   <property name="windowTitle" >
    <string>Find</string>
   </property>
+  <property name="windowIcon" >
+   <iconset resource="resources.qrc" >
+    <normaloff>:/resources/images/poshuku.png</normaloff>:/resources/images/poshuku.png</iconset>
+  </property>
   <layout class="QHBoxLayout" name="horizontalLayout_2" >
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_2" >
@@ -88,7 +92,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc" />
+ </resources>
  <connections>
   <connection>
    <sender>CloseButton_</sender>

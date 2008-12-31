@@ -12,6 +12,10 @@
   <property name="windowTitle" >
    <string>Poshuku</string>
   </property>
+  <property name="windowIcon" >
+   <iconset resource="resources.qrc" >
+    <normaloff>:/resources/images/poshuku.png</normaloff>:/resources/images/poshuku.png</iconset>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3" >
@@ -37,8 +41,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>265</width>
-        <height>145</height>
+        <width>382</width>
+        <height>192</height>
        </rect>
       </property>
       <attribute name="label" >
@@ -186,6 +190,8 @@
    <header>favoritestreeview.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="resources.qrc" />
+ </resources>
  <connections/>
 </ui>

@@ -118,7 +118,7 @@ void Poshuku::SetProvider (QObject *object, const QString& feature)
 
 QIcon Poshuku::GetIcon () const
 {
-	return QIcon ();
+	return windowIcon ();
 }
 
 QWidget* Poshuku::GetTabContents ()

@@ -12,6 +12,10 @@
   <property name="windowTitle" >
    <string>Add to favorites</string>
   </property>
+  <property name="windowIcon" >
+   <iconset resource="resources.qrc" >
+    <normaloff>:/resources/images/poshuku.png</normaloff>:/resources/images/poshuku.png</iconset>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
     <layout class="QFormLayout" name="formLayout" >
@@ -47,7 +51,7 @@
       </widget>
      </item>
      <item row="2" column="1" >
-      <widget class="LeechCraft::Util::TagsLineEdit" name="TagsEdit_" />
+      <widget class="LeechCraft::Util::TagsLineEdit" native="1" name="TagsEdit_" />
      </item>
     </layout>
    </item>
@@ -66,11 +70,13 @@
  <customwidgets>
   <customwidget>
    <class>LeechCraft::Util::TagsLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>tagslineedit.h</header>
+   <extends>QWidget</extends>
+   <header location="global" >tagslineedit.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="resources.qrc" />
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

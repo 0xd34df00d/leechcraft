@@ -1,17 +1,17 @@
 #ifndef SKINENGINE_H
 #define SKINENGINE_H
-#include <QObject>
+#include <vector>
 #include <QMap>
 #include <QString>
 #include <QList>
-#include <QAction>
+
+class QAction;
+class QTabWidget;
 
 namespace LeechCraft
 {
-	class SkinEngine : public QObject
+	class SkinEngine
 	{
-		Q_OBJECT
-
 		QString OldIconSet_;
 		QMap<QString, QString> IconName2Path_;
 		QMap<QString, QString> IconName2FileName_;
@@ -20,11 +20,12 @@ namespace LeechCraft
 	public:
 		static SkinEngine& Instance ();
 		virtual ~SkinEngine ();
+
+		void UpdateIconSet (const QList<QAction*>&);
+		void UpdateIconSet (const QList<QTabWidget*>&);
 	private:
 		void FindIcons ();
 		std::vector<int> GetDirForBase (const QString&, const QString&);
-	public slots:
-		void updateIconSet (const QList<QAction*>&);
 	};
 };
 
