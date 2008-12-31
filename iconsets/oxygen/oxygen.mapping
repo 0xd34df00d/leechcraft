@@ -18,7 +18,6 @@ lmp_open lc_documentopen
 lmp_play lc_start
 lmp_pause lc_pause
 main_addjob lc_addjob
-mainpreferences lc_preferences
 poshuku_addtofavorites lc_addtofavorites
 poshuku_back lc_back
 poshuku_find lc_find
@@ -28,6 +27,7 @@ poshuku_print lc_print
 poshuku_printpreview lc_printpreview
 poshuku_reload lc_refresh
 poshuku_stop lc_stop
+settings lc_preferences
 torrent_addjob lc_addjob
 torrent_deletejob lc_remove
 torrent_export lc_export
