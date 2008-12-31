@@ -236,13 +236,9 @@ void MainWindow::SetTrayIcon ()
 	TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/mainapp.png"), this);
 
 	QMenu *iconMenu = new QMenu (this);
-	iconMenu->addAction (tr ("Show/hide"), this, SLOT (showHideMain ()));
-	iconMenu->addSeparator ();
 	iconMenu->addAction (Ui_.ActionAddTask_);
 	iconMenu->addSeparator ();
-	iconMenu->addAction (tr ("Quit"),
-			this,
-			SLOT (on_ActionQuit__triggered ()));
+	iconMenu->addAction (Ui_.ActionQuit_);
 
 	TrayIcon_->setContextMenu (iconMenu);
 	TrayIcon_->show ();

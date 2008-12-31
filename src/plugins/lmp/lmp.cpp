@@ -80,7 +80,7 @@ void LMP::SetProvider (QObject*, const QString&)
 
 QIcon LMP::GetIcon () const
 {
-	return QIcon ();
+	return windowIcon ();
 }
 
 QWidget* LMP::GetTabContents ()

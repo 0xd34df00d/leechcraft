@@ -6,11 +6,15 @@
     <x>0</x>
     <y>0</y>
     <width>362</width>
-    <height>181</height>
+    <height>185</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Video settings</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="resources.qrc" >
+    <normaloff>:/resources/images/lmp.png</normaloff>:/resources/images/lmp.png</iconset>
   </property>
   <layout class="QFormLayout" name="formLayout" >
    <item row="0" column="0" >
@@ -185,7 +189,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc" />
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

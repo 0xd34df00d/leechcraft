@@ -254,6 +254,9 @@
    <property name="menuRole" >
     <enum>QAction::QuitRole</enum>
    </property>
+   <property name="ActionIcon" stdset="0" >
+    <string>exit</string>
+   </property>
   </action>
   <action name="ActionAboutLeechCraft_" >
    <property name="text" >

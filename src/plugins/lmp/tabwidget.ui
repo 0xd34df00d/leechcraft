@@ -12,6 +12,10 @@
   <property name="windowTitle" >
    <string>Form</string>
   </property>
+  <property name="windowIcon" >
+   <iconset resource="resources.qrc" >
+    <normaloff>:/resources/images/lmp.png</normaloff>:/resources/images/lmp.png</iconset>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
     <widget class="QLabel" name="State_" >
@@ -40,6 +44,8 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="resources.qrc" />
+ </resources>
  <connections/>
 </ui>
