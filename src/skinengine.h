@@ -13,7 +13,8 @@ namespace LeechCraft
 	class SkinEngine
 	{
 		QString OldIconSet_;
-		QMap<QString, QString> IconName2Path_;
+		typedef QMap<int, QString> sizef_t;
+		QMap<QString, QMap<int, QString> > IconName2Path_;
 		QMap<QString, QString> IconName2FileName_;
 
 		SkinEngine ();

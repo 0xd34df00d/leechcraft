@@ -44,9 +44,13 @@ void SkinEngine::UpdateIconSet (const QList<QAction*>& actions)
 			icon = QString ("lc_") + actionIcon + ".png";
 
 		QIcon iconEntity;
-		iconEntity.addPixmap (QPixmap (IconName2Path_ [icon]),
-				QIcon::Normal,
-				QIcon::On);
+		sizef_t files = IconName2Path_ [icon];
+		for (sizef_t::const_iterator sizePair = files.begin ();
+				sizePair != files.end (); ++sizePair)
+			iconEntity.addFile (sizePair.value (),
+					QSize (sizePair.key (), sizePair.key ()),
+					QIcon::Normal,
+					QIcon::On);
 
 		if (actionIconOff.size ())
 		{
@@ -55,9 +59,14 @@ void SkinEngine::UpdateIconSet (const QList<QAction*>& actions)
 				offIcon = IconName2FileName_ [actionIconOff] + ".png";
 			else
 				offIcon = QString ("lc_") + actionIconOff + ".png";
-			iconEntity.addPixmap (IconName2Path_ [offIcon],
-					QIcon::Normal,
-					QIcon::Off);
+
+			sizef_t files = IconName2Path_ [icon];
+			for (sizef_t::const_iterator sizePair = files.begin ();
+					sizePair != files.end (); ++sizePair)
+				iconEntity.addFile (sizePair.value (),
+						QSize (sizePair.key (), sizePair.key ()),
+						QIcon::Normal,
+						QIcon::On);
 		}
 		
 		(*i)->setIcon (iconEntity);
@@ -85,9 +94,13 @@ void SkinEngine::UpdateIconSet (const QList<QTabWidget*>& tabs)
 				icon = QString ("lc_") + *name + ".png";
 
 			QIcon iconEntity;
-			iconEntity.addPixmap (QPixmap (IconName2Path_ [icon]),
-					QIcon::Normal,
-					QIcon::On);
+			sizef_t files = IconName2Path_ [icon];
+			for (sizef_t::const_iterator sizePair = files.begin ();
+					sizePair != files.end (); ++sizePair)
+				iconEntity.addFile (sizePair.value (),
+						QSize (sizePair.key (), sizePair.key ()),
+						QIcon::Normal,
+						QIcon::On);
 
 			(*i)->setTabIcon (tab, iconEntity);
 		}
@@ -146,12 +159,14 @@ void SkinEngine::FindIcons ()
 			current.cd (number + 'x' + number);
 			current.cd ("actions");
 			QFileInfoList infos =
-				current.entryInfoList (QStringList ("lc_*.png"),
+				current.entryInfoList (QStringList ("*.png"),
 						QDir::Files | QDir::Readable);
+
+			int digital = number.toInt ();
 
 			for (QFileInfoList::const_iterator j = infos.begin (),
 					infoEnd = infos.end (); j != infoEnd; ++j)
-				IconName2Path_ [j->fileName ()] = j->absoluteFilePath ();
+				IconName2Path_ [j->fileName ()] [digital] = j->absoluteFilePath ();
 		}
 
 		baseDir = QDir ("/usr/local/share/icons");
@@ -165,12 +180,14 @@ void SkinEngine::FindIcons ()
 			current.cd (number + 'x' + number);
 			current.cd ("actions");
 			QFileInfoList infos =
-				current.entryInfoList (QStringList ("lc_*.png"),
+				current.entryInfoList (QStringList ("*.png"),
 						QDir::Files | QDir::Readable);
+
+			int digital = number.toInt ();
 
 			for (QFileInfoList::const_iterator j = infos.begin (),
 					infoEnd = infos.end (); j != infoEnd; ++j)
-				IconName2Path_ [j->fileName ()] = j->absoluteFilePath ();
+				IconName2Path_ [j->fileName ()] [digital] = j->absoluteFilePath ();
 		}
 #elif defined (Q_OS_WIN32)
 		QDir baseDir = QApplication::applicationDirPath ();
@@ -185,12 +202,14 @@ void SkinEngine::FindIcons ()
 			current.cd (number + 'x' + number);
 			current.cd ("actions");
 			QFileInfoList infos =
-				current.entryInfoList (QStringList ("lc_*.png"),
+				current.entryInfoList (QStringList ("*.png"),
 						QDir::Files | QDir::Readable);
+
+			int digital = number.toInt ();
 
 			for (QFileInfoList::const_iterator j = infos.begin (),
 					infoEnd = infos.end (); j != infoEnd; ++j)
-				IconName2Path_ [j->fileName ()] = j->absoluteFilePath ();
+				IconName2Path_ [j->fileName ()] [digital] = j->absoluteFilePath ();
 		}
 #endif
 	}

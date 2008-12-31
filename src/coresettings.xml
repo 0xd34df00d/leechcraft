@@ -33,7 +33,7 @@
 				</lang>
 			</item>
         </item>
-		<item type="combobox" property="IconSet" default="hicolor">
+		<item type="combobox" property="IconSet" default="oxygen">
 			<scripts>
 				<valueGenerator place="file">:/resources/scripts/iconfinder.qs</valueGenerator>
 			</scripts>
