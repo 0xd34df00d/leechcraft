@@ -5,7 +5,7 @@
 inherit cmake-utils qt4 flag-o-matic subversion
  
 DESCRIPTION="LeechCraft - extensible cross-platform download manager"
-HOMEPAGE="http://deviant-soft.ws/tiki-index.php?page=LeechCraft"
+HOMEPAGE="http://deviant-soft.ws/"
 ESVN_REPO_URI="svn://deviant-soft.ws/leechcraft/trunk/src"
  
 LICENSE="QPL"
@@ -14,7 +14,7 @@ KEYWORDS=""
 IUSE=""
  
 DEPEND="$(qt4_min_version 4.4)
-	>=net-libs/rb_libtorrent-0.14_rc1"
+	>=net-libs/rb_libtorrent-0.15_rc1"
 RDEPEND=""
  
 S=${WORKDIR}/
