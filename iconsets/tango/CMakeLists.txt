@@ -1,20 +1,20 @@
 CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
-PROJECT (leechcraft-icons-oxygen)
+PROJECT (leechcraft-icons-tango)
 
-INSTALL (DIRECTORY icons/ DESTINATION share/icons/oxygen
+INSTALL (DIRECTORY icons/ DESTINATION share/icons/Tango
 	PATTERN ".svn" EXCLUDE)
 
-INSTALL (FILES oxygen.mapping DESTINATION share/leechcraft/icons)
+INSTALL (FILES Tango.mapping DESTINATION share/leechcraft/icons)
 
 INCLUDE (InstallRequiredSystemLibraries)
 SET (CPACK_CMAKE_GENERATOR "Unix Makefiles")
-SET (CPACK_PACKAGE_NAME "leechcraft-icons-oxygen")
+SET (CPACK_PACKAGE_NAME "leechcraft-icons-tango")
 SET (CPACK_GENERATOR "DEB;RPM;TGZ")
-SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Oxygen-style icon pack for LeechCraft")
+SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Tango-style icon pack for LeechCraft")
 SET (CPACK_PACKAGE_VENDOR "0xd34df00d")
 SET (CPACK_DEBIAN_PACKAGE_SECTION "net")
-SET (CPACK_DEBIAN_PACKAGE_DESCRIPTION "Oxygen-style icon pack for LeechCraft, adapting Oxygen's icons for the LeechCraft.")
-SET (CPACK_DEBIAN_PACKAGE_DEPENDS "leechcraft (>= 0.2.950)")
+SET (CPACK_DEBIAN_PACKAGE_DESCRIPTION "Tango-style icon pack for LeechCraft, adapting Tango project's icons for the LeechCraft.")
+SET (CPACK_DEBIAN_PACKAGE_DEPENDS "leechcraft (>= 0.2.989)")
 SET (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/License.txt")
 SET (CPACK_PACKAGE_VERSION_MAJOR "0")
 SET (CPACK_PACKAGE_VERSION_MINOR "3")
