@@ -317,7 +317,6 @@ void MainWindow::on_ActionQuit__triggered ()
 
 void MainWindow::on_ActionFullscreenMode__triggered (bool full)
 {
-	qDebug () << Q_FUNC_INFO << full << WasMaximized_;
 	if (full)
 	{
 		WasMaximized_ = isMaximized ();

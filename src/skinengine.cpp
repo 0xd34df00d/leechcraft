@@ -137,10 +137,8 @@ void SkinEngine::FindIcons ()
 				{
 					QStringList pair = QString::fromUtf8 (lineData)
 						.split (' ', QString::SkipEmptyParts);
-					if (pair.size () != 2)
-						continue;
-
-					IconName2FileName_ [pair.at (0).simplified ()] = pair.at (1).simplified ();
+					if (pair.size () == 2)
+						IconName2FileName_ [pair.at (0).simplified ()] = pair.at (1).simplified ();
 
 					lineData = mappingFile.readLine ();
 				}
