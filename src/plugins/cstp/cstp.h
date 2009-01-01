@@ -22,9 +22,10 @@ class CSTP : public QObject
 			 , public IInfo
 			 , public IDownload
 			 , public IJobHolder
+			 , public IHaveSettings
 {
 	Q_OBJECT
-	Q_INTERFACES (IInfo IDownload IJobHolder)
+	Q_INTERFACES (IInfo IDownload IJobHolder IHaveSettings)
 
 	QMenu *Plugins_;
 	std::auto_ptr<QTranslator> Translator_;
@@ -54,6 +55,8 @@ public:
 	QWidget* GetControls () const;
 	QWidget* GetAdditionalInfo () const;
 	void ItemSelected (const QModelIndex&);
+
+	LeechCraft::Util::XmlSettingsDialog* GetSettingsDialog () const;
 private:
 	template<typename T> void ApplyCore2Selection (void (Core::*) (const QModelIndex&), T);
 	void SetupTabWidget ();

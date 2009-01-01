@@ -56,12 +56,18 @@ Core::Core ()
 
 	Server_->listen ("LeechCraft local socket");
 
-	XmlSettingsManager::Instance ()->RegisterObject ("ProxyEnabled", this, "handleProxySettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("ProxyHost", this, "handleProxySettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("ProxyPort", this, "handleProxySettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("ProxyLogin", this, "handleProxySettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("ProxyPassword", this, "handleProxySettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("ProxyType", this, "handleProxySettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("ProxyEnabled",
+			this, "handleProxySettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("ProxyHost",
+			this, "handleProxySettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("ProxyPort",
+			this, "handleProxySettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("ProxyLogin",
+			this, "handleProxySettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("ProxyPassword",
+			this, "handleProxySettings");
+	XmlSettingsManager::Instance ()->RegisterObject ("ProxyType",
+			this, "handleProxySettings");
 
 	handleProxySettings ();
 }
@@ -167,6 +173,8 @@ void Core::DelayedInit ()
 			SLOT (catchError (QString)));
 
 	TabContainer_.reset (new TabContainer (ReallyMainWindow_->GetTabWidget ()));
+	XmlSettingsManager::Instance ()->RegisterObject ("ShowTabNames",
+			TabContainer_.get (), "handleTabNames");
 
 	emit loadProgress (tr ("Preinitialization..."));
     PluginManager_->InitializePlugins ();
@@ -215,6 +223,8 @@ void Core::DelayedInit ()
 		if (imt)
 			InitMultiTab (plugin);
 	}
+
+	TabContainer_->handleTabNames ();
 }
 
 bool Core::ShowPlugin (int id)

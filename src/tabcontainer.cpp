@@ -1,6 +1,7 @@
 #include "tabcontainer.h"
 #include <QTabWidget>
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 using namespace LeechCraft;
 
@@ -159,6 +160,26 @@ void TabContainer::ToggleMultiwindow ()
 			widget->setWindowFlags (Qt::Window);
 			widget->show ();
 			Widgets_ << widget;
+		}
+	}
+}
+
+void TabContainer::handleTabNames ()
+{
+	int size = Core::Instance ().CountUnremoveableTabs ();
+	if (XmlSettingsManager::Instance ()->property ("ShowTabNames").toBool ())
+	{
+		for (int i = 0; i < size; ++i)
+			if (TabWidget_->tabText (i) == "")
+				TabWidget_->setTabText (i, TabNames_ [i]);
+	}
+	else
+	{
+		TabNames_.clear ();
+		for (int i = 0; i < size; ++i)
+		{
+			TabNames_ << TabWidget_->tabText (i);
+			TabWidget_->setTabText (i, "");
 		}
 	}
 }

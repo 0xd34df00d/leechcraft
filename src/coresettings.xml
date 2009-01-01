@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
+	<page>
+		<label lang="en" value="Appearance" />
+		<label lang="ru" value="Внешний вид" />
+		<item type="checkbox" property="ShowTabNames" state="on">
+			<label lang="en" value="Show tab names" />
+			<label lang="ru" value="Показывать названия вкладок" />
+		</item>
+	</page>
     <page>
         <label lang="en" value="Behavior" />
         <label lang="ru" value="Поведение" />

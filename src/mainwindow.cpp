@@ -27,6 +27,7 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , IsShown_ (true)
 , WasMaximized_ (false)
 {
+	setUpdatesEnabled (false);
 	SplashScreen_ = new QSplashScreen (QPixmap (":/resources/images/splashscreen.png"),
 			Qt::WindowStaysOnTopHint);
 	SplashScreen_->show ();
@@ -39,8 +40,6 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	installEventFilter (new ChildActionEventFilter (this));
 
 	Ui_.setupUi (this);
-	hide ();
-
 	Ui_.AddTaskButton_->setDefaultAction (Ui_.ActionAddTask_);
 
 	Ui_.ActionAddTask_->setProperty ("ActionIcon", "addjob");
@@ -179,6 +178,7 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 
 	updateIconSet ();
 
+	setUpdatesEnabled (true);
 	SplashScreen_->finish (this);
 	show ();
 }

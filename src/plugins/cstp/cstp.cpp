@@ -187,6 +187,11 @@ void CSTP::ItemSelected (const QModelIndex&)
 {
 }
 
+LeechCraft::Util::XmlSettingsDialog* CSTP::GetSettingsDialog () const
+{
+	return XmlSettingsDialog_.get ();
+}
+
 template<typename T>
 void CSTP::ApplyCore2Selection (void (Core::*temp) (const QModelIndex&), T view)
 {
