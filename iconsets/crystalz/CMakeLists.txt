@@ -4,6 +4,8 @@ PROJECT (leechcraft-icons-crystalz)
 INSTALL (DIRECTORY icons/ DESTINATION share/icons/crystalz
 	PATTERN ".svn" EXCLUDE)
 
+INSTALL (FILES crystalz.mapping DESTINATION share/leechcraft/icons)
+
 INCLUDE (InstallRequiredSystemLibraries)
 SET (CPACK_CMAKE_GENERATOR "Unix Makefiles")
 SET (CPACK_PACKAGE_NAME "leechcraft-icons-crystalz")
@@ -12,7 +14,8 @@ SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Zombieff's icon pack for LeechCraft")
 SET (CPACK_PACKAGE_VENDOR "0xd34df00d")
 SET (CPACK_DEBIAN_PACKAGE_SECTION "net")
 SET (CPACK_DEBIAN_PACKAGE_DESCRIPTION "Glassy-look icon pack by Zombieff <zombieff@gmail.com>")
-SET (CPACK_DEBIAN_PACKAGE_DEPENDS "leechcraft (>= 0.2.826)")
+SET (CPACK_DEBIAN_PACKAGE_DEPENDS "leechcraft (>= 0.2.900)")
+SET (CPACK_DEBIAN_PACKAGE_ARCHITECTURE "all")
 SET (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/License.txt")
 SET (CPACK_PACKAGE_VERSION_MAJOR "1")
 SET (CPACK_PACKAGE_VERSION_MINOR "0")
