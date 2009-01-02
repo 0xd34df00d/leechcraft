@@ -83,7 +83,7 @@ SET (COMPILED_TRANSLATIONS
 ADD_DEFINITIONS (${QT_DEFINITIONS})
 
 FIND_PACKAGE (PkgConfig)
-pkg_check_modules (RB_LT REQUIRED libtorrent-rasterbar >= 0.15-svn)
+pkg_check_modules (RB_LT REQUIRED libtorrent-rasterbar>=0.15-svn)
 ADD_DEFINITIONS (${RB_LT_CFLAGS})
 
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
