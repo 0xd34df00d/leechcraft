@@ -4,6 +4,7 @@
 #include <QMap>
 #include <QString>
 #include <QList>
+#include <QDir>
 
 class QAction;
 class QTabWidget;
@@ -26,6 +27,8 @@ namespace LeechCraft
 		void UpdateIconSet (const QList<QTabWidget*>&);
 	private:
 		void FindIcons ();
+		void CollectDir (const QString&, const QString&);
+		void CollectSubdir (QDir, const QString&, int);
 		std::vector<int> GetDirForBase (const QString&, const QString&);
 	};
 };

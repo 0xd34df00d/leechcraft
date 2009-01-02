@@ -146,71 +146,49 @@ void SkinEngine::FindIcons ()
 		}
 
 #if defined (Q_OS_UNIX)
-		std::vector<int> numbers = GetDirForBase ("/usr/share/icons", iconSet);
-		QDir baseDir ("/usr/share/icons");
-		baseDir.cd (iconSet);
-		for (std::vector<int>::const_iterator i = numbers.begin (),
-				end = numbers.end (); i != end; ++i)
-		{
-			QDir current = baseDir;
-			QString number = QString::number (*i);
-			current.cd (number + 'x' + number);
-			current.cd ("actions");
-			QFileInfoList infos =
-				current.entryInfoList (QStringList ("*.png"),
-						QDir::Files | QDir::Readable);
-
-			int digital = number.toInt ();
-
-			for (QFileInfoList::const_iterator j = infos.begin (),
-					infoEnd = infos.end (); j != infoEnd; ++j)
-				IconName2Path_ [j->fileName ()] [digital] = j->absoluteFilePath ();
-		}
-
-		baseDir = QDir ("/usr/local/share/icons");
-		numbers = GetDirForBase ("/usr/local/share/icons", iconSet);
-		baseDir.cd (iconSet);
-		for (std::vector<int>::const_iterator i = numbers.begin (),
-				end = numbers.end (); i != end; ++i)
-		{
-			QDir current = baseDir;
-			QString number = QString::number (*i);
-			current.cd (number + 'x' + number);
-			current.cd ("actions");
-			QFileInfoList infos =
-				current.entryInfoList (QStringList ("*.png"),
-						QDir::Files | QDir::Readable);
-
-			int digital = number.toInt ();
-
-			for (QFileInfoList::const_iterator j = infos.begin (),
-					infoEnd = infos.end (); j != infoEnd; ++j)
-				IconName2Path_ [j->fileName ()] [digital] = j->absoluteFilePath ();
-		}
+		CollectDir ("/usr/share/icons", iconSet);
+		CollectDir ("/usr/local/share/icons", iconSet);
 #elif defined (Q_OS_WIN32)
-		QDir baseDir = QApplication::applicationDirPath ();
-		baseDir.cd ("icons");
-		std::vector<int> numbers = GetDirForBase (baseDir.absolutePath (), iconSet);
-		baseDir.cd (iconSet);
-		for (std::vector<int>::const_iterator i = numbers.begin (),
-				end = numbers.end (); i != end; ++i)
-		{
-			QDir current = baseDir;
-			QString number = QString::number (*i);
-			current.cd (number + 'x' + number);
-			current.cd ("actions");
-			QFileInfoList infos =
-				current.entryInfoList (QStringList ("*.png"),
-						QDir::Files | QDir::Readable);
-
-			int digital = number.toInt ();
-
-			for (QFileInfoList::const_iterator j = infos.begin (),
-					infoEnd = infos.end (); j != infoEnd; ++j)
-				IconName2Path_ [j->fileName ()] [digital] = j->absoluteFilePath ();
-		}
+		CollectDir (QApplication::applicationDirPath (), iconSet);
 #endif
 	}
+}
+
+void SkinEngine::CollectDir (const QString& folder, const QString& iconSet)
+{
+	std::vector<int> numbers = GetDirForBase (folder, iconSet);
+	QDir baseDir (folder);
+	baseDir.cd (iconSet);
+	for (std::vector<int>::const_iterator i = numbers.begin (),
+			end = numbers.end (); i != end; ++i)
+	{
+		QDir current = baseDir;
+		QString number = QString::number (*i);
+		int size = number.toInt ();
+		if (size > 32 || size < 16)
+			continue;
+
+		current.cd (number + 'x' + number);
+
+		QStringList subdirs = current.entryList (QStringList (),
+				QDir::AllDirs);
+
+		for (QStringList::const_iterator j = subdirs.begin (),
+				subdirsEnd = subdirs.end (); j != subdirsEnd; ++j)
+			CollectSubdir (current, *j, size);
+	}
+}
+
+void SkinEngine::CollectSubdir (QDir current, const QString& dir, int size)
+{
+	current.cd (dir);
+	QFileInfoList infos =
+		current.entryInfoList (QStringList ("*.png"),
+				QDir::Files | QDir::Readable);
+
+	for (QFileInfoList::const_iterator i = infos.begin (),
+			infoEnd = infos.end (); i != infoEnd; ++i)
+		IconName2Path_ [i->fileName ()] [size] = i->absoluteFilePath ();
 }
 
 std::vector<int> SkinEngine::GetDirForBase (const QString& base,
