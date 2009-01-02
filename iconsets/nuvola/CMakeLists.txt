@@ -1,10 +1,10 @@
 CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
 PROJECT (leechcraft-icons-tango)
 
-INSTALL (DIRECTORY icons/ DESTINATION share/icons/Tango
-	PATTERN ".svn" EXCLUDE)
+#INSTALL (DIRECTORY icons/ DESTINATION share/icons/Tango
+#	PATTERN ".svn" EXCLUDE)
 
-INSTALL (FILES Tango.mapping DESTINATION share/leechcraft/icons)
+INSTALL (FILES nuvola.mapping DESTINATION share/leechcraft/icons)
 
 INCLUDE (InstallRequiredSystemLibraries)
 SET (CPACK_CMAKE_GENERATOR "Unix Makefiles")
@@ -13,7 +13,7 @@ SET (CPACK_GENERATOR "DEB;RPM;TGZ")
 SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Tango-style icon pack for LeechCraft")
 SET (CPACK_PACKAGE_VENDOR "0xd34df00d")
 SET (CPACK_DEBIAN_PACKAGE_SECTION "net")
-SET (CPACK_DEBIAN_PACKAGE_DESCRIPTION "Tango-style icon pack for LeechCraft, adapting Tango project's icons for the LeechCraft.")
+SET (CPACK_DEBIAN_PACKAGE_DESCRIPTION "Nuvola-style icon pack for LeechCraft, adapting Nuvola icon theme for KDE 3.x by David Vignoni icons for the LeechCraft.")
 SET (CPACK_DEBIAN_PACKAGE_DEPENDS "leechcraft (>= 0.2.989)")
 SET (CPACK_DEBIAN_PACKAGE_ARCHITECTURE "all")
 SET (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/License.txt")

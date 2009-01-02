@@ -2,7 +2,7 @@ addjob add
 exit exit
 downloaders document-save-as
 history document-save
-settings document-properties
+settings preferences-system
 aggregator_add add
 aggregator_larrow back
 aggregator_rarrow forward
@@ -20,6 +20,7 @@ cstp_stopall media-playback-stop
 lmp_open document-open
 lmp_play media-playback-start
 lmp_pause media-playback-pause
+lmp_viewersettings preferences-desktop-wallpaper
 poshuku_addtofavorites bookmark-new
 poshuku_back back
 poshuku_find edit-find
