@@ -171,7 +171,7 @@ void SkinEngine::CollectDir (const QString& folder, const QString& iconSet)
 		current.cd (number + 'x' + number);
 
 		QStringList subdirs = current.entryList (QStringList (),
-				QDir::AllDirs);
+				QDir::Dirs | QDir::NoDotAndDotDot);
 
 		for (QStringList::const_iterator j = subdirs.begin (),
 				subdirsEnd = subdirs.end (); j != subdirsEnd; ++j)

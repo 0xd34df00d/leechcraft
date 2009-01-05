@@ -18,6 +18,7 @@ class CustomWebView;
 class QWebView;
 class BrowserWidget;
 class QAbstractItemModel;
+class QNetworkReply;
 
 class Core : public QObject
 {
@@ -65,7 +66,7 @@ private:
 	void ScheduleSaveSession ();
 	void HandleHistory (QWebView*);
 public slots:
-	void gotUnsupportedContent ();
+	void gotUnsupportedContent (const QByteArray& = QByteArray ());
 private slots:
 	void saveCookies () const;
 	void handleTitleChanged (const QString&);

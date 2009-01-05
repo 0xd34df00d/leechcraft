@@ -29,9 +29,14 @@ void CustomWebPage::handleDownloadRequested (const QNetworkRequest& request)
 
 void CustomWebPage::handleUnsupportedContent (QNetworkReply *reply)
 {
-	connect (reply,
-			SIGNAL (finished ()),
-			&Core::Instance (),
-			SLOT (gotUnsupportedContent ()));
+	qint64 size = reply->
+		header (QNetworkRequest::ContentLengthHeader).value<qint64> ();
+	if (size == reply->bytesAvailable ())
+		Core::Instance ().gotUnsupportedContent (reply->readAll ());
+	else
+		connect (reply,
+				SIGNAL (finished ()),
+				&Core::Instance (),
+				SLOT (gotUnsupportedContent ()));
 }
 

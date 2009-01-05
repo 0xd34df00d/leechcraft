@@ -8,6 +8,7 @@
 #include <QFile>
 #include <QNetworkCookieJar>
 #include <QDir>
+#include <QInputDialog>
 #include <QNetworkReply>
 #include <QAuthenticator>
 #include <QNetworkProxy>
@@ -323,10 +324,17 @@ void Core::HandleHistory (QWebView *view)
 			url, QDateTime::currentDateTime ());
 }
 
-void Core::gotUnsupportedContent ()
+void Core::gotUnsupportedContent (const QByteArray& gotData)
 {
-	QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-	QByteArray data = reply->readAll ();
+	QNetworkReply *reply = 0;
+	QByteArray data;
+	if (!gotData.size ())
+	{
+		reply = qobject_cast<QNetworkReply*> (sender ());
+		data = reply->readAll ();
+	}
+	else
+		data = gotData;
 
 	LeechCraft::TaskParameters parameters = LeechCraft::Autostart;
 
@@ -337,22 +345,22 @@ void Core::gotUnsupportedContent ()
 	
 	bool added = false;
 
+	QString directory = QFileDialog::getExistingDirectory (0,
+			tr ("Save external data"),
+			XmlSettingsManager::Instance ()->
+				Property (propName,
+					QDesktopServices::storageLocation (
+						QDesktopServices::DocumentsLocation))
+						.toString ());
+	if (directory.isEmpty ())
+		return;
+
 	for (QObjectList::const_iterator i = Downloaders_.begin (),
 			end = Downloaders_.end (); i != end; ++i)
 	{
 		IDownload *downloader = qobject_cast<IDownload*> (*i);
 		if (downloader->CouldDownload (data, parameters))
 		{
-			QString directory = QFileDialog::getExistingDirectory (0,
-					tr ("Save external data"),
-					XmlSettingsManager::Instance ()->
-						Property (propName,
-							QDesktopServices::storageLocation (
-								QDesktopServices::DocumentsLocation))
-								.toString ());
-			if (directory.isEmpty ())
-				return;
-
 			LeechCraft::DownloadParams dParams =
 			{
 				data,
@@ -370,14 +378,39 @@ void Core::gotUnsupportedContent ()
 		}
 	}
 
-	if (!added &&
-			XmlSettingsManager::Instance ()->
-				property ("NotifyUnsuccessfulPushes").toBool ())
-		QMessageBox::warning (0,
-				tr ("Error"),
-				tr ("No plugins were found that could download the "
-					"content from URL<br /><code>%1</code>")
-					.arg (reply->url ().toString ()));
+	if (!added)
+	{
+		if (QMessageBox::question (0,
+					tr ("Error"),
+					tr ("No plugins were found that could download the "
+						"content. Do you want to just save it to disk?"),
+					QMessageBox::Yes | QMessageBox::No)
+					!= QMessageBox::Yes)
+			return;
+
+		QString filename = QInputDialog::getText (0,
+				tr ("Question"),
+				tr ("Please enter filename for your new saved data"),
+				QLineEdit::Normal,
+				"");			// TODO set default text as link's filename
+
+		QFile file (QDir (directory).absoluteFilePath (filename));
+		if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
+		{
+			QMessageBox::critical (0,
+					tr ("Error"),
+					tr ("Could not open file for writing."));
+			return;
+		}
+
+		if (!file.write (data))
+		{
+			QMessageBox::critical (0,
+					tr ("Error"),
+					tr ("Could not write data to file."));
+			return;
+		}
+	}
 }
 
 void Core::GotLink (const QString& link)

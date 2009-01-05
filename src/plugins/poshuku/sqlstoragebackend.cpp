@@ -164,7 +164,7 @@ void SQLStorageBackend::AddToHistory (const HistoryModel::HistoryItem& item)
 
 	if (!HistoryAdder_.exec ())
 	{
-		LeechCraft::Util::DBLock::DumpError (HistoryLoader_);
+		LeechCraft::Util::DBLock::DumpError (HistoryAdder_);
 		return;
 	}
 
