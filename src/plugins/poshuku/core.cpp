@@ -355,6 +355,9 @@ void Core::gotUnsupportedContent (const QByteArray& gotData)
 	if (directory.isEmpty ())
 		return;
 
+	XmlSettingsManager::Instance ()->
+		setProperty (propName.toStdString ().c_str (), directory);
+
 	for (QObjectList::const_iterator i = Downloaders_.begin (),
 			end = Downloaders_.end (); i != end; ++i)
 	{
@@ -366,9 +369,6 @@ void Core::gotUnsupportedContent (const QByteArray& gotData)
 				data,
 				directory
 			};
-
-			XmlSettingsManager::Instance ()->
-				setProperty (propName.toStdString ().c_str (), directory);
 
 			downloader->AddJob (dParams, parameters);
 
@@ -388,11 +388,19 @@ void Core::gotUnsupportedContent (const QByteArray& gotData)
 					!= QMessageBox::Yes)
 			return;
 
+		QString suggestedName;
+		if (reply)
+		{
+			suggestedName = QFileInfo (reply->url ().path ()).fileName ();
+			if (suggestedName.isEmpty ())
+				suggestedName = reply->url ().host ();
+		}
+
 		QString filename = QInputDialog::getText (0,
 				tr ("Question"),
 				tr ("Please enter filename for your new saved data"),
 				QLineEdit::Normal,
-				"");			// TODO set default text as link's filename
+				suggestedName);
 
 		QFile file (QDir (directory).absoluteFilePath (filename));
 		if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))

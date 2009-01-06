@@ -7,9 +7,16 @@
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QPrintPreviewDialog>
+#include <QPainter>
+#include <QWebFrame>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QDesktopServices>
 #include "core.h"
 #include "historymodel.h"
 #include "finddialog.h"
+#include "screenshotsavedialog.h"
+#include "xmlsettingsmanager.h"
 
 BrowserWidget::BrowserWidget (QWidget *parent)
 : QWidget (parent)
@@ -53,16 +60,19 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			this);
 	printPreview->setProperty ("ActionIcon", "poshuku_printpreview");
 
+	QAction *screenSave = new QAction (tr ("Take page's screenshot"),
+			this);
+	screenSave->setProperty ("ActionIcon", "poshuku_takescreenshot");
+
 	bar->addAction (back);
 	bar->addAction (forward);
 	bar->addAction (reload);
 	bar->addAction (stop);
-	bar->addSeparator ();
 	bar->addAction (find);
-	bar->addSeparator ();
 	bar->addAction (add2Favorites);
 	bar->addAction (print);
 	bar->addAction (printPreview);
+	bar->addAction (screenSave);
 
 	QWidgetAction *addressBar = new QWidgetAction (this);
 	addressBar->setDefaultWidget (Ui_.URLEdit_);
@@ -86,6 +96,10 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			SIGNAL (triggered ()),
 			this,
 			SLOT (handleFind ()));
+	connect (screenSave,
+			SIGNAL (triggered ()),
+			this,
+			SLOT (handleScreenSave ()));
 
 	connect (Ui_.WebView_,
 			SIGNAL (titleChanged (const QString&)),
@@ -227,5 +241,52 @@ void BrowserWidget::handlePrinting ()
 void BrowserWidget::handlePrintingWithPreview ()
 {
 	PrintImpl (true);
+}
+
+void BrowserWidget::handleScreenSave ()
+{
+	QSize contentsSize = Ui_.WebView_->page ()->mainFrame ()->contentsSize ();
+	QSize oldSize = Ui_.WebView_->page ()->viewportSize ();
+	QRegion clip (0, 0, contentsSize.width (), contentsSize.height ());
+
+	QPixmap image (contentsSize);
+	QPainter painter (&image);
+	Ui_.WebView_->page ()->setViewportSize (contentsSize);
+	Ui_.WebView_->page ()->mainFrame ()->render (&painter, clip);
+	Ui_.WebView_->page ()->setViewportSize (oldSize);
+
+	std::auto_ptr<ScreenShotSaveDialog> dia (new ScreenShotSaveDialog (image, this));
+	if (dia->exec () != QDialog::Accepted)
+		return;
+
+	QString filename = QFileDialog::getSaveFileName (this,
+			tr ("Save screenshot"),
+			XmlSettingsManager::Instance ()->
+				Property ("ScreenshotsLocation",
+					QDesktopServices::storageLocation (
+						QDesktopServices::DocumentsLocation)).toString ());
+	if (filename.isEmpty ())
+		return;
+
+	XmlSettingsManager::Instance ()->setProperty ("ScreenshotsLocation", filename);
+
+	QFile file (filename);
+	if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
+	{
+		QMessageBox::critical (this,
+				tr ("Error"),
+				tr ("Could not open %1 for write")
+					.arg (filename));
+		return;
+	}
+
+	if (!file.write (dia->Save ()))
+	{
+		QMessageBox::critical (this,
+				tr ("Error"),
+				tr ("Could not write screenshot to %1")
+					.arg (filename));
+		return;
+	}
 }
 

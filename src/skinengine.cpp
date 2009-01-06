@@ -60,13 +60,13 @@ void SkinEngine::UpdateIconSet (const QList<QAction*>& actions)
 			else
 				offIcon = QString ("lc_") + actionIconOff + ".png";
 
-			sizef_t files = IconName2Path_ [icon];
-			for (sizef_t::const_iterator sizePair = files.begin ();
-					sizePair != files.end (); ++sizePair)
+			sizef_t offFiles = IconName2Path_ [offIcon];
+			for (sizef_t::const_iterator sizePair = offFiles.begin ();
+					sizePair != offFiles.end (); ++sizePair)
 				iconEntity.addFile (sizePair.value (),
 						QSize (sizePair.key (), sizePair.key ()),
 						QIcon::Normal,
-						QIcon::On);
+						QIcon::Off);
 		}
 		
 		(*i)->setIcon (iconEntity);

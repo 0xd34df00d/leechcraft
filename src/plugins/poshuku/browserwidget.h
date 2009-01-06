@@ -27,6 +27,7 @@ private slots:
 	void findText (const QString&, QWebPage::FindFlags);
 	void handlePrinting ();
 	void handlePrintingWithPreview ();
+	void handleScreenSave ();
 signals:
 	void titleChanged (const QString&);
 	void urlChanged (const QString&);
