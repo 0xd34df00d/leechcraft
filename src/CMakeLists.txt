@@ -19,7 +19,7 @@ IF (WIN32 AND NOT MSVC)
 ENDIF (WIN32 AND NOT MSVC)
 SET (LC_PLUGINS_DEST "lib/leechcraft/plugins")
 # Check modules first in local dir
-SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+SET (CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 FIND_PACKAGE (Boost REQUIRED COMPONENTS date_time filesystem system thread signals)
 SET (QT_USE_QTNETWORK TRUE)
@@ -41,17 +41,6 @@ IF (ENABLE_PACK)
 	SET (CPACK_GENERATOR "DEB;RPM")
 	SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Extensible crossplatform download manager")
 	SET (CPACK_PACKAGE_VENDOR "0xd34df00d")
-
-	FIND_PROGRAM(DPKG_CMD dpkg)
-	IF(NOT DPKG_CMD)
-		MESSAGE(STATUS "Can not find dpkg in your path, default to i386.")
-		SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE i386)
-	ENDIF(NOT DPKG_CMD)
-	EXECUTE_PROCESS(COMMAND "${DPKG_CMD}" --print-architecture
-		OUTPUT_VARIABLE CPACK_DEBIAN_PACKAGE_ARCHITECTURE
-		OUTPUT_STRIP_TRAILING_WHITESPACE
-		)
-
 	SET (CPACK_DEBIAN_PACKAGE_SECTION "net")
 	SET (CPACK_DEBIAN_PACKAGE_DESCRIPTION "Extensible crossplatform download manager
  LeechCraft is a cross-platform extensibe download manager written
