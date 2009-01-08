@@ -99,7 +99,6 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	ReadSettings ();
 
 	FancyPopupManager_ = new FancyPopupManager (TrayIcon_, this);
-	PluginManagerDialog_ = new PluginManagerDialog (this);
 	LogToolBox_ = new LogToolBox (this);
 
 	connect (Ui_.HistoryView_,
@@ -124,6 +123,8 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 
 	Core::Instance ().SetReallyMainWindow (this);
 	Core::Instance ().DelayedInit ();
+
+	PluginManagerDialog_ = new PluginManagerDialog (this);
 
 	SplashScreen_->showMessage (tr ("Initializing core and plugins..."),
 			Qt::AlignLeft | Qt::AlignBottom);

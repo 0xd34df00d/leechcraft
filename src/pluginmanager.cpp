@@ -341,6 +341,7 @@ bool PluginManager::ValidatePlugin (QPluginLoader *loader) const
 	QString name = iinfo->GetName (),
 			info = iinfo->GetInfo (),
 			path = loader->fileName ();
+	qDebug () << iinfo->GetName ();
 	QFile file (path);
 	if (!file.open (QIODevice::ReadOnly))
 	{
