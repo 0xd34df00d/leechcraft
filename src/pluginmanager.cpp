@@ -11,6 +11,7 @@
 #include "core.h"
 #include "pluginmanager.h"
 #include "mainwindow.h"
+#include "xmlsettingsmanager.h"
 
 using namespace LeechCraft;
 using LeechCraft::Util::HistoryModel;
@@ -148,7 +149,8 @@ QObjectList PluginManager::GetAllPlugins () const
 
 void PluginManager::InitializePlugins ()
 {
-	bool shouldValidate = !QCoreApplication::arguments ().contains ("-nopupcheck");
+	bool shouldValidate = !(QCoreApplication::arguments ().contains ("-nopupcheck") ||
+			XmlSettingsManager::Instance ()->Property ("FirstStart", true).toBool ());
     for (int i = 0; i < Plugins_.size (); ++i)
     {
         QPluginLoader *loader = Plugins_.at (i);
@@ -341,7 +343,6 @@ bool PluginManager::ValidatePlugin (QPluginLoader *loader) const
 	QString name = iinfo->GetName (),
 			info = iinfo->GetInfo (),
 			path = loader->fileName ();
-	qDebug () << iinfo->GetName ();
 	QFile file (path);
 	if (!file.open (QIODevice::ReadOnly))
 	{

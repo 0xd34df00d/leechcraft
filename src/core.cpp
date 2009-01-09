@@ -84,6 +84,7 @@ Core& Core::Instance ()
 
 void Core::Release ()
 {
+	XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");
 	MergeModel_.reset ();
 	HistoryMergeModel_.reset ();
 

@@ -170,7 +170,8 @@ void TabContainer::handleTabNames ()
 	if (XmlSettingsManager::Instance ()->property ("ShowTabNames").toBool ())
 	{
 		for (int i = 0; i < size; ++i)
-			if (TabWidget_->tabText (i) == "")
+			if (TabWidget_->tabText (i).isNull () ||
+					TabWidget_->tabText (i).isEmpty ())
 				TabWidget_->setTabText (i, TabNames_ [i]);
 	}
 	else
@@ -179,7 +180,7 @@ void TabContainer::handleTabNames ()
 		for (int i = 0; i < size; ++i)
 		{
 			TabNames_ << TabWidget_->tabText (i);
-			TabWidget_->setTabText (i, "");
+			TabWidget_->setTabText (i, QString ());
 		}
 	}
 }
