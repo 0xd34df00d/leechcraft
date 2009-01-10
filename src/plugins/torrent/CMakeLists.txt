@@ -123,5 +123,3 @@ ELSE (WIN32)
 ENDIF (WIN32)
 
 INSTALL (TARGETS leechcraft_torrent DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor
-	PATTERN ".svn" EXCLUDE)

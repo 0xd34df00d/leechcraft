@@ -212,13 +212,16 @@ void MainWindow::closeEvent (QCloseEvent *e)
 
 void MainWindow::SetStatusBar ()
 {
+	QFontMetrics fm = fontMetrics ();
+	int minSize = fm.width (Proxy::Instance ()->MakePrettySize (999) + tr ("/s    "));
+
 	DownloadSpeed_ = new QLabel;
-	DownloadSpeed_->setText ("0");
-	DownloadSpeed_->setMinimumWidth (70);
+	DownloadSpeed_->setText (Proxy::Instance ()->MakePrettySize (0) + tr ("/s"));
+	DownloadSpeed_->setMinimumWidth (minSize);
 	DownloadSpeed_->setAlignment (Qt::AlignRight);
 	UploadSpeed_ = new QLabel;
-	UploadSpeed_->setText ("0");
-	UploadSpeed_->setMinimumWidth (70);
+	UploadSpeed_->setText (Proxy::Instance ()->MakePrettySize (0) + tr ("/s"));
+	UploadSpeed_->setMinimumWidth (minSize);
 	UploadSpeed_->setAlignment (Qt::AlignRight);
 
 	DSpeedGraph_ = new GraphWidget (Qt::green);
@@ -227,8 +230,8 @@ void MainWindow::SetStatusBar ()
 	USpeedGraph_->setMinimumWidth (250);
 
 	statusBar ()->addPermanentWidget (DownloadSpeed_);
-	statusBar ()->addPermanentWidget (UploadSpeed_);
 	statusBar ()->addPermanentWidget (DSpeedGraph_);
+	statusBar ()->addPermanentWidget (UploadSpeed_);
 	statusBar ()->addPermanentWidget (USpeedGraph_);
 }
 

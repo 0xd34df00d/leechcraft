@@ -70,6 +70,3 @@ TARGET_LINK_LIBRARIES (leechcraft_cstp
                         plugininterface
                         xmlsettingsdialog)
 INSTALL (TARGETS leechcraft_cstp DESTINATION ${LC_PLUGINS_DEST})
-
-INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor
-	PATTERN ".svn" EXCLUDE)
