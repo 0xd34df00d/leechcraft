@@ -8,6 +8,7 @@
 #include <QAction>
 #include <QTabWidget>
 #include <QTranslator>
+#include <QTextCodec>
 #include <QTimer>
 #include <QToolBar>
 #include <QSortFilterProxyModel>
@@ -121,28 +122,31 @@ void TorrentPlugin::StopAll ()
         Core::Instance ()->PauseTorrent (i);
 }
 
-bool TorrentPlugin::CouldDownload (const QByteArray& string, LeechCraft::TaskParameters) const
+bool TorrentPlugin::CouldDownload (const QByteArray& data, LeechCraft::TaskParameters) const
 {
-    QFile file (string);
+	QString str = QTextCodec::codecForName ("UTF-8")->toUnicode (data);
+    QFile file (str);
     if (file.exists () &&
 			file.open (QIODevice::ReadOnly))
         return Core::Instance ()->IsValidTorrent (file.readAll ());
 	else
-		return Core::Instance ()->IsValidTorrent (string);
+		return Core::Instance ()->IsValidTorrent (data);
 }
 
 int TorrentPlugin::AddJob (const LeechCraft::DownloadParams& dp, LeechCraft::TaskParameters parameters)
 {
-	QByteArray suggestedFname = dp.Resource_;
+	QString resource = QTextCodec::codecForName ("UTF-8")->toUnicode (dp.Resource_);
+	qDebug () << resource;
+	QString suggestedFname = resource;
 	QFile file (suggestedFname);
     if ((!file.exists () ||
 			!file.open (QIODevice::ReadOnly)) &&
-			Core::Instance ()->IsValidTorrent (suggestedFname))
+			Core::Instance ()->IsValidTorrent (dp.Resource_))
 	{
 		QTemporaryFile file ("lctemporarybittorrentfile.XXXXXX");
 		if (!file.open  ())
 			return -1;
-		file.write (suggestedFname);
+		file.write (dp.Resource_);
 		suggestedFname = file.fileName ().toUtf8 ();
 		file.setAutoRemove (false);
 	}
