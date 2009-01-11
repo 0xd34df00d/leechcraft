@@ -134,8 +134,8 @@ Core& Core::Instance ()
 void Core::Release ()
 {
 	ItemModel_->saveSettings ();
-	XmlSettingsManager::Instance ()->Release ();
 	saveSettings ();
+	XmlSettingsManager::Instance ()->Release ();
 	StorageBackend_.reset (0);
 }
 
@@ -1019,6 +1019,8 @@ void Core::fetchExternalFile (const QString& url, const QString& where)
 
 void Core::saveSettings ()
 {
+	XmlSettingsManager::Instance ()->setProperty ("GlobalTags",
+			TagsCompletionModel_->GetTags ());
 	SaveScheduled_ = false;
 }
 

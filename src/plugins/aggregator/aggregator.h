@@ -2,17 +2,15 @@
 #define AGGREGATOR_H
 #include <memory>
 #include <interfaces/interfaces.h>
-#include <plugininterface/categoryselector.h>
-#include <plugininterface/tagscompleter.h>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "ui_mainwidget.h"
-#include "itemsfiltermodel.h"
-#include "channelsfiltermodel.h"
+#include <QWidget>
+#include <QItemSelection>
 
 class QSystemTrayIcon;
 class QTranslator;
 class QToolBar;
 class ItemBucket;
+
+struct Aggregator_Impl;
 
 class Aggregator : public QWidget
                  , public IInfo
@@ -22,34 +20,7 @@ class Aggregator : public QWidget
     Q_OBJECT
     Q_INTERFACES (IInfo IEmbedTab IHaveSettings)
 
-    Ui::MainWidget Ui_;
-
-	QToolBar *ToolBar_;
-    QAction *ActionAddFeed_;
-    QAction *ActionUpdateFeeds_;
-    QAction *ActionRemoveFeed_;
-    QAction *ActionMarkItemAsUnread_;
-    QAction *ActionMarkChannelAsRead_;
-    QAction *ActionMarkChannelAsUnread_;
-    QAction *ActionUpdateSelectedFeed_;
-    QAction *ActionAddToItemBucket_;
-    QAction *ActionItemBucket_;
-    QAction *ActionRegexpMatcher_;
-    QAction *ActionHideReadItems_;
-    QAction *ActionImportOPML_;
-    QAction *ActionExportOPML_;
-	QAction *ActionImportBinary_;
-	QAction *ActionExportBinary_;
-
-	std::auto_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
-	std::auto_ptr<ItemsFilterModel> ItemsFilterModel_;
-	std::auto_ptr<ChannelsFilterModel> ChannelsFilterModel_;
-	std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsLineCompleter_,
-		ChannelTagsCompleter_;
-	std::auto_ptr<QSystemTrayIcon> TrayIcon_;
-	std::auto_ptr<QTranslator> Translator_;
-    std::auto_ptr<ItemBucket> ItemBucket_;
-	std::auto_ptr<LeechCraft::Util::CategorySelector> ItemCategorySelector_;
+	Aggregator_Impl *Impl_;
 public:
 	virtual ~Aggregator ();
     void Init ();

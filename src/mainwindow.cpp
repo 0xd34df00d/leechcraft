@@ -305,6 +305,7 @@ void MainWindow::on_ActionSettings__triggered ()
 
 void MainWindow::on_ActionQuit__triggered ()
 {
+	setUpdatesEnabled (false);
 	WriteSettings ();
 	Core::Instance ().Release ();
 
