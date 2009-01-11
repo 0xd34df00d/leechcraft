@@ -88,10 +88,6 @@ namespace LeechCraft
         void handleFileDownload (const QString&, bool = false);
         void handleClipboardTimer ();
 		void embeddedTabWantsToFront ();
-		void handleNewTab (const QString&, QWidget*);
-		void handleRemoveTab (QWidget*);
-		void handleChangeTabName (QWidget*, const QString&);
-		void handleChangeTabIcon (QWidget*, const QIcon&);
 		void handleStatusBarChanged (QWidget*, const QString&);
 		void handleLog (const QString&);
 	private:

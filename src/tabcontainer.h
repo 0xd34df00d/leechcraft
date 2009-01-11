@@ -1,8 +1,7 @@
 #ifndef TABCONTAINER_H
 #define TABCONTAINER_H
 #include <QObject>
-#include <QString>
-#include <QIcon>
+#include <QStringList>
 
 class QTabWidget;
 class QIcon;
@@ -22,18 +21,19 @@ namespace LeechCraft
 		TabContainer (QTabWidget*, QObject* = 0);
 		virtual ~TabContainer ();
 
-		void Add (QWidget*, const QString&,
-				const QIcon& icon = QIcon ());
-		void Remove (QWidget*);
-		void ChangeTabName (QWidget*, const QString&);
-		void ChangeTabIcon (QWidget*, const QIcon&);
 		QWidget* GetWidget (int) const;
-		void BringToFront (QWidget*) const;
 		bool RemoveCurrent ();
 		void RotateLeft ();
 		void RotateRight ();
 		void ToggleMultiwindow ();
 	public slots:
+		void add (const QString&, QWidget*);
+		void add (const QString&, QWidget*,
+				const QIcon& icon);
+		void remove (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void bringToFront (QWidget*) const;
 		void handleTabNames ();
 	private:
 		int FindTabForWidget (QWidget*) const;

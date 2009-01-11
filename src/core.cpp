@@ -615,27 +615,7 @@ void Core::embeddedTabWantsToFront ()
 		return;
 
 	ReallyMainWindow_->show ();
-	TabContainer_->BringToFront (iet->GetTabContents ());
-}
-
-void Core::handleNewTab (const QString& name, QWidget *contents)
-{
-	TabContainer_->Add (contents, name);
-}
-
-void Core::handleRemoveTab (QWidget *contents)
-{
-	TabContainer_->Remove (contents);
-}
-
-void Core::handleChangeTabName (QWidget *contents, const QString& title)
-{
-	TabContainer_->ChangeTabName (contents, title);
-}
-
-void Core::handleChangeTabIcon (QWidget *contents, const QIcon& icon)
-{
-	TabContainer_->ChangeTabIcon (contents, icon);
+	TabContainer_->bringToFront (iet->GetTabContents ());
 }
 
 void Core::handleStatusBarChanged (QWidget *contents, const QString& msg)
@@ -691,8 +671,8 @@ void Core::InitEmbedTab (QObject *plugin)
 {
 	IInfo *ii = qobject_cast<IInfo*> (plugin);
 	IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
-	TabContainer_->Add (iet->GetTabContents (),
-			ii->GetName (),
+	TabContainer_->add (ii->GetName (),
+			iet->GetTabContents (),
 			ii->GetIcon ());
 	connect (plugin,
 			SIGNAL (bringToFront ()),
@@ -704,23 +684,27 @@ void Core::InitMultiTab (QObject *plugin)
 {
 	connect (plugin,
 			SIGNAL (addNewTab (const QString&, QWidget*)),
-			this,
-			SLOT (handleNewTab (const QString&, QWidget*)));
+			TabContainer_.get (),
+			SLOT (add (const QString&, QWidget*)));
 	connect (plugin,
 			SIGNAL (removeTab (QWidget*)),
-			this,
-			SLOT (handleRemoveTab (QWidget*)));
+			TabContainer_.get (),
+			SLOT (remove (QWidget*)));
 	connect (plugin,
 			SIGNAL (changeTabName (QWidget*, const QString&)),
-			this,
-			SLOT (handleChangeTabName (QWidget*, const QString&)));
+			TabContainer_.get (),
+			SLOT (changeTabName (QWidget*, const QString&)));
 	connect (plugin,
 			SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
-			this,
-			SLOT (handleChangeTabIcon (QWidget*, const QIcon&)));
+			TabContainer_.get (),
+			SLOT (changeTabIcon (QWidget*, const QIcon&)));
 	connect (plugin,
 			SIGNAL (statusBarChanged (QWidget*, const QString&)),
 			this,
 			SLOT (handleStatusBarChanged (QWidget*, const QString&)));
+	connect (plugin,
+			SIGNAL (raiseTab (QWidget*)),
+			TabContainer_.get (),
+			SLOT (bringToFront (QWidget*)));
 }
 

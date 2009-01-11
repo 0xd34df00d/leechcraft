@@ -520,6 +520,8 @@ public:
  * To change tab's icon, plugin emits changeTabIcon(QWidget*, const
  * QIcon&), where the first parameter is the pointer to previously
  * inserted tab and the seocnd one is the new icon.
+ * To bring the tab to front, plugin emits raiseTab(QWidget*) signal,
+ * where the first parameter is the pointer to previously inserted tab.
  *
  * @sa IEmbedTab
  * @sa IWindow

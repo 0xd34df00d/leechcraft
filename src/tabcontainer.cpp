@@ -17,77 +17,12 @@ TabContainer::~TabContainer ()
 {
 }
 
-void TabContainer::Add (QWidget *contents, const QString& name,
-		const QIcon& icon)
-{
-	if (TabMode_)
-		TabWidget_->addTab (contents, icon, name);
-	else
-	{
-		contents->setWindowFlags (Qt::Window);
-		contents->setWindowTitle (name);
-		contents->setWindowIcon (icon);
-		contents->show ();
-		Widgets_.push_front (contents);
-	}
-}
-
-void TabContainer::Remove (QWidget *contents)
-{
-	if (TabMode_)
-	{
-		int tabNumber = FindTabForWidget (contents);
-		if (tabNumber == -1)
-			return;
-		TabWidget_->removeTab (tabNumber);
-	}
-	else
-	{
-		Widgets_.removeAll (contents);
-		contents->deleteLater ();
-	}
-}
-
-void TabContainer::ChangeTabName (QWidget *contents, const QString& name)
-{
-	if (TabMode_)
-	{
-		int tabNumber = FindTabForWidget (contents);
-		if (tabNumber == -1)
-			return;
-		TabWidget_->setTabText (tabNumber, name);
-	}
-	else
-		contents->setWindowTitle (name);
-}
-
-void TabContainer::ChangeTabIcon (QWidget *contents, const QIcon& icon)
-{
-	if (TabMode_)
-	{
-		int tabNumber = FindTabForWidget (contents);
-		if (tabNumber == -1)
-			return;
-		TabWidget_->setTabIcon (tabNumber, icon);
-	}
-	else
-		contents->setWindowIcon (icon);
-}
-
 QWidget* TabContainer::GetWidget (int position) const
 {
 	if (TabMode_)
 		return TabWidget_->widget (position);
 	else
 		return 0;
-}
-
-void TabContainer::BringToFront (QWidget *widget) const
-{
-	if (TabMode_)
-		TabWidget_->setCurrentWidget (widget);
-	else
-		widget->show ();
 }
 
 bool TabContainer::RemoveCurrent ()
@@ -102,7 +37,7 @@ bool TabContainer::RemoveCurrent ()
 			QWidget *contents = GetWidget (index);
 			if (!contents)
 				return false;
-			Remove (contents);
+			remove (contents);
 			contents->deleteLater ();
 			return true;
 		}
@@ -143,7 +78,7 @@ void TabContainer::ToggleMultiwindow ()
 		{
 			QWidget *widget = Widgets_.takeLast ();
 			widget->setWindowFlags (Qt::Widget);
-			Add (widget, widget->windowTitle ());
+			add (widget->windowTitle (), widget);
 			TabWidget_->setTabIcon (TabWidget_->count () - 1,
 					widget->windowIcon ());
 		}
@@ -162,6 +97,68 @@ void TabContainer::ToggleMultiwindow ()
 			Widgets_ << widget;
 		}
 	}
+}
+
+void TabContainer::add (const QString& name, QWidget *contents)
+{
+	add (name, contents, QIcon ());
+}
+
+void TabContainer::add (const QString& name, QWidget *contents,
+		const QIcon& icon)
+{
+	if (TabMode_)
+		TabWidget_->addTab (contents, icon, name);
+	else
+	{
+		contents->setWindowFlags (Qt::Window);
+		contents->setWindowTitle (name);
+		contents->setWindowIcon (icon);
+		contents->show ();
+		Widgets_.push_front (contents);
+	}
+}
+
+void TabContainer::remove (QWidget *contents)
+{
+	if (TabMode_)
+	{
+		int tabNumber = FindTabForWidget (contents);
+		if (tabNumber == -1)
+			return;
+		TabWidget_->removeTab (tabNumber);
+	}
+	else
+	{
+		Widgets_.removeAll (contents);
+		contents->deleteLater ();
+	}
+}
+
+void TabContainer::changeTabName (QWidget *contents, const QString& name)
+{
+	if (TabMode_)
+	{
+		int tabNumber = FindTabForWidget (contents);
+		if (tabNumber == -1)
+			return;
+		TabWidget_->setTabText (tabNumber, name);
+	}
+	else
+		contents->setWindowTitle (name);
+}
+
+void TabContainer::changeTabIcon (QWidget *contents, const QIcon& icon)
+{
+	if (TabMode_)
+	{
+		int tabNumber = FindTabForWidget (contents);
+		if (tabNumber == -1)
+			return;
+		TabWidget_->setTabIcon (tabNumber, icon);
+	}
+	else
+		contents->setWindowIcon (icon);
 }
 
 void TabContainer::handleTabNames ()
@@ -183,6 +180,14 @@ void TabContainer::handleTabNames ()
 			TabWidget_->setTabText (i, QString ());
 		}
 	}
+}
+
+void TabContainer::bringToFront (QWidget *widget) const
+{
+	if (TabMode_)
+		TabWidget_->setCurrentWidget (widget);
+	else
+		widget->show ();
 }
 
 int TabContainer::FindTabForWidget (QWidget *widget) const

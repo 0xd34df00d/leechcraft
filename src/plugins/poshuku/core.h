@@ -87,6 +87,7 @@ signals:
 	void removeTab (QWidget*);
 	void changeTabName (QWidget*, const QString&);
 	void changeTabIcon (QWidget*, const QIcon&);
+	void raiseTab (QWidget*);
 	void error (const QString&) const;
 	void statusBarChanged (QWidget*, const QString&);
 };

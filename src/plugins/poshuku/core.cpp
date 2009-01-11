@@ -192,6 +192,8 @@ BrowserWidget* Core::NewURL (const QString& url)
 	Widgets_.push_back (widget);
 
 	emit addNewTab (tr (""), widget);
+	if (url.isEmpty ())
+		emit raiseTab (widget);
 	return widget;
 }
 
@@ -326,15 +328,18 @@ void Core::HandleHistory (QWebView *view)
 
 void Core::gotUnsupportedContent (const QByteArray& gotData)
 {
-	QNetworkReply *reply = 0;
+	QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());;
 	QByteArray data;
-	if (!gotData.size ())
-	{
-		reply = qobject_cast<QNetworkReply*> (sender ());
+	if (!gotData.size () && reply)
 		data = reply->readAll ();
-	}
 	else
 		data = gotData;
+
+	if (!data.size ())
+	{
+		qWarning () << Q_FUNC_INFO << "null data" << (reply ? reply->url ().toString () : "called directly");
+		return;
+	}
 
 	LeechCraft::TaskParameters parameters = LeechCraft::Autostart;
 
