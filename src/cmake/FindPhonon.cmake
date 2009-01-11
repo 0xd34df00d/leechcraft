@@ -7,9 +7,13 @@
 
 # Copyright (c) 2008, Matthias Kretz <kretz@kde.org>
 # Copyright (c) 2008, Voker57 <voker57@gmail.com>
+# Copyright (c) 2009, 0xd34df00d <0xd34df00d@gmail.com>
 #
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
+
+# 0xd34df00d, 11 Jan 2009
+# We should search for Qt's Phonon, which is all in lowercase etc.
 
 if(PHONON_FOUND)
    # Already found, nothing more to do
@@ -19,15 +23,15 @@ else(PHONON_FOUND)
    endif(PHONON_INCLUDE_DIR AND PHONON_LIBRARY)
 
    # As discussed on kde-buildsystem: first look at CMAKE_PREFIX_PATH, then at the suggested PATHS (kde4 install dir)
-   find_library(PHONON_LIBRARY NAMES phonon PATHS ${KDE4_LIB_INSTALL_DIR} /usr/lib/kde4/lib ${QT_LIBRARY_DIR} NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
+   find_library(PHONON_LIBRARY NAMES phonon PATHS ${KDE4_LIB_INSTALL_DIR} ${QT_LIBRARY_DIR} NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
    # then at the default system locations (CMAKE_SYSTEM_PREFIX_PATH, i.e. /usr etc.)
    find_library(PHONON_LIBRARY NAMES phonon)
 
-   find_path(PHONON_INCLUDE_DIR NAMES Phonon/Global PATHS ${KDE4_INCLUDE_INSTALL_DIR} ${QT_INCLUDE_DIR} ${INCLUDE_INSTALL_DIR} /usr/include/KDE /usr/lib/kde4/include NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
+   find_path(PHONON_INCLUDE_DIR NAMES phonon/phonon PATHS ${QT_INCLUDE_DIR} ${INCLUDE_INSTALL_DIR} NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
 
    if(PHONON_INCLUDE_DIR AND PHONON_LIBRARY)
       set(PHONON_LIBS ${phonon_LIB_DEPENDS} ${PHONON_LIBRARY})
-      set(PHONON_INCLUDES ${PHONON_INCLUDE_DIR}/Phonon)
+      set(PHONON_INCLUDES ${PHONON_INCLUDE_DIR}/phonon)
       set(PHONON_FOUND TRUE)
    else(PHONON_INCLUDE_DIR AND PHONON_LIBRARY)
       set(PHONON_FOUND FALSE)

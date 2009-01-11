@@ -1,8 +1,8 @@
 #include "core.h"
 #include <QUrl>
-#include <VideoWidget>
-#include <SeekSlider>
-#include <VolumeSlider>
+#include <videowidget.h>
+#include <seekslider.h>
+#include <volumeslider.h>
 #include "xmlsettingsmanager.h"
 
 Core::Core ()

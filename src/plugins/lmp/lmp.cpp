@@ -3,8 +3,8 @@
 #include <QSlider>
 #include <QFileDialog>
 #include <QDir>
-#include <SeekSlider>
-#include <VolumeSlider>
+#include <seekslider.h>
+#include <volumeslider.h>
 #include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"

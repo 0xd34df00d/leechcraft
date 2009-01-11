@@ -2,8 +2,8 @@
 #define CORE_H
 #include <memory>
 #include <QObject>
-#include <MediaObject>
-#include <AudioOutput>
+#include <mediaobject.h>
+#include <audiooutput.h>
 
 namespace Phonon
 {
