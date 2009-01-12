@@ -8,6 +8,13 @@
 
 using LeechCraft::Util::Proxy;
 
+bool HistoryModel::HistoryItem::operator== (const HistoryModel::HistoryItem& other) const
+{
+	return Name_ == other.Name_ &&
+		TorrentSize_ == other.TorrentSize_ &&
+		Where_ == other.Where_;
+}
+
 HistoryModel::HistoryModel (QObject *parent)
 : LeechCraft::Util::HistoryModel (parent)
 {
@@ -72,13 +79,6 @@ void HistoryModel::RemoveItem (const QModelIndex& index)
 	endRemoveRows ();
 
 	SaveSettings ();
-}
-
-bool operator== (const HistoryModel::HistoryItem& hi1,
-		const HistoryModel::HistoryItem& hi2)
-{
-	return hi1.Name_ == hi2.Name_ &&
-		hi1.Where_ == hi2.Where_;
 }
 
 void HistoryModel::AddItem (const HistoryModel::HistoryItem& item)

@@ -1,6 +1,3 @@
-#define TORRENT_BUILDING_SHARED
-#define TORRENT_LINKING_SHARED
-#define NDEBUG
 #include "core.h"
 #include <memory>
 #include <QFile>

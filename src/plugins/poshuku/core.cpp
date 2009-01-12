@@ -602,7 +602,7 @@ void Core::handleSslErrors (QNetworkReply *reply, const QList<QSslError>& errors
 		if (ignore)
 			reply->ignoreSslErrors ();
 
-		SslErrorsDialog::RememberChoice choice;
+		SslErrorsDialog::RememberChoice choice = dia->GetRememberChoice ();
 
 		if (choice != SslErrorsDialog::RCNot)
 		{

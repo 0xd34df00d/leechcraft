@@ -1,12 +1,12 @@
 !include "MUI.nsh"
 
-OutFile ../lcinstall-0.2.814.exe
+OutFile ../lcinstall-0.2.1009.exe
 Name "Deviant LeechCraft"
 SetCompressor /SOLID lzma
 InstallDir "$PROGRAMFILES\Deviant\LeechCraft"
 !define MUI_ABORTWARNING
-!define MUI_ICON icon32.ico
-!define MUI_UNICON icon32.ico
+!define MUI_ICON icon64.ico
+!define MUI_UNICON icon64.ico
 #!define MUI_COMPONENTSPAGE_SMALLDESC
 
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
@@ -37,72 +37,97 @@ Var STARTMENU_FOLDER
 InstType "Full"
 InstType "Minimal"
 
-Section "Main LeechCraft Files" MAINFILES
-	SetOutPath $INSTDIR
-	File plugininterface.dll
-	File xmlsettingsdialog.dll
-	File QtGui4.dll
-	File QtNetwork4.dll
-	File QtCore4.dll
-	File QtXml4.dll
-	File QtWebkit4.dll
-	File QtSql4.dll
-	File msvcp90.dll
-	File msvcr90.dll
-	File leechcraft.exe
-	File icon64.ico
-	File icon32.ico
-	File icon24.ico
-	File icon16.ico
-	File /r icons
+SectionGroup "Core"
+	Section "LeechCraft" MAINFILES
+		SetOutPath $INSTDIR
+		File plugininterface.dll
+		File xmlsettingsdialog.dll
+		File leechcraft.exe
+		File icon64.ico
+		File icon32.ico
+		File icon24.ico
+		File icon16.ico
+		File /r icons
+		File /r leechcraft
+		File /r oxygen
+
+		WriteRegStr HKCU "Software\Deviant\LeechCraft" "" $INSTDIR
+		WriteUninstaller "$INSTDIR\Uninstall.exe"
 	
-	WriteRegStr HKCU "Software\Deviant\LeechCraft" "" $INSTDIR
-	WriteUninstaller "$INSTDIR\Uninstall.exe"
-	
-	!insertmacro MUI_STARTMENU_WRITE_BEGIN Deviant
-		CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
-		CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Leechcraft.lnk" "$INSTDIR\leechcraft.exe" "" "$INSTDIR\icon16.ico"
-		CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
-	!insertmacro MUI_STARTMENU_WRITE_END
-	
-	SectionIn 1 2
-SectionEnd
+		!insertmacro MUI_STARTMENU_WRITE_BEGIN Deviant
+			CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
+			CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Leechcraft.lnk" "$INSTDIR\leechcraft.exe" "" "$INSTDIR\icon64.ico"
+			CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
+		!insertmacro MUI_STARTMENU_WRITE_END
+
+		SectionIn 1 2 RO
+	SectionEnd
+
+	Section "Qt" QT
+		SetOutPath $INSTDIR
+		File QtCore4.dll
+		File QtGui4.dll
+		File QtNetwork4.dll
+		File QtScript4.dll
+		File QtSql4.dll
+		File QtSvg4.dll
+		File QtWebkit4.dll
+		File QtXml4.dll
+		File phonon4.dll
+		File phonon_ds94.dll
+		SectionIn 1 2 RO
+	SectionEnd
+
+	Section "OpenSSL" OPENSSL
+		SetOutPath $INSTDIR
+		File libeay32.dll
+		File ssleay32.dll
+		SectionIn 1 2 RO
+	SectionEnd
+
+	Section "MSVC" MSVC
+		SetOutPath $INSTDIR
+		File vcredist_x86.exe
+		DetailPrint "Installing Visual C++ 2005 Libraries"
+		ExecWait '"$INSTDIR\vcredist_x86.exe" /q:a /c:"msiexec /i vcredist.msi /quiet"'
+		SectionIn 1 2 RO
+	SectionEnd
+SectionGroupEnd
 
 SectionGroup "Plugins"
 	Section "BitTorrent" TORRENTPLUGIN
 		SetOutPath $INSTDIR
 		File torrent.dll
-		File boost_date_time-vc90-mt-1_36.dll
-		File boost_filesystem-vc90-mt-1_36.dll
-		File boost_thread-vc90-mt-1_36.dll
-		File boost_system-vc90-mt-1_36.dll
+		File boost_date_time-vc90-mt-1_37.dll
+		File boost_filesystem-vc90-mt-1_37.dll
+		File boost_system-vc90-mt-1_37.dll
 		SetOutPath $INSTDIR\plugins\bin
-		File leechcraft_torrent.dll
+		File plugins\bin\leechcraft_torrent.dll
 		SectionIn 1
 	SectionEnd
 	Section "Aggregator" AGGREGATORPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
-		File leechcraft_aggregator.dll
+		File plugins\bin\leechcraft_aggregator.dll
 		SectionIn 1
 	SectionEnd
-	Section "CSTP" HTTPPLUGIN
+	Section "Poshuku" POSHUKUPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
-		File leechcraft_cstp.dll
+		File plugins\bin\leechcraft_poshuku.dll
 		SectionIn 1
 	SectionEnd
-	Section "Remoter" REMOTERPLUGIN
+	Section "LMP" LMPPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
-		File leechcraft_remoter.dll
-		SectionIn 1
-	SectionEnd
-	Section "Batcher" BATCHERPLUGIN
-		SetOutPath $INSTDIR\plugins\bin
-		File leechcraft_batcher.dll
+		File plugins\bin\leechcraft_lmp.dll
 		SectionIn 1
 	SectionEnd
 	Section "Chatter" CHATTERPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
-		File leechcraft_chatter.dll
+		File plugins\bin\leechcraft_chatter.dll
+		SectionIn 1
+	SectionEnd
+	Section "CSTP" HTTPPLUGIN
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_cstp.dll
 		SectionIn 1
 	SectionEnd
 SectionGroupEnd
@@ -131,29 +156,38 @@ Section "Uninstall"
 SectionEnd
 
 LangString DESC_MAINFILES ${LANG_ENGLISH} "LeechCraft executable and support libraries."
+LangString DESC_QT ${LANG_ENGLISH} "Qt libraries."
+LangString DESC_MSVC ${LANG_ENGLISH} "Microsoft Visual Studio libraries."
+LangString DESC_OPENSSL ${LANG_ENGLISH} "OpenSSL libraries."
 LangString DESC_HTTPPLUGIN ${LANG_ENGLISH} "A simple plugin implementing HTTP facilities."
 LangString DESC_TORRENTPLUGIN ${LANG_ENGLISH} "A sophisticated feature-rich BitTorrent client."
-LangString DESC_REMOTERPLUGIN ${LANG_ENGLISH} "Provides remote access to plugins supporting this feature."
-LangString DESC_BATCHERPLUGIN ${LANG_ENGLISH} "Batch job manager."
-LangString DESC_CHATTERPLUGIN ${LANG_ENGLISH} "IRC client."
 LangString DESC_AGGREGATORPLUGIN ${LANG_ENGLISH} "RSS/Atom feed aggregator."
+LangString DESC_POSHUKUPLUGIN ${LANG_ENGLISH} "Web browser."
+LangString DESC_LMPPLUGIN ${LANG_ENGLISH} "LeechCraft Media Player."
+LangString DESC_CHATTERPLUGIN ${LANG_ENGLISH} "IRC client."
 
 LangString DESC_MAINFILES ${LANG_RUSSIAN} "Сам LeechCraft и его вспомогательные бИблиотеки."
+LangString DESC_QT ${LANG_RUSSIAN} "Библиотеки Qt."
+LangString DESC_MSVC ${LANG_RUSSIAN} "Библиотеки Microsoft Visual Studio."
+LangString DESC_OPENSSL ${LANG_RUSSIAN} "Библиотеки OpenSSL."
 LangString DESC_HTTPPLUGIN ${LANG_RUSSIAN} "Простой HTTP-модуль."
 LangString DESC_TORRENTPLUGIN ${LANG_RUSSIAN} "Полнофункциональный Torrent-клиент."
-LangString DESC_REMOTERPLUGIN ${LANG_RUSSIAN} "Предоставляет возможность удаленного администрирования плагинов."
-LangString DESC_BATCHERPLUGIN ${LANG_RUSSIAN} "Менеджер пакетных заданий."
-LangString DESC_CHATTERPLUGIN ${LANG_RUSSIAN} "Клиент IRC."
 LangString DESC_AGGREGATORPLUGIN ${LANG_RUSSIAN} "Агрегатор RSS/Atom-лент."
+LangString DESC_POSHUKUPLUGIN ${LANG_RUSSIAN} "Веб-браузер."
+LangString DESC_LMPPLUGIN ${LANG_RUSSIAN} "LeechCraft Media Player."
+LangString DESC_CHATTERPLUGIN ${LANG_RUSSIAN} "IRC-клиент."
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
 	!insertmacro MUI_DESCRIPTION_TEXT ${MAINFILES} $(DESC_MAINFILES)
+	!insertmacro MUI_DESCRIPTION_TEXT ${QT} $(DESC_QT)
+	!insertmacro MUI_DESCRIPTION_TEXT ${MSVC} $(DESC_MSVC)
+	!insertmacro MUI_DESCRIPTION_TEXT ${OPENSSL} $(DESC_OPENSSL)
 	!insertmacro MUI_DESCRIPTION_TEXT ${HTTPPLUGIN} $(DESC_HTTPPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${AGGREGATORPLUGIN} $(DESC_AGGREGATORPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${TORRENTPLUGIN} $(DESC_TORRENTPLUGIN)
-	!insertmacro MUI_DESCRIPTION_TEXT ${REMOTERPLUGIN} $(DESC_REMOTERPLUGIN)
-	!insertmacro MUI_DESCRIPTION_TEXT ${BATCHERPLUGIN} $(DESC_BATCHERPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${CHATTERPLUGIN} $(DESC_CHATTERPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${LMPPLUGIN} $(DESC_LMPPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${POSHUKUPLUGIN} $(DESC_POSHUKUPLUGIN)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Function .onInit

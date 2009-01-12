@@ -17,6 +17,8 @@ public:
 		quint64 TorrentSize_;
 		QDateTime DateTime_;
 		QStringList Tags_;
+
+		bool operator== (const HistoryItem&) const;
 	};
 private:
 	typedef std::vector<HistoryItem> items_t;
@@ -25,7 +27,7 @@ public:
 	HistoryModel (QObject* = 0);
 	virtual ~HistoryModel ();
 
-    virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
+	virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
 	virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 
 	void RemoveItem (const QModelIndex&);

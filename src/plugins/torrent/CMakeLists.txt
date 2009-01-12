@@ -80,19 +80,21 @@ SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_torrent_uk_UA.qm
 	)
 
-ADD_DEFINITIONS (${QT_DEFINITIONS})
+IF (UNIX)
+	FIND_PACKAGE (PkgConfig)
+	pkg_check_modules (RB_LT REQUIRED libtorrent-rasterbar>=0.15-svn)
+	ADD_DEFINITIONS (${RB_LT_CFLAGS})
+ENDIF (UNIX)
 
-FIND_PACKAGE (PkgConfig)
-pkg_check_modules (RB_LT REQUIRED libtorrent-rasterbar>=0.15-svn)
-ADD_DEFINITIONS (${RB_LT_CFLAGS})
-
+ADD_DEFINITIONS(-DBOOST_DYN_LINK)
+#ADD_DEFINITIONS(-D_DLL)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 ADD_CUSTOM_COMMAND (OUTPUT
 	${COMPILED_TRANSLATIONS}
-	COMMAND "lrelease" ${TRANSLATIONS}
+	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${TRANSLATIONS}
 	DEPENDS ${TRANSLATIONS}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	)
@@ -104,22 +106,14 @@ ADD_LIBRARY (leechcraft_torrent SHARED
 	${RCCS}
 	)
 
-IF (WIN32)
-	TARGET_LINK_LIBRARIES (leechcraft_torrent
-		${QT_LIBRARIES}
-		plugininterface
-		xmlsettingsdialog
-		${Boost_DATE_TIME_LIBRARY}
-		torrent
-	)
-ELSE (WIN32)
-	TARGET_LINK_LIBRARIES (leechcraft_torrent
-		${QT_LIBRARIES}
-		plugininterface
-		xmlsettingsdialog
-		${RBTorrent_LIBRARY}
-		${Boost_DATE_TIME_LIBRARY}
-	)
-ENDIF (WIN32)
-
+TARGET_LINK_LIBRARIES (leechcraft_torrent
+	${Boost_SYSTEM_LIBRARY}
+	${Boost_THREAD_LIBRARY}
+	${Boost_DATE_TIME_LIBRARY}
+	${Boost_FILESYSTEM_LIBRARY}
+	${QT_LIBRARIES}
+	plugininterface
+	xmlsettingsdialog
+	${RBTorrent_LIBRARY}
+)
 INSTALL (TARGETS leechcraft_torrent DESTINATION ${LC_PLUGINS_DEST})
