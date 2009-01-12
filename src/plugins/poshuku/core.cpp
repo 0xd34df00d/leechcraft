@@ -199,7 +199,10 @@ BrowserWidget* Core::NewURL (const QString& url)
 
 CustomWebView* Core::MakeWebView ()
 {
-	return NewURL ("")->GetView ();
+	// Because we distinguish between switch and not-switch cases by the
+	// URL.
+	// Don't touch.
+	return NewURL (" ")->GetView ();
 }
 
 FavoritesModel* Core::GetFavoritesModel () const
