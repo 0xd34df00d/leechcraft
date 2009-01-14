@@ -40,13 +40,12 @@ void CustomWebPage::gotUnsupportedContent (QNetworkReply *reply)
 				emit gotEntity (reply->url ().toString ().toUtf8 ());
 			break;
 		default:
-			qDebug () << Q_FUNC_INFO << reply->url ().toString () << reply->error () << reply->errorString ();
 			break;
 	}
 }
 
 void CustomWebPage::handleDownloadRequested (const QNetworkRequest& request)
 {
-	Core::Instance ().GotLink (request.url ().toString ());
+	emit gotEntity (request.url ().toString ().toUtf8 ());
 }
 
