@@ -40,7 +40,7 @@ void CustomWebPage::gotUnsupportedContent (QNetworkReply *reply)
 				emit gotEntity (reply->url ().toString ().toUtf8 ());
 			break;
 		default:
-			qDebug () << Q_FUNC_INFO << reply->errorString ();
+			qDebug () << Q_FUNC_INFO << reply->url ().toString () << reply->error () << reply->errorString ();
 			break;
 	}
 }

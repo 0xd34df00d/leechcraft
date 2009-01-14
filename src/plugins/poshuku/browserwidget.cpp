@@ -6,6 +6,7 @@
 #include <QWidgetAction>
 #include <QPrinter>
 #include <QPrintDialog>
+#include <QTimer>
 #include <QPrintPreviewDialog>
 #include <QPainter>
 #include <QWebFrame>
@@ -139,6 +140,9 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	QCompleter *completer = new QCompleter (this);
 	completer->setModel (Core::Instance ().GetURLCompletionModel ());
 	Ui_.URLEdit_->setCompleter (completer);
+	QTimer::singleShot (100,
+			this,
+			SLOT (focusLineEdit ()));
 }
 
 BrowserWidget::~BrowserWidget ()
@@ -292,5 +296,10 @@ void BrowserWidget::handleScreenSave ()
 					.arg (filename));
 		return;
 	}
+}
+
+void BrowserWidget::focusLineEdit ()
+{
+	Ui_.URLEdit_->setFocus (Qt::OtherFocusReason);
 }
 

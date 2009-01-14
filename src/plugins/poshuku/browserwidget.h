@@ -28,6 +28,7 @@ private slots:
 	void handlePrinting ();
 	void handlePrintingWithPreview ();
 	void handleScreenSave ();
+	void focusLineEdit ();
 signals:
 	void titleChanged (const QString&);
 	void urlChanged (const QString&);
