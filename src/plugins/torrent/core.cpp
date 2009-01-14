@@ -1533,7 +1533,7 @@ void Core::HandleSingleFinished (int i)
 
     for (libtorrent::torrent_info::file_iterator i = info.begin_files (),
 			end = info.end_files (); i != end; ++i)
-        emit fileFinished (QString::fromUtf8 (i->path.string ().c_str ()));
+        emit fileFinished (QByteArray (i->path.string ().c_str ()));
 
 	if (!(torrent.Parameters_ & LeechCraft::DoNotSaveInHistory))
 	{

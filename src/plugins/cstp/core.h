@@ -120,7 +120,7 @@ signals:
 	void taskFinished (int);
 	void taskRemoved (int);
 	void taskError (int, IDownload::Error);
-	void fileDownloaded (const QString&);
+	void gotEntity (const QByteArray&);
 	void downloadFinished (const QString&);
 	void error (const QString&);
 	void fileExists (boost::logic::tribool*);

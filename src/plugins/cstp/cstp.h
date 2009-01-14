@@ -67,7 +67,7 @@ signals:
 	void jobFinished (int);
 	void jobRemoved (int);
 	void jobError (int, IDownload::Error);
-	void fileDownloaded (const QString&);
+	void gotEntity (const QByteArray&);
 	void downloadFinished (const QString&);
 	void log (const QString&);
 };

@@ -729,9 +729,9 @@ void TorrentPlugin::SetupCore ()
 			this,
 			SIGNAL (downloadFinished (const QString&)));
 	connect (Core::Instance (),
-			SIGNAL (fileFinished (const QString&)),
+			SIGNAL (fileFinished (const QByteArray&)),
 			this,
-			SIGNAL (fileDownloaded (const QString&)));
+			SIGNAL (gotEntity (const QByteArray&)));
 	connect (Core::Instance (),
 			SIGNAL (dataChanged (const QModelIndex&,
 					const QModelIndex&)),

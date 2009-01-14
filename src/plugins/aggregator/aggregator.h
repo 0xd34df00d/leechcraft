@@ -68,7 +68,7 @@ private slots:
 	void makeCurrentItemVisible ();
 signals:
     void downloadFinished (const QString&);
-	void fileDownloaded (const QString&);
+	void gotEntity (const QByteArray&);
 	void bringToFront ();
 };
 

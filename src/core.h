@@ -85,7 +85,7 @@ namespace LeechCraft
 		void toggleMultiwindow ();
 		void deleteSelectedHistory (const QModelIndex&);
     private slots:
-        void handleFileDownload (const QString&, bool = false);
+        void handleGotEntity (const QByteArray&, bool = false);
         void handleClipboardTimer ();
 		void embeddedTabWantsToFront ();
 		void handleStatusBarChanged (QWidget*, const QString&);

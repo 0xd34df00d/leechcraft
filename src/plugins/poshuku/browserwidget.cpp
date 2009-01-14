@@ -125,6 +125,10 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			SIGNAL (statusBarMessage (const QString&)),
 			this,
 			SLOT (handleStatusBarMessage (const QString&)));
+	connect (Ui_.WebView_,
+			SIGNAL (gotEntity (const QByteArray&)),
+			this,
+			SIGNAL (gotEntity (const QByteArray&)));
 	connect (Ui_.WebView_->page (),
 			SIGNAL (linkHovered (const QString&,
 					const QString&,

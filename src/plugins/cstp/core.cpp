@@ -322,7 +322,7 @@ void Core::done (bool err)
 		if (!(taskdscr->Parameters_ & LeechCraft::DoNotSaveInHistory))
 			AddToHistory (taskdscr);
 		emit taskFinished (taskdscr->ID_);
-		emit fileDownloaded (filename);
+		emit gotEntity (filename.toUtf8 ());
 		if (!(taskdscr->Parameters_ & LeechCraft::DoNotNotifyUser))
 			emit downloadFinished (filename +
 					QString ("\n") + url);

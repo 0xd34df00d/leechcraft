@@ -146,7 +146,7 @@ private:
 	void SetupActions ();
 signals:
     void downloadFinished (const QString&);
-    void fileDownloaded (const QString&);
+    void gotEntity (const QByteArray&);
 	void jobFinished (int);
 	void jobRemoved (int);
 	void log (const QString&);

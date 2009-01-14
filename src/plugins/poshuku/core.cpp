@@ -188,6 +188,10 @@ BrowserWidget* Core::NewURL (const QString& url)
 			SIGNAL (statusBarChanged (const QString&)),
 			this,
 			SLOT (handleStatusBarChanged (const QString&)));
+	connect (widget,
+			SIGNAL (gotEntity (const QByteArray&)),
+			this,
+			SIGNAL (gotEntity (const QByteArray&)));
 
 	Widgets_.push_back (widget);
 
@@ -327,106 +331,6 @@ void Core::HandleHistory (QWebView *view)
 
 	HistoryModel_->AddItem (view->title (),
 			url, QDateTime::currentDateTime ());
-}
-
-void Core::gotUnsupportedContent (const QByteArray& gotData)
-{
-	QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());;
-	QByteArray data;
-	if (!gotData.size () && reply)
-		data = reply->readAll ();
-	else
-		data = gotData;
-
-	if (!data.size ())
-	{
-		qWarning () << Q_FUNC_INFO << "null data" << (reply ? reply->url ().toString () : "called directly");
-		return;
-	}
-
-	LeechCraft::TaskParameters parameters = LeechCraft::Autostart;
-
-	QString propName = "ExternalDataSaveLocation";
-	if (XmlSettingsManager::Instance ()->
-			property ("DifferLocationsByExtension").toBool ())
-		propName += "/External";
-	
-	bool added = false;
-
-	QString directory = QFileDialog::getExistingDirectory (0,
-			tr ("Save external data"),
-			XmlSettingsManager::Instance ()->
-				Property (propName,
-					QDesktopServices::storageLocation (
-						QDesktopServices::DocumentsLocation))
-						.toString ());
-	if (directory.isEmpty ())
-		return;
-
-	XmlSettingsManager::Instance ()->
-		setProperty (propName.toStdString ().c_str (), directory);
-
-	for (QObjectList::const_iterator i = Downloaders_.begin (),
-			end = Downloaders_.end (); i != end; ++i)
-	{
-		IDownload *downloader = qobject_cast<IDownload*> (*i);
-		if (downloader->CouldDownload (data, parameters))
-		{
-			LeechCraft::DownloadParams dParams =
-			{
-				data,
-				directory
-			};
-
-			downloader->AddJob (dParams, parameters);
-
-			added = true;
-
-			break;
-		}
-	}
-
-	if (!added)
-	{
-		if (QMessageBox::question (0,
-					tr ("Error"),
-					tr ("No plugins were found that could download the "
-						"content. Do you want to just save it to disk?"),
-					QMessageBox::Yes | QMessageBox::No)
-					!= QMessageBox::Yes)
-			return;
-
-		QString suggestedName;
-		if (reply)
-		{
-			suggestedName = QFileInfo (reply->url ().path ()).fileName ();
-			if (suggestedName.isEmpty ())
-				suggestedName = reply->url ().host ();
-		}
-
-		QString filename = QInputDialog::getText (0,
-				tr ("Question"),
-				tr ("Please enter filename for your new saved data"),
-				QLineEdit::Normal,
-				suggestedName);
-
-		QFile file (QDir (directory).absoluteFilePath (filename));
-		if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
-		{
-			QMessageBox::critical (0,
-					tr ("Error"),
-					tr ("Could not open file for writing."));
-			return;
-		}
-
-		if (!file.write (data))
-		{
-			QMessageBox::critical (0,
-					tr ("Error"),
-					tr ("Could not write data to file."));
-			return;
-		}
-	}
 }
 
 void Core::GotLink (const QString& link)

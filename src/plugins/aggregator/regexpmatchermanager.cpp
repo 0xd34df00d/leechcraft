@@ -230,7 +230,7 @@ void RegexpMatcherManager::HandleItem (const Item_ptr& item) const
 
 	for (QStringList::const_iterator i = links.begin (),
 			end = links.end ();	i != end; ++i)
-		emit gotLink (*i);
+		emit gotLink (i->toUtf8 ());
 }
 
 int RegexpMatcherManager::columnCount (const QModelIndex&) const

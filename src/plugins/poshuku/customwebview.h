@@ -14,6 +14,7 @@ private slots:
 	void remakeURL (const QUrl&);
 signals:
 	void urlChanged (const QString&);
+	void gotEntity (const QByteArray&);
 };
 
 #endif

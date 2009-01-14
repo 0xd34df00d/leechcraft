@@ -85,7 +85,7 @@ private:
 	void RestoreSettings ();
 	void ScheduleSave ();
 signals:
-	void gotLink (const QString&) const;
+	void gotLink (const QByteArray&) const;
 };
 
 #endif

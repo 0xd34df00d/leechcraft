@@ -65,8 +65,6 @@ private:
 	void RestoreSession (bool);
 	void ScheduleSaveSession ();
 	void HandleHistory (QWebView*);
-public slots:
-	void gotUnsupportedContent (const QByteArray& = QByteArray ());
 private slots:
 	void saveCookies () const;
 	void handleTitleChanged (const QString&);
@@ -90,6 +88,7 @@ signals:
 	void raiseTab (QWidget*);
 	void error (const QString&) const;
 	void statusBarChanged (QWidget*, const QString&);
+	void gotEntity (const QByteArray&);
 };
 
 #endif

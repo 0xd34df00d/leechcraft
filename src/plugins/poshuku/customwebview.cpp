@@ -10,7 +10,12 @@ CustomWebView::CustomWebView (QWidget *parent)
 			SIGNAL (urlChanged (const QUrl&)),
 			this,
 			SLOT (remakeURL (const QUrl&)));
-	setPage (new CustomWebPage (this));
+	CustomWebPage *page = new CustomWebPage (this);
+	connect (page,
+			SIGNAL (gotEntity (const QByteArray&)),
+			this,
+			SIGNAL (gotEntity (const QByteArray&)));
+	setPage (page);
 }
 
 CustomWebView::~CustomWebView ()

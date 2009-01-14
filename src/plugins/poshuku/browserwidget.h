@@ -35,6 +35,7 @@ signals:
 	void needToClose ();
 	void addToFavorites (const QString&, const QString&);
 	void statusBarChanged (const QString&);
+	void gotEntity (const QByteArray&);
 };
 
 #endif

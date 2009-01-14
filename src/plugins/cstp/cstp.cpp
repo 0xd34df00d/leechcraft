@@ -45,9 +45,9 @@ void CSTP::Init ()
 			this,
 			SIGNAL (jobError (int, IDownload::Error)));
 	connect (&Core::Instance (),
-			SIGNAL (fileDownloaded (const QString&)),
+			SIGNAL (gotEntity (const QByteArray&)),
 			this,
-			SIGNAL (fileDownloaded (const QString&)));
+			SIGNAL (gotEntity (const QByteArray&)));
 	connect (&Core::Instance (),
 			SIGNAL (downloadFinished (const QString&)),
 			this,

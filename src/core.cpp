@@ -12,6 +12,9 @@
 #include <QClipboard>
 #include <QDir>
 #include <QLocalServer>
+#include <QTextCodec>
+#include <QDesktopServices>
+#include <QFileDialog>
 #include <plugininterface/util.h>
 #include "mainwindow.h"
 #include "pluginmanager.h"
@@ -187,19 +190,19 @@ void Core::DelayedInit ()
         IInfo *info = qobject_cast<IInfo*> (plugin);
 		emit loadProgress (tr ("Setting up %1...").arg (info->GetName ()));
 
-        IDownload *download = qobject_cast<IDownload*> (plugin);
 		IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
 		IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
 		IMultiTabs *imt = qobject_cast<IMultiTabs*> (plugin);
 
 		const QMetaObject *qmo = plugin->metaObject ();
 
-        if (download)
+		if (qmo->indexOfSignal (QMetaObject::
+					normalizedSignature ("gotEntity (const "
+						"QByteArray&)").constData ()) != -1)
 			connect (plugin,
-					SIGNAL (fileDownloaded (const QString&)),
+					SIGNAL (gotEntity (const QByteArray&)),
 					this,
-					SLOT (handleFileDownload (const QString&)));
-
+					SLOT (handleGotEntity (const QByteArray&)));
 		if (qmo->indexOfSignal (QMetaObject::
 					normalizedSignature ("downloadFinished (const "
 						"QString&)").constData ()) != -1)
@@ -561,7 +564,7 @@ void Core::deleteSelectedHistory (const QModelIndex& index)
 	model->RemoveItem (HistoryMergeModel_->mapToSource (mapped));
 }
 
-void Core::handleFileDownload (const QString& file, bool fromBuffer)
+void Core::handleGotEntity (const QByteArray& file, bool fromBuffer)
 {
     if (!fromBuffer &&
 			!XmlSettingsManager::Instance ()->
@@ -574,22 +577,45 @@ void Core::handleFileDownload (const QString& file, bool fromBuffer)
         IDownload *id = qobject_cast<IDownload*> (plugins.at (i));
         IInfo *ii = qobject_cast<IInfo*> (plugins.at (i));
 		TaskParameters tp = Autostart | FromAutomatic;
-        if (id->CouldDownload (file.toUtf8 (), tp))
+		if (fromBuffer)
+			tp |= FromClipboard;
+        if (id->CouldDownload (file, tp))
         {
-            if (QMessageBox::question (
-						qobject_cast<QWidget*> (qobject_cast<QObject*> (this)->parent ()),
+			QString string = QTextCodec::codecForName ("UTF-8")->
+				toUnicode (file);
+			QString question = tr ("%1 could be handled by plugin %2, "
+					"would you like to?")
+				.arg (string)
+				.arg (ii->GetName ());
+
+			QMessageBox::StandardButton b = QMessageBox::question (0,
 						tr ("Question"),
-						tr ("File %1 could be handled by plugin %2, would you like to?")
-							.arg (file).arg (ii->GetName ()),
-						QMessageBox::Yes | QMessageBox::No
-						)
-				   == QMessageBox::No)
-                continue;
+						question,
+						QMessageBox::Yes |
+						QMessageBox::No |
+						QMessageBox::NoToAll);
+			if (b == QMessageBox::No)
+				continue;
+			else if (b == QMessageBox::NoToAll)
+				break;
+
+			QString dir = QFileDialog::getExistingDirectory (0,
+					tr ("Select save path"),
+					XmlSettingsManager::Instance ()->
+						Property ("EntitySavePath",
+							QDesktopServices::storageLocation (QDesktopServices::DocumentsLocation))
+						.toString ());
+			
+			if (dir.isEmpty ())
+				break;
+
+			XmlSettingsManager::Instance ()->
+				setProperty ("EntitySavePath", dir);
 
 			DownloadParams ddp =
 			{
-				file.toUtf8 (),
-				""
+				file,
+				dir
 			};
 			id->AddJob (ddp, tp);
         }
@@ -605,7 +631,7 @@ void Core::handleClipboardTimer ()
     PreviousClipboardContents_ = text;
 
     if (XmlSettingsManager::Instance ()->property ("WatchClipboard").toBool ())
-        handleFileDownload (text, true);
+        handleGotEntity (text.toUtf8 (), true);
 }
 
 void Core::embeddedTabWantsToFront ()

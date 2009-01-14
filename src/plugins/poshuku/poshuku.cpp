@@ -52,6 +52,10 @@ void Poshuku::Init ()
 			this,
 			SIGNAL (raiseTab (QWidget*)));
 	connect (&Core::Instance (),
+			SIGNAL (gotEntity (const QByteArray&)),
+			this,
+			SIGNAL (gotEntity (const QByteArray&)));
+	connect (&Core::Instance (),
 			SIGNAL (error (const QString&)),
 			this,
 			SLOT (handleError (const QString&)));

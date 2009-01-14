@@ -197,9 +197,9 @@ void Aggregator::Init ()
 			SLOT (openLink (const QString&)));
 
 	connect (&RegexpMatcherManager::Instance (),
-			SIGNAL (gotLink (const QString&)),
+			SIGNAL (gotLink (const QByteArray&)),
 			this,
-			SIGNAL (fileDownloaded (const QString&)));
+			SIGNAL (gotEntity (const QByteArray&)));
 	connect (Impl_->Ui_.MainSplitter_,
 			SIGNAL (splitterMoved (int, int)),
 			this,
