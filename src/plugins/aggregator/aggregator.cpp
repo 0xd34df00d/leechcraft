@@ -698,7 +698,7 @@ void Aggregator::currentItemChanged (const QItemSelection& selection)
 	QDateTime pubDate = item->PubDate_;
 	if (pubDate.isValid ())
 	{
-		Impl_->Ui_.ItemPubDate_->setDateTime (pubDate);
+		Impl_->Ui_.ItemPubDate_->setText (pubDate.toString ());
 		Impl_->Ui_.ItemPubDate_->show ();
 		Impl_->Ui_.ItemPubDateLabel_->show ();
 	}

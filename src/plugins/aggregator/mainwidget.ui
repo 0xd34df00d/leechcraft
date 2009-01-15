@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>846</width>
+    <width>1037</width>
     <height>571</height>
    </rect>
   </property>
@@ -16,7 +16,7 @@
    <iconset resource="resources.qrc" >
     <normaloff>:/resources/images/aggregator.png</normaloff>:/resources/images/aggregator.png</iconset>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_4" >
+  <layout class="QVBoxLayout" name="verticalLayout_2" >
    <item>
     <widget class="QSplitter" name="MainSplitter_" >
      <property name="orientation" >
@@ -145,8 +145,8 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="layoutWidget" >
-      <layout class="QVBoxLayout" name="verticalLayout_2" >
+     <widget class="QWidget" name="" >
+      <layout class="QVBoxLayout" name="verticalLayout" >
        <item>
         <layout class="QGridLayout" name="_3" >
          <item row="0" column="0" >
@@ -183,12 +183,11 @@
            <property name="text" >
             <string>Categories...</string>
            </property>
-          </widget>
-         </item>
-         <item row="0" column="4" >
-          <widget class="QPushButton" name="ItemCommentsSubscribe_" >
-           <property name="text" >
-            <string>Subscribe</string>
+           <property name="iconSize" >
+            <size>
+             <width>12</width>
+             <height>12</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -199,38 +198,40 @@
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
          </property>
-         <widget class="QTreeView" name="Items_" >
-          <property name="selectionMode" >
-           <enum>QAbstractItemView::ExtendedSelection</enum>
-          </property>
-          <property name="rootIsDecorated" >
-           <bool>false</bool>
-          </property>
-          <property name="itemsExpandable" >
-           <bool>false</bool>
-          </property>
-         </widget>
-         <widget class="QWidget" name="layoutWidget" >
-          <layout class="QVBoxLayout" name="verticalLayout" >
+         <widget class="QWidget" name="" >
+          <layout class="QHBoxLayout" name="horizontalLayout_3" >
            <item>
-            <widget class="BrowserWidget" native="1" name="ItemView_" />
+            <widget class="QTreeView" name="Items_" >
+             <property name="selectionMode" >
+              <enum>QAbstractItemView::ExtendedSelection</enum>
+             </property>
+             <property name="rootIsDecorated" >
+              <bool>false</bool>
+             </property>
+             <property name="itemsExpandable" >
+              <bool>false</bool>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="QGroupBox" name="ItemInfo_" >
              <property name="title" >
               <string>Item info</string>
              </property>
-             <layout class="QVBoxLayout" name="verticalLayout_5" >
+             <layout class="QVBoxLayout" name="verticalLayout_4" >
               <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_2" >
-                <item>
+               <layout class="QFormLayout" name="formLayout_3" >
+                <property name="fieldGrowthPolicy" >
+                 <enum>QFormLayout::ExpandingFieldsGrow</enum>
+                </property>
+                <item row="0" column="0" >
                  <widget class="QLabel" name="ItemLinkLabel_" >
                   <property name="text" >
                    <string>Link:</string>
                   </property>
                  </widget>
                 </item>
-                <item>
+                <item row="0" column="1" >
                  <widget class="QLabel" name="ItemLink_" >
                   <property name="text" >
                    <string/>
@@ -243,103 +244,96 @@
                   </property>
                  </widget>
                 </item>
-                <item>
-                 <spacer name="horizontalSpacer" >
-                  <property name="orientation" >
-                   <enum>Qt::Horizontal</enum>
+                <item row="1" column="0" >
+                 <widget class="QLabel" name="ItemCommentsLabel_" >
+                  <property name="text" >
+                   <string>Comments:</string>
                   </property>
-                  <property name="sizeHint" stdset="0" >
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
+                 </widget>
+                </item>
+                <item row="1" column="1" >
+                 <widget class="QLabel" name="ItemComments_" >
+                  <property name="text" >
+                   <string/>
                   </property>
-                 </spacer>
+                  <property name="textFormat" >
+                   <enum>Qt::RichText</enum>
+                  </property>
+                  <property name="openExternalLinks" >
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0" >
+                 <widget class="QLabel" name="ItemPubDateLabel_" >
+                  <property name="text" >
+                   <string>Publication date:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1" >
+                 <widget class="QLabel" name="ItemPubDate_" >
+                  <property name="text" >
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0" >
+                 <widget class="QLabel" name="ItemCategoryLabel_" >
+                  <property name="text" >
+                   <string>Category:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1" >
+                 <widget class="QLabel" name="ItemCategory_" >
+                  <property name="text" >
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0" >
+                 <widget class="QLabel" name="ItemAuthorLabel_" >
+                  <property name="text" >
+                   <string>Author:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1" >
+                 <widget class="QLabel" name="ItemAuthor_" >
+                  <property name="text" >
+                   <string/>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </item>
               <item>
-               <layout class="QHBoxLayout" name="horizontalLayout" >
-                <item>
-                 <layout class="QFormLayout" name="formLayout_3" >
-                  <item row="0" column="0" >
-                   <widget class="QLabel" name="ItemCommentsLabel_" >
-                    <property name="text" >
-                     <string>Comments:</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1" >
-                   <widget class="QLabel" name="ItemComments_" >
-                    <property name="text" >
-                     <string/>
-                    </property>
-                    <property name="textFormat" >
-                     <enum>Qt::RichText</enum>
-                    </property>
-                    <property name="openExternalLinks" >
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0" >
-                   <widget class="QLabel" name="ItemPubDateLabel_" >
-                    <property name="text" >
-                     <string>Publication date:</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1" >
-                   <widget class="QDateTimeEdit" name="ItemPubDate_" >
-                    <property name="readOnly" >
-                     <bool>true</bool>
-                    </property>
-                    <property name="calendarPopup" >
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-                <item>
-                 <layout class="QFormLayout" name="formLayout" >
-                  <item row="0" column="0" >
-                   <widget class="QLabel" name="ItemCategoryLabel_" >
-                    <property name="text" >
-                     <string>Category:</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1" >
-                   <widget class="QLabel" name="ItemCategory_" >
-                    <property name="text" >
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0" >
-                   <widget class="QLabel" name="ItemAuthorLabel_" >
-                    <property name="text" >
-                     <string>Author:</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1" >
-                   <widget class="QLabel" name="ItemAuthor_" >
-                    <property name="text" >
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-               </layout>
+               <widget class="QPushButton" name="ItemCommentsSubscribe_" >
+                <property name="text" >
+                 <string>Subscribe to comments</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer" >
+                <property name="orientation" >
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0" >
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
               </item>
              </layout>
             </widget>
            </item>
           </layout>
          </widget>
+         <widget class="BrowserWidget" native="1" name="ItemView_" />
         </widget>
        </item>
       </layout>
@@ -351,7 +345,7 @@
  <customwidgets>
   <customwidget>
    <class>LeechCraft::Util::TagsLineEdit</class>
-   <extends>QWidget</extends>
+   <extends>QLineEdit</extends>
    <header location="global" >tagslineedit.h</header>
   </customwidget>
   <customwidget>
