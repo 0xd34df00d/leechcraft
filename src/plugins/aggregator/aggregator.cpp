@@ -205,27 +205,19 @@ void Aggregator::Init ()
 			this,
 			SLOT (updatePixmap (int)));
 
-	XmlSettingsManager::Instance ()->RegisterObject ("StandardFont",
-			this, "viewerSettingsChanged");
-	XmlSettingsManager::Instance ()->RegisterObject ("FixedFont",
-			this, "viewerSettingsChanged");
-	XmlSettingsManager::Instance ()->RegisterObject ("SerifFont",
-			this, "viewerSettingsChanged");
-	XmlSettingsManager::Instance ()->RegisterObject ("SansSerifFont",
-			this, "viewerSettingsChanged");
-	XmlSettingsManager::Instance ()->RegisterObject ("CursiveFont",
-			this, "viewerSettingsChanged");
-	XmlSettingsManager::Instance ()->RegisterObject ("FantasyFont",
-			this, "viewerSettingsChanged");
-	XmlSettingsManager::Instance ()->RegisterObject ("MinimumFontSize",
-			this, "viewerSettingsChanged");
-	XmlSettingsManager::Instance ()->RegisterObject ("DefaultFontSize",
-			this, "viewerSettingsChanged");
-	XmlSettingsManager::Instance ()->RegisterObject ("DefaultFixedFontSize",
-			this, "viewerSettingsChanged");
-	XmlSettingsManager::Instance ()->RegisterObject ("AutoLoadImages",
-			this, "viewerSettingsChanged");
-	XmlSettingsManager::Instance ()->RegisterObject ("AllowJavaScript",
+	QList<QByteArray> viewerSettings;
+	viewerSettings << "StandardFont"
+		<< "FixedFont"
+		<< "SerifFont"
+		<< "SansSerifFont"
+		<< "CursiveFont"
+		<< "FantasyFont"
+		<< "MinimumFontSize"
+		<< "DefaultFontSize"
+		<< "DefaultFixedFontSize"
+		<< "AutoLoadImages"
+		<< "AllowJavaScript";
+	XmlSettingsManager::Instance ()->RegisterObject (viewerSettings,
 			this, "viewerSettingsChanged");
 
 	viewerSettingsChanged ();

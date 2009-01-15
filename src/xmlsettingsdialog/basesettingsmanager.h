@@ -57,8 +57,8 @@ namespace LeechCraft
 			void Release ();
 		 /** @brief Subscribes object to property changes.
 		  *
-		  * When a property changes, a specified object is called to notify
-		  * it that the property has changed.
+		  * After a property has changed, a specified function of the
+		  * object is called to notify it about the change.
 		  *
 		  * @param[in] propName The name of property object wants to
 		  * subscribe to.
@@ -69,6 +69,20 @@ namespace LeechCraft
 		  * it should be a (public) slot.
 		  */
 		void RegisterObject (const QByteArray& propName,
+				QObject* object, const QByteArray& funcName);
+		 /** @brief Subscribes object to property changes.
+		  *
+		  * This is an overloaded function provided for convenience.
+		  *
+		  * @param[in] propNames The names of properties object wants to
+		  * subscribe to.
+		  * @param[in] object The object instance that will get
+		  * notifications.
+		  * @param[in] funcName Name of the function that will be called.
+		  * Note that it should be known to the Qt's metaobject system, so
+		  * it should be a (public) slot.
+		  */
+		void RegisterObject (const QList<QByteArray>& propNames,
 				QObject* object, const QByteArray& funcName);
 		 /** @brief Gets a property with default value.
 		  *

@@ -1574,145 +1574,86 @@ void Core::ManipulateSettings ()
 			this, "maxUploadsChanged");
     XmlSettingsManager::Instance ()->RegisterObject ("MaxConnections",
 			this, "maxConnectionsChanged");
-    XmlSettingsManager::Instance ()->RegisterObject ("TrackerProxyEnabled",
-			this, "setProxySettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("TrackerProxyHost",
-			this, "setProxySettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("TrackerProxyPort",
-			this, "setProxySettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("TrackerProxyAuth",
-			this, "setProxySettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("PeerProxyEnabled",
-			this, "setProxySettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("PeerProxyHost",
-			this, "setProxySettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("PeerProxyPort",
-			this, "setProxySettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("PeerProxyAuth",
+
+	QList<QByteArray> proxySettings;
+	proxySettings << "TrackerProxyEnabled"
+		<< "TrackerProxyHost"
+		<< "TrackerProxyPort"
+		<< "TrackerProxyAuth"
+		<< "PeerProxyEnabled"
+		<< "PeerProxyHost"
+		<< "PeerProxyPort"
+		<< "PeerProxyAuth";
+    XmlSettingsManager::Instance ()->RegisterObject (proxySettings,
 			this, "setProxySettings");
 
-    XmlSettingsManager::Instance ()->RegisterObject ("UserAgent",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("TrackerCompletionTimeout",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("TrackerReceiveTimeout",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("StopTrackerTimeout",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("TrackerMaximumResponseLength",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("PieceTimeout",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("RequestQueueTime",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("MaxAllowedInRequestQueue",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("MaxOutRequestQueue",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("WholePiecesThreshold",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("PeerTimeout",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("UrlSeedTimeout",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("UrlSeedPipelineSize",
-			this, "setGeneralSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("SeedingPieceQuota",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("UrlSeedWaitRetry",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("FilePoolSize",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("AllowMultipleConnectionsPerIP",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("MaxFailcount",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("MinReconnectTime",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("PeerConnectTimeout",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("IgnoreLimitsOnLocalNetwork",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("ConnectionSpeed",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("SendRedundantHave",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("LazyBitfields",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("InactivityTimeout",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("UnchokeInterval",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("OptimisticUnchokeMultiplier",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("AnnounceIP",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("NumWant",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("InitialPickerThreshold",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("AllowedFastSetSize",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("MaxOutstandingDiskBytesPerConnection",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("HandshakeTimeout",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("UseDHTAsFallback",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("FreeTorrentHashes",
-			this, "setGeneralSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("UPNPIgnoreNonrouters",
-			this, "setGeneralSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("SendBufferWatermark",
-			this, "setGeneralSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("AutoUploadSlots",
-			this, "setGeneralSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("UseParoleMode",
-			this, "setGeneralSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("CacheSize",
-			this, "setGeneralSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("CacheExpiry",
-			this, "setGeneralSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("OutgoingPorts",
-			this, "setGeneralSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("PeerTOS",
-			this, "setGeneralSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("DontCountSlowTorrents",
-			this, "setGeneralSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("AutoManageInterval",
-			this, "setGeneralSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("ShareRatioLimit",
-			this, "setGeneralSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("SeedTimeRatioLimit",
-			this, "setGeneralSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("SeedTimeLimit",
-			this, "setGeneralSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("CloseRedundantConnections",
-			this, "setGeneralSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("AutoScrapeInterval",
-			this, "setGeneralSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("AutoScrapeMinInterval",
-			this, "setGeneralSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("MaxPeerListSize",
-			this, "setGeneralSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("MinAnnounceInterval",
-			this, "setGeneralSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("PrioritizePartialPieces",
-			this, "setGeneralSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("AnnounceToAllTrackers",
-			this, "setGeneralSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("PreferUDPTrackers",
-			this, "setGeneralSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("StrictSuperSeeding",
+	QList<QByteArray> generalSettings;
+	generalSettings << "UserAgent"
+		<< "TrackerCompletionTimeout"
+		<< "TrackerReceiveTimeout"
+		<< "StopTrackerTimeout"
+		<< "TrackerMaximumResponseLength"
+		<< "PieceTimeout"
+		<< "RequestQueueTime"
+		<< "MaxAllowedInRequestQueue"
+		<< "MaxOutRequestQueue"
+		<< "WholePiecesThreshold"
+		<< "PeerTimeout"
+		<< "UrlSeedTimeout"
+		<< "UrlSeedPipelineSize"
+		<< "SeedingPieceQuota"
+		<< "UrlSeedWaitRetry"
+		<< "FilePoolSize"
+		<< "AllowMultipleConnectionsPerIP"
+		<< "MaxFailcount"
+		<< "MinReconnectTime"
+		<< "PeerConnectTimeout"
+		<< "IgnoreLimitsOnLocalNetwork"
+		<< "ConnectionSpeed"
+		<< "SendRedundantHave"
+		<< "LazyBitfields"
+		<< "InactivityTimeout"
+		<< "UnchokeInterval"
+		<< "OptimisticUnchokeMultiplier"
+		<< "AnnounceIP"
+		<< "NumWant"
+		<< "InitialPickerThreshold"
+		<< "AllowedFastSetSize"
+		<< "MaxOutstandingDiskBytesPerConnection"
+		<< "HandshakeTimeout"
+		<< "UseDHTAsFallback"
+		<< "FreeTorrentHashes"
+		<< "UPNPIgnoreNonrouters"
+		<< "SendBufferWatermark"
+		<< "AutoUploadSlots"
+		<< "UseParoleMode"
+		<< "CacheSize"
+		<< "CacheExpiry"
+		<< "OutgoingPorts"
+		<< "PeerTOS"
+		<< "DontCountSlowTorrents"
+		<< "AutoManageInterval"
+		<< "ShareRatioLimit"
+		<< "SeedTimeRatioLimit"
+		<< "SeedTimeLimit"
+		<< "CloseRedundantConnections"
+		<< "AutoScrapeInterval"
+		<< "AutoScrapeMinInterval"
+		<< "MaxPeerListSize"
+		<< "MinAnnounceInterval"
+		<< "PrioritizePartialPieces"
+		<< "AnnounceToAllTrackers"
+		<< "PreferUDPTrackers"
+		<< "StrictSuperSeeding";
+	XmlSettingsManager::Instance ()->RegisterObject (generalSettings,
 			this, "setGeneralSettings");
 
-    XmlSettingsManager::Instance ()->RegisterObject ("MaxPeersReply",
-			this, "setDHTSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("SearchBranching",
-			this, "setDHTSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("ServicePort",
-			this, "setDHTSettings");
-    XmlSettingsManager::Instance ()->RegisterObject ("MaxDHTFailcount",
+	QList<QByteArray> dhtSettings;
+	dhtSettings << "MaxPeersReply"
+		<< "SearchBranching"
+		<< "ServicePort"
+		<< "MaxDHTFailcount";
+    XmlSettingsManager::Instance ()->RegisterObject (dhtSettings,
 			this, "setDHTSettings");
 
 	XmlSettingsManager::Instance ()->RegisterObject ("ScrapeInterval",
@@ -1720,23 +1661,17 @@ void Core::ManipulateSettings ()
 	XmlSettingsManager::Instance ()->RegisterObject ("ScrapeEnabled",
 			this, "setScrapeInterval");
 
-	XmlSettingsManager::Instance ()->RegisterObject ("PerformanceWarning",
-			this, "setLoggingSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("NotificationError",
-			this, "setLoggingSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("NotificationPeer",
-			this, "setLoggingSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("NotificationPortMapping",
-			this, "setLoggingSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("NotificationStorage",
-			this, "setLoggingSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("NotificationTracker",
-			this, "setLoggingSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("NotificationStatus",
-			this, "setLoggingSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("NotificationProgress",
-			this, "setLoggingSettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("NotificationIPBlock",
+	QList<QByteArray> loggingSettings;
+	loggingSettings << "PerformanceWarning"
+		<< "NotificationError"
+		<< "NotificationPeer"
+		<< "NotificationPortMapping"
+		<< "NotificationStorage"
+		<< "NotificationTracker"
+		<< "NotificationStatus"
+		<< "NotificationProgress"
+		<< "NotificationIPBlock";
+	XmlSettingsManager::Instance ()->RegisterObject (loggingSettings,
 			this, "setLoggingSettings");
 
     TagsCompletionModel_->UpdateTags (XmlSettingsManager::Instance ()->Property ("TorrentTags", QStringList (tr ("untagged"))).toStringList ());

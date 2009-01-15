@@ -4,5 +4,6 @@
     <file>leechcraft_poshuku_uk_UA.qm</file>
 	<file>poshukusettings.xml</file>
 	<file>resources/images/poshuku.png</file>
+	<file>resources/html/generalerror.html</file>
   </qresource>
 </RCC>

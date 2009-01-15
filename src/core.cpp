@@ -103,17 +103,14 @@ Core::Core ()
 
 	Server_->listen ("LeechCraft local socket");
 
-	XmlSettingsManager::Instance ()->RegisterObject ("ProxyEnabled",
-			this, "handleProxySettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("ProxyHost",
-			this, "handleProxySettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("ProxyPort",
-			this, "handleProxySettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("ProxyLogin",
-			this, "handleProxySettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("ProxyPassword",
-			this, "handleProxySettings");
-	XmlSettingsManager::Instance ()->RegisterObject ("ProxyType",
+	QList<QByteArray> proxyProperties;
+	proxyProperties << "ProxyEnabled"
+		<< "ProxyHost"
+		<< "ProxyPort"
+		<< "ProxyLogin"
+		<< "ProxyPassword"
+		<< "ProxyType";
+	XmlSettingsManager::Instance ()->RegisterObject (proxyProperties,
 			this, "handleProxySettings");
 
 	handleProxySettings ();

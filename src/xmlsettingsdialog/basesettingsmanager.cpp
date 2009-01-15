@@ -28,6 +28,14 @@ void BaseSettingsManager::RegisterObject (const QByteArray& propName,
 	Properties2Object_.insert (propName, qMakePair (object, funcName));
 }
 
+void BaseSettingsManager::RegisterObject (const QList<QByteArray>& propNames,
+		QObject* object, const QByteArray& funcName)
+{
+	for (QList<QByteArray>::const_iterator i = propNames.begin (),
+			end = propNames.end (); i != end; ++i)
+		RegisterObject (*i, object, funcName);
+}
+
 QVariant BaseSettingsManager::Property (const QString& propName, const QVariant& def)
 {
 	QVariant result = property (PROP2CHAR (propName));
