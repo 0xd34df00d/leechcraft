@@ -22,9 +22,6 @@
 #include "customwebview.h"
 #include "addtofavoritesdialog.h"
 #include "xmlsettingsmanager.h"
-#include "customcookiejar.h"
-#include "authenticationdialog.h"
-#include "sslerrorsdialog.h"
 #include "restoresessiondialog.h"
 #include "sqlstoragebackend.h"
 
@@ -32,8 +29,7 @@ using LeechCraft::Util::Proxy;
 using LeechCraft::Util::TagsCompletionModel;
 
 Core::Core ()
-: CookieSaveTimer_ (new QTimer ())
-, SaveSessionScheduled_ (false)
+: SaveSessionScheduled_ (false)
 {
 	QDir dir = QDir::home ();
 	if (!dir.cd (".leechcraft/poshuku") &&
@@ -46,41 +42,6 @@ Core::Core ()
 
 	StorageBackend_.reset (new SQLStorageBackend);
 	StorageBackend_->Prepare ();
-
-	NetworkAccessManager_.reset (new QNetworkAccessManager (this));
-	QFile file (QDir::homePath () +
-			"/.leechcraft/poshuku/cookies.txt");
-	if (file.open (QIODevice::ReadOnly))
-	{
-		CustomCookieJar *jar = new CustomCookieJar (this);
-		jar->Load (file.readAll ());
-		NetworkAccessManager_->setCookieJar (jar);
-	}
-
-	connect (NetworkAccessManager_.get (),
-			SIGNAL (authenticationRequired (QNetworkReply*,
-					QAuthenticator*)),
-			this,
-			SLOT (handleAuthentication (QNetworkReply*,
-					QAuthenticator*)));
-	connect (NetworkAccessManager_.get (),
-			SIGNAL (proxyAuthenticationRequired (const QNetworkProxy&,
-					QAuthenticator*)),
-			this,
-			SLOT (handleProxyAuthentication (const QNetworkProxy&,
-					QAuthenticator*)));
-	connect (NetworkAccessManager_.get (),
-			SIGNAL (sslErrors (QNetworkReply*,
-					const QList<QSslError>&)),
-			this,
-			SLOT (handleSslErrors (QNetworkReply*,
-					const QList<QSslError>&)));
-
-	connect (CookieSaveTimer_.get (),
-			SIGNAL (timeout ()),
-			this,
-			SLOT (saveCookies ()));
-	CookieSaveTimer_->start (10000);
 
 	HistoryModel_.reset (new HistoryModel (this));
 	connect (StorageBackend_.get (),
@@ -128,14 +89,9 @@ Core& Core::Instance ()
 
 void Core::Release ()
 {
-	CookieSaveTimer_.reset ();
-
-	saveCookies ();
-
 	qDeleteAll (Widgets_);
 	Widgets_.clear ();
 
-	NetworkAccessManager_.reset ();
 	HistoryModel_.reset ();
 	FavoritesModel_.reset ();
 	FavoriteTagsCompletionModel_.reset ();
@@ -231,7 +187,12 @@ TagsCompletionModel* Core::GetFavoritesTagsCompletionModel () const
 
 QNetworkAccessManager* Core::GetNetworkAccessManager () const
 {
-	return NetworkAccessManager_.get ();
+	return NetworkAccessManager_;
+}
+
+void Core::SetNetworkAccessManager (QNetworkAccessManager *manager)
+{
+	NetworkAccessManager_ = manager;
 }
 
 StorageBackend* Core::GetStorageBackend () const
@@ -249,34 +210,6 @@ void Core::Unregister (BrowserWidget *widget)
 	Widgets_.erase (pos);
 
 	ScheduleSaveSession ();
-}
-
-void Core::DoCommonAuth (const QString& msg, QAuthenticator *authen)
-{
-	QString realm = authen->realm ();
-
-	QString suggestedUser = authen->user ();
-	QString suggestedPassword = authen->password ();
-
-	if (suggestedUser.isEmpty ())
-		StorageBackend_->GetAuth (realm, suggestedUser, suggestedPassword);
-
-	std::auto_ptr<AuthenticationDialog> dia (
-			new AuthenticationDialog (msg,
-				suggestedUser,
-				suggestedPassword,
-				qApp->activeWindow ())
-			);
-	if (dia->exec () == QDialog::Rejected)
-		return;
-
-	QString login = dia->GetLogin ();
-	QString password = dia->GetPassword ();
-	authen->setUser (login);
-	authen->setPassword (password);
-
-	if (dia->ShouldSave ())
-		StorageBackend_->SetAuth (realm, login, password);
 }
 
 void Core::RestoreSession (bool ask)
@@ -333,25 +266,6 @@ void Core::HandleHistory (QWebView *view)
 			url, QDateTime::currentDateTime ());
 }
 
-void Core::saveCookies () const
-{
-	QDir dir = QDir::home ();
-	dir.cd (".leechcraft");
-	if (!dir.exists ("poshuku") &&
-			!dir.mkdir ("poshuku"))
-	{
-		emit error (tr ("Could not create Poshuku directory."));
-		return;
-	}
-
-	QFile file (QDir::homePath () +
-			"/.leechcraft/poshuku/cookies.txt");
-	if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
-		emit error (tr ("Could not save cookies, error opening cookie file."));
-	else
-		file.write (static_cast<CustomCookieJar*> (NetworkAccessManager_->cookieJar ())->Save ());
-}
-
 void Core::handleTitleChanged (const QString& newTitle)
 {
 	emit changeTabName (dynamic_cast<QWidget*> (sender ()), newTitle);
@@ -395,74 +309,6 @@ void Core::handleAddToFavorites (const QString& title, const QString& url)
 
 	FavoritesModel_->AddItem (dia->GetTitle (), url, dia->GetTags ());
 	FavoriteTagsCompletionModel_->UpdateTags (dia->GetTags ());
-}
-
-void Core::handleAuthentication (QNetworkReply *reply, QAuthenticator *authen)
-{
-	QString msg = tr ("The URL<br /><code>%1</code><br />with "
-			"realm<br /><em>%2</em><br />requires authentication.")
-		.arg (reply->url ().toString ())
-		.arg (authen->realm ());
-	msg = msg.left (200);
-
-	DoCommonAuth (msg, authen);
-}
-
-void Core::handleProxyAuthentication (const QNetworkProxy& proxy, QAuthenticator *authen)
-{
-	QString msg = tr ("The proxy <br /><code>%1</code><br />with "
-			"realm<br /><em>%2</em><br />requires authentication.")
-		.arg (proxy.hostName () + ":" + QString::number (proxy.port ()))
-		.arg (authen->realm ());
-	msg = msg.left (200);
-
-	DoCommonAuth (msg, authen);
-}
-
-void Core::handleSslErrors (QNetworkReply *reply, const QList<QSslError>& errors)
-{
-	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-			Proxy::Instance ()->GetApplicationName () + "_Poshuku");
-	settings.beginGroup ("SSL exceptions");
-	QStringList keys = settings.allKeys ();
-	if (keys.contains (reply->url ().toString ())) 
-	{
-		if (settings.value (reply->url ().toString ()).toBool ())
-			reply->ignoreSslErrors ();
-	}
-	else if (keys.contains (reply->url ().host ()))
-	{
-		if (settings.value (reply->url ().host ()).toBool ())
-			reply->ignoreSslErrors ();
-	}
-	else
-	{
-		QString msg = tr ("The URL<br /><code>%1</code><br />has SSL errors."
-				" What do you want to do?")
-			.arg (reply->url ().toString ());
-		std::auto_ptr<SslErrorsDialog> dia (
-				new SslErrorsDialog (msg,
-					errors,
-					qApp->activeWindow ())
-				);
-
-		bool ignore = (dia->exec () == QDialog::Accepted);
-		if (ignore)
-			reply->ignoreSslErrors ();
-
-		SslErrorsDialog::RememberChoice choice = dia->GetRememberChoice ();
-
-		if (choice != SslErrorsDialog::RCNot)
-		{
-			if (choice == SslErrorsDialog::RCFile)
-				settings.setValue (reply->url ().toString (),
-						ignore);
-			else
-				settings.setValue (reply->url ().host (),
-						ignore);
-		}
-	}
-	settings.endGroup ();
 }
 
 void Core::handleStatusBarChanged (const QString& msg)

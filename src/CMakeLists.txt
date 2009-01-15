@@ -83,6 +83,7 @@ ENDIF (ENABLE_PACK)
 INCLUDE (${CMAKE_ROOT}/Modules/UseQt4.cmake)
 INCLUDE_DIRECTORIES (${QT_QTGUI_INCLUDE_DIR}
                      ${QT_QTCORE_INCLUDE_DIR}
+                     ${QT_QTSQL_INCLUDE_DIR}
                      ${CMAKE_CURRENT_BINARY_DIR} .
                      ${Boost_INCLUDE_DIR}
 	plugininterface/)
@@ -158,6 +159,11 @@ SET (SRCS
 	logtoolbox.cpp
 	historytreeview.cpp
 	settingssink.cpp
+	customcookiejar.cpp
+	authenticationdialog.cpp
+	sslerrorsdialog.cpp
+	storagebackend.cpp
+	sqlstoragebackend.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -175,6 +181,11 @@ SET (HEADERS
 	logtoolbox.h
 	historytreeview.h
 	settingssink.h
+	customcookiejar.h
+	authenticationdialog.h
+	sslerrorsdialog.h
+	storagebackend.h
+	sqlstoragebackend.h
 	interfaces/interfaces.h
 	interfaces/structures.h
 	)
@@ -184,6 +195,8 @@ SET (FORMS
 	pluginmanagerdialog.ui
 	logtoolbox.ui
 	settingssink.ui
+	authenticationdialog.ui
+	sslerrorsdialog.ui
 	)
 SET (RESOURCES mainresources.qrc)
 SET (TRANSLATIONS

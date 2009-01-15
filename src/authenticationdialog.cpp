@@ -1,5 +1,7 @@
 #include "authenticationdialog.h"
 
+using namespace LeechCraft;
+
 AuthenticationDialog::AuthenticationDialog (const QString& message,
 		const QString& login,
 		const QString& password,

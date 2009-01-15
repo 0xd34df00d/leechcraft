@@ -1,6 +1,8 @@
 #include "sslerrorsdialog.h"
 #include <QDateTime>
 
+using namespace LeechCraft;
+
 SslErrorsDialog::SslErrorsDialog (const QString& msg,
 		const QList<QSslError>& errors,
 		QWidget *parent)

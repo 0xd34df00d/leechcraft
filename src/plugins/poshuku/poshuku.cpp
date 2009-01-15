@@ -139,6 +139,11 @@ LeechCraft::Util::XmlSettingsDialog* Poshuku::GetSettingsDialog () const
 	return XmlSettingsDialog_.get ();
 }
 
+void Poshuku::SetNetworkAccessManager (QNetworkAccessManager *manager)
+{
+	Core::Instance ().SetNetworkAccessManager (manager);
+}
+
 void Poshuku::RegisterSettings ()
 {
 	XmlSettingsManager::Instance ()->RegisterObject ("StandardFont",

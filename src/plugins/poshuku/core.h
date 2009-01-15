@@ -3,7 +3,6 @@
 #include <memory>
 #include <vector>
 #include <QObject>
-#include <QNetworkAccessManager>
 #include <QTimer>
 #include <plugininterface/tagscompletionmodel.h>
 #include "favoritesmodel.h"
@@ -19,6 +18,7 @@ class QWebView;
 class BrowserWidget;
 class QAbstractItemModel;
 class QNetworkReply;
+class QNetworkAccessManager;
 
 class Core : public QObject
 {
@@ -30,10 +30,9 @@ class Core : public QObject
 	std::auto_ptr<FavoritesModel> FavoritesModel_;
 	std::auto_ptr<HistoryModel> HistoryModel_;
 	std::auto_ptr<LeechCraft::Util::TagsCompletionModel> FavoriteTagsCompletionModel_;
-	std::auto_ptr<QNetworkAccessManager> NetworkAccessManager_;
-	std::auto_ptr<QTimer> CookieSaveTimer_;
 	std::auto_ptr<StorageBackend> StorageBackend_;
 	std::auto_ptr<URLCompletionModel> URLCompletionModel_;
+	QNetworkAccessManager *NetworkAccessManager_;
 
 	QMap<QString, QObject*> Providers_;
 	QObjectList Downloaders_;
@@ -57,23 +56,19 @@ public:
 	URLCompletionModel* GetURLCompletionModel () const;
 	LeechCraft::Util::TagsCompletionModel* GetFavoritesTagsCompletionModel () const;
 	QNetworkAccessManager* GetNetworkAccessManager () const;
+	void SetNetworkAccessManager (QNetworkAccessManager*);
 	StorageBackend* GetStorageBackend () const;
 	void Unregister (BrowserWidget*);
 private:
-	void DoCommonAuth (const QString&, QAuthenticator*);
 	void RestoreSession (bool);
 	void ScheduleSaveSession ();
 	void HandleHistory (QWebView*);
 private slots:
-	void saveCookies () const;
 	void handleTitleChanged (const QString&);
 	void handleURLChanged (const QString&);
 	void handleIconChanged (const QIcon&);
 	void handleNeedToClose ();
 	void handleAddToFavorites (const QString&, const QString&);
-	void handleAuthentication (QNetworkReply*, QAuthenticator*);
-	void handleProxyAuthentication (const QNetworkProxy&, QAuthenticator*);
-	void handleSslErrors (QNetworkReply*, const QList<QSslError>&);
 	void handleStatusBarChanged (const QString&);
 	void favoriteTagsUpdated (const QStringList&);
 	void saveSession ();

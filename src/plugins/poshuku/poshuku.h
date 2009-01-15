@@ -17,9 +17,10 @@ class Poshuku : public QWidget
 			  , public IEmbedTab
 			  , public IMultiTabs
 			  , public IHaveSettings
+			  , public IWantNetworkAccessManager
 {
     Q_OBJECT
-    Q_INTERFACES (IInfo IEmbedTab IMultiTabs IHaveSettings)
+    Q_INTERFACES (IInfo IEmbedTab IMultiTabs IHaveSettings IWantNetworkAccessManager)
 
 	Ui::Poshuku Ui_;
 
@@ -38,8 +39,12 @@ public:
 	QStringList Uses () const;
 	void SetProvider (QObject*, const QString&);
 	QIcon GetIcon () const;
+
 	QWidget* GetTabContents ();
+
 	LeechCraft::Util::XmlSettingsDialog* GetSettingsDialog () const;
+
+	void SetNetworkAccessManager (QNetworkAccessManager*);
 private:
 	void RegisterSettings ();
 	void SetupFavoritesFilter ();

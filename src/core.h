@@ -4,13 +4,14 @@
 #include <QObject>
 #include <QString>
 #include <QPair>
+#include <QTimer>
 #include <QNetworkAccessManager>
 #include "pluginmanager.h"
 #include "tabcontainer.h"
 #include "plugininterface/mergemodel.h"
 #include "interfaces/interfaces.h"
+#include "storagebackend.h"
 
-class QTimer;
 class QLocalServer;
 class QAbstractProxyModel;
 class QAction;
@@ -34,6 +35,8 @@ namespace LeechCraft
 		std::auto_ptr<FilterModel> HistoryFilterModel_;
 		std::auto_ptr<TabContainer> TabContainer_;
 		std::auto_ptr<QNetworkAccessManager> NetworkAccessManager_;
+		std::auto_ptr<QTimer> CookieSaveTimer_;
+		std::auto_ptr<StorageBackend> StorageBackend_;
 		typedef std::map<const QAbstractItemModel*, QObject*> repres2object_t;
 		mutable repres2object_t Representation2Object_;
 		mutable repres2object_t History2Object_;
@@ -80,6 +83,8 @@ namespace LeechCraft
         QPair<qint64, qint64> GetSpeeds () const;
 		int CountUnremoveableTabs () const;
 
+		QNetworkAccessManager* GetNetworkAccessManager () const;
+
 		virtual bool eventFilter (QObject*, QEvent*);
 	public slots:
 		void handleProxySettings () const;
@@ -92,13 +97,18 @@ namespace LeechCraft
 		void embeddedTabWantsToFront ();
 		void handleStatusBarChanged (QWidget*, const QString&);
 		void handleLog (const QString&);
+		void handleAuthentication (QNetworkReply*, QAuthenticator*);
+		void handleProxyAuthentication (const QNetworkProxy&, QAuthenticator*);
+		void handleSslErrors (QNetworkReply*, const QList<QSslError>&);
+		void saveCookies () const;
 	private:
+		void DoCommonAuth (const QString&, QAuthenticator*);
 		QModelIndex MapToSource (const QModelIndex&) const;
 		void InitJobHolder (QObject*);
 		void InitEmbedTab (QObject*);
 		void InitMultiTab (QObject*);
     signals:
-        void error (QString);
+        void error (QString) const;
 		void log (const QString&);
         void downloadFinished (const QString&);
 		void loadProgress (const QString&);

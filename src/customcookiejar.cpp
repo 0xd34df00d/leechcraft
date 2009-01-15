@@ -1,6 +1,8 @@
 #include "customcookiejar.h"
 #include <QtDebug>
 
+using namespace LeechCraft;
+
 CustomCookieJar::CustomCookieJar (QObject *parent)
 : QNetworkCookieJar (parent)
 {

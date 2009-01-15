@@ -14,8 +14,11 @@
 #include <QLocalServer>
 #include <QTextCodec>
 #include <QDesktopServices>
+#include <QNetworkReply>
 #include <QFileDialog>
+#include <QAuthenticator>
 #include <plugininterface/util.h>
+#include <plugininterface/proxy.h>
 #include "mainwindow.h"
 #include "pluginmanager.h"
 #include "core.h"
@@ -23,6 +26,10 @@
 #include "mergemodel.h"
 #include "filtermodel.h"
 #include "historymodel.h"
+#include "customcookiejar.h"
+#include "authenticationdialog.h"
+#include "sslerrorsdialog.h"
+#include "sqlstoragebackend.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -41,7 +48,43 @@ Core::Core ()
 , FilterModel_ (new FilterModel)
 , HistoryFilterModel_ (new FilterModel)
 , NetworkAccessManager_ (new QNetworkAccessManager)
+, CookieSaveTimer_ (new QTimer ())
+, StorageBackend_ (new SQLStorageBackend ())
 {
+	connect (NetworkAccessManager_.get (),
+			SIGNAL (authenticationRequired (QNetworkReply*,
+					QAuthenticator*)),
+			this,
+			SLOT (handleAuthentication (QNetworkReply*,
+					QAuthenticator*)));
+	connect (NetworkAccessManager_.get (),
+			SIGNAL (proxyAuthenticationRequired (const QNetworkProxy&,
+					QAuthenticator*)),
+			this,
+			SLOT (handleProxyAuthentication (const QNetworkProxy&,
+					QAuthenticator*)));
+	connect (NetworkAccessManager_.get (),
+			SIGNAL (sslErrors (QNetworkReply*,
+					const QList<QSslError>&)),
+			this,
+			SLOT (handleSslErrors (QNetworkReply*,
+					const QList<QSslError>&)));
+
+	QFile file (QDir::homePath () +
+			"/.leechcraft/core/cookies.txt");
+	if (file.open (QIODevice::ReadOnly))
+	{
+		CustomCookieJar *jar = new CustomCookieJar (this);
+		jar->Load (file.readAll ());
+		NetworkAccessManager_->setCookieJar (jar);
+	}
+
+	connect (CookieSaveTimer_.get (),
+			SIGNAL (timeout ()),
+			this,
+			SLOT (saveCookies ()));
+	CookieSaveTimer_->start (10000);
+
 	PluginManager_ = new PluginManager (this);
 	connect (PluginManager_,
 			SIGNAL (loadProgress (const QString&)),
@@ -88,6 +131,7 @@ Core& Core::Instance ()
 
 void Core::Release ()
 {
+	saveCookies ();
 	XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");
 	MergeModel_.reset ();
 	HistoryMergeModel_.reset ();
@@ -194,8 +238,6 @@ void Core::DelayedInit ()
 		IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
 		IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
 		IMultiTabs *imt = qobject_cast<IMultiTabs*> (plugin);
-		IWantNetworkAccessManager *iwnam =
-			qobject_cast<IWantNetworkAccessManager*> (plugin);
 
 		const QMetaObject *qmo = plugin->metaObject ();
 
@@ -229,9 +271,6 @@ void Core::DelayedInit ()
 
 		if (imt)
 			InitMultiTab (plugin);
-
-		if (iwnam)
-			iwnam->SetNetworkAccessManager (NetworkAccessManager_.get ());
 	}
 
 	TabContainer_->handleTabNames ();
@@ -416,6 +455,11 @@ int Core::CountUnremoveableTabs () const
 {
 	// + 2 because of tabs with downloaders and history
 	return PluginManager_->GetAllCastableTo<IEmbedTab*> ().size () + 2;
+}
+
+QNetworkAccessManager* Core::GetNetworkAccessManager () const
+{
+	return NetworkAccessManager_.get ();
 }
 
 bool Core::eventFilter (QObject *watched, QEvent *e)
@@ -663,6 +707,121 @@ void Core::handleLog (const QString& message)
 {
 	IInfo *ii = qobject_cast<IInfo*> (sender ());
 	emit log (ii->GetName () + ": " + message);
+}
+
+void Core::handleAuthentication (QNetworkReply *reply, QAuthenticator *authen)
+{
+	QString msg = tr ("The URL<br /><code>%1</code><br />with "
+			"realm<br /><em>%2</em><br />requires authentication.")
+		.arg (reply->url ().toString ())
+		.arg (authen->realm ());
+	msg = msg.left (200);
+
+	DoCommonAuth (msg, authen);
+}
+
+void Core::handleProxyAuthentication (const QNetworkProxy& proxy, QAuthenticator *authen)
+{
+	QString msg = tr ("The proxy <br /><code>%1</code><br />with "
+			"realm<br /><em>%2</em><br />requires authentication.")
+		.arg (proxy.hostName () + ":" + QString::number (proxy.port ()))
+		.arg (authen->realm ());
+	msg = msg.left (200);
+
+	DoCommonAuth (msg, authen);
+}
+
+void Core::handleSslErrors (QNetworkReply *reply, const QList<QSslError>& errors)
+{
+	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
+			Proxy::Instance ()->GetApplicationName () + "_Poshuku");
+	settings.beginGroup ("SSL exceptions");
+	QStringList keys = settings.allKeys ();
+	if (keys.contains (reply->url ().toString ())) 
+	{
+		if (settings.value (reply->url ().toString ()).toBool ())
+			reply->ignoreSslErrors ();
+	}
+	else if (keys.contains (reply->url ().host ()))
+	{
+		if (settings.value (reply->url ().host ()).toBool ())
+			reply->ignoreSslErrors ();
+	}
+	else
+	{
+		QString msg = tr ("The URL<br /><code>%1</code><br />has SSL errors."
+				" What do you want to do?")
+			.arg (reply->url ().toString ());
+		std::auto_ptr<SslErrorsDialog> dia (
+				new SslErrorsDialog (msg,
+					errors,
+					qApp->activeWindow ())
+				);
+
+		bool ignore = (dia->exec () == QDialog::Accepted);
+		if (ignore)
+			reply->ignoreSslErrors ();
+
+		SslErrorsDialog::RememberChoice choice = dia->GetRememberChoice ();
+
+		if (choice != SslErrorsDialog::RCNot)
+		{
+			if (choice == SslErrorsDialog::RCFile)
+				settings.setValue (reply->url ().toString (),
+						ignore);
+			else
+				settings.setValue (reply->url ().host (),
+						ignore);
+		}
+	}
+	settings.endGroup ();
+}
+
+void Core::saveCookies () const
+{
+	QDir dir = QDir::home ();
+	dir.cd (".leechcraft");
+	if (!dir.exists ("core") &&
+			!dir.mkdir ("core"))
+	{
+		emit error (tr ("Could not create Core directory."));
+		return;
+	}
+
+	QFile file (QDir::homePath () +
+			"/.leechcraft/core/cookies.txt");
+	if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
+		emit error (tr ("Could not save cookies, error opening cookie file."));
+	else
+		file.write (static_cast<CustomCookieJar*> (NetworkAccessManager_->cookieJar ())->Save ());
+}
+
+void Core::DoCommonAuth (const QString& msg, QAuthenticator *authen)
+{
+	QString realm = authen->realm ();
+
+	QString suggestedUser = authen->user ();
+	QString suggestedPassword = authen->password ();
+
+	if (suggestedUser.isEmpty ())
+		StorageBackend_->GetAuth (realm, suggestedUser, suggestedPassword);
+
+	std::auto_ptr<AuthenticationDialog> dia (
+			new AuthenticationDialog (msg,
+				suggestedUser,
+				suggestedPassword,
+				qApp->activeWindow ())
+			);
+	if (dia->exec () == QDialog::Rejected)
+		return;
+
+	QString login = dia->GetLogin ();
+	QString password = dia->GetPassword ();
+	authen->setUser (login);
+	authen->setPassword (password);
+
+	if (dia->ShouldSave ())
+		StorageBackend_->SetAuth (realm, login, password);
 }
 
 QModelIndex Core::MapToSource (const QModelIndex& index) const

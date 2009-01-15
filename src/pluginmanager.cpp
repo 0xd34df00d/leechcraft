@@ -194,6 +194,11 @@ void PluginManager::InitializePlugins ()
 
 		emit loadProgress (info->GetName ());
 
+		IWantNetworkAccessManager *iwnam =
+			qobject_cast<IWantNetworkAccessManager*> (pluginEntity);
+		if (iwnam)
+			iwnam->SetNetworkAccessManager (Core::Instance ().GetNetworkAccessManager ());
+
         info->Init ();
     }
 }

@@ -19,9 +19,6 @@ SET (SRCS
 	favoritesdelegate.cpp
 	favoritestreeview.cpp
 	customwebpage.cpp
-	customcookiejar.cpp
-	authenticationdialog.cpp
-	sslerrorsdialog.cpp
 	restoresessiondialog.cpp
 	historymodel.cpp
 	storagebackend.cpp
@@ -43,9 +40,6 @@ SET (HEADERS
 	favoritesdelegate.h
 	favoritestreeview.h
 	customwebpage.h
-	customcookiejar.h
-	authenticationdialog.h
-	sslerrorsdialog.h
 	restoresessiondialog.h
 	historymodel.h
 	storagebackend.h
@@ -58,8 +52,6 @@ SET (FORMS
 	poshuku.ui
 	browserwidget.ui
 	addtofavoritesdialog.ui
-	authenticationdialog.ui
-	sslerrorsdialog.ui
 	restoresessiondialog.ui
 	finddialog.ui
 	screenshotsavedialog.ui
