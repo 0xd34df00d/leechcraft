@@ -65,6 +65,7 @@ struct Aggregator_Impl
 	std::auto_ptr<QTranslator> Translator_;
     std::auto_ptr<ItemBucket> ItemBucket_;
 	std::auto_ptr<LeechCraft::Util::CategorySelector> ItemCategorySelector_;
+	std::auto_ptr<RegexpMatcherUi> RegexpMatcherUi_;
 };
 
 Aggregator::~Aggregator ()
@@ -77,6 +78,8 @@ void Aggregator::Init ()
 	Impl_->Translator_.reset (LeechCraft::Util::InstallTranslator ("aggregator"));
 	SetupMenuBar ();
 	Impl_->Ui_.setupUi (this);
+
+	Impl_->RegexpMatcherUi_.reset (new RegexpMatcherUi (this));
 
 	Impl_->ItemBucket_.reset (new ItemBucket (this));
 	dynamic_cast<QVBoxLayout*> (layout ())->insertWidget (0, Impl_->ToolBar_);
@@ -532,7 +535,7 @@ void Aggregator::on_ActionItemBucket__triggered ()
 
 void Aggregator::on_ActionRegexpMatcher__triggered ()
 {
-	RegexpMatcherUi::Instance ().show ();
+	Impl_->RegexpMatcherUi_->show ();
 }
 
 void Aggregator::on_ActionHideReadItems__triggered ()

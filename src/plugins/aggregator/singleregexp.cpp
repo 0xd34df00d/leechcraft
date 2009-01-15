@@ -5,7 +5,10 @@ namespace
 {
 	inline bool IsRegexpValid (const QString& rx)
 	{
-		return QRegExp (rx).isValid () && !QRegExp (rx).isEmpty ();
+		QString str = rx;
+		if (rx.startsWith ("\\link"))
+			str = rx.right (rx.size () - 5);
+		return QRegExp (str).isValid () && !QRegExp (str).isEmpty ();
 	}
 };
 
@@ -16,8 +19,14 @@ SingleRegexp::SingleRegexp (const QString& title,
 : QDialog (parent)
 {
 	Ui_.setupUi (this);
-	connect (Ui_.TitleEdit_, SIGNAL (textChanged (const QString&)), this, SLOT (lineEdited (const QString&)));
-	connect (Ui_.BodyEdit_, SIGNAL (textChanged (const QString&)), this, SLOT (lineEdited (const QString&)));
+	connect (Ui_.TitleEdit_,
+			SIGNAL (textChanged (const QString&)),
+			this,
+			SLOT (lineEdited (const QString&)));
+	connect (Ui_.BodyEdit_,
+			SIGNAL (textChanged (const QString&)),
+			this,
+			SLOT (lineEdited (const QString&)));
 
 	Ui_.TitleEdit_->setText (title);
 	Ui_.BodyEdit_->setText (body);
@@ -42,10 +51,10 @@ QString SingleRegexp::GetBody () const
 void SingleRegexp::lineEdited (const QString& newText, QWidget *setter)
 {
 	if (IsRegexpValid (newText))
-		(setter ? setter : qobject_cast<QWidget*> (sender ()))
-			->setStyleSheet ("background-color: rgba(0, 255, 0, 50);");
+		(setter ? setter : qobject_cast<QWidget*> (sender ()))->
+			setStyleSheet ("background-color: rgba(0, 255, 0, 50);");
 	else
-		(setter ? setter : qobject_cast<QWidget*> (sender ()))
-			->setStyleSheet ("background-color: rgba(255, 0, 0, 50);");
+		(setter ? setter : qobject_cast<QWidget*> (sender ()))->
+			setStyleSheet ("background-color: rgba(255, 0, 0, 50);");
 }
 

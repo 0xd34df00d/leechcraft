@@ -4,7 +4,8 @@
 #include "regexpmatchermanager.h"
 #include "regexpmatcherui.h"
 
-RegexpMatcherUi::RegexpMatcherUi ()
+RegexpMatcherUi::RegexpMatcherUi (QWidget *parent)
+: QDialog (parent)
 {
 	Ui_.setupUi (this);
 	Ui_.Regexps_->setModel (&RegexpMatcherManager::Instance ());
@@ -13,16 +14,6 @@ RegexpMatcherUi::RegexpMatcherUi ()
 RegexpMatcherUi::~RegexpMatcherUi ()
 {
 	RegexpMatcherManager::Instance ().Release ();
-}
-
-RegexpMatcherUi& RegexpMatcherUi::Instance ()
-{
-	static RegexpMatcherUi rmu;
-	return rmu;
-}
-
-void RegexpMatcherUi::Release ()
-{
 }
 
 void RegexpMatcherUi::on_AddRegexpButton__released ()

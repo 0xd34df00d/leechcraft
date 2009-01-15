@@ -263,6 +263,8 @@ void Core::RemoveFeed (const QModelIndex& index)
 		CurrentChannelHash_ = qMakePair (QString (), QString ());
 		reset ();
 	}
+
+	UpdateUnreadItemsNumber ();
 }
 
 void Core::Activated (const QModelIndex& index)
@@ -897,6 +899,12 @@ void Core::handleJobFinished (int id)
 			FetchPixmap (channels [i]);
 			FetchFavicon (channels [i]);
 			ChannelsModel_->AddChannel (channels [i]->ToShort ());
+
+			std::for_each (channels [i]->Items_.begin (),
+					channels [i]->Items_.end (),
+					boost::bind (&RegexpMatcherManager::HandleItem,
+						&RegexpMatcherManager::Instance (),
+						_1));
 		}
 
 		Feed_ptr feed (new Feed ());

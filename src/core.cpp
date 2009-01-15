@@ -548,9 +548,7 @@ void Core::handlePluginAction ()
 	QString slot = source->property ("Slot").toString ();
 	QString signal = source->property ("Signal").toString ();
 	QVariant varWhole = source->property ("WholeSelection");
-	bool whole = false;
-	if (varWhole.isValid ())
-		whole = varWhole.toBool ();
+	bool whole = varWhole.isValid () && varWhole.toBool ();
 
 	if (slot.isEmpty () && signal.isEmpty ())
 		return;

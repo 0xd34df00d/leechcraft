@@ -35,14 +35,15 @@ QByteArray RegexpMatcherManager::RegexpItem::Serialize () const
 	QByteArray result;
 	{
 		QDataStream out (&result, QIODevice::WriteOnly);
-		out << 1 << Title_ << Body_;
+		int version = 1;
+		out << version << Title_ << Body_;
 	}
 	return result;
 }
 
-void RegexpMatcherManager::RegexpItem::Deserialize (QByteArray& data)
+void RegexpMatcherManager::RegexpItem::Deserialize (const QByteArray& data)
 {
-	QDataStream in (&data, QIODevice::ReadOnly);
+	QDataStream in (data);
 	int version = 0;
 	in >> version;
 	if (version == 1)
@@ -196,10 +197,19 @@ namespace
 
 		void operator() (const RegexpMatcherManager::RegexpItem& item)
 		{
-			QRegExp ib (item.Body_);
-			if (item.Body_.isEmpty ())
+			QString rxs = item.Body_;
+			bool link = false;
+			if (rxs.startsWith ("\\link"))
+			{
+				rxs = rxs.right (rxs.size () - 5);
+				link = true;
+			}
+
+			QRegExp ib (rxs, Qt::CaseInsensitive, QRegExp::RegExp2);
+			if (rxs.isEmpty () && !Link_.isEmpty ())
 				Links_ << Link_;
-			else if (ib.indexIn (Description_) > -1)
+			else if ((!link && ib.indexIn (Description_) != -1) ||
+					(link && ib.indexIn (Link_) != -1))
 				Links_ << ib.cap (0);
 		}
 
@@ -226,7 +236,7 @@ void RegexpMatcherManager::HandleItem (const Item_ptr& item) const
 
 	QStringList links = std::for_each (matchingTitles.begin (),
 			matchingTitles.end (),
-			HandleBody (item->Description_, item->Link_)).Links_;
+			HandleBody (item->Description_, item->Link_)).GetLinks ();
 
 	for (QStringList::const_iterator i = links.begin (),
 			end = links.end ();	i != end; ++i)
@@ -313,6 +323,7 @@ void RegexpMatcherManager::saveSettings () const
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
 			Proxy::Instance ()->GetApplicationName () + "_Aggregator");
 	settings.beginWriteArray ("RegexpMatcher");
+	settings.remove ("");
 	std::for_each (Items_.begin (), Items_.end (), WriteOut (settings));
 	settings.endArray ();
 
@@ -326,6 +337,7 @@ void RegexpMatcherManager::RestoreSettings ()
 	int size = settings.beginReadArray ("RegexpMatcher");
 	for (int i = 0; i < size; ++i)
 	{
+		settings.setArrayIndex (i);
 		QByteArray data = settings.value ("Item").toByteArray ();
 		RegexpItem item;
 		try

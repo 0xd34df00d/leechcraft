@@ -8,11 +8,9 @@ class RegexpMatcherUi : public QDialog
 	Q_OBJECT
 
 	Ui::RegexpMatcherUi Ui_;
-	RegexpMatcherUi ();
 public:
+	RegexpMatcherUi (QWidget* = 0);
 	virtual ~RegexpMatcherUi ();
-	static RegexpMatcherUi& Instance ();
-	void Release ();
 private slots:
 	void on_AddRegexpButton__released ();
 	void on_ModifyRegexpButton__released ();

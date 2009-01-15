@@ -50,7 +50,7 @@ public:
 		bool operator== (const RegexpItem&) const;
 		bool IsEqual (const QString&) const;
 		QByteArray Serialize () const;
-		void Deserialize (QByteArray&);
+		void Deserialize (const QByteArray&);
 	};
 private:
 	QStringList ItemHeaders_;

@@ -15,7 +15,7 @@
 
 Task::Task (const QString& str)
 : URL_ (str)
-, Done_ (0)
+, Done_ (-1)
 , Total_ (0)
 , FileSizeAtStart_ (-1)
 , Speed_ (0)
@@ -159,7 +159,7 @@ void Task::Start (QIODevice *to)
 void Task::Reset ()
 {
 	RedirectHistory_.clear ();
-	Done_ = 0;
+	Done_ = -1;
 	Total_ = 0;
 	Speed_ = 0;
 	FileSizeAtStart_ = -1;
