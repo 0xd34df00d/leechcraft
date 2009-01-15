@@ -19,13 +19,14 @@ namespace boost
 };
 
 class CSTP : public QObject
-			 , public IInfo
-			 , public IDownload
-			 , public IJobHolder
-			 , public IHaveSettings
+		   , public IInfo
+		   , public IDownload
+		   , public IJobHolder
+		   , public IHaveSettings
+		   , public IWantNetworkAccessManager
 {
 	Q_OBJECT
-	Q_INTERFACES (IInfo IDownload IJobHolder IHaveSettings)
+	Q_INTERFACES (IInfo IDownload IJobHolder IHaveSettings IWantNetworkAccessManager)
 
 	QMenu *Plugins_;
 	std::auto_ptr<QTranslator> Translator_;
@@ -57,6 +58,8 @@ public:
 	void ItemSelected (const QModelIndex&);
 
 	LeechCraft::Util::XmlSettingsDialog* GetSettingsDialog () const;
+
+	void SetNetworkAccessManager (QNetworkAccessManager*);
 private:
 	template<typename T> void ApplyCore2Selection (void (Core::*) (const QModelIndex&), T);
 	void SetupTabWidget ();

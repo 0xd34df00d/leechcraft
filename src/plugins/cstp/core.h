@@ -5,6 +5,7 @@
 #include <QAbstractItemModel>
 #include <QStringList>
 #include <QNetworkProxy>
+#include <QNetworkAccessManager>
 #include <interfaces/interfaces.h>
 
 class Task;
@@ -57,7 +58,7 @@ class Core : public QAbstractItemModel
 	HistoryModel *HistoryModel_;
 	RepresentationModel *RepresentationModel_;
 	bool SaveScheduled_;
-
+	QNetworkAccessManager *NetworkAccessManager_;
 	std::list<quint32> IDPool_;
 	
 	explicit Core ();
@@ -86,6 +87,8 @@ public:
 	qint64 GetTotalDownloadSpeed () const;
 	bool CouldDownload (const QString&, LeechCraft::TaskParameters);
 	QAbstractItemModel* GetRepresentationModel ();
+	void SetNetworkAccessManager (QNetworkAccessManager*);
+	QNetworkAccessManager* GetNetworkAccessManager () const;
 
 	virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
 	virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
@@ -113,7 +116,6 @@ private:
 	tasks_t::iterator FindTask (QObject*);
 	tasks_t::iterator Remove (tasks_t::iterator);
 	void AddToHistory (tasks_t::const_iterator);
-	QNetworkProxy GetProxySettings () const;
 	tasks_t::const_reference TaskAt (int) const;
 	tasks_t::reference TaskAt (int);
 signals:

@@ -21,7 +21,6 @@ Core::Core ()
 , SaveScheduled_ (false)
 {
 	qRegisterMetaType<QIODevice*> ("QIODevice*");
-	qRegisterMetaType<QHttpResponseHeader> ("QHttpResponseHeader");
 
 	Headers_ << tr ("URL")
 		<< tr ("State")
@@ -69,7 +68,6 @@ int Core::AddTask (const QString& url,
 {
 	TaskDescr td;
 	td.Task_ = boost::shared_ptr<Task> (new Task (url));
-	td.Task_->SetProxy (GetProxySettings ());
 	QDir dir (path);
 	td.File_ = boost::shared_ptr<MorphFile> (new MorphFile (QDir::cleanPath (dir
 					.filePath (filename))));
@@ -101,8 +99,14 @@ int Core::AddTask (const QString& url,
 		}
 	}
 
-	connect (td.Task_.get (), SIGNAL (done (bool)), this, SLOT (done (bool)));
-	connect (td.Task_.get (), SIGNAL (updateInterface ()), this, SLOT (updateInterface ()));
+	connect (td.Task_.get (),
+			SIGNAL (done (bool)),
+			this,
+			SLOT (done (bool)));
+	connect (td.Task_.get (),
+			SIGNAL (updateInterface ()),
+			this,
+			SLOT (updateInterface ()));
 
 	beginInsertRows (QModelIndex (), rowCount (), rowCount ());
 	ActiveTasks_.push_back (td);
@@ -159,6 +163,16 @@ QAbstractItemModel* Core::GetRepresentationModel ()
 	return RepresentationModel_;
 }
 
+void Core::SetNetworkAccessManager (QNetworkAccessManager *manager)
+{
+	NetworkAccessManager_ = manager;
+}
+
+QNetworkAccessManager* Core::GetNetworkAccessManager () const
+{
+	return NetworkAccessManager_;
+}
+
 int Core::columnCount (const QModelIndex&) const
 {
 	return Headers_.size ();
@@ -171,14 +185,15 @@ QVariant Core::data (const QModelIndex& index, int role) const
 
     if (role == Qt::DisplayRole)
 	{
-		boost::shared_ptr<Task> task = TaskAt (index.row ())
-			.Task_;
+		TaskDescr td = TaskAt (index.row ());
+		boost::shared_ptr<Task> task = td.Task_;
 		switch (index.column ())
 		{
 			case HURL:
 				return task->GetURL ();
 			case HState:
-				return task->GetState ();
+				return td.ErrorFlag_ ?
+					task->GetErrorString () : task->GetState ();
 			case HProgress:
 				{
 					qint64 done = task->GetDone (),
@@ -395,8 +410,6 @@ void Core::ReadSettings ()
 			continue;
 		}
 
-		td.Task_->SetProxy (GetProxySettings ());
-
 		connect (td.Task_.get (),
 				SIGNAL (done (bool)),
 				this,
@@ -487,33 +500,6 @@ void Core::AddToHistory (tasks_t::const_iterator it)
 	item.Size_ = it->File_->size ();
 	item.DateTime_ = QDateTime::currentDateTime ();
 	HistoryModel_->Add (item);
-}
-
-QNetworkProxy Core::GetProxySettings () const
-{
-	bool enabled = XmlSettingsManager::Instance ().property ("ProxyEnabled").toBool ();
-	QNetworkProxy pr;
-	if (enabled)
-	{
-		pr.setHostName (XmlSettingsManager::Instance ().property ("ProxyHost").toString ());
-		pr.setPort (XmlSettingsManager::Instance ().property ("ProxyPort").toInt ());
-		pr.setUser (XmlSettingsManager::Instance ().property ("ProxyLogin").toString ());
-		pr.setPassword (XmlSettingsManager::Instance ().property ("ProxyPassword").toString ());
-		QString type = XmlSettingsManager::Instance ().property ("ProxyType").toString ();
-		QNetworkProxy::ProxyType pt = QNetworkProxy::HttpProxy;
-		if (type == "socks5")
-			pt = QNetworkProxy::Socks5Proxy;
-		else if (type == "tphttp")
-			pt = QNetworkProxy::HttpProxy;
-		else if (type == "chttp")
-			pr = QNetworkProxy::HttpCachingProxy;
-		else if (type == "cftp")
-			pr = QNetworkProxy::FtpCachingProxy;
-		pr.setType (pt);
-	}
-	else
-		pr.setType (QNetworkProxy::NoProxy);
-	return pr;
 }
 
 Core::tasks_t::const_reference Core::TaskAt (int pos) const

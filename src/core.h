@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QString>
 #include <QPair>
+#include <QNetworkAccessManager>
 #include "pluginmanager.h"
 #include "tabcontainer.h"
 #include "plugininterface/mergemodel.h"
@@ -32,6 +33,7 @@ namespace LeechCraft
 		std::auto_ptr<FilterModel> FilterModel_;
 		std::auto_ptr<FilterModel> HistoryFilterModel_;
 		std::auto_ptr<TabContainer> TabContainer_;
+		std::auto_ptr<QNetworkAccessManager> NetworkAccessManager_;
 		typedef std::map<const QAbstractItemModel*, QObject*> repres2object_t;
 		mutable repres2object_t Representation2Object_;
 		mutable repres2object_t History2Object_;

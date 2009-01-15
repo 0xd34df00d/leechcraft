@@ -40,6 +40,7 @@ Core::Core ()
 			<< tr ("Tags")))
 , FilterModel_ (new FilterModel)
 , HistoryFilterModel_ (new FilterModel)
+, NetworkAccessManager_ (new QNetworkAccessManager)
 {
 	PluginManager_ = new PluginManager (this);
 	connect (PluginManager_,
@@ -193,6 +194,8 @@ void Core::DelayedInit ()
 		IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
 		IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
 		IMultiTabs *imt = qobject_cast<IMultiTabs*> (plugin);
+		IWantNetworkAccessManager *iwnam =
+			qobject_cast<IWantNetworkAccessManager*> (plugin);
 
 		const QMetaObject *qmo = plugin->metaObject ();
 
@@ -226,6 +229,9 @@ void Core::DelayedInit ()
 
 		if (imt)
 			InitMultiTab (plugin);
+
+		if (iwnam)
+			iwnam->SetNetworkAccessManager (NetworkAccessManager_.get ());
 	}
 
 	TabContainer_->handleTabNames ();
@@ -469,6 +475,7 @@ void Core::handleProxySettings () const
 	else
 		pr.setType (QNetworkProxy::NoProxy);
 	QNetworkProxy::setApplicationProxy (pr);
+	NetworkAccessManager_->setProxy (pr);
 }
 
 namespace

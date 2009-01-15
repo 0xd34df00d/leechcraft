@@ -27,45 +27,6 @@
 					<label lang="ru" value="Использовать текстовый режим передачи" />
 				</item>
 			</groupbox>
-			<item type="groupbox" property="ProxyEnabled" checkable="true" state="off">
-				<label lang="en" value="Proxy" />
-				<label lang="ru" value="Прокси" />
-				<item type="lineedit" property="ProxyHost">
-					<label lang="en" value="Host:" />
-					<label lang="ru" value="Хост:" />
-				</item>
-				<item type="spinbox" property="ProxyPort" default="3128" minimum="1" maximum="65535" step="1">
-					<label lang="en" value="Port:" />
-					<label lang="ru" value="Порт:" />
-				</item>
-				<item type="lineedit" property="ProxyLogin">
-					<label lang="en" value="Login:" />
-					<label lang="ru" value="Логин:" />
-				</item>
-				<item type="lineedit" property="ProxyPassword" password="true">
-					<label lang="en" value="Password:" />
-					<label lang="ru" value="Пароль:" />
-				</item>
-				<item type="combobox" property="ProxyType">
-					<label lang="en" value="Proxy type:" />
-					<label lang="ru" value="Тип прокси:" />
-					<option name="socks5" default="true">
-						<label lang="en" value="SOCKS5" />
-					</option>
-					<option name="tphttp">
-						<label lang="en" value="Transparent HTTP" />
-						<label lang="ru" value="Прозрачный HTTP" />
-					</option>
-					<option name="chttp">
-						<label lang="en" value="Caching HTTP" />
-						<label lang="ru" value="Кэширующий HTTP" />
-					</option>
-					<option name="cftp">
-						<label lang="en" value="Caching FTP" />
-						<label lang="ru" value="Кэширующий FTP" />
-					</option>
-				</item>
-			</item>
 		</tab>
 		<tab>
 			<label lang="en" value="Identification" />
