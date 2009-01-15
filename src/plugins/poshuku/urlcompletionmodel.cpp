@@ -1,4 +1,5 @@
 #include "urlcompletionmodel.h"
+#include <QUrl>
 #include "core.h"
 
 URLCompletionModel::URLCompletionModel (QObject *parent)
@@ -21,15 +22,32 @@ QVariant URLCompletionModel::data (const QModelIndex& index, int role) const
 	if (!index.isValid ())
 		return QVariant ();
 
+	int realIndex = index.row () / 3;
+	int shift = index.row () % 3;
 	if (role == Qt::DisplayRole)
 	{
 		Populate ();
-		return Items_ [index.row ()].Title_ + " [" + Items_ [index.row ()].URL_ + "]";
+		return Items_ [realIndex].Title_ + " [" + Items_ [realIndex].URL_ + "]";
 	}
 	else if (role == Qt::EditRole)
 	{
 		Populate ();
-		return Items_ [index.row ()].URL_;
+		QString origURL = Items_ [realIndex].URL_;
+		if (shift == 0)
+			return origURL;
+		else if (shift == 1)
+		{
+			QUrl url (origURL);
+			return origURL.right (origURL.size () - url.scheme ().size () - 3);
+		}
+		else if (shift == 2)
+		{
+			QUrl url (origURL);
+			QString newURL = origURL.right (origURL.size () - url.scheme ().size () - 3);
+			if (newURL.startsWith ("www."))
+				newURL = newURL.right (newURL.size () - 4);
+			return newURL;
+		}
 	}
 	else
 		return QVariant ();
@@ -66,7 +84,7 @@ int URLCompletionModel::rowCount (const QModelIndex& index) const
 	else
 	{
 		Populate ();
-		return Items_.size ();
+		return Items_.size () * 3;
 	}
 }
 
