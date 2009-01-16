@@ -1,4 +1,5 @@
 #include "core.h"
+#include <typeinfo>
 #include <memory>
 #include <QFile>
 #include <QProgressDialog>
@@ -18,7 +19,6 @@
 #include <QDomDocument>
 #include <QXmlStreamWriter>
 #include <QMessageBox>
-#include <libtorrent/alert.hpp>
 #include <libtorrent/bencode.hpp>
 #include <libtorrent/entry.hpp>
 #include <libtorrent/create_torrent.hpp>
@@ -30,7 +30,6 @@
 #include <libtorrent/hasher.hpp>
 #include <libtorrent/storage.hpp>
 #include <libtorrent/file.hpp>
-#include <libtorrent/alert_types.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
@@ -1813,6 +1812,7 @@ void Core::queryLibtorrentForWarnings ()
 			libtorrent::handle_alert<
 				libtorrent::external_ip_alert
 				, libtorrent::save_resume_data_alert
+				, libtorrent::storage_moved_alert
 				>::handle_alert (a, sd);
 		}
 		catch (const libtorrent::unhandled_alert& e)
@@ -1822,6 +1822,7 @@ void Core::queryLibtorrentForWarnings ()
 		{
 			qWarning () << Q_FUNC_INFO << typeid (e).name ();
 		}
+
 		try
 		{
 			QString logmsg = QString::fromStdString (a->message ());

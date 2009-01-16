@@ -7,6 +7,7 @@
 #include <QPair>
 #include <QList>
 #include <QVector>
+#include <libtorrent/alert_types.hpp>
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/session_status.hpp>
@@ -27,7 +28,6 @@ class QDomElement;
 
 namespace libtorrent
 {
-	class save_resume_data_alert;
 	class cache_status;
 	class session;
 };
