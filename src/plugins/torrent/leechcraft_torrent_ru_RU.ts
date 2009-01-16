@@ -67,17 +67,17 @@
         <translation>&lt;неизвестно&gt;</translation>
     </message>
     <message>
-        <location filename="addtorrent.cpp" line="110"/>
+        <location filename="addtorrent.cpp" line="100"/>
         <source>Select torrent file</source>
         <translation>Выбери торрент-файл</translation>
     </message>
     <message>
-        <location filename="addtorrent.cpp" line="110"/>
+        <location filename="addtorrent.cpp" line="100"/>
         <source>Torrents (*.torrent);;All files (*.*)</source>
         <translation>Торренты (*.torrent);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="addtorrent.cpp" line="124"/>
+        <location filename="addtorrent.cpp" line="114"/>
         <source>Select save directory</source>
         <translation>Выбери директорию сохранения</translation>
     </message>
@@ -195,227 +195,227 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="375"/>
+        <location filename="core.cpp" line="371"/>
         <source>Could not open file %1 for read: %2</source>
         <translation>Не могу открыть файл %1 на запись: %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="621"/>
+        <location filename="core.cpp" line="570"/>
         <source>Bad bencoding in torrent file</source>
         <translation>Плохой код в файле</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="626"/>
+        <location filename="core.cpp" line="575"/>
         <source>Invalid torrent file</source>
         <translation>Неправильный торрент-файл (или это вообще не торрент-файл?)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="597"/>
+        <location filename="core.cpp" line="546"/>
         <source>File %1 doesn&apos;t exist or could not be read</source>
         <translation>Файл %1 не существует или не может быть прочитан</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="616"/>
+        <location filename="core.cpp" line="565"/>
         <source>The torrent %1 with save path %2 already exists in the session</source>
         <translation>Торрент %1 с путем сохранения %2 уже существует в этой сессии</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="128"/>
+        <location filename="core.cpp" line="124"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="130"/>
+        <location filename="core.cpp" line="126"/>
         <source>Progress</source>
         <translation>Прогресс</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="129"/>
+        <location filename="core.cpp" line="125"/>
         <source>State</source>
         <translation>Состояние</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="430"/>
+        <location filename="core.cpp" line="429"/>
         <source>Idle</source>
         <translation>Ничего не делает</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="317"/>
+        <location filename="core.cpp" line="313"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1378"/>
+        <location filename="core.cpp" line="1327"/>
         <source>Queued for checking</source>
         <translation>В очереди на проверку</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1382"/>
+        <location filename="core.cpp" line="1329"/>
         <source>Checking files</source>
         <translation>Проверяются файлы</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1384"/>
+        <location filename="core.cpp" line="1331"/>
         <source>Downloading metadata</source>
         <translation>Качаем метаданные</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1386"/>
+        <location filename="core.cpp" line="1333"/>
         <source>Downloading</source>
         <translation>Скачивание</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1388"/>
+        <location filename="core.cpp" line="1335"/>
         <source>Finished</source>
         <translation>Закончен</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1390"/>
+        <location filename="core.cpp" line="1337"/>
         <source>Seeding</source>
         <translation>Раздача</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1392"/>
+        <location filename="core.cpp" line="1339"/>
         <source>Allocating</source>
         <translation>Выделение места</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1519"/>
+        <location filename="core.cpp" line="1468"/>
         <source>The just restored torrent already exists in the session, that&apos;s strange.</source>
         <translation>Только что восстановленный торрент уже существует в сессии, это странно.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1501"/>
+        <location filename="core.cpp" line="1450"/>
         <source>Bad bencoding in saved torrent data</source>
         <translation>Плохой код в сохраненном торренте</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1515"/>
+        <location filename="core.cpp" line="1464"/>
         <source>Invalid saved torrent data</source>
         <translation>Невалидные сохраненные данные торрента</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="725"/>
+        <location filename="core.cpp" line="674"/>
         <source>Torrent %1 could not be reannounced at the moment, try again later.</source>
         <translation>Торрент %1 не может быть перезапрошен в данный момент, попробуй позже.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1055"/>
+        <location filename="core.cpp" line="1004"/>
         <source>Could not open file %1 for write!</source>
         <translation>Не могу открыть файл %1 на запись!</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1411"/>
+        <location filename="core.cpp" line="1360"/>
         <source>Could not open saved torrent %1 for read.</source>
         <translation>Не могу открыть сохраненный торрент %1 на чтение.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1534"/>
+        <location filename="core.cpp" line="1483"/>
         <source>Torrent finished: %1</source>
         <translation>Торрент завершен: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="631"/>
+        <location filename="core.cpp" line="580"/>
         <source>Runtime error</source>
         <translation>Ошибка выполнения</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2114"/>
+        <location filename="core.cpp" line="2009"/>
         <source>Wrong announce address %1</source>
         <translation>Неправильный announce-адрес %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1745"/>
+        <location filename="core.cpp" line="1629"/>
         <source>untagged</source>
         <translation>непротеганное</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="400"/>
+        <location filename="core.cpp" line="396"/>
         <source>General torrent parsing error</source>
         <translation>Общая ошибка парсинга торрент-файла</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="82"/>
+        <location filename="core.cpp" line="78"/>
         <source>Unknown</source>
         <translation>Неизвестен</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1772"/>
+        <location filename="core.cpp" line="1656"/>
         <source>Could not create path %1/.leechcraft/bittorrent</source>
         <translation>Не могу создать путь %1/.leechcraft/bittorrent</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="130"/>
+        <location filename="core.cpp" line="126"/>
         <source>Downloading rate</source>
         <translation>Скорость загрузки</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="309"/>
+        <location filename="core.cpp" line="305"/>
         <source>%1% (%2 of %3)</source>
         <translation>%1% (%2 из %3)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="304"/>
+        <location filename="core.cpp" line="300"/>
         <source>Name:</source>
         <translation>Имя:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="318"/>
+        <location filename="core.cpp" line="314"/>
         <source>Peers/seeds: %1/%2</source>
         <translation>Пиров/сидов: %1/%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="305"/>
+        <location filename="core.cpp" line="301"/>
         <source>Destination:</source>
         <translation>Пункт назначения:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="307"/>
+        <location filename="core.cpp" line="303"/>
         <source>Progress:</source>
         <translation>Прогресс:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="312"/>
+        <location filename="core.cpp" line="308"/>
         <source>; status:</source>
         <translation>; статус:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="314"/>
+        <location filename="core.cpp" line="310"/>
         <source>Downloading speed:</source>
         <translation>Скорость закачки:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="316"/>
+        <location filename="core.cpp" line="312"/>
         <source>; uploading speed:</source>
         <translation>; скорость отдачи:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1083"/>
+        <location filename="core.cpp" line="1032"/>
         <source>Could not open file %1 for reading</source>
         <translation>Не могу открыть файл %1 для чтения</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1093"/>
+        <location filename="core.cpp" line="1042"/>
         <source>Could not parse document from file %1.&lt;br /&gt;%1 at %2:%3</source>
         <translation>Не могу обработать документ из файла %1.&lt;br /&gt;%1 в %2:%3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1102"/>
+        <location filename="core.cpp" line="1051"/>
         <source>There should be only one storage section.</source>
         <translation>Должна быть только одна секция с хранилищем.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1120"/>
+        <location filename="core.cpp" line="1069"/>
         <source>Unknown storage version</source>
         <translation>Неизвестная версия хранилища</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1128"/>
+        <location filename="core.cpp" line="1077"/>
         <source>Could not open file %1 for writing</source>
         <translation>Не могу открыть файл %1 на запись</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1380"/>
+        <location filename="core.cpp" line="1341"/>
         <source>Checking metadata</source>
         <translation>Проверяю метаданные</translation>
     </message>
@@ -826,6 +826,24 @@
     </message>
 </context>
 <context>
+    <name>QObject</name>
+    <message>
+        <location filename="core.cpp" line="1792"/>
+        <source>Storage moved</source>
+        <translation>Хранилище переместилось</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="1794"/>
+        <source>Storage for torrent&lt;br /&gt;%1&lt;br /&gt;moved successfully to&lt;br /&gt;%2</source>
+        <translation>Хранилище для торрента&lt;br /&gt;%1&lt;br /&gt;переместилось успешно в&lt;br /&gt;%2</translation>
+    </message>
+    <message>
+        <location filename="torrentplugin.cpp" line="545"/>
+        <source>/s</source>
+        <translation>/с</translation>
+    </message>
+</context>
+<context>
     <name>SecondStep</name>
     <message>
         <location filename="secondstep.cpp" line="23"/>
@@ -836,42 +854,42 @@
 <context>
     <name>TabWidget</name>
     <message>
-        <location filename="tabwidget.ui" line="30"/>
+        <location filename="tabwidget.ui" line="36"/>
         <source>Dashboard</source>
         <translation>Панель управления</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="44"/>
         <source>Controls</source>
-        <translation>Управление</translation>
+        <translation type="obsolete">Управление</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="749"/>
+        <location filename="tabwidget.ui" line="72"/>
         <source>Download rate:</source>
         <translation>Скорость скачивания:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="603"/>
+        <location filename="tabwidget.ui" line="747"/>
         <source>Unlimited</source>
         <translation>Неограниченно</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="606"/>
+        <location filename="tabwidget.ui" line="750"/>
         <source> kb/s</source>
         <translation> кб/с</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="763"/>
+        <location filename="tabwidget.ui" line="104"/>
         <source>Upload rate:</source>
         <translation>Скорость отдачи:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="622"/>
+        <location filename="tabwidget.ui" line="768"/>
         <source>Desired rating:</source>
         <translation>Желаемый рейтинг:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="629"/>
+        <location filename="tabwidget.ui" line="775"/>
         <source>Infinite</source>
         <translation>Бесконечность</translation>
     </message>
@@ -881,82 +899,82 @@
         <translation type="obsolete">Кэш</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="268"/>
+        <location filename="tabwidget.ui" line="595"/>
         <source>Blocks written:</source>
         <translation>Записано блоков:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="282"/>
+        <location filename="tabwidget.ui" line="609"/>
         <source>Write operations:</source>
         <translation>Операций записи:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="296"/>
+        <location filename="tabwidget.ui" line="623"/>
         <source>Write hit ratio:</source>
         <translation>Эффективность кэша записи:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="310"/>
+        <location filename="tabwidget.ui" line="637"/>
         <source>Cache size:</source>
         <translation>Размер кэша:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="191"/>
+        <location filename="tabwidget.ui" line="525"/>
         <source>Total blocks read:</source>
         <translation>Всего блоков прочитано:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="205"/>
+        <location filename="tabwidget.ui" line="539"/>
         <source>Cached block reads:</source>
         <translation>Кэшированных чтений:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="219"/>
+        <location filename="tabwidget.ui" line="553"/>
         <source>Read hit ratio:</source>
         <translation>Эффективность кэша чтения:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="233"/>
+        <location filename="tabwidget.ui" line="567"/>
         <source>Read cache size:</source>
         <translation>Размер кэша чтения:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="345"/>
         <source>Session</source>
-        <translation>Сессия</translation>
+        <translation type="obsolete">Сессия</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="381"/>
+        <location filename="tabwidget.ui" line="320"/>
         <source>Total downloaded:</source>
         <translation>Всего скачано:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="395"/>
+        <location filename="tabwidget.ui" line="327"/>
         <source>Total uploaded:</source>
         <translation>Всего отдано:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="413"/>
+        <location filename="tabwidget.ui" line="996"/>
         <source>Session rating:</source>
         <translation>Рейтинг сессии:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="324"/>
+        <location filename="tabwidget.ui" line="651"/>
         <source>Total failed data:</source>
         <translation>Всего неправильных данных:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="247"/>
+        <location filename="tabwidget.ui" line="581"/>
         <source>Total redundant data:</source>
         <translation>Всего избыточных данных:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="427"/>
         <source>Upload connections:</source>
-        <translation>Соединений на отдачу:</translation>
+        <translation type="obsolete">Соединений на отдачу:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="455"/>
+        <location filename="tabwidget.ui" line="355"/>
         <source>Peers:</source>
         <translation>Пиров:</translation>
     </message>
@@ -966,12 +984,12 @@
         <translation type="obsolete">Узлов DHT:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="490"/>
+        <location filename="tabwidget.ui" line="383"/>
         <source>DHT torrents:</source>
         <translation>Торрентов в DHT:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="504"/>
+        <location filename="tabwidget.ui" line="397"/>
         <source>TCP listen port:</source>
         <translation>TCP-порт:</translation>
     </message>
@@ -983,135 +1001,135 @@
     <message>
         <location filename="tabwidget.ui" line="441"/>
         <source>Connections:</source>
-        <translation>Соединений:</translation>
+        <translation type="obsolete">Соединений:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="551"/>
         <source>Torrent settings</source>
-        <translation>Настройки торрента</translation>
+        <translation type="obsolete">Настройки торрента</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="559"/>
+        <location filename="tabwidget.ui" line="707"/>
         <source>Settings</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="639"/>
+        <location filename="tabwidget.ui" line="785"/>
         <source>Tags:</source>
         <translation>Тэги:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1004"/>
         <source>Torrent</source>
-        <translation>Торрент</translation>
+        <translation type="obsolete">Торрент</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1074"/>
+        <location filename="tabwidget.ui" line="1145"/>
         <source>Info</source>
         <translation>Информация</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1012"/>
+        <location filename="tabwidget.ui" line="1336"/>
         <source>Tracker:</source>
         <translation>Трекер:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1083"/>
+        <location filename="tabwidget.ui" line="1210"/>
         <source>Downloaded pieces:</source>
         <translation>Скачано кусочков:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1097"/>
+        <location filename="tabwidget.ui" line="1224"/>
         <source>Total pieces:</source>
         <translation>Всего кусочков:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1139"/>
+        <location filename="tabwidget.ui" line="1266"/>
         <source>Announce interval:</source>
         <translation>Интервал объявления:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1364"/>
+        <location filename="tabwidget.ui" line="1554"/>
         <source>Peers</source>
         <translation>Пиры</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1207"/>
+        <location filename="tabwidget.ui" line="1418"/>
         <source>Connect candidates:</source>
         <translation>Кандидатов на подключение:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="708"/>
+        <location filename="tabwidget.ui" line="822"/>
         <source>Status</source>
         <translation>Статус</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="721"/>
+        <location filename="tabwidget.ui" line="828"/>
         <source>State:</source>
         <translation>Состояние:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="735"/>
+        <location filename="tabwidget.ui" line="842"/>
         <source>Progress:</source>
         <translation>Прогресс:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="777"/>
+        <location filename="tabwidget.ui" line="1052"/>
         <source>Next announce:</source>
         <translation>Следующее объявление:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="954"/>
+        <location filename="tabwidget.ui" line="1066"/>
         <source>Last scrape:</source>
         <translation>Последний scrape:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="898"/>
         <source>Rating:</source>
-        <translation>Рейтинг:</translation>
+        <translation type="obsolete">Рейтинг:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="912"/>
+        <location filename="tabwidget.ui" line="1010"/>
         <source>Active time:</source>
         <translation>Активное время:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="926"/>
+        <location filename="tabwidget.ui" line="1024"/>
         <source>Seeding time:</source>
         <translation>Время сидирования:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="940"/>
+        <location filename="tabwidget.ui" line="1038"/>
         <source>Seed rank:</source>
         <translation>Рейтинг сидирования:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1261"/>
+        <location filename="tabwidget.ui" line="1280"/>
         <source>Failed:</source>
         <translation>Неверные данные:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1275"/>
         <source>Redundant data:</source>
-        <translation>Избыточные данные:</translation>
+        <translation type="obsolete">Избыточные данные:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1289"/>
+        <location filename="tabwidget.ui" line="1308"/>
         <source>DHT nodes count:</source>
         <translation>Количество узлов DHT:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1303"/>
+        <location filename="tabwidget.ui" line="1315"/>
         <source>Distributed copies:</source>
         <translation>Распределенных копий:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1346"/>
+        <location filename="tabwidget.ui" line="1536"/>
         <source>Files</source>
         <translation>Файлы</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1384"/>
+        <location filename="tabwidget.ui" line="1574"/>
         <source>Pieces</source>
         <translation>Куски</translation>
     </message>
@@ -1136,22 +1154,22 @@
         <translation type="obsolete">Дата</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="14"/>
+        <location filename="tabwidget.ui" line="20"/>
         <source>LeechCraft::BitTorrent dashboard</source>
         <translation>Панель управления LeechCraft::BitTorrent</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="518"/>
+        <location filename="tabwidget.ui" line="411"/>
         <source>External address:</source>
         <translation>Внешний адрес:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="666"/>
+        <location filename="tabwidget.ui" line="795"/>
         <source>Auto managed</source>
         <translation>Автоуправляемый</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="676"/>
+        <location filename="tabwidget.ui" line="805"/>
         <source>Sequential download</source>
         <translation>Последовательная загрузка</translation>
     </message>
@@ -1163,92 +1181,292 @@
     <message>
         <location filename="tabwidget.ui" line="134"/>
         <source>Max down/up torrents:</source>
-        <translation>Максимум торрентов к нам/от нас:</translation>
+        <translation type="obsolete">Максимум торрентов к нам/от нас:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1111"/>
         <source>Piece/block size size:</source>
-        <translation>Размер куска/блока:</translation>
+        <translation type="obsolete">Размер куска/блока:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1125"/>
         <source>Total/wanted size:</source>
-        <translation>Общий/желаемый размер:</translation>
+        <translation type="obsolete">Общий/желаемый размер:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1165"/>
         <source>Connected peers/seeds:</source>
-        <translation>Подключено пиров/сидов:</translation>
+        <translation type="obsolete">Подключено пиров/сидов:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1179"/>
         <source>Peers/seeds in list:</source>
-        <translation>Пиров/сидов в списке:</translation>
+        <translation type="obsolete">Пиров/сидов в списке:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1193"/>
         <source>Peers/seeds in swarm:</source>
-        <translation>Пиров/сидов в рое:</translation>
+        <translation type="obsolete">Пиров/сидов в рое:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1221"/>
         <source>Up/down bandwidth queue:</source>
-        <translation>Очередь на отдачу/прием:</translation>
+        <translation type="obsolete">Очередь на отдачу/прием:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1238"/>
         <source>Traffic</source>
-        <translation>Трафик</translation>
+        <translation type="obsolete">Трафик</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="811"/>
         <source>Downloaded, total:</source>
-        <translation>Скачано всего:</translation>
+        <translation type="obsolete">Скачано всего:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="825"/>
         <source>Wanted downloaded:</source>
-        <translation>Скачано желаемого:</translation>
+        <translation type="obsolete">Скачано желаемого:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="839"/>
+        <location filename="tabwidget.ui" line="968"/>
         <source>Uploaded, this session:</source>
         <translation>Закачано, эта сессия:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="853"/>
         <source>Uploaded, total:</source>
-        <translation>Закачано, всего:</translation>
+        <translation type="obsolete">Закачано, всего:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1247"/>
         <source>Protocol overhead:</source>
-        <translation>Оверхед протокола:</translation>
+        <translation type="obsolete">Оверхед протокола:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="867"/>
+        <location filename="tabwidget.ui" line="982"/>
         <source>Overall rating:</source>
         <translation>Общий рейтинг:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1043"/>
+        <location filename="tabwidget.ui" line="1350"/>
         <source>Destination:</source>
         <translation>Пункт назначения:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="180"/>
         <source>Stats</source>
-        <translation>Статистика</translation>
+        <translation type="obsolete">Статистика</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="476"/>
+        <location filename="tabwidget.ui" line="369"/>
         <source>(Global) DHT nodes:</source>
         <translation>(Глобальных) узлов DHT:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="683"/>
+        <location filename="tabwidget.ui" line="812"/>
         <source>Super seeding</source>
         <translation>Супер-сидирование</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="153"/>
+        <source>Max down/up:</source>
+        <translation>Макс. закачек/отдач:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="199"/>
+        <source>Session stats</source>
+        <translation>Статистика сессии</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="856"/>
+        <source>Total download rate:</source>
+        <translation>Общая скорость загрузки:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="870"/>
+        <source>Total upload rate:</source>
+        <translation>Общая скорость отдачи:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="236"/>
+        <source>Overhead download rate:</source>
+        <translation>Скорость загрузки оверхеда:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="250"/>
+        <source>Overhead upload rate:</source>
+        <translation>Скорость отдачи оверхеда:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="264"/>
+        <source>DHT download rate:</source>
+        <translation>Скорость загрузки из DHT:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="278"/>
+        <source>DHT upload rate:</source>
+        <translation>Скорость отдачи в DHT:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="292"/>
+        <source>Tracker download rate:</source>
+        <translation>Скорость загрузки с трекера:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="306"/>
+        <source>Tracker upload rate:</source>
+        <translation>Скорость отдачи на трекер:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="432"/>
+        <source>Overhead downloaded:</source>
+        <translation>Скачано оверхеда:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="439"/>
+        <source>Overhead uploaded:</source>
+        <translation>Отдано оверхеда:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="446"/>
+        <source>DHT downloaded:</source>
+        <translation>Скачано с DHT:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="453"/>
+        <source>DHT uploaded:</source>
+        <translation>Отдано в DHT:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="460"/>
+        <source>Tracker downloaded:</source>
+        <translation>Скачано с трекера:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="467"/>
+        <source>Tracker uploaded:</source>
+        <translation>Загружено на трекер:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="519"/>
+        <source>Cache stats</source>
+        <translation>Статистика кэша</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="716"/>
+        <source>Down/up rate:</source>
+        <translation>Скорость загрузки/отдачи:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="884"/>
+        <source>Downloaded, all time:</source>
+        <translation>Скачано всего:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="898"/>
+        <source>Uploaded, all time:</source>
+        <translation>Отдано всего:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="912"/>
+        <source>Total size:</source>
+        <translation>Общий размер:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="926"/>
+        <source>Wanted size:</source>
+        <translation>Размер желаемой части:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="940"/>
+        <source>Downloaded, this session:</source>
+        <translation>Скачано за сессию:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="954"/>
+        <source>Wanted done, this session:</source>
+        <translation>Скачано желаемого за сессию:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1118"/>
+        <source>Torrent info</source>
+        <translation>Торрент</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1154"/>
+        <source>Name:</source>
+        <translation>Имя:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1168"/>
+        <source>Creator:</source>
+        <translation>Создатель:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1182"/>
+        <source>Comment:</source>
+        <translation>Комментарий:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1196"/>
+        <source>Private:</source>
+        <translation>Частный:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1238"/>
+        <source>Piece size:</source>
+        <translation>Размер кусочка:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1252"/>
+        <source>Block size:</source>
+        <translation>Размер блока:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1287"/>
+        <source>Redundant:</source>
+        <translation>Повторные данные:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1376"/>
+        <source>Connected peers:</source>
+        <translation>Подключено пиров:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1390"/>
+        <source>Peers in list:</source>
+        <translation>Пиров в списке:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1404"/>
+        <source>Peers in swarm:</source>
+        <translation>Пиров в рое:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1432"/>
+        <source>Upload bandwidth queue:</source>
+        <translation>Очередь на отдачу:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1446"/>
+        <source>Connected seeds:</source>
+        <translation>Подключено сидов:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1460"/>
+        <source>Seeds in list:</source>
+        <translation>Сидов в списке:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1474"/>
+        <source>Seeds in swarm:</source>
+        <translation>Сидов в рое:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1488"/>
+        <source>Download bandwidth queue:</source>
+        <translation>Очередь на закачку:</translation>
     </message>
 </context>
 <context>
@@ -1285,27 +1503,27 @@
 <context>
     <name>TorrentPlugin</name>
     <message>
-        <location filename="torrentplugin.cpp" line="64"/>
+        <location filename="torrentplugin.cpp" line="65"/>
         <source>Full-featured BitTorrent client.</source>
         <translation>Полнофункциональный BitTorrent-клиент.</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="483"/>
+        <location filename="torrentplugin.cpp" line="488"/>
         <source>Error!</source>
         <translation>Ошибка!</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="578"/>
+        <location filename="torrentplugin.cpp" line="670"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="303"/>
+        <location filename="torrentplugin.cpp" line="312"/>
         <source>Question</source>
         <translation>Вопрос</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="304"/>
+        <location filename="torrentplugin.cpp" line="313"/>
         <source>Do you really want to delete the torrent?</source>
         <translation>Ты действительно хочешь удалить торрент?</translation>
     </message>
@@ -1322,20 +1540,20 @@
     <message>
         <location filename="torrentplugin.cpp" line="440"/>
         <source>Information</source>
-        <translation>Информация</translation>
+        <translation type="obsolete">Информация</translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="442"/>
         <source>Started moving torrent&apos;s files from %1 to %2</source>
-        <translation>Начало перемещения файлов торрента из %1 в %2</translation>
+        <translation type="obsolete">Начало перемещения файлов торрента из %1 в %2</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="445"/>
+        <location filename="torrentplugin.cpp" line="450"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="447"/>
+        <location filename="torrentplugin.cpp" line="452"/>
         <source>Failed to move torrent&apos;s files from %1 to %2</source>
         <translation>Ошибка при перемещении файлов торрента из %1 в %2</translation>
     </message>
@@ -1345,17 +1563,17 @@
         <translation type="obsolete">: Настройки</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="613"/>
+        <location filename="torrentplugin.cpp" line="757"/>
         <source>Not tracking</source>
         <translation>Не отслеживается</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="620"/>
+        <location filename="torrentplugin.cpp" line="769"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="802"/>
+        <location filename="torrentplugin.cpp" line="952"/>
         <source>Open torrent...</source>
         <translation>Открыть торрент...</translation>
     </message>
@@ -1370,114 +1588,129 @@
         <translation type="obsolete">Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="820"/>
+        <location filename="torrentplugin.cpp" line="970"/>
         <source>Create torrent...</source>
         <translation>Создать торрент...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="822"/>
+        <location filename="torrentplugin.cpp" line="972"/>
         <source>N</source>
         <translation>Т</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="829"/>
+        <location filename="torrentplugin.cpp" line="979"/>
         <source>Open multiple torrents...</source>
         <translation>Открыть несколько торрентов...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="837"/>
+        <location filename="torrentplugin.cpp" line="987"/>
         <source>Remove</source>
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="839"/>
+        <location filename="torrentplugin.cpp" line="989"/>
         <source>Del</source>
         <translation>Del</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="844"/>
+        <location filename="torrentplugin.cpp" line="994"/>
         <source>Resume</source>
         <translation>Продолжить</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="846"/>
+        <location filename="torrentplugin.cpp" line="996"/>
         <source>R</source>
         <translation>R</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="851"/>
+        <location filename="torrentplugin.cpp" line="1001"/>
         <source>Pause</source>
         <translation>Пауза</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="853"/>
+        <location filename="torrentplugin.cpp" line="1003"/>
         <source>S</source>
         <translation>S</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="890"/>
+        <location filename="torrentplugin.cpp" line="1040"/>
         <source>Reannounce</source>
         <translation>Переобъявить</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="892"/>
+        <location filename="torrentplugin.cpp" line="1042"/>
         <source>F</source>
         <translation>А</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="897"/>
+        <location filename="torrentplugin.cpp" line="1047"/>
         <source>Recheck</source>
         <translation>Перепроверить</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="903"/>
+        <location filename="torrentplugin.cpp" line="1053"/>
         <source>Move files...</source>
         <translation>Переместить файлы...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="905"/>
+        <location filename="torrentplugin.cpp" line="1055"/>
         <source>M</source>
         <translation>Ь</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="811"/>
+        <location filename="torrentplugin.cpp" line="961"/>
         <source>Change trackers...</source>
         <translation>Поменять трекеры...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="813"/>
+        <location filename="torrentplugin.cpp" line="963"/>
         <source>C</source>
         <translation>С</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="858"/>
+        <location filename="torrentplugin.cpp" line="1008"/>
         <source>Move up</source>
         <translation>Переместить вверх</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="866"/>
+        <location filename="torrentplugin.cpp" line="1016"/>
         <source>Move down</source>
         <translation>Переместить вниз</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="874"/>
+        <location filename="torrentplugin.cpp" line="1024"/>
         <source>Move to top</source>
         <translation>Переместить в начало</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="882"/>
+        <location filename="torrentplugin.cpp" line="1032"/>
         <source>Move to bottom</source>
         <translation>Переместить в конец</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="910"/>
+        <location filename="torrentplugin.cpp" line="1060"/>
         <source>Import...</source>
         <translation>Импорт...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="918"/>
+        <location filename="torrentplugin.cpp" line="1068"/>
         <source>Export...</source>
         <translation>Экспорт...</translation>
+    </message>
+    <message>
+        <location filename="torrentplugin.cpp" line="734"/>
+        <source>Yes</source>
+        <translation>Да</translation>
+    </message>
+    <message>
+        <location filename="torrentplugin.cpp" line="734"/>
+        <source>No</source>
+        <translation>Нет</translation>
+    </message>
+    <message>
+        <location filename="torrentplugin.cpp" line="705"/>
+        <source>Wasn&apos;t yet</source>
+        <translation>Еще не было</translation>
     </message>
 </context>
 <context>

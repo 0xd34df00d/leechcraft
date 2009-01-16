@@ -71,27 +71,27 @@
         <translation type="obsolete">Удалить задачу</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="225"/>
+        <location filename="cstp.cpp" line="235"/>
         <source>Start</source>
         <translation>Старт</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="231"/>
+        <location filename="cstp.cpp" line="241"/>
         <source>Stop</source>
         <translation>Стоп</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="217"/>
+        <location filename="cstp.cpp" line="227"/>
         <source>Remove all</source>
         <translation>Удалить все</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="237"/>
+        <location filename="cstp.cpp" line="247"/>
         <source>Start all</source>
         <translation>Стартовать все</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="243"/>
+        <location filename="cstp.cpp" line="253"/>
         <source>Stop all</source>
         <translation>Остановить все</translation>
     </message>
@@ -116,12 +116,12 @@
         <translation type="obsolete">Ошибка</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="255"/>
+        <location filename="cstp.cpp" line="265"/>
         <source>File exists</source>
         <translation>Файл существует</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="255"/>
+        <location filename="cstp.cpp" line="265"/>
         <source>File %1 already exists, continue download?</source>
         <translation>Файл %1 уже существует, продолжить закачку?</translation>
     </message>
@@ -146,7 +146,7 @@
         <translation type="obsolete">Удалить пункт</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="211"/>
+        <location filename="cstp.cpp" line="221"/>
         <source>Remove</source>
         <translation>Удалить</translation>
     </message>
@@ -159,52 +159,52 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="28"/>
+        <location filename="core.cpp" line="27"/>
         <source>State</source>
         <translation>Состояние</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="27"/>
+        <location filename="core.cpp" line="26"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="29"/>
+        <location filename="core.cpp" line="28"/>
         <source>Progress</source>
         <translation>Прогресс</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="30"/>
+        <location filename="core.cpp" line="29"/>
         <source>Speed</source>
         <translation>Скорость</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="31"/>
+        <location filename="core.cpp" line="30"/>
         <source>ETA</source>
         <translation>ОВП</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="31"/>
+        <location filename="core.cpp" line="30"/>
         <source>DTA</source>
         <translation>ВП</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="91"/>
+        <location filename="core.cpp" line="89"/>
         <source>Could not truncate file </source>
         <translation>Не могу сократить файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="279"/>
+        <location filename="core.cpp" line="297"/>
         <source>Could not open file </source>
         <translation>Не могу открыть файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="194"/>
+        <location filename="core.cpp" line="212"/>
         <source>/s</source>
         <translation>/c</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="187"/>
+        <location filename="core.cpp" line="203"/>
         <source>%1% (%2 of %3)</source>
         <translation>%1% (%2 из %3)</translation>
     </message>
@@ -263,112 +263,132 @@
     <message>
         <location filename="task.cpp" line="133"/>
         <source>Unknown task type</source>
-        <translation>Неизвестный тип задачи</translation>
+        <translation type="obsolete">Неизвестный тип задачи</translation>
     </message>
     <message>
         <location filename="task.cpp" line="451"/>
         <source>Unconnected</source>
-        <translation>Не подсоединен</translation>
+        <translation type="obsolete">Не подсоединен</translation>
     </message>
     <message>
         <location filename="task.cpp" line="453"/>
         <source>Hostname lookup</source>
-        <translation>Поиск имени хоста</translation>
+        <translation type="obsolete">Поиск имени хоста</translation>
     </message>
     <message>
         <location filename="task.cpp" line="455"/>
         <source>Connecting</source>
-        <translation>Соединение</translation>
+        <translation type="obsolete">Соединение</translation>
     </message>
     <message>
         <location filename="task.cpp" line="432"/>
         <source>Sending request</source>
-        <translation>Отправка запроса</translation>
+        <translation type="obsolete">Отправка запроса</translation>
     </message>
     <message>
         <location filename="task.cpp" line="434"/>
         <source>Reading reply</source>
-        <translation>Чтение ответа</translation>
+        <translation type="obsolete">Чтение ответа</translation>
     </message>
     <message>
         <location filename="task.cpp" line="436"/>
         <source>Connection is idle</source>
-        <translation>Соединение не используется</translation>
+        <translation type="obsolete">Соединение не используется</translation>
     </message>
     <message>
         <location filename="task.cpp" line="461"/>
         <source>Closing</source>
-        <translation>Закрытие</translation>
+        <translation type="obsolete">Закрытие</translation>
     </message>
     <message>
         <location filename="task.cpp" line="457"/>
         <source>Connected</source>
-        <translation>Подключено</translation>
+        <translation type="obsolete">Подключено</translation>
     </message>
     <message>
         <location filename="task.cpp" line="459"/>
         <source>Logged in</source>
-        <translation>Логин успешен</translation>
+        <translation type="obsolete">Логин успешен</translation>
     </message>
     <message>
         <location filename="task.cpp" line="168"/>
         <source>No error occurred.</source>
-        <translation>Нет ошибки.</translation>
+        <translation type="obsolete">Нет ошибки.</translation>
     </message>
     <message>
         <location filename="task.cpp" line="170"/>
         <source>The host name lookup failed.</source>
-        <translation>Ошибка поиска имени хоста.</translation>
+        <translation type="obsolete">Ошибка поиска имени хоста.</translation>
     </message>
     <message>
         <location filename="task.cpp" line="172"/>
         <source>The server refused the connection.</source>
-        <translation>Сервер отклонил соединение.</translation>
+        <translation type="obsolete">Сервер отклонил соединение.</translation>
     </message>
     <message>
         <location filename="task.cpp" line="174"/>
         <source>The server closed the connection unexpectedly.</source>
-        <translation>Сервер внезапно закрыл соединение.</translation>
+        <translation type="obsolete">Сервер внезапно закрыл соединение.</translation>
     </message>
     <message>
         <location filename="task.cpp" line="176"/>
         <source>The server sent an invalid response header.</source>
-        <translation>Сервер послал неправильный ответ.</translation>
+        <translation type="obsolete">Сервер послал неправильный ответ.</translation>
     </message>
     <message>
         <location filename="task.cpp" line="178"/>
         <source>The client could not read the content correctly because an error with respect to the content length occurred.</source>
-        <translation>Неправильная длина контента.</translation>
+        <translation type="obsolete">Неправильная длина контента.</translation>
     </message>
     <message>
         <location filename="task.cpp" line="180"/>
         <source>The request was aborted with abort().</source>
-        <translation>Запрос был отменен.</translation>
+        <translation type="obsolete">Запрос был отменен.</translation>
     </message>
     <message>
         <location filename="task.cpp" line="182"/>
         <source>QHttp is using a proxy, and the proxy server requires authentication to establish a connection.</source>
-        <translation>Прокси-сервер требует аутентификации.</translation>
+        <translation type="obsolete">Прокси-сервер требует аутентификации.</translation>
     </message>
     <message>
         <location filename="task.cpp" line="184"/>
         <source>The web server requires authentication to complete the request.</source>
-        <translation>Веб-сервер требует аутентификации для завершения запроса.</translation>
+        <translation type="obsolete">Веб-сервер требует аутентификации для завершения запроса.</translation>
     </message>
     <message>
         <location filename="task.cpp" line="186"/>
         <source>An error other than those specified above occurred.</source>
-        <translation>Возникла неизвестная ошибка.</translation>
+        <translation type="obsolete">Возникла неизвестная ошибка.</translation>
     </message>
     <message>
         <location filename="task.cpp" line="463"/>
         <source>Unknown</source>
-        <translation>Неизвестно</translation>
+        <translation type="obsolete">Неизвестно</translation>
     </message>
     <message>
         <location filename="task.cpp" line="191"/>
         <source>FTP shall be eliminated</source>
-        <translation>Убить FTP</translation>
+        <translation type="obsolete">Убить FTP</translation>
+    </message>
+    <message>
+        <location filename="task.cpp" line="91"/>
+        <source>Stopped</source>
+        <translation>Остановлена</translation>
+    </message>
+    <message>
+        <location filename="task.cpp" line="93"/>
+        <source>Finished</source>
+        <translation>Закончена</translation>
+    </message>
+    <message>
+        <location filename="task.cpp" line="95"/>
+        <source>Running</source>
+        <translation>Выполняется</translation>
+    </message>
+    <message>
+        <location filename="task.cpp" line="116"/>
+        <source>Task isn&apos;t initialized properly</source>
+        <translation>Не инициализирована</translation>
     </message>
 </context>
 </TS>

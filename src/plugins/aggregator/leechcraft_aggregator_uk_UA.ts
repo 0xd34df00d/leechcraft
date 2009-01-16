@@ -33,10 +33,10 @@
     <message>
         <location filename="aggregator.cpp" line="209"/>
         <source>RSS 2.0, Atom 1.0 feed reader.</source>
-        <translation>RSS 2.0, Atom 1.0 агрегатор.</translation>
+        <translation type="obsolete">RSS 2.0, Atom 1.0 агрегатор.</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="411"/>
+        <location filename="aggregator.cpp" line="451"/>
         <source>Error</source>
         <translation>Помилка</translation>
     </message>
@@ -46,7 +46,7 @@
         <translation type="obsolete">:Параметри</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="319"/>
+        <location filename="aggregator.cpp" line="359"/>
         <source>Add feed...</source>
         <translation>Додати стрічку...</translation>
     </message>
@@ -56,52 +56,52 @@
         <translation type="obsolete">Параметри...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="324"/>
+        <location filename="aggregator.cpp" line="364"/>
         <source>Update all feeds</source>
         <translation>Оновити стрічки</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="328"/>
+        <location filename="aggregator.cpp" line="368"/>
         <source>Remove feed</source>
         <translation>Видалити стрічку</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="333"/>
+        <location filename="aggregator.cpp" line="373"/>
         <source>Mark item as unread</source>
         <translation>Позначити статтю як непрочитану</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="337"/>
+        <location filename="aggregator.cpp" line="377"/>
         <source>Mark channel as read</source>
         <translation>Позначити канал як прочитаний</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="341"/>
+        <location filename="aggregator.cpp" line="381"/>
         <source>Mark channel as unread</source>
         <translation>Позначити канал як непрочитаний</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="345"/>
+        <location filename="aggregator.cpp" line="385"/>
         <source>Update selected feed</source>
         <translation>Оновити вибрану стрічку</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="350"/>
+        <location filename="aggregator.cpp" line="390"/>
         <source>Add to item bucket</source>
         <translation>Відкласти в довгий ящик</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="354"/>
+        <location filename="aggregator.cpp" line="394"/>
         <source>Item bucket...</source>
         <translation>Довгий ящик...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="359"/>
+        <location filename="aggregator.cpp" line="399"/>
         <source>Regexp matcher...</source>
         <translation>Фільтр...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="364"/>
+        <location filename="aggregator.cpp" line="404"/>
         <source>Hide read items</source>
         <translation>Приховати прочитані</translation>
     </message>
@@ -116,59 +116,64 @@
         <translation type="obsolete">Експортувати до OPML...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="424"/>
+        <location filename="aggregator.cpp" line="464"/>
         <source>Warning</source>
         <translation>Увага</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="426"/>
+        <location filename="aggregator.cpp" line="466"/>
         <source>You are going to permanently remove this feed. Are you are really sure that you want to do this?</source>
         <comment>Feed removing confirmation</comment>
         <translation>Дана стрічка буде незворотньо видалена. Ви впевнені, що хочете це зробити?</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="371"/>
+        <location filename="aggregator.cpp" line="411"/>
         <source>Import from OPML...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="376"/>
+        <location filename="aggregator.cpp" line="416"/>
         <source>Export to OPML...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="381"/>
+        <location filename="aggregator.cpp" line="421"/>
         <source>Import from binary...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="386"/>
+        <location filename="aggregator.cpp" line="426"/>
         <source>Export to binary...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="515"/>
+        <location filename="aggregator.cpp" line="562"/>
         <source>Export to OPML</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="546"/>
+        <location filename="aggregator.cpp" line="593"/>
         <source>Select save file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="519"/>
+        <location filename="aggregator.cpp" line="566"/>
         <source>OPML files (*.opml);;XML files (*.xml);;All files (*.*)</source>
         <translation type="unfinished">OPML файли (*.opml);;XML файли (*.xml);;All files (*.*)</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="545"/>
+        <location filename="aggregator.cpp" line="592"/>
         <source>Export to binary file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="548"/>
+        <location filename="aggregator.cpp" line="595"/>
         <source>Aggregator exchange files (*.lcae);;All files (*.*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="aggregator.cpp" line="250"/>
+        <source>RSS/Atom feed reader.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -271,12 +276,12 @@
         <translation>Ця стрічка вже додана</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="990"/>
+        <location filename="core.cpp" line="998"/>
         <source>Strange, but no suitable provider found</source>
         <translation>Дивно, але не можу знайти підходящого провайдера</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="995"/>
+        <location filename="core.cpp" line="1003"/>
         <source>Could not handle URL %1</source>
         <translation>Не можу обробити URL %1</translation>
     </message>
@@ -286,7 +291,7 @@
         <translation type="obsolete">Завантажений файл пустий!</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="834"/>
+        <location filename="core.cpp" line="836"/>
         <source>Feed with url %1 not found.</source>
         <translation>Не можу знайти стрічку за адресою %1.</translation>
     </message>
@@ -310,42 +315,42 @@
 </translation>
     </message>
     <message>
-        <location filename="core.cpp" line="471"/>
+        <location filename="core.cpp" line="473"/>
         <source>Could not open file %1 for reading.</source>
         <translation>Не можу відкрити файл %1 для читання.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="488"/>
+        <location filename="core.cpp" line="490"/>
         <source>XML error, file %1, line %2, column %3, error:&lt;br /&gt;%4</source>
         <translation>Помилка аналізу XML, файл %1, рядок %2, стовпчик %3, текс помилки:&lt;br/&gt;%4</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="499"/>
+        <location filename="core.cpp" line="501"/>
         <source>OPML from file %1 is not valid.</source>
         <translation>Неправильний OPML з файлу %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="849"/>
+        <location filename="core.cpp" line="851"/>
         <source>XML file parse error: %1, line %2, column %3, filename %4, from %5</source>
         <translation>Помилка аналізу XML: %1, рядок %2, стовпчик %3, ім&apos;я файлу %4, з %5</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="862"/>
+        <location filename="core.cpp" line="864"/>
         <source>Could not find parser to parse file %1 from %2</source>
         <translation>Не можу знайти обробник для файлу %1 з %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1299"/>
+        <location filename="core.cpp" line="1309"/>
         <source>Added channel &quot;%1&quot; (has %2 items)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1318"/>
+        <location filename="core.cpp" line="1328"/>
         <source>Updated channel &quot;%1&quot; (%2 new items)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="822"/>
+        <location filename="core.cpp" line="824"/>
         <source>Downloaded file from url %1 has null size!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -661,73 +666,73 @@
         <translation>Керування каналом</translation>
     </message>
     <message>
-        <location filename="mainwidget.ui" line="226"/>
+        <location filename="mainwidget.ui" line="230"/>
         <source>Link:</source>
         <translation>Адреса:</translation>
     </message>
     <message>
-        <location filename="mainwidget.ui" line="107"/>
+        <location filename="mainwidget.ui" line="110"/>
         <source>Description:</source>
         <translation>Опис:</translation>
     </message>
     <message>
-        <location filename="mainwidget.ui" line="320"/>
+        <location filename="mainwidget.ui" line="298"/>
         <source>Author:</source>
         <translation>Автор:</translation>
     </message>
     <message>
-        <location filename="mainwidget.ui" line="135"/>
+        <location filename="mainwidget.ui" line="138"/>
         <source>&lt;channel image&gt;</source>
         <translation>&lt;картинка&gt;</translation>
     </message>
     <message>
-        <location filename="mainwidget.ui" line="156"/>
+        <location filename="mainwidget.ui" line="159"/>
         <source>Fixed string</source>
         <translation>Фіксований рядок</translation>
     </message>
     <message>
-        <location filename="mainwidget.ui" line="161"/>
+        <location filename="mainwidget.ui" line="164"/>
         <source>Wildcard</source>
         <translation>Маска</translation>
     </message>
     <message>
-        <location filename="mainwidget.ui" line="166"/>
+        <location filename="mainwidget.ui" line="169"/>
         <source>Regexp</source>
         <translation>Регулярний вираз</translation>
     </message>
     <message>
-        <location filename="mainwidget.ui" line="174"/>
+        <location filename="mainwidget.ui" line="177"/>
         <source>Case sensitive</source>
         <translation>Чутливий до регістру</translation>
     </message>
     <message>
-        <location filename="mainwidget.ui" line="218"/>
+        <location filename="mainwidget.ui" line="219"/>
         <source>Item info</source>
         <translation>Інформація про статтю</translation>
     </message>
     <message>
-        <location filename="mainwidget.ui" line="306"/>
+        <location filename="mainwidget.ui" line="284"/>
         <source>Category:</source>
         <translation>Категорія:</translation>
     </message>
     <message>
-        <location filename="mainwidget.ui" line="285"/>
+        <location filename="mainwidget.ui" line="270"/>
         <source>Publication date:</source>
         <translation>Дата публікації:</translation>
     </message>
     <message>
-        <location filename="mainwidget.ui" line="265"/>
+        <location filename="mainwidget.ui" line="250"/>
         <source>Comments:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.ui" line="181"/>
+        <location filename="mainwidget.ui" line="184"/>
         <source>Categories...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.ui" line="188"/>
-        <source>Subscribe</source>
+        <location filename="mainwidget.ui" line="314"/>
+        <source>Subscribe to comments</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -895,12 +900,12 @@
 <context>
     <name>RegexpMatcherManager</name>
     <message>
-        <location filename="regexpmatchermanager.cpp" line="57"/>
+        <location filename="regexpmatchermanager.cpp" line="58"/>
         <source>Title matcher</source>
         <translation>Фільтр заголовків</translation>
     </message>
     <message>
-        <location filename="regexpmatchermanager.cpp" line="57"/>
+        <location filename="regexpmatchermanager.cpp" line="58"/>
         <source>Body extractor</source>
         <translation>Фільтр змісту</translation>
     </message>
@@ -908,17 +913,17 @@
 <context>
     <name>RegexpMatcherUi</name>
     <message>
-        <location filename="regexpmatcherui.cpp" line="97"/>
+        <location filename="regexpmatcherui.cpp" line="88"/>
         <source>Warning</source>
         <translation>Увага</translation>
     </message>
     <message>
-        <location filename="regexpmatcherui.cpp" line="92"/>
+        <location filename="regexpmatcherui.cpp" line="83"/>
         <source>This title matcher regexp already exists. Specify another one or modify existing title matcher regexp&apos;s body extractor.</source>
         <translation>Цей фільтр вже існує. Вкажіть інший, бо змініть існуючий.</translation>
     </message>
     <message>
-        <location filename="regexpmatcherui.cpp" line="98"/>
+        <location filename="regexpmatcherui.cpp" line="89"/>
         <source>Either title matcher or body extractor is malformed.</source>
         <translation>Не правильно заданий фільтр загаловків або змісту.</translation>
     </message>

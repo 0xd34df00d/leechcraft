@@ -66,12 +66,12 @@
 <context>
     <name>CSTP</name>
     <message>
-        <location filename="cstp.cpp" line="255"/>
+        <location filename="cstp.cpp" line="265"/>
         <source>File exists</source>
         <translation>Файл вже існує</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="255"/>
+        <location filename="cstp.cpp" line="265"/>
         <source>File %1 already exists, continue download?</source>
         <translation>Файл %1 вже існує, бажаєте продовжити завантаження?</translation>
     </message>
@@ -86,27 +86,27 @@
         <translation type="obsolete">Видалити завдання</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="225"/>
+        <location filename="cstp.cpp" line="235"/>
         <source>Start</source>
         <translation>Розпочати</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="231"/>
+        <location filename="cstp.cpp" line="241"/>
         <source>Stop</source>
         <translation>Зупинити</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="217"/>
+        <location filename="cstp.cpp" line="227"/>
         <source>Remove all</source>
         <translation>Видалити всі</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="237"/>
+        <location filename="cstp.cpp" line="247"/>
         <source>Start all</source>
         <translation>Розпочати всі</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="243"/>
+        <location filename="cstp.cpp" line="253"/>
         <source>Stop all</source>
         <translation>Зупунити всі</translation>
     </message>
@@ -136,7 +136,7 @@
         <translation type="obsolete">Журнал</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="211"/>
+        <location filename="cstp.cpp" line="221"/>
         <source>Remove</source>
         <translation>Видалити</translation>
     </message>
@@ -149,52 +149,52 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="28"/>
+        <location filename="core.cpp" line="27"/>
         <source>State</source>
         <translation>Стан</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="27"/>
+        <location filename="core.cpp" line="26"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="29"/>
+        <location filename="core.cpp" line="28"/>
         <source>Progress</source>
         <translation>Прогрес</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="30"/>
+        <location filename="core.cpp" line="29"/>
         <source>Speed</source>
         <translation>Швидкість</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="31"/>
+        <location filename="core.cpp" line="30"/>
         <source>ETA</source>
         <translation>ОЧЗ</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="31"/>
+        <location filename="core.cpp" line="30"/>
         <source>DTA</source>
         <translation>ЧЗ</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="91"/>
+        <location filename="core.cpp" line="89"/>
         <source>Could not truncate file </source>
         <translation>Не можу обрізати файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="279"/>
+        <location filename="core.cpp" line="297"/>
         <source>Could not open file </source>
         <translation>Не можу відкрити файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="194"/>
+        <location filename="core.cpp" line="212"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="187"/>
+        <location filename="core.cpp" line="203"/>
         <source>%1% (%2 of %3)</source>
         <translation>%1% (%2 з %3)</translation>
     </message>
@@ -258,111 +258,126 @@
     <message>
         <location filename="task.cpp" line="133"/>
         <source>Unknown task type</source>
-        <translation>Невідомий тип задачі</translation>
+        <translation type="obsolete">Невідомий тип задачі</translation>
     </message>
     <message>
         <location filename="task.cpp" line="168"/>
         <source>No error occurred.</source>
-        <translation>Без помилок.</translation>
+        <translation type="obsolete">Без помилок.</translation>
     </message>
     <message>
         <location filename="task.cpp" line="170"/>
         <source>The host name lookup failed.</source>
-        <translation>Неможливо визначити ім&apos;я хоста.</translation>
+        <translation type="obsolete">Неможливо визначити ім&apos;я хоста.</translation>
     </message>
     <message>
         <location filename="task.cpp" line="172"/>
         <source>The server refused the connection.</source>
-        <translation>Сервер відмовив у з&apos;єднанні.</translation>
+        <translation type="obsolete">Сервер відмовив у з&apos;єднанні.</translation>
     </message>
     <message>
         <location filename="task.cpp" line="174"/>
         <source>The server closed the connection unexpectedly.</source>
-        <translation>Сервер несподівано закрив з&apos;єднання.</translation>
+        <translation type="obsolete">Сервер несподівано закрив з&apos;єднання.</translation>
     </message>
     <message>
         <location filename="task.cpp" line="176"/>
         <source>The server sent an invalid response header.</source>
-        <translation>Сервер надіслав неправильний заголовок у відповідь.</translation>
+        <translation type="obsolete">Сервер надіслав неправильний заголовок у відповідь.</translation>
     </message>
     <message>
         <location filename="task.cpp" line="178"/>
         <source>The client could not read the content correctly because an error with respect to the content length occurred.</source>
-        <translation>Неправильний розмір змісту.</translation>
+        <translation type="obsolete">Неправильний розмір змісту.</translation>
     </message>
     <message>
         <location filename="task.cpp" line="180"/>
         <source>The request was aborted with abort().</source>
-        <translation>Запит було скасовано за допомогою abort().</translation>
+        <translation type="obsolete">Запит було скасовано за допомогою abort().</translation>
     </message>
     <message>
         <location filename="task.cpp" line="182"/>
         <source>QHttp is using a proxy, and the proxy server requires authentication to establish a connection.</source>
-        <translation>Проксі-сервер вимагає аутентифікацію.</translation>
+        <translation type="obsolete">Проксі-сервер вимагає аутентифікацію.</translation>
     </message>
     <message>
         <location filename="task.cpp" line="184"/>
         <source>The web server requires authentication to complete the request.</source>
-        <translation>Веб-сервер вимагає аутентифікацію.</translation>
+        <translation type="obsolete">Веб-сервер вимагає аутентифікацію.</translation>
     </message>
     <message>
         <location filename="task.cpp" line="186"/>
         <source>An error other than those specified above occurred.</source>
-        <translation>Сталася невідома помилка.</translation>
+        <translation type="obsolete">Сталася невідома помилка.</translation>
     </message>
     <message>
         <location filename="task.cpp" line="451"/>
         <source>Unconnected</source>
-        <translation>Не з&apos;єднано</translation>
+        <translation type="obsolete">Не з&apos;єднано</translation>
     </message>
     <message>
         <location filename="task.cpp" line="453"/>
         <source>Hostname lookup</source>
-        <translation>Пошук хоста</translation>
+        <translation type="obsolete">Пошук хоста</translation>
     </message>
     <message>
         <location filename="task.cpp" line="455"/>
         <source>Connecting</source>
-        <translation>З&apos;єднання</translation>
+        <translation type="obsolete">З&apos;єднання</translation>
     </message>
     <message>
         <location filename="task.cpp" line="432"/>
         <source>Sending request</source>
-        <translation>Ндсилаю запит</translation>
+        <translation type="obsolete">Ндсилаю запит</translation>
     </message>
     <message>
         <location filename="task.cpp" line="434"/>
         <source>Reading reply</source>
-        <translation>Читаю відповідь</translation>
+        <translation type="obsolete">Читаю відповідь</translation>
     </message>
     <message>
         <location filename="task.cpp" line="436"/>
         <source>Connection is idle</source>
-        <translation>З&apos;єднання не активне</translation>
+        <translation type="obsolete">З&apos;єднання не активне</translation>
     </message>
     <message>
         <location filename="task.cpp" line="461"/>
         <source>Closing</source>
-        <translation>Закриваю</translation>
+        <translation type="obsolete">Закриваю</translation>
     </message>
     <message>
         <location filename="task.cpp" line="457"/>
         <source>Connected</source>
-        <translation>З&apos;єднано</translation>
+        <translation type="obsolete">З&apos;єднано</translation>
     </message>
     <message>
         <location filename="task.cpp" line="459"/>
         <source>Logged in</source>
-        <translation>Увійшов</translation>
+        <translation type="obsolete">Увійшов</translation>
     </message>
     <message>
         <location filename="task.cpp" line="463"/>
         <source>Unknown</source>
-        <translation>Невідомо</translation>
+        <translation type="obsolete">Невідомо</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="191"/>
-        <source>FTP shall be eliminated</source>
+        <location filename="task.cpp" line="91"/>
+        <source>Stopped</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="task.cpp" line="93"/>
+        <source>Finished</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="task.cpp" line="95"/>
+        <source>Running</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="task.cpp" line="116"/>
+        <source>Task isn&apos;t initialized properly</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

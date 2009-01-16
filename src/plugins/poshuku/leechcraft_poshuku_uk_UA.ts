@@ -13,53 +13,28 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="addtofavoritesdialog.ui" line="21"/>
+        <location filename="addtofavoritesdialog.ui" line="25"/>
         <source>URL:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="addtofavoritesdialog.ui" line="35"/>
+        <location filename="addtofavoritesdialog.ui" line="39"/>
         <source>Title:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="addtofavoritesdialog.ui" line="45"/>
+        <location filename="addtofavoritesdialog.ui" line="49"/>
         <source>Tags:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>AuthenticationDialog</name>
-    <message>
-        <location filename="authenticationdialog.ui" line="13"/>
-        <source>Authentication required</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="authenticationdialog.ui" line="19"/>
-        <source>Ooops, I forgot to call the corrent constructor params.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="authenticationdialog.ui" line="28"/>
-        <source>Login:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="authenticationdialog.ui" line="38"/>
-        <source>Password:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="authenticationdialog.ui" line="54"/>
-        <source>Save credentials</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>BrowserWidget</name>
     <message>
-        <location filename="browserwidget.cpp" line="39"/>
+        <location filename="browserwidget.cpp" line="47"/>
         <source>Add to favorites...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -69,96 +44,74 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="43"/>
+        <location filename="browserwidget.cpp" line="51"/>
         <source>Find...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="48"/>
+        <location filename="browserwidget.cpp" line="56"/>
         <source>Print...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="52"/>
+        <location filename="browserwidget.cpp" line="60"/>
         <source>Print with preview...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="155"/>
+        <location filename="browserwidget.cpp" line="177"/>
         <source>Print web page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="64"/>
+        <source>Take page&apos;s screenshot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="271"/>
+        <source>Save screenshot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="294"/>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="287"/>
+        <source>Could not open %1 for write</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="296"/>
+        <source>Could not write screenshot to %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="113"/>
+        <location filename="core.cpp" line="75"/>
         <source>untagged</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="320"/>
+        <location filename="core.cpp" line="263"/>
         <source>Unknown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="449"/>
-        <source>Could not create Poshuku directory.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="456"/>
-        <source>Could not save cookies, error opening cookie file.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="471"/>
+        <location filename="core.cpp" line="279"/>
         <source>Loading %1</source>
         <translation type="unfinished"></translation>
     </message>
+</context>
+<context>
+    <name>CustomWebPage</name>
     <message>
-        <location filename="core.cpp" line="510"/>
-        <source>The URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="521"/>
-        <source>The proxy &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="548"/>
-        <source>The URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="347"/>
-        <source>Save external data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="437"/>
-        <source>Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="380"/>
-        <source>No plugins were found that could download the content from URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="407"/>
-        <source>Save link</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="439"/>
-        <source>No plugins were found that could download the URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="193"/>
-        <source></source>
+        <location filename="customwebpage.cpp" line="50"/>
+        <source>Error loading %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -183,32 +136,32 @@
 <context>
     <name>FindDialog</name>
     <message>
-        <location filename="finddialog.ui" line="63"/>
+        <location filename="finddialog.ui" line="67"/>
         <source>Find</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="finddialog.ui" line="23"/>
+        <location filename="finddialog.ui" line="27"/>
         <source>Find what:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="finddialog.ui" line="35"/>
+        <location filename="finddialog.ui" line="39"/>
         <source>Search backwards</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="finddialog.ui" line="42"/>
+        <location filename="finddialog.ui" line="46"/>
         <source>Match case</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="finddialog.ui" line="49"/>
+        <location filename="finddialog.ui" line="53"/>
         <source>Continue from the beginning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="finddialog.ui" line="70"/>
+        <location filename="finddialog.ui" line="74"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
@@ -239,62 +192,62 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="96"/>
+        <location filename="poshuku.cpp" line="104"/>
         <source>Simple yet functional web browser</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="335"/>
+        <location filename="poshuku.cpp" line="339"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="230"/>
+        <location filename="poshuku.cpp" line="234"/>
         <source>The URL you entered could not be opened by Poshuku. Sorry. By the way, you entered:&lt;br /&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.ui" line="21"/>
+        <location filename="poshuku.ui" line="25"/>
         <source>http://linux.org.ru/</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.ui" line="173"/>
+        <location filename="poshuku.ui" line="177"/>
         <source>Settings...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.ui" line="45"/>
+        <location filename="poshuku.ui" line="49"/>
         <source>History</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.ui" line="121"/>
+        <location filename="poshuku.ui" line="125"/>
         <source>Fixed string</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.ui" line="126"/>
+        <location filename="poshuku.ui" line="130"/>
         <source>Wildcard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.ui" line="131"/>
+        <location filename="poshuku.ui" line="135"/>
         <source>Regexp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.ui" line="136"/>
+        <location filename="poshuku.ui" line="140"/>
         <source>Tags</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.ui" line="144"/>
+        <location filename="poshuku.ui" line="148"/>
         <source>Case sensitive</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.ui" line="109"/>
+        <location filename="poshuku.ui" line="113"/>
         <source>Favorites</source>
         <translation type="unfinished"></translation>
     </message>
@@ -307,157 +260,55 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="restoresessiondialog.ui" line="29"/>
+        <location filename="restoresessiondialog.ui" line="33"/>
         <source>Title</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="restoresessiondialog.ui" line="34"/>
+        <location filename="restoresessiondialog.ui" line="38"/>
         <source>URL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="restoresessiondialog.ui" line="44"/>
+        <location filename="restoresessiondialog.ui" line="48"/>
         <source>All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="restoresessiondialog.ui" line="51"/>
+        <location filename="restoresessiondialog.ui" line="55"/>
         <source>None</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
+    <name>ScreenShotSaveDialog</name>
+    <message>
+        <location filename="screenshotsavedialog.cpp" line="60"/>
+        <source>File size unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="screenshotsavedialog.ui" line="13"/>
+        <source>Page shooter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="screenshotsavedialog.ui" line="28"/>
+        <source>Format:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="screenshotsavedialog.ui" line="38"/>
+        <source>Quality:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="screenshotsavedialog.ui" line="80"/>
+        <source>Preview</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>SslErrorsDialog</name>
-    <message>
-        <location filename="sslerrorsdialog.cpp" line="40"/>
-        <source>Certificate</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sslerrorsdialog.cpp" line="41"/>
-        <source>(No certificate available for this error)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sslerrorsdialog.cpp" line="45"/>
-        <source>Valid:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sslerrorsdialog.cpp" line="46"/>
-        <source>yes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sslerrorsdialog.cpp" line="46"/>
-        <source>no</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sslerrorsdialog.cpp" line="47"/>
-        <source>Effective date:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sslerrorsdialog.cpp" line="49"/>
-        <source>Expiry date:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sslerrorsdialog.cpp" line="51"/>
-        <source>Version:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sslerrorsdialog.cpp" line="53"/>
-        <source>Serial number:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sslerrorsdialog.cpp" line="55"/>
-        <source>MD5 digest:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sslerrorsdialog.cpp" line="57"/>
-        <source>SHA1 digest:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sslerrorsdialog.cpp" line="61"/>
-        <source>Issuer info</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sslerrorsdialog.cpp" line="100"/>
-        <source>Organization:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sslerrorsdialog.cpp" line="105"/>
-        <source>Common name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sslerrorsdialog.cpp" line="110"/>
-        <source>Locality:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sslerrorsdialog.cpp" line="115"/>
-        <source>Organizational unit name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sslerrorsdialog.cpp" line="120"/>
-        <source>Country name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sslerrorsdialog.cpp" line="125"/>
-        <source>State or province name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sslerrorsdialog.cpp" line="95"/>
-        <source>Subject info</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sslerrorsdialog.ui" line="13"/>
-        <source>SSL errors occured</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sslerrorsdialog.ui" line="19"/>
-        <source>&lt;Here we say that errors happened&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sslerrorsdialog.ui" line="27"/>
-        <source>Name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sslerrorsdialog.ui" line="32"/>
-        <source>Value</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sslerrorsdialog.ui" line="46"/>
-        <source>Don&apos;t remember my choice</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sslerrorsdialog.ui" line="53"/>
-        <source>Remember my choice for the file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sslerrorsdialog.ui" line="60"/>
-        <source>Remember my choice for the whole host</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 </TS>

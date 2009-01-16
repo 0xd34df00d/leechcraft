@@ -114,6 +114,12 @@
            </layout>
           </widget>
           <widget class="QDockWidget" name="ControlsDockWidget_" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="floating" >
             <bool>false</bool>
            </property>

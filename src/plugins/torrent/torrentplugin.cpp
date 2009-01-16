@@ -697,8 +697,12 @@ void TorrentPlugin::UpdateTorrentControl ()
 		setText (Proxy::Instance ()->MakeTimeFromLong (i.Status_.seeding_time));
 	Ui_.LabelSeedRank_->
 		setText (QString::number (i.Status_.seed_rank));
-	Ui_.LabelLastScrape_->
-		setText (Proxy::Instance ()->MakeTimeFromLong (i.Status_.last_scrape));
+	if (i.Status_.last_scrape >= 0)
+		Ui_.LabelLastScrape_->
+			setText (Proxy::Instance ()->MakeTimeFromLong (i.Status_.last_scrape));
+	else
+		Ui_.LabelLastScrape_->
+			setText (tr ("Wasn't yet"));
 	Ui_.LabelTotalSize_->
 		setText (Proxy::Instance ()->MakePrettySize (i.Info_.total_size ()));
 	Ui_.LabelWantedSize_->

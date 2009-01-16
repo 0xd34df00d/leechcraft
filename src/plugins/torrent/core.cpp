@@ -287,7 +287,7 @@ QVariant Core::data (const QModelIndex& index, int role) const
 				case ColumnProgress:
 					return QString (tr ("%1% (%2 of %3)")
 							.arg (status.progress * 100, 0, 'f', 2)
-							.arg (Proxy::Instance ()->MakePrettySize (status.total_done))
+							.arg (Proxy::Instance ()->MakePrettySize (status.total_wanted_done))
 							.arg (Proxy::Instance ()->MakePrettySize (status.total_wanted)));
 				case ColumnDSpeed:
 					return Proxy::Instance ()->MakePrettySize (status.download_payload_rate) + tr ("/s");
@@ -303,7 +303,7 @@ QVariant Core::data (const QModelIndex& index, int role) const
 				result += tr ("Progress:") + " " +
 					QString (tr ("%1% (%2 of %3)")
 							.arg (status.progress * 100, 0, 'f', 2)
-							.arg (Proxy::Instance ()->MakePrettySize (status.total_done))
+							.arg (Proxy::Instance ()->MakePrettySize (status.total_wanted_done))
 							.arg (Proxy::Instance ()->MakePrettySize (status.total_wanted))) +
 					tr ("; status:") + " " +
 					(status.paused ? tr ("Idle") : GetStringForState (status.state)) + "\n";
@@ -1790,7 +1790,7 @@ struct __LLEECHCRAFT_API SimpleDispatcher
 	{
 		QMessageBox::information (0,
 				QObject::tr ("Storage moved"),
-				QObject::tr ("Storage for torrent %1 moved successfully to %2")
+				QObject::tr ("Storage for torrent<br />%1<br />moved successfully to<br />%2")
 					.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
 					.arg (QString::fromUtf8 (a.path.c_str ())));
 	}
