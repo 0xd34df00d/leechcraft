@@ -1379,13 +1379,9 @@ void Core::RestoreTorrents ()
             continue;
 
         std::vector<int> priorities;
-        priorities.resize (settings.beginReadArray ("Priorities"));
-        for (size_t j = 0; j < priorities.size (); ++j)
-        {
-            settings.setArrayIndex (j);
-            priorities [j] = settings.value ("Priority", 1).toInt ();
-        }
-        settings.endArray ();
+		QByteArray prioritiesLine = settings.value ("Priorities").toByteArray ();
+		std::copy (prioritiesLine.begin (), prioritiesLine.end (),
+				std::back_inserter (priorities));
 
         if (!priorities.size ())
         {
@@ -1670,6 +1666,7 @@ void Core::writeSettings ()
         settings.setArrayIndex (i);
         if (!CheckValidity (i))
             continue;
+		settings.remove ("");
 		int oldCurrent = CurrentTorrent_;
 		CurrentTorrent_ = i;
         try
@@ -1696,13 +1693,11 @@ void Core::writeSettings ()
 			settings.setValue ("Parameters", static_cast<int> (Handles_.at (i).Parameters_));
 			settings.setValue ("AutoManaged", Handles_.at (i).AutoManaged_);
 
-            settings.beginWriteArray ("Priorities");
-            for (size_t j = 0; j < Handles_.at (i).FilePriorities_.size (); ++j)
-            {
-                settings.setArrayIndex (j);
-                settings.setValue ("Priority", Handles_.at (i).FilePriorities_ [j]);
-            }
-            settings.endArray ();
+			QByteArray prioritiesLine;
+			std::copy (Handles_.at (i).FilePriorities_.begin (),
+					Handles_.at (i).FilePriorities_.end (),
+					std::back_inserter (prioritiesLine));
+			settings.setValue ("Priorities", prioritiesLine);
         }
         catch (const std::exception& e)
         {

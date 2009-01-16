@@ -98,6 +98,7 @@ void HistoryModel::SaveSettings ()
     QSettings settings (Proxy::Instance ()->GetOrganizationName (),
 			Proxy::Instance ()->GetApplicationName () + "_Torrent");
     settings.beginWriteArray ("History");
+	settings.remove ("");
     for (items_t::const_iterator i = Items_.begin (),
 			begin = Items_.begin (), end = Items_.end ();
 			i != end; ++i)
