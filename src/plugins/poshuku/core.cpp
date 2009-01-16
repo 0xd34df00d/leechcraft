@@ -89,8 +89,8 @@ Core& Core::Instance ()
 
 void Core::Release ()
 {
-	qDeleteAll (Widgets_);
-	Widgets_.clear ();
+	while (Widgets_.begin () != Widgets_.end ())
+		delete *Widgets_.begin ();
 
 	HistoryModel_.reset ();
 	FavoritesModel_.reset ();
@@ -205,7 +205,10 @@ void Core::Unregister (BrowserWidget *widget)
 	widgets_t::iterator pos =
 		std::find (Widgets_.begin (), Widgets_.end (), widget);
 	if (pos == Widgets_.end ())
+	{
+		qWarning () << Q_FUNC_INFO << widget << "not found in the collection";
 		return;
+	}
 
 	Widgets_.erase (pos);
 
