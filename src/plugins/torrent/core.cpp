@@ -601,12 +601,15 @@ int Core::AddFile (const QString& filename,
 	handle.auto_managed (true);
 
     beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
+	QString torrentFileName = QString::fromUtf8 (handle.name ().c_str ());
+	if (!torrentFileName.endsWith (".torrent"))
+		torrentFileName.append (".torrent");
     TorrentStruct tmp =
 	{
 		priorities,
 		handle,
 		contents,
-		QFileInfo (filename).fileName (),
+		torrentFileName,
 		TSIdle,
    		0,
 		tags,
