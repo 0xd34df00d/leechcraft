@@ -9,10 +9,10 @@
 #include <QVector>
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/torrent_handle.hpp>
+#include <libtorrent/session_status.hpp>
 #include <interfaces/interfaces.h>
 #include <plugininterface/tagscompletionmodel.h>
 #include "torrentinfo.h"
-#include "overallstats.h"
 #include "fileinfo.h"
 #include "peerinfo.h"
 #include "newtorrentparams.h"
@@ -130,7 +130,8 @@ public:
     libtorrent::torrent_info GetTorrentInfo (const QByteArray&);
     bool IsValidTorrent (const QByteArray&) const;
     TorrentInfo GetTorrentStats () const;
-    OverallStats GetOverallStats () const;
+	libtorrent::session_status GetOverallStats () const;
+	int GetListenPort () const;
 	libtorrent::cache_status GetCacheStats () const;
     QList<FileInfo> GetTorrentFiles () const;
     QList<PeerInfo> GetPeers () const;

@@ -54,7 +54,6 @@ SET (HEADERS
 	historymodel.h
 	exportdialog.h
 	newtorrentparams.h
-	overallstats.h
 	torrentinfo.h
 	fileinfo.h
 	peerinfo.h

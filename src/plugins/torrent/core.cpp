@@ -17,6 +17,7 @@
 #include <QDomElement>
 #include <QDomDocument>
 #include <QXmlStreamWriter>
+#include <QMessageBox>
 #include <libtorrent/alert.hpp>
 #include <libtorrent/bencode.hpp>
 #include <libtorrent/entry.hpp>
@@ -41,7 +42,6 @@
 #include "piecesmodel.h"
 #include "peersmodel.h"
 #include "torrentfilesmodel.h"
-#include "torrentplugin.h"
 #include "representationmodel.h"
 #include "historymodel.h"
 
@@ -415,77 +415,30 @@ bool Core::IsValidTorrent (const QByteArray& torrentData) const
 TorrentInfo Core::GetTorrentStats () const
 {
     if (!CheckValidity (CurrentTorrent_))
-        return TorrentInfo ();
+        throw std::runtime_error ("Invalid torrent for stats");
 
     libtorrent::torrent_handle handle = Handles_.at (CurrentTorrent_).Handle_;
-    libtorrent::torrent_status status = handle.status ();
-    libtorrent::torrent_info info = handle.get_torrent_info ();
+    TorrentInfo result =
+	{
+		QString (),
+		QString (),
+		handle.status (),
+		handle.get_torrent_info (),
+	};
 
-    TorrentInfo result;
-    result.Tracker_ = QString::fromStdString (status.current_tracker).left (100);
 	result.Destination_ = QString::fromUtf8 (handle.save_path ().directory_string ().c_str ());
-    result.State_ = status.paused ? tr ("Idle") : GetStringForState (status.state);
-    result.Downloaded_ = status.total_done;
-	result.WantedDownload_ = status.total_wanted_done;
-    result.Uploaded_ = status.total_payload_upload;
-    result.TotalSize_ = status.total_wanted;
-	result.TorrentSize_ = info.total_size ();
-    result.FailedSize_ = status.total_failed_bytes;
-	result.RedundantBytes_ = status.total_redundant_bytes;
-    result.DHTNodesCount_ = info.nodes ().size ();
-    result.TotalPieces_ = info.num_pieces ();
-    result.DownloadedPieces_ = status.num_pieces;
-    result.DownloadRate_ = status.download_rate;
-    result.UploadRate_ = status.upload_rate;
-    result.ConnectedPeers_ = status.num_peers;
-    result.ConnectedSeeds_ = status.num_seeds;
-	result.PeersInList_ = status.list_peers;
-	result.SeedsInList_ = status.list_seeds;
-	result.PeersInSwarm_ = status.num_incomplete;
-	result.SeedsInSwarm_ = status.num_complete;
-	result.ConnectCandidates_ = status.connect_candidates;
-	result.BlockSize_ = status.block_size;
-    result.PieceSize_ = info.piece_length ();
-    result.Progress_ = status.progress;
-    result.DistributedCopies_ = status.distributed_copies;
-	result.UpBandwidthQueue_ = status.up_bandwidth_queue;
-	result.DownBandwidthQueue_ = status.down_bandwidth_queue;
-	result.LastScrape_ = status.last_scrape;
-	result.ActiveTime_ = status.active_time;
-	result.SeedingTime_ = status.seeding_time;
-	result.SeedRank_ = status.seed_rank;
-    result.NextAnnounce_ = QTime (status.next_announce.hours (),
-                                  status.next_announce.minutes (),
-                                  status.next_announce.seconds ());
-    result.AnnounceInterval_ = QTime (status.announce_interval.hours (),
-                                      status.announce_interval.minutes (),
-                                      status.announce_interval.seconds ());
-	result.DownloadOverhead_ = status.total_download - status.total_payload_download;
-	result.UploadOverhead_ = status.total_upload - status.total_payload_upload;
-    result.Pieces_ = status.pieces;
-	result.UploadedTotal_ = status.all_time_upload;
+    result.State_ = result.Status_.paused ? tr ("Idle") : GetStringForState (result.Status_.state);
     return result;
 }
 
-OverallStats Core::GetOverallStats () const
+libtorrent::session_status Core::GetOverallStats () const
 {
-    OverallStats result;
-    libtorrent::session_status status = Session_->status ();
+	return Session_->status ();
+}
 
-    result.ListenPort_ = Session_->listen_port ();
-    result.NumUploads_ = Session_->num_uploads ();
-    result.NumConnections_ = Session_->num_connections ();
-    result.SessionUpload_ = status.total_upload;
-    result.SessionDownload_ = status.total_download;
-    result.UploadRate_ = status.upload_rate;
-    result.DownloadRate_ = status.download_rate;
-    result.NumPeers_ = status.num_peers;
-    result.NumDHTNodes_ = status.dht_nodes;
-    result.NumGlobalDHTNodes_ = status.dht_global_nodes;
-    result.NumDHTTorrents_ = status.dht_torrents;
-	result.TotalFailedData_ = status.total_failed_bytes;
-	result.TotalRedundantData_ = status.total_redundant_bytes;
-    return result;
+int Core::GetListenPort () const
+{
+	return Session_->listen_port ();
 }
 
 libtorrent::cache_status Core::GetCacheStats () const
@@ -1373,8 +1326,6 @@ QString Core::GetStringForState (libtorrent::torrent_status::state_t state) cons
     {
         case libtorrent::torrent_status::queued_for_checking:
             return tr ("Queued for checking");
-		case libtorrent::torrent_status::checking_resume_data:
-			return tr ("Checking metadata");
         case libtorrent::torrent_status::checking_files:
             return tr ("Checking files");
         case libtorrent::torrent_status::downloading_metadata:
@@ -1387,6 +1338,8 @@ QString Core::GetStringForState (libtorrent::torrent_status::state_t state) cons
             return tr ("Seeding");
         case libtorrent::torrent_status::allocating:
             return tr ("Allocating");
+		case libtorrent::torrent_status::checking_resume_data:
+			return tr ("Checking metadata");
     }
     return "Uninitialized?!";
 }
@@ -1825,13 +1778,25 @@ struct __LLEECHCRAFT_API SimpleDispatcher
 {
 	void operator() (const libtorrent::external_ip_alert& a) const
 	{
+		qDebug () << Q_FUNC_INFO;
 		Core::Instance ()->SetExternalAddress (QString::
 				fromStdString (a.external_address.to_string ()));
 	}
 
 	void operator() (const libtorrent::save_resume_data_alert& a) const
 	{
+		qDebug () << Q_FUNC_INFO;
 		Core::Instance ()->SaveResumeData (a);
+	}
+
+	void operator() (const libtorrent::storage_moved_alert& a) const
+	{
+		qDebug () << Q_FUNC_INFO;
+		QMessageBox::information (0,
+				QObject::tr ("Storage moved"),
+				QObject::tr ("Storage for torrent %1 moved successfully to %2")
+					.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+					.arg (QString::fromUtf8 (a.path.c_str ())));
 	}
 };
 

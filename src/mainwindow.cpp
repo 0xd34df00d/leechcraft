@@ -49,6 +49,7 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	settings->addAction (Ui_.ActionSettings_);
 	Ui_.MainTabWidget_->setCornerWidget (settings, Qt::TopRightCorner);
 	Ui_.MainTabWidget_->setProperty ("TabIcons", "downloaders history");
+	Ui_.ControlsDockWidget_->hide ();
 
 	connect (Ui_.ActionAboutQt_,
 			SIGNAL (triggered ()),
@@ -354,10 +355,10 @@ void MainWindow::updatePanes (const QModelIndex& newIndex,
 
 	if (Ui_.PluginsStuff_->count () >= 3)
 	{
-		if (Ui_.PluginsStuff_->count () == 4)
-			Ui_.PluginsStuff_->takeAt (3)->widget ()->hide ();
 		Ui_.PluginsStuff_->takeAt (1)->widget ()->hide ();
+		Ui_.ControlsDockWidget_->hide ();
 	}
+
 
 	if (newIndex.isValid ())
 	{
@@ -369,8 +370,8 @@ void MainWindow::updatePanes (const QModelIndex& newIndex,
 		controls->show ();
 		if (addiInfo)
 		{
-			Ui_.PluginsStuff_->addWidget (addiInfo);
-			addiInfo->show ();
+			Ui_.ControlsDockWidget_->setWidget (addiInfo);
+			Ui_.ControlsDockWidget_->show ();
 		}
 	}
 }

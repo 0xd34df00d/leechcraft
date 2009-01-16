@@ -6,15 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>850</width>
-    <height>374</height>
+    <width>598</width>
+    <height>659</height>
    </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy vsizetype="Expanding" hsizetype="Minimum" >
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle" >
    <string>LeechCraft::BitTorrent dashboard</string>
   </property>
   <property name="tabPosition" >
-   <enum>QTabWidget::North</enum>
+   <enum>QTabWidget::East</enum>
   </property>
   <property name="tabShape" >
    <enum>QTabWidget::Rounded</enum>
@@ -25,166 +31,494 @@
   <property name="elideMode" >
    <enum>Qt::ElideRight</enum>
   </property>
-  <widget class="QWidget" name="tab" >
+  <widget class="QWidget" name="DashboardTab_" >
    <attribute name="title" >
     <string>Dashboard</string>
    </attribute>
-   <layout class="QVBoxLayout" name="verticalLayout" >
+   <layout class="QVBoxLayout" name="verticalLayout_4" >
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_6" >
-      <item>
-       <widget class="QGroupBox" name="groupBox" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="title" >
-         <string>Controls</string>
-        </property>
-        <layout class="QFormLayout" name="formLayout_9" >
-         <property name="fieldGrowthPolicy" >
-          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-         </property>
-         <item row="0" column="0" >
-          <widget class="QLabel" name="label_20" >
-           <property name="text" >
-            <string>Download rate:</string>
+     <widget class="QScrollArea" name="scrollArea_2" >
+      <property name="widgetResizable" >
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents_3" >
+       <property name="geometry" >
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>530</width>
+         <height>1084</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_6" >
+        <item>
+         <widget class="QGroupBox" name="groupBox" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="title" >
+           <string>Settings</string>
+          </property>
+          <layout class="QFormLayout" name="formLayout_9" >
+           <property name="fieldGrowthPolicy" >
+            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
            </property>
-          </widget>
-         </item>
-         <item row="0" column="1" >
-          <widget class="QSpinBox" name="OverallDownloadRateController_" >
-           <property name="specialValueText" >
-            <string>Unlimited</string>
-           </property>
-           <property name="accelerated" >
-            <bool>true</bool>
-           </property>
-           <property name="suffix" >
-            <string> kb/s</string>
-           </property>
-           <property name="minimum" >
-            <number>0</number>
-           </property>
-           <property name="maximum" >
-            <number>10000</number>
-           </property>
-           <property name="singleStep" >
-            <number>100</number>
-           </property>
-           <property name="value" >
-            <number>0</number>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0" >
-          <widget class="QLabel" name="label_21" >
-           <property name="text" >
-            <string>Upload rate:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1" >
-          <widget class="QSpinBox" name="OverallUploadRateController_" >
-           <property name="specialValueText" >
-            <string>Unlimited</string>
-           </property>
-           <property name="accelerated" >
-            <bool>true</bool>
-           </property>
-           <property name="suffix" >
-            <string> kb/s</string>
-           </property>
-           <property name="minimum" >
-            <number>0</number>
-           </property>
-           <property name="maximum" >
-            <number>10000</number>
-           </property>
-           <property name="singleStep" >
-            <number>100</number>
-           </property>
-           <property name="value" >
-            <number>0</number>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0" >
-          <widget class="QLabel" name="label_33" >
-           <property name="text" >
-            <string>Desired rating:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1" >
-          <widget class="QDoubleSpinBox" name="DesiredRating_" >
-           <property name="specialValueText" >
-            <string>Infinite</string>
-           </property>
-           <property name="accelerated" >
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0" >
-          <widget class="QLabel" name="label_41" >
-           <property name="text" >
-            <string>Max down/up torrents:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1" >
-          <layout class="QHBoxLayout" name="horizontalLayout_5" >
-           <item>
-            <widget class="QSpinBox" name="DownloadingTorrents_" >
-             <property name="specialValueText" >
-              <string>Unlimited</string>
-             </property>
-             <property name="minimum" >
-              <number>-1</number>
-             </property>
-             <property name="maximum" >
-              <number>1000</number>
-             </property>
-             <property name="value" >
-              <number>-1</number>
+           <item row="0" column="0" >
+            <widget class="QLabel" name="label_20" >
+             <property name="text" >
+              <string>Download rate:</string>
              </property>
             </widget>
            </item>
-           <item>
-            <widget class="QSpinBox" name="UploadingTorrents_" >
+           <item row="0" column="1" >
+            <widget class="QSpinBox" name="OverallDownloadRateController_" >
              <property name="specialValueText" >
               <string>Unlimited</string>
              </property>
+             <property name="accelerated" >
+              <bool>true</bool>
+             </property>
+             <property name="suffix" >
+              <string> kb/s</string>
+             </property>
              <property name="minimum" >
-              <number>-1</number>
+              <number>0</number>
              </property>
              <property name="maximum" >
-              <number>1000</number>
+              <number>10000</number>
+             </property>
+             <property name="singleStep" >
+              <number>100</number>
              </property>
              <property name="value" >
-              <number>-1</number>
+              <number>0</number>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" >
+            <widget class="QLabel" name="label_21" >
+             <property name="text" >
+              <string>Upload rate:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1" >
+            <widget class="QSpinBox" name="OverallUploadRateController_" >
+             <property name="specialValueText" >
+              <string>Unlimited</string>
+             </property>
+             <property name="accelerated" >
+              <bool>true</bool>
+             </property>
+             <property name="suffix" >
+              <string> kb/s</string>
+             </property>
+             <property name="minimum" >
+              <number>0</number>
+             </property>
+             <property name="maximum" >
+              <number>10000</number>
+             </property>
+             <property name="singleStep" >
+              <number>100</number>
+             </property>
+             <property name="value" >
+              <number>0</number>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" >
+            <widget class="QLabel" name="label_33" >
+             <property name="text" >
+              <string>Desired rating:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1" >
+            <widget class="QDoubleSpinBox" name="DesiredRating_" >
+             <property name="specialValueText" >
+              <string>Infinite</string>
+             </property>
+             <property name="accelerated" >
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0" >
+            <widget class="QLabel" name="label_41" >
+             <property name="text" >
+              <string>Max down/up:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1" >
+            <layout class="QHBoxLayout" name="horizontalLayout_5" >
+             <item>
+              <widget class="QSpinBox" name="DownloadingTorrents_" >
+               <property name="specialValueText" >
+                <string>Unlimited</string>
+               </property>
+               <property name="minimum" >
+                <number>-1</number>
+               </property>
+               <property name="maximum" >
+                <number>1000</number>
+               </property>
+               <property name="value" >
+                <number>-1</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="UploadingTorrents_" >
+               <property name="specialValueText" >
+                <string>Unlimited</string>
+               </property>
+               <property name="minimum" >
+                <number>-1</number>
+               </property>
+               <property name="maximum" >
+                <number>1000</number>
+               </property>
+               <property name="value" >
+                <number>-1</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_5" >
+          <property name="title" >
+           <string>Session stats</string>
+          </property>
+          <layout class="QFormLayout" name="formLayout_3" >
+           <property name="fieldGrowthPolicy" >
+            <enum>QFormLayout::ExpandingFieldsGrow</enum>
+           </property>
+           <item row="0" column="0" >
+            <widget class="QLabel" name="label_22" >
+             <property name="text" >
+              <string>Total download rate:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1" >
+            <widget class="QLabel" name="LabelTotalDownloadRate_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" >
+            <widget class="QLabel" name="label_23" >
+             <property name="text" >
+              <string>Total upload rate:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1" >
+            <widget class="QLabel" name="LabelTotalUploadRate_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" >
+            <widget class="QLabel" name="label_53" >
+             <property name="text" >
+              <string>Overhead download rate:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1" >
+            <widget class="QLabel" name="LabelOverheadDownloadRate_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0" >
+            <widget class="QLabel" name="label_57" >
+             <property name="text" >
+              <string>Overhead upload rate:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1" >
+            <widget class="QLabel" name="LabelOverheadUploadRate_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0" >
+            <widget class="QLabel" name="label_58" >
+             <property name="text" >
+              <string>DHT download rate:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1" >
+            <widget class="QLabel" name="LabelDHTDownloadRate_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0" >
+            <widget class="QLabel" name="label_62" >
+             <property name="text" >
+              <string>DHT upload rate:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1" >
+            <widget class="QLabel" name="LabelDHTUploadRate_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0" >
+            <widget class="QLabel" name="label_26" >
+             <property name="text" >
+              <string>Tracker download rate:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="1" >
+            <widget class="QLabel" name="LabelTrackerDownloadRate_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="0" >
+            <widget class="QLabel" name="label_27" >
+             <property name="text" >
+              <string>Tracker upload rate:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="1" >
+            <widget class="QLabel" name="LabelTrackerUploadRate_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="0" >
+            <widget class="QLabel" name="label_24" >
+             <property name="text" >
+              <string>Total downloaded:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="0" >
+            <widget class="QLabel" name="label_25" >
+             <property name="text" >
+              <string>Total uploaded:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="1" >
+            <widget class="QLabel" name="LabelTotalUploaded_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="16" column="0" >
+            <widget class="QLabel" name="label_18" >
+             <property name="text" >
+              <string>Session rating:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="16" column="1" >
+            <widget class="QLabel" name="LabelSessionRating_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="17" column="0" >
+            <widget class="QLabel" name="label_28" >
+             <property name="text" >
+              <string>Peers:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="17" column="1" >
+            <widget class="QLabel" name="LabelTotalPeers_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="18" column="0" >
+            <widget class="QLabel" name="label_29" >
+             <property name="text" >
+              <string>(Global) DHT nodes:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="18" column="1" >
+            <widget class="QLabel" name="LabelTotalDHTNodes_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="19" column="0" >
+            <widget class="QLabel" name="label_30" >
+             <property name="text" >
+              <string>DHT torrents:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="19" column="1" >
+            <widget class="QLabel" name="LabelDHTTorrents_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="20" column="0" >
+            <widget class="QLabel" name="label_31" >
+             <property name="text" >
+              <string>TCP listen port:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="20" column="1" >
+            <widget class="QLabel" name="LabelListenPort_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="21" column="0" >
+            <widget class="QLabel" name="label_61" >
+             <property name="text" >
+              <string>External address:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="21" column="1" >
+            <widget class="QLabel" name="LabelExternalAddress_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="1" >
+            <widget class="QLabel" name="LabelTotalDownloaded_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="0" >
+            <widget class="QLabel" name="label_66" >
+             <property name="text" >
+              <string>Overhead downloaded:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="0" >
+            <widget class="QLabel" name="label_67" >
+             <property name="text" >
+              <string>Overhead uploaded:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="12" column="0" >
+            <widget class="QLabel" name="label_68" >
+             <property name="text" >
+              <string>DHT downloaded:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="13" column="0" >
+            <widget class="QLabel" name="label_69" >
+             <property name="text" >
+              <string>DHT uploaded:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="14" column="0" >
+            <widget class="QLabel" name="label_70" >
+             <property name="text" >
+              <string>Tracker downloaded:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="15" column="0" >
+            <widget class="QLabel" name="label_71" >
+             <property name="text" >
+              <string>Tracker uploaded:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="1" >
+            <widget class="QLabel" name="LabelOverheadDownloaded_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="1" >
+            <widget class="QLabel" name="LabelOverheadUploaded_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="12" column="1" >
+            <widget class="QLabel" name="LabelDHTDownloaded_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="13" column="1" >
+            <widget class="QLabel" name="LabelDHTUploaded_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="14" column="1" >
+            <widget class="QLabel" name="LabelTrackerDownloaded_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="15" column="1" >
+            <widget class="QLabel" name="LabelTrackerUploaded_" >
+             <property name="text" >
+              <string/>
              </property>
             </widget>
            </item>
           </layout>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="groupBox_4" >
-        <property name="title" >
-         <string>Stats</string>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout" >
-         <item>
-          <layout class="QFormLayout" name="formLayout_11" >
-           <property name="fieldGrowthPolicy" >
-            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-           </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_4" >
+          <property name="title" >
+           <string>Cache stats</string>
+          </property>
+          <layout class="QFormLayout" name="formLayout" >
            <item row="0" column="0" >
             <widget class="QLabel" name="label_48" >
              <property name="text" >
@@ -255,77 +589,70 @@
              </property>
             </widget>
            </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QFormLayout" name="formLayout" >
-           <property name="fieldGrowthPolicy" >
-            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-           </property>
-           <item row="0" column="0" >
+           <item row="5" column="0" >
             <widget class="QLabel" name="label_32" >
              <property name="text" >
               <string>Blocks written:</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="1" >
+           <item row="5" column="1" >
             <widget class="QLabel" name="BlocksWritten_" >
              <property name="text" >
               <string/>
              </property>
             </widget>
            </item>
-           <item row="1" column="0" >
+           <item row="6" column="0" >
             <widget class="QLabel" name="label_46" >
              <property name="text" >
               <string>Write operations:</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="1" >
+           <item row="6" column="1" >
             <widget class="QLabel" name="Writes_" >
              <property name="text" >
               <string/>
              </property>
             </widget>
            </item>
-           <item row="2" column="0" >
+           <item row="7" column="0" >
             <widget class="QLabel" name="label_52" >
              <property name="text" >
               <string>Write hit ratio:</string>
              </property>
             </widget>
            </item>
-           <item row="2" column="1" >
+           <item row="7" column="1" >
             <widget class="QLabel" name="WriteHitRatio_" >
              <property name="text" >
               <string/>
              </property>
             </widget>
            </item>
-           <item row="3" column="0" >
+           <item row="8" column="0" >
             <widget class="QLabel" name="label_54" >
              <property name="text" >
               <string>Cache size:</string>
              </property>
             </widget>
            </item>
-           <item row="3" column="1" >
+           <item row="8" column="1" >
             <widget class="QLabel" name="CacheSize_" >
              <property name="text" >
               <string/>
              </property>
             </widget>
            </item>
-           <item row="4" column="0" >
+           <item row="9" column="0" >
             <widget class="QLabel" name="label_59" >
              <property name="text" >
               <string>Total failed data:</string>
              </property>
             </widget>
            </item>
-           <item row="4" column="1" >
+           <item row="9" column="1" >
             <widget class="QLabel" name="LabelTotalFailedData_" >
              <property name="text" >
               <string/>
@@ -333,297 +660,116 @@
             </widget>
            </item>
           </layout>
-         </item>
-        </layout>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <widget class="QGroupBox" name="groupBox_5" >
-      <property name="title" >
-       <string>Session</string>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_2" >
-       <item>
-        <layout class="QFormLayout" name="formLayout_4" >
-         <item row="0" column="0" >
-          <widget class="QLabel" name="label_22" >
-           <property name="text" >
-            <string>Download rate:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1" >
-          <widget class="QLabel" name="LabelTotalDownloadRate_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0" >
-          <widget class="QLabel" name="label_23" >
-           <property name="text" >
-            <string>Upload rate:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1" >
-          <widget class="QLabel" name="LabelTotalUploadRate_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0" >
-          <widget class="QLabel" name="label_24" >
-           <property name="text" >
-            <string>Total downloaded:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1" >
-          <widget class="QLabel" name="LabelTotalDownloaded_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0" >
-          <widget class="QLabel" name="label_25" >
-           <property name="text" >
-            <string>Total uploaded:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1" >
-          <widget class="QLabel" name="LabelTotalUploaded_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QFormLayout" name="formLayout_3" >
-         <item row="0" column="0" >
-          <widget class="QLabel" name="label_18" >
-           <property name="text" >
-            <string>Session rating:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1" >
-          <widget class="QLabel" name="LabelSessionRating_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0" >
-          <widget class="QLabel" name="label_27" >
-           <property name="text" >
-            <string>Upload connections:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1" >
-          <widget class="QLabel" name="LabelUploadConnections_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0" >
-          <widget class="QLabel" name="label_26" >
-           <property name="text" >
-            <string>Connections:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1" >
-          <widget class="QLabel" name="LabelTotalConnections_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0" >
-          <widget class="QLabel" name="label_28" >
-           <property name="text" >
-            <string>Peers:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1" >
-          <widget class="QLabel" name="LabelTotalPeers_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QFormLayout" name="formLayout_12" >
-         <property name="fieldGrowthPolicy" >
-          <enum>QFormLayout::ExpandingFieldsGrow</enum>
-         </property>
-         <item row="0" column="0" >
-          <widget class="QLabel" name="label_29" >
-           <property name="text" >
-            <string>(Global) DHT nodes:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1" >
-          <widget class="QLabel" name="LabelTotalDHTNodes_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0" >
-          <widget class="QLabel" name="label_30" >
-           <property name="text" >
-            <string>DHT torrents:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1" >
-          <widget class="QLabel" name="LabelDHTTorrents_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0" >
-          <widget class="QLabel" name="label_31" >
-           <property name="text" >
-            <string>TCP listen port:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1" >
-          <widget class="QLabel" name="LabelListenPort_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0" >
-          <widget class="QLabel" name="label_61" >
-           <property name="text" >
-            <string>External address:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1" >
-          <widget class="QLabel" name="LabelExternalAddress_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_2" >
+          <property name="orientation" >
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0" >
+           <size>
+            <width>20</width>
+            <height>29</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
      </widget>
-    </item>
-    <item>
-     <spacer name="verticalSpacer_2" >
-      <property name="orientation" >
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0" >
-       <size>
-        <width>20</width>
-        <height>40</height>
-       </size>
-      </property>
-     </spacer>
     </item>
    </layout>
   </widget>
   <widget class="QWidget" name="TorrentControlTab_" >
    <attribute name="title" >
-    <string>Torrent settings</string>
+    <string>Settings</string>
    </attribute>
-   <layout class="QVBoxLayout" name="verticalLayout_6" >
+   <layout class="QVBoxLayout" name="verticalLayout_2" >
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_9" >
-      <item>
-       <widget class="QGroupBox" name="groupBox_2" >
-        <property name="title" >
-         <string>Settings</string>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_10" >
-         <item>
+     <widget class="QScrollArea" name="scrollArea" >
+      <property name="widgetResizable" >
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents_2" >
+       <property name="geometry" >
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>530</width>
+         <height>777</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_3" >
+        <item>
+         <widget class="QGroupBox" name="groupBox_2" >
+          <property name="title" >
+           <string>Settings</string>
+          </property>
           <layout class="QFormLayout" name="formLayout_2" >
+           <property name="fieldGrowthPolicy" >
+            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+           </property>
            <item row="0" column="0" >
             <widget class="QLabel" name="label_34" >
              <property name="text" >
-              <string>Download rate:</string>
+              <string>Down/up rate:</string>
              </property>
             </widget>
            </item>
            <item row="0" column="1" >
-            <widget class="QSpinBox" name="TorrentDownloadRateController_" >
-             <property name="specialValueText" >
-              <string>Unlimited</string>
-             </property>
-             <property name="accelerated" >
-              <bool>true</bool>
-             </property>
-             <property name="suffix" >
-              <string> kb/s</string>
-             </property>
-             <property name="maximum" >
-              <number>10000</number>
-             </property>
-             <property name="singleStep" >
-              <number>100</number>
-             </property>
-             <property name="value" >
-              <number>0</number>
-             </property>
-            </widget>
+            <layout class="QHBoxLayout" name="horizontalLayout_6" >
+             <item>
+              <widget class="QSpinBox" name="TorrentDownloadRateController_" >
+               <property name="specialValueText" >
+                <string>Unlimited</string>
+               </property>
+               <property name="accelerated" >
+                <bool>true</bool>
+               </property>
+               <property name="suffix" >
+                <string> kb/s</string>
+               </property>
+               <property name="maximum" >
+                <number>10000</number>
+               </property>
+               <property name="singleStep" >
+                <number>100</number>
+               </property>
+               <property name="value" >
+                <number>0</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="TorrentUploadRateController_" >
+               <property name="specialValueText" >
+                <string>Unlimited</string>
+               </property>
+               <property name="suffix" >
+                <string> kb/s</string>
+               </property>
+               <property name="maximum" >
+                <number>10000</number>
+               </property>
+               <property name="singleStep" >
+                <number>100</number>
+               </property>
+               <property name="value" >
+                <number>0</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
            <item row="1" column="0" >
-            <widget class="QLabel" name="label_35" >
-             <property name="text" >
-              <string>Upload rate:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1" >
-            <widget class="QSpinBox" name="TorrentUploadRateController_" >
-             <property name="specialValueText" >
-              <string>Unlimited</string>
-             </property>
-             <property name="suffix" >
-              <string> kb/s</string>
-             </property>
-             <property name="maximum" >
-              <number>10000</number>
-             </property>
-             <property name="singleStep" >
-              <number>100</number>
-             </property>
-             <property name="value" >
-              <number>0</number>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0" >
             <widget class="QLabel" name="label_36" >
              <property name="text" >
               <string>Desired rating:</string>
              </property>
             </widget>
            </item>
-           <item row="2" column="1" >
+           <item row="1" column="1" >
             <widget class="QDoubleSpinBox" name="TorrentDesiredRating_" >
              <property name="specialValueText" >
               <string>Infinite</string>
@@ -633,34 +779,17 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="0" >
+           <item row="2" column="0" >
             <widget class="QLabel" name="label_44" >
              <property name="text" >
               <string>Tags:</string>
              </property>
             </widget>
            </item>
-           <item row="3" column="1" >
-            <widget class="LeechCraft::Util::TagsLineEdit" native="1" name="TorrentTags_" />
+           <item row="2" column="1" >
+            <widget class="LeechCraft::Util::TagsLineEdit" name="TorrentTags_" />
            </item>
-          </layout>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_3" >
-           <property name="orientation" >
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0" >
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <layout class="QVBoxLayout" name="verticalLayout_4" >
-           <item>
+           <item row="3" column="1" >
             <widget class="QCheckBox" name="TorrentManaged_" >
              <property name="text" >
               <string>Auto managed</string>
@@ -670,674 +799,735 @@
              </property>
             </widget>
            </item>
-           <item>
+           <item row="4" column="1" >
             <widget class="QCheckBox" name="TorrentSequentialDownload_" >
              <property name="text" >
               <string>Sequential download</string>
              </property>
             </widget>
            </item>
-           <item>
+           <item row="5" column="1" >
             <widget class="QCheckBox" name="TorrentSuperSeeding_" >
              <property name="text" >
               <string>Super seeding</string>
              </property>
             </widget>
            </item>
-           <item>
-            <spacer name="verticalSpacer_4" >
-             <property name="orientation" >
-              <enum>Qt::Vertical</enum>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_7" >
+          <property name="title" >
+           <string>Status</string>
+          </property>
+          <layout class="QFormLayout" name="formLayout_6" >
+           <item row="0" column="0" >
+            <widget class="QLabel" name="label" >
+             <property name="text" >
+              <string>State:</string>
              </property>
-             <property name="sizeHint" stdset="0" >
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
+            </widget>
+           </item>
+           <item row="0" column="1" >
+            <widget class="QLabel" name="LabelState_" >
+             <property name="text" >
+              <string/>
              </property>
-            </spacer>
+            </widget>
+           </item>
+           <item row="1" column="0" >
+            <widget class="QLabel" name="label_3" >
+             <property name="text" >
+              <string>Progress:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1" >
+            <widget class="QLabel" name="LabelProgress_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" >
+            <widget class="QLabel" name="label_15" >
+             <property name="text" >
+              <string>Total download rate:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1" >
+            <widget class="QLabel" name="LabelDownloadRate_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0" >
+            <widget class="QLabel" name="label_17" >
+             <property name="text" >
+              <string>Total upload rate:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1" >
+            <widget class="QLabel" name="LabelUploadRate_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0" >
+            <widget class="QLabel" name="label_73" >
+             <property name="text" >
+              <string>Downloaded, all time:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1" >
+            <widget class="QLabel" name="LabelDownloadedTotal_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0" >
+            <widget class="QLabel" name="label_19" >
+             <property name="text" >
+              <string>Uploaded, all time:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1" >
+            <widget class="QLabel" name="LabelUploadedTotal_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0" >
+            <widget class="QLabel" name="label_13" >
+             <property name="text" >
+              <string>Total size:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="1" >
+            <widget class="QLabel" name="LabelTotalSize_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="0" >
+            <widget class="QLabel" name="label_72" >
+             <property name="text" >
+              <string>Wanted size:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="1" >
+            <widget class="QLabel" name="LabelWantedSize_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="0" >
+            <widget class="QLabel" name="label_12" >
+             <property name="text" >
+              <string>Downloaded, this session:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="1" >
+            <widget class="QLabel" name="LabelDownloaded_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="0" >
+            <widget class="QLabel" name="label_64" >
+             <property name="text" >
+              <string>Wanted done, this session:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="1" >
+            <widget class="QLabel" name="LabelWantedDownloaded_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="0" >
+            <widget class="QLabel" name="label_39" >
+             <property name="text" >
+              <string>Uploaded, this session:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="1" >
+            <widget class="QLabel" name="LabelUploaded_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="0" >
+            <widget class="QLabel" name="label_4" >
+             <property name="text" >
+              <string>Overall rating:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="1" >
+            <widget class="QLabel" name="LabelTorrentOverallRating_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="12" column="0" >
+            <widget class="QLabel" name="label_42" >
+             <property name="text" >
+              <string>Session rating:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="12" column="1" >
+            <widget class="QLabel" name="LabelTorrentRating_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="13" column="0" >
+            <widget class="QLabel" name="label_43" >
+             <property name="text" >
+              <string>Active time:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="13" column="1" >
+            <widget class="QLabel" name="LabelActiveTime_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="14" column="0" >
+            <widget class="QLabel" name="label_51" >
+             <property name="text" >
+              <string>Seeding time:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="14" column="1" >
+            <widget class="QLabel" name="LabelSeedingTime_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="15" column="0" >
+            <widget class="QLabel" name="label_60" >
+             <property name="text" >
+              <string>Seed rank:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="15" column="1" >
+            <widget class="QLabel" name="LabelSeedRank_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="16" column="0" >
+            <widget class="QLabel" name="label_7" >
+             <property name="text" >
+              <string>Next announce:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="16" column="1" >
+            <widget class="QLabel" name="LabelNextAnnounce_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="17" column="0" >
+            <widget class="QLabel" name="label_35" >
+             <property name="text" >
+              <string>Last scrape:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="17" column="1" >
+            <widget class="QLabel" name="LabelLastScrape_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
            </item>
           </layout>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="groupBox_7" >
-        <property name="title" >
-         <string>Status</string>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_2" >
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_4" >
-           <item>
-            <layout class="QFormLayout" name="formLayout_10" >
-             <property name="fieldGrowthPolicy" >
-              <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-             </property>
-             <item row="0" column="0" >
-              <widget class="QLabel" name="label" >
-               <property name="text" >
-                <string>State:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1" >
-              <widget class="QLabel" name="LabelState_" >
-               <property name="text" >
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0" >
-              <widget class="QLabel" name="label_3" >
-               <property name="text" >
-                <string>Progress:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1" >
-              <widget class="QLabel" name="LabelProgress_" >
-               <property name="text" >
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0" >
-              <widget class="QLabel" name="label_15" >
-               <property name="text" >
-                <string>Download rate:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1" >
-              <widget class="QLabel" name="LabelDownloadRate_" >
-               <property name="text" >
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="0" >
-              <widget class="QLabel" name="label_16" >
-               <property name="text" >
-                <string>Upload rate:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="1" >
-              <widget class="QLabel" name="LabelUploadRate_" >
-               <property name="text" >
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0" >
-              <widget class="QLabel" name="label_7" >
-               <property name="text" >
-                <string>Next announce:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="1" >
-              <widget class="QLabel" name="LabelNextAnnounce_" >
-               <property name="text" >
-                <string/>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer_4" >
-             <property name="orientation" >
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0" >
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <layout class="QFormLayout" name="formLayout_13" >
-             <property name="fieldGrowthPolicy" >
-              <enum>QFormLayout::ExpandingFieldsGrow</enum>
-             </property>
-             <item row="0" column="0" >
-              <widget class="QLabel" name="label_12" >
-               <property name="text" >
-                <string>Downloaded, total:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1" >
-              <widget class="QLabel" name="LabelDownloaded_" >
-               <property name="text" >
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0" >
-              <widget class="QLabel" name="label_64" >
-               <property name="text" >
-                <string>Wanted downloaded:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1" >
-              <widget class="QLabel" name="LabelWantedDownloaded_" >
-               <property name="text" >
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0" >
-              <widget class="QLabel" name="label_19" >
-               <property name="text" >
-                <string>Uploaded, this session:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1" >
-              <widget class="QLabel" name="LabelUploaded_" >
-               <property name="text" >
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="0" >
-              <widget class="QLabel" name="label_42" >
-               <property name="text" >
-                <string>Uploaded, total:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="1" >
-              <widget class="QLabel" name="LabelUploadedTotal_" >
-               <property name="text" >
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0" >
-              <widget class="QLabel" name="label_4" >
-               <property name="text" >
-                <string>Overall rating:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="1" >
-              <widget class="QLabel" name="LabelTorrentOverallRating_" >
-               <property name="text" >
-                <string/>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer_5" >
-             <property name="orientation" >
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0" >
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <layout class="QFormLayout" name="formLayout_6" >
-             <item row="0" column="0" >
-              <widget class="QLabel" name="label_17" >
-               <property name="text" >
-                <string>Rating:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1" >
-              <widget class="QLabel" name="LabelTorrentRating_" >
-               <property name="text" >
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0" >
-              <widget class="QLabel" name="label_43" >
-               <property name="text" >
-                <string>Active time:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1" >
-              <widget class="QLabel" name="LabelActiveTime_" >
-               <property name="text" >
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0" >
-              <widget class="QLabel" name="label_57" >
-               <property name="text" >
-                <string>Seeding time:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1" >
-              <widget class="QLabel" name="LabelSeedingTime_" >
-               <property name="text" >
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="0" >
-              <widget class="QLabel" name="label_60" >
-               <property name="text" >
-                <string>Seed rank:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="1" >
-              <widget class="QLabel" name="LabelSeedRank_" >
-               <property name="text" >
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0" >
-              <widget class="QLabel" name="label_62" >
-               <property name="text" >
-                <string>Last scrape:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="1" >
-              <widget class="QLabel" name="LabelLastScrape_" >
-               <property name="text" >
-                <string/>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <widget class="PiecesWidget" native="1" name="PiecesWidget_" >
-           <property name="minimumSize" >
-            <size>
-             <width>0</width>
-             <height>20</height>
-            </size>
-           </property>
-           <property name="text" stdset="0" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <spacer name="verticalSpacer" >
-      <property name="orientation" >
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0" >
-       <size>
-        <width>20</width>
-        <height>40</height>
-       </size>
-      </property>
-     </spacer>
+         </widget>
+        </item>
+        <item>
+         <widget class="PiecesWidget" native="1" name="PiecesWidget_" >
+          <property name="minimumSize" >
+           <size>
+            <width>0</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="text" stdset="0" >
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_3" >
+          <property name="orientation" >
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0" >
+           <size>
+            <width>20</width>
+            <height>315</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+       <zorder>groupBox_2</zorder>
+       <zorder>groupBox_7</zorder>
+       <zorder>verticalSpacer_3</zorder>
+       <zorder>PiecesWidget_</zorder>
+      </widget>
+     </widget>
     </item>
    </layout>
   </widget>
   <widget class="QWidget" name="TorrentStatus_" >
    <attribute name="title" >
-    <string>Torrent</string>
+    <string>Torrent info</string>
    </attribute>
-   <layout class="QVBoxLayout" name="verticalLayout_3" >
+   <layout class="QVBoxLayout" name="verticalLayout" >
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_7" >
-      <item>
-       <widget class="QLabel" name="label_5" >
-        <property name="text" >
-         <string>Tracker:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="LabelTracker_" >
-        <property name="text" >
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_2" >
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0" >
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_8" >
-      <item>
-       <widget class="QLabel" name="label_37" >
-        <property name="text" >
-         <string>Destination:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="LabelDestination_" >
-        <property name="text" >
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer" >
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0" >
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_3" >
-      <item>
-       <widget class="QGroupBox" name="groupBox_6" >
-        <property name="title" >
-         <string>Info</string>
-        </property>
-        <layout class="QFormLayout" name="formLayout_5" >
-         <property name="fieldGrowthPolicy" >
-          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-         </property>
-         <item row="0" column="0" >
-          <widget class="QLabel" name="label_10" >
-           <property name="text" >
-            <string>Downloaded pieces:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1" >
-          <widget class="QLabel" name="LabelDownloadedPieces_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0" >
-          <widget class="QLabel" name="label_8" >
-           <property name="text" >
-            <string>Total pieces:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1" >
-          <widget class="QLabel" name="LabelTotalPieces_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0" >
-          <widget class="QLabel" name="label_14" >
-           <property name="text" >
-            <string>Piece/block size size:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1" >
-          <widget class="QLabel" name="LabelPieceSize_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0" >
-          <widget class="QLabel" name="label_13" >
-           <property name="text" >
-            <string>Total/wanted size:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1" >
-          <widget class="QLabel" name="LabelTotalSize_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0" >
-          <widget class="QLabel" name="label_9" >
-           <property name="text" >
-            <string>Announce interval:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1" >
-          <widget class="QLabel" name="LabelAnnounceInterval_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="groupBox_8" >
-        <property name="title" >
-         <string>Peers</string>
-        </property>
-        <layout class="QFormLayout" name="formLayout_7" >
-         <property name="fieldGrowthPolicy" >
-          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-         </property>
-         <item row="0" column="0" >
-          <widget class="QLabel" name="label_2" >
-           <property name="text" >
-            <string>Connected peers/seeds:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1" >
-          <widget class="QLabel" name="LabelConnectedPeers_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0" >
-          <widget class="QLabel" name="label_47" >
-           <property name="text" >
-            <string>Peers/seeds in list:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1" >
-          <widget class="QLabel" name="LabelPeersInList_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0" >
-          <widget class="QLabel" name="label_55" >
-           <property name="text" >
-            <string>Peers/seeds in swarm:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1" >
-          <widget class="QLabel" name="LabelPeersInSwarm_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0" >
-          <widget class="QLabel" name="label_50" >
-           <property name="text" >
-            <string>Connect candidates:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1" >
-          <widget class="QLabel" name="LabelConnectCandidates_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0" >
-          <widget class="QLabel" name="label_38" >
-           <property name="text" >
-            <string>Up/down bandwidth queue:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1" >
-          <widget class="QLabel" name="LabelUpBandwidthQueue_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="groupBox_3" >
-        <property name="title" >
-         <string>Traffic</string>
-        </property>
-        <layout class="QFormLayout" name="formLayout_8" >
-         <property name="fieldGrowthPolicy" >
-          <enum>QFormLayout::ExpandingFieldsGrow</enum>
-         </property>
-         <item row="0" column="0" >
-          <widget class="QLabel" name="label_65" >
-           <property name="text" >
-            <string>Protocol overhead:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1" >
-          <widget class="QLabel" name="LabelProtocolOverhead_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0" >
-          <widget class="QLabel" name="label_11" >
-           <property name="text" >
-            <string>Failed:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1" >
-          <widget class="QLabel" name="LabelFailed_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0" >
-          <widget class="QLabel" name="label_78" >
-           <property name="text" >
-            <string>Redundant data:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1" >
-          <widget class="QLabel" name="LabelRedundantData_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0" >
-          <widget class="QLabel" name="label_6" >
-           <property name="text" >
-            <string>DHT nodes count:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1" >
-          <widget class="QLabel" name="LabelDHTNodesCount_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0" >
-          <widget class="QLabel" name="label_40" >
-           <property name="text" >
-            <string>Distributed copies:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1" >
-          <widget class="QLabel" name="LabelDistributedCopies_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-        </layout>
-        <zorder>label_11</zorder>
-        <zorder>LabelFailed_</zorder>
-        <zorder>label_78</zorder>
-        <zorder>LabelRedundantData_</zorder>
-        <zorder>label_6</zorder>
-        <zorder>LabelDHTNodesCount_</zorder>
-        <zorder>label_40</zorder>
-        <zorder>LabelDistributedCopies_</zorder>
-        <zorder>label_65</zorder>
-        <zorder>LabelProtocolOverhead_</zorder>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <spacer name="verticalSpacer_3" >
-      <property name="orientation" >
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0" >
+     <widget class="QScrollArea" name="scrollArea_3" >
+      <property name="minimumSize" >
        <size>
-        <width>20</width>
-        <height>40</height>
+        <width>0</width>
+        <height>400</height>
        </size>
       </property>
-     </spacer>
+      <property name="widgetResizable" >
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents" >
+       <property name="geometry" >
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>530</width>
+         <height>710</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_7" >
+        <item>
+         <widget class="QGroupBox" name="groupBox_6" >
+          <property name="title" >
+           <string>Info</string>
+          </property>
+          <layout class="QFormLayout" name="formLayout_4" >
+           <property name="fieldGrowthPolicy" >
+            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+           </property>
+           <item row="2" column="0" >
+            <widget class="QLabel" name="label_74" >
+             <property name="text" >
+              <string>Name:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1" >
+            <widget class="QLabel" name="LabelName_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0" >
+            <widget class="QLabel" name="label_75" >
+             <property name="text" >
+              <string>Creator:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1" >
+            <widget class="QLabel" name="LabelCreator_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0" >
+            <widget class="QLabel" name="label_76" >
+             <property name="text" >
+              <string>Comment:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1" >
+            <widget class="QLabel" name="LabelComment_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0" >
+            <widget class="QLabel" name="label_79" >
+             <property name="text" >
+              <string>Private:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1" >
+            <widget class="QLabel" name="LabelPrivate_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0" >
+            <widget class="QLabel" name="label_10" >
+             <property name="text" >
+              <string>Downloaded pieces:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="1" >
+            <widget class="QLabel" name="LabelDownloadedPieces_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="0" >
+            <widget class="QLabel" name="label_8" >
+             <property name="text" >
+              <string>Total pieces:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="1" >
+            <widget class="QLabel" name="LabelTotalPieces_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="0" >
+            <widget class="QLabel" name="label_14" >
+             <property name="text" >
+              <string>Piece size:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="1" >
+            <widget class="QLabel" name="LabelPieceSize_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="0" >
+            <widget class="QLabel" name="label_16" >
+             <property name="text" >
+              <string>Block size:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="1" >
+            <widget class="QLabel" name="LabelBlockSize_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="0" >
+            <widget class="QLabel" name="label_9" >
+             <property name="text" >
+              <string>Announce interval:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="1" >
+            <widget class="QLabel" name="LabelAnnounceInterval_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="0" >
+            <widget class="QLabel" name="label_11" >
+             <property name="text" >
+              <string>Failed:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="12" column="0" >
+            <widget class="QLabel" name="label_78" >
+             <property name="text" >
+              <string>Redundant:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="1" >
+            <widget class="QLabel" name="LabelFailed_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="12" column="1" >
+            <widget class="QLabel" name="LabelRedundantData_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="13" column="0" >
+            <widget class="QLabel" name="label_6" >
+             <property name="text" >
+              <string>DHT nodes count:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="14" column="0" >
+            <widget class="QLabel" name="label_40" >
+             <property name="text" >
+              <string>Distributed copies:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="13" column="1" >
+            <widget class="QLabel" name="LabelDHTNodesCount_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="14" column="1" >
+            <widget class="QLabel" name="LabelDistributedCopies_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0" >
+            <widget class="QLabel" name="label_5" >
+             <property name="text" >
+              <string>Tracker:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1" >
+            <widget class="QLabel" name="LabelTracker_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" >
+            <widget class="QLabel" name="label_37" >
+             <property name="text" >
+              <string>Destination:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1" >
+            <widget class="QLabel" name="LabelDestination_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_8" >
+          <property name="title" >
+           <string>Peers</string>
+          </property>
+          <layout class="QFormLayout" name="formLayout_7" >
+           <property name="fieldGrowthPolicy" >
+            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+           </property>
+           <item row="0" column="0" >
+            <widget class="QLabel" name="label_2" >
+             <property name="text" >
+              <string>Connected peers:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1" >
+            <widget class="QLabel" name="LabelConnectedPeers_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" >
+            <widget class="QLabel" name="label_47" >
+             <property name="text" >
+              <string>Peers in list:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1" >
+            <widget class="QLabel" name="LabelPeersInList_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0" >
+            <widget class="QLabel" name="label_55" >
+             <property name="text" >
+              <string>Peers in swarm:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1" >
+            <widget class="QLabel" name="LabelPeersInSwarm_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0" >
+            <widget class="QLabel" name="label_50" >
+             <property name="text" >
+              <string>Connect candidates:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="1" >
+            <widget class="QLabel" name="LabelConnectCandidates_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="0" >
+            <widget class="QLabel" name="label_38" >
+             <property name="text" >
+              <string>Upload bandwidth queue:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="1" >
+            <widget class="QLabel" name="LabelUpBandwidthQueue_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" >
+            <widget class="QLabel" name="label_80" >
+             <property name="text" >
+              <string>Connected seeds:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1" >
+            <widget class="QLabel" name="LabelConnectedSeeds_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0" >
+            <widget class="QLabel" name="label_81" >
+             <property name="text" >
+              <string>Seeds in list:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1" >
+            <widget class="QLabel" name="LabelSeedsInList_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0" >
+            <widget class="QLabel" name="label_82" >
+             <property name="text" >
+              <string>Seeds in swarm:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1" >
+            <widget class="QLabel" name="LabelSeedsInSwarm_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="0" >
+            <widget class="QLabel" name="label_77" >
+             <property name="text" >
+              <string>Download bandwidth queue:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="1" >
+            <widget class="QLabel" name="LabelDownBandwidthQueue_" >
+             <property name="text" >
+              <string/>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer" >
+          <property name="orientation" >
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0" >
+           <size>
+            <width>20</width>
+            <height>16</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+       <zorder>verticalSpacer</zorder>
+       <zorder>groupBox_6</zorder>
+       <zorder>groupBox_8</zorder>
+       <zorder>layoutWidget</zorder>
+       <zorder>groupBox_3</zorder>
+       <zorder>LabelDistributedCopies_</zorder>
+       <zorder>LabelDHTNodesCount_</zorder>
+       <zorder>label_40</zorder>
+       <zorder>LabelFailed_</zorder>
+       <zorder>LabelRedundantData_</zorder>
+       <zorder>label_78</zorder>
+       <zorder>label_6</zorder>
+       <zorder>label_11</zorder>
+      </widget>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -1400,7 +1590,7 @@
  <customwidgets>
   <customwidget>
    <class>LeechCraft::Util::TagsLineEdit</class>
-   <extends>QWidget</extends>
+   <extends>QLineEdit</extends>
    <header location="global" >tagslineedit.h</header>
   </customwidget>
   <customwidget>
