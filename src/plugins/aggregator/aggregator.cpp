@@ -666,7 +666,7 @@ void Aggregator::currentItemChanged (const QItemSelection& selection)
 		Impl_->Ui_.ItemAuthorLabel_->show ();
 	}
 
-	QString category = item->Categories_.join ("; ");
+	QString category = item->Categories_.join ("; ").left (60);
 	if (category.isEmpty ())
 	{
 		Impl_->Ui_.ItemCategory_->hide ();

@@ -554,7 +554,7 @@ int Core::AddFile (const QString& filename,
 				new libtorrent::torrent_info (GetTorrentInfo (filename))
 				);
 		handle = Session_->add_torrent (tinfo,
-				boost::filesystem::path (path.toStdString ()),
+				boost::filesystem::path (std::string (path.toUtf8 ().constData ())),
 				libtorrent::entry (),
 				libtorrent::storage_mode_allocate,
 				!(params & LeechCraft::Autostart));
