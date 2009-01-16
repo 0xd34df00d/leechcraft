@@ -28,8 +28,6 @@ class Task : public QObject
 public:
 	explicit Task (const QString& = QString ());
 	virtual ~Task ();
-	void AddHook (const Hook&);
-	void RemoveHook (const Hook&);
 	void Start (const boost::shared_ptr<QFile>&);
 	void Stop ();
 

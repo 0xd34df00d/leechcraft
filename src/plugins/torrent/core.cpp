@@ -1777,20 +1777,17 @@ struct __LLEECHCRAFT_API SimpleDispatcher
 {
 	void operator() (const libtorrent::external_ip_alert& a) const
 	{
-		qDebug () << Q_FUNC_INFO;
 		Core::Instance ()->SetExternalAddress (QString::
 				fromStdString (a.external_address.to_string ()));
 	}
 
 	void operator() (const libtorrent::save_resume_data_alert& a) const
 	{
-		qDebug () << Q_FUNC_INFO;
 		Core::Instance ()->SaveResumeData (a);
 	}
 
 	void operator() (const libtorrent::storage_moved_alert& a) const
 	{
-		qDebug () << Q_FUNC_INFO;
 		QMessageBox::information (0,
 				QObject::tr ("Storage moved"),
 				QObject::tr ("Storage for torrent %1 moved successfully to %2")

@@ -204,7 +204,7 @@ void Task::handleMetaDataChanged ()
 		QString newUrl = locHeader.toString ();
 		if (!QUrl (newUrl).isValid () ||
 				RedirectHistory_.contains (newUrl, Qt::CaseInsensitive))
-			qWarning () << Q_FUNC_INFO << "redirection failed, possibly a loop detected" << newUrl;
+			qDebug () << Q_FUNC_INFO << "redirection failed, possibly a loop detected" << newUrl;
 		else
 		{
 			RedirectHistory_ << newUrl;
@@ -229,6 +229,7 @@ void Task::handleReadyRead ()
 
 void Task::handleFinished ()
 {
+	Reply_.release ()->deleteLater ();
 	emit done (false);
 }
 

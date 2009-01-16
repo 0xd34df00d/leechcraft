@@ -23,6 +23,9 @@ SQLStorageBackend::SQLStorageBackend ()
 
 SQLStorageBackend::~SQLStorageBackend ()
 {
+	AuthGetter_.finish ();
+	AuthInserter_.finish ();
+	AuthUpdater_.finish ();
 }
 
 void SQLStorageBackend::Prepare ()
@@ -73,6 +76,7 @@ void SQLStorageBackend::GetAuth (const QString& realm,
 
 	login = AuthGetter_.value (0).toString ();
 	password = AuthGetter_.value (1).toString ();
+	AuthGetter_.finish ();
 }
 
 void SQLStorageBackend::SetAuth (const QString& realm,
@@ -86,6 +90,8 @@ void SQLStorageBackend::SetAuth (const QString& realm,
 		return;
 	}
 
+	AuthGetter_.finish ();
+
 	if (!AuthGetter_.size ())
 	{
 		AuthInserter_.bindValue (":realm", realm);
@@ -96,6 +102,7 @@ void SQLStorageBackend::SetAuth (const QString& realm,
 			LeechCraft::Util::DBLock::DumpError (AuthInserter_);
 			return;
 		}
+		AuthInserter_.finish ();
 	}
 	else
 	{
@@ -107,6 +114,7 @@ void SQLStorageBackend::SetAuth (const QString& realm,
 			LeechCraft::Util::DBLock::DumpError (AuthUpdater_);
 			return;
 		}
+		AuthUpdater_.finish ();
 	}
 }
 

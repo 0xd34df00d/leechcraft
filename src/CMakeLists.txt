@@ -164,6 +164,7 @@ SET (SRCS
 	sslerrorsdialog.cpp
 	storagebackend.cpp
 	sqlstoragebackend.cpp
+	debugmessagehandler.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -186,6 +187,7 @@ SET (HEADERS
 	sslerrorsdialog.h
 	storagebackend.h
 	sqlstoragebackend.h
+	debugmessagehandler.h
 	interfaces/interfaces.h
 	interfaces/structures.h
 	)

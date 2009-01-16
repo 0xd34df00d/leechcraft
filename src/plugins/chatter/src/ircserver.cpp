@@ -89,6 +89,9 @@ bool IrcServer::isConnected() const
 
 void IrcServer::breakContact()
 {
+	if (m_socket->state () == QAbstractSocket::UnconnectedState)
+		return;
+
 	ircThrow("QUIT :"+FS_QUIT_MSG);
 	if(!m_socket->waitForDisconnected())
 		m_socket->close();

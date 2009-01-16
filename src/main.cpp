@@ -1,48 +1,14 @@
 #include <typeinfo>
-#include <fstream>
 #include <iostream>
 #include <cstring>
 #include <memory>
 #include <QtGui/QtGui>
-#include <QMutex>
-#include <QTime>
-#include <QThread>
 #include <QLocalServer>
 #include <QLocalSocket>
 #include <plugininterface/proxy.h>
 #include <plugininterface/util.h>
 #include "mainwindow.h"
-
-QMutex G_DbgMutex;
-
-void debugMessageHandler (QtMsgType type, const char *message)
-{
-	QString name (QDir::homePath ());
-	name += ("/.leechcraft/");
-    switch (type)
-    {
-        case QtDebugMsg:
-            name += "debug.log";
-            break;
-        case QtWarningMsg:
-            name += "warning.log";
-            break;
-        case QtCriticalMsg:
-            name += "critical.log";
-            break;
-        case QtFatalMsg:
-            name += "fatal.log";
-            break;
-    }
-    std::ofstream ostr;
-    G_DbgMutex.lock ();
-    ostr.open (QDir::toNativeSeparators (name).toStdString ().c_str (), std::ios::app);
-    ostr << "[" << QDateTime::currentDateTime ().toString ("dd.MM.yyyy HH:mm:ss.zzz").toStdString ()
-	<< "] [thr " << QThread::currentThread () << "] ";
-    ostr << message << std::endl;
-    ostr.close ();
-    G_DbgMutex.unlock ();
-}
+#include "debugmessagehandler.h"
 
 bool IsAlreadyRunning ()
 {
