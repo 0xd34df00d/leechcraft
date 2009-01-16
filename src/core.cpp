@@ -622,9 +622,11 @@ void Core::handleGotEntity (const QByteArray& file, bool fromBuffer)
     {
         IDownload *id = qobject_cast<IDownload*> (plugins.at (i));
         IInfo *ii = qobject_cast<IInfo*> (plugins.at (i));
-		TaskParameters tp = Autostart | FromAutomatic;
+		TaskParameters tp = Autostart;
 		if (fromBuffer)
 			tp |= FromClipboard;
+		else
+			tp |= FromAutomatic;
         if (id->CouldDownload (file, tp))
         {
 			QString string = QTextCodec::codecForName ("UTF-8")->
@@ -744,7 +746,7 @@ void Core::handleSslErrors (QNetworkReply *reply, const QList<QSslError>& errors
 	}
 	else
 	{
-		QString msg = tr ("The URL<br /><code>%1</code><br />has SSL errors."
+		QString msg = tr ("<code>%1</code><br />has SSL errors."
 				" What do you want to do?")
 			.arg (reply->url ().toString ());
 		std::auto_ptr<SslErrorsDialog> dia (

@@ -133,10 +133,11 @@ bool TorrentPlugin::CouldDownload (const QByteArray& data, LeechCraft::TaskParam
 		return Core::Instance ()->IsValidTorrent (data);
 }
 
-int TorrentPlugin::AddJob (const LeechCraft::DownloadParams& dp, LeechCraft::TaskParameters parameters)
+int TorrentPlugin::AddJob (const LeechCraft::DownloadParams& dp,
+		LeechCraft::TaskParameters parameters)
 {
-	QString resource = QTextCodec::codecForName ("UTF-8")->toUnicode (dp.Resource_);
-	qDebug () << resource;
+	QString resource = QTextCodec::codecForName ("UTF-8")->
+		toUnicode (dp.Resource_);
 	QString suggestedFname = resource;
 	QFile file (suggestedFname);
     if ((!file.exists () ||
@@ -161,8 +162,10 @@ int TorrentPlugin::AddJob (const LeechCraft::DownloadParams& dp, LeechCraft::Tas
 	if (parameters & LeechCraft::FromAutomatic)
 	{
 		fname = suggestedFname;
-		path = AddTorrentDialog_->GetDefaultSavePath ();
-		tags = AddTorrentDialog_->GetDefaultTags ();
+		path = dp.Location_;
+		tags = XmlSettingsManager::Instance ()->
+			property ("AutomaticTags").toString ()
+			.split (' ', QString::SkipEmptyParts);
 	}
 	else
 	{
@@ -178,7 +181,11 @@ int TorrentPlugin::AddJob (const LeechCraft::DownloadParams& dp, LeechCraft::Tas
 		else
 			parameters &= ~LeechCraft::Autostart;
 	}
-	int result = Core::Instance ()->AddFile (fname, path, tags, files, parameters);
+	int result = Core::Instance ()->AddFile (fname,
+			path,
+			tags,
+			files,
+			parameters);
     setActionsEnabled ();
 	file.remove ();
 	return result;

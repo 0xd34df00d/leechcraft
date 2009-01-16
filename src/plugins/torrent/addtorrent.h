@@ -25,7 +25,6 @@ public:
     void SetFilename (const QString&);
     QString GetFilename () const;
     QString GetSavePath () const;
-	QString GetDefaultSavePath () const;
     QVector<bool> GetSelectedFiles () const;
 	Core::AddType GetAddType () const;
     QStringList GetTags () const;
