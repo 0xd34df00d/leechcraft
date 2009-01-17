@@ -2,6 +2,7 @@
 #include <QToolBar>
 #include <QSlider>
 #include <QFileDialog>
+#include <QMessageBox>
 #include <QDir>
 #include <seekslider.h>
 #include <volumeslider.h>
@@ -26,6 +27,10 @@ void LMP::Init ()
 			SIGNAL (bringToFront ()),
 			this,
 			SIGNAL (bringToFront ()));
+	connect (&Core::Instance (),
+			SIGNAL (error (const QString&)),
+			this,
+			SLOT (handleError (const QString&)));
 
 	Core::Instance ().SetVideoWidget (Ui_.VideoWidget_);
 	Core::Instance ().Reinitialize ();
@@ -167,6 +172,13 @@ void LMP::ApplyVideoSettings (qreal b, qreal c, qreal h, qreal s)
 void LMP::handleStateUpdated (const QString& state)
 {
 	Ui_.State_->setText (state);
+}
+
+void LMP::handleError (const QString& error)
+{
+	QMessageBox::warning (this,
+			tr ("Error"),
+			error);
 }
 
 void LMP::setFile (const QString& file)

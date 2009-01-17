@@ -171,6 +171,7 @@ void Core::updateState ()
 			break;
 		case Phonon::ErrorState:
 			result = tr ("Error");
+			emit stateUpdated (result);
 			break;
 	}
 	if (MediaObject_->state () == Phonon::ErrorState)
@@ -222,7 +223,10 @@ void Core::updateState ()
 			break;
 	}
 
-	emit stateUpdated (result);
+	if (MediaObject_->state () == Phonon::ErrorState)
+		emit error (result);
+	else
+		emit stateUpdated (result);
 }
 
 void Core::totalTimeChanged ()

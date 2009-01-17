@@ -40,6 +40,7 @@ private:
 	void ApplyVideoSettings (qreal, qreal, qreal, qreal);
 public slots:
 	void handleStateUpdated (const QString&);
+	void handleError (const QString&);
 	void setFile (const QString&);
 	void play ();
 private slots:

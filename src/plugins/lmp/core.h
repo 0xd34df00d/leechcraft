@@ -58,6 +58,7 @@ private slots:
 	void handleHasVideoChanged (bool);
 signals:
 	void stateUpdated (const QString&);
+	void error (const QString&);
 	void bringToFront ();
 };
 
