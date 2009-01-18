@@ -134,6 +134,7 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	Ui_.PluginsTasksTree_->setModel (tasksModel);
 
 	Ui_.HistoryView_->setModel (Core::Instance ().GetHistoryModel ());
+	Ui_.HistoryView_->sortByColumn (3, Qt::DescendingOrder);
 	connect (Ui_.HistoryView_,
 			SIGNAL (activated (const QModelIndex&)),
 			this,

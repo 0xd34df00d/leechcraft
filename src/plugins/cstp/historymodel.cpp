@@ -57,7 +57,7 @@ QVariant HistoryModel::data (const QModelIndex& index, int role) const
 			case HSize:
 				return Proxy::Instance ()->MakePrettySize (item.Size_);
 			case HDate:
-				return item.DateTime_.toString ();
+				return item.DateTime_;
 			case HTags:
 				return QStringList ();
 			default:
