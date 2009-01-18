@@ -12,6 +12,7 @@
 #include <QTimer>
 #include <QToolBar>
 #include <QSortFilterProxyModel>
+#include <QHeaderView>
 #include <libtorrent/session.hpp>
 #include <plugininterface/proxy.h>
 #include <plugininterface/tagscompleter.h>
@@ -494,21 +495,18 @@ void TorrentPlugin::updateTorrentStats ()
 	{
 		case 0:
 			UpdateDashboard ();
-			updateOverallStats ();
+			UpdateOverallStats ();
 			break;
 		case 1:
 			UpdateTorrentControl ();
 			break;
 		case 2:
-			UpdateTorrentPage ();
-			break;
-		case 3:
 			UpdateFilesPage ();
 			break;
-		case 4:
+		case 3:
 			UpdatePeersPage ();
 			break;
-		case 5:
+		case 4:
 			UpdatePiecesPage ();
 			break;
 	}
@@ -547,7 +545,7 @@ namespace
 	};
 };
 
-void TorrentPlugin::updateOverallStats ()
+void TorrentPlugin::UpdateOverallStats ()
 {
 	libtorrent::session_status stats = Core::Instance ()->GetOverallStats ();
 
@@ -629,6 +627,20 @@ void TorrentPlugin::updateOverallStats ()
 		setText (QString::number (static_cast<double> (cs.blocks_read_hit) /
 				static_cast<double> (cs.blocks_read)));
 	Ui_.ReadCacheSize_->setText (QString::number (cs.read_cache_size));
+
+	Core::pertrackerstats_t ptstats;
+	Core::Instance ()->GetPerTracker (ptstats);
+	Ui_.PerTrackerStats_->clear ();
+	for (Core::pertrackerstats_t::const_iterator i = ptstats.begin (),
+			end = ptstats.end (); i != end; ++i)
+	{
+		QStringList strings;
+		strings	<< i->first
+			<< Proxy::Instance ()->MakePrettySize (i->second.DownloadRate_) + tr ("/s")
+			<< Proxy::Instance ()->MakePrettySize (i->second.UploadRate_) + tr ("/s");
+
+		new QTreeWidgetItem (Ui_.PerTrackerStats_, strings);
+	}
 }
 
 void TorrentPlugin::doLogMessage (const QString& msg)
@@ -715,11 +727,6 @@ void TorrentPlugin::UpdateTorrentControl ()
 		Ui_.LabelTorrentRating_->
 			setText (QString::fromUtf8 ("\u221E"));
 	Ui_.PiecesWidget_->setPieceMap (i.Status_.pieces);
-}
-
-void TorrentPlugin::UpdateTorrentPage ()
-{
-	TorrentInfo i = Core::Instance ()->GetTorrentStats ();
 	Ui_.LabelTracker_->
 		setText (QString::fromStdString (i.Status_.current_tracker));
 	Ui_.LabelDestination_->
@@ -941,6 +948,15 @@ void TorrentPlugin::SetupStuff ()
 			FilterModel_.get (),
 			SLOT (invalidate ()));
     OverallStatsUpdateTimer_->start (500);
+
+	QFontMetrics fm = QApplication::fontMetrics ();
+	QHeaderView *header = Ui_.PerTrackerStats_->header ();
+	header->resizeSection (0,
+			fm.width ("www.domain.name.org"));
+	header->resizeSection (1,
+			fm.width ("1234.5678 bytes/s"));
+	header->resizeSection (2,
+			fm.width ("1234.5678 bytes/s"));
 }
 
 void TorrentPlugin::SetupActions ()

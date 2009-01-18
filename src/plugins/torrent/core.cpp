@@ -1,6 +1,7 @@
 #include "core.h"
-#include <typeinfo>
 #include <memory>
+#include <numeric>
+#include <typeinfo>
 #include <QFile>
 #include <QProgressDialog>
 #include <QDir>
@@ -19,6 +20,7 @@
 #include <QDomDocument>
 #include <QXmlStreamWriter>
 #include <QMessageBox>
+#include <QUrl>
 #include <libtorrent/bencode.hpp>
 #include <libtorrent/entry.hpp>
 #include <libtorrent/create_torrent.hpp>
@@ -55,6 +57,29 @@ Core::HandleFinder::HandleFinder (const libtorrent::torrent_handle& h)
 bool Core::HandleFinder::operator() (const Core::TorrentStruct& ts) const
 {
 	return ts.Handle_ == Handle_;
+}
+
+Core::PerTrackerAccumulator::PerTrackerAccumulator (Core::pertrackerstats_t& stats)
+: Stats_ (stats)
+{
+}
+int Core::PerTrackerAccumulator::PerTrackerAccumulator::operator() (int,
+		const Core::TorrentStruct& str)
+{
+	libtorrent::torrent_status s = str.Handle_.status ();
+	QString domain = QUrl (s.current_tracker.c_str ()).host ();
+	if (domain.size ())
+	{
+		Stats_ [domain].DownloadRate_ += s.download_payload_rate;
+		Stats_ [domain].UploadRate_ += s.upload_payload_rate;
+	}
+	return 0;
+}
+
+Core::PerTrackerStats::PerTrackerStats ()
+: DownloadRate_ (0)
+, UploadRate_ (0)
+{
 }
 
 Core* Core::Instance ()
@@ -433,6 +458,12 @@ TorrentInfo Core::GetTorrentStats () const
 libtorrent::session_status Core::GetOverallStats () const
 {
 	return Session_->status ();
+}
+
+void Core::GetPerTracker (Core::pertrackerstats_t& stats) const
+{
+	std::accumulate (Handles_.begin (), Handles_.end (), 0,
+			PerTrackerAccumulator (stats));
 }
 
 int Core::GetListenPort () const

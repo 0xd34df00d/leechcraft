@@ -1,5 +1,6 @@
 #ifndef CORE_H
 #define CORE_H
+#include <map>
 #include <list>
 #include <deque>
 #include <memory>
@@ -66,6 +67,23 @@ class Core : public QAbstractItemModel
 		HandleFinder (const libtorrent::torrent_handle&);
 		bool operator() (const TorrentStruct&) const;
 	};
+public:
+	struct PerTrackerStats
+	{
+		qint64 DownloadRate_;
+		qint64 UploadRate_;
+
+		PerTrackerStats ();
+	};
+	typedef std::map<QString, PerTrackerStats> pertrackerstats_t;
+private:
+	struct PerTrackerAccumulator
+	{
+		pertrackerstats_t& Stats_;
+
+		PerTrackerAccumulator (pertrackerstats_t&);
+		int operator() (int, const Core::TorrentStruct& str);
+	};
 
     libtorrent::session *Session_;
     typedef QList<TorrentStruct> HandleDict_t;
@@ -102,6 +120,7 @@ public:
 		Started
 		, Paused
 	};
+
     static Core* Instance ();
 	virtual ~Core ();
     void DoDelayedInit ();
@@ -131,6 +150,7 @@ public:
     bool IsValidTorrent (const QByteArray&) const;
     TorrentInfo GetTorrentStats () const;
 	libtorrent::session_status GetOverallStats () const;
+	void GetPerTracker (pertrackerstats_t&) const;
 	int GetListenPort () const;
 	libtorrent::cache_status GetCacheStats () const;
     QList<FileInfo> GetTorrentFiles () const;

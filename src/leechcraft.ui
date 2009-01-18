@@ -42,7 +42,7 @@
           <property name="orientation" >
            <enum>Qt::Horizontal</enum>
           </property>
-          <widget class="QWidget" name="" >
+          <widget class="QWidget" name="layoutWidget" >
            <layout class="QVBoxLayout" name="PluginsStuff_" >
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout" >
@@ -94,9 +94,15 @@
             </item>
             <item>
              <widget class="QTreeView" name="PluginsTasksTree_" >
+              <property name="sizePolicy" >
+               <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+                <horstretch>40</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="minimumSize" >
                <size>
-                <width>250</width>
+                <width>500</width>
                 <height>0</height>
                </size>
               </property>
@@ -115,8 +121,8 @@
           </widget>
           <widget class="QDockWidget" name="ControlsDockWidget_" >
            <property name="sizePolicy" >
-            <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
-             <horstretch>0</horstretch>
+            <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+             <horstretch>3</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>

@@ -7,8 +7,8 @@
 
 struct TorrentInfo
 {
-    QString Destination_,
-            State_;
+	QString Destination_,
+			State_;
 	libtorrent::torrent_status Status_;
 	libtorrent::torrent_info Info_;
 };

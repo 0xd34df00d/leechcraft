@@ -130,12 +130,11 @@ private slots:
 	void on_Export__triggered ();
     void setActionsEnabled ();
     void showError (QString);
-    void updateOverallStats ();
     void doLogMessage (const QString&);
 private:
     void UpdateDashboard ();
+    void UpdateOverallStats ();
 	void UpdateTorrentControl ();
-    void UpdateTorrentPage ();
     void UpdateFilesPage ();
     void UpdatePeersPage ();
     void UpdatePiecesPage ();
