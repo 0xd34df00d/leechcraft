@@ -34,6 +34,122 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	SplashScreen_->showMessage (tr ("Initializing interface..."),
 			Qt::AlignLeft | Qt::AlignBottom);
 
+	InitializeInterface ();
+
+	SplashScreen_->showMessage (tr ("Initializing core and plugins..."),
+			Qt::AlignLeft | Qt::AlignBottom);
+	connect (&Core::Instance (),
+			SIGNAL (loadProgress (const QString&)),
+			this,
+			SLOT (handleLoadProgress (const QString&)));
+	connect (&Core::Instance (),
+			SIGNAL (downloadFinished (const QString&)),
+			this,
+			SLOT (handleDownloadFinished (const QString&)));
+	connect (&Core::Instance (),
+			SIGNAL (log (const QString&)),
+			LogToolBox_,
+			SLOT (log (const QString&)));
+
+	Core::Instance ().SetReallyMainWindow (this);
+	Core::Instance ().DelayedInit ();
+
+	PluginManagerDialog_ = new PluginManagerDialog (this);
+
+	SplashScreen_->showMessage (tr ("Initializing core and plugins..."),
+			Qt::AlignLeft | Qt::AlignBottom);
+
+	QAbstractItemModel *tasksModel = Core::Instance ().GetTasksModel ();
+	Ui_.PluginsTasksTree_->setModel (tasksModel);
+
+	Ui_.HistoryView_->setModel (Core::Instance ().GetHistoryModel ());
+	Ui_.HistoryView_->sortByColumn (3, Qt::DescendingOrder);
+	connect (Ui_.HistoryView_,
+			SIGNAL (activated (const QModelIndex&)),
+			this,
+			SLOT (historyActivated (const QModelIndex&)));
+
+	connect (Ui_.PluginsTasksTree_->selectionModel (),
+			SIGNAL (currentRowChanged (const QModelIndex&,
+					const QModelIndex&)),
+			this,
+			SLOT (updatePanes (const QModelIndex&,
+					const QModelIndex&)));
+
+	QHeaderView *itemsHeader = Ui_.PluginsTasksTree_->header ();
+	QFontMetrics fm = fontMetrics ();
+	itemsHeader->resizeSection (0,
+			fm.width ("Average download job or torrent name is just like this one maybe."));
+	itemsHeader->resizeSection (1,
+			fm.width ("State of the download."));
+	itemsHeader->resizeSection (2,
+			fm.width ("99.99% (1234.56 kb from 2345.67 kb)"));
+	itemsHeader->resizeSection (3,
+			fm.width (" 1234.56 kb/s "));
+
+	itemsHeader = Ui_.HistoryView_->header ();
+	itemsHeader->resizeSection (0,
+			fm.width ("Average filename or torrent name is about this width or something."));
+	itemsHeader->resizeSection (1,
+			fm.width ("this is some path for downloaded file with extension"));
+	itemsHeader->resizeSection (2,
+			fm.width (" 1234.56 kb "));
+	itemsHeader->resizeSection (3,
+			fm.width (QDateTime::currentDateTime ().toString ()));
+
+	QTimer *speedUpd = new QTimer (this);
+	speedUpd->setInterval (1000);
+	connect (speedUpd,
+			SIGNAL (timeout ()),
+			this,
+			SLOT (updateSpeedIndicators ()));
+	connect (speedUpd,
+			SIGNAL (timeout ()),
+			this,
+			SLOT (updateClock ()));
+	speedUpd->start ();
+	qApp->setQuitOnLastWindowClosed (false);
+
+	QObjectList settable = Core::Instance ().GetSettables ();
+	for (QObjectList::const_iterator i = settable.begin (),
+			end = settable.end (); i != end; ++i)
+		SettingsSink_->AddDialog (*i);
+
+	updateIconSet ();
+
+	setUpdatesEnabled (true);
+	SplashScreen_->finish (this);
+	show ();
+}
+
+MainWindow::~MainWindow ()
+{
+}
+
+QModelIndexList MainWindow::GetSelectedRows () const
+{
+	return Ui_.PluginsTasksTree_->selectionModel ()->selectedRows ();
+}
+
+QTabWidget* MainWindow::GetTabWidget () const
+{
+	return Ui_.MainTabWidget_;
+}
+
+void MainWindow::catchError (QString message)
+{
+	QMessageBox::critical (this, tr ("Error"), message);
+}
+
+void MainWindow::closeEvent (QCloseEvent *e)
+{
+	e->ignore ();
+	hide ();
+	IsShown_ = false;
+}
+
+void MainWindow::InitializeInterface ()
+{
 	if (QApplication::arguments ().contains ("-zombie"))
 		QApplication::setStyle (new ZombiTechStyle ());
 
@@ -106,111 +222,8 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			SIGNAL (deleteSelected (const QModelIndex&)),
 			&Core::Instance (),
 			SLOT (deleteSelectedHistory (const QModelIndex&)));
-
-	SplashScreen_->showMessage (tr ("Initializing core and plugins..."),
-			Qt::AlignLeft | Qt::AlignBottom);
-	connect (&Core::Instance (),
-			SIGNAL (loadProgress (const QString&)),
-			this,
-			SLOT (handleLoadProgress (const QString&)));
-	connect (&Core::Instance (),
-			SIGNAL (downloadFinished (const QString&)),
-			this,
-			SLOT (handleDownloadFinished (const QString&)));
-	connect (&Core::Instance (),
-			SIGNAL (log (const QString&)),
-			LogToolBox_,
-			SLOT (log (const QString&)));
-
-	Core::Instance ().SetReallyMainWindow (this);
-	Core::Instance ().DelayedInit ();
-
-	PluginManagerDialog_ = new PluginManagerDialog (this);
-
-	SplashScreen_->showMessage (tr ("Initializing core and plugins..."),
-			Qt::AlignLeft | Qt::AlignBottom);
-
-	QAbstractItemModel *tasksModel = Core::Instance ().GetTasksModel ();
-	Ui_.PluginsTasksTree_->setModel (tasksModel);
-
-	Ui_.HistoryView_->setModel (Core::Instance ().GetHistoryModel ());
-	Ui_.HistoryView_->sortByColumn (3, Qt::DescendingOrder);
-	connect (Ui_.HistoryView_,
-			SIGNAL (activated (const QModelIndex&)),
-			this,
-			SLOT (historyActivated (const QModelIndex&)));
-
-	connect (Ui_.PluginsTasksTree_->selectionModel (),
-			SIGNAL (currentRowChanged (const QModelIndex&,
-					const QModelIndex&)),
-			this,
-			SLOT (updatePanes (const QModelIndex&,
-					const QModelIndex&)));
-
-	QHeaderView *itemsHeader = Ui_.PluginsTasksTree_->header ();
-	QFontMetrics fm = fontMetrics ();
-	itemsHeader->resizeSection (0,
-			fm.width ("Average download job or torrent name is just like this one maybe."));
-	itemsHeader->resizeSection (1,
-			fm.width ("State of the download."));
-	itemsHeader->resizeSection (2,
-			fm.width ("99.99% (1234.56 kb from 2345.67 kb)"));
-	itemsHeader->resizeSection (3,
-			fm.width (" 1234.56 kb/s "));
-
-	itemsHeader = Ui_.HistoryView_->header ();
-	itemsHeader->resizeSection (0,
-			fm.width ("Average filename or torrent name is about this width or something."));
-	itemsHeader->resizeSection (1,
-			fm.width ("this is some path for downloaded file with extension"));
-	itemsHeader->resizeSection (2,
-			fm.width (" 1234.56 kb "));
-	itemsHeader->resizeSection (3,
-			fm.width (QDateTime::currentDateTime ().toString ()));
-
-	QTimer *speedUpd = new QTimer (this);
-	speedUpd->setInterval (1000);
-	connect (speedUpd, SIGNAL (timeout ()), this, SLOT (updateSpeedIndicators ()));
-	speedUpd->start ();
-	qApp->setQuitOnLastWindowClosed (false);
-
-	QObjectList settable = Core::Instance ().GetSettables ();
-	for (QObjectList::const_iterator i = settable.begin (),
-			end = settable.end (); i != end; ++i)
-		SettingsSink_->AddDialog (*i);
-
-	updateIconSet ();
-
-	setUpdatesEnabled (true);
-	SplashScreen_->finish (this);
-	show ();
 }
 
-MainWindow::~MainWindow ()
-{
-}
-
-QModelIndexList MainWindow::GetSelectedRows () const
-{
-	return Ui_.PluginsTasksTree_->selectionModel ()->selectedRows ();
-}
-
-QTabWidget* MainWindow::GetTabWidget () const
-{
-	return Ui_.MainTabWidget_;
-}
-
-void MainWindow::catchError (QString message)
-{
-	QMessageBox::critical (this, tr ("Error"), message);
-}
-
-void MainWindow::closeEvent (QCloseEvent *e)
-{
-	e->ignore ();
-	hide ();
-	IsShown_ = false;
-}
 
 void MainWindow::SetStatusBar ()
 {
@@ -225,6 +238,11 @@ void MainWindow::SetStatusBar ()
 	UploadSpeed_->setText (Proxy::Instance ()->MakePrettySize (0) + tr ("/s"));
 	UploadSpeed_->setMinimumWidth (minSize);
 	UploadSpeed_->setAlignment (Qt::AlignRight);
+	QString current = QTime::currentTime ().toString ();
+	Clock_ = new QLabel;
+	Clock_->setMinimumWidth (fm.width (current + "___"));
+	Clock_->setText (current);
+	Clock_->setAlignment (Qt::AlignRight);
 
 	DSpeedGraph_ = new GraphWidget (Qt::green);
 	DSpeedGraph_->setMinimumWidth (250);
@@ -235,6 +253,8 @@ void MainWindow::SetStatusBar ()
 	statusBar ()->addPermanentWidget (DSpeedGraph_);
 	statusBar ()->addPermanentWidget (UploadSpeed_);
 	statusBar ()->addPermanentWidget (USpeedGraph_);
+	statusBar ()->addPermanentWidget (Clock_);
+	Clock_->hide ();
 }
 
 void MainWindow::SetTrayIcon ()
@@ -328,9 +348,11 @@ void MainWindow::on_ActionFullscreenMode__triggered (bool full)
 	{
 		WasMaximized_ = isMaximized ();
 		showFullScreen ();
+		Clock_->show ();
 	}
 	else if (WasMaximized_)
 	{
+		Clock_->hide ();
 		showMaximized ();
 		// Because shit happens on X11 otherwise
 		QTimer::singleShot (200,
@@ -385,6 +407,11 @@ void MainWindow::updateSpeedIndicators ()
 	UploadSpeed_->setText (Proxy::Instance ()->MakePrettySize (speeds.second) + tr ("/s"));
 	DSpeedGraph_->PushSpeed (speeds.first);
 	USpeedGraph_->PushSpeed (speeds.second);
+}
+
+void MainWindow::updateClock ()
+{
+	Clock_->setText (QTime::currentTime ().toString ());
 }
 
 void MainWindow::showHideMain ()

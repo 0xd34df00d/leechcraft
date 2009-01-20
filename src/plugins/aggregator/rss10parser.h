@@ -12,7 +12,6 @@ public:
     virtual bool CouldParse (const QDomDocument&) const;
 private:
 	channels_container_t Parse (const QDomDocument&) const;
-	Item* ParseItem (const QDomElement&) const;
 };
 
 #endif

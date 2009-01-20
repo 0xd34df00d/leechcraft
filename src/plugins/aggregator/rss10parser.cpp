@@ -74,6 +74,7 @@ channels_container_t RSS10Parser::Parse (const QDomDocument& doc) const
 			item->NumComments_ = GetNumComments (itemDescr);
 			item->CommentsLink_ = GetCommentsRSS (itemDescr);
 			item->CommentsPageLink_ = GetCommentsLink (itemDescr);
+			item->Enclosures_ = GetEncEnclosures (itemDescr);
             if (item->Guid_.isEmpty ())
                 item->Guid_ = "empty";
 
@@ -83,11 +84,5 @@ channels_container_t RSS10Parser::Parse (const QDomDocument& doc) const
 	}
 
 	return result;
-}
-
-Item* RSS10Parser::ParseItem (const QDomElement&) const
-{
-	Item *item = new Item;
-	return item;
 }
 

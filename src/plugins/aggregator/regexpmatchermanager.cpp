@@ -186,12 +186,11 @@ namespace
 
 	struct HandleBody : public std::unary_function<RegexpMatcherManager::RegexpItem, void>
 	{
-		QString Link_, Description_;
+		const Item_ptr& Item_;
 		QStringList Links_;
 
-		HandleBody (const QString& descr, const QString& link)
-		: Link_ (link)
-		, Description_ (descr)
+		HandleBody (const Item_ptr& item)
+		: Item_ (item)
 		{
 		}
 
@@ -206,10 +205,17 @@ namespace
 			}
 
 			QRegExp ib (rxs, Qt::CaseInsensitive, QRegExp::RegExp2);
-			if (rxs.isEmpty () && !Link_.isEmpty ())
-				Links_ << Link_;
-			else if ((!link && ib.indexIn (Description_) != -1) ||
-					(link && ib.indexIn (Link_) != -1))
+			if (link)
+			{
+				if (rxs.isEmpty () || ib.indexIn (Item_->Link_) != -1)
+					Links_ << Item_->Link_;
+
+				for (QList<Enclosure>::const_iterator i = Item_->Enclosures_.begin (),
+						end = Item_->Enclosures_.end (); i != end; ++i)
+					if (rxs.isEmpty () || ib.indexIn (i->URL_) != -1)
+						Links_ << i->URL_;
+			}
+			else if ((!link && ib.indexIn (Item_->Description_) != -1))
 				Links_ << ib.cap (0);
 		}
 
@@ -236,7 +242,7 @@ void RegexpMatcherManager::HandleItem (const Item_ptr& item) const
 
 	QStringList links = std::for_each (matchingTitles.begin (),
 			matchingTitles.end (),
-			HandleBody (item->Description_, item->Link_)).GetLinks ();
+			HandleBody (item)).GetLinks ();
 
 	for (QStringList::const_iterator i = links.begin (),
 			end = links.end ();	i != end; ++i)

@@ -18,8 +18,7 @@ SQLStorageBackend::SQLStorageBackend ()
 	if (!DB_.open ())
 		LeechCraft::Util::DBLock::DumpError (DB_.lastError ());
 
-	if (!DB_.tables ().contains ("feeds"))
-		InitializeTables ();
+	InitializeTables ();
 }
 
 void SQLStorageBackend::Prepare ()
@@ -220,8 +219,7 @@ void SQLStorageBackend::Prepare ()
 			"comments_page_url = :comments_page_url "
 			"WHERE parents_hash = :parents_hash "
 			"AND title = :title "
-			"AND url = :url "
-			"AND guid = :guid");
+			"AND url = :url");
 
 	ToggleChannelUnread_ = QSqlQuery (DB_);
 	ToggleChannelUnread_.prepare ("UPDATE items SET "
@@ -241,8 +239,44 @@ void SQLStorageBackend::Prepare ()
 	RemoveItem_.prepare ("DELETE FROM items "
 			"WHERE parents_hash = :parents_hash "
 			"AND title = :title "
-			"AND url = :url "
-			"AND guid = :guid");
+			"AND url = :url");
+
+	WriteEnclosure_ = QSqlQuery (DB_);
+	WriteEnclosure_.prepare ("INSERT OR REPLACE INTO enclosures ("
+			"url, "
+			"type, "
+			"length, "
+			"lang, "
+			"item_parents_hash, "
+			"item_title, "
+			"item_url"
+			") VALUES ("
+			":url, "
+			":type, "
+			":length, "
+			":lang, "
+			":item_parents_hash, "
+			":item_title, "
+			":item_url"
+			")");
+
+	RemoveEnclosures_ = QSqlQuery (DB_);
+	RemoveEnclosures_.prepare ("DELETE FROM enclosures "
+			"WHERE item_parents_hash = :item_parents_hash "
+			"AND item_title = :item_title "
+			"AND item_url = :item_url");
+
+	GetEnclosures_ = QSqlQuery (DB_);
+	GetEnclosures_.prepare ("SELECT "
+			"url, "
+			"type, "
+			"length, "
+			"lang "
+			"FROM enclosures "
+			"WHERE item_parents_hash = :item_parents_hash "
+			"AND item_title = :item_title "
+			"AND item_url = :item_url "
+			"ORDER BY url");
 }
 
 SQLStorageBackend::~SQLStorageBackend ()
@@ -406,6 +440,26 @@ Item_ptr SQLStorageBackend::GetItem (const QString& title,
 	item->CommentsPageLink_ = ItemsFullSelector_.value (10).toString ();
 
 	ItemsFullSelector_.finish ();
+
+	GetEnclosures_.bindValue (":item_parents_hash", hash);
+	GetEnclosures_.bindValue (":item_title", title);
+	GetEnclosures_.bindValue (":item_url", link);
+
+	if (!GetEnclosures_.exec ())
+		LeechCraft::Util::DBLock::DumpError (GetEnclosures_);
+	else
+		while (GetEnclosures_.next ())
+		{
+			Enclosure e =
+			{
+				GetEnclosures_.value (0).toString (),
+				GetEnclosures_.value (1).toString (),
+				GetEnclosures_.value (2).toLongLong (),
+				GetEnclosures_.value (3).toString ()
+			};
+
+			item->Enclosures_ << e;
+		}
 
 	return item;
 }
@@ -573,7 +627,6 @@ void SQLStorageBackend::UpdateItem (Item_ptr item,
 	UpdateItem_.bindValue (":description", item->Description_);
 	UpdateItem_.bindValue (":author", item->Author_);
 	UpdateItem_.bindValue (":category", item->Categories_.join ("<<<"));
-	UpdateItem_.bindValue (":guid", item->Guid_);
 	UpdateItem_.bindValue (":pub_date", item->PubDate_);
 	UpdateItem_.bindValue (":unread", item->Unread_);
 	UpdateItem_.bindValue (":num_comments", item->NumComments_);
@@ -683,6 +736,23 @@ void SQLStorageBackend::AddItem (Item_ptr item,
 		throw std::runtime_error ("failed to save item");
 	}
 
+	for (QList<Enclosure>::const_iterator i = item->Enclosures_.begin (),
+			end = item->Enclosures_.end (); i != end; ++i)
+	{
+		WriteEnclosure_.bindValue (":url", i->URL_);
+		WriteEnclosure_.bindValue (":type", i->Type_);
+		WriteEnclosure_.bindValue (":length", i->Length_);
+		WriteEnclosure_.bindValue (":lang", i->Lang_);
+		WriteEnclosure_.bindValue (":item_parents_hash", parentUrl + parentTitle);
+		WriteEnclosure_.bindValue (":item_title", item->Title_);
+		WriteEnclosure_.bindValue (":item_url", item->Link_);
+
+		if (!WriteEnclosure_.exec ())
+			LeechCraft::Util::DBLock::DumpError (WriteEnclosure_);
+	}
+
+	WriteEnclosure_.finish ();
+
 	InsertItem_.finish ();
 
 	Channel_ptr channel = GetChannel (parentTitle, parentUrl);
@@ -695,10 +765,30 @@ void SQLStorageBackend::RemoveItem (Item_ptr item,
 		const QString& parentTitle,
 		const QString& parentUrl)
 {
+	LeechCraft::Util::DBLock lock (DB_);
+	try
+	{
+		lock.Init ();
+	}
+	catch (const std::runtime_error& e)
+	{
+		qWarning () << Q_FUNC_INFO << e.what ();
+		return;
+	}
+	RemoveEnclosures_.bindValue (":item_parents_hash", hash);
+	RemoveEnclosures_.bindValue (":item_title", item->Title_);
+	RemoveEnclosures_.bindValue (":item_url", item->Link_);
+	if (!RemoveEnclosures_.exec ())
+	{
+		LeechCraft::Util::DBLock::DumpError (RemoveItem_);
+		return;
+	}
+
+	RemoveEnclosures_.finish ();
+
 	RemoveItem_.bindValue (":parents_hash", hash);
 	RemoveItem_.bindValue (":title", item->Title_);
 	RemoveItem_.bindValue (":url", item->Link_);
-	RemoveItem_.bindValue (":guid", item->Guid_);
 
 	if (!RemoveItem_.exec ())
 	{
@@ -707,6 +797,8 @@ void SQLStorageBackend::RemoveItem (Item_ptr item,
 	}
 
 	RemoveItem_.finish ();
+
+	lock.Good ();
 
 	Channel_ptr channel = GetChannel (parentTitle, parentUrl);
 	emit itemDataUpdated (item, channel);
@@ -732,14 +824,23 @@ void SQLStorageBackend::RemoveFeed (const QString& url)
 	for (channels_shorts_t::iterator i = shorts.begin (),
 			end = shorts.end (); i != end; ++i)
 	{
-		QSqlQuery removeItem (DB_);
-		removeItem.prepare ("DELETE FROM items "
+		QSqlQuery query (DB_);
+		query.prepare ("DELETE FROM items "
 				"WHERE parents_hash = :parents_hash");
-		removeItem.bindValue (":parents_hash", url + i->Title_);
+		query.bindValue (":parents_hash", url + i->Title_);
 
-		if (!removeItem.exec ())
+		if (!query.exec ())
 		{
-			LeechCraft::Util::DBLock::DumpError (removeItem);
+			LeechCraft::Util::DBLock::DumpError (query);
+			return;
+		}
+
+		query.prepare ("DELETE FROM enclosures "
+				"WHERE item_parents_hash = :item_parents_hash");
+		query.bindValue (":item_parents_hash", url + i->Title_);
+		if (!query.exec ())
+		{
+			LeechCraft::Util::DBLock::DumpError (query);
 			return;
 		}
 
@@ -809,72 +910,111 @@ bool SQLStorageBackend::UpdateItemsStorage (int oldV, int newV)
 bool SQLStorageBackend::InitializeTables ()
 {
 	QSqlQuery query (DB_);
-	if (!query.exec ("CREATE TABLE feeds ("
-			"url TEXT PRIMARY KEY, "
-			"last_update TIMESTAMP "
-			");"))
+	if (!DB_.tables ().contains ("feeds"))
 	{
-		LeechCraft::Util::DBLock::DumpError (query.lastError ());
-		return false;
+		if (!query.exec ("CREATE TABLE feeds ("
+				"url TEXT PRIMARY KEY, "
+				"last_update TIMESTAMP "
+				");"))
+		{
+			LeechCraft::Util::DBLock::DumpError (query.lastError ());
+			return false;
+		}
+
+		if (!query.exec ("CREATE UNIQUE INDEX idx_feeds_url ON feeds (url);"))
+			LeechCraft::Util::DBLock::DumpError (query.lastError ());
 	}
 
-	if (!query.exec ("CREATE TABLE channels ("
-			"parent_feed_url TEXT, "
-			"url TEXT, "
-			"title TEXT, "
-			"description TEXT, "
-			"last_build TIMESTAMP, "
-			"tags TEXT, "
-			"language TEXT, "
-			"author TEXT, "
-			"pixmap_url TEXT, "
-			"pixmap BLOB, "
-			"favicon BLOB "
-			");"))
+	if (!DB_.tables ().contains ("channels"))
 	{
-		LeechCraft::Util::DBLock::DumpError (query.lastError ());
-		return false;
+		if (!query.exec ("CREATE TABLE channels ("
+				"parent_feed_url TEXT, "
+				"url TEXT, "
+				"title TEXT, "
+				"description TEXT, "
+				"last_build TIMESTAMP, "
+				"tags TEXT, "
+				"language TEXT, "
+				"author TEXT, "
+				"pixmap_url TEXT, "
+				"pixmap BLOB, "
+				"favicon BLOB "
+				");"))
+		{
+			LeechCraft::Util::DBLock::DumpError (query.lastError ());
+			return false;
+		}
+
+		if (!query.exec ("CREATE INDEX idx_channels_parent_feed_url "
+					"ON channels (parent_feed_url);"))
+			LeechCraft::Util::DBLock::DumpError (query.lastError ());
+
+		if (!query.exec ("CREATE UNIQUE INDEX idx_channels_parent_feed_url_title "
+					"ON channels (parent_feed_url, title);"))
+			LeechCraft::Util::DBLock::DumpError (query.lastError ());
+
+		if (!query.exec ("CREATE UNIQUE INDEX "
+					"idx_channels_parent_feed_url_title_url "
+					"ON channels (parent_feed_url, title, url);"))
+			LeechCraft::Util::DBLock::DumpError (query.lastError ());
 	}
 
-	if (!query.exec ("CREATE TABLE items ("
-			"parents_hash TEXT, "
-			"title TEXT, "
-			"url TEXT, "
-			"description TEXT, "
-			"author TEXT, "
-			"category TEXT, "
-			"guid TEXT, "
-			"pub_date TIMESTAMP, "
-			"unread TINYINT, "
-			"num_comments SMALLINT, "
-			"comments_url TEXT, "
-			"comments_page_url TEXT"
-			");"))
+	if (!DB_.tables ().contains ("items"))
 	{
-		LeechCraft::Util::DBLock::DumpError (query.lastError ());
-		return false;
+		if (!query.exec ("CREATE TABLE items ("
+				"parents_hash TEXT, "
+				"title TEXT, "
+				"url TEXT, "
+				"description TEXT, "
+				"author TEXT, "
+				"category TEXT, "
+				"guid TEXT, "
+				"pub_date TIMESTAMP, "
+				"unread TINYINT, "
+				"num_comments SMALLINT, "
+				"comments_url TEXT, "
+				"comments_page_url TEXT"
+				");"))
+		{
+			LeechCraft::Util::DBLock::DumpError (query.lastError ());
+			return false;
+		}
+
+		if (!query.exec ("CREATE INDEX idx_items_parents_hash "
+					"ON items (parents_hash);"))
+			LeechCraft::Util::DBLock::DumpError (query.lastError ());
+
+		if (!query.exec ("CREATE INDEX idx_items_parents_hash_unread "
+					"ON items (parents_hash, unread);"))
+			LeechCraft::Util::DBLock::DumpError (query.lastError ());
+
+		if (!query.exec ("CREATE UNIQUE INDEX "
+					"idx_items_parents_hash_title_url "
+					"ON items (parents_hash, title, url);"))
+			LeechCraft::Util::DBLock::DumpError (query.lastError ());
 	}
 
-	if (!query.exec ("CREATE UNIQUE INDEX feeds_url ON feeds (url);"))
-		LeechCraft::Util::DBLock::DumpError (query.lastError ());
-	if (!query.exec ("CREATE INDEX channels_parent_url ON channels (parent_feed_url);"))
-		LeechCraft::Util::DBLock::DumpError (query.lastError ());
-	if (!query.exec ("CREATE INDEX items_parents_hash ON items (parents_hash);"))
-		LeechCraft::Util::DBLock::DumpError (query.lastError ());
-
-	if (!query.exec ("CREATE TABLE item_bucket ("
-			"title TEXT, "
-			"url TEXT, "
-			"description TEXT, "
-			"author TEXT, "
-			"category TEXT, "
-			"guid TEXT, "
-			"pub_date TIMESTAMP, "
-			"unread TINYINT "
-			");"))
+	if (!DB_.tables ().contains ("enclosures"))
 	{
-		LeechCraft::Util::DBLock::DumpError (query.lastError ());
-		return false;
+		if (!query.exec ("CREATE TABLE enclosures ("
+					"url TEXT NOT NULL, "
+					"type TEXT NOT NULL, "
+					"length BIGINT NOT NULL, "
+					"lang TEXT, "
+					"item_parents_hash TEXT, "
+					"item_title TEXT, "
+					"item_url TEXT, "
+					"PRIMARY KEY (item_parents_hash, item_title, item_url, url)"
+					");"))
+		{
+			LeechCraft::Util::DBLock::DumpError (query.lastError ());
+			return false;
+		}
+
+		if (!query.exec ("CREATE INDEX "
+					"idx_enclosures_item_parents_hash_item_title_item_url "
+					"ON enclosures (item_parents_hash, item_title, item_url);"))
+			LeechCraft::Util::DBLock::DumpError (query.lastError ());
 	}
 
 	return true;

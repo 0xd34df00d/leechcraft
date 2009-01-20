@@ -9,6 +9,7 @@ class QSystemTrayIcon;
 class QTranslator;
 class QToolBar;
 class ItemBucket;
+class Enclosure;
 
 struct Aggregator_Impl;
 
@@ -38,6 +39,12 @@ protected:
 	virtual void keyPressEvent (QKeyEvent*);
 private:
 	void SetupMenuBar ();
+	void SetHtml (QString, const QList<Enclosure>&);
+	void SetLink (QString);
+	void SetCategory (const QStringList&);
+	void SetPubDate (const QDateTime&);
+	void SetCommentsLabel (int);
+	void SetAuthor (const QString&);
 private slots:
     void showError (const QString&);
     void on_ActionAddFeed__triggered ();

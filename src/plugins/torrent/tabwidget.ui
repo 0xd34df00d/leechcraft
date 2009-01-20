@@ -741,9 +741,9 @@
        <property name="geometry" >
         <rect>
          <x>0</x>
-         <y>0</y>
+         <y>-277</y>
          <width>530</width>
-         <height>1487</height>
+         <height>1465</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout" >
@@ -880,6 +880,9 @@
            <string>Status</string>
           </property>
           <layout class="QFormLayout" name="formLayout_6" >
+           <property name="fieldGrowthPolicy" >
+            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+           </property>
            <item row="0" column="0" >
             <widget class="QLabel" name="label" >
              <property name="text" >
@@ -888,11 +891,34 @@
             </widget>
            </item>
            <item row="0" column="1" >
-            <widget class="QLabel" name="LabelState_" >
-             <property name="text" >
-              <string/>
-             </property>
-            </widget>
+            <layout class="QHBoxLayout" name="horizontalLayout" >
+             <item>
+              <widget class="QLabel" name="LabelState_" >
+               <property name="text" >
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="PiecesWidget" native="1" name="PiecesWidget_" >
+               <property name="sizePolicy" >
+                <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+                 <horstretch>1</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize" >
+                <size>
+                 <width>0</width>
+                 <height>20</height>
+                </size>
+               </property>
+               <property name="text" stdset="0" >
+                <string/>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
            <item row="1" column="0" >
             <widget class="QLabel" name="label_3" >
@@ -1128,19 +1154,6 @@
            <item row="17" column="1" >
             <widget class="QLabel" name="LabelLastScrape_" >
              <property name="text" >
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="18" column="0" >
-            <widget class="PiecesWidget" native="1" name="PiecesWidget_" >
-             <property name="minimumSize" >
-              <size>
-               <width>0</width>
-               <height>20</height>
-              </size>
-             </property>
-             <property name="text" stdset="0" >
               <string/>
              </property>
             </widget>

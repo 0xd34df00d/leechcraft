@@ -15,6 +15,7 @@ public:
 protected:
 	virtual channels_container_t Parse (const QDomDocument&) const = 0;
 	virtual QString ParseEscapeAware (const QDomElement&) const;
+	QList<Enclosure> GetEnclosures (const QDomElement&) const;
 };
 
 #endif

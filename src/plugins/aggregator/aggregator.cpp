@@ -12,6 +12,7 @@
 #include <QKeyEvent>
 #include <plugininterface/tagscompletionmodel.h>
 #include <plugininterface/util.h>
+#include <plugininterface/proxy.h>
 #include <plugininterface/categoryselector.h>
 #include <plugininterface/tagscompleter.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -444,6 +445,118 @@ void Aggregator::SetupMenuBar ()
 	Impl_->ToolBar_->addAction (Impl_->ActionHideReadItems_);
 }
 
+void Aggregator::SetHtml (QString description,
+		const QList<Enclosure>& enclosures)
+{
+	for (QList<Enclosure>::const_iterator i = enclosures.begin (),
+			end = enclosures.end (); i != end; ++i)
+	{
+		description += "<div style='background: lightgray; "
+			"border: 1px solid #333333; "
+			"padding-top: 1em; "
+			"padding-bottom: 1em; "
+			"padding-left: 2em; "
+			"padding-right: 2em;'>";
+		if (i->Length_ > 0)
+			description += tr ("File of type %1, size %2:<br />")
+				.arg (i->Type_)
+				.arg (LeechCraft::Util::Proxy::Instance ()->
+						MakePrettySize (i->Length_));
+		else
+			description += tr ("File of type %1 and unknown length:<br />")
+				.arg (i->Type_);
+		description += QString ("<a href='%1'>%2</a>")
+			.arg (i->URL_)
+			.arg (QFileInfo (QUrl (i->URL_).path ()).fileName ());
+		if (!i->Lang_.isEmpty ())
+			description += tr ("<br />Specified language: %1")
+				.arg (i->Lang_);
+		description += "</div>";
+	}
+	Impl_->Ui_.ItemView_->setHtml (description);
+}
+
+void Aggregator::SetLink (QString link)
+{
+	QString shortLink;
+	Impl_->Ui_.ItemLink_->setToolTip (link);
+	if (link.size () >= 40)
+		shortLink = link.left (18) + "..." + link.right (18);
+	else
+		shortLink = link;
+	if (QUrl (link).isValid ())
+	{
+		link.insert (0,"<a href=\"");
+		link.append ("\">" + shortLink + "</a>");
+		Impl_->Ui_.ItemLink_->setText (link);
+	}
+	else
+		Impl_->Ui_.ItemLink_->setText (shortLink);
+}
+
+void Aggregator::SetCategory (const QStringList& categories)
+{
+	QString category = categories.join ("; ").left (60);
+	if (category.isEmpty ())
+	{
+		Impl_->Ui_.ItemCategory_->hide ();
+		Impl_->Ui_.ItemCategoryLabel_->hide ();
+	}
+	else
+	{
+		Impl_->Ui_.ItemCategory_->setText (category);
+		Impl_->Ui_.ItemCategory_->show ();
+		Impl_->Ui_.ItemCategoryLabel_->show ();
+	}
+}
+
+void Aggregator::SetPubDate (const QDateTime& pubDate)
+{
+	if (pubDate.isValid ())
+	{
+		Impl_->Ui_.ItemPubDate_->setText (pubDate.toString ());
+		Impl_->Ui_.ItemPubDate_->show ();
+		Impl_->Ui_.ItemPubDateLabel_->show ();
+	}
+	else
+	{
+		Impl_->Ui_.ItemPubDate_->hide ();
+		Impl_->Ui_.ItemPubDateLabel_->hide ();
+	}
+}
+
+void Aggregator::SetCommentsLabel (int numComments)
+{
+	if (numComments >= 0)
+	{
+		Impl_->Ui_.ItemComments_->show ();
+		Impl_->Ui_.ItemCommentsLabel_->show ();
+
+		QString text = QString::number (numComments);
+		Impl_->Ui_.ItemComments_->setText (text);
+	}
+	else
+	{
+		Impl_->Ui_.ItemComments_->hide ();
+		Impl_->Ui_.ItemCommentsLabel_->hide ();
+	}
+}
+
+void Aggregator::SetAuthor (const QString& itemAuthor)
+{
+	if (itemAuthor.isEmpty ())
+	{
+		Impl_->Ui_.ItemAuthor_->hide ();
+		Impl_->Ui_.ItemAuthorLabel_->hide ();
+	}
+	else
+	{
+		Impl_->Ui_.ItemAuthor_->setText (itemAuthor);
+		Impl_->Ui_.ItemAuthor_->show ();
+		Impl_->Ui_.ItemAuthorLabel_->show ();
+	}
+}
+
 void Aggregator::showError (const QString& msg)
 {
     qWarning () << Q_FUNC_INFO << msg;
@@ -647,83 +760,20 @@ void Aggregator::currentItemChanged (const QItemSelection& selection)
 
 	Item_ptr item = Core::Instance ().GetItem (sindex);
 
-	Impl_->Ui_.ItemView_->setHtml (item->Description_);
+	SetHtml (item->Description_, item->Enclosures_);
 	connect (Impl_->Ui_.ItemView_->page ()->networkAccessManager (),
 			SIGNAL (sslErrors (QNetworkReply*, const QList<QSslError>&)),
 			&Core::Instance (),
 			SLOT (handleSslError (QNetworkReply*)));
 
-	QString itemAuthor = item->Author_;
-	if (itemAuthor.isEmpty ())
-	{
-		Impl_->Ui_.ItemAuthor_->hide ();
-		Impl_->Ui_.ItemAuthorLabel_->hide ();
-	}
-	else
-	{
-		Impl_->Ui_.ItemAuthor_->setText (itemAuthor);
-		Impl_->Ui_.ItemAuthor_->show ();
-		Impl_->Ui_.ItemAuthorLabel_->show ();
-	}
+	SetAuthor (item->Author_);
+	SetCategory (item->Categories_);
+	SetLink (item->Link_);
+	SetPubDate (item->PubDate_);
+	SetCommentsLabel (item->NumComments_);
 
-	QString category = item->Categories_.join ("; ").left (60);
-	if (category.isEmpty ())
-	{
-		Impl_->Ui_.ItemCategory_->hide ();
-		Impl_->Ui_.ItemCategoryLabel_->hide ();
-	}
-	else
-	{
-		Impl_->Ui_.ItemCategory_->setText (category);
-		Impl_->Ui_.ItemCategory_->show ();
-		Impl_->Ui_.ItemCategoryLabel_->show ();
-	}
-
-	QString link = item->Link_;
-	QString shortLink;
-	Impl_->Ui_.ItemLink_->setToolTip (link);
-	if (link.size () >= 40)
-		shortLink = link.left (18) + "..." + link.right (18);
-	else
-		shortLink = link;
-	if (QUrl (link).isValid ())
-	{
-		link.insert (0,"<a href=\"");
-		link.append ("\">" + shortLink + "</a>");
-		Impl_->Ui_.ItemLink_->setText (link);
-	}
-	else
-		Impl_->Ui_.ItemLink_->setText (shortLink);
-
-	QDateTime pubDate = item->PubDate_;
-	if (pubDate.isValid ())
-	{
-		Impl_->Ui_.ItemPubDate_->setText (pubDate.toString ());
-		Impl_->Ui_.ItemPubDate_->show ();
-		Impl_->Ui_.ItemPubDateLabel_->show ();
-	}
-	else
-	{
-		Impl_->Ui_.ItemPubDate_->hide ();
-		Impl_->Ui_.ItemPubDateLabel_->hide ();
-	}
-
-	int numComments = item->NumComments_;
 	QString commentsRSS = item->CommentsLink_;
 	Impl_->Ui_.ItemCommentsSubscribe_->setVisible (!commentsRSS.isEmpty ());
-	if (numComments >= 0)
-	{
-		Impl_->Ui_.ItemComments_->show ();
-		Impl_->Ui_.ItemCommentsLabel_->show ();
-
-		QString text = QString::number (numComments);
-		Impl_->Ui_.ItemComments_->setText (text);
-	}
-	else
-	{
-		Impl_->Ui_.ItemComments_->hide ();
-		Impl_->Ui_.ItemCommentsLabel_->hide ();
-	}
 }
 
 void Aggregator::currentChannelChanged ()

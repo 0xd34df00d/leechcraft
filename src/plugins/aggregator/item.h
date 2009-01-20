@@ -16,6 +16,14 @@ struct ItemShort
 	bool Unread_;
 };
 
+struct Enclosure
+{
+	QString URL_;
+	QString Type_;
+	qint64 Length_;
+	QString Lang_;
+};
+
 struct Item
 {
 	/** The title of the item as showed in the item list.
@@ -60,6 +68,9 @@ struct Item
 	 * not be determined from the item representation in the feed.
 	 */
 	QString CommentsPageLink_;
+	/** List of enclosures of the item.
+	 */
+	QList<Enclosure> Enclosures_;
 
 	/** Returns the simplified (short) representation of this item.
 	 *
@@ -83,6 +94,8 @@ struct ItemComparator
 Q_DECLARE_METATYPE (Item);
 
 bool operator== (const Item&, const Item&);
+QDataStream& operator<< (QDataStream&, const Enclosure&);
+QDataStream& operator>> (QDataStream&, Enclosure&);
 QDataStream& operator<< (QDataStream&, const Item&);
 QDataStream& operator>> (QDataStream&, Item&);
 

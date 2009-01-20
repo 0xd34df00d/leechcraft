@@ -195,7 +195,35 @@ class SQLStorageBackend : public StorageBackend
 					   * - url
 					   * - guid
 					   */
-					  RemoveItem_;
+					  RemoveItem_,
+					  /** Binds:
+					   * - url
+					   * - type
+					   * - length
+					   * - lang
+					   * - item_parents_hash
+					   * - item_title
+					   * - item_url
+					   */
+					  WriteEnclosure_,
+					  /** Binds:
+					   * - item_parents_hash
+					   * - item_title
+					   * - item_url
+					   */
+					  RemoveEnclosures_,
+					  /** Returns:
+					   * - url
+					   * - type
+					   * - length
+					   * - lang
+					   *
+					   * Binds:
+					   * - item_parents_hash
+					   * - item_title
+					   * - item_url
+					   */
+					  GetEnclosures_;
 public:
 	SQLStorageBackend ();
 	virtual ~SQLStorageBackend ();

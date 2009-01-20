@@ -31,9 +31,39 @@ bool operator== (const Item& i1, const Item& i2)
         i1.Link_ == i2.Link_;
 }
 
-QDataStream& operator<< (QDataStream& out, const Item& item)
+QDataStream& operator<< (QDataStream& out, const Enclosure& enc)
 {
 	int version = 1;
+	out << version
+		<< enc.URL_
+		<< enc.Type_
+		<< enc.Length_
+		<< enc.Lang_;
+	return out;
+}
+
+QDataStream& operator>> (QDataStream& in, Enclosure& enc)
+{
+	int version = 0;
+	in >> version;
+	if (version == 1)
+	{
+		in >> enc.URL_
+			>> enc.Type_
+			>> enc.Length_
+			>> enc.Lang_;
+		return in;
+	}
+	else
+	{
+		qWarning () << Q_FUNC_INFO << "unknown version" << version;
+		return in;
+	}
+}
+
+QDataStream& operator<< (QDataStream& out, const Item& item)
+{
+	int version = 2;
     out << version
 		<< item.Title_
         << item.Link_
@@ -45,7 +75,8 @@ QDataStream& operator<< (QDataStream& out, const Item& item)
         << item.Unread_
 		<< item.NumComments_
 		<< item.CommentsLink_
-		<< item.CommentsPageLink_;
+		<< item.CommentsPageLink_
+		<< item.Enclosures_;
     return out;
 }
 
@@ -68,8 +99,27 @@ QDataStream& operator>> (QDataStream& in, Item& item)
 			>> item.CommentsPageLink_;
 		return in;
 	}
-	else
+	else if (version == 2)
+	{
+		in >> item.Title_
+			>> item.Link_
+			>> item.Description_
+			>> item.Author_
+			>> item.Categories_
+			>> item.Guid_
+			>> item.PubDate_
+			>> item.Unread_
+			>> item.NumComments_
+			>> item.CommentsLink_
+			>> item.CommentsPageLink_
+			>> item.Enclosures_;
 		return in;
+	}
+	else
+	{
+		qWarning () << Q_FUNC_INFO << "unknown version" << version;
+		return in;
+	}
 }
 
 bool IsModified (Item_ptr i1, Item_ptr i2)

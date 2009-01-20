@@ -59,3 +59,26 @@ QString AtomParser::ParseEscapeAware (const QDomElement& parent) const
 	return result;
 }
 
+QList<Enclosure> AtomParser::GetEnclosures (const QDomElement& entry) const
+{
+	QList<Enclosure> result;
+	QDomNodeList links = entry.elementsByTagName ("link");
+	for (int i = 0; i < links.size (); ++i)
+	{
+		QDomElement link = links.at (i).toElement ();
+		if (link.attribute ("rel") != "enclosure")
+			continue;
+
+		Enclosure e =
+		{
+			link.attribute ("href"),
+			link.attribute ("type"),
+			link.attribute ("length", "-1").toLongLong (),
+			link.attribute ("hreflang")
+		};
+
+		result << e;
+	}
+	return result;
+}
+

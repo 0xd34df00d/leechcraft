@@ -21,6 +21,7 @@ public:
 protected:
 	virtual channels_container_t Parse (const QDomDocument&) const = 0;
     QDateTime RFC822TimeToQDateTime (const QString&) const;
+	QList<Enclosure> GetEnclosures (const QDomElement&) const;
 };
 
 #endif

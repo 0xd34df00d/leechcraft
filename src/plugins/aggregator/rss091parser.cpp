@@ -79,6 +79,8 @@ Item* RSS091Parser::ParseItem (const QDomElement& item) const
 	result->NumComments_ = GetNumComments (item);
 	result->CommentsLink_ = GetCommentsRSS (item);
 	result->CommentsPageLink_ = GetCommentsLink (item);
+	result->Enclosures_ = GetEnclosures (item);
+	result->Enclosures_ += GetEncEnclosures (item);
 	return result;
 }
 

@@ -34,6 +34,7 @@ protected:
 	static const QString Atom_;
 	static const QString RDF_;
 	static const QString Slash_;
+	static const QString Enc_;
 
 	QString GetLink (const QDomElement&) const;
 	QString GetAuthor (const QDomElement&) const;
@@ -44,6 +45,7 @@ protected:
 	QStringList GetAllCategories (const QDomElement&) const;
 	QStringList GetDCCategories (const QDomElement&) const;
 	QStringList GetPlainCategories (const QDomElement&) const;
+	QList<Enclosure> GetEncEnclosures (const QDomElement&) const;
 
 	QDateTime FromRFC3339 (const QString&) const;
     QString UnescapeHTML (const QString&) const;

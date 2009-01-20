@@ -36,19 +36,19 @@ namespace LeechCraft
 		Ui::LeechCraft Ui_;
 
 		QSystemTrayIcon *TrayIcon_;
-		QLabel *DownloadSpeed_, *UploadSpeed_;
-		Util::GraphWidget *DSpeedGraph_, *USpeedGraph_;
-
+		QLabel *DownloadSpeed_;
+		QLabel *UploadSpeed_;
+		QLabel *Clock_;
+		Util::GraphWidget *DSpeedGraph_;
+		Util::GraphWidget *USpeedGraph_;
 		LeechCraft::Util::XmlSettingsDialog *XmlSettingsDialog_;
 		SettingsSink *SettingsSink_;
-		QList<QDockWidget*> PluginWidgets_;
-
 		PluginManagerDialog *PluginManagerDialog_;
 		FancyPopupManager *FancyPopupManager_;
 		LogToolBox *LogToolBox_;
 		QSplashScreen *SplashScreen_;
-
-		bool IsShown_, WasMaximized_;
+		bool IsShown_;
+		bool WasMaximized_;
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
 		virtual ~MainWindow ();
@@ -59,6 +59,7 @@ namespace LeechCraft
 	protected:
 		virtual void closeEvent (QCloseEvent*);
 	private:
+		void InitializeInterface ();
 		void SetStatusBar ();
 		void SetTrayIcon ();
 		void ReadSettings ();
@@ -72,6 +73,7 @@ namespace LeechCraft
 		void on_ActionLogger__triggered ();
 		void updatePanes (const QModelIndex&, const QModelIndex&);
 		void updateSpeedIndicators ();
+		void updateClock ();
 		void showHideMain ();
 		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
 		void handleDownloadFinished (const QString&);

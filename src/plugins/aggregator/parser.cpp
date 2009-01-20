@@ -8,6 +8,7 @@ const QString Parser::WFW_ = "http://wellformedweb.org/CommentAPI/";
 const QString Parser::Atom_ = "http://www.w3.org/2005/Atom";
 const QString Parser::RDF_ = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 const QString Parser::Slash_ = "http://purl.org/rss/1.0/modules/slash/";
+const QString Parser::Enc_ = "http://purl.oclc.org/net/rss_2.0/enc#";
 
 QString Parser::GetLink (const QDomElement& parent) const
 {
@@ -105,6 +106,30 @@ QStringList Parser::GetPlainCategories (const QDomElement& parent) const
 		result += nodes.at (i).toElement ().text ();
 
 	result.removeAll ("");
+
+	return result;
+}
+
+QList<Enclosure> Parser::GetEncEnclosures (const QDomElement& parent) const
+{
+	QList<Enclosure> result;
+
+	QDomNodeList nodes = parent.elementsByTagNameNS (Enc_, "enclosure");
+
+	for (int i = 0; i < nodes.size (); ++i)
+	{
+		QDomElement link = nodes.at (i).toElement ();
+
+		Enclosure e =
+		{
+			link.attributeNS (RDF_, "resource"),
+			link.attributeNS (Enc_, "type"),
+			link.attributeNS (Enc_, "length", "-1").toLongLong (),
+			""
+		};
+
+		result << e;
+	}
 
 	return result;
 }

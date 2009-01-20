@@ -128,3 +128,24 @@ QDateTime RSSParser::RFC822TimeToQDateTime (const QString& t) const
 	return result.toLocalTime ();
 }
 
+QList<Enclosure> RSSParser::GetEnclosures (const QDomElement& entry) const
+{
+	QList<Enclosure> result;
+	QDomNodeList links = entry.elementsByTagName ("enclosure");
+	for (int i = 0; i < links.size (); ++i)
+	{
+		QDomElement link = links.at (i).toElement ();
+
+		Enclosure e =
+		{
+			link.attribute ("url"),
+			link.attribute ("type"),
+			link.attribute ("length", "-1").toLongLong (),
+			link.attribute ("hreflang")
+		};
+
+		result << e;
+	}
+	return result;
+}
+

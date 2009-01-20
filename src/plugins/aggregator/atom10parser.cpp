@@ -77,6 +77,9 @@ Item* Atom10Parser::ParseItem (const QDomElement& entry) const
     if (summary.isNull ())
         summary = entry.firstChildElement ("summary");
 	item->Description_ = ParseEscapeAware (summary);
+	
+	item->Enclosures_ = GetEnclosures (entry);
+	item->Enclosures_ += GetEncEnclosures (entry);
 
     return item;
 }
