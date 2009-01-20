@@ -39,7 +39,7 @@ protected:
 	virtual void keyPressEvent (QKeyEvent*);
 private:
 	void SetupMenuBar ();
-	void SetHtml (QString, const QList<Enclosure>&);
+	void SetHtml (const QString&, const QString&, const QList<Enclosure>&);
 	void SetLink (QString);
 	void SetCategory (const QStringList&);
 	void SetPubDate (const QDateTime&);

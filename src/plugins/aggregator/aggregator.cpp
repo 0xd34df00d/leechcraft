@@ -445,35 +445,43 @@ void Aggregator::SetupMenuBar ()
 	Impl_->ToolBar_->addAction (Impl_->ActionHideReadItems_);
 }
 
-void Aggregator::SetHtml (QString description,
+void Aggregator::SetHtml (const QString& title,
+		const QString& description,
 		const QList<Enclosure>& enclosures)
 {
+	QString result = "<div style='background: lightgray; "
+		"border: 1px solid #000000; "
+		"padding-left: 2em; "
+		"padding-right: 2em;'>";
+	result += title;
+	result += "</div>";
+	result += description;
 	for (QList<Enclosure>::const_iterator i = enclosures.begin (),
 			end = enclosures.end (); i != end; ++i)
 	{
-		description += "<div style='background: lightgray; "
+		result += "<div style='background: lightgray; "
 			"border: 1px solid #333333; "
 			"padding-top: 1em; "
 			"padding-bottom: 1em; "
 			"padding-left: 2em; "
 			"padding-right: 2em;'>";
 		if (i->Length_ > 0)
-			description += tr ("File of type %1, size %2:<br />")
+			result += tr ("File of type %1, size %2:<br />")
 				.arg (i->Type_)
 				.arg (LeechCraft::Util::Proxy::Instance ()->
 						MakePrettySize (i->Length_));
 		else
-			description += tr ("File of type %1 and unknown length:<br />")
+			result += tr ("File of type %1 and unknown length:<br />")
 				.arg (i->Type_);
-		description += QString ("<a href='%1'>%2</a>")
+		result += QString ("<a href='%1'>%2</a>")
 			.arg (i->URL_)
 			.arg (QFileInfo (QUrl (i->URL_).path ()).fileName ());
 		if (!i->Lang_.isEmpty ())
-			description += tr ("<br />Specified language: %1")
+			result += tr ("<br />Specified language: %1")
 				.arg (i->Lang_);
-		description += "</div>";
+		result += "</div>";
 	}
-	Impl_->Ui_.ItemView_->setHtml (description);
+	Impl_->Ui_.ItemView_->setHtml (result);
 }
 
 void Aggregator::SetLink (QString link)
@@ -760,7 +768,7 @@ void Aggregator::currentItemChanged (const QItemSelection& selection)
 
 	Item_ptr item = Core::Instance ().GetItem (sindex);
 
-	SetHtml (item->Description_, item->Enclosures_);
+	SetHtml (item->Title_, item->Description_, item->Enclosures_);
 	connect (Impl_->Ui_.ItemView_->page ()->networkAccessManager (),
 			SIGNAL (sslErrors (QNetworkReply*, const QList<QSslError>&)),
 			&Core::Instance (),
