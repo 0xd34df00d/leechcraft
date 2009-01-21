@@ -3,7 +3,12 @@
 #include <memory>
 #include <deque>
 #include <QMainWindow>
-#include <interfaces/interfaces.h>
+#include <interfaces/iinfo.h>
+#include <interfaces/idownload.h>
+#include <interfaces/ijobholder.h>
+#include <interfaces/iimportexport.h>
+#include <interfaces/itaggablejobs.h>
+#include <interfaces/ihavesettings.h>
 #include <plugininterface/tagscompleter.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "ui_tabwidget.h"

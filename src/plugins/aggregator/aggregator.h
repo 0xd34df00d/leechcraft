@@ -1,7 +1,9 @@
 #ifndef AGGREGATOR_H
 #define AGGREGATOR_H
 #include <memory>
-#include <interfaces/interfaces.h>
+#include <interfaces/iinfo.h>
+#include <interfaces/iembedtab.h>
+#include <interfaces/ihavesettings.h>
 #include <QWidget>
 #include <QItemSelection>
 

@@ -3,7 +3,9 @@
 #include <memory>
 #include <QObject>
 #include <QTranslator>
-#include <interfaces/interfaces.h>
+#include <interfaces/iinfo.h>
+#include <interfaces/idownload.h>
+#include <interfaces/ijobholder.h>
 
 class Nufella : public QObject
 			  , public IInfo

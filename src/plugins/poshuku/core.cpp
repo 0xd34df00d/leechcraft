@@ -17,7 +17,6 @@
 #include <QMessageBox>
 #include <QtDebug>
 #include <plugininterface/proxy.h>
-#include <interfaces/interfaces.h>
 #include "browserwidget.h"
 #include "customwebview.h"
 #include "addtofavoritesdialog.h"
@@ -103,9 +102,6 @@ void Core::Release ()
 void Core::SetProvider (QObject *object, const QString& feature)
 {
 	Providers_ [feature] = object;
-
-	if (qobject_cast<IDownload*> (object))
-		Downloaders_ << object;
 }
 
 bool Core::IsValidURL (const QString& url) const

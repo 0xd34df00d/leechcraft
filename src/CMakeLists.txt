@@ -188,7 +188,17 @@ SET (HEADERS
 	storagebackend.h
 	sqlstoragebackend.h
 	debugmessagehandler.h
-	interfaces/interfaces.h
+	interfaces/iinfo.h
+	interfaces/iwindow.h
+	interfaces/idownload.h
+	interfaces/iwantnetworkaccessmanager.h
+	interfaces/ihavesettings.h
+	interfaces/icustomprovider.h
+	interfaces/imultitabs.h
+	interfaces/iembedtab.h
+	interfaces/itaggablejobs.h
+	interfaces/ijobholder.h
+	interfaces/iimportexport.h
 	interfaces/structures.h
 	)
 SET (FORMS

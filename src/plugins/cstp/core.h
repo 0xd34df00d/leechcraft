@@ -6,7 +6,8 @@
 #include <QStringList>
 #include <QNetworkProxy>
 #include <QNetworkAccessManager>
-#include <interfaces/interfaces.h>
+#include <interfaces/structures.h>
+#include <interfaces/idownload.h>
 
 class Task;
 class QFile;

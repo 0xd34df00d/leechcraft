@@ -19,6 +19,14 @@
 #include <QAuthenticator>
 #include <plugininterface/util.h>
 #include <plugininterface/proxy.h>
+#include <interfaces/iinfo.h>
+#include <interfaces/idownload.h>
+#include <interfaces/ijobholder.h>
+#include <interfaces/iembedtab.h>
+#include <interfaces/imultitabs.h>
+#include <interfaces/ihavesettings.h>
+#include <interfaces/iwindow.h>
+#include <interfaces/structures.h>
 #include "mainwindow.h"
 #include "pluginmanager.h"
 #include "core.h"

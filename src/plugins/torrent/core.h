@@ -12,7 +12,7 @@
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/session_status.hpp>
-#include <interfaces/interfaces.h>
+#include <interfaces/structures.h>
 #include <plugininterface/tagscompletionmodel.h>
 #include "torrentinfo.h"
 #include "fileinfo.h"

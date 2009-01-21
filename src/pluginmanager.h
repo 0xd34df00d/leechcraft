@@ -4,7 +4,6 @@
 #include <QMap>
 #include <QMultiMap>
 #include <QPluginLoader>
-#include "interfaces/interfaces.h"
 
 namespace LeechCraft
 {

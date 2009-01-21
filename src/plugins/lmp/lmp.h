@@ -4,7 +4,9 @@
 #include <QWidget>
 #include <QTranslator>
 #include <QAction>
-#include <interfaces/interfaces.h>
+#include <interfaces/iinfo.h>
+#include <interfaces/iembedtab.h>
+#include <interfaces/icustomprovider.h>
 #include "ui_tabwidget.h"
 
 class QToolBar;

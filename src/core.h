@@ -9,7 +9,6 @@
 #include "pluginmanager.h"
 #include "tabcontainer.h"
 #include "plugininterface/mergemodel.h"
-#include "interfaces/interfaces.h"
 #include "storagebackend.h"
 
 class QLocalServer;

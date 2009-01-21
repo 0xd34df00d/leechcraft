@@ -4,7 +4,11 @@
 #include <QAction>
 #include <QTranslator>
 #include <QWidget>
-#include <interfaces/interfaces.h>
+#include <interfaces/iinfo.h>
+#include <interfaces/iembedtab.h>
+#include <interfaces/imultitabs.h>
+#include <interfaces/ihavesettings.h>
+#include <interfaces/iwantnetworkaccessmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/tagscompleter.h>
 #include "filtermodel.h"

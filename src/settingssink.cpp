@@ -1,5 +1,6 @@
 #include "settingssink.h"
-#include <interfaces/interfaces.h>
+#include <interfaces/iinfo.h>
+#include <interfaces/ihavesettings.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <QtDebug>
 

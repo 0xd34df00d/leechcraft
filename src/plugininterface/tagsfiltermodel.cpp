@@ -1,7 +1,6 @@
 #include <QStringList>
 #include <QtDebug>
 #include "tagsfiltermodel.h"
-#include "core.h"
 
 using namespace LeechCraft::Util;
 

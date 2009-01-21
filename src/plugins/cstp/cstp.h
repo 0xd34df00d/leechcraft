@@ -1,7 +1,11 @@
 #ifndef CSTP_H
 #define CSTP_H
 #include <memory>
-#include <interfaces/interfaces.h>
+#include <interfaces/iinfo.h>
+#include <interfaces/idownload.h>
+#include <interfaces/ijobholder.h>
+#include <interfaces/ihavesettings.h>
+#include <interfaces/iwantnetworkaccessmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
 class Core;

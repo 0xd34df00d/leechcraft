@@ -35,7 +35,6 @@ class Core : public QObject
 	QNetworkAccessManager *NetworkAccessManager_;
 
 	QMap<QString, QObject*> Providers_;
-	QObjectList Downloaders_;
 
 	bool SaveSessionScheduled_;
 	QStringList RestoredURLs_;

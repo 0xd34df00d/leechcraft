@@ -8,6 +8,9 @@
 #include <QMainWindow>
 #include <QCryptographicHash>
 #include <plugininterface/proxy.h>
+#include <plugininterface/historymodel.h>
+#include <interfaces/iinfo.h>
+#include <interfaces/iwantnetworkaccessmanager.h>
 #include "core.h"
 #include "pluginmanager.h"
 #include "mainwindow.h"

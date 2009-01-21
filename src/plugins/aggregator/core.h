@@ -6,7 +6,7 @@
 #include <QMap>
 #include <QPair>
 #include <QDateTime>
-#include <interfaces/interfaces.h>
+#include <interfaces/idownload.h>
 #include <boost/shared_ptr.hpp>
 #include "item.h"
 #include "channel.h"
