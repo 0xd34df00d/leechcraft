@@ -35,6 +35,7 @@ void Chatter::Init ()
     IsShown_ = false;
 	ircClient = new fsirc();
 	connect(ircClient, SIGNAL(gotLink(QString)), this, SIGNAL(gotEntity(QString)));
+	connect(ircClient, SIGNAL(bringToFront()), this, SIGNAL(bringToFront()));
     setCentralWidget (ircClient);
 }
 
@@ -65,7 +66,8 @@ QStringList Chatter::Needs () const
 
 void Chatter::SetProvider (QObject *obj, const QString& feature)
 {
-    Providers_ [feature] = obj;
+	Q_UNUSED (obj);
+	Q_UNUSED (feature);
 }
 
 void Chatter::Release ()

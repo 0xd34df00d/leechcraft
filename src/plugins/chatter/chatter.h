@@ -19,7 +19,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <interfaces/interfaces.h>
+#include <interfaces/iinfo.h>
+#include <interfaces/iembedtab.h>
 #include <QMainWindow>
 
 class fsirc;
@@ -35,7 +36,6 @@ class Chatter : public QMainWindow
 public:
 	virtual ~Chatter ();
     virtual void Init ();
-    QMap<QString, QObject*> Providers_;
     virtual QString GetName () const;
     virtual QString GetInfo () const;
     virtual QStringList Provides () const;

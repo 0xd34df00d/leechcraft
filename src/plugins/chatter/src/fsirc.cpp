@@ -95,8 +95,10 @@ void fsirc::gotHlite()
 
 void fsirc::toggleShow()
 {
+	emit bringToFront ();
+	/*
 	// I've done some stuff to bring window to top here, but it doesn't work. At least on kde 3.5
-	if(isHidden()/* || !isActiveWindow()*/)
+	if(isHidden())
 	{
 		show();
 //		window()->activateWindow();
@@ -109,6 +111,7 @@ void fsirc::toggleShow()
 //		qDebug("Hiding window");
 		hide();
 	}
+	*/
 
 }
 

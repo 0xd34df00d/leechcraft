@@ -65,5 +65,6 @@ class fsirc : public QDialog, Ui::fsMainWindow
 		void clearCurrentTab();
 	signals:
 		void gotLink(QString);
+		void bringToFront ();
 };
 #endif
