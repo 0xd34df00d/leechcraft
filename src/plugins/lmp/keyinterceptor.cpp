@@ -28,7 +28,6 @@ bool KeyInterceptor::eventFilter (QObject *obj, QEvent *e)
 
 void KeyInterceptor::keyPressEvent (QKeyEvent *e)
 {
-	qDebug () << e->text ();
 	if (e->text () == "*")
 		Core::Instance ().IncrementVolume ();
 	else if (e->text () == "/")
@@ -49,7 +48,6 @@ void KeyInterceptor::keyPressEvent (QKeyEvent *e)
 
 void KeyInterceptor::keyReleaseEvent (QKeyEvent *e)
 {
-	qDebug () << e->text ();
 	if (e->key () == Qt::Key_Return ||
 			e->key () == Qt::Key_Enter)
 		Core::Instance ().ToggleFullScreen ();

@@ -98,6 +98,8 @@ QDataStream& operator<< (QDataStream&, const Enclosure&);
 QDataStream& operator>> (QDataStream&, Enclosure&);
 QDataStream& operator<< (QDataStream&, const Item&);
 QDataStream& operator>> (QDataStream&, Item&);
+void Print (const Item&);
+void Diff (const Item&, const Item&);
 
 bool IsModified (Item_ptr, Item_ptr);
 

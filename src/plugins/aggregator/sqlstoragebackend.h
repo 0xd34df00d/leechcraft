@@ -79,6 +79,23 @@ class SQLStorageBackend : public StorageBackend
 					   * - title
 					   * - url
 					   */
+					  ItemFullSelector_,
+					  /** Returns:
+					   * - title
+					   * - url
+					   * - description
+					   * - author
+					   * - category
+					   * - guid
+					   * - pub_date
+					   * - unread
+					   * - num_comments
+					   * - comments_url
+					   * - comments_page_url
+					   *
+					   * Binds:
+					   * - parents_hash
+					   */
 					  ItemsFullSelector_,
 					  /** Returns:
 					   * - description
@@ -238,6 +255,8 @@ public:
 	virtual int GetUnreadItems (const QString&, const QString&) const;
 	virtual Item_ptr GetItem (const QString&, const QString&,
 			const QString&) const;
+	virtual void GetItems (items_container_t&,
+			const QString&) const;
 
 	virtual void AddFeed (Feed_ptr);
 	virtual void UpdateChannel (Channel_ptr, const QString&);
@@ -263,6 +282,9 @@ private:
 	QByteArray SerializePixmap (const QPixmap&) const;
 	QPixmap UnserializePixmap (const QByteArray&) const;
     bool RollItemsStorage (int);
+	void FillItem (const QSqlQuery&, Item_ptr&) const;
+	void GetEnclosures (const QString&, const QString&, const QString&,
+			QList<Enclosure>&) const;
 };
 
 #endif

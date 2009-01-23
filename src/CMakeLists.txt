@@ -90,27 +90,28 @@ INCLUDE_DIRECTORIES (${QT_QTGUI_INCLUDE_DIR}
 ADD_SUBDIRECTORY (plugininterface)
 ADD_SUBDIRECTORY (xmlsettingsdialog)
 IF (NOT ENABLE_CONFIGURABLE)
-	ADD_SUBDIRECTORY (plugins/cstp)
 	IF (RBTorrent_FOUND)
 	   	ADD_SUBDIRECTORY (plugins/torrent)
 	ELSE (RBTorrent_FOUND)
 		MESSAGE (STATUS "Rasterbar libtorrent not found, not building BitTorrent")
    	ENDIF (RBTorrent_FOUND)
+	ADD_SUBDIRECTORY (plugins/aggregator)
+	ADD_SUBDIRECTORY (plugins/poshuku)
+	ADD_SUBDIRECTORY (plugins/nufella)
+	ADD_SUBDIRECTORY (plugins/cstp)
+	ADD_SUBDIRECTORY (plugins/chatter)
 	IF (Wt_FOUND)
 		ADD_SUBDIRECTORY (plugins/remoter)
 	ELSE (Wt_FOUND)
 		MESSAGE (STATUS "Wt isn't found, not building Remoter")
 	ENDIF (Wt_FOUND)
-	ADD_SUBDIRECTORY (plugins/aggregator)
-	ADD_SUBDIRECTORY (plugins/poshuku)
-	ADD_SUBDIRECTORY (plugins/nufella)
-	ADD_SUBDIRECTORY (plugins/chatter)
 	IF (PHONON_FOUND)
 		ADD_SUBDIRECTORY (plugins/lmp)
 	ENDIF (PHONON_FOUND)
 	IF (QT_QTDBUS_FOUND)
 		ADD_SUBDIRECTORY (plugins/dbusmanager)
 	ENDIF (QT_QTDBUS_FOUND)
+	ADD_SUBDIRECTORY (plugins/deadlyrics)
 ELSE (NOT ENABLE_CONFIGURABLE)
 	IF (ENABLE_HTTP)
 		ADD_SUBDIRECTORY (plugins/cstp)
@@ -139,6 +140,9 @@ ELSE (NOT ENABLE_CONFIGURABLE)
 	IF (ENABLE_LMP)
 		ADD_SUBDIRECTORY (plugins/lmp)
 	ENDIF (ENABLE_LMP)
+	IF (ENABLE_DEADLYRICS)
+		ADD_SUBDIRECTORY (plugins/deadlyrics)
+	ENDIF (ENABLE_DEADLYRICS)
 ENDIF (NOT ENABLE_CONFIGURABLE)
 
 
@@ -199,6 +203,7 @@ SET (HEADERS
 	interfaces/itaggablejobs.h
 	interfaces/ijobholder.h
 	interfaces/iimportexport.h
+	interfaces/ifinder.h
 	interfaces/structures.h
 	)
 SET (FORMS

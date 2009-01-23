@@ -94,6 +94,19 @@ public:
 	virtual Item_ptr GetItem (const QString& title,
 			const QString& link,
 			const QString& hash) const = 0;
+	/** @brief Returns all items in the channel.
+	 *
+	 * Returns full information about all the items in the channel
+	 * identified by their hash. The returned information is appended to
+	 * the passed container.
+	 *
+	 * Usually you will use this only inside handleJobFinished().
+	 *
+	 * @param[out] items The container with items.
+	 * @param[in] hash The item's hash.
+	 */
+	virtual void GetItems (items_container_t& items,
+			const QString& hash) const = 0;
 
 	/** @brief Puts a feed and all its child channels and items into the
 	 * storage.

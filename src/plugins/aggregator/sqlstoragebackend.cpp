@@ -80,8 +80,8 @@ void SQLStorageBackend::Prepare ()
 			"WHERE parents_hash = :parents_hash "
 			"ORDER BY pub_date DESC");
 
-	ItemsFullSelector_ = QSqlQuery (DB_);
-	ItemsFullSelector_.prepare ("SELECT "
+	ItemFullSelector_ = QSqlQuery (DB_);
+	ItemFullSelector_.prepare ("SELECT "
 			"title, "
 			"url, "
 			"description, "
@@ -97,6 +97,23 @@ void SQLStorageBackend::Prepare ()
 			"WHERE parents_hash = :parents_hash "
 			"AND title = :title "
 			"AND url = :url "
+			"ORDER BY pub_date DESC");
+
+	ItemsFullSelector_ = QSqlQuery (DB_);
+	ItemsFullSelector_.prepare ("SELECT "
+			"title, "
+			"url, "
+			"description, "
+			"author, "
+			"category, "
+			"guid, "
+			"pub_date, "
+			"unread, "
+			"num_comments, "
+			"comments_url, "
+			"comments_page_url "
+			"FROM items "
+			"WHERE parents_hash = :parents_hash "
 			"ORDER BY pub_date DESC");
 
 	ChannelFinder_ = QSqlQuery (DB_);
@@ -416,52 +433,45 @@ int SQLStorageBackend::GetUnreadItems (const QString& purl, const QString& title
 Item_ptr SQLStorageBackend::GetItem (const QString& title,
 		const QString& link, const QString& hash) const
 {
-	ItemsFullSelector_.bindValue (":parents_hash", hash);
-	ItemsFullSelector_.bindValue (":title", title);
-	ItemsFullSelector_.bindValue (":link", link);
-	if (!ItemsFullSelector_.exec () || !ItemsFullSelector_.next ())
+	ItemFullSelector_.bindValue (":parents_hash", hash);
+	ItemFullSelector_.bindValue (":title", title);
+	ItemFullSelector_.bindValue (":link", link);
+	if (!ItemFullSelector_.exec () || !ItemFullSelector_.next ())
 	{
-		LeechCraft::Util::DBLock::DumpError (ItemsFullSelector_);
+		LeechCraft::Util::DBLock::DumpError (ItemFullSelector_);
 		return Item_ptr ();
 	}
 
 	Item_ptr item (new Item);
+	FillItem (ItemFullSelector_, item);
+	ItemFullSelector_.finish ();
 
-	item->Title_ = ItemsFullSelector_.value (0).toString ();
-	item->Link_ = ItemsFullSelector_.value (1).toString ();
-	item->Description_ = ItemsFullSelector_.value (2).toString ();
-	item->Author_ = ItemsFullSelector_.value (3).toString ();
-	item->Categories_ = ItemsFullSelector_.value (4).toString ().split ("<<<");
-	item->Guid_ = ItemsFullSelector_.value (5).toString ();
-	item->PubDate_ = ItemsFullSelector_.value (6).toDateTime ();
-	item->Unread_ = ItemsFullSelector_.value (7).toBool ();
-	item->NumComments_ = ItemsFullSelector_.value (8).toInt ();
-	item->CommentsLink_ = ItemsFullSelector_.value (9).toString ();
-	item->CommentsPageLink_ = ItemsFullSelector_.value (10).toString ();
-
-	ItemsFullSelector_.finish ();
-
-	GetEnclosures_.bindValue (":item_parents_hash", hash);
-	GetEnclosures_.bindValue (":item_title", title);
-	GetEnclosures_.bindValue (":item_url", link);
-
-	if (!GetEnclosures_.exec ())
-		LeechCraft::Util::DBLock::DumpError (GetEnclosures_);
-	else
-		while (GetEnclosures_.next ())
-		{
-			Enclosure e =
-			{
-				GetEnclosures_.value (0).toString (),
-				GetEnclosures_.value (1).toString (),
-				GetEnclosures_.value (2).toLongLong (),
-				GetEnclosures_.value (3).toString ()
-			};
-
-			item->Enclosures_ << e;
-		}
+	GetEnclosures (hash, title, link, item->Enclosures_);
 
 	return item;
+}
+
+void SQLStorageBackend::GetItems (items_container_t& items,
+		const QString& hash) const
+{
+	ItemsFullSelector_.bindValue (":parents_hash", hash);
+	if (!ItemsFullSelector_.exec ())
+	{
+		LeechCraft::Util::DBLock::DumpError (ItemsFullSelector_);
+		return;
+	}
+
+	while (ItemsFullSelector_.next  ())
+	{
+		Item_ptr item (new Item);
+		FillItem (ItemsFullSelector_, item);
+		GetEnclosures (hash, item->Title_, item->Link_, item->Enclosures_);
+
+		items.push_back (item);
+	}
+
+	ItemsFullSelector_.finish ();
+	GetEnclosures_.finish ();
 }
 
 void SQLStorageBackend::AddFeed (Feed_ptr feed)
@@ -594,22 +604,6 @@ void SQLStorageBackend::UpdateChannel (const ChannelShort& channel,
 void SQLStorageBackend::UpdateItem (Item_ptr item,
 		const QString& parentUrl, const QString& parentTitle)
 {
-	ItemFinder_.bindValue (":parents_hash", parentUrl + parentTitle);
-	ItemFinder_.bindValue (":title", item->Title_);
-	ItemFinder_.bindValue (":url", item->Link_);
-	if (!ItemFinder_.exec ())
-	{
-		LeechCraft::Util::DBLock::DumpError (ItemFinder_);
-		throw std::runtime_error ("Unable to execute item finder query");
-	}
-	ItemFinder_.next ();
-	if (!ItemFinder_.isValid ())
-	{
-		AddItem (item, parentUrl, parentTitle);
-		return;
-	}
-	ItemFinder_.finish ();
-
 	LeechCraft::Util::DBLock lock (DB_);
 	try
 	{
@@ -988,7 +982,7 @@ bool SQLStorageBackend::InitializeTables ()
 					"ON items (parents_hash, unread);"))
 			LeechCraft::Util::DBLock::DumpError (query.lastError ());
 
-		if (!query.exec ("CREATE UNIQUE INDEX "
+		if (!query.exec ("CREATE INDEX "
 					"idx_items_parents_hash_title_url "
 					"ON items (parents_hash, title, url);"))
 			LeechCraft::Util::DBLock::DumpError (query.lastError ());
@@ -1089,5 +1083,49 @@ bool SQLStorageBackend::RollItemsStorage (int version)
 
 	lock.Good ();
 	return true;
+}
+
+void SQLStorageBackend::FillItem (const QSqlQuery& query, Item_ptr& item) const
+{
+	item->Title_ = query.value (0).toString ();
+	item->Link_ = query.value (1).toString ();
+	item->Description_ = query.value (2).toString ();
+	item->Author_ = query.value (3).toString ();
+	item->Categories_ = query.value (4).toString ().split ("<<<", QString::SkipEmptyParts);
+	item->Guid_ = query.value (5).toString ();
+	item->PubDate_ = query.value (6).toDateTime ();
+	item->Unread_ = query.value (7).toBool ();
+	item->NumComments_ = query.value (8).toInt ();
+	item->CommentsLink_ = query.value (9).toString ();
+	item->CommentsPageLink_ = query.value (10).toString ();
+}
+
+void SQLStorageBackend::GetEnclosures (const QString& hash, const QString& title,
+		const QString& link, QList<Enclosure>& enclosures) const
+{
+	GetEnclosures_.bindValue (":item_parents_hash", hash);
+	GetEnclosures_.bindValue (":item_title", title);
+	GetEnclosures_.bindValue (":item_url", link);
+
+	if (!GetEnclosures_.exec ())
+	{
+		LeechCraft::Util::DBLock::DumpError (GetEnclosures_);
+		return;
+	}
+
+	while (GetEnclosures_.next ())
+	{
+		Enclosure e =
+		{
+			GetEnclosures_.value (0).toString (),
+			GetEnclosures_.value (1).toString (),
+			GetEnclosures_.value (2).toLongLong (),
+			GetEnclosures_.value (3).toString ()
+		};
+
+		enclosures << e;
+	}
+
+	GetEnclosures_.finish ();
 }
 

@@ -376,7 +376,7 @@ void MainWindow::updatePanes (const QModelIndex& newIndex,
 	if (Core::Instance ().SameModel (newIndex, oldIndex))
 		return;
 
-	if (Ui_.PluginsStuff_->count () >= 3)
+	if (Ui_.PluginsStuff_->count () == 3)
 	{
 		Ui_.PluginsStuff_->takeAt (1)->widget ()->hide ();
 		Ui_.ControlsDockWidget_->hide ();

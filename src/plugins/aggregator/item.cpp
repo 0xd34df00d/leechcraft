@@ -122,6 +122,70 @@ QDataStream& operator>> (QDataStream& in, Item& item)
 	}
 }
 
+void Print (const Item& item)
+{
+	qDebug () << item.Title_
+		<< item.Link_
+		<< item.Description_
+		<< item.Author_
+		<< item.Categories_
+		<< item.Guid_
+		<< item.PubDate_
+		<< item.NumComments_
+		<< item.CommentsLink_
+		<< item.CommentsPageLink_;
+}
+
+void Diff (const Item& i1, const Item& i2)
+{
+	qDebug () << Q_FUNC_INFO << "for" << i1.Title_;
+	if (i1.Title_ != i2.Title_)
+	{
+		qDebug () << i1.Title_;
+		qDebug () << i2.Title_;
+	}
+	if (i1.Link_ != i2.Link_)
+	{
+		qDebug () << i1.Link_;
+		qDebug () << i2.Link_;
+	}
+	if (i1.Description_ != i2.Description_)
+	{
+		qDebug () << i1.Description_;
+		qDebug () << i2.Description_;
+	}
+	if (i1.Author_ != i2.Author_)
+	{
+		qDebug () << i1.Author_;
+		qDebug () << i2.Author_;
+	}
+	if (i1.Categories_ != i2.Categories_)
+	{
+		qDebug () << i1.Categories_;
+		qDebug () << i2.Categories_;
+	}
+	if (i1.PubDate_ != i2.PubDate_)
+	{
+		qDebug () << i1.PubDate_;
+		qDebug () << i2.PubDate_;
+	}
+	if (i1.NumComments_ != i2.NumComments_)
+	{
+		qDebug () << i1.NumComments_;
+		qDebug () << i2.NumComments_;
+	}
+	if (i1.CommentsLink_ != i2.CommentsLink_)
+	{
+		qDebug () << i1.CommentsLink_;
+		qDebug () << i2.CommentsLink_;
+	}
+	if (i1.CommentsPageLink_ != i2.CommentsPageLink_)
+	{
+		qDebug () << i1.CommentsPageLink_;
+		qDebug () << i2.CommentsPageLink_;
+	}
+}
+
 bool IsModified (Item_ptr i1, Item_ptr i2)
 {
 	return !(i1->Title_ == i2->Title_ &&
@@ -129,7 +193,6 @@ bool IsModified (Item_ptr i1, Item_ptr i2)
 			i1->Description_ == i2->Description_ &&
 			i1->Author_ == i2->Author_ &&
 			i1->Categories_ == i2->Categories_ &&
-			i1->Guid_ == i2->Guid_ &&
 			i1->PubDate_ == i2->PubDate_ &&
 			i1->NumComments_ == i2->NumComments_ &&
 			i1->CommentsLink_ == i2->CommentsLink_ &&

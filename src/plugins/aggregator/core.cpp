@@ -875,14 +875,8 @@ void Core::handleJobFinished (int id)
 			Channel_ptr channel2push = StorageBackend_->
 				GetChannel (i->Title_, pj.URL_);
 			// And we shouldn't forget about their items.
-			items_shorts_t itemShorts;
-			StorageBackend_->GetItems (itemShorts,
+			StorageBackend_->GetItems (channel2push->Items_,
 					pj.URL_ + channel2push->Title_);
-			for (items_shorts_t::const_iterator j = itemShorts.begin (),
-					endJ = itemShorts.end (); j != endJ; ++j)
-				channel2push->Items_.push_back (StorageBackend_->GetItem (j->Title_,
-							j->URL_, pj.URL_ + channel2push->Title_));
-
 			ourChannels.push_back (channel2push);
 		}
 
@@ -1263,6 +1257,7 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 			if (!IsModified (*ourItem, *item))
 				continue;
 
+			(*ourItem)->Description_ = (*item)->Description_;
 			(*ourItem)->Categories_ = (*item)->Categories_;
 			(*ourItem)->NumComments_ = (*item)->NumComments_;
 			(*ourItem)->CommentsLink_ = (*item)->CommentsLink_;
