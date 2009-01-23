@@ -94,15 +94,9 @@
             </item>
             <item>
              <widget class="QTreeView" name="PluginsTasksTree_" >
-              <property name="sizePolicy" >
-               <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
-                <horstretch>40</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
               <property name="minimumSize" >
                <size>
-                <width>500</width>
+                <width>250</width>
                 <height>0</height>
                </size>
               </property>
@@ -121,8 +115,8 @@
           </widget>
           <widget class="QDockWidget" name="ControlsDockWidget_" >
            <property name="sizePolicy" >
-            <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
-             <horstretch>3</horstretch>
+            <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+             <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>

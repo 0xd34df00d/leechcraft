@@ -78,7 +78,8 @@ void SQLStorageBackend::Prepare ()
 			"unread "
 			"FROM items "
 			"WHERE parents_hash = :parents_hash "
-			"ORDER BY pub_date DESC");
+			"ORDER BY pub_date DESC, "
+			"title DESC");
 
 	ItemFullSelector_ = QSqlQuery (DB_);
 	ItemFullSelector_.prepare ("SELECT "

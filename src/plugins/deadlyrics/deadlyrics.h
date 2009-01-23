@@ -4,13 +4,15 @@
 #include <QStringList>
 #include <interfaces/iinfo.h>
 #include <interfaces/ifinder.h>
+#include <interfaces/iwantnetworkaccessmanager.h>
 
 class DeadLyRicS : public QObject
 				 , public IInfo
 				 , public IFinder
+				 , public IWantNetworkAccessManager
 {
 	Q_OBJECT
-	Q_INTERFACES (IInfo IFinder)
+	Q_INTERFACES (IInfo IFinder IWantNetworkAccessManager)
 public:
 	void Init ();
 	void Release ();
@@ -21,9 +23,12 @@ public:
 	QStringList Needs () const;
 	QStringList Uses () const;
 	void SetProvider (QObject*, const QString&);
+	void SetNetworkAccessManager (QNetworkAccessManager*);
 	QStringList GetCategories () const;
-	void Start (const QString&, const QStringList&);
+	void Start (const QString&, const QStringList&, bool);
 	void Abort ();
+signals:
+	void entityUpdated (LeechCraft::FoundEntity);
 };
 
 #endif

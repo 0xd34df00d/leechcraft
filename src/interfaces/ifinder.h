@@ -3,23 +3,29 @@
 #include <QStringList>
 #include <QMap>
 
-struct FoundEntity
+namespace LeechCraft
 {
-	// As it could be handled by some plugin. URI, torrent file
-	// contents, whatever.
-	QByteArray Entity_;
-	// Visible to user.
-	QString Description_;
-
-	enum HashType
+	struct FoundEntity
 	{
-		HTMD4,
-		HTMD5,
-		HTSHA1
-	};
+		// As it could be handled by some plugin. URI, torrent file
+		// contents, whatever.
+		QByteArray Entity_;
+		// Visible to user.
+		QString Description_;
+		// Category that the entity is related to, should be the same as in
+		// GetCategories.
+		QStringList Categories_;
 
-	// To allow comparisons between results of different search plugins.
-	QMap<HashType, QByteArray> Hashes_;
+		enum HashType
+		{
+			HTMD4,
+			HTMD5,
+			HTSHA1
+		};
+
+		// To allow comparisons between results of different search plugins.
+		QMap<HashType, QByteArray> Hashes_;
+	};
 };
 
 // emits entityUpdated(FoundEntity) in case of new/updated entity.
@@ -29,7 +35,7 @@ public:
 	virtual ~IFinder () {}
 
 	virtual QStringList GetCategories () const = 0;
-	virtual void Start (const QString&, const QStringList&) = 0;
+	virtual void Start (const QString&, const QStringList&, bool) = 0;
 	virtual void Abort () = 0;
 };
 

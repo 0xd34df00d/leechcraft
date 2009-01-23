@@ -2,14 +2,22 @@ INCLUDE_DIRECTORIES (
 	${QT_INCLUDE_DIR}
 	${QT_QTCORE_INCLUDE_DIR}
 	${QT_QTGUI_INCLUDE_DIR}
+	${QT_QTXML_INCLUDE_DIR}
 	${QT_QTNETWORK_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
+	${Boost_INCLUDE_DIR}
 	)
 SET (SRCS
 	deadlyrics.cpp
+	core.cpp
+	searcher.cpp
+	lyricwikisearcher.cpp
 	)
 SET (HEADERS
 	deadlyrics.h
+	core.h
+	searcher.h
+	lyricwikisearcher.h
 	)
 SET (TRANSLATIONS
 	leechcraft_deadlyrics_ru_RU.ts
