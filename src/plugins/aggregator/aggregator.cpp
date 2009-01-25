@@ -850,18 +850,25 @@ void Aggregator::unreadNumberChanged (int number)
 		return;
 	}
 
-	QIcon icon (":/resources/images/trayicon.png");
-	QPixmap pixmap = icon.pixmap (22, 22);
+	QString text = QString::number (number);
+
+	QFont font = QApplication::font ();
+	font.setPointSize (12);
+	font.setFamily ("Verdana");
+	QFontMetrics fm = QFontMetrics (font);
+	int width = fm.width (text);
+	int height = fm.height ();
+	int max = std::max (width, height);
+
+	QPixmap pixmap (":/resources/images/trayicon.png");
+	pixmap = pixmap.scaled (max, max);
 	QPainter painter;
 	painter.begin (&pixmap);
-	QFont font = QApplication::font ();
-	font.setBold (true);
-	font.setPointSize (14);
-	font.setFamily ("Arial");
 	painter.setFont (font);
 	painter.setPen (Qt::blue);
 	painter.setRenderHints (QPainter::TextAntialiasing);
-	painter.drawText (0, 0, 21, 21, Qt::AlignBottom | Qt::AlignRight, QString::number (number));
+	painter.drawText (0, 0, width, height,
+			Qt::AlignCenter, text);
 	painter.end ();
 
 	Impl_->TrayIcon_->setIcon (QIcon (pixmap));
