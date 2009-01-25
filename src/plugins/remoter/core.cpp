@@ -9,7 +9,6 @@
 #include <QToolBar>
 #include <QSettings>
 #include <QtDebug>
-#include <interfaces/interfaces.h>
 #include <plugininterface/proxy.h>
 #include <plugininterface/mergemodel.h>
 #include "qtowabstractitemmodeladaptor.h"

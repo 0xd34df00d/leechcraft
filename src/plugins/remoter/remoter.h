@@ -1,7 +1,8 @@
 #ifndef REMOTER_H
 #define REMOTER_H
 #include <QMainWindow>
-#include <interfaces/interfaces.h>
+#include <interfaces/iinfo.h>
+#include <interfaces/iwindow.h>
 #include "ui_mainwindow.h"
 
 namespace LeechCraft

@@ -1,5 +1,5 @@
 #include "iinfoadaptor.h"
-#include <interfaces/interfaces.h>
+#include <interfaces/iinfo.h>
 
 IInfoAdaptor::IInfoAdaptor (QObject *info)
 : QDBusAbstractAdaptor (info)

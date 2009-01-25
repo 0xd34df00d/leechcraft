@@ -1,6 +1,6 @@
 #ifndef DBUSMANAGER_H
 #define DBUSMANAGER_H
-#include <interfaces/interfaces.h>
+#include <interfaces/iinfo.h>
 
 class DBusManager : public QObject
 				  , public IInfo
