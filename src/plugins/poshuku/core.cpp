@@ -243,6 +243,7 @@ void Core::RestoreSession (bool ask)
 		}
 		QTimer::singleShot (2000, this, SLOT (restorePages ()));
 	}
+	settings.remove ("");
 	settings.endArray ();
 }
 
