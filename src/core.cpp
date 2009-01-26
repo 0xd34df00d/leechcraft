@@ -531,22 +531,13 @@ namespace
 {
 	void PassSelectionsByOne (QObject *object,
 			const QModelIndexList& selected,
-			int startingRow,
-			int endingRow,
 			const QByteArray& function)
 	{
 		for (QModelIndexList::const_iterator i = selected.begin (),
 				end = selected.end (); i != end; ++i)
-		{
-			if (i->row () < startingRow)
-				continue;
-			if (i->row () >= endingRow)
-				break;
-
 			QMetaObject::invokeMethod (object,
 					function,
 					Q_ARG (int, i->row ()));
-		}
 	}
 };
 
@@ -562,6 +553,7 @@ void Core::handlePluginAction ()
 		return;
 
 	QObject *object = source->property ("Object").value<QObject*> ();
+	qDebug () << Q_FUNC_INFO << slot << signal << object;
 
 	QModelIndexList origSelection = ReallyMainWindow_->GetSelectedRows ();
 	QModelIndexList selected;
@@ -569,21 +561,12 @@ void Core::handlePluginAction ()
 			end = origSelection.end (); i != end; ++i)
 		selected.push_back (MapToSource (*i));
 
-	QAbstractItemModel *model = Action2Model_ [source];
-	int startingRow = MergeModel_->GetStartingRow (MergeModel_->FindModel (model));
-	int endingRow = startingRow + model->rowCount ();
 	if (whole)
 	{
 		std::deque<int> selections;
 		for (QModelIndexList::const_iterator i = selected.begin (),
 				end = selected.end (); i != end; ++i)
-		{
-			if (i->row () < startingRow)
-				continue;
-			if (i->row () >= endingRow)
-				break;
 			selections.push_back (i->row ());
-		}
 
 		if (!slot.isEmpty ())
 			QMetaObject::invokeMethod (object,
@@ -598,9 +581,9 @@ void Core::handlePluginAction ()
 	else
 	{
 		if (!slot.isEmpty ())
-			PassSelectionsByOne (object, selected, startingRow, endingRow, slot.toLatin1 ());
+			PassSelectionsByOne (object, selected, slot.toLatin1 ());
 		if (!signal.isEmpty ())
-			PassSelectionsByOne (object, selected, startingRow, endingRow, signal.toLatin1 ());
+			PassSelectionsByOne (object, selected, signal.toLatin1 ());
 	}
 }
 
