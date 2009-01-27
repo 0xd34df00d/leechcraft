@@ -21,6 +21,7 @@ Core::Core ()
 , SaveScheduled_ (false)
 {
 	qRegisterMetaType<QIODevice*> ("QIODevice*");
+	qRegisterMetaType<tasks_t::iterator> ("tasks_t::iterator");
 
 	Headers_ << tr ("URL")
 		<< tr ("State")
@@ -351,6 +352,8 @@ void Core::done (bool err)
 		taskdscr->ErrorFlag_ = true;
 		emit error (errorStr);
 		emit taskError (taskdscr->ID_, IDownload::EUnknown);
+		if (taskdscr->Parameters_ & LeechCraft::NotPersistent)
+			Remove (taskdscr);
 	}
 	ScheduleSave ();
 }
@@ -388,6 +391,17 @@ void Core::writeSettings ()
 	}
 	SaveScheduled_ = false;
 	settings.endArray ();
+}
+
+void Core::removeImpl (tasks_t::iterator it)
+{
+	int dst = std::distance (ActiveTasks_.begin (), it);
+	emit taskRemoved (it->ID_);
+	IDPool_.push_front (it->ID_);
+	beginRemoveRows (QModelIndex (), dst, dst);
+	ActiveTasks_.erase (it);
+	endRemoveRows ();
+	ScheduleSave ();
 }
 
 void Core::ReadSettings ()
@@ -483,16 +497,12 @@ Core::tasks_t::iterator Core::FindTask (QObject *task)
 			_Local::ObjectFinder (task));
 }
 
-Core::tasks_t::iterator Core::Remove (tasks_t::iterator it)
+void Core::Remove (tasks_t::iterator it)
 {
-	int dst = std::distance (ActiveTasks_.begin (), it);
-	emit taskRemoved (it->ID_);
-	IDPool_.push_front (it->ID_);
-	beginRemoveRows (QModelIndex (), dst, dst);
-	tasks_t::iterator result = ActiveTasks_.erase (it);
-	endRemoveRows ();
-	ScheduleSave ();
-	return result;
+	QMetaObject::invokeMethod (this,
+			"removeImpl",
+			Qt::QueuedConnection,
+			Q_ARG (tasks_t::iterator, it));
 }
 
 void Core::AddToHistory (tasks_t::const_iterator it)

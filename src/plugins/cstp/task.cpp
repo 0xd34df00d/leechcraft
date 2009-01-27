@@ -219,10 +219,6 @@ void Task::handleMetaDataChanged ()
 					Q_ARG (QIODevice*, To_),
 					Q_ARG (QString, newUrl));
 		}
-
-		Reply_->blockSignals (true);
-		Reply_->abort ();
-		Reply_.release ()->deleteLater ();
 	}
 }
 

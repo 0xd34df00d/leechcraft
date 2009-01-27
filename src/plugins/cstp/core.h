@@ -110,12 +110,13 @@ private slots:
 	void done (bool); 
 	void updateInterface ();
 	void writeSettings ();
+	void removeImpl (tasks_t::iterator);
 private:
 	void ReadSettings ();
 	void ScheduleSave ();
 	tasks_t::const_iterator FindTask (QObject*) const;
 	tasks_t::iterator FindTask (QObject*);
-	tasks_t::iterator Remove (tasks_t::iterator);
+	void Remove (tasks_t::iterator);
 	void AddToHistory (tasks_t::const_iterator);
 	tasks_t::const_reference TaskAt (int) const;
 	tasks_t::reference TaskAt (int);
