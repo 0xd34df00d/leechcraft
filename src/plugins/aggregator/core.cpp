@@ -141,6 +141,13 @@ void Core::Release ()
 
 void Core::DoDelayedInit ()
 {
+	CustomUpdateTimer_ = new QTimer (this);
+	CustomUpdateTimer_->start (60 * 1000);
+	connect (CustomUpdateTimer_,
+			SIGNAL (timeout ()),
+			this,
+			SLOT (handleCustomUpdates ()));
+
 	UpdateTimer_ = new QTimer (this);
 	UpdateTimer_->setSingleShot (true);
 	QDateTime currentDateTime = QDateTime::currentDateTime ();
@@ -156,7 +163,10 @@ void Core::DoDelayedInit ()
 
 	QTimer *saveTimer = new QTimer (this);
 	saveTimer->start (60 * 1000);
-	connect (saveTimer, SIGNAL (timeout ()), this, SLOT (scheduleSave ()));
+	connect (saveTimer,
+			SIGNAL (timeout ()),
+			this,
+			SLOT (scheduleSave ()));
 
 	XmlSettingsManager::Instance ()->RegisterObject ("UpdateInterval", this, "updateIntervalChanged");
 	XmlSettingsManager::Instance ()->RegisterObject ("ShowIconInTray", this, "showIconInTrayChanged");
@@ -396,6 +406,19 @@ QStringList Core::GetItemCategories (int index) const
 	return CurrentItems_ [index].Categories_;
 }
 
+Feed::FeedSettings Core::GetFeedSettings (const QModelIndex& index) const
+{
+	return StorageBackend_->GetFeedSettings (ChannelsModel_->
+			GetChannelForIndex (index).ParentURL_);
+}
+
+void Core::SetFeedSettings (const Feed::FeedSettings& settings,
+		const QModelIndex& index)
+{
+	StorageBackend_->SetFeedSettings (ChannelsModel_->
+			GetChannelForIndex (index).ParentURL_, settings);
+}
+
 void Core::UpdateFeed (const QModelIndex& index)
 {
 	ChannelShort channel = ChannelsModel_->GetChannelForIndex (index);
@@ -418,33 +441,7 @@ void Core::UpdateFeed (const QModelIndex& index)
 		emit error (tr ("Could not handle URL %1").arg (url));
 		return;
 	}
-
-	QString name;
-	{
-		QTemporaryFile file;
-		file.open ();
-		name = file.fileName ();
-		file.close ();
-		file.remove ();
-	}
-	LeechCraft::DownloadParams params =
-	{
-		url.toUtf8 (),
-		name
-	};
-	PendingJob pj = {
-		PendingJob::RFeedUpdated,
-		url,
-		name,
-		QStringList ()
-	};
-	int id = isd->AddJob (params,
-			LeechCraft::Internal |
-			LeechCraft::Autostart |
-			LeechCraft::DoNotNotifyUser |
-			LeechCraft::DoNotSaveInHistory |
-			LeechCraft::NotPersistent);
-	PendingJobs_ [id] = pj;
+	UpdateFeed (url, isd);
 }
 
 QModelIndex Core::GetUnreadChannelIndex ()
@@ -951,33 +948,11 @@ void Core::updateFeeds ()
 			continue;
 		}
 
-		QString filename;
-		{
-			QTemporaryFile file;
-			file.open ();
-			filename = file.fileName ();
-			file.close ();
-			file.remove ();
-		}
-		LeechCraft::DownloadParams params =
-		{
-			i->toUtf8 (),
-			filename
-		};
-		PendingJob pj =
-		{
-			PendingJob::RFeedUpdated,
-			*i,
-			filename,
-			QStringList ()
-		};
-		int id = isd->AddJob (params,
-				LeechCraft::Internal |
-				LeechCraft::Autostart |
-				LeechCraft::DoNotNotifyUser |
-				LeechCraft::DoNotSaveInHistory |
-				LeechCraft::NotPersistent);
-		PendingJobs_ [id] = pj;
+		// It's handled by custom timer.
+		if (StorageBackend_->GetFeedSettings (*i).UpdateTimeout_)
+			continue;
+
+		UpdateFeed (*i, isd);
 	}
 	XmlSettingsManager::Instance ()->setProperty ("LastUpdateDateTime", QDateTime::currentDateTime ());
 	UpdateTimer_->start (XmlSettingsManager::Instance ()->property ("UpdateInterval").toInt () * 60 * 1000);
@@ -1116,6 +1091,38 @@ void Core::showIconInTrayChanged ()
 void Core::handleSslError (QNetworkReply *reply)
 {
 	reply->ignoreSslErrors ();
+}
+
+void Core::handleCustomUpdates ()
+{
+	QObject *provider = Providers_ ["http"];
+	IDownload *isd = qobject_cast<IDownload*> (provider);
+	if (!provider || !isd)
+	{
+		emit error (tr ("Strange, but no suitable provider found"));
+		return;
+	}
+	feeds_urls_t urls;
+	StorageBackend_->GetFeedsURLs (urls);
+	QDateTime current = QDateTime::currentDateTime ();
+	for (feeds_urls_t::const_iterator i = urls.begin (),
+			end = urls.end (); i != end; ++i)
+	{
+		if (!isd->CouldDownload (i->toUtf8 (), LeechCraft::Autostart))
+		{
+			emit error (tr ("Could not handle URL %1").arg (*i));
+			continue;
+		}
+
+		int ut = StorageBackend_->GetFeedSettings (*i).UpdateTimeout_;
+		// It's handled by normal timer.
+		if (!ut)
+			continue;
+
+		if (Updates_ [*i].isValid () && 
+				Updates_ [*i].secsTo (current) / 60 > ut)
+			UpdateFeed (*i, isd);
+	}
 }
 
 void Core::UpdateUnreadItemsNumber () const
@@ -1366,5 +1373,38 @@ void Core::MarkChannel (const QModelIndex& i, bool state)
 
 	QString hash = cs.ParentURL_ + cs.Title_;
 	StorageBackend_->ToggleChannelUnread (cs.ParentURL_, cs.Title_, state);
+}
+
+void Core::UpdateFeed (const QString& url, IDownload *isd)
+{
+	QString filename;
+	{
+		QTemporaryFile file;
+		file.open ();
+		filename = file.fileName ();
+		file.close ();
+		file.remove ();
+	}
+	LeechCraft::DownloadParams params =
+	{
+		url.toUtf8 (),
+		filename
+	};
+	PendingJob pj =
+	{
+		PendingJob::RFeedUpdated,
+		url,
+		filename,
+		QStringList ()
+	};
+	int id = isd->AddJob (params,
+			LeechCraft::Internal |
+			LeechCraft::Autostart |
+			LeechCraft::DoNotNotifyUser |
+			LeechCraft::DoNotSaveInHistory |
+			LeechCraft::NotPersistent);
+	PendingJobs_ [id] = pj;
+
+	Updates_ [url] = QDateTime::currentDateTime ();
 }
 

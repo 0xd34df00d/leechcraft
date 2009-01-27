@@ -32,6 +32,7 @@
 #include "export.h"
 #include "itembucket.h"
 #include "importbinary.h"
+#include "feedsettings.h"
 
 using LeechCraft::Util::TagsCompleter;
 using LeechCraft::Util::CategorySelector;
@@ -47,6 +48,7 @@ struct Aggregator_Impl
     QAction *ActionMarkItemAsUnread_;
     QAction *ActionMarkChannelAsRead_;
     QAction *ActionMarkChannelAsUnread_;
+	QAction *ActionChannelSettings_;
     QAction *ActionUpdateSelectedFeed_;
     QAction *ActionAddToItemBucket_;
     QAction *ActionItemBucket_;
@@ -60,8 +62,7 @@ struct Aggregator_Impl
 	std::auto_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 	std::auto_ptr<ItemsFilterModel> ItemsFilterModel_;
 	std::auto_ptr<ChannelsFilterModel> ChannelsFilterModel_;
-	std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsLineCompleter_,
-		ChannelTagsCompleter_;
+	std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsLineCompleter_;
 	std::auto_ptr<QSystemTrayIcon> TrayIcon_;
 	std::auto_ptr<QTranslator> Translator_;
     std::auto_ptr<ItemBucket> ItemBucket_;
@@ -157,6 +158,10 @@ void Aggregator::Init ()
 	Impl_->Ui_.Feeds_->setModel (Impl_->ChannelsFilterModel_.get ());
 	Impl_->Ui_.Feeds_->addAction (Impl_->ActionMarkChannelAsRead_);
 	Impl_->Ui_.Feeds_->addAction (Impl_->ActionMarkChannelAsUnread_);
+	QAction *sep = new QAction (0);
+	sep->setSeparator (true);
+	Impl_->Ui_.Feeds_->addAction (sep);
+	Impl_->Ui_.Feeds_->addAction (Impl_->ActionChannelSettings_);
 	Impl_->Ui_.Feeds_->setContextMenuPolicy (Qt::ActionsContextMenu);
 	QHeaderView *channelsHeader = Impl_->Ui_.Feeds_->header ();
 	channelsHeader->resizeSection (0, fm.width ("Average channel name"));
@@ -180,22 +185,13 @@ void Aggregator::Init ()
 			SLOT (updateFeeds ()));
 
 	Impl_->TagsLineCompleter_.reset (new TagsCompleter (Impl_->Ui_.TagsLine_));
-	Impl_->ChannelTagsCompleter_.reset (new TagsCompleter (Impl_->Ui_.ChannelTags_));
 	Impl_->TagsLineCompleter_->setModel (Core::Instance ().GetTagsCompletionModel ());
-	Impl_->ChannelTagsCompleter_->setModel (Core::Instance ().GetTagsCompletionModel ());
-
 	Impl_->Ui_.TagsLine_->AddSelector ();
 
-	Impl_->Ui_.ChannelSplitter_->setStretchFactor (0, 5);
-	Impl_->Ui_.ChannelSplitter_->setStretchFactor (1, 2);
 	Impl_->Ui_.MainSplitter_->setStretchFactor (0, 5);
 	Impl_->Ui_.MainSplitter_->setStretchFactor (1, 9);
 
 	connect (Impl_->Ui_.ItemLink_,
-			SIGNAL (linkActivated (const QString&)),
-			&Core::Instance (),
-			SLOT (openLink (const QString&)));
-	connect (Impl_->Ui_.ChannelLink_,
 			SIGNAL (linkActivated (const QString&)),
 			&Core::Instance (),
 			SLOT (openLink (const QString&)));
@@ -204,10 +200,6 @@ void Aggregator::Init ()
 			SIGNAL (gotLink (const QByteArray&)),
 			this,
 			SIGNAL (gotEntity (const QByteArray&)));
-	connect (Impl_->Ui_.MainSplitter_,
-			SIGNAL (splitterMoved (int, int)),
-			this,
-			SLOT (updatePixmap (int)));
 
 	QList<QByteArray> viewerSettings;
 	viewerSettings << "StandardFont"
@@ -234,7 +226,6 @@ void Aggregator::Release ()
 	disconnect (Impl_->ItemsFilterModel_.get (), 0, this, 0);
 	disconnect (Impl_->ChannelsFilterModel_.get (), 0, this, 0);
 	disconnect (Impl_->TagsLineCompleter_.get (), 0, this, 0);
-	disconnect (Impl_->ChannelTagsCompleter_.get (), 0, this, 0);
 	disconnect (Impl_->ItemCategorySelector_.get (), 0, this, 0);
     Impl_->TrayIcon_->hide ();
 	delete Impl_;
@@ -382,6 +373,10 @@ void Aggregator::SetupMenuBar ()
 	Impl_->ActionMarkChannelAsUnread_ = new QAction (tr ("Mark channel as unread"),
 			this);
 	Impl_->ActionMarkChannelAsUnread_->setObjectName ("ActionMarkChannelAsUnread_");
+
+	Impl_->ActionChannelSettings_ = new QAction (tr ("Settings..."),
+			this);
+	Impl_->ActionChannelSettings_->setObjectName ("ActionChannelSettings_");
 
 	Impl_->ActionUpdateSelectedFeed_ = new QAction (tr ("Update selected feed"),
 			this);
@@ -617,6 +612,17 @@ void Aggregator::on_ActionMarkChannelAsUnread__triggered ()
 				ChannelsFilterModel_->mapToSource (indexes.at (i)));
 }
 
+void Aggregator::on_ActionChannelSettings__triggered ()
+{
+    QModelIndex index = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
+	QModelIndex mapped = Impl_->ChannelsFilterModel_->mapToSource (index);
+	if (!mapped.isValid ())
+		return;
+
+	std::auto_ptr<FeedSettings> dia (new FeedSettings (mapped, this));
+	dia->exec ();
+}
+
 void Aggregator::on_ActionUpdateSelectedFeed__triggered ()
 {
     QModelIndex current = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
@@ -624,16 +630,6 @@ void Aggregator::on_ActionUpdateSelectedFeed__triggered ()
         return;
     Core::Instance ().UpdateFeed (Impl_->
 			ChannelsFilterModel_->mapToSource (current));
-}
-
-void Aggregator::on_ChannelTags__editingFinished ()
-{
-    QString tags = Impl_->Ui_.ChannelTags_->text ();
-    QModelIndex current = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
-    if (!current.isValid ())
-        return;
-    Core::Instance ().SetTagsForIndex (tags, Impl_->ChannelsFilterModel_->mapToSource (current));
-    Core::Instance ().UpdateTags (tags.split (' '));
 }
 
 void Aggregator::on_CaseSensitiveSearch__stateChanged (int state)
@@ -787,46 +783,12 @@ void Aggregator::currentItemChanged (const QItemSelection& selection)
 void Aggregator::currentChannelChanged ()
 {
 	currentItemChanged (QItemSelection ());
-
 	Impl_->Ui_.Items_->scrollToTop ();
-    QModelIndex index = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
-	if (!index.isValid ())
-	{
-		Impl_->Ui_.ChannelLink_->hide ();
-		Impl_->Ui_.ItemCategoriesButton_->hide ();
-		Impl_->Ui_.ChannelTags_->setText ("");
-		Impl_->Ui_.ChannelDescription_->setHtml ("");
-		Impl_->Ui_.ChannelAuthor_->setText ("");
-		return;
-	}
-	else
-		Impl_->Ui_.ChannelLink_->show ();
 
+    QModelIndex index = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
 	QModelIndex mapped = Impl_->ChannelsFilterModel_->mapToSource (index);
 	Core::Instance ().currentChannelChanged (mapped);
-	Impl_->Ui_.ChannelTags_->setText (Core::Instance ()
-			.GetTagsForIndex (mapped.row ()).join (" "));
-	Core::ChannelInfo ci = Core::Instance ().GetChannelInfo (mapped);
-	QString link = ci.Link_;
-	QString shortLink;
-	Impl_->Ui_.ChannelLink_->setToolTip (link);
-	if (link.size () >= 80)
-		shortLink = link.left (38) + "..." + link.right (38);
-	else
-		shortLink = link;
-	if (QUrl (link).isValid ())
-	{
-		link.insert (0, "<a href=\"");
-		link.append ("\">" + shortLink + "</a>");
-		Impl_->Ui_.ChannelLink_->setText (link);
-	}
-	else
-		Impl_->Ui_.ChannelLink_->setText (shortLink);
 
-	Impl_->Ui_.ChannelDescription_->setHtml (ci.Description_);
-	Impl_->Ui_.ChannelAuthor_->setText (ci.Author_);
-
-	updatePixmap (Impl_->Ui_.MainSplitter_->sizes ().at (0));
 	QStringList allCategories = Core::Instance ().GetCategories (mapped);
 	if (allCategories.size ())
 	{
@@ -900,22 +862,6 @@ void Aggregator::updateItemsFilter ()
 		Impl_->ItemsFilterModel_->setFilterFixedString (text);
 		break;
 	}
-}
-
-void Aggregator::updatePixmap (int width)
-{
-    QModelIndex index = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
-	if (!index.isValid ())
-		return;
-
-	QModelIndex mapped = Impl_->ChannelsFilterModel_->mapToSource (index);
-
-	QPixmap pixmap = Core::Instance ().GetChannelPixmap (mapped);
-	if (pixmap.isNull ())
-		return;
-
-	Impl_->Ui_.ChannelImage_->setPixmap (pixmap.scaledToWidth (width,
-				Qt::SmoothTransformation));
 }
 
 void Aggregator::viewerSettingsChanged ()

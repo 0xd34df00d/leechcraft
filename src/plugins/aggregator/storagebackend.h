@@ -35,6 +35,24 @@ public:
 	 * appended to the container.
 	 */
 	virtual void GetFeedsURLs (feeds_urls_t& furls) const = 0;
+	/** @brief Returns feed's settings.
+	 *
+	 * Returns invalid (default-constructed) FeedSettings if no settings
+	 * exist in the storage.
+	 *
+	 * @param[int] feed Feed's URL.
+	 * @return FeedSettings for the feed.
+	 */
+	virtual Feed::FeedSettings GetFeedSettings (const QString& feed) const = 0;
+	/** @brief Sets feed's settings.
+	 *
+	 * Sets new feed settings replacing old ones if they exist.
+	 *
+	 * @param[in] feed Feed's URL.
+	 * @param[in] settings New feed's settings.
+	 */
+	virtual void SetFeedSettings (const QString& feed,
+			const Feed::FeedSettings& settings) = 0;
 	/** @brief Get all the channels of a feed in the container.
 	 *
 	 * Returns short information about channels in the storage which

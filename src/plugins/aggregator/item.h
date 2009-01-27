@@ -16,11 +16,21 @@ struct ItemShort
 	bool Unread_;
 };
 
+/** Describes an enclosure associated with an item.
+ */
 struct Enclosure
 {
+	/* @brief The URL this enclosure refers to.
+	 */
 	QString URL_;
+	/** @brief MIME type of the enclosure.
+	 */
 	QString Type_;
+	/** @brief Length of the attached enclosure or -1 if unknown.
+	 */
 	qint64 Length_;
+	/** @brief  For the Atom's hreflang attribute.
+	 */
 	QString Lang_;
 };
 

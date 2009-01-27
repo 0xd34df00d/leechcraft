@@ -36,6 +36,27 @@ void SQLStorageBackend::Prepare ()
 			"FROM feeds "
 			"WHERE url = :url");
 
+	FeedSettingsGetter_ = QSqlQuery (DB_);
+	FeedSettingsGetter_.prepare ("SELECT "
+			"update_timeout, "
+			"num_items, "
+			"item_age "
+			"FROM feeds_settings "
+			"WHERE feed_url = :feed_url");
+
+	FeedSettingsSetter_ = QSqlQuery (DB_);
+	FeedSettingsSetter_.prepare ("INSERT OR REPLACE INTO feeds_settings ("
+			"feed_url, "
+			"update_timeout, "
+			"num_items, "
+			"item_age"
+			") VALUES ("
+			":feed_url, "
+			":update_timeout, "
+			":num_items, "
+			":item_age"
+			")");
+
 	ChannelsShortSelector_ = QSqlQuery (DB_);
 	ChannelsShortSelector_.prepare ("SELECT "
 			"title, "
@@ -315,6 +336,40 @@ void SQLStorageBackend::GetFeedsURLs (feeds_urls_t& result) const
 
 	while (feedSelector.next ())
 		result.push_back (feedSelector.value (0).toString ());
+}
+
+Feed::FeedSettings SQLStorageBackend::GetFeedSettings (const QString& feedURL) const
+{
+	Feed::FeedSettings result;
+	FeedSettingsGetter_.bindValue (":feed_url", feedURL);
+	if (!FeedSettingsGetter_.exec ())
+	{
+		LeechCraft::Util::DBLock::DumpError (FeedSettingsGetter_);
+		return result;
+	}
+
+	if (!FeedSettingsGetter_.next ())
+		return result;
+
+	result.UpdateTimeout_ = FeedSettingsGetter_.value (0).toInt ();
+	result.NumItems_ = FeedSettingsGetter_.value (1).toInt ();
+	result.ItemAge_ = FeedSettingsGetter_.value (2).toInt ();
+
+	FeedSettingsGetter_.finish ();
+
+	return result;
+}
+
+void SQLStorageBackend::SetFeedSettings (const QString& feedURL,
+		const Feed::FeedSettings& settings)
+{
+	FeedSettingsSetter_.bindValue (":feed_url", feedURL);
+	FeedSettingsSetter_.bindValue (":update_timeout", settings.UpdateTimeout_);
+	FeedSettingsSetter_.bindValue (":num_items", settings.NumItems_);
+	FeedSettingsSetter_.bindValue (":item_age", settings.ItemAge_);
+
+	if (!FeedSettingsSetter_.exec ())
+		LeechCraft::Util::DBLock::DumpError (FeedSettingsSetter_);
 }
 
 void SQLStorageBackend::GetChannels (channels_shorts_t& shorts,
@@ -915,9 +970,20 @@ bool SQLStorageBackend::InitializeTables ()
 			LeechCraft::Util::DBLock::DumpError (query.lastError ());
 			return false;
 		}
+	}
 
-		if (!query.exec ("CREATE UNIQUE INDEX idx_feeds_url ON feeds (url);"))
+	if (!DB_.tables ().contains ("feeds_settings"))
+	{
+		if (!query.exec ("CREATE TABLE feeds_settings ("
+					"feed_url TEXT PRIMARY KEY, "
+					"update_timeout INTEGER NOT NULL, "
+					"num_items INTEGER NOT NULL, "
+					"item_age INTEGER NOT NULL"
+					");"))
+		{
 			LeechCraft::Util::DBLock::DumpError (query.lastError ());
+			return false;
+		}
 	}
 
 	if (!DB_.tables ().contains ("channels"))

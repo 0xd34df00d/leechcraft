@@ -54,8 +54,8 @@ private slots:
     void on_ActionMarkItemAsUnread__triggered ();
     void on_ActionMarkChannelAsRead__triggered ();
     void on_ActionMarkChannelAsUnread__triggered ();
+	void on_ActionChannelSettings__triggered ();
     void on_ActionUpdateSelectedFeed__triggered ();
-    void on_ChannelTags__editingFinished ();
     void on_CaseSensitiveSearch__stateChanged (int);
 	void on_ActionAddToItemBucket__triggered ();
 	void on_ActionItemBucket__triggered ();
@@ -72,7 +72,6 @@ private slots:
     void unreadNumberChanged (int);
     void trayIconActivated ();
 	void updateItemsFilter ();
-	void updatePixmap (int);
 	void viewerSettingsChanged ();
 	void makeCurrentItemVisible ();
 signals:

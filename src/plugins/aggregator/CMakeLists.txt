@@ -42,6 +42,7 @@ SET (SRCS
 	storagebackend.cpp
 	customwebview.cpp
 	importbinary.cpp
+	feedsettings.cpp
 	)
 SET (HEADERS
     aggregator.h
@@ -78,6 +79,7 @@ SET (HEADERS
 	customwebview.h
 	opmlitem.h
 	importbinary.h
+	feedsettings.h
 	)
 SET (FORMS
     mainwidget.ui
@@ -89,6 +91,7 @@ SET (FORMS
 	importopml.ui
 	export.ui
 	importbinary.ui
+	feedsettings.ui
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS

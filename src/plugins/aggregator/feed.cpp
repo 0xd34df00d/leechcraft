@@ -3,6 +3,13 @@
 #include "feed.h"
 #include "channel.h"
 
+Feed::FeedSettings::FeedSettings (int ut, int ni, int ia)
+: UpdateTimeout_ (ut)
+, NumItems_ (ni)
+, ItemAge_ (ia)
+{
+}
+
 Feed::Feed ()
 {
 }

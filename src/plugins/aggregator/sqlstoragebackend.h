@@ -17,6 +17,22 @@ class SQLStorageBackend : public StorageBackend
 					   */
 	mutable QSqlQuery FeedFinderByURL_,
 					  /** Returns:
+					   * - update_timeout
+					   * - num_items
+					   * - item_age
+					   *
+					   * Binds:
+					   * - feed_url
+					   */
+					  FeedSettingsGetter_,
+					  /** Binds:
+					   * - feed_url
+					   * - update_timeout
+					   * - num_items
+					   * - item_age
+					   */
+					  FeedSettingsSetter_,
+					  /** Returns:
 					   * - title
 					   * - url
 					   * - tags
@@ -248,6 +264,8 @@ public:
 	virtual void Prepare ();
 
 	virtual void GetFeedsURLs (feeds_urls_t&) const;
+	virtual Feed::FeedSettings GetFeedSettings (const QString&) const;
+	virtual void SetFeedSettings (const QString&, const Feed::FeedSettings&);
 	virtual void GetChannels (channels_shorts_t&, const QString&) const;
 	virtual Channel_ptr GetChannel (const QString&,
 			const QString&) const;

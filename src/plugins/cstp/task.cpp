@@ -35,7 +35,8 @@ void Task::Start (const boost::shared_ptr<QFile>& tof)
 
 void Task::Stop ()
 {
-	Reply_->abort ();
+	if (Reply_.get ())
+		Reply_->abort ();
 }
 
 QByteArray Task::Serialize () const

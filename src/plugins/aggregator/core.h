@@ -71,11 +71,12 @@ class Core : public QAbstractItemModel
     QStringList ItemHeaders_;
     ChannelsModel *ChannelsModel_;
 	LeechCraft::Util::TagsCompletionModel *TagsCompletionModel_;
-    QTimer *UpdateTimer_;
+    QTimer *UpdateTimer_, *CustomUpdateTimer_;
     bool SaveScheduled_;
 	std::auto_ptr<StorageBackend> StorageBackend_;
     ItemModel *ItemModel_;
 	int CurrentRow_;
+	QMap<QString, QDateTime> Updates_;
 
     Core ();
 public:
@@ -110,6 +111,8 @@ public:
 	void SetTagsForIndex (const QString&, const QModelIndex&);
 	QStringList GetCategories (const QModelIndex&) const;
 	QStringList GetItemCategories (int) const;
+	Feed::FeedSettings GetFeedSettings (const QModelIndex&) const;
+	void SetFeedSettings (const Feed::FeedSettings&, const QModelIndex&);
     void UpdateFeed (const QModelIndex&);
     QModelIndex GetUnreadChannelIndex ();
 	void AddToItemBucket (const QModelIndex&) const;
@@ -159,6 +162,7 @@ private slots:
     void saveSettings ();
 	void handleChannelDataUpdated (Channel_ptr);
 	void handleItemDataUpdated (Item_ptr, Channel_ptr);
+	void handleCustomUpdates ();
 private:
     void UpdateUnreadItemsNumber () const;
 	void FetchPixmap (const Channel_ptr&);
@@ -169,6 +173,7 @@ private:
 			const channels_container_t&,
 			const PendingJob&);
 	void MarkChannel (const QModelIndex&, bool);
+	void UpdateFeed (const QString&, IDownload*);
 signals:
     void error (const QString&) const;
     void showDownloadMessage (const QString&);
