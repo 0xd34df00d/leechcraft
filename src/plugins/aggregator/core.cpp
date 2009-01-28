@@ -1119,8 +1119,9 @@ void Core::handleCustomUpdates ()
 		if (!ut)
 			continue;
 
-		if (Updates_ [*i].isValid () && 
-				Updates_ [*i].secsTo (current) / 60 > ut)
+		if (!Updates_.contains (*i) ||
+				(Updates_ [*i].isValid () &&
+				 Updates_ [*i].secsTo (current) / 60 > ut))
 			UpdateFeed (*i, isd);
 	}
 }
@@ -1275,6 +1276,16 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 		}
 	}
 
+	if (!channels.size ())
+		return emitString;
+
+	Feed::FeedSettings settings = StorageBackend_->
+		GetFeedSettings (channels [0]->ParentURL_);
+	const int days = settings.ItemAge_ ? settings.ItemAge_ :
+		XmlSettingsManager::Instance ()->property ("ItemsMaxAge").toInt ();
+	const unsigned ipc = settings.NumItems_ ? settings.NumItems_ :
+		XmlSettingsManager::Instance ()->property ("ItemsPerChannel").value<unsigned> ();
+
 	for (channels_container_t::const_iterator i = channels.begin (),
 			end = channels.end (); i != end; ++i)
 	{
@@ -1287,16 +1298,12 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 					&RegexpMatcherManager::Instance (),
 					_1));
 
-		const int days = XmlSettingsManager::Instance ()->
-				property ("ItemsMaxAge").toInt ();
 		const QDateTime current = QDateTime::currentDateTime ();
-		const unsigned ItemsPerChannel = XmlSettingsManager::Instance ()->
-					property ("ItemsPerChannel").value<unsigned> ();
 
 		if (position == ourChannels.end ())
 		{
-			size_t truncateAt = ((*i)->Items_.size () <= ItemsPerChannel) ?
-				(*i)->Items_.size () : ItemsPerChannel;
+			size_t truncateAt = ((*i)->Items_.size () <= ipc) ?
+				(*i)->Items_.size () : ipc;
 			for (size_t j = 0; j < (*i)->Items_.size (); j++)
 				if ((*i)->Items_ [j]->PubDate_.daysTo (current) > days)
 				{
@@ -1348,7 +1355,7 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 			/*if (removeFrom == 0)
 				removeFrom = 1;*/
 
-			removeFrom = std::min (removeFrom, ItemsPerChannel);
+			removeFrom = std::min (removeFrom, ipc);
 			
 			if ((*position)->Items_.size () > removeFrom)
 				std::for_each ((*position)->Items_.begin () + removeFrom,
