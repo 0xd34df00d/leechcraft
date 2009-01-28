@@ -34,8 +34,8 @@ Core::Core ()
 	if (!dir.cd (".leechcraft/poshuku") &&
 			!dir.mkpath (".leechcraft/poshuku"))
 	{
-		qCritical () << Q_FUNC_INFO << "could not create neccessary "
-			"directories for Poshuku";
+		qCritical () << Q_FUNC_INFO
+			<< "could not create neccessary directories for Poshuku";
 		return;
 	}
 

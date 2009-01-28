@@ -1,4 +1,5 @@
 #include "sqlstoragebackend.h"
+#include <stdexcept>
 #include <QDir>
 #include <QSqlQuery>
 #include <QSqlError>
@@ -14,8 +15,8 @@ SQLStorageBackend::SQLStorageBackend ()
 	if (!DB_.open ())
 		LeechCraft::Util::DBLock::DumpError (DB_.lastError ());
 
-	if (!DB_.tables ().contains ("history"))
-		InitializeTables ();
+	InitializeTables ();
+	CheckVersions ();
 }
 
 SQLStorageBackend::~SQLStorageBackend ()
@@ -64,7 +65,7 @@ void SQLStorageBackend::Prepare ()
 			"url, "
 			"tags "
 			"FROM favorites "
-			"ORDER BY title");
+			"ORDER BY ROWID");
 
 	FavoritesAdder_ = QSqlQuery (DB_);
 	FavoritesAdder_.prepare ("INSERT INTO favorites ("
@@ -216,31 +217,87 @@ void SQLStorageBackend::InitializeTables ()
 {
 	QSqlQuery query (DB_);
 
-	if (!query.exec ("CREATE TABLE history ("
-				"date TIMESTAMP PRIMARY KEY, "
-				"title TEXT, "
-				"url TEXT"
-				");"))
+	if (!DB_.contains ("history"))
 	{
-		LeechCraft::Util::DBLock::DumpError (query);
-		return;
+		if (!query.exec ("CREATE TABLE history ("
+					"date TIMESTAMP PRIMARY KEY, "
+					"title TEXT, "
+					"url TEXT"
+					");"))
+		{
+			LeechCraft::Util::DBLock::DumpError (query);
+			return;
+		}
 	}
 
-	if (!query.exec ("CREATE TABLE favorites ("
-				"title TEXT PRIMARY KEY, "
-				"url TEXT, "
-				"tags TEXT"
-				");"))
+	if (!DB_.contains ("favorites"))
+	{
+		if (!query.exec ("CREATE TABLE favorites ("
+					"title TEXT PRIMARY KEY, "
+					"url TEXT, "
+					"tags TEXT"
+					");"))
+		{
+			LeechCraft::Util::DBLock::DumpError (query);
+			return;
+		}
+	}
+	
+	if (!DB_.contains ("storage_settings"))
+	{
+		if (!query.exec ("CREATE TABLE storage_settings ("
+					"key TEXT PRIMARY KEY, "
+					"value TEXT"
+					");"))
+		{
+			LeechCraft::Util::DBLock::DumpError (query);
+			return;
+		}
+
+		SetSetting ("historyversion", "1");
+		SetSetting ("favoritesversion", "1");
+	}
+}
+
+void SQLStorageBackend::CheckVersions ()
+{
+}
+
+QString SQLStorageBackend::GetSetting (const QString& key) const
+{
+	QSqlQuery query (DB_);
+	query.prepare ("SELECT value "
+			"FROM storage_settings "
+			"WHERE key = :key");
+	query.bindValue (":key", key);
+	if (!query.exec ())
 	{
 		LeechCraft::Util::DBLock::DumpError (query);
-		return;
+		throw std::runtime_error ("SQLStorageBackend could not query settings");
 	}
+	
+	if (!query.next ())
+		throw std::runtime_error ("No such field");
 
-	if (!query.exec ("CREATE UNIQUE INDEX history_date "
-				"ON history (date);"))
+	return query.value (0).toString ();
+}
+
+void SQLStorageBackend::SetSetting (const QString& key, const QString& value)
+{
+	QSqlQuery query (DB_);
+	query.prepare ("INSERT OR REPLACE INTO storage_settings ("
+			"key, "
+			"value"
+			") VALUES ("
+			":key, "
+			":value"
+			")");
+	query.bindValue (":key", key);
+	query.bindValue (":value", value);
+	if (!query.exec ())
+	{
 		LeechCraft::Util::DBLock::DumpError (query);
-	if (!query.exec ("CREATE UNIQUE INDEX favorites_date "
-				"ON favorites (title);"))
-		LeechCraft::Util::DBLock::DumpError (query);
+		throw std::runtime_error ("SQLStorageBackend could not query settings");
+	}
 }
 

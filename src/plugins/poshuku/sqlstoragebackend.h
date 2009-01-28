@@ -64,6 +64,9 @@ public:
 	virtual void UpdateFavorites (const FavoritesModel::FavoritesItem&);
 private:
 	void InitializeTables ();
+	void CheckVersions ();
+	QString GetSetting (const QString&) const;
+	void SetSetting (const QString&, const QString&);
 };
 
 #endif
