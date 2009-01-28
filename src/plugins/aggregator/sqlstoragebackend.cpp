@@ -328,7 +328,7 @@ void SQLStorageBackend::GetFeedsURLs (feeds_urls_t& result) const
 	QSqlQuery feedSelector (DB_);
 	if (!feedSelector.exec ("SELECT url "
 				"FROM feeds "
-				"ORDER BY url"))
+				"ORDER BY ROWID"))
 	{
 		LeechCraft::Util::DBLock::DumpError (feedSelector);
 		return;
