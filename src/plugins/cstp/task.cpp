@@ -19,18 +19,50 @@ Task::Task (const QString& str)
 , Total_ (0)
 , FileSizeAtStart_ (-1)
 , Speed_ (0)
+, Counter_ (0)
 {
 	StartTime_.start ();
 }
 
-Task::~Task ()
-{
-}
-
-void Task::Start (const boost::shared_ptr<QFile>& tof)
+void Task::Start (const boost::intrusive_ptr<MorphFile>& tof)
 {
 	FileSizeAtStart_ = tof->size ();
-	Start (tof.get ());
+	To_ = tof;
+
+	QString ua = XmlSettingsManager::Instance ()
+		.property ("UserUserAgent").toString ();
+	if (ua.isEmpty ())
+		ua = XmlSettingsManager::Instance ()
+			.property ("PredefinedUserAgent").toString ();
+
+	QNetworkRequest req (URL_);
+	req.setRawHeader ("Range", QString ("bytes=%1-").arg (tof->size ()).toLatin1 ());
+	req.setRawHeader ("User-Agent", ua.toLatin1 ());
+	req.setRawHeader ("Referer", QString (QString ("http://") + URL_.host ()).toLatin1 ());
+
+	StartTime_.restart ();
+	QNetworkAccessManager *nam = Core::Instance ().GetNetworkAccessManager ();
+	Reply_.reset (nam->get (req));
+	connect (Reply_.get (),
+			SIGNAL (downloadProgress (qint64, qint64)),
+			this,
+			SLOT (handleDataTransferProgress (qint64, qint64)));
+	connect (Reply_.get (),
+			SIGNAL (finished ()),
+			this,
+			SLOT (handleFinished ()));
+	connect (Reply_.get (),
+			SIGNAL (error (QNetworkReply::NetworkError)),
+			this,
+			SLOT (handleError ()));
+	connect (Reply_.get (),
+			SIGNAL (metaDataChanged ()),
+			this,
+			SLOT (handleMetaDataChanged ()));
+	connect (Reply_.get (),
+			SIGNAL (readyRead ()),
+			this,
+			SLOT (handleReadyRead ()));
 }
 
 void Task::Stop ()
@@ -117,44 +149,16 @@ QString Task::GetErrorString () const
 	return Reply_.get () ? Reply_->errorString () : tr ("Task isn't initialized properly");
 }
 
-void Task::Start (QIODevice *to)
+void Task::AddRef ()
 {
-	To_ = to;
+	++Counter_;
+}
 
-	QString ua = XmlSettingsManager::Instance ()
-		.property ("UserUserAgent").toString ();
-	if (ua.isEmpty ())
-		ua = XmlSettingsManager::Instance ()
-			.property ("PredefinedUserAgent").toString ();
-
-	QNetworkRequest req (URL_);
-	req.setRawHeader ("Range", QString ("bytes=%1-").arg (to->size ()).toLatin1 ());
-	req.setRawHeader ("User-Agent", ua.toLatin1 ());
-	req.setRawHeader ("Referer", QString (QString ("http://") + URL_.host ()).toLatin1 ());
-
-	StartTime_.restart ();
-	QNetworkAccessManager *nam = Core::Instance ().GetNetworkAccessManager ();
-	Reply_.reset (nam->get (req));
-	connect (Reply_.get (),
-			SIGNAL (downloadProgress (qint64, qint64)),
-			this,
-			SLOT (handleDataTransferProgress (qint64, qint64)));
-	connect (Reply_.get (),
-			SIGNAL (finished ()),
-			this,
-			SLOT (handleFinished ()));
-	connect (Reply_.get (),
-			SIGNAL (error (QNetworkReply::NetworkError)),
-			this,
-			SLOT (handleError ()));
-	connect (Reply_.get (),
-			SIGNAL (metaDataChanged ()),
-			this,
-			SLOT (handleMetaDataChanged ()));
-	connect (Reply_.get (),
-			SIGNAL (readyRead ()),
-			this,
-			SLOT (handleReadyRead ()));
+void Task::Release ()
+{
+	--Counter_;
+	if (!Counter_)
+		deleteLater ();
 }
 
 void Task::Reset ()
@@ -182,19 +186,18 @@ void Task::handleDataTransferProgress (qint64 done, qint64 total)
 	emit updateInterface ();
 }
 
-void Task::redirectedConstruction (QIODevice *to, const QString& newUrl)
+void Task::redirectedConstruction (const QString& newUrl)
 {
-	QFile *file = dynamic_cast<QFile*> (to);
-	if (file && FileSizeAtStart_ >= 0)
+	if (To_ && FileSizeAtStart_ >= 0)
 	{
-		file->close ();
-		file->size ();
-		file->resize (FileSizeAtStart_);
-		file->open (QIODevice::ReadWrite);
+		To_->close ();
+		To_->size ();
+		To_->resize (FileSizeAtStart_);
+		To_->open (QIODevice::ReadWrite);
 	}
 
 	URL_ = newUrl;
-	Start (file);
+	Start (To_);
 }
 
 void Task::handleMetaDataChanged ()
@@ -216,7 +219,6 @@ void Task::handleMetaDataChanged ()
 			QMetaObject::invokeMethod (this,
 					"redirectedConstruction",
 					Qt::QueuedConnection,
-					Q_ARG (QIODevice*, To_),
 					Q_ARG (QString, newUrl));
 		}
 	}
@@ -236,5 +238,15 @@ void Task::handleFinished ()
 void Task::handleError ()
 {
 	emit done (true);
+}
+
+void intrusive_ptr_add_ref (Task *task)
+{
+	task->AddRef ();
+}
+
+void intrusive_ptr_release (Task *task)
+{
+	task->Release ();
 }
 

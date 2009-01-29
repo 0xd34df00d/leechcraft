@@ -1,7 +1,7 @@
 #ifndef CORE_H
 #define CORE_H
 #include <list>
-#include <boost/shared_ptr.hpp>
+#include <boost/intrusive_ptr.hpp>
 #include <QAbstractItemModel>
 #include <QStringList>
 #include <QNetworkProxy>
@@ -47,8 +47,8 @@ class Core : public QAbstractItemModel
 
 	struct TaskDescr
 	{
-		boost::shared_ptr<Task> Task_;
-		boost::shared_ptr<MorphFile> File_;
+		boost::intrusive_ptr<Task> Task_;
+		boost::intrusive_ptr<MorphFile> File_;
 		QString Comment_;
 		bool ErrorFlag_;
 		LeechCraft::TaskParameters Parameters_;
@@ -110,7 +110,6 @@ private slots:
 	void done (bool); 
 	void updateInterface ();
 	void writeSettings ();
-	void removeImpl (tasks_t::iterator);
 private:
 	void ReadSettings ();
 	void ScheduleSave ();

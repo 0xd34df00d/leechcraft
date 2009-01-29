@@ -1,13 +1,14 @@
 #ifndef TASK_H
 #define TASK_H
 #include <list>
-#include <boost/shared_ptr.hpp>
+#include <boost/intrusive_ptr.hpp>
 #include <memory>
 #include <QObject>
 #include <QUrl>
 #include <QTime>
 #include <QNetworkReply>
 #include <QStringList>
+#include "morphfile.h"
 
 class Hook;
 class QAuthenticator;
@@ -24,11 +25,11 @@ class Task : public QObject
 	qint64 Done_, Total_, FileSizeAtStart_;
 	double Speed_;
 	QStringList RedirectHistory_;
-	QIODevice *To_;
+	boost::intrusive_ptr<MorphFile> To_;
+	int Counter_;
 public:
 	explicit Task (const QString& = QString ());
-	virtual ~Task ();
-	void Start (const boost::shared_ptr<QFile>&);
+	void Start (const boost::intrusive_ptr<MorphFile>&);
 	void Stop ();
 
 	QByteArray Serialize () const;
@@ -42,13 +43,15 @@ public:
 	int GetTimeFromStart () const;
 	bool IsRunning () const;
 	QString GetErrorString () const;
+
+	void AddRef ();
+	void Release ();
 private:
-	void Start (QIODevice*);
 	void Reset ();
 	void RecalculateSpeed ();
 private slots:
 	void handleDataTransferProgress (qint64, qint64);
-	void redirectedConstruction (QIODevice*, const QString&);
+	void redirectedConstruction (const QString&);
 	void handleMetaDataChanged ();
 	void handleReadyRead ();
 	void handleFinished ();
@@ -57,6 +60,9 @@ signals:
 	void updateInterface ();
 	void done (bool);
 };
+
+void intrusive_ptr_add_ref (Task*);
+void intrusive_ptr_release (Task*);
 
 #endif
 

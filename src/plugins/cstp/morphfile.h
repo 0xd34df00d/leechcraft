@@ -7,6 +7,7 @@ class MorphFile : public QFile
 	Q_OBJECT
 
 	bool Gunzip_;
+	int Counter_;
 public:
 	MorphFile (const QString&);
 	MorphFile (QObject*);
@@ -14,7 +15,13 @@ public:
 	virtual ~MorphFile ();
 
 	void Gunzip (bool);
+
+	void AddRef ();
+	void Release ();
 };
+
+void intrusive_ptr_add_ref (MorphFile*);
+void intrusive_ptr_release (MorphFile*);
 
 #endif
 

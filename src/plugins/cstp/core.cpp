@@ -1,6 +1,7 @@
 #include "core.h"
 #include <stdexcept>
 #include <numeric>
+#include <algorithm>
 #include <boost/logic/tribool.hpp>
 #include <QDir>
 #include <QTimer>
@@ -20,8 +21,7 @@ Core::Core ()
 , RepresentationModel_ (new RepresentationModel ())
 , SaveScheduled_ (false)
 {
-	qRegisterMetaType<QIODevice*> ("QIODevice*");
-	qRegisterMetaType<tasks_t::iterator> ("tasks_t::iterator");
+	qRegisterMetaType<boost::intrusive_ptr<MorphFile> > ("boost::intrusive_ptr<MorphFile>");
 
 	Headers_ << tr ("URL")
 		<< tr ("State")
@@ -68,9 +68,9 @@ int Core::AddTask (const QString& url,
 		LeechCraft::TaskParameters tp)
 {
 	TaskDescr td;
-	td.Task_ = boost::shared_ptr<Task> (new Task (url));
+	td.Task_.reset (new Task (url));
 	QDir dir (path);
-	td.File_ = boost::shared_ptr<MorphFile> (new MorphFile (QDir::cleanPath (dir
+	td.File_.reset (new MorphFile (QDir::cleanPath (dir
 					.filePath (filename))));
 	td.Comment_ = comment;
 	td.ErrorFlag_ = false;
@@ -187,7 +187,7 @@ QVariant Core::data (const QModelIndex& index, int role) const
     if (role == Qt::DisplayRole)
 	{
 		TaskDescr td = TaskAt (index.row ());
-		boost::shared_ptr<Task> task = td.Task_;
+		boost::intrusive_ptr<Task> task = td.Task_;
 		switch (index.column ())
 		{
 			case HURL:
@@ -275,7 +275,6 @@ int Core::rowCount (const QModelIndex& parent) const
 
 void Core::removeTriggered (int i)
 {
-	stopTriggered (i);
 	tasks_t::iterator it = ActiveTasks_.begin ();
 	std::advance (it, i);
 	Remove (it);
@@ -393,17 +392,6 @@ void Core::writeSettings ()
 	settings.endArray ();
 }
 
-void Core::removeImpl (tasks_t::iterator it)
-{
-	int dst = std::distance (ActiveTasks_.begin (), it);
-	emit taskRemoved (it->ID_);
-	IDPool_.push_front (it->ID_);
-	beginRemoveRows (QModelIndex (), dst, dst);
-	ActiveTasks_.erase (it);
-	endRemoveRows ();
-	ScheduleSave ();
-}
-
 void Core::ReadSettings ()
 {
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
@@ -416,7 +404,7 @@ void Core::ReadSettings ()
 		TaskDescr td;
 
 		QByteArray data = settings.value ("Task").toByteArray ();
-		td.Task_ = boost::shared_ptr<Task> (new Task ());
+		td.Task_.reset (new Task ());
 		try
 		{
 			td.Task_->Deserialize (data);
@@ -437,7 +425,7 @@ void Core::ReadSettings ()
 				SLOT (updateInterface ()));
 
 		QString filename = settings.value ("Filename").toString ();
-		td.File_ = boost::shared_ptr<MorphFile> (new MorphFile (filename));
+		td.File_.reset (new MorphFile (filename));
 
 		td.Comment_ = settings.value ("Comment").toString ();
 		td.ErrorFlag_ = settings.value ("ErrorFlag").toBool ();
@@ -499,10 +487,13 @@ Core::tasks_t::iterator Core::FindTask (QObject *task)
 
 void Core::Remove (tasks_t::iterator it)
 {
-	QMetaObject::invokeMethod (this,
-			"removeImpl",
-			Qt::QueuedConnection,
-			Q_ARG (tasks_t::iterator, it));
+	int dst = std::distance (ActiveTasks_.begin (), it);
+	emit taskRemoved (it->ID_);
+	IDPool_.push_front (it->ID_);
+	beginRemoveRows (QModelIndex (), dst, dst);
+	ActiveTasks_.erase (it);
+	endRemoveRows ();
+	ScheduleSave ();
 }
 
 void Core::AddToHistory (tasks_t::const_iterator it)
