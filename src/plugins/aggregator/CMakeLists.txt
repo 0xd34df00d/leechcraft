@@ -43,6 +43,8 @@ SET (SRCS
 	customwebview.cpp
 	importbinary.cpp
 	feedsettings.cpp
+	jobholderrepresentation.cpp
+	itemswidget.cpp
 	)
 SET (HEADERS
     aggregator.h
@@ -80,6 +82,8 @@ SET (HEADERS
 	opmlitem.h
 	importbinary.h
 	feedsettings.h
+	jobholderrepresentation.h
+	itemswidget.h
 	)
 SET (FORMS
     mainwidget.ui
@@ -92,6 +96,7 @@ SET (FORMS
 	export.ui
 	importbinary.ui
 	feedsettings.ui
+	itemswidget.ui
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS

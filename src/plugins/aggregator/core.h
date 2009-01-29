@@ -19,6 +19,7 @@ class QNetworkReply;
 class QFile;
 class ItemModel;
 class QWebView;
+class JobHolderRepresentation;
 
 namespace LeechCraft
 {
@@ -75,6 +76,7 @@ class Core : public QAbstractItemModel
     bool SaveScheduled_;
 	std::auto_ptr<StorageBackend> StorageBackend_;
     ItemModel *ItemModel_;
+	JobHolderRepresentation *JobHolderRepresentation_;
 	int CurrentRow_;
 	QMap<QString, QDateTime> Updates_;
 
@@ -129,7 +131,9 @@ public:
 			const QString&,
 			const QString&,
 			const std::vector<bool>&) const;
+	JobHolderRepresentation* GetJobHolderRepresentation () const;
     ItemModel* GetItemModel () const;
+	StorageBackend* GetStorageBackend () const;
 	void SubscribeToComments (const QModelIndex&);
 	QWebView* CreateWindow ();
 	void GetChannels (channels_shorts_t&) const;

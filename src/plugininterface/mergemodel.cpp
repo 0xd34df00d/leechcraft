@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <stdexcept>
 #include <QtDebug>
 #include "mergemodel.h"
 
@@ -241,8 +242,10 @@ MergeModel::const_iterator MergeModel::GetModelForRow (int row) const
 		if (counter > row)
 			return i;
 	}
-	qWarning () << Q_FUNC_INFO << "not found";
-	return Models_.end ();
+	QString msg = Q_FUNC_INFO;
+	msg += ": not found ";
+	msg += QString::number (row);
+	throw std::runtime_error (qPrintable (msg));
 }
 
 MergeModel::iterator MergeModel::GetModelForRow (int row)
@@ -255,8 +258,10 @@ MergeModel::iterator MergeModel::GetModelForRow (int row)
 		if (counter > row)
 			return i;
 	}
-	qWarning () << Q_FUNC_INFO << "not found";
-	return Models_.end ();
+	QString msg = Q_FUNC_INFO;
+	msg += ": not found ";
+	msg += QString::number (row);
+	throw std::runtime_error (qPrintable (msg));
 }
 
 void MergeModel::handleColumnsAboutToBeInserted (const QModelIndex&, int, int)

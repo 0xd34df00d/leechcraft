@@ -212,7 +212,9 @@ QWidget* TorrentPlugin::GetAdditionalInfo () const
 
 void TorrentPlugin::ItemSelected (const QModelIndex& item)
 {
-	QModelIndex mapped = FilterModel_->mapToSource (item);
+	QModelIndex mapped = item.isValid () ?
+		FilterModel_->mapToSource (item) : QModelIndex ();
+	Current_ = mapped;
 	Core::Instance ()->SetCurrentTorrent (mapped.row ());
 	Ui_.TorrentTags_->setText (Core::Instance ()->GetTagsForIndex ().join (" "));
 	if (mapped.isValid ())
@@ -491,6 +493,9 @@ void TorrentPlugin::showError (QString e)
 
 void TorrentPlugin::updateTorrentStats ()
 {
+	if (!Current_.isValid ())
+		return;
+
 	switch (TabWidget_->currentIndex ())
 	{
 		case 0:

@@ -27,11 +27,15 @@
 #include "opmlwriter.h"
 #include "sqlstoragebackend.h"
 #include "itemmodel.h"
+#include "jobholderrepresentation.h"
 
 using LeechCraft::Util::TagsCompletionModel;
 
 Core::Core ()
-: SaveScheduled_ (false)
+: ChannelsModel_ (new ChannelsModel)
+, SaveScheduled_ (false)
+, ItemModel_ (new ItemModel)
+, JobHolderRepresentation_ (new JobHolderRepresentation)
 , CurrentRow_ (-1)
 {
 	qRegisterMetaTypeStreamOperators<Feed> ("Feed");
@@ -96,9 +100,6 @@ Core::Core ()
 	ParserFactory::Instance ().Register (&RSS10Parser::Instance ());
 	ItemHeaders_ << tr ("Name") << tr ("Date");
 
-	ItemModel_ = new ItemModel ();
-
-	ChannelsModel_ = new ChannelsModel (this);
 	connect (ChannelsModel_,
 			SIGNAL (channelDataUpdated ()),
 			this,
@@ -120,6 +121,8 @@ Core::Core ()
 		}
 	}
 
+	JobHolderRepresentation_->setSourceModel (ChannelsModel_);
+
 	TagsCompletionModel_ = new TagsCompletionModel (this);
 	TagsCompletionModel_->UpdateTags (XmlSettingsManager::Instance ()->
 			Property ("GlobalTags", QStringList ("untagged")).toStringList ());
@@ -137,6 +140,9 @@ void Core::Release ()
 	saveSettings ();
 	XmlSettingsManager::Instance ()->Release ();
 	StorageBackend_.reset (0);
+	delete JobHolderRepresentation_;
+	delete ItemModel_;
+	delete ChannelsModel_;
 }
 
 void Core::DoDelayedInit ()
@@ -609,9 +615,19 @@ void Core::ExportToBinary (const QString& where,
 	f.write (qCompress (buffer, 9));
 }
 
+JobHolderRepresentation* Core::GetJobHolderRepresentation () const
+{
+	return JobHolderRepresentation_;
+}
+
 ItemModel* Core::GetItemModel () const
 {
 	return ItemModel_;
+}
+
+StorageBackend* Core::GetStorageBackend () const
+{
+	return StorageBackend_.get ();
 }
 
 void Core::SubscribeToComments (const QModelIndex& index)

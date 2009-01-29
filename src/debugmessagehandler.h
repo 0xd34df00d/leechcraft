@@ -3,7 +3,11 @@
 #include <QtGlobal>
 #include <QMutex>
 
-void debugMessageHandler (QtMsgType type, const char *message);
+namespace DebugHandler
+{
+	static bool PrintStack_ = false;
+	void debugMessageHandler (QtMsgType type, const char *message);
+};
 
 #endif
 

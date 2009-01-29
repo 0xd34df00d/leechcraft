@@ -3,6 +3,7 @@
 #include <memory>
 #include <interfaces/iinfo.h>
 #include <interfaces/iembedtab.h>
+#include <interfaces/ijobholder.h>
 #include <interfaces/ihavesettings.h>
 #include <QWidget>
 #include <QItemSelection>
@@ -19,9 +20,10 @@ class Aggregator : public QWidget
                  , public IInfo
                  , public IEmbedTab
 				 , public IHaveSettings
+				 , public IJobHolder
 {
     Q_OBJECT
-    Q_INTERFACES (IInfo IEmbedTab IHaveSettings)
+    Q_INTERFACES (IInfo IEmbedTab IHaveSettings IJobHolder)
 
 	Aggregator_Impl *Impl_;
 public:
@@ -37,27 +39,24 @@ public:
     QIcon GetIcon () const;
 	QWidget* GetTabContents ();
 	LeechCraft::Util::XmlSettingsDialog* GetSettingsDialog () const;
+	QAbstractItemModel* GetRepresentation () const;
+	LeechCraft::Util::HistoryModel* GetHistory () const;
+	QWidget* GetControls () const;
+	QWidget* GetAdditionalInfo () const;
+	void ItemSelected (const QModelIndex&);
 protected:
 	virtual void keyPressEvent (QKeyEvent*);
 private:
-	void SetupMenuBar ();
-	void SetHtml (const QString&, const QString&, const QList<Enclosure>&);
-	void SetLink (QString);
-	void SetCategory (const QStringList&);
-	void SetPubDate (const QDateTime&);
-	void SetCommentsLabel (int);
-	void SetAuthor (const QString&);
+	QToolBar* SetupMenuBar ();
+	void SetupActions ();
 private slots:
     void showError (const QString&);
     void on_ActionAddFeed__triggered ();
     void on_ActionRemoveFeed__triggered ();
-    void on_ActionMarkItemAsUnread__triggered ();
     void on_ActionMarkChannelAsRead__triggered ();
     void on_ActionMarkChannelAsUnread__triggered ();
 	void on_ActionChannelSettings__triggered ();
     void on_ActionUpdateSelectedFeed__triggered ();
-    void on_CaseSensitiveSearch__stateChanged (int);
-	void on_ActionAddToItemBucket__triggered ();
 	void on_ActionItemBucket__triggered ();
 	void on_ActionRegexpMatcher__triggered ();
 	void on_ActionHideReadItems__triggered ();
@@ -65,15 +64,9 @@ private slots:
 	void on_ActionExportOPML__triggered ();
 	void on_ActionImportBinary__triggered ();
 	void on_ActionExportBinary__triggered ();
-	void on_ItemCommentsSubscribe__released ();
-	void on_ItemCategoriesButton__released ();
-    void currentItemChanged (const QItemSelection&);
     void currentChannelChanged ();
     void unreadNumberChanged (int);
     void trayIconActivated ();
-	void updateItemsFilter ();
-	void viewerSettingsChanged ();
-	void makeCurrentItemVisible ();
 signals:
     void downloadFinished (const QString&);
 	void gotEntity (const QByteArray&);

@@ -70,11 +70,11 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			SLOT (historyActivated (const QModelIndex&)));
 
 	connect (Ui_.PluginsTasksTree_->selectionModel (),
-			SIGNAL (currentRowChanged (const QModelIndex&,
-					const QModelIndex&)),
+			SIGNAL (selectionChanged (const QItemSelection&,
+					const QItemSelection&)),
 			this,
-			SLOT (updatePanes (const QModelIndex&,
-					const QModelIndex&)));
+			SLOT (updatePanes (const QItemSelection&,
+					const QItemSelection&)));
 
 	QHeaderView *itemsHeader = Ui_.PluginsTasksTree_->header ();
 	QFontMetrics fm = fontMetrics ();
@@ -83,9 +83,7 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	itemsHeader->resizeSection (1,
 			fm.width ("State of the download."));
 	itemsHeader->resizeSection (2,
-			fm.width ("99.99% (1234.56 kb from 2345.67 kb)"));
-	itemsHeader->resizeSection (3,
-			fm.width (" 1234.56 kb/s "));
+			fm.width ("99.99% (1024.0 kb from 1024.0 kb at 1024.0 kb/s)"));
 
 	itemsHeader = Ui_.HistoryView_->header ();
 	itemsHeader->resizeSection (0,
@@ -120,6 +118,7 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	setUpdatesEnabled (true);
 	SplashScreen_->finish (this);
 	show ();
+	delete SplashScreen_;
 }
 
 MainWindow::~MainWindow ()
@@ -156,10 +155,12 @@ void MainWindow::InitializeInterface ()
 	installEventFilter (new ChildActionEventFilter (this));
 
 	Ui_.setupUi (this);
-	Ui_.AddTaskButton_->setDefaultAction (Ui_.ActionAddTask_);
 
 	Ui_.ActionAddTask_->setProperty ("ActionIcon", "addjob");
 	Ui_.ActionSettings_->setProperty ("ActionIcon", "settings");
+	Ui_.ActionQuit_->setProperty ("ActionIcon", "exit");
+	Ui_.ActionPluginManager_->setProperty ("ActionIcon", "pluginmanager");
+	Ui_.ActionLogger_->setProperty ("ActionIcon", "logger");
 
 	QWidget *settings = new QWidget ();
 	settings->addAction (Ui_.ActionSettings_);
@@ -167,15 +168,6 @@ void MainWindow::InitializeInterface ()
 	Ui_.MainTabWidget_->setProperty ("TabIcons", "downloaders history");
 	Ui_.ControlsDockWidget_->hide ();
 
-	connect (Ui_.ActionAboutQt_,
-			SIGNAL (triggered ()),
-			qApp,
-			SLOT (aboutQt ()));
-	connect (Ui_.ActionMultiwindow_,
-			SIGNAL (triggered ()),
-			&Core::Instance (),
-			SLOT (toggleMultiwindow ()));
-	
 	connect (Ui_.FilterCaseSensitivity_,
 			SIGNAL (stateChanged (int)),
 			this,
@@ -222,6 +214,16 @@ void MainWindow::InitializeInterface ()
 			SIGNAL (deleteSelected (const QModelIndex&)),
 			&Core::Instance (),
 			SLOT (deleteSelectedHistory (const QModelIndex&)));
+
+	QToolBar *mainBar = new QToolBar (this);
+	mainBar->addAction (Ui_.ActionAddTask_);
+	mainBar->addSeparator ();
+	mainBar->addAction (Ui_.ActionSettings_);
+	mainBar->addAction (Ui_.ActionPluginManager_);
+	mainBar->addAction (Ui_.ActionLogger_);
+	mainBar->addSeparator ();
+	mainBar->addAction (Ui_.ActionQuit_);
+	Ui_.ControlsLayout_->addWidget (mainBar);
 }
 
 
@@ -295,20 +297,6 @@ void MainWindow::WriteSettings ()
 	settings.endGroup ();
 }
 
-void MainWindow::on_ActionAboutLeechCraft__triggered ()
-{
-	QMessageBox::information (this, tr ("Information"),
-			tr ("<img src=\":/resources/images/mainapp.png\" /><h1>LeechCraft 0.3.0_pre</h1>"
-				"LeechCraft is a cross-platform extensible download manager. Currently it offers "
-				"full-featured BitTorrent client, feed reader, HTTP support, Remote access "
-				"and much more. It also aims to be resource-efficient working quite well on "
-				"even old computers.<br /><br />Here are some useful links for you:<br />"
-				"<a href=\"http://bugs.deviant-soft.ws\">Bugtracker and feature request tracker</a><br />"
-				"<a href=\"http://sourceforge.net/project/showfiles.php?group_id=161819\">Latest file releases</a><br />"
-				"<a href=\"http://deviant-soft.ws\">LeechCraft's Site</a><br />"
-				"<a href=\"http://sourceforge.net/projects/leechcraft\">LeechCraft's site at sourceforge.net</a><br />"));
-}
-
 void MainWindow::on_ActionAddTask__triggered ()
 {
 	CommonJobAdder adder (this);
@@ -368,34 +356,59 @@ void MainWindow::on_ActionLogger__triggered ()
 	LogToolBox_->show ();
 }
 
-void MainWindow::updatePanes (const QModelIndex& newIndex,
-		const QModelIndex& oldIndex)
+void MainWindow::updatePanes (const QItemSelection& newIndexes,
+		const QItemSelection& oldIndexes)
 {
-	Core::Instance ().SetNewRow (newIndex);
-
-	if (Core::Instance ().SameModel (newIndex, oldIndex))
-		return;
-
-	if (Ui_.PluginsStuff_->count () == 3)
+	QModelIndex oldIndex, newIndex;
+	if (oldIndexes.size ())
+		oldIndex = oldIndexes.at (0).topLeft ();
+	if (newIndexes.size ())
+		newIndex = newIndexes.at (0).topLeft ();
+	qDebug () << oldIndex
+		<< oldIndex.isValid ()
+		<< newIndex
+		<< newIndex.isValid ()
+		<< Core::Instance ().SameModel (newIndex, oldIndex);
+	if (!newIndex.isValid ())
 	{
-		Ui_.PluginsStuff_->takeAt (1)->widget ()->hide ();
-		Ui_.ControlsDockWidget_->hide ();
+		qDebug () << "returning";
+		return;
 	}
 
-
-	if (newIndex.isValid ())
+	if (oldIndex.isValid () &&
+			Core::Instance ().SameModel (newIndex, oldIndex))
 	{
+		qDebug () << "setting new row";
+		Core::Instance ().SetNewRow (newIndex);
+	}
+	else if (newIndex.isValid ())
+	{
+		if (oldIndex.isValid ())
+		{
+			qDebug () << "erasing older stuff";
+			Ui_.PluginsTasksTree_->selectionModel ()->clearSelection ();
+			Core::Instance ().SetNewRow (QModelIndex ());
+
+			if (Ui_.ControlsLayout_->count () == 2)
+			{
+				Ui_.ControlsLayout_->takeAt (1)->widget ()->hide ();
+				Ui_.ControlsDockWidget_->hide ();
+			}
+		}
+
+		qDebug () << "inserting newer stuff";
 		QWidget *controls = Core::Instance ()
 					.GetControls (newIndex),
 				*addiInfo = Core::Instance ()
 					.GetAdditionalInfo (newIndex);
-		Ui_.PluginsStuff_->insertWidget (1, controls);
+		Ui_.ControlsLayout_->addWidget (controls, 1);
 		controls->show ();
 		if (addiInfo)
 		{
 			Ui_.ControlsDockWidget_->setWidget (addiInfo);
 			Ui_.ControlsDockWidget_->show ();
 		}
+		Core::Instance ().SetNewRow (newIndex);
 	}
 }
 

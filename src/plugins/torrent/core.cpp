@@ -146,9 +146,8 @@ void Core::DoDelayedInit ()
     }
 
     Headers_ << tr ("Name")
-		<< tr ("State")
 		<< tr ("Progress")
-		<< tr ("Downloading rate");
+		<< tr ("State");
 
 	connect (SettingsSaveTimer_.get (),
 			SIGNAL (timeout ()),
@@ -308,14 +307,18 @@ QVariant Core::data (const QModelIndex& index, int role) const
 				case ColumnName:
 					return QString::fromUtf8 (h.name ().c_str ());
 				case ColumnState:
-					return status.paused ? tr ("Idle") : GetStringForState (status.state);
+					return status.paused ?
+						tr ("Idle") : GetStringForState (status.state);
 				case ColumnProgress:
-					return QString (tr ("%1% (%2 of %3)")
+					return QString (tr ("%1% (%2 of %3 at %4)")
 							.arg (status.progress * 100, 0, 'f', 2)
-							.arg (Proxy::Instance ()->MakePrettySize (status.total_wanted_done))
-							.arg (Proxy::Instance ()->MakePrettySize (status.total_wanted)));
-				case ColumnDSpeed:
-					return Proxy::Instance ()->MakePrettySize (status.download_payload_rate) + tr ("/s");
+							.arg (Proxy::Instance ()->
+								MakePrettySize (status.total_wanted_done))
+							.arg (Proxy::Instance ()->
+								MakePrettySize (status.total_wanted)))
+							.arg (Proxy::Instance ()->
+									MakePrettySize (status.download_payload_rate) +
+									tr ("/s"));
 				default:
 					return QVariant ();
 			}

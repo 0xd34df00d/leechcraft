@@ -6,6 +6,7 @@
 ChannelsFilterModel::ChannelsFilterModel (QObject *parent)
 : LeechCraft::Util::TagsFilterModel (parent)
 {
+	setDynamicSortFilter (true);
 	setTagsMode (true);
 }
 

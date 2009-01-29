@@ -62,6 +62,7 @@ class TorrentPlugin : public QObject
 		Import_,
 		Export_;
 	std::auto_ptr<QTranslator> Translator_;
+	QModelIndex Current_;
 public:
     // IInfo
     void Init ();

@@ -108,12 +108,6 @@ public:
         ColumnName = 0
         , ColumnState
         , ColumnProgress  // percentage, Downloaded of Size
-        , ColumnDSpeed
-        , ColumnUSpeed 
-        , ColumnUploaded
-        , ColumnRating
-        , ColumnSP
-        , ColumnRemaining 
     };
 	enum AddType
 	{

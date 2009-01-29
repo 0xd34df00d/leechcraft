@@ -28,6 +28,7 @@ bool ParseCommandLine ()
 	QStringList args = QCoreApplication::arguments ();
 	if (args.contains ("-logtoconsole"))
 		qInstallMsgHandler (0);
+	DebugHandler::PrintStack_ = args.contains ("-bt");
 	if (args.contains ("-help"))
 	{
 		std::cout << "Usage: " << args.at (0).toStdString () << " [arguments]" << std::endl;
@@ -35,6 +36,7 @@ bool ParseCommandLine ()
 		std::cout << "Where arguments could be:" << std::endl;
 		std::cout << "-nopupcheck              Do not check whether plugins had changed" << std::endl;
 		std::cout << "-logtoconsole            Log all the output to console instead of log files" << std::endl;
+		std::cout << "-bt                      Print backtraces in logs" << std::endl;
 		std::cout << "-help                    Show this help message" << std::endl;
 		std::cout << std::endl;
 		std::cout << "Please remember that installed plugins could have their own command " << std::endl;
@@ -48,7 +50,7 @@ int main (int argc, char **argv)
 {
     int author = 0xd34df00d;
 
-    qInstallMsgHandler (debugMessageHandler);
+    qInstallMsgHandler (DebugHandler::debugMessageHandler);
     QApplication app (argc, argv);
 
 	if (ParseCommandLine ())

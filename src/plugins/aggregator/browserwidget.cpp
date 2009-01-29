@@ -1,5 +1,6 @@
-#include <QDebug>
 #include "browserwidget.h"
+#include <QDebug>
+#include <QToolBar>
 
 BrowserWidget::BrowserWidget (QWidget *parent)
 : QWidget (parent)
@@ -17,30 +18,33 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			SIGNAL (loadProgress (int)),
 			this,
 			SLOT (loadProgress (int)));
-	Ui_.BrowserBackButton_->setDefaultAction (Ui_.ActionBrowserBack_);
-	Ui_.ActionBrowserBack_->setProperty ("ActionIcon", "aggregator_larrow");
-	Ui_.BrowserForwardButton_->setDefaultAction (Ui_.ActionBrowserForward_);
-	Ui_.ActionBrowserForward_->setProperty ("ActionIcon", "aggregator_rarrow");
-	Ui_.BrowserReloadButton_->setDefaultAction (Ui_.ActionBrowserReload_);
-	Ui_.ActionBrowserReload_->setProperty ("ActionIcon", "aggregator_refresh");
-	Ui_.BrowserStopButton_->setDefaultAction (Ui_.ActionBrowserStop_);
-	Ui_.ActionBrowserStop_->setProperty ("ActionIcon", "aggregator_stop");
-	connect (Ui_.ActionBrowserBack_,
-			SIGNAL (triggered ()),
-			this,
-			SLOT (back ()));
-	connect (Ui_.ActionBrowserForward_,
-			SIGNAL (triggered ()),
-			this,
-			SLOT (forward ()));
-	connect (Ui_.ActionBrowserStop_,
-			SIGNAL (triggered ()),
-			this,
-			SLOT (stop ()));
-	connect (Ui_.ActionBrowserReload_,
-			SIGNAL (triggered ()),
-			this,
-			SLOT (reload ()));
+
+	QToolBar *bar = new QToolBar ();
+
+	QAction *back = Ui_.ItemView_->pageAction (QWebPage::Back);
+	back->setParent (this);
+	back->setProperty ("ActionIcon", "aggregator_larrow");
+
+	QAction *forward = Ui_.ItemView_->pageAction (QWebPage::Forward);
+	forward->setParent (this);
+	forward->setProperty ("ActionIcon", "aggregator_rarrow");
+
+	QAction *reload = Ui_.ItemView_->pageAction (QWebPage::Reload);
+	reload->setParent (this);
+	reload->setShortcut (Qt::Key_F5);
+	reload->setProperty ("ActionIcon", "aggregator_refresh");
+
+	QAction *stop = Ui_.ItemView_->pageAction (QWebPage::Stop);
+	stop->setParent (this);
+	stop->setShortcut (Qt::Key_Escape);
+	stop->setProperty ("ActionIcon", "aggregator_stop");
+
+	bar->addAction (back);
+	bar->addAction (forward);
+	bar->addAction (reload);
+	bar->addAction (stop);
+
+	Ui_.ToolLayout_->insertWidget (0, bar);
 }
 
 BrowserWidget::~BrowserWidget ()
@@ -79,25 +83,6 @@ void BrowserWidget::loadProgress (int progress)
 	Ui_.PageLoadProgressBar_->setValue (progress);
 }
 
-void BrowserWidget::back ()
-{
-	Ui_.ItemView_->back ();
-}
-
-void BrowserWidget::forward ()
-{
-	Ui_.ItemView_->forward ();
-}
-
-void BrowserWidget::stop ()
-{
-	Ui_.ItemView_->stop ();
-}
-
-void BrowserWidget::reload ()
-{
-	Ui_.ItemView_->reload ();
-}
 QWebSettings *BrowserWidget::settings () const
 {
 	return Ui_.ItemView_->settings ();

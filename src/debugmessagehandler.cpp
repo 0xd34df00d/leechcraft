@@ -10,7 +10,7 @@
 
 QMutex G_DbgMutex;
 
-void debugMessageHandler (QtMsgType type, const char *message)
+void DebugHandler::debugMessageHandler (QtMsgType type, const char *message)
 {
 	QString name (QDir::homePath ());
 	name += ("/.leechcraft/");
@@ -40,7 +40,7 @@ void debugMessageHandler (QtMsgType type, const char *message)
 		<< "] ";
 	ostr << message << std::endl;
 
-	if (type != QtDebugMsg)
+	if (type != QtDebugMsg && PrintStack_)
 	{
 		const int maxSize = 100;
 		void *array [maxSize];

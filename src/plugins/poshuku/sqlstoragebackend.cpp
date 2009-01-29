@@ -217,7 +217,7 @@ void SQLStorageBackend::InitializeTables ()
 {
 	QSqlQuery query (DB_);
 
-	if (!DB_.contains ("history"))
+	if (!DB_.tables ().contains ("history"))
 	{
 		if (!query.exec ("CREATE TABLE history ("
 					"date TIMESTAMP PRIMARY KEY, "
@@ -230,7 +230,7 @@ void SQLStorageBackend::InitializeTables ()
 		}
 	}
 
-	if (!DB_.contains ("favorites"))
+	if (!DB_.tables ().contains ("favorites"))
 	{
 		if (!query.exec ("CREATE TABLE favorites ("
 					"title TEXT PRIMARY KEY, "
@@ -243,7 +243,7 @@ void SQLStorageBackend::InitializeTables ()
 		}
 	}
 	
-	if (!DB_.contains ("storage_settings"))
+	if (!DB_.tables ().contains ("storage_settings"))
 	{
 		if (!query.exec ("CREATE TABLE storage_settings ("
 					"key TEXT PRIMARY KEY, "

@@ -5,6 +5,7 @@ ItemsFilterModel::ItemsFilterModel (QObject *parent)
 : QSortFilterProxyModel (parent)
 , HideRead_ (false)
 {
+	setDynamicSortFilter (true);
 }
 
 ItemsFilterModel::~ItemsFilterModel ()

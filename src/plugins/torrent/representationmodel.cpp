@@ -9,11 +9,3 @@ RepresentationModel::~RepresentationModel ()
 {
 }
 
-bool RepresentationModel::filterAcceptsColumn (int column, const QModelIndex&) const
-{
-	if (column > 3)
-		return false;
-	else
-		return true;
-}
-

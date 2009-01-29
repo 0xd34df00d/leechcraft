@@ -9,8 +9,6 @@ class RepresentationModel : public QSortFilterProxyModel
 public:
 	RepresentationModel (QObject* = 0);
 	virtual ~RepresentationModel ();
-protected:
-	virtual bool filterAcceptsColumn (int, const QModelIndex&) const;
 };
 
 #endif

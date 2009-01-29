@@ -65,13 +65,12 @@ namespace LeechCraft
 		void ReadSettings ();
 		void WriteSettings ();
 	private slots:
-		void on_ActionAboutLeechCraft__triggered ();
 		void on_ActionAddTask__triggered ();
 		void on_ActionSettings__triggered ();
 		void on_ActionQuit__triggered ();
 		void on_ActionFullscreenMode__triggered (bool);
 		void on_ActionLogger__triggered ();
-		void updatePanes (const QModelIndex&, const QModelIndex&);
+		void updatePanes (const QItemSelection&, const QItemSelection&);
 		void updateSpeedIndicators ();
 		void updateClock ();
 		void showHideMain ();

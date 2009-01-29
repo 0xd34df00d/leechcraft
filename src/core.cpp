@@ -1,4 +1,5 @@
 #include <limits>
+#include <stdexcept>
 #include <list>
 #include <QMainWindow>
 #include <QTreeWidgetItem>
@@ -46,8 +47,7 @@ Core::Core ()
 : Server_ (new QLocalServer)
 , MergeModel_ (new MergeModel (QStringList (tr ("Name"))
 			<< tr ("State")
-			<< tr ("Progress")
-			<< tr ("Speed")))
+			<< tr ("Progress")))
 , HistoryMergeModel_ (new MergeModel (QStringList (tr ("Filename"))
 			<< tr ("Path")
 			<< tr ("Size")
@@ -140,6 +140,7 @@ void Core::Release ()
 	XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");
 	MergeModel_.reset ();
 	HistoryMergeModel_.reset ();
+	NetworkAccessManager_.reset ();
 
     PluginManager_->Release ();
     delete PluginManager_;
@@ -147,6 +148,7 @@ void Core::Release ()
     delete ClipboardWatchdog_;
 
 	Server_.reset ();
+	StorageBackend_.reset ();
 }
 
 void Core::SetReallyMainWindow (MainWindow *win)
@@ -157,7 +159,7 @@ void Core::SetReallyMainWindow (MainWindow *win)
 
 QObjectList Core::GetSettables () const
 {
-	return PluginManager_->GetAllCastableTo<IHaveSettings*> ();
+	return PluginManager_->GetAllCastableRoots<IHaveSettings*> ();
 }
 
 QAbstractItemModel* Core::GetPluginsModel () const
@@ -322,23 +324,50 @@ void Core::Activated (const QModelIndex& index)
 
 void Core::SetNewRow (const QModelIndex& index)
 {
-	QModelIndex mapped = FilterModel_->mapToSource (index);
-	MergeModel::const_iterator modIter = MergeModel_->GetModelForRow (mapped.row ());
-	QObject *plugin = Representation2Object_ [*modIter];
+	QList<IJobHolder*> holders = PluginManager_->GetAllCastableTo<IJobHolder*> ();
 
-	IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
-	if (ijh)
-		ijh->ItemSelected (MergeModel_->mapToSource (mapped));
+	try
+	{
+		if (index.isValid ())
+		{
+			QModelIndex mapped = FilterModel_->mapToSource (index);
+			MergeModel::const_iterator modIter = MergeModel_->GetModelForRow (mapped.row ());
+			QObject *plugin = Representation2Object_ [*modIter];
 
-	QObjectList watchers = PluginManager_->GetSelectedDownloaderWatchers ();
-	foreach (QObject *pEntity, watchers)
-		QMetaObject::invokeMethod (pEntity,
-				"selectedDownloaderChanged",
-				Q_ARG (QObject*, plugin));
+			IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
+
+			for (QList<IJobHolder*>::iterator i = holders.begin (),
+					end = holders.end (); i != end; ++i)
+				if (*i == ijh)
+					(*i)->ItemSelected (MergeModel_->mapToSource (mapped));
+				else
+					(*i)->ItemSelected (QModelIndex ());
+
+			QObjectList watchers = PluginManager_->GetSelectedDownloaderWatchers ();
+			foreach (QObject *pEntity, watchers)
+				QMetaObject::invokeMethod (pEntity,
+						"selectedDownloaderChanged",
+						Q_ARG (QObject*, plugin));
+			return;
+		}
+	}
+	catch (const std::runtime_error& e)
+	{
+		qWarning () << Q_FUNC_INFO << e.what ();
+	}
+
+	for (QList<IJobHolder*>::iterator i = holders.begin (),
+			end = holders.end (); i != end; ++i)
+		(*i)->ItemSelected (QModelIndex ());
 }
 
 bool Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) const
 {
+	if (i1.isValid () != i2.isValid ())
+		return false;
+	if (!i1.isValid () && !i2.isValid ())
+		return true;
+
 	QModelIndex mapped1 = FilterModel_->mapToSource (i1);
 	MergeModel::const_iterator modIter1 = MergeModel_->GetModelForRow (mapped1.row ());
 
@@ -608,7 +637,7 @@ void Core::handleGotEntity (const QByteArray& file, bool fromBuffer)
 			property ("QueryPluginsToHandleFinished").toBool ())
         return;
 
-    QObjectList plugins = PluginManager_->GetAllCastableTo<IDownload*> ();
+    QObjectList plugins = PluginManager_->GetAllCastableRoots<IDownload*> ();
     for (int i = 0; i < plugins.size (); ++i)
     {
         IDownload *id = qobject_cast<IDownload*> (plugins.at (i));

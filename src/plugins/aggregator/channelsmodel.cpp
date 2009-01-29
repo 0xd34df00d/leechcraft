@@ -12,7 +12,9 @@ ChannelsModel::ChannelsModel (QObject *parent)
 : QAbstractItemModel (parent)
 {
     QVariantList roots;
-    roots << tr ("Feed") << tr ("Last build") << tr ("Unread items");
+    roots << tr ("Feed")
+		<< tr ("Unread items")
+		<< tr ("Last build");
     RootItem_ = new TreeItem (roots);
 }
 
@@ -39,11 +41,11 @@ QVariant ChannelsModel::data (const QModelIndex& index, int role) const
 	else if (role == Qt::DecorationRole)
 		return static_cast<TreeItem*> (index.internalPointer ())->Data (index.column (), Qt::DecorationRole);
     else if (role == Qt::ForegroundRole)
-        return static_cast<TreeItem*> (index.internalPointer ())->Data (2).toInt () ?
+        return static_cast<TreeItem*> (index.internalPointer ())->Data (1).toInt () ?
 		   	Qt::red : QApplication::palette ().color (QPalette::Text);
     else if (role == Qt::FontRole)
     {
-        if (static_cast<TreeItem*> (index.internalPointer ())->Data (2).toInt ())
+        if (static_cast<TreeItem*> (index.internalPointer ())->Data (1).toInt ())
         {
             QFont defaultFont = QApplication::font ();
             defaultFont.setBold (true);
@@ -123,7 +125,9 @@ void ChannelsModel::AddChannel (const ChannelShort& channel)
     beginInsertRows (QModelIndex (), rowCount (), rowCount ());
 
 	QList<QVariant> data;
-	data << channel.Title_ << channel.LastBuild_ << channel.Unread_;
+	data << channel.Title_
+		<< channel.Unread_
+		<< channel.LastBuild_;
 
 	TreeItem *channelItem = new TreeItem (data, RootItem_);
 	channelItem->ModifyData (0, channel.Favicon_, Qt::DecorationRole);
@@ -153,7 +157,9 @@ void ChannelsModel::Update (const channels_container_t& channels)
 
         QList<QVariant> data;
         Channel_ptr current = channels.at (i);
-        data << current->Title_ << current->LastBuild_ << current->CountUnreadItems ();
+        data << current->Title_
+			<< current->CountUnreadItems ()
+			<< current->LastBuild_;
 
         TreeItem *channelItem = new TreeItem (data, RootItem_);
         RootItem_->AppendChild (channelItem);
@@ -185,8 +191,8 @@ void ChannelsModel::UpdateChannelData (const ChannelShort& cs)
 	TreeItem2Channel_ [item] = cs;
 
 	item->ModifyData (0, cs.Favicon_, Qt::DecorationRole);
-    item->ModifyData (1, cs.LastBuild_);
-    item->ModifyData (2, cs.Unread_);
+    item->ModifyData (1, cs.Unread_);
+    item->ModifyData (2, cs.LastBuild_);
     int pos = RootItem_->ChildPosition (item);
     emit dataChanged (index (pos, 0), index (pos, 2));
     emit channelDataUpdated ();
