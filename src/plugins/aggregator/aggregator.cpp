@@ -430,14 +430,15 @@ void Aggregator::on_ActionAddFeed__triggered ()
 
 void Aggregator::on_ActionRemoveFeed__triggered ()
 {
-	QString name;
 	bool reprMode = GetControls ()->isVisible ();
+	QModelIndex ds;
 	if (reprMode)
-		name = Core::Instance ().GetJobHolderRepresentation ()->
-			mapToSource (Impl_->SelectedRepr_).data (0).toString ();
+		ds = Core::Instance ().GetJobHolderRepresentation ()->
+			mapToSource (Impl_->SelectedRepr_);
 	else
-		name = Impl_->Ui_.Feeds_->selectionModel ()->
-			currentIndex ().data (0).toString ();
+		ds = Impl_->Ui_.Feeds_->selectionModel ()->	currentIndex ();
+
+	QString name = ds.sibling (ds.row (), 0).data ().toString ();
 
 	QMessageBox mb (QMessageBox::Warning,
 			tr ("Warning"),

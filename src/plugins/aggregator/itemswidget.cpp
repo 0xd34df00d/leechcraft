@@ -332,8 +332,8 @@ void ItemsWidget::currentItemChanged (const QItemSelection& selection)
 {
 	QModelIndexList indexes = selection.indexes ();
 
-	Impl_->Ui_.ItemInfo_->setVisible (!Impl_->HideInfoPanel_ ||
-			selection.size ());
+	Impl_->Ui_.ItemInfo_->setVisible (!(Impl_->HideInfoPanel_ ||
+			!selection.size ()));
 
 	QModelIndex sindex;
 	if (indexes.size ())
@@ -347,6 +347,7 @@ void ItemsWidget::currentItemChanged (const QItemSelection& selection)
 		Impl_->Ui_.ItemCategory_->hide ();
 		Impl_->Ui_.ItemCategoryLabel_->hide ();
 		Impl_->Ui_.ItemLink_->setText ("");
+		Impl_->Ui_.ItemLinkLabel_->hide ();
 		Impl_->Ui_.ItemPubDate_->hide ();
 		Impl_->Ui_.ItemPubDateLabel_->hide ();
 		Impl_->Ui_.ItemComments_->hide ();
