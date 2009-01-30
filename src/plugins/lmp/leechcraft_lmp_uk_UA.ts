@@ -33,57 +33,57 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="177"/>
+        <location filename="core.cpp" line="178"/>
         <source> (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="178"/>
+        <location filename="core.cpp" line="179"/>
         <source> [</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="183"/>
+        <location filename="core.cpp" line="184"/>
         <source>/</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="187"/>
+        <location filename="core.cpp" line="188"/>
         <source>]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="189"/>
+        <location filename="core.cpp" line="190"/>
         <source> borrowing data from </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="194"/>
+        <location filename="core.cpp" line="195"/>
         <source>nowhere</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="207"/>
+        <location filename="core.cpp" line="208"/>
         <source> (CD)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="210"/>
+        <location filename="core.cpp" line="211"/>
         <source> (DVD)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="213"/>
+        <location filename="core.cpp" line="214"/>
         <source> (VCD)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="216"/>
+        <location filename="core.cpp" line="217"/>
         <source> (Unknown disc type)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="221"/>
+        <location filename="core.cpp" line="222"/>
         <source>stream</source>
         <translation type="unfinished"></translation>
     </message>
@@ -91,33 +91,38 @@
 <context>
     <name>LMP</name>
     <message>
-        <location filename="lmp.cpp" line="95"/>
+        <location filename="lmp.cpp" line="109"/>
         <source>Open...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="104"/>
+        <location filename="lmp.cpp" line="118"/>
         <source>Play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="113"/>
+        <location filename="lmp.cpp" line="127"/>
         <source>Pause</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="122"/>
+        <location filename="lmp.cpp" line="136"/>
         <source>Viewer settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="188"/>
+        <location filename="lmp.cpp" line="200"/>
         <source>Select media file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="193"/>
+        <location filename="lmp.cpp" line="205"/>
         <source>Video (*.avi *.mkv *.ogg *.mpeg *.mpg *.divx *.mov *.swf);;Uncompressed lossless audio (*.aiff *.au *.cdda *.raw *.wav);;Compressed lossless audio (*.flac *.wv *.m4a *.tta *.ape *.la *.pac);;Lossy audio (*.mp3 *.ogg *.wma *.aac *.mpc *.ra *.rm *.ots *.swa);;All files (*.*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lmp.cpp" line="180"/>
+        <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -129,7 +134,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="19"/>
+        <location filename="tabwidget.ui" line="23"/>
         <source>Idle</source>
         <translation type="unfinished"></translation>
     </message>
@@ -142,22 +147,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="videosettings.ui" line="19"/>
+        <location filename="videosettings.ui" line="23"/>
         <source>Brightness:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="videosettings.ui" line="59"/>
+        <location filename="videosettings.ui" line="63"/>
         <source>Contrast:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="videosettings.ui" line="99"/>
+        <location filename="videosettings.ui" line="103"/>
         <source>Hue:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="videosettings.ui" line="139"/>
+        <location filename="videosettings.ui" line="143"/>
         <source>Saturation:</source>
         <translation type="unfinished"></translation>
     </message>

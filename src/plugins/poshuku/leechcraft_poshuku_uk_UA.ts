@@ -29,9 +29,6 @@
     </message>
 </context>
 <context>
-    <name>AuthenticationDialog</name>
-</context>
-<context>
     <name>BrowserWidget</name>
     <message>
         <location filename="browserwidget.cpp" line="47"/>
@@ -92,7 +89,7 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="75"/>
+        <location filename="core.cpp" line="74"/>
         <source>untagged</source>
         <translation type="unfinished"></translation>
     </message>
@@ -104,6 +101,11 @@
     <message>
         <location filename="core.cpp" line="279"/>
         <source>Loading %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="150"/>
+        <source></source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -307,8 +309,5 @@
         <source>Preview</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>SslErrorsDialog</name>
 </context>
 </TS>

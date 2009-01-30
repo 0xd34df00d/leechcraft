@@ -31,158 +31,117 @@
 <context>
     <name>Aggregator</name>
     <message>
-        <location filename="aggregator.cpp" line="209"/>
-        <source>RSS 2.0, Atom 1.0 feed reader.</source>
-        <translation type="obsolete">RSS 2.0, Atom 1.0 агрегатор.</translation>
-    </message>
-    <message>
-        <location filename="aggregator.cpp" line="410"/>
+        <location filename="aggregator.cpp" line="421"/>
         <source>Error</source>
         <translation>Помилка</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="440"/>
-        <source>: Preferences</source>
-        <translation type="obsolete">:Параметри</translation>
-    </message>
-    <message>
-        <location filename="aggregator.cpp" line="337"/>
+        <location filename="aggregator.cpp" line="348"/>
         <source>Add feed...</source>
         <translation>Додати стрічку...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="320"/>
-        <source>Preferences...</source>
-        <translation type="obsolete">Параметри...</translation>
-    </message>
-    <message>
-        <location filename="aggregator.cpp" line="342"/>
+        <location filename="aggregator.cpp" line="353"/>
         <source>Update all feeds</source>
         <translation>Оновити стрічки</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="346"/>
+        <location filename="aggregator.cpp" line="357"/>
         <source>Remove feed</source>
         <translation>Видалити стрічку</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="365"/>
-        <source>Mark item as unread</source>
-        <translation type="obsolete">Позначити статтю як непрочитану</translation>
-    </message>
-    <message>
-        <location filename="aggregator.cpp" line="351"/>
+        <location filename="aggregator.cpp" line="362"/>
         <source>Mark channel as read</source>
         <translation>Позначити канал як прочитаний</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="355"/>
+        <location filename="aggregator.cpp" line="366"/>
         <source>Mark channel as unread</source>
         <translation>Позначити канал як непрочитаний</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="363"/>
+        <location filename="aggregator.cpp" line="374"/>
         <source>Update selected feed</source>
         <translation>Оновити вибрану стрічку</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="386"/>
-        <source>Add to item bucket</source>
-        <translation type="obsolete">Відкласти в довгий ящик</translation>
-    </message>
-    <message>
-        <location filename="aggregator.cpp" line="368"/>
+        <location filename="aggregator.cpp" line="379"/>
         <source>Item bucket...</source>
         <translation>Довгий ящик...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="373"/>
+        <location filename="aggregator.cpp" line="384"/>
         <source>Regexp matcher...</source>
         <translation>Фільтр...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="378"/>
+        <location filename="aggregator.cpp" line="389"/>
         <source>Hide read items</source>
         <translation>Приховати прочитані</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="289"/>
-        <source>Import OPML...</source>
-        <translation type="obsolete">Імпозтувати з OPML...</translation>
-    </message>
-    <message>
-        <location filename="aggregator.cpp" line="294"/>
-        <source>Export OPML...</source>
-        <translation type="obsolete">Експортувати до OPML...</translation>
-    </message>
-    <message>
-        <location filename="aggregator.cpp" line="432"/>
+        <location filename="aggregator.cpp" line="444"/>
         <source>Warning</source>
         <translation>Увага</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="582"/>
-        <source>You are going to permanently remove this feed. Are you are really sure that you want to do this?</source>
-        <comment>Feed removing confirmation</comment>
-        <translation type="obsolete">Дана стрічка буде незворотньо видалена. Ви впевнені, що хочете це зробити?</translation>
-    </message>
-    <message>
-        <location filename="aggregator.cpp" line="385"/>
+        <location filename="aggregator.cpp" line="396"/>
         <source>Import from OPML...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="390"/>
+        <location filename="aggregator.cpp" line="401"/>
         <source>Export to OPML...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="395"/>
+        <location filename="aggregator.cpp" line="406"/>
         <source>Import from binary...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="400"/>
+        <location filename="aggregator.cpp" line="411"/>
         <source>Export to binary...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="518"/>
+        <location filename="aggregator.cpp" line="531"/>
         <source>Export to OPML</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="549"/>
+        <location filename="aggregator.cpp" line="562"/>
         <source>Select save file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="522"/>
+        <location filename="aggregator.cpp" line="535"/>
         <source>OPML files (*.opml);;XML files (*.xml);;All files (*.*)</source>
         <translation type="unfinished">OPML файли (*.opml);;XML файли (*.xml);;All files (*.*)</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="548"/>
+        <location filename="aggregator.cpp" line="561"/>
         <source>Export to binary file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="551"/>
+        <location filename="aggregator.cpp" line="564"/>
         <source>Aggregator exchange files (*.lcae);;All files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="183"/>
+        <location filename="aggregator.cpp" line="187"/>
         <source>RSS/Atom feed reader.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="359"/>
+        <location filename="aggregator.cpp" line="370"/>
         <source>Settings...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="436"/>
+        <location filename="aggregator.cpp" line="448"/>
         <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you are really sure that you want to do this?</source>
         <comment>Feed removing confirmation</comment>
         <translation type="unfinished"></translation>
@@ -216,55 +175,25 @@
         <translation>BrowserWidget</translation>
     </message>
     <message>
-        <location filename="browserwidget.ui" line="42"/>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
         <location filename="browserwidget.ui" line="27"/>
         <source>Idle</source>
         <translation>Не активний</translation>
-    </message>
-    <message>
-        <location filename="browserwidget.ui" line="65"/>
-        <source>about:blank</source>
-        <translation type="obsolete">about:blank</translation>
-    </message>
-    <message>
-        <location filename="browserwidget.ui" line="74"/>
-        <source>Back</source>
-        <translation type="obsolete">Назад</translation>
-    </message>
-    <message>
-        <location filename="browserwidget.ui" line="79"/>
-        <source>Forward</source>
-        <translation type="obsolete">Вперед</translation>
-    </message>
-    <message>
-        <location filename="browserwidget.ui" line="84"/>
-        <source>Stop</source>
-        <translation type="obsolete">Зупинити</translation>
-    </message>
-    <message>
-        <location filename="browserwidget.ui" line="89"/>
-        <source>Reload</source>
-        <translation type="obsolete">Перезавантажити</translation>
     </message>
 </context>
 <context>
     <name>ChannelsModel</name>
     <message>
-        <location filename="channelsmodel.cpp" line="15"/>
+        <location filename="channelsmodel.cpp" line="16"/>
         <source>Feed</source>
         <translation>Стрічка</translation>
     </message>
     <message>
-        <location filename="channelsmodel.cpp" line="15"/>
+        <location filename="channelsmodel.cpp" line="17"/>
         <source>Last build</source>
         <translation>Отсання версія</translation>
     </message>
     <message>
-        <location filename="channelsmodel.cpp" line="15"/>
+        <location filename="channelsmodel.cpp" line="17"/>
         <source>Unread items</source>
         <translation>Непрочитані</translation>
     </message>
@@ -297,33 +226,9 @@
         <translation>Не можу обробити URL %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="724"/>
-        <source>Downloaded file has null size!</source>
-        <translation type="obsolete">Завантажений файл пустий!</translation>
-    </message>
-    <message>
         <location filename="core.cpp" line="849"/>
         <source>Feed with url %1 not found.</source>
         <translation>Не можу знайти стрічку за адресою %1.</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="929"/>
-        <source>Added channel &quot;%1&quot; (has %2 items)<byte value="xd"/>
-</source>
-        <translation type="obsolete">Додано канал &quot;%1&quot; (має %2 статей)</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="936"/>
-        <source>Updated channel &quot;%1&quot; (%2 new items)<byte value="xd"/>
-</source>
-        <translation type="obsolete">Канал &quot;%1&quot; оновлено (&quot;%2&quot; нових статей)</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="693"/>
-        <source>Aggregator updated:<byte value="xd"/>
-</source>
-        <translation type="obsolete">Нові стрічки:
-</translation>
     </message>
     <message>
         <location filename="core.cpp" line="476"/>
@@ -412,34 +317,6 @@
         <location filename="export.ui" line="85"/>
         <source>URL</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>ExportOPML</name>
-    <message>
-        <location filename="exportopml.cpp" line="72"/>
-        <source>OPML files (*.opml);;XML files (*.xml);;All files (*.*)</source>
-        <translation type="obsolete">OPML файли (*.opml);;XML файли (*.xml);;All files (*.*)</translation>
-    </message>
-    <message>
-        <location filename="exportopml.ui" line="33"/>
-        <source>Browse...</source>
-        <translation type="obsolete">Огляд....</translation>
-    </message>
-    <message>
-        <location filename="exportopml.ui" line="42"/>
-        <source>Title:</source>
-        <translation type="obsolete">Заголовок:</translation>
-    </message>
-    <message>
-        <location filename="exportopml.ui" line="49"/>
-        <source>Owner:</source>
-        <translation type="obsolete">Власник:</translation>
-    </message>
-    <message>
-        <location filename="exportopml.ui" line="56"/>
-        <source>Owner email:</source>
-        <translation type="obsolete">e-mail власника:</translation>
     </message>
 </context>
 <context>
@@ -691,11 +568,6 @@
         <translation>Імпортовано</translation>
     </message>
     <message>
-        <location filename="importopml.ui" line="142"/>
-        <source>Feeds to import:</source>
-        <translation type="obsolete">Імпортувати стрічки:</translation>
-    </message>
-    <message>
         <location filename="importopml.ui" line="150"/>
         <source>Title</source>
         <translation>Заголовок</translation>
@@ -740,27 +612,27 @@
 <context>
     <name>ItemsWidget</name>
     <message>
-        <location filename="itemswidget.cpp" line="28"/>
+        <location filename="itemswidget.cpp" line="31"/>
         <source>Mark item as unread</source>
         <translation type="unfinished">Позначити статтю як непрочитану</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="32"/>
+        <location filename="itemswidget.cpp" line="35"/>
         <source>Add to item bucket</source>
         <translation type="unfinished">Відкласти в довгий ящик</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="139"/>
+        <location filename="itemswidget.cpp" line="143"/>
         <source>File of type %1, size %2:&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="144"/>
+        <location filename="itemswidget.cpp" line="148"/>
         <source>File of type %1 and unknown length:&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="150"/>
+        <location filename="itemswidget.cpp" line="154"/>
         <source>&lt;br /&gt;Specified language: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -841,219 +713,6 @@
         <location filename="mainwidget.ui" line="32"/>
         <source>Tags:</source>
         <translation>Теги:</translation>
-    </message>
-    <message>
-        <location filename="mainwidget.ui" line="74"/>
-        <source>Channel dashboard</source>
-        <translation type="obsolete">Керування каналом</translation>
-    </message>
-    <message>
-        <location filename="mainwidget.ui" line="153"/>
-        <source>Link:</source>
-        <translation type="obsolete">Адреса:</translation>
-    </message>
-    <message>
-        <location filename="mainwidget.ui" line="110"/>
-        <source>Description:</source>
-        <translation type="obsolete">Опис:</translation>
-    </message>
-    <message>
-        <location filename="mainwidget.ui" line="221"/>
-        <source>Author:</source>
-        <translation type="obsolete">Автор:</translation>
-    </message>
-    <message>
-        <location filename="mainwidget.ui" line="138"/>
-        <source>&lt;channel image&gt;</source>
-        <translation type="obsolete">&lt;картинка&gt;</translation>
-    </message>
-    <message>
-        <location filename="mainwidget.ui" line="79"/>
-        <source>Fixed string</source>
-        <translation type="obsolete">Фіксований рядок</translation>
-    </message>
-    <message>
-        <location filename="mainwidget.ui" line="84"/>
-        <source>Wildcard</source>
-        <translation type="obsolete">Маска</translation>
-    </message>
-    <message>
-        <location filename="mainwidget.ui" line="89"/>
-        <source>Regexp</source>
-        <translation type="obsolete">Регулярний вираз</translation>
-    </message>
-    <message>
-        <location filename="mainwidget.ui" line="97"/>
-        <source>Case sensitive</source>
-        <translation type="obsolete">Чутливий до регістру</translation>
-    </message>
-    <message>
-        <location filename="mainwidget.ui" line="142"/>
-        <source>Item info</source>
-        <translation type="obsolete">Інформація про статтю</translation>
-    </message>
-    <message>
-        <location filename="mainwidget.ui" line="207"/>
-        <source>Category:</source>
-        <translation type="obsolete">Категорія:</translation>
-    </message>
-    <message>
-        <location filename="mainwidget.ui" line="193"/>
-        <source>Publication date:</source>
-        <translation type="obsolete">Дата публікації:</translation>
-    </message>
-</context>
-<context>
-    <name>MainWindow</name>
-    <message>
-        <location filename="ui_mainwindow.h" line="403"/>
-        <source>Aggregator</source>
-        <translation type="obsolete">Агрегатор</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="431"/>
-        <source>Tags:</source>
-        <translation type="obsolete">Теги:</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="422"/>
-        <source>Item info</source>
-        <translation type="obsolete">Інформація про статтю</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="432"/>
-        <source>Link:</source>
-        <translation type="obsolete">Адреса:</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="435"/>
-        <source>Author:</source>
-        <translation type="obsolete">Автор:</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="427"/>
-        <source>Category:</source>
-        <translation type="obsolete">Категорія:</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="429"/>
-        <source>Publication date:</source>
-        <translation type="obsolete">Дата публікації:</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="430"/>
-        <source>Channel dashboard</source>
-        <translation type="obsolete">Керування каналом</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="433"/>
-        <source>Description:</source>
-        <translation type="obsolete">Опис:</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="437"/>
-        <source>Language:</source>
-        <translation type="obsolete">Мова:</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="439"/>
-        <source>&lt;channel image&gt;</source>
-        <translation type="obsolete">&lt;картинка&gt;</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="442"/>
-        <source>Fixed string</source>
-        <translation type="obsolete">Фіксований рядок</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="443"/>
-        <source>Wildcard</source>
-        <translation type="obsolete">Маска</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="444"/>
-        <source>Regexp</source>
-        <translation type="obsolete">Регулярний вираз</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="445"/>
-        <source>Case sensitive</source>
-        <translation type="obsolete">Чутливий до регістру</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="446"/>
-        <source>toolBar</source>
-        <translation type="obsolete">панель інструментів</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="447"/>
-        <source>toolBar_2</source>
-        <translation type="obsolete">панель інструментів_2</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="448"/>
-        <source>toolBar_3</source>
-        <translation type="obsolete">панель інструментів_3</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="404"/>
-        <source>Add feed...</source>
-        <translation type="obsolete">Додати стрічку...</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="405"/>
-        <source>Preferences</source>
-        <translation type="obsolete">Параметри</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="406"/>
-        <source>Update feeds</source>
-        <translation type="obsolete">Оновити стрічки</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="407"/>
-        <source>Remove feed</source>
-        <translation type="obsolete">Видалити стрічку</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="408"/>
-        <source>Mark item as unread</source>
-        <translation type="obsolete">Позначити статтю як непрочитану</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="409"/>
-        <source>Mark channel as read</source>
-        <translation type="obsolete">Позначити канал як прочитаний</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="410"/>
-        <source>Mark channel as unread</source>
-        <translation type="obsolete">Позначити канал як непрочитаний</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="411"/>
-        <source>Update selected feed</source>
-        <translation type="obsolete">Оновити вибрану стрічку</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="412"/>
-        <source>Add to item bucket</source>
-        <translation type="obsolete">Відкласти в довгий ящик</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="413"/>
-        <source>Item bucket...</source>
-        <translation type="obsolete">Довгий ящик...</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="414"/>
-        <source>Regexp matcher...</source>
-        <translation type="obsolete">Фільтр...</translation>
-    </message>
-    <message>
-        <location filename="ui_mainwindow.h" line="418"/>
-        <source>Show/hide read items</source>
-        <translation type="obsolete">Показати/приховати прочитані статті</translation>
     </message>
 </context>
 <context>

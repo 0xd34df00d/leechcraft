@@ -1,19 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="uk_UA">
 <context>
-    <name>@default</name>
-    <message>
-        <location filename="config.h" line="7"/>
-        <source>Leechcraft user</source>
-        <translation type="obsolete">Користувач Leechcraft</translation>
-    </message>
-    <message>
-        <location filename="config.h" line="11"/>
-        <source>VERSION Leechcraft Chatter v%1, using Qt v %2</source>
-        <translation type="obsolete">ВЕСІЯ Leechcraft Співрозмовние v %1, використовує Qt v %2</translation>
-    </message>
-</context>
-<context>
     <name>AuthenticationDialog</name>
     <message>
         <location filename="authenticationdialog.ui" line="13"/>
@@ -92,11 +79,6 @@
         <translation type="unfinished">Прогрес</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="42"/>
-        <source>Speed</source>
-        <translation type="obsolete">Швидкість</translation>
-    </message>
-    <message>
         <location filename="core.cpp" line="51"/>
         <source>Filename</source>
         <translation type="unfinished"></translation>
@@ -125,11 +107,6 @@
         <location filename="core.cpp" line="660"/>
         <source>Question</source>
         <translation type="unfinished">Запитання</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="572"/>
-        <source>File %1 could be handled by plugin %2, would you like to?</source>
-        <translation type="obsolete">Файл %1 може бути оброблено за допомогою плагіну %2. Хочете це зробити?</translation>
     </message>
     <message>
         <location filename="core.cpp" line="55"/>
@@ -215,36 +192,6 @@
         <translation>Вийти</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="288"/>
-        <source>About LeechCraft...</source>
-        <translation type="obsolete">Про LeechCraft...</translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="296"/>
-        <source>About Qt...</source>
-        <translation type="obsolete">Про Qt...</translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="220"/>
-        <source>Actions</source>
-        <translation type="obsolete">Дії</translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="241"/>
-        <source>Help</source>
-        <translation type="obsolete">Довідка</translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="135"/>
-        <source>Plugins</source>
-        <translation type="obsolete">Плагіни</translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="146"/>
-        <source>toolBar</source>
-        <translation type="obsolete">Панель інструментів</translation>
-    </message>
-    <message>
         <location filename="leechcraft.ui" line="148"/>
         <source>Fixed string</source>
         <translation>Фіксований рядок</translation>
@@ -327,92 +274,6 @@
     </message>
 </context>
 <context>
-    <name>Main::Core</name>
-    <message>
-        <location filename="core.cpp" line="284"/>
-        <source>No plugins are able to download &quot;%1&quot;</source>
-        <translation type="obsolete">Жоден з плагінів не може завантажити &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="597"/>
-        <source>Question</source>
-        <translation type="obsolete">Запитання</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="599"/>
-        <source>File %1 could be handled by plugin %2, would you like to?</source>
-        <translation type="obsolete">Файл %1 може бути оброблено за допомогою плагіну %2. Хочете це зробити?</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="25"/>
-        <source>Name</source>
-        <translation type="obsolete">Назва</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="27"/>
-        <source>State</source>
-        <translation type="obsolete">Стан</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="28"/>
-        <source>Progress</source>
-        <translation type="obsolete">Прогрес</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="28"/>
-        <source>Speed</source>
-        <translation type="obsolete">Швидкість</translation>
-    </message>
-</context>
-<context>
-    <name>Main::MainWindow</name>
-    <message>
-        <location filename="mainwindow.cpp" line="30"/>
-        <source>Initializing interface...</source>
-        <translation type="obsolete">Ініціалізація інтерфейсу...</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="125"/>
-        <source>Initializing core and plugins...</source>
-        <translation type="obsolete">Ініціалізація ядра і плагінів...</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="199"/>
-        <source>Error</source>
-        <translation type="obsolete">Помилка</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="245"/>
-        <source>Quit</source>
-        <translation type="obsolete">Вийти</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="280"/>
-        <source>/s</source>
-        <translation type="obsolete">/с</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="287"/>
-        <source>Information</source>
-        <translation type="obsolete">Інформація</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="277"/>
-        <source>Download finished</source>
-        <translation type="obsolete">Завантаження заваршено</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="340"/>
-        <source>: Preferences</source>
-        <translation type="obsolete">: Параметри</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="241"/>
-        <source>Show/hide</source>
-        <translation type="obsolete">Показати/приховати</translation>
-    </message>
-</context>
-<context>
     <name>MainWindow</name>
     <message>
         <location filename="mainwindow.cpp" line="34"/>
@@ -420,7 +281,7 @@
         <translation type="unfinished">Ініціалізація інтерфейсу...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="541"/>
+        <location filename="mainwindow.cpp" line="536"/>
         <source>Initializing core and plugins...</source>
         <translation type="unfinished">Ініціалізація ядра і плагінів...</translation>
     </message>
@@ -430,27 +291,7 @@
         <translation type="unfinished">Помилка</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="237"/>
-        <source>Show/hide</source>
-        <translation type="obsolete">Показати/приховати</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="241"/>
-        <source>Quit</source>
-        <translation type="obsolete">Вийти</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="279"/>
-        <source>Information</source>
-        <translation type="obsolete">Інформація</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="272"/>
-        <source>: Preferences</source>
-        <translation type="obsolete">: Параметри</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="426"/>
+        <location filename="mainwindow.cpp" line="421"/>
         <source>/s</source>
         <translation type="unfinished">/с</translation>
     </message>
@@ -463,29 +304,6 @@
         <location filename="mainwindow.cpp" line="233"/>
         <source>/s    </source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>MergeModel</name>
-    <message>
-        <location filename="mergemodel.cpp" line="9"/>
-        <source>Name</source>
-        <translation type="obsolete">Назва</translation>
-    </message>
-    <message>
-        <location filename="mergemodel.cpp" line="10"/>
-        <source>State</source>
-        <translation type="obsolete">Стан</translation>
-    </message>
-    <message>
-        <location filename="mergemodel.cpp" line="11"/>
-        <source>Progress</source>
-        <translation type="obsolete">Прогрес</translation>
-    </message>
-    <message>
-        <location filename="mergemodel.cpp" line="11"/>
-        <source>Speed</source>
-        <translation type="obsolete">Швидкість</translation>
     </message>
 </context>
 <context>
@@ -527,27 +345,6 @@
         <location filename="pluginmanagerdialog.ui" line="13"/>
         <source>Plugin Manager</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Proxy</name>
-    <message numerus="yes">
-        <location filename="plugininterface/proxy.cpp" line="118"/>
-        <source>%n month(es),</source>
-        <translation type="obsolete">
-            <numerusform>%n місяць,</numerusform>
-            <numerusform>%n місяці,</numerusform>
-            <numerusform>%n місяців,</numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <location filename="plugininterface/proxy.cpp" line="120"/>
-        <source>%n day(s),</source>
-        <translation type="obsolete">
-            <numerusform>%n день,</numerusform>
-            <numerusform>%n дені,</numerusform>
-            <numerusform>%n денів,</numerusform>
-        </translation>
     </message>
 </context>
 <context>
