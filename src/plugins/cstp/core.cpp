@@ -51,7 +51,7 @@ Core& Core::Instance ()
 void Core::Release ()
 {
 	writeSettings ();
-	stopAllTriggered ();
+	removeAllTriggered ();
 	delete HistoryModel_;
 	delete RepresentationModel_;
 }

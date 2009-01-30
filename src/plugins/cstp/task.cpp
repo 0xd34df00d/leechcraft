@@ -43,6 +43,7 @@ void Task::Start (const boost::intrusive_ptr<MorphFile>& tof)
 	StartTime_.restart ();
 	QNetworkAccessManager *nam = Core::Instance ().GetNetworkAccessManager ();
 	Reply_.reset (nam->get (req));
+	Reply_->setParent (0);
 	connect (Reply_.get (),
 			SIGNAL (downloadProgress (qint64, qint64)),
 			this,
