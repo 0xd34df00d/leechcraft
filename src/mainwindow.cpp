@@ -364,15 +364,11 @@ void MainWindow::updatePanes (const QItemSelection& newIndexes,
 		oldIndex = oldIndexes.at (0).topLeft ();
 	if (newIndexes.size ())
 		newIndex = newIndexes.at (0).topLeft ();
-//	qDebug () << oldIndex
-//		<< oldIndex.isValid ()
-//		<< newIndex
-//		<< newIndex.isValid ()
-//		<< Core::Instance ().SameModel (newIndex, oldIndex);
 	if (!newIndex.isValid ())
 	{
 		qDebug () << "invalidating";
 
+		Core::Instance ().SetNewRow (newIndex);
 		if (Ui_.ControlsLayout_->count () == 2)
 		{
 			Ui_.ControlsLayout_->takeAt (1)->widget ()->hide ();
@@ -383,6 +379,7 @@ void MainWindow::updatePanes (const QItemSelection& newIndexes,
 			Core::Instance ().SameModel (newIndex, oldIndex))
 	{
 		qDebug () << "setting new row";
+		Core::Instance ().SetNewRow (newIndex);
 	}
 	else if (newIndex.isValid ())
 	{
@@ -402,6 +399,9 @@ void MainWindow::updatePanes (const QItemSelection& newIndexes,
 					.GetControls (newIndex),
 				*addiInfo = Core::Instance ()
 					.GetAdditionalInfo (newIndex);
+
+		Core::Instance ().SetNewRow (newIndex);
+		
 		Ui_.ControlsLayout_->addWidget (controls, 1);
 		controls->show ();
 		if (addiInfo)
@@ -410,7 +410,6 @@ void MainWindow::updatePanes (const QItemSelection& newIndexes,
 			Ui_.ControlsDockWidget_->show ();
 		}
 	}
-	Core::Instance ().SetNewRow (newIndex);
 }
 
 void MainWindow::updateSpeedIndicators ()

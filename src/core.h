@@ -19,6 +19,10 @@ namespace LeechCraft
 {
 	class FilterModel;
 	class MainWindow;
+
+	/** Contains all the plugins' models, maps from end-user's tree view
+	 * to plugins' models and much more.
+	 */
     class Core : public QObject
     {
         Q_OBJECT
@@ -58,16 +62,55 @@ namespace LeechCraft
 
 		void SetReallyMainWindow (MainWindow*);
 
+		/** Returns all plugins that implement IHaveSettings as
+		 * QObjectList.
+		 *
+		 * @return List of objects.
+		 */
 		QObjectList GetSettables () const;
 		QAbstractItemModel* GetPluginsModel () const;
 		QAbstractProxyModel* GetTasksModel () const;
 		QAbstractProxyModel* GetHistoryModel () const;
 		Util::MergeModel* GetUnfilteredTasksModel () const;
 		Util::MergeModel* GetUnfilteredHistoryModel () const;
-		QWidget* GetControls (const QModelIndex&) const;
-		QWidget* GetAdditionalInfo (const QModelIndex&) const;
+		
+		/** Returns controls for the model with a given index. The
+		 * return value can't be NULL.
+		 *
+		 * The passed index shouldn't be mapped to source from filter
+		 * model, Core will do it itself.
+		 *
+		 * @param[in] index Unmapped index for which the widget should
+		 * be returned.
+		 * @return Widget with controls, usually a toolbar.
+		 *
+		 * @sa GetAdditionalInfo
+		 */
+		QWidget* GetControls (const QModelIndex& index) const;
 
-		QStringList GetTagsForIndex (int, QAbstractItemModel*) const;
+		/** Returns additional info for the model with a given index, or
+		 * NULL if the model doesn't provide it.
+		 *
+		 * The passed index shouldn't be mapped to source from filter
+		 * model, Core will do it itself.
+		 *
+		 * @param[in] index Unmapped index for which the widget should
+		 * be returned.
+		 * @return Widget with additional info/controls.
+		 *
+		 * @sa GetControls
+		 */
+		QWidget* GetAdditionalInfo (const QModelIndex& index) const;
+
+		/** Returns list of tags for a given row using given model. It's
+		 * assumed that the passed model is actually a MergeModel.
+		 *
+		 * @param[in] row The row in the merge model for which the tags
+		 * should be retrieved.
+		 * @param[in] model The MergeModel which contains the row.
+		 * @return Tags for the row.
+		 */
+		QStringList GetTagsForIndex (int row, QAbstractItemModel *model) const;
 
         void DelayedInit ();
         bool ShowPlugin (int);
@@ -75,11 +118,29 @@ namespace LeechCraft
 
 		void Activated (const QModelIndex&);
 		void SetNewRow (const QModelIndex&);
-		bool SameModel (const QModelIndex&, const QModelIndex&) const;
+
+		/** Returns true if both indexes belong to the same model. If
+		 * both indexes are invalid, true is returned.
+		 *
+		 * The passed indexes shouldn't be mapped to source from filter
+		 * model or merge model, Core will do it itself.
+		 *
+		 * @param[in] i1 The first index.
+		 * @param[in] i2 The second index.
+		 * @return Whether the indexes belong to the same model.
+		 */
+		bool SameModel (const QModelIndex& i1, const QModelIndex& i2) const;
 		void UpdateFiltering (const QString&, FilterType, bool, bool = false);
 		void HistoryActivated (int);
         
         QPair<qint64, qint64> GetSpeeds () const;
+
+		/** Counts how much tabs couldn't be removed. A tab is
+		 * considered unremovable if it's from IEmbedTab or LeechCraft's
+		 * internals.
+		 *
+		 * @return Number of unremovable tabs.
+		 */
 		int CountUnremoveableTabs () const;
 
 		QNetworkAccessManager* GetNetworkAccessManager () const;
@@ -102,6 +163,15 @@ namespace LeechCraft
 		void saveCookies () const;
 	private:
 		void DoCommonAuth (const QString&, QAuthenticator*);
+		/** Maps totally unmapped index to the plugin's source model
+		 * through merge model and filter model.
+		 *
+		 * @param[in] index The original unmapped index.
+		 * @return Mapped index from the plugin's model.
+		 *
+		 * @exception std::runtime_error Throws if the required model
+		 * could not be found.
+		 */
 		QModelIndex MapToSource (const QModelIndex&) const;
 		void InitJobHolder (QObject*);
 		void InitEmbedTab (QObject*);

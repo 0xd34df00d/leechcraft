@@ -114,7 +114,16 @@ QModelIndex MergeModel::mapToSource (const QModelIndex& proxyIndex) const
 
 	int proxyRow = proxyIndex.row ();
 	int proxyColumn = proxyIndex.column ();
-	const_iterator modIter = GetModelForRow (proxyRow);
+	const_iterator modIter;
+	try
+	{
+		modIter = GetModelForRow (proxyRow);
+	}
+	catch (const std::runtime_error& e)
+	{
+		qWarning () << Q_FUNC_INFO << "caught:" << e.what ();
+		throw;
+	}
 	//
 	// here goes blocker for hierarchical #2
 	int startingRow = GetStartingRow (modIter);

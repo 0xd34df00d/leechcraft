@@ -331,6 +331,7 @@ void Core::SetNewRow (const QModelIndex& index)
 		if (index.isValid ())
 		{
 			QModelIndex mapped = FilterModel_->mapToSource (index);
+			QModelIndex final = MergeModel_->mapToSource (mapped);
 			MergeModel::const_iterator modIter = MergeModel_->GetModelForRow (mapped.row ());
 			QObject *plugin = Representation2Object_ [*modIter];
 
@@ -339,7 +340,7 @@ void Core::SetNewRow (const QModelIndex& index)
 			for (QList<IJobHolder*>::iterator i = holders.begin (),
 					end = holders.end (); i != end; ++i)
 				if (*i == ijh)
-					(*i)->ItemSelected (MergeModel_->mapToSource (mapped));
+					(*i)->ItemSelected (final);
 				else
 					(*i)->ItemSelected (QModelIndex ());
 
@@ -353,7 +354,7 @@ void Core::SetNewRow (const QModelIndex& index)
 	}
 	catch (const std::runtime_error& e)
 	{
-		qWarning () << Q_FUNC_INFO << e.what ();
+		qWarning () << Q_FUNC_INFO << "caught:" << e.what ();
 	}
 
 	for (QList<IJobHolder*>::iterator i = holders.begin (),
@@ -582,7 +583,6 @@ void Core::handlePluginAction ()
 		return;
 
 	QObject *object = source->property ("Object").value<QObject*> ();
-	qDebug () << Q_FUNC_INFO << slot << signal << object;
 
 	QModelIndexList origSelection = ReallyMainWindow_->GetSelectedRows ();
 	QModelIndexList selected;

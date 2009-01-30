@@ -9,6 +9,7 @@
 #include <QDir>
 
 QMutex G_DbgMutex;
+uint Counter = 0;
 
 void DebugHandler::debugMessageHandler (QtMsgType type, const char *message)
 {
@@ -37,6 +38,8 @@ void DebugHandler::debugMessageHandler (QtMsgType type, const char *message)
 		<< QDateTime::currentDateTime ().toString ("dd.MM.yyyy HH:mm:ss.zzz").toStdString ()
 		<< "] ["
 		<< QThread::currentThread ()
+		<< "] ["
+		<< QString ("%1").arg (Counter++, 3, 10, QChar ('0')).toStdString ()
 		<< "] ";
 	ostr << message << std::endl;
 
