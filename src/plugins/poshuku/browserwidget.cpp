@@ -209,7 +209,7 @@ void BrowserWidget::handleStatusBarMessage (const QString& msg)
 
 void BrowserWidget::on_URLEdit__returnPressed ()
 {
-	QString url = Ui_.URLEdit_->text ();
+	QString url = QUrl (Ui_.URLEdit_->text ()).toString ();
 	if (!Core::Instance ().IsValidURL (url))
 		return;
 

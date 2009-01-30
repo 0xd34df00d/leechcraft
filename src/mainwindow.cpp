@@ -364,36 +364,31 @@ void MainWindow::updatePanes (const QItemSelection& newIndexes,
 		oldIndex = oldIndexes.at (0).topLeft ();
 	if (newIndexes.size ())
 		newIndex = newIndexes.at (0).topLeft ();
-	qDebug () << oldIndex
-		<< oldIndex.isValid ()
-		<< newIndex
-		<< newIndex.isValid ()
-		<< Core::Instance ().SameModel (newIndex, oldIndex);
+//	qDebug () << oldIndex
+//		<< oldIndex.isValid ()
+//		<< newIndex
+//		<< newIndex.isValid ()
+//		<< Core::Instance ().SameModel (newIndex, oldIndex);
 	if (!newIndex.isValid ())
 	{
-		Core::Instance ().SetNewRow (QModelIndex ());
+		qDebug () << "invalidating";
 
 		if (Ui_.ControlsLayout_->count () == 2)
 		{
 			Ui_.ControlsLayout_->takeAt (1)->widget ()->hide ();
 			Ui_.ControlsDockWidget_->hide ();
 		}
-		return;
 	}
-
-	if (oldIndex.isValid () &&
+	else if (oldIndex.isValid () &&
 			Core::Instance ().SameModel (newIndex, oldIndex))
 	{
 		qDebug () << "setting new row";
-		Core::Instance ().SetNewRow (newIndex);
 	}
 	else if (newIndex.isValid ())
 	{
 		if (oldIndex.isValid ())
 		{
 			qDebug () << "erasing older stuff";
-			Ui_.PluginsTasksTree_->selectionModel ()->clearSelection ();
-			Core::Instance ().SetNewRow (QModelIndex ());
 
 			if (Ui_.ControlsLayout_->count () == 2)
 			{
@@ -402,7 +397,7 @@ void MainWindow::updatePanes (const QItemSelection& newIndexes,
 			}
 		}
 
-		qDebug () << "inserting newer stuff";
+		qDebug () << "inserting newer stuff" << newIndex;
 		QWidget *controls = Core::Instance ()
 					.GetControls (newIndex),
 				*addiInfo = Core::Instance ()
@@ -414,8 +409,8 @@ void MainWindow::updatePanes (const QItemSelection& newIndexes,
 			Ui_.ControlsDockWidget_->setWidget (addiInfo);
 			Ui_.ControlsDockWidget_->show ();
 		}
-		Core::Instance ().SetNewRow (newIndex);
 	}
+	Core::Instance ().SetNewRow (newIndex);
 }
 
 void MainWindow::updateSpeedIndicators ()
