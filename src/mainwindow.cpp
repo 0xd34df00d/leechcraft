@@ -371,7 +371,13 @@ void MainWindow::updatePanes (const QItemSelection& newIndexes,
 		<< Core::Instance ().SameModel (newIndex, oldIndex);
 	if (!newIndex.isValid ())
 	{
-		qDebug () << "returning";
+		Core::Instance ().SetNewRow (QModelIndex ());
+
+		if (Ui_.ControlsLayout_->count () == 2)
+		{
+			Ui_.ControlsLayout_->takeAt (1)->widget ()->hide ();
+			Ui_.ControlsDockWidget_->hide ();
+		}
 		return;
 	}
 
