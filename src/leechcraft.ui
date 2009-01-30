@@ -92,7 +92,7 @@
              <widget class="QTreeView" name="PluginsTasksTree_" >
               <property name="minimumSize" >
                <size>
-                <width>250</width>
+                <width>450</width>
                 <height>0</height>
                </size>
               </property>
@@ -125,7 +125,14 @@
            <property name="allowedAreas" >
             <set>Qt::RightDockWidgetArea</set>
            </property>
-           <widget class="QWidget" name="dockWidgetContents_3" />
+           <widget class="QWidget" name="dockWidgetContents_3" >
+            <property name="sizePolicy" >
+             <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
           </widget>
          </widget>
         </item>
