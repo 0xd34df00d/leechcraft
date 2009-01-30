@@ -9,6 +9,17 @@ namespace LeechCraft
 {
 	namespace Util
 	{
+		/** Merges data from multiple source models into one resulting
+		 * model and provides means to lookup models by row, get
+		 * starting rows for a model etc.
+		 *
+		 * To add a new source model, one should use AddModel() as
+		 * setSourceModel() throws an std::runtime_error exception.
+		 *
+		 * Currently it doesn't support hierarchical source models.
+		 * Seems like it would never support it at least someone would
+		 * try to implement it.
+		 */
 		class LEECHCRAFT_API MergeModel : public QAbstractProxyModel
 		{
 			Q_OBJECT
@@ -32,18 +43,99 @@ namespace LeechCraft
 			virtual QModelIndex parent (const QModelIndex&) const;
 			virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 
-			virtual QModelIndex mapFromSource (const QModelIndex&) const;
-			virtual QModelIndex mapToSource (const QModelIndex&) const;
+			/** Returns the model index in the MergeModel given the
+			 * index from the source model.
+			 *
+			 * @param[in] index Source index.
+			 * @return MergeModel's index.
+			 */
+			virtual QModelIndex mapFromSource (const QModelIndex& index) const;
+
+			/** Returns the source model index corresponding to the
+			 * given index from the sorting filter model.
+			 *
+			 * @param[in] index MergeModel's index.
+			 * @return Source index.
+			 */
+			virtual QModelIndex mapToSource (const QModelIndex& index) const;
+
+			/** You shouldn't use this function because its semantics in
+			 * the context of multiple source models aren't clearly
+			 * defined. Calling this function results in
+			 * std::runtime_error.
+			 *
+			 * @exception std::runtime_error No matter what, you'd get
+			 * it.
+			 */
 			virtual void setSourceModel (QAbstractItemModel*);
 
-			void AddModel (QAbstractItemModel*);
-			void RemoveModel (QAbstractItemModel*);
+			/** Adds a model to the list of source models. The newly
+			 * added model is appended to the end.
+			 *
+			 * If the model already exists in the list, it is added
+			 * again, and bad things would happen, as all the signals and
+			 * slots would be connected and called twice. So it's your
+			 * duty to ensure that you don't add the same model more than
+			 * once.
+			 *
+			 * @param[in] model The model to append to the list.
+			 */
+			void AddModel (QAbstractItemModel *model);
 
-			const_iterator FindModel (const QAbstractItemModel*) const;
-			iterator FindModel (const QAbstractItemModel*);
-			int GetStartingRow (const_iterator) const;
-			const_iterator GetModelForRow (int) const;
-			iterator GetModelForRow (int);
+			/** Removes a model from the list of source models. If there
+			 * is no such model, this function does nothing.
+			 *
+			 * @param[in] model The model to remove from the list.
+			 */
+			void RemoveModel (QAbstractItemModel *model);
+
+			/** Returns a const_iterator corresponding to the passed
+			 * model, or one-past-end if no such model is found.
+			 *
+			 * @param[in] model The model to find.
+			 * @return The iterator.
+			 */
+			const_iterator FindModel (const QAbstractItemModel *model) const;
+
+			/** This is an overloaded function provided for convenience.
+			 * Non-const and returns a non-const iterator.
+			 *
+			 * @param[in] model The model to find.
+			 * @return The iterator.
+			 */
+			iterator FindModel (const QAbstractItemModel *model);
+			
+			/** Returns the row in the resulting MergeModel from which do
+			 * begin rows which belong to the model corresponding to the
+			 * given const_iterator.
+			 *
+			 * @param[in] iterator The iterator corresponding to the
+			 * model.
+			 * @return The starting row.
+			 */
+			int GetStartingRow (const_iterator iterator) const;
+			
+			/** Returns the model that corresponds to the given row. If
+			 * there is no such model, throws.
+			 *
+			 * @param[in] row The row that should be identified.
+			 * @return Iterator associated with the model.
+			 *
+			 * @exception std::runtime_error Throws if there is no model
+			 * for such row.
+			 */
+			const_iterator GetModelForRow (int row) const;
+
+			/** This is an overloaded function provided for convenience.
+			 * Non-const and returns a non-const iterator.
+			 *
+			 * @param[in] row The row that should be identified.
+			 * @return Iterator associated with the model.
+			 *
+			 * @exception std::runtime_error Throws if there is no model
+			 * for such row.
+			 */
+			iterator GetModelForRow (int row);
 		public Q_SLOTS:
 			void handleColumnsAboutToBeInserted (const QModelIndex&, int, int);
 			void handleColumnsAboutToBeRemoved (const QModelIndex&, int, int);

@@ -133,7 +133,7 @@ QModelIndex MergeModel::mapToSource (const QModelIndex& proxyIndex) const
 
 void MergeModel::setSourceModel (QAbstractItemModel*)
 {
-	QAbstractProxyModel::setSourceModel (0);
+	throw std::runtime_error ("You should not set source model via setSourceModel()");
 }
 
 void MergeModel::AddModel (QAbstractItemModel *model)
