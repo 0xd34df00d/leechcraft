@@ -11,7 +11,10 @@ JobHolderRepresentation::JobHolderRepresentation (QObject *parent)
 
 void JobHolderRepresentation::SelectionChanged (const QModelIndex& index)
 {
-	Selected_ = index;
+	if (index.isValid ())
+		Selected_ = mapToSource (index);
+	else
+		Selected_ = QModelIndex ();
 	invalidateFilter ();
 }
 
@@ -22,6 +25,6 @@ bool JobHolderRepresentation::filterAcceptsRow (int row,
 	// we can just check if it has unread items or selected. Later means
 	// that user's just clicked last unread item there.
 	return sourceModel ()->index (row, 1).data ().toInt () ||
-		(Selected_.isValid () ? row == mapToSource (Selected_).row () : false);
+		(Selected_.isValid () ? row == Selected_.row () : false);
 }
 
