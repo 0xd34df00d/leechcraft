@@ -161,6 +161,7 @@ void MainWindow::InitializeInterface ()
 	Ui_.ActionPluginManager_->setProperty ("ActionIcon", "pluginmanager");
 	Ui_.ActionLogger_->setProperty ("ActionIcon", "logger");
 	Ui_.ActionFullscreenMode_->setProperty ("ActionIcon", "fullscreen");
+	Ui_.ActionFullscreenMode_->setParent (this);
 
 	QWidget *settings = new QWidget ();
 	settings->addAction (Ui_.ActionSettings_);
@@ -350,7 +351,10 @@ void MainWindow::on_ActionFullscreenMode__triggered (bool full)
 				SLOT (showMaximized ()));
 	}
 	else
+	{
+		Clock_->hide ();
 		showNormal ();
+	}
 }
 
 void MainWindow::on_ActionLogger__triggered ()
