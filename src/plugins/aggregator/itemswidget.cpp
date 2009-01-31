@@ -159,6 +159,7 @@ void ItemsWidget::SetHtml (const QString& title,
 
 void ItemsWidget::SetLink (QString link)
 {
+	Impl_->Ui_.ItemLinkLabel_->show ();
 	QString shortLink;
 	Impl_->Ui_.ItemLink_->setToolTip (link);
 	if (link.size () >= 40)

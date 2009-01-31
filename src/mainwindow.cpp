@@ -28,8 +28,7 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , WasMaximized_ (false)
 {
 	setUpdatesEnabled (false);
-	SplashScreen_ = new QSplashScreen (QPixmap (":/resources/images/splashscreen.png"),
-			Qt::WindowStaysOnTopHint);
+	SplashScreen_ = new QSplashScreen (QPixmap (":/resources/images/splashscreen.png"));
 	SplashScreen_->show ();
 	SplashScreen_->showMessage (tr ("Initializing interface..."),
 			Qt::AlignLeft | Qt::AlignBottom);
@@ -161,6 +160,7 @@ void MainWindow::InitializeInterface ()
 	Ui_.ActionQuit_->setProperty ("ActionIcon", "exit");
 	Ui_.ActionPluginManager_->setProperty ("ActionIcon", "pluginmanager");
 	Ui_.ActionLogger_->setProperty ("ActionIcon", "logger");
+	Ui_.ActionFullscreenMode_->setProperty ("ActionIcon", "fullscreen");
 
 	QWidget *settings = new QWidget ();
 	settings->addAction (Ui_.ActionSettings_);
@@ -221,6 +221,8 @@ void MainWindow::InitializeInterface ()
 	mainBar->addAction (Ui_.ActionSettings_);
 	mainBar->addAction (Ui_.ActionPluginManager_);
 	mainBar->addAction (Ui_.ActionLogger_);
+	mainBar->addSeparator ();
+	mainBar->addAction (Ui_.ActionFullscreenMode_);
 	mainBar->addSeparator ();
 	mainBar->addAction (Ui_.ActionQuit_);
 	Ui_.ControlsLayout_->addWidget (mainBar);
