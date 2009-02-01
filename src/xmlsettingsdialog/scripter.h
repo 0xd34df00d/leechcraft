@@ -15,6 +15,7 @@
 #include <memory>
 #include <QVariant>
 #include <QDomElement>
+#include "settings.h"
 
 class QScriptEngine;
 
@@ -23,6 +24,7 @@ namespace LeechCraft
 	class Scripter
 	{
 		std::auto_ptr<QScriptEngine> Engine_;
+		std::auto_ptr<Settings> Settings_;
 		QDomElement Container_;
 	public:
 		Scripter (const QDomElement&);

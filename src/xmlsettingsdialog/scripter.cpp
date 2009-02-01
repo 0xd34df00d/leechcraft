@@ -18,12 +18,12 @@
 #include <typeinfo>
 #include "typeregister.h"
 #include "file.h"
-#include "settings.h"
 
 using namespace LeechCraft;
 
 Scripter::Scripter (const QDomElement& elem)
-: Container_ (elem)
+: Settings_ (new Settings)
+, Container_ (elem)
 {
 	TypeRegister::Instance ();
 }
@@ -110,7 +110,7 @@ void Scripter::FeedRequiredClasses () const
 				TypeRegister::Instance ().GetValueForName (*i,
 					Engine_.get ()));
 
-	global.setProperty ("Settings", Engine_->newQObject (new Settings));
+	global.setProperty ("Settings", Engine_->newQObject (Settings_.get ()));
 	qScriptRegisterMetaType (Engine_.get (), toScriptValue, fromScriptValue);
 }
 

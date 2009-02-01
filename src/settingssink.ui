@@ -91,22 +91,6 @@
   </connection>
   <connection>
    <sender>Combobox_</sender>
-   <signal>highlighted(int)</signal>
-   <receiver>Dialogs_</receiver>
-   <slot>setCurrentIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>38</x>
-     <y>45</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>152</x>
-     <y>145</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>Combobox_</sender>
    <signal>currentIndexChanged(int)</signal>
    <receiver>Dialogs_</receiver>
    <slot>setCurrentIndex(int)</slot>

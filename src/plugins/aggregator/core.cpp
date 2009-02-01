@@ -139,7 +139,7 @@ void Core::Release ()
 	ItemModel_->saveSettings ();
 	saveSettings ();
 	XmlSettingsManager::Instance ()->Release ();
-	StorageBackend_.reset (0);
+	StorageBackend_.reset ();
 	delete JobHolderRepresentation_;
 	delete ItemModel_;
 	delete ChannelsModel_;
