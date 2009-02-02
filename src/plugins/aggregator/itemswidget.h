@@ -16,17 +16,12 @@ public:
 	ItemsWidget (QWidget* = 0);
 	virtual ~ItemsWidget ();
 
-	void SetHtml (const QString&, const QString&, const QList<Enclosure>&);
-	void SetLink (QString);
-	void SetCategory (const QStringList&);
-	void SetPubDate (const QDateTime&);
-	void SetCommentsLabel (int);
-	void SetAuthor (const QString&);
 	void SetHideRead (bool);
 	void ChannelChanged (const QModelIndex&);
 	void HideInfoPanel ();
 private:
 	void Construct (bool);
+	void SetHtml (const Item_ptr&);
 private slots:
     void on_ActionMarkItemAsUnread__triggered ();
 	void on_CaseSensitiveSearch__stateChanged (int);

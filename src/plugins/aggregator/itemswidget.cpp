@@ -2,6 +2,7 @@
 #include <memory>
 #include <QFileInfo>
 #include <QHeaderView>
+#include <QtDebug>
 #include <plugininterface/categoryselector.h>
 #include <plugininterface/proxy.h>
 #include "core.h"
@@ -14,8 +15,6 @@ struct ItemsWidget_Impl
 {
 	Ui::ItemsWidget Ui_;
 
-	bool HideInfoPanel_;
-
     QAction *ActionMarkItemAsUnread_;
     QAction *ActionAddToItemBucket_;
 
@@ -27,7 +26,6 @@ ItemsWidget::ItemsWidget (QWidget *parent)
 : QWidget (parent)
 {
 	Impl_ = new ItemsWidget_Impl;
-	Impl_->HideInfoPanel_ = false;
 	Impl_->ActionMarkItemAsUnread_ = new QAction (tr ("Mark item as unread"),
 			this);
 	Impl_->ActionMarkItemAsUnread_->setObjectName ("ActionMarkItemAsUnread_");
@@ -37,6 +35,11 @@ ItemsWidget::ItemsWidget (QWidget *parent)
 	Impl_->ActionAddToItemBucket_->setObjectName ("ActionAddToItemBucket_");
 
 	Impl_->Ui_.setupUi (this);
+
+	connect (Impl_->Ui_.ItemView_->page ()->networkAccessManager (),
+			SIGNAL (sslErrors (QNetworkReply*, const QList<QSslError>&)),
+			&Core::Instance (),
+			SLOT (handleSslError (QNetworkReply*)));
 
 	Impl_->Ui_.Items_->sortByColumn (1, Qt::DescendingOrder);
 	Impl_->ItemsFilterModel_.reset (new ItemsFilterModel (this));
@@ -80,11 +83,6 @@ ItemsWidget::ItemsWidget (QWidget *parent)
 			Impl_->ItemsFilterModel_.get (),
 			SLOT (categorySelectionChanged (const QStringList&)));
 
-	connect (Impl_->Ui_.ItemLink_,
-			SIGNAL (linkActivated (const QString&)),
-			&Core::Instance (),
-			SLOT (openLink (const QString&)));
-
 	connect (Impl_->Ui_.Items_->selectionModel (),
 			SIGNAL (selectionChanged (const QItemSelection&,
 					const QItemSelection&)),
@@ -113,24 +111,118 @@ ItemsWidget::ItemsWidget (QWidget *parent)
 
 ItemsWidget::~ItemsWidget ()
 {
-	disconnect (Impl_->ItemsFilterModel_.get (), 0, this, 0);
-	disconnect (Impl_->ItemCategorySelector_.get (), 0, this, 0);
+	disconnect (Impl_->ItemsFilterModel_.get (),
+			0,
+			this,
+			0);
+	disconnect (Impl_->ItemCategorySelector_.get (),
+			0,
+			this,
+			0);
 	delete Impl_;
 }
 
-void ItemsWidget::SetHtml (const QString& title,
-		const QString& description,
-		const QList<Enclosure>& enclosures)
+void ItemsWidget::SetHideRead (bool hide)
 {
-	QString result = "<div style='background: lightgray; "
-		"border: 1px solid #000000; "
+	Impl_->ItemsFilterModel_->SetHideRead (hide);
+}
+
+void ItemsWidget::ChannelChanged (const QModelIndex& mapped)
+{
+	Impl_->Ui_.Items_->scrollToTop ();
+	currentItemChanged (QItemSelection ());
+
+	QStringList allCategories = Core::Instance ().GetCategories (mapped);
+	if (allCategories.size ())
+	{
+		Impl_->ItemCategorySelector_->SetPossibleSelections (allCategories);
+		Impl_->ItemCategorySelector_->selectAll ();
+		Impl_->Ui_.ItemCategoriesButton_->setEnabled (true);
+	}
+	else
+		Impl_->Ui_.ItemCategoriesButton_->setEnabled (false);
+
+	Impl_->ItemsFilterModel_->categorySelectionChanged (allCategories);
+}
+
+void ItemsWidget::HideInfoPanel ()
+{
+	Impl_->Ui_.Actions_->setVisible (false);
+}
+
+void ItemsWidget::SetHtml (const Item_ptr& item)
+{
+	const char darkBg [] = "#A3A3A3";
+	const char lightBg [] = "#D3D3D3";
+	QString startBox = "<div style='background: %1; "
 		"padding-left: 2em; "
 		"padding-right: 2em;'>";
-	result += title;
-	result += "</div>";
-	result += description;
-	for (QList<Enclosure>::const_iterator i = enclosures.begin (),
-			end = enclosures.end (); i != end; ++i)
+
+	bool linw = XmlSettingsManager::Instance ()->
+			property ("AlwaysUseExternalBrowser").toBool ();
+
+	// Title
+	QString result = startBox.arg (darkBg);
+	result += (QString ("<strong>") +
+			item->Title_ +
+			"</strong></div>");
+
+	// Link
+	result += (startBox.arg (lightBg) +
+			"<a href='" +
+			item->Link_ +
+			"'");
+	if (linw)
+		result += " target='_blank'";
+	result += (QString (">") +
+			item->Link_ +
+			"</a></div>");
+
+	// Publication date and author
+	if (item->PubDate_.isValid () && !item->Author_.isEmpty ())
+		result += (startBox.arg (lightBg) +
+				tr ("Published on %1 by %2")
+			   		.arg (item->PubDate_.toString ())
+					.arg (item->Author_) +
+				"</div>");
+	else if (item->PubDate_.isValid ())
+		result += (startBox.arg (lightBg) +
+				tr ("Published on %1")
+			   		.arg (item->PubDate_.toString ()) +
+				"</div>");
+	else if (!item->Author_.isEmpty ())
+		result += (startBox.arg (lightBg) +
+				tr ("Published by %1")
+					.arg (item->Author_) +
+				"</div>");
+
+	// Categories
+	if (item->Categories_.size ())
+		result += (startBox.arg (lightBg) +
+				item->Categories_.join ("; ") +
+				"</div>");
+
+	// Comments stuff
+	if (item->NumComments_ >= 0 && !item->CommentsPageLink_.isEmpty ())
+		result += (startBox.arg (lightBg) + 
+				tr ("%1 comments, <a href='%2'%3>view them</a></div>")
+					.arg (item->NumComments_)
+					.arg (item->CommentsPageLink_)
+					.arg (linw ? " target='_blank'" : ""));
+	else if (item->NumComments_ >= 0)
+		result += (startBox.arg (lightBg) + 
+				tr ("%1 comments</div>")
+					.arg (item->NumComments_));
+	else if (!item->CommentsPageLink_.isEmpty ())
+		result += (startBox.arg (lightBg) + 
+				tr ("<a href='%1'%2>View comments</a></div>")
+					.arg (item->CommentsPageLink_)
+					.arg (linw ? " target='_blank'" : ""));
+
+	// Description
+	result += item->Description_;
+	for (QList<Enclosure>::const_iterator i = item->Enclosures_.begin (),
+			end = item->Enclosures_.end (); i != end; ++i)
 	{
 		result += "<div style='background: lightgray; "
 			"border: 1px solid #333333; "
@@ -155,116 +247,6 @@ void ItemsWidget::SetHtml (const QString& title,
 		result += "</div>";
 	}
 	Impl_->Ui_.ItemView_->setHtml (result);
-}
-
-void ItemsWidget::SetLink (QString link)
-{
-	Impl_->Ui_.ItemLinkLabel_->show ();
-	QString shortLink;
-	Impl_->Ui_.ItemLink_->setToolTip (link);
-	if (link.size () >= 40)
-		shortLink = link.left (18) + "..." + link.right (18);
-	else
-		shortLink = link;
-	if (QUrl (link).isValid ())
-	{
-		link.insert (0,"<a href=\"");
-		link.append ("\">" + shortLink + "</a>");
-		Impl_->Ui_.ItemLink_->setText (link);
-	}
-	else
-		Impl_->Ui_.ItemLink_->setText (shortLink);
-}
-
-void ItemsWidget::SetCategory (const QStringList& categories)
-{
-	QString category = categories.join ("; ").left (60);
-	if (category.isEmpty ())
-	{
-		Impl_->Ui_.ItemCategory_->hide ();
-		Impl_->Ui_.ItemCategoryLabel_->hide ();
-	}
-	else
-	{
-		Impl_->Ui_.ItemCategory_->setText (category);
-		Impl_->Ui_.ItemCategory_->show ();
-		Impl_->Ui_.ItemCategoryLabel_->show ();
-	}
-}
-
-void ItemsWidget::SetPubDate (const QDateTime& pubDate)
-{
-	if (pubDate.isValid ())
-	{
-		Impl_->Ui_.ItemPubDate_->setText (pubDate.toString ());
-		Impl_->Ui_.ItemPubDate_->show ();
-		Impl_->Ui_.ItemPubDateLabel_->show ();
-	}
-	else
-	{
-		Impl_->Ui_.ItemPubDate_->hide ();
-		Impl_->Ui_.ItemPubDateLabel_->hide ();
-	}
-}
-
-void ItemsWidget::SetCommentsLabel (int numComments)
-{
-	if (numComments >= 0)
-	{
-		Impl_->Ui_.ItemComments_->show ();
-		Impl_->Ui_.ItemCommentsLabel_->show ();
-
-		QString text = QString::number (numComments);
-		Impl_->Ui_.ItemComments_->setText (text);
-	}
-	else
-	{
-		Impl_->Ui_.ItemComments_->hide ();
-		Impl_->Ui_.ItemCommentsLabel_->hide ();
-	}
-}
-
-void ItemsWidget::SetAuthor (const QString& itemAuthor)
-{
-	if (itemAuthor.isEmpty ())
-	{
-		Impl_->Ui_.ItemAuthor_->hide ();
-		Impl_->Ui_.ItemAuthorLabel_->hide ();
-	}
-	else
-	{
-		Impl_->Ui_.ItemAuthor_->setText (itemAuthor);
-		Impl_->Ui_.ItemAuthor_->show ();
-		Impl_->Ui_.ItemAuthorLabel_->show ();
-	}
-}
-
-void ItemsWidget::SetHideRead (bool hide)
-{
-	Impl_->ItemsFilterModel_->SetHideRead (hide);
-}
-
-void ItemsWidget::ChannelChanged (const QModelIndex& mapped)
-{
-	Impl_->Ui_.Items_->scrollToTop ();
-	currentItemChanged (QItemSelection ());
-
-	QStringList allCategories = Core::Instance ().GetCategories (mapped);
-	if (allCategories.size ())
-	{
-		Impl_->ItemCategorySelector_->SetPossibleSelections (allCategories);
-		Impl_->ItemCategorySelector_->selectAll ();
-		Impl_->Ui_.ItemCategoriesButton_->show ();
-	}
-	else
-		Impl_->Ui_.ItemCategoriesButton_->hide ();
-
-	Impl_->ItemsFilterModel_->categorySelectionChanged (allCategories);
-}
-
-void ItemsWidget::HideInfoPanel ()
-{
-	Impl_->HideInfoPanel_ = true;
 }
 
 void ItemsWidget::on_ActionMarkItemAsUnread__triggered ()
@@ -333,9 +315,6 @@ void ItemsWidget::currentItemChanged (const QItemSelection& selection)
 {
 	QModelIndexList indexes = selection.indexes ();
 
-	Impl_->Ui_.ItemInfo_->setVisible (!(Impl_->HideInfoPanel_ ||
-			!selection.size ()));
-
 	QModelIndex sindex;
 	if (indexes.size ())
 		sindex = Impl_->ItemsFilterModel_->mapToSource (indexes.at (0));
@@ -343,17 +322,7 @@ void ItemsWidget::currentItemChanged (const QItemSelection& selection)
 	if (!sindex.isValid () || indexes.size () != 2)
 	{
 		Impl_->Ui_.ItemView_->setHtml ("");
-		Impl_->Ui_.ItemAuthor_->hide ();
-		Impl_->Ui_.ItemAuthorLabel_->hide ();
-		Impl_->Ui_.ItemCategory_->hide ();
-		Impl_->Ui_.ItemCategoryLabel_->hide ();
-		Impl_->Ui_.ItemLink_->setText ("");
-		Impl_->Ui_.ItemLinkLabel_->hide ();
-		Impl_->Ui_.ItemPubDate_->hide ();
-		Impl_->Ui_.ItemPubDateLabel_->hide ();
-		Impl_->Ui_.ItemComments_->hide ();
-		Impl_->Ui_.ItemCommentsLabel_->hide ();
-		Impl_->Ui_.ItemCommentsSubscribe_->hide ();
+		Impl_->Ui_.ItemCommentsSubscribe_->setEnabled (false);
 		return;
 	}
 
@@ -361,23 +330,10 @@ void ItemsWidget::currentItemChanged (const QItemSelection& selection)
 
 	Item_ptr item = Core::Instance ().GetItem (sindex);
 
-	SetHtml (item->Title_, item->Description_, item->Enclosures_);
-	connect (Impl_->Ui_.ItemView_->page ()->networkAccessManager (),
-			SIGNAL (sslErrors (QNetworkReply*, const QList<QSslError>&)),
-			&Core::Instance (),
-			SLOT (handleSslError (QNetworkReply*)));
-
-	if (Impl_->HideInfoPanel_)
-		return;
-
-	SetAuthor (item->Author_);
-	SetCategory (item->Categories_);
-	SetLink (item->Link_);
-	SetPubDate (item->PubDate_);
-	SetCommentsLabel (item->NumComments_);
+	SetHtml (item);
 
 	QString commentsRSS = item->CommentsLink_;
-	Impl_->Ui_.ItemCommentsSubscribe_->setVisible (!commentsRSS.isEmpty ());
+	Impl_->Ui_.ItemCommentsSubscribe_->setEnabled (!commentsRSS.isEmpty ());
 }
 
 void ItemsWidget::makeCurrentItemVisible ()

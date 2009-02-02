@@ -12,7 +12,7 @@
   <property name="windowTitle" >
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout_2" >
    <item>
     <layout class="QGridLayout" name="_3" >
      <item row="0" column="0" >
@@ -44,19 +44,6 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="3" >
-      <widget class="QPushButton" name="ItemCategoriesButton_" >
-       <property name="text" >
-        <string>Categories...</string>
-       </property>
-       <property name="iconSize" >
-        <size>
-         <width>12</width>
-         <height>12</height>
-        </size>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
    <item>
@@ -64,8 +51,8 @@
      <property name="orientation" >
       <enum>Qt::Vertical</enum>
      </property>
-     <widget class="QWidget" name="layoutWidget_2" >
-      <layout class="QHBoxLayout" name="horizontalLayout_3" >
+     <widget class="QWidget" name="" >
+      <layout class="QHBoxLayout" name="horizontalLayout" >
        <item>
         <widget class="QTreeView" name="Items_" >
          <property name="selectionMode" >
@@ -83,122 +70,56 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="ItemInfo_" >
-         <property name="title" >
-          <string>Item info</string>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_4" >
-          <item>
-           <layout class="QFormLayout" name="formLayout_3" >
-            <property name="fieldGrowthPolicy" >
-             <enum>QFormLayout::ExpandingFieldsGrow</enum>
-            </property>
-            <item row="0" column="0" >
-             <widget class="QLabel" name="ItemLinkLabel_" >
-              <property name="text" >
-               <string>Link:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1" >
-             <widget class="QLabel" name="ItemLink_" >
-              <property name="text" >
-               <string/>
-              </property>
-              <property name="openExternalLinks" >
+        <layout class="QVBoxLayout" name="verticalLayout" >
+         <item>
+          <widget class="QGroupBox" name="Actions_" >
+           <property name="title" >
+            <string>Actions</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_4" >
+            <item>
+             <widget class="QPushButton" name="ItemCommentsSubscribe_" >
+              <property name="enabled" >
                <bool>false</bool>
               </property>
-              <property name="textInteractionFlags" >
-               <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse</set>
+              <property name="text" >
+               <string>Subscribe to comments</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="0" >
-             <widget class="QLabel" name="ItemCommentsLabel_" >
+            <item>
+             <widget class="QPushButton" name="ItemCategoriesButton_" >
+              <property name="enabled" >
+               <bool>false</bool>
+              </property>
               <property name="text" >
-               <string>Comments:</string>
+               <string>Categories...</string>
               </property>
-             </widget>
-            </item>
-            <item row="1" column="1" >
-             <widget class="QLabel" name="ItemComments_" >
-              <property name="text" >
-               <string/>
-              </property>
-              <property name="textFormat" >
-               <enum>Qt::RichText</enum>
-              </property>
-              <property name="openExternalLinks" >
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0" >
-             <widget class="QLabel" name="ItemPubDateLabel_" >
-              <property name="text" >
-               <string>Publication date:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1" >
-             <widget class="QLabel" name="ItemPubDate_" >
-              <property name="text" >
-               <string/>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0" >
-             <widget class="QLabel" name="ItemCategoryLabel_" >
-              <property name="text" >
-               <string>Category:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1" >
-             <widget class="QLabel" name="ItemCategory_" >
-              <property name="text" >
-               <string/>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0" >
-             <widget class="QLabel" name="ItemAuthorLabel_" >
-              <property name="text" >
-               <string>Author:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="1" >
-             <widget class="QLabel" name="ItemAuthor_" >
-              <property name="text" >
-               <string/>
+              <property name="iconSize" >
+               <size>
+                <width>12</width>
+                <height>12</height>
+               </size>
               </property>
              </widget>
             </item>
            </layout>
-          </item>
-          <item>
-           <widget class="QPushButton" name="ItemCommentsSubscribe_" >
-            <property name="text" >
-             <string>Subscribe to comments</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="verticalSpacer" >
-            <property name="orientation" >
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0" >
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer" >
+           <property name="orientation" >
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0" >
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>

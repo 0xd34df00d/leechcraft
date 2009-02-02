@@ -61,6 +61,8 @@ namespace LeechCraft
 			 * @sa SetPossibleSelections
 			 */
 			QStringList GetSelections ();
+		protected:
+			virtual void moveEvent (QMoveEvent*);
 		public slots:
 			/** @brief Selects all variants.
 			 */

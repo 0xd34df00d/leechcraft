@@ -4,11 +4,14 @@
 #include <QCheckBox>
 #include <QVariant>
 #include <QVBoxLayout>
+#include <QMoveEvent>
+#include <QApplication>
+#include <QDesktopWidget>
 
 using namespace LeechCraft::Util;
 
 CategorySelector::CategorySelector (QWidget *parent)
-: QWidget (parent, Qt::Tool)
+: QWidget (parent, Qt::Tool | Qt::WindowStaysOnTopHint)
 {
 	setLayout (new QVBoxLayout ());
 }
@@ -47,6 +50,22 @@ QStringList CategorySelector::GetSelections ()
 			tags += (*i)->property ("Tag").toString ();
 
 	return tags;
+}
+
+void CategorySelector::moveEvent (QMoveEvent *e)
+{
+	QWidget::moveEvent (e);
+	QPoint pos = e->pos ();
+	QRect avail = QApplication::desktop ()->availableGeometry (this);
+	int dx = 0, dy = 0;
+	if (pos.x () + width () > avail.width ())
+		dx = width () + pos.x () - avail.width ();
+	if (pos.y () + height () > avail.height () &&
+			height () < avail.height ())
+		dy = height () + pos.y () - avail.height ();
+
+	if (dx || dy)
+		move (pos - QPoint (dx, dy));
 }
 
 void CategorySelector::selectAll ()
