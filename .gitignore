@@ -1,3 +1,4 @@
 *.qm
 backup/
 debug/
+build/
