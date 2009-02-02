@@ -417,8 +417,7 @@ void Aggregator::SetupActions ()
 void Aggregator::showError (const QString& msg)
 {
     qWarning () << Q_FUNC_INFO << msg;
-    if (!XmlSettingsManager::Instance ()->property ("BeSilent").toBool ())
-        QMessageBox::warning (0, tr ("Error"), msg);
+	QMessageBox::warning (0, tr ("Error"), msg);
 }
 
 void Aggregator::on_ActionAddFeed__triggered ()

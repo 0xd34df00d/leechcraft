@@ -937,10 +937,32 @@ void Core::handleJobRemoved (int id)
 		PendingJobs_.remove (id);
 }
 
-void Core::handleJobError (int id, IDownload::Error)
+void Core::handleJobError (int id, IDownload::Error ie)
 {
 	if (!PendingJobs_.contains (id))
 		return;
+
+	if (!XmlSettingsManager::Instance ()->property ("BeSilent").toBool () ||
+			PendingJobs_ [id].Role_ == PendingJob::RFeedAdded)
+	{
+		QString msg;
+		switch (ie)
+		{
+			case IDownload::ENotFound:
+				msg = tr ("Address not found:<br />%1");
+				break;
+			case IDownload::EAccessDenied:
+				msg = tr ("Access denied:<br />%1");
+				break;
+			case IDownload::ELocalError:
+				msg = tr ("Local errro for:<br />%1");
+				break;
+			default:
+				msg = tr ("Unknown error for:<br />%1");
+				break;
+		}
+		emit error (msg.arg (PendingJobs_ [id].URL_));
+	}
 	PendingJobs_.remove (id);
 }
 
@@ -950,7 +972,8 @@ void Core::updateFeeds ()
 	IDownload *isd = qobject_cast<IDownload*> (provider);
 	if (!provider || !isd)
 	{
-		emit error (tr ("Strange, but no suitable provider found"));
+		if (!XmlSettingsManager::Instance ()->property ("BeSilent").toBool ())
+			emit error (tr ("Strange, but no suitable provider found"));
 		return;
 	}
 	feeds_urls_t urls;
@@ -960,7 +983,8 @@ void Core::updateFeeds ()
 	{
 		if (!isd->CouldDownload (i->toUtf8 (), LeechCraft::Autostart))
 		{
-			emit error (tr ("Could not handle URL %1").arg (*i));
+			if (!XmlSettingsManager::Instance ()->property ("BeSilent").toBool ())
+				emit error (tr ("Could not handle URL %1").arg (*i));
 			continue;
 		}
 
@@ -980,12 +1004,14 @@ void Core::fetchExternalFile (const QString& url, const QString& where)
 	IDownload *isd = qobject_cast<IDownload*> (provider);
 	if (!provider || !isd)
 	{
-		emit error (tr ("Strange, but no suitable provider found"));
+		if (!XmlSettingsManager::Instance ()->property ("BeSilent").toBool ())
+			emit error (tr ("Strange, but no suitable provider found"));
 		throw std::runtime_error ("no suitable provider");
 	}
 	if (!isd->CouldDownload (url.toUtf8 (), LeechCraft::Autostart))
 	{
-		emit error (tr ("Could not handle URL %1").arg (url));
+		if (!XmlSettingsManager::Instance ()->property ("BeSilent").toBool ())
+			emit error (tr ("Could not handle URL %1").arg (url));
 		throw std::runtime_error ("could not handle URL");
 	}
 
@@ -1115,7 +1141,8 @@ void Core::handleCustomUpdates ()
 	IDownload *isd = qobject_cast<IDownload*> (provider);
 	if (!provider || !isd)
 	{
-		emit error (tr ("Strange, but no suitable provider found"));
+		if (!XmlSettingsManager::Instance ()->property ("BeSilent").toBool ())
+			emit error (tr ("Strange, but no suitable provider found"));
 		return;
 	}
 	feeds_urls_t urls;
@@ -1126,7 +1153,8 @@ void Core::handleCustomUpdates ()
 	{
 		if (!isd->CouldDownload (i->toUtf8 (), LeechCraft::Autostart))
 		{
-			emit error (tr ("Could not handle URL %1").arg (*i));
+			if (!XmlSettingsManager::Instance ()->property ("BeSilent").toBool ())
+				emit error (tr ("Could not handle URL %1").arg (*i));
 			continue;
 		}
 
