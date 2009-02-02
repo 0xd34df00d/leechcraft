@@ -219,6 +219,8 @@ void ItemsWidget::SetHtml (const Item_ptr& item)
 					.arg (item->CommentsPageLink_)
 					.arg (linw ? " target='_blank'" : ""));
 
+	result += "<br />";
+
 	// Description
 	result += item->Description_;
 	for (QList<Enclosure>::const_iterator i = item->Enclosures_.begin (),
