@@ -13,6 +13,9 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2" >
+   <property name="margin" >
+    <number>0</number>
+   </property>
    <item>
     <layout class="QGridLayout" name="_3" >
      <item row="0" column="0" >
@@ -51,7 +54,7 @@
      <property name="orientation" >
       <enum>Qt::Vertical</enum>
      </property>
-     <widget class="QWidget" name="" >
+     <widget class="QWidget" name="layoutWidget" >
       <layout class="QHBoxLayout" name="horizontalLayout" >
        <item>
         <widget class="QTreeView" name="Items_" >
