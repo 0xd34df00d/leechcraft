@@ -1692,7 +1692,7 @@ void Core::writeSettings ()
         }
 
     XmlSettingsManager::Instance ()->setProperty ("TorrentTags",
-			TagsCompletionModel_->GetTags ());
+			TagsCompletionModel_->stringList ());
 
     QSettings settings (Proxy::Instance ()->GetOrganizationName (),
 			Proxy::Instance ()->GetApplicationName () + "_Torrent");

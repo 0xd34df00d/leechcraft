@@ -3,12 +3,12 @@
 #include <QCompleter>
 #include "config.h"
 
-class QLineEdit;
-
 namespace LeechCraft
 {
 	namespace Util
 	{
+		class TagsLineEdit;
+
 		/** @brief Completer suitable for tag completion.
 		 *
 		 * Handles tag completions. One would need special class for this
@@ -30,8 +30,9 @@ namespace LeechCraft
 			 * completion.
 			 * @param[in] parent Parent object.
 			 */
-			LEECHCRAFT_API TagsCompleter (QLineEdit *line,
+			LEECHCRAFT_API TagsCompleter (TagsLineEdit *line,
 					QObject *parent = 0);
+
 			/** @brief Path splitter override.
 			 *
 			 * Handles sequence of tags considering its set structure. Splits

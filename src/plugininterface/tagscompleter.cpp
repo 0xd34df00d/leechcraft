@@ -1,23 +1,20 @@
+#include "tagscompleter.h"
 #include <QtDebug>
 #include <QWidget>
 #include <QStringList>
 #include <QLineEdit>
-#include "tagscompleter.h"
+#include "tagslineedit.h"
 
 using namespace LeechCraft::Util;
 
-TagsCompleter::TagsCompleter (QLineEdit *toComplete, QObject *parent)
+TagsCompleter::TagsCompleter (TagsLineEdit *toComplete, QObject *parent)
 : QCompleter (parent)
 {
-    toComplete->setCompleter (this);
-	connect (this,
-			SIGNAL (activated (const QString&)),
-			toComplete,
-			SLOT (complete (const QString&)));
+    toComplete->SetCompleter (this);
 }
 
 QStringList TagsCompleter::splitPath (const QString& path) const
 {
-    return path.split (' ', QString::SkipEmptyParts);
+	return path.split (' ', QString::SkipEmptyParts);
 }
 

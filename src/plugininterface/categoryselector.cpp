@@ -78,10 +78,12 @@ void CategorySelector::lineTextChanged (const QString& text)
 		QStringList::const_iterator tag = std::find (tags.begin (),
 				tags.end (), (*box)->property ("Tag").toString ());
 
+		(*box)->blockSignals (true);
 		if (tag == tags.end ())
 			(*box)->setCheckState (Qt::Unchecked);
 		else
 			(*box)->setCheckState (Qt::Checked);
+		(*box)->blockSignals (false);
 	}
 }
 

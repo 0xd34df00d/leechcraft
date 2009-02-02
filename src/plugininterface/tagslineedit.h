@@ -9,6 +9,8 @@ namespace LeechCraft
 {
 	namespace Util
 	{
+		class TagsCompleter;
+
 		/** @brief A line edit class suitable for use with TagsCompleter.
 		 *
 		 * One would need this extra class because of custom behavior of both
@@ -20,7 +22,10 @@ namespace LeechCraft
 		{
 			Q_OBJECT
 
+			friend class TagsCompleter;
+
 			std::auto_ptr<CategorySelector> CategorySelector_;
+			TagsCompleter *Completer_;
 		public:
 			/** @brief Constructs the line edit widget.
 			 *
@@ -45,13 +50,17 @@ namespace LeechCraft
 			 *
 			 * @param[in] string String with completion.
 			 */
-			LEECHCRAFT_API void complete (const QString& string);
+			LEECHCRAFT_API void insertTag (const QString& string);
 		private slots:
 			void handleTagsUpdated (const QStringList&);
 			void handleSelectionChanged (const QStringList&);
 		protected:
+			virtual void keyPressEvent (QKeyEvent*);
 			virtual void focusInEvent (QFocusEvent*);
 			virtual void contextMenuEvent (QContextMenuEvent*);
+			void SetCompleter (TagsCompleter*);
+		private:
+			QString textUnderCursor () const;
 		};
 	};
 };

@@ -1,16 +1,20 @@
 #include "tagslineedit.h"
 #include <QtDebug>
+#include <QTimer>
 #include <QCompleter>
 #include <QContextMenuEvent>
 #include <QHBoxLayout>
 #include <QPushButton>
 #include "tagscompletionmodel.h"
+#include "tagscompleter.h"
 
 using namespace LeechCraft::Util;
 
 TagsLineEdit::TagsLineEdit (QWidget *parent)
 : QLineEdit (parent)
+, Completer_ (0)
 {
+
 }
 
 void TagsLineEdit::AddSelector ()
@@ -18,14 +22,14 @@ void TagsLineEdit::AddSelector ()
 	CategorySelector_.reset (new CategorySelector (parentWidget ()));
 	CategorySelector_->hide ();
 
-	QAbstractItemModel *model = completer ()->model ();
+	QAbstractItemModel *model = Completer_->model ();
 
 	connect (qobject_cast<TagsCompletionModel*> (model),
 			SIGNAL (tagsUpdated (const QStringList&)),
 			this,
 			SLOT (handleTagsUpdated (const QStringList&)));
 
-	handleTagsUpdated (qobject_cast<TagsCompletionModel*> (model)->GetTags ());
+	handleTagsUpdated (qobject_cast<TagsCompletionModel*> (model)->stringList ());
 
 	connect (CategorySelector_.get (),
 			SIGNAL (selectionChanged (const QStringList&)),
@@ -38,14 +42,19 @@ void TagsLineEdit::AddSelector ()
 			SLOT (lineTextChanged (const QString&)));
 }
 
-void TagsLineEdit::complete (const QString& completion)
+void TagsLineEdit::insertTag (const QString& completion)
 {
+	if (Completer_->widget () != this)
+		return;
+
     QString wtext = text ();
 	if (completion.startsWith (wtext))
 		wtext.clear ();
     int pos = wtext.lastIndexOf (' ');
+	qDebug () << "original:" << wtext << "; completion: " << completion << pos;
 	wtext = wtext.left (pos).append (' ').append (completion);
 	wtext = wtext.simplified ();
+	qDebug () << "and we get:" << wtext;
     setText (wtext);
 }
 
@@ -59,14 +68,44 @@ void TagsLineEdit::handleSelectionChanged (const QStringList& tags)
 	setText (tags.join (" "));
 }
 
+void TagsLineEdit::keyPressEvent (QKeyEvent *e)
+{
+	if (Completer_ && Completer_->popup ()->isVisible ())
+		switch (e->key ())
+		{
+			case Qt::Key_Enter:
+			case Qt::Key_Return:
+			case Qt::Key_Escape:
+			case Qt::Key_Tab:
+			case Qt::Key_Backtab:
+				e->ignore ();
+				return;
+			default:
+				break;
+		}
+
+	QLineEdit::keyPressEvent (e);
+
+	bool cos = e->modifiers () & (Qt::ControlModifier | Qt::ShiftModifier);
+	if (!Completer_ || (cos && e->text ().isEmpty ()))
+		return;
+
+	bool hasModifier = (e->modifiers () != Qt::NoModifier) && !cos;
+	QString completionPrefix = textUnderCursor ();
+	if (completionPrefix != Completer_->completionPrefix ())
+	{
+		Completer_->setCompletionPrefix (completionPrefix);
+		Completer_->popup ()->
+			setCurrentIndex (Completer_->completionModel ()->index (0, 0));
+	}
+	Completer_->complete ();
+}
+
 void TagsLineEdit::focusInEvent (QFocusEvent *e)
 {
+	if (Completer_)
+		Completer_->setWidget (this);
     QLineEdit::focusInEvent (e);
-    if (completer ())
-    {
-        disconnect (completer (), SIGNAL (activated (const QString&)), this, SLOT (setText (const QString&)));
-        disconnect (completer (), SIGNAL (highlighted (const QString&)), this, 0);
-    }
 }
 
 void TagsLineEdit::contextMenuEvent (QContextMenuEvent *e)
@@ -79,5 +118,39 @@ void TagsLineEdit::contextMenuEvent (QContextMenuEvent *e)
 
 	CategorySelector_->move (e->globalPos ());
 	CategorySelector_->show ();
+}
+
+void TagsLineEdit::SetCompleter (TagsCompleter *c)
+{
+	if (Completer_)
+		disconnect (Completer_,
+				0,
+				this,
+				0);
+
+	Completer_ = c;
+
+	if (!Completer_)
+		return;
+
+	Completer_->setWidget (this);
+	Completer_->setCompletionMode (QCompleter::PopupCompletion);
+	connect (Completer_,
+			SIGNAL (activated (const QString&)),
+			this,
+			SLOT (insertTag (const QString&)));
+}
+
+QString TagsLineEdit::textUnderCursor () const
+{
+	QString wtext = text ();
+	int pos = cursorPosition () - 1;
+	int last = wtext.indexOf (QChar (' '), pos);
+	int first = wtext.lastIndexOf (QChar (' '), pos);
+	if (first == -1)
+		first = 0;
+	if (last == -1)
+		last = wtext.size ();
+	return wtext.mid (first, last - first);
 }
 

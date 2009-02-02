@@ -1013,7 +1013,7 @@ void Core::fetchExternalFile (const QString& url, const QString& where)
 void Core::saveSettings ()
 {
 	XmlSettingsManager::Instance ()->setProperty ("GlobalTags",
-			TagsCompletionModel_->GetTags ());
+			TagsCompletionModel_->stringList ());
 	SaveScheduled_ = false;
 }
 
