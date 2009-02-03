@@ -81,7 +81,7 @@ SET (COMPILED_TRANSLATIONS
 
 IF (UNIX)
 	FIND_PACKAGE (PkgConfig)
-	pkg_check_modules (RB_LT REQUIRED libtorrent-rasterbar>=0.15-svn)
+	pkg_check_modules (RB_LT REQUIRED libtorrent-rasterbar)
 	ADD_DEFINITIONS (${RB_LT_CFLAGS})
 ENDIF (UNIX)
 
