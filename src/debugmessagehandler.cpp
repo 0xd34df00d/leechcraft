@@ -43,6 +43,7 @@ void DebugHandler::debugMessageHandler (QtMsgType type, const char *message)
 		<< "] ";
 	ostr << message << std::endl;
 
+#ifdef _GNU_SOURCE
 	if (type != QtDebugMsg && PrintStack_)
 	{
 		const int maxSize = 100;
@@ -56,6 +57,7 @@ void DebugHandler::debugMessageHandler (QtMsgType type, const char *message)
 			ostr << i << "\t" << strings [i] << std::endl;
 		std::free (strings);
 	}
+#endif
 
 	ostr.close ();
 	G_DbgMutex.unlock ();
