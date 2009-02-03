@@ -1,5 +1,6 @@
 #ifndef TORRENTPLUIGN_H
 #define TORRENTPLUIGN_H
+#define WIN32_LEAN_AND_MEAN
 #include <memory>
 #include <deque>
 #include <QMainWindow>

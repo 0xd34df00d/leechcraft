@@ -21,10 +21,6 @@ private slots:
 	void loadStarted ();
 	void loadFinished (bool);
 	void loadProgress (int);
-	void back ();
-	void forward ();
-	void stop ();
-	void reload ();
 };
 
 #endif

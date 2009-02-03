@@ -1,5 +1,6 @@
 #ifndef CORE_H
 #define CORE_H
+#define WIN32_LEAN_AND_MEAN
 #include <map>
 #include <list>
 #include <deque>
