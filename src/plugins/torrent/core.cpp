@@ -63,7 +63,8 @@ Core::PerTrackerAccumulator::PerTrackerAccumulator (Core::pertrackerstats_t& sta
 : Stats_ (stats)
 {
 }
-int Core::PerTrackerAccumulator::PerTrackerAccumulator::operator() (int,
+
+int Core::PerTrackerAccumulator::operator() (int,
 		const Core::TorrentStruct& str)
 {
 	libtorrent::torrent_status s = str.Handle_.status ();
