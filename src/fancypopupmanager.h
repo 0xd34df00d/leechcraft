@@ -26,8 +26,9 @@ namespace LeechCraft
 		~FancyPopupManager ();
 
 		void ShowMessage (const QString&);
-	public slots:
+	private slots:
 		void timerTimeout ();
+		void handleMessageClicked ();
 	private:
 		void UpdateMessage ();
 	};

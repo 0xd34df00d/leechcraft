@@ -9,7 +9,9 @@
 #include <QtDebug>
 #include "xmlsettingsmanager.h"
 
-LeechCraft::FancyPopupManager::FancyPopupManager (QSystemTrayIcon *icon,
+using namespace LeechCraft;
+
+FancyPopupManager::FancyPopupManager (QSystemTrayIcon *icon,
 		QObject *parent)
 : QObject (parent)
 , TrayIcon_ (icon)
@@ -21,13 +23,18 @@ LeechCraft::FancyPopupManager::FancyPopupManager (QSystemTrayIcon *icon,
 			SLOT (timerTimeout ()));
 
 	timer->start (500);
+
+	connect (TrayIcon_,
+			SIGNAL (messageClicked ()),
+			this,
+			SLOT (handleMessageClicked ()));
 }
 
-LeechCraft::FancyPopupManager::~FancyPopupManager ()
+FancyPopupManager::~FancyPopupManager ()
 {
 }
 
-void LeechCraft::FancyPopupManager::ShowMessage (const QString& message)
+void FancyPopupManager::ShowMessage (const QString& message)
 {
 	Popups_.push_back (message);
 	Dates_ [QDateTime::currentDateTime ()] = message;
@@ -35,7 +42,7 @@ void LeechCraft::FancyPopupManager::ShowMessage (const QString& message)
 	UpdateMessage ();
 }
 
-void LeechCraft::FancyPopupManager::timerTimeout ()
+void FancyPopupManager::timerTimeout ()
 {
 	QDateTime current = QDateTime::currentDateTime ();
 
@@ -54,7 +61,13 @@ void LeechCraft::FancyPopupManager::timerTimeout ()
 		}
 }
 
-void LeechCraft::FancyPopupManager::UpdateMessage ()
+void FancyPopupManager::handleMessageClicked ()
+{
+	Dates_.clear ();
+	Popups_.clear ();
+}
+
+void FancyPopupManager::UpdateMessage ()
 {
 	QString message;
 	for (popups_t::const_iterator i = Popups_.begin (),
