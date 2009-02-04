@@ -264,11 +264,12 @@ void Core::ScheduleSaveSession ()
 
 void Core::HandleHistory (QWebView *view)
 {
-	QString url = view->url ().isValid () ?
-		view->url ().toString () : tr ("Unknown");
+	QString url = view->url ().toString ();
 
-	HistoryModel_->AddItem (view->title (),
-			url, QDateTime::currentDateTime ());
+	if (!view->title ().isEmpty () &&
+			!url.isEmpty ())
+		HistoryModel_->AddItem (view->title (),
+				url, QDateTime::currentDateTime ());
 }
 
 void Core::handleTitleChanged (const QString& newTitle)
