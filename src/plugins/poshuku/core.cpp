@@ -109,12 +109,11 @@ bool Core::IsValidURL (const QString& url) const
 	return QUrl (url).isValid ();
 }
 
-BrowserWidget* Core::NewURL (const QString& url)
+BrowserWidget* Core::NewURL (const QString& url, bool raise)
 {
 	BrowserWidget *widget = new BrowserWidget;
-	widget->GetView ()->page ()->
-		setNetworkAccessManager (GetNetworkAccessManager ());
-	widget->SetURL (QUrl (url));
+
+	emit addNewTab (tr (""), widget);
 
 	connect (widget,
 			SIGNAL (titleChanged (const QString&)),
@@ -145,23 +144,26 @@ BrowserWidget* Core::NewURL (const QString& url)
 			this,
 			SIGNAL (gotEntity (const QByteArray&)));
 
+	widget->SetURL (QUrl (url));
+
 	Widgets_.push_back (widget);
 
-	emit addNewTab (tr (""), widget);
-	if (url.isEmpty ())
+	if (raise)
 		emit raiseTab (widget);
+
 	return widget;
 }
 
-CustomWebView* Core::MakeWebView ()
+CustomWebView* Core::MakeWebView (bool invert)
 {
-	// Because we distinguish between switch and not-switch cases by the
-	// URL.
-	// Don't touch.
-	QString url;
+	bool raise = true;
 	if (XmlSettingsManager::Instance ()->property ("BackgroundNewTabs").toBool ())
-		url = " ";
-	return NewURL (url)->GetView ();
+		raise = false;
+
+	if (invert)
+		raise = !raise;
+
+	return NewURL ("", raise)->GetView ();
 }
 
 FavoritesModel* Core::GetFavoritesModel () const

@@ -157,14 +157,15 @@ CustomWebView* BrowserWidget::GetView () const
 
 void BrowserWidget::SetURL (const QUrl& url)
 {
-	Ui_.WebView_->load (url);
+	if (!url.isEmpty ())
+		Ui_.WebView_->Load (url);
 }
 
 void BrowserWidget::keyReleaseEvent (QKeyEvent *e)
 {
 	if (e->key () == Qt::Key_T &&
 			e->modifiers () & Qt::ControlModifier)
-		Core::Instance ().NewURL ("");
+		Core::Instance ().NewURL ("", true);
 	else
 		QWidget::keyReleaseEvent (e);
 }
@@ -213,7 +214,7 @@ void BrowserWidget::on_URLEdit__returnPressed ()
 	if (!Core::Instance ().IsValidURL (url))
 		return;
 
-	Ui_.WebView_->load (QUrl (url));
+	Ui_.WebView_->Load (QUrl (url));
 }
 
 void BrowserWidget::handleAdd2Favorites ()

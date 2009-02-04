@@ -8,8 +8,14 @@ class CustomWebView : public QWebView
 public:
 	CustomWebView (QWidget* = 0);
 	virtual ~CustomWebView ();
+
+	void Load (const QUrl&, QString = QString ());
+	void Load (const QNetworkRequest&,
+			QNetworkAccessManager::Operation = QNetworkAccessManager::GetOperation,
+			const QByteArray& = QByteArray ());
 protected:
 	virtual QWebView* createWindow (QWebPage::WebWindowType);
+	virtual void mousePressEvent (QMouseEvent*);
 private slots:
 	void remakeURL (const QUrl&);
 signals:

@@ -48,8 +48,8 @@ public:
 	void SetProvider (QObject*, const QString&);
 
 	bool IsValidURL (const QString&) const;
-	BrowserWidget* NewURL (const QString&);
-	CustomWebView* MakeWebView ();
+	BrowserWidget* NewURL (const QString&, bool = false);
+	CustomWebView* MakeWebView (bool = false);
 	FavoritesModel* GetFavoritesModel () const;
 	HistoryModel* GetHistoryModel () const;
 	URLCompletionModel* GetURLCompletionModel () const;
