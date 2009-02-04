@@ -29,6 +29,7 @@ CustomWebPage::~CustomWebPage ()
 
 void CustomWebPage::gotUnsupportedContent (QNetworkReply *reply)
 {
+	qDebug () << Q_FUNC_INFO << reply->error ();
 	switch (reply->error ())
 	{
 		case QNetworkReply::NoError:
