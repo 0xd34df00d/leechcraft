@@ -14,8 +14,12 @@
 				<scripts>
 					<valueGenerator place="file">:/resources/scripts/iconfinder.qs</valueGenerator>
 				</scripts>
-				<label lang="en" value="Icon set" />
-				<label lang="ru" value="Набор иконок" />
+				<label lang="en" value="Icon set:" />
+				<label lang="ru" value="Набор иконок:" />
+			</item>
+			<item type="spinbox" property="MaxLogLines" default="500" step="250" minimum="10" maximum="50000">
+				<label lang="en" value="Maximum log lines:" />
+				<label lang="ru" value="Максимум строк в логе:" />
 			</item>
 		</groupbox>
 	</page>

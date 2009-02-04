@@ -13,7 +13,6 @@ class QSplashScreen;
 class QDockWidget;
 class QTabWidget;
 class QModelIndex;
-class LogToolBox;
 
 namespace LeechCraft
 {
@@ -28,6 +27,7 @@ namespace LeechCraft
 	class PluginManagerDialog;
 	class FancyPopupManager;
 	class SettingsSink;
+	class LogToolBox;
 
 	class MainWindow : public QMainWindow
 	{
@@ -45,7 +45,7 @@ namespace LeechCraft
 		SettingsSink *SettingsSink_;
 		PluginManagerDialog *PluginManagerDialog_;
 		FancyPopupManager *FancyPopupManager_;
-		LogToolBox *LogToolBox_;
+		LeechCraft::LogToolBox *LogToolBox_;
 		QSplashScreen *SplashScreen_;
 		bool IsShown_;
 		bool WasMaximized_;
