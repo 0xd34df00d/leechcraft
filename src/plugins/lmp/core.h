@@ -2,8 +2,7 @@
 #define CORE_H
 #include <memory>
 #include <QObject>
-#include <mediaobject.h>
-#include <audiooutput.h>
+#include <Phonon>
 
 namespace Phonon
 {
@@ -24,6 +23,8 @@ class Core : public QObject
 	Phonon::VideoWidget *VideoWidget_;
 	Phonon::SeekSlider *SeekSlider_;
 	Phonon::VolumeSlider *VolumeSlider_;
+	Phonon::Path VideoPath_;
+	Phonon::Path AudioPath_;
 
 	Core ();
 public:

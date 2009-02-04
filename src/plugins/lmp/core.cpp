@@ -1,8 +1,5 @@
 #include "core.h"
 #include <QUrl>
-#include <videowidget.h>
-#include <seekslider.h>
-#include <volumeslider.h>
 #include "xmlsettingsmanager.h"
 
 Core::Core ()
@@ -53,11 +50,6 @@ void Core::Reinitialize ()
 		oldVolume = AudioOutput_->volume ();
 	AudioOutput_.reset (new Phonon::AudioOutput (Phonon::MusicCategory, this));
 	AudioOutput_->setVolume (oldVolume);
-
-	Phonon::createPath (Core::Instance ().GetMediaObject (),
-			VideoWidget_);
-	Phonon::createPath (Core::Instance ().GetMediaObject (),
-			AudioOutput_.get ());
 
 	SeekSlider_->setMediaObject (MediaObject_.get ());
 	VolumeSlider_->setAudioOutput (AudioOutput_.get ());
@@ -133,6 +125,11 @@ void Core::play ()
 {
 	if (MediaObject_.get ())
 	{
+		if (!VideoPath_.isValid ())
+			VideoPath_.reconnect (MediaObject_.get (), VideoWidget_);
+		if (!AudioPath_.isValid ())
+			AudioPath_.reconnect (MediaObject_.get (), AudioOutput_.get ());
+
 		MediaObject_->play ();
 		emit bringToFront ();
 	}
