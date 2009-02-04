@@ -1,6 +1,5 @@
 #ifndef STORAGEBACKEND_H
 #define STORAGEBACKEND_H
-#include <vector>
 #include <QObject>
 #include "historymodel.h"
 #include "favoritesmodel.h"
@@ -25,23 +24,27 @@ public:
 	virtual void Prepare () = 0;
 	/** @brief Get all the history items from the storage.
 	 *
-	 * Puts all the history items (HistoryModel::HistoryItem) from the
+	 * Puts all the history items (HistoryItem) from the
 	 * storage backend into the passed container.
 	 *
 	 * @param[out] items The container with items. They would be
 	 * appended to the container.
 	 */
-	virtual void LoadHistory (std::vector<HistoryModel::HistoryItem>& items) const = 0;
-	/** @brief Get unique history items from the storage.
+	virtual void LoadHistory (history_items_t& items) const = 0;
+	/** @brief Get resembling history items from the storage.
 	 *
-	 * Puts unique history items (HistoryModel::HistoryItem) from the
-	 * storage backend into the passed container. Items are differed by
-	 * their title and URL, exact chosen date is undefined.
+	 * Puts resembling history items (HistoryItem) from the
+	 * storage backend into the passed container. An item is considered
+	 * resembling if its title or URL contains base string. The
+	 * resembling items container should be sorted by date in descending
+	 * order.
 	 *
+	 * @param[in] base The base string .
 	 * @param[out] items The container with items. They would be
 	 * appended to the container.
 	 */
-	virtual void LoadUniqueHistory (std::vector<HistoryModel::HistoryItem>& items) const = 0;
+	virtual void LoadResemblingHistory (const QString& base,
+			history_items_t& items) const = 0;
 	/** @brief Add an item to history.
 	 *
 	 * Adds the passed item to the storage and emits the added() signal
@@ -49,7 +52,7 @@ public:
 	 *
 	 * @param[in] item History item to add.
 	 */
-	virtual void AddToHistory (const HistoryModel::HistoryItem& item) = 0;
+	virtual void AddToHistory (const HistoryItem& item) = 0;
 	/** @brief Get all favorites items from the storage.
 	 *
 	 * Puts all the favorites items (FavoritesModel::FavoritesItem) from
@@ -84,7 +87,7 @@ public:
 	 */
 	virtual void UpdateFavorites (const FavoritesModel::FavoritesItem& item) = 0;
 signals:
-	void added (const HistoryModel::HistoryItem&);
+	void added (const HistoryItem&);
 	void added (const FavoritesModel::FavoritesItem&);
 	void updated (const FavoritesModel::FavoritesItem&);
 	void removed (const FavoritesModel::FavoritesItem&);

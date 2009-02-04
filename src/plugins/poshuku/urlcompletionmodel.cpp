@@ -1,5 +1,7 @@
 #include "urlcompletionmodel.h"
+#include <stdexcept>
 #include <QUrl>
+#include <QtDebug>
 #include "core.h"
 
 URLCompletionModel::URLCompletionModel (QObject *parent)
@@ -22,33 +24,12 @@ QVariant URLCompletionModel::data (const QModelIndex& index, int role) const
 	if (!index.isValid ())
 		return QVariant ();
 
-	int realIndex = index.row () / 3;
-	int shift = index.row () % 3;
 	if (role == Qt::DisplayRole)
-	{
-		Populate ();
-		return Items_ [realIndex].Title_ + " [" + Items_ [realIndex].URL_ + "]";
-	}
+		return Items_ [index.row ()].Title_ + " [" + Items_ [index.row ()].URL_ + "]";
 	else if (role == Qt::EditRole)
-	{
-		Populate ();
-		QString origURL = Items_ [realIndex].URL_;
-		if (shift == 0)
-			return origURL;
-		else if (shift == 1)
-		{
-			QUrl url (origURL);
-			return origURL.right (origURL.size () - url.scheme ().size () - 3);
-		}
-		else if (shift == 2)
-		{
-			QUrl url (origURL);
-			QString newURL = origURL.right (origURL.size () - url.scheme ().size () - 3);
-			if (newURL.startsWith ("www."))
-				newURL = newURL.right (newURL.size () - 4);
-			return newURL;
-		}
-	}
+		return Base_ + index.row ();
+	else if (role == RoleURL)
+		return Items_ [index.row ()].URL_;
 	else
 		return QVariant ();
 }
@@ -81,25 +62,50 @@ int URLCompletionModel::rowCount (const QModelIndex& index) const
 {
 	if (index.isValid ())
 		return 0;
-	else
-	{
-		Populate ();
-		return Items_.size () * 3;
-	}
+
+	return Items_.size ();
 }
 
-void URLCompletionModel::handleItemAdded (const HistoryModel::HistoryItem&)
+void URLCompletionModel::setBase (const QString& str)
 {
 	Valid_ = false;
+	Base_ = str;
+
+	Populate ();
 }
 
-void URLCompletionModel::Populate () const
+void URLCompletionModel::handleItemAdded (const HistoryItem&)
+{
+	Valid_ = false;
+	Populate ();
+}
+
+void URLCompletionModel::Populate ()
 {
 	if (!Valid_)
 	{
-		Items_.clear ();
-		Core::Instance ().GetStorageBackend ()->LoadUniqueHistory (Items_);
 		Valid_ = true;
+
+		int size = Items_.size () - 1;
+		if (size)
+			beginRemoveRows (QModelIndex (), 0, size);
+		Items_.clear ();
+		if (size)
+			endRemoveRows ();
+
+		try
+		{
+			Core::Instance ().GetStorageBackend ()->LoadResemblingHistory (Base_, Items_);
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO << e.what ();
+			Valid_ = false;
+		}
+
+		size = Items_.size () - 1;
+		beginInsertRows (QModelIndex (), 0, size);
+		endInsertRows ();
 	}
 }
 

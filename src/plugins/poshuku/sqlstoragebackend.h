@@ -16,11 +16,15 @@ class SQLStorageBackend : public StorageBackend
 			 * - url
 			 */
 	mutable QSqlQuery HistoryLoader_,
-			/** Returns:
+			/** Binds:
+			 * - titlebase
+			 * - urlbase
+			 *
+			 * Returns:
 			 * - title
 			 * - url
 			 */
-			HistoryUniqueLoader_,
+			HistoryRatedLoader_,
 			/** Binds:
 			 * - date
 			 * - title
@@ -55,9 +59,10 @@ public:
 
 	void Prepare ();
 
-	virtual void LoadHistory (std::vector<HistoryModel::HistoryItem>&) const;
-	virtual void LoadUniqueHistory (std::vector<HistoryModel::HistoryItem>&) const;
-	virtual void AddToHistory (const HistoryModel::HistoryItem&);
+	virtual void LoadHistory (history_items_t&) const;
+	virtual void LoadResemblingHistory (const QString&,
+			history_items_t&) const;
+	virtual void AddToHistory (const HistoryItem&);
 	virtual void LoadFavorites (std::vector<FavoritesModel::FavoritesItem>&) const;
 	virtual void AddToFavorites (const FavoritesModel::FavoritesItem&);
 	virtual void RemoveFromFavorites (const FavoritesModel::FavoritesItem&);

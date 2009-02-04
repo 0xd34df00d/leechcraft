@@ -3,6 +3,7 @@
 #include <QDir>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QtDebug>
 #include <plugininterface/dblock.h>
 
 SQLStorageBackend::SQLStorageBackend ()
@@ -41,12 +42,17 @@ void SQLStorageBackend::Prepare ()
 			"FROM history "
 			"ORDER BY date DESC");
 
-	HistoryUniqueLoader_ = QSqlQuery (DB_);
-	HistoryUniqueLoader_.prepare ("SELECT "
+	HistoryRatedLoader_ = QSqlQuery (DB_);
+	HistoryRatedLoader_.prepare ("SELECT "
+			"SUM (date) - MIN (date) * COUNT (date) AS rating, "
 			"title, "
 			"url "
 			"FROM history "
-			"GROUP BY url");
+			"WHERE ( title LIKE :titlebase ) "
+			"OR ( url LIKE :urlbase ) "
+			"GROUP BY title, url "
+			"ORDER BY rating DESC "
+			"LIMIT 100");
 
 	HistoryAdder_ = QSqlQuery (DB_);
 	HistoryAdder_.prepare ("INSERT INTO history ("
@@ -89,9 +95,7 @@ void SQLStorageBackend::Prepare ()
 			"WHERE url = :url");
 }
 
-void SQLStorageBackend::LoadHistory (
-		std::vector<HistoryModel::HistoryItem>& items
-		) const
+void SQLStorageBackend::LoadHistory (history_items_t& items) const
 {
 	if (!HistoryLoader_.exec ())
 	{
@@ -101,7 +105,7 @@ void SQLStorageBackend::LoadHistory (
 
 	while (HistoryLoader_.next ())
 	{
-		HistoryModel::HistoryItem item =
+		HistoryItem item =
 		{
 			HistoryLoader_.value (0).toString (),
 			HistoryLoader_.value (1).toDateTime (),
@@ -111,29 +115,34 @@ void SQLStorageBackend::LoadHistory (
 	}
 }
 
-void SQLStorageBackend::LoadUniqueHistory (
-		std::vector<HistoryModel::HistoryItem>& items
-		) const
+void SQLStorageBackend::LoadResemblingHistory (const QString& base,
+		history_items_t& items) const
 {
-	if (!HistoryUniqueLoader_.exec ())
+	QString bound = "%";
+	bound += base;
+	bound += "%";
+	HistoryRatedLoader_.bindValue (":titlebase", bound);
+	HistoryRatedLoader_.bindValue (":urlbase", bound);
+	if (!HistoryRatedLoader_.exec ())
 	{
-		LeechCraft::Util::DBLock::DumpError (HistoryUniqueLoader_);
-		return;
+		LeechCraft::Util::DBLock::DumpError (HistoryRatedLoader_);
+		throw std::runtime_error ("failed to load ratedly");
 	}
 
-	while (HistoryUniqueLoader_.next ())
+	while (HistoryRatedLoader_.next ())
 	{
-		HistoryModel::HistoryItem item =
+		HistoryItem item =
 		{
-			HistoryUniqueLoader_.value (0).toString (),
+			HistoryRatedLoader_.value (1).toString (),
 			QDateTime (),
-			HistoryUniqueLoader_.value (1).toString ()
+			HistoryRatedLoader_.value (2).toString ()
 		};
 		items.push_back (item);
 	}
+	HistoryRatedLoader_.finish ();
 }
 
-void SQLStorageBackend::AddToHistory (const HistoryModel::HistoryItem& item)
+void SQLStorageBackend::AddToHistory (const HistoryItem& item)
 {
 	HistoryAdder_.bindValue (":title", item.Title_);
 	HistoryAdder_.bindValue (":date", item.DateTime_);
@@ -228,6 +237,10 @@ void SQLStorageBackend::InitializeTables ()
 			LeechCraft::Util::DBLock::DumpError (query);
 			return;
 		}
+
+		if (!query.exec ("CREATE INDEX idx_history_title_url "
+					"ON history (title, url)"))
+			LeechCraft::Util::DBLock::DumpError (query);
 	}
 
 	if (!DB_.tables ().contains ("favorites"))

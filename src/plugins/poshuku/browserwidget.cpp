@@ -2,8 +2,8 @@
 #include <QKeyEvent>
 #include <QtDebug>
 #include <QToolBar>
-#include <QCompleter>
 #include <QWidgetAction>
+#include <QCompleter>
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QTimer>
@@ -140,6 +140,11 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	QCompleter *completer = new QCompleter (this);
 	completer->setModel (Core::Instance ().GetURLCompletionModel ());
 	Ui_.URLEdit_->setCompleter (completer);
+	connect (Ui_.URLEdit_,
+			SIGNAL (textChanged (const QString&)),
+			Core::Instance ().GetURLCompletionModel (),
+			SLOT (setBase (const QString&)));
+
 	QTimer::singleShot (100,
 			this,
 			SLOT (focusLineEdit ()));
@@ -210,6 +215,9 @@ void BrowserWidget::handleStatusBarMessage (const QString& msg)
 
 void BrowserWidget::on_URLEdit__returnPressed ()
 {
+	if (Ui_.URLEdit_->IsCompleting ())
+		return;
+
 	QString url = QUrl (Ui_.URLEdit_->text ()).toString ();
 	if (!Core::Instance ().IsValidURL (url))
 		return;

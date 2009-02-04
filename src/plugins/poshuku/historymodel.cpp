@@ -107,7 +107,7 @@ void HistoryModel::loadData ()
 	endInsertRows ();
 }
 
-void HistoryModel::handleItemAdded (const HistoryModel::HistoryItem& item)
+void HistoryModel::handleItemAdded (const HistoryItem& item)
 {
 	beginInsertRows (QModelIndex (), 0, 0);
 	Items_.push_front (item);

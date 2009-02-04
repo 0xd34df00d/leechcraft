@@ -1,23 +1,34 @@
 #ifndef HISTORYMODEL_H
 #define HISTORYMODEL_H
 #include <deque>
+#include <vector>
 #include <QAbstractItemModel>
 #include <QStringList>
 #include <QDateTime>
+
+struct HistoryItem
+{
+	QString Title_;
+	QDateTime DateTime_;
+	QString URL_;
+};
+
+typedef std::vector<HistoryItem> history_items_t;
+
+struct HistoryItemList
+{
+	QString Title_;
+	QString URL_;
+	QList<QDateTime> DateTimes_;
+};
+
+typedef std::vector<HistoryItemList> history_item_lists_t;
 
 class HistoryModel : public QAbstractItemModel
 {
 	Q_OBJECT
 
 	QStringList ItemHeaders_;
-public:
-	struct HistoryItem
-	{
-		QString Title_;
-		QDateTime DateTime_;
-		QString URL_;
-	};
-private:
 	std::deque<HistoryItem> Items_;
 public:
 	enum
@@ -47,7 +58,7 @@ public:
 	void AddItem (const QString&, const QString&, const QDateTime&);
 private slots:
 	void loadData ();
-	void handleItemAdded (const HistoryModel::HistoryItem&);
+	void handleItemAdded (const HistoryItem&);
 };
 
 #endif

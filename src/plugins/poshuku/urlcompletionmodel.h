@@ -1,6 +1,5 @@
 #ifndef URLCOMPLETIONMODEL_H
 #define URLCOMPLETIONMODEL_H
-#include <vector>
 #include <QAbstractItemModel>
 #include "historymodel.h"
 
@@ -9,8 +8,13 @@ class URLCompletionModel : public QAbstractItemModel
 	Q_OBJECT
 
 	mutable bool Valid_;
-	mutable std::vector<HistoryModel::HistoryItem> Items_;
+	mutable history_items_t Items_;
+	QString Base_;
 public:
+	enum
+	{
+		RoleURL = 45
+	};
 	URLCompletionModel (QObject* = 0);
 	virtual ~URLCompletionModel ();
 
@@ -24,9 +28,10 @@ public:
     virtual QModelIndex parent (const QModelIndex&) const;
     virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 public slots:
-	void handleItemAdded (const HistoryModel::HistoryItem&);
+	void setBase (const QString&);
+	void handleItemAdded (const HistoryItem&);
 private:
-	void Populate () const;
+	void Populate ();
 };
 
 #endif

@@ -44,15 +44,15 @@ Core::Core ()
 
 	HistoryModel_.reset (new HistoryModel (this));
 	connect (StorageBackend_.get (),
-			SIGNAL (added (const HistoryModel::HistoryItem&)),
+			SIGNAL (added (const HistoryItem&)),
 			HistoryModel_.get (),
-			SLOT (handleItemAdded (const HistoryModel::HistoryItem&)));
+			SLOT (handleItemAdded (const HistoryItem&)));
 
 	URLCompletionModel_.reset (new URLCompletionModel (this));
 	connect (StorageBackend_.get (),
-			SIGNAL (added (const HistoryModel::HistoryItem&)),
+			SIGNAL (added (const HistoryItem&)),
 			URLCompletionModel_.get (),
-			SLOT (handleItemAdded (const HistoryModel::HistoryItem&)));
+			SLOT (handleItemAdded (const HistoryItem&)));
 
 	FavoritesModel_.reset (new FavoritesModel (this));
 	connect (StorageBackend_.get (),
@@ -281,8 +281,6 @@ void Core::handleTitleChanged (const QString& newTitle)
 
 void Core::handleURLChanged (const QString& newURL)
 {
-	emit changeTabName (dynamic_cast<QWidget*> (sender ()),
-			tr ("Loading %1").arg (QUrl (newURL).host ()));
 	HandleHistory (dynamic_cast<BrowserWidget*> (sender ())->GetView ());
 
 	ScheduleSaveSession ();
