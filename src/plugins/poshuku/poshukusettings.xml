@@ -11,17 +11,25 @@
 				<label lang="en" value="Default page:" />
 				<label lang="ru" value="Страница по умолчанию:" />
 			</item>
-			<item type="lineedit" property="ExternalSchemes" default="smb nfs telnet imap pop nntp news">
-				<label lang="en" value="Open these schemes using external applications:" />
-				<label lang="ru" value="Открывать эти схемы внешними приложениями:" />
-			</item>
 			<item type="checkbox" property="RestorePreviousSession" state="on">
 				<label lang="en" value="Restore previous session" />
 				<label lang="ru" value="Восстанавливать предыдущую сессию" />
 			</item>
+		</tab>
+		<tab>
+			<item type="checkbox" property="BackgroundNewTabs" state="on">
+				<label lang="en" value="Open new tabs in the background" />
+				<label lang="ru" value="Открывать новые вкладки в фоне" />
+			</item>
 			<item type="checkbox" property="DifferLocationsByExtension" state="on">
 				<label lang="en" value="Differ download locations by file extension" />
 				<label lang="ru" value="Различать папки для скачивания по расширению файла" />
+			</item>
+			<label lang="en" value="Behavior" />
+			<label lang="ru" value="Поведение" />
+			<item type="lineedit" property="ExternalSchemes" default="smb nfs telnet imap pop nntp news">
+				<label lang="en" value="Open these schemes using external applications:" />
+				<label lang="ru" value="Открывать эти схемы внешними приложениями:" />
 			</item>
 		</tab>
 	</page>

@@ -158,7 +158,10 @@ CustomWebView* Core::MakeWebView ()
 	// Because we distinguish between switch and not-switch cases by the
 	// URL.
 	// Don't touch.
-	return NewURL (" ")->GetView ();
+	QString url;
+	if (XmlSettingsManager::Instance ()->property ("BackgroundNewTabs").toBool ())
+		url = " ";
+	return NewURL (url)->GetView ();
 }
 
 FavoritesModel* Core::GetFavoritesModel () const
