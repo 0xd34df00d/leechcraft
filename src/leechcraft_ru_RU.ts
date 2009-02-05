@@ -100,12 +100,12 @@
         <translation>Дата</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="317"/>
+        <location filename="core.cpp" line="320"/>
         <source>No plugins are able to download &quot;%1&quot;</source>
         <translation>Нет плагинов, способных скачать &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="660"/>
+        <location filename="core.cpp" line="668"/>
         <source>Question</source>
         <translation>Вопрос</translation>
     </message>
@@ -115,54 +115,62 @@
         <translation>Метки</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="235"/>
+        <location filename="core.cpp" line="236"/>
         <source>Preinitialization...</source>
         <translation>Предварительная инициализация...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="237"/>
+        <location filename="core.cpp" line="238"/>
         <source>Calculation dependencies...</source>
         <translation>Расчет зависимостей...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="243"/>
+        <location filename="core.cpp" line="246"/>
         <source>Setting up %1...</source>
         <translation>Настройка %1...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="656"/>
+        <location filename="core.cpp" line="664"/>
         <source>%1 could be handled by plugin %2, would you like to?</source>
         <translation>%1 может быть обработан плагинов %2, ты не против?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="671"/>
+        <location filename="core.cpp" line="679"/>
         <source>Select save path</source>
         <translation>Выбери директорию сохранения</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="733"/>
+        <location filename="core.cpp" line="741"/>
         <source>The URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
         <translation>URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;с реалмом&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;требует аутентификации.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="744"/>
+        <location filename="core.cpp" line="752"/>
         <source>The proxy &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
         <translation>Прокси&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;с реалмом&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;требует аутентификации.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="771"/>
+        <location filename="core.cpp" line="779"/>
         <source>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
         <translation>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;имеет ошибки SSL. Что ты хочешь?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="804"/>
+        <location filename="core.cpp" line="812"/>
         <source>Could not create Core directory.</source>
         <translation>Не могу создать директорию для Ядра.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="811"/>
+        <location filename="core.cpp" line="819"/>
         <source>Could not save cookies, error opening cookie file.</source>
         <translation>Не могу сохранить кукисы, ошибка открытия файла с кукисами.</translation>
+    </message>
+</context>
+<context>
+    <name>FancyPopupManager</name>
+    <message>
+        <location filename="fancypopupmanager.cpp" line="84"/>
+        <source>LeechCraft Notification</source>
+        <translation>Оповещение LeechCraft</translation>
     </message>
 </context>
 <context>
@@ -173,47 +181,47 @@
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="224"/>
+        <location filename="leechcraft.ui" line="225"/>
         <source>Settings</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="212"/>
+        <location filename="leechcraft.ui" line="213"/>
         <source>Add task</source>
         <translation>Добавить задачу</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="215"/>
+        <location filename="leechcraft.ui" line="216"/>
         <source>Adds job to a supporting plugin</source>
         <translation>Добавляет задачу в поддерживающий плагин</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="232"/>
+        <location filename="leechcraft.ui" line="233"/>
         <source>Quit</source>
         <translation>Выход</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="148"/>
+        <location filename="leechcraft.ui" line="149"/>
         <source>Fixed string</source>
         <translation>Строка</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="153"/>
+        <location filename="leechcraft.ui" line="154"/>
         <source>Wildcard</source>
         <translation>Маска</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="158"/>
+        <location filename="leechcraft.ui" line="159"/>
         <source>Regexp</source>
         <translation>Регулярное выражение</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="163"/>
+        <location filename="leechcraft.ui" line="164"/>
         <source>Tags</source>
         <translation>Метки</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="171"/>
+        <location filename="leechcraft.ui" line="172"/>
         <source>Case sensitive</source>
         <translation>Учитывать регистр</translation>
     </message>
@@ -223,42 +231,34 @@
         <translation>Качальщики</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="243"/>
+        <location filename="leechcraft.ui" line="244"/>
         <source>Plugin manager</source>
         <translation>Менеджер плагинов</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="136"/>
+        <location filename="leechcraft.ui" line="137"/>
         <source>Download history</source>
         <translation>История закачек</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="251"/>
+        <location filename="leechcraft.ui" line="252"/>
         <source>Fullscreen Mode</source>
         <translation>Полноэкранный режим</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="254"/>
+        <location filename="leechcraft.ui" line="255"/>
         <source>F11</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="259"/>
+        <location filename="leechcraft.ui" line="260"/>
         <source>Logger</source>
         <translation>Логгер</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="238"/>
+        <location filename="leechcraft.ui" line="239"/>
         <source>exit</source>
         <translation>Выход</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::FancyPopupManager</name>
-    <message>
-        <location filename="fancypopupmanager.cpp" line="71"/>
-        <source>LeechCraft Notification</source>
-        <translation>Оповещение LeechCraft</translation>
     </message>
 </context>
 <context>
@@ -277,32 +277,32 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="mainwindow.cpp" line="34"/>
+        <location filename="mainwindow.cpp" line="33"/>
         <source>Initializing interface...</source>
         <translation>Инициализирую интерфейс...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="536"/>
+        <location filename="mainwindow.cpp" line="541"/>
         <source>Initializing core and plugins...</source>
         <translation>Инициализирую ядро и плагины...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="140"/>
+        <location filename="mainwindow.cpp" line="139"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="421"/>
+        <location filename="mainwindow.cpp" line="426"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="205"/>
+        <location filename="mainwindow.cpp" line="206"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="233"/>
+        <location filename="mainwindow.cpp" line="236"/>
         <source>/s    </source>
         <translation>/c   </translation>
     </message>
@@ -320,22 +320,22 @@
         <translation>Освобождение одного или нескольких плагинов не удалось.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="371"/>
+        <location filename="pluginmanager.cpp" line="381"/>
         <source>The plugin %1 found at&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;which describes itself as&lt;br /&gt;&lt;em&gt;%3&lt;/em&gt;&lt;br /&gt;with SHA1 hash&lt;br /&gt;&lt;code&gt;%4&lt;/code&gt;&lt;br /&gt; is found. Would you like to load it?</source>
         <translation>Найден плагин %1 в&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;описывающий себя как&lt;br /&gt;&lt;em&gt;%3&lt;/em&gt;&lt;br /&gt;с SHA1-хэшем&lt;br /&gt;&lt;code&gt;%4&lt;/code&gt;&lt;br /&gt;Хочешь его загрузить?</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="443"/>
+        <location filename="pluginmanager.cpp" line="453"/>
         <source>Question</source>
         <translation>Вопрос</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="405"/>
+        <location filename="pluginmanager.cpp" line="415"/>
         <source>The plugin %1 at&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;previously described itself as&lt;br /&gt;&lt;em&gt;%3&lt;/em&gt;&lt;br /&gt;but now describes as&lt;br /&gt;&lt;em&gt;%4&lt;/em&gt;&lt;br /&gt;It&apos;s SHA1 hash is&lt;br /&gt;&lt;code&gt;%5&lt;/code&gt;&lt;br /&gt;Would you like to load it?</source>
         <translation>Плагин %1 в&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;раньше описывал себя как&lt;br /&gt;&lt;em&gt;%3&lt;/em&gt;&lt;br /&gt;но теперь описывает как&lt;br /&gt;&lt;em&gt;%4&lt;/em&gt;&lt;br /&gt;Его SHA1-хэш&lt;br /&gt;&lt;code&gt;%5&lt;/code&gt;&lt;br /&gt;Все еще хочешь загрузить его?</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="437"/>
+        <location filename="pluginmanager.cpp" line="447"/>
         <source>Plugin %1 at&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;which describes itself as&lt;br /&gt;&lt;em&gt;%3&lt;/em&gt;&lt;br /&gt;has its SHA1 hash changed. Old one:&lt;br /&gt;&lt;code&gt;%4&lt;/code&gt;&lt;br /&gt;new one:&lt;br /&gt;&lt;code&gt;%5&lt;/code&gt;&lt;br /&gt;Do you still want to load it?</source>
         <translation>У плагина %1 в&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;описывающего себя как&lt;br /&gt;&lt;em&gt;%3&lt;/em&gt;&lt;br /&gt;изменился SHA1-хэш. Старый:&lt;br /&gt;&lt;code&gt;%4&lt;/code&gt;&lt;br /&gt;Новый:&lt;br /&gt;&lt;code&gt;%5&lt;/code&gt;&lt;br /&gt;Ты все еще хочешь загрузить его?</translation>
     </message>
@@ -351,37 +351,37 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="main.cpp" line="88"/>
+        <location filename="main.cpp" line="89"/>
         <source>bytes</source>
         <translation>байт</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="89"/>
+        <location filename="main.cpp" line="90"/>
         <source>KB</source>
         <translation>Кб</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="90"/>
+        <location filename="main.cpp" line="91"/>
         <source>MB</source>
         <translation>Мб</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="91"/>
+        <location filename="main.cpp" line="92"/>
         <source>GB</source>
         <translation>Гб</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="71"/>
+        <location filename="main.cpp" line="72"/>
         <source>Critical failure</source>
         <translation>Критическая ошибка</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="63"/>
+        <location filename="main.cpp" line="64"/>
         <source>LeechCraft is alread running, please close another instance before starting it.</source>
         <translation>LeechCraft уже запущен, пожалуйста, закрой другой экземпляр перед запуском.</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="73"/>
+        <location filename="main.cpp" line="74"/>
         <source>Could not create path %1/.leechcraft</source>
         <translation>Не могу создать путь %1/.leechcraft</translation>
     </message>

@@ -56,7 +56,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="177"/>
+        <location filename="browserwidget.cpp" line="183"/>
         <source>Print web page</source>
         <translation type="unfinished"></translation>
     </message>
@@ -66,22 +66,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="271"/>
+        <location filename="browserwidget.cpp" line="280"/>
         <source>Save screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="294"/>
+        <location filename="browserwidget.cpp" line="303"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="287"/>
+        <location filename="browserwidget.cpp" line="296"/>
         <source>Could not open %1 for write</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="296"/>
+        <location filename="browserwidget.cpp" line="305"/>
         <source>Could not write screenshot to %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -93,27 +93,20 @@
         <source>untagged</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <location filename="core.cpp" line="263"/>
-        <source>Unknown</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="279"/>
-        <source>Loading %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="150"/>
-        <source></source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>CustomWebPage</name>
     <message>
-        <location filename="customwebpage.cpp" line="50"/>
+        <location filename="customwebpage.cpp" line="74"/>
         <source>Error loading %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CustomWebView</name>
+    <message>
+        <location filename="customwebview.cpp" line="52"/>
+        <source>Loading...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -257,11 +250,6 @@
 <context>
     <name>RestoreSessionDialog</name>
     <message>
-        <location filename="restoresessiondialog.ui" line="13"/>
-        <source>Dialog</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="restoresessiondialog.ui" line="33"/>
         <source>Title</source>
         <translation type="unfinished"></translation>
@@ -279,6 +267,11 @@
     <message>
         <location filename="restoresessiondialog.ui" line="55"/>
         <source>None</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="restoresessiondialog.ui" line="13"/>
+        <source>Restore session</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
