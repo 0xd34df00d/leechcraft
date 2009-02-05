@@ -10,7 +10,7 @@ QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName)
 {
 	QTranslator *transl = new QTranslator;
 	QString localeName = QString(::getenv ("LANG"));
-	if (localeName.isEmpty ())
+	if (localeName.isEmpty () || localeName.size () != 5)
 		localeName = QLocale::system ().name ();
 	localeName = localeName.left (5);
 
