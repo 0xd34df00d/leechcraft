@@ -169,6 +169,7 @@ SET (SRCS
 	storagebackend.cpp
 	sqlstoragebackend.cpp
 	debugmessagehandler.cpp
+	application.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -192,6 +193,7 @@ SET (HEADERS
 	storagebackend.h
 	sqlstoragebackend.h
 	debugmessagehandler.h
+	application.h
 	interfaces/iinfo.h
 	interfaces/iwindow.h
 	interfaces/idownload.h

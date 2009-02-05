@@ -7,6 +7,7 @@
 #include <QLocalSocket>
 #include <plugininterface/proxy.h>
 #include <plugininterface/util.h>
+#include "application.h"
 #include "mainwindow.h"
 #include "debugmessagehandler.h"
 
@@ -51,7 +52,7 @@ int main (int argc, char **argv)
     int author = 0xd34df00d;
 
     qInstallMsgHandler (DebugHandler::debugMessageHandler);
-    QApplication app (argc, argv);
+	LeechCraft::Application app (argc, argv);
 
 	if (ParseCommandLine ())
 		return 0;
