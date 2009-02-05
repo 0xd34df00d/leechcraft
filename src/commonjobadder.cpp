@@ -6,7 +6,7 @@
 
 using namespace LeechCraft;
 
-CommonJobAdder::CommonJobAdder (QWidget *parent)
+LeechCraft::CommonJobAdder::CommonJobAdder (QWidget *parent)
 : QDialog (parent)
 {
     setupUi (this);
@@ -16,21 +16,21 @@ CommonJobAdder::CommonJobAdder (QWidget *parent)
 				QDir::homePath ()).toString ());
 }
 
-CommonJobAdder::~CommonJobAdder ()
+LeechCraft::CommonJobAdder::~CommonJobAdder ()
 {
 }
 
-QString CommonJobAdder::GetString () const
+QString LeechCraft::CommonJobAdder::GetString () const
 {
     return What_->text ();
 }
 
-QString CommonJobAdder::GetWhere () const
+QString LeechCraft::CommonJobAdder::GetWhere () const
 {
 	return Where_->text ();
 }
 
-void CommonJobAdder::on_Browse__released ()
+void LeechCraft::CommonJobAdder::on_Browse__released ()
 {
     QString name = QFileDialog::getOpenFileName (this,
 			tr ("Select file"),
@@ -43,7 +43,7 @@ void CommonJobAdder::on_Browse__released ()
     XmlSettingsManager::Instance ()->setProperty ("LastWhatFolder", name);
 }
 
-void CommonJobAdder::on_BrowseWhere__released ()
+void LeechCraft::CommonJobAdder::on_BrowseWhere__released ()
 {
     QString name = QFileDialog::getExistingDirectory (this,
 			tr ("Select file"),
@@ -56,7 +56,7 @@ void CommonJobAdder::on_BrowseWhere__released ()
     XmlSettingsManager::Instance ()->setProperty ("LastWhereFolder", name);
 }
 
-void CommonJobAdder::on_Paste__released ()
+void LeechCraft::CommonJobAdder::on_Paste__released ()
 {
     QString text = QApplication::clipboard ()->text ();
     What_->setText (text.split ('\n') [0]);

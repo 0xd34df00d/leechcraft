@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="ru">
-<defaultcodec></defaultcodec>
 <context>
     <name>AuthenticationDialog</name>
     <message>
@@ -32,11 +31,6 @@
 <context>
     <name>CommonJobAdder</name>
     <message>
-        <location filename="commonjobadder.cpp" line="49"/>
-        <source>Select file</source>
-        <translation>Выбери файл</translation>
-    </message>
-    <message>
         <location filename="commonjobadder.ui" line="13"/>
         <source>Common job adder</source>
         <translation>Добавление задачи</translation>
@@ -60,117 +54,6 @@
         <location filename="commonjobadder.ui" line="53"/>
         <source>Where:</source>
         <translation>Куда:</translation>
-    </message>
-</context>
-<context>
-    <name>Core</name>
-    <message>
-        <location filename="core.cpp" line="48"/>
-        <source>Name</source>
-        <translation>Имя</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="50"/>
-        <source>State</source>
-        <translation>Состояние</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="50"/>
-        <source>Progress</source>
-        <translation>Прогресс</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="51"/>
-        <source>Filename</source>
-        <translation>Имя файла</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="53"/>
-        <source>Path</source>
-        <translation>Путь</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="54"/>
-        <source>Size</source>
-        <translation>Размер</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="55"/>
-        <source>Date</source>
-        <translation>Дата</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="320"/>
-        <source>No plugins are able to download &quot;%1&quot;</source>
-        <translation>Нет плагинов, способных скачать &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="668"/>
-        <source>Question</source>
-        <translation>Вопрос</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="55"/>
-        <source>Tags</source>
-        <translation>Метки</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="236"/>
-        <source>Preinitialization...</source>
-        <translation>Предварительная инициализация...</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="238"/>
-        <source>Calculation dependencies...</source>
-        <translation>Расчет зависимостей...</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="246"/>
-        <source>Setting up %1...</source>
-        <translation>Настройка %1...</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="664"/>
-        <source>%1 could be handled by plugin %2, would you like to?</source>
-        <translation>%1 может быть обработан плагинов %2, ты не против?</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="679"/>
-        <source>Select save path</source>
-        <translation>Выбери директорию сохранения</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="741"/>
-        <source>The URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
-        <translation>URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;с реалмом&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;требует аутентификации.</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="752"/>
-        <source>The proxy &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
-        <translation>Прокси&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;с реалмом&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;требует аутентификации.</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="779"/>
-        <source>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
-        <translation>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;имеет ошибки SSL. Что ты хочешь?</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="812"/>
-        <source>Could not create Core directory.</source>
-        <translation>Не могу создать директорию для Ядра.</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="819"/>
-        <source>Could not save cookies, error opening cookie file.</source>
-        <translation>Не могу сохранить кукисы, ошибка открытия файла с кукисами.</translation>
-    </message>
-</context>
-<context>
-    <name>FancyPopupManager</name>
-    <message>
-        <location filename="fancypopupmanager.cpp" line="84"/>
-        <source>LeechCraft Notification</source>
-        <translation>Оповещение LeechCraft</translation>
     </message>
 </context>
 <context>
@@ -262,20 +145,126 @@
     </message>
 </context>
 <context>
-    <name>LogToolBox</name>
+    <name>LeechCraft::CommonJobAdder</name>
     <message>
-        <location filename="logtoolbox.ui" line="13"/>
-        <source>Log</source>
-        <translation>Журнал</translation>
-    </message>
-    <message>
-        <location filename="logtoolbox.ui" line="37"/>
-        <source>Clear</source>
-        <translation>Очистить</translation>
+        <location filename="commonjobadder.cpp" line="49"/>
+        <source>Select file</source>
+        <translation>Выбери файл</translation>
     </message>
 </context>
 <context>
-    <name>MainWindow</name>
+    <name>LeechCraft::Core</name>
+    <message>
+        <location filename="core.cpp" line="236"/>
+        <source>Preinitialization...</source>
+        <translation>Предварительная инициализация...</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="238"/>
+        <source>Calculation dependencies...</source>
+        <translation>Расчет зависимостей...</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="246"/>
+        <source>Setting up %1...</source>
+        <translation>Настройка %1...</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="320"/>
+        <source>No plugins are able to download &quot;%1&quot;</source>
+        <translation>Нет плагинов, способных скачать &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="664"/>
+        <source>%1 could be handled by plugin %2, would you like to?</source>
+        <translation>%1 может быть обработан плагинов %2, ты не против?</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="668"/>
+        <source>Question</source>
+        <translation>Вопрос</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="679"/>
+        <source>Select save path</source>
+        <translation>Выбери директорию сохранения</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="741"/>
+        <source>The URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
+        <translation>URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;с реалмом&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;требует аутентификации.</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="752"/>
+        <source>The proxy &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
+        <translation>Прокси&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;с реалмом&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;требует аутентификации.</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="779"/>
+        <source>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
+        <translation>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;имеет ошибки SSL. Что ты хочешь?</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="812"/>
+        <source>Could not create Core directory.</source>
+        <translation>Не могу создать директорию для Ядра.</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="819"/>
+        <source>Could not save cookies, error opening cookie file.</source>
+        <translation>Не могу сохранить кукисы, ошибка открытия файла с кукисами.</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="48"/>
+        <source>Name</source>
+        <translation>Имя</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="50"/>
+        <source>State</source>
+        <translation>Состояние</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="50"/>
+        <source>Progress</source>
+        <translation>Прогресс</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="51"/>
+        <source>Filename</source>
+        <translation>Имя файла</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="53"/>
+        <source>Path</source>
+        <translation>Путь</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="54"/>
+        <source>Size</source>
+        <translation>Размер</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="55"/>
+        <source>Date</source>
+        <translation>Дата</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="55"/>
+        <source>Tags</source>
+        <translation>Метки</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::FancyPopupManager</name>
+    <message>
+        <location filename="fancypopupmanager.cpp" line="84"/>
+        <source>LeechCraft Notification</source>
+        <translation>Оповещение LeechCraft</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::MainWindow</name>
     <message>
         <location filename="mainwindow.cpp" line="33"/>
         <source>Initializing interface...</source>
@@ -292,11 +281,6 @@
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="426"/>
-        <source>/s</source>
-        <translation>/с</translation>
-    </message>
-    <message>
         <location filename="mainwindow.cpp" line="206"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
@@ -306,9 +290,14 @@
         <source>/s    </source>
         <translation>/c   </translation>
     </message>
+    <message>
+        <location filename="mainwindow.cpp" line="426"/>
+        <source>/s</source>
+        <translation>/с</translation>
+    </message>
 </context>
 <context>
-    <name>PluginManager</name>
+    <name>LeechCraft::PluginManager</name>
     <message>
         <location filename="pluginmanager.cpp" line="114"/>
         <source>No exit here</source>
@@ -341,61 +330,7 @@
     </message>
 </context>
 <context>
-    <name>PluginManagerDialog</name>
-    <message>
-        <location filename="pluginmanagerdialog.ui" line="13"/>
-        <source>Plugin Manager</source>
-        <translation>Менеджер плагинов</translation>
-    </message>
-</context>
-<context>
-    <name>QObject</name>
-    <message>
-        <location filename="main.cpp" line="89"/>
-        <source>bytes</source>
-        <translation>байт</translation>
-    </message>
-    <message>
-        <location filename="main.cpp" line="90"/>
-        <source>KB</source>
-        <translation>Кб</translation>
-    </message>
-    <message>
-        <location filename="main.cpp" line="91"/>
-        <source>MB</source>
-        <translation>Мб</translation>
-    </message>
-    <message>
-        <location filename="main.cpp" line="92"/>
-        <source>GB</source>
-        <translation>Гб</translation>
-    </message>
-    <message>
-        <location filename="main.cpp" line="72"/>
-        <source>Critical failure</source>
-        <translation>Критическая ошибка</translation>
-    </message>
-    <message>
-        <location filename="main.cpp" line="64"/>
-        <source>LeechCraft is alread running, please close another instance before starting it.</source>
-        <translation>LeechCraft уже запущен, пожалуйста, закрой другой экземпляр перед запуском.</translation>
-    </message>
-    <message>
-        <location filename="main.cpp" line="74"/>
-        <source>Could not create path %1/.leechcraft</source>
-        <translation>Не могу создать путь %1/.leechcraft</translation>
-    </message>
-</context>
-<context>
-    <name>SettingsSink</name>
-    <message>
-        <location filename="settingssink.ui" line="13"/>
-        <source>Preferences</source>
-        <translation>Настройки</translation>
-    </message>
-</context>
-<context>
-    <name>SslErrorsDialog</name>
+    <name>LeechCraft::SslErrorsDialog</name>
     <message>
         <location filename="sslerrorsdialog.cpp" line="42"/>
         <source>Certificate</source>
@@ -491,6 +426,76 @@
         <source>Subject info</source>
         <translation>Информация о теме</translation>
     </message>
+</context>
+<context>
+    <name>LogToolBox</name>
+    <message>
+        <location filename="logtoolbox.ui" line="13"/>
+        <source>Log</source>
+        <translation>Журнал</translation>
+    </message>
+    <message>
+        <location filename="logtoolbox.ui" line="37"/>
+        <source>Clear</source>
+        <translation>Очистить</translation>
+    </message>
+</context>
+<context>
+    <name>PluginManagerDialog</name>
+    <message>
+        <location filename="pluginmanagerdialog.ui" line="13"/>
+        <source>Plugin Manager</source>
+        <translation>Менеджер плагинов</translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="main.cpp" line="89"/>
+        <source>bytes</source>
+        <translation>байт</translation>
+    </message>
+    <message>
+        <location filename="main.cpp" line="90"/>
+        <source>KB</source>
+        <translation>Кб</translation>
+    </message>
+    <message>
+        <location filename="main.cpp" line="91"/>
+        <source>MB</source>
+        <translation>Мб</translation>
+    </message>
+    <message>
+        <location filename="main.cpp" line="92"/>
+        <source>GB</source>
+        <translation>Гб</translation>
+    </message>
+    <message>
+        <location filename="main.cpp" line="72"/>
+        <source>Critical failure</source>
+        <translation>Критическая ошибка</translation>
+    </message>
+    <message>
+        <location filename="main.cpp" line="64"/>
+        <source>LeechCraft is alread running, please close another instance before starting it.</source>
+        <translation>LeechCraft уже запущен, пожалуйста, закрой другой экземпляр перед запуском.</translation>
+    </message>
+    <message>
+        <location filename="main.cpp" line="74"/>
+        <source>Could not create path %1/.leechcraft</source>
+        <translation>Не могу создать путь %1/.leechcraft</translation>
+    </message>
+</context>
+<context>
+    <name>SettingsSink</name>
+    <message>
+        <location filename="settingssink.ui" line="13"/>
+        <source>Preferences</source>
+        <translation>Настройки</translation>
+    </message>
+</context>
+<context>
+    <name>SslErrorsDialog</name>
     <message>
         <location filename="sslerrorsdialog.ui" line="13"/>
         <source>SSL errors occured</source>

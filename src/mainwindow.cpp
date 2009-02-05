@@ -22,7 +22,7 @@
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
 
-MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
+LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 : QMainWindow (parent, flags)
 , IsShown_ (true)
 , WasMaximized_ (false)
@@ -120,33 +120,33 @@ MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	delete SplashScreen_;
 }
 
-MainWindow::~MainWindow ()
+LeechCraft::MainWindow::~MainWindow ()
 {
 }
 
-QModelIndexList MainWindow::GetSelectedRows () const
+QModelIndexList LeechCraft::MainWindow::GetSelectedRows () const
 {
 	return Ui_.PluginsTasksTree_->selectionModel ()->selectedRows ();
 }
 
-QTabWidget* MainWindow::GetTabWidget () const
+QTabWidget* LeechCraft::MainWindow::GetTabWidget () const
 {
 	return Ui_.MainTabWidget_;
 }
 
-void MainWindow::catchError (QString message)
+void LeechCraft::MainWindow::catchError (QString message)
 {
 	QMessageBox::critical (this, tr ("Error"), message);
 }
 
-void MainWindow::closeEvent (QCloseEvent *e)
+void LeechCraft::MainWindow::closeEvent (QCloseEvent *e)
 {
 	e->ignore ();
 	hide ();
 	IsShown_ = false;
 }
 
-void MainWindow::InitializeInterface ()
+void LeechCraft::MainWindow::InitializeInterface ()
 {
 	if (QApplication::arguments ().contains ("-zombie"))
 		QApplication::setStyle (new ZombiTechStyle ());
@@ -230,7 +230,7 @@ void MainWindow::InitializeInterface ()
 }
 
 
-void MainWindow::SetStatusBar ()
+void LeechCraft::MainWindow::SetStatusBar ()
 {
 	QFontMetrics fm = fontMetrics ();
 	int minSize = fm.width (Proxy::Instance ()->MakePrettySize (999) + tr ("/s    "));
@@ -262,7 +262,7 @@ void MainWindow::SetStatusBar ()
 	Clock_->hide ();
 }
 
-void MainWindow::SetTrayIcon ()
+void LeechCraft::MainWindow::SetTrayIcon ()
 {
 	TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/mainapp.png"), this);
 
@@ -279,7 +279,7 @@ void MainWindow::SetTrayIcon ()
 			SLOT (handleTrayIconActivated (QSystemTrayIcon::ActivationReason)));
 }
 
-void MainWindow::ReadSettings ()
+void LeechCraft::MainWindow::ReadSettings ()
 {
 	QSettings settings ("Deviant", "Leechcraft");
 	settings.beginGroup ("geometry");
@@ -290,7 +290,7 @@ void MainWindow::ReadSettings ()
 	settings.endGroup ();
 }
 
-void MainWindow::WriteSettings ()
+void LeechCraft::MainWindow::WriteSettings ()
 {
 	QSettings settings ("Deviant", "Leechcraft");
 	settings.beginGroup ("geometry");
@@ -300,7 +300,7 @@ void MainWindow::WriteSettings ()
 	settings.endGroup ();
 }
 
-void MainWindow::on_ActionAddTask__triggered ()
+void LeechCraft::MainWindow::on_ActionAddTask__triggered ()
 {
 	CommonJobAdder adder (this);
 	if (adder.exec () != QDialog::Accepted)
@@ -311,12 +311,12 @@ void MainWindow::on_ActionAddTask__triggered ()
 		Core::Instance ().TryToAddJob (name, adder.GetWhere ());
 }
 
-void MainWindow::on_ActionSettings__triggered ()
+void LeechCraft::MainWindow::on_ActionSettings__triggered ()
 {
 	SettingsSink_->show ();
 }
 
-void MainWindow::on_ActionQuit__triggered ()
+void LeechCraft::MainWindow::on_ActionQuit__triggered ()
 {
 	setUpdatesEnabled (false);
 	WriteSettings ();
@@ -333,7 +333,7 @@ void MainWindow::on_ActionQuit__triggered ()
 	qApp->quit ();
 }
 
-void MainWindow::on_ActionFullscreenMode__triggered (bool full)
+void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
 {
 	if (full)
 	{
@@ -357,12 +357,12 @@ void MainWindow::on_ActionFullscreenMode__triggered (bool full)
 	}
 }
 
-void MainWindow::on_ActionLogger__triggered ()
+void LeechCraft::MainWindow::on_ActionLogger__triggered ()
 {
 	LogToolBox_->show ();
 }
 
-void MainWindow::updatePanes (const QItemSelection& newIndexes,
+void LeechCraft::MainWindow::updatePanes (const QItemSelection& newIndexes,
 		const QItemSelection& oldIndexes)
 {
 	QModelIndex oldIndex, newIndex;
@@ -418,7 +418,7 @@ void MainWindow::updatePanes (const QItemSelection& newIndexes,
 	}
 }
 
-void MainWindow::updateSpeedIndicators ()
+void LeechCraft::MainWindow::updateSpeedIndicators ()
 {
 	QPair<qint64, qint64> speeds = Core::Instance ().GetSpeeds ();
 
@@ -428,18 +428,18 @@ void MainWindow::updateSpeedIndicators ()
 	USpeedGraph_->PushSpeed (speeds.second);
 }
 
-void MainWindow::updateClock ()
+void LeechCraft::MainWindow::updateClock ()
 {
 	Clock_->setText (QTime::currentTime ().toString ());
 }
 
-void MainWindow::showHideMain ()
+void LeechCraft::MainWindow::showHideMain ()
 {
 	IsShown_ = 1 - IsShown_;
 	IsShown_ ? show () : hide ();
 }
 
-void MainWindow::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason)
+void LeechCraft::MainWindow::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason)
 {
 	switch (reason)
 	{
@@ -454,13 +454,13 @@ void MainWindow::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reas
 	}
 }
 
-void MainWindow::handleDownloadFinished (const QString& string)
+void LeechCraft::MainWindow::handleDownloadFinished (const QString& string)
 {
 	if (XmlSettingsManager::Instance ()->property ("ShowFinishedDownloadMessages").toBool ())
 		FancyPopupManager_->ShowMessage (string);
 }
 
-void MainWindow::filterParametersChanged ()
+void LeechCraft::MainWindow::filterParametersChanged ()
 {
 	Core::FilterType ft;
 	switch (Ui_.FilterType_->currentIndex ())
@@ -489,7 +489,7 @@ void MainWindow::filterParametersChanged ()
 			ft, caseSensitivity);
 }
 
-void MainWindow::historyFilterParametersChanged ()
+void LeechCraft::MainWindow::historyFilterParametersChanged ()
 {
 	Core::FilterType ft;
 	switch (Ui_.HistoryFilterType_->currentIndex ())
@@ -519,23 +519,23 @@ void MainWindow::historyFilterParametersChanged ()
 			ft, caseSensitivity, true);
 }
 
-void MainWindow::updateIconSet ()
+void LeechCraft::MainWindow::updateIconSet ()
 {
 	SkinEngine::Instance ().UpdateIconSet (findChildren<QAction*> ());
 	SkinEngine::Instance ().UpdateIconSet (findChildren<QTabWidget*> ());
 }
 
-void MainWindow::on_ActionPluginManager__triggered ()
+void LeechCraft::MainWindow::on_ActionPluginManager__triggered ()
 {
 	PluginManagerDialog_->show ();
 }
 
-void MainWindow::historyActivated (const QModelIndex& index)
+void LeechCraft::MainWindow::historyActivated (const QModelIndex& index)
 {
 	Core::Instance ().HistoryActivated (index.row ());
 }
 
-void MainWindow::handleLoadProgress (const QString& msg)
+void LeechCraft::MainWindow::handleLoadProgress (const QString& msg)
 {
 	SplashScreen_->
 		showMessage (tr ("Initializing core and plugins...") + " " + msg,

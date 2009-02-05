@@ -6,7 +6,7 @@
 
 using namespace LeechCraft;
 
-SettingsSink::SettingsSink (const QString& name,
+LeechCraft::SettingsSink::SettingsSink (const QString& name,
 		Util::XmlSettingsDialog* dialog,
 		QWidget *parent)
 : QDialog (parent)
@@ -18,11 +18,11 @@ SettingsSink::SettingsSink (const QString& name,
 	Add (name, windowIcon (), dialog);
 }
 
-SettingsSink::~SettingsSink ()
+LeechCraft::SettingsSink::~SettingsSink ()
 {
 }
 
-void SettingsSink::AddDialog (const QObject *object)
+void LeechCraft::SettingsSink::AddDialog (const QObject *object)
 {
 	IInfo *info = qobject_cast<IInfo*> (object);
 	IHaveSettings *ihs = qobject_cast<IHaveSettings*> (object);
@@ -32,7 +32,7 @@ void SettingsSink::AddDialog (const QObject *object)
 	Ui_.Combobox_->setCurrentIndex (0);
 }
 
-void SettingsSink::Add (const QString& name, const QIcon& wicon,
+void LeechCraft::SettingsSink::Add (const QString& name, const QIcon& wicon,
 		QWidget *widget)
 {
 	Ui_.Combobox_->addItem (wicon, name);
