@@ -942,7 +942,8 @@ void Core::handleJobError (int id, IDownload::Error ie)
 	if (!PendingJobs_.contains (id))
 		return;
 
-	if (!XmlSettingsManager::Instance ()->property ("BeSilent").toBool () ||
+	if ((!XmlSettingsManager::Instance ()->property ("BeSilent").toBool () &&
+				PendingJobs_ [id].Role_ == PendingJob::RFeedUpdated) ||
 			PendingJobs_ [id].Role_ == PendingJob::RFeedAdded)
 	{
 		QString msg;
