@@ -140,12 +140,13 @@ void Core::Release ()
 	XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");
 	MergeModel_.reset ();
 	HistoryMergeModel_.reset ();
-	NetworkAccessManager_.reset ();
 
     PluginManager_->Release ();
     delete PluginManager_;
     ClipboardWatchdog_->stop ();
     delete ClipboardWatchdog_;
+
+	NetworkAccessManager_.reset ();
 
 	Server_.reset ();
 	StorageBackend_.reset ();
