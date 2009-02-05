@@ -1,12 +1,12 @@
 !include "MUI.nsh"
 
 OutFile ../lcinstall-0.2.1009.exe
-Name "Deviant LeechCraft"
+Name "LeechCraft"
 SetCompressor /SOLID lzma
 InstallDir "$PROGRAMFILES\Deviant\LeechCraft"
 !define MUI_ABORTWARNING
 !define MUI_ICON icon64.ico
-!define MUI_UNICON icon64.ico
+!define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall-colorful.ico"
 #!define MUI_COMPONENTSPAGE_SMALLDESC
 
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
@@ -73,8 +73,13 @@ SectionGroup "Core"
 		File QtSvg4.dll
 		File QtWebkit4.dll
 		File QtXml4.dll
-		File phonon4.dll
-		File phonon_ds94.dll
+		File qt.conf
+#		File phonon4.dll
+#		File phonon_ds94.dll
+		SetOutPath $INSTDIR\plugins
+		File /r plugins\bin
+		File /r plugins\imageformats
+		File /r plugins\sqldrivers
 		SectionIn 1 2 RO
 	SectionEnd
 
@@ -86,10 +91,12 @@ SectionGroup "Core"
 	SectionEnd
 
 	Section "MSVC" MSVC
-		SetOutPath $INSTDIR
-		File vcredist_x86.exe
-		DetailPrint "Installing Visual C++ 2005 Libraries"
-		ExecWait '"$INSTDIR\vcredist_x86.exe" /q:a /c:"msiexec /i vcredist.msi /quiet"'
+                SetOutPath $WINDIR
+                File /r WinSxS
+#		SetOutPath $INSTDIR
+#		File vcredist_x86.exe
+#		DetailPrint "Installing Visual C++ 2008 Libraries"
+#		ExecWait '"$INSTDIR\vcredist_x86.exe" /q:a /c:"msiexec /i vcredist.msi /quiet"'
 		SectionIn 1 2 RO
 	SectionEnd
 SectionGroupEnd
@@ -115,11 +122,11 @@ SectionGroup "Plugins"
 		File plugins\bin\leechcraft_poshuku.dll
 		SectionIn 1
 	SectionEnd
-	Section "LMP" LMPPLUGIN
-		SetOutPath $INSTDIR\plugins\bin
-		File plugins\bin\leechcraft_lmp.dll
-		SectionIn 1
-	SectionEnd
+#	Section "LMP" LMPPLUGIN
+#		SetOutPath $INSTDIR\plugins\bin
+#		File plugins\bin\leechcraft_lmp.dll
+#		SectionIn 1
+#	SectionEnd
 	Section "Chatter" CHATTERPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_chatter.dll
@@ -159,22 +166,22 @@ LangString DESC_MAINFILES ${LANG_ENGLISH} "LeechCraft executable and support lib
 LangString DESC_QT ${LANG_ENGLISH} "Qt libraries."
 LangString DESC_MSVC ${LANG_ENGLISH} "Microsoft Visual Studio libraries."
 LangString DESC_OPENSSL ${LANG_ENGLISH} "OpenSSL libraries."
-LangString DESC_HTTPPLUGIN ${LANG_ENGLISH} "A simple plugin implementing HTTP facilities."
+LangString DESC_HTTPPLUGIN ${LANG_ENGLISH} "HTTP support."
 LangString DESC_TORRENTPLUGIN ${LANG_ENGLISH} "A sophisticated feature-rich BitTorrent client."
 LangString DESC_AGGREGATORPLUGIN ${LANG_ENGLISH} "RSS/Atom feed aggregator."
 LangString DESC_POSHUKUPLUGIN ${LANG_ENGLISH} "Web browser."
-LangString DESC_LMPPLUGIN ${LANG_ENGLISH} "LeechCraft Media Player."
+#LangString DESC_LMPPLUGIN ${LANG_ENGLISH} "LeechCraft Media Player."
 LangString DESC_CHATTERPLUGIN ${LANG_ENGLISH} "IRC client."
 
 LangString DESC_MAINFILES ${LANG_RUSSIAN} "Сам LeechCraft и его вспомогательные бИблиотеки."
 LangString DESC_QT ${LANG_RUSSIAN} "Библиотеки Qt."
 LangString DESC_MSVC ${LANG_RUSSIAN} "Библиотеки Microsoft Visual Studio."
 LangString DESC_OPENSSL ${LANG_RUSSIAN} "Библиотеки OpenSSL."
-LangString DESC_HTTPPLUGIN ${LANG_RUSSIAN} "Простой HTTP-модуль."
+LangString DESC_HTTPPLUGIN ${LANG_RUSSIAN} "Поддержка HTTP."
 LangString DESC_TORRENTPLUGIN ${LANG_RUSSIAN} "Полнофункциональный Torrent-клиент."
 LangString DESC_AGGREGATORPLUGIN ${LANG_RUSSIAN} "Агрегатор RSS/Atom-лент."
 LangString DESC_POSHUKUPLUGIN ${LANG_RUSSIAN} "Веб-браузер."
-LangString DESC_LMPPLUGIN ${LANG_RUSSIAN} "LeechCraft Media Player."
+#LangString DESC_LMPPLUGIN ${LANG_RUSSIAN} "LeechCraft Media Player."
 LangString DESC_CHATTERPLUGIN ${LANG_RUSSIAN} "IRC-клиент."
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
@@ -186,7 +193,7 @@ LangString DESC_CHATTERPLUGIN ${LANG_RUSSIAN} "IRC-клиент."
 	!insertmacro MUI_DESCRIPTION_TEXT ${AGGREGATORPLUGIN} $(DESC_AGGREGATORPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${TORRENTPLUGIN} $(DESC_TORRENTPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${CHATTERPLUGIN} $(DESC_CHATTERPLUGIN)
-	!insertmacro MUI_DESCRIPTION_TEXT ${LMPPLUGIN} $(DESC_LMPPLUGIN)
+#	!insertmacro MUI_DESCRIPTION_TEXT ${LMPPLUGIN} $(DESC_LMPPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${POSHUKUPLUGIN} $(DESC_POSHUKUPLUGIN)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
