@@ -1,5 +1,7 @@
 #include "tabcontainer.h"
 #include <QTabWidget>
+#include <QCoreApplication>
+#include <QKeyEvent>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
@@ -97,6 +99,16 @@ void TabContainer::ToggleMultiwindow ()
 			Widgets_ << widget;
 		}
 	}
+}
+
+void TabContainer::ForwardKeyboard (QKeyEvent *key)
+{
+	if (!Events_.contains (key))
+	{
+		Events_ << key;
+		QCoreApplication::sendEvent (TabWidget_->currentWidget (), key);
+	}
+	Events_.removeAll (key);
 }
 
 void TabContainer::add (const QString& name, QWidget *contents)

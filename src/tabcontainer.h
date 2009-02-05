@@ -17,6 +17,7 @@ namespace LeechCraft
 		bool TabMode_;
 		QList<QWidget*> Widgets_;
 		QStringList TabNames_;
+		QList<QKeyEvent*> Events_;
 	public:
 		TabContainer (QTabWidget*, QObject* = 0);
 		virtual ~TabContainer ();
@@ -26,6 +27,7 @@ namespace LeechCraft
 		void RotateLeft ();
 		void RotateRight ();
 		void ToggleMultiwindow ();
+		void ForwardKeyboard (QKeyEvent*);
 	public slots:
 		void add (const QString&, QWidget*);
 		void add (const QString&, QWidget*,

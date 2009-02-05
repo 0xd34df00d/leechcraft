@@ -507,25 +507,30 @@ bool Core::eventFilter (QObject *watched, QEvent *e)
 		if (e->type () == QEvent::KeyRelease)
 		{
 			QKeyEvent *key = static_cast<QKeyEvent*> (e);
+			bool handled = false;
 
 			if (key->modifiers () & Qt::ControlModifier)
 			{
 				if (key->key () == Qt::Key_W)
 				{
 					if (TabContainer_->RemoveCurrent ())
-						return true;
+						handled = true;
 				}
 				else if (key->key () == Qt::Key_BracketLeft)
 				{
 					TabContainer_->RotateLeft ();
-					return true;
+					handled = true;
 				}
 				else if (key->key () == Qt::Key_BracketRight)
 				{
 					TabContainer_->RotateRight ();
-					return true;
+					handled = true;
 				}
 			}
+			if (handled)
+				return true;
+			else
+				TabContainer_->ForwardKeyboard (key);
 		}
 	}
 	return QObject::eventFilter (watched, e);
