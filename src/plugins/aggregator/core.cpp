@@ -32,12 +32,33 @@
 using LeechCraft::Util::TagsCompletionModel;
 
 Core::Core ()
-: ChannelsModel_ (new ChannelsModel)
-, SaveScheduled_ (false)
-, ItemModel_ (new ItemModel)
-, JobHolderRepresentation_ (new JobHolderRepresentation)
+: SaveScheduled_ (false)
 , CurrentRow_ (-1)
 {
+}
+
+Core& Core::Instance ()
+{
+	static Core core;
+	return core;
+}
+
+void Core::Release ()
+{
+	ItemModel_->saveSettings ();
+	saveSettings ();
+	XmlSettingsManager::Instance ()->Release ();
+	StorageBackend_.reset ();
+	delete JobHolderRepresentation_;
+	delete ItemModel_;
+	delete ChannelsModel_;
+}
+
+void Core::DoDelayedInit ()
+{
+	ChannelsModel_ = new ChannelsModel ();
+	ItemModel_ = new ItemModel ();
+	JobHolderRepresentation_ = new JobHolderRepresentation ();
 	qRegisterMetaTypeStreamOperators<Feed> ("Feed");
 	qRegisterMetaTypeStreamOperators<Item> ("Item");
 
@@ -126,27 +147,6 @@ Core::Core ()
 	TagsCompletionModel_ = new TagsCompletionModel (this);
 	TagsCompletionModel_->UpdateTags (XmlSettingsManager::Instance ()->
 			Property ("GlobalTags", QStringList ("untagged")).toStringList ());
-}
-
-Core& Core::Instance ()
-{
-	static Core core;
-	return core;
-}
-
-void Core::Release ()
-{
-	ItemModel_->saveSettings ();
-	saveSettings ();
-	XmlSettingsManager::Instance ()->Release ();
-	StorageBackend_.reset ();
-	delete JobHolderRepresentation_;
-	delete ItemModel_;
-	delete ChannelsModel_;
-}
-
-void Core::DoDelayedInit ()
-{
 	CustomUpdateTimer_ = new QTimer (this);
 	CustomUpdateTimer_->start (60 * 1000);
 	connect (CustomUpdateTimer_,

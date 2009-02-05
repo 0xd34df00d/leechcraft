@@ -183,12 +183,12 @@
 <context>
     <name>ChannelsModel</name>
     <message>
-        <location filename="channelsmodel.cpp" line="16"/>
+        <location filename="channelsmodel.cpp" line="15"/>
         <source>Feed</source>
         <translation>Стрічка</translation>
     </message>
     <message>
-        <location filename="channelsmodel.cpp" line="17"/>
+        <location filename="channelsmodel.cpp" line="19"/>
         <source>Last build</source>
         <translation>Отсання версія</translation>
     </message>
@@ -746,6 +746,11 @@
         <location filename="atom10parser.cpp" line="36"/>
         <source>(No title)</source>
         <translation>(Без заголовку)</translation>
+    </message>
+    <message>
+        <location filename="channelsmodel.cpp" line="22"/>
+        <source>Feed</source>
+        <translation type="unfinished">Стрічка</translation>
     </message>
 </context>
 <context>
