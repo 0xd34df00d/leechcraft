@@ -11,7 +11,7 @@
 
 using namespace LeechCraft;
 
-FancyPopupManager::FancyPopupManager (QSystemTrayIcon *icon,
+LeechCraft::FancyPopupManager::FancyPopupManager (QSystemTrayIcon *icon,
 		QObject *parent)
 : QObject (parent)
 , TrayIcon_ (icon)
@@ -30,11 +30,11 @@ FancyPopupManager::FancyPopupManager (QSystemTrayIcon *icon,
 			SLOT (handleMessageClicked ()));
 }
 
-FancyPopupManager::~FancyPopupManager ()
+LeechCraft::FancyPopupManager::~FancyPopupManager ()
 {
 }
 
-void FancyPopupManager::ShowMessage (const QString& message)
+void LeechCraft::FancyPopupManager::ShowMessage (const QString& message)
 {
 	Popups_.push_back (message);
 	Dates_ [QDateTime::currentDateTime ()] = message;
@@ -42,7 +42,7 @@ void FancyPopupManager::ShowMessage (const QString& message)
 	UpdateMessage ();
 }
 
-void FancyPopupManager::timerTimeout ()
+void LeechCraft::FancyPopupManager::timerTimeout ()
 {
 	QDateTime current = QDateTime::currentDateTime ();
 
@@ -61,13 +61,13 @@ void FancyPopupManager::timerTimeout ()
 		}
 }
 
-void FancyPopupManager::handleMessageClicked ()
+void LeechCraft::FancyPopupManager::handleMessageClicked ()
 {
 	Dates_.clear ();
 	Popups_.clear ();
 }
 
-void FancyPopupManager::UpdateMessage ()
+void LeechCraft::FancyPopupManager::UpdateMessage ()
 {
 	QString message;
 	for (popups_t::const_iterator i = Popups_.begin (),

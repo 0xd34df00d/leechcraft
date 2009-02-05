@@ -43,7 +43,7 @@
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
 
-Core::Core ()
+LeechCraft::Core::Core ()
 : Server_ (new QLocalServer)
 , MergeModel_ (new MergeModel (QStringList (tr ("Name"))
 			<< tr ("State")
@@ -124,17 +124,17 @@ Core::Core ()
 	handleProxySettings ();
 }
 
-Core::~Core ()
+LeechCraft::Core::~Core ()
 {
 }
 
-Core& Core::Instance ()
+Core& LeechCraft::Core::Instance ()
 {
 	static Core core;
 	return core;
 }
 
-void Core::Release ()
+void LeechCraft::Core::Release ()
 {
 	saveCookies ();
 	XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");
@@ -152,43 +152,43 @@ void Core::Release ()
 	StorageBackend_.reset ();
 }
 
-void Core::SetReallyMainWindow (MainWindow *win)
+void LeechCraft::Core::SetReallyMainWindow (MainWindow *win)
 {
     ReallyMainWindow_ = win;
 	ReallyMainWindow_->GetTabWidget ()->installEventFilter (this);
 }
 
-QObjectList Core::GetSettables () const
+QObjectList LeechCraft::Core::GetSettables () const
 {
 	return PluginManager_->GetAllCastableRoots<IHaveSettings*> ();
 }
 
-QAbstractItemModel* Core::GetPluginsModel () const
+QAbstractItemModel* LeechCraft::Core::GetPluginsModel () const
 {
 	return PluginManager_;
 }
 
-QAbstractProxyModel* Core::GetTasksModel () const
+QAbstractProxyModel* LeechCraft::Core::GetTasksModel () const
 {
 	return FilterModel_.get ();
 }
 
-QAbstractProxyModel* Core::GetHistoryModel () const
+QAbstractProxyModel* LeechCraft::Core::GetHistoryModel () const
 {
 	return HistoryFilterModel_.get ();
 }
 
-MergeModel* Core::GetUnfilteredTasksModel () const
+MergeModel* LeechCraft::Core::GetUnfilteredTasksModel () const
 {
 	return MergeModel_.get ();
 }
 
-MergeModel* Core::GetUnfilteredHistoryModel () const
+MergeModel* LeechCraft::Core::GetUnfilteredHistoryModel () const
 {
 	return HistoryMergeModel_.get ();
 }
 
-QWidget* Core::GetControls (const QModelIndex& index) const
+QWidget* LeechCraft::Core::GetControls (const QModelIndex& index) const
 {
 	QAbstractItemModel *model = *MergeModel_->
 		GetModelForRow (FilterModel_->mapToSource (index).row ());
@@ -198,7 +198,7 @@ QWidget* Core::GetControls (const QModelIndex& index) const
 	return ijh->GetControls ();
 }
 
-QWidget* Core::GetAdditionalInfo (const QModelIndex& index) const
+QWidget* LeechCraft::Core::GetAdditionalInfo (const QModelIndex& index) const
 {
 	QAbstractItemModel *model = *MergeModel_->
 		GetModelForRow (FilterModel_->mapToSource (index).row ());
@@ -208,7 +208,7 @@ QWidget* Core::GetAdditionalInfo (const QModelIndex& index) const
 	return ijh->GetAdditionalInfo ();
 }
 
-QStringList Core::GetTagsForIndex (int index,
+QStringList LeechCraft::Core::GetTagsForIndex (int index,
 		QAbstractItemModel *model) const
 {
 	MergeModel::const_iterator modIter =
@@ -222,7 +222,7 @@ QStringList Core::GetTagsForIndex (int index,
 		.toStringList ();
 }
 
-void Core::DelayedInit ()
+void LeechCraft::Core::DelayedInit ()
 {
 	connect (this,
 			SIGNAL (error (QString)),
@@ -286,7 +286,7 @@ void Core::DelayedInit ()
 	TabContainer_->handleTabNames ();
 }
 
-bool Core::ShowPlugin (int id)
+bool LeechCraft::Core::ShowPlugin (int id)
 {
     QObject *plugin = PluginManager_->data (PluginManager_->index (id, 0)).value <QObject*> ();
     IWindow *w = qobject_cast<IWindow*> (plugin);
@@ -299,7 +299,7 @@ bool Core::ShowPlugin (int id)
         return false;
 }
 
-void Core::TryToAddJob (const QString& name, const QString& where)
+void LeechCraft::Core::TryToAddJob (const QString& name, const QString& where)
 {
     QObjectList plugins = PluginManager_->GetAllPlugins ();
     foreach (QObject *plugin, plugins)
@@ -320,12 +320,12 @@ void Core::TryToAddJob (const QString& name, const QString& where)
     emit error (tr ("No plugins are able to download \"%1\"").arg (name));
 }
 
-void Core::Activated (const QModelIndex& index)
+void LeechCraft::Core::Activated (const QModelIndex& index)
 {
 	ShowPlugin (index.row ());
 }
 
-void Core::SetNewRow (const QModelIndex& index)
+void LeechCraft::Core::SetNewRow (const QModelIndex& index)
 {
 	QList<IJobHolder*> holders = PluginManager_->GetAllCastableTo<IJobHolder*> ();
 
@@ -365,7 +365,7 @@ void Core::SetNewRow (const QModelIndex& index)
 		(*i)->ItemSelected (QModelIndex ());
 }
 
-bool Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) const
+bool LeechCraft::Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) const
 {
 	if (i1.isValid () != i2.isValid ())
 		return false;
@@ -381,8 +381,8 @@ bool Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) const
 	return modIter1 == modIter2;
 }
 
-void Core::UpdateFiltering (const QString& text,
-		Core::FilterType ft, bool caseSensitive, bool history)
+void LeechCraft::Core::UpdateFiltering (const QString& text,
+		LeechCraft::Core::FilterType ft, bool caseSensitive, bool history)
 {
 	if (!history)
 		FilterModel_->setFilterCaseSensitivity (caseSensitive ?
@@ -444,7 +444,7 @@ void Core::UpdateFiltering (const QString& text,
 	}
 }
 
-void Core::HistoryActivated (int historyRow)
+void LeechCraft::Core::HistoryActivated (int historyRow)
 {
 	QString name = HistoryFilterModel_->index (historyRow, 0).data ().toString ();
 	QString path = HistoryFilterModel_->index (historyRow, 1).data ().toString ();
@@ -471,7 +471,7 @@ void Core::HistoryActivated (int historyRow)
 	QMetaObject::invokeMethod (videoProvider, "play");
 }
 
-QPair<qint64, qint64> Core::GetSpeeds () const
+QPair<qint64, qint64> LeechCraft::Core::GetSpeeds () const
 {
     qint64 download = 0;
     qint64 upload = 0;
@@ -489,18 +489,18 @@ QPair<qint64, qint64> Core::GetSpeeds () const
     return QPair<qint64, qint64> (download, upload);
 }
 
-int Core::CountUnremoveableTabs () const
+int LeechCraft::Core::CountUnremoveableTabs () const
 {
 	// + 2 because of tabs with downloaders and history
 	return PluginManager_->GetAllCastableTo<IEmbedTab*> ().size () + 2;
 }
 
-QNetworkAccessManager* Core::GetNetworkAccessManager () const
+QNetworkAccessManager* LeechCraft::Core::GetNetworkAccessManager () const
 {
 	return NetworkAccessManager_.get ();
 }
 
-bool Core::eventFilter (QObject *watched, QEvent *e)
+bool LeechCraft::Core::eventFilter (QObject *watched, QEvent *e)
 {
 	if (ReallyMainWindow_ &&
 			watched == ReallyMainWindow_->GetTabWidget ())
@@ -537,7 +537,7 @@ bool Core::eventFilter (QObject *watched, QEvent *e)
 	return QObject::eventFilter (watched, e);
 }
 
-void Core::handleProxySettings () const
+void LeechCraft::Core::handleProxySettings () const
 {
 	bool enabled = XmlSettingsManager::Instance ()->property ("ProxyEnabled").toBool ();
 	QNetworkProxy pr;
@@ -579,7 +579,7 @@ namespace
 	}
 };
 
-void Core::handlePluginAction ()
+void LeechCraft::Core::handlePluginAction ()
 {
 	QAction *source = qobject_cast<QAction*> (sender ());
 	QString slot = source->property ("Slot").toString ();
@@ -624,12 +624,12 @@ void Core::handlePluginAction ()
 	}
 }
 
-void Core::toggleMultiwindow ()
+void LeechCraft::Core::toggleMultiwindow ()
 {
 	TabContainer_->ToggleMultiwindow ();
 }
 
-void Core::deleteSelectedHistory (const QModelIndex& index)
+void LeechCraft::Core::deleteSelectedHistory (const QModelIndex& index)
 {
 	QModelIndex mapped = FilterModel_->mapToSource (index);
 	HistoryModel *model =
@@ -638,7 +638,7 @@ void Core::deleteSelectedHistory (const QModelIndex& index)
 	model->RemoveItem (HistoryMergeModel_->mapToSource (mapped));
 }
 
-void Core::handleGotEntity (const QByteArray& file, bool fromBuffer)
+void LeechCraft::Core::handleGotEntity (const QByteArray& file, bool fromBuffer)
 {
     if (!fromBuffer &&
 			!XmlSettingsManager::Instance ()->
@@ -698,7 +698,7 @@ void Core::handleGotEntity (const QByteArray& file, bool fromBuffer)
     }
 }
 
-void Core::handleClipboardTimer ()
+void LeechCraft::Core::handleClipboardTimer ()
 {
     QString text = QApplication::clipboard ()->text ();
     if (text.isEmpty () || text == PreviousClipboardContents_)
@@ -710,7 +710,7 @@ void Core::handleClipboardTimer ()
         handleGotEntity (text.toUtf8 (), true);
 }
 
-void Core::embeddedTabWantsToFront ()
+void LeechCraft::Core::embeddedTabWantsToFront ()
 {
 	IEmbedTab *iet = qobject_cast<IEmbedTab*> (sender ());
 	if (!iet)
@@ -720,7 +720,7 @@ void Core::embeddedTabWantsToFront ()
 	TabContainer_->bringToFront (iet->GetTabContents ());
 }
 
-void Core::handleStatusBarChanged (QWidget *contents, const QString& msg)
+void LeechCraft::Core::handleStatusBarChanged (QWidget *contents, const QString& msg)
 {
 	if (contents->visibleRegion ().isEmpty ())
 		return;
@@ -728,13 +728,13 @@ void Core::handleStatusBarChanged (QWidget *contents, const QString& msg)
 	ReallyMainWindow_->statusBar ()->showMessage (msg, 30000);
 }
 
-void Core::handleLog (const QString& message)
+void LeechCraft::Core::handleLog (const QString& message)
 {
 	IInfo *ii = qobject_cast<IInfo*> (sender ());
 	emit log (ii->GetName () + ": " + message);
 }
 
-void Core::handleAuthentication (QNetworkReply *reply, QAuthenticator *authen)
+void LeechCraft::Core::handleAuthentication (QNetworkReply *reply, QAuthenticator *authen)
 {
 	QString msg = tr ("The URL<br /><code>%1</code><br />with "
 			"realm<br /><em>%2</em><br />requires authentication.")
@@ -745,7 +745,7 @@ void Core::handleAuthentication (QNetworkReply *reply, QAuthenticator *authen)
 	DoCommonAuth (msg, authen);
 }
 
-void Core::handleProxyAuthentication (const QNetworkProxy& proxy, QAuthenticator *authen)
+void LeechCraft::Core::handleProxyAuthentication (const QNetworkProxy& proxy, QAuthenticator *authen)
 {
 	QString msg = tr ("The proxy <br /><code>%1</code><br />with "
 			"realm<br /><em>%2</em><br />requires authentication.")
@@ -756,7 +756,7 @@ void Core::handleProxyAuthentication (const QNetworkProxy& proxy, QAuthenticator
 	DoCommonAuth (msg, authen);
 }
 
-void Core::handleSslErrors (QNetworkReply *reply, const QList<QSslError>& errors)
+void LeechCraft::Core::handleSslErrors (QNetworkReply *reply, const QList<QSslError>& errors)
 {
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
 			Proxy::Instance ()->GetApplicationName () + "_Poshuku");
@@ -802,7 +802,7 @@ void Core::handleSslErrors (QNetworkReply *reply, const QList<QSslError>& errors
 	settings.endGroup ();
 }
 
-void Core::saveCookies () const
+void LeechCraft::Core::saveCookies () const
 {
 	QDir dir = QDir::home ();
 	dir.cd (".leechcraft");
@@ -821,7 +821,7 @@ void Core::saveCookies () const
 		file.write (static_cast<CustomCookieJar*> (NetworkAccessManager_->cookieJar ())->Save ());
 }
 
-void Core::DoCommonAuth (const QString& msg, QAuthenticator *authen)
+void LeechCraft::Core::DoCommonAuth (const QString& msg, QAuthenticator *authen)
 {
 	QString realm = authen->realm ();
 
@@ -849,12 +849,12 @@ void Core::DoCommonAuth (const QString& msg, QAuthenticator *authen)
 		StorageBackend_->SetAuth (realm, login, password);
 }
 
-QModelIndex Core::MapToSource (const QModelIndex& index) const
+QModelIndex LeechCraft::Core::MapToSource (const QModelIndex& index) const
 {
 	return MergeModel_->mapToSource (FilterModel_->mapToSource (index));
 }
 
-void Core::InitJobHolder (QObject *plugin)
+void LeechCraft::Core::InitJobHolder (QObject *plugin)
 {
 	IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
 	QAbstractItemModel *model = ijh->GetRepresentation ();
@@ -884,7 +884,7 @@ void Core::InitJobHolder (QObject *plugin)
 	}
 }
 
-void Core::InitEmbedTab (QObject *plugin)
+void LeechCraft::Core::InitEmbedTab (QObject *plugin)
 {
 	IInfo *ii = qobject_cast<IInfo*> (plugin);
 	IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
@@ -897,7 +897,7 @@ void Core::InitEmbedTab (QObject *plugin)
 			SLOT (embeddedTabWantsToFront ()));
 }
 
-void Core::InitMultiTab (QObject *plugin)
+void LeechCraft::Core::InitMultiTab (QObject *plugin)
 {
 	connect (plugin,
 			SIGNAL (addNewTab (const QString&, QWidget*)),

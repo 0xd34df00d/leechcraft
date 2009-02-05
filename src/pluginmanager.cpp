@@ -21,22 +21,22 @@ using LeechCraft::Util::HistoryModel;
 using LeechCraft::Util::MergeModel;
 using LeechCraft::Util::Proxy;
 
-PluginManager::PluginManager (QObject *parent)
+LeechCraft::PluginManager::PluginManager (QObject *parent)
 : QAbstractItemModel (parent)
 {
     FindPlugins ();
 }
 
-PluginManager::~PluginManager ()
+LeechCraft::PluginManager::~PluginManager ()
 {
 }
 
-int PluginManager::columnCount (const QModelIndex&) const
+int LeechCraft::PluginManager::columnCount (const QModelIndex&) const
 {
 	return 1;
 }
 
-QVariant PluginManager::data (const QModelIndex& index, int role) const
+QVariant LeechCraft::PluginManager::data (const QModelIndex& index, int role) const
 {
 	if (!index.isValid () || index.row () >= GetSize ())
 		return QVariant ();
@@ -62,27 +62,27 @@ QVariant PluginManager::data (const QModelIndex& index, int role) const
 	}
 }
 
-Qt::ItemFlags PluginManager::flags (const QModelIndex&) const
+Qt::ItemFlags LeechCraft::PluginManager::flags (const QModelIndex&) const
 {
 	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
-QVariant PluginManager::headerData (int, Qt::Orientation, int) const
+QVariant LeechCraft::PluginManager::headerData (int, Qt::Orientation, int) const
 {
 	return QVariant ();
 }
 
-QModelIndex PluginManager::index (int row, int column, const QModelIndex&) const
+QModelIndex LeechCraft::PluginManager::index (int row, int column, const QModelIndex&) const
 {
 	return createIndex (row, column);
 }
 
-QModelIndex PluginManager::parent (const QModelIndex&) const
+QModelIndex LeechCraft::PluginManager::parent (const QModelIndex&) const
 {
 	return QModelIndex ();
 }
 
-int PluginManager::rowCount (const QModelIndex& index) const
+int LeechCraft::PluginManager::rowCount (const QModelIndex& index) const
 {
 	if (!index.isValid ())
 		return Plugins_.size ();
@@ -90,12 +90,12 @@ int PluginManager::rowCount (const QModelIndex& index) const
 		return 0;
 }
 
-PluginManager::Size_t PluginManager::GetSize () const
+LeechCraft::PluginManager::Size_t LeechCraft::PluginManager::GetSize () const
 {
     return Plugins_.size ();
 }
 
-void PluginManager::Release ()
+void LeechCraft::PluginManager::Release ()
 {
     while (Plugins_.size ())
     {
@@ -118,10 +118,10 @@ void PluginManager::Release ()
     }
 }
 
-void PluginManager::Release (PluginManager::Size_t position)
+void LeechCraft::PluginManager::Release (LeechCraft::PluginManager::Size_t position)
 {
     if (position >= GetSize ())
-        throw std::runtime_error ("PluginManager::Release(): position is out of bounds.");
+        throw std::runtime_error ("LeechCraft::PluginManager::Release(): position is out of bounds.");
 
     if (Plugins_ [position] && Plugins_ [position]->isLoaded ())
 	{
@@ -131,17 +131,17 @@ void PluginManager::Release (PluginManager::Size_t position)
 	}
 }
 
-QString PluginManager::Name (const PluginManager::Size_t& pos) const
+QString LeechCraft::PluginManager::Name (const LeechCraft::PluginManager::Size_t& pos) const
 {
     return (qobject_cast<IInfo*> (Plugins_ [pos]->instance ()))->GetName ();
 }
 
-QString PluginManager::Info (const PluginManager::Size_t& pos) const
+QString LeechCraft::PluginManager::Info (const LeechCraft::PluginManager::Size_t& pos) const
 {
     return qobject_cast<IInfo*> (Plugins_ [pos]->instance ())->GetInfo ();
 }
 
-QObjectList PluginManager::GetAllPlugins () const
+QObjectList LeechCraft::PluginManager::GetAllPlugins () const
 {
     QObjectList result;
     for (PluginsContainer_t::const_iterator i = Plugins_.begin ();
@@ -150,7 +150,7 @@ QObjectList PluginManager::GetAllPlugins () const
     return result;
 }
 
-void PluginManager::CheckPlugins ()
+void LeechCraft::PluginManager::CheckPlugins ()
 {
 	bool shouldValidate = !(QCoreApplication::arguments ().contains ("-nopupcheck") ||
 			XmlSettingsManager::Instance ()->Property ("FirstStart", true).toBool ());
@@ -197,7 +197,7 @@ void PluginManager::CheckPlugins ()
     }
 }
 
-void PluginManager::InitializePlugins ()
+void LeechCraft::PluginManager::InitializePlugins ()
 {
     for (int i = 0; i < Plugins_.size (); ++i)
     {
@@ -216,7 +216,7 @@ void PluginManager::InitializePlugins ()
 	}
 }
 
-void PluginManager::CalculateDependencies ()
+void LeechCraft::PluginManager::CalculateDependencies ()
 {
     for (PluginsContainer_t::const_iterator i = Plugins_.begin ();
 			i != Plugins_.end (); ++i)
@@ -337,19 +337,19 @@ void PluginManager::CalculateDependencies ()
     }
 }
 
-QObject* PluginManager::GetProvider (const QString& feature) const
+QObject* LeechCraft::PluginManager::GetProvider (const QString& feature) const
 {
 	if (!FeatureProviders_.contains (feature))
 		return 0;
 	return (*FeatureProviders_ [feature])->instance ();
 }
 
-QObjectList PluginManager::GetSelectedDownloaderWatchers () const
+QObjectList LeechCraft::PluginManager::GetSelectedDownloaderWatchers () const
 {
 	return SelectedDownloaderWatchers_;
 }
 
-bool PluginManager::ValidatePlugin (QPluginLoader *loader) const
+bool LeechCraft::PluginManager::ValidatePlugin (QPluginLoader *loader) const
 {
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
 			Proxy::Instance ()->GetApplicationName ());
@@ -473,7 +473,7 @@ bool PluginManager::ValidatePlugin (QPluginLoader *loader) const
 	return true;
 }
 
-void PluginManager::FindPlugins ()
+void LeechCraft::PluginManager::FindPlugins ()
 {
     QDir pluginsDir = QDir ("/usr/local/lib/leechcraft/plugins");
     foreach (QString filename, pluginsDir.entryList (QStringList ("*leechcraft_*"), QDir::Files))

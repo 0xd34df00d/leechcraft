@@ -3,7 +3,7 @@
 
 using namespace LeechCraft;
 
-LogToolBox::LogToolBox (QWidget *parent)
+LeechCraft::LogToolBox::LogToolBox (QWidget *parent)
 : QDialog (parent, Qt::Tool)
 {
 	Ui_.setupUi (this);
@@ -13,23 +13,23 @@ LogToolBox::LogToolBox (QWidget *parent)
 	handleMaxLogLines ();
 }
 
-LogToolBox::~LogToolBox ()
+LeechCraft::LogToolBox::~LogToolBox ()
 {
 }
 
-void LogToolBox::log (const QString& message)
+void LeechCraft::LogToolBox::log (const QString& message)
 {
 	Ui_.Logger_->append (message.trimmed ());
 }
 
-void LogToolBox::handleMaxLogLines ()
+void LeechCraft::LogToolBox::handleMaxLogLines ()
 {
 	Ui_.Logger_->document ()->
 		setMaximumBlockCount (XmlSettingsManager::Instance ()->
 				property ("MaxLogLines").toInt ());
 }
 
-void LogToolBox::on_Clear__released ()
+void LeechCraft::LogToolBox::on_Clear__released ()
 {
 	Ui_.Logger_->clear ();
 }

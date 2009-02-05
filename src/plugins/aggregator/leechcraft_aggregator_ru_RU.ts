@@ -32,7 +32,7 @@
 <context>
     <name>Aggregator</name>
     <message>
-        <location filename="aggregator.cpp" line="421"/>
+        <location filename="aggregator.cpp" line="420"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
@@ -82,7 +82,7 @@
         <translation>Спрятать прочитанные статьи</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="444"/>
+        <location filename="aggregator.cpp" line="443"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
@@ -107,27 +107,27 @@
         <translation>Экспортировать в LCAE...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="531"/>
+        <location filename="aggregator.cpp" line="530"/>
         <source>Export to OPML</source>
         <translation>Экспорт в OPML</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="562"/>
+        <location filename="aggregator.cpp" line="561"/>
         <source>Select save file</source>
         <translation>Выбери файл сохранения</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="535"/>
+        <location filename="aggregator.cpp" line="534"/>
         <source>OPML files (*.opml);;XML files (*.xml);;All files (*.*)</source>
         <translation>OPML-файлы (*.opml);;XML-файлы (*.xml);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="561"/>
+        <location filename="aggregator.cpp" line="560"/>
         <source>Export to binary file</source>
         <translation>Экспорт в бинарный файл</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="564"/>
+        <location filename="aggregator.cpp" line="563"/>
         <source>Aggregator exchange files (*.lcae);;All files (*.*)</source>
         <translation>Файл обмена Aggregator (*.lcae);;Все файлы (*.*)</translation>
     </message>
@@ -142,7 +142,7 @@
         <translation>Настройки...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="448"/>
+        <location filename="aggregator.cpp" line="447"/>
         <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you are really sure that you want to do this?</source>
         <comment>Feed removing confirmation</comment>
         <translation>Ты собираешься навсегда удалить ленту:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Ты уверен, что хочешь сделать это?</translation>
@@ -217,12 +217,12 @@
         <translation>Эта лента уже добавлена</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1118"/>
+        <location filename="core.cpp" line="1146"/>
         <source>Strange, but no suitable provider found</source>
         <translation>Странно, но не найден ни один подходящий провайдер</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1129"/>
+        <location filename="core.cpp" line="1158"/>
         <source>Could not handle URL %1</source>
         <translation>Не могу обработать URL %1</translation>
     </message>
@@ -257,12 +257,12 @@
         <translation>Не могу найти парсер для файла %1 из %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1334"/>
+        <location filename="core.cpp" line="1363"/>
         <source>Added channel &quot;%1&quot; (has %2 items)</source>
         <translation>Добавлен канал &quot;%1&quot; (%2 статей)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1353"/>
+        <location filename="core.cpp" line="1382"/>
         <source>Updated channel &quot;%1&quot; (%2 new items)</source>
         <translation>Обновлен канал &quot;%1&quot; (%2 новых статей)</translation>
     </message>
@@ -270,6 +270,26 @@
         <location filename="core.cpp" line="837"/>
         <source>Downloaded file from url %1 has null size!</source>
         <translation>Скачанный с %1 файл имеет нулевой размер!</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="953"/>
+        <source>Address not found:&lt;br /&gt;%1</source>
+        <translation>Адрес не найден:&lt;br /&gt;%1</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="956"/>
+        <source>Access denied:&lt;br /&gt;%1</source>
+        <translation>Доступ запрещен:&lt;br /&gt;%1</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="959"/>
+        <source>Local errro for:&lt;br /&gt;%1</source>
+        <translation>Локальная ошибка для:&lt;br /&gt;</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="962"/>
+        <source>Unknown error for:&lt;br /&gt;%1</source>
+        <translation>Неизвестная ошибка для:&lt;br /&gt;%1</translation>
     </message>
 </context>
 <context>
@@ -613,27 +633,27 @@
 <context>
     <name>ItemsWidget</name>
     <message>
-        <location filename="itemswidget.cpp" line="31"/>
+        <location filename="itemswidget.cpp" line="29"/>
         <source>Mark item as unread</source>
         <translation>Отметить статью как непрочитанную</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="35"/>
+        <location filename="itemswidget.cpp" line="33"/>
         <source>Add to item bucket</source>
         <translation>Положить в долгий ящик</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="143"/>
+        <location filename="itemswidget.cpp" line="237"/>
         <source>File of type %1, size %2:&lt;br /&gt;</source>
         <translation>Файл типа %1, размер %2:&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="148"/>
+        <location filename="itemswidget.cpp" line="242"/>
         <source>File of type %1 and unknown length:&lt;br /&gt;</source>
         <translation>Файл типа %1 и неизвестного размера:&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="154"/>
+        <location filename="itemswidget.cpp" line="248"/>
         <source>&lt;br /&gt;Specified language: %1</source>
         <translation>&lt;br /&gt;Указанный язык: %1</translation>
     </message>
@@ -643,64 +663,69 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="itemswidget.ui" line="25"/>
+        <location filename="itemswidget.ui" line="28"/>
         <source>Fixed string</source>
         <translation>Фиксированная строка</translation>
     </message>
     <message>
-        <location filename="itemswidget.ui" line="30"/>
+        <location filename="itemswidget.ui" line="33"/>
         <source>Wildcard</source>
         <translation>Маска</translation>
     </message>
     <message>
-        <location filename="itemswidget.ui" line="35"/>
+        <location filename="itemswidget.ui" line="38"/>
         <source>Regexp</source>
         <translation>Регулярное выражение</translation>
     </message>
     <message>
-        <location filename="itemswidget.ui" line="43"/>
+        <location filename="itemswidget.ui" line="46"/>
         <source>Case sensitive</source>
         <translation>Учитывать регистр</translation>
     </message>
     <message>
-        <location filename="itemswidget.ui" line="50"/>
+        <location filename="itemswidget.ui" line="99"/>
         <source>Categories...</source>
         <translation>Категории...</translation>
     </message>
     <message>
-        <location filename="itemswidget.ui" line="88"/>
-        <source>Item info</source>
-        <translation>Информация о статье</translation>
-    </message>
-    <message>
-        <location filename="itemswidget.ui" line="99"/>
-        <source>Link:</source>
-        <translation>Ссылка:</translation>
-    </message>
-    <message>
-        <location filename="itemswidget.ui" line="119"/>
-        <source>Comments:</source>
-        <translation>Комментарии:</translation>
-    </message>
-    <message>
-        <location filename="itemswidget.ui" line="139"/>
-        <source>Publication date:</source>
-        <translation>Дата публикации:</translation>
-    </message>
-    <message>
-        <location filename="itemswidget.ui" line="153"/>
-        <source>Category:</source>
-        <translation>Категория:</translation>
-    </message>
-    <message>
-        <location filename="itemswidget.ui" line="167"/>
-        <source>Author:</source>
-        <translation>Автор:</translation>
-    </message>
-    <message>
-        <location filename="itemswidget.ui" line="183"/>
+        <location filename="itemswidget.ui" line="89"/>
         <source>Subscribe to comments</source>
         <translation>Подписаться на комментарии</translation>
+    </message>
+    <message>
+        <location filename="itemswidget.cpp" line="185"/>
+        <source>Published on %1 by %2</source>
+        <translation>Опубликовал %2 в %1</translation>
+    </message>
+    <message>
+        <location filename="itemswidget.cpp" line="191"/>
+        <source>Published on %1</source>
+        <translation>Опубликовано в %1</translation>
+    </message>
+    <message>
+        <location filename="itemswidget.cpp" line="196"/>
+        <source>Published by %1</source>
+        <translation>Опубликовал %1</translation>
+    </message>
+    <message>
+        <location filename="itemswidget.cpp" line="209"/>
+        <source>%1 comments, &lt;a href=&apos;%2&apos;%3&gt;view them&lt;/a&gt;&lt;/div&gt;</source>
+        <translation>%1 комментариев, &lt;a href=&apos;%2&apos;%3&gt;посмотреть их&lt;/a&gt;&lt;/div&gt;</translation>
+    </message>
+    <message>
+        <location filename="itemswidget.cpp" line="215"/>
+        <source>%1 comments&lt;/div&gt;</source>
+        <translation>%1 комментариев&lt;/div&gt;</translation>
+    </message>
+    <message>
+        <location filename="itemswidget.cpp" line="219"/>
+        <source>&lt;a href=&apos;%1&apos;%2&gt;View comments&lt;/a&gt;&lt;/div&gt;</source>
+        <translation>&lt;a href=&apos;%1&apos;%2&gt;Посмотреть комментарии&lt;/a&gt;&lt;/div&gt;</translation>
+    </message>
+    <message>
+        <location filename="itemswidget.ui" line="80"/>
+        <source>Actions</source>
+        <translation>Действия</translation>
     </message>
 </context>
 <context>

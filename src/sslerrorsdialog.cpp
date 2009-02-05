@@ -3,7 +3,7 @@
 
 using namespace LeechCraft;
 
-SslErrorsDialog::SslErrorsDialog (const QString& msg,
+LeechCraft::SslErrorsDialog::SslErrorsDialog (const QString& msg,
 		const QList<QSslError>& errors,
 		QWidget *parent)
 : QDialog (parent)
@@ -16,11 +16,11 @@ SslErrorsDialog::SslErrorsDialog (const QString& msg,
 	Ui_.Errors_->expandAll ();
 }
 
-SslErrorsDialog::~SslErrorsDialog ()
+LeechCraft::SslErrorsDialog::~SslErrorsDialog ()
 {
 }
 
-SslErrorsDialog::RememberChoice SslErrorsDialog::GetRememberChoice () const
+LeechCraft::SslErrorsDialog::RememberChoice LeechCraft::SslErrorsDialog::GetRememberChoice () const
 {
 	if (Ui_.RememberNot_->isChecked ())
 		return RCNot;
@@ -30,7 +30,7 @@ SslErrorsDialog::RememberChoice SslErrorsDialog::GetRememberChoice () const
 		return RCHost;
 }
 
-void SslErrorsDialog::PopulateTree (const QSslError& error)
+void LeechCraft::SslErrorsDialog::PopulateTree (const QSslError& error)
 {
 	QTreeWidgetItem *item = new QTreeWidgetItem (Ui_.Errors_,
 			QStringList ("Error:") << error.errorString ());

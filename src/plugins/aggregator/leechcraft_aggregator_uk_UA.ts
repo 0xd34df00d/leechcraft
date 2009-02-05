@@ -31,7 +31,7 @@
 <context>
     <name>Aggregator</name>
     <message>
-        <location filename="aggregator.cpp" line="421"/>
+        <location filename="aggregator.cpp" line="420"/>
         <source>Error</source>
         <translation>Помилка</translation>
     </message>
@@ -81,7 +81,7 @@
         <translation>Приховати прочитані</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="444"/>
+        <location filename="aggregator.cpp" line="443"/>
         <source>Warning</source>
         <translation>Увага</translation>
     </message>
@@ -106,27 +106,27 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="531"/>
+        <location filename="aggregator.cpp" line="530"/>
         <source>Export to OPML</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="562"/>
+        <location filename="aggregator.cpp" line="561"/>
         <source>Select save file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="535"/>
+        <location filename="aggregator.cpp" line="534"/>
         <source>OPML files (*.opml);;XML files (*.xml);;All files (*.*)</source>
         <translation type="unfinished">OPML файли (*.opml);;XML файли (*.xml);;All files (*.*)</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="561"/>
+        <location filename="aggregator.cpp" line="560"/>
         <source>Export to binary file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="564"/>
+        <location filename="aggregator.cpp" line="563"/>
         <source>Aggregator exchange files (*.lcae);;All files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -141,7 +141,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="448"/>
+        <location filename="aggregator.cpp" line="447"/>
         <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you are really sure that you want to do this?</source>
         <comment>Feed removing confirmation</comment>
         <translation type="unfinished"></translation>
@@ -216,12 +216,12 @@
         <translation>Ця стрічка вже додана</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1118"/>
+        <location filename="core.cpp" line="1146"/>
         <source>Strange, but no suitable provider found</source>
         <translation>Дивно, але не можу знайти підходящого провайдера</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1129"/>
+        <location filename="core.cpp" line="1158"/>
         <source>Could not handle URL %1</source>
         <translation>Не можу обробити URL %1</translation>
     </message>
@@ -256,18 +256,38 @@
         <translation>Не можу знайти обробник для файлу %1 з %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1334"/>
+        <location filename="core.cpp" line="1363"/>
         <source>Added channel &quot;%1&quot; (has %2 items)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1353"/>
+        <location filename="core.cpp" line="1382"/>
         <source>Updated channel &quot;%1&quot; (%2 new items)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="837"/>
         <source>Downloaded file from url %1 has null size!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="953"/>
+        <source>Address not found:&lt;br /&gt;%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="956"/>
+        <source>Access denied:&lt;br /&gt;%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="959"/>
+        <source>Local errro for:&lt;br /&gt;%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="962"/>
+        <source>Unknown error for:&lt;br /&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -612,27 +632,27 @@
 <context>
     <name>ItemsWidget</name>
     <message>
-        <location filename="itemswidget.cpp" line="31"/>
+        <location filename="itemswidget.cpp" line="29"/>
         <source>Mark item as unread</source>
         <translation type="unfinished">Позначити статтю як непрочитану</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="35"/>
+        <location filename="itemswidget.cpp" line="33"/>
         <source>Add to item bucket</source>
         <translation type="unfinished">Відкласти в довгий ящик</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="143"/>
+        <location filename="itemswidget.cpp" line="237"/>
         <source>File of type %1, size %2:&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="148"/>
+        <location filename="itemswidget.cpp" line="242"/>
         <source>File of type %1 and unknown length:&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="154"/>
+        <location filename="itemswidget.cpp" line="248"/>
         <source>&lt;br /&gt;Specified language: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -642,63 +662,68 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.ui" line="25"/>
+        <location filename="itemswidget.ui" line="28"/>
         <source>Fixed string</source>
         <translation type="unfinished">Фіксований рядок</translation>
     </message>
     <message>
-        <location filename="itemswidget.ui" line="30"/>
+        <location filename="itemswidget.ui" line="33"/>
         <source>Wildcard</source>
         <translation type="unfinished">Маска</translation>
     </message>
     <message>
-        <location filename="itemswidget.ui" line="35"/>
+        <location filename="itemswidget.ui" line="38"/>
         <source>Regexp</source>
         <translation type="unfinished">Регулярний вираз</translation>
     </message>
     <message>
-        <location filename="itemswidget.ui" line="43"/>
+        <location filename="itemswidget.ui" line="46"/>
         <source>Case sensitive</source>
         <translation type="unfinished">Чутливий до регістру</translation>
     </message>
     <message>
-        <location filename="itemswidget.ui" line="50"/>
+        <location filename="itemswidget.ui" line="99"/>
         <source>Categories...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.ui" line="88"/>
-        <source>Item info</source>
-        <translation type="unfinished">Інформація про статтю</translation>
-    </message>
-    <message>
-        <location filename="itemswidget.ui" line="99"/>
-        <source>Link:</source>
-        <translation type="unfinished">Адреса:</translation>
-    </message>
-    <message>
-        <location filename="itemswidget.ui" line="119"/>
-        <source>Comments:</source>
+        <location filename="itemswidget.ui" line="89"/>
+        <source>Subscribe to comments</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.ui" line="139"/>
-        <source>Publication date:</source>
-        <translation type="unfinished">Дата публікації:</translation>
+        <location filename="itemswidget.cpp" line="185"/>
+        <source>Published on %1 by %2</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.ui" line="153"/>
-        <source>Category:</source>
-        <translation type="unfinished">Категорія:</translation>
+        <location filename="itemswidget.cpp" line="191"/>
+        <source>Published on %1</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.ui" line="167"/>
-        <source>Author:</source>
-        <translation type="unfinished">Автор:</translation>
+        <location filename="itemswidget.cpp" line="196"/>
+        <source>Published by %1</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.ui" line="183"/>
-        <source>Subscribe to comments</source>
+        <location filename="itemswidget.cpp" line="209"/>
+        <source>%1 comments, &lt;a href=&apos;%2&apos;%3&gt;view them&lt;/a&gt;&lt;/div&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="itemswidget.cpp" line="215"/>
+        <source>%1 comments&lt;/div&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="itemswidget.cpp" line="219"/>
+        <source>&lt;a href=&apos;%1&apos;%2&gt;View comments&lt;/a&gt;&lt;/div&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="itemswidget.ui" line="80"/>
+        <source>Actions</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

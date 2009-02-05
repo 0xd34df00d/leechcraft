@@ -3,87 +3,87 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="158"/>
+        <location filename="core.cpp" line="155"/>
         <source>Initializing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="161"/>
+        <location filename="core.cpp" line="158"/>
         <source>Stopped</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="164"/>
+        <location filename="core.cpp" line="161"/>
         <source>Playing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="167"/>
+        <location filename="core.cpp" line="164"/>
         <source>Buffering</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="170"/>
+        <location filename="core.cpp" line="167"/>
         <source>Paused</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="173"/>
+        <location filename="core.cpp" line="170"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="178"/>
+        <location filename="core.cpp" line="175"/>
         <source> (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="179"/>
+        <location filename="core.cpp" line="176"/>
         <source> [</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="184"/>
+        <location filename="core.cpp" line="181"/>
         <source>/</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="188"/>
+        <location filename="core.cpp" line="185"/>
         <source>]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="190"/>
+        <location filename="core.cpp" line="187"/>
         <source> borrowing data from </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="195"/>
+        <location filename="core.cpp" line="192"/>
         <source>nowhere</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="208"/>
+        <location filename="core.cpp" line="205"/>
         <source> (CD)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="211"/>
+        <location filename="core.cpp" line="208"/>
         <source> (DVD)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="214"/>
+        <location filename="core.cpp" line="211"/>
         <source> (VCD)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="217"/>
+        <location filename="core.cpp" line="214"/>
         <source> (Unknown disc type)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="222"/>
+        <location filename="core.cpp" line="219"/>
         <source>stream</source>
         <translation type="unfinished"></translation>
     </message>
@@ -116,7 +116,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="205"/>
+        <location filename="lmp.cpp" line="206"/>
         <source>Video (*.avi *.mkv *.ogg *.mpeg *.mpg *.divx *.mov *.swf);;Uncompressed lossless audio (*.aiff *.au *.cdda *.raw *.wav);;Compressed lossless audio (*.flac *.wv *.m4a *.tta *.ape *.la *.pac);;Lossy audio (*.mp3 *.ogg *.wma *.aac *.mpc *.ra *.rm *.ots *.swa);;All files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
