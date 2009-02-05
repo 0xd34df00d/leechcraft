@@ -233,9 +233,11 @@ void Core::DelayedInit ()
 			TabContainer_.get (), "handleTabNames");
 
 	emit loadProgress (tr ("Preinitialization..."));
-    PluginManager_->InitializePlugins ();
+	PluginManager_->CheckPlugins ();
 	emit loadProgress (tr ("Calculation dependencies..."));
     PluginManager_->CalculateDependencies ();
+    PluginManager_->InitializePlugins ();
+
     QObjectList plugins = PluginManager_->GetAllPlugins ();
     foreach (QObject *plugin, plugins)
     {

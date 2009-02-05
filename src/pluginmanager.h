@@ -60,8 +60,9 @@ namespace LeechCraft
             }
             return result;
         }
-        void InitializePlugins ();
+        void CheckPlugins ();
         void CalculateDependencies ();
+		void InitializePlugins ();
 		QObject* GetProvider (const QString&) const;
 		QObjectList GetSelectedDownloaderWatchers () const;
     private:

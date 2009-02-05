@@ -150,7 +150,7 @@ QObjectList PluginManager::GetAllPlugins () const
     return result;
 }
 
-void PluginManager::InitializePlugins ()
+void PluginManager::CheckPlugins ()
 {
 	bool shouldValidate = !(QCoreApplication::arguments ().contains ("-nopupcheck") ||
 			XmlSettingsManager::Instance ()->Property ("FirstStart", true).toBool ());
@@ -194,6 +194,16 @@ void PluginManager::InitializePlugins ()
             Plugins_.removeAt (i--);
             continue;
 		}
+    }
+}
+
+void PluginManager::InitializePlugins ()
+{
+    for (int i = 0; i < Plugins_.size (); ++i)
+    {
+        QPluginLoader *loader = Plugins_.at (i);
+        QObject *pluginEntity = loader->instance ();
+        IInfo *info = qobject_cast<IInfo*> (pluginEntity);
 
 		emit loadProgress (info->GetName ());
 
@@ -203,7 +213,7 @@ void PluginManager::InitializePlugins ()
 			iwnam->SetNetworkAccessManager (Core::Instance ().GetNetworkAccessManager ());
 
         info->Init ();
-    }
+	}
 }
 
 void PluginManager::CalculateDependencies ()
