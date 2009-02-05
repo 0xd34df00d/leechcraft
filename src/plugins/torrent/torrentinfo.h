@@ -1,5 +1,6 @@
 #ifndef TORRENTINFO_H
 #define TORRENTINFO_H
+#include <memory>
 #include <QTime>
 #include <libtorrent/bitfield.hpp>
 #include <libtorrent/torrent_handle.hpp>
@@ -10,7 +11,7 @@ struct TorrentInfo
 	QString Destination_,
 			State_;
 	libtorrent::torrent_status Status_;
-	libtorrent::torrent_info Info_;
+	std::auto_ptr<libtorrent::torrent_info> Info_;
 };
 
 #endif

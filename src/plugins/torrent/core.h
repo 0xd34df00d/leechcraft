@@ -97,10 +97,9 @@ private:
 	std::auto_ptr<LeechCraft::Util::TagsCompletionModel> TagsCompletionModel_;
 	std::auto_ptr<TorrentFilesModel> TorrentFilesModel_;
 	std::auto_ptr<HistoryModel> HistoryModel_;
-
 	std::list<quint16> IDPool_;
-
 	QString ExternalAddress_;
+	bool SaveScheduled_;
 
     Core ();
 public:
@@ -143,16 +142,17 @@ public:
     libtorrent::torrent_info GetTorrentInfo (const QString&);
     libtorrent::torrent_info GetTorrentInfo (const QByteArray&);
     bool IsValidTorrent (const QByteArray&) const;
-    TorrentInfo GetTorrentStats () const;
+	std::auto_ptr<TorrentInfo> GetTorrentStats () const;
 	libtorrent::session_status GetOverallStats () const;
 	void GetPerTracker (pertrackerstats_t&) const;
 	int GetListenPort () const;
 	libtorrent::cache_status GetCacheStats () const;
-    QList<FileInfo> GetTorrentFiles () const;
     QList<PeerInfo> GetPeers () const;
     QStringList GetTagsForIndex (int = -1) const;
     void UpdateTags (const QStringList&, int = -1);
 	LeechCraft::Util::TagsCompletionModel* GetTagsCompletionModel () const;
+	int AddMagnet (const QString&, const QString&, const QStringList&,
+			LeechCraft::TaskParameters = LeechCraft::NoParameters);
 	int AddFile (const QString&, const QString&, const QStringList&,
 			const QVector<bool>& = QVector<bool> (),
 			LeechCraft::TaskParameters = LeechCraft::NoParameters);
@@ -201,18 +201,23 @@ public:
 	void Export (const QString&, bool, bool) const;
     bool CheckValidity (int) const;
 	void SaveResumeData (const libtorrent::save_resume_data_alert&) const;
+	void HandleMetadata (const libtorrent::metadata_received_alert&);
 	void MoveUp (const std::deque<int>&);
 	void MoveDown (const std::deque<int>&);
 	void MoveToTop (const std::deque<int>&);
 	void MoveToBottom (const std::deque<int>&);
 	HistoryModel* GetHistoryModel () const;
 private:
+    QList<FileInfo> GetTorrentFiles () const;
 	void MoveToTop (int);
 	void MoveToBottom (int);
     QString GetStringForState (libtorrent::torrent_status::state_t) const;
     void RestoreTorrents ();
     libtorrent::torrent_handle RestoreSingleTorrent (const QByteArray&,
-			const QByteArray&, const boost::filesystem::path&);
+			const QByteArray&,
+			const boost::filesystem::path&,
+			bool,
+			bool);
     void HandleSingleFinished (int);
     int GetCurrentlyDownloading () const;
     int GetCurrentlySeeding () const;
@@ -222,6 +227,7 @@ private:
 	QStringList GetTagsForIndexImpl (int) const;
 	void UpdateTagsImpl (const QStringList&, int);
 	void ParseStorage (const QDomElement&);
+	void ScheduleSave ();
 private slots:
     void writeSettings ();
     void checkFinished ();

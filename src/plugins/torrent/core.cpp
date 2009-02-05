@@ -32,6 +32,7 @@
 #include <libtorrent/hasher.hpp>
 #include <libtorrent/storage.hpp>
 #include <libtorrent/file.hpp>
+#include <libtorrent/magnet_uri.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
@@ -100,6 +101,7 @@ Core::Core ()
 , TagsCompletionModel_ (new TagsCompletionModel)
 , TorrentFilesModel_ (new TorrentFilesModel (false))
 , HistoryModel_ (new HistoryModel)
+, SaveScheduled_ (false)
 {
 	ExternalAddress_ = tr ("Unknown");
 	for (quint16 i = 0; i < 65535; ++i)
@@ -269,7 +271,15 @@ void Core::UpdateFiles ()
 		return;
 	}
 
-	TorrentFilesModel_->UpdateFiles (GetTorrentFiles ());
+	try
+	{
+		TorrentFilesModel_->UpdateFiles (GetTorrentFiles ());
+	}
+	catch (const std::exception& e)
+	{
+		qWarning () << Q_FUNC_INFO << e.what ();
+		TorrentFilesModel_->Clear ();
+	}
 }
 
 void Core::ResetFiles ()
@@ -280,7 +290,15 @@ void Core::ResetFiles ()
 		return;
 	}
 
-	TorrentFilesModel_->ResetFiles (GetTorrentFiles ());
+	try
+	{
+		TorrentFilesModel_->ResetFiles (GetTorrentFiles ());
+	}
+	catch (const std::exception& e)
+	{
+		qWarning () << Q_FUNC_INFO << e.what ();
+		TorrentFilesModel_->Clear ();
+	}
 }
 
 int Core::columnCount (const QModelIndex&) const
@@ -298,7 +316,6 @@ QVariant Core::data (const QModelIndex& index, int role) const
 
 	libtorrent::torrent_handle h = Handles_.at (row).Handle_;
     libtorrent::torrent_status status = h.status ();
-    libtorrent::torrent_info info = h.get_torrent_info ();
 
 	switch (role)
 	{
@@ -440,23 +457,19 @@ bool Core::IsValidTorrent (const QByteArray& torrentData) const
     return true;
 }
 
-TorrentInfo Core::GetTorrentStats () const
+std::auto_ptr<TorrentInfo> Core::GetTorrentStats () const
 {
     if (!CheckValidity (CurrentTorrent_))
         throw std::runtime_error ("Invalid torrent for stats");
 
-    libtorrent::torrent_handle handle = Handles_.at (CurrentTorrent_).Handle_;
-    TorrentInfo result =
-	{
-		QString (),
-		QString (),
-		handle.status (),
-		handle.get_torrent_info (),
-	};
+	libtorrent::torrent_handle handle = Handles_.at (CurrentTorrent_).Handle_;
 
-	result.Destination_ = QString::fromUtf8 (handle.save_path ().directory_string ().c_str ());
-    result.State_ = result.Status_.paused ? tr ("Idle") : GetStringForState (result.Status_.state);
-    return result;
+	std::auto_ptr<TorrentInfo> result (new TorrentInfo);
+	result->Info_.reset (new libtorrent::torrent_info (handle.get_torrent_info ()));
+	result->Status_ = handle.status ();
+	result->Destination_ = QString::fromUtf8 (handle.save_path ().directory_string ().c_str ());
+	result->State_ = result->Status_.paused ? tr ("Idle") : GetStringForState (result->Status_.state);
+	return result;
 }
 
 libtorrent::session_status Core::GetOverallStats () const
@@ -478,30 +491,6 @@ int Core::GetListenPort () const
 libtorrent::cache_status Core::GetCacheStats () const
 {
 	return Session_->get_cache_status ();
-}
-
-QList<FileInfo> Core::GetTorrentFiles () const
-{
-    if (!CheckValidity (CurrentTorrent_))
-        return QList<FileInfo> ();
-
-    QList<FileInfo> result;
-    libtorrent::torrent_handle handle = Handles_.at (CurrentTorrent_).Handle_;
-    libtorrent::torrent_info info = handle.get_torrent_info ();
-	std::vector<libtorrent::size_type> prbytes;
-    handle.file_progress (prbytes);
-    for (libtorrent::torrent_info::file_iterator i = info.begin_files (); i != info.end_files (); ++i)
-    {
-        FileInfo fi;
-        fi.Path_ = i->path;
-        fi.Size_ = i->size;
-        fi.Priority_ = Handles_.at (CurrentTorrent_).FilePriorities_.at (i - info.begin_files ());
-        fi.Progress_ = static_cast<float> (prbytes.at (i - info.begin_files ())) / 
-			static_cast<float> (fi.Size_);
-        result << fi;
-    }
-
-    return result;
 }
 
 QList<PeerInfo> Core::GetPeers () const
@@ -570,6 +559,50 @@ TagsCompletionModel* Core::GetTagsCompletionModel () const
     return TagsCompletionModel_.get ();
 }
 
+int Core::AddMagnet (const QString& magnet,
+		const QString& path,
+		const QStringList& tags,
+		LeechCraft::TaskParameters params)
+{
+	libtorrent::torrent_handle handle;
+	try
+	{
+		libtorrent::add_torrent_params atp;
+		atp.auto_managed = true;
+		atp.storage_mode = libtorrent::storage_mode_allocate;
+		atp.paused = !(params & LeechCraft::Autostart);
+		atp.save_path = boost::filesystem::path (std::string (path.toUtf8 ().constData ()));
+
+		handle = libtorrent::add_magnet_uri (*Session_,
+				magnet.toStdString (),
+				atp);
+	}
+	catch (const std::exception& e)
+	{
+		qWarning () << Q_FUNC_INFO << e.what ();
+		return -1;
+	}
+
+    TorrentStruct tmp =
+	{
+		std::vector<int> (),
+		handle,
+		QByteArray (),
+		QString (),
+		TSIdle,
+   		0,
+		tags,
+		true,
+		IDPool_.front (),
+		params
+	};
+	IDPool_.pop_front ();
+    beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
+	Handles_ << tmp;
+	endInsertRows ();
+	return tmp.ID_;
+}
+
 int Core::AddFile (const QString& filename,
 		const QString& path,
 		const QStringList& tags,
@@ -588,11 +621,13 @@ int Core::AddFile (const QString& filename,
 		boost::intrusive_ptr<libtorrent::torrent_info> tinfo (
 				new libtorrent::torrent_info (GetTorrentInfo (filename))
 				);
-		handle = Session_->add_torrent (tinfo,
-				boost::filesystem::path (std::string (path.toUtf8 ().constData ())),
-				libtorrent::entry (),
-				libtorrent::storage_mode_allocate,
-				!(params & LeechCraft::Autostart));
+		libtorrent::add_torrent_params atp;
+		atp.ti = new libtorrent::torrent_info (GetTorrentInfo (filename));
+		atp.auto_managed = true;
+		atp.storage_mode = libtorrent::storage_mode_allocate;
+		atp.paused = !(params & LeechCraft::Autostart);
+		atp.save_path = boost::filesystem::path (std::string (path.toUtf8 ().constData ()));
+		handle = Session_->add_torrent (atp);
     }
     catch (const libtorrent::duplicate_torrent& e)
     {
@@ -657,7 +692,7 @@ int Core::AddFile (const QString& filename,
     endInsertRows ();
     TagsCompletionModel_->UpdateTags (tags);
 
-    QTimer::singleShot (3000, this, SLOT (writeSettings ()));
+	ScheduleSave ();
 	return tmp.ID_;
 }
 
@@ -673,7 +708,7 @@ void Core::RemoveTorrent (int pos)
     endRemoveRows ();
 	IDPool_.push_front (id);
 
-    QTimer::singleShot (3000, this, SLOT (writeSettings ()));
+	ScheduleSave ();
 	emit taskRemoved (id);
 }
 
@@ -943,6 +978,7 @@ void Core::SetTorrentManaged (bool man)
 		return;
 
 	Handles_.at (CurrentTorrent_).Handle_.auto_managed (man);
+	Handles_ [CurrentTorrent_].AutoManaged_ = man;
 }
 
 bool Core::IsTorrentSequentialDownload () const
@@ -1257,6 +1293,25 @@ void Core::SaveResumeData (const libtorrent::save_resume_data_alert& a) const
 		file.write (&outbuf.at (i), 1);
 }
 
+void Core::HandleMetadata (const libtorrent::metadata_received_alert& a)
+{
+	HandleDict_t::iterator torrent =
+		std::find_if (Handles_.begin (), Handles_.end (),
+				HandleFinder (a.handle));
+	libtorrent::torrent_info info = a.handle.get_torrent_info ();
+	torrent->TorrentFileName_ = QString::fromUtf8 (info.name ().c_str ());
+	torrent->FilePriorities_
+		.resize (std::distance (info.begin_files (), info.end_files ()));
+	std::fill (torrent->FilePriorities_.begin (),
+			torrent->FilePriorities_.end (), 1);
+
+	boost::shared_array<char> metadata = info.metadata ();
+	std::copy (metadata.get (), metadata.get () + info.metadata_size (),
+			std::back_inserter (torrent->TorrentFileContents_));
+
+	ScheduleSave ();
+}
+
 void Core::MoveUp (const std::deque<int>& selections)
 {
 	if (!selections.size ())
@@ -1336,6 +1391,30 @@ HistoryModel* Core::GetHistoryModel () const
 	return HistoryModel_.get ();
 }
 
+QList<FileInfo> Core::GetTorrentFiles () const
+{
+    if (!CheckValidity (CurrentTorrent_))
+        return QList<FileInfo> ();
+
+    QList<FileInfo> result;
+    libtorrent::torrent_handle handle = Handles_.at (CurrentTorrent_).Handle_;
+    libtorrent::torrent_info info = handle.get_torrent_info ();
+	std::vector<libtorrent::size_type> prbytes;
+    handle.file_progress (prbytes);
+    for (libtorrent::torrent_info::file_iterator i = info.begin_files (); i != info.end_files (); ++i)
+    {
+        FileInfo fi;
+        fi.Path_ = i->path;
+        fi.Size_ = i->size;
+        fi.Priority_ = Handles_.at (CurrentTorrent_).FilePriorities_.at (i - info.begin_files ());
+        fi.Progress_ = static_cast<float> (prbytes.at (i - info.begin_files ())) / 
+			static_cast<float> (fi.Size_);
+        result << fi;
+    }
+
+    return result;
+}
+
 void Core::MoveToTop (int row)
 {
 	Handles_.at (row).Handle_.queue_position_top ();
@@ -1412,7 +1491,17 @@ void Core::RestoreTorrents ()
 			resumeDataFile.close ();
 		}
 
-        libtorrent::torrent_handle handle = RestoreSingleTorrent (data, resumed, path);
+		bool automanaged = settings.value ("AutoManaged", true).toBool ();
+		LeechCraft::TaskParameters taskParameters =
+			static_cast<LeechCraft::TaskParameters> (settings
+					.value ("Parameters").toInt ());
+
+        libtorrent::torrent_handle handle =
+			RestoreSingleTorrent (data,
+					resumed,
+					path,
+					automanaged,
+					taskParameters & LeechCraft::Autostart);
         if (!handle.is_valid ())
             continue;
 
@@ -1446,9 +1535,9 @@ void Core::RestoreTorrents ()
 			TSIdle,
 			0,
 			settings.value ("Tags").toStringList (),
-			settings.value ("AutoManaged", true).toBool (),
+			automanaged,
 			i,
-			static_cast<LeechCraft::TaskParameters> (settings.value ("Parameters").toInt ())
+			taskParameters
 	   	};
 		IDPool_.erase (std::find (IDPool_.begin (), IDPool_.end (), tmp.ID_));
         beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
@@ -1460,9 +1549,13 @@ void Core::RestoreTorrents ()
 }
 
 libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data,
-		const QByteArray& resumeData, const boost::filesystem::path& path)
+		const QByteArray& resumeData,
+		const boost::filesystem::path& path,
+		bool automanaged,
+		bool autostart)
 {
-    libtorrent::entry e, resume;
+	libtorrent::lazy_entry e;
+	libtorrent::entry resume;
 
     try
     {
@@ -1474,24 +1567,28 @@ libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data,
         qWarning () << Q_FUNC_INFO << "bad resume data";
     }
 
-    try
-    {
-        e = libtorrent::bdecode (data.constData (),
-				data.constData () + data.size ());
-    }
-    catch (const libtorrent::invalid_encoding& e)
-    {
-        emit error (tr ("Bad bencoding in saved torrent data"));
-    }
-
     libtorrent::torrent_handle handle;
+    if (libtorrent::lazy_bdecode (data.constData (),
+				data.constData () + data.size (), e))
+	{
+		emit error (tr ("Bad bencoding in saved torrent data"));
+		return handle;
+	}
+
     try
     {
-		handle = Session_->add_torrent (boost::intrusive_ptr<libtorrent::torrent_info>
-					(new libtorrent::torrent_info (e)),
-				path,
-				resume,
-				libtorrent::storage_mode_allocate);
+		libtorrent::add_torrent_params atp;
+		atp.ti = new libtorrent::torrent_info (e);
+		atp.storage_mode = libtorrent::storage_mode_allocate;
+		atp.save_path = path;
+		atp.auto_managed = automanaged;
+		atp.paused = !autostart;
+		atp.resume_data = new std::vector<char>;
+		std::copy (resumeData.constData (),
+				resumeData.constData () + resumeData.size (),
+				std::back_inserter (*atp.resume_data));
+
+		handle = Session_->add_torrent (atp);
     }
     catch (const libtorrent::invalid_torrent_file& e)
     {
@@ -1681,8 +1778,21 @@ void Core::UpdateTagsImpl (const QStringList& tags, int torrent)
     TagsCompletionModel_->UpdateTags (tags);
 }
 
+void Core::ScheduleSave ()
+{
+	if (SaveScheduled_)
+		return;
+
+	QTimer::singleShot (500,
+			this,
+			SLOT (writeSettings ()));
+
+	SaveScheduled_ = true;
+}
+
 void Core::writeSettings ()
 {
+	SaveScheduled_ = false;
     QDir home = QDir::home ();
     if (!home.exists (".leechcraft/bittorrent"))
         if (!home.mkdir (".leechcraft/bittorrent"))
@@ -1791,7 +1901,7 @@ void Core::checkFinished ()
                 if (oldState == TSDownloading)
 				{
 					HandleSingleFinished (i);
-					QTimer::singleShot (5000, this, SLOT (writeSettings ()));
+					ScheduleSave ();
 				}
                 break;
         }
@@ -1827,6 +1937,11 @@ struct __LLEECHCRAFT_API SimpleDispatcher
 					.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
 					.arg (QString::fromUtf8 (a.path.c_str ())));
 	}
+
+	void operator() (const libtorrent::metadata_received_alert& a) const
+	{
+		Core::Instance ()->HandleMetadata (a.handle);
+	}
 };
 
 #undef __LLEECHCRAFT_API
@@ -1843,6 +1958,7 @@ void Core::queryLibtorrentForWarnings ()
 				libtorrent::external_ip_alert
 				, libtorrent::save_resume_data_alert
 				, libtorrent::storage_moved_alert
+				, libtorrent::metadata_received_alert
 				>::handle_alert (a, sd);
 		}
 		catch (const libtorrent::unhandled_alert& e)

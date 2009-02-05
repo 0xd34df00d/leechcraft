@@ -1,5 +1,6 @@
 #include "torrentplugin.h"
 #include <QMessageBox>
+#include <QUrl>
 #include <QTemporaryFile>
 #include <QtDebug>
 #include <QDir>
@@ -123,12 +124,27 @@ void TorrentPlugin::StopAll ()
 bool TorrentPlugin::CouldDownload (const QByteArray& data, LeechCraft::TaskParameters) const
 {
 	QString str = QTextCodec::codecForName ("UTF-8")->toUnicode (data);
-    QFile file (str);
-    if (file.exists () &&
-			file.open (QIODevice::ReadOnly))
-        return Core::Instance ()->IsValidTorrent (file.readAll ());
+
+	if (str.startsWith ("magnet:"))
+	{
+		QUrl url (str);
+		QList<QPair<QString, QString> > queryItems = url.queryItems ();
+		for (QList<QPair<QString, QString> >::const_iterator i = queryItems.begin (),
+				end = queryItems.end (); i != end; ++i)
+			if (i->first == "xt" &&
+					i->second.startsWith ("urn:btih:"))
+				return true;
+		return false;
+	}
 	else
-		return Core::Instance ()->IsValidTorrent (data);
+	{
+		QFile file (str);
+		if (file.exists () &&
+				file.open (QIODevice::ReadOnly))
+			return Core::Instance ()->IsValidTorrent (file.readAll ());
+		else
+			return Core::Instance ()->IsValidTorrent (data);
+	}
 }
 
 int TorrentPlugin::AddJob (const LeechCraft::DownloadParams& dp,
@@ -136,6 +152,26 @@ int TorrentPlugin::AddJob (const LeechCraft::DownloadParams& dp,
 {
 	QString resource = QTextCodec::codecForName ("UTF-8")->
 		toUnicode (dp.Resource_);
+
+	if (resource.startsWith ("magnet:"))
+	{
+		QStringList tags = XmlSettingsManager::Instance ()->
+			property ("AutomaticTags").toString ()
+			.split (' ', QString::SkipEmptyParts);
+
+		QUrl url (resource);
+		QList<QPair<QString, QString> > queryItems = url.queryItems ();
+		for (QList<QPair<QString, QString> >::const_iterator i = queryItems.begin (),
+				end = queryItems.end (); i != end; ++i)
+			if (i->first == "kt")
+				tags += i->second.split ('+', QString::SkipEmptyParts);
+
+		return Core::Instance ()->AddMagnet (resource,
+				dp.Location_,
+				tags,
+				parameters);
+	}
+
 	QString suggestedFname = resource;
 	QFile file (suggestedFname);
     if ((!file.exists () ||
@@ -676,114 +712,125 @@ void TorrentPlugin::UpdateTorrentControl ()
 	Ui_.TorrentSuperSeeding_->setCheckState (Core::Instance ()->
 			IsTorrentSuperSeeding () ? Qt::Checked : Qt::Unchecked);
 
-	TorrentInfo i = Core::Instance ()->GetTorrentStats ();
-	Ui_.LabelState_->setText (i.State_);
+	std::auto_ptr<TorrentInfo> i;
+	try
+	{
+		i = Core::Instance ()->GetTorrentStats ();
+	}
+	catch (...)
+	{
+		Ui_.TorrentControlTab_->setEnabled (false);
+		return;
+	}
+
+	Ui_.TorrentControlTab_->setEnabled (true);
+	Ui_.LabelState_->setText (i->State_);
 	Ui_.LabelDownloadRate_->
 		setText (Proxy::Instance ()->
-				MakePrettySize (i.Status_.download_rate) + tr ("/s"));
+				MakePrettySize (i->Status_.download_rate) + tr ("/s"));
 	Ui_.LabelUploadRate_->
 		setText (Proxy::Instance ()->
-				MakePrettySize (i.Status_.upload_rate) + tr ("/s"));
+				MakePrettySize (i->Status_.upload_rate) + tr ("/s"));
 	Ui_.LabelNextAnnounce_->
-		setText (QTime (i.Status_.next_announce.hours (),
-					i.Status_.next_announce.minutes (),
-					i.Status_.next_announce.seconds ()).toString ());
+		setText (QTime (i->Status_.next_announce.hours (),
+					i->Status_.next_announce.minutes (),
+					i->Status_.next_announce.seconds ()).toString ());
 	Ui_.LabelProgress_->
-		setText (QString::number (i.Status_.progress * 100, 'f', 2) + "%");
+		setText (QString::number (i->Status_.progress * 100, 'f', 2) + "%");
 	Ui_.LabelDownloaded_->
-		setText (Proxy::Instance ()->MakePrettySize (i.Status_.total_download));
+		setText (Proxy::Instance ()->MakePrettySize (i->Status_.total_download));
 	Ui_.LabelUploaded_->
-		setText (Proxy::Instance ()->MakePrettySize (i.Status_.total_upload));
+		setText (Proxy::Instance ()->MakePrettySize (i->Status_.total_upload));
 	Ui_.LabelWantedDownloaded_->
-		setText (Proxy::Instance ()->MakePrettySize (i.Status_.total_wanted_done));
+		setText (Proxy::Instance ()->MakePrettySize (i->Status_.total_wanted_done));
 	Ui_.LabelDownloadedTotal_->
-		setText (Proxy::Instance ()->MakePrettySize (i.Status_.all_time_download));
+		setText (Proxy::Instance ()->MakePrettySize (i->Status_.all_time_download));
 	Ui_.LabelUploadedTotal_->
-		setText (Proxy::Instance ()->MakePrettySize (i.Status_.all_time_upload));
-	if (i.Status_.all_time_download)
+		setText (Proxy::Instance ()->MakePrettySize (i->Status_.all_time_upload));
+	if (i->Status_.all_time_download)
 		Ui_.LabelTorrentOverallRating_->
-			setText (QString::number (i.Status_.all_time_upload /
-						static_cast<double> (i.Status_.all_time_download), 'g', 4));
+			setText (QString::number (i->Status_.all_time_upload /
+						static_cast<double> (i->Status_.all_time_download), 'g', 4));
 	else
 		Ui_.LabelTorrentOverallRating_->
 			setText (QString::fromUtf8 ("\u221E"));
 	Ui_.LabelActiveTime_->
-		setText (Proxy::Instance ()->MakeTimeFromLong (i.Status_.active_time));
+		setText (Proxy::Instance ()->MakeTimeFromLong (i->Status_.active_time));
 	Ui_.LabelSeedingTime_->
-		setText (Proxy::Instance ()->MakeTimeFromLong (i.Status_.seeding_time));
+		setText (Proxy::Instance ()->MakeTimeFromLong (i->Status_.seeding_time));
 	Ui_.LabelSeedRank_->
-		setText (QString::number (i.Status_.seed_rank));
-	if (i.Status_.last_scrape >= 0)
+		setText (QString::number (i->Status_.seed_rank));
+	if (i->Status_.last_scrape >= 0)
 		Ui_.LabelLastScrape_->
-			setText (Proxy::Instance ()->MakeTimeFromLong (i.Status_.last_scrape));
+			setText (Proxy::Instance ()->MakeTimeFromLong (i->Status_.last_scrape));
 	else
 		Ui_.LabelLastScrape_->
 			setText (tr ("Wasn't yet"));
 	Ui_.LabelTotalSize_->
-		setText (Proxy::Instance ()->MakePrettySize (i.Info_.total_size ()));
+		setText (Proxy::Instance ()->MakePrettySize (i->Info_->total_size ()));
 	Ui_.LabelWantedSize_->
-		setText (Proxy::Instance ()->MakePrettySize (i.Status_.total_wanted));
-	if (i.Status_.total_payload_download)
+		setText (Proxy::Instance ()->MakePrettySize (i->Status_.total_wanted));
+	if (i->Status_.total_payload_download)
 		Ui_.LabelTorrentRating_->
-			setText (QString::number (i.Status_.total_payload_upload /
-						static_cast<double> (i.Status_.total_payload_download), 'g', 4));
+			setText (QString::number (i->Status_.total_payload_upload /
+						static_cast<double> (i->Status_.total_payload_download), 'g', 4));
 	else
 		Ui_.LabelTorrentRating_->
 			setText (QString::fromUtf8 ("\u221E"));
-	Ui_.PiecesWidget_->setPieceMap (i.Status_.pieces);
+	Ui_.PiecesWidget_->setPieceMap (i->Status_.pieces);
 	Ui_.LabelTracker_->
-		setText (QString::fromStdString (i.Status_.current_tracker));
+		setText (QString::fromStdString (i->Status_.current_tracker));
 	Ui_.LabelDestination_->
-		setText (i.Destination_);
+		setText (i->Destination_);
 	Ui_.LabelName_->
-		setText (QString::fromUtf8 (i.Info_.name ().c_str ()));
+		setText (QString::fromUtf8 (i->Info_->name ().c_str ()));
 	Ui_.LabelCreator_->
-		setText (QString::fromUtf8 (i.Info_.creator ().c_str ()));
+		setText (QString::fromUtf8 (i->Info_->creator ().c_str ()));
 	Ui_.LabelComment_->
-		setText (QString::fromUtf8 (i.Info_.comment ().c_str ()));
+		setText (QString::fromUtf8 (i->Info_->comment ().c_str ()));
 	Ui_.LabelPrivate_->
-		setText (i.Info_.priv () ? tr ("Yes") : tr ("No"));
+		setText (i->Info_->priv () ? tr ("Yes") : tr ("No"));
 	Ui_.LabelDHTNodesCount_->
-		setText (QString::number (i.Info_.nodes ().size ()));
+		setText (QString::number (i->Info_->nodes ().size ()));
 	Ui_.LabelFailed_->
-		setText (Proxy::Instance ()->MakePrettySize (i.Status_.total_failed_bytes));
+		setText (Proxy::Instance ()->MakePrettySize (i->Status_.total_failed_bytes));
 	Ui_.LabelConnectedPeers_->
-		setText (QString::number (i.Status_.num_peers));
+		setText (QString::number (i->Status_.num_peers));
 	Ui_.LabelConnectedSeeds_->
-		setText (QString::number (i.Status_.num_seeds));
+		setText (QString::number (i->Status_.num_seeds));
 	Ui_.LabelAnnounceInterval_->
-		setText (QTime (i.Status_.announce_interval.hours (),
-					i.Status_.announce_interval.minutes (),
-					i.Status_.announce_interval.seconds ()).toString ());
+		setText (QTime (i->Status_.announce_interval.hours (),
+					i->Status_.announce_interval.minutes (),
+					i->Status_.announce_interval.seconds ()).toString ());
 	Ui_.LabelTotalPieces_->
-		setText (QString::number (i.Info_.num_pieces ()));
+		setText (QString::number (i->Info_->num_pieces ()));
 	Ui_.LabelDownloadedPieces_->
-		setText (QString::number (i.Status_.num_pieces));
+		setText (QString::number (i->Status_.num_pieces));
 	Ui_.LabelPieceSize_->
-		setText (Proxy::Instance ()->MakePrettySize (i.Info_.piece_length ()));
+		setText (Proxy::Instance ()->MakePrettySize (i->Info_->piece_length ()));
 	Ui_.LabelBlockSize_->
-		setText (Proxy::Instance ()->MakePrettySize (i.Status_.block_size));
+		setText (Proxy::Instance ()->MakePrettySize (i->Status_.block_size));
 	Ui_.LabelDistributedCopies_->
-		setText (i.Status_.distributed_copies == -1 ?
-			tr ("Not tracking") : QString::number (i.Status_.distributed_copies));
+		setText (i->Status_.distributed_copies == -1 ?
+			tr ("Not tracking") : QString::number (i->Status_.distributed_copies));
 	Ui_.LabelRedundantData_->
-		setText (Proxy::Instance ()->MakePrettySize (i.Status_.total_redundant_bytes));
+		setText (Proxy::Instance ()->MakePrettySize (i->Status_.total_redundant_bytes));
 	Ui_.LabelPeersInList_->
-		setText (QString::number (i.Status_.list_peers));
+		setText (QString::number (i->Status_.list_peers));
 	Ui_.LabelSeedsInList_->
-		setText (QString::number (i.Status_.list_seeds));
+		setText (QString::number (i->Status_.list_seeds));
 	Ui_.LabelPeersInSwarm_->
-		setText ((i.Status_.num_incomplete == -1 ?
-				tr ("Unknown") : QString::number (i.Status_.num_incomplete)));
+		setText ((i->Status_.num_incomplete == -1 ?
+				tr ("Unknown") : QString::number (i->Status_.num_incomplete)));
 	Ui_.LabelSeedsInSwarm_->
-		setText ((i.Status_.num_complete == -1 ?
-			  tr ("Unknown") : QString::number (i.Status_.num_complete)));
+		setText ((i->Status_.num_complete == -1 ?
+			  tr ("Unknown") : QString::number (i->Status_.num_complete)));
 	Ui_.LabelConnectCandidates_->
-		setText (QString::number (i.Status_.connect_candidates));
+		setText (QString::number (i->Status_.connect_candidates));
 	Ui_.LabelUpBandwidthQueue_->
-		setText (QString::number (i.Status_.up_bandwidth_queue));
+		setText (QString::number (i->Status_.up_bandwidth_queue));
 	Ui_.LabelDownBandwidthQueue_->
-		setText (QString::number (i.Status_.down_bandwidth_queue));
+		setText (QString::number (i->Status_.down_bandwidth_queue));
 }
 
 void TorrentPlugin::UpdateFilesPage ()
