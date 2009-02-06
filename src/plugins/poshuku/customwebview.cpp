@@ -30,6 +30,11 @@ CustomWebView::~CustomWebView ()
 {
 }
 
+void CustomWebView::Load (const QString& string, QString title)
+{
+	Load (Core::Instance ().MakeURL (string), title);
+}
+
 void CustomWebView::Load (const QUrl& url, QString title)
 {
 	if (url.scheme () == "javascript")

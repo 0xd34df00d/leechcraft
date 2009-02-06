@@ -218,11 +218,7 @@ void BrowserWidget::on_URLEdit__returnPressed ()
 	if (Ui_.URLEdit_->IsCompleting ())
 		return;
 
-	QString url = QUrl (Ui_.URLEdit_->text ()).toString ();
-	if (!Core::Instance ().IsValidURL (url))
-		return;
-
-	Ui_.WebView_->Load (QUrl (url));
+	Ui_.WebView_->Load (Ui_.URLEdit_->text ());
 }
 
 void BrowserWidget::handleAdd2Favorites ()

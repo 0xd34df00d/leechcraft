@@ -47,7 +47,7 @@ public:
 	void Release ();
 	void SetProvider (QObject*, const QString&);
 
-	bool IsValidURL (const QString&) const;
+	QUrl MakeURL (QString) const;
 	BrowserWidget* NewURL (const QString&, bool = false);
 	CustomWebView* MakeWebView (bool = false);
 	FavoritesModel* GetFavoritesModel () const;

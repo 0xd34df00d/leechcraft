@@ -104,9 +104,20 @@ void Core::SetProvider (QObject *object, const QString& feature)
 	Providers_ [feature] = object;
 }
 
-bool Core::IsValidURL (const QString& url) const
+QUrl Core::MakeURL (QString url) const
 {
-	return QUrl (url).isValid ();
+	QUrl result = QUrl (url);
+	if (result.scheme ().isEmpty ())
+	{
+		if (url.count ('.'))
+			result = QUrl (QString ("http://") + url);
+		else
+		{
+			url.replace (' ', '+');
+			result = QUrl (QString ("http://www.google.com/search?q=%1").arg (url));
+		}
+	}
+	return result;
 }
 
 BrowserWidget* Core::NewURL (const QString& url, bool raise)

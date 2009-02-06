@@ -232,7 +232,7 @@ QWebView* Poshuku::createWindow ()
 void Poshuku::on_AddressLine__returnPressed ()
 {
 	QString url = Ui_.AddressLine_->text ();
-	if (!Core::Instance ().IsValidURL (url))
+	if (!Core::Instance ().MakeURL (url).isValid ())
 	{
 		QMessageBox::critical (this, tr ("Error"),
 				tr ("The URL you entered could not be opened by Poshuku. "
