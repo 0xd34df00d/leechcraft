@@ -71,7 +71,7 @@ void SQLStorageBackend::Prepare ()
 			"url, "
 			"tags "
 			"FROM favorites "
-			"ORDER BY ROWID");
+			"ORDER BY ROWID DESC");
 
 	FavoritesAdder_ = QSqlQuery (DB_);
 	FavoritesAdder_.prepare ("INSERT INTO favorites ("
