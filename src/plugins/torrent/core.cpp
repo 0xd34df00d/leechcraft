@@ -1378,7 +1378,7 @@ void Core::MoveToBottom (const std::deque<int>& selections)
 
 	for (std::deque<int>::const_iterator i = selections.begin (),
 			end = selections.end (); i != end; ++i)
-		if (*i <= 0 || !CheckValidity (*i))
+		if (*i < 0 || !CheckValidity (*i))
 			return;
 
 	for (std::deque<int>::const_iterator i = selections.begin (),
@@ -1418,22 +1418,27 @@ QList<FileInfo> Core::GetTorrentFiles () const
 void Core::MoveToTop (int row)
 {
 	Handles_.at (row).Handle_.queue_position_top ();
-	for (int i = row; i > 0; ++i)
-		std::swap (Handles_ [i], Handles_ [i - 1]);
 
-	emit dataChanged (index (0, 0),
-			index (row, columnCount () - 1));
+	beginRemoveRows (QModelIndex (), row, row);
+	TorrentStruct tmp = Handles_.takeAt (row);
+	endRemoveRows ();
+
+	beginInsertRows (QModelIndex (), 0, 0);
+	Handles_.push_front (tmp);
+	endInsertRows ();
 }
 
 void Core::MoveToBottom (int row)
 {
 	Handles_.at (row).Handle_.queue_position_bottom ();
-	for (int i = row, size = Handles_.size ();
-			i < size - 1; ++i)
-		std::swap (Handles_ [i], Handles_ [i + 1]);
 
-	emit dataChanged (index (row, 0),
-			index (Handles_.size () - 1, columnCount () - 1));
+	beginRemoveRows (QModelIndex (), row, row);
+	TorrentStruct tmp = Handles_.takeAt (row);
+	endRemoveRows ();
+
+	beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
+	Handles_.push_back (tmp);
+	endInsertRows ();
 }
 
 QString Core::GetStringForState (libtorrent::torrent_status::state_t state) const
