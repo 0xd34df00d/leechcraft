@@ -51,10 +51,8 @@ void TagsLineEdit::insertTag (const QString& completion)
 	if (completion.startsWith (wtext))
 		wtext.clear ();
     int pos = wtext.lastIndexOf (' ');
-	qDebug () << "original:" << wtext << "; completion: " << completion << pos;
 	wtext = wtext.left (pos).append (' ').append (completion);
 	wtext = wtext.simplified ();
-	qDebug () << "and we get:" << wtext;
     setText (wtext);
 }
 
