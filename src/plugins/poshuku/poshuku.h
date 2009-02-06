@@ -60,6 +60,7 @@ private slots:
 	void on_AddressLine__returnPressed ();
 	void on_HistoryView__activated (const QModelIndex&);
 	void on_FavoritesView__activated (const QModelIndex&);
+	void translateRemoveFavoritesItem (const QModelIndex&);
 	void viewerSettingsChanged ();
 	void updateFavoritesFilter ();
 	void updateHistoryFilter ();

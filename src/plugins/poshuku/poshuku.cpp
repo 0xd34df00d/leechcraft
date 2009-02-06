@@ -172,8 +172,8 @@ void Poshuku::SetupFavoritesFilter ()
 	Ui_.FavoritesView_->setItemDelegate (new FavoritesDelegate (this));
 	connect (Ui_.FavoritesView_,
 			SIGNAL (deleteSelected (const QModelIndex&)),
-			Core::Instance ().GetFavoritesModel (),
-			SLOT (removeItem (const QModelIndex&)));
+			this,
+			SLOT (translateRemoveFavoritesItem (const QModelIndex&)));
 
 	FavoritesFilterLineCompleter_.reset (new TagsCompleter (Ui_.FavoritesFilterLine_, this));
 	FavoritesFilterLineCompleter_->
@@ -248,6 +248,12 @@ void Poshuku::on_FavoritesView__activated (const QModelIndex& index)
 {
 	Core::Instance ().NewURL (index.sibling (index.row (),
 				FavoritesModel::ColumnURL).data ().toString ());
+}
+
+void Poshuku::translateRemoveFavoritesItem (const QModelIndex& sourceIndex)
+{
+	QModelIndex index = FavoritesFilterModel_->mapToSource (sourceIndex);
+	Core::Instance ().GetFavoritesModel ()->removeItem (index);
 }
 
 void Poshuku::viewerSettingsChanged ()
