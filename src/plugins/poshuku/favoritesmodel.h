@@ -45,7 +45,7 @@ public:
 	virtual bool setData (const QModelIndex&, const QVariant&,
 			int = Qt::EditRole);
 
-	void AddItem (const QString&, const QString&, const QStringList&);
+	bool AddItem (const QString&, const QString&, const QStringList&);
 public slots:
 	void removeItem (const QModelIndex&);
 	void handleItemAdded (const FavoritesModel::FavoritesItem&);
@@ -53,6 +53,8 @@ public slots:
 	void handleItemRemoved (const FavoritesModel::FavoritesItem&);
 private slots:
 	void loadData ();
+signals:
+	void error (const QString&);
 };
 
 #endif

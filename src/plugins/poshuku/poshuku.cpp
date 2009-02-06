@@ -66,6 +66,11 @@ void Poshuku::Init ()
 	SetupFavoritesFilter ();
 	SetupHistoryFilter ();
 
+	connect (Core::Instance ().GetFavoritesModel (),
+			SIGNAL (error (const QString&)),
+			this,
+			SLOT (handleError (const QString&)));
+
 	QHeaderView *itemsHeader = Ui_.FavoritesView_->header ();
 	QFontMetrics fm = fontMetrics ();
 	itemsHeader->resizeSection (0,

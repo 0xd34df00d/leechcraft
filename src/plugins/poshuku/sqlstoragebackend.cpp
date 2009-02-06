@@ -189,7 +189,7 @@ void SQLStorageBackend::AddToFavorites (const FavoritesModel::FavoritesItem& ite
 	if (!FavoritesAdder_.exec ())
 	{
 		LeechCraft::Util::DBLock::DumpError (FavoritesAdder_);
-		return;
+		throw std::runtime_error ("Failed to execute FavoritesAdder query.");
 	}
 
 	emit added (item);

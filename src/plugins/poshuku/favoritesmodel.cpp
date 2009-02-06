@@ -104,7 +104,7 @@ bool FavoritesModel::setData (const QModelIndex& index,
 	return true;
 }
 
-void FavoritesModel::AddItem (const QString& title, const QString& url,
+bool FavoritesModel::AddItem (const QString& title, const QString& url,
 	   const QStringList& tags)
 {
 	FavoritesItem item =
@@ -114,7 +114,18 @@ void FavoritesModel::AddItem (const QString& title, const QString& url,
 		tags
 	};
 
-	Core::Instance ().GetStorageBackend ()->AddToFavorites (item);
+	try
+	{
+		Core::Instance ().GetStorageBackend ()->AddToFavorites (item);
+	}
+	catch (const std::exception& e)
+	{
+		qWarning () << Q_FUNC_INFO << e.what ();
+		emit error (tr ("Failed to add<br />%1<br />to Favorites, seems "
+					"like such title is already used.").arg (title));
+		return false;
+	}
+	return true;
 }
 
 void FavoritesModel::removeItem (const QModelIndex& index)

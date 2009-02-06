@@ -308,10 +308,18 @@ void Core::handleAddToFavorites (const QString& title, const QString& url)
 				url,
 				GetFavoritesTagsCompletionModel (),
 				qApp->activeWindow ()));
-	if (dia->exec () == QDialog::Rejected)
-		return;
 
-	FavoritesModel_->AddItem (dia->GetTitle (), url, dia->GetTags ());
+	bool result = false;
+	do
+	{
+		if (dia->exec () == QDialog::Rejected)
+			return;
+
+		result = FavoritesModel_->AddItem (dia->GetTitle (),
+				url, dia->GetTags ());
+	}
+	while (!result);
+
 	FavoriteTagsCompletionModel_->UpdateTags (dia->GetTags ());
 }
 
