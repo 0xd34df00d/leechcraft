@@ -2,6 +2,7 @@
 #include <QKeyEvent>
 #include <QtDebug>
 #include <QToolBar>
+#include <QMenu>
 #include <QWidgetAction>
 #include <QCompleter>
 #include <QPrinter>
@@ -29,10 +30,12 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	QAction *back = Ui_.WebView_->pageAction (QWebPage::Back);
 	back->setParent (this);
 	back->setProperty ("ActionIcon", "poshuku_back");
+	back->setShortcut (Qt::CTRL + Qt::Key_Left);
 
 	QAction *forward = Ui_.WebView_->pageAction (QWebPage::Forward);
 	forward->setParent (this);
 	forward->setProperty ("ActionIcon", "poshuku_forward");
+	forward->setShortcut (Qt::CTRL + Qt::Key_Right);
 
 	QAction *reload = Ui_.WebView_->pageAction (QWebPage::Reload);
 	reload->setParent (this);
@@ -44,63 +47,101 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	stop->setShortcut (Qt::Key_Escape);
 	stop->setProperty ("ActionIcon", "poshuku_stop");
 
-	QAction *add2Favorites = new QAction (tr ("Add to favorites..."),
-			this);
-	add2Favorites->setProperty ("ActionIcon", "poshuku_addtofavorites");
+	QMenu *moreMenu = new QMenu (this);
+	QAction *more = moreMenu->menuAction ();
+	more->setText (tr ("More..."));
+	more->setProperty ("ActionIcon", "poshuku_more");
 
-	QAction *find = new QAction (tr ("Find..."),
+	Add2Favorites_ = new QAction (tr ("Add to favorites..."),
 			this);
-	find->setShortcut (Qt::Key_F3);
-	find->setProperty ("ActionIcon", "poshuku_find");
+	Add2Favorites_->setProperty ("ActionIcon", "poshuku_addtofavorites");
+	Add2Favorites_->setShortcut (tr ("Ctrl+D"));
+	Add2Favorites_->setEnabled (false);
 
-	QAction *print = new QAction (tr ("Print..."),
+	Find_ = new QAction (tr ("Find..."),
 			this);
-	print->setProperty ("ActionIcon", "poshuku_print");
+	Find_->setShortcut (tr ("Ctrl+F"));
+	Find_->setProperty ("ActionIcon", "poshuku_find");
+	Find_->setEnabled (false);
 
-	QAction *printPreview = new QAction (tr ("Print with preview..."),
+	Print_ = new QAction (tr ("Print..."),
 			this);
-	printPreview->setProperty ("ActionIcon", "poshuku_printpreview");
+	Print_->setProperty ("ActionIcon", "poshuku_print");
+	Print_->setShortcut (tr ("Ctrl+P"));
+	Print_->setEnabled (false);
 
-	QAction *screenSave = new QAction (tr ("Take page's screenshot"),
+	PrintPreview_ = new QAction (tr ("Print with preview..."),
 			this);
-	screenSave->setProperty ("ActionIcon", "poshuku_takescreenshot");
+	PrintPreview_->setProperty ("ActionIcon", "poshuku_printpreview");
+	PrintPreview_->setShortcut (tr ("Ctrl+Shift+P"));
+	PrintPreview_->setEnabled (false);
+
+	ScreenSave_ = new QAction (tr ("Take page's screenshot"),
+			this);
+	ScreenSave_->setProperty ("ActionIcon", "poshuku_takescreenshot");
+	ScreenSave_->setShortcut (Qt::Key_F12);
+	ScreenSave_->setEnabled (false);
+
+	NewTab_ = new QAction (tr ("Create new tab"),
+			this);
+	NewTab_->setProperty ("ActionIcon", "poshuku_newtab");
+	NewTab_->setShortcut (tr ("Ctrl+T"));
+
+	CloseTab_ = new QAction (tr ("Close this tab"),
+			this);
+	CloseTab_->setProperty ("ActionIcon", "poshuku_closetab");
+	CloseTab_->setShortcut (tr ("Ctrl+W"));
 
 	bar->addAction (back);
 	bar->addAction (forward);
 	bar->addAction (reload);
 	bar->addAction (stop);
-	bar->addAction (find);
-	bar->addAction (add2Favorites);
-	bar->addAction (print);
-	bar->addAction (printPreview);
-	bar->addAction (screenSave);
+	bar->addAction (more);
+
+	moreMenu->addAction (Find_);
+	moreMenu->addAction (Add2Favorites_);
+	moreMenu->addAction (Print_);
+	moreMenu->addAction (PrintPreview_);
+	moreMenu->addAction (ScreenSave_);
+	RecentlyClosed_ = moreMenu->addMenu (tr ("Recently closed"));
 
 	QWidgetAction *addressBar = new QWidgetAction (this);
 	addressBar->setDefaultWidget (Ui_.URLEdit_);
 	bar->addAction (addressBar);
 
+	bar->addAction (NewTab_);
+	bar->addAction (CloseTab_);
+
 	static_cast<QVBoxLayout*> (layout ())->insertWidget (0, bar);
 
-	connect (add2Favorites,
+	connect (Add2Favorites_,
 			SIGNAL (triggered ()),
 			this,
 			SLOT (handleAdd2Favorites ()));
-	connect (print,
+	connect (Print_,
 			SIGNAL (triggered ()),
 			this,
 			SLOT (handlePrinting ()));
-	connect (printPreview,
+	connect (PrintPreview_,
 			SIGNAL (triggered ()),
 			this,
 			SLOT (handlePrintingWithPreview ()));
-	connect (find,
+	connect (Find_,
 			SIGNAL (triggered ()),
 			this,
 			SLOT (handleFind ()));
-	connect (screenSave,
+	connect (ScreenSave_,
 			SIGNAL (triggered ()),
 			this,
 			SLOT (handleScreenSave ()));
+	connect (NewTab_,
+			SIGNAL (triggered ()),
+			this,
+			SLOT (handleNewTab ()));
+	connect (CloseTab_,
+			SIGNAL (triggered ()),
+			this,
+			SIGNAL (needToClose ()));
 
 	connect (Ui_.WebView_,
 			SIGNAL (titleChanged (const QString&)),
@@ -136,6 +177,10 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 					const QString&)),
 			this,
 			SLOT (handleStatusBarMessage (const QString&)));
+	connect (Ui_.WebView_,
+			SIGNAL (loadStarted ()),
+			this,
+			SLOT (enableActions ()));
 
 	QCompleter *completer = new QCompleter (this);
 	completer->setModel (Core::Instance ().GetURLCompletionModel ());
@@ -164,15 +209,6 @@ void BrowserWidget::SetURL (const QUrl& url)
 {
 	if (!url.isEmpty ())
 		Ui_.WebView_->Load (url);
-}
-
-void BrowserWidget::keyReleaseEvent (QKeyEvent *e)
-{
-	if (e->key () == Qt::Key_T &&
-			e->modifiers () & Qt::ControlModifier)
-		Core::Instance ().NewURL ("", true);
-	else
-		QWidget::keyReleaseEvent (e);
 }
 
 void BrowserWidget::PrintImpl (bool preview)
@@ -303,8 +339,22 @@ void BrowserWidget::handleScreenSave ()
 	}
 }
 
+void BrowserWidget::handleNewTab ()
+{
+	Core::Instance ().NewURL ("", true);
+}
+
 void BrowserWidget::focusLineEdit ()
 {
 	Ui_.URLEdit_->setFocus (Qt::OtherFocusReason);
+}
+
+void BrowserWidget::enableActions ()
+{
+	Add2Favorites_->setEnabled (true);
+	Find_->setEnabled (true);
+	Print_->setEnabled (true);
+	PrintPreview_->setEnabled (true);
+	ScreenSave_->setEnabled (true);
 }
 

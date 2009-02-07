@@ -8,14 +8,21 @@ class BrowserWidget : public QWidget
 	Q_OBJECT
 	
 	Ui::BrowserWidget Ui_;
+
+	QAction *Add2Favorites_;
+	QAction *Find_;
+	QAction *Print_;
+	QAction *PrintPreview_;
+	QAction *ScreenSave_;
+	QAction *NewTab_;
+	QAction *CloseTab_;
+	QMenu *RecentlyClosed_;
 public:
 	BrowserWidget (QWidget* = 0);
 	virtual ~BrowserWidget ();
 
 	CustomWebView* GetView () const;
 	void SetURL (const QUrl&);
-protected:
-	void keyReleaseEvent (QKeyEvent*);
 private:
 	void PrintImpl (bool);
 private slots:
@@ -28,7 +35,9 @@ private slots:
 	void handlePrinting ();
 	void handlePrintingWithPreview ();
 	void handleScreenSave ();
+	void handleNewTab ();
 	void focusLineEdit ();
+	void enableActions ();
 signals:
 	void titleChanged (const QString&);
 	void urlChanged (const QString&);
