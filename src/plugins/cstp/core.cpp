@@ -329,6 +329,7 @@ void Core::done (bool err)
 	if (taskdscr == ActiveTasks_.end ())
 		return;
 
+	int id = taskdscr->ID_;
 	QString filename = taskdscr->File_->fileName ();
 	QString url = taskdscr->Task_->GetURL ();
 	QString errorStr = taskdscr->Task_->GetErrorString ();
@@ -339,22 +340,21 @@ void Core::done (bool err)
 	{
 		if (!(taskdscr->Parameters_ & LeechCraft::DoNotSaveInHistory))
 			AddToHistory (taskdscr);
-		emit taskFinished (taskdscr->ID_);
-		emit gotEntity (filename.toUtf8 ());
 		if (!(taskdscr->Parameters_ & LeechCraft::DoNotNotifyUser))
 			emit downloadFinished (filename +
 					QString ("\n") + url);
 		Remove (taskdscr);
+		emit taskFinished (id);
+		emit gotEntity (filename.toUtf8 ());
 	}
 	else
 	{
 		taskdscr->ErrorFlag_ = true;
-		emit error (errorStr);
-		emit taskError (taskdscr->ID_, IDownload::EUnknown);
 		if (taskdscr->Parameters_ & LeechCraft::NotPersistent)
 			Remove (taskdscr);
+		emit error (errorStr);
+		emit taskError (id, IDownload::EUnknown);
 	}
-	ScheduleSave ();
 }
 
 void Core::updateInterface ()
@@ -488,7 +488,6 @@ Core::tasks_t::iterator Core::FindTask (QObject *task)
 void Core::Remove (tasks_t::iterator it)
 {
 	int dst = std::distance (ActiveTasks_.begin (), it);
-	emit taskRemoved (it->ID_);
 	IDPool_.push_front (it->ID_);
 	beginRemoveRows (QModelIndex (), dst, dst);
 	ActiveTasks_.erase (it);
