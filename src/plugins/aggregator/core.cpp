@@ -804,7 +804,7 @@ namespace
 	};
 };
 
-void Core::handleJobFinished (int id)
+namespace
 {
 	class FileRemoval : public QFile
 	{
@@ -820,7 +820,10 @@ void Core::handleJobFinished (int id)
 				remove ();
 			}
 	};
+};
 
+void Core::handleJobFinished (int id)
+{
 	if (!PendingJobs_.contains (id))
 		return;
 	PendingJob pj = PendingJobs_ [id];
@@ -942,9 +945,12 @@ void Core::handleJobError (int id, IDownload::Error ie)
 	if (!PendingJobs_.contains (id))
 		return;
 
+	PendingJob pj = PendingJobs_ [id];
+	FileRemoval file (pj.Filename_);
+
 	if ((!XmlSettingsManager::Instance ()->property ("BeSilent").toBool () &&
-				PendingJobs_ [id].Role_ == PendingJob::RFeedUpdated) ||
-			PendingJobs_ [id].Role_ == PendingJob::RFeedAdded)
+				pj.Role_ == PendingJob::RFeedUpdated) ||
+			pj.Role_ == PendingJob::RFeedAdded)
 	{
 		QString msg;
 		switch (ie)
@@ -962,7 +968,7 @@ void Core::handleJobError (int id, IDownload::Error ie)
 				msg = tr ("Unknown error for:<br />%1");
 				break;
 		}
-		emit error (msg.arg (PendingJobs_ [id].URL_));
+		emit error (msg.arg (pj.URL_));
 	}
 	PendingJobs_.remove (id);
 }
