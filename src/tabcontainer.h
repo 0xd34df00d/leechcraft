@@ -23,7 +23,6 @@ namespace LeechCraft
 		virtual ~TabContainer ();
 
 		QWidget* GetWidget (int) const;
-		bool RemoveCurrent ();
 		void RotateLeft ();
 		void RotateRight ();
 		void ToggleMultiwindow ();

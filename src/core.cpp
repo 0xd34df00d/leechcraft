@@ -512,12 +512,7 @@ bool LeechCraft::Core::eventFilter (QObject *watched, QEvent *e)
 
 			if (key->modifiers () & Qt::ControlModifier)
 			{
-				if (key->key () == Qt::Key_W)
-				{
-					if (TabContainer_->RemoveCurrent ())
-						handled = true;
-				}
-				else if (key->key () == Qt::Key_BracketLeft)
+				if (key->key () == Qt::Key_BracketLeft)
 				{
 					TabContainer_->RotateLeft ();
 					handled = true;

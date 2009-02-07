@@ -27,26 +27,6 @@ QWidget* TabContainer::GetWidget (int position) const
 		return 0;
 }
 
-bool TabContainer::RemoveCurrent ()
-{
-	if (TabMode_)
-	{
-		int index = TabWidget_->currentIndex ();
-		if (index < Core::Instance ().CountUnremoveableTabs ())
-			return false;
-		else
-		{
-			QWidget *contents = GetWidget (index);
-			if (!contents)
-				return false;
-			remove (contents);
-			contents->deleteLater ();
-			return true;
-		}
-	}
-	return false;
-}
-
 void TabContainer::RotateLeft ()
 {
 	if (TabMode_)
