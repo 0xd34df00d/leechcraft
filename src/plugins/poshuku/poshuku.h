@@ -62,6 +62,7 @@ private slots:
 	void on_FavoritesView__activated (const QModelIndex&);
 	void translateRemoveFavoritesItem (const QModelIndex&);
 	void viewerSettingsChanged ();
+	void cacheSettingsChanged ();
 	void updateFavoritesFilter ();
 	void updateHistoryFilter ();
 	void handleError (const QString&);

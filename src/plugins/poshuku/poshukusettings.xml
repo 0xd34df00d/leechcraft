@@ -17,6 +17,8 @@
 			</item>
 		</tab>
 		<tab>
+			<label lang="en" value="Behavior" />
+			<label lang="ru" value="Поведение" />
 			<item type="checkbox" property="BackgroundNewTabs" state="on">
 				<label lang="en" value="Open new tabs in the background" />
 				<label lang="ru" value="Открывать новые вкладки в фоне" />
@@ -25,13 +27,23 @@
 				<label lang="en" value="Differ download locations by file extension" />
 				<label lang="ru" value="Различать папки для скачивания по расширению файла" />
 			</item>
-			<label lang="en" value="Behavior" />
-			<label lang="ru" value="Поведение" />
 			<item type="lineedit" property="ExternalSchemes" default="smb nfs telnet imap pop nntp news">
 				<label lang="en" value="Open these schemes using external applications:" />
 				<label lang="ru" value="Открывать эти схемы внешними приложениями:" />
 			</item>
 		</tab>
+		<tab>
+			<label lang="en" value="Cache" />
+			<label lang="ru" value="Кэш" />
+			<groupbox>
+				<label lang="en" value="In-memory" />
+				<label lang="ru" value="В памяти" />
+				<item type="spinbox" property="MaximumPagesInCache" minimum="5" maximum="1000" step="5">
+					<label lang="en" value="Maximum pages:" />
+					<label lang="ru" value="Максимум страниц:" />
+				</item>
+				<item type="doublespinbox" property="MinDeadCapacity" minimum="0" maximum="
+			</groupbox>
 	</page>
 	<page>
 		<label lang="en" value="Viewer settings" />

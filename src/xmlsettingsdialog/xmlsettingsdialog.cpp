@@ -525,6 +525,8 @@ void XmlSettingsDialog::DoDoubleSpinbox (const QDomElement& item, QFormLayout *l
         box->setSingleStep (item.attribute ("step").toDouble ());
     if (item.hasAttribute ("suffix"))
         box->setSuffix (item.attribute ("suffix"));
+	if (item.hasAttribute ("precision"))
+		box->setDecimals (item.attribute ("precision").toInt ());
     LangElements langs = GetLangElements (item);
     if (langs.Valid_)
     {

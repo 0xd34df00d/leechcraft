@@ -2,6 +2,7 @@
 #include <QMessageBox>
 #include <QWebSettings>
 #include <QHeaderView>
+#include <QDir>
 #include <QUrl>
 #include <QtDebug>
 #include <plugininterface/util.h>
@@ -22,6 +23,21 @@ void Poshuku::Init ()
 	Ui_.setupUi (this);
 
 	RegisterSettings ();
+
+	QDir iconDir = QDir::home ();
+	iconDir.cd (".leechcraft");
+	iconDir.cd ("poshuku");
+	if (!iconDir.exists ("favicons") && !iconDir.mkdir ("favicons"))
+		QMessageBox::warning (0,
+				tr ("Warning"),
+				tr ("Could not create icon database at %1")
+					.arg (QDir::toNativeSeparators (iconDir
+							.absoluteFilePath ("favicons"))));
+	else
+	{
+		iconDir.cd ("favicons");
+		QWebSettings::setIconDatabasePath (iconDir.absolutePath ());
+	}
 
 	XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
     XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
@@ -166,6 +182,7 @@ void Poshuku::RegisterSettings ()
 		<< "UserStyleSheet";
 	XmlSettingsManager::Instance ()->RegisterObject (viewerSettings,
 			this, "viewerSettingsChanged");
+	viewerSettingsChanged ();
 }
 
 void Poshuku::SetupFavoritesFilter ()
@@ -288,6 +305,17 @@ void Poshuku::viewerSettingsChanged ()
 			XmlSettingsManager::Instance ()->property ("AllowJavaScript").toBool ());
 	QWebSettings::globalSettings ()->setUserStyleSheetUrl (QUrl (XmlSettingsManager::
 				Instance ()->property ("UserStyleSheet").toString ()));
+}
+
+void Poshuku::cacheSettingsChanged ()
+{
+	QWebSettings::setMaximumPagesInCache (XmlSettingsManager::Instance ()->
+			property ("MaximumPagesInCache").toInt ());
+	QWebSettings::setObjectCacheCapacities (
+			XmlSettingsManager::Instance ()->property ("MinDeadCapacity").toInt () * 1024,
+			XmlSettingsManager::Instance ()->property ("MaxDeadCapacity").toInt () * 1024,
+			XmlSettingsManager::Instance ()->property ("TotalCapacity").toInt () * 1024
+			);
 }
 
 void Poshuku::updateFavoritesFilter ()
