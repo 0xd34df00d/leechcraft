@@ -320,8 +320,6 @@ void Poshuku::viewerSettingsChanged ()
 
 void Poshuku::cacheSettingsChanged ()
 {
-	qDebug () << Q_FUNC_INFO << QWebSettings::maximumPagesInCache ();
-
 	QWebSettings::setMaximumPagesInCache (XmlSettingsManager::Instance ()->
 			property ("MaximumPagesInCache").toInt ());
 	QWebSettings::setObjectCacheCapacities (
