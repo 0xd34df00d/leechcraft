@@ -205,7 +205,8 @@ void BrowserWidget::PrintImpl (bool preview)
 
 void BrowserWidget::handleIconChanged ()
 {
-	emit iconChanged (Ui_.WebView_->icon ());
+	qDebug () << Q_FUNC_INFO;
+	emit iconChanged (QIcon (Ui_.WebView_->icon ().pixmap (QSize (32, 32)).scaled (32, 32)));
 }
 
 void BrowserWidget::handleStatusBarMessage (const QString& msg)
