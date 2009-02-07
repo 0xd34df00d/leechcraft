@@ -118,6 +118,9 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	SplashScreen_->finish (this);
 	show ();
 	delete SplashScreen_;
+
+	WasMaximized_ = isMaximized ();
+	Ui_.ActionFullscreenMode_->setChecked (isFullScreen ());
 }
 
 LeechCraft::MainWindow::~MainWindow ()
@@ -259,7 +262,8 @@ void LeechCraft::MainWindow::SetStatusBar ()
 	statusBar ()->addPermanentWidget (UploadSpeed_);
 	statusBar ()->addPermanentWidget (USpeedGraph_);
 	statusBar ()->addPermanentWidget (Clock_);
-	Clock_->hide ();
+	if (!isFullScreen ())
+		Clock_->hide ();
 }
 
 void LeechCraft::MainWindow::SetTrayIcon ()
