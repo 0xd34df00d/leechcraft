@@ -8,6 +8,7 @@
 #include <QMenu>
 #include <QToolBar>
 #include <QtWebKit>
+#include <QQueue>
 #include <QCursor>
 #include <QKeyEvent>
 #include <plugininterface/tagscompletionmodel.h>
@@ -60,6 +61,8 @@ struct Aggregator_Impl
     QAction *ActionExportOPML_;
 	QAction *ActionImportBinary_;
 	QAction *ActionExportBinary_;
+
+	QQueue<QString> ErrorQueue_;
 
 	std::auto_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 	std::auto_ptr<ChannelsFilterModel> ChannelsFilterModel_;
@@ -414,10 +417,31 @@ void Aggregator::SetupActions ()
 	Impl_->ActionExportBinary_->setProperty ("ActionIcon", "aggregator_exportbinary");
 }
 
+void Aggregator::ScheduleShowError ()
+{
+	if (Impl_->ErrorQueue_.size () > 1)
+		return;
+
+	QTimer::singleShot (500,
+			this,
+			SLOT (showError ()));
+}
+
 void Aggregator::showError (const QString& msg)
 {
-    qWarning () << Q_FUNC_INFO << msg;
-	QMessageBox::warning (0, tr ("Error"), msg);
+	Impl_->ErrorQueue_.enqueue (msg);
+	ScheduleShowError ();
+}
+
+void Aggregator::showError ()
+{
+	while (Impl_->ErrorQueue_.size ())
+	{
+		QMessageBox::critical (this,
+				tr ("Error"),
+				Impl_->ErrorQueue_.dequeue ());
+		QApplication::processEvents ();
+	}
 }
 
 void Aggregator::on_ActionAddFeed__triggered ()

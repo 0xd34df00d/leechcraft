@@ -49,8 +49,10 @@ protected:
 private:
 	QToolBar* SetupMenuBar ();
 	void SetupActions ();
+	void ScheduleShowError ();
 private slots:
     void showError (const QString&);
+	void showError ();
     void on_ActionAddFeed__triggered ();
     void on_ActionRemoveFeed__triggered ();
     void on_ActionMarkChannelAsRead__triggered ();
