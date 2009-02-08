@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 #include <QObject>
+#include <QUrl>
 #include <QTimer>
 #include <plugininterface/tagscompletionmodel.h>
 #include "favoritesmodel.h"
@@ -40,6 +41,7 @@ class Core : public QObject
 	QStringList RestoredURLs_;
 
 	QMap<QString, QString> SavedSession_;
+	QList<QAction*> Unclosers_;
 
 	Core ();
 public:
@@ -63,6 +65,7 @@ private:
 	void ScheduleSaveSession ();
 	void HandleHistory (QWebView*);
 private slots:
+	void handleUnclose ();
 	void handleTitleChanged (const QString&);
 	void handleURLChanged (const QString&);
 	void handleIconChanged (const QIcon&);
@@ -82,6 +85,7 @@ signals:
 	void error (const QString&) const;
 	void statusBarChanged (QWidget*, const QString&);
 	void gotEntity (const QByteArray&);
+	void newUnclose (QAction*);
 };
 
 #endif

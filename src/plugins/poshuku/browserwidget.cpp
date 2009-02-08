@@ -104,6 +104,7 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	moreMenu->addAction (PrintPreview_);
 	moreMenu->addAction (ScreenSave_);
 	RecentlyClosed_ = moreMenu->addMenu (tr ("Recently closed"));
+	RecentlyClosed_->setEnabled (false);
 
 	QWidgetAction *addressBar = new QWidgetAction (this);
 	addressBar->setDefaultWidget (Ui_.URLEdit_);
@@ -182,6 +183,11 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			this,
 			SLOT (enableActions ()));
 
+	connect (&Core::Instance (),
+			SIGNAL (newUnclose (QAction*)),
+			this,
+			SLOT (handleNewUnclose (QAction*)));
+
 	QCompleter *completer = new QCompleter (this);
 	completer->setModel (Core::Instance ().GetURLCompletionModel ());
 	Ui_.URLEdit_->setCompleter (completer);
@@ -198,6 +204,13 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 BrowserWidget::~BrowserWidget ()
 {
 	Core::Instance ().Unregister (this);
+}
+
+void BrowserWidget::SetUnclosers (const QList<QAction*>& unclosers)
+{
+	RecentlyClosed_->addActions (unclosers);
+	if (unclosers.size ())
+		RecentlyClosed_->setEnabled (true);
 }
 
 CustomWebView* BrowserWidget::GetView () const
@@ -347,6 +360,28 @@ void BrowserWidget::handleNewTab ()
 void BrowserWidget::focusLineEdit ()
 {
 	Ui_.URLEdit_->setFocus (Qt::OtherFocusReason);
+}
+
+void BrowserWidget::handleNewUnclose (QAction *action)
+{
+	QList<QAction*> actions = RecentlyClosed_->actions ();
+	if (actions.size ())
+		RecentlyClosed_->insertAction (actions.first (), action);
+	else
+	{
+		RecentlyClosed_->addAction (action);
+	}
+	RecentlyClosed_->setEnabled (true);
+	connect (action,
+			SIGNAL (destroyed (QObject*)),
+			this,
+			SLOT (handleUncloseDestroyed ()));
+}
+
+void BrowserWidget::handleUncloseDestroyed ()
+{
+	if (!RecentlyClosed_->actions ().size ())
+		RecentlyClosed_->setEnabled (false);
 }
 
 void BrowserWidget::enableActions ()

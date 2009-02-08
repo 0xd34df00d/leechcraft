@@ -62,6 +62,8 @@ QWebView* CustomWebView::createWindow (QWebPage::WebWindowType type)
 {
 	if (type == QWebPage::WebModalDialog)
 	{
+		// We don't need to register it in the Core, so construct
+		// directly.
 		BrowserWidget *widget = new BrowserWidget (this);
 		widget->setWindowFlags (Qt::Dialog);
 		widget->setAttribute (Qt::WA_DeleteOnClose);

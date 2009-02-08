@@ -21,6 +21,7 @@ public:
 	BrowserWidget (QWidget* = 0);
 	virtual ~BrowserWidget ();
 
+	void SetUnclosers (const QList<QAction*>&);
 	CustomWebView* GetView () const;
 	void SetURL (const QUrl&);
 private:
@@ -37,6 +38,8 @@ private slots:
 	void handleScreenSave ();
 	void handleNewTab ();
 	void focusLineEdit ();
+	void handleNewUnclose (QAction*);
+	void handleUncloseDestroyed ();
 	void enableActions ();
 signals:
 	void titleChanged (const QString&);

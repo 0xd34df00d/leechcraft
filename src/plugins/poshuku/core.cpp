@@ -122,7 +122,9 @@ QUrl Core::MakeURL (QString url) const
 
 BrowserWidget* Core::NewURL (const QString& url, bool raise)
 {
-	BrowserWidget *widget = new BrowserWidget;
+	BrowserWidget *widget = new BrowserWidget ();
+	widget->SetUnclosers (Unclosers_);
+	Widgets_.push_back (widget);
 
 	emit addNewTab (tr (""), widget);
 
@@ -156,8 +158,6 @@ BrowserWidget* Core::NewURL (const QString& url, bool raise)
 			SIGNAL (gotEntity (const QByteArray&)));
 
 	widget->SetURL (QUrl (url));
-
-	Widgets_.push_back (widget);
 
 	if (raise)
 		emit raiseTab (widget);
@@ -222,6 +222,28 @@ void Core::Unregister (BrowserWidget *widget)
 		return;
 	}
 
+	QString title = widget->GetView ()->title ();
+	if (title.isEmpty ())
+		title = widget->GetView ()->url ().toString ();
+
+	if (!title.isEmpty ())
+	{
+		if (title.size () > 103)
+			title = title.left (100) + "...";
+		QAction *action = new QAction (widget->GetView ()->icon (),
+				title, this);
+		action->setData (widget->GetView ()->url ());
+
+		connect (action,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleUnclose ()));
+
+		emit newUnclose (action);
+
+		Unclosers_.push_front (action);
+	}
+
 	Widgets_.erase (pos);
 
 	ScheduleSaveSession ();
@@ -283,6 +305,14 @@ void Core::HandleHistory (QWebView *view)
 				url, QDateTime::currentDateTime ());
 }
 
+void Core::handleUnclose ()
+{
+	QAction *action = qobject_cast<QAction*> (sender ());
+	NewURL (action->data ().toUrl ().toString ());
+	Unclosers_.removeAll (action);
+	action->deleteLater ();
+}
+
 void Core::handleTitleChanged (const QString& newTitle)
 {
 	emit changeTabName (dynamic_cast<QWidget*> (sender ()), newTitle);
@@ -307,7 +337,6 @@ void Core::handleNeedToClose ()
 	BrowserWidget *w = dynamic_cast<BrowserWidget*> (sender ());
 	emit removeTab (w);
 
-	Widgets_.erase (std::find (Widgets_.begin (), Widgets_.end (), w));
 	w->deleteLater ();
 
 	ScheduleSaveSession ();
