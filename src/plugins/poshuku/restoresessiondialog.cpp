@@ -1,5 +1,6 @@
 #include "restoresessiondialog.h"
 #include <QtDebug>
+#include <QHeaderView>
 #include <QUrl>
 #include <QWebSettings>
 
@@ -7,6 +8,11 @@ RestoreSessionDialog::RestoreSessionDialog (QWidget *parent)
 : QDialog (parent)
 {
 	Ui_.setupUi (this);
+
+	QHeaderView *header = Ui_.Pages_->header ();
+	header->resizeSection (0,
+			fontMetrics ().width ("This is an averate web site name, "
+				"with stuff from the Web 2.0 era"));
 }
 
 RestoreSessionDialog::~RestoreSessionDialog ()
