@@ -169,6 +169,7 @@ void HistoryModel::writeSettings ()
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
 			Proxy::Instance ()->GetApplicationName () + "_CSTP");
 	settings.beginWriteArray ("History");
+	settings.remove ("");
 	std::for_each (Items_.begin (), Items_.end (),
 			WriteOut (settings));
 	SaveScheduled_ = false;
