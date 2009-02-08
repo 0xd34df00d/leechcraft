@@ -203,14 +203,24 @@ void Task::redirectedConstruction (const QString& newUrl)
 
 void Task::handleMetaDataChanged ()
 {
-	QVariant locHeader = Reply_->header (QNetworkRequest::LocationHeader);
-	if (locHeader.isValid ())
+	QByteArray newUrl = Reply_->rawHeader ("Location");
+	if (newUrl.size ())
 	{
-		QString newUrl = locHeader.toString ();
-		if (!QUrl (newUrl).isValid () ||
-				RedirectHistory_.contains (newUrl, Qt::CaseInsensitive))
+		if (!QUrl (newUrl).isValid ())
 		{
-			qDebug () << Q_FUNC_INFO << "redirection failed, possibly a loop detected" << newUrl;
+			qWarning () << Q_FUNC_INFO
+				<< "invalid redirect URL"
+				<< newUrl
+				<< "for"
+				<< Reply_->url ();
+		}
+		else if (RedirectHistory_.contains (newUrl, Qt::CaseInsensitive))
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "redir loop detected"
+				<< newUrl
+				<< "for"
+				<< Reply_->url ();
 			emit done (true);
 		}
 		else
