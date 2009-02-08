@@ -701,12 +701,12 @@ void Core::RemoveTorrent (int pos)
     if (!CheckValidity (pos))
         return;
 
+    beginRemoveRows (QModelIndex (), pos, pos);
     Session_->remove_torrent (Handles_.at (pos).Handle_);
 	int id = Handles_.at (pos).ID_;
-    beginRemoveRows (QModelIndex (), pos, pos);
     Handles_.removeAt (pos);
-    endRemoveRows ();
 	IDPool_.push_front (id);
+    endRemoveRows ();
 
 	ScheduleSave ();
 	emit taskRemoved (id);
