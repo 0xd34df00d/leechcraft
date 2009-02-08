@@ -1,7 +1,7 @@
 #include "favoritesdelegate.h"
 #include <plugininterface/tagslineedit.h>
+#include <plugininterface/tagscompletionmodel.h>
 #include "core.h"
-#include "tagscompletionmodel.h"
 #include "filtermodel.h"
 #include "favoritesmodel.h"
 

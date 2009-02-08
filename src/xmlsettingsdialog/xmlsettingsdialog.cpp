@@ -18,6 +18,7 @@
 #include <QSpinBox>
 #include <QDoubleSpinBox>
 #include <QPushButton>
+#include <QDir>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QFontComboBox>

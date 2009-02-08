@@ -182,7 +182,7 @@
   <customwidget>
    <class>LeechCraft::Util::TagsLineEdit</class>
    <extends>QWidget</extends>
-   <header location="global" >tagslineedit.h</header>
+   <header location="global" >plugininterface/tagslineedit.h</header>
   </customwidget>
   <customwidget>
    <class>FavoritesTreeView</class>

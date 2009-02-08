@@ -1,12 +1,13 @@
-INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR}
-	${QT_QTCORE_INCLUDE_DIR}
-    ${QT_QTGUI_INCLUDE_DIR}
-	${QT_QTNETWORK_INCLUDE_DIR}
-    ${QT_QTXML_INCLUDE_DIR}
-    ${QT_QTWEBKIT_INCLUDE_DIR}
-	${QT_QTSQL_INCLUDE_DIR}
-    ${Boost_INCLUDE_DIRS}
-	${CMAKE_CURRENT_BINARY_DIR} ../.. .)
+SET (QT_USE_QTSQL TRUE)
+SET (QT_USE_QTXML TRUE)
+SET (QT_USE_QTWEBKIT TRUE)
+SET (QT_USE_QTNETWORK TRUE)
+INCLUDE (${QT_USE_FILE})
+INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS}
+	${CMAKE_CURRENT_BINARY_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
+	${LEECHCRAFT_INCLUDE_DIR}
+	)
 
 SET (SRCS
     aggregator.cpp
@@ -124,11 +125,13 @@ ADD_LIBRARY (leechcraft_aggregator SHARED
 	${SRCS}
 	${MOC_SRCS}
 	${UIS_H}
-	${RCCS})
+	${RCCS}
+	)
 LINK_DIRECTORIES (${Boost_LIBRARY_DIR})
 TARGET_LINK_LIBRARIES (leechcraft_aggregator
-			${Boost_DATE_TIME_LIBRARY}
-                        ${QT_LIBRARIES}
-                        plugininterface
-                        xmlsettingsdialog)
+	${Boost_DATE_TIME_LIBRARY}
+	${QT_LIBRARIES}
+	plugininterface
+	xmlsettingsdialog
+	)
 INSTALL (TARGETS leechcraft_aggregator DESTINATION ${LC_PLUGINS_DEST})
