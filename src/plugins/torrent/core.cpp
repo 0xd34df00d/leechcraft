@@ -1646,9 +1646,9 @@ void Core::ManipulateSettings ()
     SetOverallUploadRate (XmlSettingsManager::Instance ()->
 			Property ("UploadRateLimit", 5000).toInt ());
     SetMaxDownloadingTorrents (XmlSettingsManager::Instance ()->
-			Property ("MaxDownloadingTorrents", 0).toInt ());
+			Property ("MaxDownloadingTorrents", -1).toInt ());
     SetMaxUploadingTorrents (XmlSettingsManager::Instance ()->
-			Property ("MaxUploadingTorrents", 0).toInt ());
+			Property ("MaxUploadingTorrents", -1).toInt ());
     SetDesiredRating (XmlSettingsManager::Instance ()->
 			Property ("DesiredRating", 0).toInt ());
 
