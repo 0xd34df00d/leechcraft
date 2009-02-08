@@ -105,6 +105,7 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	moreMenu->addAction (ScreenSave_);
 	RecentlyClosed_ = moreMenu->addMenu (tr ("Recently closed"));
 	RecentlyClosed_->setEnabled (false);
+	RecentlyClosed_->menuAction ()->setShortcut (tr ("Ctrl+Shift+T"));
 
 	QWidgetAction *addressBar = new QWidgetAction (this);
 	addressBar->setDefaultWidget (Ui_.URLEdit_);
@@ -210,7 +211,22 @@ void BrowserWidget::SetUnclosers (const QList<QAction*>& unclosers)
 {
 	RecentlyClosed_->addActions (unclosers);
 	if (unclosers.size ())
+	{
 		RecentlyClosed_->setEnabled (true);
+		RecentlyClosed_->setDefaultAction (unclosers.front ());
+		connect (RecentlyClosed_->menuAction (),
+				SIGNAL (triggered ()),
+				unclosers.front (),
+				SLOT (trigger ()));
+
+		foreach (QAction *action, unclosers)
+		{
+			connect (action,
+					SIGNAL (destroyed (QObject*)),
+					this,
+					SLOT (handleUncloseDestroyed ()));
+		}
+	}
 }
 
 CustomWebView* BrowserWidget::GetView () const
@@ -372,6 +388,15 @@ void BrowserWidget::handleNewUnclose (QAction *action)
 		RecentlyClosed_->addAction (action);
 	}
 	RecentlyClosed_->setEnabled (true);
+	RecentlyClosed_->setDefaultAction (action);
+	disconnect (RecentlyClosed_->menuAction (),
+			SIGNAL (triggered ()),
+			0,
+			0);
+	connect (RecentlyClosed_->menuAction (),
+			SIGNAL (triggered ()),
+			action,
+			SLOT (trigger ()));
 	connect (action,
 			SIGNAL (destroyed (QObject*)),
 			this,
@@ -382,6 +407,18 @@ void BrowserWidget::handleUncloseDestroyed ()
 {
 	if (!RecentlyClosed_->actions ().size ())
 		RecentlyClosed_->setEnabled (false);
+	else
+	{
+		disconnect (RecentlyClosed_->menuAction (),
+				SIGNAL (triggered ()),
+				0,
+				0);
+		connect (RecentlyClosed_->menuAction (),
+				SIGNAL (triggered ()),
+				RecentlyClosed_->actions ().front (),
+				SLOT (trigger ()));
+		RecentlyClosed_->setDefaultAction (RecentlyClosed_->actions ().front ());
+	}
 }
 
 void BrowserWidget::enableActions ()
