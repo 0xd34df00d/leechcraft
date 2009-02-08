@@ -152,8 +152,6 @@ QObjectList LeechCraft::PluginManager::GetAllPlugins () const
 
 void LeechCraft::PluginManager::CheckPlugins ()
 {
-	bool shouldValidate = !(QCoreApplication::arguments ().contains ("-nopupcheck") ||
-			XmlSettingsManager::Instance ()->Property ("FirstStart", true).toBool ());
     for (int i = 0; i < Plugins_.size (); ++i)
     {
         QPluginLoader *loader = Plugins_.at (i);
@@ -187,13 +185,6 @@ void LeechCraft::PluginManager::CheckPlugins ()
             Plugins_.removeAt (i--);
             continue;
         }
-
-		if (shouldValidate && !ValidatePlugin (loader))
-		{
-			qWarning () << "Plugin validation failed" << loader->fileName ();
-            Plugins_.removeAt (i--);
-            continue;
-		}
     }
 }
 
@@ -347,130 +338,6 @@ QObject* LeechCraft::PluginManager::GetProvider (const QString& feature) const
 QObjectList LeechCraft::PluginManager::GetSelectedDownloaderWatchers () const
 {
 	return SelectedDownloaderWatchers_;
-}
-
-bool LeechCraft::PluginManager::ValidatePlugin (QPluginLoader *loader) const
-{
-	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-			Proxy::Instance ()->GetApplicationName ());
-	settings.beginGroup ("Plugins");
-
-	QObject *pluginEntity = loader->instance ();
-	IInfo *iinfo = qobject_cast<IInfo*> (pluginEntity);
-
-	QString name = iinfo->GetName (),
-			info = iinfo->GetInfo (),
-			path = loader->fileName ();
-	QFile file (path);
-	if (!file.open (QIODevice::ReadOnly))
-	{
-		qWarning () << "Could not read plugin's file"
-			<< path;
-		return false;
-	}
-	QByteArray sha1 = QCryptographicHash::hash (file.readAll (),
-			QCryptographicHash::Sha1);
-	settings.beginGroup (name);
-	if (!settings.contains ("info"))
-	{
-		QString msg = tr ("The plugin %1 found at"
-				"<br /><code>%2</code><br />which describes itself as"
-				"<br /><em>%3</em><br />with SHA1 hash"
-				"<br /><code>%4</code><br /> is found. Would you like "
-				"to load it?")
-			.arg (name)
-			.arg (path)
-			.arg (info)
-			.arg (QString (sha1.toBase64 ()));
-
-		if (QMessageBox::question (0,
-					tr ("Question"),
-					msg,
-					QMessageBox::Yes | QMessageBox::No) !=
-				QMessageBox::Yes)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "refused to load new plugin"
-				<< name
-				<< path
-				<< info
-				<< sha1.toBase64 ();
-			return false;
-		}
-		else
-		{
-			settings.setValue ("info", info);
-			settings.setValue ("sha1", sha1);
-		}
-	}
-	else
-	{
-		if (settings.value ("info").toString () != info)
-		{
-			QString msg = tr ("The plugin %1 at<br /><code>%2</code><br />"
-					"previously described itself as<br /><em>%3</em><br />"
-					"but now describes as<br /><em>%4</em><br />It's SHA1 "
-					"hash is<br /><code>%5</code><br />Would you like to "
-					"load it?")
-				.arg (name)
-				.arg (path)
-				.arg (info)
-				.arg (settings.value ("info").toString ())
-				.arg (QString (sha1.toBase64 ()));
-
-			if (QMessageBox::question (0,
-						tr ("Question"),
-						msg,
-						QMessageBox::Yes | QMessageBox::No) !=
-					QMessageBox::Yes)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "refused to load changed description"
-					<< name
-					<< path
-					<< info
-					<< sha1.toBase64 ();
-				return false;
-			}
-			else
-				settings.setValue ("info", info);
-		}
-
-		if (settings.value ("sha1").toByteArray () != sha1)
-		{
-			QString msg = tr ("Plugin %1 at<br /><code>%2</code><br />"
-					"which describes itself as<br /><em>%3</em><br />"
-					"has its SHA1 hash changed. Old one:"
-					"<br /><code>%4</code><br />new one:"
-					"<br /><code>%5</code><br />Do you still want to "
-					"load it?")
-				.arg (name)
-				.arg (path)
-				.arg (info)
-				.arg (QString (settings.value ("sha1").toByteArray ().toBase64 ()))
-				.arg (QString (sha1.toBase64 ()));
-			if (QMessageBox::question (0,
-						tr ("Question"),
-						msg,
-						QMessageBox::Yes | QMessageBox::No) !=
-					QMessageBox::Yes)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "refused to load changed hash"
-					<< name
-					<< path
-					<< info
-					<< sha1.toBase64 ();
-				return false;
-			}
-			else
-				settings.setValue ("sha1", sha1);
-		}
-	}
-	settings.endGroup ();
-
-	settings.endGroup ();
-	return true;
 }
 
 void LeechCraft::PluginManager::FindPlugins ()

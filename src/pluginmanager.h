@@ -66,7 +66,6 @@ namespace LeechCraft
 		QObject* GetProvider (const QString&) const;
 		QObjectList GetSelectedDownloaderWatchers () const;
     private:
-		bool ValidatePlugin (QPluginLoader*) const;
         void FindPlugins ();
     signals:
         void downloadFinished (QString);
