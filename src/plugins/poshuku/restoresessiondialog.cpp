@@ -1,4 +1,7 @@
 #include "restoresessiondialog.h"
+#include <QtDebug>
+#include <QUrl>
+#include <QWebSettings>
 
 RestoreSessionDialog::RestoreSessionDialog (QWidget *parent)
 : QDialog (parent)
@@ -16,6 +19,11 @@ void RestoreSessionDialog::AddPair (const QString& title,
 	QTreeWidgetItem *item = new QTreeWidgetItem (Ui_.Pages_,
 			QStringList (title) << url);
 	item->setData (0, Qt::CheckStateRole, Qt::Checked);
+	// Do not remote this debugging output, for some reason QWebSettings
+	// returns a valid icon only in a second or third call to the DB.
+	qDebug () << QWebSettings::iconForUrl (QUrl (url))
+		<< QWebSettings::iconForUrl (QUrl (url)).isNull ();
+	item->setIcon (0, QWebSettings::iconForUrl (QUrl (url)));
 }
 
 QStringList RestoreSessionDialog::GetSelectedURLs () const
