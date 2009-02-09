@@ -450,9 +450,14 @@ void Core::UpdateFeed (const QModelIndex& index)
 	UpdateFeed (url, isd);
 }
 
-QModelIndex Core::GetUnreadChannelIndex ()
+QModelIndex Core::GetUnreadChannelIndex () const
 {
 	return ChannelsModel_->GetUnreadChannelIndex ();
+}
+
+int Core::GetUnreadChannelsNumber () const
+{
+	return ChannelsModel_->GetUnreadChannelsNumber ();
 }
 
 void Core::AddToItemBucket (const QModelIndex& index) const

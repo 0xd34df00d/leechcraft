@@ -230,6 +230,19 @@ QModelIndex ChannelsModel::GetUnreadChannelIndex () const
     return QModelIndex ();
 }
 
+int ChannelsModel::GetUnreadChannelsNumber () const
+{
+	int result = 0;
+    for (int i = 0; i < RootItem_->ChildCount (); ++i)
+    {
+        TreeItem *item = RootItem_->Child (i);
+        ChannelShort channel = TreeItem2Channel_ [item];
+        if (channel.Unread_)
+			++result;
+    }
+	return result;
+}
+
 int ChannelsModel::GetUnreadItemsNumber () const
 {
 	int result = 0;

@@ -88,7 +88,7 @@ void Aggregator::Init ()
 
 	Impl_->ToolBar_ = SetupMenuBar ();
 	Impl_->ControlToolBar_ = SetupMenuBar ();
-	Impl_->TrayIcon_.reset (new QSystemTrayIcon (this));
+	Impl_->TrayIcon_.reset (new QSystemTrayIcon (QIcon (":/resources/images/trayicon.png"), this));
 	Impl_->TrayIcon_->hide ();
 	connect (Impl_->TrayIcon_.get (),
 			SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
@@ -617,28 +617,10 @@ void Aggregator::unreadNumberChanged (int number)
 		return;
 	}
 
-	QString text = QString::number (number);
-
-	QFont font = QApplication::font ();
-	font.setPointSize (12);
-	font.setFamily ("Verdana");
-	QFontMetrics fm = QFontMetrics (font);
-	int width = fm.width (text);
-	int height = fm.height ();
-	int max = std::max (width, height);
-
-	QPixmap pixmap (":/resources/images/trayicon.png");
-	pixmap = pixmap.scaled (max, max);
-	QPainter painter;
-	painter.begin (&pixmap);
-	painter.setFont (font);
-	painter.setPen (Qt::blue);
-	painter.setRenderHints (QPainter::TextAntialiasing);
-	painter.drawText (0, 0, width, height,
-			Qt::AlignCenter, text);
-	painter.end ();
-
-	Impl_->TrayIcon_->setIcon (QIcon (pixmap));
+	QString tip = tr ("%1 unread messages in %2 channels.")
+		.arg (number)
+		.arg (Core::Instance ().GetUnreadChannelsNumber ());
+	Impl_->TrayIcon_->setToolTip (tip);
 	Impl_->TrayIcon_->show ();
 }
 

@@ -116,7 +116,8 @@ public:
 	Feed::FeedSettings GetFeedSettings (const QModelIndex&) const;
 	void SetFeedSettings (const Feed::FeedSettings&, const QModelIndex&);
     void UpdateFeed (const QModelIndex&);
-    QModelIndex GetUnreadChannelIndex ();
+    QModelIndex GetUnreadChannelIndex () const;
+	int GetUnreadChannelsNumber () const;
 	void AddToItemBucket (const QModelIndex&) const;
 	void AddFromOPML (const QString&,
 			const QString&,

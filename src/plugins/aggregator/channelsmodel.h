@@ -40,6 +40,7 @@ public:
     ChannelShort& GetChannelForIndex (const QModelIndex&);
     void RemoveChannel (const ChannelShort&);
     QModelIndex GetUnreadChannelIndex () const;
+	int GetUnreadChannelsNumber () const;
 	int GetUnreadItemsNumber () const;
 signals:
     void channelDataUpdated ();
