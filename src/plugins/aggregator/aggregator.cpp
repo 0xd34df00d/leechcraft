@@ -88,7 +88,7 @@ void Aggregator::Init ()
 
 	Impl_->ToolBar_ = SetupMenuBar ();
 	Impl_->ControlToolBar_ = SetupMenuBar ();
-	Impl_->TrayIcon_.reset (new QSystemTrayIcon (QIcon (":/resources/images/trayicon.png"), this));
+	Impl_->TrayIcon_.reset (new QSystemTrayIcon (QIcon (":/resources/images/aggregator.png"), this));
 	Impl_->TrayIcon_->hide ();
 	connect (Impl_->TrayIcon_.get (),
 			SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
