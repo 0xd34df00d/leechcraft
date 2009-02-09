@@ -30,6 +30,7 @@ namespace LeechCraft
 	private:
 		void FindIconSets ();
 		void FindIcons ();
+		void FillMapping (const QString&, const QString&);
 		void CollectDir (const QString&, const QString&);
 		void CollectSubdir (QDir, const QString&, int);
 		std::vector<int> GetDirForBase (const QString&, const QString&);

@@ -122,9 +122,15 @@ void SkinEngine::FindIconSets ()
 	IconSets_ << dir.entryList (QStringList ("*.mapping"));
 	dir = QDir ("/usr/local/share/leechcraft/icons");
 	IconSets_ << dir.entryList (QStringList ("*.mapping"));
+	dir = QDir::home ();
+	dir.cd (".icons");
+	IconSets_ << dir.entryList (QStringList ("*.mapping"));
 #elif defined (Q_OS_WIN32)
 	QDir dir = QDir::home ();
 	dir.cd (".icons");
+	IconSets_ << dir.entryList (QStringList ("*.mapping"));
+	dir = QDir::current ();
+	dir.cd ("icons");
 	IconSets_ << dir.entryList (QStringList ("*.mapping"));
 #endif
 
@@ -145,38 +151,43 @@ void SkinEngine::FindIcons ()
 
 		OldIconSet_ = iconSet;
 
-#if defined (Q_OS_UNIX)
-		QDir dir ("/usr/share/leechcraft/icons");
-		if (!dir.exists ())
-			dir = "/usr/local/share/leechcraft/icons";
-#elif defined (Q_OS_WIN32)
-		QDir dir = QDir::home ();
-		dir.cd (".icons");
-#endif
-		if (dir.exists (iconSet + ".mapping"))
-		{
-			QFile mappingFile (dir.filePath (iconSet + ".mapping"));
-			if (mappingFile.open (QIODevice::ReadOnly))
-			{
-				QByteArray lineData = mappingFile.readLine ();
-				while (!lineData.isEmpty ())
-				{
-					QStringList pair = QString::fromUtf8 (lineData)
-						.split (' ', QString::SkipEmptyParts);
-					if (pair.size () == 2)
-						IconName2FileName_ [pair.at (0).simplified ()] = pair.at (1).simplified ();
-
-					lineData = mappingFile.readLine ();
-				}
-			}
-		}
+		FillMapping (QDir::homePath () + "/.icons", iconSet);
+		FillMapping (QDir::homePath () + "/.leechcraft/icons", iconSet);
+		CollectDir (QDir::homePath () + "/.icons", iconSet);
+		CollectDir (QDir::homePath () + "/.leechcraft/icons", iconSet);
 
 #if defined (Q_OS_UNIX)
+		FillMapping ("/usr/share/leechcraft/icons", iconSet);
+		FillMapping ("/usr/local/share/leechcraft/icons", iconSet);
 		CollectDir ("/usr/share/icons", iconSet);
 		CollectDir ("/usr/local/share/icons", iconSet);
 #elif defined (Q_OS_WIN32)
-		CollectDir (QApplication::applicationDirPath (), iconSet);
+		FillMapping (QApplication::applicationDirPath () + "/icons", iconSet);
+		CollectDir (QApplication::applicationDirPath () + "/icons", iconSet);
 #endif
+	}
+}
+
+void SkinEngine::FillMapping (const QString& folder, const QString& iconSet)
+{
+	QDir dir (folder);
+
+	if (dir.exists (iconSet + ".mapping"))
+	{
+		QFile mappingFile (dir.filePath (iconSet + ".mapping"));
+		if (mappingFile.open (QIODevice::ReadOnly))
+		{
+			QByteArray lineData = mappingFile.readLine ();
+			while (!lineData.isEmpty ())
+			{
+				QStringList pair = QString::fromUtf8 (lineData)
+					.split (' ', QString::SkipEmptyParts);
+				if (pair.size () == 2)
+					IconName2FileName_ [pair.at (0).simplified ()] = pair.at (1).simplified ();
+
+				lineData = mappingFile.readLine ();
+			}
+		}
 	}
 }
 
