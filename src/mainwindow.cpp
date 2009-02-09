@@ -18,6 +18,7 @@
 #include "zombitechstyle.h"
 #include "logtoolbox.h"
 #include "settingssink.h"
+#include "iconchooser.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -203,8 +204,13 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	XmlSettingsDialog_ = new XmlSettingsDialog ();
 	XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 			":/coresettings.xml");
-	XmlSettingsManager::Instance ()->RegisterObject ("IconSet",
-			this, "updateIconSet");
+	IconChooser *ic = new IconChooser (SkinEngine::Instance ().ListIcons (),
+			this);
+	connect (ic,
+			SIGNAL (requestNewIconSet ()),
+			this,
+			SLOT (updateIconSet ()));
+	XmlSettingsDialog_->SetCustomWidget ("IconSet", ic);
 
 	SettingsSink_ = new SettingsSink (tr ("LeechCraft"), XmlSettingsDialog_);
 

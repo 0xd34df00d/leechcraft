@@ -17,6 +17,7 @@ namespace LeechCraft
 		typedef QMap<int, QString> sizef_t;
 		QMap<QString, QMap<int, QString> > IconName2Path_;
 		QMap<QString, QString> IconName2FileName_;
+		QStringList IconSets_;
 
 		SkinEngine ();
 	public:
@@ -25,7 +26,9 @@ namespace LeechCraft
 
 		void UpdateIconSet (const QList<QAction*>&);
 		void UpdateIconSet (const QList<QTabWidget*>&);
+		QStringList ListIcons () const;
 	private:
+		void FindIconSets ();
 		void FindIcons ();
 		void CollectDir (const QString&, const QString&);
 		void CollectSubdir (QDir, const QString&, int);

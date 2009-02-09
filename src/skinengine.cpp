@@ -14,6 +14,7 @@ using namespace LeechCraft;
 
 SkinEngine::SkinEngine ()
 {
+	FindIconSets ();
 }
 
 SkinEngine& SkinEngine::Instance ()
@@ -107,6 +108,31 @@ void SkinEngine::UpdateIconSet (const QList<QTabWidget*>& tabs)
 	}
 }
 
+QStringList SkinEngine::ListIcons () const
+{
+	return IconSets_;
+}
+
+void SkinEngine::FindIconSets ()
+{
+	IconSets_.clear ();
+
+#if defined (Q_OS_UNIX)
+	QDir dir ("/usr/share/leechcraft/icons");
+	IconSets_ << dir.entryList (QStringList ("*.mapping"));
+	dir = QDir ("/usr/local/share/leechcraft/icons");
+	IconSets_ << dir.entryList (QStringList ("*.mapping"));
+#elif defined (Q_OS_WIN32)
+	QDir dir = QDir::home ();
+	dir.cd (".icons");
+	IconSets_ << dir.entryList (QStringList ("*.mapping"));
+#endif
+
+	for (QStringList::iterator i = IconSets_.begin (),
+			end = IconSets_.end (); i != end; ++i)
+		*i = i->left (i->size () - 8);
+}
+
 void SkinEngine::FindIcons ()
 {
 	QString iconSet = XmlSettingsManager::Instance ()->
@@ -124,8 +150,8 @@ void SkinEngine::FindIcons ()
 		if (!dir.exists ())
 			dir = "/usr/local/share/leechcraft/icons";
 #elif defined (Q_OS_WIN32)
-		QDir dir = QApplication::applicationDirPath ();
-		dir.cd ("icons");
+		QDir dir = QDir::home ();
+		dir.cd (".icons");
 #endif
 		if (dir.exists (iconSet + ".mapping"))
 		{

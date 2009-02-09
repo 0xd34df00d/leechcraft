@@ -10,10 +10,7 @@
 				<label lang="en" value="Show tab names" />
 				<label lang="ru" value="Показывать названия вкладок" />
 			</item>
-			<item type="combobox" property="IconSet" default="oxygen">
-				<scripts>
-					<valueGenerator place="file">:/resources/scripts/iconfinder.qs</valueGenerator>
-				</scripts>
+			<item type="customwidget" name="IconSet">
 				<label lang="en" value="Icon set:" />
 				<label lang="ru" value="Набор иконок:" />
 			</item>

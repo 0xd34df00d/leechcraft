@@ -170,6 +170,7 @@ SET (SRCS
 	sqlstoragebackend.cpp
 	debugmessagehandler.cpp
 	application.cpp
+	iconchooser.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -194,6 +195,7 @@ SET (HEADERS
 	sqlstoragebackend.h
 	debugmessagehandler.h
 	application.h
+	iconchooser.h
 	interfaces/iinfo.h
 	interfaces/iwindow.h
 	interfaces/idownload.h
