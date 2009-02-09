@@ -1,8 +1,8 @@
 CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
-PROJECT (leechcraft-icons-tango)
+PROJECT (leechcraft-icons-tango NONE)
 
-INSTALL (DIRECTORY icons/ DESTINATION share/icons/Tango
-	PATTERN ".svn" EXCLUDE)
+#INSTALL (DIRECTORY icons/ DESTINATION share/icons/Tango
+#	PATTERN ".svn" EXCLUDE)
 
 INSTALL (FILES Tango.mapping DESTINATION share/leechcraft/icons)
 

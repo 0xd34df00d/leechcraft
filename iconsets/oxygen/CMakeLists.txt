@@ -1,5 +1,5 @@
 CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
-PROJECT (leechcraft-icons-oxygen)
+PROJECT (leechcraft-icons-oxygen NONE)
 
 INSTALL (DIRECTORY icons/ DESTINATION share/icons/oxygen
 	PATTERN ".svn" EXCLUDE)

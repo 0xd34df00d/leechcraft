@@ -1,5 +1,5 @@
 CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
-PROJECT (leechcraft-icons-nuvola)
+PROJECT (leechcraft-icons-nuvola NONE)
 
 #INSTALL (DIRECTORY icons/ DESTINATION share/icons/Tango
 #	PATTERN ".svn" EXCLUDE)
