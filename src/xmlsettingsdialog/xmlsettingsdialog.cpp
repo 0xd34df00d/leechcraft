@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2008 by Rudoy Georg <0xd34df00d@gmail.com>
+    Copyright (c) 2008-2009 by Rudoy Georg <0xd34df00d@gmail.com>
 
  ***************************************************************************
  *                                                                         *
@@ -11,6 +11,7 @@
  ***************************************************************************
 */
 #include "xmlsettingsdialog.h"
+#include <stdexcept>
 #include <QFile>
 #include <QtDebug>
 #include <QGroupBox>
@@ -141,6 +142,24 @@ void XmlSettingsDialog::MergeXml (const QByteArray& newXml)
 	Prop2NewValue_.clear ();
 }
 
+void XmlSettingsDialog::SetCustomWidget (const QString& name, QWidget *widget)
+{
+	QList<QWidget*> widgets = findChildren<QWidget*> (name);
+	if (!widgets.size ())
+		throw std::runtime_error (qPrintable (QString ("Widget %1 not "
+						"found").arg (name)));
+	if (widgets.size () > 1)
+		throw std::runtime_error (qPrintable (QString ("Widget %1 "
+						"appears to exist more than once").arg (name)));
+
+	widgets [0]->layout ()->addWidget (widget);
+	Customs_ << widget;
+	connect (widget,
+			SIGNAL (destroyed (QObject*)),
+			this,
+			SLOT (handleCustomDestroyed ()));
+}
+
 void XmlSettingsDialog::HandleDeclaration (const QDomElement& decl)
 {
     if (decl.hasAttribute ("defaultlang"))
@@ -237,6 +256,8 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
         DoCombobox (item, lay);
 	else if (type == "font")
 		DoFont (item, lay);
+	else if (type == "customwidget")
+		DoCustomWidget (item, lay);
     else
         qWarning () << Q_FUNC_INFO << "unhandled type" << type;
 
@@ -443,6 +464,7 @@ QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject
 				!value.canConvert<QFont> ())
 			value = QApplication::font ();
 	}
+	else if (type == "customwidget") ;
     else
         qWarning () << Q_FUNC_INFO << "unhandled type" << type;
 
@@ -463,7 +485,10 @@ void XmlSettingsDialog::DoLineedit (const QDomElement& item, QFormLayout *lay)
         edit->setEchoMode (QLineEdit::Password);
 	if (item.hasAttribute ("inputMask"))
 		edit->setInputMask (item.attribute ("inputMask"));
-    connect (edit, SIGNAL (textChanged (const QString&)), this, SLOT (updatePreferences ()));
+    connect (edit,
+			SIGNAL (textChanged (const QString&)),
+			this,
+			SLOT (updatePreferences ()));
 
 	lay->addRow (label, edit);
 }
@@ -476,7 +501,10 @@ void XmlSettingsDialog::DoCheckbox (const QDomElement& item, QFormLayout *lay)
 	QVariant value = GetValue (item);
 
     box->setCheckState (value.toBool () ? Qt::Checked : Qt::Unchecked);
-    connect (box, SIGNAL (stateChanged (int)), this, SLOT (updatePreferences ()));
+    connect (box,
+			SIGNAL (stateChanged (int)),
+			this,
+			SLOT (updatePreferences ()));
 
     lay->addRow (box);
 }
@@ -507,7 +535,10 @@ void XmlSettingsDialog::DoSpinbox (const QDomElement& item, QFormLayout *lay)
 	QVariant value = GetValue (item);
 
     box->setValue (value.toInt ());
-    connect (box, SIGNAL (valueChanged (int)), this, SLOT (updatePreferences ()));
+    connect (box,
+			SIGNAL (valueChanged (int)),
+			this,
+			SLOT (updatePreferences ()));
 
 	lay->addRow (label, box);
 }
@@ -540,7 +571,10 @@ void XmlSettingsDialog::DoDoubleSpinbox (const QDomElement& item, QFormLayout *l
 	QVariant value = GetValue (item);
 
     box->setValue (value.toDouble ());
-    connect (box, SIGNAL (valueChanged (double)), this, SLOT (updatePreferences ()));
+    connect (box,
+			SIGNAL (valueChanged (double)),
+			this,
+			SLOT (updatePreferences ()));
 
 	lay->addRow (label, box);
 }
@@ -558,7 +592,10 @@ void XmlSettingsDialog::DoGroupbox (const QDomElement& item, QFormLayout *lay)
 	QVariant value = GetValue (item);
 
     box->setChecked (value.toBool ());
-    connect (box, SIGNAL (toggled (bool)), this, SLOT (updatePreferences ()));
+    connect (box,
+			SIGNAL (toggled (bool)),
+			this,
+			SLOT (updatePreferences ()));
     ParseEntity (item, box);
     
     lay->addRow (box);
@@ -577,7 +614,10 @@ void XmlSettingsDialog::DoSpinboxRange (const QDomElement& item, QFormLayout *la
 	QVariant value = GetValue (item);
 
     widget->SetRange (value);
-    connect (widget, SIGNAL (changed ()), this, SLOT (updatePreferences ()));
+    connect (widget,
+			SIGNAL (changed ()),
+			this,
+			SLOT (updatePreferences ()));
 
 	lay->addRow (label, widget);
 }
@@ -590,7 +630,10 @@ void XmlSettingsDialog::DoPath (const QDomElement& item, QFormLayout *lay)
 	QVariant value = GetValue (item);
     picker->SetText (value.toString ());
     picker->setObjectName (item.attribute ("property"));
-    connect (picker, SIGNAL (textChanged (const QString&)), this, SLOT (updatePreferences ()));
+    connect (picker,
+			SIGNAL (textChanged (const QString&)),
+			this,
+			SLOT (updatePreferences ()));
 
 	lay->addRow (label, picker);
 }
@@ -613,7 +656,10 @@ void XmlSettingsDialog::DoRadio (const QDomElement& item, QFormLayout *lay)
 
 	QVariant value = GetValue (item);
 
-    connect (group, SIGNAL (valueChanged ()), this, SLOT (updatePreferences ()));
+    connect (group,
+			SIGNAL (valueChanged ()),
+			this,
+			SLOT (updatePreferences ()));
 
     QGroupBox *box = new QGroupBox (GetLabel (item));
     QVBoxLayout *layout = new QVBoxLayout ();
@@ -687,6 +733,25 @@ void XmlSettingsDialog::DoFont (const QDomElement& item, QFormLayout *lay)
 	label->setWordWrap (false);
 
 	lay->addRow (label, box);
+}
+
+void XmlSettingsDialog::DoCustomWidget (const QDomElement& item, QFormLayout *lay)
+{
+	QWidget *widget = new QWidget (this);
+	widget->setObjectName (item.attribute ("name"));
+	QVBoxLayout *layout = new QVBoxLayout ();
+	layout->setContentsMargins (0, 0, 0, 0);
+	widget->setLayout (layout);
+
+	if (item.attribute ("label") == "own")
+		lay->addRow (widget);
+	else
+	{
+		QLabel *label = new QLabel (GetLabel (item));
+		label->setWordWrap (false);
+
+		lay->addRow (label, widget);
+	}
 }
 
 QList<QImage> XmlSettingsDialog::GetImages (const QDomElement& item) const
@@ -821,6 +886,9 @@ void XmlSettingsDialog::accept ()
 	UpdateXml ();
 
 	Prop2NewValue_.clear ();
+
+	foreach (QWidget *widget, Customs_)
+		QMetaObject::invokeMethod (widget, "accept");
 }
 
 void XmlSettingsDialog::reject ()
@@ -874,6 +942,15 @@ void XmlSettingsDialog::reject ()
     }
 	
 	Prop2NewValue_.clear ();
+
+	foreach (QWidget *widget, Customs_)
+		QMetaObject::invokeMethod (widget, "reject");
+}
+
+void XmlSettingsDialog::handleCustomDestroyed ()
+{
+	QWidget *widget = qobject_cast<QWidget*> (sender ());
+	Customs_.removeAll (widget);
 }
 
 void XmlSettingsDialog::updatePreferences ()

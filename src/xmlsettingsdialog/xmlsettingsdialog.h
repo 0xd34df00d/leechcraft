@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2008 by Rudoy Georg <0xd34df00d@gmail.com>
+    Copyright (c) 2008-2009 by Rudoy Georg <0xd34df00d@gmail.com>
 
  ***************************************************************************
  *                                                                         *
@@ -47,12 +47,55 @@ namespace LeechCraft
 				QPair<bool, QString> Label_;
 				QPair<bool, QString> Suffix_;
 			};
+			QList<QWidget*> Customs_;
 		public:
 			LEECHCRAFT_API XmlSettingsDialog ();
 			LEECHCRAFT_API virtual ~XmlSettingsDialog ();
 			LEECHCRAFT_API void RegisterObject (QObject*, const QString&);
+
+			/** @brief Returns the current XML.
+			 *
+			 * Returns the XML with the default settings set to current
+			 * settings.
+			 *
+			 * @return String with the current XML.
+			 */
 			LEECHCRAFT_API QString GetXml () const;
-			LEECHCRAFT_API void MergeXml (const QByteArray&);
+
+			/** @brief Sets the settings to XML's ones.
+			 *
+			 * Sets settings to defaults of the passed XML.
+			 *
+			 * @param[in] xml The XML to take data from.
+			 */
+			LEECHCRAFT_API void MergeXml (const QByteArray& xml);
+
+			/** @brief Sets custom widget mentioned in the XML.
+			 *
+			 * Sets the placeholder named name, mentioned in the XML, to
+			 * contain the widget. If there is no name or more than one
+			 * name, throws std::runtime_error. Widget's slots accept()
+			 * and reject() would be called when the dialog is accepted
+			 * or rejected.
+			 *
+			 * Default layout of the placeholder is QVBoxLayout, so if
+			 * you call this function more than once with the same name
+			 * but different widget parameters, it would create a nice
+			 * vertical layout of all added widgets in the placeholder.
+			 *
+			 * It's your duty to do anything related to the widget,
+			 * XmlSettingsDialog would only make some place for it and
+			 * notify if the dialog is accepted or rejected.
+			 *
+			 * @param[in] name Name of the placeholder to replace.
+			 * @param[in] widget The widget to add to the layout of the
+			 * placeholder.
+			 *
+			 * @exception std::runtime_error If there is no or more than
+			 * one name.
+			 */
+			LEECHCRAFT_API void SetCustomWidget (const QString& name,
+					QWidget *widget);
 		private:
 			void HandleDeclaration (const QDomElement&);
 			void ParsePage (const QDomElement&);
@@ -71,6 +114,7 @@ namespace LeechCraft
 			void DoRadio (const QDomElement&, QFormLayout*);
 			void DoCombobox (const QDomElement&, QFormLayout*);
 			void DoFont (const QDomElement&, QFormLayout*);
+			void DoCustomWidget (const QDomElement&, QFormLayout*);
 			QList<QImage> GetImages (const QDomElement&) const;
 			void UpdateXml (bool = false);
 			void UpdateSingle (const QString&, const QVariant&, QDomElement&);
@@ -78,6 +122,7 @@ namespace LeechCraft
 			virtual void accept ();
 			virtual void reject ();
 		private slots:
+			void handleCustomDestroyed ();
 			void updatePreferences ();
 		};
 	};
