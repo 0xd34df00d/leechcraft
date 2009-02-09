@@ -40,7 +40,7 @@ void SkinEngine::UpdateIconSet (const QList<QAction*>& actions)
 		QString actionIconOff = (*i)->property ("ActionIconOff").toString ();
 		QString icon;
 		if (IconName2FileName_.contains (actionIcon))
-			icon = IconName2FileName_ [actionIcon] + ".png";
+			icon = IconName2FileName_ [actionIcon];
 		else
 			icon = QString ("lc_") + actionIcon + ".png";
 
@@ -57,7 +57,7 @@ void SkinEngine::UpdateIconSet (const QList<QAction*>& actions)
 		{
 			QString offIcon;
 			if (IconName2FileName_.contains (actionIconOff))
-				offIcon = IconName2FileName_ [actionIconOff] + ".png";
+				offIcon = IconName2FileName_ [actionIconOff];
 			else
 				offIcon = QString ("lc_") + actionIconOff + ".png";
 
@@ -90,7 +90,7 @@ void SkinEngine::UpdateIconSet (const QList<QTabWidget*>& tabs)
 		{
 			QString icon;
 			if (IconName2FileName_.contains (*name))
-				icon = IconName2FileName_ [*name] + ".png";
+				icon = IconName2FileName_ [*name];
 			else
 				icon = QString ("lc_") + *name + ".png";
 
@@ -118,21 +118,22 @@ void SkinEngine::FindIconSets ()
 	IconSets_.clear ();
 
 #if defined (Q_OS_UNIX)
-	QDir dir ("/usr/share/leechcraft/icons");
+	QDir dir = QDir ("/usr/share/leechcraft/icons");
 	IconSets_ << dir.entryList (QStringList ("*.mapping"));
 	dir = QDir ("/usr/local/share/leechcraft/icons");
 	IconSets_ << dir.entryList (QStringList ("*.mapping"));
-	dir = QDir::home ();
-	dir.cd (".icons");
-	IconSets_ << dir.entryList (QStringList ("*.mapping"));
 #elif defined (Q_OS_WIN32)
-	QDir dir = QDir::home ();
-	dir.cd (".icons");
-	IconSets_ << dir.entryList (QStringList ("*.mapping"));
-	dir = QDir::current ();
-	dir.cd ("icons");
-	IconSets_ << dir.entryList (QStringList ("*.mapping"));
+	QDir dir = QDir::current ();
+	if (dir.cd ("icons"))
+		IconSets_ << dir.entryList (QStringList ("*.mapping"));
 #endif
+
+	dir = QDir::home ();
+	if (dir.cd (".icons"))
+		IconSets_ << dir.entryList (QStringList ("*.mapping"));
+	dir = QDir::home ();
+	if (dir.cd (".leechcraft") && dir.cd ("icons"))
+		IconSets_ << dir.entryList (QStringList ("*.mapping"));
 
 	for (QStringList::iterator i = IconSets_.begin (),
 			end = IconSets_.end (); i != end; ++i)
@@ -200,19 +201,29 @@ void SkinEngine::CollectDir (const QString& folder, const QString& iconSet)
 			end = numbers.end (); i != end; ++i)
 	{
 		QDir current = baseDir;
-		QString number = QString::number (*i);
-		int size = number.toInt ();
-		if (size > 32 || size < 16)
-			continue;
+		if (*i == 0)
+		{
+			current.cd ("scalable");
 
-		current.cd (number + 'x' + number);
+			QStringList subdirs = current.entryList (QStringList (),
+					QDir::Dirs | QDir::NoDotAndDotDot);
 
-		QStringList subdirs = current.entryList (QStringList (),
-				QDir::Dirs | QDir::NoDotAndDotDot);
+			for (QStringList::const_iterator j = subdirs.begin (),
+					subdirsEnd = subdirs.end (); j != subdirsEnd; ++j)
+				CollectSubdir (current, *j, *i);
+		}
+		else if (*i >= 16 && *i <= 32)
+		{
+			QString number = QString::number (*i);
+			current.cd (number + 'x' + number);
 
-		for (QStringList::const_iterator j = subdirs.begin (),
-				subdirsEnd = subdirs.end (); j != subdirsEnd; ++j)
-			CollectSubdir (current, *j, size);
+			QStringList subdirs = current.entryList (QStringList (),
+					QDir::Dirs | QDir::NoDotAndDotDot);
+
+			for (QStringList::const_iterator j = subdirs.begin (),
+					subdirsEnd = subdirs.end (); j != subdirsEnd; ++j)
+				CollectSubdir (current, *j, *i);
+		}
 	}
 }
 
@@ -220,7 +231,7 @@ void SkinEngine::CollectSubdir (QDir current, const QString& dir, int size)
 {
 	current.cd (dir);
 	QFileInfoList infos =
-		current.entryInfoList (QStringList ("*.png"),
+		current.entryInfoList (QStringList ("*.png") << "*.svg",
 				QDir::Files | QDir::Readable);
 
 	for (QFileInfoList::const_iterator i = infos.begin (),
@@ -238,6 +249,12 @@ std::vector<int> SkinEngine::GetDirForBase (const QString& base,
 	for (QStringList::const_iterator i = entries.begin (),
 			end = entries.end (); i != end; ++i)
 	{
+		if (*i == "scalable")
+		{
+			numbers.push_back (0);
+			continue;
+		}
+
 		QStringList splitted = i->split ('x');
 		if (splitted.size () != 2)
 			continue;

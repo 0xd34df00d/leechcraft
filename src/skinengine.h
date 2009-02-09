@@ -15,7 +15,7 @@ namespace LeechCraft
 	{
 		QString OldIconSet_;
 		typedef QMap<int, QString> sizef_t;
-		QMap<QString, QMap<int, QString> > IconName2Path_;
+		QMap<QString, sizef_t> IconName2Path_;
 		QMap<QString, QString> IconName2FileName_;
 		QStringList IconSets_;
 
