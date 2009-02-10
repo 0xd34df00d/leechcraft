@@ -247,7 +247,13 @@ void BrowserWidget::Load (const QString& url)
 
 void BrowserWidget::SetHtml (const QString& html, const QString& base)
 {
-	Ui_.WebView_->Load (html, base);
+	Ui_.URLEdit_->clear ();
+	Ui_.WebView_->setHtml (html, base);
+}
+
+QWidget* BrowserWidget::Widget ()
+{
+	return this;
 }
 
 void BrowserWidget::PrintImpl (bool preview)

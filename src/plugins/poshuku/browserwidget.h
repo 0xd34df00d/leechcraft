@@ -8,6 +8,7 @@ class BrowserWidget : public QWidget
 					, public IWebWidget
 {
 	Q_OBJECT
+	Q_INTERFACES (IWebWidget)
 	
 	Ui::BrowserWidget Ui_;
 
@@ -29,6 +30,7 @@ public:
 
 	void Load (const QString&);
 	void SetHtml (const QString&, const QString& = QString ());
+	QWidget* Widget ();
 private:
 	void PrintImpl (bool);
 private slots:
