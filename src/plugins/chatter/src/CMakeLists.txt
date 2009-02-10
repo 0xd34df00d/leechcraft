@@ -1,13 +1,12 @@
 INCLUDE_DIRECTORIES(
-   ${QT_INCLUDES}
-   ${CMAKE_CURRENT_BINARY_DIR}
+	${QT_INCLUDES}
+	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
-   .
-   src
+	.
+	src
 )
 
-FILE(TO_NATIVE_PATH "src/config.h" CONFIG_H)
-CONFIGURE_FILE(src/config.cmake ${CONFIG_H})
+CONFIGURE_FILE(src/config.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 SET(fsirc_SRCS
 src/fsirc.cpp
