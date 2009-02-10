@@ -1,11 +1,19 @@
 #include "browserwidget.h"
 #include <QDebug>
 #include <QToolBar>
+#include "core.h"
+#include "xmlsettingsmanager.h"
 
 BrowserWidget::BrowserWidget (QWidget *parent)
 : QWidget (parent)
 {
 	Ui_.setupUi (this);
+
+	connect (page ()->networkAccessManager (),
+			SIGNAL (sslErrors (QNetworkReply*, const QList<QSslError>&)),
+			&Core::Instance (),
+			SLOT (handleSslError (QNetworkReply*)));
+
 	connect (Ui_.ItemView_,
 			SIGNAL (loadStarted ()),
 			this,
@@ -45,15 +53,32 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	bar->addAction (stop);
 
 	Ui_.ToolLayout_->insertWidget (0, bar);
+
+	QList<QByteArray> viewerSettings;
+	viewerSettings << "StandardFont"
+		<< "FixedFont"
+		<< "SerifFont"
+		<< "SansSerifFont"
+		<< "CursiveFont"
+		<< "FantasyFont"
+		<< "MinimumFontSize"
+		<< "DefaultFontSize"
+		<< "DefaultFixedFontSize"
+		<< "AutoLoadImages"
+		<< "AllowJavaScript";
+	XmlSettingsManager::Instance ()->RegisterObject (viewerSettings,
+			this, "viewerSettingsChanged");
+
+	viewerSettingsChanged ();
 }
 
 BrowserWidget::~BrowserWidget ()
 {
 }
 
-void BrowserWidget::setHtml (const QString& html)
+void BrowserWidget::setHtml (const QString& html, const QString& base)
 {
-	Ui_.ItemView_->setHtml (html);
+	Ui_.ItemView_->setHtml (html, base);
 }
 
 QWebPage* BrowserWidget::page () const
@@ -86,5 +111,32 @@ void BrowserWidget::loadProgress (int progress)
 QWebSettings *BrowserWidget::settings () const
 {
 	return Ui_.ItemView_->settings ();
+}
+
+void BrowserWidget::viewerSettingsChanged ()
+{
+	Ui_.ItemView_->settings ()->setFontFamily (QWebSettings::StandardFont,
+			XmlSettingsManager::Instance ()->property ("StandardFont").value<QFont> ().family ());
+	Ui_.ItemView_->settings ()->setFontFamily (QWebSettings::FixedFont,
+			XmlSettingsManager::Instance ()->property ("FixedFont").value<QFont> ().family ());
+	Ui_.ItemView_->settings ()->setFontFamily (QWebSettings::SerifFont,
+			XmlSettingsManager::Instance ()->property ("SerifFont").value<QFont> ().family ());
+	Ui_.ItemView_->settings ()->setFontFamily (QWebSettings::SansSerifFont,
+			XmlSettingsManager::Instance ()->property ("SansSerifFont").value<QFont> ().family ());
+	Ui_.ItemView_->settings ()->setFontFamily (QWebSettings::CursiveFont,
+			XmlSettingsManager::Instance ()->property ("CursiveFont").value<QFont> ().family ());
+	Ui_.ItemView_->settings ()->setFontFamily (QWebSettings::FantasyFont,
+			XmlSettingsManager::Instance ()->property ("FantasyFont").value<QFont> ().family ());
+
+	Ui_.ItemView_->settings ()->setFontSize (QWebSettings::MinimumFontSize,
+			XmlSettingsManager::Instance ()->property ("MinimumFontSize").toInt ());
+	Ui_.ItemView_->settings ()->setFontSize (QWebSettings::DefaultFontSize,
+			XmlSettingsManager::Instance ()->property ("DefaultFontSize").toInt ());
+	Ui_.ItemView_->settings ()->setFontSize (QWebSettings::DefaultFixedFontSize,
+			XmlSettingsManager::Instance ()->property ("DefaultFixedFontSize").toInt ());
+	Ui_.ItemView_->settings ()->setAttribute (QWebSettings::AutoLoadImages,
+			XmlSettingsManager::Instance ()->property ("AutoLoadImages").toBool ());
+	Ui_.ItemView_->settings ()->setAttribute (QWebSettings::JavascriptEnabled,
+			XmlSettingsManager::Instance ()->property ("AllowJavaScript").toBool ());
 }
 

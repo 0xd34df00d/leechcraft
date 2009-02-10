@@ -14,13 +14,14 @@ class BrowserWidget : public QWidget
 public:
 	BrowserWidget (QWidget* = 0);
 	virtual ~BrowserWidget ();
-	void setHtml (const QString&);
+	void setHtml (const QString&, const QString& base = QString ());
 	QWebPage *page () const;
 	QWebSettings *settings () const;
 private slots:
 	void loadStarted ();
 	void loadFinished (bool);
 	void loadProgress (int);
+	void viewerSettingsChanged ();
 };
 
 #endif
