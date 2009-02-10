@@ -7,6 +7,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iembedtab.h>
 #include <interfaces/imultitabs.h>
+#include <interfaces/iwebbrowser.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iwantnetworkaccessmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -22,9 +23,10 @@ class Poshuku : public QWidget
 			  , public IMultiTabs
 			  , public IHaveSettings
 			  , public IWantNetworkAccessManager
+			  , public IWebBrowser
 {
     Q_OBJECT
-    Q_INTERFACES (IInfo IEmbedTab IMultiTabs IHaveSettings IWantNetworkAccessManager)
+    Q_INTERFACES (IInfo IEmbedTab IMultiTabs IHaveSettings IWantNetworkAccessManager IWebBrowser)
 
 	Ui::Poshuku Ui_;
 
@@ -49,12 +51,14 @@ public:
 	LeechCraft::Util::XmlSettingsDialog* GetSettingsDialog () const;
 
 	void SetNetworkAccessManager (QNetworkAccessManager*);
+
+	void Open (const QString&);
+	IWebWidget* GetWidget () const;
 private:
 	void RegisterSettings ();
 	void SetupFavoritesFilter ();
 	void SetupHistoryFilter ();
 public slots:
-	void openURL (const QString&);
 	QWebView* createWindow ();
 private slots:
 	void on_AddressLine__returnPressed ();

@@ -240,6 +240,16 @@ void BrowserWidget::SetURL (const QUrl& url)
 		Ui_.WebView_->Load (url);
 }
 
+void BrowserWidget::Load (const QString& url)
+{
+	SetURL (Core::Instance ().MakeURL (url));
+}
+
+void BrowserWidget::SetHtml (const QString& html, const QString& base)
+{
+	Ui_.WebView_->Load (html, base);
+}
+
 void BrowserWidget::PrintImpl (bool preview)
 {
 	std::auto_ptr<QPrinter> printer (new QPrinter ());

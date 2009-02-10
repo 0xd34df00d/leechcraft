@@ -1,9 +1,11 @@
 #ifndef BROWSERWIDGET_H
 #define BROWSERWIDGET_H
 #include <QWidget>
+#include <interfaces/iwebbrowser.h>
 #include "ui_browserwidget.h"
 
 class BrowserWidget : public QWidget
+					, public IWebWidget
 {
 	Q_OBJECT
 	
@@ -24,6 +26,9 @@ public:
 	void SetUnclosers (const QList<QAction*>&);
 	CustomWebView* GetView () const;
 	void SetURL (const QUrl&);
+
+	void Load (const QString&);
+	void SetHtml (const QString&, const QString& = QString ());
 private:
 	void PrintImpl (bool);
 private slots:

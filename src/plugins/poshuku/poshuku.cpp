@@ -13,6 +13,7 @@
 #include "favoritesdelegate.h"
 #include "historymodel.h"
 #include "favoritesmodel.h"
+#include "browserwidget.h"
 
 using LeechCraft::Util::TagsCompleter;
 using LeechCraft::Util::TagsCompletionModel;
@@ -165,6 +166,16 @@ void Poshuku::SetNetworkAccessManager (QNetworkAccessManager *manager)
 	Core::Instance ().SetNetworkAccessManager (manager);
 }
 
+void Poshuku::Open (const QString& link)
+{
+	Core::Instance ().NewURL (link);
+}
+
+IWebWidget* Poshuku::GetWidget () const
+{
+	return new BrowserWidget ();
+}
+
 void Poshuku::RegisterSettings ()
 {
 	QList<QByteArray> viewerSettings;
@@ -245,11 +256,6 @@ void Poshuku::SetupHistoryFilter ()
 			SIGNAL (stateChanged (int)),
 			this,
 			SLOT (updateHistoryFilter ()));
-}
-
-void Poshuku::openURL (const QString& url)
-{
-	Core::Instance ().NewURL (url);
 }
 
 QWebView* Poshuku::createWindow ()
