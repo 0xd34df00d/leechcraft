@@ -432,10 +432,16 @@ void LeechCraft::MainWindow::updateSpeedIndicators ()
 {
 	QPair<qint64, qint64> speeds = Core::Instance ().GetSpeeds ();
 
-	DownloadSpeed_->setText (Proxy::Instance ()->MakePrettySize (speeds.first) + tr ("/s"));
-	UploadSpeed_->setText (Proxy::Instance ()->MakePrettySize (speeds.second) + tr ("/s"));
+	QString down = Proxy::Instance ()->MakePrettySize (speeds.first) + tr ("/s");
+	QString up = Proxy::Instance ()->MakePrettySize (speeds.second) + tr ("/s");
+	DownloadSpeed_->setText (down);
+	UploadSpeed_->setText (up);
 	DSpeedGraph_->PushSpeed (speeds.first);
 	USpeedGraph_->PushSpeed (speeds.second);
+
+	TrayIcon_->setToolTip (tr ("%1 down, %2 up")
+			.arg (down)
+			.arg (up));
 }
 
 void LeechCraft::MainWindow::updateClock ()
