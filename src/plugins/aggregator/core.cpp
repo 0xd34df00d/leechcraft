@@ -10,6 +10,7 @@
 #include <QTemporaryFile>
 #include <QTimer>
 #include <QNetworkReply>
+#include <interfaces/iwebbrowser.h>
 #include <plugininterface/proxy.h>
 #include <plugininterface/tagscompletionmodel.h>
 #include "core.h"
@@ -767,9 +768,13 @@ void Core::openLink (const QString& url)
 		QDesktopServices::openUrl (QUrl (url));
 		return;
 	}
-	QObject *provider = Providers_ ["webbrowser"];
-	QMetaObject::invokeMethod (provider,
-			"openURL", Q_ARG (QString, url));
+	IWebBrowser *browser = qobject_cast<IWebBrowser*> (Providers_ ["webbrowser"]);
+	if (!browser)
+	{
+		emit error (tr ("Provided web browser is wrong web browser."));
+		return;
+	}
+	browser->Open (url);
 }
 
 void Core::currentChannelChanged (const QModelIndex& index)
