@@ -310,14 +310,19 @@ Item_ptr Core::GetItem (const QModelIndex& index) const
 			CurrentChannelHash_.first + CurrentChannelHash_.second);
 }
 
-QAbstractItemModel* Core::GetChannelsModel ()
+QAbstractItemModel* Core::GetChannelsModel () const
 {
 	return ChannelsModel_;
 }
 
-TagsCompletionModel* Core::GetTagsCompletionModel ()
+TagsCompletionModel* Core::GetTagsCompletionModel () const
 {
 	return TagsCompletionModel_;
+}
+
+IWebBrowser* Core::GetWebBrowser () const
+{
+	return qobject_cast<IWebBrowser*> (Providers_ ["webbrowser"]);
 }
 
 void Core::UpdateTags (const QStringList& tags)
@@ -768,7 +773,7 @@ void Core::openLink (const QString& url)
 		QDesktopServices::openUrl (QUrl (url));
 		return;
 	}
-	IWebBrowser *browser = qobject_cast<IWebBrowser*> (Providers_ ["webbrowser"]);
+	IWebBrowser *browser = GetWebBrowser ();
 	if (!browser)
 	{
 		emit error (tr ("Provided web browser is wrong web browser."));

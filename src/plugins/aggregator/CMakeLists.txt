@@ -46,6 +46,7 @@ SET (SRCS
 	feedsettings.cpp
 	jobholderrepresentation.cpp
 	itemswidget.cpp
+	selectablebrowser.cpp
 	)
 SET (HEADERS
     aggregator.h
@@ -85,6 +86,7 @@ SET (HEADERS
 	feedsettings.h
 	jobholderrepresentation.h
 	itemswidget.h
+	selectablebrowser.h
 	)
 SET (FORMS
     mainwidget.ui

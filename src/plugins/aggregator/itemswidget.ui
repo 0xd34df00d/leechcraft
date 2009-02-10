@@ -126,16 +126,16 @@
        </item>
       </layout>
      </widget>
-     <widget class="BrowserWidget" native="1" name="ItemView_" />
+     <widget class="SelectableBrowser" native="1" name="ItemView_" />
     </widget>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>BrowserWidget</class>
+   <class>SelectableBrowser</class>
    <extends>QWidget</extends>
-   <header>browserwidget.h</header>
+   <header>selectablebrowser.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

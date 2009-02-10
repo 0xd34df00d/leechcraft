@@ -20,6 +20,7 @@ class QFile;
 class ItemModel;
 class QWebView;
 class JobHolderRepresentation;
+class IWebBrowser;
 
 namespace LeechCraft
 {
@@ -99,8 +100,9 @@ public:
     void FeedActivated (const QModelIndex&);
 	void Selected (const QModelIndex&);
     Item_ptr GetItem (const QModelIndex&) const;
-    QAbstractItemModel* GetChannelsModel ();
-	LeechCraft::Util::TagsCompletionModel* GetTagsCompletionModel ();
+    QAbstractItemModel* GetChannelsModel () const;
+	LeechCraft::Util::TagsCompletionModel* GetTagsCompletionModel () const;
+	IWebBrowser* GetWebBrowser () const;
     void UpdateTags (const QStringList&);
     void MarkItemAsUnread (const QModelIndex&);
 	bool IsItemRead (int) const;

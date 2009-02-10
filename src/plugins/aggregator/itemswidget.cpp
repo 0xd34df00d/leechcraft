@@ -3,6 +3,7 @@
 #include <QFileInfo>
 #include <QHeaderView>
 #include <QtDebug>
+#include <interfaces/iwebbrowser.h>
 #include <plugininterface/categoryselector.h>
 #include <plugininterface/proxy.h>
 #include "core.h"
@@ -35,11 +36,7 @@ ItemsWidget::ItemsWidget (QWidget *parent)
 	Impl_->ActionAddToItemBucket_->setObjectName ("ActionAddToItemBucket_");
 
 	Impl_->Ui_.setupUi (this);
-
-	connect (Impl_->Ui_.ItemView_->page ()->networkAccessManager (),
-			SIGNAL (sslErrors (QNetworkReply*, const QList<QSslError>&)),
-			&Core::Instance (),
-			SLOT (handleSslError (QNetworkReply*)));
+	Impl_->Ui_.ItemView_->Construct (Core::Instance ().GetWebBrowser ());
 
 	Impl_->Ui_.Items_->sortByColumn (1, Qt::DescendingOrder);
 	Impl_->ItemsFilterModel_.reset (new ItemsFilterModel (this));
@@ -90,23 +87,6 @@ ItemsWidget::ItemsWidget (QWidget *parent)
 			SLOT (currentItemChanged (const QItemSelection&)));
 
 	currentItemChanged (QItemSelection ());
-
-	QList<QByteArray> viewerSettings;
-	viewerSettings << "StandardFont"
-		<< "FixedFont"
-		<< "SerifFont"
-		<< "SansSerifFont"
-		<< "CursiveFont"
-		<< "FantasyFont"
-		<< "MinimumFontSize"
-		<< "DefaultFontSize"
-		<< "DefaultFixedFontSize"
-		<< "AutoLoadImages"
-		<< "AllowJavaScript";
-	XmlSettingsManager::Instance ()->RegisterObject (viewerSettings,
-			this, "viewerSettingsChanged");
-
-	viewerSettingsChanged ();
 }
 
 ItemsWidget::~ItemsWidget ()
@@ -248,7 +228,7 @@ void ItemsWidget::SetHtml (const Item_ptr& item)
 				.arg (i->Lang_);
 		result += "</div>";
 	}
-	Impl_->Ui_.ItemView_->setHtml (result);
+	Impl_->Ui_.ItemView_->SetHtml (result);
 }
 
 void ItemsWidget::on_ActionMarkItemAsUnread__triggered ()
@@ -286,33 +266,6 @@ void ItemsWidget::on_ItemCategoriesButton__released ()
 	Impl_->ItemCategorySelector_->show ();
 }
 
-void ItemsWidget::viewerSettingsChanged ()
-{
-	Impl_->Ui_.ItemView_->settings ()->setFontFamily (QWebSettings::StandardFont,
-			XmlSettingsManager::Instance ()->property ("StandardFont").value<QFont> ().family ());
-	Impl_->Ui_.ItemView_->settings ()->setFontFamily (QWebSettings::FixedFont,
-			XmlSettingsManager::Instance ()->property ("FixedFont").value<QFont> ().family ());
-	Impl_->Ui_.ItemView_->settings ()->setFontFamily (QWebSettings::SerifFont,
-			XmlSettingsManager::Instance ()->property ("SerifFont").value<QFont> ().family ());
-	Impl_->Ui_.ItemView_->settings ()->setFontFamily (QWebSettings::SansSerifFont,
-			XmlSettingsManager::Instance ()->property ("SansSerifFont").value<QFont> ().family ());
-	Impl_->Ui_.ItemView_->settings ()->setFontFamily (QWebSettings::CursiveFont,
-			XmlSettingsManager::Instance ()->property ("CursiveFont").value<QFont> ().family ());
-	Impl_->Ui_.ItemView_->settings ()->setFontFamily (QWebSettings::FantasyFont,
-			XmlSettingsManager::Instance ()->property ("FantasyFont").value<QFont> ().family ());
-
-	Impl_->Ui_.ItemView_->settings ()->setFontSize (QWebSettings::MinimumFontSize,
-			XmlSettingsManager::Instance ()->property ("MinimumFontSize").toInt ());
-	Impl_->Ui_.ItemView_->settings ()->setFontSize (QWebSettings::DefaultFontSize,
-			XmlSettingsManager::Instance ()->property ("DefaultFontSize").toInt ());
-	Impl_->Ui_.ItemView_->settings ()->setFontSize (QWebSettings::DefaultFixedFontSize,
-			XmlSettingsManager::Instance ()->property ("DefaultFixedFontSize").toInt ());
-	Impl_->Ui_.ItemView_->settings ()->setAttribute (QWebSettings::AutoLoadImages,
-			XmlSettingsManager::Instance ()->property ("AutoLoadImages").toBool ());
-	Impl_->Ui_.ItemView_->settings ()->setAttribute (QWebSettings::JavascriptEnabled,
-			XmlSettingsManager::Instance ()->property ("AllowJavaScript").toBool ());
-}
-
 void ItemsWidget::currentItemChanged (const QItemSelection& selection)
 {
 	QModelIndexList indexes = selection.indexes ();
@@ -323,7 +276,7 @@ void ItemsWidget::currentItemChanged (const QItemSelection& selection)
 
 	if (!sindex.isValid () || indexes.size () != 2)
 	{
-		Impl_->Ui_.ItemView_->setHtml ("");
+		Impl_->Ui_.ItemView_->SetHtml ("");
 		Impl_->Ui_.ItemCommentsSubscribe_->setEnabled (false);
 		return;
 	}

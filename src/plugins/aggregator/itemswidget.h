@@ -6,6 +6,7 @@
 
 struct ItemsWidget_Impl;
 class QModelIndex;
+class IWebBrowser;
 
 class ItemsWidget : public QWidget
 {
@@ -28,7 +29,6 @@ private slots:
 	void on_ActionAddToItemBucket__triggered ();
 	void on_ItemCommentsSubscribe__released ();
 	void on_ItemCategoriesButton__released ();
-	void viewerSettingsChanged ();
     void currentItemChanged (const QItemSelection&);
 	void makeCurrentItemVisible ();
 	void updateItemsFilter ();
