@@ -120,6 +120,11 @@ void Core::DoDelayedInit ()
 			property ("PeerIDString").toString ();
 		QString ver = XmlSettingsManager::Instance ()->
 			property ("PeerIDVersion").toString ();
+		if (ver.size () != 4)
+		{
+			ver = "1111";
+			XmlSettingsManager::Instance ()->setProperty ("PeerIDVersion", ver);
+		}
         Session_ = new libtorrent::session (libtorrent::fingerprint
 				(peerIDstring.toLatin1 ().constData (),
 				 ver.at (0).digitValue (),
