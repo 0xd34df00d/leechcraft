@@ -1,4 +1,7 @@
 *.qm
 backup/
 debug/
+release/
 build/
+ctagscmd
+tags
