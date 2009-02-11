@@ -1,4 +1,5 @@
 #include "core.h"
+#include <QtDebug>
 #include "itemsfiltermodel.h"
 
 ItemsFilterModel::ItemsFilterModel (QObject *parent)
@@ -26,13 +27,17 @@ bool ItemsFilterModel::filterAcceptsRow (int sourceRow,
 		bool categoryFound = false;
 		QStringList itemCategories =
 			Core::Instance ().GetItemCategories (sourceRow);
-		for (QStringList::const_iterator i = itemCategories.begin (),
-				end = itemCategories.end (); i != end; ++i)
-			if (ItemCategories_.contains (*i))
-			{
-				categoryFound = true;
-				break;
-			}
+
+		if (!itemCategories.size ())
+			categoryFound = true;
+		else
+			for (QStringList::const_iterator i = itemCategories.begin (),
+					end = itemCategories.end (); i != end; ++i)
+				if (ItemCategories_.contains (*i))
+				{
+					categoryFound = true;
+					break;
+				}
 
 		if (!categoryFound)
 			return false;
