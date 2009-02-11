@@ -96,8 +96,6 @@ public:
     void SetProvider (QObject*, const QString&);
     void AddFeed (const QString&, const QStringList&);
     void RemoveFeed (const QModelIndex&);
-    void Activated (const QModelIndex&);
-    void FeedActivated (const QModelIndex&);
 	void Selected (const QModelIndex&);
     Item_ptr GetItem (const QModelIndex&) const;
     QAbstractItemModel* GetChannelsModel () const;

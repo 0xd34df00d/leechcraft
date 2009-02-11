@@ -284,16 +284,6 @@ void Core::RemoveFeed (const QModelIndex& index)
 	UpdateUnreadItemsNumber ();
 }
 
-void Core::Activated (const QModelIndex& index)
-{
-	openLink (CurrentItems_ [index.row ()].URL_);
-}
-
-void Core::FeedActivated (const QModelIndex& index)
-{
-	openLink (ChannelsModel_->GetChannelForIndex (index).Link_);
-}
-
 void Core::Selected (const QModelIndex& index)
 {
 	CurrentRow_ = index.row ();
