@@ -105,8 +105,8 @@
 			</groupbox>
         </tab>
         <tab>
-            <label lang="en" value="Tracker proxy" />
-            <label lang="ru" value="Прокси трекеров" />
+            <label lang="en" value="Proxy" />
+            <label lang="ru" value="Трекеров" />
             <item type="groupbox" property="TrackerProxyEnabled" checkable="true" state="off">
                 <label lang="en" value="Tracker proxy:" />
                 <label lang="ru" value="Прокси трекеров:" />
@@ -136,10 +136,6 @@
                     </option>
                 </item>
             </item>
-        </tab>
-        <tab>
-			<label lang="en" value="Peer proxy" />
-			<label lang="ru" value="Прокси пиров" />
             <item type="groupbox" property="PeerProxyEnabled" checkable="true" state="off">
                 <label lang="en" value="Peer proxy:" />
                 <label lang="ru" value="Прокси пиров:" />
@@ -730,5 +726,53 @@
 			</groupbox>
 		</tab>
     </page>
+	<page>
+		<label lang="en" value="Info pane" />
+		<label lang="ru" value="Информационная панель" />
+		<tab>
+			<label lang="en" value="Active groups" />
+			<label lang="ru" value="Активные группы" />
+			<groupbox>
+				<label lang="en" value="Dashboard" />
+				<label lang="ru" value="Панель управления" />
+				<item type="checkbox" property="ActiveSessionStats" default="on">
+					<label lang="en" value="Session stats" />
+					<label lang="ru" value="Статистика сессии" />
+				</item>
+				<item type="checkbox" property="ActiveAdvancedSessionStats" default="on">
+					<label lang="en" value="Advanced session stats" />
+					<label lang="ru" value="Расширенная статистика сессии" />
+				</item>
+				<item type="checkbox" property="ActiveTrackerStats" default="on">
+					<label lang="en" value="Per-tracker stats" />
+					<label lang="ru" value="Статистика по трекерам" />
+				</item>
+				<item type="checkbox" property="ActiveCacheStats" default="on">
+					<label lang="en" value="Cache stats" />
+					<label lang="ru" value="Статистика кэша" />
+				</item>
+			</groupbox>
+			<groupbox>
+				<label lang="en" value="Torrent" />
+				<label lang="ru" value="Торрент" />
+				<item type="checkbox" property="ActiveTorrentStatus" default="on">
+					<label lang="en" value="Status" />
+					<label lang="ru" value="Статус" />
+				</item>
+				<item type="checkbox" property="ActiveTorrentAdvancedStatus" default="on">
+					<label lang="en" value="Advanced status" />
+					<label lang="ru" value="Расширенный статус" />
+				</item>
+				<item type="checkbox" property="ActiveTorrentInfo" default="on">
+					<label lang="en" value="Information" />
+					<label lang="ru" value="Информация" />
+				</item>
+				<item type="checkbox" property="ActiveTorrentPeers" default="on">
+					<label lang="en" value="Peers" />
+					<label lang="ru" value="Пиры" />
+				</item>
+			</groupbox>
+		</tab>
+	</page>
 </settings>
 

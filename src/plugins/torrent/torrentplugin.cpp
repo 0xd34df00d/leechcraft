@@ -688,6 +688,26 @@ void TorrentPlugin::doLogMessage (const QString& msg)
 	emit log (msg);
 }
 
+void TorrentPlugin::setTabWidgetSettings ()
+{
+	Ui_.BoxSessionStats_->setVisible (XmlSettingsManager::Instance ()->
+			property ("ActiveSessionStats").toBool ());
+	Ui_.BoxAdvancedSessionStats_->setVisible (XmlSettingsManager::Instance ()->
+			property ("ActiveAdvancedSessionStats").toBool ());
+	Ui_.BoxPerTrackerStats_->setVisible (XmlSettingsManager::Instance ()->
+			property ("ActiveTrackerStats").toBool ());
+	Ui_.BoxCacheStats_->setVisible (XmlSettingsManager::Instance ()->
+			property ("ActiveCacheStats").toBool ());
+	Ui_.BoxTorrentStatus_->setVisible (XmlSettingsManager::Instance ()->
+			property ("ActiveTorrentStatus").toBool ());
+	Ui_.BoxTorrentAdvancedStatus_->setVisible (XmlSettingsManager::Instance ()->
+			property ("ActiveTorrentAdvancedStatus").toBool ());
+	Ui_.BoxTorrentInfo_->setVisible (XmlSettingsManager::Instance ()->
+			property ("ActiveTorrentInfo").toBool ());
+	Ui_.BoxTorrentPeers_->setVisible (XmlSettingsManager::Instance ()->
+			property ("ActiveTorrentPeers").toBool ());
+}
+
 void TorrentPlugin::UpdateDashboard ()
 {
     Ui_.OverallDownloadRateController_->setValue (Core::Instance ()->GetOverallDownloadRate ());
@@ -909,6 +929,20 @@ void TorrentPlugin::SetupTabWidget ()
 			SIGNAL (editingFinished ()),
 			this,
 			SLOT (on_TorrentTags__editingFinished ()));
+
+	QList<QByteArray> tabWidgetSettings;
+	tabWidgetSettings << "ActiveSessionStats"
+		<< "ActiveAdvancedSessionStats"
+		<< "ActiveTrackerStats"
+		<< "ActiveCacheStats"
+		<< "ActiveTorrentStatus"
+		<< "ActiveTorrentAdvancedStatus"
+		<< "ActiveTorrentInfo"
+		<< "ActiveTorrentPeers";
+    XmlSettingsManager::Instance ()->RegisterObject (tabWidgetSettings,
+			this, "setTabWidgetSettings");
+
+	setTabWidgetSettings ();
 }
 
 void TorrentPlugin::SetupCore ()

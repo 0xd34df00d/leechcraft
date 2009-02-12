@@ -138,6 +138,7 @@ private slots:
     void setActionsEnabled ();
     void showError (QString);
     void doLogMessage (const QString&);
+	void setTabWidgetSettings ();
 private:
     void UpdateDashboard ();
     void UpdateOverallStats ();
