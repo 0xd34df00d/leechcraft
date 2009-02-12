@@ -26,6 +26,7 @@ FilePicker::FilePicker (QWidget *parent)
     LineEdit_ = new QLineEdit (this);
     BrowseButton_ = new QPushButton (tr ("Browse..."));
     QHBoxLayout *lay = new QHBoxLayout;
+	lay->setContentsMargins (0, 0, 0, 0);
     lay->addWidget (LineEdit_);
     lay->addWidget (BrowseButton_);
     setLayout (lay);
