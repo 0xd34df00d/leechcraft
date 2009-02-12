@@ -94,8 +94,8 @@
 				<label lang="uk" value="Дозволити JavaScript" />
 			</item>
 			<item type="path" property="UserStyleSheet">
-				<label lang="en" value="User CSS" />
-				<label lang="ru" value="Пользовательский CSS" />
+				<label lang="en" value="User CSS:" />
+				<label lang="ru" value="Пользовательский CSS:" />
 			</item>
 		</tab>
 		<tab>
