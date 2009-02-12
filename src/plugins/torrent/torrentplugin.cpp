@@ -975,6 +975,7 @@ void TorrentPlugin::SetupStuff ()
     TagsChangeCompleter_->setModel (Core::Instance ()->GetTagsCompletionModel ());
     TagsAddDiaCompleter_->setModel (Core::Instance ()->GetTagsCompletionModel ());
 	AddTorrentDialog_->GetEdit ()->AddSelector ();
+	Ui_.TorrentTags_->AddSelector ();
 
     Ui_.PiecesView_->setModel (Core::Instance ()->GetPiecesModel ());
 
