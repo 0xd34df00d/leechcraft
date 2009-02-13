@@ -4,7 +4,7 @@
 #include <QPainter>
 #include <QWebPage>
 #include <QWebFrame>
-#include <QtConcurrentRun>
+#include <QApplication>
 #include "xmlsettingsmanager.h"
 #include "core.h"
 
@@ -32,7 +32,7 @@ QString SpeedDialProvider::GetHTML () const
 
 	QString result = "<html><head><title>";
 	result += tr ("Speed dial");
-	result += "</title><body><table>";
+	result += "</title><body><table style='width:100%; height:100%'>";
 
 	int rows = XmlSettingsManager::Instance ()->
 		property ("SpeedDialRows").toInt ();
@@ -108,7 +108,7 @@ QString SpeedDialProvider::GetHTMLForItem (const HistoryItem& hitem) const
 			.scaled (width, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
 		QBuffer renderBuffer;
-		image.save (&renderBuffer, "PNG", 85);
+		image.save (&renderBuffer, "PNG", 50);
 
 		result += renderBuffer.data ().toBase64 ();
 		result += "' /><br />";
@@ -122,6 +122,7 @@ QString SpeedDialProvider::GetHTMLForItem (const HistoryItem& hitem) const
 void SpeedDialProvider::Regenerate (const QString& url) const
 {
 	QWebPage *page = new QWebPage ();
+	page->setNetworkAccessManager (Core::Instance ().GetNetworkAccessManager ());
 	page->setProperty ("URL", url);
 	connect (page,
 			SIGNAL (loadFinished (bool)),
@@ -149,13 +150,19 @@ void SpeedDialProvider::handleFinished ()
 	int rWidth = page->viewportSize ().width (); 
 	int rHeight = height * rWidth / width + 1;
 	page->mainFrame ()->render (&painter, QRegion (0, 0, rWidth, rHeight));
+
+	QApplication::processEvents ();
+
 	painter.end ();
 
 	QImage thumbnail = image
 		.scaledToWidth (width, Qt::FastTransformation)
 		.copy (0, 0, width, height);
+
+	QApplication::processEvents ();
+
 	QBuffer renderBuffer;
-	thumbnail.save (&renderBuffer, "PNG", 85);
+	thumbnail.save (&renderBuffer, "PNG", 50);
 
 	SpeedDialProvider::Item item;
 	item.URL_ = page->property ("URL").toString ();
@@ -166,5 +173,7 @@ void SpeedDialProvider::handleFinished ()
 
 	Core::Instance ().GetStorageBackend ()->SetThumbnail (item);
 	page->deleteLater ();
+
+	emit newThumbAvailable ();
 }
 

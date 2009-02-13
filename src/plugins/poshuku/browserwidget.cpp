@@ -26,8 +26,6 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 {
 	Ui_.setupUi (this);
 
-	Ui_.WebView_->setHtml (SpeedDialProvider::Instance ().GetHTML ());
-
 	QToolBar *bar = new QToolBar ();
 	
 	QAction *back = Ui_.WebView_->pageAction (QWebPage::Back);

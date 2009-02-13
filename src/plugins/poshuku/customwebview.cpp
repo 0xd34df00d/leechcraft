@@ -5,16 +5,27 @@
 #include "core.h"
 #include "customwebpage.h"
 #include "browserwidget.h"
+#include "speeddialprovider.h"
 
 CustomWebView::CustomWebView (QWidget *parent)
 : QWebView (parent)
 {
+	CustomWebPage *page = new CustomWebPage (this);
+	setPage (page);
+
+// TODO works as shit
+//	connect (&SpeedDialProvider::Instance (),
+//			SIGNAL (newThumbAvailable ()),
+//			this,
+//			SLOT (handleNewThumbs ()));
+
+	setHtml (SpeedDialProvider::Instance ().GetHTML ());
+
 	connect (this,
 			SIGNAL (urlChanged (const QUrl&)),
 			this,
 			SLOT (remakeURL (const QUrl&)));
 
-	CustomWebPage *page = new CustomWebPage (this);
 	connect (page,
 			SIGNAL (gotEntity (const QByteArray&)),
 			this,
@@ -23,7 +34,6 @@ CustomWebView::CustomWebView (QWidget *parent)
 			SIGNAL (loadingURL (const QUrl&)),
 			this,
 			SLOT (remakeURL (const QUrl&)));
-	setPage (page);
 }
 
 CustomWebView::~CustomWebView ()
@@ -37,6 +47,10 @@ void CustomWebView::Load (const QString& string, QString title)
 
 void CustomWebView::Load (const QUrl& url, QString title)
 {
+	disconnect (&SpeedDialProvider::Instance (),
+			SIGNAL (newThumbAvailable ()),
+			this,
+			0);
 	if (url.scheme () == "javascript")
 	{
 		QVariant result = page ()->mainFrame ()->
@@ -91,5 +105,10 @@ void CustomWebView::mousePressEvent (QMouseEvent *e)
 void CustomWebView::remakeURL (const QUrl& url)
 {
 	emit urlChanged (url.toString ());
+}
+
+void CustomWebView::handleNewThumbs ()
+{
+	setHtml (SpeedDialProvider::Instance ().GetHTML ());
 }
 

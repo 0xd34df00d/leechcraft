@@ -19,6 +19,7 @@ protected:
 	virtual void mousePressEvent (QMouseEvent*);
 private slots:
 	void remakeURL (const QUrl&);
+	void handleNewThumbs ();
 signals:
 	void urlChanged (const QString&);
 	void gotEntity (const QByteArray&);

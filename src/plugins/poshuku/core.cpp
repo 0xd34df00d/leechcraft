@@ -300,7 +300,7 @@ void Core::HandleHistory (QWebView *view)
 	QString url = view->url ().toString ();
 
 	if (!view->title ().isEmpty () &&
-			!url.isEmpty ())
+			!url.isEmpty () && url != "about:blank")
 		HistoryModel_->AddItem (view->title (),
 				url, QDateTime::currentDateTime ());
 }
