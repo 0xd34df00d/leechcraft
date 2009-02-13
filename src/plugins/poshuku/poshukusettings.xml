@@ -5,20 +5,12 @@
 		<label lang="en" value="Browser settings" />
 		<label lang="ru" value="Параметры браузера" />
 		<tab>
-			<label lang="en" value="Startup" />
-			<label lang="ru" value="Запуск" />
-			<item type="lineedit" property="DefaultPage" default="http://gmail.com">
-				<label lang="en" value="Default page:" />
-				<label lang="ru" value="Страница по умолчанию:" />
-			</item>
+			<label lang="en" value="Behavior" />
+			<label lang="ru" value="Поведение" />
 			<item type="checkbox" property="RestorePreviousSession" state="on">
 				<label lang="en" value="Restore previous session" />
 				<label lang="ru" value="Восстанавливать предыдущую сессию" />
 			</item>
-		</tab>
-		<tab>
-			<label lang="en" value="Behavior" />
-			<label lang="ru" value="Поведение" />
 			<item type="checkbox" property="BackgroundNewTabs" state="on">
 				<label lang="en" value="Open new tabs in the background" />
 				<label lang="ru" value="Открывать новые вкладки в фоне" />

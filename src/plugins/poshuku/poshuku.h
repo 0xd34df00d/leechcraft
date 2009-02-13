@@ -55,13 +55,14 @@ public:
 	void Open (const QString&);
 	IWebWidget* GetWidget () const;
 private:
+	void SetupActions ();
+	void SetupView ();
 	void RegisterSettings ();
 	void SetupFavoritesFilter ();
 	void SetupHistoryFilter ();
 public slots:
 	QWebView* createWindow ();
 private slots:
-	void on_AddressLine__returnPressed ();
 	void on_HistoryView__activated (const QModelIndex&);
 	void on_FavoritesView__activated (const QModelIndex&);
 	void translateRemoveFavoritesItem (const QModelIndex&);
@@ -70,6 +71,7 @@ private slots:
 	void updateFavoritesFilter ();
 	void updateHistoryFilter ();
 	void handleError (const QString&);
+	void handleNewTab ();
 signals:
 	void bringToFront ();
 	void addNewTab (const QString&, QWidget*);

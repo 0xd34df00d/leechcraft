@@ -2,6 +2,7 @@
 #include <QMessageBox>
 #include <QWebSettings>
 #include <QHeaderView>
+#include <QToolBar>
 #include <QDir>
 #include <QUrl>
 #include <QtDebug>
@@ -23,6 +24,8 @@ void Poshuku::Init ()
 	Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku"));
 	Ui_.setupUi (this);
 
+	SetupActions ();
+	SetupView ();
 	RegisterSettings ();
 
 	QDir iconDir = QDir::home ();
@@ -76,9 +79,6 @@ void Poshuku::Init ()
 			SIGNAL (error (const QString&)),
 			this,
 			SLOT (handleError (const QString&)));
-
-	Ui_.AddressLine_->setText (XmlSettingsManager::Instance ()->
-			property ("DefaultPage").toString ());
 
 	SetupFavoritesFilter ();
 	SetupHistoryFilter ();
@@ -176,6 +176,30 @@ IWebWidget* Poshuku::GetWidget () const
 	return new BrowserWidget ();
 }
 
+void Poshuku::SetupActions ()
+{
+	/*
+	QToolBar *bar = new QToolBar;
+
+	QAction *newTab = new QAction (tr ("Create new tab"),
+			this);
+	newTab->setProperty ("ActionIcon", "poshuku_newtab");
+	newTab->setShortcut (tr ("Ctrl+T"));
+	connect (newTab,
+			SIGNAL (triggered ()),
+			this,
+			SLOT (handleNewTab ()));
+
+	bar->addAction (newTab);
+
+	Ui_.ToolButtonsLayout_->addWidget (bar);
+	*/
+}
+
+void Poshuku::SetupView ()
+{
+}
+
 void Poshuku::RegisterSettings ()
 {
 	QList<QByteArray> viewerSettings;
@@ -261,20 +285,6 @@ void Poshuku::SetupHistoryFilter ()
 QWebView* Poshuku::createWindow ()
 {
 	return Core::Instance ().MakeWebView ();
-}
-
-void Poshuku::on_AddressLine__returnPressed ()
-{
-	QString url = Ui_.AddressLine_->text ();
-	if (!Core::Instance ().MakeURL (url).isValid ())
-	{
-		QMessageBox::critical (this, tr ("Error"),
-				tr ("The URL you entered could not be opened by Poshuku. "
-					"Sorry. By the way, you entered:<br />%1").arg (url));
-		return;
-	}
-
-	Core::Instance ().NewURL (url);
 }
 
 void Poshuku::on_HistoryView__activated (const QModelIndex& index)
@@ -393,6 +403,11 @@ void Poshuku::updateHistoryFilter ()
 void Poshuku::handleError (const QString& msg)
 {
 	QMessageBox::warning (this, tr ("Error"), msg);
+}
+
+void Poshuku::handleNewTab ()
+{
+	Core::Instance ().NewURL ("", true);
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_poshuku, Poshuku);
