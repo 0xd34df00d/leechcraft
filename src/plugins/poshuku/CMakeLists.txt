@@ -28,6 +28,7 @@ SET (SRCS
 	urlcompletionmodel.cpp
 	finddialog.cpp
 	screenshotsavedialog.cpp
+	speeddialprovider.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -49,6 +50,7 @@ SET (HEADERS
 	urlcompletionmodel.h
 	finddialog.h
 	screenshotsavedialog.h
+	speeddialprovider.h
 	)
 SET (FORMS
 	poshuku.ui

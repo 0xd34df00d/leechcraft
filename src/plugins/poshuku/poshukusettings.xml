@@ -19,9 +19,23 @@
 				<label lang="en" value="Differ download locations by file extension" />
 				<label lang="ru" value="Различать папки для скачивания по расширению файла" />
 			</item>
+			<item type="checkbox" property="AutoLoadImages" state="on">
+				<label lang="en" value="Load images automatically" />
+				<label lang="ru" value="Автоматически загружать изображения" />
+				<label lang="uk" value="Автоматично завантажувати зображення" />
+			</item>
+			<item type="checkbox" property="AllowJavaScript" state="on">
+				<label lang="en" value="Allow JavaScript" />
+				<label lang="ru" value="Разрешить JavaScript" />
+				<label lang="uk" value="Дозволити JavaScript" />
+			</item>
 			<item type="lineedit" property="ExternalSchemes" default="smb nfs telnet imap pop nntp news">
 				<label lang="en" value="Open these schemes using external applications:" />
 				<label lang="ru" value="Открывать эти схемы внешними приложениями:" />
+			</item>
+			<item type="path" property="UserStyleSheet">
+				<label lang="en" value="User CSS:" />
+				<label lang="ru" value="Пользовательский CSS:" />
 			</item>
 		</tab>
 		<tab>
@@ -72,28 +86,10 @@
 		<label lang="ru" value="Параметры просмотрщика" />
 		<label lang="uk" value="Параметри переглядача" />
 		<tab>
-			<label lang="en" value="Behavior" />
-			<label lang="ru" value="Поведение" />
-			<label lang="uk" value="Поведінка" />
-			<item type="checkbox" property="AutoLoadImages" state="on">
-				<label lang="en" value="Load images automatically" />
-				<label lang="ru" value="Автоматически загружать изображения" />
-				<label lang="uk" value="Автоматично завантажувати зображення" />
-			</item>
-			<item type="checkbox" property="AllowJavaScript" state="on">
-				<label lang="en" value="Allow JavaScript" />
-				<label lang="ru" value="Разрешить JavaScript" />
-				<label lang="uk" value="Дозволити JavaScript" />
-			</item>
-			<item type="path" property="UserStyleSheet">
-				<label lang="en" value="User CSS:" />
-				<label lang="ru" value="Пользовательский CSS:" />
-			</item>
-		</tab>
-		<tab>
-			<label lang="en" value="Fonts settings" />
-			<label lang="ru" value="Настройки шрифтов" />
-			<tab>
+			<label lang="en" value="Fonts" />
+			<label lang="ru" value="Шрифты" />
+			<label lang="uk" value="Шрифти" />
+			<groupbox>
 				<label lang="en" value="Fonts" />
 				<label lang="ru" value="Шрифты" />
 				<label lang="uk" value="Шрифти" />
@@ -127,8 +123,8 @@
 					<label lang="ru" value="Fantasy-шрифт:" />
 					<label lang="uk" value="Fantasy-шрифт:" />
 				</item>
-			</tab>
-			<tab>
+			</groupbox>
+			<groupbox>
 				<label lang="en" value="Sizes" />
 				<label lang="ru" value="Размеры" />
 				<item type="spinbox" property="MinimumFontSize" default="9" minimum="5" maximum="40" step="1">
@@ -146,7 +142,31 @@
 					<label lang="ru" value="Размер фиксированного шрифта по умолчанию:" />
 					<label lang="uk" value="Розмір фіксованого шрифта за замовчуванням:" />
 				</item>	
-			</tab>
+			</groupbox>
+		</tab>
+		<tab>
+			<label lang="en" value="Speed dial" />
+			<label lang="ru" value="Быстрый набор" />
+			<item type="groupbox" property="SpeedDialEnabled" default="on" checkable="true">
+				<label lang="en" value="Speed dial" />
+				<label lang="ru" value="Быстрый набор" />
+				<item type="spinbox" property="SpeedDialRows" default="3">
+					<label lang="en" value="Rows:" />
+					<label lang="ru" value="Ряды:" />
+				</item>
+				<item type="spinbox" property="SpeedDialColumns" default="3">
+					<label lang="en" value="Columns:" />
+					<label lang="ru" value="Столбцы:" />
+				</item>
+				<item type="spinbox" property="SpeedDialThumbXResolution" default="400" minimum="4" maximum="4000">
+					<label lang="en" value="Thumbnail X resolution:" />
+					<label lang="ru" value="Разрешение превьюшки по X:" />
+				</item>
+				<item type="spinbox" property="SpeedDialThumbYResolution" default="300" minimum="3" maximum="3000">
+					<label lang="en" value="Thumbnail Y resolution:" />
+					<label lang="ru" value="Разрешение превьюшки по Y:" />
+				</item>
+			</item>
 		</tab>
 	</page>
 </settings>
