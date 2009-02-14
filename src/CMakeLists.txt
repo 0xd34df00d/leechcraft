@@ -163,7 +163,6 @@ SET (SRCS
 	logtoolbox.cpp
 	historytreeview.cpp
 	settingssink.cpp
-	customcookiejar.cpp
 	authenticationdialog.cpp
 	sslerrorsdialog.cpp
 	storagebackend.cpp
@@ -188,7 +187,6 @@ SET (HEADERS
 	logtoolbox.h
 	historytreeview.h
 	settingssink.h
-	customcookiejar.h
 	authenticationdialog.h
 	sslerrorsdialog.h
 	storagebackend.h

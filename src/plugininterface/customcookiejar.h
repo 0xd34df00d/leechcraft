@@ -2,18 +2,22 @@
 #define CUSTOMCOOKIEJAR_H
 #include <QNetworkCookieJar>
 #include <QByteArray>
+#include "config.h"
 
 namespace LeechCraft
 {
-	class CustomCookieJar : public QNetworkCookieJar
+	namespace Util
 	{
-		Q_OBJECT
-	public:
-		CustomCookieJar (QObject* = 0);
-		virtual ~CustomCookieJar ();
+		class CustomCookieJar : public QNetworkCookieJar
+		{
+			Q_OBJECT
+		public:
+			LEECHCRAFT_API CustomCookieJar (QObject* = 0);
+			LEECHCRAFT_API virtual ~CustomCookieJar ();
 
-		QByteArray Save () const;
-		void Load (const QByteArray&);
+			LEECHCRAFT_API QByteArray Save () const;
+			LEECHCRAFT_API void Load (const QByteArray&);
+		};
 	};
 };
 

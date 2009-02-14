@@ -16,6 +16,7 @@ SET (SRCS
 	historymodel.cpp
 	mergemodel.cpp
 	dblock.cpp
+	customcookiejar.cpp
 	)
 SET (HEADERS
 	proxy.h
@@ -30,6 +31,7 @@ SET (HEADERS
 	historymodel.h
 	mergemodel.h
 	dblock.h
+	customcookiejar.h
 	)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})

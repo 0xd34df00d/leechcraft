@@ -28,6 +28,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iwindow.h>
 #include <interfaces/structures.h>
+#include <plugininterface/customcookiejar.h>
 #include "mainwindow.h"
 #include "pluginmanager.h"
 #include "core.h"
@@ -35,7 +36,6 @@
 #include "mergemodel.h"
 #include "filtermodel.h"
 #include "historymodel.h"
-#include "customcookiejar.h"
 #include "authenticationdialog.h"
 #include "sslerrorsdialog.h"
 #include "sqlstoragebackend.h"
