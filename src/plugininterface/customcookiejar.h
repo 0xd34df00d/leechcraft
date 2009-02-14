@@ -8,15 +8,18 @@ namespace LeechCraft
 {
 	namespace Util
 	{
-		class CustomCookieJar : public QNetworkCookieJar
+		class LEECHCRAFT_API CustomCookieJar : public QNetworkCookieJar
 		{
 			Q_OBJECT
 		public:
-			LEECHCRAFT_API CustomCookieJar (QObject* = 0);
-			LEECHCRAFT_API virtual ~CustomCookieJar ();
+			CustomCookieJar (QObject* = 0);
+			virtual ~CustomCookieJar ();
 
-			LEECHCRAFT_API QByteArray Save () const;
-			LEECHCRAFT_API void Load (const QByteArray&);
+			QByteArray Save () const;
+			void Load (const QByteArray&);
+
+			using QNetworkCookieJar::allCookies;
+			using QNetworkCookieJar::setAllCookies;
 		};
 	};
 };
