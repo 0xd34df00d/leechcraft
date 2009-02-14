@@ -20,13 +20,14 @@
 #include "screenshotsavedialog.h"
 #include "xmlsettingsmanager.h"
 #include "speeddialprovider.h"
+#include "cookieseditdialog.h"
 
 BrowserWidget::BrowserWidget (QWidget *parent)
 : QWidget (parent)
 {
 	Ui_.setupUi (this);
 
-	QToolBar *bar = new QToolBar ();
+	QToolBar *bar = new QToolBar (this);
 	
 	QAction *back = Ui_.WebView_->pageAction (QWebPage::Back);
 	back->setParent (this);
@@ -77,11 +78,15 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	PrintPreview_->setShortcut (tr ("Ctrl+Shift+P"));
 	PrintPreview_->setEnabled (false);
 
-	ScreenSave_ = new QAction (tr ("Take page's screenshot"),
+	ScreenSave_ = new QAction (tr ("Take page's screenshot..."),
 			this);
 	ScreenSave_->setProperty ("ActionIcon", "poshuku_takescreenshot");
 	ScreenSave_->setShortcut (Qt::Key_F12);
 	ScreenSave_->setEnabled (false);
+
+	CookiesManager_ = new QAction (tr ("Cookies manager..."),
+			this);
+	CookiesManager_->setProperty ("ActionIcon", "poshuku_cookies");
 
 	NewTab_ = new QAction (tr ("Create new tab"),
 			this);
@@ -104,6 +109,9 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	moreMenu->addAction (Print_);
 	moreMenu->addAction (PrintPreview_);
 	moreMenu->addAction (ScreenSave_);
+	moreMenu->addSeparator ();
+	moreMenu->addAction (CookiesManager_);
+	moreMenu->addSeparator ();
 	RecentlyClosed_ = moreMenu->addMenu (tr ("Recently closed"));
 	RecentlyClosed_->setEnabled (false);
 	RecentlyClosed_->menuAction ()->setShortcut (tr ("Ctrl+Shift+T"));
@@ -137,6 +145,10 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			SIGNAL (triggered ()),
 			this,
 			SLOT (handleScreenSave ()));
+	connect (CookiesManager_,
+			SIGNAL (triggered ()),
+			this,
+			SLOT (handleCookiesManager ()));
 	connect (NewTab_,
 			SIGNAL (triggered ()),
 			this,
@@ -383,6 +395,12 @@ void BrowserWidget::handleScreenSave ()
 					.arg (filename));
 		return;
 	}
+}
+
+void BrowserWidget::handleCookiesManager ()
+{
+	CookiesEditDialog *dia = new CookiesEditDialog ();
+	dia->show ();
 }
 
 void BrowserWidget::handleNewTab ()
