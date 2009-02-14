@@ -121,6 +121,11 @@ QString SpeedDialProvider::GetHTMLForItem (const HistoryItem& hitem) const
 
 void SpeedDialProvider::Regenerate (const QString& url) const
 {
+	if (RenderQueue_.contains (url))
+		return;
+
+	RenderQueue_ << url;
+
 	QWebPage *page = new QWebPage ();
 	page->setNetworkAccessManager (Core::Instance ().GetNetworkAccessManager ());
 	page->setProperty ("URL", url);
@@ -142,6 +147,7 @@ void SpeedDialProvider::handleFinished ()
 	if (page->mainFrame ()->contentsSize ().isEmpty () ||
 			page->property ("URL").toString ().isEmpty ())
 		return;
+	qDebug () << page->property ("URL");
 
 	page->setViewportSize (page->mainFrame ()->contentsSize ());
 
@@ -172,6 +178,7 @@ void SpeedDialProvider::handleFinished ()
 	item.ShotDate_ = QDateTime::currentDateTime ();
 
 	Core::Instance ().GetStorageBackend ()->SetThumbnail (item);
+	RenderQueue_.removeAll (item.URL_);
 	page->deleteLater ();
 
 	emit newThumbAvailable ();

@@ -13,11 +13,10 @@ CustomWebView::CustomWebView (QWidget *parent)
 	CustomWebPage *page = new CustomWebPage (this);
 	setPage (page);
 
-// TODO works as shit
-//	connect (&SpeedDialProvider::Instance (),
-//			SIGNAL (newThumbAvailable ()),
-//			this,
-//			SLOT (handleNewThumbs ()));
+	connect (&SpeedDialProvider::Instance (),
+			SIGNAL (newThumbAvailable ()),
+			this,
+			SLOT (handleNewThumbs ()));
 
 	setHtml (SpeedDialProvider::Instance ().GetHTML ());
 

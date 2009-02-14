@@ -1,7 +1,7 @@
 #ifndef SPEEDDIALPROVIDER_H
 #define SPEEDDIALPROVIDER_H
 #include <QObject>
-#include <QString>
+#include <QStringList>
 #include <QDateTime>
 
 struct HistoryItem;
@@ -9,6 +9,8 @@ struct HistoryItem;
 class SpeedDialProvider : public QObject
 {
 	Q_OBJECT
+
+	mutable QStringList RenderQueue_;
 
 	SpeedDialProvider ();
 public:
