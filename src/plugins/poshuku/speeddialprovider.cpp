@@ -23,16 +23,27 @@ QString SpeedDialProvider::GetHTML () const
 	if (!XmlSettingsManager::Instance ()->property ("SpeedDialEnabled").toBool ())
 		return QString ();
 
+	QString result = "<html><head><title>";
+	result += tr ("Speed dial");
+	result += "</title><body><table style='width:100%;height:100%;"
+		"border-spacing:0pt;'>";
+
+	result += GetTopHistory ();
+
+	result += "</table></body></html>";
+
+	return result;
+}
+
+QString SpeedDialProvider::GetTopHistory () const
+{
+	QString result;
 	StorageBackend *storage = Core::Instance ().GetStorageBackend ();
 
 	history_items_t items;
 	storage->LoadResemblingHistory ("", items);
 	if (!items.size ())
 		return QString ();
-
-	QString result = "<html><head><title>";
-	result += tr ("Speed dial");
-	result += "</title><body><table style='width:100%; height:100%'>";
 
 	int rows = XmlSettingsManager::Instance ()->
 		property ("SpeedDialRows").toInt ();
@@ -47,7 +58,7 @@ QString SpeedDialProvider::GetHTML () const
 		result += "<tr>";
 		for (int j = 0; j < columns; ++j)
 		{
-			result += "<td>";
+			result += "<td style='border:1px solid black;text-align:center'>";
 			result += GetHTMLForItem (items.at (i * columns + j));
 			result += "</td>";
 
@@ -63,8 +74,6 @@ QString SpeedDialProvider::GetHTML () const
 		if (shouldBreak)
 			break;
 	}
-
-	result += "</table></body></html>";
 
 	return result;
 }

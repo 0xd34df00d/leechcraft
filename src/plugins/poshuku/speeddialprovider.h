@@ -26,6 +26,7 @@ public:
 	static SpeedDialProvider& Instance ();
 	QString GetHTML () const;
 private:
+	QString GetTopHistory () const;
 	QString GetHTMLForItem (const HistoryItem&) const;
 	void Regenerate (const QString&) const;
 private slots:
