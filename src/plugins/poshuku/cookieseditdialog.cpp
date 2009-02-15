@@ -53,14 +53,26 @@ void CookiesEditDialog::handleClicked (const QModelIndex& index)
 
 void CookiesEditDialog::handleAccepted ()
 {
-	QNetworkCookie cookie (Ui_.NameEdit_->text ().toUtf8 (),
-			Ui_.ValueEdit_->text ().toUtf8 ());
-	cookie.setDomain (Ui_.DomainEdit_->text ());
-	cookie.setExpirationDate (Ui_.ExpirationEdit_->dateTime ());
-	cookie.setPath (Ui_.PathEdit_->text ());
-	cookie.setSecure (Ui_.SecureEdit_->checkState () == Qt::Checked);
+	if (Ui_.RawCookieEdit_->toPlainText ().isEmpty ())
+	{
+		QNetworkCookie cookie (Ui_.NameEdit_->text ().toUtf8 (),
+				Ui_.ValueEdit_->text ().toUtf8 ());
+		cookie.setDomain (Ui_.DomainEdit_->text ());
+		cookie.setExpirationDate (Ui_.ExpirationEdit_->dateTime ());
+		cookie.setPath (Ui_.PathEdit_->text ());
+		cookie.setSecure (Ui_.SecureEdit_->checkState () == Qt::Checked);
 
-	Model_->SetCookie (Ui_.CookiesView_->currentIndex (), cookie);
+		Model_->SetCookie (Ui_.CookiesView_->currentIndex (), cookie);
+	}
+	else
+	{
+		foreach (QNetworkCookie cookie,
+				QNetworkCookie::parseCookies (Ui_.RawCookieEdit_->
+					toPlainText ().toUtf8 ()))
+			Model_->SetCookie (QModelIndex (), cookie);
+
+		Ui_.RawCookieEdit_->clear ();
+	}
 }
 
 void CookiesEditDialog::handleDomainChanged ()
