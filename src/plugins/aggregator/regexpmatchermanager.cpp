@@ -3,6 +3,8 @@
 #include <functional>
 #include <iterator>
 #include <stdexcept>
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
 #include <QTimer>
 #include <QtDebug>
 #include <QSettings>
@@ -74,22 +76,6 @@ void RegexpMatcherManager::Release ()
 	saveSettings ();
 }
 
-// Finds items with same title
-struct IsEqual : public std::unary_function<RegexpMatcherManager::RegexpItem, bool>
-{
-	QString String_;
-
-	IsEqual (const QString& str)
-	: String_ (str)
-	{
-	}
-
-	bool operator() (const RegexpMatcherManager::RegexpItem& it)
-	{
-		return it.IsEqual (String_);
-	}
-};
-
 namespace
 {
 	inline bool IsRegexpValid (const QString& rx)
@@ -103,7 +89,12 @@ void RegexpMatcherManager::Add (const QString& title, const QString& body)
 	if (!IsRegexpValid (title) || !IsRegexpValid (body))
 		throw Malformed ("Regexp is malformed");
 
-	items_t::const_iterator found = std::find_if (Items_.begin (), Items_.end (), IsEqual (title));
+	items_t::const_iterator found =
+		std::find_if (Items_.begin (), Items_.end (),
+				boost::bind (boost::function<bool (const RegexpMatcherManager::RegexpItem&,
+						const QString)> (&RegexpMatcherManager::RegexpItem::IsEqual),
+					_1, title));
+
 	if (found != Items_.end ())
 		throw AlreadyExists ("Regexp user tries to add already exists in the RegexpMatcherManager");
 
@@ -116,7 +107,11 @@ void RegexpMatcherManager::Add (const QString& title, const QString& body)
 
 void RegexpMatcherManager::Remove (const QString& title)
 {
-	items_t::iterator found = std::find_if (Items_.begin (), Items_.end (), IsEqual (title));
+	items_t::iterator found =
+		std::find_if (Items_.begin (), Items_.end (),
+				boost::bind (boost::function<bool (const RegexpMatcherManager::RegexpItem&,
+						const QString)> (&RegexpMatcherManager::RegexpItem::IsEqual),
+					_1, title));
 	if (found == Items_.end ())
 		throw NotFound ("Regexp user tried to remove doesn't exist in the RegexpMatcherManager");
 
@@ -145,7 +140,11 @@ void RegexpMatcherManager::Modify (const QString& title, const QString& newBody)
 	if (!IsRegexpValid (title) || !IsRegexpValid (newBody))
 		throw Malformed ("Regexp is malformed");
 
-	items_t::iterator found = std::find_if (Items_.begin (), Items_.end (), IsEqual (title));
+	items_t::iterator found =
+		std::find_if (Items_.begin (), Items_.end (),
+				boost::bind (boost::function<bool (const RegexpMatcherManager::RegexpItem&,
+						const QString)> (&RegexpMatcherManager::RegexpItem::IsEqual),
+					_1, title));
 	if (found == Items_.end ())
 		throw NotFound ("Regexp user tried to modify doesn't exist in the RegexpMatcherManager");
 
