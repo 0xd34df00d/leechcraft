@@ -35,7 +35,6 @@ namespace LeechCraft
 		std::auto_ptr<Util::MergeModel> MergeModel_;
 		std::auto_ptr<Util::MergeModel> HistoryMergeModel_;
 		std::auto_ptr<FilterModel> FilterModel_;
-		std::auto_ptr<FilterModel> HistoryFilterModel_;
 		std::auto_ptr<TabContainer> TabContainer_;
 		std::auto_ptr<QNetworkAccessManager> NetworkAccessManager_;
 		std::auto_ptr<QTimer> CookieSaveTimer_;
@@ -70,7 +69,6 @@ namespace LeechCraft
 		QObjectList GetSettables () const;
 		QAbstractItemModel* GetPluginsModel () const;
 		QAbstractProxyModel* GetTasksModel () const;
-		QAbstractProxyModel* GetHistoryModel () const;
 		Util::MergeModel* GetUnfilteredTasksModel () const;
 		Util::MergeModel* GetUnfilteredHistoryModel () const;
 		
@@ -130,7 +128,7 @@ namespace LeechCraft
 		 * @return Whether the indexes belong to the same model.
 		 */
 		bool SameModel (const QModelIndex& i1, const QModelIndex& i2) const;
-		void UpdateFiltering (const QString&, FilterType, bool, bool = false);
+		void UpdateFiltering (const QString&);
 		void HistoryActivated (int);
         
         QPair<qint64, qint64> GetSpeeds () const;
@@ -181,6 +179,7 @@ namespace LeechCraft
 		void log (const QString&);
         void downloadFinished (const QString&);
 		void loadProgress (const QString&);
+		void modelSwitched ();
     };
 };
 

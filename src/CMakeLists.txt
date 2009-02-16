@@ -170,6 +170,7 @@ SET (SRCS
 	debugmessagehandler.cpp
 	application.cpp
 	iconchooser.cpp
+	requestparser.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -194,6 +195,7 @@ SET (HEADERS
 	debugmessagehandler.h
 	application.h
 	iconchooser.h
+	requestparser.h
 	interfaces/iinfo.h
 	interfaces/iwindow.h
 	interfaces/idownload.h

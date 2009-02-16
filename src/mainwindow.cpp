@@ -50,6 +50,10 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			SIGNAL (log (const QString&)),
 			LogToolBox_,
 			SLOT (log (const QString&)));
+	connect (&Core::Instance (),
+			SIGNAL (modelSwitched ()),
+			this,
+			SLOT (handleModelSwitched ()));
 
 	Core::Instance ().SetReallyMainWindow (this);
 	Core::Instance ().DelayedInit ();
@@ -61,13 +65,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 
 	QAbstractItemModel *tasksModel = Core::Instance ().GetTasksModel ();
 	Ui_.PluginsTasksTree_->setModel (tasksModel);
-
-	Ui_.HistoryView_->setModel (Core::Instance ().GetHistoryModel ());
-	Ui_.HistoryView_->sortByColumn (3, Qt::DescendingOrder);
-	connect (Ui_.HistoryView_,
-			SIGNAL (activated (const QModelIndex&)),
-			this,
-			SLOT (historyActivated (const QModelIndex&)));
 
 	connect (Ui_.PluginsTasksTree_->selectionModel (),
 			SIGNAL (selectionChanged (const QItemSelection&,
@@ -84,16 +81,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			fm.width ("State of the download."));
 	itemsHeader->resizeSection (2,
 			fm.width ("99.99% (1024.0 kb from 1024.0 kb at 1024.0 kb/s)"));
-
-	itemsHeader = Ui_.HistoryView_->header ();
-	itemsHeader->resizeSection (0,
-			fm.width ("Average filename or torrent name is about this width or something."));
-	itemsHeader->resizeSection (1,
-			fm.width ("this is some path for downloaded file with extension"));
-	itemsHeader->resizeSection (2,
-			fm.width (" 1234.56 kb "));
-	itemsHeader->resizeSection (3,
-			fm.width (QDateTime::currentDateTime ().toString ()));
 
 	QTimer *speedUpd = new QTimer (this);
 	speedUpd->setInterval (1000);
@@ -173,31 +160,10 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	Ui_.MainTabWidget_->setProperty ("TabIcons", "downloaders history");
 	Ui_.ControlsDockWidget_->hide ();
 
-	connect (Ui_.FilterCaseSensitivity_,
-			SIGNAL (stateChanged (int)),
-			this,
-			SLOT (filterParametersChanged ()));
 	connect (Ui_.FilterLine_,
 			SIGNAL (textEdited (const QString&)),
 			this,
 			SLOT (filterParametersChanged ()));
-	connect (Ui_.FilterType_,
-			SIGNAL (currentIndexChanged (int)),
-			this,
-			SLOT (filterParametersChanged ()));
-
-	connect (Ui_.HistoryFilterCaseSensitivity_,
-			SIGNAL (stateChanged (int)),
-			this,
-			SLOT (historyFilterParametersChanged ()));
-	connect (Ui_.HistoryFilterLine_,
-			SIGNAL (textEdited (const QString&)),
-			this,
-			SLOT (historyFilterParametersChanged ()));
-	connect (Ui_.HistoryFilterType_,
-			SIGNAL (currentIndexChanged (int)),
-			this,
-			SLOT (historyFilterParametersChanged ()));
 
 	SetTrayIcon ();
 
@@ -219,11 +185,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	FancyPopupManager_ = new FancyPopupManager (TrayIcon_, this);
 	LogToolBox_ = new LogToolBox (this);
-
-	connect (Ui_.HistoryView_,
-			SIGNAL (deleteSelected (const QModelIndex&)),
-			&Core::Instance (),
-			SLOT (deleteSelectedHistory (const QModelIndex&)));
 
 	QToolBar *mainBar = new QToolBar (this);
 	mainBar->addAction (Ui_.ActionAddTask_);
@@ -418,14 +379,25 @@ void LeechCraft::MainWindow::updatePanes (const QItemSelection& newIndexes,
 
 		Core::Instance ().SetNewRow (newIndex);
 		
-		Ui_.ControlsLayout_->addWidget (controls, 1);
-		controls->show ();
+		if (controls)
+		{
+			Ui_.ControlsLayout_->addWidget (controls, 1);
+			controls->show ();
+		}
 		if (addiInfo)
 		{
 			Ui_.ControlsDockWidget_->setWidget (addiInfo);
 			Ui_.ControlsDockWidget_->show ();
 		}
 	}
+}
+
+void LeechCraft::MainWindow::handleModelSwitched ()
+{
+	if (Ui_.ControlsLayout_->count () == 2)
+		Ui_.ControlsLayout_->takeAt (1)->widget ()->hide ();
+
+	Ui_.ControlsDockWidget_->hide ();
 }
 
 void LeechCraft::MainWindow::updateSpeedIndicators ()
@@ -478,61 +450,7 @@ void LeechCraft::MainWindow::handleDownloadFinished (const QString& string)
 
 void LeechCraft::MainWindow::filterParametersChanged ()
 {
-	Core::FilterType ft;
-	switch (Ui_.FilterType_->currentIndex ())
-	{
-		case 0:
-			ft = Core::FTFixedString;
-			break;
-		case 1:
-			ft = Core::FTWildcard;
-			break;
-		case 2:
-			ft = Core::FTRegexp;
-			break;
-		case 3:
-			ft = Core::FTTags;
-			break;
-		default:
-			qWarning () << Q_FUNC_INFO
-				<< "unhandled ft"
-				<< Ui_.FilterType_->currentIndex ();
-			return;
-	}
-
-	bool caseSensitivity = (Ui_.FilterCaseSensitivity_->checkState () == Qt::Checked);
-	Core::Instance ().UpdateFiltering (Ui_.FilterLine_->text (),
-			ft, caseSensitivity);
-}
-
-void LeechCraft::MainWindow::historyFilterParametersChanged ()
-{
-	Core::FilterType ft;
-	switch (Ui_.HistoryFilterType_->currentIndex ())
-	{
-		case 0:
-			ft = Core::FTFixedString;
-			break;
-		case 1:
-			ft = Core::FTWildcard;
-			break;
-		case 2:
-			ft = Core::FTRegexp;
-			break;
-		case 3:
-			ft = Core::FTTags;
-			break;
-		default:
-			qWarning () << Q_FUNC_INFO
-				<< "unhandled ft"
-				<< Ui_.HistoryFilterType_->currentIndex ();
-			return;
-	}
-
-	bool caseSensitivity =
-		(Ui_.HistoryFilterCaseSensitivity_->checkState () == Qt::Checked);
-	Core::Instance ().UpdateFiltering (Ui_.HistoryFilterLine_->text (),
-			ft, caseSensitivity, true);
+	Core::Instance ().UpdateFiltering (Ui_.FilterLine_->text ());
 }
 
 void LeechCraft::MainWindow::updateIconSet ()

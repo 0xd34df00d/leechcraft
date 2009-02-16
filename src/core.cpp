@@ -39,6 +39,7 @@
 #include "authenticationdialog.h"
 #include "sslerrorsdialog.h"
 #include "sqlstoragebackend.h"
+#include "requestparser.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -54,7 +55,6 @@ LeechCraft::Core::Core ()
 			<< tr ("Date")
 			<< tr ("Tags")))
 , FilterModel_ (new FilterModel)
-, HistoryFilterModel_ (new FilterModel)
 , NetworkAccessManager_ (new QNetworkAccessManager)
 , CookieSaveTimer_ (new QTimer ())
 , StorageBackend_ (new SQLStorageBackend ())
@@ -100,7 +100,6 @@ LeechCraft::Core::Core ()
 			SIGNAL (loadProgress (const QString&)));
 
 	FilterModel_->setSourceModel (MergeModel_.get ());
-	HistoryFilterModel_->setSourceModel (HistoryMergeModel_.get ());
 
     ClipboardWatchdog_ = new QTimer (this);
     connect (ClipboardWatchdog_,
@@ -173,11 +172,6 @@ QAbstractProxyModel* LeechCraft::Core::GetTasksModel () const
 	return FilterModel_.get ();
 }
 
-QAbstractProxyModel* LeechCraft::Core::GetHistoryModel () const
-{
-	return HistoryFilterModel_.get ();
-}
-
 MergeModel* LeechCraft::Core::GetUnfilteredTasksModel () const
 {
 	return MergeModel_.get ();
@@ -190,22 +184,32 @@ MergeModel* LeechCraft::Core::GetUnfilteredHistoryModel () const
 
 QWidget* LeechCraft::Core::GetControls (const QModelIndex& index) const
 {
-	QAbstractItemModel *model = *MergeModel_->
-		GetModelForRow (FilterModel_->mapToSource (index).row ());
-	IJobHolder *ijh =
-		qobject_cast<IJobHolder*> (Representation2Object_ [model]);
+	if (FilterModel_->sourceModel () == MergeModel_.get ())
+	{
+		QAbstractItemModel *model = *MergeModel_->
+			GetModelForRow (FilterModel_->mapToSource (index).row ());
+		IJobHolder *ijh =
+			qobject_cast<IJobHolder*> (Representation2Object_ [model]);
 
-	return ijh->GetControls ();
+		return ijh->GetControls ();
+	}
+	else
+		return 0;
 }
 
 QWidget* LeechCraft::Core::GetAdditionalInfo (const QModelIndex& index) const
 {
-	QAbstractItemModel *model = *MergeModel_->
-		GetModelForRow (FilterModel_->mapToSource (index).row ());
-	IJobHolder *ijh =
-		qobject_cast<IJobHolder*> (Representation2Object_ [model]);
+	if (FilterModel_->sourceModel () == MergeModel_.get ())
+	{
+		QAbstractItemModel *model = *MergeModel_->
+			GetModelForRow (FilterModel_->mapToSource (index).row ());
+		IJobHolder *ijh =
+			qobject_cast<IJobHolder*> (Representation2Object_ [model]);
 
-	return ijh->GetAdditionalInfo ();
+		return ijh->GetAdditionalInfo ();
+	}
+	else
+		return 0;
 }
 
 QStringList LeechCraft::Core::GetTagsForIndex (int index,
@@ -329,35 +333,38 @@ void LeechCraft::Core::SetNewRow (const QModelIndex& index)
 {
 	QList<IJobHolder*> holders = PluginManager_->GetAllCastableTo<IJobHolder*> ();
 
-	try
+	if (FilterModel_->sourceModel () == MergeModel_.get ())
 	{
-		if (index.isValid ())
+		try
 		{
-			QModelIndex mapped = FilterModel_->mapToSource (index);
-			QModelIndex final = MergeModel_->mapToSource (mapped);
-			MergeModel::const_iterator modIter = MergeModel_->GetModelForRow (mapped.row ());
-			QObject *plugin = Representation2Object_ [*modIter];
+			if (index.isValid ())
+			{
+				QModelIndex mapped = FilterModel_->mapToSource (index);
+				QModelIndex final = MergeModel_->mapToSource (mapped);
+				MergeModel::const_iterator modIter = MergeModel_->GetModelForRow (mapped.row ());
+				QObject *plugin = Representation2Object_ [*modIter];
 
-			IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
+				IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
 
-			for (QList<IJobHolder*>::iterator i = holders.begin (),
-					end = holders.end (); i != end; ++i)
-				if (*i == ijh)
-					(*i)->ItemSelected (final);
-				else
-					(*i)->ItemSelected (QModelIndex ());
+				for (QList<IJobHolder*>::iterator i = holders.begin (),
+						end = holders.end (); i != end; ++i)
+					if (*i == ijh)
+						(*i)->ItemSelected (final);
+					else
+						(*i)->ItemSelected (QModelIndex ());
 
-			QObjectList watchers = PluginManager_->GetSelectedDownloaderWatchers ();
-			foreach (QObject *pEntity, watchers)
-				QMetaObject::invokeMethod (pEntity,
-						"selectedDownloaderChanged",
-						Q_ARG (QObject*, plugin));
-			return;
+				QObjectList watchers = PluginManager_->GetSelectedDownloaderWatchers ();
+				foreach (QObject *pEntity, watchers)
+					QMetaObject::invokeMethod (pEntity,
+							"selectedDownloaderChanged",
+							Q_ARG (QObject*, plugin));
+				return;
+			}
 		}
-	}
-	catch (const std::runtime_error& e)
-	{
-		qWarning () << Q_FUNC_INFO << "caught:" << e.what ();
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO << "caught:" << e.what ();
+		}
 	}
 
 	for (QList<IJobHolder*>::iterator i = holders.begin (),
@@ -381,71 +388,58 @@ bool LeechCraft::Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) 
 	return modIter1 == modIter2;
 }
 
-void LeechCraft::Core::UpdateFiltering (const QString& text,
-		LeechCraft::Core::FilterType ft, bool caseSensitive, bool history)
+void LeechCraft::Core::UpdateFiltering (const QString& text)
 {
-	if (!history)
-		FilterModel_->setFilterCaseSensitivity (caseSensitive ?
-				Qt::CaseSensitive : Qt::CaseInsensitive);
-	else
-		HistoryFilterModel_->setFilterCaseSensitivity (caseSensitive ?
-				Qt::CaseSensitive : Qt::CaseInsensitive);
+	Request r = RequestParser (text).GetRequest ();
 
-	switch (ft)
+	if (r.Category_.isEmpty () ||
+			r.Category_ == tr ("downloads") ||
+			r.Category_ == tr ("d"))
 	{
-		case FTFixedString:
-			if (!history)
-			{
-				FilterModel_->SetTagsMode (false);
-				FilterModel_->setFilterFixedString (text);
-			}
-			else
-			{
-				HistoryFilterModel_->SetTagsMode (false);
-				HistoryFilterModel_->setFilterFixedString (text);
-			}
+		if (FilterModel_->sourceModel () != MergeModel_.get ())
+		{
+			emit modelSwitched ();
+			FilterModel_->setSourceModel (MergeModel_.get ());
+		}
+	}
+	else if (r.Category_ == tr ("history") ||
+			r.Category_ == tr ("h"))
+	{
+		if (FilterModel_->sourceModel () != HistoryMergeModel_.get ())
+		{
+			emit modelSwitched ();
+			FilterModel_->setSourceModel (HistoryMergeModel_.get ());
+		}
+	}
+
+	FilterModel_->setFilterCaseSensitivity (r.CaseSensitive_ ?
+			Qt::CaseSensitive : Qt::CaseInsensitive);
+
+	switch (r.Type_)
+	{
+		case Request::RTFixed:
+			FilterModel_->SetTagsMode (false);
+			FilterModel_->setFilterFixedString (r.String_);
 			break;
-		case FTWildcard:
-			if (!history)
-			{
-				FilterModel_->SetTagsMode (false);
-				FilterModel_->setFilterWildcard (text);
-			}
-			else
-			{
-				HistoryFilterModel_->SetTagsMode (false);
-				HistoryFilterModel_->setFilterWildcard (text);
-			}
+		case Request::RTWildcard:
+			FilterModel_->SetTagsMode (false);
+			FilterModel_->setFilterWildcard (r.String_);
 			break;
-		case FTRegexp:
-			if (!history)
-			{
-				FilterModel_->SetTagsMode (false);
-				FilterModel_->setFilterRegExp (text);
-			}
-			else
-			{
-				HistoryFilterModel_->SetTagsMode (false);
-				HistoryFilterModel_->setFilterRegExp (text);
-			}
+		case Request::RTRegexp:
+			FilterModel_->SetTagsMode (false);
+			FilterModel_->setFilterRegExp (r.String_);
 			break;
-		case FTTags:
-			if (!history)
-			{
-				FilterModel_->SetTagsMode (true);
-				FilterModel_->setFilterFixedString (text);
-			}
-			else
-			{
-				HistoryFilterModel_->SetTagsMode (true);
-				HistoryFilterModel_->setFilterFixedString (text);
-			}
+		case Request::RTTag:
+			FilterModel_->SetTagsMode (true);
+			FilterModel_->setFilterFixedString (r.String_);
 			break;
 	}
 }
 
 void LeechCraft::Core::HistoryActivated (int historyRow)
 {
+	/*
+	 * TODO implement using new FilterModel_ stuff.
 	QString name = HistoryFilterModel_->index (historyRow, 0).data ().toString ();
 	QString path = HistoryFilterModel_->index (historyRow, 1).data ().toString ();
 
@@ -469,6 +463,7 @@ void LeechCraft::Core::HistoryActivated (int historyRow)
 
 	QMetaObject::invokeMethod (videoProvider, "setFile", Q_ARG (QString, file));
 	QMetaObject::invokeMethod (videoProvider, "play");
+	*/
 }
 
 QPair<qint64, qint64> LeechCraft::Core::GetSpeeds () const
