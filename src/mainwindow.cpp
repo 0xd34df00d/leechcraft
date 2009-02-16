@@ -95,6 +95,11 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	speedUpd->start ();
 	qApp->setQuitOnLastWindowClosed (false);
 
+	connect (Ui_.PluginsTasksTree_,
+			SIGNAL (activated (const QModelIndex&)),
+			this,
+			SLOT (activated (const QModelIndex&)));
+
 	QObjectList settable = Core::Instance ().GetSettables ();
 	for (QObjectList::const_iterator i = settable.begin (),
 			end = settable.end (); i != end; ++i)
@@ -157,7 +162,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	QWidget *settings = new QWidget ();
 	settings->addAction (Ui_.ActionSettings_);
 	Ui_.MainTabWidget_->setCornerWidget (settings, Qt::TopRightCorner);
-	Ui_.MainTabWidget_->setProperty ("TabIcons", "downloaders history");
+	Ui_.MainTabWidget_->setProperty ("TabIcons", "downloaders");
 	Ui_.ControlsDockWidget_->hide ();
 
 	connect (Ui_.FilterLine_,
@@ -464,9 +469,9 @@ void LeechCraft::MainWindow::on_ActionPluginManager__triggered ()
 	PluginManagerDialog_->show ();
 }
 
-void LeechCraft::MainWindow::historyActivated (const QModelIndex& index)
+void LeechCraft::MainWindow::activated (const QModelIndex& index)
 {
-	Core::Instance ().HistoryActivated (index.row ());
+	Core::Instance ().Activated (index.row ());
 }
 
 void LeechCraft::MainWindow::handleLoadProgress (const QString& msg)

@@ -129,7 +129,7 @@ namespace LeechCraft
 		 */
 		bool SameModel (const QModelIndex& i1, const QModelIndex& i2) const;
 		void UpdateFiltering (const QString&);
-		void HistoryActivated (int);
+		void Activated (int);
         
         QPair<qint64, qint64> GetSpeeds () const;
 

@@ -380,10 +380,14 @@ bool LeechCraft::Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) 
 		return true;
 
 	QModelIndex mapped1 = FilterModel_->mapToSource (i1);
-	MergeModel::const_iterator modIter1 = MergeModel_->GetModelForRow (mapped1.row ());
+	MergeModel::const_iterator modIter1 =
+		qobject_cast<MergeModel*> (FilterModel_->sourceModel ())->
+		GetModelForRow (mapped1.row ());
 
 	QModelIndex mapped2 = FilterModel_->mapToSource (i2);
-	MergeModel::const_iterator modIter2 = MergeModel_->GetModelForRow (mapped2.row ());
+	MergeModel::const_iterator modIter2 =
+		qobject_cast<MergeModel*> (FilterModel_->sourceModel ())->
+		GetModelForRow (mapped2.row ());
 
 	return modIter1 == modIter2;
 }
@@ -436,12 +440,15 @@ void LeechCraft::Core::UpdateFiltering (const QString& text)
 	}
 }
 
-void LeechCraft::Core::HistoryActivated (int historyRow)
+void LeechCraft::Core::Activated (int row)
 {
-	/*
-	 * TODO implement using new FilterModel_ stuff.
-	QString name = HistoryFilterModel_->index (historyRow, 0).data ().toString ();
-	QString path = HistoryFilterModel_->index (historyRow, 1).data ().toString ();
+	if (FilterModel_->sourceModel () != HistoryMergeModel_.get ())
+		return;
+
+	qDebug () << Q_FUNC_INFO;
+
+	QString name = FilterModel_->index (row, 0).data ().toString ();
+	QString path = FilterModel_->index (row, 1).data ().toString ();
 
 	QFileInfo pathInfo (path);
 	QString file;
@@ -449,7 +456,11 @@ void LeechCraft::Core::HistoryActivated (int historyRow)
 	{
 		QDir dir (path);
 		if (!dir.exists (name))
+		{
+			emit error (tr ("The file %1 doesn't exist anymore.")
+					.arg (name));
 			return;
+		}
 		file = dir.filePath (name);
 	}
 	else if (pathInfo.isFile ())
@@ -463,7 +474,6 @@ void LeechCraft::Core::HistoryActivated (int historyRow)
 
 	QMetaObject::invokeMethod (videoProvider, "setFile", Q_ARG (QString, file));
 	QMetaObject::invokeMethod (videoProvider, "play");
-	*/
 }
 
 QPair<qint64, qint64> LeechCraft::Core::GetSpeeds () const

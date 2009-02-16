@@ -80,7 +80,7 @@ namespace LeechCraft
 		void filterParametersChanged ();
 		void updateIconSet ();
 		void on_ActionPluginManager__triggered ();
-		void historyActivated (const QModelIndex&);
+		void activated (const QModelIndex&);
 		void handleLoadProgress (const QString&);
 	};
 };
