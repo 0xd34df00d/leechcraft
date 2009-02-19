@@ -62,6 +62,10 @@ QVariant HistoryModel::data (const QModelIndex& index, int role) const
 			}
 		case LeechCraft::TagsRole:
 			return Items_ [index.row ()].Tags_;
+		case HistoryModel::RolePath:
+			return Items_ [index.row ()].Where_ +
+				'/' +
+				Items_ [index.row ()].Name_;
 		default:
 			return QVariant ();
 	}
