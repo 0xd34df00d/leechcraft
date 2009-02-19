@@ -1,9 +1,9 @@
 #include "deadlyrics.h"
 #include "core.h"
+#include "findproxy.h"
 
 void DeadLyRicS::Init ()
 {
-	Core::Instance ().Start ("Tool - Bottom");
 }
 
 void DeadLyRicS::Release ()
@@ -49,22 +49,43 @@ void DeadLyRicS::SetNetworkAccessManager (QNetworkAccessManager *manager)
 	Core::Instance ().SetNetworkAccessManager (manager);
 }
 
+QAbstractItemModel* DeadLyRicS::GetRepresentation () const
+{
+	return &Core::Instance ();
+}
+
+LeechCraft::Util::HistoryModel* DeadLyRicS::GetHistory () const
+{
+	return 0;
+}
+
+QWidget* DeadLyRicS::GetControls () const
+{
+	return 0;
+}
+
+QWidget* DeadLyRicS::GetAdditionalInfo () const
+{
+	return 0;
+}
+
+void DeadLyRicS::ItemSelected (const QModelIndex&)
+{
+}
+
 QStringList DeadLyRicS::GetCategories () const
 {
 	return QStringList () << tr ("Lyrics");
 }
 
-void DeadLyRicS::Start (const QString& string,
-		const QStringList& categories, bool caseSensitive)
+boost::shared_ptr<IFindProxy> DeadLyRicS::GetProxy (const LeechCraft::Request& req)
 {
-	Q_UNUSED (categories);
-	Q_UNUSED (caseSensitive);
-	Core::Instance ().Start (string);
+	return boost::shared_ptr<IFindProxy> (new FindProxy (req));
 }
 
-void DeadLyRicS::Abort ()
+void DeadLyRicS::Reset ()
 {
-	Core::Instance ().Abort ();
+	Core::Instance ().Reset ();
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_deadlyrics, DeadLyRicS);

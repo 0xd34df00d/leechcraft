@@ -3,6 +3,7 @@
 #include <QHttpRequestHeader>
 #include <QDomDocument>
 #include <QtDebug>
+#include <QCryptographicHash>
 #include "core.h"
 
 LyricWikiSearcher::LyricWikiSearcher ()
@@ -10,8 +11,7 @@ LyricWikiSearcher::LyricWikiSearcher ()
 	setObjectName ("lyricwiki");
 }
 
-void LyricWikiSearcher::Start (const QString& artist, const QString& song,
-		const QString&)
+void LyricWikiSearcher::Start (const QStringList& asa)
 {
 	QByteArray data = QByteArray ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 				"<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" "
@@ -25,9 +25,9 @@ void LyricWikiSearcher::Start (const QString& artist, const QString& song,
 				"SOAP-ENV:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">"
 				"<SOAP-ENV:Body><tns:getSong>"
 				"<artist xsi:type=\"xsd:string\">")
-		.append (artist)
+		.append (asa.at (0))
 		.append ("</artist><song xsi:type=\"xsd:string\">")
-		.append (song)
+		.append (asa.at (1))
 		.append ("</song></tns:getSong></SOAP-ENV:Body></SOAP-ENV:Envelope>");
 
 	QHttpRequestHeader request ("POST", "/server.php");
@@ -47,11 +47,15 @@ void LyricWikiSearcher::Start (const QString& artist, const QString& song,
 			SIGNAL (done (bool)),
 			this,
 			SLOT (handleFinished ()));
+
+	QByteArray hash = QCryptographicHash::hash (asa.join ("").toUtf8 (),
+			QCryptographicHash::Sha1);
+	http->setObjectName (hash);
 }
 
-void LyricWikiSearcher::Stop ()
+void LyricWikiSearcher::Stop (const QByteArray& hash)
 {
-	qDeleteAll (findChildren<QHttp*> ());
+	qDeleteAll (findChildren<QHttp*> (hash));
 }
 
 void LyricWikiSearcher::handleFinished ()
@@ -63,7 +67,13 @@ void LyricWikiSearcher::handleFinished ()
 	QDomDocument doc;
 	doc.setContent (response, false);
 	QDomNodeList lyrics = doc.elementsByTagName ("lyrics");
-	if (!lyrics.size ())
+	QDomNodeList artist = doc.elementsByTagName ("artist");
+	QDomNodeList song = doc.elementsByTagName ("song");
+	QDomNodeList url = doc.elementsByTagName ("url");
+	if (!lyrics.size () ||
+			!artist.size () ||
+			!song.size () ||
+			!url.size ())
 	{
 		qWarning () << Q_FUNC_INFO << "Lyrics fetch error";
 		return;
@@ -76,6 +86,15 @@ void LyricWikiSearcher::handleFinished ()
 		return;
 	}
 
-	emit textFetched (text);
+	Lyrics result =
+	{
+		artist.at (0).toElement ().text (),
+		"",
+		song.at (0).toElement ().text (),
+		text,
+		url.at (0).toElement ().text ()
+	};
+
+	emit textFetched (result);
 }
 

@@ -3,17 +3,27 @@
 #include <QObject>
 #include <interfaces/ifinder.h>
 
+struct Lyrics
+{
+	QString Author_;
+	QString Album_;
+	QString Title_;
+	QString Text_;
+	QString URL_;
+};
+
+bool operator== (const Lyrics&, const Lyrics&);
+
 class Searcher : public QObject
 {
 	Q_OBJECT
 	
 public:
 	virtual ~Searcher ();
-	virtual void Start (const QString&, const QString&,
-			const QString& = QString ()) = 0;
-	virtual void Stop () = 0;
+	virtual void Start (const QStringList&) = 0;
+	virtual void Stop (const QByteArray&) = 0;
 signals:
-	void textFetched (const QString&);
+	void textFetched (const Lyrics&);
 };
 
 #endif

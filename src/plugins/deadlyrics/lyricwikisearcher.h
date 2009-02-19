@@ -11,9 +11,8 @@ class LyricWikiSearcher : public Searcher
 	Q_OBJECT
 public:
 	LyricWikiSearcher ();
-	void Start (const QString&, const QString&,
-			const QString& = QString ());
-	void Stop ();
+	void Start (const QStringList&);
+	void Stop (const QByteArray&);
 private slots:
 	void handleFinished ();
 };
