@@ -22,6 +22,7 @@
 #include <plugininterface/proxy.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
+#include <interfaces/ientityhandler.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/iembedtab.h>
 #include <interfaces/imultitabs.h>
@@ -40,6 +41,7 @@
 #include "sslerrorsdialog.h"
 #include "sqlstoragebackend.h"
 #include "requestparser.h"
+#include "handlerchoicedialog.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -608,62 +610,69 @@ void LeechCraft::Core::deleteSelectedHistory (const QModelIndex& index)
 
 void LeechCraft::Core::handleGotEntity (const QByteArray& file, bool fromBuffer)
 {
-    if (!fromBuffer &&
+	if (!fromBuffer &&
 			!XmlSettingsManager::Instance ()->
 			property ("QueryPluginsToHandleFinished").toBool ())
-        return;
+		return;
 
-    QObjectList plugins = PluginManager_->GetAllCastableRoots<IDownload*> ();
-    for (int i = 0; i < plugins.size (); ++i)
-    {
-        IDownload *id = qobject_cast<IDownload*> (plugins.at (i));
-        IInfo *ii = qobject_cast<IInfo*> (plugins.at (i));
-		TaskParameters tp = Autostart;
-		if (fromBuffer)
-			tp |= FromClipboard;
-		else
-			tp |= FromAutomatic;
-        if (id->CouldDownload (file, tp))
-        {
-			QString string = QTextCodec::codecForName ("UTF-8")->
-				toUnicode (file);
-			QString question = tr ("%1 could be handled by plugin %2, "
-					"would you like to?")
-				.arg (string)
-				.arg (ii->GetName ());
+	TaskParameters tp = Autostart;
+	if (fromBuffer)
+		tp |= FromClipboard;
+	else
+		tp |= FromAutomatic;
+	QString string = tr ("Too long to show");
+	if (file.size () < 1000)
+		string = QTextCodec::codecForName ("UTF-8")->toUnicode (file);
 
-			QMessageBox::StandardButton b = QMessageBox::question (0,
-						tr ("Question"),
-						question,
-						QMessageBox::Yes |
-						QMessageBox::No |
-						QMessageBox::NoToAll);
-			if (b == QMessageBox::No)
-				continue;
-			else if (b == QMessageBox::NoToAll)
-				break;
+	std::auto_ptr<HandlerChoiceDialog> dia (new HandlerChoiceDialog (string));
 
-			QString dir = QFileDialog::getExistingDirectory (0,
-					tr ("Select save path"),
-					XmlSettingsManager::Instance ()->
-						Property ("EntitySavePath",
-							QDesktopServices::storageLocation (QDesktopServices::DocumentsLocation))
-						.toString ());
-			
-			if (dir.isEmpty ())
-				break;
+	QObjectList plugins = PluginManager_->GetAllCastableRoots<IDownload*> ();
+	for (int i = 0; i < plugins.size (); ++i)
+	{
+		IDownload *id = qobject_cast<IDownload*> (plugins.at (i));
+		IInfo *ii = qobject_cast<IInfo*> (plugins.at (i));
+		if (id->CouldDownload (file, tp))
+			dia->Add (ii, id);
+	}
+	plugins = PluginManager_->GetAllCastableRoots<IEntityHandler*> ();
+	for (int i = 0; i < plugins.size (); ++i)
+	{
+		IEntityHandler *ih = qobject_cast<IEntityHandler*> (plugins.at (i));
+		IInfo *ii = qobject_cast<IInfo*> (plugins.at (i));
+		if (ih->CouldHandle (file, tp))
+			dia->Add (ii, ih);
+	}
 
-			XmlSettingsManager::Instance ()->
-				setProperty ("EntitySavePath", dir);
+	if (!dia->NumChoices () ||
+			dia->exec () == QDialog::Rejected)
+		return;
 
-			DownloadParams ddp =
-			{
-				file,
-				dir
-			};
-			id->AddJob (ddp, tp);
-        }
-    }
+	IDownload *sd = dia->GetDownload ();
+	IEntityHandler *sh = dia->GetEntityHandler ();
+	if (sd)
+	{
+		QString dir = QFileDialog::getExistingDirectory (0,
+				tr ("Select save path"),
+				XmlSettingsManager::Instance ()->
+					Property ("EntitySavePath",
+						QDesktopServices::storageLocation (QDesktopServices::DocumentsLocation))
+					.toString ());
+
+		if (dir.isEmpty ())
+			return;
+
+		XmlSettingsManager::Instance ()->
+			setProperty ("EntitySavePath", dir);
+
+		DownloadParams ddp =
+		{
+			file,
+			dir
+		};
+		sd->AddJob (ddp, tp);
+	}
+	if (sh)
+		sh->Handle (file, tp);
 }
 
 void LeechCraft::Core::handleClipboardTimer ()

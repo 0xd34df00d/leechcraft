@@ -171,6 +171,7 @@ SET (SRCS
 	application.cpp
 	iconchooser.cpp
 	requestparser.cpp
+	handlerchoicedialog.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -196,6 +197,7 @@ SET (HEADERS
 	application.h
 	iconchooser.h
 	requestparser.h
+	handlerchoicedialog.h
 	interfaces/iinfo.h
 	interfaces/iwindow.h
 	interfaces/idownload.h
@@ -220,6 +222,7 @@ SET (FORMS
 	settingssink.ui
 	authenticationdialog.ui
 	sslerrorsdialog.ui
+	handlerchoicedialog.ui
 	)
 SET (RESOURCES mainresources.qrc)
 SET (TRANSLATIONS

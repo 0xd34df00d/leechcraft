@@ -10,7 +10,7 @@ public:
 	virtual bool CouldHandle (const QByteArray&,
 			LeechCraft::TaskParameters) const = 0;
 	virtual void Handle (const QByteArray&,
-			LeechCraft::TaskParameters) const = 0;
+			LeechCraft::TaskParameters) = 0;
 
 	virtual ~IEntityHandler () {}
 };
