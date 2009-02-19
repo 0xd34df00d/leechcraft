@@ -141,7 +141,17 @@ bool TorrentPlugin::CouldDownload (const QByteArray& data, LeechCraft::TaskParam
 		QFile file (str);
 		if (file.exists () &&
 				file.open (QIODevice::ReadOnly))
-			return Core::Instance ()->IsValidTorrent (file.readAll ());
+		{
+			if (file.size () > XmlSettingsManager::Instance ()->
+					property ("MaxAutoTorrentSize").toInt () * 1024 * 1024)
+			{
+				emit log (QString ("Rejecting file %1 because it's "
+							"bigger than current auto limit.").arg (str));
+				return false;
+			}
+			else
+				return Core::Instance ()->IsValidTorrent (file.readAll ());
+		}
 		else
 			return Core::Instance ()->IsValidTorrent (data);
 	}

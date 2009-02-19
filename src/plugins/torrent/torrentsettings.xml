@@ -663,6 +663,16 @@
 					<label lang="en" value="Maximum amount of concurrently open files:" />
 					<label lang="ru" value="Максимальное число одновременно открытых файлов:" />
 				</item>
+				<item type="spinbox" property="MaxAutoTorrentSize" default="2" minimum="2" maximum="1024" step="2">
+					<lang value="en">
+						<label value="Maximum automatically added torrent size:" />
+						<suffix value=" MB" />
+					</lang>
+					<lang value="ru">
+						<label value="Максимальный размер автоматически добавляемого торрента:" />
+						<suffix value=" МБ" />
+					</lang>
+				</item>
 			</groupbox>
 		</tab>
 		<tab>

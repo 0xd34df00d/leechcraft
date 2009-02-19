@@ -156,7 +156,7 @@ signals:
     void gotEntity (const QByteArray&);
 	void jobFinished (int);
 	void jobRemoved (int);
-	void log (const QString&);
+	void log (const QString&) const;
 };
 
 #endif
