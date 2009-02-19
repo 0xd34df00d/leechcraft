@@ -64,6 +64,8 @@ QVariant HistoryModel::data (const QModelIndex& index, int role) const
 				return "Unknown field";
 		}
 	}
+	else if (role == HistoryModel::RolePath)
+		return Items_ [index.row ()].Filename_;
     else
         return QVariant ();
 
