@@ -17,7 +17,7 @@ namespace LeechCraft
 
 			QStringList Headers_;
 		protected:
-			enum Headers
+			enum Header
 			{
 				HFilename
 				, HPath
@@ -26,6 +26,10 @@ namespace LeechCraft
 				, HTags
 			};
 		public:
+			enum Role
+			{
+				RolePath = 33
+			};
 			HistoryModel (QObject* = 0);
 			virtual ~HistoryModel ();
 
