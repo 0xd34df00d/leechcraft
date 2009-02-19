@@ -17,12 +17,18 @@ void RequestParser::Parse (const QString& request)
 	foreach (QString token, tokens)
 	{
 		int index = token.indexOf (':');
-		// Skip if there is no :, if it is first or last or is escaped.
+		// Skip if there is no :, if it is first or last.
 		if (index == -1 ||
 				index == 0 ||
-				token.size () - 1 == index ||
-				token [index - 1] == '\\')
+				token.size () - 1 == index)
 			continue;
+
+		// If : is escaped, erase the \ symbol and skip.
+		if (token [index - 1] == '\\')
+		{
+			token.remove (index - 1, 1);
+			continue;
+		}
 
 		tokens.removeAll (token + ' ');
 		// This is for the case where the token is the last token in the
