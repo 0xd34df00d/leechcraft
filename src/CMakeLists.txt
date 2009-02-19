@@ -209,6 +209,7 @@ SET (HEADERS
 	interfaces/iimportexport.h
 	interfaces/ifinder.h
 	interfaces/iwebbrowser.h
+	interfaces/ientityhandler.h
 	interfaces/structures.h
 	)
 SET (FORMS
