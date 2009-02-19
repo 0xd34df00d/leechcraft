@@ -324,11 +324,6 @@ void LeechCraft::Core::TryToAddJob (const QString& name, const QString& where)
     emit error (tr ("No plugins are able to download \"%1\"").arg (name));
 }
 
-void LeechCraft::Core::Activated (const QModelIndex& index)
-{
-	ShowPlugin (index.row ());
-}
-
 void LeechCraft::Core::SetNewRow (const QModelIndex& index)
 {
 	QList<IJobHolder*> holders = PluginManager_->GetAllCastableTo<IJobHolder*> ();
@@ -440,40 +435,13 @@ void LeechCraft::Core::UpdateFiltering (const QString& text)
 	}
 }
 
-void LeechCraft::Core::Activated (int row)
+void LeechCraft::Core::Activated (const QModelIndex& index)
 {
 	if (FilterModel_->sourceModel () != HistoryMergeModel_.get ())
 		return;
 
-	qDebug () << Q_FUNC_INFO;
-
-	QString name = FilterModel_->index (row, 0).data ().toString ();
-	QString path = FilterModel_->index (row, 1).data ().toString ();
-
-	QFileInfo pathInfo (path);
-	QString file;
-	if (pathInfo.isDir ())
-	{
-		QDir dir (path);
-		if (!dir.exists (name))
-		{
-			emit error (tr ("The file %1 doesn't exist anymore.")
-					.arg (name));
-			return;
-		}
-		file = dir.filePath (name);
-	}
-	else if (pathInfo.isFile ())
-		file = path;
-	else
-		return;
-
-	QObject *videoProvider = PluginManager_->GetProvider ("media");
-	if (!videoProvider)
-		return;
-
-	QMetaObject::invokeMethod (videoProvider, "setFile", Q_ARG (QString, file));
-	QMetaObject::invokeMethod (videoProvider, "play");
+	QString name = index.data (HistoryModel::RolePath).toString ();
+	handleGotEntity (name.toUtf8 (), true);
 }
 
 QPair<qint64, qint64> LeechCraft::Core::GetSpeeds () const

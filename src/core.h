@@ -114,7 +114,6 @@ namespace LeechCraft
         bool ShowPlugin (int);
         void TryToAddJob (const QString&, const QString&);
 
-		void Activated (const QModelIndex&);
 		void SetNewRow (const QModelIndex&);
 
 		/** Returns true if both indexes belong to the same model. If
@@ -129,7 +128,7 @@ namespace LeechCraft
 		 */
 		bool SameModel (const QModelIndex& i1, const QModelIndex& i2) const;
 		void UpdateFiltering (const QString&);
-		void Activated (int);
+		void Activated (const QModelIndex&);
         
         QPair<qint64, qint64> GetSpeeds () const;
 

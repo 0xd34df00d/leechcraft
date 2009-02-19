@@ -471,7 +471,7 @@ void LeechCraft::MainWindow::on_ActionPluginManager__triggered ()
 
 void LeechCraft::MainWindow::activated (const QModelIndex& index)
 {
-	Core::Instance ().Activated (index.row ());
+	Core::Instance ().Activated (index);
 }
 
 void LeechCraft::MainWindow::handleLoadProgress (const QString& msg)
