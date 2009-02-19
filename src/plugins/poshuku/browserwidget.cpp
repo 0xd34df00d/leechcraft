@@ -27,6 +27,13 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 {
 	Ui_.setupUi (this);
 
+	Ui_.WebView_->pageAction (QWebPage::Cut)->setProperty ("ActionIcon", "poshuku_cut");
+	Ui_.WebView_->pageAction (QWebPage::Cut)->setShortcut (tr ("Ctrl+X"));
+	Ui_.WebView_->pageAction (QWebPage::Copy)->setProperty ("ActionIcon", "poshuku_copy");
+	Ui_.WebView_->pageAction (QWebPage::Copy)->setShortcut (tr ("Ctrl+C"));
+	Ui_.WebView_->pageAction (QWebPage::Paste)->setProperty ("ActionIcon", "poshuku_paste");
+	Ui_.WebView_->pageAction (QWebPage::Paste)->setShortcut (tr ("Ctrl+V"));
+
 	QToolBar *bar = new QToolBar (this);
 	
 	QAction *back = Ui_.WebView_->pageAction (QWebPage::Back);
