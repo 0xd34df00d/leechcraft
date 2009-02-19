@@ -1,10 +1,29 @@
 #ifndef IFINDER_H
 #define IFINDER_H
+#include <boost/shared_ptr.hpp>
 #include <QStringList>
 #include <QMap>
 
 namespace LeechCraft
 {
+	struct Request
+	{
+		enum Type
+		{
+			RTFixed,
+			RTWildcard,
+			RTRegexp,
+			RTTag
+		};
+
+		bool CaseSensitive_;
+		Type Type_;
+		QString Plugin_;
+		QString Category_;
+		QString String_;
+		QStringList Params_;
+	};
+
 	struct FoundEntity
 	{
 		// As it could be handled by some plugin. URI, torrent file
@@ -28,6 +47,12 @@ namespace LeechCraft
 	};
 };
 
+class IFindProxy
+{
+public:
+	virtual ~IFindProxy () {}
+};
+
 // emits entityUpdated(FoundEntity) in case of new/updated entity.
 class IFinder
 {
@@ -35,11 +60,11 @@ public:
 	virtual ~IFinder () {}
 
 	virtual QStringList GetCategories () const = 0;
-	virtual void Start (const QString&, const QStringList&, bool) = 0;
-	virtual void Abort () = 0;
+	virtual boost::shared_ptr<IFindProxy> GetProxy (const LeechCraft::Request&) = 0;
 };
 
 Q_DECLARE_INTERFACE (IFinder, "org.Deviant.LeechCraft.IFinder/1.0");
+Q_DECLARE_INTERFACE (IFindProxy, "org.Deviant.LeechCraft.IFinder/1.0");
 
 #endif
 
