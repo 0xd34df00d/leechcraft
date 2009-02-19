@@ -18,9 +18,12 @@ lmp_pause lc_pause.png
 main_addjob lc_addjob.png
 poshuku_addtofavorites lc_addtofavorites.png
 poshuku_back lc_back.png
+poshuku_copy lc_copy.png
+poshuku_cut lc_cut.png
 poshuku_find lc_find.png
 poshuku_forward lc_forward.png
 poshuku_more lc_preferences.png
+poshuku_paste lc_paste.png
 poshuku_print lc_print.png
 poshuku_printpreview lc_printpreview.png
 poshuku_reload lc_refresh.png
