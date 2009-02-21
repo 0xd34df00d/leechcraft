@@ -1233,7 +1233,7 @@ void Core::Export (const QString& filename, bool, bool) const
 					writer.writeCharacters ("fromclipboard");
 					writer.writeEndElement ();
 				}
-				if (i->Parameters_ & LeechCraft::FromCommonDialog)
+				if (i->Parameters_ & LeechCraft::FromUserInitiated)
 				{
 					writer.writeStartElement ("parameter");
 					writer.writeCharacters ("fromcommondialog");

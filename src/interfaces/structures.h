@@ -40,7 +40,7 @@ namespace LeechCraft
 		FromClipboard = 4,
 		/** Task is fetched from common job addition dialog.
 		 */
-		FromCommonDialog = 8,
+		FromUserInitiated = 8,
 		/** Task is automatically generated, for example, this is a
 		 * request from another plugin.
 		 */
