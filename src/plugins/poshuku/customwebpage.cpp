@@ -52,7 +52,10 @@ void CustomWebPage::gotUnsupportedContent (QNetworkReply *reply)
 					.contains (reply->url ().scheme ()))
 				QDesktopServices::openUrl (reply->url ());
 			else
+			{
+				reply->abort ();
 				emit gotEntity (reply->url ().toString ().toUtf8 ());
+			}
 			break;
 		case QNetworkReply::NoError:
 			{
@@ -60,6 +63,7 @@ void CustomWebPage::gotUnsupportedContent (QNetworkReply *reply)
 				if (!found &&
 						reply->header (QNetworkRequest::ContentTypeHeader).isValid ())
 				{
+					reply->abort ();
 					emit gotEntity (reply->url ().toString ().toUtf8 ());
 					break;
 				}
