@@ -311,7 +311,7 @@ void LeechCraft::Core::TryToAddJob (const QString& name, const QString& where)
     foreach (QObject *plugin, plugins)
     {
         IDownload *di = qobject_cast<IDownload*> (plugin);
-		TaskParameters tp = FromCommonDialog | Autostart;
+		TaskParameters tp = FromUserInitiated | Autostart;
         if (di && di->CouldDownload (name.toUtf8 (), tp))
         {
 			DownloadParams ddp =
@@ -412,6 +412,14 @@ void LeechCraft::Core::UpdateFiltering (const QString& text)
 			FilterModel_->setSourceModel (HistoryMergeModel_.get ());
 		}
 	}
+	/*
+	else
+	{
+		if (!FilterModel_->sourceModel () != SearchMergeModel_.get ())
+		{
+		}
+	}
+	*/
 
 	FilterModel_->setFilterCaseSensitivity (r.CaseSensitive_ ?
 			Qt::CaseSensitive : Qt::CaseInsensitive);
@@ -656,7 +664,8 @@ void LeechCraft::Core::handleGotEntity (const QByteArray& file, bool fromBuffer)
 				XmlSettingsManager::Instance ()->
 					Property ("EntitySavePath",
 						QDesktopServices::storageLocation (QDesktopServices::DocumentsLocation))
-					.toString ());
+					.toString (),
+				!QFileDialog::ShowDirsOnly);
 
 		if (dir.isEmpty ())
 			return;
