@@ -808,6 +808,8 @@ void LeechCraft::Core::pullCommandLine ()
 
 void LeechCraft::Core::handleNewLocalServerConnection ()
 {
+	ReallyMainWindow_->activateWindow ();
+	ReallyMainWindow_->raise ();
 	std::auto_ptr<QLocalSocket> socket (Server_->nextPendingConnection ());
 	// I think 100 msecs would be more than enough for the local
 	// connections.
