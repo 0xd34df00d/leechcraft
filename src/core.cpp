@@ -18,6 +18,7 @@
 #include <QNetworkReply>
 #include <QFileDialog>
 #include <QAuthenticator>
+#include <QLocalSocket>
 #include <plugininterface/util.h>
 #include <plugininterface/proxy.h>
 #include <interfaces/iinfo.h>
@@ -112,6 +113,10 @@ LeechCraft::Core::Core ()
     ClipboardWatchdog_->start (2000);
 
 	Server_->listen ("LeechCraft local socket");
+	connect (Server_.get (),
+			SIGNAL (newConnection ()),
+			this,
+			SLOT (handleNewLocalServerConnection ()));
 
 	QList<QByteArray> proxyProperties;
 	proxyProperties << "ProxyEnabled"
@@ -796,6 +801,24 @@ void LeechCraft::Core::handleSslErrors (QNetworkReply *reply, const QList<QSslEr
 void LeechCraft::Core::pullCommandLine ()
 {
 	QStringList arguments = qobject_cast<Application*> (qApp)->Arguments ();
+	if (arguments.size () > 0 &&
+			!arguments.last ().startsWith ('-'))
+		handleGotEntity (arguments.last ().toUtf8 (), true);
+}
+
+void LeechCraft::Core::handleNewLocalServerConnection ()
+{
+	std::auto_ptr<QLocalSocket> socket (Server_->nextPendingConnection ());
+	// I think 100 msecs would be more than enough for the local
+	// connections.
+	if (!socket->bytesAvailable ())
+		socket->waitForReadyRead (1000);
+
+	QByteArray read = socket->readAll ();
+	QDataStream in (read);
+	QStringList arguments;
+	in >> arguments;
+
 	if (arguments.size () > 0 &&
 			!arguments.last ().startsWith ('-'))
 		handleGotEntity (arguments.last ().toUtf8 (), true);

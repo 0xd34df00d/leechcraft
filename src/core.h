@@ -168,6 +168,7 @@ namespace LeechCraft
 		void handleProxyAuthentication (const QNetworkProxy&, QAuthenticator*);
 		void handleSslErrors (QNetworkReply*, const QList<QSslError>&);
 		void pullCommandLine ();
+		void handleNewLocalServerConnection ();
 		void saveCookies () const;
 	private:
 		void DoCommonAuth (const QString&, QAuthenticator*);

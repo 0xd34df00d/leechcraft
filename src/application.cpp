@@ -54,19 +54,14 @@ Application::Application (int& argc, char **argv)
 
 	// Sanity checks
 	if (IsAlreadyRunning ())
-	{
-		QMessageBox::critical (0, QObject::tr ("Critical failure"),
-				QObject::tr ("LeechCraft is alread running, please close another "
-				"instance before starting it."));
 		std::exit (EAlreadyRunning);
-	}
 
 	QDir home = QDir::home ();
 	if (!home.exists (".leechcraft"))
 		if (!home.mkdir (".leechcraft"))
 		{
-			QMessageBox::critical (0, QObject::tr ("Critical failure"),
-					QDir::toNativeSeparators (QObject::tr ("Could not create path %1/.leechcraft")
+			QMessageBox::critical (0, tr ("Critical failure"),
+					QDir::toNativeSeparators (tr ("Could not create path %1/.leechcraft")
 					.arg (QDir::homePath ())));
 			std::exit (EPaths);
 		}
@@ -80,10 +75,10 @@ Application::Application (int& argc, char **argv)
     qRegisterMetaType<QModelIndex> ("QModelIndex");
     qRegisterMetaType<QModelIndex*> ("QModelIndexStar");
 
-	LeechCraft::Util::Proxy::Instance ()->SetStrings (QStringList (QObject::tr ("bytes")) <<
-			QObject::tr ("KB") <<
-			QObject::tr ("MB") <<
-			QObject::tr ("GB"));
+	LeechCraft::Util::Proxy::Instance ()->SetStrings (QStringList (tr ("bytes")) <<
+			tr ("KB") <<
+			tr ("MB") <<
+			tr ("GB"));
 
 	ParseCommandLine ();
 	
@@ -119,11 +114,23 @@ bool Application::IsAlreadyRunning () const
 	QLocalSocket socket;
 	socket.connectToServer ("LeechCraft local socket");
 	if (socket.waitForConnected ())
+	{
+		QByteArray toSend;
+		{
+			QDataStream out (&toSend, QIODevice::WriteOnly);
+			out << Arguments_;
+		}
+		socket.write (toSend);
+		socket.disconnectFromServer ();
+		socket.waitForDisconnected ();
 		return true;
+	}
 
-	// Clear any halted servers
+	// Clear any halted servers and their messages
 	QLocalServer server;
 	server.listen ("LeechCraft local socket");
+	QLocalSocket *pc = 0;
+	while ((pc = server.nextPendingConnection ())) ;
 	return false;
 }
 
