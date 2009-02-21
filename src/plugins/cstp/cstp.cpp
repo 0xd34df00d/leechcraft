@@ -12,6 +12,7 @@
 #include <QDir>
 #include <QUrl>
 #include <QTranslator>
+#include <QTextCodec>
 #include <plugininterface/util.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -125,7 +126,7 @@ bool CSTP::CouldDownload (const QByteArray& url, LeechCraft::TaskParameters tp) 
 
 int CSTP::AddJob (const LeechCraft::DownloadParams& ddp, LeechCraft::TaskParameters tp)
 {
-	if (tp & LeechCraft::FromCommonDialog)
+	if (tp & LeechCraft::FromUserInitiated)
 	{
 		AddTask at (ddp.Resource_, ddp.Location_);
 		if (at.exec () == QDialog::Rejected)
@@ -142,14 +143,16 @@ int CSTP::AddJob (const LeechCraft::DownloadParams& ddp, LeechCraft::TaskParamet
 	else
 	{
 		QFileInfo fi (ddp.Location_);
-		QString dir = fi.dir ().path (), file = fi.fileName ();
+		QString dir = fi.dir ().path (),
+				file = fi.fileName ();
 
 		if (!(tp & LeechCraft::Internal))
 		{
 			if (fi.isDir ())
 			{
 				dir = ddp.Location_;
-				file = QFileInfo (QUrl (ddp.Resource_).path ()).fileName ();
+				file = QFileInfo (QUrl (QTextCodec::codecForName ("UTF-8")->
+							toUnicode (ddp.Resource_)).path ()).fileName ();
 				if (file.isEmpty ())
 					file = "index";
 			}
