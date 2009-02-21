@@ -808,6 +808,7 @@ void LeechCraft::Core::pullCommandLine ()
 
 void LeechCraft::Core::handleNewLocalServerConnection ()
 {
+	ReallyMainWindow_->show ();
 	ReallyMainWindow_->activateWindow ();
 	ReallyMainWindow_->raise ();
 	std::auto_ptr<QLocalSocket> socket (Server_->nextPendingConnection ());
