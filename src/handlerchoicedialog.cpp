@@ -17,6 +17,9 @@ void HandlerChoiceDialog::Add (const IInfo *ii, IDownload *id)
 	QRadioButton *but = new QRadioButton (ii->GetName (), this);
 	but->setToolTip (ii->GetInfo ());
 
+	if (!Buttons_->buttons ().size ())
+		but->setChecked (true);
+
 	Buttons_->addButton (but);
 	Ui_.DownloadersLayout_->addWidget (but);
 	Downloaders_ [ii->GetName ()] = id;
@@ -28,6 +31,9 @@ void HandlerChoiceDialog::Add (const IInfo *ii, IEntityHandler *ih)
 {
 	QRadioButton *but = new QRadioButton (ii->GetName (), this);
 	but->setToolTip (ii->GetInfo ());
+
+	if (!Buttons_->buttons ().size ())
+		but->setChecked (true);
 
 	Buttons_->addButton (but);
 	Handlers_ [ii->GetName ()] = ih;
