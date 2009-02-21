@@ -11,7 +11,43 @@
 QMutex G_DbgMutex;
 uint Counter = 0;
 
-void DebugHandler::debugMessageHandler (QtMsgType type, const char *message)
+void DebugHandler::simple (QtMsgType type, const char *message)
+{
+	QString name (QDir::homePath ());
+	name += ("/.leechcraft/");
+	switch (type)
+	{
+		case QtDebugMsg:
+			name += "debug.log";
+			break;
+		case QtWarningMsg:
+			name += "warning.log";
+			break;
+		case QtCriticalMsg:
+			name += "critical.log";
+			break;
+		case QtFatalMsg:
+			name += "fatal.log";
+			break;
+	}
+
+	std::ofstream ostr;
+	G_DbgMutex.lock ();
+	ostr.open (QDir::toNativeSeparators (name).toStdString ().c_str (), std::ios::app);
+	ostr << "["
+		<< QDateTime::currentDateTime ().toString ("dd.MM.yyyy HH:mm:ss.zzz").toStdString ()
+		<< "] ["
+		<< QThread::currentThread ()
+		<< "] ["
+		<< QString ("%1").arg (Counter++, 3, 10, QChar ('0')).toStdString ()
+		<< "] ";
+	ostr << message << std::endl;
+
+	ostr.close ();
+	G_DbgMutex.unlock ();
+}
+
+void DebugHandler::backtraced (QtMsgType type, const char *message)
 {
 	QString name (QDir::homePath ());
 	name += ("/.leechcraft/");
@@ -44,7 +80,7 @@ void DebugHandler::debugMessageHandler (QtMsgType type, const char *message)
 	ostr << message << std::endl;
 
 #ifdef _GNU_SOURCE
-	if (type != QtDebugMsg && PrintStack_)
+	if (type != QtDebugMsg)
 	{
 		const int maxSize = 100;
 		void *array [maxSize];

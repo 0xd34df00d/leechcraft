@@ -5,8 +5,8 @@
 
 namespace DebugHandler
 {
-	static bool PrintStack_ = false;
-	void debugMessageHandler (QtMsgType type, const char *message);
+	void simple (QtMsgType type, const char *message);
+	void backtraced (QtMsgType type, const char *message);
 };
 
 #endif
