@@ -29,7 +29,8 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , WasMaximized_ (false)
 {
 	setUpdatesEnabled (false);
-	SplashScreen_ = new QSplashScreen (QPixmap (":/resources/images/splashscreen.png"));
+	SplashScreen_ = new QSplashScreen (QPixmap (":/resources/images/splashscreen.png"),
+			Qt::WindowStaysOnTopHint);
 	SplashScreen_->show ();
 	SplashScreen_->showMessage (tr ("Initializing interface..."),
 			Qt::AlignLeft | Qt::AlignBottom);
