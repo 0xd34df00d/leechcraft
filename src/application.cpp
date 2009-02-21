@@ -30,11 +30,25 @@ Application::Application (int& argc, char **argv)
 			<< " [arguments]" << std::endl;
 		std::cout << std::endl;
 		std::cout << "Where arguments could be:"<< std::endl;
-		std::cout << "-logtoconsole     Log all the output to console instead of log files" << std::endl;
-		std::cout << "-bt               Print backtraces into logs (makes sense on Linux only)" << std::endl;
-		std::cout << "-help             Show this help message" << std::endl;
+		std::cout
+			<< "-nolog        Disable custom logger and print everything to the "
+			<< std::endl
+			<< "              stdout/stderr in a raw form."
+			<< std::endl;
+		std::cout
+			<< "-bt           Print backtraces into logs (makes sense only if "
+			<< std::endl
+			<< "              compiled with _GNU_SOURCE defined)." << std::endl;
+		std::cout << "-help         Show this help message." << std::endl;
 		std::cout << std::endl;
-		std::cout << "Installed plugins could have their own command line options." << std::endl;
+		std::cout << "Installed plugins could have their own command line options."
+			<< std::endl;
+		std::cout << "There are maybe some other hidden arguments which alter the program's"
+			<< std::endl
+			<< "behavior in an advanced or experimental way. Hack through the source code"
+			<< std::endl
+			<< "if you want them."
+			<< std::endl;
 		std::exit (EHelpRequested);
 	}
 
@@ -78,6 +92,11 @@ Application::Application (int& argc, char **argv)
     qWarning () << "======APPLICATION STARTUP======";
 }
 
+const QStringList& Application::Arguments () const
+{
+	return Arguments_;
+}
+
 bool Application::notify (QObject *obj, QEvent *event)
 {
 	try
@@ -110,11 +129,18 @@ bool Application::IsAlreadyRunning () const
 
 void Application::ParseCommandLine ()
 {
-	if (Arguments_.contains ("-logtoconsole"))
+	if (Arguments_.contains ("-nolog"))
+	{
 		qInstallMsgHandler (0);
+		Arguments_.removeAll ("-nolog");
+		Arguments_.removeAll ("-bt");
+	}
 
 	if (Arguments_.contains ("-bt"))
+	{
 		qInstallMsgHandler (DebugHandler::backtraced);
+		Arguments_.removeAll ("-bt");
+	}
 	else
 		qInstallMsgHandler (DebugHandler::simple);
 }

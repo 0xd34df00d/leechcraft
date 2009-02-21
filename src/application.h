@@ -23,6 +23,8 @@ namespace LeechCraft
 		std::auto_ptr<QTranslator> Translator_;
 	public:
 		Application (int&, char**);
+		const QStringList& Arguments () const;
+
 		virtual bool notify (QObject*, QEvent*);
 	private:
 		bool IsAlreadyRunning () const;
