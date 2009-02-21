@@ -149,7 +149,17 @@ namespace LeechCraft
 		void toggleMultiwindow ();
 		void deleteSelectedHistory (const QModelIndex&);
     private slots:
-        void handleGotEntity (const QByteArray&, bool = false);
+		/** Handles the entity which could be anything - path to a file,
+		 * link, contents of a .torrent file etc. If the entity is a
+		 * string, this parameter is considered to be an UTF-8
+		 * representation of it.
+		 *
+		 * @param[in] entity Raw entity or UTF-8 encoded string.
+		 * @param[in] user Whether this was caused by user or was
+		 * spontaneous.
+		 */
+        void handleGotEntity (const QByteArray& entity,
+				bool user = false);
         void handleClipboardTimer ();
 		void embeddedTabWantsToFront ();
 		void handleStatusBarChanged (QWidget*, const QString&);
@@ -157,6 +167,7 @@ namespace LeechCraft
 		void handleAuthentication (QNetworkReply*, QAuthenticator*);
 		void handleProxyAuthentication (const QNetworkProxy&, QAuthenticator*);
 		void handleSslErrors (QNetworkReply*, const QList<QSslError>&);
+		void pullCommandLine ();
 		void saveCookies () const;
 	private:
 		void DoCommonAuth (const QString&, QAuthenticator*);

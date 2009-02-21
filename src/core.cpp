@@ -30,6 +30,7 @@
 #include <interfaces/iwindow.h>
 #include <interfaces/structures.h>
 #include <plugininterface/customcookiejar.h>
+#include "application.h"
 #include "mainwindow.h"
 #include "pluginmanager.h"
 #include "core.h"
@@ -290,6 +291,10 @@ void LeechCraft::Core::DelayedInit ()
 	}
 
 	TabContainer_->handleTabNames ();
+
+	QTimer::singleShot (1000,
+			this,
+			SLOT (pullCommandLine ()));
 }
 
 bool LeechCraft::Core::ShowPlugin (int id)
@@ -786,6 +791,14 @@ void LeechCraft::Core::handleSslErrors (QNetworkReply *reply, const QList<QSslEr
 		}
 	}
 	settings.endGroup ();
+}
+
+void LeechCraft::Core::pullCommandLine ()
+{
+	QStringList arguments = qobject_cast<Application*> (qApp)->Arguments ();
+	if (arguments.size () > 0 &&
+			!arguments.last ().startsWith ('-'))
+		handleGotEntity (arguments.last ().toUtf8 (), true);
 }
 
 void LeechCraft::Core::saveCookies () const
