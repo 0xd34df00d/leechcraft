@@ -15,6 +15,8 @@
 # 0xd34df00d, 11 Jan 2009
 # We should search for Qt's Phonon, which is all in lowercase etc.
 
+message(STATUS "Called custom Phonon search script")
+
 if(QT_PHONON_FOUND)
    # Already found, nothing more to do
 else(QT_PHONON_FOUND)
