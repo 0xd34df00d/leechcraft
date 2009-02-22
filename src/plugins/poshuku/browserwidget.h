@@ -17,7 +17,6 @@ class BrowserWidget : public QWidget
 	QAction *Print_;
 	QAction *PrintPreview_;
 	QAction *ScreenSave_;
-	QAction *CookiesManager_;
 	QAction *NewTab_;
 	QAction *CloseTab_;
 	QMenu *RecentlyClosed_;
@@ -44,7 +43,6 @@ private slots:
 	void handlePrinting ();
 	void handlePrintingWithPreview ();
 	void handleScreenSave ();
-	void handleCookiesManager ();
 	void handleNewTab ();
 	void focusLineEdit ();
 	void handleNewUnclose (QAction*);

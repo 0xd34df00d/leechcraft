@@ -15,6 +15,7 @@
 #include "historymodel.h"
 #include "favoritesmodel.h"
 #include "browserwidget.h"
+#include "cookieseditdialog.h"
 
 using LeechCraft::Util::TagsCompleter;
 using LeechCraft::Util::TagsCompletionModel;
@@ -46,6 +47,10 @@ void Poshuku::Init ()
 	XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
     XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 			":/poshukusettings.xml");
+	connect (XmlSettingsDialog_.get (),
+			SIGNAL (pushButtonClicked (const QString&)),
+			this,
+			SLOT (handleSettingsClicked (const QString&)));
 
 	connect (&Core::Instance (),
 			SIGNAL (addNewTab (const QString&, QWidget*)),
@@ -408,6 +413,15 @@ void Poshuku::handleError (const QString& msg)
 void Poshuku::handleNewTab ()
 {
 	Core::Instance ().NewURL ("", true);
+}
+
+void Poshuku::handleSettingsClicked (const QString& name)
+{
+	if (name == "CookiesEdit")
+	{
+		CookiesEditDialog *dia = new CookiesEditDialog ();
+		dia->show ();
+	}
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_poshuku, Poshuku);

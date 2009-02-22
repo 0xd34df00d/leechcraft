@@ -20,7 +20,6 @@
 #include "screenshotsavedialog.h"
 #include "xmlsettingsmanager.h"
 #include "speeddialprovider.h"
-#include "cookieseditdialog.h"
 
 BrowserWidget::BrowserWidget (QWidget *parent)
 : QWidget (parent)
@@ -91,10 +90,6 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	ScreenSave_->setShortcut (Qt::Key_F12);
 	ScreenSave_->setEnabled (false);
 
-	CookiesManager_ = new QAction (tr ("Cookies manager..."),
-			this);
-	CookiesManager_->setProperty ("ActionIcon", "poshuku_cookies");
-
 	NewTab_ = new QAction (tr ("Create new tab"),
 			this);
 	NewTab_->setProperty ("ActionIcon", "poshuku_newtab");
@@ -116,8 +111,6 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	moreMenu->addAction (Print_);
 	moreMenu->addAction (PrintPreview_);
 	moreMenu->addAction (ScreenSave_);
-	moreMenu->addSeparator ();
-	moreMenu->addAction (CookiesManager_);
 	moreMenu->addSeparator ();
 	RecentlyClosed_ = moreMenu->addMenu (tr ("Recently closed"));
 	RecentlyClosed_->setEnabled (false);
@@ -152,10 +145,6 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			SIGNAL (triggered ()),
 			this,
 			SLOT (handleScreenSave ()));
-	connect (CookiesManager_,
-			SIGNAL (triggered ()),
-			this,
-			SLOT (handleCookiesManager ()));
 	connect (NewTab_,
 			SIGNAL (triggered ()),
 			this,
@@ -402,12 +391,6 @@ void BrowserWidget::handleScreenSave ()
 					.arg (filename));
 		return;
 	}
-}
-
-void BrowserWidget::handleCookiesManager ()
-{
-	CookiesEditDialog *dia = new CookiesEditDialog ();
-	dia->show ();
 }
 
 void BrowserWidget::handleNewTab ()

@@ -72,6 +72,7 @@ private slots:
 	void updateHistoryFilter ();
 	void handleError (const QString&);
 	void handleNewTab ();
+	void handleSettingsClicked (const QString&);
 signals:
 	void bringToFront ();
 	void addNewTab (const QString&, QWidget*);

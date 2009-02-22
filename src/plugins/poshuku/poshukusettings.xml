@@ -15,19 +15,13 @@
 				<label lang="en" value="Open new tabs in the background" />
 				<label lang="ru" value="Открывать новые вкладки в фоне" />
 			</item>
+			<item type="checkbox" property="ParanoidDownloadsDetection" state="off">
+				<label lang="en" value="Paranoid downloads detection" />
+				<label lang="ru" value="Параноидальное обнаружение загрузок" />
+			</item>
 			<item type="checkbox" property="DifferLocationsByExtension" state="on">
 				<label lang="en" value="Differ download locations by file extension" />
 				<label lang="ru" value="Различать папки для скачивания по расширению файла" />
-			</item>
-			<item type="checkbox" property="AutoLoadImages" state="on">
-				<label lang="en" value="Load images automatically" />
-				<label lang="ru" value="Автоматически загружать изображения" />
-				<label lang="uk" value="Автоматично завантажувати зображення" />
-			</item>
-			<item type="checkbox" property="AllowJavaScript" state="on">
-				<label lang="en" value="Allow JavaScript" />
-				<label lang="ru" value="Разрешить JavaScript" />
-				<label lang="uk" value="Дозволити JavaScript" />
 			</item>
 			<item type="lineedit" property="ExternalSchemes" default="smb nfs telnet imap pop nntp news">
 				<label lang="en" value="Open these schemes using external applications:" />
@@ -85,6 +79,28 @@
 		<label lang="en" value="Viewer settings" />
 		<label lang="ru" value="Параметры просмотрщика" />
 		<label lang="uk" value="Параметри переглядача" />
+		<tab>
+			<label lang="en" value="Dynamic content" />
+			<label lang="ru" value="Динамический контент" />
+			<groupbox>
+				<label lang="en" value="Dynamic content" />
+				<label lang="ru" value="Динамический контент" />
+				<item type="checkbox" property="AutoLoadImages" state="on">
+					<label lang="en" value="Load images automatically" />
+					<label lang="ru" value="Автоматически загружать изображения" />
+					<label lang="uk" value="Автоматично завантажувати зображення" />
+				</item>
+				<item type="checkbox" property="AllowJavaScript" state="on">
+					<label lang="en" value="Allow JavaScript" />
+					<label lang="ru" value="Разрешить JavaScript" />
+					<label lang="uk" value="Дозволити JavaScript" />
+				</item>
+				<item type="pushbutton" name="CookiesEdit">
+					<label lang="en" value="Cookies..." />
+					<label lang="ru" value="Кукисы..." />
+				</item>
+			</groupbox>
+		</tab>
 		<tab>
 			<label lang="en" value="Fonts" />
 			<label lang="ru" value="Шрифты" />
