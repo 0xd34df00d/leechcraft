@@ -192,16 +192,19 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	FancyPopupManager_ = new FancyPopupManager (TrayIcon_, this);
 	LogToolBox_ = new LogToolBox (this);
 
+	QToolBar *corner = new QToolBar (this);
+	corner->addAction (Ui_.ActionSettings_);
+	corner->addAction (Ui_.ActionFullscreenMode_);
+	corner->addSeparator ();
+	corner->addAction (Ui_.ActionQuit_);
+	Ui_.MainTabWidget_->setCornerWidget (corner, Qt::TopLeftCorner);
+	corner->show ();
+
 	QToolBar *mainBar = new QToolBar (this);
 	mainBar->addAction (Ui_.ActionAddTask_);
 	mainBar->addSeparator ();
-	mainBar->addAction (Ui_.ActionSettings_);
 	mainBar->addAction (Ui_.ActionPluginManager_);
 	mainBar->addAction (Ui_.ActionLogger_);
-	mainBar->addSeparator ();
-	mainBar->addAction (Ui_.ActionFullscreenMode_);
-	mainBar->addSeparator ();
-	mainBar->addAction (Ui_.ActionQuit_);
 	Ui_.ControlsLayout_->addWidget (mainBar);
 }
 
@@ -298,7 +301,6 @@ void LeechCraft::MainWindow::on_ActionQuit__triggered ()
 	setUpdatesEnabled (false);
 	Ui_.FilterLine_->setText ("");
 	filterParametersChanged ();
-	qDebug () << Q_FUNC_INFO << "destroying";
 	WriteSettings ();
 	Core::Instance ().Release ();
 
