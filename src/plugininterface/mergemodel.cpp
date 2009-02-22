@@ -197,6 +197,10 @@ void MergeModel::AddModel (QAbstractItemModel *model)
 			SIGNAL (rowsRemoved (const QModelIndex&, int, int)),
 			this,
 			SLOT (handleRowsRemoved (const QModelIndex&, int, int)));
+	connect (model,
+			SIGNAL (destroyed ()),
+			this,
+			SLOT (handleModelDestroyed ()));
 	if (wouldInsert)
 		endInsertRows ();
 }
@@ -333,5 +337,10 @@ void MergeModel::handleRowsInserted (const QModelIndex&, int, int)
 void MergeModel::handleRowsRemoved (const QModelIndex&, int, int)
 {
 	endRemoveRows ();
+}
+
+void MergeModel::handleModelDestroyed ()
+{
+	RemoveModel (qobject_cast<QAbstractItemModel*> (sender ()));
 }
 

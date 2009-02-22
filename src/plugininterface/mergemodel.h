@@ -146,6 +146,8 @@ namespace LeechCraft
 			void handleRowsAboutToBeRemoved (const QModelIndex&, int, int);
 			void handleRowsInserted (const QModelIndex&, int, int);
 			void handleRowsRemoved (const QModelIndex&, int, int);
+		private Q_SLOTS:
+			void handleModelDestroyed ();
 		};
 	};
 };
