@@ -10,7 +10,6 @@ FindProxy::FindProxy (const LeechCraft::Request& request,
 , Request_ (request)
 {
 	QStringList subs = Request_.String_.split (" - ", QString::SkipEmptyParts);
-	qDebug () << Q_FUNC_INFO << request.Category_ << subs << this;
 	if (subs.size () < 2)
 		return;
 
