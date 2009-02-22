@@ -120,9 +120,9 @@ ELSE (NOT ENABLE_CONFIGURABLE)
 	IF (ENABLE_NUFELLA)
 		ADD_SUBDIRECTORY (plugins/nufella)
 	ENDIF (ENABLE_NUFELLA)
-#	IF (ENABLE_CHATTER)
-#		ADD_SUBDIRECTORY (plugins/chatter)
-#	ENDIF (ENABLE_CHATTER)
+	IF (ENABLE_CHATTER)
+		ADD_SUBDIRECTORY (plugins/chatter)
+	ENDIF (ENABLE_CHATTER)
 	IF (ENABLE_DBUSMANAGER)
 		ADD_SUBDIRECTORY (plugins/dbusmanager)
 	ENDIF (ENABLE_DBUSMANAGER)
@@ -171,6 +171,7 @@ SET (SRCS
 	iconchooser.cpp
 	requestparser.cpp
 	handlerchoicedialog.cpp
+	categorymerger.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -197,6 +198,7 @@ SET (HEADERS
 	iconchooser.h
 	requestparser.h
 	handlerchoicedialog.h
+	categorymerger.h
 	interfaces/iinfo.h
 	interfaces/iwindow.h
 	interfaces/idownload.h

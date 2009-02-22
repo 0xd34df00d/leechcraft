@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <typeinfo>
 #include <stdexcept>
 #include <QtDebug>
 #include "mergemodel.h"
@@ -197,10 +198,6 @@ void MergeModel::AddModel (QAbstractItemModel *model)
 			SIGNAL (rowsRemoved (const QModelIndex&, int, int)),
 			this,
 			SLOT (handleRowsRemoved (const QModelIndex&, int, int)));
-	connect (model,
-			SIGNAL (destroyed ()),
-			this,
-			SLOT (handleModelDestroyed ()));
 	if (wouldInsert)
 		endInsertRows ();
 }
@@ -220,7 +217,10 @@ void MergeModel::RemoveModel (QAbstractItemModel *model)
 	models_t::iterator i = FindModel (model);
 
 	if (i == Models_.end ())
+	{
+		qWarning () << Q_FUNC_INFO << "not found model" << model;
 		return;
+	}
 
 	int rows = model->rowCount ();
 	bool wouldRemove = false;
@@ -337,10 +337,5 @@ void MergeModel::handleRowsInserted (const QModelIndex&, int, int)
 void MergeModel::handleRowsRemoved (const QModelIndex&, int, int)
 {
 	endRemoveRows ();
-}
-
-void MergeModel::handleModelDestroyed ()
-{
-	RemoveModel (qobject_cast<QAbstractItemModel*> (sender ()));
 }
 
