@@ -60,7 +60,10 @@ void CustomWebPage::gotUnsupportedContent (QNetworkReply *reply)
 		case QNetworkReply::NoError:
 			{
 				QWebFrame *found = FindFrame (reply->url ());
-				if (!found)
+				if (!found &&
+						(!XmlSettingsManager::Instance ()->
+						 property ("ParanoidDownloadsDetection").toBool () ||
+						 reply->header (QNetworkRequest::ContentTypeHeader).isValid ()))
 				{
 					reply->abort ();
 					emit gotEntity (reply->url ().toString ().toUtf8 ());
