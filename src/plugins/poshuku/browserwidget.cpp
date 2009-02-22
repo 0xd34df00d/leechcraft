@@ -20,6 +20,7 @@
 #include "screenshotsavedialog.h"
 #include "xmlsettingsmanager.h"
 #include "speeddialprovider.h"
+#include "sourceviewer.h"
 
 BrowserWidget::BrowserWidget (QWidget *parent)
 : QWidget (parent)
@@ -90,6 +91,11 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	ScreenSave_->setShortcut (Qt::Key_F12);
 	ScreenSave_->setEnabled (false);
 
+	ViewSources_ = new QAction (tr ("View sources..."),
+			this);
+	ViewSources_->setProperty ("ActionIcon", "poshuku_viewsources");
+	ViewSources_->setEnabled (false);
+
 	NewTab_ = new QAction (tr ("Create new tab"),
 			this);
 	NewTab_->setProperty ("ActionIcon", "poshuku_newtab");
@@ -111,6 +117,7 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	moreMenu->addAction (Print_);
 	moreMenu->addAction (PrintPreview_);
 	moreMenu->addAction (ScreenSave_);
+	moreMenu->addAction (ViewSources_);
 	moreMenu->addSeparator ();
 	RecentlyClosed_ = moreMenu->addMenu (tr ("Recently closed"));
 	RecentlyClosed_->setEnabled (false);
@@ -145,6 +152,10 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			SIGNAL (triggered ()),
 			this,
 			SLOT (handleScreenSave ()));
+	connect (ViewSources_,
+			SIGNAL (triggered ()),
+			this,
+			SLOT (handleViewSources ()));
 	connect (NewTab_,
 			SIGNAL (triggered ()),
 			this,
@@ -393,6 +404,15 @@ void BrowserWidget::handleScreenSave ()
 	}
 }
 
+void BrowserWidget::handleViewSources ()
+{
+	QString html = Ui_.WebView_->page ()->mainFrame ()->toHtml ();
+	SourceViewer *viewer = new SourceViewer (this);
+	viewer->setAttribute (Qt::WA_DeleteOnClose);
+	viewer->SetHtml (html);
+	viewer->show ();
+}
+
 void BrowserWidget::handleNewTab ()
 {
 	Core::Instance ().NewURL ("", true);
@@ -453,5 +473,6 @@ void BrowserWidget::enableActions ()
 	Print_->setEnabled (true);
 	PrintPreview_->setEnabled (true);
 	ScreenSave_->setEnabled (true);
+	ViewSources_->setEnabled (true);
 }
 

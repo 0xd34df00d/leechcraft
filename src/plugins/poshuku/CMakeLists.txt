@@ -31,6 +31,8 @@ SET (SRCS
 	speeddialprovider.cpp
 	cookieseditdialog.cpp
 	cookieseditmodel.cpp
+	sourceviewer.cpp
+	htmlhighlighter.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -55,6 +57,8 @@ SET (HEADERS
 	speeddialprovider.h
 	cookieseditdialog.h
 	cookieseditmodel.h
+	sourceviewer.h
+	htmlhighlighter.h
 	)
 SET (FORMS
 	poshuku.ui
@@ -64,6 +68,7 @@ SET (FORMS
 	finddialog.ui
 	screenshotsavedialog.ui
 	cookieseditdialog.ui
+	sourceviewer.ui
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS
