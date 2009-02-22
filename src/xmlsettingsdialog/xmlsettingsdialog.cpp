@@ -256,6 +256,8 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
         DoCombobox (item, lay);
 	else if (type == "font")
 		DoFont (item, lay);
+	else if (type == "pushbutton")
+		DoPushButton (item, lay);
 	else if (type == "customwidget")
 		DoCustomWidget (item, lay);
     else
@@ -464,6 +466,7 @@ QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject
 				!value.canConvert<QFont> ())
 			value = QApplication::font ();
 	}
+	else if (type == "pushbutton") ;
 	else if (type == "customwidget") ;
     else
         qWarning () << Q_FUNC_INFO << "unhandled type" << type;
@@ -735,6 +738,18 @@ void XmlSettingsDialog::DoFont (const QDomElement& item, QFormLayout *lay)
 	lay->addRow (label, box);
 }
 
+void XmlSettingsDialog::DoPushButton (const QDomElement& item, QFormLayout *lay)
+{
+	QPushButton *button = new QPushButton (this);
+	button->setObjectName (item.attribute ("name"));
+	button->setText (GetLabel (item));
+	lay->addRow (button);
+	connect (button,
+			SIGNAL (released ()),
+			this,
+			SLOT (handlePushButtonReleased ()));
+}
+
 void XmlSettingsDialog::DoCustomWidget (const QDomElement& item, QFormLayout *lay)
 {
 	QWidget *widget = new QWidget (this);
@@ -1000,5 +1015,10 @@ void XmlSettingsDialog::updatePreferences ()
     }
 
     Prop2NewValue_ [propertyName] = value;
+}
+
+void XmlSettingsDialog::handlePushButtonReleased ()
+{
+	emit pushButtonClicked (sender ()->objectName ());
 }
 

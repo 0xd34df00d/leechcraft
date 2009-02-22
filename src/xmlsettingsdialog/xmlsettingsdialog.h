@@ -114,6 +114,7 @@ namespace LeechCraft
 			void DoRadio (const QDomElement&, QFormLayout*);
 			void DoCombobox (const QDomElement&, QFormLayout*);
 			void DoFont (const QDomElement&, QFormLayout*);
+			void DoPushButton (const QDomElement&, QFormLayout*);
 			void DoCustomWidget (const QDomElement&, QFormLayout*);
 			QList<QImage> GetImages (const QDomElement&) const;
 			void UpdateXml (bool = false);
@@ -124,6 +125,9 @@ namespace LeechCraft
 		private slots:
 			void handleCustomDestroyed ();
 			void updatePreferences ();
+			void handlePushButtonReleased ();
+		signals:
+			LEECHCRAFT_API void pushButtonClicked (const QString&);
 		};
 	};
 };
