@@ -4,6 +4,8 @@
 #include <QStringList>
 #include <QMap>
 
+class QAbstractItemModel;
+
 namespace LeechCraft
 {
 	struct Request
@@ -51,9 +53,10 @@ class IFindProxy
 {
 public:
 	virtual ~IFindProxy () {}
+
+	virtual QAbstractItemModel* GetModel () = 0;
 };
 
-// emits entityUpdated(FoundEntity) in case of new/updated entity.
 class IFinder
 {
 public:

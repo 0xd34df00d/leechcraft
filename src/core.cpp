@@ -58,6 +58,7 @@ LeechCraft::Core::Core ()
 			<< tr ("Size")
 			<< tr ("Date")
 			<< tr ("Tags")))
+, CategoryMerger_ (new CategoryMerger)
 , FilterModel_ (new FilterModel)
 , NetworkAccessManager_ (new QNetworkAccessManager)
 , CookieSaveTimer_ (new QTimer ())
@@ -188,6 +189,11 @@ MergeModel* LeechCraft::Core::GetUnfilteredTasksModel () const
 MergeModel* LeechCraft::Core::GetUnfilteredHistoryModel () const
 {
 	return HistoryMergeModel_.get ();
+}
+
+PluginManager* LeechCraft::Core::GetPluginManager () const
+{
+	return PluginManager_;
 }
 
 QWidget* LeechCraft::Core::GetControls (const QModelIndex& index) const
@@ -403,10 +409,13 @@ void LeechCraft::Core::UpdateFiltering (const QString& text)
 {
 	Request r = RequestParser (text).GetRequest ();
 
+	bool builtin = false;
+
 	if (r.Category_.isEmpty () ||
 			r.Category_ == tr ("downloads") ||
 			r.Category_ == tr ("d"))
 	{
+		builtin = true;
 		if (FilterModel_->sourceModel () != MergeModel_.get ())
 		{
 			emit modelSwitched ();
@@ -416,42 +425,58 @@ void LeechCraft::Core::UpdateFiltering (const QString& text)
 	else if (r.Category_ == tr ("history") ||
 			r.Category_ == tr ("h"))
 	{
+		builtin = true;
 		if (FilterModel_->sourceModel () != HistoryMergeModel_.get ())
 		{
 			emit modelSwitched ();
 			FilterModel_->setSourceModel (HistoryMergeModel_.get ());
 		}
 	}
-	/*
 	else
 	{
-		if (!FilterModel_->sourceModel () != SearchMergeModel_.get ())
+		if (FilterModel_->sourceModel () != CategoryMerger_->GetModel ())
 		{
+			emit modelSwitched ();
+			FilterModel_->setSourceModel (CategoryMerger_->GetModel ());
 		}
+		CategoryMerger_->SetRequest (r);
 	}
-	*/
 
-	FilterModel_->setFilterCaseSensitivity (r.CaseSensitive_ ?
-			Qt::CaseSensitive : Qt::CaseInsensitive);
-
-	switch (r.Type_)
+	if (builtin)
 	{
-		case Request::RTFixed:
-			FilterModel_->SetTagsMode (false);
-			FilterModel_->setFilterFixedString (r.String_);
-			break;
-		case Request::RTWildcard:
-			FilterModel_->SetTagsMode (false);
-			FilterModel_->setFilterWildcard (r.String_);
-			break;
-		case Request::RTRegexp:
-			FilterModel_->SetTagsMode (false);
-			FilterModel_->setFilterRegExp (r.String_);
-			break;
-		case Request::RTTag:
-			FilterModel_->SetTagsMode (true);
-			FilterModel_->setFilterFixedString (r.String_);
-			break;
+		FilterModel_->setFilterCaseSensitivity (r.CaseSensitive_ ?
+				Qt::CaseSensitive : Qt::CaseInsensitive);
+
+		switch (r.Type_)
+		{
+			case Request::RTFixed:
+				FilterModel_->SetTagsMode (false);
+				FilterModel_->setFilterFixedString (r.String_);
+				break;
+			case Request::RTWildcard:
+				FilterModel_->SetTagsMode (false);
+				FilterModel_->setFilterWildcard (r.String_);
+				break;
+			case Request::RTRegexp:
+				FilterModel_->SetTagsMode (false);
+				FilterModel_->setFilterRegExp (r.String_);
+				break;
+			case Request::RTTag:
+				FilterModel_->SetTagsMode (true);
+				FilterModel_->setFilterFixedString (r.String_);
+				break;
+		}
+
+		// Erase all the requests
+		// TODO this shouldn't be needed if we make correct AND/OR/NOT
+		// stuff.
+		CategoryMerger_->SetRequest (Request ());
+	}
+	else
+	{
+		FilterModel_->setFilterCaseSensitivity (Qt::CaseInsensitive);
+		FilterModel_->SetTagsMode (false);
+		FilterModel_->setFilterFixedString ("");
 	}
 }
 

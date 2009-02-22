@@ -296,6 +296,9 @@ void LeechCraft::MainWindow::on_ActionSettings__triggered ()
 void LeechCraft::MainWindow::on_ActionQuit__triggered ()
 {
 	setUpdatesEnabled (false);
+	Ui_.FilterLine_->setText ("");
+	filterParametersChanged ();
+	qDebug () << Q_FUNC_INFO << "destroying";
 	WriteSettings ();
 	Core::Instance ().Release ();
 

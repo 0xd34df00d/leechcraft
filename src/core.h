@@ -10,6 +10,7 @@
 #include "tabcontainer.h"
 #include "plugininterface/mergemodel.h"
 #include "storagebackend.h"
+#include "categorymerger.h"
 
 class QLocalServer;
 class QAbstractProxyModel;
@@ -34,6 +35,7 @@ namespace LeechCraft
 		std::auto_ptr<QLocalServer> Server_;
 		std::auto_ptr<Util::MergeModel> MergeModel_;
 		std::auto_ptr<Util::MergeModel> HistoryMergeModel_;
+		std::auto_ptr<CategoryMerger> CategoryMerger_;
 		std::auto_ptr<FilterModel> FilterModel_;
 		std::auto_ptr<TabContainer> TabContainer_;
 		std::auto_ptr<QNetworkAccessManager> NetworkAccessManager_;
@@ -71,6 +73,7 @@ namespace LeechCraft
 		QAbstractProxyModel* GetTasksModel () const;
 		Util::MergeModel* GetUnfilteredTasksModel () const;
 		Util::MergeModel* GetUnfilteredHistoryModel () const;
+		PluginManager* GetPluginManager () const;
 		
 		/** Returns controls for the model with a given index. The
 		 * return value can't be NULL.
