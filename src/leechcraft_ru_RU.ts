@@ -1,5 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="ru">
+<defaultcodec></defaultcodec>
+<context>
+    <name>Application</name>
+    <message>
+        <location filename="application.cpp" line="63"/>
+        <source>Critical failure</source>
+        <translation>Критическая ошибка</translation>
+    </message>
+    <message>
+        <location filename="application.cpp" line="65"/>
+        <source>Could not create path %1/.leechcraft</source>
+        <translation>Не могу создать путь %1/.leechcraft</translation>
+    </message>
+    <message>
+        <location filename="application.cpp" line="78"/>
+        <source>bytes</source>
+        <translation>байт</translation>
+    </message>
+    <message>
+        <location filename="application.cpp" line="79"/>
+        <source>KB</source>
+        <translation>Кб</translation>
+    </message>
+    <message>
+        <location filename="application.cpp" line="80"/>
+        <source>MB</source>
+        <translation>Мб</translation>
+    </message>
+    <message>
+        <location filename="application.cpp" line="81"/>
+        <source>GB</source>
+        <translation>Гб</translation>
+    </message>
+</context>
 <context>
     <name>AuthenticationDialog</name>
     <message>
@@ -26,6 +60,24 @@
         <location filename="authenticationdialog.ui" line="58"/>
         <source>Save credentials</source>
         <translation>Сохранить</translation>
+    </message>
+</context>
+<context>
+    <name>CategoryMerger</name>
+    <message>
+        <location filename="categorymerger.cpp" line="10"/>
+        <source>Entity</source>
+        <translation>Сущность</translation>
+    </message>
+    <message>
+        <location filename="categorymerger.cpp" line="12"/>
+        <source>Category</source>
+        <translation>Категория</translation>
+    </message>
+    <message>
+        <location filename="categorymerger.cpp" line="12"/>
+        <source>Information</source>
+        <translation>Информация</translation>
     </message>
 </context>
 <context>
@@ -57,6 +109,34 @@
     </message>
 </context>
 <context>
+    <name>HandlerChoiceDialog</name>
+    <message>
+        <location filename="handlerchoicedialog.ui" line="13"/>
+        <source>Choose entity handler</source>
+        <translation>Выбери обработчик сущности</translation>
+    </message>
+    <message>
+        <location filename="handlerchoicedialog.ui" line="19"/>
+        <source>LeechCraft has detected some entity:</source>
+        <translation>LeechCraft что-то обнаружил:</translation>
+    </message>
+    <message>
+        <location filename="handlerchoicedialog.ui" line="26"/>
+        <source>TextLabel</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="handlerchoicedialog.ui" line="33"/>
+        <source>This entity could be downloaded by:</source>
+        <translation>Сущность может быть скачана при помощи:</translation>
+    </message>
+    <message>
+        <location filename="handlerchoicedialog.ui" line="43"/>
+        <source>This entity could also be handled by:</source>
+        <translation>Сущность может быть обработана с помощью:</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft</name>
     <message>
         <location filename="leechcraft.ui" line="13"/>
@@ -64,82 +144,52 @@
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="225"/>
+        <location filename="leechcraft.ui" line="127"/>
         <source>Settings</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="213"/>
+        <location filename="leechcraft.ui" line="115"/>
         <source>Add task</source>
         <translation>Добавить задачу</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="216"/>
+        <location filename="leechcraft.ui" line="118"/>
         <source>Adds job to a supporting plugin</source>
         <translation>Добавляет задачу в поддерживающий плагин</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="233"/>
+        <location filename="leechcraft.ui" line="135"/>
         <source>Quit</source>
         <translation>Выход</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="149"/>
-        <source>Fixed string</source>
-        <translation>Строка</translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="154"/>
-        <source>Wildcard</source>
-        <translation>Маска</translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="159"/>
-        <source>Regexp</source>
-        <translation>Регулярное выражение</translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="164"/>
-        <source>Tags</source>
-        <translation>Метки</translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="172"/>
-        <source>Case sensitive</source>
-        <translation>Учитывать регистр</translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="37"/>
+        <location filename="leechcraft.ui" line="40"/>
         <source>Downloaders</source>
         <translation>Качальщики</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="244"/>
+        <location filename="leechcraft.ui" line="146"/>
         <source>Plugin manager</source>
         <translation>Менеджер плагинов</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="137"/>
-        <source>Download history</source>
-        <translation>История закачек</translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="252"/>
+        <location filename="leechcraft.ui" line="154"/>
         <source>Fullscreen Mode</source>
         <translation>Полноэкранный режим</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="255"/>
+        <location filename="leechcraft.ui" line="157"/>
         <source>F11</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="260"/>
+        <location filename="leechcraft.ui" line="162"/>
         <source>Logger</source>
         <translation>Логгер</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="239"/>
+        <location filename="leechcraft.ui" line="141"/>
         <source>exit</source>
         <translation>Выход</translation>
     </message>
@@ -155,104 +205,119 @@
 <context>
     <name>LeechCraft::Core</name>
     <message>
-        <location filename="core.cpp" line="236"/>
+        <location filename="core.cpp" line="254"/>
         <source>Preinitialization...</source>
         <translation>Предварительная инициализация...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="238"/>
+        <location filename="core.cpp" line="256"/>
         <source>Calculation dependencies...</source>
         <translation>Расчет зависимостей...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="246"/>
+        <location filename="core.cpp" line="264"/>
         <source>Setting up %1...</source>
         <translation>Настройка %1...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="320"/>
+        <location filename="core.cpp" line="342"/>
         <source>No plugins are able to download &quot;%1&quot;</source>
         <translation>Нет плагинов, способных скачать &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="664"/>
-        <source>%1 could be handled by plugin %2, would you like to?</source>
-        <translation>%1 может быть обработан плагинов %2, ты не против?</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="668"/>
-        <source>Question</source>
-        <translation>Вопрос</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="679"/>
+        <location filename="core.cpp" line="698"/>
         <source>Select save path</source>
         <translation>Выбери директорию сохранения</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="741"/>
+        <location filename="core.cpp" line="762"/>
         <source>The URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
         <translation>URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;с реалмом&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;требует аутентификации.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="752"/>
+        <location filename="core.cpp" line="773"/>
         <source>The proxy &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
         <translation>Прокси&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;с реалмом&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;требует аутентификации.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="779"/>
+        <location filename="core.cpp" line="800"/>
         <source>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
         <translation>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;имеет ошибки SSL. Что ты хочешь?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="812"/>
+        <location filename="core.cpp" line="862"/>
         <source>Could not create Core directory.</source>
         <translation>Не могу создать директорию для Ядра.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="819"/>
+        <location filename="core.cpp" line="869"/>
         <source>Could not save cookies, error opening cookie file.</source>
         <translation>Не могу сохранить кукисы, ошибка открытия файла с кукисами.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="48"/>
+        <location filename="core.cpp" line="53"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="50"/>
+        <location filename="core.cpp" line="55"/>
         <source>State</source>
         <translation>Состояние</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="50"/>
+        <location filename="core.cpp" line="55"/>
         <source>Progress</source>
         <translation>Прогресс</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="51"/>
+        <location filename="core.cpp" line="56"/>
         <source>Filename</source>
         <translation>Имя файла</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="53"/>
+        <location filename="core.cpp" line="58"/>
         <source>Path</source>
         <translation>Путь</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="54"/>
+        <location filename="core.cpp" line="59"/>
         <source>Size</source>
         <translation>Размер</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="55"/>
+        <location filename="core.cpp" line="60"/>
         <source>Date</source>
         <translation>Дата</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="55"/>
+        <location filename="core.cpp" line="60"/>
         <source>Tags</source>
         <translation>Метки</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="416"/>
+        <source>downloads</source>
+        <translation>закачки</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="416"/>
+        <source>d</source>
+        <translation>з</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="426"/>
+        <source>history</source>
+        <translation>история</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="426"/>
+        <source>h</source>
+        <translation>и</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="666"/>
+        <source>Too long to show</source>
+        <translation>Слишком длинное для показа</translation>
     </message>
 </context>
 <context>
@@ -266,34 +331,39 @@
 <context>
     <name>LeechCraft::MainWindow</name>
     <message>
-        <location filename="mainwindow.cpp" line="33"/>
+        <location filename="mainwindow.cpp" line="35"/>
         <source>Initializing interface...</source>
         <translation>Инициализирую интерфейс...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="541"/>
+        <location filename="mainwindow.cpp" line="486"/>
         <source>Initializing core and plugins...</source>
         <translation>Инициализирую ядро и плагины...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="139"/>
+        <location filename="mainwindow.cpp" line="136"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="206"/>
+        <location filename="mainwindow.cpp" line="187"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="236"/>
+        <location filename="mainwindow.cpp" line="215"/>
         <source>/s    </source>
         <translation>/c   </translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="426"/>
+        <location filename="mainwindow.cpp" line="419"/>
         <source>/s</source>
         <translation>/с</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="426"/>
+        <source>%1 down, %2 up</source>
+        <translation>%1 к нам, %2 от нас</translation>
     </message>
 </context>
 <context>
@@ -307,26 +377,6 @@
         <location filename="pluginmanager.cpp" line="115"/>
         <source>Release of one or more plugins failed.</source>
         <translation>Освобождение одного или нескольких плагинов не удалось.</translation>
-    </message>
-    <message>
-        <location filename="pluginmanager.cpp" line="381"/>
-        <source>The plugin %1 found at&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;which describes itself as&lt;br /&gt;&lt;em&gt;%3&lt;/em&gt;&lt;br /&gt;with SHA1 hash&lt;br /&gt;&lt;code&gt;%4&lt;/code&gt;&lt;br /&gt; is found. Would you like to load it?</source>
-        <translation>Найден плагин %1 в&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;описывающий себя как&lt;br /&gt;&lt;em&gt;%3&lt;/em&gt;&lt;br /&gt;с SHA1-хэшем&lt;br /&gt;&lt;code&gt;%4&lt;/code&gt;&lt;br /&gt;Хочешь его загрузить?</translation>
-    </message>
-    <message>
-        <location filename="pluginmanager.cpp" line="453"/>
-        <source>Question</source>
-        <translation>Вопрос</translation>
-    </message>
-    <message>
-        <location filename="pluginmanager.cpp" line="415"/>
-        <source>The plugin %1 at&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;previously described itself as&lt;br /&gt;&lt;em&gt;%3&lt;/em&gt;&lt;br /&gt;but now describes as&lt;br /&gt;&lt;em&gt;%4&lt;/em&gt;&lt;br /&gt;It&apos;s SHA1 hash is&lt;br /&gt;&lt;code&gt;%5&lt;/code&gt;&lt;br /&gt;Would you like to load it?</source>
-        <translation>Плагин %1 в&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;раньше описывал себя как&lt;br /&gt;&lt;em&gt;%3&lt;/em&gt;&lt;br /&gt;но теперь описывает как&lt;br /&gt;&lt;em&gt;%4&lt;/em&gt;&lt;br /&gt;Его SHA1-хэш&lt;br /&gt;&lt;code&gt;%5&lt;/code&gt;&lt;br /&gt;Все еще хочешь загрузить его?</translation>
-    </message>
-    <message>
-        <location filename="pluginmanager.cpp" line="447"/>
-        <source>Plugin %1 at&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;which describes itself as&lt;br /&gt;&lt;em&gt;%3&lt;/em&gt;&lt;br /&gt;has its SHA1 hash changed. Old one:&lt;br /&gt;&lt;code&gt;%4&lt;/code&gt;&lt;br /&gt;new one:&lt;br /&gt;&lt;code&gt;%5&lt;/code&gt;&lt;br /&gt;Do you still want to load it?</source>
-        <translation>У плагина %1 в&lt;br /&gt;&lt;code&gt;%2&lt;/code&gt;&lt;br /&gt;описывающего себя как&lt;br /&gt;&lt;em&gt;%3&lt;/em&gt;&lt;br /&gt;изменился SHA1-хэш. Старый:&lt;br /&gt;&lt;code&gt;%4&lt;/code&gt;&lt;br /&gt;Новый:&lt;br /&gt;&lt;code&gt;%5&lt;/code&gt;&lt;br /&gt;Ты все еще хочешь загрузить его?</translation>
     </message>
 </context>
 <context>
@@ -449,41 +499,101 @@
     </message>
 </context>
 <context>
-    <name>QObject</name>
+    <name>RequestParser</name>
     <message>
-        <location filename="main.cpp" line="89"/>
-        <source>bytes</source>
-        <translation>байт</translation>
+        <location filename="requestparser.cpp" line="42"/>
+        <source>pl</source>
+        <translation>пл</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="90"/>
-        <source>KB</source>
-        <translation>Кб</translation>
+        <location filename="requestparser.cpp" line="42"/>
+        <source>plugin</source>
+        <translation>плагин</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="91"/>
-        <source>MB</source>
-        <translation>Мб</translation>
+        <location filename="requestparser.cpp" line="45"/>
+        <source>ca</source>
+        <translation>ка</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="92"/>
-        <source>GB</source>
-        <translation>Гб</translation>
+        <location filename="requestparser.cpp" line="45"/>
+        <source>category</source>
+        <translation>категория</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="72"/>
-        <source>Critical failure</source>
-        <translation>Критическая ошибка</translation>
+        <location filename="requestparser.cpp" line="48"/>
+        <source>cs</source>
+        <translation>ре</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="64"/>
-        <source>LeechCraft is alread running, please close another instance before starting it.</source>
-        <translation>LeechCraft уже запущен, пожалуйста, закрой другой экземпляр перед запуском.</translation>
+        <location filename="requestparser.cpp" line="48"/>
+        <source>casesensitive</source>
+        <translation>регистрочувствительность</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="74"/>
-        <source>Could not create path %1/.leechcraft</source>
-        <translation>Не могу создать путь %1/.leechcraft</translation>
+        <location filename="requestparser.cpp" line="50"/>
+        <source>true</source>
+        <translation>да</translation>
+    </message>
+    <message>
+        <location filename="requestparser.cpp" line="50"/>
+        <source>on</source>
+        <translation>вкл</translation>
+    </message>
+    <message>
+        <location filename="requestparser.cpp" line="64"/>
+        <source>t</source>
+        <translation>т</translation>
+    </message>
+    <message>
+        <location filename="requestparser.cpp" line="52"/>
+        <source>type</source>
+        <translation>тег</translation>
+    </message>
+    <message>
+        <location filename="requestparser.cpp" line="55"/>
+        <source>f</source>
+        <translation>с</translation>
+    </message>
+    <message>
+        <location filename="requestparser.cpp" line="55"/>
+        <source>fixed</source>
+        <translation>строка</translation>
+    </message>
+    <message>
+        <location filename="requestparser.cpp" line="58"/>
+        <source>w</source>
+        <translation>м</translation>
+    </message>
+    <message>
+        <location filename="requestparser.cpp" line="58"/>
+        <source>wildcard</source>
+        <translation>маска</translation>
+    </message>
+    <message>
+        <location filename="requestparser.cpp" line="61"/>
+        <source>r</source>
+        <translation>р</translation>
+    </message>
+    <message>
+        <location filename="requestparser.cpp" line="61"/>
+        <source>regexp</source>
+        <translation>регексп</translation>
+    </message>
+    <message>
+        <location filename="requestparser.cpp" line="64"/>
+        <source>tag</source>
+        <translation>тег</translation>
+    </message>
+    <message>
+        <location filename="requestparser.cpp" line="68"/>
+        <source>pa</source>
+        <translation>па</translation>
+    </message>
+    <message>
+        <location filename="requestparser.cpp" line="68"/>
+        <source>param</source>
+        <translation>параметр</translation>
     </message>
 </context>
 <context>
