@@ -11,7 +11,7 @@ LyricWikiSearcher::LyricWikiSearcher ()
 	setObjectName ("lyricwiki");
 }
 
-void LyricWikiSearcher::Start (const QStringList& asa)
+QByteArray LyricWikiSearcher::Start (const QStringList& asa)
 {
 	QByteArray data = QByteArray ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 				"<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" "
@@ -51,6 +51,8 @@ void LyricWikiSearcher::Start (const QStringList& asa)
 	QByteArray hash = QCryptographicHash::hash (asa.join ("").toUtf8 (),
 			QCryptographicHash::Sha1);
 	http->setObjectName (hash);
+	http->setProperty ("IDHash", hash);
+	return hash;
 }
 
 void LyricWikiSearcher::Stop (const QByteArray& hash)
@@ -95,6 +97,6 @@ void LyricWikiSearcher::handleFinished ()
 		url.at (0).toElement ().text ()
 	};
 
-	emit textFetched (result);
+	emit textFetched (result, http->property ("IDHash").toByteArray ());
 }
 

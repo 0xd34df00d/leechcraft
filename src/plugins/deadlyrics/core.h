@@ -1,44 +1,35 @@
 #ifndef CORE_H
 #define CORE_H
-#include <vector>
 #include <QAbstractItemModel>
 #include "searcher.h"
 
 class QNetworkAccessManager;
 
-class Core : public QAbstractItemModel
+class Core : public QObject
 {
 	Q_OBJECT
 
-	typedef std::vector<Searcher*> searchers_t;
 	searchers_t Searchers_;
 	QNetworkAccessManager *Manager_;
-	typedef std::vector<Lyrics> lyrics_t;
-	lyrics_t Lyrics_;
 
 	Core ();
 public:
 	static Core& Instance ();
 	void Release ();
 
-	int columnCount (const QModelIndex&) const;
-	QVariant data (const QModelIndex&, int) const;
-	QModelIndex index (int, int, const QModelIndex&) const;
-	QModelIndex parent (const QModelIndex&) const;
-	int rowCount (const QModelIndex&) const;
-
 	void SetNetworkAccessManager (QNetworkAccessManager*);
 	QNetworkAccessManager* GetNetworkAccessManager () const;
-
-	QByteArray Start (const LeechCraft::Request&);
-	void Stop (const QByteArray&);
-	void Reset ();
-
-	void LyricsAvailable (const Lyrics&);
-private slots:
-	void handleTextFetched (const Lyrics&);
-signals:
-	void entityUpdated (LeechCraft::FoundEntity);
+	QStringList GetCategories () const;
+	
+	/** Returns all the searches for the given category. It's assumed
+	 * that different calls to this function with the same category
+	 * return the same searchers in the same order.
+	 *
+	 * @param[in] category The category for which one wants to get the
+	 * searchers.
+	 * @return The searchers for the passed category.
+	 */
+	searchers_t GetSearchers (const QString& category) const;
 };
 
 #endif

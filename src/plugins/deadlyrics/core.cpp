@@ -8,13 +8,7 @@
 
 Core::Core ()
 {
-	Searchers_.push_back (new LyricWikiSearcher);
-	for (searchers_t::iterator i = Searchers_.begin (),
-			end = Searchers_.end (); i != end; ++i)
-		connect (*i,
-				SIGNAL (textFetched (const Lyrics&)),
-				this,
-				SLOT (handleTextFetched (const Lyrics&)));
+	Searchers_.push_back (searcher_ptr (new LyricWikiSearcher));
 }
 
 Core& Core::Instance ()
@@ -25,54 +19,7 @@ Core& Core::Instance ()
 
 void Core::Release ()
 {
-	qDeleteAll (Searchers_);
-}
-
-int Core::columnCount (const QModelIndex&) const
-{
-	return 3;
-}
-
-QVariant Core::data (const QModelIndex& index, int role) const
-{
-	if (!index.isValid () || role != Qt::DisplayRole)
-		return QVariant ();
-
-	Lyrics lyrics = Lyrics_ [index.row ()];
-	switch (index.column ())
-	{
-		case 0:
-			{
-				QString result = lyrics.Author_;
-				if (!lyrics.Album_.isEmpty ())
-					result.append (" - ").append (lyrics.Album_);
-				result.append (" - ").append (lyrics.Title_);
-				return result;
-			}
-		case 1:
-			return QUrl (lyrics.URL_).host ();
-		case 2:
-			return lyrics.URL_;
-	}
-}
-
-QModelIndex Core::index (int row, int column,
-		const QModelIndex& parent) const
-{
-	if (!hasIndex (row, column, parent))
-		return QModelIndex ();
-	
-	return createIndex (row, column);
-}
-
-QModelIndex Core::parent (const QModelIndex&) const
-{
-	return QModelIndex ();
-}
-
-int Core::rowCount (const QModelIndex& index) const
-{
-	return index.isValid () ? Lyrics_.size () : 0;
+	Searchers_.clear ();
 }
 
 void Core::SetNetworkAccessManager (QNetworkAccessManager *manager)
@@ -85,43 +32,16 @@ QNetworkAccessManager* Core::GetNetworkAccessManager () const
 	return Manager_;
 }
 
-QByteArray Core::Start (const LeechCraft::Request& request)
+QStringList Core::GetCategories () const
 {
-	QStringList subs = request.String_.split ('-', QString::SkipEmptyParts);
-	while (subs.size () < 3)
-		subs << QString ();
-
-	std::for_each (Searchers_.begin (), Searchers_.end (),
-			boost::bind (&Searcher::Start,
-				_1, subs));
-
-	return QCryptographicHash::hash (subs.join ("").toUtf8 (),
-			QCryptographicHash::Md5);
+	return QStringList (tr ("lyrics"));
 }
 
-void Core::Stop (const QByteArray& hash)
+searchers_t Core::GetSearchers (const QString& category) const
 {
-	std::for_each (Searchers_.begin (), Searchers_.end (),
-			boost::bind (&Searcher::Stop,
-				_1, hash));
-}
-
-void Core::Reset ()
-{
-	std::for_each (Searchers_.begin (), Searchers_.end (),
-			boost::bind (&Searcher::Stop,
-				_1, QByteArray ()));
-	Lyrics_.clear ();
-}
-
-void Core::handleTextFetched (const Lyrics& lyrics)
-{
-	if (std::find (Lyrics_.begin (), Lyrics_.end (), lyrics) !=
-			Lyrics_.end ())
-		return;
-
-	beginInsertRows (QModelIndex (), Lyrics_.size (), Lyrics_.size ());
-	Lyrics_.push_back (lyrics);
-	endInsertRows ();
+	if (category == tr ("lyrics"))
+		return Searchers_;
+	else
+		return searchers_t ();
 }
 
