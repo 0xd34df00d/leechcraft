@@ -73,5 +73,13 @@ void ProgressLineEdit::handleActivated (const QModelIndex& index)
 void ProgressLineEdit::handleHighlighted (const QModelIndex& index)
 {
 	IsCompleting_ = index.isValid ();
+
+	QString url = qobject_cast<URLCompletionModel*> (completer ()->
+			model ())->index (index.row (), 0)
+		.data (URLCompletionModel::RoleURL).toString ();
+
+	blockSignals (true);
+	setText (url);
+	blockSignals (false);
 }
 
