@@ -1,4 +1,5 @@
 #include "historymodel.h"
+#include <algorithm>
 #include <QTimer>
 #include <plugininterface/proxy.h>
 #include "core.h"
@@ -81,6 +82,24 @@ int HistoryModel::rowCount (const QModelIndex& index) const
 	return index.isValid () ? 0 : Items_.size ();
 }
 
+namespace
+{
+	struct HistoryEraser
+	{
+		int Age_;
+
+		HistoryEraser (int age)
+		: Age_ (age)
+		{
+		}
+
+		bool operator() (const HistoryItem& j, const QDateTime& current)
+		{
+			return j.DateTime_.daysTo (current) < Age_;
+		}
+	};
+};
+
 void HistoryModel::AddItem (const QString& title, const QString& url,
 		const QDateTime& date)
 {
@@ -92,9 +111,22 @@ void HistoryModel::AddItem (const QString& title, const QString& url,
 	};
 	Core::Instance ().GetStorageBackend ()->AddToHistory (item);
 
-	Core::Instance ().GetStorageBackend ()->
-		ClearOldHistory (XmlSettingsManager::Instance ()->
-				property ("HistoryClearOlderThan").toInt ());
+	int age = XmlSettingsManager::Instance ()->
+				property ("HistoryClearOlderThan").toInt ();
+
+	Core::Instance ().GetStorageBackend ()->ClearOldHistory (age);
+
+	std::deque<HistoryItem>::iterator pos =
+		std::lower_bound (Items_.begin (), Items_.end (),
+				QDateTime::currentDateTime (), HistoryEraser (age));
+
+	if (pos == Items_.end ())
+		return;
+
+	int index = std::distance (Items_.begin (), pos);
+	beginRemoveRows (QModelIndex (), index, Items_.size () - 1);
+	Items_.erase (pos, Items_.end ());
+	endRemoveRows ();
 }
 
 void HistoryModel::loadData ()
