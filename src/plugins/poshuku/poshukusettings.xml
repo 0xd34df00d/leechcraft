@@ -33,6 +33,28 @@
 			</item>
 		</tab>
 		<tab>
+			<label lang="en" value="Security" />
+			<label lang="ru" value="Безопасность" />
+			<groupbox>
+				<label lang="en" value="Security" />
+				<label lang="ru" value="Безопасность" />
+				<item type="spinbox" property="HistoryClearOlderThan" minimum="0" maximum="10000" default="30">
+					<lang value="en">
+						<label value="Clear history items older than:" />
+						<suffix value=" days" />
+					</lang>
+					<lang value="ru">
+						<label value="Удалять историю старше, чем:" />
+						<suffix value=" дней" />
+					</lang>
+				</item>
+				<item type="pushbutton" name="CookiesEdit">
+					<label lang="en" value="Cookies..." />
+					<label lang="ru" value="Кукисы..." />
+				</item>
+			</groupbox>
+		</tab>
+		<tab>
 			<label lang="en" value="Cache" />
 			<label lang="ru" value="Кэш" />
 			<groupbox>
@@ -94,10 +116,6 @@
 					<label lang="en" value="Allow JavaScript" />
 					<label lang="ru" value="Разрешить JavaScript" />
 					<label lang="uk" value="Дозволити JavaScript" />
-				</item>
-				<item type="pushbutton" name="CookiesEdit">
-					<label lang="en" value="Cookies..." />
-					<label lang="ru" value="Кукисы..." />
 				</item>
 			</groupbox>
 		</tab>

@@ -44,7 +44,7 @@ void SQLStorageBackend::Prepare ()
 
 	HistoryRatedLoader_ = QSqlQuery (DB_);
 	HistoryRatedLoader_.prepare ("SELECT "
-			"SUM (date) - MIN (date) * COUNT (date) AS rating, "
+			"SUM (julianday (date)) - julianday (MIN (date)) * COUNT (date) AS rating, "
 			"title, "
 			"url "
 			"FROM history "
@@ -64,6 +64,11 @@ void SQLStorageBackend::Prepare ()
 			":title, "
 			":url"
 			")");
+
+	HistoryEraser_ = QSqlQuery (DB_);
+	HistoryEraser_.prepare ("DELETE FROM history "
+			"WHERE "
+			"(julianday ('now') - julianday (date) > :age)");
 
 	FavoritesLoader_ = QSqlQuery (DB_);
 	FavoritesLoader_.prepare ("SELECT "
@@ -179,6 +184,18 @@ void SQLStorageBackend::AddToHistory (const HistoryItem& item)
 	}
 
 	emit added (item);
+}
+
+void SQLStorageBackend::ClearOldHistory (int age)
+{
+	LeechCraft::Util::DBLock lock (DB_);
+	lock.Init ();
+	HistoryEraser_.bindValue (":age", age);
+
+	if (HistoryEraser_.exec ())
+		lock.Good ();
+	else
+		LeechCraft::Util::DBLock::DumpError (HistoryEraser_);
 }
 
 void SQLStorageBackend::LoadFavorites (

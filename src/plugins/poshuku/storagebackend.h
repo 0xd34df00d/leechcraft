@@ -54,6 +54,13 @@ public:
 	 * @param[in] item History item to add.
 	 */
 	virtual void AddToHistory (const HistoryItem& item) = 0;
+	/** @brief Clears old history items.
+	 *
+	 * Removes all the history items that are older than days.
+	 *
+	 * @param[in] days Maximum age of an item.
+	 */
+	virtual void ClearOldHistory (int days) = 0;
 	/** @brief Get all favorites items from the storage.
 	 *
 	 * Puts all the favorites items (FavoritesModel::FavoritesItem) from

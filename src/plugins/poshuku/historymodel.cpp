@@ -2,6 +2,7 @@
 #include <QTimer>
 #include <plugininterface/proxy.h>
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 HistoryModel::HistoryModel (QObject *parent)
 : QAbstractItemModel (parent)
@@ -90,6 +91,10 @@ void HistoryModel::AddItem (const QString& title, const QString& url,
 		url
 	};
 	Core::Instance ().GetStorageBackend ()->AddToHistory (item);
+
+	Core::Instance ().GetStorageBackend ()->
+		ClearOldHistory (XmlSettingsManager::Instance ()->
+				property ("HistoryClearOlderThan").toInt ());
 }
 
 void HistoryModel::loadData ()

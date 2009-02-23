@@ -15,15 +15,6 @@ struct HistoryItem
 
 typedef std::vector<HistoryItem> history_items_t;
 
-struct HistoryItemList
-{
-	QString Title_;
-	QString URL_;
-	QList<QDateTime> DateTimes_;
-};
-
-typedef std::vector<HistoryItemList> history_item_lists_t;
-
 class HistoryModel : public QAbstractItemModel
 {
 	Q_OBJECT
