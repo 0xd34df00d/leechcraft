@@ -418,8 +418,8 @@ void LeechCraft::Core::UpdateFiltering (const QString& text)
 	bool builtin = false;
 
 	if (r.Category_.isEmpty () ||
-			r.Category_ == tr ("downloads") ||
-			r.Category_ == tr ("d"))
+			r.Category_ == "downloads" ||
+			r.Category_ == "d")
 	{
 		builtin = true;
 		if (FilterModel_->sourceModel () != MergeModel_.get ())
@@ -428,8 +428,8 @@ void LeechCraft::Core::UpdateFiltering (const QString& text)
 			FilterModel_->setSourceModel (MergeModel_.get ());
 		}
 	}
-	else if (r.Category_ == tr ("history") ||
-			r.Category_ == tr ("h"))
+	else if (r.Category_ == "history" ||
+			r.Category_ == "h")
 	{
 		builtin = true;
 		if (FilterModel_->sourceModel () != HistoryMergeModel_.get ())

@@ -38,34 +38,34 @@ void RequestParser::Parse (const QString& request)
 		QString key = token.left (index).toLower ();
 		QString value = token.mid (index + 1);
 
-		if (key == tr ("pl") ||
-				key == tr ("plugin"))
+		if (key == "pl" ||
+				key == "plugin")
 			Request_.Plugin_ = value;
-		else if (key == tr ("ca") ||
-				key == tr ("category"))
+		else if (key == "ca" ||
+				key == "category")
 			Request_.Category_ = value;
-		else if (key == tr ("cs") ||
-				key == tr ("casesensitive"))
-			Request_.CaseSensitive_ = (value.toLower () == tr ("true") ||
-					value.toLower () == tr ("on"));
-		else if (key == tr ("t") ||
-				key == tr ("type"))
+		else if (key == "cs" ||
+				key == "casesensitive")
+			Request_.CaseSensitive_ = (value.toLower () == "true" ||
+					value.toLower () == "on");
+		else if (key == "t" ||
+				key == "type")
 		{
-			if (value == tr ("f") ||
-					value == tr ("fixed"))
+			if (value == "f" ||
+					value == "fixed")
 				Request_.Type_ = Request::RTFixed;
-			else if (value == tr ("w") ||
-					value == tr ("wildcard"))
+			else if (value == "w" ||
+					value == "wildcard")
 				Request_.Type_ = Request::RTWildcard;
-			else if (value == tr ("r") ||
-					value == tr ("regexp"))
+			else if (value == "r" ||
+					value == "regexp")
 				Request_.Type_ = Request::RTRegexp;
-			else if (value == tr ("t") ||
-					value == tr ("tag"))
+			else if (value == "t" ||
+					value == "tag")
 				Request_.Type_ = Request::RTTag;
 		}
-		else if (key == tr ("pa") ||
-				key == tr ("param"))
+		else if (key == "pa" ||
+				key == "param")
 			Request_.Params_ << value;
 	}
 	Request_.String_ = tokens.join (" ");
