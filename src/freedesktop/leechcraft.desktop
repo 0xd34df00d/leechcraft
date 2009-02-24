@@ -1,8 +1,8 @@
 [Desktop Entry]
 Type=Application
 Name=LeechCraft
-GenericName=Download manager
-GenericName[ru]=Менеджер загрузок
+GenericName=Internet client
+GenericName[ru]=Интернет-клиент
 Icon=leechcraft_main
 Exec=leechcraft
 Categories=Network;FileTransfer;News;P2P;IRCClient;Qt;
