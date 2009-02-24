@@ -1,4 +1,5 @@
 #include "findproxy.h"
+#include <QTextEdit>
 #include <QUrl>
 #include <QtDebug>
 #include "searcher.h"
@@ -9,6 +10,7 @@ FindProxy::FindProxy (const LeechCraft::Request& request,
 : QAbstractItemModel (parent)
 , Request_ (request)
 {
+	LyricsHolder_ = new QTextEdit ();
 	QStringList subs = Request_.String_.split (" - ", QString::SkipEmptyParts);
 	if (subs.size () < 2)
 		return;
@@ -48,27 +50,37 @@ int FindProxy::columnCount (const QModelIndex&) const
 
 QVariant FindProxy::data (const QModelIndex& index, int role) const
 {
-	if (!index.isValid () || role != Qt::DisplayRole)
+	if (!index.isValid ())
 		return QVariant ();
 
 	Lyrics lyrics = Lyrics_ [index.row ()];
-	switch (index.column ())
+	if (role == Qt::DisplayRole)
 	{
-		case 0:
-			{
-				QString result = lyrics.Author_;
-				if (!lyrics.Album_.isEmpty ())
-					result.append (" - ").append (lyrics.Album_);
-				result.append (" - ").append (lyrics.Title_);
-				return result;
-			}
-		case 2:
-			return QString ("%1 (%2)")
-				.arg (QUrl (lyrics.URL_).host ())
-				.arg (lyrics.URL_);
-		default:
-			return Request_.Category_;
+		switch (index.column ())
+		{
+			case 0:
+				{
+					QString result = lyrics.Author_;
+					if (!lyrics.Album_.isEmpty ())
+						result.append (" - ").append (lyrics.Album_);
+					result.append (" - ").append (lyrics.Title_);
+					return result;
+				}
+			case 2:
+				return QString ("%1 (%2)")
+					.arg (QUrl (lyrics.URL_).host ())
+					.arg (lyrics.URL_);
+			default:
+				return Request_.Category_;
+		}
 	}
+	else if (role == RoleWidget)
+	{
+		LyricsHolder_->setPlainText (lyrics.Text_);
+		return QVariant::fromValue<QWidget*> (LyricsHolder_);
+	}
+	else
+		return QVariant ();
 }
 
 QModelIndex FindProxy::index (int row, int column,

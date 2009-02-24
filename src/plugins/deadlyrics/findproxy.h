@@ -5,6 +5,8 @@
 #include <interfaces/ifinder.h>
 #include "searcher.h"
 
+class QTextEdit;
+
 class FindProxy : public QAbstractItemModel
 				, public IFindProxy
 {
@@ -14,6 +16,7 @@ class FindProxy : public QAbstractItemModel
 	LeechCraft::Request Request_;
 	std::vector<QByteArray> Hashes_;
 	lyrics_t Lyrics_;
+	QTextEdit *LyricsHolder_;
 
 	FindProxy (const FindProxy&);
 	FindProxy& operator= (const FindProxy&);
