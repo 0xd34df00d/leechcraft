@@ -52,6 +52,10 @@ namespace LeechCraft
 class IFindProxy
 {
 public:
+	enum
+	{
+		RoleWidget = 50
+	};
 	virtual ~IFindProxy () {}
 
 	virtual QAbstractItemModel* GetModel () = 0;

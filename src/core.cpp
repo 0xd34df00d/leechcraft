@@ -222,6 +222,12 @@ QWidget* LeechCraft::Core::GetAdditionalInfo (const QModelIndex& index) const
 
 		return ijh->GetAdditionalInfo ();
 	}
+	else if (FilterModel_->sourceModel () == CategoryMerger_->GetModel ())
+	{
+		 QVariant v = FilterModel_->mapToSource (index).data (IFindProxy::RoleWidget);
+		 qDebug () << v;
+		 return v.value<QWidget*> ();
+	}
 	else
 		return 0;
 }
