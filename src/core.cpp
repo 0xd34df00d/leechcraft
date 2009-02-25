@@ -515,8 +515,8 @@ QPair<qint64, qint64> LeechCraft::Core::GetSpeeds () const
 
 int LeechCraft::Core::CountUnremoveableTabs () const
 {
-	// + 2 because of tabs with downloaders and history
-	return PluginManager_->GetAllCastableTo<IEmbedTab*> ().size () + 2;
+	// + 1 because of tabs with downloaders
+	return PluginManager_->GetAllCastableTo<IEmbedTab*> ().size () + 1;
 }
 
 QNetworkAccessManager* LeechCraft::Core::GetNetworkAccessManager () const
