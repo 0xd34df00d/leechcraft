@@ -298,6 +298,13 @@ void LeechCraft::MainWindow::on_ActionSettings__triggered ()
 
 void LeechCraft::MainWindow::on_ActionQuit__triggered ()
 {
+	if (XmlSettingsManager::Instance ()->property ("ConfirmQuit").toBool () &&
+			QMessageBox::question (this,
+				tr ("Question"),
+				tr ("Do you really want to quit?"),
+				QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+		return;
+
 	setUpdatesEnabled (false);
 	Ui_.FilterLine_->setText ("");
 	filterParametersChanged ();
