@@ -6,10 +6,9 @@ using namespace LeechCraft;
 using namespace LeechCraft::Util;
 
 CategoryMerger::CategoryMerger (QObject *parent)
-: QObject (parent)
-, Model_ (new MergeModel (QStringList (tr ("Entity"))
+: MergeModel (QStringList (tr ("Entity"))
 			<< tr ("Category")
-			<< tr ("Information")))
+			<< tr ("Information"))
 {
 }
 
@@ -17,7 +16,7 @@ void CategoryMerger::SetRequest (const Request& request)
 {
 	for (proxies_t::const_iterator i = Proxies_.begin (),
 			end = Proxies_.end (); i != end; ++i)
-		Model_->RemoveModel ((*i)->GetModel ());
+		RemoveModel ((*i)->GetModel ());
 	Proxies_.clear ();
 
 	QList<IFinder*> finders = Core::Instance ().GetPluginManager ()->
@@ -30,13 +29,8 @@ void CategoryMerger::SetRequest (const Request& request)
 			continue;
 
 		boost::shared_ptr<IFindProxy> proxy = (*i)->GetProxy (request);
-		Model_->AddModel (proxy->GetModel ());
+		AddModel (proxy->GetModel ());
 		Proxies_.push_back (proxy);
 	}
-}
-
-Util::MergeModel* CategoryMerger::GetModel () const
-{
-	return Model_.get ();
 }
 

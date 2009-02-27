@@ -222,7 +222,7 @@ QWidget* LeechCraft::Core::GetAdditionalInfo (const QModelIndex& index) const
 
 		return ijh->GetAdditionalInfo ();
 	}
-	else if (FilterModel_->sourceModel () == CategoryMerger_->GetModel ())
+	else if (FilterModel_->sourceModel () == CategoryMerger_.get ())
 	{
 		 QVariant v = FilterModel_->mapToSource (index).data (IFindProxy::RoleWidget);
 		 qDebug () << v;
@@ -440,10 +440,10 @@ void LeechCraft::Core::UpdateFiltering (const QString& text)
 	}
 	else
 	{
-		if (FilterModel_->sourceModel () != CategoryMerger_->GetModel ())
+		if (FilterModel_->sourceModel () != CategoryMerger_.get ())
 		{
 			emit modelSwitched ();
-			FilterModel_->setSourceModel (CategoryMerger_->GetModel ());
+			FilterModel_->setSourceModel (CategoryMerger_.get ());
 		}
 		CategoryMerger_->SetRequest (r);
 	}
