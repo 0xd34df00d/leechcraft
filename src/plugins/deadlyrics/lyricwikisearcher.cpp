@@ -77,7 +77,7 @@ void LyricWikiSearcher::handleFinished ()
 			!song.size () ||
 			!url.size ())
 	{
-		qWarning () << Q_FUNC_INFO << "Lyrics fetch error";
+		qWarning () << Q_FUNC_INFO << "Lyrics fetch error" << response;
 		return;
 	}
 
