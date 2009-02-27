@@ -77,7 +77,7 @@ int MergeModel::rowCount (const QModelIndex& parent) const
 		for (models_t::const_iterator i = Models_.begin (),
 				end = Models_.end ();
 				i != end; ++i)
-			result += (*i)->rowCount ();
+			result += RowCount (*i);
 		return result;
 	}
 	else
@@ -142,7 +142,7 @@ void MergeModel::AddModel (QAbstractItemModel *model)
 	if (!model)
 		return;
 
-	int rows = model->rowCount (QModelIndex ());
+	int rows = RowCount (model);
 	bool wouldInsert = false;
 	if (rows > 0)
 		wouldInsert = true;
@@ -222,7 +222,7 @@ void MergeModel::RemoveModel (QAbstractItemModel *model)
 		return;
 	}
 
-	int rows = model->rowCount ();
+	int rows = RowCount (model);
 	bool wouldRemove = false;
 	if (rows > 0)
 		wouldRemove = true;
@@ -241,7 +241,7 @@ int MergeModel::GetStartingRow (MergeModel::const_iterator it) const
 {
 	int result = 0;
 	for (models_t::const_iterator i = Models_.begin (); i != it; ++i)
-		result += (*i)->rowCount (QModelIndex ());
+		result += RowCount (*i);
 	return result;
 }
 
@@ -251,7 +251,7 @@ MergeModel::const_iterator MergeModel::GetModelForRow (int row) const
 	for (models_t::const_iterator i = Models_.begin (),
 			end = Models_.end (); i != end; ++i)
 	{
-		counter += (*i)->rowCount (QModelIndex ());
+		counter += RowCount (*i);
 		if (counter > row)
 			return i;
 	}
@@ -267,7 +267,7 @@ MergeModel::iterator MergeModel::GetModelForRow (int row)
 	for (models_t::iterator i = Models_.begin (),
 			end = Models_.end (); i != end; ++i)
 	{
-		counter += (*i)->rowCount (QModelIndex ());
+		counter += RowCount (*i);
 		if (counter > row)
 			return i;
 	}
@@ -337,5 +337,19 @@ void MergeModel::handleRowsInserted (const QModelIndex&, int, int)
 void MergeModel::handleRowsRemoved (const QModelIndex&, int, int)
 {
 	endRemoveRows ();
+}
+
+bool MergeModel::AcceptsRow (QAbstractItemModel*, int) const
+{
+	return true;
+}
+
+int MergeModel::RowCount (QAbstractItemModel *model) const
+{
+	int orig = model->rowCount ();
+	int result = 0;
+	for (int i = 0; i < orig; ++i)
+		result += AcceptsRow (model, i) ? 1 : 0;
+	return result;
 }
 

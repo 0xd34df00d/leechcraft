@@ -146,6 +146,10 @@ namespace LeechCraft
 			void handleRowsAboutToBeRemoved (const QModelIndex&, int, int);
 			void handleRowsInserted (const QModelIndex&, int, int);
 			void handleRowsRemoved (const QModelIndex&, int, int);
+		protected:
+			virtual bool AcceptsRow (QAbstractItemModel*, int) const;
+		private:
+			int RowCount (QAbstractItemModel*) const;
 		};
 	};
 };
