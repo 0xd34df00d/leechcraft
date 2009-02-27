@@ -23,10 +23,10 @@ namespace LeechCraft
 		class LEECHCRAFT_API MergeModel : public QAbstractProxyModel
 		{
 			Q_OBJECT
-
+		protected:
 			typedef std::deque<QAbstractItemModel*> models_t;
 			models_t Models_;
-
+		private:
 			QStringList Headers_;
 		public:
 			typedef models_t::iterator iterator;
@@ -147,7 +147,13 @@ namespace LeechCraft
 			void handleRowsInserted (const QModelIndex&, int, int);
 			void handleRowsRemoved (const QModelIndex&, int, int);
 		protected:
-			virtual bool AcceptsRow (QAbstractItemModel*, int) const;
+			/** This virtual function could be overridden to provide
+			 * custom filtering facilities. If the row in the model
+			 * should be merged into the resulting model, this function
+			 * should return true, otherwise if it returns false the row
+			 * would be filtered out.
+			 */
+			virtual bool AcceptsRow (QAbstractItemModel *model, int row) const;
 		private:
 			int RowCount (QAbstractItemModel*) const;
 		};
