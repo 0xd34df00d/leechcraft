@@ -64,8 +64,8 @@ QString SpeedDialProvider::GetTopHistory () const
 
 			if (++pos == items.size ())
 			{
-				break;
 				shouldBreak = true;
+				break;
 			}
 		}
 
