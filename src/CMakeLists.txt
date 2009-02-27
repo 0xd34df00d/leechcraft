@@ -172,6 +172,8 @@ SET (SRCS
 	requestparser.cpp
 	handlerchoicedialog.cpp
 	categorymerger.cpp
+	requestnormalizer.cpp
+	operationalmodel.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -199,6 +201,8 @@ SET (HEADERS
 	requestparser.h
 	handlerchoicedialog.h
 	categorymerger.h
+	requestnormalizer.h
+	operationalmodel.h
 	interfaces/iinfo.h
 	interfaces/iwindow.h
 	interfaces/idownload.h
