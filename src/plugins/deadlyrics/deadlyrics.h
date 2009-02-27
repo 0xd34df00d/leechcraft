@@ -28,8 +28,6 @@ public:
 
 	QStringList GetCategories () const;
 	boost::shared_ptr<IFindProxy> GetProxy (const LeechCraft::Request&);
-signals:
-	void entityUpdated (LeechCraft::FoundEntity);
 };
 
 #endif

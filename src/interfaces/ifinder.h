@@ -25,28 +25,6 @@ namespace LeechCraft
 		QString String_;
 		QStringList Params_;
 	};
-
-	struct FoundEntity
-	{
-		// As it could be handled by some plugin. URI, torrent file
-		// contents, whatever.
-		QByteArray Entity_;
-		// Visible to user.
-		QString Description_;
-		// Category that the entity is related to, should be the same as in
-		// GetCategories.
-		QStringList Categories_;
-
-		enum HashType
-		{
-			HTMD4,
-			HTMD5,
-			HTSHA1
-		};
-
-		// To allow comparisons between results of different search plugins.
-		QMap<HashType, QByteArray> Hashes_;
-	};
 };
 
 class IFindProxy
@@ -54,7 +32,14 @@ class IFindProxy
 public:
 	enum
 	{
-		RoleWidget = 50
+		/** The role for the widget appearing on the right part of the
+		 * screen when the user selects an item.
+		 */
+		RoleWidget = 50,
+		/** The role for the hash of the item, used to compare two
+		 * different results, possibly from two different models.
+		 */
+		RoleHash
 	};
 	virtual ~IFindProxy () {}
 
