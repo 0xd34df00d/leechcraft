@@ -167,6 +167,7 @@ void Aggregator::Init ()
 			this,
 			SIGNAL (gotEntity (const QByteArray&)));
 
+	Core::Instance ().SetWidgets (Impl_->ControlToolBar_, Impl_->AdditionalInfo_);
 	currentChannelChanged ();
 }
 
@@ -233,16 +234,6 @@ QAbstractItemModel* Aggregator::GetRepresentation () const
 LeechCraft::Util::HistoryModel* Aggregator::GetHistory () const
 {
 	return 0;
-}
-
-QWidget* Aggregator::GetControls () const
-{
-	return Impl_->ControlToolBar_;
-}
-
-QWidget* Aggregator::GetAdditionalInfo () const
-{
-	return Impl_->AdditionalInfo_;
 }
 
 void Aggregator::ItemSelected (const QModelIndex& index)
@@ -453,7 +444,7 @@ void Aggregator::on_ActionAddFeed__triggered ()
 
 void Aggregator::on_ActionRemoveFeed__triggered ()
 {
-	bool reprMode = GetControls ()->isVisible ();
+	bool reprMode = Impl_->ControlToolBar_->isVisible ();
 	QModelIndex ds;
 	if (reprMode)
 		ds = Core::Instance ().GetJobHolderRepresentation ()->

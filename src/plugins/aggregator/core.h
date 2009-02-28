@@ -92,6 +92,7 @@ public:
 
     static Core& Instance ();
     void Release ();
+	void SetWidgets (QWidget*, QWidget*);
     void DoDelayedInit ();
     void SetProvider (QObject*, const QString&);
     void AddFeed (const QString&, const QStringList&);

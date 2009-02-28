@@ -22,9 +22,13 @@ class ChannelsModel : public QAbstractItemModel
     typedef QMap<LeechCraft::Util::TreeItem*, ChannelShort> TreeItem2ChannelDictionary_t;
     Channel2TreeItemDictionary_t Channel2TreeItem_;
     TreeItem2ChannelDictionary_t TreeItem2Channel_;
+	QWidget *Toolbar_;
+	QWidget *TabWidget_;
 public:
     ChannelsModel (QObject *parent = 0);
     virtual ~ChannelsModel ();
+
+	void SetWidgets (QWidget*, QWidget*);
 
     virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
     virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;

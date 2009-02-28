@@ -41,8 +41,6 @@ public:
 	LeechCraft::Util::XmlSettingsDialog* GetSettingsDialog () const;
 	QAbstractItemModel* GetRepresentation () const;
 	LeechCraft::Util::HistoryModel* GetHistory () const;
-	QWidget* GetControls () const;
-	QWidget* GetAdditionalInfo () const;
 	void ItemSelected (const QModelIndex&);
 protected:
 	virtual void keyPressEvent (QKeyEvent*);

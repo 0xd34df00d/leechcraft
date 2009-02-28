@@ -55,6 +55,11 @@ void Core::Release ()
 	delete ChannelsModel_;
 }
 
+void Core::SetWidgets (QWidget *bar, QWidget *tab)
+{
+	ChannelsModel_->SetWidgets (bar, tab);
+}
+
 void Core::DoDelayedInit ()
 {
 	ChannelsModel_ = new ChannelsModel ();

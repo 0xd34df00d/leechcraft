@@ -3,6 +3,7 @@
 #include <QFont>
 #include <QPalette>
 #include <plugininterface/treeitem.h>
+#include <interfaces/structures.h>
 #include "channelsmodel.h"
 #include "item.h"
 
@@ -10,6 +11,8 @@ using LeechCraft::Util::TreeItem;
 
 ChannelsModel::ChannelsModel (QObject *parent)
 : QAbstractItemModel (parent)
+, Toolbar_ (0)
+, TabWidget_ (0)
 {
     QVariantList roots;
     roots << tr ("Feed")
@@ -23,6 +26,12 @@ ChannelsModel::~ChannelsModel ()
     delete RootItem_;
 }
 
+void ChannelsModel::SetWidgets (QWidget *bar, QWidget *tab)
+{
+	Toolbar_ = bar;
+	TabWidget_ = tab;
+}
+
 int ChannelsModel::columnCount (const QModelIndex& parent) const
 {
     if (parent.isValid ())
@@ -33,6 +42,11 @@ int ChannelsModel::columnCount (const QModelIndex& parent) const
 
 QVariant ChannelsModel::data (const QModelIndex& index, int role) const
 {
+	if (role == LeechCraft::RoleControls)
+		return QVariant::fromValue<QWidget*> (Toolbar_);
+	if (role == LeechCraft::RoleAdditionalInfo)
+		return QVariant::fromValue<QWidget*> (TabWidget_);
+
     if (!index.isValid ())
         return QVariant ();
 
