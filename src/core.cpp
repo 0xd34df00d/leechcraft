@@ -317,7 +317,6 @@ void LeechCraft::Core::SetNewRow (const QModelIndex& index)
 	if (index.isValid ())
 	{
 		QObject *plugin = Representation2Object_ [mapped.model ()];
-		qDebug () << mapped.model () << plugin;
 
 		IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
 
@@ -780,7 +779,6 @@ void LeechCraft::Core::InitJobHolder (QObject *plugin)
 {
 	IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
 	QAbstractItemModel *model = ijh->GetRepresentation ();
-	qDebug () << "inserting" << model << plugin;
 	Representation2Object_ [model] = plugin;
 	MergeModel_->AddModel (model);
 
