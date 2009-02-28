@@ -46,7 +46,6 @@ void TorrentPlugin::Init ()
 	Translator_.reset (LeechCraft::Util::InstallTranslator ("torrent"));
     SetupCore ();
     SetupTorrentView ();
-	SetupActions ();
     SetupStuff ();
 
     setActionsEnabled ();
@@ -243,16 +242,6 @@ QAbstractItemModel* TorrentPlugin::GetRepresentation () const
 LeechCraft::Util::HistoryModel* TorrentPlugin::GetHistory () const
 {
 	return Core::Instance ()->GetHistoryModel ();
-}
-
-QWidget* TorrentPlugin::GetControls () const
-{
-	return Toolbar_.get ();
-}
-
-QWidget* TorrentPlugin::GetAdditionalInfo () const
-{
-	return TabWidget_.get ();
 }
 
 void TorrentPlugin::ItemSelected (const QModelIndex& item)
@@ -461,11 +450,6 @@ void TorrentPlugin::on_TorrentSequentialDownload__stateChanged (int state)
 void TorrentPlugin::on_TorrentSuperSeeding__stateChanged (int state)
 {
 	Core::Instance ()->SetTorrentSuperSeeding (state == Qt::Checked);
-}
-
-void TorrentPlugin::on_CaseSensitiveSearch__stateChanged (int state)
-{
-    FilterModel_->setFilterCaseSensitivity (state ? Qt::CaseSensitive : Qt::CaseInsensitive);
 }
 
 void TorrentPlugin::on_DownloadingTorrents__valueChanged (int newValue)
@@ -958,6 +942,7 @@ void TorrentPlugin::SetupTabWidget ()
 void TorrentPlugin::SetupCore ()
 {
 	SetupTabWidget ();
+	SetupActions ();
     TorrentSelectionChanged_ = true;
     LastPeersUpdate_.reset (new QTime);
     LastPeersUpdate_->start ();
@@ -998,6 +983,7 @@ void TorrentPlugin::SetupCore ()
 			this,
 			SIGNAL (jobRemoved (int)));
 
+	Core::Instance ()->SetWidgets (Toolbar_.get (), TabWidget_.get ());
     Core::Instance ()->DoDelayedInit ();
 }
 

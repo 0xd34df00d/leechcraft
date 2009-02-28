@@ -88,8 +88,6 @@ public:
     // IJobHolder
     QAbstractItemModel* GetRepresentation () const;
 	LeechCraft::Util::HistoryModel* GetHistory () const;
-	QWidget* GetControls () const;
-	QWidget* GetAdditionalInfo () const;
 	void ItemSelected (const QModelIndex&);
 
 	// IImportExport
@@ -128,7 +126,6 @@ private slots:
 	void on_TorrentManaged__stateChanged (int);
 	void on_TorrentSequentialDownload__stateChanged (int);
 	void on_TorrentSuperSeeding__stateChanged (int);
-    void on_CaseSensitiveSearch__stateChanged (int);
     void on_DownloadingTorrents__valueChanged (int);
     void on_UploadingTorrents__valueChanged (int);
     void on_TorrentTags__editingFinished ();

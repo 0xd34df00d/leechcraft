@@ -100,6 +100,8 @@ private:
 	std::list<quint16> IDPool_;
 	QString ExternalAddress_;
 	bool SaveScheduled_;
+	QWidget *Toolbar_;
+	QWidget *TabWidget_;
 
     Core ();
 public:
@@ -117,6 +119,7 @@ public:
 
     static Core* Instance ();
 	virtual ~Core ();
+	void SetWidgets (QWidget*, QWidget*);
     void DoDelayedInit ();
     void Release ();
     PiecesModel* GetPiecesModel ();

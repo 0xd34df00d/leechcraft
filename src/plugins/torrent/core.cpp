@@ -102,6 +102,8 @@ Core::Core ()
 , TorrentFilesModel_ (new TorrentFilesModel (false))
 , HistoryModel_ (new HistoryModel)
 , SaveScheduled_ (false)
+, Toolbar_ (0)
+, TabWidget_ (0)
 {
 	ExternalAddress_ = tr ("Unknown");
 	for (quint16 i = 0; i < 65535; ++i)
@@ -110,6 +112,12 @@ Core::Core ()
 
 Core::~Core ()
 {
+}
+
+void Core::SetWidgets (QWidget *tool, QWidget *tab)
+{
+	Toolbar_ = tool;
+	TabWidget_ = tab;
 }
 
 void Core::DoDelayedInit ()
@@ -313,6 +321,10 @@ int Core::columnCount (const QModelIndex&) const
 
 QVariant Core::data (const QModelIndex& index, int role) const
 {
+	if (role == LeechCraft::RoleControls)
+		return QVariant::fromValue<QWidget*> (Toolbar_);
+	if (role == LeechCraft::RoleAdditionalInfo)
+		return QVariant::fromValue<QWidget*> (TabWidget_);
     int row = index.row (),
         column = index.column ();
 
