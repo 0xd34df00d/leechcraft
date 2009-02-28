@@ -36,10 +36,16 @@ void LeechCraft::Util::CreateIfNotExists (const QString& path)
 	QDir home = QDir::home ();
 	home.cd (".leechcraft");
 	if (home.exists (path) && !home.cd (path))
-			throw std::runtime_error (qPrintable (QObject::tr ("Could not cd into %1")
-						.arg (QDir::toNativeSeparators (home.filePath (path)))));
-	else if (!home.mkpath (path))
+	{
+		throw std::runtime_error (qPrintable (QObject::tr ("Could not cd into %1")
+					.arg (QDir::toNativeSeparators (home.filePath (path)))));
+	}
+	home = QDir::home ();
+	home.cd (".leechcraft");
+	if (!home.exists (path) && !home.mkpath (path))
+	{
 		throw std::runtime_error (qPrintable (QObject::tr ("Could not create %1")
 					.arg (QDir::toNativeSeparators (home.filePath (path)))));
+	}
 }
 
