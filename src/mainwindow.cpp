@@ -51,10 +51,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			SIGNAL (log (const QString&)),
 			LogToolBox_,
 			SLOT (log (const QString&)));
-	connect (&Core::Instance (),
-			SIGNAL (modelSwitched ()),
-			this,
-			SLOT (handleModelSwitched ()));
 
 	Core::Instance ().SetReallyMainWindow (this);
 	Core::Instance ().DelayedInit ();
@@ -107,6 +103,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 		SettingsSink_->AddDialog (*i);
 
 	updateIconSet ();
+	filterParametersChanged ();
 
 	setUpdatesEnabled (true);
 	SplashScreen_->finish (this);
@@ -408,14 +405,6 @@ void LeechCraft::MainWindow::updatePanes (const QItemSelection& newIndexes,
 			Ui_.ControlsDockWidget_->show ();
 		}
 	}
-}
-
-void LeechCraft::MainWindow::handleModelSwitched ()
-{
-	if (Ui_.ControlsLayout_->count () == 2)
-		Ui_.ControlsLayout_->takeAt (1)->widget ()->hide ();
-
-	Ui_.ControlsDockWidget_->hide ();
 }
 
 void LeechCraft::MainWindow::updateSpeedIndicators ()

@@ -1,6 +1,7 @@
 #ifndef CORE_H
 #define CORE_H
 #include <memory>
+#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QString>
 #include <QPair>
@@ -10,7 +11,7 @@
 #include "tabcontainer.h"
 #include "plugininterface/mergemodel.h"
 #include "storagebackend.h"
-#include "categorymerger.h"
+#include "requestnormalizer.h"
 
 class QLocalServer;
 class QAbstractProxyModel;
@@ -33,10 +34,9 @@ namespace LeechCraft
         QTimer *ClipboardWatchdog_;
         QString PreviousClipboardContents_;
 		std::auto_ptr<QLocalServer> Server_;
-		std::auto_ptr<Util::MergeModel> MergeModel_;
-		std::auto_ptr<Util::MergeModel> HistoryMergeModel_;
-		std::auto_ptr<CategoryMerger> CategoryMerger_;
-		std::auto_ptr<FilterModel> FilterModel_;
+		boost::shared_ptr<Util::MergeModel> MergeModel_;
+		boost::shared_ptr<Util::MergeModel> HistoryMergeModel_;
+		std::auto_ptr<RequestNormalizer> RequestNormalizer_;
 		std::auto_ptr<TabContainer> TabContainer_;
 		std::auto_ptr<QNetworkAccessManager> NetworkAccessManager_;
 		std::auto_ptr<QTimer> CookieSaveTimer_;
@@ -70,9 +70,7 @@ namespace LeechCraft
 		 */
 		QObjectList GetSettables () const;
 		QAbstractItemModel* GetPluginsModel () const;
-		QAbstractProxyModel* GetTasksModel () const;
-		Util::MergeModel* GetUnfilteredTasksModel () const;
-		Util::MergeModel* GetUnfilteredHistoryModel () const;
+		QAbstractItemModel* GetTasksModel () const;
 		PluginManager* GetPluginManager () const;
 		
 		/** Returns controls for the model with a given index. The
@@ -193,7 +191,6 @@ namespace LeechCraft
 		void log (const QString&);
         void downloadFinished (const QString&);
 		void loadProgress (const QString&);
-		void modelSwitched ();
     };
 };
 

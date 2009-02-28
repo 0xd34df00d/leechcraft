@@ -235,21 +235,7 @@ void LeechCraft::PluginManager::CalculateDependencies ()
 
 				if (parsed [0] == "services")
 				{
-					if (parsed [1] == "historyModel")
-					{
-						QMetaObject::invokeMethod (pEntity,
-								"pushHistoryModel",
-								Q_ARG (MergeModel*,
-									Core::Instance ().GetUnfilteredHistoryModel ()));
-					}
-					else if (parsed [1] == "downloadersModel")
-					{
-						QMetaObject::invokeMethod (pEntity,
-								"pushDownloadersModel",
-								Q_ARG (MergeModel*,
-									Core::Instance ().GetUnfilteredTasksModel ()));
-					}
-					else if (parsed [1] == "subscriptions" && parsed.size () >= 3)
+					if (parsed [1] == "subscriptions" && parsed.size () >= 3)
 					{
 						if (parsed [2] == "selectedDownloaderChanged")
 							SelectedDownloaderWatchers_ << pEntity;

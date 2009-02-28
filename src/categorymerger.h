@@ -4,6 +4,7 @@
 #include <boost/shared_ptr.hpp>
 #include <plugininterface/mergemodel.h>
 #include <interfaces/ifinder.h>
+#include "filtermodel.h"
 
 namespace LeechCraft
 {
@@ -15,10 +16,14 @@ namespace LeechCraft
 
 		typedef std::vector<boost::shared_ptr<IFindProxy> > proxies_t;
 		proxies_t Proxies_;
+		boost::shared_ptr<Util::MergeModel> MergeModel_;
+		boost::shared_ptr<Util::MergeModel> HistoryMergeModel_;
+		std::auto_ptr<FilterModel> FilterModel_;
 	public:
-		CategoryMerger (QObject* = 0);
-
-		void SetRequest (const Request&);
+		CategoryMerger (const Request&,
+				const boost::shared_ptr<Util::MergeModel>&,
+				const boost::shared_ptr<Util::MergeModel>&,
+				QObject* = 0);
 	};
 };
 

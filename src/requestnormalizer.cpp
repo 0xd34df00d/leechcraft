@@ -4,6 +4,7 @@
 #include <interfaces/ifinder.h>
 
 using namespace LeechCraft;
+using namespace LeechCraft::Util;
 
 RequestNormalizer::RequestHolder::RequestHolder ()
 : Op_ (OperationalModel::OpNull)
@@ -19,8 +20,16 @@ RequestNormalizer::RequestHolder::~RequestHolder ()
 	}
 }
 
-RequestNormalizer::RequestNormalizer (QObject *parent)
+RequestNormalizer::RequestNormalizer (const boost::shared_ptr<MergeModel>& merge,
+		const boost::shared_ptr<MergeModel>& history,
+		QObject *parent)
 : QObject (parent)
+, MergeModel_ (merge)
+, HistoryMergeModel_ (history)
+, Root_ (new MergeModel (QStringList (tr ("Name"))
+			<< tr ("State")
+			<< tr ("Progress")))
+, Parser_ (new RequestParser)
 {
 }
 
@@ -38,15 +47,24 @@ void RequestNormalizer::SetRequest (const QString& req)
 
 	try
 	{
-		Current_ = Parse (req);
+		RequestHolder_ptr c = Parse (req);
+		SetMerger (c);
+
+		Root_->AddModel (c->Merger_.get ());
+		if (Current_)
+			Root_->RemoveModel (Current_->Merger_.get ());
+		Current_ = c;
 	}
 	catch (const std::runtime_error& e)
 	{
 		qWarning () << Q_FUNC_INFO << e.what ();
 		emit error (tr ("Request parsing error: %1").arg (e.what ()));
 	}
+}
 
-	SetMerger (Current_);
+QAbstractItemModel* RequestNormalizer::GetModel () const
+{
+	return Root_.get ();
 }
 
 void RequestNormalizer::Validate (const QString& req) const
@@ -133,8 +151,8 @@ void RequestNormalizer::SetMerger (RequestHolder_ptr holder)
 {
 	if (holder->Req_)
 	{
-		CategoryMerger *merger = new CategoryMerger;
-		merger->SetRequest (*holder->Req_);
+		CategoryMerger *merger = new CategoryMerger (*holder->Req_,
+				MergeModel_, HistoryMergeModel_);
 		holder->Merger_.reset (merger);
 	}
 	else

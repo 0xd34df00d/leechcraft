@@ -34,8 +34,10 @@ public:
 	QStringList Needs () const;
 	QStringList Uses () const;
 	void SetProvider (QObject*, const QString&);
+
 	QIcon GetIcon () const;
 	QWidget* GetTabContents ();
+
 	bool ImplementsFeature (const QString&) const;
 private:
 	QToolBar* SetupToolbar ();

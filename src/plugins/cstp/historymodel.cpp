@@ -54,8 +54,6 @@ QVariant HistoryModel::data (const QModelIndex& index, int role) const
 				return item.Filename_;
 			case HPath:
 				return item.URL_;
-			case HSize:
-				return Proxy::Instance ()->MakePrettySize (item.Size_);
 			case HDate:
 				return item.DateTime_;
 			case HTags:

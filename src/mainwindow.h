@@ -71,7 +71,6 @@ namespace LeechCraft
 		void on_ActionFullscreenMode__triggered (bool);
 		void on_ActionLogger__triggered ();
 		void updatePanes (const QItemSelection&, const QItemSelection&);
-		void handleModelSwitched ();
 		void updateSpeedIndicators ();
 		void updateClock ();
 		void showHideMain ();

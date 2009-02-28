@@ -21,7 +21,6 @@ namespace LeechCraft
 			{
 				HFilename
 				, HPath
-				, HSize
 				, HDate
 				, HTags
 			};

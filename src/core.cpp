@@ -37,7 +37,6 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "mergemodel.h"
-#include "filtermodel.h"
 #include "historymodel.h"
 #include "authenticationdialog.h"
 #include "sslerrorsdialog.h"
@@ -55,11 +54,8 @@ LeechCraft::Core::Core ()
 			<< tr ("Progress")))
 , HistoryMergeModel_ (new MergeModel (QStringList (tr ("Filename"))
 			<< tr ("Path")
-			<< tr ("Size")
-			<< tr ("Date")
-			<< tr ("Tags")))
-, CategoryMerger_ (new CategoryMerger)
-, FilterModel_ (new FilterModel)
+			<< tr ("Date")))
+, RequestNormalizer_ (new RequestNormalizer (MergeModel_, HistoryMergeModel_))
 , NetworkAccessManager_ (new QNetworkAccessManager)
 , CookieSaveTimer_ (new QTimer ())
 , StorageBackend_ (new SQLStorageBackend ())
@@ -103,8 +99,6 @@ LeechCraft::Core::Core ()
 			SIGNAL (loadProgress (const QString&)),
 			this,
 			SIGNAL (loadProgress (const QString&)));
-
-	FilterModel_->setSourceModel (MergeModel_.get ());
 
     ClipboardWatchdog_ = new QTimer (this);
     connect (ClipboardWatchdog_,
@@ -176,19 +170,9 @@ QAbstractItemModel* LeechCraft::Core::GetPluginsModel () const
 	return PluginManager_;
 }
 
-QAbstractProxyModel* LeechCraft::Core::GetTasksModel () const
+QAbstractItemModel* LeechCraft::Core::GetTasksModel () const
 {
-	return FilterModel_.get ();
-}
-
-MergeModel* LeechCraft::Core::GetUnfilteredTasksModel () const
-{
-	return MergeModel_.get ();
-}
-
-MergeModel* LeechCraft::Core::GetUnfilteredHistoryModel () const
-{
-	return HistoryMergeModel_.get ();
+	return RequestNormalizer_->GetModel ();
 }
 
 PluginManager* LeechCraft::Core::GetPluginManager () const
@@ -198,6 +182,7 @@ PluginManager* LeechCraft::Core::GetPluginManager () const
 
 QWidget* LeechCraft::Core::GetControls (const QModelIndex& index) const
 {
+	/*
 	if (FilterModel_->sourceModel () == MergeModel_.get ())
 	{
 		QAbstractItemModel *model = *MergeModel_->
@@ -208,11 +193,13 @@ QWidget* LeechCraft::Core::GetControls (const QModelIndex& index) const
 		return ijh->GetControls ();
 	}
 	else
+		*/
 		return 0;
 }
 
 QWidget* LeechCraft::Core::GetAdditionalInfo (const QModelIndex& index) const
 {
+	/*
 	if (FilterModel_->sourceModel () == MergeModel_.get ())
 	{
 		QAbstractItemModel *model = *MergeModel_->
@@ -229,6 +216,7 @@ QWidget* LeechCraft::Core::GetAdditionalInfo (const QModelIndex& index) const
 		 return v.value<QWidget*> ();
 	}
 	else
+	*/
 		return 0;
 }
 
@@ -350,6 +338,7 @@ void LeechCraft::Core::TryToAddJob (const QString& name, const QString& where)
 
 void LeechCraft::Core::SetNewRow (const QModelIndex& index)
 {
+	/*
 	QList<IJobHolder*> holders = PluginManager_->GetAllCastableTo<IJobHolder*> ();
 
 	if (FilterModel_->sourceModel () == MergeModel_.get ())
@@ -389,10 +378,12 @@ void LeechCraft::Core::SetNewRow (const QModelIndex& index)
 	for (QList<IJobHolder*>::iterator i = holders.begin (),
 			end = holders.end (); i != end; ++i)
 		(*i)->ItemSelected (QModelIndex ());
+		*/
 }
 
 bool LeechCraft::Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) const
 {
+	/*
 	if (i1.isValid () != i2.isValid ())
 		return false;
 	if (!i1.isValid () && !i2.isValid ())
@@ -409,90 +400,24 @@ bool LeechCraft::Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) 
 		GetModelForRow (mapped2.row ());
 
 	return modIter1 == modIter2;
+	*/
+	return true;
 }
 
 void LeechCraft::Core::UpdateFiltering (const QString& text)
 {
-	Request r = RequestParser (text).GetRequest ();
-
-	bool builtin = false;
-
-	if (r.Category_.isEmpty () ||
-			r.Category_ == "downloads" ||
-			r.Category_ == "d")
-	{
-		builtin = true;
-		if (FilterModel_->sourceModel () != MergeModel_.get ())
-		{
-			emit modelSwitched ();
-			FilterModel_->setSourceModel (MergeModel_.get ());
-		}
-	}
-	else if (r.Category_ == "history" ||
-			r.Category_ == "h")
-	{
-		builtin = true;
-		if (FilterModel_->sourceModel () != HistoryMergeModel_.get ())
-		{
-			emit modelSwitched ();
-			FilterModel_->setSourceModel (HistoryMergeModel_.get ());
-		}
-	}
-	else
-	{
-		if (FilterModel_->sourceModel () != CategoryMerger_.get ())
-		{
-			emit modelSwitched ();
-			FilterModel_->setSourceModel (CategoryMerger_.get ());
-		}
-		CategoryMerger_->SetRequest (r);
-	}
-
-	if (builtin)
-	{
-		FilterModel_->setFilterCaseSensitivity (r.CaseSensitive_ ?
-				Qt::CaseSensitive : Qt::CaseInsensitive);
-
-		switch (r.Type_)
-		{
-			case Request::RTFixed:
-				FilterModel_->SetTagsMode (false);
-				FilterModel_->setFilterFixedString (r.String_);
-				break;
-			case Request::RTWildcard:
-				FilterModel_->SetTagsMode (false);
-				FilterModel_->setFilterWildcard (r.String_);
-				break;
-			case Request::RTRegexp:
-				FilterModel_->SetTagsMode (false);
-				FilterModel_->setFilterRegExp (r.String_);
-				break;
-			case Request::RTTag:
-				FilterModel_->SetTagsMode (true);
-				FilterModel_->setFilterFixedString (r.String_);
-				break;
-		}
-
-		// Erase all the requests
-		// TODO this shouldn't be needed if we make correct AND/OR/NOT
-		// stuff.
-		CategoryMerger_->SetRequest (Request ());
-	}
-	else
-	{
-		FilterModel_->setFilterCaseSensitivity (Qt::CaseInsensitive);
-		FilterModel_->SetTagsMode (false);
-		FilterModel_->setFilterFixedString ("");
-	}
+	RequestNormalizer_->SetRequest (text);
 }
 
 void LeechCraft::Core::Activated (const QModelIndex& index)
 {
+	/*
 	if (FilterModel_->sourceModel () != HistoryMergeModel_.get ())
 		return;
 
 	QString name = index.data (HistoryModel::RolePath).toString ();
 	handleGotEntity (name.toUtf8 (), true);
+	*/
 }
 
 QPair<qint64, qint64> LeechCraft::Core::GetSpeeds () const
@@ -650,11 +575,13 @@ void LeechCraft::Core::toggleMultiwindow ()
 
 void LeechCraft::Core::deleteSelectedHistory (const QModelIndex& index)
 {
+	/*
 	QModelIndex mapped = FilterModel_->mapToSource (index);
 	HistoryModel *model =
 		static_cast<HistoryModel*> (*HistoryMergeModel_->
 				GetModelForRow (mapped.row ()));
 	model->RemoveItem (HistoryMergeModel_->mapToSource (mapped));
+	*/
 }
 
 void LeechCraft::Core::handleGotEntity (const QByteArray& file, bool fromBuffer)
@@ -907,7 +834,8 @@ void LeechCraft::Core::DoCommonAuth (const QString& msg, QAuthenticator *authen)
 
 QModelIndex LeechCraft::Core::MapToSource (const QModelIndex& index) const
 {
-	return MergeModel_->mapToSource (FilterModel_->mapToSource (index));
+	return QModelIndex ();
+//	return MergeModel_->mapToSource (FilterModel_->mapToSource (index));
 }
 
 void LeechCraft::Core::InitJobHolder (QObject *plugin)
