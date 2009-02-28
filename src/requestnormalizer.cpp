@@ -103,7 +103,8 @@ namespace
 				break;
 			}
 
-			if (string.mid (i, 2) == " (")
+			if (string.mid (i, 2) == " (" ||
+					(!i && string.at (i) == '('))
 				++openedBraces;
 			else if (string.mid (i, 2) == ") ")
 				--openedBraces;
@@ -118,10 +119,11 @@ namespace
 
 RequestNormalizer::RequestHolder_ptr RequestNormalizer::Parse (QString req) const
 {
-	req = req.trimmed ();
+	req = req.simplified ();
+	qDebug () << Q_FUNC_INFO << req;
 	if (req.size () > 1 &&
 			req.at (0) == '(' &&
-			req.at (req.size () - 1) == '2')
+			req.at (req.size () - 1) == ')')
 		req = req.mid (1, req.size () - 2);
 
 	RequestHolder_ptr node (new RequestHolder ());
@@ -138,6 +140,38 @@ RequestNormalizer::RequestHolder_ptr RequestNormalizer::Parse (QString req) cons
 		node->Op_ = OperationalModel::OpAnd;
 		node->Left_ = Parse (req.left (pos));
 		node->Right_ = Parse (req.mid (pos + sizeof (" AND ") - 1));
+	}
+	// If there are no OR/ANDs out of braces, but there is an opening
+	// brace, than there is some text before it. The same with the
+	// closing brace.
+	else if ((pos = req.indexOf ('(')) > 0)
+	{
+		QString add = req.left (pos).trimmed ();
+		add.append (' ');
+
+		int rightPos = req.lastIndexOf (')');
+		QString subBraces = req.mid (pos + 1, rightPos - pos - 1);
+		subBraces.prepend (add);
+		subBraces.replace (" AND ", QString (" AND %1").arg (add));
+		subBraces.replace (" OR ", QString (" OR %1").arg (add));
+		req.replace (pos + 1, rightPos - pos - 1, subBraces);
+		req = req.mid (pos);
+		node = Parse (req);
+	}
+	else if ((pos = req.lastIndexOf (')')) > 0)
+	{
+		QString add = req.mid (pos + 1).trimmed ();
+		add.prepend (' ');
+
+		int leftPos = req.indexOf ('(');
+		QString subBraces = req.mid (leftPos + 1, pos - leftPos - 1);
+		subBraces.append (add);
+		subBraces.replace (" AND ", QString ("%1 AND ").arg (add));
+		subBraces.replace (" OR ", QString ("%1 OR ").arg (add));
+		req.replace (leftPos + 1, pos - leftPos - 1, subBraces);
+		req = req.left (req.size () - add.size ());
+		qDebug () << req << add << subBraces;
+		node = Parse (req);
 	}
 	else
 	{
