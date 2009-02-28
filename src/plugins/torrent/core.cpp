@@ -365,7 +365,7 @@ QVariant Core::data (const QModelIndex& index, int role) const
 				result += tr ("Peers/seeds: %1/%2").arg (status.num_peers).arg (status.num_seeds);
 				return result;
 			}
-		case LeechCraft::TagsRole:
+		case LeechCraft::RoleTags:
 			return Handles_.at (row).Tags_;
 		default:
 			return QVariant ();

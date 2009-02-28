@@ -7,7 +7,6 @@ class QTranslator;
 
 namespace LeechCraft
 {
-	const int TagsRole = 45;
 	namespace Util
 	{
 		template<typename In, typename Out, typename Pred>

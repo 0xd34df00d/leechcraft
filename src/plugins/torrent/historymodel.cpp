@@ -5,6 +5,7 @@
 #include <QtDebug>
 #include <plugininterface/proxy.h>
 #include <plugininterface/util.h>
+#include <interfaces/structures.h>
 
 using LeechCraft::Util::Proxy;
 
@@ -58,7 +59,7 @@ QVariant HistoryModel::data (const QModelIndex& index, int role) const
 				default:
 					return "Unknown field";
 			}
-		case LeechCraft::TagsRole:
+		case LeechCraft::RoleTags:
 			return Items_ [index.row ()].Tags_;
 		case HistoryModel::RolePath:
 			return Items_ [index.row ()].Where_ +

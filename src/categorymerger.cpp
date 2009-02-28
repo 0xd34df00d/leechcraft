@@ -1,4 +1,5 @@
 #include "categorymerger.h"
+#include <QtDebug>
 #include "core.h"
 #include "requestparser.h"
 
@@ -16,6 +17,7 @@ CategoryMerger::CategoryMerger (const Request& r,
 , HistoryMergeModel_ (history)
 , FilterModel_ (new FilterModel)
 {
+	qDebug () << "category" << r.Category_;
 	bool builtin = false;
 
 	if (r.Category_.isEmpty () ||
@@ -33,11 +35,6 @@ CategoryMerger::CategoryMerger (const Request& r,
 	}
 	else
 	{
-		for (proxies_t::const_iterator i = Proxies_.begin (),
-				end = Proxies_.end (); i != end; ++i)
-			RemoveModel ((*i)->GetModel ());
-		Proxies_.clear ();
-
 		QList<IFinder*> finders = Core::Instance ().GetPluginManager ()->
 			GetAllCastableTo<IFinder*> ();
 

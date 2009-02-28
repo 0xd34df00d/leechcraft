@@ -1,5 +1,6 @@
 #include "operationalmodel.h"
 #include <interfaces/ifinder.h>
+#include <interfaces/structures.h>
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -21,7 +22,7 @@ bool OperationalModel::AcceptsRow (QAbstractItemModel *model,
 {
 	if (Op_ == OpAnd)
 	{
-		QByteArray hash = model->index (row, 0).data (IFindProxy::RoleHash).toByteArray ();
+		QByteArray hash = model->index (row, 0).data (LeechCraft::RoleHash).toByteArray ();
 		size_t sameModels = 0;
 
 		for (models_t::const_iterator i = Models_.begin (),
@@ -32,7 +33,7 @@ bool OperationalModel::AcceptsRow (QAbstractItemModel *model,
 
 			bool found = false;
 			for (int j = 0; j < (*i)->rowCount (); ++j)
-				if ((*i)->index (j, 0).data (IFindProxy::RoleHash).toByteArray () == hash)
+				if ((*i)->index (j, 0).data (LeechCraft::RoleHash).toByteArray () == hash)
 				{
 					++sameModels;
 					found = true;

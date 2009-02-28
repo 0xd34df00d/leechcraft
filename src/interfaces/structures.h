@@ -58,6 +58,28 @@ namespace LeechCraft
 		NotPersistent = 128
 	};
 
+	enum CustomDataRoles
+	{
+		/** The role for the string list with tags. So, QStringList is
+		 * expected to be returned.
+		 */
+		RoleTags = 100,
+		/* The role for the additional controls for a given item.
+		 * QWidget* is expected to be returned.
+		 */
+		RoleControls,
+		/** The role for the widget appearing on the right part of the
+		 * screen when the user selects an item. QWidget* is expected to
+		 * be returned.
+		 */
+		RoleAdditionalInfo,
+		/** The role for the hash of the item, used to compare two
+		 * different results, possibly from two different models.
+		 * QByteArray is expected to be returned.
+		 */
+		RoleHash
+	};
+
 	Q_DECLARE_FLAGS (TaskParameters, TaskParameter);
 };
 

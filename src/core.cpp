@@ -230,7 +230,7 @@ QStringList LeechCraft::Core::GetTagsForIndex (int index,
 		GetStartingRow (modIter);
 
 	return (*modIter)->
-		data ((*modIter)->index (index - starting, 0), LeechCraft::TagsRole)
+		data ((*modIter)->index (index - starting, 0), LeechCraft::RoleTags)
 		.toStringList ();
 }
 
@@ -256,6 +256,7 @@ void LeechCraft::Core::DelayedInit ()
     {
         IInfo *info = qobject_cast<IInfo*> (plugin);
 		emit loadProgress (tr ("Setting up %1...").arg (info->GetName ()));
+		qDebug () << Q_FUNC_INFO << info->GetName ();
 
 		IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
 		IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
@@ -285,7 +286,7 @@ void LeechCraft::Core::DelayedInit ()
 					this,
 					SLOT (handleLog (const QString&)));
 
-		if (ijh && ijh->GetControls ())
+		if (ijh)
 			InitJobHolder (plugin);
 
 		if (iet)
@@ -411,13 +412,8 @@ void LeechCraft::Core::UpdateFiltering (const QString& text)
 
 void LeechCraft::Core::Activated (const QModelIndex& index)
 {
-	/*
-	if (FilterModel_->sourceModel () != HistoryMergeModel_.get ())
-		return;
-
 	QString name = index.data (HistoryModel::RolePath).toString ();
 	handleGotEntity (name.toUtf8 (), true);
-	*/
 }
 
 QPair<qint64, qint64> LeechCraft::Core::GetSpeeds () const
@@ -845,20 +841,30 @@ void LeechCraft::Core::InitJobHolder (QObject *plugin)
 	Representation2Object_ [model] = plugin;
 	MergeModel_->AddModel (model);
 
-	QList<QAction*> actions = ijh->GetControls ()->actions ();
-	for (QList<QAction*>::iterator i = actions.begin (),
-			end = actions.end (); i != end; ++i)
+	if (ijh->GetRepresentation ())
 	{
-		connect (*i,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handlePluginAction ()));
-		Action2Model_ [*i] = model;
-	}
+		QWidget *controlsWidget = ijh->GetRepresentation ()->
+			index (0, 0).data (LeechCraft::RoleControls).value<QWidget*> ();
+		if (controlsWidget)
+		{
+			QList<QAction*> actions = controlsWidget->actions ();
+			for (QList<QAction*>::iterator i = actions.begin (),
+					end = actions.end (); i != end; ++i)
+			{
+				connect (*i,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handlePluginAction ()));
+				Action2Model_ [*i] = model;
+			}
 
-	ijh->GetControls ()->setParent (ReallyMainWindow_);
-	if (ijh->GetAdditionalInfo ())
-		ijh->GetAdditionalInfo ()->setParent (ReallyMainWindow_);
+			controlsWidget->setParent (ReallyMainWindow_);
+		}
+		QWidget *additional = ijh->GetRepresentation ()->
+			index (0, 0).data (LeechCraft::RoleAdditionalInfo).value<QWidget*> ();
+		if (additional)
+			additional->setParent (ReallyMainWindow_);
+	}
 
 	QAbstractItemModel *historyModel = ijh->GetHistory ();
 	if (historyModel)

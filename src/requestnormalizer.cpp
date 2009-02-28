@@ -130,13 +130,13 @@ RequestNormalizer::RequestHolder_ptr RequestNormalizer::Parse (QString req) cons
 	{
 		node->Op_ = OperationalModel::OpOr;
 		node->Left_ = Parse (req.left (pos));
-		node->Right_ = Parse (req.mid (pos + sizeof (" OR ")));
+		node->Right_ = Parse (req.mid (pos + sizeof (" OR ") - 1));
 	}
 	else if ((pos = FindWB (" AND ", req)) != -1)
 	{
 		node->Op_ = OperationalModel::OpAnd;
 		node->Left_ = Parse (req.left (pos));
-		node->Right_ = Parse (req.mid (pos + sizeof (" AND ")));
+		node->Right_ = Parse (req.mid (pos + sizeof (" AND ") - 1));
 	}
 	else
 	{

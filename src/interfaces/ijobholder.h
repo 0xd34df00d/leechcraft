@@ -38,6 +38,24 @@ public:
 	 * state, progress and speed. Inside of LeechCraft it would be
 	 * merged with other models from other plugins.
 	 *
+	 * This model is also used to retrieve controls and additional info
+	 * for a given index.
+	 *
+	 * Returned widget would be placed above the view with the jobs, so
+	 * usually it has controls of the job, but in fact it can have
+	 * anything you want. It is only visible when a job from your plugin
+	 * is selected. If a job from other plugin is selected, then other
+	 * plugin's controls would be placed, and if no jobs are selected at
+	 * all, then no controls would be placed.
+	 *
+	 * Additional information a retrieved using the RoleAdditionalInfo.
+	 * Returned widget would be placed below the view with the jobs, so
+	 * usually it has additional information about the job, but in fact
+	 * it can have anything you want. It is only visible when a job from
+	 * your plugin is selected. If a job from other plugin is selected,
+	 * then other plugin's controls would be placed, and if no jobs are
+	 * selected at all, then no controls would be placed.
+	 *
 	 * @return Representation model.
 	 *
 	 * @sa GetHistory
@@ -57,38 +75,6 @@ public:
 	 * @sa GetAdditionalInfo
 	 */
 	virtual LeechCraft::Util::HistoryModel* GetHistory () const = 0;
-	/** @brief Returns the widget with controls.
-	 *
-	 * Returned widget would be placed above the view with the jobs, so
-	 * usually it has controls of the job, but in fact it can have
-	 * anything you want. It is only visible when a job from your plugin
-	 * is selected. If a job from other plugin is selected, then other
-	 * plugin's controls would be placed, and if no jobs are selected at
-	 * all, then no controls would be placed.
-	 *
-	 * @return Widget with controls.
-	 *
-	 * @sa GetRepresentation
-	 * @sa GetHistory
-	 * @sa GetAdditionalInfo
-	 */
-	virtual QWidget* GetControls () const = 0;
-	/** @brief Returns the widget with information.
-	 *
-	 * Returned widget would be placed below the view with the jobs, so
-	 * usually it has additional information about the job, but in fact
-	 * it can have anything you want. It is only visible when a job from
-	 * your plugin is selected. If a job from other plugin is selected,
-	 * then other plugin's controls would be placed, and if no jobs are
-	 * selected at all, then no controls would be placed.
-	 *
-	 * @return Widget with additional info.
-	 *
-	 * @sa GetRepresentation
-	 * @sa GetHistory
-	 * @sa GetControls
-	 */
-	virtual QWidget* GetAdditionalInfo () const = 0;
 	/** @brief Notifies plugin about item selection.
 	 * 
 	 * @param item Selected item.

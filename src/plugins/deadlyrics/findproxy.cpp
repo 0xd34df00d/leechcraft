@@ -2,6 +2,7 @@
 #include <QTextEdit>
 #include <QUrl>
 #include <QtDebug>
+#include <interfaces/structures.h>
 #include "searcher.h"
 #include "core.h"
 
@@ -74,7 +75,7 @@ QVariant FindProxy::data (const QModelIndex& index, int role) const
 				return Request_.Category_;
 		}
 	}
-	else if (role == RoleWidget)
+	else if (role == LeechCraft::RoleAdditionalInfo)
 	{
 		LyricsHolder_->setPlainText (lyrics.Text_);
 		return QVariant::fromValue<QWidget*> (LyricsHolder_);

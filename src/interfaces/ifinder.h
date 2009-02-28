@@ -30,17 +30,6 @@ namespace LeechCraft
 class IFindProxy
 {
 public:
-	enum
-	{
-		/** The role for the widget appearing on the right part of the
-		 * screen when the user selects an item.
-		 */
-		RoleWidget = 50,
-		/** The role for the hash of the item, used to compare two
-		 * different results, possibly from two different models.
-		 */
-		RoleHash
-	};
 	virtual ~IFindProxy () {}
 
 	virtual QAbstractItemModel* GetModel () = 0;
