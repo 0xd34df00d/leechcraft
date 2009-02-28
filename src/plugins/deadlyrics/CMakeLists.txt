@@ -12,6 +12,7 @@ SET (SRCS
 	searcher.cpp
 	lyricwikisearcher.cpp
 	findproxy.cpp
+	lyricscache.cpp
 	)
 SET (HEADERS
 	deadlyrics.h
@@ -19,6 +20,7 @@ SET (HEADERS
 	searcher.h
 	lyricwikisearcher.h
 	findproxy.h
+	lyricscache.h
 	)
 SET (TRANSLATIONS
 	leechcraft_deadlyrics_ru_RU.ts

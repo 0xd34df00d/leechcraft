@@ -23,8 +23,11 @@ FindProxy::FindProxy (const LeechCraft::Request& request,
 		connect (i->get (),
 				SIGNAL (textFetched (const Lyrics&, const QByteArray&)),
 				this,
-				SLOT (handleTextFetched (const Lyrics&, const QByteArray&)));
-		Hashes_.push_back ((*i)->Start (subs));
+				SLOT (handleTextFetched (const Lyrics&, const QByteArray&)),
+				Qt::QueuedConnection);
+		QByteArray hash;
+		(*i)->Start (subs, hash);
+		Hashes_.push_back (hash);
 	}
 }
 

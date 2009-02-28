@@ -5,14 +5,27 @@
 #include <QtDebug>
 #include <QCryptographicHash>
 #include "core.h"
+#include "lyricscache.h"
 
 LyricWikiSearcher::LyricWikiSearcher ()
 {
 	setObjectName ("lyricwiki");
 }
 
-QByteArray LyricWikiSearcher::Start (const QStringList& asa)
+void LyricWikiSearcher::Start (const QStringList& asa, QByteArray& hash)
 {
+	hash = QCryptographicHash::hash (asa.join ("").toUtf8 (),
+			QCryptographicHash::Sha1);
+	try
+	{
+		Lyrics result = LyricsCache::Instance ().GetLyrics (hash);
+		emit textFetched (result, hash);
+		return;
+	}
+	catch (...)
+	{
+	}
+
 	QByteArray data = QByteArray ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 				"<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" "
 				"xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" "
@@ -48,11 +61,8 @@ QByteArray LyricWikiSearcher::Start (const QStringList& asa)
 			this,
 			SLOT (handleFinished ()));
 
-	QByteArray hash = QCryptographicHash::hash (asa.join ("").toUtf8 (),
-			QCryptographicHash::Sha1);
 	http->setObjectName (hash);
 	http->setProperty ("IDHash", hash);
-	return hash;
 }
 
 void LyricWikiSearcher::Stop (const QByteArray& hash)
@@ -87,6 +97,7 @@ void LyricWikiSearcher::handleFinished ()
 		qWarning () << Q_FUNC_INFO << "No lyrics fetched";
 		return;
 	}
+	QByteArray hash = http->property ("IDHash").toByteArray ();
 
 	Lyrics result =
 	{
@@ -97,6 +108,8 @@ void LyricWikiSearcher::handleFinished ()
 		url.at (0).toElement ().text ()
 	};
 
-	emit textFetched (result, http->property ("IDHash").toByteArray ());
+	LyricsCache::Instance ().SetLyrics (hash, result);
+
+	emit textFetched (result, hash);
 }
 

@@ -8,6 +8,8 @@
 
 Core::Core ()
 {
+	qRegisterMetaType<Lyrics> ("Lyrics");
+	qRegisterMetaTypeStreamOperators<Lyrics> ("Lyrics");
 	Searchers_.push_back (searcher_ptr (new LyricWikiSearcher));
 }
 
