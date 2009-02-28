@@ -42,6 +42,7 @@ namespace LeechCraft
 		std::auto_ptr<QTimer> CookieSaveTimer_;
 		std::auto_ptr<StorageBackend> StorageBackend_;
 		typedef std::map<const QAbstractItemModel*, QObject*> repres2object_t;
+		// Contains unfolded representations
 		mutable repres2object_t Representation2Object_;
 		mutable repres2object_t History2Object_;
 		typedef std::map<const QAction*, QAbstractItemModel*> action2model_t;
@@ -186,6 +187,7 @@ namespace LeechCraft
 		void InitJobHolder (QObject*);
 		void InitEmbedTab (QObject*);
 		void InitMultiTab (QObject*);
+		QModelIndex MapToSourceRecursively (QModelIndex) const;
     signals:
         void error (QString) const;
 		void log (const QString&);

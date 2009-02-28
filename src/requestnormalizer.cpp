@@ -31,6 +31,7 @@ RequestNormalizer::RequestNormalizer (const boost::shared_ptr<MergeModel>& merge
 			<< tr ("Progress")))
 , Parser_ (new RequestParser)
 {
+	Root_->setProperty ("__LeechCraft_own_core_model", true);
 }
 
 void RequestNormalizer::SetRequest (const QString& req)

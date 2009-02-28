@@ -60,6 +60,8 @@ LeechCraft::Core::Core ()
 , CookieSaveTimer_ (new QTimer ())
 , StorageBackend_ (new SQLStorageBackend ())
 {
+	MergeModel_->setProperty ("__LeechCraft_own_core_model", true);
+	HistoryMergeModel_->setProperty ("__LeechCraft_own_core_model", true);
 	connect (NetworkAccessManager_.get (),
 			SIGNAL (authenticationRequired (QNetworkReply*,
 					QAuthenticator*)),
@@ -182,42 +184,14 @@ PluginManager* LeechCraft::Core::GetPluginManager () const
 
 QWidget* LeechCraft::Core::GetControls (const QModelIndex& index) const
 {
-	/*
-	if (FilterModel_->sourceModel () == MergeModel_.get ())
-	{
-		QAbstractItemModel *model = *MergeModel_->
-			GetModelForRow (FilterModel_->mapToSource (index).row ());
-		IJobHolder *ijh =
-			qobject_cast<IJobHolder*> (Representation2Object_ [model]);
-
-		return ijh->GetControls ();
-	}
-	else
-		*/
-		return 0;
+	QVariant data = index.data (LeechCraft::RoleControls);
+	return data.value<QWidget*> ();
 }
 
 QWidget* LeechCraft::Core::GetAdditionalInfo (const QModelIndex& index) const
 {
-	/*
-	if (FilterModel_->sourceModel () == MergeModel_.get ())
-	{
-		QAbstractItemModel *model = *MergeModel_->
-			GetModelForRow (FilterModel_->mapToSource (index).row ());
-		IJobHolder *ijh =
-			qobject_cast<IJobHolder*> (Representation2Object_ [model]);
-
-		return ijh->GetAdditionalInfo ();
-	}
-	else if (FilterModel_->sourceModel () == CategoryMerger_.get ())
-	{
-		 QVariant v = FilterModel_->mapToSource (index).data (IFindProxy::RoleWidget);
-		 qDebug () << v;
-		 return v.value<QWidget*> ();
-	}
-	else
-	*/
-		return 0;
+	QVariant data = index.data (LeechCraft::RoleAdditionalInfo);
+	return data.value<QWidget*> ();
 }
 
 QStringList LeechCraft::Core::GetTagsForIndex (int index,
@@ -256,7 +230,6 @@ void LeechCraft::Core::DelayedInit ()
     {
         IInfo *info = qobject_cast<IInfo*> (plugin);
 		emit loadProgress (tr ("Setting up %1...").arg (info->GetName ()));
-		qDebug () << Q_FUNC_INFO << info->GetName ();
 
 		IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
 		IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
@@ -339,70 +312,40 @@ void LeechCraft::Core::TryToAddJob (const QString& name, const QString& where)
 
 void LeechCraft::Core::SetNewRow (const QModelIndex& index)
 {
-	/*
+	QModelIndex mapped = MapToSourceRecursively (index);
 	QList<IJobHolder*> holders = PluginManager_->GetAllCastableTo<IJobHolder*> ();
-
-	if (FilterModel_->sourceModel () == MergeModel_.get ())
+	if (index.isValid ())
 	{
-		try
-		{
-			if (index.isValid ())
-			{
-				QModelIndex mapped = FilterModel_->mapToSource (index);
-				QModelIndex final = MergeModel_->mapToSource (mapped);
-				MergeModel::const_iterator modIter = MergeModel_->GetModelForRow (mapped.row ());
-				QObject *plugin = Representation2Object_ [*modIter];
+		QObject *plugin = Representation2Object_ [mapped.model ()];
+		qDebug () << mapped.model () << plugin;
 
-				IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
+		IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
 
-				for (QList<IJobHolder*>::iterator i = holders.begin (),
-						end = holders.end (); i != end; ++i)
-					if (*i == ijh)
-						(*i)->ItemSelected (final);
-					else
-						(*i)->ItemSelected (QModelIndex ());
+		for (QList<IJobHolder*>::iterator i = holders.begin (),
+				end = holders.end (); i != end; ++i)
+			if (*i == ijh)
+				(*i)->ItemSelected (mapped);
+			else
+				(*i)->ItemSelected (QModelIndex ());
 
-				QObjectList watchers = PluginManager_->GetSelectedDownloaderWatchers ();
-				foreach (QObject *pEntity, watchers)
-					QMetaObject::invokeMethod (pEntity,
-							"selectedDownloaderChanged",
-							Q_ARG (QObject*, plugin));
-				return;
-			}
-		}
-		catch (const std::runtime_error& e)
-		{
-			qWarning () << Q_FUNC_INFO << "caught:" << e.what ();
-		}
+		QObjectList watchers = PluginManager_->GetSelectedDownloaderWatchers ();
+		foreach (QObject *pEntity, watchers)
+			QMetaObject::invokeMethod (pEntity,
+					"selectedDownloaderChanged",
+					Q_ARG (QObject*, plugin));
+		return;
 	}
-
-	for (QList<IJobHolder*>::iterator i = holders.begin (),
-			end = holders.end (); i != end; ++i)
-		(*i)->ItemSelected (QModelIndex ());
-		*/
+	else
+		for (QList<IJobHolder*>::iterator i = holders.begin (),
+				end = holders.end (); i != end; ++i)
+			(*i)->ItemSelected (QModelIndex ());
 }
 
 bool LeechCraft::Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) const
 {
-	/*
-	if (i1.isValid () != i2.isValid ())
-		return false;
-	if (!i1.isValid () && !i2.isValid ())
-		return true;
-
-	QModelIndex mapped1 = FilterModel_->mapToSource (i1);
-	MergeModel::const_iterator modIter1 =
-		qobject_cast<MergeModel*> (FilterModel_->sourceModel ())->
-		GetModelForRow (mapped1.row ());
-
-	QModelIndex mapped2 = FilterModel_->mapToSource (i2);
-	MergeModel::const_iterator modIter2 =
-		qobject_cast<MergeModel*> (FilterModel_->sourceModel ())->
-		GetModelForRow (mapped2.row ());
-
-	return modIter1 == modIter2;
-	*/
-	return true;
+	QModelIndex mapped1 = MapToSourceRecursively (i1);
+	QModelIndex mapped2 = MapToSourceRecursively (i2);
+	return mapped1.model () == mapped2.model ();
 }
 
 void LeechCraft::Core::UpdateFiltering (const QString& text)
@@ -571,7 +514,7 @@ void LeechCraft::Core::toggleMultiwindow ()
 
 void LeechCraft::Core::deleteSelectedHistory (const QModelIndex& index)
 {
-	/*
+	/* TODO reimplement in new terms
 	QModelIndex mapped = FilterModel_->mapToSource (index);
 	HistoryModel *model =
 		static_cast<HistoryModel*> (*HistoryMergeModel_->
@@ -830,14 +773,14 @@ void LeechCraft::Core::DoCommonAuth (const QString& msg, QAuthenticator *authen)
 
 QModelIndex LeechCraft::Core::MapToSource (const QModelIndex& index) const
 {
-	return QModelIndex ();
-//	return MergeModel_->mapToSource (FilterModel_->mapToSource (index));
+	return MapToSourceRecursively (index);
 }
 
 void LeechCraft::Core::InitJobHolder (QObject *plugin)
 {
 	IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
 	QAbstractItemModel *model = ijh->GetRepresentation ();
+	qDebug () << "inserting" << model << plugin;
 	Representation2Object_ [model] = plugin;
 	MergeModel_->AddModel (model);
 
@@ -913,5 +856,14 @@ void LeechCraft::Core::InitMultiTab (QObject *plugin)
 			SIGNAL (raiseTab (QWidget*)),
 			TabContainer_.get (),
 			SLOT (bringToFront (QWidget*)));
+}
+
+QModelIndex LeechCraft::Core::MapToSourceRecursively (QModelIndex index) const
+{
+	const QAbstractProxyModel *model = 0;
+	while ((model = qobject_cast<const QAbstractProxyModel*> (index.model ())) &&
+			model->property ("__LeechCraft_own_core_model").toBool ())
+		index = model->mapToSource (index);
+	return index;
 }
 

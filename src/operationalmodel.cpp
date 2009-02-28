@@ -10,6 +10,7 @@ OperationalModel::OperationalModel (QObject *parent)
 			<< tr ("Category")
 			<< tr ("Information"), parent)
 {
+	setProperty ("__LeechCraft_own_core_model", true);
 }
 
 void OperationalModel::SetOperation (Operation op)
