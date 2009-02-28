@@ -1,9 +1,11 @@
 #include "util.h"
+#include <stdexcept>
 #include <QString>
 #include <QApplication>
 #include <QTranslator>
 #include <QLocale>
 #include <QFile>
+#include <QDir>
 #include <QtDebug>
 
 QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName)
@@ -27,5 +29,17 @@ QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName)
 	qApp->installTranslator (transl);
 
 	return transl;
+}
+
+void LeechCraft::Util::CreateIfNotExists (const QString& path)
+{
+	QDir home = QDir::home ();
+	home.cd (".leechcraft");
+	if (home.exists (path) && !home.cd (path))
+			throw std::runtime_error (qPrintable (QObject::tr ("Could not cd into %1")
+						.arg (QDir::toNativeSeparators (home.filePath (path)))));
+	else if (!home.mkpath (path))
+		throw std::runtime_error (qPrintable (QObject::tr ("Could not create %1")
+					.arg (QDir::toNativeSeparators (home.filePath (path)))));
 }
 

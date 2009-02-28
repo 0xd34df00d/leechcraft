@@ -38,7 +38,27 @@ namespace LeechCraft
 			}
 		};
 
-		LEECHCRAFT_API QTranslator* InstallTranslator (const QString&);
+		/** @brief Loads and installs a translator.
+		 *
+		 * Attempts to load from resources (:/) and install a translator
+		 * for the current locale. The name is formed like this:
+		 * ':/leechcraft_' + base + '_' + locale
+		 *
+		 * @param[in] base Base name of the translation file.
+		 */
+		LEECHCRAFT_API QTranslator* InstallTranslator (const QString& base);
+
+		/** @brief Creates a path if it isn't existing.
+		 *
+		 * Creates a relative path ~/.leechcraft/path and throws an
+		 * exception if this could not be done or if such path already
+		 * exists and it is not readable.
+		 *
+		 * @param[in] path The path to create.
+		 * @exception std::runtime_error Throws if the path could not be
+		 * created.
+		 */
+		LEECHCRAFT_API void CreateIfNotExists (const QString& path);
 	};
 };
 
