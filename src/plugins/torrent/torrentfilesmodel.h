@@ -1,6 +1,7 @@
 #ifndef TORRENTFILESMODEL_H
 #define TORRENTFILESMODEL_H
 #include <QAbstractItemModel>
+#include <boost/unordered_map.hpp>
 #include <libtorrent/torrent_info.hpp>
 #include "fileinfo.h"
 
@@ -12,14 +13,29 @@ namespace LeechCraft
 	};
 };
 
+typedef boost::unordered_map<boost::filesystem::path, LeechCraft::Util::TreeItem*> Path2TreeItem_t;
+
+namespace boost
+{
+	template<>
+	struct hash<boost::filesystem::path> : public std::unary_function<boost::filesystem::path, size_t>
+	{
+		hash<std::string> h;
+
+		size_t operator() (boost::filesystem::path const& p) const
+		{
+			return h (p.string ());
+		}
+	};
+};
+
 class TorrentFilesModel : public QAbstractItemModel
 {
     Q_OBJECT
 
     LeechCraft::Util::TreeItem *RootItem_;
     bool AdditionDialog_;
-    typedef boost::filesystem::path path_t;
-    QMap<path_t, LeechCraft::Util::TreeItem*> Path2TreeItem_;
+	Path2TreeItem_t Path2TreeItem_;
     int FilesInTorrent_;
     enum
 	{

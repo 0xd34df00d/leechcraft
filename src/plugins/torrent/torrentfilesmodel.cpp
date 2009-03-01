@@ -1,8 +1,9 @@
+#include "torrentfilesmodel.h"
+#include <iterator>
+#include <boost/functional/hash.hpp>
 #include <QtDebug>
 #include <plugininterface/treeitem.h>
 #include <plugininterface/proxy.h>
-#include <iterator>
-#include "torrentfilesmodel.h"
 #include "core.h"
 
 using LeechCraft::Util::TreeItem;
@@ -172,7 +173,7 @@ void TorrentFilesModel::ResetFiles (libtorrent::torrent_info::file_iterator begi
     Path2TreeItem_ [boost::filesystem::path ()] = RootItem_;
     for (; begin != end; ++begin)
     {
-        path_t parentPath = begin->path.branch_path ();
+		Path2TreeItem_t::key_type parentPath = begin->path.branch_path ();
         MkParentIfDoesntExist (begin->path);
 
         QList<QVariant> displayData;
@@ -200,7 +201,7 @@ void TorrentFilesModel::ResetFiles (const QList<FileInfo>& infos)
     for (int i = 0; i < infos.size (); ++i)
     {
         FileInfo fi = infos.at (i);
-        path_t parentPath = fi.Path_.branch_path ();
+		Path2TreeItem_t::key_type parentPath = fi.Path_.branch_path ();
         MkParentIfDoesntExist (fi.Path_);
 
         QList<QVariant> displayData;
@@ -222,7 +223,7 @@ void TorrentFilesModel::ResetFiles (const QList<FileInfo>& infos)
 
 void TorrentFilesModel::UpdateFiles (const QList<FileInfo>& infos)
 {
-    if (Path2TreeItem_.isEmpty () || Path2TreeItem_.size () == 1)
+    if (Path2TreeItem_.empty () || Path2TreeItem_.size () == 1)
     {
         ResetFiles (infos);
         return;
@@ -231,7 +232,7 @@ void TorrentFilesModel::UpdateFiles (const QList<FileInfo>& infos)
     for (int i = 0; i < infos.size (); ++i)
     {
         FileInfo fi = infos.at (i);
-		if (!Path2TreeItem_.contains (fi.Path_))
+		if (!Path2TreeItem_.count (fi.Path_))
 		{
 			Path2TreeItem_.clear ();
 			ResetFiles (infos);
@@ -246,10 +247,11 @@ void TorrentFilesModel::UpdateFiles (const QList<FileInfo>& infos)
 QVector<bool> TorrentFilesModel::GetSelectedFiles () const
 {
     QVector<bool> result (FilesInTorrent_);
-    QList<TreeItem*> items = Path2TreeItem_.values ();
-    for (int i = 0, f = 0; i < items.size (); ++i)
-        if (!items.at (i)->ChildCount ())
-            result [f++] = (items.at (i)->Data (0, Qt::CheckStateRole).toInt () == Qt::Checked);
+	int f = 0;
+	for (Path2TreeItem_t::const_iterator i = Path2TreeItem_.begin (),
+			end = Path2TreeItem_.end (); i != end; ++i)
+		if (!i->second->ChildCount ())
+			result [f++] = (i->second->Data (0, Qt::CheckStateRole).toInt () == Qt::Checked);
     return result;
 }
 
@@ -258,10 +260,10 @@ void TorrentFilesModel::MarkAll ()
     if (!RootItem_->ChildCount ())
         return;
 
-    QList<TreeItem*> items = Path2TreeItem_.values ();
-    for (int i = 0; i < items.size (); ++i)
-        if (!items.at (i)->ChildCount ())
-            items.at (i)->ModifyData (0, Qt::Checked, Qt::CheckStateRole);
+	for (Path2TreeItem_t::const_iterator i = Path2TreeItem_.begin (),
+			end = Path2TreeItem_.end (); i != end; ++i)
+		if (!i->second->ChildCount ())
+            i->second->ModifyData (0, Qt::Checked, Qt::CheckStateRole);
     emit dataChanged (index (0, 0), index (RootItem_->ChildCount () - 1, 1));
 }
 
@@ -270,10 +272,10 @@ void TorrentFilesModel::UnmarkAll ()
     if (!RootItem_->ChildCount ())
         return;
 
-    QList<TreeItem*> items = Path2TreeItem_.values ();
-    for (int i = 0; i < items.size (); ++i)
-        if (!items.at (i)->ChildCount ())
-            items.at (i)->ModifyData (0, Qt::Unchecked, Qt::CheckStateRole);
+	for (Path2TreeItem_t::const_iterator i = Path2TreeItem_.begin (),
+			end = Path2TreeItem_.end (); i != end; ++i)
+		if (!i->second->ChildCount ())
+            i->second->ModifyData (0, Qt::Unchecked, Qt::CheckStateRole);
     emit dataChanged (index (0, 0), index (RootItem_->ChildCount () - 1, 1));
 }
 
@@ -301,8 +303,8 @@ void TorrentFilesModel::UnmarkIndexes (const QList<QModelIndex>& indexes)
 
 void TorrentFilesModel::MkParentIfDoesntExist (const boost::filesystem::path& path)
 {
-    path_t parentPath = path.branch_path ();
-    if (Path2TreeItem_.contains (parentPath))
+	Path2TreeItem_t::key_type parentPath = path.branch_path ();
+    if (Path2TreeItem_.count (parentPath))
         return;
 
     MkParentIfDoesntExist (parentPath);
