@@ -39,12 +39,12 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	QAction *back = Ui_.WebView_->pageAction (QWebPage::Back);
 	back->setParent (this);
 	back->setProperty ("ActionIcon", "poshuku_back");
-	back->setShortcut (Qt::CTRL + Qt::Key_Left);
+	back->setShortcut (Qt::ALT + Qt::Key_Left);
 
 	QAction *forward = Ui_.WebView_->pageAction (QWebPage::Forward);
 	forward->setParent (this);
 	forward->setProperty ("ActionIcon", "poshuku_forward");
-	forward->setShortcut (Qt::CTRL + Qt::Key_Right);
+	forward->setShortcut (Qt::ALT + Qt::Key_Right);
 
 	QAction *reload = Ui_.WebView_->pageAction (QWebPage::Reload);
 	reload->setParent (this);
