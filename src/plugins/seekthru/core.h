@@ -7,9 +7,12 @@ struct UrlDescription
 {
 	QString Template_;
 	QString Type_;
-	int IndexOffset_;
-	int PageOffset_;
+	qint32 IndexOffset_;
+	qint32 PageOffset_;
 };
+
+QDataStream& operator<< (QDataStream&, const UrlDescription&);
+QDataStream& operator>> (QDataStream&, UrlDescription&);
 
 struct QueryDescription
 {
@@ -25,15 +28,18 @@ struct QueryDescription
 
 	Role Role_;
 	QString Title_;
-	int TotalResults_;
+	qint32 TotalResults_;
 	QString SearchTerms_;
-	int Count_;
-	int StartIndex_;
-	int StartPage_;
+	qint32 Count_;
+	qint32 StartIndex_;
+	qint32 StartPage_;
 	QString Language_;
 	QString InputEncoding_;
 	QString OutputEncoding_;
 };
+
+QDataStream& operator<< (QDataStream&, const QueryDescription&);
+QDataStream& operator>> (QDataStream&, QueryDescription&);
 
 struct Description
 {
@@ -60,6 +66,9 @@ struct Description
 	QStringList InputEncodings_;
 	QStringList OutputEncodings_;
 };
+
+QDataStream& operator<< (QDataStream&, const Description&);
+QDataStream& operator>> (QDataStream&, Description&);
 
 class Core : public QObject
 {

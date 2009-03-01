@@ -1,7 +1,9 @@
 #include "seekthru.h"
+#include "core.h"
 
 void SeekThru::Init ()
 {
+	Core::Instance ();
 }
 
 void SeekThru::Release ()
