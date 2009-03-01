@@ -13,21 +13,31 @@ namespace LeechCraft
 	};
 };
 
-typedef boost::unordered_map<boost::filesystem::path, LeechCraft::Util::TreeItem*> Path2TreeItem_t;
-
-namespace boost
+struct Hash : public std::unary_function<boost::filesystem::path, size_t>
 {
-	template<>
-	struct hash<boost::filesystem::path> : public std::unary_function<boost::filesystem::path, size_t>
-	{
-		hash<std::string> h;
+	boost::hash<std::string> H_;
 
-		size_t operator() (boost::filesystem::path const& p) const
-		{
-			return h (p.string ());
-		}
-	};
+	size_t operator() (const boost::filesystem::path& p) const
+	{
+		return H_ (p.string ());
+	}
 };
+
+struct MyEqual : public std::binary_function<boost::filesystem::path,
+	boost::filesystem::path,
+	bool>
+{
+	bool operator() (const boost::filesystem::path& p1,
+			const boost::filesystem::path& p2) const
+	{
+		return p1.string () == p2.string ();
+	}
+};
+
+typedef boost::unordered_map<boost::filesystem::path,
+		LeechCraft::Util::TreeItem*,
+		Hash,
+		MyEqual> Path2TreeItem_t;
 
 class TorrentFilesModel : public QAbstractItemModel
 {
