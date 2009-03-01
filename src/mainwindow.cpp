@@ -55,6 +55,10 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 
 	FilterTimer_->setSingleShot (true);
 	FilterTimer_->setInterval (800);
+	connect (FilterTimer_,
+			SIGNAL (timeout ()),
+			this,
+			SLOT (feedFilterParameters ()));
 
 	Core::Instance ().SetReallyMainWindow (this);
 	Core::Instance ().DelayedInit ();
@@ -171,6 +175,10 @@ void LeechCraft::MainWindow::InitializeInterface ()
 			SIGNAL (textEdited (const QString&)),
 			this,
 			SLOT (filterParametersChanged ()));
+	connect (Ui_.FilterLine_,
+			SIGNAL (returnPressed ()),
+			this,
+			SLOT (filterReturnPressed ()));
 
 	SetTrayIcon ();
 
@@ -458,6 +466,18 @@ void LeechCraft::MainWindow::handleDownloadFinished (const QString& string)
 }
 
 void LeechCraft::MainWindow::filterParametersChanged ()
+{
+	FilterTimer_->stop ();
+	FilterTimer_->start ();
+}
+
+void LeechCraft::MainWindow::filterReturnPressed ()
+{
+	FilterTimer_->stop ();
+	feedFilterParameters ();
+}
+
+void LeechCraft::MainWindow::feedFilterParameters ()
 {
 	Core::Instance ().UpdateFiltering (Ui_.FilterLine_->text ());
 }

@@ -78,6 +78,8 @@ namespace LeechCraft
 		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
 		void handleDownloadFinished (const QString&);
 		void filterParametersChanged ();
+		void filterReturnPressed ();
+		void feedFilterParameters ();
 		void updateIconSet ();
 		void on_ActionPluginManager__triggered ();
 		void activated (const QModelIndex&);
