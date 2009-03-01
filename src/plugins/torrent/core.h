@@ -181,7 +181,6 @@ public:
     int GetTorrentUploadRate () const;
     double GetTorrentDesiredRating () const;
     void SetFilePriority (int, int);
-    int GetFilePriority (int) const;
     QStringList GetTrackers () const;
     QStringList GetTrackers (int) const;
     void SetTrackers (const QStringList&);

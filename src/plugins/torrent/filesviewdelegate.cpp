@@ -15,7 +15,8 @@ FilesViewDelegate::~FilesViewDelegate ()
 {
 }
 
-QWidget* FilesViewDelegate::createEditor (QWidget *parent, const QStyleOptionViewItem& option, const QModelIndex& index) const
+QWidget* FilesViewDelegate::createEditor (QWidget *parent,
+		const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
     if (index.column () == 2)
     {
@@ -27,7 +28,8 @@ QWidget* FilesViewDelegate::createEditor (QWidget *parent, const QStyleOptionVie
         return QItemDelegate::createEditor (parent, option, index);
 }
 
-void FilesViewDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+void FilesViewDelegate::paint (QPainter *painter,
+		const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
     QItemDelegate::paint (painter, option, index);
 }
@@ -35,12 +37,15 @@ void FilesViewDelegate::paint (QPainter *painter, const QStyleOptionViewItem& op
 void FilesViewDelegate::setEditorData (QWidget *editor, const QModelIndex& index) const
 {
     if (index.column () == 2)
-        qobject_cast<QSpinBox*> (editor)->setValue (static_cast<TreeItem*> (index.internalPointer ())->Data (2).toInt ());
+        qobject_cast<QSpinBox*> (editor)->
+			setValue (static_cast<TreeItem*> (index.internalPointer ())->
+					Data (2).toInt ());
     else
         QItemDelegate::setEditorData (editor, index);
 }
 
-void FilesViewDelegate::setModelData (QWidget *editor, QAbstractItemModel *model, const QModelIndex& index) const
+void FilesViewDelegate::setModelData (QWidget *editor, QAbstractItemModel *model,
+		const QModelIndex& index) const
 {
     if (index.column () == 2)
     {

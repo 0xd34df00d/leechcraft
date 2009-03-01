@@ -49,7 +49,8 @@ class TorrentFilesModel : public QAbstractItemModel
     int FilesInTorrent_;
     enum
 	{
-		RawDataRole = 46
+		RawDataRole = 46,
+		RolePath
 	};
 public:
     TorrentFilesModel (bool, QObject *parent = 0);

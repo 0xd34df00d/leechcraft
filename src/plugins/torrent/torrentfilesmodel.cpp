@@ -139,8 +139,9 @@ bool TorrentFilesModel::setData (const QModelIndex& index, const QVariant& value
     }
     else if (role == Qt::EditRole && index.column () == 2)
     {
-		Core::Instance ()->SetFilePriority (index.row (), value.toInt ());
-        static_cast<TreeItem*> (index.internalPointer ())->ModifyData (index.column (), value);
+		TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
+		Core::Instance ()->SetFilePriority (item->Data (1, RolePath).toInt (), value.toInt ());
+        item->ModifyData (index.column (), value);
         emit dataChanged (index, index);
         return true;
     }
@@ -165,6 +166,7 @@ void TorrentFilesModel::ResetFiles (libtorrent::torrent_info::file_iterator begi
 		const libtorrent::torrent_info::file_iterator& end)
 {
     Clear ();
+	libtorrent::torrent_info::file_iterator orig = begin;
     beginInsertRows (QModelIndex (), 0, 0);
     int distance = std::distance (begin, end);
     if (!distance)
@@ -183,6 +185,7 @@ void TorrentFilesModel::ResetFiles (libtorrent::torrent_info::file_iterator begi
         TreeItem *parentItem = Path2TreeItem_ [parentPath],
                  *item = new TreeItem (displayData, parentItem);
         item->ModifyData (1, static_cast<qulonglong> (begin->size), RawDataRole);
+		item->ModifyData (1, static_cast<int> (std::distance (orig, begin)), RolePath);
         item->ModifyData (0, Qt::Checked, Qt::CheckStateRole);
         parentItem->AppendChild (item);
         Path2TreeItem_ [begin->path] = item;
@@ -213,6 +216,7 @@ void TorrentFilesModel::ResetFiles (const QList<FileInfo>& infos)
         TreeItem *parentItem = Path2TreeItem_ [parentPath],
                  *item = new TreeItem (displayData, parentItem);
         item->ModifyData (1, static_cast<qulonglong> (fi.Size_), RawDataRole);
+		item->ModifyData (1, i, RolePath);
         parentItem->AppendChild (item);
         Path2TreeItem_ [fi.Path_] = item;
     }

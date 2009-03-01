@@ -905,14 +905,6 @@ void Core::SetFilePriority (int file, int priority)
     }
 }
 
-int Core::GetFilePriority (int file) const
-{
-    if (!CheckValidity (CurrentTorrent_))
-        return -1;
-
-    return Handles_.at (CurrentTorrent_).FilePriorities_ [file];
-}
-
 QStringList Core::GetTrackers () const
 {
     if (!CheckValidity (CurrentTorrent_))
