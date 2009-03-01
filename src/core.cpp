@@ -142,6 +142,7 @@ void LeechCraft::Core::Release ()
 {
 	saveCookies ();
 	XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");
+	RequestNormalizer_.reset ();
 	MergeModel_.reset ();
 	HistoryMergeModel_.reset ();
 

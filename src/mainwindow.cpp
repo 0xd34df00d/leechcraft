@@ -27,6 +27,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 : QMainWindow (parent, flags)
 , IsShown_ (true)
 , WasMaximized_ (false)
+, FilterTimer_ (new QTimer (this))
 {
 	setUpdatesEnabled (false);
 	SplashScreen_ = new QSplashScreen (QPixmap (":/resources/images/splashscreen.png"),
@@ -51,6 +52,9 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			SIGNAL (log (const QString&)),
 			LogToolBox_,
 			SLOT (log (const QString&)));
+
+	FilterTimer_->setSingleShot (true);
+	FilterTimer_->setInterval (800);
 
 	Core::Instance ().SetReallyMainWindow (this);
 	Core::Instance ().DelayedInit ();
@@ -303,8 +307,6 @@ void LeechCraft::MainWindow::on_ActionQuit__triggered ()
 		return;
 
 	setUpdatesEnabled (false);
-	Ui_.FilterLine_->setText ("");
-	filterParametersChanged ();
 	WriteSettings ();
 	Core::Instance ().Release ();
 

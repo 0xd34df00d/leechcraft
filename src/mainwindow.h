@@ -49,6 +49,7 @@ namespace LeechCraft
 		QSplashScreen *SplashScreen_;
 		bool IsShown_;
 		bool WasMaximized_;
+		QTimer *FilterTimer_;
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
 		virtual ~MainWindow ();
