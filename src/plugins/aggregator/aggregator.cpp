@@ -111,7 +111,7 @@ void Aggregator::Init ()
 	Core::Instance ().DoDelayedInit ();
 	Core::Instance ().GetJobHolderRepresentation ()->setParent (this);
 
-	Impl_->AdditionalInfo_ = new ItemsWidget (this);
+	Impl_->AdditionalInfo_ = new ItemsWidget ();
 	Impl_->AdditionalInfo_->HideInfoPanel ();
 	Impl_->Ui_.setupUi (this);
 
@@ -317,7 +317,7 @@ void Aggregator::keyPressEvent (QKeyEvent *e)
 
 QToolBar* Aggregator::SetupMenuBar ()
 {
-	QToolBar *bar = new QToolBar (this);
+	QToolBar *bar = new QToolBar ();
 
 	bar->addAction (Impl_->ActionAddFeed_);
 	bar->addAction (Impl_->ActionRemoveFeed_);
