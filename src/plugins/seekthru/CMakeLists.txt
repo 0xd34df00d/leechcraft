@@ -8,10 +8,12 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	seekthru.cpp
 	core.cpp
+	description.cpp
 	)
 SET (HEADERS
 	seekthru.h
 	core.h
+	description.h
 	)
 SET (TRANSLATIONS
 	leechcraft_seekthru_ru_RU.ts
