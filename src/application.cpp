@@ -8,6 +8,7 @@
 #include <QLocalServer>
 #include <QLocalSocket>
 #include <QDir>
+#include <QIcon>
 #include <QMessageBox>
 #include <QMetaType>
 #include <QModelIndex>
@@ -81,6 +82,8 @@ Application::Application (int& argc, char **argv)
 			tr ("GB"));
 
 	ParseCommandLine ();
+
+	setWindowIcon (QIcon (":/resources/images/mainapp.png"));
 	
 	// Say hello to logs
     qDebug () << "======APPLICATION STARTUP======";
