@@ -2,6 +2,7 @@
 #define BROWSERWIDGET_H
 #include <QWidget>
 #include <interfaces/iwebbrowser.h>
+#include <interfaces/structures.h>
 #include "ui_browserwidget.h"
 
 class BrowserWidget : public QWidget
@@ -57,7 +58,7 @@ signals:
 	void needToClose ();
 	void addToFavorites (const QString&, const QString&);
 	void statusBarChanged (const QString&);
-	void gotEntity (const QByteArray&);
+	void gotEntity (const LeechCraft::DownloadEntity&);
 };
 
 #endif

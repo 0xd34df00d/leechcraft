@@ -188,21 +188,6 @@ void Core::DoDelayedInit ()
 void Core::SetProvider (QObject *provider, const QString& feature)
 {
 	Providers_ [feature] = provider;
-	if (feature == "http")
-	{
-		connect (provider,
-				SIGNAL (jobFinished (int)),
-				this,
-				SLOT (handleJobFinished (int)));
-		connect (provider,
-				SIGNAL (jobRemoved (int)),
-				this,
-				SLOT (handleJobRemoved (int)));
-		connect (provider,
-				SIGNAL (jobError (int, IDownload::Error)),
-				this,
-				SLOT (handleJobError (int, IDownload::Error)));
-	}
 }
 
 void Core::AddFeed (const QString& url, const QStringList& tags)
@@ -217,19 +202,6 @@ void Core::AddFeed (const QString& url, const QStringList& tags)
 		return;
 	}
 
-	QObject *provider = Providers_ ["http"];
-	IDownload *iid = qobject_cast<IDownload*> (provider);
-	if (!provider || !iid)
-	{
-		emit error (tr ("Strange, but no suitable provider found"));
-		return;
-	}
-	if (!iid->CouldDownload (url.toUtf8 (), LeechCraft::Autostart))
-	{
-		emit error (tr ("Could not handle URL %1").arg (url));
-		return;
-	}
-
 	QString name;
 	{
 		QTemporaryFile file;
@@ -238,10 +210,16 @@ void Core::AddFeed (const QString& url, const QStringList& tags)
 		file.close ();
 		file.remove ();
 	}
-	LeechCraft::DownloadParams params =
+
+	LeechCraft::DownloadEntity e =
 	{
 		url.toUtf8 (),
-		name
+		name,
+		QString (),
+		LeechCraft::Internal |
+			LeechCraft::DoNotNotifyUser |
+			LeechCraft::DoNotSaveInHistory |
+			LeechCraft::NotPersistent
 	};
 	PendingJob pj =
 	{
@@ -250,12 +228,18 @@ void Core::AddFeed (const QString& url, const QStringList& tags)
 		name,
 		tags
 	};
-	int id = iid->AddJob (params,
-			LeechCraft::Internal |
-			LeechCraft::Autostart |
-			LeechCraft::DoNotNotifyUser |
-			LeechCraft::DoNotSaveInHistory |
-			LeechCraft::NotPersistent);
+
+	int id = -1;
+	QObject *pr;
+	emit delegateEntity (e, &id, &pr);
+	if (id == -1)
+	{
+		emit error (tr ("Job for feed %1 wasn't delegated.")
+				.arg (url));
+		return;
+	}
+
+	HandleProvider (pr);
 	PendingJobs_ [id] = pj;
 }
 
@@ -435,20 +419,7 @@ void Core::UpdateFeed (const QModelIndex& index)
 		qWarning () << Q_FUNC_INFO << "could not found feed for index" << index;
 		return;
 	}
-
-	QObject *provider = Providers_ ["http"];
-	IDownload *isd = qobject_cast<IDownload*> (provider);
-	if (!provider || !isd)
-	{
-		emit error (tr ("Strange, but no suitable provider found"));
-		return;
-	}
-	if (!isd->CouldDownload (url.toUtf8 (), LeechCraft::Autostart))
-	{
-		emit error (tr ("Could not handle URL %1").arg (url));
-		return;
-	}
-	UpdateFeed (url, isd);
+	UpdateFeed (url);
 }
 
 QModelIndex Core::GetUnreadChannelIndex () const
@@ -985,31 +956,16 @@ void Core::handleJobError (int id, IDownload::Error ie)
 
 void Core::updateFeeds ()
 {
-	QObject *provider = Providers_ ["http"];
-	IDownload *isd = qobject_cast<IDownload*> (provider);
-	if (!provider || !isd)
-	{
-		if (!XmlSettingsManager::Instance ()->property ("BeSilent").toBool ())
-			emit error (tr ("Strange, but no suitable provider found"));
-		return;
-	}
 	feeds_urls_t urls;
 	StorageBackend_->GetFeedsURLs (urls);
 	for (feeds_urls_t::const_iterator i = urls.begin (),
 			end = urls.end (); i != end; ++i)
 	{
-		if (!isd->CouldDownload (i->toUtf8 (), LeechCraft::Autostart))
-		{
-			if (!XmlSettingsManager::Instance ()->property ("BeSilent").toBool ())
-				emit error (tr ("Could not handle URL %1").arg (*i));
-			continue;
-		}
-
 		// It's handled by custom timer.
 		if (StorageBackend_->GetFeedSettings (*i).UpdateTimeout_)
 			continue;
 
-		UpdateFeed (*i, isd);
+		UpdateFeed (*i);
 	}
 	XmlSettingsManager::Instance ()->setProperty ("LastUpdateDateTime", QDateTime::currentDateTime ());
 	UpdateTimer_->start (XmlSettingsManager::Instance ()->property ("UpdateInterval").toInt () * 60 * 1000);
@@ -1017,26 +973,17 @@ void Core::updateFeeds ()
 
 void Core::fetchExternalFile (const QString& url, const QString& where)
 {
-	QObject *provider = Providers_ ["http"];
-	IDownload *isd = qobject_cast<IDownload*> (provider);
-	if (!provider || !isd)
-	{
-		if (!XmlSettingsManager::Instance ()->property ("BeSilent").toBool ())
-			emit error (tr ("Strange, but no suitable provider found"));
-		throw std::runtime_error ("no suitable provider");
-	}
-	if (!isd->CouldDownload (url.toUtf8 (), LeechCraft::Autostart))
-	{
-		if (!XmlSettingsManager::Instance ()->property ("BeSilent").toBool ())
-			emit error (tr ("Could not handle URL %1").arg (url));
-		throw std::runtime_error ("could not handle URL");
-	}
-
-	LeechCraft::DownloadParams params =
+	LeechCraft::DownloadEntity e =
 	{
 		url.toUtf8 (),
-		where
+		where,
+		QString (),
+		LeechCraft::Internal |
+			LeechCraft::DoNotNotifyUser |
+			LeechCraft::DoNotSaveInHistory |
+			LeechCraft::NotPersistent
 	};
+
 	PendingJob pj =
 	{
 		PendingJob::RFeedExternalData,
@@ -1044,12 +991,18 @@ void Core::fetchExternalFile (const QString& url, const QString& where)
 		where,
 		QStringList ()
 	};
-	int id = isd->AddJob (params,
-			LeechCraft::Internal |
-			LeechCraft::Autostart |
-			LeechCraft::DoNotNotifyUser |
-			LeechCraft::DoNotSaveInHistory |
-			LeechCraft::NotPersistent);
+
+	int id = -1;
+	QObject *pr;
+	emit delegateEntity (e, &id, &pr);
+	if (id == -1)
+	{
+		if (!XmlSettingsManager::Instance ()->property ("BeSilent").toBool ())
+			emit error (tr ("External file %1 wasn't delegated.").arg (url));
+		return;
+	}
+
+	HandleProvider (pr);
 	PendingJobs_ [id] = pj;
 }
 
@@ -1154,27 +1107,12 @@ void Core::handleSslError (QNetworkReply *reply)
 
 void Core::handleCustomUpdates ()
 {
-	QObject *provider = Providers_ ["http"];
-	IDownload *isd = qobject_cast<IDownload*> (provider);
-	if (!provider || !isd)
-	{
-		if (!XmlSettingsManager::Instance ()->property ("BeSilent").toBool ())
-			emit error (tr ("Strange, but no suitable provider found"));
-		return;
-	}
 	feeds_urls_t urls;
 	StorageBackend_->GetFeedsURLs (urls);
 	QDateTime current = QDateTime::currentDateTime ();
 	for (feeds_urls_t::const_iterator i = urls.begin (),
 			end = urls.end (); i != end; ++i)
 	{
-		if (!isd->CouldDownload (i->toUtf8 (), LeechCraft::Autostart))
-		{
-			if (!XmlSettingsManager::Instance ()->property ("BeSilent").toBool ())
-				emit error (tr ("Could not handle URL %1").arg (*i));
-			continue;
-		}
-
 		int ut = StorageBackend_->GetFeedSettings (*i).UpdateTimeout_;
 		// It's handled by normal timer.
 		if (!ut)
@@ -1183,7 +1121,7 @@ void Core::handleCustomUpdates ()
 		if (!Updates_.contains (*i) ||
 				(Updates_ [*i].isValid () &&
 				 Updates_ [*i].secsTo (current) / 60 > ut))
-			UpdateFeed (*i, isd);
+			UpdateFeed (*i);
 	}
 }
 
@@ -1443,7 +1381,7 @@ void Core::MarkChannel (const QModelIndex& i, bool state)
 	StorageBackend_->ToggleChannelUnread (cs.ParentURL_, cs.Title_, state);
 }
 
-void Core::UpdateFeed (const QString& url, IDownload *isd)
+void Core::UpdateFeed (const QString& url)
 {
 	QString filename;
 	{
@@ -1453,11 +1391,18 @@ void Core::UpdateFeed (const QString& url, IDownload *isd)
 		file.close ();
 		file.remove ();
 	}
-	LeechCraft::DownloadParams params =
+
+	LeechCraft::DownloadEntity e =
 	{
 		url.toUtf8 (),
-		filename
+		filename,
+		QString (),
+		LeechCraft::Internal |
+			LeechCraft::DoNotNotifyUser |
+			LeechCraft::DoNotSaveInHistory |
+			LeechCraft::NotPersistent
 	};
+
 	PendingJob pj =
 	{
 		PendingJob::RFeedUpdated,
@@ -1465,14 +1410,38 @@ void Core::UpdateFeed (const QString& url, IDownload *isd)
 		filename,
 		QStringList ()
 	};
-	int id = isd->AddJob (params,
-			LeechCraft::Internal |
-			LeechCraft::Autostart |
-			LeechCraft::DoNotNotifyUser |
-			LeechCraft::DoNotSaveInHistory |
-			LeechCraft::NotPersistent);
-	PendingJobs_ [id] = pj;
 
+	int id = -1;
+	QObject *pr;
+	emit delegateEntity (e, &id, &pr);
+	if (id == -1)
+	{
+		qWarning () << Q_FUNC_INFO << url << "wasn't deleagated";
+		return;
+	}
+
+	HandleProvider (pr);
+	PendingJobs_ [id] = pj;
 	Updates_ [url] = QDateTime::currentDateTime ();
+}
+
+void Core::HandleProvider (QObject *provider)
+{
+	if (Downloaders_.contains (provider))
+		return;
+	
+	Downloaders_ << provider;
+	connect (provider,
+			SIGNAL (jobFinished (int)),
+			this,
+			SLOT (handleJobFinished (int)));
+	connect (provider,
+			SIGNAL (jobRemoved (int)),
+			this,
+			SLOT (handleJobRemoved (int)));
+	connect (provider,
+			SIGNAL (jobError (int, IDownload::Error)),
+			this,
+			SLOT (handleJobError (int, IDownload::Error)));
 }
 

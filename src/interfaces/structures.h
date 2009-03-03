@@ -5,23 +5,6 @@ class QMenu;
 
 namespace LeechCraft
 {
-	/** @brief Describes parameters of a download job.
-	 *
-	 * Describes where and what should be saved.
-	 *
-	 * @sa LeechCraft::TaskParameter
-	 */
-	struct DownloadParams
-	{
-		/** @brief What the user wants to download - this could be
-		 * anything from URL to Magnet hash to local torrent file.
-		 */
-		QByteArray Resource_;
-		/** @brief Where it wants the data to be saved.
-		 */
-		QString Location_;
-	};
-
 	/** @brief Describes single task parameter.
 	 */
 	enum TaskParameter
@@ -29,9 +12,9 @@ namespace LeechCraft
 		/** Use default parameters.
 		 */
 		NoParameters = 0,
-		/** Task should be started automatically after addition.
+		/** Task should not be started automatically after addition.
 		 */
-		Autostart = 1,
+		NoAutostart = 1,
 		/** Task should not be saved in history.
 		 */
 		DoNotSaveInHistory = 2,
@@ -48,10 +31,29 @@ namespace LeechCraft
 		/** Task should not be saved as it would have no meaning after
 		 * next start.
 		 */
-		NotPersistent = 128
+		NotPersistent = 128,
 	};
 
 	Q_DECLARE_FLAGS (TaskParameters, TaskParameter);
+
+	/** @brief Describes parameters of a download job.
+	 *
+	 * Describes where and what should be saved.
+	 *
+	 * @sa LeechCraft::TaskParameter
+	 */
+	struct DownloadEntity
+	{
+		/** @brief What the user wants to download - this could be
+		 * anything from URL to Magnet hash to local torrent file.
+		 */
+		QByteArray Entity_;
+		/** @brief Where it wants the data to be saved.
+		 */
+		QString Location_;
+		QString Mime_;
+		TaskParameters Parameters_;
+	};
 
 	enum CustomDataRoles
 	{
@@ -72,7 +74,11 @@ namespace LeechCraft
 		 * different results, possibly from two different models.
 		 * QByteArray is expected to be returned.
 		 */
-		RoleHash
+		RoleHash,
+		/** This should return MIME of an item if it's available,
+		 * otherwise an empty string should be returned.
+		 */
+		RoleMime
 	};
 };
 

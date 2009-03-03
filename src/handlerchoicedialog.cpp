@@ -45,6 +45,8 @@ void HandlerChoiceDialog::Add (const IInfo *ii, IEntityHandler *ih)
 IDownload* HandlerChoiceDialog::GetDownload ()
 {
 	IDownload *result = 0;
+	if (!Buttons_->checkedButton ())
+		return 0;
 	downloaders_t::iterator rit = Downloaders_.find (Buttons_->
 			checkedButton ()->text ());
 	if (rit != Downloaders_.end ())

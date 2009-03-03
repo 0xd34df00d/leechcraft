@@ -190,9 +190,9 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			this,
 			SLOT (handleStatusBarMessage (const QString&)));
 	connect (Ui_.WebView_,
-			SIGNAL (gotEntity (const QByteArray&)),
+			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
 			this,
-			SIGNAL (gotEntity (const QByteArray&)));
+			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
 	connect (Ui_.WebView_->page (),
 			SIGNAL (linkHovered (const QString&,
 					const QString&,

@@ -33,11 +33,6 @@
 				<label lang="ru" value="Следить за буфером обмена" />
 				<label lang="uk" value="Спостерігати за буфером обміну" />
 			</item>
-			<item type="checkbox" property="QueryPluginsToHandleFinished" state="on">
-				<label lang="en" value="Query plugins to handle finished downloads" />
-				<label lang="ru" value="Опрашивать плагины для обработки заданий при их завершении" />
-				<label lang="uk" value="Опитувати плагіни для обробки завдань після їх заваршення" />
-			</item>
 			<item type="checkbox" property="ConfirmQuit" default="true">
 				<label lang="en" value="Ask quit confirmation" />
 				<label lang="ru" value="Запрашивать подтверждение выхода" />

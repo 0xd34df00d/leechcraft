@@ -6,6 +6,7 @@
 #include <QUrl>
 #include <QTimer>
 #include <plugininterface/tagscompletionmodel.h>
+#include <interfaces/structures.h>
 #include "favoritesmodel.h"
 #include "historymodel.h"
 #include "storagebackend.h"
@@ -84,7 +85,7 @@ signals:
 	void raiseTab (QWidget*);
 	void error (const QString&) const;
 	void statusBarChanged (QWidget*, const QString&);
-	void gotEntity (const QByteArray&);
+	void gotEntity (const LeechCraft::DownloadEntity&);
 	void newUnclose (QAction*);
 };
 

@@ -1,9 +1,10 @@
 #ifndef REGEXPMATCHERMANAGER_H
 #define REGEXPMATCHERMANAGER_H
 #include <deque>
+#include <stdexcept>
 #include <QAbstractItemModel>
 #include <QStringList>
-#include <stdexcept>
+#include <interfaces/structures.h>
 #include "item.h"
 
 struct Item;
@@ -85,7 +86,7 @@ private:
 	void RestoreSettings ();
 	void ScheduleSave ();
 signals:
-	void gotLink (const QByteArray&) const;
+	void gotLink (const LeechCraft::DownloadEntity&) const;
 };
 
 #endif

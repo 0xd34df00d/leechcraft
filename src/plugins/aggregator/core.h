@@ -34,7 +34,7 @@ class Core : public QAbstractItemModel
 {
     Q_OBJECT
 
-    QMap<QString, QObject*> Providers_;
+	QMap<QString, QObject*> Providers_;
 
     enum Columns
     {
@@ -66,6 +66,7 @@ class Core : public QAbstractItemModel
     };
     QMap<int, PendingJob> PendingJobs_;
     QMap<QString, ExternalData> PendingJob2ExternalData_;
+	QList<QObject*> Downloaders_;
 
 	// First is ParentURL_ and second is Title_
 	QPair<QString, QString> CurrentChannelHash_;
@@ -179,12 +180,14 @@ private:
 			const channels_container_t&,
 			const PendingJob&);
 	void MarkChannel (const QModelIndex&, bool);
-	void UpdateFeed (const QString&, IDownload*);
+	void UpdateFeed (const QString&);
+	void HandleProvider (QObject*);
 signals:
     void error (const QString&) const;
     void showDownloadMessage (const QString&);
     void channelDataUpdated ();
     void unreadNumberChanged (int) const;
+	void delegateEntity (const LeechCraft::DownloadEntity&, int*, QObject**);
 };
 
 #endif

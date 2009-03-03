@@ -21,6 +21,7 @@
 #include <QXmlStreamWriter>
 #include <QMessageBox>
 #include <QUrl>
+#include <QTextCodec>
 #include <libtorrent/bencode.hpp>
 #include <libtorrent/entry.hpp>
 #include <libtorrent/create_torrent.hpp>
@@ -220,6 +221,42 @@ void Core::Release ()
     Session_->stop_dht ();
 	delete Session_;
 	Session_ = 0;
+}
+
+bool Core::CouldDownload (const LeechCraft::DownloadEntity& e) const
+{
+	QString str = QTextCodec::codecForName ("UTF-8")->toUnicode (e.Entity_);
+
+	if (str.startsWith ("magnet:"))
+	{
+		QUrl url (str);
+		QList<QPair<QString, QString> > queryItems = url.queryItems ();
+		for (QList<QPair<QString, QString> >::const_iterator i = queryItems.begin (),
+				end = queryItems.end (); i != end; ++i)
+			if (i->first == "xt" &&
+					i->second.startsWith ("urn:btih:"))
+				return true;
+		return false;
+	}
+	else
+	{
+		QFile file (str);
+		if (file.exists () &&
+				file.open (QIODevice::ReadOnly))
+		{
+			if (file.size () > XmlSettingsManager::Instance ()->
+					property ("MaxAutoTorrentSize").toInt () * 1024 * 1024)
+			{
+				emit logMessage (QString ("Rejecting file %1 because it's "
+							"bigger than current auto limit.").arg (str));
+				return false;
+			}
+			else
+				return IsValidTorrent (file.readAll ());
+		}
+		else
+			return IsValidTorrent (e.Entity_);
+	}
 }
 
 PiecesModel* Core::GetPiecesModel ()
@@ -587,7 +624,7 @@ int Core::AddMagnet (const QString& magnet,
 		libtorrent::add_torrent_params atp;
 		atp.auto_managed = true;
 		atp.storage_mode = libtorrent::storage_mode_allocate;
-		atp.paused = !(params & LeechCraft::Autostart);
+		atp.paused = (params & LeechCraft::NoAutostart);
 		atp.save_path = boost::filesystem::path (std::string (path.toUtf8 ().constData ()));
 
 		handle = libtorrent::add_magnet_uri (*Session_,
@@ -642,7 +679,7 @@ int Core::AddFile (const QString& filename,
 		atp.ti = new libtorrent::torrent_info (GetTorrentInfo (filename));
 		atp.auto_managed = true;
 		atp.storage_mode = libtorrent::storage_mode_allocate;
-		atp.paused = !(params & LeechCraft::Autostart);
+		atp.paused = (params & LeechCraft::NoAutostart);
 		atp.save_path = boost::filesystem::path (std::string (path.toUtf8 ().constData ()));
 		handle = Session_->add_torrent (atp);
     }
@@ -1219,10 +1256,10 @@ void Core::Export (const QString& filename, bool, bool) const
 			writer.writeEndElement ();
 
 			writer.writeStartElement ("parameters");
-				if (i->Parameters_ & LeechCraft::Autostart)
+				if (i->Parameters_ & LeechCraft::NoAutostart)
 				{
 					writer.writeStartElement ("parameter");
-					writer.writeCharacters ("autostart");
+					writer.writeCharacters ("noautostart");
 					writer.writeEndElement ();
 				}
 				if (i->Parameters_ & LeechCraft::DoNotSaveInHistory)
@@ -1503,7 +1540,7 @@ void Core::RestoreTorrents ()
 					resumed,
 					path,
 					automanaged,
-					taskParameters & LeechCraft::Autostart);
+					taskParameters & LeechCraft::NoAutostart);
         if (!handle.is_valid ())
             continue;
 
@@ -1554,7 +1591,7 @@ libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data,
 		const QByteArray& resumeData,
 		const boost::filesystem::path& path,
 		bool automanaged,
-		bool autostart)
+		bool pause)
 {
 	libtorrent::lazy_entry e;
 	libtorrent::entry resume;
@@ -1584,7 +1621,7 @@ libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data,
 		atp.storage_mode = libtorrent::storage_mode_allocate;
 		atp.save_path = path;
 		atp.auto_managed = automanaged;
-		atp.paused = !autostart;
+		atp.paused = pause;
 		atp.resume_data = new std::vector<char>;
 		std::copy (resumeData.constData (),
 				resumeData.constData () + resumeData.size (),
@@ -1618,7 +1655,11 @@ void Core::HandleSingleFinished (int i)
 
     for (libtorrent::torrent_info::file_iterator i = info.begin_files (),
 			end = info.end_files (); i != end; ++i)
-        emit fileFinished (QByteArray (i->path.string ().c_str ()));
+	{
+		LeechCraft::DownloadEntity e;
+		e.Entity_ = QByteArray (i->path.string ().c_str ());
+        emit fileFinished (e);
+	}
 
 	if (!(torrent.Parameters_ & LeechCraft::DoNotSaveInHistory))
 	{

@@ -153,9 +153,9 @@ BrowserWidget* Core::NewURL (const QString& url, bool raise)
 			this,
 			SLOT (handleStatusBarChanged (const QString&)));
 	connect (widget,
-			SIGNAL (gotEntity (const QByteArray&)),
+			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
 			this,
-			SIGNAL (gotEntity (const QByteArray&)));
+			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
 
 	widget->SetURL (QUrl (url));
 

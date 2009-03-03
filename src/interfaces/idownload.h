@@ -69,29 +69,24 @@ public:
 	 * Entity could be anything from file name to URL to all kinds of
 	 * hashes like Magnet links.
 	 *
-	 * @param[in] entity Entity.
-	 * @param[in] parameters Task parameters.
+	 * @param[in] entity A DownloadEntity structure.
 	 *
 	 * @sa AddJob
 	 * @sa LeechCraft::TaskParameters
 	 */
-    virtual bool CouldDownload (const QByteArray& entity,
-			LeechCraft::TaskParameters parameters) const = 0;
+    virtual bool CouldDownload (const LeechCraft::DownloadEntity& entity) const = 0;
 
 	/** @brief Adds the job with given parameters.
 	 *
 	 * Adds the job to the downloader and returns the ID of the newly
 	 * added job back to identify it.
 	 *
-	 * @param[in] params Download parameters.
-	 * @param[in] taskParams Task parameters.
 	 * @return ID of the job for the other plugins to use.
 	 *
 	 * @sa DownloadParams
 	 * @sa LeechCraft::TaskParameters
 	 */
-    virtual int AddJob (const LeechCraft::DownloadParams& params,
-			LeechCraft::TaskParameters taskParams) = 0;
+    virtual int AddJob (LeechCraft::DownloadEntity entity) = 0;
 
 	/** @brief Virtual destructor.
 	 */

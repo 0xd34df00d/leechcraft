@@ -82,8 +82,8 @@ public:
     qint64 GetUploadSpeed () const;
     void StartAll ();
     void StopAll ();
-	bool CouldDownload (const QByteArray&, LeechCraft::TaskParameters) const;
-	int AddJob (const LeechCraft::DownloadParams&, LeechCraft::TaskParameters);
+	bool CouldDownload (const LeechCraft::DownloadEntity&) const;
+	int AddJob (LeechCraft::DownloadEntity);
 
     // IJobHolder
     QAbstractItemModel* GetRepresentation () const;
@@ -150,7 +150,7 @@ private:
 	void SetupActions ();
 signals:
     void downloadFinished (const QString&);
-    void gotEntity (const QByteArray&);
+    void gotEntity (const LeechCraft::DownloadEntity&);
 	void jobFinished (int);
 	void jobRemoved (int);
 	void log (const QString&) const;

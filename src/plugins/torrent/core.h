@@ -122,6 +122,7 @@ public:
 	void SetWidgets (QWidget*, QWidget*);
     void DoDelayedInit ();
     void Release ();
+	bool CouldDownload (const LeechCraft::DownloadEntity&) const;
     PiecesModel* GetPiecesModel ();
     void ClearPieces ();
     void UpdatePieces ();
@@ -248,9 +249,9 @@ public slots:
 	void setScrapeInterval ();
 signals:
     void error (QString) const;
-    void logMessage (const QString&);
+    void logMessage (const QString&) const;
     void torrentFinished (const QString&);
-    void fileFinished (const QByteArray&);
+    void fileFinished (const LeechCraft::DownloadEntity&);
     void addToHistory (const QString&, const QString&, quint64,
 			const QDateTime&, const QStringList&);
 	void taskFinished (int);

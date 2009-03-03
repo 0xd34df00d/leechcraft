@@ -5,6 +5,7 @@
 #include <interfaces/iembedtab.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/structures.h>
 #include <QWidget>
 #include <QItemSelection>
 
@@ -13,6 +14,8 @@ class QTranslator;
 class QToolBar;
 class ItemBucket;
 class Enclosure;
+
+class IDownload;
 
 struct Aggregator_Impl;
 
@@ -69,7 +72,9 @@ private slots:
     void trayIconActivated ();
 signals:
     void downloadFinished (const QString&);
-	void gotEntity (const QByteArray&);
+	void gotEntity (const LeechCraft::DownloadEntity&);
+	void delegateEntity (const LeechCraft::DownloadEntity&,
+			int*, QObject**);
 	void bringToFront ();
 };
 

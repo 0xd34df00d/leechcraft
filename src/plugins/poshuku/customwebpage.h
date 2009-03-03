@@ -2,6 +2,7 @@
 #define CUSTOMWEBPAGE_H
 #include <QWebPage>
 #include <QUrl>
+#include <interfaces/structures.h>
 
 class CustomWebPage : public QWebPage
 {
@@ -27,7 +28,7 @@ protected:
 private:
 	QWebFrame* FindFrame (const QUrl&);
 signals:
-	void gotEntity (const QByteArray&);
+	void gotEntity (const LeechCraft::DownloadEntity&);
 	void loadingURL (const QUrl&);
 };
 

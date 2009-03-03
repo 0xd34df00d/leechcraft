@@ -81,7 +81,7 @@ signals:
 	void changeTabIcon (QWidget*, const QIcon&);
 	void statusBarChanged (QWidget*, const QString&);
 	void raiseTab (QWidget*);
-	void gotEntity (const QByteArray&);
+	void gotEntity (const LeechCraft::DownloadEntity&);
 };
 
 #endif

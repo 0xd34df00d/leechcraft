@@ -120,47 +120,15 @@ void TorrentPlugin::StopAll ()
         Core::Instance ()->PauseTorrent (i);
 }
 
-bool TorrentPlugin::CouldDownload (const QByteArray& data, LeechCraft::TaskParameters) const
+bool TorrentPlugin::CouldDownload (const LeechCraft::DownloadEntity& e) const
 {
-	QString str = QTextCodec::codecForName ("UTF-8")->toUnicode (data);
-
-	if (str.startsWith ("magnet:"))
-	{
-		QUrl url (str);
-		QList<QPair<QString, QString> > queryItems = url.queryItems ();
-		for (QList<QPair<QString, QString> >::const_iterator i = queryItems.begin (),
-				end = queryItems.end (); i != end; ++i)
-			if (i->first == "xt" &&
-					i->second.startsWith ("urn:btih:"))
-				return true;
-		return false;
-	}
-	else
-	{
-		QFile file (str);
-		if (file.exists () &&
-				file.open (QIODevice::ReadOnly))
-		{
-			if (file.size () > XmlSettingsManager::Instance ()->
-					property ("MaxAutoTorrentSize").toInt () * 1024 * 1024)
-			{
-				emit log (QString ("Rejecting file %1 because it's "
-							"bigger than current auto limit.").arg (str));
-				return false;
-			}
-			else
-				return Core::Instance ()->IsValidTorrent (file.readAll ());
-		}
-		else
-			return Core::Instance ()->IsValidTorrent (data);
-	}
+	return Core::Instance ()->CouldDownload (e);
 }
 
-int TorrentPlugin::AddJob (const LeechCraft::DownloadParams& dp,
-		LeechCraft::TaskParameters parameters)
+int TorrentPlugin::AddJob (LeechCraft::DownloadEntity e)
 {
 	QString resource = QTextCodec::codecForName ("UTF-8")->
-		toUnicode (dp.Resource_);
+		toUnicode (e.Entity_);
 
 	if (resource.startsWith ("magnet:"))
 	{
@@ -176,21 +144,21 @@ int TorrentPlugin::AddJob (const LeechCraft::DownloadParams& dp,
 				tags += i->second.split ('+', QString::SkipEmptyParts);
 
 		return Core::Instance ()->AddMagnet (resource,
-				dp.Location_,
+				e.Location_,
 				tags,
-				parameters);
+				e.Parameters_);
 	}
 
 	QString suggestedFname = resource;
 	QFile file (suggestedFname);
     if ((!file.exists () ||
 			!file.open (QIODevice::ReadOnly)) &&
-			Core::Instance ()->IsValidTorrent (dp.Resource_))
+			Core::Instance ()->IsValidTorrent (e.Entity_))
 	{
 		QTemporaryFile file ("lctemporarybittorrentfile.XXXXXX");
 		if (!file.open  ())
 			return -1;
-		file.write (dp.Resource_);
+		file.write (e.Entity_);
 		suggestedFname = file.fileName ().toUtf8 ();
 		file.setAutoRemove (false);
 	}
@@ -202,7 +170,7 @@ int TorrentPlugin::AddJob (const LeechCraft::DownloadParams& dp,
 	QStringList tags;
 	QVector<bool> files;
 	QString fname;
-	if (parameters & LeechCraft::FromUserInitiated)
+	if (e.Parameters_ & LeechCraft::FromUserInitiated)
 	{
 		if (AddTorrentDialog_->exec () == QDialog::Rejected)
 			return -1;
@@ -212,14 +180,14 @@ int TorrentPlugin::AddJob (const LeechCraft::DownloadParams& dp,
 		files = AddTorrentDialog_->GetSelectedFiles ();
 		tags = AddTorrentDialog_->GetTags ();
 		if (AddTorrentDialog_->GetAddType () == Core::Started)
-			parameters |= LeechCraft::Autostart;
+			e.Parameters_ &= ~LeechCraft::NoAutostart;
 		else
-			parameters &= ~LeechCraft::Autostart;
+			e.Parameters_ |= LeechCraft::NoAutostart;
 	}
 	else
 	{
 		fname = suggestedFname;
-		path = dp.Location_;
+		path = e.Location_;
 		tags = XmlSettingsManager::Instance ()->
 			property ("AutomaticTags").toString ()
 			.split (' ', QString::SkipEmptyParts);
@@ -228,7 +196,7 @@ int TorrentPlugin::AddJob (const LeechCraft::DownloadParams& dp,
 			path,
 			tags,
 			files,
-			parameters);
+			e.Parameters_);
     setActionsEnabled ();
 	file.remove ();
 	return result;
@@ -300,8 +268,8 @@ void TorrentPlugin::on_OpenTorrent__triggered ()
     QVector<bool> files = AddTorrentDialog_->GetSelectedFiles ();
     QStringList tags = AddTorrentDialog_->GetTags ();
 	LeechCraft::TaskParameters tp;
-	if (AddTorrentDialog_->GetAddType () == Core::Started)
-		tp |= LeechCraft::Autostart;
+	if (AddTorrentDialog_->GetAddType () != Core::Started)
+		tp |= LeechCraft::NoAutostart;
     Core::Instance ()->AddFile (filename, path, tags, files, tp);
     setActionsEnabled ();
 }
@@ -317,8 +285,8 @@ void TorrentPlugin::on_OpenMultipleTorrents__triggered ()
         return;
 
 	LeechCraft::TaskParameters tp;
-	if (dialog.GetAddType () == Core::Started)
-		tp |= LeechCraft::Autostart;
+	if (dialog.GetAddType () != Core::Started)
+		tp |= LeechCraft::NoAutostart;
 
     QString savePath = dialog.GetSaveDirectory (),
             openPath = dialog.GetOpenDirectory ();
@@ -962,9 +930,9 @@ void TorrentPlugin::SetupCore ()
 			this,
 			SIGNAL (downloadFinished (const QString&)));
 	connect (Core::Instance (),
-			SIGNAL (fileFinished (const QByteArray&)),
+			SIGNAL (fileFinished (const LeechCraft::DownloadEntity&)),
 			this,
-			SIGNAL (gotEntity (const QByteArray&)));
+			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
 	connect (Core::Instance (),
 			SIGNAL (dataChanged (const QModelIndex&,
 					const QModelIndex&)),

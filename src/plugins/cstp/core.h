@@ -81,7 +81,7 @@ public:
 
 	int AddTask (const QString&, const QString&,
 			const QString&, const QString&,
-			LeechCraft::TaskParameters = LeechCraft::Autostart);
+			LeechCraft::TaskParameters = LeechCraft::NoParameters);
 	qint64 GetDone (int) const;
 	qint64 GetTotal (int) const;
 	bool IsRunning (int) const;
@@ -123,7 +123,7 @@ signals:
 	void taskFinished (int);
 	void taskRemoved (int);
 	void taskError (int, IDownload::Error);
-	void gotEntity (const QByteArray&);
+	void gotEntity (const LeechCraft::DownloadEntity&);
 	void downloadFinished (const QString&);
 	void error (const QString&);
 	void fileExists (boost::logic::tribool*);

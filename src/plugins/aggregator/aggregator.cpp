@@ -107,6 +107,12 @@ void Aggregator::Init ()
 			SIGNAL (unreadNumberChanged (int)),
 			this,
 			SLOT (unreadNumberChanged (int)));
+	connect (&Core::Instance (),
+			SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
+					int*, QObject**)),
+			this,
+			SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
+					int*, QObject**)));
 
 	Core::Instance ().DoDelayedInit ();
 	Core::Instance ().GetJobHolderRepresentation ()->setParent (this);
@@ -163,9 +169,9 @@ void Aggregator::Init ()
 	Impl_->Ui_.MainSplitter_->setStretchFactor (1, 9);
 
 	connect (&RegexpMatcherManager::Instance (),
-			SIGNAL (gotLink (const QByteArray&)),
+			SIGNAL (gotLink (const LeechCraft::DownloadEntity&)),
 			this,
-			SIGNAL (gotEntity (const QByteArray&)));
+			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
 
 	Core::Instance ().SetWidgets (Impl_->ControlToolBar_, Impl_->AdditionalInfo_);
 	currentChannelChanged ();

@@ -46,9 +46,9 @@ void CSTP::Init ()
 			this,
 			SIGNAL (jobError (int, IDownload::Error)));
 	connect (&Core::Instance (),
-			SIGNAL (gotEntity (const QByteArray&)),
+			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
 			this,
-			SIGNAL (gotEntity (const QByteArray&)));
+			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
 	connect (&Core::Instance (),
 			SIGNAL (downloadFinished (const QString&)),
 			this,
@@ -119,16 +119,19 @@ void CSTP::StopAll ()
 	Core::Instance ().stopAllTriggered ();
 }
 
-bool CSTP::CouldDownload (const QByteArray& url, LeechCraft::TaskParameters tp) const
+bool CSTP::CouldDownload (const LeechCraft::DownloadEntity& e) const
 {
-	return Core::Instance ().CouldDownload (QString (url), tp);
+	return Core::Instance ()
+		.CouldDownload (QTextCodec::codecForName ("UTF-8")->
+				toUnicode (e.Entity_), e.Parameters_);
 }
 
-int CSTP::AddJob (const LeechCraft::DownloadParams& ddp, LeechCraft::TaskParameters tp)
+int CSTP::AddJob (LeechCraft::DownloadEntity e)
 {
-	if (tp & LeechCraft::FromUserInitiated)
+	if (e.Parameters_ & LeechCraft::FromUserInitiated &&
+			e.Location_.isEmpty ())
 	{
-		AddTask at (ddp.Resource_, ddp.Location_);
+		AddTask at (e.Entity_, e.Location_);
 		if (at.exec () == QDialog::Rejected)
 			return -1;
 
@@ -138,21 +141,21 @@ int CSTP::AddJob (const LeechCraft::DownloadParams& ddp, LeechCraft::TaskParamet
 				task.LocalPath_,
 				task.Filename_,
 				task.Comment_,
-				tp);
+				e.Parameters_);
 	}
 	else
 	{
-		QFileInfo fi (ddp.Location_);
+		QFileInfo fi (e.Location_);
 		QString dir = fi.dir ().path (),
 				file = fi.fileName ();
 
-		if (!(tp & LeechCraft::Internal))
+		if (!(e.Parameters_ & LeechCraft::Internal))
 		{
 			if (fi.isDir ())
 			{
-				dir = ddp.Location_;
+				dir = e.Location_;
 				file = QFileInfo (QUrl (QTextCodec::codecForName ("UTF-8")->
-							toUnicode (ddp.Resource_)).path ()).fileName ();
+							toUnicode (e.Entity_)).path ()).fileName ();
 				if (file.isEmpty ())
 					file = "index";
 			}
@@ -161,8 +164,8 @@ int CSTP::AddJob (const LeechCraft::DownloadParams& ddp, LeechCraft::TaskParamet
 				return -1;
 		}
 
-		return Core::Instance ().AddTask (ddp.Resource_,
-				dir, file, QString (), tp);
+		return Core::Instance ().AddTask (e.Entity_,
+				dir, file, QString (), e.Parameters_);
 	}
 }
 

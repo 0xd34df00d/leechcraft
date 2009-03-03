@@ -77,9 +77,9 @@ void Poshuku::Init ()
 			this,
 			SIGNAL (raiseTab (QWidget*)));
 	connect (&Core::Instance (),
-			SIGNAL (gotEntity (const QByteArray&)),
+			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
 			this,
-			SIGNAL (gotEntity (const QByteArray&)));
+			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
 	connect (&Core::Instance (),
 			SIGNAL (error (const QString&)),
 			this,

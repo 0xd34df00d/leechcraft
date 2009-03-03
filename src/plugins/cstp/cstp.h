@@ -6,6 +6,7 @@
 #include <interfaces/ijobholder.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iwantnetworkaccessmanager.h>
+#include <interfaces/structures.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
 class Core;
@@ -52,8 +53,8 @@ public:
 	qint64 GetUploadSpeed () const;
 	void StartAll ();
 	void StopAll ();
-	bool CouldDownload (const QByteArray&, LeechCraft::TaskParameters) const;
-	int AddJob (const LeechCraft::DownloadParams&, LeechCraft::TaskParameters);
+	bool CouldDownload (const LeechCraft::DownloadEntity&) const;
+	int AddJob (LeechCraft::DownloadEntity);
 
 	QAbstractItemModel* GetRepresentation () const;
 	LeechCraft::Util::HistoryModel* GetHistory () const;
@@ -74,7 +75,7 @@ signals:
 	void jobFinished (int);
 	void jobRemoved (int);
 	void jobError (int, IDownload::Error);
-	void gotEntity (const QByteArray&);
+	void gotEntity (const LeechCraft::DownloadEntity&);
 	void downloadFinished (const QString&);
 	void log (const QString&);
 };

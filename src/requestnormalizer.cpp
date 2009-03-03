@@ -120,7 +120,6 @@ namespace
 RequestNormalizer::RequestHolder_ptr RequestNormalizer::Parse (QString req) const
 {
 	req = req.simplified ();
-	qDebug () << Q_FUNC_INFO << req;
 	if (req.size () > 1 &&
 			req.at (0) == '(' &&
 			req.at (req.size () - 1) == ')')
@@ -170,7 +169,6 @@ RequestNormalizer::RequestHolder_ptr RequestNormalizer::Parse (QString req) cons
 		subBraces.replace (" OR ", QString ("%1 OR ").arg (add));
 		req.replace (leftPos + 1, pos - leftPos - 1, subBraces);
 		req = req.left (req.size () - add.size ());
-		qDebug () << req << add << subBraces;
 		node = Parse (req);
 	}
 	else

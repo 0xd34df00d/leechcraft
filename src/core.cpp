@@ -1,6 +1,9 @@
 #include <limits>
 #include <stdexcept>
 #include <list>
+#include <functional>
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
 #include <QMainWindow>
 #include <QTreeWidgetItem>
 #include <QMessageBox>
@@ -185,13 +188,13 @@ PluginManager* LeechCraft::Core::GetPluginManager () const
 
 QWidget* LeechCraft::Core::GetControls (const QModelIndex& index) const
 {
-	QVariant data = index.data (LeechCraft::RoleControls);
+	QVariant data = index.data (RoleControls);
 	return data.value<QWidget*> ();
 }
 
 QWidget* LeechCraft::Core::GetAdditionalInfo (const QModelIndex& index) const
 {
-	QVariant data = index.data (LeechCraft::RoleAdditionalInfo);
+	QVariant data = index.data (RoleAdditionalInfo);
 	return data.value<QWidget*> ();
 }
 
@@ -205,7 +208,7 @@ QStringList LeechCraft::Core::GetTagsForIndex (int index,
 		GetStartingRow (modIter);
 
 	return (*modIter)->
-		data ((*modIter)->index (index - starting, 0), LeechCraft::RoleTags)
+		data ((*modIter)->index (index - starting, 0), RoleTags)
 		.toStringList ();
 }
 
@@ -240,11 +243,21 @@ void LeechCraft::Core::DelayedInit ()
 
 		if (qmo->indexOfSignal (QMetaObject::
 					normalizedSignature ("gotEntity (const "
-						"QByteArray&)").constData ()) != -1)
+						"LeechCraft::DownloadEntity&)").constData ()) != -1)
 			connect (plugin,
-					SIGNAL (gotEntity (const QByteArray&)),
+					SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
 					this,
-					SLOT (handleGotEntity (const QByteArray&)));
+					SLOT (handleGotEntity (LeechCraft::DownloadEntity)));
+		if (qmo->indexOfSignal (QMetaObject::
+					normalizedSignature ("delegateEntity (const "
+						"LeechCraft::DownloadEntity&, "
+						"int*, QObject**)").constData ()) != -1)
+			connect (plugin,
+					SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
+							int*, QObject**)),
+					this,
+					SLOT (handleGotEntity (LeechCraft::DownloadEntity,
+							int*, QObject**)));
 		if (qmo->indexOfSignal (QMetaObject::
 					normalizedSignature ("downloadFinished (const "
 						"QString&)").constData ()) != -1)
@@ -292,19 +305,18 @@ bool LeechCraft::Core::ShowPlugin (int id)
 
 void LeechCraft::Core::TryToAddJob (const QString& name, const QString& where)
 {
+	DownloadEntity e;
+	e.Entity_ = name.toUtf8 ();
+	e.Location_ = where;
+	e.Parameters_ = FromUserInitiated;
+
     QObjectList plugins = PluginManager_->GetAllPlugins ();
     foreach (QObject *plugin, plugins)
     {
         IDownload *di = qobject_cast<IDownload*> (plugin);
-		TaskParameters tp = FromUserInitiated | Autostart;
-        if (di && di->CouldDownload (name.toUtf8 (), tp))
+        if (di && di->CouldDownload (e))
         {
-			DownloadParams ddp =
-			{
-				name.toUtf8 (),
-				where
-			};
-			di->AddJob (ddp, tp);
+			di->AddJob (e);
 			return;
         }
     }
@@ -355,8 +367,14 @@ void LeechCraft::Core::UpdateFiltering (const QString& text)
 
 void LeechCraft::Core::Activated (const QModelIndex& index)
 {
-	QString name = index.data (HistoryModel::RolePath).toString ();
-	handleGotEntity (name.toUtf8 (), true);
+	DownloadEntity e =
+	{
+		index.data (HistoryModel::RolePath).toString ().toUtf8 (),
+		QString (),
+		index.data (RoleMime).toString (),
+		FromUserInitiated
+	};
+	handleGotEntity (e);
 }
 
 QPair<qint64, qint64> LeechCraft::Core::GetSpeeds () const
@@ -523,19 +541,19 @@ void LeechCraft::Core::deleteSelectedHistory (const QModelIndex& index)
 	*/
 }
 
-void LeechCraft::Core::handleGotEntity (const QByteArray& file, bool fromBuffer)
+namespace
 {
-	if (!fromBuffer &&
-			!XmlSettingsManager::Instance ()->
-			property ("QueryPluginsToHandleFinished").toBool ())
-		return;
+	template<typename T> inline T Cast (const QObject *obj)
+	{
+		return qobject_cast<T> (obj);
+	}
+};
 
-	TaskParameters tp = Autostart;
-	if (fromBuffer)
-		tp |= FromUserInitiated;
+void LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
+{
 	QString string = tr ("Too long to show");
-	if (file.size () < 1000)
-		string = QTextCodec::codecForName ("UTF-8")->toUnicode (file);
+	if (p.Entity_.size () < 1000)
+		string = QTextCodec::codecForName ("UTF-8")->toUnicode (p.Entity_);
 
 	std::auto_ptr<HandlerChoiceDialog> dia (new HandlerChoiceDialog (string));
 
@@ -544,7 +562,7 @@ void LeechCraft::Core::handleGotEntity (const QByteArray& file, bool fromBuffer)
 	{
 		IDownload *id = qobject_cast<IDownload*> (plugins.at (i));
 		IInfo *ii = qobject_cast<IInfo*> (plugins.at (i));
-		if (id->CouldDownload (file, tp))
+		if (id->CouldDownload (p))
 			dia->Add (ii, id);
 	}
 	plugins = PluginManager_->GetAllCastableRoots<IEntityHandler*> ();
@@ -552,41 +570,80 @@ void LeechCraft::Core::handleGotEntity (const QByteArray& file, bool fromBuffer)
 	{
 		IEntityHandler *ih = qobject_cast<IEntityHandler*> (plugins.at (i));
 		IInfo *ii = qobject_cast<IInfo*> (plugins.at (i));
-		if (ih->CouldHandle (file, tp))
+		if (ih->CouldHandle (p))
 			dia->Add (ii, ih);
 	}
 
-	if (!dia->NumChoices () ||
-			dia->exec () == QDialog::Rejected)
-		return;
-
-	IDownload *sd = dia->GetDownload ();
-	IEntityHandler *sh = dia->GetEntityHandler ();
-	if (sd)
+	if (p.Parameters_ & FromUserInitiated)
 	{
-		QString dir = QFileDialog::getExistingDirectory (0,
-				tr ("Select save path"),
-				XmlSettingsManager::Instance ()->
-					Property ("EntitySavePath",
-						QDesktopServices::storageLocation (QDesktopServices::DocumentsLocation))
-					.toString (),
-				!QFileDialog::ShowDirsOnly);
-
-		if (dir.isEmpty ())
+		if (!dia->NumChoices () ||
+				dia->exec () == QDialog::Rejected)
 			return;
 
-		XmlSettingsManager::Instance ()->
-			setProperty ("EntitySavePath", dir);
-
-		DownloadParams ddp =
+		IDownload *sd = dia->GetDownload ();
+		IEntityHandler *sh = dia->GetEntityHandler ();
+		if (sd)
 		{
-			file,
-			dir
-		};
-		sd->AddJob (ddp, tp);
+			QString suggestion;
+			if (p.Location_.size ())
+				suggestion = QFileInfo (p.Location_).absolutePath ();
+			else
+				suggestion = XmlSettingsManager::Instance ()->Property ("EntitySavePath",
+						QDesktopServices::storageLocation (QDesktopServices::DocumentsLocation))
+					.toString ();
+			QString dir = QFileDialog::getExistingDirectory (0,
+					tr ("Select save path"),
+					suggestion,
+					!QFileDialog::ShowDirsOnly);
+
+			if (dir.isEmpty ())
+				return;
+
+			XmlSettingsManager::Instance ()->
+				setProperty ("EntitySavePath", dir);
+
+			p.Location_ = dir;
+			int l = sd->AddJob (p);
+			if (id)
+				*id = l;
+			if (pr)
+			{
+				QObjectList plugins = PluginManager_->GetAllCastableRoots<IDownload*> ();
+				*pr = *std::find_if (plugins.begin (), plugins.end (),
+						boost::bind (std::equal_to<IDownload*> (),
+							sd,
+							boost::bind<IDownload*> (
+								Cast<IDownload*>,
+								_1
+								)));
+			}
+		}
+		if (sh)
+			sh->Handle (p);
 	}
-	if (sh)
-		sh->Handle (file, tp);
+	else if (dia->GetDownload ())
+	{
+		IDownload *sd = dia->GetDownload ();
+		if (p.Location_.isEmpty ())
+			p.Location_ = QDir::tempPath ();
+		int l = sd->AddJob (p);
+		if (id)
+			*id = l;
+		if (pr)
+		{
+			QObjectList plugins = PluginManager_->GetAllCastableRoots<IDownload*> ();
+			*pr = *std::find_if (plugins.begin (), plugins.end (),
+					boost::bind (std::equal_to<IDownload*> (),
+						sd,
+						boost::bind<IDownload*> (
+							Cast<IDownload*>,
+							_1
+							)));
+		}
+	}
+	else
+		emit log (tr ("Could not handle download entity %1.")
+				.arg (string));
 }
 
 void LeechCraft::Core::handleClipboardTimer ()
@@ -597,8 +654,16 @@ void LeechCraft::Core::handleClipboardTimer ()
 
     PreviousClipboardContents_ = text;
 
+	DownloadEntity e =
+	{
+		text.toUtf8 (),
+		QString (),
+		QString (),
+		FromUserInitiated
+	};
+
     if (XmlSettingsManager::Instance ()->property ("WatchClipboard").toBool ())
-        handleGotEntity (text.toUtf8 (), true);
+        handleGotEntity (e);
 }
 
 void LeechCraft::Core::embeddedTabWantsToFront ()
@@ -696,9 +761,18 @@ void LeechCraft::Core::handleSslErrors (QNetworkReply *reply, const QList<QSslEr
 void LeechCraft::Core::pullCommandLine ()
 {
 	QStringList arguments = qobject_cast<Application*> (qApp)->Arguments ();
-	if (arguments.size () > 0 &&
-			!arguments.last ().startsWith ('-'))
-		handleGotEntity (arguments.last ().toUtf8 (), true);
+	if (!(arguments.size () > 1 &&
+			!arguments.last ().startsWith ('-')))
+		return;
+
+	DownloadEntity e =
+	{
+		arguments.last ().toUtf8 (),
+		QString (),
+		QString (),
+		FromUserInitiated
+	};
+	handleGotEntity (e);
 }
 
 void LeechCraft::Core::handleNewLocalServerConnection ()
@@ -717,9 +791,18 @@ void LeechCraft::Core::handleNewLocalServerConnection ()
 	QStringList arguments;
 	in >> arguments;
 
-	if (arguments.size () > 0 &&
-			!arguments.last ().startsWith ('-'))
-		handleGotEntity (arguments.last ().toUtf8 (), true);
+	if (!(arguments.size () > 1 &&
+			!arguments.last ().startsWith ('-')))
+		return;
+
+	DownloadEntity e =
+	{
+		arguments.last ().toUtf8 (),
+		QString (),
+		QString (),
+		FromUserInitiated
+	};
+	handleGotEntity (e);
 }
 
 void LeechCraft::Core::saveCookies () const
@@ -784,7 +867,7 @@ void LeechCraft::Core::InitJobHolder (QObject *plugin)
 	if (ijh->GetRepresentation ())
 	{
 		QWidget *controlsWidget = ijh->GetRepresentation ()->
-			index (0, 0).data (LeechCraft::RoleControls).value<QWidget*> ();
+			index (0, 0).data (RoleControls).value<QWidget*> ();
 		if (controlsWidget)
 		{
 			QList<QAction*> actions = controlsWidget->actions ();
@@ -801,7 +884,7 @@ void LeechCraft::Core::InitJobHolder (QObject *plugin)
 			controlsWidget->setParent (ReallyMainWindow_);
 		}
 		QWidget *additional = ijh->GetRepresentation ()->
-			index (0, 0).data (LeechCraft::RoleAdditionalInfo).value<QWidget*> ();
+			index (0, 0).data (RoleAdditionalInfo).value<QWidget*> ();
 		if (additional)
 			additional->setParent (ReallyMainWindow_);
 	}

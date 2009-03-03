@@ -7,10 +7,8 @@
 class IEntityHandler
 {
 public:
-	virtual bool CouldHandle (const QByteArray&,
-			LeechCraft::TaskParameters) const = 0;
-	virtual void Handle (const QByteArray&,
-			LeechCraft::TaskParameters) = 0;
+	virtual bool CouldHandle (const LeechCraft::DownloadEntity&) const = 0;
+	virtual void Handle (const LeechCraft::DownloadEntity&) = 0;
 
 	virtual ~IEntityHandler () {}
 };

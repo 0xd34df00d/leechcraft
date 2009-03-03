@@ -7,6 +7,7 @@
 #include <QPair>
 #include <QTimer>
 #include <QNetworkAccessManager>
+#include <interfaces/structures.h>
 #include "pluginmanager.h"
 #include "tabcontainer.h"
 #include "plugininterface/mergemodel.h"
@@ -16,6 +17,7 @@
 class QLocalServer;
 class QAbstractProxyModel;
 class QAction;
+class IDownload;
 
 namespace LeechCraft
 {
@@ -156,12 +158,16 @@ namespace LeechCraft
 		 * string, this parameter is considered to be an UTF-8
 		 * representation of it.
 		 *
-		 * @param[in] entity Raw entity or UTF-8 encoded string.
-		 * @param[in] user Whether this was caused by user or was
-		 * spontaneous.
+		 * If id is not null and the job is handled by a downloader,
+		 * the return value of IDownloader::AddJob() is assigned to *id.
+		 * The same is with the provider.
+		 *
+		 * @param[in] entity DownloadEntity.
+		 * @param[out] id The ID of the job if applicable.
+		 * @param[out] provider The provider that downloads this job.
 		 */
-        void handleGotEntity (const QByteArray& entity,
-				bool user = false);
+        void handleGotEntity (LeechCraft::DownloadEntity entity,
+				int *id = 0, QObject **provider = 0);
         void handleClipboardTimer ();
 		void embeddedTabWantsToFront ();
 		void handleStatusBarChanged (QWidget*, const QString&);

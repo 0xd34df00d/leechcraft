@@ -54,7 +54,14 @@ void CustomWebPage::gotUnsupportedContent (QNetworkReply *reply)
 			else
 			{
 				reply->abort ();
-				emit gotEntity (reply->url ().toString ().toUtf8 ());
+				LeechCraft::DownloadEntity e =
+				{
+					reply->url ().toString ().toUtf8 (),
+					QString (),
+					QString (),
+					LeechCraft::FromUserInitiated
+				};
+				emit gotEntity (e);
 			}
 			break;
 		case QNetworkReply::NoError:
@@ -66,7 +73,14 @@ void CustomWebPage::gotUnsupportedContent (QNetworkReply *reply)
 						 reply->header (QNetworkRequest::ContentTypeHeader).isValid ()))
 				{
 					reply->abort ();
-					emit gotEntity (reply->url ().toString ().toUtf8 ());
+					LeechCraft::DownloadEntity e =
+					{
+						reply->url ().toString ().toUtf8 (),
+						QString (),
+						QString (),
+						LeechCraft::FromUserInitiated
+					};
+					emit gotEntity (e);
 					break;
 				}
 			}
@@ -100,7 +114,14 @@ void CustomWebPage::gotUnsupportedContent (QNetworkReply *reply)
 
 void CustomWebPage::handleDownloadRequested (const QNetworkRequest& request)
 {
-	emit gotEntity (request.url ().toString ().toUtf8 ());
+	LeechCraft::DownloadEntity e =
+	{
+		request.url ().toString ().toUtf8 (),
+		QString (),
+		QString (),
+		LeechCraft::FromUserInitiated
+	};
+	emit gotEntity (e);
 }
 
 bool CustomWebPage::acceptNavigationRequest (QWebFrame *frame,

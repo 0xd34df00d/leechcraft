@@ -1,6 +1,7 @@
 #ifndef CUSTOMWEBVIEW_H
 #define CUSTOMWEBVIEW_H
 #include <QWebView>
+#include <interfaces/structures.h>
 
 class CustomWebView : public QWebView
 {
@@ -22,7 +23,7 @@ private slots:
 	void handleNewThumbs ();
 signals:
 	void urlChanged (const QString&);
-	void gotEntity (const QByteArray&);
+	void gotEntity (const LeechCraft::DownloadEntity&);
 };
 
 #endif

@@ -113,7 +113,7 @@ int Core::AddTask (const QString& url,
 	ActiveTasks_.push_back (td);
 	endInsertRows ();
 	ScheduleSave ();
-	if (tp & LeechCraft::Autostart)
+	if (!(tp & LeechCraft::NoAutostart))
 		startTriggered (rowCount () - 1);
 	return td.ID_;
 }
@@ -345,15 +345,23 @@ void Core::done (bool err)
 					QString ("\n") + url);
 		Remove (taskdscr);
 		emit taskFinished (id);
-		emit gotEntity (filename.toUtf8 ());
+		LeechCraft::DownloadEntity e =
+		{
+			filename.toUtf8 (),
+			QString (),
+			QString (),
+			taskdscr->Parameters_
+		};
+		qDebug () << (e.Parameters_ & LeechCraft::FromUserInitiated);
+		emit gotEntity (e);
 	}
 	else
 	{
 		taskdscr->ErrorFlag_ = true;
-		if (taskdscr->Parameters_ & LeechCraft::NotPersistent)
-			Remove (taskdscr);
 		emit error (errorStr);
 		emit taskError (id, IDownload::EUnknown);
+		if (taskdscr->Parameters_ & LeechCraft::NotPersistent)
+			Remove (taskdscr);
 	}
 }
 

@@ -26,9 +26,9 @@ CustomWebView::CustomWebView (QWidget *parent)
 			SLOT (remakeURL (const QUrl&)));
 
 	connect (page,
-			SIGNAL (gotEntity (const QByteArray&)),
+			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
 			this,
-			SIGNAL (gotEntity (const QByteArray&)));
+			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
 	connect (page,
 			SIGNAL (loadingURL (const QUrl&)),
 			this,
@@ -81,9 +81,9 @@ QWebView* CustomWebView::createWindow (QWebPage::WebWindowType type)
 		widget->setWindowFlags (Qt::Dialog);
 		widget->setAttribute (Qt::WA_DeleteOnClose);
 		connect (widget,
-				SIGNAL (gotEntity (const QByteArray&)),
+				SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
 				&Core::Instance (),
-				SIGNAL (gotEntity (const QByteArray&)));
+				SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
 		connect (widget,
 				SIGNAL (titleChanged (const QString&)),
 				widget,

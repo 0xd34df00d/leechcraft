@@ -62,12 +62,12 @@ void Nufella::StopAll ()
 {
 }
 
-bool Nufella::CouldDownload (const QByteArray& data, LeechCraft::TaskParameters params) const
+bool Nufella::CouldDownload (const LeechCraft::DownloadEntity& entity) const
 {
 	return false;
 }
 
-int Nufella::AddJob (const LeechCraft::DownloadParams& downParams, LeechCraft::TaskParameters taskParams)
+int Nufella::AddJob (LeechCraft::DownloadEntity)
 {
 	return -1;
 }
