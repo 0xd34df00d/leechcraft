@@ -35,16 +35,9 @@ namespace LeechCraft
 		/** Task should not be saved in history.
 		 */
 		DoNotSaveInHistory = 2,
-		/** Task is fetched from the clipboard.
-		 */
-		FromClipboard = 4,
-		/** Task is fetched from common job addition dialog.
+		/** Task is created as a result of user's actions.
 		 */
 		FromUserInitiated = 8,
-		/** Task is automatically generated, for example, this is a
-		 * request from another plugin.
-		 */
-		FromAutomatic = 16,
 		/** User should not be notified about task finish.
 		 */
 		DoNotNotifyUser = 32,
@@ -57,6 +50,8 @@ namespace LeechCraft
 		 */
 		NotPersistent = 128
 	};
+
+	Q_DECLARE_FLAGS (TaskParameters, TaskParameter);
 
 	enum CustomDataRoles
 	{
@@ -79,8 +74,6 @@ namespace LeechCraft
 		 */
 		RoleHash
 	};
-
-	Q_DECLARE_FLAGS (TaskParameters, TaskParameter);
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::TaskParameters);

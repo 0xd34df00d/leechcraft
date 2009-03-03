@@ -1231,22 +1231,10 @@ void Core::Export (const QString& filename, bool, bool) const
 					writer.writeCharacters ("donotsaveinhistory");
 					writer.writeEndElement ();
 				}
-				if (i->Parameters_ & LeechCraft::FromClipboard)
-				{
-					writer.writeStartElement ("parameter");
-					writer.writeCharacters ("fromclipboard");
-					writer.writeEndElement ();
-				}
 				if (i->Parameters_ & LeechCraft::FromUserInitiated)
 				{
 					writer.writeStartElement ("parameter");
 					writer.writeCharacters ("fromcommondialog");
-					writer.writeEndElement ();
-				}
-				if (i->Parameters_ & LeechCraft::FromAutomatic)
-				{
-					writer.writeStartElement ("parameter");
-					writer.writeCharacters ("fromautomatic");
 					writer.writeEndElement ();
 				}
 				if (i->Parameters_ & LeechCraft::DoNotNotifyUser)

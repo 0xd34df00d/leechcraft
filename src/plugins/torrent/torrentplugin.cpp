@@ -202,15 +202,7 @@ int TorrentPlugin::AddJob (const LeechCraft::DownloadParams& dp,
 	QStringList tags;
 	QVector<bool> files;
 	QString fname;
-	if (parameters & LeechCraft::FromAutomatic)
-	{
-		fname = suggestedFname;
-		path = dp.Location_;
-		tags = XmlSettingsManager::Instance ()->
-			property ("AutomaticTags").toString ()
-			.split (' ', QString::SkipEmptyParts);
-	}
-	else
+	if (parameters & LeechCraft::FromUserInitiated)
 	{
 		if (AddTorrentDialog_->exec () == QDialog::Rejected)
 			return -1;
@@ -223,6 +215,14 @@ int TorrentPlugin::AddJob (const LeechCraft::DownloadParams& dp,
 			parameters |= LeechCraft::Autostart;
 		else
 			parameters &= ~LeechCraft::Autostart;
+	}
+	else
+	{
+		fname = suggestedFname;
+		path = dp.Location_;
+		tags = XmlSettingsManager::Instance ()->
+			property ("AutomaticTags").toString ()
+			.split (' ', QString::SkipEmptyParts);
 	}
 	int result = Core::Instance ()->AddFile (fname,
 			path,

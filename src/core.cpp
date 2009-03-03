@@ -532,9 +532,7 @@ void LeechCraft::Core::handleGotEntity (const QByteArray& file, bool fromBuffer)
 
 	TaskParameters tp = Autostart;
 	if (fromBuffer)
-		tp |= FromClipboard;
-	else
-		tp |= FromAutomatic;
+		tp |= FromUserInitiated;
 	QString string = tr ("Too long to show");
 	if (file.size () < 1000)
 		string = QTextCodec::codecForName ("UTF-8")->toUnicode (file);
