@@ -23,14 +23,15 @@ Core& Core::Instance ()
 void Core::Add (const QString& url)
 {
 	QString name = LeechCraft::Util::GetTemporaryName ();
-	qDebug () << Q_FUNC_INFO << name << url;
 	LeechCraft::DownloadEntity e =
 	{
 		url.toUtf8 (),
 		name,
 		QString (),
 		LeechCraft::Internal |
-			LeechCraft::DoNotSaveInHistory
+			LeechCraft::DoNotSaveInHistory |
+			LeechCraft::DoNotNotifyUser |
+			LeechCraft::NotPersistent
 	};
 
 	int id = -1;
@@ -49,6 +50,8 @@ void Core::Add (const QString& url)
 
 void Core::handleJobFinished (int id)
 {
+	if (!Jobs_.contains (id))
+		return;
 	QString filename = Jobs_ [id];
 	Jobs_.remove (id);
 
@@ -74,6 +77,8 @@ void Core::handleJobRemoved (int)
 
 void Core::handleJobError (int id)
 {
+	if (!Jobs_.contains (id))
+		return;
 	emit error (tr ("A job was delegated, but it failed.")
 			.arg (Jobs_ [id]));
 	Jobs_.remove (id);
