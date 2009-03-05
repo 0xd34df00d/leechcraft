@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label lang="en" value="Searchers" />
+		<label lang="ru" value="Поисковики" />
+		<groupbox>
+			<label lang="en" value="Searchers" />
+			<label lang="ru" value="Поисковики" />
+			<item type="customwidget" name="SearchersList" label="own" />
+		</groupbox>
+	</page>
+</settings>

@@ -5,6 +5,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ifinder.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/structures.h>
 
 class SeekThru : public QObject
 			   , public IInfo
@@ -30,6 +31,11 @@ public:
 	boost::shared_ptr<IFindProxy> GetProxy (const LeechCraft::Request&);
 
 	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
+private slots:
+	void handleError (const QString&);
+signals:
+	void delegateEntity (const LeechCraft::DownloadEntity&,
+			int*, QObject**);
 };
 
 #endif

@@ -9,15 +9,22 @@ SET (SRCS
 	seekthru.cpp
 	core.cpp
 	description.cpp
+	xmlsettingsmanager.cpp
+	searcherslist.cpp
 	)
 SET (HEADERS
 	seekthru.h
 	core.h
 	description.h
+	xmlsettingsmanager.h
+	searcherslist.h
 	)
 SET (TRANSLATIONS
 	leechcraft_seekthru_ru_RU.ts
 	leechcraft_seekthru_uk_UA.ts
+	)
+SET (FORMS
+	searcherslist.ui
 	)
 SET (RESOURCES
 	resources.qrc
@@ -28,6 +35,7 @@ SET (COMPILED_TRANSLATIONS
 	)
 
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 ADD_CUSTOM_COMMAND (OUTPUT
@@ -40,6 +48,7 @@ ADD_LIBRARY (leechcraft_seekthru SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
+	${UIS_H}
 	${RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_seekthru

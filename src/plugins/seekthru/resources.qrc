@@ -2,5 +2,6 @@
 	<qresource prefix="/" >
 		<file>leechcraft_seekthru_ru_RU.qm</file>
 		<file>leechcraft_seekthru_uk_UA.qm</file>
+		<file>seekthrusettings.xml</file>
 	</qresource>
 </RCC>
