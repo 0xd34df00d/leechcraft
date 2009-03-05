@@ -88,6 +88,7 @@ void TorrentPlugin::Release ()
 {
     Core::Instance ()->Release ();
     XmlSettingsManager::Instance ()->Release ();
+	XmlSettingsDialog_.reset ();
 }
 
 QIcon TorrentPlugin::GetIcon () const
@@ -252,9 +253,9 @@ void TorrentPlugin::SetTags (int torrent, const QStringList& tags)
 	Core::Instance ()->UpdateTags (tags, torrent);
 }
 
-LeechCraft::Util::XmlSettingsDialog* TorrentPlugin::GetSettingsDialog () const
+boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> TorrentPlugin::GetSettingsDialog () const
 {
-	return XmlSettingsDialog_.get ();
+	return XmlSettingsDialog_;
 }
 
 void TorrentPlugin::on_OpenTorrent__triggered ()

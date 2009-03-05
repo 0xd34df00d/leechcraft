@@ -4,13 +4,17 @@
 #include <QStringList>
 #include <interfaces/iinfo.h>
 #include <interfaces/ifinder.h>
+#include <interfaces/ihavesettings.h>
 
 class SeekThru : public QObject
 			   , public IInfo
 			   , public IFinder
+			   , public IHaveSettings
 {
 	Q_OBJECT
-	Q_INTERFACES (IInfo IFinder)
+	Q_INTERFACES (IInfo IFinder IHaveSettings)
+
+	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 public:
 	void Init ();
 	void Release ();
@@ -24,6 +28,8 @@ public:
 
 	QStringList GetCategories () const;
 	boost::shared_ptr<IFindProxy> GetProxy (const LeechCraft::Request&);
+
+	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 };
 
 #endif

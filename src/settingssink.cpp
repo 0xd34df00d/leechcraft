@@ -27,7 +27,7 @@ void LeechCraft::SettingsSink::AddDialog (const QObject *object)
 	IInfo *info = qobject_cast<IInfo*> (object);
 	IHaveSettings *ihs = qobject_cast<IHaveSettings*> (object);
 
-	Add (info->GetName (), info->GetIcon (), ihs->GetSettingsDialog ());
+	Add (info->GetName (), info->GetIcon (), ihs->GetSettingsDialog ().get ());
 
 	Ui_.Combobox_->setCurrentIndex (0);
 }

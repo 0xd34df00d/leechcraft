@@ -35,7 +35,7 @@ class CSTP : public QObject
 
 	QMenu *Plugins_;
 	std::auto_ptr<QTranslator> Translator_;
-	std::auto_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
+	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 	std::auto_ptr<QToolBar> Toolbar_;
 public:
 	virtual ~CSTP ();
@@ -62,7 +62,7 @@ public:
 	QWidget* GetAdditionalInfo () const;
 	void ItemSelected (const QModelIndex&);
 
-	LeechCraft::Util::XmlSettingsDialog* GetSettingsDialog () const;
+	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 
 	void SetNetworkAccessManager (QNetworkAccessManager*);
 private:

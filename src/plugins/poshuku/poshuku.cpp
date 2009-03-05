@@ -161,9 +161,9 @@ QWidget* Poshuku::GetTabContents ()
 	return this;
 }
 
-LeechCraft::Util::XmlSettingsDialog* Poshuku::GetSettingsDialog () const
+boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> Poshuku::GetSettingsDialog () const
 {
-	return XmlSettingsDialog_.get ();
+	return XmlSettingsDialog_;
 }
 
 void Poshuku::SetNetworkAccessManager (QNetworkAccessManager *manager)

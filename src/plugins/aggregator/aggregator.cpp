@@ -64,7 +64,7 @@ struct Aggregator_Impl
 
 	QQueue<QString> ErrorQueue_;
 
-	std::auto_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
+	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 	std::auto_ptr<ChannelsFilterModel> ChannelsFilterModel_;
 	std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsLineCompleter_;
 	std::auto_ptr<QSystemTrayIcon> TrayIcon_;
@@ -185,6 +185,7 @@ void Aggregator::Release ()
     Impl_->TrayIcon_->hide ();
 	delete Impl_;
     Core::Instance ().Release ();
+	Impl_->XmlSettingsDialog_.reset ();
 }
 
 QString Aggregator::GetName () const
@@ -227,9 +228,9 @@ QWidget* Aggregator::GetTabContents ()
 	return this;
 }
 
-LeechCraft::Util::XmlSettingsDialog* Aggregator::GetSettingsDialog () const
+boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> Aggregator::GetSettingsDialog () const
 {
-	return Impl_->XmlSettingsDialog_.get ();
+	return Impl_->XmlSettingsDialog_;
 }
 
 QAbstractItemModel* Aggregator::GetRepresentation () const

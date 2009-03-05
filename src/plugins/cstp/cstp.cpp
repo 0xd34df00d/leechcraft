@@ -63,6 +63,7 @@ void CSTP::Release ()
 {
 	Core::Instance ().Release ();
 	XmlSettingsManager::Instance ().Release ();
+	XmlSettingsDialog_.reset ();
 }
 
 QString CSTP::GetName () const
@@ -193,9 +194,9 @@ void CSTP::ItemSelected (const QModelIndex&)
 {
 }
 
-LeechCraft::Util::XmlSettingsDialog* CSTP::GetSettingsDialog () const
+boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> CSTP::GetSettingsDialog () const
 {
-	return XmlSettingsDialog_.get ();
+	return XmlSettingsDialog_;
 }
 
 void CSTP::SetNetworkAccessManager (QNetworkAccessManager *manager)

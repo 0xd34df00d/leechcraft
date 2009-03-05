@@ -41,7 +41,7 @@ public:
     void SetProvider (QObject*, const QString&);
     QIcon GetIcon () const;
 	QWidget* GetTabContents ();
-	LeechCraft::Util::XmlSettingsDialog* GetSettingsDialog () const;
+	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 	QAbstractItemModel* GetRepresentation () const;
 	LeechCraft::Util::HistoryModel* GetHistory () const;
 	void ItemSelected (const QModelIndex&);

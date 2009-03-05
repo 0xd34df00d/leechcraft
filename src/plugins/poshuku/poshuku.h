@@ -32,7 +32,7 @@ class Poshuku : public QWidget
 
 	std::auto_ptr<QTranslator> Translator_;
 	std::auto_ptr<LeechCraft::Util::TagsCompleter> FavoritesFilterLineCompleter_;
-	std::auto_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
+	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 	std::auto_ptr<FilterModel> FavoritesFilterModel_;
 	std::auto_ptr<FilterModel> HistoryFilterModel_;
 public:
@@ -48,7 +48,7 @@ public:
 
 	QWidget* GetTabContents ();
 
-	LeechCraft::Util::XmlSettingsDialog* GetSettingsDialog () const;
+	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 
 	void SetNetworkAccessManager (QNetworkAccessManager*);
 

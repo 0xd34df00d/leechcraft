@@ -1,13 +1,18 @@
 #include "seekthru.h"
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
+
+using namespace LeechCraft::Util;
 
 void SeekThru::Init ()
 {
+	XmlSettingsDialog_.reset (new XmlSettingsDialog ());
 	Core::Instance ();
 }
 
 void SeekThru::Release ()
 {
+	XmlSettingsDialog_.reset ();
 }
 
 QString SeekThru::GetName () const
@@ -52,6 +57,11 @@ QStringList SeekThru::GetCategories () const
 boost::shared_ptr<IFindProxy> SeekThru::GetProxy (const LeechCraft::Request&)
 {
 	return boost::shared_ptr<IFindProxy> ();
+}
+
+boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> SeekThru::GetSettingsDialog () const
+{
+	return XmlSettingsDialog_;
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_seekthru, SeekThru);

@@ -1,5 +1,6 @@
 #ifndef IHAVESETTINGS_H
 #define IHAVESETTINGS_H
+#include <boost/shared_ptr.hpp>
 #include <QtPlugin>
 
 namespace LeechCraft
@@ -28,7 +29,7 @@ public:
 	 * @return The XmlSettingsDialog object that manages the settings
 	 * dialog of the plugin.
 	 */
-	virtual LeechCraft::Util::XmlSettingsDialog* GetSettingsDialog () const = 0;
+	virtual boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const = 0;
 
 	/** @brief Virtual destructor.
 	 */

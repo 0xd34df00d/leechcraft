@@ -35,7 +35,7 @@ class TorrentPlugin : public QObject
 
     Q_INTERFACES (IInfo IDownload IJobHolder IImportExport ITaggableJobs IHaveSettings);
 
-    std::auto_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
+	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 	std::auto_ptr<AddTorrent> AddTorrentDialog_;
 	std::auto_ptr<QTimer> OverallStatsUpdateTimer_;
 	std::auto_ptr<QTime> LastPeersUpdate_;
@@ -100,7 +100,7 @@ public:
 	void SetTags (int, const QStringList&);
 
 	// IHaveSettings
-	LeechCraft::Util::XmlSettingsDialog* GetSettingsDialog () const;
+	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 public slots:
     void updateTorrentStats ();
 private slots:
