@@ -6,6 +6,7 @@
 #include <QLocale>
 #include <QFile>
 #include <QDir>
+#include <QTemporaryFile>
 #include <QtDebug>
 
 QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName)
@@ -47,5 +48,15 @@ void LeechCraft::Util::CreateIfNotExists (const QString& path)
 		throw std::runtime_error (qPrintable (QObject::tr ("Could not create %1")
 					.arg (QDir::toNativeSeparators (home.filePath (path)))));
 	}
+}
+
+QString LeechCraft::Util::GetTemporaryName (const QString& pattern)
+{
+	QTemporaryFile file (QDir::tempPath () + "/" + pattern);
+	file.open ();
+	QString name = file.fileName ();
+	file.close ();
+	file.remove ();
+	return name;
 }
 

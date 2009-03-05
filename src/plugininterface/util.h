@@ -1,8 +1,8 @@
 #ifndef LEECHCRAFT_UTIL_UTIL_H
 #define LEECHCRAFT_UTIL_UTIL_H
 #include "config.h"
+#include <QString>
 
-class QString;
 class QTranslator;
 
 namespace LeechCraft
@@ -59,6 +59,16 @@ namespace LeechCraft
 		 * created.
 		 */
 		LEECHCRAFT_API void CreateIfNotExists (const QString& path);
+
+		/** @brief Returns a temporary filename.
+		 *
+		 * This function returns a name of a temporary file that could
+		 * be created, not createing the file itself.
+		 *
+		 * @param[in] pattern Pattern of the filename.
+		 * @return The filename.
+		 */
+		LEECHCRAFT_API QString GetTemporaryName (const QString& pattern = QString ("lc_temp.XXXXXX"));
 	};
 };
 
