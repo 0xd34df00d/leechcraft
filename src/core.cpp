@@ -541,14 +541,6 @@ void LeechCraft::Core::deleteSelectedHistory (const QModelIndex& index)
 	*/
 }
 
-namespace
-{
-	template<typename T> inline T Cast (const QObject *obj)
-	{
-		return qobject_cast<T> (obj);
-	}
-};
-
 void LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 {
 	QString string = tr ("Too long to show");
@@ -613,7 +605,7 @@ void LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 						boost::bind (std::equal_to<IDownload*> (),
 							sd,
 							boost::bind<IDownload*> (
-								Cast<IDownload*>,
+								static_cast<IDownload* (*) (const QObject*)> (qobject_cast<IDownload*>),
 								_1
 								)));
 			}
@@ -636,7 +628,7 @@ void LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 					boost::bind (std::equal_to<IDownload*> (),
 						sd,
 						boost::bind<IDownload*> (
-							Cast<IDownload*>,
+							static_cast<IDownload* (*) (const QObject*)> (qobject_cast<IDownload*>),
 							_1
 							)));
 		}
