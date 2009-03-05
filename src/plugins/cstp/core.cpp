@@ -352,7 +352,6 @@ void Core::done (bool err)
 			QString (),
 			taskdscr->Parameters_
 		};
-		qDebug () << (e.Parameters_ & LeechCraft::FromUserInitiated);
 		emit gotEntity (e);
 	}
 	else
