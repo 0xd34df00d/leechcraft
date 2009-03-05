@@ -68,7 +68,6 @@ void CookiesEditModel::SetCookie (const QModelIndex& index,
 	if (index.isValid ())
 	{
 		int i = itemFromIndex (index)->data ().toInt ();
-		qDebug () << i;
 		if (i == -1)
 			Cookies_.push_back (cookie);
 		else
