@@ -7,7 +7,6 @@
 #include <QDir>
 #include <QDesktopServices>
 #include <QUrl>
-#include <QTemporaryFile>
 #include <QTimer>
 #include <QNetworkReply>
 #include <interfaces/iwebbrowser.h>
@@ -202,15 +201,7 @@ void Core::AddFeed (const QString& url, const QStringList& tags)
 		return;
 	}
 
-	QString name;
-	{
-		QTemporaryFile file;
-		file.open ();
-		name = file.fileName ();
-		file.close ();
-		file.remove ();
-	}
-
+	QString name = LeechCraft::Util::GetTemporaryName ();
 	LeechCraft::DownloadEntity e =
 	{
 		url.toUtf8 (),
@@ -1138,14 +1129,7 @@ void Core::FetchPixmap (const Channel_ptr& channel)
 		ExternalData data;
 		data.Type_ = ExternalData::TImage;
 		data.RelatedChannel_ = channel;
-		QString exFName;
-		{
-			QTemporaryFile file;
-			file.open ();
-			exFName = file.fileName ();
-			file.close ();
-			file.remove ();
-		}
+		QString exFName = LeechCraft::Util::GetTemporaryName ();
 		try
 		{
 			fetchExternalFile (channel->PixmapURL_, exFName);
@@ -1168,14 +1152,7 @@ void Core::FetchFavicon (const Channel_ptr& channel)
 	ExternalData iconData;
 	iconData.Type_ = ExternalData::TIcon;
 	iconData.RelatedChannel_ = channel;
-	QString exFName;
-	{
-		QTemporaryFile file;
-		file.open ();
-		exFName = file.fileName ();
-		file.close ();
-		file.remove ();
-	}
+	QString exFName = LeechCraft::Util::GetTemporaryName ();
 	try
 	{
 		fetchExternalFile (iconUrl, exFName);
@@ -1383,14 +1360,7 @@ void Core::MarkChannel (const QModelIndex& i, bool state)
 
 void Core::UpdateFeed (const QString& url)
 {
-	QString filename;
-	{
-		QTemporaryFile file;
-		file.open ();
-		filename = file.fileName ();
-		file.close ();
-		file.remove ();
-	}
+	QString filename = LeechCraft::Util::GetTemporaryName ();
 
 	LeechCraft::DownloadEntity e =
 	{
