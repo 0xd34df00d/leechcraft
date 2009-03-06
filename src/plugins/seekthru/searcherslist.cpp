@@ -15,6 +15,8 @@ SearchersList::SearchersList (QWidget* parent)
 
 void SearchersList::handleCurrentChanged (const QModelIndex& current)
 {
+	Ui_.ButtonRemove_->setEnabled (current.isValid ());
+
 	QString description = current.data (Core::RoleDescription).toString ();
 	if (description.isEmpty ())
 		Ui_.Description_->setText (tr ("No description"));
@@ -68,5 +70,10 @@ void SearchersList::on_ButtonAdd__released ()
 			tr ("Enter the URL of the OpenSearch description"));
 
 	Core::Instance ().Add (url);
+}
+
+void SearchersList::on_ButtonRemove__released ()
+{
+	Core::Instance ().Remove (Ui_.SearchersView_->selectionModel ()->currentIndex ());
 }
 

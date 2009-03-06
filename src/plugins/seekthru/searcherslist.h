@@ -13,6 +13,7 @@ public:
 private slots:
 	void handleCurrentChanged (const QModelIndex&);
 	void on_ButtonAdd__released ();
+	void on_ButtonRemove__released ();
 };
 
 #endif

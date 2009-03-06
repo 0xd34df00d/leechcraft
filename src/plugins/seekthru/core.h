@@ -43,8 +43,11 @@ public:
     virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 
 	/** Fetches the searcher from the url.
+	 *
+	 * @param[in] url The url with the search description.
 	 */
 	void Add (const QString& url);
+	void Remove (const QModelIndex&);
 	QStringList GetCategories () const;
 	IFindProxy_ptr GetProxy (const LeechCraft::Request&);
 private slots:

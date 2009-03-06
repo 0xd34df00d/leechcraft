@@ -145,6 +145,14 @@ void Core::Add (const QString& url)
 	Jobs_ [id] = name;
 }
 
+void Core::Remove (const QModelIndex& index)
+{
+	beginRemoveRows (QModelIndex (), index.row (), index.row ());
+	Descriptions_.removeAt (index.row ());
+	endRemoveRows ();
+	WriteSettings ();
+}
+
 QStringList Core::GetCategories () const
 {
 	QStringList result;
