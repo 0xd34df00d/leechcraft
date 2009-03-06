@@ -271,6 +271,8 @@ void Core::RestoreSession (bool ask)
 			RestoredURLs_ = dia->GetSelectedURLs ();
 			QTimer::singleShot (2000, this, SLOT (restorePages ()));
 		}
+		else
+			saveSession ();
 	}
 	else
 	{
