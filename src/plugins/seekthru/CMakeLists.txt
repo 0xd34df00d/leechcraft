@@ -12,6 +12,7 @@ SET (SRCS
 	xmlsettingsmanager.cpp
 	searcherslist.cpp
 	findproxy.cpp
+	searchhandler.cpp
 	)
 SET (HEADERS
 	seekthru.h
@@ -20,6 +21,7 @@ SET (HEADERS
 	xmlsettingsmanager.h
 	searcherslist.h
 	findproxy.h
+	searchhandler.h
 	)
 SET (TRANSLATIONS
 	leechcraft_seekthru_ru_RU.ts
