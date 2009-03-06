@@ -12,6 +12,7 @@
 #include <interfaces/iwebbrowser.h>
 #include <plugininterface/proxy.h>
 #include <plugininterface/tagscompletionmodel.h>
+#include <plugininterface/util.h>
 #include "core.h"
 #include "regexpmatchermanager.h"
 #include "xmlsettingsmanager.h"
