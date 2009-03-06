@@ -66,42 +66,42 @@
 <context>
     <name>CSTP</name>
     <message>
-        <location filename="cstp.cpp" line="268"/>
+        <location filename="cstp.cpp" line="272"/>
         <source>File exists</source>
         <translation>Файл вже існує</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="268"/>
+        <location filename="cstp.cpp" line="272"/>
         <source>File %1 already exists, continue download?</source>
         <translation>Файл %1 вже існує, бажаєте продовжити завантаження?</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="238"/>
+        <location filename="cstp.cpp" line="242"/>
         <source>Start</source>
         <translation>Розпочати</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="244"/>
+        <location filename="cstp.cpp" line="248"/>
         <source>Stop</source>
         <translation>Зупинити</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="230"/>
+        <location filename="cstp.cpp" line="234"/>
         <source>Remove all</source>
         <translation>Видалити всі</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="250"/>
+        <location filename="cstp.cpp" line="254"/>
         <source>Start all</source>
         <translation>Розпочати всі</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="256"/>
+        <location filename="cstp.cpp" line="260"/>
         <source>Stop all</source>
         <translation>Зупунити всі</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="224"/>
+        <location filename="cstp.cpp" line="228"/>
         <source>Remove</source>
         <translation>Видалити</translation>
     </message>

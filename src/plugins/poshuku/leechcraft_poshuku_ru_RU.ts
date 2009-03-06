@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="ru_RU">
-<defaultcodec></defaultcodec>
 <context>
     <name>AddToFavoritesDialog</name>
     <message>
@@ -218,13 +217,13 @@
     <message>
         <location filename="core.cpp" line="129"/>
         <source></source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>CustomWebPage</name>
     <message>
-        <location filename="customwebpage.cpp" line="80"/>
+        <location filename="customwebpage.cpp" line="94"/>
         <source>Error loading %1</source>
         <translation>Ошибка загрузки %1</translation>
     </message>
@@ -296,17 +295,17 @@
 <context>
     <name>HistoryModel</name>
     <message>
-        <location filename="historymodel.cpp" line="10"/>
+        <location filename="historymodel.cpp" line="12"/>
         <source>Title</source>
         <translation>Название</translation>
     </message>
     <message>
-        <location filename="historymodel.cpp" line="11"/>
+        <location filename="historymodel.cpp" line="13"/>
         <source>Date</source>
         <translation>Дата</translation>
     </message>
     <message>
-        <location filename="historymodel.cpp" line="11"/>
+        <location filename="historymodel.cpp" line="13"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>

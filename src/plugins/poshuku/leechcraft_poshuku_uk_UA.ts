@@ -223,7 +223,7 @@
 <context>
     <name>CustomWebPage</name>
     <message>
-        <location filename="customwebpage.cpp" line="80"/>
+        <location filename="customwebpage.cpp" line="94"/>
         <source>Error loading %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -295,17 +295,17 @@
 <context>
     <name>HistoryModel</name>
     <message>
-        <location filename="historymodel.cpp" line="10"/>
+        <location filename="historymodel.cpp" line="12"/>
         <source>Title</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="historymodel.cpp" line="11"/>
+        <location filename="historymodel.cpp" line="13"/>
         <source>Date</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="historymodel.cpp" line="11"/>
+        <location filename="historymodel.cpp" line="13"/>
         <source>URL</source>
         <translation type="unfinished"></translation>
     </message>
