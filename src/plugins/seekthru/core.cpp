@@ -2,16 +2,107 @@
 #include <QDomDocument>
 #include <QMetaType>
 #include <QFile>
+#include <QSettings>
 #include <QtDebug>
+#include <plugininterface/proxy.h>
 #include <plugininterface/util.h>
+
+using LeechCraft::Util::Proxy;
 
 const QString Core::OS_ = "http://a9.com/-/spec/opensearch/1.1/";
 
 Core::Core ()
+: Headers_ (tr ("Short name"))
 {
+	qRegisterMetaType<Description> ("Description");
 	qRegisterMetaTypeStreamOperators<UrlDescription> ("UrlDescription");
 	qRegisterMetaTypeStreamOperators<QueryDescription> ("QueryDescription");
 	qRegisterMetaTypeStreamOperators<Description> ("Description");
+	ReadSettings ();
+}
+
+int Core::columnCount (const QModelIndex&) const
+{
+	return Headers_.size ();
+}
+
+QVariant Core::data (const QModelIndex& index, int role) const
+{
+	if (!index.isValid ())
+		return QVariant ();
+
+	Description d = Descriptions_.at (index.row ());
+	switch (index.column ())
+	{
+		case 0:
+			switch (role)
+			{
+				case Qt::DisplayRole:
+					return d.ShortName_;
+				case RoleDescription:
+					return d.Description_;
+				case RoleContact:
+					return d.Contact_;
+				case RoleTags:
+					return d.Tags_;
+				case RoleLongName:
+					return d.LongName_;
+				case RoleDeveloper:
+					return d.Developer_;
+				case RoleAttribution:
+					return d.Attribution_;
+				case RoleRight:
+					switch (d.Right_)
+					{
+						case Description::SROpen:
+							return tr ("Open");
+						case Description::SRLimited:
+							return tr ("Limited");
+						case Description::SRPrivate:
+							return tr ("Private");
+						case Description::SRClosed:
+							return tr ("Closed");
+					}
+				default:
+					return QVariant ();
+			}
+		default:
+			return QVariant ();
+	}
+}
+
+Qt::ItemFlags Core::flags (const QModelIndex& index) const
+{
+	if (!index.isValid ())
+		return 0;
+	else
+		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+}
+
+QVariant Core::headerData (int pos, Qt::Orientation orient, int role) const
+{
+	if (orient == Qt::Horizontal && role == Qt::DisplayRole)
+		return Headers_.at (pos);
+	else
+		return QVariant ();
+}
+
+QModelIndex Core::index (int row, int column, const QModelIndex& parent) const
+{
+	if (!hasIndex (row, column, parent))
+		return QModelIndex ();
+
+	return createIndex (row, column);
+}
+
+QModelIndex Core::parent (const QModelIndex&) const
+{
+	return QModelIndex ();
+}
+
+int Core::rowCount (const QModelIndex& parent) const
+{
+	return parent.isValid () ? 0 : Descriptions_.size ();
 }
 
 Core& Core::Instance ()
@@ -115,11 +206,6 @@ void Core::HandleEntity (const QString& contents)
 			!urlTag.hasAttribute ("template") ||
 			!urlTag.hasAttribute ("type"))
 	{
-		qWarning () << shortNameTag.isNull ()
-			<< descriptionTag.isNull ()
-			<< urlTag.isNull ();
-		for (int i = 0, size = urlTag.attributes ().size (); i < size; ++i)
-			qWarning () << urlTag.attributes ().item (i).nodeName ();
 		emit error (tr ("Malformed OpenSearch description."));
 		return;
 	}
@@ -149,6 +235,8 @@ void Core::HandleEntity (const QString& contents)
 	QDomElement tagsTag = root.firstChildElement ("Tags");
 	if (!tagsTag.isNull ())
 		descr.Tags_ = tagsTag.text ().split (' ', QString::SkipEmptyParts);
+	else
+		descr.Tags_ = QStringList ("default");
 
 	QDomElement longNameTag = root.firstChildElement ("LongName");
 	if (!longNameTag.isNull ())
@@ -260,6 +348,12 @@ void Core::HandleEntity (const QString& contents)
 	}
 	if (!was)
 		descr.InputEncodings_ << "UTF-8";
+
+	beginInsertRows (QModelIndex (), Descriptions_.size (), Descriptions_.size ());
+	Descriptions_ << descr;
+	endInsertRows ();
+
+	WriteSettings ();
 }
 
 void Core::HandleProvider (QObject *provider)
@@ -279,6 +373,33 @@ void Core::HandleProvider (QObject *provider)
 	connect (provider,
 			SIGNAL (jobError (int, IDownload::Error)),
 			this,
-			SLOT (handleJobError (int, IDownload::Error)));
+			SLOT (handleJobError (int)));
+}
+
+void Core::ReadSettings ()
+{
+	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
+			Proxy::Instance ()->GetApplicationName () + "_SeekThru");
+	int size = settings.beginReadArray ("Descriptions");
+	for (int i = 0; i < size; ++i)
+	{
+		settings.setArrayIndex (i);
+		Descriptions_ << settings.value ("Description").value<Description> ();
+	}
+	settings.endArray ();
+}
+
+void Core::WriteSettings ()
+{
+	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
+			Proxy::Instance ()->GetApplicationName () + "_SeekThru");
+	settings.beginWriteArray ("Descriptions");
+	for (int i = 0; i < Descriptions_.size (); ++i)
+	{
+		settings.setArrayIndex (i);
+		settings.setValue ("Description",
+				QVariant::fromValue<Description> (Descriptions_.at (i)));
+	}
+	settings.endArray ();
 }
 

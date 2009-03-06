@@ -11,6 +11,7 @@ class SearchersList : public QWidget
 public:
 	SearchersList (QWidget* = 0);
 private slots:
+	void handleCurrentChanged (const QModelIndex&);
 	void on_ButtonAdd__released ();
 };
 

@@ -1,6 +1,7 @@
 #ifndef DESCRIPTION_H
 #define DESCRIPTION_H
 #include <QStringList>
+#include <QMetaType>
 
 struct UrlDescription
 {
@@ -68,6 +69,8 @@ struct Description
 
 QDataStream& operator<< (QDataStream&, const Description&);
 QDataStream& operator>> (QDataStream&, Description&);
+
+Q_DECLARE_METATYPE (Description);
 
 #endif
 
