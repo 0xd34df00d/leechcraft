@@ -35,6 +35,8 @@ public:
 	virtual QAbstractItemModel* GetModel () = 0;
 };
 
+typedef boost::shared_ptr<IFindProxy> IFindProxy_ptr;
+
 class IFinder
 {
 public:

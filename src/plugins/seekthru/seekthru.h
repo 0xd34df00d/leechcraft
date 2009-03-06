@@ -28,7 +28,7 @@ public:
 	void SetProvider (QObject*, const QString&);
 
 	QStringList GetCategories () const;
-	boost::shared_ptr<IFindProxy> GetProxy (const LeechCraft::Request&);
+	IFindProxy_ptr GetProxy (const LeechCraft::Request&);
 
 	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 private slots:

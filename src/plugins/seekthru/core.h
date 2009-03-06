@@ -3,6 +3,7 @@
 #include <QAbstractItemModel>
 #include <QMap>
 #include <interfaces/structures.h>
+#include <interfaces/ifinder.h>
 #include "description.h"
 
 class Core : public QAbstractItemModel
@@ -44,6 +45,8 @@ public:
 	/** Fetches the searcher from the url.
 	 */
 	void Add (const QString& url);
+	QStringList GetCategories () const;
+	IFindProxy_ptr GetProxy (const LeechCraft::Request&);
 private slots:
 	void handleJobFinished (int);
 	void handleJobRemoved (int);

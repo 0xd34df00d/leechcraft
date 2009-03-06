@@ -1,4 +1,7 @@
 #include "core.h"
+#include <algorithm>
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
 #include <QDomDocument>
 #include <QMetaType>
 #include <QFile>
@@ -6,6 +9,7 @@
 #include <QtDebug>
 #include <plugininterface/proxy.h>
 #include <plugininterface/util.h>
+#include "findproxy.h"
 
 using LeechCraft::Util::Proxy;
 
@@ -19,6 +23,8 @@ Core::Core ()
 	qRegisterMetaTypeStreamOperators<QueryDescription> ("QueryDescription");
 	qRegisterMetaTypeStreamOperators<Description> ("Description");
 	ReadSettings ();
+
+	GetCategories ();
 }
 
 int Core::columnCount (const QModelIndex&) const
@@ -137,6 +143,26 @@ void Core::Add (const QString& url)
 
 	HandleProvider (provider);
 	Jobs_ [id] = name;
+}
+
+QStringList Core::GetCategories () const
+{
+	QStringList result;
+	for (QList<Description>::const_iterator i = Descriptions_.begin (),
+			end = Descriptions_.end (); i != end; ++i)
+		result += i->Tags_;
+
+	result.sort ();
+	result.erase (std::unique (result.begin (), result.end ()), result.end ());
+
+	qDebug () << result;
+
+	return result;
+}
+
+IFindProxy_ptr Core::GetProxy (const LeechCraft::Request& r)
+{
+	return IFindProxy_ptr (new FindProxy (r));
 }
 
 void Core::handleJobFinished (int id)

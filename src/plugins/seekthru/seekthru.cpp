@@ -67,12 +67,12 @@ void SeekThru::SetProvider (QObject*, const QString&)
 
 QStringList SeekThru::GetCategories () const
 {
-	return QStringList ();
+	return Core::Instance ().GetCategories ();
 }
 
-boost::shared_ptr<IFindProxy> SeekThru::GetProxy (const LeechCraft::Request&)
+IFindProxy_ptr SeekThru::GetProxy (const LeechCraft::Request& r)
 {
-	return boost::shared_ptr<IFindProxy> ();
+	return Core::Instance ().GetProxy (r);
 }
 
 boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> SeekThru::GetSettingsDialog () const

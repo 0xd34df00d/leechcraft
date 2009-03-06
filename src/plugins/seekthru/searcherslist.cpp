@@ -27,7 +27,7 @@ void SearchersList::handleCurrentChanged (const QModelIndex& current)
 	else
 		Ui_.LongName_->setText (longName);
 
-	QStringList tags = current.data (Core::RoleLongName).toStringList ();
+	QStringList tags = current.data (Core::RoleTags).toStringList ();
 	Ui_.Tags_->setText (tags.join ("; "));
 
 	QString contact = current.data (Core::RoleContact).toString ();
