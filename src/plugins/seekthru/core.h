@@ -7,10 +7,13 @@
 #include "description.h"
 #include "searchhandler.h"
 
+class IWebBrowser;
+
 class Core : public QAbstractItemModel
 {
 	Q_OBJECT
 
+	QMap<QString, QObject*> Providers_;
 	QObjectList Downloaders_;
 	QMap<int, QString> Jobs_;
 	QList<Description> Descriptions_;
@@ -43,6 +46,7 @@ public:
     virtual QModelIndex parent (const QModelIndex&) const;
     virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 
+	void SetProvider (QObject*, const QString&);
 	/** Fetches the searcher from the url.
 	 *
 	 * @param[in] url The url with the search description.
@@ -51,6 +55,7 @@ public:
 	void Remove (const QModelIndex&);
 	QStringList GetCategories () const;
 	IFindProxy_ptr GetProxy (const LeechCraft::Request&);
+	IWebBrowser* GetWebBrowser () const;
 private slots:
 	void handleJobFinished (int);
 	void handleJobError (int);

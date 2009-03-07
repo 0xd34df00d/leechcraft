@@ -2,9 +2,12 @@
 #define SEARCHHANDLER_H
 #include <QAbstractItemModel>
 #include <boost/shared_ptr.hpp>
+#include <QUrl>
 #include <interfaces/ifinder.h>
 #include <interfaces/structures.h>
 #include "description.h"
+
+class SelectableBrowser;
 
 /** This class performs search on a single category with a single search
  * provider.
@@ -31,11 +34,13 @@ class SearchHandler : public QAbstractItemModel
 		int ItemsPerPage_;
 		QString Response_;
 		QString Filename_;
+		QUrl RequestURL_;
 	};
 
 	QList<Result> Results_;
 	QMap<int, Result> Jobs_;
 	QList<QObject*> Downloaders_;
+	boost::shared_ptr<SelectableBrowser> Viewer_;
 public:
 	SearchHandler (const Description&);
 

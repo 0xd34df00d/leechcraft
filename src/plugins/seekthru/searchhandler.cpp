@@ -2,12 +2,16 @@
 #include <QUrl>
 #include <QFile>
 #include <QtDebug>
-#include <interfaces/structures.h>
+#include <interfaces/iwebbrowser.h>
 #include <plugininterface/util.h>
+#include "selectablebrowser.h"
+#include "core.h"
 
 SearchHandler::SearchHandler (const Description& d)
 : D_ (d)
+, Viewer_ (new SelectableBrowser)
 {
+	Viewer_->Construct (Core::Instance ().GetWebBrowser ());
 }
 
 int SearchHandler::columnCount (const QModelIndex&) const
@@ -17,39 +21,54 @@ int SearchHandler::columnCount (const QModelIndex&) const
 
 QVariant SearchHandler::data (const QModelIndex& index, int role) const
 {
-	if (!index.isValid () || role != Qt::DisplayRole)
+	if (!index.isValid ())
 		return QVariant ();
 
 	int r = index.row ();
-	switch (index.column ())
+	switch (role)
 	{
-		case 0:
-			return SearchString_;
-		case 1:
-			if (Results_.at (r).TotalResults_ >= 0)
-				return tr ("%1 total results")
-					.arg (Results_.at (r).TotalResults_);
-			else
-				return tr ("Unknown number of results");
-		case 2:
+		case Qt::DisplayRole:
+			switch (index.column ())
 			{
-				QString result = D_.ShortName_;
-				switch (Results_.at (r).Type_)
-				{
-					case Result::TypeRSS:
-						result += tr (" (RSS)");
-						break;
-					case Result::TypeAtom:
-						result += tr (" (Atom)");
-						break;
-					case Result::TypeHTML:
-						result += tr (" (HTML)");
-						break;
-				}
-				return result;
+				case 0:
+					return SearchString_;
+				case 1:
+					if (Results_.at (r).TotalResults_ >= 0)
+						return tr ("%1 total results")
+							.arg (Results_.at (r).TotalResults_);
+					else
+						return tr ("Unknown number of results");
+				case 2:
+					{
+						QString result = D_.ShortName_;
+						switch (Results_.at (r).Type_)
+						{
+							case Result::TypeRSS:
+								result += tr (" (RSS)");
+								break;
+							case Result::TypeAtom:
+								result += tr (" (Atom)");
+								break;
+							case Result::TypeHTML:
+								result += tr (" (HTML)");
+								break;
+						}
+						return result;
+					}
+				default:
+					return QString ("");
 			}
+		case LeechCraft::RoleAdditionalInfo:
+			if (Results_.at (r).Type_ == Result::TypeHTML)
+			{
+				Viewer_->SetHtml (Results_.at (r).Response_,
+						Results_.at (r).RequestURL_.toString ()); 
+				return QVariant::fromValue<QWidget*> (Viewer_.get ());
+			}
+			else
+				return 0;
 		default:
-			return QString ("");
+			return QVariant ();
 	}
 }
 
@@ -110,7 +129,6 @@ void SearchHandler::Start (const LeechCraft::Request& r)
 			newItems << item;
 		}
 		url.setQueryItems (newItems);
-		qDebug () << url.toString () << u.Template_;
 
 		QString fname = LeechCraft::Util::GetTemporaryName ();
 		LeechCraft::DownloadEntity e =
@@ -139,6 +157,7 @@ void SearchHandler::Start (const LeechCraft::Request& r)
 
 		Result job;
 		job.Filename_ = fname;
+		job.RequestURL_ = url;
 		if (u.Type_ == "application/rss+xml")
 			job.Type_ = Result::TypeRSS;
 		else if (u.Type_ == "application/atom+xml")

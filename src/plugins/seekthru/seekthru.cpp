@@ -62,11 +62,12 @@ QStringList SeekThru::Needs () const
 
 QStringList SeekThru::Uses () const
 {
-	return QStringList ();
+	return QStringList ("webbrowser");
 }
 
-void SeekThru::SetProvider (QObject*, const QString&)
+void SeekThru::SetProvider (QObject *object, const QString& feature)
 {
+	Core::Instance ().SetProvider (object, feature);
 }
 
 QStringList SeekThru::GetCategories () const

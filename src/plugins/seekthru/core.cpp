@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QSettings>
 #include <QtDebug>
+#include <interfaces/iwebbrowser.h>
 #include <plugininterface/proxy.h>
 #include <plugininterface/util.h>
 #include "findproxy.h"
@@ -25,6 +26,12 @@ Core::Core ()
 	ReadSettings ();
 
 	GetCategories ();
+}
+
+Core& Core::Instance ()
+{
+	static Core c;
+	return c;
 }
 
 int Core::columnCount (const QModelIndex&) const
@@ -111,10 +118,9 @@ int Core::rowCount (const QModelIndex& parent) const
 	return parent.isValid () ? 0 : Descriptions_.size ();
 }
 
-Core& Core::Instance ()
+void Core::SetProvider (QObject *provider, const QString& feature)
 {
-	static Core c;
-	return c;
+	Providers_ [feature] = provider;
 }
 
 void Core::Add (const QString& url)
@@ -193,6 +199,14 @@ IFindProxy_ptr Core::GetProxy (const LeechCraft::Request& r)
 	boost::shared_ptr<FindProxy> fp (new FindProxy (r));
 	fp->SetHandlers (handlers);
 	return IFindProxy_ptr (fp);
+}
+
+IWebBrowser* Core::GetWebBrowser () const
+{
+	if (Providers_.contains ("webbrowser"))
+		return qobject_cast<IWebBrowser*> (Providers_ ["webbrowser"]);
+	else
+		return 0;
 }
 
 void Core::handleJobFinished (int id)

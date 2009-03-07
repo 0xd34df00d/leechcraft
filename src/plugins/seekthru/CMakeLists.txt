@@ -13,6 +13,7 @@ SET (SRCS
 	searcherslist.cpp
 	findproxy.cpp
 	searchhandler.cpp
+	selectablebrowser.cpp
 	)
 SET (HEADERS
 	seekthru.h
@@ -22,6 +23,7 @@ SET (HEADERS
 	searcherslist.h
 	findproxy.h
 	searchhandler.h
+	selectablebrowser.h
 	)
 SET (TRANSLATIONS
 	leechcraft_seekthru_ru_RU.ts
