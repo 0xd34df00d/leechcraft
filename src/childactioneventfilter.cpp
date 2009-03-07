@@ -2,6 +2,7 @@
 #include <QEvent>
 #include <QAction>
 #include <QTabWidget>
+#include <QtDebug>
 #include "skinengine.h"
 
 using namespace LeechCraft;
@@ -15,24 +16,20 @@ ChildActionEventFilter::~ChildActionEventFilter ()
 {
 }
 
-bool ChildActionEventFilter::eventFilter (QObject *obj, QEvent *e)
+bool ChildActionEventFilter::eventFilter (QObject *obj, QEvent *event)
 {
-	if (e->type () == QEvent::ChildAdded)
+	if (event->type () == QEvent::ChildAdded)
 	{
-		dynamic_cast<QChildEvent*> (e)->child ()->installEventFilter (this);
-		return false;
-	}
-	else if (e->type () == QEvent::ChildPolished)
-	{
+		QChildEvent *e = dynamic_cast<QChildEvent*> (event);
+		e->child ()->installEventFilter (this);
+
 		SkinEngine::Instance ()
-			.UpdateIconSet (dynamic_cast<QChildEvent*> (e)->child ()->
-					findChildren<QAction*> ());
+			.UpdateIconSet (e->child ()->findChildren<QAction*> ());
 		SkinEngine::Instance ()
-			.UpdateIconSet (dynamic_cast<QChildEvent*> (e)->child ()->
-					findChildren<QTabWidget*> ());
+			.UpdateIconSet (e->child ()->findChildren<QTabWidget*> ());
 		return false;
 	}
 	else
-		return QObject::eventFilter (obj, e);
+		return QObject::eventFilter (obj, event);
 }
 

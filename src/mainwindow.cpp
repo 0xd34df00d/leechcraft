@@ -406,11 +406,15 @@ void LeechCraft::MainWindow::updatePanes (const QItemSelection& newIndexes,
 		
 		if (controls)
 		{
+			if (controls->parent () != this)
+				controls->setParent (this);
 			Ui_.ControlsLayout_->addWidget (controls, 1);
 			controls->show ();
 		}
 		if (addiInfo)
 		{
+			if (addiInfo->parent () != this)
+				addiInfo->setParent (this);
 			Ui_.ControlsDockWidget_->setWidget (addiInfo);
 			Ui_.ControlsDockWidget_->show ();
 		}
