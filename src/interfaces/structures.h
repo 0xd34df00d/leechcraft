@@ -40,21 +40,39 @@ namespace LeechCraft
 
 	Q_DECLARE_FLAGS (TaskParameters, TaskParameter);
 
-	/** @brief Describes parameters of a download job.
+	/** @brief Describes parameters of an entity.
 	 *
-	 * Describes where and what should be saved.
+	 * This struct is used both for addition of new download jobs and
+	 * for announcing about finished/available entities, so its members
+	 * are context-dependent.
 	 *
 	 * @sa LeechCraft::TaskParameter
 	 */
 	struct DownloadEntity
 	{
-		/** @brief What the user wants to download - this could be
-		 * anything from URL to Magnet hash to local torrent file.
+		/** @brief The entity that this object represents.
+		 *
+		 * In the context of entity delegation it represents the entity
+		 * that should be downloaded or handled. For example, contents
+		 * of a torrent file, a magnet link, an RSS document.
+		 *
+		 * In the context of announcing about a finished entity, it
+		 * could contain previously mentioned entities as well.
 		 */
 		QByteArray Entity_;
-		/** @brief Where it wants the data to be saved.
+		/** @brief Source or destination.
+		 *
+		 * In the context of entity delegation this parameter represents
+		 * where the other plugin wants this job to be downloaded.
+		 *
+		 * In the context of entity announce this represents from where
+		 * this entity came - original URL, for example.
 		 */
 		QString Location_;
+		/** @brief MIME type of the entity.
+		 *
+		 * An empty mime is considered to be no mime.
+		 */
 		QString Mime_;
 		TaskParameters Parameters_;
 	};
