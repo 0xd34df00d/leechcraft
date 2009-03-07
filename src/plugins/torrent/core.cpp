@@ -157,9 +157,9 @@ void Core::DoDelayedInit ()
         setGeneralSettings ();
         setDHTSettings ();
     }
-    catch (...)
+    catch (const std::exception& e)
     {
-        qWarning () << "Seems like address is already in use.";
+        qWarning () << Q_FUNC_INFO << typeid (e).name () << e.what ();
     }
 
     Headers_ << tr ("Name")
