@@ -343,16 +343,20 @@ void Core::done (bool err)
 		if (!(taskdscr->Parameters_ & LeechCraft::DoNotNotifyUser))
 			emit downloadFinished (filename +
 					QString ("\n") + url);
+		bool silence = taskdscr->Parameters_ & LeechCraft::DoNotAnnounceEntity;
 		Remove (taskdscr);
 		emit taskFinished (id);
-		LeechCraft::DownloadEntity e =
+		if (!silence)
 		{
-			filename.toUtf8 (),
-			QString (),
-			QString (),
-			taskdscr->Parameters_
-		};
-		emit gotEntity (e);
+			LeechCraft::DownloadEntity e =
+			{
+				filename.toUtf8 (),
+				QString (),
+				QString (),
+				taskdscr->Parameters_
+			};
+			emit gotEntity (e);
+		}
 	}
 	else
 	{

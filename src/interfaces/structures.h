@@ -32,6 +32,10 @@ namespace LeechCraft
 		 * next start.
 		 */
 		NotPersistent = 128,
+		/** When the task is finished, it should not be announced via
+		 * gotEntity() signal.
+		 */
+		DoNotAnnounceEntity = 256
 	};
 
 	Q_DECLARE_FLAGS (TaskParameters, TaskParameter);
