@@ -1,8 +1,8 @@
 #ifndef FINDPROXY_H
 #define FINDPROXY_H
-#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <interfaces/ifinder.h>
+#include "searchhandler.h"
 
 namespace LeechCraft
 {
@@ -12,21 +12,22 @@ namespace LeechCraft
 	};
 };
 
-class SearchHandler;
-
 class FindProxy : public QObject
 				, public IFindProxy
 {
 	Q_OBJECT
 	Q_INTERFACES (IFindProxy);
-
+	
+	LeechCraft::Request R_;
 	boost::shared_ptr<LeechCraft::Util::MergeModel> MergeModel_;
-	QList<boost::shared_ptr<SearchHandler> > Handlers_;
+	QList<SearchHandler_ptr> Handlers_;
 public:
 	FindProxy (const LeechCraft::Request&);
 	virtual ~FindProxy ();
 
 	QAbstractItemModel* GetModel ();
+
+	void SetHandlers (const QList<SearchHandler_ptr>&);
 };
 
 #endif

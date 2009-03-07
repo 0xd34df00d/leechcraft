@@ -2,41 +2,34 @@
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 #include <plugininterface/mergemodel.h>
-#include "searchhandler.h"
+#include "core.h"
 
 using LeechCraft::Util::MergeModel;
 
 FindProxy::FindProxy (const LeechCraft::Request& r)
-: MergeModel_ (new MergeModel (QStringList ("1") << "2" << "3"))
+: R_ (r)
+, MergeModel_ (new MergeModel (QStringList ("1") << "2" << "3"))
 {
 }
 
 FindProxy::~FindProxy ()
 {
-	std::for_each
-		(
-			Handlers_.begin (), Handlers_.end (),
-			boost::bind
-				(
-				boost::function<void (MergeModel*, QAbstractItemModel*)>
-				(
-					&MergeModel::RemoveModel
-				),
-				MergeModel_.get (),
-				boost::bind
-				(
-					boost::function<SearchHandler* (boost::shared_ptr<SearchHandler>&)>
-					(
-						&boost::shared_ptr<SearchHandler>::get
-					),
-					_1
-				)
-			)
-		);
+	Q_FOREACH (SearchHandler_ptr sh, Handlers_)
+		MergeModel_->RemoveModel (sh.get ());
 }
 
 QAbstractItemModel* FindProxy::GetModel ()
 {
 	return MergeModel_.get ();
+}
+
+void FindProxy::SetHandlers (const QList<SearchHandler_ptr>& handlers)
+{
+	Handlers_ = handlers;
+	Q_FOREACH (SearchHandler_ptr sh, Handlers_)
+	{
+		MergeModel_->AddModel (sh.get ());
+		sh->Start (R_);
+	}
 }
 

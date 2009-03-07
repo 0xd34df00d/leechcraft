@@ -19,6 +19,10 @@ void SeekThru::Init ()
 			SIGNAL (error (const QString&)),
 			this,
 			SLOT (handleError (const QString&)));
+	connect (&Core::Instance (),
+			SIGNAL (warning (const QString&)),
+			this,
+			SLOT (handleWarning (const QString&)));
 
 	XmlSettingsDialog_.reset (new XmlSettingsDialog ());
 	XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
@@ -84,6 +88,13 @@ void SeekThru::handleError (const QString& error)
 {
 	QMessageBox::critical (0,
 			tr ("Error"),
+			error);
+}
+
+void SeekThru::handleWarning (const QString& error)
+{
+	QMessageBox::warning (0,
+			tr ("Warning"),
 			error);
 }
 

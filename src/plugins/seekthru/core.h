@@ -5,6 +5,7 @@
 #include <interfaces/structures.h>
 #include <interfaces/ifinder.h>
 #include "description.h"
+#include "searchhandler.h"
 
 class Core : public QAbstractItemModel
 {
@@ -52,7 +53,6 @@ public:
 	IFindProxy_ptr GetProxy (const LeechCraft::Request&);
 private slots:
 	void handleJobFinished (int);
-	void handleJobRemoved (int);
 	void handleJobError (int);
 private:
 	void HandleEntity (const QString&);

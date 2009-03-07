@@ -33,6 +33,7 @@ public:
 	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 private slots:
 	void handleError (const QString&);
+	void handleWarning (const QString&);
 signals:
 	void delegateEntity (const LeechCraft::DownloadEntity&,
 			int*, QObject**);

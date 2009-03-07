@@ -163,14 +163,36 @@ QStringList Core::GetCategories () const
 	result.sort ();
 	result.erase (std::unique (result.begin (), result.end ()), result.end ());
 
-	qDebug () << result;
-
 	return result;
 }
 
 IFindProxy_ptr Core::GetProxy (const LeechCraft::Request& r)
 {
-	return IFindProxy_ptr (new FindProxy (r));
+	QList<SearchHandler_ptr> handlers;
+	Q_FOREACH (Description d, Descriptions_)
+		if (d.Tags_.contains (r.Category_))
+		{
+			SearchHandler_ptr sh (new SearchHandler (d));
+			connect (sh.get (),
+					SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
+							int*, QObject**)),
+					this,
+					SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
+							int*, QObject**)));
+			connect (sh.get (),
+					SIGNAL (error (const QString&)),
+					this,
+					SIGNAL (error (const QString&)));
+			connect (sh.get (),
+					SIGNAL (warning (const QString&)),
+					this,
+					SIGNAL (warning (const QString&)));
+			handlers << sh;
+		}
+
+	boost::shared_ptr<FindProxy> fp (new FindProxy (r));
+	fp->SetHandlers (handlers);
+	return IFindProxy_ptr (fp);
 }
 
 void Core::handleJobFinished (int id)
@@ -196,10 +218,6 @@ void Core::handleJobFinished (int id)
 				.arg (filename));
 }
 
-void Core::handleJobRemoved (int)
-{
-}
-
 void Core::handleJobError (int id)
 {
 	if (!Jobs_.contains (id))
@@ -216,7 +234,7 @@ void Core::HandleEntity (const QString& contents)
 	int line, column;
 	if (!doc.setContent (contents, true, &errorString, &line, &column))
 	{
-		qDebug () << contents;
+		qWarning () << contents;
 		emit error (tr ("XML parse error %1 at %2:%3.")
 				.arg (errorString)
 				.arg (line)
@@ -252,10 +270,10 @@ void Core::HandleEntity (const QString& contents)
 	{
 		UrlDescription d =
 		{
-			urlTag.attributeNS (OS_, "template"),
-			urlTag.attributeNS (OS_, "type"),
-			urlTag.attributeNS (OS_, "indexOffset", "1").toInt (),
-			urlTag.attributeNS (OS_, "pageOffset", "1").toInt ()
+			urlTag.attribute ("template"),
+			urlTag.attribute ("type"),
+			urlTag.attribute ("indexOffset", "1").toInt (),
+			urlTag.attribute ("pageOffset", "1").toInt ()
 		};
 		descr.URLs_ << d;
 
@@ -400,10 +418,6 @@ void Core::HandleProvider (QObject *provider)
 			SIGNAL (jobFinished (int)),
 			this,
 			SLOT (handleJobFinished (int)));
-	connect (provider,
-			SIGNAL (jobRemoved (int)),
-			this,
-			SLOT (handleJobRemoved (int)));
 	connect (provider,
 			SIGNAL (jobError (int, IDownload::Error)),
 			this,
