@@ -198,7 +198,7 @@ void Core::AddFeed (const QString& url, const QStringList& tags)
 		std::find (feeds.begin (), feeds.end (), url);
 	if (pos != feeds.end ())
 	{
-		emit error (tr ("This feed is already added"));
+		emit error (tr ("This feed is already added."));
 		return;
 	}
 
@@ -211,7 +211,8 @@ void Core::AddFeed (const QString& url, const QStringList& tags)
 		LeechCraft::Internal |
 			LeechCraft::DoNotNotifyUser |
 			LeechCraft::DoNotSaveInHistory |
-			LeechCraft::NotPersistent
+			LeechCraft::NotPersistent |
+			LeechCraft::DoNotAnnounceEntity
 	};
 	PendingJob pj =
 	{
@@ -973,7 +974,8 @@ void Core::fetchExternalFile (const QString& url, const QString& where)
 		LeechCraft::Internal |
 			LeechCraft::DoNotNotifyUser |
 			LeechCraft::DoNotSaveInHistory |
-			LeechCraft::NotPersistent
+			LeechCraft::NotPersistent |
+			LeechCraft::DoNotAnnounceEntity
 	};
 
 	PendingJob pj =
@@ -1371,7 +1373,8 @@ void Core::UpdateFeed (const QString& url)
 		LeechCraft::Internal |
 			LeechCraft::DoNotNotifyUser |
 			LeechCraft::DoNotSaveInHistory |
-			LeechCraft::NotPersistent
+			LeechCraft::NotPersistent |
+			LeechCraft::DoNotAnnounceEntity
 	};
 
 	PendingJob pj =
