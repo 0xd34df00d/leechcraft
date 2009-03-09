@@ -178,6 +178,7 @@ SET (SRCS
 	categorymerger.cpp
 	requestnormalizer.cpp
 	operationalmodel.cpp
+	tabwidget.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -207,6 +208,7 @@ SET (HEADERS
 	categorymerger.h
 	requestnormalizer.h
 	operationalmodel.h
+	tabwidget.h
 	interfaces/iinfo.h
 	interfaces/iwindow.h
 	interfaces/idownload.h

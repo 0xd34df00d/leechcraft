@@ -131,7 +131,7 @@ QModelIndexList LeechCraft::MainWindow::GetSelectedRows () const
 	return Ui_.PluginsTasksTree_->selectionModel ()->selectedRows ();
 }
 
-QTabWidget* LeechCraft::MainWindow::GetTabWidget () const
+TabWidget* LeechCraft::MainWindow::GetTabWidget () const
 {
 	return Ui_.MainTabWidget_;
 }

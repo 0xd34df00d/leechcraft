@@ -1,18 +1,22 @@
 #include "tabcontainer.h"
-#include <QTabWidget>
 #include <QCoreApplication>
 #include <QKeyEvent>
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "tabwidget.h"
 
 using namespace LeechCraft;
 
-TabContainer::TabContainer (QTabWidget *tabWidget,
+TabContainer::TabContainer (TabWidget *tabWidget,
 		QObject *parent)
 : QObject (parent)
 , TabWidget_ (tabWidget)
 , TabMode_ (true)
 {
+	connect (TabWidget_,
+			SIGNAL (tabCloseRequested (int)),
+			this,
+			SLOT (remove (int)));
 }
 
 TabContainer::~TabContainer ()
@@ -125,6 +129,12 @@ void TabContainer::remove (QWidget *contents)
 		Widgets_.removeAll (contents);
 		contents->deleteLater ();
 	}
+}
+
+void TabContainer::remove (int index)
+{
+	if (index >= Core::Instance ().CountUnremoveableTabs ())
+		remove (TabWidget_->widget (index));
 }
 
 void TabContainer::changeTabName (QWidget *contents, const QString& name)

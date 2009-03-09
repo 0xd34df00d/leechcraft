@@ -3,23 +3,24 @@
 #include <QObject>
 #include <QStringList>
 
-class QTabWidget;
 class QIcon;
 class QKeyEvent;
 
 namespace LeechCraft
 {
+	class TabWidget;
+
 	class TabContainer : public QObject
 	{
 		Q_OBJECT
 
-		QTabWidget *TabWidget_;
+		TabWidget *TabWidget_;
 		bool TabMode_;
 		QList<QWidget*> Widgets_;
 		QStringList TabNames_;
 		QList<QKeyEvent*> Events_;
 	public:
-		TabContainer (QTabWidget*, QObject* = 0);
+		TabContainer (TabWidget*, QObject* = 0);
 		virtual ~TabContainer ();
 
 		QWidget* GetWidget (int) const;
@@ -32,6 +33,7 @@ namespace LeechCraft
 		void add (const QString&, QWidget*,
 				const QIcon& icon);
 		void remove (QWidget*);
+		void remove (int);
 		void changeTabName (QWidget*, const QString&);
 		void changeTabIcon (QWidget*, const QIcon&);
 		void bringToFront (QWidget*) const;

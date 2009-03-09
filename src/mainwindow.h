@@ -11,7 +11,6 @@
 class QLabel;
 class QSplashScreen;
 class QDockWidget;
-class QTabWidget;
 class QModelIndex;
 
 namespace LeechCraft
@@ -54,7 +53,7 @@ namespace LeechCraft
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
 		virtual ~MainWindow ();
 		QModelIndexList GetSelectedRows () const;
-		QTabWidget* GetTabWidget () const;
+		TabWidget* GetTabWidget () const;
 	public slots:
 		void catchError (QString);
 	protected:
