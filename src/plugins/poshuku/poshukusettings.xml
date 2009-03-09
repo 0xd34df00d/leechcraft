@@ -58,6 +58,20 @@
 			<label lang="en" value="Cache" />
 			<label lang="ru" value="Кэш" />
 			<groupbox>
+				<label lang="en" value="Offline storage" />
+				<label lang="ru" value="Оффлайн-хранилище" />
+				<item type="spinbox" property="OfflineStorageQuota" default="128" minimum="0" maximum="1048576">
+					<lang value="en">
+						<label value="Offline storage default quota:" />
+						<suffix value=" KB" />
+					</lang>
+					<lang value="ru">
+						<label value="Квота оффлайн-хранилища по умолчанию:" />
+						<suffix value=" КБ" />
+					</lang>
+				</item>
+			</groupbox>
+			<groupbox>
 				<label lang="en" value="In-memory" />
 				<label lang="ru" value="В памяти" />
 				<item type="spinbox" property="MaximumPagesInCache" default="15" minimum="5" maximum="1000" step="5">

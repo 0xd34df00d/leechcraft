@@ -1,4 +1,5 @@
 #include "poshuku.h"
+#include <stdexcept>
 #include <QMessageBox>
 #include <QWebSettings>
 #include <QHeaderView>
@@ -29,19 +30,29 @@ void Poshuku::Init ()
 	SetupView ();
 	RegisterSettings ();
 
-	QDir iconDir = QDir::home ();
-	iconDir.cd (".leechcraft");
-	iconDir.cd ("poshuku");
-	if (!iconDir.exists ("favicons") && !iconDir.mkdir ("favicons"))
+	try
+	{
+		QWebSettings::setIconDatabasePath (
+				LeechCraft::Util::CreateIfNotExists ("poshuku/favicons").absolutePath ()
+				);
+	}
+	catch (const std::runtime_error& e)
+	{
 		QMessageBox::warning (0,
 				tr ("Warning"),
-				tr ("Could not create icon database at %1")
-					.arg (QDir::toNativeSeparators (iconDir
-							.absoluteFilePath ("favicons"))));
-	else
+				e.what ());
+	}
+	try
 	{
-		iconDir.cd ("favicons");
-		QWebSettings::setIconDatabasePath (iconDir.absolutePath ());
+		QWebSettings::setOfflineStoragePath (
+				LeechCraft::Util::CreateIfNotExists ("poshuku/offlinestorage").absolutePath ()
+				);
+	}
+	catch (const std::runtime_error& e)
+	{
+		QMessageBox::warning (0,
+				tr ("Warning"),
+				e.what ());
 	}
 
 	XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
@@ -229,7 +240,8 @@ void Poshuku::RegisterSettings ()
 	cacheSettings << "MaximumPagesInCache"
 		<< "MinDeadCapacity"
 		<< "MaxDeadCapacity"
-		<< "TotalCapacity";
+		<< "TotalCapacity"
+		<< "OfflineStorageQuota";
 	XmlSettingsManager::Instance ()->RegisterObject (cacheSettings,
 			this, "cacheSettingsChanged");
 
@@ -348,6 +360,8 @@ void Poshuku::cacheSettingsChanged ()
 			XmlSettingsManager::Instance ()->property ("MaxDeadCapacity").toDouble () * 1024 * 1024,
 			XmlSettingsManager::Instance ()->property ("TotalCapacity").toDouble () * 1024 * 1024
 			);
+	QWebSettings::setOfflineStorageDefaultQuota (XmlSettingsManager::Instance ()->
+			property ("OfflineStorageQuota").toInt () * 1024);
 }
 
 void Poshuku::updateFavoritesFilter ()
