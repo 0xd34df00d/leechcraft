@@ -53,7 +53,7 @@ QVariant LeechCraft::PluginManager::data (const QModelIndex& index, int role) co
 					return qobject_cast<IInfo*> (Plugins_.at (index.row ())->
 							instance ())->GetIcon ();
 				case 45:
-					return Plugins_.at (index.row ())->instance ();
+					return QVariant::fromValue<QObject*> (Plugins_.at (index.row ())->instance ());
 				default:
 					return QVariant ();
 			}
