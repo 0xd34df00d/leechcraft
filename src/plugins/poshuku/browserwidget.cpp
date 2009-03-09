@@ -213,7 +213,7 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	completer->setModel (Core::Instance ().GetURLCompletionModel ());
 	Ui_.URLEdit_->setCompleter (completer);
 	connect (Ui_.URLEdit_,
-			SIGNAL (textChanged (const QString&)),
+			SIGNAL (textEdited (const QString&)),
 			Core::Instance ().GetURLCompletionModel (),
 			SLOT (setBase (const QString&)));
 

@@ -78,9 +78,6 @@ void ProgressLineEdit::handleHighlighted (const QModelIndex& index)
 			model ())->index (index.row (), 0)
 		.data (URLCompletionModel::RoleURL).toString ();
 
-	// We don't wont the completion model to update the filtering.
-	blockSignals (true);
 	setText (url);
-	blockSignals (false);
 }
 
