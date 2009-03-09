@@ -23,8 +23,8 @@
 				<label lang="en" value="Behavior" />
 				<label lang="ru" value="Поведение" />
 				<item type="lineedit" property="TextTransferMode" default="txt cpp cxx c ui asm htm html css asp vbs js">
-					<label lang="en" value="Use text transfer mode" />
-					<label lang="ru" value="Использовать текстовый режим передачи" />
+					<label lang="en" value="Use text transfer mode:" />
+					<label lang="ru" value="Использовать текстовый режим передачи:" />
 				</item>
 			</groupbox>
 		</tab>
@@ -35,32 +35,32 @@
 				<label lang="en" value="FTP" />
 				<label lang="ru" value="FTP" />
 				<item type="lineedit" property="FTPLogin" default="anonymous">
-					<label lang="en" value="Login" />
-					<label lang="ru" value="Логин" />
+					<label lang="en" value="Login:" />
+					<label lang="ru" value="Логин:" />
 				</item>
 				<item type="lineedit" property="FTPPassword" default="simpleemail@leechcraft.org">
-					<label lang="en" value="Password" />
-					<label lang="ru" value="Пароль" />
+					<label lang="en" value="Password:" />
+					<label lang="ru" value="Пароль:" />
 				</item>
 			</groupbox>
 			<groupbox>
 				<label lang="en" value="HTTP" />
 				<label lang="ru" value="HTTP" />
 				<item type="lineedit" property="HTTPLogin" default="anonymous">
-					<label lang="en" value="Login" />
-					<label lang="ru" value="Логин" />
+					<label lang="en" value="Login:" />
+					<label lang="ru" value="Логин:" />
 				</item>
 				<item type="lineedit" property="HTTPPassword" default="simpleemail@leechcraft.org">
-					<label lang="en" value="Password" />
-					<label lang="ru" value="Пароль" />
+					<label lang="en" value="Password:" />
+					<label lang="ru" value="Пароль:" />
 				</item>
 				<item type="lineedit" property="UserUserAgent">
-					<label lang="en" value="User's user agent" />
-					<label lang="ru" value="Пользовательский user agent" />
+					<label lang="en" value="User's user agent:" />
+					<label lang="ru" value="Пользовательский user agent:" />
 				</item>
 				<item type="combobox" property="PredefinedUserAgent">
-					<label lang="en" value="Predefined user agent" />
-					<label lang="ru" value="Предустановленный user agent" />
+					<label lang="en" value="Predefined user agent:" />
+					<label lang="ru" value="Предустановленный user agent:" />
 					<option default="true" value="Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Firefox/3.0.1">
 						<label lang="en" value="Firefox 3.0.1 on Linux i686" />
 						<binary type="image" place="rcc">:/resources/images/clients/firefox.png</binary>
