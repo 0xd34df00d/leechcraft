@@ -27,7 +27,7 @@ CustomWebPage::CustomWebPage (QObject *parent)
 			this,
 			SLOT (gotUnsupportedContent (QNetworkReply*)));
 	connect (this,
-			SIGNAL (loadFinished ()),
+			SIGNAL (loadFinished (bool)),
 			this,
 			SLOT (handleLoadFinished ()));
 }
