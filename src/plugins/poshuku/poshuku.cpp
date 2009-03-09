@@ -229,8 +229,15 @@ void Poshuku::RegisterSettings ()
 		<< "DefaultFontSize"
 		<< "DefaultFixedFontSize"
 		<< "AutoLoadImages"
-		<< "AllowJavaScript"
-		<< "UserStyleSheet";
+		<< "AllowJavascript"
+		<< "AllowJava"
+		<< "AllowPlugins"
+		<< "JavascriptCanOpenWindows"
+		<< "JavascriptCanAccessClipboard"
+		<< "UserStyleSheet"
+		<< "OfflineStorageDB"
+		<< "LocalStorageDB"
+		<< "OfflineWebApplicationCache";
 	XmlSettingsManager::Instance ()->RegisterObject (viewerSettings,
 			this, "viewerSettingsChanged");
 
@@ -346,7 +353,21 @@ void Poshuku::viewerSettingsChanged ()
 	QWebSettings::globalSettings ()->setAttribute (QWebSettings::AutoLoadImages,
 			XmlSettingsManager::Instance ()->property ("AutoLoadImages").toBool ());
 	QWebSettings::globalSettings ()->setAttribute (QWebSettings::JavascriptEnabled,
-			XmlSettingsManager::Instance ()->property ("AllowJavaScript").toBool ());
+			XmlSettingsManager::Instance ()->property ("AllowJavascript").toBool ());
+	QWebSettings::globalSettings ()->setAttribute (QWebSettings::JavaEnabled,
+			XmlSettingsManager::Instance ()->property ("AllowJava").toBool ());
+	QWebSettings::globalSettings ()->setAttribute (QWebSettings::PluginsEnabled,
+			XmlSettingsManager::Instance ()->property ("AllowPlugins").toBool ());
+	QWebSettings::globalSettings ()->setAttribute (QWebSettings::JavascriptCanOpenWindows,
+			XmlSettingsManager::Instance ()->property ("JavascriptCanOpenWindows").toBool ());
+	QWebSettings::globalSettings ()->setAttribute (QWebSettings::JavascriptCanAccessClipboard,
+			XmlSettingsManager::Instance ()->property ("JavascriptCanAccessClipboard").toBool ());
+	QWebSettings::globalSettings ()->setAttribute (QWebSettings::OfflineStorageDatabaseEnabled,
+			XmlSettingsManager::Instance ()->property ("OfflineStorageDB").toBool ());
+	QWebSettings::globalSettings ()->setAttribute (QWebSettings::OfflineWebApplicationCacheEnabled,
+			XmlSettingsManager::Instance ()->property ("OfflineWebApplicationCache").toBool ());
+	QWebSettings::globalSettings ()->setAttribute (QWebSettings::LocalStorageDatabaseEnabled,
+			XmlSettingsManager::Instance ()->property ("LocalStorageDB").toBool ());
 	QWebSettings::globalSettings ()->setUserStyleSheetUrl (QUrl (XmlSettingsManager::
 				Instance ()->property ("UserStyleSheet").toString ()));
 }

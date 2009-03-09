@@ -38,6 +38,18 @@
 			<groupbox>
 				<label lang="en" value="Security" />
 				<label lang="ru" value="Безопасность" />
+				<item type="checkbox" property="OfflineStorageDB" state="on">
+					<label lang="en" value="Offline storage database" />
+					<label lang="ru" value="Оффлай-хранилище" />
+				</item>
+				<item type="checkbox" property="OfflineWebApplicationCache" state="on">
+					<label lang="en" value="Offline web application cache" />
+					<label lang="ru" value="Оффлайн-кэш веб-приложений" />
+				</item>
+				<item type="checkbox" property="LocalStorageDB" state="on">
+					<label lang="en" value="Local storage database" />
+					<label lang="ru" value="Локальное хранилище" />
+				</item>
 				<item type="spinbox" property="HistoryClearOlderThan" minimum="0" maximum="10000" default="30">
 					<lang value="en">
 						<label value="Clear history items older than:" />
@@ -126,10 +138,28 @@
 					<label lang="ru" value="Автоматически загружать изображения" />
 					<label lang="uk" value="Автоматично завантажувати зображення" />
 				</item>
-				<item type="checkbox" property="AllowJavaScript" state="on">
-					<label lang="en" value="Allow JavaScript" />
-					<label lang="ru" value="Разрешить JavaScript" />
-					<label lang="uk" value="Дозволити JavaScript" />
+				<item type="checkbox" property="AllowJavascript" state="on">
+					<label lang="en" value="Allow Javascript" />
+					<label lang="ru" value="Разрешить Javascript" />
+					<label lang="uk" value="Дозволити Javascript" />
+				</item>
+				<item type="checkbox" property="AllowJava" state="on">
+					<label lang="en" value="Allow Java" />
+					<label lang="ru" value="Разрешить Java" />
+					<label lang="uk" value="Дозволити Java" />
+				</item>
+				<item type="checkbox" property="AllowPlugins" state="on">
+					<label lang="en" value="Allow plugins" />
+					<label lang="ru" value="Разрешить плагины" />
+					<label lang="uk" value="Дозволити плагини" />
+				</item>
+				<item type="checkbox" property="JavascriptCanOpenWindows" state="on">
+					<label lang="en" value="Javascript programs can open new windows" />
+					<label lang="ru" value="Javascript-программы могут открывать новые окна" />
+				</item>
+				<item type="checkbox" property="JavascriptCanAccessClipboard" state="on">
+					<label lang="en" value="Javascript programs can access clipboard" />
+					<label lang="ru" value="Javascript-программы могут работать с буфером обмена" />
 				</item>
 			</groupbox>
 		</tab>
