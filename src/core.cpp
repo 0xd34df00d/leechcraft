@@ -22,6 +22,7 @@
 #include <QFileDialog>
 #include <QAuthenticator>
 #include <QLocalSocket>
+#include <QNetworkDiskCache>
 #include <plugininterface/util.h>
 #include <plugininterface/proxy.h>
 #include <interfaces/iinfo.h>
@@ -93,6 +94,18 @@ LeechCraft::Core::Core ()
 		NetworkAccessManager_->setCookieJar (jar);
 	}
 
+	try
+	{
+		CreateIfNotExists ("core/cache");
+		QNetworkDiskCache *cache = new QNetworkDiskCache (NetworkAccessManager_.get ());
+		cache->setCacheDirectory (QDir::homePath () + "/.leechcraft/core/cache");
+		NetworkAccessManager_->setCache (cache);
+	}
+	catch (const std::runtime_error& e)
+	{
+		qWarning () << Q_FUNC_INFO << e.what () << "so continuing without cache";
+	}
+
 	connect (CookieSaveTimer_.get (),
 			SIGNAL (timeout ()),
 			this,
@@ -124,7 +137,8 @@ LeechCraft::Core::Core ()
 		<< "ProxyPort"
 		<< "ProxyLogin"
 		<< "ProxyPassword"
-		<< "ProxyType";
+		<< "ProxyType"
+		<< "CacheSize";
 	XmlSettingsManager::Instance ()->RegisterObject (proxyProperties,
 			this, "handleProxySettings");
 
@@ -464,6 +478,10 @@ void LeechCraft::Core::handleProxySettings () const
 		pr.setType (QNetworkProxy::NoProxy);
 	QNetworkProxy::setApplicationProxy (pr);
 	NetworkAccessManager_->setProxy (pr);
+
+	static_cast<QNetworkDiskCache*> (NetworkAccessManager_->cache ())->
+		setMaximumCacheSize (XmlSettingsManager::Instance ()->
+				property ("CacheSize").toInt () * 1048576);
 }
 
 namespace

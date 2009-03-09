@@ -62,6 +62,16 @@
 		<label lang="en" value="Network" />
 		<label lang="ru" value="Сеть" />
 		<label lang="uk" value="Мережеа" />
+		<item type="spinbox" property="CacheSize" default="200" minimum="5" maximum="1048576">
+			<lang value="en">
+				<label value="Cache size:" />
+				<suffix value=" MB" />
+			</lang>
+			<lang value="ru">
+				<label value="Размер кэша:" />
+				<suffix value=" МБ" />
+			</lang>
+		</item>
 		<item type="groupbox" property="ProxyEnabled" checkable="true" state="off">
 			<label lang="en" value="Application-wide proxy" />
 			<label lang="ru" value="Глобальный прокси" />
