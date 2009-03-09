@@ -32,7 +32,7 @@ QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName)
 	return transl;
 }
 
-void LeechCraft::Util::CreateIfNotExists (const QString& path)
+QDir LeechCraft::Util::CreateIfNotExists (const QString& path)
 {
 	QDir home = QDir::home ();
 	home.cd (".leechcraft");
@@ -48,6 +48,11 @@ void LeechCraft::Util::CreateIfNotExists (const QString& path)
 		throw std::runtime_error (qPrintable (QObject::tr ("Could not create %1")
 					.arg (QDir::toNativeSeparators (home.filePath (path)))));
 	}
+
+	home = QDir::home ();
+	home.cd (".leechcraft");
+	home.cd (path);
+	return home;
 }
 
 QString LeechCraft::Util::GetTemporaryName (const QString& pattern)

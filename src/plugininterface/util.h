@@ -2,6 +2,7 @@
 #define LEECHCRAFT_UTIL_UTIL_H
 #include "config.h"
 #include <QString>
+#include <QDir>
 
 class QTranslator;
 
@@ -55,10 +56,11 @@ namespace LeechCraft
 		 * exists and it is not readable.
 		 *
 		 * @param[in] path The path to create.
+		 * @return The newly created dir.
 		 * @exception std::runtime_error Throws if the path could not be
 		 * created.
 		 */
-		LEECHCRAFT_API void CreateIfNotExists (const QString& path);
+		LEECHCRAFT_API QDir CreateIfNotExists (const QString& path);
 
 		/** @brief Returns a temporary filename.
 		 *
