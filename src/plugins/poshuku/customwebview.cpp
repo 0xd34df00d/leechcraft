@@ -13,6 +13,21 @@
 CustomWebView::CustomWebView (QWidget *parent)
 : QWebView (parent)
 {
+	Zooms_ << 0.3
+		<< 0.5
+		<< 0.67
+		<< 0.8
+		<< 0.9
+		<< 1
+		<< 1.1
+		<< 1.2
+		<< 1.33
+		<< 1.5
+		<< 1.7
+		<< 2
+		<< 2.4
+		<< 3;
+
 	CustomWebPage *page = new CustomWebPage (this);
 	setPage (page);
 
@@ -173,6 +188,50 @@ void CustomWebView::contextMenuEvent (QContextMenuEvent *e)
 	}
 
 	QWebView::contextMenuEvent (e);
+}
+
+int CustomWebView::LevelForZoom (qreal zoom)
+{
+	int i = Zooms_.indexOf (zoom);
+
+	if (i >= 0)
+		return i;
+
+	for (i = 0; i < Zooms_.size (); ++i)
+		if (zoom <= Zooms_ [i])
+			break;
+
+	if (i == Zooms_.size ())
+		return i - 1;
+
+	if (i == 0)
+		return i;
+
+	if (zoom - Zooms_ [i - 1] > Zooms_ [i] - zoom)
+		return i;
+	else
+		return i - 1;
+}
+
+void CustomWebView::zoomIn ()
+{
+	int i = LevelForZoom (zoomFactor ());
+
+	if (i < Zooms_.size () - 1)
+		setZoomFactor (Zooms_ [i + 1]);
+}
+
+void CustomWebView::zoomOut ()
+{
+	int i = LevelForZoom (zoomFactor ());
+
+	if (i > 0)
+		setZoomFactor (Zooms_ [i - 1]);
+}
+
+void CustomWebView::zoomReset ()
+{
+	setZoomFactor (1);
 }
 
 void CustomWebView::remakeURL (const QUrl& url)

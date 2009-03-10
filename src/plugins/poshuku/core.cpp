@@ -228,8 +228,8 @@ void Core::Unregister (BrowserWidget *widget)
 
 	if (!title.isEmpty ())
 	{
-		if (title.size () > 103)
-			title = title.left (100) + "...";
+		if (title.size () > 53)
+			title = title.left (50) + "...";
 		QAction *action = new QAction (widget->GetView ()->icon (),
 				title, this);
 		action->setData (widget->GetView ()->url ());

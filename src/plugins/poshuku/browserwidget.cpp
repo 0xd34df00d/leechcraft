@@ -106,6 +106,21 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	CloseTab_->setProperty ("ActionIcon", "poshuku_closetab");
 	CloseTab_->setShortcut (tr ("Ctrl+W"));
 
+	ZoomIn_ = new QAction (tr ("Zoom in"),
+			this);
+	ZoomIn_->setProperty ("ActionIcon", "poshuku_zoomin");
+	ZoomIn_->setShortcut (Qt::CTRL + Qt::Key_Plus);
+
+	ZoomOut_ = new QAction (tr ("Zoom out"),
+			this);
+	ZoomOut_->setProperty ("ActionIcon", "poshuku_zoomout");
+	ZoomOut_->setShortcut (Qt::CTRL + Qt::Key_Minus);
+
+	ZoomReset_ = new QAction (tr ("Reset zoom"),
+			this);
+	ZoomReset_->setProperty ("ActionIcon", "poshuku_zoomreset");
+	ZoomReset_->setShortcut (tr ("Ctrl+0"));
+
 	bar->addAction (back);
 	bar->addAction (forward);
 	bar->addAction (reload);
@@ -114,9 +129,15 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 
 	moreMenu->addAction (Find_);
 	moreMenu->addAction (Add2Favorites_);
+	moreMenu->addSeparator ();
+	moreMenu->addAction (ZoomIn_);
+	moreMenu->addAction (ZoomOut_);
+	moreMenu->addAction (ZoomReset_);
+	moreMenu->addSeparator ();
 	moreMenu->addAction (Print_);
 	moreMenu->addAction (PrintPreview_);
 	moreMenu->addAction (ScreenSave_);
+	moreMenu->addSeparator ();
 	moreMenu->addAction (ViewSources_);
 	moreMenu->addSeparator ();
 	RecentlyClosed_ = moreMenu->addMenu (tr ("Recently closed"));
@@ -168,6 +189,18 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			SIGNAL (triggered ()),
 			this,
 			SIGNAL (needToClose ()));
+	connect (ZoomIn_,
+			SIGNAL (triggered ()),
+			Ui_.WebView_,
+			SLOT (zoomIn ()));
+	connect (ZoomOut_,
+			SIGNAL (triggered ()),
+			Ui_.WebView_,
+			SLOT (zoomOut ()));
+	connect (ZoomReset_,
+			SIGNAL (triggered ()),
+			Ui_.WebView_,
+			SLOT (zoomReset ()));
 
 	connect (Ui_.WebView_,
 			SIGNAL (titleChanged (const QString&)),

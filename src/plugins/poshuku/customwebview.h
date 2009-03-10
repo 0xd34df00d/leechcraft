@@ -6,6 +6,8 @@
 class CustomWebView : public QWebView
 {
 	Q_OBJECT
+
+	QList<qreal> Zooms_;
 public:
 	CustomWebView (QWidget* = 0);
 	virtual ~CustomWebView ();
@@ -20,6 +22,12 @@ protected:
 	virtual void mousePressEvent (QMouseEvent*);
 	virtual void wheelEvent (QWheelEvent*);
 	virtual void contextMenuEvent (QContextMenuEvent*);
+private:
+	int LevelForZoom (qreal);
+public slots:
+	void zoomIn ();
+	void zoomOut ();
+	void zoomReset ();
 private slots:
 	void remakeURL (const QUrl&);
 	void handleNewThumbs ();

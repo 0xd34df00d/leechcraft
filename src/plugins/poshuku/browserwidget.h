@@ -21,6 +21,9 @@ class BrowserWidget : public QWidget
 	QAction *ViewSources_;
 	QAction *NewTab_;
 	QAction *CloseTab_;
+	QAction *ZoomIn_;
+	QAction *ZoomOut_;
+	QAction *ZoomReset_;
 	QMenu *RecentlyClosed_;
 public:
 	BrowserWidget (QWidget* = 0);
