@@ -18,6 +18,7 @@ public:
 protected:
 	virtual QWebView* createWindow (QWebPage::WebWindowType);
 	virtual void mousePressEvent (QMouseEvent*);
+	virtual void wheelEvent (QWheelEvent*);
 	virtual void contextMenuEvent (QContextMenuEvent*);
 private slots:
 	void remakeURL (const QUrl&);

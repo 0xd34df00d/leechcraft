@@ -104,6 +104,19 @@ void CustomWebView::mousePressEvent (QMouseEvent *e)
 	QWebView::mousePressEvent (e);
 }
 
+void CustomWebView::wheelEvent (QWheelEvent *e)
+{
+	if (e->modifiers () & Qt::ControlModifier)
+	{
+		int degrees = e->delta () / 8;
+		qreal delta = static_cast<qreal> (degrees) / 150;
+		setZoomFactor (zoomFactor () + delta);
+		e->accept ();
+	}
+	else
+		QWebView::wheelEvent (e);
+}
+
 void CustomWebView::contextMenuEvent (QContextMenuEvent *e)
 {
 	std::auto_ptr<QMenu> menu (new QMenu (this));
