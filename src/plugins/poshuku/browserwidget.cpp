@@ -1,5 +1,6 @@
 #include "browserwidget.h"
 #include <QKeyEvent>
+#include <QDesktopWidget>
 #include <QtDebug>
 #include <QToolBar>
 #include <QBuffer>
@@ -526,6 +527,9 @@ void BrowserWidget::updateTooltip ()
 
 	QLabel *widget = new QLabel;
 	pixmap = pixmap.scaledToWidth (200, Qt::SmoothTransformation);
+	int maxHeight = 0.8 * QApplication::desktop ()->screenGeometry (this).height ();
+	if (pixmap.height () > maxHeight)
+		pixmap = pixmap.copy (0, 0, 200, maxHeight);
 	widget->setPixmap (pixmap);
 	widget->setFixedSize (pixmap.width (), pixmap.height ());
 
