@@ -36,6 +36,7 @@ namespace LeechCraft
 		void remove (int);
 		void changeTabName (QWidget*, const QString&);
 		void changeTabIcon (QWidget*, const QIcon&);
+		void changeTooltip (QWidget*, QWidget*);
 		void bringToFront (QWidget*) const;
 		void handleTabNames ();
 	private:

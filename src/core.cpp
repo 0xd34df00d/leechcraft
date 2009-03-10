@@ -939,6 +939,10 @@ void LeechCraft::Core::InitMultiTab (QObject *plugin)
 			TabContainer_.get (),
 			SLOT (changeTabIcon (QWidget*, const QIcon&)));
 	connect (plugin,
+			SIGNAL (changeTooltip (QWidget*, QWidget*)),
+			TabContainer_.get (),
+			SLOT (changeTooltip (QWidget*, QWidget*)));
+	connect (plugin,
 			SIGNAL (statusBarChanged (QWidget*, const QString&)),
 			this,
 			SLOT (handleStatusBarChanged (QWidget*, const QString&)));

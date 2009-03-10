@@ -179,6 +179,7 @@ SET (SRCS
 	requestnormalizer.cpp
 	operationalmodel.cpp
 	tabwidget.cpp
+	3dparty/qxttooltip.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -209,6 +210,8 @@ SET (HEADERS
 	requestnormalizer.h
 	operationalmodel.h
 	tabwidget.h
+	3dparty/qxttooltip.h
+	3dparty/qxttooltip_p.h
 	interfaces/iinfo.h
 	interfaces/iwindow.h
 	interfaces/idownload.h

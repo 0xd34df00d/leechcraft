@@ -165,9 +165,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	Ui_.ActionFullscreenMode_->setProperty ("ActionIcon", "fullscreen");
 	Ui_.ActionFullscreenMode_->setParent (this);
 
-	QWidget *settings = new QWidget ();
-	settings->addAction (Ui_.ActionSettings_);
-	Ui_.MainTabWidget_->setCornerWidget (settings, Qt::TopRightCorner);
 	Ui_.MainTabWidget_->setProperty ("TabIcons", "downloaders");
 	Ui_.ControlsDockWidget_->hide ();
 
@@ -206,7 +203,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	corner->addAction (Ui_.ActionFullscreenMode_);
 	corner->addSeparator ();
 	corner->addAction (Ui_.ActionQuit_);
-	Ui_.MainTabWidget_->setCornerWidget (corner, Qt::TopLeftCorner);
+	Ui_.MainTabWidget_->setCornerWidget (corner, Qt::TopRightCorner);
 	corner->show ();
 
 	QToolBar *mainBar = new QToolBar (this);

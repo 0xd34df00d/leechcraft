@@ -1,6 +1,7 @@
 #include "tabcontainer.h"
 #include <QCoreApplication>
 #include <QKeyEvent>
+#include <QtDebug>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "tabwidget.h"
@@ -161,6 +162,17 @@ void TabContainer::changeTabIcon (QWidget *contents, const QIcon& icon)
 	}
 	else
 		contents->setWindowIcon (icon);
+}
+
+void TabContainer::changeTooltip (QWidget *contents, QWidget *tip)
+{
+	if (TabMode_)
+	{
+		int tabNumber = FindTabForWidget (contents);
+		if (tabNumber == -1)
+			return;
+		TabWidget_->SetTooltip (tabNumber, tip);
+	}
 }
 
 void TabContainer::handleTabNames ()
