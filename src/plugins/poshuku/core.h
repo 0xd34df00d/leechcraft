@@ -73,6 +73,7 @@ private slots:
 	void handleNeedToClose ();
 	void handleAddToFavorites (const QString&, const QString&);
 	void handleStatusBarChanged (const QString&);
+	void handleTooltipChanged (QWidget*);
 	void favoriteTagsUpdated (const QStringList&);
 	void saveSession ();
 	void restorePages ();
@@ -82,6 +83,7 @@ signals:
 	void removeTab (QWidget*);
 	void changeTabName (QWidget*, const QString&);
 	void changeTabIcon (QWidget*, const QIcon&);
+	void changeTooltip (QWidget*, QWidget*);
 	void raiseTab (QWidget*);
 	void error (const QString&) const;
 	void statusBarChanged (QWidget*, const QString&);

@@ -153,6 +153,10 @@ BrowserWidget* Core::NewURL (const QString& url, bool raise)
 			this,
 			SLOT (handleStatusBarChanged (const QString&)));
 	connect (widget,
+			SIGNAL (tooltipChanged (QWidget*)),
+			this,
+			SLOT (handleTooltipChanged (QWidget*)));
+	connect (widget,
 			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
 			this,
 			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
@@ -368,6 +372,11 @@ void Core::handleAddToFavorites (const QString& title, const QString& url)
 void Core::handleStatusBarChanged (const QString& msg)
 {
 	emit statusBarChanged (static_cast<QWidget*> (sender ()), msg);
+}
+
+void Core::handleTooltipChanged (QWidget *tip)
+{
+	emit changeTooltip (static_cast<QWidget*> (sender ()), tip);
 }
 
 void Core::favoriteTagsUpdated (const QStringList& tags)

@@ -2,6 +2,7 @@
 #include <QKeyEvent>
 #include <QtDebug>
 #include <QToolBar>
+#include <QBuffer>
 #include <QMenu>
 #include <QWidgetAction>
 #include <QCompleter>
@@ -236,6 +237,10 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 					const QString&)),
 			this,
 			SLOT (handleStatusBarMessage (const QString&)));
+	connect (Ui_.WebView_,
+			SIGNAL (loadFinished (bool)),
+			this,
+			SLOT (updateTooltip ()));
 	connect (Ui_.WebView_,
 			SIGNAL (loadStarted ()),
 			this,
@@ -501,6 +506,30 @@ void BrowserWidget::handleUncloseDestroyed ()
 				SLOT (trigger ()));
 		RecentlyClosed_->setDefaultAction (RecentlyClosed_->actions ().front ());
 	}
+}
+
+void BrowserWidget::updateTooltip ()
+{
+	if (!Ui_.WebView_->size ().isValid ())
+		return;
+
+	QSize contentsSize = Ui_.WebView_->page ()->mainFrame ()->contentsSize ();
+	QSize oldSize = Ui_.WebView_->page ()->viewportSize ();
+	QRegion clip (0, 0, contentsSize.width (), contentsSize.height ());
+
+	QPixmap pixmap (contentsSize);
+	QPainter painter (&pixmap);
+	Ui_.WebView_->page ()->setViewportSize (contentsSize);
+	Ui_.WebView_->page ()->mainFrame ()->render (&painter, clip);
+	Ui_.WebView_->page ()->setViewportSize (oldSize);
+	painter.end ();
+
+	QLabel *widget = new QLabel;
+	pixmap = pixmap.scaledToWidth (200, Qt::SmoothTransformation);
+	widget->setPixmap (pixmap);
+	widget->setFixedSize (pixmap.width (), pixmap.height ());
+
+	emit tooltipChanged (widget);
 }
 
 void BrowserWidget::enableActions ()

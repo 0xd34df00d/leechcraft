@@ -53,12 +53,14 @@ private slots:
 	void focusLineEdit ();
 	void handleNewUnclose (QAction*);
 	void handleUncloseDestroyed ();
+	void updateTooltip ();
 	void enableActions ();
 signals:
 	void titleChanged (const QString&);
 	void urlChanged (const QString&);
 	void iconChanged (const QIcon&);
 	void needToClose ();
+	void tooltipChanged (QWidget*);
 	void addToFavorites (const QString&, const QString&);
 	void statusBarChanged (const QString&);
 	void gotEntity (const LeechCraft::DownloadEntity&);
