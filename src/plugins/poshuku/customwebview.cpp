@@ -1,6 +1,9 @@
 #include "customwebview.h"
 #include <QWebFrame>
 #include <QMouseEvent>
+#include <QMenu>
+#include <QApplication>
+#include <QClipboard>
 #include <QtDebug>
 #include "core.h"
 #include "customwebpage.h"
@@ -101,6 +104,64 @@ void CustomWebView::mousePressEvent (QMouseEvent *e)
 	QWebView::mousePressEvent (e);
 }
 
+void CustomWebView::contextMenuEvent (QContextMenuEvent *e)
+{
+	std::auto_ptr<QMenu> menu (new QMenu (this));
+	QWebHitTestResult r = page ()->
+		mainFrame ()->hitTestContent (e->pos ());
+
+	if (!r.linkUrl ().isEmpty ())
+	{
+		menu->addAction (tr ("Open &here"),
+				this, SLOT (openLinkHere ()))->setData (r.linkUrl ());
+		menu->addAction (tr ("Open in new &tab"),
+				this, SLOT (openLinkInNewTab ()));
+		menu->addSeparator ();
+		menu->addAction (tr ("&Save link..."),
+				this, SLOT (saveLink ()));
+
+		QList<QVariant> datalist;
+		datalist << r.linkUrl ()
+			<< r.linkText ();
+		menu->addAction (tr ("&Bookmark link..."),
+				this, SLOT (bookmarkLink ()))->setData (datalist);
+
+		menu->addSeparator ();
+		if (!page ()->selectedText ().isEmpty ())
+			menu->addAction (pageAction (QWebPage::Copy));
+		menu->addAction (tr ("&Copy link"),
+				this, SLOT (copyLink ()));
+	}
+
+	if (!r.imageUrl ().isEmpty ())
+	{
+		if (!menu->isEmpty ())
+			menu->addSeparator ();
+		menu->addAction (tr ("Open image here"),
+				this, SLOT (openImageHere ()))->setData (r.imageUrl ());
+		menu->addAction (tr ("Open image in new tab"),
+				this, SLOT (openImageInNewTab ()));
+		menu->addSeparator ();
+		menu->addAction (tr ("Save image..."),
+				this, SLOT (saveImage ()));
+		menu->addAction (tr ("Copy image"),
+				this, SLOT (copyImage ()));
+		menu->addAction (tr ("Copy image location"),
+				this, SLOT (copyImageLocation ()))->setData (r.imageUrl ());
+	}
+
+	if (menu->isEmpty ())
+		menu.reset (page ()->createStandardContextMenu ());
+
+	if (!menu->isEmpty ())
+	{
+		menu->exec (mapToGlobal (e->pos ()));
+		return;
+	}
+
+	QWebView::contextMenuEvent (e);
+}
+
 void CustomWebView::remakeURL (const QUrl& url)
 {
 	emit urlChanged (url.toString ());
@@ -109,5 +170,60 @@ void CustomWebView::remakeURL (const QUrl& url)
 void CustomWebView::handleNewThumbs ()
 {
 	setHtml (SpeedDialProvider::Instance ().GetHTML ());
+}
+
+void CustomWebView::openLinkHere ()
+{
+	Load (qobject_cast<QAction*> (sender ())->data ().toUrl ());
+}
+
+void CustomWebView::openLinkInNewTab ()
+{
+	pageAction (QWebPage::OpenLinkInNewWindow)->trigger ();
+}
+
+void CustomWebView::saveLink ()
+{
+	pageAction (QWebPage::DownloadLinkToDisk)->trigger ();
+}
+
+void CustomWebView::bookmarkLink ()
+{
+	QList<QVariant> list = qobject_cast<QAction*> (sender ())->data ().toList ();
+	emit addToFavorites (list.at (1).toString (),
+			list.at (0).toUrl ().toString ());
+}
+
+void CustomWebView::copyLink ()
+{
+	pageAction (QWebPage::CopyLinkToClipboard)->trigger ();
+}
+
+void CustomWebView::openImageHere ()
+{
+	Load (qobject_cast<QAction*> (sender ())->data ().toUrl ());
+}
+
+void CustomWebView::openImageInNewTab ()
+{
+	pageAction (QWebPage::OpenImageInNewWindow)->trigger ();
+}
+
+void CustomWebView::saveImage ()
+{
+	pageAction (QWebPage::DownloadImageToDisk)->trigger ();
+}
+
+void CustomWebView::copyImage ()
+{
+	pageAction (QWebPage::CopyImageToClipboard)->trigger ();
+}
+
+void CustomWebView::copyImageLocation ()
+{
+	QString url = qobject_cast<QAction*> (sender ())->data ().toUrl ().toString ();
+	QClipboard *cb = QApplication::clipboard ();
+	cb->setText (url, QClipboard::Clipboard);
+	cb->setText (url, QClipboard::Selection);
 }
 

@@ -132,6 +132,10 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 
 	static_cast<QVBoxLayout*> (layout ())->insertWidget (0, bar);
 
+	connect (Ui_.WebView_,
+			SIGNAL (addToFavorites (const QString&, const QString&)),
+			this,
+			SIGNAL (addToFavorites (const QString&, const QString&)));
 	connect (Add2Favorites_,
 			SIGNAL (triggered ()),
 			this,

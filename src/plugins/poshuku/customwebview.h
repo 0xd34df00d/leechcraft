@@ -18,12 +18,24 @@ public:
 protected:
 	virtual QWebView* createWindow (QWebPage::WebWindowType);
 	virtual void mousePressEvent (QMouseEvent*);
+	virtual void contextMenuEvent (QContextMenuEvent*);
 private slots:
 	void remakeURL (const QUrl&);
 	void handleNewThumbs ();
+	void openLinkHere ();
+	void openLinkInNewTab ();
+	void saveLink ();
+	void bookmarkLink ();
+	void copyLink ();
+	void openImageHere ();
+	void openImageInNewTab ();
+	void saveImage ();
+	void copyImage ();
+	void copyImageLocation ();
 signals:
 	void urlChanged (const QString&);
 	void gotEntity (const LeechCraft::DownloadEntity&);
+	void addToFavorites (const QString&, const QString&);
 };
 
 #endif
