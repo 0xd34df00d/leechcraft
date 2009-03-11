@@ -255,6 +255,27 @@ void Aggregator::ItemSelected (const QModelIndex& index)
 	Core::Instance ().GetJobHolderRepresentation ()->SelectionChanged (index);
 }
 
+bool Aggregator::CouldHandle (const LeechCraft::DownloadEntity& e) const
+{
+	qDebug () << Q_FUNC_INFO << e.Entity_ << e.Mime_;
+	if (QUrl (QString (e.Entity_)).scheme () != "http" &&
+			QUrl (QString (e.Entity_)).scheme () != "https")
+		return false;
+
+	if (e.Mime_ != "application/atom+xml" &&
+			e.Mime_ != "application/rss+xml")
+		return false;
+
+	return true;
+}
+
+void Aggregator::Handle (LeechCraft::DownloadEntity e)
+{
+    AddFeed af (QString (e.Entity_));
+    if (af.exec () == QDialog::Accepted)
+        Core::Instance ().AddFeed (QString (e.Entity_), af.GetTags ());
+}
+
 void Aggregator::keyPressEvent (QKeyEvent *e)
 {
 	if (e->modifiers () & Qt::ControlModifier)
