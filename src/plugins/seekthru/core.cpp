@@ -186,6 +186,10 @@ IFindProxy_ptr Core::GetProxy (const LeechCraft::Request& r)
 					SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
 							int*, QObject**)));
 			connect (sh.get (),
+					SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+					this,
+					SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+			connect (sh.get (),
 					SIGNAL (error (const QString&)),
 					this,
 					SIGNAL (error (const QString&)));

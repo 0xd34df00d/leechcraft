@@ -69,6 +69,7 @@ signals:
 	void warning (const QString&);
 	void delegateEntity (const LeechCraft::DownloadEntity&,
 			int*, QObject**);
+	void gotEntity (const LeechCraft::DownloadEntity&);
 };
 
 #endif

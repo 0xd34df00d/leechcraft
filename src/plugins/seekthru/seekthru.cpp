@@ -16,6 +16,10 @@ void SeekThru::Init ()
 			SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
 					int*, QObject**)));
 	connect (&Core::Instance (),
+			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+			this,
+			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+	connect (&Core::Instance (),
 			SIGNAL (error (const QString&)),
 			this,
 			SLOT (handleError (const QString&)));

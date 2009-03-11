@@ -37,6 +37,7 @@ private slots:
 signals:
 	void delegateEntity (const LeechCraft::DownloadEntity&,
 			int*, QObject**);
+	void gotEntity (const LeechCraft::DownloadEntity&);
 };
 
 #endif

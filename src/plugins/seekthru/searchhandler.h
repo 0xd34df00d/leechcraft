@@ -8,6 +8,8 @@
 #include "description.h"
 
 class SelectableBrowser;
+class QToolBar;
+class QAction;
 
 /** This class performs search on a single category with a single search
  * provider.
@@ -41,6 +43,8 @@ class SearchHandler : public QAbstractItemModel
 	QMap<int, Result> Jobs_;
 	QList<QObject*> Downloaders_;
 	boost::shared_ptr<SelectableBrowser> Viewer_;
+	boost::shared_ptr<QToolBar> Toolbar_;
+	boost::shared_ptr<QAction> Action_;
 public:
 	SearchHandler (const Description&);
 
@@ -56,11 +60,13 @@ public:
 private slots:
 	void handleJobFinished (int);
 	void handleJobError (int);
+	void subscribe ();
 private:
 	void HandleProvider (QObject*);
 signals:
 	void delegateEntity (const LeechCraft::DownloadEntity&,
 			int*, QObject**);
+	void gotEntity (const LeechCraft::DownloadEntity&);
 	void error (const QString&);
 	void warning (const QString&);
 };

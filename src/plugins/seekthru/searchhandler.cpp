@@ -1,4 +1,6 @@
 #include "searchhandler.h"
+#include <QToolBar>
+#include <QAction>
 #include <QUrl>
 #include <QFile>
 #include <QtDebug>
@@ -10,8 +12,13 @@
 SearchHandler::SearchHandler (const Description& d)
 : D_ (d)
 , Viewer_ (new SelectableBrowser)
+, Toolbar_ (new QToolBar)
 {
 	Viewer_->Construct (Core::Instance ().GetWebBrowser ());
+
+	Action_.reset (Toolbar_->addAction (tr ("Subscribe"),
+			this, SLOT (subscribe ())));
+	Action_->setProperty ("ActionIcon", "seekthru_subscribe");
 }
 
 int SearchHandler::columnCount (const QModelIndex&) const
@@ -64,6 +71,14 @@ QVariant SearchHandler::data (const QModelIndex& index, int role) const
 				Viewer_->SetHtml (Results_.at (r).Response_,
 						Results_.at (r).RequestURL_.toString ()); 
 				return QVariant::fromValue<QWidget*> (Viewer_.get ());
+			}
+			else
+				return 0;
+		case LeechCraft::RoleControls:
+			if (Results_.at (r).Type_ != Result::TypeHTML)
+			{
+				Action_->setData (r);
+				return QVariant::fromValue<QWidget*> (Toolbar_.get ());
 			}
 			else
 				return 0;
@@ -203,6 +218,26 @@ void SearchHandler::handleJobError (int id)
 
 	emit error (tr ("A job was delegated, but it failed."));
 	Jobs_.remove (id);
+}
+
+void SearchHandler::subscribe ()
+{
+	int r = qobject_cast<QAction*> (sender ())->data ().toInt ();
+
+	QString mime;
+	if (Results_.at (r).Type_ == Result::TypeAtom)
+		mime = "application/atom+xml";
+	else if (Results_.at (r).Type_ == Result::TypeRSS)
+		mime = "application/rss+xml";
+
+	LeechCraft::DownloadEntity e =
+	{
+		Results_.at (r).RequestURL_.toString ().toUtf8 (),
+		QString (),
+		mime,
+		LeechCraft::FromUserInitiated
+	};
+	emit gotEntity (e);
 }
 
 void SearchHandler::HandleProvider (QObject *provider)
