@@ -158,6 +158,16 @@ void SearchHandler::Start (const LeechCraft::Request& r)
 				LeechCraft::DoNotAnnounceEntity
 		};
 
+		Result job;
+		if (u.Type_ == "application/rss+xml")
+			job.Type_ = Result::TypeRSS;
+		else if (u.Type_ == "application/atom+xml")
+			job.Type_ = Result::TypeAtom;
+		else if (u.Type_.startsWith ("text/"))
+			job.Type_ = Result::TypeHTML;
+		else
+			continue;
+
 		int id = -1;
 		QObject *pr;
 		emit delegateEntity (e, &id, &pr);
@@ -170,15 +180,8 @@ void SearchHandler::Start (const LeechCraft::Request& r)
 
 		HandleProvider (pr);
 
-		Result job;
 		job.Filename_ = fname;
 		job.RequestURL_ = url;
-		if (u.Type_ == "application/rss+xml")
-			job.Type_ = Result::TypeRSS;
-		else if (u.Type_ == "application/atom+xml")
-			job.Type_ = Result::TypeAtom;
-		else
-			job.Type_ = Result::TypeHTML;
 		Jobs_ [id] = job;
 	}
 }
