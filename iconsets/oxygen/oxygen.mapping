@@ -1,3 +1,4 @@
+aggregator_add lc_subscribe.png
 aggregator_exportbinary lc_export.png
 aggregator_exportopml lc_documentexport.png
 aggregator_favorites lc_favorites.png
@@ -28,6 +29,10 @@ poshuku_print lc_print.png
 poshuku_printpreview lc_printpreview.png
 poshuku_reload lc_refresh.png
 poshuku_stop lc_stop.png
+poshuku_zoomin lc_zoomin.png
+poshuku_zoomout lc_zoomout.png
+poshuku_zoomreset lc_zoomreset.png
+seekthru_subscribe lc_subscribe.png
 settings lc_preferences.png
 torrent_addjob lc_addjob.png
 torrent_deletejob lc_remove.png
