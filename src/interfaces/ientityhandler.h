@@ -8,7 +8,7 @@ class IEntityHandler
 {
 public:
 	virtual bool CouldHandle (const LeechCraft::DownloadEntity&) const = 0;
-	virtual void Handle (const LeechCraft::DownloadEntity&) = 0;
+	virtual void Handle (LeechCraft::DownloadEntity) = 0;
 
 	virtual ~IEntityHandler () {}
 };
