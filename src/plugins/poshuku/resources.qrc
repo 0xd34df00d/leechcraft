@@ -6,7 +6,7 @@
 	<file>resources/images/poshuku.png</file>
 	<file>resources/images/application_atom+xml.png</file>
 	<file>resources/images/application_rss+xml.png</file>
-	<file>resources/images/opensearch.png</file>
+	<file>resources/images/application_opensearchdescription+xml.png</file>
 	<file>resources/html/generalerror.html</file>
   </qresource>
 </RCC>
