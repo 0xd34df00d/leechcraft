@@ -169,6 +169,7 @@ namespace LeechCraft
 		 */
 		bool handleGotEntity (LeechCraft::DownloadEntity entity,
 				int *id = 0, QObject **provider = 0);
+		void handleCouldHandle (const LeechCraft::DownloadEntity&, bool*);
         void handleClipboardTimer ();
 		void embeddedTabWantsToFront ();
 		void handleStatusBarChanged (QWidget*, const QString&);
@@ -192,6 +193,7 @@ namespace LeechCraft
 		 * could not be found.
 		 */
 		QModelIndex MapToSource (const QModelIndex&) const;
+		void InitDynamicSignals (QObject*);
 		void InitJobHolder (QObject*);
 		void InitEmbedTab (QObject*);
 		void InitMultiTab (QObject*);

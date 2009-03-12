@@ -254,39 +254,7 @@ void LeechCraft::Core::DelayedInit ()
 		IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
 		IMultiTabs *imt = qobject_cast<IMultiTabs*> (plugin);
 
-		const QMetaObject *qmo = plugin->metaObject ();
-
-		if (qmo->indexOfSignal (QMetaObject::
-					normalizedSignature ("gotEntity (const "
-						"LeechCraft::DownloadEntity&)").constData ()) != -1)
-			connect (plugin,
-					SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
-					this,
-					SLOT (handleGotEntity (LeechCraft::DownloadEntity)));
-		if (qmo->indexOfSignal (QMetaObject::
-					normalizedSignature ("delegateEntity (const "
-						"LeechCraft::DownloadEntity&, "
-						"int*, QObject**)").constData ()) != -1)
-			connect (plugin,
-					SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
-							int*, QObject**)),
-					this,
-					SLOT (handleGotEntity (LeechCraft::DownloadEntity,
-							int*, QObject**)));
-		if (qmo->indexOfSignal (QMetaObject::
-					normalizedSignature ("downloadFinished (const "
-						"QString&)").constData ()) != -1)
-			connect (plugin,
-					SIGNAL (downloadFinished (const QString&)),
-					this,
-					SIGNAL (downloadFinished (const QString&)));
-		if (qmo->indexOfSignal (QMetaObject::
-					normalizedSignature ("log (const "
-						"QString&)").constData ()) != -1)
-			connect (plugin,
-					SIGNAL (log (const QString&)),
-					this,
-					SLOT (handleLog (const QString&)));
+		InitDynamicSignals (plugin);
 
 		if (ijh)
 			InitJobHolder (plugin);
@@ -730,6 +698,11 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 	return true;
 }
 
+void LeechCraft::Core::handleCouldHandle (const LeechCraft::DownloadEntity& e, bool *could)
+{
+	*could = CouldHandle (e);
+}
+
 void LeechCraft::Core::handleClipboardTimer ()
 {
     QString text = QApplication::clipboard ()->text ();
@@ -939,6 +912,53 @@ void LeechCraft::Core::DoCommonAuth (const QString& msg, QAuthenticator *authen)
 QModelIndex LeechCraft::Core::MapToSource (const QModelIndex& index) const
 {
 	return MapToSourceRecursively (index);
+}
+
+void LeechCraft::Core::InitDynamicSignals (QObject *plugin)
+{
+	const QMetaObject *qmo = plugin->metaObject ();
+
+	if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
+					"couldHandle (const LeechCraft::DownloadEntity&, bool*)"
+					).constData ()) != -1)
+		connect (plugin,
+				SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)),
+				this,
+				SLOT (handleCouldHandle (const LeechCraft::DownloadEntity&, bool*)));
+
+	if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
+					"gotEntity (const LeechCraft::DownloadEntity&)"
+					).constData ()) != -1)
+		connect (plugin,
+				SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+				this,
+				SLOT (handleGotEntity (LeechCraft::DownloadEntity)));
+
+	if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
+					"delegateEntity (const LeechCraft::DownloadEntity&, int*, QObject**)"
+					).constData ()) != -1)
+		connect (plugin,
+				SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
+						int*, QObject**)),
+				this,
+				SLOT (handleGotEntity (LeechCraft::DownloadEntity,
+						int*, QObject**)));
+
+	if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
+					"downloadFinished (const QString&)"
+					).constData ()) != -1)
+		connect (plugin,
+				SIGNAL (downloadFinished (const QString&)),
+				this,
+				SIGNAL (downloadFinished (const QString&)));
+
+	if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
+					"log (const QString&)"
+					).constData ()) != -1)
+		connect (plugin,
+				SIGNAL (log (const QString&)),
+				this,
+				SLOT (handleLog (const QString&)));
 }
 
 void LeechCraft::Core::InitJobHolder (QObject *plugin)
