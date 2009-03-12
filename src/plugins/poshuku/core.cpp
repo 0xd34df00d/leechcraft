@@ -408,6 +408,8 @@ void Core::restorePages ()
 	for (QStringList::const_iterator i = RestoredURLs_.begin (),
 			end = RestoredURLs_.end (); i != end; ++i)
 		NewURL (*i);
+
+	saveSession ();
 }
 
 void Core::postConstruct ()
