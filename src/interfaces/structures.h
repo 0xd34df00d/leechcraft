@@ -1,5 +1,6 @@
 #ifndef STRUCTURES_H
 #define STRUCTURES_H
+#include <QMetaType>
 
 class QMenu;
 
@@ -104,6 +105,7 @@ namespace LeechCraft
 	};
 };
 
+Q_DECLARE_METATYPE (LeechCraft::DownloadEntity);
 Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::TaskParameters);
 
 #endif
