@@ -93,6 +93,7 @@ public:
 
     static Core& Instance ();
     void Release ();
+	bool CouldHandle (const LeechCraft::DownloadEntity&);
 	void SetWidgets (QWidget*, QWidget*);
     void DoDelayedInit ();
     void SetProvider (QObject*, const QString&);

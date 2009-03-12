@@ -55,6 +55,19 @@ void Core::Release ()
 	delete ChannelsModel_;
 }
 
+bool Core::CouldHandle (const LeechCraft::DownloadEntity& e)
+{
+	if (QUrl (QString (e.Location_)).scheme () != "http" &&
+			QUrl (QString (e.Location_)).scheme () != "https")
+		return false;
+
+	if (e.Mime_ != "application/atom+xml" &&
+			e.Mime_ != "application/rss+xml")
+		return false;
+
+	return true;
+}
+
 void Core::SetWidgets (QWidget *bar, QWidget *tab)
 {
 	ChannelsModel_->SetWidgets (bar, tab);

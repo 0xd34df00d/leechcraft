@@ -257,15 +257,7 @@ void Aggregator::ItemSelected (const QModelIndex& index)
 
 bool Aggregator::CouldHandle (const LeechCraft::DownloadEntity& e) const
 {
-	if (QUrl (QString (e.Location_)).scheme () != "http" &&
-			QUrl (QString (e.Location_)).scheme () != "https")
-		return false;
-
-	if (e.Mime_ != "application/atom+xml" &&
-			e.Mime_ != "application/rss+xml")
-		return false;
-
-	return true;
+	return Core::Instance ().CouldHandle (e);
 }
 
 void Aggregator::Handle (LeechCraft::DownloadEntity e)
