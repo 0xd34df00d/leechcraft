@@ -257,9 +257,9 @@ void Aggregator::ItemSelected (const QModelIndex& index)
 
 bool Aggregator::CouldHandle (const LeechCraft::DownloadEntity& e) const
 {
-	qDebug () << Q_FUNC_INFO << e.Entity_ << e.Mime_;
-	if (QUrl (QString (e.Entity_)).scheme () != "http" &&
-			QUrl (QString (e.Entity_)).scheme () != "https")
+	qDebug () << Q_FUNC_INFO << e.Entity_ << e.Location_ << e.Mime_;
+	if (QUrl (QString (e.Location_)).scheme () != "http" &&
+			QUrl (QString (e.Location_)).scheme () != "https")
 		return false;
 
 	if (e.Mime_ != "application/atom+xml" &&
@@ -271,9 +271,10 @@ bool Aggregator::CouldHandle (const LeechCraft::DownloadEntity& e) const
 
 void Aggregator::Handle (LeechCraft::DownloadEntity e)
 {
-    AddFeed af (QString (e.Entity_));
+    AddFeed af (QString (e.Location_));
     if (af.exec () == QDialog::Accepted)
-        Core::Instance ().AddFeed (QString (e.Entity_), af.GetTags ());
+        Core::Instance ().AddFeed (e.Location_,
+				af.GetTags ());
 }
 
 void Aggregator::keyPressEvent (QKeyEvent *e)
