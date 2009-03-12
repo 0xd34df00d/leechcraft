@@ -148,6 +148,10 @@ void CustomWebPage::handleLoadFinished ()
 		if (attributes.value ("type") == "")
 			continue;
 
+		if (attributes.value ("rel") != "alternate" &&
+				attributes.value ("rel") != "search")
+			continue;
+
 		LeechCraft::DownloadEntity e;
 		e.Entity_ = attributes.value ("title").toString ().toUtf8 ();
 		e.Mime_ = attributes.value ("type").toString ();
