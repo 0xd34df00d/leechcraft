@@ -240,6 +240,11 @@ bool Core::CouldDownload (const LeechCraft::DownloadEntity& e) const
 	}
 	else
 	{
+		if (QUrl (str).scheme () == "file")
+		{
+			str = QUrl (str).toLocalFile ();
+			qDebug () << Q_FUNC_INFO << str;
+		}
 		QFile file (str);
 		if (file.exists () &&
 				file.open (QIODevice::ReadOnly))

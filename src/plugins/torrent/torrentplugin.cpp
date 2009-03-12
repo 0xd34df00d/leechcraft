@@ -149,6 +149,8 @@ int TorrentPlugin::AddJob (LeechCraft::DownloadEntity e)
 				tags,
 				e.Parameters_);
 	}
+	else if (resource.startsWith ("file://"))
+		resource = QUrl (resource).toLocalFile ();
 
 	QString suggestedFname = resource;
 	QFile file (suggestedFname);
