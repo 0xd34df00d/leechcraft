@@ -6,7 +6,6 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDesktopServices>
-#include <QXmlStreamReader>
 #include "xmlsettingsmanager.h"
 #include "customwebview.h"
 #include "core.h"
@@ -26,10 +25,6 @@ CustomWebPage::CustomWebPage (QObject *parent)
 			SIGNAL (unsupportedContent (QNetworkReply*)),
 			this,
 			SLOT (gotUnsupportedContent (QNetworkReply*)));
-	connect (this,
-			SIGNAL (loadFinished (bool)),
-			this,
-			SLOT (handleLoadFinished ()));
 }
 
 CustomWebPage::~CustomWebPage ()
@@ -127,48 +122,6 @@ void CustomWebPage::handleDownloadRequested (const QNetworkRequest& request)
 		LeechCraft::FromUserInitiated
 	};
 	emit gotEntity (e);
-}
-
-void CustomWebPage::handleLoadFinished ()
-{
-	QXmlStreamReader xml (mainFrame ()->toHtml ());
-	while (!xml.atEnd ())
-	{
-		QXmlStreamReader::TokenType token = xml.readNext ();
-		if (token == QXmlStreamReader::EndElement &&
-				xml.name () == "head")
-			break;
-		else if (token != QXmlStreamReader::StartElement)
-			continue;
-
-		if (xml.name () != "link")
-			continue;
-
-		QXmlStreamAttributes attributes = xml.attributes ();
-		if (attributes.value ("type") == "")
-			continue;
-
-		if (attributes.value ("rel") != "alternate" &&
-				attributes.value ("rel") != "search")
-			continue;
-
-		LeechCraft::DownloadEntity e;
-		e.Entity_ = attributes.value ("title").toString ().toUtf8 ();
-		e.Mime_ = attributes.value ("type").toString ();
-		QUrl hrefUrl (attributes.value ("href").toString ());
-		if (hrefUrl.isRelative ())
-		{
-			QUrl originalUrl = mainFrame ()->url ();
-			if (hrefUrl.path ().size () &&
-					hrefUrl.path ().at (0) == '/')
-				originalUrl.setPath (hrefUrl.path ());
-			else
-				originalUrl.setPath (originalUrl.path () + hrefUrl.path ());
-			hrefUrl = originalUrl;
-		}
-		e.Location_ = hrefUrl.toString ();
-		emit gotEntity (e);
-	}
 }
 
 bool CustomWebPage::acceptNavigationRequest (QWebFrame *frame,

@@ -21,7 +21,6 @@ public:
 private slots:
 	void handleDownloadRequested (const QNetworkRequest&);
 	void gotUnsupportedContent (QNetworkReply*);
-	void handleLoadFinished ();
 protected:
 	virtual bool acceptNavigationRequest (QWebFrame*,
 			const QNetworkRequest&, QWebPage::NavigationType);

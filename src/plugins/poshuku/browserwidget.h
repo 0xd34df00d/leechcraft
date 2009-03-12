@@ -20,7 +20,6 @@ class BrowserWidget : public QWidget
 	QAction *ScreenSave_;
 	QAction *ViewSources_;
 	QAction *NewTab_;
-	QAction *CloseTab_;
 	QAction *ZoomIn_;
 	QAction *ZoomOut_;
 	QAction *ZoomReset_;
@@ -55,6 +54,7 @@ private slots:
 	void handleUncloseDestroyed ();
 	void updateTooltip ();
 	void enableActions ();
+	void handleLoadFinished ();
 signals:
 	void titleChanged (const QString&);
 	void urlChanged (const QString&);

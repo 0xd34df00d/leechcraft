@@ -16,6 +16,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDesktopServices>
+#include <QXmlStreamReader>
 #include "core.h"
 #include "historymodel.h"
 #include "finddialog.h"
@@ -103,11 +104,6 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	NewTab_->setProperty ("ActionIcon", "poshuku_newtab");
 	NewTab_->setShortcut (tr ("Ctrl+T"));
 
-	CloseTab_ = new QAction (tr ("Close this tab"),
-			this);
-	CloseTab_->setProperty ("ActionIcon", "poshuku_closetab");
-	CloseTab_->setShortcut (tr ("Ctrl+W"));
-
 	ZoomIn_ = new QAction (tr ("Zoom in"),
 			this);
 	ZoomIn_->setProperty ("ActionIcon", "poshuku_zoomin");
@@ -151,7 +147,6 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	bar->addAction (addressBar);
 
 	bar->addAction (NewTab_);
-	bar->addAction (CloseTab_);
 
 	static_cast<QVBoxLayout*> (layout ())->insertWidget (0, bar);
 
@@ -187,10 +182,6 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			SIGNAL (triggered ()),
 			this,
 			SLOT (handleNewTab ()));
-	connect (CloseTab_,
-			SIGNAL (triggered ()),
-			this,
-			SIGNAL (needToClose ()));
 	connect (ZoomIn_,
 			SIGNAL (triggered ()),
 			Ui_.WebView_,
@@ -238,6 +229,10 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 					const QString&)),
 			this,
 			SLOT (handleStatusBarMessage (const QString&)));
+	connect (Ui_.WebView_->page (),
+			SIGNAL (loadFinished (bool)),
+			this,
+			SLOT (handleLoadFinished ()));
 	connect (Ui_.WebView_,
 			SIGNAL (loadFinished (bool)),
 			this,
@@ -544,5 +539,50 @@ void BrowserWidget::enableActions ()
 	PrintPreview_->setEnabled (true);
 	ScreenSave_->setEnabled (true);
 	ViewSources_->setEnabled (true);
+}
+
+void BrowserWidget::handleLoadFinished ()
+{
+	qDebug () << Q_FUNC_INFO;
+	QXmlStreamReader xml (Ui_.WebView_->page ()->mainFrame ()->toHtml ());
+	while (!xml.atEnd ())
+	{
+		QXmlStreamReader::TokenType token = xml.readNext ();
+		if (token == QXmlStreamReader::EndElement &&
+				xml.name () == "head")
+			break;
+		else if (token != QXmlStreamReader::StartElement)
+			continue;
+
+		if (xml.name () != "link")
+			continue;
+
+		QXmlStreamAttributes attributes = xml.attributes ();
+		if (attributes.value ("type") == "")
+			continue;
+
+		if (attributes.value ("rel") != "alternate" &&
+				attributes.value ("rel") != "search")
+			continue;
+
+		qDebug () << "found something";
+		LeechCraft::DownloadEntity e;
+		e.Entity_ = attributes.value ("title").toString ().toUtf8 ();
+		e.Mime_ = attributes.value ("type").toString ();
+		QUrl hrefUrl (attributes.value ("href").toString ());
+		if (hrefUrl.isRelative ())
+		{
+			QUrl originalUrl = Ui_.WebView_->page ()->mainFrame ()->url ();
+			if (hrefUrl.path ().size () &&
+					hrefUrl.path ().at (0) == '/')
+				originalUrl.setPath (hrefUrl.path ());
+			else
+				originalUrl.setPath (originalUrl.path () + hrefUrl.path ());
+			hrefUrl = originalUrl;
+		}
+		e.Location_ = hrefUrl.toString ();
+		Ui_.URLEdit_->AddAction (new QAction (QString (e.Entity_), this));
+//		emit gotEntity (e);
+	}
 }
 

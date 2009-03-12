@@ -2,6 +2,7 @@
 #include <QTimer>
 #include <QCompleter>
 #include <QAbstractItemView>
+#include <QToolBar>
 #include <QtDebug>
 #include "urlcompletionmodel.h"
 
@@ -19,6 +20,11 @@ ProgressLineEdit::~ProgressLineEdit ()
 bool ProgressLineEdit::IsCompleting () const
 {
 	return IsCompleting_;
+}
+
+void ProgressLineEdit::AddAction (QAction *act)
+{
+	addAction (act);
 }
 
 void ProgressLineEdit::focusInEvent (QFocusEvent *e)
