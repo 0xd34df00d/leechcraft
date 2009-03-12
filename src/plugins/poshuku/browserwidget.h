@@ -5,6 +5,8 @@
 #include <interfaces/structures.h>
 #include "ui_browserwidget.h"
 
+class QToolBar;
+
 class BrowserWidget : public QWidget
 					, public IWebWidget
 {
@@ -13,6 +15,7 @@ class BrowserWidget : public QWidget
 	
 	Ui::BrowserWidget Ui_;
 
+	QToolBar *ToolBar_;
 	QAction *Add2Favorites_;
 	QAction *Find_;
 	QAction *Print_;
@@ -55,6 +58,7 @@ private slots:
 	void handleUncloseDestroyed ();
 	void updateTooltip ();
 	void enableActions ();
+	void handleEntityAction ();
 	void handleLoadFinished ();
 signals:
 	void titleChanged (const QString&);
@@ -65,6 +69,7 @@ signals:
 	void addToFavorites (const QString&, const QString&);
 	void statusBarChanged (const QString&);
 	void gotEntity (const LeechCraft::DownloadEntity&);
+	void couldHandle (const LeechCraft::DownloadEntity&, bool*);
 };
 
 #endif

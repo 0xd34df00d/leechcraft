@@ -160,6 +160,10 @@ BrowserWidget* Core::NewURL (const QString& url, bool raise)
 			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
 			this,
 			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+	connect (widget,
+			SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)),
+			this,
+			SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)));
 
 	widget->SetURL (QUrl (url));
 

@@ -83,6 +83,7 @@ signals:
 	void statusBarChanged (QWidget*, const QString&);
 	void raiseTab (QWidget*);
 	void gotEntity (const LeechCraft::DownloadEntity&);
+	void couldHandle (const LeechCraft::DownloadEntity&, bool*);
 };
 
 #endif

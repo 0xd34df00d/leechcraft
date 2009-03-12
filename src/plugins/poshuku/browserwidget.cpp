@@ -37,7 +37,7 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	Ui_.WebView_->pageAction (QWebPage::Paste)->setProperty ("ActionIcon", "poshuku_paste");
 	Ui_.WebView_->pageAction (QWebPage::Paste)->setShortcut (tr ("Ctrl+V"));
 
-	QToolBar *bar = new QToolBar (this);
+	ToolBar_ = new QToolBar (this);
 	
 	QAction *back = Ui_.WebView_->pageAction (QWebPage::Back);
 	back->setParent (this);
@@ -124,11 +124,11 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	ZoomReset_->setProperty ("ActionIcon", "poshuku_zoomreset");
 	ZoomReset_->setShortcut (tr ("Ctrl+0"));
 
-	bar->addAction (back);
-	bar->addAction (forward);
-	bar->addAction (reload);
-	bar->addAction (stop);
-	bar->addAction (more);
+	ToolBar_->addAction (back);
+	ToolBar_->addAction (forward);
+	ToolBar_->addAction (reload);
+	ToolBar_->addAction (stop);
+	ToolBar_->addAction (more);
 
 	moreMenu->addAction (Find_);
 	moreMenu->addAction (Add2Favorites_);
@@ -149,12 +149,12 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 
 	QWidgetAction *addressBar = new QWidgetAction (this);
 	addressBar->setDefaultWidget (Ui_.URLEdit_);
-	bar->addAction (addressBar);
+	ToolBar_->addAction (addressBar);
 
-	bar->addAction (NewTab_);
-	bar->addAction (CloseTab_);
+	ToolBar_->addAction (NewTab_);
+	ToolBar_->addAction (CloseTab_);
 
-	static_cast<QVBoxLayout*> (layout ())->insertWidget (0, bar);
+	static_cast<QVBoxLayout*> (layout ())->insertWidget (0, ToolBar_);
 
 	connect (Ui_.WebView_,
 			SIGNAL (addToFavorites (const QString&, const QString&)),
@@ -551,9 +551,13 @@ void BrowserWidget::enableActions ()
 	ViewSources_->setEnabled (true);
 }
 
+void BrowserWidget::handleEntityAction ()
+{
+	emit gotEntity (qobject_cast<QAction*> (sender ())->data ().value<LeechCraft::DownloadEntity> ());
+}
+
 void BrowserWidget::handleLoadFinished ()
 {
-	qDebug () << Q_FUNC_INFO;
 	QXmlStreamReader xml (Ui_.WebView_->page ()->mainFrame ()->toHtml ());
 	while (!xml.atEnd ())
 	{
@@ -575,7 +579,6 @@ void BrowserWidget::handleLoadFinished ()
 				attributes.value ("rel") != "search")
 			continue;
 
-		qDebug () << "found something";
 		LeechCraft::DownloadEntity e;
 		e.Entity_ = attributes.value ("title").toString ().toUtf8 ();
 		e.Mime_ = attributes.value ("type").toString ();
@@ -591,8 +594,25 @@ void BrowserWidget::handleLoadFinished ()
 			hrefUrl = originalUrl;
 		}
 		e.Location_ = hrefUrl.toString ();
-		Ui_.URLEdit_->AddAction (new QAction (QString (e.Entity_), this));
-//		emit gotEntity (e);
+		e.Parameters_ = LeechCraft::FromUserInitiated;
+
+		bool ch = false;
+		emit couldHandle (e, &ch);
+		if (ch)
+		{
+			QString mime = e.Mime_;
+			mime.replace ('/', '_');
+			QAction *act = new QAction (QIcon (QString (":/resources/images/%1.png")
+						.arg (mime)),
+					e.Entity_,
+					ToolBar_);
+			connect (act,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleEntityAction ()));
+			act->setData (QVariant::fromValue<LeechCraft::DownloadEntity> (e));
+			ToolBar_->insertAction (NewTab_, act);
+		}
 	}
 }
 

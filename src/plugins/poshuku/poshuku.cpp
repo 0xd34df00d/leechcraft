@@ -96,6 +96,10 @@ void Poshuku::Init ()
 			this,
 			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
 	connect (&Core::Instance (),
+			SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)),
+			this,
+			SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)));
+	connect (&Core::Instance (),
 			SIGNAL (error (const QString&)),
 			this,
 			SLOT (handleError (const QString&)));
