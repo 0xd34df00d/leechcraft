@@ -47,6 +47,7 @@ public:
     virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 
 	void SetProvider (QObject*, const QString&);
+	bool CouldHandle (const LeechCraft::DownloadEntity&) const;
 	/** Fetches the searcher from the url.
 	 *
 	 * @param[in] url The url with the search description.

@@ -123,6 +123,18 @@ void Core::SetProvider (QObject *provider, const QString& feature)
 	Providers_ [feature] = provider;
 }
 
+bool Core::CouldHandle (const LeechCraft::DownloadEntity& e) const
+{
+	if (QUrl (QString (e.Location_)).scheme () != "http" &&
+			QUrl (QString (e.Location_)).scheme () != "https")
+		return false;
+
+	if (e.Mime_ != "application/opensearchdescription+xml")
+		return false;
+
+	return true;
+}
+
 void Core::Add (const QString& url)
 {
 	QString name = LeechCraft::Util::GetTemporaryName ();

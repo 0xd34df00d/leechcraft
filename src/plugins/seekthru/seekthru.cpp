@@ -89,6 +89,16 @@ boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> SeekThru::GetSettingsDial
 	return XmlSettingsDialog_;
 }
 
+bool SeekThru::CouldHandle (const LeechCraft::DownloadEntity& e) const
+{
+	return Core::Instance ().CouldHandle (e);
+}
+
+void SeekThru::Handle (LeechCraft::DownloadEntity e)
+{
+	Core::Instance ().Add (e.Location_);
+}
+
 void SeekThru::handleError (const QString& error)
 {
 	QMessageBox::critical (0,
