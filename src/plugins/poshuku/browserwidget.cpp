@@ -104,6 +104,11 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	NewTab_->setProperty ("ActionIcon", "poshuku_newtab");
 	NewTab_->setShortcut (tr ("Ctrl+T"));
 
+	CloseTab_ = new QAction (tr ("Close this tab"),
+			this);
+	CloseTab_->setProperty ("ActionIcon", "poshuku_closetab");
+	CloseTab_->setShortcut (tr ("Ctrl+W"));
+
 	ZoomIn_ = new QAction (tr ("Zoom in"),
 			this);
 	ZoomIn_->setProperty ("ActionIcon", "poshuku_zoomin");
@@ -147,6 +152,7 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	bar->addAction (addressBar);
 
 	bar->addAction (NewTab_);
+	bar->addAction (CloseTab_);
 
 	static_cast<QVBoxLayout*> (layout ())->insertWidget (0, bar);
 
@@ -182,6 +188,10 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			SIGNAL (triggered ()),
 			this,
 			SLOT (handleNewTab ()));
+	connect (CloseTab_,
+			SIGNAL (triggered ()),
+			this,
+			SIGNAL (needToClose ()));
 	connect (ZoomIn_,
 			SIGNAL (triggered ()),
 			Ui_.WebView_,

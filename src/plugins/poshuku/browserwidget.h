@@ -20,6 +20,7 @@ class BrowserWidget : public QWidget
 	QAction *ScreenSave_;
 	QAction *ViewSources_;
 	QAction *NewTab_;
+	QAction *CloseTab_;
 	QAction *ZoomIn_;
 	QAction *ZoomOut_;
 	QAction *ZoomReset_;
