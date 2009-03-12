@@ -520,6 +520,8 @@ void BrowserWidget::updateTooltip ()
 		return;
 
 	QSize contentsSize = Ui_.WebView_->page ()->mainFrame ()->contentsSize ();
+	if (contentsSize.width () < 800)
+		contentsSize.setWidth (800);
 	QSize oldSize = Ui_.WebView_->page ()->viewportSize ();
 	QRegion clip (0, 0, contentsSize.width (), contentsSize.height ());
 
@@ -534,8 +536,6 @@ void BrowserWidget::updateTooltip ()
 
 	if (pixmap.height () > 5000)
 		pixmap = pixmap.copy (0, 0, pixmap.width (), 5000);
-
-	qDebug () << pixmap.size () << pixmap.isNull ();
 
 	pixmap = pixmap.scaledToWidth (200, Qt::SmoothTransformation);
 	int maxHeight = 0.8 * QApplication::desktop ()->screenGeometry (this).height ();
