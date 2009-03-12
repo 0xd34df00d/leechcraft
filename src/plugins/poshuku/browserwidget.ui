@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>BrowserWidget</class>
- <widget class="QWidget" name="BrowserWidget" >
-  <property name="geometry" >
+ <widget class="QWidget" name="BrowserWidget">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,19 +10,34 @@
     <height>300</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Browser widget</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <widget class="ProgressLineEdit" name="URLEdit_" >
-     <property name="text" >
+    <widget class="ProgressLineEdit" name="URLEdit_">
+     <property name="text">
       <string/>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="CustomWebView" native="1" name="WebView_" />
+    <widget class="QFrame" name="frame">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="margin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="CustomWebView" name="WebView_" native="true"/>
+      </item>
+     </layout>
+    </widget>
    </item>
   </layout>
  </widget>
