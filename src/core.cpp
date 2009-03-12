@@ -178,6 +178,7 @@ void LeechCraft::Core::SetReallyMainWindow (MainWindow *win)
 {
     ReallyMainWindow_ = win;
 	ReallyMainWindow_->GetTabWidget ()->installEventFilter (this);
+	ReallyMainWindow_->installEventFilter (this);
 }
 
 QObjectList LeechCraft::Core::GetSettables () const
@@ -449,6 +450,56 @@ bool LeechCraft::Core::eventFilter (QObject *watched, QEvent *e)
 				TabContainer_->ForwardKeyboard (key);
 		}
 	}
+	else if (ReallyMainWindow_ &&
+			watched == ReallyMainWindow_)
+	{
+		if (e->type () == QEvent::DragEnter)
+		{
+			QDragEnterEvent *event = static_cast<QDragEnterEvent*> (e);
+
+			Q_FOREACH (QString format, event->mimeData ()->formats ())
+			{
+				DownloadEntity e =
+				{
+					event->mimeData ()->data (format),
+					QString (),
+					format,
+					LeechCraft::FromUserInitiated
+				};
+
+				if (CouldHandle (e))
+				{
+					event->acceptProposedAction ();
+					break;
+				}
+			}
+
+			return true;
+		}
+		else if (e->type () == QEvent::Drop)
+		{
+			QDropEvent *event = static_cast<QDropEvent*> (e);
+
+			Q_FOREACH (QString format, event->mimeData ()->formats ())
+			{
+				DownloadEntity e =
+				{
+					event->mimeData ()->data (format),
+					QString (),
+					format,
+					LeechCraft::FromUserInitiated
+				};
+
+				if (handleGotEntity (e))
+				{
+					event->acceptProposedAction ();
+					break;
+				}
+			}
+
+			return true;
+		}
+	}
 	return QObject::eventFilter (watched, e);
 }
 
@@ -559,7 +610,26 @@ void LeechCraft::Core::deleteSelectedHistory (const QModelIndex& index)
 	*/
 }
 
-void LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
+bool LeechCraft::Core::CouldHandle (const LeechCraft::DownloadEntity& e)
+{
+	QObjectList plugins = PluginManager_->GetAllCastableRoots<IDownload*> ();
+	for (int i = 0; i < plugins.size (); ++i)
+	{
+		IDownload *id = qobject_cast<IDownload*> (plugins.at (i));
+		if (id->CouldDownload (e))
+			return true;
+	}
+	plugins = PluginManager_->GetAllCastableRoots<IEntityHandler*> ();
+	for (int i = 0; i < plugins.size (); ++i)
+	{
+		IEntityHandler *ih = qobject_cast<IEntityHandler*> (plugins.at (i));
+		if (ih->CouldHandle (e))
+			return true;
+	}
+	return false;
+}
+
+bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 {
 	QString string = tr ("Too long to show");
 	if (p.Entity_.size () < 1000)
@@ -588,7 +658,7 @@ void LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 	{
 		if (!dia->NumChoices () ||
 				dia->exec () == QDialog::Rejected)
-			return;
+			return false;
 
 		IDownload *sd = dia->GetDownload ();
 		IEntityHandler *sh = dia->GetEntityHandler ();
@@ -607,7 +677,7 @@ void LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 					!QFileDialog::ShowDirsOnly);
 
 			if (dir.isEmpty ())
-				return;
+				return false;
 
 			XmlSettingsManager::Instance ()->
 				setProperty ("EntitySavePath", dir);
@@ -652,8 +722,12 @@ void LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 		}
 	}
 	else
+	{
 		emit log (tr ("Could not handle download entity %1.")
 				.arg (string));
+		return false;
+	}
+	return true;
 }
 
 void LeechCraft::Core::handleClipboardTimer ()

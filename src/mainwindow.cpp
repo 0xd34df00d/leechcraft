@@ -37,6 +37,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			Qt::AlignLeft | Qt::AlignBottom);
 
 	InitializeInterface ();
+	setAcceptDrops (true);
 
 	SplashScreen_->showMessage (tr ("Initializing core and plugins..."),
 			Qt::AlignLeft | Qt::AlignBottom);

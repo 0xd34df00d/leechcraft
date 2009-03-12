@@ -165,8 +165,9 @@ namespace LeechCraft
 		 * @param[in] entity DownloadEntity.
 		 * @param[out] id The ID of the job if applicable.
 		 * @param[out] provider The provider that downloads this job.
+		 * @return True if the entity was actually handled.
 		 */
-        void handleGotEntity (LeechCraft::DownloadEntity entity,
+		bool handleGotEntity (LeechCraft::DownloadEntity entity,
 				int *id = 0, QObject **provider = 0);
         void handleClipboardTimer ();
 		void embeddedTabWantsToFront ();
@@ -179,6 +180,7 @@ namespace LeechCraft
 		void handleNewLocalServerConnection ();
 		void saveCookies () const;
 	private:
+		bool CouldHandle (const LeechCraft::DownloadEntity&);
 		void DoCommonAuth (const QString&, QAuthenticator*);
 		/** Maps totally unmapped index to the plugin's source model
 		 * through merge model and filter model.
