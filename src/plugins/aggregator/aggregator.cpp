@@ -257,7 +257,6 @@ void Aggregator::ItemSelected (const QModelIndex& index)
 
 bool Aggregator::CouldHandle (const LeechCraft::DownloadEntity& e) const
 {
-	qDebug () << Q_FUNC_INFO << e.Entity_ << e.Location_ << e.Mime_;
 	if (QUrl (QString (e.Location_)).scheme () != "http" &&
 			QUrl (QString (e.Location_)).scheme () != "https")
 		return false;
