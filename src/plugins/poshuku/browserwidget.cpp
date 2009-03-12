@@ -564,6 +564,7 @@ void BrowserWidget::handleEntityAction ()
 
 void BrowserWidget::handleLoadFinished ()
 {
+	qDeleteAll (ToolBar_->findChildren<QAction*> ("LinkButton"));
 	QXmlStreamReader xml (Ui_.WebView_->page ()->mainFrame ()->toHtml ());
 	while (!xml.atEnd ())
 	{
@@ -617,6 +618,7 @@ void BrowserWidget::handleLoadFinished ()
 					this,
 					SLOT (handleEntityAction ()));
 			act->setData (QVariant::fromValue<LeechCraft::DownloadEntity> (e));
+			act->setObjectName ("LinkButton");
 			ToolBar_->insertAction (NewTab_, act);
 		}
 	}
