@@ -109,7 +109,7 @@ QUrl Core::MakeURL (QString url) const
 	QUrl result = QUrl (url);
 	if (result.scheme ().isEmpty ())
 	{
-		if (url.count ('.'))
+		if (!url.count (' ') && url.count ('.'))
 			result = QUrl (QString ("http://") + url);
 		else
 		{
