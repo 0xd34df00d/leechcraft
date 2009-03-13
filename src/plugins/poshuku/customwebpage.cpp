@@ -67,21 +67,22 @@ void CustomWebPage::gotUnsupportedContent (QNetworkReply *reply)
 		case QNetworkReply::NoError:
 			{
 				QWebFrame *found = FindFrame (reply->url ());
-				if (!found &&
-						(!XmlSettingsManager::Instance ()->
-						 property ("ParanoidDownloadsDetection").toBool () ||
-						 reply->header (QNetworkRequest::ContentTypeHeader).isValid ()))
+				if (!found)
 				{
-					reply->abort ();
-					LeechCraft::DownloadEntity e =
+					if (XmlSettingsManager::Instance ()->property ("ParanoidDownloadsDetection").toBool () ||
+							reply->header (QNetworkRequest::ContentTypeHeader).isValid ())
 					{
-						reply->url ().toString ().toUtf8 (),
-						QString (),
-						QString (),
-						LeechCraft::FromUserInitiated
-					};
-					emit gotEntity (e);
-					break;
+						reply->abort ();
+						LeechCraft::DownloadEntity e =
+						{
+							reply->url ().toString ().toUtf8 (),
+							QString (),
+							QString (),
+							LeechCraft::FromUserInitiated
+						};
+						emit gotEntity (e);
+						break;
+					}
 				}
 			}
 		default:
