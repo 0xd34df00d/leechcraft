@@ -593,11 +593,11 @@ void BrowserWidget::handleLoadFinished ()
 		if (hrefUrl.isRelative ())
 		{
 			QUrl originalUrl = Ui_.WebView_->page ()->mainFrame ()->url ();
-			if (hrefUrl.path ().size () &&
-					hrefUrl.path ().at (0) == '/')
-				originalUrl.setPath (hrefUrl.path ());
+			if (hrefUrl.toString ().size () &&
+					hrefUrl.toString ().at (0) == '/')
+				originalUrl.setPath (hrefUrl.toString ());
 			else
-				originalUrl.setPath (originalUrl.path () + hrefUrl.path ());
+				originalUrl.setPath (originalUrl.path () + hrefUrl.toString ());
 			hrefUrl = originalUrl;
 		}
 		e.Location_ = hrefUrl.toString ();
