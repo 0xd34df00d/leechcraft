@@ -597,6 +597,10 @@ void BrowserWidget::handleLoadFinished ()
 
 		LeechCraft::DownloadEntity e;
 		e.Entity_ = attributes.value ("title").toString ().toUtf8 ();
+		
+		if (e.Entity_.isEmpty ())
+			continue;
+
 		e.Mime_ = attributes.value ("type").toString ();
 		QUrl hrefUrl (attributes.value ("href").toString ());
 		if (hrefUrl.isRelative ())
