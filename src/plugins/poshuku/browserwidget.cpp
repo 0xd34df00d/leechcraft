@@ -143,9 +143,15 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	moreMenu->addSeparator ();
 	moreMenu->addAction (ViewSources_);
 	moreMenu->addSeparator ();
+
 	RecentlyClosed_ = moreMenu->addMenu (tr ("Recently closed"));
 	RecentlyClosed_->setEnabled (false);
 	RecentlyClosed_->menuAction ()->setShortcut (tr ("Ctrl+Shift+T"));
+
+	ExternalLinks_ = new QMenu (this);
+	ExternalLinks_->menuAction ()->setText (tr ("External links"));
+	ExternalLinks_->menuAction ()->
+		setProperty ("ActionIcon", "poshuku_externalentities");
 
 	QWidgetAction *addressBar = new QWidgetAction (this);
 	addressBar->setDefaultWidget (Ui_.URLEdit_);
@@ -564,8 +570,11 @@ void BrowserWidget::handleEntityAction ()
 
 void BrowserWidget::handleLoadFinished ()
 {
-	qDeleteAll (ToolBar_->findChildren<QAction*> ("LinkButton"));
+	ToolBar_->removeAction (ExternalLinks_->menuAction ());
+	ExternalLinks_->clear ();
+
 	QXmlStreamReader xml (Ui_.WebView_->page ()->mainFrame ()->toHtml ());
+	bool inserted = false;
 	while (!xml.atEnd ())
 	{
 		QXmlStreamReader::TokenType token = xml.readNext ();
@@ -609,17 +618,18 @@ void BrowserWidget::handleLoadFinished ()
 		{
 			QString mime = e.Mime_;
 			mime.replace ('/', '_');
-			QAction *act = new QAction (QIcon (QString (":/resources/images/%1.png")
+			QAction *act = ExternalLinks_->
+				addAction (QIcon (QString (":/resources/images/%1.png")
 						.arg (mime)),
 					e.Entity_,
-					ToolBar_);
-			connect (act,
-					SIGNAL (triggered ()),
 					this,
 					SLOT (handleEntityAction ()));
 			act->setData (QVariant::fromValue<LeechCraft::DownloadEntity> (e));
-			act->setObjectName ("LinkButton");
-			ToolBar_->insertAction (NewTab_, act);
+			if (!inserted)
+			{
+				ToolBar_->insertAction (NewTab_, ExternalLinks_->menuAction ());
+				inserted = true;
+			}
 		}
 	}
 }

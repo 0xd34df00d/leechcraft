@@ -28,6 +28,7 @@ class BrowserWidget : public QWidget
 	QAction *ZoomOut_;
 	QAction *ZoomReset_;
 	QMenu *RecentlyClosed_;
+	QMenu *ExternalLinks_;
 public:
 	BrowserWidget (QWidget* = 0);
 	virtual ~BrowserWidget ();
