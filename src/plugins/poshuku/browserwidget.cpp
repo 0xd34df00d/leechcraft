@@ -602,18 +602,28 @@ void BrowserWidget::handleLoadFinished ()
 			continue;
 
 		e.Mime_ = attributes.value ("type").toString ();
-		QUrl hrefUrl (attributes.value ("href").toString ());
-		if (hrefUrl.isRelative ())
+		QString hrefUrl (attributes.value ("href").toString ());
+		if (hrefUrl.indexOf ("://") < 0)
 		{
 			QUrl originalUrl = Ui_.WebView_->page ()->mainFrame ()->url ();
-			if (hrefUrl.toString ().size () &&
-					hrefUrl.toString ().at (0) == '/')
-				originalUrl.setPath (hrefUrl.toString ());
+			originalUrl.setQueryItems (QList<QPair<QString, QString> > ());
+			if (hrefUrl.size () &&
+					hrefUrl.at (0) == '/')
+				originalUrl.setPath (hrefUrl);
 			else
-				originalUrl.setPath (originalUrl.path () + hrefUrl.toString ());
-			hrefUrl = originalUrl;
+			{
+				QString originalPath = originalUrl.path ();
+				if (!originalPath.endsWith ('/'))
+				{
+					int slashIndex = originalPath.lastIndexOf ('/');
+					originalPath = originalPath.left (slashIndex + 1);
+				}
+				originalPath += hrefUrl;
+				originalUrl.setPath (originalPath);
+			}
+			hrefUrl = originalUrl.toString ();
 		}
-		e.Location_ = hrefUrl.toString ();
+		e.Location_ = hrefUrl;
 		e.Parameters_ = LeechCraft::FromUserInitiated;
 
 		bool ch = false;
