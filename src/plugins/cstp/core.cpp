@@ -20,6 +20,7 @@ Core::Core ()
 : HistoryModel_ (new HistoryModel ())
 , RepresentationModel_ (new RepresentationModel ())
 , SaveScheduled_ (false)
+, Toolbar_ (0)
 {
 	qRegisterMetaType<boost::intrusive_ptr<MorphFile> > ("boost::intrusive_ptr<MorphFile>");
 
@@ -59,6 +60,11 @@ void Core::Release ()
 LeechCraft::Util::HistoryModel* Core::GetHistoryModel ()
 {
 	return HistoryModel_;
+}
+
+void Core::SetToolbar (QWidget *widget)
+{
+	Toolbar_ = widget;
 }
 
 int Core::AddTask (const QString& url,
@@ -233,6 +239,8 @@ QVariant Core::data (const QModelIndex& index, int role) const
 				return QVariant ();
 		}
 	}
+	else if (role == LeechCraft::RoleControls)
+		return QVariant::fromValue<QWidget*> (Toolbar_);
     else
         return QVariant ();
 }
@@ -499,10 +507,12 @@ Core::tasks_t::iterator Core::FindTask (QObject *task)
 void Core::Remove (tasks_t::iterator it)
 {
 	int dst = std::distance (ActiveTasks_.begin (), it);
-	IDPool_.push_front (it->ID_);
+	int id = it->ID_;
 	beginRemoveRows (QModelIndex (), dst, dst);
 	ActiveTasks_.erase (it);
 	endRemoveRows ();
+	IDPool_.push_front (id);
+
 	ScheduleSave ();
 }
 

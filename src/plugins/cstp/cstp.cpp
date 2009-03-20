@@ -33,6 +33,8 @@ void CSTP::Init ()
 	SetupTabWidget ();
 	SetupToolbar ();
 
+	Core::Instance ().SetToolbar (Toolbar_.get ());
+
 	connect (&Core::Instance (),
 			SIGNAL (taskFinished (int)),
 			this,
@@ -178,16 +180,6 @@ QAbstractItemModel* CSTP::GetRepresentation () const
 LeechCraft::Util::HistoryModel* CSTP::GetHistory () const
 {
 	return Core::Instance ().GetHistoryModel ();
-}
-
-QWidget* CSTP::GetControls () const
-{
-	return Toolbar_.get ();
-}
-
-QWidget* CSTP::GetAdditionalInfo () const
-{
-	return 0;
 }
 
 void CSTP::ItemSelected (const QModelIndex&)

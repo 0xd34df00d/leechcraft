@@ -58,8 +58,6 @@ public:
 
 	QAbstractItemModel* GetRepresentation () const;
 	LeechCraft::Util::HistoryModel* GetHistory () const;
-	QWidget* GetControls () const;
-	QWidget* GetAdditionalInfo () const;
 	void ItemSelected (const QModelIndex&);
 
 	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;

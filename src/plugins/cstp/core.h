@@ -61,6 +61,7 @@ class Core : public QAbstractItemModel
 	bool SaveScheduled_;
 	QNetworkAccessManager *NetworkAccessManager_;
 	std::list<quint32> IDPool_;
+	QWidget *Toolbar_;
 	
 	explicit Core ();
 public:
@@ -78,6 +79,7 @@ public:
 	static Core& Instance ();
 	void Release ();
 	LeechCraft::Util::HistoryModel* GetHistoryModel ();
+	void SetToolbar (QWidget*);
 
 	int AddTask (const QString&, const QString&,
 			const QString&, const QString&,
