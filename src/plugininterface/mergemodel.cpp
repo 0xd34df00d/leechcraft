@@ -60,7 +60,12 @@ QModelIndex MergeModel::index (int row, int column, const QModelIndex& parent) c
 		return mapped.model ()->index (row, column, mapped);
 	}
 	else
+	{
+		if (!hasIndex (row, column))
+			return QModelIndex ();
+
 		return createIndex (row, column);
+	}
 }
 
 QModelIndex MergeModel::parent (const QModelIndex&) const
@@ -122,7 +127,17 @@ QModelIndex MergeModel::mapToSource (const QModelIndex& proxyIndex) const
 	}
 	catch (const std::runtime_error& e)
 	{
-		qWarning () << Q_FUNC_INFO << "caught:" << e.what ();
+		QStringList models;
+		Q_FOREACH (QAbstractItemModel *model, Models_)
+			models << model->objectName ();
+		qWarning () << Q_FUNC_INFO
+			<< "\n"
+			<< objectName ()
+			<< proxyIndex
+			<< "\n"
+			<< e.what ()
+			<< "\n"
+			<< models;
 		throw;
 	}
 	//
@@ -325,8 +340,21 @@ void MergeModel::handleRowsAboutToBeRemoved (const QModelIndex& parent,
 {
 	QAbstractItemModel *model = static_cast<QAbstractItemModel*> (sender ());
 	int startingRow = GetStartingRow (FindModel (model));
-	beginRemoveRows (mapFromSource (parent),
-			first + startingRow, last + startingRow);
+	try
+	{
+		beginRemoveRows (mapFromSource (parent),
+				first + startingRow, last + startingRow);
+	}
+	catch (const std::exception& e)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< e.what ()
+			<< objectName ()
+			<< first
+			<< last
+			<< startingRow;
+		throw;
+	}
 }
 
 void MergeModel::handleRowsInserted (const QModelIndex&, int, int)
