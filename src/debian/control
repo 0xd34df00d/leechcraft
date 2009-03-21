@@ -1,0 +1,236 @@
+Source: leechcraft
+Section: net
+Priority: extra
+Maintainer: Rudoy Georg <0xd34df00d@gmail.com>
+Build-Depends: debhelper (>= 5),
+ cmake (>= 2.6),
+ libboost-thread1.37-dev,
+ libboost-date-time1.37-dev,
+ libboost-filesystem1.37-dev,
+ libboost-regex1.37-dev,
+ libboost-program-options1.37-dev,
+ libqt4-dev (>= 4.5)
+Standards-Version: 3.7.3
+Homepage: http://deviant-soft.ws
+
+Package: leechcraft-xmlsettingsdialog
+Section: libs
+Architecture: i386 i586 i686 amd64
+Depends: libc6,
+ libgcc1,
+ libstdc++6,
+ libqt4-core (>= 4.5),
+ libqt4-gui (>= 4.5),
+ libqt4-xml (>= 4.5),
+ libqt4-script (>= 4.5)
+Homepage: http://deviant-soft.ws
+Description: XmlSettingsDialog for LeechCraft.
+ XmlSettingsDialog provides a simple but powerful and abstract way to
+ create settings dialogs from XML files and store the values.
+
+Package: leechcraft-plugininterface
+Section: libs
+Depends: libc6,
+ libgcc1,
+ libqt4-core (>= 4.5),
+ libqt4-gui (>= 4.5),
+ libqt4-network (>= 4.5),
+ libqt4-sql (>= 4.5)
+Architecture: i386 i586 i686 amd64
+Homepage: http://deviant-soft.ws
+Description: Common library for LeechCraft.
+ A library providing some useful and commonly used routines as well as
+ communications with the LeechCraft core.
+
+Package: leechcraft
+Section: net
+Architecture: i386 i586 i686 amd64
+Depends: libc6,
+ libgcc1,
+ libstdc++6,
+ libqt4-core (>= 4.5),
+ libqt4-gui (>= 4.5),
+ libqt4-xml (>= 4.5),
+ libqt4-network (>= 4.5),
+ libqt4-sql (>= 4.5),
+ libqt4-sql-sqlite (>= 4.5),
+ libqt4-script (>= 4.5),
+ leechcraft-xmlsettingsdialog (= ${Source-Version}),
+ leechcraft-plugininterface (= ${Source-Version})
+Recommends: leechcraft-plugin-aggregator,
+ leechcraft-plugin-bittorrent,
+ leechcraft-plugin-cstp
+Suggests: leechcraft-plugin-chatter
+Homepage: http://deviant-soft.ws
+Description: Core executable of LeechCraft.
+ LeechCraft is a crossplatform and feature-rich framework intended for
+ building internet-related applications via combining different
+ abstract modules (plugins). LeechCraft would then connect them to each
+ other and route requests for downloads or handling of entities between
+ them.
+ Official plugins currently include BitTorrent client, a web browser,
+ feed reader, different search clients and much more.
+ This package contains the main LeechCraft executable.
+
+Package: leechcraft-plugin-aggregator
+Section: net
+Architecture: i386 i586 i686 amd64
+Depends: libc6,
+ libgcc1,
+ libstdc++6,
+ libqt4-core (>= 4.5),
+ libqt4-gui (>= 4.5),
+ libqt4-xml (>= 4.5),
+ libqt4-network (>= 4.5),
+ libqt4-sql (>= 4.5),
+ libqt4-sql-sqlite (>= 4.5),
+ libqt4-webkit (>= 4.5),
+ leechcraft-xmlsettingsdialog (= ${Source-Version}),
+ leechcraft-plugininterface (= ${Source-Version}),
+ leechcraft (= ${Source-Version}),
+ leechcraft-provider-http (= ${Source-Version})
+Provides: leechcraft-provider-feedreader
+Recommends: leechcraft-provider-webbrowser
+Homepage: http://deviant-soft.ws
+Description: RSS/Atom feed reader for LeechCraft.
+ LeechCraft is a crossplatform and feature-rich framework intended for
+ building internet-related applications via combining different
+ abstract modules (plugins). LeechCraft would then connect them to each
+ other and route requests for downloads or handling of entities between
+ them.
+ Official plugins currently include BitTorrent client, a web browser,
+ feed reader, different search clients and much more.
+ This package contains Aggregator, the RSS/Atom feed reader.
+
+Package: leechcraft-plugin-bittorrent
+Section: net
+Architecture: i386 i586 i686 amd64
+Depends: libc6,
+ libgcc1,
+ libstdc++6,
+ libqt4-core (>= 4.5),
+ libqt4-gui (>= 4.5),
+ libqt4-xml (>= 4.5),
+ libboost-system1.37.0,
+ libboost-thread1.37.0,
+ libboost-date-time1.37.0,
+ libboost-filesystem1.37.0,
+ libtorrent-rasterbar-0.15,
+ leechcraft-xmlsettingsdialog (= ${Source-Version}),
+ leechcraft-plugininterface (= ${Source-Version}),
+ leechcraft (= ${Source-Version})
+Provides: leechcraft-provider-bittorrent
+Homepage: http://deviant-soft.ws
+Description: BitTorrent client for LeechCraft.
+ LeechCraft is a crossplatform and feature-rich framework intended for
+ building internet-related applications via combining different
+ abstract modules (plugins). LeechCraft would then connect them to each
+ other and route requests for downloads or handling of entities between
+ them.
+ Official plugins currently include BitTorrent client, a web browser,
+ feed reader, different search clients and much more.
+ This package contains BitTorrent client plugin.
+
+Package: leechcraft-plugin-cstp
+Section: net
+Architecture: i386 i586 i686 amd64
+Depends: libc6,
+ libgcc1,
+ libstdc++6,
+ libqt4-core (>= 4.5),
+ libqt4-gui (>= 4.5),
+ libqt4-network (>= 4.5),
+ leechcraft-xmlsettingsdialog (= ${Source-Version}),
+ leechcraft-plugininterface (= ${Source-Version}),
+ leechcraft (= ${Source-Version})
+Provides: leechcraft-provider-http
+Homepage: http://deviant-soft.ws
+Description: HTTP client for LeechCraft.
+ LeechCraft is a crossplatform and feature-rich framework intended for
+ building internet-related applications via combining different
+ abstract modules (plugins). LeechCraft would then connect them to each
+ other and route requests for downloads or handling of entities between
+ them.
+ Official plugins currently include BitTorrent client, a web browser,
+ feed reader, different search clients and much more.
+ This package contains clean and stupid HTTP implementation.
+
+Package: leechcraft-plugin-deadlyrics
+Section: net
+Architecture: i386 i586 i686 amd64
+Depends: libc6,
+ libgcc1,
+ libstdc++6,
+ libqt4-core (>= 4.5),
+ libqt4-gui (>= 4.5),
+ libqt4-network (>= 4.5),
+ libqt4-xml (>= 4.5),
+ leechcraft-xmlsettingsdialog (= ${Source-Version}),
+ leechcraft-plugininterface (= ${Source-Version}),
+ leechcraft (= ${Source-Version})
+Homepage: http://deviant-soft.ws
+Description: Song lyrics finder for LeechCraft.
+ LeechCraft is a crossplatform and feature-rich framework intended for
+ building internet-related applications via combining different
+ abstract modules (plugins). LeechCraft would then connect them to each
+ other and route requests for downloads or handling of entities between
+ them.
+ Official plugins currently include BitTorrent client, a web browser,
+ feed reader, different search clients and much more.
+ This package contains a simple lyrics finder.
+
+Package: leechcraft-plugin-poshuku
+Section: net
+Architecture: i386 i586 i686 amd64
+Depends: libc6,
+ libgcc1,
+ libstdc++6,
+ libqt4-core (>= 4.5),
+ libqt4-gui (>= 4.5),
+ libqt4-network (>= 4.5),
+ libqt4-sql (>= 4.5),
+ libqt4-webkit (>= 4.5),
+ libqt4-xml (>= 4.5),
+ leechcraft-xmlsettingsdialog (= ${Source-Version}),
+ leechcraft-plugininterface (= ${Source-Version}),
+ leechcraft (= ${Source-Version})
+Recommends: leechcraft-provider-http,
+ leechcraft-provider-bittorrent,
+ leechcraft-provider-feedreader,
+ leechcraft-provider-search
+Provides: leechcraft-provider-webbrowser
+Homepage: http://deviant-soft.ws
+Description: Web browser for LeechCraft.
+ LeechCraft is a crossplatform and feature-rich framework intended for
+ building internet-related applications via combining different
+ abstract modules (plugins). LeechCraft would then connect them to each
+ other and route requests for downloads or handling of entities between
+ them.
+ Official plugins currently include BitTorrent client, a web browser,
+ feed reader, different search clients and much more.
+ This package contains a full-featured web browser.
+
+Package: leechcraft-plugin-seekthru
+Section: net
+Architecture: i386 i586 i686 amd64
+Depends: libc6,
+ libgcc1,
+ libstdc++6,
+ libqt4-core (>= 4.5),
+ libqt4-gui (>= 4.5),
+ libqt4-xml (>= 4.5),
+ leechcraft-xmlsettingsdialog (= ${Source-Version}),
+ leechcraft-plugininterface (= ${Source-Version}),
+ leechcraft (= ${Source-Version}),
+ leechcraft-provider-webbrowser
+Provides: leechcraft-provider-search
+Homepage: http://deviant-soft.ws
+Description: Search plugin for LeechCraft.
+ LeechCraft is a crossplatform and feature-rich framework intended for
+ building internet-related applications via combining different
+ abstract modules (plugins). LeechCraft would then connect them to each
+ other and route requests for downloads or handling of entities between
+ them.
+ Official plugins currently include BitTorrent client, a web browser,
+ feed reader, different search clients and much more.
+ This package contains a search client for OpenSearch-aware web sites.

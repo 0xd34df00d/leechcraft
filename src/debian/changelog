@@ -1,0 +1,1236 @@
+leechcraft (0.2.1-771-g7c07580) unstable; urgency=low
+
+  + Tools: Repos manager
+  + Plugins: Some debugging facilities
+  + Core: Some debugging facilities
+  * PI: Fixed a serious bug with indexes creation
+  + CSTP: New controls framework support
+  * Poshuku: Better href handling in <link>s
+  * Poshuku: Don't show external links with empty titles
+  + Oxygen: New icons
+  + Poshuku: Show the external links in a menu
+  * Poshuku: More clever search heuristics
+  * Poshuku: Better handling of <link> elems
+  * Poshuku: Better handling of external stuff
+  * Poshuku: Remove old link buttons on new load
+  * Poshuku: Make sure the thumbnail looks wide enough
+  * Poshuku: Fixed a rare segfault on very long pages
+  + SeekThru: IEntityHandler as well now
+  * Aggregator: Refactored a little bit
+  * Poshuku: Fix icons
+  + Poshuku: <link>s work
+  - Aggregator: Removed some debugging output
+  + Core: Allow plugins to query for possibility of handling
+  * Interfaces: LeechCraft::DownloadEntity known to QVariant
+  * Aggregator: Fixed IHandler implementation
+  + Poshuku: Bring back the close button
+  - BitTorrent: Removed debugging output
+  + Poshuku: Prepare for icons
+  * Poshuku: Fixed session-saving issue
+  + BitTorrent: We can handle URLs to local files as well
+  + Core: Support Drag & Drop
+  * Poshuku: Skip all <link>s that aren't alternate or search
+  * Poshuku: Beautified BrowserWidget
+  * SeekThru: Thread only text/* as HTML
+  + SeekThru: Subscribing possibly works
+  * Interfaces: Fixed IEntityHandler
+  + Aggregator: IEntityHandler now
+  + Tango: New icons
+  + Nuvola: New icons
+  + Oxygen: Updated icons
+  + Tools: Icons list generator
+  * Poshuku: Crop the preview to 0.8 of height
+  + Core: Allow to change tab's tooltips
+  * Licensing sutff
+  + Poshuku: Show tab preview
+  + Poshuku: Ctrl++/Ctrl+-/Ctrl+0 zooming
+  + Poshuku: Zoom via wheel
+  + Poshuku: All-new and enhanced menu
+  + Poshuku: Caching
+  * Poshuku: Fixed completion issues
+  * Poshuku: Property connect to web page's loadFinished()
+  * CSTP: Settings fixed a bit
+  * Core: Settings fixed a bit
+  + Poshuku: Settings for various new stuff
+  + Poshuku: Offline storage stuff
+  * PI: CreateIfNotExists returns the created path now
+  * Build: Depend on Qt >= 4.5.0
+  + Core: Tabs moveable and closeable
+  * Build: Temporarily disabled LMP as it fails to build
+  * Core: Qt 4.5 build fix
+  + Poshuku: Parse out <link>s
+  + SeekThru: Show the side as well
+  * Core: Fixed some child detection bugs
+  + SeekThru: Shows something sometimes.
+  * Aggregator: Entities shouldn't be announced
+  * Interfaces: Updated docs
+  Merge branch 'master' of git@github.com:0xd34df00d/leechcraf
+  * Build: Embed version based on `git describe`
+  * BitTorrent: Saner error message in Core::DoDelayedInit ()
+  * Interfaces: DoNotAnnounceEntity flag, support by CSTP
+  * Poshuku: Remove session info if user declined to restore
+  * SeekThru: ..
+  + SeekThru: Allow to remove searchers
+  * Aggregator: Include unredundant code
+  * Aggregator: Remove redundant code
+  * Updated translations
+  * SeekThru:..
+  + SeekThru: Load/save and correct model for searchers
+  * SeekThru: Tolerance to existance of other provider users
+  - CSTP: Removed some debugging output
+  - Poshuku: Removed some debugging output
+  + SeekThru: Interface/stubs for addition of searchers
+  * SeekThru: Fixed the parser a bit
+  + PI: GetTemporaryName()
+  * Interfaces: IHaveSettings returns boost::shared_ptr
+  - Core: Fixed some code
+  * Core, Aggregator, CSTP, Poshuku, Torrent: New IPC
+  * Core: Redundant enum changed
+  * Aggregator: Fixed incorrect rendering
+  + Core: Set default window icon to LC's
+  * SeekThru: Moved descriptions to description.h|cp
+  + SeekThru: Serializers for the descriptors
+  + SeekThru: OpenSearch parser
+  + SeekThru: Stubs for this new plugin
+  * BitTorrent: Correct files' priorities work again
+  * BitTorrent: Optimized even more, though broken the priority settings
+  * BitTorrent: Optimized torrent files model
+  * Poshuku: New shortcuts
+  + Core: Delayed filter updating, though Return updates immidiately
+  * Core: More correct shutdown of RequestNormalizer
+  + Core: Support a (b OP c) -> a b OP a c
+  * PI: Fixed directory creation
+  - Core: Removed some debugging output
+  + DeadLyRicS: Caching
+  + PI: Function to check for path exist and readability
+  + Core: Working support for requesting widgets
+  * BitTorrent: Support new idiom of requesting interfaces
+  * Aggregator: Support new idiom of requesting interfaces
+  * All roles moved to the LeechCraft::, and merging works
+  + Core: Request normalizing works in the very basic form
+  + Core: OperationalModel and RequestNormalizer for the logics
+  * PI: More preparationss for RequestParser in MergeModel
+  * DeadLyriCS: LW searcher prints failed responses
+  * Core: CategoryMerger is a model itself now
+  Merge branch 'master' of git@github.com:0xd34df00d/leechcraf
+  - Interfaces: No FoundEntity is required now, all through MVC
+  + PI: MergeModeul can AcceptsRow() now
+  * Poshuku: fixed Speed Dial crash during top history traversal
+  + Core: Optionally ask for quit confirmation
+  * Core: Fix crash if tab's names are shown on startup
+  * Util: Updated .desktop-file
+  + DeadLyriCS: Show text in the sidebar
+  * Core: Use of localized search shorthands is a bad idea
+  + Core: Really support side widget for finders
+  * Poshuku: Remove old items from the model itself as well
+  + Poshuku: Remove older history items & fixed rating
+  * CSTP: Updated translations (though nothing changed)
+  * BitTorrent: Updated translations
+  * Core: Updated translations
+  * Aggregator: Updated translations
+  * Poshuku: Updated translations
+  + Poshuku: Visually react to highlighted completer
+  + Poshuku: Basic syntax highlighting
+  - Oxygen: No cookies
+  + Poshuku: Option for paranoid downloads detection
+  * Poshuku: Now cookies manager in settings dialog
+  + XmlSettingsManager: <item type="pushbutton"
+  - DeadLyriCS: Removed some debugging output
+  * Core: Show some actions in the tab widget
+  + DeadLyriCS: Searching stuff
+  * PI: MergeModel shouldn't check destroyed() actually
+  + Core: Support for other category: stuff
+  * PI: MergeModel handles destroyed models
+  * Core: And show the window if has been sent to tray
+  + Core: Bring LC to front on command-line call
+  * Build: Use bundled FindPhonon once again
+  * Core: Property update splash screen once again
+  + Core: Inter-LeechCraft communication & job send
+  + Core: Handle command-line passed entities
+  * Core: Even better arguments handling and help message
+  * Core: Moved startup from ::main to Application
+  * Interfaces: Renamed enum
+  * Core: More handy HandlerChoiceDialog
+  * CSTP: UTF-8 encoded files
+  + Core: Show files in the dir dialog in the gotEntity
+  * Poshuku: More compatibility
+  * Poshuku: Download normally from greedy servers
+  * DeadLyriCS: Attempt to satisfy new arch
+  * Core: Possibly new arch of searches
+  + Core: New suitable handler/downloader selection
+  + Oxygen: Icons for the Poshuku
+  + Poshuku: Cut, Copy & Paste icons
+  + Interfaces: IEntityHandler for entity handlers
+  * Core: Use RolePath + gotEntity to handle history
+  + CSTP: Respect HistoryModel::RolePath
+  + BitTorrent: Respect HistoryModel::RolePath
+  + BitTorrent: Reject auto addition of big files
+  * PI: New data role for the path of a file
+  * Core: Remove '\' in "\:"
+  * Core: Activation works again
+  + Core: New RequestParser, removed History-tab
+  + Poshuku: Handle raw cookies insertions
+  * Aggregator: Small code rewrite
+  + Poshuku: Forgot to include them in the previous commit
+  + Poshuku: Cookies editor
+  + PI: CustomCookieJar allows to set all cookies
+  - Oxygen: Postinst script is unneeded now
+  + Oxygen: Icon for the cookies stuff
+  * Core: Respect CustomCookieJar moving
+  * PluginInterface: Moved CustomCookieJar to PI
+  * Poshuku: Speed dial improvements, once again
+  + Poshuku: On-the-fly preview update
+  * Poshuku: SpeedDial support
+  + Poshuku: Speed dial
+  + Poshuku: New main tab, better & improved
+  * BitTorrent: Reworked settings dialog (-2 tabs)
+  * Poshuku: Fixed settings typo
+  * XmlSettingsDialog: Fixed margins around FilePicker
+  + BitTorrent: Allow to hide some panes (reorganized them as well)
+  + BitTorrent: Selector for TorrentTags
+  Added new items to .gitignor
+  - Aggregator: Clean up a bit
+  * Aggregator: Fix feeds with cats as well as items with no cats
+  * Poshuku: Implement IWebWidget
+  * Aggregator: Fully support embedding IWebBrowser's widget
+  * Aggregator: Fully support IWebWidget
+  * Interfaces: IWebView::Widget()
+  * Aggregator: Call IWebBrowser's stuff for new window directly
+  + Poshuku: Implement IWebBrowser and IWebWidget
+  + Core: Added IWebBrowser and IWebWidget
+  * BitTorrent: Foolproofed against PeerID versions
+  + Core: Show down/up speed in tray icon tooltip
+  Fixed Chatter build and re-enabled i
+  * Iconsets: Adapt to recent changes
+  * Core: SkinEngine should be able to load from SVG now
+  * Aggregator: Another icon for the tray
+  + Core: Search in ~/.icons & ~/.leechcraft/icons
+  * Core: Modified icons searcher
+  + XmlSettingsDialog: Support for custom widget
+  * Aggregator: Better tray icon, show also number of unread channels
+  + Poshuku: Unclose on Ctrl+Shift+T, also fixes
+  + Poshuku: List of items to unclose
+  * CSTP: Fixed wrong redirection interpretation
+  Changed build system a lot
+  * BitTorrent: Unlimited number of downloads by default
+  Merge branch 'master' of git@github.com:0xd34df00d/leechcraf
+  * CSTP: Really remove removed items from the history DB
+  * Poshuku: Beautified RestoreSessionDialog
+  + Poshuku: Show favicons in RestoreSessionDialog
+  - Core: Removed plugin hash/name/info validation
+  * BitTorrent: Fixed segfault on multiple removal
+  + Aggregator: Show error messages in a queue
+  - Poshuku: Removed old debugging output somewhere
+  * CSTP: Fixed concurrency bug
+  * Core: It's plugin's job to handle self removal
+  + Poshuku: New/close tab actions, menu for others
+  * Oxygen: Close/Open tab and More in Poshuku
+  * Aggregator: Remove tmp files from failed jobs
+  * Core: Better initial stuff handling
+  * Core: +6 px from each side (smaller margins)
+  * Core: Icons 24x24 now
+  + Poshuku: Configurable cache, and DB for icons
+  Actually, only XmlSettingsDialog'd be committed
+  + XmlSettingsDialog: doublespinbox now has "precision" field
+  + Poshuku: Clever URL line edit text parser
+  + Poshuku: Report that Favorites item addition failed and suggest to  
+  * Core: Possibly fixed Phonon build issues
+  * Poshuku: Fixed removal of wrong favorites item if the filter is acti
+  * PluginInterface: Removed qDebug from TagsLineEdit
+  * Poshuku: Fixed favorites' order in SQL SELECT
+  * BitTorrent: Fixed & optimized queue moving stuff
+  * Aggregator: Fixed some translations not working
+  Merge branch 'master' of git@github.com:0xd34df00d/leechcraf
+  * Core: Fixed translations
+  * Updated translations
+  * PluginInterface: Fix locale loader under Windows
+  * Tools: Add qt.conf to allow Qt to find sql/other stuff
+  * Tools: Updated NSIS build script
+  * Aggregator: Modified reporting for provider's errors
+  * Core: Seems like fixed occasional segfaults on exit
+  + Core: Forward unhandled keyboard events to plugins
+  + BitTorrent: Magnet links support
+  + Core: Catch exceptions from event handlers now
+  * Core: Changed initialization order of plugins
+  Poshuku: URL lineedit completion/suggestion
+  * Poshuku: Don't add empty items to history
+  Poshuku enhancements
+  + Poshuku: Log unsupported content's reason
+  * LMP: Create path only on playback start
+  + Core: Limit lines in LogToolBox
+  Poshuku tab enhancements
+  Windows build issues
+  * BitTorrent: Fix build with recent libtorrent
+  * Core: Made backtrace dependant on _GNU_SOURCE
+  * BitTorrent: Fix a typo
+  + Oxygen: Icon for fullscreen mode
+  + FancyPopupManage
+  * Aggregator: Padding of the header in the itemswidget
+  Modified .gitignore to include build/ dirs
+  Possibly fixed build of LMP
+  + Aggregator: Show message boxes with errors from interactive user   e
+  + Aggregator: Show error message box in case of CSTP error
+  * Poshuku: Restore session dialog should not have "Dialog" caption
+  * Aggregator: Removed margins in layout
+  * Core: Optimized interface
+  * Aggregator: Show link, comments & stuff in the browser, not in the  
+  * Aggregator: Don't hide the info pane, just make the buttons disabled
+  + PluginInterface: CategorySelector shouldn't get off the screen
+  * PluginInterface: Seems like fixed the tags issue
+  * Core: Don't switch settings widgets during highlighting
+  * XmlSettingsDialog: Fixed a small memory leak
+  * Core: Always hide clocks when exiting from fullscreen
+  * Aggregator: Really show link label
+  * Core: Fix for some WMs, splashscreen shouldn't be on top
+  * Core: Saner size policies
+  * Aggregator: Some presentation-related fixes
+  + PluginInterface: Documented MergeModel and HistoryModel
+  + Core: Debug output now logs seq number of a debug message
+  + Core: Documented LeechCraft::Core a bit
+  * Core: Hopefully, finally fixed the bug with selections
+  * Aggregator: Updated translations
+  * BitTorrent: Updated translations. * Core: Updated translations. * CS
+  * Aggregator: Reverted delayed deletions in an attempt to fix the bug
+  * Core: Fixed this fucking item reselection bug (once again?)
+  * Core: Possibly fixes with the new integrating stuff
+  * Aggregator: More user-friendly old item removal
+  * CSTP: Possibly fixed another segfault on exit
+  + Oxygen: new icons for the Logger and Plugin Manager
+  * Aggregator: Proper name of the feed in removal dialog
+  * Aggregator: Really hide item info pane
+  + Aggregator: Implement IJobHolder
+  + BitTorrent: 4->3 columns
+  * Core: Lots of fixes with the job holders
+  * CSTP: Fixed infinite loop in multiremoval and moved TaskDescr to   b
+  * Aggregator: Order feeds by ROWID (order of insertion) as well
+  + Poshuku: Order by ROWID when selecting favorites
+  + Poshuku: Stubs for DB versionning
+  + Aggregator: Individual items numbers/ages for channels
+  * Aggregator: Fixed rare misupdate cases
+  + CSTP: Remove nonpersistent tasks from list if they failed
+  * CSTP: Fix task removal issues
+  + Aggregator: Channel settings/viewer moved to separate dialog
+  + Aggregator: Able to set up update intervals separately
+  * Core: Fixed a bug with wrong selections
+  * DBusManager: Fixed broken build
+  * Remoter: Fixed broken build
+  * Aggregator: Tray icon's text drawing fixes
+  * Poshuku: Remove previous session after restore
+  + DeadLyRicS: Working fetch/parser from lyricwiki.org
+  * Chatter: Fixed embedding issues
+  * Aggregator: Optimized a lot of stuff
+  + DeadLyRicS: Stub
+  * Common: Splitted interfaces.h to multiple files. I'm sick of   whole
+  + Aggregator: Show item's title in the browser
+  + Aggregator: Support for <enclosures>
+  * Aggregator: Slightly refactored selected item changed handler
+  + Core: Show clock in FS
+  + BitTorrent: Per-tracker stats
+  * Common: Proper history handling
+  + LMP: Report errors via dialog box instead of state lineedit
+  * Aggregator: Trim categories width
+  * BitTorrent: Unicode-aware conversions upon file opening
+  * BitTorrent: Gave names to torrents based on their metadata instead o
+  * Torrent: Optimized storage
+  * Poshuku: Fix segfault on exit when something is opened in Poshuku
+  * Common: Updated Russian translations
+  + Core: Print backtraces in qWarning(), qCritical() and qFatal()
+  * Chatter: Fixed socket mishandling. * CSTP: Fixed wrong time of delet
+  * BitTorrent: Fix not handled alerts
+  * Core: Place controls at the right, not at the bottom
+  * Torrent: Now vertically-oriented stuff
+  * Core: Saner handling of automatic jobs
+  * BitTorrent: Saner handling of automatic jobs. * LMP: Fix compilation
+  * Aggregator: Optimized UI
+  * Aggregator: Possibly, regexp matcher works now
+  * Aggregator: Fixed crash on quit if RegexpMatcherUi was opened. * CST
+  + Poshuku: Try to show an own web page in case of load error
+  + Common: New XmlSettingsDialog's RegisterObject overload to support  
+  + Poshuku: Slightly better URL completion model
+  + Core: Authentication, SSL errors and cookies handling now here
+  - Poshuku: Moved stuff to Core
+  + Interfaces: IWantNetworkAccessManager for those who want to share NA
+  + Core: Handle IWantNetworkAccessManagers. + CSTP: Implements IWantNet
+  * CSTP: Moved away from QHttp to QNetworkAccessManager
+  - CSTP: Cleaned up remains of FTP support. * CSTP: Code is generally m
+  * Poshuku: Optimized "Save link" stuff as we did with unsupported   co
+  + Poshuku: Focus on new tab's line edit
+  + Core: Changed gotEntity handler behavior quite a lot
+  * Common: Changed fileDownloaded(const QString&) to   gotEntity(const 
+  * Poshuku: Don't focus on new tab if it was opened via "Open link in n
+  * Fixes build on Windows
+  * Tools: Updated NSI script
+  * Updated themes
+  * Torrent: Fixed unicode stuff
+  * LMP: Phonon fixes
+  + Aggregator: Now PImpl!!! * Aggregator: Possibly fixed some bugs with
+  + Core: Property connect slots
+  + Poshuku: Focus on new tab on Ctrl+T
+  * Poshuku: Fixed a segfault in unsupported content handler
+  + Core: Dep fix & arch fix in build stuff
+  * Core: Better statusbar
+  * Fixed a bit CMakeLists in plugins to support removal if icons
+  + Core: Don't ask about modified plugins on first start
+  - Got read of all hicolor icons
+  + Core: Fixed wrong initialization order
+  1000 revision
+  + Poshuku: Web page screenshot grabber
+  + Core: Some fixes to skinengine
+  + Poshuku: Suggest to save unsupported content
+  * Poshuku: Report correct failures in SQL storage backend
+  * Crystalz: Updated
+  + Nuvola: New icon theme
+  * Tango: all-arch. * Oxygen: all-arch
+  removed extra spaces from libtorrent version description in plugins/to
+  + Core: Collect icons from everywhere, not only from the "actions"   s
+  * Core: Slight skinmanager refactoring
+  + CSTP: Also has settings
+  + Core: Can optionally hide tab names now
+  * Tools: Modified URL to LeechCraft's site in the ebuild
+  + Oxygen: Some new icons
+  + Tango
+  * Core: Fixed infinite loop in case of malformed mapping file
+  * CSTP: Fixed icon actions namings
+  + Core: Seems like we are able to distinguish between icons by their  
+  Added an icon for exit
+  + Core: Added Quit action icon property
+  + Poshuku: Added plugin icon
+  * Aggregator: Modified plugin icon. * BitTorrent: Modified plugin icon
+  - Core: Removed default (hicolor) iconset
+  Modified mapping and added a new icon
+  + Core: Support themeable QTabWidgets
+  + Poshuku: Finally, an icon
+  + BitTorrent: Use pkg-config instead of hard-coding torrent compile   
+  * Aggregator: Optimized settings layout. * Poshuku: Optimized settings
+  * Core: Beautified splashscreen once again
+  * Updated translations
+  + Core: Aggregate all settings into one Core dialog
+  * XmlSettingsDialog: API changes. * Aggregator: Support that. * BitTor
+  + Core: Show what's exactly initializing on the splash screen
+  * Core: Beautified splash screen a bit
+  + Interfaces: IHaveSettings for those plugins that have something to c
+  + Core: Ability to remove items from history
+  + Core: Actually return the history model to LeechCraft
+  + Core: Separate logger tool window
+  + BitTorrent: Use that window instead of own
+  + Core: Request all tags in downloaders/history via the expsed model, 
+  * Core: Fixed a bug with tags requests in downloaders/history
+  + CSTP: Expose history model to the outer world
+  - CSTP: Remove tab widget
+  * Core: Windows-specific build fix
+  * XmlSettingsManager: Windows-specific build fix. * XmlSettingsManager
+  * Iconsets: Updated Oxygen to reflect new Poshuku's features
+  + Poshuku: Find text on pages
+  + Poshuku: Printing
+  + Poshuku: Keyboard shortcuts for Reload/Stop
+  + Poshuku: Handle download requests and few small enhancements
+  + Poshuku: Show web page messages or link URLs (when mouse hovers over
+  * Aggregator: Don't remove current item from items list if it is   sel
+  * Poshuku: Actually return all unique items instead of those who appea
+  * Updated translations
+  * Aggregator: Ignore double clicks on channels as well
+  * Poshuku: Saner history, unique entries in it, a bit faster and neate
+  - Aggregator: Removed opening of item's link on item list item   activ
+  * Poshuku: Moved URL line edit to the other buttons, thus optimizing  
+  + Aggregator: An option to always use an external browser
+  + Core: Switch to fullscreen mode and back on F11
+  * Core: Beautified the code a bit
+  * Aggregator: Fixed wrong database structure if created from scratch
+  + Oxygen: Few more icons added
+  * Core: FIxed improper setups of actions where ActionIconOff is define
+  * Aggregator: Fixed segfaults on various exports
+  * BitTorrent: Fixed icon names for import/export
+  * Oxygen: Updated. Almost everything works fine now
+  + LCNP: Stubs for common NPAPI plugin for LeechCraft
+  - Core: Aggregate jobs' option doesn't make sense anymore
+  + Core: Respect icons from plugins
+  + Core: Multiwindow works
+  + Core: Tab management code moved to TabContainer as a preparation for
+  * Core: Everything moved to LeechCraft namespace. * PluginInterface: E
+  * Build: Phonon is optional now
+  * Core: Make speed graph widgets be the rightmost ones and occupy   25
+  * BitTorrent: Fix hang on shutdown with recent libtorrent
+  * PluginInterface: Fix odd tags completer's behavior
+  + Poshuku: URL lineedit autocompletion
+  + Poshuku: FS#221: History filtering
+  * PluginInterface: TagsFilterModel is in normal mode by default (was  
+  * Remoter: Properly shutdown if the server wasn't initialized properly
+  + Core: Check for new/changed plugins and ask user about them
+  + Core: -nopupcheck command-line switch to disable that behavior. + Co
+  * Core: Updated translations. * Aggregator: Updated translations
+  + Core: Better protection against bad plugins returning NULL for   imp
+  + Nufella: The beginning
+  * Aggregator: Various improvements in dialogs
+  * Aggregator: Show/hide buttons when appropriate
+  + BitTorrent: FS#220: Seeding piece quota option
+  + Core: FS#217: Announce to all trackers option
+  + Core: FS#218: Prefer UDP trackers option. + Core: FS#219: Strict sup
+  + BitTorrent: FS#216: Super seeding
+  + Stuff: Debian package depends on Phonon now
+  * Aggregator: Small optimizations leading to noticeable performance   
+  + Aggregator: Ctrl+> and Ctrl+< switch current channel
+  * Chatter: Fixed annoying warning about bringToFront()
+  + BitTorrent: Export torrents to XML
+  + Core: Cycle through tabs by Ctrl+] or Ctrl+[
+  * Poshuku: Saner gradient calculations
+  + Core: New style of multitabs closes
+  * Poshuku: Support new style of multitabs closes
+  + Aggregator: Compress LCAE
+  + Poshuku: Documented StorageBackend
+  + Poshuku: Storing login/password auth data in the DB
+  + Poshuku: Keeping favorites in favorites model seems to work
+  * Aggregator: Use a name for the SQL connection
+  + Poshuku: Working history to/from SQL
+  + Aggregator: v0id's patch with some fixes
+  * Aggregator: Actually create the ".leechcraft/aggregator" path
+  + PluginInterface: Added DBLock
+  + PluginInterface: Documented CategorySelector. + PluginInterface: Doc
+  - Aggregator: Removed DBLock, moved to PluginInterface
+  Slightly more sane Phonon findin
+  + Core: Added experimental Zombieff's skin, start LeechCraft with   -z
+  * Aggregator: Use palette colors for item models
+  + Aggregator: Open links on labels using LeechCraft's web browser if i
+  + Poshuku: FS#209: Probably saving credentials
+  + Poshuku: FS#207: Handle external downloads
+  * All: Modified CMakeLists.txt's translation generation/update, thus  
+  + Aggregator: FS#161: Import/export to binary file
+  + Poshuku: Default home page is a setting now
+  * Core: Replace long tab names by ..
+  + Aggregator: FS#161: Export to binary format
+  * Aggregator: Restored functionality of OPML exporter
+  * Aggregator: Updated translations
+  * Poshuku: Updated translations
+  + Aggregator: Parse and store link to comments
+  + Aggregator: FS#187: Item category selector
+  Remoter stuff. We now can make icons, really
+  + Aggregator: Open items on item activation in favorites/history view
+  * Aggregator: Fixed a bug when items unread count wouldn't be updated 
+  + Poshuku: History of visited web pages
+  * Aggregator: Insert new items if the current channel is the updated  
+  * Aggregator: Possibly fixed a bug with non-differentiating same items
+  * Aggregator: Interpret RSS 0.92 as RSS 0.91
+  * Aggregator: Notify about channel update on item addition
+  * Aggregator: Fixed another crash on feed addition
+  * Aggregator: Fixed removal of feeds
+  * Aggregator: Fixed marking items as unread
+  * Aggregator: Fixed updating channels state on items state change (for
+  * Aggregator: Make all the transactions to be guarded by   SQLStorageB
+  * XmlSettingsDialog: Make the BaseSettingsManager implementation to   
+  + CSTP: Introduced file writing filter
+  * Aggregator: Fixed a bug with not updateable tags. * Aggregator: Fixe
+  Aggregator: Fixed some issues with items updating
+  Aggregator: Moving towards a working code
+  Aggregator: At least it compiles now
+  + CSTP: Deny gzip encodings in reply as we can't understand it now
+  + Aggregator: Add new interface to store everything inside the   SQLSt
+  + Aggregator: Added stuff to SQLStorageBackend to support the new   in
+  + Aggregator: Documented StorageBackend, prepared for refactoring of  
+  + Aggregator: Introduced ChannelShort and ItemShort
+  + Remoter: Few more bindings
+  + Remoter: qtowabstractitemmodeladaptor now reemits signals in usable 
+  * Remoter: Better encodings
+  + Remoter: Headers proxying as well
+  * Aggregator: Fixed a severe mislogic causing feeds to take items from
+  + Remoter: Web-interface works sometimes
+  + Remoter: Adaptor for QAbstractItemModel
+  * Poshuku: Fixed removal of widgets on close
+  Remoter: Working on adaptors
+  Remoter: Fixed stuff with boost.signals vs. Qt's signals
+  + Core: Add support for pushing of core's services into a requiring   
+  + Poshuku: FS#211: Restore session on startup
+  + Poshuku: FS#210: Save SSL choices
+  + Poshuku: FS#208: SSL errors handling
+  + Poshuku: FS#206: Authentication dialogs
+  + Poshuku: FS#205: Cookies handling (save/restore)
+  Remoter: SotA
+  + Remoter: Finally works and starts up. Black magic everywhere
+  + Poshuku: Delete key now deletes selected item from favorites
+  * Poshuku: Refactored a bit
+  * PluginInterface: Fixed yet another bug with tags completion
+  + Poshuku: In-view tags editing
+  * PluginInterface: Fixed overwriting of first tag by second in the   b
+  * PluginInterface: Fixed a bug when a highlighted item caused the   co
+  * PluginInterface: Few fixes, but found few bugs
+  + Poshuku: Filter favorites. + Aggregator: Use PluginInterface's filte
+  + Poshuku: Save favorites
+  + Poshuku: Add to favorites via a dialog
+  + Poshuku: Adding to favorites basically works
+  + Core: Runtime action creation handling
+  + Core: SkinManager for enhanced icon sets and support of runtime chil
+  + DBusManager: Some stuff
+  DBusManager: Connection to signals seems like working
+  * Fixed formatting everywhere
+  * Aggregator: Fixed insane timer sometimes
+  + Aggregator: Use webbrowser if it's available
+  + Poshuku: Slots for external window creation/tab opening
+  * Aggregator: Fixed not working subscribing to comments
+  * Poshuku: Even neater progress bar
+  + Aggregator: Uses webbrowser now
+  + Poshuku: New shiny neat load indicator. + Poshuku: Load new page if 
+  * Core: Temprorarily disable remoter as it breakes everything
+  + BitTorrent: Save history on addition/removal of items. Remoter: Work
+  * Core: Fixed wrong model index passing to a downloader plugin
+  * Aggregator: Datetime fixes
+  + Poshuku: Closes the active tab on Ctrl+W
+  + Poshuku: Settings. + Poshuku: Improvements here or there
+  + Poshuku: FS#197: Backbone created
+  Poshuku started
+  * Core: Properly show header for Downloaders
+  * Core: Updated Russian translations
+  + LMP: Russian translations
+  * BitTorrent: Fixed bug where downloaded items wheren't added to histo
+  * BitTorrent: Changed HistoryModel's returned data a bit
+  + LMP: Save volume on release
+  + LMP: FS#202: Video output parameters control (hue/saturation/etc)
+  - BitTorrent: Cleaned up old code a bit
+  * BitTorrent: Update all the stats on a timeout
+  + LMP: FS#200: FS mode
+  + LMP: FS#201: FF/RW. + LMP: Key grabber (working bad, though)
+  * Core: Few shutdown fixes
+  + LMP: Sane sliders for volume change and seeking
+  Updated Oxygen iconse
+  + Core: FS#199: Finished job tab
+  + Core: Play media file on finished item double click. + PluginInterfa
+  + Core: FS#198: Support for icon mappings
+  + Interface: ICustomProvider for custom providers. + LMP: FS#196: Work
+  * Aggregator: Changed ActionIcon for some actions
+  * BitTorrent: Changed ActionIcon for some actions
+  * CSTP: Fixed false redirection loop positive in case of pathes ending
+  * DBusManager: Fixed translations. LMP: Added and working
+  - Core: Do not use Get/SetID() anymore
+  - Interfaces: Removed IInfo::GetID(), IInfo::SetID()
+  - Batcher: Why the hell we need it
+  * Fixed interface update issues
+  * Core: Fixed width of columns in Downloaders tab
+  * Aggregator: Fixed wrong signal connection
+  * Core: Fixed multiple job adds. * Core: Fixed wrong common job adder 
+  Added Oxygen icon them
+  + Core: Job Addition button is near the search line in Downloaders tab
+  - Core: Removed the toolbar with settings, plugin manager and job adde
+  + Interfaces: Documented all the interfaces except of signals they sho
+  * Interfaces: Replaced all the AddJob functions with single one from  
+  - Interfaces: Removed IDirectDownload. - Interfaces: Removed IPeer2Pee
+  * DBusManager: IInfo started
+  + Icons: Crystalz: Added script for LeechCraft
+  + Icons: Crystalz: Artistic License, hell yeah
+  * Zombieff wants it to by Crystalz
+  * XmlSettingsDialog: Combobox default settings issues
+  + DBusManager: Binds and works well, even usable a bit
+  - Core: Removed IInfo::GetStatusbarMessage() from interfaces
+  * BitTorrent: Interface placement improvements
+  + DBusManager: Added, just started work
+  * Core: Fixed error reporting
+  * PluginInterface: Fixed completion model connection error
+  + Aggregator: SQLite on steroids now
+  * Aggregator: Update only really modified items in storage
+  * Zombus Icon Pack: Modified CMakeLists.txt for easier package creatio
+  + Zombieff's iconset
+  * MainWindow: Fixes for finding iconsets in /usr/local/share
+  + Core: Faster startup
+  + XmlSettingsDialog: New QByteArray wrapper, ByteArray. + XmlSettingsD
+  + XmlSettingsDialog: Startup fixes
+  * Aggregator: Fixed a bug where parsed Atom feed having no items leads
+  + XmlSettingsDialog: Dir finished
+  + Core: Working script to detect installed icon packs
+  + XmlSettingsDialog: Wrapper around QFile
+  + XmlSettingsDialog: Wrapper around QDir
+  * Aggregator: Fixes by V0id
+  + XmlSettingsDialog: Trying to implement scripting
+  * Aggregator: V0id's patch to report source URL for null files
+  * Core: -fvisibility=hidden makes no sense on Window
+  * Torrent: Fix build issues on some WinAPI   implementations which red
+  * BitTorrent: Compatibility with 2836 libtorrent
+  * Fix installs under Windows
+  PluginInterface: Keep tag selector and line edit always in sync
+  + PluginInterface: Category selector
+  + Aggregator: Added category selector to add feed dialog
+  + Torrent: Added category selector to torrent addition dialogs
+  * Torrent: Fixed queue miscalculations. * Tools: Fixed postinst script
+  + Core: UI translation interface fix
+  Aggregator: Tags selector basically works
+  + Core: Sane notifier
+  * Aggregator: Updated translations. * Core: Updated translations
+  * Core: Fixed infinite loop in popups handler
+  + Core: Better popup notificators
+  + Core: Remove plugins tree view to the plugin manager from the main w
+  * Aggregator: Fixed crashes when there are items in Item Bucket
+  * Aggregator: Scroll to top of items view on channels change
+  + Aggregator: Update modified items as well
+  + Aggregator: FS#188: Subscribe to comments
+  + Aggregator: FS#195: Show number of comments
+  + Aggregator: Support modifying of already added items
+  + Aggregator: Parsers parse links to comment RSS and number of comment
+  + Aggregator: Versioning of tables
+  * Aggregator: Num comments and comments link support for items
+  * Aggregator: Another parser for RDF
+  * Aggregator: Fixed RSS 1.0 (RDF) parser
+  * Core: Optimized tags changer
+  * Aggregator: Seems like fixed occasional crashes on exit
+  * CSTP: Support changeable icons
+  * BitTorrent: Support core's changeable icons
+  * Aggregator: Property set icons for the browser widget
+  * Aggregator: Support core's changeable themes. Core: Still working on
+  Core: Working on changeable icons
+  Core: Work on runtime-changeable icon packs started
+  * Aggregator: Actually write OPML to file
+  + Aggregator: OPML writer also writes text, email and owner and allows
+  * Aggregator: Fixed wrong tags stuff in OPML export
+  + Aggregator: FS#190: Somehow working OPML exporter
+  * Aggregator: Updated Ukrainian translations. * Core: Updated Ukrainia
+  * Aggregator: RSS 1.0 registered
+  + Aggregator: FS#194: Added RSS 1.0 parser
+  Fresh fixes from Chatter upstrea
+  * Aggregator: Fixed missavings of tags on exit
+  * Aggregator: Updated Russian translations
+  * Core: Updated Russian translations
+  + Aggregator: RSS 0.91 support
+  * Aggregator: Properly call StorageBackend's destructor on exit
+  * Aggregator: FS#192: Double-activation
+  * Aggregator: If an item has no title or GUID, make them default ones
+  * Aggregator: Set pixmap even if it is null
+  * Aggregator: Some fixes
+  * Aggregator: Small fixes here and there. I seem to not break anything
+  * Aggregator: Favicon should be persistent
+  * Aggregator: Better diagnostics in case of parser failures
+  Aggregator: Update on every type of events, so: + Aggregator: FS#185: 
+  Aggregator: Add and remove feeds/items fine
+  Aggregator: Load feeds from database as well
+  Aggregator: Maybe save added things as well
+  Aggregator: At least we save data to the database now
+  Aggregator: Started work on SQL backends
+  * Aggregator: Small refactoring
+  + Core: FS#183: Tabbed interface
+  * Aggregator: Is a tab now, not a window. * Chatter: Is a tab now, not
+  Fresh Chatter fixe
+  * Aggregator: Respect categories when importing OPML
+  + CSTP: Handle 302 as 301
+  + Aggregator: FS#160: OPML import
+  + Core: Added simple command line switch parser
+  + Core: Added "-help" switch. + Core: Added "-logToConsole" switch
+  + Aggregator: FS#186: Atom 0.3 feeds
+  * Aggregator: Some refactoring
+  + CSTP: Fixed a bug leading to crashes in case of simultaneous removin
+  * BitTorrent: Little interface fix
+  + Added ebuilds to the tree
+  - Removed mingwm10.dll
+  'I will review before commit\n'*10
+  Typ
+  If i'd say "f*ck" twenty two more times, there'd be twenty four "f*cks
+  Chatter fixe
+  * BitTorrent: Save settings on torrent finish
+  * BitTorrent: Unlimited amount of simultaneous torrents by default ins
+  * Aggregator: Favicons should be 16x16
+  * Aggregator: Show icons after start
+  + Aggregator: FS#66: Channel icon fetch
+  + CSTP: Images for clients in settings
+  * XmlSettingsDialog: fixed infinite loop when resource file could not 
+  More RBTorrent behaviour fixes & cleanu
+  Added checks for already found RBTorrent stuf
+  * Fix for FindRBTorrent
+  Configuration fi
+  CMake stuff + Added FindRBTorrent.cmake and automatic disabling of tor
+  * BitTorrent: More style consistency
+  * XmlSettingsDialog: More style consistency
+  * XmlSettingsDialog: Fix huddling up of fields
+  * Aggregator: FS#181: Wrong dates in Atom feeds corrected
+  + BitTorrent: FS#182: Tooltips for jobs
+  + BitTorrent: Also show overall rating for a torrent
+  * Aggregator: FS#180: Dates are updated now
+  * PluginInterface: FS#179: Days are counted now
+  Just another state commit
+  + CSTP: proper redirect handling. + CSTP: redirect loop avoiding + Bit
+  * Updated translations. * New icons
+  * Small stuff by artyom
+  + CSTP: Handle redirections properly
+  + V0id's patch for common home & some native separator based stuff
+  * CSTP: Fixed a bug when downloaded file was deleted in a slot   conne
+  + BitTorrent: Queue operations (up/down). They are very buggy and impl
+  + BitTorrent: FS#167: Queuing
+  - Removed old debugging output. - Extremely little fixes here or there
+  * Chatter: fsirc isn't main and only window anymore, LeechCraft has a 
+  * Few memory leaks fixed
+  * BitTorrent: Wait for resume data generation on exit
+  + BitTorrent: FS#177: Fast resume
+  More fixes & updates from Chatter's upstrea
+  + Aggregator: FS#178: Font selection for web pages
+  + XmlSettingsDialog: FS#174: Font selection
+  - XmlSettingsDialog: Remove old debugging output
+  + BitTorrent: Settings for types of alerts
+  * BitTorrent: FS#176: Report back alerts
+  State commit
+  * Aggregator: Patch from V0id
+  + BitTorrent: FS#175: Bring back change trackers
+  Ported Chatter bugfixes @1aade2
+  One more missing fil
+  Added missing file
+  + BitTorrent: FS#104: Sequenced file downloading
+  Added new version of Chatter plugin (from snapshot
+  - Forget about exceptions
+  - Exceptions
+  Compile fixes on MSVS
+  Propsedi
+  Commited somethin
+  * Updated translations
+  * Exceptions: Damn, forgot to add OutOfBounds to previous commit
+  + Import/Export of symbols, they are now hidden by default
+  - SettingsDialog
+  + Aggregator: Settings for viewer
+  * Core: Depend on libtorrent-0.14 (trunk) now. * Updated translations
+  - BitTorrent: Cleaned up a bit
+  + BitTorrent: FS#172: New settings items
+  + XmlSettingsDialog: Handle double spinboxes. + BitTorrent: New overal
+  + BitTorrent: FS#171: A lot of new stats indicators
+  * BitTorrent: Changed layout of stats indicators
+  + Aggregator: Clickable item link
+  * Aggregator: Updated translations
+  + BitTorrent: FS#168: Cache status
+  + BitTorrent: FS#170: Force recheck of torrent files
+  + BitTorrent: Support core's support of universal tagging
+  + Core: Support universal tagging
+  + BitTorrent: Support the Dream Interface
+  + Core: FS#173: Onclick changes controls, binds/connects actions
+  + CSTP: FS#173: Support onclicking
+  - CSTP: Main windows suck
+  * Core: Several bugfixes and improvements
+  + BitTorrent: FS#169: Smart ban
+  * BitTorrent: Fixes for libtorrent trunk
+  * BitTorrent: Forgot translations on previous commit
+  + Correct Ukrainian translations everywhere
+  + PluginInterface: Common translation loader
+  - PluginInterface: Blocking TcpSocket
+  + Core: MergeModel finally working! * CSTP: Support merge modeling
+  * BitTorrent: Support merge modeling
+  + Translations to Ukrainian
+  * Core: Merge model stuff
+  * Cleanup of old useless plugins
+  * Core: Merge model works, seems like it should work if I haven't made
+  * Updated translations
+  * BitTorrent: FS#166: Files page and priorities
+  * CSTP: Send query part with the request
+  * Aggregator: Don't add feed to feed list if it could not be parsed
+  * Core: Towards unified job aggregation
+  * Core: Cleaned up old stuff
+  * Fixed buil
+  * Core: Interface stuff
+  * Chatter: Stuff
+  Update Chatter plugi
+  * Core: Basically rewritten to model/view
+  + Chatter: Let there be icons
+  * Core: Major rewrite. We load, we exit successfully, plugins aren't  
+  * Core: various in settings manager
+  + XmlSettingsDialog: MergeXml
+  + XmlSettingsDialog: Update internal XML representation on startup and
+  * BitTorrent: Performance issues in PeersModel
+  + Core: New interface for XML import/export
+  + BitTorrent: FS#162: Optional scrape requests
+  * BitTorrent: Code fixups for smarter memory management
+  * BitTorrent: Fixes to previous commit
+  * BitTorrent: Performance enhancements
+  * BitTorrent: Update torrent info on selection changes via keyboard
+  * Core: Single-instance fixups
+  + Core: FS#164: Single instance
+  * Aggregator: Strip too long strings
+  Removed svn:externals; Whole fsirc tree coming for sync
+  + CSTP: Proxying support
+  + Core: Global application-wide proxy support
+  * BitTorrent: FS#163: Queue not working
+  * Issues
+  + Aggregator: FS#159: Item summary panel
+  * Aggregator: Show image for channels
+  * Aggregator: Scale image for channels
+  * Aggregator: Fixed update of single channel not working
+  * Aggregator: Fixed feed addition not working. * Aggregator: Fixed run
+  * Fix build issues under Windows. Libtorrent is still torrent.dll   th
+  + Stuff: FS#102: Integration with FreeDesktop.org
+  + BitTorrent: FS#156: Autodetect piece size
+  + XmlSettingsDialog: Support data from resource files
+  + BitTorrent: Client icons should be stored in resources
+  * BitTorrent: FS#157: Trimmed labels
+  + BitTorrent: FS#155: Icons for clients in spoofing settings
+  + XmlSettingsManager: FS#153: Images support
+  + XmlSettingsManager: FS#154: Icons for combobox
+  + BitTorrent: FS#152: Autostart option
+  + CSTP: FS#151: Fixups here or there. + Core: Allow to select where to
+  - Remove unmaintainable
+  * Core: Build: Fixed regexp
+  * BitTorrent: Fix building with recent libtorrent
+  * FS#151: Cleanup
+  + CSTP: If file exists, ask user if he wants to continue download
+  * CSTP: Don't show user notification if the flag is set
+  * Fixed slight build/runtime issues in another projects
+  * Fix build issues
+  * Various fixups (prepare for XmlSettingsDialog wide use)
+  * Aggregator: FS#146: Regexp matcher doesn't save/restore settings
+  + CSTP: FS#148: Actions. + CSTP: FS#149: Interface
+  * Core: Interfaces changed a lot
+  - HTTP/FTP. Replaced by CSTP (it currently fails with FTP though)
+  * Various fixes here or there
+  + CSTP: FS#141: History. + CSTP: FS#147: Save settings. + CSTP: FS#142
+  - Cron. It's unneeded
+  * BitTorrent: FS#139: Files list doesn't scroll
+  * BitTorrent: 8, 16, 32 and 64 mb piece sizes for extremely large   to
+  * BitTorrent: FS#145: Non-latin1 names cause crash on torrent   creati
+  CSTP: improvements here or there
+  + BitTorrent: FS#140: Change peer_id. + BitTorrent: FS#144: Multithrea
+  Build fix
+  CSTP: delegates, UI improvements and core improvements
+  CSTP: Task returns some info about itself, calculates speed, and Core 
+  * Core: FS#135: Work misspelling in the About box. Building process en
+  CPack now
+  CSTP. Add job stuff, settings
+  CSTP: Settings and stuff
+  + CSTP: FS#133: Skeleton
+  - Core: Don't show up deps and descriptions in main window
+  + Aggregator: FS#70: Regexp Matcher
+  + Aggregator: Some more new icons
+  * Aggregator: Use the STL, beach
+  * Aggregator: Refactored a bit
+  * Aggregator: Parsers should return only new items
+  * Aggregator: Updated icons
+  * Core: Changed plugins path
+  * Core: Correct configurable builds
+  * Aggregator: Fix building issues
+  * Aggregator: Reset selection on hide items activation
+  + Aggregator: FS#126: Show only unread items feature
+  * Aggregator: Merged page refresh icon with channel update. * BitTorre
+  * BitTorrent: show torrent names correctly for non-latin names
+  * Aggregator: Updated icons
+  * BitTorrent: Fixed regression with UTF-8 file encodings
+  - Remoter: Cleaned up Wt deps
+  * Aggregator: FS#127: Redesign search panel
+  * Aggregator: Fixed a crash when no items are available for preview   
+  - Aggregator, BitTorrent: Removed those .pro files, as I've learned to
+  - FS#125: Because architecture changed, Wt won't be in the main   Leec
+  //Aggregator: Regexp Matcher
+  //Aggregator: Regexp Matcher
+  * Chatter tray ico
+  + BitTorrent: FS#130: Allow user to enter tags for torrents in   multi
+  * BitTorrent: Some code fixups
+  + BitTorrent: Some improvements in Files View
+  * BitTorrent: FS#129: Files View misfunctioning for multifile   torren
+  Third icon for leechcraf
+  + FindWt.cmak
+  * Finding Wt and automatically disabling Remoter if not foun
+  Added FSIRC_NO_TRAY defin
+  * Aggregator: fixed some bugs
+  * HTTP/FTP: fixed a bug. * Remoter: moved from POCO to Wt
+  + Fix out-of-source building
+  * Aggregator: Fixed numerous code flaws
+  * Aggregator: Fixed wrong model index handling when filtering items. *
+  * Chasing the revisio
+  + Aggregator: New icons. Fixing random crashes on exit
+  * Aggregator: Let's save Item Bucket's contents on exit
+  + Aggregator: FS#69: Item bucket
+  + Aggregator: Some new icons
+  * Aggregator: The new BrowserWidget widget, because it's shared. * Agg
+  + Aggregator: Page load indicator
+  * Aggregator: Fetch correctly SSL resources with SSL errors
+  + Aggregator: FS#124: News Item view is QWebView not QTextBrowser   no
+  + BitTorrent: FS#121: Move files
+  * BitTorrent: Reworked the logging stuff
+  Added external property for chatte
+  * Aggregator: Optimized feed removal
+  * Aggregator: Always clean up temporary files
+  + Aggregator: FS#120: Tag completion on feed addition
+  * PluginInterface: FS#122: Tags completer doesn't erase previous   ent
+  * Aggregator: FS#123: Fixed abort on channel removal (double-free)
+  + Chatter: Integrated. Thanks Voker57 for this plugin
+  + Aggregator: FS#118: Open main window when tray icon clicked
+  + Aggregator: FS#117: Option to hide tray icon
+  * BitTorrent: Fixed a bug in file view leading to crash
+  + BitTorrent: FS#82: Finished. Few fixes
+  + BitTorrent: FS#116: In-place file priority editing
+  + BitTorrent: FS#82: Tree torrent representation in main window
+  + BitTorrent: AddTorrentDialog: Selectable files again
+  + PluginInterface: TreeItem supports storing different data for   diff
+  + BitTorrent: FS#82: Tree torrent representation in AddTorrentDialog
+  * Remoter: FS#113: SIGSEGV on the exit of the second leechcraft   inst
+  + Remoter: FS#71: Handle POST correctly
+  + Remoter: FS#110: Integration with POCO
+  * Remoter: FS#112: Exception when launching the second instance of   L
+  + HTTP/FTP: Sends base file path as a referer to fool some servers   w
+  + Remoter: Integrating POCO..
+  * Aggregator: FS#109: Empty lines in items view after update
+  - HTTP/FTP: Removed some debugging output
+  * BitTorrent: Few optimizations, peer/piece model update bug fix
+  * BitTorrent: FS#89: Peer sorting works correctly now
+  + BitTorrent: FS#91: Peer model instead of plain QTreeWidget
+  * Aggregator: FS#107: Error messages in windows hinder
+  + BitTorrent: FS#106: AddTorrent dialog interface improvements
+  * XmlSettingsDialog: Should respect LANG environment variable too
+  + Overall: FS#98: Language selection with "LANG" environment variable
+  * Aggregator: FS#108: Update tray icon on feed removal
+  * XMLSettingsManager: Severe performance improvements
+  * BitTorrent: Various fixes
+  * HTTP/FTP: FS#105: Messed ETA/download time displays
+  + BitTorrent: FS#80: Tagging system
+  + PluginInterface: Moved common tagging system stuff here
+  Cleanup before working on PluginInterface tagging
+  + BitTorrent: FS#99: Pieces view. Show which pieces are currently   do
+  + Aggregator: FS#103: If there are unread messages, show an icon with 
+  + BitTorrent: FS#100: Extended peer view. Much more information
+  + BitTorrent: FS#101: Update peer view, but not build it from scratch
+  * BitTorrent: refactored a bit
+  - BitTorrent: FS#100: Removed pieces graph in peer view
+  + Core: About LeechCraft is back
+  + Core: FS#94: Alt+F4 and other close event sources just send the   pr
+  + BitTorrent: Supports UPnP, LSD and NAT-PMP now
+  + BitTorrent: Limit number of concurrent seeding and leeching   torren
+  * BitTorrent: Redesigned settings dialog a bit
+  Release 0.2.1. Remover resourcesources
+  * Small bugfix in Torrents
+  * Updated translations
+  * Aggregator: Let the default feed be program's blog
+  + BitTorrent: Set actions enabled
+  * Batcher: Correspond to recent and not recent changes
+  + BitTorrent: FS#81: Keep history of all downloads
+  + Aggregator: FS#83: Tag completer
+  + BitTorrent: FS#87: Case sensitive searches
+  + Aggregator: FS#87: Case sensitive searches
+  + Aggregator: FS#83: Working. + Aggregator: New icons
+  * BitTorrent: Let's save the overriden trackers
+  + BitTorrent: FS#92: Change trackers URLs
+  * BitTorrent: FS#84: Too slow pieces widget update. Thanks for code   
+  * BitTorrent: FS#90: Fixed slow file priority updates
+  * BitTorrent: FS#88: Fixed empty context menu in torrent files list
+  * BitTorrent: Fixed a bug leading to crash if entered announce IP is  
+  * Updated translations
+  - Removed "About LeechCraft"
+  + Aggregator, MailLeecher, Remoter: Handle "hide all" event
+  Here comes the pre-release stuff
+  * Aggregator: Fixed to build on Windows
+  * Interfaces: Reflect changes in BitTorrent
+  * BitTorrent: FS#75: Fixed few encoding bugs. The string in   boost::f
+  + XmlSettingsDialog: FS#74: On "Cancel" button press restore changed  
+  * HTTP/FTP: FS#78: Fix occasional FTP failures
+  + Aggregator: FS#76: Translations
+  + Aggregator: FS#67: Finished extented settings
+  + Aggregator: FS#67: Working on extented settings
+  + Aggregator: FS#67: Working
+  + XmlSettingsManager: Labels wrap
+  + Aggregator: FS#67: Started work
+  + XmlSettingsManager: Fixed a bug
+  + BitTorrent: FS#65: Show amount of distributed copies
+  + Aggregator: FS#64: Fetches external channel elements
+  + Aggregator: FS#62: Dashboard finished. Now with images
+  + Aggregator: FS#62: Working on dashboard
+  + Aggregator: FS#63: Handle channel item activation
+  + Aggregator: FS#55: Tags modifying works well
+  + Aggregator: Added (dumb yet except tags) channel dashboard
+  + Aggregator: FS#55: entering tags and searching by tags works. We   s
+  + HTTP/FTP: FS#47: Catch only some filetypes
+  * Core, Aggregator, Torrent, HTTP/FTP: reflect interface changes
+  + Aggregator: FS#61: Mark items and channels as read/unread
+  + Aggregator: FS#59: Visually accent channels with new items in   chan
+  + Aggregator: FS#57: Show messages in tray when new download finishes
+  * Aggregator: Different pathways leading to stability
+  + Aggregator: FS#58: Silent mode
+  + Aggregator: FS#49: Search in item headers with fixed string,   wildc
+  + Aggregator: FS#53: Remove old items seems to work, but requires some
+  * Aggregator: FS#56: Delete feeds
+  * Aggregator: Update feeds action
+  * Aggregator: Enhanced compatibility. Behave correctly when new items 
+  * Aggregator: better compatibility
+  * Aggregator: QList<Channel*> -> std::vector<boost::shared_ptr<Channel
+  * Aggregator: QList<Item*> -> std::vector<boost::shared_ptr<Item> 
+  * Aggregator: Fixed a couple of memory leaks
+  * Aggregator: Final commit before rewriting it using std::vector and  
+  * Aggregator: Proper resource cleanup on release
+  * Torrent: Fix a bug in pieces widget leading to crash
+  + Aggregator: Adjustable items per channel size
+  * Aggregator: Proper channel updating
+  + Aggregator: Cleanup channels
+  + Aggregator: Configurable update timeout & update-on-start
+  + Aggregator: Preferences dialog. + XmlSettingsDialog: Translatable su
+  * Overall: Optimized icons, gained about 557056 bytes
+  + HTTP/FTP: Shortcuts for actions
+  * Aggregator: Fixed easy-to-find but important memory leak
+  + Aggregator: Save periodically and on update
+  + New c00l icons, thanks to Hector! * Aggregator: Fixed a bug leading 
+  * HTTP/FTP: ShouldNotSaveInHistory == true should not lead to not   no
+  + Aggregator: Basically pars Atom 1.
+  * HTTP/FTP: Do not ignore "ShouldBeSavedInHistory" flag
+  * Aggregator: Bugfixes
+  * Aggregator: Handle correctly situations when new feed contains no   
+  * Aggregator: Fixed some bugs in copying. * Aggregator: Started work o
+  + Seems like feeds saving works
+  * Aggregator: Updates working
+  * HTTP/FTP: Fixed a bug leading to crash in case two jobs finish   sim
+  * HTTP/FTP: append slash to the end of request if it is empty
+  * BitTorrent: header sizes. * Aggregator: rewriting... * Overall: New 
+  + Torrent: Search by fixed string, wildcard or regexp
+  Damn, forgot to uncomment commented RestoreTorrents
+  + Cron: Few improvements, but it's still quite a useless plugin
+  + Aggregator: Can update feeds now. Still fails on removed items. But 
+  * Aggregator: reworked Feed/Channel/Item hierarchy
+  * HTTP/FTP: removed some debugging output
+  * HTTP: Handle servers that don't report length but just close the   c
+  + Aggregator: basic parsing
+  * HTTP/FTP: fixed job addition
+  + Aggregato
+  * HTTP/FTP: save jobs list on job stop/finish/remove
+  + FS#44: Core: Optional job aggregation
+  + Torrent: FS#42: Implement interfaces to change priorities per-file  
+  + PluginInterface: GraphWidget
+  + Core: Draw graph of upload/download speed
+  * Core: Enhanced job collector
+  * Torrent: Supports that improvement. * Torrent: A fix in model's logi
+  + HTTP: Supports IJobHolder interface
+  + Core: Show jobs from plugins
+  + BitTorrent: Support showing jobs from plugins
+  * Torrent: change peer view on torrent view selection changes
+  * Torrent: tracker proxy is not peer proxy and vice versa
+  + Torrent: Adjustable per-torrent limits for upload/download rate and 
+  * Torrent: Property read current limits on start
+  + Torrent: FS#41: Peer's pieces in peer view
+  * HTTP/FTP: FS#43: Implemented range download (byte n1 to byte n2)
+  * Torrent: Fixed rating count system
+  * Torrent: Bind to new interfaces without restart
+  * Add torrent
+  * Working on Remote
+  * Seems like fixed a windows-specific bug
+  * Proper speed calculations
+  * Fixed few bugs with representation
+  * Updated translations, scheduled for release
+  * Updated translations
+  * Fixed few windows-compiling bugs
+  + Remoter can authenticate by passwords now
+  - ChangelogDialog sucks
+  + Remoter shows Torrent's jobs
+  * Fixed a bug in BitTorrent which could lead to terminate on startup
+  + IRemoteable added
+  * PluginManager handles situations when multiple plugins provide one  
+  * Remote
+  * Remote
+  * Working on htt
+  * Delegates rulez
+  * Still working on MVC. Downloading already works fine
+  * Working on HTTP 2 MVC
+  * Spaces, spaces, spaces
+  * Changed another spaces
+  - Removed FileWriter and FileWriter thread, they are unneeded
+  - Removed all those default.vim files
+  + Documented plugininterfac
+  * Changed tabs to spaces
+  * BeginSettings/EndSettings became const
+  * Seems like fixed compiling issues on Windows
+  * Working on FS#3
+  * Working on FS#37
+  * Fixed a bug when removing HTTP tasks, stopped by connection error
+  * Fixed a situation when externally added download jobs had no correct
+  * Fixed a typo
+  * Fixed a bug with unstoppable jobs
+  * Fixed possible bugs in release code
+  * Forgot one file, dam
+  + Translated MailLeecher
+  * Updated install script
+  + Torrent plugin returns downloaded size now
+  * Fixed a bug in pieces widget
+  + CMakeLists prepared for Gentoo USE flags stuff
+  * Show files in all selection dialogs
+  + Watch clipboard for addable tasks
+  + XmlSettingsDialog can handle "radio" type now
+  + User can choose correct proxy size in bittorrent
+  + Shows which pieces are downloaded and which are not
+  - Removed logshower
+  + Really fast resuming now. + Compact mode allocation by default
+  * Updated translations
+  + LogShower in BitTorrent
+  + Configurable download message timeout
+  + XmlSettingsDialog can handle "path" now
+  * All-new-forms. * Uses XmlSettingsDialog now
+  * HTTP's main window is all on forms now
+  + Query plugins to handle just downloaded file
+  + Settings about notifications and plugins query. + Preferences introd
+  + Notifications on download finish
+  + BitTorrent and HTTP/FTP support those notifications
+  * Fixed a way to exit without saving settings
+  + Common job adder - BitTorrent and HTTP update
+  * Few bugs fixed
+  + Tabwidgetin
+  Because Windows' runtime linker really sucks, we should put the code f
+  + Should compile on Windows fine
+  + Groupboxing
+  + True recursion
+  + Updater really work
+  + XML settings creator and dynamic property builder finally working
+  + Changed icons
+  + Multiple torrents adder
+  * Proper resume of saved torrents
+  + Images for settings categories
+  + Groupboxing of booleans in Settings. + Proxy support in torrents
+  + Creating menus and actions for added plugins
+  + Moved "Backup/Restore Settings" to menu
+  * Updated translations
+  + Creating torrents fine. Now only with latin1-names
+  + Force reannounce
+  + Icon for make torrent
+  * Making torrents..
+  + Wizard to make torrent
+  + Building with CMake, part tw
+  + Building with CMake, part on
+  * Using libtorrent 0.13 RC now
+  + We can select which files to download
+  * Showing not total size but amount of bytes we really want to   downl
+  - IVersionable dropped
+  + Hide all plugins feature (FS#22)
+  * Fixed a stupid typo
+  + HTTP now asks about job deletion too
+  * A bit refactored HTTP
+  + We ask user now if he really wants to delete torrents
+  + We ask user now if he really wants to exit
+  * SVN layout changed a bit agai
+  * Seems like fixed occasional random crashes in HTTP. Seems like I'm  
+  * Updated translation
+  * Job autostart on by default no
+  * Fixed crash on multiple job start (FS#23
+  * Showing error on response read timeout
+  * Save/restore torrents
+  * Job adder dialog is now designed by Qt Designer :
+  + Proxy login/password
+  + FS#13 User-selectable display of current speed/time
+  * Deleting a running job no longer crashes the program
+  * FS#14 erasing old settings on exit
+  + User can customize which columns to show
+  * Bugs with timer fixed
+  + Overall download time is working, but there are few bugs
+  * FS#5 implemented
+  + Now shows momental speed
+  + Now shows remaining time for both current and average speeds. + User
+  + Interface update timeout is configurable by user
+  * Don't reemit stopped signal if the job wasn't running
+  * Exiting even more gracefully
+  * Bug fixed
+  * Few performance enhancements in HTTP/FTP module
+  * Fixed a bug in FTP impl which prevented from downloading from slow  
+  * Bugfixing..
+  * Few bugfixess in batcher's file creation method
+  + Started to work on cron
+  * Changed interfaces
+  * Updater more stable now
+  * Better handling of failed dependencies
+  + Batcher works
+  + We can show ourselves' changelog
+  + Now the tasks list is contextable too
+  + Context menus for the finished list
+  * Copy URL to clipboard feature for finished list
+  + Get file size feature works for both FTP and HTTP
+  * Main translations gone into resources
+  * Updated HTTP plugin translations
+  * Improved already existing file handling. We now redownload it from  
+  * Redirects really work
+  * Enhanced File Exists dialog
+  + We now download everything OK
+  + Updater can download now :
+  * AddressParser made less verbose
+  * Maybe now waiting jobs would autostart after timeout. * Working on t
+  + Total max concurrent jobs limit added. It works
+  + Maybe detection of max server-limit works
+  * More usable SettingsDialog
+  + Basically implemented per-host concurrent job limit
+  * Fixed some memory leak
+  * Enhanced interface control in Update
+  * Changed the layout a bi
+
+ -- Rudoy Georg <0xd34df00d@gmail.com>  Sat, 21 Mar 2009 21:51:10 +0300
+
