@@ -59,7 +59,10 @@ Depends: libc6,
  leechcraft-plugininterface (= ${Source-Version})
 Recommends: leechcraft-plugin-aggregator,
  leechcraft-plugin-bittorrent,
- leechcraft-plugin-cstp
+ leechcraft-plugin-cstp,
+ leechcraft-plugin-deadlyrics,
+ leechcraft-plugin-poshuku,
+ leechcraft-plugin-seekthru
 Suggests: leechcraft-plugin-chatter
 Homepage: http://deviant-soft.ws
 Description: Core executable of LeechCraft.
@@ -68,8 +71,10 @@ Description: Core executable of LeechCraft.
  abstract modules (plugins). LeechCraft would then connect them to each
  other and route requests for downloads or handling of entities between
  them.
+ . 
  Official plugins currently include BitTorrent client, a web browser,
  feed reader, different search clients and much more.
+ .
  This package contains the main LeechCraft executable.
 
 Package: leechcraft-plugin-aggregator
@@ -88,7 +93,7 @@ Depends: libc6,
  leechcraft-xmlsettingsdialog (= ${Source-Version}),
  leechcraft-plugininterface (= ${Source-Version}),
  leechcraft (= ${Source-Version}),
- leechcraft-provider-http (= ${Source-Version})
+ leechcraft-provider-http
 Provides: leechcraft-provider-feedreader
 Recommends: leechcraft-provider-webbrowser
 Homepage: http://deviant-soft.ws
@@ -98,8 +103,10 @@ Description: RSS/Atom feed reader for LeechCraft.
  abstract modules (plugins). LeechCraft would then connect them to each
  other and route requests for downloads or handling of entities between
  them.
+ .
  Official plugins currently include BitTorrent client, a web browser,
  feed reader, different search clients and much more.
+ .
  This package contains Aggregator, the RSS/Atom feed reader.
 
 Package: leechcraft-plugin-bittorrent
@@ -127,8 +134,10 @@ Description: BitTorrent client for LeechCraft.
  abstract modules (plugins). LeechCraft would then connect them to each
  other and route requests for downloads or handling of entities between
  them.
+ .
  Official plugins currently include BitTorrent client, a web browser,
  feed reader, different search clients and much more.
+ .
  This package contains BitTorrent client plugin.
 
 Package: leechcraft-plugin-cstp
@@ -151,8 +160,10 @@ Description: HTTP client for LeechCraft.
  abstract modules (plugins). LeechCraft would then connect them to each
  other and route requests for downloads or handling of entities between
  them.
+ .
  Official plugins currently include BitTorrent client, a web browser,
  feed reader, different search clients and much more.
+ .
  This package contains clean and stupid HTTP implementation.
 
 Package: leechcraft-plugin-deadlyrics
@@ -175,8 +186,10 @@ Description: Song lyrics finder for LeechCraft.
  abstract modules (plugins). LeechCraft would then connect them to each
  other and route requests for downloads or handling of entities between
  them.
+ .
  Official plugins currently include BitTorrent client, a web browser,
  feed reader, different search clients and much more.
+ .
  This package contains a simple lyrics finder.
 
 Package: leechcraft-plugin-poshuku
@@ -206,8 +219,10 @@ Description: Web browser for LeechCraft.
  abstract modules (plugins). LeechCraft would then connect them to each
  other and route requests for downloads or handling of entities between
  them.
+ .
  Official plugins currently include BitTorrent client, a web browser,
  feed reader, different search clients and much more.
+ .
  This package contains a full-featured web browser.
 
 Package: leechcraft-plugin-seekthru
@@ -231,6 +246,8 @@ Description: Search plugin for LeechCraft.
  abstract modules (plugins). LeechCraft would then connect them to each
  other and route requests for downloads or handling of entities between
  them.
+ .
  Official plugins currently include BitTorrent client, a web browser,
  feed reader, different search clients and much more.
+ .
  This package contains a search client for OpenSearch-aware web sites.
