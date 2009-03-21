@@ -106,6 +106,7 @@ Core::Core ()
 , Toolbar_ (0)
 , TabWidget_ (0)
 {
+	setObjectName ("BitTorrent Core");
 	ExternalAddress_ = tr ("Unknown");
 	for (quint16 i = 0; i < 65535; ++i)
 		IDPool_.push_back (i);

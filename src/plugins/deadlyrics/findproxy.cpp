@@ -11,6 +11,7 @@ FindProxy::FindProxy (const LeechCraft::Request& request,
 : QAbstractItemModel (parent)
 , Request_ (request)
 {
+	setObjectName ("DeadLyRicS FindProxy");
 	LyricsHolder_ = new QTextEdit ();
 	QStringList subs = Request_.String_.split (" - ", QString::SkipEmptyParts);
 	if (subs.size () < 2)

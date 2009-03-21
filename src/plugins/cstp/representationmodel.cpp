@@ -3,6 +3,7 @@
 RepresentationModel::RepresentationModel (QObject *parent)
 : QSortFilterProxyModel (parent)
 {
+	setObjectName ("CSTP RepresentationModel");
 }
 
 RepresentationModel::~RepresentationModel ()

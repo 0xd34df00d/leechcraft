@@ -14,6 +14,7 @@ ChannelsModel::ChannelsModel (QObject *parent)
 , Toolbar_ (0)
 , TabWidget_ (0)
 {
+	setObjectName ("Aggregator ChannelsModel");
     QVariantList roots;
     roots << tr ("Feed")
 		<< tr ("Unread items")
@@ -225,7 +226,9 @@ void ChannelsModel::RemoveChannel (const ChannelShort& channel)
     TreeItem *container = Channel2TreeItem_ [channel];
     int pos = RootItem_->ChildPosition (container);
 
+	qDebug () << Q_FUNC_INFO << pos;
     beginRemoveRows (QModelIndex (), pos, pos);
+	qDebug () << "begun";
     Channel2TreeItem_.remove (channel);
     TreeItem2Channel_.remove (container);
     RootItem_->RemoveChild (pos);

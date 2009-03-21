@@ -14,6 +14,7 @@ SearchHandler::SearchHandler (const Description& d)
 , Viewer_ (new SelectableBrowser)
 , Toolbar_ (new QToolBar)
 {
+	setObjectName ("SeekThru SearchHandler");
 	Viewer_->Construct (Core::Instance ().GetWebBrowser ());
 
 	Action_.reset (Toolbar_->addAction (tr ("Subscribe"),
