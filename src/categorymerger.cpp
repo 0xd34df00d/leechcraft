@@ -17,6 +17,8 @@ CategoryMerger::CategoryMerger (const Request& r,
 , HistoryMergeModel_ (history)
 , FilterModel_ (new FilterModel)
 {
+	setObjectName (QString ("CategoryMerger ") + r.String_);
+	FilterModel_->setObjectName (QString ("CategoryMerger's filter model ") + r.String_);
 	setProperty ("__LeechCraft_own_core_model", true);
 	FilterModel_->setProperty ("__LeechCraft_own_core_model", true);
 	bool builtin = false;

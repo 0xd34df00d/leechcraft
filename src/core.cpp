@@ -64,7 +64,9 @@ LeechCraft::Core::Core ()
 , CookieSaveTimer_ (new QTimer ())
 , StorageBackend_ (new SQLStorageBackend ())
 {
+	MergeModel_->setObjectName ("Core MergeModel");
 	MergeModel_->setProperty ("__LeechCraft_own_core_model", true);
+	HistoryMergeModel_->setObjectName ("Core HistoryMergeModel");
 	HistoryMergeModel_->setProperty ("__LeechCraft_own_core_model", true);
 	connect (NetworkAccessManager_.get (),
 			SIGNAL (authenticationRequired (QNetworkReply*,

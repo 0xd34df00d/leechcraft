@@ -31,6 +31,7 @@ RequestNormalizer::RequestNormalizer (const boost::shared_ptr<MergeModel>& merge
 			<< tr ("Progress")))
 , Parser_ (new RequestParser)
 {
+	setObjectName ("RequestNormalizer");
 	Root_->setProperty ("__LeechCraft_own_core_model", true);
 }
 
@@ -197,6 +198,9 @@ void RequestNormalizer::SetMerger (RequestHolder_ptr holder)
 		oper->SetOperation (holder->Op_);
 		oper->AddModel (holder->Left_->Merger_.get ());
 		oper->AddModel (holder->Right_->Merger_.get ());
+		oper->setObjectName (holder->Left_->Merger_->objectName () +
+				" &&& " +
+				holder->Right_->Merger_->objectName ());
 		holder->Merger_.reset (oper);
 	}
 }
