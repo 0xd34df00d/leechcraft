@@ -2253,6 +2253,8 @@ void Core::setGeneralSettings ()
 		property ("StrictSuperSeeding").toBool ();
 	settings.auto_manage_startup = XmlSettingsManager::Instance ()->
 		property ("AutoManageStartup").toInt ();
+	settings.lock_disk_cache = XmlSettingsManager::Instance ()->
+		property ("LockDiskCache").toBool ();
 
 	settings.active_limit = 16384;
 

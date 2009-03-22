@@ -599,7 +599,17 @@
 						<suffix value=" KB" />
 					</lang>
 					<lang value="ru">
-						<label value="Размер кэша:" />
+						<label value="Размер кeша:" />
+						<suffix value=" МБ" />
+					</lang>
+				</item>
+				<item type="spinbox" property="MaxAutoTorrentSize" default="2" minimum="2" maximum="1024" step="2">
+					<lang value="en">
+						<label value="Maximum automatically added torrent size:" />
+						<suffix value=" MB" />
+					</lang>
+					<lang value="ru">
+						<label value="Максимальный размер автоматически добавляемого торрента:" />
 						<suffix value=" МБ" />
 					</lang>
 				</item>
@@ -617,7 +627,11 @@
 				<label lang="ru" value="Расширенные локальные настройки" />
 				<item type="checkbox" property="FreeTorrentHashes" state="on">
 					<label lang="en" value="Unload hashes from memory if seeding" />
-					<label lang="ru" value="Выгружать хэши из памяти при раздаче" />
+					<label lang="ru" value="Выгружать хеши из памяти при раздаче" />
+				</item>
+				<item type="checkbox" property="LockDiskCache" state="on">
+					<label lang="en" value="Prevent disk cache from swapping out" />
+					<label lang="ru" value="Предотвращать сброс кeша в своп" />
 				</item>
 				<item type="spinbox" property="CacheExpiry" default="60" minimum="5" maximum="1200">
 					<lang value="en">
@@ -625,7 +639,7 @@
 						<suffix value=" s" />
 					</lang>
 					<lang value="ru">
-						<label value="Годность кэша:" />
+						<label value="Годность кeша:" />
 						<suffix value=" с" />
 					</lang>
 				</item>
@@ -662,16 +676,6 @@
 				<item type="spinbox" property="FilePoolSize" default="40" minimum="5" maximum="1000" step="5">
 					<label lang="en" value="Maximum amount of concurrently open files:" />
 					<label lang="ru" value="Максимальное число одновременно открытых файлов:" />
-				</item>
-				<item type="spinbox" property="MaxAutoTorrentSize" default="2" minimum="2" maximum="1024" step="2">
-					<lang value="en">
-						<label value="Maximum automatically added torrent size:" />
-						<suffix value=" MB" />
-					</lang>
-					<lang value="ru">
-						<label value="Максимальный размер автоматически добавляемого торрента:" />
-						<suffix value=" МБ" />
-					</lang>
 				</item>
 			</groupbox>
 		</tab>
@@ -743,7 +747,7 @@
 				</item>
 				<item type="checkbox" property="ActiveCacheStats" default="on">
 					<label lang="en" value="Cache stats" />
-					<label lang="ru" value="Статистика кэша" />
+					<label lang="ru" value="Статистика кeша" />
 				</item>
 			</groupbox>
 			<groupbox>
