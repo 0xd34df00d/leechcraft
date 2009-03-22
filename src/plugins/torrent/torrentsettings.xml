@@ -334,6 +334,10 @@
 						<suffix value=" с" />
 					</lang>
 				</item>
+				<item type="spinbox" property="MaxRejects" default="50" minimum="3" maximum="1000">
+					<label lang="en" value="Max rejects for a choked peer before ban:" />
+					<label lang="ru" value="Максимум отказов заглушенному пиру перед баном:" />
+				</item>
 			</groupbox>
         </tab>
         <tab>

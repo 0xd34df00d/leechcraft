@@ -2253,6 +2253,8 @@ void Core::setGeneralSettings ()
 		property ("AutoManageStartup").toInt ();
 	settings.lock_disk_cache = XmlSettingsManager::Instance ()->
 		property ("LockDiskCache").toBool ();
+	settings.max_rejects = XmlSettingsManager::Instance ()->
+		property ("MaxRejects").toInt ();
 
 	settings.active_limit = 16384;
 
