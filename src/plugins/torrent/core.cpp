@@ -484,21 +484,11 @@ libtorrent::torrent_info Core::GetTorrentInfo (const QByteArray& data)
         libtorrent::torrent_info result (data.constData (), data.size ());
         return result;
     }
-    catch (const libtorrent::invalid_encoding& e)
+    catch (const libtorrent::libtorrent_exception& e)
     {
-        emit error (tr ("Bad bencoding in torrent file"));
+		HandleLibtorrentException (e);
         return libtorrent::torrent_info (libtorrent::sha1_hash ());
     }
-    catch (const libtorrent::invalid_torrent_file& e)
-    {
-        emit error (tr ("Invalid torrent file"));
-        return libtorrent::torrent_info (libtorrent::sha1_hash ());
-    }
-	catch (...)
-	{
-		emit error (tr ("General torrent parsing error"));
-		return libtorrent::torrent_info (libtorrent::sha1_hash ());
-	}
 }
 
 bool Core::IsValidTorrent (const QByteArray& torrentData) const
@@ -629,10 +619,16 @@ int Core::AddMagnet (const QString& magnet,
 		atp.storage_mode = libtorrent::storage_mode_allocate;
 		atp.paused = (params & LeechCraft::NoAutostart);
 		atp.save_path = boost::filesystem::path (std::string (path.toUtf8 ().constData ()));
+		atp.duplicate_is_error = true;
 
 		handle = libtorrent::add_magnet_uri (*Session_,
 				magnet.toStdString (),
 				atp);
+	}
+	catch (const libtorrent::libtorrent_exception& e)
+	{
+		HandleLibtorrentException (e);
+		return -1;
 	}
 	catch (const std::exception& e)
 	{
@@ -684,22 +680,12 @@ int Core::AddFile (const QString& filename,
 		atp.storage_mode = libtorrent::storage_mode_allocate;
 		atp.paused = (params & LeechCraft::NoAutostart);
 		atp.save_path = boost::filesystem::path (std::string (path.toUtf8 ().constData ()));
+		atp.duplicate_is_error = true;
 		handle = Session_->add_torrent (atp);
     }
-    catch (const libtorrent::duplicate_torrent& e)
+    catch (const libtorrent::libtorrent_exception& e)
     {
-		emit error (tr ("The torrent %1 with save path %2 already exists"
-					" in the session").arg (filename).arg (path));
-        return -1;
-    }
-    catch (const libtorrent::invalid_encoding& e)
-    {
-        emit error (tr ("Bad bencoding in torrent file"));
-        return -1;
-    }
-    catch (const libtorrent::invalid_torrent_file& e)
-    {
-        emit error (tr ("Invalid torrent file"));
+		HandleLibtorrentException (e);
         return -1;
     }
     catch (const std::runtime_error& e)
@@ -799,9 +785,11 @@ void Core::ForceReannounce (int pos)
     {
         Handles_.at (pos).Handle_.force_reannounce ();
     }
-    catch (const libtorrent::invalid_handle&)
+    catch (const libtorrent::libtorrent_exception& e)
     {
-        emit error (tr ("Torrent %1 could not be reannounced at the moment, try again later.").arg (pos));
+		HandleLibtorrentException (e);
+        emit error (tr ("Torrent %1 could not be reannounced at the "
+					"moment, try again later.").arg (pos));
     }
 }
 
@@ -941,8 +929,10 @@ void Core::SetFilePriority (int file, int priority)
     }
     catch (...)
     {
-        qWarning () << Q_FUNC_INFO << QString ("index for torrent %1, file %2 is out of bounds").arg (CurrentTorrent_).arg (file);
-    }
+		qWarning () << Q_FUNC_INFO
+			<< QString ("index for torrent %1, file %2 is out of bounds")
+				.arg (CurrentTorrent_).arg (file);
+	}
 }
 
 QStringList Core::GetTrackers () const
@@ -1597,17 +1587,6 @@ libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data,
 		bool pause)
 {
 	libtorrent::lazy_entry e;
-	libtorrent::entry resume;
-
-    try
-    {
-        resume = libtorrent::bdecode (resumeData.constData (),
-				resumeData.constData () + resumeData.size ());
-    }
-    catch (const libtorrent::invalid_encoding& e)
-    {
-        qWarning () << Q_FUNC_INFO << "bad resume data";
-    }
 
     libtorrent::torrent_handle handle;
     if (libtorrent::lazy_bdecode (data.constData (),
@@ -1626,19 +1605,16 @@ libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data,
 		atp.auto_managed = automanaged;
 		atp.paused = pause;
 		atp.resume_data = new std::vector<char>;
+		atp.duplicate_is_error = true;
 		std::copy (resumeData.constData (),
 				resumeData.constData () + resumeData.size (),
 				std::back_inserter (*atp.resume_data));
 
 		handle = Session_->add_torrent (atp);
     }
-    catch (const libtorrent::invalid_torrent_file& e)
+    catch (const libtorrent::libtorrent_exception& e)
     {
-        emit error (tr ("Invalid saved torrent data"));
-    }
-    catch (const libtorrent::duplicate_torrent& e)
-    {
-        emit error (tr ("The just restored torrent already exists in the session, that's strange."));
+		HandleLibtorrentException (e);
     }
 
     return handle;
@@ -1836,6 +1812,17 @@ void Core::ScheduleSave ()
 	SaveScheduled_ = true;
 }
 
+void Core::HandleLibtorrentException (const libtorrent::libtorrent_exception& e)
+{
+	emit error (tr ("Error code %1 of category:<blockquote>%2</blockquote>"
+				"error message:<blockquote>%3</blockquote>"
+				"raw exception message:<blockquote>%4</blockquote>")
+			.arg (e.error ().value ())
+			.arg (e.error ().category ().name ())
+			.arg (QString::fromUtf8 (e.error ().message ().c_str ()))
+			.arg (e.what ()));
+}
+
 void Core::writeSettings ()
 {
 	SaveScheduled_ = false;
@@ -2007,12 +1994,11 @@ void Core::queryLibtorrentForWarnings ()
 				, libtorrent::metadata_received_alert
 				>::handle_alert (a, sd);
 		}
-		catch (const libtorrent::unhandled_alert& e)
+		catch (const libtorrent::libtorrent_exception& e)
 		{
 		}
 		catch (const std::exception& e)
 		{
-			qWarning () << Q_FUNC_INFO << typeid (e).name ();
 		}
 
 		try
@@ -2201,7 +2187,8 @@ void Core::setGeneralSettings ()
     }
     catch (...)
     {
-        error (tr ("Wrong announce address %1").arg (XmlSettingsManager::Instance ()->property ("AnnounceIP").toString ()));
+        error (tr ("Wrong announce address %1")
+				.arg (XmlSettingsManager::Instance ()->property ("AnnounceIP").toString ()));
     }
     settings.num_want = XmlSettingsManager::Instance ()->
 		property ("NumWant").toInt ();

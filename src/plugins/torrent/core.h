@@ -231,6 +231,7 @@ private:
 	void UpdateTagsImpl (const QStringList&, int);
 	void ParseStorage (const QDomElement&);
 	void ScheduleSave ();
+	void HandleLibtorrentException (const libtorrent::libtorrent_exception&);
 private slots:
     void writeSettings ();
     void checkFinished ();
