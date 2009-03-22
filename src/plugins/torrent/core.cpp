@@ -156,6 +156,7 @@ void Core::DoDelayedInit ()
 				property ("MaxConnections").toInt ());
         setProxySettings ();
         setGeneralSettings ();
+		setScrapeInterval ();
         setDHTSettings ();
     }
     catch (const std::exception& e)
@@ -190,9 +191,6 @@ void Core::DoDelayedInit ()
 			SIGNAL (timeout ()),
 			this,
 			SLOT (scrape ()));
-	if (XmlSettingsManager::Instance ()->property ("ScrapeEnabled").toBool ())
-		ScrapeTimer_->start (XmlSettingsManager::Instance ()->
-				property ("ScrapeInterval").toInt () * 1000);
 
     ManipulateSettings ();
 }
