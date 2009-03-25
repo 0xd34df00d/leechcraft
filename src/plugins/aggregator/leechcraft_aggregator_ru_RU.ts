@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="ru_RU">
+<!DOCTYPE TS>
+<TS version="2.0" language="ru_RU">
+<defaultcodec></defaultcodec>
 <context>
     <name>AddFeed</name>
     <message>
@@ -15,12 +17,12 @@
     <message>
         <location filename="addfeed.ui" line="39"/>
         <source>Tags:</source>
-        <translation>Тэги:</translation>
+        <translation>Метки:</translation>
     </message>
     <message>
         <location filename="addfeed.ui" line="46"/>
         <source>untagged</source>
-        <translation>непротеганное</translation>
+        <translation>немеотмеченное</translation>
     </message>
     <message>
         <location filename="addfeed.ui" line="13"/>
@@ -68,17 +70,17 @@
     <message>
         <location filename="aggregator.cpp" line="380"/>
         <source>Item bucket...</source>
-        <translation>Долгий ящик...</translation>
+        <translation>Сборник статей...</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="385"/>
         <source>Regexp matcher...</source>
-        <translation>Сито...</translation>
+        <translation>Проверка регулярных выражений...</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="390"/>
         <source>Hide read items</source>
-        <translation>Спрятать прочитанные статьи</translation>
+        <translation>Скрыть прочитанные статьи</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="465"/>
@@ -113,7 +115,7 @@
     <message>
         <location filename="aggregator.cpp" line="583"/>
         <source>Select save file</source>
-        <translation>Выбери файл сохранения</translation>
+        <translation>Выберите файл сохранения</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="556"/>
@@ -144,7 +146,7 @@
         <location filename="aggregator.cpp" line="469"/>
         <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you are really sure that you want to do this?</source>
         <comment>Feed removing confirmation</comment>
-        <translation>Ты собираешься навсегда удалить ленту:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Ты уверен, что хочешь сделать это?</translation>
+        <translation>Вы собираетесь навсегда удалить ленту:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Уверены, что хотите сделать это?</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="619"/>
@@ -228,7 +230,7 @@
     <message>
         <location filename="core.cpp" line="453"/>
         <source>Could not open file %1 for reading.</source>
-        <translation>Не могу открыть файл %1 для чтения.</translation>
+        <translation>Невозможно открыть файл %1 для чтения.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="470"/>
@@ -248,7 +250,7 @@
     <message>
         <location filename="core.cpp" line="861"/>
         <source>Could not find parser to parse file %1 from %2</source>
-        <translation>Не могу найти парсер для файла %1 из %2</translation>
+        <translation>Невозможно найти парсер для файла %1 из %2</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1317"/>
@@ -278,7 +280,7 @@
     <message>
         <location filename="core.cpp" line="946"/>
         <source>Local errro for:&lt;br /&gt;%1</source>
-        <translation>Локальная ошибка для:&lt;br /&gt;</translation>
+        <translation>Локальная ошибка для:&lt;br /&gt;%1</translation>
     </message>
     <message>
         <location filename="core.cpp" line="949"/>
@@ -326,12 +328,12 @@
     <message>
         <location filename="export.ui" line="49"/>
         <source>Owner:</source>
-        <translation>Обладатель:</translation>
+        <translation>Владелец:</translation>
     </message>
     <message>
         <location filename="export.ui" line="56"/>
         <source>Owner email:</source>
-        <translation>Email обладателя:</translation>
+        <translation>Email владельца:</translation>
     </message>
     <message>
         <location filename="export.ui" line="63"/>
@@ -369,7 +371,7 @@
     <message>
         <location filename="feedsettings.ui" line="39"/>
         <source>Tags:</source>
-        <translation>Тэги:</translation>
+        <translation>Метки:</translation>
     </message>
     <message>
         <location filename="feedsettings.ui" line="52"/>
@@ -432,7 +434,7 @@
     <message>
         <location filename="importbinary.cpp" line="95"/>
         <source>Select binary file</source>
-        <translation>Выбери бинарный файл</translation>
+        <translation>Выберите бинарный файл</translation>
     </message>
     <message>
         <location filename="importbinary.cpp" line="98"/>
@@ -447,7 +449,7 @@
     <message>
         <location filename="importbinary.cpp" line="119"/>
         <source>Could not open file %1 for reading.</source>
-        <translation>Не могу открыть файл %1 для чтения.</translation>
+        <translation>Невозможно открыть файл %1 для чтения.</translation>
     </message>
     <message>
         <location filename="importbinary.cpp" line="133"/>
@@ -477,7 +479,7 @@
     <message>
         <location filename="importbinary.ui" line="40"/>
         <source>Additional tags:</source>
-        <translation>Дополнительные теги:</translation>
+        <translation>Дополнительные метки:</translation>
     </message>
     <message>
         <location filename="importbinary.ui" line="47"/>
@@ -510,7 +512,7 @@
     <message>
         <location filename="importopml.cpp" line="59"/>
         <source>Select OPML file</source>
-        <translation>Выбери OPML-файл</translation>
+        <translation>Выберите OPML-файл</translation>
     </message>
     <message>
         <location filename="importopml.cpp" line="63"/>
@@ -525,7 +527,7 @@
     <message>
         <location filename="importopml.cpp" line="84"/>
         <source>Could not open file %1 for reading.</source>
-        <translation>Не могу открыть файл %1 для чтения.</translation>
+        <translation>Невозможно открыть файл %1 для чтения.</translation>
     </message>
     <message>
         <location filename="importopml.cpp" line="103"/>
@@ -565,12 +567,12 @@
     <message>
         <location filename="importopml.ui" line="72"/>
         <source>Modified:</source>
-        <translation>Модифицирован:</translation>
+        <translation>Изменён:</translation>
     </message>
     <message>
         <location filename="importopml.ui" line="86"/>
         <source>Owner:</source>
-        <translation>Обладатель:</translation>
+        <translation>Владелец:</translation>
     </message>
     <message>
         <location filename="importopml.ui" line="107"/>
@@ -590,7 +592,7 @@
     <message>
         <location filename="importopml.ui" line="128"/>
         <source>Additional tags:</source>
-        <translation>Дополнительные теги:</translation>
+        <translation>Дополнительные метки:</translation>
     </message>
     <message>
         <location filename="importopml.ui" line="135"/>
@@ -610,7 +612,7 @@
     <message>
         <location filename="importopml.ui" line="173"/>
         <source>Owner email:</source>
-        <translation>Email обладателя:</translation>
+        <translation>Email владельца:</translation>
     </message>
     <message>
         <location filename="importopml.ui" line="142"/>
@@ -623,7 +625,7 @@
     <message>
         <location filename="itembucket.ui" line="13"/>
         <source>Item Bucket</source>
-        <translation>Долгий ящик</translation>
+        <translation>Сборник статей</translation>
     </message>
     <message>
         <location filename="itembucket.ui" line="39"/>
@@ -649,7 +651,7 @@
     <message>
         <location filename="itemswidget.cpp" line="34"/>
         <source>Add to item bucket</source>
-        <translation>Положить в долгий ящик</translation>
+        <translation>Добавить в сборник статей</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="217"/>
@@ -747,7 +749,7 @@
     <message>
         <location filename="mainwidget.ui" line="32"/>
         <source>Tags:</source>
-        <translation>Тэги:</translation>
+        <translation>Метки:</translation>
     </message>
 </context>
 <context>
@@ -763,12 +765,12 @@
     <message>
         <location filename="regexpmatchermanager.cpp" line="60"/>
         <source>Title matcher</source>
-        <translation>Сито заголовков</translation>
+        <translation>Проверка заголовков</translation>
     </message>
     <message>
         <location filename="regexpmatchermanager.cpp" line="60"/>
         <source>Body extractor</source>
-        <translation>Сито тел</translation>
+        <translation>Проверка содержания</translation>
     </message>
 </context>
 <context>
@@ -781,12 +783,12 @@
     <message>
         <location filename="regexpmatcherui.cpp" line="83"/>
         <source>This title matcher regexp already exists. Specify another one or modify existing title matcher regexp&apos;s body extractor.</source>
-        <translation>Это сито заголовков уже существует. Укажи другое или модифицируй сито тел существующего сита заголовков.</translation>
+        <translation>Это выражение для заголовка уже существует. Укажите новое или измените прежнее.</translation>
     </message>
     <message>
         <location filename="regexpmatcherui.cpp" line="89"/>
         <source>Either title matcher or body extractor is malformed.</source>
-        <translation>Либо сито заголовков, либо сито тел неверно сформировано.</translation>
+        <translation>Выражение для заголовка или содержания неверно сформировано.</translation>
     </message>
     <message>
         <location filename="regexpmatcherui.ui" line="44"/>
@@ -796,7 +798,7 @@
     <message>
         <location filename="regexpmatcherui.ui" line="51"/>
         <source>Modify...</source>
-        <translation>Модифицировать...</translation>
+        <translation>Изменить...</translation>
     </message>
     <message>
         <location filename="regexpmatcherui.ui" line="58"/>
@@ -806,7 +808,7 @@
     <message>
         <location filename="regexpmatcherui.ui" line="13"/>
         <source>Regexp Matcher</source>
-        <translation>Сито</translation>
+        <translation>Проверка регулярного выражения</translation>
     </message>
 </context>
 <context>
@@ -819,12 +821,12 @@
     <message>
         <location filename="singleregexp.ui" line="25"/>
         <source>Title matcher:</source>
-        <translation>Сито заголовков:</translation>
+        <translation>Проверка заголовков:</translation>
     </message>
     <message>
         <location filename="singleregexp.ui" line="35"/>
         <source>Body matcher:</source>
-        <translation>Сито тел:</translation>
+        <translation>Проверка содержания:</translation>
     </message>
 </context>
 </TS>

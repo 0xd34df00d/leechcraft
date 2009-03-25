@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="ru_RU">
+<defaultcodec></defaultcodec>
 <context>
     <name>AddMultipleTorrents</name>
     <message>
@@ -25,22 +26,22 @@
     <message>
         <location filename="addmultipletorrents.cpp" line="48"/>
         <source>Select directory with torrents</source>
-        <translation>Выбери директорию с торрентами</translation>
+        <translation>Выберите директорию с торрентами</translation>
     </message>
     <message>
         <location filename="addmultipletorrents.cpp" line="58"/>
         <source>Select save directory</source>
-        <translation>Выбери директорию сохранения</translation>
+        <translation>Выберите директорию для сохранения</translation>
     </message>
     <message>
         <location filename="addmultipletorrents.ui" line="67"/>
         <source>Tags:</source>
-        <translation>Тэги:</translation>
+        <translation>Метки:</translation>
     </message>
     <message>
         <location filename="addmultipletorrents.ui" line="74"/>
         <source>Add as:</source>
-        <translation>При добавлении:</translation>
+        <translation>Добавить как:</translation>
     </message>
     <message>
         <location filename="addmultipletorrents.ui" line="82"/>
@@ -63,7 +64,7 @@
     <message>
         <location filename="addtorrent.cpp" line="100"/>
         <source>Select torrent file</source>
-        <translation>Выбери торрент-файл</translation>
+        <translation>Выберите торрент-файл</translation>
     </message>
     <message>
         <location filename="addtorrent.cpp" line="100"/>
@@ -73,7 +74,7 @@
     <message>
         <location filename="addtorrent.cpp" line="114"/>
         <source>Select save directory</source>
-        <translation>Выбери директорию сохранения</translation>
+        <translation>Выберите директорию для сохранения</translation>
     </message>
     <message>
         <location filename="addtorrent.ui" line="13"/>
@@ -163,12 +164,12 @@
     <message>
         <location filename="addtorrent.ui" line="194"/>
         <source>Tags:</source>
-        <translation>Тэги:</translation>
+        <translation>Метки:</translation>
     </message>
     <message>
         <location filename="addtorrent.ui" line="201"/>
         <source>untagged</source>
-        <translation>непротеганное</translation>
+        <translation>без метки</translation>
     </message>
     <message>
         <location filename="addtorrent.ui" line="227"/>
@@ -191,7 +192,7 @@
     <message>
         <location filename="core.cpp" line="471"/>
         <source>Could not open file %1 for read: %2</source>
-        <translation>Не могу открыть файл %1 на запись: %2</translation>
+        <translation>Невозможно открыть файл %1 на запись: %2</translation>
     </message>
     <message>
         <location filename="core.cpp" line="694"/>
@@ -231,7 +232,7 @@
     <message>
         <location filename="core.cpp" line="525"/>
         <source>Idle</source>
-        <translation>Ничего не делает</translation>
+        <translation>Простаивает</translation>
     </message>
     <message>
         <location filename="core.cpp" line="413"/>
@@ -276,7 +277,7 @@
     <message>
         <location filename="core.cpp" line="1638"/>
         <source>The just restored torrent already exists in the session, that&apos;s strange.</source>
-        <translation>Только что восстановленный торрент уже существует в сессии, это странно.</translation>
+        <translation>Только что восстановленный торрент уже существует в сессии.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1613"/>
@@ -291,17 +292,17 @@
     <message>
         <location filename="core.cpp" line="801"/>
         <source>Torrent %1 could not be reannounced at the moment, try again later.</source>
-        <translation>Торрент %1 не может быть перезапрошен в данный момент, попробуй позже.</translation>
+        <translation>Торрент %1 не может быть перезапрошен в данный момент, попробуйте позже.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1124"/>
         <source>Could not open file %1 for write!</source>
-        <translation>Не могу открыть файл %1 на запись!</translation>
+        <translation>Невозможно открыть файл %1 на запись!</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1516"/>
         <source>Could not open saved torrent %1 for read.</source>
-        <translation>Не могу открыть сохраненный торрент %1 на чтение.</translation>
+        <translation>Невозможно открыть сохраненный торрент %1 на чтение.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1653"/>
@@ -321,7 +322,7 @@
     <message>
         <location filename="core.cpp" line="1803"/>
         <source>untagged</source>
-        <translation>непротеганное</translation>
+        <translation>без метки</translation>
     </message>
     <message>
         <location filename="core.cpp" line="496"/>
@@ -381,12 +382,12 @@
     <message>
         <location filename="core.cpp" line="1152"/>
         <source>Could not open file %1 for reading</source>
-        <translation>Не могу открыть файл %1 для чтения</translation>
+        <translation>Невозможно открыть файл %1 для чтения</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1162"/>
         <source>Could not parse document from file %1.&lt;br /&gt;%1 at %2:%3</source>
-        <translation>Не могу обработать документ из файла %1.&lt;br /&gt;%1 в %2:%3</translation>
+        <translation>Невозможно обработать документ из файла %1.&lt;br /&gt;%1 в %2:%3</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1171"/>
@@ -457,12 +458,12 @@
     <message>
         <location filename="firststep.cpp" line="23"/>
         <source>Select where to place torrent file</source>
-        <translation>Выбери, куда класть торрент-файл</translation>
+        <translation>Выберите, где расположить файл торрента</translation>
     </message>
     <message>
         <location filename="firststep.cpp" line="35"/>
         <source>Select root path</source>
-        <translation>Выбери корневую директорию</translation>
+        <translation>Выберите корневую директорию</translation>
     </message>
 </context>
 <context>
@@ -475,7 +476,7 @@
     <message>
         <location filename="intropage.cpp" line="12"/>
         <source>This wizard will generate a torrent file. You simply need so specify the torrent name, files to include and optionally few other options to produce your torrent file.</source>
-        <translation>Этот мастер создаст торрент-файл. Тебе просто нужно указать имя торрента, announce-адрес и файлы для включения и, опционально, другие опции, чтобы мастер создал торрент.</translation>
+        <translation>Этот мастер создаёт торрент-файл. Просто укажите имя торрента, announce-адрес и файлы для включения и, если требуется, другие опции, чтобы мастер создал торрент.</translation>
     </message>
 </context>
 <context>
@@ -559,7 +560,7 @@
     <message>
         <location filename="newtorrentsecondstep.ui" line="13"/>
         <source>Select files</source>
-        <translation>Выбери файлы</translation>
+        <translation>Выберите файлы</translation>
     </message>
     <message>
         <location filename="newtorrentsecondstep.ui" line="29"/>
@@ -763,7 +764,7 @@
     <message>
         <location filename="peersmodel.cpp" line="93"/>
         <source>Idle</source>
-        <translation>В покое</translation>
+        <translation>Простаивает</translation>
     </message>
 </context>
 <context>
@@ -809,12 +810,12 @@
     <message>
         <location filename="core.cpp" line="1978"/>
         <source>Storage moved</source>
-        <translation>Хранилище переместилось</translation>
+        <translation>Хранилище перемещено</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1980"/>
         <source>Storage for torrent&lt;br /&gt;%1&lt;br /&gt;moved successfully to&lt;br /&gt;%2</source>
-        <translation>Хранилище для торрента&lt;br /&gt;%1&lt;br /&gt;переместилось успешно в&lt;br /&gt;%2</translation>
+        <translation>Хранилище для торрента&lt;br /&gt;%1&lt;br /&gt;перемещено успешно в&lt;br /&gt;%2</translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="546"/>
@@ -827,7 +828,7 @@
     <message>
         <location filename="secondstep.cpp" line="23"/>
         <source>Select one or more paths to add</source>
-        <translation>Выбери один или более путей для добавления</translation>
+        <translation>Выберите один или более путей для добавления</translation>
     </message>
 </context>
 <context>
@@ -1250,7 +1251,7 @@
     <message>
         <location filename="tabwidget.ui" line="1455"/>
         <source>Peers in swarm:</source>
-        <translation>Пиров в рое:</translation>
+        <translation>Пиров в раздаче:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1497"/>
@@ -1265,7 +1266,7 @@
     <message>
         <location filename="tabwidget.ui" line="1525"/>
         <source>Seeds in swarm:</source>
-        <translation>Сидов в рое:</translation>
+        <translation>Сидов в раздаче:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="159"/>
@@ -1389,7 +1390,7 @@
     <message>
         <location filename="torrentplugin.cpp" line="319"/>
         <source>Do you really want to delete the torrent?</source>
-        <translation>Ты действительно хочешь удалить торрент?</translation>
+        <translation>Вы действительно хотите удалить торрент?</translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="451"/>
@@ -1464,7 +1465,7 @@
     <message>
         <location filename="torrentplugin.cpp" line="1107"/>
         <source>Reannounce</source>
-        <translation>Переобъявить</translation>
+        <translation>Объявить заново</translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="1109"/>
@@ -1552,7 +1553,7 @@
     <message>
         <location filename="trackerschanger.ui" line="19"/>
         <source>Trackers, one per line:</source>
-        <translation>Трекеры, один на строке:</translation>
+        <translation>Трекеры, по одному на строку:</translation>
     </message>
 </context>
 </TS>

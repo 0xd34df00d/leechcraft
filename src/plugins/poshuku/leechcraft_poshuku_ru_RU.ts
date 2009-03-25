@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="ru_RU">
+<!DOCTYPE TS>
+<TS version="2.0" language="ru_RU">
+<defaultcodec></defaultcodec>
 <context>
     <name>AddToFavoritesDialog</name>
     <message>
         <location filename="addtofavoritesdialog.cpp" line="16"/>
         <source>untagged</source>
-        <translation>непротеганное</translation>
+        <translation>неотмеченное</translation>
     </message>
     <message>
         <location filename="addtofavoritesdialog.ui" line="13"/>
@@ -25,7 +27,7 @@
     <message>
         <location filename="addtofavoritesdialog.ui" line="49"/>
         <source>Tags:</source>
-        <translation>Тэги:</translation>
+        <translation>Метки:</translation>
     </message>
 </context>
 <context>
@@ -38,7 +40,7 @@
     <message>
         <location filename="browserwidget.ui" line="13"/>
         <source>Browser widget</source>
-        <translation>Браузер видгет!</translation>
+        <translation>Браузер</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="70"/>
@@ -73,12 +75,12 @@
     <message>
         <location filename="browserwidget.cpp" line="393"/>
         <source>Could not open %1 for write</source>
-        <translation>Не могу открыть %1 на запись</translation>
+        <translation>Невозможно открыть %1 на запись</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="402"/>
         <source>Could not write screenshot to %1</source>
-        <translation>Не могу записать скриншот в %1</translation>
+        <translation>Невозможно записать скриншот в %1</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="31"/>
@@ -212,12 +214,12 @@
     <message>
         <location filename="core.cpp" line="74"/>
         <source>untagged</source>
-        <translation>непротеганное</translation>
+        <translation>без метки</translation>
     </message>
     <message>
         <location filename="core.cpp" line="129"/>
         <source></source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -233,7 +235,7 @@
     <message>
         <location filename="customwebview.cpp" line="70"/>
         <source>Loading...</source>
-        <translation>Грузится...</translation>
+        <translation>Загружается...</translation>
     </message>
 </context>
 <context>
@@ -251,12 +253,12 @@
     <message>
         <location filename="favoritesmodel.cpp" line="21"/>
         <source>Tags</source>
-        <translation>Тэги</translation>
+        <translation>Метки</translation>
     </message>
     <message>
         <location filename="favoritesmodel.cpp" line="125"/>
         <source>Failed to add&lt;br /&gt;%1&lt;br /&gt;to Favorites, seems like such title is already used.</source>
-        <translation>Не получилось добавить&lt;br /&gt;%1&lt;br /&gt;в Избранное, по ходу, такое название там уже есть.</translation>
+        <translation>Не удалось добавить&lt;br /&gt;%1&lt;br /&gt;в Избранное, название может уже присутствовать.</translation>
     </message>
 </context>
 <context>
@@ -274,7 +276,7 @@
     <message>
         <location filename="finddialog.ui" line="39"/>
         <source>Search backwards</source>
-        <translation>Обратить направление</translation>
+        <translation>Обратить направление поиска</translation>
     </message>
     <message>
         <location filename="finddialog.ui" line="46"/>
@@ -284,7 +286,7 @@
     <message>
         <location filename="finddialog.ui" line="53"/>
         <source>Continue from the beginning</source>
-        <translation>Переходить к началу</translation>
+        <translation>Начать сначала</translation>
     </message>
     <message>
         <location filename="finddialog.ui" line="74"/>
@@ -320,7 +322,7 @@
     <message>
         <location filename="poshuku.cpp" line="131"/>
         <source>Simple yet functional web browser</source>
-        <translation>Простой но в то же время функциональный веб-браузер</translation>
+        <translation>Простой, но в то же время функциональный веб-браузер</translation>
     </message>
     <message>
         <location filename="poshuku.cpp" line="410"/>
@@ -350,12 +352,12 @@
     <message>
         <location filename="poshuku.ui" line="124"/>
         <source>Regexp</source>
-        <translation>Регексп</translation>
+        <translation>Регулярное выражение</translation>
     </message>
     <message>
         <location filename="poshuku.ui" line="129"/>
         <source>Tags</source>
-        <translation>Тэги</translation>
+        <translation>Метки</translation>
     </message>
     <message>
         <location filename="poshuku.ui" line="137"/>
@@ -365,7 +367,7 @@
     <message>
         <location filename="poshuku.ui" line="100"/>
         <source>Favorites</source>
-        <translation>Любимчики</translation>
+        <translation>Закладки</translation>
     </message>
     <message>
         <location filename="poshuku.cpp" line="37"/>
@@ -375,7 +377,7 @@
     <message>
         <location filename="poshuku.cpp" line="39"/>
         <source>Could not create icon database at %1</source>
-        <translation>Не могу создать базу иконок в %1</translation>
+        <translation>Невозможно создать базу иконок в %1</translation>
     </message>
 </context>
 <context>
@@ -416,7 +418,7 @@
     <message>
         <location filename="screenshotsavedialog.ui" line="13"/>
         <source>Page shooter</source>
-        <translation>Снималка страниц</translation>
+        <translation>Создание снимков страниц</translation>
     </message>
     <message>
         <location filename="screenshotsavedialog.ui" line="28"/>
@@ -439,7 +441,7 @@
     <message>
         <location filename="sourceviewer.ui" line="13"/>
         <source>Source viewer</source>
-        <translation>Просмотрщик исходников</translation>
+        <translation>Просмотр исходников</translation>
     </message>
 </context>
 <context>
@@ -452,7 +454,7 @@
     <message>
         <location filename="speeddialprovider.cpp" line="111"/>
         <source>&lt;strong&gt;Regenerating&lt;/strong&gt; for %1...</source>
-        <translation>&lt;strong&gt;Регенерируется&lt;/strong&gt; %1...</translation>
+        <translation>&lt;strong&gt;Возобновляется&lt;/strong&gt; %1...</translation>
     </message>
 </context>
 </TS>

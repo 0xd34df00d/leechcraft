@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="ru_RU">
+<defaultcodec></defaultcodec>
 <context>
     <name>Core</name>
     <message>
@@ -55,7 +56,7 @@
     <message>
         <location filename="core.cpp" line="187"/>
         <source> borrowing data from </source>
-        <translation> поток из </translation>
+        <translation>извлечение ниформации из </translation>
     </message>
     <message>
         <location filename="core.cpp" line="192"/>
@@ -85,7 +86,7 @@
     <message>
         <location filename="core.cpp" line="219"/>
         <source>stream</source>
-        <translation>потока</translation>
+        <translation>поток</translation>
     </message>
 </context>
 <context>
@@ -113,7 +114,7 @@
     <message>
         <location filename="lmp.cpp" line="200"/>
         <source>Select media file</source>
-        <translation>Выбери медиа-файл</translation>
+        <translation>Выберите медиа-файл</translation>
     </message>
     <message>
         <location filename="lmp.cpp" line="206"/>

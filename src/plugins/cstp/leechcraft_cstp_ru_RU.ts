@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="ru">
+<!DOCTYPE TS>
+<TS version="2.0" language="ru">
+<defaultcodec></defaultcodec>
 <context>
     <name>AddTask</name>
     <message>
         <location filename="addtask.cpp" line="84"/>
         <source>Directory %1 doesn&apos;t exist, would you like to select another?</source>
-        <translation>Директория %1 не существует, хочешь выбрать другую?</translation>
+        <translation>Директория %1 не существует, хотите выбрать другую?</translation>
     </message>
     <message>
         <location filename="addtask.cpp" line="87"/>
         <source>Directory %1 isn&apos;t readable, would you like to select another?</source>
-        <translation>Директория %1 недоступна для чтения, хочешь выбрать другую?</translation>
+        <translation>Директория %1 недоступна для чтения, хотите выбрать другую?</translation>
     </message>
     <message>
         <location filename="addtask.cpp" line="90"/>
         <source>Directory %1 isn&apos;t writable, would you like to select another?</source>
-        <translation>Директория %1 недоступна для записи, хочешь выбрать другую?</translation>
+        <translation>Директория %1 недоступна для записи, хотите выбрать другую?</translation>
     </message>
     <message>
         <location filename="addtask.cpp" line="93"/>
         <source>%1 isn&apos;t a directory at all, would you like to select another?</source>
-        <translation>Директория %1 вообще не директория, хочешь выбрать другую?</translation>
+        <translation>%1 не является директорией, хотите выбрать другую?</translation>
     </message>
     <message>
         <location filename="addtask.cpp" line="101"/>
@@ -141,12 +143,12 @@
     <message>
         <location filename="core.cpp" line="90"/>
         <source>Could not truncate file </source>
-        <translation>Не могу сократить файл</translation>
+        <translation>Невозможно сократить файл</translation>
     </message>
     <message>
         <location filename="core.cpp" line="297"/>
         <source>Could not open file </source>
-        <translation>Не могу открыть файл</translation>
+        <translation>Невозможно открыть файл</translation>
     </message>
     <message>
         <location filename="core.cpp" line="213"/>
@@ -187,7 +189,7 @@
     <message>
         <location filename="task.cpp" line="150"/>
         <source>Task isn&apos;t initialized properly</source>
-        <translation>Не инициализирована</translation>
+        <translation>Задача некорректно инициализирована</translation>
     </message>
 </context>
 </TS>

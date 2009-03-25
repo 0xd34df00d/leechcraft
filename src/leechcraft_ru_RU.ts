@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="ru">
+<!DOCTYPE TS>
+<TS version="2.0" language="ru">
 <defaultcodec></defaultcodec>
 <context>
     <name>Application</name>
@@ -11,7 +12,7 @@
     <message>
         <location filename="application.cpp" line="66"/>
         <source>Could not create path %1/.leechcraft</source>
-        <translation>Не могу создать путь %1/.leechcraft</translation>
+        <translation>Невозможно создать путь %1/.leechcraft</translation>
     </message>
     <message>
         <location filename="application.cpp" line="79"/>
@@ -44,7 +45,7 @@
     <message>
         <location filename="authenticationdialog.ui" line="23"/>
         <source>Ooops, I forgot to call the corrent constructor params.</source>
-        <translation>Ыа</translation>
+        <translation>Ыа.</translation>
     </message>
     <message>
         <location filename="authenticationdialog.ui" line="32"/>
@@ -113,12 +114,12 @@
     <message>
         <location filename="handlerchoicedialog.ui" line="13"/>
         <source>Choose entity handler</source>
-        <translation>Выбери обработчик сущности</translation>
+        <translation>Выбор обработчика объекта</translation>
     </message>
     <message>
         <location filename="handlerchoicedialog.ui" line="19"/>
         <source>LeechCraft has detected some entity:</source>
-        <translation>LeechCraft что-то обнаружил:</translation>
+        <translation>LeechCraft обнаружил объект:</translation>
     </message>
     <message>
         <location filename="handlerchoicedialog.ui" line="26"/>
@@ -128,12 +129,12 @@
     <message>
         <location filename="handlerchoicedialog.ui" line="33"/>
         <source>This entity could be downloaded by:</source>
-        <translation>Сущность может быть скачана при помощи:</translation>
+        <translation>Объект может быть скачан при помощи:</translation>
     </message>
     <message>
         <location filename="handlerchoicedialog.ui" line="43"/>
         <source>This entity could also be handled by:</source>
-        <translation>Сущность может быть обработана с помощью:</translation>
+        <translation>Объект может быть обработан с помощью:</translation>
     </message>
 </context>
 <context>
@@ -166,7 +167,7 @@
     <message>
         <location filename="leechcraft.ui" line="40"/>
         <source>Downloaders</source>
-        <translation>Качальщики</translation>
+        <translation>Загрузчики</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="146"/>
@@ -199,7 +200,7 @@
     <message>
         <location filename="commonjobadder.cpp" line="49"/>
         <source>Select file</source>
-        <translation>Выбери файл</translation>
+        <translation>Выберите файл</translation>
     </message>
 </context>
 <context>
@@ -212,7 +213,7 @@
     <message>
         <location filename="core.cpp" line="228"/>
         <source>Calculation dependencies...</source>
-        <translation>Расчет зависимостей...</translation>
+        <translation>Подсчёт зависимостей...</translation>
     </message>
     <message>
         <location filename="core.cpp" line="236"/>
@@ -227,7 +228,7 @@
     <message>
         <location filename="core.cpp" line="587"/>
         <source>Select save path</source>
-        <translation>Выбери директорию сохранения</translation>
+        <translation>Выберите директорию сохранения</translation>
     </message>
     <message>
         <location filename="core.cpp" line="689"/>
@@ -242,17 +243,17 @@
     <message>
         <location filename="core.cpp" line="727"/>
         <source>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
-        <translation>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;имеет ошибки SSL. Что ты хочешь?</translation>
+        <translation>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;имеет ошибки SSL. Что хотите сделать?</translation>
     </message>
     <message>
         <location filename="core.cpp" line="807"/>
         <source>Could not create Core directory.</source>
-        <translation>Не могу создать директорию для Ядра.</translation>
+        <translation>Невозможно создать директорию для Ядра.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="814"/>
         <source>Could not save cookies, error opening cookie file.</source>
-        <translation>Не могу сохранить кукисы, ошибка открытия файла с кукисами.</translation>
+        <translation>Невозможно сохранить кукисы, ошибка открытия файла с кукисами.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="55"/>
@@ -292,7 +293,7 @@
     <message>
         <location filename="core.cpp" line="638"/>
         <source>Could not handle download entity %1.</source>
-        <translation>Не могу обработать %1.</translation>
+        <translation>Не могу обработать объект %1.</translation>
     </message>
 </context>
 <context>
@@ -348,7 +349,7 @@
     <message>
         <location filename="mainwindow.cpp" line="313"/>
         <source>Do you really want to quit?</source>
-        <translation>Ты действительно хочешь выйти?</translation>
+        <translation>Вы действительно хотите выйти?</translation>
     </message>
 </context>
 <context>
@@ -480,7 +481,7 @@
     <message>
         <location filename="operationalmodel.cpp" line="9"/>
         <source>Entity</source>
-        <translation>Сущность</translation>
+        <translation>Объект</translation>
     </message>
     <message>
         <location filename="operationalmodel.cpp" line="11"/>

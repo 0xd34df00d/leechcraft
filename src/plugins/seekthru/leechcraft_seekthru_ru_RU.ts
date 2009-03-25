@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="ru_RU">
+<!DOCTYPE TS>
+<TS version="2.0" language="ru_RU">
 <defaultcodec></defaultcodec>
 <context>
     <name>Core</name>
@@ -36,17 +37,17 @@
     <message>
         <location filename="core.cpp" line="179"/>
         <source>Could not open file %1.</source>
-        <translation>Не могу открыть файл %1.</translation>
+        <translation>Невозможно открыть файл %1.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="188"/>
         <source>Could not remove temporary file %1.</source>
-        <translation>Не могу удалить временный файл %1.</translation>
+        <translation>Невозможно удалить временный файл %1.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="200"/>
         <source>A job was delegated, but it failed.</source>
-        <translation>Задача была делегирована, но облом.</translation>
+        <translation>Задача была делегирована неудачно.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="213"/>
@@ -149,7 +150,7 @@
     <message>
         <location filename="searcherslist.ui" line="89"/>
         <source>Tags:</source>
-        <translation>Теги:</translation>
+        <translation>Метки:</translation>
     </message>
     <message>
         <location filename="searcherslist.ui" line="103"/>
@@ -174,7 +175,7 @@
     <message>
         <location filename="searcherslist.ui" line="159"/>
         <source>Adult:</source>
-        <translation>Взрослый контент:</translation>
+        <translation>Контент для взрослых:</translation>
     </message>
     <message>
         <location filename="searcherslist.ui" line="173"/>
