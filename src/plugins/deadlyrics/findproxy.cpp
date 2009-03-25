@@ -97,7 +97,6 @@ QVariant FindProxy::data (const QModelIndex& index, int role) const
 	}
 	else
 	{
-		bool error = ErrorString_.size ();
 		if (role == Qt::DisplayRole)
 		{
 			switch (index.column ())
@@ -164,7 +163,6 @@ void FindProxy::handleTextFetched (const Lyrics& lyrics,
 
 void FindProxy::handleError (const QString& message)
 {
-	qDebug () << Q_FUNC_INFO;
 	ErrorString_ = message;
 	if (!FetchedSomething_)
 		emit dataChanged (index (0, 0), index (0, 2));
