@@ -138,10 +138,21 @@ void SearchHandler::Start (const LeechCraft::Request& r)
 					item.second.at (item.second.size () - 1) == '}' &&
 					item.second.at (item.second.size () - 2) == '?')
 				continue;
+
 			if (item.second == "{searchTerms}")
 				item.second = SearchString_;
+			else if (item.second.size () > 2 &&
+					*item.second.begin () == '{' &&
+					*(item.second.end () - 1) == '}')
+			{
+				QString key = item.second.mid (1,
+						item.second.size () - 2);
+				if (r.Params_.contains (key))
+					item.second = r.Params_ [key];
+			}
 			else
 				item.second = "";
+
 			newItems << item;
 		}
 		url.setQueryItems (newItems);
