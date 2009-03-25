@@ -10,6 +10,7 @@ FindProxy::FindProxy (const LeechCraft::Request& request,
 		QObject *parent)
 : QAbstractItemModel (parent)
 , Request_ (request)
+, FetchedSomething_ (false)
 {
 	setObjectName ("DeadLyRicS FindProxy");
 	LyricsHolder_ = new QTextEdit ();
@@ -25,6 +26,11 @@ FindProxy::FindProxy (const LeechCraft::Request& request,
 				SIGNAL (textFetched (const Lyrics&, const QByteArray&)),
 				this,
 				SLOT (handleTextFetched (const Lyrics&, const QByteArray&)),
+				Qt::QueuedConnection);
+		connect (i->get (),
+				SIGNAL (error (const QString&)),
+				this,
+				SLOT (handleError (const QString&)),
 				Qt::QueuedConnection);
 		QByteArray hash;
 		(*i)->Start (subs, hash);
@@ -58,34 +64,58 @@ QVariant FindProxy::data (const QModelIndex& index, int role) const
 	if (!index.isValid ())
 		return QVariant ();
 
-	Lyrics lyrics = Lyrics_ [index.row ()];
-	if (role == Qt::DisplayRole)
+	if (Lyrics_.size ())
 	{
-		switch (index.column ())
+		Lyrics lyrics = Lyrics_ [index.row ()];
+		if (role == Qt::DisplayRole)
 		{
-			case 0:
-				{
-					QString result = lyrics.Author_;
-					if (!lyrics.Album_.isEmpty ())
-						result.append (" - ").append (lyrics.Album_);
-					result.append (" - ").append (lyrics.Title_);
-					return result;
-				}
-			case 2:
-				return QString ("%1 (%2)")
-					.arg (QUrl (lyrics.URL_).host ())
-					.arg (lyrics.URL_);
-			default:
-				return Request_.Category_;
+			switch (index.column ())
+			{
+				case 0:
+					{
+						QString result = lyrics.Author_;
+						if (!lyrics.Album_.isEmpty ())
+							result.append (" - ").append (lyrics.Album_);
+						result.append (" - ").append (lyrics.Title_);
+						return result;
+					}
+				case 2:
+					return QString ("%1 (%2)")
+						.arg (QUrl (lyrics.URL_).host ())
+						.arg (lyrics.URL_);
+				default:
+					return Request_.Category_;
+			}
 		}
-	}
-	else if (role == LeechCraft::RoleAdditionalInfo)
-	{
-		LyricsHolder_->setPlainText (lyrics.Text_);
-		return QVariant::fromValue<QWidget*> (LyricsHolder_);
+		else if (role == LeechCraft::RoleAdditionalInfo)
+		{
+			LyricsHolder_->setPlainText (lyrics.Text_);
+			return QVariant::fromValue<QWidget*> (LyricsHolder_);
+		}
+		else
+			return QVariant ();
 	}
 	else
-		return QVariant ();
+	{
+		bool error = ErrorString_.size ();
+		if (role == Qt::DisplayRole)
+		{
+			switch (index.column ())
+			{
+				case 0:
+					return Request_.String_;
+				case 2:
+					if (ErrorString_.size ())
+						return ErrorString_;
+					else
+						return tr ("Searching...");
+				default:
+					return Request_.Category_;
+			}
+		}
+		else
+			return QVariant ();
+	}
 }
 
 QModelIndex FindProxy::index (int row, int column,
@@ -104,7 +134,15 @@ QModelIndex FindProxy::parent (const QModelIndex&) const
 
 int FindProxy::rowCount (const QModelIndex& index) const
 {
-	return index.isValid () ? 0 : Lyrics_.size ();
+	if (index.isValid ())
+		return 0;
+	else
+	{
+		if (FetchedSomething_)
+			return Lyrics_.size ();
+		else
+			return 1;
+	}
 }
 
 void FindProxy::handleTextFetched (const Lyrics& lyrics,
@@ -113,8 +151,22 @@ void FindProxy::handleTextFetched (const Lyrics& lyrics,
 	if (std::find (Hashes_.begin (), Hashes_.end (), hash) == Hashes_.end ())
 		return;
 
+	if (!Lyrics_.size ())
+	{
+		beginRemoveRows (QModelIndex (), 0, 0);
+		FetchedSomething_ = true;
+		endRemoveRows ();
+	}
 	beginInsertRows (QModelIndex (), Lyrics_.size (), Lyrics_.size ());
 	Lyrics_.push_back (lyrics);
 	endInsertRows ();
+}
+
+void FindProxy::handleError (const QString& message)
+{
+	qDebug () << Q_FUNC_INFO;
+	ErrorString_ = message;
+	if (!FetchedSomething_)
+		emit dataChanged (index (0, 0), index (0, 2));
 }
 

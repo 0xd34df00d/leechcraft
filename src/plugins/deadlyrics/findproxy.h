@@ -17,6 +17,8 @@ class FindProxy : public QAbstractItemModel
 	std::vector<QByteArray> Hashes_;
 	lyrics_t Lyrics_;
 	QTextEdit *LyricsHolder_;
+	QString ErrorString_;
+	bool FetchedSomething_;
 
 	FindProxy (const FindProxy&);
 	FindProxy& operator= (const FindProxy&);
@@ -28,11 +30,12 @@ public:
 
 	int columnCount (const QModelIndex&) const;
 	QVariant data (const QModelIndex&, int) const;
-	QModelIndex index (int, int, const QModelIndex&) const;
+	QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
 	QModelIndex parent (const QModelIndex&) const;
 	int rowCount (const QModelIndex&) const;
 private slots:
 	void handleTextFetched (const Lyrics&, const QByteArray&);
+	void handleError (const QString&);
 };
 
 #endif

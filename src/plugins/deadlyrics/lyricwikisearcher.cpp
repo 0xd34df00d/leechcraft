@@ -88,13 +88,15 @@ void LyricWikiSearcher::handleFinished ()
 			!url.size ())
 	{
 		qWarning () << Q_FUNC_INFO << "Lyrics fetch error" << response;
+		emit error (tr ("Lyrics fetch error"));
 		return;
 	}
 
 	QString text = lyrics.at (0).toElement ().text ();
 	if (text == "Not found")
 	{
-		qWarning () << Q_FUNC_INFO << "No lyrics fetched";
+		qWarning () << Q_FUNC_INFO << "No lyrics found";
+		emit error (tr ("No lyrics found"));
 		return;
 	}
 	QByteArray hash = http->property ("IDHash").toByteArray ();

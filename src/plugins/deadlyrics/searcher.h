@@ -29,6 +29,7 @@ public:
 	virtual void Stop (const QByteArray&) = 0;
 signals:
 	void textFetched (const Lyrics&, const QByteArray&);
+	void error (const QString&);
 };
 
 typedef boost::shared_ptr<Searcher> searcher_ptr;
