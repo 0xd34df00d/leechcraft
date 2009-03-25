@@ -17,6 +17,7 @@
 #include <QMessageBox>
 #include <QDesktopServices>
 #include <QXmlStreamReader>
+#include <QTextCodec>
 #include "core.h"
 #include "historymodel.h"
 #include "finddialog.h"
@@ -635,7 +636,7 @@ void BrowserWidget::handleLoadFinished ()
 			QAction *act = ExternalLinks_->
 				addAction (QIcon (QString (":/resources/images/%1.png")
 						.arg (mime)),
-					e.Entity_,
+					QTextCodec::codecForName ("UTF-8")->toUnicode (e.Entity_),
 					this,
 					SLOT (handleEntityAction ()));
 			act->setData (QVariant::fromValue<LeechCraft::DownloadEntity> (e));
