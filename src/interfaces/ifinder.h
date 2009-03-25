@@ -23,7 +23,7 @@ namespace LeechCraft
 		QString Plugin_;
 		QString Category_;
 		QString String_;
-		QStringList Params_;
+		QMap<QString, QString> Params_;
 	};
 };
 

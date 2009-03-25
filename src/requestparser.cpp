@@ -64,9 +64,8 @@ void RequestParser::Parse (const QString& request)
 					value == "tag")
 				Request_.Type_ = Request::RTTag;
 		}
-		else if (key == "pa" ||
-				key == "param")
-			Request_.Params_ << value;
+		else
+			Request_.Params_ [key] = value;
 	}
 	Request_.String_ = tokens.join (" ");
 }
