@@ -17,6 +17,8 @@ class QAction;
 class SearchHandler : public QAbstractItemModel
 {
 	Q_OBJECT
+
+	static const QString OS_;
 	
 	Description D_;
 

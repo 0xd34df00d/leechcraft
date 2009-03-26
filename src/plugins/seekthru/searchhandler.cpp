@@ -3,11 +3,14 @@
 #include <QAction>
 #include <QUrl>
 #include <QFile>
+#include <QDomDocument>
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
 #include <plugininterface/util.h>
 #include "selectablebrowser.h"
 #include "core.h"
+
+const QString SearchHandler::OS_ = "http://a9.com/-/spec/opensearch/1.1/";
 
 SearchHandler::SearchHandler (const Description& d)
 : D_ (d)
@@ -215,6 +218,38 @@ void SearchHandler::handleJobFinished (int id)
 	}
 
 	result.Response_ = file.readAll ();
+	result.TotalResults_ = -1;
+
+	QDomDocument doc;
+	if (doc.setContent (result.Response_, true))
+	{
+		if (result.Type_ == Result::TypeHTML)
+		{
+			QDomNodeList nodes = doc.elementsByTagName ("meta");
+			for (int i = 0; i < nodes.size (); ++i)
+			{
+				QDomElement meta = nodes.at (i).toElement ();
+				if (meta.isNull ())
+					continue;
+
+				if (meta.attribute ("name") == "totalResults")
+				{
+					result.TotalResults_ = meta.attribute ("content").toInt ();
+					break;
+				}
+			}
+		}
+		else
+		{
+			QDomNodeList nodes = doc.elementsByTagNameNS (OS_, "totalResults");
+			if (nodes.size ())
+			{
+				QDomElement tr = nodes.at (0).toElement ();
+				if (!tr.isNull ())
+					result.TotalResults_ = tr.text ().toInt ();
+			}
+		}
+	}
 
 	file.close ();
 	if (!file.remove ())
