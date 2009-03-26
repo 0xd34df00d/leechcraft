@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <QIcon>
 #include <QFile>
+#include <QFileInfo>
 #include <QNetworkCookieJar>
 #include <QDir>
 #include <QInputDialog>
@@ -23,6 +24,7 @@
 #include "xmlsettingsmanager.h"
 #include "restoresessiondialog.h"
 #include "sqlstoragebackend.h"
+#include "xbelparser.h"
 
 using LeechCraft::Util::Proxy;
 using LeechCraft::Util::TagsCompletionModel;
@@ -313,6 +315,50 @@ void Core::HandleHistory (QWebView *view)
 			!url.isEmpty () && url != "about:blank")
 		HistoryModel_->AddItem (view->title (),
 				url, QDateTime::currentDateTime ());
+}
+
+void Core::importXbel ()
+{
+	QString suggestion = XmlSettingsManager::Instance ()->
+			Property ("LastXBELOpen", QDir::homePath ()).toString ();
+	QString filename = QFileDialog::getOpenFileName (0,
+			tr ("Select XBEL file"),
+			suggestion,
+			tr ("XBEL files (*.xbel);;"
+				"All files (*.*)"));
+
+	if (filename.isEmpty ())
+		return;
+
+	XmlSettingsManager::Instance ()->setProperty ("LastXBELOpen",
+			QFileInfo (filename).absolutePath ());
+
+	QFile file (filename);
+	if (!file.open (QIODevice::ReadOnly))
+	{
+		QMessageBox::critical (0,
+				tr ("Error"),
+				tr ("Could not open file %1 for reading.")
+					.arg (filename));
+		return;
+	}
+
+	QByteArray data = file.readAll ();
+
+	try
+	{
+		XbelParser p (data);
+	}
+	catch (const std::exception& e)
+	{
+		QMessageBox::critical (0,
+				tr ("Error"),
+				e.what ());
+	}
+}
+
+void Core::exportXbel ()
+{
 }
 
 void Core::handleUnclose ()

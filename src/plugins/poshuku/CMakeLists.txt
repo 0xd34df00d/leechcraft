@@ -33,6 +33,7 @@ SET (SRCS
 	cookieseditmodel.cpp
 	sourceviewer.cpp
 	htmlhighlighter.cpp
+	xbelparser.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -59,6 +60,7 @@ SET (HEADERS
 	cookieseditmodel.h
 	sourceviewer.h
 	htmlhighlighter.h
+	xbelparser.h
 	)
 SET (FORMS
 	poshuku.ui

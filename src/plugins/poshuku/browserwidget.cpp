@@ -125,6 +125,14 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	ZoomReset_->setProperty ("ActionIcon", "poshuku_zoomreset");
 	ZoomReset_->setShortcut (tr ("Ctrl+0"));
 
+	ImportXbel_ = new QAction (tr ("Import XBEL..."),
+			this);
+	ImportXbel_->setProperty ("ActionIcon", "poshuku_importxbel");
+
+	ExportXbel_ = new QAction (tr ("Export XBEL..."),
+			this);
+	ExportXbel_->setProperty ("ActionIcon", "poshuku_exportxbel");
+
 	ToolBar_->addAction (back);
 	ToolBar_->addAction (forward);
 	ToolBar_->addAction (reload);
@@ -143,6 +151,9 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	moreMenu->addAction (ScreenSave_);
 	moreMenu->addSeparator ();
 	moreMenu->addAction (ViewSources_);
+	moreMenu->addSeparator ();
+	moreMenu->addAction (ImportXbel_);
+	moreMenu->addAction (ExportXbel_);
 	moreMenu->addSeparator ();
 
 	RecentlyClosed_ = moreMenu->addMenu (tr ("Recently closed"));
@@ -211,6 +222,14 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			SIGNAL (triggered ()),
 			Ui_.WebView_,
 			SLOT (zoomReset ()));
+	connect (ImportXbel_,
+			SIGNAL (triggered ()),
+			&Core::Instance (),
+			SLOT (importXbel ()));
+	connect (ExportXbel_,
+			SIGNAL (triggered ()),
+			&Core::Instance (),
+			SLOT (exportXbel ()));
 
 	connect (Ui_.WebView_,
 			SIGNAL (titleChanged (const QString&)),

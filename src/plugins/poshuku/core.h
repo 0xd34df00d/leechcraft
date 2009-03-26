@@ -65,6 +65,9 @@ private:
 	void RestoreSession (bool);
 	void ScheduleSaveSession ();
 	void HandleHistory (QWebView*);
+public slots:
+	void importXbel ();
+	void exportXbel ();
 private slots:
 	void handleUnclose ();
 	void handleTitleChanged (const QString&);

@@ -27,6 +27,8 @@ class BrowserWidget : public QWidget
 	QAction *ZoomIn_;
 	QAction *ZoomOut_;
 	QAction *ZoomReset_;
+	QAction *ImportXbel_;
+	QAction *ExportXbel_;
 	QMenu *RecentlyClosed_;
 	QMenu *ExternalLinks_;
 public:
