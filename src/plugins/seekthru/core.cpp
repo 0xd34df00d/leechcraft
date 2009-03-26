@@ -6,6 +6,7 @@
 #include <QMetaType>
 #include <QFile>
 #include <QSettings>
+#include <QInputDialog>
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
 #include <plugininterface/proxy.h>
@@ -171,6 +172,12 @@ void Core::Remove (const QModelIndex& index)
 	WriteSettings ();
 }
 
+void Core::SetTags (const QModelIndex& index, const QStringList& tags)
+{
+	Descriptions_ [index.row ()].Tags_ = tags;
+	qDebug () << Q_FUNC_INFO << Descriptions_ [index.row ()].Tags_;
+}
+
 QStringList Core::GetCategories () const
 {
 	QStringList result;
@@ -319,6 +326,14 @@ void Core::HandleEntity (const QString& contents)
 		descr.Tags_ = tagsTag.text ().split (' ', QString::SkipEmptyParts);
 	else
 		descr.Tags_ = QStringList ("default");
+
+	QString userTags = QInputDialog::getText (0,
+			tr ("Enter categories"),
+			tr ("Please enter categories for this searcher:"),
+			QLineEdit::Normal,
+			descr.Tags_.join (" "));
+	if (!userTags.isEmpty ())
+		descr.Tags_ = userTags.split (' ', QString::SkipEmptyParts);
 
 	QDomElement longNameTag = root.firstChildElement ("LongName");
 	if (!longNameTag.isNull ())

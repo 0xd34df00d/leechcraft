@@ -17,6 +17,8 @@ void SearchersList::handleCurrentChanged (const QModelIndex& current)
 {
 	Ui_.ButtonRemove_->setEnabled (current.isValid ());
 
+	Current_ = current;
+
 	QString description = current.data (Core::RoleDescription).toString ();
 	if (description.isEmpty ())
 		Ui_.Description_->setText (tr ("No description"));
@@ -30,7 +32,7 @@ void SearchersList::handleCurrentChanged (const QModelIndex& current)
 		Ui_.LongName_->setText (longName);
 
 	QStringList tags = current.data (Core::RoleTags).toStringList ();
-	Ui_.Tags_->setText (tags.join ("; "));
+	Ui_.Tags_->setText (tags.join (" "));
 
 	QString contact = current.data (Core::RoleContact).toString ();
 	if (contact.isEmpty ())
@@ -75,5 +77,10 @@ void SearchersList::on_ButtonAdd__released ()
 void SearchersList::on_ButtonRemove__released ()
 {
 	Core::Instance ().Remove (Ui_.SearchersView_->selectionModel ()->currentIndex ());
+}
+
+void SearchersList::on_Tags__textEdited (const QString& text)
+{
+	Core::Instance ().SetTags (Current_, text.split (' ', QString::SkipEmptyParts));
 }
 

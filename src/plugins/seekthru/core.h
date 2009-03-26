@@ -54,6 +54,7 @@ public:
 	 */
 	void Add (const QString& url);
 	void Remove (const QModelIndex&);
+	void SetTags (const QModelIndex&, const QStringList&);
 	QStringList GetCategories () const;
 	IFindProxy_ptr GetProxy (const LeechCraft::Request&);
 	IWebBrowser* GetWebBrowser () const;
