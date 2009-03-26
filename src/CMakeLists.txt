@@ -226,6 +226,8 @@ SET (HEADERS
 	interfaces/ifinder.h
 	interfaces/iwebbrowser.h
 	interfaces/ientityhandler.h
+	interfaces/ipluginready.h
+	interfaces/iplugin2.h
 	interfaces/structures.h
 	)
 SET (FORMS
