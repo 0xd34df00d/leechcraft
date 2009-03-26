@@ -1,9 +1,11 @@
 #include "opmlwriter.h"
+#include <boost/function.hpp>
 #include <QByteArray>
 #include <QStringList>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QtDebug>
+#include <plugininterface/util.h>
 
 OPMLWriter::OPMLWriter ()
 {
@@ -59,6 +61,17 @@ void OPMLWriter::WriteHead (QDomElement& root,
 	}
 }
 
+QString TagGetter (const QDomElement& elem)
+{
+	return elem.attribute ("text");
+}
+
+void TagSetter (QDomElement& result, const QString& tag)
+{
+	result.setAttribute ("text", tag);
+	result.setAttribute ("isOpen", "true");
+}
+
 void OPMLWriter::WriteBody (QDomElement& root,
 		QDomDocument& doc,
 		const channels_shorts_t& channels) const
@@ -70,7 +83,10 @@ void OPMLWriter::WriteBody (QDomElement& root,
 		QStringList tags = i->Tags_;
 		tags.sort ();
 
-		QDomElement inserter = GetElementForTags (tags, body, doc);
+		QDomElement inserter = LeechCraft::Util::GetElementForTags (tags,
+				body, doc, "outline",
+				boost::function<QString (const QDomElement&)> (TagGetter),
+				boost::function<void (QDomElement&, const QString&)> (TagSetter));
 		QDomElement item = doc.createElement ("outline");
 		item.setAttribute ("title", i->Title_);
 		item.setAttribute ("xmlUrl", i->ParentURL_);
@@ -79,40 +95,5 @@ void OPMLWriter::WriteBody (QDomElement& root,
 	}
 
 	root.appendChild (body);
-}
-
-QDomElement OPMLWriter::GetElementForTags (const QStringList& tags,
-		QDomNode& node, QDomDocument& document) const
-{
-	QDomNodeList elements = node.childNodes ();
-	for (int i = 0; i < elements.size (); ++i)
-	{
-		QDomElement elem = elements.at (i).toElement ();
-		if (elem.attribute ("text") == tags.at (0) &&
-				!elem.hasAttribute ("xmlUrl"))
-		{
-			if (tags.size () > 1)
-			{
-				QStringList childTags = tags;
-				childTags.removeAt (0);
-				return GetElementForTags (childTags, elem, document);
-			}
-			else
-				return elem;
-		}
-	}
-
-	QDomElement result = document.createElement ("outline");
-	result.setAttribute ("text", tags.at (0));
-	result.setAttribute ("isOpen", "true");
-	node.appendChild (result);
-	if (tags.size () > 1)
-	{
-		QStringList childTags = tags;
-		childTags.removeAt (0);
-		return GetElementForTags (childTags, result, document);
-	}
-	else
-		return result;
 }
 

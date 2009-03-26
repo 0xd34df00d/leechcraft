@@ -27,9 +27,6 @@ private:
 	void WriteBody (QDomElement&,
 			QDomDocument&,
 			const channels_shorts_t&) const;
-	QDomElement GetElementForTags (const QStringList&,
-			QDomNode&,
-			QDomDocument&) const;
 };
 
 #endif
