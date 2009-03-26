@@ -34,6 +34,7 @@ SET (SRCS
 	sourceviewer.cpp
 	htmlhighlighter.cpp
 	xbelparser.cpp
+	xbelgenerator.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -61,6 +62,7 @@ SET (HEADERS
 	sourceviewer.h
 	htmlhighlighter.h
 	xbelparser.h
+	xbelgenerator.h
 	)
 SET (FORMS
 	poshuku.ui

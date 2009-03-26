@@ -128,6 +128,11 @@ bool FavoritesModel::AddItem (const QString& title, const QString& url,
 	return true;
 }
 
+const FavoritesModel::items_t& FavoritesModel::GetItems () const
+{
+	return Items_;
+}
+
 void FavoritesModel::removeItem (const QModelIndex& index)
 {
 	Core::Instance ().GetStorageBackend ()->RemoveFromFavorites (Items_ [index.row ()]);

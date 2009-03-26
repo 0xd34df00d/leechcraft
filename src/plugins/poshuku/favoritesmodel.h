@@ -18,8 +18,8 @@ public:
 
 		bool operator== (const FavoritesItem&) const;
 	};
-private:
 	typedef std::vector<FavoritesItem> items_t;
+private:
 	items_t Items_;
 public:
 	enum Columns
@@ -46,6 +46,7 @@ public:
 			int = Qt::EditRole);
 
 	bool AddItem (const QString&, const QString&, const QStringList&);
+	const items_t& GetItems () const;
 public slots:
 	void removeItem (const QModelIndex&);
 	void handleItemAdded (const FavoritesModel::FavoritesItem&);

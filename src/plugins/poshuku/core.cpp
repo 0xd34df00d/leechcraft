@@ -25,6 +25,7 @@
 #include "restoresessiondialog.h"
 #include "sqlstoragebackend.h"
 #include "xbelparser.h"
+#include "xbelgenerator.h"
 
 using LeechCraft::Util::Proxy;
 using LeechCraft::Util::TagsCompletionModel;
@@ -359,6 +360,36 @@ void Core::importXbel ()
 
 void Core::exportXbel ()
 {
+	QString suggestion = XmlSettingsManager::Instance ()->
+			Property ("LastXBELSave", QDir::homePath ()).toString ();
+	QString filename = QFileDialog::getSaveFileName (0,
+			tr ("Save XBEL file"),
+			suggestion,
+			tr ("XBEL files (*.xbel);;"
+				"All files (*.*)"));
+
+	if (filename.isEmpty ())
+		return;
+
+	if (!filename.endsWith (".xbel"))
+		filename.append (".xbel");
+
+	XmlSettingsManager::Instance ()->setProperty ("LastXBELSave",
+			QFileInfo (filename).absolutePath ());
+
+	QFile file (filename);
+	if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
+	{
+		QMessageBox::critical (0,
+				tr ("Error"),
+				tr ("Could not open file %1 for writing.")
+					.arg (filename));
+		return;
+	}
+
+	QByteArray data;
+	XbelGenerator g (data);
+	file.write (data);
 }
 
 void Core::handleUnclose ()
