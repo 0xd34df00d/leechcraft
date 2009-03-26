@@ -31,6 +31,9 @@ public:
 	 * each other through pointers to QObjects representing plugin
 	 * instance objects.
 	 *
+	 * @note This function should be able to work before Init() is
+	 * called.
+	 *
 	 * @sa GetInfo
 	 * @sa GetIcon
 	 */
@@ -39,6 +42,9 @@ public:
 	 *
 	 * Information string is only used to describe the plugin to the
 	 * user.
+	 *
+	 * @note This function should be able to work before Init() is
+	 * called.
 	 *
 	 * @sa GetName
 	 * @sa GetInfo
@@ -49,6 +55,9 @@ public:
 	 * The return value is used by LeechCraft to calculate the
 	 * dependencies between plugins and link them together by passing
 	 * object pointers to SetProvider().
+	 *
+	 * @note This function should be able to work before Init() is
+	 * called.
 	 *
 	 * @return List of provided features.
 	 *
@@ -79,6 +88,9 @@ public:
 	 *   Pushes the pointer to merged but not filtered downloaders model
 	 *   into the plugin via pushDownloadersModel(MergeModel*) slot.
 	 *
+	 * @note This function should be able to work before Init() is
+	 * called.
+	 *
 	 * @return List of needed features.
 	 *
 	 * @sa Provides
@@ -99,6 +111,9 @@ public:
 	 * that plugin can use but which are not required to start it and do
 	 * some basic work.
 	 *
+	 * @note This function should be able to work before Init() is
+	 * called.
+	 *
 	 * @return List of used features.
 	 *
 	 * @sa Provides
@@ -111,6 +126,9 @@ public:
 	 * This function is called by LeechCraft after dependency
 	 * calculations to inform plugin about other plugins which provide
 	 * the required features.
+	 *
+	 * @note This function should be able to work before Init() is
+	 * called.
 	 *
 	 * @param[in] object Pointer to plugin instance of feature provider.
 	 * @param[in] feature The feature which this object provides.
@@ -135,6 +153,9 @@ public:
 	/** @brief Returns the plugin icon.
 	 *
 	 * The icon is used only in GUI stuff.
+	 *
+	 * @note This function should be able to work before Init() is
+	 * called.
 	 *
 	 * @return Icon object.
 	 *
