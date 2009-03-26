@@ -6,6 +6,7 @@
 #include <QMetaType>
 #include <QFile>
 #include <QSettings>
+#include <QTextCodec>
 #include <QInputDialog>
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
@@ -247,7 +248,8 @@ void Core::handleJobFinished (int id)
 		return;
 	}
 
-	HandleEntity (file.readAll ());
+	HandleEntity (QTextCodec::codecForName ("UTF-8")->
+			toUnicode (file.readAll ()));
 
 	file.close ();
 	if (!file.remove ())
