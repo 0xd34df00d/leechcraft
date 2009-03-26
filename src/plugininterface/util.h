@@ -3,6 +3,7 @@
 #include "config.h"
 #include <QString>
 #include <QDir>
+#include <QtXml/QDomElement>
 
 class QTranslator;
 
@@ -71,6 +72,48 @@ namespace LeechCraft
 		 * @return The filename.
 		 */
 		LEECHCRAFT_API QString GetTemporaryName (const QString& pattern = QString ("lc_temp.XXXXXX"));
+
+		template<typename TagGetter, typename TagSetter>
+		QDomElement GetElementForTags (const QStringList& tags,
+				QDomNode& node,
+				QDomDocument& document,
+				const QString& elementName,
+				TagGetter tagGetter,
+				TagSetter tagSetter)
+		{
+			QDomNodeList elements = node.childNodes ();
+			for (int i = 0; i < elements.size (); ++i)
+			{
+				QDomElement elem = elements.at (i).toElement ();
+				if (tagGetter (elem) == tags.at (0))
+				{
+					if (tags.size () > 1)
+					{
+						QStringList childTags = tags;
+						childTags.removeAt (0);
+						return GetElementForTags (childTags, elem,
+								document, elementName,
+								tagGetter, tagSetter);
+					}
+					else
+						return elem;
+				}
+			}
+
+			QDomElement result = document.createElement (elementName);
+			tagSetter (result, tags.at (0));
+			node.appendChild (result);
+			if (tags.size () > 1)
+			{
+				QStringList childTags = tags;
+				childTags.removeAt (0);
+				return GetElementForTags (childTags, result,
+						document, elementName,
+						tagGetter, tagSetter);
+			}
+			else
+				return result;
+		}
 	};
 };
 

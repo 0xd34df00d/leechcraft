@@ -1,67 +1,68 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>CommonJobAdder</class>
- <widget class="QDialog" name="CommonJobAdder" >
-  <property name="geometry" >
+ <widget class="QDialog" name="CommonJobAdder">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>454</width>
-    <height>151</height>
+    <width>599</width>
+    <height>131</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Common job adder</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="mainresources.qrc" >
+  <property name="windowIcon">
+   <iconset resource="mainresources.qrc">
     <normaloff>:/resources/images/mainapp.png</normaloff>:/resources/images/mainapp.png</iconset>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QFormLayout" name="formLayout" >
-     <item row="0" column="0" >
-      <widget class="QLabel" name="label" >
-       <property name="text" >
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
         <string>What:</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="1" >
-      <layout class="QHBoxLayout" name="horizontalLayout" >
+     <item row="0" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QLineEdit" name="What_" />
+        <widget class="QLineEdit" name="What_"/>
        </item>
        <item>
-        <widget class="QPushButton" name="Browse_" >
-         <property name="text" >
+        <widget class="QPushButton" name="Browse_">
+         <property name="text">
           <string>Browse...</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="Paste_" >
-         <property name="text" >
-          <string>Paste from clipboard</string>
+        <widget class="QPushButton" name="Paste_">
+         <property name="text">
+          <string>Paste</string>
          </property>
         </widget>
        </item>
       </layout>
      </item>
-     <item row="1" column="0" >
-      <widget class="QLabel" name="label_2" >
-       <property name="text" >
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
         <string>Where:</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1" >
-      <layout class="QHBoxLayout" name="horizontalLayout_2" >
+     <item row="1" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QLineEdit" name="Where_" />
+        <widget class="QLineEdit" name="Where_"/>
        </item>
        <item>
-        <widget class="QPushButton" name="BrowseWhere_" >
-         <property name="text" >
+        <widget class="QPushButton" name="BrowseWhere_">
+         <property name="text">
           <string>Browse...</string>
          </property>
         </widget>
@@ -71,11 +72,11 @@
     </layout>
    </item>
    <item>
-    <spacer name="verticalSpacer" >
-     <property name="orientation" >
+    <spacer name="verticalSpacer">
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" stdset="0" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
        <height>40</height>
@@ -84,11 +85,11 @@
     </spacer>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="orientation" >
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="standardButtons" >
+     <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
@@ -96,7 +97,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="mainresources.qrc" />
+  <include location="mainresources.qrc"/>
  </resources>
  <connections>
   <connection>
@@ -105,11 +106,11 @@
    <receiver>CommonJobAdder</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>248</x>
      <y>254</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>157</x>
      <y>274</y>
     </hint>
@@ -121,11 +122,11 @@
    <receiver>CommonJobAdder</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>316</x>
      <y>260</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
     </hint>
