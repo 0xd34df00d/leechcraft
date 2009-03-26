@@ -180,6 +180,16 @@ QWidget* Poshuku::GetTabContents ()
 	return this;
 }
 
+QByteArray Poshuku::GetExpectedPluginClass () const
+{
+	return Core::Instance ().GetExpectedPluginClass ();
+}
+
+void Poshuku::AddPlugin (QObject *plugin)
+{
+	Core::Instance ().AddPlugin (plugin);
+}
+
 boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> Poshuku::GetSettingsDialog () const
 {
 	return XmlSettingsDialog_;

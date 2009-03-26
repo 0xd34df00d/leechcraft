@@ -35,6 +35,8 @@ SET (SRCS
 	htmlhighlighter.cpp
 	xbelparser.cpp
 	xbelgenerator.cpp
+	pluginmanager.cpp
+	interfaces/pluginbase.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -63,6 +65,8 @@ SET (HEADERS
 	htmlhighlighter.h
 	xbelparser.h
 	xbelgenerator.h
+	pluginmanager.h
+	interfaces/pluginbase.h
 	)
 SET (FORMS
 	poshuku.ui

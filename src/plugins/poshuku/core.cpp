@@ -1,6 +1,7 @@
 #include "core.h"
 #include <algorithm>
 #include <memory>
+#include <typeinfo>
 #include <QString>
 #include <QUrl>
 #include <QWidget>
@@ -26,6 +27,7 @@
 #include "sqlstoragebackend.h"
 #include "xbelparser.h"
 #include "xbelgenerator.h"
+#include "interfaces/pluginbase.h"
 
 using LeechCraft::Util::Proxy;
 using LeechCraft::Util::TagsCompletionModel;
@@ -56,6 +58,8 @@ Core::Core ()
 			SIGNAL (added (const HistoryItem&)),
 			URLCompletionModel_.get (),
 			SLOT (handleItemAdded (const HistoryItem&)));
+
+	PluginManager_.reset (new PluginManager (this));
 
 	FavoritesModel_.reset (new FavoritesModel (this));
 	connect (StorageBackend_.get (),
@@ -105,6 +109,16 @@ void Core::Release ()
 void Core::SetProvider (QObject *object, const QString& feature)
 {
 	Providers_ [feature] = object;
+}
+
+QByteArray Core::GetExpectedPluginClass () const
+{
+	return QByteArray (typeid (LeechCraft::Poshuku::PluginBase).name ());
+}
+
+void Core::AddPlugin (QObject *plugin)
+{
+	PluginManager_->AddPlugin (plugin);
 }
 
 QUrl Core::MakeURL (QString url) const
@@ -221,6 +235,11 @@ void Core::SetNetworkAccessManager (QNetworkAccessManager *manager)
 StorageBackend* Core::GetStorageBackend () const
 {
 	return StorageBackend_.get ();
+}
+
+PluginManager* Core::GetPluginManager () const
+{
+	return PluginManager_.get ();
 }
 
 void Core::Unregister (BrowserWidget *widget)

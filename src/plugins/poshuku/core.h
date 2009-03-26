@@ -11,6 +11,7 @@
 #include "historymodel.h"
 #include "storagebackend.h"
 #include "urlcompletionmodel.h"
+#include "pluginmanager.h"
 
 class QString;
 class QWidget;
@@ -34,6 +35,7 @@ class Core : public QObject
 	std::auto_ptr<LeechCraft::Util::TagsCompletionModel> FavoriteTagsCompletionModel_;
 	std::auto_ptr<StorageBackend> StorageBackend_;
 	std::auto_ptr<URLCompletionModel> URLCompletionModel_;
+	std::auto_ptr<PluginManager> PluginManager_;
 	QNetworkAccessManager *NetworkAccessManager_;
 
 	QMap<QString, QObject*> Providers_;
@@ -49,10 +51,14 @@ public:
 	static Core& Instance ();
 	void Release ();
 	void SetProvider (QObject*, const QString&);
+	QByteArray GetExpectedPluginClass () const;
+	void AddPlugin (QObject*);
 
 	QUrl MakeURL (QString) const;
 	BrowserWidget* NewURL (const QString&, bool = false);
 	CustomWebView* MakeWebView (bool = false);
+	void Unregister (BrowserWidget*);
+
 	FavoritesModel* GetFavoritesModel () const;
 	HistoryModel* GetHistoryModel () const;
 	URLCompletionModel* GetURLCompletionModel () const;
@@ -60,7 +66,7 @@ public:
 	QNetworkAccessManager* GetNetworkAccessManager () const;
 	void SetNetworkAccessManager (QNetworkAccessManager*);
 	StorageBackend* GetStorageBackend () const;
-	void Unregister (BrowserWidget*);
+	PluginManager* GetPluginManager () const;
 private:
 	void RestoreSession (bool);
 	void ScheduleSaveSession ();

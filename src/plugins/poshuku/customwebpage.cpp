@@ -9,6 +9,7 @@
 #include "xmlsettingsmanager.h"
 #include "customwebview.h"
 #include "core.h"
+#include "pluginmanager.h"
 
 CustomWebPage::CustomWebPage (QObject *parent)
 : QWebPage (parent)
@@ -43,7 +44,10 @@ void CustomWebPage::SetModifiers (Qt::KeyboardModifiers modifiers)
 
 void CustomWebPage::gotUnsupportedContent (QNetworkReply *reply)
 {
-	qDebug () << Q_FUNC_INFO << reply->error ();
+	if (Core::Instance ().GetPluginManager ()->
+			OnGotUnsupportedContent (this, reply))
+		return;
+
 	switch (reply->error ())
 	{
 		case QNetworkReply::ProtocolUnknownError:
@@ -115,6 +119,10 @@ void CustomWebPage::gotUnsupportedContent (QNetworkReply *reply)
 
 void CustomWebPage::handleDownloadRequested (const QNetworkRequest& request)
 {
+	if (Core::Instance ().GetPluginManager ()->
+			OnHandleDownloadRequested (this, request))
+		return;
+
 	LeechCraft::DownloadEntity e =
 	{
 		request.url ().toString ().toUtf8 (),
@@ -128,6 +136,10 @@ void CustomWebPage::handleDownloadRequested (const QNetworkRequest& request)
 bool CustomWebPage::acceptNavigationRequest (QWebFrame *frame,
 		const QNetworkRequest& request, QWebPage::NavigationType type)
 {
+	if (Core::Instance ().GetPluginManager ()->
+			OnAcceptNavigationRequest (this, frame, request, type))
+		return false;
+
 	if ((type == QWebPage::NavigationTypeLinkClicked ||
 				type == QWebPage::NavigationTypeOther) &&
 			(MouseButtons_ == Qt::MidButton ||
@@ -161,7 +173,15 @@ bool CustomWebPage::acceptNavigationRequest (QWebFrame *frame,
 
 QString CustomWebPage::userAgentForUrl (const QUrl& url) const
 {
-	return QString ("LeechCraft::Poshuku/") + QWebPage::userAgentForUrl (url);
+	try
+	{
+		return Core::Instance ().GetPluginManager ()->
+			OnUserAgentForUrl (this, url);
+	}
+	catch (...)
+	{
+		return QString ("LeechCraft::Poshuku/") + QWebPage::userAgentForUrl (url);
+	}
 }
 
 QWebFrame* CustomWebPage::FindFrame (const QUrl& url)

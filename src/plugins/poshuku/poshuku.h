@@ -8,6 +8,7 @@
 #include <interfaces/iembedtab.h>
 #include <interfaces/imultitabs.h>
 #include <interfaces/iwebbrowser.h>
+#include <interfaces/ipluginready.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iwantnetworkaccessmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -21,12 +22,13 @@ class Poshuku : public QWidget
 			  , public IInfo
 			  , public IEmbedTab
 			  , public IMultiTabs
+			  , public IPluginReady
 			  , public IHaveSettings
 			  , public IWantNetworkAccessManager
 			  , public IWebBrowser
 {
     Q_OBJECT
-    Q_INTERFACES (IInfo IEmbedTab IMultiTabs IHaveSettings IWantNetworkAccessManager IWebBrowser)
+    Q_INTERFACES (IInfo IEmbedTab IMultiTabs IHaveSettings IPluginReady IWantNetworkAccessManager IWebBrowser)
 
 	Ui::Poshuku Ui_;
 
@@ -47,6 +49,9 @@ public:
 	QIcon GetIcon () const;
 
 	QWidget* GetTabContents ();
+
+	QByteArray GetExpectedPluginClass () const;
+	void AddPlugin (QObject*);
 
 	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 
