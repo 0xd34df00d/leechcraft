@@ -37,6 +37,7 @@ namespace LeechCraft
         QString Name (const Size_t& pos) const;
         QString Info (const Size_t& pos) const;
         QObjectList GetAllPlugins () const;
+
         template<typename T> QList<T> GetAllCastableTo () const
         {
             QList<T> result;
@@ -49,6 +50,7 @@ namespace LeechCraft
             }
             return result;
         }
+
         template<typename T> QObjectList GetAllCastableRoots () const
         {
             QObjectList result;
@@ -60,8 +62,19 @@ namespace LeechCraft
             }
             return result;
         }
+
+		/** Tries to load all the plugins and filters out those who fail
+		 * various sanity checks.
+		 */
         void CheckPlugins ();
+
+		/** Calculates the deps.
+		 */
         void CalculateDependencies ();
+
+		/** Preinitializes the plugins, pushes second-level plugins to
+		 * first-level ones and calls IInfo::Init() on each one.
+		 */
 		void InitializePlugins ();
 		QObject* GetProvider (const QString&) const;
 		QObjectList GetSelectedDownloaderWatchers () const;

@@ -19,6 +19,9 @@ public:
 	 * The passed network manager object should be still owned by the
 	 * LeechCraft, plugin shouldn't take the ownership.
 	 *
+	 * @note This function should be able to work before Init() is
+	 * called.
+	 *
 	 * @param nam[in] The QNetworkAccessManager object that's shared
 	 * among the plugins.
 	 */

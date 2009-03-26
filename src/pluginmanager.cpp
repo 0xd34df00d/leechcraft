@@ -10,6 +10,8 @@
 #include <plugininterface/proxy.h>
 #include <plugininterface/historymodel.h>
 #include <interfaces/iinfo.h>
+#include <interfaces/iplugin2.h>
+#include <interfaces/ipluginready.h>
 #include <interfaces/iwantnetworkaccessmanager.h>
 #include "core.h"
 #include "pluginmanager.h"
@@ -202,6 +204,18 @@ void LeechCraft::PluginManager::InitializePlugins ()
 			qobject_cast<IWantNetworkAccessManager*> (pluginEntity);
 		if (iwnam)
 			iwnam->SetNetworkAccessManager (Core::Instance ().GetNetworkAccessManager ());
+
+		IPluginReady *ipr = qobject_cast<IPluginReady*> (pluginEntity);
+		if (ipr)
+		{
+			QByteArray expected = ipr->GetExpectedPluginClass ();
+			Q_FOREACH (QObject* second, GetAllCastableRoots<IPlugin2*> ())
+			{
+				IPlugin2 *ip2 = qobject_cast<IPlugin2*> (second);
+				if (ip2->GetPluginClass () == expected)
+					ipr->AddPlugin (second);
+			}
+		}
 
         info->Init ();
 	}
