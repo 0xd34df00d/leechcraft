@@ -1485,7 +1485,7 @@ QString Core::GetStringForState (libtorrent::torrent_status::state_t state) cons
         case libtorrent::torrent_status::allocating:
             return tr ("Allocating");
 		case libtorrent::torrent_status::checking_resume_data:
-			return tr ("Checking metadata");
+			return tr ("Checking resume data");
     }
     return "Uninitialized?!";
 }

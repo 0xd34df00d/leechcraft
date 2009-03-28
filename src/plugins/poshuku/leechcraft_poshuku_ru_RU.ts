@@ -33,132 +33,168 @@
 <context>
     <name>BrowserWidget</name>
     <message>
-        <location filename="browserwidget.cpp" line="64"/>
+        <location filename="browserwidget.cpp" line="68"/>
         <source>Add to favorites...</source>
         <translation>Добавить в избранное...</translation>
     </message>
     <message>
-        <location filename="browserwidget.ui" line="13"/>
+        <location filename="browserwidget.ui" line="14"/>
         <source>Browser widget</source>
         <translation>Браузер</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="70"/>
+        <location filename="browserwidget.cpp" line="74"/>
         <source>Find...</source>
         <translation>Найти...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="76"/>
+        <location filename="browserwidget.cpp" line="80"/>
         <source>Print...</source>
         <translation>Печать...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="82"/>
+        <location filename="browserwidget.cpp" line="86"/>
         <source>Print with preview...</source>
         <translation>Печать с предпросмотром...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="284"/>
+        <location filename="browserwidget.cpp" line="164"/>
+        <source>External links</source>
+        <translation>Внешние ссылки</translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="358"/>
         <source>Print web page</source>
         <translation>Печать веб-страницы</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="377"/>
+        <location filename="browserwidget.cpp" line="451"/>
         <source>Save screenshot</source>
         <translation>Сохранить скриншот</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="400"/>
+        <location filename="browserwidget.cpp" line="465"/>
+        <location filename="browserwidget.cpp" line="474"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="393"/>
+        <location filename="browserwidget.cpp" line="466"/>
         <source>Could not open %1 for write</source>
         <translation>Невозможно открыть %1 на запись</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="402"/>
+        <location filename="browserwidget.cpp" line="475"/>
         <source>Could not write screenshot to %1</source>
         <translation>Невозможно записать скриншот в %1</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="31"/>
+        <location filename="browserwidget.cpp" line="35"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="33"/>
+        <location filename="browserwidget.cpp" line="37"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="35"/>
+        <location filename="browserwidget.cpp" line="39"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="61"/>
+        <location filename="browserwidget.cpp" line="65"/>
         <source>More...</source>
         <translation>Больше...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="67"/>
+        <location filename="browserwidget.cpp" line="71"/>
         <source>Ctrl+D</source>
         <translation>Ctrl+D</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="72"/>
+        <location filename="browserwidget.cpp" line="76"/>
         <source>Ctrl+F</source>
         <translation>Ctrl+F</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="79"/>
+        <location filename="browserwidget.cpp" line="83"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="85"/>
+        <location filename="browserwidget.cpp" line="89"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="88"/>
+        <location filename="browserwidget.cpp" line="92"/>
         <source>Take page&apos;s screenshot...</source>
         <translation>Сделать скриншот страницы...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="94"/>
+        <location filename="browserwidget.cpp" line="98"/>
         <source>View sources...</source>
         <translation>Посмотреть исходники...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="99"/>
+        <location filename="browserwidget.cpp" line="103"/>
         <source>Create new tab</source>
         <translation>Создать вкладку</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="102"/>
+        <location filename="browserwidget.cpp" line="106"/>
         <source>Ctrl+T</source>
         <translation>Ctrl+T</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="104"/>
+        <location filename="browserwidget.cpp" line="108"/>
         <source>Close this tab</source>
         <translation>Закрыть эту вкладку</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="107"/>
+        <location filename="browserwidget.cpp" line="111"/>
         <source>Ctrl+W</source>
         <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="122"/>
+        <location filename="browserwidget.cpp" line="113"/>
+        <source>Zoom in</source>
+        <translation>Увеличить</translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="118"/>
+        <source>Zoom out</source>
+        <translation>Уменьшить</translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="123"/>
+        <source>Reset zoom</source>
+        <translation>Изначальный масштаб</translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="126"/>
+        <source>Ctrl+0</source>
+        <translation>Ctrl+0</translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="128"/>
+        <source>Import XBEL...</source>
+        <translation>Импортировать XBEL...</translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="132"/>
+        <source>Export XBEL...</source>
+        <translation>Экспортировать в XBEL...</translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="159"/>
         <source>Recently closed</source>
         <translation>Недавно закрытые</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="124"/>
+        <location filename="browserwidget.cpp" line="161"/>
         <source>Ctrl+Shift+T</source>
         <translation>Ctrl+Shift+T</translation>
     </message>
@@ -212,7 +248,7 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="74"/>
+        <location filename="core.cpp" line="81"/>
         <source>untagged</source>
         <translation>без метки</translation>
     </message>
@@ -221,11 +257,44 @@
         <source></source>
         <translation></translation>
     </message>
+    <message>
+        <location filename="core.cpp" line="363"/>
+        <source>Select XBEL file</source>
+        <translation>Выбор файла XBEL</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="365"/>
+        <location filename="core.cpp" line="405"/>
+        <source>XBEL files (*.xbel);;All files (*.*)</source>
+        <translation>Файлы XBEL (*.xbel);;Все файлы (*.*)</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="378"/>
+        <location filename="core.cpp" line="393"/>
+        <location filename="core.cpp" line="421"/>
+        <source>Error</source>
+        <translation>Ошибка</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="379"/>
+        <source>Could not open file %1 for reading.</source>
+        <translation>Не могу открыть файл %1 для чтения.</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="403"/>
+        <source>Save XBEL file</source>
+        <translation>Сохранение файла XBEL</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="422"/>
+        <source>Could not open file %1 for writing.</source>
+        <translation>Не могу открыть файл %1 на запись.</translation>
+    </message>
 </context>
 <context>
     <name>CustomWebPage</name>
     <message>
-        <location filename="customwebpage.cpp" line="94"/>
+        <location filename="customwebpage.cpp" line="98"/>
         <source>Error loading %1</source>
         <translation>Ошибка загрузки %1</translation>
     </message>
@@ -233,20 +302,71 @@
 <context>
     <name>CustomWebView</name>
     <message>
-        <location filename="customwebview.cpp" line="70"/>
+        <location filename="customwebview.cpp" line="80"/>
+        <location filename="customwebview.cpp" line="88"/>
         <source>Loading...</source>
         <translation>Загружается...</translation>
+    </message>
+    <message>
+        <location filename="customwebview.cpp" line="143"/>
+        <source>Open &amp;here</source>
+        <translation>Открыть &amp;здесь</translation>
+    </message>
+    <message>
+        <location filename="customwebview.cpp" line="145"/>
+        <source>Open in new &amp;tab</source>
+        <translation>Открыть в новой &amp;вкладке</translation>
+    </message>
+    <message>
+        <location filename="customwebview.cpp" line="148"/>
+        <source>&amp;Save link...</source>
+        <translation>&amp;Cохранить ссылку...</translation>
+    </message>
+    <message>
+        <location filename="customwebview.cpp" line="154"/>
+        <source>&amp;Bookmark link...</source>
+        <translation>Добавить ссылку в &amp;избранное...</translation>
+    </message>
+    <message>
+        <location filename="customwebview.cpp" line="160"/>
+        <source>&amp;Copy link</source>
+        <translation>&amp;Копировать ссылку</translation>
+    </message>
+    <message>
+        <location filename="customwebview.cpp" line="168"/>
+        <source>Open image here</source>
+        <translation>Открыть изображение здесь</translation>
+    </message>
+    <message>
+        <location filename="customwebview.cpp" line="170"/>
+        <source>Open image in new tab</source>
+        <translation>Открыть изображение в новой вкладке</translation>
+    </message>
+    <message>
+        <location filename="customwebview.cpp" line="173"/>
+        <source>Save image...</source>
+        <translation>Сохранить изображение...</translation>
+    </message>
+    <message>
+        <location filename="customwebview.cpp" line="175"/>
+        <source>Copy image</source>
+        <translation>Копировать изображение</translation>
+    </message>
+    <message>
+        <location filename="customwebview.cpp" line="177"/>
+        <source>Copy image location</source>
+        <translation>Копировать ссылку на изображение</translation>
     </message>
 </context>
 <context>
     <name>FavoritesModel</name>
     <message>
-        <location filename="favoritesmodel.cpp" line="20"/>
+        <location filename="favoritesmodel.cpp" line="19"/>
         <source>Title</source>
         <translation>Название</translation>
     </message>
     <message>
-        <location filename="favoritesmodel.cpp" line="21"/>
+        <location filename="favoritesmodel.cpp" line="20"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
@@ -256,7 +376,7 @@
         <translation>Метки</translation>
     </message>
     <message>
-        <location filename="favoritesmodel.cpp" line="125"/>
+        <location filename="favoritesmodel.cpp" line="124"/>
         <source>Failed to add&lt;br /&gt;%1&lt;br /&gt;to Favorites, seems like such title is already used.</source>
         <translation>Не удалось добавить&lt;br /&gt;%1&lt;br /&gt;в Избранное, название может уже присутствовать.</translation>
     </message>
@@ -264,6 +384,7 @@
 <context>
     <name>FindDialog</name>
     <message>
+        <location filename="finddialog.ui" line="13"/>
         <location filename="finddialog.ui" line="67"/>
         <source>Find</source>
         <translation>Поиск</translation>
@@ -297,12 +418,12 @@
 <context>
     <name>HistoryModel</name>
     <message>
-        <location filename="historymodel.cpp" line="12"/>
+        <location filename="historymodel.cpp" line="11"/>
         <source>Title</source>
         <translation>Название</translation>
     </message>
     <message>
-        <location filename="historymodel.cpp" line="13"/>
+        <location filename="historymodel.cpp" line="12"/>
         <source>Date</source>
         <translation>Дата</translation>
     </message>
@@ -320,12 +441,12 @@
         <translation>Poshuku</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="131"/>
+        <location filename="poshuku.cpp" line="150"/>
         <source>Simple yet functional web browser</source>
         <translation>Простой, но в то же время функциональный веб-браузер</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="410"/>
+        <location filename="poshuku.cpp" line="463"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
@@ -340,16 +461,19 @@
         <translation>История</translation>
     </message>
     <message>
+        <location filename="poshuku.ui" line="54"/>
         <location filename="poshuku.ui" line="114"/>
         <source>Fixed string</source>
         <translation>Фиксированная строка</translation>
     </message>
     <message>
+        <location filename="poshuku.ui" line="59"/>
         <location filename="poshuku.ui" line="119"/>
         <source>Wildcard</source>
         <translation>Маска</translation>
     </message>
     <message>
+        <location filename="poshuku.ui" line="64"/>
         <location filename="poshuku.ui" line="124"/>
         <source>Regexp</source>
         <translation>Регулярное выражение</translation>
@@ -360,6 +484,7 @@
         <translation>Метки</translation>
     </message>
     <message>
+        <location filename="poshuku.ui" line="72"/>
         <location filename="poshuku.ui" line="137"/>
         <source>Case sensitive</source>
         <translation>Учитывать регистр</translation>
@@ -370,14 +495,28 @@
         <translation>Закладки</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="37"/>
+        <location filename="poshuku.cpp" line="42"/>
+        <location filename="poshuku.cpp" line="54"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
+</context>
+<context>
+    <name>QObject</name>
     <message>
-        <location filename="poshuku.cpp" line="39"/>
-        <source>Could not create icon database at %1</source>
-        <translation>Невозможно создать базу иконок в %1</translation>
+        <location filename="xbelparser.cpp" line="14"/>
+        <source>XML parse error&lt;blockquote&gt;%1&lt;/blockquote&gt;at %2:%3.</source>
+        <translation>Ошибка парсинга XML&lt;blockquote&gt;%1&lt;/blockquote&gt; в %2:%3.</translation>
+    </message>
+    <message>
+        <location filename="xbelparser.cpp" line="22"/>
+        <source>Not an XBEL entity.</source>
+        <translation>Не XBEL.</translation>
+    </message>
+    <message>
+        <location filename="xbelparser.cpp" line="25"/>
+        <source>This XBEL is not 1.0.</source>
+        <translation>XBEL не версии 1.0.</translation>
     </message>
 </context>
 <context>
@@ -452,7 +591,7 @@
         <translation>Быстрый набор</translation>
     </message>
     <message>
-        <location filename="speeddialprovider.cpp" line="111"/>
+        <location filename="speeddialprovider.cpp" line="110"/>
         <source>&lt;strong&gt;Regenerating&lt;/strong&gt; for %1...</source>
         <translation>&lt;strong&gt;Возобновляется&lt;/strong&gt; %1...</translation>
     </message>

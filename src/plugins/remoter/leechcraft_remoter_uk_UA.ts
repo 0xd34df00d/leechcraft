@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1">
+<!DOCTYPE TS>
+<TS version="2.0">
 <context>
     <name>MainWindow</name>
     <message>
@@ -36,7 +37,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="interface.cpp" line="28"/>
+        <location filename="interface.cpp" line="26"/>
         <source>LeechCraft::Remoter isn&apos;t initialized yet, sorry. Please try again in a couple of seconds.</source>
         <translation type="unfinished"></translation>
     </message>

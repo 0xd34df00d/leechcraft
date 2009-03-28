@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="ru_RU">
+<!DOCTYPE TS>
+<TS version="2.0" language="ru_RU">
 <defaultcodec></defaultcodec>
 <context>
     <name>Core</name>
@@ -117,7 +118,7 @@
         <translation>Выберите медиа-файл</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="206"/>
+        <location filename="lmp.cpp" line="202"/>
         <source>Video (*.avi *.mkv *.ogg *.mpeg *.mpg *.divx *.mov *.swf);;Uncompressed lossless audio (*.aiff *.au *.cdda *.raw *.wav);;Compressed lossless audio (*.flac *.wv *.m4a *.tta *.ape *.la *.pac);;Lossy audio (*.mp3 *.ogg *.wma *.aac *.mpc *.ra *.rm *.ots *.swa);;All files (*.*)</source>
         <translation>Видео (*.avi *.mkv *.ogg *.mpeg *.mpg *.divx *.mov *.swf);;Несжатое аудио без потерь (*.aiff *.au *.cdda *.raw *.wav);;Сжатое аудио без потерь (*.flac *.wv *.m4a *.tta *.ape *.la *.pac);;Аудио с потерями (*.mp3 *.ogg *.wma *.aac *.mpc *.ra *.rm *.ots *.swa);;Все файлы (*.*)</translation>
     </message>

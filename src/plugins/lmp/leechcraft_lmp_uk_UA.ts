@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1">
+<!DOCTYPE TS>
+<TS version="2.0">
 <context>
     <name>Core</name>
     <message>
@@ -116,7 +117,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="206"/>
+        <location filename="lmp.cpp" line="202"/>
         <source>Video (*.avi *.mkv *.ogg *.mpeg *.mpg *.divx *.mov *.swf);;Uncompressed lossless audio (*.aiff *.au *.cdda *.raw *.wav);;Compressed lossless audio (*.flac *.wv *.m4a *.tta *.ape *.la *.pac);;Lossy audio (*.mp3 *.ogg *.wma *.aac *.mpc *.ra *.rm *.ots *.swa);;All files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>

@@ -5,22 +5,22 @@
 <context>
     <name>AddTask</name>
     <message>
-        <location filename="addtask.cpp" line="84"/>
+        <location filename="addtask.cpp" line="83"/>
         <source>Directory %1 doesn&apos;t exist, would you like to select another?</source>
         <translation>Директория %1 не существует, хотите выбрать другую?</translation>
     </message>
     <message>
-        <location filename="addtask.cpp" line="87"/>
+        <location filename="addtask.cpp" line="86"/>
         <source>Directory %1 isn&apos;t readable, would you like to select another?</source>
         <translation>Директория %1 недоступна для чтения, хотите выбрать другую?</translation>
     </message>
     <message>
-        <location filename="addtask.cpp" line="90"/>
+        <location filename="addtask.cpp" line="89"/>
         <source>Directory %1 isn&apos;t writable, would you like to select another?</source>
         <translation>Директория %1 недоступна для записи, хотите выбрать другую?</translation>
     </message>
     <message>
-        <location filename="addtask.cpp" line="93"/>
+        <location filename="addtask.cpp" line="92"/>
         <source>%1 isn&apos;t a directory at all, would you like to select another?</source>
         <translation>%1 не является директорией, хотите выбрать другую?</translation>
     </message>
@@ -68,42 +68,42 @@
 <context>
     <name>CSTP</name>
     <message>
-        <location filename="cstp.cpp" line="242"/>
+        <location filename="cstp.cpp" line="234"/>
         <source>Start</source>
         <translation>Старт</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="248"/>
+        <location filename="cstp.cpp" line="240"/>
         <source>Stop</source>
         <translation>Стоп</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="234"/>
+        <location filename="cstp.cpp" line="226"/>
         <source>Remove all</source>
         <translation>Удалить все</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="254"/>
+        <location filename="cstp.cpp" line="246"/>
         <source>Start all</source>
         <translation>Стартовать все</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="260"/>
+        <location filename="cstp.cpp" line="252"/>
         <source>Stop all</source>
         <translation>Остановить все</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="272"/>
+        <location filename="cstp.cpp" line="264"/>
         <source>File exists</source>
         <translation>Файл существует</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="272"/>
+        <location filename="cstp.cpp" line="264"/>
         <source>File %1 already exists, continue download?</source>
         <translation>Файл %1 уже существует, продолжить закачку?</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="228"/>
+        <location filename="cstp.cpp" line="220"/>
         <source>Remove</source>
         <translation>Удалить</translation>
     </message>
@@ -111,52 +111,52 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="28"/>
+        <location filename="core.cpp" line="29"/>
         <source>State</source>
         <translation>Состояние</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="27"/>
+        <location filename="core.cpp" line="28"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="29"/>
+        <location filename="core.cpp" line="30"/>
         <source>Progress</source>
         <translation>Прогресс</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="30"/>
+        <location filename="core.cpp" line="31"/>
         <source>Speed</source>
         <translation>Скорость</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="31"/>
+        <location filename="core.cpp" line="32"/>
         <source>ETA</source>
         <translation>ОВП</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="31"/>
+        <location filename="core.cpp" line="33"/>
         <source>DTA</source>
         <translation>ВП</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="90"/>
+        <location filename="core.cpp" line="96"/>
         <source>Could not truncate file </source>
         <translation>Невозможно сократить файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="297"/>
+        <location filename="core.cpp" line="305"/>
         <source>Could not open file </source>
         <translation>Невозможно открыть файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="213"/>
+        <location filename="core.cpp" line="220"/>
         <source>/s</source>
         <translation>/c</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="204"/>
+        <location filename="core.cpp" line="211"/>
         <source>%1% (%2 of %3)</source>
         <translation>%1% (%2 из %3)</translation>
     </message>
