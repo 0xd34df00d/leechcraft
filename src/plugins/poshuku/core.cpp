@@ -190,6 +190,24 @@ BrowserWidget* Core::NewURL (const QString& url, bool raise)
 	return widget;
 }
 
+IWebWidget* Core::GetWidget ()
+{
+	BrowserWidget *widget = new BrowserWidget ();
+	connect (widget,
+			SIGNAL (addToFavorites (const QString&, const QString&)),
+			this,
+			SLOT (handleAddToFavorites (const QString&, const QString&)));
+	connect (widget,
+			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+			this,
+			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+	connect (widget,
+			SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)),
+			this,
+			SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)));
+	return widget;
+}
+
 CustomWebView* Core::MakeWebView (bool invert)
 {
 	bool raise = true;

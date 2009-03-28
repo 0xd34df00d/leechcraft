@@ -207,7 +207,7 @@ void Poshuku::Open (const QString& link)
 
 IWebWidget* Poshuku::GetWidget () const
 {
-	return new BrowserWidget ();
+	return Core::Instance ().GetWidget ();
 }
 
 void Poshuku::SetupActions ()

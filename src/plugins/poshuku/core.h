@@ -22,6 +22,7 @@ class BrowserWidget;
 class QAbstractItemModel;
 class QNetworkReply;
 class QNetworkAccessManager;
+class IWebWidget;
 
 class Core : public QObject
 {
@@ -56,6 +57,7 @@ public:
 
 	QUrl MakeURL (QString) const;
 	BrowserWidget* NewURL (const QString&, bool = false);
+	IWebWidget* GetWidget ();
 	CustomWebView* MakeWebView (bool = false);
 	void Unregister (BrowserWidget*);
 
