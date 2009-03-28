@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="ru_RU">
+<!DOCTYPE TS>
+<TS version="2.0" language="ru_RU">
 <defaultcodec></defaultcodec>
 <context>
     <name>AddMultipleTorrents</name>
@@ -169,7 +170,7 @@
     <message>
         <location filename="addtorrent.ui" line="201"/>
         <source>untagged</source>
-        <translation>без метки</translation>
+        <translation>неотмеченное</translation>
     </message>
     <message>
         <location filename="addtorrent.ui" line="227"/>
@@ -322,7 +323,7 @@
     <message>
         <location filename="core.cpp" line="1803"/>
         <source>untagged</source>
-        <translation>без метки</translation>
+        <translation>неотмеченное</translation>
     </message>
     <message>
         <location filename="core.cpp" line="496"/>
