@@ -22,7 +22,7 @@
     <message>
         <location filename="addfeed.ui" line="46"/>
         <source>untagged</source>
-        <translation>немеотмеченное</translation>
+        <translation>неотмеченное</translation>
     </message>
     <message>
         <location filename="addfeed.ui" line="13"/>
