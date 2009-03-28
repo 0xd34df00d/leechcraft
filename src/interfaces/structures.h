@@ -57,6 +57,8 @@ namespace LeechCraft
 		 * that should be downloaded or handled. For example, contents
 		 * of a torrent file, a magnet link, an RSS document.
 		 *
+		 * Local files should start with file://
+		 *
 		 * In the context of announcing about a finished entity, it
 		 * could contain previously mentioned entities as well.
 		 */
