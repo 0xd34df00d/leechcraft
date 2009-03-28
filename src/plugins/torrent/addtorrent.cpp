@@ -46,10 +46,16 @@ void AddTorrent::SetFilename (const QString& filename)
 
     Reinit ();
 
-    XmlSettingsManager::Instance ()->setProperty ("LastTorrentDirectory", QFileInfo (filename).absolutePath ());
+    XmlSettingsManager::Instance ()->
+		setProperty ("LastTorrentDirectory", QFileInfo (filename).absolutePath ());
     TorrentFile_->setText (filename);
 
     ParseBrowsed ();
+}
+
+void AddTorrent::SetSavePath (const QString& path)
+{
+	Destination_->setText (path);
 }
 
 QString AddTorrent::GetFilename () const

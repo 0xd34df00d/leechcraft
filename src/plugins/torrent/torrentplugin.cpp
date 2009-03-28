@@ -168,6 +168,8 @@ int TorrentPlugin::AddJob (LeechCraft::DownloadEntity e)
 
     AddTorrentDialog_->Reinit ();
     AddTorrentDialog_->SetFilename (suggestedFname);
+	if (!e.Location_.isEmpty ())
+		AddTorrentDialog_->SetSavePath (e.Location_);
 
 	QString path;
 	QStringList tags;

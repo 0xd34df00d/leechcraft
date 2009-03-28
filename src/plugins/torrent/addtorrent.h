@@ -23,6 +23,7 @@ public:
     AddTorrent (QWidget *parent = 0);
     void Reinit ();
     void SetFilename (const QString&);
+	void SetSavePath (const QString&);
     QString GetFilename () const;
     QString GetSavePath () const;
     QVector<bool> GetSelectedFiles () const;
