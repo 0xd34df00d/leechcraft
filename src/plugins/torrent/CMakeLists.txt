@@ -77,8 +77,12 @@ SET (COMPILED_TRANSLATIONS
 	)
 
 IF (UNIX)
-	FIND_PACKAGE (PkgConfig)
-	pkg_check_modules (RB_LT REQUIRED libtorrent-rasterbar)
+	FIND_PROGRAM (LPKGC_CMD pkg-config)
+	EXECUTE_PROCESS (COMMAND "${LPKGC_CMD}" libtorrent-rasterbar --cflags
+		OUTPUT_VARIABLE RB_LT_CFLAGS
+		OUTPUT_STRIP_TRAILING_WHITESPACE
+		)
+	MESSAGE (STATUS "Fetched from libtorrent-rasterbar.pc: ${RB_LT_CFLAGS}")
 	ADD_DEFINITIONS (${RB_LT_CFLAGS})
 ENDIF (UNIX)
 
