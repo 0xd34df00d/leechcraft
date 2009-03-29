@@ -13,7 +13,7 @@ set -x
 CHLOG=changelog.new
 echo "leechcraft (`git describe`) unstable; urgency=low" > $CHLOG
 echo >> $CHLOG
-git log --pretty=format:'  %s' | sed -r "s/\. \+/\.\n  \+/" | sed -r "s/\. \*/\.\n  \*/" | sed -r "s/\> \*/\n  \*/" | sed -r "s/\. \-/\.\n  \-/" | sed -r "s/(.{1,72})(.+)/\1/" | grep "[:alphanum:]\+" >> $CHLOG
+git log --pretty=format:'  %s' $1..$2 | sed -r "s/\. \+/\.\n  \+/" | sed -r "s/\. \*/\.\n  \*/" | sed -r "s/\> \*/\n  \*/" | sed -r "s/\. \-/\.\n  \-/" | sed -r "s/(.{1,72})(.+)/\1/" | grep "[:alphanum:]\+" >> $CHLOG
 echo >> $CHLOG
 echo -n " -- Rudoy Georg <0xd34df00d@gmail.com>  " >> $CHLOG
 date -R >> $CHLOG
