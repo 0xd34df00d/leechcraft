@@ -5,7 +5,6 @@
 #include <QChildEvent>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "plugininterface/proxy.h"
-#include "plugininterface/graphwidget.h"
 #include "mainwindow.h"
 #include "view.h"
 #include "core.h"
@@ -19,6 +18,7 @@
 #include "logtoolbox.h"
 #include "settingssink.h"
 #include "iconchooser.h"
+#include "graphwidget.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
