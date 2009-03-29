@@ -11,7 +11,6 @@ SET (SRCS
 	treeitem.cpp
 	tagslineedit.cpp
 	tagsfiltermodel.cpp
-	graphwidget.cpp
 	util.cpp
 	categoryselector.cpp
 	historymodel.cpp
@@ -26,7 +25,6 @@ SET (HEADERS
 	treeitem.h
 	tagslineedit.h
 	tagsfiltermodel.h
-	graphwidget.h
 	util.h
 	categoryselector.h
 	historymodel.h

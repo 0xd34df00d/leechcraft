@@ -47,10 +47,10 @@ void GraphWidget::paintEvent (QPaintEvent*)
 
     if (max && DownSpeeds_.size ())
 	{
-		painter.setPen (DownColor_);
-		PaintSingle (max, DownSpeeds_, &painter);
 		painter.setPen (UpColor_);
 		PaintSingle (max, UpSpeeds_, &painter);
+		painter.setPen (DownColor_);
+		PaintSingle (max, DownSpeeds_, &painter);
 	}
 }
 

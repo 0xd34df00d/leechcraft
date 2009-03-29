@@ -2,7 +2,6 @@
 #define GRAPHWIDGET_H
 #include <QWidget>
 #include <QList>
-#include "config.h"
 
 namespace LeechCraft
 {
@@ -17,10 +16,10 @@ namespace LeechCraft
 			QColor DownColor_;
 			QColor UpColor_;
 		public:
-			LEECHCRAFT_API GraphWidget (const QColor&, const QColor&,
+			GraphWidget (const QColor&, const QColor&,
 					QWidget *parent = 0);
 
-			LEECHCRAFT_API void PushSpeed (quint64, quint64);
+			void PushSpeed (quint64, quint64);
 		protected:
 			virtual void paintEvent (QPaintEvent*);
 		private:
