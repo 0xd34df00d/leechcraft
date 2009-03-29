@@ -38,6 +38,8 @@ ItemsWidget::ItemsWidget (QWidget *parent)
 	Impl_->Ui_.setupUi (this);
 	Impl_->Ui_.ItemView_->Construct (Core::Instance ().GetWebBrowser ());
 
+	Impl_->Ui_.Items_->setAcceptDrops (false);
+
 	Impl_->Ui_.Items_->sortByColumn (1, Qt::DescendingOrder);
 	Impl_->ItemsFilterModel_.reset (new ItemsFilterModel (this));
 	Impl_->ItemsFilterModel_->setSourceModel (&Core::Instance ());
