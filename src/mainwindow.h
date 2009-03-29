@@ -38,8 +38,7 @@ namespace LeechCraft
 		QLabel *DownloadSpeed_;
 		QLabel *UploadSpeed_;
 		QLabel *Clock_;
-		Util::GraphWidget *DSpeedGraph_;
-		Util::GraphWidget *USpeedGraph_;
+		Util::GraphWidget *SpeedGraph_;
 		LeechCraft::Util::XmlSettingsDialog *XmlSettingsDialog_;
 		SettingsSink *SettingsSink_;
 		PluginManagerDialog *PluginManagerDialog_;

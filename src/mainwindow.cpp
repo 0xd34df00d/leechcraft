@@ -235,15 +235,12 @@ void LeechCraft::MainWindow::SetStatusBar ()
 	Clock_->setText (current);
 	Clock_->setAlignment (Qt::AlignRight);
 
-	DSpeedGraph_ = new GraphWidget (Qt::green);
-	DSpeedGraph_->setMinimumWidth (250);
-	USpeedGraph_ = new GraphWidget (Qt::yellow);
-	USpeedGraph_->setMinimumWidth (250);
+	SpeedGraph_ = new GraphWidget (Qt::green, Qt::red);
+	SpeedGraph_->setMinimumWidth (250);
 
 	statusBar ()->addPermanentWidget (DownloadSpeed_);
-	statusBar ()->addPermanentWidget (DSpeedGraph_);
 	statusBar ()->addPermanentWidget (UploadSpeed_);
-	statusBar ()->addPermanentWidget (USpeedGraph_);
+	statusBar ()->addPermanentWidget (SpeedGraph_);
 	statusBar ()->addPermanentWidget (Clock_);
 	if (!isFullScreen ())
 		Clock_->hide ();
@@ -427,8 +424,7 @@ void LeechCraft::MainWindow::updateSpeedIndicators ()
 	QString up = Proxy::Instance ()->MakePrettySize (speeds.second) + tr ("/s");
 	DownloadSpeed_->setText (down);
 	UploadSpeed_->setText (up);
-	DSpeedGraph_->PushSpeed (speeds.first);
-	USpeedGraph_->PushSpeed (speeds.second);
+	SpeedGraph_->PushSpeed (speeds.first, speeds.second);
 
 	TrayIcon_->setToolTip (tr ("%1 down, %2 up")
 			.arg (down)
