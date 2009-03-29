@@ -614,7 +614,7 @@ int Core::AddMagnet (const QString& magnet,
 	{
 		libtorrent::add_torrent_params atp;
 		atp.auto_managed = true;
-		atp.storage_mode = libtorrent::storage_mode_allocate;
+		atp.storage_mode = libtorrent::storage_mode_sparse;
 		atp.paused = (params & LeechCraft::NoAutostart);
 		atp.save_path = boost::filesystem::path (std::string (path.toUtf8 ().constData ()));
 		atp.duplicate_is_error = true;
@@ -675,7 +675,7 @@ int Core::AddFile (const QString& filename,
 		libtorrent::add_torrent_params atp;
 		atp.ti = new libtorrent::torrent_info (GetTorrentInfo (filename));
 		atp.auto_managed = true;
-		atp.storage_mode = libtorrent::storage_mode_allocate;
+		atp.storage_mode = libtorrent::storage_mode_sparse;
 		atp.paused = (params & LeechCraft::NoAutostart);
 		atp.save_path = boost::filesystem::path (std::string (path.toUtf8 ().constData ()));
 		atp.duplicate_is_error = true;
@@ -1598,7 +1598,7 @@ libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data,
     {
 		libtorrent::add_torrent_params atp;
 		atp.ti = new libtorrent::torrent_info (e);
-		atp.storage_mode = libtorrent::storage_mode_allocate;
+		atp.storage_mode = libtorrent::storage_mode_sparse;
 		atp.save_path = path;
 		atp.auto_managed = automanaged;
 		atp.paused = pause;
