@@ -3,6 +3,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QVariant>
+#include <QtDebug>
 #include <plugininterface/dblock.h>
 
 using namespace LeechCraft;
@@ -68,9 +69,14 @@ void SQLStorageBackend::GetAuth (const QString& realm,
 {
 	AuthGetter_.bindValue (":realm", realm);
 
-	if (!AuthGetter_.exec () || !AuthGetter_.next ())
+	if (!AuthGetter_.exec ())
 	{
 		LeechCraft::Util::DBLock::DumpError (AuthGetter_);
+		return;
+	}
+	if (!AuthGetter_.next ())
+	{
+		AuthGetter_.finish ();
 		return;
 	}
 
@@ -92,7 +98,7 @@ void SQLStorageBackend::SetAuth (const QString& realm,
 
 	AuthGetter_.finish ();
 
-	if (!AuthGetter_.size ())
+	if (AuthGetter_.size () <= 0)
 	{
 		AuthInserter_.bindValue (":realm", realm);
 		AuthInserter_.bindValue (":login", login);
