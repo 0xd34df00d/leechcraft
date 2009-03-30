@@ -50,7 +50,7 @@ void SQLStorageBackend::Prepare ()
 			"FROM history "
 			"WHERE ( title LIKE :titlebase ) "
 			"OR ( url LIKE :urlbase ) "
-			"GROUP BY title, url "
+			"GROUP BY url "
 			"ORDER BY rating DESC "
 			"LIMIT 100");
 
