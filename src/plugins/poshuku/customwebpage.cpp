@@ -63,7 +63,8 @@ void CustomWebPage::gotUnsupportedContent (QNetworkReply *reply)
 					reply->url ().toString ().toUtf8 (),
 					QString (),
 					QString (),
-					LeechCraft::FromUserInitiated
+					LeechCraft::FromUserInitiated,
+					QVariant ()
 				};
 				emit gotEntity (e);
 			}
@@ -73,16 +74,17 @@ void CustomWebPage::gotUnsupportedContent (QNetworkReply *reply)
 				QWebFrame *found = FindFrame (reply->url ());
 				if (!found)
 				{
-					if (XmlSettingsManager::Instance ()->property ("ParanoidDownloadsDetection").toBool () ||
+					if (XmlSettingsManager::Instance ()->
+							property ("ParanoidDownloadsDetection").toBool () ||
 							reply->header (QNetworkRequest::ContentTypeHeader).isValid ())
 					{
-						reply->abort ();
 						LeechCraft::DownloadEntity e =
 						{
 							reply->url ().toString ().toUtf8 (),
 							QString (),
 							QString (),
-							LeechCraft::FromUserInitiated
+							LeechCraft::FromUserInitiated,
+							QVariant::fromValue<QNetworkReply*> (reply)
 						};
 						emit gotEntity (e);
 						break;
@@ -128,7 +130,8 @@ void CustomWebPage::handleDownloadRequested (const QNetworkRequest& request)
 		request.url ().toString ().toUtf8 (),
 		QString (),
 		QString (),
-		LeechCraft::FromUserInitiated
+		LeechCraft::FromUserInitiated,
+		QVariant ()
 	};
 	emit gotEntity (e);
 }
