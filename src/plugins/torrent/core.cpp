@@ -380,8 +380,20 @@ QVariant Core::data (const QModelIndex& index, int role) const
 				case ColumnName:
 					return QString::fromUtf8 (h.name ().c_str ());
 				case ColumnState:
-					return status.paused ?
-						tr ("Idle") : GetStringForState (status.state);
+					{
+						QString result = status.paused ?
+							tr ("Idle") : GetStringForState (status.state);
+						if (status.state == libtorrent::torrent_status::downloading)
+						{
+							QDateTime remaining;
+							remaining.addSecs (static_cast<double> (status.total_wanted - status.total_wanted_done) /
+									status.total_payload_download);
+							result = QString ("%1 (ETA: %2)")
+								.arg (result)
+								.arg (remaining.toString ());
+						}
+						return result;
+					}
 				case ColumnProgress:
 					return QString (tr ("%1% (%2 of %3 at %4)")
 							.arg (status.progress * 100, 0, 'f', 2)
