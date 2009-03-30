@@ -24,25 +24,52 @@ Task::Task (const QString& str)
 	StartTime_.start ();
 }
 
+Task::Task (QNetworkReply *reply)
+: Reply_ (reply)
+, Done_ (-1)
+, Total_ (0)
+, FileSizeAtStart_ (-1)
+, Speed_ (0)
+, Counter_ (0)
+{
+}
+
 void Task::Start (const boost::intrusive_ptr<MorphFile>& tof)
 {
 	FileSizeAtStart_ = tof->size ();
 	To_ = tof;
 
-	QString ua = XmlSettingsManager::Instance ()
-		.property ("UserUserAgent").toString ();
-	if (ua.isEmpty ())
-		ua = XmlSettingsManager::Instance ()
-			.property ("PredefinedUserAgent").toString ();
+	if (!Reply_.get ())
+	{
+		QString ua = XmlSettingsManager::Instance ()
+			.property ("UserUserAgent").toString ();
+		if (ua.isEmpty ())
+			ua = XmlSettingsManager::Instance ()
+				.property ("PredefinedUserAgent").toString ();
 
-	QNetworkRequest req (URL_);
-	req.setRawHeader ("Range", QString ("bytes=%1-").arg (tof->size ()).toLatin1 ());
-	req.setRawHeader ("User-Agent", ua.toLatin1 ());
-	req.setRawHeader ("Referer", QString (QString ("http://") + URL_.host ()).toLatin1 ());
+		QNetworkRequest req (URL_);
+		req.setRawHeader ("Range", QString ("bytes=%1-").arg (tof->size ()).toLatin1 ());
+		req.setRawHeader ("User-Agent", ua.toLatin1 ());
+		req.setRawHeader ("Referer", QString (QString ("http://") + URL_.host ()).toLatin1 ());
 
-	StartTime_.restart ();
-	QNetworkAccessManager *nam = Core::Instance ().GetNetworkAccessManager ();
-	Reply_.reset (nam->get (req));
+		StartTime_.restart ();
+		QNetworkAccessManager *nam = Core::Instance ().GetNetworkAccessManager ();
+		Reply_.reset (nam->get (req));
+	}
+	else
+	{
+		if (Reply_->size () == Reply_->bytesAvailable ())
+		{
+			handleFinished ();
+			return;
+		}
+		else if (!Reply_->isOpen ())
+		{
+			handleError ();
+			return;
+		}
+	}
+
 	Reply_->setParent (0);
 	connect (Reply_.get (),
 			SIGNAL (downloadProgress (qint64, qint64)),

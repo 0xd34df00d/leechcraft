@@ -6,6 +6,7 @@
 #include <QDir>
 #include <QTimer>
 #include <QMetaType>
+#include <QTextCodec>
 #include <QtDebug>
 #include <plugininterface/proxy.h>
 #include "task.h"
@@ -13,6 +14,7 @@
 #include "xmlsettingsmanager.h"
 #include "representationmodel.h"
 #include "morphfile.h"
+#include "addtask.h"
 
 using LeechCraft::Util::Proxy;
 
@@ -68,6 +70,78 @@ void Core::SetToolbar (QWidget *widget)
 	Toolbar_ = widget;
 }
 
+int Core::AddTask (LeechCraft::DownloadEntity& e)
+{
+	QDataStream str (e.Entity_);
+	QVariant var;
+	str >> var;
+
+	QNetworkReply *rep = dynamic_cast<QNetworkReply*> (var.value<QObject*> ());
+	if (rep)
+	{
+		QFileInfo fi (e.Location_);
+		QString dir = fi.dir ().path (),
+				file = fi.fileName ();
+
+		return AddTask (rep,
+				dir, file, QString (), e.Parameters_);
+	}
+	else
+	{
+		if (e.Parameters_ & LeechCraft::FromUserInitiated &&
+				e.Location_.isEmpty ())
+		{
+			::AddTask at (e.Entity_, e.Location_);
+			if (at.exec () == QDialog::Rejected)
+				return -1;
+
+			AddTask::Task task = at.GetTask ();
+
+			return Core::Instance ().AddTask (task.URL_,
+					task.LocalPath_,
+					task.Filename_,
+					task.Comment_,
+					e.Parameters_);
+		}
+		else
+		{
+			QFileInfo fi (e.Location_);
+			QString dir = fi.dir ().path (),
+					file = fi.fileName ();
+
+			if (!(e.Parameters_ & LeechCraft::Internal))
+			{
+				if (fi.isDir ())
+				{
+					dir = e.Location_;
+					file = QFileInfo (QUrl (QTextCodec::codecForName ("UTF-8")->
+								toUnicode (e.Entity_)).path ()).fileName ();
+					if (file.isEmpty ())
+						file = "index";
+				}
+				else if (fi.isFile ());
+				else
+					return -1;
+			}
+
+			return Core::Instance ().AddTask (e.Entity_,
+					dir, file, QString (), e.Parameters_);
+		}
+	}
+}
+
+int Core::AddTask (QNetworkReply *rep,
+		const QString& path,
+		const QString& filename,
+		const QString& comment,
+		LeechCraft::TaskParameters tp)
+{
+	TaskDescr td;
+	td.Task_.reset (new Task (rep));
+
+	return AddTask (td, path, filename, comment, tp);
+}
+
 int Core::AddTask (const QString& url,
 		const QString& path,
 		const QString& filename,
@@ -76,6 +150,16 @@ int Core::AddTask (const QString& url,
 {
 	TaskDescr td;
 	td.Task_.reset (new Task (url));
+
+	return AddTask (td, path, filename, comment, tp);
+}
+
+int Core::AddTask (TaskDescr& td,
+		const QString& path,
+		const QString& filename,
+		const QString& comment,
+		LeechCraft::TaskParameters tp)
+{
 	QDir dir (path);
 	td.File_.reset (new MorphFile (QDir::cleanPath (dir
 					.filePath (filename))));
@@ -159,11 +243,16 @@ qint64 Core::GetTotalDownloadSpeed () const
 			result, _Local::SpeedAccumulator ());
 }
 
-bool Core::CouldDownload (const QString& str, LeechCraft::TaskParameters)
+bool Core::CouldDownload (const LeechCraft::DownloadEntity& e)
 {
-	QUrl url (str);
-	return url.isValid () &&
-		(url.scheme () == "http" || url.scheme () == "https");
+	QDataStream str (e.Entity_);
+	QVariant var;
+	str >> var;
+
+	QUrl url (QTextCodec::codecForName ("UTF-8")->toUnicode (e.Entity_));
+	return (url.isValid () &&
+		(url.scheme () == "http" || url.scheme () == "https")) ||
+		dynamic_cast<QNetworkReply*> (var.value<QObject*> ());
 }
 
 QAbstractItemModel* Core::GetRepresentationModel ()

@@ -81,14 +81,12 @@ public:
 	LeechCraft::Util::HistoryModel* GetHistoryModel ();
 	void SetToolbar (QWidget*);
 
-	int AddTask (const QString&, const QString&,
-			const QString&, const QString&,
-			LeechCraft::TaskParameters = LeechCraft::NoParameters);
+	int AddTask (LeechCraft::DownloadEntity&);
 	qint64 GetDone (int) const;
 	qint64 GetTotal (int) const;
 	bool IsRunning (int) const;
 	qint64 GetTotalDownloadSpeed () const;
-	bool CouldDownload (const QString&, LeechCraft::TaskParameters);
+	bool CouldDownload (const LeechCraft::DownloadEntity&);
 	QAbstractItemModel* GetRepresentationModel ();
 	void SetNetworkAccessManager (QNetworkAccessManager*);
 	QNetworkAccessManager* GetNetworkAccessManager () const;
@@ -113,6 +111,15 @@ private slots:
 	void updateInterface ();
 	void writeSettings ();
 private:
+	int AddTask (const QString&, const QString&,
+			const QString&, const QString&,
+			LeechCraft::TaskParameters = LeechCraft::NoParameters);
+	int AddTask (QNetworkReply*, const QString&,
+			const QString&, const QString&,
+			LeechCraft::TaskParameters = LeechCraft::NoParameters);
+	int AddTask (TaskDescr&, const QString&,
+			const QString&, const QString&,
+			LeechCraft::TaskParameters = LeechCraft::NoParameters);
 	void ReadSettings ();
 	void ScheduleSave ();
 	tasks_t::const_iterator FindTask (QObject*) const;

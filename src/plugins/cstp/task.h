@@ -29,6 +29,7 @@ class Task : public QObject
 	int Counter_;
 public:
 	explicit Task (const QString& = QString ());
+	explicit Task (QNetworkReply*);
 	void Start (const boost::intrusive_ptr<MorphFile>&);
 	void Stop ();
 

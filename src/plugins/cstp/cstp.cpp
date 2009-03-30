@@ -11,12 +11,11 @@
 #include <QModelIndex>
 #include <QDir>
 #include <QUrl>
-#include <QTranslator>
 #include <QTextCodec>
+#include <QTranslator>
 #include <plugininterface/util.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
-#include "addtask.h"
 #include "mainviewdelegate.h"
 
 CSTP::~CSTP ()
@@ -124,52 +123,12 @@ void CSTP::StopAll ()
 
 bool CSTP::CouldDownload (const LeechCraft::DownloadEntity& e) const
 {
-	return Core::Instance ()
-		.CouldDownload (QTextCodec::codecForName ("UTF-8")->
-				toUnicode (e.Entity_), e.Parameters_);
+	return Core::Instance ().CouldDownload (e);
 }
 
 int CSTP::AddJob (LeechCraft::DownloadEntity e)
 {
-	if (e.Parameters_ & LeechCraft::FromUserInitiated &&
-			e.Location_.isEmpty ())
-	{
-		AddTask at (e.Entity_, e.Location_);
-		if (at.exec () == QDialog::Rejected)
-			return -1;
-
-		AddTask::Task task = at.GetTask ();
-
-		return Core::Instance ().AddTask (task.URL_,
-				task.LocalPath_,
-				task.Filename_,
-				task.Comment_,
-				e.Parameters_);
-	}
-	else
-	{
-		QFileInfo fi (e.Location_);
-		QString dir = fi.dir ().path (),
-				file = fi.fileName ();
-
-		if (!(e.Parameters_ & LeechCraft::Internal))
-		{
-			if (fi.isDir ())
-			{
-				dir = e.Location_;
-				file = QFileInfo (QUrl (QTextCodec::codecForName ("UTF-8")->
-							toUnicode (e.Entity_)).path ()).fileName ();
-				if (file.isEmpty ())
-					file = "index";
-			}
-			else if (fi.isFile ());
-			else
-				return -1;
-		}
-
-		return Core::Instance ().AddTask (e.Entity_,
-				dir, file, QString (), e.Parameters_);
-	}
+	return Core::Instance ().AddTask (e);
 }
 
 QAbstractItemModel* CSTP::GetRepresentation () const
