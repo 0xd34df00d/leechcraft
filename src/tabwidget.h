@@ -16,6 +16,7 @@ namespace LeechCraft
 		void SetTooltip (int, QWidget*);
 	protected:
 		virtual bool event (QEvent*);
+		virtual void tabRemoved (int);
 	private slots:
 		void checkTabMoveAllowed (int, int);
 	};

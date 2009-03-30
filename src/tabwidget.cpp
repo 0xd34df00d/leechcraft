@@ -23,6 +23,11 @@ TabWidget::TabWidget (QWidget *parent)
 			SLOT (checkTabMoveAllowed (int, int)));
 }
 
+void TabWidget::SetTooltip (int index, QWidget *widget)
+{
+	Widgets_ [index] = widget;
+}
+
 bool TabWidget::event (QEvent *e)
 {
 	if (e->type () == QEvent::ToolTip)
@@ -41,9 +46,17 @@ bool TabWidget::event (QEvent *e)
 		return QTabWidget::event (e);
 }
 
-void TabWidget::SetTooltip (int index, QWidget *widget)
+void TabWidget::tabRemoved (int index)
 {
-	Widgets_ [index] = widget;
+	Widgets_.remove (index);
+	QList<int> keys = Widgets_.keys ();
+	for (QList<int>::const_iterator i = keys.begin (),
+			end = keys.end (); i != end; ++i)
+		if (*i > index)
+		{
+			Widgets_ [*i - 1] = Widgets_ [*i];
+			Widgets_.remove (*i);
+		}
 }
 
 void TabWidget::checkTabMoveAllowed (int from, int to)
@@ -53,6 +66,8 @@ void TabWidget::checkTabMoveAllowed (int from, int to)
 		AsResult_ = true;
 		tabBar ()->moveTab (to, from);
 	}
+	else
+		std::swap (Widgets_ [from], Widgets_ [to]);
 	AsResult_ = false;
 }
 
