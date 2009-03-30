@@ -1,8 +1,10 @@
 #ifndef STRUCTURES_H
 #define STRUCTURES_H
 #include <QMetaType>
+#include <QVariant>
 
 class QMenu;
+class QNetworkReply;
 
 namespace LeechCraft
 {
@@ -78,6 +80,10 @@ namespace LeechCraft
 		 */
 		QString Mime_;
 		TaskParameters Parameters_;
+		/** @brief Additional parameters.
+		 *
+		 */
+		QVariant Additional_;
 	};
 
 	enum CustomDataRoles
@@ -108,6 +114,7 @@ namespace LeechCraft
 };
 
 Q_DECLARE_METATYPE (LeechCraft::DownloadEntity);
+Q_DECLARE_METATYPE (QNetworkReply*);
 Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::TaskParameters);
 
 #endif

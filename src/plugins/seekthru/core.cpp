@@ -148,7 +148,8 @@ void Core::Add (const QString& url)
 		LeechCraft::Internal |
 			LeechCraft::DoNotSaveInHistory |
 			LeechCraft::DoNotNotifyUser |
-			LeechCraft::NotPersistent
+			LeechCraft::NotPersistent,
+		QVariant ()
 	};
 
 	int id = -1;

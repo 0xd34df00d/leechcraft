@@ -87,6 +87,8 @@ LeechCraft::Core::Core ()
 			SLOT (handleSslErrors (QNetworkReply*,
 					const QList<QSslError>&)));
 
+	StorageBackend_->Prepare ();
+
 	QFile file (QDir::homePath () +
 			"/.leechcraft/core/cookies.txt");
 	if (file.open (QIODevice::ReadOnly))
@@ -357,7 +359,8 @@ void LeechCraft::Core::Activated (const QModelIndex& index)
 		index.data (HistoryModel::RolePath).toString ().toUtf8 (),
 		QString (),
 		index.data (RoleMime).toString (),
-		FromUserInitiated
+		FromUserInitiated,
+		QVariant ()
 	};
 	handleGotEntity (e);
 }
@@ -434,7 +437,8 @@ bool LeechCraft::Core::eventFilter (QObject *watched, QEvent *e)
 					event->mimeData ()->data (format),
 					QString (),
 					format,
-					LeechCraft::FromUserInitiated
+					LeechCraft::FromUserInitiated,
+					QVariant ()
 				};
 
 				if (CouldHandle (e))
@@ -457,7 +461,8 @@ bool LeechCraft::Core::eventFilter (QObject *watched, QEvent *e)
 					event->mimeData ()->data (format),
 					QString (),
 					format,
-					LeechCraft::FromUserInitiated
+					LeechCraft::FromUserInitiated,
+					QVariant ()
 				};
 
 				if (handleGotEntity (e))
@@ -718,7 +723,8 @@ void LeechCraft::Core::handleClipboardTimer ()
 		text.toUtf8 (),
 		QString (),
 		QString (),
-		FromUserInitiated
+		FromUserInitiated,
+		QVariant ()
 	};
 
     if (XmlSettingsManager::Instance ()->property ("WatchClipboard").toBool ())
@@ -829,7 +835,8 @@ void LeechCraft::Core::pullCommandLine ()
 		arguments.last ().toUtf8 (),
 		QString (),
 		QString (),
-		FromUserInitiated
+		FromUserInitiated,
+		QVariant ()
 	};
 	handleGotEntity (e);
 }
@@ -859,7 +866,8 @@ void LeechCraft::Core::handleNewLocalServerConnection ()
 		arguments.last ().toUtf8 (),
 		QString (),
 		QString (),
-		FromUserInitiated
+		FromUserInitiated,
+		QVariant ()
 	};
 	handleGotEntity (e);
 }

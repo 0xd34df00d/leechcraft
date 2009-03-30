@@ -225,7 +225,8 @@ void Core::AddFeed (const QString& url, const QStringList& tags)
 			LeechCraft::DoNotNotifyUser |
 			LeechCraft::DoNotSaveInHistory |
 			LeechCraft::NotPersistent |
-			LeechCraft::DoNotAnnounceEntity
+			LeechCraft::DoNotAnnounceEntity,
+		QVariant ()
 	};
 	PendingJob pj =
 	{
@@ -988,7 +989,8 @@ void Core::fetchExternalFile (const QString& url, const QString& where)
 			LeechCraft::DoNotNotifyUser |
 			LeechCraft::DoNotSaveInHistory |
 			LeechCraft::NotPersistent |
-			LeechCraft::DoNotAnnounceEntity
+			LeechCraft::DoNotAnnounceEntity,
+		QVariant ()
 	};
 
 	PendingJob pj =
@@ -1387,7 +1389,8 @@ void Core::UpdateFeed (const QString& url)
 			LeechCraft::DoNotNotifyUser |
 			LeechCraft::DoNotSaveInHistory |
 			LeechCraft::NotPersistent |
-			LeechCraft::DoNotAnnounceEntity
+			LeechCraft::DoNotAnnounceEntity,
+		QVariant ()
 	};
 
 	PendingJob pj =

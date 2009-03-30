@@ -170,7 +170,8 @@ void SearchHandler::Start (const LeechCraft::Request& r)
 				LeechCraft::DoNotNotifyUser |
 				LeechCraft::DoNotSaveInHistory |
 				LeechCraft::NotPersistent |
-				LeechCraft::DoNotAnnounceEntity
+				LeechCraft::DoNotAnnounceEntity,
+			QVariant ()
 		};
 
 		Result job;
@@ -285,7 +286,8 @@ void SearchHandler::subscribe ()
 		Results_.at (r).RequestURL_.toString ().toUtf8 (),
 		QString (),
 		mime,
-		LeechCraft::FromUserInitiated
+		LeechCraft::FromUserInitiated,
+		QVariant ()
 	};
 	emit gotEntity (e);
 }
