@@ -26,6 +26,7 @@ Core::Core ()
 {
 	setObjectName ("CSTP Core");
 	qRegisterMetaType<boost::intrusive_ptr<MorphFile> > ("boost::intrusive_ptr<MorphFile>");
+	qRegisterMetaType<QNetworkReply*> ("QNetworkReply*");
 
 	Headers_ << tr ("URL")
 		<< tr ("State")
@@ -72,16 +73,18 @@ void Core::SetToolbar (QWidget *widget)
 
 int Core::AddTask (LeechCraft::DownloadEntity& e)
 {
-	QDataStream str (e.Entity_);
-	QVariant var;
-	str >> var;
-
-	QNetworkReply *rep = dynamic_cast<QNetworkReply*> (var.value<QObject*> ());
+	QNetworkReply *rep = e.Additional_.value<QNetworkReply*> ();
 	if (rep)
 	{
 		QFileInfo fi (e.Location_);
 		QString dir = fi.dir ().path (),
 				file = fi.fileName ();
+
+		if (fi.isDir ())
+		{
+			dir = e.Location_;
+			file = "index";
+		}
 
 		return AddTask (rep,
 				dir, file, QString (), e.Parameters_);
@@ -252,7 +255,7 @@ bool Core::CouldDownload (const LeechCraft::DownloadEntity& e)
 	QUrl url (QTextCodec::codecForName ("UTF-8")->toUnicode (e.Entity_));
 	return (url.isValid () &&
 		(url.scheme () == "http" || url.scheme () == "https")) ||
-		dynamic_cast<QNetworkReply*> (var.value<QObject*> ());
+		var.value<QNetworkReply*> ();
 }
 
 QAbstractItemModel* Core::GetRepresentationModel ()
@@ -452,7 +455,8 @@ void Core::done (bool err)
 				filename.toUtf8 (),
 				QString (),
 				QString (),
-				tp
+				tp,
+				QVariant ()
 			};
 			emit gotEntity (e);
 		}

@@ -32,6 +32,7 @@ Task::Task (QNetworkReply *reply)
 , Speed_ (0)
 , Counter_ (0)
 {
+	StartTime_.start ();
 }
 
 void Task::Start (const boost::intrusive_ptr<MorphFile>& tof)
@@ -58,15 +59,23 @@ void Task::Start (const boost::intrusive_ptr<MorphFile>& tof)
 	}
 	else
 	{
-		if (Reply_->size () == Reply_->bytesAvailable ())
+		if (Reply_->bytesAvailable () == Reply_->size ())
 		{
+			qDebug () << 1;
+			handleReadyRead ();
 			handleFinished ();
 			return;
 		}
 		else if (!Reply_->isOpen ())
 		{
+			qDebug () << 2;
 			handleError ();
 			return;
+		}
+		else
+		{
+			qDebug () << 3;
+			handleReadyRead ();
 		}
 	}
 
@@ -168,7 +177,7 @@ int Task::GetTimeFromStart () const
 
 bool Task::IsRunning () const
 {
-	return Reply_.get ();
+	return Reply_.get () && !URL_.isEmpty ();
 }
 
 QString Task::GetErrorString () const
