@@ -70,6 +70,7 @@ public slots:
 private slots:
 	void on_HistoryView__activated (const QModelIndex&);
 	void on_FavoritesView__activated (const QModelIndex&);
+	void on_OpenInTabs__released ();
 	void translateRemoveFavoritesItem (const QModelIndex&);
 	void viewerSettingsChanged ();
 	void cacheSettingsChanged ();

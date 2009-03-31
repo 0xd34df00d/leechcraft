@@ -341,6 +341,14 @@ void Poshuku::on_FavoritesView__activated (const QModelIndex& index)
 				FavoritesModel::ColumnURL).data ().toString ());
 }
 
+void Poshuku::on_OpenInTabs__released ()
+{
+	for (int i = 0, size = FavoritesFilterModel_->rowCount (); 
+			i < size; ++i)
+		Core::Instance ().NewURL (FavoritesFilterModel_->
+				index (i,FavoritesModel::ColumnURL).data ().toString ());
+}
+
 void Poshuku::translateRemoveFavoritesItem (const QModelIndex& sourceIndex)
 {
 	QModelIndex index = FavoritesFilterModel_->mapToSource (sourceIndex);

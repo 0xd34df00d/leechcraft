@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>Poshuku</class>
- <widget class="QWidget" name="Poshuku" >
-  <property name="geometry" >
+ <widget class="QWidget" name="Poshuku">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,69 +10,69 @@
     <height>519</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Poshuku</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="resources.qrc" >
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
     <normaloff>:/resources/images/poshuku.png</normaloff>:/resources/images/poshuku.png</iconset>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_6" >
+  <layout class="QVBoxLayout" name="verticalLayout_6">
    <item>
-    <widget class="QSplitter" name="splitter" >
-     <property name="orientation" >
+    <widget class="QSplitter" name="splitter">
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="" >
-      <layout class="QVBoxLayout" name="verticalLayout" >
+     <widget class="QWidget" name="layoutWidget">
+      <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <layout class="QHBoxLayout" name="ToolButtonsLayout_" />
+        <layout class="QHBoxLayout" name="ToolButtonsLayout_"/>
        </item>
        <item>
-        <widget class="QTabWidget" name="tabWidget" >
-         <property name="tabPosition" >
+        <widget class="QTabWidget" name="tabWidget">
+         <property name="tabPosition">
           <enum>QTabWidget::West</enum>
          </property>
-         <property name="currentIndex" >
-          <number>0</number>
+         <property name="currentIndex">
+          <number>1</number>
          </property>
-         <widget class="QWidget" name="HistoryTab_" >
-          <attribute name="title" >
+         <widget class="QWidget" name="HistoryTab_">
+          <attribute name="title">
            <string>History</string>
           </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_5" >
+          <layout class="QVBoxLayout" name="verticalLayout_5">
            <item>
-            <layout class="QVBoxLayout" name="verticalLayout_3" >
+            <layout class="QVBoxLayout" name="verticalLayout_3">
              <item>
-              <widget class="LeechCraft::Util::TagsLineEdit" name="HistoryFilterLine_" />
+              <widget class="LeechCraft::Util::TagsLineEdit" name="HistoryFilterLine_"/>
              </item>
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout" >
+              <layout class="QHBoxLayout" name="horizontalLayout">
                <item>
-                <widget class="QComboBox" name="HistoryFilterType_" >
+                <widget class="QComboBox" name="HistoryFilterType_">
                  <item>
-                  <property name="text" >
+                  <property name="text">
                    <string>Fixed string</string>
                   </property>
                  </item>
                  <item>
-                  <property name="text" >
+                  <property name="text">
                    <string>Wildcard</string>
                   </property>
                  </item>
                  <item>
-                  <property name="text" >
+                  <property name="text">
                    <string>Regexp</string>
                   </property>
                  </item>
                 </widget>
                </item>
                <item>
-                <widget class="QCheckBox" name="HistoryFilterCaseSensitivity_" >
-                 <property name="text" >
+                <widget class="QCheckBox" name="HistoryFilterCaseSensitivity_">
+                 <property name="text">
                   <string>Case sensitive</string>
                  </property>
-                 <property name="checked" >
+                 <property name="checked">
                   <bool>true</bool>
                  </property>
                 </widget>
@@ -81,62 +82,62 @@
             </layout>
            </item>
            <item>
-            <widget class="QTreeView" name="HistoryView_" >
-             <property name="rootIsDecorated" >
+            <widget class="QTreeView" name="HistoryView_">
+             <property name="rootIsDecorated">
               <bool>false</bool>
              </property>
-             <property name="itemsExpandable" >
+             <property name="itemsExpandable">
               <bool>false</bool>
              </property>
-             <property name="expandsOnDoubleClick" >
+             <property name="expandsOnDoubleClick">
               <bool>false</bool>
              </property>
             </widget>
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="FavoritesTab_" >
-          <attribute name="title" >
+         <widget class="QWidget" name="FavoritesTab_">
+          <attribute name="title">
            <string>Favorites</string>
           </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_4" >
+          <layout class="QVBoxLayout" name="verticalLayout_4">
            <item>
-            <layout class="QVBoxLayout" name="verticalLayout_2" >
+            <layout class="QVBoxLayout" name="verticalLayout_2">
              <item>
-              <widget class="LeechCraft::Util::TagsLineEdit" name="FavoritesFilterLine_" />
+              <widget class="LeechCraft::Util::TagsLineEdit" name="FavoritesFilterLine_"/>
              </item>
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_2" >
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
                <item>
-                <widget class="QComboBox" name="FavoritesFilterType_" >
+                <widget class="QComboBox" name="FavoritesFilterType_">
                  <item>
-                  <property name="text" >
+                  <property name="text">
                    <string>Fixed string</string>
                   </property>
                  </item>
                  <item>
-                  <property name="text" >
+                  <property name="text">
                    <string>Wildcard</string>
                   </property>
                  </item>
                  <item>
-                  <property name="text" >
+                  <property name="text">
                    <string>Regexp</string>
                   </property>
                  </item>
                  <item>
-                  <property name="text" >
+                  <property name="text">
                    <string>Tags</string>
                   </property>
                  </item>
                 </widget>
                </item>
                <item>
-                <widget class="QCheckBox" name="FavoritesFilterCaseSensitivity_" >
-                 <property name="text" >
+                <widget class="QCheckBox" name="FavoritesFilterCaseSensitivity_">
+                 <property name="text">
                   <string>Case sensitive</string>
                  </property>
-                 <property name="checked" >
+                 <property name="checked">
                   <bool>true</bool>
                  </property>
                 </widget>
@@ -146,15 +147,22 @@
             </layout>
            </item>
            <item>
-            <widget class="FavoritesTreeView" name="FavoritesView_" >
-             <property name="rootIsDecorated" >
+            <widget class="FavoritesTreeView" name="FavoritesView_">
+             <property name="rootIsDecorated">
               <bool>false</bool>
              </property>
-             <property name="itemsExpandable" >
+             <property name="itemsExpandable">
               <bool>false</bool>
              </property>
-             <property name="expandsOnDoubleClick" >
+             <property name="expandsOnDoubleClick">
               <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="OpenInTabs_">
+             <property name="text">
+              <string>Open in tabs</string>
              </property>
             </widget>
            </item>
@@ -164,12 +172,12 @@
        </item>
       </layout>
      </widget>
-     <widget class="BrowserWidget" native="1" name="MainView_" />
+     <widget class="BrowserWidget" name="MainView_" native="true"/>
     </widget>
    </item>
   </layout>
-  <action name="ActionSettings_" >
-   <property name="text" >
+  <action name="ActionSettings_">
+   <property name="text">
     <string>Settings...</string>
    </property>
   </action>
@@ -178,7 +186,7 @@
   <customwidget>
    <class>LeechCraft::Util::TagsLineEdit</class>
    <extends>QLineEdit</extends>
-   <header location="global" >plugininterface/tagslineedit.h</header>
+   <header location="global">plugininterface/tagslineedit.h</header>
   </customwidget>
   <customwidget>
    <class>BrowserWidget</class>
@@ -193,7 +201,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="resources.qrc" />
+  <include location="resources.qrc"/>
  </resources>
  <connections/>
 </ui>
