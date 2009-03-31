@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>BrowserWidget</class>
- <widget class="QWidget" name="BrowserWidget" >
-  <property name="geometry" >
+ <widget class="QWidget" name="BrowserWidget">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,21 +10,24 @@
     <height>300</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>BrowserWidget</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="margin">
+    <number>0</number>
+   </property>
    <item>
-    <layout class="QHBoxLayout" name="ToolLayout_" >
+    <layout class="QHBoxLayout" name="ToolLayout_">
      <item>
-      <widget class="QProgressBar" name="PageLoadProgressBar_" >
-       <property name="value" >
+      <widget class="QProgressBar" name="PageLoadProgressBar_">
+       <property name="value">
         <number>0</number>
        </property>
-       <property name="textVisible" >
+       <property name="textVisible">
         <bool>true</bool>
        </property>
-       <property name="format" >
+       <property name="format">
         <string>Idle</string>
        </property>
       </widget>
@@ -31,9 +35,9 @@
     </layout>
    </item>
    <item>
-    <widget class="CustomWebView" native="1" name="ItemView_" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+    <widget class="CustomWebView" name="ItemView_" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -51,7 +55,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="resources.qrc" />
+  <include location="resources.qrc"/>
  </resources>
  <connections/>
 </ui>
