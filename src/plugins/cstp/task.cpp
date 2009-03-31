@@ -273,12 +273,14 @@ void Task::handleMetaDataChanged ()
 
 void Task::handleReadyRead ()
 {
-	To_->write (Reply_->readAll ());
+	if (Reply_.get ())
+		To_->write (Reply_->readAll ());
 }
 
 void Task::handleFinished ()
 {
-	Reply_.release ()->deleteLater ();
+	if (Reply_.get ())
+		Reply_.release ()->deleteLater ();
 	emit done (false);
 }
 
