@@ -127,7 +127,8 @@ int Core::AddTask (LeechCraft::DownloadEntity& e)
 					return -1;
 			}
 
-			return Core::Instance ().AddTask (e.Entity_,
+			return Core::Instance ().AddTask (QTextCodec::codecForName ("UTF-8")->
+					toUnicode (e.Entity_),
 					dir, file, QString (), e.Parameters_);
 		}
 	}
