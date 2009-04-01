@@ -252,6 +252,11 @@ void MergeModel::RemoveModel (QAbstractItemModel *model)
 		endRemoveRows ();
 }
 
+size_t MergeModel::Size () const
+{
+	return Models_.size ();
+}
+
 int MergeModel::GetStartingRow (MergeModel::const_iterator it) const
 {
 	int result = 0;

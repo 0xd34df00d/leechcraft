@@ -89,6 +89,12 @@ namespace LeechCraft
 			 */
 			void RemoveModel (QAbstractItemModel *model);
 
+			/** Returns the number of child models in the merger.
+			 *
+			 * @return The number of child models.
+			 */
+			size_t Size () const;
+
 			/** Returns a const_iterator corresponding to the passed
 			 * model, or one-past-end if no such model is found.
 			 *
