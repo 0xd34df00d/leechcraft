@@ -151,8 +151,9 @@ void SearchHandler::Start (const LeechCraft::Request& r)
 			{
 				QString key = item.second.mid (1,
 						item.second.size () - 2);
-				if (r.Params_.contains (key))
-					item.second = r.Params_ [key];
+				// To the correct string if Params_ has this key or to
+				// empty string otherwise.
+				item.second = r.Params_ [key];
 			}
 			else
 				item.second = "";
