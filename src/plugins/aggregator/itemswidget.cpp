@@ -42,8 +42,8 @@ ItemsWidget::ItemsWidget (QWidget *parent)
 
 	Impl_->Ui_.Items_->sortByColumn (1, Qt::DescendingOrder);
 	Impl_->ItemsFilterModel_.reset (new ItemsFilterModel (this));
-	Impl_->ItemsFilterModel_->setSourceModel (&Core::Instance ());
-	connect (&Core::Instance (),
+	Impl_->ItemsFilterModel_->setSourceModel (Core::Instance ().GetItemsModel ());
+	connect (Core::Instance ().GetItemsModel (),
 			SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
 			Impl_->ItemsFilterModel_.get (),
 			SLOT (invalidate ()));
@@ -62,6 +62,12 @@ ItemsWidget::ItemsWidget (QWidget *parent)
 			SIGNAL (currentIndexChanged (int)),
 			this,
 			SLOT (updateItemsFilter ()));
+
+	connect (&Core::Instance (),
+			SIGNAL (currentChannelChanged (const QModelIndex&)),
+			this,
+			SLOT (channelChanged (const QModelIndex&)));
+
 	QHeaderView *itemsHeader = Impl_->Ui_.Items_->header ();
 	QFontMetrics fm = fontMetrics ();
 	int dateTimeSize = fm.width (QDateTime::currentDateTime ()
@@ -107,24 +113,6 @@ ItemsWidget::~ItemsWidget ()
 void ItemsWidget::SetHideRead (bool hide)
 {
 	Impl_->ItemsFilterModel_->SetHideRead (hide);
-}
-
-void ItemsWidget::ChannelChanged (const QModelIndex& mapped)
-{
-	Impl_->Ui_.Items_->scrollToTop ();
-	currentItemChanged (QItemSelection ());
-
-	QStringList allCategories = Core::Instance ().GetCategories (mapped);
-	if (allCategories.size ())
-	{
-		Impl_->ItemCategorySelector_->SetPossibleSelections (allCategories);
-		Impl_->ItemCategorySelector_->selectAll ();
-		Impl_->Ui_.ItemCategoriesButton_->setEnabled (true);
-	}
-	else
-		Impl_->Ui_.ItemCategoriesButton_->setEnabled (false);
-
-	Impl_->ItemsFilterModel_->categorySelectionChanged (allCategories);
 }
 
 void ItemsWidget::HideInfoPanel ()
@@ -233,6 +221,24 @@ void ItemsWidget::SetHtml (const Item_ptr& item)
 	Impl_->Ui_.ItemView_->SetHtml (result);
 }
 
+void ItemsWidget::channelChanged (const QModelIndex& mapped)
+{
+	Impl_->Ui_.Items_->scrollToTop ();
+	currentItemChanged (QItemSelection ());
+
+	QStringList allCategories = Core::Instance ().GetCategories (mapped);
+	if (allCategories.size ())
+	{
+		Impl_->ItemCategorySelector_->SetPossibleSelections (allCategories);
+		Impl_->ItemCategorySelector_->selectAll ();
+		Impl_->Ui_.ItemCategoriesButton_->setEnabled (true);
+	}
+	else
+		Impl_->Ui_.ItemCategoriesButton_->setEnabled (false);
+
+	Impl_->ItemsFilterModel_->categorySelectionChanged (allCategories);
+}
+
 void ItemsWidget::on_ActionMarkItemAsUnread__triggered ()
 {
     QModelIndexList indexes = Impl_->Ui_.Items_->
@@ -270,6 +276,7 @@ void ItemsWidget::on_ItemCategoriesButton__released ()
 
 void ItemsWidget::currentItemChanged (const QItemSelection& selection)
 {
+	QItemSelectionModel *ism = Impl_->Ui_.Items_->selectionModel ();
 	QModelIndexList indexes = selection.indexes ();
 
 	QModelIndex sindex;

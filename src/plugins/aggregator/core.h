@@ -23,16 +23,18 @@ class JobHolderRepresentation;
 class IWebBrowser;
 class ChannelsFilterModel;
 class QSortFilterProxyModel;
+class ItemsListModel;
 
 namespace LeechCraft
 {
 	namespace Util
 	{
 		class TagsCompletionModel;
+		class MergeModel;
 	};
 };
 
-class Core : public QAbstractItemModel
+class Core : public QObject
 {
     Q_OBJECT
 
@@ -70,10 +72,6 @@ class Core : public QAbstractItemModel
     QMap<QString, ExternalData> PendingJob2ExternalData_;
 	QList<QObject*> Downloaders_;
 
-	// First is ParentURL_ and second is Title_
-	QPair<QString, QString> CurrentChannelHash_;
-	items_shorts_t CurrentItems_;
-    QStringList ItemHeaders_;
     ChannelsModel *ChannelsModel_;
 	LeechCraft::Util::TagsCompletionModel *TagsCompletionModel_;
     QTimer *UpdateTimer_, *CustomUpdateTimer_;
@@ -81,9 +79,11 @@ class Core : public QAbstractItemModel
 	std::auto_ptr<StorageBackend> StorageBackend_;
     ItemModel *ItemModel_;
 	JobHolderRepresentation *JobHolderRepresentation_;
-	int CurrentRow_;
 	QMap<QString, QDateTime> Updates_;
 	ChannelsFilterModel *ChannelsFilterModel_;
+	ItemsListModel *CurrentItemsModel_;
+	LeechCraft::Util::MergeModel *ItemLists_;
+	bool MergeMode_;
 
     Core ();
 public:
@@ -105,6 +105,7 @@ public:
 	void Selected (const QModelIndex&);
     Item_ptr GetItem (const QModelIndex&) const;
     QSortFilterProxyModel* GetChannelsModel () const;
+	QAbstractItemModel* GetItemsModel () const;
 	LeechCraft::Util::TagsCompletionModel* GetTagsCompletionModel () const;
 	IWebBrowser* GetWebBrowser () const;
     void UpdateTags (const QStringList&);
@@ -145,21 +146,10 @@ public:
 	QWebView* CreateWindow ();
 	void GetChannels (channels_shorts_t&) const;
 	void AddFeeds (const feeds_container_t&, const QString&);
-
-    virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
-    virtual QVariant data (const QModelIndex&,
-			int = Qt::DisplayRole) const;
-    virtual Qt::ItemFlags flags (const QModelIndex&) const;
-    virtual bool hasChildren (const QModelIndex&) const;
-    virtual QVariant headerData (int, Qt::Orientation,
-			int = Qt::DisplayRole) const;
-    virtual QModelIndex index (int, int,
-			const QModelIndex& = QModelIndex()) const;
-    virtual QModelIndex parent (const QModelIndex&) const;
-    virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
+	void SetMerge (bool);
+    void CurrentChannelChanged (const QModelIndex&, bool);
 public slots:
 	void openLink (const QString&);
-    void currentChannelChanged (const QModelIndex&, bool);
     void updateFeeds ();
     void updateIntervalChanged ();
     void showIconInTrayChanged ();
@@ -190,6 +180,7 @@ signals:
     void error (const QString&) const;
     void showDownloadMessage (const QString&);
     void channelDataUpdated ();
+	void currentChannelChanged (const QModelIndex&);
     void unreadNumberChanged (int) const;
 	void delegateEntity (const LeechCraft::DownloadEntity&, int*, QObject**);
 };

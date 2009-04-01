@@ -73,6 +73,7 @@ private slots:
 	void on_ActionImportBinary__triggered ();
 	void on_ActionExportBinary__triggered ();
 	void on_MergeItems__toggled (bool);
+	void on_ShowAsTape__toggled (bool);
     void currentChannelChanged ();
     void unreadNumberChanged (int);
     void trayIconActivated ();

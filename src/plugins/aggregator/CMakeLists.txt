@@ -47,6 +47,7 @@ SET (SRCS
 	jobholderrepresentation.cpp
 	itemswidget.cpp
 	selectablebrowser.cpp
+	itemslistmodel.cpp
 	)
 SET (HEADERS
     aggregator.h
@@ -87,6 +88,7 @@ SET (HEADERS
 	jobholderrepresentation.h
 	itemswidget.h
 	selectablebrowser.h
+	itemslistmodel.h
 	)
 SET (FORMS
     mainwidget.ui

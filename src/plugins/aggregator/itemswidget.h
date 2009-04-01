@@ -18,12 +18,12 @@ public:
 	virtual ~ItemsWidget ();
 
 	void SetHideRead (bool);
-	void ChannelChanged (const QModelIndex&);
 	void HideInfoPanel ();
 private:
 	void Construct (bool);
 	void SetHtml (const Item_ptr&);
 private slots:
+	void channelChanged (const QModelIndex&);
     void on_ActionMarkItemAsUnread__triggered ();
 	void on_CaseSensitiveSearch__stateChanged (int);
 	void on_ActionAddToItemBucket__triggered ();

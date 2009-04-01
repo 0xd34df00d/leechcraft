@@ -242,9 +242,7 @@ LeechCraft::Util::HistoryModel* Aggregator::GetHistory () const
 void Aggregator::ItemSelected (const QModelIndex& index)
 {
 	Impl_->SelectedRepr_ = index;
-	Core::Instance ().currentChannelChanged (index, true);
-	Impl_->AdditionalInfo_->ChannelChanged (index);
-	Impl_->Ui_.ItemsWidget_->ChannelChanged (index);
+	Core::Instance ().CurrentChannelChanged (index, true);
 }
 
 bool Aggregator::CouldHandle (const LeechCraft::DownloadEntity& e) const
@@ -593,15 +591,17 @@ void Aggregator::on_ActionExportBinary__triggered ()
 
 void Aggregator::on_MergeItems__toggled (bool merge)
 {
-//	Core::Instance ().SetMerge (merge);
+	Core::Instance ().SetMerge (merge);
+}
+
+void Aggregator::on_ShowAsTape__toggled (bool show)
+{
 }
 
 void Aggregator::currentChannelChanged ()
 {
     QModelIndex index = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
-	Core::Instance ().currentChannelChanged (index, false);
-	Impl_->Ui_.ItemsWidget_->ChannelChanged (index);
-	Impl_->AdditionalInfo_->ChannelChanged (QModelIndex ());
+	Core::Instance ().CurrentChannelChanged (index, false);
 }
 
 void Aggregator::unreadNumberChanged (int number)

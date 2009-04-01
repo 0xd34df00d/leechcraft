@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>MainWidget</class>
- <widget class="QWidget" name="MainWidget" >
-  <property name="geometry" >
+ <widget class="QWidget" name="MainWidget">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,60 +10,77 @@
     <height>429</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>MainWidget</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="resources.qrc" >
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
     <normaloff>:/resources/images/aggregator.png</normaloff>:/resources/images/aggregator.png</iconset>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QSplitter" name="MainSplitter_" >
-     <property name="orientation" >
+    <widget class="QSplitter" name="MainSplitter_">
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="layoutWidget" >
-      <layout class="QVBoxLayout" name="verticalLayout_2" >
+     <widget class="QWidget" name="layoutWidget">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <layout class="QHBoxLayout" name="_2" >
+        <layout class="QHBoxLayout" name="_2">
          <item>
-          <widget class="QLabel" name="label" >
-           <property name="text" >
+          <widget class="QLabel" name="label">
+           <property name="text">
             <string>Tags:</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="LeechCraft::Util::TagsLineEdit" name="TagsLine_" />
+          <widget class="LeechCraft::Util::TagsLineEdit" name="TagsLine_"/>
          </item>
         </layout>
        </item>
        <item>
-        <widget class="QTreeView" name="Feeds_" >
-         <property name="minimumSize" >
+        <widget class="QTreeView" name="Feeds_">
+         <property name="minimumSize">
           <size>
            <width>250</width>
            <height>0</height>
           </size>
          </property>
-         <property name="iconSize" >
+         <property name="iconSize">
           <size>
            <width>16</width>
            <height>16</height>
           </size>
          </property>
-         <property name="rootIsDecorated" >
+         <property name="rootIsDecorated">
           <bool>false</bool>
          </property>
-         <property name="itemsExpandable" >
+         <property name="itemsExpandable">
           <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="MergeItems_">
+         <property name="text">
+          <string>Merge items</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="ShowAsTape_">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>Show as a tape</string>
          </property>
         </widget>
        </item>
       </layout>
      </widget>
-     <widget class="ItemsWidget" native="1" name="ItemsWidget_" />
+     <widget class="ItemsWidget" name="ItemsWidget_" native="true"/>
     </widget>
    </item>
   </layout>
@@ -71,7 +89,7 @@
   <customwidget>
    <class>LeechCraft::Util::TagsLineEdit</class>
    <extends>QLineEdit</extends>
-   <header location="global" >plugininterface/tagslineedit.h</header>
+   <header location="global">plugininterface/tagslineedit.h</header>
   </customwidget>
   <customwidget>
    <class>ItemsWidget</class>
@@ -81,7 +99,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="resources.qrc" />
+  <include location="resources.qrc"/>
  </resources>
  <connections/>
 </ui>

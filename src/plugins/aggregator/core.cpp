@@ -12,6 +12,7 @@
 #include <interfaces/iwebbrowser.h>
 #include <plugininterface/proxy.h>
 #include <plugininterface/tagscompletionmodel.h>
+#include <plugininterface/mergemodel.h>
 #include <plugininterface/util.h>
 #include "core.h"
 #include "regexpmatchermanager.h"
@@ -30,13 +31,18 @@
 #include "itemmodel.h"
 #include "jobholderrepresentation.h"
 #include "channelsfiltermodel.h"
+#include "itemslistmodel.h"
 
 using LeechCraft::Util::TagsCompletionModel;
 
 Core::Core ()
 : SaveScheduled_ (false)
-, CurrentRow_ (-1)
+, CurrentItemsModel_ (new ItemsListModel)
+, MergeMode_ (false)
 {
+	ItemLists_ = new LeechCraft::Util::MergeModel (QStringList (tr ("Name"))
+			<< tr ("Date"));
+	ItemLists_->AddModel (CurrentItemsModel_);
 }
 
 Core& Core::Instance ()
@@ -55,6 +61,8 @@ void Core::Release ()
 	delete ItemModel_;
 	delete ChannelsFilterModel_;
 	delete ChannelsModel_;
+	delete ItemLists_;
+	delete CurrentItemsModel_;
 }
 
 bool Core::CouldHandle (const LeechCraft::DownloadEntity& e)
@@ -144,7 +152,6 @@ void Core::DoDelayedInit ()
 	ParserFactory::Instance ().Register (&RSS091Parser::Instance ());
 	ParserFactory::Instance ().Register (&Atom03Parser::Instance ());
 	ParserFactory::Instance ().Register (&RSS10Parser::Instance ());
-	ItemHeaders_ << tr ("Name") << tr ("Date");
 
 	connect (ChannelsModel_,
 			SIGNAL (channelDataUpdated ()),
@@ -282,35 +289,36 @@ void Core::RemoveFeed (const QModelIndex& si, bool representation)
 		ChannelsModel_->RemoveChannel (shorts [i]);
 	StorageBackend_->RemoveFeed (feedURL);
 
-	if (channel.Link_ == CurrentChannelHash_.first && 
-			channel.Title_ == CurrentChannelHash_.second)
-	{
-		CurrentChannelHash_ = qMakePair (QString (), QString ());
-		reset ();
-	}
+	if (!MergeMode_ && feedURL  == CurrentItemsModel_->GetHash ().first)
+		CurrentItemsModel_->SetHash (qMakePair (QString (), QString ()));
 
 	UpdateUnreadItemsNumber ();
 }
 
 void Core::Selected (const QModelIndex& index)
 {
-	CurrentRow_ = index.row ();
-	ItemShort item = CurrentItems_ [index.row ()];
-	item.Unread_ = false;
-	StorageBackend_->UpdateItem (item,
-			CurrentChannelHash_.first, CurrentChannelHash_.second);
+	QModelIndex mapped = ItemLists_->mapToSource (index);
+	static_cast<ItemsListModel*> (*ItemLists_->
+			GetModelForRow (index.row ()))->Selected (mapped);
 }
 
 Item_ptr Core::GetItem (const QModelIndex& index) const
 {
-	ItemShort item = CurrentItems_ [index.row ()];
+	QModelIndex mapped = ItemLists_->mapToSource (index);
+	const ItemsListModel *model = static_cast<const ItemsListModel*> (mapped.model ());
+	ItemShort item = model->GetItem (mapped);
 	return StorageBackend_->GetItem (item.Title_, item.URL_,
-			CurrentChannelHash_.first + CurrentChannelHash_.second);
+			model->GetHash ().first + model->GetHash ().second);
 }
 
 QSortFilterProxyModel* Core::GetChannelsModel () const
 {
 	return ChannelsFilterModel_;
+}
+
+QAbstractItemModel* Core::GetItemsModel () const
+{
+	return ItemLists_;
 }
 
 TagsCompletionModel* Core::GetTagsCompletionModel () const
@@ -330,20 +338,23 @@ void Core::UpdateTags (const QStringList& tags)
 
 void Core::MarkItemAsUnread (const QModelIndex& i)
 {
-	ItemShort is = CurrentItems_ [i.row ()];
-	is.Unread_ = true;
-	StorageBackend_->UpdateItem (is,
-			CurrentChannelHash_.first, CurrentChannelHash_.second);
+	qDebug () << Q_FUNC_INFO;
+	QModelIndex mapped = ItemLists_->mapToSource (i);
+	static_cast<ItemsListModel*> (*ItemLists_->
+			GetModelForRow (i.row ()))->MarkItemAsUnread (mapped);
 }
 
 bool Core::IsItemRead (int item) const
 {
-	return !CurrentItems_ [item].Unread_;
+	LeechCraft::Util::MergeModel::const_iterator i = ItemLists_->
+		GetModelForRow (item);
+	int starting = ItemLists_->GetStartingRow (i);
+	return static_cast<ItemsListModel*> (*i)->IsItemRead (item - starting);
 }
 
 bool Core::IsItemCurrent (int item) const
 {
-	return CurrentRow_ == item;
+	return !MergeMode_ && CurrentItemsModel_->GetSelectedRow () == item;
 }
 
 void Core::MarkChannelAsRead (const QModelIndex& i)
@@ -413,7 +424,10 @@ QStringList Core::GetCategories (const QModelIndex& index) const
 
 QStringList Core::GetItemCategories (int index) const
 {
-	return CurrentItems_ [index].Categories_;
+	LeechCraft::Util::MergeModel::const_iterator i = ItemLists_->
+		GetModelForRow (index);
+	int starting = ItemLists_->GetStartingRow (i);
+	return static_cast<ItemsListModel*> (*i)->GetCategories (index - starting);
 }
 
 Feed::FeedSettings Core::GetFeedSettings (const QModelIndex& index) const
@@ -455,12 +469,7 @@ int Core::GetUnreadChannelsNumber () const
 
 void Core::AddToItemBucket (const QModelIndex& index) const
 {
-	if (!index.isValid () || index.row () >= rowCount ())
-		return;
-
-	ItemShort is = CurrentItems_ [index.row ()];
-	ItemModel_->AddItem (StorageBackend_->GetItem (is.Title_, is.URL_,
-				CurrentChannelHash_.first + CurrentChannelHash_.second));
+	ItemModel_->AddItem (GetItem (index));
 }
 
 void Core::AddFromOPML (const QString& filename,
@@ -686,69 +695,34 @@ void Core::AddFeeds (const feeds_container_t& feeds,
 	}
 }
 
-int Core::columnCount (const QModelIndex&) const
+void Core::SetMerge (bool merge)
 {
-	return ItemHeaders_.size ();
 }
 
-QVariant Core::data (const QModelIndex& index, int role) const
+void Core::CurrentChannelChanged (const QModelIndex& si, bool repr)
 {
-	if (!index.isValid () || index.row () >= rowCount ())
-		return QVariant ();
+	if (MergeMode_)
+		return;
 
-	if (role == Qt::DisplayRole)
+	QModelIndex index;
+	if (repr)
 	{
-		switch (index.column ())
-		{
-			case 0:
-				return CurrentItems_ [index.row ()].Title_;
-			case 1:
-				return CurrentItems_ [index.row ()].PubDate_;
-			default:
-				return QVariant ();
-		}
+		index = JobHolderRepresentation_->mapToSource (si);
+		JobHolderRepresentation_->SelectionChanged (si);
 	}
-	else if (role == Qt::ForegroundRole)
-		return CurrentItems_ [index.row ()].Unread_ ?
-		   	Qt::red : QApplication::palette ().color (QPalette::Text);
 	else
-		return QVariant ();
+		index = ChannelsFilterModel_->mapToSource (si);
+	ChannelShort ch = ChannelsModel_->GetChannelForIndex (index);
+	CurrentItemsModel_->Reset (qMakePair (ch.ParentURL_, ch.Title_));
+	emit currentChannelChanged (index);
 }
 
-Qt::ItemFlags Core::flags (const QModelIndex&) const
+void Core::scheduleSave ()
 {
-	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-}
-
-bool Core::hasChildren (const QModelIndex& index) const
-{
-	return !index.isValid ();
-}
-
-QVariant Core::headerData (int column, Qt::Orientation orient, int role) const
-{
-	if (orient == Qt::Horizontal && role == Qt::DisplayRole)
-		return ItemHeaders_.at (column);
-	else
-		return QVariant ();
-}
-
-QModelIndex Core::index (int row, int column, const QModelIndex& parent) const
-{
-	if (!hasIndex (row, column, parent))
-		return QModelIndex ();
-
-	return createIndex (row, column);
-}
-
-QModelIndex Core::parent (const QModelIndex&) const
-{
-	return QModelIndex ();
-}
-
-int Core::rowCount (const QModelIndex& parent) const
-{
-	return parent.isValid () ? 0 : CurrentItems_.size ();
+	if (SaveScheduled_)
+		return;
+	QTimer::singleShot (500, this, SLOT (saveSettings ()));
+	SaveScheduled_ = true;
 }
 
 void Core::openLink (const QString& url)
@@ -767,33 +741,6 @@ void Core::openLink (const QString& url)
 		return;
 	}
 	browser->Open (url);
-}
-
-void Core::currentChannelChanged (const QModelIndex& si, bool repr)
-{
-	QModelIndex index;
-	if (repr)
-	{
-		index = JobHolderRepresentation_->mapToSource (si);
-		JobHolderRepresentation_->SelectionChanged (si);
-	}
-	else
-		index = ChannelsFilterModel_->mapToSource (si);
-	ChannelShort ch = ChannelsModel_->GetChannelForIndex (index);
-	CurrentChannelHash_ = qMakePair<QString, QString> (ch.ParentURL_,
-			ch.Title_);
-	CurrentRow_ = -1;
-	CurrentItems_.clear ();
-	StorageBackend_->GetItems (CurrentItems_, ch.ParentURL_ + ch.Title_);
-	reset ();
-}
-
-void Core::scheduleSave ()
-{
-	if (SaveScheduled_)
-		return;
-	QTimer::singleShot (500, this, SLOT (saveSettings ()));
-	SaveScheduled_ = true;
 }
 
 namespace
@@ -1052,73 +999,17 @@ void Core::handleChannelDataUpdated (Channel_ptr channel)
 	ChannelsModel_->UpdateChannelData (cs);
 	UpdateUnreadItemsNumber ();
 
-	if (cs.ParentURL_ == CurrentChannelHash_.first &&
-			cs.Title_ == CurrentChannelHash_.second)
-	{
-		CurrentItems_.clear ();
-		StorageBackend_->GetItems (CurrentItems_, cs.ParentURL_ + cs.Title_);
-		emit dataChanged (index (0, 0), index (CurrentItems_.size (), 1));
-	}
+	QPair<QString, QString> newHash = qMakePair (cs.ParentURL_, cs.Title_);
 }
-
-namespace
-{
-	struct FindEarlierDate
-	{
-		QDateTime Pattern_;
-
-		FindEarlierDate (const QDateTime& pattern)
-		: Pattern_ (pattern)
-		{
-		}
-
-		bool operator() (const ItemShort& is)
-		{
-			return Pattern_ > is.PubDate_;
-		}
-	};
-};
 
 void Core::handleItemDataUpdated (Item_ptr item, Channel_ptr channel)
 {
-	if (channel->ParentURL_ != CurrentChannelHash_.first ||
-			channel->Title_ != CurrentChannelHash_.second)
+	if (MergeMode_ ||
+			(qMakePair (channel->ParentURL_, channel->Title_) !=
+			 CurrentItemsModel_->GetHash ()))
 		return;
 
-	ItemShort is = item->ToShort ();
-
-	items_shorts_t::iterator pos = CurrentItems_.end ();
-
-	for (items_shorts_t::iterator i = CurrentItems_.begin (),
-			end = CurrentItems_.end (); i != end; ++i)
-		if (is.Title_ == i->Title_ &&
-				is.URL_ == i->URL_)
-		{
-			pos = i;
-			break;
-		}
-
-	// Item is new
-	if (pos == CurrentItems_.end ())
-	{
-		items_shorts_t::iterator insertPos =
-			std::find_if (CurrentItems_.begin (), CurrentItems_.end (),
-					FindEarlierDate (item->PubDate_));
-
-		int shift = std::distance (CurrentItems_.begin (), insertPos);
-
-		beginInsertRows (QModelIndex (), shift, shift);
-		CurrentItems_.insert (insertPos, is);
-		endInsertRows ();
-	}
-	// Item exists already
-	else
-	{
-		*pos = is;
-
-		int distance = std::distance (CurrentItems_.begin (), pos);
-		emit dataChanged (index (distance, 0), index (distance, 1));
-	}
+	CurrentItemsModel_->ItemDataUpdated (item);
 }
 
 void Core::updateIntervalChanged ()
