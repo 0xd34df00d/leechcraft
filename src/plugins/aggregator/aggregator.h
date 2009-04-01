@@ -55,6 +55,7 @@ private:
 	QToolBar* SetupMenuBar ();
 	void SetupActions ();
 	void ScheduleShowError ();
+	bool IsRepr ();
 private slots:
     void showError (const QString&);
 	void showError ();
@@ -71,6 +72,7 @@ private slots:
 	void on_ActionExportOPML__triggered ();
 	void on_ActionImportBinary__triggered ();
 	void on_ActionExportBinary__triggered ();
+	void on_MergeItems__toggled (bool);
     void currentChannelChanged ();
     void unreadNumberChanged (int);
     void trayIconActivated ();

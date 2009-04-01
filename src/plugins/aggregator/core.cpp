@@ -29,6 +29,7 @@
 #include "sqlstoragebackend.h"
 #include "itemmodel.h"
 #include "jobholderrepresentation.h"
+#include "channelsfiltermodel.h"
 
 using LeechCraft::Util::TagsCompletionModel;
 
@@ -52,6 +53,7 @@ void Core::Release ()
 	StorageBackend_.reset ();
 	delete JobHolderRepresentation_;
 	delete ItemModel_;
+	delete ChannelsFilterModel_;
 	delete ChannelsModel_;
 }
 
@@ -76,6 +78,10 @@ void Core::SetWidgets (QWidget *bar, QWidget *tab)
 void Core::DoDelayedInit ()
 {
 	ChannelsModel_ = new ChannelsModel ();
+	ChannelsFilterModel_ = new ChannelsFilterModel ();
+	ChannelsFilterModel_->setSourceModel (ChannelsModel_);
+	ChannelsFilterModel_->setFilterKeyColumn (0);
+
 	ItemModel_ = new ItemModel ();
 	JobHolderRepresentation_ = new JobHolderRepresentation ();
 	qRegisterMetaTypeStreamOperators<Feed> ("Feed");
@@ -250,10 +256,16 @@ void Core::AddFeed (const QString& url, const QStringList& tags)
 	PendingJobs_ [id] = pj;
 }
 
-void Core::RemoveFeed (const QModelIndex& index)
+void Core::RemoveFeed (const QModelIndex& si, bool representation)
 {
-	if (!index.isValid ())
+	if (!si.isValid ())
 		return;
+
+	QModelIndex index;
+	if (representation)
+		index = JobHolderRepresentation_->mapToSource (si);
+	else
+		index = ChannelsFilterModel_->mapToSource (si);
 	ChannelShort channel = ChannelsModel_->GetChannelForIndex (index);
 
 	QString feedURL = channel.ParentURL_;
@@ -296,9 +308,9 @@ Item_ptr Core::GetItem (const QModelIndex& index) const
 			CurrentChannelHash_.first + CurrentChannelHash_.second);
 }
 
-QAbstractItemModel* Core::GetChannelsModel () const
+QSortFilterProxyModel* Core::GetChannelsModel () const
 {
-	return ChannelsModel_;
+	return ChannelsFilterModel_;
 }
 
 TagsCompletionModel* Core::GetTagsCompletionModel () const
@@ -336,12 +348,12 @@ bool Core::IsItemCurrent (int item) const
 
 void Core::MarkChannelAsRead (const QModelIndex& i)
 {
-	MarkChannel (i, false);
+	MarkChannel (ChannelsFilterModel_->mapToSource (i), false);
 }
 
 void Core::MarkChannelAsUnread (const QModelIndex& i)
 {
-	MarkChannel (i, true);
+	MarkChannel (ChannelsFilterModel_->mapToSource (i), true);
 }
 
 QStringList Core::GetTagsForIndex (int i) const
@@ -419,7 +431,8 @@ void Core::SetFeedSettings (const Feed::FeedSettings& settings,
 
 void Core::UpdateFeed (const QModelIndex& index)
 {
-	ChannelShort channel = ChannelsModel_->GetChannelForIndex (index);
+	ChannelShort channel =
+		ChannelsModel_->GetChannelForIndex (ChannelsFilterModel_->mapToSource (index));
 	QString url = channel.ParentURL_;
 	if (url.isEmpty ())
 	{
@@ -431,7 +444,8 @@ void Core::UpdateFeed (const QModelIndex& index)
 
 QModelIndex Core::GetUnreadChannelIndex () const
 {
-	return ChannelsModel_->GetUnreadChannelIndex ();
+	return ChannelsFilterModel_->
+		mapFromSource (ChannelsModel_->GetUnreadChannelIndex ());
 }
 
 int Core::GetUnreadChannelsNumber () const
@@ -755,8 +769,16 @@ void Core::openLink (const QString& url)
 	browser->Open (url);
 }
 
-void Core::currentChannelChanged (const QModelIndex& index)
+void Core::currentChannelChanged (const QModelIndex& si, bool repr)
 {
+	QModelIndex index;
+	if (repr)
+	{
+		index = JobHolderRepresentation_->mapToSource (si);
+		JobHolderRepresentation_->SelectionChanged (si);
+	}
+	else
+		index = ChannelsFilterModel_->mapToSource (si);
 	ChannelShort ch = ChannelsModel_->GetChannelForIndex (index);
 	CurrentChannelHash_ = qMakePair<QString, QString> (ch.ParentURL_,
 			ch.Title_);

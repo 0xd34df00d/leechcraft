@@ -65,7 +65,6 @@ struct Aggregator_Impl
 	QQueue<QString> ErrorQueue_;
 
 	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
-	std::auto_ptr<ChannelsFilterModel> ChannelsFilterModel_;
 	std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsLineCompleter_;
 	std::auto_ptr<QSystemTrayIcon> TrayIcon_;
 	std::auto_ptr<QTranslator> Translator_;
@@ -129,10 +128,7 @@ void Aggregator::Init ()
 	Impl_->XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
 	Impl_->XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/aggregatorsettings.xml");
 
-	Impl_->ChannelsFilterModel_.reset (new ChannelsFilterModel (this));
-	Impl_->ChannelsFilterModel_->setSourceModel (Core::Instance ().GetChannelsModel ());
-	Impl_->ChannelsFilterModel_->setFilterKeyColumn (0);
-	Impl_->Ui_.Feeds_->setModel (Impl_->ChannelsFilterModel_.get ());
+	Impl_->Ui_.Feeds_->setModel (Core::Instance ().GetChannelsModel ());
 	Impl_->Ui_.Feeds_->addAction (Impl_->ActionMarkChannelAsRead_);
 	Impl_->Ui_.Feeds_->addAction (Impl_->ActionMarkChannelAsUnread_);
 	QAction *sep = new QAction (Impl_->Ui_.Feeds_);
@@ -150,7 +146,7 @@ void Aggregator::Init ()
 	channelsHeader->resizeSection (2, dateTimeSize);
 	connect (Impl_->Ui_.TagsLine_,
 			SIGNAL (textChanged (const QString&)),
-			Impl_->ChannelsFilterModel_.get (),
+			Core::Instance ().GetChannelsModel (),
 			SLOT (setFilterFixedString (const QString&)));
 	connect (Impl_->Ui_.Feeds_->selectionModel (),
 			SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
@@ -180,7 +176,7 @@ void Aggregator::Init ()
 void Aggregator::Release ()
 {
 	disconnect (&Core::Instance (), 0, this, 0);
-	disconnect (Impl_->ChannelsFilterModel_.get (), 0, this, 0);
+	disconnect (Core::Instance ().GetChannelsModel (), 0, this, 0);
 	disconnect (Impl_->TagsLineCompleter_.get (), 0, this, 0);
     Impl_->TrayIcon_->hide ();
 	delete Impl_;
@@ -246,13 +242,9 @@ LeechCraft::Util::HistoryModel* Aggregator::GetHistory () const
 void Aggregator::ItemSelected (const QModelIndex& index)
 {
 	Impl_->SelectedRepr_ = index;
-	QModelIndex mapped =
-		Core::Instance ().GetJobHolderRepresentation ()->
-			mapToSource (index);
-	Core::Instance ().currentChannelChanged (mapped);
-	Impl_->AdditionalInfo_->ChannelChanged (mapped);
-	Impl_->Ui_.ItemsWidget_->ChannelChanged (mapped);
-	Core::Instance ().GetJobHolderRepresentation ()->SelectionChanged (index);
+	Core::Instance ().currentChannelChanged (index, true);
+	Impl_->AdditionalInfo_->ChannelChanged (index);
+	Impl_->Ui_.ItemsWidget_->ChannelChanged (index);
 }
 
 bool Aggregator::CouldHandle (const LeechCraft::DownloadEntity& e) const
@@ -438,6 +430,11 @@ void Aggregator::ScheduleShowError ()
 			SLOT (showError ()));
 }
 
+bool Aggregator::IsRepr ()
+{
+	return Impl_->ControlToolBar_->isVisible ();
+}
+
 void Aggregator::showError (const QString& msg)
 {
 	Impl_->ErrorQueue_.enqueue (msg);
@@ -464,13 +461,11 @@ void Aggregator::on_ActionAddFeed__triggered ()
 
 void Aggregator::on_ActionRemoveFeed__triggered ()
 {
-	bool reprMode = Impl_->ControlToolBar_->isVisible ();
 	QModelIndex ds;
-	if (reprMode)
-		ds = Core::Instance ().GetJobHolderRepresentation ()->
-			mapToSource (Impl_->SelectedRepr_);
+	if (IsRepr ())
+		ds = Impl_->SelectedRepr_;
 	else
-		ds = Impl_->Ui_.Feeds_->selectionModel ()->	currentIndex ();
+		ds = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
 
 	QString name = ds.sibling (ds.row (), 0).data ().toString ();
 
@@ -484,42 +479,30 @@ void Aggregator::on_ActionRemoveFeed__triggered ()
 			this);
 	mb.setWindowModality (Qt::WindowModal);
 	if (mb.exec () == QMessageBox::Ok)
-	{
-		if (reprMode)
-			Core::Instance ().RemoveFeed (Core::Instance ()
-					.GetJobHolderRepresentation ()->
-					mapToSource (Impl_->SelectedRepr_));
-		else
-			Core::Instance ().RemoveFeed (Impl_->ChannelsFilterModel_->
-					mapToSource (Impl_->Ui_.Feeds_->selectionModel ()->
-						currentIndex ()));
-	}
+		Core::Instance ().RemoveFeed (ds, IsRepr ());
 }
 
 void Aggregator::on_ActionMarkChannelAsRead__triggered ()
 {
     QModelIndexList indexes = Impl_->Ui_.Feeds_->selectionModel ()->selectedRows ();
     for (int i = 0; i < indexes.size (); ++i)
-        Core::Instance ().MarkChannelAsRead (Impl_->
-				ChannelsFilterModel_->mapToSource (indexes.at (i)));
+        Core::Instance ().MarkChannelAsRead (indexes.at (i));
 }
 
 void Aggregator::on_ActionMarkChannelAsUnread__triggered ()
 {
     QModelIndexList indexes = Impl_->Ui_.Feeds_->selectionModel ()->selectedRows ();
     for (int i = 0; i < indexes.size (); ++i)
-        Core::Instance ().MarkChannelAsUnread (Impl_->
-				ChannelsFilterModel_->mapToSource (indexes.at (i)));
+        Core::Instance ().MarkChannelAsUnread (indexes.at (i));
 }
 
 void Aggregator::on_ActionChannelSettings__triggered ()
 {
     QModelIndex index = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
-	QModelIndex mapped = Impl_->ChannelsFilterModel_->mapToSource (index);
-	if (!mapped.isValid ())
+	if (!index.isValid ())
 		return;
 
-	std::auto_ptr<FeedSettings> dia (new FeedSettings (mapped, this));
+	std::auto_ptr<FeedSettings> dia (new FeedSettings (index, this));
 	dia->exec ();
 }
 
@@ -528,8 +511,7 @@ void Aggregator::on_ActionUpdateSelectedFeed__triggered ()
     QModelIndex current = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
     if (!current.isValid ())
         return;
-    Core::Instance ().UpdateFeed (Impl_->
-			ChannelsFilterModel_->mapToSource (current));
+    Core::Instance ().UpdateFeed (current);
 }
 
 void Aggregator::on_ActionItemBucket__triggered ()
@@ -609,12 +591,16 @@ void Aggregator::on_ActionExportBinary__triggered ()
 			exportDialog.GetSelectedFeeds ());
 }
 
+void Aggregator::on_MergeItems__toggled (bool merge)
+{
+//	Core::Instance ().SetMerge (merge);
+}
+
 void Aggregator::currentChannelChanged ()
 {
     QModelIndex index = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
-	QModelIndex mapped = Impl_->ChannelsFilterModel_->mapToSource (index);
-	Core::Instance ().currentChannelChanged (mapped);
-	Impl_->Ui_.ItemsWidget_->ChannelChanged (mapped);
+	Core::Instance ().currentChannelChanged (index, false);
+	Impl_->Ui_.ItemsWidget_->ChannelChanged (index);
 	Impl_->AdditionalInfo_->ChannelChanged (QModelIndex ());
 }
 
@@ -640,8 +626,7 @@ void Aggregator::trayIconActivated ()
 	emit bringToFront ();
 	QModelIndex unread = Core::Instance ().GetUnreadChannelIndex ();
 	if (unread.isValid ())
-		Impl_->Ui_.Feeds_->setCurrentIndex (Impl_->ChannelsFilterModel_->
-				mapFromSource (unread));
+		Impl_->Ui_.Feeds_->setCurrentIndex (unread);
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_aggregator, Aggregator);

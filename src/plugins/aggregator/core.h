@@ -21,6 +21,8 @@ class ItemModel;
 class QWebView;
 class JobHolderRepresentation;
 class IWebBrowser;
+class ChannelsFilterModel;
+class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
@@ -81,6 +83,7 @@ class Core : public QAbstractItemModel
 	JobHolderRepresentation *JobHolderRepresentation_;
 	int CurrentRow_;
 	QMap<QString, QDateTime> Updates_;
+	ChannelsFilterModel *ChannelsFilterModel_;
 
     Core ();
 public:
@@ -98,10 +101,10 @@ public:
     void DoDelayedInit ();
     void SetProvider (QObject*, const QString&);
     void AddFeed (const QString&, const QStringList&);
-    void RemoveFeed (const QModelIndex&);
+    void RemoveFeed (const QModelIndex&, bool);
 	void Selected (const QModelIndex&);
     Item_ptr GetItem (const QModelIndex&) const;
-    QAbstractItemModel* GetChannelsModel () const;
+    QSortFilterProxyModel* GetChannelsModel () const;
 	LeechCraft::Util::TagsCompletionModel* GetTagsCompletionModel () const;
 	IWebBrowser* GetWebBrowser () const;
     void UpdateTags (const QStringList&);
@@ -156,7 +159,7 @@ public:
     virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 public slots:
 	void openLink (const QString&);
-    void currentChannelChanged (const QModelIndex&);
+    void currentChannelChanged (const QModelIndex&, bool);
     void updateFeeds ();
     void updateIntervalChanged ();
     void showIconInTrayChanged ();
