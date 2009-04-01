@@ -17,11 +17,12 @@ public:
 	ItemsWidget (QWidget* = 0);
 	virtual ~ItemsWidget ();
 
+	void SetTapeMode (bool);
 	void SetHideRead (bool);
 	void HideInfoPanel ();
 private:
 	void Construct (bool);
-	void SetHtml (const Item_ptr&);
+	QString ToHtml (const Item_ptr&);
 private slots:
 	void channelChanged (const QModelIndex&);
     void on_ActionMarkItemAsUnread__triggered ();

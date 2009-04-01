@@ -598,8 +598,9 @@ void Aggregator::on_MergeItems__toggled (bool merge)
 	Core::Instance ().SetMerge (merge);
 }
 
-void Aggregator::on_ShowAsTape__toggled (bool show)
+void Aggregator::on_ShowAsTape__toggled (bool tape)
 {
+	Impl_->Ui_.ItemsWidget_->SetTapeMode (tape);
 }
 
 void Aggregator::currentChannelChanged ()

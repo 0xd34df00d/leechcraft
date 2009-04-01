@@ -19,6 +19,8 @@ struct ItemsWidget_Impl
     QAction *ActionMarkItemAsUnread_;
     QAction *ActionAddToItemBucket_;
 
+	bool TapeMode_;
+
 	std::auto_ptr<ItemsFilterModel> ItemsFilterModel_;
 	std::auto_ptr<CategorySelector> ItemCategorySelector_;
 };
@@ -27,6 +29,7 @@ ItemsWidget::ItemsWidget (QWidget *parent)
 : QWidget (parent)
 {
 	Impl_ = new ItemsWidget_Impl;
+	Impl_->TapeMode_ = false;
 	Impl_->ActionMarkItemAsUnread_ = new QAction (tr ("Mark item as unread"),
 			this);
 	Impl_->ActionMarkItemAsUnread_->setObjectName ("ActionMarkItemAsUnread_");
@@ -110,6 +113,12 @@ ItemsWidget::~ItemsWidget ()
 	delete Impl_;
 }
 
+void ItemsWidget::SetTapeMode (bool tape)
+{
+	Impl_->TapeMode_ = tape;
+	currentItemChanged (QItemSelection ());
+}
+
 void ItemsWidget::SetHideRead (bool hide)
 {
 	Impl_->ItemsFilterModel_->SetHideRead (hide);
@@ -120,7 +129,7 @@ void ItemsWidget::HideInfoPanel ()
 	Impl_->Ui_.Actions_->setVisible (false);
 }
 
-void ItemsWidget::SetHtml (const Item_ptr& item)
+QString ItemsWidget::ToHtml (const Item_ptr& item)
 {
 	const char darkBg [] = "#A3A3A3";
 	const char lightBg [] = "#D3D3D3";
@@ -218,7 +227,8 @@ void ItemsWidget::SetHtml (const Item_ptr& item)
 				.arg (i->Lang_);
 		result += "</div>";
 	}
-	Impl_->Ui_.ItemView_->SetHtml (result);
+
+	return result;
 }
 
 void ItemsWidget::channelChanged (const QModelIndex& mapped)
@@ -276,28 +286,46 @@ void ItemsWidget::on_ItemCategoriesButton__released ()
 
 void ItemsWidget::currentItemChanged (const QItemSelection& selection)
 {
-	QItemSelectionModel *ism = Impl_->Ui_.Items_->selectionModel ();
-	QModelIndexList indexes = selection.indexes ();
-
-	QModelIndex sindex;
-	if (indexes.size ())
-		sindex = Impl_->ItemsFilterModel_->mapToSource (indexes.at (0));
-
-	if (!sindex.isValid () || indexes.size () != 2)
+	if (Impl_->TapeMode_)
 	{
-		Impl_->Ui_.ItemView_->SetHtml ("");
-		Impl_->Ui_.ItemCommentsSubscribe_->setEnabled (false);
-		return;
+		QString html;
+		for (int i = 0, size = Impl_->ItemsFilterModel_->rowCount ();
+				i < size; ++i)
+		{
+			QModelIndex index = Impl_->ItemsFilterModel_->index (i, 0);
+			QModelIndex mapped = Impl_->ItemsFilterModel_->mapToSource (index);
+			Item_ptr item = Core::Instance ().GetItem (mapped);
+
+			html += ToHtml (item);
+			html += "<hr />";
+		}
+
+		Impl_->Ui_.ItemView_->SetHtml (html);
 	}
+	else
+	{
+		QModelIndexList indexes = selection.indexes ();
 
-	Core::Instance ().Selected (sindex);
+		QModelIndex sindex;
+		if (indexes.size ())
+			sindex = Impl_->ItemsFilterModel_->mapToSource (indexes.at (0));
 
-	Item_ptr item = Core::Instance ().GetItem (sindex);
+		if (!sindex.isValid () || indexes.size () != 2)
+		{
+			Impl_->Ui_.ItemView_->SetHtml ("");
+			Impl_->Ui_.ItemCommentsSubscribe_->setEnabled (false);
+			return;
+		}
 
-	SetHtml (item);
+		Core::Instance ().Selected (sindex);
 
-	QString commentsRSS = item->CommentsLink_;
-	Impl_->Ui_.ItemCommentsSubscribe_->setEnabled (!commentsRSS.isEmpty ());
+		Item_ptr item = Core::Instance ().GetItem (sindex);
+
+		Impl_->Ui_.ItemView_->SetHtml (ToHtml (item));
+
+		QString commentsRSS = item->CommentsLink_;
+		Impl_->Ui_.ItemCommentsSubscribe_->setEnabled (!commentsRSS.isEmpty ());
+	}
 }
 
 void ItemsWidget::makeCurrentItemVisible ()
