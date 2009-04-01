@@ -71,6 +71,9 @@ void SearchersList::on_ButtonAdd__released ()
 			tr ("Adding a new searcher"),
 			tr ("Enter the URL of the OpenSearch description"));
 
+	if (url.isEmpty ())
+		return;
+
 	Core::Instance ().Add (url);
 }
 
