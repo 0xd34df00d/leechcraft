@@ -4,6 +4,7 @@
 #include <QUrl>
 #include <QFile>
 #include <QDomDocument>
+#include <QTextCodec>
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
 #include <plugininterface/util.h>
@@ -218,8 +219,14 @@ void SearchHandler::handleJobFinished (int id)
 		return;
 	}
 
-	result.Response_ = file.readAll ();
+	result.Response_ = QTextCodec::codecForName ("UTF-8")->
+		toUnicode (file.readAll ());
 	result.TotalResults_ = -1;
+
+	file.close ();
+	if (!file.remove ())
+		emit warning (tr ("Could not remove temporary file %1.")
+				.arg (result.Filename_));
 
 	QDomDocument doc;
 	if (doc.setContent (result.Response_, true))
@@ -251,11 +258,6 @@ void SearchHandler::handleJobFinished (int id)
 			}
 		}
 	}
-
-	file.close ();
-	if (!file.remove ())
-		emit warning (tr ("Could not remove temporary file %1.")
-				.arg (result.Filename_));
 
 	beginInsertRows (QModelIndex (), Results_.size (), Results_.size ());
 	Results_ << result;
