@@ -697,6 +697,32 @@ void Core::AddFeeds (const feeds_container_t& feeds,
 
 void Core::SetMerge (bool merge)
 {
+	MergeMode_ = merge;
+	if (MergeMode_)
+	{
+		for (int i = 0, size = ChannelsFilterModel_->rowCount ();
+				i < size; ++i)
+		{
+			QModelIndex index = ChannelsFilterModel_->index (i, 0);
+			ChannelShort cs = ChannelsModel_->
+				GetChannelForIndex (ChannelsFilterModel_->mapToSource (index));
+			QPair<QString, QString> hash = qMakePair (cs.ParentURL_, cs.Title_);
+
+			if (hash == CurrentItemsModel_->GetHash ())
+				continue;
+
+			boost::shared_ptr<ItemsListModel> ilm (new ItemsListModel);
+			ilm->Reset (hash);
+			SupplementaryModels_ << ilm;
+			ItemLists_->AddModel (ilm.get ());
+		}
+	}
+	else
+		while (SupplementaryModels_.size ())
+		{
+			ItemLists_->RemoveModel (SupplementaryModels_.at (0).get ());
+			SupplementaryModels_.removeAt (0);
+		}
 }
 
 void Core::CurrentChannelChanged (const QModelIndex& si, bool repr)
@@ -1025,6 +1051,15 @@ void Core::showIconInTrayChanged ()
 void Core::handleSslError (QNetworkReply *reply)
 {
 	reply->ignoreSslErrors ();
+}
+
+void Core::tagsUpdated ()
+{
+	if (MergeMode_)
+	{
+		SetMerge (false);
+		SetMerge (true);
+	}
 }
 
 void Core::handleCustomUpdates ()

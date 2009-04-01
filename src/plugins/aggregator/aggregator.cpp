@@ -148,6 +148,10 @@ void Aggregator::Init ()
 			SIGNAL (textChanged (const QString&)),
 			Core::Instance ().GetChannelsModel (),
 			SLOT (setFilterFixedString (const QString&)));
+	connect (Impl_->Ui_.TagsLine_,
+			SIGNAL (textChanged (const QString&)),
+			&Core::Instance (),
+			SLOT (tagsUpdated ()));
 	connect (Impl_->Ui_.Feeds_->selectionModel (),
 			SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
 			this,

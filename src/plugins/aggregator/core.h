@@ -82,6 +82,7 @@ class Core : public QObject
 	QMap<QString, QDateTime> Updates_;
 	ChannelsFilterModel *ChannelsFilterModel_;
 	ItemsListModel *CurrentItemsModel_;
+	QList<boost::shared_ptr<ItemsListModel> > SupplementaryModels_;
 	LeechCraft::Util::MergeModel *ItemLists_;
 	bool MergeMode_;
 
@@ -154,6 +155,7 @@ public slots:
     void updateIntervalChanged ();
     void showIconInTrayChanged ();
     void handleSslError (QNetworkReply*);
+	void tagsUpdated ();
 private slots:
     void fetchExternalFile (const QString&, const QString&);
     void scheduleSave ();
