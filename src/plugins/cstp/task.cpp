@@ -61,20 +61,17 @@ void Task::Start (const boost::intrusive_ptr<MorphFile>& tof)
 	{
 		if (Reply_->bytesAvailable () == Reply_->size ())
 		{
-			qDebug () << 1;
 			handleReadyRead ();
 			handleFinished ();
 			return;
 		}
 		else if (!Reply_->isOpen ())
 		{
-			qDebug () << 2;
 			handleError ();
 			return;
 		}
 		else
 		{
-			qDebug () << 3;
 			handleReadyRead ();
 		}
 	}

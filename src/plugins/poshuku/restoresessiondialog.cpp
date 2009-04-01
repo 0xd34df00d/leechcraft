@@ -27,8 +27,8 @@ void RestoreSessionDialog::AddPair (const QString& title,
 	item->setData (0, Qt::CheckStateRole, Qt::Checked);
 	// Do not remote this debugging output, for some reason QWebSettings
 	// returns a valid icon only in a second or third call to the DB.
-	qDebug () << QWebSettings::iconForUrl (QUrl (url))
-		<< QWebSettings::iconForUrl (QUrl (url)).isNull ();
+	QWebSettings::iconForUrl (QUrl (url));
+	QWebSettings::iconForUrl (QUrl (url)).isNull ();
 	item->setIcon (0, QWebSettings::iconForUrl (QUrl (url)));
 }
 
