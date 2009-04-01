@@ -46,8 +46,8 @@ XmlSettingsDialog::XmlSettingsDialog ()
 {
     Pages_ = new QStackedWidget;
     Sections_ = new QListWidget;
-    Sections_->setMinimumWidth (100);
-    Sections_->setMaximumWidth (150);
+    Sections_->setMinimumWidth (200);
+    Sections_->setMaximumWidth (200);
 
     connect (Sections_,
 			SIGNAL (currentRowChanged (int)),
