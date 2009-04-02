@@ -419,19 +419,17 @@ bool LeechCraft::PluginManager::InitializeSingle (LeechCraft::PluginManager::Dep
 				end = providers.end (); i != end; ++i)
 		{
 			if (!(*i)->Initialized_)
-			{
-				if (InitializeSingle (*i))
-				{
-					wasSuccessful = true;
+				InitializeSingle (*i);
 
-					qobject_cast<IInfo*> (item->Plugin_)->
-						SetProvider ((*i)->Plugin_, key);;
-				}
-				else
-					item->Needed_.remove (key, *i);
-			}
+			if (!(*i)->Initialized_)
+				item->Needed_.remove (key, *i);
 			else
+			{
 				wasSuccessful = true;
+
+				qobject_cast<IInfo*> (item->Plugin_)->
+					SetProvider ((*i)->Plugin_, key);;
+			}
 		}
 
 		if (!wasSuccessful)
@@ -446,16 +444,18 @@ bool LeechCraft::PluginManager::InitializeSingle (LeechCraft::PluginManager::Dep
 				end = providers.end (); i != end; ++i)
 		{
 			if (!(*i)->Initialized_)
+				InitializeSingle (*i);
+
+			if (!(*i)->Initialized_)
+				item->Used_.remove (key, *i);
+			else
 			{
-				if (InitializeSingle (*i))
-					if (key == "__lc_plugin2")
-						qobject_cast<IPluginReady*> (item->Plugin_)->
-							AddPlugin ((*i)->Plugin_);
-					else
-						qobject_cast<IInfo*> (item->Plugin_)->
-							SetProvider ((*i)->Plugin_, key);
+				if (key == "__lc_plugin2")
+					qobject_cast<IPluginReady*> (item->Plugin_)->
+						AddPlugin ((*i)->Plugin_);
 				else
-					item->Used_.remove (key, *i);
+					qobject_cast<IInfo*> (item->Plugin_)->
+						SetProvider ((*i)->Plugin_, key);
 			}
 		}
 	}
