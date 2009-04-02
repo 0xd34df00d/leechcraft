@@ -177,7 +177,7 @@ void Core::Remove (const QModelIndex& index)
 void Core::SetTags (const QModelIndex& index, const QStringList& tags)
 {
 	Descriptions_ [index.row ()].Tags_ = tags;
-	qDebug () << Q_FUNC_INFO << Descriptions_ [index.row ()].Tags_;
+	WriteSettings ();
 }
 
 QStringList Core::GetCategories () const
