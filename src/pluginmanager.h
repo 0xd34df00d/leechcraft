@@ -48,7 +48,6 @@ namespace LeechCraft
         Size_t GetSize () const;
 		void Init ();
         void Release ();
-        void Release (Size_t);
         QString Name (const Size_t& pos) const;
         QString Info (const Size_t& pos) const;
         QObjectList GetAllPlugins () const;
@@ -100,6 +99,7 @@ namespace LeechCraft
 		 */
 		void InitializePlugins ();
 		bool InitializeSingle (DepTreeItem_ptr);
+		void Release (DepTreeItem_ptr);
 		void DumpTree ();
     signals:
         void downloadFinished (QString);

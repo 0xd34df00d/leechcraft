@@ -126,13 +126,11 @@ void LeechCraft::PluginManager::Init ()
 
 void LeechCraft::PluginManager::Release ()
 {
-	// TODO
-    while (Plugins_.size ())
+    while (Roots_.size ())
     {
         try
         {
-            qDebug () << Q_FUNC_INFO << Name (Plugins_.size () - 1);
-//            Release (Plugins_.size () - 1);
+			Release (Roots_.takeAt (0));
         }
         catch (const std::exception& e)
         {
@@ -144,21 +142,7 @@ void LeechCraft::PluginManager::Release ()
 					tr ("No exit here"),
 					tr ("Release of one or more plugins failed."));
         }
-//        Plugins_.removeAt (Plugins_.size () - 1);
     }
-}
-
-void LeechCraft::PluginManager::Release (LeechCraft::PluginManager::Size_t position)
-{
-    if (position >= GetSize ())
-        throw std::runtime_error ("LeechCraft::PluginManager::Release(): position is out of bounds.");
-
-    if (Plugins_ [position] && Plugins_ [position]->isLoaded ())
-	{
-        qobject_cast<IInfo*> (Plugins_ [position]->instance ())->Release ();
-		Plugins_ [position]->unload ();
-		Plugins_.removeAt (position);
-	}
 }
 
 QString LeechCraft::PluginManager::Name (const LeechCraft::PluginManager::Size_t& pos) const
@@ -401,6 +385,8 @@ bool LeechCraft::PluginManager::InitializeSingle (LeechCraft::PluginManager::Dep
 				else
 					item->Needed_.remove (key, *i);
 			}
+			else
+				wasSuccessful = true;
 		}
 
 		if (!wasSuccessful)
@@ -427,7 +413,6 @@ bool LeechCraft::PluginManager::InitializeSingle (LeechCraft::PluginManager::Dep
 	try
 	{
 		IInfo *ii = qobject_cast<IInfo*> (item->Plugin_);
-		qDebug () << "initializing" << ii->GetName ();
 		IWantNetworkAccessManager *iwnam =
 			qobject_cast<IWantNetworkAccessManager*> (item->Plugin_);
 		if (iwnam)
@@ -442,6 +427,27 @@ bool LeechCraft::PluginManager::InitializeSingle (LeechCraft::PluginManager::Dep
 		return false;
 	}
 	return true;
+}
+
+void LeechCraft::PluginManager::Release (DepTreeItem_ptr item)
+{
+	QList<DepTreeItem_ptr> deps =
+		item->Needed_.values () + item->Used_.values ();
+	std::sort (deps.begin (), deps.end ());
+	QList<DepTreeItem_ptr>::const_iterator last =
+		std::unique (deps.begin (), deps.end ());
+
+	for (QList<DepTreeItem_ptr>::const_iterator i = deps.begin ();
+			i != last; ++i)
+		Release (*i);
+
+	if (item->Initialized_)
+	{
+		IInfo *ii = qobject_cast<IInfo*> (item->Plugin_);
+		qDebug () << Q_FUNC_INFO << ii->GetName ();
+		ii->Release ();
+		item->Initialized_ = false;
+	}
 }
 
 void LeechCraft::PluginManager::DumpTree ()
