@@ -28,6 +28,7 @@
 
 BrowserWidget::BrowserWidget (QWidget *parent)
 : QWidget (parent)
+, HtmlMode_ (true)
 {
 	Ui_.setupUi (this);
 
@@ -331,7 +332,10 @@ CustomWebView* BrowserWidget::GetView () const
 void BrowserWidget::SetURL (const QUrl& url)
 {
 	if (!url.isEmpty ())
+	{
 		Ui_.WebView_->Load (url);
+		HtmlMode_ = false;
+	}
 }
 
 void BrowserWidget::Load (const QString& url)
@@ -343,6 +347,7 @@ void BrowserWidget::SetHtml (const QString& html, const QString& base)
 {
 	Ui_.URLEdit_->clear ();
 	Ui_.WebView_->setHtml (html, base);
+	HtmlMode_ = true;
 }
 
 QWidget* BrowserWidget::Widget ()
@@ -393,7 +398,7 @@ void BrowserWidget::on_URLEdit__returnPressed ()
 	if (Ui_.URLEdit_->IsCompleting ())
 		return;
 
-	Ui_.WebView_->Load (Ui_.URLEdit_->text ());
+	Load (Ui_.URLEdit_->text ());
 }
 
 void BrowserWidget::handleAdd2Favorites ()
@@ -590,6 +595,9 @@ void BrowserWidget::handleEntityAction ()
 
 void BrowserWidget::handleLoadFinished ()
 {
+	if (HtmlMode_)
+		return;
+
 	ToolBar_->removeAction (ExternalLinks_->menuAction ());
 	ExternalLinks_->clear ();
 

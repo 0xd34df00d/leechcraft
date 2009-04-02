@@ -31,6 +31,7 @@ class BrowserWidget : public QWidget
 	QAction *ExportXbel_;
 	QMenu *RecentlyClosed_;
 	QMenu *ExternalLinks_;
+	bool HtmlMode_;
 public:
 	BrowserWidget (QWidget* = 0);
 	virtual ~BrowserWidget ();
