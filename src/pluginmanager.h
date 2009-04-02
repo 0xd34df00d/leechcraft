@@ -1,5 +1,6 @@
 #ifndef PLUGINMANAGER_H
 #define PLUGINMANAGER_H
+#include <boost/shared_ptr.hpp>
 #include <QAbstractItemModel>
 #include <QMap>
 #include <QMultiMap>
@@ -12,12 +13,25 @@ namespace LeechCraft
     {
         Q_OBJECT
 
-        typedef QList<QPluginLoader*> PluginsContainer_t;
+		struct DepTreeItem;
+		typedef boost::shared_ptr<DepTreeItem> DepTreeItem_ptr;
+		struct DepTreeItem
+		{
+			QObject *Plugin_;
+			bool Initialized_;
+			// This plugin depends upon.
+			QMultiMap<QString, DepTreeItem_ptr> Needed_;
+			QMultiMap<QString, DepTreeItem_ptr> Used_;
+
+			DepTreeItem ();
+			void Print (int = 0);
+		};
+
+		QList<DepTreeItem_ptr> Roots_;
+		typedef boost::shared_ptr<QPluginLoader> QPluginLoader_ptr;
+        typedef QList<QPluginLoader_ptr> PluginsContainer_t;
         PluginsContainer_t Plugins_;
-        QMap<PluginsContainer_t::const_iterator, bool> DependenciesMet_;
-        QMap<PluginsContainer_t::const_iterator, QStringList> FailedDependencies_;
 		QMap<QString, PluginsContainer_t::const_iterator> FeatureProviders_;
-		QObjectList SelectedDownloaderWatchers_;
     public:
         typedef PluginsContainer_t::size_type Size_t;
         PluginManager (QObject *parent = 0);
@@ -32,6 +46,7 @@ namespace LeechCraft
 		virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 
         Size_t GetSize () const;
+		void Init ();
         void Release ();
         void Release (Size_t);
         QString Name (const Size_t& pos) const;
@@ -63,23 +78,29 @@ namespace LeechCraft
             return result;
         }
 
+		QObject* GetProvider (const QString&) const;
+		QObjectList GetSelectedDownloaderWatchers () const;
+    private:
+        void FindPlugins ();
 		/** Tries to load all the plugins and filters out those who fail
 		 * various sanity checks.
 		 */
         void CheckPlugins ();
 
+		QList<PluginsContainer_t::const_iterator> FindProviders (const QString&) const;
+		DepTreeItem_ptr GetDependency (QObject*);
+
 		/** Calculates the deps.
 		 */
         void CalculateDependencies ();
+		DepTreeItem_ptr CalculateSingle (PluginsContainer_t::const_iterator i);
 
 		/** Preinitializes the plugins, pushes second-level plugins to
 		 * first-level ones and calls IInfo::Init() on each one.
 		 */
 		void InitializePlugins ();
-		QObject* GetProvider (const QString&) const;
-		QObjectList GetSelectedDownloaderWatchers () const;
-    private:
-        void FindPlugins ();
+		bool InitializeSingle (DepTreeItem_ptr);
+		void DumpTree ();
     signals:
         void downloadFinished (QString);
 		void loadProgress (const QString&);

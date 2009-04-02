@@ -242,11 +242,8 @@ void LeechCraft::Core::DelayedInit ()
 	XmlSettingsManager::Instance ()->RegisterObject ("ShowTabNames",
 			TabContainer_.get (), "handleTabNames");
 
-	emit loadProgress (tr ("Preinitialization..."));
-	PluginManager_->CheckPlugins ();
 	emit loadProgress (tr ("Calculation dependencies..."));
-    PluginManager_->CalculateDependencies ();
-    PluginManager_->InitializePlugins ();
+	PluginManager_->Init ();
 
     QObjectList plugins = PluginManager_->GetAllPlugins ();
     foreach (QObject *plugin, plugins)
@@ -326,13 +323,6 @@ void LeechCraft::Core::SetNewRow (const QModelIndex& index)
 				(*i)->ItemSelected (mapped);
 			else
 				(*i)->ItemSelected (QModelIndex ());
-
-		QObjectList watchers = PluginManager_->GetSelectedDownloaderWatchers ();
-		foreach (QObject *pEntity, watchers)
-			QMetaObject::invokeMethod (pEntity,
-					"selectedDownloaderChanged",
-					Q_ARG (QObject*, plugin));
-		return;
 	}
 	else
 		for (QList<IJobHolder*>::iterator i = holders.begin (),
