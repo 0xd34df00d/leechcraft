@@ -51,6 +51,14 @@ CustomWebView::CustomWebView (QWidget *parent)
 			SIGNAL (loadingURL (const QUrl&)),
 			this,
 			SLOT (remakeURL (const QUrl&)));
+	connect (page,
+			SIGNAL (filteredPrintRequested (QWebFrame*)),
+			this,
+			SIGNAL (printRequested (QWebFrame*)));
+	connect (page,
+			SIGNAL (filteredWindowCloseRequested ()),
+			this,
+			SIGNAL (closeRequested ()));
 }
 
 CustomWebView::~CustomWebView ()

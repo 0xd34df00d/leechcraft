@@ -278,6 +278,14 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			SIGNAL (loadStarted ()),
 			this,
 			SLOT (enableActions ()));
+	connect (Ui_.WebView_,
+			SIGNAL (printRequested (QWebFrame*)),
+			this,
+			SLOT (handleViewPrint (QWebFrame*)));
+	connect (Ui_.WebView_,
+			SIGNAL (closeRequested ()),
+			this,
+			SIGNAL (needToClose ()));
 
 	connect (&Core::Instance (),
 			SIGNAL (newUnclose (QAction*)),
@@ -355,7 +363,7 @@ QWidget* BrowserWidget::Widget ()
 	return this;
 }
 
-void BrowserWidget::PrintImpl (bool preview)
+void BrowserWidget::PrintImpl (bool preview, QWebFrame *frame)
 {
 	std::auto_ptr<QPrinter> printer (new QPrinter ());
 
@@ -373,14 +381,14 @@ void BrowserWidget::PrintImpl (bool preview)
 			new QPrintPreviewDialog (printer.get (), this);
 		connect (prevDialog,
 				SIGNAL (paintRequested (QPrinter*)),
-				Ui_.WebView_,
+				frame,
 				SLOT (print (QPrinter*)));
 
 		if (prevDialog->exec () != QDialog::Accepted)
 			return;
 	}
 
-	Ui_.WebView_->print (printer.get ());
+	frame->print (printer.get ());
 }
 
 void BrowserWidget::handleIconChanged ()
@@ -426,14 +434,19 @@ void BrowserWidget::findText (const QString& text,
 	static_cast<FindDialog*> (sender ())->SetSuccessful (found);
 }
 
+void BrowserWidget::handleViewPrint (QWebFrame *frame)
+{
+	PrintImpl (false, frame);
+}
+
 void BrowserWidget::handlePrinting ()
 {
-	PrintImpl (false);
+	PrintImpl (false, Ui_.WebView_->page ()->mainFrame ());
 }
 
 void BrowserWidget::handlePrintingWithPreview ()
 {
-	PrintImpl (true);
+	PrintImpl (true, Ui_.WebView_->page ()->mainFrame ());
 }
 
 void BrowserWidget::handleScreenSave ()

@@ -45,6 +45,8 @@ signals:
 	void urlChanged (const QString&);
 	void gotEntity (const LeechCraft::DownloadEntity&);
 	void addToFavorites (const QString&, const QString&);
+	void printRequested (QWebFrame*);
+	void closeRequested ();
 };
 
 #endif

@@ -44,7 +44,7 @@ public:
 	void SetHtml (const QString&, const QString& = QString ());
 	QWidget* Widget ();
 private:
-	void PrintImpl (bool);
+	void PrintImpl (bool, QWebFrame*);
 private slots:
 	void handleIconChanged ();
 	void handleStatusBarMessage (const QString&);
@@ -52,6 +52,7 @@ private slots:
 	void handleAdd2Favorites ();
 	void handleFind ();
 	void findText (const QString&, QWebPage::FindFlags);
+	void handleViewPrint (QWebFrame*);
 	void handlePrinting ();
 	void handlePrintingWithPreview ();
 	void handleScreenSave ();

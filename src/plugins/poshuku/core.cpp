@@ -505,6 +505,7 @@ void Core::favoriteTagsUpdated (const QStringList& tags)
 
 void Core::saveSession ()
 {
+	qDebug () << Q_FUNC_INFO;
 	int pos = 0;
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
 			Proxy::Instance ()->GetApplicationName () + "_Poshuku");
@@ -513,7 +514,7 @@ void Core::saveSession ()
 	for (widgets_t::const_iterator i = Widgets_.begin (),
 			end = Widgets_.end (); i != end; ++i)
 	{
-		qDebug () << Q_FUNC_INFO << (*i)->GetView ()->title ();
+		qDebug () << (*i)->GetView ()->title ();
 		settings.setArrayIndex (pos++);
 		settings.setValue ("Title", (*i)->GetView ()->title ());
 		settings.setValue ("URL", (*i)->GetView ()->url ().toString ());
