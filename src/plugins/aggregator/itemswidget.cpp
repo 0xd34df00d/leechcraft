@@ -116,6 +116,18 @@ ItemsWidget::~ItemsWidget ()
 void ItemsWidget::SetTapeMode (bool tape)
 {
 	Impl_->TapeMode_ = tape;
+	if (tape)
+		disconnect (Impl_->Ui_.Items_->selectionModel (),
+				SIGNAL (selectionChanged (const QItemSelection&,
+						const QItemSelection&)),
+				this,
+				SLOT (currentItemChanged (const QItemSelection&)));
+	else
+		connect (Impl_->Ui_.Items_->selectionModel (),
+				SIGNAL (selectionChanged (const QItemSelection&,
+						const QItemSelection&)),
+				this,
+				SLOT (currentItemChanged (const QItemSelection&)));
 	currentItemChanged (QItemSelection ());
 }
 
