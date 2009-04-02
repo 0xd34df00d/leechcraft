@@ -59,52 +59,37 @@ void PluginManager::AddPlugin (QObject *plugin)
 			ptr->Func (BOOST_PP_ENUM_PARAMS (BOOST_PP_SEQ_SIZE (Params), param));			\
 	}
 
-
-#define PARSEQ (IProxyObject*)
-VE (Init, PARSEQ);
-#undef PARSEQ
-
-#define PARSEQ (QWebPage*)(const QNetworkRequest&)
-BE (OnHandleDownloadRequested, PARSEQ);
-#undef PARSEQ
-
-#define PARSEQ (QWebPage*)(QNetworkReply*)
-BE (OnGotUnsupportedContent, PARSEQ);
-#undef PARSEQ
-
-#define PARSEQ (QWebPage*)(QWebFrame*)(const QNetworkRequest&)(QWebPage::NavigationType)
-BE (OnAcceptNavigationRequest, PARSEQ);
-#undef PARSEQ
-
-#define PARSEQ (QWebPage*)(QWebFrame*)(const QString&)
-CE (OnChooseFile, PARSEQ, QString);
-#undef PARSEQ
-
-#define PARSEQ (QWebPage*)(const QString&)(const QUrl&)(const QStringList&)(const QStringList&)
-CE (OnCreatePlugin, PARSEQ, QObject*);
-#undef PARSEQ
-
-#define PARSEQ (QWebPage*)(QWebPage::WebWindowType)
-CE (OnCreateWindow, PARSEQ, QWebPage*);
-#undef PARSEQ
-
-#define PARSEQ (QWebPage*)(QWebFrame*)(const QString&)
-BE (OnJavaScriptAlert, PARSEQ);
-#undef PARSEQ
-
-#define PARSEQ (QWebPage*)(QWebFrame*)(const QString&)
-CE (OnJavaScriptConfirm, PARSEQ, bool);
-#undef PARSEQ
-
-#define PARSEQ (QWebPage*)(const QString&)(int)(const QString&)
-BE (OnJavaScriptConsoleMessage, PARSEQ);
-#undef PARSEQ
-
-#define PARSEQ (QWebPage*)(QWebFrame*)(const QString&)(const QString&)(QString*)
-CE (OnJavaScriptPrompt, PARSEQ, bool);
-#undef PARSEQ
-
-#define PARSEQ (const QWebPage*)(const QUrl&)
-CE (OnUserAgentForUrl, PARSEQ, QString);
-#undef PARSEQ
+VE (Init, (IProxyObject*));
+BE (HandleContentsChanged, (QWebPage*));
+BE (HandleDatabaseQuotaExceeded, (QWebPage*)(QWebFrame*)(QString));
+BE (HandleDownloadRequested, (QWebPage*)(const QNetworkRequest&));
+BE (HandleFrameCreated, (QWebPage*)(QWebFrame*));
+BE (HandleGeometryChangeRequested, (QWebPage*)(const QRect&));
+BE (HandleLinkClicked, (QWebPage*)(const QUrl&));
+BE (HandleLinkHovered, (QWebPage*)(const QString&)(const QString&)(const QString&));
+BE (HandleLoadFinished, (QWebPage*)(bool));
+BE (HandleLoadProgress, (QWebPage*)(int));
+BE (HandleLoadStarted, (QWebPage*));
+BE (HandleMenuBarVisibilityChangeRequested, (QWebPage*)(bool));
+BE (HandleMicroFocusChanged, (QWebPage*));
+BE (HandlePrintRequested, (QWebPage*)(QWebFrame*));
+BE (HandleRepaintRequested, (QWebPage*)(const QRect&));
+BE (HandleRestoreFrameStateRequested, (QWebPage*)(QWebFrame*));
+BE (HandleSaveFrameStateRequested, (QWebPage*)(QWebFrame*)(QWebHistoryItem*));
+BE (HandleScrollRequested, (QWebPage*)(int)(int)(const QRect&));
+BE (HandleSelectionChanged, (QWebPage*));
+BE (HandleStatusBarMessage, (QWebPage*)(const QString&));
+BE (HandleStatusBarVisibilityChangeRequested, (QWebPage*)(bool));
+BE (HandleToolBarVisibilityChangeRequested, (QWebPage*)(bool));
+BE (HandleUnsupportedContent, (QWebPage*)(QNetworkReply*));
+BE (HandleWindowCloseRequested, (QWebPage*));
+BE (OnAcceptNavigationRequest, (QWebPage*)(QWebFrame*)(const QNetworkRequest&)(QWebPage::NavigationType));
+CE (OnChooseFile, (QWebPage*)(QWebFrame*)(const QString&), QString);
+CE (OnCreatePlugin, (QWebPage*)(const QString&)(const QUrl&)(const QStringList&)(const QStringList&), QObject*);
+CE (OnCreateWindow, (QWebPage*)(QWebPage::WebWindowType), QWebPage*);
+BE (OnJavaScriptAlert, (QWebPage*)(QWebFrame*)(const QString&));
+CE (OnJavaScriptConfirm, (QWebPage*)(QWebFrame*)(const QString&), bool);
+BE (OnJavaScriptConsoleMessage, (QWebPage*)(const QString&)(int)(const QString&));
+CE (OnJavaScriptPrompt, (QWebPage*)(QWebFrame*)(const QString&)(const QString&)(QString*), bool);
+CE (OnUserAgentForUrl, (const QWebPage*)(const QUrl&), QString);
 

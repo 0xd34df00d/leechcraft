@@ -3,12 +3,118 @@
 
 using namespace LeechCraft::Poshuku;
 
-bool PluginBase::OnHandleDownloadRequested (QWebPage*, const QNetworkRequest&)
+bool PluginBase::HandleContentsChanged (QWebPage*)
 {
 	return false;
 }
 
-bool PluginBase::OnGotUnsupportedContent (QWebPage*, QNetworkReply*)
+bool PluginBase::HandleDatabaseQuotaExceeded (QWebPage*, QWebFrame*, QString)
+{
+	return false;
+}
+
+bool PluginBase::HandleDownloadRequested (QWebPage*, const QNetworkRequest&)
+{
+	return false;
+}
+
+bool PluginBase::HandleFrameCreated (QWebPage*, QWebFrame*)
+{
+	return false;
+}
+
+bool PluginBase::HandleGeometryChangeRequested (QWebPage*, const QRect&)
+{
+	return false;
+}
+
+bool PluginBase::HandleLinkClicked (QWebPage*, const QUrl&)
+{
+	return false;
+}
+
+bool PluginBase::HandleLinkHovered (QWebPage*, const QString&,
+		const QString&, const QString&)
+{
+	return false;
+}
+
+bool PluginBase::HandleLoadFinished (QWebPage*, bool)
+{
+	return false;
+}
+
+bool PluginBase::HandleLoadProgress (QWebPage*, int)
+{
+	return false;
+}
+
+bool PluginBase::HandleLoadStarted (QWebPage*)
+{
+	return false;
+}
+
+bool PluginBase::HandleMenuBarVisibilityChangeRequested (QWebPage*, bool)
+{
+	return false;
+}
+
+bool PluginBase::HandleMicroFocusChanged (QWebPage*)
+{
+	return false;
+}
+
+bool PluginBase::HandlePrintRequested (QWebPage*, QWebFrame*)
+{
+	return false;
+}
+
+bool PluginBase::HandleRepaintRequested (QWebPage*, const QRect&)
+{
+	return false;
+}
+
+bool PluginBase::HandleRestoreFrameStateRequested (QWebPage*, QWebFrame*)
+{
+	return false;
+}
+
+bool PluginBase::HandleSaveFrameStateRequested (QWebPage*, QWebFrame*, QWebHistoryItem*)
+{
+	return false;
+}
+
+bool PluginBase::HandleScrollRequested (QWebPage*, int, int, const QRect&)
+{
+	return false;
+}
+
+bool PluginBase::HandleSelectionChanged (QWebPage*)
+{
+	return false;
+}
+
+bool PluginBase::HandleStatusBarMessage (QWebPage*, const QString&)
+{
+	return false;
+}
+
+bool PluginBase::HandleStatusBarVisibilityChangeRequested (QWebPage*, bool)
+{
+	return false;
+}
+
+bool PluginBase::HandleToolBarVisibilityChangeRequested (QWebPage*, bool)
+{
+	return false;
+}
+
+bool PluginBase::HandleUnsupportedContent (QWebPage*, QNetworkReply*)
+{
+	return false;
+}
+
+bool PluginBase::HandleWindowCloseRequested (QWebPage*)
 {
 	return false;
 }

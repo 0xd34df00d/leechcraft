@@ -18,14 +18,101 @@ CustomWebPage::CustomWebPage (QObject *parent)
 {
 	setForwardUnsupportedContent (true);
 	setNetworkAccessManager (Core::Instance ().GetNetworkAccessManager ());
+
+	connect (this,
+			SIGNAL (contentsChanged ()),
+			this,
+			SLOT (handleContentsChanged ()));
+	connect (this,
+			SIGNAL (databaseQuotaExceeded (QWebFrame*, QString)),
+			this,
+			SLOT (handleDatabaseQuotaExceeded (QWebFrame*, QString)));
 	connect (this,
 			SIGNAL (downloadRequested (const QNetworkRequest&)),
 			this,
 			SLOT (handleDownloadRequested (const QNetworkRequest&)));
 	connect (this,
+			SIGNAL (frameCreated (QWebFrame*)),
+			this,
+			SLOT (handleFrameCreated (QWebFrame*)));
+	connect (this,
+			SIGNAL (geometryChangeRequested (const QRect&)),
+			this,
+			SLOT (handleGeometryChangeRequested (const QRect&)));
+	connect (this,
+			SIGNAL (linkClicked (const QUrl&)),
+			this,
+			SLOT (handleLinkClicked (const QUrl&)));
+	connect (this,
+			SIGNAL (linkHovered (const QString&,
+					const QString&, const QString&)),
+			this,
+			SLOT (handleLinkHovered (const QString&,
+					const QString&, const QString&)));
+	connect (this,
+			SIGNAL (loadFinished (bool)),
+			this,
+			SLOT (handleLoadFinished (bool)));
+	connect (this,
+			SIGNAL (loadProgress (int)),
+			this,
+			SLOT (handleLoadProgress (int)));
+	connect (this,
+			SIGNAL (loadStarted ()),
+			this,
+			SLOT (handleLoadStarted ()));
+	connect (this,
+			SIGNAL (menuBarVisibilityChangeRequested (bool)),
+			this,
+			SLOT (handleMenuBarVisibilityChangeRequested (bool)));
+	connect (this,
+			SIGNAL (microFocusChanged ()),
+			this,
+			SLOT (handleMicroFocusChanged ()));
+	connect (this,
+			SIGNAL (printRequested (QWebFrame*)),
+			this,
+			SLOT (handlePrintRequested (QWebFrame*)));
+	connect (this,
+			SIGNAL (repaintRequested (const QRect&)),
+			this,
+			SLOT (handleRepaintRequested (const QRect&)));
+	connect (this,
+			SIGNAL (restoreFrameStateRequested (QWebFrame*)),
+			this,
+			SLOT (handleRestoreFrameStateRequested (QWebFrame*)));
+	connect (this,
+			SIGNAL (saveFrameStateRequested (QWebFrame*, QWebHistoryItem*)),
+			this,
+			SLOT (handleSaveFrameStateRequested (QWebFrame*, QWebHistoryItem*)));
+	connect (this,
+			SIGNAL (scrollRequested (int, int, const QRect&)),
+			this,
+			SLOT (handleScrollRequested (int, int, const QRect&)));
+	connect (this,
+			SIGNAL (selectionChanged ()),
+			this,
+			SLOT (handleSelectionChanged ()));
+	connect (this,
+			SIGNAL (statusBarMessage (const QString&)),
+			this,
+			SLOT (handleStatusBarMessage (const QString&)));
+	connect (this,
+			SIGNAL (statusBarVisibilityChangeRequested (bool)),
+			this,
+			SLOT (handleStatusBarVisibilityChangeRequested (bool)));
+	connect (this,
+			SIGNAL (toolBarVisibilityChangeRequested (bool)),
+			this,
+			SLOT (handleToolBarVisiblityChangeRequested (bool)));
+	connect (this,
 			SIGNAL (unsupportedContent (QNetworkReply*)),
 			this,
-			SLOT (gotUnsupportedContent (QNetworkReply*)));
+			SLOT (handleUnsupportedContent (QNetworkReply*)));
+	connect (this,
+			SIGNAL (windowCloseRequested ()),
+			this,
+			SLOT (handleWindowCloseRequested ()));
 }
 
 CustomWebPage::~CustomWebPage ()
@@ -42,10 +129,211 @@ void CustomWebPage::SetModifiers (Qt::KeyboardModifiers modifiers)
 	Modifiers_ = modifiers;
 }
 
-void CustomWebPage::gotUnsupportedContent (QNetworkReply *reply)
+void CustomWebPage::handleContentsChanged ()
 {
 	if (Core::Instance ().GetPluginManager ()->
-			OnGotUnsupportedContent (this, reply))
+			HandleContentsChanged (this))
+		return;
+
+	emit filteredContentsChanged ();
+}
+
+void CustomWebPage::handleDatabaseQuotaExceeded (QWebFrame *frame, QString string)
+{
+	if (Core::Instance ().GetPluginManager ()->
+			HandleDatabaseQuotaExceeded (this, frame, string))
+		return;
+
+	emit filteredDatabaseQuotaExceeded (frame, string);
+}
+
+void CustomWebPage::handleDownloadRequested (const QNetworkRequest& request)
+{
+	if (Core::Instance ().GetPluginManager ()->
+			HandleDownloadRequested (this, request))
+		return;
+
+	LeechCraft::DownloadEntity e =
+	{
+		request.url ().toString ().toUtf8 (),
+		QString (),
+		QString (),
+		LeechCraft::FromUserInitiated,
+		QVariant ()
+	};
+	emit gotEntity (e);
+
+	emit filteredDownloadRequested (request);
+}
+
+void CustomWebPage::handleFrameCreated (QWebFrame *frame)
+{
+	if (Core::Instance ().GetPluginManager ()->
+			HandleFrameCreated (this, frame))
+		return;
+
+	emit filteredFrameCreated (frame);
+}
+
+void CustomWebPage::handleGeometryChangeRequested (const QRect& rect)
+{
+	if (Core::Instance ().GetPluginManager ()->
+			HandleGeometryChangeRequested (this, rect))
+		return;
+	
+	emit filteredGeometryChangeRequested (rect);
+}
+
+void CustomWebPage::handleLinkClicked (const QUrl& url)
+{
+	if (Core::Instance ().GetPluginManager ()->
+			HandleLinkClicked (this, url))
+		return;
+
+	emit filteredLinkClicked (url);
+}
+
+void CustomWebPage::handleLinkHovered (const QString& link,
+		const QString& title, const QString& context)
+{
+	if (Core::Instance ().GetPluginManager ()->
+			HandleLinkHovered (this, link, title, context))
+		return;
+
+	emit filteredLinkHovered (link, title, context);
+}
+
+void CustomWebPage::handleLoadFinished (bool ok)
+{
+	if (Core::Instance ().GetPluginManager ()->
+			HandleLoadFinished (this, ok))
+		return;
+
+	emit filteredLoadFinished (ok);
+}
+
+void CustomWebPage::handleLoadProgress (int progress)
+{
+	if (Core::Instance ().GetPluginManager ()->
+			HandleLoadProgress (this, progress))
+		return;
+
+	emit filteredLoadProgress (progress);
+}
+
+void CustomWebPage::handleLoadStarted ()
+{
+	if (Core::Instance ().GetPluginManager ()->
+			HandleLoadStarted (this))
+		return;
+
+	emit filteredLoadStarted ();
+}
+
+void CustomWebPage::handleMenuBarVisibilityChangeRequested (bool vis)
+{
+	if (Core::Instance ().GetPluginManager ()->
+			HandleMenuBarVisibilityChangeRequested (this, vis))
+		return;
+
+	emit filteredMenuBarVisibilityChangeRequested (vis);
+}
+
+void CustomWebPage::handleMicroFocusChanged ()
+{
+	if (Core::Instance ().GetPluginManager ()->
+			HandleMicroFocusChanged (this))
+		return;
+
+	emit filteredMicroFocusChanged ();
+}
+
+void CustomWebPage::handlePrintRequested (QWebFrame *frame)
+{
+	if (Core::Instance ().GetPluginManager ()->
+			HandlePrintRequested (this, frame))
+		return;
+
+	emit filteredPrintRequested (frame);
+}
+
+void CustomWebPage::handleRepaintRequested (const QRect& rect)
+{
+	if (Core::Instance ().GetPluginManager ()->
+			HandleRepaintRequested (this, rect))
+		return;
+
+	emit filteredRepaintRequested (rect);
+}
+
+void CustomWebPage::handleRestoreFrameStateRequested (QWebFrame *frame)
+{
+	if (Core::Instance ().GetPluginManager ()->
+			HandleRestoreFrameStateRequested (this, frame))
+		return;
+
+	emit filteredRestoreFrameStateRequested (frame);
+}
+
+void CustomWebPage::handleSaveFrameStateRequested (QWebFrame *frame,
+		QWebHistoryItem *item)
+{
+	if (Core::Instance ().GetPluginManager ()->
+			HandleSaveFrameStateRequested (this, frame, item))
+		return;
+
+	emit filteredSaveFrameStateRequested (frame, item);
+}
+
+void CustomWebPage::handleScrollRequested (int dx, int dy, const QRect& rect)
+{
+	if (Core::Instance ().GetPluginManager ()->
+			HandleScrollRequested (this, dx, dy, rect))
+		return;
+
+	emit filteredScrollRequested (dx, dy, rect);
+}
+
+void CustomWebPage::handleSelectionChanged ()
+{
+	if (Core::Instance ().GetPluginManager ()->
+			HandleSelectionChanged (this))
+		return;
+
+	emit filteredSelectionChanged ();
+}
+
+void CustomWebPage::handleStatusBarMessage (const QString& msg)
+{
+	if (Core::Instance ().GetPluginManager ()->
+			HandleStatusBarMessage (this, msg))
+		return;
+
+	emit filteredStatusBarMessage (msg);
+}
+
+void CustomWebPage::handleStatusBarVisibilityChangeRequested (bool vis)
+{
+	if (Core::Instance ().GetPluginManager ()->
+			HandleStatusBarVisibilityChangeRequested (this, vis))
+		return;
+
+	emit filteredStatusBarVisibilityChangeRequested (vis);
+}
+
+void CustomWebPage::handleToolBarVisiblityChangeRequested (bool vis)
+{
+	if (Core::Instance ().GetPluginManager ()->
+			HandleToolBarVisibilityChangeRequested (this, vis))
+		return;
+
+	emit filteredToolBarVisiblityChangeRequested (vis);
+}
+
+void CustomWebPage::handleUnsupportedContent (QNetworkReply *reply)
+{
+	if (Core::Instance ().GetPluginManager ()->
+			HandleUnsupportedContent (this, reply))
 		return;
 
 	switch (reply->error ())
@@ -117,23 +405,17 @@ void CustomWebPage::gotUnsupportedContent (QNetworkReply *reply)
 			}
 			break;
 	}
+
+	emit filteredUnsupportedContent (reply);
 }
 
-void CustomWebPage::handleDownloadRequested (const QNetworkRequest& request)
+void CustomWebPage::handleWindowCloseRequested ()
 {
 	if (Core::Instance ().GetPluginManager ()->
-			OnHandleDownloadRequested (this, request))
+			HandleWindowCloseRequested (this))
 		return;
 
-	LeechCraft::DownloadEntity e =
-	{
-		request.url ().toString ().toUtf8 (),
-		QString (),
-		QString (),
-		LeechCraft::FromUserInitiated,
-		QVariant ()
-	};
-	emit gotEntity (e);
+	emit filteredWindowCloseRequested ();
 }
 
 bool CustomWebPage::acceptNavigationRequest (QWebFrame *frame,

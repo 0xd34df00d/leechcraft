@@ -37,15 +37,121 @@ namespace LeechCraft
 			virtual void Init (IProxyObject *proxy) = 0;
 
 			/** See the official Qt docs for the
-			 * QWebPage::handleDownloadRequested().
+			 * QWebPage::contentsChanged() signal.
 			 */
-			virtual bool OnHandleDownloadRequested (QWebPage*,
+			virtual bool HandleContentsChanged (QWebPage*);
+
+			/** See the official Qt docs for the
+			 * QWebPage::databaseQuotaExceeded() signal.
+			 */
+			virtual bool HandleDatabaseQuotaExceeded (QWebPage*, QWebFrame*, QString);
+
+			/** See the official Qt docs for the
+			 * QWebPage::downloadRequested() signal.
+			 */
+			virtual bool HandleDownloadRequested (QWebPage*,
 					const QNetworkRequest&);
 
 			/** See the official Qt docs for the
-			 * QWebPage::gotUnsupportedContent().
+			 * QWebPage::frameCreated() signal.
 			 */
-			virtual bool OnGotUnsupportedContent (QWebPage*, QNetworkReply*);
+			virtual bool HandleFrameCreated (QWebPage*, QWebFrame*);
+
+			/** See the official Qt docs for the
+			 * QWebPage::geometryChangeRequested() signal.
+			 */
+			virtual bool HandleGeometryChangeRequested (QWebPage*, const QRect&);
+
+			/** See the official Qt docs for the
+			 * QWebPage::linkClicked() signal.
+			 */
+			virtual bool HandleLinkClicked (QWebPage*, const QUrl&);
+
+			/** See the official Qt docs for the
+			 * QWebPage::linkHovered() signal.
+			 */
+			virtual bool HandleLinkHovered (QWebPage*,
+					const QString&, const QString&, const QString&);
+
+			/** See the official Qt docs for the
+			 * QWebPage::loadFinished() signal.
+			 */
+			virtual bool HandleLoadFinished (QWebPage*, bool);
+
+			/** See the official Qt docs for the
+			 * QWebPage::loadProgress() signal.
+			 */
+			virtual bool HandleLoadProgress (QWebPage*, int);
+
+			/** See the official Qt docs for the
+			 * QWebPage::loadStarted() signal.
+			 */
+			virtual bool HandleLoadStarted (QWebPage*);
+
+			/** See the official Qt docs for the
+			 * QWebPage::menuBarVisibilityChangeRequested() signal.
+			 */
+			virtual bool HandleMenuBarVisibilityChangeRequested (QWebPage*, bool);
+
+			/** See the official Qt docs for the
+			 * QWebPage::microFocusChanged() signal.
+			 */
+			virtual bool HandleMicroFocusChanged (QWebPage*);
+
+			/** See the official Qt docs for the
+			 * QWebPage::printRequested() signal.
+			 */
+			virtual bool HandlePrintRequested (QWebPage*, QWebFrame*);
+
+			/** See the official Qt docs for the
+			 * QWebPage::repaintRequested() signal.
+			 */
+			virtual bool HandleRepaintRequested (QWebPage*, const QRect&);
+
+			/** See the official Qt docs for the
+			 * QWebPage::restoreFrameStateRequested() signal.
+			 */
+			virtual bool HandleRestoreFrameStateRequested (QWebPage*, QWebFrame*);
+
+			/** See the official Qt docs for the
+			 * QWebPage::saveFrameStateRequested() signal.
+			 */
+			virtual bool HandleSaveFrameStateRequested (QWebPage*, QWebFrame*, QWebHistoryItem*);
+
+			/** See the official Qt docs for the
+			 * QWebPage::scrollRequested() signal.
+			 */
+			virtual bool HandleScrollRequested (QWebPage*, int, int, const QRect&);
+
+			/** See the official Qt docs for the
+			 * QWebPage::selectionChanged() signal.
+			 */
+			virtual bool HandleSelectionChanged (QWebPage*);
+
+			/** See the official Qt docs for the
+			 * QWebPage::statusBarMessage() signal.
+			 */
+			virtual bool HandleStatusBarMessage (QWebPage*, const QString&);
+
+			/** See the official Qt docs for the
+			 * QWebPage::statusBarVisibilityChangeRequested() signal.
+			 */
+			virtual bool HandleStatusBarVisibilityChangeRequested (QWebPage*, bool);
+
+			/** See the official Qt docs for the
+			 * QWebPage::toolBarVisibilityChangeRequested() signal.
+			 */
+			virtual bool HandleToolBarVisibilityChangeRequested (QWebPage*, bool);
+
+			/** See the official Qt docs for the
+			 * QWebPage::unsupportedContent() signal.
+			 */
+			virtual bool HandleUnsupportedContent (QWebPage*, QNetworkReply*);
+
+			/** See the official Qt docs for the
+			 * QWebPage::windowCloseRequested() signal.
+			 */
+			virtual bool HandleWindowCloseRequested (QWebPage*);
 
 			/** See the official Qt docs for the
 			 * QWebPage::acceptNavigationRequest().

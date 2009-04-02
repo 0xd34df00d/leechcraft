@@ -14,8 +14,30 @@ public:
 	void AddPlugin (QObject*);
 
 	void Init (LeechCraft::Poshuku::IProxyObject*);
-	bool OnHandleDownloadRequested (QWebPage*, const QNetworkRequest&);
-	bool OnGotUnsupportedContent (QWebPage*, QNetworkReply*);
+	bool HandleContentsChanged (QWebPage*);
+	bool HandleDatabaseQuotaExceeded (QWebPage*, QWebFrame*, QString);
+	bool HandleDownloadRequested (QWebPage*, const QNetworkRequest&);
+	bool HandleFrameCreated (QWebPage*, QWebFrame*);
+	bool HandleGeometryChangeRequested (QWebPage*, const QRect&);
+	bool HandleLinkClicked (QWebPage*, const QUrl&);
+	bool HandleLinkHovered (QWebPage*, const QString&,
+			const QString&, const QString&);
+	bool HandleLoadFinished (QWebPage*, bool);
+	bool HandleLoadProgress (QWebPage*, int);
+	bool HandleLoadStarted (QWebPage*);
+	bool HandleMenuBarVisibilityChangeRequested (QWebPage*, bool);
+	bool HandleMicroFocusChanged (QWebPage*);
+	bool HandlePrintRequested (QWebPage*, QWebFrame*);
+	bool HandleRepaintRequested (QWebPage*, const QRect&);
+	bool HandleRestoreFrameStateRequested (QWebPage*, QWebFrame*);
+	bool HandleSaveFrameStateRequested (QWebPage*, QWebFrame*, QWebHistoryItem*);
+	bool HandleScrollRequested (QWebPage*, int, int, const QRect&);
+	bool HandleSelectionChanged (QWebPage*);
+	bool HandleStatusBarMessage (QWebPage*, const QString&);
+	bool HandleStatusBarVisibilityChangeRequested (QWebPage*, bool);
+	bool HandleToolBarVisibilityChangeRequested (QWebPage*, bool);
+	bool HandleUnsupportedContent (QWebPage*, QNetworkReply*);
+	bool HandleWindowCloseRequested (QWebPage*);
 	bool OnAcceptNavigationRequest (QWebPage*, QWebFrame*,
 			const QNetworkRequest&, QWebPage::NavigationType);
 	QString OnChooseFile (QWebPage*, QWebFrame*, const QString&);
