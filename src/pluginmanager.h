@@ -27,6 +27,14 @@ namespace LeechCraft
 			void Print (int = 0);
 		};
 
+		struct Finder
+		{
+			QObject *Object_;
+
+			Finder (QObject*);
+			bool operator() (DepTreeItem_ptr) const;
+		};
+
 		QList<DepTreeItem_ptr> Roots_;
 		typedef boost::shared_ptr<QPluginLoader> QPluginLoader_ptr;
         typedef QList<QPluginLoader_ptr> PluginsContainer_t;
@@ -87,6 +95,7 @@ namespace LeechCraft
         void CheckPlugins ();
 
 		QList<PluginsContainer_t::const_iterator> FindProviders (const QString&) const;
+		QList<PluginsContainer_t::const_iterator> FindProviders (const QByteArray&) const;
 		DepTreeItem_ptr GetDependency (QObject*);
 
 		/** Calculates the deps.

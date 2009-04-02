@@ -43,6 +43,16 @@ void LeechCraft::PluginManager::DepTreeItem::Print (int margin)
 		item->Print (margin + 2);
 }
 
+LeechCraft::PluginManager::Finder::Finder (QObject *o)
+: Object_ (o)
+{
+}
+
+bool LeechCraft::PluginManager::Finder::operator() (LeechCraft::PluginManager::DepTreeItem_ptr item) const
+{
+	return Object_ == item->Plugin_;
+}
+
 LeechCraft::PluginManager::PluginManager (QObject *parent)
 : QAbstractItemModel (parent)
 {
@@ -242,6 +252,20 @@ QList<LeechCraft::PluginManager::PluginsContainer_t::const_iterator>
 	return result;
 }
 
+QList<LeechCraft::PluginManager::PluginsContainer_t::const_iterator>
+	LeechCraft::PluginManager::FindProviders (const QByteArray& expected) const
+{
+	QList<PluginsContainer_t::const_iterator> result;
+	for (PluginsContainer_t::const_iterator i = Plugins_.begin (),
+			end = Plugins_.end (); i != end; ++i)
+	{
+		IPlugin2 *ip2 = qobject_cast<IPlugin2*> ((*i)->instance ());
+		if (ip2 && ip2->GetPluginClass () == expected)
+			result << i;
+	}
+	return result;
+}
+
 LeechCraft::PluginManager::DepTreeItem_ptr
 	LeechCraft::PluginManager::GetDependency
 		(QObject *entity)
@@ -355,6 +379,26 @@ LeechCraft::PluginManager::DepTreeItem_ptr
 		}
 	}
 
+	IPluginReady *ipr = qobject_cast<IPluginReady*> (entity);
+	if (ipr)
+	{
+		QList<PluginsContainer_t::const_iterator> providers =
+			FindProviders (ipr->GetExpectedPluginClass ());
+		Q_FOREACH (PluginsContainer_t::const_iterator p,
+				providers)
+		{
+			// It's initialized already.
+			if (p < i)
+			{
+				DepTreeItem_ptr depprov = GetDependency ((*p)->instance ());
+				if (depprov)
+					newDep->Used_.insert ("__lc_plugin2", depprov);
+			}
+			else if (p > i)
+				newDep->Used_.insert ("__lc_plugin2", CalculateSingle (p));
+		}
+	}
+
 	return newDep;
 }
 
@@ -380,7 +424,8 @@ bool LeechCraft::PluginManager::InitializeSingle (LeechCraft::PluginManager::Dep
 				{
 					wasSuccessful = true;
 
-					qobject_cast<IInfo*> ((*i)->Plugin_)->SetProvider ((*i)->Plugin_, key);;
+					qobject_cast<IInfo*> (item->Plugin_)->
+						SetProvider ((*i)->Plugin_, key);;
 				}
 				else
 					item->Needed_.remove (key, *i);
@@ -403,7 +448,12 @@ bool LeechCraft::PluginManager::InitializeSingle (LeechCraft::PluginManager::Dep
 			if (!(*i)->Initialized_)
 			{
 				if (InitializeSingle (*i))
-					qobject_cast<IInfo*> ((*i)->Plugin_)->SetProvider ((*i)->Plugin_, key);
+					if (key == "__lc_plugin2")
+						qobject_cast<IPluginReady*> (item->Plugin_)->
+							AddPlugin ((*i)->Plugin_);
+					else
+						qobject_cast<IInfo*> (item->Plugin_)->
+							SetProvider ((*i)->Plugin_, key);
 				else
 					item->Used_.remove (key, *i);
 			}
