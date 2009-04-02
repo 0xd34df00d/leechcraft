@@ -174,6 +174,92 @@ bool CustomWebPage::acceptNavigationRequest (QWebFrame *frame,
 	return QWebPage::acceptNavigationRequest (frame, request, type);
 }
 
+QString CustomWebPage::chooseFile (QWebFrame *frame, const QString& suggested)
+{
+	try
+	{
+		return Core::Instance ().GetPluginManager ()->
+			OnChooseFile (this, frame, suggested);
+	}
+	catch (...)
+	{
+		return QWebPage::chooseFile (frame, suggested);
+	}
+}
+
+QObject* CustomWebPage::createPlugin (const QString& clsid, const QUrl& url,
+		const QStringList& names, const QStringList& values)
+{
+	try
+	{
+		return Core::Instance ().GetPluginManager ()->
+			OnCreatePlugin (this, clsid, url, names, values);
+	}
+	catch (...)
+	{
+		return QWebPage::createPlugin (clsid, url, names, values);
+	}
+}
+
+QWebPage* CustomWebPage::createWindow (QWebPage::WebWindowType type)
+{
+	try
+	{
+		return Core::Instance ().GetPluginManager ()->
+			OnCreateWindow (this, type);
+	}
+	catch (...)
+	{
+		return QWebPage::createWindow (type);
+	}
+}
+
+void CustomWebPage::javaScriptAlert (QWebFrame *frame, const QString& msg)
+{
+	if (Core::Instance ().GetPluginManager ()->
+			OnJavaScriptAlert (this, frame, msg))
+		return;
+	else
+		QWebPage::javaScriptAlert (frame, msg);
+}
+
+bool CustomWebPage::javaScriptConfirm (QWebFrame *frame, const QString& msg)
+{
+	try
+	{
+		return Core::Instance ().GetPluginManager ()->
+			OnJavaScriptConfirm (this, frame, msg);
+	}
+	catch (...)
+	{
+		return QWebPage::javaScriptConfirm (frame, msg);
+	}
+}
+
+void CustomWebPage::javaScriptConsoleMessage (const QString& msg, int line,
+		const QString& sid)
+{
+	if (Core::Instance ().GetPluginManager ()->
+			OnJavaScriptConsoleMessage (this, msg, line, sid))
+		return;
+	else
+		QWebPage::javaScriptConsoleMessage (msg, line, sid);
+}
+
+bool CustomWebPage::javaScriptPrompt (QWebFrame *frame, const QString& pr,
+		const QString& def, QString *result)
+{
+	try
+	{
+		return Core::Instance ().GetPluginManager ()->
+			OnJavaScriptPrompt (this, frame, pr, def, result);
+	}
+	catch (...)
+	{
+		return QWebPage::javaScriptPrompt (frame, pr, def, result);
+	}
+}
+
 QString CustomWebPage::userAgentForUrl (const QUrl& url) const
 {
 	try

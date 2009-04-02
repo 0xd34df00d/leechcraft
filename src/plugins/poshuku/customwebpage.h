@@ -24,6 +24,14 @@ private slots:
 protected:
 	virtual bool acceptNavigationRequest (QWebFrame*,
 			const QNetworkRequest&, QWebPage::NavigationType);
+	virtual QString chooseFile (QWebFrame*, const QString&);
+	virtual QObject* createPlugin (const QString&, const QUrl&,
+			const QStringList&, const QStringList&);
+	virtual QWebPage* createWindow (WebWindowType);
+	virtual void javaScriptAlert (QWebFrame*, const QString&);
+	virtual bool javaScriptConfirm (QWebFrame*, const QString&);
+	virtual void javaScriptConsoleMessage (const QString&, int, const QString&);
+	virtual bool javaScriptPrompt (QWebFrame*, const QString&, const QString&, QString*);
 	virtual QString userAgentForUrl (const QUrl&) const;
 private:
 	QWebFrame* FindFrame (const QUrl&);

@@ -18,6 +18,16 @@ public:
 	bool OnGotUnsupportedContent (QWebPage*, QNetworkReply*);
 	bool OnAcceptNavigationRequest (QWebPage*, QWebFrame*,
 			const QNetworkRequest&, QWebPage::NavigationType);
+	QString OnChooseFile (QWebPage*, QWebFrame*, const QString&);
+	QObject* OnCreatePlugin (QWebPage*, const QString&, const QUrl&,
+			const QStringList&, const QStringList&);
+	QWebPage* OnCreateWindow (QWebPage*, QWebPage::WebWindowType);
+	bool OnJavaScriptAlert (QWebPage*, QWebFrame*, const QString&);
+	bool OnJavaScriptConfirm (QWebPage*, QWebFrame*, const QString&);
+	bool OnJavaScriptConsoleMessage (QWebPage*, const QString&,
+			int, const QString&);
+	bool OnJavaScriptPrompt (QWebPage*, QWebFrame*, const QString&,
+			const QString&, QString*);
 	QString OnUserAgentForUrl (const QWebPage*, const QUrl&);
 };
 

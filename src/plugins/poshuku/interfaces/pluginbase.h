@@ -36,71 +36,64 @@ namespace LeechCraft
 			 */
 			virtual void Init (IProxyObject *proxy) = 0;
 
-			/** @brief Called in the beginning of handling of download
-			 * request.
-			 *
-			 * This function is called in the beginning of handling
-			 * user's request for a download of an object.
-			 * The default implementation does nothing and returns
-			 * false.
-			 *
-			 * @param[in] page Pointer to the QWebPage that generated
-			 * this event.
-			 * @param[in] request The QNetworkRequest in question.
-			 * @return Whether the processing should be stopped.
+			/** See the official Qt docs for the
+			 * QWebPage::handleDownloadRequested().
 			 */
-			virtual bool OnHandleDownloadRequested (QWebPage *page,
-					const QNetworkRequest& request);
+			virtual bool OnHandleDownloadRequested (QWebPage*,
+					const QNetworkRequest&);
 
-			/** @brief Called in the beginning of handling of
-			 * unsupported content.
-			 *
-			 * This function is called when the browser recieves the
-			 * content it can't handle.
-			 *
-			 * The default implementation does nothing and returns
-			 * false.
-			 *
-			 * @param[in] page Pointer to the QWebPage that generated
-			 * this event.
-			 * @param[in] reply The QNetworkReply associated with the
-			 * unsupported content..
-			 * @return Whether the processing should be stopped.
+			/** See the official Qt docs for the
+			 * QWebPage::gotUnsupportedContent().
 			 */
-			virtual bool OnGotUnsupportedContent (QWebPage *page,
-					QNetworkReply *reply);
+			virtual bool OnGotUnsupportedContent (QWebPage*, QNetworkReply*);
 
-			/** @brief Called when a navigation request should be either
-			 * accepter or rejected.
-			 *
-			 * If this function returns true, the request is immidiately
-			 * rejected, otherwise it is further processed with other
-			 * plugins and then via Poshuku core.
-			 *
-			 * @param[in] page Pointer to the QWebPage that generated
-			 * this event.
-			 * @param[in] frame Pointer to the QWebFrame that issued the
-			 * request.
-			 * @param[in] request Request in question.
-			 * @param[in] type The navigation type.
-			 * @return Whether the request should be rejected or
-			 * processed further.
+			/** See the official Qt docs for the
+			 * QWebPage::acceptNavigationRequest().
 			 */
-			bool OnAcceptNavigationRequest (QWebPage *page,
-					QWebFrame *frame,
-					const QNetworkRequest& request,
-					QWebPage::NavigationType type);
+			bool OnAcceptNavigationRequest (QWebPage*,
+					QWebFrame*,
+					const QNetworkRequest&,
+					QWebPage::NavigationType);
 
-			/** @brief Called when something requests user agent.
-			 *
-			 * Returns the user agent or throws anything by default.
-			 *
-			 * @param[in] page Pointer to the QWebPage that generated
-			 * this event.
-			 * @param[in] url URL that requests the user agent.
-			 * @return User agent for the URL.
+			/** See the official Qt docs for the QWebPage::chooseFile().
 			 */
-			QString OnUserAgentForUrl (const QWebPage *page, const QUrl& url);
+			QString OnChooseFile (QWebPage*, QWebFrame*, const QString&);
+
+			/** See the official Qt docs for the QWebPage::createPlugin().
+			 */
+			QObject* OnCreatePlugin (QWebPage*, const QString&, const QUrl&,
+					const QStringList&, const QStringList&);
+
+			/** See the official Qt docs for the QWebPage::createWindow().
+			 */
+			QWebPage* OnCreateWindow (QWebPage*, QWebPage::WebWindowType);
+
+			/** See the official Qt docs for the
+			 * QWebPage::javaScriptAlert().
+			 */
+			bool OnJavaScriptAlert (QWebPage*, QWebFrame*, const QString&);
+
+			/** See the official Qt docs for the
+			 * QWebPage::javaScriptConfirm().
+			 */
+			bool OnJavaScriptConfirm (QWebPage*, QWebFrame*, const QString&);
+
+			/** See the official Qt docs for the
+			 * QWebPage::javaScriptConsoleMessage().
+			 */
+			bool OnJavaScriptConsoleMessage (QWebPage*, const QString&,
+					int, const QString&);
+
+			/** See the official Qt docs for the
+			 * QWebPage::javaScriptPrompt().
+			 */
+			bool OnJavaScriptPrompt (QWebPage*, QWebFrame*, const QString&,
+					const QString&, QString*);
+
+			/** See the official Qt docs for the
+			 * QWebPage::userAgentForUrl().
+			 */
+			QString OnUserAgentForUrl (const QWebPage*, const QUrl&);
 		};
 
 		typedef PluginBase *PluginBase_ptr;

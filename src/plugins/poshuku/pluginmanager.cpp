@@ -76,6 +76,34 @@ BE (OnGotUnsupportedContent, PARSEQ);
 BE (OnAcceptNavigationRequest, PARSEQ);
 #undef PARSEQ
 
+#define PARSEQ (QWebPage*)(QWebFrame*)(const QString&)
+CE (OnChooseFile, PARSEQ, QString);
+#undef PARSEQ
+
+#define PARSEQ (QWebPage*)(const QString&)(const QUrl&)(const QStringList&)(const QStringList&)
+CE (OnCreatePlugin, PARSEQ, QObject*);
+#undef PARSEQ
+
+#define PARSEQ (QWebPage*)(QWebPage::WebWindowType)
+CE (OnCreateWindow, PARSEQ, QWebPage*);
+#undef PARSEQ
+
+#define PARSEQ (QWebPage*)(QWebFrame*)(const QString&)
+BE (OnJavaScriptAlert, PARSEQ);
+#undef PARSEQ
+
+#define PARSEQ (QWebPage*)(QWebFrame*)(const QString&)
+CE (OnJavaScriptConfirm, PARSEQ, bool);
+#undef PARSEQ
+
+#define PARSEQ (QWebPage*)(const QString&)(int)(const QString&)
+BE (OnJavaScriptConsoleMessage, PARSEQ);
+#undef PARSEQ
+
+#define PARSEQ (QWebPage*)(QWebFrame*)(const QString&)(const QString&)(QString*)
+CE (OnJavaScriptPrompt, PARSEQ, bool);
+#undef PARSEQ
+
 #define PARSEQ (const QWebPage*)(const QUrl&)
 CE (OnUserAgentForUrl, PARSEQ, QString);
 #undef PARSEQ
