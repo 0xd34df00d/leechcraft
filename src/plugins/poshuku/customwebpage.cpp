@@ -551,7 +551,7 @@ QString CustomWebPage::userAgentForUrl (const QUrl& url) const
 	}
 	catch (...)
 	{
-		return QString ("LeechCraft::Poshuku/") + QWebPage::userAgentForUrl (url);
+		return QWebPage::userAgentForUrl (url) + "/Poshuku";
 	}
 }
 
