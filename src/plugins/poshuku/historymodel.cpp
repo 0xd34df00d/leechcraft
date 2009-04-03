@@ -1,6 +1,7 @@
 #include "historymodel.h"
 #include <algorithm>
 #include <QTimer>
+#include <QtDebug>
 #include <plugininterface/proxy.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"

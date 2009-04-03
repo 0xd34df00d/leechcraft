@@ -36,15 +36,13 @@ public:
 	HistoryModel (QObject* = 0);
 	virtual ~HistoryModel ();
 
-    virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
-    virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-    virtual Qt::ItemFlags flags (const QModelIndex&) const;
-    virtual QVariant headerData (int, Qt::Orientation,
-			int = Qt::DisplayRole) const;
-    virtual QModelIndex index (int, int,
-			const QModelIndex& = QModelIndex()) const;
-    virtual QModelIndex parent (const QModelIndex&) const;
-    virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
+	int columnCount (const QModelIndex& = QModelIndex ()) const;
+	QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
+	Qt::ItemFlags flags (const QModelIndex&) const;
+	QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
+	QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
+	QModelIndex parent (const QModelIndex&) const;
+	int rowCount (const QModelIndex& = QModelIndex ()) const;
 
 	void AddItem (const QString&, const QString&, const QDateTime&);
 private slots:

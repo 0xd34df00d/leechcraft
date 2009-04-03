@@ -71,7 +71,6 @@ public:
 	PluginManager* GetPluginManager () const;
 private:
 	void RestoreSession (bool);
-	void ScheduleSaveSession ();
 	void HandleHistory (QWebView*);
 public slots:
 	void importXbel ();

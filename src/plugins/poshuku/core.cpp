@@ -295,7 +295,7 @@ void Core::Unregister (BrowserWidget *widget)
 
 	Widgets_.erase (pos);
 
-	ScheduleSaveSession ();
+	saveSession ();
 }
 
 void Core::RestoreSession (bool ask)
@@ -334,16 +334,6 @@ void Core::RestoreSession (bool ask)
 	}
 	settings.remove ("");
 	settings.endArray ();
-}
-
-void Core::ScheduleSaveSession ()
-{
-	if (SaveSessionScheduled_)
-		return;
-
-	QTimer::singleShot (1000, this, SLOT (saveSession ()));
-
-	SaveSessionScheduled_ = true;
 }
 
 void Core::HandleHistory (QWebView *view)
@@ -442,14 +432,14 @@ void Core::handleTitleChanged (const QString& newTitle)
 {
 	emit changeTabName (dynamic_cast<QWidget*> (sender ()), newTitle);
 
-	ScheduleSaveSession ();
+	saveSession ();
 }
 
 void Core::handleURLChanged (const QString& newURL)
 {
 	HandleHistory (dynamic_cast<BrowserWidget*> (sender ())->GetView ());
 
-	ScheduleSaveSession ();
+	saveSession ();
 }
 
 void Core::handleIconChanged (const QIcon& newIcon)
@@ -464,7 +454,7 @@ void Core::handleNeedToClose ()
 
 	w->deleteLater ();
 
-	ScheduleSaveSession ();
+	saveSession ();
 }
 
 void Core::handleAddToFavorites (const QString& title, const QString& url)
