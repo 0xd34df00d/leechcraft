@@ -22,10 +22,6 @@ class HistoryModel : public QAbstractItemModel
 	QStringList ItemHeaders_;
 	std::deque<HistoryItem> Items_;
 public:
-	enum
-	{
-		CompletionRole = 42
-	};
 	enum Columns
 	{
 		ColumnTitle

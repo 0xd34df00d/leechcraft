@@ -6,6 +6,65 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
+namespace
+{
+	/** Returns the number of the section for the given date.
+	 *
+	 * - Today
+	 * - Yesterday
+	 * - Two days ago
+	 * - Last week
+	 * - Last month
+	 * - Last 2 months
+	 * - Last 3 months
+	 * - Last 4 months
+	 * - ...
+	 * - Last N months
+	 */
+	int SectionNumber (const QDateTime& date)
+	{
+		QDateTime current = QDateTime::currentDateTime ();
+		QDate orig = current.date ();
+		if (date.daysTo (current) == 0)
+			return 0;
+		else if (date.daysTo (current) == 1)
+			return 1;
+		else if (date.daysTo (current) == 2)
+			return 2;
+		else if (date.daysTo (current) <= 7)
+			return 3;
+
+		int i = 0;
+		while (true)
+		{
+			current.setDate (orig.addMonths (--i));
+
+			if (date.daysTo (current) <= 0)
+				return -i;
+		}
+	}
+
+	QString SectionName (int number)
+	{
+		switch (number)
+		{
+			case 0:
+				return QObject::tr ("Today");
+			case 1:
+				return QObject::tr ("Yesterday");
+			case 2:
+				return QObject::tr ("Two days ago");
+			case 3:
+				return QObject::tr ("Last week");
+			case 4:
+				return QObject::tr ("Last month");
+			default:
+				return QObject::tr ("Last %1 months")
+					.arg (number - 3);
+		}
+	}
+};
+
 HistoryModel::HistoryModel (QObject *parent)
 : QAbstractItemModel (parent)
 {
@@ -43,8 +102,6 @@ QVariant HistoryModel::data (const QModelIndex& index, int role) const
 				default:
 					return QVariant ();
 			}
-		case CompletionRole:
-			return Items_ [index.row ()].URL_;
 		default:
 			return QVariant ();
 	}
