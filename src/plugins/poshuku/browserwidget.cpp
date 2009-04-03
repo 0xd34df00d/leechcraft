@@ -28,7 +28,7 @@
 
 BrowserWidget::BrowserWidget (QWidget *parent)
 : QWidget (parent)
-, HtmlMode_ (true)
+, HtmlMode_ (false)
 {
 	Ui_.setupUi (this);
 
@@ -341,8 +341,8 @@ void BrowserWidget::SetURL (const QUrl& url)
 {
 	if (!url.isEmpty ())
 	{
-		Ui_.WebView_->Load (url);
 		HtmlMode_ = false;
+		Ui_.WebView_->Load (url);
 	}
 }
 
@@ -354,8 +354,8 @@ void BrowserWidget::Load (const QString& url)
 void BrowserWidget::SetHtml (const QString& html, const QString& base)
 {
 	Ui_.URLEdit_->clear ();
-	Ui_.WebView_->setHtml (html, base);
 	HtmlMode_ = true;
+	Ui_.WebView_->setHtml (html, base);
 }
 
 QWidget* BrowserWidget::Widget ()
