@@ -14,6 +14,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/tagscompleter.h>
 #include "filtermodel.h"
+#include "historyfiltermodel.h"
 #include "ui_poshuku.h"
 
 class QWebView;
@@ -36,7 +37,7 @@ class Poshuku : public QWidget
 	std::auto_ptr<LeechCraft::Util::TagsCompleter> FavoritesFilterLineCompleter_;
 	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 	std::auto_ptr<FilterModel> FavoritesFilterModel_;
-	std::auto_ptr<FilterModel> HistoryFilterModel_;
+	std::auto_ptr<HistoryFilterModel> HistoryFilterModel_;
 public:
 	void Init ();
 	void Release ();

@@ -36,6 +36,7 @@ SET (SRCS
 	xbelparser.cpp
 	xbelgenerator.cpp
 	pluginmanager.cpp
+	historyfiltermodel.cpp
 	interfaces/pluginbase.cpp
 	)
 SET (HEADERS
@@ -66,6 +67,7 @@ SET (HEADERS
 	xbelparser.h
 	xbelgenerator.h
 	pluginmanager.h
+	historyfiltermodel.h
 	interfaces/pluginbase.h
 	)
 SET (FORMS
