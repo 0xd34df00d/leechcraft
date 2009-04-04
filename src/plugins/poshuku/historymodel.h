@@ -6,6 +6,16 @@
 #include <QStringList>
 #include <QDateTime>
 
+namespace LeechCraft
+{
+	namespace Util
+	{
+		class TreeItem;
+	};
+};
+
+class QTimer;
+
 struct HistoryItem
 {
 	QString Title_;
@@ -13,20 +23,22 @@ struct HistoryItem
 	QString URL_;
 };
 
+Q_DECLARE_METATYPE (HistoryItem);
+
 typedef std::vector<HistoryItem> history_items_t;
 
 class HistoryModel : public QAbstractItemModel
 {
 	Q_OBJECT
 
-	QStringList ItemHeaders_;
-	std::deque<HistoryItem> Items_;
+	QTimer *GarbageTimer_;
+	LeechCraft::Util::TreeItem *RootItem_;
 public:
 	enum Columns
 	{
 		ColumnTitle
-		, ColumnDate
 		, ColumnURL
+		, ColumnDate
 	};
 
 	HistoryModel (QObject* = 0);
@@ -41,9 +53,12 @@ public:
 	int rowCount (const QModelIndex& = QModelIndex ()) const;
 
 	void AddItem (const QString&, const QString&, const QDateTime&);
+private:
+	void Add (const HistoryItem&);
 private slots:
 	void loadData ();
 	void handleItemAdded (const HistoryItem&);
+	void collectGarbage ();
 };
 
 #endif

@@ -1,10 +1,14 @@
 #include "historymodel.h"
 #include <algorithm>
 #include <QTimer>
+#include <QVariant>
 #include <QtDebug>
 #include <plugininterface/proxy.h>
+#include <plugininterface/treeitem.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
+
+using LeechCraft::Util::TreeItem;
 
 namespace
 {
@@ -40,7 +44,7 @@ namespace
 			current.setDate (orig.addMonths (--i));
 
 			if (date.daysTo (current) <= 0)
-				return -i;
+				return -i + 3;
 		}
 	}
 
@@ -68,19 +72,31 @@ namespace
 HistoryModel::HistoryModel (QObject *parent)
 : QAbstractItemModel (parent)
 {
-	ItemHeaders_ << tr ("Title")
+	QList<QVariant> headers;
+	headers << tr ("Title")
 		<< tr ("Date")
 		<< tr ("URL");
 	QTimer::singleShot (0, this, SLOT (loadData ()));
+	RootItem_ = new TreeItem (headers);
+
+	GarbageTimer_ = new QTimer (this);
+	GarbageTimer_->start (1000);
+	connect (GarbageTimer_,
+			SIGNAL (timeout ()),
+			this,
+			SLOT (collectGarbage ()));
 }
 
 HistoryModel::~HistoryModel ()
 {
 }
 
-int HistoryModel::columnCount (const QModelIndex&) const
+int HistoryModel::columnCount (const QModelIndex& index) const
 {
-	return ItemHeaders_.size ();
+	if (index.isValid ())
+		return static_cast<TreeItem*> (index.internalPointer ())->ColumnCount ();
+	else
+		return RootItem_->ColumnCount ();
 }
 
 QVariant HistoryModel::data (const QModelIndex& index, int role) const
@@ -88,23 +104,10 @@ QVariant HistoryModel::data (const QModelIndex& index, int role) const
 	if (!index.isValid ())
 		return QVariant ();
 
-	switch (role)
-	{
-		case Qt::DisplayRole:
-			switch (index.column ())
-			{
-				case ColumnTitle:
-					return Items_ [index.row ()].Title_;
-				case ColumnDate:
-					return Items_ [index.row ()].DateTime_.toString ();
-				case ColumnURL:
-					return Items_ [index.row ()].URL_;
-				default:
-					return QVariant ();
-			}
-		default:
-			return QVariant ();
-	}
+	if (role == Qt::DisplayRole)
+		return static_cast<TreeItem*> (index.internalPointer ())->Data (index.column ());
+	else
+		return QVariant ();
 }
 
 Qt::ItemFlags HistoryModel::flags (const QModelIndex&) const
@@ -112,51 +115,62 @@ Qt::ItemFlags HistoryModel::flags (const QModelIndex&) const
 	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
-QVariant HistoryModel::headerData (int column, Qt::Orientation orient,
+QVariant HistoryModel::headerData (int h, Qt::Orientation orient,
 		int role) const
 {
 	if (orient == Qt::Horizontal && role == Qt::DisplayRole)
-		return ItemHeaders_.at (column);
-	else
-		return QVariant ();
+		return RootItem_->Data (h);
+
+	return QVariant ();
 }
 
-QModelIndex HistoryModel::index (int row, int column,
+QModelIndex HistoryModel::index (int row, int col,
 		const QModelIndex& parent) const
 {
-	if (!hasIndex (row, column, parent))
+	if (!hasIndex (row, col, parent))
 		return QModelIndex ();
 
-	return createIndex (row, column);
+	TreeItem *parentItem;
+
+	if (!parent.isValid ())
+		parentItem = RootItem_;
+	else
+		parentItem = static_cast<TreeItem*> (parent.internalPointer ());
+
+	TreeItem *childItem = parentItem->Child (row);
+	if (childItem)
+		return createIndex (row, col, childItem);
+	else
+		return QModelIndex ();
 }
 
-QModelIndex HistoryModel::parent (const QModelIndex&) const
+QModelIndex HistoryModel::parent (const QModelIndex& index) const
 {
-	return QModelIndex ();
+	if (!index.isValid ())
+		return QModelIndex ();
+
+	TreeItem *childItem = static_cast<TreeItem*> (index.internalPointer ()),
+			 *parentItem = childItem->Parent ();
+
+	if (parentItem == RootItem_)
+		return QModelIndex ();
+
+	return createIndex (parentItem->Row (), 0, parentItem);
 }
 
-int HistoryModel::rowCount (const QModelIndex& index) const
+int HistoryModel::rowCount (const QModelIndex& parent) const
 {
-	return index.isValid () ? 0 : Items_.size ();
+	TreeItem *parentItem;
+	if (parent.column () > 0)
+		return 0;
+
+	if (!parent.isValid ())
+		parentItem = RootItem_;
+	else
+		parentItem = static_cast<TreeItem*> (parent.internalPointer ());
+
+	return parentItem->ChildCount ();
 }
-
-namespace
-{
-	struct HistoryEraser
-	{
-		int Age_;
-
-		HistoryEraser (int age)
-		: Age_ (age)
-		{
-		}
-
-		bool operator() (const HistoryItem& j, const QDateTime& current)
-		{
-			return j.DateTime_.daysTo (current) < Age_;
-		}
-	};
-};
 
 void HistoryModel::AddItem (const QString& title, const QString& url,
 		const QDateTime& date)
@@ -168,23 +182,30 @@ void HistoryModel::AddItem (const QString& title, const QString& url,
 		url
 	};
 	Core::Instance ().GetStorageBackend ()->AddToHistory (item);
+}
 
-	int age = XmlSettingsManager::Instance ()->
-				property ("HistoryClearOlderThan").toInt ();
+void HistoryModel::Add (const HistoryItem& item)
+{
+	int section = SectionNumber (item.DateTime_);
 
-	Core::Instance ().GetStorageBackend ()->ClearOldHistory (age);
+	while (section >= RootItem_->ChildCount ())
+	{
+		QList<QVariant> data;
+		data << SectionName (RootItem_->ChildCount ())
+			<< QString ("")
+			<< QString ("");
+		TreeItem *folder = new TreeItem (data, RootItem_);
+		RootItem_->AppendChild (folder);
+	}
 
-	std::deque<HistoryItem>::iterator pos =
-		std::lower_bound (Items_.begin (), Items_.end (),
-				QDateTime::currentDateTime (), HistoryEraser (age));
+	QList<QVariant> data;
+	data << item.Title_
+		<< item.URL_
+		<< item.DateTime_;
 
-	if (pos == Items_.end ())
-		return;
-
-	int index = std::distance (Items_.begin (), pos);
-	beginRemoveRows (QModelIndex (), index, Items_.size () - 1);
-	Items_.erase (pos, Items_.end ());
-	endRemoveRows ();
+	TreeItem *folder = RootItem_->Child (section);
+	TreeItem *thisItem = new TreeItem (data, RootItem_->Child (section));
+	folder->PrependChild (thisItem);
 }
 
 void HistoryModel::loadData ()
@@ -195,17 +216,60 @@ void HistoryModel::loadData ()
 	if (!items.size ())
 		return;
 
-	beginInsertRows (QModelIndex (), 0, items.size () - 1);
 	for (std::vector<HistoryItem>::const_reverse_iterator i = items.rbegin (),
 			end = items.rend (); i != end; ++i)
-		Items_.push_front (*i);
-	endInsertRows ();
+		Add (*i);
+
+	reset ();
 }
 
 void HistoryModel::handleItemAdded (const HistoryItem& item)
 {
-	beginInsertRows (QModelIndex (), 0, 0);
-	Items_.push_front (item);
+	beginInsertRows (index (SectionNumber (item.DateTime_), 0),
+			0, 0);
+	Add (item);
 	endInsertRows ();
+}
+
+void HistoryModel::collectGarbage ()
+{
+	int age = XmlSettingsManager::Instance ()->
+				property ("HistoryClearOlderThan").toInt ();
+
+	Core::Instance ().GetStorageBackend ()->ClearOldHistory (age);
+
+	QDateTime current = QDateTime::currentDateTime ();
+	int folder = RootItem_->ChildCount () - 1;
+	int start = 0;
+
+	for ( ; folder >= 0; --folder)
+	{
+		TreeItem *folderItem = RootItem_->Child (folder);
+		bool found = false;
+		for (int j = folderItem->ChildCount () - 1; j >= 0; --j)
+			if (folderItem->Child (j)->Data (ColumnDate).toDateTime ()
+					.daysTo (current) <= age)
+			{
+				start = j;
+				found = true;
+				break;
+			}
+		if (found)
+			break;
+	}
+
+	beginRemoveRows (QModelIndex (),
+			folder + 1, RootItem_->ChildCount ());
+	for (int i = RootItem_->ChildCount () - 1; i >= folder + 1; --i)
+		RootItem_->RemoveChild (i);
+	endRemoveRows ();
+
+	TreeItem *folderItem = RootItem_->Child (folder);
+	beginRemoveRows (index (folder, 0),
+			start, folderItem->ChildCount () - 1);
+	for (int i = folderItem->ChildCount () - 1;
+			i > start; --i)
+		folderItem->RemoveChild (i);
+	endRemoveRows ();
 }
 
