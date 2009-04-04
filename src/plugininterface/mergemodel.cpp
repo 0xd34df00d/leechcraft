@@ -3,6 +3,9 @@
 #include <stdexcept>
 #include <QtDebug>
 #include "mergemodel.h"
+#ifdef QT_DEBUG
+#include "modeltest.h"
+#endif
 
 using namespace LeechCraft::Util;
 
@@ -10,6 +13,9 @@ MergeModel::MergeModel (const QStringList& headers, QObject *parent)
 : QAbstractProxyModel (parent)
 , Headers_ (headers)
 {
+#ifdef QT_DEBUG
+	new ModelTest (this, this);
+#endif
 }
 
 MergeModel::~MergeModel ()
