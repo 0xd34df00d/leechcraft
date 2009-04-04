@@ -2,11 +2,13 @@
 #include <algorithm>
 #include <QTimer>
 #include <QVariant>
+#include <QAction>
 #include <QtDebug>
 #include <plugininterface/proxy.h>
 #include <plugininterface/treeitem.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "poshuku.h"
 
 using LeechCraft::Util::TreeItem;
 
@@ -80,11 +82,16 @@ HistoryModel::HistoryModel (QObject *parent)
 	RootItem_ = new TreeItem (headers);
 
 	GarbageTimer_ = new QTimer (this);
-	GarbageTimer_->start (1000);
+	GarbageTimer_->start (10 * 60 * 1000);
 	connect (GarbageTimer_,
 			SIGNAL (timeout ()),
 			this,
 			SLOT (collectGarbage ()));
+
+	FolderIconProxy_ = new QAction (this);
+	FolderIconProxy_->setProperty ("ActionIcon", "poshuku_foldericon");
+	UnknownURLProxy_ = new QAction (this);
+	UnknownURLProxy_->setProperty ("ActionIcon", "poshuku_unknownurlicon");
 }
 
 HistoryModel::~HistoryModel ()
@@ -104,10 +111,7 @@ QVariant HistoryModel::data (const QModelIndex& index, int role) const
 	if (!index.isValid ())
 		return QVariant ();
 
-	if (role == Qt::DisplayRole)
-		return static_cast<TreeItem*> (index.internalPointer ())->Data (index.column ());
-	else
-		return QVariant ();
+	return static_cast<TreeItem*> (index.internalPointer ())->Data (index.column (), role);
 }
 
 Qt::ItemFlags HistoryModel::flags (const QModelIndex&) const
@@ -195,6 +199,9 @@ void HistoryModel::Add (const HistoryItem& item)
 			<< QString ("")
 			<< QString ("");
 		TreeItem *folder = new TreeItem (data, RootItem_);
+		folder->ModifyData (0,
+				FolderIconProxy_->icon (),
+				Qt::DecorationRole);
 		RootItem_->AppendChild (folder);
 	}
 
@@ -204,8 +211,19 @@ void HistoryModel::Add (const HistoryItem& item)
 		<< item.DateTime_;
 
 	TreeItem *folder = RootItem_->Child (section);
+
 	TreeItem *thisItem = new TreeItem (data, RootItem_->Child (section));
 	folder->PrependChild (thisItem);
+
+	QUrl url (item.URL_);
+	url.setFragment (QString ());
+	url.setPath (QString ());
+	url.setQueryItems (QList<QPair<QString, QString> > ());
+	QIcon icon = QWebSettings::iconForUrl (url);
+	if (icon.isNull ())
+		icon = UnknownURLProxy_->icon ();
+	thisItem->ModifyData (0,
+			icon, Qt::DecorationRole);
 }
 
 void HistoryModel::loadData ()
@@ -221,6 +239,8 @@ void HistoryModel::loadData ()
 		Add (*i);
 
 	reset ();
+
+	collectGarbage ();
 }
 
 void HistoryModel::handleItemAdded (const HistoryItem& item)

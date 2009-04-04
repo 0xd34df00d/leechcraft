@@ -307,6 +307,7 @@ void Poshuku::SetupHistoryFilter ()
 {
 	HistoryFilterModel_.reset (new FilterModel (this));
 	HistoryFilterModel_->setSourceModel (Core::Instance ().GetHistoryModel ());
+	Core::Instance ().GetHistoryModel ()->setParent (HistoryFilterModel_.get ());
 	HistoryFilterModel_->setDynamicSortFilter (true);
 	Ui_.HistoryView_->setModel (HistoryFilterModel_.get ());
 

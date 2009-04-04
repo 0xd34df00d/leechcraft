@@ -15,6 +15,7 @@ namespace LeechCraft
 };
 
 class QTimer;
+class QAction;
 
 struct HistoryItem
 {
@@ -33,6 +34,8 @@ class HistoryModel : public QAbstractItemModel
 
 	QTimer *GarbageTimer_;
 	LeechCraft::Util::TreeItem *RootItem_;
+	QAction *FolderIconProxy_;
+	QAction *UnknownURLProxy_;
 public:
 	enum Columns
 	{
