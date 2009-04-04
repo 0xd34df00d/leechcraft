@@ -140,7 +140,7 @@ void ChannelsModel::UpdateChannelData (const ChannelShort& cs)
 	if (idx == Channels_.end ())
 		return;
 	*idx = cs;
-	int pos = std::distance (idx, Channels_.begin ());
+	int pos = std::distance (Channels_.begin (), idx);
     emit dataChanged (index (pos, 0), index (pos, 2));
     emit channelDataUpdated ();
 }

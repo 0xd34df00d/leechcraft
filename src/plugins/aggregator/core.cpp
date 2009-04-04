@@ -338,7 +338,6 @@ void Core::UpdateTags (const QStringList& tags)
 
 void Core::MarkItemAsUnread (const QModelIndex& i)
 {
-	qDebug () << Q_FUNC_INFO;
 	QModelIndex mapped = ItemLists_->mapToSource (i);
 	static_cast<ItemsListModel*> (*ItemLists_->
 			GetModelForRow (i.row ()))->MarkItemAsUnread (mapped);
