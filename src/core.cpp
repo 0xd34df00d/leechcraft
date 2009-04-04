@@ -320,14 +320,38 @@ void LeechCraft::Core::SetNewRow (const QModelIndex& index)
 		for (QList<IJobHolder*>::iterator i = holders.begin (),
 				end = holders.end (); i != end; ++i)
 			if (*i == ijh)
-				(*i)->ItemSelected (mapped);
+			{
+				try
+				{
+					(*i)->ItemSelected (mapped);
+				}
+				catch (...)
+				{
+				}
+			}
 			else
-				(*i)->ItemSelected (QModelIndex ());
+			{
+				try
+				{
+					(*i)->ItemSelected (QModelIndex ());
+				}
+				catch (...)
+				{
+				}
+			}
 	}
 	else
 		for (QList<IJobHolder*>::iterator i = holders.begin (),
 				end = holders.end (); i != end; ++i)
-			(*i)->ItemSelected (QModelIndex ());
+		{
+			try
+			{
+				(*i)->ItemSelected (QModelIndex ());
+			}
+			catch (...)
+			{
+			}
+		}
 }
 
 bool LeechCraft::Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) const
