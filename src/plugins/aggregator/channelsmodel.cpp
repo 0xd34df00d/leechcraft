@@ -1,13 +1,11 @@
+#include <stdexcept>
 #include <QtDebug>
 #include <QApplication>
 #include <QFont>
 #include <QPalette>
-#include <plugininterface/treeitem.h>
 #include <interfaces/structures.h>
 #include "channelsmodel.h"
 #include "item.h"
-
-using LeechCraft::Util::TreeItem;
 
 ChannelsModel::ChannelsModel (QObject *parent)
 : QAbstractItemModel (parent)
@@ -15,16 +13,13 @@ ChannelsModel::ChannelsModel (QObject *parent)
 , TabWidget_ (0)
 {
 	setObjectName ("Aggregator ChannelsModel");
-    QVariantList roots;
-    roots << tr ("Feed")
+	Headers_ << tr ("Feed")
 		<< tr ("Unread items")
 		<< tr ("Last build");
-    RootItem_ = new TreeItem (roots);
 }
 
 ChannelsModel::~ChannelsModel ()
 {
-    delete RootItem_;
 }
 
 void ChannelsModel::SetWidgets (QWidget *bar, QWidget *tab)
@@ -33,12 +28,9 @@ void ChannelsModel::SetWidgets (QWidget *bar, QWidget *tab)
 	TabWidget_ = tab;
 }
 
-int ChannelsModel::columnCount (const QModelIndex& parent) const
+int ChannelsModel::columnCount (const QModelIndex&) const
 {
-    if (parent.isValid ())
-        return static_cast<TreeItem*> (parent.internalPointer ())->ColumnCount ();
-    else
-        return RootItem_->ColumnCount();
+	return Headers_.size ();
 }
 
 QVariant ChannelsModel::data (const QModelIndex& index, int role) const
@@ -51,16 +43,29 @@ QVariant ChannelsModel::data (const QModelIndex& index, int role) const
     if (!index.isValid ())
         return QVariant ();
 
+	int row = index.row ();
     if (role == Qt::DisplayRole)
-        return static_cast<TreeItem*> (index.internalPointer ())->Data (index.column ());
-	else if (role == Qt::DecorationRole)
-		return static_cast<TreeItem*> (index.internalPointer ())->Data (index.column (), Qt::DecorationRole);
+		switch (index.column ())
+		{
+			case ColumnTitle:
+				return Channels_.at (row).Title_;
+			case ColumnUnread:
+				return Channels_.at (row).Unread_;
+			case ColumnLastBuild:
+				return Channels_.at (row).LastBuild_;
+			default:
+				return QVariant ();
+		}
+	else if (role == Qt::DecorationRole &&
+			index.column () == 0)
+		return Channels_.at (row).Favicon_;
     else if (role == Qt::ForegroundRole)
-        return static_cast<TreeItem*> (index.internalPointer ())->Data (1).toInt () ?
-		   	Qt::red : QApplication::palette ().color (QPalette::Text);
+        return Channels_.at (row).Unread_ ?
+		   	Qt::red :
+			QApplication::palette ().color (QPalette::Text);
     else if (role == Qt::FontRole)
     {
-        if (static_cast<TreeItem*> (index.internalPointer ())->Data (1).toInt ())
+        if (Channels_.at (row).Unread_)
         {
             QFont defaultFont = QApplication::font ();
             defaultFont.setBold (true);
@@ -84,7 +89,7 @@ Qt::ItemFlags ChannelsModel::flags (const QModelIndex& index) const
 QVariant ChannelsModel::headerData (int column, Qt::Orientation orient, int role) const
 {
     if (orient == Qt::Horizontal && role == Qt::DisplayRole)
-        return RootItem_->Data (column);
+        return Headers_.at (column);
     else
         return QVariant ();
 }
@@ -94,179 +99,95 @@ QModelIndex ChannelsModel::index (int row, int column, const QModelIndex& parent
     if (!hasIndex (row, column, parent))
         return QModelIndex ();
 
-    TreeItem *parentItem;
-    if (!parent.isValid ())
-        parentItem = RootItem_;
-    else
-        parentItem = static_cast<TreeItem*> (parent.internalPointer ());
-
-    TreeItem *childItem = parentItem->Child (row);
-    if (childItem)
-        return createIndex (row, column, childItem);
-    else
-        return QModelIndex ();
+	return createIndex (row, column);
 }
 
-QModelIndex ChannelsModel::parent (const QModelIndex& index) const
+QModelIndex ChannelsModel::parent (const QModelIndex&) const
 {
-    if (!index.isValid ())
-        return QModelIndex ();
-
-    TreeItem *childItem = static_cast<TreeItem*> (index.internalPointer ());
-    TreeItem *parentItem = childItem->Parent ();
-
-    if (parentItem == RootItem_)
-        return QModelIndex ();
-    else
-        return createIndex (parentItem->Row (), 0, parentItem);
+	return QModelIndex ();
 }
 
 int ChannelsModel::rowCount (const QModelIndex& parent) const
 {
-    if (parent.column () > 0)
-        return 0;
-
-    TreeItem *parentItem;
-    if (!parent.isValid ())
-        parentItem = RootItem_;
-    else
-        parentItem = static_cast<TreeItem*> (parent.internalPointer ());
-
-    return parentItem->ChildCount ();
+	return parent.isValid () ? 0 : Channels_.size ();
 }
 
 void ChannelsModel::AddChannel (const ChannelShort& channel)
 {
     beginInsertRows (QModelIndex (), rowCount (), rowCount ());
-
-	QList<QVariant> data;
-	data << channel.Title_
-		<< channel.Unread_
-		<< channel.LastBuild_;
-
-	TreeItem *channelItem = new TreeItem (data, RootItem_);
-	channelItem->ModifyData (0, channel.Favicon_, Qt::DecorationRole);
-
-	RootItem_->AppendChild (channelItem);
-
-	Channel2TreeItem_ [channel] = channelItem;
-	TreeItem2Channel_ [channelItem] = channel;
-
+	Channels_ << channel;
     endInsertRows ();
 }
 
 void ChannelsModel::Update (const channels_container_t& channels)
 {
-    QList<ChannelShort> channelswh = Channel2TreeItem_.keys ();
-    for (size_t i = 0; i < channels.size (); ++i)
-    {
-        bool found = false;
-        for (int j = 0; j < channelswh.size (); ++j)
-            if (channels.at (i)->ToShort () == channelswh.at (j))
-			{
-                found = true;
-				break;
-			}
-        if (found)
-            continue;
+	for (size_t i = 0; i < channels.size (); ++i)
+	{
+		Channels_t::const_iterator pos =
+			std::find (Channels_.begin (), Channels_.end (),
+				channels.at (i));
+		if (pos != Channels_.end ())
+			continue;
 
-        QList<QVariant> data;
-        Channel_ptr current = channels.at (i);
-        data << current->Title_
-			<< current->CountUnreadItems ()
-			<< current->LastBuild_;
-
-        TreeItem *channelItem = new TreeItem (data, RootItem_);
-        RootItem_->AppendChild (channelItem);
-
-		ChannelShort cs = current->ToShort ();
-
-        Channel2TreeItem_ [cs] = channelItem;
-        TreeItem2Channel_ [channelItem] = cs;
-    }
+		Channels_ << channels [i]->ToShort ();
+	}
 }
 
 void ChannelsModel::UpdateChannelData (const ChannelShort& cs)
 {
-    Channel2TreeItemDictionary_t::iterator position = Channel2TreeItem_.end ();
-    for (Channel2TreeItemDictionary_t::iterator i =
-			Channel2TreeItem_.begin (), end = Channel2TreeItem_.end ();
-			i != end; ++i)
-        if (i.key () == cs)
-        {
-            position = i;
-            break;
-        }
-
-    if (position == Channel2TreeItem_.end ())
-        return;
-
-    TreeItem *item = position.value ();
-
-	TreeItem2Channel_ [item] = cs;
-
-	item->ModifyData (0, cs.Favicon_, Qt::DecorationRole);
-    item->ModifyData (1, cs.Unread_);
-    item->ModifyData (2, cs.LastBuild_);
-    int pos = RootItem_->ChildPosition (item);
+	Channels_t::iterator idx =
+		std::find (Channels_.begin (), Channels_.end (), cs);
+	if (idx == Channels_.end ())
+		return;
+	*idx = cs;
+	int pos = std::distance (idx, Channels_.begin ());
     emit dataChanged (index (pos, 0), index (pos, 2));
     emit channelDataUpdated ();
 }
 
 ChannelShort& ChannelsModel::GetChannelForIndex (const QModelIndex& index)
 {
-	return TreeItem2Channel_ [static_cast<TreeItem*> (index.internalPointer ())];
+	if (!index.isValid ())
+		throw std::runtime_error ("Invalid index");
+	else
+		return Channels_ [index.row ()];
 }
 
 void ChannelsModel::RemoveChannel (const ChannelShort& channel)
 {
-    if (!Channel2TreeItem_.contains (channel))
-        return;
+	Channels_t::iterator idx =
+		std::find (Channels_.begin (), Channels_.end (), channel);
+	if (idx == Channels_.end ())
+		return;
 
-    TreeItem *container = Channel2TreeItem_ [channel];
-    int pos = RootItem_->ChildPosition (container);
-
-    beginRemoveRows (QModelIndex (), pos, pos);
-    Channel2TreeItem_.remove (channel);
-    TreeItem2Channel_.remove (container);
-    RootItem_->RemoveChild (pos);
-    endRemoveRows ();
+	int pos = std::distance (Channels_.begin (), idx);
+	beginRemoveRows (QModelIndex (), pos, pos);
+	Channels_.erase (idx);
+	endRemoveRows ();
 }
 
 QModelIndex ChannelsModel::GetUnreadChannelIndex () const
 {
-    for (int i = 0; i < RootItem_->ChildCount (); ++i)
-    {
-        TreeItem *item = RootItem_->Child (i);
-        ChannelShort channel = TreeItem2Channel_ [item];
-        if (channel.Unread_)
-            return index (i, 0);
-    }
-    return QModelIndex ();
+	for (int i = 0; i < Channels_.size (); ++i)
+		if (Channels_.at (i).Unread_)
+			return index (i, 0);
+	return QModelIndex ();
 }
 
 int ChannelsModel::GetUnreadChannelsNumber () const
 {
 	int result = 0;
-    for (int i = 0; i < RootItem_->ChildCount (); ++i)
-    {
-        TreeItem *item = RootItem_->Child (i);
-        ChannelShort channel = TreeItem2Channel_ [item];
-        if (channel.Unread_)
+	for (int i = 0; i < Channels_.size (); ++i)
+		if (Channels_.at (i).Unread_)
 			++result;
-    }
 	return result;
 }
 
 int ChannelsModel::GetUnreadItemsNumber () const
 {
 	int result = 0;
-    for (int i = 0; i < RootItem_->ChildCount (); ++i)
-    {
-        TreeItem *item = RootItem_->Child (i);
-        ChannelShort channel = TreeItem2Channel_ [item];
-		result += channel.Unread_;
-    }
+	for (int i = 0; i < Channels_.size (); ++i)
+		result += Channels_.at (i).Unread_;
 	return result;
 }
 

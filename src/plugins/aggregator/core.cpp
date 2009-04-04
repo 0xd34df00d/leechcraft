@@ -738,8 +738,15 @@ void Core::CurrentChannelChanged (const QModelIndex& si, bool repr)
 	}
 	else
 		index = ChannelsFilterModel_->mapToSource (si);
-	ChannelShort ch = ChannelsModel_->GetChannelForIndex (index);
-	CurrentItemsModel_->Reset (qMakePair (ch.ParentURL_, ch.Title_));
+	try
+	{
+		ChannelShort ch = ChannelsModel_->GetChannelForIndex (index);
+		CurrentItemsModel_->Reset (qMakePair (ch.ParentURL_, ch.Title_));
+	}
+	catch (const std::exception&)
+	{
+		CurrentItemsModel_->Reset (qMakePair (QString (), QString ()));
+	}
 	emit currentChannelChanged (index);
 }
 
