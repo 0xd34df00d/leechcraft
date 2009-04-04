@@ -23,6 +23,7 @@ poshuku_copy lc_copy.png
 poshuku_cut lc_cut.png
 poshuku_exportxbel lc_documentexport.png
 poshuku_find lc_find.png
+poshuku_foldericon lc_folder.png
 poshuku_forward lc_forward.png
 poshuku_importxbel lc_documentimport.png
 poshuku_more lc_preferences.png
