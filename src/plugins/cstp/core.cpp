@@ -77,14 +77,13 @@ int Core::AddTask (LeechCraft::DownloadEntity& e)
 	if (rep)
 	{
 		QFileInfo fi (e.Location_);
-		QString dir = fi.dir ().path (),
-				file = fi.fileName ();
+		QString dir = fi.dir ().path ();
+		QString file = QFileInfo (e.Entity_).fileName ();
 
 		if (fi.isDir ())
-		{
 			dir = e.Location_;
+		if (file.isEmpty ())
 			file = "index";
-		}
 
 		return AddTask (rep,
 				dir, file, QString (), e.Parameters_);
