@@ -195,7 +195,7 @@ void Core::DoDelayedInit ()
 	int updateDiff = lastUpdated.secsTo (currentDateTime);
 	if ((XmlSettingsManager::Instance ()->property ("UpdateOnStartup").toBool ()) ||
 		(updateDiff > XmlSettingsManager::Instance ()->property ("UpdateInterval").toInt () * 60))
-			QTimer::singleShot (2000, this, SLOT (updateFeeds ()));
+			QTimer::singleShot (7000, this, SLOT (updateFeeds ()));
 	else
 		UpdateTimer_->start (updateDiff * 1000);
 
