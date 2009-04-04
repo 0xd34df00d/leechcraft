@@ -59,7 +59,8 @@ void Task::Start (const boost::intrusive_ptr<MorphFile>& tof)
 	}
 	else
 	{
-		if (Reply_->bytesAvailable () == Reply_->size ())
+		if (Reply_->bytesAvailable () == Reply_->
+				header (QNetworkRequest::ContentLengthHeader).toInt ())
 		{
 			handleReadyRead ();
 			handleFinished ();
@@ -71,9 +72,7 @@ void Task::Start (const boost::intrusive_ptr<MorphFile>& tof)
 			return;
 		}
 		else
-		{
 			handleReadyRead ();
-		}
 	}
 
 	Reply_->setParent (0);
@@ -164,7 +163,7 @@ QString Task::GetState () const
 
 QString Task::GetURL () const
 {
-	return URL_.toString ();
+	return Reply_.get () ? Reply_->url ().toString () : URL_.toString ();
 }
 
 int Task::GetTimeFromStart () const
