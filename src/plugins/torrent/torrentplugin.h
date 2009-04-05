@@ -10,6 +10,7 @@
 #include <interfaces/iimportexport.h>
 #include <interfaces/itaggablejobs.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/ihaveshortcuts.h>
 #include <plugininterface/tagscompleter.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "ui_tabwidget.h"
@@ -30,10 +31,11 @@ class TorrentPlugin : public QObject
 					, public IImportExport
 					, public ITaggableJobs
 					, public IHaveSettings
+					, public IHaveShortcuts
 {
     Q_OBJECT
 
-    Q_INTERFACES (IInfo IDownload IJobHolder IImportExport ITaggableJobs IHaveSettings);
+    Q_INTERFACES (IInfo IDownload IJobHolder IImportExport ITaggableJobs IHaveSettings IHaveShortcuts);
 
 	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 	std::auto_ptr<AddTorrent> AddTorrentDialog_;
@@ -101,6 +103,12 @@ public:
 
 	// IHaveSettings
 	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
+
+	// IHaveShortcuts
+	void SetShortcutProxy (const IShortcutProxy*);
+	void SetShortcut (const QString&, const QKeySequence&);
+	QMap<QString, LeechCraft::ActionInfo> GetActionInfo () const;
+	void ShortcutsUpdated ();
 public slots:
     void updateTorrentStats ();
 private slots:
