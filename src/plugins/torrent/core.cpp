@@ -385,12 +385,13 @@ QVariant Core::data (const QModelIndex& index, int role) const
 							tr ("Idle") : GetStringForState (status.state);
 						if (status.state == libtorrent::torrent_status::downloading)
 						{
-							QDateTime remaining;
-							remaining.addSecs (static_cast<double> (status.total_wanted - status.total_wanted_done) /
-									status.total_payload_download);
 							result = QString ("%1 (ETA: %2)")
 								.arg (result)
-								.arg (remaining.toString ());
+								.arg (LeechCraft::Util::Proxy::Instance ()->MakeTimeFromLong
+										(
+										 static_cast<double> (status.total_wanted - status.total_wanted_done) /
+										 status.total_payload_download
+										));
 						}
 						return result;
 					}
