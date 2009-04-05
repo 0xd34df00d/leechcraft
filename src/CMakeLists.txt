@@ -180,6 +180,8 @@ SET (SRCS
 	operationalmodel.cpp
 	tabwidget.cpp
 	graphwidget.cpp
+	shortcutmanager.cpp
+	keysequencer.cpp
 	3dparty/qxttooltip.cpp
 	)
 SET (HEADERS
@@ -212,6 +214,8 @@ SET (HEADERS
 	operationalmodel.h
 	tabwidget.h
 	graphwidget.h
+	shortcutmanager.h
+	keysequencer.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/iinfo.h
@@ -230,6 +234,7 @@ SET (HEADERS
 	interfaces/ientityhandler.h
 	interfaces/ipluginready.h
 	interfaces/iplugin2.h
+	interfaces/ihaveshortcuts.h
 	interfaces/structures.h
 	)
 SET (FORMS
@@ -241,6 +246,8 @@ SET (FORMS
 	authenticationdialog.ui
 	sslerrorsdialog.ui
 	handlerchoicedialog.ui
+	shortcutmanager.ui
+	keysequencer.ui
 	)
 SET (RESOURCES mainresources.qrc)
 SET (TRANSLATIONS

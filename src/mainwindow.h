@@ -26,6 +26,7 @@ namespace LeechCraft
 	class PluginManagerDialog;
 	class FancyPopupManager;
 	class SettingsSink;
+	class ShortcutManager;
 	class LogToolBox;
 
 	class MainWindow : public QMainWindow
@@ -41,6 +42,7 @@ namespace LeechCraft
 		Util::GraphWidget *SpeedGraph_;
 		LeechCraft::Util::XmlSettingsDialog *XmlSettingsDialog_;
 		SettingsSink *SettingsSink_;
+		ShortcutManager *ShortcutManager_;
 		PluginManagerDialog *PluginManagerDialog_;
 		FancyPopupManager *FancyPopupManager_;
 		LeechCraft::LogToolBox *LogToolBox_;
@@ -66,6 +68,7 @@ namespace LeechCraft
 	private slots:
 		void on_ActionAddTask__triggered ();
 		void on_ActionSettings__triggered ();
+		void on_ActionConfigureShortcuts__triggered ();
 		void on_ActionQuit__triggered ();
 		void on_ActionFullscreenMode__triggered (bool);
 		void on_ActionLogger__triggered ();

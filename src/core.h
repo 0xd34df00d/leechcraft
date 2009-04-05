@@ -72,6 +72,7 @@ namespace LeechCraft
 		 * @return List of objects.
 		 */
 		QObjectList GetSettables () const;
+		QObjectList GetShortcuts () const;
 		QAbstractItemModel* GetPluginsModel () const;
 		QAbstractItemModel* GetTasksModel () const;
 		PluginManager* GetPluginManager () const;

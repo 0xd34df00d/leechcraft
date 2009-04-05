@@ -32,6 +32,7 @@
 #include <interfaces/iembedtab.h>
 #include <interfaces/imultitabs.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/ihaveshortcuts.h>
 #include <interfaces/iwindow.h>
 #include <interfaces/structures.h>
 #include <plugininterface/customcookiejar.h>
@@ -186,6 +187,11 @@ void LeechCraft::Core::SetReallyMainWindow (MainWindow *win)
 }
 
 QObjectList LeechCraft::Core::GetSettables () const
+{
+	return PluginManager_->GetAllCastableRoots<IHaveSettings*> ();
+}
+
+QObjectList LeechCraft::Core::GetShortcuts () const
 {
 	return PluginManager_->GetAllCastableRoots<IHaveSettings*> ();
 }

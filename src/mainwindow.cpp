@@ -19,6 +19,7 @@
 #include "settingssink.h"
 #include "iconchooser.h"
 #include "graphwidget.h"
+#include "shortcutmanager.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -112,6 +113,12 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 		SettingsSink_->AddDialog (*i);
 
 	updateIconSet ();
+
+	QObjectList shortcuts = Core::Instance ().GetShortcuts ();
+	for (QObjectList::const_iterator i = shortcuts.begin (),
+			end = shortcuts.end (); i != end; ++i)
+		ShortcutManager_->AddObject (*i);
+
 	filterParametersChanged ();
 
 	setUpdatesEnabled (true);
@@ -164,6 +171,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	Ui_.ActionPluginManager_->setProperty ("ActionIcon", "pluginmanager");
 	Ui_.ActionLogger_->setProperty ("ActionIcon", "logger");
 	Ui_.ActionFullscreenMode_->setProperty ("ActionIcon", "fullscreen");
+	Ui_.ActionConfigureShortcuts_->setProperty ("ActionIcon", "configureshortcuts");
 	Ui_.ActionFullscreenMode_->setParent (this);
 
 	Ui_.MainTabWidget_->setProperty ("TabIcons", "downloaders");
@@ -191,7 +199,9 @@ void LeechCraft::MainWindow::InitializeInterface ()
 			SLOT (updateIconSet ()));
 	XmlSettingsDialog_->SetCustomWidget ("IconSet", ic);
 
-	SettingsSink_ = new SettingsSink (tr ("LeechCraft"), XmlSettingsDialog_);
+	SettingsSink_ = new SettingsSink (tr ("LeechCraft"),
+			XmlSettingsDialog_);
+	ShortcutManager_ = new ShortcutManager (this);
 
 	SetStatusBar ();
 	ReadSettings ();
@@ -201,6 +211,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	QToolBar *corner = new QToolBar (this);
 	corner->addAction (Ui_.ActionSettings_);
+	corner->addAction (Ui_.ActionConfigureShortcuts_);
 	corner->addAction (Ui_.ActionFullscreenMode_);
 	corner->addSeparator ();
 	corner->addAction (Ui_.ActionQuit_);
@@ -298,6 +309,11 @@ void LeechCraft::MainWindow::on_ActionAddTask__triggered ()
 void LeechCraft::MainWindow::on_ActionSettings__triggered ()
 {
 	SettingsSink_->show ();
+}
+
+void LeechCraft::MainWindow::on_ActionConfigureShortcuts__triggered ()
+{
+	ShortcutManager_->show ();
 }
 
 void LeechCraft::MainWindow::on_ActionQuit__triggered ()
