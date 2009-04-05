@@ -109,18 +109,10 @@ QString Proxy::MakeTimeFromLong (ulong time) const
 {
 	int d = time / 86400;
 	time -= d * 86400;
-	QDateTime object;
-	object = object.addDays (d).addSecs (time);
-	QDate datePart = object.date ();
-	QTime timePart = object.time ();
-	int day = datePart.day () - 1;
-	int month = datePart.month () - 1;
 	QString result;
-	if (month)
-		result += tr ("%n month(es),", "", month) += " ";
-	if (day)
-		result += tr ("%n day(s),", "", day) += " ";
-	result += timePart.toString ();
+	if (d)
+		result += tr ("%n day(s), ", "", d);
+	result += QTime (0, 0, 0).addSecs (time).toString ();
     return result;
 }
 
