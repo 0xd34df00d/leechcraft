@@ -390,7 +390,7 @@ QVariant Core::data (const QModelIndex& index, int role) const
 								.arg (LeechCraft::Util::Proxy::Instance ()->MakeTimeFromLong
 										(
 										 static_cast<double> (status.total_wanted - status.total_wanted_done) /
-										 status.total_payload_download
+										 status.download_rate
 										));
 						}
 						return result;
