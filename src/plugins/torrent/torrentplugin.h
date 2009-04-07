@@ -108,7 +108,6 @@ public:
 	void SetShortcutProxy (const IShortcutProxy*);
 	void SetShortcut (const QString&, const QKeySequence&);
 	QMap<QString, LeechCraft::ActionInfo> GetActionInfo () const;
-	void ShortcutsUpdated ();
 public slots:
     void updateTorrentStats ();
 private slots:

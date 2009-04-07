@@ -330,10 +330,6 @@ QMap<QString, ActionInfo> TorrentPlugin::GetActionInfo () const
 }
 #undef _L
 
-void TorrentPlugin::ShortcutsUpdated ()
-{
-}
-
 void TorrentPlugin::on_OpenTorrent__triggered ()
 {
     AddTorrentDialog_->Reinit ();
