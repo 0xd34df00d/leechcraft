@@ -5,6 +5,7 @@
 #include <QString>
 #include <QKeySequence>
 #include <QIcon>
+#include <QMetaType>
 
 class QAction;
 
