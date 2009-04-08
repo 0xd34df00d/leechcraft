@@ -1,13 +1,18 @@
 #ifndef PLUGINMANAGER_H
 #define PLUGINMANAGER_H
 #include <vector>
+#include <boost/shared_ptr.hpp>
 #include "interfaces/pluginbase.h"
 
-class PluginManager : public LeechCraft::Poshuku::PluginBase
+class ProxyObject;
+
+class PluginManager : public QObject
+					, public LeechCraft::Poshuku::PluginBase
 {
 	Q_OBJECT
 
 	std::vector<LeechCraft::Poshuku::PluginBase_ptr> Plugins_;
+	boost::shared_ptr<ProxyObject> ProxyObject_;
 public:
 	PluginManager (QObject* = 0);
 

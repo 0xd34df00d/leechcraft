@@ -5,16 +5,23 @@
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/punctuation/comma_if.hpp>
+#include "proxyobject.h"
 
 using namespace LeechCraft::Poshuku;
 
 PluginManager::PluginManager (QObject *parent)
+: ProxyObject_ (new ProxyObject)
 {
 }
 
 void PluginManager::AddPlugin (QObject *plugin)
 {
 	PluginBase_ptr base = qobject_cast<PluginBase_ptr> (plugin);
+	/* TODO
+	if (!base)
+		return;
+		*/
+	base->Init (ProxyObject_.get ());
 	Plugins_.push_back (base);
 }
 

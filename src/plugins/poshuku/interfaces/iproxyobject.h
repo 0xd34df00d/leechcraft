@@ -8,6 +8,7 @@ namespace LeechCraft
 	{
 		class IProxyObject
 		{
+		public:
 		};
 	};
 };

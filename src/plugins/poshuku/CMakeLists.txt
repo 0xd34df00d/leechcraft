@@ -37,7 +37,7 @@ SET (SRCS
 	xbelgenerator.cpp
 	pluginmanager.cpp
 	historyfiltermodel.cpp
-	interfaces/pluginbase.cpp
+	proxyobject.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -68,6 +68,7 @@ SET (HEADERS
 	xbelgenerator.h
 	pluginmanager.h
 	historyfiltermodel.h
+	proxyobject.h
 	interfaces/pluginbase.h
 	)
 SET (FORMS
@@ -113,3 +114,6 @@ TARGET_LINK_LIBRARIES (leechcraft_poshuku
 	xmlsettingsdialog
 	)
 INSTALL (TARGETS leechcraft_poshuku DESTINATION ${LC_PLUGINS_DEST})
+
+SET (POSHUKU_INCLUDE_DIR ${CURRENT_SOURCE_DIR})
+ADD_SUBDIRECTORY (plugins/fua)

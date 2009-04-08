@@ -1,5 +1,6 @@
 #ifndef PLUGINBASE_H
 #define PLUGINBASE_H
+#include <stdexcept>
 #include <QObject>
 #include <QWebPage>
 
@@ -22,9 +23,8 @@ namespace LeechCraft
 		 * something means "stop processing and use this value instead
 		 * of default", throwing any exception means "continue".
 		 */
-		class PluginBase : public QObject
+		class PluginBase
 		{
-			Q_OBJECT
 		public:
 			/** @brief Initializes the plugin.
 			 *
@@ -39,172 +39,270 @@ namespace LeechCraft
 			/** See the official Qt docs for the
 			 * QWebPage::contentsChanged() signal.
 			 */
-			virtual bool HandleContentsChanged (QWebPage*);
+			virtual bool HandleContentsChanged (QWebPage*)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::databaseQuotaExceeded() signal.
 			 */
-			virtual bool HandleDatabaseQuotaExceeded (QWebPage*, QWebFrame*, QString);
+			virtual bool HandleDatabaseQuotaExceeded (QWebPage*, QWebFrame*, QString)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::downloadRequested() signal.
 			 */
 			virtual bool HandleDownloadRequested (QWebPage*,
-					const QNetworkRequest&);
+					const QNetworkRequest&)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::frameCreated() signal.
 			 */
-			virtual bool HandleFrameCreated (QWebPage*, QWebFrame*);
+			virtual bool HandleFrameCreated (QWebPage*, QWebFrame*)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::geometryChangeRequested() signal.
 			 */
-			virtual bool HandleGeometryChangeRequested (QWebPage*, const QRect&);
+			virtual bool HandleGeometryChangeRequested (QWebPage*, const QRect&)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::linkClicked() signal.
 			 */
-			virtual bool HandleLinkClicked (QWebPage*, const QUrl&);
+			virtual bool HandleLinkClicked (QWebPage*, const QUrl&)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::linkHovered() signal.
 			 */
 			virtual bool HandleLinkHovered (QWebPage*,
-					const QString&, const QString&, const QString&);
+					const QString&, const QString&, const QString&)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::loadFinished() signal.
 			 */
-			virtual bool HandleLoadFinished (QWebPage*, bool);
+			virtual bool HandleLoadFinished (QWebPage*, bool)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::loadProgress() signal.
 			 */
-			virtual bool HandleLoadProgress (QWebPage*, int);
+			virtual bool HandleLoadProgress (QWebPage*, int)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::loadStarted() signal.
 			 */
-			virtual bool HandleLoadStarted (QWebPage*);
+			virtual bool HandleLoadStarted (QWebPage*)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::menuBarVisibilityChangeRequested() signal.
 			 */
-			virtual bool HandleMenuBarVisibilityChangeRequested (QWebPage*, bool);
+			virtual bool HandleMenuBarVisibilityChangeRequested (QWebPage*, bool)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::microFocusChanged() signal.
 			 */
-			virtual bool HandleMicroFocusChanged (QWebPage*);
+			virtual bool HandleMicroFocusChanged (QWebPage*)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::printRequested() signal.
 			 */
-			virtual bool HandlePrintRequested (QWebPage*, QWebFrame*);
+			virtual bool HandlePrintRequested (QWebPage*, QWebFrame*)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::repaintRequested() signal.
 			 */
-			virtual bool HandleRepaintRequested (QWebPage*, const QRect&);
+			virtual bool HandleRepaintRequested (QWebPage*, const QRect&)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::restoreFrameStateRequested() signal.
 			 */
-			virtual bool HandleRestoreFrameStateRequested (QWebPage*, QWebFrame*);
+			virtual bool HandleRestoreFrameStateRequested (QWebPage*, QWebFrame*)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::saveFrameStateRequested() signal.
 			 */
-			virtual bool HandleSaveFrameStateRequested (QWebPage*, QWebFrame*, QWebHistoryItem*);
+			virtual bool HandleSaveFrameStateRequested (QWebPage*, QWebFrame*, QWebHistoryItem*)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::scrollRequested() signal.
 			 */
-			virtual bool HandleScrollRequested (QWebPage*, int, int, const QRect&);
+			virtual bool HandleScrollRequested (QWebPage*, int, int, const QRect&)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::selectionChanged() signal.
 			 */
-			virtual bool HandleSelectionChanged (QWebPage*);
+			virtual bool HandleSelectionChanged (QWebPage*)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::statusBarMessage() signal.
 			 */
-			virtual bool HandleStatusBarMessage (QWebPage*, const QString&);
+			virtual bool HandleStatusBarMessage (QWebPage*, const QString&)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::statusBarVisibilityChangeRequested() signal.
 			 */
-			virtual bool HandleStatusBarVisibilityChangeRequested (QWebPage*, bool);
+			virtual bool HandleStatusBarVisibilityChangeRequested (QWebPage*, bool)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::toolBarVisibilityChangeRequested() signal.
 			 */
-			virtual bool HandleToolBarVisibilityChangeRequested (QWebPage*, bool);
+			virtual bool HandleToolBarVisibilityChangeRequested (QWebPage*, bool)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::unsupportedContent() signal.
 			 */
-			virtual bool HandleUnsupportedContent (QWebPage*, QNetworkReply*);
+			virtual bool HandleUnsupportedContent (QWebPage*, QNetworkReply*)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::windowCloseRequested() signal.
 			 */
-			virtual bool HandleWindowCloseRequested (QWebPage*);
+			virtual bool HandleWindowCloseRequested (QWebPage*)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::acceptNavigationRequest().
 			 */
-			bool OnAcceptNavigationRequest (QWebPage*,
+			virtual bool OnAcceptNavigationRequest (QWebPage*,
 					QWebFrame*,
 					const QNetworkRequest&,
-					QWebPage::NavigationType);
+					QWebPage::NavigationType)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the QWebPage::chooseFile().
 			 */
-			QString OnChooseFile (QWebPage*, QWebFrame*, const QString&);
+			virtual QString OnChooseFile (QWebPage*, QWebFrame*, const QString&)
+			{
+				throw std::runtime_error ("We don't handle it by default.");
+			}
 
 			/** See the official Qt docs for the QWebPage::createPlugin().
 			 */
-			QObject* OnCreatePlugin (QWebPage*, const QString&, const QUrl&,
-					const QStringList&, const QStringList&);
+			virtual QObject* OnCreatePlugin (QWebPage*, const QString&, const QUrl&,
+					const QStringList&, const QStringList&)
+			{
+				throw std::runtime_error ("We don't handle it by default.");
+			}
 
 			/** See the official Qt docs for the QWebPage::createWindow().
 			 */
-			QWebPage* OnCreateWindow (QWebPage*, QWebPage::WebWindowType);
+			virtual QWebPage* OnCreateWindow (QWebPage*, QWebPage::WebWindowType)
+			{
+				throw std::runtime_error ("We don't handle it by default.");
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::javaScriptAlert().
 			 */
-			bool OnJavaScriptAlert (QWebPage*, QWebFrame*, const QString&);
+			virtual bool OnJavaScriptAlert (QWebPage*, QWebFrame*, const QString&)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::javaScriptConfirm().
 			 */
-			bool OnJavaScriptConfirm (QWebPage*, QWebFrame*, const QString&);
+			virtual bool OnJavaScriptConfirm (QWebPage*, QWebFrame*, const QString&)
+			{
+				throw std::runtime_error ("We don't handle it by default.");
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::javaScriptConsoleMessage().
 			 */
-			bool OnJavaScriptConsoleMessage (QWebPage*, const QString&,
-					int, const QString&);
+			virtual bool OnJavaScriptConsoleMessage (QWebPage*, const QString&,
+					int, const QString&)
+			{
+				return false;
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::javaScriptPrompt().
 			 */
-			bool OnJavaScriptPrompt (QWebPage*, QWebFrame*, const QString&,
-					const QString&, QString*);
+			virtual bool OnJavaScriptPrompt (QWebPage*, QWebFrame*, const QString&,
+					const QString&, QString*)
+			{
+				throw std::runtime_error ("We don't handle it by default.");
+			}
 
 			/** See the official Qt docs for the
 			 * QWebPage::userAgentForUrl().
 			 */
-			QString OnUserAgentForUrl (const QWebPage*, const QUrl&);
+			virtual QString OnUserAgentForUrl (const QWebPage*, const QUrl&)
+			{
+				throw std::runtime_error ("We don't handle it by default.");
+			}
 		};
 
 		typedef PluginBase *PluginBase_ptr;
 	};
 };
+
+Q_DECLARE_INTERFACE (LeechCraft::Poshuku::PluginBase, "org.Deviant.LeechCraft.Poshuku.PluginBase/1.0");
 
 #endif
 
