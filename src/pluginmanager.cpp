@@ -12,6 +12,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ipluginready.h>
+#include <interfaces/ihaveshortcuts.h>
 #include <interfaces/iwantnetworkaccessmanager.h>
 #include "core.h"
 #include "pluginmanager.h"
@@ -462,12 +463,15 @@ bool LeechCraft::PluginManager::InitializeSingle (LeechCraft::PluginManager::Dep
 
 	try
 	{
-		IInfo *ii = qobject_cast<IInfo*> (item->Plugin_);
 		IWantNetworkAccessManager *iwnam =
 			qobject_cast<IWantNetworkAccessManager*> (item->Plugin_);
 		if (iwnam)
 			iwnam->SetNetworkAccessManager (Core::Instance ().GetNetworkAccessManager ());
+		IHaveShortcuts *ihs = qobject_cast<IHaveShortcuts*> (item->Plugin_);
+		if (ihs)
+			ihs->SetShortcutProxy (Core::Instance ().GetShortcutProxy ());
 
+		IInfo *ii = qobject_cast<IInfo*> (item->Plugin_);
 		ii->Init ();
 		item->Initialized_ = true;
 	}

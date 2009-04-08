@@ -18,6 +18,7 @@ class QLocalServer;
 class QAbstractProxyModel;
 class QAction;
 class IDownload;
+class IShortcutProxy;
 
 namespace LeechCraft
 {
@@ -65,6 +66,7 @@ namespace LeechCraft
         void Release ();
 
 		void SetReallyMainWindow (MainWindow*);
+		const IShortcutProxy* GetShortcutProxy () const;
 
 		/** Returns all plugins that implement IHaveSettings as
 		 * QObjectList.

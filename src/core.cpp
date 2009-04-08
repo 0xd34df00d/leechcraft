@@ -186,6 +186,11 @@ void LeechCraft::Core::SetReallyMainWindow (MainWindow *win)
 	ReallyMainWindow_->installEventFilter (this);
 }
 
+const IShortcutProxy* LeechCraft::Core::GetShortcutProxy () const
+{
+	return ReallyMainWindow_->GetShortcutProxy ();
+}
+
 QObjectList LeechCraft::Core::GetSettables () const
 {
 	return PluginManager_->GetAllCastableRoots<IHaveSettings*> ();

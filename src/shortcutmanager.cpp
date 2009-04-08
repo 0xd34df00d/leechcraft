@@ -1,5 +1,6 @@
 #include "shortcutmanager.h"
 #include <memory>
+#include <QtDebug>
 #include <QSettings>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihaveshortcuts.h>
@@ -17,7 +18,12 @@ void ShortcutManager::AddObject (QObject *object)
 {
 	IInfo *ii = qobject_cast<IInfo*> (object);
 	if (!ii)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< object
+			<< "couldn't be casted to IInfo";
 		return;
+	}
 	AddObject (object, ii->GetName (), ii->GetInfo (), ii->GetIcon ());
 }
 
@@ -31,7 +37,12 @@ void ShortcutManager::AddObject (QObject *object,
 	IHaveShortcuts *ihs = qobject_cast<IHaveShortcuts*> (object);
 
 	if (!ihs)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< object
+			<< "could not be casted to IHaveShortcuts";
 		return;
+	}
 
 	QStringList pstrings;
 	pstrings << objName
@@ -88,7 +99,8 @@ QKeySequence ShortcutManager::GetShortcut (const QObject *object,
 		}
 		return QKeySequence ();
 	}
-	return QKeySequence ();
+	const_cast<ShortcutManager*> (this)->AddObject (const_cast<QObject*> (object));
+	return GetShortcut (object, originalName);
 }
 
 void ShortcutManager::on_Tree__itemActivated (QTreeWidgetItem *item)

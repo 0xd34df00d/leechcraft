@@ -12,6 +12,7 @@ class QLabel;
 class QSplashScreen;
 class QDockWidget;
 class QModelIndex;
+class IShortcutProxy;
 
 namespace LeechCraft
 {
@@ -55,6 +56,7 @@ namespace LeechCraft
 		virtual ~MainWindow ();
 		QModelIndexList GetSelectedRows () const;
 		TabWidget* GetTabWidget () const;
+		const IShortcutProxy* GetShortcutProxy () const;
 	public slots:
 		void catchError (QString);
 	protected:
