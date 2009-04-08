@@ -42,14 +42,14 @@ void ShortcutManager::AddObject (QObject *object,
 	parent->setData (0, RoleObject,
 			QVariant::fromValue<QObject*> (object));
 
-	QMap<QString, ActionInfo> info = ihs->GetActionInfo ();
+	QMap<int, ActionInfo> info = ihs->GetActionInfo ();
 
-	QStringList names = info.keys ();
+	QList<int> names = info.keys ();
 
 	settings.beginGroup (objName);
-	Q_FOREACH (QString name, names)
+	Q_FOREACH (int name, names)
 	{
-		QKeySequence sequence = settings.value (name,
+		QKeySequence sequence = settings.value (QString::number (name),
 				info [name].Default_).value<QKeySequence> ();
 
 		QStringList strings;
@@ -70,7 +70,7 @@ void ShortcutManager::AddObject (QObject *object,
 }
 
 QKeySequence ShortcutManager::GetShortcut (const QObject *object,
-		const QString& originalName) const
+		int originalName) const
 {
 	for (int i = 0, size = Ui_.Tree_->topLevelItemCount ();
 			i < size; ++i)
@@ -83,7 +83,7 @@ QKeySequence ShortcutManager::GetShortcut (const QObject *object,
 				j < namesSize; ++j)
 		{
 			QTreeWidgetItem *item = objectItem->child (j);
-			if (item->data (0, RoleOriginalName).toString () == originalName)
+			if (item->data (0, RoleOriginalName).toInt () == originalName)
 				return item->data (0, RoleSequence).value<QKeySequence> ();
 		}
 		return QKeySequence ();
@@ -94,7 +94,7 @@ QKeySequence ShortcutManager::GetShortcut (const QObject *object,
 void ShortcutManager::on_Tree__itemActivated (QTreeWidgetItem *item)
 {
 	// Root or something
-	if (item->data (0, RoleOriginalName).toString ().isEmpty ())
+	if (item->data (0, RoleOriginalName).isNull ())
 		return;
 
 	std::auto_ptr<KeySequencer> dia (new KeySequencer (this));
@@ -128,10 +128,10 @@ void ShortcutManager::accept ()
 			QTreeWidgetItem *item = objectItem->child (j);
 			if (!item->data (0, RoleOldSequence).isNull ())
 			{
-				QString name = item->data (0, RoleOriginalName).toString ();
+				int name = item->data (0, RoleOriginalName).toInt ();
 				QKeySequence sequence = item->data (0, RoleSequence).value<QKeySequence> ();
 
-				settings.setValue (name, sequence);
+				settings.setValue (QString::number (name), sequence);
 				item->setData (0, RoleOldSequence, QVariant ());
 				ihs->SetShortcut (name, sequence);
 			}

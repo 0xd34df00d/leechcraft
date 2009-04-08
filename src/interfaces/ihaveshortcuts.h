@@ -36,7 +36,7 @@ Q_DECLARE_METATYPE (LeechCraft::ActionInfo);
 class IShortcutProxy
 {
 public:
-	virtual QKeySequence GetShortcut (const QObject*, const QString&) const = 0;
+	virtual QKeySequence GetShortcut (const QObject*, int) const = 0;
 	virtual ~IShortcutProxy () { }
 };
 
@@ -44,8 +44,8 @@ class IHaveShortcuts
 {
 public:
 	virtual void SetShortcutProxy (const IShortcutProxy*) = 0;
-	virtual void SetShortcut (const QString&, const QKeySequence&) = 0;
-	virtual QMap<QString, LeechCraft::ActionInfo> GetActionInfo () const = 0;
+	virtual void SetShortcut (int, const QKeySequence&) = 0;
+	virtual QMap<int, LeechCraft::ActionInfo> GetActionInfo () const = 0;
 	virtual ~IHaveShortcuts () { }
 };
 
