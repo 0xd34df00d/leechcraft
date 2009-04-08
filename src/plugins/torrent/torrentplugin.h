@@ -66,6 +66,26 @@ class TorrentPlugin : public QObject
 		Export_;
 	std::auto_ptr<QTranslator> Translator_;
 	QModelIndex Current_;
+
+	enum
+	{
+		EAOpenTorrent_,
+		EAChangeTrackers_,
+		EACreateTorrent_,
+		EAOpenMultipleTorrents_,
+		EARemoveTorrent_,
+		EAResume_,
+		EAStop_,
+		EAMoveUp_,
+		EAMoveDown_,
+		EAMoveToTop_,
+		EAMoveToBottom_,
+		EAForceReannounce_,
+		EAForceRecheck_,
+		EAMoveFiles_,
+		EAImport_,
+		EAExport_
+	};
 public:
     // IInfo
     void Init ();
@@ -106,8 +126,8 @@ public:
 
 	// IHaveShortcuts
 	void SetShortcutProxy (const IShortcutProxy*);
-	void SetShortcut (const QString&, const QKeySequence&);
-	QMap<QString, LeechCraft::ActionInfo> GetActionInfo () const;
+	void SetShortcut (int, const QKeySequence&);
+	QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
 public slots:
     void updateTorrentStats ();
 private slots:

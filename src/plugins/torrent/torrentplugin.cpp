@@ -267,65 +267,48 @@ void TorrentPlugin::SetShortcutProxy (const IShortcutProxy*)
 {
 }
 
-void TorrentPlugin::SetShortcut (const QString& name,
+#define _LC_MERGE(a) EA##a
+
+#define _LC_SINGLE(a) \
+	case _LC_MERGE(a): \
+		a->setShortcut (shortcut); \
+		break;
+
+#define _LC_TRAVERSER(z,i,array) \
+	_LC_SINGLE (BOOST_PP_SEQ_ELEM(i, array))
+
+#define _LC_EXPANDER(Names) \
+	switch (name) \
+	{ \
+		BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), _LC_TRAVERSER, Names) \
+	}
+void TorrentPlugin::SetShortcut (int name,
 		const QKeySequence& shortcut)
 {
-	qDebug () << name << shortcut;
-	if (name == "OpenTorrent_")
-		OpenTorrent_->setShortcut (shortcut);
-	else if (name == "ChangeTrackers_")
-		ChangeTrackers_->setShortcut (shortcut);
-	else if (name == "CreateTorrent_")
-		CreateTorrent_->setShortcut (shortcut);
-	else if (name == "OpenMultipleTorrents_")
-		OpenMultipleTorrents_->setShortcut (shortcut);
-	else if (name == "RemoveTorrent_")
-		RemoveTorrent_->setShortcut (shortcut);
-	else if (name == "Resume_")
-		Resume_->setShortcut (shortcut);
-	else if (name == "Stop_")
-		Stop_->setShortcut (shortcut);
-	else if (name == "MoveUp_")
-		MoveUp_->setShortcut (shortcut);
-	else if (name == "MoveDown_")
-		MoveDown_->setShortcut (shortcut);
-	else if (name == "MoveToTop_")
-		MoveToTop_->setShortcut (shortcut);
-	else if (name == "MoveToBottom_")
-		MoveToBottom_->setShortcut (shortcut);
-	else if (name == "ForceReannounce_")
-		ForceReannounce_->setShortcut (shortcut);
-	else if (name == "ForceRecheck_")
-		ForceRecheck_->setShortcut (shortcut);
-	else if (name == "MoveFiles_")
-		MoveFiles_->setShortcut (shortcut);
-	else if (name == "Import_")
-		Import_->setShortcut (shortcut);
-	else if (name == "Export_")
-		Export_->setShortcut (shortcut);
+	_LC_EXPANDER ((OpenTorrent_)(ChangeTrackers_)(CreateTorrent_)(OpenMultipleTorrents_)(RemoveTorrent_)(Resume_)(Stop_)(MoveUp_)(MoveDown_)(MoveToTop_)(MoveToBottom_)(ForceReannounce_)(ForceRecheck_)(MoveFiles_)(Import_)(Export_));
 }
 
-#define _L(a, b) result [a] = ActionInfo (b->text (), \
-		b->shortcut (), b->icon ())
-QMap<QString, ActionInfo> TorrentPlugin::GetActionInfo () const
+#define _L(a) result [EA##a] = ActionInfo (a->text (), \
+		a->shortcut (), a->icon ())
+QMap<int, ActionInfo> TorrentPlugin::GetActionInfo () const
 {
-	QMap<QString, ActionInfo> result;
-	_L ("OpenTorrent_", OpenTorrent_);
-	_L ("ChangeTrackers_", ChangeTrackers_);
-	_L ("CreateTorrent_", CreateTorrent_);
-	_L ("OpenMultipleTorrents_", OpenMultipleTorrents_);
-	_L ("RemoveTorrent_", RemoveTorrent_);
-	_L ("Resume_", Resume_);
-	_L ("Stop_", Stop_);
-	_L ("MoveUp_", MoveUp_);
-	_L ("MoveDown_", MoveDown_);
-	_L ("MoveToTop_", MoveToTop_);
-	_L ("MoveToBottom_", MoveToBottom_);
-	_L ("ForceReannounce_", ForceReannounce_);
-	_L ("ForceRecheck_", ForceRecheck_);
-	_L ("MoveFiles_", MoveFiles_);
-	_L ("Import_", Import_);
-	_L ("Export_", Export_);
+	QMap<int, ActionInfo> result;
+	_L (OpenTorrent_);
+	_L (ChangeTrackers_);
+	_L (CreateTorrent_);
+	_L (OpenMultipleTorrents_);
+	_L (RemoveTorrent_);
+	_L (Resume_);
+	_L (Stop_);
+	_L (MoveUp_);
+	_L (MoveDown_);
+	_L (MoveToTop_);
+	_L (MoveToBottom_);
+	_L (ForceReannounce_);
+	_L (ForceRecheck_);
+	_L (MoveFiles_);
+	_L (Import_);
+	_L (Export_);
 	return result;
 }
 #undef _L
