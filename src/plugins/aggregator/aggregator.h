@@ -52,8 +52,8 @@ public:
 	bool CouldHandle (const LeechCraft::DownloadEntity&) const;
 	void Handle (LeechCraft::DownloadEntity);
 	void SetShortcutProxy (const IShortcutProxy*);
-	void SetShortcut (const QString&, const QKeySequence&);
-	QMap<QString, LeechCraft::ActionInfo> GetActionInfo () const;
+	void SetShortcut (int, const QKeySequence&);
+	QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
 protected:
 	virtual void keyPressEvent (QKeyEvent*);
 private:
