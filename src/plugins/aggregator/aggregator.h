@@ -5,6 +5,7 @@
 #include <interfaces/iembedtab.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/ihaveshortcuts.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/structures.h>
 #include <QWidget>
@@ -26,9 +27,10 @@ class Aggregator : public QWidget
 				 , public IHaveSettings
 				 , public IJobHolder
 				 , public IEntityHandler
+				 , public IHaveShortcuts
 {
     Q_OBJECT
-    Q_INTERFACES (IInfo IEmbedTab IHaveSettings IJobHolder IEntityHandler)
+    Q_INTERFACES (IInfo IEmbedTab IHaveSettings IJobHolder IEntityHandler IHaveShortcuts)
 
 	Aggregator_Impl *Impl_;
 public:
@@ -49,6 +51,9 @@ public:
 	void ItemSelected (const QModelIndex&);
 	bool CouldHandle (const LeechCraft::DownloadEntity&) const;
 	void Handle (LeechCraft::DownloadEntity);
+	void SetShortcutProxy (const IShortcutProxy*);
+	void SetShortcut (const QString&, const QKeySequence&);
+	QMap<QString, LeechCraft::ActionInfo> GetActionInfo () const;
 protected:
 	virtual void keyPressEvent (QKeyEvent*);
 private:

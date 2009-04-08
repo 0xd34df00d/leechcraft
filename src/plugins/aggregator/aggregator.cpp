@@ -38,6 +38,7 @@
 
 using LeechCraft::Util::TagsCompleter;
 using LeechCraft::Util::CategorySelector;
+using LeechCraft::ActionInfo;
 
 struct Aggregator_Impl
 {
@@ -260,6 +261,65 @@ void Aggregator::Handle (LeechCraft::DownloadEntity e)
     if (af.exec () == QDialog::Accepted)
         Core::Instance ().AddFeed (e.Location_,
 				af.GetTags ());
+}
+
+void Aggregator::SetShortcutProxy (const IShortcutProxy*)
+{
+}
+
+void Aggregator::SetShortcut (const QString& name,
+		const QKeySequence& shortcut)
+{
+	if (name == "ActionAddFeed_")
+		Impl_->ActionAddFeed_->setShortcut (shortcut);
+	else if (name == "ActionUpdateFeeds_")
+		Impl_->ActionUpdateFeeds_->setShortcut (shortcut);
+	else if (name == "ActionRemoveFeed_")
+		Impl_->ActionRemoveFeed_->setShortcut (shortcut);
+	else if (name == "ActionMarkChannelAsRead_")
+		Impl_->ActionMarkChannelAsRead_->setShortcut (shortcut);
+	else if (name == "ActionMarkChannelAsUnread_")
+		Impl_->ActionMarkChannelAsUnread_->setShortcut (shortcut);
+	else if (name == "ActionChannelSettings_")
+		Impl_->ActionChannelSettings_->setShortcut (shortcut);
+	else if (name == "ActionUpdateSelectedFeed_")
+		Impl_->ActionUpdateSelectedFeed_->setShortcut (shortcut);
+	else if (name == "ActionItemBucket_")
+		Impl_->ActionItemBucket_->setShortcut (shortcut);
+	else if (name == "ActionRegexpMatcher_")
+		Impl_->ActionRegexpMatcher_->setShortcut (shortcut);
+	else if (name == "ActionHideReadItems_")
+		Impl_->ActionHideReadItems_->setShortcut (shortcut);
+	else if (name == "ActionImportOPML_")
+		Impl_->ActionImportOPML_->setShortcut (shortcut);
+	else if (name == "ActionExportOPML_")
+		Impl_->ActionExportOPML_->setShortcut (shortcut);
+	else if (name == "ActionImportBinary_")
+		Impl_->ActionImportBinary_->setShortcut (shortcut);
+	else if (name == "ActionExportBinary_")
+		Impl_->ActionExportBinary_->setShortcut (shortcut);
+}
+
+#define _L(a, b) result [a] = ActionInfo (b->text (), \
+		b->shortcut (), b->icon ())
+QMap<QString, ActionInfo> Aggregator::GetActionInfo () const
+{
+	QMap<QString, ActionInfo> result;
+	_L ("ActionAddFeed_", Impl_->ActionAddFeed_);
+	_L ("ActionUpdateFeeds_", Impl_->ActionUpdateFeeds_);
+	_L ("ActionRemoveFeed_", Impl_->ActionRemoveFeed_);
+	_L ("ActionMarkChannelAsRead_", Impl_->ActionMarkChannelAsRead_);
+	_L ("ActionMarkChannelAsUnread_", Impl_->ActionMarkChannelAsUnread_);
+	_L ("ActionChannelSettings_", Impl_->ActionChannelSettings_);
+	_L ("ActionUpdateSelectedFeed_", Impl_->ActionUpdateSelectedFeed_);
+	_L ("ActionItemBucket_", Impl_->ActionItemBucket_);
+	_L ("ActionRegexpMatcher_", Impl_->ActionRegexpMatcher_);
+	_L ("ActionHideReadItems_", Impl_->ActionHideReadItems_);
+	_L ("ActionImportOPML_", Impl_->ActionImportOPML_);
+	_L ("ActionExportOPML_", Impl_->ActionExportOPML_);
+	_L ("ActionImportBinary_", Impl_->ActionImportBinary_);
+	_L ("ActionExportBinary_", Impl_->ActionExportBinary_);
+	return result;
 }
 
 void Aggregator::keyPressEvent (QKeyEvent *e)
