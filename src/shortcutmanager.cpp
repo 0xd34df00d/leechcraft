@@ -15,21 +15,30 @@ ShortcutManager::ShortcutManager (QWidget *parent)
 
 void ShortcutManager::AddObject (QObject *object)
 {
+	IInfo *ii = qobject_cast<IInfo*> (object);
+	if (!ii)
+		return;
+	AddObject (object, ii->GetName (), ii->GetInfo (), ii->GetIcon ());
+}
+
+void ShortcutManager::AddObject (QObject *object,
+		const QString& objName, const QString& objDescr,
+		const QIcon& objIcon)
+{
 	QSettings settings ("Deviant", "Leechcraft");
 	settings.beginGroup ("Shortcuts");
 
-	IInfo *ii = qobject_cast<IInfo*> (object);
 	IHaveShortcuts *ihs = qobject_cast<IHaveShortcuts*> (object);
 
-	if (!ii || !ihs)
+	if (!ihs)
 		return;
 
 	QStringList pstrings;
-	pstrings << ii->GetName ()
-		<< ii->GetInfo ();
+	pstrings << objName
+		<< objDescr;
 
 	QTreeWidgetItem *parent = new QTreeWidgetItem (Ui_.Tree_, pstrings);
-	parent->setIcon (0, ii->GetIcon ());
+	parent->setIcon (0, objIcon);
 	parent->setData (0, RoleObject,
 			QVariant::fromValue<QObject*> (object));
 
@@ -37,7 +46,7 @@ void ShortcutManager::AddObject (QObject *object)
 
 	QStringList names = info.keys ();
 
-	settings.beginGroup (ii->GetName ());
+	settings.beginGroup (objName);
 	Q_FOREACH (QString name, names)
 	{
 		QKeySequence sequence = settings.value (name,
