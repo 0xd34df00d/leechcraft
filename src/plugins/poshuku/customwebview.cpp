@@ -104,6 +104,7 @@ QWebView* CustomWebView::createWindow (QWebPage::WebWindowType type)
 		// We don't need to register it in the Core, so construct
 		// directly.
 		BrowserWidget *widget = new BrowserWidget (this);
+		widget->InitShortcuts ();
 		widget->setWindowFlags (Qt::Dialog);
 		widget->setAttribute (Qt::WA_DeleteOnClose);
 		connect (widget,

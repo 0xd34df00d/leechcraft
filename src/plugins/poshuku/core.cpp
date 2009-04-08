@@ -19,6 +19,7 @@
 #include <QMessageBox>
 #include <QtDebug>
 #include <plugininterface/proxy.h>
+#include <interfaces/ihaveshortcuts.h>
 #include "browserwidget.h"
 #include "customwebview.h"
 #include "addtofavoritesdialog.h"
@@ -33,7 +34,9 @@ using LeechCraft::Util::Proxy;
 using LeechCraft::Util::TagsCompletionModel;
 
 Core::Core ()
-: SaveSessionScheduled_ (false)
+: NetworkAccessManager_ (0)
+, SaveSessionScheduled_ (false)
+, ShortcutProxy_ (0)
 {
 	QDir dir = QDir::home ();
 	if (!dir.cd (".leechcraft/poshuku") &&
@@ -140,6 +143,7 @@ QUrl Core::MakeURL (QString url) const
 BrowserWidget* Core::NewURL (const QString& url, bool raise)
 {
 	BrowserWidget *widget = new BrowserWidget ();
+	widget->InitShortcuts ();
 	widget->SetUnclosers (Unclosers_);
 	Widgets_.push_back (widget);
 
@@ -193,6 +197,7 @@ BrowserWidget* Core::NewURL (const QString& url, bool raise)
 IWebWidget* Core::GetWidget ()
 {
 	BrowserWidget *widget = new BrowserWidget ();
+	widget->InitShortcuts ();
 	connect (widget,
 			SIGNAL (addToFavorites (const QString&, const QString&)),
 			this,
@@ -258,6 +263,22 @@ StorageBackend* Core::GetStorageBackend () const
 PluginManager* Core::GetPluginManager () const
 {
 	return PluginManager_.get ();
+}
+
+void Core::SetShortcutProxy (const IShortcutProxy *proxy)
+{
+	ShortcutProxy_ = proxy;
+}
+
+void Core::SetShortcut (int name, const QKeySequence& shortcut)
+{
+	Q_FOREACH (BrowserWidget *widget, Widgets_)
+		widget->SetShortcut (name, shortcut);
+}
+
+const IShortcutProxy* Core::GetShortcutProxy () const
+{
+	return ShortcutProxy_;
 }
 
 void Core::Unregister (BrowserWidget *widget)

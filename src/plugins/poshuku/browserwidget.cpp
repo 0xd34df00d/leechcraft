@@ -1,4 +1,7 @@
 #include "browserwidget.h"
+#include <boost/preprocessor/seq/size.hpp>
+#include <boost/preprocessor/seq/elem.hpp>
+#include <boost/preprocessor/repetition/repeat.hpp>
 #include <QKeyEvent>
 #include <QDesktopWidget>
 #include <QtDebug>
@@ -26,40 +29,38 @@
 #include "speeddialprovider.h"
 #include "sourceviewer.h"
 
+using LeechCraft::ActionInfo;
+
 BrowserWidget::BrowserWidget (QWidget *parent)
 : QWidget (parent)
 , HtmlMode_ (false)
 {
 	Ui_.setupUi (this);
 
-	Ui_.WebView_->pageAction (QWebPage::Cut)->setProperty ("ActionIcon", "poshuku_cut");
-	Ui_.WebView_->pageAction (QWebPage::Cut)->setShortcut (tr ("Ctrl+X"));
-	Ui_.WebView_->pageAction (QWebPage::Copy)->setProperty ("ActionIcon", "poshuku_copy");
-	Ui_.WebView_->pageAction (QWebPage::Copy)->setShortcut (tr ("Ctrl+C"));
-	Ui_.WebView_->pageAction (QWebPage::Paste)->setProperty ("ActionIcon", "poshuku_paste");
-	Ui_.WebView_->pageAction (QWebPage::Paste)->setShortcut (tr ("Ctrl+V"));
+	Cut_ = Ui_.WebView_->pageAction (QWebPage::Cut);
+	Cut_->setProperty ("ActionIcon", "poshuku_cut");
+	Copy_ = Ui_.WebView_->pageAction (QWebPage::Copy);
+	Copy_->setProperty ("ActionIcon", "poshuku_copy");
+	Paste_ = Ui_.WebView_->pageAction (QWebPage::Paste);
+	Paste_->setProperty ("ActionIcon", "poshuku_paste");
 
 	ToolBar_ = new QToolBar (this);
 	
-	QAction *back = Ui_.WebView_->pageAction (QWebPage::Back);
-	back->setParent (this);
-	back->setProperty ("ActionIcon", "poshuku_back");
-	back->setShortcut (Qt::ALT + Qt::Key_Left);
+	Back_ = Ui_.WebView_->pageAction (QWebPage::Back);
+	Back_->setParent (this);
+	Back_->setProperty ("ActionIcon", "poshuku_back");
 
-	QAction *forward = Ui_.WebView_->pageAction (QWebPage::Forward);
-	forward->setParent (this);
-	forward->setProperty ("ActionIcon", "poshuku_forward");
-	forward->setShortcut (Qt::ALT + Qt::Key_Right);
+	Forward_ = Ui_.WebView_->pageAction (QWebPage::Forward);
+	Forward_->setParent (this);
+	Forward_->setProperty ("ActionIcon", "poshuku_forward");
 
-	QAction *reload = Ui_.WebView_->pageAction (QWebPage::Reload);
-	reload->setParent (this);
-	reload->setShortcut (Qt::Key_F5);
-	reload->setProperty ("ActionIcon", "poshuku_reload");
+	Reload_ = Ui_.WebView_->pageAction (QWebPage::Reload);
+	Reload_->setParent (this);
+	Reload_->setProperty ("ActionIcon", "poshuku_reload");
 
-	QAction *stop = Ui_.WebView_->pageAction (QWebPage::Stop);
-	stop->setParent (this);
-	stop->setShortcut (Qt::Key_Escape);
-	stop->setProperty ("ActionIcon", "poshuku_stop");
+	Stop_ = Ui_.WebView_->pageAction (QWebPage::Stop);
+	Stop_->setParent (this);
+	Stop_->setProperty ("ActionIcon", "poshuku_stop");
 
 	QMenu *moreMenu = new QMenu (this);
 	QAction *more = moreMenu->menuAction ();
@@ -69,31 +70,26 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	Add2Favorites_ = new QAction (tr ("Add to favorites..."),
 			this);
 	Add2Favorites_->setProperty ("ActionIcon", "poshuku_addtofavorites");
-	Add2Favorites_->setShortcut (tr ("Ctrl+D"));
 	Add2Favorites_->setEnabled (false);
 
 	Find_ = new QAction (tr ("Find..."),
 			this);
-	Find_->setShortcut (tr ("Ctrl+F"));
 	Find_->setProperty ("ActionIcon", "poshuku_find");
 	Find_->setEnabled (false);
 
 	Print_ = new QAction (tr ("Print..."),
 			this);
 	Print_->setProperty ("ActionIcon", "poshuku_print");
-	Print_->setShortcut (tr ("Ctrl+P"));
 	Print_->setEnabled (false);
 
 	PrintPreview_ = new QAction (tr ("Print with preview..."),
 			this);
 	PrintPreview_->setProperty ("ActionIcon", "poshuku_printpreview");
-	PrintPreview_->setShortcut (tr ("Ctrl+Shift+P"));
 	PrintPreview_->setEnabled (false);
 
 	ScreenSave_ = new QAction (tr ("Take page's screenshot..."),
 			this);
 	ScreenSave_->setProperty ("ActionIcon", "poshuku_takescreenshot");
-	ScreenSave_->setShortcut (Qt::Key_F12);
 	ScreenSave_->setEnabled (false);
 
 	ViewSources_ = new QAction (tr ("View sources..."),
@@ -104,27 +100,22 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	NewTab_ = new QAction (tr ("Create new tab"),
 			this);
 	NewTab_->setProperty ("ActionIcon", "poshuku_newtab");
-	NewTab_->setShortcut (tr ("Ctrl+T"));
 
 	CloseTab_ = new QAction (tr ("Close this tab"),
 			this);
 	CloseTab_->setProperty ("ActionIcon", "poshuku_closetab");
-	CloseTab_->setShortcut (tr ("Ctrl+W"));
 
 	ZoomIn_ = new QAction (tr ("Zoom in"),
 			this);
 	ZoomIn_->setProperty ("ActionIcon", "poshuku_zoomin");
-	ZoomIn_->setShortcut (Qt::CTRL + Qt::Key_Plus);
 
 	ZoomOut_ = new QAction (tr ("Zoom out"),
 			this);
 	ZoomOut_->setProperty ("ActionIcon", "poshuku_zoomout");
-	ZoomOut_->setShortcut (Qt::CTRL + Qt::Key_Minus);
 
 	ZoomReset_ = new QAction (tr ("Reset zoom"),
 			this);
 	ZoomReset_->setProperty ("ActionIcon", "poshuku_zoomreset");
-	ZoomReset_->setShortcut (tr ("Ctrl+0"));
 
 	ImportXbel_ = new QAction (tr ("Import XBEL..."),
 			this);
@@ -134,10 +125,10 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			this);
 	ExportXbel_->setProperty ("ActionIcon", "poshuku_exportxbel");
 
-	ToolBar_->addAction (back);
-	ToolBar_->addAction (forward);
-	ToolBar_->addAction (reload);
-	ToolBar_->addAction (stop);
+	ToolBar_->addAction (Back_);
+	ToolBar_->addAction (Forward_);
+	ToolBar_->addAction (Reload_);
+	ToolBar_->addAction (Stop_);
 	ToolBar_->addAction (more);
 
 	moreMenu->addAction (Find_);
@@ -159,7 +150,7 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 
 	RecentlyClosed_ = moreMenu->addMenu (tr ("Recently closed"));
 	RecentlyClosed_->setEnabled (false);
-	RecentlyClosed_->menuAction ()->setShortcut (tr ("Ctrl+Shift+T"));
+	RecentlyClosedAction_ = RecentlyClosed_->menuAction ();
 
 	ExternalLinks_ = new QMenu (this);
 	ExternalLinks_->menuAction ()->setText (tr ("External links"));
@@ -310,6 +301,34 @@ BrowserWidget::~BrowserWidget ()
 	Core::Instance ().Unregister (this);
 }
 
+void BrowserWidget::InitShortcuts ()
+{
+	const IShortcutProxy *proxy = Core::Instance ().GetShortcutProxy ();
+	QObject *object = Core::Instance ().parent ();
+
+	Cut_->setShortcut (proxy->GetShortcut (object, EACut_));
+	Copy_->setShortcut (proxy->GetShortcut (object, EACopy_));
+	Paste_->setShortcut (proxy->GetShortcut (object, EAPaste_));
+	Back_->setShortcut (proxy->GetShortcut (object, EABack_));
+	Forward_->setShortcut (proxy->GetShortcut (object, EAForward_));
+	Reload_->setShortcut (proxy->GetShortcut (object, EAReload_));
+	Stop_->setShortcut (proxy->GetShortcut (object, EAStop_));
+	Add2Favorites_->setShortcut (proxy->GetShortcut (object, EAAdd2Favorites_));
+	Find_->setShortcut (proxy->GetShortcut (object, EAFind_));
+	Print_->setShortcut (proxy->GetShortcut (object, EAPrint_));
+	PrintPreview_->setShortcut (proxy->GetShortcut (object, EAPrintPreview_));
+	ScreenSave_->setShortcut (proxy->GetShortcut (object, EAScreenSave_));
+	ViewSources_->setShortcut (proxy->GetShortcut (object, EAViewSources_));
+	NewTab_->setShortcut (proxy->GetShortcut (object, EANewTab_));
+	CloseTab_->setShortcut (proxy->GetShortcut (object, EACloseTab_));
+	ZoomIn_->setShortcut (proxy->GetShortcut (object, EAZoomIn_));
+	ZoomOut_->setShortcut (proxy->GetShortcut (object, EAZoomOut_));
+	ZoomReset_->setShortcut (proxy->GetShortcut (object, EAZoomReset_));
+	ImportXbel_->setShortcut (proxy->GetShortcut (object, EAImportXbel_));
+	ExportXbel_->setShortcut (proxy->GetShortcut (object, EAExportXbel_));
+	RecentlyClosedAction_->setShortcut (proxy->GetShortcut (object, EARecentlyClosedAction_));
+}
+
 void BrowserWidget::SetUnclosers (const QList<QAction*>& unclosers)
 {
 	RecentlyClosed_->addActions (unclosers);
@@ -317,7 +336,7 @@ void BrowserWidget::SetUnclosers (const QList<QAction*>& unclosers)
 	{
 		RecentlyClosed_->setEnabled (true);
 		RecentlyClosed_->setDefaultAction (unclosers.front ());
-		connect (RecentlyClosed_->menuAction (),
+		connect (RecentlyClosedAction_,
 				SIGNAL (triggered ()),
 				unclosers.front (),
 				SLOT (trigger ()));
@@ -361,6 +380,75 @@ void BrowserWidget::SetHtml (const QString& html, const QString& base)
 QWidget* BrowserWidget::Widget ()
 {
 	return this;
+}
+
+#define _LC_MERGE(a) EA##a
+
+#define _LC_SINGLE(a) \
+	case _LC_MERGE(a): \
+		a->setShortcut (shortcut); \
+		break;
+
+#define _LC_TRAVERSER(z,i,array) \
+	_LC_SINGLE (BOOST_PP_SEQ_ELEM(i, array))
+
+#define _LC_EXPANDER(Names) \
+	switch (name) \
+	{ \
+		BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), _LC_TRAVERSER, Names) \
+	}
+void BrowserWidget::SetShortcut (int name, const QKeySequence& shortcut)
+{
+	_LC_EXPANDER ((Add2Favorites_)
+			(Find_)
+			(Print_)
+			(PrintPreview_)
+			(ScreenSave_)
+			(ViewSources_)
+			(NewTab_)
+			(CloseTab_)
+			(ZoomIn_)
+			(ZoomOut_)
+			(ZoomReset_)
+			(ImportXbel_)
+			(ExportXbel_)
+			(Cut_)
+			(Copy_)
+			(Paste_)
+			(Back_)
+			(Forward_)
+			(Reload_)
+			(Stop_)
+			(RecentlyClosedAction_));
+}
+
+#define _L(a,b) result [EA##a] = ActionInfo (a->text (), \
+		b, a->icon ())
+QMap<int, ActionInfo> BrowserWidget::GetActionInfo () const
+{
+	QMap<int, ActionInfo> result;
+	_L (Add2Favorites_, tr ("Ctrl+D"));
+	_L (Find_, tr ("Ctrl+F"));
+	_L (Print_, tr ("Ctrl+P"));
+	_L (PrintPreview_, tr ("Ctrl+Shift+P"));
+	_L (ScreenSave_, Qt::Key_F12);
+	_L (ViewSources_, QKeySequence ());
+	_L (NewTab_, tr ("Ctrl+T"));
+	_L (CloseTab_, tr ("Ctrl+W"));
+	_L (ZoomIn_, Qt::CTRL + Qt::Key_Plus);
+	_L (ZoomOut_, Qt::CTRL + Qt::Key_Minus);
+	_L (ZoomReset_, tr ("Ctrl+0"));
+	_L (ImportXbel_, QKeySequence ());
+	_L (ExportXbel_, QKeySequence ());
+	_L (Cut_, tr ("Ctrl+X"));
+	_L (Copy_, tr ("Ctrl+C"));
+	_L (Paste_, tr ("Ctrl+V"));
+	_L (Back_, Qt::ALT + Qt::Key_Left);
+	_L (Forward_, Qt::ALT + Qt::Key_Right);
+	_L (Reload_, Qt::Key_F5);
+	_L (Stop_, Qt::Key_Escape);
+	_L (RecentlyClosedAction_, tr ("Ctrl+Shift+T"));
+	return result;
 }
 
 void BrowserWidget::PrintImpl (bool preview, QWebFrame *frame)
@@ -526,11 +614,11 @@ void BrowserWidget::handleNewUnclose (QAction *action)
 	}
 	RecentlyClosed_->setEnabled (true);
 	RecentlyClosed_->setDefaultAction (action);
-	disconnect (RecentlyClosed_->menuAction (),
+	disconnect (RecentlyClosedAction_,
 			SIGNAL (triggered ()),
 			0,
 			0);
-	connect (RecentlyClosed_->menuAction (),
+	connect (RecentlyClosedAction_,
 			SIGNAL (triggered ()),
 			action,
 			SLOT (trigger ()));
@@ -546,11 +634,11 @@ void BrowserWidget::handleUncloseDestroyed ()
 		RecentlyClosed_->setEnabled (false);
 	else
 	{
-		disconnect (RecentlyClosed_->menuAction (),
+		disconnect (RecentlyClosedAction_,
 				SIGNAL (triggered ()),
 				0,
 				0);
-		connect (RecentlyClosed_->menuAction (),
+		connect (RecentlyClosedAction_,
 				SIGNAL (triggered ()),
 				RecentlyClosed_->actions ().front (),
 				SLOT (trigger ()));

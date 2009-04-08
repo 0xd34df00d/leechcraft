@@ -10,6 +10,7 @@
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/ipluginready.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/ihaveshortcuts.h>
 #include <interfaces/iwantnetworkaccessmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/tagscompleter.h>
@@ -25,11 +26,12 @@ class Poshuku : public QWidget
 			  , public IMultiTabs
 			  , public IPluginReady
 			  , public IHaveSettings
+			  , public IHaveShortcuts
 			  , public IWantNetworkAccessManager
 			  , public IWebBrowser
 {
     Q_OBJECT
-    Q_INTERFACES (IInfo IEmbedTab IMultiTabs IHaveSettings IPluginReady IWantNetworkAccessManager IWebBrowser)
+    Q_INTERFACES (IInfo IEmbedTab IMultiTabs IHaveSettings IPluginReady IWantNetworkAccessManager IWebBrowser IHaveShortcuts)
 
 	Ui::Poshuku Ui_;
 
@@ -60,6 +62,10 @@ public:
 
 	void Open (const QString&);
 	IWebWidget* GetWidget () const;
+
+	void SetShortcutProxy (const IShortcutProxy*);
+	void SetShortcut (int, const QKeySequence&);
+	QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
 private:
 	void SetupActions ();
 	void SetupView ();

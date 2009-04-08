@@ -23,6 +23,7 @@ class QAbstractItemModel;
 class QNetworkReply;
 class QNetworkAccessManager;
 class IWebWidget;
+class IShortcutProxy;
 
 class Core : public QObject
 {
@@ -46,6 +47,7 @@ class Core : public QObject
 
 	QMap<QString, QString> SavedSession_;
 	QList<QAction*> Unclosers_;
+	const IShortcutProxy *ShortcutProxy_;
 
 	Core ();
 public:
@@ -69,6 +71,9 @@ public:
 	void SetNetworkAccessManager (QNetworkAccessManager*);
 	StorageBackend* GetStorageBackend () const;
 	PluginManager* GetPluginManager () const;
+	void SetShortcutProxy (const IShortcutProxy*);
+	void SetShortcut (int name, const QKeySequence& shortcut);
+	const IShortcutProxy* GetShortcutProxy () const;
 private:
 	void RestoreSession (bool);
 	void HandleHistory (QWebView*);

@@ -2,6 +2,7 @@
 #define BROWSERWIDGET_H
 #include <QWidget>
 #include <interfaces/iwebbrowser.h>
+#include <interfaces/ihaveshortcuts.h>
 #include <interfaces/structures.h>
 #include "ui_browserwidget.h"
 
@@ -29,12 +30,47 @@ class BrowserWidget : public QWidget
 	QAction *ZoomReset_;
 	QAction *ImportXbel_;
 	QAction *ExportXbel_;
+	QAction *Cut_;
+	QAction *Copy_;
+	QAction *Paste_;
+	QAction *Back_;
+	QAction *Forward_;
+	QAction *Reload_;
+	QAction *Stop_;
+	QAction *RecentlyClosedAction_;
 	QMenu *RecentlyClosed_;
 	QMenu *ExternalLinks_;
 	bool HtmlMode_;
 public:
+	enum Actions
+	{
+		EAAdd2Favorites_,
+		EAFind_,
+		EAPrint_,
+		EAPrintPreview_,
+		EAScreenSave_,
+		EAViewSources_,
+		EANewTab_,
+		EACloseTab_,
+		EAZoomIn_,
+		EAZoomOut_,
+		EAZoomReset_,
+		EAImportXbel_,
+		EAExportXbel_,
+		EACut_,
+		EACopy_,
+		EAPaste_,
+		EABack_,
+		EAForward_,
+		EAReload_,
+		EAStop_,
+		EARecentlyClosedAction_
+	};
+
 	BrowserWidget (QWidget* = 0);
 	virtual ~BrowserWidget ();
+
+	void InitShortcuts ();
 
 	void SetUnclosers (const QList<QAction*>&);
 	CustomWebView* GetView () const;
@@ -43,6 +79,9 @@ public:
 	void Load (const QString&);
 	void SetHtml (const QString&, const QString& = QString ());
 	QWidget* Widget ();
+
+	void SetShortcut (int, const QKeySequence&);
+	QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
 private:
 	void PrintImpl (bool, QWebFrame*);
 private slots:

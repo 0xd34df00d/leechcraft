@@ -23,8 +23,12 @@ using LeechCraft::Util::TagsCompletionModel;
 
 void Poshuku::Init ()
 {
+	Core::Instance ().setParent (this);
+
 	Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku"));
 	Ui_.setupUi (this);
+
+	Ui_.MainView_->InitShortcuts ();
 
 	SetupActions ();
 	SetupView ();
@@ -134,6 +138,7 @@ void Poshuku::Init ()
 
 void Poshuku::Release ()
 {
+	Core::Instance ().setParent (0);
 	Core::Instance ().Release ();
 	XmlSettingsDialog_.reset ();
 	FavoritesFilterLineCompleter_.reset ();
@@ -208,6 +213,22 @@ void Poshuku::Open (const QString& link)
 IWebWidget* Poshuku::GetWidget () const
 {
 	return Core::Instance ().GetWidget ();
+}
+
+void Poshuku::SetShortcutProxy (const IShortcutProxy *proxy)
+{
+	Core::Instance ().SetShortcutProxy (proxy);
+}
+
+void Poshuku::SetShortcut (int name, const QKeySequence& sequence)
+{
+	Ui_.MainView_->SetShortcut (name, sequence);
+	Core::Instance ().SetShortcut (name, sequence);
+}
+
+QMap<int, LeechCraft::ActionInfo> Poshuku::GetActionInfo () const
+{
+	return Ui_.MainView_->GetActionInfo ();
 }
 
 void Poshuku::SetupActions ()
