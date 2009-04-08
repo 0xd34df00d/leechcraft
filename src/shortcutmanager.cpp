@@ -31,6 +31,15 @@ void ShortcutManager::AddObject (QObject *object,
 		const QString& objName, const QString& objDescr,
 		const QIcon& objIcon)
 {
+	for (int i = 0, size = Ui_.Tree_->topLevelItemCount ();
+			i < size; ++i)
+	{
+		QTreeWidgetItem *objectItem = Ui_.Tree_->topLevelItem (i);
+		QObject *o = objectItem->data (0, RoleObject).value<QObject*> ();
+		if (o == object)
+			return;
+	}
+
 	QSettings settings ("Deviant", "Leechcraft");
 	settings.beginGroup ("Shortcuts");
 
