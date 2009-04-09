@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
+ <class>Changer</class>
+ <widget class="QDialog" name="Changer">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>423</width>
-    <height>144</height>
+    <width>706</width>
+    <height>236</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Fake user agent</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QFormLayout" name="formLayout">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+     </property>
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
@@ -24,7 +27,7 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLineEdit" name="lineEdit"/>
+      <widget class="QLineEdit" name="Domain_"/>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
@@ -34,7 +37,7 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QComboBox" name="comboBox"/>
+      <widget class="QComboBox" name="Agent_"/>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_3">
@@ -44,12 +47,23 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QLineEdit" name="lineEdit_2"/>
+      <widget class="QLineEdit" name="IDString_"/>
      </item>
     </layout>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>%Platform% and %Subplatform% are expanded to the windowing system and the operation system.
+%Security% is expanded to U if SSL is enabled, otherwise N.
+%Locale% is replaced with current locale name.
+%WebKitVersion% is expanded to WebKit version.
+%AppVersion% is expanded to the application's version.</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="ButtonBox_">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -63,9 +77,9 @@
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>ButtonBox_</sender>
    <signal>accepted()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>Changer</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -79,9 +93,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>ButtonBox_</sender>
    <signal>rejected()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>Changer</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

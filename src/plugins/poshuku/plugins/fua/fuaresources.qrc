@@ -1,0 +1,7 @@
+<RCC>
+  <qresource prefix="/" >
+    <file>leechcraft_poshuku_fua_ru_RU.qm</file>
+    <file>leechcraft_poshuku_fua_uk_UA.qm</file>
+	<file>poshukufuasettings.xml</file>
+  </qresource>
+</RCC>
