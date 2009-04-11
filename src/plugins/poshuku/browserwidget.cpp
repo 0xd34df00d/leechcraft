@@ -7,7 +7,9 @@
 #include <QtDebug>
 #include <QToolBar>
 #include <QBuffer>
+#include <QDial>
 #include <QMenu>
+#include <QMovie>
 #include <QWidgetAction>
 #include <QCompleter>
 #include <QPrinter>
@@ -237,8 +239,12 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			SLOT (setText (const QString&)));
 	connect (Ui_.WebView_,
 			SIGNAL (loadProgress (int)),
-			Ui_.URLEdit_,
+			Ui_.Progress_,
 			SLOT (setValue (int)));
+	connect (Ui_.WebView_,
+			SIGNAL (loadProgress (int)),
+			this,
+			SLOT (handleIconChanged ()));
 	connect (Ui_.WebView_,
 			SIGNAL (iconChanged ()),
 			this,
@@ -269,6 +275,10 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			SIGNAL (loadStarted ()),
 			this,
 			SLOT (enableActions ()));
+	connect (Ui_.WebView_,
+			SIGNAL (loadStarted ()),
+			this,
+			SLOT (setupLoading ()));
 	connect (Ui_.WebView_,
 			SIGNAL (printRequested (QWebFrame*)),
 			this,
@@ -481,7 +491,16 @@ void BrowserWidget::PrintImpl (bool preview, QWebFrame *frame)
 
 void BrowserWidget::handleIconChanged ()
 {
-	emit iconChanged (Ui_.WebView_->icon ());
+	int progress = Ui_.Progress_->value ();
+	if (progress == 100)
+	{
+		emit iconChanged (Ui_.WebView_->icon ());
+		Loading_.reset ();
+	}
+	else if (Loading_)
+		emit iconChanged (QIcon (Loading_->currentPixmap ()));
+	else
+		emit iconChanged (QIcon ());
 }
 
 void BrowserWidget::handleStatusBarMessage (const QString& msg)
@@ -687,6 +706,17 @@ void BrowserWidget::enableActions ()
 	PrintPreview_->setEnabled (true);
 	ScreenSave_->setEnabled (true);
 	ViewSources_->setEnabled (true);
+}
+
+void BrowserWidget::setupLoading ()
+{
+	Loading_.reset (new QMovie (":/resources/images/loading.gif"));
+	Loading_->setBackgroundColor (QApplication::palette ().color (QPalette::Window));
+	Loading_->start ();
+	connect (Loading_.get (),
+			SIGNAL (frameChanged (int)),
+			this,
+			SLOT (handleIconChanged ()));
 }
 
 void BrowserWidget::handleEntityAction ()

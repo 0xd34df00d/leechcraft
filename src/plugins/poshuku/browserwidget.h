@@ -1,5 +1,6 @@
 #ifndef BROWSERWIDGET_H
 #define BROWSERWIDGET_H
+#include <boost/shared_ptr.hpp>
 #include <QWidget>
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/ihaveshortcuts.h>
@@ -7,6 +8,7 @@
 #include "ui_browserwidget.h"
 
 class QToolBar;
+class QMovie;
 
 class BrowserWidget : public QWidget
 					, public IWebWidget
@@ -38,6 +40,7 @@ class BrowserWidget : public QWidget
 	QAction *Reload_;
 	QAction *Stop_;
 	QAction *RecentlyClosedAction_;
+	boost::shared_ptr<QMovie> Loading_;
 	QMenu *RecentlyClosed_;
 	QMenu *ExternalLinks_;
 	bool HtmlMode_;
@@ -102,6 +105,7 @@ private slots:
 	void handleUncloseDestroyed ();
 	void updateTooltip ();
 	void enableActions ();
+	void setupLoading ();
 	void handleEntityAction ();
 	void handleLoadFinished ();
 signals:

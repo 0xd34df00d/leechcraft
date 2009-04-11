@@ -20,7 +20,6 @@ protected:
 	virtual void focusInEvent (QFocusEvent*);
 	virtual void keyPressEvent (QKeyEvent*);
 public slots:
-	void setValue (int);
 	void handleActivated (const QModelIndex&);
 	void handleHighlighted (const QModelIndex&);
 };
