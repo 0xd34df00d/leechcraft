@@ -27,9 +27,9 @@
 				<label lang="en" value="Open these schemes using external applications:" />
 				<label lang="ru" value="Открывать эти схемы внешними приложениями:" />
 			</item>
-			<item type="path" property="UserStyleSheet">
-				<label lang="en" value="User CSS:" />
-				<label lang="ru" value="Пользовательский CSS:" />
+			<item type="lineedit" property="UserStyleSheet">
+				<label lang="en" value="User CSS URL:" />
+				<label lang="ru" value="URL пользовательского CSS:" />
 			</item>
 		</tab>
 		<tab>
