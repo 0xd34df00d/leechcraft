@@ -34,14 +34,12 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	SplashScreen_ = new QSplashScreen (QPixmap (":/resources/images/splashscreen.png"),
 			Qt::WindowStaysOnTopHint);
 	SplashScreen_->show ();
-	SplashScreen_->showMessage (tr ("Initializing interface..."),
-			Qt::AlignLeft | Qt::AlignBottom);
+	ShowMessage (tr ("Initializing interface..."));
 
 	InitializeInterface ();
 	setAcceptDrops (true);
 
-	SplashScreen_->showMessage (tr ("Initializing core and plugins..."),
-			Qt::AlignLeft | Qt::AlignBottom);
+	ShowMessage (tr ("Initializing core and plugins..."));
 	connect (&Core::Instance (),
 			SIGNAL (loadProgress (const QString&)),
 			this,
@@ -67,8 +65,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 
 	PluginManagerDialog_ = new PluginManagerDialog (this);
 
-	SplashScreen_->showMessage (tr ("Initializing core and plugins..."),
-			Qt::AlignLeft | Qt::AlignBottom);
+	ShowMessage (tr ("Initializing core and plugins..."));
 
 	QAbstractItemModel *tasksModel = Core::Instance ().GetTasksModel ();
 	Ui_.PluginsTasksTree_->setModel (tasksModel);
@@ -300,6 +297,13 @@ void LeechCraft::MainWindow::WriteSettings ()
 	settings.endGroup ();
 }
 
+void LeechCraft::MainWindow::ShowMessage (const QString& message)
+{
+	SplashScreen_->showMessage (message,
+			Qt::AlignLeft | Qt::AlignBottom,
+			QApplication::palette ().color (QPalette::WindowText));
+}
+
 void LeechCraft::MainWindow::on_ActionAddTask__triggered ()
 {
 	CommonJobAdder adder (this);
@@ -519,8 +523,6 @@ void LeechCraft::MainWindow::activated (const QModelIndex& index)
 
 void LeechCraft::MainWindow::handleLoadProgress (const QString& msg)
 {
-	SplashScreen_->
-		showMessage (tr ("Initializing core and plugins...") + " " + msg,
-				Qt::AlignLeft | Qt::AlignBottom);
+	ShowMessage (tr ("Initializing core and plugins...") + " " + msg);
 }
 

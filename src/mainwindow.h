@@ -67,6 +67,7 @@ namespace LeechCraft
 		void SetTrayIcon ();
 		void ReadSettings ();
 		void WriteSettings ();
+		void ShowMessage (const QString&);
 	private slots:
 		void on_ActionAddTask__triggered ();
 		void on_ActionSettings__triggered ();
