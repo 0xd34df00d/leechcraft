@@ -22,6 +22,7 @@ public:
 	void HideInfoPanel ();
 private:
 	void Construct (bool);
+	QString GetHex (QPalette::ColorRole, QPalette::ColorGroup = QApplication::palette ().currentColorGroup ());
 	QString ToHtml (const Item_ptr&);
 private slots:
 	void channelChanged (const QModelIndex&);

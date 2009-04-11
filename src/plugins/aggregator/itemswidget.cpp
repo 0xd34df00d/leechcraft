@@ -141,25 +141,49 @@ void ItemsWidget::HideInfoPanel ()
 	Impl_->Ui_.Actions_->setVisible (false);
 }
 
+QString ItemsWidget::GetHex (QPalette::ColorRole role, QPalette::ColorGroup group)
+{
+	int r, g, b;
+	QApplication::palette ().color (group, role).getRgb (&r, &g, &b);
+	long color = b + (g << 8) + (b << 16);
+	QString result ("#%1");
+	// Fill spare space with zeros.
+	return result.arg (color, 6, 16, QChar ('0'));
+}
+
 QString ItemsWidget::ToHtml (const Item_ptr& item)
 {
-	const char darkBg [] = "#A3A3A3";
-	const char lightBg [] = "#D3D3D3";
+	QPalette palette = QApplication::palette ();
+
+	QString headerBg = GetHex (QPalette::Window);
+	QString headerText = GetHex (QPalette::WindowText);
+
 	QString startBox = "<div style='background: %1; "
+		"color: COLOR; "
+		"margin-left: -1em;"
+		"margin-right: -1em; "
 		"padding-left: 2em; "
 		"padding-right: 2em;'>";
+	startBox.replace ("COLOR", headerText);
 
 	bool linw = XmlSettingsManager::Instance ()->
 			property ("AlwaysUseExternalBrowser").toBool ();
 
+	QString result = QString ("<div style='background: %1; "
+			"margin-left: 0px; "
+			"margin-right: 0px; "
+			"padding-left: 1em; "
+			"padding-right: 1em'>")
+		.arg (GetHex (QPalette::Base));
+
 	// Title
-	QString result = startBox.arg (darkBg);
+	result += startBox.arg (headerBg);
 	result += (QString ("<strong>") +
 			item->Title_ +
 			"</strong></div>");
 
 	// Link
-	result += (startBox.arg (lightBg) +
+	result += (startBox.arg (headerBg) +
 			"<a href='" +
 			item->Link_ +
 			"'");
@@ -171,58 +195,63 @@ QString ItemsWidget::ToHtml (const Item_ptr& item)
 
 	// Publication date and author
 	if (item->PubDate_.isValid () && !item->Author_.isEmpty ())
-		result += (startBox.arg (lightBg) +
+		result += (startBox.arg (headerBg) +
 				tr ("Published on %1 by %2")
 			   		.arg (item->PubDate_.toString ())
 					.arg (item->Author_) +
 				"</div>");
 	else if (item->PubDate_.isValid ())
-		result += (startBox.arg (lightBg) +
+		result += (startBox.arg (headerBg) +
 				tr ("Published on %1")
 			   		.arg (item->PubDate_.toString ()) +
 				"</div>");
 	else if (!item->Author_.isEmpty ())
-		result += (startBox.arg (lightBg) +
+		result += (startBox.arg (headerBg) +
 				tr ("Published by %1")
 					.arg (item->Author_) +
 				"</div>");
 
 	// Categories
 	if (item->Categories_.size ())
-		result += (startBox.arg (lightBg) +
+		result += (startBox.arg (headerBg) +
 				item->Categories_.join ("; ") +
 				"</div>");
 
 	// Comments stuff
 	if (item->NumComments_ >= 0 && !item->CommentsPageLink_.isEmpty ())
-		result += (startBox.arg (lightBg) + 
+		result += (startBox.arg (headerBg) + 
 				tr ("%1 comments, <a href='%2'%3>view them</a></div>")
 					.arg (item->NumComments_)
 					.arg (item->CommentsPageLink_)
 					.arg (linw ? " target='_blank'" : ""));
 	else if (item->NumComments_ >= 0)
-		result += (startBox.arg (lightBg) + 
+		result += (startBox.arg (headerBg) + 
 				tr ("%1 comments</div>")
 					.arg (item->NumComments_));
 	else if (!item->CommentsPageLink_.isEmpty ())
-		result += (startBox.arg (lightBg) + 
+		result += (startBox.arg (headerBg) + 
 				tr ("<a href='%1'%2>View comments</a></div>")
 					.arg (item->CommentsPageLink_)
 					.arg (linw ? " target='_blank'" : ""));
 
 	result += "<br />";
+	result += QString ("<div style='color: %2'>")
+		.arg (GetHex (QPalette::Text));
 
 	// Description
 	result += item->Description_;
 	for (QList<Enclosure>::const_iterator i = item->Enclosures_.begin (),
 			end = item->Enclosures_.end (); i != end; ++i)
 	{
-		result += "<div style='background: lightgray; "
+		result += QString ("<div style='background: %1; "
+			"color: %2; "
 			"border: 1px solid #333333; "
 			"padding-top: 1em; "
 			"padding-bottom: 1em; "
 			"padding-left: 2em; "
-			"padding-right: 2em;'>";
+			"padding-right: 2em;'>")
+			.arg (headerBg)
+			.arg (headerText);
 		if (i->Length_ > 0)
 			result += tr ("File of type %1, size %2:<br />")
 				.arg (i->Type_)
@@ -239,6 +268,9 @@ QString ItemsWidget::ToHtml (const Item_ptr& item)
 				.arg (i->Lang_);
 		result += "</div>";
 	}
+
+	result += "</div>";
+	result += "</div>";
 
 	return result;
 }
