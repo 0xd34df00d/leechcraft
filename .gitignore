@@ -6,3 +6,8 @@ build/
 ctagscmd
 tags
 changelog
+*.deb
+leechcraft_*.changes
+tools/repos/dists/
+tools/repos/packages-i386.db
+tools/repos/packages-amd64.db

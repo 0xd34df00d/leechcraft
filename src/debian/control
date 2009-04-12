@@ -226,6 +226,30 @@ Description: Web browser for LeechCraft.
  .
  This package contains a full-featured web browser.
 
+Package: leechcraft-plugin-poshuku-fua
+Section: net
+Architecture: i386 i586 i686 amd64
+Depends: libc6,
+ libgcc1,
+ libstdc++6,
+ leechcraft-xmlsettingsdialog (= ${Source-Version}),
+ leechcraft-plugininterface (= ${Source-Version}),
+ leechcraft-poshuku-fua (= ${Source-Version}),
+ leechcraft (= ${Source-Version})
+Homepage: http://deviant-soft.ws
+Description: Fake user agent plugin for Web browser for LeechCraft.
+ LeechCraft is a crossplatform and feature-rich framework intended for
+ building internet-related applications via combining different
+ abstract modules (plugins). LeechCraft would then connect them to each
+ other and route requests for downloads or handling of entities between
+ them.
+ .
+ Official plugins currently include BitTorrent client, a web browser,
+ feed reader, different search clients and much more.
+ .
+ This package contains a plugin for the Poshuku web browser that allows
+ to set fake user agents for different domains.
+
 Package: leechcraft-plugin-seekthru
 Section: net
 Architecture: i386 i586 i686 amd64

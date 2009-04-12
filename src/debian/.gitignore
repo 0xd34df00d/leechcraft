@@ -1,0 +1,13 @@
+*substvars
+*.log
+files
+leechcraft-plugin-aggregator
+leechcraft-plugin-bittorrent
+leechcraft-plugin-cstp
+leechcraft-plugin-deadlyrics
+leechcraft-plugin-poshuku-fua
+leechcraft-plugin-poshuku
+leechcraft-plugin-seekthru
+leechcraft
+leechcraft-plugininterface
+leechcraft-xmlsettingsdialog
