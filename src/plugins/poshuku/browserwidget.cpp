@@ -673,6 +673,7 @@ void BrowserWidget::updateTooltip ()
 	QSize contentsSize = Ui_.WebView_->page ()->mainFrame ()->contentsSize ();
 	if (contentsSize.width () < 800)
 		contentsSize.setWidth (800);
+	QPoint scroll = Ui_.WebView_->page ()->mainFrame ()->scrollPosition ();
 	QSize oldSize = Ui_.WebView_->page ()->viewportSize ();
 	QRegion clip (0, 0, contentsSize.width (), contentsSize.height ());
 
@@ -681,6 +682,7 @@ void BrowserWidget::updateTooltip ()
 	Ui_.WebView_->page ()->setViewportSize (contentsSize);
 	Ui_.WebView_->page ()->mainFrame ()->render (&painter, clip);
 	Ui_.WebView_->page ()->setViewportSize (oldSize);
+	Ui_.WebView_->page ()->mainFrame ()->setScrollPosition (scroll);
 	painter.end ();
 
 	QLabel *widget = new QLabel;
