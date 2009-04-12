@@ -130,7 +130,7 @@ LeechCraft::Core::Core ()
 			SLOT (handleClipboardTimer ()));
     ClipboardWatchdog_->start (2000);
 
-	Server_->listen ("LeechCraft local socket");
+	Server_->listen (Application::GetSocketName ());
 	connect (Server_.get (),
 			SIGNAL (newConnection ()),
 			this,

@@ -24,6 +24,7 @@ namespace LeechCraft
 	public:
 		Application (int&, char**);
 		const QStringList& Arguments () const;
+		static QString GetSocketName ();
 
 		virtual bool notify (QObject*, QEvent*);
 	private:

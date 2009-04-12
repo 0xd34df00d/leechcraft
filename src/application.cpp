@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cstring>
 #include <cstdlib>
+#include <boost/scoped_array.hpp>
 #include <QEvent>
 #include <QtDebug>
 #include <QLocalServer>
@@ -95,6 +96,30 @@ const QStringList& Application::Arguments () const
 	return Arguments_;
 }
 
+#ifdef Q_WS_WIN
+#include <windows.h>
+#else
+#include <unistd.h>
+#include <sys/types.h>
+#endif
+
+QString Application::GetSocketName ()
+{
+	QString templ = QString ("LeechCraft_local_socket_%1");
+#ifdef Q_WS_WIN
+	boost::scoped_array<TCHAR> buffer (new TCHAR [0]);
+	DWORD size = 0;
+	GetUserName (buffer.get (), &size);
+	buffer.reset (new TCHAR [size]);
+	if (GetUserName (buffer.get (), &size))
+		return templ.arg (buffer.get ());
+	else
+		return templ.arg ("unknown");
+#else
+	return templ.arg (getuid ());
+#endif
+}
+
 bool Application::notify (QObject *obj, QEvent *event)
 {
 	try
@@ -107,7 +132,7 @@ bool Application::notify (QObject *obj, QEvent *event)
 	}
 	catch (...)
 	{
-		qWarning () << "GLOBALL caught something" << obj << event << event->type ();
+		qWarning () << "GLOBALLY caught something" << obj << event << event->type ();
 	}
 	return false;
 }
@@ -115,8 +140,9 @@ bool Application::notify (QObject *obj, QEvent *event)
 bool Application::IsAlreadyRunning () const
 {
 	QLocalSocket socket;
-	socket.connectToServer ("LeechCraft local socket");
-	if (socket.waitForConnected ())
+	socket.connectToServer (GetSocketName ());
+	if (socket.serverName ().size () ||
+			socket.waitForConnected ())
 	{
 		QByteArray toSend;
 		{
@@ -131,7 +157,7 @@ bool Application::IsAlreadyRunning () const
 
 	// Clear any halted servers and their messages
 	QLocalServer server;
-	server.listen ("LeechCraft local socket");
+	server.listen (GetSocketName ());
 	QLocalSocket *pc = 0;
 	while ((pc = server.nextPendingConnection ())) ;
 	return false;
