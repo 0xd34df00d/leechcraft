@@ -1,0 +1,19 @@
+INCLUDE_DIRECTORIES (${POSHUKU_INCLUDE_DIR}
+	${CMAKE_CURRENT_BINARY_DIR})
+SET (CLEANWEB_SRCS
+	cleanweb.cpp
+	)
+SET (CLEANWEB_HEADERS
+	cleanweb.h
+	)
+QT4_WRAP_CPP (CLEANWEB_MOC_SRCS ${CLEANWEB_HEADERS})
+ADD_LIBRARY (leechcraft_poshuku_cleanweb SHARED
+	${CLEANWEB_SRCS}
+	${CLEANWEB_MOC_SRCS}
+	)
+TARGET_LINK_LIBRARIES (leechcraft_poshuku_cleanweb
+	${QT_LIBRARIES}
+	plugininterface
+	xmlsettingsdialog
+	)
+INSTALL (TARGETS leechcraft_poshuku_cleanweb DESTINATION ${LC_PLUGINS_DEST})
