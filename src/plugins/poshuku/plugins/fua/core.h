@@ -1,5 +1,5 @@
-#ifndef CORE_H
-#define CORE_H
+#ifndef PLUGINS_POSHUKU_PLUGINS_FUA_CORE_H
+#define PLUGINS_POSHUKU_PLUGINS_FUA_CORE_H
 
 
 #endif

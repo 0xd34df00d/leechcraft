@@ -8,9 +8,11 @@
 #include "xmlsettingsmanager.h"
 
 using namespace LeechCraft::Poshuku;
+using namespace LeechCraft::Poshuku::Plugins;
+using namespace LeechCraft::Poshuku::Plugins::Fua;
 using namespace LeechCraft::Util;
 
-void Poshuku_Fua::Init ()
+void FUA::Init ()
 {
 	Browser2ID_ ["Firefox 1.5.0.4"] =
 		"Mozilla/5.0 (X11; U; x86_64 Linux; en_US; rv:1.8.0.4) Gecko/20060508 Firefox/1.5.0.4";
@@ -63,59 +65,59 @@ void Poshuku_Fua::Init ()
 	XmlSettingsDialog_->SetCustomWidget ("Settings", Settings_.get ());
 }
 
-void Poshuku_Fua::Release ()
+void FUA::Release ()
 {
 }
 
-QString Poshuku_Fua::GetName () const
+QString FUA::GetName () const
 {
-	return "Poshuku-FUA";
+	return "Poshuku FUA";
 }
 
-QString Poshuku_Fua::GetInfo () const
+QString FUA::GetInfo () const
 {
 	return tr ("Allows to set fake user agents for different sites.");
 }
 
-QIcon Poshuku_Fua::GetIcon () const
+QIcon FUA::GetIcon () const
 {
 	return QIcon ();
 }
 
-QStringList Poshuku_Fua::Provides () const
+QStringList FUA::Provides () const
 {
 	return QStringList ();
 }
 
-QStringList Poshuku_Fua::Needs () const
+QStringList FUA::Needs () const
 {
 	return QStringList ("webbrowser");
 }
 
-QStringList Poshuku_Fua::Uses () const
+QStringList FUA::Uses () const
 {
 	return QStringList ();
 }
 
-void Poshuku_Fua::SetProvider (QObject*, const QString&)
+void FUA::SetProvider (QObject*, const QString&)
 {
 }
 
-QByteArray Poshuku_Fua::GetPluginClass () const
+QByteArray FUA::GetPluginClass () const
 {
 	return QByteArray (typeid (LeechCraft::Poshuku::PluginBase).name ());
 }
 
-boost::shared_ptr<XmlSettingsDialog> Poshuku_Fua::GetSettingsDialog () const
+boost::shared_ptr<XmlSettingsDialog> FUA::GetSettingsDialog () const
 {
 	return XmlSettingsDialog_;
 }
 
-void Poshuku_Fua::Init (IProxyObject*)
+void FUA::Init (IProxyObject*)
 {
 }
 
-QString Poshuku_Fua::OnUserAgentForUrl (const QWebPage*, const QUrl& url)
+QString FUA::OnUserAgentForUrl (const QWebPage*, const QUrl& url)
 {
 	QString host = url.host ();
 	for (int i = 0; i < Model_->rowCount (); ++i)
@@ -128,7 +130,7 @@ QString Poshuku_Fua::OnUserAgentForUrl (const QWebPage*, const QUrl& url)
 	throw std::runtime_error ("Not found");
 }
 
-void Poshuku_Fua::Save () const
+void FUA::Save () const
 {
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
 			Proxy::Instance ()->GetApplicationName () + "_Poshuku_FUA");
@@ -143,10 +145,10 @@ void Poshuku_Fua::Save () const
 	settings.endArray ();
 }
 
-const QMap<QString, QString>& Poshuku_Fua::GetBrowser2ID () const
+const QMap<QString, QString>& FUA::GetBrowser2ID () const
 {
 	return Browser2ID_;
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku_fua, Poshuku_Fua);
+Q_EXPORT_PLUGIN2 (leechcraft_poshuku_fua, FUA);
 

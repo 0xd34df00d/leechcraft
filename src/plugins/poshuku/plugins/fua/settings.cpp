@@ -3,7 +3,9 @@
 #include "fua.h"
 #include "changer.h"
 
-Settings::Settings (QStandardItemModel *model, Poshuku_Fua *parent)
+using namespace LeechCraft::Poshuku::Plugins::Fua;
+
+Settings::Settings (QStandardItemModel *model, FUA *parent)
 : Fua_ (parent)
 , Model_ (model)
 {
