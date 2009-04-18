@@ -200,6 +200,7 @@ void SearchHandler::Start (const LeechCraft::Request& r)
 
 		job.Filename_ = fname;
 		job.RequestURL_ = url;
+		qDebug () << Q_FUNC_INFO << job.RequestURL_;
 		Jobs_ [id] = job;
 	}
 }
