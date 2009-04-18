@@ -377,7 +377,13 @@ void CustomWebPage::handleUnsupportedContent (QNetworkReply *reply)
 						emit gotEntity (e);
 						break;
 					}
+					else
+						qDebug () << Q_FUNC_INFO
+							<< reply->header (QNetworkRequest::ContentTypeHeader);
 				}
+				else
+					qDebug () << Q_FUNC_INFO
+						<< "but frame is found";
 			}
 		default:
 			{
