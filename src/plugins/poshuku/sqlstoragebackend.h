@@ -8,6 +8,7 @@ class SQLStorageBackend : public StorageBackend
 {
 	Q_OBJECT
 
+	Type Type_;
 	QSqlDatabase DB_;
 
 			/** Returns:
@@ -76,7 +77,7 @@ class SQLStorageBackend : public StorageBackend
 			 */
 			ThumbnailsSetter_;
 public:
-	SQLStorageBackend ();
+	SQLStorageBackend (Type);
 	virtual ~SQLStorageBackend ();
 
 	void Prepare ();

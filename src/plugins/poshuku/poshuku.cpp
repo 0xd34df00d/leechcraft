@@ -17,6 +17,7 @@
 #include "favoritesmodel.h"
 #include "browserwidget.h"
 #include "cookieseditdialog.h"
+#include "backendselector.h"
 
 using LeechCraft::Util::TagsCompleter;
 using LeechCraft::Util::TagsCompletionModel;
@@ -62,6 +63,8 @@ void Poshuku::Init ()
 	XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
     XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 			":/poshukusettings.xml");
+	XmlSettingsDialog_->SetCustomWidget ("BackendSelector", new BackendSelector);
+
 	connect (XmlSettingsDialog_.get (),
 			SIGNAL (pushButtonClicked (const QString&)),
 			this,
@@ -107,6 +110,8 @@ void Poshuku::Init ()
 			SIGNAL (error (const QString&)),
 			this,
 			SLOT (handleError (const QString&)));
+
+	Core::Instance ().Init ();
 
 	SetupFavoritesFilter ();
 	SetupHistoryFilter ();

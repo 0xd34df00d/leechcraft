@@ -1,5 +1,6 @@
 #ifndef STORAGEBACKEND_H
 #define STORAGEBACKEND_H
+#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include "historymodel.h"
 #include "favoritesmodel.h"
@@ -14,8 +15,15 @@ class StorageBackend : public QObject
 {
 	Q_OBJECT
 public:
+	enum Type
+	{
+		SBSQLite,
+		SBPostgres
+	};
+
 	StorageBackend (QObject* = 0);
 	virtual ~StorageBackend ();
+	static boost::shared_ptr<StorageBackend> Create (Type);
 
 	/** @brief Do post-initialization.
 	 *

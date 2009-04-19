@@ -5,16 +5,53 @@
 #include <QSqlError>
 #include <QtDebug>
 #include <plugininterface/dblock.h>
+#include "xmlsettingsmanager.h"
 
-SQLStorageBackend::SQLStorageBackend ()
-: DB_ (QSqlDatabase::addDatabase ("QSQLITE", "PoshukuConnection"))
+SQLStorageBackend::SQLStorageBackend (StorageBackend::Type type)
+: Type_ (type)
 {
-	QDir dir = QDir::home ();
-	dir.cd (".leechcraft");
-	dir.cd ("poshuku");
-	DB_.setDatabaseName (dir.filePath ("poshuku.db"));
+	QString strType;
+	switch (Type_)
+	{
+		case SBSQLite:
+			strType = "QSQLITE";
+			break;
+		case SBPostgres:
+			strType = "QPSQL";
+	}
+
+	DB_ = QSqlDatabase::addDatabase (strType, "PoshukuConnection");
+	switch (Type_)
+	{
+		case SBSQLite:
+			{
+				QDir dir = QDir::home ();
+				dir.cd (".leechcraft");
+				dir.cd ("poshuku");
+				DB_.setDatabaseName (dir.filePath ("poshuku.db"));
+			}
+			break;
+		case SBPostgres:
+			{
+				DB_.setDatabaseName (XmlSettingsManager::Instance ()->
+						property ("PostgresDBName").toString ());
+				DB_.setHostName (XmlSettingsManager::Instance ()->
+						property ("PostgresHostname").toString ());
+				DB_.setPort (XmlSettingsManager::Instance ()->
+						property ("PostgresPort").toInt ());
+				DB_.setUserName (XmlSettingsManager::Instance ()->
+						property ("PostgresUsername").toString ());
+				DB_.setPassword (XmlSettingsManager::Instance ()->
+						property ("PostgresPassword").toString ());
+			}
+			break;
+	}
+
 	if (!DB_.open ())
+	{
 		LeechCraft::Util::DBLock::DumpError (DB_.lastError ());
+		throw std::runtime_error ("Could not initialize database");
+	}
 
 	InitializeTables ();
 	CheckVersions ();
@@ -22,17 +59,32 @@ SQLStorageBackend::SQLStorageBackend ()
 
 SQLStorageBackend::~SQLStorageBackend ()
 {
+	if (Type_ == SBSQLite &&
+			XmlSettingsManager::Instance ()->property ("SQLiteVacuum").toBool ())
+	{
+		QSqlQuery vacuum (DB_);
+		vacuum.exec ("VACUUM;");
+	}
 }
 
 void SQLStorageBackend::Prepare ()
 {
-	QSqlQuery pragma (DB_);
-	if (!pragma.exec ("PRAGMA journal_mode = TRUNCATE;"))
-		LeechCraft::Util::DBLock::DumpError (pragma);
-	if (!pragma.exec ("PRAGMA synchronous = OFF;"))
-		LeechCraft::Util::DBLock::DumpError (pragma);
-	if (!pragma.exec ("PRAGMA temp_store = MEMORY;"))
-		LeechCraft::Util::DBLock::DumpError (pragma);
+	if (Type_ == SBSQLite)
+	{
+		QSqlQuery pragma (DB_);
+		if (!pragma.exec (QString ("PRAGMA journal_mode = %1;")
+					.arg (XmlSettingsManager::Instance ()->
+						property ("SQLiteJournalMode").toString ())))
+			LeechCraft::Util::DBLock::DumpError (pragma);
+		if (!pragma.exec (QString ("PRAGMA synchronous = %1;")
+					.arg (XmlSettingsManager::Instance ()->
+						property ("SQLiteSynchronous").toString ())))
+			LeechCraft::Util::DBLock::DumpError (pragma);
+		if (!pragma.exec (QString ("PRAGMA temp_store = %1;")
+					.arg (XmlSettingsManager::Instance ()->
+						property ("SQLiteTempStore").toString ())))
+			LeechCraft::Util::DBLock::DumpError (pragma);
+	}
 
 	HistoryLoader_ = QSqlQuery (DB_);
 	HistoryLoader_.prepare ("SELECT "
@@ -43,16 +95,33 @@ void SQLStorageBackend::Prepare ()
 			"ORDER BY date DESC");
 
 	HistoryRatedLoader_ = QSqlQuery (DB_);
-	HistoryRatedLoader_.prepare ("SELECT "
-			"SUM (julianday (date)) - julianday (MIN (date)) * COUNT (date) AS rating, "
-			"title, "
-			"url "
-			"FROM history "
-			"WHERE ( title LIKE :titlebase ) "
-			"OR ( url LIKE :urlbase ) "
-			"GROUP BY url "
-			"ORDER BY rating DESC "
-			"LIMIT 100");
+	switch (Type_)
+	{
+		case SBSQLite:
+			HistoryRatedLoader_.prepare ("SELECT "
+					"SUM (julianday (date)) - julianday (MIN (date)) * COUNT (date) AS rating, "
+					"title, "
+					"url "
+					"FROM history "
+					"WHERE ( title LIKE :titlebase ) "
+					"OR ( url LIKE :urlbase ) "
+					"GROUP BY url "
+					"ORDER BY rating DESC "
+					"LIMIT 100");
+			break;
+		case SBPostgres:
+			HistoryRatedLoader_.prepare ("SELECT "
+					"SUM (AGE (date)) - AGE (MIN (date)) * COUNT (date) AS rating, "
+					"MAX (title) AS title, "
+					"url "
+					"FROM history "
+					"WHERE ( title LIKE :titlebase ) "
+					"OR ( url LIKE :urlbase ) "
+					"GROUP BY url "
+					"ORDER BY rating ASC "
+					"LIMIT 100");
+			break;
+	}
 
 	HistoryAdder_ = QSqlQuery (DB_);
 	HistoryAdder_.prepare ("INSERT INTO history ("
@@ -66,17 +135,40 @@ void SQLStorageBackend::Prepare ()
 			")");
 
 	HistoryEraser_ = QSqlQuery (DB_);
-	HistoryEraser_.prepare ("DELETE FROM history "
-			"WHERE "
-			"(julianday ('now') - julianday (date) > :age)");
+	switch (Type_)
+	{
+		case SBSQLite:
+			HistoryEraser_.prepare ("DELETE FROM history "
+					"WHERE "
+					"(julianday ('now') - julianday (date) > :age)");
+			break;
+		case SBPostgres:
+			HistoryEraser_.prepare ("DELETE FROM history "
+					"WHERE "
+					"(age (date) > :age)");
+			break;
+	}
 
 	FavoritesLoader_ = QSqlQuery (DB_);
-	FavoritesLoader_.prepare ("SELECT "
-			"title, "
-			"url, "
-			"tags "
-			"FROM favorites "
-			"ORDER BY ROWID DESC");
+	switch (Type_)
+	{
+		case SBSQLite:
+			FavoritesLoader_.prepare ("SELECT "
+					"title, "
+					"url, "
+					"tags "
+					"FROM favorites "
+					"ORDER BY ROWID DESC");
+			break;
+		case SBPostgres:
+			FavoritesLoader_.prepare ("SELECT "
+					"title, "
+					"url, "
+					"tags "
+					"FROM favorites "
+					"ORDER BY CTID DESC");
+			break;
+	}
 
 	FavoritesAdder_ = QSqlQuery (DB_);
 	FavoritesAdder_.prepare ("INSERT INTO favorites ("
@@ -342,6 +434,23 @@ void SQLStorageBackend::InitializeTables ()
 			LeechCraft::Util::DBLock::DumpError (query);
 			return;
 		}
+		
+		if (Type_ == SBPostgres)
+		{
+			if (!query.exec ("CREATE RULE \"replace_storage_settings\" AS "
+								"ON INSERT TO \"storage_settings\" "
+							    "WHERE "
+									"EXISTS (SELECT 1 FROM storage_settings "
+										"WHERE key = NEW.key) "
+								"DO INSTEAD "
+									"(UPDATE storage_settings "
+										"SET value = NEW.value "
+										"WHERE key = NEW.key)"))
+			{
+				LeechCraft::Util::DBLock::DumpError (query);
+				return;
+			}
+		}
 
 		SetSetting ("historyversion", "1");
 		SetSetting ("favoritesversion", "1");
@@ -350,13 +459,29 @@ void SQLStorageBackend::InitializeTables ()
 
 	if (!DB_.tables ().contains ("thumbnails"))
 	{
-		if (!query.exec ("CREATE TABLE thumbnails ("
+		QString request;
+		switch (Type_)
+		{
+			case SBSQLite:
+				request = "CREATE TABLE thumbnails ("
 					"url TEXT PRIMARY KEY, "
 					"shot_date TIMESTAMP, "
 					"res_x INTEGER, "
 					"res_y INTEGER, "
 					"thumbnail BLOB"
-					");"))
+					");";
+				break;
+			case SBPostgres:
+				request = "CREATE TABLE thumbnails ("
+					"url TEXT PRIMARY KEY, "
+					"shot_date TIMESTAMP, "
+					"res_x INTEGER, "
+					"res_y INTEGER, "
+					"thumbnail BYTEA"
+					");";
+				break;
+		}
+		if (!query.exec (request))
 		{
 			LeechCraft::Util::DBLock::DumpError (query);
 			return;
@@ -392,13 +517,29 @@ QString SQLStorageBackend::GetSetting (const QString& key) const
 void SQLStorageBackend::SetSetting (const QString& key, const QString& value)
 {
 	QSqlQuery query (DB_);
-	query.prepare ("INSERT OR REPLACE INTO storage_settings ("
+	QString r;
+	switch (Type_)
+	{
+		case SBSQLite:
+			r = "INSERT OR REPLACE INTO storage_settings ("
 			"key, "
 			"value"
 			") VALUES ("
 			":key, "
 			":value"
-			")");
+			")";
+			break;
+		case SBPostgres:
+			r = "INSERT INTO storage_settings ("
+			"key, "
+			"value"
+			") VALUES ("
+			":key, "
+			":value"
+			")";
+			break;
+	}
+	query.prepare (r);
 	query.bindValue (":key", key);
 	query.bindValue (":value", value);
 	if (!query.exec ())

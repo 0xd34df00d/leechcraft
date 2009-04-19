@@ -38,6 +38,7 @@ SET (SRCS
 	pluginmanager.cpp
 	historyfiltermodel.cpp
 	proxyobject.cpp
+	backendselector.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -69,6 +70,7 @@ SET (HEADERS
 	pluginmanager.h
 	historyfiltermodel.h
 	proxyobject.h
+	backendselector.h
 	interfaces/pluginbase.h
 	)
 SET (FORMS
@@ -80,6 +82,7 @@ SET (FORMS
 	screenshotsavedialog.ui
 	cookieseditdialog.ui
 	sourceviewer.ui
+	backendselector.ui
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS

@@ -38,6 +38,17 @@ Core::Core ()
 , SaveSessionScheduled_ (false)
 , ShortcutProxy_ (0)
 {
+	PluginManager_.reset (new PluginManager (this));
+}
+
+Core& Core::Instance ()
+{
+	static Core core;
+	return core;
+}
+
+void Core::Init ()
+{
 	QDir dir = QDir::home ();
 	if (!dir.cd (".leechcraft/poshuku") &&
 			!dir.mkpath (".leechcraft/poshuku"))
@@ -47,7 +58,18 @@ Core::Core ()
 		return;
 	}
 
-	StorageBackend_.reset (new SQLStorageBackend);
+	StorageBackend::Type type;
+	QString strType = XmlSettingsManager::Instance ()->
+		property ("StorageType").toString ();
+	if (strType == "SQLite")
+		type = StorageBackend::SBSQLite;
+	else if (strType == "PostgreSQL")
+		type = StorageBackend::SBPostgres;
+	else
+		throw std::runtime_error (qPrintable (QString ("Unknown storage type %1")
+					.arg (strType)));
+
+	StorageBackend_ = StorageBackend::Create (type);
 	StorageBackend_->Prepare ();
 
 	HistoryModel_.reset (new HistoryModel (this));
@@ -61,8 +83,6 @@ Core::Core ()
 			SIGNAL (added (const HistoryItem&)),
 			URLCompletionModel_.get (),
 			SLOT (handleItemAdded (const HistoryItem&)));
-
-	PluginManager_.reset (new PluginManager (this));
 
 	FavoritesModel_.reset (new FavoritesModel (this));
 	connect (StorageBackend_.get (),
@@ -90,12 +110,6 @@ Core::Core ()
 	QTimer::singleShot (200, this, SLOT (postConstruct ()));
 }
 
-Core& Core::Instance ()
-{
-	static Core core;
-	return core;
-}
-
 void Core::Release ()
 {
 	while (Widgets_.begin () != Widgets_.end ())
@@ -104,6 +118,7 @@ void Core::Release ()
 	HistoryModel_.reset ();
 	FavoritesModel_.reset ();
 	FavoriteTagsCompletionModel_.reset ();
+	StorageBackend_.reset ();
 
 	XmlSettingsManager::Instance ()->setProperty ("CleanShutdown", true);
 	XmlSettingsManager::Instance ()->Release ();

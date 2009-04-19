@@ -35,9 +35,9 @@ class Core : public QObject
 	std::auto_ptr<FavoritesModel> FavoritesModel_;
 	std::auto_ptr<HistoryModel> HistoryModel_;
 	std::auto_ptr<LeechCraft::Util::TagsCompletionModel> FavoriteTagsCompletionModel_;
-	std::auto_ptr<StorageBackend> StorageBackend_;
 	std::auto_ptr<URLCompletionModel> URLCompletionModel_;
 	std::auto_ptr<PluginManager> PluginManager_;
+	boost::shared_ptr<StorageBackend> StorageBackend_;
 	QNetworkAccessManager *NetworkAccessManager_;
 
 	QMap<QString, QObject*> Providers_;
@@ -52,6 +52,7 @@ class Core : public QObject
 	Core ();
 public:
 	static Core& Instance ();
+	void Init ();
 	void Release ();
 	void SetProvider (QObject*, const QString&);
 	QByteArray GetExpectedPluginClass () const;
