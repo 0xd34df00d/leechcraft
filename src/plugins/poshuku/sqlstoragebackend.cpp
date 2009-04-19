@@ -145,7 +145,7 @@ void SQLStorageBackend::Prepare ()
 		case SBPostgres:
 			HistoryEraser_.prepare ("DELETE FROM history "
 					"WHERE "
-					"(age (date) > :age)");
+					"(date - now () > :age * interval '1 day')");
 			break;
 	}
 
