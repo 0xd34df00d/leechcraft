@@ -141,8 +141,8 @@ bool Application::IsAlreadyRunning () const
 {
 	QLocalSocket socket;
 	socket.connectToServer (GetSocketName ());
-	if (socket.serverName ().size () ||
-			socket.waitForConnected ())
+	if (socket.waitForConnected () ||
+			socket.state () == QLocalSocket::ConnectedState)
 	{
 		QByteArray toSend;
 		{
@@ -154,12 +154,23 @@ bool Application::IsAlreadyRunning () const
 		socket.waitForDisconnected ();
 		return true;
 	}
+	else
+	{
+		switch (socket.error ())
+		{
+			case QLocalSocket::ServerNotFoundError:
+			case QLocalSocket::ConnectionRefusedError:
+				break;
+			default:
+				qWarning () << Q_FUNC_INFO
+					<< "socket error"
+					<< socket.error ();
+				return true;
+		}
+	}
 
 	// Clear any halted servers and their messages
-	QLocalServer server;
-	server.listen (GetSocketName ());
-	QLocalSocket *pc = 0;
-	while ((pc = server.nextPendingConnection ())) ;
+	QLocalServer::removeServer (GetSocketName ());
 	return false;
 }
 
