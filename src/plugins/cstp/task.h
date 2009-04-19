@@ -54,7 +54,9 @@ private slots:
 	void handleDataTransferProgress (qint64, qint64);
 	void redirectedConstruction (const QString&);
 	void handleMetaDataChanged ();
-	void handleReadyRead ();
+	/** REturns true if the reply is at end after this read.
+	 */
+	bool handleReadyRead ();
 	void handleFinished ();
 	void handleError ();
 signals:

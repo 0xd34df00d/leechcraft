@@ -59,8 +59,10 @@ void Task::Start (const boost::intrusive_ptr<MorphFile>& tof)
 	}
 	else
 	{
-		if (Reply_->bytesAvailable () == Reply_->
-				header (QNetworkRequest::ContentLengthHeader).toInt ())
+		qint64 contentLength = Reply_->
+			header (QNetworkRequest::ContentLengthHeader).toInt ();
+		if (contentLength &&
+				Reply_->bytesAvailable () == contentLength)
 		{
 			handleReadyRead ();
 			handleFinished ();
@@ -72,7 +74,8 @@ void Task::Start (const boost::intrusive_ptr<MorphFile>& tof)
 			return;
 		}
 		else
-			handleReadyRead ();
+			if (handleReadyRead ())
+				return;
 	}
 
 	Reply_->setParent (0);
@@ -267,14 +270,25 @@ void Task::handleMetaDataChanged ()
 	}
 }
 
-void Task::handleReadyRead ()
+bool Task::handleReadyRead ()
 {
 	if (Reply_.get ())
 		To_->write (Reply_->readAll ());
+
+	if (Reply_->atEnd ())
+	{
+		handleFinished ();
+		return true;
+	}
+	return false;
 }
 
 void Task::handleFinished ()
 {
+	disconnect (Reply_.get (),
+			0,
+			this,
+			0);
 	if (Reply_.get ())
 		Reply_.release ()->deleteLater ();
 	emit done (false);
