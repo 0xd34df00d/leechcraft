@@ -39,6 +39,7 @@ Core::Core ()
 , ShortcutProxy_ (0)
 {
 	PluginManager_.reset (new PluginManager (this));
+	URLCompletionModel_.reset (new URLCompletionModel (this));
 }
 
 Core& Core::Instance ()
@@ -78,7 +79,6 @@ void Core::Init ()
 			HistoryModel_.get (),
 			SLOT (handleItemAdded (const HistoryItem&)));
 
-	URLCompletionModel_.reset (new URLCompletionModel (this));
 	connect (StorageBackend_.get (),
 			SIGNAL (added (const HistoryItem&)),
 			URLCompletionModel_.get (),
