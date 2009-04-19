@@ -27,6 +27,7 @@ class Task : public QObject
 	QStringList RedirectHistory_;
 	boost::intrusive_ptr<MorphFile> To_;
 	int Counter_;
+	bool BeCareful_;
 public:
 	explicit Task (const QString& = QString ());
 	explicit Task (QNetworkReply*);
