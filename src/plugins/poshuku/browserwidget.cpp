@@ -678,6 +678,8 @@ void BrowserWidget::updateTooltip ()
 	QRegion clip (0, 0, contentsSize.width (), contentsSize.height ());
 
 	QPixmap pixmap (contentsSize);
+	if (pixmap.isNull ())
+		return;
 	QPainter painter (&pixmap);
 	Ui_.WebView_->page ()->setViewportSize (contentsSize);
 	Ui_.WebView_->page ()->mainFrame ()->render (&painter, clip);
