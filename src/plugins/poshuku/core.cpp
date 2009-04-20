@@ -35,7 +35,7 @@ using LeechCraft::Util::TagsCompletionModel;
 
 Core::Core ()
 : NetworkAccessManager_ (0)
-, SaveSessionScheduled_ (false)
+, IsShuttingDown_ (false)
 , ShortcutProxy_ (0)
 {
 	PluginManager_.reset (new PluginManager (this));
@@ -112,6 +112,8 @@ void Core::Init ()
 
 void Core::Release ()
 {
+	saveSession ();
+	IsShuttingDown_ = true;
 	while (Widgets_.begin () != Widgets_.end ())
 		delete *Widgets_.begin ();
 
@@ -531,6 +533,9 @@ void Core::favoriteTagsUpdated (const QStringList& tags)
 
 void Core::saveSession ()
 {
+	if (IsShuttingDown_)
+		return;
+
 	qDebug () << Q_FUNC_INFO;
 	int pos = 0;
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
@@ -546,8 +551,6 @@ void Core::saveSession ()
 		settings.setValue ("URL", (*i)->GetView ()->url ().toString ());
 	}
 	settings.endArray ();
-
-	SaveSessionScheduled_ = false;
 }
 
 void Core::restorePages ()

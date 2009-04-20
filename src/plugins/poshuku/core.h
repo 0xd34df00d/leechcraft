@@ -42,7 +42,7 @@ class Core : public QObject
 
 	QMap<QString, QObject*> Providers_;
 
-	bool SaveSessionScheduled_;
+	bool IsShuttingDown_;
 	QStringList RestoredURLs_;
 
 	QMap<QString, QString> SavedSession_;
