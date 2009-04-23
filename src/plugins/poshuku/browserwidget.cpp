@@ -667,12 +667,15 @@ void BrowserWidget::handleUncloseDestroyed ()
 
 void BrowserWidget::updateTooltip ()
 {
+	const int previewWidth = 200;
 	if (!Ui_.WebView_->size ().isValid ())
 		return;
 
 	QSize contentsSize = Ui_.WebView_->page ()->mainFrame ()->contentsSize ();
 	if (contentsSize.width () < 800)
 		contentsSize.setWidth (800);
+	int maxHeight = 0.8 * QApplication::desktop ()->screenGeometry (this).height () * static_cast<double> (contentsSize.width ()) / 200.0;
+	contentsSize.setHeight (std::min (contentsSize.height (), 3000));
 	QPoint scroll = Ui_.WebView_->page ()->mainFrame ()->scrollPosition ();
 	QSize oldSize = Ui_.WebView_->page ()->viewportSize ();
 	QRegion clip (0, 0, contentsSize.width (), contentsSize.height ());
@@ -689,11 +692,11 @@ void BrowserWidget::updateTooltip ()
 
 	QLabel *widget = new QLabel;
 
-	if (pixmap.height () > 5000)
-		pixmap = pixmap.copy (0, 0, pixmap.width (), 5000);
+	if (pixmap.height () > 3000)
+		pixmap = pixmap.copy (0, 0, pixmap.width (), 3000);
 
-	pixmap = pixmap.scaledToWidth (200, Qt::SmoothTransformation);
-	int maxHeight = 0.8 * QApplication::desktop ()->screenGeometry (this).height ();
+	pixmap = pixmap.scaledToWidth (previewWidth, Qt::SmoothTransformation);
+	maxHeight = 0.8 * QApplication::desktop ()->screenGeometry (this).height ();
 	if (pixmap.height () > maxHeight)
 		pixmap = pixmap.copy (0, 0, 200, maxHeight);
 	widget->setPixmap (pixmap);
