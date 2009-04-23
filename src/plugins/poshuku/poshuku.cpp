@@ -9,6 +9,7 @@
 #include <QtDebug>
 #include <plugininterface/util.h>
 #include <plugininterface/tagscompletionmodel.h>
+#include <plugininterface/backendselector.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "customwebview.h"
@@ -17,7 +18,6 @@
 #include "favoritesmodel.h"
 #include "browserwidget.h"
 #include "cookieseditdialog.h"
-#include "backendselector.h"
 
 using LeechCraft::Util::TagsCompleter;
 using LeechCraft::Util::TagsCompletionModel;
@@ -63,7 +63,8 @@ void Poshuku::Init ()
 	XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
     XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 			":/poshukusettings.xml");
-	XmlSettingsDialog_->SetCustomWidget ("BackendSelector", new BackendSelector);
+	XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
+			new LeechCraft::Util::BackendSelector (XmlSettingsManager::Instance ()));
 
 	connect (XmlSettingsDialog_.get (),
 			SIGNAL (pushButtonClicked (const QString&)),
