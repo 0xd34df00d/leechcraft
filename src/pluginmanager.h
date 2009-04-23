@@ -22,6 +22,7 @@ namespace LeechCraft
 			// This plugin depends upon.
 			QMultiMap<QString, DepTreeItem_ptr> Needed_;
 			QMultiMap<QString, DepTreeItem_ptr> Used_;
+			QList<DepTreeItem_ptr> Belongs_;
 
 			DepTreeItem ();
 			void Print (int = 0);
@@ -38,8 +39,11 @@ namespace LeechCraft
 		QList<DepTreeItem_ptr> Roots_;
 		typedef boost::shared_ptr<QPluginLoader> QPluginLoader_ptr;
         typedef QList<QPluginLoader_ptr> PluginsContainer_t;
-        PluginsContainer_t Plugins_;
+        mutable PluginsContainer_t Plugins_;
 		QMap<QString, PluginsContainer_t::const_iterator> FeatureProviders_;
+
+		typedef QList<PluginsContainer_t::iterator> UnloadQueue_t;
+		UnloadQueue_t UnloadQueue_;
     public:
         typedef PluginsContainer_t::size_type Size_t;
         PluginManager (QObject *parent = 0);
@@ -86,7 +90,7 @@ namespace LeechCraft
         }
 
 		QObject* GetProvider (const QString&) const;
-		QObjectList GetSelectedDownloaderWatchers () const;
+		void Unload (QObject*);
     private:
         void FindPlugins ();
 		/** Tries to load all the plugins and filters out those who fail
@@ -94,14 +98,14 @@ namespace LeechCraft
 		 */
         void CheckPlugins ();
 
-		QList<PluginsContainer_t::const_iterator> FindProviders (const QString&) const;
-		QList<PluginsContainer_t::const_iterator> FindProviders (const QByteArray&) const;
+		QList<PluginsContainer_t::iterator> FindProviders (const QString&);
+		QList<PluginsContainer_t::iterator> FindProviders (const QByteArray&);
 		DepTreeItem_ptr GetDependency (QObject*);
 
 		/** Calculates the deps.
 		 */
         void CalculateDependencies ();
-		DepTreeItem_ptr CalculateSingle (PluginsContainer_t::const_iterator i);
+		DepTreeItem_ptr CalculateSingle (PluginsContainer_t::iterator i);
 
 		/** Preinitializes the plugins, pushes second-level plugins to
 		 * first-level ones and calls IInfo::Init() on each one.
@@ -110,6 +114,11 @@ namespace LeechCraft
 		bool InitializeSingle (DepTreeItem_ptr);
 		void Release (DepTreeItem_ptr);
 		void DumpTree ();
+		PluginsContainer_t::iterator Find (DepTreeItem_ptr);
+		PluginsContainer_t::iterator Find (QObject*);
+		void Unload (PluginsContainer_t::iterator);
+	private slots:
+		void processUnloadQueue ();
     signals:
         void downloadFinished (QString);
 		void loadProgress (const QString&);

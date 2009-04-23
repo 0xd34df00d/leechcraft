@@ -260,7 +260,25 @@ void LeechCraft::Core::DelayedInit ()
     foreach (QObject *plugin, plugins)
     {
         IInfo *info = qobject_cast<IInfo*> (plugin);
-		emit loadProgress (tr ("Setting up %1...").arg (info->GetName ()));
+		try
+		{
+			emit loadProgress (tr ("Setting up %1...").arg (info->GetName ()));
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "unable to get name with"
+				<< e.what ()
+				<< plugin;
+			PluginManager_->Unload (plugin);
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "unable to get name"
+				<< plugin;
+			PluginManager_->Unload (plugin);
+		}
 
 		IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
 		IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
@@ -291,7 +309,16 @@ bool LeechCraft::Core::ShowPlugin (int id)
     IWindow *w = qobject_cast<IWindow*> (plugin);
     if (w)
     {
-        w->ShowWindow ();
+		try
+		{
+			w->ShowWindow ();
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "unable to show window";
+			return false;
+		}
         return true;
     }
     else
@@ -309,11 +336,29 @@ void LeechCraft::Core::TryToAddJob (const QString& name, const QString& where)
     foreach (QObject *plugin, plugins)
     {
         IDownload *di = qobject_cast<IDownload*> (plugin);
-        if (di && di->CouldDownload (e))
-        {
-			di->AddJob (e);
-			return;
-        }
+		try
+		{
+			if (di &&
+					di->CouldDownload (e))
+			{
+				di->AddJob (e);
+				return;
+			}
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "failed to query/add job with"
+				<< e.what ()
+				<< "for"
+				<< plugin;
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "failed to query/add job"
+				<< plugin;
+		}
     }
     emit error (tr ("No plugins are able to download \"%1\"").arg (name));
 }
@@ -400,8 +445,24 @@ QPair<qint64, qint64> LeechCraft::Core::GetSpeeds () const
         IDownload *di = qobject_cast<IDownload*> (plugin);
         if (di)
         {
-            download += di->GetDownloadSpeed ();
-            upload += di->GetUploadSpeed ();
+			try
+			{
+				download += di->GetDownloadSpeed ();
+				upload += di->GetUploadSpeed ();
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "unable to get speeds"
+					<< e.what ()
+					<< plugin;
+			}
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "unable to get speeds"
+					<< plugin;
+			}
         }
     }
 
@@ -543,9 +604,29 @@ namespace
 	{
 		for (QModelIndexList::const_iterator i = selected.begin (),
 				end = selected.end (); i != end; ++i)
-			QMetaObject::invokeMethod (object,
-					function,
-					Q_ARG (int, i->row ()));
+		{
+			try
+			{
+				QMetaObject::invokeMethod (object,
+						function,
+						Q_ARG (int, i->row ()));
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "invokation failed"
+					<< e.what ()
+					<< object
+					<< function;
+			}
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "invokation failed"
+					<< object
+					<< function;
+			}
+		}
 	}
 };
 
@@ -576,14 +657,54 @@ void LeechCraft::Core::handlePluginAction ()
 			selections.push_back (i->row ());
 
 		if (!slot.isEmpty ())
-			QMetaObject::invokeMethod (object,
-					slot.toLatin1 (),
-					Q_ARG (std::deque<int>, selections));
+		{
+			try
+			{
+				QMetaObject::invokeMethod (object,
+						slot.toLatin1 (),
+						Q_ARG (std::deque<int>, selections));
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "slot invokation failed"
+					<< e.what ()
+					<< object
+					<< slot;
+			}
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "slot invokation failed"
+					<< object
+					<< slot;
+			}
+		}
 
 		if (!signal.isEmpty ())
-			QMetaObject::invokeMethod (object,
-					signal.toLatin1 (),
-					Q_ARG (std::deque<int>, selections));
+		{
+			try
+			{
+				QMetaObject::invokeMethod (object,
+						signal.toLatin1 (),
+						Q_ARG (std::deque<int>, selections));
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "signal invokation failed"
+					<< e.what ()
+					<< object
+					<< slot;
+			}
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "signal invokation failed"
+					<< object
+					<< slot;
+			}
+		}
 	}
 	else
 	{
@@ -616,15 +737,47 @@ bool LeechCraft::Core::CouldHandle (const LeechCraft::DownloadEntity& e)
 	for (int i = 0; i < plugins.size (); ++i)
 	{
 		IDownload *id = qobject_cast<IDownload*> (plugins.at (i));
-		if (id->CouldDownload (e))
-			return true;
+		try
+		{
+			if (id->CouldDownload (e))
+				return true;
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "could not query"
+				<< e.what ()
+				<< plugins.at (i);
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "could not query"
+				<< plugins.at (i);
+		}
 	}
 	plugins = PluginManager_->GetAllCastableRoots<IEntityHandler*> ();
 	for (int i = 0; i < plugins.size (); ++i)
 	{
 		IEntityHandler *ih = qobject_cast<IEntityHandler*> (plugins.at (i));
-		if (ih->CouldHandle (e))
-			return true;
+		try
+		{
+			if (ih->CouldHandle (e))
+				return true;
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "could not query"
+				<< e.what ()
+				<< plugins.at (i);
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "could not query"
+				<< plugins.at (i);
+		}
 	}
 	return false;
 }
@@ -642,16 +795,48 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 	{
 		IDownload *id = qobject_cast<IDownload*> (plugins.at (i));
 		IInfo *ii = qobject_cast<IInfo*> (plugins.at (i));
-		if (id->CouldDownload (p))
-			dia->Add (ii, id);
+		try
+		{
+			if (id->CouldDownload (p))
+				dia->Add (ii, id);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "could not query"
+				<< e.what ()
+				<< plugins.at (i);
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "could not query"
+				<< plugins.at (i);
+		}
 	}
 	plugins = PluginManager_->GetAllCastableRoots<IEntityHandler*> ();
 	for (int i = 0; i < plugins.size (); ++i)
 	{
 		IEntityHandler *ih = qobject_cast<IEntityHandler*> (plugins.at (i));
 		IInfo *ii = qobject_cast<IInfo*> (plugins.at (i));
-		if (ih->CouldHandle (p))
-			dia->Add (ii, ih);
+		try
+		{
+			if (ih->CouldHandle (p))
+				dia->Add (ii, ih);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "could not query"
+				<< e.what ()
+				<< plugins.at (i);
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "could not query"
+				<< plugins.at (i);
+		}
 	}
 
 	if (p.Parameters_ & FromUserInitiated)
@@ -683,7 +868,42 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 				setProperty ("EntitySavePath", dir);
 
 			p.Location_ = dir;
-			int l = sd->AddJob (p);
+
+			int l = -1;
+			try
+			{
+				l = sd->AddJob (p);
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "could not add job"
+					<< e.what ();
+				if (dia->NumChoices () > 1 &&
+						QMessageBox::question (0,
+						tr ("Error"),
+						tr ("Could not add job to the selected downloader, "
+							"would you like to try another one?"),
+						QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+					return handleGotEntity (p, id, pr);
+				else
+					return false;
+			}
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "could not add job";
+				if (dia->NumChoices () > 1 &&
+						QMessageBox::question (0,
+						tr ("Error"),
+						tr ("Could not add job to the selected downloader, "
+							"would you like to try another one?"),
+						QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+					return handleGotEntity (p, id, pr);
+				else
+					return false;
+			}
+
 			if (id)
 				*id = l;
 			if (pr)
@@ -699,14 +919,65 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 			}
 		}
 		if (sh)
-			sh->Handle (p);
+		{
+			try
+			{
+				sh->Handle (p);
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "could not handle job"
+					<< e.what ();
+				if (dia->NumChoices () > 1 &&
+						QMessageBox::question (0,
+						tr ("Error"),
+						tr ("Could not handle job with the selected handler, "
+							"would you like to try another one?"),
+						QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+					return handleGotEntity (p, id, pr);
+				else
+					return false;
+			}
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "could not add job";
+				if (dia->NumChoices () > 1 &&
+						QMessageBox::question (0,
+						tr ("Error"),
+						tr ("Could not handle job with the selected handler, "
+							"would you like to try another one?"),
+						QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+					return handleGotEntity (p, id, pr);
+				else
+					return false;
+			}
+		}
 	}
 	else if (dia->GetDownload ())
 	{
 		IDownload *sd = dia->GetDownload ();
 		if (p.Location_.isEmpty ())
 			p.Location_ = QDir::tempPath ();
-		int l = sd->AddJob (p);
+		int l;
+		try
+		{
+			l = sd->AddJob (p);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "could not handle job"
+				<< e.what ();
+			return false;
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "could not add job";
+			return false;
+		}
 		if (id)
 			*id = l;
 		if (pr)
@@ -762,8 +1033,22 @@ void LeechCraft::Core::embeddedTabWantsToFront ()
 	if (!iet)
 		return;
 
-	ReallyMainWindow_->show ();
-	TabContainer_->bringToFront (iet->GetTabContents ());
+	try
+	{
+		TabContainer_->bringToFront (iet->GetTabContents ());
+		ReallyMainWindow_->show ();
+	}
+	catch (const std::exception& e)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< e.what ()
+			<< sender ();
+	}
+	catch (...)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< sender ();
+	}
 }
 
 void LeechCraft::Core::handleStatusBarChanged (QWidget *contents, const QString& msg)
@@ -777,7 +1062,21 @@ void LeechCraft::Core::handleStatusBarChanged (QWidget *contents, const QString&
 void LeechCraft::Core::handleLog (const QString& message)
 {
 	IInfo *ii = qobject_cast<IInfo*> (sender ());
-	emit log (ii->GetName () + ": " + message);
+	try
+	{
+		emit log (ii->GetName () + ": " + message);
+	}
+	catch (const std::exception& e)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< e.what ()
+			<< sender ();
+	}
+	catch (...)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< sender ();
+	}
 }
 
 void LeechCraft::Core::handleAuthentication (QNetworkReply *reply, QAuthenticator *authen)
@@ -998,55 +1297,83 @@ void LeechCraft::Core::InitDynamicSignals (QObject *plugin)
 
 void LeechCraft::Core::InitJobHolder (QObject *plugin)
 {
-	IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
-	QAbstractItemModel *model = ijh->GetRepresentation ();
-	Representation2Object_ [model] = plugin;
-	MergeModel_->AddModel (model);
-
-	if (ijh->GetRepresentation ())
+	try
 	{
-		QWidget *controlsWidget = ijh->GetRepresentation ()->
-			index (0, 0).data (RoleControls).value<QWidget*> ();
-		if (controlsWidget)
+		IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
+		QAbstractItemModel *model = ijh->GetRepresentation ();
+		Representation2Object_ [model] = plugin;
+		MergeModel_->AddModel (model);
+
+		if (model)
 		{
-			QList<QAction*> actions = controlsWidget->actions ();
-			for (QList<QAction*>::iterator i = actions.begin (),
-					end = actions.end (); i != end; ++i)
+			QWidget *controlsWidget = model->
+				index (0, 0).data (RoleControls).value<QWidget*> ();
+			if (controlsWidget)
 			{
-				connect (*i,
-						SIGNAL (triggered ()),
-						this,
-						SLOT (handlePluginAction ()));
-				Action2Model_ [*i] = model;
+				QList<QAction*> actions = controlsWidget->actions ();
+				for (QList<QAction*>::iterator i = actions.begin (),
+						end = actions.end (); i != end; ++i)
+				{
+					connect (*i,
+							SIGNAL (triggered ()),
+							this,
+							SLOT (handlePluginAction ()));
+					Action2Model_ [*i] = model;
+				}
+
+				controlsWidget->setParent (ReallyMainWindow_);
 			}
-
-			controlsWidget->setParent (ReallyMainWindow_);
+			QWidget *additional = model->
+				index (0, 0).data (RoleAdditionalInfo).value<QWidget*> ();
+			if (additional)
+				additional->setParent (ReallyMainWindow_);
 		}
-		QWidget *additional = ijh->GetRepresentation ()->
-			index (0, 0).data (RoleAdditionalInfo).value<QWidget*> ();
-		if (additional)
-			additional->setParent (ReallyMainWindow_);
-	}
 
-	QAbstractItemModel *historyModel = ijh->GetHistory ();
-	if (historyModel)
+		QAbstractItemModel *historyModel = ijh->GetHistory ();
+		if (historyModel)
+		{
+			History2Object_ [historyModel] = plugin;
+			HistoryMergeModel_->AddModel (historyModel);
+		}
+	}
+	catch (const std::exception& e)
 	{
-		History2Object_ [historyModel] = plugin;
-		HistoryMergeModel_->AddModel (historyModel);
+		qWarning () << Q_FUNC_INFO
+			<< e.what ()
+			<< plugin;
+	}
+	catch (...)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< plugin;
 	}
 }
 
 void LeechCraft::Core::InitEmbedTab (QObject *plugin)
 {
-	IInfo *ii = qobject_cast<IInfo*> (plugin);
-	IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
-	TabContainer_->add (ii->GetName (),
-			iet->GetTabContents (),
-			ii->GetIcon ());
-	connect (plugin,
-			SIGNAL (bringToFront ()),
-			this,
-			SLOT (embeddedTabWantsToFront ()));
+	try
+	{
+		IInfo *ii = qobject_cast<IInfo*> (plugin);
+		IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
+		TabContainer_->add (ii->GetName (),
+				iet->GetTabContents (),
+				ii->GetIcon ());
+		connect (plugin,
+				SIGNAL (bringToFront ()),
+				this,
+				SLOT (embeddedTabWantsToFront ()));
+	}
+	catch (const std::exception& e)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< e.what ()
+			<< plugin;
+	}
+	catch (...)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< plugin;
+	}
 }
 
 void LeechCraft::Core::InitMultiTab (QObject *plugin)
