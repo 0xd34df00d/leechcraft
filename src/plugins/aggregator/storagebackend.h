@@ -12,8 +12,14 @@ class StorageBackend : public QObject
 {
 	Q_OBJECT
 public:
+	enum Type
+	{
+		SBSQLite,
+		SBPostgres
+	};
 	StorageBackend (QObject* = 0);
 	virtual ~StorageBackend ();
+	boost::shared_ptr<StorageBackend> Create (Type);
 
 	/** @brief Do post-initialization.
 	 *

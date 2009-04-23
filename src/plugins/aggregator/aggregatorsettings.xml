@@ -84,6 +84,11 @@
 				</item>
 			</groupbox>
 		</tab>
+		<tab>
+			<label lang="en" value="Storage" />
+			<label lang="ru" value="Хранилище" />
+			<item type="customwidget" label="own" name="BackendSelector" />
+		</tab>
 	</page>
 	<page>
 		<label lang="en" value="Viewer settings" />

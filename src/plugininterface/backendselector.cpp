@@ -1,8 +1,11 @@
 #include "backendselector.h"
-#include "xmlsettingsmanager.h"
 
-BackendSelector::BackendSelector (QWidget *parent)
+using namespace LeechCraft::Util;
+
+BackendSelector::BackendSelector (BaseSettingsManager *m,
+		QWidget *parent)
 : QWidget (parent)
+, Manager_ (m)
 {
 	Ui_.setupUi (this);
 
@@ -12,60 +15,60 @@ BackendSelector::BackendSelector (QWidget *parent)
 void BackendSelector::FillUI ()
 {
 	int index = Ui_.StorageType_->
-			findText (XmlSettingsManager::Instance ()->
+			findText (Manager_->
 				Property ("StorageType", "SQLite").toString ());
 	Ui_.StorageType_->setCurrentIndex (index);
 	Ui_.Settings_->setCurrentIndex (index);
 
-	Ui_.SQLiteVacuum_->setCheckState (XmlSettingsManager::Instance ()->
+	Ui_.SQLiteVacuum_->setCheckState (Manager_->
 			Property ("SQLiteVacuum", false).toBool () ?
 			Qt::Checked :
 			Qt::Unchecked);
 	Ui_.SQLiteJournalMode_->setCurrentIndex (Ui_.SQLiteJournalMode_->
-			findText (XmlSettingsManager::Instance ()->
+			findText (Manager_->
 				Property ("SQLiteJournalMode", "TRUNCATE").toString ()));
 	Ui_.SQLiteTempStore_->setCurrentIndex (Ui_.SQLiteTempStore_->
-			findText (XmlSettingsManager::Instance ()->
+			findText (Manager_->
 				Property ("SQLiteTempStore", "MEMORY").toString ()));
 	Ui_.SQLiteSynchronous_->setCurrentIndex (Ui_.SQLiteSynchronous_->
-			findText (XmlSettingsManager::Instance ()->
+			findText (Manager_->
 				Property ("SQLiteSynchronous", "OFF").toString ()));
 
-	Ui_.PostgresHostname_->setText (XmlSettingsManager::Instance ()->
+	Ui_.PostgresHostname_->setText (Manager_->
 			Property ("PostgresHostname", "localhost").toString ());
-	Ui_.PostgresPort_->setValue (XmlSettingsManager::Instance ()->
+	Ui_.PostgresPort_->setValue (Manager_->
 			Property ("PostgresPort", 5432).toInt ());
-	Ui_.PostgresDBName_->setText (XmlSettingsManager::Instance ()->
+	Ui_.PostgresDBName_->setText (Manager_->
 			Property ("PostgresDBName", "lc_poshuku").toString ());
-	Ui_.PostgresUsername_->setText (XmlSettingsManager::Instance ()->
+	Ui_.PostgresUsername_->setText (Manager_->
 			Property ("PostgresUsername", "").toString ());
-	Ui_.PostgresPassword_->setText (XmlSettingsManager::Instance ()->
+	Ui_.PostgresPassword_->setText (Manager_->
 			Property ("PostgresPassword", "").toString ());
 }
 
 void BackendSelector::accept ()
 {
-	XmlSettingsManager::Instance ()->setProperty ("StorageType",
+	Manager_->setProperty ("StorageType",
 			Ui_.StorageType_->currentText ());
 
-	XmlSettingsManager::Instance ()->setProperty ("SQLiteVacuum",
+	Manager_->setProperty ("SQLiteVacuum",
 			Ui_.SQLiteVacuum_->checkState () == Qt::Checked);
-	XmlSettingsManager::Instance ()->setProperty ("SQLiteJournalMode",
+	Manager_->setProperty ("SQLiteJournalMode",
 			Ui_.SQLiteJournalMode_->currentText ());
-	XmlSettingsManager::Instance ()->setProperty ("SQLiteTempStore",
+	Manager_->setProperty ("SQLiteTempStore",
 			Ui_.SQLiteTempStore_->currentText ());
-	XmlSettingsManager::Instance ()->setProperty ("SQLiteSynchronous",
+	Manager_->setProperty ("SQLiteSynchronous",
 			Ui_.SQLiteSynchronous_->currentText ());
 
-	XmlSettingsManager::Instance ()->setProperty ("PostgresHostname",
+	Manager_->setProperty ("PostgresHostname",
 			Ui_.PostgresHostname_->text ());
-	XmlSettingsManager::Instance ()->setProperty ("PostgresPort",
+	Manager_->setProperty ("PostgresPort",
 			Ui_.PostgresPort_->value ());
-	XmlSettingsManager::Instance ()->setProperty ("PostgresDBName",
+	Manager_->setProperty ("PostgresDBName",
 			Ui_.PostgresDBName_->text ());
-	XmlSettingsManager::Instance ()->setProperty ("PostgresUsername",
+	Manager_->setProperty ("PostgresUsername",
 			Ui_.PostgresUsername_->text ());
-	XmlSettingsManager::Instance ()->setProperty ("PostgresPassword",
+	Manager_->setProperty ("PostgresPassword",
 			Ui_.PostgresPassword_->text ());
 }
 

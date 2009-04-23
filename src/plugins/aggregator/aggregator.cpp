@@ -149,6 +149,8 @@ void Aggregator::Init ()
 
 	Impl_->XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
 	Impl_->XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/aggregatorsettings.xml");
+	Impl_->XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
+			new LeechCraft::Util::BackendSelector (XmlSettingsManager::Instance ()));
 
 	Impl_->Ui_.Feeds_->setModel (Core::Instance ().GetChannelsModel ());
 	Impl_->Ui_.Feeds_->addAction (Impl_->ActionMarkChannelAsRead_);

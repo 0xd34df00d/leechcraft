@@ -18,6 +18,7 @@ SET (SRCS
 	dblock.cpp
 	customcookiejar.cpp
 	modeltest.cpp
+	backendselector.cpp
 	)
 SET (HEADERS
 	proxy.h
@@ -33,7 +34,12 @@ SET (HEADERS
 	dblock.h
 	customcookiejar.h
 	modeltest.h
+	backendselector.h
 	)
+SET (FORMS
+	backendselector.ui
+	)
+QT4_WRAP_UI (UIS_H ${FORMS})
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 ADD_DEFINITIONS(-DQT_PLUGIN)
@@ -41,7 +47,11 @@ ADD_DEFINITIONS(-DQT_NO_DEBUG)
 ADD_DEFINITIONS(-DQT_SHARED)
 ADD_DEFINITIONS(-DQT_GUI_LIB)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ADD_LIBRARY (plugininterface SHARED ${SRCS} ${MOC_SRCS})
+ADD_LIBRARY (plugininterface SHARED
+	${SRCS}
+	${MOC_SRCS}
+	${UIS_H}
+	)
 TARGET_LINK_LIBRARIES (plugininterface
 	${QT_LIBRARIES}
 	)
