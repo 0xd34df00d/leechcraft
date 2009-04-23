@@ -104,7 +104,18 @@ void Core::DoDelayedInit ()
 		return;
 	}
 
-	StorageBackend_.reset (new SQLStorageBackend);
+	StorageBackend::Type type;
+	QString strType = XmlSettingsManager::Instance ()->
+		property ("StorageType").toString ();
+	if (strType == "SQLite")
+		type = StorageBackend::SBSQLite;
+	else if (strType == "PostgreSQL")
+		type = StorageBackend::SBPostgres;
+	else
+		throw std::runtime_error (qPrintable (QString ("Unknown storage type %1")
+					.arg (strType)));
+
+	StorageBackend_ = StorageBackend::Create (type);
 
 	const int feedsTable = 1;
 	const int channelsTable = 1;
@@ -113,7 +124,7 @@ void Core::DoDelayedInit ()
 	bool tablesOK = true;
 
 	if (StorageBackend_->UpdateFeedsStorage (XmlSettingsManager::Instance ()->
-			Property ("FeedsTableVersion", feedsTable).toInt (),
+			Property (strType + "FeedsTableVersion", feedsTable).toInt (),
 			feedsTable))
 		XmlSettingsManager::Instance ()->setProperty ("FeedsTableVersion",
 				feedsTable);
@@ -121,7 +132,7 @@ void Core::DoDelayedInit ()
 		tablesOK = false;
 
 	if (StorageBackend_->UpdateChannelsStorage (XmlSettingsManager::Instance ()->
-			Property ("ChannelsTableVersion", channelsTable).toInt (),
+			Property (strType + "ChannelsTableVersion", channelsTable).toInt (),
 			channelsTable))
 		XmlSettingsManager::Instance ()->setProperty ("ChannelsTableVersion",
 				channelsTable);
@@ -129,7 +140,7 @@ void Core::DoDelayedInit ()
 		tablesOK = false;
 
 	if (StorageBackend_->UpdateItemsStorage (XmlSettingsManager::Instance ()->
-			Property ("ItemsTableVersion", itemsTable).toInt (),
+			Property (strType + "ItemsTableVersion", itemsTable).toInt (),
 			itemsTable))
 		XmlSettingsManager::Instance ()->setProperty ("ItemsTableVersion",
 				itemsTable);
@@ -273,7 +284,17 @@ void Core::RemoveFeed (const QModelIndex& si, bool representation)
 		index = JobHolderRepresentation_->mapToSource (si);
 	else
 		index = ChannelsFilterModel_->mapToSource (si);
-	ChannelShort channel = ChannelsModel_->GetChannelForIndex (index);
+
+	ChannelShort channel;
+	try
+	{
+		channel = ChannelsModel_->GetChannelForIndex (index);
+	}
+	catch (const std::exception&)
+	{
+		emit error (tr ("Could not remove the feed."));
+		return;
+	}
 
 	QString feedURL = channel.ParentURL_;
 	if (feedURL.isEmpty ())
@@ -368,13 +389,33 @@ void Core::MarkChannelAsUnread (const QModelIndex& i)
 
 QStringList Core::GetTagsForIndex (int i) const
 {
-	return ChannelsModel_->
-		GetChannelForIndex (ChannelsModel_->index (i, 0)).Tags_;
+	try
+	{
+		return ChannelsModel_->
+			GetChannelForIndex (ChannelsModel_->index (i, 0)).Tags_;
+	}
+	catch (const std::exception& e)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< "caught"
+			<< e.what ();
+		return QStringList ();
+	}
 }
 
 Core::ChannelInfo Core::GetChannelInfo (const QModelIndex& i) const
 {
-	ChannelShort channel = ChannelsModel_->GetChannelForIndex (i);
+	ChannelShort channel;
+	try
+	{
+		channel = ChannelsModel_->GetChannelForIndex (i);
+	}
+	catch (const std::exception& e)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< e.what ();
+		return ChannelInfo ();
+	}
 	ChannelInfo ci;
 	ci.Link_ = channel.Link_;
 
@@ -387,23 +428,50 @@ Core::ChannelInfo Core::GetChannelInfo (const QModelIndex& i) const
 
 QPixmap Core::GetChannelPixmap (const QModelIndex& i) const
 {
-	ChannelShort channel = ChannelsModel_->GetChannelForIndex (i);
-
-	Channel_ptr rc = StorageBackend_->
-		GetChannel (channel.Title_, channel.ParentURL_);
-	return rc->Pixmap_;
+	try
+	{
+		ChannelShort channel = ChannelsModel_->GetChannelForIndex (i);
+		Channel_ptr rc = StorageBackend_->
+			GetChannel (channel.Title_, channel.ParentURL_);
+		return rc->Pixmap_;
+	}
+	catch (const std::exception& e)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< e.what ();
+		return QPixmap ();
+	}
 }
 
 void Core::SetTagsForIndex (const QString& tags, const QModelIndex& index)
 {
-	ChannelShort channel = ChannelsModel_->GetChannelForIndex (index);
-	channel.Tags_ = tags.split (' ');
-	StorageBackend_->UpdateChannel (channel, channel.ParentURL_);
+	try
+	{
+		ChannelShort channel = ChannelsModel_->GetChannelForIndex (index);
+		channel.Tags_ = tags.split (' ');
+		StorageBackend_->UpdateChannel (channel, channel.ParentURL_);
+	}
+	catch (const std::exception& e)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< e.what ();
+	}
 }
 
 QStringList Core::GetCategories (const QModelIndex& index) const
 {
-	ChannelShort cs = ChannelsModel_->GetChannelForIndex (index);
+	ChannelShort cs;
+	try
+	{
+		cs = ChannelsModel_->GetChannelForIndex (index);
+	}
+	catch (const std::exception& e)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< e.what ();
+		return QStringList ();
+	}
+
 	items_shorts_t items;
 	StorageBackend_->GetItems (items, cs.ParentURL_ + cs.Title_);
 
@@ -431,21 +499,47 @@ QStringList Core::GetItemCategories (int index) const
 
 Feed::FeedSettings Core::GetFeedSettings (const QModelIndex& index) const
 {
-	return StorageBackend_->GetFeedSettings (ChannelsModel_->
-			GetChannelForIndex (index).ParentURL_);
+	try
+	{
+		return StorageBackend_->GetFeedSettings (ChannelsModel_->
+				GetChannelForIndex (index).ParentURL_);
+	}
+	catch (const std::exception& e)
+	{
+		emit error (tr ("Could not get feed settings"));
+		return Feed::FeedSettings ();
+	}
 }
 
 void Core::SetFeedSettings (const Feed::FeedSettings& settings,
 		const QModelIndex& index)
 {
-	StorageBackend_->SetFeedSettings (ChannelsModel_->
-			GetChannelForIndex (index).ParentURL_, settings);
+	try
+	{
+		StorageBackend_->SetFeedSettings (ChannelsModel_->
+				GetChannelForIndex (index).ParentURL_, settings);
+	}
+	catch (const std::exception& e)
+	{
+		emit error (tr ("Could not update feed settings"));
+	}
 }
 
 void Core::UpdateFeed (const QModelIndex& index)
 {
-	ChannelShort channel =
-		ChannelsModel_->GetChannelForIndex (ChannelsFilterModel_->mapToSource (index));
+	ChannelShort channel;
+	try
+	{
+		channel = ChannelsModel_->
+			GetChannelForIndex (ChannelsFilterModel_->mapToSource (index));
+	}
+	catch (const std::exception& e)
+	{
+		emit error (tr ("Could not update feed"));
+		qWarning () << Q_FUNC_INFO
+			<< e.what ();
+		return;
+	}
 	QString url = channel.ParentURL_;
 	if (url.isEmpty ())
 	{
@@ -703,8 +797,18 @@ void Core::SetMerge (bool merge)
 				i < size; ++i)
 		{
 			QModelIndex index = ChannelsFilterModel_->index (i, 0);
-			ChannelShort cs = ChannelsModel_->
-				GetChannelForIndex (ChannelsFilterModel_->mapToSource (index));
+			ChannelShort cs;
+			try
+			{
+				cs = ChannelsModel_->
+					GetChannelForIndex (ChannelsFilterModel_->mapToSource (index));
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< e.what ();
+				continue;
+			}
 			QPair<QString, QString> hash = qMakePair (cs.ParentURL_, cs.Title_);
 
 			if (hash == CurrentItemsModel_->GetHash ())
@@ -1324,10 +1428,19 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 
 void Core::MarkChannel (const QModelIndex& i, bool state)
 {
-	ChannelShort cs = ChannelsModel_->GetChannelForIndex (i);
+	try
+	{
+		ChannelShort cs = ChannelsModel_->GetChannelForIndex (i);
 
-	QString hash = cs.ParentURL_ + cs.Title_;
-	StorageBackend_->ToggleChannelUnread (cs.ParentURL_, cs.Title_, state);
+		QString hash = cs.ParentURL_ + cs.Title_;
+		StorageBackend_->ToggleChannelUnread (cs.ParentURL_, cs.Title_, state);
+	}
+	catch (const std::exception& e)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< e.what ();
+		emit error (tr ("Could not mark channel"));
+	}
 }
 
 void Core::UpdateFeed (const QString& url)

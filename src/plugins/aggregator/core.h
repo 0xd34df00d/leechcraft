@@ -76,7 +76,7 @@ class Core : public QObject
 	LeechCraft::Util::TagsCompletionModel *TagsCompletionModel_;
     QTimer *UpdateTimer_, *CustomUpdateTimer_;
     bool SaveScheduled_;
-	std::auto_ptr<StorageBackend> StorageBackend_;
+	boost::shared_ptr<StorageBackend> StorageBackend_;
     ItemModel *ItemModel_;
 	JobHolderRepresentation *JobHolderRepresentation_;
 	QMap<QString, QDateTime> Updates_;

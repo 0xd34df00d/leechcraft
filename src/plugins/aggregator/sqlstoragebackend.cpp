@@ -7,29 +7,87 @@
 #include <QSqlError>
 #include <QVariant>
 #include "plugininterface/dblock.h"
+#include "xmlsettingsmanager.h"
 
-SQLStorageBackend::SQLStorageBackend ()
-: DB_ (QSqlDatabase::addDatabase ("QSQLITE", "AggregatorConnection"))
+SQLStorageBackend::SQLStorageBackend (StorageBackend::Type t)
+: Type_ (t)
 {
-	QDir dir = QDir::home ();
-	dir.cd (".leechcraft");
-	dir.cd ("aggregator");
-	DB_.setDatabaseName (dir.filePath ("aggregator.db"));
+	QString strType;
+	switch (Type_)
+	{
+		case SBSQLite:
+			strType = "QSQLITE";
+			break;
+		case SBPostgres:
+			strType = "QPSQL";
+	}
+
+	DB_ = QSqlDatabase::addDatabase (strType, "AggregatorConnection");
+
+	switch (Type_)
+	{
+		case SBSQLite:
+			{
+				QDir dir = QDir::home ();
+				dir.cd (".leechcraft");
+				dir.cd ("aggregator");
+				DB_.setDatabaseName (dir.filePath ("aggregator.db"));
+			}
+			break;
+		case SBPostgres:
+			{
+				DB_.setDatabaseName (XmlSettingsManager::Instance ()->
+						property ("PostgresDBName").toString ());
+				DB_.setHostName (XmlSettingsManager::Instance ()->
+						property ("PostgresHostname").toString ());
+				DB_.setPort (XmlSettingsManager::Instance ()->
+						property ("PostgresPort").toInt ());
+				DB_.setUserName (XmlSettingsManager::Instance ()->
+						property ("PostgresUsername").toString ());
+				DB_.setPassword (XmlSettingsManager::Instance ()->
+						property ("PostgresPassword").toString ());
+			}
+			break;
+	}
+
 	if (!DB_.open ())
+	{
 		LeechCraft::Util::DBLock::DumpError (DB_.lastError ());
+		throw std::runtime_error ("Could not initialize database");
+	}
 
 	InitializeTables ();
 }
 
+SQLStorageBackend::~SQLStorageBackend ()
+{
+	if (Type_ == SBSQLite &&
+			XmlSettingsManager::Instance ()->property ("SQLiteVacuum").toBool ())
+	{
+		QSqlQuery vacuum (DB_);
+		vacuum.exec ("VACUUM;");
+	}
+	DB_.close ();
+}
+
 void SQLStorageBackend::Prepare ()
 {
-	QSqlQuery pragma (DB_);
-	if (!pragma.exec ("PRAGMA journal_mode = TRUNCATE;"))
-		LeechCraft::Util::DBLock::DumpError (pragma);
-	if (!pragma.exec ("PRAGMA synchronous = OFF;"))
-		LeechCraft::Util::DBLock::DumpError (pragma);
-	if (!pragma.exec ("PRAGMA temp_store = MEMORY;"))
-		LeechCraft::Util::DBLock::DumpError (pragma);
+	if (Type_ == SBSQLite)
+	{
+		QSqlQuery pragma (DB_);
+		if (!pragma.exec (QString ("PRAGMA journal_mode = %1;")
+					.arg (XmlSettingsManager::Instance ()->
+						property ("SQLiteJournalMode").toString ())))
+			LeechCraft::Util::DBLock::DumpError (pragma);
+		if (!pragma.exec (QString ("PRAGMA synchronous = %1;")
+					.arg (XmlSettingsManager::Instance ()->
+						property ("SQLiteSynchronous").toString ())))
+			LeechCraft::Util::DBLock::DumpError (pragma);
+		if (!pragma.exec (QString ("PRAGMA temp_store = %1;")
+					.arg (XmlSettingsManager::Instance ()->
+						property ("SQLiteTempStore").toString ())))
+			LeechCraft::Util::DBLock::DumpError (pragma);
+	}
 
 	FeedFinderByURL_ = QSqlQuery (DB_);
 	FeedFinderByURL_.prepare ("SELECT last_update "
@@ -45,7 +103,11 @@ void SQLStorageBackend::Prepare ()
 			"WHERE feed_url = :feed_url");
 
 	FeedSettingsSetter_ = QSqlQuery (DB_);
-	FeedSettingsSetter_.prepare ("INSERT OR REPLACE INTO feeds_settings ("
+	QString orReplace;
+	if (Type_ == SBSQLite)
+		orReplace = "OR REPLACE";
+
+	FeedSettingsSetter_.prepare (QString ("INSERT %1 INTO feeds_settings ("
 			"feed_url, "
 			"update_timeout, "
 			"num_items, "
@@ -55,7 +117,7 @@ void SQLStorageBackend::Prepare ()
 			":update_timeout, "
 			":num_items, "
 			":item_age"
-			")");
+			")").arg (orReplace));
 
 	ChannelsShortSelector_ = QSqlQuery (DB_);
 	ChannelsShortSelector_.prepare ("SELECT "
@@ -85,10 +147,21 @@ void SQLStorageBackend::Prepare ()
 			"ORDER BY title");
 
 	UnreadItemsCounter_ = QSqlQuery (DB_);
-	UnreadItemsCounter_.prepare ("SELECT COUNT (unread) "
-			"FROM items "
-			"WHERE parents_hash = :parents_hash "
-			"AND unread = \"true\"");
+	switch (Type_)
+	{
+		case SBSQLite:
+			UnreadItemsCounter_.prepare ("SELECT COUNT (unread) "
+					"FROM items "
+					"WHERE parents_hash = :parents_hash "
+					"AND unread = \"true\"");
+			break;
+		case SBPostgres:
+			UnreadItemsCounter_.prepare ("SELECT COUNT (1) "
+					"FROM items "
+					"WHERE parents_hash = :parents_hash "
+					"AND unread");
+			break;
+	}
 
 	ItemsShortSelector_ = QSqlQuery (DB_);
 	ItemsShortSelector_.prepare ("SELECT "
@@ -281,7 +354,7 @@ void SQLStorageBackend::Prepare ()
 			"AND url = :url");
 
 	WriteEnclosure_ = QSqlQuery (DB_);
-	WriteEnclosure_.prepare ("INSERT OR REPLACE INTO enclosures ("
+	WriteEnclosure_.prepare (QString ("INSERT %1 INTO enclosures ("
 			"url, "
 			"type, "
 			"length, "
@@ -297,7 +370,7 @@ void SQLStorageBackend::Prepare ()
 			":item_parents_hash, "
 			":item_title, "
 			":item_url"
-			")");
+			")").arg (orReplace));
 
 	RemoveEnclosures_ = QSqlQuery (DB_);
 	RemoveEnclosures_.prepare ("DELETE FROM enclosures "
@@ -318,17 +391,12 @@ void SQLStorageBackend::Prepare ()
 			"ORDER BY url");
 }
 
-SQLStorageBackend::~SQLStorageBackend ()
-{
-	DB_.close ();
-}
-
 void SQLStorageBackend::GetFeedsURLs (feeds_urls_t& result) const
 {
 	QSqlQuery feedSelector (DB_);
 	if (!feedSelector.exec ("SELECT url "
 				"FROM feeds "
-				"ORDER BY ROWID"))
+				"ORDER BY CTID"))
 	{
 		LeechCraft::Util::DBLock::DumpError (feedSelector);
 		return;
@@ -985,11 +1053,40 @@ bool SQLStorageBackend::InitializeTables ()
 			LeechCraft::Util::DBLock::DumpError (query.lastError ());
 			return false;
 		}
+
+		if (Type_ == SBPostgres)
+		{
+			if (!query.exec ("CREATE RULE \"replace_feeds_settings\" AS "
+								"ON INSERT TO \"feeds_settings\" "
+							    "WHERE "
+									"EXISTS (SELECT 1 FROM feeds_settings "
+										"WHERE feed_url = NEW.feed_url) "
+								"DO INSTEAD "
+									"(UPDATE feeds_settings "
+										"SET update_timeout = NEW.update_timeout, "
+										"num_items = NEW.num_items, "
+										"item_age = NEW.item_age "
+										"WHERE feed_url = NEW.feed_url)"))
+			{
+				LeechCraft::Util::DBLock::DumpError (query);
+				return false;
+			}
+		}
 	}
 
 	if (!DB_.tables ().contains ("channels"))
 	{
-		if (!query.exec ("CREATE TABLE channels ("
+		QString blob;
+		switch (Type_)
+		{
+			case SBSQLite:
+				blob = "BLOB";
+				break;
+			case SBPostgres:
+				blob = "BYTEA";
+				break;
+		}
+		if (!query.exec (QString ("CREATE TABLE channels ("
 				"parent_feed_url TEXT, "
 				"url TEXT, "
 				"title TEXT, "
@@ -999,9 +1096,9 @@ bool SQLStorageBackend::InitializeTables ()
 				"language TEXT, "
 				"author TEXT, "
 				"pixmap_url TEXT, "
-				"pixmap BLOB, "
-				"favicon BLOB "
-				");"))
+				"pixmap %1, "
+				"favicon %1 "
+				");").arg (blob)))
 		{
 			LeechCraft::Util::DBLock::DumpError (query.lastError ());
 			return false;
@@ -1023,7 +1120,17 @@ bool SQLStorageBackend::InitializeTables ()
 
 	if (!DB_.tables ().contains ("items"))
 	{
-		if (!query.exec ("CREATE TABLE items ("
+		QString unreadType;
+		switch (Type_)
+		{
+			case SBSQLite:
+				unreadType = "TINYINT";
+				break;
+			case SBPostgres:
+				unreadType = "BOOLEAN";
+				break;
+		}
+		if (!query.exec (QString ("CREATE TABLE items ("
 				"parents_hash TEXT, "
 				"title TEXT, "
 				"url TEXT, "
@@ -1032,11 +1139,11 @@ bool SQLStorageBackend::InitializeTables ()
 				"category TEXT, "
 				"guid TEXT, "
 				"pub_date TIMESTAMP, "
-				"unread TINYINT, "
+				"unread %1, "
 				"num_comments SMALLINT, "
 				"comments_url TEXT, "
 				"comments_page_url TEXT"
-				");"))
+				");").arg (unreadType)))
 		{
 			LeechCraft::Util::DBLock::DumpError (query.lastError ());
 			return false;
@@ -1071,6 +1178,31 @@ bool SQLStorageBackend::InitializeTables ()
 		{
 			LeechCraft::Util::DBLock::DumpError (query.lastError ());
 			return false;
+		}
+
+		if (Type_ == SBPostgres)
+		{
+			if (!query.exec ("CREATE RULE \"replace_enclosures\" AS "
+								"ON INSERT TO \"enclosures\" "
+							    "WHERE "
+									"EXISTS (SELECT 1 FROM enclosures "
+										"WHERE item_parents_hash = NEW.item_parents_hash "
+										"AND item_title = NEW.item_title "
+										"AND item_url = NEW.item_url "
+										"AND url = NEW.url) "
+								"DO INSTEAD "
+									"(UPDATE enclosures "
+										"SET type = NEW.type, "
+										"length = NEW.length, "
+										"lang = NEW.lang "
+										"WHERE item_parents_hash = NEW.item_parents_hash "
+										"AND item_title = NEW.item_title "
+										"AND item_url = NEW.item_url "
+										"AND url = NEW.url)"))
+			{
+				LeechCraft::Util::DBLock::DumpError (query);
+				return false;
+			}
 		}
 
 		if (!query.exec ("CREATE INDEX "

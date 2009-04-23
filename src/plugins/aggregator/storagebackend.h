@@ -19,7 +19,7 @@ public:
 	};
 	StorageBackend (QObject* = 0);
 	virtual ~StorageBackend ();
-	boost::shared_ptr<StorageBackend> Create (Type);
+	static boost::shared_ptr<StorageBackend> Create (Type);
 
 	/** @brief Do post-initialization.
 	 *

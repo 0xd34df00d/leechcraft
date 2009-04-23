@@ -9,6 +9,8 @@ class SQLStorageBackend : public StorageBackend
 	Q_OBJECT
 
 	QSqlDatabase DB_;
+
+	Type Type_;
 					  /** Returns:
 					   * - last_update
 					   *
@@ -258,7 +260,7 @@ class SQLStorageBackend : public StorageBackend
 					   */
 					  GetEnclosures_;
 public:
-	SQLStorageBackend ();
+	SQLStorageBackend (Type);
 	virtual ~SQLStorageBackend ();
 	
 	virtual void Prepare ();

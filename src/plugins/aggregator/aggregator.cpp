@@ -19,6 +19,7 @@
 #include <plugininterface/proxy.h>
 #include <plugininterface/categoryselector.h>
 #include <plugininterface/tagscompleter.h>
+#include <plugininterface/backendselector.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "ui_mainwidget.h"
 #include "itemsfiltermodel.h"
@@ -135,6 +136,11 @@ void Aggregator::Init ()
 			SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
 					int*, QObject**)));
 
+	Impl_->XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
+	Impl_->XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/aggregatorsettings.xml");
+	Impl_->XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
+			new LeechCraft::Util::BackendSelector (XmlSettingsManager::Instance ()));
+
 	Core::Instance ().DoDelayedInit ();
 	Core::Instance ().GetJobHolderRepresentation ()->setParent (this);
 
@@ -146,11 +152,6 @@ void Aggregator::Init ()
 
 	Impl_->ItemBucket_.reset (new ItemBucket (this));
 	dynamic_cast<QVBoxLayout*> (layout ())->insertWidget (0, Impl_->ToolBar_);
-
-	Impl_->XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
-	Impl_->XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/aggregatorsettings.xml");
-	Impl_->XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
-			new LeechCraft::Util::BackendSelector (XmlSettingsManager::Instance ()));
 
 	Impl_->Ui_.Feeds_->setModel (Core::Instance ().GetChannelsModel ());
 	Impl_->Ui_.Feeds_->addAction (Impl_->ActionMarkChannelAsRead_);
