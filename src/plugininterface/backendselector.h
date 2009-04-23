@@ -1,9 +1,13 @@
 #ifndef PLUGININTERFACE_BACKENDSELECTOR_H
 #define PLUGININTERFACE_BACKENDSELECTOR_H
 #include <QWidget>
-#include "ui_backendselector.h"
 #include "config.h"
 #include "../xmlsettingsdialog/basesettingsmanager.h"
+
+namespace Ui
+{
+	class BackendSelector;
+};
 
 namespace LeechCraft
 {
@@ -13,7 +17,7 @@ namespace LeechCraft
 		{
 			Q_OBJECT
 
-			Ui::BackendSelector Ui_;
+			Ui::BackendSelector *Ui_;
 			BaseSettingsManager *Manager_;
 		public:
 			BackendSelector (BaseSettingsManager*, QWidget* = 0);
