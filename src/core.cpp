@@ -256,6 +256,8 @@ void LeechCraft::Core::DelayedInit ()
 	emit loadProgress (tr ("Calculation dependencies..."));
 	PluginManager_->Init ();
 
+	QApplication::processEvents ();
+
     QObjectList plugins = PluginManager_->GetAllPlugins ();
     foreach (QObject *plugin, plugins)
     {

@@ -627,6 +627,7 @@ bool LeechCraft::PluginManager::InitializeSingle (LeechCraft::PluginManager::Dep
 	catch (const std::exception& e)
 	{
 		qWarning () << Q_FUNC_INFO << e.what ();
+		Unload (Find (item));
 		return false;
 	}
 	return true;
