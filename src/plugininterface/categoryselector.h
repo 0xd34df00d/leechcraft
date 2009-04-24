@@ -39,6 +39,7 @@ namespace LeechCraft
 			 * @param[in] parent Pointer to parent widget.
 			 */
 			CategorySelector (QWidget *parent = 0);
+			virtual ~CategorySelector ();
 
 			/** @brief Sets possible selections.
 			 *

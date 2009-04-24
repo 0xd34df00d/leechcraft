@@ -16,6 +16,12 @@ CategorySelector::CategorySelector (QWidget *parent)
 	setLayout (new QVBoxLayout ());
 }
 
+CategorySelector::~CategorySelector ()
+{
+	QList<QCheckBox*> boxes = findChildren<QCheckBox*> ();
+	qDeleteAll (boxes);
+}
+
 void CategorySelector::SetPossibleSelections (const QStringList& tags)
 {
 	QList<QCheckBox*> boxes = findChildren<QCheckBox*> ();
