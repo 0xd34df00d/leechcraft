@@ -44,8 +44,8 @@ using namespace LeechCraft::Util;
 XmlSettingsDialog::XmlSettingsDialog ()
 : Document_ (new QDomDocument)
 {
-    Pages_ = new QStackedWidget;
-    Sections_ = new QListWidget;
+    Pages_ = new QStackedWidget (this);
+    Sections_ = new QListWidget (this);
     Sections_->setMinimumWidth (200);
     Sections_->setMaximumWidth (200);
 

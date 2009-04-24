@@ -1,4 +1,5 @@
 #include "basesettingsmanager.h"
+#include <QtDebug>
 
 using namespace LeechCraft::Util;
 
@@ -14,6 +15,12 @@ void BaseSettingsManager::Init ()
 
 void BaseSettingsManager::Release ()
 {
+	if (!Settings_)
+	{
+		qWarning () << Q_FUNC_INFO << "already released";
+		return;
+	}
+
 	QList<QByteArray> dProperties = dynamicPropertyNames ();
 	for (int i = 0; i < dProperties.size (); ++i)
 		Settings_->setValue (dProperties.at (i), property (dProperties.at (i).constData ()));
