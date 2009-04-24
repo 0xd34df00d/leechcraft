@@ -65,6 +65,8 @@ void CSTP::Release ()
 	Core::Instance ().Release ();
 	XmlSettingsManager::Instance ().Release ();
 	XmlSettingsDialog_.reset ();
+	Toolbar_.reset ();
+	Translator_.reset ();
 }
 
 QString CSTP::GetName () const
