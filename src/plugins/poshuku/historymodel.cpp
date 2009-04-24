@@ -96,6 +96,7 @@ HistoryModel::HistoryModel (QObject *parent)
 
 HistoryModel::~HistoryModel ()
 {
+	delete RootItem_;
 }
 
 int HistoryModel::columnCount (const QModelIndex& index) const

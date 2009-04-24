@@ -234,6 +234,8 @@ void SQLStorageBackend::LoadHistory (history_items_t& items) const
 		};
 		items.push_back (item);
 	}
+
+	HistoryLoader_.finish ();
 }
 
 void SQLStorageBackend::LoadResemblingHistory (const QString& base,
