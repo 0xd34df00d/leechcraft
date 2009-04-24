@@ -394,9 +394,19 @@ void SQLStorageBackend::Prepare ()
 void SQLStorageBackend::GetFeedsURLs (feeds_urls_t& result) const
 {
 	QSqlQuery feedSelector (DB_);
-	if (!feedSelector.exec ("SELECT url "
+	QString idType;
+	switch (Type_)
+	{
+		case SBSQLite:
+			idType = "ROWID";
+			break;
+		case SBPostgres:
+			idType = "CTID";
+			break;
+	}
+	if (!feedSelector.exec (QString ("SELECT url "
 				"FROM feeds "
-				"ORDER BY CTID"))
+				"ORDER BY %1").arg (idType)))
 	{
 		LeechCraft::Util::DBLock::DumpError (feedSelector);
 		return;
