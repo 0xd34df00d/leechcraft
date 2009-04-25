@@ -2,6 +2,7 @@
 #include <QCoreApplication>
 #include <QKeyEvent>
 #include <QtDebug>
+#include <interfaces/imultitabs.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "tabwidget.h"
@@ -135,7 +136,34 @@ void TabContainer::remove (QWidget *contents)
 void TabContainer::remove (int index)
 {
 	if (index >= Core::Instance ().CountUnremoveableTabs ())
-		remove (TabWidget_->widget (index));
+	{
+		IMultiTabsWidget *itw =
+			qobject_cast<IMultiTabsWidget*> (TabWidget_->widget (index));
+		if (!itw)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "casting to ITabWidget* failed for"
+				<< TabWidget_->widget (index);
+			return;
+		}
+		try
+		{
+			itw->Remove ();
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "failed to ITabWidget::Remove"
+				<< e.what ()
+				<< TabWidget_->widget (index);
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "failed to ITabWidget::Remove"
+				<< TabWidget_->widget (index);
+		}
+	}
 }
 
 void TabContainer::changeTabName (QWidget *contents, const QString& name)
