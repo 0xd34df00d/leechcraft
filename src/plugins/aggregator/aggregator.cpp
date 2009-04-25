@@ -10,8 +10,9 @@
 #include <QPainter>
 #include <QMenu>
 #include <QToolBar>
-#include <QtWebKit>
 #include <QQueue>
+#include <QTimer>
+#include <QTranslator>
 #include <QCursor>
 #include <QKeyEvent>
 #include <plugininterface/tagscompletionmodel.h>

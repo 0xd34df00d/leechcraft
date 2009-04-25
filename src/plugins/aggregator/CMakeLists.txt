@@ -39,7 +39,6 @@ SET (SRCS
 	export.cpp
 	sqlstoragebackend.cpp
 	storagebackend.cpp
-	customwebview.cpp
 	importbinary.cpp
 	feedsettings.cpp
 	jobholderrepresentation.cpp
@@ -78,7 +77,6 @@ SET (HEADERS
 	export.h
 	sqlstoragebackend.h
 	storagebackend.h
-	customwebview.h
 	opmlitem.h
 	importbinary.h
 	feedsettings.h
