@@ -22,7 +22,6 @@
 #include <QFileDialog>
 #include <QAuthenticator>
 #include <QLocalSocket>
-#include <QNetworkDiskCache>
 #include <plugininterface/util.h>
 #include <plugininterface/proxy.h>
 #include <interfaces/iinfo.h>
@@ -48,6 +47,7 @@
 #include "sqlstoragebackend.h"
 #include "requestparser.h"
 #include "handlerchoicedialog.h"
+#include "networkdiskcache.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -102,7 +102,7 @@ LeechCraft::Core::Core ()
 	try
 	{
 		CreateIfNotExists ("core/cache");
-		QNetworkDiskCache *cache = new QNetworkDiskCache (NetworkAccessManager_.get ());
+		NetworkDiskCache *cache = new NetworkDiskCache (NetworkAccessManager_.get ());
 		cache->setCacheDirectory (QDir::homePath () + "/.leechcraft/core/cache");
 		NetworkAccessManager_->setCache (cache);
 	}

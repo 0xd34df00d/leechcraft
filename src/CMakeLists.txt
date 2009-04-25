@@ -182,6 +182,7 @@ SET (SRCS
 	graphwidget.cpp
 	shortcutmanager.cpp
 	keysequencer.cpp
+	networkdiskcache.cpp
 	3dparty/qxttooltip.cpp
 	)
 SET (HEADERS
@@ -216,6 +217,7 @@ SET (HEADERS
 	graphwidget.h
 	shortcutmanager.h
 	keysequencer.h
+	networkdiskcache.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/iinfo.h
