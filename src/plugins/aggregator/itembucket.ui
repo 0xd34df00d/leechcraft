@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>ItemBucket</class>
- <widget class="QDialog" name="ItemBucket" >
-  <property name="geometry" >
+ <widget class="QDialog" name="ItemBucket">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,47 +10,47 @@
     <height>497</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Item Bucket</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="resources.qrc" >
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
     <normaloff>:/resources/images/aggregator.png</normaloff>:/resources/images/aggregator.png</iconset>
   </property>
-  <layout class="QGridLayout" name="gridLayout" >
-   <item row="0" column="0" >
-    <widget class="QSplitter" name="splitter" >
-     <property name="orientation" >
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QSplitter" name="splitter">
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <widget class="QTreeView" name="Items_" >
-      <property name="selectionMode" >
+     <widget class="QTreeView" name="Items_">
+      <property name="selectionMode">
        <enum>QAbstractItemView::ExtendedSelection</enum>
       </property>
-      <property name="itemsExpandable" >
+      <property name="itemsExpandable">
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="BrowserWidget" native="1" name="ItemView_" />
+     <widget class="SelectableBrowser" name="ItemView_" native="true"/>
     </widget>
    </item>
   </layout>
-  <action name="ActionDeleteItem_" >
-   <property name="text" >
+  <action name="ActionDeleteItem_">
+   <property name="text">
     <string>Delete item</string>
    </property>
   </action>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>BrowserWidget</class>
+   <class>SelectableBrowser</class>
    <extends>QWidget</extends>
-   <header>browserwidget.h</header>
+   <header>selectablebrowser.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="resources.qrc" />
+  <include location="resources.qrc"/>
  </resources>
  <connections/>
 </ui>

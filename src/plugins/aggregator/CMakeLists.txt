@@ -1,6 +1,5 @@
 SET (QT_USE_QTSQL TRUE)
 SET (QT_USE_QTXML TRUE)
-SET (QT_USE_QTWEBKIT TRUE)
 SET (QT_USE_QTNETWORK TRUE)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS}
@@ -28,7 +27,6 @@ SET (SRCS
     xmlsettingsmanager.cpp
     channelsmodel.cpp
     channelsfiltermodel.cpp
-	browserwidget.cpp
 	itembucket.cpp
 	itemmodel.cpp
 	regexpmatcherui.cpp
@@ -68,7 +66,6 @@ SET (HEADERS
     channelsmodel.h
     xmlsettingsmanager.h
     channelsfiltermodel.h
-	browserwidget.h
 	itembucket.h
 	itemmodel.h
 	regexpmatcherui.h
@@ -93,7 +90,6 @@ SET (HEADERS
 SET (FORMS
     mainwidget.ui
     addfeed.ui
-	browserwidget.ui
 	itembucket.ui
 	regexpmatcherui.ui
 	singleregexp.ui

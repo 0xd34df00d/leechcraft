@@ -1,4 +1,5 @@
 #include "selectablebrowser.h"
+#include <QVBoxLayout>
 
 SelectableBrowser::SelectableBrowser (QWidget *parent)
 : QWidget (parent)
@@ -21,7 +22,7 @@ void SelectableBrowser::Construct (IWebBrowser *browser)
 	else
 	{
 		Internal_ = true;
-		InternalBrowser_.reset (new BrowserWidget (this));
+		InternalBrowser_.reset (new QTextEdit (this));
 		ExternalBrowser_.reset ();
 		layout ()->addWidget (InternalBrowser_.get ());
 	}
@@ -30,7 +31,7 @@ void SelectableBrowser::Construct (IWebBrowser *browser)
 void SelectableBrowser::SetHtml (const QString& html, const QString& base)
 {
 	if (Internal_)
-		InternalBrowser_->setHtml (html, base);
+		InternalBrowser_->setHtml (html);
 	else
 		ExternalBrowser_->SetHtml (html, base);
 }

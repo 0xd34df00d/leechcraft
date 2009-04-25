@@ -11,6 +11,7 @@ ItemBucket::ItemBucket (QWidget *parent)
 	Ui_.Items_->setModel (Model_);
     Ui_.Items_->addAction (Ui_.ActionDeleteItem_);
     Ui_.Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
+	Ui_.ItemView_->Construct (Core::Instance ().GetWebBrowser ());
 
     connect (Ui_.Items_->selectionModel (),
 			SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
@@ -36,10 +37,6 @@ void ItemBucket::on_ActionDeleteItem__triggered ()
 
 void ItemBucket::currentItemChanged (const QModelIndex& index)
 {
-    Ui_.ItemView_->setHtml (Model_->GetDescription (index));
-	connect (Ui_.ItemView_->page ()->networkAccessManager (),
-			SIGNAL (sslErrors (QNetworkReply*, const QList<QSslError>&)),
-			&Core::Instance (),
-			SLOT (handleSslError (QNetworkReply*)));
+    Ui_.ItemView_->SetHtml (Model_->GetDescription (index));
 }
 

@@ -3,6 +3,7 @@
 #include <QFileInfo>
 #include <QHeaderView>
 #include <QtDebug>
+#include <QUrl>
 #include <interfaces/iwebbrowser.h>
 #include <plugininterface/categoryselector.h>
 #include <plugininterface/proxy.h>
