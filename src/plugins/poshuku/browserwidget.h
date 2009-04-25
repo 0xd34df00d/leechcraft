@@ -2,6 +2,7 @@
 #define BROWSERWIDGET_H
 #include <boost/shared_ptr.hpp>
 #include <QWidget>
+#include <interfaces/imultitabs.h>
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/structures.h>
@@ -12,9 +13,10 @@ class QMovie;
 
 class BrowserWidget : public QWidget
 					, public IWebWidget
+					, public IMultiTabsWidget
 {
 	Q_OBJECT
-	Q_INTERFACES (IWebWidget)
+	Q_INTERFACES (IWebWidget IMultiTabsWidget)
 	
 	Ui::BrowserWidget Ui_;
 
@@ -85,6 +87,8 @@ public:
 
 	void SetShortcut (int, const QKeySequence&);
 	QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
+
+	void Remove ();
 private:
 	void PrintImpl (bool, QWebFrame*);
 private slots:

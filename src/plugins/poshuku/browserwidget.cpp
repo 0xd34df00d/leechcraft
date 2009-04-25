@@ -461,6 +461,11 @@ QMap<int, ActionInfo> BrowserWidget::GetActionInfo () const
 	return result;
 }
 
+void BrowserWidget::Remove ()
+{
+	emit needToClose ();
+}
+
 void BrowserWidget::PrintImpl (bool preview, QWebFrame *frame)
 {
 	std::auto_ptr<QPrinter> printer (new QPrinter ());
