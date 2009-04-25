@@ -300,10 +300,16 @@ QVariant Core::data (const QModelIndex& index, int role) const
 						   total = task->GetTotal ();
 					int progress = total ? done * 100 / total : 0;
 					if (done > -1)
-						return QString (tr ("%1% (%2 of %3)"))
-							.arg (progress)
-							.arg (Proxy::Instance ()->MakePrettySize (done))
-							.arg (Proxy::Instance ()->MakePrettySize (total));
+					{
+						if (total > -1)
+							return QString (tr ("%1% (%2 of %3)"))
+								.arg (progress)
+								.arg (Proxy::Instance ()->MakePrettySize (done))
+								.arg (Proxy::Instance ()->MakePrettySize (total));
+						else
+							return QString (tr ("%1"))
+								.arg (Proxy::Instance ()->MakePrettySize (done));
+					}
 					else
 						return QString ("");
 				}
