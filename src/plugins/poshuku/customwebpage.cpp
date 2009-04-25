@@ -427,9 +427,17 @@ void CustomWebPage::handleWindowCloseRequested ()
 bool CustomWebPage::acceptNavigationRequest (QWebFrame *frame,
 		const QNetworkRequest& request, QWebPage::NavigationType type)
 {
+	qDebug () << Q_FUNC_INFO;
 	if (Core::Instance ().GetPluginManager ()->
 			OnAcceptNavigationRequest (this, frame, request, type))
 		return false;
+
+	QString scheme = request.url ().scheme ();
+	if (scheme == "mailto" || scheme == "ftp")
+	{
+		QDesktopServices::openUrl (request.url ());
+		return false;
+	}
 
 	if ((type == QWebPage::NavigationTypeLinkClicked ||
 				type == QWebPage::NavigationTypeOther) &&
@@ -452,13 +460,7 @@ bool CustomWebPage::acceptNavigationRequest (QWebFrame *frame,
 		emit loadingURL (LoadingURL_);
 	}
 
-	QString scheme = request.url ().scheme ();
-	if (scheme == "mailto" || scheme == "ftp")
-	{
-		QDesktopServices::openUrl (request.url ());
-		return false;
-	}
-
+	qDebug () << request.url ();
 	return QWebPage::acceptNavigationRequest (frame, request, type);
 }
 

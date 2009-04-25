@@ -309,7 +309,6 @@ void Core::Unregister (BrowserWidget *widget)
 	}
 
 	QString title = widget->GetView ()->title ();
-	qDebug () << Q_FUNC_INFO << title;
 	if (title.isEmpty ())
 		title = widget->GetView ()->url ().toString ();
 
@@ -536,7 +535,6 @@ void Core::saveSession ()
 	if (IsShuttingDown_)
 		return;
 
-	qDebug () << Q_FUNC_INFO;
 	int pos = 0;
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
 			Proxy::Instance ()->GetApplicationName () + "_Poshuku");
@@ -545,7 +543,6 @@ void Core::saveSession ()
 	for (widgets_t::const_iterator i = Widgets_.begin (),
 			end = Widgets_.end (); i != end; ++i)
 	{
-		qDebug () << (*i)->GetView ()->title ();
 		settings.setArrayIndex (pos++);
 		settings.setValue ("Title", (*i)->GetView ()->title ());
 		settings.setValue ("URL", (*i)->GetView ()->url ().toString ());
