@@ -2,6 +2,23 @@
 #define IMULTITABS_H
 #include <QtPlugin>
 
+/** @brief Interface for a single tab in a multitab plugin.
+ *
+ * Provides means to communicate with the single tab in a plugin.
+ */
+class IMultiTabsWidget
+{
+public:
+	virtual ~IMultiTabsWidget () {}
+
+	/** @brief Requests to remove the tab.
+	 *
+	 * This is usually called when a user has requested to close the tab
+	 * via LeechCraft's UI. For example, clicking the "x" on the tab.
+	 */
+	virtual void Remove () = 0;
+};
+
 /** @brief Interface for plugins having (and opening/closing) multiple
  * tabs.
  *
@@ -32,6 +49,7 @@ public:
 	virtual ~IMultiTabs () {}
 };
 
+Q_DECLARE_INTERFACE (IMultiTabsWidget, "org.Deviant.LeechCraft.IMultiTabsWidget/1.0");
 Q_DECLARE_INTERFACE (IMultiTabs, "org.Deviant.LeechCraft.IMultiTabs/1.0");
 
 #endif
