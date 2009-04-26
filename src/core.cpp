@@ -593,9 +593,11 @@ void LeechCraft::Core::handleProxySettings () const
 	QNetworkProxy::setApplicationProxy (pr);
 	NetworkAccessManager_->setProxy (pr);
 
-	static_cast<QNetworkDiskCache*> (NetworkAccessManager_->cache ())->
-		setMaximumCacheSize (XmlSettingsManager::Instance ()->
-				property ("CacheSize").toInt () * 1048576);
+	QAbstractNetworkCache *cache = NetworkAccessManager_->cache ();
+	if (cache)
+		static_cast<QNetworkDiskCache*> (cache)->
+			setMaximumCacheSize (XmlSettingsManager::Instance ()->
+					property ("CacheSize").toInt () * 1048576);
 }
 
 namespace
