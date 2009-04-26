@@ -1,5 +1,5 @@
-#ifndef IEMBEDTAB_H
-#define IEMBEDTAB_H
+#ifndef INTERFACES_IEMBEDTAB_H
+#define INTERFACES_IEMBEDTAB_H
 #include <QtPlugin>
 
 class QWidget;

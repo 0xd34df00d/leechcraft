@@ -1,5 +1,5 @@
-#ifndef STRUCTURES_H
-#define STRUCTURES_H
+#ifndef INTERFACES_STRUCTURES_H
+#define INTERFACES_STRUCTURES_H
 #include <QMetaType>
 #include <QVariant>
 

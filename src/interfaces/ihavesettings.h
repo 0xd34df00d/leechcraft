@@ -1,5 +1,5 @@
-#ifndef IHAVESETTINGS_H
-#define IHAVESETTINGS_H
+#ifndef INTERFACES_IHAVESETTINGS_H
+#define INTERFACES_IHAVESETTINGS_H
 #include <boost/shared_ptr.hpp>
 #include <QtPlugin>
 

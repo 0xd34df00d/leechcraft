@@ -1,5 +1,5 @@
-#ifndef IFINDER_H
-#define IFINDER_H
+#ifndef INTERFACES_IFINDER_H
+#define INTERFACES_IFINDER_H
 #include <boost/shared_ptr.hpp>
 #include <QStringList>
 #include <QMap>

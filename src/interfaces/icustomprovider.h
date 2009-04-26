@@ -1,5 +1,5 @@
-#ifndef ICUSTOMPROVIDER_H
-#define ICUSTOMPROVIDER_H
+#ifndef INTERFACES_ICUSTOMPROVIDER_H
+#define INTERFACES_ICUSTOMPROVIDER_H
 #include <QString>
 
 /** @brief Interface for plugins providing custom facilities.

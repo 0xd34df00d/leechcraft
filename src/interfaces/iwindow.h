@@ -1,5 +1,5 @@
-#ifndef IWINDOW_H
-#define IWINDOW_H
+#ifndef INTERFACES_IWINDOW_H
+#define INTERFACES_IWINDOW_H
 #include <QWidget>
 #include <QtPlugin>
 

@@ -1,5 +1,5 @@
-#ifndef ITAGGABLEJOBS_H
-#define ITAGGABLEJOBS_H
+#ifndef INTERFACES_ITAGGABLEJOBS_H
+#define INTERFACES_ITAGGABLEJOBS_H
 #include <QStringList>
 #include <QtPlugin>
 

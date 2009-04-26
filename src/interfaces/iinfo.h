@@ -1,5 +1,5 @@
-#ifndef IINFO_H
-#define IINFO_H
+#ifndef INTERFACES_IINFO_H
+#define INTERFACES_IINFO_H
 #include <QString>
 #include <QStringList>
 #include <QIcon>

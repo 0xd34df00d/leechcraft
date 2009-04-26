@@ -1,5 +1,5 @@
-#ifndef IIMPORTEXPORT_H
-#define IIMPORTEXPORT_H
+#ifndef INTERFACES_IIMPORTEXPORT_H
+#define INTERFACES_IIMPORTEXPORT_H
 #include <QByteArray>
 #include <QtPlugin>
 

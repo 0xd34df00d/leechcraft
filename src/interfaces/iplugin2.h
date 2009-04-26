@@ -1,5 +1,5 @@
-#ifndef IPLUGIN2_H
-#define IPLUGIN2_H
+#ifndef INTERFACES_IPLUGIN2_H
+#define INTERFACES_IPLUGIN2_H
 #include <QtPlugin>
 #include <QByteArray>
 

@@ -1,5 +1,5 @@
-#ifndef IHAVESHORTCUTS_H
-#define IHAVESHORTCUTS_H
+#ifndef INTERFACES_IHAVESHORTCUTS_H
+#define INTERFACES_IHAVESHORTCUTS_H
 #include <QtPlugin>
 #include <QMultiMap>
 #include <QString>

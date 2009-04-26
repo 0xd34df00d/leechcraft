@@ -1,5 +1,5 @@
-#ifndef IDOWNLOAD_H
-#define IDOWNLOAD_H
+#ifndef INTERFACES_IDOWNLOAD_H
+#define INTERFACES_IDOWNLOAD_H
 #include <QByteArray>
 #include <QtPlugin>
 #include "structures.h"

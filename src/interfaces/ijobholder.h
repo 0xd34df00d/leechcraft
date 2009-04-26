@@ -1,5 +1,5 @@
-#ifndef IJOBHOLDER_H
-#define IJOBHOLDER_H
+#ifndef INTERFACES_IJOBHOLDER_H
+#define INTERFACES_IJOBHOLDER_H
 #include <QtPlugin>
 
 class QModelIndex;

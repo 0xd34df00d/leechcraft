@@ -1,5 +1,5 @@
-#ifndef IWEBBROWSER_H
-#define IWEBBROWSER_H
+#ifndef INTERFACES_IWEBBROWSER_H
+#define INTERFACES_IWEBBROWSER_H
 #include <QString>
 #include <QWidget>
 #include <QtPlugin>

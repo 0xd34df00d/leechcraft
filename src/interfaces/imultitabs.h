@@ -1,5 +1,5 @@
-#ifndef IMULTITABS_H
-#define IMULTITABS_H
+#ifndef INTERFACES_IMULTITABS_H
+#define INTERFACES_IMULTITABS_H
 #include <QtPlugin>
 
 /** @brief Interface for a single tab in a multitab plugin.

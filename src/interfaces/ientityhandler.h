@@ -1,5 +1,5 @@
-#ifndef IENTITYHANDLER_H
-#define IENTITYHANDLER_H
+#ifndef INTERFACES_IENTITYHANDLER_H
+#define INTERFACES_IENTITYHANDLER_H
 #include <QByteArray>
 #include <QtPlugin>
 #include "structures.h"

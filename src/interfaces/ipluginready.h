@@ -1,5 +1,5 @@
-#ifndef IPLUGINREADY_H
-#define IPLUGINREADY_H
+#ifndef INTERFACES_IPLUGINREADY_H
+#define INTERFACES_IPLUGINREADY_H
 #include <QtPlugin>
 
 class IPluginReady
