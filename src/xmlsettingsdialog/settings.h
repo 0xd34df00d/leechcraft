@@ -10,8 +10,8 @@
  *                                                                         *
  ***************************************************************************
 */
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#ifndef XMLSETTINGSDIALOG_SETTINGS_H
+#define XMLSETTINGSDIALOG_SETTINGS_H
 #include <QObject>
 #include <QSettings>
 

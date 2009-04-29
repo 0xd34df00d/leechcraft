@@ -10,8 +10,8 @@
  *                                                                         *
  ***************************************************************************
 */
-#ifndef RADIOGROUP_H
-#define RADIOGROUP_H
+#ifndef XMLSETTINGSDIALOG_RADIOGROUP_H
+#define XMLSETTINGSDIALOG_RADIOGROUP_H
 #include <QWidget>
 
 class QButtonGroup;

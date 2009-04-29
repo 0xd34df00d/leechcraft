@@ -10,8 +10,8 @@
  *                                                                         *
  ***************************************************************************
 */
-#ifndef BASESETTINGSMANAGER_H
-#define BASESETTINGSMANAGER_H
+#ifndef XMLSETTINGSDIALOG_BASESETTINGSMANAGER_H
+#define XMLSETTINGSDIALOG_BASESETTINGSMANAGER_H
 #include <QMap>
 #include <QPair>
 #include <QObject>
@@ -31,7 +31,7 @@ namespace LeechCraft
 		 * Facilitates creation of settings managers due to providing some
 		 * frequently used features.
 		 */
-		class LEECHCRAFT_API BaseSettingsManager : public QObject
+		class XMLSETTINGSMANAGER_API BaseSettingsManager : public QObject
 		{
 			Q_OBJECT
 

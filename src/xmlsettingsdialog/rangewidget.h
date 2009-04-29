@@ -10,8 +10,8 @@
  *                                                                         *
  ***************************************************************************
 */
-#ifndef RANGEWIDGET_H
-#define RANGEWIDGET_h
+#ifndef XMLSETTINGSDIALOG_RANGEWIDGET_H
+#define XMLSETTINGSDIALOG_RANGEWIDGET_h
 #include <QWidget>
 
 class QSpinBox;

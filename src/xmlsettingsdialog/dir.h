@@ -10,8 +10,8 @@
  *                                                                         *
  ***************************************************************************
 */
-#ifndef DIR_H
-#define DIR_H
+#ifndef XMLSETTINGSDIALOG_DIR_H
+#define XMLSETTINGSDIALOG_DIR_H
 #include <memory>
 #include <QObject>
 #include <QMetaType>

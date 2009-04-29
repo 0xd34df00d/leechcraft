@@ -10,8 +10,8 @@
  *                                                                         *
  ***************************************************************************
 */
-#ifndef TYPEREGISTER_H
-#define TYPEREGISTER_H
+#ifndef XMLSETTINGSDIALOG_TYPEREGISTER_H
+#define XMLSETTINGSDIALOG_TYPEREGISTER_H
 
 class QScriptValue;
 class QScriptEngine;

@@ -10,8 +10,8 @@
  *                                                                         *
  ***************************************************************************
 */
-#ifndef BYTEARRAY_H
-#define BYTEARRAY_H
+#ifndef XMLSETTINGSDIALOG_BYTEARRAY_H
+#define XMLSETTINGSDIALOG_BYTEARRAY_H
 #include <memory>
 #include <QObject>
 #include <QByteArray>

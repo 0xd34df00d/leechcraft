@@ -10,8 +10,8 @@
  *                                                                         *
  ***************************************************************************
 */
-#ifndef FILE_H
-#define FILE_H
+#ifndef XMLSETTINGSDIALOG_FILE_H
+#define XMLSETTINGSDIALOG_FILE_H
 #include <memory>
 #include <QScriptEngine>
 #include <QFile>

@@ -10,8 +10,8 @@
  *                                                                         *
  ***************************************************************************
 */
-#ifndef XMLSETTINGSDIALOG_H
-#define XMLSETTINGSDIALOG_H
+#ifndef XMLSETTINGSDIALOG_XMLSETTINGSDIALOG_H
+#define XMLSETTINGSDIALOG_XMLSETTINGSDIALOG_H
 #include <QWidget>
 #include <QString>
 #include <QMap>
@@ -49,9 +49,9 @@ namespace LeechCraft
 			};
 			QList<QWidget*> Customs_;
 		public:
-			LEECHCRAFT_API XmlSettingsDialog ();
-			LEECHCRAFT_API virtual ~XmlSettingsDialog ();
-			LEECHCRAFT_API void RegisterObject (QObject*, const QString&);
+			XMLSETTINGSMANAGER_API XmlSettingsDialog ();
+			XMLSETTINGSMANAGER_API virtual ~XmlSettingsDialog ();
+			XMLSETTINGSMANAGER_API void RegisterObject (QObject*, const QString&);
 
 			/** @brief Returns the current XML.
 			 *
@@ -60,7 +60,7 @@ namespace LeechCraft
 			 *
 			 * @return String with the current XML.
 			 */
-			LEECHCRAFT_API QString GetXml () const;
+			XMLSETTINGSMANAGER_API QString GetXml () const;
 
 			/** @brief Sets the settings to XML's ones.
 			 *
@@ -68,7 +68,7 @@ namespace LeechCraft
 			 *
 			 * @param[in] xml The XML to take data from.
 			 */
-			LEECHCRAFT_API void MergeXml (const QByteArray& xml);
+			XMLSETTINGSMANAGER_API void MergeXml (const QByteArray& xml);
 
 			/** @brief Sets custom widget mentioned in the XML.
 			 *
@@ -94,7 +94,7 @@ namespace LeechCraft
 			 * @exception std::runtime_error If there is no or more than
 			 * one name.
 			 */
-			LEECHCRAFT_API void SetCustomWidget (const QString& name,
+			XMLSETTINGSMANAGER_API void SetCustomWidget (const QString& name,
 					QWidget *widget);
 		private:
 			void HandleDeclaration (const QDomElement&);
@@ -127,7 +127,7 @@ namespace LeechCraft
 			void updatePreferences ();
 			void handlePushButtonReleased ();
 		signals:
-			LEECHCRAFT_API void pushButtonClicked (const QString&);
+			XMLSETTINGSMANAGER_API void pushButtonClicked (const QString&);
 		};
 	};
 };

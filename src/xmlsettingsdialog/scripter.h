@@ -10,8 +10,8 @@
  *                                                                         *
  ***************************************************************************
 */
-#ifndef SCRIPTER_H
-#define SCRIPTER_H
+#ifndef XMLSETTINGSDIALOG_SCRIPTER_H
+#define XMLSETTINGSDIALOG_SCRIPTER_H
 #include <memory>
 #include <QVariant>
 #include <QDomElement>

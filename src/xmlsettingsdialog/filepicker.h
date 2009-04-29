@@ -10,8 +10,8 @@
  *                                                                         *
  ***************************************************************************
 */
-#ifndef FILEPICKER_H
-#define FILEPICKER_H
+#ifndef XMLSETTINGSDIALOG_FILEPICKER_H
+#define XMLSETTINGSDIALOG_FILEPICKER_H
 #include <QWidget>
 
 class QLineEdit;
