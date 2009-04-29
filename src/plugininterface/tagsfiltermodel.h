@@ -1,5 +1,5 @@
-#ifndef TAGSFILTERMODEL_H
-#define TAGSFILTERMODEL_H
+#ifndef PLUGININTERFACE_TAGSFILTERMODEL_H
+#define PLUGININTERFACE_TAGSFILTERMODEL_H
 #include <QSortFilterProxyModel>
 #include "config.h"
 
@@ -7,7 +7,7 @@ namespace LeechCraft
 {
 	namespace Util
 	{
-		class LEECHCRAFT_API TagsFilterModel : public QSortFilterProxyModel
+		class PLUGININTERFACE_API TagsFilterModel : public QSortFilterProxyModel
 		{
 			Q_OBJECT
 

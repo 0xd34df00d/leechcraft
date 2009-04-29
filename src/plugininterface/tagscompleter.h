@@ -1,5 +1,5 @@
-#ifndef TAGSCOMPLETER_H
-#define TAGSCOMPLETER_H
+#ifndef PLUGININTERFACE_TAGSCOMPLETER_H
+#define PLUGININTERFACE_TAGSCOMPLETER_H
 #include <QCompleter>
 #include "config.h"
 
@@ -30,7 +30,7 @@ namespace LeechCraft
 			 * completion.
 			 * @param[in] parent Parent object.
 			 */
-			LEECHCRAFT_API TagsCompleter (TagsLineEdit *line,
+			PLUGININTERFACE_API TagsCompleter (TagsLineEdit *line,
 					QObject *parent = 0);
 
 			/** @brief Path splitter override.
@@ -41,7 +41,7 @@ namespace LeechCraft
 			 * @param[in] path The tags sequence to split.
 			 * @return Splitted sequence.
 			 */
-			LEECHCRAFT_API virtual QStringList splitPath (const QString& path) const;
+			PLUGININTERFACE_API virtual QStringList splitPath (const QString& path) const;
 		};
 	};
 };

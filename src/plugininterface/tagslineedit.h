@@ -1,5 +1,5 @@
-#ifndef TAGSLINEEDIT_H
-#define TAGSLINEEDIT_H
+#ifndef PLUGININTERFACE_TAGSLINEEDIT_H
+#define PLUGININTERFACE_TAGSLINEEDIT_H
 #include <memory>
 #include <QLineEdit>
 #include "config.h"
@@ -33,7 +33,7 @@ namespace LeechCraft
 			 *
 			 * @param[in] parent Parent widget.
 			 */
-			LEECHCRAFT_API TagsLineEdit (QWidget *parent);
+			PLUGININTERFACE_API TagsLineEdit (QWidget *parent);
 			/** @brief Adds the selector widget to the line edit.
 			 *
 			 * Because this function uses the completion model, it should be
@@ -41,7 +41,7 @@ namespace LeechCraft
 			 *
 			 * @sa TagsCompleter
 			 */
-			LEECHCRAFT_API void AddSelector ();
+			PLUGININTERFACE_API void AddSelector ();
 		public slots:
 			/** @brief Completes the string.
 			 *
@@ -50,7 +50,7 @@ namespace LeechCraft
 			 *
 			 * @param[in] string String with completion.
 			 */
-			LEECHCRAFT_API void insertTag (const QString& string);
+			PLUGININTERFACE_API void insertTag (const QString& string);
 		private slots:
 			void handleTagsUpdated (const QStringList&);
 			void handleSelectionChanged (const QStringList&);

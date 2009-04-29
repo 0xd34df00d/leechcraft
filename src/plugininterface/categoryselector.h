@@ -1,5 +1,5 @@
-#ifndef CATEGORYSELECTOR_H
-#define CATEGORYSELECTOR_H
+#ifndef PLUGININTERFACE_CATEGORYSELECTOR_H
+#define PLUGININTERFACE_CATEGORYSELECTOR_H
 #include <QWidget>
 #include "config.h"
 
@@ -30,7 +30,7 @@ namespace LeechCraft
 		 * slots selectAll() and selectNone() which could be used to mark all
 		 * and no elements in the list respectively.
 		 */
-		class LEECHCRAFT_API CategorySelector : public QWidget
+		class PLUGININTERFACE_API CategorySelector : public QWidget
 		{
 			Q_OBJECT
 		public:

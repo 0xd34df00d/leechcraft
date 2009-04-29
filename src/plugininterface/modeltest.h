@@ -24,8 +24,8 @@
 /** Adapted to LeechCraft by 0xd34df00d.
  */
 
-#ifndef MODELTEST_H
-#define MODELTEST_H
+#ifndef PLUGININTERFACE_MODELTEST_H
+#define PLUGININTERFACE_MODELTEST_H
 
 #include <QtCore/QObject>
 #include <QtCore/QAbstractItemModel>
@@ -36,7 +36,7 @@ namespace LeechCraft
 {
 	namespace Util
 	{
-		class LEECHCRAFT_API ModelTest : public QObject
+		class PLUGININTERFACE_API ModelTest : public QObject
 		{
 			Q_OBJECT
 

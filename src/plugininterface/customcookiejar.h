@@ -1,5 +1,5 @@
-#ifndef CUSTOMCOOKIEJAR_H
-#define CUSTOMCOOKIEJAR_H
+#ifndef PLUGININTERFACE_CUSTOMCOOKIEJAR_H
+#define PLUGININTERFACE_CUSTOMCOOKIEJAR_H
 #include <QNetworkCookieJar>
 #include <QByteArray>
 #include "config.h"
@@ -8,7 +8,7 @@ namespace LeechCraft
 {
 	namespace Util
 	{
-		class LEECHCRAFT_API CustomCookieJar : public QNetworkCookieJar
+		class PLUGININTERFACE_API CustomCookieJar : public QNetworkCookieJar
 		{
 			Q_OBJECT
 		public:

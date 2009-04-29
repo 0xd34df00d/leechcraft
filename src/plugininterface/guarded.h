@@ -1,5 +1,5 @@
-#ifndef GUARDED_H
-#define GUARDED_H
+#ifndef PLUGININTERFACE_GUARDED_H
+#define PLUGININTERFACE_GUARDED_H
 #include <QReadWriteLock>
 #include <QVariant>
 

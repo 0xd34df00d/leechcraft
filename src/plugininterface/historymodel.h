@@ -1,5 +1,5 @@
-#ifndef LEECHCRAFT_HISTORYMODEL_H
-#define LEECHCRAFT_HISTORYMODEL_H
+#ifndef PLUGININTERFACE_LEECHCRAFT_HISTORYMODEL_H
+#define PLUGININTERFACE_LEECHCRAFT_HISTORYMODEL_H
 #include <QAbstractItemModel>
 #include <QStringList>
 #include "config.h"
@@ -11,7 +11,7 @@ namespace LeechCraft
 		/** The base class for all history models in IJobHolder
 		 * implementators. Reimplement RemoveItem() in the subclasses.
 		 */
-		class LEECHCRAFT_API HistoryModel : public QAbstractItemModel
+		class PLUGININTERFACE_API HistoryModel : public QAbstractItemModel
 		{
 			Q_OBJECT
 

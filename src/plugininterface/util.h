@@ -1,5 +1,5 @@
-#ifndef LEECHCRAFT_UTIL_UTIL_H
-#define LEECHCRAFT_UTIL_UTIL_H
+#ifndef PLUGININTERFACE_UTIL_H
+#define PLUGININTERFACE_UTIL_H
 #include "config.h"
 #include <QString>
 #include <QDir>
@@ -48,7 +48,7 @@ namespace LeechCraft
 		 *
 		 * @param[in] base Base name of the translation file.
 		 */
-		LEECHCRAFT_API QTranslator* InstallTranslator (const QString& base);
+		PLUGININTERFACE_API QTranslator* InstallTranslator (const QString& base);
 
 		/** @brief Creates a path if it isn't existing.
 		 *
@@ -61,7 +61,7 @@ namespace LeechCraft
 		 * @exception std::runtime_error Throws if the path could not be
 		 * created.
 		 */
-		LEECHCRAFT_API QDir CreateIfNotExists (const QString& path);
+		PLUGININTERFACE_API QDir CreateIfNotExists (const QString& path);
 
 		/** @brief Returns a temporary filename.
 		 *
@@ -71,7 +71,7 @@ namespace LeechCraft
 		 * @param[in] pattern Pattern of the filename.
 		 * @return The filename.
 		 */
-		LEECHCRAFT_API QString GetTemporaryName (const QString& pattern = QString ("lc_temp.XXXXXX"));
+		PLUGININTERFACE_API QString GetTemporaryName (const QString& pattern = QString ("lc_temp.XXXXXX"));
 
 		template<typename TagGetter, typename TagSetter>
 		QDomElement GetElementForTags (const QStringList& tags,

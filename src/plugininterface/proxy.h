@@ -1,5 +1,5 @@
-#ifndef PROXY_H
-#define PROXY_H
+#ifndef PLUGININTERFACE_PROXY_H
+#define PLUGININTERFACE_PROXY_H
 #include <QObject>
 #include <QStringList>
 #include <QTime>
@@ -26,12 +26,12 @@ namespace LeechCraft
 			static Proxy *Instance_;
 			QStringList Strings_;
 		public:
-			LEECHCRAFT_API static Proxy *Instance ();
-			LEECHCRAFT_API void SetStrings (const QStringList&);
-			LEECHCRAFT_API QString GetApplicationName () const;
-			LEECHCRAFT_API QString GetOrganizationName () const;
-			LEECHCRAFT_API QString MakePrettySize (qint64) const;
-			LEECHCRAFT_API QString MakeTimeFromLong (ulong) const;
+			PLUGININTERFACE_API static Proxy *Instance ();
+			PLUGININTERFACE_API void SetStrings (const QStringList&);
+			PLUGININTERFACE_API QString GetApplicationName () const;
+			PLUGININTERFACE_API QString GetOrganizationName () const;
+			PLUGININTERFACE_API QString MakePrettySize (qint64) const;
+			PLUGININTERFACE_API QString MakeTimeFromLong (ulong) const;
 		};
 	};
 };

@@ -1,5 +1,5 @@
-#ifndef DBLOCK_H
-#define DBLOCK_H
+#ifndef PLUGININTERFACE_DBLOCK_H
+#define PLUGININTERFACE_DBLOCK_H
 #include "config.h"
 
 class QSqlError;
@@ -44,13 +44,13 @@ namespace LeechCraft
 			 * @param[in] database Non-const reference to the database to be
 			 * guarded.
 			 */
-			LEECHCRAFT_API DBLock (QSqlDatabase& database);
+			PLUGININTERFACE_API DBLock (QSqlDatabase& database);
 			/** @brief Destructor.
 			 *
 			 * Ends the transaction if the lock is in a correct state. If Good()
 			 * was called, it commits the transaction, otherwise rolls back.
 			 */
-			LEECHCRAFT_API ~DBLock ();
+			PLUGININTERFACE_API ~DBLock ();
 
 			/** @brief Initializes the transaction.
 			 *
@@ -59,25 +59,25 @@ namespace LeechCraft
 			 *
 			 * @throw std::runtime_error
 			 */
-			LEECHCRAFT_API void Init ();
+			PLUGININTERFACE_API void Init ();
 			/** @brief Notifies the lock about successful higher-level
 			 * operations.
 			 *
 			 * Calling this function makes the lock to commit the transaction
 			 * upon destruction instead of rolling back.
 			 */
-			LEECHCRAFT_API void Good ();
+			PLUGININTERFACE_API void Good ();
 
 			/** @brief Dumps the error to the qWarning() stream.
 			 *
 			 * @param[in] error The error class.
 			 */
-			LEECHCRAFT_API static void DumpError (const QSqlError& error);
+			PLUGININTERFACE_API static void DumpError (const QSqlError& error);
 			/** @brief Dumps the error to the qWarning() stream.
 			 *
 			 * @param[in] query The query that should be dumped.
 			 */
-			LEECHCRAFT_API static void DumpError (const QSqlQuery& query);
+			PLUGININTERFACE_API static void DumpError (const QSqlQuery& query);
 		};
 	};
 };

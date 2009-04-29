@@ -1,5 +1,5 @@
-#ifndef MERGEMODEL_H
-#define MERGEMODEL_H
+#ifndef PLUGININTERFACE_MERGEMODEL_H
+#define PLUGININTERFACE_MERGEMODEL_H
 #include <deque>
 #include <QAbstractProxyModel>
 #include <QStringList>
@@ -20,7 +20,7 @@ namespace LeechCraft
 		 * Seems like it would never support it at least someone would
 		 * try to implement it.
 		 */
-		class LEECHCRAFT_API MergeModel : public QAbstractProxyModel
+		class PLUGININTERFACE_API MergeModel : public QAbstractProxyModel
 		{
 			Q_OBJECT
 		protected:

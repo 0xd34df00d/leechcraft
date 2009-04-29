@@ -1,5 +1,5 @@
-#ifndef TAGSCOMPLETIONMODEL_H
-#define TAGSCOMPLETIONMODEL_H
+#ifndef PLUGININTERFACE_TAGSCOMPLETIONMODEL_H
+#define PLUGININTERFACE_TAGSCOMPLETIONMODEL_H
 #include <QStringListModel>
 #include <QStringList>
 #include "config.h"
@@ -8,7 +8,7 @@ namespace LeechCraft
 {
 	namespace Util
 	{
-		class LEECHCRAFT_API TagsCompletionModel : public QStringListModel
+		class PLUGININTERFACE_API TagsCompletionModel : public QStringListModel
 		{
 			Q_OBJECT
 		public:

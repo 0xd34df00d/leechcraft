@@ -13,7 +13,7 @@ namespace LeechCraft
 {
 	namespace Util
 	{
-		class LEECHCRAFT_API BackendSelector : public QWidget
+		class PLUGININTERFACE_API BackendSelector : public QWidget
 		{
 			Q_OBJECT
 
