@@ -41,6 +41,15 @@ Application::Application (int& argc, char **argv)
 			<< "-bt           Print backtraces into logs (makes sense only if "
 			<< std::endl
 			<< "              compiled with _GNU_SOURCE defined)." << std::endl;
+		std::cout
+			<< "-clrsckt      Clear stalled socket if previous LeechCraft instance"
+			<< std::endl
+			<< "              terminated not cleanly and there are stale sockets"
+			<< std::endl
+			<< "              that LeechCraft is unable to detect as stale (but"
+			<< std::endl
+			<< "              you are sure they are)."
+			<< std::endl;
 		std::cout << "-help         Show this help message." << std::endl;
 		std::cout << std::endl;
 		std::cout << "Installed plugins could have their own command line options."
@@ -53,6 +62,9 @@ Application::Application (int& argc, char **argv)
 			<< std::endl;
 		std::exit (EHelpRequested);
 	}
+
+	if (Arguments_.contains ("-clrsckt"))
+		QLocalServer::removeServer (GetSocketName ());
 
 	// Sanity checks
 	if (IsAlreadyRunning ())
@@ -128,11 +140,11 @@ bool Application::notify (QObject *obj, QEvent *event)
 	}
 	catch (const std::exception& e)
 	{
-		qWarning () << "GLOBALLY" << e.what () << "for" << obj << event << event->type ();
+		qWarning () << Q_FUNC_INFO << e.what () << "for" << obj << event << event->type ();
 	}
 	catch (...)
 	{
-		qWarning () << "GLOBALLY caught something" << obj << event << event->type ();
+		qWarning () << Q_FUNC_INFO << obj << event << event->type ();
 	}
 	return false;
 }
