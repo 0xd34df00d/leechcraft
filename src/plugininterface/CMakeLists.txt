@@ -36,6 +36,7 @@ SET (HEADERS
 	customcookiejar.h
 	modeltest.h
 	backendselector.h
+	../xmlsettingsdialog/basesettingsmanager.h
 	)
 SET (FORMS
 	backendselector.ui
