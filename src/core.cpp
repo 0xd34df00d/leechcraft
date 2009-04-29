@@ -863,7 +863,7 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 			QString dir = QFileDialog::getExistingDirectory (0,
 					tr ("Select save path"),
 					suggestion,
-					!QFileDialog::ShowDirsOnly);
+					QFileDialog::Options (~QFileDialog::ShowDirsOnly));
 
 			if (dir.isEmpty ())
 				return false;
