@@ -56,5 +56,6 @@ ADD_LIBRARY (plugininterface SHARED
 	)
 TARGET_LINK_LIBRARIES (plugininterface
 	${QT_LIBRARIES}
+	xmlsettingsdialog
 	)
 INSTALL (TARGETS plugininterface DESTINATION lib)
