@@ -211,7 +211,6 @@ void Aggregator::Release ()
     Impl_->TrayIcon_->hide ();
 	delete Impl_;
     Core::Instance ().Release ();
-	Impl_->XmlSettingsDialog_.reset ();
 }
 
 QString Aggregator::GetName () const
