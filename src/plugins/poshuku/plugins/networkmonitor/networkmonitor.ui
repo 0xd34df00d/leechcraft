@@ -15,6 +15,16 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
    <item>
+    <widget class="QCheckBox" name="ClearFinished_">
+     <property name="text">
+      <string>Clear finished items</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QLabel" name="label">
@@ -40,7 +50,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QTreeView" name="RequestHeadersVeiw_"/>
+        <widget class="QTreeView" name="RequestHeadersView_"/>
        </item>
       </layout>
      </item>
@@ -54,7 +64,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QTreeView" name="ResponseHeadersView_"/>
+        <widget class="QTreeView" name="ReplyHeadersView_"/>
        </item>
       </layout>
      </item>
@@ -81,8 +91,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>222</x>
+     <y>448</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -97,8 +107,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>290</x>
+     <y>454</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>

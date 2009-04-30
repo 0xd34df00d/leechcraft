@@ -3,6 +3,7 @@
 #include <QMenu>
 #include <interfaces/iproxyobject.h>
 #include "requestmodel.h"
+#include "headermodel.h"
 
 using namespace LeechCraft::Poshuku;
 using namespace LeechCraft::Poshuku::Plugins;
@@ -11,9 +12,21 @@ using namespace LeechCraft::Poshuku::Plugins::NetworkMonitor;
 void Plugin::Init ()
 {
 	Ui_.setupUi (this);
-	RequestModel *model;
-	model = new RequestModel ();
-	Ui_.RequestsView_->setModel (model);
+
+	Model_ = new RequestModel (this);
+	Ui_.RequestsView_->setModel (Model_);
+	connect (Ui_.RequestsView_->selectionModel (),
+			SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
+			Model_,
+			SLOT (handleCurrentChanged (const QModelIndex&)));
+
+	Ui_.RequestHeadersView_->setModel (Model_->GetRequestHeadersModel ());
+	Ui_.ReplyHeadersView_->setModel (Model_->GetReplyHeadersModel ());
+
+	connect (Ui_.ClearFinished_,
+			SIGNAL (toggled (bool)),
+			Model_,
+			SLOT (setClear (bool)));
 }
 
 void Plugin::Release ()

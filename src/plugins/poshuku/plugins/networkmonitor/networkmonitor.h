@@ -16,7 +16,7 @@ namespace LeechCraft
 		{
 			namespace NetworkMonitor
 			{
-				class Settings;
+				class RequestModel;
 
 				class Plugin : public QDialog
 							 , public IInfo
@@ -28,6 +28,7 @@ namespace LeechCraft
 
 					Ui::NetworkMonitor Ui_;
 					IProxyObject *Object_;
+					RequestModel *Model_;
 				public:
 					void Init ();
 					void Release ();
