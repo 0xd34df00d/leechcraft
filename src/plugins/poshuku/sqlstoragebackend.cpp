@@ -190,30 +190,6 @@ void SQLStorageBackend::Prepare ()
 	FavoritesRemover_ = QSqlQuery (DB_);
 	FavoritesRemover_.prepare ("DELETE FROM favorites "
 			"WHERE url = :url");
-
-	ThumbnailsGetter_ = QSqlQuery (DB_);
-	ThumbnailsGetter_.prepare ("SELECT "
-			"shot_date, "
-			"res_x, "
-			"res_y, "
-			"thumbnail "
-			"FROM thumbnails "
-			"WHERE url = :url");
-
-	ThumbnailsSetter_ = QSqlQuery (DB_);
-	ThumbnailsSetter_.prepare ("INSERT OR REPLACE INTO thumbnails ("
-			"url, "
-			"shot_date, "
-			"res_x, "
-			"res_y, "
-			"thumbnail"
-			") VALUES ("
-			":url, "
-			":shot_date, "
-			":res_x, "
-			":res_y, "
-			":thumbnail"
-			")");
 }
 
 void SQLStorageBackend::LoadHistory (history_items_t& items) const
@@ -357,41 +333,6 @@ void SQLStorageBackend::UpdateFavorites (const FavoritesModel::FavoritesItem& it
 	emit updated (item);
 }
 
-void SQLStorageBackend::GetThumbnail (SpeedDialProvider::Item& item) const
-{
-	ThumbnailsGetter_.bindValue (":url", item.URL_);
-	if (!ThumbnailsGetter_.exec ())
-	{
-		LeechCraft::Util::DBLock::DumpError (ThumbnailsGetter_);
-		return;
-	}
-
-	if (ThumbnailsGetter_.next ())
-	{
-		item.ShotDate_ = ThumbnailsGetter_.value (0).toDateTime ();
-		item.ResX_ = ThumbnailsGetter_.value (1).toInt ();
-		item.ResY_ = ThumbnailsGetter_.value (2).toInt ();
-		item.Thumb_ = ThumbnailsGetter_.value (3).toByteArray ();
-	}
-
-	ThumbnailsGetter_.finish ();
-}
-
-void SQLStorageBackend::SetThumbnail (const SpeedDialProvider::Item& item)
-{
-	ThumbnailsSetter_.bindValue (":url", item.URL_);
-	ThumbnailsSetter_.bindValue (":shot_date", item.ShotDate_);
-	ThumbnailsSetter_.bindValue (":res_x", item.ResX_);
-	ThumbnailsSetter_.bindValue (":res_y", item.ResY_);
-	ThumbnailsSetter_.bindValue (":thumbnail", item.Thumb_);
-
-	if (!ThumbnailsSetter_.exec ())
-	{
-		LeechCraft::Util::DBLock::DumpError (ThumbnailsSetter_);
-		return;
-	}
-}
-
 void SQLStorageBackend::InitializeTables ()
 {
 	QSqlQuery query (DB_);
@@ -458,39 +399,6 @@ void SQLStorageBackend::InitializeTables ()
 		SetSetting ("favoritesversion", "1");
 		SetSetting ("storagesettingsversion", "1");
 	}
-
-	if (!DB_.tables ().contains ("thumbnails"))
-	{
-		QString request;
-		switch (Type_)
-		{
-			case SBSQLite:
-				request = "CREATE TABLE thumbnails ("
-					"url TEXT PRIMARY KEY, "
-					"shot_date TIMESTAMP, "
-					"res_x INTEGER, "
-					"res_y INTEGER, "
-					"thumbnail BLOB"
-					");";
-				break;
-			case SBPostgres:
-				request = "CREATE TABLE thumbnails ("
-					"url TEXT PRIMARY KEY, "
-					"shot_date TIMESTAMP, "
-					"res_x INTEGER, "
-					"res_y INTEGER, "
-					"thumbnail BYTEA"
-					");";
-				break;
-		}
-		if (!query.exec (request))
-		{
-			LeechCraft::Util::DBLock::DumpError (query);
-			return;
-		}
-
-		SetSetting ("thumbnailsversion", "1");
-	}
 }
 
 void SQLStorageBackend::CheckVersions ()
@@ -511,7 +419,7 @@ QString SQLStorageBackend::GetSetting (const QString& key) const
 	}
 	
 	if (!query.next ())
-		throw std::runtime_error ("No such field");
+		return QString ();
 
 	return query.value (0).toString ();
 }

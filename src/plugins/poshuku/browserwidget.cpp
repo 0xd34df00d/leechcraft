@@ -28,7 +28,6 @@
 #include "finddialog.h"
 #include "screenshotsavedialog.h"
 #include "xmlsettingsmanager.h"
-#include "speeddialprovider.h"
 #include "sourceviewer.h"
 
 using LeechCraft::ActionInfo;

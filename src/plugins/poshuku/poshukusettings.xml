@@ -227,29 +227,5 @@
 				</item>	
 			</groupbox>
 		</tab>
-		<tab>
-			<label lang="en" value="Speed dial" />
-			<label lang="ru" value="Быстрый набор" />
-			<item type="groupbox" property="SpeedDialEnabled" default="on" checkable="true">
-				<label lang="en" value="Speed dial" />
-				<label lang="ru" value="Быстрый набор" />
-				<item type="spinbox" property="SpeedDialRows" default="3">
-					<label lang="en" value="Rows:" />
-					<label lang="ru" value="Ряды:" />
-				</item>
-				<item type="spinbox" property="SpeedDialColumns" default="3">
-					<label lang="en" value="Columns:" />
-					<label lang="ru" value="Столбцы:" />
-				</item>
-				<item type="spinbox" property="SpeedDialThumbXResolution" default="400" minimum="4" maximum="4000">
-					<label lang="en" value="Thumbnail X resolution:" />
-					<label lang="ru" value="Разрешение превьюшки по X:" />
-				</item>
-				<item type="spinbox" property="SpeedDialThumbYResolution" default="300" minimum="3" maximum="3000">
-					<label lang="en" value="Thumbnail Y resolution:" />
-					<label lang="ru" value="Разрешение превьюшки по Y:" />
-				</item>
-			</item>
-		</tab>
 	</page>
 </settings>

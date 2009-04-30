@@ -30,7 +30,6 @@ public slots:
 	void zoomReset ();
 private slots:
 	void remakeURL (const QUrl&);
-	void handleNewThumbs ();
 	void openLinkHere ();
 	void openLinkInNewTab ();
 	void saveLink ();

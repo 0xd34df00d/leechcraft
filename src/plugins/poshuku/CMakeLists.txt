@@ -28,7 +28,6 @@ SET (SRCS
 	urlcompletionmodel.cpp
 	finddialog.cpp
 	screenshotsavedialog.cpp
-	speeddialprovider.cpp
 	cookieseditdialog.cpp
 	cookieseditmodel.cpp
 	sourceviewer.cpp
@@ -59,7 +58,6 @@ SET (HEADERS
 	urlcompletionmodel.h
 	finddialog.h
 	screenshotsavedialog.h
-	speeddialprovider.h
 	cookieseditdialog.h
 	cookieseditmodel.h
 	sourceviewer.h

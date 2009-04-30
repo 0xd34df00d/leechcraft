@@ -8,7 +8,6 @@
 #include "core.h"
 #include "customwebpage.h"
 #include "browserwidget.h"
-#include "speeddialprovider.h"
 
 CustomWebView::CustomWebView (QWidget *parent)
 : QWebView (parent)
@@ -30,13 +29,6 @@ CustomWebView::CustomWebView (QWidget *parent)
 
 	CustomWebPage *page = new CustomWebPage (this);
 	setPage (page);
-
-	connect (&SpeedDialProvider::Instance (),
-			SIGNAL (newThumbAvailable ()),
-			this,
-			SLOT (handleNewThumbs ()));
-
-	setHtml (SpeedDialProvider::Instance ().GetHTML ());
 
 	connect (this,
 			SIGNAL (urlChanged (const QUrl&)),
@@ -72,10 +64,6 @@ void CustomWebView::Load (const QString& string, QString title)
 
 void CustomWebView::Load (const QUrl& url, QString title)
 {
-	disconnect (&SpeedDialProvider::Instance (),
-			SIGNAL (newThumbAvailable ()),
-			this,
-			0);
 	if (url.scheme () == "javascript")
 	{
 		QVariant result = page ()->mainFrame ()->
@@ -246,11 +234,6 @@ void CustomWebView::zoomReset ()
 void CustomWebView::remakeURL (const QUrl& url)
 {
 	emit urlChanged (url.toString ());
-}
-
-void CustomWebView::handleNewThumbs ()
-{
-	setHtml (SpeedDialProvider::Instance ().GetHTML ());
 }
 
 void CustomWebView::openLinkHere ()

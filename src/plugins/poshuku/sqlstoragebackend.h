@@ -57,25 +57,7 @@ class SQLStorageBackend : public StorageBackend
 			/** Binds:
 			 * - url
 			 */
-			FavoritesRemover_,
-			/** Binds:
-			 * - url
-			 * 
-			 * Returns:
-			 * - shot_date
-			 * - res_x
-			 * - res_y
-			 * - thumbnail
-			 */
-			ThumbnailsGetter_,
-			/** Binds:
-			 * - url
-			 * - shot_date
-			 * - res_x
-			 * - res_y
-			 * - thumbnail
-			 */
-			ThumbnailsSetter_;
+			FavoritesRemover_;
 public:
 	SQLStorageBackend (Type);
 	virtual ~SQLStorageBackend ();
@@ -91,8 +73,6 @@ public:
 	virtual void AddToFavorites (const FavoritesModel::FavoritesItem&);
 	virtual void RemoveFromFavorites (const FavoritesModel::FavoritesItem&);
 	virtual void UpdateFavorites (const FavoritesModel::FavoritesItem&);
-	virtual void GetThumbnail (SpeedDialProvider::Item&) const;
-	virtual void SetThumbnail (const SpeedDialProvider::Item&);
 private:
 	void InitializeTables ();
 	void CheckVersions ();

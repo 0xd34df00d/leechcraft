@@ -4,7 +4,6 @@
 #include <QObject>
 #include "historymodel.h"
 #include "favoritesmodel.h"
-#include "speeddialprovider.h"
 
 /** @brief Abstract base class for storage backends.
  *
@@ -102,24 +101,6 @@ public:
 	 * @param[in] item Favorites item to update.
 	 */
 	virtual void UpdateFavorites (const FavoritesModel::FavoritesItem& item) = 0;
-	/** @brief Get thumbnail of a page.
-	 *
-	 * Fills the passed SpeedDialProvider::Item with data for the page
-	 * identified by the url in the passed item, or empty item if no
-	 * such url exists.
-	 *
-	 * @param[out] item Speed dial item.
-	 */
-	virtual void GetThumbnail (SpeedDialProvider::Item& item) const = 0;
-	/** @brief Set thumbnail of a page.
-	 *
-	 * Sets a SpeedDialProvider::Item with data filled for the page
-	 * identified by the url in the passed item. If this url already
-	 * exists, it is replaced with the new data.
-	 *
-	 * @param[in] item Speed dial item.
-	 */
-	virtual void SetThumbnail (const SpeedDialProvider::Item& item) = 0;
 signals:
 	void added (const HistoryItem&);
 	void added (const FavoritesModel::FavoritesItem&);
