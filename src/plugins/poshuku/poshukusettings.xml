@@ -23,6 +23,10 @@
 				<label lang="en" value="Differ download locations by file extension" />
 				<label lang="ru" value="Различать папки для скачивания по расширению файла" />
 			</item>
+			<item type="checkbox" property="GenerateTooltips" state="on">
+				<label lang="en" value="Generate tooltips" />
+				<label lang="ru" value="Создавать образ страниц" />
+			</item>
 			<item type="lineedit" property="ExternalSchemes" default="smb nfs telnet imap pop nntp news">
 				<label lang="en" value="Open these schemes using external applications:" />
 				<label lang="ru" value="Открывать эти схемы внешними приложениями:" />

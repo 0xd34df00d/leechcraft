@@ -673,6 +673,10 @@ void BrowserWidget::handleUncloseDestroyed ()
 
 void BrowserWidget::updateTooltip ()
 {
+	if (!XmlSettingsManager::Instance ()->
+			property ("GenerateTooltips").toBool ())
+		return;
+
 	const int previewWidth = 200;
 	if (!Ui_.WebView_->size ().isValid ())
 		return;
