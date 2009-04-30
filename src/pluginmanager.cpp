@@ -560,6 +560,29 @@ void LeechCraft::PluginManager::InitializePlugins ()
 
 bool LeechCraft::PluginManager::InitializeSingle (LeechCraft::PluginManager::DepTreeItem_ptr item)
 {
+	try
+	{
+		IWantNetworkAccessManager *iwnam =
+			qobject_cast<IWantNetworkAccessManager*> (item->Plugin_);
+		if (iwnam)
+			iwnam->SetNetworkAccessManager (Core::Instance ().GetNetworkAccessManager ());
+		IHaveShortcuts *ihs = qobject_cast<IHaveShortcuts*> (item->Plugin_);
+		if (ihs)
+			ihs->SetShortcutProxy (Core::Instance ().GetShortcutProxy ());
+	}
+	catch (const std::exception& e)
+	{
+		qWarning () << Q_FUNC_INFO << 1 << e.what ();
+		Unload (Find (item));
+		return false;
+	}
+	catch (...)
+	{
+		qWarning () << Q_FUNC_INFO << 1;
+		Unload (Find (item));
+		return false;
+	}
+
 	QList<QString> keys = item->Needed_.uniqueKeys ();
 	Q_FOREACH (QString key, keys)
 	{
@@ -612,21 +635,19 @@ bool LeechCraft::PluginManager::InitializeSingle (LeechCraft::PluginManager::Dep
 
 	try
 	{
-		IWantNetworkAccessManager *iwnam =
-			qobject_cast<IWantNetworkAccessManager*> (item->Plugin_);
-		if (iwnam)
-			iwnam->SetNetworkAccessManager (Core::Instance ().GetNetworkAccessManager ());
-		IHaveShortcuts *ihs = qobject_cast<IHaveShortcuts*> (item->Plugin_);
-		if (ihs)
-			ihs->SetShortcutProxy (Core::Instance ().GetShortcutProxy ());
-
 		IInfo *ii = qobject_cast<IInfo*> (item->Plugin_);
 		ii->Init ();
 		item->Initialized_ = true;
 	}
 	catch (const std::exception& e)
 	{
-		qWarning () << Q_FUNC_INFO << e.what ();
+		qWarning () << Q_FUNC_INFO << 2 << e.what ();
+		Unload (Find (item));
+		return false;
+	}
+	catch (...)
+	{
+		qWarning () << Q_FUNC_INFO << 2;
 		Unload (Find (item));
 		return false;
 	}
