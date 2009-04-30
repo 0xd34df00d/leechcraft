@@ -9,6 +9,7 @@ class ProxyObject : public QObject
 	Q_OBJECT
 	Q_INTERFACES (LeechCraft::Poshuku::IProxyObject);
 public:
+	QMenu* GetPluginsMenu () const;
 };
 
 #endif

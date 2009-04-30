@@ -10,6 +10,7 @@
 #include <QFileInfo>
 #include <QNetworkCookieJar>
 #include <QDir>
+#include <QMenu>
 #include <QInputDialog>
 #include <QNetworkReply>
 #include <QAuthenticator>
@@ -40,6 +41,8 @@ Core::Core ()
 {
 	PluginManager_.reset (new PluginManager (this));
 	URLCompletionModel_.reset (new URLCompletionModel (this));
+
+	PluginsMenu_ = new QMenu (tr ("Plugins"));
 }
 
 Core& Core::Instance ()
@@ -333,6 +336,11 @@ void Core::Unregister (BrowserWidget *widget)
 	Widgets_.erase (pos);
 
 	saveSession ();
+}
+
+QMenu* Core::GetPluginsMenu () const
+{
+	return PluginsMenu_;
 }
 
 void Core::RestoreSession (bool ask)

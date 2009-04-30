@@ -153,6 +153,8 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	RecentlyClosed_->setEnabled (false);
 	RecentlyClosedAction_ = RecentlyClosed_->menuAction ();
 
+	moreMenu->addMenu (Core::Instance ().GetPluginsMenu ());
+
 	ExternalLinks_ = new QMenu (this);
 	ExternalLinks_->menuAction ()->setText (tr ("External links"));
 	ExternalLinks_->menuAction ()->

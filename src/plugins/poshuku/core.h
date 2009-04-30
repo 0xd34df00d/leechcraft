@@ -29,6 +29,8 @@ class Core : public QObject
 {
 	Q_OBJECT
 
+	QMenu *PluginsMenu_;
+
 	typedef std::vector<BrowserWidget*> widgets_t;
 	widgets_t Widgets_;
 
@@ -63,6 +65,7 @@ public:
 	IWebWidget* GetWidget ();
 	CustomWebView* MakeWebView (bool = false);
 	void Unregister (BrowserWidget*);
+	QMenu* GetPluginsMenu () const;
 
 	FavoritesModel* GetFavoritesModel () const;
 	HistoryModel* GetHistoryModel () const;
