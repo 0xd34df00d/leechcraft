@@ -61,7 +61,7 @@ LeechCraft::Core::Core ()
 			<< tr ("Path")
 			<< tr ("Date")))
 , RequestNormalizer_ (new RequestNormalizer (MergeModel_, HistoryMergeModel_))
-, NetworkAccessManager_ (new QNetworkAccessManager)
+, NetworkAccessManager_ (new NetworkAccessManager)
 , CookieSaveTimer_ (new QTimer ())
 , StorageBackend_ (new SQLStorageBackend ())
 {

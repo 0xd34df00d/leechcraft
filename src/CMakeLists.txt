@@ -183,6 +183,7 @@ SET (SRCS
 	shortcutmanager.cpp
 	keysequencer.cpp
 	networkdiskcache.cpp
+	networkaccessmanager.cpp
 	3dparty/qxttooltip.cpp
 	)
 SET (HEADERS
@@ -218,6 +219,7 @@ SET (HEADERS
 	shortcutmanager.h
 	keysequencer.h
 	networkdiskcache.h
+	networkaccessmanager.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/iinfo.h

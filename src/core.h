@@ -6,13 +6,13 @@
 #include <QString>
 #include <QPair>
 #include <QTimer>
-#include <QNetworkAccessManager>
 #include <interfaces/structures.h>
 #include "pluginmanager.h"
 #include "tabcontainer.h"
 #include "plugininterface/mergemodel.h"
 #include "storagebackend.h"
 #include "requestnormalizer.h"
+#include "networkaccessmanager.h"
 
 class QLocalServer;
 class QAbstractProxyModel;
