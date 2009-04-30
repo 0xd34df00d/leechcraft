@@ -1309,10 +1309,7 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 						(*position)->Items_.end (),
 						ItemComparator (*item));
 			if (ourItem == (*position)->Items_.end ())
-			{
-				qWarning () << Q_FUNC_INFO << "not found modified item";
 				continue;
-			}
 
 			if (!IsModified (*ourItem, *item))
 				continue;
