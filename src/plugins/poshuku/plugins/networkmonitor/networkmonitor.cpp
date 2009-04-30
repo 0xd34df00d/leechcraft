@@ -1,5 +1,8 @@
 #include "networkmonitor.h"
 #include <typeinfo>
+#include <QMenu>
+#include <interfaces/iproxyobject.h>
+#include "requestmodel.h"
 
 using namespace LeechCraft::Poshuku;
 using namespace LeechCraft::Poshuku::Plugins;
@@ -7,6 +10,10 @@ using namespace LeechCraft::Poshuku::Plugins::NetworkMonitor;
 
 void Plugin::Init ()
 {
+	Ui_.setupUi (this);
+	RequestModel *model;
+	model = new RequestModel ();
+	Ui_.RequestsView_->setModel (model);
 }
 
 void Plugin::Release ()
@@ -52,8 +59,18 @@ QByteArray Plugin::GetPluginClass () const
 	return QByteArray (typeid (LeechCraft::Poshuku::PluginBase).name ());
 }
 
-void Plugin::Init (IProxyObject*)
+void Plugin::Init (IProxyObject *o)
 {
+	Object_ = o;
+	o->GetPluginsMenu ()->addAction (tr ("Network monitor..."),
+			this,
+			SLOT (show ()));
+	connect (o->GetNetworkAccessManager (),
+			SIGNAL (requestCreated (QNetworkAccessManager::Operation,
+					const QNetworkRequest&, QNetworkReply*)),
+			Ui_.RequestsView_->model (),
+			SLOT (handleRequest (QNetworkAccessManager::Operation,
+					const QNetworkRequest&, QNetworkReply*)));
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_poshuku_networkmonitor, Plugin);

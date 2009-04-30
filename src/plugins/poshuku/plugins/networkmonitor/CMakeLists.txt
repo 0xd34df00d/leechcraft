@@ -2,9 +2,11 @@ INCLUDE_DIRECTORIES (${POSHUKU_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR})
 SET (NETWORKMONITOR_SRCS
 	networkmonitor.cpp
+	requestmodel.cpp
 	)
 SET (NETWORKMONITOR_HEADERS
 	networkmonitor.h
+	requestmodel.h
 	)
 SET (NETWORKMONITOR_FORMS
 	networkmonitor.ui
