@@ -5,32 +5,32 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="application.cpp" line="64"/>
+        <location filename="application.cpp" line="77"/>
         <source>Critical failure</source>
         <translation>Критическая ошибка</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="65"/>
+        <location filename="application.cpp" line="78"/>
         <source>Could not create path %1/.leechcraft</source>
         <translation>Невозможно создать путь %1/.leechcraft</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="79"/>
+        <location filename="application.cpp" line="92"/>
         <source>bytes</source>
         <translation>байт</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="80"/>
+        <location filename="application.cpp" line="93"/>
         <source>KB</source>
         <translation>Кб</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="81"/>
+        <location filename="application.cpp" line="94"/>
         <source>MB</source>
         <translation>Мб</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="82"/>
+        <location filename="application.cpp" line="95"/>
         <source>GB</source>
         <translation>Гб</translation>
     </message>
@@ -139,6 +139,19 @@
     </message>
 </context>
 <context>
+    <name>KeySequencer</name>
+    <message>
+        <location filename="keysequencer.ui" line="20"/>
+        <source>Press key sequence</source>
+        <translation>Введите сочетание</translation>
+    </message>
+    <message>
+        <location filename="keysequencer.ui" line="26"/>
+        <source>background-color: rgb(255, 255, 255);</source>
+        <translation>background-color: rgb(255, 255, 255);</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft</name>
     <message>
         <location filename="leechcraft.ui" line="14"/>
@@ -191,6 +204,11 @@
         <translation>Логгер</translation>
     </message>
     <message>
+        <location filename="leechcraft.ui" line="174"/>
+        <source>Configure shortcuts...</source>
+        <translation>Настроить сочетания клавиш...</translation>
+    </message>
+    <message>
         <location filename="leechcraft.ui" line="148"/>
         <source>exit</source>
         <translation>Выход</translation>
@@ -208,92 +226,107 @@
 <context>
     <name>LeechCraft::Core</name>
     <message>
-        <location filename="core.cpp" line="243"/>
-        <source>Preinitialization...</source>
-        <translation>Предварительная инициализация...</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="245"/>
+        <location filename="core.cpp" line="256"/>
         <source>Calculation dependencies...</source>
         <translation>Подсчёт зависимостей...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="253"/>
+        <location filename="core.cpp" line="267"/>
         <source>Setting up %1...</source>
         <translation>Настройка %1...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="308"/>
+        <location filename="core.cpp" line="365"/>
         <source>No plugins are able to download &quot;%1&quot;</source>
         <translation>Нет плагинов, способных скачать &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="645"/>
+        <location filename="core.cpp" line="864"/>
         <source>Select save path</source>
         <translation>Выберите директорию сохранения</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="754"/>
+        <location filename="core.cpp" line="888"/>
+        <location filename="core.cpp" line="902"/>
+        <location filename="core.cpp" line="938"/>
+        <location filename="core.cpp" line="952"/>
+        <source>Error</source>
+        <translation>ОшибкаОшибка</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="889"/>
+        <location filename="core.cpp" line="903"/>
+        <source>Could not add job to the selected downloader, would you like to try another one?</source>
+        <translation>Невозможно добавить задачу в выбранный загрузчик, попробовать другой?</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="939"/>
+        <location filename="core.cpp" line="953"/>
+        <source>Could not handle job with the selected handler, would you like to try another one?</source>
+        <translation>Невозможно обработать задачу выбранным обработчиком, попробовать другой?</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="1088"/>
         <source>The URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
         <translation>URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;с реалмом&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;требует аутентификации.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="765"/>
+        <location filename="core.cpp" line="1099"/>
         <source>The proxy &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
         <translation>Прокси&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;с реалмом&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;требует аутентификации.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="792"/>
+        <location filename="core.cpp" line="1126"/>
         <source>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
         <translation>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;имеет ошибки SSL. Что хотите сделать?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="874"/>
+        <location filename="core.cpp" line="1210"/>
         <source>Could not create Core directory.</source>
         <translation>Невозможно создать директорию для Ядра.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="881"/>
+        <location filename="core.cpp" line="1217"/>
         <source>Could not save cookies, error opening cookie file.</source>
         <translation>Невозможно сохранить кукисы, ошибка открытия файла с кукисами.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="56"/>
+        <location filename="core.cpp" line="57"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="57"/>
+        <location filename="core.cpp" line="58"/>
         <source>State</source>
         <translation>Состояние</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="58"/>
+        <location filename="core.cpp" line="59"/>
         <source>Progress</source>
         <translation>Прогресс</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="59"/>
+        <location filename="core.cpp" line="60"/>
         <source>Filename</source>
         <translation>Имя файла</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="60"/>
+        <location filename="core.cpp" line="61"/>
         <source>Path</source>
         <translation>Путь</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="61"/>
+        <location filename="core.cpp" line="62"/>
         <source>Date</source>
         <translation>Дата</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="604"/>
+        <location filename="core.cpp" line="791"/>
         <source>Too long to show</source>
         <translation>Слишком длинное для показа</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="696"/>
+        <location filename="core.cpp" line="1001"/>
         <source>Could not handle download entity %1.</source>
         <translation>Не могу обработать объект %1.</translation>
     </message>
@@ -309,52 +342,52 @@
 <context>
     <name>LeechCraft::MainWindow</name>
     <message>
-        <location filename="mainwindow.cpp" line="36"/>
+        <location filename="mainwindow.cpp" line="37"/>
         <source>Initializing interface...</source>
         <translation>Инициализирую интерфейс...</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="42"/>
-        <location filename="mainwindow.cpp" line="69"/>
-        <location filename="mainwindow.cpp" line="506"/>
+        <location filename="mainwindow.cpp" line="68"/>
+        <location filename="mainwindow.cpp" line="526"/>
         <source>Initializing core and plugins...</source>
         <translation>Инициализирую ядро и плагины...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="142"/>
+        <location filename="mainwindow.cpp" line="151"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="194"/>
+        <location filename="mainwindow.cpp" line="204"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="222"/>
+        <location filename="mainwindow.cpp" line="235"/>
         <source>/s    </source>
         <translation>/c   </translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="225"/>
-        <location filename="mainwindow.cpp" line="229"/>
-        <location filename="mainwindow.cpp" line="426"/>
-        <location filename="mainwindow.cpp" line="427"/>
+        <location filename="mainwindow.cpp" line="238"/>
+        <location filename="mainwindow.cpp" line="242"/>
+        <location filename="mainwindow.cpp" line="448"/>
+        <location filename="mainwindow.cpp" line="449"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="433"/>
+        <location filename="mainwindow.cpp" line="454"/>
         <source>%1 down, %2 up</source>
         <translation>%1 к нам, %2 от нас</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="310"/>
+        <location filename="mainwindow.cpp" line="332"/>
         <source>Question</source>
         <translation>Вопрос</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="311"/>
+        <location filename="mainwindow.cpp" line="333"/>
         <source>Do you really want to quit?</source>
         <translation>Вы действительно хотите выйти?</translation>
     </message>
@@ -362,12 +395,12 @@
 <context>
     <name>LeechCraft::PluginManager</name>
     <message>
-        <location filename="pluginmanager.cpp" line="116"/>
+        <location filename="pluginmanager.cpp" line="200"/>
         <source>No exit here</source>
         <translation>Нет выхода</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="117"/>
+        <location filename="pluginmanager.cpp" line="201"/>
         <source>Release of one or more plugins failed.</source>
         <translation>Освобождение одного или нескольких плагинов не удалось.</translation>
     </message>
@@ -554,6 +587,24 @@
         <location filename="settingssink.ui" line="13"/>
         <source>Preferences</source>
         <translation>Настройки</translation>
+    </message>
+</context>
+<context>
+    <name>ShortcutManager</name>
+    <message>
+        <location filename="shortcutmanager.ui" line="14"/>
+        <source>Shortcut manager</source>
+        <translation>Менеджер сочетаний клавиш</translation>
+    </message>
+    <message>
+        <location filename="shortcutmanager.ui" line="21"/>
+        <source>Name</source>
+        <translation>Имя</translation>
+    </message>
+    <message>
+        <location filename="shortcutmanager.ui" line="26"/>
+        <source>Shortcut</source>
+        <translation>Сочетание</translation>
     </message>
 </context>
 <context>

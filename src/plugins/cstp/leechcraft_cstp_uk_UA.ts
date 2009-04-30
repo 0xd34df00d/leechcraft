@@ -67,42 +67,42 @@
 <context>
     <name>CSTP</name>
     <message>
-        <location filename="cstp.cpp" line="264"/>
+        <location filename="cstp.cpp" line="225"/>
         <source>File exists</source>
         <translation>Файл вже існує</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="264"/>
+        <location filename="cstp.cpp" line="225"/>
         <source>File %1 already exists, continue download?</source>
         <translation>Файл %1 вже існує, бажаєте продовжити завантаження?</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="234"/>
+        <location filename="cstp.cpp" line="195"/>
         <source>Start</source>
         <translation>Розпочати</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="240"/>
+        <location filename="cstp.cpp" line="201"/>
         <source>Stop</source>
         <translation>Зупинити</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="226"/>
+        <location filename="cstp.cpp" line="187"/>
         <source>Remove all</source>
         <translation>Видалити всі</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="246"/>
+        <location filename="cstp.cpp" line="207"/>
         <source>Start all</source>
         <translation>Розпочати всі</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="252"/>
+        <location filename="cstp.cpp" line="213"/>
         <source>Stop all</source>
         <translation>Зупунити всі</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="220"/>
+        <location filename="cstp.cpp" line="181"/>
         <source>Remove</source>
         <translation>Видалити</translation>
     </message>
@@ -110,52 +110,57 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="29"/>
+        <location filename="core.cpp" line="32"/>
         <source>State</source>
         <translation>Стан</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="28"/>
+        <location filename="core.cpp" line="31"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="30"/>
+        <location filename="core.cpp" line="33"/>
         <source>Progress</source>
         <translation>Прогрес</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="31"/>
+        <location filename="core.cpp" line="34"/>
         <source>Speed</source>
         <translation>Швидкість</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="32"/>
+        <location filename="core.cpp" line="35"/>
         <source>ETA</source>
         <translation>ОЧЗ</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="33"/>
+        <location filename="core.cpp" line="36"/>
         <source>DTA</source>
         <translation>ЧЗ</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="96"/>
+        <location filename="core.cpp" line="183"/>
         <source>Could not truncate file </source>
         <translation>Не можу обрізати файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="305"/>
+        <location filename="core.cpp" line="310"/>
+        <source>%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="403"/>
         <source>Could not open file </source>
         <translation>Не можу відкрити файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="220"/>
+        <location filename="core.cpp" line="318"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="211"/>
+        <location filename="core.cpp" line="305"/>
         <source>%1% (%2 of %3)</source>
         <translation>%1% (%2 з %3)</translation>
     </message>
@@ -171,22 +176,22 @@
 <context>
     <name>Task</name>
     <message>
-        <location filename="task.cpp" line="125"/>
+        <location filename="task.cpp" line="165"/>
         <source>Stopped</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="task.cpp" line="127"/>
+        <location filename="task.cpp" line="167"/>
         <source>Finished</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="task.cpp" line="129"/>
+        <location filename="task.cpp" line="169"/>
         <source>Running</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="task.cpp" line="150"/>
+        <location filename="task.cpp" line="190"/>
         <source>Task isn&apos;t initialized properly</source>
         <translation type="unfinished"></translation>
     </message>

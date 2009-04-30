@@ -30,47 +30,47 @@
         <translation>Закрытый</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="159"/>
+        <location filename="core.cpp" line="160"/>
         <source>%1 wasn&apos;t delegated</source>
         <translation>%1 не был делегирован</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="246"/>
+        <location filename="core.cpp" line="247"/>
         <source>Could not open file %1.</source>
         <translation>Невозможно открыть файл %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="256"/>
+        <location filename="core.cpp" line="257"/>
         <source>Could not remove temporary file %1.</source>
         <translation>Невозможно удалить временный файл %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="264"/>
+        <location filename="core.cpp" line="265"/>
         <source>A job was delegated, but it failed.</source>
         <translation>Задача была делегирована неудачно.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="277"/>
+        <location filename="core.cpp" line="278"/>
         <source>XML parse error %1 at %2:%3.</source>
         <translation>Ошибка парсинга XML %1 в %2:%3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="287"/>
+        <location filename="core.cpp" line="288"/>
         <source>Not and OpenSearch description.</source>
         <translation>Не OpenSearch-описание.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="300"/>
+        <location filename="core.cpp" line="301"/>
         <source>Malformed OpenSearch description.</source>
         <translation>Плохо сформированное OpenSearch-описание.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="333"/>
+        <location filename="core.cpp" line="334"/>
         <source>Enter categories</source>
         <translation>Введите категории</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="334"/>
+        <location filename="core.cpp" line="335"/>
         <source>Please enter categories for this searcher:</source>
         <translation>Пожалуйста, введите категории для этого поисковика:</translation>
     </message>
@@ -78,52 +78,52 @@
 <context>
     <name>SearchHandler</name>
     <message>
-        <location filename="searchhandler.cpp" line="23"/>
+        <location filename="searchhandler.cpp" line="24"/>
         <source>Subscribe</source>
         <translation>Подписаться</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="48"/>
+        <location filename="searchhandler.cpp" line="49"/>
         <source>%1 total results</source>
         <translation>%1 результатов всего</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="51"/>
+        <location filename="searchhandler.cpp" line="52"/>
         <source>Unknown number of results</source>
         <translation>Неизвестное количество результатов</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="58"/>
+        <location filename="searchhandler.cpp" line="59"/>
         <source> (RSS)</source>
         <translation>(RSS)</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="61"/>
+        <location filename="searchhandler.cpp" line="62"/>
         <source> (Atom)</source>
         <translation>(Atom)</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="64"/>
+        <location filename="searchhandler.cpp" line="65"/>
         <source> (HTML)</source>
         <translation>(HTML)</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="191"/>
+        <location filename="searchhandler.cpp" line="194"/>
         <source>Job for request&lt;br /&gt;%1&lt;br /&gt;wasn&apos;t delegated.</source>
         <translation>Задача для запроса&lt;br /&gt;%1&lt;br /&gt;не была делегирована.</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="215"/>
+        <location filename="searchhandler.cpp" line="219"/>
         <source>Could not open file %1.</source>
         <translation>Невозможно открыть файл %1.</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="256"/>
+        <location filename="searchhandler.cpp" line="230"/>
         <source>Could not remove temporary file %1.</source>
         <translation>Невозможно удалить временный файл %1.</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="269"/>
+        <location filename="searchhandler.cpp" line="274"/>
         <source>A job was delegated, but it failed.</source>
         <translation>Задача была делегирована неудачно.</translation>
     </message>
