@@ -4,6 +4,7 @@
 #include <QString>
 #include <QDir>
 #include <QtXml/QDomElement>
+#include <QtDebug>
 
 class QTranslator;
 
@@ -81,6 +82,14 @@ namespace LeechCraft
 				TagGetter tagGetter,
 				TagSetter tagSetter)
 		{
+			if (!tags.size ())
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "no tags"
+					<< elementName;
+				return QDomElement ();
+			}
+
 			QDomNodeList elements = node.childNodes ();
 			for (int i = 0; i < elements.size (); ++i)
 			{
