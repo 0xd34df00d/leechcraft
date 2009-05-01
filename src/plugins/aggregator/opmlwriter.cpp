@@ -84,13 +84,10 @@ void OPMLWriter::WriteBody (QDomElement& root,
 		tags.sort ();
 
 		QDomElement inserter;
-		if (tags.size ())
-			inserter = LeechCraft::Util::GetElementForTags (tags,
-					body, doc, "outline",
-					boost::function<QString (const QDomElement&)> (TagGetter),
-					boost::function<void (QDomElement&, const QString&)> (TagSetter));
-		else
-			inserter = body;
+		inserter = LeechCraft::Util::GetElementForTags (tags,
+				body, doc, "outline",
+				boost::function<QString (const QDomElement&)> (TagGetter),
+				boost::function<void (QDomElement&, const QString&)> (TagSetter));
 		QDomElement item = doc.createElement ("outline");
 		item.setAttribute ("title", i->Title_);
 		item.setAttribute ("xmlUrl", i->ParentURL_);
