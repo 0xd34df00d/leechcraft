@@ -597,10 +597,22 @@ void Aggregator::on_ActionChannelSettings__triggered ()
 
 void Aggregator::on_ActionUpdateSelectedFeed__triggered ()
 {
-    QModelIndex current = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
-    if (!current.isValid ())
-        return;
-    Core::Instance ().UpdateFeed (current);
+	bool isRepr = IsRepr ();
+	QModelIndex current;
+	if (isRepr)
+		current = Impl_->SelectedRepr_;
+	else
+		current = Impl_->Ui_.Feeds_->
+			selectionModel ()->currentIndex ();
+
+	if (!current.isValid ())
+	{
+		qWarning () << Q_FUNC_INFO
+			<< current
+			<< isRepr;
+		return;
+	}
+	Core::Instance ().UpdateFeed (current, isRepr);
 }
 
 void Aggregator::on_ActionItemBucket__triggered ()

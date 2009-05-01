@@ -200,7 +200,8 @@ void Core::DoDelayedInit ()
 	UpdateTimer_ = new QTimer (this);
 	UpdateTimer_->setSingleShot (true);
 	QDateTime currentDateTime = QDateTime::currentDateTime ();
-	QDateTime lastUpdated = XmlSettingsManager::Instance ()->Property ("LastUpdateDateTime", currentDateTime).toDateTime ();
+	QDateTime lastUpdated = XmlSettingsManager::Instance ()->
+		Property ("LastUpdateDateTime", currentDateTime).toDateTime ();
 	connect (UpdateTimer_, SIGNAL (timeout ()), this, SLOT (updateFeeds ()));
 
 	int updateDiff = lastUpdated.secsTo (currentDateTime);
@@ -525,19 +526,28 @@ void Core::SetFeedSettings (const Feed::FeedSettings& settings,
 	}
 }
 
-void Core::UpdateFeed (const QModelIndex& index)
+void Core::UpdateFeed (const QModelIndex& si, bool isRepr)
 {
+	QModelIndex index;
+	if (isRepr)
+		index = JobHolderRepresentation_->mapToSource (si);
+	else
+		index = ChannelsFilterModel_->mapToSource (si);
+
 	ChannelShort channel;
 	try
 	{
 		channel = ChannelsModel_->
-			GetChannelForIndex (ChannelsFilterModel_->mapToSource (index));
+			GetChannelForIndex (index);
 	}
 	catch (const std::exception& e)
 	{
-		emit error (tr ("Could not update feed"));
 		qWarning () << Q_FUNC_INFO
-			<< e.what ();
+			<< e.what ()
+			<< si
+			<< index
+			<< isRepr;
+		emit error (tr ("Could not update feed"));
 		return;
 	}
 	QString url = channel.ParentURL_;
