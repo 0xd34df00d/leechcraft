@@ -589,6 +589,8 @@ void Aggregator::on_ActionChannelSettings__triggered ()
 	if (!index.isValid ())
 		return;
 
+	index = Core::Instance ().GetChannelsModel ()->mapToSource (index);
+
 	std::auto_ptr<FeedSettings> dia (new FeedSettings (index, this));
 	dia->exec ();
 }
