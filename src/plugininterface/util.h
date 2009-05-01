@@ -74,6 +74,38 @@ namespace LeechCraft
 		 */
 		PLUGININTERFACE_API QString GetTemporaryName (const QString& pattern = QString ("lc_temp.XXXXXX"));
 
+		/** @brief Returns an element for a given tags list.
+		 *
+		 * This function tries to implement projection from tags to a
+		 * hierarchical structure in form of XML. It traverses the tags
+		 * list and creates child nodes from the document, appending
+		 * the hierarchical structure's tree root to the node. It
+		 * returns the parent element to which the item should be
+		 * appended.
+		 *
+		 * For empty tags list it just returns node converted to the
+		 * QDomElement.
+		 *
+		 * tagSetter is a function or functor that should be able to
+		 * take two parameters, a QDomElement and a QString, and set
+		 * tags for it.
+		 *
+		 * tagGetter is a function or functor that should be able to
+		 * take one parameter, a QDomElement, and return a QString for
+		 * it with tags previously set with tagSetter.
+		 *
+		 * @param[in] tags List of tags.
+		 * @param[in] node The parent-most node to which all other nodes
+		 * are appended.
+		 * @param[in] document The document containing all these nodes.
+		 * @param[in] elementname The name of the XML element that
+		 * carries info about the tags.
+		 * @param[in] tagSetter Setter function for the tags for the
+		 * given element.
+		 * @param[in] tagGetter Getter function for the tags for the
+		 * given element.
+		 * @return Parent element of the item with tags.
+		 */
 		template<typename TagGetter, typename TagSetter>
 		QDomElement GetElementForTags (const QStringList& tags,
 				QDomNode& node,
@@ -87,7 +119,7 @@ namespace LeechCraft
 				qWarning () << Q_FUNC_INFO
 					<< "no tags"
 					<< elementName;
-				return QDomElement ();
+				return node.toElement ();
 			}
 
 			QDomNodeList elements = node.childNodes ();
