@@ -6,7 +6,7 @@
 
 namespace LeechCraft
 {
-	class ShortcutManager : public QDialog
+	class ShortcutManager : public QWidget
 						  , public IShortcutProxy
 	{
 		Q_OBJECT

@@ -173,7 +173,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	Ui_.ActionPluginManager_->setProperty ("ActionIcon", "pluginmanager");
 	Ui_.ActionLogger_->setProperty ("ActionIcon", "logger");
 	Ui_.ActionFullscreenMode_->setProperty ("ActionIcon", "fullscreen");
-	Ui_.ActionConfigureShortcuts_->setProperty ("ActionIcon", "configureshortcuts");
 	Ui_.ActionFullscreenMode_->setParent (this);
 
 	Ui_.MainTabWidget_->setProperty ("TabIcons", "downloaders");
@@ -204,6 +203,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	SettingsSink_ = new SettingsSink (tr ("LeechCraft"),
 			XmlSettingsDialog_);
 	ShortcutManager_ = new ShortcutManager (this);
+	XmlSettingsDialog_->SetCustomWidget ("ShortcutManager", ShortcutManager_);
 
 	SetStatusBar ();
 	ReadSettings ();
@@ -213,7 +213,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	QToolBar *corner = new QToolBar (this);
 	corner->addAction (Ui_.ActionSettings_);
-	corner->addAction (Ui_.ActionConfigureShortcuts_);
 	corner->addAction (Ui_.ActionFullscreenMode_);
 	corner->addSeparator ();
 	corner->addAction (Ui_.ActionQuit_);
@@ -318,11 +317,6 @@ void LeechCraft::MainWindow::on_ActionAddTask__triggered ()
 void LeechCraft::MainWindow::on_ActionSettings__triggered ()
 {
 	SettingsSink_->show ();
-}
-
-void LeechCraft::MainWindow::on_ActionConfigureShortcuts__triggered ()
-{
-	ShortcutManager_->show ();
 }
 
 void LeechCraft::MainWindow::on_ActionQuit__triggered ()

@@ -71,7 +71,6 @@ namespace LeechCraft
 	private slots:
 		void on_ActionAddTask__triggered ();
 		void on_ActionSettings__triggered ();
-		void on_ActionConfigureShortcuts__triggered ();
 		void on_ActionQuit__triggered ();
 		void on_ActionFullscreenMode__triggered (bool);
 		void on_ActionLogger__triggered ();

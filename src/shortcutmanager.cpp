@@ -9,7 +9,7 @@
 using namespace LeechCraft;
 
 ShortcutManager::ShortcutManager (QWidget *parent)
-: QDialog (parent)
+: QWidget (parent)
 {
 	Ui_.setupUi (this);
 }
@@ -161,8 +161,6 @@ void ShortcutManager::accept ()
 		}
 	}
 	settings.endGroup ();
-
-	QDialog::accept ();
 }
 
 void ShortcutManager::reject ()
@@ -184,7 +182,5 @@ void ShortcutManager::reject ()
 			}
 		}
 	}
-
-	QDialog::reject ();
 }
 

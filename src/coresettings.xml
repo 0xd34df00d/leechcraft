@@ -3,7 +3,7 @@
 	<page>
 		<label lang="en" value="Appearance" />
 		<label lang="ru" value="Внешний вид" />
-		<groupbox>
+		<tab>
 			<label lang="en" value="Appearance" />
 			<label lang="ru" value="Внешний вид" />
 			<item type="checkbox" property="ShowTabNames" state="on">
@@ -18,7 +18,12 @@
 				<label lang="en" value="Maximum log lines:" />
 				<label lang="ru" value="Максимум строк в логе:" />
 			</item>
-		</groupbox>
+		</tab>
+		<tab>
+			<label lang="en" value="Shortcuts" />
+			<label lang="ru" value="Горячие клавиши" />
+			<item type="customwidget" label="own" name="ShortcutManager" />
+		</tab>
 	</page>
     <page>
         <label lang="en" value="Behavior" />

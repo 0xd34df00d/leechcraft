@@ -169,11 +169,6 @@
     <string>Logger</string>
    </property>
   </action>
-  <action name="ActionConfigureShortcuts_">
-   <property name="text">
-    <string>Configure shortcuts...</string>
-   </property>
-  </action>
  </widget>
  <customwidgets>
   <customwidget>
