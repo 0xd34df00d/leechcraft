@@ -82,7 +82,7 @@ public:
 	void SetURL (const QUrl&);
 
 	void Load (const QString&);
-	void SetHtml (const QString&, const QString& = QString ());
+	void SetHtml (const QString&, const QUrl& = QUrl ());
 	QWidget* Widget ();
 
 	void SetShortcut (int, const QKeySequence&);

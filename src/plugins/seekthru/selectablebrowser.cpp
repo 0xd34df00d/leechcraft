@@ -27,7 +27,7 @@ void SelectableBrowser::Construct (IWebBrowser *browser)
 	}
 }
 
-void SelectableBrowser::SetHtml (const QString& html, const QString& base)
+void SelectableBrowser::SetHtml (const QString& html, const QUrl& base)
 {
 	if (Internal_)
 		InternalBrowser_->setHtml (html);

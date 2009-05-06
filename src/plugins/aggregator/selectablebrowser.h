@@ -16,7 +16,7 @@ public:
 	SelectableBrowser (QWidget* = 0);
 	void Construct (IWebBrowser*);
 
-	void SetHtml (const QString&, const QString& = QString ());
+	void SetHtml (const QString&, const QUrl& = QString ());
 };
 
 #endif

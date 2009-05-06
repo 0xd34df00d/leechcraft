@@ -137,6 +137,7 @@ void SearchHandler::Start (const LeechCraft::Request& r)
 		QPair<QString, QString> item;
 		Q_FOREACH (item, items)
 		{
+			// Currently skips optional parameters
 			if (item.second.size () >= 3 &&
 					item.second.at (0) == '{' &&
 					item.second.at (item.second.size () - 1) == '}' &&
@@ -200,7 +201,6 @@ void SearchHandler::Start (const LeechCraft::Request& r)
 
 		job.Filename_ = fname;
 		job.RequestURL_ = url;
-		qDebug () << Q_FUNC_INFO << job.RequestURL_;
 		Jobs_ [id] = job;
 	}
 }

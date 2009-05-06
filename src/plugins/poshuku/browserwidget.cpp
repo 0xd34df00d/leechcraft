@@ -381,7 +381,7 @@ void BrowserWidget::Load (const QString& url)
 	SetURL (Core::Instance ().MakeURL (url));
 }
 
-void BrowserWidget::SetHtml (const QString& html, const QString& base)
+void BrowserWidget::SetHtml (const QString& html, const QUrl& base)
 {
 	Ui_.URLEdit_->clear ();
 	HtmlMode_ = true;

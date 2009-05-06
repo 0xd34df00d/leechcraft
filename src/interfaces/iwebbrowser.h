@@ -2,6 +2,7 @@
 #define INTERFACES_IWEBBROWSER_H
 #include <QString>
 #include <QWidget>
+#include <QUrl>
 #include <QtPlugin>
 
 class IWebWidget
@@ -10,7 +11,7 @@ public:
 	virtual ~IWebWidget () {}
 
 	virtual void Load (const QString&) = 0;
-	virtual void SetHtml (const QString&, const QString& = QString ()) = 0;
+	virtual void SetHtml (const QString&, const QUrl& = QUrl ()) = 0;
 	virtual QWidget* Widget () = 0;
 };
 
