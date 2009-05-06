@@ -153,7 +153,6 @@ int Core::AddTask (const QString& url,
 {
 	TaskDescr td;
 	QUrl u (url);
-	qDebug () << Q_FUNC_INFO << u << url;
 	td.Task_.reset (new Task (u));
 
 	return AddTask (td, path, filename, comment, tp);
