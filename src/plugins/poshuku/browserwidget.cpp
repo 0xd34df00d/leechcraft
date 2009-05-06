@@ -530,7 +530,7 @@ void BrowserWidget::handleAdd2Favorites ()
 
 void BrowserWidget::handleFind ()
 {
-	FindDialog *dialog = new FindDialog (this);
+	FindDialog *dialog = new FindDialog (Ui_.WebFrame_);
 	
 	connect (dialog,
 			SIGNAL (next (const QString&, QWebPage::FindFlags)),

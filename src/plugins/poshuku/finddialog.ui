@@ -1,6 +1,6 @@
 <ui version="4.0" >
  <class>FindDialog</class>
- <widget class="QDialog" name="FindDialog" >
+ <widget class="QWidget" name="FindDialog" >
   <property name="geometry" >
    <rect>
     <x>0</x>

@@ -37,26 +37,22 @@
       </widget>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="FrameBox_">
-       <item>
-        <widget class="QFrame" name="frame">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <property name="margin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="CustomWebView" name="WebView_" native="true"/>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QFrame" name="WebFrame_">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <property name="margin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="CustomWebView" name="WebView_" native="true"/>
+        </item>
+       </layout>
+      </widget>
      </item>
     </layout>
    </item>

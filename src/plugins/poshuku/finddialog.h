@@ -1,10 +1,10 @@
 #ifndef FINDDIALOG_H
 #define FINDDIALOG_H
-#include <QDialog>
 #include <QWebPage>
+#include "notification.h"
 #include "ui_finddialog.h"
 
-class FindDialog : public QDialog
+class FindDialog : public Notification
 {
 	Q_OBJECT
 	
