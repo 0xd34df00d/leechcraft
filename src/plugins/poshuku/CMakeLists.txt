@@ -38,6 +38,7 @@ SET (SRCS
 	historyfiltermodel.cpp
 	proxyobject.cpp
 	jsproxy.cpp
+	notification.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -69,6 +70,7 @@ SET (HEADERS
 	historyfiltermodel.h
 	proxyobject.h
 	jsproxy.h
+	notification.h
 	interfaces/pluginbase.h
 	)
 SET (FORMS
