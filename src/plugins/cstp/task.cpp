@@ -13,8 +13,8 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
-Task::Task (const QString& str)
-: URL_ (str)
+Task::Task (const QUrl& url)
+: URL_ (url)
 , Done_ (-1)
 , Total_ (0)
 , FileSizeAtStart_ (-1)

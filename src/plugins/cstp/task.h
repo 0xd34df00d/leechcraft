@@ -29,7 +29,7 @@ class Task : public QObject
 	int Counter_;
 	bool BeCareful_;
 public:
-	explicit Task (const QString& = QString ());
+	explicit Task (const QUrl& = QUrl ());
 	explicit Task (QNetworkReply*);
 	void Start (const boost::intrusive_ptr<MorphFile>&);
 	void Stop ();

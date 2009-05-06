@@ -73,12 +73,14 @@ void Core::SetToolbar (QWidget *widget)
 
 int Core::AddTask (LeechCraft::DownloadEntity& e)
 {
+	QString entity = QTextCodec::codecForName ("UTF-8")->
+		toUnicode (e.Entity_);
 	QNetworkReply *rep = e.Additional_.value<QNetworkReply*> ();
 	if (rep)
 	{
 		QFileInfo fi (e.Location_);
 		QString dir = fi.dir ().path ();
-		QString file = QFileInfo (e.Entity_).fileName ();
+		QString file = QFileInfo (entity).fileName ();
 
 		if (fi.isDir ())
 			dir = e.Location_;
@@ -93,7 +95,7 @@ int Core::AddTask (LeechCraft::DownloadEntity& e)
 		if (e.Parameters_ & LeechCraft::FromUserInitiated &&
 				e.Location_.isEmpty ())
 		{
-			::AddTask at (e.Entity_, e.Location_);
+			::AddTask at (entity, e.Location_);
 			if (at.exec () == QDialog::Rejected)
 				return -1;
 
@@ -116,8 +118,7 @@ int Core::AddTask (LeechCraft::DownloadEntity& e)
 				if (fi.isDir ())
 				{
 					dir = e.Location_;
-					file = QFileInfo (QUrl (QTextCodec::codecForName ("UTF-8")->
-								toUnicode (e.Entity_)).path ()).fileName ();
+					file = QFileInfo (entity).fileName ();
 					if (file.isEmpty ())
 						file = "index";
 				}
@@ -126,8 +127,7 @@ int Core::AddTask (LeechCraft::DownloadEntity& e)
 					return -1;
 			}
 
-			return Core::Instance ().AddTask (QTextCodec::codecForName ("UTF-8")->
-					toUnicode (e.Entity_),
+			return Core::Instance ().AddTask (entity,
 					dir, file, QString (), e.Parameters_);
 		}
 	}
@@ -152,7 +152,9 @@ int Core::AddTask (const QString& url,
 		LeechCraft::TaskParameters tp)
 {
 	TaskDescr td;
-	td.Task_.reset (new Task (url));
+	QUrl u (url);
+	qDebug () << Q_FUNC_INFO << u << url;
+	td.Task_.reset (new Task (u));
 
 	return AddTask (td, path, filename, comment, tp);
 }
