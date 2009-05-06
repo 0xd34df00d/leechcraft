@@ -1,8 +1,11 @@
 #ifndef CUSTOMWEBPAGE_H
 #define CUSTOMWEBPAGE_H
+#include <boost/shared_ptr.hpp>
 #include <QWebPage>
 #include <QUrl>
 #include <interfaces/structures.h>
+
+class JSProxy;
 
 class CustomWebPage : public QWebPage
 {
@@ -12,6 +15,7 @@ class CustomWebPage : public QWebPage
 	Qt::KeyboardModifiers Modifiers_;
 
 	QUrl LoadingURL_;
+	boost::shared_ptr<JSProxy> JSProxy_;
 public:
 	CustomWebPage (QObject* = 0);
 	virtual ~CustomWebPage ();
