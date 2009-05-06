@@ -10,6 +10,7 @@
 #include "customwebview.h"
 #include "core.h"
 #include "pluginmanager.h"
+#include "jsproxy.h"
 
 CustomWebPage::CustomWebPage (QObject *parent)
 : QWebPage (parent)
@@ -18,6 +19,11 @@ CustomWebPage::CustomWebPage (QObject *parent)
 {
 	setForwardUnsupportedContent (true);
 	setNetworkAccessManager (Core::Instance ().GetNetworkAccessManager ());
+
+	connect (mainFrame (),
+			SIGNAL (javaScriptWindowObjectCleared ()),
+			this,
+			SLOT (handleJavaScriptWindowObjectCleared ()));
 
 	connect (this,
 			SIGNAL (contentsChanged ()),
@@ -173,6 +179,17 @@ void CustomWebPage::handleFrameCreated (QWebFrame *frame)
 		return;
 
 	emit filteredFrameCreated (frame);
+}
+
+void CustomWebPage::handleJavaScriptWindowObjectCleared ()
+{
+	QWebFrame *frame = qobject_cast<QWebFrame*> (sender ());
+	if (Core::Instance ().GetPluginManager ()->
+			HandleJavaScriptWindowObjectCleared (this, frame))
+		return;
+
+	frame->addToJavaScriptWindowObject ("JSProxy",
+			new JSProxy (this), QScriptEngine::ScriptOwnership);
 }
 
 void CustomWebPage::handleGeometryChangeRequested (const QRect& rect)
@@ -438,8 +455,21 @@ bool CustomWebPage::acceptNavigationRequest (QWebFrame *frame,
 		return false;
 	}
 
-	if ((type == QWebPage::NavigationTypeLinkClicked ||
-				type == QWebPage::NavigationTypeOther) &&
+	if (type == NavigationTypeFormSubmitted)
+	{
+		QWebFrame *formFrame = frame ? frame : mainFrame ();
+		QFile file (":/resources/scripts/formquery.js");
+		if (file.open (QIODevice::ReadOnly))
+			formFrame->evaluateJavaScript (file.readAll ());
+		else
+			qWarning () << Q_FUNC_INFO
+				<< "could not open internal file"
+				<< file.fileName ()
+				<< file.errorString ();
+	}
+
+	if ((type == NavigationTypeLinkClicked ||
+				type == NavigationTypeOther) &&
 			(MouseButtons_ == Qt::MidButton ||
 			 Modifiers_ & Qt::ControlModifier))
 	{

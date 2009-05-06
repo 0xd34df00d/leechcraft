@@ -23,6 +23,7 @@ private slots:
 	void handleDatabaseQuotaExceeded (QWebFrame*, QString);
 	void handleDownloadRequested (const QNetworkRequest&);
 	void handleFrameCreated (QWebFrame*);
+	void handleJavaScriptWindowObjectCleared ();
 	void handleGeometryChangeRequested (const QRect&);
 	void handleLinkClicked (const QUrl&);
 	void handleLinkHovered (const QString&, const QString&, const QString&);

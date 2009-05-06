@@ -72,6 +72,7 @@ BE (HandleDatabaseQuotaExceeded, (QWebPage*)(QWebFrame*)(QString));
 BE (HandleDownloadRequested, (QWebPage*)(const QNetworkRequest&));
 BE (HandleFrameCreated, (QWebPage*)(QWebFrame*));
 BE (HandleGeometryChangeRequested, (QWebPage*)(const QRect&));
+BE (HandleJavaScriptWindowObjectCleared, (QWebPage*)(QWebFrame*));
 BE (HandleLinkClicked, (QWebPage*)(const QUrl&));
 BE (HandleLinkHovered, (QWebPage*)(const QString&)(const QString&)(const QString&));
 BE (HandleLoadFinished, (QWebPage*)(bool));

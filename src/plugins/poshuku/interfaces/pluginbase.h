@@ -77,6 +77,14 @@ namespace LeechCraft
 				return false;
 			}
 
+			/** This function is called in a slot connected to
+			 * QWebFrame::javaScriptWindowObjectCleared().
+			 */
+			virtual bool HandleJavaScriptWindowObjectCleared (QWebPage*, QWebFrame*)
+			{
+				return false;
+			}
+
 			/** See the official Qt docs for the
 			 * QWebPage::linkClicked() signal.
 			 */

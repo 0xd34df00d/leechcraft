@@ -9,5 +9,6 @@
 	<file>resources/images/application_rss+xml.png</file>
 	<file>resources/images/application_opensearchdescription+xml.png</file>
 	<file>resources/html/generalerror.html</file>
+	<file>resources/scripts/formquery.js</file>
   </qresource>
 </RCC>

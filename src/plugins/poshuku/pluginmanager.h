@@ -24,6 +24,7 @@ public:
 	bool HandleDownloadRequested (QWebPage*, const QNetworkRequest&);
 	bool HandleFrameCreated (QWebPage*, QWebFrame*);
 	bool HandleGeometryChangeRequested (QWebPage*, const QRect&);
+	bool HandleJavaScriptWindowObjectCleared (QWebPage*, QWebFrame*);
 	bool HandleLinkClicked (QWebPage*, const QUrl&);
 	bool HandleLinkHovered (QWebPage*, const QString&,
 			const QString&, const QString&);
