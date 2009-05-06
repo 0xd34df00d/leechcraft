@@ -49,7 +49,14 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="CustomWebView" name="WebView_" native="true"/>
+         <widget class="CustomWebView" name="WebView_" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>1</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>

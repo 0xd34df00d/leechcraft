@@ -1,99 +1,71 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>FindDialog</class>
- <widget class="QWidget" name="FindDialog" >
-  <property name="geometry" >
+ <widget class="QWidget" name="FindDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>393</width>
-    <height>133</height>
+    <width>518</width>
+    <height>36</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Find</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="resources.qrc" >
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
     <normaloff>:/resources/images/poshuku.png</normaloff>:/resources/images/poshuku.png</iconset>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout_2" >
+  <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout_2" >
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout" >
-       <item>
-        <widget class="QLabel" name="label" >
-         <property name="text" >
-          <string>Find what:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="Pattern_" />
-       </item>
-      </layout>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="SearchBackwards_" >
-       <property name="text" >
-        <string>Search backwards</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="MatchCase_" >
-       <property name="text" >
-        <string>Match case</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="WrapAround_" >
-       <property name="text" >
-        <string>Continue from the beginning</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QLineEdit" name="Pattern_"/>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout" >
-     <item>
-      <widget class="QPushButton" name="FindButton_" >
-       <property name="enabled" >
-        <bool>false</bool>
-       </property>
-       <property name="text" >
-        <string>Find</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="CloseButton_" >
-       <property name="text" >
-        <string>Close</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="verticalSpacer" >
-       <property name="orientation" >
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0" >
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
+    <widget class="QCheckBox" name="SearchBackwards_">
+     <property name="text">
+      <string>Backwards</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="MatchCase_">
+     <property name="text">
+      <string>Case</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="WrapAround_">
+     <property name="text">
+      <string>Cycle</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="FindButton_">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>Find</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="CloseButton_">
+     <property name="text">
+      <string>Close</string>
+     </property>
+     <property name="shortcut">
+      <string>Esc</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
  <resources>
-  <include location="resources.qrc" />
+  <include location="resources.qrc"/>
  </resources>
  <connections>
   <connection>
@@ -102,13 +74,29 @@
    <receiver>FindDialog</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>365</x>
-     <y>59</y>
+    <hint type="sourcelabel">
+     <x>513</x>
+     <y>30</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>359</x>
-     <y>89</y>
+     <y>35</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Pattern_</sender>
+   <signal>returnPressed()</signal>
+   <receiver>FindButton_</receiver>
+   <slot>animateClick()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>114</x>
+     <y>15</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>408</x>
+     <y>19</y>
     </hint>
    </hints>
   </connection>

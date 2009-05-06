@@ -4,6 +4,7 @@ FindDialog::FindDialog (QWidget *parent)
 : Notification (parent)
 {
 	Ui_.setupUi (this);
+	Ui_.Pattern_->setFocus ();
 }
 
 FindDialog::~FindDialog ()
@@ -38,5 +39,10 @@ void FindDialog::SetSuccessful (bool success)
 		ss.append ("255,0");
 	ss.append (",0) }");
 	Ui_.Pattern_->setStyleSheet (ss);
+}
+
+void FindDialog::reject ()
+{
+	deleteLater ();
 }
 

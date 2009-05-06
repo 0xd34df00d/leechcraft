@@ -17,6 +17,7 @@ public:
 private slots:
 	void on_Pattern__textChanged (const QString&);
 	void on_FindButton__released ();
+	void reject ();
 signals:
 	void next (const QString&, QWebPage::FindFlags);
 };
