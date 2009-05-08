@@ -27,6 +27,9 @@ namespace LeechCraft
 		static QString GetSocketName ();
 
 		virtual bool notify (QObject*, QEvent*);
+	protected:
+		virtual void commitData (QSessionManager&);
+		virtual void saveState (QSessionManager&);
 	private:
 		bool IsAlreadyRunning () const;
 		void ParseCommandLine ();

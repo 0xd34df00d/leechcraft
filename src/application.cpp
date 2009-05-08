@@ -13,6 +13,7 @@
 #include <QMessageBox>
 #include <QMetaType>
 #include <QModelIndex>
+#include <QSessionManager>
 #include <plugininterface/proxy.h>
 #include <plugininterface/util.h>
 #include "debugmessagehandler.h"
@@ -50,11 +51,21 @@ Application::Application (int& argc, char **argv)
 			<< std::endl
 			<< "              you are sure they are)."
 			<< std::endl;
-		std::cout << "-help         Show this help message." << std::endl;
-		std::cout << std::endl;
-		std::cout << "Installed plugins could have their own command line options."
+		std::cout
+			<< "-restart      Automatically restart application if it's closed (this is"
+			<< std::endl
+			<< "              done via the Session Manager, so it is not guaranteed to"
+			<< std::endl
+			<< "              work everywhere, especially on Windows and Mac OS X)."
 			<< std::endl;
-		std::cout << "There are maybe some other hidden arguments which alter the program's"
+		std::cout
+			<< "-help         Show this help message." << std::endl;
+		std::cout << std::endl;
+		std::cout
+			<< "Installed plugins may have their own command line options."
+			<< std::endl;
+		std::cout
+			<< "There are maybe some other hidden arguments which alter the program's"
 			<< std::endl
 			<< "behavior in an advanced or experimental way. Hack through the source code"
 			<< std::endl
@@ -65,7 +76,7 @@ Application::Application (int& argc, char **argv)
 
 	if (Arguments_.contains ("-clrsckt"))
 		QLocalServer::removeServer (GetSocketName ());
-
+	
 	// Sanity checks
 	if (IsAlreadyRunning ())
 		std::exit (EAlreadyRunning);
@@ -147,6 +158,22 @@ bool Application::notify (QObject *obj, QEvent *event)
 		qWarning () << Q_FUNC_INFO << obj << event << event->type ();
 	}
 	return false;
+}
+
+void Application::commitData (QSessionManager& sm)
+{
+	if (Arguments_.contains ("-restart"))
+		sm.setRestartHint (QSessionManager::RestartImmediately);
+
+	sm.release ();
+}
+
+void Application::saveState (QSessionManager& sm)
+{
+	if (Arguments_.contains ("-restart"))
+		sm.setRestartHint (QSessionManager::RestartImmediately);
+
+	sm.release ();
 }
 
 bool Application::IsAlreadyRunning () const
