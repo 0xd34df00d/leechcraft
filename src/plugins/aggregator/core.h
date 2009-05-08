@@ -24,6 +24,7 @@ class IWebBrowser;
 class ChannelsFilterModel;
 class QSortFilterProxyModel;
 class ItemsListModel;
+class QToolBar;
 
 namespace LeechCraft
 {
@@ -98,7 +99,7 @@ public:
     static Core& Instance ();
     void Release ();
 	bool CouldHandle (const LeechCraft::DownloadEntity&);
-	void SetWidgets (QWidget*, QWidget*);
+	void SetWidgets (QToolBar*, QWidget*);
     void DoDelayedInit ();
     void SetProvider (QObject*, const QString&);
     void AddFeed (const QString&, const QStringList&);

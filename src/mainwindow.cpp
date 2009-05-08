@@ -210,21 +210,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	FancyPopupManager_ = new FancyPopupManager (TrayIcon_, this);
 	LogToolBox_ = new LogToolBox (this);
-
-	QToolBar *corner = new QToolBar (this);
-	corner->addAction (Ui_.ActionSettings_);
-	corner->addAction (Ui_.ActionFullscreenMode_);
-	corner->addSeparator ();
-	corner->addAction (Ui_.ActionQuit_);
-	Ui_.MainTabWidget_->setCornerWidget (corner, Qt::TopRightCorner);
-	corner->show ();
-
-	QToolBar *mainBar = new QToolBar (this);
-	mainBar->addAction (Ui_.ActionAddTask_);
-	mainBar->addSeparator ();
-	mainBar->addAction (Ui_.ActionPluginManager_);
-	mainBar->addAction (Ui_.ActionLogger_);
-	Ui_.ControlsLayout_->addWidget (mainBar);
 }
 
 
@@ -375,19 +360,25 @@ void LeechCraft::MainWindow::on_ActionLogger__triggered ()
 void LeechCraft::MainWindow::updatePanes (const QItemSelection& newIndexes,
 		const QItemSelection& oldIndexes)
 {
+	qDebug () << Q_FUNC_INFO;
+
 	QModelIndex oldIndex, newIndex;
 	if (oldIndexes.size ())
 		oldIndex = oldIndexes.at (0).topLeft ();
 	if (newIndexes.size ())
 		newIndex = newIndexes.at (0).topLeft ();
+
 	if (!newIndex.isValid ())
 	{
 		qDebug () << "invalidating";
 
 		Core::Instance ().SetNewRow (newIndex);
-		if (Ui_.ControlsLayout_->count () == 2)
+		if (oldIndex.isValid ())
 		{
-			Ui_.ControlsLayout_->takeAt (1)->widget ()->hide ();
+			qDebug () << "erasing older stuff";
+			QToolBar *oldControls = Core::Instance ().GetControls (oldIndex);
+			if (oldControls)
+				removeToolBar (oldControls);
 			Ui_.ControlsDockWidget_->hide ();
 		}
 	}
@@ -399,30 +390,27 @@ void LeechCraft::MainWindow::updatePanes (const QItemSelection& newIndexes,
 	}
 	else if (newIndex.isValid ())
 	{
+		QToolBar *controls = Core::Instance ()
+					.GetControls (newIndex);
+		QWidget *addiInfo = Core::Instance ()
+					.GetAdditionalInfo (newIndex);
+
 		if (oldIndex.isValid ())
 		{
 			qDebug () << "erasing older stuff";
-
-			if (Ui_.ControlsLayout_->count () == 2)
-			{
-				Ui_.ControlsLayout_->takeAt (1)->widget ()->hide ();
-				Ui_.ControlsDockWidget_->hide ();
-			}
+			QToolBar *oldControls = Core::Instance ().GetControls (oldIndex);
+			if (oldControls)
+				removeToolBar (oldControls);
+			Ui_.ControlsDockWidget_->hide ();
 		}
 
-		qDebug () << "inserting newer stuff" << newIndex;
-		QWidget *controls = Core::Instance ()
-					.GetControls (newIndex),
-				*addiInfo = Core::Instance ()
-					.GetAdditionalInfo (newIndex);
+		qDebug () << "inserting newer stuff" << newIndex << controls << addiInfo;
 
 		Core::Instance ().SetNewRow (newIndex);
 		
 		if (controls)
 		{
-			if (controls->parent () != this)
-				controls->setParent (this);
-			Ui_.ControlsLayout_->addWidget (controls, 1);
+			addToolBar (controls);
 			controls->show ();
 		}
 		if (addiInfo)

@@ -27,6 +27,7 @@ class PeersModel;
 class TorrentFilesModel;
 class RepresentationModel;
 class QDomElement;
+class QToolBar;
 
 namespace libtorrent
 {
@@ -100,7 +101,7 @@ private:
 	std::list<quint16> IDPool_;
 	QString ExternalAddress_;
 	bool SaveScheduled_;
-	QWidget *Toolbar_;
+	QToolBar *Toolbar_;
 	QWidget *TabWidget_;
 
     Core ();
@@ -119,7 +120,7 @@ public:
 
     static Core* Instance ();
 	virtual ~Core ();
-	void SetWidgets (QWidget*, QWidget*);
+	void SetWidgets (QToolBar*, QWidget*);
     void DoDelayedInit ();
     void Release ();
 	bool CouldDownload (const LeechCraft::DownloadEntity&) const;

@@ -12,6 +12,7 @@
 #include <QNetworkProxy>
 #include <QApplication>
 #include <QAction>
+#include <QToolBar>
 #include <QKeyEvent>
 #include <QClipboard>
 #include <QDir>
@@ -216,10 +217,10 @@ PluginManager* LeechCraft::Core::GetPluginManager () const
 	return PluginManager_;
 }
 
-QWidget* LeechCraft::Core::GetControls (const QModelIndex& index) const
+QToolBar* LeechCraft::Core::GetControls (const QModelIndex& index) const
 {
 	QVariant data = index.data (RoleControls);
-	return data.value<QWidget*> ();
+	return data.value<QToolBar*> ();
 }
 
 QWidget* LeechCraft::Core::GetAdditionalInfo (const QModelIndex& index) const
@@ -1310,8 +1311,8 @@ void LeechCraft::Core::InitJobHolder (QObject *plugin)
 
 		if (model)
 		{
-			QWidget *controlsWidget = model->
-				index (0, 0).data (RoleControls).value<QWidget*> ();
+			QToolBar *controlsWidget = model->
+				index (0, 0).data (RoleControls).value<QToolBar*> ();
 			if (controlsWidget)
 			{
 				QList<QAction*> actions = controlsWidget->actions ();
@@ -1327,6 +1328,7 @@ void LeechCraft::Core::InitJobHolder (QObject *plugin)
 
 				controlsWidget->setParent (ReallyMainWindow_);
 			}
+
 			QWidget *additional = model->
 				index (0, 0).data (RoleAdditionalInfo).value<QWidget*> ();
 			if (additional)

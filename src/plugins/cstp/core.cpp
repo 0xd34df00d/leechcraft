@@ -66,7 +66,7 @@ LeechCraft::Util::HistoryModel* Core::GetHistoryModel ()
 	return HistoryModel_;
 }
 
-void Core::SetToolbar (QWidget *widget)
+void Core::SetToolbar (QToolBar *widget)
 {
 	Toolbar_ = widget;
 }
@@ -340,7 +340,7 @@ QVariant Core::data (const QModelIndex& index, int role) const
 		}
 	}
 	else if (role == LeechCraft::RoleControls)
-		return QVariant::fromValue<QWidget*> (Toolbar_);
+		return QVariant::fromValue<QToolBar*> (Toolbar_);
     else
         return QVariant ();
 }

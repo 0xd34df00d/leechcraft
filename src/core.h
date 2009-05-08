@@ -19,6 +19,7 @@ class QAbstractProxyModel;
 class QAction;
 class IDownload;
 class IShortcutProxy;
+class QToolBar;
 
 namespace LeechCraft
 {
@@ -87,11 +88,11 @@ namespace LeechCraft
 		 *
 		 * @param[in] index Unmapped index for which the widget should
 		 * be returned.
-		 * @return Widget with controls, usually a toolbar.
+		 * @return Toolbar with controls.
 		 *
 		 * @sa GetAdditionalInfo
 		 */
-		QWidget* GetControls (const QModelIndex& index) const;
+		QToolBar* GetControls (const QModelIndex& index) const;
 
 		/** Returns additional info for the model with a given index, or
 		 * NULL if the model doesn't provide it.

@@ -2,6 +2,7 @@
 #define INTERFACES_STRUCTURES_H
 #include <QMetaType>
 #include <QVariant>
+#include <QToolBar>
 
 class QMenu;
 class QNetworkReply;
@@ -93,7 +94,7 @@ namespace LeechCraft
 		 */
 		RoleTags = 100,
 		/* The role for the additional controls for a given item.
-		 * QWidget* is expected to be returned.
+		 * QToolBar* is expected to be returned.
 		 */
 		RoleControls,
 		/** The role for the widget appearing on the right part of the
@@ -115,6 +116,7 @@ namespace LeechCraft
 
 Q_DECLARE_METATYPE (LeechCraft::DownloadEntity);
 Q_DECLARE_METATYPE (QNetworkReply*);
+Q_DECLARE_METATYPE (QToolBar*);
 Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::TaskParameters);
 
 #endif

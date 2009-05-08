@@ -78,7 +78,7 @@ bool Core::CouldHandle (const LeechCraft::DownloadEntity& e)
 	return true;
 }
 
-void Core::SetWidgets (QWidget *bar, QWidget *tab)
+void Core::SetWidgets (QToolBar *bar, QWidget *tab)
 {
 	ChannelsModel_->SetWidgets (bar, tab);
 }

@@ -8,6 +8,7 @@
 #include <QFileInfo>
 #include <QTimerEvent>
 #include <QSettings>
+#include <QToolBar>
 #include <QTimer>
 #include <QDomDocument>
 #include <QDomElement>
@@ -116,7 +117,7 @@ Core::~Core ()
 {
 }
 
-void Core::SetWidgets (QWidget *tool, QWidget *tab)
+void Core::SetWidgets (QToolBar *tool, QWidget *tab)
 {
 	Toolbar_ = tool;
 	TabWidget_ = tab;
@@ -360,7 +361,7 @@ int Core::columnCount (const QModelIndex&) const
 QVariant Core::data (const QModelIndex& index, int role) const
 {
 	if (role == LeechCraft::RoleControls)
-		return QVariant::fromValue<QWidget*> (Toolbar_);
+		return QVariant::fromValue<QToolBar*> (Toolbar_);
 	if (role == LeechCraft::RoleAdditionalInfo)
 		return QVariant::fromValue<QWidget*> (TabWidget_);
     int row = index.row (),

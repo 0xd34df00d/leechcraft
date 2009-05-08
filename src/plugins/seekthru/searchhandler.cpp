@@ -83,7 +83,7 @@ QVariant SearchHandler::data (const QModelIndex& index, int role) const
 			if (Results_.at (r).Type_ != Result::TypeHTML)
 			{
 				Action_->setData (r);
-				return QVariant::fromValue<QWidget*> (Toolbar_.get ());
+				return QVariant::fromValue<QToolBar*> (Toolbar_.get ());
 			}
 			else
 				return 0;

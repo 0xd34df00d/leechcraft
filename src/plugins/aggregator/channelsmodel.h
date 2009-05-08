@@ -4,6 +4,8 @@
 #include <boost/shared_ptr.hpp>
 #include "channel.h"
 
+class QToolBar;
+
 class ChannelsModel : public QAbstractItemModel
 {
     Q_OBJECT
@@ -11,7 +13,7 @@ class ChannelsModel : public QAbstractItemModel
 	QStringList Headers_;
 	typedef QList<ChannelShort> Channels_t;
 	Channels_t Channels_;
-	QWidget *Toolbar_;
+	QToolBar *Toolbar_;
 	QWidget *TabWidget_;
 public:
 	enum Columns
@@ -23,7 +25,7 @@ public:
     ChannelsModel (QObject *parent = 0);
     virtual ~ChannelsModel ();
 
-	void SetWidgets (QWidget*, QWidget*);
+	void SetWidgets (QToolBar*, QWidget*);
 
     virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
     virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;

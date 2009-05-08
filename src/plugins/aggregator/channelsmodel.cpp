@@ -22,7 +22,7 @@ ChannelsModel::~ChannelsModel ()
 {
 }
 
-void ChannelsModel::SetWidgets (QWidget *bar, QWidget *tab)
+void ChannelsModel::SetWidgets (QToolBar *bar, QWidget *tab)
 {
 	Toolbar_ = bar;
 	TabWidget_ = tab;
@@ -36,7 +36,7 @@ int ChannelsModel::columnCount (const QModelIndex&) const
 QVariant ChannelsModel::data (const QModelIndex& index, int role) const
 {
 	if (role == LeechCraft::RoleControls)
-		return QVariant::fromValue<QWidget*> (Toolbar_);
+		return QVariant::fromValue<QToolBar*> (Toolbar_);
 	if (role == LeechCraft::RoleAdditionalInfo)
 		return QVariant::fromValue<QWidget*> (TabWidget_);
 
