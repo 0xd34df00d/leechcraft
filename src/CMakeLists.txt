@@ -102,6 +102,7 @@ IF (NOT ENABLE_CONFIGURABLE)
 	ENDIF (QT_QTDBUS_FOUND)
 	ADD_SUBDIRECTORY (plugins/deadlyrics)
 	ADD_SUBDIRECTORY (plugins/seekthru)
+	ADD_SUBDIRECTORY (plugins/networkmonitor)
 ELSE (NOT ENABLE_CONFIGURABLE)
 	IF (ENABLE_HTTP)
 		ADD_SUBDIRECTORY (plugins/cstp)
@@ -136,6 +137,9 @@ ELSE (NOT ENABLE_CONFIGURABLE)
 	IF (ENABLE_SEEKTHRU)
 		ADD_SUBDIRECTORY (plugins/seekthru)
 	ENDIF (ENABLE_SEEKTHRU)
+	IF (ENABLE_NETWORKMONITOR)
+		ADD_SUBDIRECTORY (plugins/networkmonitor)
+	ENDIF (ENABLE_NETWORKMONITOR)
 ENDIF (NOT ENABLE_CONFIGURABLE)
 
 SET (QT_USE_QTNETWORK TRUE)
@@ -239,6 +243,7 @@ SET (HEADERS
 	interfaces/ipluginready.h
 	interfaces/iplugin2.h
 	interfaces/ihaveshortcuts.h
+	interfaces/itoolbarembedder.h
 	interfaces/structures.h
 	)
 SET (FORMS

@@ -30,14 +30,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , WasMaximized_ (false)
 , FilterTimer_ (new QTimer (this))
 {
-	setUpdatesEnabled (false);
-	SplashScreen_ = new QSplashScreen (QPixmap (":/resources/images/splashscreen.png"),
-			Qt::WindowStaysOnTopHint);
-	SplashScreen_->show ();
-	ShowMessage (tr ("Initializing interface..."));
-
 	InitializeInterface ();
-	setAcceptDrops (true);
 
 	ShowMessage (tr ("Initializing core and plugins..."));
 	connect (&Core::Instance (),
@@ -80,9 +73,9 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	QHeaderView *itemsHeader = Ui_.PluginsTasksTree_->header ();
 	QFontMetrics fm = fontMetrics ();
 	itemsHeader->resizeSection (0,
-			fm.width ("Average download job or torrent name is just like this one maybe."));
+			fm.width ("Average download job or torrent name is just like this."));
 	itemsHeader->resizeSection (1,
-			fm.width ("State of the download."));
+			fm.width ("Of the download."));
 	itemsHeader->resizeSection (2,
 			fm.width ("99.99% (1024.0 kb from 1024.0 kb at 1024.0 kb/s)"));
 
@@ -108,6 +101,12 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	for (QObjectList::const_iterator i = settable.begin (),
 			end = settable.end (); i != end; ++i)
 		SettingsSink_->AddDialog (*i);
+
+	QList<QAction*> actions2embed = Core::Instance ().GetActions2Embed ();
+	Q_FOREACH (QAction *act, actions2embed)
+		act->setParent (this);
+	if (actions2embed.size ())
+		addToolBar (tr ("Plugins"))->addActions (actions2embed);
 
 	updateIconSet ();
 
@@ -160,6 +159,12 @@ void LeechCraft::MainWindow::closeEvent (QCloseEvent *e)
 
 void LeechCraft::MainWindow::InitializeInterface ()
 {
+	setUpdatesEnabled (false);
+	SplashScreen_ = new QSplashScreen (QPixmap (":/resources/images/splashscreen.png"),
+			Qt::WindowStaysOnTopHint);
+	SplashScreen_->show ();
+	ShowMessage (tr ("Initializing interface..."));
+
 	if (QApplication::arguments ().contains ("-zombie"))
 		QApplication::setStyle (new ZombiTechStyle ());
 
@@ -210,6 +215,8 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	FancyPopupManager_ = new FancyPopupManager (TrayIcon_, this);
 	LogToolBox_ = new LogToolBox (this);
+
+	setAcceptDrops (true);
 }
 
 

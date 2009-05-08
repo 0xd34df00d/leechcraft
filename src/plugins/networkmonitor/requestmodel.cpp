@@ -8,7 +8,7 @@
 
 Q_DECLARE_METATYPE (QNetworkReply*);
 
-using namespace LeechCraft::Poshuku::Plugins::NetworkMonitor;
+using namespace LeechCraft::Plugins::NetworkMonitor;
 
 RequestModel::RequestModel (QObject *parent)
 : QStandardItemModel (parent)

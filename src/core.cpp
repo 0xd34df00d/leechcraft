@@ -34,6 +34,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/iwindow.h>
+#include <interfaces/itoolbarembedder.h>
 #include <interfaces/structures.h>
 #include <plugininterface/customcookiejar.h>
 #include "application.h"
@@ -200,6 +201,15 @@ QObjectList LeechCraft::Core::GetSettables () const
 QObjectList LeechCraft::Core::GetShortcuts () const
 {
 	return PluginManager_->GetAllCastableRoots<IHaveSettings*> ();
+}
+
+QList<QAction*> LeechCraft::Core::GetActions2Embed () const
+{
+	QList<IToolBarEmbedder*> plugins = PluginManager_->GetAllCastableTo<IToolBarEmbedder*> ();
+	QList<QAction*> actions;
+	Q_FOREACH (IToolBarEmbedder *plugin, plugins)
+		actions += plugin->GetActions ();
+	return actions;
 }
 
 QAbstractItemModel* LeechCraft::Core::GetPluginsModel () const

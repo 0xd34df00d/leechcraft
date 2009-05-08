@@ -1,13 +1,11 @@
 #include "networkmonitor.h"
 #include <typeinfo>
 #include <QMenu>
-#include <interfaces/iproxyobject.h>
 #include "requestmodel.h"
 #include "headermodel.h"
 
-using namespace LeechCraft::Poshuku;
-using namespace LeechCraft::Poshuku::Plugins;
-using namespace LeechCraft::Poshuku::Plugins::NetworkMonitor;
+using namespace LeechCraft::Plugins;
+using namespace LeechCraft::Plugins::NetworkMonitor;
 
 void Plugin::Init ()
 {
@@ -27,20 +25,37 @@ void Plugin::Init ()
 			SIGNAL (toggled (bool)),
 			Model_,
 			SLOT (setClear (bool)));
+
+	connect (NetworkAccessManager_,
+			SIGNAL (requestCreated (QNetworkAccessManager::Operation,
+					const QNetworkRequest&, QNetworkReply*)),
+			Ui_.RequestsView_->model (),
+			SLOT (handleRequest (QNetworkAccessManager::Operation,
+					const QNetworkRequest&, QNetworkReply*)));
+
+	QAction *showAction = new QAction (tr ("Network monitor..."),
+			this);
+	showAction->setProperty ("ActionIcon", "networkmonitor_plugin");
+	connect (showAction,
+			SIGNAL (triggered ()),
+			this,
+			SLOT (show ()));
+	Actions_.push_back (showAction);
 }
 
 void Plugin::Release ()
 {
+	qDeleteAll (Actions_);
 }
 
 QString Plugin::GetName () const
 {
-	return "Poshuku NetworkMonitor";
+	return "NetworkMonitor";
 }
 
 QString Plugin::GetInfo () const
 {
-	return tr ("Monitors network activity.");
+	return tr ("Monitors HTTP network requests.");
 }
 
 QIcon Plugin::GetIcon () const
@@ -55,7 +70,7 @@ QStringList Plugin::Provides () const
 
 QStringList Plugin::Needs () const
 {
-	return QStringList ("webbrowser");
+	return QStringList ();
 }
 
 QStringList Plugin::Uses () const
@@ -67,24 +82,15 @@ void Plugin::SetProvider (QObject*, const QString&)
 {
 }
 
-QByteArray Plugin::GetPluginClass () const
+QList<QAction*> Plugin::GetActions () const
 {
-	return QByteArray (typeid (LeechCraft::Poshuku::PluginBase).name ());
+	return Actions_;
 }
 
-void Plugin::Init (IProxyObject *o)
+void Plugin::SetNetworkAccessManager (QNetworkAccessManager *nam)
 {
-	Object_ = o;
-	o->GetPluginsMenu ()->addAction (tr ("Network monitor..."),
-			this,
-			SLOT (show ()));
-	connect (o->GetNetworkAccessManager (),
-			SIGNAL (requestCreated (QNetworkAccessManager::Operation,
-					const QNetworkRequest&, QNetworkReply*)),
-			Ui_.RequestsView_->model (),
-			SLOT (handleRequest (QNetworkAccessManager::Operation,
-					const QNetworkRequest&, QNetworkReply*)));
+	NetworkAccessManager_ = nam;
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku_networkmonitor, Plugin);
+Q_EXPORT_PLUGIN2 (leechcraft_networkmonitor, Plugin);
 

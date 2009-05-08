@@ -1,6 +1,6 @@
 #include "headermodel.h"
 
-using namespace LeechCraft::Poshuku::Plugins::NetworkMonitor;
+using namespace LeechCraft::Plugins::NetworkMonitor;
 
 HeaderModel::HeaderModel (QObject *parent)
 : QStandardItemModel (parent)

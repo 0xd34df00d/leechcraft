@@ -236,7 +236,7 @@ Depends: libc6,
  libstdc++6,
  leechcraft-xmlsettingsdialog (= ${Source-Version}),
  leechcraft-plugininterface (= ${Source-Version}),
- leechcraft-poshuku-fua (= ${Source-Version}),
+ leechcraft-plugin-poshuku (= ${Source-Version}),
  leechcraft (= ${Source-Version})
 Homepage: http://deviant-soft.ws
 Description: Fake user agent plugin for Web browser for LeechCraft.
@@ -252,18 +252,20 @@ Description: Fake user agent plugin for Web browser for LeechCraft.
  This package contains a plugin for the Poshuku web browser that allows
  to set fake user agents for different domains.
 
-Package: leechcraft-plugin-poshuku-networkmonitor
+Package: leechcraft-plugin-networkmonitor
 Section: net
 Architecture: i386 i586 i686 amd64
 Depends: libc6,
  libgcc1,
  libstdc++6,
+ libqt4-core (>= 4.5),
+ libqt4-gui (>= 4.5),
+ libqt4-network (>= 4.5),
  leechcraft-xmlsettingsdialog (= ${Source-Version}),
  leechcraft-plugininterface (= ${Source-Version}),
- leechcraft-poshuku-fua (= ${Source-Version}),
  leechcraft (= ${Source-Version})
 Homepage: http://deviant-soft.ws
-Description: Fake user agent plugin for Web browser for LeechCraft.
+Description: Network monitor plugin for LeechCraft.
  LeechCraft is a crossplatform and feature-rich framework intended for
  building internet-related applications via combining different
  abstract modules (plugins). LeechCraft would then connect them to each
@@ -273,8 +275,8 @@ Description: Fake user agent plugin for Web browser for LeechCraft.
  Official plugins currently include BitTorrent client, a web browser,
  feed reader, different search clients and much more.
  .
- This package contains a plugin for the Poshuku web browser that shows
- HTTP requests passing around.
+ This package contains a monitor for HTTP requests passing around from
+ and to other plugins.
 
 Package: leechcraft-plugin-seekthru
 Section: net
