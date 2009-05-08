@@ -25,6 +25,7 @@ public:
 	 * @sa Release
 	 */
     virtual void Init () = 0;
+
 	/** @brief Returns the name of the plugin.
 	 *
 	 * This name is used only for the UI, all internals communicate with
@@ -38,6 +39,7 @@ public:
 	 * @sa GetIcon
 	 */
     virtual QString GetName () const = 0;
+
 	/** @brief Returns the information string about the plugin.
 	 *
 	 * Information string is only used to describe the plugin to the
@@ -50,6 +52,7 @@ public:
 	 * @sa GetInfo
 	 */
     virtual QString GetInfo () const = 0;
+
 	/** @brief Returns the list of provided features.
 	 *
 	 * The return value is used by LeechCraft to calculate the
@@ -66,6 +69,7 @@ public:
 	 * @sa SetProvider
 	 */
     virtual QStringList Provides () const = 0;
+
 	/** @brief Returns the list of needed features.
 	 *
 	 * The return value is used by LeechCraft to calculate the
@@ -98,6 +102,7 @@ public:
 	 * @sa SetProvider
 	 */
     virtual QStringList Needs () const = 0;
+
 	/** @brief Returns the list of used features.
 	 *
 	 * The return value is used by LeechCraft to calculate the
@@ -121,6 +126,7 @@ public:
 	 * @sa SetProvider
 	 */
     virtual QStringList Uses () const = 0;
+
 	/** @brief Sets the provider plugin for a given feature.
 	 *
 	 * This function is called by LeechCraft after dependency
@@ -139,6 +145,7 @@ public:
 	 */
     virtual void SetProvider (QObject* object,
 			const QString& feature) = 0;
+
 	/** @brief Destroys the plugin.
 	 *
 	 * This function is called to notify that the plugin would be
@@ -150,6 +157,7 @@ public:
 	 * @sa Init
 	 */
     virtual void Release () = 0;
+
 	/** @brief Returns the plugin icon.
 	 *
 	 * The icon is used only in GUI stuff.

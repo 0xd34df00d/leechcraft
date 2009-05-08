@@ -20,6 +20,7 @@ public:
 	 * @param[in] parent Pointer to parent widget.
 	 */
     virtual void SetParent (QWidget *parent) = 0;
+
 	/** @brief Shows the plugin's main window.
 	 *
 	 * This function is called by LeechCraft when the user has done an

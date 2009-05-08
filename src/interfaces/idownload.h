@@ -10,7 +10,7 @@
  * by LeechCraft and other plugins as download providers should
  * implement this interface.
  *
- * @sa IJobHolder
+ * @sa IJobHolder, IEntityHandler
  */
 class IDownload
 {
@@ -61,7 +61,7 @@ public:
 	 */
     virtual void StopAll () = 0;
 
-	/** @brief Returns whether plugin can handle given string.
+	/** @brief Returns whether plugin can handle given entity.
 	 *
 	 * This function is used to query every loaded plugin providing the
 	 * IDownload interface whether it could handle the entity entered by
@@ -72,7 +72,7 @@ public:
 	 * @param[in] entity A DownloadEntity structure.
 	 *
 	 * @sa AddJob
-	 * @sa LeechCraft::TaskParameters
+	 * @sa LeechCraft::DownloadEntity
 	 */
     virtual bool CouldDownload (const LeechCraft::DownloadEntity& entity) const = 0;
 
@@ -81,10 +81,10 @@ public:
 	 * Adds the job to the downloader and returns the ID of the newly
 	 * added job back to identify it.
 	 *
+	 * @param[in] entity A DownloadEntity structure.
 	 * @return ID of the job for the other plugins to use.
 	 *
-	 * @sa DownloadParams
-	 * @sa LeechCraft::TaskParameters
+	 * @sa LeechCraft::DownloadEntity
 	 */
     virtual int AddJob (LeechCraft::DownloadEntity entity) = 0;
 

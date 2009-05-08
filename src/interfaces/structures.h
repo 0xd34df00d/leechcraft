@@ -66,6 +66,7 @@ namespace LeechCraft
 		 * could contain previously mentioned entities as well.
 		 */
 		QByteArray Entity_;
+
 		/** @brief Source or destination.
 		 *
 		 * In the context of entity delegation this parameter represents
@@ -75,14 +76,18 @@ namespace LeechCraft
 		 * this entity came - original URL, for example.
 		 */
 		QString Location_;
+
 		/** @brief MIME type of the entity.
 		 *
 		 * An empty mime is considered to be no mime.
 		 */
 		QString Mime_;
+
+		/** @brief Parameters of this task.
+		 */
 		TaskParameters Parameters_;
+
 		/** @brief Additional parameters.
-		 *
 		 */
 		QVariant Additional_;
 	};

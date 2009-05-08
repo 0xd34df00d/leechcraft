@@ -25,6 +25,7 @@ public:
 	 * @sa ExportData
 	 */
 	virtual void ImportSettings (const QByteArray& data) = 0;
+
 	/** @brief Loads data.
 	 *
 	 * Loads the data from byte array previously retrieved from this
@@ -37,6 +38,7 @@ public:
 	 * @sa ExportData
 	 */
 	virtual void ImportData (const QByteArray& data) = 0;
+
 	/** @brief Saves settings.
 	 *
 	 * Saves the settings into byte array which should be loadable with
@@ -49,6 +51,7 @@ public:
 	 * @sa ExportData
 	 */
 	virtual QByteArray ExportSettings () const = 0;
+
 	/** @brief Loads settings.
 	 *
 	 * Saves the data into byte array which should be loadable with

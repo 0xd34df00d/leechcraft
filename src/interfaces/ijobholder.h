@@ -63,6 +63,7 @@ public:
 	 * @sa GetAdditionalInfo
 	 */
     virtual QAbstractItemModel* GetRepresentation () const = 0;
+
 	/** @brief Returns the history model.
 	 *
 	 * If the returned value is 0, it is ignored. Otherwise it would be
@@ -75,6 +76,7 @@ public:
 	 * @sa GetAdditionalInfo
 	 */
 	virtual LeechCraft::Util::HistoryModel* GetHistory () const = 0;
+
 	/** @brief Notifies plugin about item selection.
 	 * 
 	 * @param item Selected item.
