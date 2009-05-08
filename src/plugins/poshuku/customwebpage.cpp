@@ -466,7 +466,9 @@ bool CustomWebPage::acceptNavigationRequest (QWebFrame *frame,
 			<< file.errorString ();
 	if (type == NavigationTypeFormSubmitted)
 	{
+#ifdef QT_DEBUG
 		qDebug () << frame << request.url ();
+#endif
 		PageFormsData_t data = JSProxy_->GetForms ();
 	}
 

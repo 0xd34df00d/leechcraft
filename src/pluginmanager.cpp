@@ -665,6 +665,7 @@ void LeechCraft::PluginManager::Release (DepTreeItem_ptr item)
 	if (item->Initialized_)
 	{
 		IInfo *ii = qobject_cast<IInfo*> (item->Plugin_);
+#ifdef QT_DEBUG
 		try
 		{
 			qDebug () << Q_FUNC_INFO << ii->GetName ();
@@ -674,6 +675,7 @@ void LeechCraft::PluginManager::Release (DepTreeItem_ptr item)
 			qWarning () << Q_FUNC_INFO
 				<< "failed to get the name of the unloading object";
 		}
+#endif
 
 		try
 		{

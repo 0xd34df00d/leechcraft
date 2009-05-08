@@ -319,11 +319,15 @@ void LeechCraft::MainWindow::on_ActionQuit__triggered ()
 
 	TrayIcon_->hide ();
 	delete TrayIcon_;
+#ifdef QT_DEBUG
 	qDebug () << "Releasing XmlSettingsManager";
+#endif
 	delete XmlSettingsDialog_;
 	delete SettingsSink_;
 	XmlSettingsManager::Instance ()->Release ();
+#ifdef QT_DEBUG
 	qDebug () << "Destroyed fine";
+#endif
 
 	qApp->quit ();
 }
@@ -360,7 +364,9 @@ void LeechCraft::MainWindow::on_ActionLogger__triggered ()
 void LeechCraft::MainWindow::updatePanes (const QItemSelection& newIndexes,
 		const QItemSelection& oldIndexes)
 {
+#ifdef QT_DEBUG
 	qDebug () << Q_FUNC_INFO;
+#endif
 
 	QModelIndex oldIndex, newIndex;
 	if (oldIndexes.size ())
@@ -370,12 +376,16 @@ void LeechCraft::MainWindow::updatePanes (const QItemSelection& newIndexes,
 
 	if (!newIndex.isValid ())
 	{
+#ifdef QT_DEBUG
 		qDebug () << "invalidating";
+#endif
 
 		Core::Instance ().SetNewRow (newIndex);
 		if (oldIndex.isValid ())
 		{
+#ifdef QT_DEBUG
 			qDebug () << "erasing older stuff";
+#endif
 			QToolBar *oldControls = Core::Instance ().GetControls (oldIndex);
 			if (oldControls)
 				removeToolBar (oldControls);
@@ -385,7 +395,9 @@ void LeechCraft::MainWindow::updatePanes (const QItemSelection& newIndexes,
 	else if (oldIndex.isValid () &&
 			Core::Instance ().SameModel (newIndex, oldIndex))
 	{
+#ifdef QT_DEBUG
 		qDebug () << "setting new row";
+#endif
 		Core::Instance ().SetNewRow (newIndex);
 	}
 	else if (newIndex.isValid ())
@@ -397,14 +409,18 @@ void LeechCraft::MainWindow::updatePanes (const QItemSelection& newIndexes,
 
 		if (oldIndex.isValid ())
 		{
+#ifdef QT_DEBUG
 			qDebug () << "erasing older stuff";
+#endif
 			QToolBar *oldControls = Core::Instance ().GetControls (oldIndex);
 			if (oldControls)
 				removeToolBar (oldControls);
 			Ui_.ControlsDockWidget_->hide ();
 		}
 
+#ifdef QT_DEBUG
 		qDebug () << "inserting newer stuff" << newIndex << controls << addiInfo;
+#endif
 
 		Core::Instance ().SetNewRow (newIndex);
 		
