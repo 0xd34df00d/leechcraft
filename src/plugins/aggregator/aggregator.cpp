@@ -152,7 +152,6 @@ void Aggregator::Init ()
 	Impl_->RegexpMatcherUi_.reset (new RegexpMatcherUi (this));
 
 	Impl_->ItemBucket_.reset (new ItemBucket (this));
-	dynamic_cast<QVBoxLayout*> (layout ())->insertWidget (0, Impl_->ToolBar_);
 
 	Impl_->Ui_.Feeds_->setModel (Core::Instance ().GetChannelsModel ());
 	Impl_->Ui_.Feeds_->addAction (Impl_->ActionMarkChannelAsRead_);
@@ -251,6 +250,11 @@ QIcon Aggregator::GetIcon () const
 QWidget* Aggregator::GetTabContents ()
 {
 	return this;
+}
+
+QToolBar* Aggregator::GetToolBar () const
+{
+	return Impl_->ToolBar_;
 }
 
 boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> Aggregator::GetSettingsDialog () const

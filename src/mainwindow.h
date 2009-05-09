@@ -51,6 +51,7 @@ namespace LeechCraft
 		bool IsShown_;
 		bool WasMaximized_;
 		QTimer *FilterTimer_;
+		QToolBar *CurrentToolBar_;
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
 		virtual ~MainWindow ();

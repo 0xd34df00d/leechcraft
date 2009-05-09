@@ -2,6 +2,8 @@
 #define INTERFACES_IMULTITABS_H
 #include <QtPlugin>
 
+class QToolBar;
+
 /** @brief Interface for a single tab in a multitab plugin.
  *
  * Provides means to communicate with the single tab in a plugin.
@@ -17,6 +19,15 @@ public:
 	 * via LeechCraft's UI. For example, clicking the "x" on the tab.
 	 */
 	virtual void Remove () = 0;
+
+	/** @brief Requests page's toolbar.
+	 *
+	 * The returned toolbar would be shown on top of the LeechCraft's
+	 * main window. If there is no toolbar, 0 should be returned.
+	 *
+	 * @return The toolbar of this page.
+	 */
+	virtual QToolBar* GetToolBar () const = 0;
 };
 
 /** @brief Interface for plugins having (and opening/closing) multiple

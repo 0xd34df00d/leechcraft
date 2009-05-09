@@ -167,8 +167,6 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	ToolBar_->addAction (NewTab_);
 	ToolBar_->addAction (CloseTab_);
 
-	static_cast<QVBoxLayout*> (layout ())->insertWidget (0, ToolBar_);
-
 	connect (Ui_.WebView_,
 			SIGNAL (addToFavorites (const QString&, const QString&)),
 			this,
@@ -465,6 +463,11 @@ QMap<int, ActionInfo> BrowserWidget::GetActionInfo () const
 void BrowserWidget::Remove ()
 {
 	emit needToClose ();
+}
+
+QToolBar* BrowserWidget::GetToolBar () const
+{
+	return ToolBar_;
 }
 
 void BrowserWidget::PrintImpl (bool preview, QWebFrame *frame)

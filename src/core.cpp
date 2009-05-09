@@ -227,6 +227,11 @@ PluginManager* LeechCraft::Core::GetPluginManager () const
 	return PluginManager_;
 }
 
+QToolBar* LeechCraft::Core::GetToolBar (int index) const
+{
+	return TabContainer_->GetToolBar (index);
+}
+
 QToolBar* LeechCraft::Core::GetControls (const QModelIndex& index) const
 {
 	QVariant data = index.data (RoleControls);
@@ -1374,6 +1379,8 @@ void LeechCraft::Core::InitEmbedTab (QObject *plugin)
 		TabContainer_->add (ii->GetName (),
 				iet->GetTabContents (),
 				ii->GetIcon ());
+		TabContainer_->SetToolBar (iet->GetToolBar (),
+				iet->GetTabContents ());
 		connect (plugin,
 				SIGNAL (bringToFront ()),
 				this,

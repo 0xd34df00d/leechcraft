@@ -45,6 +45,7 @@ public:
     virtual void Release ();
     virtual QIcon GetIcon () const;
 	virtual QWidget* GetTabContents ();
+	virtual QToolBar* GetToolBar () const;
 	fsirc * ircClient;
 signals:
 	void gotEntity(QString);

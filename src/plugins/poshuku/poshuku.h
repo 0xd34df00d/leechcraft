@@ -52,6 +52,7 @@ public:
 	QIcon GetIcon () const;
 
 	QWidget* GetTabContents ();
+	QToolBar* GetToolBar () const;
 
 	QByteArray GetExpectedPluginClass () const;
 	void AddPlugin (QObject*);

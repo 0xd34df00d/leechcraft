@@ -3,6 +3,7 @@
 #include <QtPlugin>
 
 class QWidget;
+class QToolBar;
 
 /** @brief Interface for plugins embedding a tab into main LeechCraft's
  * window.
@@ -35,6 +36,15 @@ public:
 	 * @return Widget with tab contents.
 	 */
 	virtual QWidget* GetTabContents () = 0;
+
+	/** @brief Requests plugin's toolbar.
+	 *
+	 * The returned toolbar would be shown on top of the LeechCraft's
+	 * main window. If there is no toolbar, 0 should be returned.
+	 *
+	 * @return The toolbar of this plugin.
+	 */
+	virtual QToolBar* GetToolBar () const = 0;
 
 	/** @brief Virtual destructor.
 	 */

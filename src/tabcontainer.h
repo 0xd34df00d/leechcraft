@@ -2,9 +2,11 @@
 #define TABCONTAINER_H
 #include <QObject>
 #include <QStringList>
+#include <QMap>
 
 class QIcon;
 class QKeyEvent;
+class QToolBar;
 
 namespace LeechCraft
 {
@@ -19,11 +21,14 @@ namespace LeechCraft
 		QList<QWidget*> Widgets_;
 		QStringList TabNames_;
 		QList<QKeyEvent*> Events_;
+		QMap<QWidget*, QToolBar*> StaticBars_;
 	public:
 		TabContainer (TabWidget*, QObject* = 0);
 		virtual ~TabContainer ();
 
 		QWidget* GetWidget (int) const;
+		QToolBar* GetToolBar (int) const;
+		void SetToolBar (QToolBar*, QWidget*);
 		void RotateLeft ();
 		void RotateRight ();
 		void ToggleMultiwindow ();

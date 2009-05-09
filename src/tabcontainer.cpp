@@ -33,6 +33,48 @@ QWidget* TabContainer::GetWidget (int position) const
 		return 0;
 }
 
+QToolBar* TabContainer::GetToolBar (int position) const
+{
+	QWidget *widget = TabWidget_->widget (position);
+	if (position >= Core::Instance ().CountUnremoveableTabs ())
+	{
+		IMultiTabsWidget *itw = qobject_cast<IMultiTabsWidget*> (widget);
+		if (!itw)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "casting to ITabWidget* failed for"
+				<< TabWidget_->widget (position);
+			return 0;
+		}
+		try
+		{
+			return itw->GetToolBar ();
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "failed to ITabWidget::GetToolBar"
+				<< e.what ()
+				<< widget;
+			return 0;
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "failed to ITabWidget::GetToolBar"
+				<< widget;
+			return 0;
+		}
+	}
+	else
+		return StaticBars_ [widget];
+}
+
+void TabContainer::SetToolBar (QToolBar *bar, QWidget *tw)
+{
+	StaticBars_ [tw] = bar;
+}
+
 void TabContainer::RotateLeft ()
 {
 	if (TabMode_)

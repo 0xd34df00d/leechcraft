@@ -96,5 +96,10 @@ QWidget* Chatter::GetTabContents ()
 	return ircClient;
 }
 
+QToolBar* Chatter::GetToolBar () const
+{
+	return 0;
+}
+
 Q_EXPORT_PLUGIN2 (leechcraft_chatter, Chatter);
 

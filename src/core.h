@@ -90,6 +90,16 @@ namespace LeechCraft
 		QAbstractItemModel* GetPluginsModel () const;
 		QAbstractItemModel* GetTasksModel () const;
 		PluginManager* GetPluginManager () const;
+
+		/** Returns toolbar for plugin that represents the tab widget's
+		 * page with given index. If the index is invalid or plugin
+		 * doesn't provide a toolbar, 0 is returned.
+		 *
+		 * @param[in] index Index of the tab widget's page with the
+		 * plugin.
+		 * @return Toolbar for the given plugin's page.
+		 */
+		QToolBar* GetToolBar (int index) const;
 		
 		/** Returns controls for the model with a given index. The
 		 * return value can't be NULL.

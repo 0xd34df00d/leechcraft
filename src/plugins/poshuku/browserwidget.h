@@ -89,6 +89,7 @@ public:
 	QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
 
 	void Remove ();
+	QToolBar* GetToolBar () const;
 private:
 	void PrintImpl (bool, QWebFrame*);
 private slots:

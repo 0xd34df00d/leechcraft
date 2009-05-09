@@ -191,6 +191,11 @@ QWidget* Poshuku::GetTabContents ()
 	return this;
 }
 
+QToolBar* Poshuku::GetToolBar () const
+{
+	return Ui_.MainView_->GetToolBar ();
+}
+
 QByteArray Poshuku::GetExpectedPluginClass () const
 {
 	return Core::Instance ().GetExpectedPluginClass ();

@@ -29,6 +29,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , IsShown_ (true)
 , WasMaximized_ (false)
 , FilterTimer_ (new QTimer (this))
+, CurrentToolBar_ (0)
 {
 	InitializeInterface ();
 
@@ -370,6 +371,12 @@ void LeechCraft::MainWindow::on_ActionLogger__triggered ()
 
 void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
 {
+	if (CurrentToolBar_)
+	{
+		removeToolBar (CurrentToolBar_);
+		CurrentToolBar_ = 0;
+	}
+
 	if (index == 0)
 	{
 		QItemSelection sel = Ui_.PluginsTasksTree_->
@@ -413,6 +420,13 @@ void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
 
 			if (controls)
 				removeToolBar (controls);
+		}
+
+		CurrentToolBar_ = Core::Instance ().GetToolBar (index);
+		if (CurrentToolBar_)
+		{
+			addToolBar (CurrentToolBar_);
+			CurrentToolBar_->show ();
 		}
 	}
 }
