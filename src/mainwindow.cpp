@@ -368,6 +368,55 @@ void LeechCraft::MainWindow::on_ActionLogger__triggered ()
 	LogToolBox_->show ();
 }
 
+void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
+{
+	if (index == 0)
+	{
+		QItemSelection sel = Ui_.PluginsTasksTree_->
+			selectionModel ()->selection ();
+		if (sel.size ())
+		{
+			QModelIndex ri = sel.at (0).topLeft ();
+			QToolBar *controls = Core::Instance ()
+						.GetControls (ri);
+			QWidget *addiInfo = Core::Instance ()
+						.GetAdditionalInfo (ri);
+
+			Core::Instance ().SetNewRow (ri);
+			
+			if (controls)
+			{
+				controls->setWindowTitle (tr ("Plugin control"));
+				controls->setFloatable (true);
+				controls->setMovable (true);
+				addToolBar (controls);
+				controls->show ();
+			}
+			if (addiInfo)
+			{
+				if (addiInfo->parent () != this)
+					addiInfo->setParent (this);
+				Ui_.ControlsDockWidget_->setWidget (addiInfo);
+				Ui_.ControlsDockWidget_->show ();
+			}
+		}
+	}
+	else
+	{
+		QItemSelection sel = Ui_.PluginsTasksTree_->
+			selectionModel ()->selection ();
+		if (sel.size ())
+		{
+			QModelIndex ri = sel.at (0).topLeft ();
+			QToolBar *controls = Core::Instance ()
+						.GetControls (ri);
+
+			if (controls)
+				removeToolBar (controls);
+		}
+	}
+}
+
 void LeechCraft::MainWindow::updatePanes (const QItemSelection& newIndexes,
 		const QItemSelection& oldIndexes)
 {
