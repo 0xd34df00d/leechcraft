@@ -46,6 +46,7 @@ class BrowserWidget : public QWidget
 	QMenu *RecentlyClosed_;
 	QMenu *ExternalLinks_;
 	bool HtmlMode_;
+	bool Own_;
 public:
 	enum Actions
 	{
@@ -75,6 +76,7 @@ public:
 	BrowserWidget (QWidget* = 0);
 	virtual ~BrowserWidget ();
 
+	void Deown ();
 	void InitShortcuts ();
 
 	void SetUnclosers (const QList<QAction*>&);

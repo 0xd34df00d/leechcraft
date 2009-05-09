@@ -35,6 +35,7 @@ using LeechCraft::ActionInfo;
 BrowserWidget::BrowserWidget (QWidget *parent)
 : QWidget (parent)
 , HtmlMode_ (false)
+, Own_ (true)
 {
 	Ui_.setupUi (this);
 
@@ -166,6 +167,8 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 
 	ToolBar_->addAction (NewTab_);
 	ToolBar_->addAction (CloseTab_);
+
+	static_cast<QVBoxLayout*> (layout ())->insertWidget (0, ToolBar_);
 
 	connect (Ui_.WebView_,
 			SIGNAL (addToFavorites (const QString&, const QString&)),
@@ -307,7 +310,13 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 
 BrowserWidget::~BrowserWidget ()
 {
-	Core::Instance ().Unregister (this);
+	if (Own_)
+		Core::Instance ().Unregister (this);
+}
+
+void BrowserWidget::Deown ()
+{
+	Own_ = false;
 }
 
 void BrowserWidget::InitShortcuts ()
@@ -467,7 +476,7 @@ void BrowserWidget::Remove ()
 
 QToolBar* BrowserWidget::GetToolBar () const
 {
-	return ToolBar_;
+	return Own_ ? ToolBar_ : 0;
 }
 
 void BrowserWidget::PrintImpl (bool preview, QWebFrame *frame)

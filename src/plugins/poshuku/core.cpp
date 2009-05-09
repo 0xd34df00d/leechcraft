@@ -217,6 +217,7 @@ BrowserWidget* Core::NewURL (const QString& url, bool raise)
 IWebWidget* Core::GetWidget ()
 {
 	BrowserWidget *widget = new BrowserWidget ();
+	widget->Deown ();
 	widget->InitShortcuts ();
 	connect (widget,
 			SIGNAL (addToFavorites (const QString&, const QString&)),
