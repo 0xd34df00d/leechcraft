@@ -1230,7 +1230,11 @@ void LeechCraft::Core::saveCookies () const
 	QFile file (QDir::homePath () +
 			"/.leechcraft/core/cookies.txt");
 	if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
+	{
 		emit error (tr ("Could not save cookies, error opening cookie file."));
+		qWarning () << Q_FUNC_INFO
+			<< file.errorString ();
+	}
 	else
 		file.write (static_cast<CustomCookieJar*> (NetworkAccessManager_->cookieJar ())->Save ());
 }
