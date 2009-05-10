@@ -141,8 +141,6 @@ void CustomWebPage::handleContentsChanged ()
 	if (Core::Instance ().GetPluginManager ()->
 			HandleContentsChanged (this))
 		return;
-
-	emit filteredContentsChanged ();
 }
 
 void CustomWebPage::handleDatabaseQuotaExceeded (QWebFrame *frame, QString string)
@@ -150,8 +148,6 @@ void CustomWebPage::handleDatabaseQuotaExceeded (QWebFrame *frame, QString strin
 	if (Core::Instance ().GetPluginManager ()->
 			HandleDatabaseQuotaExceeded (this, frame, string))
 		return;
-
-	emit filteredDatabaseQuotaExceeded (frame, string);
 }
 
 void CustomWebPage::handleDownloadRequested (const QNetworkRequest& request)
@@ -169,8 +165,6 @@ void CustomWebPage::handleDownloadRequested (const QNetworkRequest& request)
 		QVariant ()
 	};
 	emit gotEntity (e);
-
-	emit filteredDownloadRequested (request);
 }
 
 void CustomWebPage::handleFrameCreated (QWebFrame *frame)
@@ -178,8 +172,6 @@ void CustomWebPage::handleFrameCreated (QWebFrame *frame)
 	if (Core::Instance ().GetPluginManager ()->
 			HandleFrameCreated (this, frame))
 		return;
-
-	emit filteredFrameCreated (frame);
 }
 
 void CustomWebPage::handleJavaScriptWindowObjectCleared ()
@@ -197,8 +189,6 @@ void CustomWebPage::handleGeometryChangeRequested (const QRect& rect)
 	if (Core::Instance ().GetPluginManager ()->
 			HandleGeometryChangeRequested (this, rect))
 		return;
-	
-	emit filteredGeometryChangeRequested (rect);
 }
 
 void CustomWebPage::handleLinkClicked (const QUrl& url)
@@ -206,8 +196,6 @@ void CustomWebPage::handleLinkClicked (const QUrl& url)
 	if (Core::Instance ().GetPluginManager ()->
 			HandleLinkClicked (this, url))
 		return;
-
-	emit filteredLinkClicked (url);
 }
 
 void CustomWebPage::handleLinkHovered (const QString& link,
@@ -216,8 +204,6 @@ void CustomWebPage::handleLinkHovered (const QString& link,
 	if (Core::Instance ().GetPluginManager ()->
 			HandleLinkHovered (this, link, title, context))
 		return;
-
-	emit filteredLinkHovered (link, title, context);
 }
 
 void CustomWebPage::handleLoadFinished (bool ok)
@@ -225,8 +211,6 @@ void CustomWebPage::handleLoadFinished (bool ok)
 	if (Core::Instance ().GetPluginManager ()->
 			HandleLoadFinished (this, ok))
 		return;
-
-	emit filteredLoadFinished (ok);
 }
 
 void CustomWebPage::handleLoadProgress (int progress)
@@ -234,8 +218,6 @@ void CustomWebPage::handleLoadProgress (int progress)
 	if (Core::Instance ().GetPluginManager ()->
 			HandleLoadProgress (this, progress))
 		return;
-
-	emit filteredLoadProgress (progress);
 }
 
 void CustomWebPage::handleLoadStarted ()
@@ -243,8 +225,6 @@ void CustomWebPage::handleLoadStarted ()
 	if (Core::Instance ().GetPluginManager ()->
 			HandleLoadStarted (this))
 		return;
-
-	emit filteredLoadStarted ();
 }
 
 void CustomWebPage::handleMenuBarVisibilityChangeRequested (bool vis)
@@ -252,8 +232,6 @@ void CustomWebPage::handleMenuBarVisibilityChangeRequested (bool vis)
 	if (Core::Instance ().GetPluginManager ()->
 			HandleMenuBarVisibilityChangeRequested (this, vis))
 		return;
-
-	emit filteredMenuBarVisibilityChangeRequested (vis);
 }
 
 void CustomWebPage::handleMicroFocusChanged ()
@@ -261,8 +239,6 @@ void CustomWebPage::handleMicroFocusChanged ()
 	if (Core::Instance ().GetPluginManager ()->
 			HandleMicroFocusChanged (this))
 		return;
-
-	emit filteredMicroFocusChanged ();
 }
 
 void CustomWebPage::handlePrintRequested (QWebFrame *frame)
@@ -270,8 +246,6 @@ void CustomWebPage::handlePrintRequested (QWebFrame *frame)
 	if (Core::Instance ().GetPluginManager ()->
 			HandlePrintRequested (this, frame))
 		return;
-
-	emit filteredPrintRequested (frame);
 }
 
 void CustomWebPage::handleRepaintRequested (const QRect& rect)
@@ -279,8 +253,6 @@ void CustomWebPage::handleRepaintRequested (const QRect& rect)
 	if (Core::Instance ().GetPluginManager ()->
 			HandleRepaintRequested (this, rect))
 		return;
-
-	emit filteredRepaintRequested (rect);
 }
 
 void CustomWebPage::handleRestoreFrameStateRequested (QWebFrame *frame)
@@ -288,8 +260,6 @@ void CustomWebPage::handleRestoreFrameStateRequested (QWebFrame *frame)
 	if (Core::Instance ().GetPluginManager ()->
 			HandleRestoreFrameStateRequested (this, frame))
 		return;
-
-	emit filteredRestoreFrameStateRequested (frame);
 }
 
 void CustomWebPage::handleSaveFrameStateRequested (QWebFrame *frame,
@@ -298,8 +268,6 @@ void CustomWebPage::handleSaveFrameStateRequested (QWebFrame *frame,
 	if (Core::Instance ().GetPluginManager ()->
 			HandleSaveFrameStateRequested (this, frame, item))
 		return;
-
-	emit filteredSaveFrameStateRequested (frame, item);
 }
 
 void CustomWebPage::handleScrollRequested (int dx, int dy, const QRect& rect)
@@ -307,8 +275,6 @@ void CustomWebPage::handleScrollRequested (int dx, int dy, const QRect& rect)
 	if (Core::Instance ().GetPluginManager ()->
 			HandleScrollRequested (this, dx, dy, rect))
 		return;
-
-	emit filteredScrollRequested (dx, dy, rect);
 }
 
 void CustomWebPage::handleSelectionChanged ()
@@ -316,8 +282,6 @@ void CustomWebPage::handleSelectionChanged ()
 	if (Core::Instance ().GetPluginManager ()->
 			HandleSelectionChanged (this))
 		return;
-
-	emit filteredSelectionChanged ();
 }
 
 void CustomWebPage::handleStatusBarMessage (const QString& msg)
@@ -325,8 +289,6 @@ void CustomWebPage::handleStatusBarMessage (const QString& msg)
 	if (Core::Instance ().GetPluginManager ()->
 			HandleStatusBarMessage (this, msg))
 		return;
-
-	emit filteredStatusBarMessage (msg);
 }
 
 void CustomWebPage::handleStatusBarVisibilityChangeRequested (bool vis)
@@ -334,8 +296,6 @@ void CustomWebPage::handleStatusBarVisibilityChangeRequested (bool vis)
 	if (Core::Instance ().GetPluginManager ()->
 			HandleStatusBarVisibilityChangeRequested (this, vis))
 		return;
-
-	emit filteredStatusBarVisibilityChangeRequested (vis);
 }
 
 void CustomWebPage::handleToolBarVisiblityChangeRequested (bool vis)
@@ -343,8 +303,6 @@ void CustomWebPage::handleToolBarVisiblityChangeRequested (bool vis)
 	if (Core::Instance ().GetPluginManager ()->
 			HandleToolBarVisibilityChangeRequested (this, vis))
 		return;
-
-	emit filteredToolBarVisiblityChangeRequested (vis);
 }
 
 void CustomWebPage::handleUnsupportedContent (QNetworkReply *reply)
@@ -428,8 +386,6 @@ void CustomWebPage::handleUnsupportedContent (QNetworkReply *reply)
 			}
 			break;
 	}
-
-	emit filteredUnsupportedContent (reply);
 }
 
 void CustomWebPage::handleWindowCloseRequested ()
@@ -437,8 +393,6 @@ void CustomWebPage::handleWindowCloseRequested ()
 	if (Core::Instance ().GetPluginManager ()->
 			HandleWindowCloseRequested (this))
 		return;
-
-	emit filteredWindowCloseRequested ();
 }
 
 bool CustomWebPage::acceptNavigationRequest (QWebFrame *frame,

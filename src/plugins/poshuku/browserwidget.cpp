@@ -265,7 +265,7 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 					const QString&)),
 			this,
 			SLOT (handleStatusBarMessage (const QString&)));
-	connect (Ui_.WebView_->page (),
+	connect (Ui_.WebView_,
 			SIGNAL (loadFinished (bool)),
 			this,
 			SLOT (handleLoadFinished ()));

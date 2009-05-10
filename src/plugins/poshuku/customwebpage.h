@@ -16,6 +16,8 @@ class CustomWebPage : public QWebPage
 
 	QUrl LoadingURL_;
 	boost::shared_ptr<JSProxy> JSProxy_;
+	typedef QMap<QWebFrame*, QWebHistoryItem*> Frame2History_t;
+	Frame2History_t Frame2History_;
 public:
 	CustomWebPage (QObject* = 0);
 	virtual ~CustomWebPage ();
@@ -62,29 +64,6 @@ protected:
 private:
 	QWebFrame* FindFrame (const QUrl&);
 signals:
-	void filteredContentsChanged ();
-	void filteredDatabaseQuotaExceeded (QWebFrame*, QString);
-	void filteredDownloadRequested (const QNetworkRequest&);
-	void filteredFrameCreated (QWebFrame*);
-	void filteredGeometryChangeRequested (const QRect&);
-	void filteredLinkClicked (const QUrl&);
-	void filteredLinkHovered (const QString&, const QString&, const QString&);
-	void filteredLoadFinished (bool);
-	void filteredLoadProgress (int);
-	void filteredLoadStarted ();
-	void filteredMenuBarVisibilityChangeRequested (bool);
-	void filteredMicroFocusChanged ();
-	void filteredPrintRequested (QWebFrame*);
-	void filteredRepaintRequested (const QRect&);
-	void filteredRestoreFrameStateRequested (QWebFrame*);
-	void filteredSaveFrameStateRequested (QWebFrame*, QWebHistoryItem*);
-	void filteredScrollRequested (int, int, const QRect&);
-	void filteredSelectionChanged ();
-	void filteredStatusBarMessage (const QString&);
-	void filteredStatusBarVisibilityChangeRequested (bool);
-	void filteredToolBarVisiblityChangeRequested (bool);
-	void filteredUnsupportedContent (QNetworkReply*);
-	void filteredWindowCloseRequested ();
 	void gotEntity (const LeechCraft::DownloadEntity&);
 	void loadingURL (const QUrl&);
 };

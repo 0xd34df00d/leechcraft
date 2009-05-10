@@ -44,11 +44,11 @@ CustomWebView::CustomWebView (QWidget *parent)
 			this,
 			SLOT (remakeURL (const QUrl&)));
 	connect (page,
-			SIGNAL (filteredPrintRequested (QWebFrame*)),
+			SIGNAL (printRequested (QWebFrame*)),
 			this,
 			SIGNAL (printRequested (QWebFrame*)));
 	connect (page,
-			SIGNAL (filteredWindowCloseRequested ()),
+			SIGNAL (windowCloseRequested ()),
 			this,
 			SIGNAL (closeRequested ()));
 }
