@@ -34,7 +34,8 @@ bool TabWidget::event (QEvent *e)
 	{
 		QHelpEvent *he = static_cast<QHelpEvent*> (e);
 		int index = tabBar ()->tabAt (he->pos ());
-		if (Widgets_.contains (index))
+		if (Widgets_.contains (index) &&
+				Widgets_ [index])
 		{
 			QxtToolTip::show (he->globalPos (), Widgets_ [index], tabBar ());
 			return true;
