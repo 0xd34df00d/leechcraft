@@ -17,6 +17,12 @@
    <iconset resource="mainresources.qrc">
     <normaloff>:/resources/images/mainapp.png</normaloff>:/resources/images/mainapp.png</iconset>
   </property>
+  <property name="iconSize">
+   <size>
+    <width>24</width>
+    <height>24</height>
+   </size>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="margin">
