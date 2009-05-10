@@ -53,6 +53,11 @@ class Core : public QObject
 
 	Core ();
 public:
+	struct UncloseData
+	{
+		QUrl URL_;
+	};
+
 	static Core& Instance ();
 	void Init ();
 	void Release ();
@@ -110,6 +115,8 @@ signals:
 	void couldHandle (const LeechCraft::DownloadEntity&, bool*);
 	void newUnclose (QAction*);
 };
+
+Q_DECLARE_METATYPE (Core::UncloseData);
 
 #endif
 

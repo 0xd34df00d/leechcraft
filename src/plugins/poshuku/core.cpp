@@ -18,6 +18,7 @@
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QWebHistory>
 #include <QtDebug>
 #include <plugininterface/proxy.h>
 #include <interfaces/ihaveshortcuts.h>
@@ -322,7 +323,11 @@ void Core::Unregister (BrowserWidget *widget)
 			title = title.left (50) + "...";
 		QAction *action = new QAction (widget->GetView ()->icon (),
 				title, this);
-		action->setData (widget->GetView ()->url ());
+		UncloseData ud =
+		{
+			widget->GetView ()->url (),
+		};
+		action->setData (QVariant::fromValue (ud));
 
 		connect (action,
 				SIGNAL (triggered ()),
@@ -469,7 +474,8 @@ void Core::exportXbel ()
 void Core::handleUnclose ()
 {
 	QAction *action = qobject_cast<QAction*> (sender ());
-	NewURL (action->data ().toUrl ().toString ());
+	UncloseData ud = action->data ().value<UncloseData> ();
+	NewURL (ud.URL_.toString ());
 	Unclosers_.removeAll (action);
 	action->deleteLater ();
 }
