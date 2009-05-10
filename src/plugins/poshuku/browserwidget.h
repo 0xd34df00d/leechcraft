@@ -10,6 +10,7 @@
 
 class QToolBar;
 class QMovie;
+class FindDialog;
 
 class BrowserWidget : public QWidget
 					, public IWebWidget
@@ -45,6 +46,7 @@ class BrowserWidget : public QWidget
 	boost::shared_ptr<QMovie> Loading_;
 	QMenu *RecentlyClosed_;
 	QMenu *ExternalLinks_;
+	FindDialog *FindDialog_;
 	bool HtmlMode_;
 	bool Own_;
 public:

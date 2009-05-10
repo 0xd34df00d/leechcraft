@@ -306,6 +306,14 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	QTimer::singleShot (100,
 			this,
 			SLOT (focusLineEdit ()));
+
+	FindDialog_ = new FindDialog (Ui_.WebFrame_);
+	FindDialog_->hide ();
+	
+	connect (FindDialog_,
+			SIGNAL (next (const QString&, QWebPage::FindFlags)),
+			this,
+			SLOT (findText (const QString&, QWebPage::FindFlags)));
 }
 
 BrowserWidget::~BrowserWidget ()
@@ -542,21 +550,14 @@ void BrowserWidget::handleAdd2Favorites ()
 
 void BrowserWidget::handleFind ()
 {
-	FindDialog *dialog = new FindDialog (Ui_.WebFrame_);
-	
-	connect (dialog,
-			SIGNAL (next (const QString&, QWebPage::FindFlags)),
-			this,
-			SLOT (findText (const QString&, QWebPage::FindFlags)));
-
-	dialog->show ();
+	FindDialog_->show ();
 }
 
 void BrowserWidget::findText (const QString& text,
 		QWebPage::FindFlags flags)
 {
 	bool found = Ui_.WebView_->page ()->findText (text, flags);
-	static_cast<FindDialog*> (sender ())->SetSuccessful (found);
+	FindDialog_->SetSuccessful (found);
 }
 
 void BrowserWidget::handleViewPrint (QWebFrame *frame)

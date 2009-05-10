@@ -43,6 +43,6 @@ void FindDialog::SetSuccessful (bool success)
 
 void FindDialog::reject ()
 {
-	deleteLater ();
+	hide ();
 }
 
