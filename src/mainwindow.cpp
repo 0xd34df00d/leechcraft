@@ -389,8 +389,6 @@ void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
 			QWidget *addiInfo = Core::Instance ()
 						.GetAdditionalInfo (ri);
 
-			Core::Instance ().SetNewRow (ri);
-			
 			if (controls)
 			{
 				controls->setWindowTitle (tr ("Plugin control"));
