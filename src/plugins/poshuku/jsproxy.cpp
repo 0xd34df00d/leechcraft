@@ -11,8 +11,12 @@ JSProxy::JSProxy (QObject *parent)
 PageFormsData_t JSProxy::GetForms ()
 {
 	PageFormsData_t result = Current_;
-	Current_.clear ();
 	return result;
+}
+
+void JSProxy::ClearForms ()
+{
+	Current_.clear ();
 }
 
 void JSProxy::setFormElement (const QString& url,

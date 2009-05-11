@@ -409,22 +409,7 @@ bool CustomWebPage::acceptNavigationRequest (QWebFrame *frame,
 		return false;
 	}
 
-	QWebFrame *formFrame = frame ? frame : mainFrame ();
-	QFile file (":/resources/scripts/formquery.js");
-	if (file.open (QIODevice::ReadOnly))
-		formFrame->evaluateJavaScript (file.readAll ());
-	else
-		qWarning () << Q_FUNC_INFO
-			<< "could not open internal file"
-			<< file.fileName ()
-			<< file.errorString ();
-	if (type == NavigationTypeFormSubmitted)
-	{
-#ifdef QT_DEBUG
-		qDebug () << frame << request.url ();
-#endif
-		PageFormsData_t data = JSProxy_->GetForms ();
-	}
+	HandleForms (frame, request, type);
 
 	if ((type == NavigationTypeLinkClicked ||
 				type == NavigationTypeOther) &&
@@ -561,5 +546,46 @@ QWebFrame* CustomWebPage::FindFrame (const QUrl& url)
 		frames << frame->childFrames ();
 	}
 	return 0;
+}
+
+void CustomWebPage::HandleForms (QWebFrame *frame,
+		const QNetworkRequest& request, QWebPage::NavigationType type)
+{
+	JSProxy_->ClearForms ();
+
+	QWebFrame *formFrame = frame ? frame : mainFrame ();
+	QFile file (":/resources/scripts/formquery.js");
+	if (file.open (QIODevice::ReadOnly))
+		formFrame->evaluateJavaScript (file.readAll ());
+	else
+		qWarning () << Q_FUNC_INFO
+			<< "could not open internal file"
+			<< file.fileName ()
+			<< file.errorString ();
+	if (type == NavigationTypeFormSubmitted)
+	{
+		PageFormsData_t data = JSProxy_->GetForms ();
+#ifdef QT_DEBUG
+		qDebug () << frame << request.url () << data;
+#endif
+		if (data.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "no form data for"
+				<< frame
+				<< request.url ();
+			return;
+		}
+		if (data.size () > 1)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "too much form data for"
+				<< frame
+				<< data.size ()
+				<< request.url ();
+		}
+
+		emit storeFormData (data);
+	}
 }
 

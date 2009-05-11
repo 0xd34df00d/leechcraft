@@ -39,6 +39,8 @@ SET (SRCS
 	proxyobject.cpp
 	jsproxy.cpp
 	notification.cpp
+	passwordremember.cpp
+	pageformsdata.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -71,6 +73,8 @@ SET (HEADERS
 	proxyobject.h
 	jsproxy.h
 	notification.h
+	passwordremember.h
+	pageformsdata.h
 	interfaces/pluginbase.h
 	)
 SET (FORMS
@@ -82,6 +86,7 @@ SET (FORMS
 	screenshotsavedialog.ui
 	cookieseditdialog.ui
 	sourceviewer.ui
+	passwordremember.ui
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS

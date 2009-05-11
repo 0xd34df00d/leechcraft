@@ -29,6 +29,7 @@
 #include "screenshotsavedialog.h"
 #include "xmlsettingsmanager.h"
 #include "sourceviewer.h"
+#include "passwordremember.h"
 
 using LeechCraft::ActionInfo;
 
@@ -309,11 +310,19 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 
 	FindDialog_ = new FindDialog (Ui_.WebFrame_);
 	FindDialog_->hide ();
-	
+
 	connect (FindDialog_,
 			SIGNAL (next (const QString&, QWebPage::FindFlags)),
 			this,
 			SLOT (findText (const QString&, QWebPage::FindFlags)));
+
+	RememberDialog_ = new PasswordRemember (Ui_.WebFrame_);
+	RememberDialog_->hide ();
+	
+	connect (Ui_.WebView_,
+			SIGNAL (storeFormData (const PageFormsData_t&)),
+			RememberDialog_,
+			SLOT (add (const PageFormsData_t&)));
 }
 
 BrowserWidget::~BrowserWidget ()

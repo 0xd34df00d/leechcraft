@@ -1,9 +1,10 @@
-#ifndef CUSTOMWEBPAGE_H
-#define CUSTOMWEBPAGE_H
+#ifndef PLUGINS_POSHUKU_CUSTOMWEBPAGE_H
+#define PLUGINS_POSHUKU_CUSTOMWEBPAGE_H
 #include <boost/shared_ptr.hpp>
 #include <QWebPage>
 #include <QUrl>
 #include <interfaces/structures.h>
+#include "pageformsdata.h"
 
 class JSProxy;
 
@@ -63,9 +64,11 @@ protected:
 	virtual QString userAgentForUrl (const QUrl&) const;
 private:
 	QWebFrame* FindFrame (const QUrl&);
+	void HandleForms (QWebFrame*, const QNetworkRequest&, QWebPage::NavigationType);
 signals:
 	void gotEntity (const LeechCraft::DownloadEntity&);
 	void loadingURL (const QUrl&);
+	void storeFormData (const PageFormsData_t&);
 };
 
 #endif

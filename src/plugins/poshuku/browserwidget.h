@@ -1,5 +1,5 @@
-#ifndef BROWSERWIDGET_H
-#define BROWSERWIDGET_H
+#ifndef PLUGINS_POSHUKU_BROWSERWIDGET_H
+#define PLUGINS_POSHUKU_BROWSERWIDGET_H
 #include <boost/shared_ptr.hpp>
 #include <QWidget>
 #include <interfaces/imultitabs.h>
@@ -11,6 +11,7 @@
 class QToolBar;
 class QMovie;
 class FindDialog;
+class PasswordRemember;
 
 class BrowserWidget : public QWidget
 					, public IWebWidget
@@ -47,6 +48,7 @@ class BrowserWidget : public QWidget
 	QMenu *RecentlyClosed_;
 	QMenu *ExternalLinks_;
 	FindDialog *FindDialog_;
+	PasswordRemember *RememberDialog_;
 	bool HtmlMode_;
 	bool Own_;
 public:

@@ -1,5 +1,5 @@
-#ifndef CORE_H
-#define CORE_H
+#ifndef PLUGINS_POSHUKU_CORE_H
+#define PLUGINS_POSHUKU_CORE_H
 #include <memory>
 #include <vector>
 #include <QObject>
@@ -53,6 +53,13 @@ class Core : public QObject
 
 	Core ();
 public:
+	enum FormRememberType
+	{
+		FRTRemember_,
+		FRTNotNow_,
+		FRTNever_
+	};
+
 	struct UncloseData
 	{
 		QUrl URL_;

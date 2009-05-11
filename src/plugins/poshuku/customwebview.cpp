@@ -51,6 +51,10 @@ CustomWebView::CustomWebView (QWidget *parent)
 			SIGNAL (windowCloseRequested ()),
 			this,
 			SIGNAL (closeRequested ()));
+	connect (page,
+			SIGNAL (storeFormData (const PageFormsData_t&)),
+			this,
+			SIGNAL (storeFormData (const PageFormsData_t&)));
 }
 
 CustomWebView::~CustomWebView ()

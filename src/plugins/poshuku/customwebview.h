@@ -2,6 +2,7 @@
 #define CUSTOMWEBVIEW_H
 #include <QWebView>
 #include <interfaces/structures.h>
+#include "pageformsdata.h"
 
 class CustomWebView : public QWebView
 {
@@ -46,6 +47,7 @@ signals:
 	void addToFavorites (const QString&, const QString&);
 	void printRequested (QWebFrame*);
 	void closeRequested ();
+	void storeFormData (const PageFormsData_t&);
 };
 
 #endif
