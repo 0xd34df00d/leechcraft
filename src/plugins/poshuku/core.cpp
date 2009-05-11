@@ -147,7 +147,20 @@ void Core::AddPlugin (QObject *plugin)
 
 QUrl Core::MakeURL (QString url) const
 {
-	QUrl result = QUrl (url);
+	// If the url without percent signs and two following characters is
+	// a valid url (it should not be percent-encoded), then treat source
+	// url as percent-encoded, otherwise treat as not percent-encoded.
+	QString withoutPercent = url;
+	withoutPercent.remove (QRegExp ("%%??",
+				Qt::CaseInsensitive, QRegExp::Wildcard));
+	QUrl testUrl (withoutPercent);
+	qDebug () << withoutPercent << testUrl.toString ();
+	QUrl result;
+	if (testUrl.toString () == withoutPercent)
+		result = QUrl::fromPercentEncoding (url.toUtf8 ());
+	else
+		result = QUrl (url);
+
 	if (result.scheme ().isEmpty ())
 	{
 		if (!url.count (' ') && url.count ('.'))
@@ -158,6 +171,7 @@ QUrl Core::MakeURL (QString url) const
 			result = QUrl (QString ("http://www.google.com/search?q=%1").arg (url));
 		}
 	}
+
 	return result;
 }
 
