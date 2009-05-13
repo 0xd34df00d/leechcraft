@@ -79,7 +79,19 @@ class SQLStorageBackend : public StorageBackend
 			/** Binds:
 			 * - url
 			 */
-			FormsClearer_;
+			FormsClearer_,
+			/** Binds:
+			 * - url
+			 */
+			FormsIgnoreSetter_,
+			/** Binds:
+			 * - url
+			 */
+			FormsIgnoreGetter_,
+			/** Binds:
+			 * - url
+			 */
+			FormsIgnoreClearer_;
 public:
 	SQLStorageBackend (Type);
 	virtual ~SQLStorageBackend ();
@@ -97,6 +109,8 @@ public:
 	virtual void UpdateFavorites (const FavoritesModel::FavoritesItem&);
 	virtual void GetFormsData (const QString&, ElementsData_t&) const;
 	virtual void SetFormsData (const QString&, const ElementsData_t&);
+	virtual void SetFormsIgnored (const QString&, bool);
+	virtual bool GetFormsIgnored (const QString&) const;
 private:
 	void InitializeTables ();
 	void CheckVersions ();

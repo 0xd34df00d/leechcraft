@@ -598,6 +598,16 @@ void CustomWebPage::HandleForms (QWebFrame *frame,
 #endif
 		if (!CheckData (data, frame, request))
 			return;
+
+		QString url = frame->url ().toString ();
+
+		// Check if this should be emitted at all
+		if (Core::Instance ().GetStorageBackend ()->GetFormsIgnored (url))
+			return;
+
+		PageFormsData_t oldData;
+		Core::Instance ().GetStorageBackend ()->GetFormsData (url, oldData [url]);
+
 		emit storeFormData (data);
 	}
 }

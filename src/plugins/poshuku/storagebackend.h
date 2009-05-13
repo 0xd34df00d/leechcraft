@@ -127,6 +127,21 @@ public:
 	 * @param[in] forms The forms data for that page.
 	 */
 	virtual void SetFormsData (const QString& url, const ElementsData_t& forms) = 0;
+
+	/** @brief Sets the URL to be ignored by password manager.
+	 *
+	 * @param[in] url The url of the page that should be ignored.
+	 * @param[in] ignored Whether it should be ignored or unignored.
+	 */
+	virtual void SetFormsIgnored (const QString& url, bool ignored) = 0;
+
+	/** @brief Returns the ignore state of the page.
+	 *
+	 * @param[in] url The url of the page that is queried.
+	 *
+	 * @return Whether the page is ignored or not.
+	 */
+	virtual bool GetFormsIgnored (const QString& url) const = 0;
 signals:
 	void added (const HistoryItem&);
 	void added (const FavoritesModel::FavoritesItem&);

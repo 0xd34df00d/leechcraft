@@ -219,6 +219,22 @@ void SQLStorageBackend::Prepare ()
 	FormsClearer_ = QSqlQuery (DB_);
 	FormsClearer_.prepare ("DELETE FROM forms "
 			"WHERE url = :url");
+
+	FormsIgnoreSetter_ = QSqlQuery (DB_);
+	FormsIgnoreSetter_.prepare ("INSERT INTO forms_never ("
+			"url"
+			") VALUES ("
+			":url"
+			")");
+
+	FormsIgnoreGetter_ = QSqlQuery (DB_);
+	FormsIgnoreGetter_.prepare ("SELECT COUNT (url) AS num "
+			"FROM forms_never "
+			"WHERE url = :url");
+
+	FormsIgnoreClearer_ = QSqlQuery (DB_);
+	FormsIgnoreClearer_.prepare ("DELETE FROM forms_never ("
+			"WHERE url = :url");
 }
 
 void SQLStorageBackend::LoadHistory (history_items_t& items) const
@@ -415,6 +431,44 @@ void SQLStorageBackend::SetFormsData (const QString& url, const ElementsData_t& 
 	}
 
 	lock.Good ();
+}
+
+void SQLStorageBackend::SetFormsIgnored (const QString& url, bool ignore)
+{
+	if (ignore)
+	{
+		FormsIgnoreSetter_.bindValue (":url", url);
+		if (!FormsIgnoreSetter_.exec ())
+		{
+			LeechCraft::Util::DBLock::DumpError (FormsIgnoreSetter_);
+			return;
+		}
+	}
+	else
+	{
+		FormsIgnoreClearer_.bindValue (":url", url);
+		if (!FormsIgnoreClearer_.exec ())
+		{
+			LeechCraft::Util::DBLock::DumpError (FormsIgnoreClearer_);
+			return;
+		}
+	}
+}
+
+bool SQLStorageBackend::GetFormsIgnored (const QString& url) const
+{
+	FormsIgnoreGetter_.bindValue (":url", url);
+	if (!FormsIgnoreGetter_.exec ())
+	{
+		LeechCraft::Util::DBLock::DumpError (FormsIgnoreGetter_);
+		return false;
+	}
+
+	FormsIgnoreGetter_.next ();
+
+	bool ignored = FormsIgnoreGetter_.value (0).toInt ();
+	FormsIgnoreGetter_.finish ();
+	return ignored;
 }
 
 void SQLStorageBackend::InitializeTables ()

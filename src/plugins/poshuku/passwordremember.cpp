@@ -29,8 +29,8 @@ void PasswordRemember::add (const PageFormsData_t& data)
 
 void PasswordRemember::on_Remember__released ()
 {
-	Core::Instance ().GetStorageBackend ()->SetFormsData (TempData_.first,
-			TempData_.second);
+	Core::Instance ().GetStorageBackend ()->
+		SetFormsData (TempData_.first, TempData_.second);
 	hide ();
 }
 
@@ -43,7 +43,8 @@ void PasswordRemember::on_NotNow__released ()
 
 void PasswordRemember::on_Never__released ()
 {
-	// TODO implement never case
+	Core::Instance ().GetStorageBackend ()->
+		SetFormsIgnored (TempData_.first, true);
 	TempData_.first.clear ();
 	TempData_.second.clear ();
 	hide ();
