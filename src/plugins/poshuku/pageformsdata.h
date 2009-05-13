@@ -25,5 +25,23 @@ typedef QList<ElementData> ElementsData_t;
  */
 typedef QMap<QString, ElementsData_t> PageFormsData_t;
 
+struct ElemFinder
+{
+	const QString& ElemName_;
+	const QString& ElemType_;
+
+	ElemFinder (const QString& en, const QString& et)
+	: ElemName_ (en)
+	, ElemType_ (et)
+	{
+	}
+
+	inline bool operator() (const ElementData& ed) const
+	{
+		return ed.Name_ == ElemName_ &&
+			ed.Type_ == ElemType_;
+	}
+};
+
 #endif
 

@@ -605,9 +605,6 @@ void CustomWebPage::HandleForms (QWebFrame *frame,
 		if (Core::Instance ().GetStorageBackend ()->GetFormsIgnored (url))
 			return;
 
-		PageFormsData_t oldData;
-		Core::Instance ().GetStorageBackend ()->GetFormsData (url, oldData [url]);
-
 		emit storeFormData (data);
 	}
 }

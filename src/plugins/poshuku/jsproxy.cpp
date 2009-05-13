@@ -51,24 +51,6 @@ void JSProxy::setFormElement (const QString& url,
 	Current_ [url] << ed;
 }
 
-struct ElemFinder
-{
-	const QString& ElemName_;
-	const QString& ElemType_;
-
-	ElemFinder (const QString& en, const QString& et)
-	: ElemName_ (en)
-	, ElemType_ (et)
-	{
-	}
-
-	bool operator() (const ElementData& ed) const
-	{
-		return ed.Name_ == ElemName_ &&
-			ed.Type_ == ElemType_;
-	}
-};
-
 struct FormMatcher
 {
 	int FormID_;
