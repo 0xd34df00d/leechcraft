@@ -289,6 +289,8 @@ void SQLStorageBackend::LoadFavorites (
 		};
 		items.push_back (item);
 	}
+
+	FavoritesLoader_.finish ();
 }
 
 void SQLStorageBackend::AddToFavorites (const FavoritesModel::FavoritesItem& item)
