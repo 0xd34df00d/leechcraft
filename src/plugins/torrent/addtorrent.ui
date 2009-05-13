@@ -1,133 +1,134 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>AddTorrent</class>
- <widget class="QDialog" name="AddTorrent" >
-  <property name="geometry" >
+ <widget class="QDialog" name="AddTorrent">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>532</width>
+    <width>594</width>
     <height>547</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Add torrent</string>
   </property>
-  <property name="windowIcon" >
+  <property name="windowIcon">
    <iconset>
     <normaloff/>
    </iconset>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QVBoxLayout">
    <item>
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="title" >
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
       <string>Torrent</string>
      </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" >
-       <widget class="QLabel" name="label" >
-        <property name="text" >
+     <layout class="QGridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
          <string>Torrent:</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
-       <layout class="QHBoxLayout" >
+      <item row="0" column="1">
+       <layout class="QHBoxLayout">
         <item>
-         <widget class="QLineEdit" name="TorrentFile_" />
+         <widget class="QLineEdit" name="TorrentFile_"/>
         </item>
         <item>
-         <widget class="QPushButton" name="TorrentBrowse_" >
-          <property name="text" >
+         <widget class="QPushButton" name="TorrentBrowse_">
+          <property name="text">
            <string>Browse...</string>
           </property>
          </widget>
         </item>
        </layout>
       </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="label_2" >
-        <property name="text" >
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
          <string>Tracker URL:</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" >
-       <widget class="QLabel" name="TrackerURL_" >
-        <property name="text" >
-         <string>&lt;unknown></string>
+      <item row="1" column="1">
+       <widget class="QLabel" name="TrackerURL_">
+        <property name="text">
+         <string>&lt;unknown&gt;</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" >
-       <widget class="QLabel" name="label_3" >
-        <property name="text" >
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
          <string>Size:</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1" >
-       <widget class="QLabel" name="Size_" >
-        <property name="text" >
-         <string>&lt;unknown></string>
+      <item row="2" column="1">
+       <widget class="QLabel" name="Size_">
+        <property name="text">
+         <string>&lt;unknown&gt;</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0" >
-       <widget class="QLabel" name="label_6" >
-        <property name="text" >
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
          <string>Creator:</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1" >
-       <widget class="QLabel" name="Creator_" >
-        <property name="text" >
-         <string>&lt;unknown></string>
+      <item row="3" column="1">
+       <widget class="QLabel" name="Creator_">
+        <property name="text">
+         <string>&lt;unknown&gt;</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="0" >
-       <widget class="QLabel" name="label_8" >
-        <property name="text" >
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
          <string>Comment:</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1" >
-       <widget class="QLabel" name="Comment_" >
-        <property name="text" >
-         <string>&lt;unknown></string>
+      <item row="4" column="1">
+       <widget class="QLabel" name="Comment_">
+        <property name="text">
+         <string>&lt;unknown&gt;</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="0" >
-       <widget class="QLabel" name="label_12" >
-        <property name="text" >
+      <item row="5" column="0">
+       <widget class="QLabel" name="label_12">
+        <property name="text">
          <string>Date:</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="1" >
-       <widget class="QLabel" name="Date_" >
-        <property name="text" >
-         <string>&lt;unknown></string>
+      <item row="5" column="1">
+       <widget class="QLabel" name="Date_">
+        <property name="text">
+         <string>&lt;unknown&gt;</string>
         </property>
        </widget>
       </item>
-      <item row="6" column="0" >
-       <widget class="QLabel" name="label_10" >
-        <property name="text" >
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
          <string>Files:</string>
         </property>
        </widget>
       </item>
-      <item row="7" column="0" >
+      <item row="7" column="0">
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
           <height>40</height>
@@ -135,108 +136,108 @@
         </property>
        </spacer>
       </item>
-      <item row="8" column="1" >
-       <layout class="QHBoxLayout" >
+      <item row="8" column="1">
+       <layout class="QHBoxLayout">
         <item>
-         <widget class="QPushButton" name="MarkAll_" >
-          <property name="text" >
+         <widget class="QPushButton" name="MarkAll_">
+          <property name="text">
            <string>Mark all</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="UnmarkAll_" >
-          <property name="text" >
+         <widget class="QPushButton" name="UnmarkAll_">
+          <property name="text">
            <string>Unmark all</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="MarkSelected_" >
-          <property name="text" >
+         <widget class="QPushButton" name="MarkSelected_">
+          <property name="text">
            <string>Mark selected</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="UnmarkSelected_" >
-          <property name="text" >
+         <widget class="QPushButton" name="UnmarkSelected_">
+          <property name="text">
            <string>Unmark selected</string>
           </property>
          </widget>
         </item>
        </layout>
       </item>
-      <item row="9" column="0" >
-       <widget class="QLabel" name="label_11" >
-        <property name="text" >
+      <item row="9" column="0">
+       <widget class="QLabel" name="label_11">
+        <property name="text">
          <string>Destination:</string>
         </property>
        </widget>
       </item>
-      <item row="9" column="1" >
-       <layout class="QHBoxLayout" >
+      <item row="9" column="1">
+       <layout class="QHBoxLayout">
         <item>
-         <widget class="QLineEdit" name="Destination_" />
+         <widget class="QLineEdit" name="Destination_"/>
         </item>
         <item>
-         <widget class="QPushButton" name="DestinationBrowse_" >
-          <property name="text" >
+         <widget class="QPushButton" name="DestinationBrowse_">
+          <property name="text">
            <string>Browse...</string>
           </property>
          </widget>
         </item>
        </layout>
       </item>
-      <item row="10" column="0" >
-       <widget class="QLabel" name="label_4" >
-        <property name="text" >
+      <item row="10" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
          <string>Tags:</string>
         </property>
        </widget>
       </item>
-      <item row="10" column="1" >
-       <widget class="LeechCraft::Util::TagsLineEdit" native="1" name="TagsEdit_" >
-        <property name="text" stdset="0" >
+      <item row="10" column="1">
+       <widget class="LeechCraft::Util::TagsLineEdit" name="TagsEdit_">
+        <property name="text">
          <string>untagged</string>
         </property>
        </widget>
       </item>
-      <item rowspan="2" row="6" column="1" >
-       <widget class="QTreeView" name="FilesView_" >
-        <property name="editTriggers" >
+      <item row="6" column="1" rowspan="2">
+       <widget class="QTreeView" name="FilesView_">
+        <property name="editTriggers">
          <set>QAbstractItemView::NoEditTriggers</set>
         </property>
-        <property name="showDropIndicator" stdset="0" >
+        <property name="showDropIndicator" stdset="0">
          <bool>false</bool>
         </property>
-        <property name="alternatingRowColors" >
+        <property name="alternatingRowColors">
          <bool>true</bool>
         </property>
-        <property name="selectionMode" >
+        <property name="selectionMode">
          <enum>QAbstractItemView::ExtendedSelection</enum>
         </property>
-        <property name="rootIsDecorated" >
+        <property name="rootIsDecorated">
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="11" column="0" >
-       <widget class="QLabel" name="label_5" >
-        <property name="text" >
+      <item row="11" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
          <string>Add as:</string>
         </property>
        </widget>
       </item>
-      <item row="11" column="1" >
-       <widget class="QComboBox" name="AddTypeBox_" >
+      <item row="11" column="1">
+       <widget class="QComboBox" name="AddTypeBox_">
         <item>
-         <property name="text" >
+         <property name="text">
           <string>Started</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>Paused</string>
          </property>
         </item>
@@ -246,13 +247,13 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" >
+    <layout class="QHBoxLayout">
      <item>
       <spacer>
-       <property name="orientation" >
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -261,15 +262,15 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="OK_" >
-       <property name="text" >
+      <widget class="QPushButton" name="OK_">
+       <property name="text">
         <string>OK</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="Cancel_" >
-       <property name="text" >
+      <widget class="QPushButton" name="Cancel_">
+       <property name="text">
         <string>Cancel</string>
        </property>
       </widget>
@@ -281,12 +282,12 @@
  <customwidgets>
   <customwidget>
    <class>LeechCraft::Util::TagsLineEdit</class>
-   <extends>QWidget</extends>
-   <header location="global" >plugininterface/tagslineedit.h</header>
+   <extends>QLineEdit</extends>
+   <header location="global">plugininterface/tagslineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="resources.qrc" />
+  <include location="resources.qrc"/>
  </resources>
  <connections>
   <connection>
@@ -295,11 +296,11 @@
    <receiver>AddTorrent</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>366</x>
-     <y>462</y>
+    <hint type="sourcelabel">
+     <x>505</x>
+     <y>541</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>312</x>
      <y>470</y>
     </hint>
@@ -311,11 +312,11 @@
    <receiver>AddTorrent</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>453</x>
-     <y>456</y>
+    <hint type="sourcelabel">
+     <x>588</x>
+     <y>541</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>493</x>
      <y>451</y>
     </hint>
@@ -327,13 +328,13 @@
    <receiver>OK_</receiver>
    <slot>animateClick()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>202</x>
      <y>47</y>
     </hint>
-    <hint type="destinationlabel" >
-     <x>378</x>
-     <y>457</y>
+    <hint type="destinationlabel">
+     <x>505</x>
+     <y>541</y>
     </hint>
    </hints>
   </connection>
@@ -343,13 +344,29 @@
    <receiver>OK_</receiver>
    <slot>animateClick()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>307</x>
      <y>409</y>
     </hint>
-    <hint type="destinationlabel" >
-     <x>392</x>
-     <y>470</y>
+    <hint type="destinationlabel">
+     <x>505</x>
+     <y>541</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>TagsEdit_</sender>
+   <signal>returnPressed()</signal>
+   <receiver>AddTorrent</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>321</x>
+     <y>466</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>311</x>
+     <y>523</y>
     </hint>
    </hints>
   </connection>
