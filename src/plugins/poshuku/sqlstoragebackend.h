@@ -57,7 +57,29 @@ class SQLStorageBackend : public StorageBackend
 			/** Binds:
 			 * - url
 			 */
-			FavoritesRemover_;
+			FavoritesRemover_,
+			/** Binds:
+			 * - url
+			 *
+			 * Returns:
+			 * - form_index
+			 * - name
+			 * - type
+			 * - value
+			 */
+			FormsGetter_,
+			/** Binds:
+			 * - url
+			 * - form_index
+			 * - name
+			 * - type
+			 * - value
+			 */
+			FormsSetter_,
+			/** Binds:
+			 * - url
+			 */
+			FormsClearer_;
 public:
 	SQLStorageBackend (Type);
 	virtual ~SQLStorageBackend ();
@@ -73,6 +95,8 @@ public:
 	virtual void AddToFavorites (const FavoritesModel::FavoritesItem&);
 	virtual void RemoveFromFavorites (const FavoritesModel::FavoritesItem&);
 	virtual void UpdateFavorites (const FavoritesModel::FavoritesItem&);
+	virtual void GetFormsData (const QString&, ElementsData_t&) const;
+	virtual void SetFormsData (const QString&, const ElementsData_t&);
 private:
 	void InitializeTables ();
 	void CheckVersions ();

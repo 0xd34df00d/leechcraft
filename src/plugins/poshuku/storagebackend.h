@@ -4,6 +4,7 @@
 #include <QObject>
 #include "historymodel.h"
 #include "favoritesmodel.h"
+#include "pageformsdata.h"
 
 /** @brief Abstract base class for storage backends.
  *
@@ -30,6 +31,7 @@ public:
 	 * checked and done, if required.
 	 */
 	virtual void Prepare () = 0;
+
 	/** @brief Get all the history items from the storage.
 	 *
 	 * Puts all the history items (HistoryItem) from the
@@ -39,6 +41,7 @@ public:
 	 * appended to the container.
 	 */
 	virtual void LoadHistory (history_items_t& items) const = 0;
+
 	/** @brief Get resembling history items from the storage.
 	 *
 	 * Puts resembling history items (HistoryItem) from the
@@ -53,6 +56,7 @@ public:
 	 */
 	virtual void LoadResemblingHistory (const QString& base,
 			history_items_t& items) const = 0;
+
 	/** @brief Add an item to history.
 	 *
 	 * Adds the passed item to the storage and emits the added() signal
@@ -61,6 +65,7 @@ public:
 	 * @param[in] item History item to add.
 	 */
 	virtual void AddToHistory (const HistoryItem& item) = 0;
+
 	/** @brief Clears old history items.
 	 *
 	 * Removes all the history items that are older than days.
@@ -68,6 +73,7 @@ public:
 	 * @param[in] days Maximum age of an item.
 	 */
 	virtual void ClearOldHistory (int days) = 0;
+
 	/** @brief Get all favorites items from the storage.
 	 *
 	 * Puts all the favorites items (FavoritesModel::FavoritesItem) from
@@ -77,6 +83,7 @@ public:
 	 * appended to the container.
 	 */
 	virtual void LoadFavorites (std::vector<FavoritesModel::FavoritesItem>& items) const = 0;
+
 	/** @brief Add an item to the favorites list.
 	 *
 	 * Adds the passed item to the storage and emits the added() signal
@@ -85,6 +92,7 @@ public:
 	 * @param[in] item Favorites item to add.
 	 */
 	virtual void AddToFavorites (const FavoritesModel::FavoritesItem& item) = 0;
+
 	/** @brief Remove an item from the favorites list.
 	 *
 	 * Removes the passed item from the storage and emits the removed()
@@ -93,6 +101,7 @@ public:
 	 * @param[in] item Favorites item to remove.
 	 */
 	virtual void RemoveFromFavorites (const FavoritesModel::FavoritesItem& item) = 0;
+
 	/** @brief Update an item in the favorites list.
 	 *
 	 * Finds matching record in the database by URL and updates its
@@ -101,6 +110,23 @@ public:
 	 * @param[in] item Favorites item to update.
 	 */
 	virtual void UpdateFavorites (const FavoritesModel::FavoritesItem& item) = 0;
+
+	/** @brief Gets all forms for an URL.
+	 *
+	 * @param[in] url The url of the page for which the forms should be
+	 * got.
+	 * @param[out] forms The forms of that page.
+	 */
+	virtual void GetFormsData (const QString& url, ElementsData_t& forms) const = 0;
+
+	/** @brief Sets new forms data for an URL.
+	 *
+	 * Clears all the old data and replaces it with new one.
+	 *
+	 * @param[in] url The url of the page with the forms.
+	 * @param[in] forms The forms data for that page.
+	 */
+	virtual void SetFormsData (const QString& url, const ElementsData_t& forms) = 0;
 signals:
 	void added (const HistoryItem&);
 	void added (const FavoritesModel::FavoritesItem&);

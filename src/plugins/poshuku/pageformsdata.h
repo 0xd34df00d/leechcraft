@@ -8,6 +8,7 @@ class QDebug;
 
 struct ElementData
 {
+	int FormIndex_;
 	QString Name_;
 	QString Type_;
 	QVariant Value_;
@@ -19,14 +20,10 @@ QDebug& operator<< (QDebug&, const ElementData&);
  */
 typedef QList<ElementData> ElementsData_t;
 
-/** Holds information about all the forms on a page.
- */
-typedef QMap<int, ElementsData_t> FormsData_t;
-
 /** Holds information about all the forms/pages, identified by their
  * URL.
  */
-typedef QMap<QString, FormsData_t> PageFormsData_t;
+typedef QMap<QString, ElementsData_t> PageFormsData_t;
 
 #endif
 

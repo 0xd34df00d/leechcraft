@@ -190,6 +190,35 @@ void SQLStorageBackend::Prepare ()
 	FavoritesRemover_ = QSqlQuery (DB_);
 	FavoritesRemover_.prepare ("DELETE FROM favorites "
 			"WHERE url = :url");
+
+	FormsGetter_ = QSqlQuery (DB_);
+	FormsGetter_.prepare ("SELECT "
+			"form_index, "
+			"name, "
+			"type, "
+			"value "
+			"FROM forms "
+			"WHERE url = :url "
+			"ORDER BY form_index");
+
+	FormsSetter_ = QSqlQuery (DB_);
+	FormsSetter_.prepare ("INSERT INTO forms ("
+			"url, "
+			"form_index, "
+			"name, "
+			"type, "
+			"value"
+			") VALUES ("
+			":url, "
+			":form_index, "
+			":name, "
+			":type, "
+			":value"
+			")");
+
+	FormsClearer_ = QSqlQuery (DB_);
+	FormsClearer_.prepare ("DELETE FROM forms "
+			"WHERE url = :url");
 }
 
 void SQLStorageBackend::LoadHistory (history_items_t& items) const
@@ -335,6 +364,59 @@ void SQLStorageBackend::UpdateFavorites (const FavoritesModel::FavoritesItem& it
 	emit updated (item);
 }
 
+void SQLStorageBackend::GetFormsData (const QString& url, ElementsData_t& result) const
+{
+	FormsGetter_.bindValue (":url", url);
+	if (!FormsGetter_.exec ())
+	{
+		LeechCraft::Util::DBLock::DumpError (FormsGetter_);
+		return;
+	}
+
+	while (FormsGetter_.next ())
+	{
+		ElementData ed =
+		{
+			FormsGetter_.value (0).toInt (),
+			FormsGetter_.value (1).toString (),
+			FormsGetter_.value (2).toString (),
+			FormsGetter_.value (3)
+		};
+		result.push_back (ed);
+	}
+
+	FormsGetter_.finish ();
+}
+
+void SQLStorageBackend::SetFormsData (const QString& url, const ElementsData_t& data)
+{
+	LeechCraft::Util::DBLock lock (DB_);
+	lock.Init ();
+
+	FormsClearer_.bindValue (":url", url);
+	if (!FormsClearer_.exec ())
+	{
+		LeechCraft::Util::DBLock::DumpError (FormsClearer_);
+		return;
+	}
+
+	for (int i = 0; i < data.size (); ++i)
+	{
+		FormsSetter_.bindValue (":url", url);
+		FormsSetter_.bindValue (":form_index", data [i].FormIndex_);
+		FormsSetter_.bindValue (":name", data [i].Name_);
+		FormsSetter_.bindValue (":type", data [i].Type_);
+		FormsSetter_.bindValue (":value", data [i].Value_);
+		if (!FormsSetter_.exec ())
+		{
+			LeechCraft::Util::DBLock::DumpError (FormsSetter_);
+			return;
+		}
+	}
+
+	lock.Good ();
+}
+
 void SQLStorageBackend::InitializeTables ()
 {
 	QSqlQuery query (DB_);
@@ -400,6 +482,36 @@ void SQLStorageBackend::InitializeTables ()
 		SetSetting ("historyversion", "1");
 		SetSetting ("favoritesversion", "1");
 		SetSetting ("storagesettingsversion", "1");
+	}
+
+	if (!DB_.tables ().contains ("forms"))
+	{
+		QString binary = "BLOB";
+		if (Type_ == SBPostgres)
+			binary = "BYTEA";
+
+		if (!query.exec (QString ("CREATE TABLE forms ("
+						"url TEXT, "
+						"form_index INTEGER, "
+						"name TEXT, "
+						"type TEXT, "
+						"value %1"
+						");").arg (binary)))
+		{
+			LeechCraft::Util::DBLock::DumpError (query);
+			return;
+		}
+	}
+
+	if (!DB_.tables ().contains ("forms_never"))
+	{
+		if (!query.exec ("CREATE TABLE forms_never ("
+					"url TEXT PRIMARY KEY"
+					");"))
+		{
+			LeechCraft::Util::DBLock::DumpError (query);
+			return;
+		}
 	}
 }
 

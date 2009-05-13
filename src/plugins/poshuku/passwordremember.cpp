@@ -8,41 +8,44 @@ PasswordRemember::PasswordRemember (QWidget *parent)
 
 void PasswordRemember::add (const PageFormsData_t& data)
 {
-	FormsData_t forms = data.values ().at (0);
-	QList<int> indexes = forms.keys ();
-	Q_FOREACH (int index, indexes)
+	QString url = data.keys ().at (0);
+	ElementsData_t elems = data [url];
+	Q_FOREACH (ElementData ed, elems)
 	{
-		ElementsData_t elements = forms [index];
-		Q_FOREACH (ElementData ed, elements)
+		if (ed.Type_.toLower () == "password" &&
+				!ed.Value_.toString ().isEmpty ())
 		{
-			if (ed.Type_.toLower () == "password" &&
-					!ed.Value_.toString ().isEmpty ())
-			{
-				// If there is already some data awaiting for user
-				// response, don't add new one.
-				if (TempData_.size ())
-					return;
+			// If there is already some data awaiting for user
+			// response, don't add new one.
+			if (TempData_.first.size ())
+				return;
 
-				TempData_ = elements;
+			TempData_ = qMakePair (url, elems);
 
-				show ();
-			}
+			show ();
 		}
 	}
 }
 
 void PasswordRemember::on_Remember__released ()
 {
+	Core::Instance ().GetStorageBackend ()->SetFormsData (TempData_.first,
+			TempData_.second);
 	hide ();
 }
 
 void PasswordRemember::on_NotNow__released ()
 {
+	TempData_.first.clear ();
+	TempData_.second.clear ();
 	hide ();
 }
 
 void PasswordRemember::on_Never__released ()
 {
+	// TODO implement never case
+	TempData_.first.clear ();
+	TempData_.second.clear ();
 	hide ();
 }
 

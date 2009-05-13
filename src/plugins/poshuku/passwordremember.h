@@ -10,7 +10,7 @@ class PasswordRemember : public Notification
 	Q_OBJECT
 
 	Ui::PasswordRemember Ui_;
-	ElementsData_t TempData_;
+	QPair<QString, ElementsData_t> TempData_;
 public:
 	PasswordRemember (QWidget* = 0);
 public slots:

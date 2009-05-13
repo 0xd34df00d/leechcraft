@@ -27,10 +27,11 @@ void JSProxy::setFormElement (const QString& url,
 {
 	ElementData ed =
 	{
+		formId,
 		elemName,
 		elemType,
 		value
 	};
-	Current_ [url] [formId] << ed;
+	Current_ [url] << ed;
 }
 
