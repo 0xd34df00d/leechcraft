@@ -211,6 +211,8 @@ void CustomWebPage::handleLoadFinished (bool ok)
 	if (Core::Instance ().GetPluginManager ()->
 			HandleLoadFinished (this, ok))
 		return;
+
+	FillForms (mainFrame ());
 }
 
 void CustomWebPage::handleLoadProgress (int progress)
@@ -548,6 +550,32 @@ QWebFrame* CustomWebPage::FindFrame (const QUrl& url)
 	return 0;
 }
 
+namespace
+{
+	bool CheckData (const PageFormsData_t& data,
+			QWebFrame *frame,
+			const QNetworkRequest& request = QNetworkRequest ())
+	{
+		if (data.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "no form data for"
+				<< frame
+				<< request.url ();
+			return false;
+		}
+		if (data.size () > 1)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "too much form data for"
+				<< frame
+				<< data.size ()
+				<< request.url ();
+		}
+		return true;
+	}
+};
+
 void CustomWebPage::HandleForms (QWebFrame *frame,
 		const QNetworkRequest& request, QWebPage::NavigationType type)
 {
@@ -568,24 +596,32 @@ void CustomWebPage::HandleForms (QWebFrame *frame,
 #ifdef QT_DEBUG
 		qDebug () << frame << request.url () << data;
 #endif
-		if (data.isEmpty ())
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "no form data for"
-				<< frame
-				<< request.url ();
+		if (!CheckData (data, frame, request))
 			return;
-		}
-		if (data.size () > 1)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "too much form data for"
-				<< frame
-				<< data.size ()
-				<< request.url ();
-		}
-
 		emit storeFormData (data);
 	}
+}
+
+void CustomWebPage::FillForms (QWebFrame *frame)
+{
+	JSProxy_->ClearForms ();
+
+	QString url = frame->url ().toString ();
+
+	PageFormsData_t data;
+	Core::Instance ().GetStorageBackend ()->GetFormsData (url, data [url]);
+
+	JSProxy_->SetForms (data);
+	QFile sfile (":/resources/scripts/formsetter.js");
+	if (sfile.open (QIODevice::ReadOnly))
+		frame->evaluateJavaScript (sfile.readAll ());
+	else
+		qWarning () << Q_FUNC_INFO
+			<< "could not open internal file"
+			<< sfile.fileName ()
+			<< sfile.errorString ();
+
+	Q_FOREACH (QWebFrame *childFrame, frame->childFrames ())
+		FillForms (childFrame);
 }
 

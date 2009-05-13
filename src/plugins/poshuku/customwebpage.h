@@ -64,7 +64,9 @@ protected:
 	virtual QString userAgentForUrl (const QUrl&) const;
 private:
 	QWebFrame* FindFrame (const QUrl&);
-	void HandleForms (QWebFrame*, const QNetworkRequest&, QWebPage::NavigationType);
+	void HandleForms (QWebFrame*, const QNetworkRequest&,
+			QWebPage::NavigationType);
+	void FillForms (QWebFrame*);
 signals:
 	void gotEntity (const LeechCraft::DownloadEntity&);
 	void loadingURL (const QUrl&);
