@@ -38,24 +38,24 @@
     </message>
 </context>
 <context>
-    <name>Poshuku_Fua</name>
+    <name>FUA</name>
     <message>
-        <location filename="fua.cpp" line="38"/>
+        <location filename="fua.cpp" line="40"/>
         <source>Domain</source>
         <translation>Домен</translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="39"/>
+        <location filename="fua.cpp" line="41"/>
         <source>Agent</source>
         <translation>Агент</translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="40"/>
+        <location filename="fua.cpp" line="42"/>
         <source>Identification string</source>
         <translation>Строка идентификации</translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="77"/>
+        <location filename="fua.cpp" line="79"/>
         <source>Allows to set fake user agents for different sites.</source>
         <translation>Позволяет устанавливать поддельные user-agent для различных сайтов.</translation>
     </message>

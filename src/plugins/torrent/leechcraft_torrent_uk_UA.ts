@@ -63,11 +63,11 @@
         <location filename="addtorrent.cpp" line="37"/>
         <location filename="addtorrent.cpp" line="38"/>
         <location filename="addtorrent.cpp" line="39"/>
-        <location filename="addtorrent.ui" line="58"/>
-        <location filename="addtorrent.ui" line="72"/>
-        <location filename="addtorrent.ui" line="86"/>
-        <location filename="addtorrent.ui" line="100"/>
-        <location filename="addtorrent.ui" line="114"/>
+        <location filename="addtorrent.ui" line="59"/>
+        <location filename="addtorrent.ui" line="73"/>
+        <location filename="addtorrent.ui" line="87"/>
+        <location filename="addtorrent.ui" line="101"/>
+        <location filename="addtorrent.ui" line="115"/>
         <source>&lt;unknown&gt;</source>
         <translation>&lt;невідомо&gt;</translation>
     </message>
@@ -87,113 +87,113 @@
         <translation>Оберіть теку для збереження</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="13"/>
+        <location filename="addtorrent.ui" line="14"/>
         <source>Add torrent</source>
         <translation>Додати торрент</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="24"/>
+        <location filename="addtorrent.ui" line="25"/>
         <source>Torrent</source>
         <translation>Торрент</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="30"/>
+        <location filename="addtorrent.ui" line="31"/>
         <source>Torrent:</source>
         <translation>Торрент:</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="42"/>
-        <location filename="addtorrent.ui" line="185"/>
+        <location filename="addtorrent.ui" line="43"/>
+        <location filename="addtorrent.ui" line="186"/>
         <source>Browse...</source>
         <translation>Огляд...</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="51"/>
+        <location filename="addtorrent.ui" line="52"/>
         <source>Tracker URL:</source>
         <translation>Трекер URL:</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="65"/>
+        <location filename="addtorrent.ui" line="66"/>
         <source>Size:</source>
         <translation>Розмір:</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="79"/>
+        <location filename="addtorrent.ui" line="80"/>
         <source>Creator:</source>
         <translation>Створив:</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="93"/>
+        <location filename="addtorrent.ui" line="94"/>
         <source>Comment:</source>
         <translation>Коментар:</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="107"/>
+        <location filename="addtorrent.ui" line="108"/>
         <source>Date:</source>
         <translation>Дата:</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="121"/>
+        <location filename="addtorrent.ui" line="122"/>
         <source>Files:</source>
         <translation>Файли:</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="143"/>
+        <location filename="addtorrent.ui" line="144"/>
         <source>Mark all</source>
         <translation>Позначити всі</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="150"/>
+        <location filename="addtorrent.ui" line="151"/>
         <source>Unmark all</source>
         <translation>Зняти позначення з усіх</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="157"/>
+        <location filename="addtorrent.ui" line="158"/>
         <source>Mark selected</source>
         <translation>Позначити вибрані</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="164"/>
+        <location filename="addtorrent.ui" line="165"/>
         <source>Unmark selected</source>
         <translation>Зняти позначення з вибраних</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="173"/>
+        <location filename="addtorrent.ui" line="174"/>
         <source>Destination:</source>
         <translation>Місце збереження:</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="194"/>
+        <location filename="addtorrent.ui" line="195"/>
         <source>Tags:</source>
         <translation>Теги:</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="201"/>
+        <location filename="addtorrent.ui" line="202"/>
         <source>untagged</source>
         <translation>без тегів</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="227"/>
+        <location filename="addtorrent.ui" line="228"/>
         <source>Add as:</source>
         <translation>Додати як:</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="235"/>
+        <location filename="addtorrent.ui" line="236"/>
         <source>Started</source>
         <translation>Розпочато</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="240"/>
+        <location filename="addtorrent.ui" line="241"/>
         <source>Paused</source>
         <translation>Призупинено</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="266"/>
+        <location filename="addtorrent.ui" line="267"/>
         <source>OK</source>
         <translation>ОК</translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="273"/>
+        <location filename="addtorrent.ui" line="274"/>
         <source>Cancel</source>
         <translation>Скасувати</translation>
     </message>
@@ -201,206 +201,206 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="167"/>
+        <location filename="core.cpp" line="168"/>
         <source>Name</source>
         <translation>Назва</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="168"/>
+        <location filename="core.cpp" line="169"/>
         <source>Progress</source>
         <translation>Прогрес</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="169"/>
+        <location filename="core.cpp" line="170"/>
         <source>State</source>
         <translation>Стан</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="385"/>
-        <location filename="core.cpp" line="423"/>
-        <location filename="core.cpp" line="529"/>
+        <location filename="core.cpp" line="386"/>
+        <location filename="core.cpp" line="424"/>
+        <location filename="core.cpp" line="530"/>
         <source>Idle</source>
         <translation>Бездіяльність</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="407"/>
-        <location filename="core.cpp" line="425"/>
-        <location filename="core.cpp" line="427"/>
+        <location filename="core.cpp" line="408"/>
+        <location filename="core.cpp" line="426"/>
+        <location filename="core.cpp" line="428"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="485"/>
+        <location filename="core.cpp" line="486"/>
         <source>Could not open file %1 for read: %2</source>
         <translation>Не можу відкрити файл %1 для читання: %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="678"/>
+        <location filename="core.cpp" line="679"/>
         <source>File %1 doesn&apos;t exist or could not be read</source>
         <translation>Файл %1 не існує або не може бути прочитаний</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="704"/>
+        <location filename="core.cpp" line="705"/>
         <source>Runtime error</source>
         <translation>Помилка під час виконання</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="802"/>
+        <location filename="core.cpp" line="803"/>
         <source>Torrent %1 could not be reannounced at the moment, try again later.</source>
         <translation>Торрент %1 не може бути повторно анонсований в даний момент. Спробуйте повторити пізніше.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1128"/>
+        <location filename="core.cpp" line="1129"/>
         <source>Could not open file %1 for write!</source>
         <translation>Не можу відкрити файл %1 для запису!</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1487"/>
+        <location filename="core.cpp" line="1488"/>
         <source>Queued for checking</source>
         <translation>Поставлено в чергу на перевірку</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1489"/>
+        <location filename="core.cpp" line="1490"/>
         <source>Checking files</source>
         <translation>Перевіряю файли</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1491"/>
+        <location filename="core.cpp" line="1492"/>
         <source>Downloading metadata</source>
         <translation>Завантажую метадані</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1493"/>
+        <location filename="core.cpp" line="1494"/>
         <source>Downloading</source>
         <translation>Заванажую</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1495"/>
+        <location filename="core.cpp" line="1496"/>
         <source>Finished</source>
         <translation>Закінчено</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1497"/>
+        <location filename="core.cpp" line="1498"/>
         <source>Seeding</source>
         <translation>Розповсюджую</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1499"/>
+        <location filename="core.cpp" line="1500"/>
         <source>Allocating</source>
         <translation>Резервую місце</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1501"/>
+        <location filename="core.cpp" line="1502"/>
         <source>Checking resume data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1520"/>
+        <location filename="core.cpp" line="1521"/>
         <source>Could not open saved torrent %1 for read.</source>
         <translation>Не можу відкрити збережений торрент %1 для читання.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1606"/>
+        <location filename="core.cpp" line="1607"/>
         <source>Bad bencoding in saved torrent data</source>
         <translation>Збережений торрент має неправильний формат</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1643"/>
+        <location filename="core.cpp" line="1644"/>
         <source>Torrent finished: %1</source>
         <translation>Торрент завершено: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1793"/>
+        <location filename="core.cpp" line="1794"/>
         <source>untagged</source>
         <translation>без тегів</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1828"/>
+        <location filename="core.cpp" line="1829"/>
         <source>Error code %1 of category:&lt;blockquote&gt;%2&lt;/blockquote&gt;error message:&lt;blockquote&gt;%3&lt;/blockquote&gt;raw exception message:&lt;blockquote&gt;%4&lt;/blockquote&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2201"/>
+        <location filename="core.cpp" line="2202"/>
         <source>Wrong announce address %1</source>
         <translation>Неправильна адреса для анонсування %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="110"/>
+        <location filename="core.cpp" line="111"/>
         <source>Unknown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1844"/>
+        <location filename="core.cpp" line="1845"/>
         <source>Could not create path %1/.leechcraft/bittorrent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="418"/>
+        <location filename="core.cpp" line="419"/>
         <source>%1% (%2 of %3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="414"/>
+        <location filename="core.cpp" line="415"/>
         <source>Name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="428"/>
+        <location filename="core.cpp" line="429"/>
         <source>Peers/seeds: %1/%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="415"/>
+        <location filename="core.cpp" line="416"/>
         <source>Destination:</source>
         <translation type="unfinished">Місце збереження:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="417"/>
+        <location filename="core.cpp" line="418"/>
         <source>Progress:</source>
         <translation type="unfinished">Прогрес:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="422"/>
+        <location filename="core.cpp" line="423"/>
         <source>; status:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="424"/>
+        <location filename="core.cpp" line="425"/>
         <source>Downloading speed:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="426"/>
+        <location filename="core.cpp" line="427"/>
         <source>; uploading speed:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1156"/>
+        <location filename="core.cpp" line="1157"/>
         <source>Could not open file %1 for reading</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1165"/>
+        <location filename="core.cpp" line="1166"/>
         <source>Could not parse document from file %1.&lt;br /&gt;%1 at %2:%3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1175"/>
+        <location filename="core.cpp" line="1176"/>
         <source>There should be only one storage section.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1193"/>
+        <location filename="core.cpp" line="1194"/>
         <source>Unknown storage version</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1201"/>
+        <location filename="core.cpp" line="1202"/>
         <source>Could not open file %1 for writing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="399"/>
+        <location filename="core.cpp" line="400"/>
         <source>%1% (%2 of %3 at %4)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -800,12 +800,12 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="core.cpp" line="1979"/>
+        <location filename="core.cpp" line="1980"/>
         <source>Storage moved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1980"/>
+        <location filename="core.cpp" line="1981"/>
         <source>Storage for torrent&lt;br /&gt;%1&lt;br /&gt;moved successfully to&lt;br /&gt;%2</source>
         <translation type="unfinished"></translation>
     </message>

@@ -45,14 +45,14 @@
 <context>
     <name>Plugin</name>
     <message>
-        <location filename="networkmonitor.cpp" line="43"/>
-        <source>Monitors network activity.</source>
-        <translation>Следит за сетевой активностью.</translation>
-    </message>
-    <message>
-        <location filename="networkmonitor.cpp" line="78"/>
+        <location filename="networkmonitor.cpp" line="36"/>
         <source>Network monitor...</source>
         <translation>Сетевой монитор...</translation>
+    </message>
+    <message>
+        <location filename="networkmonitor.cpp" line="58"/>
+        <source>Monitors HTTP network requests.</source>
+        <translation>Следит за HTTP-запросами.</translation>
     </message>
 </context>
 <context>

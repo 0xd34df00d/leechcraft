@@ -140,27 +140,27 @@
         <translation>ЧЗ</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="183"/>
+        <location filename="core.cpp" line="184"/>
         <source>Could not truncate file </source>
         <translation>Не можу обрізати файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="310"/>
+        <location filename="core.cpp" line="311"/>
         <source>%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="403"/>
+        <location filename="core.cpp" line="404"/>
         <source>Could not open file </source>
         <translation>Не можу відкрити файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="318"/>
+        <location filename="core.cpp" line="319"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="305"/>
+        <location filename="core.cpp" line="306"/>
         <source>%1% (%2 of %3)</source>
         <translation>%1% (%2 з %3)</translation>
     </message>

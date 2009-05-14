@@ -32,7 +32,7 @@
 <context>
     <name>BrowserWidget</name>
     <message>
-        <location filename="browserwidget.cpp" line="71"/>
+        <location filename="browserwidget.cpp" line="73"/>
         <source>Add to favorites...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -42,158 +42,158 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="76"/>
+        <location filename="browserwidget.cpp" line="78"/>
         <source>Find...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="81"/>
+        <location filename="browserwidget.cpp" line="83"/>
         <source>Print...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="86"/>
+        <location filename="browserwidget.cpp" line="88"/>
         <source>Print with preview...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="159"/>
+        <location filename="browserwidget.cpp" line="161"/>
         <source>External links</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="475"/>
+        <location filename="browserwidget.cpp" line="504"/>
         <source>Print web page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="582"/>
+        <location filename="browserwidget.cpp" line="604"/>
         <source>Save screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="596"/>
-        <location filename="browserwidget.cpp" line="605"/>
+        <location filename="browserwidget.cpp" line="618"/>
+        <location filename="browserwidget.cpp" line="627"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="597"/>
+        <location filename="browserwidget.cpp" line="619"/>
         <source>Could not open %1 for write</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="606"/>
+        <location filename="browserwidget.cpp" line="628"/>
         <source>Could not write screenshot to %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="454"/>
+        <location filename="browserwidget.cpp" line="478"/>
         <source>Ctrl+X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="455"/>
+        <location filename="browserwidget.cpp" line="479"/>
         <source>Ctrl+C</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="456"/>
+        <location filename="browserwidget.cpp" line="480"/>
         <source>Ctrl+V</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="68"/>
+        <location filename="browserwidget.cpp" line="70"/>
         <source>More...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="441"/>
+        <location filename="browserwidget.cpp" line="465"/>
         <source>Ctrl+D</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="442"/>
+        <location filename="browserwidget.cpp" line="466"/>
         <source>Ctrl+F</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="443"/>
+        <location filename="browserwidget.cpp" line="467"/>
         <source>Ctrl+P</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="444"/>
+        <location filename="browserwidget.cpp" line="468"/>
         <source>Ctrl+Shift+P</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="91"/>
+        <location filename="browserwidget.cpp" line="93"/>
         <source>Take page&apos;s screenshot...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="96"/>
+        <location filename="browserwidget.cpp" line="98"/>
         <source>View sources...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="101"/>
+        <location filename="browserwidget.cpp" line="103"/>
         <source>Create new tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="447"/>
+        <location filename="browserwidget.cpp" line="471"/>
         <source>Ctrl+T</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="105"/>
+        <location filename="browserwidget.cpp" line="107"/>
         <source>Close this tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="448"/>
+        <location filename="browserwidget.cpp" line="472"/>
         <source>Ctrl+W</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="109"/>
+        <location filename="browserwidget.cpp" line="111"/>
         <source>Zoom in</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="113"/>
+        <location filename="browserwidget.cpp" line="115"/>
         <source>Zoom out</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="117"/>
+        <location filename="browserwidget.cpp" line="119"/>
         <source>Reset zoom</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="451"/>
+        <location filename="browserwidget.cpp" line="475"/>
         <source>Ctrl+0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="121"/>
+        <location filename="browserwidget.cpp" line="123"/>
         <source>Import XBEL...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="125"/>
+        <location filename="browserwidget.cpp" line="127"/>
         <source>Export XBEL...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="152"/>
+        <location filename="browserwidget.cpp" line="154"/>
         <source>Recently closed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="461"/>
+        <location filename="browserwidget.cpp" line="485"/>
         <source>Ctrl+Shift+T</source>
         <translation type="unfinished"></translation>
     </message>
@@ -247,12 +247,12 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="45"/>
+        <location filename="core.cpp" line="46"/>
         <source>Plugins</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="107"/>
+        <location filename="core.cpp" line="108"/>
         <source>untagged</source>
         <translation type="unfinished"></translation>
     </message>
@@ -262,35 +262,35 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="399"/>
+        <location filename="core.cpp" line="419"/>
         <source>Select XBEL file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="401"/>
-        <location filename="core.cpp" line="441"/>
+        <location filename="core.cpp" line="421"/>
+        <location filename="core.cpp" line="461"/>
         <source>XBEL files (*.xbel);;All files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="414"/>
-        <location filename="core.cpp" line="429"/>
-        <location filename="core.cpp" line="457"/>
+        <location filename="core.cpp" line="434"/>
+        <location filename="core.cpp" line="449"/>
+        <location filename="core.cpp" line="477"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="415"/>
+        <location filename="core.cpp" line="435"/>
         <source>Could not open file %1 for reading.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="439"/>
+        <location filename="core.cpp" line="459"/>
         <source>Save XBEL file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="458"/>
+        <location filename="core.cpp" line="478"/>
         <source>Could not open file %1 for writing.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -298,7 +298,7 @@
 <context>
     <name>CustomWebPage</name>
     <message>
-        <location filename="customwebpage.cpp" line="394"/>
+        <location filename="customwebpage.cpp" line="371"/>
         <source>Error loading %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -306,58 +306,58 @@
 <context>
     <name>CustomWebView</name>
     <message>
-        <location filename="customwebview.cpp" line="76"/>
-        <location filename="customwebview.cpp" line="84"/>
+        <location filename="customwebview.cpp" line="80"/>
+        <location filename="customwebview.cpp" line="88"/>
         <source>Loading...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="140"/>
+        <location filename="customwebview.cpp" line="144"/>
         <source>Open &amp;here</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="142"/>
+        <location filename="customwebview.cpp" line="146"/>
         <source>Open in new &amp;tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="145"/>
+        <location filename="customwebview.cpp" line="149"/>
         <source>&amp;Save link...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="151"/>
+        <location filename="customwebview.cpp" line="155"/>
         <source>&amp;Bookmark link...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="157"/>
+        <location filename="customwebview.cpp" line="161"/>
         <source>&amp;Copy link</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="165"/>
+        <location filename="customwebview.cpp" line="169"/>
         <source>Open image here</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="167"/>
+        <location filename="customwebview.cpp" line="171"/>
         <source>Open image in new tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="170"/>
+        <location filename="customwebview.cpp" line="174"/>
         <source>Save image...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="172"/>
+        <location filename="customwebview.cpp" line="176"/>
         <source>Copy image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="174"/>
+        <location filename="customwebview.cpp" line="178"/>
         <source>Copy image location</source>
         <translation type="unfinished"></translation>
     </message>
@@ -388,33 +388,33 @@
 <context>
     <name>FindDialog</name>
     <message>
-        <location filename="finddialog.ui" line="13"/>
-        <location filename="finddialog.ui" line="67"/>
+        <location filename="finddialog.ui" line="14"/>
+        <location filename="finddialog.ui" line="51"/>
         <source>Find</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="finddialog.ui" line="27"/>
-        <source>Find what:</source>
+        <source>Backwards</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="finddialog.ui" line="39"/>
-        <source>Search backwards</source>
+        <location filename="finddialog.ui" line="34"/>
+        <source>Case</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="finddialog.ui" line="46"/>
-        <source>Match case</source>
+        <location filename="finddialog.ui" line="41"/>
+        <source>Cycle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="finddialog.ui" line="53"/>
-        <source>Continue from the beginning</source>
+        <location filename="finddialog.ui" line="61"/>
+        <source>Esc</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="finddialog.ui" line="74"/>
+        <location filename="finddialog.ui" line="58"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
@@ -438,6 +438,29 @@
     </message>
 </context>
 <context>
+    <name>PasswordRemember</name>
+    <message>
+        <location filename="passwordremember.ui" line="14"/>
+        <source>Password remember</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="passwordremember.ui" line="20"/>
+        <source>Remember this password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="passwordremember.ui" line="27"/>
+        <source>Not now</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="passwordremember.ui" line="34"/>
+        <source>Never</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Poshuku</name>
     <message>
         <location filename="poshuku.ui" line="14"/>
@@ -450,7 +473,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="499"/>
+        <location filename="poshuku.cpp" line="504"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>

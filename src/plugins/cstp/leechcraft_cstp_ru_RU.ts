@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="ru">
-<defaultcodec></defaultcodec>
 <context>
     <name>AddTask</name>
     <message>
@@ -141,27 +140,27 @@
         <translation>ВП</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="183"/>
+        <location filename="core.cpp" line="184"/>
         <source>Could not truncate file </source>
         <translation>Невозможно сократить файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="310"/>
+        <location filename="core.cpp" line="311"/>
         <source>%1</source>
         <translation>%1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="403"/>
+        <location filename="core.cpp" line="404"/>
         <source>Could not open file </source>
         <translation>Невозможно открыть файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="318"/>
+        <location filename="core.cpp" line="319"/>
         <source>/s</source>
         <translation>/c</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="305"/>
+        <location filename="core.cpp" line="306"/>
         <source>%1% (%2 of %3)</source>
         <translation>%1% (%2 из %3)</translation>
     </message>

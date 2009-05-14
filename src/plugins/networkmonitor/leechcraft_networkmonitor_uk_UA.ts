@@ -45,13 +45,13 @@
 <context>
     <name>Plugin</name>
     <message>
-        <location filename="networkmonitor.cpp" line="43"/>
-        <source>Monitors network activity.</source>
+        <location filename="networkmonitor.cpp" line="36"/>
+        <source>Network monitor...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="networkmonitor.cpp" line="78"/>
-        <source>Network monitor...</source>
+        <location filename="networkmonitor.cpp" line="58"/>
+        <source>Monitors HTTP network requests.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

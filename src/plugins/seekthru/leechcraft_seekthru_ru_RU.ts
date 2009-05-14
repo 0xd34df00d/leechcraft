@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
-<defaultcodec></defaultcodec>
 <context>
     <name>Core</name>
     <message>
@@ -108,7 +107,7 @@
         <translation>(HTML)</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="194"/>
+        <location filename="searchhandler.cpp" line="195"/>
         <source>Job for request&lt;br /&gt;%1&lt;br /&gt;wasn&apos;t delegated.</source>
         <translation>Задача для запроса&lt;br /&gt;%1&lt;br /&gt;не была делегирована.</translation>
     </message>
