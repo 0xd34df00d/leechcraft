@@ -47,6 +47,12 @@ bool TabWidget::event (QEvent *e)
 		return QTabWidget::event (e);
 }
 
+void TabWidget::tabInserted (int index)
+{
+	if (index < Core::Instance ().CountUnremoveableTabs ())
+		tabBar ()->setTabButton (index, QTabBar::RightSide, 0);
+}
+
 void TabWidget::tabRemoved (int index)
 {
 	Widgets_.remove (index);
