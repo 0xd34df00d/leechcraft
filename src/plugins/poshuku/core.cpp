@@ -30,8 +30,10 @@
 #include "sqlstoragebackend.h"
 #include "xbelparser.h"
 #include "xbelgenerator.h"
+#include "linkhistory.h"
 #include "interfaces/pluginbase.h"
 
+using namespace LeechCraft::Poshuku;
 using LeechCraft::Util::Proxy;
 using LeechCraft::Util::TagsCompletionModel;
 
@@ -44,6 +46,8 @@ Core::Core ()
 	URLCompletionModel_.reset (new URLCompletionModel (this));
 
 	PluginsMenu_ = new QMenu (tr ("Plugins"));
+
+	QWebHistoryInterface::setDefaultInterface (new LinkHistory);
 }
 
 Core& Core::Instance ()
