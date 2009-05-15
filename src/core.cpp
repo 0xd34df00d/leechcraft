@@ -742,13 +742,19 @@ void LeechCraft::Core::toggleMultiwindow ()
 
 void LeechCraft::Core::deleteSelectedHistory (const QModelIndex& index)
 {
-	/* TODO reimplement in new terms
-	QModelIndex mapped = FilterModel_->mapToSource (index);
-	HistoryModel *model =
-		static_cast<HistoryModel*> (*HistoryMergeModel_->
-				GetModelForRow (mapped.row ()));
-	model->RemoveItem (HistoryMergeModel_->mapToSource (mapped));
-	*/
+	QModelIndex mapped = MapToSourceRecursively (index);
+	if (!mapped.isValid ())
+		return;
+	QAbstractItemModel *model = const_cast<QAbstractItemModel*> (mapped.model ());
+	HistoryModel *hm = qobject_cast<HistoryModel*> (model);
+	qDebug () << hm << model;
+	if (!hm)
+	{
+		qWarning () << "Source history model doesn't cast to history model :(";
+		return;
+	}
+
+	hm->RemoveItem (mapped);
 }
 
 bool LeechCraft::Core::CouldHandle (const LeechCraft::DownloadEntity& e)
