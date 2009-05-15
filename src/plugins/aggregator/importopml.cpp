@@ -2,6 +2,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDomDocument>
+#include <QTimer>
 #include "opmlparser.h"
 
 ImportOPML::ImportOPML (QWidget *parent)
@@ -63,7 +64,12 @@ void ImportOPML::on_Browse__released ()
 				"All files (*.*)"));
 
 	if (filename.isEmpty ())
+	{
+		QTimer::singleShot (0,
+				this,
+				SLOT (reject ()));
 		return;
+	}
 
 	Reset ();
 

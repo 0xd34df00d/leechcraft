@@ -4,12 +4,14 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QMessageBox>
+#include <QTimer>
 #include <QtDebug>
 
 ImportBinary::ImportBinary (QWidget *parent)
 : QDialog (parent)
 {
 	Ui_.setupUi (this);
+	on_Browse__released ();
 }
 
 ImportBinary::~ImportBinary ()
@@ -98,7 +100,12 @@ void ImportBinary::on_Browse__released ()
 				"All files (*.*)"));
 
 	if (filename.isEmpty ())
+	{
+		QTimer::singleShot (0,
+				this,
+				SLOT (reject ()));
 		return;
+	}
 
 	Reset ();
 

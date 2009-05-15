@@ -2,6 +2,7 @@
 #include <QFileInfo>
 #include <QFileDialog>
 #include <QDir>
+#include <QTimer>
 
 Export::Export (const QString& title,
 		const QString& exportTitle,
@@ -83,7 +84,12 @@ void Export::on_Browse__released ()
 			startingPath,
 			Choices_);
 	if (filename.isEmpty ())
+	{
+		QTimer::singleShot (0,
+				this,
+				SLOT (reject ()));
 		return;
+	}
 
 	Ui_.File_->setText (filename);
 	Ui_.ButtonBox_->button (QDialogButtonBox::Save)->setEnabled (true);
