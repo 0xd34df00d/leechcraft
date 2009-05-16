@@ -36,12 +36,76 @@ CategoryMerger::CategoryMerger (const Request& r,
 		for (QList<IFinder*>::iterator i = finders.begin (),
 				end = finders.end (); i != end; ++i)
 		{
-			if (!(*i)->GetCategories ().contains (r.Category_))
+			try
+			{
+				if (!(*i)->GetCategories ().contains (r.Category_))
+					continue;
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "getting categories"
+					<< *i
+					<< e.what ();
 				continue;
+			}
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "getting categories"
+					<< *i;
+				continue;
+			}
 
-			boost::shared_ptr<IFindProxy> proxy = (*i)->GetProxy (r);
-			AddModel (proxy->GetModel ());
-			Proxies_.push_back (proxy);
+			IFindProxy_ptr proxy;
+			try
+			{
+				proxy = (*i)->GetProxy (r);
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "getting proxy"
+					<< *i
+					<< e.what ();
+				continue;
+			}
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "getting proxy"
+					<< *i;
+				continue;
+			}
+
+			if (!proxy)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "got null proxy"
+					<< *i;
+				continue;
+			}
+
+			try
+			{
+				AddModel (proxy->GetModel ());
+				Proxies_.push_back (proxy);
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "getting model"
+					<< *i
+					<< e.what ();
+				continue;
+			}
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "getting model"
+					<< *i;
+				continue;
+			}
 		}
 	}
 
