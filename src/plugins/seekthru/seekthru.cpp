@@ -51,7 +51,7 @@ QString SeekThru::GetInfo () const
 
 QIcon SeekThru::GetIcon () const
 {
-	return QIcon ();
+	return QIcon (":/resources/images/seekthru.png");
 }
 
 QStringList SeekThru::Provides () const
