@@ -29,7 +29,7 @@ Chatter::~Chatter ()
 {
 }
 
-void Chatter::Init ()
+void Chatter::Init (ICoreProxy_ptr)
 {
     setWindowTitle ("Chatter");
     IsShown_ = false;

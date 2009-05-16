@@ -11,7 +11,6 @@
 #include <interfaces/ipluginready.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ihaveshortcuts.h>
-#include <interfaces/iwantnetworkaccessmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/tagscompleter.h>
 #include "filtermodel.h"
@@ -27,11 +26,10 @@ class Poshuku : public QWidget
 			  , public IPluginReady
 			  , public IHaveSettings
 			  , public IHaveShortcuts
-			  , public IWantNetworkAccessManager
 			  , public IWebBrowser
 {
     Q_OBJECT
-    Q_INTERFACES (IInfo IEmbedTab IMultiTabs IHaveSettings IPluginReady IWantNetworkAccessManager IWebBrowser IHaveShortcuts)
+    Q_INTERFACES (IInfo IEmbedTab IMultiTabs IHaveSettings IPluginReady IWebBrowser IHaveShortcuts)
 
 	Ui::Poshuku Ui_;
 
@@ -41,7 +39,7 @@ class Poshuku : public QWidget
 	std::auto_ptr<FilterModel> FavoritesFilterModel_;
 	std::auto_ptr<HistoryFilterModel> HistoryFilterModel_;
 public:
-	void Init ();
+	void Init (ICoreProxy_ptr);
 	void Release ();
 	QString GetName () const;
 	QString GetInfo () const;
@@ -59,12 +57,9 @@ public:
 
 	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 
-	void SetNetworkAccessManager (QNetworkAccessManager*);
-
 	void Open (const QString&);
 	IWebWidget* GetWidget () const;
 
-	void SetShortcutProxy (const IShortcutProxy*);
 	void SetShortcut (int, const QKeySequence&);
 	QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
 private:

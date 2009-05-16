@@ -7,8 +7,10 @@
 using namespace LeechCraft::Plugins;
 using namespace LeechCraft::Plugins::NetworkMonitor;
 
-void Plugin::Init ()
+void Plugin::Init (ICoreProxy_ptr proxy)
 {
+	NetworkAccessManager_ = proxy->GetNetworkAccessManager ();
+
 	Ui_.setupUi (this);
 
 	Model_ = new RequestModel (this);
@@ -85,11 +87,6 @@ void Plugin::SetProvider (QObject*, const QString&)
 QList<QAction*> Plugin::GetActions () const
 {
 	return Actions_;
-}
-
-void Plugin::SetNetworkAccessManager (QNetworkAccessManager *nam)
-{
-	NetworkAccessManager_ = nam;
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_networkmonitor, Plugin);

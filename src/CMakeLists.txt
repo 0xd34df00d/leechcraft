@@ -188,6 +188,7 @@ SET (SRCS
 	keysequencer.cpp
 	networkdiskcache.cpp
 	networkaccessmanager.cpp
+	coreproxy.cpp
 	3dparty/qxttooltip.cpp
 	)
 SET (HEADERS
@@ -224,12 +225,12 @@ SET (HEADERS
 	keysequencer.h
 	networkdiskcache.h
 	networkaccessmanager.h
+	coreproxy.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/iinfo.h
 	interfaces/iwindow.h
 	interfaces/idownload.h
-	interfaces/iwantnetworkaccessmanager.h
 	interfaces/ihavesettings.h
 	interfaces/icustomprovider.h
 	interfaces/imultitabs.h

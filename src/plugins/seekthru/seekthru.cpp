@@ -7,7 +7,7 @@
 
 using namespace LeechCraft::Util;
 
-void SeekThru::Init ()
+void SeekThru::Init (ICoreProxy_ptr)
 {
 	connect (&Core::Instance (),
 			SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,

@@ -68,15 +68,6 @@ public:
 class IHaveShortcuts
 {
 public:
-	/** @brief Sets shortcut proxy for this plugin to proxy.
-	 *
-	 * The plugin can communicate with the core and the shortcut manager
-	 * via the proxy.
-	 * 
-	 * @sa IShortcutProxy
-	 */
-	virtual void SetShortcutProxy (const IShortcutProxy *proxy) = 0;
-
 	/** @brief Sets shortcut's sequence if it has changed.
 	 *
 	 * The id is the same as in the return value of GetActionInfo().

@@ -22,8 +22,10 @@
 using LeechCraft::Util::TagsCompleter;
 using LeechCraft::Util::TagsCompletionModel;
 
-void Poshuku::Init ()
+void Poshuku::Init (ICoreProxy_ptr coreProxy)
 {
+	Core::Instance ().SetNetworkAccessManager (coreProxy->GetNetworkAccessManager ());
+	Core::Instance ().SetShortcutProxy (coreProxy->GetShortcutProxy ());
 	Core::Instance ().setParent (this);
 
 	Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku"));
@@ -211,11 +213,6 @@ boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> Poshuku::GetSettingsDialo
 	return XmlSettingsDialog_;
 }
 
-void Poshuku::SetNetworkAccessManager (QNetworkAccessManager *manager)
-{
-	Core::Instance ().SetNetworkAccessManager (manager);
-}
-
 void Poshuku::Open (const QString& link)
 {
 	Core::Instance ().NewURL (link);
@@ -224,11 +221,6 @@ void Poshuku::Open (const QString& link)
 IWebWidget* Poshuku::GetWidget () const
 {
 	return Core::Instance ().GetWidget ();
-}
-
-void Poshuku::SetShortcutProxy (const IShortcutProxy *proxy)
-{
-	Core::Instance ().SetShortcutProxy (proxy);
 }
 
 void Poshuku::SetShortcut (int name, const QKeySequence& sequence)

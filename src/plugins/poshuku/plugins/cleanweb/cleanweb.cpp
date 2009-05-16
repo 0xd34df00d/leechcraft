@@ -5,7 +5,7 @@
 using namespace LeechCraft::Poshuku;
 using namespace LeechCraft::Poshuku::Plugins;
 
-void CleanWeb::Init ()
+void CleanWeb::Init (ICoreProxy_ptr)
 {
 }
 

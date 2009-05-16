@@ -41,7 +41,7 @@ namespace LeechCraft
 					boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 					QMap<QString, QString> Browser2ID_;
 				public:
-					void Init ();
+					void Init (ICoreProxy_ptr);
 					void Release ();
 					QString GetName () const;
 					QString GetInfo () const;

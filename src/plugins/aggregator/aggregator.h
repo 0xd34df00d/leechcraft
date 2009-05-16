@@ -35,7 +35,7 @@ class Aggregator : public QWidget
 	Aggregator_Impl *Impl_;
 public:
 	virtual ~Aggregator ();
-    void Init ();
+    void Init (ICoreProxy_ptr);
     void Release ();
     QString GetName () const;
     QString GetInfo () const;
@@ -52,7 +52,6 @@ public:
 	void ItemSelected (const QModelIndex&);
 	bool CouldHandle (const LeechCraft::DownloadEntity&) const;
 	void Handle (LeechCraft::DownloadEntity);
-	void SetShortcutProxy (const IShortcutProxy*);
 	void SetShortcut (int, const QKeySequence&);
 	QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
 protected:

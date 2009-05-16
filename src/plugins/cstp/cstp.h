@@ -5,7 +5,6 @@
 #include <interfaces/idownload.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/ihavesettings.h>
-#include <interfaces/iwantnetworkaccessmanager.h>
 #include <interfaces/structures.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
@@ -28,10 +27,9 @@ class CSTP : public QObject
 		   , public IDownload
 		   , public IJobHolder
 		   , public IHaveSettings
-		   , public IWantNetworkAccessManager
 {
 	Q_OBJECT
-	Q_INTERFACES (IInfo IDownload IJobHolder IHaveSettings IWantNetworkAccessManager)
+	Q_INTERFACES (IInfo IDownload IJobHolder IHaveSettings)
 
 	QMenu *Plugins_;
 	std::auto_ptr<QTranslator> Translator_;
@@ -39,7 +37,7 @@ class CSTP : public QObject
 	std::auto_ptr<QToolBar> Toolbar_;
 public:
 	virtual ~CSTP ();
-	void Init ();
+	void Init (ICoreProxy_ptr);
 	void Release ();
     QString GetName () const;
     QString GetInfo () const;
@@ -61,8 +59,6 @@ public:
 	void ItemSelected (const QModelIndex&);
 
 	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
-
-	void SetNetworkAccessManager (QNetworkAccessManager*);
 private:
 	template<typename T> void ApplyCore2Selection (void (Core::*) (const QModelIndex&), T);
 	void SetupTabWidget ();

@@ -22,8 +22,9 @@ CSTP::~CSTP ()
 {
 }
 
-void CSTP::Init ()
+void CSTP::Init (ICoreProxy_ptr coreProxy)
 {
+	Core::Instance ().SetNetworkAccessManager (coreProxy->GetNetworkAccessManager ());
 	Translator_.reset (LeechCraft::Util::InstallTranslator ("cstp"));
 
 	XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
@@ -150,11 +151,6 @@ void CSTP::ItemSelected (const QModelIndex&)
 boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> CSTP::GetSettingsDialog () const
 {
 	return XmlSettingsDialog_;
-}
-
-void CSTP::SetNetworkAccessManager (QNetworkAccessManager *manager)
-{
-	Core::Instance ().SetNetworkAccessManager (manager);
 }
 
 template<typename T>

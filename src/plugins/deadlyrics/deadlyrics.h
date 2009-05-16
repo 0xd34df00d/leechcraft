@@ -4,17 +4,15 @@
 #include <QStringList>
 #include <interfaces/iinfo.h>
 #include <interfaces/ifinder.h>
-#include <interfaces/iwantnetworkaccessmanager.h>
 
 class DeadLyRicS : public QObject
 				 , public IInfo
 				 , public IFinder
-				 , public IWantNetworkAccessManager
 {
 	Q_OBJECT
-	Q_INTERFACES (IInfo IFinder IWantNetworkAccessManager)
+	Q_INTERFACES (IInfo IFinder)
 public:
-	void Init ();
+	void Init (ICoreProxy_ptr);
 	void Release ();
 	QString GetName () const;
 	QString GetInfo () const;
@@ -24,7 +22,6 @@ public:
 	QStringList Uses () const;
 
 	void SetProvider (QObject*, const QString&);
-	void SetNetworkAccessManager (QNetworkAccessManager*);
 
 	QStringList GetCategories () const;
 	boost::shared_ptr<IFindProxy> GetProxy (const LeechCraft::Request&);

@@ -20,7 +20,7 @@ namespace LeechCraft
 				Q_OBJECT
 				Q_INTERFACES (IInfo IPlugin2 LeechCraft::Poshuku::PluginBase)
 			public:
-				void Init ();
+				void Init (ICoreProxy_ptr);
 				void Release ();
 				QString GetName () const;
 				QString GetInfo () const;

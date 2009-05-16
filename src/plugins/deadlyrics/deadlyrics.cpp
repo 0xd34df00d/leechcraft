@@ -2,8 +2,9 @@
 #include "core.h"
 #include "findproxy.h"
 
-void DeadLyRicS::Init ()
+void DeadLyRicS::Init (ICoreProxy_ptr proxy)
 {
+	Core::Instance ().SetNetworkAccessManager (proxy->GetNetworkAccessManager ());
 }
 
 void DeadLyRicS::Release ()
@@ -42,11 +43,6 @@ QStringList DeadLyRicS::Uses () const
 
 void DeadLyRicS::SetProvider (QObject*, const QString&)
 {
-}
-
-void DeadLyRicS::SetNetworkAccessManager (QNetworkAccessManager *manager)
-{
-	Core::Instance ().SetNetworkAccessManager (manager);
 }
 
 QStringList DeadLyRicS::GetCategories () const

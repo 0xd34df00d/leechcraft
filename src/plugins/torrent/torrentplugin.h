@@ -88,7 +88,7 @@ class TorrentPlugin : public QObject
 	};
 public:
     // IInfo
-    void Init ();
+    void Init (ICoreProxy_ptr);
 	virtual ~TorrentPlugin ();
     QString GetName () const;
     QString GetInfo () const;
@@ -125,7 +125,6 @@ public:
 	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 
 	// IHaveShortcuts
-	void SetShortcutProxy (const IShortcutProxy*);
 	void SetShortcut (int, const QKeySequence&);
 	QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
 public slots:

@@ -12,7 +12,7 @@ using namespace LeechCraft::Poshuku::Plugins;
 using namespace LeechCraft::Poshuku::Plugins::Fua;
 using namespace LeechCraft::Util;
 
-void FUA::Init ()
+void FUA::Init (ICoreProxy_ptr)
 {
 	Browser2ID_ ["Firefox 1.5.0.4"] =
 		"Mozilla/5.0 (X11; U; x86_64 Linux; en_US; rv:1.8.0.4) Gecko/20060508 Firefox/1.5.0.4";

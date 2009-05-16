@@ -35,7 +35,7 @@ class Chatter : public QMainWindow
     bool IsShown_;
 public:
 	virtual ~Chatter ();
-    virtual void Init ();
+    virtual void Init (ICoreProxy_ptr);
     virtual QString GetName () const;
     virtual QString GetInfo () const;
     virtual QStringList Provides () const;

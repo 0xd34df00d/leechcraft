@@ -102,7 +102,7 @@ Aggregator::~Aggregator ()
 {
 }
 
-void Aggregator::Init ()
+void Aggregator::Init (ICoreProxy_ptr)
 {
 	Impl_ = new Aggregator_Impl;
 	Impl_->Translator_.reset (LeechCraft::Util::InstallTranslator ("aggregator"));
@@ -289,10 +289,6 @@ void Aggregator::Handle (LeechCraft::DownloadEntity e)
     if (af.exec () == QDialog::Accepted)
         Core::Instance ().AddFeed (e.Location_,
 				af.GetTags ());
-}
-
-void Aggregator::SetShortcutProxy (const IShortcutProxy*)
-{
 }
 
 #define _LC_MERGE(a) EA##a

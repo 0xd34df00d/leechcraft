@@ -1,9 +1,42 @@
 #ifndef INTERFACES_IINFO_H
 #define INTERFACES_IINFO_H
+#include <boost/shared_ptr.hpp>
 #include <QString>
 #include <QStringList>
 #include <QIcon>
 #include <QtPlugin>
+
+class QNetworkAccessManager;
+class IShortcutProxy;
+
+/** @brief Proxy class for the communication with LeechCraft.
+ *
+ * Allows to talk with LeechCraft, requesting and getting various
+ * services.
+ */
+class ICoreProxy
+{
+public:
+	/** @brief Returns application-wide network access manager.
+	 *
+	 * If your plugin wants to work well with other internet-related
+	 * ones and wants to integrate with application-wide cookie database
+	 * and network cache, it should use the returned
+	 * QNetworkAccessManager.
+	 *
+	 * @return Application-wide QNetworkAccessManager.
+	 */
+	virtual QNetworkAccessManager* GetNetworkAccessManager () const = 0;
+
+	/** @brief Returns the shortcut proxy used to communicate with the
+	 * shortcut manager.
+	 */
+	virtual const IShortcutProxy* GetShortcutProxy () const = 0;
+
+	virtual ~ICoreProxy () {}
+};
+
+typedef boost::shared_ptr<ICoreProxy> ICoreProxy_ptr;
 
 /** @brief Required interface for every plugin.
  *
@@ -22,9 +55,11 @@ public:
 	 * Generally, all initialization code should be placed into this
 	 * method instead of plugin's instance object's constructor.
 	 *
+	 * @param[in] proxy The pointer to proxy to LeechCraft.
+	 *
 	 * @sa Release
 	 */
-    virtual void Init () = 0;
+    virtual void Init (ICoreProxy_ptr proxy) = 0;
 
 	/** @brief Returns the name of the plugin.
 	 *
@@ -178,6 +213,7 @@ public:
 };
 
 Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
+Q_DECLARE_INTERFACE (ICoreProxy, "org.Deviant.LeechCraft.ICoreProxy/1.0");
 
 #endif
 

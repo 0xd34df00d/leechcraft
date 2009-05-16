@@ -42,7 +42,7 @@ using LeechCraft::Util::TagsCompleter;
 using LeechCraft::Util::TagsLineEdit;
 using LeechCraft::ActionInfo;
 
-void TorrentPlugin::Init ()
+void TorrentPlugin::Init (ICoreProxy_ptr)
 {
 	Translator_.reset (LeechCraft::Util::InstallTranslator ("torrent"));
     SetupCore ();
@@ -263,10 +263,6 @@ boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> TorrentPlugin::GetSetting
 	return XmlSettingsDialog_;
 }
 
-void TorrentPlugin::SetShortcutProxy (const IShortcutProxy*)
-{
-}
-
 #define _LC_MERGE(a) EA##a
 
 #define _LC_SINGLE(a) \
@@ -285,7 +281,22 @@ void TorrentPlugin::SetShortcutProxy (const IShortcutProxy*)
 void TorrentPlugin::SetShortcut (int name,
 		const QKeySequence& shortcut)
 {
-	_LC_EXPANDER ((OpenTorrent_)(ChangeTrackers_)(CreateTorrent_)(OpenMultipleTorrents_)(RemoveTorrent_)(Resume_)(Stop_)(MoveUp_)(MoveDown_)(MoveToTop_)(MoveToBottom_)(ForceReannounce_)(ForceRecheck_)(MoveFiles_)(Import_)(Export_));
+	_LC_EXPANDER ((OpenTorrent_)
+			(ChangeTrackers_)
+			(CreateTorrent_)
+			(OpenMultipleTorrents_)
+			(RemoveTorrent_)
+			(Resume_)
+			(Stop_)
+			(MoveUp_)
+			(MoveDown_)
+			(MoveToTop_)
+			(MoveToBottom_)
+			(ForceReannounce_)
+			(ForceRecheck_)
+			(MoveFiles_)
+			(Import_)
+			(Export_));
 }
 
 #define _L(a) result [EA##a] = ActionInfo (a->text (), \

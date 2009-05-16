@@ -1,7 +1,7 @@
 #include "nufella.h"
 #include <plugininterface/util.h>
 
-void Nufella::Init ()
+void Nufella::Init (ICoreProxy_ptr)
 {
 	Translator_.reset (LeechCraft::Util::InstallTranslator ("nufella"));
 }

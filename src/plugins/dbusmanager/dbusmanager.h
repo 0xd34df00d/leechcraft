@@ -9,7 +9,7 @@ class DBusManager : public QObject
 
 	Q_INTERFACES (IInfo);
 public:
-	void Init ();
+	void Init (ICoreProxy_ptr);
 	void Release ();
 	QString GetName () const;
 	QString GetInfo () const;

@@ -1,7 +1,7 @@
 #include "dbusmanager.h"
 #include "core.h"
 
-void DBusManager::Init ()
+void DBusManager::Init (ICoreProxy_ptr)
 {
 	Core::Instance ();
 }

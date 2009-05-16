@@ -18,7 +18,7 @@ class Nufella : public QObject
 
 	std::auto_ptr<QTranslator> Translator_;
 public:
-	void Init ();
+	void Init (ICoreProxy_ptr);
 	void Release ();
 	QString GetName () const;
 	QString GetInfo () const;

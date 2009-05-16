@@ -13,11 +13,11 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/ipluginready.h>
 #include <interfaces/ihaveshortcuts.h>
-#include <interfaces/iwantnetworkaccessmanager.h>
 #include "core.h"
 #include "pluginmanager.h"
 #include "mainwindow.h"
 #include "xmlsettingsmanager.h"
+#include "coreproxy.h"
 
 using namespace LeechCraft;
 using LeechCraft::Util::HistoryModel;
@@ -560,29 +560,6 @@ void LeechCraft::PluginManager::InitializePlugins ()
 
 bool LeechCraft::PluginManager::InitializeSingle (LeechCraft::PluginManager::DepTreeItem_ptr item)
 {
-	try
-	{
-		IWantNetworkAccessManager *iwnam =
-			qobject_cast<IWantNetworkAccessManager*> (item->Plugin_);
-		if (iwnam)
-			iwnam->SetNetworkAccessManager (Core::Instance ().GetNetworkAccessManager ());
-		IHaveShortcuts *ihs = qobject_cast<IHaveShortcuts*> (item->Plugin_);
-		if (ihs)
-			ihs->SetShortcutProxy (Core::Instance ().GetShortcutProxy ());
-	}
-	catch (const std::exception& e)
-	{
-		qWarning () << Q_FUNC_INFO << 1 << e.what ();
-		Unload (Find (item));
-		return false;
-	}
-	catch (...)
-	{
-		qWarning () << Q_FUNC_INFO << 1;
-		Unload (Find (item));
-		return false;
-	}
-
 	QList<QString> keys = item->Needed_.uniqueKeys ();
 	Q_FOREACH (QString key, keys)
 	{
@@ -636,7 +613,7 @@ bool LeechCraft::PluginManager::InitializeSingle (LeechCraft::PluginManager::Dep
 	try
 	{
 		IInfo *ii = qobject_cast<IInfo*> (item->Plugin_);
-		ii->Init ();
+		ii->Init (ICoreProxy_ptr (new CoreProxy ()));
 		item->Initialized_ = true;
 	}
 	catch (const std::exception& e)

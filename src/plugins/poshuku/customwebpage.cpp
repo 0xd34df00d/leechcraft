@@ -411,7 +411,8 @@ bool CustomWebPage::acceptNavigationRequest (QWebFrame *frame,
 		return false;
 	}
 
-	HandleForms (frame, request, type);
+	if (frame)
+		HandleForms (frame, request, type);
 
 	if ((type == NavigationTypeLinkClicked ||
 				type == NavigationTypeOther) &&
