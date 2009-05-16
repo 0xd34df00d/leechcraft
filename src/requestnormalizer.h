@@ -15,7 +15,6 @@ namespace LeechCraft
 		Q_OBJECT
 
 		boost::shared_ptr<Util::MergeModel> MergeModel_;
-		boost::shared_ptr<Util::MergeModel> HistoryMergeModel_;
 		/** Forms a binary tree, where each node is an operation holding
 		 * a corresponding operational model and each leaf is a category
 		 * merger which parses the requests and provides the
@@ -42,7 +41,6 @@ namespace LeechCraft
 		boost::shared_ptr<RequestParser> Parser_;
 	public:
 		RequestNormalizer (const boost::shared_ptr<Util::MergeModel>&,
-				const boost::shared_ptr<Util::MergeModel>&,
 				QObject* = 0);
 
 		void SetRequest (const QString&);

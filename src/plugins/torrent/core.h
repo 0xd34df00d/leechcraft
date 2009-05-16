@@ -19,7 +19,6 @@
 #include "fileinfo.h"
 #include "peerinfo.h"
 #include "newtorrentparams.h"
-#include "historymodel.h"
 
 class QTimer;
 class PiecesModel;
@@ -97,7 +96,6 @@ private:
 	std::auto_ptr<PeersModel> PeersModel_;
 	std::auto_ptr<LeechCraft::Util::TagsCompletionModel> TagsCompletionModel_;
 	std::auto_ptr<TorrentFilesModel> TorrentFilesModel_;
-	std::auto_ptr<HistoryModel> HistoryModel_;
 	std::list<quint16> IDPool_;
 	QString ExternalAddress_;
 	bool SaveScheduled_;
@@ -210,7 +208,6 @@ public:
 	void MoveDown (const std::deque<int>&);
 	void MoveToTop (const std::deque<int>&);
 	void MoveToBottom (const std::deque<int>&);
-	HistoryModel* GetHistoryModel () const;
 private:
     QList<FileInfo> GetTorrentFiles () const;
 	void MoveToTop (int);

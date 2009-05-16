@@ -39,7 +39,6 @@ namespace LeechCraft
         QString PreviousClipboardContents_;
 		std::auto_ptr<QLocalServer> Server_;
 		boost::shared_ptr<Util::MergeModel> MergeModel_;
-		boost::shared_ptr<Util::MergeModel> HistoryMergeModel_;
 		std::auto_ptr<RequestNormalizer> RequestNormalizer_;
 		std::auto_ptr<TabContainer> TabContainer_;
 		std::auto_ptr<QNetworkAccessManager> NetworkAccessManager_;
@@ -48,7 +47,6 @@ namespace LeechCraft
 		typedef std::map<const QAbstractItemModel*, QObject*> repres2object_t;
 		// Contains unfolded representations
 		mutable repres2object_t Representation2Object_;
-		mutable repres2object_t History2Object_;
 		typedef std::map<const QAction*, QAbstractItemModel*> action2model_t;
 		mutable action2model_t Action2Model_;
 
@@ -157,7 +155,6 @@ namespace LeechCraft
 		 */
 		bool SameModel (const QModelIndex& i1, const QModelIndex& i2) const;
 		void UpdateFiltering (const QString&);
-		void Activated (const QModelIndex&);
         
         QPair<qint64, qint64> GetSpeeds () const;
 
@@ -176,7 +173,6 @@ namespace LeechCraft
 		void handleProxySettings () const;
 		void handlePluginAction ();
 		void toggleMultiwindow ();
-		void deleteSelectedHistory (const QModelIndex&);
     private slots:
 		/** Handles the entity which could be anything - path to a file,
 		 * link, contents of a .torrent file etc. If the entity is a

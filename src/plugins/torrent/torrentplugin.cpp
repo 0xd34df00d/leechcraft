@@ -30,7 +30,6 @@
 #include "movetorrentfiles.h"
 #include "representationmodel.h"
 #include "trackerschanger.h"
-#include "historymodel.h"
 #include "exportdialog.h"
 
 #ifdef AddJob
@@ -211,11 +210,6 @@ int TorrentPlugin::AddJob (LeechCraft::DownloadEntity e)
 QAbstractItemModel* TorrentPlugin::GetRepresentation () const
 {
     return FilterModel_.get ();
-}
-
-LeechCraft::Util::HistoryModel* TorrentPlugin::GetHistory () const
-{
-	return Core::Instance ()->GetHistoryModel ();
 }
 
 void TorrentPlugin::ItemSelected (const QModelIndex& item)

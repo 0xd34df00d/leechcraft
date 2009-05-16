@@ -14,7 +14,6 @@ SET (SRCS
 	tagsfiltermodel.cpp
 	util.cpp
 	categoryselector.cpp
-	historymodel.cpp
 	mergemodel.cpp
 	dblock.cpp
 	customcookiejar.cpp
@@ -30,7 +29,6 @@ SET (HEADERS
 	tagsfiltermodel.h
 	util.h
 	categoryselector.h
-	historymodel.h
 	mergemodel.h
 	dblock.h
 	customcookiejar.h

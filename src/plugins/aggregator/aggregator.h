@@ -48,7 +48,6 @@ public:
 	QToolBar* GetToolBar () const;
 	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 	QAbstractItemModel* GetRepresentation () const;
-	LeechCraft::Util::HistoryModel* GetHistory () const;
 	void ItemSelected (const QModelIndex&);
 	bool CouldHandle (const LeechCraft::DownloadEntity&) const;
 	void Handle (LeechCraft::DownloadEntity);

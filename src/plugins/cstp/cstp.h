@@ -55,7 +55,6 @@ public:
 	int AddJob (LeechCraft::DownloadEntity);
 
 	QAbstractItemModel* GetRepresentation () const;
-	LeechCraft::Util::HistoryModel* GetHistory () const;
 	void ItemSelected (const QModelIndex&);
 
 	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;

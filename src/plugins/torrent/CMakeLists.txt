@@ -26,7 +26,6 @@ SET (SRCS
 	movetorrentfiles.cpp
 	representationmodel.cpp
 	trackerschanger.cpp
-	historymodel.cpp
 	exportdialog.cpp
 	)
 SET (HEADERS
@@ -48,7 +47,6 @@ SET (HEADERS
 	movetorrentfiles.h
 	representationmodel.h
 	trackerschanger.h
-	historymodel.h
 	exportdialog.h
 	newtorrentparams.h
 	torrentinfo.h

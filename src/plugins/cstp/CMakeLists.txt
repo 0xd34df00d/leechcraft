@@ -13,7 +13,6 @@ SET (SRCS
 	addtask.cpp
 	xmlsettingsmanager.cpp
 	mainviewdelegate.cpp
-	historymodel.cpp
 	representationmodel.cpp
 	morphfile.cpp
 	)
@@ -25,7 +24,6 @@ SET (HEADERS
 	addtask.h
 	xmlsettingsmanager.h
 	mainviewdelegate.h
-	historymodel.h
 	representationmodel.h
 	morphfile.h
 	)

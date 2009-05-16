@@ -17,11 +17,9 @@ namespace LeechCraft
 		typedef std::vector<boost::shared_ptr<IFindProxy> > proxies_t;
 		proxies_t Proxies_;
 		boost::shared_ptr<Util::MergeModel> MergeModel_;
-		boost::shared_ptr<Util::MergeModel> HistoryMergeModel_;
 		std::auto_ptr<FilterModel> FilterModel_;
 	public:
 		CategoryMerger (const Request&,
-				const boost::shared_ptr<Util::MergeModel>&,
 				const boost::shared_ptr<Util::MergeModel>&,
 				QObject* = 0);
 	};

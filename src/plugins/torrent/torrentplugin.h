@@ -109,7 +109,6 @@ public:
 
     // IJobHolder
     QAbstractItemModel* GetRepresentation () const;
-	LeechCraft::Util::HistoryModel* GetHistory () const;
 	void ItemSelected (const QModelIndex&);
 
 	// IImportExport

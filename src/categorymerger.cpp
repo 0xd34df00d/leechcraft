@@ -8,13 +8,11 @@ using namespace LeechCraft::Util;
 
 CategoryMerger::CategoryMerger (const Request& r,
 		const boost::shared_ptr<MergeModel>& merge,
-		const boost::shared_ptr<MergeModel>& history,
 		QObject *parent)
 : MergeModel (QStringList (tr ("Name"))
 		<< tr ("State")
 		<< tr ("Progress"))
 , MergeModel_ (merge)
-, HistoryMergeModel_ (history)
 , FilterModel_ (new FilterModel)
 {
 	setObjectName (QString ("CategoryMerger ") + r.String_);
@@ -29,12 +27,6 @@ CategoryMerger::CategoryMerger (const Request& r,
 	{
 		builtin = true;
 		FilterModel_->setSourceModel (MergeModel_.get ());
-	}
-	else if (r.Category_ == "history" ||
-			r.Category_ == "h")
-	{
-		builtin = true;
-		FilterModel_->setSourceModel (HistoryMergeModel_.get ());
 	}
 	else
 	{

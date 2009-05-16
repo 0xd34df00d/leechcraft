@@ -6,14 +6,6 @@ class QModelIndex;
 class QAbstractItemModel;
 class QWidget;
 
-namespace LeechCraft
-{
-	namespace Util
-	{
-		class HistoryModel;
-	};
-};
-
 /** @brief Interface for plugins providing data for the Downloaders tab.
  *
  * If a plugin wants to show any data in the Downloaders tab, it should
@@ -58,24 +50,10 @@ public:
 	 *
 	 * @return Representation model.
 	 *
-	 * @sa GetHistory
 	 * @sa GetControls
 	 * @sa GetAdditionalInfo
 	 */
     virtual QAbstractItemModel* GetRepresentation () const = 0;
-
-	/** @brief Returns the history model.
-	 *
-	 * If the returned value is 0, it is ignored. Otherwise it would be
-	 * merged with other history models in LeechCraft's History tab.
-	 *
-	 * @return History model.
-	 *
-	 * @sa GetRepresentation
-	 * @sa GetControls
-	 * @sa GetAdditionalInfo
-	 */
-	virtual LeechCraft::Util::HistoryModel* GetHistory () const = 0;
 
 	/** @brief Notifies plugin about item selection.
 	 * 

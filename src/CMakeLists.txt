@@ -168,7 +168,6 @@ SET (SRCS
 	tabcontainer.cpp
 	zombitechstyle.cpp
 	logtoolbox.cpp
-	historytreeview.cpp
 	settingssink.cpp
 	authenticationdialog.cpp
 	sslerrorsdialog.cpp
@@ -205,7 +204,6 @@ SET (HEADERS
 	tabcontainer.h
 	zombitechstyle.h
 	logtoolbox.h
-	historytreeview.h
 	settingssink.h
 	authenticationdialog.h
 	sslerrorsdialog.h

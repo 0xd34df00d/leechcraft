@@ -21,11 +21,9 @@ RequestNormalizer::RequestHolder::~RequestHolder ()
 }
 
 RequestNormalizer::RequestNormalizer (const boost::shared_ptr<MergeModel>& merge,
-		const boost::shared_ptr<MergeModel>& history,
 		QObject *parent)
 : QObject (parent)
 , MergeModel_ (merge)
-, HistoryMergeModel_ (history)
 , Root_ (new MergeModel (QStringList (tr ("Name"))
 			<< tr ("State")
 			<< tr ("Progress")))
@@ -186,7 +184,7 @@ void RequestNormalizer::SetMerger (RequestHolder_ptr holder)
 	if (holder->Req_)
 	{
 		CategoryMerger *merger = new CategoryMerger (*holder->Req_,
-				MergeModel_, HistoryMergeModel_);
+				MergeModel_);
 		holder->Merger_.reset (merger);
 	}
 	else

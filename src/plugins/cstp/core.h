@@ -56,7 +56,6 @@ class Core : public QAbstractItemModel
 	};
 	typedef std::list<TaskDescr> tasks_t;
 	tasks_t ActiveTasks_;
-	HistoryModel *HistoryModel_;
 	RepresentationModel *RepresentationModel_;
 	bool SaveScheduled_;
 	QNetworkAccessManager *NetworkAccessManager_;
@@ -78,7 +77,6 @@ public:
 	virtual ~Core ();
 	static Core& Instance ();
 	void Release ();
-	LeechCraft::Util::HistoryModel* GetHistoryModel ();
 	void SetToolbar (QToolBar*);
 
 	int AddTask (LeechCraft::DownloadEntity&);

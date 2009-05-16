@@ -139,11 +139,6 @@ QAbstractItemModel* CSTP::GetRepresentation () const
 	return Core::Instance ().GetRepresentationModel ();
 }
 
-LeechCraft::Util::HistoryModel* CSTP::GetHistory () const
-{
-	return Core::Instance ().GetHistoryModel ();
-}
-
 void CSTP::ItemSelected (const QModelIndex&)
 {
 }

@@ -10,7 +10,6 @@
 #include <QtDebug>
 #include <plugininterface/proxy.h>
 #include "task.h"
-#include "historymodel.h"
 #include "xmlsettingsmanager.h"
 #include "representationmodel.h"
 #include "morphfile.h"
@@ -19,8 +18,7 @@
 using LeechCraft::Util::Proxy;
 
 Core::Core ()
-: HistoryModel_ (new HistoryModel ())
-, RepresentationModel_ (new RepresentationModel ())
+: RepresentationModel_ (new RepresentationModel ())
 , SaveScheduled_ (false)
 , Toolbar_ (0)
 {
@@ -57,13 +55,7 @@ void Core::Release ()
 {
 	writeSettings ();
 	removeAllTriggered ();
-	delete HistoryModel_;
 	delete RepresentationModel_;
-}
-
-LeechCraft::Util::HistoryModel* Core::GetHistoryModel ()
-{
-	return HistoryModel_;
 }
 
 void Core::SetToolbar (QToolBar *widget)
@@ -446,8 +438,6 @@ void Core::done (bool err)
 
 	if (!err)
 	{
-		if (!(taskdscr->Parameters_ & LeechCraft::DoNotSaveInHistory))
-			AddToHistory (taskdscr);
 		if (!(taskdscr->Parameters_ & LeechCraft::DoNotNotifyUser))
 			emit downloadFinished (filename +
 					QString ("\n") + url);
@@ -616,16 +606,6 @@ void Core::Remove (tasks_t::iterator it)
 	IDPool_.push_front (id);
 
 	ScheduleSave ();
-}
-
-void Core::AddToHistory (tasks_t::const_iterator it)
-{
-	HistoryModel::Item item;
-	item.Filename_ = it->File_->fileName ();
-	item.URL_ = it->Task_->GetURL ();
-	item.Size_ = it->File_->size ();
-	item.DateTime_ = QDateTime::currentDateTime ();
-	HistoryModel_->Add (item);
 }
 
 Core::tasks_t::const_reference Core::TaskAt (int pos) const

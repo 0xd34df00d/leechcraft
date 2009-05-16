@@ -40,14 +40,12 @@
 #include <boost/filesystem/fstream.hpp>
 #include <plugininterface/proxy.h>
 #include <plugininterface/tagscompletionmodel.h>
-#include <plugininterface/historymodel.h>
 #include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
 #include "piecesmodel.h"
 #include "peersmodel.h"
 #include "torrentfilesmodel.h"
 #include "representationmodel.h"
-#include "historymodel.h"
 
 using LeechCraft::Util::Proxy;
 using LeechCraft::Util::TagsCompletionModel;
@@ -102,7 +100,6 @@ Core::Core ()
 , PeersModel_ (new PeersModel ())
 , TagsCompletionModel_ (new TagsCompletionModel)
 , TorrentFilesModel_ (new TorrentFilesModel (false))
-, HistoryModel_ (new HistoryModel)
 , SaveScheduled_ (false)
 , Toolbar_ (0)
 , TabWidget_ (0)
@@ -209,7 +206,6 @@ void Core::Release ()
 	PeersModel_.reset ();
 	TagsCompletionModel_.reset ();
 	TorrentFilesModel_.reset ();
-	HistoryModel_.reset ();
 
 	QObjectList kids = children ();
 	for (int i = 0; i < kids.size (); ++i)
@@ -1425,11 +1421,6 @@ void Core::MoveToBottom (const std::deque<int>& selections)
 		MoveToBottom (*i);
 }
 
-HistoryModel* Core::GetHistoryModel () const
-{
-	return HistoryModel_.get ();
-}
-
 QList<FileInfo> Core::GetTorrentFiles () const
 {
     if (!CheckValidity (CurrentTorrent_))
@@ -1650,19 +1641,6 @@ void Core::HandleSingleFinished (int i)
 		LeechCraft::DownloadEntity e;
 		e.Entity_ = QByteArray (i->path.string ().c_str ());
         emit fileFinished (e);
-	}
-
-	if (!(torrent.Parameters_ & LeechCraft::DoNotSaveInHistory))
-	{
-		HistoryModel::HistoryItem item =
-		{
-			QString::fromStdString (info.name ()),
-			where,
-			info.total_size (),
-			QDateTime::currentDateTime (),
-			torrent.Tags_
-		};
-		HistoryModel_->AddItem (item);
 	}
 
 	emit taskFinished (torrent.ID_);

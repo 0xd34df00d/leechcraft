@@ -93,11 +93,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	speedUpd->start ();
 	qApp->setQuitOnLastWindowClosed (false);
 
-	connect (Ui_.PluginsTasksTree_,
-			SIGNAL (activated (const QModelIndex&)),
-			this,
-			SLOT (activated (const QModelIndex&)));
-
 	QObjectList settable = Core::Instance ().GetSettables ();
 	for (QObjectList::const_iterator i = settable.begin (),
 			end = settable.end (); i != end; ++i)
@@ -583,11 +578,6 @@ void LeechCraft::MainWindow::updateIconSet ()
 void LeechCraft::MainWindow::on_ActionPluginManager__triggered ()
 {
 	PluginManagerDialog_->show ();
-}
-
-void LeechCraft::MainWindow::activated (const QModelIndex& index)
-{
-	Core::Instance ().Activated (index);
 }
 
 void LeechCraft::MainWindow::handleLoadProgress (const QString& msg)

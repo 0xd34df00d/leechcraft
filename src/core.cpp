@@ -43,7 +43,6 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "mergemodel.h"
-#include "historymodel.h"
 #include "authenticationdialog.h"
 #include "sslerrorsdialog.h"
 #include "sqlstoragebackend.h"
@@ -59,18 +58,13 @@ LeechCraft::Core::Core ()
 , MergeModel_ (new MergeModel (QStringList (tr ("Name"))
 			<< tr ("State")
 			<< tr ("Progress")))
-, HistoryMergeModel_ (new MergeModel (QStringList (tr ("Filename"))
-			<< tr ("Path")
-			<< tr ("Date")))
-, RequestNormalizer_ (new RequestNormalizer (MergeModel_, HistoryMergeModel_))
+, RequestNormalizer_ (new RequestNormalizer (MergeModel_))
 , NetworkAccessManager_ (new NetworkAccessManager)
 , CookieSaveTimer_ (new QTimer ())
 , StorageBackend_ (new SQLStorageBackend ())
 {
 	MergeModel_->setObjectName ("Core MergeModel");
 	MergeModel_->setProperty ("__LeechCraft_own_core_model", true);
-	HistoryMergeModel_->setObjectName ("Core HistoryMergeModel");
-	HistoryMergeModel_->setProperty ("__LeechCraft_own_core_model", true);
 	connect (NetworkAccessManager_.get (),
 			SIGNAL (authenticationRequired (QNetworkReply*,
 					QAuthenticator*)),
@@ -168,7 +162,6 @@ void LeechCraft::Core::Release ()
 	XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");
 	RequestNormalizer_.reset ();
 	MergeModel_.reset ();
-	HistoryMergeModel_.reset ();
 
     PluginManager_->Release ();
     delete PluginManager_;
@@ -438,19 +431,6 @@ bool LeechCraft::Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) 
 void LeechCraft::Core::UpdateFiltering (const QString& text)
 {
 	RequestNormalizer_->SetRequest (text);
-}
-
-void LeechCraft::Core::Activated (const QModelIndex& index)
-{
-	DownloadEntity e =
-	{
-		index.data (HistoryModel::RolePath).toString ().toUtf8 (),
-		QString (),
-		index.data (RoleMime).toString (),
-		FromUserInitiated,
-		QVariant ()
-	};
-	handleGotEntity (e);
 }
 
 QPair<qint64, qint64> LeechCraft::Core::GetSpeeds () const
@@ -738,23 +718,6 @@ void LeechCraft::Core::handlePluginAction ()
 void LeechCraft::Core::toggleMultiwindow ()
 {
 	TabContainer_->ToggleMultiwindow ();
-}
-
-void LeechCraft::Core::deleteSelectedHistory (const QModelIndex& index)
-{
-	QModelIndex mapped = MapToSourceRecursively (index);
-	if (!mapped.isValid ())
-		return;
-	QAbstractItemModel *model = const_cast<QAbstractItemModel*> (mapped.model ());
-	HistoryModel *hm = qobject_cast<HistoryModel*> (model);
-	qDebug () << hm << model;
-	if (!hm)
-	{
-		qWarning () << "Source history model doesn't cast to history model :(";
-		return;
-	}
-
-	hm->RemoveItem (mapped);
 }
 
 bool LeechCraft::Core::CouldHandle (const LeechCraft::DownloadEntity& e)
@@ -1358,13 +1321,6 @@ void LeechCraft::Core::InitJobHolder (QObject *plugin)
 				index (0, 0).data (RoleAdditionalInfo).value<QWidget*> ();
 			if (additional)
 				additional->setParent (ReallyMainWindow_);
-		}
-
-		QAbstractItemModel *historyModel = ijh->GetHistory ();
-		if (historyModel)
-		{
-			History2Object_ [historyModel] = plugin;
-			HistoryMergeModel_->AddModel (historyModel);
 		}
 	}
 	catch (const std::exception& e)

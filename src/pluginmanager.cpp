@@ -8,7 +8,6 @@
 #include <QMainWindow>
 #include <QCryptographicHash>
 #include <plugininterface/proxy.h>
-#include <plugininterface/historymodel.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ipluginready.h>
@@ -20,7 +19,6 @@
 #include "coreproxy.h"
 
 using namespace LeechCraft;
-using LeechCraft::Util::HistoryModel;
 using LeechCraft::Util::MergeModel;
 using LeechCraft::Util::Proxy;
 

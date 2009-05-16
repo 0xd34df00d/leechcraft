@@ -34,7 +34,6 @@ public:
 	bool CouldDownload (const LeechCraft::DownloadEntity&) const;
 	int AddJob (LeechCraft::DownloadEntity);
 	QAbstractItemModel* GetRepresentation () const;
-	LeechCraft::Util::HistoryModel* GetHistory () const;
 	QWidget* GetControls () const;
 	QWidget* GetAdditionalInfo () const;
 	void ItemSelected (const QModelIndex&);

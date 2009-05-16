@@ -267,11 +267,6 @@ QAbstractItemModel* Aggregator::GetRepresentation () const
 	return Core::Instance ().GetJobHolderRepresentation ();
 }
 
-LeechCraft::Util::HistoryModel* Aggregator::GetHistory () const
-{
-	return 0;
-}
-
 void Aggregator::ItemSelected (const QModelIndex& index)
 {
 	Impl_->SelectedRepr_ = index;

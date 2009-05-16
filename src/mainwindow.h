@@ -87,7 +87,6 @@ namespace LeechCraft
 		void feedFilterParameters ();
 		void updateIconSet ();
 		void on_ActionPluginManager__triggered ();
-		void activated (const QModelIndex&);
 		void handleLoadProgress (const QString&);
 	};
 };
