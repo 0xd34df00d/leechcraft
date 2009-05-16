@@ -50,9 +50,9 @@ QStringList DeadLyRicS::GetCategories () const
 	return Core::Instance ().GetCategories ();
 }
 
-boost::shared_ptr<IFindProxy> DeadLyRicS::GetProxy (const LeechCraft::Request& req)
+IFindProxy_ptr DeadLyRicS::GetProxy (const LeechCraft::Request& req)
 {
-	return boost::shared_ptr<IFindProxy> (new FindProxy (req));
+	return IFindProxy_ptr (new FindProxy (req));
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_deadlyrics, DeadLyRicS);
