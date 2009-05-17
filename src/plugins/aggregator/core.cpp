@@ -468,8 +468,6 @@ QStringList Core::GetCategories (const QModelIndex& index) const
 	}
 	catch (const std::exception& e)
 	{
-		qWarning () << Q_FUNC_INFO
-			<< e.what ();
 		return QStringList ();
 	}
 
