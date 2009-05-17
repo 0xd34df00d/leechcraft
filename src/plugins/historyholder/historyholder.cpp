@@ -1,11 +1,13 @@
 #include "historyholder.h"
+#include <QIcon>
 #include "core.h"
 #include "findproxy.h"
 
 using namespace LeechCraft::Plugins::HistoryHolder;
 
-void Plugin::Init (ICoreProxy_ptr)
+void Plugin::Init (ICoreProxy_ptr proxy)
 {
+	Core::Instance ().SetCoreProxy (proxy);
 }
 
 void Plugin::Release ()

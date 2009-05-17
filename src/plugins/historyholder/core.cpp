@@ -2,12 +2,15 @@
 #include <typeinfo>
 #include <QSettings>
 #include <QTextCodec>
+#include <QToolBar>
+#include <QAction>
+#include <QTreeView>
 #include <plugininterface/structuresops.h>
 #include <plugininterface/proxy.h>
+#include "findproxy.h"
 
 using LeechCraft::Util::Proxy;
 using namespace LeechCraft::Plugins::HistoryHolder;
-
 
 QDataStream& operator<< (QDataStream& out, const Core::HistoryEntry& e)
 {
@@ -39,6 +42,7 @@ QDataStream& operator>> (QDataStream& in, Core::HistoryEntry& e)
 }
 
 LeechCraft::Plugins::HistoryHolder::Core::Core ()
+: ToolBar_ (new QToolBar)
 {
 	Headers_ << tr ("Entity/location")
 			<< tr ("Date")
@@ -56,6 +60,11 @@ LeechCraft::Plugins::HistoryHolder::Core::Core ()
 		History_.append (settings.value ("Item").value<HistoryEntry> ());
 	}
 	settings.endArray ();
+
+	QAction *remove = ToolBar_->addAction (tr ("Remove"),
+			this,
+			SLOT (remove ()));
+	remove->setProperty ("ActionIcon", "remove");
 }
 
 Core& Core::Instance ()
@@ -66,6 +75,17 @@ Core& Core::Instance ()
 
 void Core::Release ()
 {
+	ToolBar_.reset ();
+}
+
+void Core::SetCoreProxy (ICoreProxy_ptr proxy)
+{
+	CoreProxy_ = proxy;
+}
+
+ICoreProxy_ptr Core::GetCoreProxy () const
+{
+	return CoreProxy_;
 }
 
 void Core::Handle (const LeechCraft::DownloadEntity& entity)
@@ -79,23 +99,6 @@ void Core::Handle (const LeechCraft::DownloadEntity& entity)
 	beginInsertRows (QModelIndex (), 0, 0);
 	History_.prepend (entry);
 	endInsertRows ();
-
-	WriteSettings ();
-}
-
-void Core::Remove (const QModelIndex& index)
-{
-	if (!index.isValid ())
-	{
-		qWarning () << Q_FUNC_INFO
-			<< "invalid index"
-			<< index;
-		return;
-	}
-
-	beginRemoveRows (QModelIndex (), index.row (), index.row ());
-	History_.removeAt (index.row ());
-	endRemoveRows ();
 
 	WriteSettings ();
 }
@@ -129,15 +132,21 @@ QVariant Core::data (const QModelIndex& index, int role) const
 			case 1:
 				return History_.at (row).DateTime_;
 			case 2:
-				return data (index, RTags).toStringList ().join ("; ");
+				return data (index, RoleTags).toStringList ().join ("; ");
 			default:
 				return QVariant ();
 		}
 	}
-	else if (role == RTags)
-		return QStringList ();
+	else if (role == RoleTags)
 //		TODO
 //		return History_.at (row).Entity_
+		return QStringList ();
+	else if (role == RoleControls)
+		return QVariant::fromValue<QToolBar*> (ToolBar_.get ());
+	else if (role == RoleHash)
+		return History_.at (row).Entity_.Entity_;
+	else if (role == RoleMime)
+		return History_.at (row).Entity_.Mime_;
 	else
 		return QVariant ();
 }
@@ -175,6 +184,7 @@ void Core::WriteSettings ()
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
 			Proxy::Instance ()->GetApplicationName () + "_HistoryHolder");
 	settings.beginWriteArray ("History");
+	settings.remove ("");
 	int i = 0;
 	Q_FOREACH (HistoryEntry e, History_)
 	{
@@ -182,5 +192,28 @@ void Core::WriteSettings ()
 		settings.setValue ("Item", QVariant::fromValue<HistoryEntry> (e));
 	}
 	settings.endArray ();
+}
+
+void Core::remove ()
+{
+	QModelIndex index = CoreProxy_->GetMainView ()->
+		selectionModel ()->currentIndex ();
+	index = CoreProxy_->MapToSource (index);
+	if (!index.isValid ())
+	{
+		qWarning () << Q_FUNC_INFO
+			<< "invalid index"
+			<< index;
+		return;
+	}
+	
+	const FindProxy *sm = qobject_cast<const FindProxy*> (index.model ());
+	index = sm->mapToSource (index);
+
+	beginRemoveRows (QModelIndex (), index.row (), index.row ());
+	History_.removeAt (index.row ());
+	endRemoveRows ();
+
+	WriteSettings ();
 }
 

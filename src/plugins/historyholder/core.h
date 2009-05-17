@@ -1,8 +1,12 @@
 #ifndef PLUGINS_HISTORYHOLDER_CORE_H
 #define PLUGINS_HISTORYHOLDER_CORE_H
+#include <boost/shared_ptr.hpp>
 #include <QAbstractItemModel>
 #include <QDateTime>
+#include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
+
+class QToolBar;
 
 namespace LeechCraft
 {
@@ -26,16 +30,14 @@ namespace LeechCraft
 				typedef QList<HistoryEntry> History_t;
 				History_t History_;
 				QStringList Headers_;
+				boost::shared_ptr<QToolBar> ToolBar_;
+				ICoreProxy_ptr CoreProxy_;
 			public:
-				enum Roles
-				{
-					RTags = Qt::UserRole + 1
-				};
-
 				static Core& Instance ();
 				void Release ();
+				void SetCoreProxy (ICoreProxy_ptr);
+				ICoreProxy_ptr GetCoreProxy () const;
 				void Handle (const LeechCraft::DownloadEntity&);
-				void Remove (const QModelIndex&);
 
 				int columnCount (const QModelIndex&) const;
 				QVariant data (const QModelIndex&, int) const;
@@ -45,6 +47,8 @@ namespace LeechCraft
 				int rowCount (const QModelIndex&) const;
 			private:
 				void WriteSettings ();
+			private slots:
+				void remove ();
 			};
 		};
 	};

@@ -37,6 +37,6 @@ QAbstractItemModel* FindProxy::GetModel ()
 QStringList FindProxy::GetTagsForIndex (int row) const
 {
 	return sourceModel ()->data (sourceModel ()->
-			index (row, 0), Core::RTags).toStringList ();
+			index (row, 0), RoleTags).toStringList ();
 }
 
