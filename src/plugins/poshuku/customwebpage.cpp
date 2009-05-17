@@ -161,7 +161,8 @@ void CustomWebPage::handleDownloadRequested (const QNetworkRequest& request)
 		request.url ().toString ().toUtf8 (),
 		QString (),
 		QString (),
-		LeechCraft::FromUserInitiated,
+		LeechCraft::FromUserInitiated |
+			LeechCraft::IsntDownloaded,
 		QVariant ()
 	};
 	emit gotEntity (e);
@@ -328,7 +329,8 @@ void CustomWebPage::handleUnsupportedContent (QNetworkReply *reply)
 					reply->url ().toString ().toUtf8 (),
 					QString (),
 					QString (),
-					LeechCraft::FromUserInitiated,
+					LeechCraft::FromUserInitiated |
+						LeechCraft::IsntDownloaded,
 					QVariant ()
 				};
 				emit gotEntity (e);
@@ -348,7 +350,8 @@ void CustomWebPage::handleUnsupportedContent (QNetworkReply *reply)
 							reply->url ().toString ().toUtf8 (),
 							QString (),
 							QString (),
-							LeechCraft::FromUserInitiated,
+							LeechCraft::FromUserInitiated |
+								LeechCraft::IsntDownloaded,
 							QVariant::fromValue<QNetworkReply*> (reply)
 						};
 						emit gotEntity (e);

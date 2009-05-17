@@ -822,7 +822,8 @@ void BrowserWidget::handleLoadFinished ()
 			hrefUrl = originalUrl.toString ();
 		}
 		e.Location_ = hrefUrl;
-		e.Parameters_ = LeechCraft::FromUserInitiated;
+		e.Parameters_ = LeechCraft::FromUserInitiated |
+			LeechCraft::IsntDownloaded;
 
 		bool ch = false;
 		emit couldHandle (e, &ch);
