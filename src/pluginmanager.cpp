@@ -195,7 +195,7 @@ void LeechCraft::PluginManager::Release ()
         catch (...)
         {
             QMessageBox::warning (0,
-					tr ("No exit here"),
+					tr ("Warning"),
 					tr ("Release of one or more plugins failed."));
         }
     }
