@@ -122,13 +122,16 @@ QVariant Core::data (const QModelIndex& index, int role) const
 			case 0:
 				{
 					HistoryEntry e = History_.at (row);
-					QString entity = e.Entity_.Location_;
-
+					QString entity;
 					if (e.Entity_.Entity_.size () < 150)
+						entity = QTextCodec::codecForName ("UTF-8")->
+							toUnicode (e.Entity_.Entity_);
+					else
+						entity = tr ("Binary data");
+					if (!e.Entity_.Location_.isEmpty ())
 					{
 						entity += " (";
-						entity += QTextCodec::codecForName ("UTF-8")->
-							toUnicode (e.Entity_.Entity_);
+						entity += e.Entity_.Location_;
 						entity += ")";
 					}
 					return entity;
