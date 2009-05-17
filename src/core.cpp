@@ -813,28 +813,32 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 				<< plugins.at (i);
 		}
 	}
-	plugins = PluginManager_->GetAllCastableRoots<IEntityHandler*> ();
-	for (int i = 0; i < plugins.size (); ++i)
+	// Handlers don't fit when we want to delegate.
+	if (!id)
 	{
-		IEntityHandler *ih = qobject_cast<IEntityHandler*> (plugins.at (i));
-		IInfo *ii = qobject_cast<IInfo*> (plugins.at (i));
-		try
+		plugins = PluginManager_->GetAllCastableRoots<IEntityHandler*> ();
+		for (int i = 0; i < plugins.size (); ++i)
 		{
-			if (ih->CouldHandle (p))
-				dia->Add (ii, ih);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "could not query"
-				<< e.what ()
-				<< plugins.at (i);
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "could not query"
-				<< plugins.at (i);
+			IEntityHandler *ih = qobject_cast<IEntityHandler*> (plugins.at (i));
+			IInfo *ii = qobject_cast<IInfo*> (plugins.at (i));
+			try
+			{
+				if (ih->CouldHandle (p))
+					dia->Add (ii, ih);
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "could not query"
+					<< e.what ()
+					<< plugins.at (i);
+			}
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "could not query"
+					<< plugins.at (i);
+			}
 		}
 	}
 
