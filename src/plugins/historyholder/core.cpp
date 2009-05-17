@@ -90,7 +90,8 @@ ICoreProxy_ptr Core::GetCoreProxy () const
 
 void Core::Handle (const LeechCraft::DownloadEntity& entity)
 {
-	if (entity.Parameters_ & LeechCraft::DoNotSaveInHistory)
+	if (entity.Parameters_ & LeechCraft::DoNotSaveInHistory ||
+			entity.Parameters_ & LeechCraft::IsntDownloaded)
 		return;
 
 	HistoryEntry entry =

@@ -447,10 +447,11 @@ void Core::done (bool err)
 		emit taskFinished (id);
 		if (!silence)
 		{
+			tp &= ~LeechCraft::IsntDownloaded;
 			LeechCraft::DownloadEntity e =
 			{
 				filename.toUtf8 (),
-				QString (),
+				url,
 				QString (),
 				tp,
 				QVariant ()
