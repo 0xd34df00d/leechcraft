@@ -1,6 +1,9 @@
 #ifndef INTERFACES_IINFO_H
 #define INTERFACES_IINFO_H
 #include <boost/shared_ptr.hpp>
+#include <boost/function.hpp>
+#include <boost/preprocessor/repeat.hpp>
+#include <boost/preprocessor/seq.hpp>
 #include <QString>
 #include <QStringList>
 #include <QtPlugin>
@@ -10,6 +13,38 @@ class IShortcutProxy;
 class QTreeView;
 class QModelIndex;
 class QIcon;
+
+namespace LeechCraft
+{
+	class IHookProxy
+	{
+	public:
+		virtual ~IHookProxy () {}
+
+		virtual void CancelDefault () = 0;
+	};
+
+	enum HookID
+	{
+		HIDDownloadFinishedNotification = 1,
+	};
+
+	template<int>
+	struct HookSignature;
+
+	template<>
+		struct HookSignature<HIDDownloadFinishedNotification>
+		{
+			/** @param[in] msg Message to show.
+			 * @param[in] show If the notification is enabled in the
+			 * settings.
+			 */
+			typedef boost::function<void (IHookProxy*,
+					const QString& msg, bool show)> Signature_t;
+			typedef QList<Signature_t> Functors_t;
+			Functors_t Functors_;
+		};
+};
 
 /** @brief Proxy class for the communication with LeechCraft.
  *
@@ -43,6 +78,14 @@ public:
 	 * hierarchy of LeechCraft's models
 	 */
 	virtual QModelIndex MapToSource (const QModelIndex&) const = 0;
+
+#define LC_DEFINE_REGISTER(a) virtual void RegisterHook (LeechCraft::HookSignature<a>::Signature_t) = 0;
+#define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))
+#define LC_EXPANDER(Names) BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), LC_TRAVERSER, Names)
+	LC_EXPANDER ((LeechCraft::HIDDownloadFinishedNotification));
+#undef LC_EXPANDER
+#undef LC_TRAVERSER
+#undef LC_DEFINE_REGISTER
 
 	virtual ~ICoreProxy () {}
 };

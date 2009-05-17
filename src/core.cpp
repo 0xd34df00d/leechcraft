@@ -53,6 +53,25 @@
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
 
+HookProxy::HookProxy ()
+: Cancelled_ (false)
+{
+}
+
+HookProxy::~HookProxy ()
+{
+}
+
+void HookProxy::CancelDefault ()
+{
+	Cancelled_ = true;
+}
+
+bool HookProxy::IsCancelled () const
+{
+	return Cancelled_;
+}
+
 LeechCraft::Core::Core ()
 : Server_ (new QLocalServer)
 , MergeModel_ (new MergeModel (QStringList (tr ("Name"))
@@ -487,6 +506,28 @@ QModelIndex LeechCraft::Core::MapToSource (const QModelIndex& index) const
 {
 	return MapToSourceRecursively (index);
 }
+
+#define LC_APPENDER(a) a##_.Functors_.append (functor)
+#define LC_GETTER(a) a##_.Functors_
+#define LC_DEFINE_REGISTER(a) \
+void LeechCraft::Core::RegisterHook (LeechCraft::HookSignature<a>::Signature_t functor) \
+{ \
+	LC_APPENDER(a); \
+} \
+template<> \
+	LeechCraft::HookSignature<a>::Functors_t LeechCraft::Core::GetHooks<a> () const \
+{ \
+	return LC_GETTER(a); \
+}
+#define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))
+#define LC_EXPANDER(Names) BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), LC_TRAVERSER, Names)
+	LC_EXPANDER ((HIDDownloadFinishedNotification));
+#undef LC_EXPANDER
+#undef LC_TRAVERSER
+#undef LC_DEFINE_REGISTER
+#undef LC_GETTER
+#undef LC_APPENDER
+
 
 bool LeechCraft::Core::eventFilter (QObject *watched, QEvent *e)
 {

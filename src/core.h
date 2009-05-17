@@ -6,6 +6,7 @@
 #include <QString>
 #include <QPair>
 #include <QTimer>
+#include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
 #include "pluginmanager.h"
 #include "tabcontainer.h"
@@ -25,6 +26,19 @@ namespace LeechCraft
 {
 	class FilterModel;
 	class MainWindow;
+
+	class HookProxy : public IHookProxy
+	{
+		bool Cancelled_;
+	public:
+		HookProxy ();
+		virtual ~HookProxy ();
+
+		void CancelDefault ();
+		bool IsCancelled () const;
+	};
+
+	typedef boost::shared_ptr<HookProxy> HookProxy_ptr;
 
 	/** Contains all the plugins' models, maps from end-user's tree view
 	 * to plugins' models and much more.
@@ -171,6 +185,19 @@ namespace LeechCraft
 
 		QModelIndex MapToSource (const QModelIndex&) const;
 
+		template<LeechCraft::HookID id>
+			typename LeechCraft::HookSignature<id>::Functors_t GetHooks () const;
+#define LC_STRN(a) a##_
+#define LC_DEFINE_REGISTER(a) \
+	private: \
+		LeechCraft::HookSignature<a> LC_STRN(a); \
+	public: \
+		void RegisterHook (LeechCraft::HookSignature<LeechCraft::a>::Signature_t);
+#define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))
+#define LC_EXPANDER(Names) BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), LC_TRAVERSER, Names)
+	LC_EXPANDER ((HIDDownloadFinishedNotification));
+#undef LC_DEFINE_REGISTER
+
 		virtual bool eventFilter (QObject*, QEvent*);
 	public slots:
 		void handleProxySettings () const;
@@ -227,7 +254,17 @@ namespace LeechCraft
         void downloadFinished (const QString&);
 		void loadProgress (const QString&);
     };
+#define LC_DEFINE_REGISTER(a) \
+	template<> \
+		LeechCraft::HookSignature<LeechCraft::a>::Functors_t Core::GetHooks<a> () const;
+	LC_EXPANDER ((HIDDownloadFinishedNotification));
+#undef LC_DEFINE_REGISTER
+#undef LC_EXPANDER
+#undef LC_TRAVERSER
+#undef LC_STRN
 };
+
+
 
 #endif
 

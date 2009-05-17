@@ -553,8 +553,17 @@ void LeechCraft::MainWindow::handleTrayIconActivated (QSystemTrayIcon::Activatio
 
 void LeechCraft::MainWindow::handleDownloadFinished (const QString& string)
 {
-	if (XmlSettingsManager::Instance ()->property ("ShowFinishedDownloadMessages").toBool ())
-		FancyPopupManager_->ShowMessage (string);
+	bool show = XmlSettingsManager::Instance ()->
+		property ("ShowFinishedDownloadMessages").toBool ();
+
+	HookProxy_ptr proxy (new HookProxy);
+	Q_FOREACH (HookSignature<HIDDownloadFinishedNotification>::Signature_t f,
+			Core::Instance ().GetHooks<HIDDownloadFinishedNotification> ())
+		f (proxy.get (), string, show);
+
+	if (show &&
+			!proxy->IsCancelled ())
+	FancyPopupManager_->ShowMessage (string);
 }
 
 void LeechCraft::MainWindow::filterParametersChanged ()
