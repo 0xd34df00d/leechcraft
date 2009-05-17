@@ -1640,6 +1640,7 @@ void Core::HandleSingleFinished (int i)
 	{
 		LeechCraft::DownloadEntity e;
 		e.Entity_ = QByteArray (i->path.string ().c_str ());
+		e.Location_ = torrent.TorrentFileName_;
         emit fileFinished (e);
 	}
 
