@@ -19,6 +19,7 @@ SET (SRCS
 	customcookiejar.cpp
 	modeltest.cpp
 	backendselector.cpp
+	structuresops.cpp
 	)
 SET (HEADERS
 	proxy.h
@@ -34,6 +35,7 @@ SET (HEADERS
 	customcookiejar.h
 	modeltest.h
 	backendselector.h
+	structuresops.h
 	)
 SET (FORMS
 	backendselector.ui

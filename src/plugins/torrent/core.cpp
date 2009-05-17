@@ -1832,6 +1832,7 @@ void Core::writeSettings ()
 			Proxy::Instance ()->GetApplicationName () + "_Torrent");
     settings.beginGroup ("Core");
     settings.beginWriteArray ("AddedTorrents");
+	settings.remove ("");
     for (int i = 0; i < Handles_.size (); ++i)
     {
         settings.setArrayIndex (i);

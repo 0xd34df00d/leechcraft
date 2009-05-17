@@ -16,6 +16,7 @@
 #include <QSessionManager>
 #include <plugininterface/proxy.h>
 #include <plugininterface/util.h>
+#include <plugininterface/structuresops.h>
 #include "debugmessagehandler.h"
 
 using namespace LeechCraft;
@@ -99,6 +100,8 @@ Application::Application (int& argc, char **argv)
 
     qRegisterMetaType<QModelIndex> ("QModelIndex");
     qRegisterMetaType<QModelIndex*> ("QModelIndexStar");
+	qRegisterMetaType<LeechCraft::DownloadEntity> ("LeechCraft::DownloadEntity");
+	qRegisterMetaTypeStreamOperators<LeechCraft::DownloadEntity> ("LeechCraft::DownloadEntity");
 
 	LeechCraft::Util::Proxy::Instance ()->SetStrings (QStringList (tr ("bytes")) <<
 			tr ("KB") <<

@@ -2,7 +2,10 @@
 #define INTERFACES_STRUCTURES_H
 #include <QMetaType>
 #include <QVariant>
+#include <QString>
+#include <QByteArray>
 #include <QToolBar>
+#include <QtDebug>
 
 class QMenu;
 class QNetworkReply;

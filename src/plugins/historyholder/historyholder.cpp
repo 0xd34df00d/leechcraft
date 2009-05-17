@@ -1,4 +1,6 @@
 #include "historyholder.h"
+#include "core.h"
+#include "findproxy.h"
 
 using namespace LeechCraft::Plugins::HistoryHolder;
 
@@ -8,6 +10,7 @@ void Plugin::Init (ICoreProxy_ptr)
 
 void Plugin::Release ()
 {
+	Core::Instance ().Release ();
 }
 
 QString Plugin::GetName () const
@@ -49,13 +52,14 @@ QStringList Plugin::GetCategories () const
 	return QStringList ("history");
 }
 
-IFindProxy_ptr Plugin::GetProxy (const LeechCraft::Request&)
+IFindProxy_ptr Plugin::GetProxy (const LeechCraft::Request& r)
 {
-	return IFindProxy_ptr ();
+	return IFindProxy_ptr (new FindProxy (r));
 }
 
 bool Plugin::CouldHandle (const LeechCraft::DownloadEntity& e) const
 {
+	Core::Instance ().Handle (e);
 	return false;
 }
 

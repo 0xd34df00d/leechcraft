@@ -6,9 +6,13 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	historyholder.cpp
+	findproxy.cpp
+	core.cpp
 	)
 SET (HEADERS
 	historyholder.h
+	findproxy.h
+	core.h
 	)
 SET (TRANSLATIONS
 	leechcraft_historyholder_ru_RU.ts
