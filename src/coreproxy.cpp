@@ -1,5 +1,6 @@
 #include "coreproxy.h"
 #include "core.h"
+#include "mainwindow.h"
 
 using namespace LeechCraft;
 
@@ -16,5 +17,15 @@ QNetworkAccessManager* CoreProxy::GetNetworkAccessManager () const
 const IShortcutProxy* CoreProxy::GetShortcutProxy () const
 {
 	return Core::Instance ().GetShortcutProxy ();
+}
+
+QTreeView* CoreProxy::GetMainView () const
+{
+	return Core::Instance ().GetReallyMainWindow ()->GetMainView ();
+}
+
+QModelIndex CoreProxy::MapToSource (const QModelIndex& index) const
+{
+	return Core::Instance ().MapToSource (index);
 }
 

@@ -1,4 +1,5 @@
 #include "nufella.h"
+#include <QIcon>
 #include <plugininterface/util.h>
 
 void Nufella::Init (ICoreProxy_ptr)

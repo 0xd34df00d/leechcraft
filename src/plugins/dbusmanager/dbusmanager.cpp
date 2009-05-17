@@ -1,4 +1,5 @@
 #include "dbusmanager.h"
+#include <QIcon>
 #include "core.h"
 
 void DBusManager::Init (ICoreProxy_ptr)

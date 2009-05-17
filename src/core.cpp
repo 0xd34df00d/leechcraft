@@ -181,6 +181,11 @@ void LeechCraft::Core::SetReallyMainWindow (MainWindow *win)
 	ReallyMainWindow_->installEventFilter (this);
 }
 
+MainWindow* LeechCraft::Core::GetReallyMainWindow ()
+{
+	return ReallyMainWindow_;
+}
+
 const IShortcutProxy* LeechCraft::Core::GetShortcutProxy () const
 {
 	return ReallyMainWindow_->GetShortcutProxy ();
@@ -476,6 +481,11 @@ int LeechCraft::Core::CountUnremoveableTabs () const
 QNetworkAccessManager* LeechCraft::Core::GetNetworkAccessManager () const
 {
 	return NetworkAccessManager_.get ();
+}
+
+QModelIndex LeechCraft::Core::MapToSource (const QModelIndex& index) const
+{
+	return MapToSourceRecursively (index);
 }
 
 bool LeechCraft::Core::eventFilter (QObject *watched, QEvent *e)
@@ -1234,11 +1244,6 @@ void LeechCraft::Core::DoCommonAuth (const QString& msg, QAuthenticator *authen)
 
 	if (dia->ShouldSave ())
 		StorageBackend_->SetAuth (realm, login, password);
-}
-
-QModelIndex LeechCraft::Core::MapToSource (const QModelIndex& index) const
-{
-	return MapToSourceRecursively (index);
 }
 
 void LeechCraft::Core::InitDynamicSignals (QObject *plugin)

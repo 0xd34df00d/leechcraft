@@ -58,6 +58,7 @@ namespace LeechCraft
 		QModelIndexList GetSelectedRows () const;
 		TabWidget* GetTabWidget () const;
 		const IShortcutProxy* GetShortcutProxy () const;
+		QTreeView* GetMainView () const;
 	public slots:
 		void catchError (QString);
 	protected:

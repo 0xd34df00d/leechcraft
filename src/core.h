@@ -65,6 +65,7 @@ namespace LeechCraft
         void Release ();
 
 		void SetReallyMainWindow (MainWindow*);
+		MainWindow* GetReallyMainWindow ();
 		const IShortcutProxy* GetShortcutProxy () const;
 
 		/** Returns all plugins that implement IHaveSettings as
@@ -168,6 +169,8 @@ namespace LeechCraft
 
 		QNetworkAccessManager* GetNetworkAccessManager () const;
 
+		QModelIndex MapToSource (const QModelIndex&) const;
+
 		virtual bool eventFilter (QObject*, QEvent*);
 	public slots:
 		void handleProxySettings () const;
@@ -213,7 +216,6 @@ namespace LeechCraft
 		 * @exception std::runtime_error Throws if the required model
 		 * could not be found.
 		 */
-		QModelIndex MapToSource (const QModelIndex&) const;
 		void InitDynamicSignals (QObject*);
 		void InitJobHolder (QObject*);
 		void InitEmbedTab (QObject*);

@@ -141,6 +141,11 @@ const IShortcutProxy* LeechCraft::MainWindow::GetShortcutProxy () const
 	return ShortcutManager_;
 }
 
+QTreeView* LeechCraft::MainWindow::GetMainView () const
+{
+	return Ui_.PluginsTasksTree_;
+}
+
 void LeechCraft::MainWindow::catchError (QString message)
 {
 	QMessageBox::critical (this, tr ("Error"), message);

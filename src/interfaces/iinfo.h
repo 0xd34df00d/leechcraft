@@ -3,11 +3,13 @@
 #include <boost/shared_ptr.hpp>
 #include <QString>
 #include <QStringList>
-#include <QIcon>
 #include <QtPlugin>
 
 class QNetworkAccessManager;
 class IShortcutProxy;
+class QTreeView;
+class QModelIndex;
+class QIcon;
 
 /** @brief Proxy class for the communication with LeechCraft.
  *
@@ -32,6 +34,15 @@ public:
 	 * shortcut manager.
 	 */
 	virtual const IShortcutProxy* GetShortcutProxy () const = 0;
+
+	/** @brief Returns the view where all the jobs are.
+	 */
+	virtual QTreeView* GetMainView () const = 0;
+
+	/** @brief Maps the given index up to the plugin's through the
+	 * hierarchy of LeechCraft's models
+	 */
+	virtual QModelIndex MapToSource (const QModelIndex&) const = 0;
 
 	virtual ~ICoreProxy () {}
 };

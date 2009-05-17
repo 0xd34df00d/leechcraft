@@ -14,6 +14,8 @@ namespace LeechCraft
 		CoreProxy (QObject* = 0);
 		QNetworkAccessManager* GetNetworkAccessManager () const;
 		const IShortcutProxy* GetShortcutProxy () const;
+		QTreeView* GetMainView () const;
+		QModelIndex MapToSource (const QModelIndex&) const;
 	};
 };
 

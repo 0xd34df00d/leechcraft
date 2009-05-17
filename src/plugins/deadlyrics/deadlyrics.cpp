@@ -1,4 +1,5 @@
 #include "deadlyrics.h"
+#include <QIcon>
 #include "core.h"
 #include "findproxy.h"
 
