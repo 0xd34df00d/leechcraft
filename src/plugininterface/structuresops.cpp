@@ -30,6 +30,8 @@ QDataStream& operator>> (QDataStream& in, LeechCraft::DownloadEntity& e)
 			e.Parameters_ |= LeechCraft::NoAutostart;
 		if (parameters & LeechCraft::DoNotSaveInHistory)
 			e.Parameters_ |= LeechCraft::DoNotSaveInHistory;
+		if (parameters & LeechCraft::IsntDownloaded)
+			e.Parameters_ |= LeechCraft::IsntDownloaded;
 		if (parameters & LeechCraft::FromUserInitiated)
 			e.Parameters_ |= LeechCraft::FromUserInitiated;
 		if (parameters & LeechCraft::DoNotNotifyUser)
