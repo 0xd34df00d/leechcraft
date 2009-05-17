@@ -81,6 +81,10 @@ void Core::Release ()
 void Core::SetCoreProxy (ICoreProxy_ptr proxy)
 {
 	CoreProxy_ = proxy;
+	connect (CoreProxy_->GetMainView (),
+			SIGNAL (activated (const QModelIndex&)),
+			this,
+			SLOT (handleActivated (const QModelIndex&)));
 }
 
 ICoreProxy_ptr Core::GetCoreProxy () const
@@ -115,13 +119,13 @@ int Core::columnCount (const QModelIndex&) const
 QVariant Core::data (const QModelIndex& index, int role) const
 {
 	int row = index.row ();
+	HistoryEntry e = History_.at (row);
 	if (role == Qt::DisplayRole)
 	{
 		switch (index.column ())
 		{
 			case 0:
 				{
-					HistoryEntry e = History_.at (row);
 					QString entity;
 					if (e.Entity_.Entity_.size () < 150)
 						entity = QTextCodec::codecForName ("UTF-8")->
@@ -137,7 +141,7 @@ QVariant Core::data (const QModelIndex& index, int role) const
 					return entity;
 				}
 			case 1:
-				return History_.at (row).DateTime_;
+				return e.DateTime_;
 			case 2:
 				return data (index, RoleTags).toStringList ().join ("; ");
 			default:
@@ -151,9 +155,9 @@ QVariant Core::data (const QModelIndex& index, int role) const
 	else if (role == RoleControls)
 		return QVariant::fromValue<QToolBar*> (ToolBar_.get ());
 	else if (role == RoleHash)
-		return History_.at (row).Entity_.Entity_;
+		return e.Entity_.Entity_;
 	else if (role == RoleMime)
-		return History_.at (row).Entity_.Mime_;
+		return e.Entity_.Mime_;
 	else
 		return QVariant ();
 }
@@ -215,6 +219,9 @@ void Core::remove ()
 	}
 	
 	const FindProxy *sm = qobject_cast<const FindProxy*> (index.model ());
+	if (!sm)
+		return;
+
 	index = sm->mapToSource (index);
 
 	beginRemoveRows (QModelIndex (), index.row (), index.row ());
@@ -222,5 +229,27 @@ void Core::remove ()
 	endRemoveRows ();
 
 	WriteSettings ();
+}
+
+void Core::handleActivated (const QModelIndex& si)
+{
+	QModelIndex index = CoreProxy_->MapToSource (si);
+	if (!index.isValid ())
+	{
+		qWarning () << Q_FUNC_INFO
+			<< "invalid index"
+			<< index;
+		return;
+	}
+	
+	const FindProxy *sm = qobject_cast<const FindProxy*> (index.model ());
+	if (!sm)
+		return;
+
+	index = sm->mapToSource (index);
+
+	LeechCraft::DownloadEntity e = History_.at (index.row ()).Entity_;
+	e.Parameters_ |= LeechCraft::IsntDownloaded;
+	emit gotEntity (e);
 }
 

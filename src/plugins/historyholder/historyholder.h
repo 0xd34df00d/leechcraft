@@ -35,6 +35,8 @@ namespace LeechCraft
 
 				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
 				void Handle (LeechCraft::DownloadEntity);
+			signals:
+				void gotEntity (const LeechCraft::DownloadEntity&);
 			};
 		};
 	};

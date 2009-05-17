@@ -8,6 +8,10 @@ using namespace LeechCraft::Plugins::HistoryHolder;
 void Plugin::Init (ICoreProxy_ptr proxy)
 {
 	Core::Instance ().SetCoreProxy (proxy);
+	connect (&Core::Instance (),
+			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+			this,
+			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
 }
 
 void Plugin::Release ()
