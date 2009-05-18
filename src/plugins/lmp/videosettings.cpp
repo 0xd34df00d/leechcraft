@@ -1,5 +1,7 @@
 #include "videosettings.h"
 
+using namespace LeechCraft::Plugins::LMP;
+
 VideoSettings::VideoSettings (qreal b, qreal c, qreal h, qreal s, QWidget *parent)
 : QDialog (parent)
 {

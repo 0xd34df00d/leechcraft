@@ -1,20 +1,29 @@
-#ifndef VIDEOSETTINGS_H
-#define VIDEOSETTINGS_H
+#ifndef PLUGINS_LMP_VIDEOSETTINGS_H
+#define PLUGINS_LMP_VIDEOSETTINGS_H
 #include <QDialog>
 #include "ui_videosettings.h"
 
-class VideoSettings : public QDialog
+namespace LeechCraft
 {
-	Q_OBJECT
+	namespace Plugins
+	{
+		namespace LMP
+		{
+			class VideoSettings : public QDialog
+			{
+				Q_OBJECT
 
-	Ui::VideoSettings Ui_;
-public:
-	VideoSettings (qreal, qreal, qreal, qreal, QWidget* = 0);
-	virtual ~VideoSettings ();
-	qreal Brightness () const;
-	qreal Contrast () const;
-	qreal Hue () const;
-	qreal Saturation () const;
+				Ui::VideoSettings Ui_;
+			public:
+				VideoSettings (qreal, qreal, qreal, qreal, QWidget* = 0);
+				virtual ~VideoSettings ();
+				qreal Brightness () const;
+				qreal Contrast () const;
+				qreal Hue () const;
+				qreal Saturation () const;
+			};
+		};
+	};
 };
 
 #endif

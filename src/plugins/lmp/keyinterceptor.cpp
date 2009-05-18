@@ -2,6 +2,8 @@
 #include <QKeyEvent>
 #include "core.h"
 
+using namespace LeechCraft::Plugins::LMP;
+
 KeyInterceptor::KeyInterceptor (QObject *parent)
 : QObject (parent)
 {

@@ -10,6 +10,7 @@ SET (SRCS
 	xmlsettingsmanager.cpp
 	keyinterceptor.cpp
 	videosettings.cpp
+	entitychecker.cpp
 	)
 SET (HEADERS
 	lmp.h
@@ -17,9 +18,10 @@ SET (HEADERS
 	xmlsettingsmanager.h
 	keyinterceptor.h
 	videosettings.h
+	entitychecker.h
 	)
 SET (FORMS
-    tabwidget.ui
+    player.ui
 	videosettings.ui
 	)
 SET (RESOURCES resources.qrc)

@@ -1,51 +1,21 @@
 #include "lmp.h"
 #include <QToolBar>
-#include <QSlider>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QDir>
 #include <seekslider.h>
 #include <volumeslider.h>
 #include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
-#include "keyinterceptor.h"
-#include "videosettings.h"
+#include "entitychecker.h"
 
-void LMP::Init ()
+using namespace LeechCraft::Plugins::LMP;
+
+void LMP::Init (ICoreProxy_ptr)
 {
 	Translator_.reset (LeechCraft::Util::InstallTranslator ("lmp"));
-	Ui_.setupUi (this);
-	dynamic_cast<QBoxLayout*> (layout ())->
-		insertWidget (0, SetupToolbar ());
-
-	connect (&Core::Instance (),
-			SIGNAL (stateUpdated (const QString&)),
-			this,
-			SLOT (handleStateUpdated (const QString&)));
 	connect (&Core::Instance (),
 			SIGNAL (bringToFront ()),
 			this,
 			SIGNAL (bringToFront ()));
-	connect (&Core::Instance (),
-			SIGNAL (error (const QString&)),
-			this,
-			SLOT (handleError (const QString&)));
-
-	Core::Instance ().SetVideoWidget (Ui_.VideoWidget_);
-	Core::Instance ().Reinitialize ();
-
-	KeyInterceptor *ki = new KeyInterceptor (this);
-	QList<QWidget*> children = findChildren<QWidget*> ();
-	for (QList<QWidget*>::iterator i = children.begin (),
-			end = children.end (); i != end; ++i)
-		(*i)->installEventFilter (ki);
-
-	ApplyVideoSettings (XmlSettingsManager::Instance ()->
-				Property ("Brightness", 0).value<qreal> (),
-			XmlSettingsManager::Instance ()->Property ("Contrast", 0).value<qreal> (),
-			XmlSettingsManager::Instance ()->Property ("Hue", 0).value<qreal> (),
-			XmlSettingsManager::Instance ()->Property ("Saturation", 0).value <qreal> ());
 }
 
 void LMP::Release ()
@@ -85,156 +55,20 @@ void LMP::SetProvider (QObject*, const QString&)
 
 QIcon LMP::GetIcon () const
 {
-	return windowIcon ();
+	return QIcon (":/resources/images/lmp.png");
 }
 
-QWidget* LMP::GetTabContents ()
+bool LMP::CouldHandle (const LeechCraft::DownloadEntity& e) const
 {
-	return this;
+	EntityChecker ec (e);
+	return ec.Can ();
 }
 
-bool LMP::ImplementsFeature (const QString& feature) const
+void LMP::Handle (LeechCraft::DownloadEntity e)
 {
-	if (feature == "videoplayer" ||
-			feature == "audioplayer")
-		return true;
-	else
-		return false;
-}
-
-QToolBar* LMP::SetupToolbar ()
-{
-	QToolBar *bar = new QToolBar;
-
-	Open_.reset (new QAction (tr ("Open..."),
-				this));
-	Open_->setObjectName ("Open_");
-	Open_->setProperty ("ActionIcon", "lmp_open");
-	connect (Open_.get (),
-			SIGNAL (triggered ()),
-			this,
-			SLOT (selectFile ()));
-
-	Play_.reset (new QAction (tr ("Play"),
-				this));
-	Play_->setObjectName ("Play_");
-	Play_->setProperty ("ActionIcon", "lmp_play");
-	connect (Play_.get (),
-			SIGNAL (triggered ()),
-			&Core::Instance (),
-			SLOT (play ()));
-
-	Pause_.reset (new QAction (tr ("Pause"),
-				this));
-	Pause_->setObjectName ("Pause_");
-	Pause_->setProperty ("ActionIcon", "lmp_pause");
-	connect (Pause_.get (),
-			SIGNAL (triggered ()),
-			&Core::Instance (),
-			SLOT (pause ()));
-
-	ViewerSettings_.reset (new QAction (tr ("Viewer settings"),
-				this));
-	ViewerSettings_->setObjectName ("ViewerSettings_");
-	ViewerSettings_->setProperty ("ActionIcon", "lmp_viewersettings");
-	connect (ViewerSettings_.get (),
-			SIGNAL (triggered ()),
-			this,
-			SLOT (changeViewerSettings ()));
-
-	Phonon::VolumeSlider *volumeSlider = new Phonon::VolumeSlider (this);
-	Phonon::SeekSlider *seekSlider = new Phonon::SeekSlider (this);
-	Core::Instance ().SetSeekSlider (seekSlider);
-	Core::Instance ().SetVolumeSlider (volumeSlider);
-
-	bar->addAction (Open_.get ());
-	bar->addSeparator ();
-	bar->addAction (Play_.get ());
-	bar->addAction (Pause_.get ());
-	bar->addSeparator ();
-	bar->addAction (ViewerSettings_.get ());
-	bar->addSeparator ();
-	bar->addWidget (volumeSlider);
-	bar->addSeparator ();
-	bar->addWidget (seekSlider);
-
-	return bar;
-}
-
-void LMP::ApplyVideoSettings (qreal b, qreal c, qreal h, qreal s)
-{
-	Ui_.VideoWidget_->setBrightness (b);
-	Ui_.VideoWidget_->setContrast (c);
-	Ui_.VideoWidget_->setHue (h);
-	Ui_.VideoWidget_->setSaturation (s);
-}
-
-void LMP::handleStateUpdated (const QString& state)
-{
-	Ui_.State_->setText (state);
-}
-
-void LMP::handleError (const QString& error)
-{
-	QMessageBox::warning (this,
-			tr ("Error"),
-			error);
-}
-
-void LMP::setFile (const QString& file)
-{
-	Core::Instance ().setSource (file);
-}
-
-void LMP::play ()
-{
-	Core::Instance ().play ();
-}
-
-void LMP::selectFile ()
-{
-	QString oldDir = XmlSettingsManager::Instance ()->
-		Property ("LastOpenFileName", QDir::homePath ()).toString ();
-
-	QString filename = QFileDialog::getOpenFileName (this,
-			tr ("Select media file"),
-			oldDir,
-			tr ("Video (*.avi *.mkv *.ogg *.mpeg *.mpg *.divx *.mov *.swf);;"
-				"Uncompressed lossless audio (*.aiff *.au *.cdda *.raw *.wav);;"
-				"Compressed lossless audio (*.flac *.wv *.m4a *.tta *.ape *.la *.pac);;"
-				"Lossy audio (*.mp3 *.ogg *.wma *.aac *.mpc *.ra *.rm *.ots *.swa);;"
-				"All files (*.*)"));
-
-	if (filename.isEmpty ())
+	if (!CouldHandle (e))
 		return;
-
-	XmlSettingsManager::Instance ()->setProperty ("LastOpenFileName",
-			QDir (filename).absolutePath ());
-	Core::Instance ().setSource (filename);
 }
 
-void LMP::changeViewerSettings ()
-{
-	std::auto_ptr<VideoSettings> settings (new VideoSettings (Ui_.VideoWidget_->brightness (),
-			Ui_.VideoWidget_->contrast (),
-			Ui_.VideoWidget_->hue (),
-			Ui_.VideoWidget_->saturation (),
-			this));
-	if (settings->exec () == QDialog::Rejected)
-		return;
-
-	qreal b = settings->Brightness (),
-		  c = settings->Contrast (),
-		  h = settings->Hue (),
-		  s = settings->Saturation ();
-
-	ApplyVideoSettings (b, c, h, s);
-
-	XmlSettingsManager::Instance ()->setProperty ("Brightness", b);
-	XmlSettingsManager::Instance ()->setProperty ("Contrast", c);
-	XmlSettingsManager::Instance ()->setProperty ("Hue", h);
-	XmlSettingsManager::Instance ()->setProperty ("Saturation", s);
-}
-
-Q_EXPORT_PLUGIN2 (leechcraft_lmp, LMP);
+Q_EXPORT_PLUGIN2 (leechcraft_lmp, LeechCraft::Plugins::LMP::LMP);
 

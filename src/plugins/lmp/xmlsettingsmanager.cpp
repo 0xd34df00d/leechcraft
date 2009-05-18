@@ -2,6 +2,7 @@
 #include "xmlsettingsmanager.h"
 
 using LeechCraft::Util::Proxy;
+using namespace LeechCraft::Plugins::LMP;
 
 namespace
 {

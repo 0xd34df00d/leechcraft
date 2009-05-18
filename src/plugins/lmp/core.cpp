@@ -2,6 +2,8 @@
 #include <QUrl>
 #include "xmlsettingsmanager.h"
 
+using namespace LeechCraft::Plugins::LMP;
+
 Core::Core ()
 : TotalTimeAvailable_ (false)
 , VideoWidget_ (0)
