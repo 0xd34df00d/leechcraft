@@ -9,7 +9,7 @@
 			<label lang="en" value="Behavior" />
 			<label lang="ru" value="Поведение" />
 			<label lang="uk" value="Поведінка" />
-			<item type="checkbox" property="BeSilent" state="off">
+			<item type="checkbox" property="BeSilent" state="on">
 				<label lang="en" value="Be silent" />
 				<label lang="ru" value="Вести себя тихо" />
 				<label lang="uk" value="Поводитись тихо" />
@@ -40,7 +40,7 @@
 					<label lang="ru" value="Обновлять ленты при запуске" />
 					<label lang="uk" value="Оновлювати стрічки під час запуску" />
 				</item>
-				<item type="spinbox" property="UpdateInterval" default="10" minimum="1" maximum="300" step="5">
+				<item type="spinbox" property="UpdateInterval" default="180" minimum="1" maximum="3000" step="5">
 					<lang value="en">
 						<label value="Update interval:" />
 						<suffix value=" min" />
@@ -63,12 +63,12 @@
 					<label lang="en" value="Never remove unread items on update" />
 					<label lang="ru" value="Не удалять непрочитанные сообщения при обновлении" />
 				</item>
-				<item type="spinbox" property="ItemsPerChannel" default="50" minimum="20" maximum="10000" step="50">
+				<item type="spinbox" property="ItemsPerChannel" default="1000" minimum="20" maximum="10000" step="50">
 					<label lang="en" value="Items per channel:" />
 					<label lang="ru" value="Статей в канале:" />
 					<label lang="uk" value="Статей в каналі:" />
 				</item>
-				<item type="spinbox" property="ItemsMaxAge" default="30" minimum="1" maximum="3650">
+				<item type="spinbox" property="ItemsMaxAge" default="90" minimum="1" maximum="3650">
 					<lang value="en">
 						<label value="Store items for:" />
 						<suffix value=" days" />
