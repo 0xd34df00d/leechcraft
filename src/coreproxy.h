@@ -16,6 +16,7 @@ namespace LeechCraft
 		const IShortcutProxy* GetShortcutProxy () const;
 		QTreeView* GetMainView () const;
 		QModelIndex MapToSource (const QModelIndex&) const;
+		Util::BaseSettingsManager* GetSettingsManager () const;
 
 #define LC_DEFINE_REGISTER(a) void RegisterHook (LeechCraft::HookSignature<LeechCraft::a>::Signature_t);
 #define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))

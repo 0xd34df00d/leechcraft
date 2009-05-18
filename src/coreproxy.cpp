@@ -1,8 +1,10 @@
 #include "coreproxy.h"
 #include "core.h"
 #include "mainwindow.h"
+#include "xmlsettingsmanager.h"
 
 using namespace LeechCraft;
+using namespace LeechCraft::Util;
 
 CoreProxy::CoreProxy (QObject *parent)
 : QObject (parent)
@@ -27,6 +29,11 @@ QTreeView* CoreProxy::GetMainView () const
 QModelIndex CoreProxy::MapToSource (const QModelIndex& index) const
 {
 	return Core::Instance ().MapToSource (index);
+}
+
+BaseSettingsManager* CoreProxy::GetSettingsManager () const
+{
+	return XmlSettingsManager::Instance ();
 }
 
 #define LC_DEFINE_REGISTER(a) \

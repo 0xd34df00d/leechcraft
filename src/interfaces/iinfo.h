@@ -16,6 +16,11 @@ class QIcon;
 
 namespace LeechCraft
 {
+	namespace Util
+	{
+		class BaseSettingsManager;
+	};
+
 	class IHookProxy
 	{
 	public:
@@ -78,6 +83,8 @@ public:
 	 * hierarchy of LeechCraft's models
 	 */
 	virtual QModelIndex MapToSource (const QModelIndex&) const = 0;
+
+	virtual LeechCraft::Util::BaseSettingsManager* GetSettingsManager () const = 0;
 
 #define LC_DEFINE_REGISTER(a) virtual void RegisterHook (LeechCraft::HookSignature<a>::Signature_t) = 0;
 #define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))
