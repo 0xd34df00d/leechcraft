@@ -10,12 +10,14 @@ SET (SRCS
 	core.cpp
 	adaptor.cpp
 	iinfoadaptor.cpp
+	notificationmanager.cpp
 	)
 SET (HEADERS
 	dbusmanager.h
 	core.h
 	adaptor.h
 	iinfoadaptor.h
+	notificationmanager.h
 	)
 SET (FORMS
 	)

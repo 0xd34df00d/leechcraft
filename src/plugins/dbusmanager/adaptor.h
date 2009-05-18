@@ -3,29 +3,38 @@
 #include <QDBusAbstractAdaptor>
 #include <QStringList>
 
-class Core;
-class QDBusMessage;
-
-class Adaptor : public QDBusAbstractAdaptor
+namespace LeechCraft
 {
-	Q_OBJECT
+	namespace Plugins
+	{
+		namespace DBusManager
+		{
+			class Core;
+			class QDBusMessage;
 
-	Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.DBus.Manager");
-	Q_PROPERTY (QString OrganizationName READ GetOrganizationName);
-	Q_PROPERTY (QString ApplicationName READ GetApplicationName);
+			class Adaptor : public QDBusAbstractAdaptor
+			{
+				Q_OBJECT
 
-	Core *Core_;
-public:
-	Adaptor (Core*);
+				Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.DBus.Manager");
+				Q_PROPERTY (QString OrganizationName READ GetOrganizationName);
+				Q_PROPERTY (QString ApplicationName READ GetApplicationName);
 
-	QString GetOrganizationName () const;
-	QString GetApplicationName () const;
-public slots:
-	QString Greeter (const QString&, const QDBusMessage&);
-	QStringList GetLoadedPlugins ();
-signals:
-	void aboutToQuit ();
-	void someEventHappened (const QString&);
+				Core *Core_;
+			public:
+				Adaptor (Core*);
+
+				QString GetOrganizationName () const;
+				QString GetApplicationName () const;
+			public slots:
+				QString Greeter (const QString&, const QDBusMessage&);
+				QStringList GetLoadedPlugins ();
+			signals:
+				void aboutToQuit ();
+				void someEventHappened (const QString&);
+			};
+		};
+	};
 };
 
 #endif

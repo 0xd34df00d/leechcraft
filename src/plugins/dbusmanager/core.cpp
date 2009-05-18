@@ -1,4 +1,5 @@
 #include "core.h"
+#include <boost/bind.hpp>
 #include <QtDebug>
 #include <QDBusError>
 #include <QDBusConnection>
@@ -6,7 +7,11 @@
 #include <QApplication>
 #include "adaptor.h"
 
+using namespace LeechCraft;
+using namespace LeechCraft::Plugins::DBusManager;
+
 Core::Core ()
+: NotificationManager_ (new NotificationManager)
 {
 	new Adaptor (this);
 
@@ -23,6 +28,22 @@ Core& Core::Instance ()
 void Core::Release ()
 {
 	emit aboutToQuit ();
+	Proxy_.reset ();
+}
+
+void Core::SetProxy (ICoreProxy_ptr proxy)
+{
+	Proxy_ = proxy;
+	Proxy_->RegisterHook (boost::bind (&NotificationManager::HandleFinishedNotification,
+				NotificationManager_.get (),
+				_1,
+				_2,
+				_3));
+}
+
+ICoreProxy_ptr Core::GetProxy () const
+{
+	return Proxy_;
 }
 
 QString Core::Greeter (const QString& msg)

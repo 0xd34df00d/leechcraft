@@ -2,9 +2,11 @@
 #include <QIcon>
 #include "core.h"
 
-void DBusManager::Init (ICoreProxy_ptr)
+using namespace LeechCraft::Plugins::DBusManager;
+
+void DBusManager::Init (ICoreProxy_ptr proxy)
 {
-	Core::Instance ();
+	Core::Instance ().SetProxy (proxy);
 }
 
 void DBusManager::Release ()
@@ -46,5 +48,5 @@ QIcon DBusManager::GetIcon () const
 	return QIcon ();
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_dbusmanager, DBusManager);
+Q_EXPORT_PLUGIN2 (leechcraft_dbusmanager, LeechCraft::Plugins::DBusManager::DBusManager);
 

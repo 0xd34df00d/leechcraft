@@ -3,6 +3,7 @@
 #include "core.h"
 
 using LeechCraft::Util::Proxy;
+using namespace LeechCraft::Plugins::DBusManager;
 
 Adaptor::Adaptor (Core *parent)
 : QDBusAbstractAdaptor (parent)
