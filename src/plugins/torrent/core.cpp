@@ -1626,10 +1626,8 @@ libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data,
 void Core::HandleSingleFinished (int i)
 {
 	TorrentStruct torrent = Handles_.at (i);
-	libtorrent::torrent_info info = Handles_.at (i).Handle_
+	libtorrent::torrent_info info = torrent.Handle_
 		.get_torrent_info ();
-	QString where = QString::fromUtf8 (Handles_.at (i).Handle_
-			.save_path ().string ().c_str ());
 
     QString name = QString::fromStdString (info.name ());
     QString string = tr ("Torrent finished: %1").arg (name);
@@ -1639,7 +1637,7 @@ void Core::HandleSingleFinished (int i)
 			end = info.end_files (); i != end; ++i)
 	{
 		LeechCraft::DownloadEntity e;
-		e.Entity_ = QByteArray (i->path.string ().c_str ());
+		e.Entity_ = QByteArray ((torrent.Handle_.save_path () / i->path).string ().c_str ());
 		e.Location_ = torrent.TorrentFileName_;
         emit fileFinished (e);
 	}
