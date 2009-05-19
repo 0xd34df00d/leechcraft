@@ -66,3 +66,8 @@ void FeedSettings::accept ()
 	QDialog::accept ();
 }
 
+void FeedSettings::on_UpdateFavicon__released ()
+{
+	Core::Instance ().UpdateFavicon (Index_);
+}
+

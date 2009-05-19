@@ -459,6 +459,21 @@ void Core::SetTagsForIndex (const QString& tags, const QModelIndex& index)
 	}
 }
 
+void Core::UpdateFavicon (const QModelIndex& index)
+{
+	try
+	{
+		ChannelShort channel = ChannelsModel_->GetChannelForIndex (index);
+		FetchFavicon (StorageBackend_->GetChannel (channel.Title_,
+					channel.ParentURL_));
+	}
+	catch (const std::exception& e)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< e.what ();
+	}
+}
+
 QStringList Core::GetCategories (const QModelIndex& index) const
 {
 	ChannelShort cs;

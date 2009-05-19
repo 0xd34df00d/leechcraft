@@ -1,132 +1,91 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>FeedSettings</class>
- <widget class="QDialog" name="FeedSettings" >
-  <property name="geometry" >
+ <widget class="QDialog" name="FeedSettings">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>556</width>
-    <height>387</height>
+    <width>406</width>
+    <height>330</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Feed settings</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="resources.qrc" >
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
     <normaloff>:/resources/images/aggregator.png</normaloff>:/resources/images/aggregator.png</iconset>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2" >
+  <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <widget class="QTabWidget" name="tabWidget" >
-     <property name="currentIndex" >
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="tab" >
-      <attribute name="title" >
-       <string>Settings</string>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
+       <string>Channel information</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3" >
+      <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QGroupBox" name="groupBox" >
-         <property name="title" >
-          <string>Channel</string>
+        <widget class="QLabel" name="ChannelImage_">
+         <property name="text">
+          <string/>
          </property>
-         <layout class="QFormLayout" name="formLayout" >
-          <item row="0" column="0" >
-           <widget class="QLabel" name="label" >
-            <property name="text" >
-             <string>Tags:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" >
-           <widget class="LeechCraft::Util::TagsLineEdit" name="ChannelTags_" />
-          </item>
-         </layout>
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_2" >
-         <property name="title" >
-          <string>Feed</string>
+        <layout class="QFormLayout" name="formLayout_2">
+         <property name="fieldGrowthPolicy">
+          <enum>QFormLayout::ExpandingFieldsGrow</enum>
          </property>
-         <layout class="QFormLayout" name="formLayout_3" >
-          <property name="fieldGrowthPolicy" >
-           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-          </property>
-          <item row="0" column="0" >
-           <widget class="QLabel" name="label_3" >
-            <property name="text" >
-             <string>Update interval:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" >
-           <widget class="QSpinBox" name="UpdateInterval_" >
-            <property name="specialValueText" >
-             <string>Default</string>
-            </property>
-            <property name="suffix" >
-             <string> min</string>
-            </property>
-            <property name="maximum" >
-             <number>300</number>
-            </property>
-            <property name="singleStep" >
-             <number>5</number>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" >
-           <widget class="QLabel" name="label_6" >
-            <property name="text" >
-             <string>Max items number:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1" >
-           <widget class="QSpinBox" name="NumItems_" >
-            <property name="specialValueText" >
-             <string>Default</string>
-            </property>
-            <property name="maximum" >
-             <number>10000</number>
-            </property>
-            <property name="singleStep" >
-             <number>50</number>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" >
-           <widget class="QLabel" name="label_7" >
-            <property name="text" >
-             <string>Max item's age:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1" >
-           <widget class="QSpinBox" name="ItemAge_" >
-            <property name="specialValueText" >
-             <string>Default</string>
-            </property>
-            <property name="suffix" >
-             <string> days</string>
-            </property>
-            <property name="maximum" >
-             <number>3650</number>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Link:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="ChannelLink_">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Author:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLabel" name="ChannelAuthor_">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>Description:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QTextBrowser" name="ChannelDescription_"/>
+         </item>
+        </layout>
        </item>
        <item>
-        <spacer name="verticalSpacer_2" >
-         <property name="orientation" >
+        <spacer name="verticalSpacer">
+         <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" stdset="0" >
+         <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
            <height>40</height>
@@ -136,69 +95,133 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_2" >
-      <attribute name="title" >
-       <string>Channel information</string>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Settings</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout" >
+      <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
-        <widget class="QLabel" name="ChannelImage_" >
-         <property name="text" >
-          <string/>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>Channel</string>
          </property>
+         <layout class="QFormLayout" name="formLayout">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Tags:</string>
+            </property>
+            <property name="buddy">
+             <cstring>ChannelTags_</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="LeechCraft::Util::TagsLineEdit" name="ChannelTags_"/>
+          </item>
+         </layout>
         </widget>
        </item>
        <item>
-        <layout class="QFormLayout" name="formLayout_2" >
-         <property name="fieldGrowthPolicy" >
-          <enum>QFormLayout::ExpandingFieldsGrow</enum>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Feed</string>
          </property>
-         <item row="0" column="0" >
-          <widget class="QLabel" name="label_2" >
-           <property name="text" >
-            <string>Link:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1" >
-          <widget class="QLabel" name="ChannelLink_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0" >
-          <widget class="QLabel" name="label_4" >
-           <property name="text" >
-            <string>Author:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1" >
-          <widget class="QLabel" name="ChannelAuthor_" >
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0" >
-          <widget class="QLabel" name="label_5" >
-           <property name="text" >
-            <string>Description:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1" >
-          <widget class="QTextBrowser" name="ChannelDescription_" />
-         </item>
-        </layout>
+         <layout class="QFormLayout" name="formLayout_3">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Update interval:</string>
+            </property>
+            <property name="buddy">
+             <cstring>UpdateInterval_</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="UpdateInterval_">
+            <property name="specialValueText">
+             <string>Default</string>
+            </property>
+            <property name="suffix">
+             <string> min</string>
+            </property>
+            <property name="maximum">
+             <number>300</number>
+            </property>
+            <property name="singleStep">
+             <number>5</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Max items number:</string>
+            </property>
+            <property name="buddy">
+             <cstring>NumItems_</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="NumItems_">
+            <property name="specialValueText">
+             <string>Default</string>
+            </property>
+            <property name="maximum">
+             <number>10000</number>
+            </property>
+            <property name="singleStep">
+             <number>50</number>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Max item's age:</string>
+            </property>
+            <property name="buddy">
+             <cstring>ItemAge_</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QSpinBox" name="ItemAge_">
+            <property name="specialValueText">
+             <string>Default</string>
+            </property>
+            <property name="suffix">
+             <string> days</string>
+            </property>
+            <property name="maximum">
+             <number>3650</number>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QPushButton" name="UpdateFavicon_">
+            <property name="text">
+             <string>Update favicon</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </item>
        <item>
-        <spacer name="verticalSpacer" >
-         <property name="orientation" >
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" stdset="0" >
+         <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
            <height>40</height>
@@ -211,11 +234,11 @@
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="orientation" >
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="standardButtons" >
+     <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
@@ -226,11 +249,20 @@
   <customwidget>
    <class>LeechCraft::Util::TagsLineEdit</class>
    <extends>QLineEdit</extends>
-   <header location="global" >plugininterface/tagslineedit.h</header>
+   <header location="global">plugininterface/tagslineedit.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>ChannelTags_</tabstop>
+  <tabstop>UpdateInterval_</tabstop>
+  <tabstop>NumItems_</tabstop>
+  <tabstop>ItemAge_</tabstop>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>ChannelDescription_</tabstop>
+ </tabstops>
  <resources>
-  <include location="resources.qrc" />
+  <include location="resources.qrc"/>
  </resources>
  <connections>
   <connection>
@@ -239,11 +271,11 @@
    <receiver>FeedSettings</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>248</x>
-     <y>254</y>
+    <hint type="sourcelabel">
+     <x>252</x>
+     <y>382</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>157</x>
      <y>274</y>
     </hint>
@@ -255,13 +287,29 @@
    <receiver>FeedSettings</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>316</x>
-     <y>260</y>
+    <hint type="sourcelabel">
+     <x>320</x>
+     <y>382</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ChannelTags_</sender>
+   <signal>editingFinished()</signal>
+   <receiver>FeedSettings</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>121</x>
+     <y>93</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>71</x>
+     <y>386</y>
     </hint>
    </hints>
   </connection>

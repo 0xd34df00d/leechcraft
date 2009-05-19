@@ -17,6 +17,8 @@ public:
 	FeedSettings (const QModelIndex&, QWidget* = 0);
 public slots:
 	virtual void accept ();
+private slots:
+	void on_UpdateFavicon__released ();
 };
 
 #endif

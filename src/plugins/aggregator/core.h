@@ -120,6 +120,7 @@ public:
 	ChannelInfo GetChannelInfo (const QModelIndex&) const;
 	QPixmap GetChannelPixmap (const QModelIndex&) const;
 	void SetTagsForIndex (const QString&, const QModelIndex&);
+	void UpdateFavicon (const QModelIndex&);
 	QStringList GetCategories (const QModelIndex&) const;
 	QStringList GetItemCategories (int) const;
 	Feed::FeedSettings GetFeedSettings (const QModelIndex&) const;
