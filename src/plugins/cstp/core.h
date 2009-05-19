@@ -6,6 +6,7 @@
 #include <QStringList>
 #include <QNetworkProxy>
 #include <QNetworkAccessManager>
+#include <QSet>
 #include <interfaces/structures.h>
 #include <interfaces/idownload.h>
 
@@ -61,6 +62,7 @@ class Core : public QAbstractItemModel
 	QNetworkAccessManager *NetworkAccessManager_;
 	std::list<quint32> IDPool_;
 	QToolBar *Toolbar_;
+	QSet<QNetworkReply*> FinishedReplies_;
 	
 	explicit Core ();
 public:
@@ -88,6 +90,8 @@ public:
 	QAbstractItemModel* GetRepresentationModel ();
 	void SetNetworkAccessManager (QNetworkAccessManager*);
 	QNetworkAccessManager* GetNetworkAccessManager () const;
+	bool HasFinishedReply (QNetworkReply*) const;
+	void RemoveFinishedReply (QNetworkReply*);
 
 	virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
 	virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
@@ -108,6 +112,7 @@ private slots:
 	void done (bool); 
 	void updateInterface ();
 	void writeSettings ();
+	void finishedReply (QNetworkReply*);
 private:
 	int AddTask (const QString&, const QString&,
 			const QString&, const QString&,

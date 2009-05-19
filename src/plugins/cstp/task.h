@@ -27,7 +27,6 @@ class Task : public QObject
 	QStringList RedirectHistory_;
 	boost::intrusive_ptr<MorphFile> To_;
 	int Counter_;
-	bool BeCareful_;
 public:
 	explicit Task (const QUrl& = QUrl ());
 	explicit Task (QNetworkReply*);
@@ -57,7 +56,7 @@ private slots:
 	void handleMetaDataChanged ();
 	/** REturns true if the reply is at end after this read.
 	 */
-	bool handleReadyRead ();
+	void handleReadyRead ();
 	void handleFinished ();
 	void handleError ();
 signals:

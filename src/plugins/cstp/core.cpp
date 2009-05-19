@@ -259,11 +259,25 @@ QAbstractItemModel* Core::GetRepresentationModel ()
 void Core::SetNetworkAccessManager (QNetworkAccessManager *manager)
 {
 	NetworkAccessManager_ = manager;
+	connect (manager,
+			SIGNAL (finished (QNetworkReply*)),
+			this,
+			SLOT (finishedReply (QNetworkReply*)));
 }
 
 QNetworkAccessManager* Core::GetNetworkAccessManager () const
 {
 	return NetworkAccessManager_;
+}
+
+bool Core::HasFinishedReply (QNetworkReply *rep) const
+{
+	return FinishedReplies_.contains (rep);
+}
+
+void Core::RemoveFinishedReply (QNetworkReply *rep)
+{
+	FinishedReplies_.remove (rep);
 }
 
 int Core::columnCount (const QModelIndex&) const
@@ -502,6 +516,11 @@ void Core::writeSettings ()
 	}
 	SaveScheduled_ = false;
 	settings.endArray ();
+}
+
+void Core::finishedReply (QNetworkReply *rep)
+{
+	FinishedReplies_.insert (rep);
 }
 
 void Core::ReadSettings ()

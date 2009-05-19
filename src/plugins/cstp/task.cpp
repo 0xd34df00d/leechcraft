@@ -20,7 +20,6 @@ Task::Task (const QUrl& url)
 , FileSizeAtStart_ (-1)
 , Speed_ (0)
 , Counter_ (0)
-, BeCareful_ (false)
 {
 	StartTime_.start ();
 }
@@ -32,7 +31,6 @@ Task::Task (QNetworkReply *reply)
 , FileSizeAtStart_ (-1)
 , Speed_ (0)
 , Counter_ (0)
-, BeCareful_ (false)
 {
 	StartTime_.start ();
 }
@@ -76,11 +74,7 @@ void Task::Start (const boost::intrusive_ptr<MorphFile>& tof)
 			return;
 		}
 		else
-		{
-			BeCareful_ = true;
-			if (handleReadyRead ())
-				return;
-		}
+			handleReadyRead ();
 	}
 
 	Reply_->setParent (0);
@@ -275,21 +269,17 @@ void Task::handleMetaDataChanged ()
 	}
 }
 
-bool Task::handleReadyRead ()
+void Task::handleReadyRead ()
 {
 	if (Reply_.get ())
 		To_->write (Reply_->readAll ());
-
-	if (BeCareful_ && Reply_->atEnd ())
-	{
+	if (Core::Instance ().HasFinishedReply (Reply_.get ()))
 		handleFinished ();
-		return true;
-	}
-	return false;
 }
 
 void Task::handleFinished ()
 {
+	Core::Instance ().RemoveFinishedReply (Reply_.get ());
 	disconnect (Reply_.get (),
 			0,
 			this,
