@@ -63,6 +63,7 @@ class Core : public QAbstractItemModel
 	std::list<quint32> IDPool_;
 	QToolBar *Toolbar_;
 	QSet<QNetworkReply*> FinishedReplies_;
+	QModelIndex Selected_;
 	
 	explicit Core ();
 public:
@@ -80,6 +81,7 @@ public:
 	static Core& Instance ();
 	void Release ();
 	void SetToolbar (QToolBar*);
+	void ItemSelected (const QModelIndex&);
 
 	int AddTask (LeechCraft::DownloadEntity&);
 	qint64 GetDone (int) const;
@@ -102,12 +104,12 @@ public:
 	virtual QModelIndex parent (const QModelIndex&) const;
 	virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 public slots:
-	void removeTriggered (int);
-	void removeAllTriggered (int = -1);
-	void startTriggered (int);
-	void stopTriggered (int);
-	void startAllTriggered (int = -1);
-	void stopAllTriggered (int = -1);
+	void removeTriggered (int = -1);
+	void removeAllTriggered ();
+	void startTriggered (int = -1);
+	void stopTriggered (int = -1);
+	void startAllTriggered ();
+	void stopAllTriggered ();
 private slots:
 	void done (bool); 
 	void updateInterface ();

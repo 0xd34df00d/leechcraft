@@ -63,6 +63,11 @@ void Core::SetToolbar (QToolBar *widget)
 	Toolbar_ = widget;
 }
 
+void Core::ItemSelected (const QModelIndex& i)
+{
+	Selected_ = i;
+}
+
 int Core::AddTask (LeechCraft::DownloadEntity& e)
 {
 	QString entity = QTextCodec::codecForName ("UTF-8")->
@@ -389,12 +394,19 @@ int Core::rowCount (const QModelIndex& parent) const
 
 void Core::removeTriggered (int i)
 {
+	if (i == -1)
+	{
+		if (!Selected_.isValid ())
+			return;
+		i = Selected_.row ();
+	}
+
 	tasks_t::iterator it = ActiveTasks_.begin ();
-	std::advance (it, i);
+	std::advance (it, Selected_.row ());
 	Remove (it);
 }
 
-void Core::removeAllTriggered (int)
+void Core::removeAllTriggered ()
 {
 	while (ActiveTasks_.size ())
 		removeTriggered (0);
@@ -402,6 +414,13 @@ void Core::removeAllTriggered (int)
 
 void Core::startTriggered (int i)
 {
+	if (i == -1)
+	{
+		if (!Selected_.isValid ())
+			return;
+		i = Selected_.row ();
+	}
+
 	TaskDescr selected = TaskAt (i);
 	if (selected.Task_->IsRunning ())
 		return;
@@ -418,6 +437,13 @@ void Core::startTriggered (int i)
 
 void Core::stopTriggered (int i)
 {
+	if (i == -1)
+	{
+		if (!Selected_.isValid ())
+			return;
+		i = Selected_.row ();
+	}
+
 	TaskDescr selected = TaskAt (i);
 	if (!selected.Task_->IsRunning ())
 		return;
@@ -425,13 +451,13 @@ void Core::stopTriggered (int i)
 	selected.File_->close ();
 }
 
-void Core::startAllTriggered (int)
+void Core::startAllTriggered ()
 {
 	for (int i = 0, size = ActiveTasks_.size (); i < size; ++i)
 		startTriggered (i);
 }
 
-void Core::stopAllTriggered (int)
+void Core::stopAllTriggered ()
 {
 	for (int i = 0, size = ActiveTasks_.size (); i < size; ++i)
 		stopTriggered (i);

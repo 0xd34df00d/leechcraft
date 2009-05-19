@@ -30,7 +30,6 @@ void CSTP::Init (ICoreProxy_ptr coreProxy)
 	XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
 	XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (), ":/cstpsettings.xml");
 
-	SetupTabWidget ();
 	SetupToolbar ();
 
 	Core::Instance ().SetToolbar (Toolbar_.get ());
@@ -139,8 +138,9 @@ QAbstractItemModel* CSTP::GetRepresentation () const
 	return Core::Instance ().GetRepresentationModel ();
 }
 
-void CSTP::ItemSelected (const QModelIndex&)
+void CSTP::ItemSelected (const QModelIndex& index)
 {
+	Core::Instance ().ItemSelected (index);
 }
 
 boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> CSTP::GetSettingsDialog () const
@@ -159,10 +159,6 @@ void CSTP::ApplyCore2Selection (void (Core::*temp) (const QModelIndex&), T view)
 				_1));
 }
 
-void CSTP::SetupTabWidget ()
-{
-}
-
 void CSTP::SetupToolbar ()
 {
 	Toolbar_.reset (new QToolBar);
@@ -170,44 +166,48 @@ void CSTP::SetupToolbar ()
 	Toolbar_->setFloatable (false);
 
 	QAction *remove = Toolbar_->addAction (tr ("Remove"));
-	remove->setProperty ("Slot", "removeTriggered");
-	remove->setProperty ("Object",
-			QVariant::fromValue<QObject*> (&Core::Instance ()));
+	connect (remove,
+			SIGNAL (triggered ()),
+			&Core::Instance (),
+			SLOT (removeTriggered ()));
 	remove->setProperty ("ActionIcon", "cstp_remove");
 
 	QAction *removeAll = Toolbar_->addAction (tr ("Remove all"));
-	removeAll->setProperty ("Slot", "removeAllTriggered");
-	removeAll->setProperty ("Object",
-			QVariant::fromValue<QObject*> (&Core::Instance ()));
+	connect (removeAll,
+			SIGNAL (triggered ()),
+			&Core::Instance (),
+			SLOT (removeAllTriggered ()));
 	removeAll->setProperty ("ActionIcon", "cstp_removeall");
 
 	Toolbar_->addSeparator ();
 
 	QAction *start = Toolbar_->addAction (tr ("Start"));
-	start->setProperty ("Slot", "startTriggered");
-	start->setProperty ("Object",
-			QVariant::fromValue<QObject*> (&Core::Instance ()));
+	connect (start,
+			SIGNAL (triggered ()),
+			&Core::Instance (),
+			SLOT (startTriggered ()));
 	start->setProperty ("ActionIcon", "cstp_start");
 
 	QAction *stop = Toolbar_->addAction (tr ("Stop"));
-	stop->setProperty ("Slot", "stopTriggered");
-	stop->setProperty ("Object",
-			QVariant::fromValue<QObject*> (&Core::Instance ()));
+	connect (stop,
+			SIGNAL (triggered ()),
+			&Core::Instance (),
+			SLOT (stopTriggered ()));
 	stop->setProperty ("ActionIcon", "cstp_stop");
 
 	QAction *startAll = Toolbar_->addAction (tr ("Start all"));
-	startAll->setProperty ("Slot", "startAllTriggered");
-	startAll->setProperty ("Object",
-			QVariant::fromValue<QObject*> (&Core::Instance ()));
+	connect (startAll,
+			SIGNAL (triggered ()),
+			&Core::Instance (),
+			SLOT (startAllTriggered ()));
 	startAll->setProperty ("ActionIcon", "cstp_startall");
 
 	QAction *stopAll = Toolbar_->addAction (tr ("Stop all"));
-	stopAll->setProperty ("Slot", "stopAllTriggered");
-	stopAll->setProperty ("Object",
-			QVariant::fromValue<QObject*> (&Core::Instance ()));
+	connect (stopAll,
+			SIGNAL (triggered ()),
+			&Core::Instance (),
+			SLOT (stopAllTriggered ()));
 	stopAll->setProperty ("ActionIcon", "cstp_stopall");
-
-	Toolbar_->addSeparator ();
 }
 
 void CSTP::handleFileExists (boost::logic::tribool *remove)

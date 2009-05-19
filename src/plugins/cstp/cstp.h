@@ -60,7 +60,6 @@ public:
 	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 private:
 	template<typename T> void ApplyCore2Selection (void (Core::*) (const QModelIndex&), T);
-	void SetupTabWidget ();
 	void SetupToolbar ();
 private slots:
 	void handleFileExists (boost::logic::tribool*);
