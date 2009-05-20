@@ -1260,7 +1260,16 @@ void LeechCraft::Core::saveCookies () const
 			<< file.errorString ();
 	}
 	else
-		file.write (static_cast<CustomCookieJar*> (NetworkAccessManager_->cookieJar ())->Save ());
+	{
+		CustomCookieJar *jar = static_cast<CustomCookieJar*> (NetworkAccessManager_->cookieJar ());
+		if (!jar)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "jar is NULL";
+			return;
+		}
+		file.write (jar->Save ());
+	}
 }
 
 void LeechCraft::Core::DoCommonAuth (const QString& msg, QAuthenticator *authen)
