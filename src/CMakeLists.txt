@@ -192,6 +192,7 @@ SET (SRCS
 	networkdiskcache.cpp
 	networkaccessmanager.cpp
 	coreproxy.cpp
+	appstyler.cpp
 	3dparty/qxttooltip.cpp
 	)
 SET (HEADERS
@@ -228,6 +229,7 @@ SET (HEADERS
 	networkdiskcache.h
 	networkaccessmanager.h
 	coreproxy.h
+	appstyler.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/iinfo.h

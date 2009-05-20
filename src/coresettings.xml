@@ -14,6 +14,10 @@
 				<label lang="en" value="Icon set:" />
 				<label lang="ru" value="Набор иконок:" />
 			</item>
+			<item type="customwidget" name="AppQStyle">
+				<label lang="en" value="Style:" />
+				<label lang="ru" value="Стиль:" />
+			</item>
 			<item type="spinbox" property="MaxLogLines" default="500" step="250" minimum="10" maximum="50000">
 				<label lang="en" value="Maximum log lines:" />
 				<label lang="ru" value="Максимум строк в логе:" />

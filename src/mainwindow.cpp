@@ -20,6 +20,7 @@
 #include "iconchooser.h"
 #include "graphwidget.h"
 #include "shortcutmanager.h"
+#include "appstyler.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -198,6 +199,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	XmlSettingsDialog_ = new XmlSettingsDialog ();
 	XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 			":/coresettings.xml");
+
 	IconChooser *ic = new IconChooser (SkinEngine::Instance ().ListIcons (),
 			this);
 	connect (ic,
@@ -205,6 +207,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 			this,
 			SLOT (updateIconSet ()));
 	XmlSettingsDialog_->SetCustomWidget ("IconSet", ic);
+	XmlSettingsDialog_->SetCustomWidget ("AppQStyle", new AppStyler (this));
 
 	SettingsSink_ = new SettingsSink (tr ("LeechCraft"),
 			XmlSettingsDialog_);
