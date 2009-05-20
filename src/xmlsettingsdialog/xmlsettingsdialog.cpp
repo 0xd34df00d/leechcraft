@@ -31,6 +31,7 @@
 #include <QRadioButton>
 #include <QApplication>
 #include <QUrl>
+#include <QScrollArea>
 #include <QDomNodeList>
 #include <QtScript>
 #include "rangewidget.h"
@@ -206,6 +207,43 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
         gbox = gbox.nextSiblingElement ("groupbox");
     }
 
+	QDomElement scroll = entity.firstChildElement ("scrollarea");
+	while (!scroll.isNull ())
+	{
+		QScrollArea *area = new QScrollArea ();
+		if (scroll.hasAttribute ("horizontalScroll"))
+		{
+			QString attr = scroll.attribute ("horizontalScroll");
+			if (attr == "on")
+				area->setHorizontalScrollBarPolicy (Qt::ScrollBarAlwaysOn);
+			else if (attr == "off")
+				area->setHorizontalScrollBarPolicy (Qt::ScrollBarAlwaysOff);
+		}
+		if (scroll.hasAttribute ("verticalScroll"))
+		{
+			QString attr = scroll.attribute ("verticalScroll");
+			if (attr == "on")
+				area->setVerticalScrollBarPolicy (Qt::ScrollBarAlwaysOn);
+			else if (attr == "off")
+				area->setVerticalScrollBarPolicy (Qt::ScrollBarAlwaysOff);
+		}
+
+		QFrame *areaWidget = new QFrame;
+		QFormLayout *areaLayout = new QFormLayout;
+		areaLayout->setRowWrapPolicy (QFormLayout::DontWrapRows);
+		areaLayout->setFieldGrowthPolicy (QFormLayout::AllNonFixedFieldsGrow);
+		areaWidget->setLayout (areaLayout);
+
+		ParseEntity (scroll, areaWidget);
+		area->setWidget (areaWidget);
+		areaWidget->show ();
+
+        QFormLayout *lay = qobject_cast<QFormLayout*> (baseWidget->layout ());
+		lay->addRow (area);
+
+		scroll = scroll.nextSiblingElement ("scrollarea");
+	}
+
     QDomElement tab = entity.firstChildElement ("tab");
     if (!tab.isNull ())
     {
@@ -244,7 +282,8 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
         DoSpinbox (item, lay);
 	else if (type == "doublespinbox")
 		DoDoubleSpinbox (item, lay);
-    else if (type == "groupbox" && item.attribute ("checkable") == "true")
+    else if (type == "groupbox" &&
+			item.attribute ("checkable") == "true")
         DoGroupbox (item, lay);
     else if (type == "spinboxrange")
         DoSpinboxRange (item, lay);
