@@ -4,32 +4,32 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="application.cpp" line="88"/>
+        <location filename="application.cpp" line="89"/>
         <source>Critical failure</source>
         <translation type="unfinished">Критична помилка</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="89"/>
+        <location filename="application.cpp" line="90"/>
         <source>Could not create path %1/.leechcraft</source>
         <translation type="unfinished">Не можу створити %1/.leechcraft</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="103"/>
+        <location filename="application.cpp" line="106"/>
         <source>bytes</source>
         <translation type="unfinished">байт</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="104"/>
+        <location filename="application.cpp" line="107"/>
         <source>KB</source>
         <translation type="unfinished">КБ</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="105"/>
+        <location filename="application.cpp" line="108"/>
         <source>MB</source>
         <translation type="unfinished">МБ</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="106"/>
+        <location filename="application.cpp" line="109"/>
         <source>GB</source>
         <translation type="unfinished">ГБ</translation>
     </message>
@@ -65,17 +65,17 @@
 <context>
     <name>CategoryMerger</name>
     <message>
-        <location filename="categorymerger.cpp" line="13"/>
+        <location filename="categorymerger.cpp" line="12"/>
         <source>Name</source>
         <translation type="unfinished">Назва</translation>
     </message>
     <message>
-        <location filename="categorymerger.cpp" line="14"/>
+        <location filename="categorymerger.cpp" line="13"/>
         <source>State</source>
         <translation type="unfinished">Стан</translation>
     </message>
     <message>
-        <location filename="categorymerger.cpp" line="15"/>
+        <location filename="categorymerger.cpp" line="14"/>
         <source>Progress</source>
         <translation type="unfinished">Прогрес</translation>
     </message>
@@ -231,107 +231,92 @@
 <context>
     <name>LeechCraft::Core</name>
     <message>
-        <location filename="core.cpp" line="272"/>
+        <location filename="core.cpp" line="289"/>
         <source>Calculation dependencies...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="283"/>
+        <location filename="core.cpp" line="300"/>
         <source>Setting up %1...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="381"/>
+        <location filename="core.cpp" line="398"/>
         <source>No plugins are able to download &quot;%1&quot;</source>
         <translation type="unfinished">Жоден з плагінів не може завантажити &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="880"/>
+        <location filename="core.cpp" line="904"/>
         <source>Select save path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="904"/>
-        <location filename="core.cpp" line="918"/>
-        <location filename="core.cpp" line="954"/>
-        <location filename="core.cpp" line="968"/>
+        <location filename="core.cpp" line="928"/>
+        <location filename="core.cpp" line="942"/>
+        <location filename="core.cpp" line="978"/>
+        <location filename="core.cpp" line="992"/>
         <source>Error</source>
         <translation type="unfinished">Помилка</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="905"/>
-        <location filename="core.cpp" line="919"/>
+        <location filename="core.cpp" line="929"/>
+        <location filename="core.cpp" line="943"/>
         <source>Could not add job to the selected downloader, would you like to try another one?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="955"/>
-        <location filename="core.cpp" line="969"/>
+        <location filename="core.cpp" line="979"/>
+        <location filename="core.cpp" line="993"/>
         <source>Could not handle job with the selected handler, would you like to try another one?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1104"/>
+        <location filename="core.cpp" line="1128"/>
         <source>The URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1115"/>
+        <location filename="core.cpp" line="1139"/>
         <source>The proxy &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1142"/>
+        <location filename="core.cpp" line="1166"/>
         <source>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1226"/>
+        <location filename="core.cpp" line="1250"/>
         <source>Could not create Core directory.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1234"/>
+        <location filename="core.cpp" line="1258"/>
         <source>Could not save cookies, error opening cookie file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="59"/>
+        <location filename="core.cpp" line="77"/>
         <source>Name</source>
         <translation type="unfinished">Назва</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="60"/>
+        <location filename="core.cpp" line="78"/>
         <source>State</source>
         <translation type="unfinished">Стан</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="61"/>
+        <location filename="core.cpp" line="79"/>
         <source>Progress</source>
         <translation type="unfinished">Прогрес</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="62"/>
-        <source>Filename</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="63"/>
-        <source>Path</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="64"/>
-        <source>Date</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="807"/>
+        <location filename="core.cpp" line="827"/>
         <source>Too long to show</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1017"/>
+        <location filename="core.cpp" line="1041"/>
         <source>Could not handle download entity %1.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -354,12 +339,12 @@
     <message>
         <location filename="mainwindow.cpp" line="36"/>
         <location filename="mainwindow.cpp" line="62"/>
-        <location filename="mainwindow.cpp" line="595"/>
+        <location filename="mainwindow.cpp" line="599"/>
         <source>Initializing core and plugins...</source>
         <translation type="unfinished">Ініціалізація ядра і плагінів...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="110"/>
+        <location filename="mainwindow.cpp" line="105"/>
         <source>Plugins</source>
         <translation type="unfinished"></translation>
     </message>
@@ -411,12 +396,12 @@
 <context>
     <name>LeechCraft::PluginManager</name>
     <message>
-        <location filename="pluginmanager.cpp" line="200"/>
-        <source>No exit here</source>
-        <translation type="unfinished">Виходу немає</translation>
+        <location filename="pluginmanager.cpp" line="198"/>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="201"/>
+        <location filename="pluginmanager.cpp" line="199"/>
         <source>Release of one or more plugins failed.</source>
         <translation type="unfinished">Не вдалося вивантажити один або декілька плагінів.</translation>
     </message>
@@ -567,32 +552,32 @@
 <context>
     <name>RequestNormalizer</name>
     <message>
-        <location filename="requestnormalizer.cpp" line="29"/>
+        <location filename="requestnormalizer.cpp" line="27"/>
         <source>Name</source>
         <translation type="unfinished">Назва</translation>
     </message>
     <message>
-        <location filename="requestnormalizer.cpp" line="30"/>
+        <location filename="requestnormalizer.cpp" line="28"/>
         <source>State</source>
         <translation type="unfinished">Стан</translation>
     </message>
     <message>
-        <location filename="requestnormalizer.cpp" line="31"/>
+        <location filename="requestnormalizer.cpp" line="29"/>
         <source>Progress</source>
         <translation type="unfinished">Прогрес</translation>
     </message>
     <message>
-        <location filename="requestnormalizer.cpp" line="47"/>
+        <location filename="requestnormalizer.cpp" line="45"/>
         <source>Request validation error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="requestnormalizer.cpp" line="63"/>
+        <location filename="requestnormalizer.cpp" line="61"/>
         <source>Request parsing error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="requestnormalizer.cpp" line="87"/>
+        <location filename="requestnormalizer.cpp" line="85"/>
         <source>Open/close braces mismatch</source>
         <translation type="unfinished"></translation>
     </message>

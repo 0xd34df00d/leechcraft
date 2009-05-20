@@ -4,139 +4,116 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="155"/>
+        <location filename="core.cpp" line="157"/>
         <source>Initializing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="158"/>
+        <location filename="core.cpp" line="160"/>
         <source>Stopped</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="161"/>
+        <location filename="core.cpp" line="163"/>
         <source>Playing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="164"/>
+        <location filename="core.cpp" line="166"/>
         <source>Buffering</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="167"/>
+        <location filename="core.cpp" line="169"/>
         <source>Paused</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="170"/>
+        <location filename="core.cpp" line="172"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="175"/>
+        <location filename="core.cpp" line="177"/>
         <source> (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="176"/>
+        <location filename="core.cpp" line="178"/>
         <source> [</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="181"/>
+        <location filename="core.cpp" line="183"/>
         <source>/</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="185"/>
+        <location filename="core.cpp" line="187"/>
         <source>]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="187"/>
+        <location filename="core.cpp" line="189"/>
         <source> borrowing data from </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="192"/>
+        <location filename="core.cpp" line="194"/>
         <source>nowhere</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="205"/>
+        <location filename="core.cpp" line="207"/>
         <source> (CD)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="208"/>
+        <location filename="core.cpp" line="210"/>
         <source> (DVD)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="211"/>
+        <location filename="core.cpp" line="213"/>
         <source> (VCD)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="214"/>
+        <location filename="core.cpp" line="216"/>
         <source> (Unknown disc type)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="219"/>
+        <location filename="core.cpp" line="221"/>
         <source>stream</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>LMP</name>
+    <name>Player</name>
     <message>
-        <location filename="lmp.cpp" line="109"/>
-        <source>Open...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="lmp.cpp" line="118"/>
+        <location filename="player.cpp" line="55"/>
         <source>Play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="127"/>
+        <location filename="player.cpp" line="64"/>
         <source>Pause</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="136"/>
+        <location filename="player.cpp" line="73"/>
         <source>Viewer settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="200"/>
-        <source>Select media file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="lmp.cpp" line="202"/>
-        <source>Video (*.avi *.mkv *.ogg *.mpeg *.mpg *.divx *.mov *.swf);;Uncompressed lossless audio (*.aiff *.au *.cdda *.raw *.wav);;Compressed lossless audio (*.flac *.wv *.m4a *.tta *.ape *.la *.pac);;Lossy audio (*.mp3 *.ogg *.wma *.aac *.mpc *.ra *.rm *.ots *.swa);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="lmp.cpp" line="180"/>
+        <location filename="player.cpp" line="117"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>TabWidget</name>
     <message>
-        <location filename="tabwidget.ui" line="13"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="23"/>
-        <source>Idle</source>
+        <location filename="player.ui" line="14"/>
+        <source>LMP</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

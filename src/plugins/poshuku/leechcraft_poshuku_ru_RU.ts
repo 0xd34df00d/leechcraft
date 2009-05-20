@@ -247,12 +247,12 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="46"/>
+        <location filename="core.cpp" line="48"/>
         <source>Plugins</source>
         <translation>Плагины</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="108"/>
+        <location filename="core.cpp" line="112"/>
         <source>untagged</source>
         <translation>без метки</translation>
     </message>
@@ -262,35 +262,35 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="419"/>
+        <location filename="core.cpp" line="423"/>
         <source>Select XBEL file</source>
         <translation>Выбор файла XBEL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="421"/>
-        <location filename="core.cpp" line="461"/>
+        <location filename="core.cpp" line="425"/>
+        <location filename="core.cpp" line="465"/>
         <source>XBEL files (*.xbel);;All files (*.*)</source>
         <translation>Файлы XBEL (*.xbel);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="434"/>
-        <location filename="core.cpp" line="449"/>
-        <location filename="core.cpp" line="477"/>
+        <location filename="core.cpp" line="438"/>
+        <location filename="core.cpp" line="453"/>
+        <location filename="core.cpp" line="481"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="435"/>
+        <location filename="core.cpp" line="439"/>
         <source>Could not open file %1 for reading.</source>
         <translation>Не могу открыть файл %1 для чтения.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="459"/>
+        <location filename="core.cpp" line="463"/>
         <source>Save XBEL file</source>
         <translation>Сохранение файла XBEL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="478"/>
+        <location filename="core.cpp" line="482"/>
         <source>Could not open file %1 for writing.</source>
         <translation>Не могу открыть файл %1 на запись.</translation>
     </message>
@@ -298,7 +298,7 @@
 <context>
     <name>CustomWebPage</name>
     <message>
-        <location filename="customwebpage.cpp" line="371"/>
+        <location filename="customwebpage.cpp" line="374"/>
         <source>Error loading %1</source>
         <translation>Ошибка загрузки %1</translation>
     </message>
@@ -468,12 +468,12 @@
         <translation>Poshuku</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="161"/>
+        <location filename="poshuku.cpp" line="163"/>
         <source>Simple yet functional web browser</source>
         <translation>Простой, но в то же время функциональный веб-браузер</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="504"/>
+        <location filename="poshuku.cpp" line="496"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
@@ -527,8 +527,8 @@
         <translation>Закладки</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="47"/>
-        <location filename="poshuku.cpp" line="59"/>
+        <location filename="poshuku.cpp" line="49"/>
+        <location filename="poshuku.cpp" line="61"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
