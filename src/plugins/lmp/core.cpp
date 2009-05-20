@@ -171,8 +171,6 @@ void Core::play ()
 		if (!AudioPath_.isValid ())
 			AudioPath_.reconnect (MediaObject_.get (), AudioOutput_.get ());
 
-		qDebug () << AudioOutput_.get ();
-
 		MediaObject_->play ();
 		emit bringToFront ();
 	}
