@@ -3,6 +3,7 @@
 #include <memory>
 #include <QObject>
 #include <Phonon>
+#include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
 #include "player.h"
 
@@ -35,6 +36,7 @@ namespace LeechCraft
 				Phonon::Path AudioPath_;
 
 				std::auto_ptr<Player> Player_;
+				ICoreProxy_ptr Proxy_;
 
 				Core ();
 			public:
@@ -47,6 +49,7 @@ namespace LeechCraft
 
 				static Core& Instance ();
 				void Release ();
+				void SetCoreProxy (ICoreProxy_ptr);
 
 				void Reinitialize ();
 				Phonon::MediaObject* GetMediaObject () const;

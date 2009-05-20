@@ -52,7 +52,7 @@ Player::Player (QWidget *parent)
 
 QToolBar* Player::SetupToolbar ()
 {
-	QToolBar *bar = new QToolBar;
+	QToolBar *bar = new QToolBar (this);
 
 	Play_.reset (new QAction (tr ("Play"),
 				this));

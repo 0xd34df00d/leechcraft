@@ -10,13 +10,15 @@
 using namespace LeechCraft::Plugins::LMP;
 using namespace LeechCraft::Util;
 
-void LMP::Init (ICoreProxy_ptr)
+void LMP::Init (ICoreProxy_ptr proxy)
 {
 	Translator_.reset (LeechCraft::Util::InstallTranslator ("lmp"));
 
 	SettingsDialog_.reset (new XmlSettingsDialog ());
 	SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 			":/plugins/lmp/lmpsettings.xml");
+
+	Core::Instance ().SetCoreProxy (proxy);
 
 	connect (&Core::Instance (),
 			SIGNAL (bringToFront ()),
