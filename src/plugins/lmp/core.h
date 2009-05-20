@@ -3,6 +3,8 @@
 #include <memory>
 #include <QObject>
 #include <Phonon>
+#include <interfaces/structures.h>
+#include "player.h"
 
 namespace Phonon
 {
@@ -32,6 +34,8 @@ namespace LeechCraft
 				Phonon::Path VideoPath_;
 				Phonon::Path AudioPath_;
 
+				std::auto_ptr<Player> Player_;
+
 				Core ();
 			public:
 				enum SkipAmount
@@ -55,6 +59,7 @@ namespace LeechCraft
 				void TogglePause ();
 				void Forward (SkipAmount);
 				void Rewind (SkipAmount);
+				void Handle (const LeechCraft::DownloadEntity&);
 			public slots:
 				void play ();
 				void pause ();

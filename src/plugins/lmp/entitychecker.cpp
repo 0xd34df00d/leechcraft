@@ -1,7 +1,9 @@
 #include "entitychecker.h"
 #include <QApplication>
 #include <QTextCodec>
+#include <QFileInfo>
 #include <interfaces/structures.h>
+#include "xmlsettingsmanager.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Plugins::LMP;
@@ -13,9 +15,20 @@ EntityChecker::EntityChecker (const LeechCraft::DownloadEntity& e)
 	if (e.Entity_.size () > 255)
 		return;
 
-	std::auto_ptr<Phonon::MediaObject> mo (new Phonon::MediaObject ());
 	QString source = QTextCodec::codecForName ("UTF-8")->
 			toUnicode (e.Entity_);
+
+	QFileInfo fi (source);
+	if (!fi.exists ())
+		return;
+
+	if (XmlSettingsManager::Instance ()->property ("TestOnly").toBool () &&
+			!XmlSettingsManager::Instance ()->
+				property ("TestExtensions").toString ()
+				.split (' ', QString::SkipEmptyParts).contains (fi.suffix ()))
+		return;
+
+	std::auto_ptr<Phonon::MediaObject> mo (new Phonon::MediaObject ());
 	mo->setCurrentSource (source);
 	connect (mo.get (),
 			SIGNAL (stateChanged (Phonon::State, Phonon::State)),

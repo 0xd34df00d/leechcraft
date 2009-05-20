@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<declare defaultlang="en" />
+	<page>
+		<label lang="en" value="General" />
+		<lagen lang="ru" value="Общие" />
+		<tab>
+			<label lang="en" value="Plugin communication" />
+			<label lang="ru" value="Взаимодействие с плагинами" />
+			<item type="groupbox" property="TestOnly" state="on" checkable="true">
+				<label lang="en" value="Test only these extensions" />
+				<label lang="ru" value="Проверять только эти расширения" />
+				<item type="lineedit" property="TestExtensions" default="avi flac mkv mp3 ogg">
+					<label lang="en" value="Extenstions list:" />
+					<label lang="ru" value="Список расширений:" />
+				</item>
+			</item>
+		</tab>
+	</page>
+</settings>

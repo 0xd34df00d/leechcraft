@@ -14,7 +14,7 @@ namespace LeechCraft
 	{
 		namespace LMP
 		{
-			class Player : QDialog
+			class Player : public QDialog
 			{
 				Q_OBJECT
 

@@ -5,6 +5,7 @@
 #include <QTranslator>
 #include <QAction>
 #include <interfaces/iinfo.h>
+#include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
 
 class QToolBar;
@@ -17,12 +18,14 @@ namespace LeechCraft
 		{
 			class LMP : public QObject
 					  , public IInfo
+					  , public IHaveSettings
 					  , public IEntityHandler
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IEntityHandler)
+				Q_INTERFACES (IInfo IHaveSettings IEntityHandler)
 
 				std::auto_ptr<QTranslator> Translator_;
+				boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void Release ();
@@ -33,6 +36,8 @@ namespace LeechCraft
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
 				QIcon GetIcon () const;
+
+				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 
 				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
 				void Handle (LeechCraft::DownloadEntity);

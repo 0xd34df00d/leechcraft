@@ -11,6 +11,7 @@ SET (SRCS
 	keyinterceptor.cpp
 	videosettings.cpp
 	entitychecker.cpp
+	player.cpp
 	)
 SET (HEADERS
 	lmp.h
@@ -19,6 +20,7 @@ SET (HEADERS
 	keyinterceptor.h
 	videosettings.h
 	entitychecker.h
+	player.h
 	)
 SET (FORMS
     player.ui

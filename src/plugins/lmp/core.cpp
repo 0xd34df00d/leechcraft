@@ -1,8 +1,10 @@
 #include "core.h"
 #include <QUrl>
+#include <QTextCodec>
 #include "xmlsettingsmanager.h"
 
 using namespace LeechCraft::Plugins::LMP;
+using namespace Phonon;
 
 Core::Core ()
 : TotalTimeAvailable_ (false)
@@ -21,13 +23,14 @@ void Core::Release ()
 	if (AudioOutput_.get ())
 		XmlSettingsManager::Instance ()->setProperty ("Volume", AudioOutput_->volume ());
 	MediaObject_.reset ();
+	Player_.reset ();
 }
 
 void Core::Reinitialize ()
 {
 	TotalTimeAvailable_ = false;
 
-	MediaObject_.reset (new Phonon::MediaObject (this));
+	MediaObject_.reset (new MediaObject (this));
 	MediaObject_->setTickInterval (100);
 	connect (MediaObject_.get (),
 			SIGNAL (totalTimeChanged (qint64)),
@@ -50,29 +53,29 @@ void Core::Reinitialize ()
 	qreal oldVolume = XmlSettingsManager::Instance ()->Property ("Volume", 1).value<qreal> ();
 	if (AudioOutput_.get ())
 		oldVolume = AudioOutput_->volume ();
-	AudioOutput_.reset (new Phonon::AudioOutput (Phonon::MusicCategory, this));
+	AudioOutput_.reset (new AudioOutput (MusicCategory, this));
 	AudioOutput_->setVolume (oldVolume);
 
 	SeekSlider_->setMediaObject (MediaObject_.get ());
 	VolumeSlider_->setAudioOutput (AudioOutput_.get ());
 }
 
-Phonon::MediaObject* Core::GetMediaObject () const
+MediaObject* Core::GetMediaObject () const
 {
 	return MediaObject_.get ();
 }
 
-void Core::SetVideoWidget (Phonon::VideoWidget *widget)
+void Core::SetVideoWidget (VideoWidget *widget)
 {
 	VideoWidget_ = widget;
 }
 
-void Core::SetSeekSlider (Phonon::SeekSlider *slider)
+void Core::SetSeekSlider (SeekSlider *slider)
 {
 	SeekSlider_ = slider;
 }
 
-void Core::SetVolumeSlider (Phonon::VolumeSlider *slider)
+void Core::SetVolumeSlider (VolumeSlider *slider)
 {
 	VolumeSlider_ = slider;
 }
@@ -104,7 +107,7 @@ void Core::TogglePause ()
 {
 	if (MediaObject_.get ())
 	{
-		if (MediaObject_->state () == Phonon::PausedState)
+		if (MediaObject_->state () == PausedState)
 			play ();
 		else
 			pause ();
@@ -121,6 +124,21 @@ void Core::Rewind (SkipAmount a)
 {
 	if (MediaObject_.get ())
 		MediaObject_->seek (MediaObject_->currentTime () - a * 1000);
+}
+
+void Core::Handle (const LeechCraft::DownloadEntity& e)
+{
+	QString source = QTextCodec::codecForName ("UTF-8")->
+			toUnicode (e.Entity_);
+	if (!Player_.get ())
+		Player_.reset (new Player);
+	Player_->show ();
+	MediaObject_->enqueue (MediaSource (source));
+	if (!MediaObject_->queue ().size ())
+	{
+		MediaObject_->play ();
+		VideoWidget_->setVisible (MediaObject_->hasVideo ());
+	}
 }
 
 void Core::play ()
@@ -153,27 +171,27 @@ void Core::updateState ()
 	QString result;
 	switch (MediaObject_->state ())
 	{
-		case Phonon::LoadingState:
+		case LoadingState:
 			result = tr ("Initializing");
 			break;
-		case Phonon::StoppedState:
+		case StoppedState:
 			result = tr ("Stopped");
 			break;
-		case Phonon::PlayingState:
+		case PlayingState:
 			result = tr ("Playing");
 			break;
-		case Phonon::BufferingState:
+		case BufferingState:
 			result = tr ("Buffering");
 			break;
-		case Phonon::PausedState:
+		case PausedState:
 			result = tr ("Paused");
 			break;
-		case Phonon::ErrorState:
+		case ErrorState:
 			result = tr ("Error");
 			emit stateUpdated (result);
 			break;
 	}
-	if (MediaObject_->state () == Phonon::ErrorState)
+	if (MediaObject_->state () == ErrorState)
 		result += tr (" (%1)").arg (MediaObject_->errorString ()); 
 	result += tr (" [");
 	result += QString::number (static_cast<double> (MediaObject_->
@@ -186,30 +204,31 @@ void Core::updateState ()
 	}
 	result += tr ("]");
 
-	result += tr (" borrowing data from ");
-	Phonon::MediaSource source = MediaObject_->currentSource ();
+	result += tr (" from ");
+	MediaSource source = MediaObject_->currentSource ();
 	switch (source.type ())
 	{
-		case Phonon::MediaSource::Invalid:
+		case MediaSource::Invalid:
+		case MediaSource::Empty:
 			result += tr ("nowhere");
 			break;
-		case Phonon::MediaSource::LocalFile:
+		case MediaSource::LocalFile:
 			result += source.fileName ();
 			break;
-		case Phonon::MediaSource::Url:
+		case MediaSource::Url:
 			result += source.url ().toString ();
 			break;
-		case Phonon::MediaSource::Disc:
+		case MediaSource::Disc:
 			result += source.deviceName ();
 			switch (source.discType ())
 			{
-				case Phonon::Cd:
+				case Cd:
 					result += tr (" (CD)");
 					break;
-				case Phonon::Dvd:
+				case Dvd:
 					result += tr (" (DVD)");
 					break;
-				case Phonon::Vcd:
+				case Vcd:
 					result += tr (" (VCD)");
 					break;
 				default:
@@ -217,12 +236,12 @@ void Core::updateState ()
 					break;
 			}
 			break;
-		case Phonon::MediaSource::Stream:
+		case MediaSource::Stream:
 			result += tr ("stream");
 			break;
 	}
 
-	if (MediaObject_->state () == Phonon::ErrorState)
+	if (MediaObject_->state () == ErrorState)
 		emit error (result);
 	else
 		emit stateUpdated (result);

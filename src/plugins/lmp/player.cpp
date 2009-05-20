@@ -6,6 +6,8 @@
 #include <Phonon>
 #include "keyinterceptor.h"
 #include "videosettings.h"
+#include "core.h"
+#include "xmlsettingsmanager.h"
 
 using namespace LeechCraft::Plugins::LMP;
 
@@ -20,11 +22,11 @@ Player::Player (QWidget *parent)
 	layout ()->addWidget (StatusBar_);
 
 	Core::Instance ().SetVideoWidget (Ui_.VideoWidget_);
+	Core::Instance ().Reinitialize ();
 	connect (Core::Instance ().GetMediaObject (),
 			SIGNAL (hasVideoChanged (bool)),
 			Ui_.VideoWidget_,
-			setVisible (bool));
-	Core::Instance ().Reinitialize ();
+			SLOT (setVisible (bool)));
 
 	ApplyVideoSettings (XmlSettingsManager::Instance ()->
 				Property ("Brightness", 0).value<qreal> (),
@@ -84,8 +86,6 @@ QToolBar* Player::SetupToolbar ()
 	Core::Instance ().SetSeekSlider (seekSlider);
 	Core::Instance ().SetVolumeSlider (volumeSlider);
 
-	bar->addAction (Open_.get ());
-	bar->addSeparator ();
 	bar->addAction (Play_.get ());
 	bar->addAction (Pause_.get ());
 	bar->addSeparator ();
