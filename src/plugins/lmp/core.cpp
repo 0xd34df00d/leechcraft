@@ -1,6 +1,7 @@
 #include "core.h"
 #include <QUrl>
 #include <QTextCodec>
+#include <QMainWindow>
 #include "xmlsettingsmanager.h"
 
 using namespace LeechCraft::Plugins::LMP;
@@ -24,6 +25,11 @@ void Core::Release ()
 		XmlSettingsManager::Instance ()->setProperty ("Volume", AudioOutput_->volume ());
 	MediaObject_.reset ();
 	Player_.reset ();
+}
+
+void Core::SetCoreProxy (ICoreProxy_ptr proxy)
+{
+	Proxy_ = proxy;
 }
 
 void Core::Reinitialize ()
@@ -131,12 +137,12 @@ void Core::Handle (const LeechCraft::DownloadEntity& e)
 	QString source = QTextCodec::codecForName ("UTF-8")->
 			toUnicode (e.Entity_);
 	if (!Player_.get ())
-		Player_.reset (new Player);
+		Player_.reset (new Player (Proxy_->GetMainWindow ()));
 	Player_->show ();
 	MediaObject_->enqueue (MediaSource (source));
 	if (!MediaObject_->queue ().size ())
 	{
-		MediaObject_->play ();
+		play ();
 		VideoWidget_->setVisible (MediaObject_->hasVideo ());
 	}
 }
