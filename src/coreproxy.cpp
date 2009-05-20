@@ -2,6 +2,7 @@
 #include "core.h"
 #include "mainwindow.h"
 #include "xmlsettingsmanager.h"
+#include "skinengine.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -39,6 +40,11 @@ BaseSettingsManager* CoreProxy::GetSettingsManager () const
 QMainWindow* CoreProxy::GetMainWindow () const
 {
 	return Core::Instance ().GetReallyMainWindow ();
+}
+
+QIcon CoreProxy::GetIcon (const QString& icon, const QString& iconOff) const
+{
+	return SkinEngine::Instance ().GetIcon (icon, iconOff);
 }
 
 #define LC_DEFINE_REGISTER(a) \

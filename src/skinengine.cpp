@@ -27,6 +27,35 @@ SkinEngine::~SkinEngine ()
 {
 }
 
+QIcon SkinEngine::GetIcon (const QString& actionIcon, const QString& actionIconOff) const
+{
+	QString icon = GetIconName (actionIcon);
+
+	QIcon iconEntity;
+	sizef_t files = IconName2Path_ [icon];
+	for (sizef_t::const_iterator sizePair = files.begin ();
+			sizePair != files.end (); ++sizePair)
+		iconEntity.addFile (sizePair.value (),
+				QSize (sizePair.key (), sizePair.key ()),
+				QIcon::Normal,
+				QIcon::On);
+
+	if (actionIconOff.size ())
+	{
+		QString offIcon = GetIconName (actionIconOff);
+
+		sizef_t offFiles = IconName2Path_ [offIcon];
+		for (sizef_t::const_iterator sizePair = offFiles.begin ();
+				sizePair != offFiles.end (); ++sizePair)
+			iconEntity.addFile (sizePair.value (),
+					QSize (sizePair.key (), sizePair.key ()),
+					QIcon::Normal,
+					QIcon::Off);
+	}
+
+	return iconEntity;
+}
+
 void SkinEngine::UpdateIconSet (const QList<QAction*>& actions)
 {
 	FindIcons ();
@@ -38,39 +67,8 @@ void SkinEngine::UpdateIconSet (const QList<QAction*>& actions)
 			continue;
 		QString actionIcon = (*i)->property ("ActionIcon").toString ();
 		QString actionIconOff = (*i)->property ("ActionIconOff").toString ();
-		QString icon;
-		if (IconName2FileName_.contains (actionIcon))
-			icon = IconName2FileName_ [actionIcon];
-		else
-			icon = QString ("lc_") + actionIcon + ".png";
-
-		QIcon iconEntity;
-		sizef_t files = IconName2Path_ [icon];
-		for (sizef_t::const_iterator sizePair = files.begin ();
-				sizePair != files.end (); ++sizePair)
-			iconEntity.addFile (sizePair.value (),
-					QSize (sizePair.key (), sizePair.key ()),
-					QIcon::Normal,
-					QIcon::On);
-
-		if (actionIconOff.size ())
-		{
-			QString offIcon;
-			if (IconName2FileName_.contains (actionIconOff))
-				offIcon = IconName2FileName_ [actionIconOff];
-			else
-				offIcon = QString ("lc_") + actionIconOff + ".png";
-
-			sizef_t offFiles = IconName2Path_ [offIcon];
-			for (sizef_t::const_iterator sizePair = offFiles.begin ();
-					sizePair != offFiles.end (); ++sizePair)
-				iconEntity.addFile (sizePair.value (),
-						QSize (sizePair.key (), sizePair.key ()),
-						QIcon::Normal,
-						QIcon::Off);
-		}
 		
-		(*i)->setIcon (iconEntity);
+		(*i)->setIcon (GetIcon (actionIcon, actionIconOff));
 	}
 }
 
@@ -88,11 +86,7 @@ void SkinEngine::UpdateIconSet (const QList<QTabWidget*>& tabs)
 		for (QStringList::const_iterator name = icons.begin ();
 				name != icons.end (); ++name, ++tab)
 		{
-			QString icon;
-			if (IconName2FileName_.contains (*name))
-				icon = IconName2FileName_ [*name];
-			else
-				icon = QString ("lc_") + *name + ".png";
+			QString icon = GetIconName (*name);;
 
 			QIcon iconEntity;
 			sizef_t files = IconName2Path_ [icon];
@@ -111,6 +105,16 @@ void SkinEngine::UpdateIconSet (const QList<QTabWidget*>& tabs)
 QStringList SkinEngine::ListIcons () const
 {
 	return IconSets_;
+}
+
+QString SkinEngine::GetIconName (const QString& actionIcon) const
+{
+	QString icon;
+	if (IconName2FileName_.contains (actionIcon))
+		icon = IconName2FileName_ [actionIcon];
+	else
+		icon = QString ("lc_") + actionIcon + ".png";
+	return icon;
 }
 
 void SkinEngine::FindIconSets ()

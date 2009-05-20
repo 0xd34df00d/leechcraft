@@ -6,6 +6,7 @@
 #include <QList>
 #include <QDir>
 
+class QIcon;
 class QAction;
 class QTabWidget;
 
@@ -24,10 +25,12 @@ namespace LeechCraft
 		static SkinEngine& Instance ();
 		virtual ~SkinEngine ();
 
+		QIcon GetIcon (const QString&, const QString&) const;
 		void UpdateIconSet (const QList<QAction*>&);
 		void UpdateIconSet (const QList<QTabWidget*>&);
 		QStringList ListIcons () const;
 	private:
+		QString GetIconName (const QString&) const;
 		void FindIconSets ();
 		void FindIcons ();
 		void FillMapping (const QString&, const QString&);

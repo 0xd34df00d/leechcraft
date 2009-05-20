@@ -87,6 +87,8 @@ public:
 
 	virtual LeechCraft::Util::BaseSettingsManager* GetSettingsManager () const = 0;
 
+	virtual QIcon GetIcon (const QString&, const QString& = QString ()) const = 0;
+
 	virtual QMainWindow* GetMainWindow () const = 0;
 
 #define LC_DEFINE_REGISTER(a) virtual void RegisterHook (LeechCraft::HookSignature<a>::Signature_t) = 0;
