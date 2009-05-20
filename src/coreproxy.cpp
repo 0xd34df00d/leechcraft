@@ -36,6 +36,11 @@ BaseSettingsManager* CoreProxy::GetSettingsManager () const
 	return XmlSettingsManager::Instance ();
 }
 
+QMainWindow* CoreProxy::GetMainWindow () const
+{
+	return Core::Instance ().GetReallyMainWindow ();
+}
+
 #define LC_DEFINE_REGISTER(a) \
 void CoreProxy::RegisterHook (LeechCraft::HookSignature<LeechCraft::a>::Signature_t functor) \
 { \
