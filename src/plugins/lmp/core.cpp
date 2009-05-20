@@ -35,6 +35,11 @@ void Core::SetCoreProxy (ICoreProxy_ptr proxy)
 	Proxy_ = proxy;
 }
 
+ICoreProxy_ptr Core::GetCoreProxy () const
+{
+	return Proxy_;
+}
+
 void Core::Reinitialize ()
 {
 	TotalTimeAvailable_ = false;

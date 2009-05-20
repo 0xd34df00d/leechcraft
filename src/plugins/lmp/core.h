@@ -48,6 +48,7 @@ namespace LeechCraft
 				static Core& Instance ();
 				void Release ();
 				void SetCoreProxy (ICoreProxy_ptr);
+				ICoreProxy_ptr GetCoreProxy () const;
 
 				void Reinitialize ();
 				Phonon::MediaObject* GetMediaObject () const;

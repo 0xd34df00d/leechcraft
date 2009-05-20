@@ -36,6 +36,10 @@ Player::Player (QWidget *parent)
 			SIGNAL (hasVideoChanged (bool)),
 			Ui_.VideoWidget_,
 			SLOT (setVisible (bool)));
+	connect (Core::Instance ().GetMediaObject (),
+			SIGNAL (currentSourceChanged (const Phonon::MediaSource&)),
+			this,
+			SLOT (handleSourceChanged (const Phonon::MediaSource&)));
 
 	ApplyVideoSettings (XmlSettingsManager::Instance ()->
 				Property ("Brightness", 0).value<qreal> (),
@@ -194,6 +198,18 @@ void Player::changeViewerSettings ()
 	XmlSettingsManager::Instance ()->setProperty ("Contrast", c);
 	XmlSettingsManager::Instance ()->setProperty ("Hue", h);
 	XmlSettingsManager::Instance ()->setProperty ("Saturation", s);
+}
+
+void Player::handleSourceChanged (const Phonon::MediaSource& source)
+{
+	for (int i = 0; i < QueueModel_->rowCount (); ++i)
+	{
+		QStandardItem *item = QueueModel_->item (i);
+		if (source == *item->data (SourceRole).value<MediaSource*> ())
+			item->setIcon (Core::Instance ().GetCoreProxy ()->GetIcon ("lmp_play"));
+		else
+			item->setIcon (QIcon ());
+	}
 }
 
 void Player::on_Queue__activated (const QModelIndex& si)
