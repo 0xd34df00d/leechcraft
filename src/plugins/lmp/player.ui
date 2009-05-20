@@ -31,7 +31,14 @@
        </sizepolicy>
       </property>
      </widget>
-     <widget class="QTreeView" name="treeView"/>
+     <widget class="QTreeView" name="Queue_">
+      <property name="rootIsDecorated">
+       <bool>false</bool>
+      </property>
+      <property name="itemsExpandable">
+       <bool>false</bool>
+      </property>
+     </widget>
     </widget>
    </item>
   </layout>

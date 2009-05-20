@@ -154,7 +154,7 @@ void Core::Handle (const LeechCraft::DownloadEntity& e)
 				SLOT (show ()));
 	}
 	Player_->show ();
-	MediaObject_->enqueue (MediaSource (source));
+	Player_->Enqueue (new MediaSource (source));
 	if (!MediaObject_->queue ().size ())
 	{
 		play ();

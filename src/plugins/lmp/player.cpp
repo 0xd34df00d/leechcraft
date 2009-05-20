@@ -3,13 +3,17 @@
 #include <QStatusBar>
 #include <QSlider>
 #include <QMessageBox>
-#include <Phonon>
+#include <QStandardItem>
+#include <QUrl>
 #include "keyinterceptor.h"
 #include "videosettings.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
+Q_DECLARE_METATYPE (Phonon::MediaSource*);
+
 using namespace LeechCraft::Plugins::LMP;
+using namespace Phonon;
 
 Player::Player (QWidget *parent)
 : QDialog (parent)
@@ -20,6 +24,11 @@ Player::Player (QWidget *parent)
 		insertWidget (0, SetupToolbar ());
 	StatusBar_ = new QStatusBar (this);
 	layout ()->addWidget (StatusBar_);
+
+	QueueModel_.reset (new QStandardItemModel);
+	QueueModel_->setHorizontalHeaderLabels (QStringList (tr ("Media source"))
+			<< tr ("Source type"));
+	Ui_.Queue_->setModel (QueueModel_.get ());
 
 	Core::Instance ().SetVideoWidget (Ui_.VideoWidget_);
 	Core::Instance ().Reinitialize ();
@@ -48,6 +57,52 @@ Player::Player (QWidget *parent)
 			SIGNAL (error (const QString&)),
 			this,
 			SLOT (handleError (const QString&)));
+}
+
+void Player::Enqueue (MediaSource *source)
+{
+	QList<QStandardItem*> items;
+	switch (source->type ())
+	{
+		case MediaSource::LocalFile:
+			items << new QStandardItem (source->fileName ())
+				<< new QStandardItem (tr ("File"));
+			break;
+		case MediaSource::Url:
+			items << new QStandardItem (source->url ().toString ())
+				<< new QStandardItem (tr ("URL"));
+			break;
+		case MediaSource::Disc:
+			items << new QStandardItem (source->deviceName ());
+			switch (source->discType ())
+			{
+				case Cd:
+					items << new QStandardItem (tr ("Audio CD"));
+					break;
+				case Dvd:
+					items << new QStandardItem (tr ("DVD"));
+					break;
+				case Vcd:
+					items << new QStandardItem (tr ("Video CD"));
+					break;
+				default:
+					items << new QStandardItem (tr ("Unknown disc type"));
+					break;
+			}
+			break;
+		case MediaSource::Stream:
+			items << new QStandardItem (source->fileName ())
+				<< new QStandardItem (tr ("Stream"));
+			break;
+		case MediaSource::Invalid:
+		case MediaSource::Empty:
+			return;
+	}
+
+	items.at (0)->setData (QVariant::fromValue<MediaSource*> (source), SourceRole);
+
+	QueueModel_->appendRow (items);
+	Core::Instance ().GetMediaObject ()->enqueue (*source);
 }
 
 QToolBar* Player::SetupToolbar ()
@@ -81,8 +136,8 @@ QToolBar* Player::SetupToolbar ()
 			this,
 			SLOT (changeViewerSettings ()));
 
-	Phonon::VolumeSlider *volumeSlider = new Phonon::VolumeSlider (this);
-	Phonon::SeekSlider *seekSlider = new Phonon::SeekSlider (this);
+	VolumeSlider *volumeSlider = new VolumeSlider (this);
+	SeekSlider *seekSlider = new SeekSlider (this);
 	Core::Instance ().SetSeekSlider (seekSlider);
 	Core::Instance ().SetVolumeSlider (volumeSlider);
 
@@ -139,5 +194,17 @@ void Player::changeViewerSettings ()
 	XmlSettingsManager::Instance ()->setProperty ("Contrast", c);
 	XmlSettingsManager::Instance ()->setProperty ("Hue", h);
 	XmlSettingsManager::Instance ()->setProperty ("Saturation", s);
+}
+
+void Player::on_Queue__activated (const QModelIndex& si)
+{
+	MediaObject *o = Core::Instance ().GetMediaObject ();
+
+	MediaSource *source = QueueModel_->item (si.row ())->data (SourceRole).value<MediaSource*> ();
+	o->clearQueue ();
+	o->setCurrentSource (*source);
+	o->play ();
+	for (int i = si.row (); i < QueueModel_->rowCount (); ++i)
+		o->enqueue (*QueueModel_->item (i)->data (SourceRole).value<MediaSource*> ());
 }
 
