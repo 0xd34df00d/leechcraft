@@ -26,17 +26,15 @@ namespace LeechCraft
 
 				std::auto_ptr<Phonon::MediaObject> MediaObject_;
 				std::auto_ptr<Phonon::AudioOutput> AudioOutput_;
-
 				bool TotalTimeAvailable_;
-
 				Phonon::VideoWidget *VideoWidget_;
 				Phonon::SeekSlider *SeekSlider_;
 				Phonon::VolumeSlider *VolumeSlider_;
 				Phonon::Path VideoPath_;
 				Phonon::Path AudioPath_;
-
 				std::auto_ptr<Player> Player_;
 				ICoreProxy_ptr Proxy_;
+				QAction *ShowAction_;
 
 				Core ();
 			public:
@@ -62,6 +60,7 @@ namespace LeechCraft
 				void TogglePause ();
 				void Forward (SkipAmount);
 				void Rewind (SkipAmount);
+				QAction* GetShowAction () const;
 				void Handle (const LeechCraft::DownloadEntity&);
 			public slots:
 				void play ();

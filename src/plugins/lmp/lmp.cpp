@@ -85,5 +85,12 @@ void LMP::Handle (LeechCraft::DownloadEntity e)
 	Core::Instance ().Handle (e);
 }
 
+QList<QAction*> LMP::GetActions () const
+{
+	QList<QAction*> result;
+	result += Core::Instance ().GetShowAction ();
+	return result;
+}
+
 Q_EXPORT_PLUGIN2 (leechcraft_lmp, LeechCraft::Plugins::LMP::LMP);
 

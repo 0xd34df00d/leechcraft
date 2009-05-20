@@ -10,7 +10,10 @@ using namespace Phonon;
 Core::Core ()
 : TotalTimeAvailable_ (false)
 , VideoWidget_ (0)
+, ShowAction_ (new QAction (QIcon (":/plugins/lmp/resources/images/lmp.png"),
+			tr ("Show LMP"), this))
 {
+	ShowAction_->setEnabled (false);
 }
 
 Core& Core::Instance ()
@@ -132,12 +135,24 @@ void Core::Rewind (SkipAmount a)
 		MediaObject_->seek (MediaObject_->currentTime () - a * 1000);
 }
 
+QAction* Core::GetShowAction () const
+{
+	return ShowAction_;
+}
+
 void Core::Handle (const LeechCraft::DownloadEntity& e)
 {
 	QString source = QTextCodec::codecForName ("UTF-8")->
 			toUnicode (e.Entity_);
 	if (!Player_.get ())
+	{
 		Player_.reset (new Player (Proxy_->GetMainWindow ()));
+		ShowAction_->setEnabled (true);
+		connect (ShowAction_,
+				SIGNAL (triggered ()),
+				Player_.get (),
+				SLOT (show ()));
+	}
 	Player_->show ();
 	MediaObject_->enqueue (MediaSource (source));
 	if (!MediaObject_->queue ().size ())
@@ -155,6 +170,8 @@ void Core::play ()
 			VideoPath_.reconnect (MediaObject_.get (), VideoWidget_);
 		if (!AudioPath_.isValid ())
 			AudioPath_.reconnect (MediaObject_.get (), AudioOutput_.get ());
+
+		qDebug () << AudioOutput_.get ();
 
 		MediaObject_->play ();
 		emit bringToFront ();
