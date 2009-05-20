@@ -8,9 +8,7 @@ IconChooser::IconChooser (const QStringList& sets, QWidget *parent)
 , Sets_ (sets)
 {
 	addItems (sets);
-	int index = sets.indexOf (XmlSettingsManager::Instance ()->
-			Property ("IconSet", "oxygen").toString ());
-	setCurrentIndex (index == -1 ? 0 : index);
+	reject ();
 }
 
 void IconChooser::accept ()
