@@ -29,6 +29,9 @@ EntityChecker::EntityChecker (const LeechCraft::DownloadEntity& e)
 		return;
 
 	std::auto_ptr<Phonon::MediaObject> mo (new Phonon::MediaObject ());
+	std::auto_ptr<Phonon::AudioOutput> ao (new Phonon::AudioOutput ());
+	ao->setMuted (true);
+	Phonon::createPath (mo.get (), ao.get ());
 	mo->setCurrentSource (source);
 	connect (mo.get (),
 			SIGNAL (stateChanged (Phonon::State, Phonon::State)),
