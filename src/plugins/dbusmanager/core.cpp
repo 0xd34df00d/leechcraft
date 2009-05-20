@@ -16,7 +16,7 @@ Core::Core ()
 	new Adaptor (this);
 
 	QDBusConnection::sessionBus ().registerService ("org.LeechCraft.DBus");
-	QDBusConnection::sessionBus ().registerObject ("/org/LeechCraft/Manager", this);
+	QDBusConnection::sessionBus ().registerObject ("/LeechCraft/Manager", this);
 }
 
 Core& Core::Instance ()
