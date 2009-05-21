@@ -4,11 +4,15 @@
 #include <QNetworkRequest>
 #include <QRegExp>
 #include <QFile>
+#include <QSettings>
 #include <QFileInfo>
 #include <QTextCodec>
+#include <QMessageBox>
 #include <plugininterface/util.h>
+#include <plugininterface/proxy.h>
 
 using namespace LeechCraft::Plugins::CleanWeb;
+using LeechCraft::Util::Proxy;
 
 namespace
 {
@@ -146,34 +150,7 @@ Core::Core ()
 	home.cd ("cleanweb");
 	QFileInfoList infos = home.entryInfoList (QDir::Files | QDir::Readable);
 	Q_FOREACH (QFileInfo info, infos)
-	{
-		QFile file (info.absoluteFilePath ());
-		if (!file.open (QIODevice::ReadOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "could not open file"
-				<< info.absoluteFilePath ()
-				<< file.errorString ();
-			continue;
-		}
-
-		qDebug () << Q_FUNC_INFO << "started parsing";
-		QString data = QTextCodec::codecForName ("UTF-8")->
-			toUnicode (file.readAll ());
-		QStringList rawLines = data.split ('\n', QString::SkipEmptyParts);
-		if (rawLines.size ())
-			rawLines.removeAt (0);
-		QStringList lines;
-		std::transform (rawLines.begin (), rawLines.end (),
-				std::back_inserter (lines),
-				boost::bind (&QString::trimmed,
-					_1));
-
-		Filter f;
-		std::for_each (lines.begin (), lines.end (),
-				LineHandler (&f));
-		Filters_ << f;
-	}
+		Parse (info.absoluteFilePath ());
 }
 
 Core& Core::Instance ()
@@ -186,7 +163,59 @@ void Core::Release ()
 {
 }
 
-QNetworkReply* Core::Hook (IHookProxy *proxy,
+void Core::Handle (DownloadEntity subscr)
+{
+	QString urlString = QTextCodec::codecForName ("UTF-8")->
+		toUnicode (subscr.Entity_);
+	QUrl subscrUrl (urlString);
+	QUrl url (subscrUrl.queryItemValue ("location"));
+	QString subscrName = subscrUrl.queryItemValue ("title");
+
+	QDir home = QDir::home ();
+	home.cd (".leechcraft");
+	home.cd ("cleanweb");
+
+	QString name = QFileInfo (url.path ()).fileName ();
+	QString path = home.absoluteFilePath (name);
+
+	LeechCraft::DownloadEntity e =
+	{
+		url.toString ().toUtf8 (),
+		path,
+		QString (),
+		LeechCraft::Internal |
+			LeechCraft::DoNotNotifyUser |
+			LeechCraft::DoNotSaveInHistory |
+			LeechCraft::NotPersistent |
+			LeechCraft::DoNotAnnounceEntity,
+		QVariant ()
+	};
+
+	int id = -1;
+	QObject *pr;
+	emit delegateEntity (e, &id, &pr);
+	if (id == -1)
+	{
+		QMessageBox::critical (0,
+				tr ("Error"),
+				tr ("Job the subscription wasn't delegated."));
+		qWarning () << Q_FUNC_INFO
+			<< url.toString ().toUtf8 ();
+		return;
+	}
+
+	HandleProvider (pr);
+	PendingJob pj =
+	{
+		path,
+		name,
+		subscrName,
+		url
+	};
+	PendingJobs_ [id] = pj;
+}
+
+QNetworkReply* Core::Hook (IHookProxy*,
 		QNetworkAccessManager::Operation*,
 		QNetworkRequest *req,
 		QIODevice**)
@@ -347,5 +376,102 @@ bool Core::Matches (const QString& exception, const Filter& filter,
 		}
 	}
 	return false;
+}
+
+void Core::HandleProvider (QObject *provider)
+{
+	if (Downloaders_.contains (provider))
+		return;
+	
+	Downloaders_ << provider;
+	connect (provider,
+			SIGNAL (jobFinished (int)),
+			this,
+			SLOT (handleJobFinished (int)));
+	connect (provider,
+			SIGNAL (jobError (int, IDownload::Error)),
+			this,
+			SLOT (handleJobError (int, IDownload::Error)));
+}
+
+
+void Core::Parse (const QString& filePath)
+{
+	QFile file (filePath);
+	if (!file.open (QIODevice::ReadOnly))
+	{
+		qWarning () << Q_FUNC_INFO
+			<< "could not open file"
+			<< filePath
+			<< file.errorString ();
+		return;
+	}
+
+	QString data = QTextCodec::codecForName ("UTF-8")->
+		toUnicode (file.readAll ());
+	QStringList rawLines = data.split ('\n', QString::SkipEmptyParts);
+	if (rawLines.size ())
+		rawLines.removeAt (0);
+	QStringList lines;
+	std::transform (rawLines.begin (), rawLines.end (),
+			std::back_inserter (lines),
+			boost::bind (&QString::trimmed,
+				_1));
+
+	Filter f;
+	std::for_each (lines.begin (), lines.end (),
+			LineHandler (&f));
+	Filters_ << f;
+}
+
+void Core::WriteSettings ()
+{
+	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
+			Proxy::Instance ()->GetApplicationName () + "_CleanWeb");
+	settings.beginGroup ("Subscriptions");
+
+	QMap<QString, QVariant> tmp;
+
+	Q_FOREACH (QString key, File2Url_.keys ())
+		tmp [key] = File2Url_ [key];
+	settings.setValue ("MapUrl", tmp);
+
+	Q_FOREACH (QString key, File2Name_.keys ())
+		tmp [key] = File2Name_ [key];
+	settings.setValue ("MapName", tmp);
+
+	settings.endGroup ();
+}
+
+void Core::ReadSettings ()
+{
+	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
+			Proxy::Instance ()->GetApplicationName () + "_CleanWeb");
+	settings.beginGroup ("Subscriptions");
+
+	QMap<QString, QVariant> tmp = settings.value ("MapUrl").toMap ();
+	Q_FOREACH (QString key, tmp.keys ())
+		File2Url_ [key] = tmp [key].toUrl ();
+
+	tmp = settings.value ("MapName").toMap ();
+	Q_FOREACH (QString key, tmp.keys ())
+		File2Name_ [key] = tmp [key].toString ();
+
+	settings.endGroup ();
+}
+
+void Core::handleJobFinished (int id)
+{
+	PendingJob pj = PendingJobs_ [id];
+	File2Url_ [pj.FileName_] = pj.URL_;
+	File2Name_ [pj.FileName_] = pj.Subscr_;
+	Parse (pj.FullName_);
+	PendingJobs_.remove (id);
+	WriteSettings ();
+}
+
+void Core::handleJobError (int id, IDownload::Error)
+{
+	PendingJobs_.remove (id);
 }
 

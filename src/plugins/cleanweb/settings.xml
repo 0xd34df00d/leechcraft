@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<declare defaultlang="en" />
+	<page>
+		<label lang="en" value="General" />
+		<label lang="ru" value="Общие" />
+		<tab>
+			<label lang="en" value="Updates" />
+			<label lang="ru" value="Обновление" />
+			<item type="groupbox" checkable="true" state="on" property="Autoupdate">
+				<label lang="en" value="Update subscriptions" />
+				<label lang="ru" value="Обновлять подписки" />
+				<item type="spinbox" minimum="1" maximum="65535" default="5">
+					<label lang="en" value="Update interval:" />
+					<label lang="ru" value="Интервал обновления:" />
+				</item>
+			</item>
+		</tab>
+		<tab>
+			<label lang="en" value="Subscriptions" />
+			<label lang="ru" value="Подписки" />
+		</tab>
+	</page>
+</settings>

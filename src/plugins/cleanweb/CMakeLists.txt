@@ -8,15 +8,27 @@ INCLUDE_DIRECTORIES (
 SET (CLEANWEB_SRCS
 	cleanweb.cpp
 	core.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (CLEANWEB_HEADERS
 	cleanweb.h
 	core.h
+	xmlsettingsmanager.h
+	)
+SET (CLEANWEB_FORMS
+	subscriptionsmanager.ui
+	)
+SET (CLEANWEB_RESOURCES
+	resources.qrc
 	)
 QT4_WRAP_CPP (CLEANWEB_MOC_SRCS ${CLEANWEB_HEADERS})
+QT4_WRAP_UI (CLEANWEB_UIS_H ${CLEANWEB_FORMS})
+QT4_ADD_RESOURCES (CLEANWEB_RCCS ${CLEANWEB_RESOURCES})
 ADD_LIBRARY (leechcraft_cleanweb SHARED
 	${CLEANWEB_SRCS}
 	${CLEANWEB_MOC_SRCS}
+	${CLEANWEB_UIS_H}
+	${CLEANWEB_RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_cleanweb
 	${QT_LIBRARIES}

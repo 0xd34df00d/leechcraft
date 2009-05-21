@@ -5,6 +5,7 @@
 #include <QStringList>
 #include <QNetworkReply>
 #include <interfaces/iinfo.h>
+#include <interfaces/idownload.h>
 
 class QNetworkRequest;
 
@@ -45,11 +46,24 @@ namespace LeechCraft
 				Q_OBJECT
 
 				QList<Filter> Filters_;
+				QObjectList Downloaders_;
+
+				struct PendingJob
+				{
+					QString FullName_;
+					QString FileName_;
+					QString Subscr_;
+					QUrl URL_;
+				};
+				QMap<int, PendingJob> PendingJobs_;
+				QMap<QString, QUrl> File2Url_;
+				QMap<QString, QString> File2Name_;
 
 				Core ();
 			public:
 				static Core& Instance ();
 				void Release ();
+				void Handle (DownloadEntity);
 				QNetworkReply* Hook (LeechCraft::IHookProxy*,
 						QNetworkAccessManager::Operation*,
 						QNetworkRequest*,
@@ -58,6 +72,16 @@ namespace LeechCraft
 			private:
 				bool Matches (const QString&, const Filter&,
 						const QString&, const QString&) const;
+				void HandleProvider (QObject*);
+				void Parse (const QString&);
+				void WriteSettings ();
+				void ReadSettings ();
+			private slots:
+				void handleJobFinished (int);
+				void handleJobError (int, IDownload::Error);
+			signals:
+				void delegateEntity (const LeechCraft::DownloadEntity&,
+						int*, QObject**);
 			};
 		};
 	};

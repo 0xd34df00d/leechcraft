@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/plugins/cleanweb" >
+    <file>settings.xml</file>
+  </qresource>
+</RCC>
