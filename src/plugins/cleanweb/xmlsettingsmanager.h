@@ -14,7 +14,7 @@ namespace LeechCraft
 
 				XmlSettingsManager ();
 			public:
-				static XmlSettingsManager& Instance ();
+				static XmlSettingsManager* Instance ();
 			protected:
 				virtual QSettings* BeginSettings () const;
 				virtual void EndSettings (QSettings*) const;

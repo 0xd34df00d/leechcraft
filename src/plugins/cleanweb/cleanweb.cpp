@@ -30,7 +30,7 @@ void CleanWeb::Init (ICoreProxy_ptr proxy)
 					_4)));
 
 	SettingsDialog_.reset (new XmlSettingsDialog);
-	SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
+	SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 			":/plugins/cleanweb/settings.xml");
 }
 

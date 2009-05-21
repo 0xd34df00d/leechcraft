@@ -10,7 +10,7 @@
 			<item type="groupbox" checkable="true" state="on" property="Autoupdate">
 				<label lang="en" value="Update subscriptions" />
 				<label lang="ru" value="Обновлять подписки" />
-				<item type="spinbox" minimum="1" maximum="65535" default="5">
+				<item type="spinbox" property="UpdateInterval" minimum="1" maximum="65535" default="5">
 					<label lang="en" value="Update interval:" />
 					<label lang="ru" value="Интервал обновления:" />
 				</item>

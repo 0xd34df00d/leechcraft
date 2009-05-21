@@ -10,6 +10,7 @@
 #include <QMessageBox>
 #include <plugininterface/util.h>
 #include <plugininterface/proxy.h>
+#include "xmlsettingsmanager.h"
 
 using namespace LeechCraft::Plugins::CleanWeb;
 using LeechCraft::Util::Proxy;
@@ -145,6 +146,10 @@ Core::Core ()
 			<< e.what ();
 		return;
 	}
+
+	ReadSettings ();
+	Update ();
+
 	QDir home = QDir::home ();
 	home.cd (".leechcraft");
 	home.cd ("cleanweb");
@@ -171,48 +176,7 @@ void Core::Handle (DownloadEntity subscr)
 	QUrl url (subscrUrl.queryItemValue ("location"));
 	QString subscrName = subscrUrl.queryItemValue ("title");
 
-	QDir home = QDir::home ();
-	home.cd (".leechcraft");
-	home.cd ("cleanweb");
-
-	QString name = QFileInfo (url.path ()).fileName ();
-	QString path = home.absoluteFilePath (name);
-
-	LeechCraft::DownloadEntity e =
-	{
-		url.toString ().toUtf8 (),
-		path,
-		QString (),
-		LeechCraft::Internal |
-			LeechCraft::DoNotNotifyUser |
-			LeechCraft::DoNotSaveInHistory |
-			LeechCraft::NotPersistent |
-			LeechCraft::DoNotAnnounceEntity,
-		QVariant ()
-	};
-
-	int id = -1;
-	QObject *pr;
-	emit delegateEntity (e, &id, &pr);
-	if (id == -1)
-	{
-		QMessageBox::critical (0,
-				tr ("Error"),
-				tr ("Job the subscription wasn't delegated."));
-		qWarning () << Q_FUNC_INFO
-			<< url.toString ().toUtf8 ();
-		return;
-	}
-
-	HandleProvider (pr);
-	PendingJob pj =
-	{
-		path,
-		name,
-		subscrName,
-		url
-	};
-	PendingJobs_ [id] = pj;
+	Load (url, subscrName);
 }
 
 QNetworkReply* Core::Hook (IHookProxy*,
@@ -301,8 +265,8 @@ loopStart:
 				if (mapCaseTable[str[i]] != mapCaseTable[pat[i]])
 				   goto starCheck;
 				break;
-		} /* endswitch */
-	} /* endfor */
+		}
+	}
 	while (pat[i] == '*') ++i;
 	return (!pat[i]);
 
@@ -424,38 +388,118 @@ void Core::Parse (const QString& filePath)
 	Filters_ << f;
 }
 
+void Core::Update ()
+{
+	if (!XmlSettingsManager::Instance ()->
+			property ("Autoupdate").toBool ())
+		return;
+
+	QDateTime current = QDateTime::currentDateTime ();
+	int days = XmlSettingsManager::Instance ()->
+		property ("UpdateInterval").toInt ();
+	Q_FOREACH (QString key, Files_.keys ())
+		if (Files_ [key].LastDateTime_.daysTo (current) > days)
+		{
+			QUrl url = Files_ [key].URL_;
+			QString name = Files_ [key].Name_;
+			Remove (key);
+			Load (url, name);
+		}
+}
+
+void Core::Load (const QUrl& url, const QString& subscrName)
+{
+	QDir home = QDir::home ();
+	home.cd (".leechcraft");
+	home.cd ("cleanweb");
+
+	QString name = QFileInfo (url.path ()).fileName ();
+	QString path = home.absoluteFilePath (name);
+
+	LeechCraft::DownloadEntity e =
+	{
+		url.toString ().toUtf8 (),
+		path,
+		QString (),
+		LeechCraft::Internal |
+			LeechCraft::DoNotNotifyUser |
+			LeechCraft::DoNotSaveInHistory |
+			LeechCraft::NotPersistent |
+			LeechCraft::DoNotAnnounceEntity,
+		QVariant ()
+	};
+
+	int id = -1;
+	QObject *pr;
+	emit delegateEntity (e, &id, &pr);
+	if (id == -1)
+	{
+		QMessageBox::critical (0,
+				tr ("Error"),
+				tr ("Job the subscription wasn't delegated."));
+		qWarning () << Q_FUNC_INFO
+			<< url.toString ().toUtf8 ();
+		return;
+	}
+
+	HandleProvider (pr);
+	PendingJob pj =
+	{
+		path,
+		name,
+		subscrName,
+		url
+	};
+	PendingJobs_ [id] = pj;
+}
+
+void Core::Remove (const QString& fileName)
+{
+	Files_.remove (fileName);
+
+	QDir home = QDir::home ();
+	home.cd (".leechcraft");
+	home.cd ("cleanweb");
+	home.remove (fileName);
+}
+
 void Core::WriteSettings ()
 {
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
 			Proxy::Instance ()->GetApplicationName () + "_CleanWeb");
-	settings.beginGroup ("Subscriptions");
+	settings.beginWriteArray ("Subscriptions");
+	settings.remove ("");
 
-	QMap<QString, QVariant> tmp;
+	int i = 0;
+	Q_FOREACH (QString key, Files_.keys ())
+	{
+		settings.setArrayIndex (i++);
+		settings.setValue ("key", key);
+		settings.setValue ("URL", Files_ [key].URL_);
+		settings.setValue ("name", Files_ [key].Name_);
+		settings.setValue ("lastDateTime", Files_ [key].LastDateTime_);
+	}
 
-	Q_FOREACH (QString key, File2Url_.keys ())
-		tmp [key] = File2Url_ [key];
-	settings.setValue ("MapUrl", tmp);
-
-	Q_FOREACH (QString key, File2Name_.keys ())
-		tmp [key] = File2Name_ [key];
-	settings.setValue ("MapName", tmp);
-
-	settings.endGroup ();
+	settings.endArray ();
 }
 
 void Core::ReadSettings ()
 {
 	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
 			Proxy::Instance ()->GetApplicationName () + "_CleanWeb");
-	settings.beginGroup ("Subscriptions");
+	int size = settings.beginReadArray ("Subscriptions");
 
-	QMap<QString, QVariant> tmp = settings.value ("MapUrl").toMap ();
-	Q_FOREACH (QString key, tmp.keys ())
-		File2Url_ [key] = tmp [key].toUrl ();
-
-	tmp = settings.value ("MapName").toMap ();
-	Q_FOREACH (QString key, tmp.keys ())
-		File2Name_ [key] = tmp [key].toString ();
+	for (int i = 0; i < size; ++i)
+	{
+		settings.setArrayIndex (i);
+		SubscriptionData sd =
+		{
+			settings.value ("URL").toUrl (),
+			settings.value ("name").toString (),
+			settings.value ("lastDateTime").toDateTime ()
+		};
+		Files_ [settings.value ("key").toString ()] = sd;
+	}
 
 	settings.endGroup ();
 }
@@ -463,8 +507,13 @@ void Core::ReadSettings ()
 void Core::handleJobFinished (int id)
 {
 	PendingJob pj = PendingJobs_ [id];
-	File2Url_ [pj.FileName_] = pj.URL_;
-	File2Name_ [pj.FileName_] = pj.Subscr_;
+	SubscriptionData sd =
+	{
+		pj.URL_,
+		pj.Subscr_,
+		QDateTime::currentDateTime ()
+	};
+	Files_ [pj.FileName_] = sd;
 	Parse (pj.FullName_);
 	PendingJobs_.remove (id);
 	WriteSettings ();

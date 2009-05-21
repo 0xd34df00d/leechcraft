@@ -4,6 +4,7 @@
 #include <QHash>
 #include <QStringList>
 #include <QNetworkReply>
+#include <QDateTime>
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
 
@@ -56,8 +57,14 @@ namespace LeechCraft
 					QUrl URL_;
 				};
 				QMap<int, PendingJob> PendingJobs_;
-				QMap<QString, QUrl> File2Url_;
-				QMap<QString, QString> File2Name_;
+
+				struct SubscriptionData
+				{
+					QUrl URL_;
+					QString Name_;
+					QDateTime LastDateTime_;
+				};
+				QMap<QString, SubscriptionData> Files_;
 
 				Core ();
 			public:
@@ -74,6 +81,9 @@ namespace LeechCraft
 						const QString&, const QString&) const;
 				void HandleProvider (QObject*);
 				void Parse (const QString&);
+				void Update ();
+				void Load (const QUrl&, const QString&);
+				void Remove (const QString&);
 				void WriteSettings ();
 				void ReadSettings ();
 			private slots:
