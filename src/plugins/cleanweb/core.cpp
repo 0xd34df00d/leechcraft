@@ -191,13 +191,11 @@ QNetworkReply* Core::Hook (IHookProxy *proxy,
 		QNetworkRequest *req,
 		QIODevice**)
 {
-	qDebug () << "entered" << req->url ();
 	if (ShouldReject (*req))
 	{
 		qDebug () << "rejecting" << req->url ();
-//		*req = QNetworkRequest ();
+		*req = QNetworkRequest ();
 	}
-	qDebug () << "leaving";
 	return 0;
 }
 
@@ -337,12 +335,16 @@ bool Core::Matches (const QString& exception, const Filter& filter,
 	else if (opt.MatchType_ == FilterOption::MTWildcard_)
 	{
 		if (opt.Case_ == Qt::CaseSensitive)
+		{
 			if (WildcardMatches (qPrintable (exception), qPrintable (urlStr)))
 				return true;
+		}
 		else
+		{
 			if (WildcardMatches (qPrintable (exception.toLower ()),
 						qPrintable (urlStr.toLower ())))
 				return true;
+		}
 	}
 	return false;
 }
