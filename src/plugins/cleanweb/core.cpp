@@ -74,22 +74,25 @@ namespace
 				actualLine = actualLine.mid (1, actualLine.size () - 2);
 				f.MatchType_ = FilterOption::MTRegexp_;
 			}
-			else if (actualLine.endsWith ('|'))
-			{
-				actualLine.remove (0, 1);
-				actualLine = QRegExp::escape (actualLine);
-				actualLine.prepend ('*');
-				f.MatchType_ = FilterOption::MTSide_;
-			}
-			else if (actualLine.startsWith ('|'))
-			{
-				actualLine.chop (1);
-				actualLine = QRegExp::escape (actualLine);
-				actualLine.append ('*');
-				f.MatchType_ = FilterOption::MTSide_;
-			}
 			else
-				actualLine = QRegExp::escape (actualLine);
+			{
+				if (actualLine.endsWith ('|'))
+				{
+					actualLine.remove (0, 1);
+					actualLine.prepend ('*');
+				}
+				else if (actualLine.startsWith ('|'))
+				{
+					actualLine.chop (1);
+					actualLine.append ('*');
+				}
+				else
+				{
+					actualLine.prepend ('*');
+					actualLine.append ('*');
+				}
+				actualLine.replace ('?', "\\?");
+			}
 
 			if (white)
 				Filter_->ExceptionStrings_ << actualLine;
@@ -153,6 +156,8 @@ Core::Core ()
 		QString data = QTextCodec::codecForName ("UTF-8")->
 			toUnicode (file.readAll ());
 		QStringList rawLines = data.split ('\n', QString::SkipEmptyParts);
+		if (rawLines.size ())
+			rawLines.removeAt (0);
 		QStringList lines;
 		std::transform (rawLines.begin (), rawLines.end (),
 				std::back_inserter (lines),
@@ -218,10 +223,10 @@ bool Core::ShouldReject (const QNetworkRequest& req) const
 	
 	Q_FOREACH (Filter filter, Filters_)
 	{
-		Q_FOREACH (QString exception, filter.ExceptionStrings_)
-			if (Matches (exception, filter.Options_ [exception],
-						urlStr, domain))
-				return false;
+//		Q_FOREACH (QString exception, filter.ExceptionStrings_)
+//			if (Matches (exception, filter.Options_ [exception],
+//						urlStr, domain))
+//				return false;
 
 		Q_FOREACH (QString filterString, filter.FilterStrings_)
 			if (Matches (filterString, filter.Options_ [filterString],
@@ -261,14 +266,12 @@ bool Core::Matches (const QString& exception, const FilterOption& opt,
 			return false;
 	}
 
-	QRegExp re (exception, opt.Case_);
-	if (opt.MatchType_ != FilterOption::MTRegexp_)
-		re.setPatternSyntax (QRegExp::Wildcard);
+	QRegExp::PatternSyntax syntax = (opt.MatchType_ == FilterOption::MTRegexp_ ?
+			QRegExp::RegExp : QRegExp::Wildcard);
+	QRegExp re (exception, opt.Case_, syntax);
 
 	bool exact = re.exactMatch (urlStr);
-	if ((opt.MatchType_ == FilterOption::MTSide_ &&
-				exact) ||
-			re.matchedLength ())
+	if (exact)
 		return true;
 	return false;
 }
