@@ -1,0 +1,26 @@
+SET (QT_USE_QTNETWORK TRUE)
+INCLUDE (${QT_USE_FILE})
+INCLUDE_DIRECTORIES (
+	${CMAKE_CURRENT_BINARY_DIR}
+	${Boost_INCLUDE_DIR}
+	${LEECHCRAFT_INCLUDE_DIR}
+)
+SET (CLEANWEB_SRCS
+	cleanweb.cpp
+	core.cpp
+	)
+SET (CLEANWEB_HEADERS
+	cleanweb.h
+	core.h
+	)
+QT4_WRAP_CPP (CLEANWEB_MOC_SRCS ${CLEANWEB_HEADERS})
+ADD_LIBRARY (leechcraft_cleanweb SHARED
+	${CLEANWEB_SRCS}
+	${CLEANWEB_MOC_SRCS}
+	)
+TARGET_LINK_LIBRARIES (leechcraft_cleanweb
+	${QT_LIBRARIES}
+	plugininterface
+	xmlsettingsdialog
+	)
+INSTALL (TARGETS leechcraft_cleanweb DESTINATION ${LC_PLUGINS_DEST})

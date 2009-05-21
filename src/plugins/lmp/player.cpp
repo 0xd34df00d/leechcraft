@@ -165,6 +165,14 @@ void Player::ApplyVideoSettings (qreal b, qreal c, qreal h, qreal s)
 	Ui_.VideoWidget_->setSaturation (s);
 }
 
+void Player::FillQueue (int start) const
+{
+	for (int i = start; i < QueueModel_->rowCount (); ++i)
+		Core::Instance ().GetMediaObject ()->
+			enqueue (*QueueModel_->item (i)->
+					data (SourceRole).value<MediaSource*> ());
+}
+
 void Player::handleStateUpdated (const QString& state)
 {
 	StatusBar_->showMessage (state);
@@ -220,7 +228,6 @@ void Player::on_Queue__activated (const QModelIndex& si)
 	o->clearQueue ();
 	o->setCurrentSource (*source);
 	o->play ();
-	for (int i = si.row (); i < QueueModel_->rowCount (); ++i)
-		o->enqueue (*QueueModel_->item (i)->data (SourceRole).value<MediaSource*> ());
+	FillQueue (si.row ());
 }
 

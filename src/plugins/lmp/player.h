@@ -36,6 +36,7 @@ namespace LeechCraft
 			private:
 				QToolBar* SetupToolbar ();
 				void ApplyVideoSettings (qreal, qreal, qreal, qreal);
+				void FillQueue (int) const;
 			public slots:
 				void handleStateUpdated (const QString&);
 				void handleError (const QString&);

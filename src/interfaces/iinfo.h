@@ -7,8 +7,8 @@
 #include <QString>
 #include <QStringList>
 #include <QtPlugin>
+#include <QtNetwork/QNetworkAccessManager>
 
-class QNetworkAccessManager;
 class IShortcutProxy;
 class QTreeView;
 class QModelIndex;
@@ -32,7 +32,8 @@ namespace LeechCraft
 
 	enum HookID
 	{
-		HIDDownloadFinishedNotification = 1,
+		HIDDownloadFinishedNotification,
+		HIDNetworkAccessManagerCreateRequest
 	};
 
 	template<int>
@@ -47,6 +48,17 @@ namespace LeechCraft
 			 */
 			typedef boost::function<void (IHookProxy*,
 					const QString& msg, bool show)> Signature_t;
+			typedef QList<Signature_t> Functors_t;
+			Functors_t Functors_;
+		};
+
+	template<>
+		struct HookSignature<HIDNetworkAccessManagerCreateRequest>
+		{
+			typedef boost::function<QNetworkReply* (IHookProxy*,
+					QNetworkAccessManager::Operation*,
+					QNetworkRequest*,
+					QIODevice**)> Signature_t;
 			typedef QList<Signature_t> Functors_t;
 			Functors_t Functors_;
 		};
@@ -94,7 +106,8 @@ public:
 #define LC_DEFINE_REGISTER(a) virtual void RegisterHook (LeechCraft::HookSignature<a>::Signature_t) = 0;
 #define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))
 #define LC_EXPANDER(Names) BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), LC_TRAVERSER, Names)
-	LC_EXPANDER ((LeechCraft::HIDDownloadFinishedNotification));
+	LC_EXPANDER ((LeechCraft::HIDDownloadFinishedNotification)
+			(LeechCraft::HIDNetworkAccessManagerCreateRequest));
 #undef LC_EXPANDER
 #undef LC_TRAVERSER
 #undef LC_DEFINE_REGISTER

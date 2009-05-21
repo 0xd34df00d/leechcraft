@@ -34,11 +34,12 @@ void Core::Release ()
 void Core::SetProxy (ICoreProxy_ptr proxy)
 {
 	Proxy_ = proxy;
-	Proxy_->RegisterHook (boost::bind (&NotificationManager::HandleFinishedNotification,
+	Proxy_->RegisterHook (HookSignature<HIDDownloadFinishedNotification>::Signature_t (
+				boost::bind (&NotificationManager::HandleFinishedNotification,
 				NotificationManager_.get (),
 				_1,
 				_2,
-				_3));
+				_3)));
 }
 
 ICoreProxy_ptr Core::GetProxy () const
