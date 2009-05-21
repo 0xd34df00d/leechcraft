@@ -101,6 +101,10 @@ namespace
 
 			if (FilterOption () != f)
 				Filter_->Options_ [actualLine] = f;
+
+			QRegExp::PatternSyntax syntax = (f.MatchType_ == FilterOption::MTRegexp_ ?
+					QRegExp::RegExp : QRegExp::Wildcard);
+			Filter_->RegExps_ [actualLine] = QRegExp (actualLine, f.Case_, syntax);
 		}
 	};
 };
@@ -153,6 +157,7 @@ Core::Core ()
 			continue;
 		}
 
+		qDebug () << Q_FUNC_INFO << "started parsing";
 		QString data = QTextCodec::codecForName ("UTF-8")->
 			toUnicode (file.readAll ());
 		QStringList rawLines = data.split ('\n', QString::SkipEmptyParts);
@@ -186,11 +191,13 @@ QNetworkReply* Core::Hook (IHookProxy *proxy,
 		QNetworkRequest *req,
 		QIODevice**)
 {
+	qDebug () << "entered" << req->url ();
 	if (ShouldReject (*req))
 	{
 		qDebug () << "rejecting" << req->url ();
-		*req = QNetworkRequest ();
+//		*req = QNetworkRequest ();
 	}
+	qDebug () << "leaving";
 	return 0;
 }
 
@@ -223,23 +230,81 @@ bool Core::ShouldReject (const QNetworkRequest& req) const
 	
 	Q_FOREACH (Filter filter, Filters_)
 	{
-//		Q_FOREACH (QString exception, filter.ExceptionStrings_)
-//			if (Matches (exception, filter.Options_ [exception],
-//						urlStr, domain))
-//				return false;
+		Q_FOREACH (QString exception, filter.ExceptionStrings_)
+			if (Matches (exception, filter, urlStr, domain))
+				return false;
 
 		Q_FOREACH (QString filterString, filter.FilterStrings_)
-			if (Matches (filterString, filter.Options_ [filterString],
-						urlStr, domain))
+			if (Matches (filterString, filter, urlStr, domain))
 				return true;
 	}
 
 	return false;
 }
 
-bool Core::Matches (const QString& exception, const FilterOption& opt,
+#ifdef Q_WS_WIN
+#include <windows.h>
+
+BOOL szWildMatch6(PSZ pat, PSZ str)
+{
+	int i;
+	BOOL star = FALSE;
+
+loopStart:
+	for (i = 0; str[i]; i++)
+	{
+		switch (pat[i])
+		{
+			case '?':
+				if (str[i] == '.')
+					goto starCheck;
+				break;
+			case '*':
+				star = TRUE;
+				str += i, pat += i;
+				do
+				{
+					++pat;
+				}
+				while (*pat == '*');
+				if (!*pat)
+					return TRUE;
+				goto loopStart;
+			default:
+				if (mapCaseTable[str[i]] != mapCaseTable[pat[i]])
+				   goto starCheck;
+				break;
+		} /* endswitch */
+	} /* endfor */
+	while (pat[i] == '*') ++i;
+	return (!pat[i]);
+
+starCheck:
+	if (!star)
+		return FALSE;
+	str++;
+	goto loopStart;
+}
+
+bool WildcardMatches (const char *pat, const char *str)
+{
+	return szWildMatch6 (pat, str);
+}
+#elif Q_WS_MAC
+#error "Sorry, we don't provide wildcard matching for Macs now."
+#else
+#include <fnmatch.h>
+
+bool WildcardMatches (const char *pat, const char *str)
+{
+	return !fnmatch (pat, str, 0);
+}
+#endif
+
+bool Core::Matches (const QString& exception, const Filter& filter,
 		const QString& urlStr, const QString& domain) const
 {
+	FilterOption opt = filter.Options_ [exception];
 	if (!opt.NotDomains_.isEmpty ())
 	{
 		bool shouldFurther = true;
@@ -266,13 +331,19 @@ bool Core::Matches (const QString& exception, const FilterOption& opt,
 			return false;
 	}
 
-	QRegExp::PatternSyntax syntax = (opt.MatchType_ == FilterOption::MTRegexp_ ?
-			QRegExp::RegExp : QRegExp::Wildcard);
-	QRegExp re (exception, opt.Case_, syntax);
-
-	bool exact = re.exactMatch (urlStr);
-	if (exact)
+	if (opt.MatchType_ == FilterOption::MTRegexp_ &&
+			filter.RegExps_ [exception].exactMatch (urlStr))
 		return true;
+	else if (opt.MatchType_ == FilterOption::MTWildcard_)
+	{
+		if (opt.Case_ == Qt::CaseSensitive)
+			if (WildcardMatches (qPrintable (exception), qPrintable (urlStr)))
+				return true;
+		else
+			if (WildcardMatches (qPrintable (exception.toLower ()),
+						qPrintable (urlStr.toLower ())))
+				return true;
+	}
 	return false;
 }
 

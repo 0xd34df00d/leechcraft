@@ -19,7 +19,6 @@ namespace LeechCraft
 				Qt::CaseSensitivity Case_;
 				enum MatchType
 				{
-					MTSide_,
 					MTWildcard_,
 					MTRegexp_
 				};
@@ -38,6 +37,7 @@ namespace LeechCraft
 				QStringList ExceptionStrings_;
 				QStringList FilterStrings_;
 				QHash<QString, FilterOption> Options_;
+				QHash<QString, QRegExp> RegExps_;
 			};
 
 			class Core : public QObject
@@ -56,7 +56,7 @@ namespace LeechCraft
 						QIODevice**);
 				bool ShouldReject (const QNetworkRequest&) const;
 			private:
-				bool Matches (const QString&, const FilterOption&,
+				bool Matches (const QString&, const Filter&,
 						const QString&, const QString&) const;
 			};
 		};
