@@ -12,6 +12,7 @@ using namespace LeechCraft::Util;
 TagsCompleter::TagsCompleter (TagsLineEdit *toComplete, QObject *parent)
 : QCompleter (parent)
 {
+	setCompletionRole (Qt::DisplayRole);
     toComplete->SetCompleter (this);
 }
 
