@@ -71,7 +71,7 @@
 		<label lang="en" value="Network" />
 		<label lang="ru" value="Сеть" />
 		<label lang="uk" value="Мережеа" />
-		<item type="spinbox" property="CacheSize" default="200" minimum="5" maximum="1048576">
+		<item type="spinbox" property="CacheSize" default="200" minimum="0" maximum="1048576">
 			<lang value="en">
 				<label value="Cache size:" />
 				<suffix value=" MB" />
