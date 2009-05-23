@@ -4,6 +4,7 @@
 #include <QSettings>
 #include <QtDebug>
 #include <plugininterface/proxy.h>
+#include <plugininterface/tagscompleter.h>
 
 using namespace LeechCraft;
 
@@ -11,6 +12,7 @@ TagsManager::TagsManager ()
 {
 	ReadSettings ();
 	GetID (tr ("untagged"));
+	LeechCraft::Util::TagsCompleter::SetModel (GetModel ());
 }
 
 TagsManager& TagsManager::Instance ()

@@ -5,6 +5,8 @@
 
 namespace LeechCraft
 {
+	class TagsManager;
+
 	namespace Util
 	{
 		class TagsLineEdit;
@@ -21,6 +23,9 @@ namespace LeechCraft
 		class TagsCompleter : public QCompleter
 		{
 			Q_OBJECT
+
+			PLUGININTERFACE_API static QAbstractItemModel *CompletionModel_;
+			friend class LeechCraft::TagsManager;
 		public:
 			/** @brief Constructs the completer.
 			 *
@@ -42,6 +47,11 @@ namespace LeechCraft
 			 * @return Splitted sequence.
 			 */
 			PLUGININTERFACE_API virtual QStringList splitPath (const QString& path) const;
+		protected:
+			static void SetModel (QAbstractItemModel *model)
+			{
+				CompletionModel_ = model;
+			}
 		};
 	};
 };
