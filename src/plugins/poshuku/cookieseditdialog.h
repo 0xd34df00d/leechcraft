@@ -18,6 +18,7 @@ private slots:
 	void handleAccepted ();
 	void handleDomainChanged ();
 	void handleNameChanged ();
+	void on_Delete__released ();
 };
 
 #endif

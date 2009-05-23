@@ -85,3 +85,8 @@ void CookiesEditDialog::handleNameChanged ()
 	Ui_.ButtonBox_->button (QDialogButtonBox::Apply)->setEnabled (true);
 }
 
+void CookiesEditDialog::on_Delete__released ()
+{
+	Model_->RemoveCookie (Ui_.CookiesView_->currentIndex ());
+}
+

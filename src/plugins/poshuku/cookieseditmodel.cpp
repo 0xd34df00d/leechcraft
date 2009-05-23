@@ -18,17 +18,19 @@ CookiesEditModel::CookiesEditModel (QObject *parent)
 	Jar_ = qobject_cast<CustomCookieJar*> (Core::Instance ()
 				.GetNetworkAccessManager ()->cookieJar ());
 
-	Cookies_ = Jar_->allCookies ();
-
+	QList<QNetworkCookie> cookies = Jar_->allCookies ();
 	typedef boost::function<QString (const QNetworkCookie&)> name_t;
-	std::stable_sort (Cookies_.begin (), Cookies_.end (),
+	std::stable_sort (cookies.begin (), cookies.end (),
 			boost::bind (std::less<QString> (),
 				boost::bind<QString> (name_t (&QNetworkCookie::domain), _1),
 				boost::bind<QString> (name_t (&QNetworkCookie::domain), _2)));
+	int idx = 0;
+	Q_FOREACH (QNetworkCookie cookie, cookies)
+		Cookies_ [idx++] = cookie;
 
 	for (int i = 0; i < Cookies_.size (); ++i)
 	{
-		QString domain = Cookies_.at (i).domain ();
+		QString domain = Cookies_ [i].domain ();
 
 		QList<QStandardItem*> foundItems = findItems (domain);
 		QStandardItem *parent = 0;
@@ -41,7 +43,7 @@ CookiesEditModel::CookiesEditModel (QObject *parent)
 		}
 		else
 			parent = foundItems.back ();
-		QStandardItem *item = new QStandardItem (QString (Cookies_.at (i).name ()));
+		QStandardItem *item = new QStandardItem (QString (Cookies_ [i].name ()));
 		item->setData (i);
 		item->setEditable (false);
 		parent->appendRow (item);
@@ -58,7 +60,7 @@ QNetworkCookie CookiesEditModel::GetCookie (const QModelIndex& index) const
 		if (i == -1)
 			throw std::runtime_error ("Wrong index");
 		else
-			return Cookies_.at (i);
+			return Cookies_ [i];
 	}
 }
 
@@ -69,13 +71,67 @@ void CookiesEditModel::SetCookie (const QModelIndex& index,
 	{
 		int i = itemFromIndex (index)->data ().toInt ();
 		if (i == -1)
-			Cookies_.push_back (cookie);
+			AddCookie (cookie);
 		else
+		{
 			Cookies_ [i] = cookie;
+			emit itemChanged (itemFromIndex (index));
+		}
 	}
 	else
-		Cookies_.push_back (cookie);
+		AddCookie (cookie);
 
-	Jar_->setAllCookies (Cookies_);
+	Jar_->setAllCookies (Cookies_.values ());
+}
+
+void CookiesEditModel::RemoveCookie (const QModelIndex& index)
+{
+	if (!index.isValid ())
+		return;
+
+	QStandardItem *item = itemFromIndex (index);
+	int i = item->data ().toInt ();
+	if (i == -1)
+	{
+		for (int j = 0; j < item->rowCount (); ++j)
+		{
+			Cookies_.remove (item->child (j)->data ().toInt ());
+		}
+		qDeleteAll (takeRow (item->row ()));
+	}
+	else
+	{
+		Cookies_.remove (i);
+		qDeleteAll (item->parent ()->takeRow (item->row ()));
+	}
+	Jar_->setAllCookies (Cookies_.values ());
+}
+
+void CookiesEditModel::AddCookie (const QNetworkCookie& cookie)
+{
+	int i = 0;
+	if (Cookies_.size ())
+		i = (Cookies_.end () - 1).key () + 1;
+	Cookies_ [i] = cookie;
+
+	QString domain = cookie.domain ();
+
+	QList<QStandardItem*> foundItems = findItems (domain);
+	QStandardItem *parent = 0;
+	if (!foundItems.size ())
+	{
+		parent = new QStandardItem (domain);
+		parent->setEditable (false);
+		parent->setData (-1);
+		invisibleRootItem ()->appendRow (parent);
+	}
+	else
+		parent = foundItems.back ();
+	QStandardItem *item = new QStandardItem (QString (Cookies_ [i].name ()));
+	item->setData (i);
+	item->setEditable (false);
+	parent->appendRow (item);
+
+	Jar_->setAllCookies (Cookies_.values ());
 }
 

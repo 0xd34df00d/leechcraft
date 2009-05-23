@@ -1,119 +1,127 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>CookiesEditDialog</class>
- <widget class="QDialog" name="CookiesEditDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="CookiesEditDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>532</width>
-    <height>419</height>
+    <height>469</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Cookies Editor</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="resources.qrc" >
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
     <normaloff>:/resources/images/poshuku.png</normaloff>:/resources/images/poshuku.png</iconset>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2" >
+  <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <widget class="QTreeView" name="CookiesView_" />
+    <widget class="QTreeView" name="CookiesView_"/>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout" >
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <layout class="QFormLayout" name="formLayout" >
-       <property name="fieldGrowthPolicy" >
+      <layout class="QFormLayout" name="formLayout">
+       <property name="fieldGrowthPolicy">
         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
        </property>
-       <item row="0" column="0" >
-        <widget class="QLabel" name="label" >
-         <property name="text" >
+       <item row="0" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
           <string>Domain:</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="1" >
-        <widget class="QLineEdit" name="DomainEdit_" >
-         <property name="enabled" >
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="DomainEdit_">
+         <property name="enabled">
           <bool>false</bool>
          </property>
         </widget>
        </item>
-       <item row="1" column="0" >
-        <widget class="QLabel" name="label_3" >
-         <property name="text" >
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
           <string>Name:</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1" >
-        <widget class="QLineEdit" name="NameEdit_" >
-         <property name="enabled" >
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="NameEdit_">
+         <property name="enabled">
           <bool>false</bool>
          </property>
         </widget>
        </item>
-       <item row="2" column="0" >
-        <widget class="QLabel" name="label_2" >
-         <property name="text" >
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
           <string>Expiration date:</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="1" >
-        <widget class="QDateTimeEdit" name="ExpirationEdit_" >
-         <property name="enabled" >
+       <item row="2" column="1">
+        <widget class="QDateTimeEdit" name="ExpirationEdit_">
+         <property name="enabled">
           <bool>false</bool>
          </property>
         </widget>
        </item>
-       <item row="3" column="0" >
-        <widget class="QLabel" name="label_4" >
-         <property name="text" >
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
           <string>Path:</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="1" >
-        <widget class="QLineEdit" name="PathEdit_" >
-         <property name="enabled" >
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="PathEdit_">
+         <property name="enabled">
           <bool>false</bool>
          </property>
         </widget>
        </item>
-       <item row="4" column="0" >
-        <widget class="QLabel" name="label_5" >
-         <property name="text" >
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
           <string>Value:</string>
          </property>
         </widget>
        </item>
-       <item row="4" column="1" >
-        <widget class="QLineEdit" name="ValueEdit_" >
-         <property name="enabled" >
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="ValueEdit_">
+         <property name="enabled">
           <bool>false</bool>
          </property>
         </widget>
        </item>
-       <item row="5" column="1" >
-        <widget class="QCheckBox" name="SecureEdit_" >
-         <property name="enabled" >
+       <item row="5" column="1">
+        <widget class="QCheckBox" name="SecureEdit_">
+         <property name="enabled">
           <bool>false</bool>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>Secure</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QPushButton" name="Delete_">
+         <property name="text">
+          <string>Delete</string>
          </property>
         </widget>
        </item>
       </layout>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout" >
+      <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QPlainTextEdit" name="RawCookieEdit_" >
-         <property name="enabled" >
+        <widget class="QPlainTextEdit" name="RawCookieEdit_">
+         <property name="enabled">
           <bool>false</bool>
          </property>
         </widget>
@@ -123,11 +131,11 @@
     </layout>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="ButtonBox_" >
-     <property name="orientation" >
+    <widget class="QDialogButtonBox" name="ButtonBox_">
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="standardButtons" >
+     <property name="standardButtons">
       <set>QDialogButtonBox::Apply|QDialogButtonBox::Close</set>
      </property>
     </widget>
@@ -135,7 +143,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="resources.qrc" />
+  <include location="resources.qrc"/>
  </resources>
  <connections>
   <connection>
@@ -144,11 +152,11 @@
    <receiver>CookiesEditDialog</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>248</x>
      <y>254</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>157</x>
      <y>274</y>
     </hint>
@@ -160,11 +168,11 @@
    <receiver>CookiesEditDialog</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>316</x>
      <y>260</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
     </hint>
