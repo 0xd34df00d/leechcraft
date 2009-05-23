@@ -13,6 +13,7 @@
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/session_status.hpp>
+#include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
 #include <plugininterface/tagscompletionmodel.h>
 #include "torrentinfo.h"
@@ -94,13 +95,13 @@ private:
 	std::auto_ptr<QTimer> SettingsSaveTimer_, FinishedTimer_, WarningWatchdog_, ScrapeTimer_;
 	std::auto_ptr<PiecesModel> PiecesModel_;
 	std::auto_ptr<PeersModel> PeersModel_;
-	std::auto_ptr<LeechCraft::Util::TagsCompletionModel> TagsCompletionModel_;
 	std::auto_ptr<TorrentFilesModel> TorrentFilesModel_;
 	std::list<quint16> IDPool_;
 	QString ExternalAddress_;
 	bool SaveScheduled_;
 	QToolBar *Toolbar_;
 	QWidget *TabWidget_;
+	ICoreProxy_ptr Proxy_;
 
     Core ();
 public:
@@ -121,6 +122,10 @@ public:
 	void SetWidgets (QToolBar*, QWidget*);
     void DoDelayedInit ();
     void Release ();
+
+	void SetProxy (ICoreProxy_ptr);
+	ICoreProxy_ptr GetProxy () const;
+
 	bool CouldDownload (const LeechCraft::DownloadEntity&) const;
     PiecesModel* GetPiecesModel ();
     void ClearPieces ();
@@ -153,7 +158,6 @@ public:
     QList<PeerInfo> GetPeers () const;
     QStringList GetTagsForIndex (int = -1) const;
     void UpdateTags (const QStringList&, int = -1);
-	LeechCraft::Util::TagsCompletionModel* GetTagsCompletionModel () const;
 	int AddMagnet (const QString&, const QString&, const QStringList&,
 			LeechCraft::TaskParameters = LeechCraft::NoParameters);
 	int AddFile (const QString&, const QString&, const QStringList&,

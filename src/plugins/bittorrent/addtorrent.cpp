@@ -16,8 +16,14 @@ AddTorrent::AddTorrent (QWidget *parent)
     FilesView_->header ()->setStretchLastSection (true);
     FilesView_->setModel (FilesModel_);
     OK_->setEnabled (false);
-    connect (this, SIGNAL (on_TorrentFile__textChanged ()), this, SLOT (setOkEnabled ()));
-    connect (this, SIGNAL (on_Destination__textChanged ()), this, SLOT (setOkEnabled ()));
+	connect (this,
+			SIGNAL (on_TorrentFile__textChanged ()),
+			this,
+			SLOT (setOkEnabled ()));
+	connect (this,
+			SIGNAL (on_Destination__textChanged ()),
+			this,
+			SLOT (setOkEnabled ()));
 
     QString dir = XmlSettingsManager::Instance ()->property ("LastSaveDirectory").toString ();
     Destination_->setText (dir);
@@ -88,7 +94,7 @@ Core::AddType AddTorrent::GetAddType () const
 
 QStringList AddTorrent::GetTags () const
 {
-    return TagsEdit_->text ().split (' ', QString::SkipEmptyParts);
+    return Core::Instance ()->GetProxy ()->GetTagsManager ()->Split (TagsEdit_->text ());
 }
 
 LeechCraft::Util::TagsLineEdit* AddTorrent::GetEdit ()
@@ -98,18 +104,24 @@ LeechCraft::Util::TagsLineEdit* AddTorrent::GetEdit ()
 
 void AddTorrent::setOkEnabled ()
 {
-    OK_->setEnabled (QFileInfo (TorrentFile_->text ()).isReadable () && QFileInfo (Destination_->text ()).exists ());
+	OK_->setEnabled (QFileInfo (TorrentFile_->text ()).isReadable () &&
+			QFileInfo (Destination_->text ()).exists ());
 }
 
 void AddTorrent::on_TorrentBrowse__released ()
 {
-      QString filename = QFileDialog::getOpenFileName (this, tr ("Select torrent file"), XmlSettingsManager::Instance ()->property ("LastTorrentDirectory").toString (), tr ("Torrents (*.torrent);;All files (*.*)"));
+	  QString filename = QFileDialog::getOpenFileName (this,
+				tr ("Select torrent file"),
+				XmlSettingsManager::Instance ()->
+					property ("LastTorrentDirectory").toString (),
+				tr ("Torrents (*.torrent);;All files (*.*)"));
       if (filename.isEmpty ())
         return;
 
     Reinit ();
 
-    XmlSettingsManager::Instance ()->setProperty ("LastTorrentDirectory", QFileInfo (filename).absolutePath ());
+	XmlSettingsManager::Instance ()->setProperty ("LastTorrentDirectory",
+			QFileInfo (filename).absolutePath ());
     TorrentFile_->setText (filename);
 
     ParseBrowsed ();
@@ -117,7 +129,10 @@ void AddTorrent::on_TorrentBrowse__released ()
 
 void AddTorrent::on_DestinationBrowse__released ()
 {
-    QString dir = QFileDialog::getExistingDirectory (this, tr ("Select save directory"), Destination_->text (), 0);
+	QString dir = QFileDialog::getExistingDirectory (this,
+			tr ("Select save directory"),
+			Destination_->text (),
+			0);
     if (dir.isEmpty ())
         return;
 

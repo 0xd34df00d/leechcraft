@@ -41,9 +41,10 @@ using LeechCraft::Util::TagsCompleter;
 using LeechCraft::Util::TagsLineEdit;
 using LeechCraft::ActionInfo;
 
-void TorrentPlugin::Init (ICoreProxy_ptr)
+void TorrentPlugin::Init (ICoreProxy_ptr proxy)
 {
 	Translator_.reset (LeechCraft::Util::InstallTranslator ("torrent"));
+	Core::Instance ()->SetProxy (proxy);
     SetupCore ();
     SetupTorrentView ();
     SetupStuff ();
@@ -133,9 +134,10 @@ int TorrentPlugin::AddJob (LeechCraft::DownloadEntity e)
 
 	if (resource.startsWith ("magnet:"))
 	{
-		QStringList tags = XmlSettingsManager::Instance ()->
-			property ("AutomaticTags").toString ()
-			.split (' ', QString::SkipEmptyParts);
+		QString at = XmlSettingsManager::Instance ()->
+			property ("AutomaticTags").toString ();
+		QStringList tags = Core::Instance ()->GetProxy ()->
+			GetTagsManager ()->Split (at);
 
 		QUrl url (resource);
 		QList<QPair<QString, QString> > queryItems = url.queryItems ();
@@ -193,9 +195,10 @@ int TorrentPlugin::AddJob (LeechCraft::DownloadEntity e)
 	{
 		fname = suggestedFname;
 		path = e.Location_;
-		tags = XmlSettingsManager::Instance ()->
-			property ("AutomaticTags").toString ()
-			.split (' ', QString::SkipEmptyParts);
+		QString at = XmlSettingsManager::Instance ()->
+			property ("AutomaticTags").toString ();
+		tags = Core::Instance ()->GetProxy ()->
+			GetTagsManager ()->Split (at);
 	}
 	int result = Core::Instance ()->AddFile (fname,
 			path,
@@ -218,7 +221,8 @@ void TorrentPlugin::ItemSelected (const QModelIndex& item)
 		FilterModel_->mapToSource (item) : QModelIndex ();
 	Current_ = mapped;
 	Core::Instance ()->SetCurrentTorrent (mapped.row ());
-	Ui_.TorrentTags_->setText (Core::Instance ()->GetTagsForIndex ().join (" "));
+	Ui_.TorrentTags_->setText (Core::Instance ()->GetProxy ()->GetTagsManager ()->
+			Join (Core::Instance ()->GetTagsForIndex ()));
 	if (mapped.isValid ())
 	{
 		TorrentSelectionChanged_ = true;
@@ -339,7 +343,6 @@ void TorrentPlugin::on_OpenMultipleTorrents__triggered ()
 {
     AddMultipleTorrents dialog;
 	std::auto_ptr<TagsCompleter> completer (new TagsCompleter (dialog.GetEdit (), this));
-    completer->setModel (Core::Instance ()->GetTagsCompletionModel ());
 	dialog.GetEdit ()->AddSelector ();
 
     if (dialog.exec () == QDialog::Rejected)
@@ -353,13 +356,14 @@ void TorrentPlugin::on_OpenMultipleTorrents__triggered ()
             openPath = dialog.GetOpenDirectory ();
     QDir dir (openPath);
     QStringList names = dir.entryList (QStringList ("*.torrent"));
+	QStringList tags = dialog.GetTags ();
     for (int i = 0; i < names.size (); ++i)
     {
         QString name = openPath;
         if (!name.endsWith ('/'))
             name += '/';
         name += names.at (i);
-        Core::Instance ()->AddFile (name, savePath, dialog.GetTags ());
+        Core::Instance ()->AddFile (name, savePath, tags);
     }
     setActionsEnabled ();
 }
@@ -493,7 +497,8 @@ void TorrentPlugin::on_UploadingTorrents__valueChanged (int newValue)
 
 void TorrentPlugin::on_TorrentTags__editingFinished ()
 {
-    Core::Instance ()->UpdateTags (Ui_.TorrentTags_->text ().split (' ', QString::SkipEmptyParts));
+    Core::Instance ()->UpdateTags (Core::Instance ()->GetProxy ()->
+			GetTagsManager ()->Split (Ui_.TorrentTags_->text ()));
 }
 
 void TorrentPlugin::on_MoveFiles__triggered (int)
@@ -1031,8 +1036,6 @@ void TorrentPlugin::SetupStuff ()
 {
     TagsChangeCompleter_.reset (new TagsCompleter (Ui_.TorrentTags_));
     TagsAddDiaCompleter_.reset (new TagsCompleter (AddTorrentDialog_->GetEdit ()));
-    TagsChangeCompleter_->setModel (Core::Instance ()->GetTagsCompletionModel ());
-    TagsAddDiaCompleter_->setModel (Core::Instance ()->GetTagsCompletionModel ());
 	AddTorrentDialog_->GetEdit ()->AddSelector ();
 	Ui_.TorrentTags_->AddSelector ();
 

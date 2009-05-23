@@ -98,7 +98,6 @@ Core::Core ()
 , ScrapeTimer_ (new QTimer ())
 , PiecesModel_ (new PiecesModel ())
 , PeersModel_ (new PeersModel ())
-, TagsCompletionModel_ (new TagsCompletionModel)
 , TorrentFilesModel_ (new TorrentFilesModel (false))
 , SaveScheduled_ (false)
 , Toolbar_ (0)
@@ -204,7 +203,6 @@ void Core::Release ()
 	ScrapeTimer_.reset ();
 	PiecesModel_.reset ();
 	PeersModel_.reset ();
-	TagsCompletionModel_.reset ();
 	TorrentFilesModel_.reset ();
 
 	QObjectList kids = children ();
@@ -217,6 +215,16 @@ void Core::Release ()
     Session_->stop_dht ();
 	delete Session_;
 	Session_ = 0;
+}
+
+void Core::SetProxy (ICoreProxy_ptr proxy)
+{
+	Proxy_ = proxy;
+}
+
+ICoreProxy_ptr Core::GetProxy () const
+{
+	return Proxy_;
 }
 
 bool Core::CouldDownload (const LeechCraft::DownloadEntity& e) const
@@ -609,11 +617,6 @@ void Core::UpdateTags (const QStringList& tags, int torrent)
         UpdateTagsImpl (tags, CurrentTorrent_);
 }
 
-TagsCompletionModel* Core::GetTagsCompletionModel () const
-{
-    return TagsCompletionModel_.get ();
-}
-
 int Core::AddMagnet (const QString& magnet,
 		const QString& path,
 		const QStringList& tags,
@@ -725,6 +728,9 @@ int Core::AddFile (const QString& filename,
 	QString torrentFileName = QString::fromUtf8 (handle.name ().c_str ());
 	if (!torrentFileName.endsWith (".torrent"))
 		torrentFileName.append (".torrent");
+	QStringList ids;
+	Q_FOREACH (QString tag, tags)
+		ids << Proxy_->GetTagsManager ()->GetID (tag);
     TorrentStruct tmp =
 	{
 		priorities,
@@ -733,7 +739,7 @@ int Core::AddFile (const QString& filename,
 		torrentFileName,
 		TSIdle,
    		0,
-		tags,
+		ids,
 		true,
 		IDPool_.front (),
 		params
@@ -741,7 +747,6 @@ int Core::AddFile (const QString& filename,
 	IDPool_.pop_front ();
     Handles_.append (tmp);
     endInsertRows ();
-    TagsCompletionModel_->UpdateTags (tags);
 
 	ScheduleSave ();
 	return tmp.ID_;
@@ -1094,7 +1099,8 @@ void Core::MakeTorrent (NewTorrentParams params) const
 		for (int i = 0; i < params.DHTNodes_.size (); ++i)
 		{
 			QStringList splitted = params.DHTNodes_.at (i).split (":");
-			ct.add_node (std::pair<std::string, int> (splitted [0].trimmed ().toStdString (), splitted [1].trimmed ().toInt ()));
+			ct.add_node (std::pair<std::string, int> (splitted [0].trimmed ().toStdString (),
+						splitted [1].trimmed ().toInt ()));
 		}
 
 	ct.add_tracker (params.AnnounceURL_.toStdString ());
@@ -1241,7 +1247,7 @@ void Core::Export (const QString& filename, bool, bool) const
 						tagEnd = i->Tags_.end (); tag != tagEnd; ++tag)
 				{
 					writer.writeStartElement ("tag");
-					writer.writeCharacters (*tag);
+					writer.writeCharacters (Proxy_->GetTagsManager ()->GetTag (*tag));
 					writer.writeEndElement ();
 				}
 			writer.writeEndElement ();
@@ -1768,7 +1774,6 @@ void Core::ManipulateSettings ()
 	XmlSettingsManager::Instance ()->RegisterObject (loggingSettings,
 			this, "setLoggingSettings");
 
-    TagsCompletionModel_->UpdateTags (XmlSettingsManager::Instance ()->Property ("TorrentTags", QStringList (tr ("untagged"))).toStringList ());
     RestoreTorrents ();
 }
 
@@ -1777,7 +1782,10 @@ QStringList Core::GetTagsForIndexImpl (int torrent) const
 	if (!CheckValidity (torrent))
 		return QStringList ();
 
-	return Handles_.at (torrent).Tags_;
+	QStringList result;
+	Q_FOREACH (QString id, Handles_.at (torrent).Tags_)
+		result << Proxy_->GetTagsManager ()->GetTag (id);
+	return result;
 }
 
 void Core::UpdateTagsImpl (const QStringList& tags, int torrent)
@@ -1785,8 +1793,9 @@ void Core::UpdateTagsImpl (const QStringList& tags, int torrent)
     if (!CheckValidity (torrent))
         return;
 
-    Handles_ [torrent].Tags_ = tags;
-    TagsCompletionModel_->UpdateTags (tags);
+    Handles_ [torrent].Tags_.clear ();
+	Q_FOREACH (QString tag, tags)
+		Handles_ [torrent].Tags_ << Proxy_->GetTagsManager ()->GetID (tag);
 }
 
 void Core::ScheduleSave ()
@@ -1823,9 +1832,6 @@ void Core::writeSettings ()
 					.arg (QDir::toNativeSeparators (QDir::homePath ())));
             return;
         }
-
-    XmlSettingsManager::Instance ()->setProperty ("TorrentTags",
-			TagsCompletionModel_->stringList ());
 
     QSettings settings (Proxy::Instance ()->GetOrganizationName (),
 			Proxy::Instance ()->GetApplicationName () + "_Torrent");
@@ -2043,17 +2049,20 @@ void Core::dhtStateChanged ()
 void Core::autosaveIntervalChanged ()
 {
     SettingsSaveTimer_->stop ();
-    SettingsSaveTimer_->start (XmlSettingsManager::Instance ()->property ("AutosaveInterval").toInt () * 1000);
+    SettingsSaveTimer_->start (XmlSettingsManager::Instance ()->
+			property ("AutosaveInterval").toInt () * 1000);
 }
 
 void Core::maxUploadsChanged ()
 {
-    Session_->set_max_uploads (XmlSettingsManager::Instance ()->property ("MaxUploads").toInt ());
+    Session_->set_max_uploads (XmlSettingsManager::Instance ()->
+			property ("MaxUploads").toInt ());
 }
 
 void Core::maxConnectionsChanged ()
 {
-    Session_->set_max_connections (XmlSettingsManager::Instance ()->property ("MaxConnections").toInt ());
+    Session_->set_max_connections (XmlSettingsManager::Instance ()->
+			property ("MaxConnections").toInt ());
 }
 
 void Core::setProxySettings ()
@@ -2061,9 +2070,12 @@ void Core::setProxySettings ()
     libtorrent::proxy_settings trackerProxySettings, peerProxySettings;
     if (XmlSettingsManager::Instance ()->property ("TrackerProxyEnabled").toBool ())
     {
-        trackerProxySettings.hostname = XmlSettingsManager::Instance ()->property ("TrackerProxyAddress").toString ().toStdString ();
-        trackerProxySettings.port = XmlSettingsManager::Instance ()->property ("TrackerProxyPort").toInt ();
-		QStringList auth = XmlSettingsManager::Instance ()->property ("TrackerProxyAuth").toString ().split ('@');
+        trackerProxySettings.hostname = XmlSettingsManager::Instance ()->
+			property ("TrackerProxyAddress").toString ().toStdString ();
+        trackerProxySettings.port = XmlSettingsManager::Instance ()->
+			property ("TrackerProxyPort").toInt ();
+		QStringList auth = XmlSettingsManager::Instance ()->
+			property ("TrackerProxyAuth").toString ().split ('@');
 		if (auth.size ())
 			trackerProxySettings.username = auth.at (0).toStdString ();
 		if (auth.size () > 1)
@@ -2071,11 +2083,15 @@ void Core::setProxySettings ()
         bool passworded = trackerProxySettings.username.size ();
         QString pt = XmlSettingsManager::Instance ()->property ("TrackerProxyType").toString ();
         if (pt == "http")
-            trackerProxySettings.type = passworded ? libtorrent::proxy_settings::http_pw : libtorrent::proxy_settings::http;
+            trackerProxySettings.type = passworded ?
+				libtorrent::proxy_settings::http_pw :
+				libtorrent::proxy_settings::http;
         else if (pt == "socks4")
             trackerProxySettings.type = libtorrent::proxy_settings::socks4;
         else if (pt == "socks5")
-            trackerProxySettings.type = passworded ? libtorrent::proxy_settings::socks5_pw : libtorrent::proxy_settings::socks5;
+            trackerProxySettings.type = passworded ?
+				libtorrent::proxy_settings::socks5_pw :
+				libtorrent::proxy_settings::socks5;
         else
             trackerProxySettings.type = libtorrent::proxy_settings::none;
     }
@@ -2084,9 +2100,12 @@ void Core::setProxySettings ()
 
     if (XmlSettingsManager::Instance ()->property ("PeerProxyEnabled").toBool ())
     {
-        peerProxySettings.hostname = XmlSettingsManager::Instance ()->property ("PeerProxyAddress").toString ().toStdString ();
-        peerProxySettings.port = XmlSettingsManager::Instance ()->property ("PeerProxyPort").toInt ();
-		QStringList auth = XmlSettingsManager::Instance ()->property ("PeerProxyAuth").toString ().split ('@');
+        peerProxySettings.hostname = XmlSettingsManager::Instance ()->
+			property ("PeerProxyAddress").toString ().toStdString ();
+        peerProxySettings.port = XmlSettingsManager::Instance ()->
+			property ("PeerProxyPort").toInt ();
+		QStringList auth = XmlSettingsManager::Instance ()->
+			property ("PeerProxyAuth").toString ().split ('@');
 		if (auth.size ())
 			peerProxySettings.username = auth.at (0).toStdString ();
 		if (auth.size () > 1)
@@ -2094,11 +2113,15 @@ void Core::setProxySettings ()
         bool passworded = peerProxySettings.username.size ();
         QString pt = XmlSettingsManager::Instance ()->property ("PeerProxyType").toString ();
         if (pt == "http")
-            peerProxySettings.type = passworded ? libtorrent::proxy_settings::http_pw : libtorrent::proxy_settings::http;
+            peerProxySettings.type = passworded ?
+				libtorrent::proxy_settings::http_pw :
+				libtorrent::proxy_settings::http;
         else if (pt == "socks4")
             peerProxySettings.type = libtorrent::proxy_settings::socks4;
         else if (pt == "socks5")
-            peerProxySettings.type = passworded ? libtorrent::proxy_settings::socks5_pw : libtorrent::proxy_settings::socks5;
+            peerProxySettings.type = passworded ?
+				libtorrent::proxy_settings::socks5_pw :
+				libtorrent::proxy_settings::socks5;
         else
             peerProxySettings.type = libtorrent::proxy_settings::none;
     }
