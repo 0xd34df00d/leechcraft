@@ -9,8 +9,6 @@ FeedSettings::FeedSettings (const QModelIndex& mapped, QWidget *parent)
 	Ui_.setupUi (this);
 
 	ChannelTagsCompleter_.reset (new LeechCraft::Util::TagsCompleter (Ui_.ChannelTags_));
-	ChannelTagsCompleter_->setModel (Core::Instance ().GetProxy ()->
-			GetTagsManager ()->GetModel ());
 	Ui_.ChannelTags_->AddSelector ();
 
 	connect (Ui_.ChannelLink_,

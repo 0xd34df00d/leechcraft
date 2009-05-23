@@ -189,7 +189,6 @@ void Aggregator::Init (ICoreProxy_ptr proxy)
 			SLOT (updateFeeds ()));
 
 	Impl_->TagsLineCompleter_.reset (new TagsCompleter (Impl_->Ui_.TagsLine_));
-	Impl_->TagsLineCompleter_->setModel (proxy->GetTagsManager ()->GetModel ());
 	Impl_->Ui_.TagsLine_->AddSelector ();
 
 	Impl_->Ui_.MainSplitter_->setStretchFactor (0, 5);

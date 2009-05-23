@@ -9,8 +9,7 @@ AddFeed::AddFeed (const QString& url, QWidget *parent)
 : QDialog (parent)
 {
     setupUi (this);
-    TagsCompleter *comp = new TagsCompleter (Tags_, this);
-    comp->setModel (Core::Instance ().GetProxy ()->GetTagsManager ()->GetModel ());
+    new TagsCompleter (Tags_, this);
 	Tags_->AddSelector ();
 
 	URL_->setText (url);
