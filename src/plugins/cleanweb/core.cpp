@@ -202,10 +202,7 @@ Core::Core ()
 	home.cd ("cleanweb");
 	QFileInfoList infos = home.entryInfoList (QDir::Files | QDir::Readable);
 	Q_FOREACH (QFileInfo info, infos)
-	{
-		qDebug () << Q_FUNC_INFO << info.absoluteFilePath ();
 		Parse (info.absoluteFilePath ());
-	}
 
 	ReadSettings ();
 	Update ();
@@ -531,7 +528,6 @@ void Core::Parse (const QString& filePath)
 			LineHandler (&f));
 
 	f.SD_.Filename_ = QFileInfo (filePath).fileName ();
-	qDebug () << f.SD_.Filename_;
 
 	beginInsertRows (QModelIndex (), Filters_.size (), Filters_.size ());
 	Filters_ << f;
