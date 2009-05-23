@@ -273,12 +273,14 @@ void Task::handleReadyRead ()
 {
 	if (Reply_.get ())
 		To_->write (Reply_->readAll ());
-	if (Core::Instance ().HasFinishedReply (Reply_.get ()))
+	if (URL_.isEmpty () &&
+			Core::Instance ().HasFinishedReply (Reply_.get ()))
 		handleFinished ();
 }
 
 void Task::handleFinished ()
 {
+	To_->write (Reply_->readAll ());
 	Core::Instance ().RemoveFinishedReply (Reply_.get ());
 	disconnect (Reply_.get (),
 			0,

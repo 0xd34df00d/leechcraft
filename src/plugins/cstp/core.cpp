@@ -56,6 +56,7 @@ void Core::Release ()
 	writeSettings ();
 	removeAllTriggered ();
 	delete RepresentationModel_;
+	RepresentationModel_ = 0;
 }
 
 void Core::SetToolbar (QToolBar *widget)

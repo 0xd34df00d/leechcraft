@@ -7,6 +7,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "subscriptionsmanager.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -32,6 +33,8 @@ void CleanWeb::Init (ICoreProxy_ptr proxy)
 	SettingsDialog_.reset (new XmlSettingsDialog);
 	SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 			":/plugins/cleanweb/settings.xml");
+	SettingsDialog_->SetCustomWidget ("SubscriptionsManager",
+			new SubscriptionsManager ());
 }
 
 void CleanWeb::Release ()
@@ -60,7 +63,7 @@ QStringList CleanWeb::Provides () const
 
 QStringList CleanWeb::Needs () const
 {
-	return QStringList ();
+	return QStringList ("http");
 }
 
 QStringList CleanWeb::Uses () const

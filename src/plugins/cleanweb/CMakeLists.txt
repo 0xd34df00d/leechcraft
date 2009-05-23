@@ -9,11 +9,13 @@ SET (CLEANWEB_SRCS
 	cleanweb.cpp
 	core.cpp
 	xmlsettingsmanager.cpp
+	subscriptionsmanager.cpp
 	)
 SET (CLEANWEB_HEADERS
 	cleanweb.h
 	core.h
 	xmlsettingsmanager.h
+	subscriptionsmanager.h
 	)
 SET (CLEANWEB_FORMS
 	subscriptionsmanager.ui

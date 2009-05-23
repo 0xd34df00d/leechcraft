@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>SubscriptionsManager</class>
+ <widget class="QWidget" name="SubscriptionsManager">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -13,21 +13,18 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QTreeWidget" name="treeWidget">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>30</y>
-     <width>256</width>
-     <height>192</height>
-    </rect>
-   </property>
-   <column>
-    <property name="text">
-     <string notr="true">1</string>
-    </property>
-   </column>
-  </widget>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QTreeView" name="Subscriptions_"/>
+   </item>
+   <item>
+    <widget class="QPushButton" name="RemoveButton_">
+     <property name="text">
+      <string>Remove</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>

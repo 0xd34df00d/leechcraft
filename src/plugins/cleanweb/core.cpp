@@ -11,12 +11,59 @@
 #include <plugininterface/util.h>
 #include <plugininterface/proxy.h>
 #include "xmlsettingsmanager.h"
+#include "core.h"
 
 using namespace LeechCraft::Plugins::CleanWeb;
 using LeechCraft::Util::Proxy;
 
 namespace
 {
+	struct FilterFinderBase
+	{
+		const QString& ID_;
+		enum Type
+		{
+			TName_,
+			TFilename_
+		};
+
+		FilterFinderBase (const QString& id)
+		: ID_ (id)
+		{
+		}
+	};
+
+	template<FilterFinderBase::Type>
+		struct FilterFinder;
+
+	template<>
+		struct FilterFinder<FilterFinderBase::TName_> : FilterFinderBase
+		{
+			FilterFinder (const QString& id)
+			: FilterFinderBase (id)
+			{
+			}
+
+			bool operator() (const Filter& f) const
+			{
+				return f.SD_.Name_ == ID_;
+			}
+		};
+
+	template<>
+		struct FilterFinder<FilterFinderBase::TFilename_> : FilterFinderBase
+		{
+			FilterFinder (const QString& id)
+			: FilterFinderBase (id)
+			{
+			}
+
+			bool operator() (const Filter& f) const
+			{
+				return f.SD_.Filename_ == ID_;
+			}
+		};
+
 	struct LineHandler
 	{
 		Filter *Filter_;
@@ -135,6 +182,9 @@ bool LeechCraft::Plugins::CleanWeb::operator!= (const FilterOption& f1, const Fi
 
 Core::Core ()
 {
+	HeaderLabels_ << tr ("Name")
+		<< tr ("Last updated")
+		<< tr ("URL");
 	try
 	{
 		LeechCraft::Util::CreateIfNotExists ("cleanweb");
@@ -147,15 +197,18 @@ Core::Core ()
 		return;
 	}
 
-	ReadSettings ();
-	Update ();
-
 	QDir home = QDir::home ();
 	home.cd (".leechcraft");
 	home.cd ("cleanweb");
 	QFileInfoList infos = home.entryInfoList (QDir::Files | QDir::Readable);
 	Q_FOREACH (QFileInfo info, infos)
+	{
+		qDebug () << Q_FUNC_INFO << info.absoluteFilePath ();
 		Parse (info.absoluteFilePath ());
+	}
+
+	ReadSettings ();
+	Update ();
 }
 
 Core& Core::Instance ()
@@ -168,6 +221,58 @@ void Core::Release ()
 {
 }
 
+int Core::columnCount (const QModelIndex&) const
+{
+	return HeaderLabels_.size ();
+}
+
+QVariant Core::data (const QModelIndex& index, int role) const
+{
+	if (!index.isValid () ||
+			role != Qt::DisplayRole)
+		return QVariant ();
+
+	int row = index.row ();
+	switch (index.column ())
+	{
+		case 0:
+			return Filters_.at (row).SD_.Name_;
+		case 1:
+			return Filters_.at (row).SD_.LastDateTime_;
+		case 2:
+			return Filters_.at (row).SD_.URL_.toString ();
+		default:
+			return QVariant ();
+	}
+}
+
+QVariant Core::headerData (int section, Qt::Orientation orient, int role) const
+{
+	if (orient != Qt::Horizontal ||
+			role != Qt::DisplayRole)
+		return QVariant ();
+
+	return HeaderLabels_.at (section);
+}
+
+QModelIndex Core::index (int row, int column, const QModelIndex& parent) const
+{
+	if (!hasIndex (row, column, parent))
+		return QModelIndex ();
+
+	return createIndex (row, column);
+}
+
+QModelIndex Core::parent (const QModelIndex&) const
+{
+	return QModelIndex ();
+}
+
+int Core::rowCount (const QModelIndex& index) const
+{
+	return index.isValid () ? 0 : Filters_.size ();
+}
+
 void Core::Handle (DownloadEntity subscr)
 {
 	QString urlString = QTextCodec::codecForName ("UTF-8")->
@@ -177,6 +282,19 @@ void Core::Handle (DownloadEntity subscr)
 	QString subscrName = subscrUrl.queryItemValue ("title");
 
 	Load (url, subscrName);
+}
+
+QAbstractItemModel* Core::GetModel ()
+{
+	return this;
+}
+
+void Core::Remove (const QModelIndex& index)
+{
+	if (!index.isValid ())
+		return;
+
+	Remove (Filters_ [index.row ()].SD_.Filename_);
 }
 
 QNetworkReply* Core::Hook (IHookProxy*,
@@ -385,7 +503,13 @@ void Core::Parse (const QString& filePath)
 	Filter f;
 	std::for_each (lines.begin (), lines.end (),
 			LineHandler (&f));
+
+	f.SD_.Filename_ = QFileInfo (filePath).fileName ();
+	qDebug () << f.SD_.Filename_;
+
+	beginInsertRows (QModelIndex (), Filters_.size (), Filters_.size ());
 	Filters_ << f;
+	endInsertRows ();
 }
 
 void Core::Update ()
@@ -397,17 +521,13 @@ void Core::Update ()
 	QDateTime current = QDateTime::currentDateTime ();
 	int days = XmlSettingsManager::Instance ()->
 		property ("UpdateInterval").toInt ();
-	Q_FOREACH (QString key, Files_.keys ())
-		if (Files_ [key].LastDateTime_.daysTo (current) > days)
-		{
-			QUrl url = Files_ [key].URL_;
-			QString name = Files_ [key].Name_;
-			Remove (key);
-			Load (url, name);
-		}
+	Q_FOREACH (Filter f, Filters_)
+		if (f.SD_.LastDateTime_.daysTo (current) > days)
+			if (Load (f.SD_.URL_, f.SD_.Name_))
+				Remove (f.SD_.Filename_);
 }
 
-void Core::Load (const QUrl& url, const QString& subscrName)
+bool Core::Load (const QUrl& url, const QString& subscrName)
 {
 	QDir home = QDir::home ();
 	home.cd (".leechcraft");
@@ -439,7 +559,7 @@ void Core::Load (const QUrl& url, const QString& subscrName)
 				tr ("Job the subscription wasn't delegated."));
 		qWarning () << Q_FUNC_INFO
 			<< url.toString ().toUtf8 ();
-		return;
+		return false;
 	}
 
 	HandleProvider (pr);
@@ -451,16 +571,30 @@ void Core::Load (const QUrl& url, const QString& subscrName)
 		url
 	};
 	PendingJobs_ [id] = pj;
+	return true;
 }
 
 void Core::Remove (const QString& fileName)
 {
-	Files_.remove (fileName);
-
 	QDir home = QDir::home ();
 	home.cd (".leechcraft");
 	home.cd ("cleanweb");
 	home.remove (fileName);
+
+	QList<Filter>::iterator pos = std::find_if (Filters_.begin (), Filters_.end (),
+			FilterFinder<FilterFinderBase::TFilename_> (fileName));
+	if (pos != Filters_.end ())
+	{
+		int row = std::distance (Filters_.begin (), pos);
+		beginRemoveRows (QModelIndex (), row, row);
+		Filters_.erase (pos);
+		endRemoveRows ();
+		WriteSettings ();
+	}
+	else
+		qWarning () << Q_FUNC_INFO
+			<< "could not find filter for name"
+			<< fileName;
 }
 
 void Core::WriteSettings ()
@@ -471,13 +605,13 @@ void Core::WriteSettings ()
 	settings.remove ("");
 
 	int i = 0;
-	Q_FOREACH (QString key, Files_.keys ())
+	Q_FOREACH (Filter f, Filters_)
 	{
 		settings.setArrayIndex (i++);
-		settings.setValue ("key", key);
-		settings.setValue ("URL", Files_ [key].URL_);
-		settings.setValue ("name", Files_ [key].Name_);
-		settings.setValue ("lastDateTime", Files_ [key].LastDateTime_);
+		settings.setValue ("URL", f.SD_.URL_);
+		settings.setValue ("name", f.SD_.Name_);
+		settings.setValue ("fileName", f.SD_.Filename_);
+		settings.setValue ("lastDateTime", f.SD_.LastDateTime_);
 	}
 
 	settings.endArray ();
@@ -496,31 +630,61 @@ void Core::ReadSettings ()
 		{
 			settings.value ("URL").toUrl (),
 			settings.value ("name").toString (),
+			settings.value ("fileName").toString (),
 			settings.value ("lastDateTime").toDateTime ()
 		};
-		Files_ [settings.value ("key").toString ()] = sd;
+		if (!AssignSD (sd))
+			qWarning () << Q_FUNC_INFO
+				<< "could not find filter for name"
+				<< sd.Filename_;
 	}
 
-	settings.endGroup ();
+	settings.endArray ();
+}
+
+bool Core::AssignSD (const SubscriptionData& sd)
+{
+	QList<Filter>::iterator pos =
+		std::find_if (Filters_.begin (), Filters_.end (),
+			FilterFinder<FilterFinderBase::TFilename_> (sd.Filename_));
+	if (pos != Filters_.end ())
+	{
+		pos->SD_ = sd;
+		int row = std::distance (Filters_.begin (), pos);
+		emit dataChanged (index (row, 0), index (row, columnCount () - 1));
+		return true;
+	}
+	else
+		return false;
 }
 
 void Core::handleJobFinished (int id)
 {
+	if (!PendingJobs_.contains (id))
+		return;
+
 	PendingJob pj = PendingJobs_ [id];
 	SubscriptionData sd =
 	{
 		pj.URL_,
 		pj.Subscr_,
+		pj.FileName_,
 		QDateTime::currentDateTime ()
 	};
-	Files_ [pj.FileName_] = sd;
 	Parse (pj.FullName_);
 	PendingJobs_.remove (id);
+	if (!AssignSD (sd))
+		qWarning () << Q_FUNC_INFO
+			<< "could not find filter for name"
+			<< sd.Filename_;
 	WriteSettings ();
 }
 
 void Core::handleJobError (int id, IDownload::Error)
 {
+	if (!PendingJobs_.contains (id))
+		return;
+
 	PendingJobs_.remove (id);
 }
 

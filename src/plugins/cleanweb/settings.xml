@@ -19,6 +19,7 @@
 		<tab>
 			<label lang="en" value="Subscriptions" />
 			<label lang="ru" value="Подписки" />
+			<item type="customwidget" name="SubscriptionsManager" label="own" />
 		</tab>
 	</page>
 </settings>
