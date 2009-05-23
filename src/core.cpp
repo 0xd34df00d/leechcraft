@@ -106,14 +106,17 @@ LeechCraft::Core::Core ()
 
 	StorageBackend_->Prepare ();
 
+	CustomCookieJar *jar = new CustomCookieJar (this);
+	NetworkAccessManager_->setCookieJar (jar);
 	QFile file (QDir::homePath () +
 			"/.leechcraft/core/cookies.txt");
 	if (file.open (QIODevice::ReadOnly))
-	{
-		CustomCookieJar *jar = new CustomCookieJar (this);
 		jar->Load (file.readAll ());
-		NetworkAccessManager_->setCookieJar (jar);
-	}
+	else
+		qWarning () << Q_FUNC_INFO
+			<< "could not open file"
+			<< file.fileName ()
+			<< file.errorString ();
 
 	try
 	{
