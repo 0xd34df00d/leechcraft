@@ -3,6 +3,7 @@
 #include "interfaces/iinfo.h"
 #include <QAbstractItemModel>
 #include <QMap>
+#include <QUuid>
 #include <QString>
 #include <QMetaType>
 
@@ -16,12 +17,10 @@ namespace LeechCraft
 
 		TagsManager ();
 	public:
-		typedef QMap<tag_id, QString> TagsDictionary_t;
+		typedef QMap<QUuid, QString> TagsDictionary_t;
 	private:
 		TagsDictionary_t Tags_;
-		tag_id Next_;
 	public:
-		typedef tag_id tag_size_t;
 		static TagsManager& Instance ();
 		virtual ~TagsManager ();
 

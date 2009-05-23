@@ -57,13 +57,13 @@ int TagsManager::rowCount (const QModelIndex& index) const
 
 ITagsManager::tag_id TagsManager::GetID (const QString& tag)
 {
-	QList<tag_id> keys = Tags_.keys (tag);
+	QList<QUuid> keys = Tags_.keys (tag);
 	if (keys.isEmpty ())
 		return InsertTag (tag);
 	else if (keys.size () > 1)
 		throw std::runtime_error (qPrintable (QString ("More than one key for %1").arg (tag)));
 	else
-		return keys.at (0);
+		return keys.at (0).toString ();
 }
 
 QString TagsManager::GetTag (ITagsManager::tag_id id) const
@@ -84,11 +84,11 @@ QString TagsManager::Join (const QStringList& tags) const
 ITagsManager::tag_id TagsManager::InsertTag (const QString& tag)
 {
 	beginInsertRows (QModelIndex (), Tags_.size (), Tags_.size ());
-	Tags_ [Next_] = tag;
+	QUuid uuid = QUuid::createUuid ();
+	Tags_ [uuid] = tag;
 	endInsertRows ();
-	tag_id result = Next_++;
 	WriteSettings ();
-	return result;
+	return uuid.toString ();
 }
 
 void TagsManager::RemoveTag (const QModelIndex& index)
@@ -129,7 +129,6 @@ void TagsManager::ReadSettings ()
 	Tags_ = settings.value ("Dict").value<TagsDictionary_t> ();
 	beginInsertRows (QModelIndex (), 0, Tags_.size () - 1);
 	endInsertRows ();
-	Next_ = settings.value ("Next", 0).value<tag_id> ();
 	settings.endGroup ();
 }
 
@@ -139,7 +138,6 @@ void TagsManager::WriteSettings () const
 			Util::Proxy::Instance ()->GetApplicationName ());
 	settings.beginGroup ("Tags");
 	settings.setValue ("Dict", QVariant::fromValue<TagsDictionary_t> (Tags_));
-	settings.setValue ("Next", Next_);
 	settings.endGroup ();
 }
 

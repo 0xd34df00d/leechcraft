@@ -71,7 +71,7 @@ namespace LeechCraft
 class ITagsManager
 {
 public:
-	typedef quint64 tag_id;
+	typedef QString tag_id;
 
 	/** @brief Returns the ID of the given tag.
 	 *
