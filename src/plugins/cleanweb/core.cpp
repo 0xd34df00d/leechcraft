@@ -273,6 +273,28 @@ int Core::rowCount (const QModelIndex& index) const
 	return index.isValid () ? 0 : Filters_.size ();
 }
 
+bool Core::CouldHandle (const DownloadEntity& e) const
+{
+	if (e.Entity_.size () > 1024)
+		return false;
+
+	QString urlString = QTextCodec::codecForName ("UTF-8")->
+		toUnicode (e.Entity_);
+	QUrl url (urlString);
+	if (url.scheme () == "abp" &&
+			url.path () == "subscribe")
+	{
+		QString name = url.queryItemValue ("title");
+		if (std::find_if (Filters_.begin (), Filters_.end (),
+					FilterFinder<FilterFinderBase::TName_> (name)) == Filters_.end ())
+			return true;
+		else
+			return false;
+	}
+	else
+		return false;
+}
+
 void Core::Handle (DownloadEntity subscr)
 {
 	QString urlString = QTextCodec::codecForName ("UTF-8")->
@@ -280,6 +302,10 @@ void Core::Handle (DownloadEntity subscr)
 	QUrl subscrUrl (urlString);
 	QUrl url (subscrUrl.queryItemValue ("location"));
 	QString subscrName = subscrUrl.queryItemValue ("title");
+
+	if (std::find_if (Filters_.begin (), Filters_.end (),
+				FilterFinder<FilterFinderBase::TName_> (subscrName)) != Filters_.end ())
+		return;
 
 	Load (url, subscrName);
 }

@@ -88,6 +88,7 @@ namespace LeechCraft
 				QModelIndex parent (const QModelIndex&) const;
 				int rowCount (const QModelIndex& = QModelIndex ()) const;
 
+				bool CouldHandle (const DownloadEntity&) const;
 				void Handle (DownloadEntity);
 				QAbstractItemModel* GetModel ();
 				void Remove (const QModelIndex&);

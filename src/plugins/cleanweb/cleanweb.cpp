@@ -82,17 +82,7 @@ boost::shared_ptr<XmlSettingsDialog> CleanWeb::GetSettingsDialog () const
 
 bool CleanWeb::CouldHandle (const DownloadEntity& e) const
 {
-	if (e.Entity_.size () > 1024)
-		return false;
-
-	QString urlString = QTextCodec::codecForName ("UTF-8")->
-		toUnicode (e.Entity_);
-	QUrl url (urlString);
-	if (url.scheme () == "abp" &&
-			url.path () == "subscribe")
-		return true;
-	else
-		return false;
+	return Core::Instance ().CouldHandle (e);
 }
 
 void CleanWeb::Handle (DownloadEntity e)
