@@ -46,12 +46,14 @@ QVariant FavoritesModel::data (const QModelIndex& index, int role) const
 				case ColumnURL:
 					return Items_ [index.row ()].URL_;
 				case ColumnTags:
-					return Items_ [index.row ()].Tags_.join (" ");
+					return Core::Instance ().GetProxy ()->
+						GetTagsManager ()->Join (GetVisibleTags (index.row ()));
 				default:
 					return QVariant ();
 			}
 		case TagsRole:
-			return Items_ [index.row ()].Tags_;
+			return Core::Instance ().GetProxy ()->
+				GetTagsManager ()->Join (GetVisibleTags (index.row ()));
 		default:
 			return QVariant ();
 	}
@@ -93,13 +95,19 @@ int FavoritesModel::rowCount (const QModelIndex& index) const
 	return index.isValid () ? 0 : Items_.size ();
 }
 
+/** The passed value is a string list with user-visible tags.
+ */
 bool FavoritesModel::setData (const QModelIndex& index,
 		const QVariant& value, int)
 {
 	if (index.column () != ColumnTags)
 		return false;
 
-	Items_ [index.row ()].Tags_ = value.toStringList ();
+	QStringList userTags = value.toStringList ();
+	Items_ [index.row ()].Tags_.clear ();
+	Q_FOREACH (QString ut, userTags) 
+		Items_ [index.row ()].Tags_.append (Core::Instance ().GetProxy ()->
+				GetTagsManager ()->GetID (ut));
 	Core::Instance ().GetStorageBackend ()->UpdateFavorites (Items_ [index.row ()]);
 	return true;
 }
@@ -131,6 +139,15 @@ bool FavoritesModel::AddItem (const QString& title, const QString& url,
 const FavoritesModel::items_t& FavoritesModel::GetItems () const
 {
 	return Items_;
+}
+
+QStringList FavoritesModel::GetVisibleTags (int index) const
+{
+	QStringList user;
+	Q_FOREACH (QString id, Items_ [index].Tags_)
+		user.append (Core::Instance ().GetProxy ()->GetTagsManager ()->
+				GetTag (id));
+	return user;
 }
 
 void FavoritesModel::removeItem (const QModelIndex& index)

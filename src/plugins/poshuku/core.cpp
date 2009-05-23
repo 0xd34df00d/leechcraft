@@ -106,15 +106,6 @@ void Core::Init ()
 			FavoritesModel_.get (),
 			SLOT (handleItemRemoved (const FavoritesModel::FavoritesItem&)));
 
-	FavoriteTagsCompletionModel_.reset (new TagsCompletionModel (this));
-	FavoriteTagsCompletionModel_->
-		UpdateTags (XmlSettingsManager::Instance ()->
-				Property ("FavoriteTags", tr ("untagged")).toStringList ());
-	connect (FavoriteTagsCompletionModel_.get (),
-			SIGNAL (tagsUpdated (const QStringList&)),
-			this,
-			SLOT (favoriteTagsUpdated (const QStringList&)));
-
 	QTimer::singleShot (200, this, SLOT (postConstruct ()));
 }
 
@@ -127,11 +118,20 @@ void Core::Release ()
 
 	HistoryModel_.reset ();
 	FavoritesModel_.reset ();
-	FavoriteTagsCompletionModel_.reset ();
 	StorageBackend_.reset ();
 
 	XmlSettingsManager::Instance ()->setProperty ("CleanShutdown", true);
 	XmlSettingsManager::Instance ()->Release ();
+}
+
+void Core::SetProxy (ICoreProxy_ptr proxy)
+{
+	Proxy_ = proxy;
+}
+
+ICoreProxy_ptr Core::GetProxy () const
+{
+	return Proxy_;
 }
 
 void Core::SetProvider (QObject *object, const QString& feature)
@@ -278,11 +278,6 @@ HistoryModel* Core::GetHistoryModel () const
 URLCompletionModel* Core::GetURLCompletionModel () const
 {
 	return URLCompletionModel_.get ();
-}
-
-TagsCompletionModel* Core::GetFavoritesTagsCompletionModel () const
-{
-	return FavoriteTagsCompletionModel_.get ();
 }
 
 QNetworkAccessManager* Core::GetNetworkAccessManager () const
@@ -531,7 +526,6 @@ void Core::handleAddToFavorites (const QString& title, const QString& url)
 {
 	std::auto_ptr<AddToFavoritesDialog> dia (new AddToFavoritesDialog (title,
 				url,
-				GetFavoritesTagsCompletionModel (),
 				qApp->activeWindow ()));
 
 	bool result = false;
@@ -544,8 +538,6 @@ void Core::handleAddToFavorites (const QString& title, const QString& url)
 				url, dia->GetTags ());
 	}
 	while (!result);
-
-	FavoriteTagsCompletionModel_->UpdateTags (dia->GetTags ());
 }
 
 void Core::handleStatusBarChanged (const QString& msg)

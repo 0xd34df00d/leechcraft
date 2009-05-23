@@ -6,6 +6,7 @@
 #include <QUrl>
 #include <QTimer>
 #include <plugininterface/tagscompletionmodel.h>
+#include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
 #include "favoritesmodel.h"
 #include "historymodel.h"
@@ -36,7 +37,6 @@ class Core : public QObject
 
 	std::auto_ptr<FavoritesModel> FavoritesModel_;
 	std::auto_ptr<HistoryModel> HistoryModel_;
-	std::auto_ptr<LeechCraft::Util::TagsCompletionModel> FavoriteTagsCompletionModel_;
 	std::auto_ptr<URLCompletionModel> URLCompletionModel_;
 	std::auto_ptr<PluginManager> PluginManager_;
 	boost::shared_ptr<StorageBackend> StorageBackend_;
@@ -50,6 +50,8 @@ class Core : public QObject
 	QMap<QString, QString> SavedSession_;
 	QList<QAction*> Unclosers_;
 	const IShortcutProxy *ShortcutProxy_;
+
+	ICoreProxy_ptr Proxy_;
 
 	Core ();
 public:
@@ -68,6 +70,9 @@ public:
 	static Core& Instance ();
 	void Init ();
 	void Release ();
+	void SetProxy (ICoreProxy_ptr);
+	ICoreProxy_ptr GetProxy () const;
+
 	void SetProvider (QObject*, const QString&);
 	QByteArray GetExpectedPluginClass () const;
 	void AddPlugin (QObject*);
@@ -82,7 +87,6 @@ public:
 	FavoritesModel* GetFavoritesModel () const;
 	HistoryModel* GetHistoryModel () const;
 	URLCompletionModel* GetURLCompletionModel () const;
-	LeechCraft::Util::TagsCompletionModel* GetFavoritesTagsCompletionModel () const;
 	QNetworkAccessManager* GetNetworkAccessManager () const;
 	void SetNetworkAccessManager (QNetworkAccessManager*);
 	StorageBackend* GetStorageBackend () const;

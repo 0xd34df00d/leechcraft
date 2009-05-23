@@ -27,6 +27,7 @@ void Poshuku::Init (ICoreProxy_ptr coreProxy)
 	Core::Instance ().SetNetworkAccessManager (coreProxy->GetNetworkAccessManager ());
 	Core::Instance ().SetShortcutProxy (coreProxy->GetShortcutProxy ());
 	Core::Instance ().setParent (this);
+	Core::Instance ().SetProxy (coreProxy);
 
 	Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku"));
 	Ui_.setupUi (this);
@@ -310,8 +311,6 @@ void Poshuku::SetupFavoritesFilter ()
 			SLOT (translateRemoveFavoritesItem (const QModelIndex&)));
 
 	FavoritesFilterLineCompleter_.reset (new TagsCompleter (Ui_.FavoritesFilterLine_, this));
-	FavoritesFilterLineCompleter_->
-		setModel (Core::Instance ().GetFavoritesTagsCompletionModel ());
 	Ui_.FavoritesFilterLine_->AddSelector ();
 	connect (Ui_.FavoritesFilterLine_,
 			SIGNAL (textChanged (const QString&)),

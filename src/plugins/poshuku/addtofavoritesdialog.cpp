@@ -1,12 +1,11 @@
 #include "addtofavoritesdialog.h"
-#include <plugininterface/tagscompletionmodel.h>
+#include "core.h"
 
 using LeechCraft::Util::TagsCompleter;
 using LeechCraft::Util::TagsCompletionModel;
 
 AddToFavoritesDialog::AddToFavoritesDialog (const QString& title,
 		const QString& url,
-		TagsCompletionModel *model,
 		QWidget *parent)
 : QDialog (parent)
 {
@@ -16,7 +15,6 @@ AddToFavoritesDialog::AddToFavoritesDialog (const QString& title,
 	Ui_.TagsEdit_->setText (tr ("untagged"));
 
 	TagsCompleter_.reset (new TagsCompleter (Ui_.TagsEdit_));
-	TagsCompleter_->setModel (model);
 	Ui_.TagsEdit_->AddSelector ();
 }
 
@@ -31,6 +29,7 @@ QString AddToFavoritesDialog::GetTitle () const
 
 QStringList AddToFavoritesDialog::GetTags () const
 {
-	return Ui_.TagsEdit_->text ().split (" ", QString::SkipEmptyParts);
+	return Core::Instance ().GetProxy ()->
+		GetTagsManager ()->Split (Ui_.TagsEdit_->text ());
 }
 

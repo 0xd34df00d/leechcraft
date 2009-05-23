@@ -23,7 +23,6 @@ class AddToFavoritesDialog : public QDialog
 public:
 	AddToFavoritesDialog (const QString&,
 			const QString&,
-			LeechCraft::Util::TagsCompletionModel*,
 			QWidget* = 0);
 	virtual ~AddToFavoritesDialog ();
 

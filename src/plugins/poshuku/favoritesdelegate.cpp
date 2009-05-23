@@ -21,7 +21,6 @@ QWidget* FavoritesDelegate::createEditor (QWidget *parent,
 
 	TagsLineEdit *tle = new TagsLineEdit (parent);
 	TagsCompleter_.reset (new TagsCompleter (tle));
-	TagsCompleter_->setModel (Core::Instance ().GetFavoritesTagsCompletionModel ());
 	tle->AddSelector ();
 	return tle;
 }
@@ -35,9 +34,11 @@ void FavoritesDelegate::setEditorData (QWidget *editor,
 		return;
 	}
 
-	static_cast<TagsLineEdit*> (editor)->setText (Core::Instance ()
-			.GetFavoritesModel ()->	data (index, FavoritesModel::TagsRole)
-			.toStringList ().join (" "));
+	QStringList tags = Core::Instance ().GetFavoritesModel ()->
+		data (index, FavoritesModel::TagsRole).toStringList ();
+	static_cast<TagsLineEdit*> (editor)->
+		setText (Core::Instance ().GetProxy ()->
+				GetTagsManager ()->Join (tags));
 }
 
 void FavoritesDelegate::setModelData (QWidget *editor,
@@ -49,8 +50,8 @@ void FavoritesDelegate::setModelData (QWidget *editor,
 		return;
 	}
 
-	QStringList tags = static_cast<TagsLineEdit*> (editor)->
-		text ().split (" ", QString::SkipEmptyParts);
+	QStringList tags = Core::Instance ().GetProxy ()->GetTagsManager ()->
+		Split (static_cast<TagsLineEdit*> (editor)->text ());
 	model->setData (index, tags);
 }
 

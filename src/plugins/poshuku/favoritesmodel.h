@@ -14,6 +14,7 @@ public:
 	{
 		QString Title_;
 		QString URL_;
+		/// Contains ids of the real tags.
 		QStringList Tags_;
 
 		bool operator== (const FavoritesItem&) const;
@@ -28,7 +29,12 @@ public:
 		, ColumnURL
 		, ColumnTags
 	};
-	enum { TagsRole = 42 };
+
+	enum
+	{
+		/// Returns the user-sensible string with tags.
+		TagsRole = 42
+	};
 
 	FavoritesModel (QObject* = 0);
 	virtual ~FavoritesModel ();
@@ -47,6 +53,8 @@ public:
 
 	bool AddItem (const QString&, const QString&, const QStringList&);
 	const items_t& GetItems () const;
+private:
+	QStringList GetVisibleTags (int) const;
 public slots:
 	void removeItem (const QModelIndex&);
 	void handleItemAdded (const FavoritesModel::FavoritesItem&);
