@@ -36,6 +36,7 @@ namespace LeechCraft
 			bool operator() (DepTreeItem_ptr) const;
 		};
 
+		// No plugins are dependent on these.
 		QList<DepTreeItem_ptr> Roots_;
 		typedef boost::shared_ptr<QPluginLoader> QPluginLoader_ptr;
         typedef QList<QPluginLoader_ptr> PluginsContainer_t;
@@ -100,7 +101,10 @@ namespace LeechCraft
 
 		QList<PluginsContainer_t::iterator> FindProviders (const QString&);
 		QList<PluginsContainer_t::iterator> FindProviders (const QByteArray&);
-		DepTreeItem_ptr GetDependency (QObject*);
+
+		/** Returns dependency item that matches the given object.
+		 */
+		DepTreeItem_ptr GetDependency (QObject *object);
 
 		/** Calculates the deps.
 		 */

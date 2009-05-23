@@ -439,7 +439,6 @@ LeechCraft::PluginManager::DepTreeItem_ptr
 
 void LeechCraft::PluginManager::CalculateDependencies ()
 {
-	// This step prepares the most full graph that could possibly be.
 	for (PluginsContainer_t::iterator i = Plugins_.begin ();
 			i < Plugins_.end (); ++i)
 		if (!GetDependency ((*i)->instance ()))
@@ -461,6 +460,10 @@ LeechCraft::PluginManager::DepTreeItem_ptr
 		(LeechCraft::PluginManager::PluginsContainer_t::iterator i)
 {
 	QObject *entity = (*i)->instance ();
+	DepTreeItem_ptr possibly = GetDependency (entity);
+	if (possibly)
+		return possibly;
+
 	IInfo *info = qobject_cast<IInfo*> (entity);
 	QStringList needs;
 	QStringList uses;
@@ -488,6 +491,9 @@ LeechCraft::PluginManager::DepTreeItem_ptr
 		throw;
 	}
 
+#ifdef QT_DEBUG
+	qDebug () << "new item" << info->GetName ();
+#endif
 	DepTreeItem_ptr newDep (new DepTreeItem ());
 	newDep->Plugin_ = entity;
 
