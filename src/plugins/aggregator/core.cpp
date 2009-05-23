@@ -395,7 +395,6 @@ QStringList Core::GetTagsForIndex (int i) const
 			if (!tag.isEmpty ())
 				result.append (tag);
 		}
-		qDebug () << ids << result;
 		return result;
 	}
 	catch (const std::exception& e)
