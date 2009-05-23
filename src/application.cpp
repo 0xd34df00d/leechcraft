@@ -18,6 +18,7 @@
 #include <plugininterface/util.h>
 #include <plugininterface/structuresops.h>
 #include "debugmessagehandler.h"
+#include "tagsmanager.h"
 
 using namespace LeechCraft;
 
@@ -100,7 +101,9 @@ Application::Application (int& argc, char **argv)
 
     qRegisterMetaType<QModelIndex> ("QModelIndex");
     qRegisterMetaType<QModelIndex*> ("QModelIndexStar");
+	qRegisterMetaType<TagsManager::TagsDictionary_t> ("LeechCraft::TagsManager::TagsDictionary_t");
 	qRegisterMetaType<LeechCraft::DownloadEntity> ("LeechCraft::DownloadEntity");
+	qRegisterMetaTypeStreamOperators<TagsManager::TagsDictionary_t> ("LeechCraft::TagsManager::TagsDictionary_t");
 	qRegisterMetaTypeStreamOperators<LeechCraft::DownloadEntity> ("LeechCraft::DownloadEntity");
 
 	LeechCraft::Util::Proxy::Instance ()->SetStrings (QStringList (tr ("bytes")) <<

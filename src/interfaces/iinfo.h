@@ -64,6 +64,58 @@ namespace LeechCraft
 		};
 };
 
+/** @brief Tags manager's interface.
+ *
+ * This interface is for communication with the tags manager.
+ */
+class ITagsManager
+{
+public:
+	typedef quint64 tag_id;
+
+	/** @brief Returns the ID of the given tag.
+	 *
+	 * If there is no such tag, it's added to the tag collection and the
+	 * id of the new tag is returned.
+	 *
+	 * @param[in] tag The tag that should be identified.
+	 * @return The ID of the tag.
+	 *
+	 * @sa GetTag
+	 */
+	virtual tag_id GetID (const QString& tag) = 0;
+
+	/** @brief Returns the tag with the given id.
+	 *
+	 * If there is no such tag, a null QString is returned. A sensible
+	 * plugin would delete the given id from the list of assigned tags
+	 * for all the items with this id.
+	 * 
+	 * @param[in] id The id of the tag.
+	 * @return The tag.
+	 *
+	 * @sa GetID
+	 */
+	virtual QString GetTag (tag_id id) const = 0;
+
+	/** @brief Splits the given string with tags to the list of the tags.
+	 *
+	 * @param[in] string String with tags.
+	 * @return The list of the tags.
+	 */
+	virtual QStringList Split (const QString& string) const = 0;
+
+	/** @brief Joins the given tags into one string that's suitable to
+	 * display to the user.
+	 *
+	 * @param[in] tags List of tags.
+	 * @return The joined string with tags.
+	 */
+	virtual QString Join (const QStringList& tags) const = 0;
+
+	virtual ~ITagsManager () {}
+};
+
 /** @brief Proxy class for the communication with LeechCraft.
  *
  * Allows to talk with LeechCraft, requesting and getting various
@@ -97,11 +149,22 @@ public:
 	 */
 	virtual QModelIndex MapToSource (const QModelIndex&) const = 0;
 
+	/** Returns the LeechCraft's settings manager.
+	 */
 	virtual LeechCraft::Util::BaseSettingsManager* GetSettingsManager () const = 0;
 
-	virtual QIcon GetIcon (const QString&, const QString& = QString ()) const = 0;
+	/** Returns the current theme's icon for the given on and off
+	 * states. Similar to the mapping files.
+	 */
+	virtual QIcon GetIcon (const QString& on, const QString& off = QString ()) const = 0;
 
+	/** Returns main LeechCraft's window.
+	 */
 	virtual QMainWindow* GetMainWindow () const = 0;
+
+	/** Returns the application-wide tags manager.
+	 */
+	virtual ITagsManager* GetTagsManager () const = 0;
 
 #define LC_DEFINE_REGISTER(a) virtual void RegisterHook (LeechCraft::HookSignature<a>::Signature_t) = 0;
 #define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))
@@ -293,6 +356,7 @@ public:
 
 Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
 Q_DECLARE_INTERFACE (ICoreProxy, "org.Deviant.LeechCraft.ICoreProxy/1.0");
+Q_DECLARE_INTERFACE (ITagsManager, "org.Deviant.LeechCraft.ITagsManager/1.0");
 
 #endif
 

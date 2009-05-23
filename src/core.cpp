@@ -49,6 +49,7 @@
 #include "requestparser.h"
 #include "handlerchoicedialog.h"
 #include "networkdiskcache.h"
+#include "tagsmanager.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;

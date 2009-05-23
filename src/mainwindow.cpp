@@ -21,6 +21,7 @@
 #include "graphwidget.h"
 #include "shortcutmanager.h"
 #include "appstyler.h"
+#include "tagsviewer.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -199,6 +200,8 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	XmlSettingsDialog_ = new XmlSettingsDialog ();
 	XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 			":/coresettings.xml");
+
+	XmlSettingsDialog_->SetCustomWidget ("TagsViewer", new TagsViewer);
 
 	IconChooser *ic = new IconChooser (SkinEngine::Instance ().ListIcons (),
 			this);

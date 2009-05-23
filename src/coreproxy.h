@@ -19,6 +19,7 @@ namespace LeechCraft
 		Util::BaseSettingsManager* GetSettingsManager () const;
 		QMainWindow* GetMainWindow () const;
 		QIcon GetIcon (const QString&, const QString& = QString ()) const;
+		ITagsManager* GetTagsManager () const;
 
 #define LC_DEFINE_REGISTER(a) void RegisterHook (LeechCraft::HookSignature<LeechCraft::a>::Signature_t);
 #define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))

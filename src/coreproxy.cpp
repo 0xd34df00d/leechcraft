@@ -3,6 +3,7 @@
 #include "mainwindow.h"
 #include "xmlsettingsmanager.h"
 #include "skinengine.h"
+#include "tagsmanager.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -45,6 +46,11 @@ QMainWindow* CoreProxy::GetMainWindow () const
 QIcon CoreProxy::GetIcon (const QString& icon, const QString& iconOff) const
 {
 	return SkinEngine::Instance ().GetIcon (icon, iconOff);
+}
+
+ITagsManager* CoreProxy::GetTagsManager () const
+{
+	return &TagsManager::Instance ();
 }
 
 #define LC_DEFINE_REGISTER(a) \

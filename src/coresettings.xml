@@ -28,45 +28,50 @@
 			<label lang="ru" value="Горячие клавиши" />
 			<item type="customwidget" label="own" name="ShortcutManager" />
 		</tab>
-	</page>
-    <page>
-        <label lang="en" value="Behavior" />
-        <label lang="ru" value="Поведение" />
-		<label lang="uk" value="Поведінка" />
-		<groupbox>
+		<tab>
 			<label lang="en" value="Behavior" />
 			<label lang="ru" value="Поведение" />
 			<label lang="uk" value="Поведінка" />
-			<item type="checkbox" property="WatchClipboard" state="on">
-				<label lang="en" value="Watch clipboard" />
-				<label lang="ru" value="Следить за буфером обмена" />
-				<label lang="uk" value="Спостерігати за буфером обміну" />
+			<groupbox>
+				<label lang="en" value="Behavior" />
+				<label lang="ru" value="Поведение" />
+				<label lang="uk" value="Поведінка" />
+				<item type="checkbox" property="WatchClipboard" state="on">
+					<label lang="en" value="Watch clipboard" />
+					<label lang="ru" value="Следить за буфером обмена" />
+					<label lang="uk" value="Спостерігати за буфером обміну" />
+				</item>
+				<item type="checkbox" property="ConfirmQuit" default="true">
+					<label lang="en" value="Ask quit confirmation" />
+					<label lang="ru" value="Запрашивать подтверждение выхода" />
+				</item>
+			</groupbox>
+			<item type="groupbox" property="ShowFinishedDownloadMessages" state="on" checkable="true">
+				<label lang="en" value="Show messages about finished downloads in tray" />
+				<label lang="ru" value="Показывать сообщения о завершенных закачках в трее" />
+				<label lang="uk" value="Показувати повідомленя про завершені завантаження в треї" />
+				<item type="spinbox" property="FinishedDownloadMessageTimeout" default="10" minimum="1" maximum="15" step="1">
+					<lang value="en">
+						<label value="Message timeout:" />
+						<suffix value=" s" />
+					</lang>
+					<lang value="ru">
+						<label value="Время показа:" />
+						<suffix value=" с" />
+					</lang>
+					<lang value="uk">
+						<label value="Відображати повідомлення:" />
+						<suffix value=" с" />
+					</lang>
+				</item>
 			</item>
-			<item type="checkbox" property="ConfirmQuit" default="true">
-				<label lang="en" value="Ask quit confirmation" />
-				<label lang="ru" value="Запрашивать подтверждение выхода" />
-			</item>
-		</groupbox>
-		<item type="groupbox" property="ShowFinishedDownloadMessages" state="on" checkable="true">
-			<label lang="en" value="Show messages about finished downloads in tray" />
-			<label lang="ru" value="Показывать сообщения о завершенных закачках в трее" />
-			<label lang="uk" value="Показувати повідомленя про завершені завантаження в треї" />
-			<item type="spinbox" property="FinishedDownloadMessageTimeout" default="10" minimum="1" maximum="15" step="1">
-				<lang value="en">
-					<label value="Message timeout:" />
-					<suffix value=" s" />
-				</lang>
-				<lang value="ru">
-					<label value="Время показа:" />
-					<suffix value=" с" />
-				</lang>
-				<lang value="uk">
-					<label value="Відображати повідомлення:" />
-					<suffix value=" с" />
-				</lang>
-			</item>
-		</item>
+		</tab>
     </page>
+	<page>
+		<label lang="en" value="Tags" />
+		<label lang="ru" value="Теги" />
+		<item type="customwidget" label="own" name="TagsViewer" />
+	</page>
 	<page>
 		<label lang="en" value="Network" />
 		<label lang="ru" value="Сеть" />

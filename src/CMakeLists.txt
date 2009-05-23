@@ -193,6 +193,8 @@ SET (SRCS
 	networkaccessmanager.cpp
 	coreproxy.cpp
 	appstyler.cpp
+	tagsmanager.cpp
+	tagsviewer.cpp
 	3dparty/qxttooltip.cpp
 	)
 SET (HEADERS
@@ -230,6 +232,8 @@ SET (HEADERS
 	networkaccessmanager.h
 	coreproxy.h
 	appstyler.h
+	tagsmanager.h
+	tagsviewer.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/iinfo.h
@@ -262,6 +266,7 @@ SET (FORMS
 	handlerchoicedialog.ui
 	shortcutmanager.ui
 	keysequencer.ui
+	tagsviewer.ui
 	)
 SET (RESOURCES mainresources.qrc)
 SET (TRANSLATIONS
