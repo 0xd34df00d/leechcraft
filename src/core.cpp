@@ -274,9 +274,12 @@ QStringList LeechCraft::Core::GetTagsForIndex (int index,
 	int starting = dynamic_cast<MergeModel*> (model)->
 		GetStartingRow (modIter);
 
-	return (*modIter)->
-		data ((*modIter)->index (index - starting, 0), RoleTags)
-		.toStringList ();
+	QStringList ids = (*modIter)->data ((*modIter)->
+			index (index - starting, 0), RoleTags).toStringList ();
+	QStringList result;
+	Q_FOREACH (QString id, ids)
+		result << TagsManager::Instance ().GetTag (id);
+	return result;
 }
 
 void LeechCraft::Core::DelayedInit ()
