@@ -1223,5 +1223,5 @@ void TorrentPlugin::SetupActions ()
 	Toolbar_->addAction (Export_.get ());
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_torrent, TorrentPlugin);
+Q_EXPORT_PLUGIN2 (leechcraft_bittorrent, TorrentPlugin);
 

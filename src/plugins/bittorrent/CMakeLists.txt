@@ -66,12 +66,12 @@ SET (FORMS
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS
-	leechcraft_torrent_ru_RU.ts
-	leechcraft_torrent_uk_UA.ts
+	leechcraft_bittorrent_ru_RU.ts
+	leechcraft_bittorrent_uk_UA.ts
 	)
 SET (COMPILED_TRANSLATIONS
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_torrent_ru_RU.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_torrent_uk_UA.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_bittorrent_ru_RU.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_bittorrent_uk_UA.qm
 	)
 
 IF (UNIX)
@@ -97,7 +97,7 @@ ADD_CUSTOM_COMMAND (OUTPUT
 	DEPENDS ${TRANSLATIONS}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	)
-ADD_LIBRARY (leechcraft_torrent SHARED
+ADD_LIBRARY (leechcraft_bittorrent SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
@@ -105,7 +105,7 @@ ADD_LIBRARY (leechcraft_torrent SHARED
 	${RCCS}
 	)
 
-TARGET_LINK_LIBRARIES (leechcraft_torrent
+TARGET_LINK_LIBRARIES (leechcraft_bittorrent
 	${Boost_SYSTEM_LIBRARY}
 	${Boost_THREAD_LIBRARY}
 	${Boost_DATE_TIME_LIBRARY}
@@ -115,4 +115,4 @@ TARGET_LINK_LIBRARIES (leechcraft_torrent
 	xmlsettingsdialog
 	${RBTorrent_LIBRARY}
 )
-INSTALL (TARGETS leechcraft_torrent DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (TARGETS leechcraft_bittorrent DESTINATION ${LC_PLUGINS_DEST})
