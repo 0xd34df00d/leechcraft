@@ -6,6 +6,7 @@
 #include <QMap>
 #include <QPair>
 #include <QDateTime>
+#include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
 #include <boost/shared_ptr.hpp>
 #include "item.h"
@@ -30,7 +31,6 @@ namespace LeechCraft
 {
 	namespace Util
 	{
-		class TagsCompletionModel;
 		class MergeModel;
 	};
 };
@@ -74,7 +74,6 @@ class Core : public QObject
 	QList<QObject*> Downloaders_;
 
     ChannelsModel *ChannelsModel_;
-	LeechCraft::Util::TagsCompletionModel *TagsCompletionModel_;
     QTimer *UpdateTimer_, *CustomUpdateTimer_;
     bool SaveScheduled_;
 	boost::shared_ptr<StorageBackend> StorageBackend_;
@@ -86,6 +85,7 @@ class Core : public QObject
 	QList<boost::shared_ptr<ItemsListModel> > SupplementaryModels_;
 	LeechCraft::Util::MergeModel *ItemLists_;
 	bool MergeMode_;
+	ICoreProxy_ptr Proxy_;
 
     Core ();
 public:
@@ -98,6 +98,10 @@ public:
 
     static Core& Instance ();
     void Release ();
+
+	void SetProxy (ICoreProxy_ptr);
+	ICoreProxy_ptr GetProxy () const;
+
 	bool CouldHandle (const LeechCraft::DownloadEntity&);
 	void SetWidgets (QToolBar*, QWidget*);
     void DoDelayedInit ();
@@ -108,17 +112,21 @@ public:
     Item_ptr GetItem (const QModelIndex&) const;
     QSortFilterProxyModel* GetChannelsModel () const;
 	QAbstractItemModel* GetItemsModel () const;
-	LeechCraft::Util::TagsCompletionModel* GetTagsCompletionModel () const;
 	IWebBrowser* GetWebBrowser () const;
-    void UpdateTags (const QStringList&);
     void MarkItemAsUnread (const QModelIndex&);
 	bool IsItemRead (int) const;
 	bool IsItemCurrent (int) const;
     void MarkChannelAsRead (const QModelIndex&);
     void MarkChannelAsUnread (const QModelIndex&);
+	
+	/** Returns user-meaningful tags for the given index.
+	 */
     QStringList GetTagsForIndex (int) const;
 	ChannelInfo GetChannelInfo (const QModelIndex&) const;
 	QPixmap GetChannelPixmap (const QModelIndex&) const;
+
+	/** Sets the tags for index from the given user-edited string.
+	 */
 	void SetTagsForIndex (const QString&, const QModelIndex&);
 	void UpdateFavicon (const QModelIndex&);
 	QStringList GetCategories (const QModelIndex&) const;

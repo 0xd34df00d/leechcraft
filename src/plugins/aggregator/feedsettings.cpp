@@ -9,7 +9,8 @@ FeedSettings::FeedSettings (const QModelIndex& mapped, QWidget *parent)
 	Ui_.setupUi (this);
 
 	ChannelTagsCompleter_.reset (new LeechCraft::Util::TagsCompleter (Ui_.ChannelTags_));
-	ChannelTagsCompleter_->setModel (Core::Instance ().GetTagsCompletionModel ());
+	ChannelTagsCompleter_->setModel (Core::Instance ().GetProxy ()->
+			GetTagsManager ()->GetModel ());
 	Ui_.ChannelTags_->AddSelector ();
 
 	connect (Ui_.ChannelLink_,
@@ -17,8 +18,8 @@ FeedSettings::FeedSettings (const QModelIndex& mapped, QWidget *parent)
 			&Core::Instance (),
 			SLOT (openLink (const QString&)));
 
-	Ui_.ChannelTags_->setText (Core::Instance ()
-			.GetTagsForIndex (Index_.row ()).join (" "));
+	QStringList tags = Core::Instance ().GetTagsForIndex (Index_.row ());
+	Ui_.ChannelTags_->setText (Core::Instance ().GetProxy ()->GetTagsManager ()->Join (tags));
 
 	Feed::FeedSettings settings = Core::Instance ().GetFeedSettings (Index_);
 	Ui_.UpdateInterval_->setValue (settings.UpdateTimeout_);
@@ -56,7 +57,6 @@ void FeedSettings::accept ()
 {
 	QString tags = Ui_.ChannelTags_->text ();
     Core::Instance ().SetTagsForIndex (tags, Index_);
-    Core::Instance ().UpdateTags (tags.split (' '));
 
 	Feed::FeedSettings settings (Ui_.UpdateInterval_->value (),
 		Ui_.NumItems_->value (),

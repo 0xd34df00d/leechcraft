@@ -10,7 +10,7 @@ AddFeed::AddFeed (const QString& url, QWidget *parent)
 {
     setupUi (this);
     TagsCompleter *comp = new TagsCompleter (Tags_, this);
-    comp->setModel (Core::Instance ().GetTagsCompletionModel ());
+    comp->setModel (Core::Instance ().GetProxy ()->GetTagsManager ()->GetModel ());
 	Tags_->AddSelector ();
 
 	URL_->setText (url);
@@ -23,6 +23,6 @@ QString AddFeed::GetURL () const
 
 QStringList AddFeed::GetTags () const
 {
-    return Tags_->text ().split (' ', QString::SkipEmptyParts);
+    return Core::Instance ().GetProxy ()->GetTagsManager ()->Split (Tags_->text ());
 }
 

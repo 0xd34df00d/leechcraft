@@ -11,7 +11,6 @@
 #include <QNetworkReply>
 #include <interfaces/iwebbrowser.h>
 #include <plugininterface/proxy.h>
-#include <plugininterface/tagscompletionmodel.h>
 #include <plugininterface/mergemodel.h>
 #include <plugininterface/util.h>
 #include "core.h"
@@ -32,8 +31,6 @@
 #include "jobholderrepresentation.h"
 #include "channelsfiltermodel.h"
 #include "itemslistmodel.h"
-
-using LeechCraft::Util::TagsCompletionModel;
 
 Core::Core ()
 : SaveScheduled_ (false)
@@ -63,6 +60,16 @@ void Core::Release ()
 	delete ChannelsModel_;
 	delete ItemLists_;
 	delete CurrentItemsModel_;
+}
+
+void Core::SetProxy (ICoreProxy_ptr proxy)
+{
+	Proxy_ = proxy;
+}
+
+ICoreProxy_ptr Core::GetProxy () const
+{
+	return Proxy_;
 }
 
 bool Core::CouldHandle (const LeechCraft::DownloadEntity& e)
@@ -187,9 +194,6 @@ void Core::DoDelayedInit ()
 
 	JobHolderRepresentation_->setSourceModel (ChannelsModel_);
 
-	TagsCompletionModel_ = new TagsCompletionModel (this);
-	TagsCompletionModel_->UpdateTags (XmlSettingsManager::Instance ()->
-			Property ("GlobalTags", QStringList ("untagged")).toStringList ());
 	CustomUpdateTimer_ = new QTimer (this);
 	CustomUpdateTimer_->start (60 * 1000);
 	connect (CustomUpdateTimer_,
@@ -343,19 +347,9 @@ QAbstractItemModel* Core::GetItemsModel () const
 	return ItemLists_;
 }
 
-TagsCompletionModel* Core::GetTagsCompletionModel () const
-{
-	return TagsCompletionModel_;
-}
-
 IWebBrowser* Core::GetWebBrowser () const
 {
 	return qobject_cast<IWebBrowser*> (Providers_ ["webbrowser"]);
-}
-
-void Core::UpdateTags (const QStringList& tags)
-{
-	TagsCompletionModel_->UpdateTags (tags);
 }
 
 void Core::MarkItemAsUnread (const QModelIndex& i)
@@ -392,8 +386,17 @@ QStringList Core::GetTagsForIndex (int i) const
 {
 	try
 	{
-		return ChannelsModel_->
+		QStringList ids = ChannelsModel_->
 			GetChannelForIndex (ChannelsModel_->index (i, 0)).Tags_;
+		QStringList result;
+		Q_FOREACH (QString id, ids)
+		{
+			QString tag = Proxy_->GetTagsManager ()->GetTag (id);
+			if (!tag.isEmpty ())
+				result.append (tag);
+		}
+		qDebug () << ids << result;
+		return result;
 	}
 	catch (const std::exception& e)
 	{
@@ -449,7 +452,10 @@ void Core::SetTagsForIndex (const QString& tags, const QModelIndex& index)
 	try
 	{
 		ChannelShort channel = ChannelsModel_->GetChannelForIndex (index);
-		channel.Tags_ = tags.split (' ');
+		QStringList tlist = Proxy_->GetTagsManager ()->Split (tags);
+		channel.Tags_.clear ();
+		Q_FOREACH (QString tag, tlist)
+			channel.Tags_.append (Proxy_->GetTagsManager ()->GetID (tag));
 		StorageBackend_->UpdateChannel (channel, channel.ParentURL_);
 	}
 	catch (const std::exception& e)
@@ -639,7 +645,7 @@ void Core::AddFromOPML (const QString& filename,
 			items.erase (eraser);
 		}
 
-	QStringList tagsList = tags.split (" ", QString::SkipEmptyParts);
+	QStringList tagsList = Proxy_->GetTagsManager ()->Split (tags);
 	for (OPMLParser::items_container_t::const_iterator i = items.begin (),
 			end = items.end (); i != end; ++i)
 		AddFeed (i->URL_, tagsList + i->Categories_);
@@ -759,9 +765,9 @@ void Core::SubscribeToComments (const QModelIndex& index)
 	QString commentRSS = it->CommentsLink_;
 	QStringList tags = it->Categories_;
 
-	QStringList addTags = XmlSettingsManager::Instance ()->
-		property ("CommentsTags").toString ().split (' ',
-				QString::SkipEmptyParts);
+	QStringList addTags = Proxy_->GetTagsManager ()->
+		Split (XmlSettingsManager::Instance ()->
+				property ("CommentsTags").toString ());
 	AddFeed (commentRSS, tags + addTags);
 }
 
@@ -790,7 +796,7 @@ void Core::GetChannels (channels_shorts_t& channels) const
 void Core::AddFeeds (const feeds_container_t& feeds,
 		const QString& tagsString)
 {
-	QStringList tags = tagsString.split (" ", QString::SkipEmptyParts);
+	QStringList tags = Proxy_->GetTagsManager ()->Split (tagsString);
 
 	for (feeds_container_t::const_iterator i = feeds.begin (),
 			end = feeds.end (); i != end; ++i)
@@ -1036,7 +1042,6 @@ void Core::handleJobFinished (int id)
 		Feed_ptr feed (new Feed ());
 		feed->Channels_ = channels;
 		feed->URL_ = pj.URL_;
-		TagsCompletionModel_->UpdateTags (pj.Tags_);
 		StorageBackend_->AddFeed (feed);
 	}
 	else if (pj.Role_ == PendingJob::RFeedUpdated)
@@ -1145,8 +1150,6 @@ void Core::fetchExternalFile (const QString& url, const QString& where)
 
 void Core::saveSettings ()
 {
-	XmlSettingsManager::Instance ()->setProperty ("GlobalTags",
-			TagsCompletionModel_->stringList ());
 	SaveScheduled_ = false;
 }
 

@@ -8,6 +8,7 @@
 #include <QVariant>
 #include "plugininterface/dblock.h"
 #include "xmlsettingsmanager.h"
+#include "core.h"
 
 SQLStorageBackend::SQLStorageBackend (StorageBackend::Type t)
 : Type_ (t)
@@ -473,12 +474,13 @@ void SQLStorageBackend::GetChannels (channels_shorts_t& shorts,
 
 		UnreadItemsCounter_.finish ();
 
+		QStringList tags = Core::Instance ().GetProxy ()->
+			GetTagsManager ()->Split (ChannelsShortSelector_.value (2).toString ());
 		ChannelShort sh =
 		{
 			title,
 			ChannelsShortSelector_.value (1).toString (),
-			ChannelsShortSelector_.value (2).toString ().split (' ',
-					QString::SkipEmptyParts),
+			tags,
 			ChannelsShortSelector_.value (3).toDateTime (),
 			UnserializePixmap (ChannelsShortSelector_
 					.value (4).toByteArray ()),
@@ -508,8 +510,8 @@ Channel_ptr SQLStorageBackend::GetChannel (const QString& title,
 	channel->Title_ = title;
 	channel->Description_ = ChannelsFullSelector_.value (1).toString ();
 	channel->LastBuild_ = ChannelsFullSelector_.value (2).toDateTime ();
-	channel->Tags_ = ChannelsFullSelector_.value (3).toString ().split (' ',
-			QString::SkipEmptyParts);
+	QString tags = ChannelsFullSelector_.value (3).toString ();
+	channel->Tags_ = Core::Instance ().GetProxy ()->GetTagsManager ()->Split (tags);
 	channel->Language_ = ChannelsFullSelector_.value (4).toString ();
 	channel->Author_ = ChannelsFullSelector_.value (5).toString ();
 	channel->PixmapURL_ = ChannelsFullSelector_.value (6).toString ();
@@ -682,7 +684,8 @@ void SQLStorageBackend::UpdateChannel (Channel_ptr channel, const QString& paren
 	UpdateChannel_.bindValue (":title", channel->Title_);
 	UpdateChannel_.bindValue (":description", channel->Description_);
 	UpdateChannel_.bindValue (":last_build", channel->LastBuild_);
-	UpdateChannel_.bindValue (":tags", channel->Tags_.join (" "));
+	UpdateChannel_.bindValue (":tags",
+			Core::Instance ().GetProxy ()->GetTagsManager ()->Join (channel->Tags_));
 	UpdateChannel_.bindValue (":language", channel->Language_);
 	UpdateChannel_.bindValue (":author", channel->Author_);
 	UpdateChannel_.bindValue (":pixmap_url", channel->PixmapURL_);
@@ -723,7 +726,8 @@ void SQLStorageBackend::UpdateChannel (const ChannelShort& channel,
 	UpdateShortChannel_.bindValue (":url", channel.Link_);
 	UpdateShortChannel_.bindValue (":title", channel.Title_);
 	UpdateShortChannel_.bindValue (":last_build", channel.LastBuild_);
-	UpdateShortChannel_.bindValue (":tags", channel.Tags_.join (" "));
+	UpdateShortChannel_.bindValue (":tags",
+			Core::Instance ().GetProxy ()->GetTagsManager ()->Join (channel.Tags_));
 
 	if (!UpdateShortChannel_.exec ())
 	{
@@ -820,7 +824,8 @@ void SQLStorageBackend::AddChannel (Channel_ptr channel, const QString& url)
 	InsertChannel_.bindValue (":title", channel->Title_);
 	InsertChannel_.bindValue (":description", channel->Description_);
 	InsertChannel_.bindValue (":last_build", channel->LastBuild_);
-	InsertChannel_.bindValue (":tags", channel->Tags_.join (" "));
+	InsertChannel_.bindValue (":tags",
+			Core::Instance ().GetProxy ()->GetTagsManager ()->Join (channel->Tags_));
 	InsertChannel_.bindValue (":language", channel->Language_);
 	InsertChannel_.bindValue (":author", channel->Author_);
 	InsertChannel_.bindValue (":pixmap_url", channel->PixmapURL_);

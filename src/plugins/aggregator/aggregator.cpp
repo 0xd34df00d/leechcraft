@@ -102,7 +102,7 @@ Aggregator::~Aggregator ()
 {
 }
 
-void Aggregator::Init (ICoreProxy_ptr)
+void Aggregator::Init (ICoreProxy_ptr proxy)
 {
 	Impl_ = new Aggregator_Impl;
 	Impl_->Translator_.reset (LeechCraft::Util::InstallTranslator ("aggregator"));
@@ -117,6 +117,8 @@ void Aggregator::Init (ICoreProxy_ptr)
 			SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
 			this,
 			SLOT (trayIconActivated ()));
+
+	Core::Instance ().SetProxy (proxy);
 
 	connect (&Core::Instance (),
 			SIGNAL (error (const QString&)),
@@ -187,7 +189,7 @@ void Aggregator::Init (ICoreProxy_ptr)
 			SLOT (updateFeeds ()));
 
 	Impl_->TagsLineCompleter_.reset (new TagsCompleter (Impl_->Ui_.TagsLine_));
-	Impl_->TagsLineCompleter_->setModel (Core::Instance ().GetTagsCompletionModel ());
+	Impl_->TagsLineCompleter_->setModel (proxy->GetTagsManager ()->GetModel ());
 	Impl_->Ui_.TagsLine_->AddSelector ();
 
 	Impl_->Ui_.MainSplitter_->setStretchFactor (0, 5);
