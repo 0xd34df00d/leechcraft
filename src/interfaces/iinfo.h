@@ -14,6 +14,7 @@ class QTreeView;
 class QModelIndex;
 class QIcon;
 class QMainWindow;
+class QAbstractItemModel;
 
 namespace LeechCraft
 {
@@ -112,6 +113,10 @@ public:
 	 * @return The joined string with tags.
 	 */
 	virtual QString Join (const QStringList& tags) const = 0;
+
+	/** @brief Returns the completion model for this.
+	 */
+	virtual QAbstractItemModel* GetModel () = 0;
 
 	virtual ~ITagsManager () {}
 };

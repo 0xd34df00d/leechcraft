@@ -24,12 +24,15 @@ void TagsLineEdit::AddSelector ()
 
 	QAbstractItemModel *model = Completer_->model ();
 
-	connect (qobject_cast<TagsCompletionModel*> (model),
+	connect (model,
 			SIGNAL (tagsUpdated (const QStringList&)),
 			this,
 			SLOT (handleTagsUpdated (const QStringList&)));
 
-	handleTagsUpdated (qobject_cast<TagsCompletionModel*> (model)->stringList ());
+	QStringList initialTags;
+	for (int i = 0; i < model->rowCount (); ++i)
+		initialTags << model->data (model->index (i, 0)).toString ();
+	handleTagsUpdated (initialTags);
 
 	connect (CategorySelector_.get (),
 			SIGNAL (selectionChanged (const QStringList&)),
@@ -88,14 +91,10 @@ void TagsLineEdit::keyPressEvent (QKeyEvent *e)
 	if (!Completer_ || (cos && e->text ().isEmpty ()))
 		return;
 
-	bool hasModifier = (e->modifiers () != Qt::NoModifier) && !cos;
 	QString completionPrefix = textUnderCursor ();
-	if (completionPrefix != Completer_->completionPrefix ())
-	{
-		Completer_->setCompletionPrefix (completionPrefix);
-		Completer_->popup ()->
-			setCurrentIndex (Completer_->completionModel ()->index (0, 0));
-	}
+	Completer_->setCompletionPrefix (completionPrefix);
+	Completer_->popup ()->
+		setCurrentIndex (Completer_->completionModel ()->index (0, 0));
 	Completer_->complete ();
 }
 
@@ -141,10 +140,11 @@ void TagsLineEdit::SetCompleter (TagsCompleter *c)
 
 QString TagsLineEdit::textUnderCursor () const
 {
+	QRegExp rx (";\\s*");
 	QString wtext = text ();
 	int pos = cursorPosition () - 1;
-	int last = wtext.indexOf (QChar (' '), pos);
-	int first = wtext.lastIndexOf (QChar (' '), pos);
+	int last = wtext.indexOf (rx, pos);
+	int first = wtext.lastIndexOf (rx, pos);
 	if (first == -1)
 		first = 0;
 	if (last == -1)

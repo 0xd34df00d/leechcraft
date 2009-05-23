@@ -21,8 +21,12 @@ bool TagsFilterModel::filterAcceptsRow (int source_row, const QModelIndex& index
 		return QSortFilterProxyModel::filterAcceptsRow (source_row, index);
 	else
 	{
-		QStringList itemTags = GetTagsForIndex (source_row),
-					filterTags = filterRegExp ().pattern ().split (' ', QString::SkipEmptyParts);
+		QStringList itemTags = GetTagsForIndex (source_row);
+		QStringList filterTags;
+		QStringList splitted = filterRegExp ().pattern ().split (";", QString::SkipEmptyParts);
+		Q_FOREACH (QString s, splitted)
+			filterTags << s.trimmed ();
+
 		if (!filterTags.size ())
 			return true;
 

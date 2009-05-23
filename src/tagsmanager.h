@@ -34,14 +34,17 @@ namespace LeechCraft
 		QString GetTag (tag_id) const;
 		QStringList Split (const QString&) const;
 		QString Join (const QStringList&) const;
-
 		QAbstractItemModel* GetModel ();
+
 		void RemoveTag (const QModelIndex&);
 		void SetTag (const QModelIndex&, const QString&);
 	private:
 		tag_id InsertTag (const QString&);
+		QStringList GetAllTags () const;
 		void ReadSettings ();
 		void WriteSettings () const;
+	signals:
+		void tagsUpdated (const QStringList&);
 	};
 };
 

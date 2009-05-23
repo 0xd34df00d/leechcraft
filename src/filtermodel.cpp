@@ -2,6 +2,7 @@
 #include <QtDebug>
 #include "filtermodel.h"
 #include "core.h"
+#include "tagsmanager.h"
 
 using namespace LeechCraft;
 
@@ -24,7 +25,7 @@ bool FilterModel::filterAcceptsRow (int source_row, const QModelIndex& source_pa
 	else
 	{
 		QStringList itemTags = Core::Instance ().GetTagsForIndex (source_row, sourceModel ()),
-					filterTags = filterRegExp ().pattern ().split (' ', QString::SkipEmptyParts);
+					filterTags = TagsManager::Instance ().Split (filterRegExp ().pattern ());
 		if (!filterTags.size () || !itemTags.size ())
 			return true;
 

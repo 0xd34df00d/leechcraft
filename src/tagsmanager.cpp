@@ -1,4 +1,6 @@
 #include "tagsmanager.h"
+#include <boost/bind.hpp>
+#include <QStringList>
 #include <QSettings>
 #include <QtDebug>
 #include <plugininterface/proxy.h>
@@ -7,8 +9,8 @@ using namespace LeechCraft;
 
 TagsManager::TagsManager ()
 {
-	GetID (tr ("untagged"));
 	ReadSettings ();
+	GetID (tr ("untagged"));
 }
 
 TagsManager& TagsManager::Instance ()
@@ -73,7 +75,11 @@ QString TagsManager::GetTag (ITagsManager::tag_id id) const
 
 QStringList TagsManager::Split (const QString& string) const
 {
-	return string.split (";", QString::SkipEmptyParts);
+	QStringList splitted = string.split (";", QString::SkipEmptyParts);
+	QStringList result;
+	Q_FOREACH (QString s, splitted)
+		result << s.trimmed ();
+	return result;
 }
 
 QString TagsManager::Join (const QStringList& tags) const
@@ -88,6 +94,7 @@ ITagsManager::tag_id TagsManager::InsertTag (const QString& tag)
 	Tags_ [uuid] = tag;
 	endInsertRows ();
 	WriteSettings ();
+	emit tagsUpdated (GetAllTags ());
 	return uuid.toString ();
 }
 
@@ -102,6 +109,7 @@ void TagsManager::RemoveTag (const QModelIndex& index)
 	Tags_.erase (pos);
 	endRemoveRows ();
 	WriteSettings ();
+	emit tagsUpdated (GetAllTags ());
 }
 
 void TagsManager::SetTag (const QModelIndex& index, const QString& newTag)
@@ -114,11 +122,23 @@ void TagsManager::SetTag (const QModelIndex& index, const QString& newTag)
 	*pos = newTag;
 
 	emit dataChanged (index, index);
+
+	WriteSettings ();
+
+	emit tagsUpdated (GetAllTags ());
 }
 
 QAbstractItemModel* TagsManager::GetModel ()
 {
 	return this;
+}
+
+QStringList TagsManager::GetAllTags () const
+{
+	QStringList result;
+	std::copy (Tags_.begin (), Tags_.end (),
+			std::back_inserter (result));
+	return result;
 }
 
 void TagsManager::ReadSettings ()
