@@ -74,6 +74,8 @@ QVariant ChannelsModel::data (const QModelIndex& index, int role) const
         else
             return QVariant ();
     }
+	else if (role == LeechCraft::RoleTags)
+		return Channels_.at (row).Tags_;
     else
         return QVariant ();
 }
