@@ -14,7 +14,7 @@ build-stamp: configure-stamp
 	touch build-stamp
 
 configure-stamp:
-	cmake -DCMAKE_INSTALL_PREFIX:STRING=/usr -DCMAKE_BUILD_TYPE:STRING=MinSizeRel -DDISABLE_RPATH_TRICKS=True .
+	cmake -DCMAKE_INSTALL_PREFIX:STRING=/usr -DCMAKE_BUILD_TYPE:STRING=MinSizeRel .
 	touch configure-stamp
 
 clean:
