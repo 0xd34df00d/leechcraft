@@ -280,7 +280,6 @@ void Task::handleReadyRead ()
 
 void Task::handleFinished ()
 {
-	To_->write (Reply_->readAll ());
 	Core::Instance ().RemoveFinishedReply (Reply_.get ());
 	disconnect (Reply_.get (),
 			0,
