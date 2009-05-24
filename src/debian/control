@@ -60,7 +60,7 @@ Depends: libc6,
  libqt4-script (>= 4.5),
  leechcraft-libxmlsettingsdialog0.3.0 (= ${Source-Version}),
  leechcraft-libplugininterface0.3.0 (= ${Source-Version}),
- leechcraft-iconset (= ${Source-Version})
+ leechcraft-iconset
 Recommends: leechcraft-plugin-aggregator,
  leechcraft-plugin-bittorrent,
  leechcraft-plugin-cstp,
@@ -392,3 +392,40 @@ Description: Search plugin for LeechCraft
  client). And there are lots of other plugins.
  .
  This package contains a search client for OpenSearch-aware web sites.
+
+Package: leechcraft-iconset-oxygen
+Section: net
+Architecture: all
+Depends: libc6,
+ libgcc1,
+ leechcraft (= ${Source-Version})
+Provides: leechcraft-iconset
+Homepage: http://leechcraft.org
+Description: Oxygen-based iconset for LeechCraft
+ LeechCraft is a full-featured "Internet client" application based on
+ Nokia's Qt framework. Features can be easily added via plugins that
+ can be integrated with each other with no effort, while staying away
+ from tight coupling. Most significant plugins are Poshuku (web browser),
+ Aggregator (feed reader), BitTorrent client, SeekThru (OpenSearch
+ client). And there are lots of other plugins.
+ .
+ This package contains icons taken from the Oxygen project for LeechCraft.
+
+Package: leechcraft-iconset-tango
+Section: net
+Architecture: all
+Depends: libc6,
+ libgcc1,
+ leechcraft (= ${Source-Version}),
+ tango-icon-theme (>= 0.8.1)
+Provides: leechcraft-iconset
+Homepage: http://leechcraft.org
+Description: Iconset based on the Tango project for LeechCraft
+ LeechCraft is a full-featured "Internet client" application based on
+ Nokia's Qt framework. Features can be easily added via plugins that
+ can be integrated with each other with no effort, while staying away
+ from tight coupling. Most significant plugins are Poshuku (web browser),
+ Aggregator (feed reader), BitTorrent client, SeekThru (OpenSearch
+ client). And there are lots of other plugins.
+ .
+ This package contains mapping to the Tango project icons.
