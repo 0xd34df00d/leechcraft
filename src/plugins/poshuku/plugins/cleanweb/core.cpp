@@ -13,7 +13,7 @@
 #include "xmlsettingsmanager.h"
 #include "core.h"
 
-using namespace LeechCraft::Plugins::CleanWeb;
+using namespace LeechCraft::Plugins::Poshuku::Plugins::CleanWeb;
 using LeechCraft::Util::Proxy;
 
 namespace
@@ -167,7 +167,7 @@ FilterOption::FilterOption ()
 {
 }
 
-bool LeechCraft::Plugins::CleanWeb::operator== (const FilterOption& f1, const FilterOption& f2)
+bool LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::operator== (const FilterOption& f1, const FilterOption& f2)
 {
 	return f1.Case_ == f2.Case_ &&
 		f1.MatchType_ == f2.MatchType_ &&
@@ -175,7 +175,7 @@ bool LeechCraft::Plugins::CleanWeb::operator== (const FilterOption& f1, const Fi
 		f1.NotDomains_ == f2.NotDomains_;
 }
 
-bool LeechCraft::Plugins::CleanWeb::operator!= (const FilterOption& f1, const FilterOption& f2)
+bool LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::operator!= (const FilterOption& f1, const FilterOption& f2)
 {
 	return !(f1 == f2);
 }

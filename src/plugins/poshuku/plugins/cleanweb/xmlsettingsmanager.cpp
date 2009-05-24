@@ -2,7 +2,7 @@
 #include "xmlsettingsmanager.h"
 
 using LeechCraft::Util::Proxy;
-using namespace LeechCraft::Plugins::CleanWeb;
+using namespace LeechCraft::Plugins::Poshuku::Plugins::CleanWeb;
 
 XmlSettingsManager::XmlSettingsManager ()
 {

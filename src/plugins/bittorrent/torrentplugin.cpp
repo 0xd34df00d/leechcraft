@@ -43,7 +43,7 @@ using LeechCraft::ActionInfo;
 
 void TorrentPlugin::Init (ICoreProxy_ptr proxy)
 {
-	Translator_.reset (LeechCraft::Util::InstallTranslator ("torrent"));
+	Translator_.reset (LeechCraft::Util::InstallTranslator ("bittorrent"));
 	Core::Instance ()->SetProxy (proxy);
     SetupCore ();
     SetupTorrentView ();

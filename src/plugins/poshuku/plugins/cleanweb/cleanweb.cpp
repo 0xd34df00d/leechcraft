@@ -11,7 +11,7 @@
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
-using namespace LeechCraft::Plugins::CleanWeb;
+using namespace LeechCraft::Plugins::Poshuku::Plugins::CleanWeb;
 
 void CleanWeb::Init (ICoreProxy_ptr proxy)
 {
@@ -43,7 +43,7 @@ void CleanWeb::Release ()
 
 QString CleanWeb::GetName () const
 {
-	return "CleanWeb";
+	return "Poshuku CleanWeb";
 }
 
 QString CleanWeb::GetInfo () const
@@ -90,5 +90,5 @@ void CleanWeb::Handle (DownloadEntity e)
 	Core::Instance ().Handle (e);
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_cleanweb, CleanWeb);
+Q_EXPORT_PLUGIN2 (leechcraft_poshuku_cleanweb, CleanWeb);
 

@@ -1,7 +1,7 @@
 #include "subscriptionsmanager.h"
 #include "core.h"
 
-using namespace LeechCraft::Plugins::CleanWeb;
+using namespace LeechCraft::Plugins::Poshuku::Plugins::CleanWeb;
 
 SubscriptionsManager::SubscriptionsManager (QWidget *parent)
 : QWidget (parent)
