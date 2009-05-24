@@ -113,8 +113,11 @@ bool FavoritesModel::setData (const QModelIndex& index,
 }
 
 bool FavoritesModel::AddItem (const QString& title, const QString& url,
-	   const QStringList& tags)
+	   const QStringList& visibleTags)
 {
+	QStringList tags;
+	Q_FOREACH (QString vt, visibleTags)
+		tags << Core::Instance ().GetProxy ()->GetTagsManager ()->GetID (vt);
 	FavoritesItem item =
 	{
 		title,
