@@ -40,9 +40,6 @@ void ShortcutManager::AddObject (QObject *object,
 			return;
 	}
 
-	QSettings settings ("Deviant", "Leechcraft");
-	settings.beginGroup ("Shortcuts");
-
 	IHaveShortcuts *ihs = qobject_cast<IHaveShortcuts*> (object);
 
 	if (!ihs)
@@ -52,6 +49,9 @@ void ShortcutManager::AddObject (QObject *object,
 			<< "could not be casted to IHaveShortcuts";
 		return;
 	}
+
+	QSettings settings ("Deviant", "Leechcraft");
+	settings.beginGroup ("Shortcuts");
 
 	QStringList pstrings;
 	pstrings << objName
