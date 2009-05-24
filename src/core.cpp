@@ -21,8 +21,8 @@
 #include <QDesktopServices>
 #include <QNetworkReply>
 #include <QFileDialog>
-#include <QAuthenticator>
 #include <QLocalSocket>
+#include <QNetworkDiskCache>
 #include <plugininterface/util.h>
 #include <plugininterface/proxy.h>
 #include <interfaces/iinfo.h>
@@ -36,19 +36,15 @@
 #include <interfaces/iwindow.h>
 #include <interfaces/itoolbarembedder.h>
 #include <interfaces/structures.h>
-#include <plugininterface/customcookiejar.h>
 #include "application.h"
 #include "mainwindow.h"
 #include "pluginmanager.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "mergemodel.h"
-#include "authenticationdialog.h"
-#include "sslerrorsdialog.h"
 #include "sqlstoragebackend.h"
 #include "requestparser.h"
 #include "handlerchoicedialog.h"
-#include "networkdiskcache.h"
 #include "tagsmanager.h"
 
 using namespace LeechCraft;
@@ -80,61 +76,16 @@ LeechCraft::Core::Core ()
 			<< tr ("Progress")))
 , RequestNormalizer_ (new RequestNormalizer (MergeModel_))
 , NetworkAccessManager_ (new NetworkAccessManager)
-, CookieSaveTimer_ (new QTimer ())
 , StorageBackend_ (new SQLStorageBackend ())
 {
 	MergeModel_->setObjectName ("Core MergeModel");
 	MergeModel_->setProperty ("__LeechCraft_own_core_model", true);
 	connect (NetworkAccessManager_.get (),
-			SIGNAL (authenticationRequired (QNetworkReply*,
-					QAuthenticator*)),
+			SIGNAL (error (const QString&)),
 			this,
-			SLOT (handleAuthentication (QNetworkReply*,
-					QAuthenticator*)));
-	connect (NetworkAccessManager_.get (),
-			SIGNAL (proxyAuthenticationRequired (const QNetworkProxy&,
-					QAuthenticator*)),
-			this,
-			SLOT (handleProxyAuthentication (const QNetworkProxy&,
-					QAuthenticator*)));
-	connect (NetworkAccessManager_.get (),
-			SIGNAL (sslErrors (QNetworkReply*,
-					const QList<QSslError>&)),
-			this,
-			SLOT (handleSslErrors (QNetworkReply*,
-					const QList<QSslError>&)));
+			SIGNAL (error (const QString&)));
 
 	StorageBackend_->Prepare ();
-
-	CustomCookieJar *jar = new CustomCookieJar (this);
-	NetworkAccessManager_->setCookieJar (jar);
-	QFile file (QDir::homePath () +
-			"/.leechcraft/core/cookies.txt");
-	if (file.open (QIODevice::ReadOnly))
-		jar->Load (file.readAll ());
-	else
-		qWarning () << Q_FUNC_INFO
-			<< "could not open file"
-			<< file.fileName ()
-			<< file.errorString ();
-
-	try
-	{
-		CreateIfNotExists ("core/cache");
-		NetworkDiskCache *cache = new NetworkDiskCache (NetworkAccessManager_.get ());
-		cache->setCacheDirectory (QDir::homePath () + "/.leechcraft/core/cache");
-		NetworkAccessManager_->setCache (cache);
-	}
-	catch (const std::runtime_error& e)
-	{
-		qWarning () << Q_FUNC_INFO << e.what () << "so continuing without cache";
-	}
-
-	connect (CookieSaveTimer_.get (),
-			SIGNAL (timeout ()),
-			this,
-			SLOT (saveCookies ()));
-	CookieSaveTimer_->start (10000);
 
 	PluginManager_ = new PluginManager (this);
 	connect (PluginManager_,
@@ -181,7 +132,6 @@ Core& LeechCraft::Core::Instance ()
 
 void LeechCraft::Core::Release ()
 {
-	saveCookies ();
 	XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");
 	RequestNormalizer_.reset ();
 	MergeModel_.reset ();
@@ -246,6 +196,11 @@ QAbstractItemModel* LeechCraft::Core::GetTasksModel () const
 PluginManager* LeechCraft::Core::GetPluginManager () const
 {
 	return PluginManager_;
+}
+
+StorageBackend* LeechCraft::Core::GetStorageBackend () const
+{
+	return StorageBackend_.get ();
 }
 
 QToolBar* LeechCraft::Core::GetToolBar (int index) const
@@ -1131,74 +1086,6 @@ void LeechCraft::Core::handleLog (const QString& message)
 	}
 }
 
-void LeechCraft::Core::handleAuthentication (QNetworkReply *reply, QAuthenticator *authen)
-{
-	QString msg = tr ("The URL<br /><code>%1</code><br />with "
-			"realm<br /><em>%2</em><br />requires authentication.")
-		.arg (reply->url ().toString ())
-		.arg (authen->realm ());
-	msg = msg.left (200);
-
-	DoCommonAuth (msg, authen);
-}
-
-void LeechCraft::Core::handleProxyAuthentication (const QNetworkProxy& proxy, QAuthenticator *authen)
-{
-	QString msg = tr ("The proxy <br /><code>%1</code><br />with "
-			"realm<br /><em>%2</em><br />requires authentication.")
-		.arg (proxy.hostName () + ":" + QString::number (proxy.port ()))
-		.arg (authen->realm ());
-	msg = msg.left (200);
-
-	DoCommonAuth (msg, authen);
-}
-
-void LeechCraft::Core::handleSslErrors (QNetworkReply *reply, const QList<QSslError>& errors)
-{
-	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-			Proxy::Instance ()->GetApplicationName () + "_Poshuku");
-	settings.beginGroup ("SSL exceptions");
-	QStringList keys = settings.allKeys ();
-	if (keys.contains (reply->url ().toString ())) 
-	{
-		if (settings.value (reply->url ().toString ()).toBool ())
-			reply->ignoreSslErrors ();
-	}
-	else if (keys.contains (reply->url ().host ()))
-	{
-		if (settings.value (reply->url ().host ()).toBool ())
-			reply->ignoreSslErrors ();
-	}
-	else
-	{
-		QString msg = tr ("<code>%1</code><br />has SSL errors."
-				" What do you want to do?")
-			.arg (reply->url ().toString ());
-		std::auto_ptr<SslErrorsDialog> dia (
-				new SslErrorsDialog (msg,
-					errors,
-					qApp->activeWindow ())
-				);
-
-		bool ignore = (dia->exec () == QDialog::Accepted);
-		if (ignore)
-			reply->ignoreSslErrors ();
-
-		SslErrorsDialog::RememberChoice choice = dia->GetRememberChoice ();
-
-		if (choice != SslErrorsDialog::RCNot)
-		{
-			if (choice == SslErrorsDialog::RCFile)
-				settings.setValue (reply->url ().toString (),
-						ignore);
-			else
-				settings.setValue (reply->url ().host (),
-						ignore);
-		}
-	}
-	settings.endGroup ();
-}
-
 void LeechCraft::Core::pullCommandLine ()
 {
 	QStringList arguments = qobject_cast<Application*> (qApp)->Arguments ();
@@ -1246,66 +1133,6 @@ void LeechCraft::Core::handleNewLocalServerConnection ()
 		QVariant ()
 	};
 	handleGotEntity (e);
-}
-
-void LeechCraft::Core::saveCookies () const
-{
-	QDir dir = QDir::home ();
-	dir.cd (".leechcraft");
-	if (!dir.exists ("core") &&
-			!dir.mkdir ("core"))
-	{
-		emit error (tr ("Could not create Core directory."));
-		return;
-	}
-
-	QFile file (QDir::homePath () +
-			"/.leechcraft/core/cookies.txt");
-	if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
-	{
-		emit error (tr ("Could not save cookies, error opening cookie file."));
-		qWarning () << Q_FUNC_INFO
-			<< file.errorString ();
-	}
-	else
-	{
-		CustomCookieJar *jar = static_cast<CustomCookieJar*> (NetworkAccessManager_->cookieJar ());
-		if (!jar)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "jar is NULL";
-			return;
-		}
-		file.write (jar->Save ());
-	}
-}
-
-void LeechCraft::Core::DoCommonAuth (const QString& msg, QAuthenticator *authen)
-{
-	QString realm = authen->realm ();
-
-	QString suggestedUser = authen->user ();
-	QString suggestedPassword = authen->password ();
-
-	if (suggestedUser.isEmpty ())
-		StorageBackend_->GetAuth (realm, suggestedUser, suggestedPassword);
-
-	std::auto_ptr<AuthenticationDialog> dia (
-			new AuthenticationDialog (msg,
-				suggestedUser,
-				suggestedPassword,
-				qApp->activeWindow ())
-			);
-	if (dia->exec () == QDialog::Rejected)
-		return;
-
-	QString login = dia->GetLogin ();
-	QString password = dia->GetPassword ();
-	authen->setUser (login);
-	authen->setPassword (password);
-
-	if (dia->ShouldSave ())
-		StorageBackend_->SetAuth (realm, login, password);
 }
 
 void LeechCraft::Core::InitDynamicSignals (QObject *plugin)

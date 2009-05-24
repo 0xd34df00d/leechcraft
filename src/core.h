@@ -56,7 +56,6 @@ namespace LeechCraft
 		std::auto_ptr<RequestNormalizer> RequestNormalizer_;
 		std::auto_ptr<TabContainer> TabContainer_;
 		std::auto_ptr<QNetworkAccessManager> NetworkAccessManager_;
-		std::auto_ptr<QTimer> CookieSaveTimer_;
 		std::auto_ptr<StorageBackend> StorageBackend_;
 		typedef std::map<const QAbstractItemModel*, QObject*> repres2object_t;
 		// Contains unfolded representations
@@ -103,6 +102,7 @@ namespace LeechCraft
 		QAbstractItemModel* GetPluginsModel () const;
 		QAbstractItemModel* GetTasksModel () const;
 		PluginManager* GetPluginManager () const;
+		StorageBackend* GetStorageBackend () const;
 
 		/** Returns toolbar for plugin that represents the tab widget's
 		 * page with given index. If the index is invalid or plugin
@@ -226,15 +226,10 @@ namespace LeechCraft
 		void embeddedTabWantsToFront ();
 		void handleStatusBarChanged (QWidget*, const QString&);
 		void handleLog (const QString&);
-		void handleAuthentication (QNetworkReply*, QAuthenticator*);
-		void handleProxyAuthentication (const QNetworkProxy&, QAuthenticator*);
-		void handleSslErrors (QNetworkReply*, const QList<QSslError>&);
 		void pullCommandLine ();
 		void handleNewLocalServerConnection ();
-		void saveCookies () const;
 	private:
 		bool CouldHandle (const LeechCraft::DownloadEntity&);
-		void DoCommonAuth (const QString&, QAuthenticator*);
 		/** Maps totally unmapped index to the plugin's source model
 		 * through merge model and filter model.
 		 *
