@@ -221,7 +221,7 @@ QObjectList LeechCraft::Core::GetSettables () const
 
 QObjectList LeechCraft::Core::GetShortcuts () const
 {
-	return PluginManager_->GetAllCastableRoots<IHaveSettings*> ();
+	return PluginManager_->GetAllCastableRoots<IHaveShortcuts*> ();
 }
 
 QList<QAction*> LeechCraft::Core::GetActions2Embed () const
