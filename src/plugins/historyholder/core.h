@@ -5,6 +5,7 @@
 #include <QDateTime>
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
+#include <interfaces/ihaveshortcuts.h>
 
 class QToolBar;
 
@@ -32,12 +33,21 @@ namespace LeechCraft
 				QStringList Headers_;
 				boost::shared_ptr<QToolBar> ToolBar_;
 				ICoreProxy_ptr CoreProxy_;
+				QAction *Remove_;
+
+				enum Shortcuts
+				{
+					SRemove
+				};
 			public:
 				static Core& Instance ();
 				void Release ();
 				void SetCoreProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetCoreProxy () const;
 				void Handle (const LeechCraft::DownloadEntity&);
+
+				void SetShortcut (int, const QKeySequence&);
+				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
 
 				int columnCount (const QModelIndex&) const;
 				QVariant data (const QModelIndex&, int) const;

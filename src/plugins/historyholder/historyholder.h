@@ -5,6 +5,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ifinder.h>
 #include <interfaces/ientityhandler.h>
+#include <interfaces/ihaveshortcuts.h>
 
 namespace LeechCraft
 {
@@ -16,9 +17,10 @@ namespace LeechCraft
 						 , public IInfo
 						 , public IFinder
 						 , public IEntityHandler
+						 , public IHaveShortcuts
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IFinder IEntityHandler)
+				Q_INTERFACES (IInfo IFinder IEntityHandler IHaveShortcuts)
 			public:
 				void Init (ICoreProxy_ptr);
 				void Release ();
@@ -35,6 +37,9 @@ namespace LeechCraft
 
 				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
 				void Handle (LeechCraft::DownloadEntity);
+
+				void SetShortcut (int, const QKeySequence&);
+				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
 			signals:
 				void gotEntity (const LeechCraft::DownloadEntity&);
 			};

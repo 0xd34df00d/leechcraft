@@ -73,5 +73,15 @@ void Plugin::Handle (LeechCraft::DownloadEntity)
 {
 }
 
+void Plugin::SetShortcut (int id, const QKeySequence& seq)
+{
+	Core::Instance ().SetShortcut (id, seq);
+}
+
+QMap<int, LeechCraft::ActionInfo> Plugin::GetActionInfo () const
+{
+	return Core::Instance ().GetActionInfo ();
+}
+
 Q_EXPORT_PLUGIN2 (leechcraft_deadlyrics, Plugin);
 

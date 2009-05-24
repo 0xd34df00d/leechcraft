@@ -5,6 +5,7 @@
 #include <QToolBar>
 #include <QAction>
 #include <QTreeView>
+#include <QMainWindow>
 #include <plugininterface/structuresops.h>
 #include <plugininterface/proxy.h>
 #include "findproxy.h"
@@ -61,10 +62,10 @@ LeechCraft::Plugins::HistoryHolder::Core::Core ()
 	}
 	settings.endArray ();
 
-	QAction *remove = ToolBar_->addAction (tr ("Remove"),
+	Remove_ = ToolBar_->addAction (tr ("Remove"),
 			this,
 			SLOT (remove ()));
-	remove->setProperty ("ActionIcon", "remove");
+	Remove_->setProperty ("ActionIcon", "remove");
 }
 
 Core& Core::Instance ()
@@ -81,6 +82,7 @@ void Core::Release ()
 void Core::SetCoreProxy (ICoreProxy_ptr proxy)
 {
 	CoreProxy_ = proxy;
+	Remove_->setParent (proxy->GetMainWindow ());
 	connect (CoreProxy_->GetMainView (),
 			SIGNAL (activated (const QModelIndex&)),
 			this,
@@ -109,6 +111,24 @@ void Core::Handle (const LeechCraft::DownloadEntity& entity)
 	endInsertRows ();
 
 	WriteSettings ();
+}
+
+void Core::SetShortcut (int id, const QKeySequence& seq)
+{
+	switch (id)
+	{
+		case SRemove:
+			Remove_->setShortcut (seq);
+			break;
+	}
+}
+
+QMap<int, LeechCraft::ActionInfo> Core::GetActionInfo () const
+{
+	QMap<int, ActionInfo> result;
+	result [SRemove] = ActionInfo (Remove_->text (),
+			Remove_->shortcut (), Remove_->icon ());
+	return result;
 }
 
 int Core::columnCount (const QModelIndex&) const
