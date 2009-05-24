@@ -78,15 +78,17 @@ HistoryModel::HistoryModel (QObject *parent)
 	headers << tr ("Title")
 		<< tr ("Date")
 		<< tr ("URL");
-	QTimer::singleShot (0, this, SLOT (loadData ()));
+	QTimer::singleShot (0,
+			this,
+			SLOT (loadData ()));
 	RootItem_ = new TreeItem (headers);
 
 	GarbageTimer_ = new QTimer (this);
-	GarbageTimer_->start (10 * 60 * 1000);
+	GarbageTimer_->start (60 * 60 * 1000);
 	connect (GarbageTimer_,
 			SIGNAL (timeout ()),
 			this,
-			SLOT (collectGarbage ()));
+			SLOT (loadData ()));
 
 	FolderIconProxy_ = new QAction (this);
 	FolderIconProxy_->setProperty ("ActionIcon", "poshuku_foldericon");
@@ -240,8 +242,6 @@ void HistoryModel::loadData ()
 		Add (*i);
 
 	reset ();
-
-	collectGarbage ();
 }
 
 void HistoryModel::handleItemAdded (const HistoryItem& item)
@@ -250,47 +250,5 @@ void HistoryModel::handleItemAdded (const HistoryItem& item)
 			0, 0);
 	Add (item);
 	endInsertRows ();
-}
-
-void HistoryModel::collectGarbage ()
-{
-	int age = XmlSettingsManager::Instance ()->
-				property ("HistoryClearOlderThan").toInt ();
-
-	Core::Instance ().GetStorageBackend ()->ClearOldHistory (age);
-
-	QDateTime current = QDateTime::currentDateTime ();
-	int folder = RootItem_->ChildCount () - 1;
-	int start = 0;
-
-	for ( ; folder >= 0; --folder)
-	{
-		TreeItem *folderItem = RootItem_->Child (folder);
-		bool found = false;
-		for (int j = folderItem->ChildCount () - 1; j >= 0; --j)
-			if (folderItem->Child (j)->Data (ColumnDate).toDateTime ()
-					.daysTo (current) <= age)
-			{
-				start = j;
-				found = true;
-				break;
-			}
-		if (found)
-			break;
-	}
-
-	beginRemoveRows (QModelIndex (),
-			folder + 1, RootItem_->ChildCount ());
-	for (int i = RootItem_->ChildCount () - 1; i >= folder + 1; --i)
-		RootItem_->RemoveChild (i);
-	endRemoveRows ();
-
-	TreeItem *folderItem = RootItem_->Child (folder);
-	beginRemoveRows (index (folder, 0),
-			start, folderItem->ChildCount () - 1);
-	for (int i = folderItem->ChildCount () - 1;
-			i > start; --i)
-		folderItem->RemoveChild (i);
-	endRemoveRows ();
 }
 
