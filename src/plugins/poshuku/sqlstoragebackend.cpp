@@ -149,6 +149,11 @@ void SQLStorageBackend::Prepare ()
 			break;
 	}
 
+	HistoryTruncater_ = QSqlQuery (DB_);
+	HistoryTruncater_.prepare ("DELETE FROM history "
+			"WHERE date IN "
+			"	(SELECT date FROM history ORDER BY date DESC OFFSET :num)");
+
 	FavoritesLoader_ = QSqlQuery (DB_);
 	switch (Type_)
 	{
@@ -301,16 +306,25 @@ void SQLStorageBackend::AddToHistory (const HistoryItem& item)
 	emit added (item);
 }
 
-void SQLStorageBackend::ClearOldHistory (int age)
+void SQLStorageBackend::ClearOldHistory (int age, int items)
 {
 	LeechCraft::Util::DBLock lock (DB_);
 	lock.Init ();
 	HistoryEraser_.bindValue (":age", age);
+	HistoryTruncater_.bindValue (":num", items);
 
-	if (HistoryEraser_.exec ())
-		lock.Good ();
-	else
+	if (!HistoryEraser_.exec ())
+	{
 		LeechCraft::Util::DBLock::DumpError (HistoryEraser_);
+		return;
+	}
+	if (!HistoryTruncater_.exec ())
+	{
+		LeechCraft::Util::DBLock::DumpError (HistoryTruncater_);
+		return;
+	}
+
+	lock.Good ();
 }
 
 void SQLStorageBackend::LoadFavorites (

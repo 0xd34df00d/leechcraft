@@ -68,11 +68,13 @@ public:
 
 	/** @brief Clears old history items.
 	 *
-	 * Removes all the history items that are older than days.
+	 * Removes all the history items that are older than days. Also
+	 * removes items that are overlimit.
 	 *
 	 * @param[in] days Maximum age of an item.
+	 * @param[in] items How much items should be kept at most.
 	 */
-	virtual void ClearOldHistory (int days) = 0;
+	virtual void ClearOldHistory (int days, int items) = 0;
 
 	/** @brief Get all favorites items from the storage.
 	 *

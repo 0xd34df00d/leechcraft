@@ -64,6 +64,16 @@
 						<suffix value=" дней" />
 					</lang>
 				</item>
+				<item type="spinbox" property="HistoryKeepLessThan" minimum="0" maximum="100000" default="20000">
+					<lang value="en">
+						<label value="Keep less than: " />
+						<suffix value=" items" />
+					</lang>
+					<lang value="ru">
+						<label value="Хранить не более: " />
+						<suffix value=" записей" />
+					</lang>
+				</item>
 				<item type="pushbutton" name="CookiesEdit">
 					<label lang="en" value="Cookies..." />
 					<label lang="ru" value="Кукисы..." />

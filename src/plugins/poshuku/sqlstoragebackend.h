@@ -36,6 +36,10 @@ class SQLStorageBackend : public StorageBackend
 			 * - age
 			 */
 			HistoryEraser_,
+			/** Binds:
+			 * - items
+			 */
+			HistoryTruncater_,
 			/** Returns:
 			 * - title
 			 * - url
@@ -102,7 +106,7 @@ public:
 	virtual void LoadResemblingHistory (const QString&,
 			history_items_t&) const;
 	virtual void AddToHistory (const HistoryItem&);
-	virtual void ClearOldHistory (int);
+	virtual void ClearOldHistory (int, int);
 	virtual void LoadFavorites (std::vector<FavoritesModel::FavoritesItem>&) const;
 	virtual void AddToFavorites (const FavoritesModel::FavoritesItem&);
 	virtual void RemoveFromFavorites (const FavoritesModel::FavoritesItem&);

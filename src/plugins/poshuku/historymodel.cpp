@@ -233,7 +233,9 @@ void HistoryModel::loadData ()
 { 
 	int age = XmlSettingsManager::Instance ()->
 		property ("HistoryClearOlderThan").toInt ();
-	Core::Instance ().GetStorageBackend ()->ClearOldHistory (age);
+	int maxItems = XmlSettingsManager::Instance ()->
+		property ("HistoryKeepLessThan").toInt ();
+	Core::Instance ().GetStorageBackend ()->ClearOldHistory (age, maxItems);
 
 	std::vector<HistoryItem> items;
 	Core::Instance ().GetStorageBackend ()->LoadHistory (items);
