@@ -3,9 +3,11 @@ IF (COMMAND cmake_policy)
 	cmake_policy (SET CMP0003 NEW)
 ENDIF (COMMAND cmake_policy)
 PROJECT (leechcraft)
-SET (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-SET (CMAKE_BUILD_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-SET (CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
+IF (NOT DISABLE_RPATH_TRICKS)
+	SET (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+	SET (CMAKE_BUILD_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+	SET (CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
+ENDIF (NOT DISABLE_RPATH_TRICKS)
 LIST (APPEND CMAKE_MODULE_PATH "cmake")
 IF (MSVC)
 	SET (CMAKE_CXX_FLAGS "/GX")
@@ -26,52 +28,6 @@ FIND_PACKAGE (Qt4 REQUIRED)
 FIND_PACKAGE (Phonon)
 FIND_PACKAGE (RBTorrent)
 #FIND_PACKAGE (Wt)
-
-IF (ENABLE_PACK)
-	INCLUDE (InstallRequiredSystemLibraries)
-	SET (CPACK_CMAKE_GENERATOR "Unix Makefiles")
-	SET (CPACK_PACKAGE_NAME "leechcraft")
-	SET (CPACK_GENERATOR "DEB;RPM")
-	FIND_PROGRAM (DPKG_CMD dpkg)
-	IF (NOT DPKG_CMD)
-		MESSAGE (STATUS "Can not find dpkg in your path, default to i386.")
-		SET (CPACK_DEBIAN_PACKAGE_ARCHITECTURE i386)
-	ENDIF (NOT DPKG_CMD)
-	EXECUTE_PROCESS (COMMAND "${DPKG_CMD}" --print-architecture
-		OUTPUT_VARIABLE CPACK_DEBIAN_PACKAGE_ARCHITECTURE
-		OUTPUT_STRIP_TRAILING_WHITESPACE
-		)
-	FIND_PROGRAM (GIT_CMD git)
-	IF (NOT GIT_CMD)
-		MESSAGE (STATUS "Can't find git in your path, using dependent defaults.")
-		SET (CPACK_PACKAGE_VERSION "0.2.svn")
-	ENDIF (NOT GIT_CMD)
-	EXECUTE_PROCESS (COMMAND "${GIT_CMD}" describe
-		OUTPUT_VARIABLE CPACK_PACKAGE_VERSION
-		OUTPUT_STRIP_TRAILING_WHITESPACE
-		)
-	SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Extensible crossplatform download manager")
-	SET (CPACK_PACKAGE_VENDOR "0xd34df00d")
-	SET (CPACK_DEBIAN_PACKAGE_SECTION "net")
-	SET (CPACK_DEBIAN_PACKAGE_DESCRIPTION "Extensible crossplatform download manager
- LeechCraft is a cross-platform extensibe download manager written
- in C++. Currently it offers full-featured BitTorrent client, feed
- reader, HTTP/FTP plugin, Remote access and much more. It also aims
- to be resource-efficient, working quite well on even old computers.")
-	SET (CPACK_DEBIAN_PACKAGE_DEPENDS "libqt4-core (>= 4.5.0), libqt4-gui (>= 4.5.0), libqt4-network (>= 4.5.0), libqt4-webkit (>= 4.5.0), libqt4-xml (>= 4.5.0), libqt4-sql (>= 4.5.0), libqt4-script (>= 4.5.0), libphonon4, libtorrent-rasterbar-0.15, leechcraft-icons-oxygen (>= 0.3.0) | leechcraft-icons-tango (>= 0.3.0)")
-	SET (CPACK_PACKAGE_DESCRIPTION_FILE	"${CMAKE_CURRENT_SOURCE_DIR}/ReadMe.txt")
-	SET (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/copyright.txt")
-	SET (CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
-	SET (CPACK_PACKAGE_CONTACT "0xd34df00d@gmail.com")
-	SET (CPACK_DEBIAN_PACKAGE_MAINTAINER "Rudoy Georg <0xd34df00d@gmail.com>")
-	SET (CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_SOURCE_DIR}/scripts/postinst")
-
-	SET (CPACK_SOURCE_GENERATOR "TGZ;ZIP;TBZ2")
-	SET (CPACK_SOURCE_IGNORE_FILES "/.svn/;.log")
-	SET (CPACK_PACKAGE_EXECUTABLES "leechcraft" "LeechCraft")
-	SET (CPACK_STRIP_FILES TRUE)
-	INCLUDE (CPack)
-ENDIF (ENABLE_PACK)
 
 ADD_SUBDIRECTORY (plugininterface)
 ADD_SUBDIRECTORY (xmlsettingsdialog)

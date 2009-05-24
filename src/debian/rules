@@ -14,7 +14,7 @@ build-stamp: configure-stamp
 	touch build-stamp
 
 configure-stamp:
-	cmake -DCMAKE_INSTALL_PREFIX:STRING=/usr -DCMAKE_BUILD_TYPE:STRING=MinSizeRel .
+	cmake -DCMAKE_INSTALL_PREFIX:STRING=/usr -DCMAKE_BUILD_TYPE:STRING=MinSizeRel -DDISABLE_RPATH_TRICKS=True .
 	touch configure-stamp
 
 clean:
@@ -26,7 +26,6 @@ clean:
 	[ ! -e Makefile ] || $(MAKE) clean
 	rm -f CMakeCache.txt
 	rm -f install_manifest.txt
-	rm -f plugins/chatter/config.h
 	rm -Rf debian/.install
 	find ./ -name "Makefile" -delete
 	find ./ -name "cmake_install.cmake" -delete
@@ -53,7 +52,7 @@ binary-arch: build install
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs
-#	dh_installdocs
+	dh_installdocs
 #	dh_installexamples
 	dh_install --sourcedir=debian/.install
 #	dh_installmenu

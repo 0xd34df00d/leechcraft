@@ -57,4 +57,5 @@ TARGET_LINK_LIBRARIES (plugininterface
 	${QT_LIBRARIES}
 	xmlsettingsdialog
 	)
+SET_PROPERTY (TARGET plugininterface PROPERTY SOVERSION 0.3.0)
 INSTALL (TARGETS plugininterface DESTINATION lib)

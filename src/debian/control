@@ -1,7 +1,7 @@
 Source: leechcraft
 Section: net
 Priority: extra
-Maintainer: Rudoy Georg <0xd34df00d@gmail.com>
+Maintainer: Georg Rudoy <0xd34df00d@gmail.com>
 Build-Depends: debhelper (>= 5),
  cmake (>= 2.6),
  libboost-thread1.37-dev,
@@ -13,7 +13,7 @@ Build-Depends: debhelper (>= 5),
 Standards-Version: 3.7.3
 Homepage: http://leechcraft.org
 
-Package: leechcraft-xmlsettingsdialog
+Package: leechcraft-libxmlsettingsdialog0.3.0
 Section: libs
 Architecture: i386 i586 i686 amd64
 Depends: libc6,
@@ -24,12 +24,12 @@ Depends: libc6,
  libqt4-xml (>= 4.5),
  libqt4-script (>= 4.5)
 Homepage: http://leechcraft.org
-Description: Dynamic settings dialog builder for LeechCraft.
+Description: Dynamic settings dialog builder for LeechCraft
  XmlSettingsDialog provides a simple but powerful and abstract way to
- create settings dialogs from XML files and store their (but not 
- limited to) values.
+ create settings dialogs from XML files and store their (and not only)
+ values.
 
-Package: leechcraft-plugininterface
+Package: leechcraft-libplugininterface0.3.0
 Section: libs
 Depends: libc6,
  libgcc1,
@@ -40,7 +40,7 @@ Depends: libc6,
  libqt4-xml (>= 4.5)
 Architecture: i386 i586 i686 amd64
 Homepage: http://leechcraft.org
-Description: Common library for LeechCraft.
+Description: Common library for LeechCraft
  A library providing some useful and commonly used routines as well as
  communications with the LeechCraft core.
 
@@ -58,21 +58,27 @@ Depends: libc6,
  libqt4-sql-sqlite (>= 4.5),
  libqt4-sql-psql (>= 4.5),
  libqt4-script (>= 4.5),
- leechcraft-xmlsettingsdialog (= ${Source-Version}),
- leechcraft-plugininterface (= ${Source-Version})
+ leechcraft-libxmlsettingsdialog0.3.0 (= ${Source-Version}),
+ leechcraft-libplugininterface0.3.0 (= ${Source-Version}),
+ leechcraft-iconset (= ${Source-Version})
 Recommends: leechcraft-plugin-aggregator,
  leechcraft-plugin-bittorrent,
  leechcraft-plugin-cstp,
+ leechcraft-plugin-dbusmanager,
  leechcraft-plugin-deadlyrics,
+ leechcraft-plugin-historyholder,
+ leechcraft-plugin-lmp,
+ leechcraft-plugin-networkmonitor,
  leechcraft-plugin-poshuku,
+ leechcraft-plugin-poshuku-cleanweb,
+ leechcraft-plugin-poshuku-fua,
  leechcraft-plugin-seekthru
-Suggests: leechcraft-plugin-chatter
 Homepage: http://leechcraft.org
-Description: Core executable of LeechCraft.
+Description: Core executable of LeechCraft
  LeechCraft is a full-featured "Internet client" application based on
  Nokia's Qt framework. Features can be easily added via plugins that
  can be integrated with each other with no effort, while staying away
- from tight coupling. Most significant ones are Poshuku (web browser),
+ from tight coupling. Most significant plugins are Poshuku (web browser),
  Aggregator (feed reader), BitTorrent client, SeekThru (OpenSearch
  client). And there are lots of other plugins.
  .
@@ -93,23 +99,23 @@ Depends: libc6,
  libqt4-sql (>= 4.5),
  libqt4-sql-sqlite (>= 4.5),
  libqt4-sql-psql (>= 4.5),
- leechcraft-xmlsettingsdialog (= ${Source-Version}),
- leechcraft-plugininterface (= ${Source-Version}),
+ leechcraft-libxmlsettingsdialog0.3.0 (= ${Source-Version}),
+ leechcraft-libplugininterface0.3.0 (= ${Source-Version}),
  leechcraft (= ${Source-Version}),
  leechcraft-provider-http
 Provides: leechcraft-provider-feedreader
 Recommends: leechcraft-provider-webbrowser
 Homepage: http://leechcraft.org
-Description: RSS/Atom feed reader for LeechCraft.
+Description: RSS/Atom feed reader for LeechCraft
  LeechCraft is a full-featured "Internet client" application based on
  Nokia's Qt framework. Features can be easily added via plugins that
  can be integrated with each other with no effort, while staying away
- from tight coupling. Most significant ones are Poshuku (web browser),
+ from tight coupling. Most significant plugins are Poshuku (web browser),
  Aggregator (feed reader), BitTorrent client, SeekThru (OpenSearch
  client). And there are lots of other plugins.
  .
  This package contains Aggregator, the RSS/Atom feed reader. A web
- browser plugin is recommended to show the news in a nice manner.
+ browser plugin is recommended to show the news in a handy manner.
 
 Package: leechcraft-plugin-bittorrent
 Section: net
@@ -125,16 +131,16 @@ Depends: libc6,
  libboost-date-time1.37.0,
  libboost-filesystem1.37.0,
  libtorrent-rasterbar-0.15,
- leechcraft-xmlsettingsdialog (= ${Source-Version}),
- leechcraft-plugininterface (= ${Source-Version}),
+ leechcraft-libxmlsettingsdialog0.3.0 (= ${Source-Version}),
+ leechcraft-libplugininterface0.3.0 (= ${Source-Version}),
  leechcraft (= ${Source-Version})
 Provides: leechcraft-provider-bittorrent
 Homepage: http://leechcraft.org
-Description: BitTorrent client for LeechCraft.
+Description: BitTorrent client for LeechCraft
  LeechCraft is a full-featured "Internet client" application based on
  Nokia's Qt framework. Features can be easily added via plugins that
  can be integrated with each other with no effort, while staying away
- from tight coupling. Most significant ones are Poshuku (web browser),
+ from tight coupling. Most significant plugins are Poshuku (web browser),
  Aggregator (feed reader), BitTorrent client, SeekThru (OpenSearch
  client). And there are lots of other plugins.
  .
@@ -149,20 +155,20 @@ Depends: libc6,
  libqt4-core (>= 4.5),
  libqt4-gui (>= 4.5),
  libqt4-network (>= 4.5),
- leechcraft-xmlsettingsdialog (= ${Source-Version}),
- leechcraft-plugininterface (= ${Source-Version}),
+ leechcraft-libxmlsettingsdialog0.3.0 (= ${Source-Version}),
+ leechcraft-libplugininterface0.3.0 (= ${Source-Version}),
  leechcraft (= ${Source-Version})
 Provides: leechcraft-provider-http
 Homepage: http://leechcraft.org
-Description: HTTP client for LeechCraft.
+Description: HTTP client for LeechCraft
  LeechCraft is a full-featured "Internet client" application based on
  Nokia's Qt framework. Features can be easily added via plugins that
  can be integrated with each other with no effort, while staying away
- from tight coupling. Most significant ones are Poshuku (web browser),
+ from tight coupling. Most significant plugins are Poshuku (web browser),
  Aggregator (feed reader), BitTorrent client, SeekThru (OpenSearch
  client). And there are lots of other plugins.
  .
- This package contains clean and stupid HTTP implementation.
+ This package contains clean and simple HTTP implementation.
 
 Package: leechcraft-plugin-dbusmanager
 Section: net
@@ -173,16 +179,16 @@ Depends: libc6,
  libqt4-core (>= 4.5),
  libqt4-dbus (>= 4.5),
  libqt4-gui (>= 4.5),
- leechcraft-xmlsettingsdialog (= ${Source-Version}),
- leechcraft-plugininterface (= ${Source-Version}),
+ leechcraft-libxmlsettingsdialog0.3.0 (= ${Source-Version}),
+ leechcraft-libplugininterface0.3.0 (= ${Source-Version}),
  leechcraft (= ${Source-Version})
 Provides: leechcraft-provider-dbus
 Homepage: http://leechcraft.org
-Description: D-Bus side of LeechCraft.
+Description: D-Bus side of LeechCraft
  LeechCraft is a full-featured "Internet client" application based on
  Nokia's Qt framework. Features can be easily added via plugins that
  can be integrated with each other with no effort, while staying away
- from tight coupling. Most significant ones are Poshuku (web browser),
+ from tight coupling. Most significant plugins are Poshuku (web browser),
  Aggregator (feed reader), BitTorrent client, SeekThru (OpenSearch
  client). And there are lots of other plugins.
  .
@@ -199,15 +205,15 @@ Depends: libc6,
  libqt4-gui (>= 4.5),
  libqt4-network (>= 4.5),
  libqt4-xml (>= 4.5),
- leechcraft-xmlsettingsdialog (= ${Source-Version}),
- leechcraft-plugininterface (= ${Source-Version}),
+ leechcraft-libxmlsettingsdialog0.3.0 (= ${Source-Version}),
+ leechcraft-libplugininterface0.3.0 (= ${Source-Version}),
  leechcraft (= ${Source-Version})
 Homepage: http://leechcraft.org
-Description: Song lyrics finder for LeechCraft.
+Description: Song lyrics finder for LeechCraft
  LeechCraft is a full-featured "Internet client" application based on
  Nokia's Qt framework. Features can be easily added via plugins that
  can be integrated with each other with no effort, while staying away
- from tight coupling. Most significant ones are Poshuku (web browser),
+ from tight coupling. Most significant plugins are Poshuku (web browser),
  Aggregator (feed reader), BitTorrent client, SeekThru (OpenSearch
  client). And there are lots of other plugins.
  .
@@ -221,20 +227,20 @@ Depends: libc6,
  libstdc++6,
  libqt4-core (>= 4.5),
  libqt4-gui (>= 4.5),
- leechcraft-xmlsettingsdialog (= ${Source-Version}),
- leechcraft-plugininterface (= ${Source-Version}),
+ leechcraft-libxmlsettingsdialog0.3.0 (= ${Source-Version}),
+ leechcraft-libplugininterface0.3.0 (= ${Source-Version}),
  leechcraft (= ${Source-Version})
 Homepage: http://leechcraft.org
-Description: History keeper for LeechCraft.
+Description: History keeper for LeechCraft
  LeechCraft is a full-featured "Internet client" application based on
  Nokia's Qt framework. Features can be easily added via plugins that
  can be integrated with each other with no effort, while staying away
- from tight coupling. Most significant ones are Poshuku (web browser),
+ from tight coupling. Most significant plugins are Poshuku (web browser),
  Aggregator (feed reader), BitTorrent client, SeekThru (OpenSearch
  client). And there are lots of other plugins.
  .
- This package contains a history tracker, that stores information about
- finished downloads and such events.
+ This package contains a history keeper that stores information about
+ finished downloads and similar events.
 
 Package: leechcraft-plugin-lmp
 Section: net
@@ -245,15 +251,15 @@ Depends: libc6,
  libqt4-core (>= 4.5),
  libqt4-gui (>= 4.5),
  phonon (>= 4.5),
- leechcraft-xmlsettingsdialog (= ${Source-Version}),
- leechcraft-plugininterface (= ${Source-Version}),
+ leechcraft-libxmlsettingsdialog0.3.0 (= ${Source-Version}),
+ leechcraft-libplugininterface0.3.0 (= ${Source-Version}),
  leechcraft (= ${Source-Version})
 Homepage: http://leechcraft.org
-Description: Media Previewer for LeechCraft.
+Description: Media Previewer for LeechCraft
  LeechCraft is a full-featured "Internet client" application based on
  Nokia's Qt framework. Features can be easily added via plugins that
  can be integrated with each other with no effort, while staying away
- from tight coupling. Most significant ones are Poshuku (web browser),
+ from tight coupling. Most significant plugins are Poshuku (web browser),
  Aggregator (feed reader), BitTorrent client, SeekThru (OpenSearch
  client). And there are lots of other plugins.
  .
@@ -269,15 +275,15 @@ Depends: libc6,
  libqt4-core (>= 4.5),
  libqt4-gui (>= 4.5),
  libqt4-network (>= 4.5),
- leechcraft-xmlsettingsdialog (= ${Source-Version}),
- leechcraft-plugininterface (= ${Source-Version}),
+ leechcraft-libxmlsettingsdialog0.3.0 (= ${Source-Version}),
+ leechcraft-libplugininterface0.3.0 (= ${Source-Version}),
  leechcraft (= ${Source-Version})
 Homepage: http://leechcraft.org
-Description: Network monitor for LeechCraft.
+Description: Network monitor for LeechCraft
  LeechCraft is a full-featured "Internet client" application based on
  Nokia's Qt framework. Features can be easily added via plugins that
  can be integrated with each other with no effort, while staying away
- from tight coupling. Most significant ones are Poshuku (web browser),
+ from tight coupling. Most significant plugins are Poshuku (web browser),
  Aggregator (feed reader), BitTorrent client, SeekThru (OpenSearch
  client). And there are lots of other plugins.
  .
@@ -298,8 +304,8 @@ Depends: libc6,
  libqt4-sql-psql (>= 4.5),
  libqt4-webkit (>= 4.5),
  libqt4-xml (>= 4.5),
- leechcraft-xmlsettingsdialog (= ${Source-Version}),
- leechcraft-plugininterface (= ${Source-Version}),
+ leechcraft-libxmlsettingsdialog0.3.0 (= ${Source-Version}),
+ leechcraft-libplugininterface0.3.0 (= ${Source-Version}),
  leechcraft (= ${Source-Version})
 Recommends: leechcraft-provider-http,
  leechcraft-provider-bittorrent,
@@ -307,11 +313,11 @@ Recommends: leechcraft-provider-http,
  leechcraft-provider-search
 Provides: leechcraft-provider-webbrowser
 Homepage: http://leechcraft.org
-Description: Web browser for LeechCraft.
+Description: Web browser for LeechCraft
  LeechCraft is a full-featured "Internet client" application based on
  Nokia's Qt framework. Features can be easily added via plugins that
  can be integrated with each other with no effort, while staying away
- from tight coupling. Most significant ones are Poshuku (web browser),
+ from tight coupling. Most significant plugins are Poshuku (web browser),
  Aggregator (feed reader), BitTorrent client, SeekThru (OpenSearch
  client). And there are lots of other plugins.
  .
@@ -323,16 +329,16 @@ Architecture: i386 i586 i686 amd64
 Depends: libc6,
  libgcc1,
  libstdc++6,
- leechcraft-xmlsettingsdialog (= ${Source-Version}),
- leechcraft-plugininterface (= ${Source-Version}),
+ leechcraft-libxmlsettingsdialog0.3.0 (= ${Source-Version}),
+ leechcraft-libplugininterface0.3.0 (= ${Source-Version}),
  leechcraft-plugin-poshuku (= ${Source-Version}),
  leechcraft (= ${Source-Version})
 Homepage: http://leechcraft.org
-Description: Ad filter for Web browser for LeechCraft.
+Description: Ad filter for Web browser for LeechCraft
  LeechCraft is a full-featured "Internet client" application based on
  Nokia's Qt framework. Features can be easily added via plugins that
  can be integrated with each other with no effort, while staying away
- from tight coupling. Most significant ones are Poshuku (web browser),
+ from tight coupling. Most significant plugins are Poshuku (web browser),
  Aggregator (feed reader), BitTorrent client, SeekThru (OpenSearch
  client). And there are lots of other plugins.
  .
@@ -346,16 +352,16 @@ Architecture: i386 i586 i686 amd64
 Depends: libc6,
  libgcc1,
  libstdc++6,
- leechcraft-xmlsettingsdialog (= ${Source-Version}),
- leechcraft-plugininterface (= ${Source-Version}),
+ leechcraft-libxmlsettingsdialog0.3.0 (= ${Source-Version}),
+ leechcraft-libplugininterface0.3.0 (= ${Source-Version}),
  leechcraft-plugin-poshuku (= ${Source-Version}),
  leechcraft (= ${Source-Version})
 Homepage: http://leechcraft.org
-Description: Fake user agent plugin for Web browser for LeechCraft.
+Description: Fake user agent plugin for Web browser for LeechCraft
  LeechCraft is a full-featured "Internet client" application based on
  Nokia's Qt framework. Features can be easily added via plugins that
  can be integrated with each other with no effort, while staying away
- from tight coupling. Most significant ones are Poshuku (web browser),
+ from tight coupling. Most significant plugins are Poshuku (web browser),
  Aggregator (feed reader), BitTorrent client, SeekThru (OpenSearch
  client). And there are lots of other plugins.
  .
@@ -371,17 +377,17 @@ Depends: libc6,
  libqt4-core (>= 4.5),
  libqt4-gui (>= 4.5),
  libqt4-xml (>= 4.5),
- leechcraft-xmlsettingsdialog (= ${Source-Version}),
- leechcraft-plugininterface (= ${Source-Version}),
+ leechcraft-libxmlsettingsdialog0.3.0 (= ${Source-Version}),
+ leechcraft-libplugininterface0.3.0 (= ${Source-Version}),
  leechcraft (= ${Source-Version}),
  leechcraft-provider-webbrowser
 Provides: leechcraft-provider-search
 Homepage: http://leechcraft.org
-Description: Search plugin for LeechCraft.
+Description: Search plugin for LeechCraft
  LeechCraft is a full-featured "Internet client" application based on
  Nokia's Qt framework. Features can be easily added via plugins that
  can be integrated with each other with no effort, while staying away
- from tight coupling. Most significant ones are Poshuku (web browser),
+ from tight coupling. Most significant plugins are Poshuku (web browser),
  Aggregator (feed reader), BitTorrent client, SeekThru (OpenSearch
  client). And there are lots of other plugins.
  .

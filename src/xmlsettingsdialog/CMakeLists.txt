@@ -36,4 +36,5 @@ ADD_LIBRARY (xmlsettingsdialog SHARED ${SRCS} ${MOC_SRCS})
 TARGET_LINK_LIBRARIES (xmlsettingsdialog
 	${QT_LIBRARIES}
 	)
+SET_PROPERTY (TARGET xmlsettingsdialog PROPERTY SOVERSION 0.3.0)
 INSTALL (TARGETS xmlsettingsdialog DESTINATION lib)

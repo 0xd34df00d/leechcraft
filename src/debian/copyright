@@ -1,9 +1,9 @@
-This package was debianized by Rudoy Georg <0xd34df00d@gmail.com> on Sat, 21 Mar 2009 17:38:01 +0300.
+This package was debianized by Georg Rudoy <0xd34df00d@gmail.com> on Sat, 21 Mar 2009 17:38:01 +0300.
 
 It was downloaded from git://github.com/0xd34df00d/leechcraft.git.
 
-Copyright Holder: Rudoy Georg, 0xd34df00d@gmail.com
+Copyright 2006-2009 Georg Rudoy, 0xd34df00d@gmail.com
+Copyright 2009 Alex Ermolov, aaermolov@gmail.com
 
 License: The LGPL License
-
-http://www.opensource.org/licenses/lgpl-3.0.html
+/usr/share/common-licenses/LGPL-3
