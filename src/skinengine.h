@@ -9,6 +9,7 @@
 class QIcon;
 class QAction;
 class QTabWidget;
+class QFile;
 
 namespace LeechCraft
 {
@@ -34,6 +35,7 @@ namespace LeechCraft
 		void FindIconSets ();
 		void FindIcons ();
 		void FillMapping (const QString&, const QString&);
+		void ParseMapping (QFile&);
 		void CollectDir (const QString&, const QString&);
 		void CollectSubdir (QDir, const QString&, int);
 		std::vector<int> GetDirForBase (const QString&, const QString&);

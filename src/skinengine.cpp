@@ -181,18 +181,32 @@ void SkinEngine::FillMapping (const QString& folder, const QString& iconSet)
 	{
 		QFile mappingFile (dir.filePath (iconSet + ".mapping"));
 		if (mappingFile.open (QIODevice::ReadOnly))
-		{
-			QByteArray lineData = mappingFile.readLine ();
-			while (!lineData.isEmpty ())
-			{
-				QStringList pair = QString::fromUtf8 (lineData)
-					.split (' ', QString::SkipEmptyParts);
-				if (pair.size () == 2)
-					IconName2FileName_ [pair.at (0).simplified ()] = pair.at (1).simplified ();
+			ParseMapping (mappingFile);
+	}
 
-				lineData = mappingFile.readLine ();
-			}
+	if (QFileInfo (dir.filePath (iconSet + ".mapping.d")).isDir ())
+	{
+		dir.cd (iconSet + ".mapping.d");
+		Q_FOREACH (QString entry, dir.entryList (QDir::Files))
+		{
+			QFile mappingFile (dir.filePath (entry));
+			if (mappingFile.open (QIODevice::ReadOnly))
+				ParseMapping (mappingFile);
 		}
+	}
+}
+
+void SkinEngine::ParseMapping (QFile& mappingFile)
+{
+	QByteArray lineData = mappingFile.readLine ();
+	while (!lineData.isEmpty ())
+	{
+		QStringList pair = QString::fromUtf8 (lineData)
+			.split (' ', QString::SkipEmptyParts);
+		if (pair.size () == 2)
+			IconName2FileName_ [pair.at (0).simplified ()] = pair.at (1).simplified ();
+
+		lineData = mappingFile.readLine ();
 	}
 }
 
