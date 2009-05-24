@@ -61,7 +61,6 @@ private:
 private slots:
 	void loadData ();
 	void handleItemAdded (const HistoryItem&);
-	void collectGarbage ();
 };
 
 #endif

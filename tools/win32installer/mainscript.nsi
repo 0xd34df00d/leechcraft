@@ -74,7 +74,7 @@ SectionGroup "Core"
 		File QtWebkit4.dll
 		File QtXml4.dll
 		File qt.conf
-#		File phonon4.dll
+		File phonon4.dll
 #		File phonon_ds94.dll
 		SetOutPath $INSTDIR\plugins
 		File /r plugins\bin
@@ -91,17 +91,22 @@ SectionGroup "Core"
 	SectionEnd
 
 	Section "MSVC" MSVC
-                SetOutPath $WINDIR
-                File /r WinSxS
-#		SetOutPath $INSTDIR
-#		File vcredist_x86.exe
-#		DetailPrint "Installing Visual C++ 2008 Libraries"
-#		ExecWait '"$INSTDIR\vcredist_x86.exe" /q:a /c:"msiexec /i vcredist.msi /quiet"'
+#		SetOutPath $WINDIR
+#		File /r WinSxS
+		SetOutPath $INSTDIR
+		File vcredist_x86.exe
+		DetailPrint "Installing Visual C++ 2008 Libraries"
+		ExecWait '"$INSTDIR\vcredist_x86.exe" /q:a /c:"msiexec /i vcredist.msi /quiet"'
 		SectionIn 1 2 RO
 	SectionEnd
 SectionGroupEnd
 
 SectionGroup "Plugins"
+	Section "Aggregator" AGGREGATORPLUGIN
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_aggregator.dll
+		SectionIn 1
+	SectionEnd
 	Section "BitTorrent" TORRENTPLUGIN
 		SetOutPath $INSTDIR
 		File torrent.dll
@@ -109,27 +114,7 @@ SectionGroup "Plugins"
 		File boost_filesystem-vc90-mt-1_37.dll
 		File boost_system-vc90-mt-1_37.dll
 		SetOutPath $INSTDIR\plugins\bin
-		File plugins\bin\leechcraft_torrent.dll
-		SectionIn 1
-	SectionEnd
-	Section "Aggregator" AGGREGATORPLUGIN
-		SetOutPath $INSTDIR\plugins\bin
-		File plugins\bin\leechcraft_aggregator.dll
-		SectionIn 1
-	SectionEnd
-	Section "Poshuku" POSHUKUPLUGIN
-		SetOutPath $INSTDIR\plugins\bin
-		File plugins\bin\leechcraft_poshuku.dll
-		SectionIn 1
-	SectionEnd
-#	Section "LMP" LMPPLUGIN
-#		SetOutPath $INSTDIR\plugins\bin
-#		File plugins\bin\leechcraft_lmp.dll
-#		SectionIn 1
-#	SectionEnd
-	Section "Chatter" CHATTERPLUGIN
-		SetOutPath $INSTDIR\plugins\bin
-		File plugins\bin\leechcraft_chatter.dll
+		File plugins\bin\leechcraft_bittorrent.dll
 		SectionIn 1
 	SectionEnd
 	Section "CSTP" HTTPPLUGIN
@@ -137,6 +122,46 @@ SectionGroup "Plugins"
 		File plugins\bin\leechcraft_cstp.dll
 		SectionIn 1
 	SectionEnd
+	Section "DeadLyRiCS" DEADLYRICSPLUGIN
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_deadlyrics.dll
+		SectionIn 1
+	SectionEnd
+	Section "HistoryHolder" HISTORYHOLDERPLUGIN
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_historyholder.dll
+		SectionIn 1
+	SectionEnd
+	Section "NetworkMonitor" NETWORKMONITORPLUGIN
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_networkmonitor.dll
+		SectionIn 1
+	SectionEnd
+	Section "Poshuku" POSHUKUPLUGIN
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_poshuku.dll
+		SectionIn 1
+	SectionEnd
+	Section "Poshuku CleanWeb" POSHUKUCLEANWEBPLUGIN
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_poshuku_cleanweb.dll
+		SectionIn 1
+	SectionEnd
+	Section "Poshuku FUA" POSHUKUFUAPLUGIN
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_poshuku_fua.dll
+		SectionIn 1
+	SectionEnd
+	Section "SeekThru" SEEKTHRUPLUGIN
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_seekthru.dll
+		SectionIn 1
+	SectionEnd
+#	Section "LMP" LMPPLUGIN
+#		SetOutPath $INSTDIR\plugins\bin
+#		File plugins\bin\leechcraft_lmp.dll
+#		SectionIn 1
+#	SectionEnd
 SectionGroupEnd
 
 Var MUI_TEMP
@@ -169,9 +194,14 @@ LangString DESC_OPENSSL ${LANG_ENGLISH} "OpenSSL libraries."
 LangString DESC_HTTPPLUGIN ${LANG_ENGLISH} "HTTP support."
 LangString DESC_TORRENTPLUGIN ${LANG_ENGLISH} "A sophisticated feature-rich BitTorrent client."
 LangString DESC_AGGREGATORPLUGIN ${LANG_ENGLISH} "RSS/Atom feed aggregator."
+LangString DESC_HISTORYHOLDERPLUGIN ${LANG_ENGLISH} "Keeps download history."
+LangString DESC_NETWORKMONITORPLUGIN ${LANG_ENGLISH} "Monitors HTTP network requests."
 LangString DESC_POSHUKUPLUGIN ${LANG_ENGLISH} "Web browser."
+LangString DESC_POSHUKUCLEANWEBPLUGIN ${LANG_ENGLISH} "Ad blocker plugin for the Poshuku."
+LangString DESC_POSHUKUFUAPLUGIN ${LANG_ENGLISH} "Fake User Agent plugin for the Poshuku."
 #LangString DESC_LMPPLUGIN ${LANG_ENGLISH} "LeechCraft Media Player."
-LangString DESC_CHATTERPLUGIN ${LANG_ENGLISH} "IRC client."
+LangString DESC_DEADLYRICSPLUGIN ${LANG_ENGLISH} "LyricWiki.org song lyrics search client."
+LangString DESC_SEEKTHRUPLUGIN ${LANG_ENGLISH} "Client for OpenSearch-capable search engines."
 
 LangString DESC_MAINFILES ${LANG_RUSSIAN} "Сам LeechCraft и его вспомогательные бИблиотеки."
 LangString DESC_QT ${LANG_RUSSIAN} "Библиотеки Qt."
@@ -180,9 +210,14 @@ LangString DESC_OPENSSL ${LANG_RUSSIAN} "Библиотеки OpenSSL."
 LangString DESC_HTTPPLUGIN ${LANG_RUSSIAN} "Поддержка HTTP."
 LangString DESC_TORRENTPLUGIN ${LANG_RUSSIAN} "Полнофункциональный Torrent-клиент."
 LangString DESC_AGGREGATORPLUGIN ${LANG_RUSSIAN} "Агрегатор RSS/Atom-лент."
+LangString DESC_HISTORYHOLDERPLUGIN ${LANG_RUSSIAN} "Хранит историю закачек."
+LangString DESC_NETWORKMONITORPLUGIN ${LANG_RUSSIAN} "Следит за HTTP-запросами."
 LangString DESC_POSHUKUPLUGIN ${LANG_RUSSIAN} "Веб-браузер."
+LangString DESC_POSHUKUCLEANWEBPLUGIN ${LANG_RUSSIAN} "Блокировщик рекламы для Poshuku."
+LangString DESC_POSHUKUFUAPLUGIN ${LANG_RUSSIAN} "Плагин для Poshuku, подделывающий идентификацию браузера."
 #LangString DESC_LMPPLUGIN ${LANG_RUSSIAN} "LeechCraft Media Player."
-LangString DESC_CHATTERPLUGIN ${LANG_RUSSIAN} "IRC-клиент."
+LangString DESC_DEADLYRICSPLUGIN ${LANG_RUSSIAN} "Поиск песен на LyricWiki.org."
+LangString DESC_SEEKTHRUPLUGIN ${LANG_RUSSIAN} "Клиент для поисковиков, поддерживающих OpenSearch."
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
 	!insertmacro MUI_DESCRIPTION_TEXT ${MAINFILES} $(DESC_MAINFILES)
@@ -192,9 +227,14 @@ LangString DESC_CHATTERPLUGIN ${LANG_RUSSIAN} "IRC-клиент."
 	!insertmacro MUI_DESCRIPTION_TEXT ${HTTPPLUGIN} $(DESC_HTTPPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${AGGREGATORPLUGIN} $(DESC_AGGREGATORPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${TORRENTPLUGIN} $(DESC_TORRENTPLUGIN)
-	!insertmacro MUI_DESCRIPTION_TEXT ${CHATTERPLUGIN} $(DESC_CHATTERPLUGIN)
 #	!insertmacro MUI_DESCRIPTION_TEXT ${LMPPLUGIN} $(DESC_LMPPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${POSHUKUPLUGIN} $(DESC_POSHUKUPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${POSHUKUFUAPLUGIN} $(DESC_POSHUKUFUAPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${POSHUKUCLEANWEBPLUGIN} $(DESC_POSHUKUCLEANWEBPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${DEADLYRICSPLUGIN} $(DESC_DEADLYRICSPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${SEEKTHRUPLUGIN} $(DESC_SEEKTHRUPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${HISTORYHOLDERPLUGIN} $(DESC_HISTORYHOLDERPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${NETWORKMONITORPLUGIN} $(DESC_NETWORKMONITORPLUGIN)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Function .onInit

@@ -1,6 +1,5 @@
 #include "tagscompleter.h"
 #include <algorithm>
-#include <boost/bind.hpp>
 #include <QtDebug>
 #include <QWidget>
 #include <QStringList>

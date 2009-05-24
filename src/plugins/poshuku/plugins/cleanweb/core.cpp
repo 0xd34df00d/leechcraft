@@ -13,6 +13,7 @@
 #include "xmlsettingsmanager.h"
 #include "core.h"
 
+using namespace LeechCraft;
 using namespace LeechCraft::Plugins::Poshuku::Plugins::CleanWeb;
 using LeechCraft::Util::Proxy;
 
@@ -374,56 +375,57 @@ bool Core::ShouldReject (const QNetworkRequest& req) const
 	return false;
 }
 
-#ifdef Q_WS_WIN
-#include <windows.h>
-
-BOOL szWildMatch6(PSZ pat, PSZ str)
+#if defined (Q_WS_WIN) || defined (Q_WS_MAC)
+// Thanks for this goes to http://www.codeproject.com/KB/string/patmatch.aspx
+bool WildcardMatches (const char *pattern, const char *str)
 {
-	int i;
-	BOOL star = FALSE;
+    enum State {
+        Exact,        // exact match
+        Any,        // ?
+        AnyRepeat    // *
+    };
 
-loopStart:
-	for (i = 0; str[i]; i++)
-	{
-		switch (pat[i])
-		{
-			case '?':
-				if (str[i] == '.')
-					goto starCheck;
-				break;
-			case '*':
-				star = TRUE;
-				str += i, pat += i;
-				do
-				{
-					++pat;
-				}
-				while (*pat == '*');
-				if (!*pat)
-					return TRUE;
-				goto loopStart;
-			default:
-				if (mapCaseTable[str[i]] != mapCaseTable[pat[i]])
-				   goto starCheck;
-				break;
-		}
-	}
-	while (pat[i] == '*') ++i;
-	return (!pat[i]);
+    const char *s = str;
+    const char *p = pattern;
+    const char *q = 0;
+    int state = 0;
 
-starCheck:
-	if (!star)
-		return FALSE;
-	str++;
-	goto loopStart;
+    bool match = true;
+    while (match && *p) {
+        if (*p == '*') {
+            state = AnyRepeat;
+            q = p+1;
+        } else if (*p == '?') state = Any;
+        else state = Exact;
+
+        if (*s == 0) break;
+
+        switch (state) {
+            case Exact:
+                match = *s == *p;
+                s++;
+                p++;
+                break;
+
+            case Any:
+                match = true;
+                s++;
+                p++;
+                break;
+
+            case AnyRepeat:
+                match = true;
+                s++;
+
+                if (*s == *q) p++;
+                break;
+        }
+    }
+
+    if (state == AnyRepeat) return (*s == *q);
+    else if (state == Any) return (*s == *p);
+    else return match && (*s == *p);
 }
-
-bool WildcardMatches (const char *pat, const char *str)
-{
-	return szWildMatch6 (pat, str);
-}
-#elif Q_WS_MAC
-#error "Sorry, we don't provide wildcard matching for Macs now."
 #else
 #include <fnmatch.h>
 
