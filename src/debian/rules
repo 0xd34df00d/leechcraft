@@ -26,7 +26,6 @@ clean:
 	[ ! -e Makefile ] || $(MAKE) clean
 	rm -f CMakeCache.txt
 	rm -f install_manifest.txt
-	rm -f config.h
 	rm -f plugins/chatter/config.h
 	rm -Rf debian/.install
 	find ./ -name "Makefile" -delete
