@@ -163,8 +163,12 @@ void LeechCraft::MainWindow::closeEvent (QCloseEvent *e)
 void LeechCraft::MainWindow::InitializeInterface ()
 {
 	setUpdatesEnabled (false);
+#ifdef QT_WS_WIN
+	SplashScreen_ = new QSplashScreen (QPixmap (":/resources/images/splashscreen.png"));
+#else
 	SplashScreen_ = new QSplashScreen (QPixmap (":/resources/images/splashscreen.png"),
 			Qt::WindowStaysOnTopHint);
+#endif
 	SplashScreen_->show ();
 	ShowMessage (tr ("Initializing interface..."));
 
