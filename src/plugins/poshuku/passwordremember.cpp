@@ -16,10 +16,10 @@ namespace
 		Core::Instance ().GetStorageBackend ()->
 			GetFormsData (url, oldElems);
 
-		Q_FOREACH (ElementData ed, oldElems)
+		Q_FOREACH (ElementData ed, elems)
 		{
 			ElementsData_t::const_iterator pos =
-				std::find_if (elems.begin (), elems.end (),
+				std::find_if (oldElems.begin (), oldElems.end (),
 						ElemFinder (ed.Name_, ed.Type_));
 			if (pos != oldElems.end () &&
 					pos->Value_ == ed.Value_)
