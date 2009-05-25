@@ -4,6 +4,7 @@
 #include "ui_cookieseditdialog.h"
 
 class CookiesEditModel;
+class CookiesFilter;
 
 class CookiesEditDialog : public QDialog
 {
@@ -11,6 +12,7 @@ class CookiesEditDialog : public QDialog
 	
 	Ui::CookiesEditDialog Ui_;
 	CookiesEditModel *Model_;
+	CookiesFilter *Filter_;
 public:
 	CookiesEditDialog (QWidget* = 0);
 private slots:

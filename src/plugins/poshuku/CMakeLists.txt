@@ -42,6 +42,7 @@ SET (SRCS
 	passwordremember.cpp
 	pageformsdata.cpp
 	linkhistory.cpp
+	cookiesfilter.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -77,6 +78,7 @@ SET (HEADERS
 	passwordremember.h
 	pageformsdata.h
 	linkhistory.h
+	cookiesfilter.h
 	interfaces/pluginbase.h
 	)
 SET (FORMS

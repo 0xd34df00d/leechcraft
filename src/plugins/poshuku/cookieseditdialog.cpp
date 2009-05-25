@@ -1,6 +1,7 @@
 #include "cookieseditdialog.h"
 #include <QPushButton>
 #include "cookieseditmodel.h"
+#include "cookiesfilter.h"
 
 CookiesEditDialog::CookiesEditDialog (QWidget *parent)
 : QDialog (parent)
@@ -8,9 +9,16 @@ CookiesEditDialog::CookiesEditDialog (QWidget *parent)
 	Ui_.setupUi (this);
 	Ui_.ButtonBox_->button (QDialogButtonBox::Apply)->setEnabled (false);
 
+	Filter_ = new CookiesFilter (this);
 	Model_ = new CookiesEditModel (this);
 
-	Ui_.CookiesView_->setModel (Model_);
+	connect (Ui_.FilterLine_,
+			SIGNAL (textChanged (const QString&)),
+			Filter_,
+			SLOT (setFilterWildcard (const QString&)));
+
+	Filter_->setSourceModel (Model_);
+	Ui_.CookiesView_->setModel (Filter_);
 	connect (Ui_.CookiesView_,
 			SIGNAL (clicked (const QModelIndex&)),
 			this,
@@ -22,8 +30,9 @@ CookiesEditDialog::CookiesEditDialog (QWidget *parent)
 			SLOT (handleAccepted ()));
 }
 
-void CookiesEditDialog::handleClicked (const QModelIndex& index)
+void CookiesEditDialog::handleClicked (const QModelIndex& si)
 {
+	QModelIndex index = Filter_->mapToSource (si);
 	QNetworkCookie cookie;
 	try
 	{
@@ -62,7 +71,8 @@ void CookiesEditDialog::handleAccepted ()
 		cookie.setPath (Ui_.PathEdit_->text ());
 		cookie.setSecure (Ui_.SecureEdit_->checkState () == Qt::Checked);
 
-		Model_->SetCookie (Ui_.CookiesView_->currentIndex (), cookie);
+		Model_->SetCookie (Filter_->mapToSource (Ui_.CookiesView_->currentIndex ()),
+				cookie);
 	}
 	else
 	{
@@ -87,6 +97,6 @@ void CookiesEditDialog::handleNameChanged ()
 
 void CookiesEditDialog::on_Delete__released ()
 {
-	Model_->RemoveCookie (Ui_.CookiesView_->currentIndex ());
+	Model_->RemoveCookie (Filter_->mapToSource (Ui_.CookiesView_->currentIndex ()));
 }
 

@@ -19,6 +19,9 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
+    <widget class="QLineEdit" name="FilterLine_"/>
+   </item>
+   <item>
     <widget class="QTreeView" name="CookiesView_"/>
    </item>
    <item>
