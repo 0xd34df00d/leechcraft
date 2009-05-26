@@ -39,7 +39,6 @@ namespace LeechCraft
 					Q_INTERFACES (IInfo IPlugin2 IHaveSettings LeechCraft::Poshuku::PluginBase)
 
 					boost::shared_ptr<QStandardItemModel> Model_;
-					boost::shared_ptr<Settings> Settings_;
 					boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 					std::auto_ptr<QTranslator> Translator_;
 					QMap<QString, QString> Browser2ID_;
