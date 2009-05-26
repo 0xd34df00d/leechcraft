@@ -1,8 +1,10 @@
 #ifndef PLUGINS_POSHUKU_PLUGINS_FUA_FUA_H
 #define PLUGINS_POSHUKU_PLUGINS_FUA_FUA_H
+#include <memory>
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QMap>
+#include <QTranslator>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iplugin2.h>
@@ -39,6 +41,7 @@ namespace LeechCraft
 					boost::shared_ptr<QStandardItemModel> Model_;
 					boost::shared_ptr<Settings> Settings_;
 					boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
+					std::auto_ptr<QTranslator> Translator_;
 					QMap<QString, QString> Browser2ID_;
 				public:
 					void Init (ICoreProxy_ptr);

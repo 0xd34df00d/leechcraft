@@ -2,6 +2,7 @@
 #include <QStandardItemModel>
 #include <QUrl>
 #include <QSettings>
+#include <plugininterface/util.h>
 #include <plugininterface/proxy.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "settings.h"
@@ -12,8 +13,9 @@ using namespace LeechCraft::Poshuku::Plugins;
 using namespace LeechCraft::Poshuku::Plugins::Fua;
 using namespace LeechCraft::Util;
 
-void FUA::Init (ICoreProxy_ptr)
+void LeechCraft::Poshuku::Plugins::Fua::FUA::Init (ICoreProxy_ptr)
 {
+	Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku_fua"));
 	Browser2ID_ ["Firefox 1.5.0.4"] =
 		"Mozilla/5.0 (X11; U; x86_64 Linux; en_US; rv:1.8.0.4) Gecko/20060508 Firefox/1.5.0.4";
 	Browser2ID_ ["Firefox 2.0.0.8"] =
@@ -74,7 +76,7 @@ QString FUA::GetName () const
 	return "Poshuku FUA";
 }
 
-QString FUA::GetInfo () const
+QString LeechCraft::Poshuku::Plugins::Fua::FUA::GetInfo () const
 {
 	return tr ("Allows to set fake user agents for different sites.");
 }
