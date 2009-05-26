@@ -10,7 +10,7 @@ Q_DECLARE_METATYPE (QNetworkReply*);
 
 using namespace LeechCraft::Plugins::NetworkMonitor;
 
-RequestModel::RequestModel (QObject *parent)
+LeechCraft::Plugins::NetworkMonitor::RequestModel::RequestModel (QObject *parent)
 : QStandardItemModel (parent)
 , Clear_ (true)
 {
@@ -33,7 +33,7 @@ HeaderModel* RequestModel::GetReplyHeadersModel () const
 	return ReplyHeadersModel_;
 }
 
-void RequestModel::handleRequest (QNetworkAccessManager::Operation op,
+void LeechCraft::Plugins::NetworkMonitor::RequestModel::handleRequest (QNetworkAccessManager::Operation op,
 		const QNetworkRequest& req, QNetworkReply *rep)
 {
 	QList<QStandardItem*> items;
@@ -103,7 +103,9 @@ void RequestModel::handleFinished ()
 	QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
 	if (!reply)
 	{
-		qWarning () << Q_FUNC_INFO << sender () << "not found";
+		qWarning () << Q_FUNC_INFO
+			<< sender ()
+			<< "not found";
 		return;
 	}
 

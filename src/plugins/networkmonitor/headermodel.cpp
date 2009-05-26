@@ -2,7 +2,7 @@
 
 using namespace LeechCraft::Plugins::NetworkMonitor;
 
-HeaderModel::HeaderModel (QObject *parent)
+LeechCraft::Plugins::NetworkMonitor::HeaderModel::HeaderModel (QObject *parent)
 : QStandardItemModel (parent)
 {
 	setHorizontalHeaderLabels (QStringList (tr ("Name"))

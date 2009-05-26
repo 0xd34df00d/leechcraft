@@ -1,6 +1,7 @@
 #ifndef PLUGINS_NETWORKMONITOR_H
 #define PLUGINS_NETWORKMONITOR_H
 #include <QDialog>
+#include <QTranslator>
 #include <interfaces/iinfo.h>
 #include <interfaces/itoolbarembedder.h>
 #include "ui_networkmonitor.h"
@@ -24,6 +25,7 @@ namespace LeechCraft
 				RequestModel *Model_;
 				QNetworkAccessManager *NetworkAccessManager_;
 				QList<QAction*> Actions_;
+				std::auto_ptr<QTranslator> Translator_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void Release ();

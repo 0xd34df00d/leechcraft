@@ -1,14 +1,17 @@
 #include "networkmonitor.h"
 #include <typeinfo>
 #include <QMenu>
+#include <plugininterface/util.h>
 #include "requestmodel.h"
 #include "headermodel.h"
 
 using namespace LeechCraft::Plugins;
 using namespace LeechCraft::Plugins::NetworkMonitor;
 
-void Plugin::Init (ICoreProxy_ptr proxy)
+void LeechCraft::Plugins::NetworkMonitor::Plugin::Init (ICoreProxy_ptr proxy)
 {
+	Translator_.reset (LeechCraft::Util::InstallTranslator ("networkmonitor"));
+
 	NetworkAccessManager_ = proxy->GetNetworkAccessManager ();
 
 	Ui_.setupUi (this);
@@ -55,9 +58,9 @@ QString Plugin::GetName () const
 	return "NetworkMonitor";
 }
 
-QString Plugin::GetInfo () const
+QString LeechCraft::Plugins::NetworkMonitor::Plugin::GetInfo () const
 {
-	return tr ("Monitors HTTP network requests.");
+	return tr ("Monitors HTTP network requests and responses.");
 }
 
 QIcon Plugin::GetIcon () const
