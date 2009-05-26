@@ -67,7 +67,8 @@
     </message>
     <message>
         <location filename="handlerchoicedialog.ui" line="19"/>
-        <source>LeechCraft has detected some entity:</source>
+        <source>LeechCraft has detected an entity:</source>
+        <oldsource>LeechCraft has detected some entity:</oldsource>
         <translation>LeechCraft обнаружил объект:</translation>
     </message>
     <message>
@@ -77,13 +78,15 @@
     </message>
     <message>
         <location filename="handlerchoicedialog.ui" line="33"/>
-        <source>This entity could be downloaded by:</source>
-        <translation>Объект может быть скачан при помощи:</translation>
+        <source>It could be downloaded by:</source>
+        <oldsource>This entity could be downloaded by:</oldsource>
+        <translation>Он может быть скачан при помощи:</translation>
     </message>
     <message>
         <location filename="handlerchoicedialog.ui" line="43"/>
-        <source>This entity could also be handled by:</source>
-        <translation>Объект может быть обработан с помощью:</translation>
+        <source>It could be handled by:</source>
+        <oldsource>This entity could also be handled by:</oldsource>
+        <translation>Он может быть обработан с помощью:</translation>
     </message>
 </context>
 <context>

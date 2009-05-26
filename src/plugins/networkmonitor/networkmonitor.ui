@@ -50,7 +50,14 @@
         </widget>
        </item>
        <item>
-        <widget class="QTreeView" name="RequestHeadersView_"/>
+        <widget class="QTreeView" name="RequestHeadersView_">
+         <attribute name="headerVisible">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="headerVisible">
+          <bool>false</bool>
+         </attribute>
+        </widget>
        </item>
       </layout>
      </item>
@@ -64,7 +71,14 @@
         </widget>
        </item>
        <item>
-        <widget class="QTreeView" name="ReplyHeadersView_"/>
+        <widget class="QTreeView" name="ReplyHeadersView_">
+         <attribute name="headerVisible">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="headerVisible">
+          <bool>false</bool>
+         </attribute>
+        </widget>
        </item>
       </layout>
      </item>

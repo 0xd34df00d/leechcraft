@@ -248,7 +248,7 @@ void LeechCraft::Core::DelayedInit ()
 	XmlSettingsManager::Instance ()->RegisterObject ("ShowTabNames",
 			TabContainer_.get (), "handleTabNames");
 
-	emit loadProgress (tr ("Calculation dependencies..."));
+	emit loadProgress (tr ("Calculating dependencies..."));
 	PluginManager_->Init ();
 
 	QApplication::processEvents ();

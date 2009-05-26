@@ -16,7 +16,7 @@
    <item>
     <widget class="QLabel" name="label_3" >
      <property name="text" >
-      <string>LeechCraft has detected some entity:</string>
+      <string>LeechCraft has detected an entity:</string>
      </property>
     </widget>
    </item>
@@ -30,7 +30,7 @@
    <item>
     <widget class="QLabel" name="DownloadersLabel_" >
      <property name="text" >
-      <string>This entity could be downloaded by:</string>
+      <string>It could be downloaded by:</string>
      </property>
     </widget>
    </item>
@@ -40,7 +40,7 @@
    <item>
     <widget class="QLabel" name="HandlersLabel_" >
      <property name="text" >
-      <string>This entity could also be handled by:</string>
+      <string>It could be handled by:</string>
      </property>
     </widget>
    </item>
