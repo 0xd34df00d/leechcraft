@@ -4,6 +4,7 @@
 #include <QIcon>
 #include <QTextCodec>
 #include <QtDebug>
+#include <plugininterface/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -15,6 +16,7 @@ using namespace LeechCraft::Plugins::Poshuku::Plugins::CleanWeb;
 
 void CleanWeb::Init (ICoreProxy_ptr proxy)
 {
+	Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku_cleanweb"));
 	connect (&Core::Instance (),
 			SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
 					int*, QObject**)),
@@ -32,7 +34,7 @@ void CleanWeb::Init (ICoreProxy_ptr proxy)
 
 	SettingsDialog_.reset (new XmlSettingsDialog);
 	SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-			":/plugins/cleanweb/settings.xml");
+			":/plugins/poshuku/plugins/cleanweb/settings.xml");
 	SettingsDialog_->SetCustomWidget ("SubscriptionsManager",
 			new SubscriptionsManager ());
 }
@@ -48,7 +50,7 @@ QString CleanWeb::GetName () const
 
 QString CleanWeb::GetInfo () const
 {
-	return tr ("Blocks unwanted ads and other stuff frequently seen on the internets.");
+	return tr ("Blocks unwanted ads.");
 }
 
 QIcon CleanWeb::GetIcon () const

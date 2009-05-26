@@ -1,5 +1,9 @@
 <RCC>
-  <qresource prefix="/plugins/cleanweb" >
+  <qresource prefix="/plugins/poshuku/plugins/cleanweb" >
     <file>settings.xml</file>
+  </qresource>
+  <qresource prefix="/" >
+    <file>leechcraft_poshuku_cleanweb_ru_RU.qm</file>
+    <file>leechcraft_poshuku_cleanweb_uk_UA.qm</file>
   </qresource>
 </RCC>

@@ -181,7 +181,7 @@ bool LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::operator!= (const FilterOp
 	return !(f1 == f2);
 }
 
-Core::Core ()
+LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::Core::Core ()
 {
 	HeaderLabels_ << tr ("Name")
 		<< tr ("Last updated")
@@ -580,7 +580,7 @@ bool Core::Load (const QUrl& url, const QString& subscrName)
 	{
 		QMessageBox::critical (0,
 				tr ("Error"),
-				tr ("Job the subscription wasn't delegated."));
+				tr ("The subscription wasn't delegated."));
 		qWarning () << Q_FUNC_INFO
 			<< url.toString ().toUtf8 ();
 		return false;

@@ -1,7 +1,9 @@
 #ifndef PLUGINS_POSHUKU_PLUGINS_CLEANWEB_CLEANWEB_H
 #define PLUGINS_POSHUKU_PLUGINS_CLEANWEB_CLEANWEB_H
+#include <memory>
 #include <QObject>
 #include <QMap>
+#include <QTranslator>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
@@ -25,6 +27,7 @@ namespace LeechCraft
 						Q_INTERFACES (IInfo IHaveSettings IEntityHandler)
 
 						boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
+						std::auto_ptr<QTranslator> Translator_;
 					public:
 						void Init (ICoreProxy_ptr);
 						void Release ();
