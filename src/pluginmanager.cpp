@@ -199,6 +199,8 @@ void LeechCraft::PluginManager::Release ()
 					tr ("Release of one or more plugins failed."));
         }
     }
+
+	Plugins_.clear ();
 }
 
 QString LeechCraft::PluginManager::Name (const LeechCraft::PluginManager::Size_t& pos) const
@@ -660,6 +662,7 @@ void LeechCraft::PluginManager::Release (DepTreeItem_ptr item)
 		}
 #endif
 
+		PluginsContainer_t::iterator i = Find (item);
 		try
 		{
 			ii->Release ();
@@ -667,13 +670,11 @@ void LeechCraft::PluginManager::Release (DepTreeItem_ptr item)
 		}
 		catch (const std::exception& e)
 		{
-			PluginsContainer_t::iterator i = Find (item);
 			qWarning () << Q_FUNC_INFO
 				<< "failed to release the unloading object with"
 				<< e.what ()
 				<< "for"
 				<< (*i)->fileName ();
-			Unload (i);
 		}
 		catch (...)
 		{
@@ -681,8 +682,8 @@ void LeechCraft::PluginManager::Release (DepTreeItem_ptr item)
 			qWarning () << Q_FUNC_INFO
 				<< "failed to release the unloading object"
 				<< (*i)->fileName ();
-			Unload (i);
 		}
+		Unload (i);
 	}
 
 	for (QList<DepTreeItem_ptr>::const_iterator i = deps.begin ();
@@ -734,10 +735,6 @@ void LeechCraft::PluginManager::Unload (PluginsContainer_t::iterator i)
 
 	if (!UnloadQueue_.contains (i))
 		UnloadQueue_ << i;
-	if (UnloadQueue_.size () == 1)
-		QTimer::singleShot (0,
-				this,
-				SLOT (processUnloadQueue ()));
 
 	DepTreeItem_ptr dep = GetDependency ((*i)->instance ());
 	if (dep)
@@ -770,10 +767,64 @@ void LeechCraft::PluginManager::Unload (PluginsContainer_t::iterator i)
 			}
 		}
 	}
+
+	/** TODO understand why app segfaults on exit if it's uncommented.
+	if (UnloadQueue_.size () == 1)
+		processUnloadQueue ();
+	*/
 }
 
 void LeechCraft::PluginManager::processUnloadQueue ()
 {
+	for (int i = 0; i < UnloadQueue_.size (); ++i)
+	{
+		QPluginLoader_ptr loader = *UnloadQueue_.at (i);
+		IInfo *ii = qobject_cast<IInfo*> (loader->instance ());
+		QString name;
+		try
+		{
+			name = ii->GetName ();
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "unable to get name for the unload"
+				<< loader->instance ()
+				<< e.what ();
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "unable to get name for the unload"
+				<< loader->instance ();
+		}
+
+		try
+		{
+#ifdef QT_DEBUG
+			qDebug () << Q_FUNC_INFO
+				<< name;
+#endif
+			if (!loader->unload ())
+				qWarning () << Q_FUNC_INFO
+					<< "unable to unload"
+					<< loader->instance ()
+					<< loader->errorString ();
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "unable to unload with exception"
+				<< loader->instance ()
+				<< e.what ();
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "unable to unload with exception"
+				<< loader->instance ();
+		}
+	}
 	std::sort (UnloadQueue_.begin (), UnloadQueue_.end ());
 	while (UnloadQueue_.size ())
 	{

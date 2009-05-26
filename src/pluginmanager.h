@@ -22,6 +22,7 @@ namespace LeechCraft
 			// This plugin depends upon.
 			QMultiMap<QString, DepTreeItem_ptr> Needed_;
 			QMultiMap<QString, DepTreeItem_ptr> Used_;
+			// What depends on this plugin.
 			QList<DepTreeItem_ptr> Belongs_;
 
 			DepTreeItem ();

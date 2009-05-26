@@ -7,7 +7,7 @@ int main (int argc, char **argv)
 
 	LeechCraft::Application app (argc, argv);
 
-	std::auto_ptr<LeechCraft::MainWindow> mw (new LeechCraft::MainWindow ());
+	LeechCraft::MainWindow *mw = new LeechCraft::MainWindow ();
     return app.exec ();
 }
 
