@@ -231,6 +231,8 @@ void Task::redirectedConstruction (const QString& newUrl)
 		To_->open (QIODevice::ReadWrite);
 	}
 
+	Reply_.reset ();
+
 	URL_ = newUrl;
 	Start (To_);
 }
