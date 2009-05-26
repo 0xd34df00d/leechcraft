@@ -22,7 +22,7 @@
 
 using namespace LeechCraft;
 
-Application::Application (int& argc, char **argv)
+LeechCraft::Application::Application (int& argc, char **argv)
 : QApplication (argc, argv)
 {
 	Arguments_ = arguments ();

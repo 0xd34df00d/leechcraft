@@ -5,7 +5,7 @@
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
 
-OperationalModel::OperationalModel (QObject *parent)
+LeechCraft::OperationalModel::OperationalModel (QObject *parent)
 : MergeModel (QStringList (tr ("Entity"))
 			<< tr ("Category")
 			<< tr ("Information"), parent)

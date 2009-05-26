@@ -197,7 +197,7 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 	settings.endGroup ();
 }
 
-void NetworkAccessManager::saveCookies () const
+void LeechCraft::NetworkAccessManager::saveCookies () const
 {
 	QDir dir = QDir::home ();
 	dir.cd (".leechcraft");

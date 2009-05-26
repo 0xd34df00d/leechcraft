@@ -11,7 +11,7 @@ TagsViewer::TagsViewer (QWidget *parent)
 	Ui_.TagsView_->setModel (TagsManager::Instance ().GetModel ());
 }
 
-void TagsViewer::on_Rename__released ()
+void LeechCraft::TagsViewer::on_Rename__released ()
 {
 	QModelIndex index = Ui_.TagsView_->currentIndex ();
 	if (!index.isValid ())

@@ -20,7 +20,7 @@ RequestNormalizer::RequestHolder::~RequestHolder ()
 	}
 }
 
-RequestNormalizer::RequestNormalizer (const boost::shared_ptr<MergeModel>& merge,
+LeechCraft::RequestNormalizer::RequestNormalizer (const boost::shared_ptr<MergeModel>& merge,
 		QObject *parent)
 : QObject (parent)
 , MergeModel_ (merge)
@@ -33,7 +33,7 @@ RequestNormalizer::RequestNormalizer (const boost::shared_ptr<MergeModel>& merge
 	Root_->setProperty ("__LeechCraft_own_core_model", true);
 }
 
-void RequestNormalizer::SetRequest (const QString& req)
+void LeechCraft::RequestNormalizer::SetRequest (const QString& req)
 {
 	try
 	{
@@ -67,7 +67,7 @@ QAbstractItemModel* RequestNormalizer::GetModel () const
 	return Root_.get ();
 }
 
-void RequestNormalizer::Validate (const QString& req) const
+void LeechCraft::RequestNormalizer::Validate (const QString& req) const
 {
 	if (req.size () < 2)
 		return;

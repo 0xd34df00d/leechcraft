@@ -6,7 +6,7 @@
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
 
-CategoryMerger::CategoryMerger (const Request& r,
+LeechCraft::CategoryMerger::CategoryMerger (const Request& r,
 		const boost::shared_ptr<MergeModel>& merge,
 		QObject *parent)
 : MergeModel (QStringList (tr ("Name"))
