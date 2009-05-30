@@ -3,8 +3,8 @@
 #include <memory>
 #include <QDialog>
 #include <QStandardItemModel>
-#include <Phonon>
 #include "ui_player.h"
+#include "phonon.h"
 
 class QStatusBar;
 class QToolBar;

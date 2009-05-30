@@ -1,6 +1,5 @@
 #include "lmp.h"
 #include <QToolBar>
-#include <Phonon>
 #include <plugininterface/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"

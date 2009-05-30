@@ -3,6 +3,7 @@
 #include <QTextCodec>
 #include <QFileInfo>
 #include <interfaces/structures.h>
+#include "phonon.h"
 #include "xmlsettingsmanager.h"
 
 using namespace LeechCraft;

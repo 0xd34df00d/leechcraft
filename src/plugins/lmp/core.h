@@ -2,9 +2,9 @@
 #define PLUGINS_LMP_CORE_H
 #include <memory>
 #include <QObject>
-#include <Phonon>
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
+#include "phonon.h"
 #include "player.h"
 
 namespace Phonon

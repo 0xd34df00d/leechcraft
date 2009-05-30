@@ -2,7 +2,7 @@
 #define PLUGINS_LMP_ENTITYCHECKER_H
 #include <memory>
 #include <QObject>
-#include <Phonon>
+#include "phonon.h"
 
 namespace LeechCraft
 {

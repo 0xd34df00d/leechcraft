@@ -1,6 +1,6 @@
-SET (QT_USE_PHONON TRUE)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR}
+	${QT_PHONON_INCLUDES}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${Boost_INCLUDE_DIR}
 	)
@@ -21,6 +21,7 @@ SET (HEADERS
 	videosettings.h
 	entitychecker.h
 	player.h
+	phonon.h
 	)
 SET (FORMS
     player.ui
