@@ -12,11 +12,13 @@ StorageBackend::~StorageBackend ()
 
 boost::shared_ptr<StorageBackend> StorageBackend::Create (Type type)
 {
+	boost::shared_ptr<StorageBackend> result;
 	switch (type)
 	{
 		case SBSQLite:
 		case SBPostgres:
-			return boost::shared_ptr<StorageBackend> (new SQLStorageBackend (type));
+			result.reset (new SQLStorageBackend (type));
 	}
+	return result;
 }
 
