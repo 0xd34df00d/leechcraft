@@ -56,7 +56,7 @@ ADD_LIBRARY (leechcraft_lmp SHARED
 	)
 TARGET_LINK_LIBRARIES (leechcraft_lmp
 	${QT_LIBRARIES}
-	${PHONON_LIBRARY}
+	${QT_PHONON_LIBS}
 	plugininterface
 	xmlsettingsdialog
 	)
