@@ -119,6 +119,7 @@ private slots:
 	void setupLoading ();
 	void handleEntityAction ();
 	void handleLoadFinished ();
+	void handleLoadProgress (int);
 signals:
 	void titleChanged (const QString&);
 	void urlChanged (const QString&);

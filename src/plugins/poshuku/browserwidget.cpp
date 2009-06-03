@@ -242,8 +242,8 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 			SLOT (setText (const QString&)));
 	connect (Ui_.WebView_,
 			SIGNAL (loadProgress (int)),
-			Ui_.Progress_,
-			SLOT (setValue (int)));
+			this,
+			SLOT (handleLoadProgress (int)));
 	connect (Ui_.WebView_,
 			SIGNAL (loadProgress (int)),
 			this,
@@ -845,5 +845,11 @@ void BrowserWidget::handleLoadFinished ()
 			}
 		}
 	}
+}
+
+void BrowserWidget::handleLoadProgress (int p)
+{
+	Ui_.Progress_->setValue (p);
+	Ui_.Progress_->setVisible (p != 100);
 }
 
