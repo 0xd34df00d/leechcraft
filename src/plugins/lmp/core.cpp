@@ -235,7 +235,9 @@ void Core::updateState ()
 	switch (source.type ())
 	{
 		case MediaSource::Invalid:
+#if PHONON_VERSION >= PHONON_VERSION_CHECK (4, 3, 0)
 		case MediaSource::Empty:
+#endif
 			result += tr ("nowhere");
 			break;
 		case MediaSource::LocalFile:
