@@ -36,7 +36,7 @@
 				<label lang="en" value="Behavior" />
 				<label lang="ru" value="Поведение" />
 				<label lang="uk" value="Поведінка" />
-				<item type="checkbox" property="WatchClipboard" state="on">
+				<item type="checkbox" property="WatchClipboard" state="off">
 					<label lang="en" value="Watch clipboard" />
 					<label lang="ru" value="Следить за буфером обмена" />
 					<label lang="uk" value="Спостерігати за буфером обміну" />
