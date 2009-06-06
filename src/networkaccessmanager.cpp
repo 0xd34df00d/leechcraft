@@ -92,7 +92,7 @@ QNetworkReply* NetworkAccessManager::createRequest (QNetworkAccessManager::Opera
 	}
 
 	QNetworkReply *result = QNetworkAccessManager::createRequest (op, r, out);
-	emit requestCreated (op, req, result);
+	emit requestCreated (op, r, result);
 	return result;
 }
 
