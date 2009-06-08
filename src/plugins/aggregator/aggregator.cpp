@@ -151,6 +151,11 @@ void Aggregator::Init (ICoreProxy_ptr proxy)
 	Impl_->AdditionalInfo_->HideInfoPanel ();
 	Impl_->Ui_.setupUi (this);
 
+	Impl_->Ui_.MergeItems_->setChecked (XmlSettingsManager::Instance ()->
+			Property ("MergeItems", false).toBool ());
+	Impl_->Ui_.ShowAsTape_->setChecked (XmlSettingsManager::Instance ()->
+			Property ("TapeMode", false).toBool ());
+
 	Impl_->RegexpMatcherUi_.reset (new RegexpMatcherUi (this));
 
 	Impl_->ItemBucket_.reset (new ItemBucket (this));
@@ -691,11 +696,13 @@ void Aggregator::on_ActionExportBinary__triggered ()
 void Aggregator::on_MergeItems__toggled (bool merge)
 {
 	Core::Instance ().SetMerge (merge);
+	XmlSettingsManager::Instance ()->setProperty ("MergeItems", merge);
 }
 
 void Aggregator::on_ShowAsTape__toggled (bool tape)
 {
 	Impl_->Ui_.ItemsWidget_->SetTapeMode (tape);
+	XmlSettingsManager::Instance ()->setProperty ("TapeMode", tape);
 }
 
 void Aggregator::currentChannelChanged ()
