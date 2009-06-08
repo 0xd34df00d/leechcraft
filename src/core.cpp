@@ -245,8 +245,6 @@ void LeechCraft::Core::DelayedInit ()
 			SLOT (catchError (QString)));
 
 	TabContainer_.reset (new TabContainer (ReallyMainWindow_->GetTabWidget ()));
-	XmlSettingsManager::Instance ()->RegisterObject ("ShowTabNames",
-			TabContainer_.get (), "handleTabNames");
 
 	emit loadProgress (tr ("Calculating dependencies..."));
 	PluginManager_->Init ();
@@ -292,8 +290,6 @@ void LeechCraft::Core::DelayedInit ()
 		if (imt)
 			InitMultiTab (plugin);
 	}
-
-	TabContainer_->handleTabNames ();
 
 	QTimer::singleShot (1000,
 			this,

@@ -10,6 +10,10 @@
 				<label lang="en" value="Show tab names" />
 				<label lang="ru" value="Показывать названия вкладок" />
 			</item>
+			<item type="checkbox" property="UseTabScrollButtons" state="on">
+				<label lang="en" value="Use tab scroll buttons" />
+				<label lang="ru" value="Использовать кнопки прокрутки табов" />
+			</item>
 			<item type="customwidget" name="IconSet">
 				<label lang="en" value="Icon set:" />
 				<label lang="ru" value="Набор иконок:" />

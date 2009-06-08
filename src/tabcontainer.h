@@ -44,6 +44,7 @@ namespace LeechCraft
 		void changeTooltip (QWidget*, QWidget*);
 		void bringToFront (QWidget*) const;
 		void handleTabNames ();
+		void handleScrollButtons ();
 	private:
 		int FindTabForWidget (QWidget*) const;
 	};

@@ -19,6 +19,14 @@ TabContainer::TabContainer (TabWidget *tabWidget,
 			SIGNAL (tabCloseRequested (int)),
 			this,
 			SLOT (remove (int)));
+
+	XmlSettingsManager::Instance ()->RegisterObject ("ShowTabNames",
+			this, "handleTabNames");
+	XmlSettingsManager::Instance ()->RegisterObject ("UseTabScrollButtons",
+			this, "handleScrollButtons");
+
+	handleTabNames ();
+	handleScrollButtons ();
 }
 
 TabContainer::~TabContainer ()
@@ -264,6 +272,12 @@ void TabContainer::handleTabNames ()
 			TabWidget_->setTabText (i, QString ());
 		}
 	}
+}
+
+void TabContainer::handleScrollButtons ()
+{
+	TabWidget_->setUsesScrollButtons (XmlSettingsManager::Instance ()->
+			property ("UseTabScrollButtons").toBool ());
 }
 
 void TabContainer::bringToFront (QWidget *widget) const
