@@ -25,7 +25,6 @@ TabContainer::TabContainer (TabWidget *tabWidget,
 	XmlSettingsManager::Instance ()->RegisterObject ("UseTabScrollButtons",
 			this, "handleScrollButtons");
 
-	handleTabNames ();
 	handleScrollButtons ();
 }
 

@@ -291,6 +291,8 @@ void LeechCraft::Core::DelayedInit ()
 			InitMultiTab (plugin);
 	}
 
+	TabContainer_->handleTabNames ();
+
 	QTimer::singleShot (1000,
 			this,
 			SLOT (pullCommandLine ()));
