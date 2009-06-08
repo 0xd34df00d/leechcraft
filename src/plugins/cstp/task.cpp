@@ -74,7 +74,10 @@ void Task::Start (const boost::intrusive_ptr<MorphFile>& tof)
 			return;
 		}
 		else
-			handleReadyRead ();
+		{
+			if (handleReadyRead ())
+				return;
+		}
 	}
 
 	Reply_->setParent (0);
@@ -271,13 +274,17 @@ void Task::handleMetaDataChanged ()
 	}
 }
 
-void Task::handleReadyRead ()
+bool Task::handleReadyRead ()
 {
 	if (Reply_.get ())
 		To_->write (Reply_->readAll ());
 	if (URL_.isEmpty () &&
 			Core::Instance ().HasFinishedReply (Reply_.get ()))
+	{
 		handleFinished ();
+		return true;
+	}
+	return false;
 }
 
 void Task::handleFinished ()
