@@ -862,7 +862,7 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 						QDesktopServices::storageLocation (QDesktopServices::DocumentsLocation))
 					.toString ();
 			QString dir = QFileDialog::getExistingDirectory (0,
-					tr ("Select save path"),
+					tr ("Select save location"),
 					suggestion,
 					QFileDialog::Options (~QFileDialog::ShowDirsOnly));
 

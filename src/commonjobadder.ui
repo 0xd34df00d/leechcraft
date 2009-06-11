@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>599</width>
-    <height>131</height>
+    <height>121</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Common job adder</string>
+   <string>Add task</string>
   </property>
   <property name="windowIcon">
    <iconset resource="mainresources.qrc">
@@ -20,10 +20,13 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QFormLayout" name="formLayout">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+     </property>
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>What:</string>
+        <string>Entity:</string>
        </property>
       </widget>
      </item>
@@ -51,7 +54,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Where:</string>
+        <string>Location:</string>
        </property>
       </widget>
      </item>

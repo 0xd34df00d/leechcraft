@@ -192,7 +192,10 @@
   </action>
   <action name="ActionLogger_">
    <property name="text">
-    <string>Logger</string>
+    <string>Log</string>
+   </property>
+   <property name="toolTip">
+    <string>Log</string>
    </property>
   </action>
  </widget>
