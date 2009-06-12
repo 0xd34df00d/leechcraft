@@ -1645,6 +1645,7 @@ void Core::HandleSingleFinished (int i)
 		LeechCraft::DownloadEntity e;
 		e.Entity_ = QByteArray ((torrent.Handle_.save_path () / i->path).string ().c_str ());
 		e.Location_ = torrent.TorrentFileName_;
+		e.Additional_ [" Tags"] = torrent.Tags_;
         emit fileFinished (e);
 	}
 
