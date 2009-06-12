@@ -528,14 +528,11 @@ bool LeechCraft::Core::eventFilter (QObject *watched, QEvent *e)
 
 			Q_FOREACH (QString format, event->mimeData ()->formats ())
 			{
-				DownloadEntity e =
-				{
-					event->mimeData ()->data (format),
-					QString (),
-					format,
-					LeechCraft::FromUserInitiated,
-					QVariant ()
-				};
+				DownloadEntity e = Util::MakeEntity (event->
+							mimeData ()->data (format),
+						QString (),
+						LeechCraft::FromUserInitiated,
+						format);
 
 				if (CouldHandle (e))
 				{
@@ -552,14 +549,11 @@ bool LeechCraft::Core::eventFilter (QObject *watched, QEvent *e)
 
 			Q_FOREACH (QString format, event->mimeData ()->formats ())
 			{
-				DownloadEntity e =
-				{
-					event->mimeData ()->data (format),
-					QString (),
-					format,
-					LeechCraft::FromUserInitiated,
-					QVariant ()
-				};
+				DownloadEntity e = Util::MakeEntity (event->
+							mimeData ()->data (format),
+						QString (),
+						LeechCraft::FromUserInitiated,
+						format);
 
 				if (handleGotEntity (e))
 				{
@@ -1019,14 +1013,9 @@ void LeechCraft::Core::handleClipboardTimer ()
 
     PreviousClipboardContents_ = text;
 
-	DownloadEntity e =
-	{
-		text.toUtf8 (),
-		QString (),
-		QString (),
-		FromUserInitiated,
-		QVariant ()
-	};
+	DownloadEntity e = Util::MakeEntity (text.toUtf8 (),
+			QString (),
+			LeechCraft::FromUserInitiated);
 
     if (XmlSettingsManager::Instance ()->property ("WatchClipboard").toBool ())
         handleGotEntity (e);
@@ -1091,14 +1080,9 @@ void LeechCraft::Core::pullCommandLine ()
 			!arguments.last ().startsWith ('-')))
 		return;
 
-	DownloadEntity e =
-	{
-		arguments.last ().toUtf8 (),
-		QString (),
-		QString (),
-		FromUserInitiated,
-		QVariant ()
-	};
+	DownloadEntity e = Util::MakeEntity (arguments.last ().toUtf8 (),
+			QString (),
+			LeechCraft::FromUserInitiated);
 	handleGotEntity (e);
 }
 
@@ -1122,14 +1106,9 @@ void LeechCraft::Core::handleNewLocalServerConnection ()
 			!arguments.last ().startsWith ('-')))
 		return;
 
-	DownloadEntity e =
-	{
-		arguments.last ().toUtf8 (),
-		QString (),
-		QString (),
-		FromUserInitiated,
-		QVariant ()
-	};
+	DownloadEntity e = Util::MakeEntity (arguments.last ().toUtf8 (),
+			QString (),
+			LeechCraft::FromUserInitiated);
 	handleGotEntity (e);
 }
 

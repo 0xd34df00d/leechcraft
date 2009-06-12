@@ -561,17 +561,13 @@ bool Core::Load (const QUrl& url, const QString& subscrName)
 	QString path = home.absoluteFilePath (name);
 
 	LeechCraft::DownloadEntity e =
-	{
-		url.toString ().toUtf8 (),
-		path,
-		QString (),
-		LeechCraft::Internal |
-			LeechCraft::DoNotNotifyUser |
-			LeechCraft::DoNotSaveInHistory |
-			LeechCraft::NotPersistent |
-			LeechCraft::DoNotAnnounceEntity,
-		QVariant ()
-	};
+		LeechCraft::Util::MakeEntity (url.toString ().toUtf8 (),
+			path,
+			LeechCraft::Internal |
+				LeechCraft::DoNotNotifyUser |
+				LeechCraft::DoNotSaveInHistory |
+				LeechCraft::NotPersistent |
+				LeechCraft::DoNotAnnounceEntity);
 
 	int id = -1;
 	QObject *pr;

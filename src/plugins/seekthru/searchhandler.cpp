@@ -100,7 +100,7 @@ Qt::ItemFlags SearchHandler::flags (const QModelIndex& index) const
 		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
-QVariant SearchHandler::headerData (int header, Qt::Orientation orient, int role) const
+QVariant SearchHandler::headerData (int, Qt::Orientation orient, int role) const
 {
 	if (orient == Qt::Horizontal && role == Qt::DisplayRole)
 		return QString ("");
@@ -165,17 +165,14 @@ void SearchHandler::Start (const LeechCraft::Request& r)
 
 		QString fname = LeechCraft::Util::GetTemporaryName ();
 		LeechCraft::DownloadEntity e =
-		{
-			url.toString ().toUtf8 (),
-			fname,
-			u.Type_,
-			LeechCraft::Internal |
-				LeechCraft::DoNotNotifyUser |
-				LeechCraft::DoNotSaveInHistory |
-				LeechCraft::NotPersistent |
-				LeechCraft::DoNotAnnounceEntity,
-			QVariant ()
-		};
+			LeechCraft::Util::MakeEntity (url.toString ().toUtf8 (),
+				fname,
+				LeechCraft::Internal |
+					LeechCraft::DoNotNotifyUser |
+					LeechCraft::DoNotSaveInHistory |
+					LeechCraft::NotPersistent |
+					LeechCraft::DoNotAnnounceEntity,
+				u.Type_);
 
 		Result job;
 		if (u.Type_ == "application/rss+xml")
@@ -286,13 +283,10 @@ void SearchHandler::subscribe ()
 		mime = "application/rss+xml";
 
 	LeechCraft::DownloadEntity e =
-	{
-		Results_.at (r).RequestURL_.toString ().toUtf8 (),
-		QString (),
-		mime,
-		LeechCraft::FromUserInitiated,
-		QVariant ()
-	};
+		LeechCraft::Util::MakeEntity (Results_.at (r).RequestURL_.toString ().toUtf8 (),
+				QString (),
+				LeechCraft::FromUserInitiated,
+				mime);
 	emit gotEntity (e);
 }
 

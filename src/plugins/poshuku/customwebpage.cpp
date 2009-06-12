@@ -6,6 +6,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDesktopServices>
+#include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
 #include "customwebview.h"
 #include "core.h"
@@ -156,15 +157,10 @@ void CustomWebPage::handleDownloadRequested (const QNetworkRequest& request)
 			HandleDownloadRequested (this, request))
 		return;
 
-	LeechCraft::DownloadEntity e =
-	{
-		request.url ().toString ().toUtf8 (),
-		QString (),
-		QString (),
-		LeechCraft::FromUserInitiated |
-			LeechCraft::IsntDownloaded,
-		QVariant ()
-	};
+	LeechCraft::DownloadEntity e = LeechCraft::Util::MakeEntity (request.url ().toString ().toUtf8 (),
+			QString (),
+			LeechCraft::FromUserInitiated |
+				LeechCraft::IsntDownloaded);
 	emit gotEntity (e);
 }
 
@@ -325,14 +321,10 @@ void CustomWebPage::handleUnsupportedContent (QNetworkReply *reply)
 			{
 				reply->abort ();
 				LeechCraft::DownloadEntity e =
-				{
-					reply->url ().toString ().toUtf8 (),
-					QString (),
-					QString (),
-					LeechCraft::FromUserInitiated |
-						LeechCraft::IsntDownloaded,
-					QVariant ()
-				};
+					LeechCraft::Util::MakeEntity (reply->url ().toString ().toUtf8 (),
+						QString (),
+						LeechCraft::FromUserInitiated |
+							LeechCraft::IsntDownloaded);
 				emit gotEntity (e);
 			}
 			break;
@@ -346,14 +338,12 @@ void CustomWebPage::handleUnsupportedContent (QNetworkReply *reply)
 							reply->header (QNetworkRequest::ContentTypeHeader).isValid ())
 					{
 						LeechCraft::DownloadEntity e =
-						{
-							reply->url ().toString ().toUtf8 (),
-							QString (),
-							QString (),
-							LeechCraft::FromUserInitiated |
-								LeechCraft::IsntDownloaded,
-							QVariant::fromValue<QNetworkReply*> (reply)
-						};
+							LeechCraft::Util::MakeEntity (reply->url ().toString ().toUtf8 (),
+								QString (),
+								LeechCraft::FromUserInitiated |
+									LeechCraft::IsntDownloaded);
+
+						e.Additional_ ["QNetworkReply*"] = QVariant::fromValue<QNetworkReply*> (reply);
 						emit gotEntity (e);
 						break;
 					}

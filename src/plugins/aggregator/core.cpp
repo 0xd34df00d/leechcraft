@@ -245,18 +245,14 @@ void Core::AddFeed (const QString& url, const QStringList& tags)
 	}
 
 	QString name = LeechCraft::Util::GetTemporaryName ();
-	LeechCraft::DownloadEntity e =
-	{
-		url.toUtf8 (),
-		name,
-		QString (),
-		LeechCraft::Internal |
-			LeechCraft::DoNotNotifyUser |
-			LeechCraft::DoNotSaveInHistory |
-			LeechCraft::NotPersistent |
-			LeechCraft::DoNotAnnounceEntity,
-		QVariant ()
-	};
+	LeechCraft::DownloadEntity e = LeechCraft::Util::MakeEntity (url.toUtf8 (),
+			name, 
+			LeechCraft::Internal |
+				LeechCraft::DoNotNotifyUser |
+				LeechCraft::DoNotSaveInHistory |
+				LeechCraft::NotPersistent |
+				LeechCraft::DoNotAnnounceEntity);
+
 	PendingJob pj =
 	{
 		PendingJob::RFeedAdded,
@@ -1113,18 +1109,13 @@ void Core::updateFeeds ()
 
 void Core::fetchExternalFile (const QString& url, const QString& where)
 {
-	LeechCraft::DownloadEntity e =
-	{
-		url.toUtf8 (),
-		where,
-		QString (),
-		LeechCraft::Internal |
-			LeechCraft::DoNotNotifyUser |
-			LeechCraft::DoNotSaveInHistory |
-			LeechCraft::NotPersistent |
-			LeechCraft::DoNotAnnounceEntity,
-		QVariant ()
-	};
+	LeechCraft::DownloadEntity e = LeechCraft::Util::MakeEntity (url.toUtf8 (),
+			where,
+			LeechCraft::Internal |
+				LeechCraft::DoNotNotifyUser |
+				LeechCraft::DoNotSaveInHistory |
+				LeechCraft::NotPersistent |
+				LeechCraft::DoNotAnnounceEntity);
 
 	PendingJob pj =
 	{
@@ -1470,18 +1461,13 @@ void Core::UpdateFeed (const QString& url)
 {
 	QString filename = LeechCraft::Util::GetTemporaryName ();
 
-	LeechCraft::DownloadEntity e =
-	{
-		url.toUtf8 (),
-		filename,
-		QString (),
-		LeechCraft::Internal |
-			LeechCraft::DoNotNotifyUser |
-			LeechCraft::DoNotSaveInHistory |
-			LeechCraft::NotPersistent |
-			LeechCraft::DoNotAnnounceEntity,
-		QVariant ()
-	};
+	LeechCraft::DownloadEntity e = LeechCraft::Util::MakeEntity (url.toUtf8 (),
+			filename,
+			LeechCraft::Internal |
+				LeechCraft::DoNotNotifyUser |
+				LeechCraft::DoNotSaveInHistory |
+				LeechCraft::NotPersistent |
+				LeechCraft::DoNotAnnounceEntity);
 
 	PendingJob pj =
 	{

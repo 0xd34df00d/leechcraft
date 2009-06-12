@@ -140,17 +140,12 @@ bool Core::CouldHandle (const LeechCraft::DownloadEntity& e) const
 void Core::Add (const QString& url)
 {
 	QString name = LeechCraft::Util::GetTemporaryName ();
-	LeechCraft::DownloadEntity e =
-	{
-		url.toUtf8 (),
-		name,
-		QString (),
-		LeechCraft::Internal |
-			LeechCraft::DoNotSaveInHistory |
-			LeechCraft::DoNotNotifyUser |
-			LeechCraft::NotPersistent,
-		QVariant ()
-	};
+	LeechCraft::DownloadEntity e = LeechCraft::Util::MakeEntity (url.toUtf8 (),
+			name,
+			LeechCraft::Internal |
+				LeechCraft::DoNotSaveInHistory |
+				LeechCraft::DoNotNotifyUser |
+				LeechCraft::NotPersistent);
 
 	int id = -1;
 	QObject *provider;

@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QtXml/QDomElement>
 #include <QtDebug>
+#include <interfaces/structures.h>
 
 class QTranslator;
 
@@ -73,6 +74,11 @@ namespace LeechCraft
 		 * @return The filename.
 		 */
 		PLUGININTERFACE_API QString GetTemporaryName (const QString& pattern = QString ("lc_temp.XXXXXX"));
+
+		PLUGININTERFACE_API DownloadEntity MakeEntity (const QByteArray& entity,
+				const QString& location,
+				LeechCraft::TaskParameters tp,
+				const QString& mime = QString ());
 
 		/** @brief Returns an element for a given tags list.
 		 *

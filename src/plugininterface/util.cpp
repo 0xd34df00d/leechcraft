@@ -65,3 +65,16 @@ QString LeechCraft::Util::GetTemporaryName (const QString& pattern)
 	return name;
 }
 
+LeechCraft::DownloadEntity LeechCraft::Util::MakeEntity (const QByteArray& entity,
+		const QString& location,
+		LeechCraft::TaskParameters tp,
+		const QString& mime)
+{
+	LeechCraft::DownloadEntity result;
+	result.Entity_ = entity;
+	result.Location_ = location;
+	result.Parameters_ = tp;
+	result.Mime_ = mime;
+	return result;
+}
+

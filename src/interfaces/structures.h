@@ -96,7 +96,7 @@ namespace LeechCraft
 
 		/** @brief Additional parameters.
 		 */
-		QVariant Additional_;
+		QMap<QString, QVariant> Additional_;
 	};
 
 	enum CustomDataRoles

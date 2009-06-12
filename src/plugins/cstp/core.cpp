@@ -8,6 +8,7 @@
 #include <QMetaType>
 #include <QTextCodec>
 #include <QtDebug>
+#include <plugininterface/util.h>
 #include <plugininterface/proxy.h>
 #include "task.h"
 #include "xmlsettingsmanager.h"
@@ -73,7 +74,7 @@ int Core::AddTask (LeechCraft::DownloadEntity& e)
 {
 	QString entity = QTextCodec::codecForName ("UTF-8")->
 		toUnicode (e.Entity_);
-	QNetworkReply *rep = e.Additional_.value<QNetworkReply*> ();
+	QNetworkReply *rep = e.Additional_ ["QNetworkReply*"].value<QNetworkReply*> ();
 	if (rep)
 	{
 		QFileInfo fi (e.Location_);
@@ -490,13 +491,9 @@ void Core::done (bool err)
 		{
 			tp &= ~LeechCraft::IsntDownloaded;
 			LeechCraft::DownloadEntity e =
-			{
-				filename.toUtf8 (),
-				url,
-				QString (),
-				tp,
-				QVariant ()
-			};
+				LeechCraft::Util::MakeEntity (filename.toUtf8 (),
+					url,
+					tp);
 			emit gotEntity (e);
 		}
 	}
