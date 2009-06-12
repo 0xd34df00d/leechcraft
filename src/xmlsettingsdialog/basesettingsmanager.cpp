@@ -23,7 +23,8 @@ void BaseSettingsManager::Release ()
 
 	QList<QByteArray> dProperties = dynamicPropertyNames ();
 	for (int i = 0; i < dProperties.size (); ++i)
-		Settings_->setValue (dProperties.at (i), property (dProperties.at (i).constData ()));
+		Settings_->setValue (dProperties.at (i),
+				property (dProperties.at (i).constData ()));
 	EndSettings (Settings_);
 	delete Settings_;
 	Settings_ = 0;
@@ -68,7 +69,12 @@ bool BaseSettingsManager::event (QEvent *e)
 	if (Properties2Object_.contains (name))
 	{
 		QPair<QObject*, QByteArray> object = Properties2Object_ [name];
-		object.first->metaObject ()->invokeMethod (object.first, object.second);
+		if (!object.first->metaObject ()->invokeMethod (object.first, object.second))
+			qWarning () << Q_FUNC_INFO
+				<< "could not find method in the metaobject"
+				<< name
+				<< object.first
+				<< object.second;
 	}
 
 	event->accept ();
