@@ -14,6 +14,10 @@
 				<label lang="ru" value="Вести себя тихо" />
 				<label lang="uk" value="Поводитись тихо" />
 			</item>
+			<item type="checkbox" property="ShowInDashboard" state="on">
+				<label lang="en" value="Show unread channels in summary" />
+				<label lang="ru" value="Показывать непрочитанные каналы в сводке" />
+			</item>
 			<item type="checkbox" property="ShowIconInTray" state="on">
 				<label lang="en" value="Show icon in tray when there are unread items" />
 				<label lang="ru" value="Показывать иконку в трее при непрочтенных сообщениях" />
