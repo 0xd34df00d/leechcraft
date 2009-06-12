@@ -169,9 +169,7 @@ QVariant Core::data (const QModelIndex& index, int role) const
 		}
 	}
 	else if (role == RoleTags)
-//		TODO
-//		return History_.at (row).Entity_
-		return QStringList ();
+		return History_.at (row).Entity_.Additional_ [" Tags"].toStringList ();
 	else if (role == RoleControls)
 		return QVariant::fromValue<QToolBar*> (ToolBar_.get ());
 	else if (role == RoleHash)
