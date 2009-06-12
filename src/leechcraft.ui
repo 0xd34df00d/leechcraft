@@ -44,7 +44,7 @@
       </property>
       <widget class="QWidget" name="DownloadersTab_">
        <attribute name="title">
-        <string>Downloaders</string>
+        <string>Summary</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <property name="margin">

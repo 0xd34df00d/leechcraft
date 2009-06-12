@@ -147,8 +147,8 @@
     </message>
     <message>
         <location filename="leechcraft.ui" line="47"/>
-        <source>Downloaders</source>
-        <translation>Загрузчики</translation>
+        <source>Summary</source>
+        <translation>Сводка</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="173"/>
