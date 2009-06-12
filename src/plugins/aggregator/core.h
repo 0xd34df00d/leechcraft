@@ -91,6 +91,7 @@ class Core : public QObject
 public:
 	struct ChannelInfo
 	{
+		QString URL_;
 		QString Link_;
 		QString Description_;
 		QString Author_;

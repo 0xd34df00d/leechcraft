@@ -420,6 +420,7 @@ Core::ChannelInfo Core::GetChannelInfo (const QModelIndex& i) const
 		return ChannelInfo ();
 	}
 	ChannelInfo ci;
+	ci.URL_ = channel.ParentURL_;
 	ci.Link_ = channel.Link_;
 
 	Channel_ptr rc = StorageBackend_->

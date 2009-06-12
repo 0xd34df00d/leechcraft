@@ -41,6 +41,21 @@ FeedSettings::FeedSettings (const QModelIndex& mapped, QWidget *parent)
 	else
 		Ui_.ChannelLink_->setText (shortLink);
 
+	link = ci.URL_;
+	Ui_.ChannelLink_->setToolTip (link);
+	if (link.size () >= 160)
+		shortLink = link.left (78) + "..." + link.right (78);
+	else
+		shortLink = link;
+	if (QUrl (link).isValid ())
+	{
+		link.insert (0, "<a href=\"");
+		link.append ("\">" + shortLink + "</a>");
+		Ui_.FeedURL_->setText (link);
+	}
+	else
+		Ui_.FeedURL_->setText (shortLink);
+
 	Ui_.ChannelDescription_->setHtml (ci.Description_);
 	Ui_.ChannelAuthor_->setText (ci.Author_);
 
