@@ -568,7 +568,7 @@ void LeechCraft::MainWindow::handleDownloadFinished (const QString& string)
 
 	if (show &&
 			!proxy->IsCancelled ())
-	FancyPopupManager_->ShowMessage (string);
+		FancyPopupManager_->ShowMessage (string);
 }
 
 void LeechCraft::MainWindow::filterParametersChanged ()
