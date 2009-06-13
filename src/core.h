@@ -43,14 +43,14 @@ namespace LeechCraft
 	/** Contains all the plugins' models, maps from end-user's tree view
 	 * to plugins' models and much more.
 	 */
-    class Core : public QObject
-    {
-        Q_OBJECT
+	class Core : public QObject
+	{
+		Q_OBJECT
 
-        PluginManager *PluginManager_;
+		PluginManager *PluginManager_;
 		MainWindow *ReallyMainWindow_;
-        QTimer *ClipboardWatchdog_;
-        QString PreviousClipboardContents_;
+		QTimer *ClipboardWatchdog_;
+		QString PreviousClipboardContents_;
 		std::auto_ptr<QLocalServer> Server_;
 		boost::shared_ptr<Util::MergeModel> MergeModel_;
 		std::auto_ptr<RequestNormalizer> RequestNormalizer_;
@@ -63,8 +63,8 @@ namespace LeechCraft
 		typedef std::map<const QAction*, QAbstractItemModel*> action2model_t;
 		mutable action2model_t Action2Model_;
 
-        Core ();
-    public:
+		Core ();
+	public:
 		enum FilterType
 		{
 			FTFixedString
@@ -73,9 +73,9 @@ namespace LeechCraft
 			, FTTags
 		};
 
-        virtual ~Core ();
+		virtual ~Core ();
 		static Core& Instance ();
-        void Release ();
+		void Release ();
 
 		void SetReallyMainWindow (MainWindow*);
 		MainWindow* GetReallyMainWindow ();
@@ -152,9 +152,9 @@ namespace LeechCraft
 		 */
 		QStringList GetTagsForIndex (int row, QAbstractItemModel *model) const;
 
-        void DelayedInit ();
-        bool ShowPlugin (int);
-        void TryToAddJob (const QString&, const QString&);
+		void DelayedInit ();
+		bool ShowPlugin (int);
+		void TryToAddJob (const QString&, const QString&);
 
 		void SetNewRow (const QModelIndex&);
 
@@ -170,8 +170,8 @@ namespace LeechCraft
 		 */
 		bool SameModel (const QModelIndex& i1, const QModelIndex& i2) const;
 		void UpdateFiltering (const QString&);
-        
-        QPair<qint64, qint64> GetSpeeds () const;
+		
+		QPair<qint64, qint64> GetSpeeds () const;
 
 		/** Counts how much tabs couldn't be removed. A tab is
 		 * considered unremovable if it's from IEmbedTab or LeechCraft's
@@ -204,7 +204,7 @@ namespace LeechCraft
 		void handleProxySettings () const;
 		void handlePluginAction ();
 		void toggleMultiwindow ();
-    private slots:
+	private slots:
 		/** Handles the entity which could be anything - path to a file,
 		 * link, contents of a .torrent file etc. If the entity is a
 		 * string, this parameter is considered to be an UTF-8
@@ -222,7 +222,7 @@ namespace LeechCraft
 		bool handleGotEntity (LeechCraft::DownloadEntity entity,
 				int *id = 0, QObject **provider = 0);
 		void handleCouldHandle (const LeechCraft::DownloadEntity&, bool*);
-        void handleClipboardTimer ();
+		void handleClipboardTimer ();
 		void embeddedTabWantsToFront ();
 		void handleStatusBarChanged (QWidget*, const QString&);
 		void handleLog (const QString&);
@@ -244,12 +244,12 @@ namespace LeechCraft
 		void InitEmbedTab (QObject*);
 		void InitMultiTab (QObject*);
 		QModelIndex MapToSourceRecursively (QModelIndex) const;
-    signals:
-        void error (QString) const;
+	signals:
+		void error (QString) const;
 		void log (const QString&);
-        void downloadFinished (const QString&);
+		void downloadFinished (const QString&);
 		void loadProgress (const QString&);
-    };
+	};
 #define LC_DEFINE_REGISTER(a) \
 	template<> \
 		LeechCraft::HookSignature<LeechCraft::a>::Functors_t Core::GetHooks<a> () const;
