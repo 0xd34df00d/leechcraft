@@ -68,7 +68,9 @@ void TabWidget::tabRemoved (int index)
 
 void TabWidget::checkTabMoveAllowed (int from, int to)
 {
-	if (!AsResult_ && from < Core::Instance ().CountUnremoveableTabs ())
+	int unrem = Core::Instance ().CountUnremoveableTabs ();
+	if (!AsResult_ &&
+			(from < unrem || to < unrem))
 	{
 		AsResult_ = true;
 		tabBar ()->moveTab (to, from);
