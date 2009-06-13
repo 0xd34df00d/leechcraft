@@ -129,8 +129,8 @@ namespace LeechCraft
 				void raiseTab (QWidget*);
 				void error (const QString&) const;
 				void statusBarChanged (QWidget*, const QString&);
-				void gotEntity (const DownloadEntity&);
-				void couldHandle (const DownloadEntity&, bool*);
+				void gotEntity (const LeechCraft::DownloadEntity&);
+				void couldHandle (const LeechCraft::DownloadEntity&, bool*);
 				void newUnclose (QAction*);
 			};
 		};
