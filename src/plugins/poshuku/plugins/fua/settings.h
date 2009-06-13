@@ -7,27 +7,30 @@ class QStandardItemModel;
 
 namespace LeechCraft
 {
-	namespace Poshuku
+	namespace Plugins
 	{
-		namespace Plugins
+		namespace Poshuku
 		{
-			namespace Fua
+			namespace Plugins
 			{
-				class FUA;
-
-				class Settings : public QWidget
+				namespace Fua
 				{
-					Q_OBJECT
+					class FUA;
 
-					Ui::Settings Ui_;
-					FUA *Fua_;
-					QStandardItemModel *Model_;
-				public:
-					Settings (QStandardItemModel*, FUA*);
-				private slots:
-					void on_Add__released ();
-					void on_Modify__released ();
-					void on_Remove__released ();
+					class Settings : public QWidget
+					{
+						Q_OBJECT
+
+						Ui::Settings Ui_;
+						FUA *Fua_;
+						QStandardItemModel *Model_;
+					public:
+						Settings (QStandardItemModel*, FUA*);
+					private slots:
+						void on_Add__released ();
+						void on_Modify__released ();
+						void on_Remove__released ();
+					};
 				};
 			};
 		};

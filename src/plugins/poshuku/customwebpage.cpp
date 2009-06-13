@@ -13,6 +13,8 @@
 #include "pluginmanager.h"
 #include "jsproxy.h"
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 CustomWebPage::CustomWebPage (QObject *parent)
 : QWebPage (parent)
 , MouseButtons_ (Qt::NoButton)
@@ -587,9 +589,7 @@ void CustomWebPage::HandleForms (QWebFrame *frame,
 	if (type == NavigationTypeFormSubmitted)
 	{
 		PageFormsData_t data = JSProxy_->GetForms ();
-#ifdef QT_DEBUG
 		qDebug () << frame << request.url () << data;
-#endif
 		if (!CheckData (data, frame, request))
 			return;
 
@@ -625,4 +625,5 @@ void CustomWebPage::FillForms (QWebFrame *frame)
 	Q_FOREACH (QWebFrame *childFrame, frame->childFrames ())
 		FillForms (childFrame);
 }
+
 

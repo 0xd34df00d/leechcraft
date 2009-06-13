@@ -5,6 +5,8 @@
 #include <QtDebug>
 #include <plugininterface/util.h>
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 JSProxy::JSProxy (QObject *parent)
 : QObject (parent)
 {
@@ -92,4 +94,5 @@ QVariant JSProxy::getFormElement (int formId,
 				toUnicode (pos->Value_.toByteArray ());
 	}
 }
+
 

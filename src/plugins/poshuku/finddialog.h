@@ -4,22 +4,31 @@
 #include "notification.h"
 #include "ui_finddialog.h"
 
-class FindDialog : public Notification
+namespace LeechCraft
 {
-	Q_OBJECT
-	
-	Ui::FindDialog Ui_;
-public:
-	FindDialog (QWidget* = 0);
-	virtual ~FindDialog ();
+	namespace Plugins
+	{
+		namespace Poshuku
+		{
+			class FindDialog : public Notification
+			{
+				Q_OBJECT
 
-	void SetSuccessful (bool);
-private slots:
-	void on_Pattern__textChanged (const QString&);
-	void on_FindButton__released ();
-	void reject ();
-signals:
-	void next (const QString&, QWebPage::FindFlags);
+				Ui::FindDialog Ui_;
+			public:
+				FindDialog (QWidget* = 0);
+				virtual ~FindDialog ();
+
+				void SetSuccessful (bool);
+			private slots:
+				void on_Pattern__textChanged (const QString&);
+				void on_FindButton__released ();
+				void reject ();
+			signals:
+				void next (const QString&, QWebPage::FindFlags);
+			};
+		};
+	};
 };
 
 #endif

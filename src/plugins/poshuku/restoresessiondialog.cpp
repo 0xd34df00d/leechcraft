@@ -4,6 +4,8 @@
 #include <QUrl>
 #include <QWebSettings>
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 RestoreSessionDialog::RestoreSessionDialog (QWidget *parent)
 : QDialog (parent)
 {
@@ -59,4 +61,5 @@ void RestoreSessionDialog::on_SelectNone__released ()
 		Ui_.Pages_->topLevelItem (i)->setData (0, Qt::CheckStateRole,
 				Qt::Unchecked);
 }
+
 

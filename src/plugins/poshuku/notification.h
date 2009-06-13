@@ -2,11 +2,20 @@
 #define NOTIFICATION_H
 #include <QWidget>
 
-class Notification : public QWidget
+namespace LeechCraft
 {
-	Q_OBJECT
-public:
-	Notification (QWidget* = 0);
+	namespace Plugins
+	{
+		namespace Poshuku
+		{
+			class Notification : public QWidget
+			{
+				Q_OBJECT
+			public:
+				Notification (QWidget* = 0);
+			};
+		};
+	};
 };
 
 #endif

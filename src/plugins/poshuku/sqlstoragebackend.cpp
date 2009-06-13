@@ -7,6 +7,8 @@
 #include <plugininterface/dblock.h>
 #include "xmlsettingsmanager.h"
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 SQLStorageBackend::SQLStorageBackend (StorageBackend::Type type)
 : Type_ (type)
 {
@@ -518,7 +520,7 @@ void SQLStorageBackend::InitializeTables ()
 			return;
 		}
 	}
-	
+
 	if (!DB_.tables ().contains ("storage_settings"))
 	{
 		if (!query.exec ("CREATE TABLE storage_settings ("
@@ -529,7 +531,7 @@ void SQLStorageBackend::InitializeTables ()
 			LeechCraft::Util::DBLock::DumpError (query);
 			return;
 		}
-		
+
 		if (Type_ == SBPostgres)
 		{
 			if (!query.exec ("CREATE RULE \"replace_storage_settings\" AS "
@@ -599,7 +601,7 @@ QString SQLStorageBackend::GetSetting (const QString& key) const
 		LeechCraft::Util::DBLock::DumpError (query);
 		throw std::runtime_error ("SQLStorageBackend could not query settings");
 	}
-	
+
 	if (!query.next ())
 		return QString ();
 
@@ -640,4 +642,5 @@ void SQLStorageBackend::SetSetting (const QString& key, const QString& value)
 		throw std::runtime_error ("SQLStorageBackend could not query settings");
 	}
 }
+
 

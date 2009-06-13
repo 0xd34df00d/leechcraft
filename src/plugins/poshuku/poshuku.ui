@@ -93,7 +93,7 @@
             </layout>
            </item>
            <item>
-            <widget class="FavoritesTreeView" name="FavoritesView_">
+            <widget class="LeechCraft::Plugins::Poshuku::FavoritesTreeView" name="FavoritesView_">
              <property name="rootIsDecorated">
               <bool>false</bool>
              </property>
@@ -171,7 +171,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="BrowserWidget" name="MainView_" native="true"/>
+     <widget class="LeechCraft::Plugins::Poshuku::BrowserWidget" name="MainView_" native="true"/>
     </widget>
    </item>
   </layout>
@@ -188,13 +188,13 @@
    <header location="global">plugininterface/tagslineedit.h</header>
   </customwidget>
   <customwidget>
-   <class>BrowserWidget</class>
+   <class>LeechCraft::Plugins::Poshuku::BrowserWidget</class>
    <extends>QWidget</extends>
    <header>browserwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>FavoritesTreeView</class>
+   <class>LeechCraft::Plugins::Poshuku::FavoritesTreeView</class>
    <extends>QTreeView</extends>
    <header>favoritestreeview.h</header>
   </customwidget>

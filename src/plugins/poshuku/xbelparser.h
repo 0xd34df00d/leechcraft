@@ -5,12 +5,21 @@
 class QByteArray;
 class QDomElement;
 
-class XbelParser
+namespace LeechCraft
 {
-public:
-	XbelParser (const QByteArray&);
-private:
-	void ParseFolder (const QDomElement&, QStringList = QStringList ());
+	namespace Plugins
+	{
+		namespace Poshuku
+		{
+			class XbelParser
+			{
+			public:
+				XbelParser (const QByteArray&);
+			private:
+				void ParseFolder (const QDomElement&, QStringList = QStringList ());
+			};
+		};
+	};
 };
 
 #endif

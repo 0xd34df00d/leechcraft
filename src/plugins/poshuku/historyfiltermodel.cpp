@@ -1,5 +1,7 @@
 #include "historyfiltermodel.h"
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 HistoryFilterModel::HistoryFilterModel (QObject *parent)
 : QSortFilterProxyModel (parent)
 {
@@ -12,4 +14,5 @@ bool HistoryFilterModel::filterAcceptsRow (int row, const QModelIndex& parent) c
 	else
 		return QSortFilterProxyModel::filterAcceptsRow (row, parent);
 }
+
 

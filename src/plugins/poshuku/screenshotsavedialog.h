@@ -4,25 +4,34 @@
 #include <QPixmap>
 #include "ui_screenshotsavedialog.h"
 
-class ScreenShotSaveDialog : public QDialog
+namespace LeechCraft
 {
-	Q_OBJECT
-	
-	Ui::ScreenShotSaveDialog Ui_;
-	QPixmap Source_;
-	mutable QPixmap Rendered_;
-	mutable QLabel *PixmapHolder_;
+	namespace Plugins
+	{
+		namespace Poshuku
+		{
+			class ScreenShotSaveDialog : public QDialog
+			{
+				Q_OBJECT
 
-	bool RenderScheduled_;
-public:
-	ScreenShotSaveDialog (const QPixmap&, QWidget* = 0);
-	QByteArray Save ();
-private:
-	void ScheduleRender ();
-private slots:
-	void render ();
-	void on_QualitySlider__valueChanged ();
-	void on_FormatCombobox__currentIndexChanged ();
+				Ui::ScreenShotSaveDialog Ui_;
+				QPixmap Source_;
+				mutable QPixmap Rendered_;
+				mutable QLabel *PixmapHolder_;
+
+				bool RenderScheduled_;
+			public:
+				ScreenShotSaveDialog (const QPixmap&, QWidget* = 0);
+				QByteArray Save ();
+			private:
+				void ScheduleRender ();
+			private slots:
+				void render ();
+				void on_QualitySlider__valueChanged ();
+				void on_FormatCombobox__currentIndexChanged ();
+			};
+		};
+	};
 };
 
 #endif

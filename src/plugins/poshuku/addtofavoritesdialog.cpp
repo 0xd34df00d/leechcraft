@@ -1,6 +1,8 @@
 #include "addtofavoritesdialog.h"
 #include "core.h"
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 using LeechCraft::Util::TagsCompleter;
 using LeechCraft::Util::TagsCompletionModel;
 
@@ -32,4 +34,5 @@ QStringList AddToFavoritesDialog::GetTags () const
 	return Core::Instance ().GetProxy ()->
 		GetTagsManager ()->Split (Ui_.TagsEdit_->text ());
 }
+
 

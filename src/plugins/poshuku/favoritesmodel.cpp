@@ -6,6 +6,8 @@
 #include "filtermodel.h"
 #include "core.h"
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 bool FavoritesModel::FavoritesItem::operator== (const FavoritesModel::FavoritesItem& item) const
 {
 	return Title_ == item.Title_ &&
@@ -230,4 +232,5 @@ void FavoritesModel::loadData ()
 		Items_.push_back (*i);
 	endInsertRows ();
 }
+
 

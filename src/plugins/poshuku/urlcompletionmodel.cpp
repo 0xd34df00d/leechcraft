@@ -4,6 +4,8 @@
 #include <QtDebug>
 #include "core.h"
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 URLCompletionModel::URLCompletionModel (QObject *parent)
 : QAbstractItemModel (parent)
 , Valid_ (false)
@@ -108,4 +110,5 @@ void URLCompletionModel::Populate ()
 		endInsertRows ();
 	}
 }
+
 

@@ -5,6 +5,8 @@
 #include "filtermodel.h"
 #include "favoritesmodel.h"
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 using LeechCraft::Util::TagsCompleter;
 using LeechCraft::Util::TagsLineEdit;
 
@@ -67,4 +69,5 @@ void FavoritesDelegate::updateEditorGeometry (QWidget *editor,
 
 	editor->setGeometry (option.rect);
 }
+
 

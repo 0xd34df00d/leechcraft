@@ -1,7 +1,7 @@
 #include "changer.h"
 #include <QPushButton>
 
-using namespace LeechCraft::Poshuku::Plugins::Fua;
+using namespace LeechCraft::Plugins::Poshuku::Plugins::Fua;
 
 Changer::Changer (const QMap<QString, QString>& ids,
 		const QString& suggestedDomain,

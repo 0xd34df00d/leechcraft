@@ -1,5 +1,7 @@
 #include "htmlhighlighter.h"
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 HtmlHighlighter::HtmlHighlighter (QTextDocument *doc)
 : QSyntaxHighlighter (doc)
 {
@@ -126,4 +128,5 @@ void HtmlHighlighter::Fill ()
 	commentFormat.setFontItalic (true);
 	SetFormatFor (Comment, commentFormat);
 }
+
 

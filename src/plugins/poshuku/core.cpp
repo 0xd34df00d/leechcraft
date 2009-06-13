@@ -33,7 +33,8 @@
 #include "linkhistory.h"
 #include "interfaces/pluginbase.h"
 
-using namespace LeechCraft::Poshuku;
+using namespace LeechCraft::Plugins::Poshuku;
+
 using LeechCraft::Util::Proxy;
 using LeechCraft::Util::TagsCompletionModel;
 
@@ -141,7 +142,7 @@ void Core::SetProvider (QObject *object, const QString& feature)
 
 QByteArray Core::GetExpectedPluginClass () const
 {
-	return QByteArray (typeid (LeechCraft::Poshuku::PluginBase).name ());
+	return QByteArray (typeid (LeechCraft::Plugins::Poshuku::PluginBase).name ());
 }
 
 void Core::AddPlugin (QObject *plugin)
@@ -597,4 +598,5 @@ void Core::postConstruct ()
 			property ("RestorePreviousSession").toBool ())
 		RestoreSession (false);
 }
+
 

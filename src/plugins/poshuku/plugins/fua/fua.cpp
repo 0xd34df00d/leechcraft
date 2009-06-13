@@ -8,12 +8,12 @@
 #include "settings.h"
 #include "xmlsettingsmanager.h"
 
-using namespace LeechCraft::Poshuku;
-using namespace LeechCraft::Poshuku::Plugins;
-using namespace LeechCraft::Poshuku::Plugins::Fua;
+using namespace LeechCraft::Plugins::Poshuku;
+using namespace LeechCraft::Plugins::Poshuku::Plugins;
+using namespace LeechCraft::Plugins::Poshuku::Plugins::Fua;
 using namespace LeechCraft::Util;
 
-void LeechCraft::Poshuku::Plugins::Fua::FUA::Init (ICoreProxy_ptr)
+void LeechCraft::Plugins::Poshuku::Plugins::Fua::FUA::Init (ICoreProxy_ptr)
 {
 	Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku_fua"));
 	Browser2ID_ ["Firefox 1.5.0.4"] =
@@ -74,7 +74,7 @@ QString FUA::GetName () const
 	return "Poshuku FUA";
 }
 
-QString LeechCraft::Poshuku::Plugins::Fua::FUA::GetInfo () const
+QString LeechCraft::Plugins::Poshuku::Plugins::Fua::FUA::GetInfo () const
 {
 	return tr ("Allows to set fake user agents for different sites.");
 }
@@ -105,7 +105,7 @@ void FUA::SetProvider (QObject*, const QString&)
 
 QByteArray FUA::GetPluginClass () const
 {
-	return QByteArray (typeid (LeechCraft::Poshuku::PluginBase).name ());
+	return QByteArray (typeid (PluginBase).name ());
 }
 
 boost::shared_ptr<XmlSettingsDialog> FUA::GetSettingsDialog () const

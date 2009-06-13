@@ -3,6 +3,8 @@
 #include "cookieseditmodel.h"
 #include "cookiesfilter.h"
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 CookiesEditDialog::CookiesEditDialog (QWidget *parent)
 : QDialog (parent)
 {
@@ -99,4 +101,5 @@ void CookiesEditDialog::on_Delete__released ()
 {
 	Model_->RemoveCookie (Filter_->mapToSource (Ui_.CookiesView_->currentIndex ()));
 }
+
 

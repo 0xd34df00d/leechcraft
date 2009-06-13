@@ -2,13 +2,22 @@
 #define HISTORYFILTERMODEL_H
 #include <QSortFilterProxyModel>
 
-class HistoryFilterModel : public QSortFilterProxyModel
+namespace LeechCraft
 {
-	Q_OBJECT
-public:
-	HistoryFilterModel (QObject* = 0);
-protected:
-	virtual bool filterAcceptsRow (int, const QModelIndex&) const;
+	namespace Plugins
+	{
+		namespace Poshuku
+		{
+			class HistoryFilterModel : public QSortFilterProxyModel
+			{
+				Q_OBJECT
+			public:
+				HistoryFilterModel (QObject* = 0);
+			protected:
+				virtual bool filterAcceptsRow (int, const QModelIndex&) const;
+			};
+		};
+	};
 };
 
 #endif

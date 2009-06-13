@@ -11,23 +11,29 @@ namespace LeechCraft
 	{
 		class TagsCompletionModel;
 	};
-};
 
-class AddToFavoritesDialog : public QDialog
-{
-	Q_OBJECT
+	namespace Plugins
+	{
+		namespace Poshuku
+		{
+			class AddToFavoritesDialog : public QDialog
+			{
+				Q_OBJECT
 
-	Ui::AddToFavoritesDialog Ui_;
+				Ui::AddToFavoritesDialog Ui_;
 
-	std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsCompleter_;
-public:
-	AddToFavoritesDialog (const QString&,
-			const QString&,
-			QWidget* = 0);
-	virtual ~AddToFavoritesDialog ();
+				std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsCompleter_;
+			public:
+				AddToFavoritesDialog (const QString&,
+						const QString&,
+						QWidget* = 0);
+				virtual ~AddToFavoritesDialog ();
 
-	QString GetTitle () const;
-	QStringList GetTags () const;
+				QString GetTitle () const;
+				QStringList GetTags () const;
+			};
+		};
+	};
 };
 
 #endif

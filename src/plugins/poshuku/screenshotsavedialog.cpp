@@ -6,6 +6,8 @@
 #include <QtDebug>
 #include <plugininterface/proxy.h>
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 ScreenShotSaveDialog::ScreenShotSaveDialog (const QPixmap& source,
 		QWidget *parent)
 : QDialog (parent)
@@ -85,4 +87,5 @@ void ScreenShotSaveDialog::on_FormatCombobox__currentIndexChanged ()
 {
 	ScheduleRender ();
 }
+
 

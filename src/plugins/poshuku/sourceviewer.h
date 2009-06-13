@@ -3,14 +3,23 @@
 #include <QMainWindow>
 #include "ui_sourceviewer.h"
 
-class SourceViewer : public QMainWindow
+namespace LeechCraft
 {
-	Q_OBJECT
-	
-	Ui::SourceViewer Ui_;
-public:
-	SourceViewer (QWidget* = 0);
-	void SetHtml (const QString&);
+	namespace Plugins
+	{
+		namespace Poshuku
+		{
+			class SourceViewer : public QMainWindow
+			{
+				Q_OBJECT
+
+				Ui::SourceViewer Ui_;
+			public:
+				SourceViewer (QWidget* = 0);
+				void SetHtml (const QString&);
+			};
+		};
+	};
 };
 
 #endif

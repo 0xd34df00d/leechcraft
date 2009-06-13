@@ -2,6 +2,8 @@
 #include <stdexcept>
 #include <QVBoxLayout>
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 Notification::Notification (QWidget *parent)
 : QWidget (parent)
 {
@@ -10,4 +12,5 @@ Notification::Notification (QWidget *parent)
 		throw std::runtime_error ("Passed parent object has no QVBoxLayout");
 	lay->addWidget (this);
 }
+
 

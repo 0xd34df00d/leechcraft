@@ -2,16 +2,25 @@
 #define FAVORITESTREEVIEW_H
 #include <QTreeView>
 
-class FavoritesTreeView : public QTreeView
+namespace LeechCraft
 {
-	Q_OBJECT
-public:
-	FavoritesTreeView (QWidget* = 0);
-	virtual ~FavoritesTreeView ();
-protected:
-	virtual void keyPressEvent (QKeyEvent*);
-signals:
-	void deleteSelected (const QModelIndex&);
+	namespace Plugins
+	{
+		namespace Poshuku
+		{
+			class FavoritesTreeView : public QTreeView
+			{
+				Q_OBJECT
+			public:
+				FavoritesTreeView (QWidget* = 0);
+				virtual ~FavoritesTreeView ();
+			protected:
+				virtual void keyPressEvent (QKeyEvent*);
+			signals:
+				void deleteSelected (const QModelIndex&);
+			};
+		};
+	};
 };
 
 #endif

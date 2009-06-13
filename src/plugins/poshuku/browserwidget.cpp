@@ -31,6 +31,8 @@
 #include "sourceviewer.h"
 #include "passwordremember.h"
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 using LeechCraft::ActionInfo;
 
 BrowserWidget::BrowserWidget (QWidget *parent)
@@ -48,7 +50,7 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 	Paste_->setProperty ("ActionIcon", "poshuku_paste");
 
 	ToolBar_ = new QToolBar (this);
-	
+
 	Back_ = Ui_.WebView_->pageAction (QWebPage::Back);
 	Back_->setParent (this);
 	Back_->setProperty ("ActionIcon", "poshuku_back");
@@ -318,7 +320,7 @@ BrowserWidget::BrowserWidget (QWidget *parent)
 
 	RememberDialog_ = new PasswordRemember (Ui_.WebFrame_);
 	RememberDialog_->hide ();
-	
+
 	connect (Ui_.WebView_,
 			SIGNAL (storeFormData (const PageFormsData_t&)),
 			RememberDialog_,
@@ -795,7 +797,7 @@ void BrowserWidget::handleLoadFinished ()
 
 		LeechCraft::DownloadEntity e;
 		e.Entity_ = attributes.value ("title").toString ().toUtf8 ();
-		
+
 		if (e.Entity_.isEmpty ())
 			continue;
 
@@ -852,4 +854,5 @@ void BrowserWidget::handleLoadProgress (int p)
 	Ui_.Progress_->setValue (p);
 	Ui_.Progress_->setVisible (p != 100);
 }
+
 

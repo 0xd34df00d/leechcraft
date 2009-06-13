@@ -4,6 +4,8 @@
 #include <QDomDocument>
 #include "core.h"
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 XbelParser::XbelParser (const QByteArray& data)
 {
 	QDomDocument document;
@@ -52,4 +54,5 @@ void XbelParser::ParseFolder (const QDomElement& element, QStringList previous)
 		child = child.nextSiblingElement ();
 	}
 }
+
 

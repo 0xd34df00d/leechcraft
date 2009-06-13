@@ -18,7 +18,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="ProgressLineEdit" name="URLEdit_">
+    <widget class="LeechCraft::Plugins::Poshuku::ProgressLineEdit" name="URLEdit_">
      <property name="text">
       <string/>
      </property>
@@ -39,7 +39,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="CustomWebView" name="WebView_" native="true">
+         <widget class="LeechCraft::Plugins::Poshuku::CustomWebView" name="WebView_" native="true">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>0</horstretch>
@@ -67,13 +67,13 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>CustomWebView</class>
+   <class>LeechCraft::Plugins::Poshuku::CustomWebView</class>
    <extends>QWidget</extends>
    <header>customwebview.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>ProgressLineEdit</class>
+   <class>LeechCraft::Plugins::Poshuku::ProgressLineEdit</class>
    <extends>QLineEdit</extends>
    <header>progresslineedit.h</header>
   </customwidget>

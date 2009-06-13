@@ -1,6 +1,6 @@
 #include "linkhistory.h"
 
-using namespace LeechCraft::Poshuku;
+using namespace LeechCraft::Plugins::Poshuku;
 
 LinkHistory::LinkHistory (QObject *parent)
 : QWebHistoryInterface (parent)
@@ -19,4 +19,5 @@ bool LinkHistory::historyContains (const QString& url) const
 		return true;
 	return false;
 }
+
 

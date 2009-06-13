@@ -1,6 +1,8 @@
 #include "pageformsdata.h"
 #include <QtDebug>
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 QDebug& operator<< (QDebug& dbg, const ElementData& ed)
 {
 	dbg << "Element: {"
@@ -10,4 +12,5 @@ QDebug& operator<< (QDebug& dbg, const ElementData& ed)
 		<< "}";
 	return dbg;
 }
+
 

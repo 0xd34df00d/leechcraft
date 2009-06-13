@@ -9,6 +9,8 @@
 #include <plugininterface/customcookiejar.h>
 #include "core.h"
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 using LeechCraft::Util::CustomCookieJar;
 
 CookiesEditModel::CookiesEditModel (QObject *parent)
@@ -134,4 +136,5 @@ void CookiesEditModel::AddCookie (const QNetworkCookie& cookie)
 
 	Jar_->setAllCookies (Cookies_.values ());
 }
+
 

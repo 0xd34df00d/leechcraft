@@ -1,6 +1,8 @@
 #include "sourceviewer.h"
 #include "htmlhighlighter.h"
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 SourceViewer::SourceViewer (QWidget *parent)
 : QMainWindow (parent)
 {
@@ -12,4 +14,5 @@ void SourceViewer::SetHtml (const QString& html)
 {
 	Ui_.HtmlEdit_->setPlainText (html);
 }
+
 

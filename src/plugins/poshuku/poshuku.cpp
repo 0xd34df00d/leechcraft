@@ -19,6 +19,8 @@
 #include "browserwidget.h"
 #include "cookieseditdialog.h"
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 using LeechCraft::Util::TagsCompleter;
 using LeechCraft::Util::TagsCompletionModel;
 
@@ -510,4 +512,5 @@ void Poshuku::handleSettingsClicked (const QString& name)
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_poshuku, Poshuku);
+
 

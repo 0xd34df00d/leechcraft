@@ -10,6 +10,8 @@
 #include "xmlsettingsmanager.h"
 #include "poshuku.h"
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 using LeechCraft::Util::TreeItem;
 
 namespace
@@ -257,4 +259,5 @@ void HistoryModel::handleItemAdded (const HistoryItem& item)
 	Add (item);
 	endInsertRows ();
 }
+
 

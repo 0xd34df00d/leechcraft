@@ -6,6 +6,8 @@
 #include <QtDebug>
 #include "urlcompletionmodel.h"
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 ProgressLineEdit::ProgressLineEdit (QWidget *parent)
 : QLineEdit (parent)
 , IsCompleting_ (false)
@@ -71,4 +73,5 @@ void ProgressLineEdit::handleHighlighted (const QModelIndex& index)
 
 	setText (url);
 }
+
 

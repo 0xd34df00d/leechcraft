@@ -1,6 +1,8 @@
 #include "favoritestreeview.h"
 #include <QKeyEvent>
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 FavoritesTreeView::FavoritesTreeView (QWidget *parent)
 : QTreeView (parent)
 {
@@ -18,4 +20,5 @@ void FavoritesTreeView::keyPressEvent (QKeyEvent *e)
 
 	QTreeView::keyPressEvent (e);
 }
+
 

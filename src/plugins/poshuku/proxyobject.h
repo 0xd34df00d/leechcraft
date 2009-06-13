@@ -3,14 +3,23 @@
 #include <QObject>
 #include "interfaces/iproxyobject.h"
 
-class ProxyObject : public QObject
-				  , public LeechCraft::Poshuku::IProxyObject
+namespace LeechCraft
 {
-	Q_OBJECT
-	Q_INTERFACES (LeechCraft::Poshuku::IProxyObject);
-public:
-	QMenu* GetPluginsMenu () const;
-	QNetworkAccessManager* GetNetworkAccessManager () const;
+	namespace Plugins
+	{
+		namespace Poshuku
+		{
+			class ProxyObject : public QObject
+							  , public IProxyObject
+			{
+				Q_OBJECT
+				Q_INTERFACES (LeechCraft::Plugins::Poshuku::IProxyObject);
+			public:
+				QMenu* GetPluginsMenu () const;
+				QNetworkAccessManager* GetNetworkAccessManager () const;
+			};
+		};
+	};
 };
 
 #endif

@@ -3,7 +3,7 @@
 #include "fua.h"
 #include "changer.h"
 
-using namespace LeechCraft::Poshuku::Plugins::Fua;
+using namespace LeechCraft::Plugins::Poshuku::Plugins::Fua;
 
 Settings::Settings (QStandardItemModel *model, FUA *parent)
 : Fua_ (parent)

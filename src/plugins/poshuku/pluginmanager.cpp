@@ -7,7 +7,7 @@
 #include <boost/preprocessor/punctuation/comma_if.hpp>
 #include "proxyobject.h"
 
-using namespace LeechCraft::Poshuku;
+using namespace LeechCraft::Plugins::Poshuku;
 
 PluginManager::PluginManager (QObject *parent)
 : ProxyObject_ (new ProxyObject)
@@ -100,4 +100,5 @@ CE (OnJavaScriptConfirm, (QWebPage*)(QWebFrame*)(const QString&), bool);
 BE (OnJavaScriptConsoleMessage, (QWebPage*)(const QString&)(int)(const QString&));
 CE (OnJavaScriptPrompt, (QWebPage*)(QWebFrame*)(const QString&)(const QString&)(QString*), bool);
 CE (OnUserAgentForUrl, (const QWebPage*)(const QUrl&), QString);
+
 

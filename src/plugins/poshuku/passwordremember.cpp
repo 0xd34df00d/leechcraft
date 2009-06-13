@@ -2,6 +2,8 @@
 #include <QtDebug>
 #include "core.h"
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 PasswordRemember::PasswordRemember (QWidget *parent)
 : Notification (parent)
 {
@@ -76,4 +78,5 @@ void PasswordRemember::on_Never__released ()
 	TempData_.second.clear ();
 	hide ();
 }
+
 

@@ -1,6 +1,8 @@
 #include <plugininterface/proxy.h>
 #include "xmlsettingsmanager.h"
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 using LeechCraft::Util::Proxy;
 
 namespace
@@ -40,4 +42,5 @@ void XmlSettingsManager::EndSettings (QSettings* settings) const
 {
     return torrentEndSettings (settings);
 }
+
 

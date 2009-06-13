@@ -2,7 +2,7 @@
 #include <plugininterface/proxy.h>
 
 using LeechCraft::Util::Proxy;
-using namespace LeechCraft::Poshuku::Plugins::Fua;
+using namespace LeechCraft::Plugins::Poshuku::Plugins::Fua;
 
 namespace
 {

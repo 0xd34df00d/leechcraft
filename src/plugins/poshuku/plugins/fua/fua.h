@@ -11,57 +11,57 @@
 #include <interfaces/pluginbase.h>
 
 class QStandardItemModel;
+
 namespace LeechCraft
 {
 	namespace Util
 	{
 		class XmlSettingsDialog;
 	};
-};
-
-namespace LeechCraft
-{
-	namespace Poshuku
+	namespace Plugins
 	{
-		namespace Plugins
+		namespace Poshuku
 		{
-			namespace Fua
+			namespace Plugins
 			{
-				class Settings;
-
-				class FUA : public QObject
-						  , public IInfo
-						  , public IPlugin2
-						  , public IHaveSettings
-						  , public LeechCraft::Poshuku::PluginBase
+				namespace Fua
 				{
-					Q_OBJECT
-					Q_INTERFACES (IInfo IPlugin2 IHaveSettings LeechCraft::Poshuku::PluginBase)
+					class Settings;
 
-					boost::shared_ptr<QStandardItemModel> Model_;
-					boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
-					std::auto_ptr<QTranslator> Translator_;
-					QMap<QString, QString> Browser2ID_;
-				public:
-					void Init (ICoreProxy_ptr);
-					void Release ();
-					QString GetName () const;
-					QString GetInfo () const;
-					QIcon GetIcon () const;
-					QStringList Provides () const;
-					QStringList Needs () const;
-					QStringList Uses () const;
-					void SetProvider (QObject*, const QString&);
+					class FUA : public QObject
+							  , public IInfo
+							  , public IPlugin2
+							  , public IHaveSettings
+							  , public LeechCraft::Plugins::Poshuku::PluginBase
+					{
+						Q_OBJECT
+						Q_INTERFACES (IInfo IPlugin2 IHaveSettings LeechCraft::Plugins::Poshuku::PluginBase)
 
-					QByteArray GetPluginClass () const;
+						boost::shared_ptr<QStandardItemModel> Model_;
+						boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
+						std::auto_ptr<QTranslator> Translator_;
+						QMap<QString, QString> Browser2ID_;
+					public:
+						void Init (ICoreProxy_ptr);
+						void Release ();
+						QString GetName () const;
+						QString GetInfo () const;
+						QIcon GetIcon () const;
+						QStringList Provides () const;
+						QStringList Needs () const;
+						QStringList Uses () const;
+						void SetProvider (QObject*, const QString&);
 
-					boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
+						QByteArray GetPluginClass () const;
 
-					void Init (LeechCraft::Poshuku::IProxyObject*);
-					QString OnUserAgentForUrl (const QWebPage*, const QUrl&);
+						boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 
-					void Save () const;
-					const QMap<QString, QString>& GetBrowser2ID () const;
+						void Init (IProxyObject*);
+						QString OnUserAgentForUrl (const QWebPage*, const QUrl&);
+
+						void Save () const;
+						const QMap<QString, QString>& GetBrowser2ID () const;
+					};
 				};
 			};
 		};

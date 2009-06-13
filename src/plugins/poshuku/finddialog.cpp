@@ -1,5 +1,7 @@
 #include "finddialog.h"
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 FindDialog::FindDialog (QWidget *parent)
 : Notification (parent)
 {
@@ -45,4 +47,5 @@ void FindDialog::reject ()
 {
 	hide ();
 }
+
 

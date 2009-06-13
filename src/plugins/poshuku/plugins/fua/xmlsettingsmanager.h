@@ -4,21 +4,24 @@
 
 namespace LeechCraft
 {
-	namespace Poshuku
+	namespace Plugins
 	{
-		namespace Plugins
+		namespace Poshuku
 		{
-			namespace Fua
+			namespace Plugins
 			{
-				class XmlSettingsManager : public LeechCraft::Util::BaseSettingsManager
+				namespace Fua
 				{
-					Q_OBJECT
-				public:
-					XmlSettingsManager ();
-					static XmlSettingsManager* Instance ();
-				protected:
-					virtual QSettings* BeginSettings () const;
-					virtual void EndSettings (QSettings*) const;
+					class XmlSettingsManager : public LeechCraft::Util::BaseSettingsManager
+					{
+						Q_OBJECT
+					public:
+						XmlSettingsManager ();
+						static XmlSettingsManager* Instance ();
+					protected:
+						virtual QSettings* BeginSettings () const;
+						virtual void EndSettings (QSettings*) const;
+					};
 				};
 			};
 		};

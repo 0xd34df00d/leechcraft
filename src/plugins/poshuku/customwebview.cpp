@@ -9,6 +9,8 @@
 #include "customwebpage.h"
 #include "browserwidget.h"
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 CustomWebView::CustomWebView (QWidget *parent)
 : QWebView (parent)
 {
@@ -294,4 +296,5 @@ void CustomWebView::copyImageLocation ()
 	cb->setText (url, QClipboard::Clipboard);
 	cb->setText (url, QClipboard::Selection);
 }
+
 

@@ -1,12 +1,20 @@
 #ifndef XBELGENERATOR_H
 #define XBELGENERATOR_H
+#include <QByteArray>
 
-class QByteArray;
-
-class XbelGenerator
+namespace LeechCraft
 {
-public:
-	XbelGenerator (QByteArray&);
+	namespace Plugins
+	{
+		namespace Poshuku
+		{
+			class XbelGenerator
+			{
+			public:
+				XbelGenerator (QByteArray&);
+			};
+		};
+	};
 };
 
 #endif

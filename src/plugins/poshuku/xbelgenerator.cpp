@@ -7,6 +7,8 @@
 #include <plugininterface/util.h>
 #include "core.h"
 
+using namespace LeechCraft::Plugins::Poshuku;
+
 QString TagGetter (const QDomElement& elem)
 {
 	if (elem.tagName () == "folder")
@@ -53,4 +55,5 @@ XbelGenerator::XbelGenerator (QByteArray& output)
 
 	output = document.toByteArray (4);
 }
+
 
