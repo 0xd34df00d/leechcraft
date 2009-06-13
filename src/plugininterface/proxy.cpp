@@ -8,7 +8,7 @@ Proxy *Proxy::Instance_ = 0;
 
 Proxy::Proxy ()
 {
-    Strings_ << "bytes" << "KB" << "MB" << "GB";
+	Strings_ << "bytes" << "KB" << "MB" << "GB";
 }
 
 Proxy::~Proxy ()
@@ -24,9 +24,9 @@ Proxy::~Proxy ()
  */
 Proxy* Proxy::Instance ()
 {
-    if (!Instance_)
-        Instance_ = new Proxy;
-    return Instance_;
+	if (!Instance_)
+		Instance_ = new Proxy;
+	return Instance_;
 }
 
 /*! @brief Sets strings for sizes.
@@ -40,7 +40,7 @@ Proxy* Proxy::Instance ()
  */
 void Proxy::SetStrings (const QStringList& str)
 {
-    Strings_ = str;
+	Strings_ = str;
 }
 
 /*! @brief Returns application name.
@@ -50,7 +50,7 @@ void Proxy::SetStrings (const QStringList& str)
  */
 QString Proxy::GetApplicationName () const
 {
-    return QCoreApplication::applicationName ();
+	return QCoreApplication::applicationName ();
 }
 
 /*! @brief Returns organization name.
@@ -60,7 +60,7 @@ QString Proxy::GetApplicationName () const
  */
 QString Proxy::GetOrganizationName () const
 {
-    return QCoreApplication::organizationName ();
+	return QCoreApplication::organizationName ();
 }
 
 /*! @brief Makes a formatted size from number.
@@ -75,25 +75,25 @@ QString Proxy::GetOrganizationName () const
  */
 QString Proxy::MakePrettySize (qint64 sourcesize) const
 {
-    QString dString = Strings_ [0];
-    long double size = sourcesize;
-    if (size >= 1024)
-    {
-        dString = Strings_ [1];
-        size /= 1024;
-    }
-    if (size >= 1024)
-    {
-        dString = Strings_ [2];
-        size /= 1024;
-    }
-    if (size >= 1024)
-    {
-        dString = Strings_ [3];
-        size /= 1024;
-    }
+	QString dString = Strings_ [0];
+	long double size = sourcesize;
+	if (size >= 1024)
+	{
+		dString = Strings_ [1];
+		size /= 1024;
+	}
+	if (size >= 1024)
+	{
+		dString = Strings_ [2];
+		size /= 1024;
+	}
+	if (size >= 1024)
+	{
+		dString = Strings_ [3];
+		size /= 1024;
+	}
 
-    return QString::number (size, 'f', 1) + " " + dString;
+	return QString::number (size, 'f', 1) + " " + dString;
 }
 
 /*! @brief Makes a formatted time from number.
@@ -113,6 +113,6 @@ QString Proxy::MakeTimeFromLong (ulong time) const
 	if (d)
 		result += tr ("%n day(s), ", "", d);
 	result += QTime (0, 0, 0).addSecs (time).toString ();
-    return result;
+	return result;
 }
 

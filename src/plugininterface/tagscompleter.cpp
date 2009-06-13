@@ -15,7 +15,7 @@ TagsCompleter::TagsCompleter (TagsLineEdit *toComplete, QObject *parent)
 {
 	setCompletionRole (Qt::DisplayRole);
 	setModel (CompletionModel_);
-    toComplete->SetCompleter (this);
+	toComplete->SetCompleter (this);
 }
 
 QStringList TagsCompleter::splitPath (const QString& string) const

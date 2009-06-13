@@ -50,13 +50,13 @@ void TagsLineEdit::insertTag (const QString& completion)
 	if (Completer_->widget () != this)
 		return;
 
-    QString wtext = text ();
+	QString wtext = text ();
 	if (completion.startsWith (wtext))
 		wtext.clear ();
-    int pos = wtext.lastIndexOf (' ');
+	int pos = wtext.lastIndexOf (' ');
 	wtext = wtext.left (pos).append (' ').append (completion);
 	wtext = wtext.simplified ();
-    setText (wtext);
+	setText (wtext);
 }
 
 void TagsLineEdit::handleTagsUpdated (const QStringList& tags)
@@ -102,7 +102,7 @@ void TagsLineEdit::focusInEvent (QFocusEvent *e)
 {
 	if (Completer_)
 		Completer_->setWidget (this);
-    QLineEdit::focusInEvent (e);
+	QLineEdit::focusInEvent (e);
 }
 
 void TagsLineEdit::contextMenuEvent (QContextMenuEvent *e)
