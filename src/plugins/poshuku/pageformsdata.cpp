@@ -1,9 +1,7 @@
 #include "pageformsdata.h"
 #include <QtDebug>
 
-using namespace LeechCraft::Plugins::Poshuku;
-
-QDebug& operator<< (QDebug& dbg, const ElementData& ed)
+QDebug& LeechCraft::Plugins::Poshuku::operator<< (QDebug& dbg, const ElementData& ed)
 {
 	dbg << "Element: {"
 		<< ed.Name_

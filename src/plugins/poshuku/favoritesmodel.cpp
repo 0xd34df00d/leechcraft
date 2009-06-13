@@ -35,8 +35,8 @@ int FavoritesModel::columnCount (const QModelIndex&) const
 
 QVariant FavoritesModel::data (const QModelIndex& index, int role) const
 {
-    if (!index.isValid ())
-        return QVariant ();
+	if (!index.isValid ())
+		return QVariant ();
 
 	switch (role)
 	{
@@ -72,24 +72,24 @@ Qt::ItemFlags FavoritesModel::flags (const QModelIndex& index) const
 QVariant FavoritesModel::headerData (int column, Qt::Orientation orient,
 		int role) const
 {
-    if (orient == Qt::Horizontal && role == Qt::DisplayRole)
-        return ItemHeaders_.at (column);
-    else
-        return QVariant ();
+	if (orient == Qt::Horizontal && role == Qt::DisplayRole)
+		return ItemHeaders_.at (column);
+	else
+		return QVariant ();
 }
 
 QModelIndex FavoritesModel::index (int row, int column,
 		const QModelIndex& parent) const
 {
-    if (!hasIndex (row, column, parent))
-        return QModelIndex ();
+	if (!hasIndex (row, column, parent))
+		return QModelIndex ();
 
-    return createIndex (row, column);
+	return createIndex (row, column);
 }
 
 QModelIndex FavoritesModel::parent (const QModelIndex&) const
 {
-    return QModelIndex ();
+	return QModelIndex ();
 }
 
 int FavoritesModel::rowCount (const QModelIndex& index) const

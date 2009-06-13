@@ -536,7 +536,7 @@ void SQLStorageBackend::InitializeTables ()
 		{
 			if (!query.exec ("CREATE RULE \"replace_storage_settings\" AS "
 								"ON INSERT TO \"storage_settings\" "
-							    "WHERE "
+								"WHERE "
 									"EXISTS (SELECT 1 FROM storage_settings "
 										"WHERE key = NEW.key) "
 								"DO INSTEAD "

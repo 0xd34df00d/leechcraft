@@ -66,7 +66,7 @@ void Poshuku::Init (ICoreProxy_ptr coreProxy)
 	}
 
 	XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
-    XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+	XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 			":/poshukusettings.xml");
 	XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
 			new LeechCraft::Util::BackendSelector (XmlSettingsManager::Instance ()));
