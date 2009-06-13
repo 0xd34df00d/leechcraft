@@ -11,16 +11,16 @@
 View::View (QWidget *parent)
 : QTableView (parent)
 {
-    QHeaderView *hh = horizontalHeader ();
-    hh->setSortIndicatorShown (false);
-    hh->setStretchLastSection (true);
-    hh->setMovable (true);
-    
-    setShowGrid (false);
-    setEditTriggers (QAbstractItemView::DoubleClicked);
-    setSelectionBehavior (QAbstractItemView::SelectRows);
-    setSelectionMode (QAbstractItemView::SingleSelection);
-    setAlternatingRowColors (true);
+	QHeaderView *hh = horizontalHeader ();
+	hh->setSortIndicatorShown (false);
+	hh->setStretchLastSection (true);
+	hh->setMovable (true);
+	
+	setShowGrid (false);
+	setEditTriggers (QAbstractItemView::DoubleClicked);
+	setSelectionBehavior (QAbstractItemView::SelectRows);
+	setSelectionMode (QAbstractItemView::SingleSelection);
+	setAlternatingRowColors (true);
 }
 
 /** @brief Resizes the columns.
@@ -30,8 +30,8 @@ View::View (QWidget *parent)
  */
 void View::DoResizes (int size)
 {
-    QHeaderView *hh = horizontalHeader ();
-    hh->resizeSection (0, static_cast<int> (static_cast<double> (size) / 2));
-    hh->resizeSection (1, static_cast<int> (static_cast<double> (size) / 2));
+	QHeaderView *hh = horizontalHeader ();
+	hh->resizeSection (0, static_cast<int> (static_cast<double> (size) / 2));
+	hh->resizeSection (1, static_cast<int> (static_cast<double> (size) / 2));
 }
 

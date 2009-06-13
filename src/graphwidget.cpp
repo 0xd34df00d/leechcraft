@@ -13,9 +13,9 @@ GraphWidget::GraphWidget (const QColor& downColor,
 , DownColor_ (downColor)
 , UpColor_ (upColor)
 {
-    setAutoFillBackground (true);
-    setBackgroundRole (QPalette::Window);
-    setPalette (Qt::black);
+	setAutoFillBackground (true);
+	setBackgroundRole (QPalette::Window);
+	setPalette (Qt::black);
 }
 
 void GraphWidget::PushSpeed (quint64 ds, quint64 us)
@@ -32,20 +32,20 @@ void GraphWidget::PushSpeed (quint64 ds, quint64 us)
 
 void GraphWidget::paintEvent (QPaintEvent*)
 {
-    quint64 max = 0;
-    for (int i = 0; i < DownSpeeds_.size (); ++i)
+	quint64 max = 0;
+	for (int i = 0; i < DownSpeeds_.size (); ++i)
 	{
-        if (DownSpeeds_.at (i) > max)
-            max = DownSpeeds_.at (i);
+		if (DownSpeeds_.at (i) > max)
+			max = DownSpeeds_.at (i);
 		if (UpSpeeds_.at (i) > max)
 			max = UpSpeeds_.at (i);
 	}
 
-    QPainter painter (this);
-    painter.eraseRect (rect ());
+	QPainter painter (this);
+	painter.eraseRect (rect ());
 	painter.setRenderHints (QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
-    if (max && DownSpeeds_.size ())
+	if (max && DownSpeeds_.size ())
 	{
 		painter.setPen (UpColor_);
 		PaintSingle (max, UpSpeeds_, &painter);

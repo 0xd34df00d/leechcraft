@@ -21,15 +21,15 @@ namespace LeechCraft
 		return &manager;
 	}
 
-    QSettings* XmlSettingsManager::BeginSettings () const
-    {
-        QSettings *settings = new QSettings (Util::Proxy::Instance ()->GetOrganizationName (),
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (Util::Proxy::Instance ()->GetOrganizationName (),
 				Util::Proxy::Instance ()->GetApplicationName ());
-        return settings;
-    }
+		return settings;
+	}
 
-    void XmlSettingsManager::EndSettings (QSettings*) const
-    {
-    }
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
 };
 

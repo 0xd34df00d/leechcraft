@@ -229,7 +229,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 void LeechCraft::MainWindow::SetStatusBar ()
 {
 	QFontMetrics fm = fontMetrics ();
-	int minSize = fm.width (Proxy::Instance ()->MakePrettySize (999) + tr ("/s    "));
+	int minSize = fm.width (Proxy::Instance ()->MakePrettySize (999) + tr ("/s	"));
 
 	DownloadSpeed_ = new QLabel;
 	DownloadSpeed_->setText (Proxy::Instance ()->MakePrettySize (0) + tr ("/s"));

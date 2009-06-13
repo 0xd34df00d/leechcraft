@@ -93,12 +93,12 @@ LeechCraft::Core::Core ()
 			this,
 			SIGNAL (loadProgress (const QString&)));
 
-    ClipboardWatchdog_ = new QTimer (this);
-    connect (ClipboardWatchdog_,
+	ClipboardWatchdog_ = new QTimer (this);
+	connect (ClipboardWatchdog_,
 			SIGNAL (timeout ()),
 			this,
 			SLOT (handleClipboardTimer ()));
-    ClipboardWatchdog_->start (2000);
+	ClipboardWatchdog_->start (2000);
 
 	Server_->listen (Application::GetSocketName ());
 	connect (Server_.get (),
@@ -136,10 +136,10 @@ void LeechCraft::Core::Release ()
 	RequestNormalizer_.reset ();
 	MergeModel_.reset ();
 
-    PluginManager_->Release ();
-    delete PluginManager_;
-    ClipboardWatchdog_->stop ();
-    delete ClipboardWatchdog_;
+	PluginManager_->Release ();
+	delete PluginManager_;
+	ClipboardWatchdog_->stop ();
+	delete ClipboardWatchdog_;
 
 	NetworkAccessManager_.reset ();
 
@@ -149,7 +149,7 @@ void LeechCraft::Core::Release ()
 
 void LeechCraft::Core::SetReallyMainWindow (MainWindow *win)
 {
-    ReallyMainWindow_ = win;
+	ReallyMainWindow_ = win;
 	ReallyMainWindow_->GetTabWidget ()->installEventFilter (this);
 	ReallyMainWindow_->installEventFilter (this);
 }
@@ -251,10 +251,10 @@ void LeechCraft::Core::DelayedInit ()
 
 	QApplication::processEvents ();
 
-    QObjectList plugins = PluginManager_->GetAllPlugins ();
-    foreach (QObject *plugin, plugins)
-    {
-        IInfo *info = qobject_cast<IInfo*> (plugin);
+	QObjectList plugins = PluginManager_->GetAllPlugins ();
+	foreach (QObject *plugin, plugins)
+	{
+		IInfo *info = qobject_cast<IInfo*> (plugin);
 		try
 		{
 			emit loadProgress (tr ("Setting up %1...").arg (info->GetName ()));
@@ -300,10 +300,10 @@ void LeechCraft::Core::DelayedInit ()
 
 bool LeechCraft::Core::ShowPlugin (int id)
 {
-    QObject *plugin = PluginManager_->data (PluginManager_->index (id, 0)).value <QObject*> ();
-    IWindow *w = qobject_cast<IWindow*> (plugin);
-    if (w)
-    {
+	QObject *plugin = PluginManager_->data (PluginManager_->index (id, 0)).value <QObject*> ();
+	IWindow *w = qobject_cast<IWindow*> (plugin);
+	if (w)
+	{
 		try
 		{
 			w->ShowWindow ();
@@ -314,10 +314,10 @@ bool LeechCraft::Core::ShowPlugin (int id)
 				<< "unable to show window";
 			return false;
 		}
-        return true;
-    }
-    else
-        return false;
+		return true;
+	}
+	else
+		return false;
 }
 
 void LeechCraft::Core::TryToAddJob (const QString& name, const QString& where)
@@ -327,10 +327,10 @@ void LeechCraft::Core::TryToAddJob (const QString& name, const QString& where)
 	e.Location_ = where;
 	e.Parameters_ = FromUserInitiated;
 
-    QObjectList plugins = PluginManager_->GetAllPlugins ();
-    foreach (QObject *plugin, plugins)
-    {
-        IDownload *di = qobject_cast<IDownload*> (plugin);
+	QObjectList plugins = PluginManager_->GetAllPlugins ();
+	foreach (QObject *plugin, plugins)
+	{
+		IDownload *di = qobject_cast<IDownload*> (plugin);
 		try
 		{
 			if (di &&
@@ -354,8 +354,8 @@ void LeechCraft::Core::TryToAddJob (const QString& name, const QString& where)
 				<< "failed to query/add job"
 				<< plugin;
 		}
-    }
-    emit error (tr ("No plugins are able to download \"%1\"").arg (name));
+	}
+	emit error (tr ("No plugins are able to download \"%1\"").arg (name));
 }
 
 void LeechCraft::Core::SetNewRow (const QModelIndex& index)
@@ -419,14 +419,14 @@ void LeechCraft::Core::UpdateFiltering (const QString& text)
 
 QPair<qint64, qint64> LeechCraft::Core::GetSpeeds () const
 {
-    qint64 download = 0;
-    qint64 upload = 0;
-    QObjectList plugins = PluginManager_->GetAllPlugins ();
-    foreach (QObject *plugin, plugins)
-    {
-        IDownload *di = qobject_cast<IDownload*> (plugin);
-        if (di)
-        {
+	qint64 download = 0;
+	qint64 upload = 0;
+	QObjectList plugins = PluginManager_->GetAllPlugins ();
+	foreach (QObject *plugin, plugins)
+	{
+		IDownload *di = qobject_cast<IDownload*> (plugin);
+		if (di)
+		{
 			try
 			{
 				download += di->GetDownloadSpeed ();
@@ -445,10 +445,10 @@ QPair<qint64, qint64> LeechCraft::Core::GetSpeeds () const
 					<< "unable to get speeds"
 					<< plugin;
 			}
-        }
-    }
+		}
+	}
 
-    return QPair<qint64, qint64> (download, upload);
+	return QPair<qint64, qint64> (download, upload);
 }
 
 int LeechCraft::Core::CountUnremoveableTabs () const
@@ -1007,18 +1007,18 @@ void LeechCraft::Core::handleCouldHandle (const LeechCraft::DownloadEntity& e, b
 
 void LeechCraft::Core::handleClipboardTimer ()
 {
-    QString text = QApplication::clipboard ()->text ();
-    if (text.isEmpty () || text == PreviousClipboardContents_)
-        return;
+	QString text = QApplication::clipboard ()->text ();
+	if (text.isEmpty () || text == PreviousClipboardContents_)
+		return;
 
-    PreviousClipboardContents_ = text;
+	PreviousClipboardContents_ = text;
 
 	DownloadEntity e = Util::MakeEntity (text.toUtf8 (),
 			QString (),
 			LeechCraft::FromUserInitiated);
 
-    if (XmlSettingsManager::Instance ()->property ("WatchClipboard").toBool ())
-        handleGotEntity (e);
+	if (XmlSettingsManager::Instance ()->property ("WatchClipboard").toBool ())
+		handleGotEntity (e);
 }
 
 void LeechCraft::Core::embeddedTabWantsToFront ()

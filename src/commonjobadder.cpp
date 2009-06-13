@@ -9,7 +9,7 @@ using namespace LeechCraft;
 LeechCraft::CommonJobAdder::CommonJobAdder (QWidget *parent)
 : QDialog (parent)
 {
-    setupUi (this);
+	setupUi (this);
 	What_->setText (XmlSettingsManager::Instance ()->Property ("LastWhatFolder",
 				QDir::homePath ()).toString ());
 	Where_->setText (XmlSettingsManager::Instance ()->Property ("LastWhereFolder",
@@ -22,7 +22,7 @@ LeechCraft::CommonJobAdder::~CommonJobAdder ()
 
 QString LeechCraft::CommonJobAdder::GetString () const
 {
-    return What_->text ();
+	return What_->text ();
 }
 
 QString LeechCraft::CommonJobAdder::GetWhere () const
@@ -32,33 +32,33 @@ QString LeechCraft::CommonJobAdder::GetWhere () const
 
 void LeechCraft::CommonJobAdder::on_Browse__released ()
 {
-    QString name = QFileDialog::getOpenFileName (this,
+	QString name = QFileDialog::getOpenFileName (this,
 			tr ("Select file"),
 			XmlSettingsManager::Instance ()->Property ("LastWhatFolder",
 				QDir::homePath ()).toString ());
-    if (name.isEmpty ())
-        return;
+	if (name.isEmpty ())
+		return;
 
-    What_->setText (name);
-    XmlSettingsManager::Instance ()->setProperty ("LastWhatFolder", name);
+	What_->setText (name);
+	XmlSettingsManager::Instance ()->setProperty ("LastWhatFolder", name);
 }
 
 void LeechCraft::CommonJobAdder::on_BrowseWhere__released ()
 {
-    QString name = QFileDialog::getExistingDirectory (this,
+	QString name = QFileDialog::getExistingDirectory (this,
 			tr ("Select file"),
 			XmlSettingsManager::Instance ()->Property ("LastWhereFolder",
 				QDir::homePath ()).toString ());
-    if (name.isEmpty ())
-        return;
+	if (name.isEmpty ())
+		return;
 
-    Where_->setText (name);
-    XmlSettingsManager::Instance ()->setProperty ("LastWhereFolder", name);
+	Where_->setText (name);
+	XmlSettingsManager::Instance ()->setProperty ("LastWhereFolder", name);
 }
 
 void LeechCraft::CommonJobAdder::on_Paste__released ()
 {
-    QString text = QApplication::clipboard ()->text ();
-    What_->setText (text.split ('\n') [0]);
+	QString text = QApplication::clipboard ()->text ();
+	What_->setText (text.split ('\n') [0]);
 }
 

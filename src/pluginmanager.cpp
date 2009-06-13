@@ -55,7 +55,7 @@ bool LeechCraft::PluginManager::Finder::operator() (LeechCraft::PluginManager::D
 LeechCraft::PluginManager::PluginManager (QObject *parent)
 : QAbstractItemModel (parent)
 {
-    FindPlugins ();
+	FindPlugins ();
 }
 
 LeechCraft::PluginManager::~PluginManager ()
@@ -170,7 +170,7 @@ int LeechCraft::PluginManager::rowCount (const QModelIndex& index) const
 
 LeechCraft::PluginManager::Size_t LeechCraft::PluginManager::GetSize () const
 {
-    return Plugins_.size ();
+	return Plugins_.size ();
 }
 
 void LeechCraft::PluginManager::Init ()
@@ -182,44 +182,44 @@ void LeechCraft::PluginManager::Init ()
 
 void LeechCraft::PluginManager::Release ()
 {
-    while (Roots_.size ())
-    {
-        try
-        {
+	while (Roots_.size ())
+	{
+		try
+		{
 			Release (Roots_.takeAt (0));
-        }
-        catch (const std::exception& e)
-        {
-            qWarning () << Q_FUNC_INFO << e.what ();
-        }
-        catch (...)
-        {
-            QMessageBox::warning (0,
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO << e.what ();
+		}
+		catch (...)
+		{
+			QMessageBox::warning (0,
 					tr ("Warning"),
 					tr ("Release of one or more plugins failed."));
-        }
-    }
+		}
+	}
 
 	Plugins_.clear ();
 }
 
 QString LeechCraft::PluginManager::Name (const LeechCraft::PluginManager::Size_t& pos) const
 {
-    return (qobject_cast<IInfo*> (Plugins_ [pos]->instance ()))->GetName ();
+	return (qobject_cast<IInfo*> (Plugins_ [pos]->instance ()))->GetName ();
 }
 
 QString LeechCraft::PluginManager::Info (const LeechCraft::PluginManager::Size_t& pos) const
 {
-    return qobject_cast<IInfo*> (Plugins_ [pos]->instance ())->GetInfo ();
+	return qobject_cast<IInfo*> (Plugins_ [pos]->instance ())->GetInfo ();
 }
 
 QObjectList LeechCraft::PluginManager::GetAllPlugins () const
 {
-    QObjectList result;
-    for (PluginsContainer_t::const_iterator i = Plugins_.begin ();
+	QObjectList result;
+	for (PluginsContainer_t::const_iterator i = Plugins_.begin ();
 			i != Plugins_.end (); ++i)
-        result << (*i)->instance ();
-    return result;
+		result << (*i)->instance ();
+	return result;
 }
 
 QObject* LeechCraft::PluginManager::GetProvider (const QString& feature) const
@@ -258,28 +258,28 @@ void LeechCraft::PluginManager::FindPlugins ()
 
 void LeechCraft::PluginManager::CheckPlugins ()
 {
-    for (int i = 0; i < Plugins_.size (); ++i)
-    {
-        QPluginLoader_ptr loader = Plugins_.at (i);
+	for (int i = 0; i < Plugins_.size (); ++i)
+	{
+		QPluginLoader_ptr loader = Plugins_.at (i);
 
 		if (!QFileInfo (loader->fileName ()).isFile ())
 		{
 			qWarning () << "A plugin isn't really a file, aborting load:"
 				<< loader->fileName ();
-            Plugins_.removeAt (i--);
+			Plugins_.removeAt (i--);
 			continue;
 		}
 
-        loader->load ();
-        if (!loader->isLoaded ())
-        {
-            qWarning () << "Could not load library:"
+		loader->load ();
+		if (!loader->isLoaded ())
+		{
+			qWarning () << "Could not load library:"
 				<< loader->fileName ()
 				<< ";"
 				<< loader->errorString ();
-            Plugins_.removeAt (i--);
-            continue;
-        }
+			Plugins_.removeAt (i--);
+			continue;
+		}
 
 		QObject *pluginEntity;
 		try
@@ -293,7 +293,7 @@ void LeechCraft::PluginManager::CheckPlugins ()
 				<< e.what ()
 				<< "for"
 				<< loader->fileName ();
-            Plugins_.removeAt (i--);
+			Plugins_.removeAt (i--);
 			continue;
 		}
 		catch (...)
@@ -301,19 +301,19 @@ void LeechCraft::PluginManager::CheckPlugins ()
 			qWarning () << Q_FUNC_INFO
 				<< "failed to construct the instance for"
 				<< loader->fileName ();
-            Plugins_.removeAt (i--);
+			Plugins_.removeAt (i--);
 			continue;
 		}
 
-        IInfo *info = qobject_cast<IInfo*> (pluginEntity);
-        if (!info)
-        {
-            qWarning () << "Casting to IInfo failed:"
+		IInfo *info = qobject_cast<IInfo*> (pluginEntity);
+		if (!info)
+		{
+			qWarning () << "Casting to IInfo failed:"
 					<< loader->fileName ();
-            Plugins_.removeAt (i--);
-            continue;
-        }
-    }
+			Plugins_.removeAt (i--);
+			continue;
+		}
+	}
 }
 
 QList<LeechCraft::PluginManager::PluginsContainer_t::iterator>
