@@ -1,13 +1,13 @@
 /*
-    Copyright (c) 2008-2009 by Rudoy Georg <0xd34df00d@gmail.com>
+	Copyright (c) 2008-2009 by Rudoy Georg <0xd34df00d@gmail.com>
 
  ***************************************************************************
- *                                                                         *
+ *																		 *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
+ *   the Free Software Foundation; either version 2 of the License, or	 *
+ *   (at your option) any later version.								   *
+ *																		 *
  ***************************************************************************
 */
 #include "xmlsettingsdialog.h"
@@ -45,22 +45,22 @@ using namespace LeechCraft::Util;
 XmlSettingsDialog::XmlSettingsDialog ()
 : Document_ (new QDomDocument)
 {
-    Pages_ = new QStackedWidget (this);
-    Sections_ = new QListWidget (this);
-    Sections_->setMinimumWidth (200);
-    Sections_->setMaximumWidth (200);
+	Pages_ = new QStackedWidget (this);
+	Sections_ = new QListWidget (this);
+	Sections_->setMinimumWidth (200);
+	Sections_->setMaximumWidth (200);
 
-    connect (Sections_,
+	connect (Sections_,
 			SIGNAL (currentRowChanged (int)),
 			Pages_,
 			SLOT (setCurrentIndex (int)));
 
-    QHBoxLayout *mainLay = new QHBoxLayout (this);
-    mainLay->addWidget (Sections_);
-    mainLay->addWidget (Pages_);
-    setLayout (mainLay);
+	QHBoxLayout *mainLay = new QHBoxLayout (this);
+	mainLay->addWidget (Sections_);
+	mainLay->addWidget (Pages_);
+	setLayout (mainLay);
 
-    DefaultLang_ = "en";
+	DefaultLang_ = "en";
 }
 
 XmlSettingsDialog::~XmlSettingsDialog ()
@@ -69,41 +69,41 @@ XmlSettingsDialog::~XmlSettingsDialog ()
 
 void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& filename)
 {
-    WorkingObject_ = obj;
-    QFile file (filename);
-    if (!file.open (QIODevice::ReadOnly))
-    {
-        qWarning () << "cannot open file";
-        return;
-    }
-    QByteArray data = file.readAll ();
-    file.close ();
+	WorkingObject_ = obj;
+	QFile file (filename);
+	if (!file.open (QIODevice::ReadOnly))
+	{
+		qWarning () << "cannot open file";
+		return;
+	}
+	QByteArray data = file.readAll ();
+	file.close ();
 
-    if (!Document_->setContent (data))
-    {
-        qWarning () << "Could not parse file";
-        return;
-    }
-    QDomElement root = Document_->documentElement ();
-    if (root.tagName () != "settings")
-    {
-        qWarning () << "Bad settings file";
-        return;
-    }
+	if (!Document_->setContent (data))
+	{
+		qWarning () << "Could not parse file";
+		return;
+	}
+	QDomElement root = Document_->documentElement ();
+	if (root.tagName () != "settings")
+	{
+		qWarning () << "Bad settings file";
+		return;
+	}
 
-    QDomElement declaration = root.firstChildElement ("declare");
-    while (!declaration.isNull ())
-    {
-        HandleDeclaration (declaration);
-        declaration = declaration.nextSiblingElement ("declare");
-    }
+	QDomElement declaration = root.firstChildElement ("declare");
+	while (!declaration.isNull ())
+	{
+		HandleDeclaration (declaration);
+		declaration = declaration.nextSiblingElement ("declare");
+	}
 
-    QDomElement pageChild = root.firstChildElement ("page");
-    while (!pageChild.isNull ())
-    {
-        ParsePage (pageChild);
-        pageChild = pageChild.nextSiblingElement ("page");
-    }
+	QDomElement pageChild = root.firstChildElement ("page");
+	while (!pageChild.isNull ())
+	{
+		ParsePage (pageChild);
+		pageChild = pageChild.nextSiblingElement ("page");
+	}
 
 	UpdateXml (true);
 }
@@ -163,49 +163,49 @@ void XmlSettingsDialog::SetCustomWidget (const QString& name, QWidget *widget)
 
 void XmlSettingsDialog::HandleDeclaration (const QDomElement& decl)
 {
-    if (decl.hasAttribute ("defaultlang"))
-        DefaultLang_ = decl.attribute ("defaultlang");
+	if (decl.hasAttribute ("defaultlang"))
+		DefaultLang_ = decl.attribute ("defaultlang");
 }
 
 void XmlSettingsDialog::ParsePage (const QDomElement& page)
 {
-    QString sectionTitle = GetLabel (page);
-    Sections_->addItem (sectionTitle);
+	QString sectionTitle = GetLabel (page);
+	Sections_->addItem (sectionTitle);
 
-    QWidget *baseWidget = new QWidget;
-    Pages_->addWidget (baseWidget);
-    QFormLayout *lay = new QFormLayout;
+	QWidget *baseWidget = new QWidget;
+	Pages_->addWidget (baseWidget);
+	QFormLayout *lay = new QFormLayout;
 	lay->setRowWrapPolicy (QFormLayout::DontWrapRows);
 	lay->setFieldGrowthPolicy (QFormLayout::AllNonFixedFieldsGrow);
-    baseWidget->setLayout (lay);
+	baseWidget->setLayout (lay);
 
-    ParseEntity (page, baseWidget);
+	ParseEntity (page, baseWidget);
 }
 
 void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWidget)
 {
-    QDomElement item = entity.firstChildElement ("item");
-    while (!item.isNull ())
-    {
-        ParseItem (item, baseWidget);
-        item = item.nextSiblingElement ("item");
-    }
+	QDomElement item = entity.firstChildElement ("item");
+	while (!item.isNull ())
+	{
+		ParseItem (item, baseWidget);
+		item = item.nextSiblingElement ("item");
+	}
 
-    QDomElement gbox = entity.firstChildElement ("groupbox");
-    while (!gbox.isNull ())
-    {
-        QGroupBox *box = new QGroupBox (GetLabel (gbox));
+	QDomElement gbox = entity.firstChildElement ("groupbox");
+	while (!gbox.isNull ())
+	{
+		QGroupBox *box = new QGroupBox (GetLabel (gbox));
 		QFormLayout *groupLayout = new QFormLayout ();
 		groupLayout->setRowWrapPolicy (QFormLayout::DontWrapRows);
 		groupLayout->setFieldGrowthPolicy (QFormLayout::AllNonFixedFieldsGrow);
 		box->setLayout (groupLayout);
-        ParseEntity (gbox, box);
-        
-        QFormLayout *lay = qobject_cast<QFormLayout*> (baseWidget->layout ());
-        lay->addRow (box);
+		ParseEntity (gbox, box);
+		
+		QFormLayout *lay = qobject_cast<QFormLayout*> (baseWidget->layout ());
+		lay->addRow (box);
 
-        gbox = gbox.nextSiblingElement ("groupbox");
-    }
+		gbox = gbox.nextSiblingElement ("groupbox");
+	}
 
 	QDomElement scroll = entity.firstChildElement ("scrollarea");
 	while (!scroll.isNull ())
@@ -238,190 +238,190 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
 		area->setWidget (areaWidget);
 		areaWidget->show ();
 
-        QFormLayout *lay = qobject_cast<QFormLayout*> (baseWidget->layout ());
+		QFormLayout *lay = qobject_cast<QFormLayout*> (baseWidget->layout ());
 		lay->addRow (area);
 
 		scroll = scroll.nextSiblingElement ("scrollarea");
 	}
 
-    QDomElement tab = entity.firstChildElement ("tab");
-    if (!tab.isNull ())
-    {
-        QTabWidget *tabs = new QTabWidget;
-        QFormLayout *lay = qobject_cast<QFormLayout*> (baseWidget->layout ());
-        lay->addRow (tabs);
-        while (!tab.isNull ())
-        {
-            QWidget *page = new QWidget;
-            QFormLayout *widgetLay = new QFormLayout;
+	QDomElement tab = entity.firstChildElement ("tab");
+	if (!tab.isNull ())
+	{
+		QTabWidget *tabs = new QTabWidget;
+		QFormLayout *lay = qobject_cast<QFormLayout*> (baseWidget->layout ());
+		lay->addRow (tabs);
+		while (!tab.isNull ())
+		{
+			QWidget *page = new QWidget;
+			QFormLayout *widgetLay = new QFormLayout;
 			widgetLay->setRowWrapPolicy (QFormLayout::DontWrapRows);
 			widgetLay->setFieldGrowthPolicy (QFormLayout::AllNonFixedFieldsGrow);
-            page->setLayout (widgetLay);
-            tabs->addTab (page, GetLabel (tab));
-            ParseEntity (tab, page);
-            tab = tab.nextSiblingElement ("tab");
-        }
-    }
+			page->setLayout (widgetLay);
+			tabs->addTab (page, GetLabel (tab));
+			ParseEntity (tab, page);
+			tab = tab.nextSiblingElement ("tab");
+		}
+	}
 }
 
 void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 {
-    QString type = item.attribute ("type");
+	QString type = item.attribute ("type");
 
-    QFormLayout *lay = qobject_cast<QFormLayout*> (baseWidget->layout ());
+	QFormLayout *lay = qobject_cast<QFormLayout*> (baseWidget->layout ());
 
-    QString property = item.attribute ("property");
+	QString property = item.attribute ("property");
 
-    if (type.isEmpty () || type.isNull ())
-        return;
-    else if (type == "lineedit")
-        DoLineedit (item, lay);
-    else if (type == "checkbox")
-        DoCheckbox (item, lay);
-    else if (type == "spinbox")
-        DoSpinbox (item, lay);
+	if (type.isEmpty () || type.isNull ())
+		return;
+	else if (type == "lineedit")
+		DoLineedit (item, lay);
+	else if (type == "checkbox")
+		DoCheckbox (item, lay);
+	else if (type == "spinbox")
+		DoSpinbox (item, lay);
 	else if (type == "doublespinbox")
 		DoDoubleSpinbox (item, lay);
-    else if (type == "groupbox" &&
+	else if (type == "groupbox" &&
 			item.attribute ("checkable") == "true")
-        DoGroupbox (item, lay);
-    else if (type == "spinboxrange")
-        DoSpinboxRange (item, lay);
-    else if (type == "path")
-        DoPath (item, lay);
-    else if (type == "radio")
-        DoRadio (item, lay);
-    else if (type == "combobox")
-        DoCombobox (item, lay);
+		DoGroupbox (item, lay);
+	else if (type == "spinboxrange")
+		DoSpinboxRange (item, lay);
+	else if (type == "path")
+		DoPath (item, lay);
+	else if (type == "radio")
+		DoRadio (item, lay);
+	else if (type == "combobox")
+		DoCombobox (item, lay);
 	else if (type == "font")
 		DoFont (item, lay);
 	else if (type == "pushbutton")
 		DoPushButton (item, lay);
 	else if (type == "customwidget")
 		DoCustomWidget (item, lay);
-    else
-        qWarning () << Q_FUNC_INFO << "unhandled type" << type;
+	else
+		qWarning () << Q_FUNC_INFO << "unhandled type" << type;
 
-    WorkingObject_->setProperty (property.toLatin1 ().constData (), GetValue (item));
+	WorkingObject_->setProperty (property.toLatin1 ().constData (), GetValue (item));
 }
 
 QString XmlSettingsDialog::GetLabel (const QDomElement& item) const
 {
-    QString locale = QString(::getenv ("LANG")).left (2);
-    if (locale.isNull () || locale.isEmpty ())
-        locale = QLocale::system ().name ().toLower ();
-    if (locale == "c")
-        locale = "en";
+	QString locale = QString(::getenv ("LANG")).left (2);
+	if (locale.isNull () || locale.isEmpty ())
+		locale = QLocale::system ().name ().toLower ();
+	if (locale == "c")
+		locale = "en";
 
-    locale = locale.left (2);
+	locale = locale.left (2);
 
-    QString result = "<no label>";
-    QDomElement label = item.firstChildElement ("label");
-    while (!label.isNull ())
-    {
-        if (label.attribute ("lang").toLower () == locale)
-        {
-            result = label.attribute ("value");
-            break;
-        }
-        label = label.nextSiblingElement ("label");
-    }
-    if (result == "<no label>")
-    {
-        label = item.firstChildElement ("label");
-        while (!label.isNull ())
-        {
-            if (label.attribute ("lang").toLower () == DefaultLang_)
-            {
-                result = label.attribute ("value");
-                break;
-            }
-            label = label.nextSiblingElement ("label");
-        }
-    }
-    return result;
+	QString result = "<no label>";
+	QDomElement label = item.firstChildElement ("label");
+	while (!label.isNull ())
+	{
+		if (label.attribute ("lang").toLower () == locale)
+		{
+			result = label.attribute ("value");
+			break;
+		}
+		label = label.nextSiblingElement ("label");
+	}
+	if (result == "<no label>")
+	{
+		label = item.firstChildElement ("label");
+		while (!label.isNull ())
+		{
+			if (label.attribute ("lang").toLower () == DefaultLang_)
+			{
+				result = label.attribute ("value");
+				break;
+			}
+			label = label.nextSiblingElement ("label");
+		}
+	}
+	return result;
 }
 
 XmlSettingsDialog::LangElements XmlSettingsDialog::GetLangElements (const QDomElement& parent) const
 {
-    QString locale = QString(::getenv ("LANG")).left (2);
-    if (locale.isNull () || locale.isEmpty ())
-        locale = QLocale::system ().name ().toLower ();
-    if (locale == "c")
-        locale = "en";
+	QString locale = QString(::getenv ("LANG")).left (2);
+	if (locale.isNull () || locale.isEmpty ())
+		locale = QLocale::system ().name ().toLower ();
+	if (locale == "c")
+		locale = "en";
 
-    locale = locale.left (2);
-    LangElements returning;
-    returning.Valid_ = false;
+	locale = locale.left (2);
+	LangElements returning;
+	returning.Valid_ = false;
 
-    bool found = false;
+	bool found = false;
 
-    QDomElement result = parent.firstChildElement ("lang");
-    while (!result.isNull ())
-    {
-        if (result.attribute ("value").toLower () == locale)
-        {
-            found = true;
-            break;
-        }
-        result = result.nextSiblingElement ("lang");
-    }
-    if (!found)
-    {
-        result = parent.firstChildElement ("lang");
-        while (!result.isNull ())
-        {
-            if (result.attribute ("value").toLower () == DefaultLang_)
-            {
-                found = true;
-                break;
-            }
-            result = result.nextSiblingElement ("lang");
-        }
-    }
-    if (!found)
-    {
-        result = parent.firstChildElement ("lang");
-        while (!result.isNull ())
-        {
-            if (result.attribute ("value").toLower () == "en" || !result.hasAttribute ("value"))
-            {
-                found = true;
-                break;
-            }
-            result = result.nextSiblingElement ("lang");
-        }
-    }
-    if (result.isNull ())
-        return returning;
+	QDomElement result = parent.firstChildElement ("lang");
+	while (!result.isNull ())
+	{
+		if (result.attribute ("value").toLower () == locale)
+		{
+			found = true;
+			break;
+		}
+		result = result.nextSiblingElement ("lang");
+	}
+	if (!found)
+	{
+		result = parent.firstChildElement ("lang");
+		while (!result.isNull ())
+		{
+			if (result.attribute ("value").toLower () == DefaultLang_)
+			{
+				found = true;
+				break;
+			}
+			result = result.nextSiblingElement ("lang");
+		}
+	}
+	if (!found)
+	{
+		result = parent.firstChildElement ("lang");
+		while (!result.isNull ())
+		{
+			if (result.attribute ("value").toLower () == "en" || !result.hasAttribute ("value"))
+			{
+				found = true;
+				break;
+			}
+			result = result.nextSiblingElement ("lang");
+		}
+	}
+	if (result.isNull ())
+		return returning;
 
-    returning.Valid_ = true;
+	returning.Valid_ = true;
 
-    QDomElement label = result.firstChildElement ("label");
-    if (!label.isNull () && label.hasAttribute ("value"))
-    {
-        returning.Label_.first = true;
-        returning.Label_.second = label.attribute ("value");
-    }
-    else
-        returning.Label_.first = false;
+	QDomElement label = result.firstChildElement ("label");
+	if (!label.isNull () && label.hasAttribute ("value"))
+	{
+		returning.Label_.first = true;
+		returning.Label_.second = label.attribute ("value");
+	}
+	else
+		returning.Label_.first = false;
 
-    QDomElement suffix = result.firstChildElement ("suffix");
-    if (!suffix.isNull () && suffix.hasAttribute ("value"))
-    {
-        returning.Suffix_.first = true;
-        returning.Suffix_.second = suffix.attribute ("value");
-    }
-    else
-        returning.Suffix_.first = false;
+	QDomElement suffix = result.firstChildElement ("suffix");
+	if (!suffix.isNull () && suffix.hasAttribute ("value"))
+	{
+		returning.Suffix_.first = true;
+		returning.Suffix_.second = suffix.attribute ("value");
+	}
+	else
+		returning.Suffix_.first = false;
 
-    return returning;
+	return returning;
 }
 
 QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject) const
 {
 	QString type = item.attribute ("type");
-    QString property = item.attribute ("property");
+	QString property = item.attribute ("property");
 
 	QVariant value;
 	if (ignoreObject)
@@ -433,11 +433,11 @@ QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject
 			return tmpValue;
 	}
 
-    if (type == "lineedit" ||
+	if (type == "lineedit" ||
 			type == "spinbox" ||
 			type == "doublespinbox")
 		return item.attribute ("default");
-    else if (type == "checkbox" ||
+	else if (type == "checkbox" ||
 			(type == "groupbox" && item.attribute ("checkable") == "true"))
 	{
 		if (!value.isValid () ||
@@ -451,7 +451,7 @@ QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject
 				value = (item.attribute ("state") == "on");
 		}
 	}
-    else if (type == "spinboxrange")
+	else if (type == "spinboxrange")
 	{
 		if (!value.isValid () ||
 				value.isNull () ||
@@ -468,7 +468,7 @@ QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject
 			value = result;
 		}
 	}
-    else if (type == "path")
+	else if (type == "path")
 	{
 		if (value.isNull () ||
 				value.toString ().isEmpty ())
@@ -476,7 +476,7 @@ QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject
 					item.attribute ("defaultHomePath") == "true")
 				value = QDir::homePath ();
 	}
-    else if (type == "radio" ||
+	else if (type == "radio" ||
 			type == "combobox")
 	{
 		if (value.isNull () ||
@@ -507,27 +507,27 @@ QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject
 	}
 	else if (type == "pushbutton") ;
 	else if (type == "customwidget") ;
-    else
-        qWarning () << Q_FUNC_INFO << "unhandled type" << type;
+	else
+		qWarning () << Q_FUNC_INFO << "unhandled type" << type;
 
 	return value;
 }
 
 void XmlSettingsDialog::DoLineedit (const QDomElement& item, QFormLayout *lay)
 {
-    QLabel *label = new QLabel (GetLabel (item));
-    label->setWordWrap (false);
+	QLabel *label = new QLabel (GetLabel (item));
+	label->setWordWrap (false);
 
 	QVariant value = GetValue (item);
 
-    QLineEdit *edit = new QLineEdit (value.toString ());
-    edit->setObjectName (item.attribute ("property"));
-    edit->setMinimumWidth (QApplication::fontMetrics ().width ("thisismaybeadefaultsetting"));
-    if (item.hasAttribute ("password"))
-        edit->setEchoMode (QLineEdit::Password);
+	QLineEdit *edit = new QLineEdit (value.toString ());
+	edit->setObjectName (item.attribute ("property"));
+	edit->setMinimumWidth (QApplication::fontMetrics ().width ("thisismaybeadefaultsetting"));
+	if (item.hasAttribute ("password"))
+		edit->setEchoMode (QLineEdit::Password);
 	if (item.hasAttribute ("inputMask"))
 		edit->setInputMask (item.attribute ("inputMask"));
-    connect (edit,
+	connect (edit,
 			SIGNAL (textChanged (const QString&)),
 			this,
 			SLOT (updatePreferences ()));
@@ -537,47 +537,47 @@ void XmlSettingsDialog::DoLineedit (const QDomElement& item, QFormLayout *lay)
 
 void XmlSettingsDialog::DoCheckbox (const QDomElement& item, QFormLayout *lay)
 {
-    QCheckBox *box = new QCheckBox (GetLabel (item));
-    box->setObjectName (item.attribute ("property"));
+	QCheckBox *box = new QCheckBox (GetLabel (item));
+	box->setObjectName (item.attribute ("property"));
 
 	QVariant value = GetValue (item);
 
-    box->setCheckState (value.toBool () ? Qt::Checked : Qt::Unchecked);
-    connect (box,
+	box->setCheckState (value.toBool () ? Qt::Checked : Qt::Unchecked);
+	connect (box,
 			SIGNAL (stateChanged (int)),
 			this,
 			SLOT (updatePreferences ()));
 
-    lay->addRow (box);
+	lay->addRow (box);
 }
 
 void XmlSettingsDialog::DoSpinbox (const QDomElement& item, QFormLayout *lay)
 {
-    QLabel *label = new QLabel (GetLabel (item));
-    label->setWordWrap (false);
-    QSpinBox *box = new QSpinBox;
-    box->setObjectName (item.attribute ("property"));
-    if (item.hasAttribute ("minimum"))
-        box->setMinimum (item.attribute ("minimum").toInt ());
-    if (item.hasAttribute ("maximum"))
-        box->setMaximum (item.attribute ("maximum").toInt ());
-    if (item.hasAttribute ("step"))
-        box->setSingleStep (item.attribute ("step").toInt ());
-    if (item.hasAttribute ("suffix"))
-        box->setSuffix (item.attribute ("suffix"));
-    LangElements langs = GetLangElements (item);
-    if (langs.Valid_)
-    {
-        if (langs.Label_.first)
-            label->setText (langs.Label_.second);
-        if (langs.Suffix_.first)
-            box->setSuffix (langs.Suffix_.second);
-    }
+	QLabel *label = new QLabel (GetLabel (item));
+	label->setWordWrap (false);
+	QSpinBox *box = new QSpinBox;
+	box->setObjectName (item.attribute ("property"));
+	if (item.hasAttribute ("minimum"))
+		box->setMinimum (item.attribute ("minimum").toInt ());
+	if (item.hasAttribute ("maximum"))
+		box->setMaximum (item.attribute ("maximum").toInt ());
+	if (item.hasAttribute ("step"))
+		box->setSingleStep (item.attribute ("step").toInt ());
+	if (item.hasAttribute ("suffix"))
+		box->setSuffix (item.attribute ("suffix"));
+	LangElements langs = GetLangElements (item);
+	if (langs.Valid_)
+	{
+		if (langs.Label_.first)
+			label->setText (langs.Label_.second);
+		if (langs.Suffix_.first)
+			box->setSuffix (langs.Suffix_.second);
+	}
 
 	QVariant value = GetValue (item);
 
-    box->setValue (value.toInt ());
-    connect (box,
+	box->setValue (value.toInt ());
+	connect (box,
 			SIGNAL (valueChanged (int)),
 			this,
 			SLOT (updatePreferences ()));
@@ -587,33 +587,33 @@ void XmlSettingsDialog::DoSpinbox (const QDomElement& item, QFormLayout *lay)
 
 void XmlSettingsDialog::DoDoubleSpinbox (const QDomElement& item, QFormLayout *lay)
 {
-    QLabel *label = new QLabel (GetLabel (item));
-    label->setWordWrap (false);
-    QDoubleSpinBox *box = new QDoubleSpinBox;
-    box->setObjectName (item.attribute ("property"));
-    if (item.hasAttribute ("minimum"))
-        box->setMinimum (item.attribute ("minimum").toDouble ());
-    if (item.hasAttribute ("maximum"))
-        box->setMaximum (item.attribute ("maximum").toDouble ());
-    if (item.hasAttribute ("step"))
-        box->setSingleStep (item.attribute ("step").toDouble ());
-    if (item.hasAttribute ("suffix"))
-        box->setSuffix (item.attribute ("suffix"));
+	QLabel *label = new QLabel (GetLabel (item));
+	label->setWordWrap (false);
+	QDoubleSpinBox *box = new QDoubleSpinBox;
+	box->setObjectName (item.attribute ("property"));
+	if (item.hasAttribute ("minimum"))
+		box->setMinimum (item.attribute ("minimum").toDouble ());
+	if (item.hasAttribute ("maximum"))
+		box->setMaximum (item.attribute ("maximum").toDouble ());
+	if (item.hasAttribute ("step"))
+		box->setSingleStep (item.attribute ("step").toDouble ());
+	if (item.hasAttribute ("suffix"))
+		box->setSuffix (item.attribute ("suffix"));
 	if (item.hasAttribute ("precision"))
 		box->setDecimals (item.attribute ("precision").toInt ());
-    LangElements langs = GetLangElements (item);
-    if (langs.Valid_)
-    {
-        if (langs.Label_.first)
-            label->setText (langs.Label_.second);
-        if (langs.Suffix_.first)
-            box->setSuffix (langs.Suffix_.second);
-    }
+	LangElements langs = GetLangElements (item);
+	if (langs.Valid_)
+	{
+		if (langs.Label_.first)
+			label->setText (langs.Label_.second);
+		if (langs.Suffix_.first)
+			box->setSuffix (langs.Suffix_.second);
+	}
 
 	QVariant value = GetValue (item);
 
-    box->setValue (value.toDouble ());
-    connect (box,
+	box->setValue (value.toDouble ());
+	connect (box,
 			SIGNAL (valueChanged (double)),
 			this,
 			SLOT (updatePreferences ()));
@@ -623,40 +623,40 @@ void XmlSettingsDialog::DoDoubleSpinbox (const QDomElement& item, QFormLayout *l
 
 void XmlSettingsDialog::DoGroupbox (const QDomElement& item, QFormLayout *lay)
 {
-    QGroupBox *box = new QGroupBox (GetLabel (item));
-    box->setObjectName (item.attribute ("property"));
+	QGroupBox *box = new QGroupBox (GetLabel (item));
+	box->setObjectName (item.attribute ("property"));
 	QFormLayout *groupLayout = new QFormLayout ();
 	groupLayout->setRowWrapPolicy (QFormLayout::DontWrapRows);
 	groupLayout->setFieldGrowthPolicy (QFormLayout::AllNonFixedFieldsGrow);
-    box->setLayout (groupLayout);
-    box->setCheckable (true);
+	box->setLayout (groupLayout);
+	box->setCheckable (true);
 
 	QVariant value = GetValue (item);
 
-    box->setChecked (value.toBool ());
-    connect (box,
+	box->setChecked (value.toBool ());
+	connect (box,
 			SIGNAL (toggled (bool)),
 			this,
 			SLOT (updatePreferences ()));
-    ParseEntity (item, box);
-    
-    lay->addRow (box);
+	ParseEntity (item, box);
+	
+	lay->addRow (box);
 }
 
 void XmlSettingsDialog::DoSpinboxRange (const QDomElement& item, QFormLayout *lay)
 {
 
-    QLabel *label = new QLabel (GetLabel (item));
-    label->setWordWrap (false);
-    RangeWidget *widget = new RangeWidget ();
-    widget->setObjectName (item.attribute ("property"));
-    widget->SetMinimum (item.attribute ("minimum").toInt ());
-    widget->SetMaximum (item.attribute ("maximum").toInt ());
+	QLabel *label = new QLabel (GetLabel (item));
+	label->setWordWrap (false);
+	RangeWidget *widget = new RangeWidget ();
+	widget->setObjectName (item.attribute ("property"));
+	widget->SetMinimum (item.attribute ("minimum").toInt ());
+	widget->SetMaximum (item.attribute ("maximum").toInt ());
 
 	QVariant value = GetValue (item);
 
-    widget->SetRange (value);
-    connect (widget,
+	widget->SetRange (value);
+	connect (widget,
 			SIGNAL (changed ()),
 			this,
 			SLOT (updatePreferences ()));
@@ -666,13 +666,13 @@ void XmlSettingsDialog::DoSpinboxRange (const QDomElement& item, QFormLayout *la
 
 void XmlSettingsDialog::DoPath (const QDomElement& item, QFormLayout *lay)
 {
-    QLabel *label = new QLabel (GetLabel (item));
-    label->setWordWrap (false);
-    FilePicker *picker = new FilePicker (this);
+	QLabel *label = new QLabel (GetLabel (item));
+	label->setWordWrap (false);
+	FilePicker *picker = new FilePicker (this);
 	QVariant value = GetValue (item);
-    picker->SetText (value.toString ());
-    picker->setObjectName (item.attribute ("property"));
-    connect (picker,
+	picker->SetText (value.toString ());
+	picker->setObjectName (item.attribute ("property"));
+	connect (picker,
 			SIGNAL (textChanged (const QString&)),
 			this,
 			SLOT (updatePreferences ()));
@@ -682,45 +682,45 @@ void XmlSettingsDialog::DoPath (const QDomElement& item, QFormLayout *lay)
 
 void XmlSettingsDialog::DoRadio (const QDomElement& item, QFormLayout *lay)
 {
-    RadioGroup *group = new RadioGroup (this);
-    group->setObjectName (item.attribute ("property"));
+	RadioGroup *group = new RadioGroup (this);
+	group->setObjectName (item.attribute ("property"));
 
-    QDomElement option = item.firstChildElement ("option");
-    while (!option.isNull ())
-    {
-        QRadioButton *button = new QRadioButton (GetLabel (option));
-        button->setObjectName (option.attribute ("name"));
+	QDomElement option = item.firstChildElement ("option");
+	while (!option.isNull ())
+	{
+		QRadioButton *button = new QRadioButton (GetLabel (option));
+		button->setObjectName (option.attribute ("name"));
 		group->AddButton (button,
 				option.hasAttribute ("default") &&
 				option.attribute ("default") == "true");
-        option = option.nextSiblingElement ("option");
-    }
+		option = option.nextSiblingElement ("option");
+	}
 
 	QVariant value = GetValue (item);
 
-    connect (group,
+	connect (group,
 			SIGNAL (valueChanged ()),
 			this,
 			SLOT (updatePreferences ()));
 
-    QGroupBox *box = new QGroupBox (GetLabel (item));
-    QVBoxLayout *layout = new QVBoxLayout ();
-    box->setLayout (layout);
-    layout->addWidget (group);
+	QGroupBox *box = new QGroupBox (GetLabel (item));
+	QVBoxLayout *layout = new QVBoxLayout ();
+	box->setLayout (layout);
+	layout->addWidget (group);
 
-    lay->addRow (box);
+	lay->addRow (box);
 }
 
 void XmlSettingsDialog::DoCombobox (const QDomElement& item, QFormLayout *lay)
 {
-    QComboBox *box = new QComboBox (this);
-    box->setObjectName (item.attribute ("property"));
+	QComboBox *box = new QComboBox (this);
+	box->setObjectName (item.attribute ("property"));
 	if (item.hasAttribute ("maxVisibleItems"))
 		box->setMaxVisibleItems (item.attribute ("maxVisibleItems").toInt ());
 
-    QDomElement option = item.firstChildElement ("option");
-    while (!option.isNull ())
-    {
+	QDomElement option = item.firstChildElement ("option");
+	while (!option.isNull ())
+	{
 		QList<QImage> images = GetImages (option);
 		if (images.size ())
 		{
@@ -730,10 +730,10 @@ void XmlSettingsDialog::DoCombobox (const QDomElement& item, QFormLayout *lay)
 		else
 			box->addItem (GetLabel (option), option.attribute ("name"));
 
-        option = option.nextSiblingElement ("option");
-    }
+		option = option.nextSiblingElement ("option");
+	}
 
-    connect (box,
+	connect (box,
 			SIGNAL (currentIndexChanged (int)),
 			this,
 			SLOT (updatePreferences ()));
@@ -754,7 +754,7 @@ void XmlSettingsDialog::DoCombobox (const QDomElement& item, QFormLayout *lay)
 	if (pos != -1)
 		box->setCurrentIndex (pos);
 
-    QLabel *label = new QLabel (GetLabel (item));
+	QLabel *label = new QLabel (GetLabel (item));
 	label->setWordWrap (false);
 
 	lay->addRow (label, box);
@@ -933,9 +933,9 @@ void XmlSettingsDialog::UpdateSingle (const QString& name,
 
 void XmlSettingsDialog::accept ()
 {
-    for (Property2Value_t::const_iterator i = Prop2NewValue_.begin (),
+	for (Property2Value_t::const_iterator i = Prop2NewValue_.begin (),
 			end = Prop2NewValue_.end (); i != end; ++i)
-        WorkingObject_->setProperty (i.key ().toLatin1 ().constData (), i.value ());
+		WorkingObject_->setProperty (i.key ().toLatin1 ().constData (), i.value ());
 
 	UpdateXml ();
 
@@ -947,53 +947,53 @@ void XmlSettingsDialog::accept ()
 
 void XmlSettingsDialog::reject ()
 {
-    for (Property2Value_t::iterator i = Prop2NewValue_.begin (); i != Prop2NewValue_.end (); ++i)
-    {
-        QWidget *object = findChild<QWidget*> (i.key ());
-        if (!object)
-        {
-            qWarning () << Q_FUNC_INFO << "could not find object for property" << i.key ();
-            continue;
-        }
+	for (Property2Value_t::iterator i = Prop2NewValue_.begin (); i != Prop2NewValue_.end (); ++i)
+	{
+		QWidget *object = findChild<QWidget*> (i.key ());
+		if (!object)
+		{
+			qWarning () << Q_FUNC_INFO << "could not find object for property" << i.key ();
+			continue;
+		}
 
-        QVariant oldValue = WorkingObject_->property (i.key ().toLatin1 ().constData ());
+		QVariant oldValue = WorkingObject_->property (i.key ().toLatin1 ().constData ());
 
-        QLineEdit *edit = qobject_cast<QLineEdit*> (object);
-        QCheckBox *checkbox = qobject_cast<QCheckBox*> (object);
-        QSpinBox *spinbox = qobject_cast<QSpinBox*> (object);
+		QLineEdit *edit = qobject_cast<QLineEdit*> (object);
+		QCheckBox *checkbox = qobject_cast<QCheckBox*> (object);
+		QSpinBox *spinbox = qobject_cast<QSpinBox*> (object);
 		QDoubleSpinBox *doubleSpinbox = qobject_cast<QDoubleSpinBox*> (object);
-        QGroupBox *groupbox = qobject_cast<QGroupBox*> (object);
-        RangeWidget *rangeWidget = qobject_cast<RangeWidget*> (object);
-        FilePicker *picker = qobject_cast<FilePicker*> (object);
-        RadioGroup *radiogroup = qobject_cast<RadioGroup*> (object);
-        QComboBox *combobox = qobject_cast<QComboBox*> (object);
+		QGroupBox *groupbox = qobject_cast<QGroupBox*> (object);
+		RangeWidget *rangeWidget = qobject_cast<RangeWidget*> (object);
+		FilePicker *picker = qobject_cast<FilePicker*> (object);
+		RadioGroup *radiogroup = qobject_cast<RadioGroup*> (object);
+		QComboBox *combobox = qobject_cast<QComboBox*> (object);
 		QFontComboBox *fontComboBox = qobject_cast<QFontComboBox*> (object);
-        if (edit)
-            edit->setText (oldValue.toString ());
-        else if (checkbox)
-            checkbox->setCheckState (oldValue.toBool () ? Qt::Checked : Qt::Unchecked);
-        else if (spinbox)
-            spinbox->setValue (oldValue.toLongLong ());
+		if (edit)
+			edit->setText (oldValue.toString ());
+		else if (checkbox)
+			checkbox->setCheckState (oldValue.toBool () ? Qt::Checked : Qt::Unchecked);
+		else if (spinbox)
+			spinbox->setValue (oldValue.toLongLong ());
 		else if (doubleSpinbox)
 			doubleSpinbox->setValue (oldValue.toDouble ());
-        else if (groupbox)
-            groupbox->setChecked (oldValue.toBool ());
-        else if (rangeWidget)
-            rangeWidget->SetRange (oldValue);
-        else if (picker)
-            picker->SetText (oldValue.toString ());
-        else if (radiogroup)
-            radiogroup->SetValue (oldValue.toString ());
-        else if (combobox)
-            combobox->setCurrentIndex (combobox->findText (oldValue.toString ()));
+		else if (groupbox)
+			groupbox->setChecked (oldValue.toBool ());
+		else if (rangeWidget)
+			rangeWidget->SetRange (oldValue);
+		else if (picker)
+			picker->SetText (oldValue.toString ());
+		else if (radiogroup)
+			radiogroup->SetValue (oldValue.toString ());
+		else if (combobox)
+			combobox->setCurrentIndex (combobox->findText (oldValue.toString ()));
 		else if (fontComboBox)
 			fontComboBox->setCurrentFont (oldValue.value<QFont> ());
-        else
-        {
-            qWarning () << Q_FUNC_INFO << "unhandled object" << object << "for" << i.key ();
-            continue;
-        }
-    }
+		else
+		{
+			qWarning () << Q_FUNC_INFO << "unhandled object" << object << "for" << i.key ();
+			continue;
+		}
+	}
 	
 	Prop2NewValue_.clear ();
 
@@ -1009,51 +1009,51 @@ void XmlSettingsDialog::handleCustomDestroyed ()
 
 void XmlSettingsDialog::updatePreferences ()
 {
-    QString propertyName = sender ()->objectName ();
-    if (propertyName.isEmpty ())
-    {
-        qWarning () << Q_FUNC_INFO << "property name is empty for object" << sender ();
-        return;
-    }
-    QVariant value;
+	QString propertyName = sender ()->objectName ();
+	if (propertyName.isEmpty ())
+	{
+		qWarning () << Q_FUNC_INFO << "property name is empty for object" << sender ();
+		return;
+	}
+	QVariant value;
 
-    QLineEdit *edit = qobject_cast<QLineEdit*> (sender ());
-    QCheckBox *checkbox = qobject_cast<QCheckBox*> (sender ());
-    QSpinBox *spinbox = qobject_cast<QSpinBox*> (sender ());
+	QLineEdit *edit = qobject_cast<QLineEdit*> (sender ());
+	QCheckBox *checkbox = qobject_cast<QCheckBox*> (sender ());
+	QSpinBox *spinbox = qobject_cast<QSpinBox*> (sender ());
 	QDoubleSpinBox *doubleSpinbox = qobject_cast<QDoubleSpinBox*> (sender ());
-    QGroupBox *groupbox = qobject_cast<QGroupBox*> (sender ());
-    RangeWidget *rangeWidget = qobject_cast<RangeWidget*> (sender ());
-    FilePicker *picker = qobject_cast<FilePicker*> (sender ());
-    RadioGroup *radiogroup = qobject_cast<RadioGroup*> (sender ());
-    QComboBox *combobox = qobject_cast<QComboBox*> (sender ());
+	QGroupBox *groupbox = qobject_cast<QGroupBox*> (sender ());
+	RangeWidget *rangeWidget = qobject_cast<RangeWidget*> (sender ());
+	FilePicker *picker = qobject_cast<FilePicker*> (sender ());
+	RadioGroup *radiogroup = qobject_cast<RadioGroup*> (sender ());
+	QComboBox *combobox = qobject_cast<QComboBox*> (sender ());
 	QFontComboBox *fontComboBox = qobject_cast<QFontComboBox*> (sender ());
 	if (fontComboBox)
 		value = fontComboBox->currentFont ();
 	else if (edit)
-        value = edit->text ();
-    else if (checkbox)
-        value = checkbox->checkState ();
-    else if (spinbox)
-        value = spinbox->value ();
+		value = edit->text ();
+	else if (checkbox)
+		value = checkbox->checkState ();
+	else if (spinbox)
+		value = spinbox->value ();
 	else if (doubleSpinbox)
 		value = doubleSpinbox->value ();
-    else if (groupbox)
-        value = groupbox->isChecked ();
-    else if (rangeWidget)
-        value = rangeWidget->GetRange ();
-    else if (picker)
-        value = picker->GetText ();
-    else if (radiogroup)
-        value = radiogroup->GetValue ();
-    else if (combobox)
-        value = combobox->itemData (combobox->currentIndex ());
-    else
-    {
-        qWarning () << Q_FUNC_INFO << "unhandled sender" << sender ();
-        return;
-    }
+	else if (groupbox)
+		value = groupbox->isChecked ();
+	else if (rangeWidget)
+		value = rangeWidget->GetRange ();
+	else if (picker)
+		value = picker->GetText ();
+	else if (radiogroup)
+		value = radiogroup->GetValue ();
+	else if (combobox)
+		value = combobox->itemData (combobox->currentIndex ());
+	else
+	{
+		qWarning () << Q_FUNC_INFO << "unhandled sender" << sender ();
+		return;
+	}
 
-    Prop2NewValue_ [propertyName] = value;
+	Prop2NewValue_ [propertyName] = value;
 }
 
 void XmlSettingsDialog::handlePushButtonReleased ()
