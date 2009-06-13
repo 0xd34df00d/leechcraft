@@ -1,59 +1,72 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>PluginManagerDialog</class>
- <widget class="QDialog" name="PluginManagerDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="PluginManagerDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>644</width>
+    <height>298</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Plugin Manager</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="mainresources.qrc" >
+  <property name="windowIcon">
+   <iconset resource="mainresources.qrc">
     <normaloff>:/resources/images/mainapp.png</normaloff>:/resources/images/mainapp.png</iconset>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QTreeView" name="PluginsTree_" >
-     <property name="minimumSize" >
+    <widget class="QTreeView" name="PluginsTree_">
+     <property name="minimumSize">
       <size>
        <width>120</width>
        <height>0</height>
       </size>
      </property>
-     <property name="editTriggers" >
+     <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
      </property>
-     <property name="alternatingRowColors" >
+     <property name="alternatingRowColors">
       <bool>true</bool>
      </property>
-     <property name="rootIsDecorated" >
+     <property name="rootIsDecorated">
       <bool>false</bool>
      </property>
-     <property name="itemsExpandable" >
+     <property name="itemsExpandable">
       <bool>false</bool>
      </property>
-     <property name="sortingEnabled" >
+     <property name="sortingEnabled">
       <bool>true</bool>
      </property>
-     <property name="headerHidden" >
-      <bool>true</bool>
-     </property>
-     <property name="expandsOnDoubleClick" >
+     <property name="headerHidden">
       <bool>false</bool>
      </property>
+     <property name="expandsOnDoubleClick">
+      <bool>false</bool>
+     </property>
+     <attribute name="headerVisible">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="headerDefaultSectionSize">
+      <number>150</number>
+     </attribute>
+     <attribute name="headerDefaultSectionSize">
+      <number>150</number>
+     </attribute>
+     <attribute name="headerVisible">
+      <bool>true</bool>
+     </attribute>
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="orientation" >
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="standardButtons" >
+     <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
@@ -61,7 +74,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="mainresources.qrc" />
+  <include location="mainresources.qrc"/>
  </resources>
  <connections>
   <connection>
@@ -70,11 +83,11 @@
    <receiver>PluginManagerDialog</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>248</x>
      <y>254</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>157</x>
      <y>274</y>
     </hint>
@@ -86,11 +99,11 @@
    <receiver>PluginManagerDialog</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>316</x>
      <y>260</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
     </hint>

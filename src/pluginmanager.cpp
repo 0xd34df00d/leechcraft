@@ -55,6 +55,8 @@ bool LeechCraft::PluginManager::Finder::operator() (LeechCraft::PluginManager::D
 LeechCraft::PluginManager::PluginManager (QObject *parent)
 : QAbstractItemModel (parent)
 {
+	Headers_ << tr ("Name")
+		<< tr ("File");
 	FindPlugins ();
 }
 
@@ -64,7 +66,7 @@ LeechCraft::PluginManager::~PluginManager ()
 
 int LeechCraft::PluginManager::columnCount (const QModelIndex&) const
 {
-	return 1;
+	return Headers_.size ();
 }
 
 QVariant LeechCraft::PluginManager::data (const QModelIndex& index, int role) const
@@ -135,6 +137,11 @@ QVariant LeechCraft::PluginManager::data (const QModelIndex& index, int role) co
 				default:
 					return QVariant ();
 			}
+		case 1:
+			if (role == Qt::DisplayRole)
+				return Plugins_.at (index.row ())->fileName ();
+			else
+				return QVariant ();
 		default:
 			return QVariant ();
 	}
@@ -145,9 +152,13 @@ Qt::ItemFlags LeechCraft::PluginManager::flags (const QModelIndex&) const
 	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
-QVariant LeechCraft::PluginManager::headerData (int, Qt::Orientation, int) const
+QVariant LeechCraft::PluginManager::headerData (int column, Qt::Orientation orient, int role) const
 {
-	return QVariant ();
+	if (role != Qt::DisplayRole ||
+			orient != Qt::Horizontal)
+		return QVariant ();
+
+	return Headers_.at (column);
 }
 
 QModelIndex LeechCraft::PluginManager::index (int row, int column, const QModelIndex&) const

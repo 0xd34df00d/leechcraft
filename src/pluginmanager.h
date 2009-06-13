@@ -4,6 +4,7 @@
 #include <QAbstractItemModel>
 #include <QMap>
 #include <QMultiMap>
+#include <QStringList>
 #include <QPluginLoader>
 
 namespace LeechCraft
@@ -46,6 +47,8 @@ namespace LeechCraft
 
 		typedef QList<PluginsContainer_t::iterator> UnloadQueue_t;
 		UnloadQueue_t UnloadQueue_;
+
+		QStringList Headers_;
 	public:
 		typedef PluginsContainer_t::size_type Size_t;
 		PluginManager (QObject *parent = 0);
