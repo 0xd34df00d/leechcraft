@@ -1,14 +1,23 @@
-#ifndef HOOK_H
-#define HOOK_H
+#ifndef PLUGINS_CSTP_HOOK_H
+#define PLUGINS_CSTP_HOOK_H
 #include <QString>
 #include <QPair>
 #include <QList>
 
-class Hook
+namespace LeechCraft
 {
-public:
-	virtual void Act (int, const QString&) const;
-	virtual void Act (const QList<QPair<QString, QString> >&) const;
+	namespace Plugins
+	{
+		namespace CSTP
+		{
+			class Hook
+			{
+			public:
+				virtual void Act (int, const QString&) const;
+				virtual void Act (const QList<QPair<QString, QString> >&) const;
+			};
+		};
+	};
 };
 
 #endif

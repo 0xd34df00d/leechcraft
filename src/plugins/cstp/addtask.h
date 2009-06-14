@@ -1,42 +1,51 @@
-#ifndef ADDTASK_H
-#define ADDTASK_H
+#ifndef PLUGINS_CSTP_ADDTASK_H
+#define PLUGINS_CSTP_ADDTASK_H
 #include <QDialog>
 #include "ui_addtask.h"
 
-class AddTask : public QDialog
+namespace LeechCraft
 {
-	Q_OBJECT
-
-	Ui::AddTask Ui_;
-	bool UserModifiedFilename_;
-public:
-	AddTask (QWidget* = 0);
-	AddTask (const QString&, const QString&, QWidget* = 0);
-	virtual ~AddTask ();
-
-	struct Task
+	namespace Plugins
 	{
-		QString URL_;
-		QString LocalPath_;
-		QString Filename_;
-		QString Comment_;
+		namespace CSTP
+		{
+			class AddTask : public QDialog
+			{
+				Q_OBJECT
 
-		Task (const QString&,
-				const QString&,
-				const QString&,
-				const QString&);
+				Ui::AddTask Ui_;
+				bool UserModifiedFilename_;
+			public:
+				AddTask (QWidget* = 0);
+				AddTask (const QString&, const QString&, QWidget* = 0);
+				virtual ~AddTask ();
+
+				struct Task
+				{
+					QString URL_;
+					QString LocalPath_;
+					QString Filename_;
+					QString Comment_;
+
+					Task (const QString&,
+							const QString&,
+							const QString&,
+							const QString&);
+				};
+
+				Task GetTask () const;
+			public slots:
+				virtual void accept ();
+			private slots:
+				void on_URL__textEdited (const QString&);
+				void on_LocalPath__textChanged ();
+				void on_Filename__textEdited ();
+				void on_BrowseButton__released ();
+			private:
+				void CheckOK ();
+			};
+		};
 	};
-
-	Task GetTask () const;
-public slots:
-	virtual void accept ();
-private slots:
-	void on_URL__textEdited (const QString&);
-	void on_LocalPath__textChanged ();
-	void on_Filename__textEdited ();
-	void on_BrowseButton__released ();
-private:
-	void CheckOK ();
 };
 
 #endif

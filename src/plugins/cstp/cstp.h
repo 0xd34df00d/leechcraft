@@ -1,5 +1,5 @@
-#ifndef CSTP_H
-#define CSTP_H
+#ifndef PLUGINS_CSTP_CSTP_H
+#define PLUGINS_CSTP_CSTP_H
 #include <memory>
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
@@ -8,7 +8,6 @@
 #include <interfaces/structures.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
-class Core;
 class QTabWidget;
 class QToolBar;
 class QModelIndex;
@@ -22,54 +21,65 @@ namespace boost
 	};
 };
 
-class CSTP : public QObject
-		   , public IInfo
-		   , public IDownload
-		   , public IJobHolder
-		   , public IHaveSettings
+namespace LeechCraft
 {
-	Q_OBJECT
-	Q_INTERFACES (IInfo IDownload IJobHolder IHaveSettings)
+	namespace Plugins
+	{
+		namespace CSTP
+		{
+			class Core;
 
-	QMenu *Plugins_;
-	std::auto_ptr<QTranslator> Translator_;
-	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
-	std::auto_ptr<QToolBar> Toolbar_;
-public:
-	virtual ~CSTP ();
-	void Init (ICoreProxy_ptr);
-	void Release ();
-    QString GetName () const;
-    QString GetInfo () const;
-    QStringList Provides () const;
-    QStringList Needs () const;
-    QStringList Uses () const;
-    void SetProvider (QObject*, const QString&);
-    QIcon GetIcon () const;
+			class CSTP : public QObject
+					   , public IInfo
+					   , public IDownload
+					   , public IJobHolder
+					   , public IHaveSettings
+			{
+				Q_OBJECT
+				Q_INTERFACES (IInfo IDownload IJobHolder IHaveSettings)
 
-	qint64 GetDownloadSpeed () const;
-	qint64 GetUploadSpeed () const;
-	void StartAll ();
-	void StopAll ();
-	bool CouldDownload (const LeechCraft::DownloadEntity&) const;
-	int AddJob (LeechCraft::DownloadEntity);
+				QMenu *Plugins_;
+				std::auto_ptr<QTranslator> Translator_;
+				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
+				std::auto_ptr<QToolBar> Toolbar_;
+			public:
+				virtual ~CSTP ();
+				void Init (ICoreProxy_ptr);
+				void Release ();
+			    QString GetName () const;
+			    QString GetInfo () const;
+			    QStringList Provides () const;
+			    QStringList Needs () const;
+			    QStringList Uses () const;
+			    void SetProvider (QObject*, const QString&);
+			    QIcon GetIcon () const;
 
-	QAbstractItemModel* GetRepresentation () const;
-	void ItemSelected (const QModelIndex&);
+				qint64 GetDownloadSpeed () const;
+				qint64 GetUploadSpeed () const;
+				void StartAll ();
+				void StopAll ();
+				bool CouldDownload (const LeechCraft::DownloadEntity&) const;
+				int AddJob (LeechCraft::DownloadEntity);
 
-	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
-private:
-	template<typename T> void ApplyCore2Selection (void (Core::*) (const QModelIndex&), T);
-	void SetupToolbar ();
-private slots:
-	void handleFileExists (boost::logic::tribool*);
-signals:
-	void jobFinished (int);
-	void jobRemoved (int);
-	void jobError (int, IDownload::Error);
-	void gotEntity (const LeechCraft::DownloadEntity&);
-	void downloadFinished (const QString&);
-	void log (const QString&);
+				QAbstractItemModel* GetRepresentation () const;
+				void ItemSelected (const QModelIndex&);
+
+				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
+			private:
+				template<typename T> void ApplyCore2Selection (void (Core::*) (const QModelIndex&), T);
+				void SetupToolbar ();
+			private slots:
+				void handleFileExists (boost::logic::tribool*);
+			signals:
+				void jobFinished (int);
+				void jobRemoved (int);
+				void jobError (int, IDownload::Error);
+				void gotEntity (const LeechCraft::DownloadEntity&);
+				void downloadFinished (const QString&);
+				void log (const QString&);
+			};
+		};
+	};
 };
 
 #endif

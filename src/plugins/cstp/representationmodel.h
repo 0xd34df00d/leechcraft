@@ -1,16 +1,25 @@
-#ifndef REPRESENTATIONMODEL_H
-#define REPRESENTATIONMODEL_H
+#ifndef PLUGINS_CSTP_REPRESENTATIONMODEL_H
+#define PLUGINS_CSTP_REPRESENTATIONMODEL_H
 #include <QSortFilterProxyModel>
 
-class RepresentationModel : public QSortFilterProxyModel
+namespace LeechCraft
 {
-	Q_OBJECT
+	namespace Plugins
+	{
+		namespace CSTP
+		{
+			class RepresentationModel : public QSortFilterProxyModel
+			{
+				Q_OBJECT
 
-public:
-	RepresentationModel (QObject* = 0);
-	virtual ~RepresentationModel ();
-protected:
-	virtual bool filterAcceptsColumn (int, const QModelIndex&) const;
+			public:
+				RepresentationModel (QObject* = 0);
+				virtual ~RepresentationModel ();
+			protected:
+				virtual bool filterAcceptsColumn (int, const QModelIndex&) const;
+			};
+		};
+	};
 };
 
 #endif
