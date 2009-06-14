@@ -514,9 +514,9 @@ namespace LeechCraft
 					dia->show ();
 				}
 			}
-			
-			Q_EXPORT_PLUGIN2 (leechcraft_poshuku, Poshuku);
 		};
 	};
 };
+
+Q_EXPORT_PLUGIN2 (leechcraft_poshuku, LeechCraft::Plugins::Poshuku::Poshuku);
 
