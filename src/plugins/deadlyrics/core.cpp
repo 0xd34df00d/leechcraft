@@ -14,8 +14,8 @@ namespace LeechCraft
 		{
 			Core::Core ()
 			{
-				qRegisterMetaType<Lyrics> ("Lyrics");
-				qRegisterMetaTypeStreamOperators<Lyrics> ("Lyrics");
+				qRegisterMetaType<Lyrics> ("LeechCraft::Plugins::DeadLyrics::Lyrics");
+				qRegisterMetaTypeStreamOperators<Lyrics> ("LeechCraft::Plugins::DeadLyrics::Lyrics");
 				Searchers_.push_back (searcher_ptr (new LyricWikiSearcher));
 			}
 			
