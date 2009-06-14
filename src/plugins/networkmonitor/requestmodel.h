@@ -1,5 +1,5 @@
-#ifndef PLUGINS_REQUESTMODEL_H 
-#define PLUGINS_REQUESTMODEL_H 
+#ifndef PLUGINS_NETWORKMONITOR_REQUESTMODEL_H 
+#define PLUGINS_NETWORKMONITOR_REQUESTMODEL_H 
 #include <QStandardItemModel>
 #include <QNetworkAccessManager>
 

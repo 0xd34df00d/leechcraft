@@ -1,5 +1,5 @@
-#ifndef PLUGINS_NETWORKMONITOR_H
-#define PLUGINS_NETWORKMONITOR_H
+#ifndef PLUGINS_NETWORKMONITOR_NETWORKMONITOR_H
+#define PLUGINS_NETWORKMONITOR_NETWORKMONITOR_H
 #include <QDialog>
 #include <QTranslator>
 #include <interfaces/iinfo.h>

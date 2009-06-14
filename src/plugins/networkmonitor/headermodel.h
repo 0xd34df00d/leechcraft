@@ -1,5 +1,5 @@
-#ifndef PLUGINS_HEADERMODEL_H 
-#define PLUGINS_HEADERMODEL_H 
+#ifndef PLUGINS_NETWORKMONITOR_HEADERMODEL_H 
+#define PLUGINS_NETWORKMONITOR_HEADERMODEL_H 
 #include <QStandardItemModel>
 #include <QNetworkAccessManager>
 
