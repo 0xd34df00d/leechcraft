@@ -34,8 +34,8 @@ namespace LeechCraft
 						  , public IHaveShortcuts
 						  , public IWebBrowser
 			{
-			    Q_OBJECT
-			    Q_INTERFACES (IInfo IEmbedTab IMultiTabs IHaveSettings IPluginReady IWebBrowser IHaveShortcuts)
+				Q_OBJECT
+				Q_INTERFACES (IInfo IEmbedTab IMultiTabs IHaveSettings IPluginReady IWebBrowser IHaveShortcuts)
 
 				Ui::Poshuku Ui_;
 
