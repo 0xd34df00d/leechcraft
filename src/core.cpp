@@ -699,11 +699,6 @@ void LeechCraft::Core::handlePluginAction ()
 	}
 }
 
-void LeechCraft::Core::toggleMultiwindow ()
-{
-	TabContainer_->ToggleMultiwindow ();
-}
-
 bool LeechCraft::Core::CouldHandle (const LeechCraft::DownloadEntity& e)
 {
 	QObjectList plugins = PluginManager_->GetAllCastableRoots<IDownload*> ();

@@ -13,7 +13,6 @@ TabContainer::TabContainer (TabWidget *tabWidget,
 		QObject *parent)
 : QObject (parent)
 , TabWidget_ (tabWidget)
-, TabMode_ (true)
 {
 	connect (TabWidget_,
 			SIGNAL (tabCloseRequested (int)),
@@ -34,10 +33,7 @@ TabContainer::~TabContainer ()
 
 QWidget* TabContainer::GetWidget (int position) const
 {
-	if (TabMode_)
-		return TabWidget_->widget (position);
-	else
-		return 0;
+	return TabWidget_->widget (position);
 }
 
 QToolBar* TabContainer::GetToolBar (int position) const
@@ -84,56 +80,20 @@ void TabContainer::SetToolBar (QToolBar *bar, QWidget *tw)
 
 void TabContainer::RotateLeft ()
 {
-	if (TabMode_)
-	{
-		int index = TabWidget_->currentIndex ();
-		if (index)
-			TabWidget_->setCurrentIndex (index - 1);
-		else
-			TabWidget_->setCurrentIndex (TabWidget_->count () - 1);
-	}
+	int index = TabWidget_->currentIndex ();
+	if (index)
+		TabWidget_->setCurrentIndex (index - 1);
+	else
+		TabWidget_->setCurrentIndex (TabWidget_->count () - 1);
 }
 
 void TabContainer::RotateRight ()
 {
-	if (TabMode_)
-	{
-		int index = TabWidget_->currentIndex ();
-		if (index < TabWidget_->count () - 1)
-			TabWidget_->setCurrentIndex (index + 1);
-		else
-			TabWidget_->setCurrentIndex (0);
-	}
-}
-
-void TabContainer::ToggleMultiwindow ()
-{
-	TabMode_ = !TabMode_;
-	if (TabMode_)
-	{
-		while (Widgets_.size ())
-		{
-			QWidget *widget = Widgets_.takeLast ();
-			widget->setWindowFlags (Qt::Widget);
-			add (widget->windowTitle (), widget);
-			TabWidget_->setTabIcon (TabWidget_->count () - 1,
-					widget->windowIcon ());
-		}
-	}
+	int index = TabWidget_->currentIndex ();
+	if (index < TabWidget_->count () - 1)
+		TabWidget_->setCurrentIndex (index + 1);
 	else
-	{
-		int count = TabWidget_->count ();
-		for (int i = count - 1; i >= 2; --i)
-		{
-			QWidget *widget = TabWidget_->widget (i);
-			widget->setWindowTitle (TabWidget_->tabText (i));
-			widget->setWindowIcon (TabWidget_->tabIcon (i));
-			TabWidget_->removeTab (i);
-			widget->setWindowFlags (Qt::Window);
-			widget->show ();
-			Widgets_ << widget;
-		}
-	}
+		TabWidget_->setCurrentIndex (0);
 }
 
 void TabContainer::ForwardKeyboard (QKeyEvent *key)
@@ -154,32 +114,15 @@ void TabContainer::add (const QString& name, QWidget *contents)
 void TabContainer::add (const QString& name, QWidget *contents,
 		const QIcon& icon)
 {
-	if (TabMode_)
-		TabWidget_->addTab (contents, icon, name);
-	else
-	{
-		contents->setWindowFlags (Qt::Window);
-		contents->setWindowTitle (name);
-		contents->setWindowIcon (icon);
-		contents->show ();
-		Widgets_.push_front (contents);
-	}
+	TabWidget_->addTab (contents, icon, MakeTabName (name));
 }
 
 void TabContainer::remove (QWidget *contents)
 {
-	if (TabMode_)
-	{
-		int tabNumber = FindTabForWidget (contents);
-		if (tabNumber == -1)
-			return;
-		TabWidget_->removeTab (tabNumber);
-	}
-	else
-	{
-		Widgets_.removeAll (contents);
-		contents->deleteLater ();
-	}
+	int tabNumber = FindTabForWidget (contents);
+	if (tabNumber == -1)
+		return;
+	TabWidget_->removeTab (tabNumber);
 }
 
 void TabContainer::remove (int index)
@@ -217,39 +160,26 @@ void TabContainer::remove (int index)
 
 void TabContainer::changeTabName (QWidget *contents, const QString& name)
 {
-	if (TabMode_)
-	{
-		int tabNumber = FindTabForWidget (contents);
-		if (tabNumber == -1)
-			return;
-		TabWidget_->setTabText (tabNumber, name);
-	}
-	else
-		contents->setWindowTitle (name);
+	int tabNumber = FindTabForWidget (contents);
+	if (tabNumber == -1)
+		return;
+	TabWidget_->setTabText (tabNumber, MakeTabName (name));
 }
 
 void TabContainer::changeTabIcon (QWidget *contents, const QIcon& icon)
 {
-	if (TabMode_)
-	{
-		int tabNumber = FindTabForWidget (contents);
-		if (tabNumber == -1)
-			return;
-		TabWidget_->setTabIcon (tabNumber, icon);
-	}
-	else
-		contents->setWindowIcon (icon);
+	int tabNumber = FindTabForWidget (contents);
+	if (tabNumber == -1)
+		return;
+	TabWidget_->setTabIcon (tabNumber, icon);
 }
 
 void TabContainer::changeTooltip (QWidget *contents, QWidget *tip)
 {
-	if (TabMode_)
-	{
-		int tabNumber = FindTabForWidget (contents);
-		if (tabNumber == -1)
-			return;
-		TabWidget_->SetTooltip (tabNumber, tip);
-	}
+	int tabNumber = FindTabForWidget (contents);
+	if (tabNumber == -1)
+		return;
+	TabWidget_->SetTooltip (tabNumber, tip);
 }
 
 void TabContainer::handleTabNames ()
@@ -281,10 +211,7 @@ void TabContainer::handleScrollButtons ()
 
 void TabContainer::bringToFront (QWidget *widget) const
 {
-	if (TabMode_)
-		TabWidget_->setCurrentWidget (widget);
-	else
-		widget->show ();
+	TabWidget_->setCurrentWidget (widget);
 }
 
 int TabContainer::FindTabForWidget (QWidget *widget) const
@@ -293,5 +220,10 @@ int TabContainer::FindTabForWidget (QWidget *widget) const
 		if (TabWidget_->widget (i) == widget)
 			return i;
 	return -1;
+}
+
+QString TabContainer::MakeTabName (const QString& name) const
+{
+	return name;
 }
 

@@ -17,7 +17,6 @@ namespace LeechCraft
 		Q_OBJECT
 
 		TabWidget *TabWidget_;
-		bool TabMode_;
 		QList<QWidget*> Widgets_;
 		QStringList TabNames_;
 		QList<QKeyEvent*> Events_;
@@ -31,7 +30,6 @@ namespace LeechCraft
 		void SetToolBar (QToolBar*, QWidget*);
 		void RotateLeft ();
 		void RotateRight ();
-		void ToggleMultiwindow ();
 		void ForwardKeyboard (QKeyEvent*);
 	public slots:
 		void add (const QString&, QWidget*);
@@ -47,6 +45,7 @@ namespace LeechCraft
 		void handleScrollButtons ();
 	private:
 		int FindTabForWidget (QWidget*) const;
+		QString MakeTabName (const QString&) const;
 	};
 };
 
