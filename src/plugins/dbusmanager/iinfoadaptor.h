@@ -1,17 +1,26 @@
-#ifndef IINFOADAPTOR_H
-#define IINFOADAPTOR_H
+#ifndef PLUGINS_DBUSMANAGER_IINFOADAPTOR_H
+#define PLUGINS_DBUSMANAGER_IINFOADAPTOR_H
 #include <QDBusAbstractAdaptor>
 
 class IInfo;
 class QObject;
 
-class IInfoAdaptor : public QDBusAbstractAdaptor
+namespace LeechCract
 {
-	Q_OBJECT
+	namespace Plugins
+	{
+		namespace DBusManager
+		{
+			class IInfoAdaptor : public QDBusAbstractAdaptor
+			{
+				Q_OBJECT
 
-	IInfo *Object_;
-public:
-	IInfoAdaptor (QObject*);
+				IInfo *Object_;
+			public:
+				IInfoAdaptor (QObject*);
+			};
+		};
+	};
 };
 
 #endif

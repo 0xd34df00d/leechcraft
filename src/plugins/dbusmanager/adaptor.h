@@ -1,5 +1,5 @@
-#ifndef ADAPTOR_H
-#define ADAPTOR_H
+#ifndef PLUGINS_DBUSMANAGER_ADAPTOR_H
+#define PLUGINS_DBUSMANAGER_ADAPTOR_H
 #include <QDBusAbstractAdaptor>
 #include <QStringList>
 

@@ -1,5 +1,5 @@
-#ifndef DBUSMANAGER_H
-#define DBUSMANAGER_H
+#ifndef PLUGINS_DBUSMANAGER_DBUSMANAGER_H
+#define PLUGINS_DBUSMANAGER_DBUSMANAGER_H
 #include <interfaces/iinfo.h>
 
 namespace LeechCraft

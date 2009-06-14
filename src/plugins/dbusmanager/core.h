@@ -1,5 +1,5 @@
-#ifndef CORE_H
-#define CORE_H
+#ifndef PLUGINS_DBUSMANAGER_CORE_H
+#define PLUGINS_DBUSMANAGER_CORE_H
 #include <memory>
 #include <QObject>
 #include <QDBusConnection>
