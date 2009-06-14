@@ -1,5 +1,5 @@
-#ifndef PLUGINS_POSHUKU_PLUGINS_POSHUKU_CORE_H
-#define PLUGINS_POSHUKU_PLUGINS_POSHUKU_CORE_H
+#ifndef PLUGINS_POSHUKU_CORE_H
+#define PLUGINS_POSHUKU_CORE_H
 #include <memory>
 #include <vector>
 #include <QObject>
@@ -72,6 +72,7 @@ namespace LeechCraft
 				struct UncloseData
 				{
 					QUrl URL_;
+					QPoint SPoint_;
 				};
 
 				static Core& Instance ();

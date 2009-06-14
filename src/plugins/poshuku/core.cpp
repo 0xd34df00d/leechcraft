@@ -11,6 +11,7 @@
 #include <QNetworkCookieJar>
 #include <QDir>
 #include <QMenu>
+#include <QWebFrame>
 #include <QInputDialog>
 #include <QNetworkReply>
 #include <QAuthenticator>
@@ -345,6 +346,7 @@ namespace LeechCraft
 					UncloseData ud =
 					{
 						widget->GetView ()->url (),
+						widget->GetView ()->page ()->mainFrame ()->scrollPosition ()
 					};
 					action->setData (QVariant::fromValue (ud));
 			
@@ -494,7 +496,8 @@ namespace LeechCraft
 			{
 				QAction *action = qobject_cast<QAction*> (sender ());
 				UncloseData ud = action->data ().value<UncloseData> ();
-				NewURL (ud.URL_.toString ());
+				BrowserWidget *bw = NewURL (ud.URL_.toString ());
+				bw->SetOnLoadScrollPoint (ud.SPoint_);
 				Unclosers_.removeAll (action);
 				action->deleteLater ();
 			}

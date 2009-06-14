@@ -1,5 +1,5 @@
-#ifndef PLUGINS_POSHUKU_PLUGINS_POSHUKU_BROWSERWIDGET_H
-#define PLUGINS_POSHUKU_PLUGINS_POSHUKU_BROWSERWIDGET_H
+#ifndef PLUGINS_POSHUKU_BROWSERWIDGET_H
+#define PLUGINS_POSHUKU_BROWSERWIDGET_H
 #include <boost/shared_ptr.hpp>
 #include <QWidget>
 #include <interfaces/imultitabs.h>
@@ -51,6 +51,7 @@ namespace LeechCraft
 				QAction *Reload_;
 				QAction *Stop_;
 				QAction *RecentlyClosedAction_;
+				QPoint OnLoadPos_;
 				boost::shared_ptr<QMovie> Loading_;
 				QMenu *RecentlyClosed_;
 				QMenu *ExternalLinks_;
@@ -103,6 +104,8 @@ namespace LeechCraft
 
 				void Remove ();
 				QToolBar* GetToolBar () const;
+
+				void SetOnLoadScrollPoint (const QPoint&);
 			private:
 				void PrintImpl (bool, QWebFrame*);
 			private slots:

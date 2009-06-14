@@ -501,6 +501,11 @@ namespace LeechCraft
 			{
 				return Own_ ? ToolBar_ : 0;
 			}
+
+			void BrowserWidget::SetOnLoadScrollPoint (const QPoint& sp)
+			{
+				OnLoadPos_ = sp;
+			}
 			
 			void BrowserWidget::PrintImpl (bool preview, QWebFrame *frame)
 			{
@@ -851,6 +856,7 @@ namespace LeechCraft
 						}
 					}
 				}
+				GetView ()->page ()->mainFrame ()->setScrollPosition (OnLoadPos_);
 			}
 			
 			void BrowserWidget::handleLoadProgress (int p)
