@@ -5,73 +5,71 @@
 #include "channel.h"
 #include "item.h"
 
-using namespace LeechCraft::Plugins::Aggregator;
-
-Channel::Channel ()
-{
-}
-
-Channel::Channel (const Channel& channel)
-: Items_ (channel.Items_)
-{
-	Equalify (channel);
-}
-
-Channel::~Channel ()
-{
-}
-
-Channel& Channel::operator= (const Channel& channel)
-{
-	Equalify (channel);
-	Items_ = channel.Items_;
-	return *this;
-}
-
-int Channel::CountUnreadItems () const
-{
-	int result = 0;
-	for (size_t i = 0; i < Items_.size (); ++i)
-		result += (Items_ [i]->Unread_);
-	return result;
-}
-
-void Channel::Equalify (const Channel& channel)
-{
-	Title_ = channel.Title_;
-	Link_ = channel.Link_;
-	Description_ = channel.Description_;
-	LastBuild_ = channel.LastBuild_;
-	Tags_ = channel.Tags_;
-	Language_ = channel.Language_;
-	Author_ = channel.Author_;
-	PixmapURL_ = channel.PixmapURL_;
-	Pixmap_ = channel.Pixmap_;
-	Favicon_ = channel.Favicon_;
-	ParentURL_ = channel.ParentURL_;
-}
-
-ChannelShort Channel::ToShort () const
-{
-	ChannelShort cs =
-	{
-		Title_,
-		Link_,
-		Tags_,
-		LastBuild_,
-		Favicon_,
-		CountUnreadItems (),
-		ParentURL_
-	};
-	return cs;
-}
-
 namespace LeechCraft
 {
 	namespace Plugins
 	{
 		namespace Aggregator
 		{
+			Channel::Channel ()
+			{
+			}
+			
+			Channel::Channel (const Channel& channel)
+			: Items_ (channel.Items_)
+			{
+				Equalify (channel);
+			}
+			
+			Channel::~Channel ()
+			{
+			}
+			
+			Channel& Channel::operator= (const Channel& channel)
+			{
+				Equalify (channel);
+				Items_ = channel.Items_;
+				return *this;
+			}
+			
+			int Channel::CountUnreadItems () const
+			{
+				int result = 0;
+				for (size_t i = 0; i < Items_.size (); ++i)
+					result += (Items_ [i]->Unread_);
+				return result;
+			}
+			
+			void Channel::Equalify (const Channel& channel)
+			{
+				Title_ = channel.Title_;
+				Link_ = channel.Link_;
+				Description_ = channel.Description_;
+				LastBuild_ = channel.LastBuild_;
+				Tags_ = channel.Tags_;
+				Language_ = channel.Language_;
+				Author_ = channel.Author_;
+				PixmapURL_ = channel.PixmapURL_;
+				Pixmap_ = channel.Pixmap_;
+				Favicon_ = channel.Favicon_;
+				ParentURL_ = channel.ParentURL_;
+			}
+			
+			ChannelShort Channel::ToShort () const
+			{
+				ChannelShort cs =
+				{
+					Title_,
+					Link_,
+					Tags_,
+					LastBuild_,
+					Favicon_,
+					CountUnreadItems (),
+					ParentURL_
+				};
+				return cs;
+			}
+			
 			bool operator< (const ChannelShort& cs1, const ChannelShort& cs2)
 			{
 				return (cs1.Title_ + cs1.Link_) < (cs2.Title_ + cs2.Link_);

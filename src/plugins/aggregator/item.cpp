@@ -2,37 +2,35 @@
 #include <QDataStream>
 #include "item.h"
 
-using namespace LeechCraft::Plugins::Aggregator;
-
-ItemShort Item::ToShort () const
-{
-	ItemShort is =
-	{
-		Title_,
-		Link_,
-		Categories_,
-		PubDate_,
-		Unread_
-	};
-	return is;
-}
-
-ItemComparator::ItemComparator (const Item_ptr& item)
-: Item_ (item)
-{
-}
-
-bool ItemComparator::operator() (const Item_ptr& item)
-{
-	return *Item_ == *item;
-}
-
 namespace LeechCraft
 {
 	namespace Plugins
 	{
 		namespace Aggregator
 		{
+			ItemShort Item::ToShort () const
+			{
+				ItemShort is =
+				{
+					Title_,
+					Link_,
+					Categories_,
+					PubDate_,
+					Unread_
+				};
+				return is;
+			}
+			
+			ItemComparator::ItemComparator (const Item_ptr& item)
+			: Item_ (item)
+			{
+			}
+			
+			bool ItemComparator::operator() (const Item_ptr& item)
+			{
+				return *Item_ == *item;
+			}
+			
 			bool operator== (const Item& i1, const Item& i2)
 			{
 				return i1.Title_ == i2.Title_ &&
