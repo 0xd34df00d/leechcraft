@@ -741,9 +741,9 @@ namespace LeechCraft
 				if (unread.isValid ())
 					Impl_->Ui_.Feeds_->setCurrentIndex (unread);
 			}
-			
-			Q_EXPORT_PLUGIN2 (leechcraft_aggregator, Aggregator);
 		};
 	};
 };
+
+Q_EXPORT_PLUGIN2 (leechcraft_aggregator, LeechCraft::Plugins::Aggregator::Aggregator);
 
