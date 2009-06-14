@@ -224,6 +224,12 @@ int TabContainer::FindTabForWidget (QWidget *widget) const
 
 QString TabContainer::MakeTabName (const QString& name) const
 {
-	return name;
+	int width = TabWidget_->fontMetrics ().averageCharWidth ();
+	int numChars = 180 / width;
+
+	QString result = name;
+	if (result.size () > numChars + 3)
+		result = name.left (numChars) + "...";
+	return result;
 }
 
