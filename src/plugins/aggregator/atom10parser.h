@@ -1,5 +1,5 @@
-#ifndef ATOM10PARSER_H
-#define ATOM10PARSER_H
+#ifndef PLUGINS_AGGREGATOR_ATOM10PARSER_H
+#define PLUGINS_AGGREGATOR_ATOM10PARSER_H
 #include <QPair>
 #include <QDateTime>
 #include "atomparser.h"

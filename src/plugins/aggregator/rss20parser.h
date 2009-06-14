@@ -1,5 +1,5 @@
-#ifndef RSS20PARSER_H
-#define RSS20PARSER_H
+#ifndef PLUGINS_AGGREGATOR_RSS20PARSER_H
+#define PLUGINS_AGGREGATOR_RSS20PARSER_H
 #include "rssparser.h"
 #include "channel.h"
 

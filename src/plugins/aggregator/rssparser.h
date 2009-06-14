@@ -1,5 +1,5 @@
-#ifndef RSSPARSER_H
-#define RSSPARSER_H
+#ifndef PLUGINS_AGGREGATOR_RSSPARSER_H
+#define PLUGINS_AGGREGATOR_RSSPARSER_H
 #include <QMap>
 #include <QString>
 #include "parser.h"

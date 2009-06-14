@@ -1,5 +1,5 @@
-#ifndef ADDFEED_H
-#define ADDFEED_H
+#ifndef PLUGINS_AGGREGATOR_ADDFEED_H
+#define PLUGINS_AGGREGATOR_ADDFEED_H
 #include <QDialog>
 #include "ui_addfeed.h"
 

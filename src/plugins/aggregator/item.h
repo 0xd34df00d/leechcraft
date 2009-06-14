@@ -1,5 +1,5 @@
-#ifndef ITEM_H
-#define ITEM_H
+#ifndef PLUGINS_AGGREGATOR_ITEM_H
+#define PLUGINS_AGGREGATOR_ITEM_H
 #include <vector>
 #include <QString>
 #include <QStringList>

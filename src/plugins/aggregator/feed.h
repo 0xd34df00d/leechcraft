@@ -1,5 +1,5 @@
-#ifndef FEED_H
-#define FEED_H
+#ifndef PLUGINS_AGGREGATOR_FEED_H
+#define PLUGINS_AGGREGATOR_FEED_H
 #include <QString>
 #include <QDateTime>
 #include <QList>

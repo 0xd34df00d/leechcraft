@@ -1,5 +1,5 @@
-#ifndef CHANNEL_H
-#define CHANNEL_H
+#ifndef PLUGINS_AGGREGATOR_CHANNEL_H
+#define PLUGINS_AGGREGATOR_CHANNEL_H
 #include <QString>
 #include <QList>
 #include <QDateTime>

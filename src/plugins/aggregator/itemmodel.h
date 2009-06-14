@@ -1,5 +1,5 @@
-#ifndef ITEMMODEL_H
-#define ITEMMODEL_H
+#ifndef PLUGINS_AGGREGATOR_ITEMMODEL_H
+#define PLUGINS_AGGREGATOR_ITEMMODEL_H
 #include <deque>
 #include <QAbstractItemModel>
 #include <QStringList>

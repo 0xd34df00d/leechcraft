@@ -1,5 +1,5 @@
-#ifndef OPMLITEM_H
-#define OPMLITEM_H
+#ifndef PLUGINS_AGGREGATOR_OPMLITEM_H
+#define PLUGINS_AGGREGATOR_OPMLITEM_H
 #include <QString>
 #include <QStringList>
 

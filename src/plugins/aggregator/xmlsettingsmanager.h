@@ -1,5 +1,5 @@
-#ifndef XMLSETTINGSMANAGER_H
-#define XMLSETTINGSMANAGER_H
+#ifndef PLUGINS_AGGREGATOR_XMLSETTINGSMANAGER_H
+#define PLUGINS_AGGREGATOR_XMLSETTINGSMANAGER_H
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft

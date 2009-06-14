@@ -1,5 +1,5 @@
-#ifndef IMPORTOPML_H
-#define IMPORTOPML_H
+#ifndef PLUGINS_AGGREGATOR_IMPORTOPML_H
+#define PLUGINS_AGGREGATOR_IMPORTOPML_H
 #include <QDialog>
 #include "ui_importopml.h"
 

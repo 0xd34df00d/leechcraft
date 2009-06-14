@@ -1,5 +1,5 @@
-#ifndef CORE_H
-#define CORE_H
+#ifndef PLUGINS_AGGREGATOR_CORE_H
+#define PLUGINS_AGGREGATOR_CORE_H
 #include <memory>
 #include <QAbstractItemModel>
 #include <QString>

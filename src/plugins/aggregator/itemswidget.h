@@ -1,5 +1,5 @@
-#ifndef ITEMSWIDGET_H
-#define ITEMSWIDGET_H
+#ifndef PLUGINS_AGGREGATOR_ITEMSWIDGET_H
+#define PLUGINS_AGGREGATOR_ITEMSWIDGET_H
 #include <QWidget>
 #include "ui_itemswidget.h"
 #include "item.h"

@@ -1,5 +1,5 @@
-#ifndef PARSER_H
-#define PARSER_H
+#ifndef PLUGINS_AGGREGATOR_PARSER_H
+#define PLUGINS_AGGREGATOR_PARSER_H
 #include <QDomDocument>
 #include <vector>
 #include <boost/shared_ptr.hpp>

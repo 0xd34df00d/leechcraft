@@ -1,5 +1,5 @@
-#ifndef FEEDSETTINGS_H
-#define FEEDSETTINGS_H
+#ifndef PLUGINS_AGGREGATOR_FEEDSETTINGS_H
+#define PLUGINS_AGGREGATOR_FEEDSETTINGS_H
 #include <memory>
 #include <QDialog>
 #include <QModelIndex>

@@ -1,5 +1,5 @@
-#ifndef CHANNELSMODEL_H
-#define CHANNELSMODEL_H
+#ifndef PLUGINS_AGGREGATOR_CHANNELSMODEL_H
+#define PLUGINS_AGGREGATOR_CHANNELSMODEL_H
 #include <QAbstractItemModel>
 #include <boost/shared_ptr.hpp>
 #include "channel.h"

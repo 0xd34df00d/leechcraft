@@ -1,5 +1,5 @@
-#ifndef ATOMPARSER_H
-#define ATOMPARSER_H
+#ifndef PLUGINS_AGGREGATOR_ATOMPARSER_H
+#define PLUGINS_AGGREGATOR_ATOMPARSER_H
 #include "parser.h"
 #include "channel.h"
 

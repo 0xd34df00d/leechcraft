@@ -1,5 +1,5 @@
-#ifndef OPMLPARSER_H
-#define OPMLPARSER_H
+#ifndef PLUGINS_AGGREGATOR_OPMLPARSER_H
+#define PLUGINS_AGGREGATOR_OPMLPARSER_H
 #include <vector>
 #include <QHash>
 #include <QString>

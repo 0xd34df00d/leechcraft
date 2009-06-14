@@ -1,5 +1,5 @@
-#ifndef SELECTABLEBROWSER_H
-#define SELECTABLEBROWSER_H
+#ifndef PLUGINS_AGGREGATOR_SELECTABLEBROWSER_H
+#define PLUGINS_AGGREGATOR_SELECTABLEBROWSER_H
 #include <memory>
 #include <QWidget>
 #include <QTextEdit>

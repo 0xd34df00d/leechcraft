@@ -1,5 +1,5 @@
-#ifndef SINGLEREGEXP_H
-#define SINGLEREGEXP_H
+#ifndef PLUGINS_AGGREGATOR_SINGLEREGEXP_H
+#define PLUGINS_AGGREGATOR_SINGLEREGEXP_H
 #include <QDialog>
 #include "ui_singleregexp.h"
 

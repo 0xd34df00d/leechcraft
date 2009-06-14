@@ -1,5 +1,5 @@
-#ifndef RSS091PARSER_H
-#define RSS091PARSER_H
+#ifndef PLUGINS_AGGREGATOR_RSS091PARSER_H
+#define PLUGINS_AGGREGATOR_RSS091PARSER_H
 #include "rssparser.h"
 
 namespace LeechCraft

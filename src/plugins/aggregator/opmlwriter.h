@@ -1,5 +1,5 @@
-#ifndef OPMLWRITER_H
-#define OPMLWRITER_H
+#ifndef PLUGINS_AGGREGATOR_OPMLWRITER_H
+#define PLUGINS_AGGREGATOR_OPMLWRITER_H
 #include "feed.h"
 #include <QString>
 

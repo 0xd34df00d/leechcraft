@@ -1,5 +1,5 @@
-#ifndef AGGREGATOR_H
-#define AGGREGATOR_H
+#ifndef PLUGINS_AGGREGATOR_AGGREGATOR_H
+#define PLUGINS_AGGREGATOR_AGGREGATOR_H
 #include <memory>
 #include <interfaces/iinfo.h>
 #include <interfaces/iembedtab.h>

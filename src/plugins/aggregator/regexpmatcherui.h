@@ -1,5 +1,5 @@
-#ifndef REGEXPMATCHERUI_H
-#define REGEXPMATCHERUI_H
+#ifndef PLUGINS_AGGREGATOR_REGEXPMATCHERUI_H
+#define PLUGINS_AGGREGATOR_REGEXPMATCHERUI_H
 #include <QDialog>
 #include "ui_regexpmatcherui.h"
 

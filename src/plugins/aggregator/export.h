@@ -1,5 +1,5 @@
-#ifndef EXPORT_H
-#define EXPORT_H
+#ifndef PLUGINS_AGGREGATOR_EXPORT_H
+#define PLUGINS_AGGREGATOR_EXPORT_H
 #include <QDialog>
 #include "ui_export.h"
 #include "channel.h"

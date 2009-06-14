@@ -1,5 +1,5 @@
-#ifndef IMPORTBINARY_H
-#define IMPORTBINARY_H
+#ifndef PLUGINS_AGGREGATOR_IMPORTBINARY_H
+#define PLUGINS_AGGREGATOR_IMPORTBINARY_H
 #include <QDialog>
 #include "ui_importbinary.h"
 #include "feed.h"

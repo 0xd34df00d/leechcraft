@@ -1,5 +1,5 @@
-#ifndef ITEMBUCKET_H
-#define ITEMBUCKET_H
+#ifndef PLUGINS_AGGREGATOR_ITEMBUCKET_H
+#define PLUGINS_AGGREGATOR_ITEMBUCKET_H
 #include <QDialog>
 #include "item.h"
 #include "ui_itembucket.h"

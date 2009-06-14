@@ -1,5 +1,5 @@
-#ifndef SQLSTORAGEBACKEND_H
-#define SQLSTORAGEBACKEND_H
+#ifndef PLUGINS_AGGREGATOR_SQLSTORAGEBACKEND_H
+#define PLUGINS_AGGREGATOR_SQLSTORAGEBACKEND_H
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include "storagebackend.h"

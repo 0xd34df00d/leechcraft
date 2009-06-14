@@ -1,5 +1,5 @@
-#ifndef REGEXPMATCHERMANAGER_H
-#define REGEXPMATCHERMANAGER_H
+#ifndef PLUGINS_AGGREGATOR_REGEXPMATCHERMANAGER_H
+#define PLUGINS_AGGREGATOR_REGEXPMATCHERMANAGER_H
 #include <deque>
 #include <stdexcept>
 #include <QAbstractItemModel>
