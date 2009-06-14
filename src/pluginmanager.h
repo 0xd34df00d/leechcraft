@@ -43,6 +43,7 @@ namespace LeechCraft
 		typedef boost::shared_ptr<QPluginLoader> QPluginLoader_ptr;
 		typedef QList<QPluginLoader_ptr> PluginsContainer_t;
 		mutable PluginsContainer_t Plugins_;
+		PluginsContainer_t AvailablePlugins_;
 		QMap<QString, PluginsContainer_t::const_iterator> FeatureProviders_;
 
 		typedef QList<PluginsContainer_t::iterator> UnloadQueue_t;
@@ -61,6 +62,7 @@ namespace LeechCraft
 		virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
 		virtual QModelIndex parent (const QModelIndex&) const;
 		virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
+		virtual bool setData (const QModelIndex&, const QVariant&, int);
 
 		Size_t GetSize () const;
 		void Init ();
@@ -98,6 +100,7 @@ namespace LeechCraft
 		void Unload (QObject*);
 	private:
 		void FindPlugins ();
+		void ScanDir (const QString&);
 		/** Tries to load all the plugins and filters out those who fail
 		 * various sanity checks.
 		 */

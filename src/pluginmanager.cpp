@@ -81,65 +81,56 @@ QVariant LeechCraft::PluginManager::data (const QModelIndex& index, int role) co
 			switch (role)
 			{
 				case Qt::DisplayRole:
-					try
 					{
-						return qobject_cast<IInfo*> (Plugins_.at (index.row ())->
-								instance ())->GetName ();
-					}
-					catch (const std::exception& e)
-					{
-						qWarning () << Q_FUNC_INFO
-							<< "could not get name with"
-							<< e.what ()
-							<< "for"
-							<< Plugins_.at (index.row ())->fileName ();
-						const_cast<PluginManager*> (this)->
-							Unload (Plugins_.begin () + index.row ());
-						return QVariant ();
-					}
-					catch (...)
-					{
-						qWarning () << Q_FUNC_INFO
-							<< "could not get name"
-							<< Plugins_.at (index.row ())->fileName ();
-						const_cast<PluginManager*> (this)->
-							Unload (Plugins_.begin () + index.row ());
-						return QVariant ();
+						QSettings settings (Util::Proxy::Instance ()->GetOrganizationName (),
+								Util::Proxy::Instance ()->GetApplicationName ());
+						settings.beginGroup ("Plugins");
+						settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
+						QVariant result = settings.value ("Name");
+						settings.endGroup ();
+						settings.endGroup ();
+						return result;
 					}
 				case Qt::DecorationRole:
-					try
 					{
-						return qobject_cast<IInfo*> (Plugins_.at (index.row ())->
-								instance ())->GetIcon ();
+						QSettings settings (Util::Proxy::Instance ()->GetOrganizationName (),
+								Util::Proxy::Instance ()->GetApplicationName ());
+						settings.beginGroup ("Plugins");
+						settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
+						QVariant result = settings.value ("Icon");
+						settings.endGroup ();
+						settings.endGroup ();
+						return result;
 					}
-					catch (const std::exception& e)
+				case Qt::CheckStateRole:
 					{
-						qWarning () << Q_FUNC_INFO
-							<< "could not get icon with"
-							<< e.what ()
-							<< "for"
-							<< Plugins_.at (index.row ())->fileName ();
-						const_cast<PluginManager*> (this)->
-							Unload (Plugins_.begin () + index.row ());
-						return QVariant ();
+						QSettings settings (Util::Proxy::Instance ()->GetOrganizationName (),
+								Util::Proxy::Instance ()->GetApplicationName ());
+						settings.beginGroup ("Plugins");
+						settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
+						bool result = settings.value ("AllowLoad", true).toBool ();
+						settings.endGroup ();
+						settings.endGroup ();
+						return result ? Qt::Checked : Qt::Unchecked;
 					}
-					catch (...)
-					{
-						qWarning () << Q_FUNC_INFO
-							<< "could not get icon"
-							<< Plugins_.at (index.row ())->fileName ();
-						const_cast<PluginManager*> (this)->
-							Unload (Plugins_.begin () + index.row ());
-						return QVariant ();
-					}
-				case 45:
-					return QVariant::fromValue<QObject*> (Plugins_.at (index.row ())->instance ());
+				case Qt::ForegroundRole:
+					return QApplication::palette ()
+						.brush (AvailablePlugins_.at (index.row ())->isLoaded () ?
+								QPalette::Normal :
+								QPalette::Disabled,
+							QPalette::WindowText);
 				default:
 					return QVariant ();
 			}
 		case 1:
 			if (role == Qt::DisplayRole)
-				return Plugins_.at (index.row ())->fileName ();
+				return AvailablePlugins_.at (index.row ())->fileName ();
+			else if (role == Qt::ForegroundRole)
+				return QApplication::palette ()
+					.brush (AvailablePlugins_.at (index.row ())->isLoaded () ?
+							QPalette::Normal :
+							QPalette::Disabled,
+						QPalette::WindowText);
 			else
 				return QVariant ();
 		default:
@@ -147,9 +138,12 @@ QVariant LeechCraft::PluginManager::data (const QModelIndex& index, int role) co
 	}
 }
 
-Qt::ItemFlags LeechCraft::PluginManager::flags (const QModelIndex&) const
+Qt::ItemFlags LeechCraft::PluginManager::flags (const QModelIndex& index) const
 {
-	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+	Qt::ItemFlags result = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+	if (index.column () == 0)
+		result |= Qt::ItemIsUserCheckable;
+	return result;
 }
 
 QVariant LeechCraft::PluginManager::headerData (int column, Qt::Orientation orient, int role) const
@@ -174,9 +168,29 @@ QModelIndex LeechCraft::PluginManager::parent (const QModelIndex&) const
 int LeechCraft::PluginManager::rowCount (const QModelIndex& index) const
 {
 	if (!index.isValid ())
-		return Plugins_.size ();
+		return AvailablePlugins_.size ();
 	else
 		return 0;
+}
+
+bool LeechCraft::PluginManager::setData (const QModelIndex& index,
+		const QVariant& data, int role)
+{
+	if (index.column () != 0 ||
+			role != Qt::CheckStateRole)
+		return false;
+
+	QSettings settings (Util::Proxy::Instance ()->GetOrganizationName (),
+			Util::Proxy::Instance ()->GetApplicationName ());
+	settings.beginGroup ("Plugins");
+	settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
+	settings.setValue ("AllowLoad", data.toBool ());
+	settings.endGroup ();
+	settings.endGroup ();
+
+	emit dataChanged (index, index);
+
+	return true;
 }
 
 LeechCraft::PluginManager::Size_t LeechCraft::PluginManager::GetSize () const
@@ -247,28 +261,45 @@ void LeechCraft::PluginManager::Unload (QObject *plugin)
 
 void LeechCraft::PluginManager::FindPlugins ()
 {
-	QDir pluginsDir = QDir ("/usr/local/lib/leechcraft/plugins");
-	Q_FOREACH (QString filename,
-			pluginsDir.entryList (QStringList ("*leechcraft_*"),
-				QDir::Files))
-		Plugins_.push_back (QPluginLoader_ptr (new QPluginLoader (pluginsDir.absoluteFilePath (filename))));
+#ifdef Q_WS_WIN
+	ScanDir (QApplication::applicationDirPath () + "/plugins/bin");
+#else
+	ScanDir ("/usr/local/lib/leechcraft/plugins");
+	ScanDir ("/usr/lib/leechcraft/plugins");
+#endif
+}
 
-	pluginsDir = QDir ("/usr/lib/leechcraft/plugins");
-	Q_FOREACH (QString filename,
-			pluginsDir.entryList (QStringList ("*leechcraft_*"),
-				QDir::Files))
-		Plugins_.push_back (QPluginLoader_ptr (new QPluginLoader (pluginsDir.absoluteFilePath (filename))));
+void LeechCraft::PluginManager::ScanDir (const QString& dir)
+{
+	QSettings settings (Util::Proxy::Instance ()->GetOrganizationName (),
+			Util::Proxy::Instance ()->GetApplicationName ());
+	settings.beginGroup ("Plugins");
 
-	pluginsDir = QDir (QApplication::applicationDirPath ());
-	if (pluginsDir.cd ("plugins/bin"))
-		Q_FOREACH (QString filename,
-				pluginsDir.entryList (QStringList ("*leechcraft_*"),
-					QDir::Files))
-			Plugins_.push_back (QPluginLoader_ptr (new QPluginLoader (pluginsDir.absoluteFilePath (filename))));
+	QDir pluginsDir = QDir (dir);
+	Q_FOREACH (QString filename,
+			pluginsDir.entryList (QStringList ("*leechcraft_*"), QDir::Files))
+	{
+		QString name = pluginsDir.absoluteFilePath (filename);
+		settings.beginGroup (name);
+
+		QPluginLoader_ptr loader (new QPluginLoader (name));
+		if (settings.value ("AllowLoad", true).toBool ())
+			Plugins_.push_back (loader);
+
+		AvailablePlugins_.push_back (loader);
+
+		settings.endGroup ();
+	}
+
+	settings.endGroup ();
 }
 
 void LeechCraft::PluginManager::CheckPlugins ()
 {
+	QSettings settings (Util::Proxy::Instance ()->GetOrganizationName (),
+			Util::Proxy::Instance ()->GetApplicationName ());
+	settings.beginGroup ("Plugins");
+
 	for (int i = 0; i < Plugins_.size (); ++i)
 	{
 		QPluginLoader_ptr loader = Plugins_.at (i);
@@ -324,7 +355,38 @@ void LeechCraft::PluginManager::CheckPlugins ()
 			Plugins_.removeAt (i--);
 			continue;
 		}
+
+		QString file = loader->fileName ();
+		settings.beginGroup (file);
+		try
+		{
+			QString name = info->GetName ();
+			QIcon icon = info->GetIcon ();
+			settings.setValue ("Name", name);
+			settings.setValue ("Icon", icon);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "failed to get name/icon"
+				<< e.what ()
+				<< "for"
+				<< file;
+			Plugins_.removeAt (i--);
+			continue;
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "failed to get name/icon"
+				<< file;
+			Plugins_.removeAt (i--);
+			continue;
+		}
+		settings.endGroup ();
 	}
+
+	settings.endGroup ();
 }
 
 QList<LeechCraft::PluginManager::PluginsContainer_t::iterator>
