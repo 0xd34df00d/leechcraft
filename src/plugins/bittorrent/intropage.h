@@ -1,15 +1,25 @@
-#ifndef INTROPAGE_H
-#define INTROPAGE_H
+#ifndef PLUGINS_BITTORRENT_INTROPAGE_H
+#define PLUGINS_BITTORRENT_INTROPAGE_H
 #include <QWizardPage>
+
 class QLabel;
 
-class IntroPage : public QWizardPage
+namespace LeechCraft
 {
-    Q_OBJECT
+	namespace Plugins
+	{
+		namespace BitTorrent
+		{
+			class IntroPage : public QWizardPage
+			{
+				Q_OBJECT
 
-    QLabel *Label_;
-public:
-    IntroPage (QWidget *parent = 0);
+				QLabel *Label_;
+			public:
+				IntroPage (QWidget *parent = 0);
+			};
+		};
+	};
 };
 
 #endif

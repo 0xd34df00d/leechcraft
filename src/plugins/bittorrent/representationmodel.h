@@ -1,14 +1,23 @@
-#ifndef REPRESENTATIONMODEL_H
-#define REPRESENTATIONMODEL_H
+#ifndef PLUGINS_BITTORRENT_REPRESENTATIONMODEL_H
+#define PLUGINS_BITTORRENT_REPRESENTATIONMODEL_H
 #include <QSortFilterProxyModel>
 
-class RepresentationModel : public QSortFilterProxyModel
+namespace LeechCraft
 {
-	Q_OBJECT
+	namespace Plugins
+	{
+		namespace BitTorrent
+		{
+			class RepresentationModel : public QSortFilterProxyModel
+			{
+				Q_OBJECT
 
-public:
-	RepresentationModel (QObject* = 0);
-	virtual ~RepresentationModel ();
+			public:
+				RepresentationModel (QObject* = 0);
+				virtual ~RepresentationModel ();
+			};
+		};
+	};
 };
 
 #endif

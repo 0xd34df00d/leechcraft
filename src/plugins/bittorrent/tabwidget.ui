@@ -920,7 +920,7 @@
               </widget>
              </item>
              <item>
-              <widget class="PiecesWidget" native="1" name="PiecesWidget_" >
+              <widget class="LeechCraft::Plugins::BitTorrent::PiecesWidget" native="1" name="PiecesWidget_" >
                <property name="sizePolicy" >
                 <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
                  <horstretch>1</horstretch>
@@ -1632,7 +1632,7 @@
    <header location="global" >plugininterface/tagslineedit.h</header>
   </customwidget>
   <customwidget>
-   <class>PiecesWidget</class>
+   <class>LeechCraft::Plugins::BitTorrent::PiecesWidget</class>
    <extends>QWidget</extends>
    <header>pieceswidget.h</header>
   </customwidget>
