@@ -298,28 +298,6 @@ void LeechCraft::Core::DelayedInit ()
 			SLOT (pullCommandLine ()));
 }
 
-bool LeechCraft::Core::ShowPlugin (int id)
-{
-	QObject *plugin = PluginManager_->data (PluginManager_->index (id, 0)).value <QObject*> ();
-	IWindow *w = qobject_cast<IWindow*> (plugin);
-	if (w)
-	{
-		try
-		{
-			w->ShowWindow ();
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "unable to show window";
-			return false;
-		}
-		return true;
-	}
-	else
-		return false;
-}
-
 void LeechCraft::Core::TryToAddJob (const QString& name, const QString& where)
 {
 	DownloadEntity e;

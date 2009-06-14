@@ -153,7 +153,6 @@ namespace LeechCraft
 		QStringList GetTagsForIndex (int row, QAbstractItemModel *model) const;
 
 		void DelayedInit ();
-		bool ShowPlugin (int);
 		void TryToAddJob (const QString&, const QString&);
 
 		void SetNewRow (const QModelIndex&);
