@@ -1,5 +1,5 @@
-#ifndef CUSTOMWEBVIEW_H
-#define CUSTOMWEBVIEW_H
+#ifndef PLUGINS_POSHUKU_CUSTOMWEBVIEW_H
+#define PLUGINS_POSHUKU_CUSTOMWEBVIEW_H
 #include <QWebView>
 #include <interfaces/structures.h>
 #include "pageformsdata.h"

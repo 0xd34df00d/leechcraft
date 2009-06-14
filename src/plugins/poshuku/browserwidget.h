@@ -1,5 +1,5 @@
-#ifndef PLUGINS_POSHUKU_BROWSERWIDGET_H
-#define PLUGINS_POSHUKU_BROWSERWIDGET_H
+#ifndef PLUGINS_POSHUKU_PLUGINS_POSHUKU_BROWSERWIDGET_H
+#define PLUGINS_POSHUKU_PLUGINS_POSHUKU_BROWSERWIDGET_H
 #include <boost/shared_ptr.hpp>
 #include <QWidget>
 #include <interfaces/imultitabs.h>

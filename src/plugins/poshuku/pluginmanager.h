@@ -1,5 +1,5 @@
-#ifndef PLUGINMANAGER_H
-#define PLUGINMANAGER_H
+#ifndef PLUGINS_POSHUKU_PLUGINMANAGER_H
+#define PLUGINS_POSHUKU_PLUGINMANAGER_H
 #include <vector>
 #include <boost/shared_ptr.hpp>
 #include "interfaces/pluginbase.h"

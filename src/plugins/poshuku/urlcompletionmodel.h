@@ -1,5 +1,5 @@
-#ifndef URLCOMPLETIONMODEL_H
-#define URLCOMPLETIONMODEL_H
+#ifndef PLUGINS_POSHUKU_URLCOMPLETIONMODEL_H
+#define PLUGINS_POSHUKU_URLCOMPLETIONMODEL_H
 #include <QAbstractItemModel>
 #include "historymodel.h"
 

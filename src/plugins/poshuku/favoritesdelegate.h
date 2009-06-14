@@ -1,5 +1,5 @@
-#ifndef FAVORITESDELEGATE_H
-#define FAVORITESDELEGATE_H
+#ifndef PLUGINS_POSHUKU_FAVORITESDELEGATE_H
+#define PLUGINS_POSHUKU_FAVORITESDELEGATE_H
 #include <memory>
 #include <QItemDelegate>
 #include <plugininterface/tagscompleter.h>

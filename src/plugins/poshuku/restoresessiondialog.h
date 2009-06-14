@@ -1,5 +1,5 @@
-#ifndef RESTORESESSIONDIALOG_H
-#define RESTORESESSIONDIALOG_H
+#ifndef PLUGINS_POSHUKU_RESTORESESSIONDIALOG_H
+#define PLUGINS_POSHUKU_RESTORESESSIONDIALOG_H
 #include <QDialog>
 #include "ui_restoresessiondialog.h"
 

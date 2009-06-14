@@ -1,5 +1,5 @@
-#ifndef PROGRESSLINEEDIT_H
-#define PROGRESSLINEEDIT_H
+#ifndef PLUGINS_POSHUKU_PROGRESSLINEEDIT_H
+#define PLUGINS_POSHUKU_PROGRESSLINEEDIT_H
 #include <boost/shared_ptr.hpp>
 #include <QLineEdit>
 

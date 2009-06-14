@@ -1,5 +1,5 @@
-#ifndef PROXYOBJECT_H
-#define PROXYOBJECT_H
+#ifndef PLUGINS_POSHUKU_PROXYOBJECT_H
+#define PLUGINS_POSHUKU_PROXYOBJECT_H
 #include <QObject>
 #include "interfaces/iproxyobject.h"
 

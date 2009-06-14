@@ -1,5 +1,5 @@
-#ifndef STORAGEBACKEND_H
-#define STORAGEBACKEND_H
+#ifndef PLUGINS_POSHUKU_STORAGEBACKEND_H
+#define PLUGINS_POSHUKU_STORAGEBACKEND_H
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include "historymodel.h"

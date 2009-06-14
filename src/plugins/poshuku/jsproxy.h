@@ -1,5 +1,5 @@
-#ifndef JSPROXY_H
-#define JSPROXY_H
+#ifndef PLUGINS_POSHUKU_JSPROXY_H
+#define PLUGINS_POSHUKU_JSPROXY_H
 #include <QObject>
 #include <QVariant>
 #include "customwebpage.h"

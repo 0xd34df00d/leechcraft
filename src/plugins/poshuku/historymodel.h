@@ -1,5 +1,5 @@
-#ifndef HISTORYMODEL_H
-#define HISTORYMODEL_H
+#ifndef PLUGINS_POSHUKU_HISTORYMODEL_H
+#define PLUGINS_POSHUKU_HISTORYMODEL_H
 #include <deque>
 #include <vector>
 #include <QAbstractItemModel>

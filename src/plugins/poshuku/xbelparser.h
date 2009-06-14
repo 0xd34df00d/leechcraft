@@ -1,5 +1,5 @@
-#ifndef XBELPARSER_H
-#define XBELPARSER_H
+#ifndef PLUGINS_POSHUKU_XBELPARSER_H
+#define PLUGINS_POSHUKU_XBELPARSER_H
 #include <QStringList>
 
 class QByteArray;

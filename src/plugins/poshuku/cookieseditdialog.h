@@ -1,5 +1,5 @@
-#ifndef COOKIESEDITDIALOG_H
-#define COOKIESEDITDIALOG_H
+#ifndef PLUGINS_POSHUKU_COOKIESEDITDIALOG_H
+#define PLUGINS_POSHUKU_COOKIESEDITDIALOG_H
 #include <QDialog>
 #include "ui_cookieseditdialog.h"
 

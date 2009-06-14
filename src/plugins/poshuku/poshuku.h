@@ -1,5 +1,5 @@
-#ifndef POSHUKU_H
-#define POSHUKU_H
+#ifndef PLUGINS_POSHUKU_POSHUKU_H
+#define PLUGINS_POSHUKU_POSHUKU_H
 #include <memory>
 #include <QAction>
 #include <QTranslator>

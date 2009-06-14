@@ -1,5 +1,5 @@
-#ifndef COOKIESFILTER_H
-#define COOKIESFILTER_H
+#ifndef PLUGINS_POSHUKU_COOKIESFILTER_H
+#define PLUGINS_POSHUKU_COOKIESFILTER_H
 #include <QSortFilterProxyModel>
 
 namespace LeechCraft

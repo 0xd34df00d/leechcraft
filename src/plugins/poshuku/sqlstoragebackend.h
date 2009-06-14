@@ -1,5 +1,5 @@
-#ifndef SQLSTORAGEBACKEND_H
-#define SQLSTORAGEBACKEND_H
+#ifndef PLUGINS_POSHUKU_SQLSTORAGEBACKEND_H
+#define PLUGINS_POSHUKU_SQLSTORAGEBACKEND_H
 #include "storagebackend.h"
 #include <QSqlDatabase>
 #include <QSqlQuery>

@@ -1,5 +1,5 @@
-#ifndef COOKIESEDITMODEL_H
-#define COOKIESEDITMODEL_H
+#ifndef PLUGINS_POSHUKU_COOKIESEDITMODEL_H
+#define PLUGINS_POSHUKU_COOKIESEDITMODEL_H
 #include <QStandardItemModel>
 #include <QNetworkCookie>
 #include <QMap>

@@ -1,5 +1,5 @@
-#ifndef NOTIFICATION_H
-#define NOTIFICATION_H
+#ifndef PLUGINS_POSHUKU_NOTIFICATION_H
+#define PLUGINS_POSHUKU_NOTIFICATION_H
 #include <QWidget>
 
 namespace LeechCraft

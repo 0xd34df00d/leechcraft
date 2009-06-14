@@ -1,5 +1,5 @@
-#ifndef FAVORITESMODEL_H
-#define FAVORITESMODEL_H
+#ifndef PLUGINS_POSHUKU_FAVORITESMODEL_H
+#define PLUGINS_POSHUKU_FAVORITESMODEL_H
 #include <vector>
 #include <QAbstractItemModel>
 #include <QStringList>

@@ -1,5 +1,5 @@
-#ifndef ADDTOFAVORITESDIALOG_H
-#define ADDTOFAVORITESDIALOG_H
+#ifndef PLUGINS_POSHUKU_ADDTOFAVORITESDIALOG_H
+#define PLUGINS_POSHUKU_ADDTOFAVORITESDIALOG_H
 #include <memory>
 #include <QDialog>
 #include <plugininterface/tagscompleter.h>

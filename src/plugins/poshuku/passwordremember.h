@@ -1,5 +1,5 @@
-#ifndef PLUGINS_POSHUKU_PASSWORDREMEMBER_H
-#define PLUGINS_POSHUKU_PASSWORDREMEMBER_H
+#ifndef PLUGINS_POSHUKU_PLUGINS_POSHUKU_PASSWORDREMEMBER_H
+#define PLUGINS_POSHUKU_PLUGINS_POSHUKU_PASSWORDREMEMBER_H
 #include "notification.h"
 #include "pageformsdata.h"
 #include "ui_passwordremember.h"

@@ -1,5 +1,5 @@
-#ifndef SCREENSHOTSAVEDIALOG_H
-#define SCREENSHOTSAVEDIALOG_H
+#ifndef PLUGINS_POSHUKU_SCREENSHOTSAVEDIALOG_H
+#define PLUGINS_POSHUKU_SCREENSHOTSAVEDIALOG_H
 #include <QDialog>
 #include <QPixmap>
 #include "ui_screenshotsavedialog.h"

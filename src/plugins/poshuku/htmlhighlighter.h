@@ -1,5 +1,5 @@
-#ifndef HTMLHIGHLIGHTER_H
-#define HTMLHIGHLIGHTER_H
+#ifndef PLUGINS_POSHUKU_HTMLHIGHLIGHTER_H
+#define PLUGINS_POSHUKU_HTMLHIGHLIGHTER_H
 #include <QSyntaxHighlighter>
 
 namespace LeechCraft

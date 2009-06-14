@@ -1,5 +1,5 @@
-#ifndef SOURCEVIEWER_H
-#define SOURCEVIEWER_H
+#ifndef PLUGINS_POSHUKU_SOURCEVIEWER_H
+#define PLUGINS_POSHUKU_SOURCEVIEWER_H
 #include <QMainWindow>
 #include "ui_sourceviewer.h"
 
