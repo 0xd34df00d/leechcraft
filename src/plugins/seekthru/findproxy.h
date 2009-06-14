@@ -1,5 +1,5 @@
-#ifndef FINDPROXY_H
-#define FINDPROXY_H
+#ifndef PLUGINS_SEEKTHRU_FINDPROXY_H
+#define PLUGINS_SEEKTHRU_FINDPROXY_H
 #include <QObject>
 #include <interfaces/ifinder.h>
 #include "searchhandler.h"
@@ -10,24 +10,30 @@ namespace LeechCraft
 	{
 		class MergeModel;
 	};
-};
 
-class FindProxy : public QObject
-				, public IFindProxy
-{
-	Q_OBJECT
-	Q_INTERFACES (IFindProxy);
-	
-	LeechCraft::Request R_;
-	boost::shared_ptr<LeechCraft::Util::MergeModel> MergeModel_;
-	QList<SearchHandler_ptr> Handlers_;
-public:
-	FindProxy (const LeechCraft::Request&);
-	virtual ~FindProxy ();
+	namespace Plugins
+	{
+		namespace SeekThru
+		{
+			class FindProxy : public QObject
+							, public IFindProxy
+			{
+				Q_OBJECT
+				Q_INTERFACES (IFindProxy);
 
-	QAbstractItemModel* GetModel ();
+				LeechCraft::Request R_;
+				boost::shared_ptr<LeechCraft::Util::MergeModel> MergeModel_;
+				QList<SearchHandler_ptr> Handlers_;
+			public:
+				FindProxy (const LeechCraft::Request&);
+				virtual ~FindProxy ();
 
-	void SetHandlers (const QList<SearchHandler_ptr>&);
+				QAbstractItemModel* GetModel ();
+
+				void SetHandlers (const QList<SearchHandler_ptr>&);
+			};
+		};
+	};
 };
 
 #endif

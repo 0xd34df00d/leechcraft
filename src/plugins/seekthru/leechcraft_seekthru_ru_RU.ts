@@ -2,183 +2,204 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>Core</name>
+    <name>LeechCraft::Plugins::SeekThru::Core</name>
     <message>
-        <location filename="core.cpp" line="22"/>
+        <location filename="core.cpp" line="28"/>
         <source>Short name</source>
         <translation>Короткое имя</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="73"/>
+        <location filename="core.cpp" line="79"/>
         <source>Open</source>
         <translation>Открытый</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="75"/>
+        <location filename="core.cpp" line="81"/>
         <source>Limited</source>
         <translation>Ограниченный</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="77"/>
+        <location filename="core.cpp" line="83"/>
         <source>Private</source>
         <translation>Частный</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="79"/>
+        <location filename="core.cpp" line="85"/>
         <source>Closed</source>
         <translation>Закрытый</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="160"/>
+        <location filename="core.cpp" line="161"/>
         <source>%1 wasn&apos;t delegated</source>
         <translation>%1 не был делегирован</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="247"/>
+        <location filename="core.cpp" line="248"/>
         <source>Could not open file %1.</source>
         <translation>Невозможно открыть файл %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="257"/>
+        <location filename="core.cpp" line="258"/>
         <source>Could not remove temporary file %1.</source>
         <translation>Невозможно удалить временный файл %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="265"/>
+        <location filename="core.cpp" line="266"/>
         <source>A job was delegated, but it failed.</source>
         <translation>Задача была делегирована неудачно.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="278"/>
+        <location filename="core.cpp" line="279"/>
         <source>XML parse error %1 at %2:%3.</source>
         <translation>Ошибка парсинга XML %1 в %2:%3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="288"/>
+        <location filename="core.cpp" line="289"/>
         <source>Not and OpenSearch description.</source>
         <translation>Не OpenSearch-описание.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="301"/>
+        <location filename="core.cpp" line="302"/>
         <source>Malformed OpenSearch description.</source>
         <translation>Плохо сформированное OpenSearch-описание.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="334"/>
+        <location filename="core.cpp" line="335"/>
         <source>Enter categories</source>
         <translation>Введите категории</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="335"/>
+        <location filename="core.cpp" line="336"/>
         <source>Please enter categories for this searcher:</source>
         <translation>Пожалуйста, введите категории для этого поисковика:</translation>
     </message>
 </context>
 <context>
-    <name>SearchHandler</name>
+    <name>LeechCraft::Plugins::SeekThru::SearchHandler</name>
     <message>
-        <location filename="searchhandler.cpp" line="24"/>
+        <location filename="searchhandler.cpp" line="30"/>
         <source>Subscribe</source>
         <translation>Подписаться</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="49"/>
+        <location filename="searchhandler.cpp" line="55"/>
         <source>%1 total results</source>
         <translation>%1 результатов всего</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="52"/>
+        <location filename="searchhandler.cpp" line="58"/>
         <source>Unknown number of results</source>
         <translation>Неизвестное количество результатов</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="59"/>
+        <location filename="searchhandler.cpp" line="65"/>
         <source> (RSS)</source>
         <translation>(RSS)</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="62"/>
+        <location filename="searchhandler.cpp" line="68"/>
         <source> (Atom)</source>
         <translation>(Atom)</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="65"/>
+        <location filename="searchhandler.cpp" line="71"/>
         <source> (HTML)</source>
         <translation>(HTML)</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="195"/>
+        <location filename="searchhandler.cpp" line="198"/>
         <source>Job for request&lt;br /&gt;%1&lt;br /&gt;wasn&apos;t delegated.</source>
         <translation>Задача для запроса&lt;br /&gt;%1&lt;br /&gt;не была делегирована.</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="219"/>
+        <location filename="searchhandler.cpp" line="222"/>
         <source>Could not open file %1.</source>
         <translation>Невозможно открыть файл %1.</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="230"/>
+        <location filename="searchhandler.cpp" line="233"/>
         <source>Could not remove temporary file %1.</source>
         <translation>Невозможно удалить временный файл %1.</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="274"/>
+        <location filename="searchhandler.cpp" line="277"/>
         <source>A job was delegated, but it failed.</source>
         <translation>Задача была делегирована неудачно.</translation>
     </message>
 </context>
 <context>
-    <name>SearchersList</name>
+    <name>LeechCraft::Plugins::SeekThru::SearchersList</name>
     <message>
-        <location filename="searcherslist.cpp" line="24"/>
+        <location filename="searcherslist.cpp" line="30"/>
         <source>No description</source>
         <translation>Нет описания</translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="30"/>
+        <location filename="searcherslist.cpp" line="36"/>
         <source>No long name</source>
         <translation>Нет полного имени</translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="39"/>
+        <location filename="searcherslist.cpp" line="45"/>
         <source>No contacts information</source>
         <translation>Нет контактной информации</translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="45"/>
+        <location filename="searcherslist.cpp" line="51"/>
         <source>No developer information</source>
         <translation>Нет информации о разработчике</translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="51"/>
+        <location filename="searcherslist.cpp" line="57"/>
         <source>No attribution information</source>
         <translation>Нет информации об авторстве</translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="57"/>
+        <location filename="searcherslist.cpp" line="63"/>
         <source>No right information</source>
         <translation>Нет информации о правах</translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="62"/>
+        <location filename="searcherslist.cpp" line="68"/>
         <source>Yes</source>
         <translation>Да</translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="62"/>
+        <location filename="searcherslist.cpp" line="68"/>
         <source>No</source>
         <translation>Нет</translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="71"/>
+        <location filename="searcherslist.cpp" line="77"/>
         <source>Adding a new searcher</source>
         <translation>Добавление нового поисковика</translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="72"/>
+        <location filename="searcherslist.cpp" line="78"/>
         <source>Enter the URL of the OpenSearch description</source>
         <translation>Введи URL OpenSearch-описания</translation>
     </message>
+</context>
+<context>
+    <name>LeechCraft::Plugins::SeekThru::SeekThru</name>
+    <message>
+        <location filename="seekthru.cpp" line="55"/>
+        <source>Search via OpenSearch-aware search providers.</source>
+        <translation>Поиск при помощи OpenSearch-поисковиков.</translation>
+    </message>
+    <message>
+        <location filename="seekthru.cpp" line="111"/>
+        <source>Error</source>
+        <translation>Ошибка</translation>
+    </message>
+    <message>
+        <location filename="seekthru.cpp" line="118"/>
+        <source>Warning</source>
+        <translation>Предупреждение</translation>
+    </message>
+</context>
+<context>
+    <name>SearchersList</name>
     <message>
         <location filename="searcherslist.ui" line="24"/>
         <source>Controls</source>
@@ -248,24 +269,6 @@
         <location filename="searcherslist.ui" line="14"/>
         <source>Searchers list</source>
         <translation>Список поисковиков</translation>
-    </message>
-</context>
-<context>
-    <name>SeekThru</name>
-    <message>
-        <location filename="seekthru.cpp" line="49"/>
-        <source>Search via OpenSearch-aware search providers.</source>
-        <translation>Поиск при помощи OpenSearch-поисковиков.</translation>
-    </message>
-    <message>
-        <location filename="seekthru.cpp" line="105"/>
-        <source>Error</source>
-        <translation>Ошибка</translation>
-    </message>
-    <message>
-        <location filename="seekthru.cpp" line="112"/>
-        <source>Warning</source>
-        <translation>Предупреждение</translation>
     </message>
 </context>
 </TS>
