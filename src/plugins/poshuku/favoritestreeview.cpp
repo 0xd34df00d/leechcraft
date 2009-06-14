@@ -1,24 +1,30 @@
 #include "favoritestreeview.h"
 #include <QKeyEvent>
 
-using namespace LeechCraft::Plugins::Poshuku;
-
-FavoritesTreeView::FavoritesTreeView (QWidget *parent)
-: QTreeView (parent)
+namespace LeechCraft
 {
-}
-
-FavoritesTreeView::~FavoritesTreeView ()
-{
-}
-
-void FavoritesTreeView::keyPressEvent (QKeyEvent *e)
-{
-	if (e->key () == Qt::Key_Delete &&
-			selectionModel ()->currentIndex ().isValid ())
-		emit deleteSelected (selectionModel ()->currentIndex ());
-
-	QTreeView::keyPressEvent (e);
-}
-
+	namespace Plugins
+	{
+		namespace Poshuku
+		{
+			FavoritesTreeView::FavoritesTreeView (QWidget *parent)
+			: QTreeView (parent)
+			{
+			}
+			
+			FavoritesTreeView::~FavoritesTreeView ()
+			{
+			}
+			
+			void FavoritesTreeView::keyPressEvent (QKeyEvent *e)
+			{
+				if (e->key () == Qt::Key_Delete &&
+						selectionModel ()->currentIndex ().isValid ())
+					emit deleteSelected (selectionModel ()->currentIndex ());
+			
+				QTreeView::keyPressEvent (e);
+			}
+		};
+	};
+};
 

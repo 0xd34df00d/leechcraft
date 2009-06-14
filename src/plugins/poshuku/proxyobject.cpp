@@ -1,16 +1,22 @@
 #include "proxyobject.h"
 #include "core.h"
 
-using namespace LeechCraft::Plugins::Poshuku;
-
-QMenu* ProxyObject::GetPluginsMenu () const
+namespace LeechCraft
 {
-	return Core::Instance ().GetPluginsMenu ();
-}
-
-QNetworkAccessManager* ProxyObject::GetNetworkAccessManager () const
-{
-	return Core::Instance ().GetNetworkAccessManager ();
-}
-
+	namespace Plugins
+	{
+		namespace Poshuku
+		{
+			QMenu* ProxyObject::GetPluginsMenu () const
+			{
+				return Core::Instance ().GetPluginsMenu ();
+			}
+			
+			QNetworkAccessManager* ProxyObject::GetNetworkAccessManager () const
+			{
+				return Core::Instance ().GetNetworkAccessManager ();
+			}
+		};
+	};
+};
 
