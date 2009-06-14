@@ -1,6 +1,8 @@
 #include <QtDebug>
 #include "rss10parser.h"
 
+using namespace LeechCraft::Plugins::Aggregator;
+
 RSS10Parser::RSS10Parser ()
 {
 }
@@ -38,7 +40,7 @@ channels_container_t RSS10Parser::Parse (const QDomDocument& doc) const
 		channel->PixmapURL_ =
 			channelDescr.firstChildElement ("image")
 			.firstChildElement ("url").text ();
-        channel->LastBuild_ = GetDCDateTime (channelDescr);
+		channel->LastBuild_ = GetDCDateTime (channelDescr);
 
 		QDomElement itemsRoot = channelDescr.firstChildElement ("items");
 		QDomNodeList seqs = itemsRoot.elementsByTagNameNS (RDF_, "Seq");
@@ -61,28 +63,29 @@ channels_container_t RSS10Parser::Parse (const QDomDocument& doc) const
 	{
 		QString about = itemDescr.attributeNS (RDF_, "about");
 		if (item2Channel.contains (about))
-        {
-            Item_ptr item (new Item);
-            item->Title_ = itemDescr.firstChildElement ("title").text ();
-            item->Link_ = itemDescr.firstChildElement ("link").text ();
-            item->Description_ = itemDescr.firstChildElement ("description").text ();
+		{
+			Item_ptr item (new Item);
+			item->Title_ = itemDescr.firstChildElement ("title").text ();
+			item->Link_ = itemDescr.firstChildElement ("link").text ();
+			item->Description_ = itemDescr.firstChildElement ("description").text ();
 
-            item->Categories_ = GetAllCategories (itemDescr);
-            item->Author_ = GetAuthor (itemDescr);
-            item->PubDate_ = GetDCDateTime (itemDescr);
-            item->Unread_ = true;
+			item->Categories_ = GetAllCategories (itemDescr);
+			item->Author_ = GetAuthor (itemDescr);
+			item->PubDate_ = GetDCDateTime (itemDescr);
+			item->Unread_ = true;
 			item->NumComments_ = GetNumComments (itemDescr);
 			item->CommentsLink_ = GetCommentsRSS (itemDescr);
 			item->CommentsPageLink_ = GetCommentsLink (itemDescr);
 			item->Enclosures_ = GetEncEnclosures (itemDescr);
-            if (item->Guid_.isEmpty ())
-                item->Guid_ = "empty";
+			if (item->Guid_.isEmpty ())
+				item->Guid_ = "empty";
 
-            item2Channel [about]->Items_.push_back (item);
-        }
+			item2Channel [about]->Items_.push_back (item);
+		}
 		itemDescr = itemDescr.nextSiblingElement ("item");
 	}
 
 	return result;
 }
+
 

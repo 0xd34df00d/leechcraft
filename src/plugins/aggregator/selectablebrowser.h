@@ -5,18 +5,27 @@
 #include <QTextEdit>
 #include <interfaces/iwebbrowser.h>
 
-class SelectableBrowser : public QWidget
+namespace LeechCraft
 {
-	Q_OBJECT
+	namespace Plugins
+	{
+		namespace Aggregator
+		{
+			class SelectableBrowser : public QWidget
+			{
+				Q_OBJECT
 
-	bool Internal_;
-	std::auto_ptr<QTextEdit> InternalBrowser_;
-	std::auto_ptr<IWebWidget> ExternalBrowser_;
-public:
-	SelectableBrowser (QWidget* = 0);
-	void Construct (IWebBrowser*);
+				bool Internal_;
+				std::auto_ptr<QTextEdit> InternalBrowser_;
+				std::auto_ptr<IWebWidget> ExternalBrowser_;
+			public:
+				SelectableBrowser (QWidget* = 0);
+				void Construct (IWebBrowser*);
 
-	void SetHtml (const QString&, const QUrl& = QString ());
+				void SetHtml (const QString&, const QUrl& = QString ());
+			};
+		};
+	};
 };
 
 #endif

@@ -4,6 +4,8 @@
 #include "aggregator.h"
 #include "xmlsettingsmanager.h"
 
+using namespace LeechCraft::Plugins::Aggregator;
+
 JobHolderRepresentation::JobHolderRepresentation (QObject *parent)
 : QSortFilterProxyModel (parent)
 {
@@ -34,4 +36,5 @@ bool JobHolderRepresentation::filterAcceptsRow (int row,
 	else
 		return false;
 }
+
 

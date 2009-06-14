@@ -8,6 +8,8 @@
 #include "item.h"
 #include "core.h"
 
+using namespace LeechCraft::Plugins::Aggregator;
+
 using LeechCraft::Util::Proxy;
 
 ItemModel::ItemModel (QObject *parent)
@@ -16,15 +18,15 @@ ItemModel::ItemModel (QObject *parent)
 {
 	ItemHeaders_ << tr ("Name");
 
-    QSettings settings (Proxy::Instance ()->GetOrganizationName (),
+	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
 			Proxy::Instance ()->GetApplicationName () + "_Aggregator");
-    int numItems = settings.beginReadArray ("ItemBucket");
-    for (int i = 0; i < numItems; ++i)
-    {
-        settings.setArrayIndex (i);
+	int numItems = settings.beginReadArray ("ItemBucket");
+	for (int i = 0; i < numItems; ++i)
+	{
+		settings.setArrayIndex (i);
 		Items_.push_back (Item_ptr (new Item (settings.value ("Item").value<Item> ())));
-    }
-    settings.endArray ();
+	}
+	settings.endArray ();
 }
 
 ItemModel::~ItemModel ()
@@ -64,10 +66,10 @@ void ItemModel::Activated (const QModelIndex& index) const
 
 QString ItemModel::GetDescription (const QModelIndex& index) const
 {
-    if (!index.isValid () || index.row () >= rowCount ())
-        return QString ();
+	if (!index.isValid () || index.row () >= rowCount ())
+		return QString ();
 
-    return Items_ [index.row ()]->Description_;
+	return Items_ [index.row ()]->Description_;
 }
 
 int ItemModel::columnCount (const QModelIndex&) const
@@ -77,8 +79,8 @@ int ItemModel::columnCount (const QModelIndex&) const
 
 QVariant ItemModel::data (const QModelIndex& index, int role) const
 {
-    if (!index.isValid () || index.row () >= rowCount () || role != Qt::DisplayRole)
-        return QVariant ();
+	if (!index.isValid () || index.row () >= rowCount () || role != Qt::DisplayRole)
+		return QVariant ();
 
 	switch (index.column ())
 	{
@@ -91,33 +93,33 @@ QVariant ItemModel::data (const QModelIndex& index, int role) const
 
 Qt::ItemFlags ItemModel::flags (const QModelIndex&) const
 {
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
 bool ItemModel::hasChildren (const QModelIndex& index) const
 {
-    return !index.isValid ();
+	return !index.isValid ();
 }
 
 QVariant ItemModel::headerData (int column, Qt::Orientation orient, int role) const
 {
-    if (orient == Qt::Horizontal && role == Qt::DisplayRole)
-        return ItemHeaders_.at (column);
-    else
-        return QVariant ();
+	if (orient == Qt::Horizontal && role == Qt::DisplayRole)
+		return ItemHeaders_.at (column);
+	else
+		return QVariant ();
 }
 
 QModelIndex ItemModel::index (int row, int column, const QModelIndex& parent) const
 {
-    if (!hasIndex (row, column, parent))
-        return QModelIndex ();
+	if (!hasIndex (row, column, parent))
+		return QModelIndex ();
 
-    return createIndex (row, column);
+	return createIndex (row, column);
 }
 
 QModelIndex ItemModel::parent (const QModelIndex&) const
 {
-    return QModelIndex ();
+	return QModelIndex ();
 }
 
 int ItemModel::rowCount (const QModelIndex&) const
@@ -134,15 +136,16 @@ void ItemModel::ScheduleSave ()
 
 void ItemModel::saveSettings ()
 {
-    QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Aggregator");
-    settings.beginWriteArray ("ItemBucket");
-    settings.remove ("");
-    for (size_t i = 0; i < Items_.size (); ++i)
-    {
-        settings.setArrayIndex (i);
-        settings.setValue ("Item", qVariantFromValue<Item> (*Items_ [i]));
-    }
-    settings.endArray ();
-    SaveScheduled_ = false;
+	QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Aggregator");
+	settings.beginWriteArray ("ItemBucket");
+	settings.remove ("");
+	for (size_t i = 0; i < Items_.size (); ++i)
+	{
+		settings.setArrayIndex (i);
+		settings.setValue ("Item", qVariantFromValue<Item> (*Items_ [i]));
+	}
+	settings.endArray ();
+	SaveScheduled_ = false;
 }
+
 

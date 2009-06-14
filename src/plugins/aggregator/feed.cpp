@@ -3,6 +3,8 @@
 #include "feed.h"
 #include "channel.h"
 
+using namespace LeechCraft::Plugins::Aggregator;
+
 Feed::FeedSettings::FeedSettings (int ut, int ni, int ia)
 : UpdateTimeout_ (ut)
 , NumItems_ (ni)
@@ -23,39 +25,40 @@ Feed::Feed (const Feed& feed)
 
 Feed& Feed::operator= (const Feed& feed)
 {
-    URL_ = feed.URL_;
-    LastUpdate_ = feed.LastUpdate_;
-    Channels_ = feed.Channels_;
+	URL_ = feed.URL_;
+	LastUpdate_ = feed.LastUpdate_;
+	Channels_ = feed.Channels_;
 	return *this;
 }
 
 bool operator< (const Feed& f1, const Feed& f2)
 {
-    return f1.URL_ < f2.URL_;
+	return f1.URL_ < f2.URL_;
 }
 
 QDataStream& operator<< (QDataStream& out, const Feed& feed)
 {
-    out << feed.URL_
-        << feed.LastUpdate_
-        << static_cast<quint32> (feed.Channels_.size ());
-    for (quint32 i = 0; i < feed.Channels_.size (); ++i)
-        out << *feed.Channels_.at (i);
-    return out;
+	out << feed.URL_
+		<< feed.LastUpdate_
+		<< static_cast<quint32> (feed.Channels_.size ());
+	for (quint32 i = 0; i < feed.Channels_.size (); ++i)
+		out << *feed.Channels_.at (i);
+	return out;
 }
 
 QDataStream& operator>> (QDataStream& in, Feed& feed)
 {
-    quint32 size = 0;
-    in >> feed.URL_
-        >> feed.LastUpdate_
-        >> size;
-    for (quint32 i = 0; i < size; ++i)
-    {
+	quint32 size = 0;
+	in >> feed.URL_
+		>> feed.LastUpdate_
+		>> size;
+	for (quint32 i = 0; i < size; ++i)
+	{
 		Channel_ptr chan (new Channel);
-        in >> *chan;
-        feed.Channels_.push_back (chan);
-    }
-    return in;
+		in >> *chan;
+		feed.Channels_.push_back (chan);
+	}
+	return in;
 }
+
 

@@ -2,6 +2,8 @@
 #include <plugininterface/tagscompletionmodel.h>
 #include "core.h"
 
+using namespace LeechCraft::Plugins::Aggregator;
+
 FeedSettings::FeedSettings (const QModelIndex& mapped, QWidget *parent)
 : QDialog (parent)
 , Index_ (mapped)
@@ -69,7 +71,7 @@ FeedSettings::FeedSettings (const QModelIndex& mapped, QWidget *parent)
 void FeedSettings::accept ()
 {
 	QString tags = Ui_.ChannelTags_->text ();
-    Core::Instance ().SetTagsForIndex (tags, Index_);
+	Core::Instance ().SetTagsForIndex (tags, Index_);
 
 	Feed::FeedSettings settings (Ui_.UpdateInterval_->value (),
 		Ui_.NumItems_->value (),
@@ -83,4 +85,5 @@ void FeedSettings::on_UpdateFavicon__released ()
 {
 	Core::Instance ().UpdateFavicon (Index_);
 }
+
 

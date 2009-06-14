@@ -2,17 +2,27 @@
 #define PARSERFACTORY_H
 #include <QList>
 
-class Parser;
 class QDomDocument;
 
-class ParserFactory
+namespace LeechCraft
 {
-    QList<Parser*> Parsers_;
-    ParserFactory ();
-public:
-    static ParserFactory& Instance ();
-    void Register (Parser*);
-    Parser* Return (const QDomDocument&) const;
+	namespace Plugins
+	{
+		namespace Aggregator
+		{
+			class Parser;
+
+			class ParserFactory
+			{
+			    QList<Parser*> Parsers_;
+			    ParserFactory ();
+			public:
+			    static ParserFactory& Instance ();
+			    void Register (Parser*);
+			    Parser* Return (const QDomDocument&) const;
+			};
+		};
+	};
 };
 
 #endif

@@ -4,39 +4,41 @@
 #include <QtDebug>
 #include "atom10parser.h"
 
+using namespace LeechCraft::Plugins::Aggregator;
+
 Atom10Parser::Atom10Parser ()
 {
 }
 
 Atom10Parser& Atom10Parser::Instance ()
 {
-    static Atom10Parser inst;
-    return inst;
+	static Atom10Parser inst;
+	return inst;
 }
 
 bool Atom10Parser::CouldParse (const QDomDocument& doc) const
 {
-    QDomElement root = doc.documentElement ();
+	QDomElement root = doc.documentElement ();
 	if (root.tagName () != "feed")
 		return false;
 	if (root.hasAttribute ("version") && root.attribute ("version") != "1.0")
 		return false;
-    return true;
+	return true;
 }
 
 channels_container_t Atom10Parser::Parse (const QDomDocument& doc) const
 {
 	channels_container_t channels;
-    Channel_ptr chan (new Channel);
-    channels.push_back (chan);
+	Channel_ptr chan (new Channel);
+	channels.push_back (chan);
 
-    QDomElement root = doc.documentElement ();
-    chan->Title_ = root.firstChildElement ("title").text ();
+	QDomElement root = doc.documentElement ();
+	chan->Title_ = root.firstChildElement ("title").text ();
 	if (chan->Title_.isEmpty ())
 		chan->Title_ = QObject::tr ("(No title)");
-    chan->LastBuild_ = FromRFC3339 (root.firstChildElement ("updated").text ());
-    chan->Link_ = GetLink (root);
-    chan->Description_ = root.firstChildElement ("subtitle").text ();
+	chan->LastBuild_ = FromRFC3339 (root.firstChildElement ("updated").text ());
+	chan->Link_ = GetLink (root);
+	chan->Description_ = root.firstChildElement ("subtitle").text ();
 	chan->Author_ = GetAuthor (root);
 	if (chan->Author_.isEmpty ())
 	{
@@ -46,41 +48,42 @@ channels_container_t Atom10Parser::Parse (const QDomDocument& doc) const
 			author.firstChildElement ("email").text () +
 			")";
 	}
-    chan->Language_ = "<>";
+	chan->Language_ = "<>";
 
-    QDomElement entry = root.firstChildElement ("entry");
-    while (!entry.isNull ())
-    {
-        chan->Items_.push_back (Item_ptr (ParseItem (entry)));
-        entry = entry.nextSiblingElement ("entry");
-    }
+	QDomElement entry = root.firstChildElement ("entry");
+	while (!entry.isNull ())
+	{
+		chan->Items_.push_back (Item_ptr (ParseItem (entry)));
+		entry = entry.nextSiblingElement ("entry");
+	}
 
-    return channels;
+	return channels;
 }
 
 Item* Atom10Parser::ParseItem (const QDomElement& entry) const
 {
-    Item *item = new Item;
+	Item *item = new Item;
 
-    item->Title_ = entry.firstChildElement ("title").text ();
-    item->Link_ = GetLink (entry);
-    item->Guid_ = entry.firstChildElement ("id").text ();
-    item->PubDate_ = FromRFC3339 (entry.firstChildElement ("updated").text ());
-    item->Unread_ = true;
+	item->Title_ = entry.firstChildElement ("title").text ();
+	item->Link_ = GetLink (entry);
+	item->Guid_ = entry.firstChildElement ("id").text ();
+	item->PubDate_ = FromRFC3339 (entry.firstChildElement ("updated").text ());
+	item->Unread_ = true;
 	item->Categories_ = GetAllCategories (entry);
 	item->Author_ = GetAuthor (entry);
 	item->NumComments_ = GetNumComments (entry);
 	item->CommentsLink_ = GetCommentsRSS (entry);
 	item->CommentsPageLink_ = GetCommentsLink (entry);
 
-    QDomElement summary = entry.firstChildElement ("content");
-    if (summary.isNull ())
-        summary = entry.firstChildElement ("summary");
+	QDomElement summary = entry.firstChildElement ("content");
+	if (summary.isNull ())
+		summary = entry.firstChildElement ("summary");
 	item->Description_ = ParseEscapeAware (summary);
-	
+
 	item->Enclosures_ = GetEnclosures (entry);
 	item->Enclosures_ += GetEncEnclosures (entry);
 
-    return item;
+	return item;
 }
+
 

@@ -1,6 +1,8 @@
 #include <QtDebug>
 #include "singleregexp.h"
 
+using namespace LeechCraft::Plugins::Aggregator;
+
 namespace
 {
 	inline bool IsRegexpValid (const QString& rx)
@@ -57,4 +59,5 @@ void SingleRegexp::lineEdited (const QString& newText, QWidget *setter)
 		(setter ? setter : qobject_cast<QWidget*> (sender ()))->
 			setStyleSheet ("background-color: rgba(255, 0, 0, 50);");
 }
+
 

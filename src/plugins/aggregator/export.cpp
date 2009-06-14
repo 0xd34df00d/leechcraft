@@ -4,6 +4,8 @@
 #include <QDir>
 #include <QTimer>
 
+using namespace LeechCraft::Plugins::Aggregator;
+
 Export::Export (const QString& title,
 		const QString& exportTitle,
 		const QString& choices,
@@ -94,4 +96,5 @@ void Export::on_Browse__released ()
 	Ui_.File_->setText (filename);
 	Ui_.ButtonBox_->button (QDialogButtonBox::Save)->setEnabled (true);
 }
+
 

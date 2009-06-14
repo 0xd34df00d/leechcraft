@@ -7,6 +7,8 @@
 #include "channelsmodel.h"
 #include "item.h"
 
+using namespace LeechCraft::Plugins::Aggregator;
+
 ChannelsModel::ChannelsModel (QObject *parent)
 : QAbstractItemModel (parent)
 , Toolbar_ (0)
@@ -40,11 +42,11 @@ QVariant ChannelsModel::data (const QModelIndex& index, int role) const
 	if (role == LeechCraft::RoleAdditionalInfo)
 		return QVariant::fromValue<QWidget*> (TabWidget_);
 
-    if (!index.isValid ())
-        return QVariant ();
+	if (!index.isValid ())
+		return QVariant ();
 
 	int row = index.row ();
-    if (role == Qt::DisplayRole)
+	if (role == Qt::DisplayRole)
 		switch (index.column ())
 		{
 			case ColumnTitle:
@@ -59,47 +61,47 @@ QVariant ChannelsModel::data (const QModelIndex& index, int role) const
 	else if (role == Qt::DecorationRole &&
 			index.column () == 0)
 		return Channels_.at (row).Favicon_;
-    else if (role == Qt::ForegroundRole)
-        return Channels_.at (row).Unread_ ?
+	else if (role == Qt::ForegroundRole)
+		return Channels_.at (row).Unread_ ?
 		   	Qt::red :
 			QApplication::palette ().color (QPalette::Text);
-    else if (role == Qt::FontRole)
-    {
-        if (Channels_.at (row).Unread_)
-        {
-            QFont defaultFont = QApplication::font ();
-            defaultFont.setBold (true);
-            return defaultFont;
-        }
-        else
-            return QVariant ();
-    }
+	else if (role == Qt::FontRole)
+	{
+		if (Channels_.at (row).Unread_)
+		{
+			QFont defaultFont = QApplication::font ();
+			defaultFont.setBold (true);
+			return defaultFont;
+		}
+		else
+			return QVariant ();
+	}
 	else if (role == LeechCraft::RoleTags)
 		return Channels_.at (row).Tags_;
-    else
-        return QVariant ();
+	else
+		return QVariant ();
 }
 
 Qt::ItemFlags ChannelsModel::flags (const QModelIndex& index) const
 {
-    if (!index.isValid ())
-        return 0;
-    else
-        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+	if (!index.isValid ())
+		return 0;
+	else
+		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
 QVariant ChannelsModel::headerData (int column, Qt::Orientation orient, int role) const
 {
-    if (orient == Qt::Horizontal && role == Qt::DisplayRole)
-        return Headers_.at (column);
-    else
-        return QVariant ();
+	if (orient == Qt::Horizontal && role == Qt::DisplayRole)
+		return Headers_.at (column);
+	else
+		return QVariant ();
 }
 
 QModelIndex ChannelsModel::index (int row, int column, const QModelIndex& parent) const
 {
-    if (!hasIndex (row, column, parent))
-        return QModelIndex ();
+	if (!hasIndex (row, column, parent))
+		return QModelIndex ();
 
 	return createIndex (row, column);
 }
@@ -116,9 +118,9 @@ int ChannelsModel::rowCount (const QModelIndex& parent) const
 
 void ChannelsModel::AddChannel (const ChannelShort& channel)
 {
-    beginInsertRows (QModelIndex (), rowCount (), rowCount ());
+	beginInsertRows (QModelIndex (), rowCount (), rowCount ());
 	Channels_ << channel;
-    endInsertRows ();
+	endInsertRows ();
 }
 
 void ChannelsModel::Update (const channels_container_t& channels)
@@ -143,8 +145,8 @@ void ChannelsModel::UpdateChannelData (const ChannelShort& cs)
 		return;
 	*idx = cs;
 	int pos = std::distance (Channels_.begin (), idx);
-    emit dataChanged (index (pos, 0), index (pos, 2));
-    emit channelDataUpdated ();
+	emit dataChanged (index (pos, 0), index (pos, 2));
+	emit channelDataUpdated ();
 }
 
 ChannelShort& ChannelsModel::GetChannelForIndex (const QModelIndex& index)
@@ -192,4 +194,5 @@ int ChannelsModel::GetUnreadItemsNumber () const
 		result += Channels_.at (i).Unread_;
 	return result;
 }
+
 

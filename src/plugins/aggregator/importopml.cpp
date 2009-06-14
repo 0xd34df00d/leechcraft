@@ -5,6 +5,8 @@
 #include <QTimer>
 #include "opmlparser.h"
 
+using namespace LeechCraft::Plugins::Aggregator;
+
 ImportOPML::ImportOPML (QWidget *parent)
 : QDialog (parent)
 {
@@ -175,4 +177,5 @@ void ImportOPML::Reset ()
 
 	Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (false);
 }
+
 

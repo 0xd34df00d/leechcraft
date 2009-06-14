@@ -10,6 +10,8 @@
 #include "xmlsettingsmanager.h"
 #include "core.h"
 
+using namespace LeechCraft::Plugins::Aggregator;
+
 SQLStorageBackend::SQLStorageBackend (StorageBackend::Type t)
 : Type_ (t)
 {
@@ -1020,25 +1022,25 @@ void SQLStorageBackend::ToggleChannelUnread (const QString& purl,
 
 bool SQLStorageBackend::UpdateFeedsStorage (int, int)
 {
-    return true;
+	return true;
 }
 
 bool SQLStorageBackend::UpdateChannelsStorage (int, int)
 {
-    return true;
+	return true;
 }
 
 bool SQLStorageBackend::UpdateItemsStorage (int oldV, int newV)
 {
-    bool success = true;
-    while (oldV < newV)
-    {
-        success = RollItemsStorage (++oldV);
-        if (!success)
-            break;
-    }
+	bool success = true;
+	while (oldV < newV)
+	{
+		success = RollItemsStorage (++oldV);
+		if (!success)
+			break;
+	}
 
-    return success;
+	return success;
 }
 
 bool SQLStorageBackend::InitializeTables ()
@@ -1073,7 +1075,7 @@ bool SQLStorageBackend::InitializeTables ()
 		{
 			if (!query.exec ("CREATE RULE \"replace_feeds_settings\" AS "
 								"ON INSERT TO \"feeds_settings\" "
-							    "WHERE "
+								"WHERE "
 									"EXISTS (SELECT 1 FROM feeds_settings "
 										"WHERE feed_url = NEW.feed_url) "
 								"DO INSTEAD "
@@ -1199,7 +1201,7 @@ bool SQLStorageBackend::InitializeTables ()
 		{
 			if (!query.exec ("CREATE RULE \"replace_enclosures\" AS "
 								"ON INSERT TO \"enclosures\" "
-							    "WHERE "
+								"WHERE "
 									"EXISTS (SELECT 1 FROM enclosures "
 										"WHERE item_parents_hash = NEW.item_parents_hash "
 										"AND item_title = NEW.item_title "
@@ -1232,7 +1234,7 @@ bool SQLStorageBackend::InitializeTables ()
 QByteArray SQLStorageBackend::SerializePixmap (const QPixmap& pixmap) const
 {
 	QByteArray bytes;
-    if (!pixmap.isNull ())
+	if (!pixmap.isNull ())
 	{
 		QBuffer buffer (&bytes);
 		buffer.open (QIODevice::WriteOnly);
@@ -1343,4 +1345,5 @@ void SQLStorageBackend::GetEnclosures (const QString& hash, const QString& title
 
 	GetEnclosures_.finish ();
 }
+
 

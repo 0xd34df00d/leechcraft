@@ -4,6 +4,8 @@
 #include <QtDebug>
 #include "core.h"
 
+using namespace LeechCraft::Plugins::Aggregator;
+
 ItemsListModel::ItemsListModel (QObject *parent)
 : QAbstractItemModel (parent)
 , CurrentRow_ (-1)
@@ -184,4 +186,5 @@ int ItemsListModel::rowCount (const QModelIndex& parent) const
 {
 	return parent.isValid () ? 0 : CurrentItems_.size ();
 }
+
 

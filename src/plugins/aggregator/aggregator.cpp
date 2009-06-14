@@ -41,60 +41,71 @@
 #include "feedsettings.h"
 #include "jobholderrepresentation.h"
 
+using namespace LeechCraft::Plugins::Aggregator;
+
 using LeechCraft::Util::TagsCompleter;
 using LeechCraft::Util::CategorySelector;
 using LeechCraft::ActionInfo;
 
-struct Aggregator_Impl
+namespace LeechCraft
 {
-    Ui::MainWidget Ui_;
-
-	ItemsWidget *AdditionalInfo_;
-
-	QToolBar *ToolBar_;
-	QToolBar *ControlToolBar_;
-    QAction *ActionAddFeed_;
-    QAction *ActionUpdateFeeds_;
-    QAction *ActionRemoveFeed_;
-    QAction *ActionMarkChannelAsRead_;
-    QAction *ActionMarkChannelAsUnread_;
-	QAction *ActionChannelSettings_;
-    QAction *ActionUpdateSelectedFeed_;
-    QAction *ActionItemBucket_;
-    QAction *ActionRegexpMatcher_;
-    QAction *ActionHideReadItems_;
-    QAction *ActionImportOPML_;
-    QAction *ActionExportOPML_;
-	QAction *ActionImportBinary_;
-	QAction *ActionExportBinary_;
-
-	QQueue<QString> ErrorQueue_;
-
-	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
-	std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsLineCompleter_;
-	std::auto_ptr<QSystemTrayIcon> TrayIcon_;
-	std::auto_ptr<QTranslator> Translator_;
-    std::auto_ptr<ItemBucket> ItemBucket_;
-	std::auto_ptr<RegexpMatcherUi> RegexpMatcherUi_;
-
-	QModelIndex SelectedRepr_;
-
-	enum
+	namespace Plugins
 	{
-		EAActionAddFeed_,
-		EAActionUpdateFeeds_,
-		EAActionRemoveFeed_,
-		EAActionMarkChannelAsRead_,
-		EAActionMarkChannelAsUnread_,
-		EAActionChannelSettings_,
-		EAActionUpdateSelectedFeed_,
-		EAActionItemBucket_,
-		EAActionRegexpMatcher_,
-		EAActionHideReadItems_,
-		EAActionImportOPML_,
-		EAActionExportOPML_,
-		EAActionImportBinary_,
-		EAActionExportBinary_
+		namespace Aggregator
+		{
+			struct Aggregator_Impl
+			{
+				Ui::MainWidget Ui_;
+
+				ItemsWidget *AdditionalInfo_;
+
+				QToolBar *ToolBar_;
+				QToolBar *ControlToolBar_;
+				QAction *ActionAddFeed_;
+				QAction *ActionUpdateFeeds_;
+				QAction *ActionRemoveFeed_;
+				QAction *ActionMarkChannelAsRead_;
+				QAction *ActionMarkChannelAsUnread_;
+				QAction *ActionChannelSettings_;
+				QAction *ActionUpdateSelectedFeed_;
+				QAction *ActionItemBucket_;
+				QAction *ActionRegexpMatcher_;
+				QAction *ActionHideReadItems_;
+				QAction *ActionImportOPML_;
+				QAction *ActionExportOPML_;
+				QAction *ActionImportBinary_;
+				QAction *ActionExportBinary_;
+
+				QQueue<QString> ErrorQueue_;
+
+				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
+				std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsLineCompleter_;
+				std::auto_ptr<QSystemTrayIcon> TrayIcon_;
+				std::auto_ptr<QTranslator> Translator_;
+				std::auto_ptr<ItemBucket> ItemBucket_;
+				std::auto_ptr<RegexpMatcherUi> RegexpMatcherUi_;
+
+				QModelIndex SelectedRepr_;
+
+				enum
+				{
+					EAActionAddFeed_,
+					EAActionUpdateFeeds_,
+					EAActionRemoveFeed_,
+					EAActionMarkChannelAsRead_,
+					EAActionMarkChannelAsUnread_,
+					EAActionChannelSettings_,
+					EAActionUpdateSelectedFeed_,
+					EAActionItemBucket_,
+					EAActionRegexpMatcher_,
+					EAActionHideReadItems_,
+					EAActionImportOPML_,
+					EAActionExportOPML_,
+					EAActionImportBinary_,
+					EAActionExportBinary_
+				};
+			};
+		};
 	};
 };
 
@@ -213,44 +224,44 @@ void Aggregator::Release ()
 	disconnect (&Core::Instance (), 0, this, 0);
 	disconnect (Core::Instance ().GetChannelsModel (), 0, this, 0);
 	disconnect (Impl_->TagsLineCompleter_.get (), 0, this, 0);
-    Impl_->TrayIcon_->hide ();
+	Impl_->TrayIcon_->hide ();
 	delete Impl_;
-    Core::Instance ().Release ();
+	Core::Instance ().Release ();
 }
 
 QString Aggregator::GetName () const
 {
-    return "Aggregator";
+	return "Aggregator";
 }
 
 QString Aggregator::GetInfo () const
 {
-    return tr ("RSS/Atom feed reader.");
+	return tr ("RSS/Atom feed reader.");
 }
 
 QStringList Aggregator::Provides () const
 {
-    return QStringList ("rss");
+	return QStringList ("rss");
 }
 
 QStringList Aggregator::Needs () const
 {
-    return QStringList ("http");
+	return QStringList ("http");
 }
 
 QStringList Aggregator::Uses () const
 {
-    return QStringList ("webbrowser");
+	return QStringList ("webbrowser");
 }
 
 void Aggregator::SetProvider (QObject* object, const QString& feature)
 {
-    Core::Instance ().SetProvider (object, feature);
+	Core::Instance ().SetProvider (object, feature);
 }
 
 QIcon Aggregator::GetIcon () const
 {
-    return windowIcon ();
+	return windowIcon ();
 }
 
 QWidget* Aggregator::GetTabContents ()
@@ -286,9 +297,9 @@ bool Aggregator::CouldHandle (const LeechCraft::DownloadEntity& e) const
 
 void Aggregator::Handle (LeechCraft::DownloadEntity e)
 {
-    AddFeed af (QString (e.Location_));
-    if (af.exec () == QDialog::Accepted)
-        Core::Instance ().AddFeed (e.Location_,
+	AddFeed af (QString (e.Location_));
+	if (af.exec () == QDialog::Accepted)
+		Core::Instance ().AddFeed (e.Location_,
 				af.GetTags ());
 }
 
@@ -542,9 +553,9 @@ void Aggregator::showError ()
 
 void Aggregator::on_ActionAddFeed__triggered ()
 {
-    AddFeed af;
-    if (af.exec () == QDialog::Accepted)
-        Core::Instance ().AddFeed (af.GetURL (), af.GetTags ());
+	AddFeed af;
+	if (af.exec () == QDialog::Accepted)
+		Core::Instance ().AddFeed (af.GetURL (), af.GetTags ());
 }
 
 void Aggregator::on_ActionRemoveFeed__triggered ()
@@ -572,21 +583,21 @@ void Aggregator::on_ActionRemoveFeed__triggered ()
 
 void Aggregator::on_ActionMarkChannelAsRead__triggered ()
 {
-    QModelIndexList indexes = Impl_->Ui_.Feeds_->selectionModel ()->selectedRows ();
-    for (int i = 0; i < indexes.size (); ++i)
-        Core::Instance ().MarkChannelAsRead (indexes.at (i));
+	QModelIndexList indexes = Impl_->Ui_.Feeds_->selectionModel ()->selectedRows ();
+	for (int i = 0; i < indexes.size (); ++i)
+		Core::Instance ().MarkChannelAsRead (indexes.at (i));
 }
 
 void Aggregator::on_ActionMarkChannelAsUnread__triggered ()
 {
-    QModelIndexList indexes = Impl_->Ui_.Feeds_->selectionModel ()->selectedRows ();
-    for (int i = 0; i < indexes.size (); ++i)
-        Core::Instance ().MarkChannelAsUnread (indexes.at (i));
+	QModelIndexList indexes = Impl_->Ui_.Feeds_->selectionModel ()->selectedRows ();
+	for (int i = 0; i < indexes.size (); ++i)
+		Core::Instance ().MarkChannelAsUnread (indexes.at (i));
 }
 
 void Aggregator::on_ActionChannelSettings__triggered ()
 {
-    QModelIndex index = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
+	QModelIndex index = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
 	if (!index.isValid ())
 		return;
 
@@ -707,7 +718,7 @@ void Aggregator::on_ShowAsTape__toggled (bool tape)
 
 void Aggregator::currentChannelChanged ()
 {
-    QModelIndex index = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
+	QModelIndex index = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
 	Core::Instance ().CurrentChannelChanged (index, false);
 }
 
@@ -737,4 +748,5 @@ void Aggregator::trayIconActivated ()
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_aggregator, Aggregator);
+
 

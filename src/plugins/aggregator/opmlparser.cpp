@@ -2,6 +2,8 @@
 #include <QDomDocument>
 #include <QDomElement>
 
+using namespace LeechCraft::Plugins::Aggregator;
+
 OPMLParser::OPMLParser (const QDomDocument& document)
 : CacheValid_ (false)
 , Document_ (document)
@@ -106,4 +108,5 @@ void OPMLParser::ParseOutline (const QDomElement& parentOutline,
 		outline = outline.nextSiblingElement ("outline");
 	}
 }
+
 

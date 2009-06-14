@@ -7,6 +7,8 @@
 #include <QtDebug>
 #include <plugininterface/util.h>
 
+using namespace LeechCraft::Plugins::Aggregator;
+
 OPMLWriter::OPMLWriter ()
 {
 }
@@ -97,4 +99,5 @@ void OPMLWriter::WriteBody (QDomElement& root,
 
 	root.appendChild (body);
 }
+
 

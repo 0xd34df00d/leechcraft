@@ -1,6 +1,8 @@
 #include "storagebackend.h"
 #include "sqlstoragebackend.h"
 
+using namespace LeechCraft::Plugins::Aggregator;
+
 StorageBackend::StorageBackend (QObject *parent)
 : QObject (parent)
 {
@@ -21,4 +23,5 @@ boost::shared_ptr<StorageBackend> StorageBackend::Create (Type type)
 	}
 	return result;
 }
+
 

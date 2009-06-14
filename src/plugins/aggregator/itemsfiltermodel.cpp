@@ -2,6 +2,8 @@
 #include <QtDebug>
 #include "itemsfiltermodel.h"
 
+using namespace LeechCraft::Plugins::Aggregator;
+
 ItemsFilterModel::ItemsFilterModel (QObject *parent)
 : QSortFilterProxyModel (parent)
 , HideRead_ (false)
@@ -57,4 +59,5 @@ void ItemsFilterModel::categorySelectionChanged (const QStringList& categories)
 	ItemCategories_ = categories;
 	invalidateFilter ();
 }
+
 

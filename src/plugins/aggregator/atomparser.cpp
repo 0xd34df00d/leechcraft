@@ -3,23 +3,25 @@
 #include <QString>
 #include <QtDebug>
 
+using namespace LeechCraft::Plugins::Aggregator;
+
 channels_container_t AtomParser::Parse (const channels_container_t& old,
 		channels_container_t& modified,
 		const QDomDocument& recent) const
 {
 	channels_container_t newes = Parse (recent),
-        result;
-    if (!newes.size ())
-        return channels_container_t ();
-    else if (!old.size ())
-        return newes;
-    else
-    {
-        Channel_ptr toInsert (new Channel ());
+		result;
+	if (!newes.size ())
+		return channels_container_t ();
+	else if (!old.size ())
+		return newes;
+	else
+	{
+		Channel_ptr toInsert (new Channel ());
 		Channel_ptr modifiedContainer (new Channel ());
-        toInsert->Equalify (*old [0]);
+		toInsert->Equalify (*old [0]);
 		modifiedContainer->Equalify (*old [0]);
-        Item_ptr lastItemWeHave;
+		Item_ptr lastItemWeHave;
 		if (old [0]->Items_.size ())
 			lastItemWeHave = old [0]->Items_ [0];
 		else
@@ -36,23 +38,23 @@ channels_container_t AtomParser::Parse (const channels_container_t& old,
 			modifiedContainer->Items_.insert (modifiedContainer->Items_.end (),
 					itemPosition + 1, newes [0]->Items_.end ());
 
-        result.push_back (toInsert);
+		result.push_back (toInsert);
 		modified.push_back (modifiedContainer);
-    }
-    return result;
+	}
+	return result;
 }
 
 QString AtomParser::ParseEscapeAware (const QDomElement& parent) const
 {
 	QString result;
-    if (!parent.hasAttribute ("type") ||
+	if (!parent.hasAttribute ("type") ||
 			parent.attribute ("type") == "text" ||
 			(parent.attribute ("type") == "text/html" &&
 			 parent.attribute ("mode") != "escaped"))
-        result = parent.text ();
-    else if (parent.attribute ("type") == "text/html" &&
+		result = parent.text ();
+	else if (parent.attribute ("type") == "text/html" &&
 			parent.attribute ("mode") == "escaped")
-        result = UnescapeHTML (parent.text ());
+		result = UnescapeHTML (parent.text ());
 	else
 		result = UnescapeHTML (parent.text ());
 
@@ -81,4 +83,5 @@ QList<Enclosure> AtomParser::GetEnclosures (const QDomElement& entry) const
 	}
 	return result;
 }
+
 

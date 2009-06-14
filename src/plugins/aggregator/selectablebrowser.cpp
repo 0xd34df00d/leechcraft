@@ -1,6 +1,8 @@
 #include "selectablebrowser.h"
 #include <QVBoxLayout>
 
+using namespace LeechCraft::Plugins::Aggregator;
+
 SelectableBrowser::SelectableBrowser (QWidget *parent)
 : QWidget (parent)
 , Internal_ (true)
@@ -35,4 +37,5 @@ void SelectableBrowser::SetHtml (const QString& html, const QUrl& base)
 	else
 		ExternalBrowser_->SetHtml (html, base);
 }
+
 

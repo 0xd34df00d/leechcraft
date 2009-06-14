@@ -4,6 +4,8 @@
 #include "regexpmatchermanager.h"
 #include "regexpmatcherui.h"
 
+using namespace LeechCraft::Plugins::Aggregator;
+
 RegexpMatcherUi::RegexpMatcherUi (QWidget *parent)
 : QDialog (parent)
 {
@@ -101,4 +103,5 @@ void RegexpMatcherUi::on_RemoveRegexpButton__released ()
 
 	RegexpMatcherManager::Instance ().Remove (index);
 }
+
 

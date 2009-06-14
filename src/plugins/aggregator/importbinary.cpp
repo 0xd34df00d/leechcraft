@@ -7,6 +7,8 @@
 #include <QTimer>
 #include <QtDebug>
 
+using namespace LeechCraft::Plugins::Aggregator;
+
 ImportBinary::ImportBinary (QWidget *parent)
 : QDialog (parent)
 {
@@ -182,4 +184,5 @@ void ImportBinary::Reset ()
 
 	Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (false);
 }
+
 

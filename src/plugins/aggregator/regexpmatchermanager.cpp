@@ -12,6 +12,8 @@
 #include <plugininterface/util.h>
 #include "item.h"
 
+using namespace LeechCraft::Plugins::Aggregator;
+
 using LeechCraft::Util::Proxy;
 
 RegexpMatcherManager::RegexpItem::RegexpItem (const QString& title,
@@ -259,8 +261,8 @@ int RegexpMatcherManager::columnCount (const QModelIndex&) const
 
 QVariant RegexpMatcherManager::data (const QModelIndex& index, int role) const
 {
-    if (!index.isValid () || index.row () >= rowCount () || role != Qt::DisplayRole)
-        return QVariant ();
+	if (!index.isValid () || index.row () >= rowCount () || role != Qt::DisplayRole)
+		return QVariant ();
 
 	items_t::const_iterator pointer = Items_.begin ();
 	std::advance (pointer, index.row ());
@@ -277,28 +279,28 @@ QVariant RegexpMatcherManager::data (const QModelIndex& index, int role) const
 
 Qt::ItemFlags RegexpMatcherManager::flags (const QModelIndex&) const
 {
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
 QVariant RegexpMatcherManager::headerData (int column, Qt::Orientation orient, int role) const
 {
-    if (orient == Qt::Horizontal && role == Qt::DisplayRole)
-        return ItemHeaders_.at (column);
-    else
-        return QVariant ();
+	if (orient == Qt::Horizontal && role == Qt::DisplayRole)
+		return ItemHeaders_.at (column);
+	else
+		return QVariant ();
 }
 
 QModelIndex RegexpMatcherManager::index (int row, int column, const QModelIndex& parent) const
 {
-    if (!hasIndex (row, column, parent))
-        return QModelIndex ();
+	if (!hasIndex (row, column, parent))
+		return QModelIndex ();
 
-    return createIndex (row, column);
+	return createIndex (row, column);
 }
 
 QModelIndex RegexpMatcherManager::parent (const QModelIndex&) const
 {
-    return QModelIndex ();
+	return QModelIndex ();
 }
 
 int RegexpMatcherManager::rowCount (const QModelIndex& parent) const
@@ -371,4 +373,5 @@ void RegexpMatcherManager::ScheduleSave ()
 	QTimer::singleShot (100, this, SLOT (saveSettings ()));
 	SaveScheduled_ = true;
 }
+
 

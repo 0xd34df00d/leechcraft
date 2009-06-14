@@ -11,19 +11,30 @@
 #include "itemsfiltermodel.h"
 #include "xmlsettingsmanager.h"
 
+using namespace LeechCraft::Plugins::Aggregator;
+
 using LeechCraft::Util::CategorySelector;
 
-struct ItemsWidget_Impl
+namespace LeechCraft
 {
-	Ui::ItemsWidget Ui_;
+	namespace Plugins
+	{
+		namespace Aggregator
+		{
+			struct ItemsWidget_Impl
+			{
+				Ui::ItemsWidget Ui_;
 
-    QAction *ActionMarkItemAsUnread_;
-    QAction *ActionAddToItemBucket_;
+				QAction *ActionMarkItemAsUnread_;
+				QAction *ActionAddToItemBucket_;
 
-	bool TapeMode_;
+				bool TapeMode_;
 
-	std::auto_ptr<ItemsFilterModel> ItemsFilterModel_;
-	std::auto_ptr<CategorySelector> ItemCategorySelector_;
+				std::auto_ptr<ItemsFilterModel> ItemsFilterModel_;
+				std::auto_ptr<CategorySelector> ItemCategorySelector_;
+			};
+		};
+	};
 };
 
 ItemsWidget::ItemsWidget (QWidget *parent)
@@ -296,16 +307,16 @@ void ItemsWidget::channelChanged (const QModelIndex& mapped)
 
 void ItemsWidget::on_ActionMarkItemAsUnread__triggered ()
 {
-    QModelIndexList indexes = Impl_->Ui_.Items_->
+	QModelIndexList indexes = Impl_->Ui_.Items_->
 		selectionModel ()->selectedRows ();
-    for (int i = 0; i < indexes.size (); ++i)
-        Core::Instance ().MarkItemAsUnread (Impl_->
+	for (int i = 0; i < indexes.size (); ++i)
+		Core::Instance ().MarkItemAsUnread (Impl_->
 				ItemsFilterModel_->mapToSource (indexes.at (i)));
 }
 
 void ItemsWidget::on_CaseSensitiveSearch__stateChanged (int state)
 {
-    Impl_->ItemsFilterModel_->setFilterCaseSensitivity (state ?
+	Impl_->ItemsFilterModel_->setFilterCaseSensitivity (state ?
 			Qt::CaseSensitive : Qt::CaseInsensitive);
 }
 
@@ -318,7 +329,7 @@ void ItemsWidget::on_ActionAddToItemBucket__triggered ()
 
 void ItemsWidget::on_ItemCommentsSubscribe__released ()
 {
-    QModelIndex selected = Impl_->Ui_.Items_->selectionModel ()->currentIndex ();
+	QModelIndex selected = Impl_->Ui_.Items_->selectionModel ()->currentIndex ();
 	Core::Instance ().SubscribeToComments (Impl_->ItemsFilterModel_->
 			mapToSource (selected));
 }
@@ -397,4 +408,5 @@ void ItemsWidget::updateItemsFilter ()
 		break;
 	}
 }
+
 

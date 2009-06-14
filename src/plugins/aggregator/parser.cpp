@@ -3,6 +3,8 @@
 #include <QStringList>
 #include <QtDebug>
 
+using namespace LeechCraft::Plugins::Aggregator;
+
 const QString Parser::DC_ = "http://purl.org/dc/elements/1.1/";
 const QString Parser::WFW_ = "http://wellformedweb.org/CommentAPI/";
 const QString Parser::Atom_ = "http://www.w3.org/2005/Atom";
@@ -12,11 +14,11 @@ const QString Parser::Enc_ = "http://purl.oclc.org/net/rss_2.0/enc#";
 
 QString Parser::GetLink (const QDomElement& parent) const
 {
-    QString result;
-    QDomElement link = parent.firstChildElement ("link");
-    while (!link.isNull ())
-    {
-        if (!link.hasAttribute ("rel") || link.attribute ("rel") == "alternate")
+	QString result;
+	QDomElement link = parent.firstChildElement ("link");
+	while (!link.isNull ())
+	{
+		if (!link.hasAttribute ("rel") || link.attribute ("rel") == "alternate")
 		{
 			if (!link.hasAttribute ("href"))
 				result = link.text ();
@@ -24,9 +26,9 @@ QString Parser::GetLink (const QDomElement& parent) const
 				result = link.attribute ("href");
 			break;
 		}
-        link = link.nextSiblingElement ("link");
-    }
-    return result;
+		link = link.nextSiblingElement ("link");
+	}
+	return result;
 }
 
 QString Parser::GetAuthor (const QDomElement& parent) const
@@ -138,16 +140,16 @@ QList<Enclosure> Parser::GetEncEnclosures (const QDomElement& parent) const
 // http://www.theukwebdesigncompany.com/articles/entity-escape-characters.php
 QString Parser::UnescapeHTML (const QString& escaped) const
 {
-    QString result = escaped;
-    result.replace ("&euro;", "€");
-    result.replace ("&quot;", "\"");
-    result.replace ("&amp;", "&");
-    result.replace ("&nbsp;", " ");
-    result.replace ("&lt;", "<");
-    result.replace ("&gt;", ">");
+	QString result = escaped;
+	result.replace ("&euro;", "€");
+	result.replace ("&quot;", "\"");
+	result.replace ("&amp;", "&");
+	result.replace ("&nbsp;", " ");
+	result.replace ("&lt;", "<");
+	result.replace ("&gt;", ">");
 	result.replace ("&#8217;", "'");
 	result.replace ("&#8230;", "...");
-    return result;
+	return result;
 }
 
 QDateTime Parser::FromRFC3339 (const QString& t) const
@@ -183,4 +185,5 @@ QDateTime Parser::FromRFC3339 (const QString& t) const
 	result.setTimeSpec (Qt::UTC);
 	return result.toLocalTime ();
 }
+
 

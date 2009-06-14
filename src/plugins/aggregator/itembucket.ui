@@ -31,7 +31,7 @@
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="SelectableBrowser" name="ItemView_" native="true"/>
+     <widget class="LeechCraft::Plugins::Aggregator::SelectableBrowser" name="ItemView_" native="true"/>
     </widget>
    </item>
   </layout>
@@ -43,7 +43,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>SelectableBrowser</class>
+   <class>LeechCraft::Plugins::Aggregator::SelectableBrowser</class>
    <extends>QWidget</extends>
    <header>selectablebrowser.h</header>
    <container>1</container>

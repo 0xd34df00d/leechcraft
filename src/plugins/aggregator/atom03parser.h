@@ -4,15 +4,24 @@
 #include <QDateTime>
 #include "atomparser.h"
 
-class Atom03Parser : public AtomParser
+namespace LeechCraft
 {
-    Atom03Parser ();
-public:
-    static Atom03Parser& Instance ();
-    virtual bool CouldParse (const QDomDocument&) const;
-private:
-	channels_container_t Parse (const QDomDocument&) const;
-    Item* ParseItem (const QDomElement&) const;
+	namespace Plugins
+	{
+		namespace Aggregator
+		{
+			class Atom03Parser : public AtomParser
+			{
+			    Atom03Parser ();
+			public:
+			    static Atom03Parser& Instance ();
+			    virtual bool CouldParse (const QDomDocument&) const;
+			private:
+				channels_container_t Parse (const QDomDocument&) const;
+			    Item* ParseItem (const QDomElement&) const;
+			};
+		};
+	};
 };
 
 #endif

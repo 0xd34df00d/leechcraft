@@ -32,6 +32,8 @@
 #include "channelsfiltermodel.h"
 #include "itemslistmodel.h"
 
+using namespace LeechCraft::Plugins::Aggregator;
+
 Core::Core ()
 : SaveScheduled_ (false)
 , CurrentItemsModel_ (new ItemsListModel)
@@ -999,7 +1001,7 @@ void Core::handleJobFinished (int id)
 					.arg (pj.URL_));
 			return;
 		}
-		
+
 		// We should form the list of already existing channels
 		channels_shorts_t shorts;
 		StorageBackend_->GetChannels (shorts, pj.URL_);
@@ -1422,7 +1424,7 @@ QString Core::HandleFeedUpdated (const channels_container_t& channels,
 				removeFrom = 1;*/
 
 			removeFrom = std::min (removeFrom, ipc);
-			
+
 			if ((*position)->Items_.size () > removeFrom)
 				std::for_each ((*position)->Items_.begin () + removeFrom,
 						(*position)->Items_.end (),
@@ -1495,7 +1497,7 @@ void Core::HandleProvider (QObject *provider)
 {
 	if (Downloaders_.contains (provider))
 		return;
-	
+
 	Downloaders_ << provider;
 	connect (provider,
 			SIGNAL (jobFinished (int)),
@@ -1510,4 +1512,5 @@ void Core::HandleProvider (QObject *provider)
 			this,
 			SLOT (handleJobError (int, IDownload::Error)));
 }
+
 
