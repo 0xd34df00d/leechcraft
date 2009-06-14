@@ -34,7 +34,7 @@ namespace LeechCraft
 				virtual void Start (const QStringList&, QByteArray&) = 0;
 				virtual void Stop (const QByteArray&) = 0;
 			signals:
-				void textFetched (const Lyrics&, const QByteArray&);
+				void textFetched (const LeechCraft::Plugins::DeadLyrics::Lyrics&, const QByteArray&);
 				void error (const QString&);
 			};
 

@@ -29,9 +29,9 @@ namespace LeechCraft
 						end = searchers.end (); i != end; ++i)
 				{
 					connect (i->get (),
-							SIGNAL (textFetched (const Lyrics&, const QByteArray&)),
+							SIGNAL (textFetched (const LeechCraft::Plugins::DeadLyrics::Lyrics&, const QByteArray&)),
 							this,
-							SLOT (handleTextFetched (const Lyrics&, const QByteArray&)),
+							SLOT (handleTextFetched (const LeechCraft::Plugins::DeadLyrics::Lyrics&, const QByteArray&)),
 							Qt::QueuedConnection);
 					connect (i->get (),
 							SIGNAL (error (const QString&)),

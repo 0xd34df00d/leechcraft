@@ -40,7 +40,7 @@ namespace LeechCraft
 				QModelIndex parent (const QModelIndex&) const;
 				int rowCount (const QModelIndex&) const;
 			private slots:
-				void handleTextFetched (const Lyrics&, const QByteArray&);
+				void handleTextFetched (const LeechCraft::Plugins::DeadLyrics::Lyrics&, const QByteArray&);
 				void handleError (const QString&);
 			};
 		};
