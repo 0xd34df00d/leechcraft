@@ -15,7 +15,7 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 
-			    QStringList ItemHeaders_;
+				QStringList ItemHeaders_;
 				items_shorts_t CurrentItems_;
 				int CurrentRow_;
 				// First is ParentURL_ and second is Title_

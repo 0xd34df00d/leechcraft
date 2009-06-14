@@ -299,15 +299,15 @@ namespace LeechCraft
 						const QString&,
 						const QString&);
 				virtual void RemoveFeed (const QString&);
-			    virtual bool UpdateFeedsStorage (int, int);
-			    virtual bool UpdateChannelsStorage (int, int);
-			    virtual bool UpdateItemsStorage (int, int);
+				virtual bool UpdateFeedsStorage (int, int);
+				virtual bool UpdateChannelsStorage (int, int);
+				virtual bool UpdateItemsStorage (int, int);
 				virtual void ToggleChannelUnread (const QString&, const QString&, bool);
 			private:
 				bool InitializeTables ();
 				QByteArray SerializePixmap (const QPixmap&) const;
 				QPixmap UnserializePixmap (const QByteArray&) const;
-			    bool RollItemsStorage (int);
+				bool RollItemsStorage (int);
 				void FillItem (const QSqlQuery&, Item_ptr&) const;
 				void GetEnclosures (const QString&, const QString&, const QString&,
 						QList<Enclosure>&) const;

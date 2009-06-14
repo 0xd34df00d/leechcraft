@@ -12,13 +12,13 @@ namespace LeechCraft
 		{
 			class Atom03Parser : public AtomParser
 			{
-			    Atom03Parser ();
+				Atom03Parser ();
 			public:
-			    static Atom03Parser& Instance ();
-			    virtual bool CouldParse (const QDomDocument&) const;
+				static Atom03Parser& Instance ();
+				virtual bool CouldParse (const QDomDocument&) const;
 			private:
 				channels_container_t Parse (const QDomDocument&) const;
-			    Item* ParseItem (const QDomElement&) const;
+				Item* ParseItem (const QDomElement&) const;
 			};
 		};
 	};

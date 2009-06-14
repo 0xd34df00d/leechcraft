@@ -263,7 +263,7 @@ namespace LeechCraft
 				 *
 				 * @return true if update successful, else false.
 				 */
-			    virtual bool UpdateFeedsStorage (int oldV, int newV) = 0;
+				virtual bool UpdateFeedsStorage (int oldV, int newV) = 0;
 				/** @brief Update channels storage section.
 				 *
 				 * This function is called if channels storage section format version
@@ -274,7 +274,7 @@ namespace LeechCraft
 				 *
 				 * @return true if update successful, else false.
 				 */
-			    virtual bool UpdateChannelsStorage (int oldV, int newV) = 0;
+				virtual bool UpdateChannelsStorage (int oldV, int newV) = 0;
 				/** @brief Update items storage section.
 				 *
 				 * This function is called if items storage section format version
@@ -285,7 +285,7 @@ namespace LeechCraft
 				 *
 				 * @return true if update successful, else false.
 				 */
-			    virtual bool UpdateItemsStorage (int oldV, int newV) = 0;
+				virtual bool UpdateItemsStorage (int oldV, int newV) = 0;
 				/** @brief Toggle channel state.
 				 *
 				 * Changes state of all the items matching the passed hash.

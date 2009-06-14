@@ -28,25 +28,25 @@ namespace LeechCraft
 
 			struct Channel
 			{
-			    QString Title_;
-			    QString Link_;
-			    QString Description_;
-			    QDateTime LastBuild_;
-			    QStringList Tags_;
-			    QString Language_;
-			    QString Author_;
-			    QString PixmapURL_;
-			    QPixmap Pixmap_;
+				QString Title_;
+				QString Link_;
+				QString Description_;
+				QDateTime LastBuild_;
+				QStringList Tags_;
+				QString Language_;
+				QString Author_;
+				QString PixmapURL_;
+				QPixmap Pixmap_;
 				QPixmap Favicon_;
 				QString ParentURL_;
 				items_container_t Items_;
 
-			    Channel ();
-			    Channel (const Channel&);
+				Channel ();
+				Channel (const Channel&);
 				~Channel ();
-			    Channel& operator= (const Channel&);
+				Channel& operator= (const Channel&);
 
-			    int CountUnreadItems () const;
+				int CountUnreadItems () const;
 				void Equalify (const Channel&);
 				ChannelShort ToShort () const;
 			};

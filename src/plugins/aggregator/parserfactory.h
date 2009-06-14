@@ -14,12 +14,12 @@ namespace LeechCraft
 
 			class ParserFactory
 			{
-			    QList<Parser*> Parsers_;
-			    ParserFactory ();
+				QList<Parser*> Parsers_;
+				ParserFactory ();
 			public:
-			    static ParserFactory& Instance ();
-			    void Register (Parser*);
-			    Parser* Return (const QDomDocument&) const;
+				static ParserFactory& Instance ();
+				void Register (Parser*);
+				Parser* Return (const QDomDocument&) const;
 			};
 		};
 	};

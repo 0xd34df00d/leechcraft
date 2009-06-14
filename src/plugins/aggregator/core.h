@@ -41,47 +41,47 @@ namespace LeechCraft
 
 			class Core : public QObject
 			{
-			    Q_OBJECT
+				Q_OBJECT
 
 				QMap<QString, QObject*> Providers_;
 
-			    enum Columns
-			    {
-			        ColumnName = 0
-			        , ColumnDate = 1
-			    };
+				enum Columns
+				{
+					ColumnName = 0
+					, ColumnDate = 1
+				};
 
-			    struct PendingJob
-			    {
-			        enum Role
-			        {
-			            RFeedAdded
-			            , RFeedUpdated
-			            , RFeedExternalData
-			        } Role_;
-			        QString URL_;
-			        QString Filename_;
-			        QStringList Tags_;
-			    };
-			    struct ExternalData
-			    {
-			        enum Type
-			        {
-			            TImage
-			            , TIcon
-			        } Type_;
-			        Channel_ptr RelatedChannel_;
-			        Feed_ptr RelatedFeed_;
-			    };
-			    QMap<int, PendingJob> PendingJobs_;
-			    QMap<QString, ExternalData> PendingJob2ExternalData_;
+				struct PendingJob
+				{
+					enum Role
+					{
+						RFeedAdded
+						, RFeedUpdated
+						, RFeedExternalData
+					} Role_;
+					QString URL_;
+					QString Filename_;
+					QStringList Tags_;
+				};
+				struct ExternalData
+				{
+					enum Type
+					{
+						TImage
+						, TIcon
+					} Type_;
+					Channel_ptr RelatedChannel_;
+					Feed_ptr RelatedFeed_;
+				};
+				QMap<int, PendingJob> PendingJobs_;
+				QMap<QString, ExternalData> PendingJob2ExternalData_;
 				QList<QObject*> Downloaders_;
 
-			    ChannelsModel *ChannelsModel_;
-			    QTimer *UpdateTimer_, *CustomUpdateTimer_;
-			    bool SaveScheduled_;
+				ChannelsModel *ChannelsModel_;
+				QTimer *UpdateTimer_, *CustomUpdateTimer_;
+				bool SaveScheduled_;
 				boost::shared_ptr<StorageBackend> StorageBackend_;
-			    ItemModel *ItemModel_;
+				ItemModel *ItemModel_;
 				JobHolderRepresentation *JobHolderRepresentation_;
 				QMap<QString, QDateTime> Updates_;
 				ChannelsFilterModel *ChannelsFilterModel_;
@@ -91,7 +91,7 @@ namespace LeechCraft
 				bool MergeMode_;
 				ICoreProxy_ptr Proxy_;
 
-			    Core ();
+				Core ();
 			public:
 				struct ChannelInfo
 				{
@@ -101,32 +101,32 @@ namespace LeechCraft
 					QString Author_;
 				};
 
-			    static Core& Instance ();
-			    void Release ();
+				static Core& Instance ();
+				void Release ();
 
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;
 
 				bool CouldHandle (const LeechCraft::DownloadEntity&);
 				void SetWidgets (QToolBar*, QWidget*);
-			    void DoDelayedInit ();
-			    void SetProvider (QObject*, const QString&);
-			    void AddFeed (const QString&, const QStringList&);
-			    void RemoveFeed (const QModelIndex&, bool);
+				void DoDelayedInit ();
+				void SetProvider (QObject*, const QString&);
+				void AddFeed (const QString&, const QStringList&);
+				void RemoveFeed (const QModelIndex&, bool);
 				void Selected (const QModelIndex&);
-			    Item_ptr GetItem (const QModelIndex&) const;
-			    QSortFilterProxyModel* GetChannelsModel () const;
+				Item_ptr GetItem (const QModelIndex&) const;
+				QSortFilterProxyModel* GetChannelsModel () const;
 				QAbstractItemModel* GetItemsModel () const;
 				IWebBrowser* GetWebBrowser () const;
-			    void MarkItemAsUnread (const QModelIndex&);
+				void MarkItemAsUnread (const QModelIndex&);
 				bool IsItemRead (int) const;
 				bool IsItemCurrent (int) const;
-			    void MarkChannelAsRead (const QModelIndex&);
-			    void MarkChannelAsUnread (const QModelIndex&);
+				void MarkChannelAsRead (const QModelIndex&);
+				void MarkChannelAsUnread (const QModelIndex&);
 
 				/** Returns user-meaningful tags for the given index.
 				 */
-			    QStringList GetTagsForIndex (int) const;
+				QStringList GetTagsForIndex (int) const;
 				ChannelInfo GetChannelInfo (const QModelIndex&) const;
 				QPixmap GetChannelPixmap (const QModelIndex&) const;
 
@@ -138,8 +138,8 @@ namespace LeechCraft
 				QStringList GetItemCategories (int) const;
 				Feed::FeedSettings GetFeedSettings (const QModelIndex&) const;
 				void SetFeedSettings (const Feed::FeedSettings&, const QModelIndex&);
-			    void UpdateFeed (const QModelIndex&, bool);
-			    QModelIndex GetUnreadChannelIndex () const;
+				void UpdateFeed (const QModelIndex&, bool);
+				QModelIndex GetUnreadChannelIndex () const;
 				int GetUnreadChannelsNumber () const;
 				void AddToItemBucket (const QModelIndex&) const;
 				void AddFromOPML (const QString&,
@@ -156,33 +156,33 @@ namespace LeechCraft
 						const QString&,
 						const std::vector<bool>&) const;
 				JobHolderRepresentation* GetJobHolderRepresentation () const;
-			    ItemModel* GetItemModel () const;
+				ItemModel* GetItemModel () const;
 				StorageBackend* GetStorageBackend () const;
 				void SubscribeToComments (const QModelIndex&);
 				QWebView* CreateWindow ();
 				void GetChannels (channels_shorts_t&) const;
 				void AddFeeds (const feeds_container_t&, const QString&);
 				void SetMerge (bool);
-			    void CurrentChannelChanged (const QModelIndex&, bool);
+				void CurrentChannelChanged (const QModelIndex&, bool);
 			public slots:
 				void openLink (const QString&);
-			    void updateFeeds ();
-			    void updateIntervalChanged ();
-			    void showIconInTrayChanged ();
-			    void handleSslError (QNetworkReply*);
+				void updateFeeds ();
+				void updateIntervalChanged ();
+				void showIconInTrayChanged ();
+				void handleSslError (QNetworkReply*);
 				void tagsUpdated ();
 			private slots:
-			    void fetchExternalFile (const QString&, const QString&);
-			    void scheduleSave ();
-			    void handleJobFinished (int);
-			    void handleJobRemoved (int);
-			    void handleJobError (int, IDownload::Error);
-			    void saveSettings ();
+				void fetchExternalFile (const QString&, const QString&);
+				void scheduleSave ();
+				void handleJobFinished (int);
+				void handleJobRemoved (int);
+				void handleJobError (int, IDownload::Error);
+				void saveSettings ();
 				void handleChannelDataUpdated (Channel_ptr);
 				void handleItemDataUpdated (Item_ptr, Channel_ptr);
 				void handleCustomUpdates ();
 			private:
-			    void UpdateUnreadItemsNumber () const;
+				void UpdateUnreadItemsNumber () const;
 				void FetchPixmap (const Channel_ptr&);
 				void FetchFavicon (const Channel_ptr&);
 				void HandleExternalData (const QString&, const QFile&);
@@ -194,11 +194,11 @@ namespace LeechCraft
 				void UpdateFeed (const QString&);
 				void HandleProvider (QObject*);
 			signals:
-			    void error (const QString&) const;
-			    void showDownloadMessage (const QString&);
-			    void channelDataUpdated ();
+				void error (const QString&) const;
+				void showDownloadMessage (const QString&);
+				void channelDataUpdated ();
 				void currentChannelChanged (const QModelIndex&);
-			    void unreadNumberChanged (int) const;
+				void unreadNumberChanged (int) const;
 				void delegateEntity (const LeechCraft::DownloadEntity&, int*, QObject**);
 			};
 		};

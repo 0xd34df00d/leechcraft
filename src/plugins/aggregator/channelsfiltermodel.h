@@ -10,9 +10,9 @@ namespace LeechCraft
 		{
 			class ChannelsFilterModel : public LeechCraft::Util::TagsFilterModel
 			{
-			    Q_OBJECT
+				Q_OBJECT
 			public:
-			    ChannelsFilterModel (QObject *parent = 0);
+				ChannelsFilterModel (QObject *parent = 0);
 			protected:
 				virtual QStringList GetTagsForIndex (int) const;
 			};

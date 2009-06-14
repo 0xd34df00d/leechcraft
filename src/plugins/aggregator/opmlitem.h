@@ -20,12 +20,12 @@ namespace LeechCraft
 				int FetchInterval_;
 				int MaxArticleNumber_;
 				bool CustomFetchInterval_;
-				//    <outline htmlUrl="" title="Оформление KDE"
-				//    useCustomFetchInterval="false" maxArticleAge="0"
-				//    fetchInterval="0" maxArticleNumber="0"
-				//    archiveMode="globalDefault" version="RSS" type="rss"
-				//    xmlUrl="http://www.kde.org/kde-look-content.rdf"
-				//    id="2097705275" text="Оформление KDE" description="" />
+				//	<outline htmlUrl="" title="Оформление KDE"
+				//	useCustomFetchInterval="false" maxArticleAge="0"
+				//	fetchInterval="0" maxArticleNumber="0"
+				//	archiveMode="globalDefault" version="RSS" type="rss"
+				//	xmlUrl="http://www.kde.org/kde-look-content.rdf"
+				//	id="2097705275" text="Оформление KDE" description="" />
 			};
 		};
 	};

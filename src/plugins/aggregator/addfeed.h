@@ -11,11 +11,11 @@ namespace LeechCraft
 		{
 			class AddFeed : public QDialog, private Ui::AddFeed
 			{
-			    Q_OBJECT
+				Q_OBJECT
 			public:
-			    AddFeed (const QString& = QString (), QWidget *parent = 0);
-			    QString GetURL () const;
-			    QStringList GetTags () const;
+				AddFeed (const QString& = QString (), QWidget *parent = 0);
+				QString GetURL () const;
+				QStringList GetTags () const;
 			};
 		};
 	};

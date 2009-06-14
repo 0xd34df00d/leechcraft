@@ -34,12 +34,12 @@ namespace LeechCraft
 				QString ToHtml (const Item_ptr&);
 			private slots:
 				void channelChanged (const QModelIndex&);
-			    void on_ActionMarkItemAsUnread__triggered ();
+				void on_ActionMarkItemAsUnread__triggered ();
 				void on_CaseSensitiveSearch__stateChanged (int);
 				void on_ActionAddToItemBucket__triggered ();
 				void on_ItemCommentsSubscribe__released ();
 				void on_ItemCategoriesButton__released ();
-			    void currentItemChanged (const QItemSelection&);
+				void currentItemChanged (const QItemSelection&);
 				void makeCurrentItemVisible ();
 				void updateItemsFilter ();
 			};

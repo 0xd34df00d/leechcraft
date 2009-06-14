@@ -28,28 +28,28 @@ namespace LeechCraft
 			struct Aggregator_Impl;
 
 			class Aggregator : public QWidget
-			                 , public IInfo
-			                 , public IEmbedTab
+							 , public IInfo
+							 , public IEmbedTab
 							 , public IHaveSettings
 							 , public IJobHolder
 							 , public IEntityHandler
 							 , public IHaveShortcuts
 			{
-			    Q_OBJECT
-			    Q_INTERFACES (IInfo IEmbedTab IHaveSettings IJobHolder IEntityHandler IHaveShortcuts)
+				Q_OBJECT
+				Q_INTERFACES (IInfo IEmbedTab IHaveSettings IJobHolder IEntityHandler IHaveShortcuts)
 
 				Aggregator_Impl *Impl_;
 			public:
 				virtual ~Aggregator ();
-			    void Init (ICoreProxy_ptr);
-			    void Release ();
-			    QString GetName () const;
-			    QString GetInfo () const;
-			    QStringList Provides () const;
-			    QStringList Needs () const;
-			    QStringList Uses () const;
-			    void SetProvider (QObject*, const QString&);
-			    QIcon GetIcon () const;
+				void Init (ICoreProxy_ptr);
+				void Release ();
+				QString GetName () const;
+				QString GetInfo () const;
+				QStringList Provides () const;
+				QStringList Needs () const;
+				QStringList Uses () const;
+				void SetProvider (QObject*, const QString&);
+				QIcon GetIcon () const;
 				QWidget* GetTabContents ();
 				QToolBar* GetToolBar () const;
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
@@ -67,14 +67,14 @@ namespace LeechCraft
 				void ScheduleShowError ();
 				bool IsRepr ();
 			private slots:
-			    void showError (const QString&);
+				void showError (const QString&);
 				void showError ();
-			    void on_ActionAddFeed__triggered ();
-			    void on_ActionRemoveFeed__triggered ();
-			    void on_ActionMarkChannelAsRead__triggered ();
-			    void on_ActionMarkChannelAsUnread__triggered ();
+				void on_ActionAddFeed__triggered ();
+				void on_ActionRemoveFeed__triggered ();
+				void on_ActionMarkChannelAsRead__triggered ();
+				void on_ActionMarkChannelAsUnread__triggered ();
 				void on_ActionChannelSettings__triggered ();
-			    void on_ActionUpdateSelectedFeed__triggered ();
+				void on_ActionUpdateSelectedFeed__triggered ();
 				void on_ActionItemBucket__triggered ();
 				void on_ActionRegexpMatcher__triggered ();
 				void on_ActionHideReadItems__triggered ();
@@ -84,11 +84,11 @@ namespace LeechCraft
 				void on_ActionExportBinary__triggered ();
 				void on_MergeItems__toggled (bool);
 				void on_ShowAsTape__toggled (bool);
-			    void currentChannelChanged ();
-			    void unreadNumberChanged (int);
-			    void trayIconActivated ();
+				void currentChannelChanged ();
+				void unreadNumberChanged (int);
+				void trayIconActivated ();
 			signals:
-			    void downloadFinished (const QString&);
+				void downloadFinished (const QString&);
 				void gotEntity (const LeechCraft::DownloadEntity&);
 				void delegateEntity (const LeechCraft::DownloadEntity&,
 						int*, QObject**);

@@ -18,7 +18,7 @@ namespace LeechCraft
 				 *
 				 * @param[in] doc 
 				 */
-			    virtual bool CouldParse (const QDomDocument& doc) const = 0;
+				virtual bool CouldParse (const QDomDocument& doc) const = 0;
 
 				/** @brief Parses the document
 				 * 
@@ -31,7 +31,7 @@ namespace LeechCraft
 				 * @param[in] document Byte array with XML document.
 				 * @return Container (channels_container_t) with new items.
 				 */
-			    virtual channels_container_t Parse (const channels_container_t& old,
+				virtual channels_container_t Parse (const channels_container_t& old,
 						channels_container_t& modified,
 						const QDomDocument& document) const = 0;
 			protected:
@@ -54,7 +54,7 @@ namespace LeechCraft
 				QList<Enclosure> GetEncEnclosures (const QDomElement&) const;
 
 				QDateTime FromRFC3339 (const QString&) const;
-			    QString UnescapeHTML (const QString&) const;
+				QString UnescapeHTML (const QString&) const;
 			};
 		};
 	};
