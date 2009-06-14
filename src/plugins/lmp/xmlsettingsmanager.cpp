@@ -6,16 +6,16 @@ using namespace LeechCraft::Plugins::LMP;
 
 namespace
 {
-    QSettings *torrentBeginSettings ()
-    {
-        QSettings *settings = new QSettings (Proxy::Instance ()->GetOrganizationName (),
+	QSettings *torrentBeginSettings ()
+	{
+		QSettings *settings = new QSettings (Proxy::Instance ()->GetOrganizationName (),
 				Proxy::Instance ()->GetApplicationName () + "_LMP");
-        return settings;
-    }
+		return settings;
+	}
 
-    void torrentEndSettings (QSettings*)
-    {
-    }
+	void torrentEndSettings (QSettings*)
+	{
+	}
 };
 
 #define PROP2CHAR(a) (a.toLatin1 ().constData ())
@@ -29,16 +29,16 @@ XmlSettingsManager::XmlSettingsManager ()
 
 XmlSettingsManager* XmlSettingsManager::Instance ()
 {
-    return XmlSettingsManagerInstance ();
+	return XmlSettingsManagerInstance ();
 }
 
 QSettings* XmlSettingsManager::BeginSettings () const
 {
-    return torrentBeginSettings ();
+	return torrentBeginSettings ();
 }
 
 void XmlSettingsManager::EndSettings (QSettings *settings) const
 {
-    return torrentEndSettings (settings);
+	return torrentEndSettings (settings);
 }
 
