@@ -300,10 +300,10 @@ namespace LeechCraft
 			
 			QVariant Core::data (const QModelIndex& index, int role) const
 			{
-			    if (!index.isValid ())
-			        return QVariant ();
+				if (!index.isValid ())
+					return QVariant ();
 			
-			    if (role == Qt::DisplayRole)
+				if (role == Qt::DisplayRole)
 				{
 					TaskDescr td = TaskAt (index.row ());
 					boost::intrusive_ptr<Task> task = td.Task_;
@@ -360,8 +360,8 @@ namespace LeechCraft
 				}
 				else if (role == LeechCraft::RoleControls)
 					return QVariant::fromValue<QToolBar*> (Toolbar_);
-			    else
-			        return QVariant ();
+				else
+					return QVariant ();
 			}
 			
 			Qt::ItemFlags Core::flags (const QModelIndex&) const
@@ -376,16 +376,16 @@ namespace LeechCraft
 			
 			QVariant Core::headerData (int column, Qt::Orientation orient, int role) const
 			{
-			    if (orient == Qt::Horizontal && role == Qt::DisplayRole)
-			        return Headers_.at (column);
-			    else
-			        return QVariant ();
+				if (orient == Qt::Horizontal && role == Qt::DisplayRole)
+					return Headers_.at (column);
+				else
+					return QVariant ();
 			}
 			
 			QModelIndex Core::index (int row, int column, const QModelIndex& parent) const
 			{
-			    if (!hasIndex (row, column, parent))
-			        return QModelIndex ();
+				if (!hasIndex (row, column, parent))
+					return QModelIndex ();
 			
 				return createIndex (row, column);
 			}

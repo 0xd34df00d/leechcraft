@@ -46,13 +46,13 @@ namespace LeechCraft
 				virtual ~CSTP ();
 				void Init (ICoreProxy_ptr);
 				void Release ();
-			    QString GetName () const;
-			    QString GetInfo () const;
-			    QStringList Provides () const;
-			    QStringList Needs () const;
-			    QStringList Uses () const;
-			    void SetProvider (QObject*, const QString&);
-			    QIcon GetIcon () const;
+				QString GetName () const;
+				QString GetInfo () const;
+				QStringList Provides () const;
+				QStringList Needs () const;
+				QStringList Uses () const;
+				void SetProvider (QObject*, const QString&);
+				QIcon GetIcon () const;
 
 				qint64 GetDownloadSpeed () const;
 				qint64 GetUploadSpeed () const;
