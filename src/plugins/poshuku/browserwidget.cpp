@@ -856,7 +856,8 @@ namespace LeechCraft
 						}
 					}
 				}
-				GetView ()->page ()->mainFrame ()->setScrollPosition (OnLoadPos_);
+				if (!OnLoadPos_.isNull ())
+					GetView ()->page ()->mainFrame ()->setScrollPosition (OnLoadPos_);
 			}
 			
 			void BrowserWidget::handleLoadProgress (int p)
