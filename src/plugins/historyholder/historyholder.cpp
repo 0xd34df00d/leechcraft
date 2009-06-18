@@ -83,5 +83,5 @@ QMap<int, LeechCraft::ActionInfo> Plugin::GetActionInfo () const
 	return Core::Instance ().GetActionInfo ();
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_deadlyrics, Plugin);
+Q_EXPORT_PLUGIN2 (leechcraft_historyholder, Plugin);
 
