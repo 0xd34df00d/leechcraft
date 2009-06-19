@@ -750,6 +750,74 @@ bool LeechCraft::Core::CouldHandle (const LeechCraft::DownloadEntity& e)
 	return false;
 }
 
+namespace
+{
+	bool DoDownload (IDownload *sd,
+			LeechCraft::DownloadEntity p,
+			int *id,
+			QObject **pr)
+	{
+		int l = -1;
+		try
+		{
+			l = sd->AddJob (p);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "could not add job"
+				<< e.what ();
+			return false;
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "could not add job";
+			return false;
+		}
+
+		if (id)
+			*id = l;
+		if (pr)
+		{
+			QObjectList plugins = Core::Instance ().GetPluginManager ()->
+				GetAllCastableRoots<IDownload*> ();
+			*pr = *std::find_if (plugins.begin (), plugins.end (),
+					boost::bind (std::equal_to<IDownload*> (),
+						sd,
+						boost::bind<IDownload*> (
+							static_cast<IDownload* (*) (const QObject*)> (qobject_cast<IDownload*>),
+							_1
+							)));
+		}
+
+		return true;
+	}
+
+	bool DoHandle (IEntityHandler *sh,
+			LeechCraft::DownloadEntity p)
+	{
+		try
+		{
+			sh->Handle (p);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "could not handle job"
+				<< e.what ();
+			return false;
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "could not add job";
+			return false;
+		}
+		return true;
+	}
+};
+
 bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 {
 	QString string = tr ("Too long to show");
@@ -758,34 +826,38 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 
 	std::auto_ptr<HandlerChoiceDialog> dia (new HandlerChoiceDialog (string));
 
-	QObjectList plugins = PluginManager_->GetAllCastableRoots<IDownload*> ();
-	for (int i = 0; i < plugins.size (); ++i)
+	if (!(p.Parameters_ & LeechCraft::OnlyHandle))
 	{
-		IDownload *id = qobject_cast<IDownload*> (plugins.at (i));
-		IInfo *ii = qobject_cast<IInfo*> (plugins.at (i));
-		try
+		QObjectList plugins = PluginManager_->GetAllCastableRoots<IDownload*> ();
+		for (int i = 0; i < plugins.size (); ++i)
 		{
-			if (id->CouldDownload (p))
-				dia->Add (ii, id);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "could not query"
-				<< e.what ()
-				<< plugins.at (i);
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "could not query"
-				<< plugins.at (i);
+			IDownload *id = qobject_cast<IDownload*> (plugins.at (i));
+			IInfo *ii = qobject_cast<IInfo*> (plugins.at (i));
+			try
+			{
+				if (id->CouldDownload (p))
+					dia->Add (ii, id);
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "could not query"
+					<< e.what ()
+					<< plugins.at (i);
+			}
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "could not query"
+					<< plugins.at (i);
+			}
 		}
 	}
+
 	// Handlers don't fit when we want to delegate.
-	if (!id)
+	if (!id && !(p.Parameters_ & LeechCraft::OnlyDownload))
 	{
-		plugins = PluginManager_->GetAllCastableRoots<IEntityHandler*> ();
+		QObjectList plugins = PluginManager_->GetAllCastableRoots<IEntityHandler*> ();
 		for (int i = 0; i < plugins.size (); ++i)
 		{
 			IEntityHandler *ih = qobject_cast<IEntityHandler*> (plugins.at (i));
@@ -811,7 +883,8 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 		}
 	}
 
-	if (p.Parameters_ & FromUserInitiated)
+	if (p.Parameters_ & FromUserInitiated &&
+			!(p.Parameters_ & AutoAccept))
 	{
 		if (!dia->NumChoices () ||
 				dia->exec () == QDialog::Rejected)
@@ -841,16 +914,8 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 
 			p.Location_ = dir;
 
-			int l = -1;
-			try
+			if (!DoDownload (sd, p, id, pr))
 			{
-				l = sd->AddJob (p);
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "could not add job"
-					<< e.what ();
 				if (dia->NumChoices () > 1 &&
 						QMessageBox::question (0,
 						tr ("Error"),
@@ -861,46 +926,13 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 				else
 					return false;
 			}
-			catch (...)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "could not add job";
-				if (dia->NumChoices () > 1 &&
-						QMessageBox::question (0,
-						tr ("Error"),
-						tr ("Could not add job to the selected downloader, "
-							"would you like to try another one?"),
-						QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-					return handleGotEntity (p, id, pr);
-				else
-					return false;
-			}
-
-			if (id)
-				*id = l;
-			if (pr)
-			{
-				QObjectList plugins = PluginManager_->GetAllCastableRoots<IDownload*> ();
-				*pr = *std::find_if (plugins.begin (), plugins.end (),
-						boost::bind (std::equal_to<IDownload*> (),
-							sd,
-							boost::bind<IDownload*> (
-								static_cast<IDownload* (*) (const QObject*)> (qobject_cast<IDownload*>),
-								_1
-								)));
-			}
+			else
+				return true;
 		}
 		if (sh)
 		{
-			try
+			if (!DoHandle (sh, p))
 			{
-				sh->Handle (p);
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "could not handle job"
-					<< e.what ();
 				if (dia->NumChoices () > 1 &&
 						QMessageBox::question (0,
 						tr ("Error"),
@@ -911,20 +943,8 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 				else
 					return false;
 			}
-			catch (...)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "could not add job";
-				if (dia->NumChoices () > 1 &&
-						QMessageBox::question (0,
-						tr ("Error"),
-						tr ("Could not handle job with the selected handler, "
-							"would you like to try another one?"),
-						QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-					return handleGotEntity (p, id, pr);
-				else
-					return false;
-			}
+			else
+				return true;
 		}
 	}
 	else if (dia->GetDownload ())
@@ -932,38 +952,11 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 		IDownload *sd = dia->GetDownload ();
 		if (p.Location_.isEmpty ())
 			p.Location_ = QDir::tempPath ();
-		int l;
-		try
-		{
-			l = sd->AddJob (p);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "could not handle job"
-				<< e.what ();
-			return false;
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "could not add job";
-			return false;
-		}
-		if (id)
-			*id = l;
-		if (pr)
-		{
-			QObjectList plugins = PluginManager_->GetAllCastableRoots<IDownload*> ();
-			*pr = *std::find_if (plugins.begin (), plugins.end (),
-					boost::bind (std::equal_to<IDownload*> (),
-						sd,
-						boost::bind<IDownload*> (
-							static_cast<IDownload* (*) (const QObject*)> (qobject_cast<IDownload*>),
-							_1
-							)));
-		}
+		return DoDownload (sd, p, id, pr);
 	}
+	else if ((p.Parameters_ & LeechCraft::AutoAccept) &&
+			dia->GetFirstEntityHandler ())
+		return DoHandle (dia->GetFirstEntityHandler (), p);
 	else
 	{
 		emit log (tr ("Could not handle download entity %1.")
@@ -1049,14 +1042,7 @@ void LeechCraft::Core::handleLog (const QString& message)
 void LeechCraft::Core::pullCommandLine ()
 {
 	QStringList arguments = qobject_cast<Application*> (qApp)->Arguments ();
-	if (!(arguments.size () > 1 &&
-			!arguments.last ().startsWith ('-')))
-		return;
-
-	DownloadEntity e = Util::MakeEntity (arguments.last ().toUtf8 (),
-			QString (),
-			LeechCraft::FromUserInitiated);
-	handleGotEntity (e);
+	DoCommandLine (arguments);
 }
 
 void LeechCraft::Core::handleNewLocalServerConnection ()
@@ -1075,13 +1061,34 @@ void LeechCraft::Core::handleNewLocalServerConnection ()
 	QStringList arguments;
 	in >> arguments;
 
+	DoCommandLine (arguments);
+}
+
+void LeechCraft::Core::DoCommandLine (const QStringList& arguments)
+{
 	if (!(arguments.size () > 1 &&
 			!arguments.last ().startsWith ('-')))
 		return;
 
+	TaskParameters tp;
+	if (!arguments.contains ("-automatic"))
+		tp |= FromUserInitiated;
+	else
+		tp |= AutoAccept;
+	if (arguments.contains ("-handle"))
+	{
+		tp |= OnlyHandle;
+		tp |= AutoAccept;
+	}
+	if (arguments.contains ("-download"))
+	{
+		tp |= OnlyDownload;
+		tp |= AutoAccept;
+	}
+
 	DownloadEntity e = Util::MakeEntity (arguments.last ().toUtf8 (),
 			QString (),
-			LeechCraft::FromUserInitiated);
+			tp);
 	handleGotEntity (e);
 }
 

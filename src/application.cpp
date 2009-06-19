@@ -32,9 +32,21 @@ LeechCraft::Application::Application (int& argc, char **argv)
 	{
 		std::cout << "Usage: "
 			<< Arguments_.at (0).toStdString ()
-			<< " [arguments]" << std::endl;
+			<< " [arguments] [entity]" << std::endl;
 		std::cout << std::endl;
-		std::cout << "Where arguments could be:"<< std::endl;
+		std::cout
+			<< "Entity is something that could (possibly) be handled by LeechCraft."
+			<< std::endl
+			<< "For example, an URL or a torrent file." << std::endl;
+		std::cout << "Arguments could be:"<< std::endl;
+		std::cout
+			<< "-automatic    Don't consider this entity to be added by the user." << std::endl;
+		std::cout
+			<< "-handle       This entity should be handled, it shouldn't be downloaded."
+			<< std::endl;
+		std::cout
+			<< "-download     This entity should be downloaded but not handled."
+			<< std::endl;
 		std::cout
 			<< "-nolog        Disable custom logger and print everything to the "
 			<< std::endl

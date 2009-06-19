@@ -27,6 +27,7 @@ public:
 	void Add (const IInfo*, IEntityHandler*);
 	IDownload* GetDownload ();
 	IEntityHandler* GetEntityHandler ();
+	IEntityHandler* GetFirstEntityHandler ();
 	int NumChoices () const;
 };
 

@@ -227,6 +227,7 @@ namespace LeechCraft
 		void pullCommandLine ();
 		void handleNewLocalServerConnection ();
 	private:
+		void DoCommandLine (const QStringList&);
 		bool CouldHandle (const LeechCraft::DownloadEntity&);
 		/** Maps totally unmapped index to the plugin's source model
 		 * through merge model and filter model.

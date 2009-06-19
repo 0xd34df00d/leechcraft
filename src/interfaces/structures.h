@@ -46,7 +46,19 @@ namespace LeechCraft
 		/** When the task is finished, it should not be announced via
 		 * gotEntity() signal.
 		 */
-		DoNotAnnounceEntity = 256
+		DoNotAnnounceEntity = 256,
+		/** This task should not be downloaded, only handled by a
+		 * handler.
+		 */
+		OnlyHandle = 512,
+		/** This task should not be handled, only downloaded by a
+		 * downloader.
+		 */
+		OnlyDownload = 1024,
+		/** This task should be automatically accepted if any handler is
+		 * available.
+		 */
+		AutoAccept = 2048
 	};
 
 	Q_DECLARE_FLAGS (TaskParameters, TaskParameter);

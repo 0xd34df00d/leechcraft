@@ -64,6 +64,14 @@ IEntityHandler* HandlerChoiceDialog::GetEntityHandler ()
 	return result;
 }
 
+IEntityHandler* HandlerChoiceDialog::GetFirstEntityHandler ()
+{
+	if (Handlers_.size ())
+		return Handlers_.begin ()->second;
+	else
+		return 0;
+}
+
 int HandlerChoiceDialog::NumChoices () const
 {
 	return Buttons_->buttons ().size ();
