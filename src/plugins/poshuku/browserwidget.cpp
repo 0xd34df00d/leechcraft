@@ -341,6 +341,15 @@ namespace LeechCraft
 			{
 				Own_ = false;
 			}
+
+			void BrowserWidget::SetMainMode ()
+			{
+				ToolBar_->removeAction (CloseTab_);
+				disconnect (CloseTab_,
+						0,
+						this,
+						0);
+			}
 			
 			void BrowserWidget::InitShortcuts ()
 			{

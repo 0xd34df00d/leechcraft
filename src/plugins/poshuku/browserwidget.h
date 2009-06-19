@@ -89,6 +89,7 @@ namespace LeechCraft
 				virtual ~BrowserWidget ();
 
 				void Deown ();
+				void SetMainMode ();
 				void InitShortcuts ();
 
 				void SetUnclosers (const QList<QAction*>&);
