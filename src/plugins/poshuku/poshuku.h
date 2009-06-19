@@ -10,6 +10,7 @@
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/ipluginready.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/ientityhandler.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/tagscompleter.h>
@@ -31,11 +32,12 @@ namespace LeechCraft
 						  , public IMultiTabs
 						  , public IPluginReady
 						  , public IHaveSettings
+						  , public IEntityHandler
 						  , public IHaveShortcuts
 						  , public IWebBrowser
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IEmbedTab IMultiTabs IHaveSettings IPluginReady IWebBrowser IHaveShortcuts)
+				Q_INTERFACES (IInfo IEmbedTab IMultiTabs IHaveSettings IEntityHandler IPluginReady IWebBrowser IHaveShortcuts)
 
 				Ui::Poshuku Ui_;
 
@@ -62,6 +64,9 @@ namespace LeechCraft
 				void AddPlugin (QObject*);
 
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
+
+				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
+				void Handle (LeechCraft::DownloadEntity);
 
 				void Open (const QString&);
 				IWebWidget* GetWidget () const;

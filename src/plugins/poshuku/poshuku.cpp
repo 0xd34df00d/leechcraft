@@ -6,6 +6,7 @@
 #include <QToolBar>
 #include <QDir>
 #include <QUrl>
+#include <QTextCodec>
 #include <QtDebug>
 #include <plugininterface/util.h>
 #include <plugininterface/tagscompletionmodel.h>
@@ -220,6 +221,22 @@ namespace LeechCraft
 			boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> Poshuku::GetSettingsDialog () const
 			{
 				return XmlSettingsDialog_;
+			}
+
+			bool Poshuku::CouldHandle (const LeechCraft::DownloadEntity& e) const
+			{
+				if (!(e.Parameters_ & FromUserInitiated) ||
+						e.Parameters_ & Internal)
+					return false;
+
+				QUrl url (QTextCodec::codecForName ("UTF-8")->toUnicode (e.Entity_));
+				return (url.isValid () &&
+					(url.scheme () == "http" || url.scheme () == "https"));
+			}
+
+			void Poshuku::Handle (LeechCraft::DownloadEntity e)
+			{
+				Open (QTextCodec::codecForName ("UTF-8")->toUnicode (e.Entity_));
 			}
 			
 			void Poshuku::Open (const QString& link)
