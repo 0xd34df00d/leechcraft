@@ -234,10 +234,12 @@ SET (RESOURCES mainresources.qrc)
 SET (TRANSLATIONS
 	leechcraft_ru_RU.ts
 	leechcraft_uk_UA.ts
+	leechcraft_it.ts
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_ru_RU.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_uk_UA.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_it.qm
 	)
 
 ADD_DEFINITIONS (-DQT_GUI_LIB)
