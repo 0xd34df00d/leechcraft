@@ -833,8 +833,7 @@ namespace LeechCraft
 						hrefUrl = originalUrl.toString ();
 					}
 					e.Location_ = hrefUrl;
-					e.Parameters_ = LeechCraft::FromUserInitiated |
-						LeechCraft::IsntDownloaded;
+					e.Parameters_ = LeechCraft::FromUserInitiated;
 			
 					bool ch = false;
 					emit couldHandle (e, &ch);

@@ -1648,6 +1648,7 @@ namespace LeechCraft
 				{
 					DownloadEntity e;
 					e.Entity_ = QByteArray ((torrent.Handle_.save_path () / i->path).string ().c_str ());
+					e.Parameters_ = LeechCraft::IsDownloaded;
 					e.Location_ = torrent.TorrentFileName_;
 					e.Additional_ [" Tags"] = torrent.Tags_;
 					emit fileFinished (e);

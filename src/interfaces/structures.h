@@ -25,10 +25,10 @@ namespace LeechCraft
 		/** Task should not be saved in history.
 		 */
 		DoNotSaveInHistory = 2,
-		/** Task isn't downloaded, it's just a delegation/handle
-		 * request.
+		/** Task is really downloaded, so, a file, for example, has
+		 * appeared as a result.
 		 */
-		IsntDownloaded = 4,
+		IsDownloaded = 4,
 		/** Task is created as a result of user's actions.
 		 */
 		FromUserInitiated = 8,

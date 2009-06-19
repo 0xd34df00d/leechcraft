@@ -32,6 +32,8 @@ namespace LeechCraft
 			
 				if (role == Qt::DisplayRole)
 					return Items_ [index.row ()].Title_ + " [" + Items_ [index.row ()].URL_ + "]";
+				else if (role == Qt::DecorationRole)
+					return QWebSettings::iconForUrl (QUrl (Items_ [index.row ()].URL_));
 				else if (role == Qt::EditRole)
 					return Base_ + index.row ();
 				else if (role == RoleURL)

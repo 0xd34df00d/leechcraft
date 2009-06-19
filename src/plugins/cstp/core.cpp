@@ -495,7 +495,7 @@ namespace LeechCraft
 					emit taskFinished (id);
 					if (!silence)
 					{
-						tp &= ~LeechCraft::IsntDownloaded;
+						tp |= LeechCraft::IsDownloaded;
 						LeechCraft::DownloadEntity e =
 							LeechCraft::Util::MakeEntity (filename.toUtf8 (),
 								url,
