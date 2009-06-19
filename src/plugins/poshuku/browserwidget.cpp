@@ -717,7 +717,8 @@ namespace LeechCraft
 				QSize contentsSize = Ui_.WebView_->page ()->mainFrame ()->contentsSize ();
 				if (contentsSize.width () < 800)
 					contentsSize.setWidth (800);
-				int maxHeight = 0.8 * QApplication::desktop ()->screenGeometry (this).height () * static_cast<double> (contentsSize.width ()) / 200.0;
+				int maxHeight = 0.8 * QApplication::desktop ()->
+					screenGeometry (this).height () * static_cast<double> (contentsSize.width ()) / 200.0;
 				contentsSize.setHeight (std::min (contentsSize.height (), 3000));
 				QPoint scroll = Ui_.WebView_->page ()->mainFrame ()->scrollPosition ();
 				QSize oldSize = Ui_.WebView_->page ()->viewportSize ();

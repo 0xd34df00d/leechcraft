@@ -38,6 +38,7 @@ namespace LeechCraft
 				Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku"));
 				Ui_.setupUi (this);
 			
+				Core::Instance ().ConnectSignals (Ui_.MainView_);
 				Ui_.MainView_->InitShortcuts ();
 			
 				SetupActions ();

@@ -194,43 +194,8 @@ namespace LeechCraft
 				Widgets_.push_back (widget);
 			
 				emit addNewTab (tr (""), widget);
-			
-				connect (widget,
-						SIGNAL (titleChanged (const QString&)),
-						this,
-						SLOT (handleTitleChanged (const QString&)));
-				connect (widget,
-						SIGNAL (iconChanged (const QIcon&)),
-						this,
-						SLOT (handleIconChanged (const QIcon&)));
-				connect (widget,
-						SIGNAL (needToClose ()),
-						this,
-						SLOT (handleNeedToClose ()));
-				connect (widget,
-						SIGNAL (addToFavorites (const QString&, const QString&)),
-						this,
-						SLOT (handleAddToFavorites (const QString&, const QString&)));
-				connect (widget,
-						SIGNAL (urlChanged (const QString&)),
-						this,
-						SLOT (handleURLChanged (const QString&)));
-				connect (widget,
-						SIGNAL (statusBarChanged (const QString&)),
-						this,
-						SLOT (handleStatusBarChanged (const QString&)));
-				connect (widget,
-						SIGNAL (tooltipChanged (QWidget*)),
-						this,
-						SLOT (handleTooltipChanged (QWidget*)));
-				connect (widget,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
-						this,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
-				connect (widget,
-						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)),
-						this,
-						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)));
+
+				ConnectSignals (widget);
 			
 				widget->SetURL (QUrl (url));
 			
@@ -270,6 +235,46 @@ namespace LeechCraft
 					raise = !raise;
 			
 				return NewURL ("", raise)->GetView ();
+			}
+
+			void Core::ConnectSignals (BrowserWidget *widget)
+			{			
+				connect (widget,
+						SIGNAL (titleChanged (const QString&)),
+						this,
+						SLOT (handleTitleChanged (const QString&)));
+				connect (widget,
+						SIGNAL (iconChanged (const QIcon&)),
+						this,
+						SLOT (handleIconChanged (const QIcon&)));
+				connect (widget,
+						SIGNAL (needToClose ()),
+						this,
+						SLOT (handleNeedToClose ()));
+				connect (widget,
+						SIGNAL (addToFavorites (const QString&, const QString&)),
+						this,
+						SLOT (handleAddToFavorites (const QString&, const QString&)));
+				connect (widget,
+						SIGNAL (urlChanged (const QString&)),
+						this,
+						SLOT (handleURLChanged (const QString&)));
+				connect (widget,
+						SIGNAL (statusBarChanged (const QString&)),
+						this,
+						SLOT (handleStatusBarChanged (const QString&)));
+				connect (widget,
+						SIGNAL (tooltipChanged (QWidget*)),
+						this,
+						SLOT (handleTooltipChanged (QWidget*)));
+				connect (widget,
+						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						this,
+						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+				connect (widget,
+						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)),
+						this,
+						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)));
 			}
 			
 			FavoritesModel* Core::GetFavoritesModel () const

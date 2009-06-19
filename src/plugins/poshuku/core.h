@@ -91,6 +91,7 @@ namespace LeechCraft
 				CustomWebView* MakeWebView (bool = false);
 				void Unregister (BrowserWidget*);
 				QMenu* GetPluginsMenu () const;
+				void ConnectSignals (BrowserWidget*);
 
 				FavoritesModel* GetFavoritesModel () const;
 				HistoryModel* GetHistoryModel () const;
