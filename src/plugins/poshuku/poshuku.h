@@ -74,8 +74,6 @@ namespace LeechCraft
 				void SetShortcut (int, const QKeySequence&);
 				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
 			private:
-				void SetupActions ();
-				void SetupView ();
 				void RegisterSettings ();
 				void SetupFavoritesFilter ();
 				void SetupHistoryFilter ();

@@ -43,8 +43,6 @@ namespace LeechCraft
 				Ui_.MainView_->InitShortcuts ();
 				Ui_.MainView_->SetMainMode ();
 			
-				SetupActions ();
-				SetupView ();
 				RegisterSettings ();
 			
 				try
@@ -258,30 +256,6 @@ namespace LeechCraft
 			QMap<int, LeechCraft::ActionInfo> Poshuku::GetActionInfo () const
 			{
 				return Ui_.MainView_->GetActionInfo ();
-			}
-			
-			void Poshuku::SetupActions ()
-			{
-				/*
-				QToolBar *bar = new QToolBar;
-			
-				QAction *newTab = new QAction (tr ("Create new tab"),
-						this);
-				newTab->setProperty ("ActionIcon", "poshuku_newtab");
-				newTab->setShortcut (tr ("Ctrl+T"));
-				connect (newTab,
-						SIGNAL (triggered ()),
-						this,
-						SLOT (handleNewTab ()));
-			
-				bar->addAction (newTab);
-			
-				Ui_.ToolButtonsLayout_->addWidget (bar);
-				*/
-			}
-			
-			void Poshuku::SetupView ()
-			{
 			}
 			
 			void Poshuku::RegisterSettings ()
