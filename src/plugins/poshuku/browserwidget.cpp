@@ -565,7 +565,8 @@ namespace LeechCraft
 			
 			void BrowserWidget::on_URLEdit__returnPressed ()
 			{
-				if (Ui_.URLEdit_->IsCompleting ())
+				if (Ui_.URLEdit_->IsCompleting () ||
+						Ui_.URLEdit_->text ().isEmpty ())
 					return;
 			
 				Load (Ui_.URLEdit_->text ());
