@@ -16,12 +16,12 @@
     <message>
         <location filename="authenticationdialog.ui" line="32"/>
         <source>Login:</source>
-        <translation>:اسم المستخدم</translation>
+        <translation>اسم المستخدم:</translation>
     </message>
     <message>
         <location filename="authenticationdialog.ui" line="42"/>
         <source>Password:</source>
-        <translation>:كلمة المرور</translation>
+        <translation>كلمة المرور:</translation>
     </message>
     <message>
         <location filename="authenticationdialog.ui" line="58"/>
@@ -68,7 +68,7 @@
     <message>
         <location filename="handlerchoicedialog.ui" line="19"/>
         <source>LeechCraft has detected an entity:</source>
-        <translation>:تم اكتشاف صيغة تحميل</translation>
+        <translation>تم اكتشاف صيغة تحميل:</translation>
     </message>
     <message>
         <location filename="handlerchoicedialog.ui" line="26"/>
@@ -78,12 +78,12 @@
     <message>
         <location filename="handlerchoicedialog.ui" line="33"/>
         <source>It could be downloaded by:</source>
-        <translation>:سيتمّ تحميل هذا الملف بواسطة</translation>
+        <translation>سيتمّ تحميل هذا الملف بواسطة:</translation>
     </message>
     <message>
         <location filename="handlerchoicedialog.ui" line="43"/>
         <source>It could be handled by:</source>
-        <translation>:يمكن أن تعالج عن طريق</translation>
+        <translation>يمكن أن تعالج عن طريق:</translation>
     </message>
 </context>
 <context>
@@ -96,7 +96,7 @@
     <message>
         <location filename="keysequencer.ui" line="26"/>
         <source>background-color: rgb(255, 255, 255);</source>
-        <translation>:لون الخلفية rgb(255.255.255);</translation>
+        <translation>background-color: rgb(255, 255, 255);</translation>
     </message>
     <message>
         <location filename="keysequencer.ui" line="42"/>
@@ -399,7 +399,7 @@
     <message>
         <location filename="operationalmodel.cpp" line="9"/>
         <source>Entity</source>
-        <translation>:ﺈﺿﺎﻓﺓ ﻢﻬﻣﺓ</translation>
+        <translation>ﺈﺿﺎﻓﺓ ﻢﻬﻣﺓ</translation>
     </message>
     <message>
         <location filename="operationalmodel.cpp" line="10"/>
@@ -503,7 +503,7 @@
     <message>
         <location filename="sslerrorsdialog.cpp" line="51"/>
         <source>Expiry date:</source>
-        <translation>:تاريخ الانتهاء</translation>
+        <translation>تاريخ الانتهاء:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="53"/>
@@ -513,7 +513,7 @@
     <message>
         <location filename="sslerrorsdialog.cpp" line="55"/>
         <source>Serial number:</source>
-        <translation>:رقم التسلسل</translation>
+        <translation>رقم التسلسل:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="57"/>
@@ -534,7 +534,7 @@
         <location filename="sslerrorsdialog.cpp" line="69"/>
         <location filename="sslerrorsdialog.cpp" line="102"/>
         <source>Organization:</source>
-        <translation>:الشركة</translation>
+        <translation>الشركة:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="74"/>
@@ -558,7 +558,7 @@
         <location filename="sslerrorsdialog.cpp" line="89"/>
         <location filename="sslerrorsdialog.cpp" line="122"/>
         <source>Country name:</source>
-        <translation>:اسم البلد</translation>
+        <translation>اسم البلد:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="94"/>
