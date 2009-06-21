@@ -2215,7 +2215,7 @@ namespace LeechCraft
 					property ("InitialPickerThreshold").toInt ();
 				settings.allowed_fast_set_size = XmlSettingsManager::Instance ()->
 					property ("AllowedFastSetSize").toInt ();
-				settings.max_outstanding_disk_bytes_per_connection = XmlSettingsManager::Instance ()->
+				settings.max_queued_disk_bytes = XmlSettingsManager::Instance ()->
 					property ("MaxOutstandingDiskBytesPerConnection").toInt () * 1024;
 				settings.handshake_timeout = XmlSettingsManager::Instance ()->
 					property ("HandshakeTimeout").toInt ();
