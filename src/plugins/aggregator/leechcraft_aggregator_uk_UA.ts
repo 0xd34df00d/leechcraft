@@ -69,7 +69,7 @@
     <message>
         <location filename="export.ui" line="84"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Назва</translation>
     </message>
     <message>
         <location filename="export.ui" line="89"/>
@@ -502,7 +502,7 @@
     <message>
         <location filename="core.cpp" line="46"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Назва</translation>
     </message>
     <message>
         <location filename="core.cpp" line="47"/>
@@ -695,7 +695,7 @@
     <message>
         <location filename="itemmodel.cpp" line="23"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Назва</translation>
     </message>
 </context>
 <context>
@@ -703,7 +703,7 @@
     <message>
         <location filename="itemslistmodel.cpp" line="17"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Назва</translation>
     </message>
     <message>
         <location filename="itemslistmodel.cpp" line="17"/>

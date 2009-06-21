@@ -21,7 +21,7 @@
     <message>
         <location filename="addfeed.ui" line="43"/>
         <source>Tags:</source>
-        <translation>:علامات</translation>
+        <translation>علامات:</translation>
     </message>
     <message>
         <location filename="addfeed.ui" line="50"/>
@@ -39,7 +39,7 @@
     <message>
         <location filename="export.ui" line="25"/>
         <source>Where to save:</source>
-        <translation>:مكان للحفظ</translation>
+        <translation>مكان للحفظ:</translation>
     </message>
     <message>
         <location filename="export.ui" line="37"/>
@@ -49,22 +49,22 @@
     <message>
         <location filename="export.ui" line="46"/>
         <source>Title:</source>
-        <translation>:عنوان</translation>
+        <translation>عنوان:</translation>
     </message>
     <message>
         <location filename="export.ui" line="53"/>
         <source>Owner:</source>
-        <translation>:صاحب</translation>
+        <translation>صاحب:</translation>
     </message>
     <message>
         <location filename="export.ui" line="60"/>
         <source>Owner email:</source>
-        <translation>:البريد الإلكتروني</translation>
+        <translation>البريد الإلكتروني:</translation>
     </message>
     <message>
         <location filename="export.ui" line="67"/>
         <source>Channels:</source>
-        <translation>:قنوات</translation>
+        <translation>قنوات:</translation>
     </message>
     <message>
         <location filename="export.ui" line="84"/>
@@ -92,7 +92,7 @@
     <message>
         <location filename="feedsettings.ui" line="46"/>
         <source>Link:</source>
-        <translation>:الرابط</translation>
+        <translation>الرابط:</translation>
     </message>
     <message>
         <location filename="feedsettings.ui" line="60"/>
@@ -102,7 +102,7 @@
     <message>
         <location filename="feedsettings.ui" line="74"/>
         <source>Description:</source>
-        <translation>:وصف</translation>
+        <translation>وصف:</translation>
     </message>
     <message>
         <location filename="feedsettings.ui" line="84"/>
@@ -122,7 +122,7 @@
     <message>
         <location filename="feedsettings.ui" line="129"/>
         <source>Tags:</source>
-        <translation>:علامات</translation>
+        <translation>علامات:</translation>
     </message>
     <message>
         <location filename="feedsettings.ui" line="145"/>
@@ -132,7 +132,7 @@
     <message>
         <location filename="feedsettings.ui" line="154"/>
         <source>Update interval:</source>
-        <translation>:فترة التحديث</translation>
+        <translation>فترة التحديث:</translation>
     </message>
     <message>
         <location filename="feedsettings.ui" line="164"/>
@@ -149,12 +149,12 @@
     <message>
         <location filename="feedsettings.ui" line="180"/>
         <source>Max items number:</source>
-        <translation>:أكبر عدد المقالات المسموح</translation>
+        <translation>أكبر عدد المقالات المسموح:</translation>
     </message>
     <message>
         <location filename="feedsettings.ui" line="203"/>
         <source>Max item&apos;s age:</source>
-        <translation>:أكبر عمر المقالة</translation>
+        <translation>أكبر عمر المقالة:</translation>
     </message>
     <message>
         <location filename="feedsettings.ui" line="216"/>
@@ -177,7 +177,7 @@
     <message>
         <location filename="importbinary.ui" line="23"/>
         <source>File:</source>
-        <translation>:ملف</translation>
+        <translation>ملف:</translation>
     </message>
     <message>
         <location filename="importbinary.ui" line="35"/>
@@ -187,7 +187,7 @@
     <message>
         <location filename="importbinary.ui" line="44"/>
         <source>Additional tags:</source>
-        <translation>:علامات إضافية</translation>
+        <translation>علامات إضافية:</translation>
     </message>
     <message>
         <location filename="importbinary.ui" line="51"/>
@@ -197,7 +197,7 @@
     <message>
         <location filename="importbinary.ui" line="58"/>
         <source>Feeds:</source>
-        <translation>:أشرطة</translation>
+        <translation>أشرطة:</translation>
     </message>
     <message>
         <location filename="importbinary.ui" line="66"/>
@@ -225,7 +225,7 @@
     <message>
         <location filename="importopml.ui" line="27"/>
         <source>File:</source>
-        <translation>:ملف</translation>
+        <translation>ملف:</translation>
     </message>
     <message>
         <location filename="importopml.ui" line="39"/>
@@ -235,22 +235,22 @@
     <message>
         <location filename="importopml.ui" line="48"/>
         <source>Title:</source>
-        <translation>:عنوان</translation>
+        <translation>عنوان:</translation>
     </message>
     <message>
         <location filename="importopml.ui" line="62"/>
         <source>Created:</source>
-        <translation>:منشوء</translation>
+        <translation>منشوء:</translation>
     </message>
     <message>
         <location filename="importopml.ui" line="76"/>
         <source>Modified:</source>
-        <translation>:معدّل</translation>
+        <translation>معدّل:</translation>
     </message>
     <message>
         <location filename="importopml.ui" line="90"/>
         <source>Owner:</source>
-        <translation>:صاحب</translation>
+        <translation>صاحب:</translation>
     </message>
     <message>
         <location filename="importopml.ui" line="111"/>
@@ -270,7 +270,7 @@
     <message>
         <location filename="importopml.ui" line="132"/>
         <source>Additional tags:</source>
-        <translation>:علامات إضافية</translation>
+        <translation>علامات إضافية:</translation>
     </message>
     <message>
         <location filename="importopml.ui" line="139"/>
@@ -280,7 +280,7 @@
     <message>
         <location filename="importopml.ui" line="146"/>
         <source>Feeds:</source>
-        <translation>:أشرطة</translation>
+        <translation>أشرطة:</translation>
     </message>
     <message>
         <location filename="importopml.ui" line="154"/>
@@ -295,7 +295,7 @@
     <message>
         <location filename="importopml.ui" line="177"/>
         <source>Owner email:</source>
-        <translation>:البريد الإلكتروني</translation>
+        <translation>البريد الإلكتروني:</translation>
     </message>
 </context>
 <context>
@@ -815,7 +815,7 @@
     <message>
         <location filename="mainwidget.ui" line="33"/>
         <source>Tags:</source>
-        <translation>:علامات</translation>
+        <translation>علامات:</translation>
     </message>
     <message>
         <location filename="mainwidget.ui" line="67"/>
