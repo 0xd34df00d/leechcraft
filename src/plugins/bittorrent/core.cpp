@@ -2155,6 +2155,8 @@ namespace LeechCraft
 					property ("TrackerMaximumResponseLength").toInt () * 1024;
 				settings.piece_timeout = XmlSettingsManager::Instance ()->
 					property ("PieceTimeout").toInt ();
+				settings.request_timeout = XmlSettingsManager:Instance ()->
+					property ("RequestTimeout").toInt ();
 				settings.request_queue_time = XmlSettingsManager::Instance ()->
 					property ("RequestQueueTime").toInt ();
 				settings.max_allowed_in_request_queue = XmlSettingsManager::Instance ()->
@@ -2169,8 +2171,6 @@ namespace LeechCraft
 					property ("UrlSeedTimeout").toInt ();
 				settings.urlseed_pipeline_size = XmlSettingsManager::Instance ()->
 					property ("UrlSeedPipelineSize").toInt ();
-				settings.seeding_piece_quota = XmlSettingsManager::Instance ()->
-					property ("SeedingPieceQuota").toInt ();
 				settings.urlseed_wait_retry = XmlSettingsManager::Instance ()->
 					property ("UrlSeedWaitRetry").toInt ();
 				settings.file_pool_size = XmlSettingsManager::Instance ()->
@@ -2233,6 +2233,8 @@ namespace LeechCraft
 					property ("UseParoleMode").toBool ();
 				settings.cache_size = 1048576 / 16384 * XmlSettingsManager::Instance ()->
 					property ("CacheSize").value<long int> ();
+				settings.cache_buffer_chunk_size = XmlSettingsManager::Instance ()->
+					property ("CacheBufferChunkSize").toInt ();
 				settings.cache_expiry = XmlSettingsManager::Instance ()->
 					property ("CacheExpiry").toInt ();
 				QList<QVariant> ports = XmlSettingsManager::Instance ()->
@@ -2240,8 +2242,12 @@ namespace LeechCraft
 				if (ports.size () == 2)
 					settings.outgoing_ports = std::make_pair (ports.at (0).toInt (),
 							ports.at (1).toInt ());
+				settings.use_read_cache = XmlSettingsManager::Instance ()->
+					property ("UseReadCache").toBool ();
 				settings.peer_tos = XmlSettingsManager::Instance ()->
 					property ("PeerTOS").toInt ();
+				settings.auto_manage_prefer_seeds = XmlSettingsManager::Instance ()->
+					property ("AutoManagePreferSeeds").toBool ();
 				settings.dont_count_slow_torrents = XmlSettingsManager::Instance ()->
 					property ("DontCountSlowTorrents").toBool ();
 				settings.auto_manage_interval = XmlSettingsManager::Instance ()->
@@ -2252,6 +2258,8 @@ namespace LeechCraft
 					property ("SeedTimeRatioLimit").toDouble ();
 				settings.seed_time_limit = XmlSettingsManager::Instance ()->
 					property ("SeedTimeLimit").toULongLong () * 60;
+				settings.peer_turnover = XmlSettingsManager::Instance ()->
+					property ("PeerTurnover").toDouble ();
 				settings.close_redundant_connections = XmlSettingsManager::Instance ()->
 					property ("CloseRedundantConnections").toBool ();
 				settings.auto_scrape_interval = XmlSettingsManager::Instance ()->
@@ -2270,6 +2278,8 @@ namespace LeechCraft
 					property ("PreferUDPTrackers").toBool ();
 				settings.strict_super_seeding = XmlSettingsManager::Instance ()->
 					property ("StrictSuperSeeding").toBool ();
+				settings.seeding_piece_quota = XmlSettingsManager::Instance ()->
+					property ("SeedingPieceQuota").toInt ();
 				settings.auto_manage_startup = XmlSettingsManager::Instance ()->
 					property ("AutoManageStartup").toInt ();
 				settings.lock_disk_cache = XmlSettingsManager::Instance ()->

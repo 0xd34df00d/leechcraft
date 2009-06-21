@@ -208,6 +208,10 @@
 			<groupbox>
 				<label lang="en" value="Advanced settings" />
 				<label lang="ru" value="Расширенные настройки" />
+				<item type="lineedit" property="AnnounceIP" default="">
+					<label lang="en" value="Announce IP:" />
+					<label lang="ru" value="IP, передаваемый трекеру:" />
+				</item>
 				<item type="checkbox" property="AllowMultipleConnectionsPerIP" state="off">
 					<label lang="en" value="Allow multiple connections per IP" />
 					<label lang="ru" value="Разрешать множественные соединения с одним IP" />
@@ -236,6 +240,10 @@
 				<item type="checkbox" property="UPNPIgnoreNonrouters" state="on">
 					<label lang="en" value="Ignore UPNP-nonrouters" />
 					<label lang="ru" value="Игнорировать UPNP-устройства, не являющиеся роутерами" />
+				</item>
+				<item type="checkbox" property="UseReadCache" state="on">
+					<label lang="en" value="Use read cache" />
+					<label lang="ru" value="Использовать кеш для чтения" />
 				</item>
 				<item type="checkbox" property="AutoUploadSlots" default="true">
 					<label lang="en" value="Auto upload slots" />
@@ -325,6 +333,16 @@
 						<suffix value=" с" />
 					</lang>
 				</item>
+				<item type="spinbox" property="RequestTimeout" default="50" minimum="5" maximum="3600" step="5">
+					<lang value="en">
+						<label value="Block request timeout:" />
+						<suffix value=" s" />
+					</lang>
+					<lang value="ru">
+						<label value="Время ожидания получения блока:" />
+						<suffix value=" с" />
+					</lang>
+				</item>
 				<item type="spinbox" property="RequestQueueTime" default="3" minimum="1" maximum="10" step="1">
 					<lang value="en">
 						<label value="Piece request queue time:" />
@@ -335,9 +353,15 @@
 						<suffix value=" с" />
 					</lang>
 				</item>
-				<item type="lineedit" property="AnnounceIP" default="">
-					<label lang="en" value="Announce IP:" />
-					<label lang="ru" value="IP, передаваемый трекеру:" />
+				<item type="spinbox" property="CacheBufferChunkSize" default="16" minimum="1" maximum="256">
+					<lang value="en">
+						<label value="Allocate this number of blocks at a time:" />
+						<suffix value=" blocks" />
+					</lang>
+					<lang value="ru">
+						<label value="Выделять по:" />
+						<suffix value=" блоков" />
+					</lang>
 				</item>
 				<item type="spinbox" property="MaxAllowedInRequestQueue" default="250" minimum="50" maximum="1000" step="50">
 					<label lang="en" value="The number of block requests a peer is allowed to queue up:" />
@@ -594,6 +618,10 @@
 				<item type="checkbox" property="LockDiskCache" state="on">
 					<label lang="en" value="Prevent disk cache from swapping out" />
 					<label lang="ru" value="Предотвращать сброс кeша в своп" />
+				</item>
+				<item type="checkbox" property="AutoManagePreferSeeds" default="true">
+					<label lang="en" value="Give slots to seeding torrents in automanaged mode" />
+					<label lang="ru" value="Давать слоты отдающимся торрентам в автоуправляемом режиме" />
 				</item>
 				<item type="spinbox" property="CacheExpiry" default="60" minimum="5" maximum="1200">
 					<lang value="en">
