@@ -234,7 +234,8 @@ namespace LeechCraft
 
 			void Poshuku::Handle (LeechCraft::DownloadEntity e)
 			{
-				Open (QTextCodec::codecForName ("UTF-8")->toUnicode (e.Entity_));
+				QString link = QTextCodec::codecForName ("UTF-8")->toUnicode (e.Entity_);
+				Core::Instance ().NewURL (link, true);
 			}
 			
 			void Poshuku::Open (const QString& link)
