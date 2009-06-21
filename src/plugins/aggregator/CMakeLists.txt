@@ -101,10 +101,12 @@ SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS
 	leechcraft_aggregator_ru_RU.ts
 	leechcraft_aggregator_uk_UA.ts
+	leechcraft_aggregator_ar.ts
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_aggregator_ru_RU.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_aggregator_uk_UA.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_aggregator_ar.qm
 	)
 
 ADD_DEFINITIONS(-DBOOST_DYN_LINK)
