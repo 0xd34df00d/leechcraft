@@ -184,6 +184,8 @@ namespace LeechCraft
 
 		QModelIndex MapToSource (const QModelIndex&) const;
 
+		void Setup (QObject*);
+
 		template<LeechCraft::HookID id>
 			typename LeechCraft::HookSignature<id>::Functors_t GetHooks () const;
 #define LC_STRN(a) a##_

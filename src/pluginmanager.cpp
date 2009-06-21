@@ -696,6 +696,8 @@ bool LeechCraft::PluginManager::InitializeSingle (LeechCraft::PluginManager::Dep
 		emit loadProgress (QString (tr ("Initializing %1...")).arg (name));
 		ii->Init (ICoreProxy_ptr (new CoreProxy ()));
 		item->Initialized_ = true;
+
+		Core::Instance ().Setup (item->Plugin_);
 	}
 	catch (const std::exception& e)
 	{

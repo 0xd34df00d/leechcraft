@@ -237,6 +237,48 @@ QStringList LeechCraft::Core::GetTagsForIndex (int index,
 	return result;
 }
 
+void LeechCraft::Core::Setup (QObject *plugin)
+{
+	IInfo *info = qobject_cast<IInfo*> (plugin);
+	try
+	{
+		emit loadProgress (tr ("Setting up %1...").arg (info->GetName ()));
+	}
+	catch (const std::exception& e)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< "unable to get name with"
+			<< e.what ()
+			<< plugin;
+		PluginManager_->Unload (plugin);
+	}
+	catch (...)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< "unable to get name"
+			<< plugin;
+		PluginManager_->Unload (plugin);
+	}
+
+	IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
+	IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
+	IMultiTabs *imt = qobject_cast<IMultiTabs*> (plugin);
+
+	InitDynamicSignals (plugin);
+
+	if (ijh)
+		InitJobHolder (plugin);
+
+	if (iet)
+		connect (plugin,
+				SIGNAL (bringToFront ()),
+				this,
+				SLOT (embeddedTabWantsToFront ()));
+
+	if (imt)
+		InitMultiTab (plugin);
+}
+
 void LeechCraft::Core::DelayedInit ()
 {
 	connect (this,
@@ -249,46 +291,12 @@ void LeechCraft::Core::DelayedInit ()
 	emit loadProgress (tr ("Calculating dependencies..."));
 	PluginManager_->Init ();
 
-	QApplication::processEvents ();
-
 	QObjectList plugins = PluginManager_->GetAllPlugins ();
 	foreach (QObject *plugin, plugins)
 	{
-		IInfo *info = qobject_cast<IInfo*> (plugin);
-		try
-		{
-			emit loadProgress (tr ("Setting up %1...").arg (info->GetName ()));
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "unable to get name with"
-				<< e.what ()
-				<< plugin;
-			PluginManager_->Unload (plugin);
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "unable to get name"
-				<< plugin;
-			PluginManager_->Unload (plugin);
-		}
-
-		IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
 		IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
-		IMultiTabs *imt = qobject_cast<IMultiTabs*> (plugin);
-
-		InitDynamicSignals (plugin);
-
-		if (ijh)
-			InitJobHolder (plugin);
-
 		if (iet)
 			InitEmbedTab (plugin);
-
-		if (imt)
-			InitMultiTab (plugin);
 	}
 
 	TabContainer_->handleTabNames ();
@@ -1198,10 +1206,6 @@ void LeechCraft::Core::InitEmbedTab (QObject *plugin)
 				ii->GetIcon ());
 		TabContainer_->SetToolBar (iet->GetToolBar (),
 				iet->GetTabContents ());
-		connect (plugin,
-				SIGNAL (bringToFront ()),
-				this,
-				SLOT (embeddedTabWantsToFront ()));
 	}
 	catch (const std::exception& e)
 	{
