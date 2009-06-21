@@ -16,6 +16,7 @@ GraphWidget::GraphWidget (const QColor& downColor,
 	setAutoFillBackground (true);
 	setBackgroundRole (QPalette::Window);
 	setPalette (Qt::black);
+	PushSpeed (0, 0);
 }
 
 void GraphWidget::PushSpeed (quint64 ds, quint64 us)
