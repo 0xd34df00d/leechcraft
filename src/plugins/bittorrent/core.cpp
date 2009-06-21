@@ -576,8 +576,6 @@ namespace LeechCraft
 				{
 					libtorrent::peer_info pi = peerInfos [i];
 			
-					QTime time (0, 0, 0);
-					time.addMSecs (libtorrent::total_milliseconds (pi.last_active));
 					int interesting = 0;
 					for (size_t j = 0; j < localPieces.size (); ++j)
 						interesting += (pi.pieces [j] && !localPieces [j]);
@@ -585,20 +583,9 @@ namespace LeechCraft
 					PeerInfo ppi =
 					{
 						QString::fromStdString (pi.ip.address ().to_string ()),
-						pi.down_speed,
-						pi.up_speed,
-						pi.total_download,
-						pi.total_upload,
 						QString::fromUtf8 (pi.client.c_str ()),
-						pi.num_pieces,
 						interesting,
-						time,
-						pi.num_hashfails,
-						pi.failcount,
-						pi.downloading_piece_index,
-						pi.downloading_block_index,
-						pi.downloading_progress,
-						pi.downloading_total
+						boost::shared_ptr<libtorrent::peer_info> (new libtorrent::peer_info (pi))
 					};
 					result << ppi;
 				}
@@ -2155,7 +2142,7 @@ namespace LeechCraft
 					property ("TrackerMaximumResponseLength").toInt () * 1024;
 				settings.piece_timeout = XmlSettingsManager::Instance ()->
 					property ("PieceTimeout").toInt ();
-				settings.request_timeout = XmlSettingsManager:Instance ()->
+				settings.request_timeout = XmlSettingsManager::Instance ()->
 					property ("RequestTimeout").toInt ();
 				settings.request_queue_time = XmlSettingsManager::Instance ()->
 					property ("RequestQueueTime").toInt ();

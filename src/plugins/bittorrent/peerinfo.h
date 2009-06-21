@@ -1,7 +1,9 @@
 #ifndef PLUGINS_BITTORRENT_PEERINFO_H
 #define PLUGINS_BITTORRENT_PEERINFO_H
 #include <vector>
+#include <boost/shared_ptr.hpp>
 #include <QTime>
+#include <libtorrent/peer_info.hpp>
 #include <libtorrent/bitfield.hpp>
 
 namespace LeechCraft
@@ -13,20 +15,9 @@ namespace LeechCraft
 			struct PeerInfo
 			{
 				QString IP_;
-				quint64 DSpeed_,
-						USpeed_;
-				quint64 Downloaded_,
-						Uploaded_;
 				QString Client_;
-				int NumPieces_;
 				int RemoteHas_;
-				QTime LastActive_;
-				int Hashfails_;
-				int Failcount_;
-				int DownloadingPiece_;
-				int DownloadingBlock_;
-				int DownloadingProgress_;
-				int DownloadingTotal_;
+				boost::shared_ptr<libtorrent::peer_info> PI_;
 			};
 		};
 	};

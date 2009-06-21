@@ -33,6 +33,8 @@ namespace LeechCraft
 				virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
 				virtual QModelIndex parent (const QModelIndex&) const;
 				virtual int rowCount (const QModelIndex& parent = QModelIndex ()) const;
+
+				const PeerInfo& GetPeerInfo (const QModelIndex&) const;
 			protected:
 				void Clear ();
 				void Update (const QList<PeerInfo>&, int);

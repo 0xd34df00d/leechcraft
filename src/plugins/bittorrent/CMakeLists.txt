@@ -27,6 +27,7 @@ SET (SRCS
 	representationmodel.cpp
 	trackerschanger.cpp
 	exportdialog.cpp
+	peerstablinker.cpp
 	)
 SET (HEADERS
 	torrentplugin.h
@@ -48,6 +49,7 @@ SET (HEADERS
 	representationmodel.h
 	trackerschanger.h
 	exportdialog.h
+	peerstablinker.h
 	newtorrentparams.h
 	torrentinfo.h
 	fileinfo.h

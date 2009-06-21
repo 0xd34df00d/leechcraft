@@ -22,11 +22,7 @@ namespace LeechCraft
 					<< tr ("Downloaded")
 					<< tr ("Uploaded")
 					<< tr ("Client")
-					<< tr ("Available pieces")
-					<< tr ("Last active")
-					<< tr ("Hashfails")
-					<< tr ("Failcount")
-					<< tr ("Progress");
+					<< tr ("Available pieces");
 			}
 			
 			PeersModel::~PeersModel ()
@@ -40,7 +36,8 @@ namespace LeechCraft
 			
 			QVariant PeersModel::data (const QModelIndex& index, int role) const
 			{
-				if (!index.isValid () || (role != Qt::DisplayRole && role != SortRole))
+				if (!index.isValid () ||
+						(role != Qt::DisplayRole && role != SortRole))
 					return QVariant ();
 			
 				int i = index.row ();
@@ -52,51 +49,42 @@ namespace LeechCraft
 						return pi.IP_;
 					case 1:
 						if (role == Qt::DisplayRole)
-							return Proxy::Instance ()->MakePrettySize (pi.DSpeed_) + tr ("/s");
+							return Proxy::Instance ()->
+								MakePrettySize (pi.PI_->payload_down_speed) + tr ("/s");
 						else if (role == SortRole)
-							return pi.DSpeed_;
+							return pi.PI_->payload_down_speed;
 						else
 							return QVariant ();
 					case 2:
 						if (role == Qt::DisplayRole)
-							return Proxy::Instance ()->MakePrettySize (pi.USpeed_) + tr ("/s");
+							return Proxy::Instance ()->
+								MakePrettySize (pi.PI_->payload_up_speed) + tr ("/s");
 						else if (role == SortRole)
-							return Peers_.at (i).USpeed_;
+							return pi.PI_->payload_up_speed;
 						else
 							return QVariant ();
 					case 3:
 						if (role == Qt::DisplayRole)
-							return Proxy::Instance ()->MakePrettySize (pi.Downloaded_);
+							return Proxy::Instance ()->
+								MakePrettySize (pi.PI_->total_download);
 						else if (role == SortRole)
-							return pi.Downloaded_;
+							return static_cast<qulonglong> (pi.PI_->total_download);
 						else
 							return QVariant ();
 					case 4:
 						if (role == Qt::DisplayRole)
-							return Proxy::Instance ()->MakePrettySize (pi.Uploaded_);
+							return Proxy::Instance ()->
+								MakePrettySize (pi.PI_->total_upload);
 						else if (role == SortRole)
-							return pi.Uploaded_;
+							return static_cast<qulonglong> (pi.PI_->total_upload);
 						else
 							return QVariant ();
 					case 5:
-						return Peers_.at (i).Client_;
+						return pi.Client_;
 					case 6:
-						return tr ("%1, %2 interesting").arg (pi.NumPieces_).arg (pi.RemoteHas_);
-					case 7:
-						return pi.LastActive_.toString ("mm:ss.zzz");
-					case 8:
-						return pi.Hashfails_;
-					case 9:
-						return pi.Failcount_;
-					case 10:
-						if (pi.DownloadingPiece_ >= 0)
-							return tr ("Piece %1, block %2, %3 of %4 bytes").
-									arg (pi.DownloadingPiece_).
-									arg (pi.DownloadingBlock_).
-									arg (pi.DownloadingProgress_).
-									arg (pi.DownloadingTotal_);
-						else
-							return tr ("Idle");
+						return tr ("%1/%2")
+							.arg (pi.RemoteHas_)
+							.arg (pi.PI_->num_pieces);
 					default:
 						return "Unhandled column";
 				}
@@ -137,6 +125,13 @@ namespace LeechCraft
 			{
 				return Peers_.size ();
 			}
+
+			const PeerInfo& PeersModel::GetPeerInfo (const QModelIndex& index) const
+			{
+				if (index.row () >= Peers_.size ())
+					throw std::runtime_error ("Index too large");
+				return Peers_.at (index.row ());
+			}
 			
 			void PeersModel::Clear ()
 			{
@@ -154,6 +149,7 @@ namespace LeechCraft
 				{
 					CurrentTorrent_ = torrent;
 					Peers_.clear ();
+					reset ();
 			
 					Update (peers, torrent);
 				}
@@ -172,6 +168,9 @@ namespace LeechCraft
 						if (pos != IP2position.end ())
 						{
 							Peers_ [pos.value ()] = pi;
+							QModelIndex chin1 = index (pos.value (), 0);
+							QModelIndex chin2 = index (pos.value (), columnCount () - 1);
+							emit dataChanged (chin1, chin2);
 							IP2position.erase (pos);
 						}
 						else
@@ -179,11 +178,24 @@ namespace LeechCraft
 					}
 			
 					QList<int> values = IP2position.values ();
+					std::sort (values.begin (), values.end (),
+							std::greater<int> ());
 					for (int i = 0; i < values.size (); ++i)
-						Peers_.removeAt (values.at (i));
-					Peers_ += peers2insert;
-			
-					reset ();
+					{
+						int val = values.at (i);
+						beginRemoveRows (QModelIndex (), val, val);
+						Peers_.removeAt (val);
+						endRemoveRows ();
+					}
+
+					if (peers2insert.size ())
+					{
+						beginInsertRows (QModelIndex (),
+								Peers_.size (),
+								Peers_.size () + peers2insert.size () - 1);
+						Peers_ += peers2insert;
+						endInsertRows ();
+					}
 				}
 			}
 			

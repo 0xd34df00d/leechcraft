@@ -31,6 +31,7 @@
 #include "representationmodel.h"
 #include "trackerschanger.h"
 #include "exportdialog.h"
+#include "peerstablinker.h"
 
 #ifdef AddJob
 #undef AddJob
@@ -1054,6 +1055,8 @@ namespace LeechCraft
 				peersSorter->setSourceModel (Core::Instance ()->GetPeersModel ());
 				peersSorter->setSortRole (PeersModel::SortRole);
 				Ui_.PeersView_->setModel (peersSorter);
+
+				new PeersTabLinker (&Ui_, peersSorter, this);
 			
 				UpdateDashboard ();
 				
