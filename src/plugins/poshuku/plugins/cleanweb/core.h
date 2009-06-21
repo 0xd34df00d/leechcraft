@@ -106,7 +106,6 @@ namespace LeechCraft
 								const QString&, const QString&) const;
 						void HandleProvider (QObject*);
 						void Parse (const QString&);
-						void Update ();
 
 						/** Loads the subscription from the url with the name
 						 * subscrName. Returns true if the load delegation was
@@ -122,6 +121,7 @@ namespace LeechCraft
 						void ReadSettings ();
 						bool AssignSD (const SubscriptionData&);
 					private slots:
+						void update ();
 						void handleJobFinished (int);
 						void handleJobError (int, IDownload::Error);
 					signals:

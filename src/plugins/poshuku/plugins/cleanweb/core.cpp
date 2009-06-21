@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QSettings>
 #include <QFileInfo>
+#include <QTimer>
 #include <QTextCodec>
 #include <QMessageBox>
 #include <plugininterface/util.h>
@@ -206,7 +207,9 @@ LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::Core::Core ()
 		Parse (info.absoluteFilePath ());
 
 	ReadSettings ();
-	Update ();
+	QTimer::singleShot (0,
+			this,
+			SLOT (update ()));
 }
 
 Core& Core::Instance ()
@@ -536,21 +539,6 @@ void Core::Parse (const QString& filePath)
 	endInsertRows ();
 }
 
-void Core::Update ()
-{
-	if (!XmlSettingsManager::Instance ()->
-			property ("Autoupdate").toBool ())
-		return;
-
-	QDateTime current = QDateTime::currentDateTime ();
-	int days = XmlSettingsManager::Instance ()->
-		property ("UpdateInterval").toInt ();
-	Q_FOREACH (Filter f, Filters_)
-		if (f.SD_.LastDateTime_.daysTo (current) > days)
-			if (Load (f.SD_.URL_, f.SD_.Name_))
-				Remove (f.SD_.Filename_);
-}
-
 bool Core::Load (const QUrl& url, const QString& subscrName)
 {
 	QDir home = QDir::home ();
@@ -676,6 +664,21 @@ bool Core::AssignSD (const SubscriptionData& sd)
 	}
 	else
 		return false;
+}
+
+void Core::update ()
+{
+	if (!XmlSettingsManager::Instance ()->
+			property ("Autoupdate").toBool ())
+		return;
+
+	QDateTime current = QDateTime::currentDateTime ();
+	int days = XmlSettingsManager::Instance ()->
+		property ("UpdateInterval").toInt ();
+	Q_FOREACH (Filter f, Filters_)
+		if (f.SD_.LastDateTime_.daysTo (current) > days)
+			if (Load (f.SD_.URL_, f.SD_.Name_))
+				Remove (f.SD_.Filename_);
 }
 
 void Core::handleJobFinished (int id)
