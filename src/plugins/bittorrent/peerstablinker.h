@@ -1,7 +1,7 @@
 #ifndef PLUGINS_BITTORRENT_PEERSTABLINKER_H
 #define PLUGINS_BITTORRENT_PEERSTABLINKER_H
 #include <QObject>
-#include <QModelIndex>
+#include <QPersistentModelIndex>
 
 class QSortFilterProxyModel;
 
@@ -22,7 +22,7 @@ namespace LeechCraft
 
 				Ui::TabWidget *Ui_;
 				QSortFilterProxyModel *ProxyModel_;
-				QModelIndex Current_;
+				QPersistentModelIndex Current_;
 			public:
 				PeersTabLinker (Ui::TabWidget*,
 						QSortFilterProxyModel*, QObject* = 0);

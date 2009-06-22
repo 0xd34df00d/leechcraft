@@ -1581,12 +1581,6 @@
     </item>
     <item>
      <widget class="QGroupBox" name="groupBox_3">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>500</height>
-       </size>
-      </property>
       <property name="title">
        <string>Statistics</string>
       </property>
@@ -1611,8 +1605,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>505</width>
-            <height>426</height>
+            <width>488</width>
+            <height>400</height>
            </rect>
           </property>
           <layout class="QFormLayout" name="formLayout_10">
