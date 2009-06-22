@@ -534,6 +534,17 @@ void Core::Parse (const QString& filePath)
 
 	f.SD_.Filename_ = QFileInfo (filePath).fileName ();
 
+	QList<Filter>::iterator pos = std::find_if (Filters_.begin (), Filters_.end (),
+			FilterFinder<FilterFinderBase::TFilename_> (f.SD_.Filename_));
+	if (pos != Filters_.end ())
+	{
+		int row = std::distance (Filters_.begin (), pos);
+		beginRemoveRows (QModelIndex (), row, row);
+		Filters_.erase (pos);
+		endRemoveRows ();
+		WriteSettings ();
+	}
+
 	beginInsertRows (QModelIndex (), Filters_.size (), Filters_.size ());
 	Filters_ << f;
 	endInsertRows ();
@@ -677,8 +688,7 @@ void Core::update ()
 		property ("UpdateInterval").toInt ();
 	Q_FOREACH (Filter f, Filters_)
 		if (f.SD_.LastDateTime_.daysTo (current) > days)
-			if (Load (f.SD_.URL_, f.SD_.Name_))
-				Remove (f.SD_.Filename_);
+			Load (f.SD_.URL_, f.SD_.Name_);
 }
 
 void Core::handleJobFinished (int id)

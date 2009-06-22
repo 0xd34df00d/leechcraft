@@ -113,10 +113,10 @@ namespace LeechCraft
 						 */
 						bool Load (const QUrl& url, const QString& subscrName);
 
-						/** Returns the subscription at
-						 * ~/.leechcraft/cleanweb/name.
+						/** Removes the subscription at
+						 * ~/.leechcraft/cleanweb/filename.
 						 */
-						void Remove (const QString& name);
+						void Remove (const QString& filename);
 						void WriteSettings ();
 						void ReadSettings ();
 						bool AssignSD (const SubscriptionData&);
