@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0">
+<!DOCTYPE TS><TS>
 <context>
     <name>AuthenticationDialog</name>
     <message>
@@ -32,7 +30,7 @@
     </message>
     <message>
         <source>Entity:</source>
-        <translation type="unfinished">Entità</translation>
+        <translation type="unfinished">Entit�</translation>
     </message>
     <message>
         <source>Browse...</source>
@@ -266,8 +264,8 @@
         <translation type="unfinished">LeechCraft</translation>
     </message>
     <message>
-        <source>/s	</source>
-        <translation type="unfinished">/s	</translation>
+        <source>/s<byte value="x9"/></source>
+        <translation type="unfinished">/s<byte value="x9"/></translation>
     </message>
     <message>
         <source>/s</source>
@@ -386,7 +384,7 @@
     </message>
     <message>
         <source>Valid:</source>
-        <translation type="unfinished">Valido:</translation>
+        <translation type="unfinished">Validità:</translation>
     </message>
     <message>
         <source>yes</source>
@@ -438,7 +436,7 @@
     </message>
     <message>
         <source>Organizational unit name:</source>
-        <translation type="unfinished">Nome unità organizazzionale:</translation>
+        <translation type="unfinished">Nome unità di organizazzione:</translation>
     </message>
     <message>
         <source>Country name:</source>
