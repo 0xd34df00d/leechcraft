@@ -3,6 +3,7 @@
 #include <QHeaderView>
 #include <QUrl>
 #include <QWebSettings>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -33,9 +34,7 @@ namespace LeechCraft
 				item->setData (0, Qt::CheckStateRole, Qt::Checked);
 				// Do not remote this debugging output, for some reason QWebSettings
 				// returns a valid icon only in a second or third call to the DB.
-				QWebSettings::iconForUrl (QUrl (url));
-				QWebSettings::iconForUrl (QUrl (url)).isNull ();
-				item->setIcon (0, QWebSettings::iconForUrl (QUrl (url)));
+				item->setIcon (0, Core::Instance ().GetIcon (QUrl (url)));
 			}
 			
 			QStringList RestoreSessionDialog::GetSelectedURLs () const

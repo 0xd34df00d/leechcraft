@@ -327,6 +327,23 @@ namespace LeechCraft
 			{
 				return ShortcutProxy_;
 			}
+
+			QIcon Core::GetIcon (const QUrl& url) const
+			{
+				QIcon result = QWebSettings::iconForUrl (url);
+				if (!result.isNull ())
+					return result;
+
+				QUrl test;
+				test.setScheme (url.scheme ());
+				test.setHost (url.host ());
+
+				result = QWebSettings::iconForUrl (test);
+				if (!result.isNull ())
+					return result;
+
+				return QWebSettings::webGraphic (QWebSettings::DefaultFrameIconGraphic);
+			}
 			
 			void Core::Unregister (BrowserWidget *widget)
 			{

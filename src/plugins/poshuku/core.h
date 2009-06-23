@@ -103,6 +103,8 @@ namespace LeechCraft
 				void SetShortcutProxy (const IShortcutProxy*);
 				void SetShortcut (int name, const QKeySequence& shortcut);
 				const IShortcutProxy* GetShortcutProxy () const;
+
+				QIcon GetIcon (const QUrl&) const;
 			private:
 				void RestoreSession (bool);
 				void HandleHistory (QWebView*);

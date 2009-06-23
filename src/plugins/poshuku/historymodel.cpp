@@ -224,11 +224,7 @@ namespace LeechCraft
 				TreeItem *thisItem = new TreeItem (data, RootItem_->Child (section));
 				folder->PrependChild (thisItem);
 			
-				QUrl url (item.URL_);
-				url.setFragment (QString ());
-				url.setPath (QString ());
-				url.setQueryItems (QList<QPair<QString, QString> > ());
-				QIcon icon = QWebSettings::iconForUrl (url);
+				QIcon icon = Core::Instance ().GetIcon (QUrl (item.URL_));
 				if (icon.isNull ())
 					icon = UnknownURLProxy_->icon ();
 				thisItem->ModifyData (0,
