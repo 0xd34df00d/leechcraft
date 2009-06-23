@@ -201,15 +201,12 @@ bool Application::IsAlreadyRunning () const
 	if (socket.waitForConnected () ||
 			socket.state () == QLocalSocket::ConnectedState)
 	{
-		QByteArray toSend;
-		{
-			QDataStream out (&toSend, QIODevice::WriteOnly);
-			out << Arguments_;
-		}
-		socket.write (toSend);
-		socket.disconnectFromServer ();
-		socket.waitForDisconnected ();
-		return true;
+		QDataStream out (&socket);
+		out << Arguments_;
+		if (socket.waitForBytesWritten ())
+			return true;
+        if (socket.error() == QLocalSocket::UnknownSocketError)
+            return true;
 	}
 	else
 	{
