@@ -158,6 +158,9 @@ namespace LeechCraft
 			QUrl Core::MakeURL (QString url) const
 			{
 				url = url.trimmed ();
+				if (url == "localhost")
+					return QUrl ("http://localhost");
+
 				// If the url without percent signs and two following characters is
 				// a valid url (it should not be percent-encoded), then treat source
 				// url as percent-encoded, otherwise treat as not percent-encoded.
