@@ -355,6 +355,9 @@ namespace LeechCraft
 			
 			void Poshuku::on_HistoryView__activated (const QModelIndex& index)
 			{
+				if (!index.parent ().isValid ())
+					return;
+
 				Core::Instance ().NewURL (index.sibling (index.row (),
 							HistoryModel::ColumnURL).data ().toString ());
 			}
