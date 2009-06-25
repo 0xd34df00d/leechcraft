@@ -11,6 +11,7 @@
 #include <interfaces/itaggablejobs.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ihaveshortcuts.h>
+#include <interfaces/itoolbarembedder.h>
 #include <plugininterface/tagscompleter.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "ui_tabwidget.h"
@@ -39,10 +40,11 @@ namespace LeechCraft
 								, public ITaggableJobs
 								, public IHaveSettings
 								, public IHaveShortcuts
+								, public IToolBarEmbedder
 			{
 				Q_OBJECT
 
-				Q_INTERFACES (IInfo IDownload IJobHolder IImportExport ITaggableJobs IHaveSettings IHaveShortcuts);
+				Q_INTERFACES (IInfo IDownload IJobHolder IImportExport ITaggableJobs IHaveSettings IHaveShortcuts IToolBarEmbedder);
 
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 				std::auto_ptr<AddTorrent> AddTorrentDialog_;
@@ -133,6 +135,9 @@ namespace LeechCraft
 				// IHaveShortcuts
 				void SetShortcut (int, const QKeySequence&);
 				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
+
+				// IToolBarEmbedder
+				QList<QAction*> GetActions () const;
 			public slots:
 				void updateTorrentStats ();
 			private slots:

@@ -327,6 +327,13 @@ namespace LeechCraft
 				return result;
 			}
 #undef _L
+
+			QList<QAction*> TorrentPlugin::GetActions () const
+			{
+				QList<QAction*> result;
+				result += CreateTorrent_.get ();
+				return result;
+			}
 			
 			void TorrentPlugin::on_OpenTorrent__triggered ()
 			{
