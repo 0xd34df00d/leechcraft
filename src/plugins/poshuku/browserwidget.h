@@ -129,7 +129,8 @@ namespace LeechCraft
 				void enableActions ();
 				void setupLoading ();
 				void handleEntityAction ();
-				void handleLoadFinished ();
+				void checkLinkRels ();
+				void setScrollPosition ();
 				void handleLoadProgress (int);
 			signals:
 				void titleChanged (const QString&);

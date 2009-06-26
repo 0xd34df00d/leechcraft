@@ -30,7 +30,7 @@ namespace LeechCraft
 			{
 				Current_.clear ();
 			}
-			
+
 			void JSProxy::debug (const QString& string)
 			{
 				qDebug () << Q_FUNC_INFO << string;

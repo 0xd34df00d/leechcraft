@@ -12,6 +12,7 @@
 #include "core.h"
 #include "pluginmanager.h"
 #include "jsproxy.h"
+#include "externalproxy.h"
 
 namespace LeechCraft
 {
@@ -24,15 +25,22 @@ namespace LeechCraft
 			, MouseButtons_ (Qt::NoButton)
 			, Modifiers_ (Qt::NoModifier)
 			, JSProxy_ (new JSProxy (this))
+			, ExternalProxy_ (new ExternalProxy (this))
 			{
 				setForwardUnsupportedContent (true);
 				setNetworkAccessManager (Core::Instance ().GetNetworkAccessManager ());
+
+				connect (ExternalProxy_.get (),
+						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						this,
+						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+
+				handleFrameCreated (mainFrame ());
 			
 				connect (mainFrame (),
 						SIGNAL (javaScriptWindowObjectCleared ()),
 						this,
 						SLOT (handleJavaScriptWindowObjectCleared ()));
-			
 				connect (this,
 						SIGNAL (contentsChanged ()),
 						this,
@@ -174,6 +182,9 @@ namespace LeechCraft
 				if (Core::Instance ().GetPluginManager ()->
 						HandleFrameCreated (this, frame))
 					return;
+			
+				frame->addToJavaScriptWindowObject ("JSProxy", JSProxy_.get ());
+				frame->addToJavaScriptWindowObject ("external", ExternalProxy_.get ());
 			}
 			
 			void CustomWebPage::handleJavaScriptWindowObjectCleared ()
@@ -182,8 +193,6 @@ namespace LeechCraft
 				if (Core::Instance ().GetPluginManager ()->
 						HandleJavaScriptWindowObjectCleared (this, frame))
 					return;
-			
-				frame->addToJavaScriptWindowObject ("JSProxy", JSProxy_.get ());
 			}
 			
 			void CustomWebPage::handleGeometryChangeRequested (const QRect& rect)

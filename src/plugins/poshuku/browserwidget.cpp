@@ -275,7 +275,11 @@ namespace LeechCraft
 				connect (Ui_.WebView_,
 						SIGNAL (loadFinished (bool)),
 						this,
-						SLOT (handleLoadFinished ()));
+						SLOT (checkLinkRels ()));
+				connect (Ui_.WebView_,
+						SIGNAL (loadFinished (bool)),
+						this,
+						SLOT (setScrollPosition ()));
 				connect (Ui_.WebView_,
 						SIGNAL (loadFinished (bool)),
 						this,
@@ -785,7 +789,7 @@ namespace LeechCraft
 				emit gotEntity (qobject_cast<QAction*> (sender ())->data ().value<LeechCraft::DownloadEntity> ());
 			}
 			
-			void BrowserWidget::handleLoadFinished ()
+			void BrowserWidget::checkLinkRels ()
 			{
 				if (HtmlMode_)
 					return;
@@ -866,6 +870,10 @@ namespace LeechCraft
 						}
 					}
 				}
+			}
+
+			void BrowserWidget::setScrollPosition ()
+			{
 				if (!OnLoadPos_.isNull ())
 					GetView ()->page ()->mainFrame ()->setScrollPosition (OnLoadPos_);
 			}

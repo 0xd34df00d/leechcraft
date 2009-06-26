@@ -13,6 +13,7 @@ namespace LeechCraft
 		namespace Poshuku
 		{
 			class JSProxy;
+			class ExternalProxy;
 
 			class CustomWebPage : public QWebPage
 			{
@@ -23,6 +24,7 @@ namespace LeechCraft
 
 				QUrl LoadingURL_;
 				boost::shared_ptr<JSProxy> JSProxy_;
+				boost::shared_ptr<ExternalProxy> ExternalProxy_;
 				typedef QMap<QWebFrame*, QWebHistoryItem*> Frame2History_t;
 				Frame2History_t Frame2History_;
 			public:

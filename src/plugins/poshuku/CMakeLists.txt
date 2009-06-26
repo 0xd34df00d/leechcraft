@@ -38,6 +38,7 @@ SET (SRCS
 	historyfiltermodel.cpp
 	proxyobject.cpp
 	jsproxy.cpp
+	externalproxy.cpp
 	notification.cpp
 	passwordremember.cpp
 	pageformsdata.cpp
@@ -74,6 +75,7 @@ SET (HEADERS
 	historyfiltermodel.h
 	proxyobject.h
 	jsproxy.h
+	externalproxy.h
 	notification.h
 	passwordremember.h
 	pageformsdata.h
