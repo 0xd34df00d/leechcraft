@@ -353,6 +353,14 @@ namespace LeechCraft
 				_L (ActionExportBinary_);
 				return result;
 			}
+
+			QList<QAction*> Aggregator::GetActions () const
+			{
+				QList<QAction*> result;
+				result += Impl_->ActionAddFeed_;
+				result += Impl_->ActionUpdateFeeds_;
+				return result;
+			}
 			
 			void Aggregator::keyPressEvent (QKeyEvent *e)
 			{
@@ -425,10 +433,8 @@ namespace LeechCraft
 			{
 				QToolBar *bar = new QToolBar ();
 			
-				bar->addAction (Impl_->ActionAddFeed_);
 				bar->addAction (Impl_->ActionRemoveFeed_);
 				bar->addAction (Impl_->ActionUpdateSelectedFeed_);
-				bar->addAction (Impl_->ActionUpdateFeeds_);
 				bar->addSeparator ();
 				bar->addAction (Impl_->ActionItemBucket_);
 				bar->addAction (Impl_->ActionRegexpMatcher_);

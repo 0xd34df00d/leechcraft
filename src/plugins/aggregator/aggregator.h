@@ -1,6 +1,8 @@
 #ifndef PLUGINS_AGGREGATOR_AGGREGATOR_H
 #define PLUGINS_AGGREGATOR_AGGREGATOR_H
 #include <memory>
+#include <QWidget>
+#include <QItemSelection>
 #include <interfaces/iinfo.h>
 #include <interfaces/iembedtab.h>
 #include <interfaces/ijobholder.h>
@@ -8,8 +10,7 @@
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/structures.h>
-#include <QWidget>
-#include <QItemSelection>
+#include <interfaces/itoolbarembedder.h>
 
 class QSystemTrayIcon;
 class QTranslator;
@@ -34,9 +35,10 @@ namespace LeechCraft
 							 , public IJobHolder
 							 , public IEntityHandler
 							 , public IHaveShortcuts
+							 , public IToolBarEmbedder
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IEmbedTab IHaveSettings IJobHolder IEntityHandler IHaveShortcuts)
+				Q_INTERFACES (IInfo IEmbedTab IHaveSettings IJobHolder IEntityHandler IHaveShortcuts IToolBarEmbedder)
 
 				Aggregator_Impl *Impl_;
 			public:
@@ -50,15 +52,21 @@ namespace LeechCraft
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
 				QIcon GetIcon () const;
+
 				QWidget* GetTabContents ();
 				QToolBar* GetToolBar () const;
-				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 				QAbstractItemModel* GetRepresentation () const;
 				void ItemSelected (const QModelIndex&);
+
+				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
+
 				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
 				void Handle (LeechCraft::DownloadEntity);
+
 				void SetShortcut (int, const QKeySequence&);
 				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
+
+				QList<QAction*> GetActions () const;
 			protected:
 				virtual void keyPressEvent (QKeyEvent*);
 			private:
