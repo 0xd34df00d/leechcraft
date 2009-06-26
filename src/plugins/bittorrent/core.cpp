@@ -939,6 +939,16 @@ namespace LeechCraft
 							.arg (CurrentTorrent_).arg (file);
 				}
 			}
+
+			void Core::SetFilename (int index, const QString& name)
+			{
+				if (!CheckValidity (CurrentTorrent_))
+					return;
+
+				Handles_ [CurrentTorrent_].Handle_.rename_file (index, name.toStdWString ());
+
+				ResetFiles ();
+			}
 			
 			QStringList Core::GetTrackers () const
 			{

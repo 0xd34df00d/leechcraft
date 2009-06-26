@@ -50,12 +50,13 @@ namespace LeechCraft
 				bool AdditionDialog_;
 				Path2TreeItem_t Path2TreeItem_;
 				int FilesInTorrent_;
+			public:
 				enum
 				{
 					RawDataRole = 46,
 					RolePath
 				};
-			public:
+
 				TorrentFilesModel (bool, QObject *parent = 0);
 				virtual ~TorrentFilesModel ();
 

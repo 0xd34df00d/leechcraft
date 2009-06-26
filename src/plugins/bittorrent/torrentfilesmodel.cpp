@@ -68,12 +68,22 @@ namespace LeechCraft
 				if (!index.isValid ())
 					return 0;
 			
-				if (AdditionDialog_ && index.column () == 0 && !hasChildren (index))
-					return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
-				else if (!AdditionDialog_ && index.column () == 2 && !rowCount (index.sibling (index.row (), 0)))
-					return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
+				if (AdditionDialog_ &&
+						index.column () == 0 &&
+						!hasChildren (index))
+					return Qt::ItemIsSelectable |
+						Qt::ItemIsEnabled |
+						Qt::ItemIsUserCheckable;
+				else if (!AdditionDialog_ &&
+						((index.column () == 2 &&
+						  !rowCount (index.sibling (index.row (), 0))) ||
+						  index.column () == 0))
+					return Qt::ItemIsSelectable |
+						Qt::ItemIsEnabled |
+						Qt::ItemIsEditable;
 				else
-					return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+					return Qt::ItemIsSelectable |
+						Qt::ItemIsEnabled;
 			}
 			
 			QVariant TorrentFilesModel::headerData (int h, Qt::Orientation orient, int role) const
@@ -142,13 +152,27 @@ namespace LeechCraft
 					emit dataChanged (index, index);
 					return true;
 				}
-				else if (role == Qt::EditRole && index.column () == 2)
+				else if (role == Qt::EditRole)
 				{
-					TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
-					Core::Instance ()->SetFilePriority (item->Data (1, RolePath).toInt (), value.toInt ());
-					item->ModifyData (index.column (), value);
-					emit dataChanged (index, index);
-					return true;
+					if (index.column () == 2)
+					{
+						TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
+						Core::Instance ()->
+							SetFilePriority (item->Data (1, RolePath).toInt (), value.toInt ());
+						item->ModifyData (index.column (), value);
+						emit dataChanged (index, index);
+						return true;
+					}
+					else if (index.column () == 0)
+					{
+						TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
+						Core::Instance ()->
+							SetFilename (item->Data (1, RolePath).toInt (),
+									value.toString ());
+						return true;
+					}
+					else
+						return false;
 				}
 				else
 					return false;
@@ -171,6 +195,7 @@ namespace LeechCraft
 					const libtorrent::torrent_info::file_iterator& end)
 			{
 				Clear ();
+
 				libtorrent::torrent_info::file_iterator orig = begin;
 				beginInsertRows (QModelIndex (), 0, 0);
 				int distance = std::distance (begin, end);
@@ -178,6 +203,7 @@ namespace LeechCraft
 					return;
 				FilesInTorrent_ = distance;
 				Path2TreeItem_ [boost::filesystem::path ()] = RootItem_;
+
 				for (; begin != end; ++begin)
 				{
 					Path2TreeItem_t::key_type parentPath = begin->path.branch_path ();
@@ -195,22 +221,28 @@ namespace LeechCraft
 					parentItem->AppendChild (item);
 					Path2TreeItem_ [begin->path] = item;
 				}
+
 				for (int i = 0; i < RootItem_->ChildCount (); ++i)
 					UpdateSizeGraph (RootItem_->Child (i));
+
 				endInsertRows ();
 			}
 			
 			void TorrentFilesModel::ResetFiles (const QList<FileInfo>& infos)
 			{
 				Clear ();
+
 				beginInsertRows (QModelIndex (), 0, 0);
 				FilesInTorrent_ = infos.size ();
 				Path2TreeItem_ [boost::filesystem::path ()] = RootItem_;
+
 				for (int i = 0; i < infos.size (); ++i)
 				{
 					FileInfo fi = infos.at (i);
 					Path2TreeItem_t::key_type parentPath = fi.Path_.branch_path ();
 					MkParentIfDoesntExist (fi.Path_);
+
+					QString pathStr = QString::fromUtf8 (fi.Path_.string ().c_str ());
 			
 					QList<QVariant> displayData;
 					displayData << QString::fromUtf8 (fi.Path_.leaf ().c_str ())
@@ -220,13 +252,16 @@ namespace LeechCraft
 					
 					TreeItem *parentItem = Path2TreeItem_ [parentPath],
 							 *item = new TreeItem (displayData, parentItem);
+					item->ModifyData (0, pathStr, RawDataRole);
 					item->ModifyData (1, static_cast<qulonglong> (fi.Size_), RawDataRole);
 					item->ModifyData (1, i, RolePath);
 					parentItem->AppendChild (item);
 					Path2TreeItem_ [fi.Path_] = item;
 				}
+
 				for (int i = 0; i < RootItem_->ChildCount (); ++i)
 					UpdateSizeGraph (RootItem_->Child (i));
+
 				endInsertRows ();
 			}
 			
@@ -342,7 +377,6 @@ namespace LeechCraft
 				item->ModifyData (1, size, RawDataRole);
 				item->ModifyData (1, Proxy::Instance ()->MakePrettySize (size));
 			}
-			
 		};
 	};
 };
