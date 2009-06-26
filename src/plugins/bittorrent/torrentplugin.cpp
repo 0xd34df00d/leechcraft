@@ -332,6 +332,7 @@ namespace LeechCraft
 			{
 				QList<QAction*> result;
 				result += CreateTorrent_.get ();
+				result += OpenMultipleTorrents_.get ();
 				return result;
 			}
 			
@@ -1218,11 +1219,8 @@ namespace LeechCraft
 						SLOT (on_Export__triggered ()));
 				Export_->setProperty ("ActionIcon", "torrent_export");
 			
-				Toolbar_->addAction (CreateTorrent_.get ());
-				Toolbar_->addSeparator ();
 				Toolbar_->addAction (OpenTorrent_.get ());
 				Toolbar_->addAction (RemoveTorrent_.get ());
-				Toolbar_->addAction (OpenMultipleTorrents_.get ());
 				Toolbar_->addSeparator ();
 				Toolbar_->addAction (Resume_.get ());
 				Toolbar_->addAction (Stop_.get ());
