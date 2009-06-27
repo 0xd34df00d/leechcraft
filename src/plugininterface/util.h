@@ -44,13 +44,23 @@ namespace LeechCraft
 
 		/** @brief Loads and installs a translator.
 		 *
-		 * Attempts to load from resources (:/) and install a translator
-		 * for the current locale. The name is formed like this:
-		 * ':/leechcraft_' + base + '_' + locale
+		 * Attempts to load and install a translator for the current
+		 * locale. The name is formed like this:
+		 * 'prefix_' + base + '_' + locale
+		 * If base is an empty string, the second _ isn't appended.
+		 *
+		 * First resources are searched (:/), then APPDIR/translations
+		 * on Windows and /usr/[local/]share/appname/translations on
+		 * Unix.
 		 *
 		 * @param[in] base Base name of the translation file.
+		 * @param[in] appname Base name of the application.
+		 * @return The translator object if loading is successful, NULL
+		 * otherwise.
 		 */
-		PLUGININTERFACE_API QTranslator* InstallTranslator (const QString& base);
+		PLUGININTERFACE_API QTranslator* InstallTranslator (const QString& base,
+				const QString& prefix = "leechcraft",
+				const QString& appname = "leechcraft");
 
 		/** @brief Creates a path if it isn't existing.
 		 *

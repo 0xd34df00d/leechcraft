@@ -9,7 +9,9 @@
 #include <QTemporaryFile>
 #include <QtDebug>
 
-QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName)
+QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName,
+		const QString& prefix,
+		const QString& appName)
 {
 	QTranslator *transl = new QTranslator;
 	QString localeName = QString(::getenv ("LANG"));
@@ -17,19 +19,32 @@ QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName)
 		localeName = QLocale::system ().name ();
 	localeName = localeName.left (5);
 
-	QString filename = QString (":/leechcraft_");
+	QString filename = prefix;
+	filename.append ("_");
 	if (!baseName.isEmpty ())
 		filename.append (baseName).append ("_");
 	filename.append (localeName);
 
-	if (!transl->load (filename))
+#ifdef Q_WS_WIN
+	if (transl->load (filename, ":/") ||
+			transl->load (filename, ""))
+#else
+	if (transl->load (filename, ":/") ||
+			transl->load (filename,
+				QString ("/usr/local/share/%1/translations").arg (appName)) ||
+			transl->load (filename,
+				QString ("/usr/share/%1/translations").arg (appName)))
+#endif
 	{
-		qWarning () << Q_FUNC_INFO << "could not load translation file for locale" << localeName << filename;
-		return 0;
+		qApp->installTranslator (transl);
+		return transl;
 	}
-	qApp->installTranslator (transl);
 
-	return transl;
+	qWarning () << Q_FUNC_INFO
+		<< "could not load translation file for locale"
+		<< localeName
+		<< filename;
+	return 0;
 }
 
 QDir LeechCraft::Util::CreateIfNotExists (const QString& path)
