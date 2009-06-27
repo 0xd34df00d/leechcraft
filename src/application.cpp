@@ -95,6 +95,8 @@ LeechCraft::Application::Application (int& argc, char **argv)
 	if (IsAlreadyRunning ())
 		std::exit (EAlreadyRunning);
 
+	Util::InstallTranslator ("", "qt", "qt4");
+
 	QDir home = QDir::home ();
 	if (!home.exists (".leechcraft"))
 		if (!home.mkdir (".leechcraft"))
