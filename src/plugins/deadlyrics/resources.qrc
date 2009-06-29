@@ -1,6 +1,4 @@
 <RCC>
   <qresource prefix="/" >
-    <file>leechcraft_deadlyrics_ru_RU.qm</file>
-    <file>leechcraft_deadlyrics_uk_UA.qm</file>
   </qresource>
 </RCC>

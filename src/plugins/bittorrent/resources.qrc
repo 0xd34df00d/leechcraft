@@ -1,7 +1,5 @@
 <RCC>
     <qresource prefix="/" >
-        <file>leechcraft_bittorrent_ru_RU.qm</file>
-        <file>leechcraft_bittorrent_uk_UA.qm</file>
 		<file>torrentsettings.xml</file>
         <file>resources/images/torrent_bittorrent.png</file>
         <file>resources/images/torrent_local.png</file>

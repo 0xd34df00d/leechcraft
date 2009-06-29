@@ -3,8 +3,5 @@
     <file>resources/images/aggregator.png</file>
     <file>resources/images/trayicon.png</file>
     <file>aggregatorsettings.xml</file>
-    <file>leechcraft_aggregator_ru_RU.qm</file>
-    <file>leechcraft_aggregator_uk_UA.qm</file>
-    <file>leechcraft_aggregator_ar.qm</file>
   </qresource>
 </RCC>

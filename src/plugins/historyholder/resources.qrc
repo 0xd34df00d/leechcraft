@@ -1,7 +1,5 @@
 <RCC>
   <qresource prefix="/" >
-    <file>leechcraft_historyholder_ru_RU.qm</file>
-    <file>leechcraft_historyholder_uk_UA.qm</file>
 	<file>resources/images/historyholder.png</file>
   </qresource>
 </RCC>

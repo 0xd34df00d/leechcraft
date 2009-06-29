@@ -68,3 +68,4 @@ TARGET_LINK_LIBRARIES (leechcraft_cstp
                         plugininterface
                         xmlsettingsdialog)
 INSTALL (TARGETS leechcraft_cstp DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
