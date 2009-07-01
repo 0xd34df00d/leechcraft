@@ -1644,7 +1644,8 @@ namespace LeechCraft
 						end = info.end_files (); i != end; ++i)
 				{
 					DownloadEntity e;
-					e.Entity_ = QByteArray ((torrent.Handle_.save_path () / i->path).string ().c_str ());
+					e.Entity_ = QTextCodec::codecForLocale ()->
+						toUnicode ((torrent.Handle_.save_path () / i->path).string ().c_str ()).toUtf8 ();
 					e.Parameters_ = LeechCraft::IsDownloaded;
 					e.Location_ = torrent.TorrentFileName_;
 					e.Additional_ [" Tags"] = torrent.Tags_;
