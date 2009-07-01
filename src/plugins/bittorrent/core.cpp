@@ -2272,6 +2272,8 @@ namespace LeechCraft
 					property ("PrioritizePartialPieces").toBool ();
 				settings.announce_to_all_trackers = XmlSettingsManager::Instance ()->
 					property ("AnnounceToAllTrackers").toBool ();
+				settings.announce_to_all_tiers = XmlSettingsManager::Instance ()->
+					property ("AnnounceToAllTiers").toBool ();
 				settings.prefer_udp_trackers = XmlSettingsManager::Instance ()->
 					property ("PreferUDPTrackers").toBool ();
 				settings.strict_super_seeding = XmlSettingsManager::Instance ()->
