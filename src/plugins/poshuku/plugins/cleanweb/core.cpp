@@ -83,6 +83,7 @@ namespace
 
 			QString actualLine;
 			FilterOption f = FilterOption ();
+			bool cs = false;
 			if (line.indexOf ('$') != -1)
 			{
 				QStringList splitted = line.split ('$',
@@ -101,7 +102,11 @@ namespace
 						QString::SkipEmptyParts);
 
 				if (options.contains ("match-case"))
+				{
 					f.Case_ = Qt::CaseSensitive;
+					cs = true;
+				}
+
 				Q_FOREACH (QString option, options)
 					if (option.startsWith ("domain="))
 					{
@@ -149,9 +154,9 @@ namespace
 			}
 
 			if (white)
-				Filter_->ExceptionStrings_ << actualLine;
+				Filter_->ExceptionStrings_ << (cs ? actualLine : actualLine.toLower ());
 			else
-				Filter_->FilterStrings_ << actualLine;
+				Filter_->FilterStrings_ << (cs ? actualLine : actualLine.toLower ());
 
 			if (FilterOption () != f)
 				Filter_->Options_ [actualLine] = f;
@@ -362,17 +367,26 @@ bool Core::ShouldReject (const QNetworkRequest& req) const
 {
 	QUrl url = req.url ();
 	QString urlStr = url.toString ();
+	QString cinUrlStr = urlStr.toLower ();
 	QString domain = url.host ();
 	
 	Q_FOREACH (Filter filter, Filters_)
 	{
 		Q_FOREACH (QString exception, filter.ExceptionStrings_)
-			if (Matches (exception, filter, urlStr, domain))
+		{
+			bool cs = filter.Options_ [exception].Case_ == Qt::CaseSensitive;
+			QString url = cs ? urlStr : cinUrlStr;
+			if (Matches (exception, filter, url, domain))
 				return false;
+		}
 
 		Q_FOREACH (QString filterString, filter.FilterStrings_)
-			if (Matches (filterString, filter, urlStr, domain))
+		{
+			bool cs = filter.Options_ [filterString].Case_ == Qt::CaseSensitive;
+			QString url = cs ? urlStr : cinUrlStr;
+			if (Matches (filterString, filter, url, domain))
 				return true;
+		}
 	}
 
 	return false;
@@ -473,17 +487,9 @@ bool Core::Matches (const QString& exception, const Filter& filter,
 		return true;
 	else if (opt.MatchType_ == FilterOption::MTWildcard_)
 	{
-		if (opt.Case_ == Qt::CaseSensitive)
-		{
-			if (WildcardMatches (qPrintable (exception), qPrintable (urlStr)))
-				return true;
-		}
-		else
-		{
-			if (WildcardMatches (qPrintable (exception.toLower ()),
-						qPrintable (urlStr.toLower ())))
-				return true;
-		}
+		if (WildcardMatches (qPrintable (exception),
+					qPrintable (urlStr)))
+			return true;
 	}
 	return false;
 }
@@ -503,7 +509,6 @@ void Core::HandleProvider (QObject *provider)
 			this,
 			SLOT (handleJobError (int, IDownload::Error)));
 }
-
 
 void Core::Parse (const QString& filePath)
 {
