@@ -208,83 +208,83 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="471"/>
+        <location filename="browserwidget.cpp" line="484"/>
         <source>Ctrl+D</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="472"/>
+        <location filename="browserwidget.cpp" line="485"/>
         <source>Ctrl+F</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="473"/>
+        <location filename="browserwidget.cpp" line="486"/>
         <source>Ctrl+P</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="474"/>
+        <location filename="browserwidget.cpp" line="487"/>
         <source>Ctrl+Shift+P</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="477"/>
+        <location filename="browserwidget.cpp" line="490"/>
         <source>Ctrl+T</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="478"/>
+        <location filename="browserwidget.cpp" line="491"/>
         <source>Ctrl+W</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="481"/>
+        <location filename="browserwidget.cpp" line="494"/>
         <source>Ctrl+0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="484"/>
+        <location filename="browserwidget.cpp" line="497"/>
         <source>Ctrl+X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="485"/>
+        <location filename="browserwidget.cpp" line="498"/>
         <source>Ctrl+C</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="486"/>
+        <location filename="browserwidget.cpp" line="499"/>
         <source>Ctrl+V</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="491"/>
+        <location filename="browserwidget.cpp" line="504"/>
         <source>Ctrl+Shift+T</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="510"/>
+        <location filename="browserwidget.cpp" line="528"/>
         <source>Print web page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="610"/>
+        <location filename="browserwidget.cpp" line="629"/>
         <source>Save screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="624"/>
-        <location filename="browserwidget.cpp" line="633"/>
+        <location filename="browserwidget.cpp" line="643"/>
+        <location filename="browserwidget.cpp" line="652"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="625"/>
+        <location filename="browserwidget.cpp" line="644"/>
         <source>Could not open %1 for write</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="634"/>
+        <location filename="browserwidget.cpp" line="653"/>
         <source>Could not write screenshot to %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -300,40 +300,40 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Core</name>
     <message>
-        <location filename="core.cpp" line="53"/>
+        <location filename="core.cpp" line="54"/>
         <source>Plugins</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="424"/>
+        <location filename="core.cpp" line="451"/>
         <source>Select XBEL file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="426"/>
-        <location filename="core.cpp" line="466"/>
+        <location filename="core.cpp" line="453"/>
+        <location filename="core.cpp" line="493"/>
         <source>XBEL files (*.xbel);;All files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="439"/>
-        <location filename="core.cpp" line="454"/>
-        <location filename="core.cpp" line="482"/>
+        <location filename="core.cpp" line="466"/>
+        <location filename="core.cpp" line="481"/>
+        <location filename="core.cpp" line="509"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="440"/>
+        <location filename="core.cpp" line="467"/>
         <source>Could not open file %1 for reading.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="464"/>
+        <location filename="core.cpp" line="491"/>
         <source>Save XBEL file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="483"/>
+        <location filename="core.cpp" line="510"/>
         <source>Could not open file %1 for writing.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -341,7 +341,7 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::CustomWebPage</name>
     <message>
-        <location filename="customwebpage.cpp" line="370"/>
+        <location filename="customwebpage.cpp" line="376"/>
         <source>Error loading %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -449,18 +449,18 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Poshuku</name>
     <message>
-        <location filename="poshuku.cpp" line="56"/>
-        <location filename="poshuku.cpp" line="68"/>
+        <location filename="poshuku.cpp" line="57"/>
+        <location filename="poshuku.cpp" line="69"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="170"/>
+        <location filename="poshuku.cpp" line="171"/>
         <source>Simple yet functional web browser</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="501"/>
+        <location filename="poshuku.cpp" line="498"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
