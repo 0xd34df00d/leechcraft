@@ -4,87 +4,92 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="157"/>
+        <location filename="core.cpp" line="14"/>
+        <source>Show LMP</source>
+        <translation>Показать LMP</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="201"/>
         <source>Initializing</source>
         <translation>Инициализация</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="160"/>
+        <location filename="core.cpp" line="204"/>
         <source>Stopped</source>
         <translation>Остановлен</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="163"/>
+        <location filename="core.cpp" line="207"/>
         <source>Playing</source>
         <translation>Проигрывает</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="166"/>
+        <location filename="core.cpp" line="210"/>
         <source>Buffering</source>
         <translation>Буферизация</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="169"/>
+        <location filename="core.cpp" line="213"/>
         <source>Paused</source>
         <translation>Пауза</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="172"/>
+        <location filename="core.cpp" line="216"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="177"/>
+        <location filename="core.cpp" line="221"/>
         <source> (%1)</source>
         <translation> (%1)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="178"/>
+        <location filename="core.cpp" line="222"/>
         <source> [</source>
         <translation>[</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="183"/>
+        <location filename="core.cpp" line="227"/>
         <source>/</source>
         <translation>/</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="187"/>
+        <location filename="core.cpp" line="231"/>
         <source>]</source>
         <translation>]</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="189"/>
-        <source> borrowing data from </source>
-        <translation>извлечение ниформации из </translation>
+        <location filename="core.cpp" line="233"/>
+        <source> from </source>
+        <translation> из </translation>
     </message>
     <message>
-        <location filename="core.cpp" line="194"/>
+        <location filename="core.cpp" line="241"/>
         <source>nowhere</source>
         <translation>ниоткуда</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="207"/>
+        <location filename="core.cpp" line="254"/>
         <source> (CD)</source>
         <translation> (CD)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="210"/>
+        <location filename="core.cpp" line="257"/>
         <source> (DVD)</source>
         <translation> (DVD)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="213"/>
+        <location filename="core.cpp" line="260"/>
         <source> (VCD)</source>
         <translation> (VCD)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="216"/>
+        <location filename="core.cpp" line="263"/>
         <source> (Unknown disc type)</source>
         <translation> (Неизвестный тип диска)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="221"/>
+        <location filename="core.cpp" line="268"/>
         <source>stream</source>
         <translation>поток</translation>
     </message>
@@ -92,22 +97,67 @@
 <context>
     <name>Player</name>
     <message>
-        <location filename="player.cpp" line="55"/>
+        <location filename="player.cpp" line="29"/>
+        <source>Media source</source>
+        <translation>Источник</translation>
+    </message>
+    <message>
+        <location filename="player.cpp" line="30"/>
+        <source>Source type</source>
+        <translation>Тип</translation>
+    </message>
+    <message>
+        <location filename="player.cpp" line="73"/>
+        <source>File</source>
+        <translation>Файл</translation>
+    </message>
+    <message>
+        <location filename="player.cpp" line="77"/>
+        <source>URL</source>
+        <translation>URL</translation>
+    </message>
+    <message>
+        <location filename="player.cpp" line="84"/>
+        <source>Audio CD</source>
+        <translation>Audio CD</translation>
+    </message>
+    <message>
+        <location filename="player.cpp" line="87"/>
+        <source>DVD</source>
+        <translation>DVD</translation>
+    </message>
+    <message>
+        <location filename="player.cpp" line="90"/>
+        <source>Video CD</source>
+        <translation>Video CD</translation>
+    </message>
+    <message>
+        <location filename="player.cpp" line="93"/>
+        <source>Unknown disc type</source>
+        <translation>Неизвестный тип диска</translation>
+    </message>
+    <message>
+        <location filename="player.cpp" line="99"/>
+        <source>Stream</source>
+        <translation>Поток</translation>
+    </message>
+    <message>
+        <location filename="player.cpp" line="118"/>
         <source>Play</source>
         <translation>Играть</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="64"/>
+        <location filename="player.cpp" line="127"/>
         <source>Pause</source>
         <translation>Пауза</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="73"/>
+        <location filename="player.cpp" line="136"/>
         <source>Viewer settings</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="117"/>
+        <location filename="player.cpp" line="186"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
