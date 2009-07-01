@@ -5,7 +5,7 @@
     <name>AuthenticationDialog</name>
     <message>
         <source>Authentication required</source>
-        <translation type="unfinished"></translation>
+        <translation>Необхідна автетнификація</translation>
     </message>
     <message>
         <source>Ooops, I forgot to call the corrent constructor params.</source>
@@ -13,26 +13,26 @@
     </message>
     <message>
         <source>Login:</source>
-        <translation type="unfinished"></translation>
+        <translation>Логін:</translation>
     </message>
     <message>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Пароль:</translation>
     </message>
     <message>
         <source>Save credentials</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти повноваження</translation>
     </message>
 </context>
 <context>
     <name>CommonJobAdder</name>
     <message>
         <source>Add task</source>
-        <translation type="unfinished">Додати задачу</translation>
+        <translation>Додати задачу</translation>
     </message>
     <message>
         <source>Entity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Сутність:</translation>
     </message>
     <message>
         <source>Browse...</source>
@@ -40,23 +40,23 @@
     </message>
     <message>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставити</translation>
     </message>
     <message>
         <source>Location:</source>
-        <translation type="unfinished"></translation>
+        <translation>Місце знаходження:</translation>
     </message>
 </context>
 <context>
     <name>HandlerChoiceDialog</name>
     <message>
         <source>Choose entity handler</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть обробник сутності</translation>
     </message>
     <message>
         <source>LeechCraft has detected an entity:</source>
         <oldsource>LeechCraft has detected some entity:</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>LeechCraft виявив сутність:</translation>
     </message>
     <message>
         <source>TextLabel</source>
@@ -65,19 +65,19 @@
     <message>
         <source>It could be downloaded by:</source>
         <oldsource>This entity could be downloaded by:</oldsource>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Може бути завантажений:</translation>
     </message>
     <message>
         <source>It could be handled by:</source>
         <oldsource>This entity could also be handled by:</oldsource>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Може бути оброблений:</translation>
     </message>
 </context>
 <context>
     <name>KeySequencer</name>
     <message>
         <source>Press key sequence</source>
-        <translation type="unfinished"></translation>
+        <translation>Натисніть послидовність клавіш</translation>
     </message>
     <message>
         <source>background-color: rgb(255, 255, 255);</source>
@@ -85,7 +85,7 @@
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистити</translation>
     </message>
 </context>
 <context>
@@ -96,7 +96,7 @@
     </message>
     <message>
         <source>Summary</source>
-        <translation type="unfinished"></translation>
+        <translation>Підсумок</translation>
     </message>
     <message>
         <source>toolBar</source>
@@ -128,7 +128,7 @@
     </message>
     <message>
         <source>Plugin manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Менеджер плагінів</translation>
     </message>
     <message>
         <source>F11</source>
@@ -143,64 +143,64 @@
     <name>LeechCraft::Application</name>
     <message>
         <source>Critical failure</source>
-        <translation type="unfinished">Критична помилка</translation>
+        <translation>Критична помилка</translation>
     </message>
     <message>
         <source>Could not create path %1/.leechcraft</source>
-        <translation type="unfinished">Не можу створити %1/.leechcraft</translation>
+        <translation>Не вдалося створити %1/.leechcraft</translation>
     </message>
     <message>
         <source>bytes</source>
-        <translation type="unfinished">байт</translation>
+        <translation>байт</translation>
     </message>
     <message>
         <source>KB</source>
-        <translation type="unfinished">КБ</translation>
+        <translation>КБ</translation>
     </message>
     <message>
         <source>MB</source>
-        <translation type="unfinished">МБ</translation>
+        <translation>МБ</translation>
     </message>
     <message>
         <source>GB</source>
-        <translation type="unfinished">ГБ</translation>
+        <translation>ГБ</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::CategoryMerger</name>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Назва</translation>
+        <translation>Назва</translation>
     </message>
     <message>
         <source>State</source>
-        <translation type="unfinished">Стан</translation>
+        <translation>Стан</translation>
     </message>
     <message>
         <source>Progress</source>
-        <translation type="unfinished">Прогрес</translation>
+        <translation>Прогрес</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::CommonJobAdder</name>
     <message>
         <source>Select file</source>
-        <translation type="unfinished">Вибрати файл</translation>
+        <translation>Вибрати файл</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Core</name>
     <message>
         <source>Setting up %1...</source>
-        <translation type="unfinished"></translation>
+        <translation>Встановлюємо %1...</translation>
     </message>
     <message>
         <source>No plugins are able to download &quot;%1&quot;</source>
-        <translation type="unfinished">Жоден з плагінів не може завантажити &quot;%1&quot;</translation>
+        <translation>Жоден з плагінів не може завантажити &quot;%1&quot;</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Помилка</translation>
+        <translation>Помилка</translation>
     </message>
     <message>
         <source>Could not add job to the selected downloader, would you like to try another one?</source>
@@ -208,81 +208,81 @@
     </message>
     <message>
         <source>Could not handle job with the selected handler, would you like to try another one?</source>
-        <translation type="unfinished"></translation>
+        <translation>Не можу обробити задачу з вибраним обробником, бажаєте спробовати інший?</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Назва</translation>
+        <translation>Назва</translation>
     </message>
     <message>
         <source>State</source>
-        <translation type="unfinished">Стан</translation>
+        <translation>Стан</translation>
     </message>
     <message>
         <source>Progress</source>
-        <translation type="unfinished">Прогрес</translation>
+        <translation>Прогрес</translation>
     </message>
     <message>
         <source>Calculating dependencies...</source>
-        <translation type="unfinished"></translation>
+        <translation>Обчислюються залежності...</translation>
     </message>
     <message>
         <source>Too long to show</source>
-        <translation type="unfinished"></translation>
+        <translation>Занадто велика довжина для показу</translation>
     </message>
     <message>
         <source>Select save location</source>
-        <translation type="unfinished"></translation>
+        <translation>Видеріть місце для збереження</translation>
     </message>
     <message>
         <source>Could not handle download entity %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося обробити закачувану сутність %1.</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::FancyPopupManager</name>
     <message>
         <source>LeechCraft Notification</source>
-        <translation type="unfinished"></translation>
+        <translation>Повідомлення LeechCraft</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::MainWindow</name>
     <message>
         <source>Initializing interface...</source>
-        <translation type="unfinished">Ініціалізація інтерфейсу...</translation>
+        <translation>Ініціалізація інтерфейсу...</translation>
     </message>
     <message>
         <source>Initializing core and plugins...</source>
-        <translation type="unfinished">Ініціалізація ядра і плагінів...</translation>
+        <translation>Ініціалізація ядра і плагінів...</translation>
     </message>
     <message>
         <source>Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Плагіни</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Помилка</translation>
+        <translation>Помилка</translation>
     </message>
     <message>
         <source>LeechCraft</source>
-        <translation type="unfinished">LeechCraft</translation>
+        <translation>LeechCraft</translation>
     </message>
     <message>
         <source>/s</source>
-        <translation type="unfinished">/с</translation>
+        <translation>/с</translation>
     </message>
     <message>
         <source>Plugin control</source>
-        <translation type="unfinished"></translation>
+        <translation>Контроль за плагінами</translation>
     </message>
     <message>
         <source>%1 down, %2 up</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 вниз, %2 вгору</translation>
     </message>
     <message>
         <source>Question</source>
-        <translation type="unfinished"></translation>
+        <translation>Запитання</translation>
     </message>
     <message>
         <source>/s	</source>
@@ -290,7 +290,7 @@
     </message>
     <message>
         <source>Do you really want to quit?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви справді бажаєте вийти?</translation>
     </message>
 </context>
 <context>
@@ -320,53 +320,53 @@
     <name>LeechCraft::OperationalModel</name>
     <message>
         <source>Entity</source>
-        <translation type="unfinished"></translation>
+        <translation>Сутність</translation>
     </message>
     <message>
         <source>Category</source>
-        <translation type="unfinished"></translation>
+        <translation>Категорія</translation>
     </message>
     <message>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Інформація</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::PluginManager</name>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Назва</translation>
+        <translation>Назва</translation>
     </message>
     <message>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Попередження</translation>
     </message>
     <message>
         <source>Release of one or more plugins failed.</source>
-        <translation type="unfinished">Не вдалося вивантажити один або декілька плагінів.</translation>
+        <translation>Не вдалося вивантажити один або декілька плагінів.</translation>
     </message>
     <message>
         <source>Initializing %1...</source>
-        <translation type="unfinished"></translation>
+        <translation>Иніціалізація %1...</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::RequestNormalizer</name>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Назва</translation>
+        <translation>Назва</translation>
     </message>
     <message>
         <source>State</source>
-        <translation type="unfinished">Стан</translation>
+        <translation>Стан</translation>
     </message>
     <message>
         <source>Progress</source>
-        <translation type="unfinished">Прогрес</translation>
+        <translation>Прогрес</translation>
     </message>
     <message>
         <source>Request validation error: %1</source>
@@ -486,21 +486,21 @@
     <name>PluginManagerDialog</name>
     <message>
         <source>Plugin Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Менеджер плагінів</translation>
     </message>
 </context>
 <context>
     <name>SettingsSink</name>
     <message>
         <source>Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштування</translation>
     </message>
 </context>
 <context>
     <name>ShortcutManager</name>
     <message>
         <source>Shortcut manager</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Менеджер комбінацій клавіш</translation>
     </message>
     <message>
         <source>Name</source>
@@ -553,15 +553,15 @@
     <name>TagsViewer</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <source>Rename...</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити назву...</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити</translation>
     </message>
 </context>
 </TS>
