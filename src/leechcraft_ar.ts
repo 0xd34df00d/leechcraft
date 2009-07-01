@@ -173,32 +173,32 @@
 <context>
     <name>LeechCraft::Application</name>
     <message>
-        <location filename="application.cpp" line="102"/>
+        <location filename="application.cpp" line="104"/>
         <source>Critical failure</source>
         <translation>خطأ خطر</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="103"/>
+        <location filename="application.cpp" line="105"/>
         <source>Could not create path %1/.leechcraft</source>
         <translation>لم يتمكن leechcraft من إنشاء %1/</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="121"/>
+        <location filename="application.cpp" line="123"/>
         <source>bytes</source>
         <translation>بايت</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="122"/>
+        <location filename="application.cpp" line="124"/>
         <source>KB</source>
         <translation>ك/ب</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="123"/>
+        <location filename="application.cpp" line="125"/>
         <source>MB</source>
         <translation>م/ب</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="124"/>
+        <location filename="application.cpp" line="126"/>
         <source>GB</source>
         <translation>غ/ب</translation>
     </message>
@@ -248,48 +248,48 @@
         <translation>تقدّم</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="249"/>
+        <location filename="core.cpp" line="291"/>
         <source>Calculating dependencies...</source>
         <translation>...جار حساب التبعيّات</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="260"/>
+        <location filename="core.cpp" line="245"/>
         <source>Setting up %1...</source>
         <translation>...جار التنصيب %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="336"/>
+        <location filename="core.cpp" line="344"/>
         <source>No plugins are able to download &quot;%1&quot;</source>
         <translation>لا يوجد برامج مساعدة قابلة لتحميل %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="823"/>
+        <location filename="core.cpp" line="831"/>
         <source>Too long to show</source>
         <translation>طويل جدّاً الإظهار</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="905"/>
+        <location filename="core.cpp" line="913"/>
         <source>Select save location</source>
         <translation>ﺎﺨﺗﺭ ﻢﻛﺎﻧ ﺎﻟﺬﻳ ﺕﺮﻳﺩ ﺢﻔﻇ ﺎﻠﻤﻠﻓ ﻒﻴﻫ</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="921"/>
-        <location filename="core.cpp" line="938"/>
+        <location filename="core.cpp" line="929"/>
+        <location filename="core.cpp" line="946"/>
         <source>Error</source>
         <translation>خطأ</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="922"/>
+        <location filename="core.cpp" line="930"/>
         <source>Could not add job to the selected downloader, would you like to try another one?</source>
         <translation>البرنامج غير قادر على إضافة هذه المهمّة إلى برنامج تحمبل مخصص. تريد اختيار برنامج آخر؟</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="939"/>
+        <location filename="core.cpp" line="947"/>
         <source>Could not handle job with the selected handler, would you like to try another one?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="962"/>
+        <location filename="core.cpp" line="970"/>
         <source>Could not handle download entity %1.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -432,6 +432,11 @@
     <message>
         <location filename="pluginmanager.cpp" line="224"/>
         <source>Release of one or more plugins failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="pluginmanager.cpp" line="696"/>
+        <source>Initializing %1...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

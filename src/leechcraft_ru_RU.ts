@@ -349,6 +349,10 @@
         <source>Release of one or more plugins failed.</source>
         <translation>Освобождение одного или нескольких плагинов не удалось.</translation>
     </message>
+    <message>
+        <source>Initializing %1...</source>
+        <translation>Инициализирую %1...</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::RequestNormalizer</name>

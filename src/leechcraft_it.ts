@@ -1,4 +1,6 @@
-<!DOCTYPE TS><TS>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0">
 <context>
     <name>AuthenticationDialog</name>
     <message>
@@ -264,8 +266,8 @@
         <translation type="unfinished">LeechCraft</translation>
     </message>
     <message>
-        <source>/s<byte value="x9"/></source>
-        <translation type="unfinished">/s<byte value="x9"/></translation>
+        <source>/s	</source>
+        <translation type="unfinished">/s	</translation>
     </message>
     <message>
         <source>/s</source>
@@ -343,6 +345,10 @@
     <message>
         <source>Release of one or more plugins failed.</source>
         <translation type="unfinished">Rilascio di uno o più plugin fallito.</translation>
+    </message>
+    <message>
+        <source>Initializing %1...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
