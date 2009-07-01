@@ -10,8 +10,8 @@
 #include <QTimer>
 #include <QNetworkReply>
 #include <interfaces/iwebbrowser.h>
-#include <plugininterface/proxy.h>
 #include <plugininterface/mergemodel.h>
+#include <plugininterface/proxy.h>
 #include <plugininterface/util.h>
 #include "core.h"
 #include "regexpmatchermanager.h"
@@ -513,10 +513,15 @@ namespace LeechCraft
 			
 			QStringList Core::GetItemCategories (int index) const
 			{
-				LeechCraft::Util::MergeModel::const_iterator i = ItemLists_->
-					GetModelForRow (index);
-				int starting = ItemLists_->GetStartingRow (i);
-				return static_cast<ItemsListModel*> (*i)->GetCategories (index - starting);
+				if (!SupplementaryModels_.size ())
+					return CurrentItemsModel_->GetCategories (index);
+				else
+				{
+					LeechCraft::Util::MergeModel::const_iterator i = ItemLists_->
+						GetModelForRow (index);
+					int starting = ItemLists_->GetStartingRow (i);
+					return static_cast<ItemsListModel*> (*i)->GetCategories (index - starting);
+				}
 			}
 			
 			Feed::FeedSettings Core::GetFeedSettings (const QModelIndex& index) const
