@@ -362,119 +362,119 @@
         <translation>قارء أشرطة الـخبار</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="448"/>
+        <location filename="aggregator.cpp" line="454"/>
         <source>Add feed...</source>
         <translation>...إضافة شريط الأخبار</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="453"/>
+        <location filename="aggregator.cpp" line="459"/>
         <source>Update all feeds</source>
         <translation>تحديث جميع أشرطة الأخبار</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="457"/>
+        <location filename="aggregator.cpp" line="463"/>
         <source>Remove feed</source>
         <translation>إزالة الشريط</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="462"/>
+        <location filename="aggregator.cpp" line="468"/>
         <source>Mark channel as read</source>
         <translation>تحديد كقناة مقروءة</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="466"/>
+        <location filename="aggregator.cpp" line="472"/>
         <source>Mark channel as unread</source>
         <translation>تحديد كقناة غير مقروءة</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="470"/>
+        <location filename="aggregator.cpp" line="476"/>
         <source>Settings...</source>
         <translation>...إعدادات</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="474"/>
+        <location filename="aggregator.cpp" line="480"/>
         <source>Update selected feed</source>
         <translation>تحديث هذا شريط</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="479"/>
+        <location filename="aggregator.cpp" line="485"/>
         <source>Item bucket...</source>
         <translation>...باقة المقالات</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="484"/>
+        <location filename="aggregator.cpp" line="490"/>
         <source>Regexp matcher...</source>
         <translation>...منظّم العبارات الدائمة</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="489"/>
+        <location filename="aggregator.cpp" line="495"/>
         <source>Hide read items</source>
         <translation>إخفاء المقالات المقروءة</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="496"/>
+        <location filename="aggregator.cpp" line="502"/>
         <source>Import from OPML...</source>
         <translation>...OPML إستيراد من ملف</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="501"/>
+        <location filename="aggregator.cpp" line="507"/>
         <source>Export to OPML...</source>
         <translation>...OPML تصدير إلى ملف</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="506"/>
+        <location filename="aggregator.cpp" line="512"/>
         <source>Import from binary...</source>
         <translation>...binary إستيراد من ملف</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="511"/>
+        <location filename="aggregator.cpp" line="517"/>
         <source>Export to binary...</source>
         <translation>...binary تصدير إلى ملف</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="543"/>
+        <location filename="aggregator.cpp" line="549"/>
         <source>Error</source>
         <translation>خطأ</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="567"/>
+        <location filename="aggregator.cpp" line="573"/>
         <source>Warning</source>
         <translation>تنبيه</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="568"/>
+        <location filename="aggregator.cpp" line="574"/>
         <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you are really sure that you want to do this?</source>
         <comment>Feed removing confirmation</comment>
         <translation>هل تريد حذفه؟&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;:سيتمّ حذف الشريط الأخبار</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="655"/>
+        <location filename="aggregator.cpp" line="661"/>
         <source>Export to OPML</source>
         <translation>OPML تصدير إلى ملف</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="656"/>
-        <location filename="aggregator.cpp" line="686"/>
+        <location filename="aggregator.cpp" line="662"/>
+        <location filename="aggregator.cpp" line="692"/>
         <source>Select save file</source>
         <translation>أختر ملف للحفظ</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="657"/>
+        <location filename="aggregator.cpp" line="663"/>
         <source>OPML files (*.opml);;XML files (*.xml);;All files (*.*)</source>
         <translation>OPML ملفات (*.opml);;XML ملفات (*.xml);;جمبع الملفات (*.*)</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="685"/>
+        <location filename="aggregator.cpp" line="691"/>
         <source>Export to binary file</source>
         <translation>binary تصدير إلى ملف</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="687"/>
+        <location filename="aggregator.cpp" line="693"/>
         <source>Aggregator exchange files (*.lcae);;All files (*.*)</source>
         <translation>Aggregator ملفات ال (*.lcae);;جميع  (*.*)الملفات</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="730"/>
+        <location filename="aggregator.cpp" line="736"/>
         <source>%1 unread messages in %2 channels.</source>
         <translation>رسائل غير مقروءة %1 في قنوات %2</translation>
     </message>
@@ -484,7 +484,7 @@
     <message>
         <location filename="channelsmodel.cpp" line="22"/>
         <source>Feed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">شريط</translation>
     </message>
     <message>
         <location filename="channelsmodel.cpp" line="23"/>
