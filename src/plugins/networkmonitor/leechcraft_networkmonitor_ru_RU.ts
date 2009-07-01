@@ -17,12 +17,12 @@
 <context>
     <name>LeechCraft::Plugins::NetworkMonitor::Plugin</name>
     <message>
-        <location filename="networkmonitor.cpp" line="38"/>
+        <location filename="networkmonitor.cpp" line="41"/>
         <source>Network monitor...</source>
         <translation>Сетевой монитор...</translation>
     </message>
     <message>
-        <location filename="networkmonitor.cpp" line="60"/>
+        <location filename="networkmonitor.cpp" line="63"/>
         <source>Monitors HTTP network requests and responses.</source>
         <translation>Следит за HTTP-запросами.</translation>
     </message>
@@ -78,7 +78,7 @@
         <translation>Заголовки запроса</translation>
     </message>
     <message>
-        <location filename="networkmonitor.ui" line="62"/>
+        <location filename="networkmonitor.ui" line="69"/>
         <source>Response headers</source>
         <translation>Заголовки ответа</translation>
     </message>
