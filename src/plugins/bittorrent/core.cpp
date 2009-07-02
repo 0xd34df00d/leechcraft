@@ -945,7 +945,7 @@ namespace LeechCraft
 				if (!CheckValidity (CurrentTorrent_))
 					return;
 
-				Handles_ [CurrentTorrent_].Handle_.rename_file (index, name.toStdWString ());
+				Handles_ [CurrentTorrent_].Handle_.rename_file (index, std::string (name.toUtf8 ().data ()));
 
 				ResetFiles ();
 			}
