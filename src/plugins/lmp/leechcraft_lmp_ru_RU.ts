@@ -158,8 +158,8 @@
     </message>
     <message>
         <location filename="player.cpp" line="186"/>
-        <source>Error</source>
-        <translation>Ошибка</translation>
+        <source>LeechCraft</source>
+        <translation>LeechCraft</translation>
     </message>
     <message>
         <location filename="player.ui" line="14"/>

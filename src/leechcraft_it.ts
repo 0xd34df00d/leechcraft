@@ -139,10 +139,6 @@
 <context>
     <name>LeechCraft::Application</name>
     <message>
-        <source>Critical failure</source>
-        <translation type="unfinished">Fallimento critico</translation>
-    </message>
-    <message>
         <source>Could not create path %1/.leechcraft</source>
         <translation type="unfinished">Non può creare il percorso %1/.leechcraft</translation>
     </message>
@@ -161,6 +157,10 @@
     <message>
         <source>GB</source>
         <translation type="unfinished">GB</translation>
+    </message>
+    <message>
+        <source>LeechCraft</source>
+        <translation type="unfinished">LeechCraft</translation>
     </message>
 </context>
 <context>
@@ -254,10 +254,6 @@
         <translation type="unfinished">Plugins</translation>
     </message>
     <message>
-        <source>Error</source>
-        <translation type="unfinished">Errore</translation>
-    </message>
-    <message>
         <source>Initializing interface...</source>
         <translation type="unfinished">Inizializzando l&apos;interfaccia</translation>
     </message>
@@ -272,10 +268,6 @@
     <message>
         <source>/s</source>
         <translation type="unfinished">/s</translation>
-    </message>
-    <message>
-        <source>Question</source>
-        <translation type="unfinished">Domanda</translation>
     </message>
     <message>
         <source>Do you really want to quit?</source>
@@ -339,16 +331,16 @@
         <translation type="unfinished">File</translation>
     </message>
     <message>
-        <source>Warning</source>
-        <translation type="unfinished">Attenzione</translation>
-    </message>
-    <message>
         <source>Release of one or more plugins failed.</source>
         <translation type="unfinished">Rilascio di uno o più plugin fallito.</translation>
     </message>
     <message>
         <source>Initializing %1...</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LeechCraft</source>
+        <translation type="unfinished">LeechCraft</translation>
     </message>
 </context>
 <context>

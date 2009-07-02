@@ -142,10 +142,6 @@
 <context>
     <name>LeechCraft::Application</name>
     <message>
-        <source>Critical failure</source>
-        <translation>Критическая ошибка</translation>
-    </message>
-    <message>
         <source>Could not create path %1/.leechcraft</source>
         <translation>Невозможно создать путь %1/.leechcraft</translation>
     </message>
@@ -164,6 +160,10 @@
     <message>
         <source>GB</source>
         <translation>Гб</translation>
+    </message>
+    <message>
+        <source>LeechCraft</source>
+        <translation>LeechCraft</translation>
     </message>
 </context>
 <context>
@@ -261,10 +261,6 @@
         <translation>Плагины</translation>
     </message>
     <message>
-        <source>Error</source>
-        <translation>Ошибка</translation>
-    </message>
-    <message>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
@@ -279,10 +275,6 @@
     <message>
         <source>%1 down, %2 up</source>
         <translation>%1 к нам, %2 от нас</translation>
-    </message>
-    <message>
-        <source>Question</source>
-        <translation>Вопрос</translation>
     </message>
     <message>
         <source>/s	</source>
@@ -342,16 +334,16 @@
         <translation>Файл</translation>
     </message>
     <message>
-        <source>Warning</source>
-        <translation>Предупреждение</translation>
-    </message>
-    <message>
         <source>Release of one or more plugins failed.</source>
         <translation>Освобождение одного или нескольких плагинов не удалось.</translation>
     </message>
     <message>
         <source>Initializing %1...</source>
         <translation>Инициализирую %1...</translation>
+    </message>
+    <message>
+        <source>LeechCraft</source>
+        <translation>LeechCraft</translation>
     </message>
 </context>
 <context>

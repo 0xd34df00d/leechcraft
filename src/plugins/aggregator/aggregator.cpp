@@ -546,7 +546,7 @@ namespace LeechCraft
 				while (Impl_->ErrorQueue_.size ())
 				{
 					QMessageBox::critical (this,
-							tr ("Error"),
+							tr ("LeechCraft"),
 							Impl_->ErrorQueue_.dequeue ());
 					QApplication::processEvents ();
 				}
@@ -570,7 +570,7 @@ namespace LeechCraft
 				QString name = ds.sibling (ds.row (), 0).data ().toString ();
 			
 				QMessageBox mb (QMessageBox::Warning,
-						tr ("Warning"),
+						tr ("LeechCraft"),
 						tr ("You are going to permanently remove the feed:"
 							"<br />%1<br /><br />"
 							"Are you are really sure that you want to do this?",

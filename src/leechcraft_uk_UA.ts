@@ -142,10 +142,6 @@
 <context>
     <name>LeechCraft::Application</name>
     <message>
-        <source>Critical failure</source>
-        <translation>Критична помилка</translation>
-    </message>
-    <message>
         <source>Could not create path %1/.leechcraft</source>
         <translation>Не вдалося створити %1/.leechcraft</translation>
     </message>
@@ -164,6 +160,10 @@
     <message>
         <source>GB</source>
         <translation>ГБ</translation>
+    </message>
+    <message>
+        <source>LeechCraft</source>
+        <translation type="unfinished">LeechCraft</translation>
     </message>
 </context>
 <context>
@@ -261,10 +261,6 @@
         <translation>Плагіни</translation>
     </message>
     <message>
-        <source>Error</source>
-        <translation>Помилка</translation>
-    </message>
-    <message>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
@@ -279,10 +275,6 @@
     <message>
         <source>%1 down, %2 up</source>
         <translation>%1 вниз, %2 вгору</translation>
-    </message>
-    <message>
-        <source>Question</source>
-        <translation>Запитання</translation>
     </message>
     <message>
         <source>/s	</source>
@@ -342,16 +334,16 @@
         <translation>Файл</translation>
     </message>
     <message>
-        <source>Warning</source>
-        <translation>Попередження</translation>
-    </message>
-    <message>
         <source>Release of one or more plugins failed.</source>
         <translation>Не вдалося вивантажити один або декілька плагінів.</translation>
     </message>
     <message>
         <source>Initializing %1...</source>
         <translation>Иніціалізація %1...</translation>
+    </message>
+    <message>
+        <source>LeechCraft</source>
+        <translation type="unfinished">LeechCraft</translation>
     </message>
 </context>
 <context>
@@ -479,7 +471,7 @@
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Очистити</translation>
     </message>
 </context>
 <context>

@@ -423,17 +423,17 @@
         <translation>Торрент завершен: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1818"/>
+        <location filename="core.cpp" line="1819"/>
         <source>Error code %1 of category:&lt;blockquote&gt;%2&lt;/blockquote&gt;error message:&lt;blockquote&gt;%3&lt;/blockquote&gt;raw exception message:&lt;blockquote&gt;%4&lt;/blockquote&gt;</source>
         <translation>Код ошибки %1 категории &lt;blockquote&gt;%2&lt;/blockquote&gt;Сообщение об ошибке:&lt;blockquote&gt;%3&lt;/blockquote&gt;Исходное сообщение исключения:&lt;blockquote&gt;%4&lt;/blockquote&gt;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1834"/>
+        <location filename="core.cpp" line="1835"/>
         <source>Could not create path %1/.leechcraft/bittorrent</source>
         <translation>Не могу создать путь %1/.leechcraft/bittorrent</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2206"/>
+        <location filename="core.cpp" line="2207"/>
         <source>Wrong announce address %1</source>
         <translation>Неправильный announce-адрес %1</translation>
     </message>
@@ -706,19 +706,9 @@
         <translation>Полнофункциональный BitTorrent-клиент.</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="396"/>
-        <source>Question</source>
-        <translation>Вопрос</translation>
-    </message>
-    <message>
         <location filename="torrentplugin.cpp" line="397"/>
         <source>Do you really want to delete the torrent?</source>
         <translation>Вы действительно хотите удалить торрент?</translation>
-    </message>
-    <message>
-        <location filename="torrentplugin.cpp" line="530"/>
-        <source>Warning</source>
-        <translation>Предупреждение</translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="531"/>
@@ -726,158 +716,160 @@
         <translation>Ошибка при перемещении файлов торрента из %1 в %2</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="568"/>
-        <source>Error!</source>
-        <translation>Ошибка!</translation>
+        <location filename="torrentplugin.cpp" line="396"/>
+        <location filename="torrentplugin.cpp" line="530"/>
+        <location filename="torrentplugin.cpp" line="569"/>
+        <source>LeechCraft</source>
+        <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="636"/>
-        <location filename="torrentplugin.cpp" line="639"/>
-        <location filename="torrentplugin.cpp" line="721"/>
-        <location filename="torrentplugin.cpp" line="722"/>
-        <location filename="torrentplugin.cpp" line="792"/>
-        <location filename="torrentplugin.cpp" line="795"/>
+        <location filename="torrentplugin.cpp" line="638"/>
+        <location filename="torrentplugin.cpp" line="641"/>
+        <location filename="torrentplugin.cpp" line="723"/>
+        <location filename="torrentplugin.cpp" line="724"/>
+        <location filename="torrentplugin.cpp" line="794"/>
+        <location filename="torrentplugin.cpp" line="797"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="830"/>
+        <location filename="torrentplugin.cpp" line="832"/>
         <source>Wasn&apos;t yet</source>
         <translation>Еще не было</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="854"/>
+        <location filename="torrentplugin.cpp" line="856"/>
         <source>Yes</source>
         <translation>Да</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="854"/>
+        <location filename="torrentplugin.cpp" line="856"/>
         <source>No</source>
         <translation>Нет</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="877"/>
+        <location filename="torrentplugin.cpp" line="879"/>
         <source>Not tracking</source>
         <translation>Не отслеживается</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="886"/>
-        <location filename="torrentplugin.cpp" line="889"/>
+        <location filename="torrentplugin.cpp" line="888"/>
+        <location filename="torrentplugin.cpp" line="891"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1098"/>
+        <location filename="torrentplugin.cpp" line="1100"/>
         <source>Open torrent...</source>
         <translation>Открыть торрент...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1107"/>
+        <location filename="torrentplugin.cpp" line="1109"/>
         <source>Change trackers...</source>
         <translation>Поменять трекеры...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1109"/>
+        <location filename="torrentplugin.cpp" line="1111"/>
         <source>C</source>
         <translation>С</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1116"/>
+        <location filename="torrentplugin.cpp" line="1118"/>
         <source>Create torrent...</source>
         <translation>Создать торрент...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1118"/>
+        <location filename="torrentplugin.cpp" line="1120"/>
         <source>N</source>
         <translation>Т</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1125"/>
+        <location filename="torrentplugin.cpp" line="1127"/>
         <source>Open multiple torrents...</source>
         <translation>Открыть несколько торрентов...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1133"/>
+        <location filename="torrentplugin.cpp" line="1135"/>
         <source>Remove</source>
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1135"/>
+        <location filename="torrentplugin.cpp" line="1137"/>
         <source>Del</source>
         <translation>Del</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1140"/>
+        <location filename="torrentplugin.cpp" line="1142"/>
         <source>Resume</source>
         <translation>Продолжить</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1142"/>
+        <location filename="torrentplugin.cpp" line="1144"/>
         <source>R</source>
         <translation>R</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1147"/>
+        <location filename="torrentplugin.cpp" line="1149"/>
         <source>Pause</source>
         <translation>Пауза</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1149"/>
+        <location filename="torrentplugin.cpp" line="1151"/>
         <source>S</source>
         <translation>S</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1154"/>
+        <location filename="torrentplugin.cpp" line="1156"/>
         <source>Move up</source>
         <translation>Переместить вверх</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1162"/>
+        <location filename="torrentplugin.cpp" line="1164"/>
         <source>Move down</source>
         <translation>Переместить вниз</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1170"/>
+        <location filename="torrentplugin.cpp" line="1172"/>
         <source>Move to top</source>
         <translation>Переместить в начало</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1178"/>
+        <location filename="torrentplugin.cpp" line="1180"/>
         <source>Move to bottom</source>
         <translation>Переместить в конец</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1186"/>
+        <location filename="torrentplugin.cpp" line="1188"/>
         <source>Reannounce</source>
         <translation>Объявить заново</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1188"/>
+        <location filename="torrentplugin.cpp" line="1190"/>
         <source>F</source>
         <translation>А</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1193"/>
+        <location filename="torrentplugin.cpp" line="1195"/>
         <source>Recheck</source>
         <translation>Перепроверить</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1199"/>
+        <location filename="torrentplugin.cpp" line="1201"/>
         <source>Move files...</source>
         <translation>Переместить файлы...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1201"/>
+        <location filename="torrentplugin.cpp" line="1203"/>
         <source>M</source>
         <translation>Ь</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1206"/>
+        <location filename="torrentplugin.cpp" line="1208"/>
         <source>Import...</source>
         <translation>Импорт...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1214"/>
+        <location filename="torrentplugin.cpp" line="1216"/>
         <source>Export...</source>
         <translation>Экспорт...</translation>
     </message>
@@ -1083,17 +1075,17 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="core.cpp" line="1967"/>
-        <source>Storage moved</source>
-        <translation>Хранилище перемещено</translation>
+        <location filename="core.cpp" line="1968"/>
+        <source>LeechCraft</source>
+        <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1968"/>
+        <location filename="core.cpp" line="1969"/>
         <source>Storage for torrent&lt;br /&gt;%1&lt;br /&gt;moved successfully to&lt;br /&gt;%2</source>
         <translation>Хранилище для торрента&lt;br /&gt;%1&lt;br /&gt;перемещено успешно в&lt;br /&gt;%2</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="625"/>
+        <location filename="torrentplugin.cpp" line="627"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>

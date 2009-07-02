@@ -91,7 +91,7 @@ namespace LeechCraft
 				if (!file.open (QIODevice::ReadOnly))
 				{
 					QMessageBox::critical (this,
-							tr ("Error"),
+							tr ("LeechCraft"),
 							tr ("Could not open file %1 for reading.")
 								.arg (filename));
 					return false;
@@ -110,7 +110,7 @@ namespace LeechCraft
 							&errorColumn))
 				{
 					QMessageBox::critical (this,
-							tr ("Error"),
+							tr ("LeechCraft"),
 							tr ("XML error, file %1, line %2, column %3, error:<br />%4")
 								.arg (filename)
 								.arg (errorLine)
@@ -123,7 +123,7 @@ namespace LeechCraft
 				if (!parser.IsValid ())
 				{
 					QMessageBox::critical (this,
-							tr ("Error"),
+							tr ("LeechCraft"),
 							tr ("OPML from file %1 is not valid.")
 								.arg (filename));
 					return false;

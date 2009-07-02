@@ -104,7 +104,7 @@ namespace LeechCraft
 				}
 			
 				if (QMessageBox::question (this,
-							tr ("Question"),
+							tr ("LeechCraft"),
 							message,
 							QMessageBox::Ok | QMessageBox::Cancel) ==
 						QMessageBox::Ok)

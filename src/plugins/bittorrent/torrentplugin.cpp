@@ -393,7 +393,7 @@ namespace LeechCraft
 			void TorrentPlugin::on_RemoveTorrent__triggered (int row)
 			{
 				if (QMessageBox::question (0,
-							tr ("Question"),
+							tr ("LeechCraft"),
 							tr ("Do you really want to delete the torrent?"),
 							QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 					return;
@@ -527,7 +527,7 @@ namespace LeechCraft
 			
 				if (!Core::Instance ()->MoveTorrentFiles (newDir))
 					QMessageBox::warning (0,
-							tr ("Warning"),
+							tr ("LeechCraft"),
 							tr ("Failed to move torrent's files from %1 to %2")
 							.arg (oldDir)
 							.arg (newDir));
@@ -565,7 +565,9 @@ namespace LeechCraft
 			void TorrentPlugin::showError (QString e)
 			{
 				qWarning () << e;
-				QMessageBox::warning (0, tr ("Error!"), e);
+				QMessageBox::warning (0,
+						tr ("LeechCraft"),
+						e);
 			}
 			
 			void TorrentPlugin::updateTorrentStats ()

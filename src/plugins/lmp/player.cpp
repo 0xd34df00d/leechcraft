@@ -183,7 +183,7 @@ void Player::handleStateUpdated (const QString& state)
 void Player::handleError (const QString& error)
 {
 	QMessageBox::warning (this,
-			tr ("Error"),
+			tr ("LeechCraft"),
 			error);
 }
 

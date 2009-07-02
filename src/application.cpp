@@ -101,9 +101,10 @@ LeechCraft::Application::Application (int& argc, char **argv)
 	if (!home.exists (".leechcraft"))
 		if (!home.mkdir (".leechcraft"))
 		{
-			QMessageBox::critical (0, tr ("Critical failure"),
+			QMessageBox::critical (0,
+					tr ("LeechCraft"),
 					QDir::toNativeSeparators (tr ("Could not create path %1/.leechcraft")
-					.arg (QDir::homePath ())));
+						.arg (QDir::homePath ())));
 			std::exit (EPaths);
 		}
 

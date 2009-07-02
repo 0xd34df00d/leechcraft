@@ -42,7 +42,9 @@ namespace LeechCraft
 					}
 					catch (const RegexpMatcherManager::AlreadyExists&)
 					{
-						QMessageBox::warning (this, tr ("Warning"), tr ("This title "
+						QMessageBox::critical (this,
+								tr ("LeechCraft"),
+								tr ("This title "
 									"matcher regexp already exists. Specify another "
 									"one or modify existing title matcher regexp's "
 									"body extractor."));
@@ -50,7 +52,9 @@ namespace LeechCraft
 					}
 					catch (const RegexpMatcherManager::Malformed&)
 					{
-						QMessageBox::warning (this, tr ("Warning"), tr ("Either title"
+						QMessageBox::critical (this,
+								tr ("LeechCraft"),
+								tr ("Either title"
 									" matcher or body extractor is malformed."));
 						success = false;
 					}
@@ -83,7 +87,9 @@ namespace LeechCraft
 					}
 					catch (const RegexpMatcherManager::AlreadyExists&)
 					{
-						QMessageBox::warning (this, tr ("Warning"), tr ("This title "
+						QMessageBox::critical (this,
+								tr ("LeechCraft"),
+								tr ("This title "
 									"matcher regexp already exists. Specify another "
 									"one or modify existing title matcher regexp's "
 									"body extractor."));
@@ -91,7 +97,9 @@ namespace LeechCraft
 					}
 					catch (const RegexpMatcherManager::Malformed&)
 					{
-						QMessageBox::warning (this, tr ("Warning"), tr ("Either title"
+						QMessageBox::critical (this,
+								tr ("LeechCraft"),
+								tr ("Either title"
 									" matcher or body extractor is malformed."));
 						success = false;
 					}

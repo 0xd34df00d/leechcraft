@@ -150,7 +150,9 @@ QTreeView* LeechCraft::MainWindow::GetMainView () const
 
 void LeechCraft::MainWindow::catchError (QString message)
 {
-	QMessageBox::critical (this, tr ("Error"), message);
+	QMessageBox::critical (this,
+			tr ("LeechCraft"),
+			message);
 }
 
 void LeechCraft::MainWindow::closeEvent (QCloseEvent *e)
@@ -321,7 +323,7 @@ void LeechCraft::MainWindow::on_ActionQuit__triggered ()
 {
 	if (XmlSettingsManager::Instance ()->property ("ConfirmQuit").toBool () &&
 			QMessageBox::question (this,
-				tr ("Question"),
+				tr ("LeechCraft"),
 				tr ("Do you really want to quit?"),
 				QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 		return;

@@ -218,8 +218,10 @@ namespace LeechCraft
 			
 			void CSTP::handleFileExists (boost::logic::tribool *remove)
 			{
-				QMessageBox::StandardButton userReply = QMessageBox::warning (0,
-						tr ("File exists"), tr ("File %1 already exists, continue download?"),
+				QMessageBox::StandardButton userReply =
+					QMessageBox::warning (0,
+						tr ("File exists"),
+						tr ("File %1 already exists, continue download?"),
 						QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
 				if (userReply == QMessageBox::Yes)
 					*remove = false;

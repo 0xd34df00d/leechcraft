@@ -127,7 +127,7 @@ namespace LeechCraft
 				if (!file.open (QIODevice::ReadOnly))
 				{
 					QMessageBox::critical (this,
-							tr ("Error"),
+							tr ("LeechCraft"),
 							tr ("Could not open file %1 for reading.")
 								.arg (filename));
 					return false;
@@ -140,7 +140,8 @@ namespace LeechCraft
 				stream >> magic;
 				if (magic != 0xd34df00d)
 				{
-					QMessageBox::warning (this, tr ("Error"),
+					QMessageBox::warning (this,
+							tr ("LeechCraft"),
 							tr ("Selected file %1 is not a valid "
 								"LeechCraft::Aggregator exchange file.")
 							.arg (filename));
@@ -152,7 +153,8 @@ namespace LeechCraft
 			
 				if (version != 1)
 				{
-					QMessageBox::warning (this, tr ("Error"),
+					QMessageBox::warning (this,
+							tr ("LeechCraft"),
 							tr ("Selected file %1 is a valid LeechCraft::Aggregator "
 								"exchange file, but its version %2 is unknown")
 							.arg (filename)

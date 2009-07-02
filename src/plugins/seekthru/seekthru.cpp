@@ -108,14 +108,14 @@ namespace LeechCraft
 			void SeekThru::handleError (const QString& error)
 			{
 				QMessageBox::critical (0,
-						tr ("Error"),
+						tr ("LeechCraft"),
 						error);
 			}
 			
 			void SeekThru::handleWarning (const QString& error)
 			{
 				QMessageBox::warning (0,
-						tr ("Warning"),
+						tr ("LeechCraft"),
 						error);
 			}
 			

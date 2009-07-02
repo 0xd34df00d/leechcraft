@@ -54,7 +54,7 @@ namespace LeechCraft
 				catch (const std::runtime_error& e)
 				{
 					QMessageBox::warning (0,
-							tr ("Warning"),
+							tr ("LeechCraft"),
 							e.what ());
 				}
 				try
@@ -66,7 +66,7 @@ namespace LeechCraft
 				catch (const std::runtime_error& e)
 				{
 					QMessageBox::warning (0,
-							tr ("Warning"),
+							tr ("LeechCraft"),
 							e.what ());
 				}
 			
@@ -495,7 +495,9 @@ namespace LeechCraft
 			
 			void Poshuku::handleError (const QString& msg)
 			{
-				QMessageBox::warning (this, tr ("Error"), msg);
+				QMessageBox::warning (this,
+						tr ("LeechCraft"),
+						msg);
 			}
 			
 			void Poshuku::handleNewTab ()

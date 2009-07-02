@@ -220,7 +220,7 @@ void LeechCraft::PluginManager::Release ()
 		catch (...)
 		{
 			QMessageBox::warning (0,
-					tr ("Warning"),
+					tr ("LeechCraft"),
 					tr ("Release of one or more plugins failed."));
 		}
 	}

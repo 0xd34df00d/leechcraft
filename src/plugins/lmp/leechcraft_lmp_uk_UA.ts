@@ -158,7 +158,7 @@
     </message>
     <message>
         <location filename="player.cpp" line="186"/>
-        <source>Error</source>
+        <source>LeechCraft</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

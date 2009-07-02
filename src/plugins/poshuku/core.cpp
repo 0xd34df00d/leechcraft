@@ -463,7 +463,7 @@ namespace LeechCraft
 				if (!file.open (QIODevice::ReadOnly))
 				{
 					QMessageBox::critical (0,
-							tr ("Error"),
+							tr ("LeechCraft"),
 							tr ("Could not open file %1 for reading.")
 								.arg (filename));
 					return;
@@ -478,7 +478,7 @@ namespace LeechCraft
 				catch (const std::exception& e)
 				{
 					QMessageBox::critical (0,
-							tr ("Error"),
+							tr ("LeechCraft"),
 							e.what ());
 				}
 			}
@@ -506,7 +506,7 @@ namespace LeechCraft
 				if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
 				{
 					QMessageBox::critical (0,
-							tr ("Error"),
+							tr ("LeechCraft"),
 							tr ("Could not open file %1 for writing.")
 								.arg (filename));
 					return;

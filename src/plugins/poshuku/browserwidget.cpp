@@ -640,7 +640,7 @@ namespace LeechCraft
 				if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
 				{
 					QMessageBox::critical (this,
-							tr ("Error"),
+							tr ("LeechCraft"),
 							tr ("Could not open %1 for write")
 								.arg (filename));
 					return;
@@ -649,7 +649,7 @@ namespace LeechCraft
 				if (!file.write (dia->Save ()))
 				{
 					QMessageBox::critical (this,
-							tr ("Error"),
+							tr ("LeechCraft"),
 							tr ("Could not write screenshot to %1")
 								.arg (filename));
 					return;

@@ -189,12 +189,8 @@
     </message>
     <message>
         <location filename="seekthru.cpp" line="111"/>
-        <source>Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="seekthru.cpp" line="118"/>
-        <source>Warning</source>
+        <source>LeechCraft</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

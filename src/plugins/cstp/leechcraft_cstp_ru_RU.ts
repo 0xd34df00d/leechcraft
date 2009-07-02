@@ -58,8 +58,8 @@
     </message>
     <message>
         <location filename="addtask.cpp" line="107"/>
-        <source>Question</source>
-        <translation>Вопрос</translation>
+        <source>LeechCraft</source>
+        <translation>LeechCraft</translation>
     </message>
     <message>
         <location filename="addtask.cpp" line="139"/>
@@ -100,12 +100,12 @@
         <translation>Остановить все</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="222"/>
+        <location filename="cstp.cpp" line="223"/>
         <source>File exists</source>
         <translation>Файл существует</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="222"/>
+        <location filename="cstp.cpp" line="224"/>
         <source>File %1 already exists, continue download?</source>
         <translation>Файл %1 уже существует, продолжить закачку?</translation>
     </message>

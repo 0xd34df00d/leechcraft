@@ -275,7 +275,7 @@
     <message>
         <location filename="browserwidget.cpp" line="643"/>
         <location filename="browserwidget.cpp" line="652"/>
-        <source>Error</source>
+        <source>LeechCraft</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -319,7 +319,7 @@
         <location filename="core.cpp" line="466"/>
         <location filename="core.cpp" line="481"/>
         <location filename="core.cpp" line="509"/>
-        <source>Error</source>
+        <source>LeechCraft</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -451,17 +451,13 @@
     <message>
         <location filename="poshuku.cpp" line="57"/>
         <location filename="poshuku.cpp" line="69"/>
-        <source>Warning</source>
+        <location filename="poshuku.cpp" line="499"/>
+        <source>LeechCraft</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="poshuku.cpp" line="171"/>
         <source>Simple yet functional web browser</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="poshuku.cpp" line="498"/>
-        <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

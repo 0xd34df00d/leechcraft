@@ -1965,7 +1965,7 @@ namespace LeechCraft
 				void operator() (const libtorrent::storage_moved_alert& a) const
 				{
 					QMessageBox::information (0,
-							QObject::tr ("Storage moved"),
+							QObject::tr ("LeechCraft"),
 							QObject::tr ("Storage for torrent<br />%1<br />moved successfully to<br />%2")
 								.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
 								.arg (QString::fromUtf8 (a.path.c_str ())));

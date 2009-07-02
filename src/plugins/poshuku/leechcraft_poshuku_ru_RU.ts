@@ -275,8 +275,8 @@
     <message>
         <location filename="browserwidget.cpp" line="643"/>
         <location filename="browserwidget.cpp" line="652"/>
-        <source>Error</source>
-        <translation>Ошибка</translation>
+        <source>LeechCraft</source>
+        <translation>LeechCraft</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="644"/>
@@ -319,8 +319,8 @@
         <location filename="core.cpp" line="466"/>
         <location filename="core.cpp" line="481"/>
         <location filename="core.cpp" line="509"/>
-        <source>Error</source>
-        <translation>Ошибка</translation>
+        <source>LeechCraft</source>
+        <translation>LeechCraft</translation>
     </message>
     <message>
         <location filename="core.cpp" line="467"/>
@@ -451,18 +451,14 @@
     <message>
         <location filename="poshuku.cpp" line="57"/>
         <location filename="poshuku.cpp" line="69"/>
-        <source>Warning</source>
-        <translation>Предупреждение</translation>
+        <location filename="poshuku.cpp" line="499"/>
+        <source>LeechCraft</source>
+        <translation>LeechCraft</translation>
     </message>
     <message>
         <location filename="poshuku.cpp" line="171"/>
         <source>Simple yet functional web browser</source>
         <translation>Простой, но в то же время функциональный веб-браузер</translation>
-    </message>
-    <message>
-        <location filename="poshuku.cpp" line="498"/>
-        <source>Error</source>
-        <translation>Ошибка</translation>
     </message>
 </context>
 <context>

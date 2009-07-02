@@ -58,8 +58,8 @@
     </message>
     <message>
         <location filename="addtask.cpp" line="107"/>
-        <source>Question</source>
-        <translation type="unfinished">Запитання</translation>
+        <source>LeechCraft</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="addtask.cpp" line="139"/>
@@ -100,12 +100,12 @@
         <translation type="unfinished">Зупунити всі</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="222"/>
+        <location filename="cstp.cpp" line="223"/>
         <source>File exists</source>
         <translation type="unfinished">Файл вже існує</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="222"/>
+        <location filename="cstp.cpp" line="224"/>
         <source>File %1 already exists, continue download?</source>
         <translation type="unfinished">Файл %1 вже існує, бажаєте продовжити завантаження?</translation>
     </message>

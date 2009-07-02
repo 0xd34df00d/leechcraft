@@ -173,32 +173,32 @@
 <context>
     <name>LeechCraft::Application</name>
     <message>
-        <location filename="application.cpp" line="104"/>
-        <source>Critical failure</source>
-        <translation>خطأ خطر</translation>
+        <location filename="application.cpp" line="105"/>
+        <source>LeechCraft</source>
+        <translation type="unfinished">LeechCraft</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="105"/>
+        <location filename="application.cpp" line="106"/>
         <source>Could not create path %1/.leechcraft</source>
         <translation>لم يتمكن leechcraft من إنشاء %1/</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="123"/>
+        <location filename="application.cpp" line="124"/>
         <source>bytes</source>
         <translation>بايت</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="124"/>
+        <location filename="application.cpp" line="125"/>
         <source>KB</source>
         <translation>ك/ب</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="125"/>
+        <location filename="application.cpp" line="126"/>
         <source>MB</source>
         <translation>م/ب</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="126"/>
+        <location filename="application.cpp" line="127"/>
         <source>GB</source>
         <translation>غ/ب</translation>
     </message>
@@ -307,7 +307,7 @@
     <message>
         <location filename="mainwindow.cpp" line="38"/>
         <location filename="mainwindow.cpp" line="64"/>
-        <location filename="mainwindow.cpp" line="604"/>
+        <location filename="mainwindow.cpp" line="606"/>
         <source>Initializing core and plugins...</source>
         <translation type="unfinished">لإضافة مهام للبرنلمج المساعد </translation>
     </message>
@@ -317,51 +317,43 @@
         <translation>البرامج المساعدة</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="153"/>
-        <source>Error</source>
-        <translation>خطأ</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="168"/>
+        <location filename="mainwindow.cpp" line="170"/>
         <source>Initializing interface...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="214"/>
+        <location filename="mainwindow.cpp" line="154"/>
+        <location filename="mainwindow.cpp" line="216"/>
+        <location filename="mainwindow.cpp" line="326"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="232"/>
+        <location filename="mainwindow.cpp" line="234"/>
         <source>/s	</source>
         <translation>/s	</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="235"/>
-        <location filename="mainwindow.cpp" line="239"/>
-        <location filename="mainwindow.cpp" line="522"/>
-        <location filename="mainwindow.cpp" line="523"/>
+        <location filename="mainwindow.cpp" line="237"/>
+        <location filename="mainwindow.cpp" line="241"/>
+        <location filename="mainwindow.cpp" line="524"/>
+        <location filename="mainwindow.cpp" line="525"/>
         <source>/s</source>
         <translation>/s</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="324"/>
-        <source>Question</source>
-        <translation>سؤال</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="325"/>
+        <location filename="mainwindow.cpp" line="327"/>
         <source>Do you really want to quit?</source>
         <translation>هل تريد الخروج؟</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="399"/>
-        <location filename="mainwindow.cpp" line="502"/>
+        <location filename="mainwindow.cpp" line="401"/>
+        <location filename="mainwindow.cpp" line="504"/>
         <source>Plugin control</source>
         <translation>تحكّم با البرامج المساعدة</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="528"/>
+        <location filename="mainwindow.cpp" line="530"/>
         <source>%1 down, %2 up</source>
         <translation>تحميل %1، إعطاء %2</translation>
     </message>
@@ -426,8 +418,8 @@
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="223"/>
-        <source>Warning</source>
-        <translation>تنبيه</translation>
+        <source>LeechCraft</source>
+        <translation type="unfinished">LeechCraft</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="224"/>

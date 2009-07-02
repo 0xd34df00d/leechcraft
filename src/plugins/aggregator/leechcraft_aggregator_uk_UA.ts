@@ -433,13 +433,9 @@
     </message>
     <message>
         <location filename="aggregator.cpp" line="549"/>
-        <source>Error</source>
-        <translation type="unfinished">Помилка</translation>
-    </message>
-    <message>
         <location filename="aggregator.cpp" line="573"/>
-        <source>Warning</source>
-        <translation type="unfinished">Увага</translation>
+        <source>LeechCraft</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="574"/>
@@ -525,97 +521,97 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="531"/>
+        <location filename="core.cpp" line="536"/>
         <source>Could not get feed settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="546"/>
+        <location filename="core.cpp" line="551"/>
         <source>Could not update feed settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="571"/>
+        <location filename="core.cpp" line="576"/>
         <source>Could not update feed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="606"/>
+        <location filename="core.cpp" line="611"/>
         <source>Could not open file %1 for reading.</source>
         <translation type="unfinished">Не можу відкрити файл %1 для читання.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="623"/>
+        <location filename="core.cpp" line="628"/>
         <source>XML error, file %1, line %2, column %3, error:&lt;br /&gt;%4</source>
         <translation type="unfinished">Помилка аналізу XML, файл %1, рядок %2, стовпчик %3, текс помилки:&lt;br/&gt;%4</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="634"/>
+        <location filename="core.cpp" line="639"/>
         <source>OPML from file %1 is not valid.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="907"/>
+        <location filename="core.cpp" line="912"/>
         <source>Provided web browser is wrong web browser.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="964"/>
+        <location filename="core.cpp" line="969"/>
         <source>Downloaded file from url %1 has null size!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="976"/>
+        <location filename="core.cpp" line="981"/>
         <source>Feed with url %1 not found.</source>
         <translation type="unfinished">Не можу знайти стрічку за адресою %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="990"/>
+        <location filename="core.cpp" line="995"/>
         <source>XML file parse error: %1, line %2, column %3, filename %4, from %5</source>
         <translation type="unfinished">Помилка аналізу XML: %1, рядок %2, стовпчик %3, ім&apos;я файлу %4, з %5</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1003"/>
+        <location filename="core.cpp" line="1008"/>
         <source>Could not find parser to parse file %1 from %2</source>
         <translation type="unfinished">Не можу знайти обробник для файлу %1 з %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1082"/>
+        <location filename="core.cpp" line="1087"/>
         <source>Address not found:&lt;br /&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1085"/>
+        <location filename="core.cpp" line="1090"/>
         <source>Access denied:&lt;br /&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1088"/>
+        <location filename="core.cpp" line="1093"/>
         <source>Local errro for:&lt;br /&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1091"/>
+        <location filename="core.cpp" line="1096"/>
         <source>Unknown error for:&lt;br /&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1140"/>
+        <location filename="core.cpp" line="1145"/>
         <source>External file %1 wasn&apos;t delegated.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1389"/>
+        <location filename="core.cpp" line="1394"/>
         <source>Added channel &quot;%1&quot; (has %2 items)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1408"/>
+        <location filename="core.cpp" line="1413"/>
         <source>Updated channel &quot;%1&quot; (%2 new items)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1462"/>
+        <location filename="core.cpp" line="1467"/>
         <source>Could not mark channel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -634,10 +630,10 @@
     </message>
     <message>
         <location filename="importbinary.cpp" line="130"/>
-        <location filename="importbinary.cpp" line="143"/>
-        <location filename="importbinary.cpp" line="155"/>
-        <source>Error</source>
-        <translation type="unfinished">Помилка</translation>
+        <location filename="importbinary.cpp" line="144"/>
+        <location filename="importbinary.cpp" line="157"/>
+        <source>LeechCraft</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="importbinary.cpp" line="131"/>
@@ -645,12 +641,12 @@
         <translation type="unfinished">Не можу відкрити файл %1 для читання.</translation>
     </message>
     <message>
-        <location filename="importbinary.cpp" line="144"/>
+        <location filename="importbinary.cpp" line="145"/>
         <source>Selected file %1 is not a valid LeechCraft::Aggregator exchange file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="importbinary.cpp" line="156"/>
+        <location filename="importbinary.cpp" line="158"/>
         <source>Selected file %1 is a valid LeechCraft::Aggregator exchange file, but its version %2 is unknown</source>
         <translation type="unfinished"></translation>
     </message>
@@ -671,8 +667,8 @@
         <location filename="importopml.cpp" line="94"/>
         <location filename="importopml.cpp" line="113"/>
         <location filename="importopml.cpp" line="126"/>
-        <source>Error</source>
-        <translation type="unfinished">Помилка</translation>
+        <source>LeechCraft</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="importopml.cpp" line="95"/>
@@ -785,22 +781,22 @@
 <context>
     <name>LeechCraft::Plugins::Aggregator::RegexpMatcherUi</name>
     <message>
-        <location filename="regexpmatcherui.cpp" line="45"/>
-        <location filename="regexpmatcherui.cpp" line="53"/>
-        <location filename="regexpmatcherui.cpp" line="86"/>
-        <location filename="regexpmatcherui.cpp" line="94"/>
-        <source>Warning</source>
-        <translation type="unfinished">Увага</translation>
+        <location filename="regexpmatcherui.cpp" line="46"/>
+        <location filename="regexpmatcherui.cpp" line="56"/>
+        <location filename="regexpmatcherui.cpp" line="91"/>
+        <location filename="regexpmatcherui.cpp" line="101"/>
+        <source>LeechCraft</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="regexpmatcherui.cpp" line="45"/>
-        <location filename="regexpmatcherui.cpp" line="86"/>
+        <location filename="regexpmatcherui.cpp" line="47"/>
+        <location filename="regexpmatcherui.cpp" line="92"/>
         <source>This title matcher regexp already exists. Specify another one or modify existing title matcher regexp&apos;s body extractor.</source>
         <translation type="unfinished">Цей фільтр вже існує. Вкажіть інший, бо змініть існуючий.</translation>
     </message>
     <message>
-        <location filename="regexpmatcherui.cpp" line="53"/>
-        <location filename="regexpmatcherui.cpp" line="94"/>
+        <location filename="regexpmatcherui.cpp" line="57"/>
+        <location filename="regexpmatcherui.cpp" line="102"/>
         <source>Either title matcher or body extractor is malformed.</source>
         <translation type="unfinished">Не правильно заданий фільтр загаловків або змісту.</translation>
     </message>
