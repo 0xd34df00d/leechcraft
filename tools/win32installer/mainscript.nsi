@@ -1,6 +1,6 @@
 !include "MUI.nsh"
 
-OutFile ../lcinstall-0.2.1009.exe
+OutFile ../leechcraft-installer.exe
 Name "LeechCraft"
 SetCompressor /SOLID lzma
 InstallDir "$PROGRAMFILES\Deviant\LeechCraft"
@@ -12,7 +12,7 @@ InstallDir "$PROGRAMFILES\Deviant\LeechCraft"
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
 !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\Deviant\LeechCraft"
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
-!define MUI_STARTMENUPAGE_DEFAULTFOLDER "Deviant\LeechCraft"
+!define MUI_STARTMENUPAGE_DEFAULTFOLDER "LeechCraft"
 
 !define MUI_WELCOMEFINISHPAGE_BITMAP installscreen.bmp
 !insertmacro MUI_PAGE_WELCOME
@@ -21,14 +21,14 @@ InstallDir "$PROGRAMFILES\Deviant\LeechCraft"
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
 Var STARTMENU_FOLDER
-!insertmacro MUI_PAGE_STARTMENU Deviant $STARTMENU_FOLDER
+!insertmacro MUI_PAGE_STARTMENU LeechCraft $STARTMENU_FOLDER
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_UNPAGE_CONFIRM
 !insertmacro MUI_UNPAGE_INSTFILES
 
 !define MUI_FINISHPAGE_RUN $INSTDIR\leechcraft.exe
-!define MUI_FINISHPAGE_LINK "Bugtracker"
-!define MUI_FINISHPAGE_LINK_LOCATION http://bugs.deviant-soft.ws
+!define MUI_FINISHPAGE_LINK "Web site"
+!define MUI_FINISHPAGE_LINK_LOCATION http://leechcraft.org
 !insertmacro MUI_PAGE_FINISH
 
 !insertmacro MUI_LANGUAGE "English"
@@ -54,7 +54,7 @@ SectionGroup "Core"
 		WriteRegStr HKCU "Software\Deviant\LeechCraft" "" $INSTDIR
 		WriteUninstaller "$INSTDIR\Uninstall.exe"
 	
-		!insertmacro MUI_STARTMENU_WRITE_BEGIN Deviant
+		!insertmacro MUI_STARTMENU_WRITE_BEGIN LeechCraft
 			CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
 			CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Leechcraft.lnk" "$INSTDIR\leechcraft.exe" "" "$INSTDIR\icon64.ico"
 			CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
@@ -169,7 +169,7 @@ Var MUI_TEMP
 Section "Uninstall"
 	RMDir /r "$INSTDIR"
 		
-	!insertmacro MUI_STARTMENU_GETFOLDER Deviant $MUI_TEMP
+	!insertmacro MUI_STARTMENU_GETFOLDER LeechCraft $MUI_TEMP
 	Delete "$SMPROGRAMS\$MUI_TEMP\Leechcraft.lnk"
 	Delete "$SMPROGRAMS\$MUI_TEMP\Uninstall.lnk"
 	
@@ -191,17 +191,17 @@ LangString DESC_MAINFILES ${LANG_ENGLISH} "LeechCraft executable and support lib
 LangString DESC_QT ${LANG_ENGLISH} "Qt libraries."
 LangString DESC_MSVC ${LANG_ENGLISH} "Microsoft Visual Studio libraries."
 LangString DESC_OPENSSL ${LANG_ENGLISH} "OpenSSL libraries."
-LangString DESC_HTTPPLUGIN ${LANG_ENGLISH} "HTTP support."
-LangString DESC_TORRENTPLUGIN ${LANG_ENGLISH} "A sophisticated feature-rich BitTorrent client."
-LangString DESC_AGGREGATORPLUGIN ${LANG_ENGLISH} "RSS/Atom feed aggregator."
-LangString DESC_HISTORYHOLDERPLUGIN ${LANG_ENGLISH} "Keeps download history."
+LangString DESC_HTTPPLUGIN ${LANG_ENGLISH} "Support for the HTTP protocol."
+LangString DESC_TORRENTPLUGIN ${LANG_ENGLISH} "Feature-rich BitTorrent client."
+LangString DESC_AGGREGATORPLUGIN ${LANG_ENGLISH} "Sophisticated RSS/Atom feed aggregator."
+LangString DESC_HISTORYHOLDERPLUGIN ${LANG_ENGLISH} "Keeps history of downloaded files."
 LangString DESC_NETWORKMONITORPLUGIN ${LANG_ENGLISH} "Monitors HTTP network requests."
-LangString DESC_POSHUKUPLUGIN ${LANG_ENGLISH} "Web browser."
-LangString DESC_POSHUKUCLEANWEBPLUGIN ${LANG_ENGLISH} "Ad blocker plugin for the Poshuku."
+LangString DESC_POSHUKUPLUGIN ${LANG_ENGLISH} "Full-featured web browser."
+LangString DESC_POSHUKUCLEANWEBPLUGIN ${LANG_ENGLISH} "Ad blocker for the Poshuku."
 LangString DESC_POSHUKUFUAPLUGIN ${LANG_ENGLISH} "Fake User Agent plugin for the Poshuku."
 #LangString DESC_LMPPLUGIN ${LANG_ENGLISH} "LeechCraft Media Player."
-LangString DESC_DEADLYRICSPLUGIN ${LANG_ENGLISH} "LyricWiki.org song lyrics search client."
-LangString DESC_SEEKTHRUPLUGIN ${LANG_ENGLISH} "Client for OpenSearch-capable search engines."
+LangString DESC_DEADLYRICSPLUGIN ${LANG_ENGLISH} "Fetches lyrics from LyricWiki.org."
+LangString DESC_SEEKTHRUPLUGIN ${LANG_ENGLISH} "Client for OpenSearch-aware search engines."
 
 LangString DESC_MAINFILES ${LANG_RUSSIAN} "—ам LeechCraft и его вспомогательные б»блиотеки."
 LangString DESC_QT ${LANG_RUSSIAN} "Ѕиблиотеки Qt."
