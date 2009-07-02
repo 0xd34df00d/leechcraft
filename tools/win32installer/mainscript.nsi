@@ -77,7 +77,6 @@ SectionGroup "Core"
 		File phonon4.dll
 #		File phonon_ds94.dll
 		SetOutPath $INSTDIR\plugins
-		File /r plugins\bin
 		File /r plugins\imageformats
 		File /r plugins\sqldrivers
 		SectionIn 1 2 RO
@@ -162,6 +161,29 @@ SectionGroup "Plugins"
 #		File plugins\bin\leechcraft_lmp.dll
 #		SectionIn 1
 #	SectionEnd
+SectionGroupEnd
+
+SectionGroup "Translations"
+	Section "Arabic"
+		SetOutPath $INSTDIR
+		File /r *_ar.qm
+		SectionIn 1
+	SectionEnd
+	Section "Italian"
+		SetOutPath $INSTDIR
+		File /r *_it.qm
+		SectionIn 1
+	SectionEnd
+	Section "Russian"
+		SetOutPath $INSTDIR
+		File /r *_ru_RU.qm
+		SectionIn 1
+	SectionEnd
+	Section "Ukrainian"
+		SetOutPath $INSTDIR
+		File /r *_uk_UA.qm
+		SectionIn 1
+	SectionEnd
 SectionGroupEnd
 
 Var MUI_TEMP
