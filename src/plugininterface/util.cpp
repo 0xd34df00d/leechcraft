@@ -27,7 +27,7 @@ QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName,
 
 #ifdef Q_WS_WIN
 	if (transl->load (filename, ":/") ||
-			transl->load (filename, ""))
+			transl->load (filename, "translations"))
 #else
 	if (transl->load (filename, ":/") ||
 			transl->load (filename,
