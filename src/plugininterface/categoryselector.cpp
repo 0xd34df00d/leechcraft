@@ -96,7 +96,7 @@ void CategorySelector::lineTextChanged (const QString& text)
 {
 	QList<QCheckBox*> boxes = findChildren<QCheckBox*> ();
 
-	QStringList tags = text.split (" ", QString::SkipEmptyParts);
+	QStringList tags = text.split ("; ", QString::SkipEmptyParts);
 	for (QList<QCheckBox*>::iterator box = boxes.begin (),
 			end = boxes.end (); box != end; ++box)
 	{
