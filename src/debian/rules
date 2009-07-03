@@ -29,7 +29,7 @@ clean:
 	rm -Rf debian/.install
 	find ./ -name "Makefile" -delete
 	find ./ -name "cmake_install.cmake" -delete
-	find ./ -name "CMakeFiles" -exec rm -rf {} \;
+	find ./ -name "CMakeFiles" -exec rm -rf {} \+
 
 	dh_clean
 
