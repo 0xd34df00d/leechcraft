@@ -688,6 +688,9 @@ void XmlSettingsDialog::DoPath (const QDomElement& item, QFormLayout *lay)
 	QVariant value = GetValue (item);
 	picker->SetText (value.toString ());
 	picker->setObjectName (item.attribute ("property"));
+	if (item.attribute ("onCancel") == "clear")
+		picker->SetClearOnCancel (true);
+
 	connect (picker,
 			SIGNAL (textChanged (const QString&)),
 			this,

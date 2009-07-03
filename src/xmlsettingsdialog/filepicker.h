@@ -25,10 +25,12 @@ namespace LeechCraft
 
 		QLineEdit *LineEdit_;
 		QPushButton *BrowseButton_;
+		bool ClearOnCancel_;
 	public:
 		FilePicker (QWidget *parent = 0);
 		void SetText (const QString&);
 		QString GetText () const;
+		void SetClearOnCancel (bool);
 	private slots:
 		void chooseFile ();
 	signals:
