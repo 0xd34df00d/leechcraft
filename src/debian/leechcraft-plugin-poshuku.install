@@ -1,2 +1,3 @@
 usr/lib/leechcraft/plugins/*leechcraft_poshuku.so
-usr/share/leechcraft/translations/leechcraft_poshuku*.qm
+usr/share/leechcraft/translations/leechcraft_poshuku_ru_RU.qm
+usr/share/leechcraft/translations/leechcraft_poshuku_uk_UA.qm
