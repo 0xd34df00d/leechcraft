@@ -66,7 +66,7 @@ void TagsLineEdit::handleTagsUpdated (const QStringList& tags)
 
 void TagsLineEdit::handleSelectionChanged (const QStringList& tags)
 {
-	setText (tags.join (" "));
+	setText (tags.join ("; "));
 }
 
 void TagsLineEdit::keyPressEvent (QKeyEvent *e)
