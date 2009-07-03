@@ -67,13 +67,29 @@ XmlSettingsDialog::~XmlSettingsDialog ()
 {
 }
 
-void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& filename)
+void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& basename)
 {
 	WorkingObject_ = obj;
+	QString filename;
+	if (QFile::exists (basename))
+		filename = basename;
+	else if (QFile::exists (QString (":/") + basename))
+		filename = QString (":/") + basename;
+#ifdef Q_WS_WIN
+	else if (QFile::exists (QString ("settings/") + basename))
+		filename = QString ("settings/") + basename;
+#else
+	else if (QFile::exists (QString ("/usr/local/share/leechcraft/settings/") + basename))
+		filename = QString ("/usr/local/share/leechcraft/settings/") + basename;
+	else if (QFile::exists (QString ("/usr/share/leechcraft/settings/") + basename))
+		filename = QString ("/usr/share/leechcraft/settings/") + basename;
+#endif
 	QFile file (filename);
 	if (!file.open (QIODevice::ReadOnly))
 	{
-		qWarning () << "cannot open file";
+		qWarning () << "cannot open file"
+			<< filename
+			<< basename;
 		return;
 	}
 	QByteArray data = file.readAll ();
