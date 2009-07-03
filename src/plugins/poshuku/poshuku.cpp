@@ -72,7 +72,7 @@ namespace LeechCraft
 			
 				XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
 				XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-						":/poshukusettings.xml");
+						"poshukusettings.xml");
 				XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
 						new LeechCraft::Util::BackendSelector (XmlSettingsManager::Instance ()));
 			

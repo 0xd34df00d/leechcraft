@@ -200,7 +200,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	XmlSettingsDialog_ = new XmlSettingsDialog ();
 	XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-			":/coresettings.xml");
+			"coresettings.xml");
 
 	XmlSettingsDialog_->SetCustomWidget ("TagsViewer", new TagsViewer);
 

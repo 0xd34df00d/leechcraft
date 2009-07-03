@@ -997,7 +997,8 @@ namespace LeechCraft
 				LastPeersUpdate_.reset (new QTime);
 				LastPeersUpdate_->start ();
 				XmlSettingsDialog_.reset (new XmlSettingsDialog ());
-				XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/torrentsettings.xml");
+				XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+						"torrentsettings.xml");
 				AddTorrentDialog_.reset (new AddTorrent ());
 				connect (Core::Instance (),
 						SIGNAL (error (QString)),

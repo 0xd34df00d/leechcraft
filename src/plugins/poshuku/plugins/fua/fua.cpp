@@ -61,7 +61,7 @@ void LeechCraft::Plugins::Poshuku::Plugins::Fua::FUA::Init (ICoreProxy_ptr)
 
 	XmlSettingsDialog_.reset (new XmlSettingsDialog ());
     XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-			":/poshukufuasettings.xml");
+			"poshukufuasettings.xml");
 	XmlSettingsDialog_->SetCustomWidget ("Settings", new Settings (Model_.get (), this));
 }
 

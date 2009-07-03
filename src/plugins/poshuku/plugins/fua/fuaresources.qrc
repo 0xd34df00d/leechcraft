@@ -1,5 +1,4 @@
 <RCC>
   <qresource prefix="/" >
-	<file>poshukufuasettings.xml</file>
   </qresource>
 </RCC>

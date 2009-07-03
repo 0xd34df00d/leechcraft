@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/" >
-		<file>coresettings.xml</file>
         <file>resources/images/mainapp.png</file>
         <file>resources/images/splashscreen.png</file>
     </qresource>

@@ -34,7 +34,8 @@ namespace LeechCraft
 				Translator_.reset (LeechCraft::Util::InstallTranslator ("cstp"));
 			
 				XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
-				XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (), ":/cstpsettings.xml");
+				XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
+						"cstpsettings.xml");
 			
 				SetupToolbar ();
 			

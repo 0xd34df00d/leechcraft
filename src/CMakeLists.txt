@@ -30,6 +30,7 @@ ENDIF (IS64BITS AND RESPECTLIB64)
 
 SET (LC_PLUGINS_DEST "${LIBDIR}/leechcraft/plugins")
 SET (LC_TRANSLATIONS_DEST "share/leechcraft/translations")
+SET (LC_SETTINGS_DEST "share/leechcraft/settings")
 
 # Check modules first in local dir
 SET (CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
@@ -271,6 +272,7 @@ TARGET_LINK_LIBRARIES(leechcraft
 						xmlsettingsdialog)
 INSTALL (TARGETS leechcraft DESTINATION bin)
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+INSTALL (FILES coresettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor
 	PATTERN ".svn" EXCLUDE)

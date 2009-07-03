@@ -15,7 +15,7 @@ void LMP::Init (ICoreProxy_ptr proxy)
 
 	SettingsDialog_.reset (new XmlSettingsDialog ());
 	SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-			":/plugins/lmp/lmpsettings.xml");
+			"lmpsettings.xml");
 
 	Core::Instance ().SetCoreProxy (proxy);
 

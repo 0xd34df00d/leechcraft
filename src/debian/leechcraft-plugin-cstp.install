@@ -1,2 +1,3 @@
 usr/lib/leechcraft/plugins/*leechcraft_cstp.so
 usr/share/leechcraft/translations/leechcraft_cstp*.qm
+usr/share/leechcraft/settings/cstpsettings.xml
