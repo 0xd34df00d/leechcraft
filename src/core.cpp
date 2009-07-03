@@ -76,7 +76,8 @@ LeechCraft::Core::Core ()
 			<< tr ("Progress")))
 , RequestNormalizer_ (new RequestNormalizer (MergeModel_))
 , NetworkAccessManager_ (new NetworkAccessManager)
-, StorageBackend_ (new SQLStorageBackend ())
+, StorageBackend_ (new SQLStorageBackend)
+, DirectoryWatcher_ (new DirectoryWatcher)
 {
 	MergeModel_->setObjectName ("Core MergeModel");
 	MergeModel_->setProperty ("__LeechCraft_own_core_model", true);
@@ -84,6 +85,11 @@ LeechCraft::Core::Core ()
 			SIGNAL (error (const QString&)),
 			this,
 			SIGNAL (error (const QString&)));
+
+	connect (DirectoryWatcher_.get (),
+			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+			this,
+			SLOT (handleGotEntity (LeechCraft::DownloadEntity)));
 
 	StorageBackend_->Prepare ();
 

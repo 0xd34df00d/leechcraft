@@ -14,6 +14,7 @@
 #include "storagebackend.h"
 #include "requestnormalizer.h"
 #include "networkaccessmanager.h"
+#include "directorywatcher.h"
 
 class QLocalServer;
 class QAbstractProxyModel;
@@ -57,6 +58,7 @@ namespace LeechCraft
 		std::auto_ptr<TabContainer> TabContainer_;
 		std::auto_ptr<QNetworkAccessManager> NetworkAccessManager_;
 		std::auto_ptr<StorageBackend> StorageBackend_;
+		std::auto_ptr<DirectoryWatcher> DirectoryWatcher_;
 		typedef std::map<const QAbstractItemModel*, QObject*> repres2object_t;
 		// Contains unfolded representations
 		mutable repres2object_t Representation2Object_;

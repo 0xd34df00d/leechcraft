@@ -160,6 +160,7 @@ SET (SRCS
 	appstyler.cpp
 	tagsmanager.cpp
 	tagsviewer.cpp
+	directorywatcher.cpp
 	3dparty/qxttooltip.cpp
 	)
 SET (HEADERS
@@ -199,6 +200,7 @@ SET (HEADERS
 	appstyler.h
 	tagsmanager.h
 	tagsviewer.h
+	directorywatcher.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/iinfo.h
