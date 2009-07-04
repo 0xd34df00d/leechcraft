@@ -4,8 +4,8 @@
 #include <QApplication>
 #include <QIcon>
 #include <QtDebug>
-#include <xmlsettingsdialog/basesettingsmanager.h>
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Plugins::DBusManager;
@@ -33,20 +33,17 @@ NotificationManager::NotificationManager (QObject *parent)
 void NotificationManager::HandleFinishedNotification (IHookProxy *proxy,
 		const QString& msg, bool show)
 {
-	if (!Connection_.get () || !show)
+	if (!Connection_.get () ||
+			!show ||
+			!XmlSettingsManager::Instance ()->
+				property ("UseKDENotifications").toBool ())
 		return;
-
-	QByteArray iconData;
-	{
-		QDataStream arg (&iconData, QIODevice::WriteOnly);
-		arg << qApp->windowIcon ().pixmap (64, 64);
-	}
 
 	QList<QVariant> arguments;
 	arguments << "LeechCraft"
 		<< uint (0)
 		<< QString ()
-		<< QString ("LeechCraft")
+		<< QString ("leechcraft")
 		<< QString ()
 		<< msg
 		<< QStringList ()
