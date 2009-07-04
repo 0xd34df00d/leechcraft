@@ -164,13 +164,20 @@ QVariant Core::data (const QModelIndex& index, int role) const
 			case 1:
 				return e.DateTime_;
 			case 2:
-				return data (index, RoleTags).toStringList ().join ("; ");
+				return CoreProxy_->GetTagsManager ()->
+					Join (data (index, RoleTags).toStringList ());
 			default:
 				return QVariant ();
 		}
 	}
 	else if (role == RoleTags)
-		return History_.at (row).Entity_.Additional_ [" Tags"].toStringList ();
+	{
+		QStringList tagids = History_.at (row).Entity_.Additional_ [" Tags"].toStringList ();
+		QStringList result;
+		Q_FOREACH (QString id, tagids)
+			result << CoreProxy_->GetTagsManager ()->GetTag (id);
+		return result;
+	}
 	else if (role == RoleControls)
 		return QVariant::fromValue<QToolBar*> (ToolBar_.get ());
 	else if (role == RoleHash)
