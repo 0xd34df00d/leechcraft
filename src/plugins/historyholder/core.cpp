@@ -276,6 +276,7 @@ void Core::handleActivated (const QModelIndex& si)
 
 	LeechCraft::DownloadEntity e = History_.at (index.row ()).Entity_;
 	e.Parameters_ |= LeechCraft::FromUserInitiated;
+	e.Parameters_ &= ~LeechCraft::IsDownloaded;
 	emit gotEntity (e);
 }
 
