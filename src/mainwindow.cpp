@@ -260,7 +260,7 @@ void LeechCraft::MainWindow::SetStatusBar ()
 
 void LeechCraft::MainWindow::SetTrayIcon ()
 {
-	TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/mainapp.png"), this);
+	TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/leechcraft.png"), this);
 
 	QMenu *iconMenu = new QMenu (this);
 	iconMenu->addAction (Ui_.ActionAddTask_);
