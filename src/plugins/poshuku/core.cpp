@@ -534,7 +534,7 @@ namespace LeechCraft
 				saveSession ();
 			}
 			
-			void Core::handleURLChanged (const QString& newURL)
+			void Core::handleURLChanged (const QString&)
 			{
 				HandleHistory (dynamic_cast<BrowserWidget*> (sender ())->GetView ());
 			

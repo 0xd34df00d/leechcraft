@@ -47,7 +47,7 @@ ICoreProxy_ptr Core::GetProxy () const
 	return Proxy_;
 }
 
-QString Core::Greeter (const QString& msg)
+QString Core::Greeter (const QString&)
 {
 	return "LeechCraft D-Bus connector development version";
 }

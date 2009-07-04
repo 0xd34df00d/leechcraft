@@ -912,6 +912,8 @@ void XmlSettingsDialog::UpdateXml (bool whole)
 void XmlSettingsDialog::UpdateSingle (const QString& name,
 		const QVariant& value, QDomElement& element)
 {
+	Q_UNUSED (name);
+
 	QString type = element.attribute ("type");
 	if (type == "lineedit" ||
 			type == "checkbox" ||

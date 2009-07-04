@@ -138,7 +138,7 @@ namespace LeechCraft
 			
 				int magic = 0;
 				stream >> magic;
-				if (magic != 0xd34df00d)
+				if (magic != static_cast<int> (0xd34df00d))
 				{
 					QMessageBox::warning (this,
 							tr ("LeechCraft"),

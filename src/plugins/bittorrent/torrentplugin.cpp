@@ -243,7 +243,7 @@ namespace LeechCraft
 				XmlSettingsDialog_->MergeXml (settings);
 			}
 			
-			void TorrentPlugin::ImportData (const QByteArray& data)
+			void TorrentPlugin::ImportData (const QByteArray&)
 			{
 			}
 			

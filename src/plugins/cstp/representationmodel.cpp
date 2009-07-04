@@ -16,7 +16,7 @@ namespace LeechCraft
 			{
 			}
 			
-			bool RepresentationModel::filterAcceptsColumn (int column, const QModelIndex& parent) const
+			bool RepresentationModel::filterAcceptsColumn (int column, const QModelIndex&) const
 			{
 				if (column > 3)
 					return false;

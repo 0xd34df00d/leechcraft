@@ -4,10 +4,11 @@
 int main (int argc, char **argv)
 {
 	int author = 0xd34df00d;
+	Q_UNUSED (author);
 
 	LeechCraft::Application app (argc, argv);
 
-	LeechCraft::MainWindow *mw = new LeechCraft::MainWindow ();
+	new LeechCraft::MainWindow ();
 	return app.exec ();
 }
 

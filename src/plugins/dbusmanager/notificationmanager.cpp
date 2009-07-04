@@ -43,7 +43,7 @@ void NotificationManager::HandleFinishedNotification (IHookProxy *proxy,
 	arguments << "LeechCraft"
 		<< uint (0)
 		<< QString ()
-		<< QString ("leechcraft")
+		<< QString ("leechcraft_main")
 		<< QString ()
 		<< msg
 		<< QStringList ()
