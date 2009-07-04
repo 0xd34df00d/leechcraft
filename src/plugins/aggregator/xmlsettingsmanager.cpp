@@ -9,25 +9,6 @@ namespace LeechCraft
 		{
 			using LeechCraft::Util::Proxy;
 			
-			namespace
-			{
-				QSettings *torrentBeginSettings ()
-				{
-					QSettings *settings =
-						new QSettings (Proxy::Instance ()->GetOrganizationName (),
-								Proxy::Instance ()->GetApplicationName () + "_Aggregator");
-					return settings;
-				}
-			
-				void torrentEndSettings (QSettings*)
-				{
-				}
-			};
-			
-#define PROP2CHAR(a) (a.toLatin1 ().constData ())
-			
-			Q_GLOBAL_STATIC (XmlSettingsManager, XmlSettingsManagerInstance);
-			
 			XmlSettingsManager::XmlSettingsManager ()
 			{
 				LeechCraft::Util::BaseSettingsManager::Init ();
@@ -35,17 +16,20 @@ namespace LeechCraft
 			
 			XmlSettingsManager* XmlSettingsManager::Instance ()
 			{
-				return XmlSettingsManagerInstance ();
+				static XmlSettingsManager manager;
+				return &manager;
 			}
 			
 			QSettings* XmlSettingsManager::BeginSettings () const
 			{
-				return torrentBeginSettings ();
+				QSettings *settings =
+					new QSettings (Proxy::Instance ()->GetOrganizationName (),
+							Proxy::Instance ()->GetApplicationName () + "_Aggregator");
+				return settings;
 			}
 			
-			void XmlSettingsManager::EndSettings (QSettings *settings) const
+			void XmlSettingsManager::EndSettings (QSettings*) const
 			{
-				return torrentEndSettings (settings);
 			}
 		};
 	};

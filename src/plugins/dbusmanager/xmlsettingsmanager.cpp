@@ -4,8 +4,6 @@
 using LeechCraft::Util::Proxy;
 using namespace LeechCraft::Plugins::DBusManager;
 
-Q_GLOBAL_STATIC (XmlSettingsManager, XmlSettingsManagerInstance);
-
 XmlSettingsManager::XmlSettingsManager ()
 {
 	LeechCraft::Util::BaseSettingsManager::Init ();
@@ -13,7 +11,8 @@ XmlSettingsManager::XmlSettingsManager ()
 
 XmlSettingsManager* XmlSettingsManager::Instance ()
 {
-	return XmlSettingsManagerInstance ();
+	static XmlSettingsManager manager;
+	return &manager;
 }
 
 QSettings* XmlSettingsManager::BeginSettings () const

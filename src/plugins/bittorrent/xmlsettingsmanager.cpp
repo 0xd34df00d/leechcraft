@@ -11,22 +11,7 @@ namespace LeechCraft
 		namespace BitTorrent
 		{
 			using LeechCraft::Util::Proxy;
-			
-			namespace
-			{
-				QSettings *torrentBeginSettings ()
-				{
-					QSettings *settings =
-						new QSettings (Proxy::Instance ()->GetOrganizationName (),
-								Proxy::Instance ()->GetApplicationName () + "_Torrent");
-					return settings;
-				}
-			
-				void torrentEndSettings (QSettings*)
-				{
-				}
-			};
-			
+
 			XmlSettingsManager::XmlSettingsManager ()
 			{
 				LeechCraft::Util::BaseSettingsManager::Init ();
@@ -40,14 +25,15 @@ namespace LeechCraft
 			
 			QSettings* XmlSettingsManager::BeginSettings () const
 			{
-				return torrentBeginSettings ();
+				QSettings *settings =
+					new QSettings (Proxy::Instance ()->GetOrganizationName (),
+							Proxy::Instance ()->GetApplicationName () + "_Torrent");
+				return settings;
 			}
 			
-			void XmlSettingsManager::EndSettings (QSettings* settings) const
+			void XmlSettingsManager::EndSettings (QSettings*) const
 			{
-				return torrentEndSettings (settings);
 			}
-			
 		};
 	};
 };
