@@ -139,6 +139,7 @@ Core& LeechCraft::Core::Instance ()
 void LeechCraft::Core::Release ()
 {
 	XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");
+	DirectoryWatcher_.reset ();
 	RequestNormalizer_.reset ();
 	MergeModel_.reset ();
 
