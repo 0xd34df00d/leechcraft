@@ -7,7 +7,8 @@ Changer::Changer (const QMap<QString, QString>& ids,
 		const QString& suggestedDomain,
 		const QString& selectedID,
 		QWidget *parent)
-: IDs_ (ids)
+: QDialog (parent)
+, IDs_ (ids)
 {
 	Ui_.setupUi (this);
 

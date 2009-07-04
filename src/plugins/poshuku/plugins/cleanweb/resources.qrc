@@ -1,5 +1,4 @@
 <RCC>
   <qresource prefix="/plugins/poshuku/plugins/cleanweb" >
-    <file>settings.xml</file>
   </qresource>
 </RCC>

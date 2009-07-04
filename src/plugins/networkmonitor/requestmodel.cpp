@@ -120,7 +120,8 @@ void RequestModel::handleFinished ()
 			{
 				item (i, 1)->setText (QDateTime::currentDateTime ().toString ());
 				item (i, 0)->setData (0);
-				item (i, 1)->setData (GetHeaders (&reply->request ()));
+				QNetworkRequest r = reply->request ();
+				item (i, 1)->setData (GetHeaders (&r));
 				item (i, 2)->setData (GetHeaders (reply));
 			}
 			break;
@@ -152,7 +153,8 @@ void RequestModel::handleCurrentChanged (const QModelIndex& newItem)
 		data ().value<QNetworkReply*> ();
 	if (reply)
 	{
-		FeedHeaders (&reply->request (), RequestHeadersModel_);
+		QNetworkRequest r = reply->request ();
+		FeedHeaders (&r, RequestHeadersModel_);
 		FeedHeaders (reply, ReplyHeadersModel_);
 	}
 	else

@@ -11,6 +11,7 @@ SET (SRCS
 	adaptor.cpp
 	iinfoadaptor.cpp
 	notificationmanager.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (HEADERS
 	dbusmanager.h
@@ -18,6 +19,7 @@ SET (HEADERS
 	adaptor.h
 	iinfoadaptor.h
 	notificationmanager.h
+	xmlsettingsmanager.h
 	)
 SET (FORMS
 	)
@@ -56,3 +58,4 @@ TARGET_LINK_LIBRARIES (leechcraft_dbusmanager
 		)
 INSTALL (TARGETS leechcraft_dbusmanager DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+INSTALL (FILES dbusmanagersettings.xml DESTINATION ${LC_SETTINGS_DEST})

@@ -146,7 +146,8 @@ namespace LeechCraft
 								int*, QObject**)));
 			
 				Impl_->XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
-				Impl_->XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), ":/aggregatorsettings.xml");
+				Impl_->XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+						"aggregatorsettings.xml");
 				Impl_->XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
 						new LeechCraft::Util::BackendSelector (XmlSettingsManager::Instance ()));
 			

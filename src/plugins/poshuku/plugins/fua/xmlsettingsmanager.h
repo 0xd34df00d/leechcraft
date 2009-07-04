@@ -15,8 +15,9 @@ namespace LeechCraft
 					class XmlSettingsManager : public LeechCraft::Util::BaseSettingsManager
 					{
 						Q_OBJECT
-					public:
+
 						XmlSettingsManager ();
+					public:
 						static XmlSettingsManager* Instance ();
 					protected:
 						virtual QSettings* BeginSettings () const;

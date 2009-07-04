@@ -1,6 +1,5 @@
 <RCC>
   <qresource prefix="/plugins/lmp">
 	<file>resources/images/lmp.png</file>
-	<file>lmpsettings.xml</file>
   </qresource>
 </RCC>

@@ -1,6 +1,5 @@
 <RCC>
 	<qresource prefix="/" >
-		<file>seekthrusettings.xml</file>
 		<file>resources/images/seekthru.png</file>
 	</qresource>
 </RCC>

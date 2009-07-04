@@ -34,7 +34,7 @@ void CleanWeb::Init (ICoreProxy_ptr proxy)
 
 	SettingsDialog_.reset (new XmlSettingsDialog);
 	SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-			":/plugins/poshuku/plugins/cleanweb/settings.xml");
+			"poshukucleanwebsettings.xml");
 	SettingsDialog_->SetCustomWidget ("SubscriptionsManager",
 			new SubscriptionsManager ());
 }

@@ -32,6 +32,11 @@
 			<label lang="ru" value="Горячие клавиши" />
 			<item type="customwidget" label="own" name="ShortcutManager" />
 		</tab>
+	</page>
+	<page>
+		<label lang="en" value="Behavior" />
+		<label lang="ru" value="Поведение" />
+		<label lang="uk" value="Поведінка" />
 		<tab>
 			<label lang="en" value="Behavior" />
 			<label lang="ru" value="Поведение" />
@@ -48,6 +53,10 @@
 				<item type="checkbox" property="ConfirmQuit" default="true">
 					<label lang="en" value="Ask quit confirmation" />
 					<label lang="ru" value="Запрашивать подтверждение выхода" />
+				</item>
+				<item type="path" property="WatchDirectory" onCancel="clear">
+					<label lang="en" value="Watch directory:" />
+					<label lang="ru" value="Следить за директорией:" />
 				</item>
 			</groupbox>
 			<item type="groupbox" property="ShowFinishedDownloadMessages" state="on" checkable="true">

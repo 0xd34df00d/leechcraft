@@ -2,7 +2,7 @@
 #include <plugininterface/proxy.h>
 
 using LeechCraft::Util::Proxy;
-using namespace LeechCraft::Plugins::Poshuku::Plugins::Fua;
+using namespace LeechCraft::Plugins::DBusManager;
 
 XmlSettingsManager::XmlSettingsManager ()
 {
@@ -18,11 +18,11 @@ XmlSettingsManager* XmlSettingsManager::Instance ()
 QSettings* XmlSettingsManager::BeginSettings () const
 {
 	QSettings *settings = new QSettings (Proxy::Instance ()->GetOrganizationName (),
-			Proxy::Instance ()->GetApplicationName () + "_Poshuku_FUA");
+			Proxy::Instance ()->GetApplicationName () + "_DBusManager");
 	return settings;
 }
 
-void XmlSettingsManager::EndSettings (QSettings*) const
+void XmlSettingsManager::EndSettings (QSettings *settings) const
 {
 }
 

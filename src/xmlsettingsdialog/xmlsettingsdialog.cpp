@@ -67,13 +67,29 @@ XmlSettingsDialog::~XmlSettingsDialog ()
 {
 }
 
-void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& filename)
+void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& basename)
 {
 	WorkingObject_ = obj;
+	QString filename;
+	if (QFile::exists (basename))
+		filename = basename;
+	else if (QFile::exists (QString (":/") + basename))
+		filename = QString (":/") + basename;
+#ifdef Q_WS_WIN
+	else if (QFile::exists (QString ("settings/") + basename))
+		filename = QString ("settings/") + basename;
+#else
+	else if (QFile::exists (QString ("/usr/local/share/leechcraft/settings/") + basename))
+		filename = QString ("/usr/local/share/leechcraft/settings/") + basename;
+	else if (QFile::exists (QString ("/usr/share/leechcraft/settings/") + basename))
+		filename = QString ("/usr/share/leechcraft/settings/") + basename;
+#endif
 	QFile file (filename);
 	if (!file.open (QIODevice::ReadOnly))
 	{
-		qWarning () << "cannot open file";
+		qWarning () << "cannot open file"
+			<< filename
+			<< basename;
 		return;
 	}
 	QByteArray data = file.readAll ();
@@ -672,6 +688,9 @@ void XmlSettingsDialog::DoPath (const QDomElement& item, QFormLayout *lay)
 	QVariant value = GetValue (item);
 	picker->SetText (value.toString ());
 	picker->setObjectName (item.attribute ("property"));
+	if (item.attribute ("onCancel") == "clear")
+		picker->SetClearOnCancel (true);
+
 	connect (picker,
 			SIGNAL (textChanged (const QString&)),
 			this,
@@ -893,6 +912,8 @@ void XmlSettingsDialog::UpdateXml (bool whole)
 void XmlSettingsDialog::UpdateSingle (const QString& name,
 		const QVariant& value, QDomElement& element)
 {
+	Q_UNUSED (name);
+
 	QString type = element.attribute ("type");
 	if (type == "lineedit" ||
 			type == "checkbox" ||

@@ -89,7 +89,7 @@ void DebugHandler::backtraced (QtMsgType type, const char *message)
 
 		ostr << "Backtrace of " << size << " frames:" << std::endl;
 
-		for (int i = 0; i < size; ++i)
+		for (size_t i = 0; i < size; ++i)
 			ostr << i << "\t" << strings [i] << std::endl;
 		std::free (strings);
 	}

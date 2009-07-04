@@ -1,12 +1,12 @@
-#ifndef PLUGINS_POSHUKU_XMLSETTINGSMANAGER_H
-#define PLUGINS_POSHUKU_XMLSETTINGSMANAGER_H
+#ifndef PLUGINS_DBUSMANAGER_XMLSETTINGSMANAGER_H
+#define PLUGINS_DBUSMANAGER_XMLSETTINGSMANAGER_H
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
 	namespace Plugins
 	{
-		namespace Poshuku
+		namespace DBusManager
 		{
 			class XmlSettingsManager : public LeechCraft::Util::BaseSettingsManager
 			{

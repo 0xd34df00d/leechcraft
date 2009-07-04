@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<declare defaultlang="en" />
+	<page>
+		<label lang="en" value="Environment" />
+		<label lang="ru" value="Окружение" />
+		<tab>
+			<label lang="en" value="KDE" />
+			<item type="checkbox" property="UseKDENotifications" state="on">
+				<label lang="en" value="Use KDE4 Visual Notifications" />
+				<label lang="ru" value="Использовать визуальные оповещения KDE4" />
+			</item>
+		</tab>
+	</page>
+</settings>

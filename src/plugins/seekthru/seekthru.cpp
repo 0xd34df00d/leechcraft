@@ -36,7 +36,7 @@ namespace LeechCraft
 			
 				XmlSettingsDialog_.reset (new XmlSettingsDialog ());
 				XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
-						":/seekthrusettings.xml");
+						"seekthrusettings.xml");
 				XmlSettingsDialog_->SetCustomWidget ("SearchersList", new SearchersList);
 			}
 			

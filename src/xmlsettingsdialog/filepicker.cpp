@@ -22,6 +22,7 @@ using namespace LeechCraft;
 
 FilePicker::FilePicker (QWidget *parent)
 : QWidget (parent)
+, ClearOnCancel_ (false)
 {
 	LineEdit_ = new QLineEdit (this);
 	BrowseButton_ = new QPushButton (tr ("Browse..."));
@@ -44,10 +45,15 @@ QString FilePicker::GetText () const
 	return LineEdit_->text ();
 }
 
+void FilePicker::SetClearOnCancel (bool clear)
+{
+	ClearOnCancel_ = clear;
+}
+
 void FilePicker::chooseFile ()
 {
 	QString name = QFileDialog::getExistingDirectory (this, tr ("Select file"), LineEdit_->text (), 0);
-	if (name.isEmpty ())
+	if (name.isEmpty () && !ClearOnCancel_)
 		return;
 
 	LineEdit_->setText (name);

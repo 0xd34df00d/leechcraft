@@ -3,7 +3,7 @@
 	<declare defaultlang="en" />
 	<page>
 		<label lang="en" value="General" />
-		<lagen lang="ru" value="Общие" />
+		<label lang="ru" value="Общие" />
 		<tab>
 			<label lang="en" value="Plugin communication" />
 			<label lang="ru" value="Взаимодействие с плагинами" />
