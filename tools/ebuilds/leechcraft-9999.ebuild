@@ -52,6 +52,6 @@ src_configure()
 src_install()
 {
 	cmake-utils_src_install
-	doicon resources/mainapp.png
-	make_desktop_entry leechcraft "LeechCraft" mainapp.png
+	doicon resources/leechcraft.png
+	make_desktop_entry leechcraft "LeechCraft" leechcraft.png
 }
