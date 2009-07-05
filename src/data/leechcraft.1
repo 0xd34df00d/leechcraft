@@ -1,0 +1,79 @@
+.TH LEECHCRAFT "1" "Jul 2009"
+
+.SH NAME
+LeechCraft - Extensible plugin-based internet-client
+
+.SH SYNOPSIS
+.B leechcraft [options] [entity]
+
+.SH DESCRIPTION
+.B LeechCraft
+is an extensible cross-platfrom plugin-based internet-client. Currently plugins
+include, but are not limited to, Poshuku (WebKit-based browser), BitTorrent
+(BitTorrent client), Aggregator (RSS/Atom feed reader) and SeekThru (OpenSearch
+client).
+
+.SH OPTIONS
+.SS Common Qt Options
+.TP
+.B -style style, -style=style
+Specify the Qt widget style to use (examples: plastique, cleanlooks).
+.TP
+.B -stylesheet stylesheet, -stylesheet=stylesheet
+Specify the user stylesheet to use when rendering widgets.
+.TP
+.B -reverse
+Sets the application's layout direction to right-to-left.
+
+.SS Options Specific to LeechCraft
+.TP
+.B entity
+The entity to handle by LeechCraft. This could be, for example, a torrent file
+name or an URL.
+.TP
+.B -automatic
+Don't consider this entity to be added as a result of user's action. This way
+LeechCraft would try to minimize the number of dialogues with user. Suitable for
+adding entities from cron or some other sources, where the user could be AFK.
+.TP
+.B -handle
+The item should be handled only. Useful when settings LeechCraft as default
+browser. This way it won't ask if the item should be open in Poshuku or
+downloaded to the disk.
+.TP
+.B -download
+The item should be downloaded only, similar to the previous option.
+.TP
+.B -nolog
+Disable custom logger to the files in ~/.leechcraft and print everything to
+stdout/stderr.
+.TP
+.B -bt
+Print backtrace with warning-level log messages.
+.TP
+.B -clrsckt
+Clear stalled local socket. Useful when LeechCraft doesn't start up and you know
+that no other instances are running.
+.TP
+.B -restart
+Automatically restart if closed. This is done via Session Manager, so it won't
+work everywhere.
+.TP
+.B -help
+Print short help message.
+
+.SH BUGS
+Please report bugs to \fIhttp://leechcraft.org\fR.
+
+.SH AUTHOR
+The author of LeechCraft is Georg Rudoy <0xd34df00d@gmail.com>.
+.PP
+This manual page was written by Georg Rudoy <0xd34df00d@gmail.com>.
+.PP
+Permission is granted to copy, distribute and/or modify this document under the
+terms of the
+GNU Lesser General Public License, Version 3 or any later version published by
+the Free Software Foundation.
+.PP
+On Debian systems, the complete text of the GNU General Public License can be
+found in /usr/share/common-licenses/LGPL.

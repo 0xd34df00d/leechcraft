@@ -11,3 +11,4 @@ leechcraft_*.changes
 tools/repos/dists/
 tools/repos/packages-i386.db
 tools/repos/packages-amd64.db
+src/data/leechcraft.1.gz

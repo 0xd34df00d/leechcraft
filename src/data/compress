@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cat leechcraft.1 | gzip -9 > leechcraft.1.gz
+
