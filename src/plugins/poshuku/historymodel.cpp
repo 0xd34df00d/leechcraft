@@ -90,7 +90,7 @@ namespace LeechCraft
 				RootItem_ = new TreeItem (headers);
 			
 				GarbageTimer_ = new QTimer (this);
-				GarbageTimer_->start (60 * 60 * 1000);
+				GarbageTimer_->start (15 * 60 * 1000);
 				connect (GarbageTimer_,
 						SIGNAL (timeout ()),
 						this,
@@ -229,6 +229,8 @@ namespace LeechCraft
 			
 			void HistoryModel::loadData ()
 			{ 
+				while (RootItem_->ChildCount ())
+					RootItem_->RemoveChild (0);
 				int age = XmlSettingsManager::Instance ()->
 					property ("HistoryClearOlderThan").toInt ();
 				int maxItems = XmlSettingsManager::Instance ()->
