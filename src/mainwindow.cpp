@@ -150,7 +150,10 @@ QTreeView* LeechCraft::MainWindow::GetMainView () const
 
 void LeechCraft::MainWindow::SetAdditionalTitle (const QString& title)
 {
-	setWindowTitle (tr ("%1 - LeechCraft").arg (title));
+	if (title.isEmpty ())
+		setWindowTitle (tr ("LeechCraft"));
+	else
+		setWindowTitle (tr ("%1 - LeechCraft").arg (title));
 }
 
 void LeechCraft::MainWindow::catchError (QString message)
