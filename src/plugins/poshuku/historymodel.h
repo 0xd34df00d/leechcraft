@@ -36,7 +36,6 @@ namespace LeechCraft
 				QTimer *GarbageTimer_;
 				Util::TreeItem *RootItem_;
 				QAction *FolderIconProxy_;
-				QAction *UnknownURLProxy_;
 			public:
 				enum Columns
 				{

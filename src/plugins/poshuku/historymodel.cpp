@@ -98,8 +98,6 @@ namespace LeechCraft
 			
 				FolderIconProxy_ = new QAction (this);
 				FolderIconProxy_->setProperty ("ActionIcon", "poshuku_foldericon");
-				UnknownURLProxy_ = new QAction (this);
-				UnknownURLProxy_->setProperty ("ActionIcon", "poshuku_unknownurlicon");
 			}
 			
 			HistoryModel::~HistoryModel ()
@@ -225,8 +223,6 @@ namespace LeechCraft
 				folder->PrependChild (thisItem);
 			
 				QIcon icon = Core::Instance ().GetIcon (QUrl (item.URL_));
-				if (icon.isNull ())
-					icon = UnknownURLProxy_->icon ();
 				thisItem->ModifyData (0,
 						icon, Qt::DecorationRole);
 			}
