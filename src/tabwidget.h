@@ -20,6 +20,8 @@ namespace LeechCraft
 		virtual void tabRemoved (int);
 	private slots:
 		void checkTabMoveAllowed (int, int);
+	signals:
+		void moveHappened (int, int);
 	};
 };
 

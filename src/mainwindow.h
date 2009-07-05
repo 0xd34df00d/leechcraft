@@ -59,6 +59,7 @@ namespace LeechCraft
 		TabWidget* GetTabWidget () const;
 		const IShortcutProxy* GetShortcutProxy () const;
 		QTreeView* GetMainView () const;
+		void SetAdditionalTitle (const QString&);
 	public slots:
 		void catchError (QString);
 	protected:

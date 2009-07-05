@@ -6,6 +6,7 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "tabwidget.h"
+#include "mainwindow.h"
 
 using namespace LeechCraft;
 
@@ -14,10 +15,25 @@ TabContainer::TabContainer (TabWidget *tabWidget,
 : QObject (parent)
 , TabWidget_ (tabWidget)
 {
+	for (int i = 0; i < TabWidget_->count (); ++i)
+		OriginalTabNames_ << TabWidget_->tabText (i);
+
 	connect (TabWidget_,
 			SIGNAL (tabCloseRequested (int)),
 			this,
 			SLOT (remove (int)));
+	connect (TabWidget_,
+			SIGNAL (currentChanged (int)),
+			this,
+			SLOT (handleCurrentChanged (int)));
+	connect (TabWidget_,
+			SIGNAL (currentChanged (int)),
+			this,
+			SLOT (handleCurrentChanged (int)));
+	connect (TabWidget_,
+			SIGNAL (moveHappened (int, int)),
+			this,
+			SLOT (handleMoveHappened (int, int)));
 
 	XmlSettingsManager::Instance ()->RegisterObject ("ShowTabNames",
 			this, "handleTabNames");
@@ -115,6 +131,8 @@ void TabContainer::add (const QString& name, QWidget *contents,
 		const QIcon& icon)
 {
 	TabWidget_->addTab (contents, icon, MakeTabName (name));
+	OriginalTabNames_ << name;
+	InvalidateName ();
 }
 
 void TabContainer::remove (QWidget *contents)
@@ -123,6 +141,8 @@ void TabContainer::remove (QWidget *contents)
 	if (tabNumber == -1)
 		return;
 	TabWidget_->removeTab (tabNumber);
+	OriginalTabNames_.removeAt (tabNumber);
+	InvalidateName ();
 }
 
 void TabContainer::remove (int index)
@@ -141,6 +161,8 @@ void TabContainer::remove (int index)
 		try
 		{
 			itw->Remove ();
+			OriginalTabNames_.removeAt (index);
+			InvalidateName ();
 		}
 		catch (const std::exception& e)
 		{
@@ -164,6 +186,8 @@ void TabContainer::changeTabName (QWidget *contents, const QString& name)
 	if (tabNumber == -1)
 		return;
 	TabWidget_->setTabText (tabNumber, MakeTabName (name));
+	OriginalTabNames_ [tabNumber] = name;
+	InvalidateName ();
 }
 
 void TabContainer::changeTabIcon (QWidget *contents, const QIcon& icon)
@@ -190,14 +214,14 @@ void TabContainer::handleTabNames ()
 		for (int i = 0; i < size; ++i)
 			if (TabWidget_->tabText (i).isNull () ||
 					TabWidget_->tabText (i).isEmpty ())
-				TabWidget_->setTabText (i, TabNames_ [i]);
+				TabWidget_->setTabText (i, UnremTabNames_ [i]);
 	}
 	else
 	{
-		TabNames_.clear ();
+		UnremTabNames_.clear ();
 		for (int i = 0; i < size; ++i)
 		{
-			TabNames_ << TabWidget_->tabText (i);
+			UnremTabNames_ << TabWidget_->tabText (i);
 			TabWidget_->setTabText (i, QString ());
 		}
 	}
@@ -212,6 +236,18 @@ void TabContainer::handleScrollButtons ()
 void TabContainer::bringToFront (QWidget *widget) const
 {
 	TabWidget_->setCurrentWidget (widget);
+}
+
+void TabContainer::handleCurrentChanged (int index)
+{
+	InvalidateName ();
+}
+
+void TabContainer::handleMoveHappened (int from, int to)
+{
+	std::swap (OriginalTabNames_ [from],
+			OriginalTabNames_ [to]);
+	InvalidateName ();
 }
 
 int TabContainer::FindTabForWidget (QWidget *widget) const
@@ -231,5 +267,11 @@ QString TabContainer::MakeTabName (const QString& name) const
 	if (result.size () > numChars + 3)
 		result = name.left (numChars) + "...";
 	return result;
+}
+
+void TabContainer::InvalidateName ()
+{
+	Core::Instance ().GetReallyMainWindow ()->
+		SetAdditionalTitle (OriginalTabNames_.at (TabWidget_->currentIndex ()));
 }
 

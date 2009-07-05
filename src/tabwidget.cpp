@@ -76,7 +76,10 @@ void TabWidget::checkTabMoveAllowed (int from, int to)
 		tabBar ()->moveTab (to, from);
 	}
 	else
+	{
 		std::swap (Widgets_ [from], Widgets_ [to]);
+		emit moveHappened (from, to);
+	}
 	AsResult_ = false;
 }
 

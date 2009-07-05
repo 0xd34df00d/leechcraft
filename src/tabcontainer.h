@@ -17,8 +17,8 @@ namespace LeechCraft
 		Q_OBJECT
 
 		TabWidget *TabWidget_;
-		QList<QWidget*> Widgets_;
-		QStringList TabNames_;
+		QStringList UnremTabNames_;
+		QStringList OriginalTabNames_;
 		QList<QKeyEvent*> Events_;
 		QMap<QWidget*, QToolBar*> StaticBars_;
 	public:
@@ -43,9 +43,12 @@ namespace LeechCraft
 		void bringToFront (QWidget*) const;
 		void handleTabNames ();
 		void handleScrollButtons ();
+		void handleCurrentChanged (int);
+		void handleMoveHappened (int, int);
 	private:
 		int FindTabForWidget (QWidget*) const;
 		QString MakeTabName (const QString&) const;
+		void InvalidateName ();
 	};
 };
 

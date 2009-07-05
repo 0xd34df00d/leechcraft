@@ -148,6 +148,14 @@ QTreeView* LeechCraft::MainWindow::GetMainView () const
 	return Ui_.PluginsTasksTree_;
 }
 
+void LeechCraft::MainWindow::SetAdditionalTitle (const QString& title)
+{
+	if (title.size () < 15)
+		setWindowTitle (tr ("LeechCraft: %1").arg (title));
+	else
+		setWindowTitle (tr ("%1").arg (title));
+}
+
 void LeechCraft::MainWindow::catchError (QString message)
 {
 	QMessageBox::critical (this,
