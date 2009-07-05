@@ -3,12 +3,16 @@ backup/
 debug/
 release/
 build/
+src/debian/
 ctagscmd
 tags
 changelog
-*.deb
 leechcraft_*.changes
 tools/repos/dists/
 tools/repos/packages-i386.db
 tools/repos/packages-amd64.db
 src/data/leechcraft.1.gz
+*.deb
+*.dsc
+*.changes
+*.tar.gz
