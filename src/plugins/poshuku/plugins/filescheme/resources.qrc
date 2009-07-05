@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/plugins/poshuku/plugins/filescheme">
+    <file>basetemplate.tpl</file>
+    <file>rowtemplate.tpl</file>
+  </qresource>
+</RCC>
