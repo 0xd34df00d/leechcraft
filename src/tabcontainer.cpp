@@ -161,8 +161,6 @@ void TabContainer::remove (int index)
 		try
 		{
 			itw->Remove ();
-			OriginalTabNames_.removeAt (index);
-			InvalidateName ();
 		}
 		catch (const std::exception& e)
 		{
@@ -238,7 +236,7 @@ void TabContainer::bringToFront (QWidget *widget) const
 	TabWidget_->setCurrentWidget (widget);
 }
 
-void TabContainer::handleCurrentChanged (int index)
+void TabContainer::handleCurrentChanged (int)
 {
 	InvalidateName ();
 }
