@@ -86,7 +86,7 @@ QNetworkReply* NetworkAccessManager::createRequest (QNetworkAccessManager::Opera
 	Q_FOREACH (HookSignature<HIDNetworkAccessManagerCreateRequest>::Signature_t f,
 			Core::Instance ().GetHooks<HIDNetworkAccessManagerCreateRequest> ())
 	{
-		QNetworkReply *rep = f (proxy.get (), &op, &r, &out);
+		QNetworkReply *rep = f (proxy, &op, &r, &out);
 		if (proxy->IsCancelled ())
 			return rep;
 	}

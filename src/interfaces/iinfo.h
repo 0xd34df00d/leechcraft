@@ -31,6 +31,8 @@ namespace LeechCraft
 		virtual void CancelDefault () = 0;
 	};
 
+	typedef boost::shared_ptr<IHookProxy> IHookProxy_ptr;
+
 	enum HookID
 	{
 		HIDDownloadFinishedNotification,
@@ -47,7 +49,7 @@ namespace LeechCraft
 			 * @param[in] show If the notification is enabled in the
 			 * settings.
 			 */
-			typedef boost::function<void (IHookProxy*,
+			typedef boost::function<void (IHookProxy_ptr,
 					const QString& msg, bool show)> Signature_t;
 			typedef QList<Signature_t> Functors_t;
 			Functors_t Functors_;
@@ -56,7 +58,7 @@ namespace LeechCraft
 	template<>
 		struct HookSignature<HIDNetworkAccessManagerCreateRequest>
 		{
-			typedef boost::function<QNetworkReply* (IHookProxy*,
+			typedef boost::function<QNetworkReply* (IHookProxy_ptr,
 					QNetworkAccessManager::Operation*,
 					QNetworkRequest*,
 					QIODevice**)> Signature_t;

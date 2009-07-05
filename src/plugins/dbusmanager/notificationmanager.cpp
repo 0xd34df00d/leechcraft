@@ -30,7 +30,7 @@ NotificationManager::NotificationManager (QObject *parent)
 	}
 }
 
-void NotificationManager::HandleFinishedNotification (IHookProxy *proxy,
+void NotificationManager::HandleFinishedNotification (IHookProxy_ptr proxy,
 		const QString& msg, bool show)
 {
 	if (!Connection_.get () ||

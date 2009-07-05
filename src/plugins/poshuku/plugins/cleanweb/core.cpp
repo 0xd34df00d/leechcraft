@@ -329,7 +329,7 @@ void Core::Remove (const QModelIndex& index)
 	Remove (Filters_ [index.row ()].SD_.Filename_);
 }
 
-QNetworkReply* Core::Hook (IHookProxy*,
+QNetworkReply* Core::Hook (IHookProxy_ptr,
 		QNetworkAccessManager::Operation*,
 		QNetworkRequest *req,
 		QIODevice**)

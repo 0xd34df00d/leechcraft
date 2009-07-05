@@ -566,7 +566,7 @@ void LeechCraft::MainWindow::handleDownloadFinished (const QString& string)
 	HookProxy_ptr proxy (new HookProxy);
 	Q_FOREACH (HookSignature<HIDDownloadFinishedNotification>::Signature_t f,
 			Core::Instance ().GetHooks<HIDDownloadFinishedNotification> ())
-		f (proxy.get (), string, show);
+		f (proxy, string, show);
 
 	if (show &&
 			!proxy->IsCancelled ())
