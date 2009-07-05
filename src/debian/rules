@@ -68,7 +68,7 @@ binary-arch: build install
 #	dh_installwm
 #	dh_installudev
 #	dh_undocumented
-#	dh_installman
+	dh_installman
 #	dh_link
 	dh_strip
 	dh_compress

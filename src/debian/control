@@ -13,6 +13,49 @@ Build-Depends: debhelper (>= 5),
 Standards-Version: 3.7.3
 Homepage: http://leechcraft.org
 
+Package: leechcraft
+Section: net
+Architecture: i386 i586 i686 amd64
+Depends: libc6,
+ libgcc1,
+ libstdc++6,
+ libqt4-core (>= 4.5.1),
+ libqt4-gui (>= 4.5.1),
+ libqt4-xml (>= 4.5.1),
+ libqt4-network (>= 4.5.1),
+ libqt4-sql (>= 4.5.1),
+ libqt4-sql-sqlite (>= 4.5.1),
+ libqt4-sql-psql (>= 4.5.1),
+ libqt4-script (>= 4.5.1),
+ leechcraft-libxmlsettingsdialog0.3.0 (= ${Source-Version}),
+ leechcraft-libplugininterface0.3.0 (= ${Source-Version}),
+ leechcraft-iconset
+Recommends: leechcraft-plugin-aggregator,
+ leechcraft-plugin-bittorrent,
+ leechcraft-plugin-cstp,
+ leechcraft-plugin-dbusmanager,
+ leechcraft-plugin-deadlyrics,
+ leechcraft-plugin-historyholder,
+ leechcraft-plugin-lmp,
+ leechcraft-plugin-networkmonitor,
+ leechcraft-plugin-poshuku,
+ leechcraft-plugin-poshuku-cleanweb,
+ leechcraft-plugin-poshuku-filescheme,
+ leechcraft-plugin-poshuku-fua,
+ leechcraft-plugin-seekthru
+Homepage: http://leechcraft.org
+Description: Core executable of LeechCraft
+ LeechCraft is a full-featured "Internet client" application based on
+ Nokia's Qt framework. Features can be easily added via plugins that
+ can be integrated with each other with no effort, while staying away
+ from tight coupling. Most significant plugins are Poshuku (web browser),
+ Aggregator (feed reader), BitTorrent client, SeekThru (OpenSearch
+ client). And there are lots of other plugins.
+ .
+ This package contains the main LeechCraft executable, which connects
+ all the plugins with each other, routes requests between them and
+ tracks dependencies.
+
 Package: leechcraft-libxmlsettingsdialog0.3.0
 Section: libs
 Architecture: i386 i586 i686 amd64
@@ -43,48 +86,6 @@ Homepage: http://leechcraft.org
 Description: Common library for LeechCraft
  A library providing some useful and commonly used routines as well as
  communications with the LeechCraft core.
-
-Package: leechcraft
-Section: net
-Architecture: i386 i586 i686 amd64
-Depends: libc6,
- libgcc1,
- libstdc++6,
- libqt4-core (>= 4.5.1),
- libqt4-gui (>= 4.5.1),
- libqt4-xml (>= 4.5.1),
- libqt4-network (>= 4.5.1),
- libqt4-sql (>= 4.5.1),
- libqt4-sql-sqlite (>= 4.5.1),
- libqt4-sql-psql (>= 4.5.1),
- libqt4-script (>= 4.5.1),
- leechcraft-libxmlsettingsdialog0.3.0 (= ${Source-Version}),
- leechcraft-libplugininterface0.3.0 (= ${Source-Version}),
- leechcraft-iconset
-Recommends: leechcraft-plugin-aggregator,
- leechcraft-plugin-bittorrent,
- leechcraft-plugin-cstp,
- leechcraft-plugin-dbusmanager,
- leechcraft-plugin-deadlyrics,
- leechcraft-plugin-historyholder,
- leechcraft-plugin-lmp,
- leechcraft-plugin-networkmonitor,
- leechcraft-plugin-poshuku,
- leechcraft-plugin-poshuku-cleanweb,
- leechcraft-plugin-poshuku-fua,
- leechcraft-plugin-seekthru
-Homepage: http://leechcraft.org
-Description: Core executable of LeechCraft
- LeechCraft is a full-featured "Internet client" application based on
- Nokia's Qt framework. Features can be easily added via plugins that
- can be integrated with each other with no effort, while staying away
- from tight coupling. Most significant plugins are Poshuku (web browser),
- Aggregator (feed reader), BitTorrent client, SeekThru (OpenSearch
- client). And there are lots of other plugins.
- .
- This package contains the main LeechCraft executable, which connects
- all the plugins with each other, routes requests between them and
- tracks dependencies.
 
 Package: leechcraft-plugin-aggregator
 Section: net
@@ -345,6 +346,28 @@ Description: Ad filter for Web browser for LeechCraft
  This package contains a plugin for the Poshuku web browser that
  filters out ads according to predefined rules. It is compatible with
  Firefox's AdBlock rules.
+
+Package: leechcraft-plugin-poshuku-filescheme
+Section: net
+Architecture: i386 i586 i686 amd64
+Depends: libc6,
+ libgcc1,
+ libstdc++6,
+ leechcraft-libxmlsettingsdialog0.3.0 (= ${Source-Version}),
+ leechcraft-libplugininterface0.3.0 (= ${Source-Version}),
+ leechcraft-plugin-poshuku (= ${Source-Version}),
+ leechcraft (= ${Source-Version})
+Homepage: http://leechcraft.org
+Description: Fake user agent plugin for Web browser for LeechCraft
+ LeechCraft is a full-featured "Internet client" application based on
+ Nokia's Qt framework. Features can be easily added via plugins that
+ can be integrated with each other with no effort, while staying away
+ from tight coupling. Most significant plugins are Poshuku (web browser),
+ Aggregator (feed reader), BitTorrent client, SeekThru (OpenSearch
+ client). And there are lots of other plugins.
+ .
+ This package contains a plugin for the Poshuku web browser that allows
+ to handle file:// schemes.
 
 Package: leechcraft-plugin-poshuku-fua
 Section: net
