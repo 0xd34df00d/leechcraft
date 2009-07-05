@@ -257,7 +257,7 @@ namespace LeechCraft
 			
 			QIcon Aggregator::GetIcon () const
 			{
-				return windowIcon ();
+				return QIcon (":/resources/images/aggregator.png");
 			}
 			
 			QWidget* Aggregator::GetTabContents ()
