@@ -3,33 +3,41 @@
 	<page>
 		<label lang="en" value="Appearance" />
 		<label lang="ru" value="Внешний вид" />
+		<label lang="uk" value="Зовнішній вигляд" />
 		<tab>
 			<label lang="en" value="Appearance" />
 			<label lang="ru" value="Внешний вид" />
+            <label lang="uk" value="Зовнішній вигляд" />
 			<item type="checkbox" property="ShowTabNames" state="on">
 				<label lang="en" value="Show tab names" />
 				<label lang="ru" value="Показывать названия вкладок" />
+				<label lang="uk" value="Показувати назви вкладок" />
 			</item>
 			<item type="checkbox" property="UseTabScrollButtons" state="on">
 				<label lang="en" value="Use tab scroll buttons" />
 				<label lang="ru" value="Использовать кнопки прокрутки табов" />
+				<label lang="uk" value="Використовувати кнопки прокручування табів" />
 			</item>
 			<item type="customwidget" name="IconSet">
 				<label lang="en" value="Icon set:" />
 				<label lang="ru" value="Набор иконок:" />
+				<label lang="uk" value="Набір іконок:" />
 			</item>
 			<item type="customwidget" name="AppQStyle">
 				<label lang="en" value="Style:" />
 				<label lang="ru" value="Стиль:" />
+				<label lang="uk" value="Стиль:" />
 			</item>
 			<item type="spinbox" property="MaxLogLines" default="500" step="250" minimum="10" maximum="50000">
 				<label lang="en" value="Maximum log lines:" />
 				<label lang="ru" value="Максимум строк в логе:" />
+				<label lang="uk" value="Максимум строк в логу:" />
 			</item>
 		</tab>
 		<tab>
 			<label lang="en" value="Shortcuts" />
 			<label lang="ru" value="Горячие клавиши" />
+			<label lang="uk" value="Гарячі клавиші" />
 			<item type="customwidget" label="own" name="ShortcutManager" />
 		</tab>
 	</page>
@@ -53,10 +61,12 @@
 				<item type="checkbox" property="ConfirmQuit" default="true">
 					<label lang="en" value="Ask quit confirmation" />
 					<label lang="ru" value="Запрашивать подтверждение выхода" />
+					<label lang="uk" value="Запитувати підтвердження виходу" />
 				</item>
 				<item type="path" property="WatchDirectory" onCancel="clear">
 					<label lang="en" value="Watch directory:" />
 					<label lang="ru" value="Следить за директорией:" />
+					<label lang="uk" value="Слідкувати за каталогом:" />
 				</item>
 			</groupbox>
 			<item type="groupbox" property="ShowFinishedDownloadMessages" state="on" checkable="true">
@@ -83,6 +93,7 @@
 	<page>
 		<label lang="en" value="Tags" />
 		<label lang="ru" value="Теги" />
+		<label lang="uk" value="Теги" />
 		<item type="customwidget" label="own" name="TagsViewer" />
 	</page>
 	<page>
@@ -96,6 +107,10 @@
 			</lang>
 			<lang value="ru">
 				<label value="Размер кэша:" />
+				<suffix value=" МБ" />
+			</lang>
+			<lang value="uk">
+				<label value="Розмір кешу:" />
 				<suffix value=" МБ" />
 			</lang>
 		</item>
@@ -121,6 +136,7 @@
 			<item type="lineedit" property="ProxyPassword" password="true">
 				<label lang="en" value="Password:" />
 				<label lang="ru" value="Пароль:" />
+				<label lang="uk" value="Пароль:" />
 			</item>
 			<item type="combobox" property="ProxyType">
 				<label lang="en" value="Proxy type:" />
