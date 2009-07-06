@@ -1,5 +1,6 @@
 #include "directorywatcher.h"
 #include <QDir>
+#include <QTimer>
 #include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
 
@@ -13,7 +14,9 @@ namespace LeechCraft
 				this,
 				"settingsChanged");
 
-		settingsChanged ();
+		QTimer::singleShot (5000,
+				this,
+				SLOT (settingsChanged ()));
 
 		connect (Watcher_.get (),
 				SIGNAL (directoryChanged (const QString&)),
@@ -23,7 +26,13 @@ namespace LeechCraft
 
 	void DirectoryWatcher::settingsChanged ()
 	{
+		QString path = XmlSettingsManager::Instance ()->
+			property ("WatchDirectory").toString ();
 		QStringList dirs = Watcher_->directories ();
+		if (dirs.size () == 1 && 
+				dirs.at (0) == path)
+			return;
+
 		if (!dirs.isEmpty ())
 		{
 			Watcher_->removePaths (dirs);
@@ -31,8 +40,6 @@ namespace LeechCraft
 				setProperty ("WatchedDirectoryOldContents", QStringList ());
 		}
 
-		QString path = XmlSettingsManager::Instance ()->
-			property ("WatchDirectory").toString ();
 		if (!path.isEmpty ())
 		{
 			Watcher_->addPath (path);
