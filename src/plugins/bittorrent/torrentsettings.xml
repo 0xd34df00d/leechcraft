@@ -241,10 +241,6 @@
 					<label lang="en" value="Ignore UPNP-nonrouters" />
 					<label lang="ru" value="Игнорировать UPNP-устройства, не являющиеся роутерами" />
 				</item>
-				<item type="checkbox" property="UseReadCache" state="on">
-					<label lang="en" value="Use read cache" />
-					<label lang="ru" value="Использовать кеш для чтения" />
-				</item>
 				<item type="checkbox" property="AutoUploadSlots" default="true">
 					<label lang="en" value="Auto upload slots" />
 					<label lang="ru" value="Автоматические слоты на отдачу" />
@@ -355,16 +351,6 @@
 					<lang value="ru">
 						<label value="Длина очереди запросов для куска:" />
 						<suffix value=" с" />
-					</lang>
-				</item>
-				<item type="spinbox" property="CacheBufferChunkSize" default="16" minimum="1" maximum="256">
-					<lang value="en">
-						<label value="Allocate this number of blocks at a time:" />
-						<suffix value=" blocks" />
-					</lang>
-					<lang value="ru">
-						<label value="Выделять по:" />
-						<suffix value=" блоков" />
 					</lang>
 				</item>
 				<item type="spinbox" property="MaxAllowedInRequestQueue" default="250" minimum="50" maximum="1000" step="50">
@@ -612,9 +598,15 @@
 		<tab>
 			<label lang="en" value="Advanced" />
 			<label lang="ru" value="Расширенные" />
-			<groupbox>
-				<label lang="en" value="Advanced local settings" />
-				<label lang="ru" value="Расширенные локальные настройки" />
+			<scrollarea horizontalScroll="off">
+				<item type="checkbox" property="AccurateFileProgress" state="off">
+					<label lang="en" value="Accurate but slow file progress calculation" />
+					<label lang="ru" value="Точное, но медленное вычисление прогресса файлов" />
+				</item>
+				<item type="checkbox" property="UseReadCache" state="on">
+					<label lang="en" value="Use read cache" />
+					<label lang="ru" value="Использовать кеш для чтения" />
+				</item>
 				<item type="checkbox" property="FreeTorrentHashes" state="on">
 					<label lang="en" value="Unload hashes from memory if seeding" />
 					<label lang="ru" value="Выгружать хеши из памяти при раздаче" />
@@ -667,11 +659,21 @@
 						<suffix value=" КБ" />
 					</lang>
 				</item>
+				<item type="spinbox" property="CacheBufferChunkSize" default="16" minimum="1" maximum="256">
+					<lang value="en">
+						<label value="Allocate this number of blocks at a time:" />
+						<suffix value=" blocks" />
+					</lang>
+					<lang value="ru">
+						<label value="Выделять по:" />
+						<suffix value=" блоков" />
+					</lang>
+				</item>
 				<item type="spinbox" property="FilePoolSize" default="40" minimum="5" maximum="1000" step="5">
 					<label lang="en" value="Maximum amount of concurrently open files:" />
 					<label lang="ru" value="Максимальное число одновременно открытых файлов:" />
 				</item>
-			</groupbox>
+			</scrollarea>
 		</tab>
 		<tab>
 			<label lang="en" value="Logging" />

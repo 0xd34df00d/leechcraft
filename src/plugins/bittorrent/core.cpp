@@ -1438,7 +1438,12 @@ namespace LeechCraft
 				libtorrent::torrent_handle handle = Handles_.at (CurrentTorrent_).Handle_;
 				libtorrent::torrent_info info = handle.get_torrent_info ();
 				std::vector<libtorrent::size_type> prbytes;
-				handle.file_progress (prbytes);
+				
+				int flags = 0;
+				if (!XmlSettingsManager::Instance ()->
+						property ("AccurateFileProgress").toBool ())
+					flags |= libtorrent::torrent_handle::piece_granularity;
+				handle.file_progress (prbytes, flags);
 				for (libtorrent::torrent_info::file_iterator i = info.begin_files (); i != info.end_files (); ++i)
 				{
 					FileInfo fi;
