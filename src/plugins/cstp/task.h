@@ -34,6 +34,7 @@ namespace LeechCraft
 				QStringList RedirectHistory_;
 				boost::intrusive_ptr<MorphFile> To_;
 				int Counter_;
+				int UpdateCounter_;
 			public:
 				explicit Task (const QUrl& = QUrl ());
 				explicit Task (QNetworkReply*);

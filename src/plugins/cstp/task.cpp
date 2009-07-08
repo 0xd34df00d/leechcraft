@@ -26,6 +26,7 @@ namespace LeechCraft
 			, FileSizeAtStart_ (-1)
 			, Speed_ (0)
 			, Counter_ (0)
+			, UpdateCounter_ (0)
 			{
 				StartTime_.start ();
 			}
@@ -36,7 +37,7 @@ namespace LeechCraft
 			, Total_ (0)
 			, FileSizeAtStart_ (-1)
 			, Speed_ (0)
-			, Counter_ (0)
+			, UpdateCounter_ (0)
 			{
 				StartTime_.start ();
 			}
@@ -227,7 +228,9 @@ namespace LeechCraft
 			
 				RecalculateSpeed ();
 			
-				emit updateInterface ();
+				if (done == total ||
+						UpdateCounter_++ % 100 == 0)
+					emit updateInterface ();
 			}
 			
 			void Task::redirectedConstruction (const QString& newUrl)
