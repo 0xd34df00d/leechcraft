@@ -14,7 +14,7 @@ LICENSE="GPL-3"
 SLOT="0"
 KEYWORDS=""
 IUSE="+poshuku +torrent +aggregator +dbusmanager deadlyrics historyholder
-	lmp networkmonitor +seekthru"
+	lmp networkmonitor +seekthru debug"
 
 DEPEND="dev-libs/boost:1.37
 		>=x11-libs/qt-gui-4.5.1
@@ -33,6 +33,8 @@ src_unpack()
 
 src_configure()
 {
+	use debug && CMAKE_BUILD_TYPE="RelWithDebInfo"
+	CMAKE_BUILD_TYPE="Release"
 	mycmakeargs="${mycmakeargs}
 				-DENABLE_CONFIGURABLE=ON
 				-DENABLE_HTTP=ON
