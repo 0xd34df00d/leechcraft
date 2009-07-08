@@ -14,11 +14,14 @@
 #include <QMetaType>
 #include <QModelIndex>
 #include <QSessionManager>
+#include <QProcess>
+#include <QTimer>
 #include <plugininterface/proxy.h>
 #include <plugininterface/util.h>
 #include <plugininterface/structuresops.h>
 #include "debugmessagehandler.h"
 #include "tagsmanager.h"
+#include "mainwindow.h"
 
 using namespace LeechCraft;
 
@@ -66,7 +69,7 @@ LeechCraft::Application::Application (int& argc, char **argv)
 			<< "              you are sure they are)."
 			<< std::endl;
 		std::cout
-			<< "-restart      Automatically restart application if it's closed (this is"
+			<< "-autorestart  Automatically restart application if it's closed (this is"
 			<< std::endl
 			<< "              done via the Session Manager, so it is not guaranteed to"
 			<< std::endl
@@ -90,6 +93,12 @@ LeechCraft::Application::Application (int& argc, char **argv)
 
 	if (Arguments_.contains ("-clrsckt"))
 		QLocalServer::removeServer (GetSocketName ());
+
+	if (Arguments_.contains ("-restart"))
+	{
+		EnterRestartMode ();
+		return;
+	}
 	
 	// Sanity checks
 	if (IsAlreadyRunning ())
@@ -133,6 +142,9 @@ LeechCraft::Application::Application (int& argc, char **argv)
 	// Say hello to logs
     qDebug () << "======APPLICATION STARTUP======";
     qWarning () << "======APPLICATION STARTUP======";
+
+	// And finally!..
+	new LeechCraft::MainWindow ();
 }
 
 const QStringList& Application::Arguments () const
@@ -164,6 +176,16 @@ QString Application::GetSocketName ()
 #endif
 }
 
+void Application::InitiateRestart ()
+{
+	QStringList arguments = Arguments_;
+	arguments << "-restart";
+
+	QProcess::startDetached (applicationFilePath (), arguments);
+
+	qApp->quit ();
+}
+
 bool Application::notify (QObject *obj, QEvent *event)
 {
 	try
@@ -183,7 +205,7 @@ bool Application::notify (QObject *obj, QEvent *event)
 
 void Application::commitData (QSessionManager& sm)
 {
-	if (Arguments_.contains ("-restart"))
+	if (Arguments_.contains ("-autorestart"))
 		sm.setRestartHint (QSessionManager::RestartImmediately);
 
 	sm.release ();
@@ -191,10 +213,28 @@ void Application::commitData (QSessionManager& sm)
 
 void Application::saveState (QSessionManager& sm)
 {
-	if (Arguments_.contains ("-restart"))
+	if (Arguments_.contains ("-autorestart"))
 		sm.setRestartHint (QSessionManager::RestartImmediately);
 
 	sm.release ();
+}
+
+void Application::checkStillRunning ()
+{
+	if (IsAlreadyRunning ())
+		return;
+
+	QStringList arguments;
+	if (Arguments_.contains ("-autorestart"))
+		arguments << "-autorestart";
+	if (Arguments_.contains ("-nolog"))
+		arguments << "-nolog";
+	if (Arguments_.contains ("-bt"))
+		arguments << "-bt";
+
+	QProcess::startDetached (applicationFilePath (), arguments);
+
+	quit ();
 }
 
 bool Application::IsAlreadyRunning () const
@@ -248,4 +288,14 @@ void Application::ParseCommandLine ()
 	else
 		qInstallMsgHandler (DebugHandler::simple);
 }
+
+void Application::EnterRestartMode ()
+{
+	QTimer *timer = new QTimer;
+	connect (timer,
+			SIGNAL (timeout ()),
+			this,
+			SLOT (checkStillRunning ()));
+	timer->start (1000);
+} 
 

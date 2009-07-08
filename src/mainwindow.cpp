@@ -36,6 +36,11 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	InitializeInterface ();
 
 	ShowMessage (tr ("Initializing core and plugins..."));
+	connect (qApp,
+			SIGNAL (aboutToQuit ()),
+			this,
+			SLOT (handleQuit ()));
+
 	connect (&Core::Instance (),
 			SIGNAL (loadProgress (const QString&)),
 			this,
@@ -335,7 +340,11 @@ void LeechCraft::MainWindow::on_ActionQuit__triggered ()
 				tr ("Do you really want to quit?"),
 				QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 		return;
+	qApp->quit ();
+}
 
+void LeechCraft::MainWindow::handleQuit ()
+{
 	setUpdatesEnabled (false);
 	WriteSettings ();
 	Core::Instance ().Release ();
@@ -351,8 +360,6 @@ void LeechCraft::MainWindow::on_ActionQuit__triggered ()
 #ifdef QT_DEBUG
 	qDebug () << "Destroyed fine";
 #endif
-
-	qApp->quit ();
 }
 
 void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)

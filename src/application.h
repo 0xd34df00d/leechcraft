@@ -25,14 +25,18 @@ namespace LeechCraft
 		Application (int&, char**);
 		const QStringList& Arguments () const;
 		static QString GetSocketName ();
+		void InitiateRestart ();
 
 		virtual bool notify (QObject*, QEvent*);
 	protected:
 		virtual void commitData (QSessionManager&);
 		virtual void saveState (QSessionManager&);
+	private slots:
+		void checkStillRunning ();
 	private:
 		bool IsAlreadyRunning () const;
 		void ParseCommandLine ();
+		void EnterRestartMode ();
 	};
 };
 
