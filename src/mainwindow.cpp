@@ -22,6 +22,7 @@
 #include "shortcutmanager.h"
 #include "appstyler.h"
 #include "tagsviewer.h"
+#include "application.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -217,6 +218,9 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	XmlSettingsDialog_->SetCustomWidget ("TagsViewer", new TagsViewer);
 
+	XmlSettingsManager::Instance ()->RegisterObject ("Language",
+			this, "handleLanguage");
+
 	IconChooser *ic = new IconChooser (SkinEngine::Instance ().ListIcons (),
 			this);
 	connect (ic,
@@ -360,6 +364,18 @@ void LeechCraft::MainWindow::handleQuit ()
 #ifdef QT_DEBUG
 	qDebug () << "Destroyed fine";
 #endif
+}
+
+void LeechCraft::MainWindow::handleLanguage ()
+{
+	if (QMessageBox::question (this,
+				tr ("LeechCraft"),
+				tr ("Changing language requires restarting LeechCraft. "
+					"Do you want to restart now?"),
+				QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+		return;
+
+	static_cast<Application*> (qApp)->InitiateRestart ();
 }
 
 void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)

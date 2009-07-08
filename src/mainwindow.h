@@ -76,6 +76,7 @@ namespace LeechCraft
 		void on_ActionSettings__triggered ();
 		void on_ActionQuit__triggered ();
 		void handleQuit ();
+		void handleLanguage ();
 		void on_ActionFullscreenMode__triggered (bool);
 		void on_ActionLogger__triggered ();
 		void on_MainTabWidget__currentChanged (int);

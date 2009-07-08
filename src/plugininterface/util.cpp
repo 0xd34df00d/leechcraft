@@ -7,17 +7,25 @@
 #include <QFile>
 #include <QDir>
 #include <QTemporaryFile>
+#include <QSettings>
 #include <QtDebug>
+#include "proxy.h"
 
 QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName,
 		const QString& prefix,
 		const QString& appName)
 {
-	QTranslator *transl = new QTranslator;
-	QString localeName = QString(::getenv ("LANG"));
-	if (localeName.isEmpty () || localeName.size () != 5)
-		localeName = QLocale::system ().name ();
-	localeName = localeName.left (5);
+	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
+			Proxy::Instance ()->GetApplicationName ());
+	QString localeName = settings.value ("Language", "system").toString ();
+
+	if (localeName == "system")
+	{
+		localeName = QString(::getenv ("LANG"));
+		if (localeName.isEmpty () || localeName.size () != 5)
+			localeName = QLocale::system ().name ();
+		localeName = localeName.left (5);
+	}
 
 	QString filename = prefix;
 	filename.append ("_");
@@ -25,6 +33,7 @@ QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName,
 		filename.append (baseName).append ("_");
 	filename.append (localeName);
 
+	QTranslator *transl = new QTranslator;
 #ifdef Q_WS_WIN
 	if (transl->load (filename, ":/") ||
 			transl->load (filename, "translations"))

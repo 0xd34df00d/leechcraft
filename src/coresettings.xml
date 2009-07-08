@@ -28,6 +28,29 @@
 				<label lang="ru" value="Стиль:" />
 				<label lang="uk" value="Стиль:" />
 			</item>
+			<item type="combobox" property="Language">
+				<label lang="en" value="Language:" />
+				<label lang="ru" value="Язык:" />
+				<label lang="uk" value="Язик:" />
+				<option name="system" default="true">
+					<label lang="en" value="System" />
+				</option>
+				<option name="ar">
+					<label lang="en" value="Arabic" />
+				</option>
+				<option name="en">
+					<label lang="en" value="English" />
+				</option>
+				<option name="it">
+					<label lang="en" value="Italian" />
+				</option>
+				<option name="ru">
+					<label lang="en" value="Russian" />
+				</option>
+				<option name="uk">
+					<label lang="en" value="Ukrainian" />
+				</option>
+			</item>
 			<item type="spinbox" property="MaxLogLines" default="500" step="250" minimum="10" maximum="50000">
 				<label lang="en" value="Maximum log lines:" />
 				<label lang="ru" value="Максимум строк в логе:" />
