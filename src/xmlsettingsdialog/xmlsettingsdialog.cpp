@@ -772,6 +772,11 @@ void XmlSettingsDialog::DoCombobox (const QDomElement& item, QFormLayout *lay)
 	int pos = box->findData (GetValue (item));
 	if (pos != -1)
 		box->setCurrentIndex (pos);
+	else
+		qWarning () << Q_FUNC_INFO
+			<< box
+			<< GetValue (item)
+			<< "not found";
 
 	QLabel *label = new QLabel (GetLabel (item));
 	label->setWordWrap (false);
@@ -1006,7 +1011,16 @@ void XmlSettingsDialog::reject ()
 		else if (radiogroup)
 			radiogroup->SetValue (oldValue.toString ());
 		else if (combobox)
-			combobox->setCurrentIndex (combobox->findText (oldValue.toString ()));
+		{
+			int pos = combobox->findData (oldValue);
+			if (pos != -1)
+				combobox->setCurrentIndex (pos);
+			else
+				qWarning () << Q_FUNC_INFO
+					<< combobox
+					<< oldValue
+					<< "not found";
+		}
 		else if (fontComboBox)
 			fontComboBox->setCurrentFont (oldValue.value<QFont> ());
 		else
