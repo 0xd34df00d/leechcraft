@@ -214,8 +214,11 @@ namespace LeechCraft
 				void Import (const QString&);
 				void Export (const QString&, bool, bool) const;
 				bool CheckValidity (int) const;
+
 				void SaveResumeData (const libtorrent::save_resume_data_alert&) const;
 				void HandleMetadata (const libtorrent::metadata_received_alert&);
+				void FileFinished (const libtorrent::torrent_handle&, int);
+
 				void MoveUp (const std::deque<int>&);
 				void MoveDown (const std::deque<int>&);
 				void MoveToTop (const std::deque<int>&);

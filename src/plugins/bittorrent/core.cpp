@@ -1354,6 +1354,40 @@ namespace LeechCraft
 			
 				ScheduleSave ();
 			}
+
+			void Core::FileFinished (const libtorrent::torrent_handle& th, int fi)
+			{
+				QList<TorrentStruct>::const_iterator sit =
+					std::find_if (Handles_.begin (), Handles_.end (),
+							HandleFinder (th));
+
+				if (sit == Handles_.end ())
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "wtf? not found the handle";
+					return;
+				} 
+
+				TorrentStruct torrent = *sit;
+				libtorrent::torrent_info info = torrent.Handle_
+					.get_torrent_info ();
+
+				libtorrent::torrent_info::file_iterator fit = info.begin_files ();
+				std::advance (fit, fi);
+
+				QString name = QTextCodec::codecForLocale ()->
+					toUnicode ((torrent.Handle_.save_path () / fit->path).string ().c_str ());
+
+				QString string = tr ("File finished: %1").arg (name);
+				emit torrentFinished (string);
+
+				DownloadEntity e;
+				e.Entity_ = name.toUtf8 ();
+				e.Parameters_ = LeechCraft::IsDownloaded;
+				e.Location_ = torrent.TorrentFileName_;
+				e.Additional_ [" Tags"] = torrent.Tags_;
+				emit fileFinished (e);
+			}
 			
 			void Core::MoveUp (const std::deque<int>& selections)
 			{
@@ -1656,7 +1690,7 @@ namespace LeechCraft
 					e.Additional_ [" Tags"] = torrent.Tags_;
 					emit fileFinished (e);
 				}
-			
+
 				emit taskFinished (torrent.ID_);
 			}
 			
@@ -1966,19 +2000,73 @@ namespace LeechCraft
 				{
 					Core::Instance ()->SaveResumeData (a);
 				}
+
+				void operator() (const libtorrent::save_resume_data_failed_alert& a) const
+				{
+					QMessageBox::warning (0,
+							QObject::tr ("LeechCraft"),
+							QObject::tr ("Saving resume data failed for torrent:<br />%1<br />%2")
+								.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+								.arg (QString::fromUtf8 (a.error.message ().c_str ())));
+				}
 			
 				void operator() (const libtorrent::storage_moved_alert& a) const
 				{
 					QMessageBox::information (0,
 							QObject::tr ("LeechCraft"),
-							QObject::tr ("Storage for torrent<br />%1<br />moved successfully to<br />%2")
+							QObject::tr ("Storage for torrent:<br />%1<br />moved successfully to:<br />%2")
 								.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
 								.arg (QString::fromUtf8 (a.path.c_str ())));
+				}
+
+				void operator() (const libtorrent::storage_moved_failed_alert& a) const
+				{
+					QMessageBox::critical (0,
+							QObject::tr ("LeechCraft"),
+							QObject::tr ("Storage move failure:<br />%2<br />for torrent:<br />%1")
+								.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+								.arg (QString::fromUtf8 (a.error.message ().c_str ())));
 				}
 			
 				void operator() (const libtorrent::metadata_received_alert& a) const
 				{
 					Core::Instance ()->HandleMetadata (a.handle);
+				}
+
+				void operator() (const libtorrent::file_error_alert& a) const
+				{
+					QMessageBox::critical (0,
+							QObject::tr ("LeechCraft"),
+							QObject::tr ("File error for torrent:<br />%1<br />"
+								"file:<br />%2<br />error:<br />%3")
+								.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+								.arg (QString::fromUtf8 (a.file.c_str ()))
+								.arg (QString::fromUtf8 (a.error.message ().c_str ())));
+				}
+
+				void operator() (const libtorrent::file_rename_failed_alert& a) const
+				{
+					QMessageBox::critical (0,
+							QObject::tr ("LeechCraft"),
+							QObject::tr ("File rename failed for torrent:<br />%1<br />"
+								"file %2, error:<br />%3")
+								.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+								.arg (QString::number (a.index))
+								.arg (QString::fromUtf8 (a.error.message ().c_str ())));
+				}
+
+				void operator() (const libtorrent::torrent_delete_failed_alert& a) const
+				{
+					QMessageBox::critical (0,
+							QObject::tr ("LeechCraft"),
+							QObject::tr ("Failed to delete torrent:<br />%1<br />error:<br />%2")
+								.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+								.arg (QString::fromUtf8 (a.error.message ().c_str ())));
+				}
+				
+				void operator() (const libtorrent::file_completed_alert& a) const
+				{
+//					Core::Instance ()->FileFinished (a.handle, a.index);
 				}
 			};
 			
@@ -1995,8 +2083,13 @@ namespace LeechCraft
 						libtorrent::handle_alert<
 							libtorrent::external_ip_alert
 							, libtorrent::save_resume_data_alert
+							, libtorrent::save_resume_data_failed_alert
 							, libtorrent::storage_moved_alert
+							, libtorrent::storage_moved_failed_alert
 							, libtorrent::metadata_received_alert
+							, libtorrent::file_error_alert
+							, libtorrent::file_rename_failed_alert
+							, libtorrent::file_completed_alert
 							>::handle_alert (a, sd);
 					}
 					catch (const libtorrent::libtorrent_exception& e)
