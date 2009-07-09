@@ -78,6 +78,8 @@ SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_bittorrent_ar.qm
 	)
 
+ADD_DEFINITIONS (-DWIN32_LEAN_AND_MEAN)
+
 IF (UNIX)
 	FIND_PROGRAM (LPKGC_CMD pkg-config)
 	EXECUTE_PROCESS (COMMAND "${LPKGC_CMD}" libtorrent-rasterbar --cflags

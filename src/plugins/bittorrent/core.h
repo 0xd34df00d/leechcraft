@@ -1,6 +1,5 @@
 #ifndef PLUGINS_BITTORRENT_CORE_H
 #define PLUGINS_BITTORRENT_CORE_H
-#define WIN32_LEAN_AND_MEAN
 #include <map>
 #include <list>
 #include <deque>
