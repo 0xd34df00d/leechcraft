@@ -262,20 +262,32 @@ ADD_CUSTOM_COMMAND (OUTPUT
 	DEPENDS ${TRANSLATIONS}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	)
-ADD_CUSTOM_COMMAND (OUTPUT
-	data/leechcraft.1.gz
-	COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/data/compress"
-	DEPENDS data/leechcraft.1
-	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data
-	)
-ADD_EXECUTABLE (leechcraft WIN32
-	${COMPILED_TRANSLATIONS}
-	${SRCS}
-	${MOC_SRCS}
-	${UIS_H}
-	${RCC}
-	data/leechcraft.1.gz
-	)
+
+IF (UNIX)
+	ADD_CUSTOM_COMMAND (OUTPUT
+		data/leechcraft.1.gz
+		COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/data/compress"
+		DEPENDS data/leechcraft.1
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data
+		)
+	ADD_EXECUTABLE (leechcraft WIN32
+		${COMPILED_TRANSLATIONS}
+		${SRCS}
+		${MOC_SRCS}
+		${UIS_H}
+		${RCC}
+		data/leechcraft.1.gz
+		)
+ELSE (UNIX)
+	ADD_EXECUTABLE (leechcraft WIN32
+		${COMPILED_TRANSLATIONS}
+		${SRCS}
+		${MOC_SRCS}
+		${UIS_H}
+		${RCC}
+		)
+ENDIF (UNIX)
+
 TARGET_LINK_LIBRARIES(leechcraft
 						${QT_LIBRARIES}
 						plugininterface
@@ -283,10 +295,10 @@ TARGET_LINK_LIBRARIES(leechcraft
 INSTALL (TARGETS leechcraft DESTINATION bin)
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 INSTALL (FILES coresettings.xml DESTINATION ${LC_SETTINGS_DEST})
-INSTALL (FILES data/leechcraft.1.gz DESTINATION share/man/man1)
 
 INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor
 	PATTERN ".svn" EXCLUDE)
 IF (UNIX)
 	INSTALL (FILES freedesktop/leechcraft.desktop DESTINATION share/applications)
+	INSTALL (FILES data/leechcraft.1.gz DESTINATION share/man/man1)
 ENDIF (UNIX)
