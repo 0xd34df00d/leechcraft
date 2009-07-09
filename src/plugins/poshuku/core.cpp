@@ -200,7 +200,10 @@ namespace LeechCraft
 
 				ConnectSignals (widget);
 			
-				widget->SetURL (MakeURL (url));
+				if (url != "")
+					widget->SetURL (MakeURL (url));
+				else
+					widget->SetURL (url);
 			
 				if (raise)
 					emit raiseTab (widget);
