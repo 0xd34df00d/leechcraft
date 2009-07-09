@@ -112,6 +112,7 @@ SectionGroup "Plugins"
 		File boost_date_time-vc90-mt-1_37.dll
 		File boost_filesystem-vc90-mt-1_37.dll
 		File boost_system-vc90-mt-1_37.dll
+		File boost_thread-vc90-mt-1_37.dll
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_bittorrent.dll
 		SectionIn 1
@@ -144,6 +145,11 @@ SectionGroup "Plugins"
 	Section "Poshuku CleanWeb" POSHUKUCLEANWEBPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_poshuku_cleanweb.dll
+		SectionIn 1
+	SectionEnd
+	Section "Poshuku FileScheme" POSHUKUFILESCHEMEPLUGIN
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_poshuku_filescheme.dll
 		SectionIn 1
 	SectionEnd
 	Section "Poshuku FUA" POSHUKUFUAPLUGIN
@@ -219,7 +225,8 @@ LangString DESC_AGGREGATORPLUGIN ${LANG_ENGLISH} "Sophisticated RSS/Atom feed ag
 LangString DESC_HISTORYHOLDERPLUGIN ${LANG_ENGLISH} "Keeps history of downloaded files."
 LangString DESC_NETWORKMONITORPLUGIN ${LANG_ENGLISH} "Monitors HTTP network requests."
 LangString DESC_POSHUKUPLUGIN ${LANG_ENGLISH} "Full-featured web browser."
-LangString DESC_POSHUKUCLEANWEBPLUGIN ${LANG_ENGLISH} "Ad blocker for the Poshuku."
+LangString DESC_POSHUKUCLEANWEBPLUGIN ${LANG_ENGLISH} "Ad blocker for the Poshuku compatible with Firefox's AdBlock lists."
+LangString DESC_POSHUKUFILESCHEMEPLUGIN ${LANG_ENGLISH} "Support of the file:// scheme for the Poshuku."
 LangString DESC_POSHUKUFUAPLUGIN ${LANG_ENGLISH} "Fake User Agent plugin for the Poshuku."
 #LangString DESC_LMPPLUGIN ${LANG_ENGLISH} "LeechCraft Media Player."
 LangString DESC_DEADLYRICSPLUGIN ${LANG_ENGLISH} "Fetches lyrics from LyricWiki.org."
@@ -234,8 +241,9 @@ LangString DESC_TORRENTPLUGIN ${LANG_RUSSIAN} "Полнофункциональный Torrent-клиен
 LangString DESC_AGGREGATORPLUGIN ${LANG_RUSSIAN} "Агрегатор RSS/Atom-лент."
 LangString DESC_HISTORYHOLDERPLUGIN ${LANG_RUSSIAN} "Хранит историю закачек."
 LangString DESC_NETWORKMONITORPLUGIN ${LANG_RUSSIAN} "Следит за HTTP-запросами."
-LangString DESC_POSHUKUPLUGIN ${LANG_RUSSIAN} "Веб-браузер."
-LangString DESC_POSHUKUCLEANWEBPLUGIN ${LANG_RUSSIAN} "Блокировщик рекламы для Poshuku."
+LangString DESC_POSHUKUPLUGIN ${LANG_RUSSIAN} "Полнофункциональный веб-браузер."
+LangString DESC_POSHUKUCLEANWEBPLUGIN ${LANG_RUSSIAN} "Блокировщик рекламы для Poshuku, совместимый с Firefox AdBlock."
+LangString DESC_POSHUKUFILESCHEMEPLUGIN ${LANG_RUSSIAN} "Поддержка file://-схемы для Poshuku."
 LangString DESC_POSHUKUFUAPLUGIN ${LANG_RUSSIAN} "Плагин для Poshuku, подделывающий идентификацию браузера."
 #LangString DESC_LMPPLUGIN ${LANG_RUSSIAN} "LeechCraft Media Player."
 LangString DESC_DEADLYRICSPLUGIN ${LANG_RUSSIAN} "Поиск песен на LyricWiki.org."
@@ -251,6 +259,7 @@ LangString DESC_SEEKTHRUPLUGIN ${LANG_RUSSIAN} "Клиент для поисковиков, поддержи
 	!insertmacro MUI_DESCRIPTION_TEXT ${TORRENTPLUGIN} $(DESC_TORRENTPLUGIN)
 #	!insertmacro MUI_DESCRIPTION_TEXT ${LMPPLUGIN} $(DESC_LMPPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${POSHUKUPLUGIN} $(DESC_POSHUKUPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${POSHUKUFILESCHEMEPLUGIN} $(DESC_POSHUKUFILESCHEMEPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${POSHUKUFUAPLUGIN} $(DESC_POSHUKUFUAPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${POSHUKUCLEANWEBPLUGIN} $(DESC_POSHUKUCLEANWEBPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${DEADLYRICSPLUGIN} $(DESC_DEADLYRICSPLUGIN)
