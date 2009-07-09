@@ -281,6 +281,14 @@
         <source>%1 down, %2 up</source>
         <translation type="unfinished">%1 scarica, %2 manda</translation>
     </message>
+    <message>
+        <source>%1 - LeechCraft</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Changing language requires restarting LeechCraft. Do you want to restart now?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::NetworkAccessManager</name>

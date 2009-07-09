@@ -284,6 +284,14 @@
         <source>Do you really want to quit?</source>
         <translation>Ви справді бажаєте вийти?</translation>
     </message>
+    <message>
+        <source>%1 - LeechCraft</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Changing language requires restarting LeechCraft. Do you want to restart now?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::NetworkAccessManager</name>

@@ -173,32 +173,32 @@
 <context>
     <name>LeechCraft::Application</name>
     <message>
-        <location filename="application.cpp" line="105"/>
+        <location filename="application.cpp" line="114"/>
         <source>LeechCraft</source>
         <translation type="unfinished">LeechCraft</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="106"/>
+        <location filename="application.cpp" line="115"/>
         <source>Could not create path %1/.leechcraft</source>
         <translation>لم يتمكن leechcraft من إنشاء %1/</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="124"/>
+        <location filename="application.cpp" line="133"/>
         <source>bytes</source>
         <translation>بايت</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="125"/>
+        <location filename="application.cpp" line="134"/>
         <source>KB</source>
         <translation>ك/ب</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="126"/>
+        <location filename="application.cpp" line="135"/>
         <source>MB</source>
         <translation>م/ب</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="127"/>
+        <location filename="application.cpp" line="136"/>
         <source>GB</source>
         <translation>غ/ب</translation>
     </message>
@@ -248,48 +248,48 @@
         <translation>تقدّم</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="291"/>
+        <location filename="core.cpp" line="298"/>
         <source>Calculating dependencies...</source>
         <translation>...جار حساب التبعيّات</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="245"/>
+        <location filename="core.cpp" line="252"/>
         <source>Setting up %1...</source>
         <translation>...جار التنصيب %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="344"/>
+        <location filename="core.cpp" line="351"/>
         <source>No plugins are able to download &quot;%1&quot;</source>
         <translation>لا يوجد برامج مساعدة قابلة لتحميل %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="831"/>
+        <location filename="core.cpp" line="838"/>
         <source>Too long to show</source>
         <translation>طويل جدّاً الإظهار</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="913"/>
+        <location filename="core.cpp" line="920"/>
         <source>Select save location</source>
         <translation>ﺎﺨﺗﺭ ﻢﻛﺎﻧ ﺎﻟﺬﻳ ﺕﺮﻳﺩ ﺢﻔﻇ ﺎﻠﻤﻠﻓ ﻒﻴﻫ</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="929"/>
-        <location filename="core.cpp" line="946"/>
+        <location filename="core.cpp" line="936"/>
+        <location filename="core.cpp" line="953"/>
         <source>Error</source>
         <translation>خطأ</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="930"/>
+        <location filename="core.cpp" line="937"/>
         <source>Could not add job to the selected downloader, would you like to try another one?</source>
         <translation>البرنامج غير قادر على إضافة هذه المهمّة إلى برنامج تحمبل مخصص. تريد اختيار برنامج آخر؟</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="947"/>
+        <location filename="core.cpp" line="954"/>
         <source>Could not handle job with the selected handler, would you like to try another one?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="970"/>
+        <location filename="core.cpp" line="977"/>
         <source>Could not handle download entity %1.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -305,55 +305,67 @@
 <context>
     <name>LeechCraft::MainWindow</name>
     <message>
-        <location filename="mainwindow.cpp" line="38"/>
-        <location filename="mainwindow.cpp" line="64"/>
-        <location filename="mainwindow.cpp" line="606"/>
+        <location filename="mainwindow.cpp" line="39"/>
+        <location filename="mainwindow.cpp" line="70"/>
+        <location filename="mainwindow.cpp" line="637"/>
         <source>Initializing core and plugins...</source>
         <translation type="unfinished">لإضافة مهام للبرنلمج المساعد </translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="107"/>
+        <location filename="mainwindow.cpp" line="113"/>
         <source>Plugins</source>
         <translation>البرامج المساعدة</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="170"/>
+        <location filename="mainwindow.cpp" line="184"/>
         <source>Initializing interface...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="154"/>
-        <location filename="mainwindow.cpp" line="216"/>
-        <location filename="mainwindow.cpp" line="326"/>
+        <location filename="mainwindow.cpp" line="160"/>
+        <location filename="mainwindow.cpp" line="168"/>
+        <location filename="mainwindow.cpp" line="233"/>
+        <location filename="mainwindow.cpp" line="343"/>
+        <location filename="mainwindow.cpp" line="372"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="234"/>
+        <location filename="mainwindow.cpp" line="162"/>
+        <source>%1 - LeechCraft</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="251"/>
         <source>/s	</source>
         <translation>/s	</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="237"/>
-        <location filename="mainwindow.cpp" line="241"/>
-        <location filename="mainwindow.cpp" line="524"/>
-        <location filename="mainwindow.cpp" line="525"/>
+        <location filename="mainwindow.cpp" line="254"/>
+        <location filename="mainwindow.cpp" line="258"/>
+        <location filename="mainwindow.cpp" line="555"/>
+        <location filename="mainwindow.cpp" line="556"/>
         <source>/s</source>
         <translation>/s</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="327"/>
+        <location filename="mainwindow.cpp" line="344"/>
         <source>Do you really want to quit?</source>
         <translation>هل تريد الخروج؟</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="401"/>
-        <location filename="mainwindow.cpp" line="504"/>
+        <location filename="mainwindow.cpp" line="373"/>
+        <source>Changing language requires restarting LeechCraft. Do you want to restart now?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="432"/>
+        <location filename="mainwindow.cpp" line="535"/>
         <source>Plugin control</source>
         <translation>تحكّم با البرامج المساعدة</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="530"/>
+        <location filename="mainwindow.cpp" line="561"/>
         <source>%1 down, %2 up</source>
         <translation>تحميل %1، إعطاء %2</translation>
     </message>
