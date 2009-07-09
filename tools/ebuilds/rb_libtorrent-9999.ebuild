@@ -35,8 +35,11 @@ src_unpack()
 
 src_configure()
 {
-	use debug && CMAKE_BUILD_TYPE="RelWithDebInfo"
-	CMAKE_BUILD_TYPE="Release"
+	if use debug ; then
+		CMAKE_BUILD_TYPE="RelWithDebInfo"
+	else
+		CMAKE_BUILD_TYPE="Release"
+	fi
 
 	mycmakeargs="${mycmakeargs}
 				-Dbuild_examples=OFF
