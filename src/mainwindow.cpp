@@ -267,9 +267,9 @@ void LeechCraft::MainWindow::SetStatusBar ()
 	SpeedGraph_ = new GraphWidget (Qt::green, Qt::red);
 	SpeedGraph_->setMinimumWidth (250);
 
+	statusBar ()->addPermanentWidget (SpeedGraph_);
 	statusBar ()->addPermanentWidget (DownloadSpeed_);
 	statusBar ()->addPermanentWidget (UploadSpeed_);
-	statusBar ()->addPermanentWidget (SpeedGraph_);
 	statusBar ()->addPermanentWidget (Clock_);
 	if (!isFullScreen ())
 		Clock_->hide ();

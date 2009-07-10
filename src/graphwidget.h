@@ -1,13 +1,13 @@
 #ifndef GRAPHWIDGET_H
 #define GRAPHWIDGET_H
-#include <QWidget>
+#include <QFrame>
 #include <QList>
 
 namespace LeechCraft
 {
 	namespace Util
 	{
-		class GraphWidget : public QWidget
+		class GraphWidget : public QFrame
 		{
 			Q_OBJECT
 

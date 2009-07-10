@@ -9,13 +9,14 @@ using namespace LeechCraft::Util;
 GraphWidget::GraphWidget (const QColor& downColor,
 		const QColor& upColor,
 		QWidget *parent)
-: QWidget (parent)
+: QFrame (parent)
 , DownColor_ (downColor)
 , UpColor_ (upColor)
 {
+	setFrameShape (QFrame::Box);
 	setAutoFillBackground (true);
 	setBackgroundRole (QPalette::Window);
-	setPalette (Qt::black);
+	setPalette (Qt::transparent);
 	PushSpeed (0, 0);
 }
 
@@ -43,7 +44,6 @@ void GraphWidget::paintEvent (QPaintEvent*)
 	}
 
 	QPainter painter (this);
-	painter.eraseRect (rect ());
 	painter.setRenderHints (QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
 	if (max && DownSpeeds_.size ())
