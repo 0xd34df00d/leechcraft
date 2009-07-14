@@ -3,27 +3,42 @@
 #include <QApplication>
 #include "xmlsettingsmanager.h"
 
-using namespace LeechCraft;
+#ifdef Q_WS_WIN
+#include <QWindowsXPStyle>
+#endif
 
-AppStyler::AppStyler (QWidget *parent)
-: QComboBox (parent)
+namespace LeechCraft
 {
-	addItems (QStyleFactory::keys ());
-	reject ();
-}
+	AppStyler::AppStyler (QWidget *parent)
+	: QComboBox (parent)
+	{
+		addItems (QStyleFactory::keys ());
+		reject ();
+	}
 
-void AppStyler::accept ()
-{
-	XmlSettingsManager::Instance ()->
-		setProperty ("AppQStyle", currentText ());
-	QApplication::setStyle (currentText ());
-}
+	void AppStyler::accept ()
+	{
+		QString style = currentText ();
+		XmlSettingsManager::Instance ()->
+			setProperty ("AppQStyle", style);
+		QApplication::setStyle (style);
+	}
 
-void AppStyler::reject ()
-{
-	int index = findText (XmlSettingsManager::Instance ()->
-			Property ("AppQStyle", "Plastique").toString ());
-	setCurrentIndex (index == -1 ? 0 : index);
-}
-
+	void AppStyler::reject ()
+	{
+		QString style = XmlSettingsManager::Instance ()->
+				property ("AppQStyle").toString ();
+		if (style.isEmpty ())
+		{
+#ifdef Q_WS_WIN
+			style = "Plastique";
+			XmlSettingsManager::Instance ()->
+				setProperty ("AppQStyle", style);
+#endif
+		}
+		QApplication::setStyle (style);
+		int index = findText (style);
+		setCurrentIndex (index);
+	}
+};
 
