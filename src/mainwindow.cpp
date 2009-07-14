@@ -121,7 +121,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 
 	filterParametersChanged ();
 
-	setUpdatesEnabled (true);
 	SplashScreen_->finish (this);
 	show ();
 	delete SplashScreen_;
@@ -178,7 +177,6 @@ void LeechCraft::MainWindow::closeEvent (QCloseEvent *e)
 
 void LeechCraft::MainWindow::InitializeInterface ()
 {
-	setUpdatesEnabled (false);
 	SplashScreen_ = new QSplashScreen (QPixmap (":/resources/images/splashscreen.png"));
 	SplashScreen_->show ();
 	ShowMessage (tr ("Initializing interface..."));
@@ -349,7 +347,6 @@ void LeechCraft::MainWindow::on_ActionQuit__triggered ()
 
 void LeechCraft::MainWindow::handleQuit ()
 {
-	setUpdatesEnabled (false);
 	WriteSettings ();
 	Core::Instance ().Release ();
 
