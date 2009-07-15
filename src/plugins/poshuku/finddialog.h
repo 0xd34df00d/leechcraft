@@ -20,6 +20,7 @@ namespace LeechCraft
 				virtual ~FindDialog ();
 
 				void SetSuccessful (bool);
+				void Focus ();
 			private slots:
 				void on_Pattern__textChanged (const QString&);
 				void on_FindButton__released ();

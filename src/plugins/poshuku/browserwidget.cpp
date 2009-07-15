@@ -585,6 +585,7 @@ namespace LeechCraft
 			void BrowserWidget::handleFind ()
 			{
 				FindDialog_->show ();
+				FindDialog_->Focus ();
 			}
 			
 			void BrowserWidget::findText (const QString& text,

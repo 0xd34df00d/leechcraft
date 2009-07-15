@@ -10,11 +10,27 @@ namespace LeechCraft
 			: Notification (parent)
 			{
 				Ui_.setupUi (this);
-				Ui_.Pattern_->setFocus ();
 			}
 			
 			FindDialog::~FindDialog ()
 			{
+			}
+			
+			void FindDialog::SetSuccessful (bool success)
+			{
+				QString ss = QString ("QLineEdit {"
+						"background-color:rgb(");
+				if (success)
+					ss.append ("0,255");
+				else
+					ss.append ("255,0");
+				ss.append (",0) }");
+				Ui_.Pattern_->setStyleSheet (ss);
+			}
+
+			void FindDialog::Focus ()
+			{
+				Ui_.Pattern_->setFocus ();
 			}
 			
 			void FindDialog::on_Pattern__textChanged (const QString& newText)
@@ -33,18 +49,6 @@ namespace LeechCraft
 					flags |= QWebPage::FindWrapsAroundDocument;
 			
 				emit next (Ui_.Pattern_->text (), flags);
-			}
-			
-			void FindDialog::SetSuccessful (bool success)
-			{
-				QString ss = QString ("QLineEdit {"
-						"background-color:rgb(");
-				if (success)
-					ss.append ("0,255");
-				else
-					ss.append ("255,0");
-				ss.append (",0) }");
-				Ui_.Pattern_->setStyleSheet (ss);
 			}
 			
 			void FindDialog::reject ()
