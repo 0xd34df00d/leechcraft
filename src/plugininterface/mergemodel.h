@@ -69,6 +69,12 @@ namespace LeechCraft
 			 */
 			virtual void setSourceModel (QAbstractItemModel*);
 
+			/** Sets the new headers for this model.
+			 *
+			 * @param[in] headers The new headers.
+			 */
+			void SetHeaders (const QStringList& headers);
+
 			/** Adds a model to the list of source models. The newly
 			 * added model is appended to the end.
 			 *

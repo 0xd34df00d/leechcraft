@@ -158,6 +158,11 @@ void MergeModel::setSourceModel (QAbstractItemModel*)
 	throw std::runtime_error ("You should not set source model via setSourceModel()");
 }
 
+void MergeModel::SetHeaders (const QStringList& headers)
+{
+	Headers_ = headers;
+}
+
 void MergeModel::AddModel (QAbstractItemModel *model)
 {
 	if (!model)
