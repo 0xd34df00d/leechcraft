@@ -38,13 +38,14 @@ namespace LeechCraft
 	{
 		namespace Aggregator
 		{
-			Core::Core ()
+			LeechCraft::Plugins::Aggregator::Core::Core ()
 			: SaveScheduled_ (false)
 			, CurrentItemsModel_ (new ItemsListModel)
 			, MergeMode_ (false)
 			{
-				ItemLists_ = new LeechCraft::Util::MergeModel (QStringList (tr ("Name"))
-						<< tr ("Date"));
+				QStringList placeholders;
+				placeholders << "" << "";
+				ItemLists_ = new LeechCraft::Util::MergeModel (placeholders);
 				ItemLists_->AddModel (CurrentItemsModel_);
 			}
 			
@@ -98,6 +99,11 @@ namespace LeechCraft
 			
 			void Core::DoDelayedInit ()
 			{
+				QStringList headers;
+				headers << tr ("Name")
+					<< tr ("Date");
+				ItemLists_->SetHeaders (headers);
+
 				ChannelsModel_ = new ChannelsModel ();
 				ChannelsFilterModel_ = new ChannelsFilterModel ();
 				ChannelsFilterModel_->setSourceModel (ChannelsModel_);
