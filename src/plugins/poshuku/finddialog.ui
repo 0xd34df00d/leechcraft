@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>518</width>
-    <height>36</height>
+    <height>38</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,6 +39,9 @@
     <widget class="QCheckBox" name="WrapAround_">
      <property name="text">
       <string>Cycle</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
