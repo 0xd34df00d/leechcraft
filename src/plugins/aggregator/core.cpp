@@ -38,7 +38,7 @@ namespace LeechCraft
 	{
 		namespace Aggregator
 		{
-			LeechCraft::Plugins::Aggregator::Core::Core ()
+			Core::Core ()
 			: SaveScheduled_ (false)
 			, CurrentItemsModel_ (new ItemsListModel)
 			, MergeMode_ (false)
