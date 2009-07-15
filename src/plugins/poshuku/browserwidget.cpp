@@ -283,6 +283,10 @@ namespace LeechCraft
 				connect (Ui_.WebView_,
 						SIGNAL (loadFinished (bool)),
 						this,
+						SLOT (pageFocus ()));
+				connect (Ui_.WebView_,
+						SIGNAL (loadFinished (bool)),
+						this,
 						SLOT (updateTooltip ()));
 				connect (Ui_.WebView_,
 						SIGNAL (loadStarted ()),
@@ -877,6 +881,11 @@ namespace LeechCraft
 			{
 				if (!OnLoadPos_.isNull ())
 					GetView ()->page ()->mainFrame ()->setScrollPosition (OnLoadPos_);
+			}
+
+			void BrowserWidget::pageFocus ()
+			{
+				Ui_.WebView_->setFocus ();
 			}
 			
 			void BrowserWidget::handleLoadProgress (int p)
