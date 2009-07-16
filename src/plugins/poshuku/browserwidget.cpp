@@ -885,7 +885,8 @@ namespace LeechCraft
 
 			void BrowserWidget::pageFocus ()
 			{
-				Ui_.WebView_->setFocus ();
+				if (!HtmlMode_)
+					Ui_.WebView_->setFocus ();
 			}
 			
 			void BrowserWidget::handleLoadProgress (int p)
