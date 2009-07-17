@@ -283,8 +283,12 @@ namespace LeechCraft
 					<< "OfflineWebApplicationCache";
 				XmlSettingsManager::Instance ()->RegisterObject (viewerSettings,
 						this, "viewerSettingsChanged");
+
+				XmlSettingsManager::Instance ()->RegisterObject ("DeveloperExtrasEnabled",
+						this, "developerExtrasChanged");
 			
 				viewerSettingsChanged ();
+				developerExtrasChanged ();
 			
 				QList<QByteArray> cacheSettings;
 				cacheSettings << "MaximumPagesInCache"
@@ -423,6 +427,19 @@ namespace LeechCraft
 						XmlSettingsManager::Instance ()->property ("LocalStorageDB").toBool ());
 				QWebSettings::globalSettings ()->setUserStyleSheetUrl (QUrl (XmlSettingsManager::
 							Instance ()->property ("UserStyleSheet").toString ()));
+			}
+
+			void Poshuku::developerExtrasChanged ()
+			{
+				bool enabled = XmlSettingsManager::Instance ()->
+					property ("DeveloperExtrasEnabled").toBool ();
+				QWebSettings::globalSettings ()->
+					setAttribute (QWebSettings::DeveloperExtrasEnabled, enabled);
+				if (enabled && sender ())
+					QMessageBox::information (this,
+							tr ("LeechCraft"),
+							tr ("Please note that Developer Extras would work correctly "
+								"only for pages that are loaded after enabling."));
 			}
 			
 			void Poshuku::cacheSettingsChanged ()

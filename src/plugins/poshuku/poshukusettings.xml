@@ -180,6 +180,10 @@
 					<label lang="en" value="Javascript programs can access clipboard" />
 					<label lang="ru" value="Javascript-программы могут работать с буфером обмена" />
 				</item>
+				<item type="checkbox" property="DeveloperExtrasEnabled" state="off">
+					<label lang="en" value="Developer extras" />
+					<label lang="ru" value="Дополнения для разработчика" />
+				</item>
 			</groupbox>
 		</tab>
 		<tab>

@@ -85,6 +85,7 @@ namespace LeechCraft
 				void on_OpenInTabs__released ();
 				void translateRemoveFavoritesItem (const QModelIndex&);
 				void viewerSettingsChanged ();
+				void developerExtrasChanged ();
 				void cacheSettingsChanged ();
 				void updateFavoritesFilter ();
 				void updateHistoryFilter ();

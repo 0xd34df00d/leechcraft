@@ -166,6 +166,8 @@ namespace LeechCraft
 						menu->addAction (pageAction (QWebPage::Copy));
 					menu->addAction (tr ("&Copy link"),
 							this, SLOT (copyLink ()));
+					if (page ()->settings ()->testAttribute (QWebSettings::DeveloperExtrasEnabled))
+						menu->addAction (pageAction (QWebPage::InspectElement));
 				}
 			
 				if (!r.imageUrl ().isEmpty ())
