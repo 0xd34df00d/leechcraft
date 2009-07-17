@@ -23,6 +23,7 @@
 #include <QDesktopServices>
 #include <QXmlStreamReader>
 #include <QTextCodec>
+#include <plugininterface/proxy.h>
 #include "core.h"
 #include "historymodel.h"
 #include "finddialog.h"
@@ -45,6 +46,7 @@ namespace LeechCraft
 			, Own_ (true)
 			{
 				Ui_.setupUi (this);
+				Ui_.Progress_->hide ();
 			
 				Cut_ = Ui_.WebView_->pageAction (QWebPage::Cut);
 				Cut_->setProperty ("ActionIcon", "poshuku_cut");
@@ -892,6 +894,9 @@ namespace LeechCraft
 			void BrowserWidget::handleLoadProgress (int p)
 			{
 				Ui_.Progress_->setValue (p);
+				Ui_.Progress_->setFormat (tr ("%p% (%1 received)")
+						.arg (Util::Proxy::Instance ()->
+							MakePrettySize (Ui_.WebView_->page ()->totalBytes ())));
 				Ui_.Progress_->setVisible (p != 100);
 			}
 		};
