@@ -21,7 +21,7 @@
    <string>LeechCraft::BitTorrent dashboard</string>
   </property>
   <property name="tabPosition">
-   <enum>QTabWidget::East</enum>
+   <enum>QTabWidget::North</enum>
   </property>
   <property name="tabShape">
    <enum>QTabWidget::Rounded</enum>
@@ -47,8 +47,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>506</width>
-         <height>1296</height>
+         <width>537</width>
+         <height>1298</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -749,8 +749,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>506</width>
-         <height>1389</height>
+         <width>537</width>
+         <height>1359</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -871,7 +871,7 @@
               </widget>
              </item>
              <item row="3" column="1">
-              <widget class="LeechCraft::Util::TagsLineEdit" name="TorrentTags_"/>
+              <widget class="LeechCraft::Util::TagsLineEdit" name="TorrentTags_" native="true"/>
              </item>
             </layout>
            </item>
@@ -1605,8 +1605,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>488</width>
-            <height>400</height>
+            <width>517</width>
+            <height>406</height>
            </rect>
           </property>
           <layout class="QFormLayout" name="formLayout_10">
