@@ -65,12 +65,12 @@
     <message>
         <source>It could be downloaded by:</source>
         <oldsource>This entity could be downloaded by:</oldsource>
-        <translation>Он может быть скачан при помощи:</translation>
+        <translation>Может быть загружено при помощи:</translation>
     </message>
     <message>
         <source>It could be handled by:</source>
         <oldsource>This entity could also be handled by:</oldsource>
-        <translation>Он может быть обработан с помощью:</translation>
+        <translation>Может быть обработано с помощью:</translation>
     </message>
 </context>
 <context>
@@ -105,10 +105,6 @@
     <message>
         <source>toolBar</source>
         <translation></translation>
-    </message>
-    <message>
-        <source>Adds job to a supporting plugin</source>
-        <translation>Добавляет задачу в поддерживающий плагин</translation>
     </message>
     <message>
         <source>Quit</source>
@@ -196,19 +192,11 @@
     </message>
     <message>
         <source>No plugins are able to download &quot;%1&quot;</source>
-        <translation>Нет плагинов, способных скачать &quot;%1&quot;</translation>
+        <translation>Нет плагинов, способных загрузить «%1»</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>ОшибкаОшибка</translation>
-    </message>
-    <message>
-        <source>Could not add job to the selected downloader, would you like to try another one?</source>
-        <translation>Невозможно добавить задачу в выбранный загрузчик, попробовать другой?</translation>
-    </message>
-    <message>
-        <source>Could not handle job with the selected handler, would you like to try another one?</source>
-        <translation>Невозможно обработать задачу выбранным обработчиком, попробовать другой?</translation>
+        <translation>Ошибка</translation>
     </message>
     <message>
         <source>Name</source>
@@ -228,33 +216,41 @@
     </message>
     <message>
         <source>Too long to show</source>
-        <translation>Слишком длинное для показа</translation>
+        <translation>Строка слишком длинная для отображения</translation>
     </message>
     <message>
         <source>Select save location</source>
-        <translation>Выберите директорию сохранения</translation>
+        <translation>Выберите место сохранения</translation>
     </message>
     <message>
         <source>Could not handle download entity %1.</source>
         <translation>Не могу обработать объект %1.</translation>
+    </message>
+    <message>
+        <source>Could not add task to the selected downloader, would you like to try another one?</source>
+        <translation>Невозможно добавить задачу в выбранный загрузчик, хотите попробовать другой?</translation>
+    </message>
+    <message>
+        <source>Could not handle task with the selected handler, would you like to try another one?</source>
+        <translation>Невозможно обработать задачу выбранным обработчиком, хотите попробовать другой?</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::FancyPopupManager</name>
     <message>
         <source>LeechCraft Notification</source>
-        <translation>Оповещение LeechCraft</translation>
+        <translation>Уведомление LeechCraft</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::MainWindow</name>
     <message>
         <source>Initializing interface...</source>
-        <translation>Инициализирую интерфейс...</translation>
+        <translation>Инициализация интерфейса...</translation>
     </message>
     <message>
         <source>Initializing core and plugins...</source>
-        <translation>Инициализирую ядро и плагины...</translation>
+        <translation>Инициализация ядра и плагинов...</translation>
     </message>
     <message>
         <source>Plugins</source>
@@ -278,7 +274,7 @@
     </message>
     <message>
         <source>/s	</source>
-        <translation>/s	</translation>
+        <translation>/c	</translation>
     </message>
     <message>
         <source>Do you really want to quit?</source>
@@ -289,20 +285,12 @@
         <translation>%1 - LeechCraft</translation>
     </message>
     <message>
-        <source>Changing language requires restarting LeechCraft. Do you want to restart now?</source>
-        <translation>Изменения языка требует перезапуска LeechCraft. Вы хотите перезапуститься сейчас?</translation>
+        <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
+        <translation>Это изменение требует перезапуска LeechCraft. Вы хотите перезапуститься сейчас?</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::NetworkAccessManager</name>
-    <message>
-        <source>The URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
-        <translation>URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;с реалмом&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;требует аутентификации.</translation>
-    </message>
-    <message>
-        <source>The proxy &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
-        <translation>Прокси&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;с реалмом&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;требует аутентификации.</translation>
-    </message>
     <message>
         <source>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
         <translation>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;имеет ошибки SSL. Что хотите сделать?</translation>
@@ -314,6 +302,10 @@
     <message>
         <source>Could not save cookies, error opening cookie file.</source>
         <translation>Невозможно сохранить кукисы, ошибка открытия файла с кукисами.</translation>
+    </message>
+    <message>
+        <source>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
+        <translation>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;требует аутентификации.</translation>
     </message>
 </context>
 <context>
@@ -347,7 +339,7 @@
     </message>
     <message>
         <source>Initializing %1...</source>
-        <translation>Инициализирую %1...</translation>
+        <translation>Инициализация %1...</translation>
     </message>
     <message>
         <source>LeechCraft</source>
@@ -370,11 +362,11 @@
     </message>
     <message>
         <source>Request validation error: %1</source>
-        <translation>Ошибка валидации запроса: %1</translation>
+        <translation>Ошибка проверки запроса: %1</translation>
     </message>
     <message>
         <source>Request parsing error: %1</source>
-        <translation>Ошибка парсинга запроса: %1</translation>
+        <translation>Ошибка обработки запроса: %1</translation>
     </message>
     <message>
         <source>Open/close braces mismatch</source>
@@ -389,11 +381,11 @@
     </message>
     <message>
         <source>(No certificate available for this error)</source>
-        <translation>(Сертификат недоступен для данной ошибки)</translation>
+        <translation>(Ошибка, не связанная с сертификатом)</translation>
     </message>
     <message>
         <source>Valid:</source>
-        <translation>Валиден:</translation>
+        <translation>Действителен:</translation>
     </message>
     <message>
         <source>yes</source>
@@ -409,7 +401,7 @@
     </message>
     <message>
         <source>Expiry date:</source>
-        <translation>Дата конца действия:</translation>
+        <translation>Дата окончания действия:</translation>
     </message>
     <message>
         <source>Version:</source>
@@ -429,7 +421,7 @@
     </message>
     <message>
         <source>Issuer info</source>
-        <translation>Информация о выдавшем</translation>
+        <translation>Выдан</translation>
     </message>
     <message>
         <source>Organization:</source>
@@ -453,11 +445,11 @@
     </message>
     <message>
         <source>State or province name:</source>
-        <translation>Штат или провинция страны:</translation>
+        <translation>Регион:</translation>
     </message>
     <message>
         <source>Subject info</source>
-        <translation>Информация о теме</translation>
+        <translation>Тема</translation>
     </message>
 </context>
 <context>
@@ -468,7 +460,7 @@
     </message>
     <message>
         <source>Enter new tag name</source>
-        <translation>Введите новое имя тега</translation>
+        <translation>Введите новое имя метки</translation>
     </message>
 </context>
 <context>
@@ -534,19 +526,19 @@
         <translation>Не запоминать мой выбор</translation>
     </message>
     <message>
-        <source>Remember my choice for the file</source>
-        <translation>Запомнить выбор для файла</translation>
+        <source>Remember my choice for the whole host</source>
+        <translation>Запомнить выбор для хоста</translation>
     </message>
     <message>
-        <source>Remember my choice for the whole host</source>
-        <translation>Запомнить выбор для всего хоста</translation>
+        <source>Remember my choice for the resource</source>
+        <translation>Запомнить мой выбор для ресурса</translation>
     </message>
 </context>
 <context>
     <name>TagsManager</name>
     <message>
         <source>untagged</source>
-        <translation>без отметки</translation>
+        <translation>без метки</translation>
     </message>
 </context>
 <context>

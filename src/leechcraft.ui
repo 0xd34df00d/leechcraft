@@ -144,9 +144,6 @@
    <property name="text">
     <string>Add task</string>
    </property>
-   <property name="statusTip">
-    <string>Adds job to a supporting plugin</string>
-   </property>
   </action>
   <action name="ActionSettings_">
    <property name="icon">

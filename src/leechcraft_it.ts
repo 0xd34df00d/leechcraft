@@ -104,10 +104,6 @@
         <translation type="unfinished">Aggiungi task</translation>
     </message>
     <message>
-        <source>Adds job to a supporting plugin</source>
-        <translation type="unfinished">Aggiungi funzione a un plugin supportato</translation>
-    </message>
-    <message>
         <source>Settings</source>
         <translation type="unfinished">Settaggi</translation>
     </message>
@@ -224,16 +220,16 @@
         <translation type="unfinished">Errore</translation>
     </message>
     <message>
-        <source>Could not add job to the selected downloader, would you like to try another one?</source>
-        <translation type="unfinished">Non può aggiungere funzione allo scaricatore selezionato, vuoi provarne un altro?</translation>
-    </message>
-    <message>
-        <source>Could not handle job with the selected handler, would you like to try another one?</source>
-        <translation type="unfinished">Non può aggiungere funzione all&apos;apritore selezionato, vuoi provarne un altro?</translation>
-    </message>
-    <message>
         <source>Could not handle download entity %1.</source>
         <translation type="unfinished">Non può aprire l&apos;entità scaricata %1.</translation>
+    </message>
+    <message>
+        <source>Could not add task to the selected downloader, would you like to try another one?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not handle task with the selected handler, would you like to try another one?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -286,20 +282,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Changing language requires restarting LeechCraft. Do you want to restart now?</source>
+        <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::NetworkAccessManager</name>
-    <message>
-        <source>The URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
-        <translation type="unfinished">L&apos;indirizzo&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;con regno&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;richiede autenticazione.</translation>
-    </message>
-    <message>
-        <source>The proxy &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
-        <translation type="unfinished">Il proxy &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;con regno&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;richiede autenticazione.</translation>
-    </message>
     <message>
         <source>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
         <translation type="unfinished">&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;ha errori SSL. Cosa vuoi fare?</translation>
@@ -311,6 +299,10 @@
     <message>
         <source>Could not save cookies, error opening cookie file.</source>
         <translation type="unfinished">Impossibile salvare i cookies, errore apertura cookie file.</translation>
+    </message>
+    <message>
+        <source>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -531,12 +523,12 @@
         <translation type="unfinished">Non ricordare la mia scelta</translation>
     </message>
     <message>
-        <source>Remember my choice for the file</source>
-        <translation type="unfinished">Ricorda la mia scelta per il file</translation>
-    </message>
-    <message>
         <source>Remember my choice for the whole host</source>
         <translation type="unfinished">Ricorda la mia scelta per tutto l&apos;host</translation>
+    </message>
+    <message>
+        <source>Remember my choice for the resource</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

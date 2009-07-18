@@ -336,7 +336,7 @@ void LeechCraft::Core::TryToAddJob (const QString& name, const QString& where)
 		catch (const std::exception& e)
 		{
 			qWarning () << Q_FUNC_INFO
-				<< "failed to query/add job with"
+				<< "failed to query/add task with"
 				<< e.what ()
 				<< "for"
 				<< plugin;
@@ -344,7 +344,7 @@ void LeechCraft::Core::TryToAddJob (const QString& name, const QString& where)
 		catch (...)
 		{
 			qWarning () << Q_FUNC_INFO
-				<< "failed to query/add job"
+				<< "failed to query/add task"
 				<< plugin;
 		}
 	}
@@ -934,7 +934,7 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 				if (dia->NumChoices () > 1 &&
 						QMessageBox::question (0,
 						tr ("Error"),
-						tr ("Could not add job to the selected downloader, "
+						tr ("Could not add task to the selected downloader, "
 							"would you like to try another one?"),
 						QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
 					return handleGotEntity (p, id, pr);
@@ -951,7 +951,7 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 				if (dia->NumChoices () > 1 &&
 						QMessageBox::question (0,
 						tr ("Error"),
-						tr ("Could not handle job with the selected handler, "
+						tr ("Could not handle task with the selected handler, "
 							"would you like to try another one?"),
 						QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
 					return handleGotEntity (p, id, pr);

@@ -31,7 +31,7 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 			SIGNAL (proxyAuthenticationRequired (const QNetworkProxy&,
 					QAuthenticator*)),
 			this,
-			SLOT (handleProxyAuthentication (const QNetworkProxy&,
+			SLOT (handleAuthentication (const QNetworkProxy&,
 					QAuthenticator*)));
 	connect (this,
 			SIGNAL (sslErrors (QNetworkReply*,
@@ -129,23 +129,9 @@ void LeechCraft::NetworkAccessManager::DoCommonAuth (const QString& msg, QAuthen
 void LeechCraft::NetworkAccessManager::handleAuthentication (QNetworkReply *reply,
 		QAuthenticator *authen)
 {
-	QString msg = tr ("The URL<br /><code>%1</code><br />with "
-			"realm<br /><em>%2</em><br />requires authentication.")
-		.arg (reply->url ().toString ())
-		.arg (authen->realm ());
-	msg = msg.left (200);
-
-	DoCommonAuth (msg, authen);
-}
-
-void LeechCraft::NetworkAccessManager::handleProxyAuthentication (const QNetworkProxy& proxy,
-		QAuthenticator *authen)
-{
-	QString msg = tr ("The proxy <br /><code>%1</code><br />with "
-			"realm<br /><em>%2</em><br />requires authentication.")
-		.arg (proxy.hostName () + ":" + QString::number (proxy.port ()))
-		.arg (authen->realm ());
-	msg = msg.left (200);
+	QString msg = tr ("%1<br /><em>%2</em><br />requires authentication.")
+		.arg (authen->realm ())
+		.arg (reply->url ().toString ());
 
 	DoCommonAuth (msg, authen);
 }

@@ -107,10 +107,6 @@
         <translation>Додати задачу</translation>
     </message>
     <message>
-        <source>Adds job to a supporting plugin</source>
-        <translation>Додати задачу у відповідний плагін</translation>
-    </message>
-    <message>
         <source>Settings</source>
         <translation>Налаштування</translation>
     </message>
@@ -203,14 +199,6 @@
         <translation>Помилка</translation>
     </message>
     <message>
-        <source>Could not add job to the selected downloader, would you like to try another one?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not handle job with the selected handler, would you like to try another one?</source>
-        <translation>Не можу обробити задачу з вибраним обробником, бажаєте спробовати інший?</translation>
-    </message>
-    <message>
         <source>Name</source>
         <translation>Назва</translation>
     </message>
@@ -237,6 +225,14 @@
     <message>
         <source>Could not handle download entity %1.</source>
         <translation>Не вдалося обробити закачувану сутність %1.</translation>
+    </message>
+    <message>
+        <source>Could not add task to the selected downloader, would you like to try another one?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not handle task with the selected handler, would you like to try another one?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -289,20 +285,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Changing language requires restarting LeechCraft. Do you want to restart now?</source>
+        <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::NetworkAccessManager</name>
-    <message>
-        <source>The URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The proxy &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
         <translation type="unfinished"></translation>
@@ -313,6 +301,10 @@
     </message>
     <message>
         <source>Could not save cookies, error opening cookie file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -534,11 +526,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Remember my choice for the file</source>
+        <source>Remember my choice for the whole host</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Remember my choice for the whole host</source>
+        <source>Remember my choice for the resource</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

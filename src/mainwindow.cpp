@@ -367,7 +367,7 @@ void LeechCraft::MainWindow::handleLanguage ()
 {
 	if (QMessageBox::question (this,
 				tr ("LeechCraft"),
-				tr ("Changing language requires restarting LeechCraft. "
+				tr ("This change requires restarting LeechCraft. "
 					"Do you want to restart now?"),
 				QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 		return;
