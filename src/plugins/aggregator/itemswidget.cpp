@@ -25,6 +25,7 @@ namespace LeechCraft
 
 				QAction *ActionMarkItemAsUnread_;
 				QAction *ActionAddToItemBucket_;
+				QAction *ActionItemCommentsSubscribe_;
 
 				bool TapeMode_;
 
@@ -44,6 +45,10 @@ namespace LeechCraft
 				Impl_->ActionAddToItemBucket_ = new QAction (tr ("Add to item bucket"),
 						this);
 				Impl_->ActionAddToItemBucket_->setObjectName ("ActionAddToItemBucket_");
+
+				Impl_->ActionItemCommentsSubscribe_ = new QAction (tr ("Subscribe to comments"),
+						this);
+				Impl_->ActionItemCommentsSubscribe_->setObjectName ("ActionItemCommentsSubscribe_");
 			
 				Impl_->Ui_.setupUi (this);
 				Impl_->Ui_.ItemView_->Construct (Core::Instance ().GetWebBrowser ());
@@ -63,6 +68,7 @@ namespace LeechCraft
 			
 				Impl_->Ui_.Items_->addAction (Impl_->ActionMarkItemAsUnread_);
 				Impl_->Ui_.Items_->addAction (Impl_->ActionAddToItemBucket_);
+				Impl_->Ui_.Items_->addAction (Impl_->ActionItemCommentsSubscribe_);
 				Impl_->Ui_.Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
 				connect (Impl_->Ui_.SearchLine_,
 						SIGNAL (textChanged (const QString&)),
@@ -322,7 +328,7 @@ namespace LeechCraft
 							currentIndex ()));
 			}
 			
-			void ItemsWidget::on_ItemCommentsSubscribe__released ()
+			void ItemsWidget::on_ActionItemCommentsSubscribe__triggered ()
 			{
 				QModelIndex selected = Impl_->Ui_.Items_->selectionModel ()->currentIndex ();
 				Core::Instance ().SubscribeToComments (Impl_->ItemsFilterModel_->
@@ -364,7 +370,7 @@ namespace LeechCraft
 					if (!sindex.isValid () || indexes.size () != 2)
 					{
 						Impl_->Ui_.ItemView_->SetHtml ("");
-						Impl_->Ui_.ItemCommentsSubscribe_->setEnabled (false);
+						Impl_->ActionItemCommentsSubscribe_->setEnabled (false);
 						return;
 					}
 			
@@ -375,7 +381,7 @@ namespace LeechCraft
 					Impl_->Ui_.ItemView_->SetHtml (ToHtml (item));
 			
 					QString commentsRSS = item->CommentsLink_;
-					Impl_->Ui_.ItemCommentsSubscribe_->setEnabled (!commentsRSS.isEmpty ());
+					Impl_->ActionItemCommentsSubscribe_->setEnabled (!commentsRSS.isEmpty ());
 				}
 			}
 			

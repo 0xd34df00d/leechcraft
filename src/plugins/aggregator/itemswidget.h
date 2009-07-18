@@ -37,7 +37,7 @@ namespace LeechCraft
 				void on_ActionMarkItemAsUnread__triggered ();
 				void on_CaseSensitiveSearch__stateChanged (int);
 				void on_ActionAddToItemBucket__triggered ();
-				void on_ItemCommentsSubscribe__released ();
+				void on_ActionItemCommentsSubscribe__triggered ();
 				void on_ItemCategoriesButton__released ();
 				void currentItemChanged (const QItemSelection&);
 				void makeCurrentItemVisible ();
