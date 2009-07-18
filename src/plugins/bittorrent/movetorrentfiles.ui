@@ -44,7 +44,7 @@
        <item>
         <widget class="QPushButton" name="Browse_" >
          <property name="text" >
-          <string>Browse</string>
+          <string>Browse...</string>
          </property>
         </widget>
        </item>
