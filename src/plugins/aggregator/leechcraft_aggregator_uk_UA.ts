@@ -38,8 +38,9 @@
     </message>
     <message>
         <location filename="export.ui" line="25"/>
-        <source>Where to save:</source>
-        <translation>Куди зберегти:</translation>
+        <source>Save to:</source>
+        <oldsource>Where to save:</oldsource>
+        <translation type="unfinished">Куди зберегти:</translation>
     </message>
     <message>
         <location filename="export.ui" line="37"/>
@@ -439,9 +440,10 @@
     </message>
     <message>
         <location filename="aggregator.cpp" line="575"/>
-        <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you are really sure that you want to do this?</source>
+        <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you are really sure that you want to do it?</source>
+        <oldsource>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you are really sure that you want to do this?</oldsource>
         <comment>Feed removing confirmation</comment>
-        <translation>Ви збираєтеся назавжди видалити стрічку:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Ви насправді впевнені, що бажаєте це зробити?</translation>
+        <translation type="unfinished">Ви збираєтеся назавжди видалити стрічку:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Ви насправді впевнені, що бажаєте це зробити?</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="662"/>
@@ -587,7 +589,8 @@
     </message>
     <message>
         <location filename="core.cpp" line="1099"/>
-        <source>Local errro for:&lt;br /&gt;%1</source>
+        <source>Local error for:&lt;br /&gt;%1</source>
+        <oldsource>Local errro for:&lt;br /&gt;%1</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>

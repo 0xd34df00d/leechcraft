@@ -38,8 +38,9 @@
     </message>
     <message>
         <location filename="export.ui" line="25"/>
-        <source>Where to save:</source>
-        <translation>Куда сохранить:</translation>
+        <source>Save to:</source>
+        <oldsource>Where to save:</oldsource>
+        <translation>Сохранить в:</translation>
     </message>
     <message>
         <location filename="export.ui" line="37"/>
@@ -59,7 +60,7 @@
     <message>
         <location filename="export.ui" line="60"/>
         <source>Owner email:</source>
-        <translation>Email владельца:</translation>
+        <translation>E-mail владельца:</translation>
     </message>
     <message>
         <location filename="export.ui" line="67"/>
@@ -129,7 +130,7 @@
     <message>
         <location filename="feedsettings.ui" line="180"/>
         <source>Max items number:</source>
-        <translation>Максимально новостей:</translation>
+        <translation>Максимальное количество новостей:</translation>
     </message>
     <message>
         <location filename="feedsettings.ui" line="203"/>
@@ -290,7 +291,7 @@
     <message>
         <location filename="importopml.ui" line="177"/>
         <source>Owner email:</source>
-        <translation>Email владельца:</translation>
+        <translation>E-mail владельца:</translation>
     </message>
     <message>
         <location filename="importopml.ui" line="146"/>
@@ -359,7 +360,7 @@
     <message>
         <location filename="aggregator.cpp" line="235"/>
         <source>RSS/Atom feed reader.</source>
-        <translation>Клиент новостых лент RSS/Atom.</translation>
+        <translation>Чтение RSS/Atom-лент.</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="455"/>
@@ -404,7 +405,7 @@
     <message>
         <location filename="aggregator.cpp" line="491"/>
         <source>Regexp matcher...</source>
-        <translation>Проверка регулярных выражений...</translation>
+        <translation>Автоматическая обработка...</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="496"/>
@@ -439,7 +440,8 @@
     </message>
     <message>
         <location filename="aggregator.cpp" line="575"/>
-        <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you are really sure that you want to do this?</source>
+        <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you are really sure that you want to do it?</source>
+        <oldsource>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you are really sure that you want to do this?</oldsource>
         <comment>Feed removing confirmation</comment>
         <translation>Вы собираетесь навсегда удалить ленту:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Уверены, что хотите сделать это?</translation>
     </message>
@@ -452,7 +454,7 @@
         <location filename="aggregator.cpp" line="663"/>
         <location filename="aggregator.cpp" line="693"/>
         <source>Select save file</source>
-        <translation>Выберите файл сохранения</translation>
+        <translation>Выберите файл</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="664"/>
@@ -498,12 +500,12 @@
     <message>
         <location filename="core.cpp" line="103"/>
         <source>Name</source>
-        <translation type="unfinished">Имя</translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <location filename="core.cpp" line="104"/>
         <source>Date</source>
-        <translation type="unfinished">Дата</translation>
+        <translation>Дата</translation>
     </message>
     <message>
         <location filename="core.cpp" line="255"/>
@@ -518,27 +520,27 @@
     <message>
         <location filename="core.cpp" line="308"/>
         <source>Could not remove the feed.</source>
-        <translation>Невозможно удалить поток.</translation>
+        <translation>Невозможно удалить ленту.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="542"/>
         <source>Could not get feed settings</source>
-        <translation>Невозможно получить настройки потока</translation>
+        <translation>Невозможно получить настройки ленты</translation>
     </message>
     <message>
         <location filename="core.cpp" line="557"/>
         <source>Could not update feed settings</source>
-        <translation>Невозможно обновить настройки потока</translation>
+        <translation>Невозможно обновить настройки ленты</translation>
     </message>
     <message>
         <location filename="core.cpp" line="582"/>
         <source>Could not update feed</source>
-        <translation>Невозможно обновить поток</translation>
+        <translation>Невозможно обновить ленту</translation>
     </message>
     <message>
         <location filename="core.cpp" line="617"/>
         <source>Could not open file %1 for reading.</source>
-        <translation>Невозможно открыть файл %1 для чтения.</translation>
+        <translation>Невозможно открыть %1 для чтения.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="634"/>
@@ -587,7 +589,8 @@
     </message>
     <message>
         <location filename="core.cpp" line="1099"/>
-        <source>Local errro for:&lt;br /&gt;%1</source>
+        <source>Local error for:&lt;br /&gt;%1</source>
+        <oldsource>Local errro for:&lt;br /&gt;%1</oldsource>
         <translation>Локальная ошибка для:&lt;br /&gt;%1</translation>
     </message>
     <message>
@@ -603,12 +606,12 @@
     <message>
         <location filename="core.cpp" line="1400"/>
         <source>Added channel &quot;%1&quot; (has %2 items)</source>
-        <translation>Добавлен канал &quot;%1&quot; (%2 статей)</translation>
+        <translation>Добавлен канал «%1» (%2 статей)</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1419"/>
         <source>Updated channel &quot;%1&quot; (%2 new items)</source>
-        <translation>Обновлен канал &quot;%1&quot; (%2 новых статей)</translation>
+        <translation>Обновлен канал «%1» (%2 новых статей)</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1473"/>
@@ -638,17 +641,17 @@
     <message>
         <location filename="importbinary.cpp" line="131"/>
         <source>Could not open file %1 for reading.</source>
-        <translation>Невозможно открыть файл %1 для чтения.</translation>
+        <translation>Невозможно открыть %1 для чтения.</translation>
     </message>
     <message>
         <location filename="importbinary.cpp" line="145"/>
         <source>Selected file %1 is not a valid LeechCraft::Aggregator exchange file.</source>
-        <translation>Выбранный файл %1 не является правильным файлом обмена LeechCraft::Aggregator.</translation>
+        <translation>Выбранный файл %1 не является правильным файлом обмена Aggregator.</translation>
     </message>
     <message>
         <location filename="importbinary.cpp" line="158"/>
         <source>Selected file %1 is a valid LeechCraft::Aggregator exchange file, but its version %2 is unknown</source>
-        <translation>Выбранный файл %1 является правильным файлом обмена LeechCraft::Aggregator, но версия %2 неизвестна</translation>
+        <translation>Выбранный файл %1 является правильным файлом обмена Aggregator, но версия %2 неизвестна</translation>
     </message>
 </context>
 <context>
@@ -673,7 +676,7 @@
     <message>
         <location filename="importopml.cpp" line="95"/>
         <source>Could not open file %1 for reading.</source>
-        <translation>Невозможно открыть файл %1 для чтения.</translation>
+        <translation>Невозможно открыть %1 для чтения.</translation>
     </message>
     <message>
         <location filename="importopml.cpp" line="114"/>
@@ -737,7 +740,7 @@
     <message>
         <location filename="itemswidget.cpp" line="230"/>
         <source>%1 comments, &lt;a href=&apos;%2&apos;%3&gt;view them&lt;/a&gt;&lt;/div&gt;</source>
-        <translation>%1 комментариев, &lt;a href=&apos;%2&apos;%3&gt;посмотреть их&lt;/a&gt;&lt;/div&gt;</translation>
+        <translation>&lt;a href=&apos;%2&apos;%3&gt;посмотреть %1 комментариев&lt;/a&gt;&lt;/div&gt;</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="236"/>
@@ -853,7 +856,7 @@
     <message>
         <location filename="regexpmatcherui.ui" line="13"/>
         <source>Regexp Matcher</source>
-        <translation>Проверка регулярного выражения</translation>
+        <translation>Автоматическая обработка</translation>
     </message>
 </context>
 <context>

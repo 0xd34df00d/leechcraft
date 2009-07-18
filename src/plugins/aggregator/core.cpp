@@ -1096,7 +1096,7 @@ namespace LeechCraft
 							msg = tr ("Access denied:<br />%1");
 							break;
 						case IDownload::ELocalError:
-							msg = tr ("Local errro for:<br />%1");
+							msg = tr ("Local error for:<br />%1");
 							break;
 						default:
 							msg = tr ("Unknown error for:<br />%1");
