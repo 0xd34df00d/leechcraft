@@ -21,7 +21,6 @@ namespace LeechCraft
 		void DoCommonAuth (const QString&, QAuthenticator*);
 	private slots:
 		void handleAuthentication (QNetworkReply*, QAuthenticator*);
-		void handleProxyAuthentication (const QNetworkProxy&, QAuthenticator*);
 		void handleSslErrors (QNetworkReply*, const QList<QSslError>&);
 		void saveCookies () const;
 	signals:
