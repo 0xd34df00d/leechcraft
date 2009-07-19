@@ -253,7 +253,6 @@ namespace LeechCraft
 			bool Core::CouldDownload (const LeechCraft::DownloadEntity& e)
 			{
 				QUrl url = e.Entity_.toUrl ();
-				qDebug () << Q_FUNC_INFO << e.Entity_ << url;
 				return (url.isValid () &&
 					(url.scheme () == "http" || url.scheme () == "https")) ||
 					e.Entity_.value<QNetworkReply*> ();

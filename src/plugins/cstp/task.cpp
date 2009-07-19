@@ -233,7 +233,7 @@ namespace LeechCraft
 					emit updateInterface ();
 			}
 			
-			void Task::redirectedConstruction (const QString& newUrl)
+			void Task::redirectedConstruction (const QByteArray& newUrl)
 			{
 				if (To_ && FileSizeAtStart_ >= 0)
 				{
@@ -245,7 +245,7 @@ namespace LeechCraft
 			
 				Reply_.reset ();
 			
-				URL_ = newUrl;
+				URL_ = QUrl::fromEncoded (newUrl);
 				Start (To_);
 			}
 			
@@ -262,7 +262,7 @@ namespace LeechCraft
 							<< "for"
 							<< Reply_->url ();
 					}
-					else if (RedirectHistory_.contains (newUrl, Qt::CaseInsensitive))
+					else if (RedirectHistory_.contains (newUrl))
 					{
 						qWarning () << Q_FUNC_INFO
 							<< "redir loop detected"
@@ -278,7 +278,7 @@ namespace LeechCraft
 						QMetaObject::invokeMethod (this,
 								"redirectedConstruction",
 								Qt::QueuedConnection,
-								Q_ARG (QString, newUrl));
+								Q_ARG (QByteArray, newUrl));
 					}
 				}
 			}
