@@ -26,7 +26,6 @@ namespace LeechCraft
 
 				void SetTapeMode (bool);
 				void SetHideRead (bool);
-				void HideInfoPanel ();
 			private:
 				void Construct (bool);
 				QString GetHex (QPalette::ColorRole,
@@ -38,7 +37,6 @@ namespace LeechCraft
 				void on_CaseSensitiveSearch__stateChanged (int);
 				void on_ActionAddToItemBucket__triggered ();
 				void on_ActionItemCommentsSubscribe__triggered ();
-				void on_ItemCategoriesButton__released ();
 				void currentItemChanged (const QItemSelection&);
 				void makeCurrentItemVisible ();
 				void updateItemsFilter ();

@@ -99,6 +99,10 @@ namespace LeechCraft
 						SLOT (makeCurrentItemVisible ()));
 			
 				Impl_->ItemCategorySelector_.reset (new CategorySelector ());
+				Impl_->ItemCategorySelector_->setWindowFlags (Qt::Widget);
+				Impl_->Ui_.CategoriesLayout_->addWidget (Impl_->ItemCategorySelector_.get ());
+				Impl_->ItemCategorySelector_->hide ();
+				Impl_->ItemCategorySelector_->layout ()->setContentsMargins (0, 0, 0, 0);
 				connect (Impl_->ItemCategorySelector_.get (),
 						SIGNAL (selectionChanged (const QStringList&)),
 						Impl_->ItemsFilterModel_.get (),
@@ -147,11 +151,6 @@ namespace LeechCraft
 			void ItemsWidget::SetHideRead (bool hide)
 			{
 				Impl_->ItemsFilterModel_->SetHideRead (hide);
-			}
-			
-			void ItemsWidget::HideInfoPanel ()
-			{
-				Impl_->Ui_.Actions_->setVisible (false);
 			}
 			
 			QString ItemsWidget::GetHex (QPalette::ColorRole role, QPalette::ColorGroup group)
@@ -296,12 +295,17 @@ namespace LeechCraft
 				QStringList allCategories = Core::Instance ().GetCategories (mapped);
 				if (allCategories.size ())
 				{
+					int count = Impl_->ItemCategorySelector_->layout ()->count ();
+					if (count)
+						delete Impl_->ItemCategorySelector_->layout ()->takeAt (count - 1);
 					Impl_->ItemCategorySelector_->SetPossibleSelections (allCategories);
 					Impl_->ItemCategorySelector_->selectAll ();
-					Impl_->Ui_.ItemCategoriesButton_->setEnabled (true);
+					static_cast<QBoxLayout*> (Impl_->ItemCategorySelector_->layout ())->
+						addStretch (0);
+					Impl_->ItemCategorySelector_->show ();
 				}
 				else
-					Impl_->Ui_.ItemCategoriesButton_->setEnabled (false);
+					Impl_->ItemCategorySelector_->hide ();
 			
 				Impl_->ItemsFilterModel_->categorySelectionChanged (allCategories);
 			}
@@ -333,12 +337,6 @@ namespace LeechCraft
 				QModelIndex selected = Impl_->Ui_.Items_->selectionModel ()->currentIndex ();
 				Core::Instance ().SubscribeToComments (Impl_->ItemsFilterModel_->
 						mapToSource (selected));
-			}
-			
-			void ItemsWidget::on_ItemCategoriesButton__released ()
-			{
-				Impl_->ItemCategorySelector_->move (QCursor::pos ());
-				Impl_->ItemCategorySelector_->show ();
 			}
 			
 			void ItemsWidget::currentItemChanged (const QItemSelection& selection)

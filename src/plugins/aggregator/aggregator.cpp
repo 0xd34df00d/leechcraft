@@ -155,7 +155,6 @@ namespace LeechCraft
 				Core::Instance ().GetJobHolderRepresentation ()->setParent (this);
 			
 				Impl_->AdditionalInfo_ = new ItemsWidget ();
-				Impl_->AdditionalInfo_->HideInfoPanel ();
 				Impl_->Ui_.setupUi (this);
 			
 				Impl_->Ui_.MergeItems_->setChecked (XmlSettingsManager::Instance ()->
