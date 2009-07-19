@@ -31,7 +31,7 @@ namespace LeechCraft
 				QTime StartTime_;
 				qint64 Done_, Total_, FileSizeAtStart_;
 				double Speed_;
-				QStringList RedirectHistory_;
+				QList<QByteArray> RedirectHistory_;
 				boost::intrusive_ptr<MorphFile> To_;
 				int Counter_;
 				int UpdateCounter_;
@@ -60,7 +60,7 @@ namespace LeechCraft
 				void RecalculateSpeed ();
 			private slots:
 				void handleDataTransferProgress (qint64, qint64);
-				void redirectedConstruction (const QString&);
+				void redirectedConstruction (const QByteArray&);
 				void handleMetaDataChanged ();
 				/** Returns true if the reply is at end after this read.
 				 */
