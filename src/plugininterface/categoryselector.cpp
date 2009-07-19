@@ -7,13 +7,21 @@
 #include <QMoveEvent>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QtDebug>
 
 using namespace LeechCraft::Util;
 
 CategorySelector::CategorySelector (QWidget *parent)
-: QWidget (parent, Qt::Tool | Qt::WindowStaysOnTopHint)
+: QScrollArea (parent)
 {
-	setLayout (new QVBoxLayout ());
+	setWindowFlags (Qt::Tool | Qt::WindowStaysOnTopHint);
+	QWidget *rw = new QWidget ();
+	rw->setLayout (new QVBoxLayout ());
+	rw->layout ()->setSizeConstraint (QLayout::SetMinAndMaxSize);
+	setWidget (rw);
+
+	QRect avail = QApplication::desktop ()->availableGeometry (this);
+	setMinimumHeight (avail.height () / 3 * 2);
 }
 
 CategorySelector::~CategorySelector ()
@@ -33,8 +41,8 @@ void CategorySelector::SetPossibleSelections (const QStringList& tags)
 		if (i->isEmpty ())
 			continue;
 
-		QCheckBox *box = new QCheckBox (*i, this);
-		layout ()->addWidget (box);
+		QCheckBox *box = new QCheckBox (*i);
+		widget ()->layout ()->addWidget (box);
 		box->setCheckState (Qt::Unchecked);
 		box->setProperty ("Tag", *i);
 
