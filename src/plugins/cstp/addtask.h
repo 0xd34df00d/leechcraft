@@ -1,6 +1,7 @@
 #ifndef PLUGINS_CSTP_ADDTASK_H
 #define PLUGINS_CSTP_ADDTASK_H
 #include <QDialog>
+#include <QUrl>
 #include "ui_addtask.h"
 
 namespace LeechCraft
@@ -17,17 +18,17 @@ namespace LeechCraft
 				bool UserModifiedFilename_;
 			public:
 				AddTask (QWidget* = 0);
-				AddTask (const QString&, const QString&, QWidget* = 0);
+				AddTask (const QUrl&, const QString&, QWidget* = 0);
 				virtual ~AddTask ();
 
 				struct Task
 				{
-					QString URL_;
+					QUrl URL_;
 					QString LocalPath_;
 					QString Filename_;
 					QString Comment_;
 
-					Task (const QString&,
+					Task (const QUrl&,
 							const QString&,
 							const QString&,
 							const QString&);

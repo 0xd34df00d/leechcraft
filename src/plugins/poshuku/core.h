@@ -86,6 +86,7 @@ namespace LeechCraft
 				void AddPlugin (QObject*);
 
 				QUrl MakeURL (QString) const;
+				BrowserWidget* NewURL (const QUrl&, bool = false);
 				BrowserWidget* NewURL (const QString&, bool = false);
 				IWebWidget* GetWidget ();
 				CustomWebView* MakeWebView (bool = false);

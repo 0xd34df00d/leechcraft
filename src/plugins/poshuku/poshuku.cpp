@@ -227,15 +227,18 @@ namespace LeechCraft
 						e.Parameters_ & Internal)
 					return false;
 
-				QUrl url (QTextCodec::codecForName ("UTF-8")->toUnicode (e.Entity_));
+				if (!e.Entity_.canConvert<QUrl> ())
+					return false;
+
+				QUrl url = e.Entity_.toUrl ();
 				return (url.isValid () &&
 					(url.scheme () == "http" || url.scheme () == "https"));
 			}
 
 			void Poshuku::Handle (LeechCraft::DownloadEntity e)
 			{
-				QString link = QTextCodec::codecForName ("UTF-8")->toUnicode (e.Entity_);
-				Core::Instance ().NewURL (link, true);
+				QUrl url = e.Entity_.toUrl ();
+				Core::Instance ().NewURL (url, true);
 			}
 			
 			void Poshuku::Open (const QString& link)

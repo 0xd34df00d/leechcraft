@@ -17,9 +17,11 @@ namespace LeechCraft
 			class LCFTP : public QObject
 						, public IInfo
 						, public IMultiTabs
+						, public IDownload
+						, public IEntityHandler
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IMultiTabs)
+				Q_INTERFACES (IInfo IMultiTabs IDownload IEntityHandler)
 
 				std::auto_ptr<QTranslator> Translator_;
 			public:
@@ -32,6 +34,16 @@ namespace LeechCraft
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
 				QIcon GetIcon () const;
+
+				qint64 GetDownloadSpeed () const;
+				qint64 GetUploadSpeed () const;
+				void StartAll ();
+				void StopAll ();
+				bool CouldDownload (const DownloadEntity&) const;
+				int AddJob (DownloadEntity);
+
+				bool CouldHandle (const DownloadEntity&) const;
+				void Handle (DownloadEntity);
 			signals:
 				void bringToFront ();
 				void addNewTab (const QString&, QWidget*);

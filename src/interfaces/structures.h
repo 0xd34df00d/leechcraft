@@ -84,7 +84,7 @@ namespace LeechCraft
 		 * In the context of announcing about a finished entity, it
 		 * could contain previously mentioned entities as well.
 		 */
-		QByteArray Entity_;
+		QVariant Entity_;
 
 		/** @brief Source or destination.
 		 *

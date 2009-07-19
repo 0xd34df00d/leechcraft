@@ -51,6 +51,42 @@ namespace LeechCraft
 			{
 				return QIcon ();
 			}
+
+			qint64 LCFTP::GetDownloadSpeed () const
+			{
+				return 0;
+			}
+
+			qint64 LCFTP::GetUploadSpeed () const
+			{
+				return 0;
+			}
+
+			void LCFTP::StartAll ()
+			{
+			}
+
+			void LCFTP::StopAll ()
+			{
+			}
+
+			bool LCFTP::CouldDownload (const DownloadEntity& e) const
+			{
+				return false;
+			}
+
+			int LCFTP::AddJob (DownloadEntity e)
+			{
+			}
+
+			bool LCFTP::CouldHandle (const DownloadEntity& e) const
+			{
+				return false;
+			}
+
+			void LCFTP::Handle (DownloadEntity e)
+			{
+			}
 		};
 	};
 };

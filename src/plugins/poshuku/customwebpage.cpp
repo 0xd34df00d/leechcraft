@@ -171,7 +171,7 @@ namespace LeechCraft
 						HandleDownloadRequested (this, request))
 					return;
 			
-				LeechCraft::DownloadEntity e = LeechCraft::Util::MakeEntity (request.url ().toString ().toUtf8 (),
+				LeechCraft::DownloadEntity e = LeechCraft::Util::MakeEntity (request.url (),
 						QString (),
 						LeechCraft::FromUserInitiated);
 				emit gotEntity (e);
@@ -335,7 +335,7 @@ namespace LeechCraft
 						{
 							reply->abort ();
 							LeechCraft::DownloadEntity e =
-								LeechCraft::Util::MakeEntity (reply->url ().toString ().toUtf8 (),
+								LeechCraft::Util::MakeEntity (reply->url (),
 									QString (),
 									LeechCraft::FromUserInitiated);
 							emit gotEntity (e);
@@ -351,11 +351,12 @@ namespace LeechCraft
 										reply->header (QNetworkRequest::ContentTypeHeader).isValid ())
 								{
 									LeechCraft::DownloadEntity e =
-										LeechCraft::Util::MakeEntity (reply->url ().toString ().toUtf8 (),
+										LeechCraft::Util::MakeEntity (QVariant::fromValue<QNetworkReply*> (reply),
 											QString (),
 											LeechCraft::FromUserInitiated);
+
+									e.Additional_ ["SourceURL"] = reply->url ().toString ();
 			
-									e.Additional_ ["QNetworkReply*"] = QVariant::fromValue<QNetworkReply*> (reply);
 									emit gotEntity (e);
 									break;
 								}

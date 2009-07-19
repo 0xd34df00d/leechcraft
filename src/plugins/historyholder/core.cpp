@@ -98,7 +98,7 @@ void Core::Handle (const LeechCraft::DownloadEntity& entity)
 {
 	if (entity.Parameters_ & LeechCraft::DoNotSaveInHistory ||
 			!(entity.Parameters_ & LeechCraft::IsDownloaded) ||
-			!entity.Entity_.size ())
+			!entity.Entity_.toByteArray ().size ())
 		return;
 
 	HistoryEntry entry =
@@ -147,19 +147,23 @@ QVariant Core::data (const QModelIndex& index, int role) const
 		{
 			case 0:
 				{
-					QString entity;
-					if (e.Entity_.Entity_.size () < 150)
-						entity = QTextCodec::codecForName ("UTF-8")->
-							toUnicode (e.Entity_.Entity_);
-					else
-						entity = tr ("Binary data");
+					QString stren;
+					if (e.Entity_.Entity_.canConvert<QByteArray> ())
+					{
+						QByteArray entity = e.Entity_.Entity_.toByteArray ();
+						if (entity.size () < 250)
+							stren = QTextCodec::codecForName ("UTF-8")->
+								toUnicode (entity);
+					}
+					if (stren.isEmpty ())
+						stren = tr ("Binary data");
 					if (!e.Entity_.Location_.isEmpty ())
 					{
-						entity += " (";
-						entity += e.Entity_.Location_;
-						entity += ")";
+						stren += " (";
+						stren += e.Entity_.Location_;
+						stren += ")";
 					}
-					return entity;
+					return stren;
 				}
 			case 1:
 				return e.DateTime_;

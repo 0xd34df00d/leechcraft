@@ -33,7 +33,7 @@ namespace LeechCraft
 				}
 			};
 			
-			AddTask::Task::Task (const QString& url,
+			AddTask::Task::Task (const QUrl& url,
 					const QString& localPath,
 					const QString& filename,
 					const QString& comment)
@@ -55,7 +55,7 @@ namespace LeechCraft
 							QDir::homePath ()).toString ());
 			}
 			
-			AddTask::AddTask (const QString& url, const QString& where, QWidget *parent)
+			AddTask::AddTask (const QUrl& url, const QString& where, QWidget *parent)
 			: QDialog (parent)
 			, UserModifiedFilename_ (false)
 			{
@@ -63,9 +63,9 @@ namespace LeechCraft
 				Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (false);
 				Ui_.URL_->setValidator (new URLValidator (this));
 				Ui_.LocalPath_->setText (where);
-				Ui_.URL_->setText (url);
+				Ui_.URL_->setText (url.toString ());
 				on_LocalPath__textChanged ();
-				on_URL__textEdited (url);
+				on_URL__textEdited (url.toString ());
 				CheckOK ();
 			}
 			

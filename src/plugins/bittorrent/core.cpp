@@ -20,6 +20,7 @@
 #include <QDomElement>
 #include <QDomDocument>
 #include <QXmlStreamWriter>
+#include <QTemporaryFile>
 #include <QMessageBox>
 #include <QUrl>
 #include <QTextCodec>
@@ -234,42 +235,48 @@ namespace LeechCraft
 			
 			bool Core::CouldDownload (const DownloadEntity& e) const
 			{
-				QString str = QTextCodec::codecForName ("UTF-8")->toUnicode (e.Entity_);
-			
-				if (str.startsWith ("magnet:"))
+				if (e.Entity_.canConvert<QUrl> ())
 				{
-					QUrl url (str);
-					QList<QPair<QString, QString> > queryItems = url.queryItems ();
-					for (QList<QPair<QString, QString> >::const_iterator i = queryItems.begin (),
-							end = queryItems.end (); i != end; ++i)
-						if (i->first == "xt" &&
-								i->second.startsWith ("urn:btih:"))
-							return true;
-					return false;
-				}
-				else
-				{
-					if (QUrl (str).scheme () == "file")
-						str = QUrl (str).toLocalFile ();
-					QFile file (str);
-					if (file.exists () &&
-							file.open (QIODevice::ReadOnly))
+					QUrl url = e.Entity_.toUrl ();
+					if (url.scheme () == "magnet")
 					{
-						if (file.size () > XmlSettingsManager::Instance ()->
-								property ("MaxAutoTorrentSize").toInt () * 1024 * 1024)
+						QList<QPair<QString, QString> > queryItems = url.queryItems ();
+						for (QList<QPair<QString, QString> >::const_iterator i = queryItems.begin (),
+								end = queryItems.end (); i != end; ++i)
+							if (i->first == "xt" &&
+									i->second.startsWith ("urn:btih:"))
+								return true;
+						return false;
+					}
+					else if (url.scheme () == "file")
+					{
+						QString str = url.toLocalFile ();
+						QFile file (str);
+						if (file.exists () &&
+								file.open (QIODevice::ReadOnly))
 						{
-							emit logMessage (QString ("Rejecting file %1 because it's "
-										"bigger than current auto limit.").arg (str));
-							return false;
+							if (file.size () > XmlSettingsManager::Instance ()->
+									property ("MaxAutoTorrentSize").toInt () * 1024 * 1024)
+							{
+								emit logMessage (QString ("Rejecting file %1 because it's "
+											"bigger than current auto limit.").arg (str));
+								return false;
+							}
+							else
+								return IsValidTorrent (file.readAll ());
 						}
 						else
-							return IsValidTorrent (file.readAll ());
+							return false;
 					}
 					else
-						return IsValidTorrent (e.Entity_);
+						return false;
 				}
+				else if (e.Entity_.canConvert<QByteArray> ())
+					return IsValidTorrent (e.Entity_.toByteArray ());
+				else
+					return false;
 			}
-			
+
 			PiecesModel* Core::GetPiecesModel ()
 			{
 				return PiecesModel_.get ();

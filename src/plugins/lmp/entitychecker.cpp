@@ -2,6 +2,7 @@
 #include <QApplication>
 #include <QTextCodec>
 #include <QFileInfo>
+#include <QUrl>
 #include <interfaces/structures.h>
 #include "phonon.h"
 #include "xmlsettingsmanager.h"
@@ -13,11 +14,13 @@ EntityChecker::EntityChecker (const LeechCraft::DownloadEntity& e)
 : Result_ (false)
 , Break_ (false)
 {
-	if (e.Entity_.size () > 255)
+	QString source;
+	if (e.Entity_.canConvert<QUrl> ())
+		source = e.Entity_.toUrl ().toLocalFile ();
+	else if (e.Entity_.canConvert<QString> ())
+		source = e.Entity_.toString ();
+	else
 		return;
-
-	QString source = QTextCodec::codecForName ("UTF-8")->
-			toUnicode (e.Entity_);
 
 	QFileInfo fi (source);
 	if (!fi.exists ())

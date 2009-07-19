@@ -147,8 +147,14 @@ QAction* Core::GetShowAction () const
 
 void Core::Handle (const LeechCraft::DownloadEntity& e)
 {
-	QString source = QTextCodec::codecForName ("UTF-8")->
-			toUnicode (e.Entity_);
+	QString source;
+	if (e.Entity_.canConvert<QUrl> ())
+		source = e.Entity_.toUrl ().toLocalFile ();
+	else if (e.Entity_.canConvert<QString> ())
+		source = e.Entity_.toString ();
+	else
+		return;
+
 	if (!Player_.get ())
 	{
 		Player_.reset (new Player (Proxy_->GetMainWindow ()));

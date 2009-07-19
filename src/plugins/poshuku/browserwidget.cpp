@@ -827,11 +827,12 @@ namespace LeechCraft
 						continue;
 			
 					LeechCraft::DownloadEntity e;
-					e.Entity_ = attributes.value ("title").toString ().toUtf8 ();
+					QString entity = attributes.value ("title").toString ();
 			
-					if (e.Entity_.isEmpty ())
+					if (entity.isEmpty ())
 						continue;
 			
+					e.Entity_ = entity;
 					e.Mime_ = attributes.value ("type").toString ();
 					QString hrefUrl (attributes.value ("href").toString ());
 					if (hrefUrl.indexOf ("://") < 0)
@@ -866,7 +867,7 @@ namespace LeechCraft
 						QAction *act = ExternalLinks_->
 							addAction (QIcon (QString (":/resources/images/%1.png")
 									.arg (mime)),
-								QTextCodec::codecForName ("UTF-8")->toUnicode (e.Entity_),
+								entity,
 								this,
 								SLOT (handleEntityAction ()));
 						act->setData (QVariant::fromValue<LeechCraft::DownloadEntity> (e));

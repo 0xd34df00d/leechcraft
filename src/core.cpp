@@ -836,8 +836,20 @@ namespace
 bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 {
 	QString string = tr ("Too long to show");
-	if (p.Entity_.size () < 1000)
-		string = QTextCodec::codecForName ("UTF-8")->toUnicode (p.Entity_);
+	if (p.Entity_.canConvert<QByteArray> ())
+	{
+		QByteArray entity = p.Entity_.toByteArray ();
+		if (entity.size () < 1000)
+			string = QTextCodec::codecForName ("UTF-8")->toUnicode (entity);
+	}
+	else if (p.Entity_.canConvert<QUrl> ())
+	{
+		string = p.Entity_.toUrl ().toString ();
+		if (string.size () > 150)
+			string = string.left (147) + "...";
+	}
+	else
+		string = tr ("Binary entity");
 
 	std::auto_ptr<HandlerChoiceDialog> dia (new HandlerChoiceDialog (string));
 

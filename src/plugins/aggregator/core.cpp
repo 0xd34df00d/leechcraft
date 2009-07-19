@@ -257,7 +257,7 @@ namespace LeechCraft
 				}
 			
 				QString name = LeechCraft::Util::GetTemporaryName ();
-				LeechCraft::DownloadEntity e = LeechCraft::Util::MakeEntity (url.toUtf8 (),
+				LeechCraft::DownloadEntity e = LeechCraft::Util::MakeEntity (QUrl (url),
 						name, 
 						LeechCraft::Internal |
 							LeechCraft::DoNotNotifyUser |
@@ -1126,7 +1126,7 @@ namespace LeechCraft
 			
 			void Core::fetchExternalFile (const QString& url, const QString& where)
 			{
-				LeechCraft::DownloadEntity e = LeechCraft::Util::MakeEntity (url.toUtf8 (),
+				LeechCraft::DownloadEntity e = LeechCraft::Util::MakeEntity (QUrl (url),
 						where,
 						LeechCraft::Internal |
 							LeechCraft::DoNotNotifyUser |
@@ -1478,7 +1478,7 @@ namespace LeechCraft
 			{
 				QString filename = LeechCraft::Util::GetTemporaryName ();
 			
-				LeechCraft::DownloadEntity e = LeechCraft::Util::MakeEntity (url.toUtf8 (),
+				LeechCraft::DownloadEntity e = LeechCraft::Util::MakeEntity (QUrl (url),
 						filename,
 						LeechCraft::Internal |
 							LeechCraft::DoNotNotifyUser |

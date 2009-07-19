@@ -85,7 +85,7 @@ namespace LeechCraft
 		 */
 		PLUGININTERFACE_API QString GetTemporaryName (const QString& pattern = QString ("lc_temp.XXXXXX"));
 
-		PLUGININTERFACE_API DownloadEntity MakeEntity (const QByteArray& entity,
+		PLUGININTERFACE_API DownloadEntity MakeEntity (const QVariant& entity,
 				const QString& location,
 				LeechCraft::TaskParameters tp,
 				const QString& mime = QString ());

@@ -146,7 +146,7 @@ namespace LeechCraft
 			void Core::Add (const QString& url)
 			{
 				QString name = LeechCraft::Util::GetTemporaryName ();
-				LeechCraft::DownloadEntity e = LeechCraft::Util::MakeEntity (url.toUtf8 (),
+				LeechCraft::DownloadEntity e = LeechCraft::Util::MakeEntity (url,
 						name,
 						LeechCraft::Internal |
 							LeechCraft::DoNotSaveInHistory |

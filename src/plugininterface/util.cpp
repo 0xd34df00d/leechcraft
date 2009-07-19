@@ -89,7 +89,7 @@ QString LeechCraft::Util::GetTemporaryName (const QString& pattern)
 	return name;
 }
 
-LeechCraft::DownloadEntity LeechCraft::Util::MakeEntity (const QByteArray& entity,
+LeechCraft::DownloadEntity LeechCraft::Util::MakeEntity (const QVariant& entity,
 		const QString& location,
 		LeechCraft::TaskParameters tp,
 		const QString& mime)

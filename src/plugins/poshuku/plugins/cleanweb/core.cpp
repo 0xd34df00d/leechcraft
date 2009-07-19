@@ -281,12 +281,7 @@ int Core::rowCount (const QModelIndex& index) const
 
 bool Core::CouldHandle (const DownloadEntity& e) const
 {
-	if (e.Entity_.size () > 1024)
-		return false;
-
-	QString urlString = QTextCodec::codecForName ("UTF-8")->
-		toUnicode (e.Entity_);
-	QUrl url (urlString);
+	QUrl url = e.Entity_.toUrl ();
 	if (url.scheme () == "abp" &&
 			url.path () == "subscribe")
 	{
@@ -303,9 +298,7 @@ bool Core::CouldHandle (const DownloadEntity& e) const
 
 void Core::Handle (DownloadEntity subscr)
 {
-	QString urlString = QTextCodec::codecForName ("UTF-8")->
-		toUnicode (subscr.Entity_);
-	QUrl subscrUrl (urlString);
+	QUrl subscrUrl = subscr.Entity_.toUrl ();
 	QUrl url (subscrUrl.queryItemValue ("location"));
 	QString subscrName = subscrUrl.queryItemValue ("title");
 
@@ -565,7 +558,7 @@ bool Core::Load (const QUrl& url, const QString& subscrName)
 	QString path = home.absoluteFilePath (name);
 
 	LeechCraft::DownloadEntity e =
-		LeechCraft::Util::MakeEntity (url.toString ().toUtf8 (),
+		LeechCraft::Util::MakeEntity (url,
 			path,
 			LeechCraft::Internal |
 				LeechCraft::DoNotNotifyUser |

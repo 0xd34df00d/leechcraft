@@ -120,7 +120,7 @@ namespace LeechCraft
 				void writeSettings ();
 				void finishedReply (QNetworkReply*);
 			private:
-				int AddTask (const QString&, const QString&,
+				int AddTask (const QUrl&, const QString&,
 						const QString&, const QString&,
 						LeechCraft::TaskParameters = LeechCraft::NoParameters);
 				int AddTask (QNetworkReply*, const QString&,

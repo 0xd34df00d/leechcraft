@@ -135,45 +135,48 @@ namespace LeechCraft
 			
 			int TorrentPlugin::AddJob (DownloadEntity e)
 			{
-				QString resource = QTextCodec::codecForName ("UTF-8")->
-					toUnicode (e.Entity_);
-			
-				if (resource.startsWith ("magnet:"))
+				QString suggestedFname;
+
+				if (e.Entity_.canConvert<QUrl> ())
 				{
-					QString at = XmlSettingsManager::Instance ()->
-						property ("AutomaticTags").toString ();
-					QStringList tags = Core::Instance ()->GetProxy ()->
-						GetTagsManager ()->Split (at);
-			
-					QUrl url (resource);
-					QList<QPair<QString, QString> > queryItems = url.queryItems ();
-					for (QList<QPair<QString, QString> >::const_iterator i = queryItems.begin (),
-							end = queryItems.end (); i != end; ++i)
-						if (i->first == "kt")
-							tags += i->second.split ('+', QString::SkipEmptyParts);
-			
-					return Core::Instance ()->AddMagnet (resource,
-							e.Location_,
-							tags,
-							e.Parameters_);
+					QUrl resource = e.Entity_.toUrl ();
+					if (resource.scheme () == "magnet")
+					{
+						QString at = XmlSettingsManager::Instance ()->
+							property ("AutomaticTags").toString ();
+						QStringList tags = Core::Instance ()->GetProxy ()->
+							GetTagsManager ()->Split (at);
+				
+						QList<QPair<QString, QString> > queryItems = resource.queryItems ();
+						for (QList<QPair<QString, QString> >::const_iterator i = queryItems.begin (),
+								end = queryItems.end (); i != end; ++i)
+							if (i->first == "kt")
+								tags += i->second.split ('+', QString::SkipEmptyParts);
+				
+						return Core::Instance ()->AddMagnet (resource.toString (),
+								e.Location_,
+								tags,
+								e.Parameters_);
+					}
+					else if (resource.scheme () == "file")
+						suggestedFname = resource.toLocalFile ();
 				}
-				else if (resource.startsWith ("file://"))
-					resource = QUrl (resource).toLocalFile ();
 			
-				QString suggestedFname = resource;
+				QByteArray entity = e.Entity_.toByteArray ();
+
 				QFile file (suggestedFname);
 				if ((!file.exists () ||
 						!file.open (QIODevice::ReadOnly)) &&
-						Core::Instance ()->IsValidTorrent (e.Entity_))
+						Core::Instance ()->IsValidTorrent (entity))
 				{
 					QTemporaryFile file ("lctemporarybittorrentfile.XXXXXX");
 					if (!file.open  ())
 						return -1;
-					file.write (e.Entity_);
+					file.write (entity);
 					suggestedFname = file.fileName ().toUtf8 ();
 					file.setAutoRemove (false);
 				}
-			
+
 				AddTorrentDialog_->Reinit ();
 				AddTorrentDialog_->SetFilename (suggestedFname);
 				if (!e.Location_.isEmpty ())

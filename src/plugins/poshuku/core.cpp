@@ -157,6 +157,9 @@ namespace LeechCraft
 			
 			QUrl Core::MakeURL (QString url) const
 			{
+				if (url.isEmpty ())
+					return QUrl ();
+
 				url = url.trimmed ();
 				if (url == "localhost")
 					return QUrl ("http://localhost");
@@ -189,7 +192,7 @@ namespace LeechCraft
 				return result;
 			}
 			
-			BrowserWidget* Core::NewURL (const QString& url, bool raise)
+			BrowserWidget* Core::NewURL (const QUrl& url, bool raise)
 			{
 				BrowserWidget *widget = new BrowserWidget ();
 				widget->InitShortcuts ();
@@ -200,15 +203,18 @@ namespace LeechCraft
 
 				ConnectSignals (widget);
 			
-				if (url != "")
-					widget->SetURL (MakeURL (url));
-				else
+				if (!url.isEmpty ())
 					widget->SetURL (url);
 			
 				if (raise)
 					emit raiseTab (widget);
 			
 				return widget;
+			}
+
+			BrowserWidget* Core::NewURL (const QString& str, bool raise)
+			{
+				return NewURL (MakeURL (str), raise);
 			}
 			
 			IWebWidget* Core::GetWidget ()
@@ -240,7 +246,7 @@ namespace LeechCraft
 				if (invert)
 					raise = !raise;
 			
-				return NewURL ("", raise)->GetView ();
+				return NewURL (QUrl (), raise)->GetView ();
 			}
 
 			void Core::ConnectSignals (BrowserWidget *widget)
@@ -524,7 +530,7 @@ namespace LeechCraft
 			{
 				QAction *action = qobject_cast<QAction*> (sender ());
 				UncloseData ud = action->data ().value<UncloseData> ();
-				BrowserWidget *bw = NewURL (ud.URL_.toString ());
+				BrowserWidget *bw = NewURL (ud.URL_);
 				bw->SetOnLoadScrollPoint (ud.SPoint_);
 				Unclosers_.removeAll (action);
 				action->deleteLater ();

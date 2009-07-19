@@ -78,14 +78,13 @@ namespace LeechCraft
 			
 			int Core::AddTask (LeechCraft::DownloadEntity& e)
 			{
-				QString entity = QTextCodec::codecForName ("UTF-8")->
-					toUnicode (e.Entity_);
-				QNetworkReply *rep = e.Additional_ ["QNetworkReply*"].value<QNetworkReply*> ();
+				QUrl entity = e.Entity_.toUrl ();
+				QNetworkReply *rep = e.Entity_.value<QNetworkReply*> ();
 				if (rep)
 				{
 					QFileInfo fi (e.Location_);
 					QString dir = fi.dir ().path ();
-					QString file = QFileInfo (entity).fileName ();
+					QString file = QFileInfo (entity.path ()).fileName ();
 			
 					if (fi.isDir ())
 						dir = e.Location_;
@@ -106,7 +105,7 @@ namespace LeechCraft
 			
 						AddTask::Task task = at.GetTask ();
 			
-						return Core::Instance ().AddTask (task.URL_,
+						return AddTask (task.URL_,
 								task.LocalPath_,
 								task.Filename_,
 								task.Comment_,
@@ -123,7 +122,7 @@ namespace LeechCraft
 							if (fi.isDir ())
 							{
 								dir = e.Location_;
-								file = QFileInfo (entity).fileName ();
+								file = QFileInfo (entity.path ()).fileName ();
 								if (file.isEmpty ())
 									file = "index";
 							}
@@ -132,7 +131,7 @@ namespace LeechCraft
 								return -1;
 						}
 			
-						return Core::Instance ().AddTask (entity,
+						return AddTask (entity,
 								dir, file, QString (), e.Parameters_);
 					}
 				}
@@ -150,15 +149,14 @@ namespace LeechCraft
 				return AddTask (td, path, filename, comment, tp);
 			}
 			
-			int Core::AddTask (const QString& url,
+			int Core::AddTask (const QUrl& url,
 					const QString& path,
 					const QString& filename,
 					const QString& comment,
 					LeechCraft::TaskParameters tp)
 			{
 				TaskDescr td;
-				QUrl u (url);
-				td.Task_.reset (new Task (u));
+				td.Task_.reset (new Task (url));
 			
 				return AddTask (td, path, filename, comment, tp);
 			}
@@ -254,14 +252,11 @@ namespace LeechCraft
 			
 			bool Core::CouldDownload (const LeechCraft::DownloadEntity& e)
 			{
-				QDataStream str (e.Entity_);
-				QVariant var;
-				str >> var;
-			
-				QUrl url (QTextCodec::codecForName ("UTF-8")->toUnicode (e.Entity_));
+				QUrl url = e.Entity_.toUrl ();
+				qDebug () << Q_FUNC_INFO << e.Entity_ << url;
 				return (url.isValid () &&
 					(url.scheme () == "http" || url.scheme () == "https")) ||
-					var.value<QNetworkReply*> ();
+					e.Entity_.value<QNetworkReply*> ();
 			}
 			
 			QAbstractItemModel* Core::GetRepresentationModel ()
