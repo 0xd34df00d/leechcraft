@@ -1,97 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="ar" sourcelanguage="en">
 <context>
     <name>Core</name>
     <message>
         <location filename="core.cpp" line="14"/>
         <source>Show LMP</source>
-        <translation type="unfinished"></translation>
+        <translation>إظهار LMP</translation>
     </message>
     <message>
         <location filename="core.cpp" line="201"/>
         <source>Initializing</source>
-        <translation type="unfinished"></translation>
+        <translation>جاري التحضير</translation>
     </message>
     <message>
         <location filename="core.cpp" line="204"/>
         <source>Stopped</source>
-        <translation type="unfinished"></translation>
+        <translation>متوقف</translation>
     </message>
     <message>
         <location filename="core.cpp" line="207"/>
         <source>Playing</source>
-        <translation type="unfinished"></translation>
+        <translation>تشغيل</translation>
     </message>
     <message>
         <location filename="core.cpp" line="210"/>
         <source>Buffering</source>
-        <translation type="unfinished"></translation>
+        <translation>تخزين في الذاكرة المؤقتة</translation>
     </message>
     <message>
         <location filename="core.cpp" line="213"/>
         <source>Paused</source>
-        <translation type="unfinished"></translation>
+        <translation>متوقف مؤقتاً</translation>
     </message>
     <message>
         <location filename="core.cpp" line="216"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>خطأ</translation>
     </message>
     <message>
         <location filename="core.cpp" line="221"/>
         <source> (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="core.cpp" line="222"/>
         <source> [</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="core.cpp" line="227"/>
         <source>/</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="core.cpp" line="231"/>
         <source>]</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="core.cpp" line="233"/>
         <source> from </source>
-        <translation type="unfinished"></translation>
+        <translation> من </translation>
     </message>
     <message>
         <location filename="core.cpp" line="241"/>
         <source>nowhere</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="core.cpp" line="254"/>
         <source> (CD)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="core.cpp" line="257"/>
         <source> (DVD)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="core.cpp" line="260"/>
         <source> (VCD)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="core.cpp" line="263"/>
         <source> (Unknown disc type)</source>
-        <translation type="unfinished"></translation>
+        <translation> (نوع القرص غير معروف)</translation>
     </message>
     <message>
         <location filename="core.cpp" line="268"/>
         <source>stream</source>
-        <translation type="unfinished"></translation>
+        <translation>المجرى</translation>
     </message>
 </context>
 <context>
@@ -104,52 +104,52 @@
     <message>
         <location filename="player.cpp" line="30"/>
         <source>Source type</source>
-        <translation type="unfinished"></translation>
+        <translation>نوع المصدر</translation>
     </message>
     <message>
         <location filename="player.cpp" line="73"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>الملف</translation>
     </message>
     <message>
         <location filename="player.cpp" line="77"/>
         <source>URL</source>
-        <translation type="unfinished"></translation>
+        <translation>المكان</translation>
     </message>
     <message>
         <location filename="player.cpp" line="84"/>
         <source>Audio CD</source>
-        <translation type="unfinished"></translation>
+        <translation>CD صوتي</translation>
     </message>
     <message>
         <location filename="player.cpp" line="87"/>
         <source>DVD</source>
-        <translation type="unfinished"></translation>
+        <translation>DVD</translation>
     </message>
     <message>
         <location filename="player.cpp" line="90"/>
         <source>Video CD</source>
-        <translation type="unfinished"></translation>
+        <translation>CD فيديو</translation>
     </message>
     <message>
         <location filename="player.cpp" line="93"/>
         <source>Unknown disc type</source>
-        <translation type="unfinished"></translation>
+        <translation> نوع القرص غير معروف</translation>
     </message>
     <message>
         <location filename="player.cpp" line="99"/>
         <source>Stream</source>
-        <translation type="unfinished"></translation>
+        <translation>المجرى</translation>
     </message>
     <message>
         <location filename="player.cpp" line="118"/>
         <source>Play</source>
-        <translation type="unfinished"></translation>
+        <translation>تشغيل</translation>
     </message>
     <message>
         <location filename="player.cpp" line="127"/>
         <source>Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>إيقاف مؤقتاً</translation>
     </message>
     <message>
         <location filename="player.cpp" line="136"/>
@@ -159,12 +159,12 @@
     <message>
         <location filename="player.cpp" line="186"/>
         <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
+        <translation>LeechCraft</translation>
     </message>
     <message>
         <location filename="player.ui" line="14"/>
         <source>LMP</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -172,12 +172,12 @@
     <message>
         <location filename="videosettings.ui" line="13"/>
         <source>Video settings</source>
-        <translation type="unfinished"></translation>
+        <translation>إعدادات الفيديو</translation>
     </message>
     <message>
         <location filename="videosettings.ui" line="23"/>
         <source>Brightness:</source>
-        <translation type="unfinished"></translation>
+        <translation>السطوع:</translation>
     </message>
     <message>
         <location filename="videosettings.ui" line="63"/>
