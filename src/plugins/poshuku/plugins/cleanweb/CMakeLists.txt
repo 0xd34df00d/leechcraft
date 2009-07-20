@@ -21,10 +21,12 @@ SET (CLEANWEB_RESOURCES
 SET (CLEANWEB_TRANSLATIONS
 	leechcraft_poshuku_cleanweb_ru_RU.ts
 	leechcraft_poshuku_cleanweb_uk_UA.ts
+	leechcraft_poshuku_cleanweb_ar.ts
 	)
 SET (CLEANWEB_COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_cleanweb_ru_RU.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_cleanweb_uk_UA.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_cleanweb_ar.qm
 	)
 QT4_WRAP_CPP (CLEANWEB_MOC_SRCS ${CLEANWEB_HEADERS})
 QT4_WRAP_UI (CLEANWEB_UIS_H ${CLEANWEB_FORMS})
