@@ -1,6 +1,8 @@
 #include "lcftp.h"
 #include <QIcon>
+#include <QUrl>
 #include <plugininterface/util.h>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -11,10 +13,12 @@ namespace LeechCraft
 			void LCFTP::Init (ICoreProxy_ptr)
 			{
 				Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku"));
+				Core::Instance ();
 			}
 
 			void LCFTP::Release ()
 			{
+				Core::Instance ().Release ();
 				Translator_.reset ();
 			}
 
@@ -30,7 +34,7 @@ namespace LeechCraft
 
 			QStringList LCFTP::Provides () const
 			{
-				return QStringList ("ftp");
+				return Core::Instance ().Provides ();
 			}
 
 			QStringList LCFTP::Needs () const
@@ -72,20 +76,22 @@ namespace LeechCraft
 
 			bool LCFTP::CouldDownload (const DownloadEntity& e) const
 			{
-				return false;
+				return Core::Instance ().IsOK (e);
 			}
 
 			int LCFTP::AddJob (DownloadEntity e)
 			{
+				return Core::Instance ().Add (e);
 			}
 
 			bool LCFTP::CouldHandle (const DownloadEntity& e) const
 			{
-				return false;
+				return Core::Instance ().IsOK (e);
 			}
 
 			void LCFTP::Handle (DownloadEntity e)
 			{
+				Core::Instance ().Add (e);
 			}
 		};
 	};

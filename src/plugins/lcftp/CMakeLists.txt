@@ -1,15 +1,23 @@
+FIND_PACKAGE (CURL)
+IF (NOT CURL_FOUND)
+	MESSAGE (ERROR "libcurl not found")
+ENDIF (NOT CURL_FOUND)
+
 SET (QT_USE_QTNETWORK TRUE)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS}
+	${CURL_INCLUDE_DIRS}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 SET (SRCS
 	lcftp.cpp
+	core.cpp
 	)
 SET (HEADERS
 	lcftp.h
+	core.h
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS
@@ -40,6 +48,7 @@ ADD_LIBRARY (leechcraft_lcftp SHARED
 	)
 TARGET_LINK_LIBRARIES (leechcraft_lcftp
 	${QT_LIBRARIES}
+	${CURL_LIBRARIES}
 	plugininterface
 	xmlsettingsdialog
 	)
