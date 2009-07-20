@@ -355,7 +355,7 @@ namespace LeechCraft
 											QString (),
 											LeechCraft::FromUserInitiated);
 
-									e.Additional_ ["SourceURL"] = reply->url ().toString ();
+									e.Additional_ ["SourceURL"] = reply->url ();
 			
 									emit gotEntity (e);
 									break;
