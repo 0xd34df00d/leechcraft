@@ -239,206 +239,206 @@
 <context>
     <name>LeechCraft::Plugins::BitTorrent::Core</name>
     <message>
-        <location filename="core.cpp" line="112"/>
+        <location filename="core.cpp" line="113"/>
         <source>Unknown</source>
         <translation>غير معروف</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="169"/>
+        <location filename="core.cpp" line="168"/>
         <source>Name</source>
         <translation>الأسم</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="170"/>
+        <location filename="core.cpp" line="169"/>
         <source>Progress</source>
         <translation>التقدّم</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="171"/>
+        <location filename="core.cpp" line="170"/>
         <source>State</source>
         <translation>الحالة</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="395"/>
-        <location filename="core.cpp" line="433"/>
-        <location filename="core.cpp" line="539"/>
+        <location filename="core.cpp" line="400"/>
+        <location filename="core.cpp" line="438"/>
+        <location filename="core.cpp" line="544"/>
         <source>Idle</source>
         <translation>عاطل</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="409"/>
+        <location filename="core.cpp" line="414"/>
         <source>%1% (%2 of %3 at %4)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="417"/>
-        <location filename="core.cpp" line="435"/>
-        <location filename="core.cpp" line="437"/>
+        <location filename="core.cpp" line="422"/>
+        <location filename="core.cpp" line="440"/>
+        <location filename="core.cpp" line="442"/>
         <source>/s</source>
         <translation type="unfinished">ثوان</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="424"/>
+        <location filename="core.cpp" line="429"/>
         <source>Name:</source>
         <translation>الأسم:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="425"/>
+        <location filename="core.cpp" line="430"/>
         <source>Destination:</source>
         <translation>مكان الحفظ:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="427"/>
+        <location filename="core.cpp" line="432"/>
         <source>Progress:</source>
         <translation>التقدّم:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="428"/>
+        <location filename="core.cpp" line="433"/>
         <source>%1% (%2 of %3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="432"/>
+        <location filename="core.cpp" line="437"/>
         <source>; status:</source>
         <translation>; الحالة:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="434"/>
+        <location filename="core.cpp" line="439"/>
         <source>Downloading speed:</source>
         <translation>سرعة التحميل:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="436"/>
+        <location filename="core.cpp" line="441"/>
         <source>; uploading speed:</source>
         <translation>; سرعة التوزيع:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="438"/>
+        <location filename="core.cpp" line="443"/>
         <source>Peers/seeds: %1/%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="495"/>
+        <location filename="core.cpp" line="500"/>
         <source>Could not open file %1 for read: %2</source>
         <translation>غير قادر على فتح ملف %1 للقراءة:%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="670"/>
+        <location filename="core.cpp" line="674"/>
         <source>File %1 doesn&apos;t exist or could not be read</source>
         <translation>الملف %1 غير موجود أو غير ممكن قراءته</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="696"/>
+        <location filename="core.cpp" line="700"/>
         <source>Runtime error</source>
         <translation>خطأ المعالجة</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="796"/>
+        <location filename="core.cpp" line="799"/>
         <source>Torrent %1 could not be reannounced at the moment, try again later.</source>
         <translation>تورنت %1 غير يمكن أن يعاد إعلانه الآن، حاول لاحقاً.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1133"/>
+        <location filename="core.cpp" line="1136"/>
         <source>Could not open file %1 for write!</source>
         <translation>غير قادر على فتح ملف %1 للكتابة!</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1161"/>
+        <location filename="core.cpp" line="1164"/>
         <source>Could not open file %1 for reading</source>
         <translation>غير قادر على فتح ملف %1 للقراءة</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1170"/>
+        <location filename="core.cpp" line="1173"/>
         <source>Could not parse document from file %1.&lt;br /&gt;%1 at %2:%3</source>
         <translation>غير قادر على تحليل ملف %1.&lt;br /&gt;%1 at %2:%3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1180"/>
+        <location filename="core.cpp" line="1183"/>
         <source>There should be only one storage section.</source>
         <translation>يجب أن يكون قفط قسم واحد.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1198"/>
+        <location filename="core.cpp" line="1201"/>
         <source>Unknown storage version</source>
         <translation>الإصدار الخزن غير معروف</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1206"/>
+        <location filename="core.cpp" line="1209"/>
         <source>Could not open file %1 for writing</source>
         <translation>غير قادر على فتح ملف %1 للقراءة</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1381"/>
+        <location filename="core.cpp" line="1384"/>
         <source>File finished: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1526"/>
+        <location filename="core.cpp" line="1529"/>
         <source>Queued for checking</source>
         <translation>في الإنتظار للفحص</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1528"/>
+        <location filename="core.cpp" line="1531"/>
         <source>Checking files</source>
         <translation>جاري فحص الملفات</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1530"/>
+        <location filename="core.cpp" line="1533"/>
         <source>Downloading metadata</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1532"/>
+        <location filename="core.cpp" line="1535"/>
         <source>Downloading</source>
         <translation>جاري التحميل</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1534"/>
+        <location filename="core.cpp" line="1537"/>
         <source>Finished</source>
         <translation>انتهى</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1536"/>
+        <location filename="core.cpp" line="1539"/>
         <source>Seeding</source>
         <translation>توزيع</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1538"/>
+        <location filename="core.cpp" line="1541"/>
         <source>Allocating</source>
         <translation>جاري التخصيص</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1540"/>
+        <location filename="core.cpp" line="1543"/>
         <source>Checking resume data</source>
         <translation>جاري فحص البيانات</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1559"/>
+        <location filename="core.cpp" line="1562"/>
         <source>Could not open saved torrent %1 for read.</source>
         <translation>غير قادر على فتح تورنت المحفوظ %1 للقراءة.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1644"/>
+        <location filename="core.cpp" line="1646"/>
         <source>Bad bencoding in saved torrent data</source>
         <translation>التشفير سيئ في بيانات التورنت المحفوظة</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1679"/>
+        <location filename="core.cpp" line="1681"/>
         <source>Torrent finished: %1</source>
         <translation>%1تمّ تحميل التورنت</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1858"/>
+        <location filename="core.cpp" line="1860"/>
         <source>Error code %1 of category:&lt;blockquote&gt;%2&lt;/blockquote&gt;error message:&lt;blockquote&gt;%3&lt;/blockquote&gt;raw exception message:&lt;blockquote&gt;%4&lt;/blockquote&gt;</source>
         <translation>خطأ رقم %1 من المجموعة:&lt;blockquote&gt;%2&lt;/blockquote&gt; الخطأ:&lt;blockquote&gt;%3&lt;/blockquote&gt; رسالة الإستثناء:&lt;blockquote&gt;%4&lt;/blockquote&gt;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1874"/>
+        <location filename="core.cpp" line="1876"/>
         <source>Could not create path %1/.leechcraft/bittorrent</source>
         <translation>غير قادر على إنشاء المكان %1/.leechcraft/bittorrent</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2305"/>
+        <location filename="core.cpp" line="2307"/>
         <source>Wrong announce address %1</source>
         <translation>%1 خطأ في عنوان الإعلان</translation>
     </message>
@@ -711,170 +711,170 @@
         <translation>برنامج التورنت كامل المواصفات.</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="397"/>
+        <location filename="torrentplugin.cpp" line="400"/>
         <source>Do you really want to delete the torrent?</source>
         <translation>هل أنت متأكد أنك تريد حذف هذا التتورنت؟</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="531"/>
+        <location filename="torrentplugin.cpp" line="534"/>
         <source>Failed to move torrent&apos;s files from %1 to %2</source>
         <translation>غير قادر على نقل ملفات التورنت من %1 إلى %2</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="396"/>
-        <location filename="torrentplugin.cpp" line="530"/>
-        <location filename="torrentplugin.cpp" line="569"/>
+        <location filename="torrentplugin.cpp" line="399"/>
+        <location filename="torrentplugin.cpp" line="533"/>
+        <location filename="torrentplugin.cpp" line="572"/>
         <source>LeechCraft</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="638"/>
         <location filename="torrentplugin.cpp" line="641"/>
-        <location filename="torrentplugin.cpp" line="723"/>
-        <location filename="torrentplugin.cpp" line="724"/>
-        <location filename="torrentplugin.cpp" line="794"/>
+        <location filename="torrentplugin.cpp" line="644"/>
+        <location filename="torrentplugin.cpp" line="726"/>
+        <location filename="torrentplugin.cpp" line="727"/>
         <location filename="torrentplugin.cpp" line="797"/>
+        <location filename="torrentplugin.cpp" line="800"/>
         <source>/s</source>
         <translation type="unfinished">ثوان</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="832"/>
+        <location filename="torrentplugin.cpp" line="835"/>
         <source>Wasn&apos;t yet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="856"/>
+        <location filename="torrentplugin.cpp" line="859"/>
         <source>Yes</source>
         <translation>نعم</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="856"/>
+        <location filename="torrentplugin.cpp" line="859"/>
         <source>No</source>
         <translation>لا</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="879"/>
+        <location filename="torrentplugin.cpp" line="882"/>
         <source>Not tracking</source>
         <translation>لا يراقب</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="888"/>
         <location filename="torrentplugin.cpp" line="891"/>
+        <location filename="torrentplugin.cpp" line="894"/>
         <source>Unknown</source>
         <translation>غير معروف</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1101"/>
+        <location filename="torrentplugin.cpp" line="1104"/>
         <source>Open torrent...</source>
         <translation>فتح تورنت...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1110"/>
+        <location filename="torrentplugin.cpp" line="1113"/>
         <source>Change trackers...</source>
         <translation>تغيير مسارات...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1112"/>
+        <location filename="torrentplugin.cpp" line="1115"/>
         <source>C</source>
         <translation>C</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1119"/>
+        <location filename="torrentplugin.cpp" line="1122"/>
         <source>Create torrent...</source>
         <translation>إنشاء تورنت...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1121"/>
+        <location filename="torrentplugin.cpp" line="1124"/>
         <source>N</source>
         <translation>N</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1128"/>
+        <location filename="torrentplugin.cpp" line="1131"/>
         <source>Open multiple torrents...</source>
         <translation>فتح مجموعة التورنت...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1136"/>
+        <location filename="torrentplugin.cpp" line="1139"/>
         <source>Remove</source>
         <translation>إزالة</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1138"/>
+        <location filename="torrentplugin.cpp" line="1141"/>
         <source>Del</source>
         <translation>مسح</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1143"/>
+        <location filename="torrentplugin.cpp" line="1146"/>
         <source>Resume</source>
         <translation>استمرار</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1145"/>
+        <location filename="torrentplugin.cpp" line="1148"/>
         <source>R</source>
         <translation>R</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1150"/>
+        <location filename="torrentplugin.cpp" line="1153"/>
         <source>Pause</source>
         <translation>إيقاف مؤقّتاً</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1152"/>
+        <location filename="torrentplugin.cpp" line="1155"/>
         <source>S</source>
         <translation>S</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1157"/>
+        <location filename="torrentplugin.cpp" line="1160"/>
         <source>Move up</source>
         <translation>نقل للأعلى</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1165"/>
+        <location filename="torrentplugin.cpp" line="1168"/>
         <source>Move down</source>
         <translation>نقل للأسفل</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1173"/>
+        <location filename="torrentplugin.cpp" line="1176"/>
         <source>Move to top</source>
         <translation>نقل لأعلى القائمة</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1181"/>
+        <location filename="torrentplugin.cpp" line="1184"/>
         <source>Move to bottom</source>
         <translation>نقل إلى أسفل القائمة</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1189"/>
+        <location filename="torrentplugin.cpp" line="1192"/>
         <source>Reannounce</source>
         <translation>إعادة الإنطاق</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1191"/>
+        <location filename="torrentplugin.cpp" line="1194"/>
         <source>F</source>
         <translation>F</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1196"/>
+        <location filename="torrentplugin.cpp" line="1199"/>
         <source>Recheck</source>
         <translation>إعادة الفحص</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1202"/>
+        <location filename="torrentplugin.cpp" line="1205"/>
         <source>Move files...</source>
         <translation>نقل ملفات...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1204"/>
+        <location filename="torrentplugin.cpp" line="1207"/>
         <source>M</source>
         <translation>M</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1209"/>
+        <location filename="torrentplugin.cpp" line="1212"/>
         <source>Import...</source>
         <translation>إستيراد...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1217"/>
+        <location filename="torrentplugin.cpp" line="1220"/>
         <source>Export...</source>
         <translation>تصدير...</translation>
     </message>
@@ -1081,47 +1081,47 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="core.cpp" line="2008"/>
-        <source>Saving resume data failed for torrent:&lt;br /&gt;%1&lt;br /&gt;%2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="2017"/>
+        <location filename="core.cpp" line="2019"/>
         <source>Storage for torrent:&lt;br /&gt;%1&lt;br /&gt;moved successfully to:&lt;br /&gt;%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2026"/>
+        <location filename="core.cpp" line="2010"/>
+        <source>Saving resume data failed for torrent:&lt;br /&gt;%1&lt;br /&gt;%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="2028"/>
         <source>Storage move failure:&lt;br /&gt;%2&lt;br /&gt;for torrent:&lt;br /&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2040"/>
+        <location filename="core.cpp" line="2042"/>
         <source>File error for torrent:&lt;br /&gt;%1&lt;br /&gt;file:&lt;br /&gt;%2&lt;br /&gt;error:&lt;br /&gt;%3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2051"/>
+        <location filename="core.cpp" line="2053"/>
         <source>File rename failed for torrent:&lt;br /&gt;%1&lt;br /&gt;file %2, error:&lt;br /&gt;%3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2062"/>
+        <location filename="core.cpp" line="2064"/>
         <source>Failed to delete torrent:&lt;br /&gt;%1&lt;br /&gt;error:&lt;br /&gt;%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2007"/>
-        <location filename="core.cpp" line="2016"/>
-        <location filename="core.cpp" line="2025"/>
-        <location filename="core.cpp" line="2039"/>
-        <location filename="core.cpp" line="2050"/>
-        <location filename="core.cpp" line="2061"/>
+        <location filename="core.cpp" line="2009"/>
+        <location filename="core.cpp" line="2018"/>
+        <location filename="core.cpp" line="2027"/>
+        <location filename="core.cpp" line="2041"/>
+        <location filename="core.cpp" line="2052"/>
+        <location filename="core.cpp" line="2063"/>
         <source>LeechCraft</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="627"/>
+        <location filename="torrentplugin.cpp" line="630"/>
         <source>/s</source>
         <translation>ثوان</translation>
     </message>
