@@ -489,7 +489,7 @@ namespace LeechCraft
 					{
 						tp |= LeechCraft::IsDownloaded;
 						LeechCraft::DownloadEntity e =
-							LeechCraft::Util::MakeEntity (filename.toUtf8 (),
+							LeechCraft::Util::MakeEntity (QUrl::fromLocalFile (filename),
 								url,
 								tp);
 						emit gotEntity (e);
