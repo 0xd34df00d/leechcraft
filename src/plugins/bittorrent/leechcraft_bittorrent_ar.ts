@@ -275,7 +275,7 @@
         <location filename="core.cpp" line="440"/>
         <location filename="core.cpp" line="442"/>
         <source>/s</source>
-        <translation type="unfinished">ثوان</translation>
+        <translation>ثوان</translation>
     </message>
     <message>
         <location filename="core.cpp" line="429"/>
@@ -539,7 +539,7 @@
         <location filename="peersmodel.cpp" line="53"/>
         <location filename="peersmodel.cpp" line="61"/>
         <source>/s</source>
-        <translation type="unfinished">ثوان</translation>
+        <translation>ثوان</translation>
     </message>
     <message>
         <location filename="peersmodel.cpp" line="85"/>
@@ -725,7 +725,7 @@
         <location filename="torrentplugin.cpp" line="533"/>
         <location filename="torrentplugin.cpp" line="572"/>
         <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
+        <translation>LeechCraft</translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="641"/>
@@ -735,7 +735,7 @@
         <location filename="torrentplugin.cpp" line="797"/>
         <location filename="torrentplugin.cpp" line="800"/>
         <source>/s</source>
-        <translation type="unfinished">ثوان</translation>
+        <translation>ثوان</translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="835"/>
@@ -900,7 +900,7 @@
         <location filename="movetorrentfiles.ui" line="47"/>
         <source>Browse...</source>
         <oldsource>Browse</oldsource>
-        <translation type="unfinished">استكشاف</translation>
+        <translation>استكشاف...</translation>
     </message>
 </context>
 <context>
@@ -1118,7 +1118,7 @@
         <location filename="core.cpp" line="2052"/>
         <location filename="core.cpp" line="2063"/>
         <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
+        <translation>LeechCraft</translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="630"/>

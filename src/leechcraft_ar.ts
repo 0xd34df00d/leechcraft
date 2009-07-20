@@ -170,7 +170,7 @@
     <message>
         <location filename="application.cpp" line="114"/>
         <source>LeechCraft</source>
-        <translation type="unfinished">LeechCraft</translation>
+        <translation>LeechCraft</translation>
     </message>
     <message>
         <location filename="application.cpp" line="115"/>
@@ -310,7 +310,7 @@
         <location filename="mainwindow.cpp" line="70"/>
         <location filename="mainwindow.cpp" line="634"/>
         <source>Initializing core and plugins...</source>
-        <translation type="unfinished">لإضافة مهام للبرنلمج المساعد </translation>
+        <translation>لإضافة مهام للبرنلمج المساعد...</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="113"/>
@@ -320,7 +320,7 @@
     <message>
         <location filename="mainwindow.cpp" line="182"/>
         <source>Initializing interface...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="159"/>
@@ -334,7 +334,7 @@
     <message>
         <location filename="mainwindow.cpp" line="161"/>
         <source>%1 - LeechCraft</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 - LeechCraft</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="249"/>
@@ -428,7 +428,7 @@
     <message>
         <location filename="pluginmanager.cpp" line="223"/>
         <source>LeechCraft</source>
-        <translation type="unfinished">LeechCraft</translation>
+        <translation>LeechCraft</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="224"/>
@@ -669,7 +669,7 @@
         <location filename="sslerrorsdialog.ui" line="57"/>
         <source>Remember my choice for the resource</source>
         <oldsource>Remember my choice for the file</oldsource>
-        <translation type="unfinished">تذكّر خياري لهذا الملف</translation>
+        <translation>تذكّر خياري لهذا الملف</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.ui" line="64"/>

@@ -40,12 +40,12 @@
         <location filename="export.ui" line="25"/>
         <source>Save to:</source>
         <oldsource>Where to save:</oldsource>
-        <translation type="unfinished">مكان للحفظ:</translation>
+        <translation>مكان للحفظ:</translation>
     </message>
     <message>
         <location filename="export.ui" line="37"/>
         <source>Browse...</source>
-        <translation>..استكشاف</translation>
+        <translation>استكشاف...</translation>
     </message>
     <message>
         <location filename="export.ui" line="46"/>
@@ -98,7 +98,7 @@
     <message>
         <location filename="feedsettings.ui" line="60"/>
         <source>Author:</source>
-        <translation>صاحب</translation>
+        <translation>صاحب:</translation>
     </message>
     <message>
         <location filename="feedsettings.ui" line="74"/>
@@ -183,7 +183,7 @@
     <message>
         <location filename="importbinary.ui" line="35"/>
         <source>Browse...</source>
-        <translation>..استكشاف</translation>
+        <translation>استكشاف...</translation>
     </message>
     <message>
         <location filename="importbinary.ui" line="44"/>
@@ -231,7 +231,7 @@
     <message>
         <location filename="importopml.ui" line="39"/>
         <source>Browse...</source>
-        <translation>..استكشاف</translation>
+        <translation>استكشاف...</translation>
     </message>
     <message>
         <location filename="importopml.ui" line="48"/>
@@ -345,12 +345,12 @@
     <message>
         <location filename="aggregator.cpp" line="234"/>
         <source>RSS/Atom feed reader.</source>
-        <translation>قارء أشرطة الـخبار</translation>
+        <translation>قارء أشرطة الـخبار.</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="454"/>
         <source>Add feed...</source>
-        <translation>...إضافة شريط الأخبار</translation>
+        <translation>إضافة شريط الأخبار...</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="459"/>
@@ -375,7 +375,7 @@
     <message>
         <location filename="aggregator.cpp" line="476"/>
         <source>Settings...</source>
-        <translation>...إعدادات</translation>
+        <translation>إعدادات...</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="480"/>
@@ -385,12 +385,12 @@
     <message>
         <location filename="aggregator.cpp" line="485"/>
         <source>Item bucket...</source>
-        <translation>...باقة المقالات</translation>
+        <translation>باقة المقالات...</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="490"/>
         <source>Regexp matcher...</source>
-        <translation>...منظّم العبارات الدائمة</translation>
+        <translation>منظّم العبارات الدائمة...</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="495"/>
@@ -400,35 +400,35 @@
     <message>
         <location filename="aggregator.cpp" line="502"/>
         <source>Import from OPML...</source>
-        <translation>...OPML إستيراد من ملف</translation>
+        <translation>OPML إستيراد من ملف...</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="507"/>
         <source>Export to OPML...</source>
-        <translation>...OPML تصدير إلى ملف</translation>
+        <translation>OPML تصدير إلى ملف...</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="512"/>
         <source>Import from binary...</source>
-        <translation>...binary إستيراد من ملف</translation>
+        <translation>binary إستيراد من ملف...</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="517"/>
         <source>Export to binary...</source>
-        <translation>...binary تصدير إلى ملف</translation>
+        <translation>binary تصدير إلى ملف...</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="549"/>
         <location filename="aggregator.cpp" line="573"/>
         <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
+        <translation>LeechCraft</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="574"/>
         <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you are really sure that you want to do it?</source>
         <oldsource>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you are really sure that you want to do this?</oldsource>
         <comment>Feed removing confirmation</comment>
-        <translation>هل تريد حذفه؟&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;:سيتمّ حذف الشريط الأخبار</translation>
+        <translation>هل تريد حذفه؟&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;:سيتمّ حذف الشريط الأخبار?</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="661"/>
@@ -459,7 +459,7 @@
     <message>
         <location filename="aggregator.cpp" line="736"/>
         <source>%1 unread messages in %2 channels.</source>
-        <translation>رسائل غير مقروءة %1 في قنوات %2</translation>
+        <translation>رسائل غير مقروءة %1 في قنوات %2.</translation>
     </message>
 </context>
 <context>
@@ -467,7 +467,7 @@
     <message>
         <location filename="channelsmodel.cpp" line="22"/>
         <source>Feed</source>
-        <translation type="unfinished">شريط</translation>
+        <translation>شريط</translation>
     </message>
     <message>
         <location filename="channelsmodel.cpp" line="23"/>
@@ -495,7 +495,7 @@
     <message>
         <location filename="core.cpp" line="255"/>
         <source>This feed is already added.</source>
-        <translation>هذا الشريط موجود</translation>
+        <translation>هذا الشريط موجود.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="281"/>
@@ -505,7 +505,7 @@
     <message>
         <location filename="core.cpp" line="308"/>
         <source>Could not remove the feed.</source>
-        <translation>لم تتم إزالة الشريط</translation>
+        <translation>لم تتم إزالة الشريط.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="542"/>
@@ -525,7 +525,7 @@
     <message>
         <location filename="core.cpp" line="617"/>
         <source>Could not open file %1 for reading.</source>
-        <translation>لم يتم فتح ملف %1 للقراءة</translation>
+        <translation>لم يتم فتح ملف %1 للقراءة.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="634"/>
@@ -535,22 +535,22 @@
     <message>
         <location filename="core.cpp" line="645"/>
         <source>OPML from file %1 is not valid.</source>
-        <translation>من ملف %1 غير صحيح OPML</translation>
+        <translation>من ملف %1 غير صحيح OPML.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="918"/>
         <source>Provided web browser is wrong web browser.</source>
-        <translation>متصفح ويب المفضل غير صحيح</translation>
+        <translation>متصفح ويب المفضل غير صحيح.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="975"/>
         <source>Downloaded file from url %1 has null size!</source>
-        <translation>!الملف المحمّل من عنوان %1 ليس له حجم</translation>
+        <translation>!الملف المحمّل من عنوان %1 ليس له حجم!</translation>
     </message>
     <message>
         <location filename="core.cpp" line="987"/>
         <source>Feed with url %1 not found.</source>
-        <translation>شريط بهذا العنوان %1 غير متوفر</translation>
+        <translation>شريط بهذا العنوان %1 غير متوفر.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1001"/>
@@ -576,7 +576,7 @@
         <location filename="core.cpp" line="1099"/>
         <source>Local error for:&lt;br /&gt;%1</source>
         <oldsource>Local errro for:&lt;br /&gt;%1</oldsource>
-        <translation type="unfinished">&lt;br /&gt;%1: خطأ محلي ل</translation>
+        <translation>&lt;br /&gt;%1: خطأ محلي ل</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1102"/>
@@ -586,7 +586,7 @@
     <message>
         <location filename="core.cpp" line="1151"/>
         <source>External file %1 wasn&apos;t delegated.</source>
-        <translation>.الملف الخارجي %1 غير موفّر</translation>
+        <translation>.الملف الخارجي %1 غير موفّر.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1400"/>
@@ -621,12 +621,12 @@
         <location filename="importbinary.cpp" line="144"/>
         <location filename="importbinary.cpp" line="157"/>
         <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
+        <translation>LeechCraft</translation>
     </message>
     <message>
         <location filename="importbinary.cpp" line="131"/>
         <source>Could not open file %1 for reading.</source>
-        <translation>لم يتم فتح ملف %1 للقراءة</translation>
+        <translation>لم يتم فتح ملف %1 للقراءة.</translation>
     </message>
     <message>
         <location filename="importbinary.cpp" line="145"/>
@@ -656,12 +656,12 @@
         <location filename="importopml.cpp" line="113"/>
         <location filename="importopml.cpp" line="126"/>
         <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
+        <translation>LeechCraft</translation>
     </message>
     <message>
         <location filename="importopml.cpp" line="95"/>
         <source>Could not open file %1 for reading.</source>
-        <translation>لم يتم فتح ملف %1 للقراءة</translation>
+        <translation>لم يتم فتح ملف %1 للقراءة.</translation>
     </message>
     <message>
         <location filename="importopml.cpp" line="114"/>
@@ -671,7 +671,7 @@
     <message>
         <location filename="importopml.cpp" line="127"/>
         <source>OPML from file %1 is not valid.</source>
-        <translation>من ملف %1 غير صحيح OPML</translation>
+        <translation>من ملف %1 غير صحيح OPML.</translation>
     </message>
 </context>
 <context>
@@ -779,7 +779,7 @@
         <location filename="regexpmatcherui.cpp" line="91"/>
         <location filename="regexpmatcherui.cpp" line="101"/>
         <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
+        <translation>LeechCraft</translation>
     </message>
     <message>
         <location filename="regexpmatcherui.cpp" line="47"/>
@@ -859,7 +859,7 @@
     <message>
         <location filename="singleregexp.ui" line="29"/>
         <source>Title matcher:</source>
-        <translation>مدير العناوين</translation>
+        <translation>مدير العناوين:</translation>
     </message>
     <message>
         <location filename="singleregexp.ui" line="39"/>
