@@ -25,11 +25,13 @@ SET (HEADERS
 SET (TRANSLATIONS
 	leechcraft_deadlyrics_ru_RU.ts
 	leechcraft_deadlyrics_uk_UA.ts
+	leechcraft_deadlyrics_ar.ts
 	)
 SET (RESOURCES resources.qrc)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_deadlyrics_ru_RU.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_deadlyrics_uk_UA.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_deadlyrics_ar.qm
 	)
 
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
