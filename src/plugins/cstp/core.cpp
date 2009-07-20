@@ -42,9 +42,6 @@ namespace LeechCraft
 			
 				RepresentationModel_->setSourceModel (this);
 			
-				for (int i = 0; i < 65535; ++i)
-					IDPool_.push_back (i);
-			
 				ReadSettings ();
 			}
 			
@@ -64,6 +61,17 @@ namespace LeechCraft
 				removeAllTriggered ();
 				delete RepresentationModel_;
 				RepresentationModel_ = 0;
+			}
+
+			void Core::SetCoreProxy (ICoreProxy_ptr proxy)
+			{
+				CoreProxy_ = proxy;
+
+				NetworkAccessManager_ = proxy->GetNetworkAccessManager ();
+				connect (NetworkAccessManager_,
+						SIGNAL (finished (QNetworkReply*)),
+						this,
+						SLOT (finishedReply (QNetworkReply*)));
 			}
 			
 			void Core::SetToolbar (QToolBar *widget)
@@ -173,8 +181,7 @@ namespace LeechCraft
 				td.Comment_ = comment;
 				td.ErrorFlag_ = false;
 				td.Parameters_ = tp;
-				td.ID_ = IDPool_.front ();
-				IDPool_.pop_front ();
+				td.ID_ = CoreProxy_->GetID ();
 			
 				if (td.File_->exists ())
 				{
@@ -193,7 +200,7 @@ namespace LeechCraft
 					else if (!remove);
 					else
 					{
-						IDPool_.push_front (td.ID_);
+						CoreProxy_->FreeID (td.ID_);
 						return -1;
 					}
 				}
@@ -261,15 +268,6 @@ namespace LeechCraft
 			QAbstractItemModel* Core::GetRepresentationModel ()
 			{
 				return RepresentationModel_;
-			}
-			
-			void Core::SetNetworkAccessManager (QNetworkAccessManager *manager)
-			{
-				NetworkAccessManager_ = manager;
-				connect (manager,
-						SIGNAL (finished (QNetworkReply*)),
-						this,
-						SLOT (finishedReply (QNetworkReply*)));
 			}
 			
 			QNetworkAccessManager* Core::GetNetworkAccessManager () const
@@ -647,7 +645,7 @@ namespace LeechCraft
 				beginRemoveRows (QModelIndex (), dst, dst);
 				ActiveTasks_.erase (it);
 				endRemoveRows ();
-				IDPool_.push_front (id);
+				CoreProxy_->FreeID (id);
 			
 				ScheduleSave ();
 			}

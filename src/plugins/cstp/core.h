@@ -7,6 +7,7 @@
 #include <QNetworkProxy>
 #include <QNetworkAccessManager>
 #include <QSet>
+#include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
 #include <interfaces/idownload.h>
 
@@ -64,10 +65,10 @@ namespace LeechCraft
 				RepresentationModel *RepresentationModel_;
 				bool SaveScheduled_;
 				QNetworkAccessManager *NetworkAccessManager_;
-				std::list<quint32> IDPool_;
 				QToolBar *Toolbar_;
 				QSet<QNetworkReply*> FinishedReplies_;
 				QModelIndex Selected_;
+				ICoreProxy_ptr CoreProxy_;
 
 				explicit Core ();
 			public:
@@ -84,6 +85,7 @@ namespace LeechCraft
 				virtual ~Core ();
 				static Core& Instance ();
 				void Release ();
+				void SetCoreProxy (ICoreProxy_ptr);
 				void SetToolbar (QToolBar*);
 				void ItemSelected (const QModelIndex&);
 

@@ -53,6 +53,25 @@ ITagsManager* CoreProxy::GetTagsManager () const
 	return &TagsManager::Instance ();
 }
 
+int CoreProxy::GetID ()
+{
+	int i = 0;
+	while (true)
+		if (!UsedIDs_.contains (++i))
+		{
+			UsedIDs_ << i;
+			return i;
+		}
+	throw std::runtime_error ("ID pool exhausted");
+}
+
+void CoreProxy::FreeID (int id)
+{
+	if (UsedIDs_.removeAll (id) != 1)
+		throw std::runtime_error (QString ("The ID being freed wasn't reserved %1")
+				.arg (id).toStdString ().c_str ());
+}
+
 #define LC_DEFINE_REGISTER(a) \
 void CoreProxy::RegisterHook (LeechCraft::HookSignature<LeechCraft::a>::Signature_t functor) \
 { \

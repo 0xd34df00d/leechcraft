@@ -30,7 +30,7 @@ namespace LeechCraft
 			
 			void CSTP::Init (ICoreProxy_ptr coreProxy)
 			{
-				Core::Instance ().SetNetworkAccessManager (coreProxy->GetNetworkAccessManager ());
+				Core::Instance ().SetCoreProxy (coreProxy);
 				Translator_.reset (LeechCraft::Util::InstallTranslator ("cstp"));
 			
 				XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());

@@ -173,6 +173,14 @@ public:
 	 */
 	virtual ITagsManager* GetTagsManager () const = 0;
 
+	/** Returns an ID for a delegated task from the pool.
+	 */
+	virtual int GetID () = 0;
+
+	/** Marks an ID previously returned by GetID to the pool.
+	 */
+	virtual void FreeID (int) = 0;
+
 #define LC_DEFINE_REGISTER(a) virtual void RegisterHook (LeechCraft::HookSignature<a>::Signature_t) = 0;
 #define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))
 #define LC_EXPANDER(Names) BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), LC_TRAVERSER, Names)

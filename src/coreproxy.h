@@ -10,6 +10,8 @@ namespace LeechCraft
 	{
 		Q_OBJECT
 		Q_INTERFACES (ICoreProxy);
+
+		QList<int> UsedIDs_;
 	public:
 		CoreProxy (QObject* = 0);
 		QNetworkAccessManager* GetNetworkAccessManager () const;
@@ -20,6 +22,8 @@ namespace LeechCraft
 		QMainWindow* GetMainWindow () const;
 		QIcon GetIcon (const QString&, const QString& = QString ()) const;
 		ITagsManager* GetTagsManager () const;
+		int GetID ();
+		void FreeID (int);
 
 #define LC_DEFINE_REGISTER(a) void RegisterHook (LeechCraft::HookSignature<LeechCraft::a>::Signature_t);
 #define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))

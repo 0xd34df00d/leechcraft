@@ -102,7 +102,6 @@ namespace LeechCraft
 				std::auto_ptr<PiecesModel> PiecesModel_;
 				std::auto_ptr<PeersModel> PeersModel_;
 				std::auto_ptr<TorrentFilesModel> TorrentFilesModel_;
-				std::list<quint16> IDPool_;
 				QString ExternalAddress_;
 				bool SaveScheduled_;
 				QToolBar *Toolbar_;

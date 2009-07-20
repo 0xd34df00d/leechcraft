@@ -111,8 +111,6 @@ namespace LeechCraft
 			{
 				setObjectName ("BitTorrent Core");
 				ExternalAddress_ = tr ("Unknown");
-				for (quint16 i = 0; i < 65535; ++i)
-					IDPool_.push_back (i);
 			}
 			
 			Core::~Core ()
@@ -656,10 +654,9 @@ namespace LeechCraft
 			   		0,
 					tags,
 					true,
-					IDPool_.front (),
+					Proxy_->GetID (),
 					params
 				};
-				IDPool_.pop_front ();
 				beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
 				Handles_ << tmp;
 				endInsertRows ();
@@ -740,10 +737,9 @@ namespace LeechCraft
 			   		0,
 					ids,
 					true,
-					IDPool_.front (),
+					Proxy_->GetID (),
 					params
 				};
-				IDPool_.pop_front ();
 				Handles_.append (tmp);
 				endInsertRows ();
 			
@@ -760,7 +756,7 @@ namespace LeechCraft
 				Session_->remove_torrent (Handles_.at (pos).Handle_);
 				int id = Handles_.at (pos).ID_;
 				Handles_.removeAt (pos);
-				IDPool_.push_front (id);
+				Proxy_->FreeID (id);
 				endRemoveRows ();
 			
 				ScheduleSave ();
@@ -1624,10 +1620,9 @@ namespace LeechCraft
 						0,
 						settings.value ("Tags").toStringList (),
 						automanaged,
-						i,
+						Proxy_->GetID (),
 						taskParameters
 				   	};
-					IDPool_.erase (std::find (IDPool_.begin (), IDPool_.end (), tmp.ID_));
 					beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
 					Handles_.append (tmp);
 					endInsertRows ();
