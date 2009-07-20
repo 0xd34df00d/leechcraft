@@ -1,6 +1,7 @@
 #include "directorywatcher.h"
 #include <QDir>
 #include <QTimer>
+#include <QUrl>
 #include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
 
@@ -78,8 +79,9 @@ namespace LeechCraft
 		Olds_ = nl;
 
 		Q_FOREACH (QFileInfo newFi, nl)
-			emit gotEntity (Util::MakeEntity (newFi.absoluteFilePath ().toUtf8 (),
-						path, FromUserInitiated));
+			emit gotEntity (Util::MakeEntity (QUrl::fromLocalFile (newFi.absoluteFilePath ()),
+						path,
+						FromUserInitiated));
 	}
 };
 
