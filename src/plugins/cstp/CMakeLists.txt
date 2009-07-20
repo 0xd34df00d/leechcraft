@@ -36,10 +36,12 @@ SET (RESOURCES
 SET (TRANSLATIONS
 	leechcraft_cstp_ru_RU.ts
 	leechcraft_cstp_uk_UA.ts
+	leechcraft_cstp_ar.ts
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_cstp_ru_RU.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_cstp_uk_UA.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_cstp_ar.qm
 	)
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 ADD_DEFINITIONS(-DQT_PLUGIN)
