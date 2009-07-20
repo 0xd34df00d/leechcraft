@@ -50,6 +50,8 @@ SectionGroup "Core"
 		File /r icons
 		File /r leechcraft
 		File /r oxygen
+		SetOutPath $INSTDIR\settings
+		File settings\coresettings.xml
 
 		WriteRegStr HKCU "Software\Deviant\LeechCraft" "" $INSTDIR
 		WriteUninstaller "$INSTDIR\Uninstall.exe"
@@ -104,6 +106,8 @@ SectionGroup "Plugins"
 	Section "Aggregator" AGGREGATORPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_aggregator.dll
+		SetOutPath $INSTDIR\settings
+		File settings\aggregatorsettings.xml
 		SectionIn 1
 	SectionEnd
 	Section "BitTorrent" TORRENTPLUGIN
@@ -113,16 +117,20 @@ SectionGroup "Plugins"
 		File boost_filesystem-vc90-mt-1_37.dll
 		File boost_system-vc90-mt-1_37.dll
 		File boost_thread-vc90-mt-1_37.dll
+		SetOutPath $INSTDIR\settings
+		File settings\torrentsettings.xml
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_bittorrent.dll
 		SectionIn 1
 	SectionEnd
 	Section "CSTP" HTTPPLUGIN
+		SetOutPath $INSTDIR\settings
+		File settings\cstpsettings.xml
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_cstp.dll
 		SectionIn 1
 	SectionEnd
-	Section "DeadLyRiCS" DEADLYRICSPLUGIN
+	Section "DeadLyrics" DEADLYRICSPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_deadlyrics.dll
 		SectionIn 1
@@ -138,11 +146,15 @@ SectionGroup "Plugins"
 		SectionIn 1
 	SectionEnd
 	Section "Poshuku" POSHUKUPLUGIN
+		SetOutPath $INSTDIR\settings
+		File settings\poshukusettings.xml
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_poshuku.dll
 		SectionIn 1
 	SectionEnd
 	Section "Poshuku CleanWeb" POSHUKUCLEANWEBPLUGIN
+		SetOutPath $INSTDIR\settings
+		File settings\poshukucleanwebsettings.xml
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_poshuku_cleanweb.dll
 		SectionIn 1
@@ -153,11 +165,15 @@ SectionGroup "Plugins"
 		SectionIn 1
 	SectionEnd
 	Section "Poshuku FUA" POSHUKUFUAPLUGIN
+		SetOutPath $INSTDIR\settings
+		File settings\poshukufuasettings.xml
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_poshuku_fua.dll
 		SectionIn 1
 	SectionEnd
 	Section "SeekThru" SEEKTHRUPLUGIN
+		SetOutPath $INSTDIR\settings
+		File settings\seekthrusettings.xml
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_seekthru.dll
 		SectionIn 1
