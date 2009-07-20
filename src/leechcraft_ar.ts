@@ -45,7 +45,7 @@
         <location filename="commonjobadder.ui" line="41"/>
         <location filename="commonjobadder.ui" line="69"/>
         <source>Browse...</source>
-        <translation>استعراض</translation>
+        <translation>استكشاف...</translation>
     </message>
     <message>
         <location filename="commonjobadder.ui" line="48"/>
@@ -245,12 +245,12 @@
     <message>
         <location filename="core.cpp" line="298"/>
         <source>Calculating dependencies...</source>
-        <translation>...جار حساب التبعيّات</translation>
+        <translation>جار حساب التبعيّات...</translation>
     </message>
     <message>
         <location filename="core.cpp" line="252"/>
         <source>Setting up %1...</source>
-        <translation>...جار التنصيب %1</translation>
+        <translation>جار التنصيب %1...</translation>
     </message>
     <message>
         <location filename="core.cpp" line="351"/>
@@ -263,30 +263,34 @@
         <translation>طويل جدّاً الإظهار</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="920"/>
+        <location filename="core.cpp" line="852"/>
+        <source>Binary entity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="932"/>
         <source>Select save location</source>
         <translation>ﺎﺨﺗﺭ ﻢﻛﺎﻧ ﺎﻟﺬﻳ ﺕﺮﻳﺩ ﺢﻔﻇ ﺎﻠﻤﻠﻓ ﻒﻴﻫ</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="936"/>
-        <location filename="core.cpp" line="953"/>
+        <location filename="core.cpp" line="948"/>
+        <location filename="core.cpp" line="965"/>
         <source>Error</source>
         <translation>خطأ</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="937"/>
+        <location filename="core.cpp" line="949"/>
         <source>Could not add task to the selected downloader, would you like to try another one?</source>
-        <oldsource>Could not add job to the selected downloader, would you like to try another one?</oldsource>
-        <translation type="unfinished">البرنامج غير قادر على إضافة هذه المهمّة إلى برنامج تحمبل مخصص. تريد اختيار برنامج آخر؟</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="954"/>
+        <location filename="core.cpp" line="966"/>
         <source>Could not handle task with the selected handler, would you like to try another one?</source>
         <oldsource>Could not handle job with the selected handler, would you like to try another one?</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="977"/>
+        <location filename="core.cpp" line="989"/>
         <source>Could not handle download entity %1.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -571,7 +575,7 @@
     <message>
         <location filename="sslerrorsdialog.cpp" line="97"/>
         <source>Subject info</source>
-        <translation type="unfinished"></translation>
+        <translation>معلومات العنوان</translation>
     </message>
 </context>
 <context>
@@ -678,7 +682,7 @@
     <message>
         <location filename="tagsmanager.cpp" line="14"/>
         <source>untagged</source>
-        <translation type="unfinished"></translation>
+        <translation>غير معلَّم</translation>
     </message>
 </context>
 <context>
@@ -686,12 +690,12 @@
     <message>
         <location filename="tagsviewer.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>النموذج</translation>
     </message>
     <message>
         <location filename="tagsviewer.ui" line="38"/>
         <source>Rename...</source>
-        <translation>...إعادة التسمية</translation>
+        <translation>إعادة التسمية...</translation>
     </message>
     <message>
         <location filename="tagsviewer.ui" line="45"/>
