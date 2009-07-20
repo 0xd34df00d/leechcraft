@@ -1385,7 +1385,7 @@ namespace LeechCraft
 				emit torrentFinished (string);
 
 				DownloadEntity e;
-				e.Entity_ = name.toUtf8 ();
+				e.Entity_ = QUrl::fromLocalFile (name);
 				e.Parameters_ = LeechCraft::IsDownloaded;
 				e.Location_ = torrent.TorrentFileName_;
 				e.Additional_ [" Tags"] = torrent.Tags_;
