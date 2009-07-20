@@ -92,7 +92,8 @@ namespace LeechCraft
 				{
 					QFileInfo fi (e.Location_);
 					QString dir = fi.dir ().path ();
-					QString file = QFileInfo (entity.path ()).fileName ();
+					QUrl source = e.Additional_ ["SourceURL"].toUrl ();
+					QString file = QFileInfo (source.toString (QUrl::RemoveFragment)).fileName ();
 			
 					if (fi.isDir ())
 						dir = e.Location_;
@@ -130,7 +131,7 @@ namespace LeechCraft
 							if (fi.isDir ())
 							{
 								dir = e.Location_;
-								file = QFileInfo (entity.path ()).fileName ();
+								file = QFileInfo (entity.toString (QUrl::RemoveFragment)).fileName ();
 								if (file.isEmpty ())
 									file = "index";
 							}
