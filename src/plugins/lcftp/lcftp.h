@@ -23,7 +23,7 @@ namespace LeechCraft
 						, public IEntityHandler
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IMultiTabs IDownload IEntityHandler)
+				Q_INTERFACES (IInfo IMultiTabs IJobHolder IDownload IEntityHandler)
 
 				std::auto_ptr<QTranslator> Translator_;
 			public:

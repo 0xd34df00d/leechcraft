@@ -58,6 +58,7 @@ namespace LeechCraft
 
 			QAbstractItemModel* LCFTP::GetRepresentation () const
 			{
+				qDebug () << Core::Instance ().GetModel ();
 				return Core::Instance ().GetModel ();
 			}
 

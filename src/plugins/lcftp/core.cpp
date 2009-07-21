@@ -6,6 +6,7 @@
 #include <QMessageBox>
 #include <QTimer>
 #include <curl/curl.h>
+#include <plugininterface/proxy.h>
 #include "inactiveworkersfilter.h"
 
 namespace LeechCraft
@@ -92,8 +93,8 @@ namespace LeechCraft
 			{
 				if (!index.isValid ())
 					return QVariant ();
-			
-				int working = CountWorking ();
+
+				int working = Workers_.size ();
 				int r = index.row ();
 				int c = index.column ();
 
@@ -103,7 +104,7 @@ namespace LeechCraft
 					{
 						case 0:
 							if (r < working)
-								return RealState (r).URL_.toString ();
+								return States_.at (r).URL_.toString ();
 							else
 								return Tasks_ [r - working].URL_.toString ();
 						case 1:
@@ -113,11 +114,16 @@ namespace LeechCraft
 								return QVariant ();
 							else
 							{
-								QPair<quint64, quint64> s = RealState (r).DL_;
-								return tr ("%1 of %2 (%3%)")
-									.arg (s.first)
-									.arg (s.second)
-									.arg (s.first * 100 / s.second);
+								QPair<quint64, quint64> s = States_.at (r).DL_;
+								if (s.second)
+									return tr ("%1 of %2 (%3%)")
+										.arg (Util::Proxy::Instance ()->MakePrettySize (s.first))
+										.arg (Util::Proxy::Instance ()->MakePrettySize (s.second))
+										.arg (s.first * 100 / s.second);
+								else
+									return tr ("%1 of %2")
+										.arg (Util::Proxy::Instance ()->MakePrettySize (s.first))
+										.arg (Util::Proxy::Instance ()->MakePrettySize (s.second));
 							}
 						default:
 							return QVariant ();
@@ -146,7 +152,7 @@ namespace LeechCraft
 					return 0;
 
 				int result = 0;
-				result += CountWorking ();
+				result += Workers_.size ();
 				result += Tasks_.size ();
 				return result;
 			}
@@ -269,23 +275,6 @@ namespace LeechCraft
 				endInsertRows ();
 			}
 			
-			int Core::CountWorking () const
-			{
-				int result = 0;
-				Q_FOREACH (Worker::TaskState ts, States_)
-					result += (ts.IsWorking_ ? 1 : 0);
-				return result;
-			}
-
-			Worker::TaskState Core::RealState (int lindex) const
-			{
-				Q_FOREACH (Worker::TaskState w, States_)
-					if (w.IsWorking_ &&
-							lindex-- == 0)
-						return w;
-				return Worker::TaskState ();
-			}
-
 			void Core::handleError (const QString& msg)
 			{
 				QMessageBox::critical (0,

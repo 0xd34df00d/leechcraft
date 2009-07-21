@@ -64,8 +64,6 @@ namespace LeechCraft
 				void FinishedTask (int = -1);
 			private:
 				void QueueTask (const TaskData&);
-				int CountWorking () const;
-				Worker::TaskState RealState (int) const;
 			public slots:
 				void handleError (const QString&);
 			private slots:
