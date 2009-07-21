@@ -52,13 +52,14 @@ namespace LeechCraft
 
 			Worker::TaskState Worker::GetState () const
 			{
+				quint64 is = InitialSize_;
 				TaskState result =
 				{
 					ID_,
 					IsWorking_,
 					URL_,
-					qMakePair<quint64, quint64> (DLNow_, DLTotal_),
-					qMakePair<quint64, quint64> (ULNow_, ULTotal_)
+					qMakePair<quint64, quint64> (DLNow_ + is, DLTotal_ + is),
+					qMakePair<quint64, quint64> (ULNow_ + is, ULTotal_ + is)
 				};
 				return result;
 			}
@@ -141,7 +142,8 @@ namespace LeechCraft
 			void Worker::HandleTask (const TaskData& td, CURL_ptr handle)
 			{
 				File_.reset (new QFile (td.Filename_));
-				if (!File_->open (QIODevice::WriteOnly))
+				if (!File_->open (QIODevice::WriteOnly | QIODevice::Append) &&
+						!File_->open (QIODevice::WriteOnly))
 				{
 					emit error (tr ("Could not open file<br />%1<br />%2")
 							.arg (td.Filename_)
@@ -150,6 +152,9 @@ namespace LeechCraft
 				}
 				curl_easy_setopt (handle.get (),
 						CURLOPT_URL, td.URL_.toEncoded ().constData ());
+				InitialSize_ = File_->size ();
+				curl_easy_setopt (handle.get (),
+						CURLOPT_RESUME_FROM_LARGE, File_->size ());
 
 				CURLcode result = curl_easy_perform (handle.get ());
 				File_->flush ();

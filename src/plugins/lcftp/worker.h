@@ -37,7 +37,8 @@ namespace LeechCraft
 				Util::Guarded<quint64> DLNow_,
 					DLTotal_,
 					ULNow_,
-					ULTotal_;
+					ULTotal_,
+					InitialSize_;
 			public:
 				struct TaskState
 				{
