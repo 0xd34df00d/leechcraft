@@ -16,12 +16,14 @@ SET (SRCS
 	core.cpp
 	worker.cpp
 	inactiveworkersfilter.cpp
+	3dparty/ftpparse.c
 	)
 SET (HEADERS
 	lcftp.h
 	core.h
 	worker.h
 	inactiveworkersfilter.h
+	3dparty/ftpparse.h
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS

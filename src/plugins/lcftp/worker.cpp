@@ -1,6 +1,7 @@
 #include "worker.h"
 #include <curl/curl.h>
 #include "core.h"
+#include "3dparty/ftpparse.h"
 
 namespace LeechCraft
 {
@@ -20,6 +21,11 @@ namespace LeechCraft
 				size_t WriteData (void *buf, size_t size, size_t nmemb)
 				{
 					return W_->WriteData (buf, size, nmemb);
+				}
+
+				size_t ListDir (void *buf, size_t size, size_t nmemb)
+				{
+					return W_->ListDir (buf, size, nmemb);
 				}
 
 				int Progress (double dlt, double dln, double ult, double uln)
@@ -93,6 +99,12 @@ namespace LeechCraft
 					Wrapper *w = static_cast<Wrapper*> (userp);
 					return w->WriteData (buf, size, nmemb);
 				}
+
+				size_t list_dir (void *buf, size_t size, size_t nmemb, void *userp)
+				{
+					Wrapper *w = static_cast<Wrapper*> (userp);
+					return w->ListDir (buf, size, nmemb);
+				}
 				
 				int progress_function (void *userp,
 						double dltotal, double dlnow,
@@ -109,8 +121,6 @@ namespace LeechCraft
 						curl_easy_cleanup);
 				boost::shared_ptr<Wrapper> w (new Wrapper (this));
 
-				curl_easy_setopt (handle.get (),
-						CURLOPT_WRITEFUNCTION, write_data);
 				curl_easy_setopt (handle.get (),
 						CURLOPT_WRITEDATA, w.get ());
 				curl_easy_setopt (handle.get (),
@@ -144,29 +154,52 @@ namespace LeechCraft
 					StartDT_ = QDateTime::currentDateTime ();
 
 					HandleTask (td, handle);
+					if (File_)
+						emit finished (td);
+					else
+						ParseBuffer ();
 					Reset ();
 				}
 			}
 
 			void Worker::HandleTask (const TaskData& td, CURL_ptr handle)
 			{
-				File_.reset (new QFile (td.Filename_));
-				if (!File_->open (QIODevice::WriteOnly | QIODevice::Append) &&
-						!File_->open (QIODevice::WriteOnly))
-				{
-					emit error (tr ("Could not open file<br />%1<br />%2")
-							.arg (td.Filename_)
-							.arg (File_->errorString ()));
-					return;
-				}
 				curl_easy_setopt (handle.get (),
 						CURLOPT_URL, td.URL_.toEncoded ().constData ());
-				InitialSize_ = File_->size ();
-				curl_easy_setopt (handle.get (),
-						CURLOPT_RESUME_FROM_LARGE, File_->size ());
+				if (!td.URL_.toString ().endsWith ("/"))
+				{
+					curl_easy_setopt (handle.get (),
+							CURLOPT_WRITEFUNCTION, write_data);
+
+					ListBuffer_.reset ();
+					File_.reset (new QFile (td.Filename_));
+					if (!File_->open (QIODevice::WriteOnly | QIODevice::Append) &&
+							!File_->open (QIODevice::WriteOnly))
+					{
+						emit error (tr ("Could not open file<br />%1<br />%2")
+								.arg (td.Filename_)
+								.arg (File_->errorString ()));
+						return;
+					}
+
+					InitialSize_ = File_->size ();
+					curl_easy_setopt (handle.get (),
+							CURLOPT_RESUME_FROM_LARGE, File_->size ());
+				}
+				else
+				{
+					curl_easy_setopt (handle.get (),
+							CURLOPT_WRITEFUNCTION, list_dir);
+
+					File_.reset ();
+					ListBuffer_.reset (new QBuffer ());
+					curl_easy_setopt (handle.get (),
+							CURLOPT_RESUME_FROM_LARGE, 0);
+				}
 
 				CURLcode result = curl_easy_perform (handle.get ());
-				File_->flush ();
+				if (File_)
+					File_->close ();
 				if (result)
 				{
 					QString errstr (curl_easy_strerror (result));
@@ -174,6 +207,19 @@ namespace LeechCraft
 						<< result
 						<< errstr;
 					emit error (errstr);
+				}
+			}
+
+			void Worker::ParseBuffer ()
+			{
+				QByteArray buf = ListBuffer_->buffer ();
+				QList<QByteArray> bstrs = buf.split ('\n');
+				QStringList result;
+				Q_FOREACH (QByteArray bstr, bstrs)
+				{
+					struct ftpparse fp;
+					if (!ftpparse (&fp, bstr.data (), bstr.size ()))
+						continue;
 				}
 			}
 
@@ -192,6 +238,14 @@ namespace LeechCraft
 				const char *start = static_cast<char*> (buffer);
 				size_t written = File_->write (start, size * nmemb);
 				return written;
+			}
+			
+			size_t Worker::ListDir (void *buffer, size_t size, size_t nmemb)
+			{
+				const char *start = static_cast<char*> (buffer);
+				size_t result = size * nmemb;
+				ListBuffer_->buffer ().append (start, result);
+				return result;
 			}
 			
 			int Worker::Progress (double dlt, double dln, double ult, double uln)

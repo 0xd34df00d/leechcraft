@@ -3,6 +3,7 @@
 #include <boost/shared_ptr.hpp>
 #include <QThread>
 #include <QFile>
+#include <QBuffer>
 #include <QUrl>
 #include <QDateTime>
 #include <curl/curl.h>
@@ -25,6 +26,16 @@ namespace LeechCraft
 				QString Filename_;
 			};
 
+			struct FetchedEntry
+			{
+				QUrl URL_;
+				QString OriginalLocalPath_;
+				quint64 Size_;
+				QDateTime DateTime_;
+				QString User_;
+				QString Group_;
+			};
+
 			class Worker : public QThread
 			{
 				Q_OBJECT
@@ -32,6 +43,7 @@ namespace LeechCraft
 				friend struct Wrapper;
 				int ID_;
 				boost::shared_ptr<QFile> File_;
+				boost::shared_ptr<QBuffer> ListBuffer_;
 				Util::Guarded<QUrl> URL_;
 				Util::Guarded<bool> Exit_;
 				Util::Guarded<bool> IsWorking_;
@@ -66,11 +78,14 @@ namespace LeechCraft
 				void run ();
 			private:
 				void HandleTask (const TaskData&, CURL_ptr);
+				void ParseBuffer ();
 				void Reset ();
 				size_t WriteData (void*, size_t, size_t);
+				size_t ListDir (void*, size_t, size_t);
 				int Progress (double, double, double, double);
 			signals:
 				void error (const QString&);
+				void finished (const TaskData&);
 			};
 
 			typedef boost::shared_ptr<Worker> Worker_ptr;
