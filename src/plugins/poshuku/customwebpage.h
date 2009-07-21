@@ -79,6 +79,7 @@ namespace LeechCraft
 				void gotEntity (const LeechCraft::DownloadEntity&);
 				void loadingURL (const QUrl&);
 				void storeFormData (const PageFormsData_t&);
+				void couldHandle (const LeechCraft::DownloadEntity&, bool*);
 			};
 		};
 	};

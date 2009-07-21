@@ -306,6 +306,10 @@ namespace LeechCraft
 						SIGNAL (closeRequested ()),
 						this,
 						SIGNAL (needToClose ()));
+				connect (Ui_.WebView_->page (),
+						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)),
+						this,
+						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)));
 			
 				connect (&Core::Instance (),
 						SIGNAL (newUnclose (QAction*)),

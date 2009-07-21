@@ -411,9 +411,19 @@ namespace LeechCraft
 					return false;
 			
 				QString scheme = request.url ().scheme ();
-				if (scheme == "mailto" || scheme == "ftp")
+				if (scheme == "mailto" ||
+						scheme == "ftp")
 				{
-					QDesktopServices::openUrl (request.url ());
+					LeechCraft::DownloadEntity e =
+						LeechCraft::Util::MakeEntity (request.url (),
+							QString (),
+							LeechCraft::FromUserInitiated);
+					bool ch = false;
+					emit couldHandle (e, &ch);
+					if (ch)
+						emit gotEntity (e);
+					else
+						QDesktopServices::openUrl (request.url ());
 					return false;
 				}
 			
