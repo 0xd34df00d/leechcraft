@@ -216,32 +216,27 @@ namespace LeechCraft
 				QUrl url = e.Entity_.toUrl ();
 
 				QFileInfo fi (e.Location_);
-				QString dir = fi.dir ().path (),
-						file = fi.fileName ();
+				QString dir, file;
+				if (fi.isDir ())
+					dir = fi.path ();
+				else
+				{
+					dir = fi.dir ().path ();
+					file = fi.fileName ();
+				}
 	
 				if (!(e.Parameters_ & LeechCraft::Internal))
 				{
 					if (fi.isDir ())
 					{
 						dir = e.Location_;
-						file = QFileInfo (url.toString (QUrl::RemoveFragment)).fileName ();
-						while (file.isEmpty ())
-						{
-							bool ok;
-							file = QInputDialog::getText (0,
-									tr ("LeechCraft"),
-									tr ("Input file name for the %1")
-										.arg (url.toString ()),
-									QLineEdit::Normal,
-									"",
-									&ok);
-							if (!ok)
-								return -1;
-						}
+						if (file.isEmpty ())
+							file = QFileInfo (url.toString (QUrl::RemoveFragment)).fileName ();
 
 						QDir fd (dir);
 
-						if (fd.exists (file))
+						if (!file.isEmpty () &&
+								fd.exists (file))
 						{
 							QMessageBox box (QMessageBox::Question,
 									tr ("LeechCraft"),
@@ -325,6 +320,7 @@ namespace LeechCraft
 					TasksLock_.unlock ();
 					WorkerWaitMutex_.lock ();
 					WorkerWait_.wait (&WorkerWaitMutex_);
+					WorkerWaitMutex_.unlock ();
 					if (Quitting_)
 						break;
 					TasksLock_.lockForWrite ();
@@ -350,7 +346,6 @@ namespace LeechCraft
 
 			void Core::FinishedTask (int id)
 			{
-				WorkerWaitMutex_.unlock ();
 				if (id >= 0)
 					Proxy_->FreeID (id);
 				QTimer::singleShot (0,
