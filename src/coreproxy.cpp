@@ -57,9 +57,9 @@ int CoreProxy::GetID ()
 {
 	int i = 0;
 	while (true)
-		if (!UsedIDs_.contains (++i))
+		if (!UsedIDs_.Val ().contains (++i))
 		{
-			UsedIDs_ << i;
+			UsedIDs_.Val () << i;
 			return i;
 		}
 	throw std::runtime_error ("ID pool exhausted");
@@ -67,7 +67,7 @@ int CoreProxy::GetID ()
 
 void CoreProxy::FreeID (int id)
 {
-	if (UsedIDs_.removeAll (id) != 1)
+	if (UsedIDs_.Val ().removeAll (id) != 1)
 		throw std::runtime_error (QString ("The ID being freed wasn't reserved %1")
 				.arg (id).toStdString ().c_str ());
 }
