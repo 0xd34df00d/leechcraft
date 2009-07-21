@@ -29,19 +29,34 @@ namespace LeechCraft
 				Q_OBJECT
 
 				friend struct Wrapper;
+				int ID_;
 				boost::shared_ptr<QFile> File_;
+				Util::Guarded<QUrl> URL_;
 				Util::Guarded<bool> Exit_;
+				Util::Guarded<bool> IsWorking_;
 				Util::Guarded<quint64> DLNow_,
 					DLTotal_,
 					ULNow_,
 					ULTotal_;
 			public:
-				Worker (QObject* = 0);
+				struct TaskState
+				{
+					int WorkID_;
+					bool IsWorking_;
+					QUrl URL_;
+					QPair<quint64, quint64> DL_;
+					QPair<quint64, quint64> UL_;
+				};
+
+				Worker (int, QObject* = 0);
 				virtual ~Worker ();
 
+				bool IsWorking () const;
 				void SetExit ();
+				TaskState GetState () const;
 				QPair<quint64, quint64> GetDL () const;
 				QPair<quint64, quint64> GetUL () const;
+				QUrl GetURL () const;
 			protected:
 				void run ();
 			private:

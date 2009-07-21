@@ -15,11 +15,13 @@ SET (SRCS
 	lcftp.cpp
 	core.cpp
 	worker.cpp
+	inactiveworkersfilter.cpp
 	)
 SET (HEADERS
 	lcftp.h
 	core.h
 	worker.h
+	inactiveworkersfilter.h
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS

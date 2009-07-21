@@ -1,7 +1,7 @@
 #ifndef PLUGINS_LCFTP_CORE_H
 #define PLUGINS_LCFTP_CORE_H
 #include <boost/scoped_array.hpp>
-#include <QObject>
+#include <QAbstractItemModel>
 #include <QWaitCondition>
 #include <QReadWriteLock>
 #include <QMutex>
@@ -16,7 +16,9 @@ namespace LeechCraft
 	{
 		namespace LCFTP
 		{
-			class Core : public QObject
+			class InactiveWorkersFilter;
+
+			class Core : public QAbstractItemModel
 			{
 				Q_OBJECT
 
@@ -33,6 +35,9 @@ namespace LeechCraft
 
 				QList<Worker_ptr> Workers_;
 				Util::Guarded<bool> Quitting_;
+				QList<Worker::TaskState> States_;
+
+				boost::shared_ptr<InactiveWorkersFilter> WorkersFilter_;
 
 				Core ();
 			public:
@@ -40,15 +45,31 @@ namespace LeechCraft
 				void Release ();
 				void SetCoreProxy (ICoreProxy_ptr);
 
+				QAbstractItemModel* GetModel () const;
+
+				int columnCount (const QModelIndex& = QModelIndex ()) const;
+				QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
+				QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
+				QModelIndex parent (const QModelIndex&) const;
+				int rowCount (const QModelIndex& = QModelIndex ()) const;
+
 				QStringList Provides () const;
 				bool IsOK (const DownloadEntity&) const;
 				int Add (DownloadEntity);
 
+				bool IsAcceptable (int) const;
+
 				// These are called from workers' threads.
 				TaskData GetNextTask ();
-				void FinishedTask ();
+				void FinishedTask (int = -1);
+			private:
+				void QueueTask (const TaskData&);
+				int CountWorking () const;
+				Worker::TaskState RealState (int) const;
 			public slots:
 				void handleError (const QString&);
+			private slots:
+				void handleUpdateInterface ();
 			};
 		};
 	};

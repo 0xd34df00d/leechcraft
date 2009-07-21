@@ -28,8 +28,9 @@ namespace LeechCraft
 				}
 			};
 
-			Worker::Worker (QObject *parent)
+			Worker::Worker (int id, QObject *parent)
 			: QThread (parent)
+			, ID_ (id)
 			, Exit_ (false)
 			{
 				Reset ();
@@ -39,9 +40,27 @@ namespace LeechCraft
 			{
 			}
 
+			bool Worker::IsWorking () const
+			{
+				return IsWorking_;
+			}
+
 			void Worker::SetExit ()
 			{
 				Exit_ = true;
+			}
+
+			Worker::TaskState Worker::GetState () const
+			{
+				TaskState result =
+				{
+					ID_,
+					IsWorking_,
+					URL_,
+					qMakePair<quint64, quint64> (DLNow_, DLTotal_),
+					qMakePair<quint64, quint64> (ULNow_, ULTotal_)
+				};
+				return result;
 			}
 
 			QPair<quint64, quint64> Worker::GetDL () const
@@ -52,6 +71,11 @@ namespace LeechCraft
 			QPair<quint64, quint64> Worker::GetUL () const
 			{
 				return qMakePair<quint64, quint64> (ULNow_, ULTotal_);
+			}
+
+			QUrl Worker::GetURL () const
+			{
+				return URL_;
 			}
 
 			namespace
@@ -88,13 +112,12 @@ namespace LeechCraft
 				curl_easy_setopt (handle.get (),
 						CURLOPT_PROGRESSDATA, w.get ());
 
-				bool first = true;
+				int id = -1;
 
 				while (true)
 				{
-					if (!first)
-						Core::Instance ().FinishedTask ();
-					first = false;
+					if (id >= 0)
+						Core::Instance ().FinishedTask (id);
 
 					TaskData td = Core::Instance ().GetNextTask ();
 					if (Exit_)
@@ -103,6 +126,12 @@ namespace LeechCraft
 						File_.reset ();
 						break;
 					}
+
+					id = td.ID_;
+
+					URL_ = td.URL_;
+
+					IsWorking_ = true;
 
 					HandleTask (td, handle);
 					Reset ();
@@ -140,6 +169,8 @@ namespace LeechCraft
 				DLTotal_ = 0;
 				ULNow_ = 0;
 				ULTotal_ = 0;
+				IsWorking_ = false;
+				URL_ = QUrl ();
 			}
 
 			size_t Worker::WriteData (void *buffer, size_t size, size_t nmemb)

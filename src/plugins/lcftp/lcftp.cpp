@@ -56,6 +56,15 @@ namespace LeechCraft
 				return QIcon ();
 			}
 
+			QAbstractItemModel* LCFTP::GetRepresentation () const
+			{
+				return Core::Instance ().GetModel ();
+			}
+
+			void LCFTP::ItemSelected (const QModelIndex&)
+			{
+			}
+
 			qint64 LCFTP::GetDownloadSpeed () const
 			{
 				return 0;

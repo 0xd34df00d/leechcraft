@@ -5,6 +5,7 @@
 #include <QTranslator>
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
+#include <interfaces/ijobholder.h>
 #include <interfaces/imultitabs.h>
 #include <interfaces/ientityhandler.h>
 
@@ -17,6 +18,7 @@ namespace LeechCraft
 			class LCFTP : public QObject
 						, public IInfo
 						, public IMultiTabs
+						, public IJobHolder
 						, public IDownload
 						, public IEntityHandler
 			{
@@ -34,6 +36,9 @@ namespace LeechCraft
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
 				QIcon GetIcon () const;
+
+				QAbstractItemModel* GetRepresentation () const;
+				void ItemSelected (const QModelIndex&);
 
 				qint64 GetDownloadSpeed () const;
 				qint64 GetUploadSpeed () const;

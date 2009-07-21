@@ -4,7 +4,9 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QMessageBox>
+#include <QTimer>
 #include <curl/curl.h>
+#include "inactiveworkersfilter.h"
 
 namespace LeechCraft
 {
@@ -18,10 +20,11 @@ namespace LeechCraft
 			Core::Core ()
 			: Quitting_ (false)
 			{
+				WorkersFilter_.reset (new InactiveWorkersFilter (this));
 				curl_global_init (CURL_GLOBAL_ALL);
 				for (int i = 0; i < 8; ++i)
 				{
-					Worker_ptr w (new Worker);
+					Worker_ptr w (new Worker (i));
 					w->start ();
 					connect (w.get (),
 							SIGNAL (error (const QString&)),
@@ -29,7 +32,18 @@ namespace LeechCraft
 							SLOT (handleError (const QString&)),
 							Qt::QueuedConnection);
 					Workers_ << w;
+					States_ << Workers_.at (i)->GetState ();
 				}
+
+				handleUpdateInterface ();
+
+				QTimer *timer = new QTimer (this);
+				timer->setInterval (500);
+				connect (timer,
+						SIGNAL (timeout ()),
+						this,
+						SLOT (handleUpdateInterface ()));
+				timer->start ();
 			}
 
 			Core& Core::Instance ()
@@ -62,6 +76,79 @@ namespace LeechCraft
 			void Core::SetCoreProxy (ICoreProxy_ptr proxy)
 			{
 				Proxy_ = proxy;
+			}
+
+			QAbstractItemModel* Core::GetModel () const
+			{
+				return WorkersFilter_.get ();
+			}
+
+			int Core::columnCount (const QModelIndex&) const
+			{
+				return 3;
+			}
+
+			QVariant Core::data (const QModelIndex& index, int role) const
+			{
+				if (!index.isValid ())
+					return QVariant ();
+			
+				int working = CountWorking ();
+				int r = index.row ();
+				int c = index.column ();
+
+				if (role == Qt::DisplayRole)
+				{
+					switch (c)
+					{
+						case 0:
+							if (r < working)
+								return RealState (r).URL_.toString ();
+							else
+								return Tasks_ [r - working].URL_.toString ();
+						case 1:
+							return r < working ? tr ("Downloading") : tr ("Waiting");
+						case 2:
+							if (r >= working)
+								return QVariant ();
+							else
+							{
+								QPair<quint64, quint64> s = RealState (r).DL_;
+								return tr ("%1 of %2 (%3%)")
+									.arg (s.first)
+									.arg (s.second)
+									.arg (s.first * 100 / s.second);
+							}
+						default:
+							return QVariant ();
+					}
+				}
+				else
+					return QVariant ();
+			}
+
+			QModelIndex Core::index (int row, int column, const QModelIndex& parent) const
+			{
+				if (!hasIndex (row, column, parent))
+					return QModelIndex ();
+			
+				return createIndex (row, column);
+			}
+
+			QModelIndex Core::parent (const QModelIndex&) const
+			{
+				return QModelIndex ();
+			}
+
+			int Core::rowCount (const QModelIndex& parent) const
+			{
+				if (parent.isValid ())
+					return 0;
+
+				int result = 0;
+				result += CountWorking ();
+				result += Tasks_.size ();
+				return result;
 			}
 
 			QStringList Core::Provides () const
@@ -120,11 +207,15 @@ namespace LeechCraft
 					url,
 					dir + "/" + file
 				};
-				TasksLock_.lockForWrite ();
-				Tasks_ << td;
-				TasksLock_.unlock ();
+				QueueTask (td);
 				WorkerWait_.wakeOne ();
 				return td.ID_;
+			}
+
+			bool Core::IsAcceptable (int index) const
+			{
+				return index >= States_.size () ||
+					States_.at (index).IsWorking_;
 			}
 
 			TaskData Core::GetNextTask ()
@@ -142,8 +233,13 @@ namespace LeechCraft
 
 				if (!Quitting_)
 				{
+					beginRemoveRows (QModelIndex (), 0, 0);
 					TaskData td = Tasks_.takeFirst ();
 					TasksLock_.unlock ();
+					endRemoveRows ();
+					QTimer::singleShot (0,
+							this,
+							SLOT (handleUpdateInterface ()));
 					return td;
 				}
 				else
@@ -153,16 +249,58 @@ namespace LeechCraft
 				}
 			}
 
-			void Core::FinishedTask ()
+			void Core::FinishedTask (int id)
 			{
 				WorkerWaitMutex_.unlock ();
+				if (id >= 0)
+					Proxy_->FreeID (id);
+				QTimer::singleShot (0,
+						this,
+						SLOT (handleUpdateInterface ()));
+			}
+
+			void Core::QueueTask (const TaskData& td)
+			{
+				beginInsertRows (QModelIndex (),
+						Tasks_.size (), Tasks_.size ());
+				TasksLock_.lockForWrite ();
+				Tasks_ << td;
+				TasksLock_.unlock ();
+				endInsertRows ();
 			}
 			
+			int Core::CountWorking () const
+			{
+				int result = 0;
+				Q_FOREACH (Worker::TaskState ts, States_)
+					result += (ts.IsWorking_ ? 1 : 0);
+				return result;
+			}
+
+			Worker::TaskState Core::RealState (int lindex) const
+			{
+				Q_FOREACH (Worker::TaskState w, States_)
+					if (w.IsWorking_ &&
+							lindex-- == 0)
+						return w;
+				return Worker::TaskState ();
+			}
+
 			void Core::handleError (const QString& msg)
 			{
 				QMessageBox::critical (0,
 						tr ("LeechCraft"),
 						msg);
+			}
+
+			void Core::handleUpdateInterface ()
+			{
+				States_.clear ();
+				for (int i = 0; i < Workers_.size (); ++i)
+					States_ << Workers_.at (i)->GetState ();
+
+				emit dataChanged (index (0, 0),
+						index (States_.size () - 1, 2));
 			}
 		};
 	};
