@@ -14,10 +14,12 @@ INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS}
 SET (SRCS
 	lcftp.cpp
 	core.cpp
+	worker.cpp
 	)
 SET (HEADERS
 	lcftp.h
 	core.h
+	worker.h
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS

@@ -1,5 +1,6 @@
 #include "core.h"
 #include <QUrl>
+#include <QMutexLocker>
 #include <curl/curl.h>
 
 namespace LeechCraft
@@ -8,6 +9,9 @@ namespace LeechCraft
 	{
 		namespace LCFTP
 		{
+			Core* Core::Instance_ = 0;
+			QMutex Core::InstanceMutex_;
+
 			Core::Core ()
 			{
 				curl_global_init (CURL_GLOBAL_ALL);
@@ -15,13 +19,19 @@ namespace LeechCraft
 
 			Core& Core::Instance ()
 			{
-				static Core c;
-				return c;
+				if (!Instance_)
+				{
+					QMutexLocker locker (&InstanceMutex_);
+					if (!Instance_)
+						Instance_ = new Core ();
+				}
+				return *Instance_;
 			}
 
 			void Core::Release ()
 			{
 				curl_global_cleanup ();
+				deleteLater ();
 			}
 
 			QStringList Core::Provides () const
@@ -31,7 +41,7 @@ namespace LeechCraft
 				if (data->age > 0)
 				{
 					if (data->features & CURL_VERSION_SSL)
-						result << "http";
+						result << "ftps";
 				}
 				return result;
 			}
@@ -46,6 +56,22 @@ namespace LeechCraft
 					return true;
 				else
 					return false;
+			}
+
+			int Core::Add (DownloadEntity e)
+			{
+			}
+
+			TaskData Core::GetNextTask ()
+			{
+				WorkerWaitMutex_.lock ();
+				WorkerWait_.wait (&WorkerWaitMutex_);
+				return Tasks_.Val ().takeFirst ();
+			}
+
+			void Core::FinishedTask ()
+			{
+				WorkerWaitMutex_.unlock ();
 			}
 		};
 	};
