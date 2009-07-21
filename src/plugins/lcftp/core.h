@@ -47,6 +47,8 @@ namespace LeechCraft
 				// These are called from workers' threads.
 				TaskData GetNextTask ();
 				void FinishedTask ();
+			public slots:
+				void handleError (const QString&);
 			};
 		};
 	};

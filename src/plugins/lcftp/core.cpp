@@ -3,6 +3,7 @@
 #include <QMutexLocker>
 #include <QFileInfo>
 #include <QDir>
+#include <QMessageBox>
 #include <curl/curl.h>
 
 namespace LeechCraft
@@ -20,8 +21,13 @@ namespace LeechCraft
 				curl_global_init (CURL_GLOBAL_ALL);
 				for (int i = 0; i < 8; ++i)
 				{
-					boost::shared_ptr<Worker> w (new Worker);
+					Worker_ptr w (new Worker);
 					w->start ();
+					connect (w.get (),
+							SIGNAL (error (const QString&)),
+							this,
+							SLOT (handleError (const QString&)),
+							Qt::QueuedConnection);
 					Workers_ << w;
 				}
 			}
@@ -150,6 +156,13 @@ namespace LeechCraft
 			void Core::FinishedTask ()
 			{
 				WorkerWaitMutex_.unlock ();
+			}
+			
+			void Core::handleError (const QString& msg)
+			{
+				QMessageBox::critical (0,
+						tr ("LeechCraft"),
+						msg);
 			}
 		};
 	};
