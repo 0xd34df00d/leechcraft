@@ -4,6 +4,7 @@
 #include <QThread>
 #include <QFile>
 #include <QUrl>
+#include <QDateTime>
 #include <curl/curl.h>
 #include <plugininterface/guarded.h>
 
@@ -39,6 +40,7 @@ namespace LeechCraft
 					ULNow_,
 					ULTotal_,
 					InitialSize_;
+				Util::Guarded<QDateTime> StartDT_;
 			public:
 				struct TaskState
 				{
@@ -47,6 +49,8 @@ namespace LeechCraft
 					QUrl URL_;
 					QPair<quint64, quint64> DL_;
 					QPair<quint64, quint64> UL_;
+					quint64 DLSpeed_;
+					quint64 ULSpeed_;
 				};
 
 				Worker (int, QObject* = 0);

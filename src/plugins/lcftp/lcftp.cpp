@@ -67,12 +67,12 @@ namespace LeechCraft
 
 			qint64 LCFTP::GetDownloadSpeed () const
 			{
-				return 0;
+				return Core::Instance ().GetDownloadSpeed ();
 			}
 
 			qint64 LCFTP::GetUploadSpeed () const
 			{
-				return 0;
+				return Core::Instance ().GetUploadSpeed ();
 			}
 
 			void LCFTP::StartAll ()

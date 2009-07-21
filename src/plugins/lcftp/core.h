@@ -46,6 +46,8 @@ namespace LeechCraft
 				void SetCoreProxy (ICoreProxy_ptr);
 
 				QAbstractItemModel* GetModel () const;
+				qint64 GetDownloadSpeed () const;
+				qint64 GetUploadSpeed () const;
 
 				int columnCount (const QModelIndex& = QModelIndex ()) const;
 				QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;

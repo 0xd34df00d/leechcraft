@@ -87,6 +87,22 @@ namespace LeechCraft
 				return WorkersFilter_.get ();
 			}
 
+			qint64 Core::GetDownloadSpeed () const
+			{
+				qint64 result = 0;
+				Q_FOREACH (Worker::TaskState st, States_)
+					result += st.DLSpeed_;
+				return result;
+			}
+
+			qint64 Core::GetUploadSpeed () const
+			{
+				qint64 result = 0;
+				Q_FOREACH (Worker::TaskState st, States_)
+					result += st.ULSpeed_;
+				return result;
+			}
+
 			int Core::columnCount (const QModelIndex&) const
 			{
 				return 3;
@@ -111,7 +127,11 @@ namespace LeechCraft
 							else
 								return Tasks_ [r - working].URL_.toString ();
 						case 1:
-							return r < working ? tr ("Downloading") : tr ("Waiting");
+							return r < working ?
+								tr ("Downloading at %1")
+									.arg (Util::Proxy::Instance ()->
+											MakePrettySize (States_.at (r).DLSpeed_)) :
+								tr ("Waiting");
 						case 2:
 							if (r >= working)
 								return QVariant ();
@@ -120,13 +140,17 @@ namespace LeechCraft
 								QPair<quint64, quint64> s = States_.at (r).DL_;
 								if (s.second)
 									return tr ("%1 of %2 (%3%)")
-										.arg (Util::Proxy::Instance ()->MakePrettySize (s.first))
-										.arg (Util::Proxy::Instance ()->MakePrettySize (s.second))
+										.arg (Util::Proxy::Instance ()->
+												MakePrettySize (s.first))
+										.arg (Util::Proxy::Instance ()->
+												MakePrettySize (s.second))
 										.arg (s.first * 100 / s.second);
 								else
 									return tr ("%1 of %2")
-										.arg (Util::Proxy::Instance ()->MakePrettySize (s.first))
-										.arg (Util::Proxy::Instance ()->MakePrettySize (s.second));
+										.arg (Util::Proxy::Instance ()->
+												MakePrettySize (s.first))
+										.arg (Util::Proxy::Instance ()->
+												MakePrettySize (s.second));
 							}
 						default:
 							return QVariant ();

@@ -52,14 +52,21 @@ namespace LeechCraft
 
 			Worker::TaskState Worker::GetState () const
 			{
+				int secs = StartDT_.Val ().secsTo (QDateTime::currentDateTime ());
+				quint64 dl = secs ? DLNow_ / secs : 0;
+				quint64 ul = secs ? ULNow_ / secs : 0;
+
 				quint64 is = InitialSize_;
+
 				TaskState result =
 				{
 					ID_,
 					IsWorking_,
 					URL_,
 					qMakePair<quint64, quint64> (DLNow_ + is, DLTotal_ + is),
-					qMakePair<quint64, quint64> (ULNow_ + is, ULTotal_ + is)
+					qMakePair<quint64, quint64> (ULNow_ + is, ULTotal_ + is),
+					dl,
+					ul
 				};
 				return result;
 			}
@@ -133,6 +140,8 @@ namespace LeechCraft
 					URL_ = td.URL_;
 
 					IsWorking_ = true;
+
+					StartDT_ = QDateTime::currentDateTime ();
 
 					HandleTask (td, handle);
 					Reset ();
