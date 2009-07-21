@@ -25,11 +25,17 @@ namespace LeechCraft
 
 			Worker::Worker (QObject *parent)
 			: QThread (parent)
+			, Exit_ (false)
 			{
 			}
 
 			Worker::~Worker ()
 			{
+			}
+
+			void Worker::SetExit ()
+			{
+				Exit_ = true;
 			}
 
 			namespace
@@ -47,9 +53,29 @@ namespace LeechCraft
 						curl_easy_cleanup);
 				boost::shared_ptr<Wrapper> w (new Wrapper (this));
 
+				bool first = true;
+
 				while (true)
 				{
+					if (!first)
+						Core::Instance ().FinishedTask ();
+					first = false;
+
 					TaskData td = Core::Instance ().GetNextTask ();
+					if (Exit_)
+					{
+						File_.reset ();
+						break;
+					}
+
+					File_.reset (new QFile (td.Filename_));
+					if (!File_->open (QIODevice::WriteOnly))
+					{
+						emit error (tr ("Could not open file<br />%1<br />%2")
+								.arg (td.Filename_)
+								.arg (File_->errorString ()));
+						continue;
+					}
 					curl_easy_setopt (handle.get (),
 							CURLOPT_URL, td.URL_.toEncoded ().constData ());
 					curl_easy_setopt (handle.get (),
@@ -58,7 +84,7 @@ namespace LeechCraft
 							CURLOPT_WRITEDATA, w.get ());
 
 					CURLcode result = curl_easy_perform (handle.get ());
-					if (!result)
+					if (result)
 					{
 						QString errstr (curl_easy_strerror (result));
 						qWarning () << Q_FUNC_INFO
@@ -66,15 +92,15 @@ namespace LeechCraft
 							<< errstr;
 						emit error (errstr);
 					}
-					Core::Instance ().FinishedTask ();
+					File_->flush ();
 				}
+				qDebug () << "quitting worker";
 			}
 
 			size_t Worker::WriteData (void *buffer, size_t size, size_t nmemb)
 			{
 				const char *start = static_cast<char*> (buffer);
 				size_t written = File_->write (start, size * nmemb);
-				qDebug () << Q_FUNC_INFO << written << size * nmemb;
 				return written;
 			}
 		};

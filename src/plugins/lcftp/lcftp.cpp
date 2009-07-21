@@ -10,10 +10,10 @@ namespace LeechCraft
 	{
 		namespace LCFTP
 		{
-			void LCFTP::Init (ICoreProxy_ptr)
+			void LCFTP::Init (ICoreProxy_ptr proxy)
 			{
 				Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku"));
-				Core::Instance ();
+				Core::Instance ().SetCoreProxy (proxy);
 			}
 
 			void LCFTP::Release ()

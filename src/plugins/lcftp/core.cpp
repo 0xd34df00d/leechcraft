@@ -1,6 +1,8 @@
 #include "core.h"
 #include <QUrl>
 #include <QMutexLocker>
+#include <QFileInfo>
+#include <QDir>
 #include <curl/curl.h>
 
 namespace LeechCraft
@@ -13,8 +15,15 @@ namespace LeechCraft
 			QMutex Core::InstanceMutex_;
 
 			Core::Core ()
+			: Quitting_ (false)
 			{
 				curl_global_init (CURL_GLOBAL_ALL);
+				for (int i = 0; i < 8; ++i)
+				{
+					boost::shared_ptr<Worker> w (new Worker);
+					w->start ();
+					Workers_ << w;
+				}
 			}
 
 			Core& Core::Instance ()
@@ -30,8 +39,23 @@ namespace LeechCraft
 
 			void Core::Release ()
 			{
+				Quitting_ = true;
+				Q_FOREACH (Worker_ptr w, Workers_)
+					w->SetExit ();
+				WorkerWait_.wakeAll ();
+
 				curl_global_cleanup ();
 				deleteLater ();
+				Q_FOREACH (Worker_ptr w, Workers_)
+				{
+					w->wait (10);
+					w->terminate ();
+				}
+			}
+
+			void Core::SetCoreProxy (ICoreProxy_ptr proxy)
+			{
+				Proxy_ = proxy;
 			}
 
 			QStringList Core::Provides () const
@@ -60,13 +84,67 @@ namespace LeechCraft
 
 			int Core::Add (DownloadEntity e)
 			{
+				if (!e.Entity_.canConvert<QUrl> ())
+					return -1;
+
+				QUrl url = e.Entity_.toUrl ();
+				QString path = e.Location_;
+
+				QFileInfo fi (path);
+				QString dir = fi.dir ().path (),
+						file = fi.fileName ();
+	
+				if (!(e.Parameters_ & LeechCraft::Internal))
+				{
+					if (fi.isDir ())
+					{
+						dir = e.Location_;
+						file = QFileInfo (url.toString (QUrl::RemoveFragment)).fileName ();
+						if (file.isEmpty ())
+							file = "index";
+					}
+					else if (fi.isFile ());
+					else
+						return -1;
+				}
+
+				TaskData td =
+				{
+					Proxy_->GetID (),
+					url,
+					dir + "/" + file
+				};
+				TasksLock_.lockForWrite ();
+				Tasks_ << td;
+				TasksLock_.unlock ();
+				WorkerWait_.wakeOne ();
+				return td.ID_;
 			}
 
 			TaskData Core::GetNextTask ()
 			{
-				WorkerWaitMutex_.lock ();
-				WorkerWait_.wait (&WorkerWaitMutex_);
-				return Tasks_.Val ().takeFirst ();
+				TasksLock_.lockForRead ();
+				while (!Tasks_.size ())
+				{
+					TasksLock_.unlock ();
+					WorkerWaitMutex_.lock ();
+					WorkerWait_.wait (&WorkerWaitMutex_);
+					if (Quitting_)
+						break;
+					TasksLock_.lockForWrite ();
+				}
+
+				if (!Quitting_)
+				{
+					TaskData td = Tasks_.takeFirst ();
+					TasksLock_.unlock ();
+					return td;
+				}
+				else
+				{
+					TaskData td;
+					return td;
+				}
 			}
 
 			void Core::FinishedTask ()

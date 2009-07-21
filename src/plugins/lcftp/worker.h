@@ -4,6 +4,7 @@
 #include <QThread>
 #include <QFile>
 #include <QUrl>
+#include <plugininterface/guarded.h>
 
 namespace LeechCraft
 {
@@ -15,8 +16,9 @@ namespace LeechCraft
 
 			struct TaskData
 			{
-				QString Filename_;
+				int ID_;
 				QUrl URL_;
+				QString Filename_;
 			};
 
 			class Worker : public QThread
@@ -25,9 +27,12 @@ namespace LeechCraft
 
 				friend struct Wrapper;
 				boost::shared_ptr<QFile> File_;
+				Util::Guarded<bool> Exit_;
 			public:
 				Worker (QObject* = 0);
 				virtual ~Worker ();
+
+				void SetExit ();
 			protected:
 				void run ();
 			private:
@@ -35,6 +40,8 @@ namespace LeechCraft
 			signals:
 				void error (const QString&);
 			};
+
+			typedef boost::shared_ptr<Worker> Worker_ptr;
 		};
 	};
 };
