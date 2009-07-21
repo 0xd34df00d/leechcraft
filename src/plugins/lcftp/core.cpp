@@ -4,6 +4,9 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QMessageBox>
+#include <QInputDialog>
+#include <QFileDialog>
+#include <QPushButton>
 #include <QTimer>
 #include <curl/curl.h>
 #include <plugininterface/proxy.h>
@@ -187,9 +190,8 @@ namespace LeechCraft
 					return -1;
 
 				QUrl url = e.Entity_.toUrl ();
-				QString path = e.Location_;
 
-				QFileInfo fi (path);
+				QFileInfo fi (e.Location_);
 				QString dir = fi.dir ().path (),
 						file = fi.fileName ();
 	
@@ -199,8 +201,75 @@ namespace LeechCraft
 					{
 						dir = e.Location_;
 						file = QFileInfo (url.toString (QUrl::RemoveFragment)).fileName ();
-						if (file.isEmpty ())
-							file = "index";
+						while (file.isEmpty ())
+						{
+							bool ok;
+							file = QInputDialog::getText (0,
+									tr ("LeechCraft"),
+									tr ("Input file name for the %1")
+										.arg (url.toString ()),
+									QLineEdit::Normal,
+									"",
+									&ok);
+							if (!ok)
+								return -1;
+						}
+
+						QDir fd (dir);
+
+						if (fd.exists (file))
+						{
+							QMessageBox box (QMessageBox::Question,
+									tr ("LeechCraft"),
+									tr ("%1 already exists. What do you want to do?")
+										.arg (QDir::toNativeSeparators (dir + "/" + file)));
+							QPushButton *resume = box.addButton (tr ("Resume"),
+									QMessageBox::AcceptRole);
+							QPushButton *overwrite = box.addButton (tr ("Overwrite"),
+									QMessageBox::DestructiveRole);
+							QPushButton *rename = box.addButton (tr ("Rename"),
+									QMessageBox::ActionRole);
+							QPushButton *cancel = box.addButton (tr ("Cancel"),
+									QMessageBox::RejectRole);
+							box.setDefaultButton (resume);
+							box.setEscapeButton (cancel);
+
+							box.exec ();
+
+							QAbstractButton *clicked = box.clickedButton ();
+							if (clicked == overwrite)
+							{
+								if (!fd.remove (file))
+								{
+									QMessageBox::critical (0,
+											tr ("LeechCraft"),
+											tr ("Error removing %1")
+												.arg (QDir::toNativeSeparators (dir + "/" + file)));
+									return -1;
+								}
+							}
+							else if (clicked == resume)
+							{
+								// Do nothing
+							}
+							else if (clicked == rename)
+							{
+								while (fd.exists (file))
+								{
+									QString filename = QFileDialog::getSaveFileName (0,
+											tr ("Choose new file name"),
+											dir);
+									if (filename.isEmpty ())
+										return -1;
+									fi = QFileInfo (filename);
+									dir = fi.dir ().path ();
+									file = fi.fileName ();
+									fd = QDir (dir);
+								}
+							}
+							else
+								return -1;
+						}
 					}
 					else if (fi.isFile ());
 					else
