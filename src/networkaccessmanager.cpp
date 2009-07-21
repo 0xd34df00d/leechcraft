@@ -136,6 +136,16 @@ void LeechCraft::NetworkAccessManager::handleAuthentication (QNetworkReply *repl
 	DoCommonAuth (msg, authen);
 }
 
+void LeechCraft::NetworkAccessManager::handleAuthentication (const QNetworkProxy& proxy,
+		QAuthenticator *authen)
+{
+	QString msg = tr ("%1<br /><em>%2</em><br />requires authentication.")
+		.arg (authen->realm ())
+		.arg (proxy.hostName ());
+
+	DoCommonAuth (msg, authen);
+}
+
 void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 		const QList<QSslError>& errors)
 {
