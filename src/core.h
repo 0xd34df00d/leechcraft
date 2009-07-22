@@ -100,7 +100,7 @@ namespace LeechCraft
 		 *
 		 * @return List of actions.
 		 */
-		QList<QAction*> GetActions2Embed () const;
+		QList<QList<QAction*> > GetActions2Embed () const;
 		QAbstractItemModel* GetPluginsModel () const;
 		QAbstractItemModel* GetTasksModel () const;
 		PluginManager* GetPluginManager () const;

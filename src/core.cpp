@@ -181,12 +181,12 @@ QObjectList LeechCraft::Core::GetShortcuts () const
 	return PluginManager_->GetAllCastableRoots<IHaveShortcuts*> ();
 }
 
-QList<QAction*> LeechCraft::Core::GetActions2Embed () const
+QList<QList<QAction*> > LeechCraft::Core::GetActions2Embed () const
 {
 	QList<IToolBarEmbedder*> plugins = PluginManager_->GetAllCastableTo<IToolBarEmbedder*> ();
-	QList<QAction*> actions;
+	QList<QList<QAction*> > actions;
 	Q_FOREACH (IToolBarEmbedder *plugin, plugins)
-		actions += plugin->GetActions ();
+		actions << plugin->GetActions ();
 	return actions;
 }
 

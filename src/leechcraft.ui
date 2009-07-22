@@ -116,10 +116,7 @@
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <widget class="QToolBar" name="toolBar">
-   <property name="windowTitle">
-    <string>toolBar</string>
-   </property>
+  <widget class="QToolBar" name="MainToolbar_">
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
