@@ -76,6 +76,7 @@ namespace LeechCraft
 		void handleLanguage ();
 		void on_ActionFullscreenMode__triggered (bool);
 		void on_ActionLogger__triggered ();
+		void handleToolButtonStyleChanged ();
 		void on_MainTabWidget__currentChanged (int);
 		void updatePanes (const QItemSelection&, const QItemSelection&);
 		void updateSpeedIndicators ();

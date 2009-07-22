@@ -211,6 +211,9 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	XmlSettingsManager::Instance ()->RegisterObject ("Language",
 			this, "handleLanguage");
+	XmlSettingsManager::Instance ()->RegisterObject ("ToolButtonStyle",
+			this, "handleToolButtonStyleChanged");
+	handleToolButtonStyleChanged ();
 
 	IconChooser *ic = new IconChooser (SkinEngine::Instance ().ListIcons (),
 			this);
@@ -388,6 +391,28 @@ void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
 void LeechCraft::MainWindow::on_ActionLogger__triggered ()
 {
 	LogToolBox_->show ();
+}
+
+namespace
+{
+	Qt::ToolButtonStyle GetToolButtonStyle ()
+	{
+		QString style = XmlSettingsManager::Instance ()->
+			property ("ToolButtonStyle").toString ();
+		if (style == "iconOnly")
+			return Qt::ToolButtonIconOnly;
+		else if (style == "textOnly")
+			return Qt::ToolButtonTextOnly;
+		else if (style == "textBesideIcon")
+			return Qt::ToolButtonTextBesideIcon;
+		else
+			return Qt::ToolButtonTextUnderIcon;
+	}
+};
+
+void LeechCraft::MainWindow::handleToolButtonStyleChanged ()
+{
+	setToolButtonStyle (GetToolButtonStyle ());
 }
 
 void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)

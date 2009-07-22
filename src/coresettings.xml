@@ -18,6 +18,26 @@
 				<label lang="ru" value="Использовать кнопки прокрутки табов" />
 				<label lang="uk" value="Використовувати кнопки прокручування табів" />
 			</item>
+			<item type="combobox" property="ToolButtonStyle">
+				<label lang="en" value="Tool button style:" />
+				<label lang="ru" value="Стиль панелей инструментов:" />
+				<option name="iconOnly" default="true">
+					<label lang="en" value="Only display the icon" />
+					<label lang="ru" value="Показывать только иконку" />
+				</option>
+				<option name="textOnly">
+					<label lang="en" value="Only display the text" />
+					<label lang="ru" value="Показывать только текст" />
+				</option>
+				<option name="textBesideIcon">
+					<label lang="en" value="The text appears beside the icon" />
+					<label lang="ru" value="Текст рядом с иконкой" />
+				</option>
+				<option name="textUnderIcon">
+					<label lang="en" value="The text appears under the icon" />
+					<label lang="ru" value="Текст под иконкой" />
+				</option>
+			</item>
 			<item type="customwidget" name="IconSet">
 				<label lang="en" value="Icon set:" />
 				<label lang="ru" value="Набор иконок:" />
