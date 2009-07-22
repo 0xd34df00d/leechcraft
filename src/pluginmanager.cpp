@@ -693,7 +693,6 @@ bool LeechCraft::PluginManager::InitializeSingle (LeechCraft::PluginManager::Dep
 	{
 		IInfo *ii = qobject_cast<IInfo*> (item->Plugin_);
 		QString name = ii->GetName ();
-		emit loadProgress (QString (tr ("Initializing %1...")).arg (name));
 		ii->Init (ICoreProxy_ptr (new CoreProxy ()));
 		item->Initialized_ = true;
 

@@ -251,7 +251,6 @@ namespace LeechCraft
 		void error (QString) const;
 		void log (const QString&);
 		void downloadFinished (const QString&);
-		void loadProgress (const QString&);
 	};
 #define LC_DEFINE_REGISTER(a) \
 	template<> \

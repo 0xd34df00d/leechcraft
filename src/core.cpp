@@ -94,10 +94,6 @@ LeechCraft::Core::Core ()
 	StorageBackend_->Prepare ();
 
 	PluginManager_ = new PluginManager (this);
-	connect (PluginManager_,
-			SIGNAL (loadProgress (const QString&)),
-			this,
-			SIGNAL (loadProgress (const QString&)));
 
 	ClipboardWatchdog_ = new QTimer (this);
 	connect (ClipboardWatchdog_,
@@ -246,27 +242,6 @@ QStringList LeechCraft::Core::GetTagsForIndex (int index,
 
 void LeechCraft::Core::Setup (QObject *plugin)
 {
-	IInfo *info = qobject_cast<IInfo*> (plugin);
-	try
-	{
-		emit loadProgress (tr ("Setting up %1...").arg (info->GetName ()));
-	}
-	catch (const std::exception& e)
-	{
-		qWarning () << Q_FUNC_INFO
-			<< "unable to get name with"
-			<< e.what ()
-			<< plugin;
-		PluginManager_->Unload (plugin);
-	}
-	catch (...)
-	{
-		qWarning () << Q_FUNC_INFO
-			<< "unable to get name"
-			<< plugin;
-		PluginManager_->Unload (plugin);
-	}
-
 	IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
 	IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
 	IMultiTabs *imt = qobject_cast<IMultiTabs*> (plugin);
@@ -295,7 +270,6 @@ void LeechCraft::Core::DelayedInit ()
 
 	TabContainer_.reset (new TabContainer (ReallyMainWindow_->GetTabWidget ()));
 
-	emit loadProgress (tr ("Calculating dependencies..."));
 	PluginManager_->Init ();
 
 	QObjectList plugins = PluginManager_->GetAllPlugins ();
