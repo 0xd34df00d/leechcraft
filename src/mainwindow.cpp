@@ -106,11 +106,17 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			end = settable.end (); i != end; ++i)
 		SettingsSink_->AddDialog (*i);
 
-	QList<QAction*> actions2embed = Core::Instance ().GetActions2Embed ();
-	Q_FOREACH (QAction *act, actions2embed)
-		act->setParent (this);
-	if (actions2embed.size ())
-		addToolBar (tr ("Plugins"))->addActions (actions2embed);
+	QList<QList<QAction*> > actions2embed = Core::Instance ().GetActions2Embed ();
+	Q_FOREACH (QList<QAction*> list, Core::Instance ().GetActions2Embed ())
+	{
+		Q_FOREACH (QAction *act, list)
+			act->setParent (this);
+		if (list.size ())
+		{
+			Ui_.MainToolbar_->insertActions (Ui_.ActionLogger_, list);
+			Ui_.MainToolbar_->insertSeparator (Ui_.ActionLogger_);
+		}
+	}
 
 	updateIconSet ();
 
