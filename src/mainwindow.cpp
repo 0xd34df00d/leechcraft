@@ -432,7 +432,6 @@ void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
 
 			if (controls)
 			{
-				controls->setWindowTitle (tr ("Plugin control"));
 				controls->setFloatable (true);
 				controls->setMovable (true);
 				addToolBar (controls);
@@ -535,7 +534,6 @@ void LeechCraft::MainWindow::updatePanes (const QItemSelection& newIndexes,
 		
 		if (controls)
 		{
-			controls->setWindowTitle (tr ("Plugin control"));
 			controls->setFloatable (true);
 			controls->setMovable (true);
 			addToolBar (controls);

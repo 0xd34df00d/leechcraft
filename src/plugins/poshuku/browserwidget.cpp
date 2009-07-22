@@ -54,6 +54,7 @@ namespace LeechCraft
 				Paste_->setProperty ("ActionIcon", "poshuku_paste");
 			
 				ToolBar_ = new QToolBar (this);
+				ToolBar_->setWindowTitle (tr ("Poshuku"));
 			
 				Back_ = Ui_.WebView_->pageAction (QWebPage::Back);
 				Back_->setParent (this);

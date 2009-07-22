@@ -1095,8 +1095,7 @@ namespace LeechCraft
 			void TorrentPlugin::SetupActions ()
 			{
 				Toolbar_.reset (new QToolBar ());
-				Toolbar_->setMovable (false);
-				Toolbar_->setFloatable (false);
+				Toolbar_->setWindowTitle (tr ("BitTorrent"));
 			
 				OpenTorrent_.reset (new QAction (tr ("Open torrent..."),
 							Toolbar_.get ()));
