@@ -19,9 +19,6 @@
   <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
     <widget class="QLabel" name="Message_" >
-     <property name="text" >
-      <string>Ooops, I forgot to call the corrent constructor params.</string>
-     </property>
     </widget>
    </item>
    <item>

@@ -8,10 +8,6 @@
         <translation>Требуется аутентификация</translation>
     </message>
     <message>
-        <source>Ooops, I forgot to call the corrent constructor params.</source>
-        <translation>Ыа.</translation>
-    </message>
-    <message>
         <source>Login:</source>
         <translation>Логин:</translation>
     </message>
@@ -233,6 +229,10 @@
     <message>
         <source>Could not handle task with the selected handler, would you like to try another one?</source>
         <translation>Невозможно обработать задачу выбранным обработчиком, хотите попробовать другой?</translation>
+    </message>
+    <message>
+        <source>Binary entity</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

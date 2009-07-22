@@ -8,10 +8,6 @@
         <translation type="unfinished">Autenticazione richiesta</translation>
     </message>
     <message>
-        <source>Ooops, I forgot to call the corrent constructor params.</source>
-        <translation type="unfinished">Ooops, ho dimenticato di chiamare il corrente parametro costruttore.</translation>
-    </message>
-    <message>
         <source>Login:</source>
         <translation type="unfinished">Accesso:</translation>
     </message>
@@ -229,6 +225,10 @@
     </message>
     <message>
         <source>Could not handle task with the selected handler, would you like to try another one?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Binary entity</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

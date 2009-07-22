@@ -9,22 +9,17 @@
         <translation>التوثيق لازم</translation>
     </message>
     <message>
-        <location filename="authenticationdialog.ui" line="23"/>
-        <source>Ooops, I forgot to call the corrent constructor params.</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="authenticationdialog.ui" line="32"/>
+        <location filename="authenticationdialog.ui" line="29"/>
         <source>Login:</source>
         <translation>اسم المستخدم:</translation>
     </message>
     <message>
-        <location filename="authenticationdialog.ui" line="42"/>
+        <location filename="authenticationdialog.ui" line="39"/>
         <source>Password:</source>
         <translation>كلمة المرور:</translation>
     </message>
     <message>
-        <location filename="authenticationdialog.ui" line="58"/>
+        <location filename="authenticationdialog.ui" line="55"/>
         <source>Save credentials</source>
         <translation>حفظ المعلومات</translation>
     </message>
@@ -375,22 +370,23 @@
     <name>LeechCraft::NetworkAccessManager</name>
     <message>
         <location filename="networkaccessmanager.cpp" line="132"/>
+        <location filename="networkaccessmanager.cpp" line="142"/>
         <source>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
         <oldsource>The URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="158"/>
+        <location filename="networkaccessmanager.cpp" line="168"/>
         <source>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="193"/>
+        <location filename="networkaccessmanager.cpp" line="203"/>
         <source>Could not create Core directory.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="201"/>
+        <location filename="networkaccessmanager.cpp" line="211"/>
         <source>Could not save cookies, error opening cookie file.</source>
         <translation type="unfinished"></translation>
     </message>
