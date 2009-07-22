@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/" >
         <file>resources/images/leechcraft.png</file>
-        <file>resources/images/splashscreen.png</file>
     </qresource>
 </RCC>

@@ -132,7 +132,6 @@ namespace LeechCraft
 		void processUnloadQueue ();
 	signals:
 		void downloadFinished (QString);
-		void loadProgress (const QString&);
 	};
 };
 

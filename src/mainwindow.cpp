@@ -36,16 +36,11 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 {
 	InitializeInterface ();
 
-	ShowMessage (tr ("Initializing core and plugins..."));
 	connect (qApp,
 			SIGNAL (aboutToQuit ()),
 			this,
 			SLOT (handleQuit ()));
 
-	connect (&Core::Instance (),
-			SIGNAL (loadProgress (const QString&)),
-			this,
-			SLOT (handleLoadProgress (const QString&)));
 	connect (&Core::Instance (),
 			SIGNAL (downloadFinished (const QString&)),
 			this,
@@ -66,8 +61,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	Core::Instance ().DelayedInit ();
 
 	PluginManagerDialog_ = new PluginManagerDialog (this);
-
-	ShowMessage (tr ("Initializing core and plugins..."));
 
 	QAbstractItemModel *tasksModel = Core::Instance ().GetTasksModel ();
 	Ui_.PluginsTasksTree_->setModel (tasksModel);
@@ -127,9 +120,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 
 	filterParametersChanged ();
 
-	SplashScreen_->finish (this);
 	show ();
-	delete SplashScreen_;
 
 	WasMaximized_ = isMaximized ();
 	Ui_.ActionFullscreenMode_->setChecked (isFullScreen ());
@@ -183,10 +174,6 @@ void LeechCraft::MainWindow::closeEvent (QCloseEvent *e)
 
 void LeechCraft::MainWindow::InitializeInterface ()
 {
-	SplashScreen_ = new QSplashScreen (QPixmap (":/resources/images/splashscreen.png"));
-	SplashScreen_->show ();
-	ShowMessage (tr ("Initializing interface..."));
-
 	if (QApplication::arguments ().contains ("-zombie"))
 		QApplication::setStyle (new ZombiTechStyle ());
 
@@ -315,13 +302,6 @@ void LeechCraft::MainWindow::WriteSettings ()
 	settings.setValue ("pos",  pos ());
 	settings.setValue ("maximized", isMaximized ());
 	settings.endGroup ();
-}
-
-void LeechCraft::MainWindow::ShowMessage (const QString& message)
-{
-	SplashScreen_->showMessage (message,
-			Qt::AlignLeft | Qt::AlignBottom,
-			QApplication::palette ().color (QPalette::WindowText));
 }
 
 void LeechCraft::MainWindow::on_ActionAddTask__triggered ()
@@ -631,10 +611,5 @@ void LeechCraft::MainWindow::updateIconSet ()
 void LeechCraft::MainWindow::on_ActionPluginManager__triggered ()
 {
 	PluginManagerDialog_->show ();
-}
-
-void LeechCraft::MainWindow::handleLoadProgress (const QString& msg)
-{
-	ShowMessage (tr ("Initializing core and plugins...") + " " + msg);
 }
 

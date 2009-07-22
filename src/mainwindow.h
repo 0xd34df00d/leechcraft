@@ -9,7 +9,6 @@
 #include "ui_leechcraft.h"
 
 class QLabel;
-class QSplashScreen;
 class QDockWidget;
 class QModelIndex;
 class IShortcutProxy;
@@ -47,7 +46,6 @@ namespace LeechCraft
 		PluginManagerDialog *PluginManagerDialog_;
 		FancyPopupManager *FancyPopupManager_;
 		LeechCraft::LogToolBox *LogToolBox_;
-		QSplashScreen *SplashScreen_;
 		bool IsShown_;
 		bool WasMaximized_;
 		QTimer *FilterTimer_;
@@ -70,7 +68,6 @@ namespace LeechCraft
 		void SetTrayIcon ();
 		void ReadSettings ();
 		void WriteSettings ();
-		void ShowMessage (const QString&);
 	private slots:
 		void on_ActionAddTask__triggered ();
 		void on_ActionSettings__triggered ();
@@ -91,7 +88,6 @@ namespace LeechCraft
 		void feedFilterParameters ();
 		void updateIconSet ();
 		void on_ActionPluginManager__triggered ();
-		void handleLoadProgress (const QString&);
 	};
 };
 
