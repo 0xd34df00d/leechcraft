@@ -432,6 +432,7 @@ namespace LeechCraft
 			QToolBar* Aggregator::SetupMenuBar ()
 			{
 				QToolBar *bar = new QToolBar ();
+				bar->setWindowTitle (tr ("Aggregator"));
 			
 				bar->addAction (Impl_->ActionRemoveFeed_);
 				bar->addAction (Impl_->ActionUpdateSelectedFeed_);

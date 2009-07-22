@@ -169,8 +169,7 @@ namespace LeechCraft
 			void CSTP::SetupToolbar ()
 			{
 				Toolbar_.reset (new QToolBar);
-				Toolbar_->setMovable (false);
-				Toolbar_->setFloatable (false);
+				Toolbar_->setWindowTitle (tr ("CSTP"));
 			
 				QAction *remove = Toolbar_->addAction (tr ("Remove"));
 				connect (remove,
