@@ -1021,7 +1021,12 @@ namespace LeechCraft
 			
 				ToggleChannelUnread_.finish ();
 			
-				emit channelDataUpdated (GetChannel (title, purl));
+				Channel_ptr channel = GetChannel (title, purl);
+				emit channelDataUpdated (channel);
+				items_container_t items;
+				GetItems (items, purl + title);
+				Q_FOREACH (Item_ptr item, items)
+					emit itemDataUpdated (item, channel);
 			}
 			
 			bool SQLStorageBackend::UpdateFeedsStorage (int, int)
