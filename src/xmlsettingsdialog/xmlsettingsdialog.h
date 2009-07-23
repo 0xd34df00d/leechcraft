@@ -35,7 +35,7 @@ namespace LeechCraft
 			Q_OBJECT
 
 			QStackedWidget *Pages_;
-			QListWidget *Sections_;
+			QStringList Titles_;
 			QObject *WorkingObject_;
 			typedef QMap<QString, QVariant> Property2Value_t;
 			Property2Value_t Prop2NewValue_;
@@ -96,6 +96,18 @@ namespace LeechCraft
 			 */
 			XMLSETTINGSMANAGER_API void SetCustomWidget (const QString& name,
 					QWidget *widget);
+
+			/** @brief Sets the current page to page.
+			 *
+			 * @param[in] page Number of the page.
+			 */
+			XMLSETTINGSMANAGER_API void SetPage (int page);
+
+			/** @brief Returns the list of all the pages.
+			 *
+			 * @return The names of the pages.
+			 */
+			XMLSETTINGSMANAGER_API QStringList GetPages () const;
 		private:
 			void HandleDeclaration (const QDomElement&);
 			void ParsePage (const QDomElement&);

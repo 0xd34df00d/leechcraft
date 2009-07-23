@@ -46,17 +46,8 @@ XmlSettingsDialog::XmlSettingsDialog ()
 : Document_ (new QDomDocument)
 {
 	Pages_ = new QStackedWidget (this);
-	Sections_ = new QListWidget (this);
-	Sections_->setMinimumWidth (200);
-	Sections_->setMaximumWidth (200);
-
-	connect (Sections_,
-			SIGNAL (currentRowChanged (int)),
-			Pages_,
-			SLOT (setCurrentIndex (int)));
 
 	QHBoxLayout *mainLay = new QHBoxLayout (this);
-	mainLay->addWidget (Sections_);
 	mainLay->addWidget (Pages_);
 	setLayout (mainLay);
 
@@ -177,6 +168,16 @@ void XmlSettingsDialog::SetCustomWidget (const QString& name, QWidget *widget)
 			SLOT (handleCustomDestroyed ()));
 }
 
+void XmlSettingsDialog::SetPage (int page)
+{
+	Pages_->setCurrentIndex (page);
+}
+
+QStringList XmlSettingsDialog::GetPages () const
+{
+	return Titles_;
+}
+
 void XmlSettingsDialog::HandleDeclaration (const QDomElement& decl)
 {
 	if (decl.hasAttribute ("defaultlang"))
@@ -186,7 +187,7 @@ void XmlSettingsDialog::HandleDeclaration (const QDomElement& decl)
 void XmlSettingsDialog::ParsePage (const QDomElement& page)
 {
 	QString sectionTitle = GetLabel (page);
-	Sections_->addItem (sectionTitle);
+	Titles_ << sectionTitle;
 
 	QWidget *baseWidget = new QWidget;
 	Pages_->addWidget (baseWidget);

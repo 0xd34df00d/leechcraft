@@ -4,48 +4,81 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <QtDebug>
 
-using namespace LeechCraft;
+Q_DECLARE_METATYPE (LeechCraft::Util::XmlSettingsDialog*);
 
-LeechCraft::SettingsSink::SettingsSink (const QString& name,
-		Util::XmlSettingsDialog* dialog,
-		QWidget *parent)
-: QDialog (parent)
+namespace LeechCraft
 {
-	Ui_.setupUi (this);
-	// Because Qt Designer inserts one.
-	Ui_.Dialogs_->removeWidget (Ui_.Dialogs_->currentWidget ());
+	using namespace Util;
 
-	Add (name, windowIcon (), dialog);
-}
+	SettingsSink::SettingsSink (const QString& name,
+			XmlSettingsDialog* dialog,
+			QWidget *parent)
+	: QDialog (parent)
+	{
+		Ui_.setupUi (this);
+		// Because Qt Designer inserts one.
+		Ui_.Dialogs_->removeWidget (Ui_.Dialogs_->currentWidget ());
 
-LeechCraft::SettingsSink::~SettingsSink ()
-{
-}
+		Add (name, windowIcon (), dialog);
+	}
 
-void LeechCraft::SettingsSink::AddDialog (const QObject *object)
-{
-	IInfo *info = qobject_cast<IInfo*> (object);
-	IHaveSettings *ihs = qobject_cast<IHaveSettings*> (object);
+	SettingsSink::~SettingsSink ()
+	{
+	}
 
-	Add (info->GetName (), info->GetIcon (), ihs->GetSettingsDialog ().get ());
+	void SettingsSink::AddDialog (const QObject *object)
+	{
+		IInfo *info = qobject_cast<IInfo*> (object);
+		IHaveSettings *ihs = qobject_cast<IHaveSettings*> (object);
 
-	Ui_.Combobox_->setCurrentIndex (0);
-}
+		Add (info->GetName (), info->GetIcon (), ihs->GetSettingsDialog ().get ());
 
-void LeechCraft::SettingsSink::Add (const QString& name, const QIcon& wicon,
-		QWidget *widget)
-{
-	Ui_.Combobox_->addItem (wicon, name);
-	Ui_.Dialogs_->addWidget (widget);
-	adjustSize ();
+		Ui_.Dialogs_->setCurrentIndex (0);
+	}
 
-	connect (this,
-			SIGNAL (accepted ()),
-			widget,
-			SLOT (accept ()));
-	connect (this,
-			SIGNAL (rejected ()),
-			widget,
-			SLOT (reject ()));
-}
+	void SettingsSink::Add (const QString& name, const QIcon& wicon,
+			XmlSettingsDialog *widget)
+	{
+		Ui_.Dialogs_->addWidget (widget);
+		adjustSize ();
+
+		QTreeWidgetItem *parent = new QTreeWidgetItem (Ui_.Tree_, QStringList (name));
+		parent->setData (0, RDialog, QVariant::fromValue<XmlSettingsDialog*> (widget));
+		if (widget->GetPages ().size () > 1)
+			Q_FOREACH (QString page, widget->GetPages ())
+				new QTreeWidgetItem (parent, QStringList (page));
+
+		connect (this,
+				SIGNAL (accepted ()),
+				widget,
+				SLOT (accept ()));
+		connect (this,
+				SIGNAL (rejected ()),
+				widget,
+				SLOT (reject ()));
+
+		Ui_.Tree_->expandAll ();
+	}
+
+	void SettingsSink::on_Tree__currentItemChanged (QTreeWidgetItem *current)
+	{
+		if (current == Ui_.Tree_->invisibleRootItem ())
+			return;
+
+		int pindex = 0;
+		XmlSettingsDialog *dialog = 0;
+
+		if (current->parent ())
+		{
+			QTreeWidgetItem *parent = current->parent ();
+			dialog = parent->data (0, RDialog).value<XmlSettingsDialog*> ();
+			pindex = parent->indexOfChild (current);
+		}
+		else
+			dialog = current->data (0, RDialog).value<XmlSettingsDialog*> ();
+
+		Ui_.Dialogs_->setCurrentWidget (dialog);
+		dialog->SetPage (pindex);
+	}
+};
 

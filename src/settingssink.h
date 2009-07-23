@@ -15,6 +15,10 @@ namespace LeechCraft
 		Q_OBJECT
 
 		Ui::SettingsSink Ui_;
+		enum
+		{
+			RDialog = 100
+		};
 	public:
 		SettingsSink (const QString&,
 				Util::XmlSettingsDialog*,
@@ -23,7 +27,9 @@ namespace LeechCraft
 
 		void AddDialog (const QObject*);
 	private:
-		void Add (const QString&, const QIcon&, QWidget*);
+		void Add (const QString&, const QIcon&, Util::XmlSettingsDialog*);
+	private slots:
+		void on_Tree__currentItemChanged (QTreeWidgetItem*);
 	};
 };
 
