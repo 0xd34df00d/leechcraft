@@ -56,7 +56,6 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 	{
 		CreateIfNotExists ("core/cache");
 		NetworkDiskCache *cache = new NetworkDiskCache (this);
-		cache->setCacheDirectory (QDir::homePath () + "/.leechcraft/core/cache");
 		setCache (cache);
 	}
 	catch (const std::runtime_error& e)

@@ -114,8 +114,7 @@ LeechCraft::Core::Core ()
 		<< "ProxyPort"
 		<< "ProxyLogin"
 		<< "ProxyPassword"
-		<< "ProxyType"
-		<< "CacheSize";
+		<< "ProxyType";
 	XmlSettingsManager::Instance ()->RegisterObject (proxyProperties,
 			this, "handleProxySettings");
 
@@ -561,12 +560,6 @@ void LeechCraft::Core::handleProxySettings () const
 		pr.setType (QNetworkProxy::NoProxy);
 	QNetworkProxy::setApplicationProxy (pr);
 	NetworkAccessManager_->setProxy (pr);
-
-	QAbstractNetworkCache *cache = NetworkAccessManager_->cache ();
-	if (cache)
-		static_cast<QNetworkDiskCache*> (cache)->
-			setMaximumCacheSize (XmlSettingsManager::Instance ()->
-					property ("CacheSize").toInt () * 1048576);
 }
 
 namespace
