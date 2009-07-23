@@ -205,6 +205,7 @@ namespace LeechCraft
 		virtual bool eventFilter (QObject*, QEvent*);
 	public slots:
 		void handleProxySettings () const;
+		void handleSettingClicked (const QString&);
 		void handlePluginAction ();
 	private slots:
 		/** Handles the entity which could be anything - path to a file,

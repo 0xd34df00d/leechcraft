@@ -157,6 +157,14 @@
 				<suffix value=" МБ" />
 			</lang>
 		</item>
+		<item type="pushbutton" name="ClearCache">
+			<label lang="en" value="Clear cache" />
+			<label lang="ru" value="Очистить кеш" />
+		</item>
+		<item type="pushbutton" name="ClearCookies">
+			<label lang="en" value="Clear cookies" />
+			<label lang="ru" value="Очистить куки" />
+		</item>
 		<item type="groupbox" property="ProxyEnabled" checkable="true" state="off">
 			<label lang="en" value="Application-wide proxy" />
 			<label lang="ru" value="Глобальный прокси" />

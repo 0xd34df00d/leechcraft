@@ -25,6 +25,7 @@
 #include <QNetworkDiskCache>
 #include <plugininterface/util.h>
 #include <plugininterface/proxy.h>
+#include <plugininterface/customcookiejar.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
 #include <interfaces/ientityhandler.h>
@@ -595,6 +596,34 @@ namespace
 		}
 	}
 };
+
+void LeechCraft::Core::handleSettingClicked (const QString& name)
+{
+	if (name == "ClearCache")
+	{
+		if (QMessageBox::question (0,
+					tr ("LeechCraft"),
+					tr ("Do you really want to clear the network cache?"),
+					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+			return;
+
+		QAbstractNetworkCache *cache = NetworkAccessManager_->cache ();
+		if (cache)
+			cache->clear ();
+	}
+	else if (name == "ClearCookies")
+	{
+		if (QMessageBox::question (0,
+					tr ("LeechCraft"),
+					tr ("Do you really want to clear cookies?"),
+					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+			return;
+
+		CustomCookieJar *jar = static_cast<CustomCookieJar*> (NetworkAccessManager_->cookieJar ());
+		jar->setAllCookies (QList<QNetworkCookie> ());
+		jar->Save ();
+	}
+}
 
 void LeechCraft::Core::handlePluginAction ()
 {
