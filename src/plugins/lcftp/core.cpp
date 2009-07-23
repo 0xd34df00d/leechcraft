@@ -49,7 +49,7 @@ namespace LeechCraft
 							SLOT (handleFetchedEntry (const FetchedEntry&)),
 							Qt::QueuedConnection);
 					Workers_ << w;
-					States_ << Workers_.at (i)->GetState ();
+					States_ << w->GetState ();
 				}
 
 				handleUpdateInterface ();
