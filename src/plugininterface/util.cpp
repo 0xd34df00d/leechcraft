@@ -27,6 +27,9 @@ QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName,
 		localeName = localeName.left (5);
 	}
 
+	if (localeName.size () == 2)
+		localeName += "_00";
+
 	QString filename = prefix;
 	filename.append ("_");
 	if (!baseName.isEmpty ())

@@ -64,10 +64,10 @@
 				<option name="it">
 					<label lang="en" value="Italian" />
 				</option>
-				<option name="ru">
+				<option name="ru_RU">
 					<label lang="en" value="Russian" />
 				</option>
-				<option name="uk">
+				<option name="uk_UA">
 					<label lang="en" value="Ukrainian" />
 				</option>
 			</item>
