@@ -24,16 +24,29 @@ namespace LeechCraft
 			Core::Core ()
 			: Quitting_ (false)
 			{
+				qRegisterMetaType<TaskData> ("TaskData");
+				qRegisterMetaType<FetchedEntry> ("FetchedEntry");
+
 				WorkersFilter_.reset (new InactiveWorkersFilter (this));
 				curl_global_init (CURL_GLOBAL_ALL);
-				for (int i = 0; i < 8; ++i)
+				for (int i = 0; i < 4; ++i)
 				{
 					Worker_ptr w (new Worker (i));
 					w->start ();
 					connect (w.get (),
-							SIGNAL (error (const QString&)),
+							SIGNAL (error (const QString&, const TaskData&)),
 							this,
-							SLOT (handleError (const QString&)),
+							SLOT (handleError (const QString&, const TaskData&)),
+							Qt::QueuedConnection);
+					connect (w.get (),
+							SIGNAL (finished (const TaskData&)),
+							this,
+							SLOT (handleFinished (const TaskData&)),
+							Qt::QueuedConnection);
+					connect (w.get (),
+							SIGNAL (fetchedEntry (const FetchedEntry&)),
+							this,
+							SLOT (handleFetchedEntry (const FetchedEntry&)),
 							Qt::QueuedConnection);
 					Workers_ << w;
 					States_ << Workers_.at (i)->GetState ();
@@ -208,6 +221,88 @@ namespace LeechCraft
 					return false;
 			}
 
+			namespace
+			{
+				QString CheckName (const QUrl& url, const QString& location)
+				{
+					QFileInfo fi (location);
+					QString dir, file;
+					if (fi.isDir ())
+						dir = fi.path ();
+					else
+					{
+						dir = fi.dir ().path ();
+						file = fi.fileName ();
+					}
+
+					if (fi.isDir ())
+					{
+						dir = location;
+						if (file.isEmpty ())
+							file = QFileInfo (url.toString (QUrl::RemoveFragment)).fileName ();
+
+						QDir fd (dir);
+
+						if (!file.isEmpty () &&
+								fd.exists (file))
+						{
+							QMessageBox box (QMessageBox::Question,
+									Core::tr ("LeechCraft"),
+									Core::tr ("%1 already exists. What do you want to do?")
+										.arg (QDir::toNativeSeparators (dir + "/" + file)));
+							QPushButton *resume = box.addButton (Core::tr ("Resume"),
+									QMessageBox::AcceptRole);
+							QPushButton *overwrite = box.addButton (Core::tr ("Overwrite"),
+									QMessageBox::DestructiveRole);
+							QPushButton *rename = box.addButton (Core::tr ("Rename"),
+									QMessageBox::ActionRole);
+							QPushButton *cancel = box.addButton (Core::tr ("Cancel"),
+									QMessageBox::RejectRole);
+							box.setDefaultButton (resume);
+							box.setEscapeButton (cancel);
+
+							box.exec ();
+
+							QAbstractButton *clicked = box.clickedButton ();
+							if (clicked == overwrite)
+							{
+								if (!fd.remove (file))
+								{
+									QMessageBox::critical (0,
+											Core::tr ("LeechCraft"),
+											Core::tr ("Error removing %1")
+												.arg (QDir::toNativeSeparators (dir + "/" + file)));
+									return QString ();
+								}
+							}
+							else if (clicked == resume)
+							{
+								// Do nothing
+							}
+							else if (clicked == rename)
+							{
+								while (fd.exists (file))
+								{
+									QString filename = QFileDialog::getSaveFileName (0,
+											Core::tr ("Choose new file name"),
+											dir);
+									if (filename.isEmpty ())
+										return QString ();
+									fi = QFileInfo (filename);
+									dir = fi.dir ().path ();
+									file = fi.fileName ();
+									fd = QDir (dir);
+								}
+							}
+							else
+								return QString ();
+						}
+					}
+
+					return dir + "/" + file;
+				}
+			};
+
 			int Core::Add (DownloadEntity e)
 			{
 				if (!e.Entity_.canConvert<QUrl> ())
@@ -225,81 +320,23 @@ namespace LeechCraft
 					file = fi.fileName ();
 				}
 	
+				QString tfn = dir + "/" + file;
 				if (!(e.Parameters_ & LeechCraft::Internal))
 				{
-					if (fi.isDir ())
-					{
-						dir = e.Location_;
-						if (file.isEmpty ())
-							file = QFileInfo (url.toString (QUrl::RemoveFragment)).fileName ();
-
-						QDir fd (dir);
-
-						if (!file.isEmpty () &&
-								fd.exists (file))
-						{
-							QMessageBox box (QMessageBox::Question,
-									tr ("LeechCraft"),
-									tr ("%1 already exists. What do you want to do?")
-										.arg (QDir::toNativeSeparators (dir + "/" + file)));
-							QPushButton *resume = box.addButton (tr ("Resume"),
-									QMessageBox::AcceptRole);
-							QPushButton *overwrite = box.addButton (tr ("Overwrite"),
-									QMessageBox::DestructiveRole);
-							QPushButton *rename = box.addButton (tr ("Rename"),
-									QMessageBox::ActionRole);
-							QPushButton *cancel = box.addButton (tr ("Cancel"),
-									QMessageBox::RejectRole);
-							box.setDefaultButton (resume);
-							box.setEscapeButton (cancel);
-
-							box.exec ();
-
-							QAbstractButton *clicked = box.clickedButton ();
-							if (clicked == overwrite)
-							{
-								if (!fd.remove (file))
-								{
-									QMessageBox::critical (0,
-											tr ("LeechCraft"),
-											tr ("Error removing %1")
-												.arg (QDir::toNativeSeparators (dir + "/" + file)));
-									return -1;
-								}
-							}
-							else if (clicked == resume)
-							{
-								// Do nothing
-							}
-							else if (clicked == rename)
-							{
-								while (fd.exists (file))
-								{
-									QString filename = QFileDialog::getSaveFileName (0,
-											tr ("Choose new file name"),
-											dir);
-									if (filename.isEmpty ())
-										return -1;
-									fi = QFileInfo (filename);
-									dir = fi.dir ().path ();
-									file = fi.fileName ();
-									fd = QDir (dir);
-								}
-							}
-							else
-								return -1;
-						}
-					}
-					else if (fi.isFile ());
-					else
+					tfn = CheckName (e.Entity_.toUrl (), e.Location_);
+					if (tfn.isEmpty ())
 						return -1;
 				}
+				else
+					tfn = dir + "/" + file;
+
+				qDebug () << tfn;
 
 				TaskData td =
 				{
 					Proxy_->GetID (),
 					url,
-					dir + "/" + file
+					tfn
 				};
 				QueueTask (td);
 				WorkerWait_.wakeOne ();
@@ -363,11 +400,58 @@ namespace LeechCraft
 				endInsertRows ();
 			}
 			
-			void Core::handleError (const QString& msg)
+			void Core::handleError (const QString& msg, const TaskData& td)
 			{
+				if (td.ID_ >= 0)
+					emit taskError (td.ID_, IDownload::EUnknown);
+
 				QMessageBox::critical (0,
 						tr ("LeechCraft"),
 						msg);
+			}
+
+			void Core::handleFinished (const TaskData& data)
+			{
+				emit downloadFinished (tr ("Download finished: %1")
+						.arg (data.Filename_));
+
+				if (data.ID_ >= 0)
+					emit taskFinished (data.ID_);
+			}
+
+			void Core::handleFetchedEntry (const FetchedEntry& entry)
+			{
+				QString name = entry.PreviousTask_.Filename_ + entry.Name_;
+				if (entry.IsDir_)
+				{
+					QDir dir (entry.PreviousTask_.Filename_);
+					if (!dir.exists (entry.Name_))
+						dir.mkdir (entry.Name_);
+					else if (!QFileInfo (name).isDir ())
+					{
+						QMessageBox::critical (0,
+								tr ("LeechCraft"),
+								tr ("While mirroring<br />%1<br />to<br />%2<br />"
+									"an error occured:<br />%3<br /> already exists.")
+									.arg (entry.PreviousTask_.URL_.toString ())
+									.arg (QDir::toNativeSeparators (entry.PreviousTask_.Filename_))
+									.arg (QDir::toNativeSeparators (name)));
+						return;
+					}
+					name += "/";
+				}
+				else
+					name = CheckName (entry.URL_, entry.PreviousTask_.Filename_);
+
+				qDebug () << "handle" << entry.URL_ << name;
+				TaskData td =
+				{
+					entry.PreviousTask_.ID_ >= 0 ? Proxy_->GetID () : -1,
+					entry.URL_,
+					name
+				};
+				QueueTask (td);
+				WorkerWait_.wakeOne ();
 			}
 
 			void Core::handleUpdateInterface ()

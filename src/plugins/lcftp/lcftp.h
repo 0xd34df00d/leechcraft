@@ -50,6 +50,12 @@ namespace LeechCraft
 				bool CouldHandle (const DownloadEntity&) const;
 				void Handle (DownloadEntity);
 			signals:
+				void jobFinished (int);
+				void jobRemoved (int);
+				void jobError (int, IDownload::Error);
+				void gotEntity (const LeechCraft::DownloadEntity&);
+				void downloadFinished (const QString&);
+
 				void bringToFront ();
 				void addNewTab (const QString&, QWidget*);
 				void removeTab (QWidget*);
@@ -58,7 +64,6 @@ namespace LeechCraft
 				void changeTooltip (QWidget*, QWidget*);
 				void statusBarChanged (QWidget*, const QString&);
 				void raiseTab (QWidget*);
-				void gotEntity (const LeechCraft::DownloadEntity&);
 			};
 		};
 	};

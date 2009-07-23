@@ -8,6 +8,7 @@
 #include <QDateTime>
 #include <curl/curl.h>
 #include <plugininterface/guarded.h>
+#include "structures.h"
 
 namespace LeechCraft
 {
@@ -18,23 +19,6 @@ namespace LeechCraft
 			typedef boost::shared_ptr<CURL> CURL_ptr;
 
 			struct Wrapper;
-
-			struct TaskData
-			{
-				int ID_;
-				QUrl URL_;
-				QString Filename_;
-			};
-
-			struct FetchedEntry
-			{
-				QUrl URL_;
-				QString OriginalLocalPath_;
-				quint64 Size_;
-				QDateTime DateTime_;
-				QString User_;
-				QString Group_;
-			};
 
 			class Worker : public QThread
 			{
@@ -78,14 +62,15 @@ namespace LeechCraft
 				void run ();
 			private:
 				void HandleTask (const TaskData&, CURL_ptr);
-				void ParseBuffer ();
+				void ParseBuffer (const TaskData&);
 				void Reset ();
 				size_t WriteData (void*, size_t, size_t);
 				size_t ListDir (void*, size_t, size_t);
 				int Progress (double, double, double, double);
 			signals:
-				void error (const QString&);
+				void error (const QString&, const TaskData&);
 				void finished (const TaskData&);
+				void fetchedEntry (const FetchedEntry&);
 			};
 
 			typedef boost::shared_ptr<Worker> Worker_ptr;

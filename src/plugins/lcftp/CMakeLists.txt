@@ -23,6 +23,7 @@ SET (HEADERS
 	core.h
 	worker.h
 	inactiveworkersfilter.h
+	structures.h
 	3dparty/ftpparse.h
 	)
 SET (RESOURCES resources.qrc)

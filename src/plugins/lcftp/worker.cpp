@@ -1,7 +1,11 @@
 #include "worker.h"
 #include <curl/curl.h>
 #include "core.h"
+
+extern "C"
+{
 #include "3dparty/ftpparse.h"
+};
 
 namespace LeechCraft
 {
@@ -145,8 +149,6 @@ namespace LeechCraft
 						break;
 					}
 
-					id = td.ID_;
-
 					URL_ = td.URL_;
 
 					IsWorking_ = true;
@@ -157,7 +159,7 @@ namespace LeechCraft
 					if (File_)
 						emit finished (td);
 					else
-						ParseBuffer ();
+						ParseBuffer (td);
 					Reset ();
 				}
 			}
@@ -177,8 +179,9 @@ namespace LeechCraft
 							!File_->open (QIODevice::WriteOnly))
 					{
 						emit error (tr ("Could not open file<br />%1<br />%2")
-								.arg (td.Filename_)
-								.arg (File_->errorString ()));
+									.arg (td.Filename_)
+									.arg (File_->errorString ()),
+								td);
 						return;
 					}
 
@@ -206,11 +209,11 @@ namespace LeechCraft
 					qWarning () << Q_FUNC_INFO
 						<< result
 						<< errstr;
-					emit error (errstr);
+					emit error (errstr, td);
 				}
 			}
 
-			void Worker::ParseBuffer ()
+			void Worker::ParseBuffer (const TaskData& td)
 			{
 				QByteArray buf = ListBuffer_->buffer ();
 				QList<QByteArray> bstrs = buf.split ('\n');
@@ -220,6 +223,36 @@ namespace LeechCraft
 					struct ftpparse fp;
 					if (!ftpparse (&fp, bstr.data (), bstr.size ()))
 						continue;
+
+					QString name = QString (QByteArray (fp.name, fp.namelen));
+					if (!fp.flagtrycwd && !fp.flagtryretr)
+					{
+						qWarning () << Q_FUNC_INFO
+							<< "skipping"
+							<< name;
+						continue;
+					}
+
+					QUrl itemUrl = URL_;
+					itemUrl.setPath (itemUrl.path () + name);
+					if (fp.flagtrycwd)
+						itemUrl.setPath (itemUrl.path () + "/");
+
+					QDateTime dt;
+					if (fp.mtimetype != FTPPARSE_MTIME_UNKNOWN)
+						dt.setTime_t (fp.mtime);
+
+					FetchedEntry fe =
+					{
+						itemUrl,
+						fp.size,
+						dt,
+						fp.flagtrycwd,
+						name,
+						td
+					};
+
+					emit fetchedEntry (fe);
 				}
 			}
 

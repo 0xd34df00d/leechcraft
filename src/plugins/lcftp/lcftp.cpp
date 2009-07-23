@@ -13,7 +13,29 @@ namespace LeechCraft
 			void LCFTP::Init (ICoreProxy_ptr proxy)
 			{
 				Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku"));
+
 				Core::Instance ().SetCoreProxy (proxy);
+
+				connect (&Core::Instance (),
+						SIGNAL (taskFinished (int)),
+						this,
+						SIGNAL (jobFinished (int)));
+				connect (&Core::Instance (),
+						SIGNAL (taskRemoved (int)),
+						this,
+						SIGNAL (jobRemoved (int)));
+				connect (&Core::Instance (),
+						SIGNAL (taskError (int, IDownload::Error)),
+						this,
+						SIGNAL (jobError (int, IDownload::Error)));
+				connect (&Core::Instance (),
+						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						this,
+						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+				connect (&Core::Instance (),
+						SIGNAL (downloadFinished (const QString&)),
+						this,
+						SIGNAL (downloadFinished (const QString&)));
 			}
 
 			void LCFTP::Release ()

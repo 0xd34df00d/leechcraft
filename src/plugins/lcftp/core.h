@@ -7,6 +7,7 @@
 #include <QMutex>
 #include <QList>
 #include <interfaces/iinfo.h>
+#include <interfaces/idownload.h>
 #include <interfaces/structures.h>
 #include "worker.h"
 
@@ -67,9 +68,17 @@ namespace LeechCraft
 			private:
 				void QueueTask (const TaskData&);
 			public slots:
-				void handleError (const QString&);
+				void handleError (const QString&, const TaskData&);
+				void handleFinished (const TaskData&);
+				void handleFetchedEntry (const FetchedEntry&);
 			private slots:
 				void handleUpdateInterface ();
+			signals:
+				void taskFinished (int);
+				void taskRemoved (int);
+				void taskError (int, IDownload::Error);
+				void gotEntity (const LeechCraft::DownloadEntity&);
+				void downloadFinished (const QString&);
 			};
 		};
 	};
