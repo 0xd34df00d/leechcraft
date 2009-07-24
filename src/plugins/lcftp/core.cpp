@@ -24,6 +24,7 @@ namespace LeechCraft
 
 			Core::Core ()
 			: Quitting_ (false)
+			, NumScheduledWorkers_ (0)
 			{
 				qRegisterMetaType<TaskData> ("TaskData");
 				qRegisterMetaType<FetchedEntry> ("FetchedEntry");
@@ -32,27 +33,10 @@ namespace LeechCraft
 				curl_global_init (CURL_GLOBAL_ALL);
 				for (int i = 0; i < XmlSettingsManager::Instance ()
 						.property ("TotalNumWorkers").toInt (); ++i)
-				{
-					Worker_ptr w (new Worker (i));
-					w->start ();
-					connect (w.get (),
-							SIGNAL (error (const QString&, const TaskData&)),
-							this,
-							SLOT (handleError (const QString&, const TaskData&)),
-							Qt::QueuedConnection);
-					connect (w.get (),
-							SIGNAL (finished (const TaskData&)),
-							this,
-							SLOT (handleFinished (const TaskData&)),
-							Qt::QueuedConnection);
-					connect (w.get (),
-							SIGNAL (fetchedEntry (const FetchedEntry&)),
-							this,
-							SLOT (handleFetchedEntry (const FetchedEntry&)),
-							Qt::QueuedConnection);
-					Workers_ << w;
-					States_ << w->GetState ();
-				}
+					AddWorker (i);
+
+				XmlSettingsManager::Instance ().RegisterObject ("TotalNumWorkers",
+						this, "handleTotalNumWorkersChanged");
 
 				handleUpdateInterface ();
 
@@ -332,8 +316,6 @@ namespace LeechCraft
 				else
 					tfn = dir + "/" + file;
 
-				qDebug () << tfn;
-
 				TaskData td =
 				{
 					Proxy_->GetID (),
@@ -383,13 +365,34 @@ namespace LeechCraft
 				}
 			}
 
-			void Core::FinishedTask (int id)
+			void Core::FinishedTask (Worker *w, int id)
 			{
 				if (id >= 0)
 					Proxy_->FreeID (id);
+
 				QTimer::singleShot (0,
 						this,
 						SLOT (handleUpdateInterface ()));
+
+				if (NumScheduledWorkers_ > 0)
+				{
+					if (!w)
+						return;
+
+					for (int i = 0; i < Workers_.size (); ++i)
+					{
+						if (Workers_.at (i).get () != w)
+							continue;
+
+						w->SetExit ();
+						ScheduledWorkers_.Val ().append (w);
+						--NumScheduledWorkers_;
+						QTimer::singleShot (0,
+								this,
+								SLOT (handleScheduledRemoval ()));
+						break;
+					}
+				}
 			}
 
 			void Core::QueueTask (const TaskData& td)
@@ -399,6 +402,31 @@ namespace LeechCraft
 				TasksLock_.lockForWrite ();
 				Tasks_ << td;
 				TasksLock_.unlock ();
+				endInsertRows ();
+			}
+
+			void Core::AddWorker (int i)
+			{
+				Worker_ptr w (new Worker (i));
+				w->start ();
+				connect (w.get (),
+						SIGNAL (error (const QString&, const TaskData&)),
+						this,
+						SLOT (handleError (const QString&, const TaskData&)),
+						Qt::QueuedConnection);
+				connect (w.get (),
+						SIGNAL (finished (const TaskData&)),
+						this,
+						SLOT (handleFinished (const TaskData&)),
+						Qt::QueuedConnection);
+				connect (w.get (),
+						SIGNAL (fetchedEntry (const FetchedEntry&)),
+						this,
+						SLOT (handleFetchedEntry (const FetchedEntry&)),
+						Qt::QueuedConnection);
+				beginInsertRows (QModelIndex (), i, i);
+				Workers_ << w;
+				States_ << w->GetState ();
 				endInsertRows ();
 			}
 			
@@ -445,7 +473,7 @@ namespace LeechCraft
 				else
 					name = CheckName (entry.URL_, entry.PreviousTask_.Filename_);
 
-				qDebug () << "handle" << entry.URL_ << name;
+//				qDebug () << "handle" << entry.URL_ << name;
 				TaskData td =
 				{
 					entry.PreviousTask_.ID_ >= 0 ? Proxy_->GetID () : -1,
@@ -464,6 +492,43 @@ namespace LeechCraft
 
 				emit dataChanged (index (0, 0),
 						index (States_.size () - 1, 2));
+			}
+
+			void Core::handleScheduledRemoval ()
+			{
+				while (ScheduledWorkers_.Val ().size ())
+				{
+					Worker *w = ScheduledWorkers_.Val ().takeFirst ();
+					for (int i = 0; i < Workers_.size (); ++i)
+					{
+						if (Workers_.at (i).get () != w)
+							continue;
+
+						beginRemoveRows (QModelIndex (), i, i);
+						Workers_.removeAt (i);
+						States_.removeAt (i);
+						for (int j = i; j < Workers_.size (); ++j)
+							Workers_ [j]->SetID (j - 1);
+						endRemoveRows ();
+						break;
+					}
+				}
+			}
+
+			void Core::handleTotalNumWorkersChanged ()
+			{
+				int numWorkers = XmlSettingsManager::Instance ()
+					.property ("TotalNumWorkers").toInt ();
+				int current = Workers_.size ();
+				int delta = numWorkers - current - NumScheduledWorkers_;
+				if (delta >= 0)
+				{
+					NumScheduledWorkers_ = 0;
+					for (int i = 0; i < delta; ++i)
+						AddWorker (i + current);
+				}
+				else
+					NumScheduledWorkers_ = -delta;
 			}
 		};
 	};

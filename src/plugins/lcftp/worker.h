@@ -25,7 +25,7 @@ namespace LeechCraft
 				Q_OBJECT
 
 				friend struct Wrapper;
-				int ID_;
+				Util::Guarded<int> ID_;
 				boost::shared_ptr<QFile> File_;
 				boost::shared_ptr<QBuffer> ListBuffer_;
 				Util::Guarded<QUrl> URL_;
@@ -53,6 +53,7 @@ namespace LeechCraft
 				virtual ~Worker ();
 
 				bool IsWorking () const;
+				void SetID (int);
 				void SetExit ();
 				TaskState GetState () const;
 				QPair<quint64, quint64> GetDL () const;

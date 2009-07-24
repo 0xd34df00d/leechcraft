@@ -40,6 +40,9 @@ namespace LeechCraft
 
 				boost::shared_ptr<InactiveWorkersFilter> WorkersFilter_;
 
+				Util::Guarded<QList<Worker*> > ScheduledWorkers_;
+				int NumScheduledWorkers_;
+
 				Core ();
 			public:
 				static Core& Instance ();
@@ -64,15 +67,19 @@ namespace LeechCraft
 
 				// These are called from workers' threads.
 				TaskData GetNextTask ();
-				void FinishedTask (int = -1);
+				void FinishedTask (Worker*, int = -1);
 			private:
 				void QueueTask (const TaskData&);
+				void AddWorker (int);
 			public slots:
 				void handleError (const QString&, const TaskData&);
 				void handleFinished (const TaskData&);
 				void handleFetchedEntry (const FetchedEntry&);
 			private slots:
 				void handleUpdateInterface ();
+				void handleScheduledRemoval ();
+				void handleThreadFinished ();
+				void handleTotalNumWorkersChanged ();
 			signals:
 				void taskFinished (int);
 				void taskRemoved (int);

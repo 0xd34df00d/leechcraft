@@ -10,7 +10,7 @@
 			<groupbox>
 				<label lang="en" value="General settings" />
 				<label lang="ru" value="Общие настройки" />
-				<item type="spinbox" property="TotalNumWorkers" minimum="1" maximum="128" default="4">
+				<item type="spinbox" property="TotalNumWorkers" minimum="2" maximum="128" default="4">
 					<label lang="en" value="Total number of worker threads:" />
 					<label lang="ru" value="Общее количество рабочих потоков:" />
 				</item>

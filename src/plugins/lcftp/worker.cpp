@@ -48,11 +48,17 @@ namespace LeechCraft
 
 			Worker::~Worker ()
 			{
+				qDebug () << Q_FUNC_INFO;
 			}
 
 			bool Worker::IsWorking () const
 			{
 				return IsWorking_;
+			}
+
+			void Worker::SetID (int id)
+			{
+				ID_ = id;
 			}
 
 			void Worker::SetExit ()
@@ -138,20 +144,25 @@ namespace LeechCraft
 
 				while (true)
 				{
-					if (id >= 0)
-						Core::Instance ().FinishedTask (id);
+					Core::Instance ().FinishedTask (this, id);
 
-					TaskData td = Core::Instance ().GetNextTask ();
 					if (Exit_)
 					{
-						Core::Instance ().FinishedTask ();
+						File_.reset ();
+						break;
+					}
+
+					TaskData td = Core::Instance ().GetNextTask ();
+					IsWorking_ = true;
+
+					if (Exit_)
+					{
+						Core::Instance ().FinishedTask (this);
 						File_.reset ();
 						break;
 					}
 
 					URL_ = td.URL_;
-
-					IsWorking_ = true;
 
 					StartDT_ = QDateTime::currentDateTime ();
 
@@ -162,6 +173,8 @@ namespace LeechCraft
 						ParseBuffer (td);
 					Reset ();
 				}
+
+				IsWorking_ = false;
 			}
 
 			void Worker::HandleTask (const TaskData& td, CURL_ptr handle)
