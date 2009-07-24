@@ -32,18 +32,6 @@
 			<label lang="en" value="Identification" />
 			<label lang="ru" value="Идентификация" />
 			<groupbox>
-				<label lang="en" value="FTP" />
-				<label lang="ru" value="FTP" />
-				<item type="lineedit" property="FTPLogin" default="anonymous">
-					<label lang="en" value="Login:" />
-					<label lang="ru" value="Логин:" />
-				</item>
-				<item type="lineedit" property="FTPPassword" default="simpleemail@leechcraft.org">
-					<label lang="en" value="Password:" />
-					<label lang="ru" value="Пароль:" />
-				</item>
-			</groupbox>
-			<groupbox>
 				<label lang="en" value="HTTP" />
 				<label lang="ru" value="HTTP" />
 				<item type="lineedit" property="HTTPLogin" default="anonymous">
