@@ -81,8 +81,13 @@ namespace LeechCraft
 			
 			bool Core::CouldHandle (const LeechCraft::DownloadEntity& e)
 			{
-				if (QUrl (QString (e.Location_)).scheme () != "http" &&
-						QUrl (QString (e.Location_)).scheme () != "https")
+				if (!e.Entity_.canConvert<QUrl> ())
+					return false;
+
+				QUrl url = e.Entity_.toUrl ();
+
+				if (url.scheme () != "http" &&
+						url.scheme () != "https")
 					return false;
 			
 				if (e.Mime_ != "application/atom+xml" &&

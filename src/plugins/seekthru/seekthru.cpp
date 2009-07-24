@@ -102,7 +102,7 @@ namespace LeechCraft
 			
 			void SeekThru::Handle (LeechCraft::DownloadEntity e)
 			{
-				Core::Instance ().Add (e.Location_);
+				Core::Instance ().Add (e.Entity_.toUrl ());
 			}
 			
 			void SeekThru::handleError (const QString& error)

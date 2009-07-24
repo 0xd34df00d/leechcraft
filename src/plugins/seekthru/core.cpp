@@ -133,8 +133,12 @@ namespace LeechCraft
 			
 			bool Core::CouldHandle (const LeechCraft::DownloadEntity& e) const
 			{
-				if (QUrl (QString (e.Location_)).scheme () != "http" &&
-						QUrl (QString (e.Location_)).scheme () != "https")
+				if (!e.Entity_.canConvert<QUrl> ())
+					return false;
+
+				QUrl url = e.Entity_.toUrl ();
+				if (url.scheme () != "http" &&
+						url.scheme () != "https")
 					return false;
 			
 				if (e.Mime_ != "application/opensearchdescription+xml")
@@ -143,7 +147,7 @@ namespace LeechCraft
 				return true;
 			}
 			
-			void Core::Add (const QString& url)
+			void Core::Add (const QUrl& url)
 			{
 				QString name = LeechCraft::Util::GetTemporaryName ();
 				LeechCraft::DownloadEntity e = LeechCraft::Util::MakeEntity (url,
@@ -159,7 +163,7 @@ namespace LeechCraft
 				if (id == -1)
 				{
 					emit error (tr ("%1 wasn't delegated")
-							.arg (url));
+							.arg (url.toString ()));
 					return;
 				}
 			

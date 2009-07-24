@@ -58,7 +58,7 @@ namespace LeechCraft
 				 *
 				 * @param[in] url The url with the search description.
 				 */
-				void Add (const QString& url);
+				void Add (const QUrl& url);
 				void Remove (const QModelIndex&);
 				void SetTags (const QModelIndex&, const QStringList&);
 				QStringList GetCategories () const;

@@ -292,9 +292,9 @@ namespace LeechCraft
 			
 			void Aggregator::Handle (LeechCraft::DownloadEntity e)
 			{
-				AddFeed af (QString (e.Location_));
+				AddFeed af (e.Entity_.toUrl ().toString ());
 				if (af.exec () == QDialog::Accepted)
-					Core::Instance ().AddFeed (e.Location_,
+					Core::Instance ().AddFeed (e.Entity_.toUrl ().toString (),
 							af.GetTags ());
 			}
 			

@@ -837,7 +837,6 @@ namespace LeechCraft
 					if (entity.isEmpty ())
 						continue;
 			
-					e.Entity_ = entity;
 					e.Mime_ = attributes.value ("type").toString ();
 					QString hrefUrl (attributes.value ("href").toString ());
 					if (hrefUrl.indexOf ("://") < 0)
@@ -860,8 +859,9 @@ namespace LeechCraft
 						}
 						hrefUrl = originalUrl.toString ();
 					}
-					e.Location_ = hrefUrl;
+					e.Entity_ = QUrl (hrefUrl);
 					e.Parameters_ = LeechCraft::FromUserInitiated;
+					e.Additional_ ["UserVisibleName"] = entity;
 			
 					bool ch = false;
 					emit couldHandle (e, &ch);
