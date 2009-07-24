@@ -54,8 +54,12 @@ namespace LeechCraft
 
 		if (tc)
 		{
-			QItemSelection sel = tc->GetUi ().PluginsTasksTree_->
-				selectionModel ()->selection ();
+			QItemSelectionModel *selectionModel = tc->
+				GetUi ().PluginsTasksTree_->selectionModel ();
+			QItemSelection sel;
+			if (selectionModel)
+				sel = selectionModel->selection ();
+
 			if (sel.size ())
 			{
 				QModelIndex ri = sel.at (0).topLeft ();
@@ -80,30 +84,6 @@ namespace LeechCraft
 				}
 			}
 		}
-
-		/* Hope this won't be needed with the SmartDeselect().
-		else
-		{
-			QItemSelection sel = Ui_.PluginsTasksTree_->
-				selectionModel ()->selection ();
-			if (sel.size ())
-			{
-				QModelIndex ri = sel.at (0).topLeft ();
-				QToolBar *controls = Core::Instance ()
-							.GetControls (ri);
-
-				if (controls)
-					removeToolBar (controls);
-			}
-
-			CurrentToolBar_ = Core::Instance ().GetToolBar (index);
-			if (CurrentToolBar_)
-			{
-				addToolBar (CurrentToolBar_);
-				CurrentToolBar_->show ();
-			}
-		}
-		*/
 	}
 };
 

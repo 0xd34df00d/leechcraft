@@ -34,6 +34,10 @@ namespace LeechCraft
 
 	TabContents::~TabContents ()
 	{
+		QWidget *widget = Ui_.ControlsDockWidget_->widget ();
+		Ui_.ControlsDockWidget_->setWidget (0);
+		widget->setParent (0);
+
 		QAbstractItemModel *old = Ui_.PluginsTasksTree_->model ();
 		Ui_.PluginsTasksTree_->setModel (0);
 		delete old;
@@ -125,8 +129,6 @@ namespace LeechCraft
 			}
 			if (addiInfo)
 			{
-				if (addiInfo->parent () != this)
-					addiInfo->setParent (this);
 				Ui_.ControlsDockWidget_->setWidget (addiInfo);
 				Ui_.ControlsDockWidget_->show ();
 			}
@@ -153,7 +155,6 @@ namespace LeechCraft
 					.GetTasksModel (Ui_.FilterLine_->text ()));
 		delete old;
 
-		qDebug () << Ui_.PluginsTasksTree_->selectionModel ();
 		connect (Ui_.PluginsTasksTree_->selectionModel (),
 				SIGNAL (selectionChanged (const QItemSelection&,
 						const QItemSelection&)),
