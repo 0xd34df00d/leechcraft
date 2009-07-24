@@ -23,7 +23,7 @@ namespace LeechCraft
 
 	QList<TabContents*> TabContentsManager::GetTabs () const
 	{
-		QList<TabContents*> result;
+		QList<TabContents*> result = Others_;
 		result.prepend (Default_);
 		return result;
 	}
@@ -45,12 +45,8 @@ namespace LeechCraft
 	void TabContentsManager::MadeCurrent (TabContents *tc)
 	{
 		Q_FOREACH (TabContents *tab, GetTabs ())
-		{
 			if (tab != tc)
-			{
 				tab->SmartDeselect ();
-			}
-		}
 
 		if (tc)
 		{

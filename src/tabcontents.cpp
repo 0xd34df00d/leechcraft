@@ -50,8 +50,8 @@ namespace LeechCraft
 
 	void TabContents::SmartDeselect ()
 	{
-		updatePanes (QItemSelection (),
-				Ui_.PluginsTasksTree_->selectionModel ()->selection ());
+		if (Ui_.PluginsTasksTree_->selectionModel ())
+			Ui_.PluginsTasksTree_->selectionModel ()->clear ();
 	}
 
 	void TabContents::updatePanes (const QItemSelection& newIndexes,
