@@ -1,6 +1,7 @@
 #include "worker.h"
 #include <curl/curl.h>
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 extern "C"
 {
@@ -140,6 +141,8 @@ namespace LeechCraft
 				curl_easy_setopt (handle.get (),
 						CURLOPT_PROGRESSDATA, w.get ());
 
+				UpdateHandleSettings (handle);
+
 				int id = -1;
 
 				while (true)
@@ -166,6 +169,7 @@ namespace LeechCraft
 
 					StartDT_ = QDateTime::currentDateTime ();
 
+					UpdateHandleSettings (handle);
 					HandleTask (td, handle);
 					if (File_)
 						emit finished (td);
@@ -301,6 +305,100 @@ namespace LeechCraft
 				ULNow_ = uln;
 				ULTotal_ = ult;
 				return 0;
+			}
+
+			void Worker::UpdateHandleSettings (CURL_ptr handle)
+			{
+				/** Ports
+				 */
+				if (XmlSettingsManager::Instance ()
+						.property ("CustomPortRange").toBool ())
+				{
+					QList<QVariant> ports = XmlSettingsManager::Instance ().property ("TCPPortRange").toList ();
+					curl_easy_setopt (handle.get (),
+							CURLOPT_LOCALPORT, ports.at (0).toInt ());
+					curl_easy_setopt (handle.get (),
+							CURLOPT_LOCALPORTRANGE, ports.at (1).toInt () - ports.at (0).toInt () + 1);
+				}
+				else
+				{
+					curl_easy_setopt (handle.get (),
+							CURLOPT_LOCALPORT, 0);
+					curl_easy_setopt (handle.get (),
+							CURLOPT_LOCALPORTRANGE, 0);
+				}
+
+				/** Proxy stuff
+				 */
+				if (XmlSettingsManager::Instance ()
+						.property ("ProxyEnabled").toBool ())
+				{
+					QString str = QString ("%1:%2")
+						.arg (XmlSettingsManager::Instance ()
+								.property ("ProxyHost").toString ())
+						.arg (XmlSettingsManager::Instance ()
+								.property ("ProxyPort").toInt ());
+					curl_easy_setopt (handle.get (),
+							CURLOPT_PROXY, str.toStdString ().c_str ());
+
+					QString type = XmlSettingsManager::Instance ()
+						.property ("ProxyType").toString ();
+					if (type == "http")
+						curl_easy_setopt (handle.get (),
+								CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
+					else if (type == "http10")
+						curl_easy_setopt (handle.get (),
+								CURLOPT_PROXYTYPE, CURLPROXY_HTTP_1_0);
+					else if (type == "socks4")
+						curl_easy_setopt (handle.get (),
+								CURLOPT_PROXYTYPE, CURLPROXY_SOCKS4);
+					else if (type == "socks4a")
+						curl_easy_setopt (handle.get (),
+								CURLOPT_PROXYTYPE, CURLPROXY_SOCKS4A);
+					else if (type == "socks5")
+						curl_easy_setopt (handle.get (),
+								CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+					else if (type == "socks5-hostname")
+						curl_easy_setopt (handle.get (),
+								CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5_HOSTNAME);
+
+					QString creds = QString ("%1:%2")
+						.arg (XmlSettingsManager::Instance ()
+								.property ("ProxyLogin").toString ())
+						.arg (XmlSettingsManager::Instance ()
+								.property ("ProxyPassword").toString ());
+					curl_easy_setopt (handle.get (),
+							CURLOPT_PROXYUSERPWD, creds.toStdString ().c_str ());
+
+					curl_easy_setopt (handle.get (),
+							CURLOPT_NOPROXY, XmlSettingsManager::Instance ()
+								.property ("NoProxy").toString ().toStdString ().c_str ());
+
+					curl_easy_setopt (handle.get (),
+							CURLOPT_HTTPPROXYTUNNEL, XmlSettingsManager::Instance ()
+								.property ("ProxyTunnel").toBool () ? 1 : 0);
+				}
+				else
+					curl_easy_setopt (handle.get (),
+							CURLOPT_PROXY, "");
+
+				/** EPRT
+				 */
+				curl_easy_setopt (handle.get (),
+						CURLOPT_FTP_USE_EPRT, XmlSettingsManager::Instance ()
+							.property ("UseEPRT").toBool () ? 1 : 0);
+
+				/** EPSV
+				 */
+				curl_easy_setopt (handle.get (),
+						CURLOPT_FTP_USE_EPRT, XmlSettingsManager::Instance ()
+							.property ("UseEPSV").toBool () ? 1 : 0);
+
+				/** Ignore PASV IP
+				 */
+				curl_easy_setopt (handle.get (),
+						CURLOPT_FTP_SKIP_PASV_IP, XmlSettingsManager::Instance ()
+							.property ("SkipPasvIP").toBool () ? 1 : 0);
 			}
 		};
 	};

@@ -68,6 +68,7 @@ namespace LeechCraft
 				size_t WriteData (void*, size_t, size_t);
 				size_t ListDir (void*, size_t, size_t);
 				int Progress (double, double, double, double);
+				void UpdateHandleSettings (CURL_ptr);
 			signals:
 				void error (const QString&, const TaskData&);
 				void finished (const TaskData&);

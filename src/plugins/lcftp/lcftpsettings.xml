@@ -23,18 +23,110 @@
 		<tab>
 			<label lang="en" value="Identification" />
 			<label lang="ru" value="Идентификация" />
-			<groupbox>
-				<label lang="en" value="FTP" />
-				<label lang="ru" value="FTP" />
-				<item type="lineedit" property="FTPLogin" default="anonymous">
+			<item type="lineedit" property="FTPLogin" default="anonymous">
+				<label lang="en" value="Login:" />
+				<label lang="ru" value="Логин:" />
+			</item>
+			<item type="lineedit" property="FTPPassword" default="simpleemail@leechcraft.org">
+				<label lang="en" value="Password:" />
+				<label lang="ru" value="Пароль:" />
+			</item>
+		</tab>
+	</page>
+	<page>
+		<label lang="en" value="FTP settings" />
+		<label lang="ru" value="Настройки FTP" />
+		<tab>
+			<label lang="en" value="Behavior" />
+			<label lang="ru" value="Поведение" />
+			<item type="checkbox" property="UseEPRT" default="on">
+				<label lang="en" value="Attempt to use EPRT and LPRT instead of PORT" />
+				<label lang="ru" value="Пытаться использовать EPRT и LPRT вместо PORT" />
+			</item>
+			<item type="checkbox" property="UseEPSV" default="on">
+				<label lang="en" value="Attempt to use EPSV before PASV" />
+				<label lang="ru" value="Пытаться использовать EPSV перед PASV" />
+			</item>
+			<item type="checkbox" property="SkipPasvIP" default="off">
+				<label lang="en" value="Skip IP received as the result of PASV" />
+				<label lang="ru" value="Игнорировать IP, полученный в результате PASV" />
+			</item>
+		</tab>
+	</page>
+	<page>
+		<label lang="en" value="Network settings" />
+		<label lang="ru" value="Настройки сети" />
+		<tab>
+			<label lang="en" value="General" />
+			<label lang="ru" value="Общие" />
+			<item type="groupbox" property="CustomPortRange" checkable="true" default="off">
+				<label lang="en" value="Custom port range" />
+				<label lang="ru" value="Специальный диапазон портов" />
+				<item type="spinboxrange" property="TCPPortRange" default="6881:6889" minimum="1" maximum="65535" step="5">
+					<label lang="en" value="Port range:" />
+					<label lang="ru" value="Диапазон портов:" />
+				</item>
+			</item>
+		</tab>
+		<tab>
+			<label lang="en" value="Proxy settings" />
+			<label lang="ru" value="Настройки прокси" />
+			<item type="groupbox" property="ProxyEnabled" checkable="true" default="off">
+				<label lang="en" value="Application-wide proxy" />
+				<label lang="ru" value="Глобальный прокси" />
+				<label lang="uk" value="Глобальний проксі" />
+				<item type="lineedit" property="ProxyHost">
+					<label lang="en" value="Host:" />
+					<label lang="ru" value="Хост:" />
+					<label lang="uk" value="Хост:" />
+				</item>
+				<item type="spinbox" property="ProxyPort" default="3128" minimum="1" maximum="65535" step="1">
+					<label lang="en" value="Port:" />
+					<label lang="ru" value="Порт:" />
+					<label lang="uk" value="Порт:" />
+				</item>
+				<item type="lineedit" property="ProxyLogin">
 					<label lang="en" value="Login:" />
 					<label lang="ru" value="Логин:" />
+					<label lang="uk" value="Логін:" />
 				</item>
-				<item type="lineedit" property="FTPPassword" default="simpleemail@leechcraft.org">
+				<item type="lineedit" property="ProxyPassword" password="true">
 					<label lang="en" value="Password:" />
 					<label lang="ru" value="Пароль:" />
+					<label lang="uk" value="Пароль:" />
 				</item>
-			</groupbox>
+				<item type="combobox" property="ProxyType">
+					<label lang="en" value="Proxy type:" />
+					<label lang="ru" value="Тип прокси:" />
+					<label lang="uk" value="Тип проксі:" />
+					<option name="http" default="true">
+						<label lang="en" value="HTTP" />
+					</option>
+					<option name="http10">
+						<label lang="en" value="HTTP 1.0" />
+					</option>
+					<option name="socks4">
+						<label lang="en" value="SOCKS4" />
+					</option>
+					<option name="socks4a">
+						<label lang="en" value="SOCKS4A" />
+					</option>
+					<option name="socks5">
+						<label lang="en" value="SOCKS5" />
+					</option>
+					<option name="socks5-hostname">
+						<label lang="en" value="SOCKS5-HOSTNAME" />
+					</option>
+				</item>
+				<item type="checkbox" propery="ProxyTunnel" default="off">
+					<label lang="en" value="Tunnel requests through the proxy" />
+					<label lang="ru" value="Тунеллировать запросы через прокси" />
+				</item>
+				<item type="lineedit" property="NoProxy" default="">
+					<label lang="en" value="Comma-separated list of exceptions:" />
+					<label lang="ru" value="Разделенный запятыми список исключений:" />
+				</item>
+			</item>
 		</tab>
 	</page>
 </settings>
