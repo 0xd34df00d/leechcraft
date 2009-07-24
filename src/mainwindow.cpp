@@ -23,6 +23,7 @@
 #include "appstyler.h"
 #include "tagsviewer.h"
 #include "application.h"
+#include "tabcontentsmanager.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -31,7 +32,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 : QMainWindow (parent, flags)
 , IsShown_ (true)
 , WasMaximized_ (false)
-, FilterTimer_ (new QTimer (this))
 , CurrentToolBar_ (0)
 {
 	InitializeInterface ();
@@ -50,36 +50,11 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			LogToolBox_,
 			SLOT (log (const QString&)));
 
-	FilterTimer_->setSingleShot (true);
-	FilterTimer_->setInterval (800);
-	connect (FilterTimer_,
-			SIGNAL (timeout ()),
-			this,
-			SLOT (feedFilterParameters ()));
-
+	TabContentsManager::Instance ().SetDefault (Ui_.SummaryContents_);
 	Core::Instance ().SetReallyMainWindow (this);
 	Core::Instance ().DelayedInit ();
 
 	PluginManagerDialog_ = new PluginManagerDialog (this);
-
-	QAbstractItemModel *tasksModel = Core::Instance ().GetTasksModel ();
-	Ui_.PluginsTasksTree_->setModel (tasksModel);
-
-	connect (Ui_.PluginsTasksTree_->selectionModel (),
-			SIGNAL (selectionChanged (const QItemSelection&,
-					const QItemSelection&)),
-			this,
-			SLOT (updatePanes (const QItemSelection&,
-					const QItemSelection&)));
-
-	QHeaderView *itemsHeader = Ui_.PluginsTasksTree_->header ();
-	QFontMetrics fm = fontMetrics ();
-	itemsHeader->resizeSection (0,
-			fm.width ("Average download job or torrent name is just like this."));
-	itemsHeader->resizeSection (1,
-			fm.width ("Of the download."));
-	itemsHeader->resizeSection (2,
-			fm.width ("99.99% (1024.0 kb from 1024.0 kb at 1024.0 kb/s)"));
 
 	QTimer *speedUpd = new QTimer (this);
 	speedUpd->setInterval (1000);
@@ -118,8 +93,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			end = shortcuts.end (); i != end; ++i)
 		ShortcutManager_->AddObject (*i);
 
-	filterParametersChanged ();
-
 	show ();
 
 	WasMaximized_ = isMaximized ();
@@ -132,7 +105,8 @@ LeechCraft::MainWindow::~MainWindow ()
 
 QModelIndexList LeechCraft::MainWindow::GetSelectedRows () const
 {
-	return Ui_.PluginsTasksTree_->selectionModel ()->selectedRows ();
+	// TODO
+	return Ui_.SummaryContents_->GetUi ().PluginsTasksTree_->selectionModel ()->selectedRows ();
 }
 
 TabWidget* LeechCraft::MainWindow::GetTabWidget () const
@@ -147,7 +121,8 @@ const IShortcutProxy* LeechCraft::MainWindow::GetShortcutProxy () const
 
 QTreeView* LeechCraft::MainWindow::GetMainView () const
 {
-	return Ui_.PluginsTasksTree_;
+	// TODO
+	return Ui_.SummaryContents_->GetUi ().PluginsTasksTree_;
 }
 
 void LeechCraft::MainWindow::SetAdditionalTitle (const QString& title)
@@ -182,6 +157,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	Ui_.setupUi (this);
 
 	Ui_.ActionAddTask_->setProperty ("ActionIcon", "addjob");
+	Ui_.ActionNewTab_->setProperty ("ActionIcon", "newtab");
 	Ui_.ActionSettings_->setProperty ("ActionIcon", "settings");
 	Ui_.ActionQuit_->setProperty ("ActionIcon", "exit");
 	Ui_.ActionPluginManager_->setProperty ("ActionIcon", "pluginmanager");
@@ -190,17 +166,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	Ui_.ActionFullscreenMode_->setParent (this);
 
 	Ui_.MainTabWidget_->setProperty ("TabIcons", "downloaders");
-	Ui_.ControlsDockWidget_->hide ();
-
-	connect (Ui_.FilterLine_,
-			SIGNAL (textEdited (const QString&)),
-			this,
-			SLOT (filterParametersChanged ()));
-	connect (Ui_.FilterLine_,
-			SIGNAL (returnPressed ()),
-			this,
-			SLOT (filterReturnPressed ()));
-
 	SetTrayIcon ();
 
 	XmlSettingsDialog_ = new XmlSettingsDialog ();
@@ -324,6 +289,11 @@ void LeechCraft::MainWindow::on_ActionAddTask__triggered ()
 		Core::Instance ().TryToAddJob (name, adder.GetWhere ());
 }
 
+void LeechCraft::MainWindow::on_ActionNewTab__triggered ()
+{
+	TabContentsManager::Instance ().AddNewTab ();
+}
+
 void LeechCraft::MainWindow::on_ActionSettings__triggered ()
 {
 	SettingsSink_->show ();
@@ -429,133 +399,15 @@ void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
 		CurrentToolBar_ = 0;
 	}
 
-	if (index == 0)
+	TabContents *tc = qobject_cast<TabContents*> (Ui_.MainTabWidget_->widget (index));
+	TabContentsManager::Instance ().MadeCurrent (tc);
+	if (!tc)
 	{
-		QItemSelection sel = Ui_.PluginsTasksTree_->
-			selectionModel ()->selection ();
-		if (sel.size ())
-		{
-			QModelIndex ri = sel.at (0).topLeft ();
-			QToolBar *controls = Core::Instance ()
-						.GetControls (ri);
-			QWidget *addiInfo = Core::Instance ()
-						.GetAdditionalInfo (ri);
-
-			if (controls)
-			{
-				controls->setFloatable (true);
-				controls->setMovable (true);
-				addToolBar (controls);
-				controls->show ();
-			}
-			if (addiInfo)
-			{
-				if (addiInfo->parent () != this)
-					addiInfo->setParent (this);
-				Ui_.ControlsDockWidget_->setWidget (addiInfo);
-				Ui_.ControlsDockWidget_->show ();
-			}
-		}
-	}
-	else
-	{
-		QItemSelection sel = Ui_.PluginsTasksTree_->
-			selectionModel ()->selection ();
-		if (sel.size ())
-		{
-			QModelIndex ri = sel.at (0).topLeft ();
-			QToolBar *controls = Core::Instance ()
-						.GetControls (ri);
-
-			if (controls)
-				removeToolBar (controls);
-		}
-
 		CurrentToolBar_ = Core::Instance ().GetToolBar (index);
 		if (CurrentToolBar_)
 		{
 			addToolBar (CurrentToolBar_);
 			CurrentToolBar_->show ();
-		}
-	}
-}
-
-void LeechCraft::MainWindow::updatePanes (const QItemSelection& newIndexes,
-		const QItemSelection& oldIndexes)
-{
-#ifdef QT_DEBUG
-	qDebug () << Q_FUNC_INFO;
-#endif
-
-	QModelIndex oldIndex, newIndex;
-	if (oldIndexes.size ())
-		oldIndex = oldIndexes.at (0).topLeft ();
-	if (newIndexes.size ())
-		newIndex = newIndexes.at (0).topLeft ();
-
-	if (!newIndex.isValid ())
-	{
-#ifdef QT_DEBUG
-		qDebug () << "invalidating";
-#endif
-
-		Core::Instance ().SetNewRow (newIndex);
-		if (oldIndex.isValid ())
-		{
-#ifdef QT_DEBUG
-			qDebug () << "erasing older stuff";
-#endif
-			QToolBar *oldControls = Core::Instance ().GetControls (oldIndex);
-			if (oldControls)
-				removeToolBar (oldControls);
-			Ui_.ControlsDockWidget_->hide ();
-		}
-	}
-	else if (oldIndex.isValid () &&
-			Core::Instance ().SameModel (newIndex, oldIndex))
-	{
-#ifdef QT_DEBUG
-		qDebug () << "setting new row";
-#endif
-		Core::Instance ().SetNewRow (newIndex);
-	}
-	else if (newIndex.isValid ())
-	{
-		QToolBar *controls = Core::Instance ()
-					.GetControls (newIndex);
-		QWidget *addiInfo = Core::Instance ()
-					.GetAdditionalInfo (newIndex);
-
-		if (oldIndex.isValid ())
-		{
-#ifdef QT_DEBUG
-			qDebug () << "erasing older stuff";
-#endif
-			QToolBar *oldControls = Core::Instance ().GetControls (oldIndex);
-			if (oldControls)
-				removeToolBar (oldControls);
-			Ui_.ControlsDockWidget_->hide ();
-		}
-
-#ifdef QT_DEBUG
-		qDebug () << "inserting newer stuff" << newIndex << controls << addiInfo;
-#endif
-
-		Core::Instance ().SetNewRow (newIndex);
-		
-		if (controls)
-		{
-			controls->setFloatable (true);
-			controls->setMovable (true);
-			addToolBar (controls);
-			controls->show ();
-		}
-		if (addiInfo)
-		{
-			if (addiInfo->parent () != this)
-				addiInfo->setParent (this);
-			Ui_.ControlsDockWidget_->setWidget (addiInfo);
-			Ui_.ControlsDockWidget_->show ();
 		}
 	}
 }
@@ -614,23 +466,6 @@ void LeechCraft::MainWindow::handleDownloadFinished (const QString& string)
 	if (show &&
 			!proxy->IsCancelled ())
 		FancyPopupManager_->ShowMessage (string);
-}
-
-void LeechCraft::MainWindow::filterParametersChanged ()
-{
-	FilterTimer_->stop ();
-	FilterTimer_->start ();
-}
-
-void LeechCraft::MainWindow::filterReturnPressed ()
-{
-	FilterTimer_->stop ();
-	feedFilterParameters ();
-}
-
-void LeechCraft::MainWindow::feedFilterParameters ()
-{
-	Core::Instance ().UpdateFiltering (Ui_.FilterLine_->text ());
 }
 
 void LeechCraft::MainWindow::updateIconSet ()

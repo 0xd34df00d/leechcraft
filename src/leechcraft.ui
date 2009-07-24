@@ -51,63 +51,7 @@
          <number>0</number>
         </property>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout">
-          <item>
-           <widget class="QLineEdit" name="FilterLine_"/>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="ControlsLayout_"/>
-        </item>
-        <item>
-         <widget class="QSplitter" name="MainSplitter_">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <widget class="QTreeView" name="PluginsTasksTree_">
-           <property name="minimumSize">
-            <size>
-             <width>450</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="rootIsDecorated">
-            <bool>false</bool>
-           </property>
-           <property name="itemsExpandable">
-            <bool>false</bool>
-           </property>
-           <property name="expandsOnDoubleClick">
-            <bool>false</bool>
-           </property>
-          </widget>
-          <widget class="QDockWidget" name="ControlsDockWidget_">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="floating">
-            <bool>false</bool>
-           </property>
-           <property name="features">
-            <set>QDockWidget::DockWidgetVerticalTitleBar</set>
-           </property>
-           <property name="allowedAreas">
-            <set>Qt::RightDockWidgetArea</set>
-           </property>
-           <widget class="QWidget" name="dockWidgetContents_3">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-           </widget>
-          </widget>
-         </widget>
+         <widget class="LeechCraft::TabContents" name="SummaryContents_" native="true"/>
         </item>
        </layout>
       </widget>
@@ -127,6 +71,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="ActionAddTask_"/>
+   <addaction name="ActionNewTab_"/>
    <addaction name="separator"/>
    <addaction name="ActionSettings_"/>
    <addaction name="ActionPluginManager_"/>
@@ -195,12 +140,23 @@
     <string>Log</string>
    </property>
   </action>
+  <action name="ActionNewTab_">
+   <property name="text">
+    <string>New tab</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
    <class>LeechCraft::TabWidget</class>
    <extends>QTabWidget</extends>
    <header>tabwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LeechCraft::TabContents</class>
+   <extends>QWidget</extends>
+   <header>tabcontents.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

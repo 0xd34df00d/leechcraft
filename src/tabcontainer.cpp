@@ -7,6 +7,8 @@
 #include "xmlsettingsmanager.h"
 #include "tabwidget.h"
 #include "mainwindow.h"
+#include "tabcontents.h"
+#include "tabcontentsmanager.h"
 
 using namespace LeechCraft;
 
@@ -149,8 +151,16 @@ void TabContainer::remove (int index)
 {
 	if (index >= Core::Instance ().CountUnremoveableTabs ())
 	{
+		QWidget *widget = TabWidget_->widget (index);
+		TabContents *tc = qobject_cast<TabContents*> (widget);
+		if (tc)
+		{
+			TabContentsManager::Instance ().RemoveTab (tc);
+			return;
+		}
+
 		IMultiTabsWidget *itw =
-			qobject_cast<IMultiTabsWidget*> (TabWidget_->widget (index));
+			qobject_cast<IMultiTabsWidget*> (widget);
 		if (!itw)
 		{
 			qWarning () << Q_FUNC_INFO

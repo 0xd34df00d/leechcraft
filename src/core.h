@@ -54,7 +54,6 @@ namespace LeechCraft
 		QString PreviousClipboardContents_;
 		std::auto_ptr<QLocalServer> Server_;
 		boost::shared_ptr<Util::MergeModel> MergeModel_;
-		std::auto_ptr<RequestNormalizer> RequestNormalizer_;
 		std::auto_ptr<TabContainer> TabContainer_;
 		std::auto_ptr<QNetworkAccessManager> NetworkAccessManager_;
 		std::auto_ptr<StorageBackend> StorageBackend_;
@@ -102,7 +101,7 @@ namespace LeechCraft
 		 */
 		QList<QList<QAction*> > GetActions2Embed () const;
 		QAbstractItemModel* GetPluginsModel () const;
-		QAbstractItemModel* GetTasksModel () const;
+		QAbstractItemModel* GetTasksModel (const QString&) const;
 		PluginManager* GetPluginManager () const;
 		StorageBackend* GetStorageBackend () const;
 
@@ -170,7 +169,6 @@ namespace LeechCraft
 		 * @return Whether the indexes belong to the same model.
 		 */
 		bool SameModel (const QModelIndex& i1, const QModelIndex& i2) const;
-		void UpdateFiltering (const QString&);
 		
 		QPair<qint64, qint64> GetSpeeds () const;
 

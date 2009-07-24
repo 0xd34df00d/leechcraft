@@ -48,7 +48,6 @@ namespace LeechCraft
 		LeechCraft::LogToolBox *LogToolBox_;
 		bool IsShown_;
 		bool WasMaximized_;
-		QTimer *FilterTimer_;
 		QToolBar *CurrentToolBar_;
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
@@ -70,6 +69,7 @@ namespace LeechCraft
 		void WriteSettings ();
 	private slots:
 		void on_ActionAddTask__triggered ();
+		void on_ActionNewTab__triggered ();
 		void on_ActionSettings__triggered ();
 		void on_ActionQuit__triggered ();
 		void handleQuit ();
@@ -78,15 +78,11 @@ namespace LeechCraft
 		void on_ActionLogger__triggered ();
 		void handleToolButtonStyleChanged ();
 		void on_MainTabWidget__currentChanged (int);
-		void updatePanes (const QItemSelection&, const QItemSelection&);
 		void updateSpeedIndicators ();
 		void updateClock ();
 		void showHideMain ();
 		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
 		void handleDownloadFinished (const QString&);
-		void filterParametersChanged ();
-		void filterReturnPressed ();
-		void feedFilterParameters ();
 		void updateIconSet ();
 		void on_ActionPluginManager__triggered ();
 	};

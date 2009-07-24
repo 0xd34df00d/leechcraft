@@ -17,6 +17,7 @@ lmp_open lc_documentopen.png
 lmp_play lc_start.png
 lmp_pause lc_pause.png
 main_addjob lc_addjob.png
+newtab lc_poshuku_newtab.png
 poshuku_addtofavorites lc_addtofavorites.png
 poshuku_back lc_back.png
 poshuku_copy lc_copy.png

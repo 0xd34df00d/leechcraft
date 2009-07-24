@@ -47,6 +47,7 @@
 #include "requestparser.h"
 #include "handlerchoicedialog.h"
 #include "tagsmanager.h"
+#include "tabcontentsmanager.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -75,7 +76,6 @@ LeechCraft::Core::Core ()
 , MergeModel_ (new MergeModel (QStringList (tr ("Name"))
 			<< tr ("State")
 			<< tr ("Progress")))
-, RequestNormalizer_ (new RequestNormalizer (MergeModel_))
 , NetworkAccessManager_ (new NetworkAccessManager)
 , StorageBackend_ (new SQLStorageBackend)
 , DirectoryWatcher_ (new DirectoryWatcher)
@@ -136,7 +136,6 @@ void LeechCraft::Core::Release ()
 {
 	XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");
 	DirectoryWatcher_.reset ();
-	RequestNormalizer_.reset ();
 	MergeModel_.reset ();
 
 	PluginManager_->Release ();
@@ -191,9 +190,11 @@ QAbstractItemModel* LeechCraft::Core::GetPluginsModel () const
 	return PluginManager_;
 }
 
-QAbstractItemModel* LeechCraft::Core::GetTasksModel () const
+QAbstractItemModel* LeechCraft::Core::GetTasksModel (const QString& text) const
 {
-	return RequestNormalizer_->GetModel ();
+	RequestNormalizer *rm = new RequestNormalizer (MergeModel_);
+	rm->SetRequest (text);
+	return rm->GetModel ();
 }
 
 PluginManager* LeechCraft::Core::GetPluginManager () const
@@ -279,6 +280,8 @@ void LeechCraft::Core::DelayedInit ()
 		if (iet)
 			InitEmbedTab (plugin);
 	}
+
+	InitMultiTab (&TabContentsManager::Instance ());
 
 	TabContainer_->handleTabNames ();
 
@@ -377,11 +380,6 @@ bool LeechCraft::Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) 
 	QModelIndex mapped1 = MapToSourceRecursively (i1);
 	QModelIndex mapped2 = MapToSourceRecursively (i2);
 	return mapped1.model () == mapped2.model ();
-}
-
-void LeechCraft::Core::UpdateFiltering (const QString& text)
-{
-	RequestNormalizer_->SetRequest (text);
 }
 
 QPair<qint64, qint64> LeechCraft::Core::GetSpeeds () const
@@ -834,9 +832,7 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 	QString string = tr ("Too long to show");
 	if (p.Additional_.contains ("UserVisibleName") &&
 			p.Additional_ ["UserVisibleName"].canConvert<QString> ())
-	{
 		string = p.Additional_ ["UserVisibleName"].toString ();
-	}
 	else if (p.Entity_.canConvert<QByteArray> ())
 	{
 		QByteArray entity = p.Entity_.toByteArray ();

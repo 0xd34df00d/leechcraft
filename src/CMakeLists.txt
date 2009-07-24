@@ -167,6 +167,8 @@ SET (SRCS
 	tagsmanager.cpp
 	tagsviewer.cpp
 	directorywatcher.cpp
+	tabcontents.cpp
+	tabcontentsmanager.cpp
 	3dparty/qxttooltip.cpp
 	)
 SET (HEADERS
@@ -207,6 +209,8 @@ SET (HEADERS
 	tagsmanager.h
 	tagsviewer.h
 	directorywatcher.h
+	tabcontents.h
+	tabcontentsmanager.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/iinfo.h
@@ -240,6 +244,7 @@ SET (FORMS
 	shortcutmanager.ui
 	keysequencer.ui
 	tagsviewer.ui
+	tabcontents.ui
 	)
 SET (RESOURCES mainresources.qrc)
 SET (TRANSLATIONS
