@@ -455,6 +455,11 @@ namespace LeechCraft
 			
 			void Core::handleError (const QString& msg, const TaskData& td)
 			{
+				if (WorkersPerDomain_.Val () [td.URL_.host ()]-- ==
+						XmlSettingsManager::Instance ()
+						.property ("WorkersPerDomain").toInt () + 1)
+					WorkerWait_.wakeAll ();
+
 				if (td.ID_ >= 0)
 					emit taskError (td.ID_, IDownload::EUnknown);
 
