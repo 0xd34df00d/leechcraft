@@ -832,7 +832,12 @@ namespace
 bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 {
 	QString string = tr ("Too long to show");
-	if (p.Entity_.canConvert<QByteArray> ())
+	if (p.Additional_.contains ("UserVisibleName") &&
+			p.Additional_ ["UserVisibleName"].canConvert<QString> ())
+	{
+		string = p.Additional_ ["UserVisibleName"].toString ();
+	}
+	else if (p.Entity_.canConvert<QByteArray> ())
 	{
 		QByteArray entity = p.Entity_.toByteArray ();
 		if (entity.size () < 1000)
