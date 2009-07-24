@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<declare defaultlang="en" />
+	<page>
+		<label lang="en" value="General settings" />
+		<label lang="ru" value="Общие настройки" />
+		<tab>
+			<label lang="en" value="General settings" />
+			<label lang="ru" value="Общие настройки" />
+			<groupbox>
+				<label lang="en" value="General settings" />
+				<label lang="ru" value="Общие настройки" />
+				<item type="spinbox" property="TotalNumWorkers" minimum="1" maximum="128" default="4">
+					<label lang="en" value="Total number of worker threads:" />
+					<label lang="ru" value="Общее количество рабочих потоков:" />
+				</item>
+				<item type="spinbox" property="WorkersPerDomain" minimum="1" maximum="64" default="2">
+					<label lang="en" value="Worker threads per domain:" />
+					<label lang="ru" value="Рабочих потоков на домен:" />
+				</item>
+			</groupbox>
+		</tab>
+		<tab>
+			<label lang="en" value="Identification" />
+			<label lang="ru" value="Идентификация" />
+			<groupbox>
+				<label lang="en" value="FTP" />
+				<label lang="ru" value="FTP" />
+				<item type="lineedit" property="FTPLogin" default="anonymous">
+					<label lang="en" value="Login:" />
+					<label lang="ru" value="Логин:" />
+				</item>
+				<item type="lineedit" property="FTPPassword" default="simpleemail@leechcraft.org">
+					<label lang="en" value="Password:" />
+					<label lang="ru" value="Пароль:" />
+				</item>
+			</groupbox>
+		</tab>
+	</page>
+</settings>

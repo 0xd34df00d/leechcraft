@@ -11,6 +11,7 @@
 #include <curl/curl.h>
 #include <plugininterface/proxy.h>
 #include "inactiveworkersfilter.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -29,7 +30,8 @@ namespace LeechCraft
 
 				WorkersFilter_.reset (new InactiveWorkersFilter (this));
 				curl_global_init (CURL_GLOBAL_ALL);
-				for (int i = 0; i < 4; ++i)
+				for (int i = 0; i < XmlSettingsManager::Instance ()
+						.property ("TotalNumWorkers").toInt (); ++i)
 				{
 					Worker_ptr w (new Worker (i));
 					w->start ();

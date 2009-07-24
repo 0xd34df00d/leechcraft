@@ -3,6 +3,7 @@
 #include <QUrl>
 #include <plugininterface/util.h>
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -13,6 +14,10 @@ namespace LeechCraft
 			void LCFTP::Init (ICoreProxy_ptr proxy)
 			{
 				Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku"));
+
+				XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
+				XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
+						"lcftpsettings.xml");
 
 				Core::Instance ().SetCoreProxy (proxy);
 
@@ -123,6 +128,11 @@ namespace LeechCraft
 			void LCFTP::Handle (DownloadEntity e)
 			{
 				Core::Instance ().Add (e);
+			}
+
+			boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> LCFTP::GetSettingsDialog () const
+			{
+				return XmlSettingsDialog_;
 			}
 		};
 	};

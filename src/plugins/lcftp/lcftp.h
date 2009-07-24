@@ -7,7 +7,9 @@
 #include <interfaces/idownload.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/imultitabs.h>
+#include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 
 namespace LeechCraft
 {
@@ -20,12 +22,14 @@ namespace LeechCraft
 						, public IMultiTabs
 						, public IJobHolder
 						, public IDownload
+						, public IHaveSettings
 						, public IEntityHandler
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IMultiTabs IJobHolder IDownload IEntityHandler)
+				Q_INTERFACES (IInfo IMultiTabs IJobHolder IDownload IEntityHandler IHaveSettings)
 
 				std::auto_ptr<QTranslator> Translator_;
+				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void Release ();
@@ -49,6 +53,8 @@ namespace LeechCraft
 
 				bool CouldHandle (const DownloadEntity&) const;
 				void Handle (DownloadEntity);
+
+				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 			signals:
 				void jobFinished (int);
 				void jobRemoved (int);
