@@ -37,6 +37,7 @@ namespace LeechCraft
 				QList<Worker_ptr> Workers_;
 				Util::Guarded<bool> Quitting_;
 				QList<Worker::TaskState> States_;
+				Util::Guarded<QMap<QString, int> > WorkersPerDomain_;
 
 				boost::shared_ptr<InactiveWorkersFilter> WorkersFilter_;
 
@@ -64,6 +65,7 @@ namespace LeechCraft
 				int Add (DownloadEntity);
 
 				bool IsAcceptable (int) const;
+				bool SelectSuitableTask (TaskData*);
 
 				// These are called from workers' threads.
 				TaskData GetNextTask ();
@@ -80,6 +82,7 @@ namespace LeechCraft
 				void handleScheduledRemoval ();
 				void handleThreadFinished ();
 				void handleTotalNumWorkersChanged ();
+				void handleWorkersPerDomainChanged ();
 			signals:
 				void taskFinished (int);
 				void taskRemoved (int);

@@ -3,6 +3,7 @@
 #include <QUrl>
 #include <QString>
 #include <QDateTime>
+#include <QMetaType>
 
 namespace LeechCraft
 {
@@ -16,6 +17,8 @@ namespace LeechCraft
 				QUrl URL_;
 				QString Filename_;
 			};
+
+			bool operator== (const TaskData&, const TaskData&);
 
 			struct FetchedEntry
 			{

@@ -17,6 +17,7 @@ SET (SRCS
 	worker.cpp
 	inactiveworkersfilter.cpp
 	xmlsettingsmanager.cpp
+	structures.cpp
 	3dparty/ftpparse.c
 	)
 SET (HEADERS

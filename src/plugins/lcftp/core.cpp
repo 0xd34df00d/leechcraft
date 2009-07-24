@@ -37,6 +37,8 @@ namespace LeechCraft
 
 				XmlSettingsManager::Instance ().RegisterObject ("TotalNumWorkers",
 						this, "handleTotalNumWorkersChanged");
+				XmlSettingsManager::Instance ().RegisterObject ("WorkersPerDomain",
+						this, "handleWorkersPerDomainChanged");
 
 				handleUpdateInterface ();
 
@@ -333,10 +335,33 @@ namespace LeechCraft
 					States_.at (index).IsWorking_;
 			}
 
+			bool Core::SelectSuitableTask (TaskData *result)
+			{
+				int limit = XmlSettingsManager::Instance ()
+					.property ("WorkersPerDomain").toInt ();
+				Q_FOREACH (TaskData td, Tasks_)
+				{
+					QString domain = td.URL_.host ();
+
+					if (!WorkersPerDomain_.Val ().contains (domain))
+						WorkersPerDomain_.Val () [domain] = 0;
+
+					if (WorkersPerDomain_.Val () [domain] > limit)
+						continue;
+
+					WorkersPerDomain_.Val () [domain]++;
+					*result = td;
+					Tasks_.removeAll (td);
+					return true;
+				}
+				return false;
+			}
+
 			TaskData Core::GetNextTask ()
 			{
-				TasksLock_.lockForRead ();
-				while (!Tasks_.size ())
+				TaskData td;
+				TasksLock_.lockForWrite ();
+				while (!SelectSuitableTask (&td))
 				{
 					TasksLock_.unlock ();
 					WorkerWaitMutex_.lock ();
@@ -346,12 +371,11 @@ namespace LeechCraft
 						break;
 					TasksLock_.lockForWrite ();
 				}
+				TasksLock_.unlock ();
 
 				if (!Quitting_)
 				{
 					beginRemoveRows (QModelIndex (), 0, 0);
-					TaskData td = Tasks_.takeFirst ();
-					TasksLock_.unlock ();
 					endRemoveRows ();
 					QTimer::singleShot (0,
 							this,
@@ -360,7 +384,6 @@ namespace LeechCraft
 				}
 				else
 				{
-					TaskData td;
 					return td;
 				}
 			}
@@ -442,6 +465,11 @@ namespace LeechCraft
 
 			void Core::handleFinished (const TaskData& data)
 			{
+				if (WorkersPerDomain_.Val () [data.URL_.host ()]-- ==
+						XmlSettingsManager::Instance ()
+						.property ("WorkersPerDomain").toInt () + 1)
+					WorkerWait_.wakeAll ();
+
 				emit downloadFinished (tr ("Download finished: %1")
 						.arg (data.Filename_));
 
@@ -529,6 +557,11 @@ namespace LeechCraft
 				}
 				else
 					NumScheduledWorkers_ = -delta;
+			}
+
+			void Core::handleWorkersPerDomainChanged ()
+			{
+				WorkerWait_.wakeAll ();
 			}
 		};
 	};
