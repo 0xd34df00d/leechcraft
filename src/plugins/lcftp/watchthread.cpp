@@ -55,18 +55,7 @@ namespace LeechCraft
 					if (Quitting_)
 						return;
 
-					curl_multi_timeout (Core::Instance ().MultiHandle_.get (), &timeout);
-
-					if (!timeout)
-					{
-						emit shouldPerform ();
-						continue;
-					}
-
-					if (timeout > 1000)
-						timeout = 1000;
-
-					tv.tv_sec = timeout / 1000;
+					tv.tv_sec = 1;
 					tv.tv_usec = 0;
 
 					select (nfds + 1,
@@ -76,6 +65,8 @@ namespace LeechCraft
 							timeout < 0 ? NULL : &tv);
 
 					emit shouldPerform ();
+
+					msleep (100);
 				}
 			}
 		};
