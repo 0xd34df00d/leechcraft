@@ -6,6 +6,7 @@
 #include <QReadWriteLock>
 #include <QMutex>
 #include <QList>
+#include <curl/curl.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
 #include <interfaces/structures.h>
@@ -19,6 +20,9 @@ namespace LeechCraft
 		{
 			class InactiveWorkersFilter;
 
+			typedef boost::shared_ptr<CURLM> CURLM_ptr;
+			typedef boost::shared_ptr<CURLSH> CURLSH_ptr;
+
 			class Core : public QAbstractItemModel
 			{
 				Q_OBJECT
@@ -26,23 +30,36 @@ namespace LeechCraft
 				static Core *Instance_;
 				static QMutex InstanceMutex_;
 
-				QWaitCondition WorkerWait_;
-				QMutex WorkerWaitMutex_;
+				struct CurlGlobalGuard
+				{
+					CurlGlobalGuard ()
+					{
+						curl_global_init (CURL_GLOBAL_ALL);
+					}
+
+					~CurlGlobalGuard ()
+					{
+						curl_global_cleanup ();
+					}
+				};
+
+				CurlGlobalGuard Guard_;
+				CURLM_ptr MultiHandle_;
+				CURLSH_ptr ShareHandle_;
 
 				QList<TaskData> Tasks_;
-				QReadWriteLock TasksLock_;
 
 				ICoreProxy_ptr Proxy_;
 
 				QList<Worker_ptr> Workers_;
-				Util::Guarded<bool> Quitting_;
+				bool Quitting_;
 				QList<Worker::TaskState> States_;
-				Util::Guarded<QMap<QString, int> > WorkersPerDomain_;
+				QMap<QString, int> WorkersPerDomain_;
 
 				boost::shared_ptr<InactiveWorkersFilter> WorkersFilter_;
 
-				Util::Guarded<QList<Worker*> > ScheduledWorkers_;
 				int NumScheduledWorkers_;
+				int RunningHandles_;
 
 				Core ();
 			public:
@@ -66,20 +83,18 @@ namespace LeechCraft
 
 				bool IsAcceptable (int) const;
 				bool SelectSuitableTask (TaskData*);
-
-				// These are called from workers' threads.
-				TaskData GetNextTask ();
-				void FinishedTask (Worker*, int = -1);
 			private:
 				void QueueTask (const TaskData&);
 				void AddWorker (int);
+				void Reschedule ();
+				Worker_ptr FindWorker (CURL*) const;
 			public slots:
 				void handleError (const QString&, const TaskData&);
 				void handleFinished (const TaskData&);
 				void handleFetchedEntry (const FetchedEntry&);
 			private slots:
+				void handlePerform ();
 				void handleUpdateInterface ();
-				void handleScheduledRemoval ();
 				void handleThreadFinished ();
 				void handleTotalNumWorkersChanged ();
 				void handleWorkersPerDomainChanged ();
