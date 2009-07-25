@@ -45,7 +45,7 @@ namespace LeechCraft
 				handleUpdateInterface ();
 
 				QTimer *perform = new QTimer (this);
-				perform->setInterval (500);
+				perform->setInterval (100);
 				connect (perform,
 						SIGNAL (timeout ()),
 						this,
@@ -399,7 +399,7 @@ namespace LeechCraft
 
 			void Core::Reschedule ()
 			{
-				int inQueue;
+				int inQueue = 1;
 				do
 				{
 					CURLMsg *info = curl_multi_info_read (MultiHandle_.get (),
@@ -411,10 +411,11 @@ namespace LeechCraft
 					{
 						case CURLMSG_DONE:
 							{
+								qDebug () << "finished!" << info->data.result;
 								Worker_ptr w = FindWorker (info->easy_handle);
-								w->NotifyFinished (info->data.result);
 								curl_multi_remove_handle (MultiHandle_.get (),
 										info->easy_handle);
+								w->NotifyFinished (info->data.result);
 
 								if (NumScheduledWorkers_)
 								{
@@ -543,7 +544,7 @@ namespace LeechCraft
 				else
 					name = CheckName (entry.URL_, entry.PreviousTask_.Filename_);
 
-				qDebug () << "handle" << entry.URL_ << name;
+				qDebug () << "fetched" << entry.URL_ << name;
 				TaskData td =
 				{
 					entry.PreviousTask_.ID_ >= 0 ? Proxy_->GetID () : -1,

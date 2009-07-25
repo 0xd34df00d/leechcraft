@@ -138,6 +138,7 @@ namespace LeechCraft
 				IsWorking_ = true;
 				StartDT_ = QDateTime::currentDateTime ();
 				Task_ = td;
+				qDebug () << "started" << td.URL_ << td.Filename_;
 
 				HandleTask (td, Handle_);
 				return Handle_;
@@ -145,7 +146,8 @@ namespace LeechCraft
 
 			void Worker::NotifyFinished (CURLcode result)
 			{
-				qDebug () << result << (bool) File_;
+				IsWorking_ = false;
+
 				if (result)
 				{
 					QString errstr (curl_easy_strerror (result));
@@ -204,7 +206,6 @@ namespace LeechCraft
 			void Worker::ParseBuffer (const TaskData& td)
 			{
 				QByteArray buf = ListBuffer_->buffer ();
-				qDebug () << Q_FUNC_INFO << buf;
 				QList<QByteArray> bstrs = buf.split ('\n');
 				QStringList result;
 				Q_FOREACH (QByteArray bstr, bstrs)
