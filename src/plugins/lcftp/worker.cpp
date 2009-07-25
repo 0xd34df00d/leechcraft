@@ -155,12 +155,10 @@ namespace LeechCraft
 				}
 
 				if (File_)
-				{
 					File_->close ();
-					emit finished (Task_);
-				}
 				else
 					ParseBuffer (Task_);
+				emit finished (Task_);
 
 				IsWorking_ = false;
 			}
