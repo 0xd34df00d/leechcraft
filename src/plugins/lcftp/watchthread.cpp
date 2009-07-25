@@ -23,7 +23,6 @@ namespace LeechCraft
 			{
 				fd_set read_fds, write_fds, error_fds;
 				int nfds;
-				long timeout;
 				struct timeval tv;
 
 				while (!Quitting_)
@@ -62,7 +61,7 @@ namespace LeechCraft
 							&read_fds,
 							&write_fds,
 							&error_fds,
-							timeout < 0 ? NULL : &tv);
+							&tv);
 
 					emit shouldPerform ();
 
