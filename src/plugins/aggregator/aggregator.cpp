@@ -57,7 +57,6 @@ namespace LeechCraft
 
 				ItemsWidget *AdditionalInfo_;
 
-				QToolBar *ToolBar_;
 				QToolBar *ControlToolBar_;
 				QAction *ActionAddFeed_;
 				QAction *ActionUpdateFeeds_;
@@ -115,7 +114,6 @@ namespace LeechCraft
 			
 				SetupActions ();
 			
-				Impl_->ToolBar_ = SetupMenuBar ();
 				Impl_->ControlToolBar_ = SetupMenuBar ();
 				Impl_->TrayIcon_.reset (new QSystemTrayIcon (QIcon (":/resources/images/aggregator.png"), this));
 				Impl_->TrayIcon_->hide ();
@@ -169,12 +167,27 @@ namespace LeechCraft
 				Impl_->Ui_.Feeds_->setModel (Core::Instance ().GetChannelsModel ());
 				Impl_->Ui_.Feeds_->addAction (Impl_->ActionMarkChannelAsRead_);
 				Impl_->Ui_.Feeds_->addAction (Impl_->ActionMarkChannelAsUnread_);
-				QAction *sep = new QAction (Impl_->Ui_.Feeds_);
-				sep->setSeparator (true);
-				Impl_->Ui_.Feeds_->addAction (sep);
+				QAction *sep1 = new QAction (Impl_->Ui_.Feeds_),
+						*sep2 = new QAction (Impl_->Ui_.Feeds_);
+				sep1->setSeparator (true);
+				sep2->setSeparator (true);
+				Impl_->Ui_.Feeds_->addAction (sep1);
+				Impl_->Ui_.Feeds_->addAction (Impl_->ActionRemoveFeed_);
+				Impl_->Ui_.Feeds_->addAction (Impl_->ActionUpdateSelectedFeed_);
+				Impl_->Ui_.Feeds_->addAction (sep2);
 				Impl_->Ui_.Feeds_->addAction (Impl_->ActionChannelSettings_);
 				Impl_->Ui_.Feeds_->setContextMenuPolicy (Qt::ActionsContextMenu);
 				QHeaderView *channelsHeader = Impl_->Ui_.Feeds_->header ();
+
+				QMenu *contextMenu = new QMenu (tr ("Feeds actions"));
+				contextMenu->addAction (Impl_->ActionMarkChannelAsRead_);
+				contextMenu->addAction (Impl_->ActionMarkChannelAsUnread_);
+				contextMenu->addSeparator ();
+				contextMenu->addAction (Impl_->ActionRemoveFeed_);
+				contextMenu->addAction (Impl_->ActionUpdateSelectedFeed_);
+				contextMenu->addSeparator ();
+				contextMenu->addAction (Impl_->ActionChannelSettings_);
+				Core::Instance ().SetContextMenu (contextMenu);
 			
 				QFontMetrics fm = fontMetrics ();
 				int dateTimeSize = fm.width (QDateTime::currentDateTime ()
@@ -266,7 +279,7 @@ namespace LeechCraft
 			
 			QToolBar* Aggregator::GetToolBar () const
 			{
-				return Impl_->ToolBar_;
+				return Impl_->ControlToolBar_;
 			}
 			
 			boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> Aggregator::GetSettingsDialog () const
@@ -531,9 +544,22 @@ namespace LeechCraft
 						SLOT (showError ()));
 			}
 			
-			bool Aggregator::IsRepr ()
+			bool Aggregator::IsRepr () const
 			{
-				return Impl_->ControlToolBar_->isVisible ();
+				return Impl_->AdditionalInfo_->isVisible ();
+			}
+
+			QModelIndex Aggregator::GetRelevantIndex () const
+			{
+				if (IsRepr ())
+					return Core::Instance ()
+						.GetJobHolderRepresentation ()->
+						mapToSource (Impl_->SelectedRepr_);
+				else
+					return Core::Instance ()
+						.GetChannelsModel ()->
+						mapToSource (Impl_->Ui_.Feeds_->
+								selectionModel ()->currentIndex ());
 			}
 			
 			void Aggregator::showError (const QString& msg)
@@ -562,11 +588,10 @@ namespace LeechCraft
 			
 			void Aggregator::on_ActionRemoveFeed__triggered ()
 			{
-				QModelIndex ds;
-				if (IsRepr ())
-					ds = Impl_->SelectedRepr_;
-				else
-					ds = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
+				QModelIndex ds = GetRelevantIndex ();
+
+				if (!ds.isValid ())
+					return;
 			
 				QString name = ds.sibling (ds.row (), 0).data ().toString ();
 			
@@ -580,30 +605,24 @@ namespace LeechCraft
 						this);
 				mb.setWindowModality (Qt::WindowModal);
 				if (mb.exec () == QMessageBox::Ok)
-					Core::Instance ().RemoveFeed (ds, IsRepr ());
+					Core::Instance ().RemoveFeed (ds);
 			}
 			
 			void Aggregator::on_ActionMarkChannelAsRead__triggered ()
 			{
-				QModelIndexList indexes = Impl_->Ui_.Feeds_->selectionModel ()->selectedRows ();
-				for (int i = 0; i < indexes.size (); ++i)
-					Core::Instance ().MarkChannelAsRead (indexes.at (i));
+				Core::Instance ().MarkChannelAsRead (GetRelevantIndex ());
 			}
 			
 			void Aggregator::on_ActionMarkChannelAsUnread__triggered ()
 			{
-				QModelIndexList indexes = Impl_->Ui_.Feeds_->selectionModel ()->selectedRows ();
-				for (int i = 0; i < indexes.size (); ++i)
-					Core::Instance ().MarkChannelAsUnread (indexes.at (i));
+				Core::Instance ().MarkChannelAsUnread (GetRelevantIndex ());
 			}
 			
 			void Aggregator::on_ActionChannelSettings__triggered ()
 			{
-				QModelIndex index = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
+				QModelIndex index = GetRelevantIndex ();
 				if (!index.isValid ())
 					return;
-			
-				index = Core::Instance ().GetChannelsModel ()->mapToSource (index);
 			
 				std::auto_ptr<FeedSettings> dia (new FeedSettings (index, this));
 				dia->exec ();
@@ -612,12 +631,7 @@ namespace LeechCraft
 			void Aggregator::on_ActionUpdateSelectedFeed__triggered ()
 			{
 				bool isRepr = IsRepr ();
-				QModelIndex current;
-				if (isRepr)
-					current = Impl_->SelectedRepr_;
-				else
-					current = Impl_->Ui_.Feeds_->
-						selectionModel ()->currentIndex ();
+				QModelIndex current = GetRelevantIndex ();
 			
 				if (!current.isValid ())
 				{

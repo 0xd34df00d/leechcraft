@@ -17,6 +17,7 @@ namespace LeechCraft
 			: QAbstractItemModel (parent)
 			, Toolbar_ (0)
 			, TabWidget_ (0)
+			, Menu_ (0)
 			{
 				setObjectName ("Aggregator ChannelsModel");
 				Headers_ << tr ("Feed")
@@ -45,6 +46,8 @@ namespace LeechCraft
 					return QVariant::fromValue<QToolBar*> (Toolbar_);
 				if (role == LeechCraft::RoleAdditionalInfo)
 					return QVariant::fromValue<QWidget*> (TabWidget_);
+				if (role == LeechCraft::RoleContextMenu)
+					return QVariant::fromValue<QMenu*> (Menu_);
 			
 				if (!index.isValid ())
 					return QVariant ();
@@ -197,6 +200,11 @@ namespace LeechCraft
 				for (int i = 0; i < Channels_.size (); ++i)
 					result += Channels_.at (i).Unread_;
 				return result;
+			}
+
+			void ChannelsModel::SetMenu (QMenu *menu)
+			{
+				Menu_ = menu;
 			}
 		};
 	};

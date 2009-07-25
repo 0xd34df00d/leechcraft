@@ -112,7 +112,7 @@ namespace LeechCraft
 				void DoDelayedInit ();
 				void SetProvider (QObject*, const QString&);
 				void AddFeed (const QString&, const QStringList&);
-				void RemoveFeed (const QModelIndex&, bool);
+				void RemoveFeed (const QModelIndex&);
 				void Selected (const QModelIndex&);
 				Item_ptr GetItem (const QModelIndex&) const;
 				QSortFilterProxyModel* GetChannelsModel () const;
@@ -164,6 +164,7 @@ namespace LeechCraft
 				void AddFeeds (const feeds_container_t&, const QString&);
 				void SetMerge (bool);
 				void CurrentChannelChanged (const QModelIndex&, bool);
+				void SetContextMenu (QMenu*);
 			public slots:
 				void openLink (const QString&);
 				void updateFeeds ();

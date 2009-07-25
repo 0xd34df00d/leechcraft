@@ -14,7 +14,7 @@ namespace LeechCraft
 			{
 				Ui_.setupUi (this);
 			
-				ChannelTagsCompleter_.reset (new LeechCraft::Util::TagsCompleter (Ui_.ChannelTags_));
+				ChannelTagsCompleter_.reset (new Util::TagsCompleter (Ui_.ChannelTags_));
 				Ui_.ChannelTags_->AddSelector ();
 			
 				connect (Ui_.ChannelLink_,

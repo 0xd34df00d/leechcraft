@@ -292,16 +292,10 @@ namespace LeechCraft
 				PendingJobs_ [id] = pj;
 			}
 			
-			void Core::RemoveFeed (const QModelIndex& si, bool representation)
+			void Core::RemoveFeed (const QModelIndex& index)
 			{
-				if (!si.isValid ())
+				if (!index.isValid ())
 					return;
-			
-				QModelIndex index;
-				if (representation)
-					index = JobHolderRepresentation_->mapToSource (si);
-				else
-					index = ChannelsFilterModel_->mapToSource (si);
 			
 				ChannelShort channel;
 				try
@@ -387,12 +381,12 @@ namespace LeechCraft
 			
 			void Core::MarkChannelAsRead (const QModelIndex& i)
 			{
-				MarkChannel (ChannelsFilterModel_->mapToSource (i), false);
+				MarkChannel (i, false);
 			}
 			
 			void Core::MarkChannelAsUnread (const QModelIndex& i)
 			{
-				MarkChannel (ChannelsFilterModel_->mapToSource (i), true);
+				MarkChannel (i, true);
 			}
 			
 			QStringList Core::GetTagsForIndex (int i) const
@@ -565,11 +559,7 @@ namespace LeechCraft
 			
 			void Core::UpdateFeed (const QModelIndex& si, bool isRepr)
 			{
-				QModelIndex index;
-				if (isRepr)
-					index = JobHolderRepresentation_->mapToSource (si);
-				else
-					index = ChannelsFilterModel_->mapToSource (si);
+				QModelIndex index = si;
 			
 				ChannelShort channel;
 				try
@@ -898,6 +888,11 @@ namespace LeechCraft
 					CurrentItemsModel_->Reset (qMakePair (QString (), QString ()));
 				}
 				emit currentChannelChanged (index);
+			}
+
+			void Core::SetContextMenu (QMenu *menu)
+			{
+				ChannelsModel_->SetMenu (menu);
 			}
 			
 			void Core::scheduleSave ()

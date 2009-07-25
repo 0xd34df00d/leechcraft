@@ -5,6 +5,7 @@
 #include "channel.h"
 
 class QToolBar;
+class QMenu;
 
 namespace LeechCraft
 {
@@ -21,6 +22,7 @@ namespace LeechCraft
 				Channels_t Channels_;
 				QToolBar *Toolbar_;
 				QWidget *TabWidget_;
+				QMenu *Menu_;
 			public:
 				enum Columns
 				{
@@ -49,6 +51,7 @@ namespace LeechCraft
 				QModelIndex GetUnreadChannelIndex () const;
 				int GetUnreadChannelsNumber () const;
 				int GetUnreadItemsNumber () const;
+				void SetMenu (QMenu*);
 			signals:
 				void channelDataUpdated ();
 			};

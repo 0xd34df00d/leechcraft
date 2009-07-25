@@ -73,7 +73,8 @@ namespace LeechCraft
 				QToolBar* SetupMenuBar ();
 				void SetupActions ();
 				void ScheduleShowError ();
-				bool IsRepr ();
+				bool IsRepr () const;
+				QModelIndex GetRelevantIndex () const;
 			private slots:
 				void showError (const QString&);
 				void showError ();
