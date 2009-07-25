@@ -48,6 +48,12 @@ namespace LeechCraft
 		return Ui_;
 	}
 
+	void TabContents::SetQuery (const QString& query)
+	{
+		Ui_.FilterLine_->setText (query);
+		feedFilterParameters ();
+	}
+
 	void TabContents::SmartDeselect ()
 	{
 		if (Ui_.PluginsTasksTree_->selectionModel ())

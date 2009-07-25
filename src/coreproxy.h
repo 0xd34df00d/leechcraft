@@ -23,6 +23,8 @@ namespace LeechCraft
 		QMainWindow* GetMainWindow () const;
 		QIcon GetIcon (const QString&, const QString& = QString ()) const;
 		ITagsManager* GetTagsManager () const;
+		QStringList GetSearchCategories () const;
+		void OpenSummary (const QString&) const;
 		int GetID ();
 		void FreeID (int);
 

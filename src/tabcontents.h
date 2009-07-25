@@ -19,6 +19,7 @@ namespace LeechCraft
 
 		Ui::TabContents GetUi () const;
 		void SmartDeselect ();
+		void SetQuery (const QString&);
 	private slots:
 		void updatePanes (const QItemSelection&, const QItemSelection&);
 		void filterParametersChanged ();

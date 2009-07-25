@@ -28,11 +28,13 @@ namespace LeechCraft
 		return result;
 	}
 
-	void TabContentsManager::AddNewTab ()
+	void TabContentsManager::AddNewTab (const QString& query)
 	{
 		TabContents *tc = new TabContents ();
 		Others_ << tc;
 		emit addNewTab (tr ("Summary"), tc);
+
+		tc->SetQuery (query);
 	}
 
 	void TabContentsManager::RemoveTab (TabContents *tc)

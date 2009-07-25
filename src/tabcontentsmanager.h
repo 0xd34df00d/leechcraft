@@ -21,7 +21,7 @@ namespace LeechCraft
 		void SetDefault (TabContents*);
 		QList<TabContents*> GetTabs () const;
 
-		void AddNewTab ();
+		void AddNewTab (const QString& = QString ());
 		void RemoveTab (TabContents*);
 		void MadeCurrent (TabContents*);
 	signals:

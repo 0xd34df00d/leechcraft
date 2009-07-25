@@ -173,6 +173,15 @@ public:
 	 */
 	virtual ITagsManager* GetTagsManager () const = 0;
 
+	/** Returns the list of all possible search categories from the
+	 * finders installed.
+	 */
+	virtual QStringList GetSearchCategories () const = 0;
+
+	/** Opens a new Summary page with the given query.
+	 */
+	virtual void OpenSummary (const QString& query = QString ()) const = 0;
+
 	/** Returns an ID for a delegated task from the pool.
 	 */
 	virtual int GetID () = 0;

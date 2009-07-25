@@ -1,9 +1,11 @@
 #include "coreproxy.h"
+#include <algorithm>
 #include "core.h"
 #include "mainwindow.h"
 #include "xmlsettingsmanager.h"
 #include "skinengine.h"
 #include "tagsmanager.h"
+#include "tabcontentsmanager.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -51,6 +53,24 @@ QIcon CoreProxy::GetIcon (const QString& icon, const QString& iconOff) const
 ITagsManager* CoreProxy::GetTagsManager () const
 {
 	return &TagsManager::Instance ();
+}
+
+QStringList CoreProxy::GetSearchCategories () const
+{
+	QList<IFinder*> finders = Core::Instance ().GetPluginManager ()->
+		GetAllCastableTo<IFinder*> ();
+
+	QStringList result;
+	for (QList<IFinder*>::iterator i = finders.begin (),
+			end = finders.end (); i != end; ++i)
+		result += (*i)->GetCategories (); 
+	std::sort (result.begin (), result.end ());
+	return result;
+}
+
+void CoreProxy::OpenSummary (const QString& query) const
+{
+	TabContentsManager::Instance ().AddNewTab (query);
 }
 
 int CoreProxy::GetID ()
