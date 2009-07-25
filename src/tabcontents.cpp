@@ -1,5 +1,6 @@
 #include "tabcontents.h"
 #include <QTimer>
+#include <QMenu>
 #include "core.h"
 #include "mainwindow.h"
 
@@ -178,6 +179,15 @@ namespace LeechCraft
 				fm.width ("Of the download."));
 		itemsHeader->resizeSection (2,
 				fm.width ("99.99% (1024.0 kb from 1024.0 kb at 1024.0 kb/s)"));
+	}
+
+	void TabContents::on_PluginsTasksTree__customContextMenuRequested (const QPoint& pos)
+	{
+		QModelIndex current = Ui_.PluginsTasksTree_->currentIndex ();
+		QMenu *menu = current.data (RoleContextMenu).value<QMenu*> ();
+		if (!menu)
+			return;
+		menu->popup (Ui_.PluginsTasksTree_->viewport ()->mapToGlobal (pos));
 	}
 };
 

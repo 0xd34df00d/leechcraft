@@ -134,13 +134,18 @@ namespace LeechCraft
 		/** This should return MIME of an item if it's available,
 		 * otherwise an empty string should be returned.
 		 */
-		RoleMime
+		RoleMime,
+		/** This role returns the QMenu* that should be used as the
+		 * context menu.
+		 */
+		RoleContextMenu
 	};
 };
 
 Q_DECLARE_METATYPE (LeechCraft::DownloadEntity);
 Q_DECLARE_METATYPE (QNetworkReply*);
 Q_DECLARE_METATYPE (QToolBar*);
+Q_DECLARE_METATYPE (QMenu*);
 Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::TaskParameters);
 
 #endif
