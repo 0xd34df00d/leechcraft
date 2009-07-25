@@ -35,9 +35,7 @@ namespace LeechCraft
 				MultiHandle_.reset (curl_multi_init (), curl_multi_cleanup);
 				ShareHandle_.reset (curl_share_init (), curl_share_cleanup);
 
-				for (int i = 0; i < XmlSettingsManager::Instance ()
-						.property ("TotalNumWorkers").toInt (); ++i)
-					AddWorker (i);
+				handleTotalNumWorkersChanged ();
 
 				XmlSettingsManager::Instance ().RegisterObject ("TotalNumWorkers",
 						this, "handleTotalNumWorkersChanged");
@@ -47,7 +45,7 @@ namespace LeechCraft
 				handleUpdateInterface ();
 
 				QTimer *perform = new QTimer (this);
-				perform->setInterval (50);
+				perform->setInterval (500);
 				connect (perform,
 						SIGNAL (timeout ()),
 						this,
@@ -388,8 +386,8 @@ namespace LeechCraft
 						this,
 						SLOT (handleFetchedEntry (const FetchedEntry&)));
 
-				curl_easy_setopt (w->GetHandle ().get (),
-						CURLOPT_SHARE, ShareHandle_.get ());
+//				curl_easy_setopt (w->GetHandle ().get (),
+//						CURLOPT_SHARE, ShareHandle_.get ());
 
 				beginInsertRows (QModelIndex (), i, i);
 				Workers_ << w;
@@ -415,6 +413,8 @@ namespace LeechCraft
 							{
 								Worker_ptr w = FindWorker (info->easy_handle);
 								w->NotifyFinished (info->data.result);
+								curl_multi_remove_handle (MultiHandle_.get (),
+										info->easy_handle);
 
 								if (NumScheduledWorkers_)
 								{
@@ -451,8 +451,11 @@ namespace LeechCraft
 						break;
 					Q_FOREACH (Worker_ptr w, Workers_)
 						if (!w->IsWorking ())
+						{
 							curl_multi_add_handle (MultiHandle_.get (),
 									w->Start (td).get ());
+							break;
+						}
 				}
 
 				QTimer::singleShot (0,
@@ -478,9 +481,13 @@ namespace LeechCraft
 							&RunningHandles_) == CURLM_CALL_MULTI_PERFORM)
 				{
 					if (prev != RunningHandles_)
+					{
 						Reschedule ();
-					prev = RunningHandles_;
+						prev = RunningHandles_;
+					}
 				}
+				if (prev != RunningHandles_)
+					Reschedule ();
 			}
 			
 			void Core::handleError (const QString& msg, const TaskData& td)
@@ -536,7 +543,7 @@ namespace LeechCraft
 				else
 					name = CheckName (entry.URL_, entry.PreviousTask_.Filename_);
 
-//				qDebug () << "handle" << entry.URL_ << name;
+				qDebug () << "handle" << entry.URL_ << name;
 				TaskData td =
 				{
 					entry.PreviousTask_.ID_ >= 0 ? Proxy_->GetID () : -1,

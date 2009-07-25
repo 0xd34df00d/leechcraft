@@ -31,7 +31,6 @@ namespace LeechCraft
 				Wrapper_ptr W_;
 				boost::shared_ptr<QFile> File_;
 				boost::shared_ptr<QBuffer> ListBuffer_;
-				QUrl URL_;
 				bool IsWorking_;
 				quint64 DLNow_,
 					DLTotal_,

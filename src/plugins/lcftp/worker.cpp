@@ -67,6 +67,12 @@ namespace LeechCraft
 			, ID_ (id)
 			, Handle_ (curl_easy_init (), curl_easy_cleanup)
 			, W_ (new Wrapper (this))
+			, IsWorking_ (false)
+			, DLNow_ (0)
+			, DLTotal_ (0)
+			, ULNow_ (0)
+			, ULTotal_ (0)
+			, InitialSize_ (0)
 			{
 				curl_easy_setopt (Handle_.get (),
 						CURLOPT_WRITEDATA, W_.get ());
@@ -107,7 +113,7 @@ namespace LeechCraft
 				{
 					ID_,
 					IsWorking_,
-					URL_,
+					Task_.URL_,
 					qMakePair<quint64, quint64> (DLNow_ + is, DLTotal_ + is),
 					qMakePair<quint64, quint64> (ULNow_ + is, ULTotal_ + is),
 					dl,
@@ -118,7 +124,7 @@ namespace LeechCraft
 
 			QUrl Worker::GetURL () const
 			{
-				return URL_;
+				return Task_.URL_;
 			}
 
 			CURL_ptr Worker::GetHandle () const
@@ -139,6 +145,7 @@ namespace LeechCraft
 
 			void Worker::NotifyFinished (CURLcode result)
 			{
+				qDebug () << result << (bool) File_;
 				if (result)
 				{
 					QString errstr (curl_easy_strerror (result));
@@ -197,6 +204,7 @@ namespace LeechCraft
 			void Worker::ParseBuffer (const TaskData& td)
 			{
 				QByteArray buf = ListBuffer_->buffer ();
+				qDebug () << Q_FUNC_INFO << buf;
 				QList<QByteArray> bstrs = buf.split ('\n');
 				QStringList result;
 				Q_FOREACH (QByteArray bstr, bstrs)
@@ -214,7 +222,7 @@ namespace LeechCraft
 						continue;
 					}
 
-					QUrl itemUrl = URL_;
+					QUrl itemUrl = Task_.URL_;
 					itemUrl.setPath (itemUrl.path () + name);
 					if (fp.flagtrycwd)
 						itemUrl.setPath (itemUrl.path () + "/");
@@ -244,7 +252,7 @@ namespace LeechCraft
 				ULNow_ = 0;
 				ULTotal_ = 0;
 				IsWorking_ = false;
-				URL_ = QUrl ();
+				Task_ = TaskData ();
 			}
 
 			size_t Worker::WriteData (void *buffer, size_t size, size_t nmemb)
