@@ -1,13 +1,12 @@
 #ifndef PLUGINS_LCFTP_WORKER_H
 #define PLUGINS_LCFTP_WORKER_H
 #include <boost/shared_ptr.hpp>
-#include <QThread>
+#include <QObject>
 #include <QFile>
 #include <QBuffer>
 #include <QUrl>
 #include <QDateTime>
 #include <curl/curl.h>
-#include <plugininterface/guarded.h>
 #include "structures.h"
 
 namespace LeechCraft
@@ -16,27 +15,29 @@ namespace LeechCraft
 	{
 		namespace LCFTP
 		{
+			struct Wrapper;
+			typedef boost::shared_ptr<Wrapper> Wrapper_ptr;
+
 			typedef boost::shared_ptr<CURL> CURL_ptr;
 
-			struct Wrapper;
-
-			class Worker : public QThread
+			class Worker : public QObject
 			{
 				Q_OBJECT
 
 				friend struct Wrapper;
-				Util::Guarded<int> ID_;
+				int ID_;
+				CURL_ptr Handle_;
+				Wrapper_ptr W_;
 				boost::shared_ptr<QFile> File_;
 				boost::shared_ptr<QBuffer> ListBuffer_;
-				Util::Guarded<QUrl> URL_;
-				Util::Guarded<bool> Exit_;
-				Util::Guarded<bool> IsWorking_;
-				Util::Guarded<quint64> DLNow_,
+				bool IsWorking_;
+				quint64 DLNow_,
 					DLTotal_,
 					ULNow_,
 					ULTotal_,
 					InitialSize_;
-				Util::Guarded<QDateTime> StartDT_;
+				QDateTime StartDT_;
+				TaskData Task_;
 			public:
 				struct TaskState
 				{
@@ -56,11 +57,10 @@ namespace LeechCraft
 				void SetID (int);
 				void SetExit ();
 				TaskState GetState () const;
-				QPair<quint64, quint64> GetDL () const;
-				QPair<quint64, quint64> GetUL () const;
 				QUrl GetURL () const;
-			protected:
-				void run ();
+				CURL_ptr GetHandle () const;
+				CURL_ptr Start (const TaskData&);
+				void NotifyFinished (CURLcode);
 			private:
 				void HandleTask (const TaskData&, CURL_ptr);
 				void ParseBuffer (const TaskData&);

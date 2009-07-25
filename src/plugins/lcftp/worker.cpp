@@ -39,70 +39,6 @@ namespace LeechCraft
 				}
 			};
 
-			Worker::Worker (int id, QObject *parent)
-			: QThread (parent)
-			, ID_ (id)
-			, Exit_ (false)
-			{
-				Reset ();
-			}
-
-			Worker::~Worker ()
-			{
-				qDebug () << Q_FUNC_INFO;
-			}
-
-			bool Worker::IsWorking () const
-			{
-				return IsWorking_;
-			}
-
-			void Worker::SetID (int id)
-			{
-				ID_ = id;
-			}
-
-			void Worker::SetExit ()
-			{
-				Exit_ = true;
-			}
-
-			Worker::TaskState Worker::GetState () const
-			{
-				int secs = StartDT_.Val ().secsTo (QDateTime::currentDateTime ());
-				quint64 dl = secs ? DLNow_ / secs : 0;
-				quint64 ul = secs ? ULNow_ / secs : 0;
-
-				quint64 is = InitialSize_;
-
-				TaskState result =
-				{
-					ID_,
-					IsWorking_,
-					URL_,
-					qMakePair<quint64, quint64> (DLNow_ + is, DLTotal_ + is),
-					qMakePair<quint64, quint64> (ULNow_ + is, ULTotal_ + is),
-					dl,
-					ul
-				};
-				return result;
-			}
-
-			QPair<quint64, quint64> Worker::GetDL () const
-			{
-				return qMakePair<quint64, quint64> (DLNow_, DLTotal_);
-			}
-
-			QPair<quint64, quint64> Worker::GetUL () const
-			{
-				return qMakePair<quint64, quint64> (ULNow_, ULTotal_);
-			}
-
-			QUrl Worker::GetURL () const
-			{
-				return URL_;
-			}
-
 			namespace
 			{
 				size_t write_data (void *buf, size_t size, size_t nmemb, void *userp)
@@ -126,57 +62,105 @@ namespace LeechCraft
 				}
 			};
 
-			void Worker::run ()
+			Worker::Worker (int id, QObject *parent)
+			: QObject (parent)
+			, ID_ (id)
+			, Handle_ (curl_easy_init (), curl_easy_cleanup)
+			, W_ (new Wrapper (this))
+			, IsWorking_ (false)
+			, DLNow_ (0)
+			, DLTotal_ (0)
+			, ULNow_ (0)
+			, ULTotal_ (0)
+			, InitialSize_ (0)
 			{
-				CURL_ptr handle (curl_easy_init (),
-						curl_easy_cleanup);
-				boost::shared_ptr<Wrapper> w (new Wrapper (this));
-
-				curl_easy_setopt (handle.get (),
-						CURLOPT_WRITEDATA, w.get ());
-				curl_easy_setopt (handle.get (),
+				curl_easy_setopt (Handle_.get (),
+						CURLOPT_WRITEDATA, W_.get ());
+				curl_easy_setopt (Handle_.get (),
 						CURLOPT_NOPROGRESS, 0);
-				curl_easy_setopt (handle.get (),
+				curl_easy_setopt (Handle_.get (),
 						CURLOPT_PROGRESSFUNCTION, progress_function);
-				curl_easy_setopt (handle.get (),
-						CURLOPT_PROGRESSDATA, w.get ());
+				curl_easy_setopt (Handle_.get (),
+						CURLOPT_PROGRESSDATA, W_.get ());
 
-				UpdateHandleSettings (handle);
+				Reset ();
+			}
 
-				int id = -1;
+			Worker::~Worker ()
+			{
+				qDebug () << Q_FUNC_INFO;
+			}
 
-				while (true)
+			bool Worker::IsWorking () const
+			{
+				return IsWorking_;
+			}
+
+			void Worker::SetID (int id)
+			{
+				ID_ = id;
+			}
+
+			Worker::TaskState Worker::GetState () const
+			{
+				int secs = StartDT_.secsTo (QDateTime::currentDateTime ());
+				quint64 dl = secs ? DLNow_ / secs : 0;
+				quint64 ul = secs ? ULNow_ / secs : 0;
+
+				quint64 is = InitialSize_;
+
+				TaskState result =
 				{
-					Core::Instance ().FinishedTask (this, id);
+					ID_,
+					IsWorking_,
+					Task_.URL_,
+					qMakePair<quint64, quint64> (DLNow_ + is, DLTotal_ + is),
+					qMakePair<quint64, quint64> (ULNow_ + is, ULTotal_ + is),
+					dl,
+					ul
+				};
+				return result;
+			}
 
-					if (Exit_)
-					{
-						File_.reset ();
-						break;
-					}
+			QUrl Worker::GetURL () const
+			{
+				return Task_.URL_;
+			}
 
-					TaskData td = Core::Instance ().GetNextTask ();
-					IsWorking_ = true;
+			CURL_ptr Worker::GetHandle () const
+			{
+				return Handle_;
+			}
 
-					if (Exit_)
-					{
-						Core::Instance ().FinishedTask (this);
-						File_.reset ();
-						break;
-					}
+			CURL_ptr Worker::Start (const TaskData& td)
+			{
+				IsWorking_ = true;
+				UpdateHandleSettings (Handle_);
+				StartDT_ = QDateTime::currentDateTime ();
+				Task_ = td;
 
-					URL_ = td.URL_;
+				HandleTask (td, Handle_);
+				return Handle_;
+			}
 
-					StartDT_ = QDateTime::currentDateTime ();
-
-					UpdateHandleSettings (handle);
-					HandleTask (td, handle);
-					if (File_)
-						emit finished (td);
-					else
-						ParseBuffer (td);
-					Reset ();
+			void Worker::NotifyFinished (CURLcode result)
+			{
+				if (result)
+				{
+					QString errstr (curl_easy_strerror (result));
+					qWarning () << Q_FUNC_INFO
+						<< result
+						<< errstr;
+					emit error (errstr, Task_);
 				}
+
+				if (File_)
+				{
+					File_->close ();
+					emit finished (Task_);
+				}
+				else
+					ParseBuffer (Task_);
 
 				IsWorking_ = false;
 			}
@@ -216,18 +200,6 @@ namespace LeechCraft
 					curl_easy_setopt (handle.get (),
 							CURLOPT_RESUME_FROM_LARGE, 0);
 				}
-
-				CURLcode result = curl_easy_perform (handle.get ());
-				if (File_)
-					File_->close ();
-				if (result)
-				{
-					QString errstr (curl_easy_strerror (result));
-					qWarning () << Q_FUNC_INFO
-						<< result
-						<< errstr;
-					emit error (errstr, td);
-				}
 			}
 
 			void Worker::ParseBuffer (const TaskData& td)
@@ -250,7 +222,7 @@ namespace LeechCraft
 						continue;
 					}
 
-					QUrl itemUrl = URL_;
+					QUrl itemUrl = Task_.URL_;
 					itemUrl.setPath (itemUrl.path () + name);
 					if (fp.flagtrycwd)
 						itemUrl.setPath (itemUrl.path () + "/");
@@ -280,7 +252,7 @@ namespace LeechCraft
 				ULNow_ = 0;
 				ULTotal_ = 0;
 				IsWorking_ = false;
-				URL_ = QUrl ();
+				Task_ = TaskData ();
 			}
 
 			size_t Worker::WriteData (void *buffer, size_t size, size_t nmemb)

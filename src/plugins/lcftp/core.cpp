@@ -12,6 +12,7 @@
 #include <plugininterface/proxy.h>
 #include "inactiveworkersfilter.h"
 #include "xmlsettingsmanager.h"
+#include "watchthread.h"
 
 namespace LeechCraft
 {
@@ -23,17 +24,23 @@ namespace LeechCraft
 			QMutex Core::InstanceMutex_;
 
 			Core::Core ()
-			: Quitting_ (false)
+			: WatchThread_ (new WatchThread (this))
+			, Quitting_ (false)
 			, NumScheduledWorkers_ (0)
+			, RunningHandles_ (0)
 			{
 				qRegisterMetaType<TaskData> ("TaskData");
 				qRegisterMetaType<FetchedEntry> ("FetchedEntry");
 
 				WorkersFilter_.reset (new InactiveWorkersFilter (this));
-				curl_global_init (CURL_GLOBAL_ALL);
-				for (int i = 0; i < XmlSettingsManager::Instance ()
-						.property ("TotalNumWorkers").toInt (); ++i)
-					AddWorker (i);
+
+				{
+					QMutexLocker l (&MultiHandleMutex_);
+					MultiHandle_.reset (curl_multi_init (), curl_multi_cleanup);
+				}
+				ShareHandle_.reset (curl_share_init (), curl_share_cleanup);
+
+				handleTotalNumWorkersChanged ();
 
 				XmlSettingsManager::Instance ().RegisterObject ("TotalNumWorkers",
 						this, "handleTotalNumWorkersChanged");
@@ -41,6 +48,13 @@ namespace LeechCraft
 						this, "handleWorkersPerDomainChanged");
 
 				handleUpdateInterface ();
+
+				WatchThread_->start (QThread::IdlePriority);
+				connect (WatchThread_,
+						SIGNAL (shouldPerform ()),
+						this,
+						SLOT (handlePerform ()),
+						Qt::QueuedConnection);
 
 				QTimer *timer = new QTimer (this);
 				timer->setInterval (500);
@@ -65,17 +79,17 @@ namespace LeechCraft
 			void Core::Release ()
 			{
 				Quitting_ = true;
-				Q_FOREACH (Worker_ptr w, Workers_)
-					w->SetExit ();
-				WorkerWait_.wakeAll ();
+				WatchThread_->SetExit ();
 
-				curl_global_cleanup ();
 				deleteLater ();
+
+				QMutexLocker l (&MultiHandleMutex_);
 				Q_FOREACH (Worker_ptr w, Workers_)
-				{
-					w->wait (10);
-					w->terminate ();
-				}
+					curl_multi_remove_handle (MultiHandle_.get (),
+							w->GetHandle ().get ());
+
+				if (!WatchThread_->wait (100))
+					WatchThread_->terminate ();
 			}
 
 			void Core::SetCoreProxy (ICoreProxy_ptr proxy)
@@ -325,7 +339,6 @@ namespace LeechCraft
 					tfn
 				};
 				QueueTask (td);
-				WorkerWait_.wakeOne ();
 				return td.ID_;
 			}
 
@@ -343,13 +356,13 @@ namespace LeechCraft
 				{
 					QString domain = td.URL_.host ();
 
-					if (!WorkersPerDomain_.Val ().contains (domain))
-						WorkersPerDomain_.Val () [domain] = 0;
+					if (!WorkersPerDomain_.contains (domain))
+						WorkersPerDomain_ [domain] = 0;
 
-					if (WorkersPerDomain_.Val () [domain] > limit)
+					if (WorkersPerDomain_ [domain] > limit)
 						continue;
 
-					WorkersPerDomain_.Val () [domain]++;
+					WorkersPerDomain_ [domain]++;
 					*result = td;
 					Tasks_.removeAll (td);
 					return true;
@@ -357,108 +370,148 @@ namespace LeechCraft
 				return false;
 			}
 
-			TaskData Core::GetNextTask ()
-			{
-				TaskData td;
-				TasksLock_.lockForWrite ();
-				while (!SelectSuitableTask (&td))
-				{
-					TasksLock_.unlock ();
-					WorkerWaitMutex_.lock ();
-					WorkerWait_.wait (&WorkerWaitMutex_);
-					WorkerWaitMutex_.unlock ();
-					if (Quitting_)
-						break;
-					TasksLock_.lockForWrite ();
-				}
-				TasksLock_.unlock ();
-
-				if (!Quitting_)
-				{
-					beginRemoveRows (QModelIndex (), 0, 0);
-					endRemoveRows ();
-					QTimer::singleShot (0,
-							this,
-							SLOT (handleUpdateInterface ()));
-					return td;
-				}
-				else
-				{
-					return td;
-				}
-			}
-
-			void Core::FinishedTask (Worker *w, int id)
-			{
-				if (id >= 0)
-					Proxy_->FreeID (id);
-
-				QTimer::singleShot (0,
-						this,
-						SLOT (handleUpdateInterface ()));
-
-				if (NumScheduledWorkers_ > 0)
-				{
-					if (!w)
-						return;
-
-					for (int i = 0; i < Workers_.size (); ++i)
-					{
-						if (Workers_.at (i).get () != w)
-							continue;
-
-						w->SetExit ();
-						ScheduledWorkers_.Val ().append (w);
-						--NumScheduledWorkers_;
-						QTimer::singleShot (0,
-								this,
-								SLOT (handleScheduledRemoval ()));
-						break;
-					}
-				}
-			}
-
 			void Core::QueueTask (const TaskData& td)
 			{
 				beginInsertRows (QModelIndex (),
 						Tasks_.size (), Tasks_.size ());
-				TasksLock_.lockForWrite ();
 				Tasks_ << td;
-				TasksLock_.unlock ();
 				endInsertRows ();
+				Reschedule ();
 			}
 
 			void Core::AddWorker (int i)
 			{
 				Worker_ptr w (new Worker (i));
-				w->start ();
 				connect (w.get (),
 						SIGNAL (error (const QString&, const TaskData&)),
 						this,
-						SLOT (handleError (const QString&, const TaskData&)),
-						Qt::QueuedConnection);
+						SLOT (handleError (const QString&, const TaskData&)));
 				connect (w.get (),
 						SIGNAL (finished (const TaskData&)),
 						this,
-						SLOT (handleFinished (const TaskData&)),
-						Qt::QueuedConnection);
+						SLOT (handleFinished (const TaskData&)));
 				connect (w.get (),
 						SIGNAL (fetchedEntry (const FetchedEntry&)),
 						this,
 						SLOT (handleFetchedEntry (const FetchedEntry&)),
 						Qt::QueuedConnection);
+
+				curl_easy_setopt (w->GetHandle ().get (),
+						CURLOPT_SHARE, ShareHandle_.get ());
+
 				beginInsertRows (QModelIndex (), i, i);
 				Workers_ << w;
 				States_ << w->GetState ();
 				endInsertRows ();
+
+				Reschedule ();
+			}
+
+			void Core::Reschedule ()
+			{
+				int inQueue = 1;
+				do
+				{
+					QMutexLocker l (&MultiHandleMutex_);
+					CURLMsg *info = curl_multi_info_read (MultiHandle_.get (),
+							&inQueue);
+					if (!info)
+						continue;
+
+					switch (info->msg)
+					{
+						case CURLMSG_DONE:
+							{
+								Worker_ptr w = FindWorker (info->easy_handle);
+								curl_multi_remove_handle (MultiHandle_.get (),
+										info->easy_handle);
+								w->NotifyFinished (info->data.result);
+
+								if (NumScheduledWorkers_)
+								{
+									for (int i = 0; i < Workers_.size (); ++i)
+									{
+										if (Workers_.at (i) != w)
+											continue;
+
+										beginRemoveRows (QModelIndex (), i, i);
+										Workers_.removeAt (i);
+										States_.removeAt (i);
+										for (int j = i; j < Workers_.size (); ++j)
+											Workers_ [j]->SetID (j - 1);
+										--NumScheduledWorkers_;
+										endRemoveRows ();
+										break;
+									}
+								}
+							}
+							break;
+						default:
+							qWarning () << Q_FUNC_INFO
+								<< "unhandled message"
+								<< info->msg;
+							break;
+					}
+				}
+				while (inQueue);
+
+				while (RunningHandles_ < Workers_.size () &&
+						Tasks_.size ())
+				{
+					TaskData td;
+					if (!SelectSuitableTask (&td))
+						break;
+					Q_FOREACH (Worker_ptr w, Workers_)
+						if (!w->IsWorking ())
+						{
+							{
+								QMutexLocker l (&MultiHandleMutex_);
+								curl_multi_add_handle (MultiHandle_.get (),
+										w->Start (td).get ());
+							}
+							handlePerform ();
+							break;
+						}
+				}
+			}
+
+			Worker_ptr Core::FindWorker (CURL *handle) const
+			{
+				Q_FOREACH (Worker_ptr w, Workers_)
+					if (w->GetHandle ().get () == handle)
+						return w;
+				qWarning () << Q_FUNC_INFO
+					<< "not found handle"
+					<< handle;
+				return Worker_ptr ();
+			}
+
+			void Core::handlePerform ()
+			{
+				bool reschedule = false;
+				int prev = RunningHandles_;
+				{
+					QMutexLocker l (&MultiHandleMutex_);
+					while (curl_multi_perform (MultiHandle_.get (),
+								&RunningHandles_) == CURLM_CALL_MULTI_PERFORM)
+					{
+						if (prev != RunningHandles_)
+						{
+							reschedule = true;
+							prev = RunningHandles_;
+						}
+					}
+				}
+				if (reschedule ||
+						prev != RunningHandles_ ||
+						(Tasks_.size () &&
+						 RunningHandles_ < Workers_.size ()))
+					Reschedule ();
 			}
 			
 			void Core::handleError (const QString& msg, const TaskData& td)
 			{
-				if (WorkersPerDomain_.Val () [td.URL_.host ()]-- ==
-						XmlSettingsManager::Instance ()
-						.property ("WorkersPerDomain").toInt () + 1)
-					WorkerWait_.wakeAll ();
+				--WorkersPerDomain_ [td.URL_.host ()];
 
 				if (td.ID_ >= 0)
 					emit taskError (td.ID_, IDownload::EUnknown);
@@ -470,10 +523,7 @@ namespace LeechCraft
 
 			void Core::handleFinished (const TaskData& data)
 			{
-				if (WorkersPerDomain_.Val () [data.URL_.host ()]-- ==
-						XmlSettingsManager::Instance ()
-						.property ("WorkersPerDomain").toInt () + 1)
-					WorkerWait_.wakeAll ();
+				--WorkersPerDomain_ [data.URL_.host ()];
 
 				emit downloadFinished (tr ("Download finished: %1")
 						.arg (data.Filename_));
@@ -506,7 +556,6 @@ namespace LeechCraft
 				else
 					name = CheckName (entry.URL_, entry.PreviousTask_.Filename_);
 
-//				qDebug () << "handle" << entry.URL_ << name;
 				TaskData td =
 				{
 					entry.PreviousTask_.ID_ >= 0 ? Proxy_->GetID () : -1,
@@ -514,7 +563,6 @@ namespace LeechCraft
 					name
 				};
 				QueueTask (td);
-				WorkerWait_.wakeOne ();
 			}
 
 			void Core::handleUpdateInterface ()
@@ -525,27 +573,6 @@ namespace LeechCraft
 
 				emit dataChanged (index (0, 0),
 						index (States_.size () - 1, 2));
-			}
-
-			void Core::handleScheduledRemoval ()
-			{
-				while (ScheduledWorkers_.Val ().size ())
-				{
-					Worker *w = ScheduledWorkers_.Val ().takeFirst ();
-					for (int i = 0; i < Workers_.size (); ++i)
-					{
-						if (Workers_.at (i).get () != w)
-							continue;
-
-						beginRemoveRows (QModelIndex (), i, i);
-						Workers_.removeAt (i);
-						States_.removeAt (i);
-						for (int j = i; j < Workers_.size (); ++j)
-							Workers_ [j]->SetID (j - 1);
-						endRemoveRows ();
-						break;
-					}
-				}
 			}
 
 			void Core::handleTotalNumWorkersChanged ()
@@ -566,7 +593,7 @@ namespace LeechCraft
 
 			void Core::handleWorkersPerDomainChanged ()
 			{
-				WorkerWait_.wakeAll ();
+				Reschedule ();
 			}
 		};
 	};
