@@ -135,6 +135,8 @@ namespace LeechCraft
 			}
 			if (addiInfo)
 			{
+				if (addiInfo->parent () != this)
+					addiInfo->setParent (this);
 				Ui_.ControlsDockWidget_->setWidget (addiInfo);
 				Ui_.ControlsDockWidget_->show ();
 			}
