@@ -47,6 +47,7 @@ namespace LeechCraft
 				void saveImage ();
 				void copyImage ();
 				void copyImageLocation ();
+				void searchSelectedText ();
 			signals:
 				void urlChanged (const QString&);
 				void gotEntity (const LeechCraft::DownloadEntity&);

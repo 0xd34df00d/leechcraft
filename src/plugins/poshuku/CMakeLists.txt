@@ -44,6 +44,7 @@ SET (SRCS
 	pageformsdata.cpp
 	linkhistory.cpp
 	cookiesfilter.cpp
+	searchtext.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -81,6 +82,7 @@ SET (HEADERS
 	pageformsdata.h
 	linkhistory.h
 	cookiesfilter.h
+	searchtext.h
 	interfaces/pluginbase.h
 	)
 SET (FORMS
@@ -93,6 +95,7 @@ SET (FORMS
 	cookieseditdialog.ui
 	sourceviewer.ui
 	passwordremember.ui
+	searchtext.ui
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS

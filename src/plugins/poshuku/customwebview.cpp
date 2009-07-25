@@ -8,6 +8,7 @@
 #include "core.h"
 #include "customwebpage.h"
 #include "browserwidget.h"
+#include "searchtext.h"
 
 namespace LeechCraft
 {
@@ -186,6 +187,17 @@ namespace LeechCraft
 					menu->addAction (tr ("Copy image location"),
 							this, SLOT (copyImageLocation ()))->setData (r.imageUrl ());
 				}
+
+				if (!page ()->selectedText ().isEmpty ())
+				{
+					if (menu->isEmpty ())
+						menu->addAction (pageAction (QWebPage::Copy));
+					else
+						menu->addSeparator ();
+
+					menu->addAction (tr ("Search..."),
+							this, SLOT (searchSelectedText ()));
+				}
 			
 				if (menu->isEmpty ())
 					menu.reset (page ()->createStandardContextMenu ());
@@ -301,6 +313,17 @@ namespace LeechCraft
 				QClipboard *cb = QApplication::clipboard ();
 				cb->setText (url, QClipboard::Clipboard);
 				cb->setText (url, QClipboard::Selection);
+			}
+			
+			void CustomWebView::searchSelectedText ()
+			{
+				QString text = page ()->selectedText ();
+				if (text.isEmpty ())
+					return;
+
+				SearchText *st = new SearchText (text, this);
+				st->setAttribute (Qt::WA_DeleteOnClose);
+				st->show ();
 			}
 		};
 	};
