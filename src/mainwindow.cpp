@@ -263,7 +263,6 @@ void LeechCraft::MainWindow::ReadSettings ()
 	move   (settings.value ("pos",  QPoint (10, 10)).toPoint ());
 	WasMaximized_ = settings.value ("maximized").toBool ();
 	WasMaximized_ ? showMaximized () : showNormal ();
-	restoreState (settings.value ("state").toByteArray (), 1);
 	settings.endGroup ();
 }
 
@@ -274,7 +273,6 @@ void LeechCraft::MainWindow::WriteSettings ()
 	settings.setValue ("size", size ());
 	settings.setValue ("pos",  pos ());
 	settings.setValue ("maximized", isMaximized ());
-	settings.setValue ("state", saveState (1));
 	settings.endGroup ();
 }
 
