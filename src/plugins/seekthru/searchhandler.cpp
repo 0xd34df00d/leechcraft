@@ -274,7 +274,8 @@ namespace LeechCraft
 				if (!Jobs_.contains (id))
 					return;
 			
-				emit error (tr ("A job was delegated, but it failed."));
+				emit error (tr ("Search request for URL<br />%1<br />was delegated, but it failed.")
+						.arg (Jobs_ [id].RequestURL_.toString ()));
 				Jobs_.remove (id);
 			}
 			
