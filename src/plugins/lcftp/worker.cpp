@@ -134,11 +134,10 @@ namespace LeechCraft
 
 			CURL_ptr Worker::Start (const TaskData& td)
 			{
-				UpdateHandleSettings (Handle_);
 				IsWorking_ = true;
+				UpdateHandleSettings (Handle_);
 				StartDT_ = QDateTime::currentDateTime ();
 				Task_ = td;
-				qDebug () << "started" << td.URL_ << td.Filename_;
 
 				HandleTask (td, Handle_);
 				return Handle_;
@@ -146,8 +145,6 @@ namespace LeechCraft
 
 			void Worker::NotifyFinished (CURLcode result)
 			{
-				IsWorking_ = false;
-
 				if (result)
 				{
 					QString errstr (curl_easy_strerror (result));
@@ -164,6 +161,8 @@ namespace LeechCraft
 				}
 				else
 					ParseBuffer (Task_);
+
+				IsWorking_ = false;
 			}
 
 			void Worker::HandleTask (const TaskData& td, CURL_ptr handle)

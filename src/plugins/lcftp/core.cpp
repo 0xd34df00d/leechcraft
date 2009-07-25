@@ -45,7 +45,7 @@ namespace LeechCraft
 				handleUpdateInterface ();
 
 				QTimer *perform = new QTimer (this);
-				perform->setInterval (100);
+				perform->setInterval (10);
 				connect (perform,
 						SIGNAL (timeout ()),
 						this,
@@ -384,10 +384,11 @@ namespace LeechCraft
 				connect (w.get (),
 						SIGNAL (fetchedEntry (const FetchedEntry&)),
 						this,
-						SLOT (handleFetchedEntry (const FetchedEntry&)));
+						SLOT (handleFetchedEntry (const FetchedEntry&)),
+						Qt::QueuedConnection);
 
-//				curl_easy_setopt (w->GetHandle ().get (),
-//						CURLOPT_SHARE, ShareHandle_.get ());
+				curl_easy_setopt (w->GetHandle ().get (),
+						CURLOPT_SHARE, ShareHandle_.get ());
 
 				beginInsertRows (QModelIndex (), i, i);
 				Workers_ << w;
@@ -411,7 +412,6 @@ namespace LeechCraft
 					{
 						case CURLMSG_DONE:
 							{
-								qDebug () << "finished!" << info->data.result;
 								Worker_ptr w = FindWorker (info->easy_handle);
 								curl_multi_remove_handle (MultiHandle_.get (),
 										info->easy_handle);
@@ -445,7 +445,8 @@ namespace LeechCraft
 				}
 				while (inQueue);
 
-				while (RunningHandles_ < Workers_.size ())
+				while (RunningHandles_ < Workers_.size () &&
+						Tasks_.size ())
 				{
 					TaskData td;
 					if (!SelectSuitableTask (&td))
@@ -458,10 +459,6 @@ namespace LeechCraft
 							break;
 						}
 				}
-
-				QTimer::singleShot (0,
-						this,
-						SLOT (handlePerform ()));
 			}
 
 			Worker_ptr Core::FindWorker (CURL *handle) const
@@ -477,26 +474,27 @@ namespace LeechCraft
 
 			void Core::handlePerform ()
 			{
+				bool reschedule = false;
 				int prev = RunningHandles_;
 				while (curl_multi_perform (MultiHandle_.get (),
 							&RunningHandles_) == CURLM_CALL_MULTI_PERFORM)
 				{
 					if (prev != RunningHandles_)
 					{
-						Reschedule ();
+						reschedule = true;
 						prev = RunningHandles_;
 					}
 				}
-				if (prev != RunningHandles_)
+				if (reschedule ||
+						prev != RunningHandles_ ||
+						(Tasks_.size () &&
+						 RunningHandles_ < Workers_.size ()))
 					Reschedule ();
 			}
 			
 			void Core::handleError (const QString& msg, const TaskData& td)
 			{
-				if (WorkersPerDomain_ [td.URL_.host ()]-- ==
-						XmlSettingsManager::Instance ()
-						.property ("WorkersPerDomain").toInt () + 1)
-					Reschedule ();
+				--WorkersPerDomain_ [td.URL_.host ()];
 
 				if (td.ID_ >= 0)
 					emit taskError (td.ID_, IDownload::EUnknown);
@@ -508,10 +506,7 @@ namespace LeechCraft
 
 			void Core::handleFinished (const TaskData& data)
 			{
-				if (WorkersPerDomain_ [data.URL_.host ()]-- ==
-						XmlSettingsManager::Instance ()
-						.property ("WorkersPerDomain").toInt () + 1)
-					Reschedule ();
+				--WorkersPerDomain_ [data.URL_.host ()];
 
 				emit downloadFinished (tr ("Download finished: %1")
 						.arg (data.Filename_));
@@ -544,7 +539,6 @@ namespace LeechCraft
 				else
 					name = CheckName (entry.URL_, entry.PreviousTask_.Filename_);
 
-				qDebug () << "fetched" << entry.URL_ << name;
 				TaskData td =
 				{
 					entry.PreviousTask_.ID_ >= 0 ? Proxy_->GetID () : -1,
