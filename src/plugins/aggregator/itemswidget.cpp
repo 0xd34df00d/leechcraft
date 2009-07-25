@@ -100,6 +100,7 @@ namespace LeechCraft
 			
 				Impl_->ItemCategorySelector_.reset (new CategorySelector ());
 				Impl_->ItemCategorySelector_->setWindowFlags (Qt::Widget);
+				Impl_->ItemCategorySelector_->setFixedWidth (200);
 				Impl_->Ui_.CategoriesLayout_->addWidget (Impl_->ItemCategorySelector_.get ());
 				Impl_->ItemCategorySelector_->hide ();
 				Impl_->ItemCategorySelector_->setMinimumHeight (0);
