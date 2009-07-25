@@ -2,7 +2,7 @@
 #define PLUGINS_AGGREGATOR_SELECTABLEBROWSER_H
 #include <memory>
 #include <QWidget>
-#include <QTextEdit>
+#include <QTextBrowser>
 #include <interfaces/iwebbrowser.h>
 
 namespace LeechCraft
@@ -16,7 +16,7 @@ namespace LeechCraft
 				Q_OBJECT
 
 				bool Internal_;
-				std::auto_ptr<QTextEdit> InternalBrowser_;
+				std::auto_ptr<QTextBrowser> InternalBrowser_;
 				std::auto_ptr<IWebWidget> ExternalBrowser_;
 			public:
 				SelectableBrowser (QWidget* = 0);
