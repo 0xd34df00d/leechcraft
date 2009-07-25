@@ -10,6 +10,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
 #include <interfaces/structures.h>
+#include <plugininterface/guarded.h>
 #include "worker.h"
 
 namespace LeechCraft
@@ -19,6 +20,7 @@ namespace LeechCraft
 		namespace LCFTP
 		{
 			class InactiveWorkersFilter;
+			class WatchThread;
 
 			typedef boost::shared_ptr<CURLM> CURLM_ptr;
 			typedef boost::shared_ptr<CURLSH> CURLSH_ptr;
@@ -26,6 +28,8 @@ namespace LeechCraft
 			class Core : public QAbstractItemModel
 			{
 				Q_OBJECT
+
+				friend class WatchThread;
 
 				static Core *Instance_;
 				static QMutex InstanceMutex_;
@@ -43,7 +47,10 @@ namespace LeechCraft
 					}
 				};
 
+				WatchThread *WatchThread_;
+
 				CurlGlobalGuard Guard_;
+				QMutex MultiHandleMutex_;
 				CURLM_ptr MultiHandle_;
 				CURLSH_ptr ShareHandle_;
 

@@ -7,7 +7,6 @@
 #include <QUrl>
 #include <QDateTime>
 #include <curl/curl.h>
-#include <plugininterface/guarded.h>
 #include "structures.h"
 
 namespace LeechCraft

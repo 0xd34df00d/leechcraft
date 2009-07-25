@@ -12,6 +12,7 @@
 #include <plugininterface/proxy.h>
 #include "inactiveworkersfilter.h"
 #include "xmlsettingsmanager.h"
+#include "watchthread.h"
 
 namespace LeechCraft
 {
@@ -23,7 +24,8 @@ namespace LeechCraft
 			QMutex Core::InstanceMutex_;
 
 			Core::Core ()
-			: Quitting_ (false)
+			: WatchThread_ (new WatchThread (this))
+			, Quitting_ (false)
 			, NumScheduledWorkers_ (0)
 			, RunningHandles_ (0)
 			{
@@ -32,7 +34,10 @@ namespace LeechCraft
 
 				WorkersFilter_.reset (new InactiveWorkersFilter (this));
 
-				MultiHandle_.reset (curl_multi_init (), curl_multi_cleanup);
+				{
+					QMutexLocker l (&MultiHandleMutex_);
+					MultiHandle_.reset (curl_multi_init (), curl_multi_cleanup);
+				}
 				ShareHandle_.reset (curl_share_init (), curl_share_cleanup);
 
 				handleTotalNumWorkersChanged ();
@@ -44,13 +49,12 @@ namespace LeechCraft
 
 				handleUpdateInterface ();
 
-				QTimer *perform = new QTimer (this);
-				perform->setInterval (10);
-				connect (perform,
-						SIGNAL (timeout ()),
+				WatchThread_->start (QThread::IdlePriority);
+				connect (WatchThread_,
+						SIGNAL (shouldPerform ()),
 						this,
-						SLOT (handlePerform ()));
-				perform->start ();
+						SLOT (handlePerform ()),
+						Qt::QueuedConnection);
 
 				QTimer *timer = new QTimer (this);
 				timer->setInterval (500);
@@ -75,12 +79,17 @@ namespace LeechCraft
 			void Core::Release ()
 			{
 				Quitting_ = true;
+				WatchThread_->SetExit ();
 
 				deleteLater ();
 
+				QMutexLocker l (&MultiHandleMutex_);
 				Q_FOREACH (Worker_ptr w, Workers_)
 					curl_multi_remove_handle (MultiHandle_.get (),
 							w->GetHandle ().get ());
+
+				if (!WatchThread_->wait (100))
+					WatchThread_->terminate ();
 			}
 
 			void Core::SetCoreProxy (ICoreProxy_ptr proxy)
@@ -403,6 +412,7 @@ namespace LeechCraft
 				int inQueue = 1;
 				do
 				{
+					QMutexLocker l (&MultiHandleMutex_);
 					CURLMsg *info = curl_multi_info_read (MultiHandle_.get (),
 							&inQueue);
 					if (!info)
@@ -454,8 +464,12 @@ namespace LeechCraft
 					Q_FOREACH (Worker_ptr w, Workers_)
 						if (!w->IsWorking ())
 						{
-							curl_multi_add_handle (MultiHandle_.get (),
-									w->Start (td).get ());
+							{
+								QMutexLocker l (&MultiHandleMutex_);
+								curl_multi_add_handle (MultiHandle_.get (),
+										w->Start (td).get ());
+							}
+							handlePerform ();
 							break;
 						}
 				}
@@ -476,13 +490,16 @@ namespace LeechCraft
 			{
 				bool reschedule = false;
 				int prev = RunningHandles_;
-				while (curl_multi_perform (MultiHandle_.get (),
-							&RunningHandles_) == CURLM_CALL_MULTI_PERFORM)
 				{
-					if (prev != RunningHandles_)
+					QMutexLocker l (&MultiHandleMutex_);
+					while (curl_multi_perform (MultiHandle_.get (),
+								&RunningHandles_) == CURLM_CALL_MULTI_PERFORM)
 					{
-						reschedule = true;
-						prev = RunningHandles_;
+						if (prev != RunningHandles_)
+						{
+							reschedule = true;
+							prev = RunningHandles_;
+						}
 					}
 				}
 				if (reschedule ||

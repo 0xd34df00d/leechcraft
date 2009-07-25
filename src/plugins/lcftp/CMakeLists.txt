@@ -18,6 +18,7 @@ SET (SRCS
 	inactiveworkersfilter.cpp
 	xmlsettingsmanager.cpp
 	structures.cpp
+	watchthread.cpp
 	3dparty/ftpparse.c
 	)
 SET (HEADERS
@@ -27,6 +28,7 @@ SET (HEADERS
 	inactiveworkersfilter.h
 	xmlsettingsmanager.h
 	structures.h
+	watchthread.h
 	3dparty/ftpparse.h
 	)
 SET (RESOURCES resources.qrc)
