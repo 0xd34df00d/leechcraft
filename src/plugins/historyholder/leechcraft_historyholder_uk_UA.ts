@@ -2,9 +2,40 @@
 <!DOCTYPE TS>
 <TS version="2.0">
 <context>
-    <name>HistoryHolder</name>
+    <name>Core</name>
     <message>
-        <location filename="historyholder.cpp" line="20"/>
+        <location filename="core.cpp" line="155"/>
+        <source>Binary data</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Plugins::HistoryHolder::Core</name>
+    <message>
+        <location filename="core.cpp" line="48"/>
+        <source>Entity/location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="49"/>
+        <source>Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="50"/>
+        <source>Tags</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="65"/>
+        <source>Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Plugin</name>
+    <message>
+        <location filename="historyholder.cpp" line="29"/>
         <source>Holds history from various plugins</source>
         <translation type="unfinished"></translation>
     </message>
