@@ -26,17 +26,17 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::Core</name>
     <message>
-        <location filename="core.cpp" line="186"/>
+        <location filename="core.cpp" line="192"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="187"/>
+        <location filename="core.cpp" line="193"/>
         <source>Last updated</source>
         <translation>Последнее обновление</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="188"/>
+        <location filename="core.cpp" line="194"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>

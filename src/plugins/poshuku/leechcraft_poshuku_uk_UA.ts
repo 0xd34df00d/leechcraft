@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="uk_UA">
 <context>
     <name>AddToFavoritesDialog</name>
     <message>
@@ -87,7 +87,7 @@
     <name>FindDialog</name>
     <message>
         <location filename="finddialog.ui" line="14"/>
-        <location filename="finddialog.ui" line="51"/>
+        <location filename="finddialog.ui" line="54"/>
         <source>Find</source>
         <translation type="unfinished"></translation>
     </message>
@@ -107,12 +107,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="finddialog.ui" line="61"/>
+        <location filename="finddialog.ui" line="64"/>
         <source>Esc</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="finddialog.ui" line="58"/>
+        <location filename="finddialog.ui" line="61"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
@@ -128,163 +128,168 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::BrowserWidget</name>
     <message>
-        <location filename="browserwidget.cpp" line="76"/>
+        <location filename="browserwidget.cpp" line="57"/>
+        <source>Poshuku</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="77"/>
         <source>More...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="79"/>
+        <location filename="browserwidget.cpp" line="80"/>
         <source>Add to favorites...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="84"/>
+        <location filename="browserwidget.cpp" line="85"/>
         <source>Find...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="89"/>
+        <location filename="browserwidget.cpp" line="90"/>
         <source>Print...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="94"/>
+        <location filename="browserwidget.cpp" line="95"/>
         <source>Print with preview...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="99"/>
+        <location filename="browserwidget.cpp" line="100"/>
         <source>Take page&apos;s screenshot...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="104"/>
+        <location filename="browserwidget.cpp" line="105"/>
         <source>View sources...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="109"/>
+        <location filename="browserwidget.cpp" line="110"/>
         <source>Create new tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="113"/>
+        <location filename="browserwidget.cpp" line="114"/>
         <source>Close this tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="117"/>
+        <location filename="browserwidget.cpp" line="118"/>
         <source>Zoom in</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="121"/>
+        <location filename="browserwidget.cpp" line="122"/>
         <source>Zoom out</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="125"/>
+        <location filename="browserwidget.cpp" line="126"/>
         <source>Reset zoom</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="129"/>
+        <location filename="browserwidget.cpp" line="130"/>
         <source>Import XBEL...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="133"/>
+        <location filename="browserwidget.cpp" line="134"/>
         <source>Export XBEL...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="160"/>
+        <location filename="browserwidget.cpp" line="161"/>
         <source>Recently closed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="167"/>
+        <location filename="browserwidget.cpp" line="168"/>
         <source>External links</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="484"/>
+        <location filename="browserwidget.cpp" line="489"/>
         <source>Ctrl+D</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="485"/>
+        <location filename="browserwidget.cpp" line="490"/>
         <source>Ctrl+F</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="486"/>
+        <location filename="browserwidget.cpp" line="491"/>
         <source>Ctrl+P</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="487"/>
+        <location filename="browserwidget.cpp" line="492"/>
         <source>Ctrl+Shift+P</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="490"/>
+        <location filename="browserwidget.cpp" line="495"/>
         <source>Ctrl+T</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="491"/>
+        <location filename="browserwidget.cpp" line="496"/>
         <source>Ctrl+W</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="494"/>
+        <location filename="browserwidget.cpp" line="499"/>
         <source>Ctrl+0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="497"/>
+        <location filename="browserwidget.cpp" line="502"/>
         <source>Ctrl+X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="498"/>
+        <location filename="browserwidget.cpp" line="503"/>
         <source>Ctrl+C</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="499"/>
+        <location filename="browserwidget.cpp" line="504"/>
         <source>Ctrl+V</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="504"/>
+        <location filename="browserwidget.cpp" line="509"/>
         <source>Ctrl+Shift+T</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="528"/>
+        <location filename="browserwidget.cpp" line="533"/>
         <source>Print web page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="629"/>
+        <location filename="browserwidget.cpp" line="635"/>
         <source>Save screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="643"/>
-        <location filename="browserwidget.cpp" line="652"/>
+        <location filename="browserwidget.cpp" line="649"/>
+        <location filename="browserwidget.cpp" line="658"/>
         <source>LeechCraft</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="644"/>
+        <location filename="browserwidget.cpp" line="650"/>
         <source>Could not open %1 for write</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="653"/>
+        <location filename="browserwidget.cpp" line="659"/>
         <source>Could not write screenshot to %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -305,35 +310,35 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="451"/>
+        <location filename="core.cpp" line="454"/>
         <source>Select XBEL file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="453"/>
-        <location filename="core.cpp" line="493"/>
+        <location filename="core.cpp" line="456"/>
+        <location filename="core.cpp" line="496"/>
         <source>XBEL files (*.xbel);;All files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="466"/>
-        <location filename="core.cpp" line="481"/>
-        <location filename="core.cpp" line="509"/>
+        <location filename="core.cpp" line="469"/>
+        <location filename="core.cpp" line="484"/>
+        <location filename="core.cpp" line="512"/>
         <source>LeechCraft</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="467"/>
+        <location filename="core.cpp" line="470"/>
         <source>Could not open file %1 for reading.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="491"/>
+        <location filename="core.cpp" line="494"/>
         <source>Save XBEL file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="510"/>
+        <location filename="core.cpp" line="513"/>
         <source>Could not open file %1 for writing.</source>
         <translation type="unfinished"></translation>
     </message>

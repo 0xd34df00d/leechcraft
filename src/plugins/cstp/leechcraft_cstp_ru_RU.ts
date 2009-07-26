@@ -70,6 +70,11 @@
 <context>
     <name>LeechCraft::Plugins::CSTP::CSTP</name>
     <message>
+        <location filename="cstp.cpp" line="172"/>
+        <source>CSTP</source>
+        <translation>CSTP</translation>
+    </message>
+    <message>
         <location filename="cstp.cpp" line="174"/>
         <source>Remove</source>
         <translation>Удалить</translation>
@@ -179,22 +184,22 @@
 <context>
     <name>LeechCraft::Plugins::CSTP::Task</name>
     <message>
-        <location filename="task.cpp" line="168"/>
+        <location filename="task.cpp" line="169"/>
         <source>Stopped</source>
         <translation>Остановлена</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="170"/>
+        <location filename="task.cpp" line="171"/>
         <source>Finished</source>
         <translation>Закончена</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="172"/>
+        <location filename="task.cpp" line="173"/>
         <source>Running</source>
         <translation>Выполняется</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="193"/>
+        <location filename="task.cpp" line="194"/>
         <source>Task isn&apos;t initialized properly</source>
         <translation>Задача некорректно инициализирована</translation>
     </message>

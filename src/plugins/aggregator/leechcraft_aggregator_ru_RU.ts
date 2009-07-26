@@ -362,115 +362,120 @@
         <translation>Клиент новостых лент RSS/Atom.</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="455"/>
+        <location filename="aggregator.cpp" line="436"/>
+        <source>Aggregator</source>
+        <translation>Aggregator</translation>
+    </message>
+    <message>
+        <location filename="aggregator.cpp" line="456"/>
         <source>Add feed...</source>
         <translation>Добавить ленту...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="460"/>
+        <location filename="aggregator.cpp" line="461"/>
         <source>Update all feeds</source>
         <translation>Обновить все ленты</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="464"/>
+        <location filename="aggregator.cpp" line="465"/>
         <source>Remove feed</source>
         <translation>Удалить ленту</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="469"/>
+        <location filename="aggregator.cpp" line="470"/>
         <source>Mark channel as read</source>
         <translation>Отметить канал как прочитанный</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="473"/>
+        <location filename="aggregator.cpp" line="474"/>
         <source>Mark channel as unread</source>
         <translation>Отметить канал как непрочитанный</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="477"/>
+        <location filename="aggregator.cpp" line="478"/>
         <source>Settings...</source>
         <translation>Настройки...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="481"/>
+        <location filename="aggregator.cpp" line="482"/>
         <source>Update selected feed</source>
         <translation>Обновить выделенную ленту</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="486"/>
+        <location filename="aggregator.cpp" line="487"/>
         <source>Item bucket...</source>
         <translation>Сборник статей...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="491"/>
+        <location filename="aggregator.cpp" line="492"/>
         <source>Regexp matcher...</source>
         <translation>Проверка регулярных выражений...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="496"/>
+        <location filename="aggregator.cpp" line="497"/>
         <source>Hide read items</source>
         <translation>Скрыть прочитанные статьи</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="503"/>
+        <location filename="aggregator.cpp" line="504"/>
         <source>Import from OPML...</source>
         <translation>Импортировать из OPML...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="508"/>
+        <location filename="aggregator.cpp" line="509"/>
         <source>Export to OPML...</source>
         <translation>Экспортировать в OPML...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="513"/>
+        <location filename="aggregator.cpp" line="514"/>
         <source>Import from binary...</source>
         <translation>Импортировать из LCAE...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="518"/>
+        <location filename="aggregator.cpp" line="519"/>
         <source>Export to binary...</source>
         <translation>Экспортировать в LCAE...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="550"/>
-        <location filename="aggregator.cpp" line="574"/>
+        <location filename="aggregator.cpp" line="551"/>
+        <location filename="aggregator.cpp" line="575"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="575"/>
+        <location filename="aggregator.cpp" line="576"/>
         <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you are really sure that you want to do this?</source>
         <comment>Feed removing confirmation</comment>
         <translation>Вы собираетесь навсегда удалить ленту:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Уверены, что хотите сделать это?</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="662"/>
+        <location filename="aggregator.cpp" line="663"/>
         <source>Export to OPML</source>
         <translation>Экспорт в OPML</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="663"/>
-        <location filename="aggregator.cpp" line="693"/>
+        <location filename="aggregator.cpp" line="664"/>
+        <location filename="aggregator.cpp" line="694"/>
         <source>Select save file</source>
         <translation>Выберите файл сохранения</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="664"/>
+        <location filename="aggregator.cpp" line="665"/>
         <source>OPML files (*.opml);;XML files (*.xml);;All files (*.*)</source>
         <translation>OPML-файлы (*.opml);;XML-файлы (*.xml);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="692"/>
+        <location filename="aggregator.cpp" line="693"/>
         <source>Export to binary file</source>
         <translation>Экспорт в бинарный файл</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="694"/>
+        <location filename="aggregator.cpp" line="695"/>
         <source>Aggregator exchange files (*.lcae);;All files (*.*)</source>
         <translation>Файл обмена Aggregator (*.lcae);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="737"/>
+        <location filename="aggregator.cpp" line="738"/>
         <source>%1 unread messages in %2 channels.</source>
         <translation>%1 непрочитанных статей в %2 каналах.</translation>
     </message>
@@ -498,12 +503,12 @@
     <message>
         <location filename="core.cpp" line="103"/>
         <source>Name</source>
-        <translation type="unfinished">Имя</translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <location filename="core.cpp" line="104"/>
         <source>Date</source>
-        <translation type="unfinished">Дата</translation>
+        <translation>Дата</translation>
     </message>
     <message>
         <location filename="core.cpp" line="255"/>

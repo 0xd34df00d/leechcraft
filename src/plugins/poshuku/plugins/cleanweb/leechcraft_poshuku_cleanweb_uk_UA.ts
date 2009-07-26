@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="uk_UA">
 <context>
     <name>CleanWeb</name>
     <message>
@@ -26,17 +26,17 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::Core</name>
     <message>
-        <location filename="core.cpp" line="186"/>
+        <location filename="core.cpp" line="192"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="187"/>
+        <location filename="core.cpp" line="193"/>
         <source>Last updated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="188"/>
+        <location filename="core.cpp" line="194"/>
         <source>URL</source>
         <translation type="unfinished"></translation>
     </message>

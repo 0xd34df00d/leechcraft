@@ -362,115 +362,120 @@
         <translation>Кліент стрічок новин RSS/Atom.</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="455"/>
+        <location filename="aggregator.cpp" line="436"/>
+        <source>Aggregator</source>
+        <translation>Aggregator</translation>
+    </message>
+    <message>
+        <location filename="aggregator.cpp" line="456"/>
         <source>Add feed...</source>
         <translation>Додати стрічку...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="460"/>
+        <location filename="aggregator.cpp" line="461"/>
         <source>Update all feeds</source>
         <translation>Оновити усі стрічки</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="464"/>
+        <location filename="aggregator.cpp" line="465"/>
         <source>Remove feed</source>
         <translation>Видалити стрічку</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="469"/>
+        <location filename="aggregator.cpp" line="470"/>
         <source>Mark channel as read</source>
         <translation>Позначити канал як прочитаний</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="473"/>
+        <location filename="aggregator.cpp" line="474"/>
         <source>Mark channel as unread</source>
         <translation>Позначити канал як непрочитаний</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="477"/>
+        <location filename="aggregator.cpp" line="478"/>
         <source>Settings...</source>
         <translation>Налаштування...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="481"/>
+        <location filename="aggregator.cpp" line="482"/>
         <source>Update selected feed</source>
         <translation>Оновити вибрану стрічку</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="486"/>
+        <location filename="aggregator.cpp" line="487"/>
         <source>Item bucket...</source>
         <translation>Довгий ящик...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="491"/>
+        <location filename="aggregator.cpp" line="492"/>
         <source>Regexp matcher...</source>
         <translation>Фільтр регулярних виразів...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="496"/>
+        <location filename="aggregator.cpp" line="497"/>
         <source>Hide read items</source>
         <translation>Приховати прочитані</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="503"/>
+        <location filename="aggregator.cpp" line="504"/>
         <source>Import from OPML...</source>
         <translation>Імпорт з OPML...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="508"/>
+        <location filename="aggregator.cpp" line="509"/>
         <source>Export to OPML...</source>
         <translation>Експорт в OPML...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="513"/>
+        <location filename="aggregator.cpp" line="514"/>
         <source>Import from binary...</source>
         <translation>Імпорт з бінарного файлу...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="518"/>
+        <location filename="aggregator.cpp" line="519"/>
         <source>Export to binary...</source>
         <translation>Експрт в бінарний файл...</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="550"/>
-        <location filename="aggregator.cpp" line="574"/>
+        <location filename="aggregator.cpp" line="551"/>
+        <location filename="aggregator.cpp" line="575"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="575"/>
+        <location filename="aggregator.cpp" line="576"/>
         <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you are really sure that you want to do this?</source>
         <comment>Feed removing confirmation</comment>
         <translation>Ви збираєтеся назавжди видалити стрічку:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Ви насправді впевнені, що бажаєте це зробити?</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="662"/>
+        <location filename="aggregator.cpp" line="663"/>
         <source>Export to OPML</source>
         <translation>Експорт в OPML</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="663"/>
-        <location filename="aggregator.cpp" line="693"/>
+        <location filename="aggregator.cpp" line="664"/>
+        <location filename="aggregator.cpp" line="694"/>
         <source>Select save file</source>
         <translation>Виберіть файл для збереження</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="664"/>
+        <location filename="aggregator.cpp" line="665"/>
         <source>OPML files (*.opml);;XML files (*.xml);;All files (*.*)</source>
         <translation>OPML файли (*.opml);;XML файли (*.xml);;All files (*.*)</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="692"/>
+        <location filename="aggregator.cpp" line="693"/>
         <source>Export to binary file</source>
         <translation>Експорт в бінарний файл</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="694"/>
+        <location filename="aggregator.cpp" line="695"/>
         <source>Aggregator exchange files (*.lcae);;All files (*.*)</source>
         <translation>Файл обміну Aggregator (*.lcae);;Всі файли (*.*)</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="737"/>
+        <location filename="aggregator.cpp" line="738"/>
         <source>%1 unread messages in %2 channels.</source>
         <translation>%1 непрочитанных статті в %2 каналах.</translation>
     </message>
@@ -498,12 +503,12 @@
     <message>
         <location filename="core.cpp" line="103"/>
         <source>Name</source>
-        <translation type="unfinished">Назва</translation>
+        <translation>Назва</translation>
     </message>
     <message>
         <location filename="core.cpp" line="104"/>
         <source>Date</source>
-        <translation type="unfinished">Дата</translation>
+        <translation>Дата</translation>
     </message>
     <message>
         <location filename="core.cpp" line="255"/>
@@ -538,17 +543,17 @@
     <message>
         <location filename="core.cpp" line="617"/>
         <source>Could not open file %1 for reading.</source>
-        <translation type="unfinished">Не можу відкрити файл %1 для читання.</translation>
+        <translation>Не можу відкрити файл %1 для читання.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="634"/>
         <source>XML error, file %1, line %2, column %3, error:&lt;br /&gt;%4</source>
-        <translation type="unfinished">Помилка аналізу XML, файл %1, рядок %2, стовпчик %3, текс помилки:&lt;br/&gt;%4</translation>
+        <translation>Помилка аналізу XML, файл %1, рядок %2, стовпчик %3, текс помилки:&lt;br/&gt;%4</translation>
     </message>
     <message>
         <location filename="core.cpp" line="645"/>
         <source>OPML from file %1 is not valid.</source>
-        <translation type="unfinished">OPML з файлу %1 не валідний</translation>
+        <translation>OPML з файлу %1 не валідний.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="918"/>
@@ -563,17 +568,17 @@
     <message>
         <location filename="core.cpp" line="987"/>
         <source>Feed with url %1 not found.</source>
-        <translation type="unfinished">Не можу знайти стрічку за адресою %1.</translation>
+        <translation>Не можу знайти стрічку за адресою %1.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1001"/>
         <source>XML file parse error: %1, line %2, column %3, filename %4, from %5</source>
-        <translation type="unfinished">Помилка аналізу XML: %1, рядок %2, стовпчик %3, ім&apos;я файлу %4, з %5</translation>
+        <translation>Помилка аналізу XML: %1, рядок %2, стовпчик %3, ім&apos;я файлу %4, з %5</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1014"/>
         <source>Could not find parser to parse file %1 from %2</source>
-        <translation type="unfinished">Не можу знайти обробник для файлу %1 з %2</translation>
+        <translation>Не можу знайти обробник для файлу %1 з %2</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1093"/>
@@ -626,19 +631,19 @@
     <message>
         <location filename="importbinary.cpp" line="105"/>
         <source>Aggregator exchange files (*.lcae);;All files (*.*)</source>
-        <translation type="unfinished">Файл обміну Aggregator (*.lcae);;Всі файли (*.*)</translation>
+        <translation>Файл обміну Aggregator (*.lcae);;Всі файли (*.*)</translation>
     </message>
     <message>
         <location filename="importbinary.cpp" line="130"/>
         <location filename="importbinary.cpp" line="144"/>
         <location filename="importbinary.cpp" line="157"/>
         <source>LeechCraft</source>
-        <translation type="unfinished">LeechCraft</translation>
+        <translation>LeechCraft</translation>
     </message>
     <message>
         <location filename="importbinary.cpp" line="131"/>
         <source>Could not open file %1 for reading.</source>
-        <translation type="unfinished">Не можу відкрити файл %1 для читання.</translation>
+        <translation>Не можу відкрити файл %1 для читання.</translation>
     </message>
     <message>
         <location filename="importbinary.cpp" line="145"/>

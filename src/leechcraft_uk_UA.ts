@@ -9,7 +9,7 @@
     </message>
     <message>
         <source>Ooops, I forgot to call the corrent constructor params.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Login:</source>
@@ -60,17 +60,17 @@
     </message>
     <message>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>It could be downloaded by:</source>
         <oldsource>This entity could be downloaded by:</oldsource>
-        <translation type="unfinished">Може бути завантажений:</translation>
+        <translation>Може бути завантажений:</translation>
     </message>
     <message>
         <source>It could be handled by:</source>
         <oldsource>This entity could also be handled by:</oldsource>
-        <translation type="unfinished">Може бути оброблений:</translation>
+        <translation>Може бути оброблений:</translation>
     </message>
 </context>
 <context>
@@ -81,7 +81,7 @@
     </message>
     <message>
         <source>background-color: rgb(255, 255, 255);</source>
-        <translation type="unfinished"></translation>
+        <translation>background-color: rgb(255, 255, 255);</translation>
     </message>
     <message>
         <source>Clear</source>
@@ -97,10 +97,6 @@
     <message>
         <source>Summary</source>
         <translation>Підсумок</translation>
-    </message>
-    <message>
-        <source>toolBar</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Add task</source>
@@ -132,10 +128,14 @@
     </message>
     <message>
         <source>F11</source>
-        <translation type="unfinished"></translation>
+        <translation>F11</translation>
     </message>
     <message>
         <source>exit</source>
+        <translation>Вийти</translation>
+    </message>
+    <message>
+        <source>Main toolbar</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -163,7 +163,7 @@
     </message>
     <message>
         <source>LeechCraft</source>
-        <translation type="unfinished">LeechCraft</translation>
+        <translation>LeechCraft</translation>
     </message>
 </context>
 <context>
@@ -192,7 +192,7 @@
     <name>LeechCraft::Core</name>
     <message>
         <source>Setting up %1...</source>
-        <translation>Встановлюємо %1...</translation>
+        <translation type="obsolete">Встановлюємо %1...</translation>
     </message>
     <message>
         <source>No plugins are able to download &quot;%1&quot;</source>
@@ -224,7 +224,7 @@
     </message>
     <message>
         <source>Calculating dependencies...</source>
-        <translation>Обчислюються залежності...</translation>
+        <translation type="obsolete">Обчислюються залежності...</translation>
     </message>
     <message>
         <source>Too long to show</source>
@@ -250,15 +250,15 @@
     <name>LeechCraft::MainWindow</name>
     <message>
         <source>Initializing interface...</source>
-        <translation>Ініціалізація інтерфейсу...</translation>
+        <translation type="obsolete">Ініціалізація інтерфейсу...</translation>
     </message>
     <message>
         <source>Initializing core and plugins...</source>
-        <translation>Ініціалізація ядра і плагінів...</translation>
+        <translation type="obsolete">Ініціалізація ядра і плагінів...</translation>
     </message>
     <message>
         <source>Plugins</source>
-        <translation>Плагіни</translation>
+        <translation type="obsolete">Плагіни</translation>
     </message>
     <message>
         <source>LeechCraft</source>
@@ -270,7 +270,7 @@
     </message>
     <message>
         <source>Plugin control</source>
-        <translation>Контроль за плагінами</translation>
+        <translation type="obsolete">Контроль за плагінами</translation>
     </message>
     <message>
         <source>%1 down, %2 up</source>
@@ -278,7 +278,7 @@
     </message>
     <message>
         <source>/s	</source>
-        <translation type="unfinished"></translation>
+        <translation>/с	</translation>
     </message>
     <message>
         <source>Do you really want to quit?</source>
@@ -286,7 +286,7 @@
     </message>
     <message>
         <source>%1 - LeechCraft</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 - LeechCraft</translation>
     </message>
     <message>
         <source>Changing language requires restarting LeechCraft. Do you want to restart now?</source>
@@ -347,11 +347,11 @@
     </message>
     <message>
         <source>Initializing %1...</source>
-        <translation>Иніціалізація %1...</translation>
+        <translation type="obsolete">Иніціалізація %1...</translation>
     </message>
     <message>
         <source>LeechCraft</source>
-        <translation type="unfinished">LeechCraft</translation>
+        <translation>LeechCraft</translation>
     </message>
 </context>
 <context>
@@ -464,7 +464,7 @@
     <name>LeechCraft::TagsViewer</name>
     <message>
         <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити назву</translation>
     </message>
     <message>
         <source>Enter new tag name</source>
@@ -479,7 +479,7 @@
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished">Очистити</translation>
+        <translation>Очистити</translation>
     </message>
 </context>
 <context>
@@ -500,11 +500,11 @@
     <name>ShortcutManager</name>
     <message>
         <source>Shortcut manager</source>
-        <translation type="unfinished">Менеджер комбінацій клавіш</translation>
+        <translation>Менеджер комбінацій клавіш</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Назва</translation>
+        <translation>Назва</translation>
     </message>
     <message>
         <source>Shortcut</source>
@@ -523,7 +523,7 @@
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Назва</translation>
+        <translation>Назва</translation>
     </message>
     <message>
         <source>Value</source>

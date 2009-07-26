@@ -103,10 +103,6 @@
         <translation>Добавить задачу</translation>
     </message>
     <message>
-        <source>toolBar</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Adds job to a supporting plugin</source>
         <translation>Добавляет задачу в поддерживающий плагин</translation>
     </message>
@@ -137,6 +133,10 @@
     <message>
         <source>exit</source>
         <translation>Выход</translation>
+    </message>
+    <message>
+        <source>Main toolbar</source>
+        <translation>Главная панель</translation>
     </message>
 </context>
 <context>
@@ -192,7 +192,7 @@
     <name>LeechCraft::Core</name>
     <message>
         <source>Setting up %1...</source>
-        <translation>Настройка %1...</translation>
+        <translation type="obsolete">Настройка %1...</translation>
     </message>
     <message>
         <source>No plugins are able to download &quot;%1&quot;</source>
@@ -224,7 +224,7 @@
     </message>
     <message>
         <source>Calculating dependencies...</source>
-        <translation>Подсчет зависимостей...</translation>
+        <translation type="obsolete">Подсчет зависимостей...</translation>
     </message>
     <message>
         <source>Too long to show</source>
@@ -250,15 +250,15 @@
     <name>LeechCraft::MainWindow</name>
     <message>
         <source>Initializing interface...</source>
-        <translation>Инициализирую интерфейс...</translation>
+        <translation type="obsolete">Инициализирую интерфейс...</translation>
     </message>
     <message>
         <source>Initializing core and plugins...</source>
-        <translation>Инициализирую ядро и плагины...</translation>
+        <translation type="obsolete">Инициализирую ядро и плагины...</translation>
     </message>
     <message>
         <source>Plugins</source>
-        <translation>Плагины</translation>
+        <translation type="obsolete">Плагины</translation>
     </message>
     <message>
         <source>LeechCraft</source>
@@ -270,7 +270,7 @@
     </message>
     <message>
         <source>Plugin control</source>
-        <translation>Управление плагинами</translation>
+        <translation type="obsolete">Управление плагинами</translation>
     </message>
     <message>
         <source>%1 down, %2 up</source>
@@ -347,7 +347,7 @@
     </message>
     <message>
         <source>Initializing %1...</source>
-        <translation>Инициализирую %1...</translation>
+        <translation type="obsolete">Инициализирую %1...</translation>
     </message>
     <message>
         <source>LeechCraft</source>
