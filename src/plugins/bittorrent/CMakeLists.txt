@@ -9,6 +9,7 @@ INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR}
 
 SET (SRCS
 	torrentplugin.cpp
+	tabwidget.cpp
 	core.cpp
 	addtorrent.cpp
 	newtorrentwizard.cpp
@@ -31,6 +32,7 @@ SET (SRCS
 	)
 SET (HEADERS
 	torrentplugin.h
+	tabwidget.h
 	core.h
 	addtorrent.h
 	newtorrentwizard.h

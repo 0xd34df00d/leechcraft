@@ -14,12 +14,11 @@
 #include <interfaces/itoolbarembedder.h>
 #include <plugininterface/tagscompleter.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "ui_tabwidget.h"
+#include "tabwidget.h"
 #include "torrentinfo.h"
 
 class QTimer;
 class QToolBar;
-class QSortFilterProxyModel;
 class QTabWidget;
 class QTranslator;
 
@@ -52,10 +51,8 @@ namespace LeechCraft
 				std::auto_ptr<QTime> LastPeersUpdate_;
 				std::auto_ptr<RepresentationModel> FilterModel_;
 				bool TorrentSelectionChanged_;
-				std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsChangeCompleter_,
-					TagsAddDiaCompleter_;
-				std::auto_ptr<QTabWidget> TabWidget_;
-				Ui::TabWidget Ui_;
+				std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsAddDiaCompleter_;
+				std::auto_ptr<TabWidget> TabWidget_;
 				std::auto_ptr<QToolBar> Toolbar_;
 				std::auto_ptr<QAction> OpenTorrent_,
 					RemoveTorrent_,
@@ -74,7 +71,6 @@ namespace LeechCraft
 					Import_,
 					Export_;
 				std::auto_ptr<QTranslator> Translator_;
-				QModelIndex Current_;
 
 				enum
 				{
@@ -138,8 +134,6 @@ namespace LeechCraft
 
 				// IToolBarEmbedder
 				QList<QAction*> GetActions () const;
-			public slots:
-				void updateTorrentStats ();
 			private slots:
 				void on_OpenTorrent__triggered ();
 				void on_OpenMultipleTorrents__triggered ();
@@ -154,33 +148,13 @@ namespace LeechCraft
 				void on_ForceReannounce__triggered (int);
 				void on_ForceRecheck__triggered (int);
 				void on_ChangeTrackers__triggered ();
-				void on_OverallDownloadRateController__valueChanged (int);
-				void on_OverallUploadRateController__valueChanged (int);
-				void on_DesiredRating__valueChanged (double);
-				void on_TorrentDownloadRateController__valueChanged (int);
-				void on_TorrentUploadRateController__valueChanged (int);
-				void on_TorrentDesiredRating__valueChanged (double);
-				void on_TorrentManaged__stateChanged (int);
-				void on_TorrentSequentialDownload__stateChanged (int);
-				void on_TorrentSuperSeeding__stateChanged (int);
-				void on_DownloadingTorrents__valueChanged (int);
-				void on_UploadingTorrents__valueChanged (int);
-				void on_TorrentTags__editingFinished ();
 				void on_MoveFiles__triggered (int = 0);
 				void on_Import__triggered ();
 				void on_Export__triggered ();
 				void setActionsEnabled ();
 				void showError (QString);
 				void doLogMessage (const QString&);
-				void setTabWidgetSettings ();
 			private:
-				void UpdateDashboard ();
-				void UpdateOverallStats ();
-				void UpdateTorrentControl ();
-				void UpdateFilesPage ();
-				void UpdatePeersPage ();
-				void UpdatePiecesPage ();
-				void SetupTabWidget ();
 				void SetupCore ();
 				void SetupTorrentView ();
 				void SetupStuff ();
