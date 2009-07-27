@@ -27,7 +27,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>0</number>
+   <number>3</number>
   </property>
   <property name="elideMode">
    <enum>Qt::ElideRight</enum>
@@ -47,8 +47,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>537</width>
-         <height>1298</height>
+         <width>531</width>
+         <height>1296</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -749,8 +749,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>537</width>
-         <height>1359</height>
+         <width>531</width>
+         <height>1389</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -871,7 +871,7 @@
               </widget>
              </item>
              <item row="3" column="1">
-              <widget class="LeechCraft::Util::TagsLineEdit" name="TorrentTags_" native="true"/>
+              <widget class="LeechCraft::Util::TagsLineEdit" name="TorrentTags_"/>
              </item>
             </layout>
            </item>
@@ -1568,6 +1568,9 @@
    <layout class="QVBoxLayout">
     <item>
      <widget class="QTreeView" name="PeersView_">
+      <property name="contextMenuPolicy">
+       <enum>Qt::ActionsContextMenu</enum>
+      </property>
       <property name="rootIsDecorated">
        <bool>false</bool>
       </property>
@@ -1605,8 +1608,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>517</width>
-            <height>406</height>
+            <width>513</width>
+            <height>400</height>
            </rect>
           </property>
           <layout class="QFormLayout" name="formLayout_10">

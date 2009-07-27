@@ -8,6 +8,7 @@
 #include "peerstablinker.h"
 #include "piecesmodel.h"
 #include "peersmodel.h"
+#include "addpeerdialog.h"
 
 namespace LeechCraft
 {
@@ -31,6 +32,22 @@ namespace LeechCraft
 				header->resizeSection (2,
 						fm.width ("1234.5678 bytes/s"));
 
+				TagsChangeCompleter_.reset (new TagsCompleter (Ui_.TorrentTags_));
+				Ui_.TorrentTags_->AddSelector ();
+			
+				Ui_.PiecesView_->setModel (Core::Instance ()->GetPiecesModel ());
+			
+				Ui_.FilesView_->setModel (Core::Instance ()->GetTorrentFilesModel ());
+				Ui_.FilesView_->setItemDelegate (new FilesViewDelegate (this));
+			
+				QSortFilterProxyModel *peersSorter = new QSortFilterProxyModel (this);
+				peersSorter->setDynamicSortFilter (true);
+				peersSorter->setSourceModel (Core::Instance ()->GetPeersModel ());
+				peersSorter->setSortRole (PeersModel::SortRole);
+				Ui_.PeersView_->setModel (peersSorter);
+
+				new PeersTabLinker (&Ui_, peersSorter, this);
+			
 				connect (Ui_.OverallDownloadRateController_,
 						SIGNAL (valueChanged (int)), this,
 						SLOT (on_OverallDownloadRateController__valueChanged (int)));
@@ -89,23 +106,18 @@ namespace LeechCraft
 						this,
 						SLOT (updateTorrentStats ()));
 
-				TagsChangeCompleter_.reset (new TagsCompleter (Ui_.TorrentTags_));
-				Ui_.TorrentTags_->AddSelector ();
-			
-				Ui_.PiecesView_->setModel (Core::Instance ()->GetPiecesModel ());
-			
-				Ui_.FilesView_->setModel (Core::Instance ()->GetTorrentFilesModel ());
-				Ui_.FilesView_->setItemDelegate (new FilesViewDelegate (this));
-			
-				QSortFilterProxyModel *peersSorter = new QSortFilterProxyModel (this);
-				peersSorter->setDynamicSortFilter (true);
-				peersSorter->setSourceModel (Core::Instance ()->GetPeersModel ());
-				peersSorter->setSortRole (PeersModel::SortRole);
-				Ui_.PeersView_->setModel (peersSorter);
-
-				new PeersTabLinker (&Ui_, peersSorter, this);
-			
 				UpdateDashboard ();
+
+				AddPeer_ = new QAction (tr ("Add peer..."),
+						Ui_.PeersView_);
+				AddPeer_->setProperty ("ActionIcon", "torrent_addpeer");
+				AddPeer_->setObjectName ("AddPeer_");
+				connect (AddPeer_,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleAddPeer ()));
+
+				Ui_.PeersView_->addAction (AddPeer_);
 				
 				QList<QByteArray> tabWidgetSettings;
 				tabWidgetSettings << "ActiveSessionStats"
@@ -118,7 +130,7 @@ namespace LeechCraft
 					<< "ActiveTorrentPeers";
 				XmlSettingsManager::Instance ()->RegisterObject (tabWidgetSettings,
 						this, "setTabWidgetSettings");
-			
+
 				setTabWidgetSettings ();
 			}
 
@@ -535,6 +547,15 @@ namespace LeechCraft
 						property ("ActiveTorrentInfo").toBool ());
 				Ui_.BoxTorrentPeers_->setVisible (XmlSettingsManager::Instance ()->
 						property ("ActiveTorrentPeers").toBool ());
+			}
+
+			void TabWidget::handleAddPeer ()
+			{
+				AddPeerDialog peer;
+				if (peer.exec () != QDialog::Accepted)
+					return;
+
+				Core::Instance ()->AddPeer (peer.GetIP (), peer.GetPort ());
 			}
 		};
 	};

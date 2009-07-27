@@ -2,6 +2,7 @@
 #define PLUGINS_TORRENT_TABWIDGET_H
 #include <memory>
 #include <QTabWidget>
+#include <QAction>
 #include <plugininterface/tagscompleter.h>
 #include "ui_tabwidget.h"
 
@@ -18,6 +19,7 @@ namespace LeechCraft
 				Ui::TabWidget Ui_;
 				bool TorrentSelectionChanged_;
 				std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsChangeCompleter_;
+				QAction *AddPeer_;
 			public:
 				TabWidget (QWidget* = 0);
 
@@ -45,6 +47,7 @@ namespace LeechCraft
 				void on_UploadingTorrents__valueChanged (int);
 				void on_TorrentTags__editingFinished ();
 				void setTabWidgetSettings ();
+				void handleAddPeer ();
 			};
 		};
 	};

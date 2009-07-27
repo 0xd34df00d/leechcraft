@@ -189,6 +189,7 @@ namespace LeechCraft
 				int GetTorrentDownloadRate () const;
 				int GetTorrentUploadRate () const;
 				double GetTorrentDesiredRating () const;
+				void AddPeer (const QString&, int);
 				void SetFilePriority (int, int);
 				void SetFilename (int, const QString&);
 				QStringList GetTrackers () const;

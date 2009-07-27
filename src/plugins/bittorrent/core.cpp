@@ -919,6 +919,19 @@ namespace LeechCraft
 				else
 					return -1;
 			}
+
+			void Core::AddPeer (const QString& ip, int port)
+			{
+				if (!CheckValidity (CurrentTorrent_))
+					return;
+
+				Handles_.at (CurrentTorrent_).Handle_.connect_peer (
+							libtorrent::tcp::endpoint (
+								libtorrent::address::from_string (ip.toStdString ()),
+								port
+								)
+							);
+			}
 			
 			void Core::SetFilePriority (int file, int priority)
 			{
