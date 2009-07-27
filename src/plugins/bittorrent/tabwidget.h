@@ -20,6 +20,8 @@ namespace LeechCraft
 				bool TorrentSelectionChanged_;
 				std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsChangeCompleter_;
 				QAction *AddPeer_;
+				QAction *AddWebSeed_;
+				QAction *RemoveWebSeed_;
 			public:
 				TabWidget (QWidget* = 0);
 
@@ -48,6 +50,9 @@ namespace LeechCraft
 				void on_TorrentTags__editingFinished ();
 				void setTabWidgetSettings ();
 				void handleAddPeer ();
+				void handleAddWebSeed ();
+				void currentWebSeedChanged (const QModelIndex&);
+				void handleRemoveWebSeed ();
 			};
 		};
 	};

@@ -963,6 +963,32 @@ namespace LeechCraft
 								)
 							);
 			}
+
+			void Core::AddWebSeed (const QString& ws, bool url)
+			{
+				if (!CheckValidity (CurrentTorrent_))
+					return;
+
+				if (url)
+					Handles_.at (CurrentTorrent_).Handle_.add_url_seed (ws.toStdString ());
+				else
+					Handles_.at (CurrentTorrent_).Handle_.add_http_seed (ws.toStdString ());
+				WebSeedsModel_->clear ();
+				UpdatePeers ();
+			}
+			
+			void Core::RemoveWebSeed (const QString& ws, bool url)
+			{
+				if (!CheckValidity (CurrentTorrent_))
+					return;
+
+				if (url)
+					Handles_.at (CurrentTorrent_).Handle_.remove_url_seed (ws.toStdString ());
+				else
+					Handles_.at (CurrentTorrent_).Handle_.remove_http_seed (ws.toStdString ());
+				WebSeedsModel_->clear ();
+				UpdatePeers ();
+			}
 			
 			void Core::SetFilePriority (int file, int priority)
 			{

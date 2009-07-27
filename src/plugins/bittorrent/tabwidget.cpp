@@ -1,5 +1,6 @@
 #include "tabwidget.h"
 #include <QSortFilterProxyModel>
+#include <QUrl>
 #include <plugininterface/proxy.h>
 #include "core.h"
 #include "filesviewdelegate.h"
@@ -9,6 +10,7 @@
 #include "piecesmodel.h"
 #include "peersmodel.h"
 #include "addpeerdialog.h"
+#include "addwebseeddialog.h"
 
 namespace LeechCraft
 {
@@ -50,6 +52,17 @@ namespace LeechCraft
 
 				Ui_.WebSeedsView_->setModel (Core::Instance ()->GetWebSeedsModel ());
 			
+				header = Ui_.WebSeedsView_->header ();
+				header->resizeSection (0,
+						fm.width ("average.domain.name.of.a.tracker"));
+				header->resizeSection (1,
+						fm.width ("  BEP 99  "));
+				
+				connect (Ui_.WebSeedsView_->selectionModel (),
+						SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
+						this,
+						SLOT (currentWebSeedChanged (const QModelIndex&)));
+
 				connect (Ui_.OverallDownloadRateController_,
 						SIGNAL (valueChanged (int)), this,
 						SLOT (on_OverallDownloadRateController__valueChanged (int)));
@@ -118,8 +131,27 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (handleAddPeer ()));
-
 				Ui_.PeersView_->addAction (AddPeer_);
+
+				AddWebSeed_ = new QAction (tr ("Add web seed..."),
+						Ui_.WebSeedsView_);
+				AddWebSeed_->setProperty ("ActionIcon", "torrent_addwebseed");
+				AddWebSeed_->setObjectName ("AddWebSeed_");
+				connect (AddWebSeed_,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleAddWebSeed ()));
+				RemoveWebSeed_ = new QAction (tr ("Remove web seed"),
+						Ui_.WebSeedsView_);
+				RemoveWebSeed_->setProperty ("ActionIcon", "torrent_removewebseed");
+				RemoveWebSeed_->setObjectName ("RemoveWebSeed_");
+				RemoveWebSeed_->setEnabled (false);
+				connect (RemoveWebSeed_,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleRemoveWebSeed ()));
+				Ui_.WebSeedsView_->addAction (AddWebSeed_);
+				Ui_.WebSeedsView_->addAction (RemoveWebSeed_);
 				
 				QList<QByteArray> tabWidgetSettings;
 				tabWidgetSettings << "ActiveSessionStats"
@@ -558,6 +590,33 @@ namespace LeechCraft
 					return;
 
 				Core::Instance ()->AddPeer (peer.GetIP (), peer.GetPort ());
+			}
+
+			void TabWidget::handleAddWebSeed ()
+			{
+				AddWebSeedDialog ws;
+				if (ws.exec () != QDialog::Accepted || 
+						ws.GetURL ().isEmpty ())
+					return;
+
+				if (!QUrl (ws.GetURL ()).isValid ())
+					return;
+
+				Core::Instance ()->AddWebSeed (ws.GetURL (), ws.GetType ());
+			}
+
+			void TabWidget::currentWebSeedChanged (const QModelIndex& index)
+			{
+				RemoveWebSeed_->setEnabled (index.isValid ());
+			}
+
+			void TabWidget::handleRemoveWebSeed ()
+			{
+				QModelIndex index = Ui_.WebSeedsView_->currentIndex ();
+				QString url = index.sibling (index.row (), 0).data ().toString ();
+				bool bep19 = index.sibling (index.row (), 1).data ().toString () == "BEP 19";
+				qDebug () << url << bep19;
+				Core::Instance ()->RemoveWebSeed (index.data ().toString (), bep19);
 			}
 		};
 	};
