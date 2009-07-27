@@ -47,6 +47,8 @@ namespace LeechCraft
 				Ui_.PeersView_->setModel (peersSorter);
 
 				new PeersTabLinker (&Ui_, peersSorter, this);
+
+				Ui_.WebSeedsView_->setModel (Core::Instance ()->GetWebSeedsModel ());
 			
 				connect (Ui_.OverallDownloadRateController_,
 						SIGNAL (valueChanged (int)), this,

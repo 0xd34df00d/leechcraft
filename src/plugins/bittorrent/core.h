@@ -8,6 +8,7 @@
 #include <QPair>
 #include <QList>
 #include <QVector>
+#include <QStandardItemModel>
 #include <libtorrent/alert_types.hpp>
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/torrent_handle.hpp>
@@ -102,6 +103,7 @@ namespace LeechCraft
 				std::auto_ptr<PiecesModel> PiecesModel_;
 				std::auto_ptr<PeersModel> PeersModel_;
 				std::auto_ptr<TorrentFilesModel> TorrentFilesModel_;
+				std::auto_ptr<QStandardItemModel> WebSeedsModel_;
 				QString ExternalAddress_;
 				bool SaveScheduled_;
 				QToolBar *Toolbar_;
@@ -136,6 +138,7 @@ namespace LeechCraft
 				void ClearPieces ();
 				void UpdatePieces ();
 				PeersModel* GetPeersModel ();
+				QAbstractItemModel* GetWebSeedsModel ();
 				void ClearPeers ();
 				void UpdatePeers ();
 				TorrentFilesModel* GetTorrentFilesModel ();

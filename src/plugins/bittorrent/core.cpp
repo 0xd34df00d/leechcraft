@@ -105,12 +105,15 @@ namespace LeechCraft
 			, PiecesModel_ (new PiecesModel ())
 			, PeersModel_ (new PeersModel ())
 			, TorrentFilesModel_ (new TorrentFilesModel (false))
+			, WebSeedsModel_ (new QStandardItemModel ())
 			, SaveScheduled_ (false)
 			, Toolbar_ (0)
 			, TabWidget_ (0)
 			{
 				setObjectName ("BitTorrent Core");
 				ExternalAddress_ = tr ("Unknown");
+				WebSeedsModel_->setHorizontalHeaderLabels (QStringList (tr ("URL"))
+						<< tr ("Standard"));
 			}
 			
 			Core::~Core ()
@@ -208,6 +211,7 @@ namespace LeechCraft
 				PiecesModel_.reset ();
 				PeersModel_.reset ();
 				TorrentFilesModel_.reset ();
+				WebSeedsModel_.reset ();
 			
 				QObjectList kids = children ();
 				for (int i = 0; i < kids.size (); ++i)
@@ -302,10 +306,16 @@ namespace LeechCraft
 			{
 				return PeersModel_.get ();
 			}
+
+			QAbstractItemModel* Core::GetWebSeedsModel ()
+			{
+				return WebSeedsModel_.get ();
+			}
 			
 			void Core::ClearPeers ()
 			{
 				PeersModel_->Clear ();
+				WebSeedsModel_->clear ();
 			}
 			
 			void Core::UpdatePeers ()
@@ -317,6 +327,27 @@ namespace LeechCraft
 				}
 			
 				PeersModel_->Update (GetPeers (), CurrentTorrent_);
+
+				if (CheckValidity (CurrentTorrent_) &&
+						!WebSeedsModel_->rowCount ())
+				{
+					Q_FOREACH (std::string url,
+							Handles_.at (CurrentTorrent_).Handle_.url_seeds ())
+					{
+						QList<QStandardItem*> items;
+						items << new QStandardItem (QString::fromStdString (url));
+						items << new QStandardItem ("BEP 19");
+						WebSeedsModel_->appendRow (items);
+					}
+					Q_FOREACH (std::string url,
+							Handles_.at (CurrentTorrent_).Handle_.http_seeds ())
+					{
+						QList<QStandardItem*> items;
+						items << new QStandardItem (QString::fromStdString (url));
+						items << new QStandardItem ("BEP 17");
+						WebSeedsModel_->appendRow (items);
+					}
+				}
 			}
 			
 			TorrentFilesModel* Core::GetTorrentFilesModel ()
