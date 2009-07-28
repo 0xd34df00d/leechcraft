@@ -19,6 +19,8 @@ SET (SRCS
 	xmlsettingsmanager.cpp
 	structures.cpp
 	watchthread.cpp
+	pane.cpp
+	tabwidget.cpp
 	3dparty/ftpparse.c
 	)
 SET (HEADERS
@@ -29,7 +31,13 @@ SET (HEADERS
 	xmlsettingsmanager.h
 	structures.h
 	watchthread.h
+	pane.h
+	tabwidget.h
 	3dparty/ftpparse.h
+	)
+SET (FORMS
+	pane.ui
+	tabwidget.ui
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS
@@ -42,7 +50,7 @@ SET (COMPILED_TRANSLATIONS
 	)
 
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-#QT4_WRAP_UI (UIS_H ${FORMS})
+QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 ADD_CUSTOM_COMMAND (OUTPUT
@@ -55,7 +63,7 @@ ADD_LIBRARY (leechcraft_lcftp SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
-#	${UIS_H}
+	${UIS_H}
 	${RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_lcftp
