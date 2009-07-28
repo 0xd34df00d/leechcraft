@@ -63,6 +63,7 @@ namespace LeechCraft
 			private slots:
 				void on_Address__returnPressed ();
 				void on_Tree__activated (const QModelIndex&);
+				void on_Up__released ();
 				void handleFetchedEntry (const FetchedEntry&);
 			};
 		};

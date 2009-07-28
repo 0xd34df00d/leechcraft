@@ -61,7 +61,7 @@ namespace LeechCraft
 				{
 					QUrl nu = url;
 					int lastIndex = url.path ().lastIndexOf ("/");
-					if (lastIndex > 0)
+					if (lastIndex >= 0)
 						nu.setPath (url.path ().left (lastIndex + 1));
 					else
 						nu.setPath ("/");
@@ -80,7 +80,7 @@ namespace LeechCraft
 				if (!IsLocal ())
 					Ui_.Address_->completer ()->setModel (DirModel_);
 
-				if (!string.endsWith ("/"))
+				if (!string.endsWith ('/'))
 					Ui_.Address_->setText (string);
 				else
 					Ui_.Address_->setText (string.left (string.size () - 1));
@@ -126,7 +126,32 @@ namespace LeechCraft
 						SetURL (RemoteModel_->item (row, CName)->data (RDUrl).toUrl ());
 					else
 					{
+						// TODO download the file
 					}
+				}
+			}
+
+			void Pane::on_Up__released ()
+			{
+				QString text = Ui_.Address_->text ();
+				if (IsLocal ())
+				{
+					int lastIndex = text.lastIndexOf ('/');
+					if (lastIndex >= 0)
+					{
+						text = text.left (lastIndex + 1);
+						Navigate (text);
+					}
+				}
+				else
+				{
+					QUrl url (text);
+					int lastIndex = url.path ().lastIndexOf ('/', -2);
+					if (lastIndex > 0)
+						url.setPath (url.path ().left (lastIndex + 1));
+					else
+						url.setPath ("/");
+					SetURL (url);
 				}
 			}
 
