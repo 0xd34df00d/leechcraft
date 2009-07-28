@@ -317,9 +317,13 @@ namespace LeechCraft
 				if (!e.Entity_.canConvert<QUrl> ())
 					return -1;
 
-				QUrl url = e.Entity_.toUrl ();
+				return Add (e.Entity_.toUrl (), e.Location_,
+						!(e.Parameters_ & LeechCraft::Internal));
+			}
 
-				QFileInfo fi (e.Location_);
+			int Core::Add (const QUrl& url, const QString& location, bool check)
+			{
+				QFileInfo fi (location);
 				QString dir, file;
 				if (fi.isDir ())
 					dir = fi.path ();
@@ -330,9 +334,9 @@ namespace LeechCraft
 				}
 	
 				QString tfn = dir + "/" + file;
-				if (!(e.Parameters_ & LeechCraft::Internal))
+				if (check)
 				{
-					tfn = CheckName (e.Entity_.toUrl (), e.Location_);
+					tfn = CheckName (url, location);
 					if (tfn.isEmpty ())
 						return -1;
 				}

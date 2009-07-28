@@ -58,14 +58,19 @@ namespace LeechCraft
 				 * local mode.
 				 */
 				void Navigate (const QString& location);
-			private:
 				bool IsLocal () const;
+				/** Returns the address in the address bar. That can be
+				 * a local path or an URL.
+				 */
+				QString GetString () const;
 			private slots:
 				void on_Address__returnPressed ();
 				void on_Tree__activated (const QModelIndex&);
 				void on_Up__released ();
 				void on_Root__released ();
 				void handleFetchedEntry (const FetchedEntry&);
+			signals:
+				void downloadRequested (const QUrl&);
 			};
 		};
 	};

@@ -95,6 +95,7 @@ namespace LeechCraft
 				QStringList Provides () const;
 				bool IsOK (const DownloadEntity&) const;
 				int Add (DownloadEntity);
+				int Add (const QUrl&, const QString&, bool);
 				void Handle (DownloadEntity);
 				int Browse (const QUrl&);
 

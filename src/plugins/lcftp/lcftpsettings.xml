@@ -4,23 +4,15 @@
 	<page>
 		<label lang="en" value="General settings" />
 		<label lang="ru" value="Общие настройки" />
-		<tab>
+		<groupbox>
 			<label lang="en" value="General settings" />
 			<label lang="ru" value="Общие настройки" />
-			<groupbox>
-				<label lang="en" value="General settings" />
-				<label lang="ru" value="Общие настройки" />
-				<item type="spinbox" property="TotalNumWorkers" minimum="2" maximum="128" default="4">
-					<label lang="en" value="Total number of worker threads:" />
-					<label lang="ru" value="Общее количество рабочих потоков:" />
-				</item>
-				<item type="spinbox" property="WorkersPerDomain" minimum="1" maximum="64" default="2">
-					<label lang="en" value="Worker threads per domain:" />
-					<label lang="ru" value="Рабочих потоков на домен:" />
-				</item>
-			</groupbox>
-		</tab>
-		<tab>
+			<item type="checkbox" property="ActivatedTransfers" default="on">
+				<label lang="en" value="Transfer is also triggered by activating an item" />
+				<label lang="ru" value="Начинать передачи в результате активации файла" />
+			</item>
+		</groupbox>
+		<groupbox>
 			<label lang="en" value="Identification" />
 			<label lang="ru" value="Идентификация" />
 			<item type="lineedit" property="FTPLogin" default="anonymous">
@@ -31,7 +23,7 @@
 				<label lang="en" value="Password:" />
 				<label lang="ru" value="Пароль:" />
 			</item>
-		</tab>
+		</groupbox>
 	</page>
 	<page>
 		<label lang="en" value="FTP settings" />
@@ -50,6 +42,14 @@
 			<item type="checkbox" property="SkipPasvIP" default="off">
 				<label lang="en" value="Skip IP received as the result of PASV" />
 				<label lang="ru" value="Игнорировать IP, полученный в результате PASV" />
+			</item>
+			<item type="spinbox" property="TotalNumWorkers" minimum="2" maximum="128" default="4">
+				<label lang="en" value="Total number of worker threads:" />
+				<label lang="ru" value="Общее количество рабочих потоков:" />
+			</item>
+			<item type="spinbox" property="WorkersPerDomain" minimum="1" maximum="64" default="2">
+				<label lang="en" value="Worker threads per domain:" />
+				<label lang="ru" value="Рабочих потоков на домен:" />
 			</item>
 		</tab>
 	</page>

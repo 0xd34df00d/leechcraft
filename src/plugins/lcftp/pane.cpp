@@ -36,7 +36,6 @@ namespace LeechCraft
 
 			Pane::~Pane ()
 			{
-				qDebug () << Q_FUNC_INFO;
 			}
 
 			void Pane::SetURL (const QUrl& url)
@@ -98,6 +97,11 @@ namespace LeechCraft
 				return Ui_.Address_->completer ()->model ();
 			}
 
+			QString Pane::GetString () const
+			{
+				return Ui_.Address_->text ();
+			}
+
 			void Pane::on_Address__returnPressed ()
 			{
 				QString text = Ui_.Address_->text ();
@@ -122,11 +126,14 @@ namespace LeechCraft
 				else
 				{
 					int row = index.row ();
+					QUrl url = RemoteModel_->item (row, CName)->data (RDUrl).toUrl ();
 					if (RemoteModel_->item (row, CType)->data (RDIsDir).toBool ())
-						SetURL (RemoteModel_->item (row, CName)->data (RDUrl).toUrl ());
+						SetURL (url);
 					else
 					{
-						// TODO download the file
+						if (XmlSettingsManager::Instance ()
+								.property ("ActivatedTransfers").toBool ())
+							emit downloadRequested (url);
 					}
 				}
 			}

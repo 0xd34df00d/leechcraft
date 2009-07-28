@@ -22,6 +22,11 @@ namespace LeechCraft
 
 				void Remove ();
 				QToolBar* GetToolBar () const;
+			private:
+				void Setup (Pane*);
+				Pane* Other (Pane*);
+			private slots:
+				void handleDownloadRequested (const QUrl&);
 			};
 
 			typedef TabWidget *TabWidget_ptr;
