@@ -64,6 +64,7 @@ namespace LeechCraft
 				void on_Address__returnPressed ();
 				void on_Tree__activated (const QModelIndex&);
 				void on_Up__released ();
+				void on_Root__released ();
 				void handleFetchedEntry (const FetchedEntry&);
 			};
 		};

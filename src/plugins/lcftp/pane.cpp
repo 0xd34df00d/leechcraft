@@ -155,6 +155,18 @@ namespace LeechCraft
 				}
 			}
 
+			void Pane::on_Root__released ()
+			{
+				if (IsLocal ())
+					Navigate ("/");
+				else
+				{
+					QUrl url (Ui_.Address_->text ());
+					url.setPath ("/");
+					SetURL (url);
+				}
+			}
+
 			void Pane::handleFetchedEntry (const FetchedEntry& e)
 			{
 				if (e.PreviousTask_.ID_ != JobID_)
