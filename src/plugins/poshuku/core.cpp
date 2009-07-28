@@ -413,15 +413,20 @@ namespace LeechCraft
 				else if (ask)
 				{
 					std::auto_ptr<RestoreSessionDialog> dia (new RestoreSessionDialog ());
+					bool added = false;
 					for (int i = 0; i < size; ++i)
 					{
 						settings.setArrayIndex (i);
 						QString title = settings.value ("Title").toString ();
 						QString url = settings.value ("URL").toString ();
+						if (title.isEmpty () || url.isEmpty ())
+							continue;
 						dia->AddPair (title, url);
+						added = true;
 					}
 			
-					if (dia->exec () == QDialog::Accepted)
+					if (added &&
+							dia->exec () == QDialog::Accepted)
 					{
 						RestoredURLs_ = dia->GetSelectedURLs ();
 						QTimer::singleShot (2000, this, SLOT (restorePages ()));
@@ -434,7 +439,10 @@ namespace LeechCraft
 					for (int i = 0; i < size; ++i)
 					{
 						settings.setArrayIndex (i);
-						RestoredURLs_ << settings.value ("URL").toString ();
+						QString url = settings.value ("URL").toString ();
+						if (url.isEmpty ())
+							continue;
+						RestoredURLs_ << url;
 					}
 					QTimer::singleShot (2000, this, SLOT (restorePages ()));
 				}
