@@ -376,7 +376,7 @@ namespace LeechCraft
 					QString (),
 					true
 				};
-				QueueTask (td);
+				QueueTask (td, PHigh);
 				return td.ID_;
 			}
 
@@ -397,7 +397,7 @@ namespace LeechCraft
 					if (!WorkersPerDomain_.contains (domain))
 						WorkersPerDomain_ [domain] = 0;
 
-					if (WorkersPerDomain_ [domain] > limit)
+					if (WorkersPerDomain_ [domain] >= limit)
 						continue;
 
 					WorkersPerDomain_ [domain]++;
@@ -408,11 +408,21 @@ namespace LeechCraft
 				return false;
 			}
 
-			void Core::QueueTask (const TaskData& td)
+			void Core::QueueTask (const TaskData& td, Core::Priority p)
 			{
-				beginInsertRows (QModelIndex (),
-						Tasks_.size (), Tasks_.size ());
-				Tasks_ << td;
+				switch (p)
+				{
+					case PLow:
+						beginInsertRows (QModelIndex (),
+								Tasks_.size (), Tasks_.size ());
+						Tasks_ << td;
+						break;
+					case PHigh:
+						beginInsertRows (QModelIndex (),
+								0, 0);
+						Tasks_.prepend (td);
+						break;
+				}
 				endInsertRows ();
 				Reschedule ();
 			}
@@ -553,11 +563,10 @@ namespace LeechCraft
 
 				if (td.ID_ >= 0 &&
 						!td.Internal_)
+				{
 					emit taskError (td.ID_, IDownload::EUnknown);
-
-				QMessageBox::critical (0,
-						tr ("LeechCraft"),
-						msg);
+					emit log (QString ("LCFTP: %1").arg (msg));
+				}
 			}
 
 			void Core::handleFinished (const TaskData& data)

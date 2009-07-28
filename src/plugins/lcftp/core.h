@@ -71,6 +71,11 @@ namespace LeechCraft
 				int RunningHandles_;
 
 				Core ();
+				enum Priority
+				{
+					PLow,
+					PHigh
+				};
 			public:
 				static Core& Instance ();
 				void Release ();
@@ -96,7 +101,7 @@ namespace LeechCraft
 				bool IsAcceptable (int) const;
 				bool SelectSuitableTask (TaskData*);
 			private:
-				void QueueTask (const TaskData&);
+				void QueueTask (const TaskData&, Priority = PLow);
 				void AddWorker (int);
 				void Reschedule ();
 				Worker_ptr FindWorker (CURL*) const;
@@ -117,6 +122,7 @@ namespace LeechCraft
 				void gotEntity (const LeechCraft::DownloadEntity&);
 				void downloadFinished (const QString&);
 				void fetchedEntry (const FetchedEntry&);
+				void log (const QString&);
 			};
 		};
 	};
