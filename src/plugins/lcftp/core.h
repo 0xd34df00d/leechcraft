@@ -21,6 +21,7 @@ namespace LeechCraft
 		{
 			class InactiveWorkersFilter;
 			class WatchThread;
+			class TabManager;
 
 			typedef boost::shared_ptr<CURLM> CURLM_ptr;
 			typedef boost::shared_ptr<CURLSH> CURLSH_ptr;
@@ -62,6 +63,7 @@ namespace LeechCraft
 				bool Quitting_;
 				QList<Worker::TaskState> States_;
 				QMap<QString, int> WorkersPerDomain_;
+				TabManager *TabManager_;
 
 				boost::shared_ptr<InactiveWorkersFilter> WorkersFilter_;
 
@@ -77,6 +79,7 @@ namespace LeechCraft
 				QAbstractItemModel* GetModel () const;
 				qint64 GetDownloadSpeed () const;
 				qint64 GetUploadSpeed () const;
+				TabManager* GetTabManager () const;
 
 				int columnCount (const QModelIndex& = QModelIndex ()) const;
 				QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
@@ -87,6 +90,7 @@ namespace LeechCraft
 				QStringList Provides () const;
 				bool IsOK (const DownloadEntity&) const;
 				int Add (DownloadEntity);
+				void Handle (DownloadEntity);
 
 				bool IsAcceptable (int) const;
 				bool SelectSuitableTask (TaskData*);

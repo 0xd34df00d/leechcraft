@@ -21,6 +21,7 @@ SET (SRCS
 	watchthread.cpp
 	pane.cpp
 	tabwidget.cpp
+	tabmanager.cpp
 	3dparty/ftpparse.c
 	)
 SET (HEADERS
@@ -33,6 +34,7 @@ SET (HEADERS
 	watchthread.h
 	pane.h
 	tabwidget.h
+	tabmanager.h
 	3dparty/ftpparse.h
 	)
 SET (FORMS

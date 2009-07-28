@@ -3,6 +3,7 @@
 #include <QUrl>
 #include <plugininterface/util.h>
 #include "core.h"
+#include "tabmanager.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -41,6 +42,24 @@ namespace LeechCraft
 						SIGNAL (downloadFinished (const QString&)),
 						this,
 						SIGNAL (downloadFinished (const QString&)));
+
+				TabManager *manager = Core::Instance ().GetTabManager ();
+				connect (manager,
+						SIGNAL (addNewTab (const QString&, QWidget*)),
+						this,
+						SIGNAL (addNewTab (const QString&, QWidget*)));
+				connect (manager,
+						SIGNAL (removeTab (QWidget*)),
+						this,
+						SIGNAL (removeTab (QWidget*)));
+				connect (manager,
+						SIGNAL (changeTabName (QWidget*, const QString&)),
+						this,
+						SIGNAL (changeTabName (QWidget*, const QString&)));
+				connect (manager,
+						SIGNAL (statusBarChanged (QWidget*, const QString&)),
+						this,
+						SIGNAL (statusBarChanged (QWidget*, const QString&)));
 			}
 
 			void LCFTP::Release ()
@@ -117,6 +136,7 @@ namespace LeechCraft
 
 			int LCFTP::AddJob (DownloadEntity e)
 			{
+				qDebug () << Q_FUNC_INFO;
 				return Core::Instance ().Add (e);
 			}
 
@@ -127,7 +147,8 @@ namespace LeechCraft
 
 			void LCFTP::Handle (DownloadEntity e)
 			{
-				Core::Instance ().Add (e);
+				qDebug () << Q_FUNC_INFO;
+				Core::Instance ().Handle (e);
 			}
 
 			boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> LCFTP::GetSettingsDialog () const

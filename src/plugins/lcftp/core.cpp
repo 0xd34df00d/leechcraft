@@ -13,6 +13,7 @@
 #include "inactiveworkersfilter.h"
 #include "xmlsettingsmanager.h"
 #include "watchthread.h"
+#include "tabmanager.h"
 
 namespace LeechCraft
 {
@@ -26,6 +27,7 @@ namespace LeechCraft
 			Core::Core ()
 			: WatchThread_ (new WatchThread (this))
 			, Quitting_ (false)
+			, TabManager_ (new TabManager (this))
 			, NumScheduledWorkers_ (0)
 			, RunningHandles_ (0)
 			{
@@ -116,6 +118,11 @@ namespace LeechCraft
 				Q_FOREACH (Worker::TaskState st, States_)
 					result += st.ULSpeed_;
 				return result;
+			}
+
+			TabManager* Core::GetTabManager () const
+			{
+				return TabManager_;
 			}
 
 			int Core::columnCount (const QModelIndex&) const
@@ -340,6 +347,23 @@ namespace LeechCraft
 				};
 				QueueTask (td);
 				return td.ID_;
+			}
+
+			void Core::Handle (DownloadEntity e)
+			{
+				if (!e.Entity_.canConvert<QUrl> ())
+					return;
+
+				QUrl url = e.Entity_.toUrl ();
+
+				QFileInfo fi (e.Location_);
+				QString dir;
+				if (fi.isDir ())
+					dir = fi.path ();
+				else
+					dir = fi.dir ().path ();
+	
+				TabManager_->AddTab (url, dir);
 			}
 
 			bool Core::IsAcceptable (int index) const
