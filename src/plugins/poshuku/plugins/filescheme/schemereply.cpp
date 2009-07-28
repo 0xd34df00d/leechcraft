@@ -129,7 +129,7 @@ namespace LeechCraft
 
 						if (!dir.isRoot ())
 						{
-							QIcon icon = qApp->style()->standardIcon(QStyle::SP_FileDialogToParent);
+							QIcon icon = qApp->style ()->standardIcon (QStyle::SP_FileDialogToParent);
 							QString addr = QString::fromUtf8 (
 										QUrl::fromLocalFile (
 											QFileInfo (
