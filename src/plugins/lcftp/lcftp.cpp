@@ -42,6 +42,10 @@ namespace LeechCraft
 						SIGNAL (downloadFinished (const QString&)),
 						this,
 						SIGNAL (downloadFinished (const QString&)));
+				connect (&Core::Instance (),
+						SIGNAL (log (const QString&)),
+						this,
+						SIGNAL (log (const QString&)));
 
 				TabManager *manager = Core::Instance ().GetTabManager ();
 				connect (manager,
