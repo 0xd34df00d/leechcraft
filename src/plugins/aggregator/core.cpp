@@ -43,6 +43,7 @@ namespace LeechCraft
 			, CurrentItemsModel_ (new ItemsListModel)
 			, MergeMode_ (false)
 			{
+				qRegisterMetaType<QItemSelection> ("QItemSelection");
 				QStringList placeholders;
 				placeholders << "" << "";
 				ItemLists_ = new LeechCraft::Util::MergeModel (placeholders);
