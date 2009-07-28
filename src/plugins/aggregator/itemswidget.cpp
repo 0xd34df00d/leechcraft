@@ -114,7 +114,8 @@ namespace LeechCraft
 						SIGNAL (selectionChanged (const QItemSelection&,
 								const QItemSelection&)),
 						this,
-						SLOT (currentItemChanged (const QItemSelection&)));
+						SLOT (currentItemChanged (const QItemSelection&)),
+						Qt::QueuedConnection);
 			
 				currentItemChanged (QItemSelection ());
 			}
@@ -146,7 +147,8 @@ namespace LeechCraft
 							SIGNAL (selectionChanged (const QItemSelection&,
 									const QItemSelection&)),
 							this,
-							SLOT (currentItemChanged (const QItemSelection&)));
+							SLOT (currentItemChanged (const QItemSelection&)),
+							Qt::QueuedConnection);
 				currentItemChanged (QItemSelection ());
 			}
 			
