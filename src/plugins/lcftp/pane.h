@@ -29,6 +29,19 @@ namespace LeechCraft
 				QDirModel *DirModel_;
 				QStandardItemModel *RemoteModel_;
 				int JobID_;
+				enum RoleData
+				{
+					RDIsDir = 100,
+					RDUrl
+				};
+
+				enum Columns
+				{
+					CName,
+					CSize,
+					CType,
+					CDateTime
+				};
 			public:
 				/** Initializes, constructs the interface, sets up the
 				 * pane as the remote one.
@@ -49,6 +62,7 @@ namespace LeechCraft
 				bool IsLocal () const;
 			private slots:
 				void on_Address__returnPressed ();
+				void on_Tree__activated (const QModelIndex&);
 				void handleFetchedEntry (const FetchedEntry&);
 			};
 		};

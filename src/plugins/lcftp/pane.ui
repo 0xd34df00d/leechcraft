@@ -36,7 +36,20 @@
     </layout>
    </item>
    <item>
-    <widget class="QTreeView" name="Tree_"/>
+    <widget class="QTreeView" name="Tree_">
+     <attribute name="headerHighlightSections">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="headerShowSortIndicator" stdset="0">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="headerShowSortIndicator" stdset="0">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="headerHighlightSections">
+      <bool>true</bool>
+     </attribute>
+    </widget>
    </item>
   </layout>
  </widget>
