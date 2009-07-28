@@ -78,7 +78,23 @@ namespace LeechCraft
 				if (result->Title_.isEmpty ())
 					result->Title_ = "<>";
 				result->Link_ = item.firstChildElement ("link").text ();
+
 				result->Description_ = item.firstChildElement ("description").text ();
+				if (result->Description_.isEmpty ())
+				{
+					QDomNodeList nodes = item.elementsByTagNameNS (ITunes_, "summary");
+					if (nodes.size ())
+						result->Description_ = nodes.at (0).toElement ().text ();
+				}
+				QDomNodeList duration = item.elementsByTagNameNS (ITunes_, "duration");
+				if (duration.size ())
+				{
+					if (!result->Description_.isEmpty ())
+						result->Description_ += "<br /><br />";
+					result->Description_ += QObject::tr ("Duration: %1")
+						.arg (duration.at (0).toElement ().text ());
+				}
+
 				result->PubDate_ = RFC822TimeToQDateTime (item.firstChildElement ("pubDate").text ());
 				if (!result->PubDate_.isValid () || result->PubDate_.isNull ())
 					result->PubDate_ = QDateTime::currentDateTime ();

@@ -41,6 +41,7 @@ namespace LeechCraft
 				static const QString RDF_;
 				static const QString Slash_;
 				static const QString Enc_;
+				static const QString ITunes_;
 
 				QString GetLink (const QDomElement&) const;
 				QString GetAuthor (const QDomElement&) const;
@@ -50,6 +51,7 @@ namespace LeechCraft
 				QDateTime GetDCDateTime (const QDomElement&) const;
 				QStringList GetAllCategories (const QDomElement&) const;
 				QStringList GetDCCategories (const QDomElement&) const;
+				QStringList GetITunesCategories (const QDomElement&) const;
 				QStringList GetPlainCategories (const QDomElement&) const;
 				QList<Enclosure> GetEncEnclosures (const QDomElement&) const;
 

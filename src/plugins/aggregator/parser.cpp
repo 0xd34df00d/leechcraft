@@ -1,6 +1,7 @@
 #include "parser.h"
 #include <QDomElement>
 #include <QStringList>
+#include <QObject>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -15,6 +16,7 @@ namespace LeechCraft
 			const QString Parser::RDF_ = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 			const QString Parser::Slash_ = "http://purl.org/rss/1.0/modules/slash/";
 			const QString Parser::Enc_ = "http://purl.oclc.org/net/rss_2.0/enc#";
+			const QString Parser::ITunes_ = "http://www.itunes.com/dtds/podcast-1.0.dtd";
 			
 			QString Parser::GetLink (const QDomElement& parent) const
 			{
@@ -38,10 +40,22 @@ namespace LeechCraft
 			QString Parser::GetAuthor (const QDomElement& parent) const
 			{
 				QString result;
-				QDomNodeList nodes = parent.elementsByTagNameNS (DC_,
+				QDomNodeList nodes = parent.elementsByTagNameNS (ITunes_,
+						"author");
+				if (nodes.size ())
+				{
+					result = nodes.at (0).toElement ().text ();
+					return result;
+				}
+
+				nodes = parent.elementsByTagNameNS (DC_,
 						"creator");
 				if (nodes.size ())
+				{
 					result = nodes.at (0).toElement ().text ();
+					return result;
+				}
+
 				return result;
 			}
 			
@@ -84,7 +98,9 @@ namespace LeechCraft
 			
 			QStringList Parser::GetAllCategories (const QDomElement& parent) const
 			{
-				return GetDCCategories (parent) + GetPlainCategories (parent);
+				return GetDCCategories (parent) +
+					GetPlainCategories (parent) +
+					GetITunesCategories (parent);
 			}
 			
 			QStringList Parser::GetDCCategories (const QDomElement& parent) const
@@ -99,6 +115,24 @@ namespace LeechCraft
 			
 				result.removeAll ("");
 			
+				return result;
+			}
+
+			QStringList Parser::GetITunesCategories (const QDomElement& parent) const
+			{
+				QStringList result;
+
+				QDomNodeList nodes =
+					parent.elementsByTagNameNS (ITunes_,
+							"keywords");
+				for (int i = 0; i < nodes.size (); ++i)
+					/*: This is the template for the category created of
+					 * iTunes podcast keywords.
+					 */
+					result += QString (QObject::tr ("Podcast %1")
+							.arg (nodes.at (i).toElement ().text ()));
+
+				result.removeAll ("");
 				return result;
 			}
 			
