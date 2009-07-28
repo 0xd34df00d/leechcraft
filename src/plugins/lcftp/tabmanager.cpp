@@ -1,5 +1,7 @@
 #include "tabmanager.h"
 #include <QUrl>
+#include <QDir>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -17,8 +19,14 @@ namespace LeechCraft
 				qDeleteAll (Widgets_);
 			}
 
-			void TabManager::AddTab (const QUrl& url, const QString& local)
+			void TabManager::AddTab (const QUrl& url, QString local)
 			{
+				if (local.isEmpty () ||
+						local == "." ||
+						local == "..")
+					local = XmlSettingsManager::Instance ()
+						.Property ("LastPanedLocalPath", QDir::homePath ()).toString ();
+
 				TabWidget_ptr w (new TabWidget (url, local));
 				emit addNewTab (url.host (), w);
 				Widgets_ << w;

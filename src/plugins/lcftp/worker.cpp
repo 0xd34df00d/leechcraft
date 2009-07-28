@@ -163,11 +163,32 @@ namespace LeechCraft
 				IsWorking_ = false;
 			}
 
+			/** Sets up the libcurl handle to perform the task and
+			 * starts the task.
+			 */
 			void Worker::HandleTask (const TaskData& td, CURL_ptr handle)
 			{
 				curl_easy_setopt (handle.get (),
 						CURLOPT_URL, td.URL_.toEncoded ().constData ());
-				if (!td.URL_.toString ().endsWith ("/"))
+				curl_easy_setopt (handle.get (),
+						CURLOPT_DIRLISTONLY, 0);
+				if (td.URL_.toString ().endsWith ("/") ||
+						td.Filename_.isNull ())
+				{
+					if (td.Filename_.isNull () &&
+							!td.URL_.toString ().endsWith ("/"))
+						curl_easy_setopt (handle.get (),
+								CURLOPT_DIRLISTONLY, 1);
+
+					curl_easy_setopt (handle.get (),
+							CURLOPT_WRITEFUNCTION, list_dir);
+
+					File_.reset ();
+					ListBuffer_.reset (new QBuffer ());
+					curl_easy_setopt (handle.get (),
+							CURLOPT_RESUME_FROM_LARGE, 0);
+				}
+				else
 				{
 					curl_easy_setopt (handle.get (),
 							CURLOPT_WRITEFUNCTION, write_data);
@@ -188,18 +209,13 @@ namespace LeechCraft
 					curl_easy_setopt (handle.get (),
 							CURLOPT_RESUME_FROM_LARGE, File_->size ());
 				}
-				else
-				{
-					curl_easy_setopt (handle.get (),
-							CURLOPT_WRITEFUNCTION, list_dir);
-
-					File_.reset ();
-					ListBuffer_.reset (new QBuffer ());
-					curl_easy_setopt (handle.get (),
-							CURLOPT_RESUME_FROM_LARGE, 0);
-				}
 			}
 
+			/** Parses the buffer in case the task referred to a
+			 * directory, and we got a listing instead of file.
+			 *
+			 * Throws found entries to the Core.
+			 */
 			void Worker::ParseBuffer (const TaskData& td)
 			{
 				QByteArray buf = ListBuffer_->buffer ();
@@ -209,7 +225,12 @@ namespace LeechCraft
 				{
 					struct ftpparse fp;
 					if (!ftpparse (&fp, bstr.data (), bstr.size ()))
+					{
+						qWarning () << Q_FUNC_INFO
+							<< "unable to parse"
+							<< bstr;
 						continue;
+					}
 
 					QString name = QString (QByteArray (fp.name, fp.namelen));
 					if (!fp.flagtrycwd && !fp.flagtryretr)

@@ -21,7 +21,7 @@ namespace LeechCraft
 				TabManager (QObject* = 0);
 				~TabManager ();
 
-				void AddTab (const QUrl&, const QString&);
+				void AddTab (const QUrl&, QString);
 				void Remove (TabWidget*);
 			signals:
 				void addNewTab (const QString&, QWidget*);

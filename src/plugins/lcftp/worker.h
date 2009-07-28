@@ -55,12 +55,22 @@ namespace LeechCraft
 
 				bool IsWorking () const;
 				void SetID (int);
-				void SetExit ();
 				TaskState GetState () const;
 				QUrl GetURL () const;
 				CURL_ptr GetHandle () const;
-				CURL_ptr Start (const TaskData&);
-				void NotifyFinished (CURLcode);
+				/** Prepares to perform the given task, starts it and
+				 * returns immediately.
+				 * 
+				 * @param[in] task The task description.
+				 */
+				CURL_ptr Start (const TaskData& task);
+				/** This function is used by the Core to notify this
+				 * worker that it has finished and now should do some
+				 * post-processing, if any.
+				 *
+				 * @param[in] result The result of the operation.
+				 */
+				void NotifyFinished (CURLcode result);
 			private:
 				void HandleTask (const TaskData&, CURL_ptr);
 				void ParseBuffer (const TaskData&);

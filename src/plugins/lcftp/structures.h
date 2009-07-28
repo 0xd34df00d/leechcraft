@@ -15,7 +15,15 @@ namespace LeechCraft
 			{
 				int ID_;
 				QUrl URL_;
+				/** If the filename is empty, than only the listing is
+				 * fetched.
+				 */
 				QString Filename_;
+				/** If a task is internal, it wouldn't be announced to
+				 * the outer world, and the fetched entries wouldn't be
+				 * downloaded recursively by the Core.
+				 */
+				bool Internal_;
 			};
 
 			bool operator== (const TaskData&, const TaskData&);

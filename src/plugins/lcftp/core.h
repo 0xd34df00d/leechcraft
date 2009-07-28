@@ -91,6 +91,7 @@ namespace LeechCraft
 				bool IsOK (const DownloadEntity&) const;
 				int Add (DownloadEntity);
 				void Handle (DownloadEntity);
+				int Browse (const QUrl&);
 
 				bool IsAcceptable (int) const;
 				bool SelectSuitableTask (TaskData*);
@@ -115,6 +116,7 @@ namespace LeechCraft
 				void taskError (int, IDownload::Error);
 				void gotEntity (const LeechCraft::DownloadEntity&);
 				void downloadFinished (const QString&);
+				void fetchedEntry (const FetchedEntry&);
 			};
 		};
 	};

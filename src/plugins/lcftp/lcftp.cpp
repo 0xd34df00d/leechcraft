@@ -136,7 +136,6 @@ namespace LeechCraft
 
 			int LCFTP::AddJob (DownloadEntity e)
 			{
-				qDebug () << Q_FUNC_INFO;
 				return Core::Instance ().Add (e);
 			}
 
@@ -147,7 +146,6 @@ namespace LeechCraft
 
 			void LCFTP::Handle (DownloadEntity e)
 			{
-				qDebug () << Q_FUNC_INFO;
 				Core::Instance ().Handle (e);
 			}
 

@@ -343,7 +343,8 @@ namespace LeechCraft
 				{
 					Proxy_->GetID (),
 					url,
-					tfn
+					tfn,
+					false
 				};
 				QueueTask (td);
 				return td.ID_;
@@ -364,6 +365,19 @@ namespace LeechCraft
 					dir = fi.dir ().path ();
 	
 				TabManager_->AddTab (url, dir);
+			}
+
+			int Core::Browse (const QUrl& url)
+			{
+				TaskData td =
+				{
+					Proxy_->GetID (),
+					url,
+					QString (),
+					true
+				};
+				QueueTask (td);
+				return td.ID_;
 			}
 
 			bool Core::IsAcceptable (int index) const
@@ -537,7 +551,8 @@ namespace LeechCraft
 			{
 				--WorkersPerDomain_ [td.URL_.host ()];
 
-				if (td.ID_ >= 0)
+				if (td.ID_ >= 0 &&
+						!td.Internal_)
 					emit taskError (td.ID_, IDownload::EUnknown);
 
 				QMessageBox::critical (0,
@@ -549,15 +564,23 @@ namespace LeechCraft
 			{
 				--WorkersPerDomain_ [data.URL_.host ()];
 
-				emit downloadFinished (tr ("Download finished: %1")
-						.arg (data.Filename_));
-
-				if (data.ID_ >= 0)
+				if (data.ID_ >= 0 &&
+						!data.Internal_)
+				{
+					emit downloadFinished (tr ("Download finished: %1")
+							.arg (data.Filename_));
 					emit taskFinished (data.ID_);
+				}
 			}
 
 			void Core::handleFetchedEntry (const FetchedEntry& entry)
 			{
+				if (entry.PreviousTask_.Internal_)
+				{
+					emit fetchedEntry (entry);
+					return;
+				}
+
 				QString name = entry.PreviousTask_.Filename_ + entry.Name_;
 				if (entry.IsDir_)
 				{
@@ -584,7 +607,8 @@ namespace LeechCraft
 				{
 					entry.PreviousTask_.ID_ >= 0 ? Proxy_->GetID () : -1,
 					entry.URL_,
-					name
+					name,
+					false
 				};
 				QueueTask (td);
 			}
