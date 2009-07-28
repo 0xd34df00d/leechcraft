@@ -16,6 +16,7 @@ void HandlerChoiceDialog::Add (const IInfo *ii, IDownload *id)
 {
 	QRadioButton *but = new QRadioButton (ii->GetName (), this);
 	but->setToolTip (ii->GetInfo ());
+	but->setProperty ("AddedAs", "IDownload");
 
 	if (!Buttons_->buttons ().size ())
 		but->setChecked (true);
@@ -31,6 +32,7 @@ void HandlerChoiceDialog::Add (const IInfo *ii, IEntityHandler *ih)
 {
 	QRadioButton *but = new QRadioButton (ii->GetName (), this);
 	but->setToolTip (ii->GetInfo ());
+	but->setProperty ("AddedAs", "IEntityHandler");
 
 	if (!Buttons_->buttons ().size ())
 		but->setChecked (true);
@@ -45,7 +47,9 @@ void HandlerChoiceDialog::Add (const IInfo *ii, IEntityHandler *ih)
 IDownload* HandlerChoiceDialog::GetDownload ()
 {
 	IDownload *result = 0;
-	if (!Buttons_->checkedButton ())
+	if (!Buttons_->checkedButton () ||
+			Buttons_->checkedButton ()->
+				property ("AddedAs").toString () != "IDownload")
 		return 0;
 	downloaders_t::iterator rit = Downloaders_.find (Buttons_->
 			checkedButton ()->text ());

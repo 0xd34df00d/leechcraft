@@ -19,7 +19,7 @@ class HandlerChoiceDialog : public QDialog
 	typedef std::map<QString, IDownload*> downloaders_t;
 	downloaders_t Downloaders_;
 	typedef std::map<QString, IEntityHandler*> handlers_t;
-	std::map<QString, IEntityHandler*> Handlers_;
+	handlers_t Handlers_;
 public:
 	HandlerChoiceDialog (const QString&, QWidget* = 0);
 
