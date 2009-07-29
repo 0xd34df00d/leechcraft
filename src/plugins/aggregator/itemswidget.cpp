@@ -103,7 +103,6 @@ namespace LeechCraft
 				Impl_->Ui_.CategoriesLayout_->addWidget (Impl_->ItemCategorySelector_.get ());
 				Impl_->ItemCategorySelector_->hide ();
 				Impl_->ItemCategorySelector_->setMinimumHeight (0);
-				Impl_->ItemCategorySelector_->widget ()->layout ()->setContentsMargins (0, 0, 0, 0);
 				connect (Impl_->ItemCategorySelector_.get (),
 						SIGNAL (selectionChanged (const QStringList&)),
 						Impl_->ItemsFilterModel_.get (),
@@ -301,22 +300,15 @@ namespace LeechCraft
 				QStringList allCategories = Core::Instance ().GetCategories (mapped);
 				if (allCategories.size ())
 				{
-					int count = Impl_->ItemCategorySelector_->widget ()->layout ()->count ();
-					if (count)
-						delete Impl_->ItemCategorySelector_->widget ()->layout ()->takeAt (count - 1);
 					Impl_->ItemCategorySelector_->SetPossibleSelections (allCategories);
 					Impl_->ItemCategorySelector_->selectAll ();
-					static_cast<QBoxLayout*> (Impl_->ItemCategorySelector_->widget ()->layout ())->
-						addStretch (0);
 					if (XmlSettingsManager::Instance ()->
 							property ("ShowCategorySelector").toBool ())
 					Impl_->ItemCategorySelector_->show ();
-					Impl_->ItemCategorySelector_->widget ()->show ();
 				}
 				else
 				{
 					Impl_->ItemCategorySelector_->SetPossibleSelections (QStringList ());
-					Impl_->ItemCategorySelector_->widget ()->hide ();
 					Impl_->ItemCategorySelector_->hide ();
 				}
 			

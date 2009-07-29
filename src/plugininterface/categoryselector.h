@@ -1,6 +1,6 @@
 #ifndef PLUGININTERFACE_CATEGORYSELECTOR_H
 #define PLUGININTERFACE_CATEGORYSELECTOR_H
-#include <QScrollArea>
+#include <QTreeWidget>
 #include "config.h"
 
 class QStringList;
@@ -30,7 +30,7 @@ namespace LeechCraft
 		 * slots selectAll() and selectNone() which could be used to mark all
 		 * and no elements in the list respectively.
 		 */
-		class PLUGININTERFACE_API CategorySelector : public QScrollArea
+		class PLUGININTERFACE_API CategorySelector : public QTreeWidget
 		{
 			Q_OBJECT
 		public:

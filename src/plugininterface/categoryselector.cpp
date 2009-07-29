@@ -10,58 +10,54 @@
 #include <QtDebug>
 
 using namespace LeechCraft::Util;
+const int RoleTag = 52;
 
 CategorySelector::CategorySelector (QWidget *parent)
-: QScrollArea (parent)
+: QTreeWidget (parent)
 {
 	setWindowFlags (Qt::Tool | Qt::WindowStaysOnTopHint);
-	QWidget *rw = new QWidget ();
-	rw->setLayout (new QVBoxLayout ());
-	rw->layout ()->setSizeConstraint (QLayout::SetMinAndMaxSize);
-	setWidget (rw);
 
 	QRect avail = QApplication::desktop ()->availableGeometry (this);
 	setMinimumHeight (avail.height () / 3 * 2);
+
+	connect (this,
+			SIGNAL (itemChanged (QTreeWidgetItem*, int)),
+			this,
+			SLOT (buttonToggled ()));
 }
 
 CategorySelector::~CategorySelector ()
 {
-	QList<QCheckBox*> boxes = findChildren<QCheckBox*> ();
-	qDeleteAll (boxes);
 }
 
 void CategorySelector::SetPossibleSelections (const QStringList& tags)
 {
-	QList<QCheckBox*> boxes = findChildren<QCheckBox*> ();
-	qDeleteAll (boxes);
+	clear ();
 
+	QList<QTreeWidgetItem*> items;
 	for (QStringList::const_iterator i = tags.begin (),
 			end = tags.end (); i != end; ++i)
 	{
 		if (i->isEmpty ())
 			continue;
 
-		QCheckBox *box = new QCheckBox (*i);
-		widget ()->layout ()->addWidget (box);
-		box->setCheckState (Qt::Unchecked);
-		box->setProperty ("Tag", *i);
-
-		connect (box,
-				SIGNAL (stateChanged (int)),
-				this,
-				SLOT (buttonToggled ()));
+		QTreeWidgetItem *item = new QTreeWidgetItem (QStringList (*i));
+		item->setCheckState (0, Qt::Unchecked);
+		item->setData (0, RoleTag, *i);
+		items << item;
 	}
+	addTopLevelItems (items);
+
+	setHeaderLabel (QString ());
 }
 
 QStringList CategorySelector::GetSelections ()
 {
 	QStringList tags;
 
-	QList<QCheckBox*> boxes = findChildren<QCheckBox*> ();
-	for (QList<QCheckBox*>::const_iterator i = boxes.begin (),
-			end = boxes.end (); i != end; ++i)
-		if ((*i)->checkState () == Qt::Checked)
-			tags += (*i)->property ("Tag").toString ();
+	for (int i = 0; i < topLevelItemCount (); ++i)
+		if (topLevelItem (i)->checkState (0) == Qt::Checked)
+			tags += topLevelItem (i)->data (0, RoleTag).toString ();
 
 	return tags;
 }
@@ -84,40 +80,29 @@ void CategorySelector::moveEvent (QMoveEvent *e)
 
 void CategorySelector::selectAll ()
 {
-	QList<QCheckBox*> boxes = findChildren<QCheckBox*> ();
-
-	for (QList<QCheckBox*>::iterator box = boxes.begin (),
-			end = boxes.end (); box != end; ++box)
-		(*box)->setCheckState (Qt::Checked);
+	for (int i = 0; i < topLevelItemCount (); ++i)
+		topLevelItem (i)->setCheckState (0, Qt::Checked);
 }
 
 void CategorySelector::selectNone ()
 {
-	QList<QCheckBox*> boxes = findChildren<QCheckBox*> ();
-
-	for (QList<QCheckBox*>::iterator box = boxes.begin (),
-			end = boxes.end (); box != end; ++box)
-		(*box)->setCheckState (Qt::Unchecked);
+	for (int i = 0; i < topLevelItemCount (); ++i)
+		topLevelItem (i)->setCheckState (0, Qt::Unchecked);
 }
 
 void CategorySelector::lineTextChanged (const QString& text)
 {
-	QList<QCheckBox*> boxes = findChildren<QCheckBox*> ();
-
+	blockSignals (true);
 	QStringList tags = text.split ("; ", QString::SkipEmptyParts);
-	for (QList<QCheckBox*>::iterator box = boxes.begin (),
-			end = boxes.end (); box != end; ++box)
+	for (int i = 0; i < topLevelItemCount (); ++i)
 	{
-		QStringList::const_iterator tag = std::find (tags.begin (),
-				tags.end (), (*box)->property ("Tag").toString ());
-
-		(*box)->blockSignals (true);
-		if (tag == tags.end ())
-			(*box)->setCheckState (Qt::Unchecked);
-		else
-			(*box)->setCheckState (Qt::Checked);
-		(*box)->blockSignals (false);
+		Qt::CheckState state =
+			tags.contains (topLevelItem (i)->data (0, RoleTag).toString ()) ?
+				Qt::Checked :
+				Qt::Unchecked;
+		topLevelItem (i)->setCheckState (0, state);
 	}
+	blockSignals (false);
 }
 
 void CategorySelector::buttonToggled ()
