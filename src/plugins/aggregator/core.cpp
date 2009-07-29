@@ -147,7 +147,7 @@ namespace LeechCraft
 				}
 				catch (...)
 				{
-					emit error (tr ("General storage initialization error."));
+					emit error (tr ("Aggregator: general storage initialization error."));
 					return false;
 				}
 
