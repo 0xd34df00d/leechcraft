@@ -377,11 +377,17 @@ namespace LeechCraft
 
 			void Core::Add (const QString& path, const QUrl& url)
 			{
-				qDebug () << "Add" << path << url;
 				QFileInfo fi (path);
 				if (fi.isDir ())
 				{
+					QUrl nu = url;
 					QDir dir (path);
+					QString path = nu.path ();
+					path += dir.dirName ();
+					if (!path.endsWith ("/"))
+						path += "/";
+					nu.setPath (path);
+
 					QDir::Filters filters = QDir::Dirs |
 						QDir::Files |
 						QDir::NoDotAndDotDot;
@@ -404,23 +410,7 @@ namespace LeechCraft
 							continue;
 						}
 
-						if (info.isDir ())
-						{
-							QUrl nu = url;
-							QString path = nu.path ();
-							QDir testDir (info.absoluteFilePath ());
-							path += testDir.dirName ();
-							if (!path.endsWith ("/"))
-								path += "/";
-							nu.setPath (path);
-							qDebug () << Q_FUNC_INFO << info.absoluteFilePath () << nu;
-							Add (info.absoluteFilePath (), nu);
-						}
-						else
-						{
-							qDebug () << Q_FUNC_INFO << info.absoluteFilePath () << url;
-							Add (info.absoluteFilePath (), url);
-						}
+						Add (info.absoluteFilePath (), nu);
 					}
 				}
 				else
