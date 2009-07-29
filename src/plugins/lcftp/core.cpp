@@ -670,6 +670,9 @@ namespace LeechCraft
 					emit taskError (td.ID_, IDownload::EUnknown);
 					emit log (QString ("LCFTP: %1").arg (msg));
 				}
+				QMessageBox::critical (0,
+						tr ("LeechCraft"),
+						msg);
 			}
 
 			void Core::handleFinished (const TaskData& data)
