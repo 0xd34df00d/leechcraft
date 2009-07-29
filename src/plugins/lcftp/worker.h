@@ -76,6 +76,7 @@ namespace LeechCraft
 				void ParseBuffer (const TaskData&);
 				void Reset ();
 				size_t WriteData (void*, size_t, size_t);
+				size_t ReadData (char*, size_t, size_t);
 				size_t ListDir (void*, size_t, size_t);
 				int Progress (double, double, double, double);
 				void UpdateHandleSettings (CURL_ptr);

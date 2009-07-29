@@ -28,6 +28,11 @@ namespace LeechCraft
 					return W_->WriteData (buf, size, nmemb);
 				}
 
+				size_t ReadData (char *buf, size_t size, size_t nmemb)
+				{
+					return W_->ReadData (buf, size, nmemb);
+				}
+
 				size_t ListDir (void *buf, size_t size, size_t nmemb)
 				{
 					return W_->ListDir (buf, size, nmemb);
@@ -45,6 +50,12 @@ namespace LeechCraft
 				{
 					Wrapper *w = static_cast<Wrapper*> (userp);
 					return w->WriteData (buf, size, nmemb);
+				}
+
+				size_t read_data (char *buf, size_t size, size_t nmemb, void *userp)
+				{
+					Wrapper *w = static_cast<Wrapper*> (userp);
+					return w->ReadData (buf, size, nmemb);
 				}
 
 				size_t list_dir (void *buf, size_t size, size_t nmemb, void *userp)
@@ -76,6 +87,10 @@ namespace LeechCraft
 			{
 				curl_easy_setopt (Handle_.get (),
 						CURLOPT_WRITEDATA, W_.get ());
+				curl_easy_setopt (Handle_.get (),
+						CURLOPT_WRITEFUNCTION, read_data);
+				curl_easy_setopt (Handle_.get (),
+						CURLOPT_READDATA, W_.get ());
 				curl_easy_setopt (Handle_.get (),
 						CURLOPT_NOPROGRESS, 0);
 				curl_easy_setopt (Handle_.get (),
@@ -172,42 +187,55 @@ namespace LeechCraft
 						CURLOPT_URL, td.URL_.toEncoded ().constData ());
 				curl_easy_setopt (handle.get (),
 						CURLOPT_DIRLISTONLY, 0);
-				if (td.URL_.toString ().endsWith ("/") ||
-						td.Filename_.isNull ())
-				{
-					if (td.Filename_.isNull () &&
-							!td.URL_.toString ().endsWith ("/"))
-						curl_easy_setopt (handle.get (),
-								CURLOPT_DIRLISTONLY, 1);
 
-					curl_easy_setopt (handle.get (),
-							CURLOPT_WRITEFUNCTION, list_dir);
-
-					File_.reset ();
-					ListBuffer_.reset (new QBuffer ());
-					curl_easy_setopt (handle.get (),
-							CURLOPT_RESUME_FROM_LARGE, 0);
-				}
-				else
+				if (td.Direction_ == TaskData::DDownload)
 				{
 					curl_easy_setopt (handle.get (),
-							CURLOPT_WRITEFUNCTION, write_data);
+							CURLOPT_UPLOAD, 0L);
 
-					ListBuffer_.reset ();
-					File_.reset (new QFile (td.Filename_));
-					if (!File_->open (QIODevice::WriteOnly | QIODevice::Append) &&
-							!File_->open (QIODevice::WriteOnly))
+					if (td.URL_.toString ().endsWith ("/") ||
+							td.Filename_.isNull ())
 					{
-						emit error (tr ("Could not open file<br />%1<br />%2")
-									.arg (td.Filename_)
-									.arg (File_->errorString ()),
-								td);
-						return;
-					}
+						if (td.Filename_.isNull () &&
+								!td.URL_.toString ().endsWith ("/"))
+							curl_easy_setopt (handle.get (),
+									CURLOPT_DIRLISTONLY, 1);
 
-					InitialSize_ = File_->size ();
+						curl_easy_setopt (handle.get (),
+								CURLOPT_WRITEFUNCTION, list_dir);
+
+						File_.reset ();
+						ListBuffer_.reset (new QBuffer ());
+						curl_easy_setopt (handle.get (),
+								CURLOPT_RESUME_FROM_LARGE, 0);
+					}
+					else
+					{
+						curl_easy_setopt (handle.get (),
+								CURLOPT_WRITEFUNCTION, write_data);
+
+						ListBuffer_.reset ();
+						File_.reset (new QFile (td.Filename_));
+						if (!File_->open (QIODevice::WriteOnly | QIODevice::Append) &&
+								!File_->open (QIODevice::WriteOnly))
+							throw (tr ("Could not open file<br />%1<br />%2")
+										.arg (td.Filename_)
+										.arg (File_->errorString ()));
+
+						InitialSize_ = File_->size ();
+						curl_easy_setopt (handle.get (),
+								CURLOPT_RESUME_FROM_LARGE, File_->size ());
+					}
+				}
+				else if (td.Direction_ == TaskData::DUpload)
+				{
 					curl_easy_setopt (handle.get (),
-							CURLOPT_RESUME_FROM_LARGE, File_->size ());
+							CURLOPT_UPLOAD, 0L);
+					File_.reset (new QFile (td.Filename_));
+					if (!File_->open (QIODevice::ReadOnly))
+						throw (tr ("Could not open file<br />%1<br />%2")
+								.arg (td.Filename_)
+								.arg (File_->errorString ()));
 				}
 			}
 

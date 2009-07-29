@@ -539,7 +539,17 @@ namespace LeechCraft
 					Q_FOREACH (Worker_ptr w, Workers_)
 						if (!w->IsWorking ())
 						{
-							CURL_ptr ptr = w->Start (td);
+							CURL_ptr ptr;
+							try
+							{
+								ptr = w->Start (td);
+							}
+							catch (const QString& msg)
+							{
+								handleError (msg, td);
+								continue;
+							}
+
 							{
 								QMutexLocker l (&MultiHandleMutex_);
 								curl_multi_add_handle (MultiHandle_.get (),
