@@ -18,7 +18,8 @@ namespace LeechCraft
 			
 			void SelectableBrowser::Construct (IWebBrowser *browser)
 			{
-				if (browser)
+				if (browser &&
+						browser->GetWidget ())
 				{
 					Internal_ = false;
 					InternalBrowser_.reset ();
