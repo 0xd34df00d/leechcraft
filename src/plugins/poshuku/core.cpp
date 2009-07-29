@@ -5,6 +5,7 @@
 #include <QString>
 #include <QUrl>
 #include <QWidget>
+#include <QTextCodec>
 #include <QIcon>
 #include <QFile>
 #include <QFileInfo>
@@ -47,6 +48,7 @@ namespace LeechCraft
 			: NetworkAccessManager_ (0)
 			, IsShuttingDown_ (false)
 			, ShortcutProxy_ (0)
+			, Initialized_ (false)
 			{
 				PluginManager_.reset (new PluginManager (this));
 				URLCompletionModel_.reset (new URLCompletionModel (this));
@@ -62,7 +64,7 @@ namespace LeechCraft
 				return core;
 			}
 			
-			void Core::Init ()
+			bool Core::Init ()
 			{
 				QDir dir = QDir::home ();
 				if (!dir.cd (".leechcraft/poshuku") &&
@@ -70,7 +72,7 @@ namespace LeechCraft
 				{
 					qCritical () << Q_FUNC_INFO
 						<< "could not create neccessary directories for Poshuku";
-					return;
+					return false;
 				}
 			
 				StorageBackend::Type type;
@@ -84,7 +86,21 @@ namespace LeechCraft
 					throw std::runtime_error (qPrintable (QString ("Unknown storage type %1")
 								.arg (strType)));
 			
-				StorageBackend_ = StorageBackend::Create (type);
+				try
+				{
+					StorageBackend_ = StorageBackend::Create (type);
+				}
+				catch (const std::runtime_error& s)
+				{
+					emit error (QTextCodec::codecForName ("UTF-8")->
+							toUnicode (s.what ()));
+					return false;
+				}
+				catch (...)
+				{
+					emit error (tr ("Poshuku: general storage initialization error."));
+					return false;
+				}
 				StorageBackend_->Prepare ();
 			
 				HistoryModel_.reset (new HistoryModel (this));
@@ -113,6 +129,8 @@ namespace LeechCraft
 						SLOT (handleItemRemoved (const FavoritesModel::FavoritesItem&)));
 			
 				QTimer::singleShot (200, this, SLOT (postConstruct ()));
+				Initialized_ = true;
+				return true;
 			}
 			
 			void Core::Release ()
@@ -152,6 +170,8 @@ namespace LeechCraft
 			
 			void Core::AddPlugin (QObject *plugin)
 			{
+				if (!Initialized_)
+					return;
 				PluginManager_->AddPlugin (plugin);
 			}
 			
@@ -194,6 +214,9 @@ namespace LeechCraft
 			
 			BrowserWidget* Core::NewURL (const QUrl& url, bool raise)
 			{
+				if (!Initialized_)
+					return 0;
+
 				BrowserWidget *widget = new BrowserWidget ();
 				widget->InitShortcuts ();
 				widget->SetUnclosers (Unclosers_);
@@ -219,6 +242,9 @@ namespace LeechCraft
 			
 			IWebWidget* Core::GetWidget ()
 			{
+				if (!Initialized_)
+					return 0;
+
 				BrowserWidget *widget = new BrowserWidget ();
 				widget->Deown ();
 				widget->InitShortcuts ();
@@ -239,6 +265,9 @@ namespace LeechCraft
 			
 			CustomWebView* Core::MakeWebView (bool invert)
 			{
+				if (!Initialized_)
+					return 0;
+
 				bool raise = true;
 				if (XmlSettingsManager::Instance ()->property ("BackgroundNewTabs").toBool ())
 					raise = false;
@@ -608,7 +637,7 @@ namespace LeechCraft
 			
 			void Core::saveSession ()
 			{
-				if (IsShuttingDown_)
+				if (IsShuttingDown_ || !Initialized_)
 					return;
 			
 				int pos = 0;

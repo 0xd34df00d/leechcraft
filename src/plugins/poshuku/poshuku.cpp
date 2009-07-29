@@ -122,7 +122,18 @@ namespace LeechCraft
 						this,
 						SLOT (handleError (const QString&)));
 			
-				Core::Instance ().Init ();
+				if (!Core::Instance ().Init ())
+				{
+					QMessageBox::critical (this,
+							tr ("LeechCraft"),
+							tr ("Poshuku failed to initialize properly. "
+								"Check logs and talk with the developers. "
+								"Or, at least, check the storage backend "
+								"settings and restart LeechCraft."));
+					setEnabled (false);
+					Ui_.MainView_->GetToolBar ()->setEnabled (false);
+					return;
+				}
 			
 				SetupFavoritesFilter ();
 				SetupHistoryFilter ();

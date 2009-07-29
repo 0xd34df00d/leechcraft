@@ -60,6 +60,8 @@ namespace LeechCraft
 
 				ICoreProxy_ptr Proxy_;
 
+				bool Initialized_;
+
 				Core ();
 			public:
 				enum FormRememberType
@@ -76,7 +78,7 @@ namespace LeechCraft
 				};
 
 				static Core& Instance ();
-				void Init ();
+				bool Init ();
 				void Release ();
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;
