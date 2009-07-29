@@ -27,9 +27,13 @@
 				<label lang="en" value="Always use external browser" />
 				<label lang="ru" value="Всегда использовать внешний браузер" />
 			</item>
+			<item type="checkbox" property="ShowCategorySelector" state="on">
+				<label lang="en" value="Show items category selector" />
+				<label lang="ru" value="Показывать список категорий новостей" />
+			</item>
 			<item type="lineedit" property="CommentsTags" default="comments">
-				<label lang="en" value="Additional tags for subscribed comments" />
-				<label lang="ru" value="Дополнительные теги для подписанных комментариев" />
+				<label lang="en" value="Additional tags for subscribed comments:" />
+				<label lang="ru" value="Дополнительные теги для подписанных комментариев:" />
 			</item>
 		</tab>
 		<tab>

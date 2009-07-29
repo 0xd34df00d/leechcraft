@@ -100,7 +100,6 @@ namespace LeechCraft
 			
 				Impl_->ItemCategorySelector_.reset (new CategorySelector ());
 				Impl_->ItemCategorySelector_->setWindowFlags (Qt::Widget);
-				Impl_->ItemCategorySelector_->setFixedWidth (200);
 				Impl_->Ui_.CategoriesLayout_->addWidget (Impl_->ItemCategorySelector_.get ());
 				Impl_->ItemCategorySelector_->hide ();
 				Impl_->ItemCategorySelector_->setMinimumHeight (0);
@@ -118,6 +117,9 @@ namespace LeechCraft
 						Qt::QueuedConnection);
 			
 				currentItemChanged (QItemSelection ());
+
+				XmlSettingsManager::Instance ()->RegisterObject ("ShowCategorySelector",
+						this, "selectorVisiblityChanged");
 			}
 			
 			ItemsWidget::~ItemsWidget ()
@@ -306,11 +308,14 @@ namespace LeechCraft
 					Impl_->ItemCategorySelector_->selectAll ();
 					static_cast<QBoxLayout*> (Impl_->ItemCategorySelector_->widget ()->layout ())->
 						addStretch (0);
+					if (XmlSettingsManager::Instance ()->
+							property ("ShowCategorySelector").toBool ())
 					Impl_->ItemCategorySelector_->show ();
 					Impl_->ItemCategorySelector_->widget ()->show ();
 				}
 				else
 				{
+					Impl_->ItemCategorySelector_->SetPossibleSelections (QStringList ());
 					Impl_->ItemCategorySelector_->widget ()->hide ();
 					Impl_->ItemCategorySelector_->hide ();
 				}
@@ -414,6 +419,18 @@ namespace LeechCraft
 					Impl_->ItemsFilterModel_->setFilterFixedString (text);
 					break;
 				}
+			}
+
+			void ItemsWidget::selectorVisiblityChanged ()
+			{
+				if (!XmlSettingsManager::Instance ()->
+						property ("ShowCategorySelector").toBool ())
+				{
+					Impl_->ItemCategorySelector_->selectAll ();
+					Impl_->ItemCategorySelector_->hide ();
+				}
+				else if (Impl_->ItemCategorySelector_->GetSelections ().size ())
+					Impl_->ItemCategorySelector_->show ();
 			}
 		};
 	};

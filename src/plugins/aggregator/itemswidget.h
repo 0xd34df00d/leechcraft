@@ -40,6 +40,7 @@ namespace LeechCraft
 				void currentItemChanged (const QItemSelection&);
 				void makeCurrentItemVisible ();
 				void updateItemsFilter ();
+				void selectorVisiblityChanged ();
 			};
 		};
 	};
