@@ -77,9 +77,9 @@ namespace LeechCraft
 				QMap<QString, ExternalData> PendingJob2ExternalData_;
 				QList<QObject*> Downloaders_;
 
+				bool SaveScheduled_;
 				ChannelsModel *ChannelsModel_;
 				QTimer *UpdateTimer_, *CustomUpdateTimer_;
-				bool SaveScheduled_;
 				boost::shared_ptr<StorageBackend> StorageBackend_;
 				ItemModel *ItemModel_;
 				JobHolderRepresentation *JobHolderRepresentation_;
@@ -90,6 +90,7 @@ namespace LeechCraft
 				LeechCraft::Util::MergeModel *ItemLists_;
 				bool MergeMode_;
 				ICoreProxy_ptr Proxy_;
+				bool Initialized_;
 
 				Core ();
 			public:
@@ -109,7 +110,7 @@ namespace LeechCraft
 
 				bool CouldHandle (const LeechCraft::DownloadEntity&);
 				void SetWidgets (QToolBar*, QWidget*);
-				void DoDelayedInit ();
+				bool DoDelayedInit ();
 				void SetProvider (QObject*, const QString&);
 				void AddFeed (const QString&, const QStringList&);
 				void RemoveFeed (const QModelIndex&);

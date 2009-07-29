@@ -149,11 +149,38 @@ namespace LeechCraft
 				Impl_->XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
 						new LeechCraft::Util::BackendSelector (XmlSettingsManager::Instance ()));
 			
-				Core::Instance ().DoDelayedInit ();
-				Core::Instance ().GetJobHolderRepresentation ()->setParent (this);
-			
 				Impl_->AdditionalInfo_ = new ItemsWidget ();
 				Impl_->Ui_.setupUi (this);
+
+				if (!Core::Instance ().DoDelayedInit ())
+				{
+					QMessageBox::critical (this,
+							tr ("LeechCraft"),
+							tr ("Aggregator failed to initialize properly. "
+								"Check logs and talk with the developers. "
+								"Or, at least, check the storage backend "
+								"settings and restart LeechCraft."));
+					setEnabled (false);
+					Impl_->AdditionalInfo_->setEnabled (false);
+					Impl_->ControlToolBar_->setEnabled (false);
+					Impl_->ActionAddFeed_->setEnabled (false);
+					Impl_->ActionUpdateFeeds_->setEnabled (false);
+					Impl_->ActionRemoveFeed_->setEnabled (false);
+					Impl_->ActionMarkChannelAsRead_->setEnabled (false);
+					Impl_->ActionMarkChannelAsUnread_->setEnabled (false);
+					Impl_->ActionChannelSettings_->setEnabled (false);
+					Impl_->ActionUpdateSelectedFeed_->setEnabled (false);
+					Impl_->ActionItemBucket_->setEnabled (false);
+					Impl_->ActionRegexpMatcher_->setEnabled (false);
+					Impl_->ActionHideReadItems_->setEnabled (false);
+					Impl_->ActionImportOPML_->setEnabled (false);
+					Impl_->ActionExportOPML_->setEnabled (false);
+					Impl_->ActionImportBinary_->setEnabled (false);
+					Impl_->ActionExportBinary_->setEnabled (false);
+					return;
+				}
+
+				Core::Instance ().GetJobHolderRepresentation ()->setParent (this);
 			
 				Impl_->Ui_.MergeItems_->setChecked (XmlSettingsManager::Instance ()->
 						Property ("MergeItems", false).toBool ());
@@ -230,8 +257,10 @@ namespace LeechCraft
 			void Aggregator::Release ()
 			{
 				disconnect (&Core::Instance (), 0, this, 0);
-				disconnect (Core::Instance ().GetChannelsModel (), 0, this, 0);
-				disconnect (Impl_->TagsLineCompleter_.get (), 0, this, 0);
+				if (Core::Instance ().GetChannelsModel ())
+					disconnect (Core::Instance ().GetChannelsModel (), 0, this, 0);
+				if (Impl_->TagsLineCompleter_.get ())
+					disconnect (Impl_->TagsLineCompleter_.get (), 0, this, 0);
 				Impl_->TrayIcon_->hide ();
 				delete Impl_;
 				Core::Instance ().Release ();

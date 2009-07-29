@@ -3,11 +3,11 @@
 #include <boost/bind.hpp>
 #include <QtDebug>
 #include <QImage>
-#include <QSettings>
 #include <QDir>
 #include <QDesktopServices>
 #include <QUrl>
 #include <QTimer>
+#include <QTextCodec>
 #include <QNetworkReply>
 #include <interfaces/iwebbrowser.h>
 #include <plugininterface/mergemodel.h>
@@ -40,8 +40,14 @@ namespace LeechCraft
 		{
 			Core::Core ()
 			: SaveScheduled_ (false)
+			, ChannelsModel_ (0)
+			, ItemModel_ (0)
+			, JobHolderRepresentation_ (0)
+			, ChannelsFilterModel_ (0)
 			, CurrentItemsModel_ (new ItemsListModel)
+			, ItemLists_ (0)
 			, MergeMode_ (false)
+			, Initialized_ (false)
 			{
 				qRegisterMetaType<QItemSelection> ("QItemSelection");
 				QStringList placeholders;
@@ -58,8 +64,8 @@ namespace LeechCraft
 			
 			void Core::Release ()
 			{
-				ItemModel_->saveSettings ();
-				saveSettings ();
+				if (ItemModel_)
+					ItemModel_->saveSettings ();
 				XmlSettingsManager::Instance ()->Release ();
 				StorageBackend_.reset ();
 				delete JobHolderRepresentation_;
@@ -82,7 +88,8 @@ namespace LeechCraft
 			
 			bool Core::CouldHandle (const LeechCraft::DownloadEntity& e)
 			{
-				if (!e.Entity_.canConvert<QUrl> ())
+				if (!e.Entity_.canConvert<QUrl> () ||
+						!Initialized_)
 					return false;
 
 				QUrl url = e.Entity_.toUrl ();
@@ -103,20 +110,8 @@ namespace LeechCraft
 				ChannelsModel_->SetWidgets (bar, tab);
 			}
 			
-			void Core::DoDelayedInit ()
+			bool Core::DoDelayedInit ()
 			{
-				QStringList headers;
-				headers << tr ("Name")
-					<< tr ("Date");
-				ItemLists_->SetHeaders (headers);
-
-				ChannelsModel_ = new ChannelsModel ();
-				ChannelsFilterModel_ = new ChannelsFilterModel ();
-				ChannelsFilterModel_->setSourceModel (ChannelsModel_);
-				ChannelsFilterModel_->setFilterKeyColumn (0);
-			
-				ItemModel_ = new ItemModel ();
-				JobHolderRepresentation_ = new JobHolderRepresentation ();
 				qRegisterMetaTypeStreamOperators<Feed> ("Feed");
 				qRegisterMetaTypeStreamOperators<Item> ("Item");
 			
@@ -126,7 +121,7 @@ namespace LeechCraft
 				{
 					qCritical () << Q_FUNC_INFO << "could not create neccessary "
 						"directories for Aggregator";
-					return;
+					return false;
 				}
 			
 				StorageBackend::Type type;
@@ -140,7 +135,34 @@ namespace LeechCraft
 					throw std::runtime_error (qPrintable (QString ("Unknown storage type %1")
 								.arg (strType)));
 			
-				StorageBackend_ = StorageBackend::Create (type);
+				try
+				{
+					StorageBackend_ = StorageBackend::Create (type);
+				}
+				catch (const std::runtime_error& s)
+				{
+					emit error (QTextCodec::codecForName ("UTF-8")->
+							toUnicode (s.what ()));
+					return false;
+				}
+				catch (...)
+				{
+					emit error (tr ("General storage initialization error."));
+					return false;
+				}
+
+				QStringList headers;
+				headers << tr ("Name")
+					<< tr ("Date");
+				ItemLists_->SetHeaders (headers);
+
+				ChannelsModel_ = new ChannelsModel ();
+				ChannelsFilterModel_ = new ChannelsFilterModel ();
+				ChannelsFilterModel_->setSourceModel (ChannelsModel_);
+				ChannelsFilterModel_->setFilterKeyColumn (0);
+			
+				ItemModel_ = new ItemModel ();
+				JobHolderRepresentation_ = new JobHolderRepresentation ();
 			
 				const int feedsTable = 1;
 				const int channelsTable = 1;
@@ -243,6 +265,8 @@ namespace LeechCraft
 				XmlSettingsManager::Instance ()->RegisterObject ("UpdateInterval", this, "updateIntervalChanged");
 				XmlSettingsManager::Instance ()->RegisterObject ("ShowIconInTray", this, "showIconInTrayChanged");
 				UpdateUnreadItemsNumber ();
+				Initialized_ = true;
+				return true;
 			}
 			
 			void Core::SetProvider (QObject *provider, const QString& feature)
