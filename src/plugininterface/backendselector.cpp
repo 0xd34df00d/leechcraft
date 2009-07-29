@@ -1,4 +1,5 @@
 #include "backendselector.h"
+#include <QSqlDatabase>
 #include "ui_backendselector.h"
 
 using namespace LeechCraft::Util;
@@ -12,6 +13,13 @@ BackendSelector::BackendSelector (BaseSettingsManager *m,
 	Ui_->setupUi (this);
 
 	FillUI ();
+
+	// We should check from last to first
+	if (!QSqlDatabase::isDriverAvailable ("QPSQL"))
+	{
+		Ui_->PostgreSQLSettings_->setEnabled (false);
+		Ui_->StorageType_->removeItem (1);
+	}
 }
 
 void BackendSelector::FillUI ()
