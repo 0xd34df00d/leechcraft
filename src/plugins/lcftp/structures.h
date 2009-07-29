@@ -13,6 +13,13 @@ namespace LeechCraft
 		{
 			struct TaskData
 			{
+				enum Direction
+				{
+					DDownload,
+					DUpload
+				};
+				Direction Direction_;
+
 				int ID_;
 				QUrl URL_;
 				/** If the filename is empty, than only the listing is

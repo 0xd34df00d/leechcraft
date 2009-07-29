@@ -71,6 +71,7 @@ namespace LeechCraft
 				void handleFetchedEntry (const FetchedEntry&);
 			signals:
 				void downloadRequested (const QUrl&);
+				void uploadRequested (const QString&);
 			};
 		};
 	};

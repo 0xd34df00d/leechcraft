@@ -152,16 +152,23 @@ namespace LeechCraft
 								return Tasks_ [r - working].URL_.toString ();
 						case 1:
 							return r < working ?
-								tr ("Downloading at %1")
-									.arg (Util::Proxy::Instance ()->
-											MakePrettySize (States_.at (r).DLSpeed_)) :
+								(States_.at (r).Direction_ == TaskData::DDownload ?
+									tr ("Downloading at %1")
+										.arg (Util::Proxy::Instance ()->
+												MakePrettySize (States_.at (r).DLSpeed_)) :
+									tr ("Uploading at %1")
+										.arg (Util::Proxy::Instance ()->
+												MakePrettySize (States_.at (r).ULSpeed_))) :
 								tr ("Waiting");
 						case 2:
 							if (r >= working)
 								return QVariant ();
 							else
 							{
-								QPair<quint64, quint64> s = States_.at (r).DL_;
+								QPair<quint64, quint64> s =
+									(States_.at (r).Direction_ == TaskData::DDownload ?
+										States_.at (r).DL_ :
+										States_.at (r).UL_);
 								if (s.second)
 									return tr ("%1 of %2 (%3%)")
 										.arg (Util::Proxy::Instance ()->
@@ -170,11 +177,9 @@ namespace LeechCraft
 												MakePrettySize (s.second))
 										.arg (s.first * 100 / s.second);
 								else
-									return tr ("%1 of %2")
+									return tr ("%1")
 										.arg (Util::Proxy::Instance ()->
-												MakePrettySize (s.first))
-										.arg (Util::Proxy::Instance ()->
-												MakePrettySize (s.second));
+												MakePrettySize (s.first));
 							}
 						default:
 							return QVariant ();
@@ -359,15 +364,70 @@ namespace LeechCraft
 
 			void Core::Add (const QString& path, const QUrl& url)
 			{
-				TaskData td =
+				qDebug () << "Add" << path << url;
+				QFileInfo fi (path);
+				if (fi.isDir ())
 				{
-					TaskData::DUpload,
-					-1,
-					url,
-					path,
-					false
-				};
-				QueueTask (td);
+					QDir dir (path);
+					QDir::Filters filters = QDir::Dirs |
+						QDir::Files |
+						QDir::NoDotAndDotDot;
+
+					if (XmlSettingsManager::Instance ()
+							.property ("TransferHiddenFiles").toBool ())
+						filters |= QDir::Hidden;
+					if (!XmlSettingsManager::Instance ()
+							.property ("FollowSymLinks").toBool ())
+						filters |= QDir::NoSymLinks;
+
+					QFileInfoList infos = dir.entryInfoList (filters);
+					Q_FOREACH (QFileInfo info, infos)
+					{
+						if (!info.isReadable ())
+						{
+							qDebug () << Q_FUNC_INFO
+								<< "skipping unreadable"
+								<< info.absoluteFilePath ();
+							continue;
+						}
+
+						if (info.isDir ())
+						{
+							QUrl nu = url;
+							QString path = nu.path ();
+							QDir testDir (info.absoluteFilePath ());
+							path += testDir.dirName ();
+							if (!path.endsWith ("/"))
+								path += "/";
+							nu.setPath (path);
+							qDebug () << Q_FUNC_INFO << info.absoluteFilePath () << nu;
+							Add (info.absoluteFilePath (), nu);
+						}
+						else
+						{
+							qDebug () << Q_FUNC_INFO << info.absoluteFilePath () << url;
+							Add (info.absoluteFilePath (), url);
+						}
+					}
+				}
+				else
+				{
+					QUrl nu = url;
+					QString upath = nu.path ();
+					if (!upath.endsWith ("/"))
+						upath += "/";
+					upath += fi.fileName ();
+					nu.setPath (upath);
+					TaskData td =
+					{
+						TaskData::DUpload,
+						-1,
+						nu,
+						path,
+						false
+					};
+					QueueTask (td);
+				}
 			}
 
 			void Core::Handle (DownloadEntity e)

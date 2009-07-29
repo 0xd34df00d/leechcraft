@@ -116,11 +116,14 @@ namespace LeechCraft
 				QModelIndex index = StaticSource_->mapToSource (si);
 				if (IsLocal ())
 				{
+					QString path = DirModel_->filePath (index);
 					if (DirModel_->isDir (index))
-						Navigate (DirModel_->filePath (index));
+						Navigate (path);
 					else
 					{
-						// TODO upload the file
+						if (XmlSettingsManager::Instance ()
+								.property ("ActivatedTransfers").toBool ())
+							emit uploadRequested (path);
 					}
 				}
 				else

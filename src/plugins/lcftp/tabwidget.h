@@ -27,6 +27,7 @@ namespace LeechCraft
 				Pane* Other (Pane*);
 			private slots:
 				void handleDownloadRequested (const QUrl&);
+				void handleUploadRequested (const QString&);
 			};
 
 			typedef TabWidget *TabWidget_ptr;

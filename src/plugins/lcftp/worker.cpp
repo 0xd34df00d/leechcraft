@@ -88,15 +88,17 @@ namespace LeechCraft
 				curl_easy_setopt (Handle_.get (),
 						CURLOPT_WRITEDATA, W_.get ());
 				curl_easy_setopt (Handle_.get (),
-						CURLOPT_WRITEFUNCTION, read_data);
+						CURLOPT_READFUNCTION, read_data);
 				curl_easy_setopt (Handle_.get (),
 						CURLOPT_READDATA, W_.get ());
 				curl_easy_setopt (Handle_.get (),
-						CURLOPT_NOPROGRESS, 0);
+						CURLOPT_NOPROGRESS, 0L);
 				curl_easy_setopt (Handle_.get (),
 						CURLOPT_PROGRESSFUNCTION, progress_function);
 				curl_easy_setopt (Handle_.get (),
 						CURLOPT_PROGRESSDATA, W_.get ());
+				curl_easy_setopt (Handle_.get (),
+						CURLOPT_FTP_CREATE_MISSING_DIRS, 1L);
 
 				Reset ();
 			}
@@ -132,7 +134,8 @@ namespace LeechCraft
 					qMakePair<quint64, quint64> (DLNow_ + is, DLTotal_ + is),
 					qMakePair<quint64, quint64> (ULNow_ + is, ULTotal_ + is),
 					dl,
-					ul
+					ul,
+					Task_.Direction_
 				};
 				return result;
 			}
@@ -186,7 +189,7 @@ namespace LeechCraft
 				curl_easy_setopt (handle.get (),
 						CURLOPT_URL, td.URL_.toEncoded ().constData ());
 				curl_easy_setopt (handle.get (),
-						CURLOPT_DIRLISTONLY, 0);
+						CURLOPT_DIRLISTONLY, 0L);
 
 				if (td.Direction_ == TaskData::DDownload)
 				{
@@ -199,7 +202,7 @@ namespace LeechCraft
 						if (td.Filename_.isNull () &&
 								!td.URL_.toString ().endsWith ("/"))
 							curl_easy_setopt (handle.get (),
-									CURLOPT_DIRLISTONLY, 1);
+									CURLOPT_DIRLISTONLY, 1L);
 
 						curl_easy_setopt (handle.get (),
 								CURLOPT_WRITEFUNCTION, list_dir);
@@ -207,7 +210,7 @@ namespace LeechCraft
 						File_.reset ();
 						ListBuffer_.reset (new QBuffer ());
 						curl_easy_setopt (handle.get (),
-								CURLOPT_RESUME_FROM_LARGE, 0);
+								CURLOPT_RESUME_FROM_LARGE, 0L);
 					}
 					else
 					{
@@ -230,12 +233,18 @@ namespace LeechCraft
 				else if (td.Direction_ == TaskData::DUpload)
 				{
 					curl_easy_setopt (handle.get (),
-							CURLOPT_UPLOAD, 0L);
+							CURLOPT_UPLOAD, 1L);
+
+					ListBuffer_.reset ();
 					File_.reset (new QFile (td.Filename_));
 					if (!File_->open (QIODevice::ReadOnly))
 						throw (tr ("Could not open file<br />%1<br />%2")
 								.arg (td.Filename_)
 								.arg (File_->errorString ()));
+
+					qint64 filesize = File_->size ();
+					curl_easy_setopt (handle.get (),
+							CURLOPT_INFILESIZE_LARGE, filesize);
 				}
 			}
 
@@ -308,6 +317,11 @@ namespace LeechCraft
 				size_t written = File_->write (start, size * nmemb);
 				return written;
 			}
+
+			size_t Worker::ReadData (char *buffer, size_t size, size_t nmemb)
+			{
+				return File_->read (buffer, size * nmemb);
+			}
 			
 			size_t Worker::ListDir (void *buffer, size_t size, size_t nmemb)
 			{
@@ -342,9 +356,9 @@ namespace LeechCraft
 				else
 				{
 					curl_easy_setopt (handle.get (),
-							CURLOPT_LOCALPORT, 0);
+							CURLOPT_LOCALPORT, 0L);
 					curl_easy_setopt (handle.get (),
-							CURLOPT_LOCALPORTRANGE, 0);
+							CURLOPT_LOCALPORTRANGE, 0L);
 				}
 
 				/** Proxy stuff
@@ -395,7 +409,7 @@ namespace LeechCraft
 
 					curl_easy_setopt (handle.get (),
 							CURLOPT_HTTPPROXYTUNNEL, XmlSettingsManager::Instance ()
-								.property ("ProxyTunnel").toBool () ? 1 : 0);
+								.property ("ProxyTunnel").toBool () ? 1L : 0L);
 				}
 				else
 					curl_easy_setopt (handle.get (),
@@ -405,19 +419,19 @@ namespace LeechCraft
 				 */
 				curl_easy_setopt (handle.get (),
 						CURLOPT_FTP_USE_EPRT, XmlSettingsManager::Instance ()
-							.property ("UseEPRT").toBool () ? 1 : 0);
+							.property ("UseEPRT").toBool () ? 1L : 0L);
 
 				/** EPSV
 				 */
 				curl_easy_setopt (handle.get (),
 						CURLOPT_FTP_USE_EPRT, XmlSettingsManager::Instance ()
-							.property ("UseEPSV").toBool () ? 1 : 0);
+							.property ("UseEPSV").toBool () ? 1L : 0L);
 
 				/** Ignore PASV IP
 				 */
 				curl_easy_setopt (handle.get (),
 						CURLOPT_FTP_SKIP_PASV_IP, XmlSettingsManager::Instance ()
-							.property ("SkipPasvIP").toBool () ? 1 : 0);
+							.property ("SkipPasvIP").toBool () ? 1L : 0L);
 			}
 		};
 	};

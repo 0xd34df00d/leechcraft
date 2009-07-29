@@ -11,6 +11,14 @@
 				<label lang="en" value="Transfer is also triggered by activating an item" />
 				<label lang="ru" value="Начинать передачи в результате активации файла" />
 			</item>
+			<item type="checkbox" property="TransferHiddenFiles" default="on">
+				<label lang="en" value="Transfer hidden files" />
+				<label lang="ru" value="Передавать скрытые файлы" />
+			</item>
+			<item type="checkbox" property="FollowSymLinks" default="off">
+				<label lang="en" value="Follow symlinks" />
+				<label lang="ru" value="Следовать за символическими ссылками" />
+			</item>
 		</groupbox>
 		<groupbox>
 			<label lang="en" value="Identification" />

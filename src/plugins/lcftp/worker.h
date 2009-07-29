@@ -48,6 +48,7 @@ namespace LeechCraft
 					QPair<quint64, quint64> UL_;
 					quint64 DLSpeed_;
 					quint64 ULSpeed_;
+					TaskData::Direction Direction_;
 				};
 
 				Worker (int, QObject* = 0);
