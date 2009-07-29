@@ -22,6 +22,10 @@ namespace LeechCraft
 				Ui_.Left_->Navigate (str);
 			}
 
+			TabWidget::~TabWidget ()
+			{
+			}
+
 			void TabWidget::Remove ()
 			{
 				Core::Instance ().GetTabManager ()->Remove (this);

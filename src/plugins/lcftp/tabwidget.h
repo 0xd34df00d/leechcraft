@@ -19,6 +19,7 @@ namespace LeechCraft
 				Ui::TabWidget Ui_;
 			public:
 				TabWidget (const QUrl& url, const QString& str, QWidget* = 0);
+				virtual ~TabWidget ();
 
 				void Remove ();
 				QToolBar* GetToolBar () const;

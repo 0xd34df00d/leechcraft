@@ -32,6 +32,15 @@ namespace LeechCraft
 						SIGNAL (fetchedEntry (const FetchedEntry&)),
 						this,
 						SLOT (handleFetchedEntry (const FetchedEntry&)));
+
+				Transfer_ = new QAction (tr ("Transfer"),
+						this);
+				Transfer_->setProperty ("ActionIcon", "lcftp_transfer");
+				connect (Transfer_,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleTransfer ()));
+				Ui_.Tree_->addAction (Transfer_);
 			}
 
 			Pane::~Pane ()
@@ -111,36 +120,6 @@ namespace LeechCraft
 					Navigate (text);
 			}
 
-			void Pane::on_Tree__activated (const QModelIndex& si)
-			{
-				QModelIndex index = StaticSource_->mapToSource (si);
-				if (IsLocal ())
-				{
-					QString path = DirModel_->filePath (index);
-					if (DirModel_->isDir (index))
-						Navigate (path);
-					else
-					{
-						if (XmlSettingsManager::Instance ()
-								.property ("ActivatedTransfers").toBool ())
-							emit uploadRequested (path);
-					}
-				}
-				else
-				{
-					int row = index.row ();
-					QUrl url = RemoteModel_->item (row, CName)->data (RDUrl).toUrl ();
-					if (RemoteModel_->item (row, CType)->data (RDIsDir).toBool ())
-						SetURL (url);
-					else
-					{
-						if (XmlSettingsManager::Instance ()
-								.property ("ActivatedTransfers").toBool ())
-							emit downloadRequested (url);
-					}
-				}
-			}
-
 			void Pane::on_Up__released ()
 			{
 				QString text = Ui_.Address_->text ();
@@ -175,6 +154,47 @@ namespace LeechCraft
 					url.setPath ("/");
 					SetURL (url);
 				}
+			}
+
+			void Pane::on_Tree__activated (const QModelIndex& si)
+			{
+				QModelIndex index = StaticSource_->mapToSource (si);
+				if (IsLocal ())
+				{
+					QString path = DirModel_->filePath (index);
+					if (DirModel_->isDir (index))
+						Navigate (path);
+					else
+					{
+						if (XmlSettingsManager::Instance ()
+								.property ("ActivatedTransfers").toBool ())
+							emit uploadRequested (path);
+					}
+				}
+				else
+				{
+					int row = index.row ();
+					QUrl url = RemoteModel_->item (row, CName)->data (RDUrl).toUrl ();
+					if (RemoteModel_->item (row, CType)->data (RDIsDir).toBool ())
+						SetURL (url);
+					else
+					{
+						if (XmlSettingsManager::Instance ()
+								.property ("ActivatedTransfers").toBool ())
+							emit downloadRequested (url);
+					}
+				}
+			}
+
+			void Pane::handleTransfer ()
+			{
+				QModelIndex index = StaticSource_->
+					mapToSource (Ui_.Tree_->currentIndex ());
+				if (IsLocal ())
+					emit uploadRequested (DirModel_->filePath (index));
+				else
+					emit downloadRequested (RemoteModel_->
+							item (index.row (), CName)->data (RDUrl).toUrl ());
 			}
 
 			void Pane::handleFetchedEntry (const FetchedEntry& e)

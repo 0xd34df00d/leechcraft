@@ -37,16 +37,13 @@
    </item>
    <item>
     <widget class="QTreeView" name="Tree_">
+     <property name="contextMenuPolicy">
+      <enum>Qt::ActionsContextMenu</enum>
+     </property>
      <attribute name="headerHighlightSections">
       <bool>true</bool>
      </attribute>
      <attribute name="headerShowSortIndicator" stdset="0">
-      <bool>true</bool>
-     </attribute>
-     <attribute name="headerShowSortIndicator" stdset="0">
-      <bool>true</bool>
-     </attribute>
-     <attribute name="headerHighlightSections">
       <bool>true</bool>
      </attribute>
     </widget>

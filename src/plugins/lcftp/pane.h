@@ -42,6 +42,11 @@ namespace LeechCraft
 					CType,
 					CDateTime
 				};
+
+				// TODO implement these two.
+				QAction *NewDir_;
+				QAction *RmDir_;
+				QAction *Transfer_;
 			public:
 				/** Initializes, constructs the interface, sets up the
 				 * pane as the remote one.
@@ -65,9 +70,10 @@ namespace LeechCraft
 				QString GetString () const;
 			private slots:
 				void on_Address__returnPressed ();
-				void on_Tree__activated (const QModelIndex&);
 				void on_Up__released ();
 				void on_Root__released ();
+				void on_Tree__activated (const QModelIndex&);
+				void handleTransfer ();
 				void handleFetchedEntry (const FetchedEntry&);
 			signals:
 				void downloadRequested (const QUrl&);
