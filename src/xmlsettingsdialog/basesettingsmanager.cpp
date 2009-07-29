@@ -33,7 +33,7 @@ void BaseSettingsManager::Release ()
 void BaseSettingsManager::RegisterObject (const QByteArray& propName,
 		QObject* object, const QByteArray& funcName)
 {
-	Properties2Object_.insert (propName, qMakePair (object, funcName));
+	Properties2Object_.insertMulti (propName, qMakePair (object, funcName));
 }
 
 void BaseSettingsManager::RegisterObject (const QList<QByteArray>& propNames,
@@ -68,13 +68,15 @@ bool BaseSettingsManager::event (QEvent *e)
 
 	if (Properties2Object_.contains (name))
 	{
-		QPair<QObject*, QByteArray> object = Properties2Object_ [name];
-		if (!object.first->metaObject ()->invokeMethod (object.first, object.second))
-			qWarning () << Q_FUNC_INFO
-				<< "could not find method in the metaobject"
-				<< name
-				<< object.first
-				<< object.second;
+		QList<QPair<QObject*, QByteArray> > objects = Properties2Object_.values (name);
+		QPair<QObject*, QByteArray> object;
+		Q_FOREACH (object, objects)
+			if (!object.first->metaObject ()->invokeMethod (object.first, object.second))
+				qWarning () << Q_FUNC_INFO
+					<< "could not find method in the metaobject"
+					<< name
+					<< object.first
+					<< object.second;
 	}
 
 	event->accept ();
