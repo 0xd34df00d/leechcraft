@@ -85,10 +85,12 @@ namespace LeechCraft
 
 				deleteLater ();
 
-				QMutexLocker l (&MultiHandleMutex_);
-				Q_FOREACH (Worker_ptr w, Workers_)
-					curl_multi_remove_handle (MultiHandle_.get (),
-							w->GetHandle ().get ());
+				{
+					QMutexLocker l (&MultiHandleMutex_);
+					Q_FOREACH (Worker_ptr w, Workers_)
+						curl_multi_remove_handle (MultiHandle_.get (),
+								w->GetHandle ().get ());
+				}
 
 				if (!WatchThread_->wait (100))
 					WatchThread_->terminate ();
@@ -345,6 +347,7 @@ namespace LeechCraft
 
 				TaskData td =
 				{
+					TaskData::DDownload,
 					Proxy_->GetID (),
 					url,
 					tfn,
@@ -352,6 +355,19 @@ namespace LeechCraft
 				};
 				QueueTask (td);
 				return td.ID_;
+			}
+
+			void Core::Add (const QString& path, const QUrl& url)
+			{
+				TaskData td =
+				{
+					TaskData::DUpload,
+					-1,
+					url,
+					path,
+					false
+				};
+				QueueTask (td);
 			}
 
 			void Core::Handle (DownloadEntity e)
@@ -375,6 +391,7 @@ namespace LeechCraft
 			{
 				TaskData td =
 				{
+					TaskData::DDownload,
 					Proxy_->GetID (),
 					url,
 					QString (),
@@ -464,9 +481,12 @@ namespace LeechCraft
 				int inQueue = 1;
 				do
 				{
-					QMutexLocker l (&MultiHandleMutex_);
-					CURLMsg *info = curl_multi_info_read (MultiHandle_.get (),
-							&inQueue);
+					CURLMsg *info = 0;
+					{
+						QMutexLocker l (&MultiHandleMutex_);
+						info = curl_multi_info_read (MultiHandle_.get (),
+								&inQueue);
+					}
 					if (!info)
 						continue;
 
@@ -475,8 +495,11 @@ namespace LeechCraft
 						case CURLMSG_DONE:
 							{
 								Worker_ptr w = FindWorker (info->easy_handle);
-								curl_multi_remove_handle (MultiHandle_.get (),
-										info->easy_handle);
+								{
+									QMutexLocker l (&MultiHandleMutex_);
+									curl_multi_remove_handle (MultiHandle_.get (),
+											info->easy_handle);
+								}
 								w->NotifyFinished (info->data.result);
 
 								if (NumScheduledWorkers_)
@@ -516,10 +539,11 @@ namespace LeechCraft
 					Q_FOREACH (Worker_ptr w, Workers_)
 						if (!w->IsWorking ())
 						{
+							CURL_ptr ptr = w->Start (td);
 							{
 								QMutexLocker l (&MultiHandleMutex_);
 								curl_multi_add_handle (MultiHandle_.get (),
-										w->Start (td).get ());
+										ptr.get ());
 							}
 							handlePerform ();
 							break;
@@ -547,11 +571,13 @@ namespace LeechCraft
 					while (curl_multi_perform (MultiHandle_.get (),
 								&RunningHandles_) == CURLM_CALL_MULTI_PERFORM)
 					{
+						l.unlock ();
 						if (prev != RunningHandles_)
 						{
 							reschedule = true;
 							prev = RunningHandles_;
 						}
+						l.relock ();
 					}
 				}
 				if (reschedule ||
@@ -618,6 +644,7 @@ namespace LeechCraft
 
 				TaskData td =
 				{
+					TaskData::DDownload,
 					entry.PreviousTask_.ID_ >= 0 ? Proxy_->GetID () : -1,
 					entry.URL_,
 					name,

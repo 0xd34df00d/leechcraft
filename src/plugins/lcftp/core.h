@@ -94,8 +94,17 @@ namespace LeechCraft
 
 				QStringList Provides () const;
 				bool IsOK (const DownloadEntity&) const;
+				/** Downloads given download entity.
+				 */
 				int Add (DownloadEntity);
-				int Add (const QUrl&, const QString&, bool);
+				/** Downloads the given url to the given path. Whether
+				 * the target files are checked to is controlled by
+				 * check.
+				 */
+				int Add (const QUrl& url, const QString& path, bool check);
+				/** Uploads the given path to the given url.
+				 */
+				void Add (const QString& path, const QUrl& url);
 				void Handle (DownloadEntity);
 				int Browse (const QUrl&);
 
