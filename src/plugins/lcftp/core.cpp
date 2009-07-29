@@ -313,6 +313,21 @@ namespace LeechCraft
 							else
 								return QString ();
 						}
+						else if (file.isEmpty ())
+						{
+							QString path = url.path ();
+							if (path.count ("/") >= 2)
+							{
+								int right = path.lastIndexOf ("/");
+								int left = path.lastIndexOf ("/", -2);
+								if (!dir.endsWith ("/"))
+									dir += "/";
+								QString add = path.mid (left + 1, right - left - 1);
+								QDir rd (dir);
+								rd.mkdir (add);
+								dir += add;
+							}
+						}
 					}
 
 					return dir + "/" + file;
@@ -347,8 +362,6 @@ namespace LeechCraft
 					if (tfn.isEmpty ())
 						return -1;
 				}
-				else
-					tfn = dir + "/" + file;
 
 				TaskData td =
 				{
