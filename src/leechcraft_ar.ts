@@ -163,6 +163,11 @@
         <oldsource>Logger</oldsource>
         <translation>سجلّ</translation>
     </message>
+    <message>
+        <location filename="leechcraft.ui" line="145"/>
+        <source>New tab</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::Application</name>
