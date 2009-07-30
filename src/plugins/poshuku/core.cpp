@@ -165,13 +165,11 @@ namespace LeechCraft
 			
 			QByteArray Core::GetExpectedPluginClass () const
 			{
-				return QByteArray (typeid (LeechCraft::Plugins::Poshuku::PluginBase).name ());
+				return QByteArray (typeid (PluginBase).name ());
 			}
 			
 			void Core::AddPlugin (QObject *plugin)
 			{
-				if (!Initialized_)
-					return;
 				PluginManager_->AddPlugin (plugin);
 			}
 			
