@@ -12,12 +12,12 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="582"/>
+        <location filename="core.cpp" line="575"/>
         <source>Error</source>
         <translation>o&apos;H</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="583"/>
+        <location filename="core.cpp" line="576"/>
         <source>The subscription wasn&apos;t delegated.</source>
         <translation>الإشتراك لَمْ يُوفَدْ.</translation>
     </message>
@@ -25,17 +25,17 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::Core</name>
     <message>
-        <location filename="core.cpp" line="186"/>
+        <location filename="core.cpp" line="192"/>
         <source>Name</source>
         <translation>hGsl</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="187"/>
+        <location filename="core.cpp" line="193"/>
         <source>Last updated</source>
         <translation>آخر تحديث</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="188"/>
+        <location filename="core.cpp" line="194"/>
         <source>URL</source>
         <translation>المكان</translation>
     </message>

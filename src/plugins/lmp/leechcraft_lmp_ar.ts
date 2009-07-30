@@ -9,87 +9,87 @@
         <translation>إظهار LMP</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="201"/>
+        <location filename="core.cpp" line="207"/>
         <source>Initializing</source>
         <translation>جاري التحضير</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="204"/>
+        <location filename="core.cpp" line="210"/>
         <source>Stopped</source>
         <translation>متوقف</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="207"/>
+        <location filename="core.cpp" line="213"/>
         <source>Playing</source>
         <translation>تشغيل</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="210"/>
+        <location filename="core.cpp" line="216"/>
         <source>Buffering</source>
         <translation>تخزين في الذاكرة المؤقتة</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="213"/>
+        <location filename="core.cpp" line="219"/>
         <source>Paused</source>
         <translation>متوقف مؤقتاً</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="216"/>
+        <location filename="core.cpp" line="222"/>
         <source>Error</source>
         <translation>خطأ</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="221"/>
+        <location filename="core.cpp" line="227"/>
         <source> (%1)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="222"/>
+        <location filename="core.cpp" line="228"/>
         <source> [</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="227"/>
+        <location filename="core.cpp" line="233"/>
         <source>/</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="231"/>
+        <location filename="core.cpp" line="237"/>
         <source>]</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="233"/>
+        <location filename="core.cpp" line="239"/>
         <source> from </source>
         <translation> من </translation>
     </message>
     <message>
-        <location filename="core.cpp" line="241"/>
+        <location filename="core.cpp" line="247"/>
         <source>nowhere</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="254"/>
+        <location filename="core.cpp" line="260"/>
         <source> (CD)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="257"/>
+        <location filename="core.cpp" line="263"/>
         <source> (DVD)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="260"/>
+        <location filename="core.cpp" line="266"/>
         <source> (VCD)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="263"/>
+        <location filename="core.cpp" line="269"/>
         <source> (Unknown disc type)</source>
         <translation> (نوع القرص غير معروف)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="268"/>
+        <location filename="core.cpp" line="274"/>
         <source>stream</source>
         <translation>المجرى</translation>
     </message>

@@ -70,6 +70,11 @@
 <context>
     <name>LeechCraft::Plugins::CSTP::CSTP</name>
     <message>
+        <location filename="cstp.cpp" line="172"/>
+        <source>CSTP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="cstp.cpp" line="174"/>
         <source>Remove</source>
         <translation>إزالة</translation>
@@ -143,27 +148,27 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="189"/>
+        <location filename="core.cpp" line="195"/>
         <source>Could not truncate file </source>
         <translation>غير قادر على تقطيع الملف</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="325"/>
+        <location filename="core.cpp" line="318"/>
         <source>%1% (%2 of %3)</source>
         <translation>%1% (%2 من %3)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="330"/>
+        <location filename="core.cpp" line="323"/>
         <source>%1</source>
         <translation>%1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="338"/>
+        <location filename="core.cpp" line="331"/>
         <source>/s</source>
         <translation>ثوان</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="437"/>
+        <location filename="core.cpp" line="430"/>
         <source>Could not open file </source>
         <translation>غير قادر على فتح الملف</translation>
     </message>
@@ -179,22 +184,22 @@
 <context>
     <name>LeechCraft::Plugins::CSTP::Task</name>
     <message>
-        <location filename="task.cpp" line="168"/>
+        <location filename="task.cpp" line="169"/>
         <source>Stopped</source>
         <translation>متوفّف</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="170"/>
+        <location filename="task.cpp" line="171"/>
         <source>Finished</source>
         <translation>منتهي</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="172"/>
+        <location filename="task.cpp" line="173"/>
         <source>Running</source>
         <translation>تحميل</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="193"/>
+        <location filename="task.cpp" line="194"/>
         <source>Task isn&apos;t initialized properly</source>
         <translation>المهمّة لَمْ تُشغّلْ بشكل صحيح</translation>
     </message>

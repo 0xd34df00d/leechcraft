@@ -4,7 +4,7 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="154"/>
+        <location filename="core.cpp" line="159"/>
         <source>Binary data</source>
         <translation>البيانات القابلة للتّنفيذ</translation>
     </message>
