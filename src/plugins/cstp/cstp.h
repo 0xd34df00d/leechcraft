@@ -62,13 +62,13 @@ namespace LeechCraft
 				int AddJob (LeechCraft::DownloadEntity);
 
 				QAbstractItemModel* GetRepresentation () const;
-				void ItemSelected (const QModelIndex&);
 
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 			private:
 				template<typename T> void ApplyCore2Selection (void (Core::*) (const QModelIndex&), T);
 				void SetupToolbar ();
 			private slots:
+				void handleItemSelected (const QModelIndex&);
 				void handleFileExists (boost::logic::tribool*);
 			signals:
 				void jobFinished (int);

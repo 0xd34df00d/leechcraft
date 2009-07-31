@@ -65,6 +65,12 @@ namespace LeechCraft
 						SIGNAL (error (const QString&)),
 						this,
 						SIGNAL (log (const QString&)));
+
+				connect (coreProxy->GetTreeViewReemitter (),
+						SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&,
+								QTreeView*)),
+						this,
+						SLOT (handleItemSelected (const QModelIndex&)));
 			}
 			
 			void CSTP::Release ()
@@ -145,8 +151,11 @@ namespace LeechCraft
 				return Core::Instance ().GetRepresentationModel ();
 			}
 			
-			void CSTP::ItemSelected (const QModelIndex& index)
+			void CSTP::handleItemSelected (const QModelIndex& si)
 			{
+				QModelIndex index = Core::Instance ().GetCoreProxy ()->MapToSource (si);
+				if (index.model () != GetRepresentation ())
+					index = QModelIndex ();
 				Core::Instance ().ItemSelected (index);
 			}
 			

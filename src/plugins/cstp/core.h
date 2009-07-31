@@ -86,6 +86,7 @@ namespace LeechCraft
 				static Core& Instance ();
 				void Release ();
 				void SetCoreProxy (ICoreProxy_ptr);
+				ICoreProxy_ptr GetCoreProxy () const;
 				void SetToolbar (QToolBar*);
 				void ItemSelected (const QModelIndex&);
 

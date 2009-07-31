@@ -73,6 +73,11 @@ namespace LeechCraft
 						this,
 						SLOT (finishedReply (QNetworkReply*)));
 			}
+
+			ICoreProxy_ptr Core::GetCoreProxy () const
+			{
+				return CoreProxy_;
+			}
 			
 			void Core::SetToolbar (QToolBar *widget)
 			{
