@@ -7,6 +7,7 @@
 #include <QInputDialog>
 #include <QFileDialog>
 #include <QPushButton>
+#include <QToolBar>
 #include <QTimer>
 #include <curl/curl.h>
 #include <plugininterface/proxy.h>
@@ -30,6 +31,7 @@ namespace LeechCraft
 			, TabManager_ (new TabManager (this))
 			, NumScheduledWorkers_ (0)
 			, RunningHandles_ (0)
+			, Toolbar_ (new QToolBar ())
 			{
 				qRegisterMetaType<TaskData> ("TaskData");
 				qRegisterMetaType<FetchedEntry> ("FetchedEntry");
@@ -48,6 +50,8 @@ namespace LeechCraft
 						this, "handleTotalNumWorkersChanged");
 				XmlSettingsManager::Instance ().RegisterObject ("WorkersPerDomain",
 						this, "handleWorkersPerDomainChanged");
+
+				SetupToolbar ();
 
 				handleUpdateInterface ();
 
@@ -185,6 +189,10 @@ namespace LeechCraft
 							return QVariant ();
 					}
 				}
+				else if (role == RoleControls)
+					return QVariant::fromValue<QToolBar*> (Toolbar_);
+				else if (role == RoleAdditionalInfo)
+					return QVariant ();
 				else
 					return QVariant ();
 			}
@@ -635,6 +643,37 @@ namespace LeechCraft
 				return Worker_ptr ();
 			}
 
+			void Core::SetupToolbar ()
+			{
+				ActionPause_ = new QAction (tr ("Pause"),
+						Toolbar_);
+				ActionPause_->setProperty ("ActionIcon", "lcftp_pause");
+				connect (ActionPause_,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handlePause ()));
+
+				ActionResume_ = new QAction (tr ("Resume"),
+						Toolbar_);
+				ActionResume_->setProperty ("ActionIcon", "lcftp_resume");
+				connect (ActionResume_,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleResume ()));
+
+				ActionDelete_ = new QAction (tr ("Delete"),
+						Toolbar_);
+				ActionDelete_->setProperty ("ActionDelete", "lcftp_delete");
+				connect (ActionDelete_,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleDelete ()));
+
+				Toolbar_->addAction (ActionPause_);
+				Toolbar_->addAction (ActionResume_);
+				Toolbar_->addAction (ActionDelete_);
+			}
+
 			void Core::handlePerform ()
 			{
 				bool reschedule = false;
@@ -670,6 +709,7 @@ namespace LeechCraft
 					emit taskError (td.ID_, IDownload::EUnknown);
 					emit log (QString ("LCFTP: %1").arg (msg));
 				}
+
 				QMessageBox::critical (0,
 						tr ("LeechCraft"),
 						msg);
@@ -758,6 +798,15 @@ namespace LeechCraft
 			void Core::handleWorkersPerDomainChanged ()
 			{
 				Reschedule ();
+			}
+
+			void Core::handlePause ()
+			{
+		//		QModelIndex index = Proxy_->GetMainView ()->
+			}
+
+			void Core::handleResume ()
+			{
 			}
 		};
 	};

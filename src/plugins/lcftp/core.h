@@ -13,6 +13,9 @@
 #include <plugininterface/guarded.h>
 #include "worker.h"
 
+class QToolBar;
+class QAction;
+
 namespace LeechCraft
 {
 	namespace Plugins
@@ -70,12 +73,18 @@ namespace LeechCraft
 				int NumScheduledWorkers_;
 				int RunningHandles_;
 
-				Core ();
+				QToolBar *Toolbar_;
+				QAction *ActionPause_,
+						*ActionResume_,
+						*ActionDelete_;
+
 				enum Priority
 				{
 					PLow,
 					PHigh
 				};
+
+				Core ();
 			public:
 				static Core& Instance ();
 				void Release ();
@@ -115,6 +124,7 @@ namespace LeechCraft
 				void AddWorker (int);
 				void Reschedule ();
 				Worker_ptr FindWorker (CURL*) const;
+				void SetupToolbar ();
 			public slots:
 				void handleError (const QString&, const TaskData&);
 				void handleFinished (const TaskData&);
@@ -125,6 +135,9 @@ namespace LeechCraft
 				void handleThreadFinished ();
 				void handleTotalNumWorkersChanged ();
 				void handleWorkersPerDomainChanged ();
+				void handlePause ();
+				void handleResume ();
+				void handleDelete ();
 			signals:
 				void taskFinished (int);
 				void taskRemoved (int);
