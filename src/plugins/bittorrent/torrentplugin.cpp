@@ -416,12 +416,55 @@ namespace LeechCraft
 			
 			void TorrentPlugin::on_MoveUp__triggered (const std::deque<int>& selections)
 			{
+				QTreeView *tree = Core::Instance ()->
+					GetProxy ()->GetCurrentView ();
+				QItemSelectionModel *sel = 0;
+				if (tree)
+					sel = tree->selectionModel ();
+				QModelIndex current;
+				if (sel)
+					current = sel->currentIndex ();
+
 				Core::Instance ()->MoveUp (selections);
+
+				if (current.row () > 0)
+				{
+					QModelIndex sibling = current.sibling (current.row () - 1,
+								current.column ());
+					if (Core::Instance ()->GetProxy ()->
+							MapToSource (sibling).model () == GetRepresentation ())
+						sel->setCurrentIndex (sibling,
+								QItemSelectionModel::Select |
+								QItemSelectionModel::Current |
+								QItemSelectionModel::Rows);
+				}
 			}
 			
 			void TorrentPlugin::on_MoveDown__triggered (const std::deque<int>& selections)
 			{
+				QTreeView *tree = Core::Instance ()->
+					GetProxy ()->GetCurrentView ();
+				QItemSelectionModel *sel = 0;
+				if (tree)
+					sel = tree->selectionModel ();
+				QModelIndex current;
+				if (sel)
+					current = sel->currentIndex ();
+
 				Core::Instance ()->MoveDown (selections);
+
+				if (current.row () > 0)
+				{
+					QModelIndex sibling = current.sibling (current.row () + 1,
+								current.column ());
+					if (sibling.isValid () &&
+							Core::Instance ()->GetProxy ()->
+							MapToSource (sibling).model () == GetRepresentation ())
+						sel->setCurrentIndex (sibling,
+								QItemSelectionModel::Select |
+								QItemSelectionModel::Current |
+								QItemSelectionModel::Rows);
+				}
 			}
 			
 			void TorrentPlugin::on_MoveToTop__triggered (const std::deque<int>& selections)
