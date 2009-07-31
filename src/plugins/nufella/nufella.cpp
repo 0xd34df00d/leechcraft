@@ -88,9 +88,5 @@ QWidget* Nufella::GetAdditionalInfo () const
 	return 0;
 }
 
-void Nufella::ItemSelected (const QModelIndex&)
-{
-}
-
 Q_EXPORT_PLUGIN2 (leechcraft_nufella, Nufella);
 

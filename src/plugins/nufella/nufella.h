@@ -36,7 +36,6 @@ public:
 	QAbstractItemModel* GetRepresentation () const;
 	QWidget* GetControls () const;
 	QWidget* GetAdditionalInfo () const;
-	void ItemSelected (const QModelIndex&);
 };
 
 #endif
