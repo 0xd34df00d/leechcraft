@@ -114,7 +114,6 @@ namespace LeechCraft
 
 				// IJobHolder
 				QAbstractItemModel* GetRepresentation () const;
-				void ItemSelected (const QModelIndex&);
 
 				// IImportExport
 				void ImportSettings (const QByteArray&);
@@ -154,6 +153,7 @@ namespace LeechCraft
 				void setActionsEnabled ();
 				void showError (QString);
 				void doLogMessage (const QString&);
+				void handleItemSelected (const QModelIndex&);
 			private:
 				void SetupCore ();
 				void SetupTorrentView ();

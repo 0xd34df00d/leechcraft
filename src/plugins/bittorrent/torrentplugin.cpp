@@ -46,6 +46,12 @@ namespace LeechCraft
 				SetupCore ();
 				SetupTorrentView ();
 				SetupStuff ();
+
+				connect (proxy->GetTreeViewReemitter (),
+						SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&,
+								QTreeView*)),
+						this,
+						SLOT (handleItemSelected (const QModelIndex&)));
 			
 				setActionsEnabled ();
 			}
@@ -216,8 +222,12 @@ namespace LeechCraft
 				return FilterModel_.get ();
 			}
 			
-			void TorrentPlugin::ItemSelected (const QModelIndex& item)
+			void TorrentPlugin::handleItemSelected (const QModelIndex& si)
 			{
+				QModelIndex item = Core::Instance ()->GetProxy ()->MapToSource (si);
+				if (item.model () != GetRepresentation ())
+					item = QModelIndex ();
+
 				QModelIndex mapped = item.isValid () ?
 					FilterModel_->mapToSource (item) : QModelIndex ();
 				Core::Instance ()->SetCurrentTorrent (mapped.row ());
