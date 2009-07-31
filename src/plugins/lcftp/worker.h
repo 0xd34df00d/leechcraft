@@ -31,6 +31,7 @@ namespace LeechCraft
 				boost::shared_ptr<QFile> File_;
 				boost::shared_ptr<QBuffer> ListBuffer_;
 				bool IsWorking_;
+				bool Paused_;
 				quint64 DLNow_,
 					DLTotal_,
 					ULNow_,
@@ -49,6 +50,7 @@ namespace LeechCraft
 					quint64 DLSpeed_;
 					quint64 ULSpeed_;
 					TaskData::Direction Direction_;
+					bool Paused_;
 				};
 
 				Worker (int, QObject* = 0);
@@ -72,6 +74,8 @@ namespace LeechCraft
 				 * @param[in] result The result of the operation.
 				 */
 				void NotifyFinished (CURLcode result);
+				void Pause ();
+				void Resume ();
 			private:
 				void HandleTask (const TaskData&, CURL_ptr);
 				void ParseBuffer (const TaskData&);

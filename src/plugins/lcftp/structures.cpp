@@ -12,7 +12,8 @@ namespace LeechCraft
 					t1.URL_ == t2.URL_ &&
 					t1.Filename_ == t2.Filename_ &&
 					t1.Internal_ == t2.Internal_ &&
-					t1.Direction_ == t2.Direction_;
+					t1.Direction_ == t2.Direction_ &&
+					t1.Paused_ == t2.Paused_;
 			}
 		};
 	};

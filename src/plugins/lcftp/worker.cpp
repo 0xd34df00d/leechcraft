@@ -79,6 +79,7 @@ namespace LeechCraft
 			, Handle_ (curl_easy_init (), curl_easy_cleanup)
 			, W_ (new Wrapper (this))
 			, IsWorking_ (false)
+			, Paused_ (false)
 			, DLNow_ (0)
 			, DLTotal_ (0)
 			, ULNow_ (0)
@@ -135,7 +136,8 @@ namespace LeechCraft
 					qMakePair<quint64, quint64> (ULNow_ + is, ULTotal_ + is),
 					dl,
 					ul,
-					Task_.Direction_
+					Task_.Direction_,
+					Paused_
 				};
 				return result;
 			}
@@ -179,6 +181,18 @@ namespace LeechCraft
 				emit finished (Task_);
 
 				IsWorking_ = false;
+			}
+
+			void Worker::Pause ()
+			{
+				curl_easy_pause (Handle_.get (), CURLPAUSE_ALL);
+				Paused_ = true;
+			}
+
+			void Worker::Resume ()
+			{
+				curl_easy_pause (Handle_.get (), CURLPAUSE_CONT);
+				Paused_ = false;
 			}
 
 			/** Sets up the libcurl handle to perform the task and

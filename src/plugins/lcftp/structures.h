@@ -31,6 +31,7 @@ namespace LeechCraft
 				 * downloaded recursively by the Core.
 				 */
 				bool Internal_;
+				bool Paused_;
 			};
 
 			bool operator== (const TaskData&, const TaskData&);

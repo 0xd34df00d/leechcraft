@@ -155,15 +155,22 @@ namespace LeechCraft
 							else
 								return Tasks_ [r - working].URL_.toString ();
 						case 1:
-							return r < working ?
-								(States_.at (r).Direction_ == TaskData::DDownload ?
-									tr ("Downloading at %1")
+							if (r >= working)
+								return tr ("Waiting");
+							else
+							{
+								Worker::TaskState st = States_.at (r);
+								if (st.Paused_)
+									return tr ("Paused");
+								else if (States_.at (r).Direction_ == TaskData::DDownload)
+									return tr ("Downloading at %1")
 										.arg (Util::Proxy::Instance ()->
-												MakePrettySize (States_.at (r).DLSpeed_)) :
-									tr ("Uploading at %1")
+												MakePrettySize (States_.at (r).DLSpeed_));
+								else
+									return tr ("Uploading at %1")
 										.arg (Util::Proxy::Instance ()->
-												MakePrettySize (States_.at (r).ULSpeed_))) :
-								tr ("Waiting");
+												MakePrettySize (States_.at (r).ULSpeed_));
+							}
 						case 2:
 							if (r >= working)
 								return QVariant ();
@@ -377,6 +384,7 @@ namespace LeechCraft
 					Proxy_->GetID (),
 					url,
 					tfn,
+					false,
 					false
 				};
 				QueueTask (td);
@@ -435,6 +443,7 @@ namespace LeechCraft
 						-1,
 						nu,
 						path,
+						false,
 						false
 					};
 					QueueTask (td);
@@ -466,7 +475,8 @@ namespace LeechCraft
 					Proxy_->GetID (),
 					url,
 					QString (),
-					true
+					true,
+					false
 				};
 				QueueTask (td, PHigh);
 				return td.ID_;
@@ -484,6 +494,9 @@ namespace LeechCraft
 					.property ("WorkersPerDomain").toInt ();
 				Q_FOREACH (TaskData td, Tasks_)
 				{
+					if (td.Paused_)
+						continue;
+
 					QString domain = td.URL_.host ();
 
 					if (!WorkersPerDomain_.contains (domain))
@@ -764,6 +777,7 @@ namespace LeechCraft
 					entry.PreviousTask_.ID_ >= 0 ? Proxy_->GetID () : -1,
 					entry.URL_,
 					name,
+					false,
 					false
 				};
 				QueueTask (td);
@@ -802,11 +816,104 @@ namespace LeechCraft
 
 			void Core::handlePause ()
 			{
-		//		QModelIndex index = Proxy_->GetMainView ()->
+				QTreeView *tree = Proxy_->GetCurrentView ();
+				if (!tree)
+					return;
+
+				QItemSelectionModel *sel = tree->selectionModel ();
+				if (!sel)
+					return;
+
+				QModelIndexList sis = sel->selectedRows ();
+				Q_FOREACH (QModelIndex si, sis)
+				{
+					QModelIndex index = Proxy_->MapToSource (si);
+					if (index.model () != GetModel ())
+						continue;
+
+					QModelIndex source = WorkersFilter_->mapToSource (index);
+					int r = source.row ();
+
+					int working = Workers_.size ();
+
+					if (r < working)
+						Workers_.at (r)->Pause ();
+					else
+						Tasks_ [r - working].Paused_ = true;
+				}
 			}
 
 			void Core::handleResume ()
 			{
+				QTreeView *tree = Proxy_->GetCurrentView ();
+				if (!tree)
+					return;
+
+				QItemSelectionModel *sel = tree->selectionModel ();
+				if (!sel)
+					return;
+
+				QModelIndexList sis = sel->selectedRows ();
+				Q_FOREACH (QModelIndex si, sis)
+				{
+					QModelIndex index = Proxy_->MapToSource (si);
+					if (index.model () != GetModel ())
+						continue;
+
+					QModelIndex source = WorkersFilter_->mapToSource (index);
+					int r = source.row ();
+
+					int working = Workers_.size ();
+
+					if (r < working)
+						Workers_.at (r)->Resume ();
+					else
+						Tasks_ [r - working].Paused_ = false;
+				}
+
+				Reschedule ();
+			}
+
+			void Core::handleDelete ()
+			{
+				QTreeView *tree = Proxy_->GetCurrentView ();
+				if (!tree)
+					return;
+
+				QItemSelectionModel *sel = tree->selectionModel ();
+				if (!sel)
+					return;
+
+				QModelIndexList sis = sel->selectedRows ();
+				QList<int> tasksIndexes;
+				Q_FOREACH (QModelIndex si, sis)
+				{
+					QModelIndex index = Proxy_->MapToSource (si);
+					if (index.model () != GetModel ())
+						continue;
+
+					QModelIndex source = WorkersFilter_->mapToSource (index);
+					int r = source.row ();
+
+					int working = Workers_.size ();
+
+					if (r < working)
+					{
+						// TODO delete working stuff
+					}
+					else
+						tasksIndexes << (r - working);
+				}
+
+				std::sort (tasksIndexes.begin (), tasksIndexes.end (),
+						std::greater<int> ());
+
+				Q_FOREACH (int index, tasksIndexes)
+				{
+					beginRemoveRows (QModelIndex (), index, index);
+					Tasks_.removeAt (index);
+					endRemoveRows ();
+				}
 			}
 		};
 	};
