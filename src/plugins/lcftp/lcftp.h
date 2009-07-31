@@ -42,7 +42,6 @@ namespace LeechCraft
 				QIcon GetIcon () const;
 
 				QAbstractItemModel* GetRepresentation () const;
-				void ItemSelected (const QModelIndex&);
 
 				qint64 GetDownloadSpeed () const;
 				qint64 GetUploadSpeed () const;

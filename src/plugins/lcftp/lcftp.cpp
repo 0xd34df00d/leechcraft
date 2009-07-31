@@ -111,10 +111,6 @@ namespace LeechCraft
 				return Core::Instance ().GetModel ();
 			}
 
-			void LCFTP::ItemSelected (const QModelIndex&)
-			{
-			}
-
 			qint64 LCFTP::GetDownloadSpeed () const
 			{
 				return Core::Instance ().GetDownloadSpeed ();
