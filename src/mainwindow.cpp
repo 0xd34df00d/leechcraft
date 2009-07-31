@@ -397,7 +397,9 @@ void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
 		CurrentToolBar_ = 0;
 	}
 
-	TabContents *tc = qobject_cast<TabContents*> (Ui_.MainTabWidget_->widget (index));
+	TabContents *tc = index ?
+		qobject_cast<TabContents*> (Ui_.MainTabWidget_->widget (index)) :
+		Ui_.SummaryContents_;
 	TabContentsManager::Instance ().MadeCurrent (tc);
 	if (!tc)
 	{

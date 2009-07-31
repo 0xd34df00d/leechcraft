@@ -55,9 +55,10 @@ namespace LeechCraft
 		feedFilterParameters ();
 	}
 
-	void TabContents::SmartDeselect ()
+	void TabContents::SmartDeselect (TabContents *newFocus)
 	{
-		if (Ui_.PluginsTasksTree_->selectionModel ())
+		if (newFocus &&
+				Ui_.PluginsTasksTree_->selectionModel ())
 			Ui_.PluginsTasksTree_->selectionModel ()->clear ();
 	}
 

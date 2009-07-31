@@ -19,6 +19,7 @@ namespace LeechCraft
 	void TabContentsManager::SetDefault (TabContents *tc)
 	{
 		Default_ = tc;
+		Current_ = Default_;
 	}
 
 	QList<TabContents*> TabContentsManager::GetTabs () const
@@ -46,9 +47,11 @@ namespace LeechCraft
 
 	void TabContentsManager::MadeCurrent (TabContents *tc)
 	{
+		Current_ = tc;
+
 		Q_FOREACH (TabContents *tab, GetTabs ())
 			if (tab != tc)
-				tab->SmartDeselect ();
+				tab->SmartDeselect (tc);
 
 		if (tc)
 		{

@@ -13,6 +13,7 @@ namespace LeechCraft
 		Q_OBJECT
 
 		TabContents *Default_;
+		TabContents *Current_;
 		QList<TabContents*> Others_;
 
 		TabContentsManager ();
