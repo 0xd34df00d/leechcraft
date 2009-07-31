@@ -1491,7 +1491,7 @@ namespace LeechCraft
 			
 				for (std::deque<int>::const_iterator i = selections.begin (),
 						end = selections.end (); i != end; ++i)
-					if (*i <= 0 || !CheckValidity (*i))
+					if (*i < 0 || !CheckValidity (*i) || !CheckValidity (*i + 1))
 						return;
 			
 				for (std::deque<int>::const_reverse_iterator i = selections.rbegin (),
