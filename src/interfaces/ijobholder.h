@@ -12,12 +12,10 @@ class QWidget;
  * implement this interface.
  *
  * Item model is returned by GetRepresentation(), GetControls() and
- * GetAdditionalInfo() are used to retrieve controls and information pane
- * of the plugin, and ItemSelected() is called to notify the plugin about
- * selection of an item. Returned model should have four columns, each
- * for name, state, progress and speed. Controls and additional
- * information pane are only visible when a job handled by the plugin is
- * selected.
+ * GetAdditionalInfo() are used to retrieve controls and information
+ * pane of the plugin. Returned model should have four columns, each for
+ * name, state, progress and speed. Controls and additional information
+ * pane are only visible when a job handled by the plugin is selected.
  *
  * @sa IDownloader
  */
@@ -54,12 +52,6 @@ public:
 	 * @sa GetAdditionalInfo
 	 */
     virtual QAbstractItemModel* GetRepresentation () const = 0;
-
-	/** @brief Notifies plugin about item selection.
-	 * 
-	 * @param item Selected item.
-	 */
-	virtual void ItemSelected (const QModelIndex& item) = 0;
 
 	/** @brief Virtual destructor.
 	 */

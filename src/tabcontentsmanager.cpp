@@ -3,10 +3,12 @@
 #include "tabcontents.h"
 #include "core.h"
 #include "mainwindow.h"
+#include "viewreemitter.h"
 
 namespace LeechCraft
 {
 	TabContentsManager::TabContentsManager ()
+	: Reemitter_ (new ViewReemitter (this))
 	{
 	}
 
@@ -20,6 +22,9 @@ namespace LeechCraft
 	{
 		Default_ = tc;
 		Current_ = Default_;
+
+		Connect (tc);
+		Reemitter_->Connect (Default_);
 	}
 
 	QList<TabContents*> TabContentsManager::GetTabs () const
@@ -32,6 +37,8 @@ namespace LeechCraft
 	void TabContentsManager::AddNewTab (const QString& query)
 	{
 		TabContents *tc = new TabContents ();
+		Connect (tc);
+		Reemitter_->Connect (tc);
 		Others_ << tc;
 		emit addNewTab (tr ("Summary"), tc);
 
@@ -85,6 +92,33 @@ namespace LeechCraft
 				}
 			}
 		}
+	}
+
+	TabContents* TabContentsManager::GetCurrent () const
+	{
+		return Current_;
+	}
+
+	QObject* TabContentsManager::GetReemitter () const
+	{
+		return Reemitter_;
+	}
+
+	void TabContentsManager::Connect (TabContents *tc)
+	{
+		connect (tc,
+				SIGNAL (filterUpdated ()),
+				this,
+				SLOT (handleFilterUpdated ()));
+	}
+
+	void TabContentsManager::handleFilterUpdated ()
+	{
+		TabContents *tc = qobject_cast<TabContents*> (sender ());
+		if (!tc)
+			return;
+
+		Reemitter_->ConnectModelSpecific (tc);
 	}
 };
 

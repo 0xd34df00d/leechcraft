@@ -7,6 +7,7 @@
 namespace LeechCraft
 {
 	class TabContents;
+	class ViewReemitter;
 
 	class TabContentsManager : public QObject
 	{
@@ -15,6 +16,8 @@ namespace LeechCraft
 		TabContents *Default_;
 		TabContents *Current_;
 		QList<TabContents*> Others_;
+
+		ViewReemitter *Reemitter_;
 
 		TabContentsManager ();
 	public:
@@ -26,6 +29,12 @@ namespace LeechCraft
 		void AddNewTab (const QString& = QString ());
 		void RemoveTab (TabContents*);
 		void MadeCurrent (TabContents*);
+		TabContents* GetCurrent () const;
+		QObject* GetReemitter () const;
+	private:
+		void Connect (TabContents*);
+	private slots:
+		void handleFilterUpdated ();
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

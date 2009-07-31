@@ -52,10 +52,8 @@ namespace LeechCraft
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
 		virtual ~MainWindow ();
-		QModelIndexList GetSelectedRows () const;
 		TabWidget* GetTabWidget () const;
 		const IShortcutProxy* GetShortcutProxy () const;
-		QTreeView* GetMainView () const;
 		void SetAdditionalTitle (const QString&);
 	public slots:
 		void catchError (QString);

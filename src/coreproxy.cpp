@@ -25,9 +25,13 @@ const IShortcutProxy* CoreProxy::GetShortcutProxy () const
 	return Core::Instance ().GetShortcutProxy ();
 }
 
-QTreeView* CoreProxy::GetMainView () const
+QTreeView* CoreProxy::GetCurrentView () const
 {
-	return Core::Instance ().GetReallyMainWindow ()->GetMainView ();
+	TabContents *tc = TabContentsManager::Instance ().GetCurrent ();
+	if (!tc)
+		return 0;
+	else
+		return tc->GetUi ().PluginsTasksTree_;
 }
 
 QModelIndex CoreProxy::MapToSource (const QModelIndex& index) const
@@ -90,6 +94,11 @@ void CoreProxy::FreeID (int id)
 	if (UsedIDs_.Val ().removeAll (id) != 1)
 		throw std::runtime_error (QString ("The ID being freed wasn't reserved %1")
 				.arg (id).toStdString ().c_str ());
+}
+
+QObject* CoreProxy::GetTreeViewReemitter () const
+{
+	return TabContentsManager::Instance ().GetReemitter ();
 }
 
 #define LC_DEFINE_REGISTER(a) \

@@ -81,7 +81,6 @@ namespace LeechCraft
 			qDebug () << "invalidating";
 #endif
 
-			Core::Instance ().SetNewRow (newIndex);
 			if (oldIndex.isValid ())
 			{
 #ifdef QT_DEBUG
@@ -97,10 +96,6 @@ namespace LeechCraft
 		else if (oldIndex.isValid () &&
 				Core::Instance ().SameModel (newIndex, oldIndex))
 		{
-#ifdef QT_DEBUG
-			qDebug () << "setting new row";
-#endif
-			Core::Instance ().SetNewRow (newIndex);
 		}
 		else if (newIndex.isValid ())
 		{
@@ -125,8 +120,6 @@ namespace LeechCraft
 			qDebug () << "inserting newer stuff" << newIndex << controls << addiInfo;
 #endif
 
-			Core::Instance ().SetNewRow (newIndex);
-			
 			if (controls)
 			{
 				controls->setFloatable (true);
@@ -180,6 +173,8 @@ namespace LeechCraft
 				fm.width ("Of the download."));
 		itemsHeader->resizeSection (2,
 				fm.width ("99.99% (1024.0 kb from 1024.0 kb at 1024.0 kb/s)"));
+
+		emit filterUpdated ();
 	}
 
 	void TabContents::on_PluginsTasksTree__customContextMenuRequested (const QPoint& pos)

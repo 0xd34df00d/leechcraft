@@ -147,9 +147,10 @@ public:
 	 */
 	virtual const IShortcutProxy* GetShortcutProxy () const = 0;
 
-	/** @brief Returns the view where all the jobs are.
+	/** Returns the currently active QTreeView from a Summary tab or 0
+	 * if currently active tab is not Summary.
 	 */
-	virtual QTreeView* GetMainView () const = 0;
+	virtual QTreeView* GetCurrentView () const = 0;
 
 	/** @brief Maps the given index up to the plugin's through the
 	 * hierarchy of LeechCraft's models
@@ -189,6 +190,11 @@ public:
 	/** Marks an ID previously returned by GetID to the pool.
 	 */
 	virtual void FreeID (int) = 0;
+
+	/** Returns the object that reemits the signals from the currently
+	 * active QTreeView.
+	 */
+	virtual QObject* GetTreeViewReemitter () const = 0;
 
 #define LC_DEFINE_REGISTER(a) virtual void RegisterHook (LeechCraft::HookSignature<a>::Signature_t) = 0;
 #define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))

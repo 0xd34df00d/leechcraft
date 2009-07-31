@@ -26,6 +26,8 @@ namespace LeechCraft
 		void filterReturnPressed ();
 		void feedFilterParameters ();
 		void on_PluginsTasksTree__customContextMenuRequested (const QPoint&);
+	signals:
+		void filterUpdated ();
 	};
 };
 

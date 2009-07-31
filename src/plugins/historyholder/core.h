@@ -59,7 +59,7 @@ namespace LeechCraft
 				void WriteSettings ();
 			private slots:
 				void remove ();
-				void handleActivated (const QModelIndex&);
+				void handleActivated (const QModelIndex&, QTreeView*);
 			signals:
 				void gotEntity (const LeechCraft::DownloadEntity&);
 			};

@@ -169,6 +169,7 @@ SET (SRCS
 	directorywatcher.cpp
 	tabcontents.cpp
 	tabcontentsmanager.cpp
+	viewreemitter.cpp
 	3dparty/qxttooltip.cpp
 	)
 SET (HEADERS
@@ -211,6 +212,7 @@ SET (HEADERS
 	directorywatcher.h
 	tabcontents.h
 	tabcontentsmanager.h
+	viewreemitter.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/iinfo.h

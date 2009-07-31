@@ -17,7 +17,7 @@ namespace LeechCraft
 		CoreProxy (QObject* = 0);
 		QNetworkAccessManager* GetNetworkAccessManager () const;
 		const IShortcutProxy* GetShortcutProxy () const;
-		QTreeView* GetMainView () const;
+		QTreeView* GetCurrentView () const;
 		QModelIndex MapToSource (const QModelIndex&) const;
 		Util::BaseSettingsManager* GetSettingsManager () const;
 		QMainWindow* GetMainWindow () const;
@@ -27,6 +27,7 @@ namespace LeechCraft
 		void OpenSummary (const QString&) const;
 		int GetID ();
 		void FreeID (int);
+		QObject* GetTreeViewReemitter () const;
 
 #define LC_DEFINE_REGISTER(a) void RegisterHook (LeechCraft::HookSignature<LeechCraft::a>::Signature_t);
 #define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))

@@ -328,53 +328,6 @@ void LeechCraft::Core::TryToAddJob (const QString& name, const QString& where)
 	emit error (tr ("No plugins are able to download \"%1\"").arg (name));
 }
 
-void LeechCraft::Core::SetNewRow (const QModelIndex& index)
-{
-	QModelIndex mapped = MapToSourceRecursively (index);
-	QList<IJobHolder*> holders = PluginManager_->GetAllCastableTo<IJobHolder*> ();
-	if (index.isValid ())
-	{
-		QObject *plugin = Representation2Object_ [mapped.model ()];
-
-		IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
-
-		for (QList<IJobHolder*>::iterator i = holders.begin (),
-				end = holders.end (); i != end; ++i)
-			if (*i == ijh)
-			{
-				try
-				{
-					(*i)->ItemSelected (mapped);
-				}
-				catch (...)
-				{
-				}
-			}
-			else
-			{
-				try
-				{
-					(*i)->ItemSelected (QModelIndex ());
-				}
-				catch (...)
-				{
-				}
-			}
-	}
-	else
-		for (QList<IJobHolder*>::iterator i = holders.begin (),
-				end = holders.end (); i != end; ++i)
-		{
-			try
-			{
-				(*i)->ItemSelected (QModelIndex ());
-			}
-			catch (...)
-			{
-			}
-		}
-}
-
 bool LeechCraft::Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) const
 {
 	QModelIndex mapped1 = MapToSourceRecursively (i1);
@@ -636,7 +589,19 @@ void LeechCraft::Core::handlePluginAction ()
 
 	QObject *object = source->property ("Object").value<QObject*> ();
 
-	QModelIndexList origSelection = ReallyMainWindow_->GetSelectedRows ();
+	TabContents *current = TabContentsManager::Instance ().GetCurrent ();
+	if (!current)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< "called when no current plugin tab"
+			<< sender ()
+			<< slot
+			<< signal;
+		return;
+	}
+
+	QModelIndexList origSelection = current->
+		GetUi ().PluginsTasksTree_->selectionModel ()->selectedRows ();
 	QModelIndexList selected;
 	for (QModelIndexList::const_iterator i = origSelection.begin (),
 			end = origSelection.end (); i != end; ++i)

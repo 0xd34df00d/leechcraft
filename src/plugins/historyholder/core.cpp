@@ -83,10 +83,10 @@ void Core::SetCoreProxy (ICoreProxy_ptr proxy)
 {
 	CoreProxy_ = proxy;
 	Remove_->setParent (proxy->GetMainWindow ());
-	connect (CoreProxy_->GetMainView (),
-			SIGNAL (activated (const QModelIndex&)),
+	connect (CoreProxy_->GetTreeViewReemitter (),
+			SIGNAL (activated (const QModelIndex&, QTreeView*)),
 			this,
-			SLOT (handleActivated (const QModelIndex&)));
+			SLOT (handleActivated (const QModelIndex&, QTreeView*)));
 }
 
 ICoreProxy_ptr Core::GetCoreProxy () const
@@ -237,8 +237,11 @@ void Core::WriteSettings ()
 
 void Core::remove ()
 {
-	QModelIndex index = CoreProxy_->GetMainView ()->
-		selectionModel ()->currentIndex ();
+	QTreeView *currentView = CoreProxy_->GetCurrentView ();
+	if (!currentView)
+		return;
+
+	QModelIndex index = currentView->selectionModel ()->currentIndex ();
 	index = CoreProxy_->MapToSource (index);
 	if (!index.isValid ())
 	{
@@ -261,7 +264,7 @@ void Core::remove ()
 	WriteSettings ();
 }
 
-void Core::handleActivated (const QModelIndex& si)
+void Core::handleActivated (const QModelIndex& si, QTreeView*)
 {
 	QModelIndex index = CoreProxy_->MapToSource (si);
 	if (!index.isValid ())

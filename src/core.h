@@ -156,8 +156,6 @@ namespace LeechCraft
 		void DelayedInit ();
 		void TryToAddJob (const QString&, const QString&);
 
-		void SetNewRow (const QModelIndex&);
-
 		/** Returns true if both indexes belong to the same model. If
 		 * both indexes are invalid, true is returned.
 		 *

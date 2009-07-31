@@ -103,12 +103,6 @@ LeechCraft::MainWindow::~MainWindow ()
 {
 }
 
-QModelIndexList LeechCraft::MainWindow::GetSelectedRows () const
-{
-	// TODO
-	return Ui_.SummaryContents_->GetUi ().PluginsTasksTree_->selectionModel ()->selectedRows ();
-}
-
 TabWidget* LeechCraft::MainWindow::GetTabWidget () const
 {
 	return Ui_.MainTabWidget_;
@@ -117,12 +111,6 @@ TabWidget* LeechCraft::MainWindow::GetTabWidget () const
 const IShortcutProxy* LeechCraft::MainWindow::GetShortcutProxy () const
 {
 	return ShortcutManager_;
-}
-
-QTreeView* LeechCraft::MainWindow::GetMainView () const
-{
-	// TODO
-	return Ui_.SummaryContents_->GetUi ().PluginsTasksTree_;
 }
 
 void LeechCraft::MainWindow::SetAdditionalTitle (const QString& title)
