@@ -329,7 +329,6 @@ namespace LeechCraft
 			void Aggregator::handleItemSelected (const QModelIndex& index)
 			{
 				QModelIndex si = Core::Instance ().GetProxy ()->MapToSource (index);
-				qDebug () << si << si.model () << index;
 				if (si.model () != GetRepresentation ())
 					si = QModelIndex ();
 				Impl_->SelectedRepr_ = si;
