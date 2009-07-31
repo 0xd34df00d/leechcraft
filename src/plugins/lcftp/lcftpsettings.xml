@@ -19,6 +19,10 @@
 				<label lang="en" value="Follow symlinks" />
 				<label lang="ru" value="Следовать за символическими ссылками" />
 			</item>
+			<item type="checkbox" property="AppendRemoteFiles" default="on">
+				<label lang="en" value="Append to remote files instead of overwriting" />
+				<label lang="ru" value="Дописывать к удаленным файлам вместо перезаписи" />
+			</item>
 		</groupbox>
 		<groupbox>
 			<label lang="en" value="Identification" />

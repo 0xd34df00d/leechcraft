@@ -257,6 +257,12 @@ namespace LeechCraft
 				{
 					curl_easy_setopt (handle.get (),
 							CURLOPT_UPLOAD, 1L);
+					curl_easy_setopt (handle.get (),
+							CURLOPT_APPEND,
+							XmlSettingsManager::Instance ()
+								.property ("AppendRemoteFiles").toBool () ?
+								1L :
+								0L);
 
 					ListBuffer_.reset ();
 					File_.reset (new QFile (td.Filename_));
