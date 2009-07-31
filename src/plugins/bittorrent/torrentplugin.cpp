@@ -389,102 +389,226 @@ namespace LeechCraft
 				setActionsEnabled ();
 			}
 			
-			void TorrentPlugin::on_RemoveTorrent__triggered (int row)
+			void TorrentPlugin::on_RemoveTorrent__triggered ()
 			{
+				QTreeView *tree = Core::Instance ()->GetProxy ()->GetCurrentView ();
+				if (!tree)
+					return;
+
+				QItemSelectionModel *sel = tree->selectionModel ();
+				if (!sel)
+					return;
+
+				QModelIndexList sis = sel->selectedRows ();
+				QList<int> rows;
+				Q_FOREACH (QModelIndex si, sis)
+					rows << Core::Instance ()->GetProxy ()->MapToSource (si).row ();
+
 				if (QMessageBox::question (0,
 							tr ("LeechCraft"),
-							tr ("Do you really want to delete the torrent?"),
+							tr ("Do you really want to delete %n torrents?", 0, rows.size ()),
 							QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 					return;
+
+				std::sort (rows.begin (), rows.end (),
+						std::greater<int> ());
 			
-				Core::Instance ()->RemoveTorrent (row);
+				Q_FOREACH (int row, rows)
+					Core::Instance ()->RemoveTorrent (row);
 				TabWidget_->InvalidateSelection ();
 				setActionsEnabled ();
 			}
-			
-			void TorrentPlugin::on_Resume__triggered (int row)
+
+			void TorrentPlugin::on_Resume__triggered ()
 			{
-				Core::Instance ()->ResumeTorrent (row);
+				QTreeView *tree = Core::Instance ()->GetProxy ()->GetCurrentView ();
+				if (!tree)
+					return;
+
+				QItemSelectionModel *sel = tree->selectionModel ();
+				if (!sel)
+					return;
+
+				QModelIndexList sis = sel->selectedRows ();
+				QList<int> rows;
+				Q_FOREACH (QModelIndex si, sis)
+					Core::Instance ()->ResumeTorrent (Core::Instance ()->GetProxy ()->MapToSource (si).row ());
 				setActionsEnabled ();
 			}
 			
-			void TorrentPlugin::on_Stop__triggered (int row)
+			void TorrentPlugin::on_Stop__triggered ()
 			{
-				Core::Instance ()->PauseTorrent (row);
+				QTreeView *tree = Core::Instance ()->GetProxy ()->GetCurrentView ();
+				if (!tree)
+					return;
+
+				QItemSelectionModel *sel = tree->selectionModel ();
+				if (!sel)
+					return;
+
+				QModelIndexList sis = sel->selectedRows ();
+				QList<int> rows;
+				Q_FOREACH (QModelIndex si, sis)
+					Core::Instance ()->PauseTorrent (Core::Instance ()->GetProxy ()->MapToSource (si).row ());
 				setActionsEnabled ();
 			}
 			
-			void TorrentPlugin::on_MoveUp__triggered (const std::deque<int>& selections)
+			namespace
 			{
-				QTreeView *tree = Core::Instance ()->
-					GetProxy ()->GetCurrentView ();
-				QItemSelectionModel *sel = 0;
-				if (tree)
-					sel = tree->selectionModel ();
-				QModelIndex current;
-				if (sel)
-					current = sel->currentIndex ();
+				std::deque<int> GetSelections (QAbstractItemModel *model)
+				{
+					QTreeView *tree = Core::Instance ()->GetProxy ()->GetCurrentView ();
+					if (!tree)
+						throw std::runtime_error ("No current view");
+
+					QItemSelectionModel *sel = tree->selectionModel ();
+					if (!sel)
+						throw std::runtime_error ("No selection model");
+
+					QModelIndexList sis = sel->selectedRows ();
+					std::deque<int> selections;
+					Q_FOREACH (QModelIndex si, sis)
+					{
+						QModelIndex mapped = Core::Instance ()->GetProxy ()->MapToSource (si);
+						if (mapped.model () != model)
+							continue;
+						selections.push_back (mapped.row ());
+					}
+
+					return selections;
+				}
+			};
+			
+			void TorrentPlugin::on_MoveUp__triggered ()
+			{
+				QTreeView *tree = Core::Instance ()->GetProxy ()->GetCurrentView ();
+				if (!tree)
+					return;
+
+				QItemSelectionModel *sel = tree->selectionModel ();
+				if (!sel)
+					return;
+
+				QModelIndexList sis = sel->selectedRows ();
+				std::deque<int> selections;
+				try
+				{
+					selections = GetSelections (GetRepresentation ());
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< e.what ();
+					return;
+				}
 
 				Core::Instance ()->MoveUp (selections);
 
-				if (current.row () > 0)
+				sel->clearSelection ();
+				Q_FOREACH (QModelIndex si, sis)
 				{
-					QModelIndex sibling = current.sibling (current.row () - 1,
-								current.column ());
-					if (Core::Instance ()->GetProxy ()->
-							MapToSource (sibling).model () == GetRepresentation ())
-						sel->setCurrentIndex (sibling,
-								QItemSelectionModel::Select |
-								QItemSelectionModel::Current |
-								QItemSelectionModel::Rows);
+					QModelIndex sibling = si.sibling (si.row () - 1, si.column ());
+					if (Core::Instance ()->GetProxy ()->MapToSource (sibling).model () != GetRepresentation ())
+						continue;
+
+					sel->select (sibling, QItemSelectionModel::Rows |
+							QItemSelectionModel::SelectCurrent);
 				}
 			}
 			
-			void TorrentPlugin::on_MoveDown__triggered (const std::deque<int>& selections)
+			void TorrentPlugin::on_MoveDown__triggered ()
 			{
-				QTreeView *tree = Core::Instance ()->
-					GetProxy ()->GetCurrentView ();
-				QItemSelectionModel *sel = 0;
-				if (tree)
-					sel = tree->selectionModel ();
-				QModelIndex current;
-				if (sel)
-					current = sel->currentIndex ();
+				QTreeView *tree = Core::Instance ()->GetProxy ()->GetCurrentView ();
+				if (!tree)
+					return;
+
+				QItemSelectionModel *sel = tree->selectionModel ();
+				if (!sel)
+					return;
+
+				QModelIndexList sis = sel->selectedRows ();
+				std::deque<int> selections;
+				try
+				{
+					selections = GetSelections (GetRepresentation ());
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< e.what ();
+					return;
+				}
 
 				Core::Instance ()->MoveDown (selections);
 
-				if (current.row () > 0)
+				sel->clearSelection ();
+				Q_FOREACH (QModelIndex si, sis)
 				{
-					QModelIndex sibling = current.sibling (current.row () + 1,
-								current.column ());
-					if (sibling.isValid () &&
-							Core::Instance ()->GetProxy ()->
-							MapToSource (sibling).model () == GetRepresentation ())
-						sel->setCurrentIndex (sibling,
-								QItemSelectionModel::Select |
-								QItemSelectionModel::Current |
-								QItemSelectionModel::Rows);
+					QModelIndex sibling = si.sibling (si.row () + 1, si.column ());
+					if (Core::Instance ()->GetProxy ()->MapToSource (sibling).model () != GetRepresentation ())
+						continue;
+
+					sel->select (sibling, QItemSelectionModel::Rows |
+							QItemSelectionModel::SelectCurrent);
 				}
 			}
 			
-			void TorrentPlugin::on_MoveToTop__triggered (const std::deque<int>& selections)
+			void TorrentPlugin::on_MoveToTop__triggered ()
 			{
-				Core::Instance ()->MoveToTop (selections);
+				try
+				{
+					Core::Instance ()->MoveToTop (GetSelections (GetRepresentation ()));
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< e.what ();
+					return;
+				}
 			}
 			
-			void TorrentPlugin::on_MoveToBottom__triggered (const std::deque<int>& selections)
+			void TorrentPlugin::on_MoveToBottom__triggered ()
 			{
-				Core::Instance ()->MoveToBottom (selections);
+				try
+				{
+					Core::Instance ()->MoveToBottom (GetSelections (GetRepresentation ()));
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< e.what ();
+					return;
+				}
 			}
 			
-			void TorrentPlugin::on_ForceReannounce__triggered (int row)
+			void TorrentPlugin::on_ForceReannounce__triggered ()
 			{
-				Core::Instance ()->ForceReannounce (row);
+				try
+				{
+					Q_FOREACH (int torrent, GetSelections (GetRepresentation ()))
+						Core::Instance ()->ForceReannounce (torrent);
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< e.what ();
+					return;
+				}
 			}
 			
-			void TorrentPlugin::on_ForceRecheck__triggered (int row)
+			void TorrentPlugin::on_ForceRecheck__triggered ()
 			{
-				Core::Instance ()->ForceRecheck (row);
+				try
+				{
+					Q_FOREACH (int torrent, GetSelections (GetRepresentation ()))
+						Core::Instance ()->ForceRecheck (torrent);
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< e.what ();
+					return;
+				}
 			}
 			
 			void TorrentPlugin::on_ChangeTrackers__triggered ()
@@ -496,7 +620,7 @@ namespace LeechCraft
 					Core::Instance ()->SetTrackers (changer.GetTrackers ());
 			}
 			
-			void TorrentPlugin::on_MoveFiles__triggered (int)
+			void TorrentPlugin::on_MoveFiles__triggered ()
 			{
 				QString oldDir = Core::Instance ()->GetTorrentDirectory ();
 				MoveTorrentFiles mtf (oldDir);
@@ -667,75 +791,91 @@ namespace LeechCraft
 				RemoveTorrent_.reset (new QAction (tr ("Remove"),
 							Toolbar_.get ()));
 				RemoveTorrent_->setShortcut (tr ("Del"));
-				RemoveTorrent_->setProperty ("Slot", "on_RemoveTorrent__triggered");
-				RemoveTorrent_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
 				RemoveTorrent_->setProperty ("ActionIcon", "torrent_deletejob");
+				connect (RemoveTorrent_.get (),
+						SIGNAL (triggered ()),
+						this,
+						SLOT (on_RemoveTorrent__triggered ()));
 				
 				Resume_.reset (new QAction (tr ("Resume"),
 							Toolbar_.get ()));
 				Resume_->setShortcut (tr ("R"));
-				Resume_->setProperty ("Slot", "on_Resume__triggered");
-				Resume_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
 				Resume_->setProperty ("ActionIcon", "torrent_startjob");
+				connect (Resume_.get (),
+						SIGNAL (triggered ()),
+						this,
+						SLOT (on_Resume__triggered ()));
 			
 				Stop_.reset (new QAction (tr ("Pause"),
 							Toolbar_.get ()));
 				Stop_->setShortcut (tr ("S"));
-				Stop_->setProperty ("Slot", "on_Stop__triggered");
-				Stop_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
 				Stop_->setProperty ("ActionIcon", "torrent_stopjob");
+				connect (Stop_.get (),
+						SIGNAL (triggered ()),
+						this,
+						SLOT (on_Stop__triggered ()));
 			
 				MoveUp_.reset (new QAction (tr ("Move up"),
 							Toolbar_.get ()));
 				MoveUp_->setShortcut (Qt::CTRL + Qt::Key_Up);
-				MoveUp_->setProperty ("Slot", "on_MoveUp__triggered");
-				MoveUp_->setProperty ("WholeSelection", true);
-				MoveUp_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
 				MoveUp_->setProperty ("ActionIcon", "torrent_moveup");
+				connect (MoveUp_.get (),
+						SIGNAL (triggered ()),
+						this,
+						SLOT (on_MoveUp__triggered ()));
 			
 				MoveDown_.reset (new QAction (tr ("Move down"),
 							Toolbar_.get ()));
 				MoveDown_->setShortcut (Qt::CTRL + Qt::Key_Down);
-				MoveDown_->setProperty ("Slot", "on_MoveDown__triggered");
-				MoveDown_->setProperty ("WholeSelection", true);
-				MoveDown_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
 				MoveDown_->setProperty ("ActionIcon", "torrent_movedown");
+				connect (MoveDown_.get (),
+						SIGNAL (triggered ()),
+						this,
+						SLOT (on_MoveDown__triggered ()));
 			
 				MoveToTop_.reset (new QAction (tr ("Move to top"),
 							Toolbar_.get ()));
 				MoveToTop_->setShortcut (Qt::CTRL + Qt::SHIFT + Qt::Key_Up);
-				MoveToTop_->setProperty ("Slot", "on_MoveToTop__triggered");
-				MoveToTop_->setProperty ("WholeSelection", true);
-				MoveToTop_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
 				MoveToTop_->setProperty ("ActionIcon", "torrent_movetop");
+				connect (MoveToTop_.get (),
+						SIGNAL (triggered ()),
+						this,
+						SLOT (on_MoveToTop__triggered ()));
 			
 				MoveToBottom_.reset (new QAction (tr ("Move to bottom"),
 							Toolbar_.get ()));
 				MoveToBottom_->setShortcut (Qt::CTRL + Qt::SHIFT + Qt::Key_Down);
-				MoveToBottom_->setProperty ("Slot", "on_MoveToBottom__triggered");
-				MoveToBottom_->setProperty ("WholeSelection", true);
-				MoveToBottom_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
 				MoveToBottom_->setProperty ("ActionIcon", "torrent_movebottom");
+				connect (MoveToBottom_.get (),
+						SIGNAL (triggered ()),
+						this,
+						SLOT (on_MoveToBottom__triggered ()));
 			
 				ForceReannounce_.reset (new QAction (tr ("Reannounce"),
 							Toolbar_.get ()));
 				ForceReannounce_->setShortcut (tr ("F"));
-				ForceReannounce_->setProperty ("Slot", "on_ForceReannounce__triggered");
-				ForceReannounce_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
 				ForceReannounce_->setProperty ("ActionIcon", "torrent_forcereannounce");
+				connect (ForceReannounce_.get (),
+						SIGNAL (triggered ()),
+						this,
+						SLOT (on_ForceReannounce__triggered ()));
 				
 				ForceRecheck_.reset (new QAction (tr ("Recheck"),
 						Toolbar_.get ()));
-				ForceRecheck_->setProperty ("Slot", "on_ForceRecheck__triggered");
-				ForceRecheck_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
 				ForceRecheck_->setProperty ("ActionIcon", "torrent_forcerecheck");
+				connect (ForceRecheck_.get (),
+						SIGNAL (triggered ()),
+						this,
+						SLOT (on_ForceRecheck__triggered ()));
 			
 				MoveFiles_.reset (new QAction (tr ("Move files..."),
 							Toolbar_.get ()));
 				MoveFiles_->setShortcut (tr ("M"));
-				MoveFiles_->setProperty ("Slot", "on_MoveFiles__triggered");
-				MoveFiles_->setProperty ("Object", QVariant::fromValue<QObject*> (this));
 				MoveFiles_->setProperty ("ActionIcon", "torrent_movefiles");
+				connect (MoveFiles_.get (),
+						SIGNAL (triggered ()),
+						this,
+						SLOT (on_MoveFiles__triggered ()));
 			
 				Import_.reset (new QAction (tr ("Import..."),
 							Toolbar_.get ()));
