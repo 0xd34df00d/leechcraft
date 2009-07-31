@@ -183,6 +183,15 @@ namespace LeechCraft
 				IsWorking_ = false;
 			}
 
+			void Worker::Abort ()
+			{
+				if (File_)
+					File_->close ();
+				emit error (tr ("Aborted"), Task_);
+
+				IsWorking_ = false;
+			}
+
 			void Worker::Pause ()
 			{
 				curl_easy_pause (Handle_.get (), CURLPAUSE_ALL);

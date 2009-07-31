@@ -74,6 +74,7 @@ namespace LeechCraft
 				 * @param[in] result The result of the operation.
 				 */
 				void NotifyFinished (CURLcode result);
+				void Abort ();
 				void Pause ();
 				void Resume ();
 			private:

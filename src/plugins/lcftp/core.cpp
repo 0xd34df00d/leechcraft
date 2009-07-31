@@ -899,7 +899,12 @@ namespace LeechCraft
 
 					if (r < working)
 					{
-						// TODO delete working stuff
+						{
+							QMutexLocker l (&MultiHandleMutex_);
+							curl_multi_remove_handle (MultiHandle_.get (),
+									Workers_.at (r)->GetHandle ().get ());
+						}
+						Workers_.at (r)->Abort ();
 					}
 					else
 						tasksIndexes << (r - working);
@@ -914,6 +919,8 @@ namespace LeechCraft
 					Tasks_.removeAt (index);
 					endRemoveRows ();
 				}
+
+				Reschedule ();
 			}
 		};
 	};
