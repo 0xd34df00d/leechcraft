@@ -249,6 +249,11 @@ namespace LeechCraft
 						SIGNAL (gotLink (const LeechCraft::DownloadEntity&)),
 						this,
 						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+				connect (proxy->GetTreeViewReemitter (),
+						SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&,
+								QTreeView*)),
+						this,
+						SLOT (handleItemSelected (const QModelIndex&)));
 			
 				Core::Instance ().SetWidgets (Impl_->ControlToolBar_, Impl_->AdditionalInfo_);
 				currentChannelChanged ();
@@ -321,10 +326,14 @@ namespace LeechCraft
 				return Core::Instance ().GetJobHolderRepresentation ();
 			}
 			
-			void Aggregator::ItemSelected (const QModelIndex& index)
+			void Aggregator::handleItemSelected (const QModelIndex& index)
 			{
-				Impl_->SelectedRepr_ = index;
-				Core::Instance ().CurrentChannelChanged (index, true);
+				QModelIndex si = Core::Instance ().GetProxy ()->MapToSource (index);
+				qDebug () << si << si.model () << index;
+				if (si.model () != GetRepresentation ())
+					si = QModelIndex ();
+				Impl_->SelectedRepr_ = si;
+				Core::Instance ().CurrentChannelChanged (Impl_->SelectedRepr_, true);
 			}
 			
 			bool Aggregator::CouldHandle (const LeechCraft::DownloadEntity& e) const

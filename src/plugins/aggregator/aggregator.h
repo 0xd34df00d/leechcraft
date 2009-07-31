@@ -56,7 +56,6 @@ namespace LeechCraft
 				QWidget* GetTabContents ();
 				QToolBar* GetToolBar () const;
 				QAbstractItemModel* GetRepresentation () const;
-				void ItemSelected (const QModelIndex&);
 
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 
@@ -78,6 +77,7 @@ namespace LeechCraft
 			private slots:
 				void showError (const QString&);
 				void showError ();
+				void handleItemSelected (const QModelIndex&);
 				void on_ActionAddFeed__triggered ();
 				void on_ActionRemoveFeed__triggered ();
 				void on_ActionMarkChannelAsRead__triggered ();
