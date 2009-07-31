@@ -505,15 +505,17 @@ namespace LeechCraft
 				Core::Instance ()->MoveUp (selections);
 
 				sel->clearSelection ();
+				QItemSelection selection;
 				Q_FOREACH (QModelIndex si, sis)
 				{
 					QModelIndex sibling = si.sibling (si.row () - 1, si.column ());
 					if (Core::Instance ()->GetProxy ()->MapToSource (sibling).model () != GetRepresentation ())
 						continue;
-
-					sel->select (sibling, QItemSelectionModel::Rows |
-							QItemSelectionModel::SelectCurrent);
+					
+					selection.select (sibling, sibling);
 				}
+				sel->select (selection, QItemSelectionModel::Rows |
+						QItemSelectionModel::SelectCurrent);
 			}
 			
 			void TorrentPlugin::on_MoveDown__triggered ()
@@ -542,15 +544,17 @@ namespace LeechCraft
 				Core::Instance ()->MoveDown (selections);
 
 				sel->clearSelection ();
+				QItemSelection selection;
 				Q_FOREACH (QModelIndex si, sis)
 				{
 					QModelIndex sibling = si.sibling (si.row () + 1, si.column ());
 					if (Core::Instance ()->GetProxy ()->MapToSource (sibling).model () != GetRepresentation ())
 						continue;
 
-					sel->select (sibling, QItemSelectionModel::Rows |
-							QItemSelectionModel::SelectCurrent);
+					selection.select (sibling, sibling);
 				}
+				sel->select (selection, QItemSelectionModel::Rows |
+						QItemSelectionModel::SelectCurrent);
 			}
 			
 			void TorrentPlugin::on_MoveToTop__triggered ()
