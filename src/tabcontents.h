@@ -4,6 +4,7 @@
 #include "ui_tabcontents.h"
 
 class QTimer;
+class QToolBar;
 
 namespace LeechCraft
 {
@@ -13,6 +14,7 @@ namespace LeechCraft
 
 		Ui::TabContents Ui_;
 		QTimer *FilterTimer_;
+		QToolBar *Controls_;
 	public:
 		TabContents (QWidget* = 0);
 		virtual ~TabContents ();

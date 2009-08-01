@@ -9,6 +9,7 @@ namespace LeechCraft
 	TabContents::TabContents (QWidget *parent)
 	: QWidget (parent)
 	, FilterTimer_ (new QTimer (this))
+	, Controls_ (0)
 	{
 		Ui_.setupUi (this);
 
@@ -57,6 +58,10 @@ namespace LeechCraft
 
 	void TabContents::SmartDeselect (TabContents *newFocus)
 	{
+		if (Controls_)
+			Core::Instance ().GetReallyMainWindow ()->
+				removeToolBar (Controls_);
+
 		if (newFocus &&
 				Ui_.PluginsTasksTree_->selectionModel ())
 			Ui_.PluginsTasksTree_->selectionModel ()->clear ();
@@ -127,6 +132,7 @@ namespace LeechCraft
 				Core::Instance ().GetReallyMainWindow ()->
 					addToolBar (controls);
 				controls->show ();
+				Controls_ = controls;
 			}
 			if (addiInfo)
 			{
