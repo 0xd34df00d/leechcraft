@@ -19,7 +19,7 @@ LICENSE="BSD"
 SLOT="0"
 KEYWORDS=""
 
-IUSE="debug examples test +encryption geoip +resolvecountries logging vlogging"
+IUSE="debug examples test +encryption geoip resolvecountries logging vlogging +unicode"
 
 DEPEND="
 	>=dev-libs/boost-1.34
@@ -45,14 +45,14 @@ src_configure()
 				-Dbuild_examples=OFF
 				-Dbuild_tests=OFF
 				-Dresolve-countries=OFF
-				-Dencryption=OFF
 				$(cmake-utils_use examples build_examples)
 				$(cmake-utils_use test build_tests)
 				$(cmake-utils_use resolvecountries resolve-countries)
 				$(cmake-utils_use encryption encryption)
 				$(cmake-utils_use geoip geoip)
 				$(cmake-utils_use logging logging)
-				$(cmake-utils_use vlogging verbose-logging)"
+				$(cmake-utils_use vlogging verbose-logging)
+				$(cmake-utils_use unicode unicode)"
 	cmake-utils_src_configure
 }
 
