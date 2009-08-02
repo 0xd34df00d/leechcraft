@@ -95,10 +95,6 @@
         <translation>Підсумок</translation>
     </message>
     <message>
-        <source>toolBar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Add task</source>
         <translation>Додати задачу</translation>
     </message>
@@ -128,6 +124,14 @@
     </message>
     <message>
         <source>exit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Main toolbar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New tab</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -184,7 +188,7 @@
     <name>LeechCraft::Core</name>
     <message>
         <source>Setting up %1...</source>
-        <translation>Встановлюємо %1...</translation>
+        <translation type="obsolete">Встановлюємо %1...</translation>
     </message>
     <message>
         <source>No plugins are able to download &quot;%1&quot;</source>
@@ -208,7 +212,7 @@
     </message>
     <message>
         <source>Calculating dependencies...</source>
-        <translation>Обчислюються залежності...</translation>
+        <translation type="obsolete">Обчислюються залежності...</translation>
     </message>
     <message>
         <source>Too long to show</source>
@@ -234,6 +238,18 @@
         <source>Binary entity</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>LeechCraft</source>
+        <translation type="unfinished">LeechCraft</translation>
+    </message>
+    <message>
+        <source>Do you really want to clear the network cache?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you really want to clear cookies?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::FancyPopupManager</name>
@@ -246,15 +262,15 @@
     <name>LeechCraft::MainWindow</name>
     <message>
         <source>Initializing interface...</source>
-        <translation>Ініціалізація інтерфейсу...</translation>
+        <translation type="obsolete">Ініціалізація інтерфейсу...</translation>
     </message>
     <message>
         <source>Initializing core and plugins...</source>
-        <translation>Ініціалізація ядра і плагінів...</translation>
+        <translation type="obsolete">Ініціалізація ядра і плагінів...</translation>
     </message>
     <message>
         <source>Plugins</source>
-        <translation>Плагіни</translation>
+        <translation type="obsolete">Плагіни</translation>
     </message>
     <message>
         <source>LeechCraft</source>
@@ -266,7 +282,7 @@
     </message>
     <message>
         <source>Plugin control</source>
-        <translation>Контроль за плагінами</translation>
+        <translation type="obsolete">Контроль за плагінами</translation>
     </message>
     <message>
         <source>%1 down, %2 up</source>
@@ -339,7 +355,7 @@
     </message>
     <message>
         <source>Initializing %1...</source>
-        <translation>Иніціалізація %1...</translation>
+        <translation type="obsolete">Иніціалізація %1...</translation>
     </message>
     <message>
         <source>LeechCraft</source>
@@ -453,6 +469,13 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::TabContentsManager</name>
+    <message>
+        <source>Summary</source>
+        <translation type="unfinished">Підсумок</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::TagsViewer</name>
     <message>
         <source>Rename</source>
@@ -532,6 +555,13 @@
     <message>
         <source>Remember my choice for the resource</source>
         <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TabContents</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished">Форма</translation>
     </message>
 </context>
 <context>

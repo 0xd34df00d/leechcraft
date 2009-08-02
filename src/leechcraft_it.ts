@@ -93,7 +93,7 @@
     </message>
     <message>
         <source>toolBar</source>
-        <translation type="unfinished">toolBar</translation>
+        <translation type="obsolete">toolBar</translation>
     </message>
     <message>
         <source>Add task</source>
@@ -126,6 +126,14 @@
     <message>
         <source>Log</source>
         <translation type="unfinished">Traccia</translation>
+    </message>
+    <message>
+        <source>Main toolbar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New tab</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -193,11 +201,11 @@
     </message>
     <message>
         <source>Calculating dependencies...</source>
-        <translation type="unfinished">Calcolando le dipendenze...</translation>
+        <translation type="obsolete">Calcolando le dipendenze...</translation>
     </message>
     <message>
         <source>Setting up %1...</source>
-        <translation type="unfinished">Settando %1...</translation>
+        <translation type="obsolete">Settando %1...</translation>
     </message>
     <message>
         <source>No plugins are able to download &quot;%1&quot;</source>
@@ -231,6 +239,18 @@
         <source>Binary entity</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>LeechCraft</source>
+        <translation type="unfinished">LeechCraft</translation>
+    </message>
+    <message>
+        <source>Do you really want to clear the network cache?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you really want to clear cookies?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::FancyPopupManager</name>
@@ -243,15 +263,15 @@
     <name>LeechCraft::MainWindow</name>
     <message>
         <source>Initializing core and plugins...</source>
-        <translation type="unfinished">Inizializzando base e plugins...</translation>
+        <translation type="obsolete">Inizializzando base e plugins...</translation>
     </message>
     <message>
         <source>Plugins</source>
-        <translation type="unfinished">Plugins</translation>
+        <translation type="obsolete">Plugins</translation>
     </message>
     <message>
         <source>Initializing interface...</source>
-        <translation type="unfinished">Inizializzando l&apos;interfaccia</translation>
+        <translation type="obsolete">Inizializzando l&apos;interfaccia</translation>
     </message>
     <message>
         <source>LeechCraft</source>
@@ -271,7 +291,7 @@
     </message>
     <message>
         <source>Plugin control</source>
-        <translation type="unfinished">Controllo plugin</translation>
+        <translation type="obsolete">Controllo plugin</translation>
     </message>
     <message>
         <source>%1 down, %2 up</source>
@@ -333,10 +353,6 @@
     <message>
         <source>Release of one or more plugins failed.</source>
         <translation type="unfinished">Rilascio di uno o più plugin fallito.</translation>
-    </message>
-    <message>
-        <source>Initializing %1...</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>LeechCraft</source>
@@ -450,6 +466,13 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::TabContentsManager</name>
+    <message>
+        <source>Summary</source>
+        <translation type="unfinished">Sommario</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::TagsViewer</name>
     <message>
         <source>Rename</source>
@@ -529,6 +552,13 @@
     <message>
         <source>Remember my choice for the resource</source>
         <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TabContents</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished">Form</translation>
     </message>
 </context>
 <context>

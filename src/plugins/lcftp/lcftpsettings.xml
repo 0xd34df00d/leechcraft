@@ -9,7 +9,7 @@
 			<label lang="ru" value="Общие настройки" />
 			<item type="checkbox" property="ActivatedTransfers" default="on">
 				<label lang="en" value="Transfer is also triggered by activating an item" />
-				<label lang="ru" value="Начинать передачи в результате задействования объекта" />
+				<label lang="ru" value="Начинать передачи в результате активации строки в списке" />
 			</item>
 			<item type="checkbox" property="TransferHiddenFiles" default="on">
 				<label lang="en" value="Transfer hidden files" />

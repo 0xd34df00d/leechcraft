@@ -47,7 +47,7 @@
     <name>HandlerChoiceDialog</name>
     <message>
         <source>Choose entity handler</source>
-        <translation>Выбрать обработчик объекта</translation>
+        <translation>Выбор обработчика объекта</translation>
     </message>
     <message>
         <source>LeechCraft has detected an entity:</source>
@@ -61,12 +61,12 @@
     <message>
         <source>It could be downloaded by:</source>
         <oldsource>This entity could be downloaded by:</oldsource>
-        <translation>Может быть загружено при помощи:</translation>
+        <translation>Может быть загружен при помощи:</translation>
     </message>
     <message>
         <source>It could be handled by:</source>
         <oldsource>This entity could also be handled by:</oldsource>
-        <translation>Может быть обработано с помощью:</translation>
+        <translation>Может быть обработан с помощью:</translation>
     </message>
 </context>
 <context>
@@ -99,10 +99,6 @@
         <translation>Добавить задачу</translation>
     </message>
     <message>
-        <source>toolBar</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Quit</source>
         <translation>Выход</translation>
     </message>
@@ -129,6 +125,14 @@
     <message>
         <source>exit</source>
         <translation>Выход</translation>
+    </message>
+    <message>
+        <source>Main toolbar</source>
+        <translation>Главная панель инструментов</translation>
+    </message>
+    <message>
+        <source>New tab</source>
+        <translation>Новая вкладка</translation>
     </message>
 </context>
 <context>
@@ -184,7 +188,7 @@
     <name>LeechCraft::Core</name>
     <message>
         <source>Setting up %1...</source>
-        <translation>Настройка %1...</translation>
+        <translation type="obsolete">Настройка %1...</translation>
     </message>
     <message>
         <source>No plugins are able to download &quot;%1&quot;</source>
@@ -208,7 +212,7 @@
     </message>
     <message>
         <source>Calculating dependencies...</source>
-        <translation>Подсчет зависимостей...</translation>
+        <translation type="obsolete">Подсчет зависимостей...</translation>
     </message>
     <message>
         <source>Too long to show</source>
@@ -234,6 +238,18 @@
         <source>Binary entity</source>
         <translation>Двоичный объект</translation>
     </message>
+    <message>
+        <source>LeechCraft</source>
+        <translation>LeechCraft</translation>
+    </message>
+    <message>
+        <source>Do you really want to clear the network cache?</source>
+        <translation>Вы действительно хотите очистить кэш?</translation>
+    </message>
+    <message>
+        <source>Do you really want to clear cookies?</source>
+        <translation>Вы действительно хотите очистить куки?</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::FancyPopupManager</name>
@@ -246,15 +262,15 @@
     <name>LeechCraft::MainWindow</name>
     <message>
         <source>Initializing interface...</source>
-        <translation>Инициализация интерфейса...</translation>
+        <translation type="obsolete">Инициализация интерфейса...</translation>
     </message>
     <message>
         <source>Initializing core and plugins...</source>
-        <translation>Инициализация ядра и плагинов...</translation>
+        <translation type="obsolete">Инициализация ядра и плагинов...</translation>
     </message>
     <message>
         <source>Plugins</source>
-        <translation>Плагины</translation>
+        <translation type="obsolete">Плагины</translation>
     </message>
     <message>
         <source>LeechCraft</source>
@@ -266,11 +282,11 @@
     </message>
     <message>
         <source>Plugin control</source>
-        <translation>Управление плагинами</translation>
+        <translation type="obsolete">Управление плагинами</translation>
     </message>
     <message>
         <source>%1 down, %2 up</source>
-        <translation>%1 скачка, %2 отдача</translation>
+        <translation>%1 закачка, %2 отдача</translation>
     </message>
     <message>
         <source>/s	</source>
@@ -339,7 +355,7 @@
     </message>
     <message>
         <source>Initializing %1...</source>
-        <translation>Инициализация %1...</translation>
+        <translation type="obsolete">Инициализация %1...</translation>
     </message>
     <message>
         <source>LeechCraft</source>
@@ -453,6 +469,13 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::TabContentsManager</name>
+    <message>
+        <source>Summary</source>
+        <translation>Сводка</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::TagsViewer</name>
     <message>
         <source>Rename</source>
@@ -532,6 +555,13 @@
     <message>
         <source>Remember my choice for the resource</source>
         <translation>Запомнить мой выбор для ресурса</translation>
+    </message>
+</context>
+<context>
+    <name>TabContents</name>
+    <message>
+        <source>Form</source>
+        <translation>Форма</translation>
     </message>
 </context>
 <context>

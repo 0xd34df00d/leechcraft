@@ -613,7 +613,7 @@
 				</item>
 				<item type="checkbox" property="LockDiskCache" state="on">
 					<label lang="en" value="Prevent disk cache from swapping out" />
-					<label lang="ru" value="Предотвращать сброс кэша в подкачку" />
+					<label lang="ru" value="Предотвращать сброс кэша в своп" />
 				</item>
 				<item type="checkbox" property="AutoManagePreferSeeds" default="true">
 					<label lang="en" value="Give slots to seeding torrents in automanaged mode" />

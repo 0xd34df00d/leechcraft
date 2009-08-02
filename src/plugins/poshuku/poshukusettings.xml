@@ -92,7 +92,7 @@
 						<suffix value=" KB" />
 					</lang>
 					<lang value="ru">
-						<label value="Квота оффлайн-хранилища по-умолчанию:" />
+						<label value="Квота оффлайн-хранилища по умолчанию:" />
 						<suffix value=" КБ" />
 					</lang>
 				</item>
@@ -235,12 +235,12 @@
 				</item>
 				<item type="spinbox" property="DefaultFontSize" default="14" minimum="5" maximum="40" step="1">
 					<label lang="en" value="Default font size:" />
-					<label lang="ru" value="Размер шрифта по-умолчанию:" />
+					<label lang="ru" value="Размер шрифта по умолчанию:" />
 					<label lang="uk" value="Розмірш шрифта за заомвчуванням:" />
 				</item>	
 				<item type="spinbox" property="DefaultFixedFontSize" default="14" minimum="5" maximum="40" step="1">
 					<label lang="en" value="Default fixed font size:" />
-					<label lang="ru" value="Размер фиксированного шрифта по-умолчанию:" />
+					<label lang="ru" value="Размер фиксированного шрифта по умолчанию:" />
 					<label lang="uk" value="Розмір фіксованого шрифта за замовчуванням:" />
 				</item>	
 			</groupbox>
