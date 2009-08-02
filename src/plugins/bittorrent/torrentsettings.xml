@@ -190,7 +190,7 @@
 				<label lang="ru" value="DHT" />
 				<item type="spinbox" property="MaxPeersReply" default="50" minimum="10" maximum="150" step="10">
 					<label lang="en" value="Maximum peers in reply:" />
-					<label lang="ru" value="Максимально пиров в ответе:" />
+					<label lang="ru" value="Максимум пиров при ответе:" />
 				</item>
 				<item type="spinbox" property="SearchBranching" default="5" minimum="2" maximum="10" step="1">
 					<label lang="en" value="Search branching:" />
@@ -271,7 +271,7 @@
 				</item>
 				<item type="checkbox" property="StrictSuperSeeding" default="false">
 					<label lang="en" value="Strict super seeding" />
-					<label lang="ru" value="Строгий супер-сидинг" />
+					<label lang="ru" value="Строгий супер-сид" />
 				</item>
 				<item type="spinbox" property="TrackerCompletionTimeout" default="60" minimum="10" maximum="300" step="10">
 					<lang value="en">
@@ -279,7 +279,7 @@
 						<suffix value=" s" />
 					</lang>
 					<lang value="ru">
-						<label value="Таймаут ожидания результата запроса от трекера:" />
+						<label value="Время ожидания результата запроса от трекера:" />
 						<suffix value=" с" />
 					</lang>
 				</item>
@@ -289,7 +289,7 @@
 						<suffix value=" s" />
 					</lang>
 					<lang value="ru">
-						<label value="Таймаут ожидания получения данных от трекера:" />
+						<label value="Время ожидания получения данных от трекера:" />
 						<suffix value=" с" />
 					</lang>
 				</item>
@@ -403,7 +403,7 @@
 				</item>
 				<item type="spinbox" property="MaxPeerListSize" default="8000" minimum="5" maximum="32000" step="500">
 					<label lang="en" value="Max peer list size:" />
-					<label lang="ru" value="Максимальное количество пиров в списке:" />
+					<label lang="ru" value="Максимум пиров в списке:" />
 				</item>
 				<item type="spinbox" property="MinAnnounceInterval" default="300" minimum="10" maximum="3600" step="10">
 					<lang value="en">
@@ -455,11 +455,11 @@
 				</item>
 				<item type="spinbox" property="MaxFailcount" default="5" minimum="1" maximum="99" step="1">
 					<label lang="en" value="Maximum peer connection attempt failcount:" />
-					<label lang="ru" value="Максимальное количество неудачных соединений с пиром:" />
+					<label lang="ru" value="Максимум неудачных соединений с пиром:" />
 				</item>
 				<item type="spinbox" property="ConnectionSpeed" default="20" minimum="1" maximum="100" step="10">
 					<label lang="en" value="Connection attempts per second:" />
-					<label lang="ru" value="Количество попыток соединения в секунду:" />
+					<label lang="ru" value="Попыток соединения в секунду:" />
 				</item>
 				<item type="spinbox" property="SendBufferWatermark" default="80" minimum="1" maximum="100">
 					<lang value="en">
@@ -503,11 +503,11 @@
 				</item>
 				<item type="doublespinbox" property="ShareRatioLimit" default="2" minimum="0.7" maximum="1000">
 					<label lang="en" value="Share ratio limit:" />
-					<label lang="ru" value="Лимит рейтинга:" />
+					<label lang="ru" value="Предел рейтинга:" />
 				</item>
 				<item type="doublespinbox" property="SeedTimeRatioLimit" default="2" minimum="0.7" maximum="1000">
 					<label lang="en" value="Seed time ratio limit:" />
-					<label lang="ru" value="Лимит отношения времени сидирования:" />
+					<label lang="ru" value="Предел отношения времени раздачи:" />
 				</item>
 				<item type="doublespinbox" property="SeedTimeLimit" default="1440" minimum="60" maximum="30240" step="60">
 					<lang value="en">
@@ -515,7 +515,7 @@
 						<suffix value=" min" />
 					</lang>
 					<lang value="ru">
-						<label value="Лимит времени сидирования:" />
+						<label value="Предел времени раздачи:" />
 						<suffix value=" мин" />
 					</lang>
 				</item>
@@ -531,7 +531,7 @@
 				</item>
 				<item type="spinbox" property="AllowedFastSetSize" default="10" minimum="1" maximum="50" step="5">
 					<label lang="en" value="N of pieces to send via fast extensions:" />
-					<label lang="ru" value="Посылать через fast extensions кусков:" />
+					<label lang="ru" value="Посылать кусков через fast extensions:" />
 				</item>
 				<item type="spinbox" property="HandshakeTimeout" default="10" minimum="1" maximum="60" step="10">
 					<lang value="en">
@@ -575,7 +575,7 @@
 						<suffix value=" KB" />
 					</lang>
 					<lang value="ru">
-						<label value="Размер кeша:" />
+						<label value="Размер кэша:" />
 						<suffix value=" МБ" />
 					</lang>
 				</item>
@@ -591,7 +591,7 @@
 				</item>
 				<item type="lineedit" property="AutomaticTags" default="automatic">
 					<label lang="en" value="Tags for automatic jobs:" />
-					<label lang="ru" value="Тэги для автоматических задач:" />
+					<label lang="ru" value="Метки для автоматических задач:" />
 				</item>
 			</groupbox>
 		</tab>
@@ -605,7 +605,7 @@
 				</item>
 				<item type="checkbox" property="UseReadCache" state="on">
 					<label lang="en" value="Use read cache" />
-					<label lang="ru" value="Использовать кеш для чтения" />
+					<label lang="ru" value="Использовать кэш для чтения" />
 				</item>
 				<item type="checkbox" property="FreeTorrentHashes" state="on">
 					<label lang="en" value="Unload hashes from memory if seeding" />
@@ -613,11 +613,11 @@
 				</item>
 				<item type="checkbox" property="LockDiskCache" state="on">
 					<label lang="en" value="Prevent disk cache from swapping out" />
-					<label lang="ru" value="Предотвращать сброс кeша в своп" />
+					<label lang="ru" value="Предотвращать сброс кэша в подкачку" />
 				</item>
 				<item type="checkbox" property="AutoManagePreferSeeds" default="true">
 					<label lang="en" value="Give slots to seeding torrents in automanaged mode" />
-					<label lang="ru" value="Давать слоты отдающимся торрентам в автоуправляемом режиме" />
+					<label lang="ru" value="Давать слоты раздающимся торрентам в автоуправляемом режиме" />
 				</item>
 				<item type="spinbox" property="CacheExpiry" default="60" minimum="5" maximum="1200">
 					<lang value="en">
@@ -625,7 +625,7 @@
 						<suffix value=" s" />
 					</lang>
 					<lang value="ru">
-						<label value="Годность кeша:" />
+						<label value="Годность кэша:" />
 						<suffix value=" с" />
 					</lang>
 				</item>
@@ -680,7 +680,7 @@
 			<label lang="ru" value="Протоколирование" />
 			<groupbox>
 				<label lang="en" value="Logging levels" />
-				<label lang="ru" value="События протоколирования" />
+				<label lang="ru" value="Уровни протоколирования" />
 				<item type="checkbox" property="NotificationError" default="on">
 					<label lang="en" value="Error notifications" />
 					<label lang="ru" value="Уведомления об ошибках" />
@@ -743,7 +743,7 @@
 				</item>
 				<item type="checkbox" property="ActiveCacheStats" default="on">
 					<label lang="en" value="Cache stats" />
-					<label lang="ru" value="Статистика кeша" />
+					<label lang="ru" value="Статистика кэша" />
 				</item>
 			</groupbox>
 			<groupbox>

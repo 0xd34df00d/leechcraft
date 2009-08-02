@@ -20,7 +20,7 @@
 			</item>
 			<item type="checkbox" property="ShowIconInTray" state="on">
 				<label lang="en" value="Show icon in tray when there are unread items" />
-				<label lang="ru" value="Показывать иконку в трее при непрочтенных сообщениях" />
+				<label lang="ru" value="Показывать иконку в трее при непрочтённых сообщениях" />
 				<label lang="uk" value="Сповіщати про непрочитані повідомлення" />
 			</item>
 			<item type="checkbox" property="AlwaysUseExternalBrowser" state="off">
@@ -32,8 +32,8 @@
 				<label lang="ru" value="Показывать список категорий новостей" />
 			</item>
 			<item type="lineedit" property="CommentsTags" default="comments">
-				<label lang="en" value="Additional tags for subscribed comments:" />
-				<label lang="ru" value="Дополнительные теги для подписанных комментариев:" />
+				<label lang="en" value="Additional tags for comment feeds:" />
+				<label lang="ru" value="Дополнительные метки для лент комментариев:" />
 			</item>
 		</tab>
 		<tab>

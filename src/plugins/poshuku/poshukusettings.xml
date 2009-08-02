@@ -44,7 +44,7 @@
 				<label lang="ru" value="Безопасность" />
 				<item type="checkbox" property="OfflineStorageDB" state="on">
 					<label lang="en" value="Offline storage database" />
-					<label lang="ru" value="Оффлай-хранилище" />
+					<label lang="ru" value="Оффлайн-хранилище" />
 				</item>
 				<item type="checkbox" property="OfflineWebApplicationCache" state="on">
 					<label lang="en" value="Offline web application cache" />
@@ -76,7 +76,7 @@
 				</item>
 				<item type="pushbutton" name="CookiesEdit">
 					<label lang="en" value="Cookies..." />
-					<label lang="ru" value="Кукисы..." />
+					<label lang="ru" value="Куки..." />
 				</item>
 			</groupbox>
 		</tab>
@@ -92,7 +92,7 @@
 						<suffix value=" KB" />
 					</lang>
 					<lang value="ru">
-						<label value="Квота оффлайн-хранилища по умолчанию:" />
+						<label value="Квота оффлайн-хранилища по-умолчанию:" />
 						<suffix value=" КБ" />
 					</lang>
 				</item>
@@ -110,7 +110,7 @@
 						<suffix value=" MB" />
 					</lang>
 					<lang value="ru">
-						<label value="Минимальная мертвая емкость:" />
+						<label value="Минимальная мертвая ёмкость:" />
 						<suffix value=" МБ" />
 					</lang>
 				</item>
@@ -120,7 +120,7 @@
 						<suffix value=" MB" />
 					</lang>
 					<lang value="ru">
-						<label value="Максимальная мертвая емкость:" />
+						<label value="Максимальная мертвая ёмкость:" />
 						<suffix value=" МБ" />
 					</lang>
 				</item>
@@ -130,7 +130,7 @@
 						<suffix value=" MB" />
 					</lang>
 					<lang value="ru">
-						<label value="Общая емкость:" />
+						<label value="Общая ёмкость:" />
 						<suffix value=" МБ" />
 					</lang>
 				</item>
@@ -148,10 +148,10 @@
 		<label lang="uk" value="Параметри переглядача" />
 		<tab>
 			<label lang="en" value="Dynamic content" />
-			<label lang="ru" value="Динамический контент" />
+			<label lang="ru" value="Динамическое содержимое" />
 			<groupbox>
 				<label lang="en" value="Dynamic content" />
-				<label lang="ru" value="Динамический контент" />
+				<label lang="ru" value="Динамическое содержимое" />
 				<item type="checkbox" property="AutoLoadImages" state="on">
 					<label lang="en" value="Load images automatically" />
 					<label lang="ru" value="Автоматически загружать изображения" />
@@ -178,7 +178,7 @@
 				</item>
 				<item type="checkbox" property="JavascriptCanAccessClipboard" state="on">
 					<label lang="en" value="Javascript programs can access clipboard" />
-					<label lang="ru" value="Javascript-программы могут работать с буфером обмена" />
+					<label lang="ru" value="Javascript-программам доступен буфер обмена" />
 				</item>
 				<item type="checkbox" property="DeveloperExtrasEnabled" state="off">
 					<label lang="en" value="Developer extras" />
@@ -235,12 +235,12 @@
 				</item>
 				<item type="spinbox" property="DefaultFontSize" default="14" minimum="5" maximum="40" step="1">
 					<label lang="en" value="Default font size:" />
-					<label lang="ru" value="Размер шрифта по умолчанию:" />
+					<label lang="ru" value="Размер шрифта по-умолчанию:" />
 					<label lang="uk" value="Розмірш шрифта за заомвчуванням:" />
 				</item>	
 				<item type="spinbox" property="DefaultFixedFontSize" default="14" minimum="5" maximum="40" step="1">
 					<label lang="en" value="Default fixed font size:" />
-					<label lang="ru" value="Размер фиксированного шрифта по умолчанию:" />
+					<label lang="ru" value="Размер фиксированного шрифта по-умолчанию:" />
 					<label lang="uk" value="Розмір фіксованого шрифта за замовчуванням:" />
 				</item>	
 			</groupbox>
