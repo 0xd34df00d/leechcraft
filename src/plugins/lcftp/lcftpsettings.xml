@@ -9,7 +9,7 @@
 			<label lang="ru" value="Общие настройки" />
 			<item type="checkbox" property="ActivatedTransfers" default="on">
 				<label lang="en" value="Transfer is also triggered by activating an item" />
-				<label lang="ru" value="Начинать передачи в результате активации файла" />
+				<label lang="ru" value="Начинать передачи в результате задействования объекта" />
 			</item>
 			<item type="checkbox" property="TransferHiddenFiles" default="on">
 				<label lang="en" value="Transfer hidden files" />
@@ -17,11 +17,11 @@
 			</item>
 			<item type="checkbox" property="FollowSymLinks" default="off">
 				<label lang="en" value="Follow symlinks" />
-				<label lang="ru" value="Следовать за символическими ссылками" />
+				<label lang="ru" value="Переходить по символическим ссылкам" />
 			</item>
 			<item type="checkbox" property="AppendRemoteFiles" default="on">
 				<label lang="en" value="Append to remote files instead of overwriting" />
-				<label lang="ru" value="Дописывать к удаленным файлам вместо перезаписи" />
+				<label lang="ru" value="Дописывать к удалённым файлам вместо перезаписи" />
 			</item>
 		</groupbox>
 		<groupbox>

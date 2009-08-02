@@ -28,7 +28,7 @@
     </message>
     <message>
         <source>Entity:</source>
-        <translation>Что:</translation>
+        <translation>Объект:</translation>
     </message>
     <message>
         <source>Browse...</source>
@@ -40,14 +40,14 @@
     </message>
     <message>
         <source>Location:</source>
-        <translation>Куда:</translation>
+        <translation>Расположение:</translation>
     </message>
 </context>
 <context>
     <name>HandlerChoiceDialog</name>
     <message>
         <source>Choose entity handler</source>
-        <translation>Выбор обработчика объекта</translation>
+        <translation>Выбрать обработчик объекта</translation>
     </message>
     <message>
         <source>LeechCraft has detected an entity:</source>
@@ -212,7 +212,7 @@
     </message>
     <message>
         <source>Too long to show</source>
-        <translation>Строка слишком длинная для отображения</translation>
+        <translation>Строка слишком длинна для отображения</translation>
     </message>
     <message>
         <source>Select save location</source>
@@ -232,7 +232,7 @@
     </message>
     <message>
         <source>Binary entity</source>
-        <translation type="unfinished"></translation>
+        <translation>Двоичный объект</translation>
     </message>
 </context>
 <context>
@@ -270,7 +270,7 @@
     </message>
     <message>
         <source>%1 down, %2 up</source>
-        <translation>%1 к нам, %2 от нас</translation>
+        <translation>%1 скачка, %2 отдача</translation>
     </message>
     <message>
         <source>/s	</source>
@@ -286,7 +286,7 @@
     </message>
     <message>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
-        <translation>Это изменение требует перезапуска LeechCraft. Вы хотите перезапуститься сейчас?</translation>
+        <translation>Это изменение требует перезапуска LeechCraft. Хотите перезапустить сейчас?</translation>
     </message>
 </context>
 <context>
@@ -301,7 +301,7 @@
     </message>
     <message>
         <source>Could not save cookies, error opening cookie file.</source>
-        <translation>Невозможно сохранить кукисы, ошибка открытия файла с кукисами.</translation>
+        <translation>Невозможно сохранить куки, ошибка открытия cookie-файла.</translation>
     </message>
     <message>
         <source>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
@@ -397,11 +397,11 @@
     </message>
     <message>
         <source>Effective date:</source>
-        <translation>Дата начала действия:</translation>
+        <translation>Доступен с:</translation>
     </message>
     <message>
         <source>Expiry date:</source>
-        <translation>Дата окончания действия:</translation>
+        <translation>Годен до:</translation>
     </message>
     <message>
         <source>Version:</source>
@@ -456,7 +456,7 @@
     <name>LeechCraft::TagsViewer</name>
     <message>
         <source>Rename</source>
-        <translation>Переименование</translation>
+        <translation>Переименовать</translation>
     </message>
     <message>
         <source>Enter new tag name</source>

@@ -43,7 +43,7 @@
 					<label lang="ru" value="Пароль:" />
 				</item>
 				<item type="lineedit" property="UserUserAgent">
-					<label lang="en" value="User's user agent:" />
+					<label lang="en" value="Custom user agent:" />
 					<label lang="ru" value="Пользовательский user agent:" />
 				</item>
 				<item type="combobox" property="PredefinedUserAgent">
