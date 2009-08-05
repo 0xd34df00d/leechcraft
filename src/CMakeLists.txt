@@ -251,12 +251,14 @@ SET (FORMS
 SET (RESOURCES mainresources.qrc)
 SET (TRANSLATIONS
 	leechcraft_ru_RU.ts
+	leechcraft_de_DE.ts
 	leechcraft_uk_UA.ts
 	leechcraft_it.ts
 	leechcraft_ar.ts
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_ru_RU.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_de_DE.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_uk_UA.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_it.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_ar.qm
