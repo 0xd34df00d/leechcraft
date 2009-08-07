@@ -686,6 +686,8 @@ namespace LeechCraft
 			
 			void TorrentPlugin::SetupCore ()
 			{
+				Core::Instance ()->DoDelayedInit ();
+
 				TabWidget_.reset (new TabWidget ());
 				SetupActions ();
 				TorrentSelectionChanged_ = true;
@@ -721,7 +723,6 @@ namespace LeechCraft
 						SIGNAL (jobRemoved (int)));
 			
 				Core::Instance ()->SetWidgets (Toolbar_.get (), TabWidget_.get ());
-				Core::Instance ()->DoDelayedInit ();
 			}
 			
 			void TorrentPlugin::SetupTorrentView ()
