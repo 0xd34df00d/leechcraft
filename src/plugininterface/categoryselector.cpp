@@ -35,9 +35,11 @@ void CategorySelector::SetPossibleSelections (const QStringList& tags)
 {
 	clear ();
 
+	QStringList mytags = tags;
+	qSort (mytags);
 	QList<QTreeWidgetItem*> items;
-	for (QStringList::const_iterator i = tags.begin (),
-			end = tags.end (); i != end; ++i)
+	for (QStringList::const_iterator i = mytags.begin (),
+			end = mytags.end (); i != end; ++i)
 	{
 		if (i->isEmpty ())
 			continue;
