@@ -16,6 +16,7 @@ CategorySelector::CategorySelector (QWidget *parent)
 : QTreeWidget (parent)
 {
 	setWindowFlags (Qt::Tool | Qt::WindowStaysOnTopHint);
+	setRootIsDecorated (false);
 
 	QRect avail = QApplication::desktop ()->availableGeometry (this);
 	setMinimumHeight (avail.height () / 3 * 2);
