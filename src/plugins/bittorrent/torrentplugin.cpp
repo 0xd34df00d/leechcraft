@@ -686,6 +686,10 @@ namespace LeechCraft
 			
 			void TorrentPlugin::SetupCore ()
 			{
+				XmlSettingsDialog_.reset (new XmlSettingsDialog ());
+				XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+						"torrentsettings.xml");
+
 				Core::Instance ()->DoDelayedInit ();
 
 				TabWidget_.reset (new TabWidget ());
@@ -693,9 +697,6 @@ namespace LeechCraft
 				TorrentSelectionChanged_ = true;
 				LastPeersUpdate_.reset (new QTime);
 				LastPeersUpdate_->start ();
-				XmlSettingsDialog_.reset (new XmlSettingsDialog ());
-				XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-						"torrentsettings.xml");
 				AddTorrentDialog_.reset (new AddTorrent ());
 				connect (Core::Instance (),
 						SIGNAL (error (QString)),
