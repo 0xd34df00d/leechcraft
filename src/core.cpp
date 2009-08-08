@@ -1075,7 +1075,32 @@ void LeechCraft::Core::DoCommandLine (const QStringList& arguments)
 		tp |= AutoAccept;
 	}
 
-	DownloadEntity e = Util::MakeEntity (arguments.last ().toUtf8 (),
+	QVariant entity;
+	int typePos = arguments.indexOf ("-type");
+	if (typePos >= 0)
+	{
+		if (typePos + 1 < arguments.size ())
+		{
+			QString type = arguments.at (typePos + 1);
+			if (type == "url")
+				entity = QUrl (arguments.last ());
+			else if (type == "url_encoded")
+				entity = QUrl::fromEncoded (arguments.last ().toUtf8 ());
+			else
+				entity = arguments.last ();
+		}
+		else
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "illegal '-type' option position for"
+				<< arguments;
+			entity = arguments.last ();
+		}
+	}
+	else
+		entity = arguments.last ();
+
+	DownloadEntity e = Util::MakeEntity (entity,
 			QString (),
 			tp);
 	handleGotEntity (e);
