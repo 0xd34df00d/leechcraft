@@ -151,6 +151,8 @@ namespace LeechCraft
 			void Core::SetProxy (ICoreProxy_ptr proxy)
 			{
 				Proxy_ = proxy;
+				NetworkAccessManager_ = proxy->GetNetworkAccessManager ();
+				ShortcutProxy_ = proxy->GetShortcutProxy ();
 			}
 			
 			ICoreProxy_ptr Core::GetProxy () const
@@ -336,11 +338,6 @@ namespace LeechCraft
 				return NetworkAccessManager_;
 			}
 			
-			void Core::SetNetworkAccessManager (QNetworkAccessManager *manager)
-			{
-				NetworkAccessManager_ = manager;
-			}
-			
 			StorageBackend* Core::GetStorageBackend () const
 			{
 				return StorageBackend_.get ();
@@ -349,11 +346,6 @@ namespace LeechCraft
 			PluginManager* Core::GetPluginManager () const
 			{
 				return PluginManager_.get ();
-			}
-			
-			void Core::SetShortcutProxy (const IShortcutProxy *proxy)
-			{
-				ShortcutProxy_ = proxy;
 			}
 			
 			void Core::SetShortcut (int name, const QKeySequence& shortcut)

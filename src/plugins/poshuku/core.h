@@ -100,10 +100,8 @@ namespace LeechCraft
 				HistoryModel* GetHistoryModel () const;
 				URLCompletionModel* GetURLCompletionModel () const;
 				QNetworkAccessManager* GetNetworkAccessManager () const;
-				void SetNetworkAccessManager (QNetworkAccessManager*);
 				StorageBackend* GetStorageBackend () const;
 				PluginManager* GetPluginManager () const;
-				void SetShortcutProxy (const IShortcutProxy*);
 				void SetShortcut (int name, const QKeySequence& shortcut);
 				const IShortcutProxy* GetShortcutProxy () const;
 

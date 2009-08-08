@@ -31,8 +31,6 @@ namespace LeechCraft
 			
 			void Poshuku::Init (ICoreProxy_ptr coreProxy)
 			{
-				Core::Instance ().SetNetworkAccessManager (coreProxy->GetNetworkAccessManager ());
-				Core::Instance ().SetShortcutProxy (coreProxy->GetShortcutProxy ());
 				Core::Instance ().setParent (this);
 				Core::Instance ().SetProxy (coreProxy);
 			
