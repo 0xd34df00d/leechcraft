@@ -23,7 +23,7 @@ public:
 		, EAccessDenied
 		, ELocalError
 	};
-    typedef unsigned long int JobID_t;
+	typedef unsigned long int JobID_t;
 
 	/** @brief Returns download speed.
 	 *
@@ -35,7 +35,7 @@ public:
 	 *
 	 * @sa GetUploadSpeed
 	 */
-    virtual qint64 GetDownloadSpeed () const = 0;
+	virtual qint64 GetDownloadSpeed () const = 0;
 	/** @brief Returns upload speed.
 	 *
 	 * Returns summed up upload speed of the plugin. The value is
@@ -46,20 +46,20 @@ public:
 	 *
 	 * @sa GetDownloadSpeed
 	 */
-    virtual qint64 GetUploadSpeed () const = 0;
+	virtual qint64 GetUploadSpeed () const = 0;
 
 	/** @brief Starts all tasks.
 	 *
 	 * This is called by LeechCraft when it wants all plugins to start
 	 * all of its tasks.
 	 */
-    virtual void StartAll () = 0;
+	virtual void StartAll () = 0;
 	/** @brief Stops all tasks.
 	 *
 	 * This is called by LeechCraft when it wants all plugins to stop
 	 * all of its tasks.
 	 */
-    virtual void StopAll () = 0;
+	virtual void StopAll () = 0;
 
 	/** @brief Returns whether plugin can handle given entity.
 	 *
@@ -74,7 +74,7 @@ public:
 	 * @sa AddJob
 	 * @sa LeechCraft::DownloadEntity
 	 */
-    virtual bool CouldDownload (const LeechCraft::DownloadEntity& entity) const = 0;
+	virtual bool CouldDownload (const LeechCraft::DownloadEntity& entity) const = 0;
 
 	/** @brief Adds the job with given parameters.
 	 *
@@ -86,11 +86,11 @@ public:
 	 *
 	 * @sa LeechCraft::DownloadEntity
 	 */
-    virtual int AddJob (LeechCraft::DownloadEntity entity) = 0;
+	virtual int AddJob (LeechCraft::DownloadEntity entity) = 0;
 
 	/** @brief Virtual destructor.
 	 */
-    virtual ~IDownload () {}
+	virtual ~IDownload () {}
 };
 
 Q_DECLARE_INTERFACE (IDownload, "org.Deviant.LeechCraft.IDownload/1.0");

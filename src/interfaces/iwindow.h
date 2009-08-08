@@ -19,7 +19,7 @@ public:
 	 *
 	 * @param[in] parent Pointer to parent widget.
 	 */
-    virtual void SetParent (QWidget *parent) = 0;
+	virtual void SetParent (QWidget *parent) = 0;
 
 	/** @brief Shows the plugin's main window.
 	 *
@@ -27,11 +27,11 @@ public:
 	 * action which means that the plugin should show or hide it's
 	 * window (depending of the current state).
 	 */
-    virtual void ShowWindow () = 0;
+	virtual void ShowWindow () = 0;
 
 	/** @brief Virtual destructor.
 	 */
-    virtual ~IWindow () {}
+	virtual ~IWindow () {}
 };
 
 Q_DECLARE_INTERFACE (IWindow, "org.Deviant.LeechCraft.IWindow/1.0");

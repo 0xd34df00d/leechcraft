@@ -51,11 +51,11 @@ public:
 	 * @sa GetControls
 	 * @sa GetAdditionalInfo
 	 */
-    virtual QAbstractItemModel* GetRepresentation () const = 0;
+	virtual QAbstractItemModel* GetRepresentation () const = 0;
 
 	/** @brief Virtual destructor.
 	 */
-    virtual ~IJobHolder () {}
+	virtual ~IJobHolder () {}
 };
 
 Q_DECLARE_INTERFACE (IJobHolder, "org.Deviant.LeechCraft.IJobHolder/1.0");

@@ -231,7 +231,7 @@ public:
 	 *
 	 * @sa Release
 	 */
-    virtual void Init (ICoreProxy_ptr proxy) = 0;
+	virtual void Init (ICoreProxy_ptr proxy) = 0;
 
 	/** @brief Returns the name of the plugin.
 	 *
@@ -245,7 +245,7 @@ public:
 	 * @sa GetInfo
 	 * @sa GetIcon
 	 */
-    virtual QString GetName () const = 0;
+	virtual QString GetName () const = 0;
 
 	/** @brief Returns the information string about the plugin.
 	 *
@@ -258,7 +258,7 @@ public:
 	 * @sa GetName
 	 * @sa GetInfo
 	 */
-    virtual QString GetInfo () const = 0;
+	virtual QString GetInfo () const = 0;
 
 	/** @brief Returns the list of provided features.
 	 *
@@ -275,7 +275,7 @@ public:
 	 * @sa Uses
 	 * @sa SetProvider
 	 */
-    virtual QStringList Provides () const = 0;
+	virtual QStringList Provides () const = 0;
 
 	/** @brief Returns the list of needed features.
 	 *
@@ -308,7 +308,7 @@ public:
 	 * @sa Uses
 	 * @sa SetProvider
 	 */
-    virtual QStringList Needs () const = 0;
+	virtual QStringList Needs () const = 0;
 
 	/** @brief Returns the list of used features.
 	 *
@@ -332,7 +332,7 @@ public:
 	 * @sa Uses
 	 * @sa SetProvider
 	 */
-    virtual QStringList Uses () const = 0;
+	virtual QStringList Uses () const = 0;
 
 	/** @brief Sets the provider plugin for a given feature.
 	 *
@@ -350,7 +350,7 @@ public:
 	 * @sa Needs
 	 * @sa Uses
 	 */
-    virtual void SetProvider (QObject* object,
+	virtual void SetProvider (QObject* object,
 			const QString& feature) = 0;
 
 	/** @brief Destroys the plugin.
@@ -363,7 +363,7 @@ public:
 	 *
 	 * @sa Init
 	 */
-    virtual void Release () = 0;
+	virtual void Release () = 0;
 
 	/** @brief Returns the plugin icon.
 	 *
@@ -377,11 +377,11 @@ public:
 	 * @sa GetName
 	 * @sa GetInfo
 	 */
-    virtual QIcon GetIcon () const = 0;
+	virtual QIcon GetIcon () const = 0;
 
 	/** @brief Virtual destructor.
 	 */
-    virtual ~IInfo () {}
+	virtual ~IInfo () {}
 };
 
 Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
