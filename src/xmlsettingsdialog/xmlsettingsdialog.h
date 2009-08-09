@@ -131,6 +131,9 @@ namespace LeechCraft
 			QList<QImage> GetImages (const QDomElement&) const;
 			void UpdateXml (bool = false);
 			void UpdateSingle (const QString&, const QVariant&, QDomElement&);
+			void SetValue (QWidget*, const QVariant&);
+		protected:
+			bool eventFilter (QObject*, QEvent*);
 		public slots:
 			virtual void accept ();
 			virtual void reject ();

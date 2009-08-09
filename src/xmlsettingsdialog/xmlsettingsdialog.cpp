@@ -112,6 +112,8 @@ void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& basename)
 		pageChild = pageChild.nextSiblingElement ("page");
 	}
 
+	obj->installEventFilter (this);
+
 	UpdateXml (true);
 }
 
@@ -958,6 +960,67 @@ void XmlSettingsDialog::UpdateSingle (const QString& name,
 	}
 }
 
+void XmlSettingsDialog::SetValue (QWidget *object, const QVariant& value)
+{
+	QLineEdit *edit = qobject_cast<QLineEdit*> (object);
+	QCheckBox *checkbox = qobject_cast<QCheckBox*> (object);
+	QSpinBox *spinbox = qobject_cast<QSpinBox*> (object);
+	QDoubleSpinBox *doubleSpinbox = qobject_cast<QDoubleSpinBox*> (object);
+	QGroupBox *groupbox = qobject_cast<QGroupBox*> (object);
+	RangeWidget *rangeWidget = qobject_cast<RangeWidget*> (object);
+	FilePicker *picker = qobject_cast<FilePicker*> (object);
+	RadioGroup *radiogroup = qobject_cast<RadioGroup*> (object);
+	QComboBox *combobox = qobject_cast<QComboBox*> (object);
+	QFontComboBox *fontComboBox = qobject_cast<QFontComboBox*> (object);
+	if (edit)
+		edit->setText (value.toString ());
+	else if (checkbox)
+		checkbox->setCheckState (value.toBool () ? Qt::Checked : Qt::Unchecked);
+	else if (spinbox)
+		spinbox->setValue (value.toLongLong ());
+	else if (doubleSpinbox)
+		doubleSpinbox->setValue (value.toDouble ());
+	else if (groupbox)
+		groupbox->setChecked (value.toBool ());
+	else if (rangeWidget)
+		rangeWidget->SetRange (value);
+	else if (picker)
+		picker->SetText (value.toString ());
+	else if (radiogroup)
+		radiogroup->SetValue (value.toString ());
+	else if (combobox)
+	{
+		int pos = combobox->findData (value);
+		if (pos != -1)
+			combobox->setCurrentIndex (pos);
+		else
+			qWarning () << Q_FUNC_INFO
+				<< combobox
+				<< value
+				<< "not found";
+	}
+	else if (fontComboBox)
+		fontComboBox->setCurrentFont (value.value<QFont> ());
+	else
+		qWarning () << Q_FUNC_INFO << "unhandled object" << object << "for" << value;
+}
+
+bool XmlSettingsDialog::eventFilter (QObject *obj, QEvent *event)
+{
+	if (event->type () == QEvent::DynamicPropertyChange)
+	{
+		QByteArray name = static_cast<QDynamicPropertyChangeEvent*> (event)->propertyName ();
+
+		QWidget *widget = findChild<QWidget*> (name);
+		if (widget)
+			SetValue (widget, obj->property (name));
+
+		return false;
+	}
+	else
+		return QWidget::eventFilter (obj, event);
+}
+
 void XmlSettingsDialog::accept ()
 {
 	for (Property2Value_t::const_iterator i = Prop2NewValue_.begin (),
@@ -983,52 +1046,8 @@ void XmlSettingsDialog::reject ()
 			continue;
 		}
 
-		QVariant oldValue = WorkingObject_->property (i.key ().toLatin1 ().constData ());
-
-		QLineEdit *edit = qobject_cast<QLineEdit*> (object);
-		QCheckBox *checkbox = qobject_cast<QCheckBox*> (object);
-		QSpinBox *spinbox = qobject_cast<QSpinBox*> (object);
-		QDoubleSpinBox *doubleSpinbox = qobject_cast<QDoubleSpinBox*> (object);
-		QGroupBox *groupbox = qobject_cast<QGroupBox*> (object);
-		RangeWidget *rangeWidget = qobject_cast<RangeWidget*> (object);
-		FilePicker *picker = qobject_cast<FilePicker*> (object);
-		RadioGroup *radiogroup = qobject_cast<RadioGroup*> (object);
-		QComboBox *combobox = qobject_cast<QComboBox*> (object);
-		QFontComboBox *fontComboBox = qobject_cast<QFontComboBox*> (object);
-		if (edit)
-			edit->setText (oldValue.toString ());
-		else if (checkbox)
-			checkbox->setCheckState (oldValue.toBool () ? Qt::Checked : Qt::Unchecked);
-		else if (spinbox)
-			spinbox->setValue (oldValue.toLongLong ());
-		else if (doubleSpinbox)
-			doubleSpinbox->setValue (oldValue.toDouble ());
-		else if (groupbox)
-			groupbox->setChecked (oldValue.toBool ());
-		else if (rangeWidget)
-			rangeWidget->SetRange (oldValue);
-		else if (picker)
-			picker->SetText (oldValue.toString ());
-		else if (radiogroup)
-			radiogroup->SetValue (oldValue.toString ());
-		else if (combobox)
-		{
-			int pos = combobox->findData (oldValue);
-			if (pos != -1)
-				combobox->setCurrentIndex (pos);
-			else
-				qWarning () << Q_FUNC_INFO
-					<< combobox
-					<< oldValue
-					<< "not found";
-		}
-		else if (fontComboBox)
-			fontComboBox->setCurrentFont (oldValue.value<QFont> ());
-		else
-		{
-			qWarning () << Q_FUNC_INFO << "unhandled object" << object << "for" << i.key ();
-			continue;
-		}
+		SetValue (object,
+				WorkingObject_->property (i.key ().toLatin1 ().constData ()));
 	}
 	
 	Prop2NewValue_.clear ();
