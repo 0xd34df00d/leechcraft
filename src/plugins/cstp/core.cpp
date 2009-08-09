@@ -58,7 +58,6 @@ namespace LeechCraft
 			void Core::Release ()
 			{
 				writeSettings ();
-				removeAllTriggered ();
 				delete RepresentationModel_;
 				RepresentationModel_ = 0;
 			}
