@@ -32,6 +32,8 @@ SET (SRCS
 	addpeerdialog.cpp
 	ipvalidators.cpp
 	addwebseeddialog.cpp
+	wizardgenerator.cpp
+	startupfirstpage.cpp
 	)
 SET (HEADERS
 	torrentplugin.h
@@ -58,6 +60,8 @@ SET (HEADERS
 	addpeerdialog.h
 	ipvalidators.h
 	addwebseeddialog.h
+	wizardgenerator.h
+	startupfirstpage.h
 	newtorrentparams.h
 	torrentinfo.h
 	fileinfo.h
@@ -75,6 +79,7 @@ SET (FORMS
 	exportdialog.ui
 	addpeerdialog.ui
 	addwebseeddialog.ui
+	startupfirstpage.ui
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS

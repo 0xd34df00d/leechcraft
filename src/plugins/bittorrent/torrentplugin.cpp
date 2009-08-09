@@ -24,6 +24,7 @@
 #include "representationmodel.h"
 #include "trackerschanger.h"
 #include "exportdialog.h"
+#include "wizardgenerator.h"
 
 #ifdef AddJob
 #undef AddJob
@@ -326,6 +327,12 @@ namespace LeechCraft
 				return result;
 			}
 #undef _L
+
+			QList<QWizardPage*> TorrentPlugin::GetWizardPages () const
+			{
+				std::auto_ptr<WizardGenerator> wg (new WizardGenerator);
+				return wg->GetPages ();
+			}
 
 			QList<QAction*> TorrentPlugin::GetActions () const
 			{
