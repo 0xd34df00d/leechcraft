@@ -24,6 +24,7 @@
 #include "tagsviewer.h"
 #include "application.h"
 #include "tabcontentsmanager.h"
+#include "startupwizard.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -69,11 +70,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	speedUpd->start ();
 	qApp->setQuitOnLastWindowClosed (false);
 
-	QObjectList settable = Core::Instance ().GetSettables ();
-	for (QObjectList::const_iterator i = settable.begin (),
-			end = settable.end (); i != end; ++i)
-		SettingsSink_->AddDialog (*i);
-
 	QList<QList<QAction*> > actions2embed = Core::Instance ().GetActions2Embed ();
 	Q_FOREACH (QList<QAction*> list, Core::Instance ().GetActions2Embed ())
 	{
@@ -88,15 +84,13 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 
 	updateIconSet ();
 
-	QObjectList shortcuts = Core::Instance ().GetShortcuts ();
-	for (QObjectList::const_iterator i = shortcuts.begin (),
-			end = shortcuts.end (); i != end; ++i)
-		ShortcutManager_->AddObject (*i);
-
 	show ();
 
 	WasMaximized_ = isMaximized ();
 	Ui_.ActionFullscreenMode_->setChecked (isFullScreen ());
+	QTimer::singleShot (0,
+			this,
+			SLOT (doDelayedInit ()));
 }
 
 LeechCraft::MainWindow::~MainWindow ()
@@ -465,5 +459,20 @@ void LeechCraft::MainWindow::updateIconSet ()
 void LeechCraft::MainWindow::on_ActionPluginManager__triggered ()
 {
 	PluginManagerDialog_->show ();
+}
+
+void LeechCraft::MainWindow::doDelayedInit ()
+{
+	QObjectList settable = Core::Instance ().GetSettables ();
+	for (QObjectList::const_iterator i = settable.begin (),
+			end = settable.end (); i != end; ++i)
+		SettingsSink_->AddDialog (*i);
+
+	QObjectList shortcuts = Core::Instance ().GetShortcuts ();
+	for (QObjectList::const_iterator i = shortcuts.begin (),
+			end = shortcuts.end (); i != end; ++i)
+		ShortcutManager_->AddObject (*i);
+
+	new StartupWizard (this);
 }
 

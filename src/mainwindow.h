@@ -83,6 +83,7 @@ namespace LeechCraft
 		void handleDownloadFinished (const QString&);
 		void updateIconSet ();
 		void on_ActionPluginManager__triggered ();
+		void doDelayedInit ();
 	};
 };
 

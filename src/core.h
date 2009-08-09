@@ -88,18 +88,21 @@ namespace LeechCraft
 		 * @return List of objects.
 		 */
 		QObjectList GetSettables () const;
+
 		/** Returns all plugins that implement IHaveShortcuts as
 		 * QObjectList.
 		 *
 		 * @return List of objects.
 		 */
 		QObjectList GetShortcuts () const;
+
 		/** Returns all the actions from plugins that implement
 		 * IToolBarEmbedder.
 		 *
 		 * @return List of actions.
 		 */
 		QList<QList<QAction*> > GetActions2Embed () const;
+
 		QAbstractItemModel* GetPluginsModel () const;
 		QAbstractItemModel* GetTasksModel (const QString&) const;
 		PluginManager* GetPluginManager () const;

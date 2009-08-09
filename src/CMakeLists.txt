@@ -170,6 +170,7 @@ SET (SRCS
 	tabcontents.cpp
 	tabcontentsmanager.cpp
 	viewreemitter.cpp
+	startupwizard.cpp
 	3dparty/qxttooltip.cpp
 	)
 SET (HEADERS
@@ -213,6 +214,7 @@ SET (HEADERS
 	tabcontents.h
 	tabcontentsmanager.h
 	viewreemitter.h
+	startupwizard.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/iinfo.h
@@ -232,6 +234,7 @@ SET (HEADERS
 	interfaces/iplugin2.h
 	interfaces/ihaveshortcuts.h
 	interfaces/itoolbarembedder.h
+	interfaces/istartupwizard.h
 	interfaces/structures.h
 	)
 SET (FORMS
