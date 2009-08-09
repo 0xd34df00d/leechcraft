@@ -296,8 +296,13 @@ namespace LeechCraft
 			{
 				Impl_->Ui_.Items_->scrollToTop ();
 				currentItemChanged (QItemSelection ());
+				
+				if (!isVisible ())
+					return;
 			
 				QStringList allCategories = Core::Instance ().GetCategories (mapped);
+				Impl_->ItemsFilterModel_->categorySelectionChanged (allCategories);
+
 				if (allCategories.size ())
 				{
 					Impl_->ItemCategorySelector_->SetPossibleSelections (allCategories);
@@ -311,8 +316,6 @@ namespace LeechCraft
 					Impl_->ItemCategorySelector_->SetPossibleSelections (QStringList ());
 					Impl_->ItemCategorySelector_->hide ();
 				}
-			
-				Impl_->ItemsFilterModel_->categorySelectionChanged (allCategories);
 			}
 			
 			void ItemsWidget::on_ActionMarkItemAsUnread__triggered ()
