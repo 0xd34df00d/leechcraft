@@ -45,6 +45,7 @@ SET (SRCS
 	linkhistory.cpp
 	cookiesfilter.cpp
 	searchtext.cpp
+	reloadintervalselector.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -83,6 +84,7 @@ SET (HEADERS
 	linkhistory.h
 	cookiesfilter.h
 	searchtext.h
+	reloadintervalselector.h
 	interfaces/pluginbase.h
 	)
 SET (FORMS
@@ -96,6 +98,7 @@ SET (FORMS
 	sourceviewer.ui
 	passwordremember.ui
 	searchtext.ui
+	reloadintervalselector.ui
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS

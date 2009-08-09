@@ -31,6 +31,7 @@
 #include "xmlsettingsmanager.h"
 #include "sourceviewer.h"
 #include "passwordremember.h"
+#include "reloadintervalselector.h"
 
 namespace LeechCraft
 {
@@ -42,11 +43,17 @@ namespace LeechCraft
 			
 			BrowserWidget::BrowserWidget (QWidget *parent)
 			: QWidget (parent)
+			, ReloadTimer_ (new QTimer (this))
 			, HtmlMode_ (false)
 			, Own_ (true)
 			{
 				Ui_.setupUi (this);
 				Ui_.Progress_->hide ();
+
+				connect (ReloadTimer_,
+						SIGNAL (timeout ()),
+						Ui_.WebView_,
+						SLOT (reload ()));
 			
 				Cut_ = Ui_.WebView_->pageAction (QWebPage::Cut);
 				Cut_->setProperty ("ActionIcon", "poshuku_cut");
@@ -69,15 +76,18 @@ namespace LeechCraft
 				Reload_ = Ui_.WebView_->pageAction (QWebPage::Reload);
 				Reload_->setParent (this);
 				Reload_->setProperty ("ActionIcon", "poshuku_reload");
+
+				ReloadPeriodically_ = new QAction (tr ("Reload periodically"), this);
+				ReloadPeriodically_->setCheckable (true);
+				ReloadPeriodically_->setProperty ("ActionIcon", "poshuku_reloadperiodically");
+
+				QMenu *reloadMenu = new QMenu (this);
+				reloadMenu->addAction (ReloadPeriodically_);
+				Reload_->setMenu (reloadMenu);
 			
 				Stop_ = Ui_.WebView_->pageAction (QWebPage::Stop);
 				Stop_->setParent (this);
 				Stop_->setProperty ("ActionIcon", "poshuku_stop");
-			
-				QMenu *moreMenu = new QMenu (this);
-				QAction *more = moreMenu->menuAction ();
-				more->setText (tr ("More..."));
-				more->setProperty ("ActionIcon", "poshuku_more");
 			
 				Add2Favorites_ = new QAction (tr ("Add to favorites..."),
 						this);
@@ -141,8 +151,14 @@ namespace LeechCraft
 				ToolBar_->addAction (Forward_);
 				ToolBar_->addAction (Reload_);
 				ToolBar_->addAction (Stop_);
+
+				QMenu *moreMenu = new QMenu (this);
+				QAction *more = moreMenu->menuAction ();
+				more->setText (tr ("More..."));
+				more->setProperty ("ActionIcon", "poshuku_more");
+				
 				ToolBar_->addAction (more);
-			
+
 				moreMenu->addAction (Find_);
 				moreMenu->addAction (Add2Favorites_);
 				moreMenu->addSeparator ();
@@ -180,6 +196,10 @@ namespace LeechCraft
 			
 				static_cast<QVBoxLayout*> (layout ())->insertWidget (0, ToolBar_);
 			
+				connect (ReloadPeriodically_,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleReloadPeriodically ()));
 				connect (Ui_.WebView_,
 						SIGNAL (addToFavorites (const QString&, const QString&)),
 						this,
@@ -585,6 +605,46 @@ namespace LeechCraft
 					return;
 			
 				Load (Ui_.URLEdit_->text ());
+			}
+
+			void BrowserWidget::handleReloadPeriodically ()
+			{
+				if (ReloadPeriodically_->isChecked ())
+				{
+					std::auto_ptr<ReloadIntervalSelector> sel (new ReloadIntervalSelector);
+					if (sel->exec () != QDialog::Accepted)
+					{
+						ReloadPeriodically_->setChecked (false);
+						ReloadPeriodically_->setStatusTip (QString ());
+						ReloadPeriodically_->setToolTip (QString ());
+						ReloadTimer_->stop ();
+						return;
+					}
+
+					QTime value = sel->GetInterval ();
+					QTime null (0, 0, 0);
+					int msecs = null.msecsTo (value);
+					if (msecs < 1000)
+					{
+						ReloadPeriodically_->setChecked (false);
+						ReloadPeriodically_->setStatusTip (QString ());
+						ReloadPeriodically_->setToolTip (QString ());
+						ReloadTimer_->stop ();
+						return;
+					}
+
+					QString tip = tr ("Reloading once in %1")
+						.arg (value.toString ());
+					ReloadPeriodically_->setStatusTip (tip);
+					ReloadPeriodically_->setToolTip (tip);
+					ReloadTimer_->start (null.msecsTo (value));
+				}
+				else if (ReloadTimer_->isActive ())
+				{
+					ReloadPeriodically_->setStatusTip (QString ());
+					ReloadPeriodically_->setToolTip (QString ());
+					ReloadTimer_->stop ();
+				}
 			}
 			
 			void BrowserWidget::handleAdd2Favorites ()

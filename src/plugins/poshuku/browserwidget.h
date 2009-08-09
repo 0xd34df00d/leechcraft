@@ -49,6 +49,7 @@ namespace LeechCraft
 				QAction *Back_;
 				QAction *Forward_;
 				QAction *Reload_;
+				QAction *ReloadPeriodically_;
 				QAction *Stop_;
 				QAction *RecentlyClosedAction_;
 				QPoint OnLoadPos_;
@@ -57,6 +58,7 @@ namespace LeechCraft
 				QMenu *ExternalLinks_;
 				FindDialog *FindDialog_;
 				PasswordRemember *RememberDialog_;
+				QTimer *ReloadTimer_;
 				bool HtmlMode_;
 				bool Own_;
 			public:
@@ -113,6 +115,7 @@ namespace LeechCraft
 				void handleIconChanged ();
 				void handleStatusBarMessage (const QString&);
 				void on_URLEdit__returnPressed ();
+				void handleReloadPeriodically ();
 				void handleAdd2Favorites ();
 				void handleFind ();
 				void findText (const QString&, QWebPage::FindFlags);
