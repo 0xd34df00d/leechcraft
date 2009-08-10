@@ -8,6 +8,7 @@
 #include <QTimer>
 #include <QtDebug>
 #include <QSettings>
+#include <QUrl>
 #include <plugininterface/proxy.h>
 #include <plugininterface/util.h>
 #include "item.h"
@@ -253,7 +254,11 @@ namespace LeechCraft
 						end = links.end ();	i != end; ++i)
 				{
 					LeechCraft::DownloadEntity e;
-					e.Entity_ = i->toUtf8 ();
+					QUrl url (*i);
+					if (url.isValid ())
+						e.Entity_ = url;
+					else
+						e.Entity_ = *i;
 					emit gotLink (e);
 				}
 			}
