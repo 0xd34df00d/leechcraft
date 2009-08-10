@@ -678,6 +678,10 @@ bool LeechCraft::Core::CouldHandle (const LeechCraft::DownloadEntity& e)
 	QObjectList plugins = PluginManager_->GetAllCastableRoots<IDownload*> ();
 	for (int i = 0; i < plugins.size (); ++i)
 	{
+		if (plugins.at (i) == sender () &&
+				!(e.Parameters_ & ShouldQuerySource))
+			continue;
+
 		IDownload *id = qobject_cast<IDownload*> (plugins.at (i));
 		try
 		{
@@ -701,6 +705,10 @@ bool LeechCraft::Core::CouldHandle (const LeechCraft::DownloadEntity& e)
 	plugins = PluginManager_->GetAllCastableRoots<IEntityHandler*> ();
 	for (int i = 0; i < plugins.size (); ++i)
 	{
+		if (plugins.at (i) == sender () &&
+				!(e.Parameters_ & ShouldQuerySource))
+			continue;
+
 		IEntityHandler *ih = qobject_cast<IEntityHandler*> (plugins.at (i));
 		try
 		{
@@ -820,6 +828,10 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 		QObjectList plugins = PluginManager_->GetAllCastableRoots<IDownload*> ();
 		for (int i = 0; i < plugins.size (); ++i)
 		{
+			if (plugins.at (i) == sender () &&
+					!(p.Parameters_ & ShouldQuerySource))
+				continue;
+
 			IDownload *id = qobject_cast<IDownload*> (plugins.at (i));
 			IInfo *ii = qobject_cast<IInfo*> (plugins.at (i));
 			try
@@ -849,6 +861,10 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 		QObjectList plugins = PluginManager_->GetAllCastableRoots<IEntityHandler*> ();
 		for (int i = 0; i < plugins.size (); ++i)
 		{
+			if (plugins.at (i) == sender () &&
+					!(p.Parameters_ & ShouldQuerySource))
+				continue;
+
 			IEntityHandler *ih = qobject_cast<IEntityHandler*> (plugins.at (i));
 			IInfo *ii = qobject_cast<IInfo*> (plugins.at (i));
 			try
