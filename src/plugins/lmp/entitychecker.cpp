@@ -16,9 +16,35 @@ EntityChecker::EntityChecker (const LeechCraft::DownloadEntity& e)
 {
 	QString source;
 	if (e.Entity_.canConvert<QUrl> ())
-		source = e.Entity_.toUrl ().toLocalFile ();
+	{
+		QUrl url = e.Entity_.toUrl ();
+		if (url.scheme () == "file")
+			source = url.toLocalFile ();
+		else
+		{
+			QString extension = QFileInfo (url.path ()).suffix ();
+
+			QStringList goodExt = XmlSettingsManager::Instance ()->
+				property ("TestExtensions").toString ()
+				.split (' ', QString::SkipEmptyParts);
+
+			Result_ = goodExt.contains (extension);
+			return;
+		}
+	}
 	else if (e.Entity_.canConvert<QString> ())
 		source = e.Entity_.toString ();
+	else if (e.Additional_ ["SourceURL"].canConvert<QUrl> ())
+	{
+		QUrl url = e.Additional_ ["SourceURL"].toUrl ();
+		QString extension = QFileInfo (url.path ()).suffix ();
+
+		QStringList goodExt = XmlSettingsManager::Instance ()->
+			property ("TestExtensions").toString ()
+			.split (' ', QString::SkipEmptyParts);
+
+		Result_ = goodExt.contains (extension);
+	}
 	else
 		return;
 

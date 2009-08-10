@@ -147,11 +147,22 @@ QAction* Core::GetShowAction () const
 
 void Core::Handle (const LeechCraft::DownloadEntity& e)
 {
-	QString source;
+	MediaSource *source = 0;
 	if (e.Entity_.canConvert<QUrl> ())
-		source = e.Entity_.toUrl ().toLocalFile ();
+	{
+		QUrl url = e.Entity_.toUrl ();
+		if (url.scheme () == "file")
+			source = new MediaSource (url.toLocalFile ());
+		else
+			source = new MediaSource (url);
+	}
 	else if (e.Entity_.canConvert<QString> ())
-		source = e.Entity_.toString ();
+		source = new MediaSource (e.Entity_.toString ());
+	else if (e.Additional_ ["SourceURL"].canConvert<QUrl> ())
+	{
+		QUrl url = e.Additional_ ["SourceURL"].toUrl ();
+		source = new MediaSource (url);
+	}
 	else
 		return;
 
@@ -165,7 +176,7 @@ void Core::Handle (const LeechCraft::DownloadEntity& e)
 				SLOT (show ()));
 	}
 	Player_->show ();
-	Player_->Enqueue (new MediaSource (source));
+	Player_->Enqueue (source);
 	if (!MediaObject_->queue ().size ())
 	{
 		play ();
