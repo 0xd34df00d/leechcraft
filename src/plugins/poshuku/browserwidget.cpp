@@ -923,6 +923,7 @@ namespace LeechCraft
 					e.Parameters_ = LeechCraft::FromUserInitiated |
 						LeechCraft::OnlyHandle;
 					e.Additional_ ["UserVisibleName"] = entity;
+					e.Additional_ ["SourceURL"] = QUrl (hrefUrl);
 			
 					bool ch = false;
 					emit couldHandle (e, &ch);

@@ -356,6 +356,7 @@ namespace LeechCraft
 											LeechCraft::FromUserInitiated);
 
 									e.Additional_ ["SourceURL"] = reply->url ();
+									e.Mime_ = reply->header (QNetworkRequest::ContentTypeHeader).toString ();
 			
 									emit gotEntity (e);
 									break;
