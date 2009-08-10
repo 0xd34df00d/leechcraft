@@ -675,60 +675,68 @@ void LeechCraft::Core::handlePluginAction ()
 
 bool LeechCraft::Core::CouldHandle (const LeechCraft::DownloadEntity& e)
 {
-	QObjectList plugins = PluginManager_->GetAllCastableRoots<IDownload*> ();
-	for (int i = 0; i < plugins.size (); ++i)
+	if (!(e.Parameters_ & LeechCraft::OnlyHandle))
 	{
-		if (plugins.at (i) == sender () &&
-				!(e.Parameters_ & ShouldQuerySource))
-			continue;
+		QObjectList plugins = PluginManager_->GetAllCastableRoots<IDownload*> ();
+		for (int i = 0; i < plugins.size (); ++i)
+		{
+			if (plugins.at (i) == sender () &&
+					!(e.Parameters_ & ShouldQuerySource))
+				continue;
 
-		IDownload *id = qobject_cast<IDownload*> (plugins.at (i));
-		try
-		{
-			if (id->CouldDownload (e))
-				return true;
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "could not query"
-				<< e.what ()
-				<< plugins.at (i);
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "could not query"
-				<< plugins.at (i);
+			IDownload *id = qobject_cast<IDownload*> (plugins.at (i));
+			try
+			{
+				if (id->CouldDownload (e))
+					return true;
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "could not query"
+					<< e.what ()
+					<< plugins.at (i);
+			}
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "could not query"
+					<< plugins.at (i);
+			}
 		}
 	}
-	plugins = PluginManager_->GetAllCastableRoots<IEntityHandler*> ();
-	for (int i = 0; i < plugins.size (); ++i)
-	{
-		if (plugins.at (i) == sender () &&
-				!(e.Parameters_ & ShouldQuerySource))
-			continue;
 
-		IEntityHandler *ih = qobject_cast<IEntityHandler*> (plugins.at (i));
-		try
+	if (!(e.Parameters_ & LeechCraft::OnlyDownload))
+	{
+		QObjectList plugins = PluginManager_->GetAllCastableRoots<IEntityHandler*> ();
+		for (int i = 0; i < plugins.size (); ++i)
 		{
-			if (ih->CouldHandle (e))
-				return true;
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "could not query"
-				<< e.what ()
-				<< plugins.at (i);
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "could not query"
-				<< plugins.at (i);
+			if (plugins.at (i) == sender () &&
+					!(e.Parameters_ & ShouldQuerySource))
+				continue;
+
+			IEntityHandler *ih = qobject_cast<IEntityHandler*> (plugins.at (i));
+			try
+			{
+				if (ih->CouldHandle (e))
+					return true;
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "could not query"
+					<< e.what ()
+					<< plugins.at (i);
+			}
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "could not query"
+					<< plugins.at (i);
+			}
 		}
 	}
+
 	return false;
 }
 
@@ -822,7 +830,7 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 		string = tr ("Binary entity");
 
 	if (!p.Mime_.isEmpty ())
-		string += tr ("<br /><br />of type <pre>%1<pre>").arg (p.Mime_);
+		string += tr ("<br /><br />of type <code>%1</code>").arg (p.Mime_);
 
 	if (!p.Additional_ ["SourceURL"].toUrl ().isEmpty ())
 		string += tr ("<br />from %1")
