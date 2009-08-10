@@ -920,7 +920,8 @@ namespace LeechCraft
 						hrefUrl = originalUrl.toString ();
 					}
 					e.Entity_ = QUrl (hrefUrl);
-					e.Parameters_ = LeechCraft::FromUserInitiated;
+					e.Parameters_ = LeechCraft::FromUserInitiated |
+						LeechCraft::OnlyHandle;
 					e.Additional_ ["UserVisibleName"] = entity;
 			
 					bool ch = false;
