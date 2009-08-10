@@ -123,6 +123,12 @@ namespace LeechCraft
 					Started
 					, Paused
 				};
+				enum SettingsPreset
+				{
+					SPDefault
+					, SPMinMemoryUsage
+					, SPHighPerfSeed
+				};
 
 				static Core* Instance ();
 				virtual ~Core ();
@@ -227,6 +233,8 @@ namespace LeechCraft
 				void MoveDown (const std::deque<int>&);
 				void MoveToTop (const std::deque<int>&);
 				void MoveToBottom (const std::deque<int>&);
+
+				void SetPreset (SettingsPreset);
 			private:
 				QList<FileInfo> GetTorrentFiles () const;
 				void MoveToTop (int);

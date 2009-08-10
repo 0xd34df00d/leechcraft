@@ -1,5 +1,6 @@
 #include "startupfirstpage.h"
 #include "xmlsettingsmanager.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -30,7 +31,16 @@ namespace LeechCraft
 				ports << Ui_.LowerPort_->value ()
 					<< Ui_.UpperPort_->value ();
 				XmlSettingsManager::Instance ()->setProperty ("TCPPortRange", ports);
+
+				XmlSettingsManager::Instance ()->setProperty ("MaxUploads",
+						Ui_.UploadConnections_->value ());
+				XmlSettingsManager::Instance ()->setProperty ("MaxConnections",
+						Ui_.TotalConnections_->value ());
+
+				int sset = Ui_.SettingsSet_->currentIndex ();
+				Core::Instance ()->SetPreset (static_cast<Core::SettingsPreset> (sset));
 			}
 		};
 	};
 };
+
