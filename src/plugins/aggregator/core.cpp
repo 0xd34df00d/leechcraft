@@ -1401,14 +1401,22 @@ namespace LeechCraft
 				for (channels_container_t::const_iterator i = channels.begin (),
 						end = channels.end (); i != end; ++i)
 				{
-					channels_container_t::const_iterator position =
-						std::find_if (ourChannels.begin (), ourChannels.end (),
-								ChannelFinder (*i));
-			
 					std::for_each ((*i)->Items_.begin (), (*i)->Items_.end (),
 							boost::bind (&RegexpMatcherManager::HandleItem,
 								&RegexpMatcherManager::Instance (),
 								_1));
+
+					if (settings.AutoDownloadEnclosures_)
+						Q_FOREACH (Item_ptr item, (*i)->Items_)
+							Q_FOREACH (Enclosure e, item->Enclosures_)
+								emit gotEntity (Util::MakeEntity (QUrl (e.URL_),
+											QString (),
+											0,
+											e.Type_));
+			
+					channels_container_t::const_iterator position =
+						std::find_if (ourChannels.begin (), ourChannels.end (),
+								ChannelFinder (*i));
 			
 					const QDateTime current = QDateTime::currentDateTime ();
 			

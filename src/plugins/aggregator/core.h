@@ -202,6 +202,7 @@ namespace LeechCraft
 				void currentChannelChanged (const QModelIndex&);
 				void unreadNumberChanged (int) const;
 				void delegateEntity (const LeechCraft::DownloadEntity&, int*, QObject**);
+				void gotEntity (const LeechCraft::DownloadEntity&);
 			};
 		};
 	};

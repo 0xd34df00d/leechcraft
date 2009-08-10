@@ -249,6 +249,10 @@ namespace LeechCraft
 						SIGNAL (gotLink (const LeechCraft::DownloadEntity&)),
 						this,
 						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+				connect (&Core::Instance (),
+						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						this,
+						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
 				connect (proxy->GetTreeViewReemitter (),
 						SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&,
 								QTreeView*)),
