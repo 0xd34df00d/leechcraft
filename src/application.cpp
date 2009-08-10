@@ -137,7 +137,7 @@ LeechCraft::Application::Application (int& argc, char **argv)
 
 	ParseCommandLine ();
 
-	setWindowIcon (QIcon (":/resources/images/leechcraft.png"));
+	setWindowIcon (QIcon (":/resources/images/leechcraft.svg"));
 	
 	// Say hello to logs
     qDebug () << "======APPLICATION STARTUP======";

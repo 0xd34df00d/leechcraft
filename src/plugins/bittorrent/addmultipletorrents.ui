@@ -14,7 +14,7 @@
   </property>
   <property name="windowIcon" >
    <iconset>
-    <normaloff>:/resources/images/bittorrent.png</normaloff>:/resources/images/bittorrent.png</iconset>
+    <normaloff>:/resources/images/bittorrent.svg</normaloff>:/resources/images/bittorrent.svg</iconset>
   </property>
   <layout class="QVBoxLayout" >
    <item>

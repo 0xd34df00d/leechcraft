@@ -14,7 +14,7 @@
   </property>
   <property name="windowIcon" >
    <iconset resource="resources.qrc" >
-    <normaloff>:/resources/images/poshuku.png</normaloff>:/resources/images/poshuku.png</iconset>
+    <normaloff>:/resources/images/poshuku.svg</normaloff>:/resources/images/poshuku.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" >
    <item>

@@ -30,7 +30,7 @@ namespace LeechCraft
 			
 			QIcon DeadLyRicS::GetIcon () const
 			{
-				return QIcon ();
+				return QIcon (":/resources/images/deadlyrics.svg");
 			}
 			
 			QStringList DeadLyRicS::Provides () const

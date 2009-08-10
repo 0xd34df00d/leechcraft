@@ -193,7 +193,7 @@ namespace LeechCraft
 			
 			QIcon Poshuku::GetIcon () const
 			{
-				return windowIcon ();
+				return QIcon (":/resources/images/poshuku.svg");
 			}
 			
 			QWidget* Poshuku::GetTabContents ()

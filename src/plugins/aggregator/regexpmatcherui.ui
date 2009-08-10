@@ -14,7 +14,7 @@
   </property>
   <property name="windowIcon" >
    <iconset resource="resources.qrc" >
-    <normaloff>:/resources/images/aggregator.png</normaloff>:/resources/images/aggregator.png</iconset>
+    <normaloff>:/resources/images/aggregator.svg</normaloff>:/resources/images/aggregator.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" >
    <item>

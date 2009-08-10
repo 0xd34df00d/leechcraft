@@ -14,7 +14,7 @@
   </property>
   <property name="windowIcon" >
    <iconset resource="mainresources.qrc" >
-    <normaloff>:/resources/images/leechcraft.png</normaloff>:/resources/images/leechcraft.png</iconset>
+    <normaloff>:/resources/images/leechcraft.svg</normaloff>:/resources/images/leechcraft.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" >
    <item>

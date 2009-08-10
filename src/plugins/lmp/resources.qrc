@@ -1,5 +1,5 @@
 <RCC>
   <qresource prefix="/plugins/lmp">
-	<file>resources/images/lmp.png</file>
+	<file>resources/images/lmp.svg</file>
   </qresource>
 </RCC>

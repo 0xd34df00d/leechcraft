@@ -10,7 +10,7 @@ using namespace Phonon;
 Core::Core ()
 : TotalTimeAvailable_ (false)
 , VideoWidget_ (0)
-, ShowAction_ (new QAction (QIcon (":/plugins/lmp/resources/images/lmp.png"),
+, ShowAction_ (new QAction (QIcon (":/plugins/lmp/resources/images/lmp.svg"),
 			tr ("Show LMP"), this))
 {
 	ShowAction_->setEnabled (false);
