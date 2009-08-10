@@ -158,7 +158,7 @@ namespace LeechCraft
 							channelsTable);
 				else
 					tablesOK = false;
-			
+
 				if (StorageBackend_->UpdateItemsStorage (XmlSettingsManager::Instance ()->
 						Property (strType + "ItemsTableVersion", itemsTable).toInt (),
 						itemsTable))
@@ -266,12 +266,16 @@ namespace LeechCraft
 							LeechCraft::NotPersistent |
 							LeechCraft::DoNotAnnounceEntity);
 			
+				QStringList tagIds;
+				Q_FOREACH (QString tag, tags)
+					tagIds << Proxy_->GetTagsManager ()->GetID (tag);
+
 				PendingJob pj =
 				{
 					PendingJob::RFeedAdded,
 					url,
 					name,
-					tags
+					tagIds
 				};
 			
 				int id = -1;
