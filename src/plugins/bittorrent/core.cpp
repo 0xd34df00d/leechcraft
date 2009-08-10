@@ -1456,7 +1456,8 @@ namespace LeechCraft
 
 				DownloadEntity e;
 				e.Entity_ = QUrl::fromLocalFile (name);
-				e.Parameters_ = LeechCraft::IsDownloaded;
+				e.Parameters_ = LeechCraft::IsDownloaded |
+					LeechCraft::ShouldQuerySource;
 				e.Location_ = torrent.TorrentFileName_;
 				e.Additional_ [" Tags"] = torrent.Tags_;
 				emit fileFinished (e);
@@ -1841,7 +1842,8 @@ namespace LeechCraft
 					DownloadEntity e;
 					e.Entity_ = QTextCodec::codecForLocale ()->
 						toUnicode ((torrent.Handle_.save_path () / i->path).string ().c_str ()).toUtf8 ();
-					e.Parameters_ = LeechCraft::IsDownloaded;
+					e.Parameters_ = LeechCraft::IsDownloaded |
+						LeechCraft::ShouldQuerySource;
 					e.Location_ = torrent.TorrentFileName_;
 					e.Additional_ [" Tags"] = torrent.Tags_;
 					emit fileFinished (e);
