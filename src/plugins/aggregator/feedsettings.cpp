@@ -29,6 +29,7 @@ namespace LeechCraft
 				Ui_.UpdateInterval_->setValue (settings.UpdateTimeout_);
 				Ui_.NumItems_->setValue (settings.NumItems_);
 				Ui_.ItemAge_->setValue (settings.ItemAge_);
+				Ui_.AutoDownloadEnclosures_->setChecked (settings.AutoDownloadEnclosures_);
 			
 				Core::ChannelInfo ci = Core::Instance ().GetChannelInfo (Index_);
 				QString link = ci.Link_;
@@ -79,7 +80,8 @@ namespace LeechCraft
 			
 				Feed::FeedSettings settings (Ui_.UpdateInterval_->value (),
 					Ui_.NumItems_->value (),
-					Ui_.ItemAge_->value ());
+					Ui_.ItemAge_->value (),
+					Ui_.AutoDownloadEnclosures_->checkState () == Qt::Checked);
 				Core::Instance ().SetFeedSettings (settings, Index_);
 			
 				QDialog::accept ();

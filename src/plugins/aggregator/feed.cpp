@@ -9,10 +9,11 @@ namespace LeechCraft
 	{
 		namespace Aggregator
 		{
-			Feed::FeedSettings::FeedSettings (int ut, int ni, int ia)
+			Feed::FeedSettings::FeedSettings (int ut, int ni, int ia, bool ade)
 			: UpdateTimeout_ (ut)
 			, NumItems_ (ni)
 			, ItemAge_ (ia)
+			, AutoDownloadEnclosures_ (ade)
 			{
 			}
 			

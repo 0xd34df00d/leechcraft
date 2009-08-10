@@ -166,7 +166,7 @@ namespace LeechCraft
 			
 				const int feedsTable = 1;
 				const int channelsTable = 1;
-				const int itemsTable = 3;
+				const int itemsTable = 4;
 			
 				bool tablesOK = true;
 			

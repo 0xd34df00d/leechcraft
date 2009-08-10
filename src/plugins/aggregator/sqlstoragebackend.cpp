@@ -106,7 +106,8 @@ namespace LeechCraft
 				FeedSettingsGetter_.prepare ("SELECT "
 						"update_timeout, "
 						"num_items, "
-						"item_age "
+						"item_age, "
+						"auto_download_enclosures "
 						"FROM feeds_settings "
 						"WHERE feed_url = :feed_url");
 			
@@ -119,12 +120,14 @@ namespace LeechCraft
 						"feed_url, "
 						"update_timeout, "
 						"num_items, "
-						"item_age"
+						"item_age, "
+						"auto_download_enclosures"
 						") VALUES ("
 						":feed_url, "
 						":update_timeout, "
 						":num_items, "
-						":item_age"
+						":item_age, "
+						":auto_download_enclosures"
 						")").arg (orReplace));
 			
 				ChannelsShortSelector_ = QSqlQuery (DB_);
@@ -440,6 +443,7 @@ namespace LeechCraft
 				result.UpdateTimeout_ = FeedSettingsGetter_.value (0).toInt ();
 				result.NumItems_ = FeedSettingsGetter_.value (1).toInt ();
 				result.ItemAge_ = FeedSettingsGetter_.value (2).toInt ();
+				result.AutoDownloadEnclosures_ = FeedSettingsGetter_.value (3).toBool ();
 			
 				FeedSettingsGetter_.finish ();
 			
@@ -449,10 +453,16 @@ namespace LeechCraft
 			void SQLStorageBackend::SetFeedSettings (const QString& feedURL,
 					const Feed::FeedSettings& settings)
 			{
-				FeedSettingsSetter_.bindValue (":feed_url", feedURL);
-				FeedSettingsSetter_.bindValue (":update_timeout", settings.UpdateTimeout_);
-				FeedSettingsSetter_.bindValue (":num_items", settings.NumItems_);
-				FeedSettingsSetter_.bindValue (":item_age", settings.ItemAge_);
+				FeedSettingsSetter_.bindValue (":feed_url",
+						feedURL);
+				FeedSettingsSetter_.bindValue (":update_timeout",
+						settings.UpdateTimeout_);
+				FeedSettingsSetter_.bindValue (":num_items",
+						settings.NumItems_);
+				FeedSettingsSetter_.bindValue (":item_age",
+						settings.ItemAge_);
+				FeedSettingsSetter_.bindValue (":auto_download_enclosures",
+						settings.AutoDownloadEnclosures_);
 			
 				if (!FeedSettingsSetter_.exec ())
 					LeechCraft::Util::DBLock::DumpError (FeedSettingsSetter_);
@@ -1070,12 +1080,24 @@ namespace LeechCraft
 			
 				if (!DB_.tables ().contains ("feeds_settings"))
 				{
-					if (!query.exec ("CREATE TABLE feeds_settings ("
-								"feed_url TEXT PRIMARY KEY, "
-								"update_timeout INTEGER NOT NULL, "
-								"num_items INTEGER NOT NULL, "
-								"item_age INTEGER NOT NULL"
-								");"))
+					QString adeType;
+					switch (Type_)
+					{
+						case SBSQLite:
+							adeType = "TINYINT";
+							break;
+						case SBPostgres:
+							adeType = "BOOLEAN";
+							break;
+					}
+
+					if (!query.exec (QString ("CREATE TABLE feeds_settings ("
+									"feed_url TEXT PRIMARY KEY, "
+									"update_timeout INTEGER NOT NULL, "
+									"num_items INTEGER NOT NULL, "
+									"item_age INTEGER NOT NULL, "
+									"auto_download_enclosures %1 NOT NULL"
+									");").arg (adeType)))
 					{
 						LeechCraft::Util::DBLock::DumpError (query.lastError ());
 						return false;
@@ -1092,7 +1114,8 @@ namespace LeechCraft
 												"(UPDATE feeds_settings "
 													"SET update_timeout = NEW.update_timeout, "
 													"num_items = NEW.num_items, "
-													"item_age = NEW.item_age "
+													"item_age = NEW.item_age, "
+													"auto_download_enclosures = NEW.auto_download_enclosures "
 													"WHERE feed_url = NEW.feed_url)"))
 						{
 							LeechCraft::Util::DBLock::DumpError (query);
@@ -1302,6 +1325,27 @@ namespace LeechCraft
 					QSqlQuery updateQuery = QSqlQuery (DB_);
 					if (!updateQuery.exec ("ALTER TABLE items "
 								"ADD comments_page_url TEXT"))
+					{
+						LeechCraft::Util::DBLock::DumpError (updateQuery);
+						return false;
+					}
+				}
+				else if (version == 4)
+				{
+					QString adeType;
+					switch (Type_)
+					{
+						case SBSQLite:
+							adeType = "TINYINT";
+							break;
+						case SBPostgres:
+							adeType = "BOOLEAN";
+							break;
+					}
+
+					QSqlQuery updateQuery = QSqlQuery (DB_);
+					if (!updateQuery.exec (QString ("ALTER TABLE feeds_settings "
+									"ADD auto_download_enclosures %1").arg (adeType)))
 					{
 						LeechCraft::Util::DBLock::DumpError (updateQuery);
 						return false;

@@ -32,7 +32,7 @@ namespace LeechCraft
 					 * A default-constructed feed has all the settings set to default
 					 * values - so, no settings are overridden.
 					 */
-					FeedSettings (int = 0, int = 0, int = 0);
+					FeedSettings (int = 0, int = 0, int = 0, bool = false);
 
 					/** @brief Update timeout for the feed.
 					 *
@@ -40,17 +40,27 @@ namespace LeechCraft
 					 * value is 0.
 					 */
 					int UpdateTimeout_;
+
 					/** @brief Max number of stored items.
 					 *
 					 * How much items should be stored in the feed's channels. The
 					 * default value is 0.
 					 */
 					int NumItems_;
+
 					/** @brief Max item's age.
 					 *
 					 * How old could be items in the feed. The default value is 0.
 					 */
 					int ItemAge_;
+
+					/** @brief Automatically download enclosures.
+					 *
+					 * Whether Aggregator should automatically emit a
+					 * gotEntity for each enclosure in each news item it
+					 * fetches.
+					 */
+					bool AutoDownloadEnclosures_;
 				};
 
 				QString URL_;
