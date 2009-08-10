@@ -61,6 +61,10 @@ namespace LeechCraft
 						this,
 						SIGNAL (changeTabName (QWidget*, const QString&)));
 				connect (manager,
+						SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
+						this,
+						SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
+				connect (manager,
 						SIGNAL (statusBarChanged (QWidget*, const QString&)),
 						this,
 						SIGNAL (statusBarChanged (QWidget*, const QString&)));
@@ -103,7 +107,7 @@ namespace LeechCraft
 
 			QIcon LCFTP::GetIcon () const
 			{
-				return QIcon ();
+				return QIcon (":/resources/images/lcftp.svg");
 			}
 
 			QAbstractItemModel* LCFTP::GetRepresentation () const

@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">
-    <normaloff>:/plugins/lmp/resources/images/lmp.png</normaloff>:/plugins/lmp/resources/images/lmp.png</iconset>
+    <normaloff>:/plugins/lmp/resources/images/lmp.svg</normaloff>:/plugins/lmp/resources/images/lmp.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

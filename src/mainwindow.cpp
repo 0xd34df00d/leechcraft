@@ -147,7 +147,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	Ui_.ActionFullscreenMode_->setProperty ("ActionIcon", "fullscreen");
 	Ui_.ActionFullscreenMode_->setParent (this);
 
-	Ui_.MainTabWidget_->setProperty ("TabIcons", "downloaders");
+	Ui_.MainTabWidget_->setTabIcon (0, QIcon (":/resources/images/leechcraft.svg"));
 	SetTrayIcon ();
 
 	XmlSettingsDialog_ = new XmlSettingsDialog ();
@@ -222,7 +222,7 @@ void LeechCraft::MainWindow::SetStatusBar ()
 
 void LeechCraft::MainWindow::SetTrayIcon ()
 {
-	TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/leechcraft.png"), this);
+	TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/leechcraft.svg"), this);
 
 	QMenu *iconMenu = new QMenu (this);
 	iconMenu->addAction (Ui_.ActionAddTask_);

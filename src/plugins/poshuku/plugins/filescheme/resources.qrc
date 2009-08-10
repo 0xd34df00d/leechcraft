@@ -2,5 +2,6 @@
   <qresource prefix="/plugins/poshuku/plugins/filescheme">
     <file>basetemplate.tpl</file>
     <file>rowtemplate.tpl</file>
+    <file>resources/images/poshuku_filescheme.svg</file>
   </qresource>
 </RCC>

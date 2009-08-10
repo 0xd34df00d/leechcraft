@@ -13,7 +13,7 @@
    <string>Main parameters</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="resources.qrc" >:/resources/images/bittorrent.png</iconset>
+   <iconset resource="resources.qrc" >:/resources/images/bittorrent.svg</iconset>
   </property>
   <layout class="QGridLayout" >
    <item row="0" column="0" >

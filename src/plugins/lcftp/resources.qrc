@@ -1,4 +1,5 @@
 <RCC>
   <qresource prefix="/" >
+    <file>resources/images/lcftp.svg</file>
   </qresource>
 </RCC>

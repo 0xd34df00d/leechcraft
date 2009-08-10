@@ -57,7 +57,7 @@ namespace LeechCraft
 			
 			QIcon SeekThru::GetIcon () const
 			{
-				return QIcon (":/resources/images/seekthru.png");
+				return QIcon (":/resources/images/seekthru.svg");
 			}
 			
 			QStringList SeekThru::Provides () const

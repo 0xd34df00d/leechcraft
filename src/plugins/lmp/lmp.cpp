@@ -62,7 +62,7 @@ void LMP::SetProvider (QObject*, const QString&)
 
 QIcon LMP::GetIcon () const
 {
-	return QIcon (":/plugins/lmp/resources/images/lmp.png");
+	return QIcon (":/plugins/lmp/resources/images/lmp.svg");
 }
 
 boost::shared_ptr<XmlSettingsDialog> LMP::GetSettingsDialog () const

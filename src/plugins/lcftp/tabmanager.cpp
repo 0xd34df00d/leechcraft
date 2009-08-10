@@ -29,6 +29,7 @@ namespace LeechCraft
 
 				TabWidget_ptr w (new TabWidget (url, local));
 				emit addNewTab (url.host (), w);
+				emit changeTabIcon (w, QIcon (":/resources/images/lcftp.svg"));
 				Widgets_ << w;
 			}
 

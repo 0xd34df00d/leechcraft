@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/" >
-        <file>resources/images/torrent_bittorrent.png</file>
+        <file>resources/images/bittorrent.svg</file>
         <file>resources/images/torrent_local.png</file>
         <file>resources/images/torrent_network.png</file>
 		<file>resources/images/clients/ares.png</file>

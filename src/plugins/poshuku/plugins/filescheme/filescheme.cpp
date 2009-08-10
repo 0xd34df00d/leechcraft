@@ -43,7 +43,7 @@ namespace LeechCraft
 
 					QIcon FileScheme::GetIcon () const
 					{
-						return QIcon ();
+						return QIcon (":/plugins/poshuku/plugins/filescheme/resources/images/poshuku_filescheme.svg");
 					}
 
 					QStringList FileScheme::Provides () const
