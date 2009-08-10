@@ -809,17 +809,24 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 	else if (p.Entity_.canConvert<QByteArray> ())
 	{
 		QByteArray entity = p.Entity_.toByteArray ();
-		if (entity.size () < 1000)
+		if (entity.size () < 100)
 			string = QTextCodec::codecForName ("UTF-8")->toUnicode (entity);
 	}
 	else if (p.Entity_.canConvert<QUrl> ())
 	{
 		string = p.Entity_.toUrl ().toString ();
-		if (string.size () > 150)
-			string = string.left (147) + "...";
+		if (string.size () > 100)
+			string = string.left (97) + "...";
 	}
 	else
 		string = tr ("Binary entity");
+
+	if (!p.Mime_.isEmpty ())
+		string += tr ("<br /><br />of type <pre>%1<pre>").arg (p.Mime_);
+
+	if (!p.Additional_ ["SourceURL"].toUrl ().isEmpty ())
+		string += tr ("<br />from %1")
+			.arg (p.Additional_ ["SourceURL"].toUrl ().toString ());
 
 	std::auto_ptr<HandlerChoiceDialog> dia (new HandlerChoiceDialog (string));
 
