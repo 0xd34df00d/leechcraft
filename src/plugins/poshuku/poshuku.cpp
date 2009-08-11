@@ -214,6 +214,15 @@ namespace LeechCraft
 			{
 				return Ui_.MainView_->GetToolBar ();
 			}
+
+			void Poshuku::Remove ()
+			{
+			}
+
+			void Poshuku::NewTabRequested ()
+			{
+				Ui_.MainView_->NewTabRequested ();
+			}
 			
 			QByteArray Poshuku::GetExpectedPluginClass () const
 			{

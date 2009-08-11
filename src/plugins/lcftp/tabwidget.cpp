@@ -36,6 +36,10 @@ namespace LeechCraft
 				return 0;
 			}
 
+			void TabWidget::NewTabRequested ()
+			{
+			}
+
 			void TabWidget::Setup (Pane *p)
 			{
 				connect (p,

@@ -119,10 +119,6 @@ namespace LeechCraft
 				ViewSources_->setProperty ("ActionIcon", "poshuku_viewsources");
 				ViewSources_->setEnabled (false);
 			
-				NewTab_ = new QAction (tr ("Create new tab"),
-						this);
-				NewTab_->setProperty ("ActionIcon", "poshuku_newtab");
-			
 				CloseTab_ = new QAction (tr ("Close this tab"),
 						this);
 				CloseTab_->setProperty ("ActionIcon", "poshuku_closetab");
@@ -191,7 +187,6 @@ namespace LeechCraft
 				addressBar->setDefaultWidget (Ui_.URLEdit_);
 				ToolBar_->addAction (addressBar);
 			
-				ToolBar_->addAction (NewTab_);
 				ToolBar_->addAction (CloseTab_);
 			
 				static_cast<QVBoxLayout*> (layout ())->insertWidget (0, ToolBar_);
@@ -228,10 +223,6 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (handleViewSources ()));
-				connect (NewTab_,
-						SIGNAL (triggered ()),
-						this,
-						SLOT (handleNewTab ()));
 				connect (CloseTab_,
 						SIGNAL (triggered ()),
 						this,
@@ -404,7 +395,6 @@ namespace LeechCraft
 				PrintPreview_->setShortcut (proxy->GetShortcut (object, EAPrintPreview_));
 				ScreenSave_->setShortcut (proxy->GetShortcut (object, EAScreenSave_));
 				ViewSources_->setShortcut (proxy->GetShortcut (object, EAViewSources_));
-				NewTab_->setShortcut (proxy->GetShortcut (object, EANewTab_));
 				CloseTab_->setShortcut (proxy->GetShortcut (object, EACloseTab_));
 				ZoomIn_->setShortcut (proxy->GetShortcut (object, EAZoomIn_));
 				ZoomOut_->setShortcut (proxy->GetShortcut (object, EAZoomOut_));
@@ -490,7 +480,6 @@ namespace LeechCraft
 						(PrintPreview_)
 						(ScreenSave_)
 						(ViewSources_)
-						(NewTab_)
 						(CloseTab_)
 						(ZoomIn_)
 						(ZoomOut_)
@@ -518,7 +507,6 @@ namespace LeechCraft
 				_L (PrintPreview_, tr ("Ctrl+Shift+P"));
 				_L (ScreenSave_, Qt::Key_F12);
 				_L (ViewSources_, QKeySequence ());
-				_L (NewTab_, tr ("Ctrl+T"));
 				_L (CloseTab_, tr ("Ctrl+W"));
 				_L (ZoomIn_, Qt::CTRL + Qt::Key_Plus);
 				_L (ZoomOut_, Qt::CTRL + Qt::Key_Minus);
@@ -544,6 +532,11 @@ namespace LeechCraft
 			QToolBar* BrowserWidget::GetToolBar () const
 			{
 				return Own_ ? ToolBar_ : 0;
+			}
+
+			void BrowserWidget::NewTabRequested ()
+			{
+				Core::Instance ().NewURL ("", true);
 			}
 
 			void BrowserWidget::SetOnLoadScrollPoint (const QPoint& sp)
@@ -735,11 +728,6 @@ namespace LeechCraft
 				viewer->setAttribute (Qt::WA_DeleteOnClose);
 				viewer->SetHtml (html);
 				viewer->show ();
-			}
-			
-			void BrowserWidget::handleNewTab ()
-			{
-				Core::Instance ().NewURL ("", true);
 			}
 			
 			void BrowserWidget::focusLineEdit ()
@@ -940,7 +928,7 @@ namespace LeechCraft
 						act->setData (QVariant::fromValue<LeechCraft::DownloadEntity> (e));
 						if (!inserted)
 						{
-							ToolBar_->insertAction (NewTab_, ExternalLinks_->menuAction ());
+							ToolBar_->insertAction (CloseTab_, ExternalLinks_->menuAction ());
 							inserted = true;
 						}
 					}

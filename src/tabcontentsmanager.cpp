@@ -4,6 +4,7 @@
 #include "core.h"
 #include "mainwindow.h"
 #include "viewreemitter.h"
+#include "interfaces/imultitabs.h"
 
 namespace LeechCraft
 {
@@ -36,13 +37,24 @@ namespace LeechCraft
 
 	void TabContentsManager::AddNewTab (const QString& query)
 	{
-		TabContents *tc = new TabContents ();
-		Connect (tc);
-		Reemitter_->Connect (tc);
-		Others_ << tc;
-		emit addNewTab (tr ("Summary"), tc);
+		TabWidget *tw = Core::Instance ()
+			.GetReallyMainWindow ()->GetTabWidget ();
+		IMultiTabsWidget *imtw =
+			qobject_cast<IMultiTabsWidget*> (tw->currentWidget ());
+		if (imtw)
+			imtw->NewTabRequested ();
+		else
+		{
+			TabContents *tc = new TabContents ();
+			Connect (tc);
+			Reemitter_->Connect (tc);
+			Others_ << tc;
+			emit addNewTab (tr ("Summary"), tc);
+			emit changeTabIcon (tc,
+					QIcon (":/resources/images/leechcraft.svg"));
 
-		tc->SetQuery (query);
+			tc->SetQuery (query);
+		}
 	}
 
 	void TabContentsManager::RemoveTab (TabContents *tc)

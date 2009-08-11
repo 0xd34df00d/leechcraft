@@ -36,7 +36,6 @@ namespace LeechCraft
 				QAction *PrintPreview_;
 				QAction *ScreenSave_;
 				QAction *ViewSources_;
-				QAction *NewTab_;
 				QAction *CloseTab_;
 				QAction *ZoomIn_;
 				QAction *ZoomOut_;
@@ -70,7 +69,7 @@ namespace LeechCraft
 					EAPrintPreview_,
 					EAScreenSave_,
 					EAViewSources_,
-					EANewTab_,
+					EANewTab_, // Unused now
 					EACloseTab_,
 					EAZoomIn_,
 					EAZoomOut_,
@@ -107,6 +106,7 @@ namespace LeechCraft
 
 				void Remove ();
 				QToolBar* GetToolBar () const;
+				void NewTabRequested ();
 
 				void SetOnLoadScrollPoint (const QPoint&);
 			private:
@@ -124,7 +124,6 @@ namespace LeechCraft
 				void handlePrintingWithPreview ();
 				void handleScreenSave ();
 				void handleViewSources ();
-				void handleNewTab ();
 				void focusLineEdit ();
 				void handleNewUnclose (QAction*);
 				void handleUncloseDestroyed ();

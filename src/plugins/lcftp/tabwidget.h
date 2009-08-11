@@ -23,6 +23,7 @@ namespace LeechCraft
 
 				void Remove ();
 				QToolBar* GetToolBar () const;
+				void NewTabRequested ();
 			private:
 				void Setup (Pane*);
 				Pane* Other (Pane*);

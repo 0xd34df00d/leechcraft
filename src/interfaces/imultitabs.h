@@ -28,6 +28,10 @@ public:
 	 * @return The toolbar of this page.
 	 */
 	virtual QToolBar* GetToolBar () const = 0;
+
+	/** Notifies this plugin that a new tab was requested.
+	 */
+	virtual void NewTabRequested () = 0;
 };
 
 /** @brief Interface for plugins having (and opening/closing) multiple

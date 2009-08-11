@@ -30,6 +30,7 @@ namespace LeechCraft
 						  , public IInfo
 						  , public IEmbedTab
 						  , public IMultiTabs
+						  , public IMultiTabsWidget
 						  , public IPluginReady
 						  , public IHaveSettings
 						  , public IEntityHandler
@@ -37,7 +38,7 @@ namespace LeechCraft
 						  , public IWebBrowser
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IEmbedTab IMultiTabs IHaveSettings IEntityHandler IPluginReady IWebBrowser IHaveShortcuts)
+				Q_INTERFACES (IInfo IEmbedTab IMultiTabs IMultiTabsWidget IHaveSettings IEntityHandler IPluginReady IWebBrowser IHaveShortcuts)
 
 				Ui::Poshuku Ui_;
 
@@ -59,6 +60,9 @@ namespace LeechCraft
 
 				QWidget* GetTabContents ();
 				QToolBar* GetToolBar () const;
+
+				void Remove ();
+				void NewTabRequested ();
 
 				QByteArray GetExpectedPluginClass () const;
 				void AddPlugin (QObject*);
