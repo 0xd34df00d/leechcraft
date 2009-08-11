@@ -370,7 +370,7 @@ namespace LeechCraft
 
 			void BrowserWidget::SetMainMode ()
 			{
-				ToolBar_->removeAction (CloseTab_);
+				CloseTab_->setEnabled (false);
 				disconnect (CloseTab_,
 						0,
 						this,
