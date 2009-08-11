@@ -56,7 +56,7 @@ QString CleanWeb::GetInfo () const
 
 QIcon CleanWeb::GetIcon () const
 {
-	return QIcon ();
+	return QIcon (":/plugins/poshuku/plugins/cleanweb/resources/images/poshuku_cleanweb.svg");
 }
 
 QStringList CleanWeb::Provides () const
