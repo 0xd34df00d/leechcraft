@@ -43,6 +43,7 @@ namespace LeechCraft
 						void Init (IProxyObject*);
 
 						QNetworkReply* CreateRequest (IHookProxy_ptr,
+								QNetworkAccessManager*,
 								QNetworkAccessManager::Operation*,
 								const QNetworkRequest*,
 								QIODevice**);

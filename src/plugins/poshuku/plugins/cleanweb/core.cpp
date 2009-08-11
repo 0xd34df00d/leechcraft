@@ -12,7 +12,6 @@
 #include <plugininterface/util.h>
 #include <plugininterface/proxy.h>
 #include "xmlsettingsmanager.h"
-#include "core.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Plugins::Poshuku::Plugins::CleanWeb;
@@ -322,7 +321,8 @@ void Core::Remove (const QModelIndex& index)
 	Remove (Filters_ [index.row ()].SD_.Filename_);
 }
 
-QNetworkReply* Core::Hook (IHookProxy_ptr,
+QNetworkReply* Core::Hook (IHookProxy_ptr hook,
+		QNetworkAccessManager *manager,
 		QNetworkAccessManager::Operation*,
 		QNetworkRequest *req,
 		QIODevice**)
@@ -330,9 +330,12 @@ QNetworkReply* Core::Hook (IHookProxy_ptr,
 	if (ShouldReject (*req))
 	{
 		qDebug () << "rejecting" << req->url ();
+		hook->CancelDefault ();
 		*req = QNetworkRequest ();
+		return manager->get (QNetworkRequest (QUrl ("about:blank")));
 	}
-	return 0;
+	else
+		return 0;
 }
 
 /** We test each filter until we know that we should reject it or until

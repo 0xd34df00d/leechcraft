@@ -30,7 +30,8 @@ void CleanWeb::Init (ICoreProxy_ptr proxy)
 					_1,
 					_2,
 					_3,
-					_4)));
+					_4,
+					_5)));
 
 	SettingsDialog_.reset (new XmlSettingsDialog);
 	SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),

@@ -24,7 +24,8 @@ namespace LeechCraft
 										_1,
 										_2,
 										_3,
-										_4)));
+										_4,
+										_5)));
 					}
 
 					void FileScheme::Release ()
@@ -75,6 +76,7 @@ namespace LeechCraft
 					}
 
 					QNetworkReply* FileScheme::CreateRequest (IHookProxy_ptr proxy,
+							QNetworkAccessManager*,
 							QNetworkAccessManager::Operation *op,
 							const QNetworkRequest *req,
 							QIODevice **)

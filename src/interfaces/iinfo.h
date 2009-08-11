@@ -59,6 +59,7 @@ namespace LeechCraft
 		struct HookSignature<HIDNetworkAccessManagerCreateRequest>
 		{
 			typedef boost::function<QNetworkReply* (IHookProxy_ptr,
+					QNetworkAccessManager*,
 					QNetworkAccessManager::Operation*,
 					QNetworkRequest*,
 					QIODevice**)> Signature_t;

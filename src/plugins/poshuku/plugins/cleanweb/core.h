@@ -97,6 +97,7 @@ namespace LeechCraft
 						QAbstractItemModel* GetModel ();
 						void Remove (const QModelIndex&);
 						QNetworkReply* Hook (LeechCraft::IHookProxy_ptr,
+								QNetworkAccessManager*,
 								QNetworkAccessManager::Operation*,
 								QNetworkRequest*,
 								QIODevice**);
