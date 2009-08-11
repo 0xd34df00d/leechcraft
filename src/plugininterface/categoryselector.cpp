@@ -15,6 +15,7 @@ const int RoleTag = 52;
 CategorySelector::CategorySelector (QWidget *parent)
 : QTreeWidget (parent)
 {
+	setWindowTitle (tr ("Tags selector"));
 	setWindowFlags (Qt::Tool | Qt::WindowStaysOnTopHint);
 	setRootIsDecorated (false);
 
