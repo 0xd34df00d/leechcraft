@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>644</width>
+    <width>724</width>
     <height>298</height>
    </rect>
   </property>
@@ -32,6 +32,12 @@
      <property name="alternatingRowColors">
       <bool>true</bool>
      </property>
+     <property name="iconSize">
+      <size>
+       <width>48</width>
+       <height>48</height>
+      </size>
+     </property>
      <property name="rootIsDecorated">
       <bool>false</bool>
      </property>
@@ -51,13 +57,10 @@
       <bool>true</bool>
      </attribute>
      <attribute name="headerDefaultSectionSize">
-      <number>150</number>
+      <number>220</number>
      </attribute>
      <attribute name="headerDefaultSectionSize">
-      <number>150</number>
-     </attribute>
-     <attribute name="headerVisible">
-      <bool>true</bool>
+      <number>220</number>
      </attribute>
     </widget>
    </item>
