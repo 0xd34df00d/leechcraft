@@ -65,7 +65,7 @@ QString LeechCraft::Plugins::NetworkMonitor::Plugin::GetInfo () const
 
 QIcon Plugin::GetIcon () const
 {
-	return QIcon ();
+	return QIcon (":/resources/images/networkmonitor.svg");
 }
 
 QStringList Plugin::Provides () const

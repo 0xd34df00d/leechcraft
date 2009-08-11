@@ -81,7 +81,7 @@ QString LeechCraft::Plugins::Poshuku::Plugins::Fua::FUA::GetInfo () const
 
 QIcon FUA::GetIcon () const
 {
-	return QIcon ();
+	return QIcon (":/resources/images/poshuku_fua.svg");
 }
 
 QStringList FUA::Provides () const

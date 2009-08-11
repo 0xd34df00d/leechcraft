@@ -1,4 +1,5 @@
 <RCC>
   <qresource prefix="/" >
+  	<file>resources/images/poshuku_fua.svg</file>
   </qresource>
 </RCC>

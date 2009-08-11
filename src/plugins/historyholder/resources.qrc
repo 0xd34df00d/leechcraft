@@ -1,5 +1,5 @@
 <RCC>
   <qresource prefix="/" >
-	<file>resources/images/historyholder.png</file>
+	<file>resources/images/historyholder.svg</file>
   </qresource>
 </RCC>

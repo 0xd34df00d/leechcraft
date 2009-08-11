@@ -1,4 +1,5 @@
 <RCC>
   <qresource prefix="/plugins/poshuku/plugins/cleanweb" >
+  	<file>resources/images/poshuku_cleanweb.svg</file>
   </qresource>
 </RCC>

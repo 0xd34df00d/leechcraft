@@ -31,7 +31,7 @@ QString Plugin::GetInfo () const
 
 QIcon Plugin::GetIcon () const
 {
-	return QIcon (":/resources/images/historyholder.png");
+	return QIcon (":/resources/images/historyholder.svg");
 }
 
 QStringList Plugin::Provides () const
