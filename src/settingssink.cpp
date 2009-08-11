@@ -44,6 +44,7 @@ namespace LeechCraft
 
 		QTreeWidgetItem *parent = new QTreeWidgetItem (Ui_.Tree_, QStringList (name));
 		parent->setData (0, RDialog, QVariant::fromValue<XmlSettingsDialog*> (widget));
+		parent->setIcon (0, wicon);
 		if (widget->GetPages ().size () > 1)
 			Q_FOREACH (QString page, widget->GetPages ())
 				new QTreeWidgetItem (parent, QStringList (page));
