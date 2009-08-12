@@ -161,9 +161,8 @@ namespace
 			if (FilterOption () != f)
 				Filter_->Options_ [actualLine] = f;
 
-			QRegExp::PatternSyntax syntax = (f.MatchType_ == FilterOption::MTRegexp_ ?
-					QRegExp::RegExp : QRegExp::Wildcard);
-			Filter_->RegExps_ [actualLine] = QRegExp (actualLine, f.Case_, syntax);
+			if (f.MatchType_ == FilterOption::MTRegexp_)
+				Filter_->RegExps_ [actualLine] = QRegExp (actualLine, f.Case_, QRegExp::RegExp);
 		}
 	};
 };
