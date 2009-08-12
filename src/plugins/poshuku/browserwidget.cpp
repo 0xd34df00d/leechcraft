@@ -893,7 +893,7 @@ namespace LeechCraft
 						originalUrl.setQueryItems (QList<QPair<QString, QString> > ());
 						if (hrefUrl.size () &&
 								hrefUrl.at (0) == '/')
-							originalUrl.setPath (hrefUrl);
+							originalUrl.setEncodedPath (hrefUrl.toUtf8 ());
 						else
 						{
 							QString originalPath = originalUrl.path ();
@@ -903,15 +903,19 @@ namespace LeechCraft
 								originalPath = originalPath.left (slashIndex + 1);
 							}
 							originalPath += hrefUrl;
-							originalUrl.setPath (originalPath);
+							originalUrl.setEncodedPath (originalPath.toUtf8 ());
 						}
-						hrefUrl = originalUrl.toString ();
+						e.Entity_ = originalUrl;
+						e.Additional_ ["SourceURL"] = originalUrl;
 					}
-					e.Entity_ = QUrl (hrefUrl);
+					else
+					{
+						e.Entity_ = QUrl::fromEncoded (hrefUrl.toUtf8 ());
+						e.Additional_ ["SourceURL"] = QUrl::fromEncoded (hrefUrl.toUtf8 ());
+					}
 					e.Parameters_ = LeechCraft::FromUserInitiated |
 						LeechCraft::OnlyHandle;
 					e.Additional_ ["UserVisibleName"] = entity;
-					e.Additional_ ["SourceURL"] = QUrl (hrefUrl);
 			
 					bool ch = false;
 					emit couldHandle (e, &ch);
