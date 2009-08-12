@@ -9,24 +9,31 @@
         <translation>Authentifizierung erfordert</translation>
     </message>
     <message>
-        <location filename="authenticationdialog.ui" line="23"/>
         <source>Ooops, I forgot to call the corrent constructor params.</source>
-        <translation>,.</translation>
+        <translation type="obsolete">,.</translation>
     </message>
     <message>
-        <location filename="authenticationdialog.ui" line="32"/>
+        <location filename="authenticationdialog.ui" line="29"/>
         <source>Login:</source>
         <translation>Login:</translation>
     </message>
     <message>
-        <location filename="authenticationdialog.ui" line="42"/>
+        <location filename="authenticationdialog.ui" line="39"/>
         <source>Password:</source>
         <translation>Paßwort:</translation>
     </message>
     <message>
-        <location filename="authenticationdialog.ui" line="58"/>
+        <location filename="authenticationdialog.ui" line="55"/>
         <source>Save credentials</source>
         <translation>Speichern</translation>
+    </message>
+</context>
+<context>
+    <name>CategorySelector</name>
+    <message>
+        <location filename="plugininterface/categoryselector.cpp" line="18"/>
+        <source>Tags selector</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -117,56 +124,69 @@
         <translation>Ergebnis</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="121"/>
         <source>toolBar</source>
-        <translation>toolBar</translation>
+        <translation type="obsolete">toolBar</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="145"/>
+        <location filename="leechcraft.ui" line="90"/>
         <source>Add task</source>
         <translation>Aufgabe hinzufügen</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="148"/>
         <source>Adds job to a supporting plugin</source>
-        <translation>Aufgabe zu dem unterstütztem plugin hinzufügen</translation>
+        <translation type="obsolete">Aufgabe zu dem unterstütztem plugin hinzufügen</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="157"/>
+        <location filename="leechcraft.ui" line="65"/>
+        <source>Main toolbar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="99"/>
         <source>Settings</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="165"/>
+        <location filename="leechcraft.ui" line="107"/>
         <source>Quit</source>
         <translation>Ausgang</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="171"/>
+        <location filename="leechcraft.ui" line="113"/>
         <source>exit</source>
         <translation>Ausgang</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="176"/>
+        <location filename="leechcraft.ui" line="118"/>
         <source>Plugin manager</source>
         <translation>Plugin manager</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="184"/>
-        <location filename="leechcraft.ui" line="187"/>
+        <location filename="leechcraft.ui" line="126"/>
+        <location filename="leechcraft.ui" line="129"/>
         <source>Fullscreen mode</source>
         <translation>Vollbild-Modus</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="190"/>
+        <location filename="leechcraft.ui" line="132"/>
         <source>F11</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="195"/>
-        <location filename="leechcraft.ui" line="198"/>
+        <location filename="leechcraft.ui" line="137"/>
+        <location filename="leechcraft.ui" line="140"/>
         <source>Log</source>
         <translation>Log</translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="145"/>
+        <source>New tab</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="148"/>
+        <source>Ctrl+T</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -232,63 +252,100 @@
 <context>
     <name>LeechCraft::Core</name>
     <message>
-        <location filename="core.cpp" line="74"/>
+        <location filename="core.cpp" line="76"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="75"/>
+        <location filename="core.cpp" line="77"/>
         <source>State</source>
         <translation>Staat</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="76"/>
+        <location filename="core.cpp" line="78"/>
         <source>Progress</source>
         <translation>Progress</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="252"/>
         <source>Setting up %1...</source>
-        <translation>Konfiguration %1...</translation>
+        <translation type="obsolete">Konfiguration %1...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="298"/>
         <source>Calculating dependencies...</source>
-        <translation>Zählen Abhängigkeiten...</translation>
+        <translation type="obsolete">Zählen Abhängigkeiten...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="351"/>
+        <location filename="core.cpp" line="328"/>
         <source>No plugins are able to download &quot;%1&quot;</source>
         <translation>Kein plugin kann laden &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="838"/>
+        <location filename="core.cpp" line="556"/>
+        <location filename="core.cpp" line="568"/>
+        <source>LeechCraft</source>
+        <translation type="unfinished">LeechCraft</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="557"/>
+        <source>Do you really want to clear the network cache?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="569"/>
+        <source>Do you really want to clear cookies?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="813"/>
         <source>Too long to show</source>
         <translation>Es ist zu lang für Vorschau</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="920"/>
+        <location filename="core.cpp" line="830"/>
+        <source>Binary entity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="833"/>
+        <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="836"/>
+        <source>&lt;br /&gt;from %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="925"/>
         <source>Select save location</source>
         <translation>Platz für Speichern wählen</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="936"/>
-        <location filename="core.cpp" line="953"/>
+        <location filename="core.cpp" line="941"/>
+        <location filename="core.cpp" line="958"/>
         <source>Error</source>
         <translation>Fehrer</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="937"/>
+        <location filename="core.cpp" line="942"/>
+        <source>Could not add task to the selected downloader, would you like to try another one?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="959"/>
+        <source>Could not handle task with the selected handler, would you like to try another one?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Could not add job to the selected downloader, would you like to try another one?</source>
-        <translation>Die Aufgabe kann zu diesem Loader hinzufügend nicht werdan, wollen Sie mit einem anderen es zu probieren?</translation>
+        <translation type="obsolete">Die Aufgabe kann zu diesem Loader hinzufügend nicht werdan, wollen Sie mit einem anderen es zu probieren?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="954"/>
         <source>Could not handle job with the selected handler, would you like to try another one?</source>
-        <translation>Die Autgabe kann mit diesem Handler bearbeitet nicht werden, woolen Sie mit einen anderen es zu probieren?</translation>
+        <translation type="obsolete">Die Autgabe kann mit diesem Handler bearbeitet nicht werden, woolen Sie mit einen anderen es zu probieren?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="977"/>
+        <location filename="core.cpp" line="982"/>
         <source>Could not handle download entity %1.</source>
         <translation>Das Objekt kann nicht bearbeitet werden %1.</translation>
     </message>
@@ -304,67 +361,64 @@
 <context>
     <name>LeechCraft::MainWindow</name>
     <message>
-        <location filename="mainwindow.cpp" line="39"/>
-        <location filename="mainwindow.cpp" line="70"/>
-        <location filename="mainwindow.cpp" line="634"/>
         <source>Initializing core and plugins...</source>
-        <translation>Der Kern und die Plugins initialisieren sich...</translation>
+        <translation type="obsolete">Der Kern und die Plugins initialisieren sich...</translation>
+    </message>
+    <message>
+        <source>Plugins</source>
+        <translation type="obsolete">Plugins</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="113"/>
-        <source>Plugins</source>
-        <translation>Plugins</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="159"/>
-        <location filename="mainwindow.cpp" line="167"/>
-        <location filename="mainwindow.cpp" line="231"/>
-        <location filename="mainwindow.cpp" line="341"/>
-        <location filename="mainwindow.cpp" line="369"/>
+        <location filename="mainwindow.cpp" line="121"/>
+        <location filename="mainwindow.cpp" line="178"/>
+        <location filename="mainwindow.cpp" line="286"/>
+        <location filename="mainwindow.cpp" line="314"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="161"/>
+        <location filename="mainwindow.cpp" line="115"/>
         <source>%1 - LeechCraft</source>
         <translation>%1 - LeechCraft</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="182"/>
         <source>Initializing interface...</source>
-        <translation>Die Schnittstelle initialisiert sich...</translation>
+        <translation type="obsolete">Die Schnittstelle initialisiert sich...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="249"/>
+        <location filename="mainwindow.cpp" line="196"/>
         <source>/s	</source>
         <translation>/s	</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="252"/>
-        <location filename="mainwindow.cpp" line="256"/>
-        <location filename="mainwindow.cpp" line="552"/>
-        <location filename="mainwindow.cpp" line="553"/>
+        <location filename="mainwindow.cpp" line="199"/>
+        <location filename="mainwindow.cpp" line="203"/>
+        <location filename="mainwindow.cpp" line="401"/>
+        <location filename="mainwindow.cpp" line="402"/>
         <source>/s</source>
         <translation>/s</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="342"/>
+        <location filename="mainwindow.cpp" line="287"/>
         <source>Do you really want to quit?</source>
         <translation>Wollen Sie wirklich ausgehen?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="370"/>
+        <location filename="mainwindow.cpp" line="315"/>
+        <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Changing language requires restarting LeechCraft. Do you want to restart now?</source>
-        <translation>Die Änderung der Sprache braucht Neustart LeechCraft. Wollen Sie den Neustart jetzt machen?</translation>
+        <translation type="obsolete">Die Änderung der Sprache braucht Neustart LeechCraft. Wollen Sie den Neustart jetzt machen?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="429"/>
-        <location filename="mainwindow.cpp" line="532"/>
         <source>Plugin control</source>
-        <translation>Management Plugins</translation>
+        <translation type="obsolete">Management Plugins</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="558"/>
+        <location filename="mainwindow.cpp" line="407"/>
         <source>%1 down, %2 up</source>
         <translation>%1 down, %2 up</translation>
     </message>
@@ -372,27 +426,31 @@
 <context>
     <name>LeechCraft::NetworkAccessManager</name>
     <message>
-        <location filename="networkaccessmanager.cpp" line="132"/>
         <source>The URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
-        <translation>Die URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;erfordert die Authentifizierung.</translation>
+        <translation type="obsolete">Die URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;erfordert die Authentifizierung.</translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="144"/>
         <source>The proxy &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
-        <translation>Die Proxy &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;erfordert die Authentifizierung.</translation>
+        <translation type="obsolete">Die Proxy &lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;erfordert die Authentifizierung.</translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="172"/>
+        <location filename="networkaccessmanager.cpp" line="131"/>
+        <location filename="networkaccessmanager.cpp" line="141"/>
+        <source>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="networkaccessmanager.cpp" line="167"/>
         <source>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
         <translation>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;hast SSL Fehler. Was wollen Sie machen?</translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="207"/>
+        <location filename="networkaccessmanager.cpp" line="202"/>
         <source>Could not create Core directory.</source>
         <translation>Die Directory für dem Kern kann nicht erstalllt werden.</translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="215"/>
+        <location filename="networkaccessmanager.cpp" line="210"/>
         <source>Could not save cookies, error opening cookie file.</source>
         <translation>Die Cookies können nicht gespeichert werden, es gibt feler mit Öffnung Cookies Datei.</translation>
     </message>
@@ -438,9 +496,8 @@
         <translation>Angelegenheit einen oder einigen Plugins ist erfolglos.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="696"/>
         <source>Initializing %1...</source>
-        <translation>Initialisierung %1...</translation>
+        <translation type="obsolete">Initialisierung %1...</translation>
     </message>
 </context>
 <context>
@@ -581,6 +638,22 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::StartupWizard</name>
+    <message>
+        <location filename="startupwizard.cpp" line="10"/>
+        <source>Startup wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::TabContentsManager</name>
+    <message>
+        <location filename="tabcontentsmanager.cpp" line="52"/>
+        <source>Summary</source>
+        <translation type="unfinished">Ergebnis</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::TagsViewer</name>
     <message>
         <location filename="tagsviewer.cpp" line="26"/>
@@ -615,9 +688,34 @@
     </message>
 </context>
 <context>
+    <name>Proxy</name>
+    <message numerus="yes">
+        <location filename="plugininterface/proxy.cpp" line="114"/>
+        <source>%n day(s), </source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="plugininterface/util.cpp" line="68"/>
+        <source>Could not cd into %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/util.cpp" line="75"/>
+        <source>Could not create %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>SettingsSink</name>
     <message>
-        <location filename="settingssink.ui" line="13"/>
+        <location filename="settingssink.ui" line="14"/>
         <source>Preferences</source>
         <translation>Einstellungen</translation>
     </message>
@@ -669,13 +767,22 @@
     </message>
     <message>
         <location filename="sslerrorsdialog.ui" line="57"/>
-        <source>Remember my choice for the file</source>
-        <translation>Erinnern mein Wahl für die Datei</translation>
+        <source>Remember my choice for the resource</source>
+        <oldsource>Remember my choice for the file</oldsource>
+        <translation type="unfinished">Erinnern mein Wahl für die Datei</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.ui" line="64"/>
         <source>Remember my choice for the whole host</source>
         <translation>Erinnrn mein Wahl für dem ganzen Host</translation>
+    </message>
+</context>
+<context>
+    <name>TabContents</name>
+    <message>
+        <location filename="tabcontents.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

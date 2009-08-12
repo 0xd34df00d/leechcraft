@@ -25,6 +25,14 @@
     </message>
 </context>
 <context>
+    <name>CategorySelector</name>
+    <message>
+        <location filename="plugininterface/categoryselector.cpp" line="18"/>
+        <source>Tags selector</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CommonJobAdder</name>
     <message>
         <location filename="commonjobadder.ui" line="14"/>
@@ -168,6 +176,11 @@
         <source>New tab</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="leechcraft.ui" line="148"/>
+        <source>Ctrl+T</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::Application</name>
@@ -276,39 +289,49 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="797"/>
+        <location filename="core.cpp" line="813"/>
         <source>Too long to show</source>
         <translation>طويل جدّاً الإظهار</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="814"/>
+        <location filename="core.cpp" line="830"/>
         <source>Binary entity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="894"/>
+        <location filename="core.cpp" line="833"/>
+        <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="836"/>
+        <source>&lt;br /&gt;from %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="925"/>
         <source>Select save location</source>
         <translation>ﺎﺨﺗﺭ ﻢﻛﺎﻧ ﺎﻟﺬﻳ ﺕﺮﻳﺩ ﺢﻔﻇ ﺎﻠﻤﻠﻓ ﻒﻴﻫ</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="910"/>
-        <location filename="core.cpp" line="927"/>
+        <location filename="core.cpp" line="941"/>
+        <location filename="core.cpp" line="958"/>
         <source>Error</source>
         <translation>خطأ</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="911"/>
+        <location filename="core.cpp" line="942"/>
         <source>Could not add task to the selected downloader, would you like to try another one?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="928"/>
+        <location filename="core.cpp" line="959"/>
         <source>Could not handle task with the selected handler, would you like to try another one?</source>
         <oldsource>Could not handle job with the selected handler, would you like to try another one?</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="951"/>
+        <location filename="core.cpp" line="982"/>
         <source>Could not handle download entity %1.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -332,39 +355,39 @@
         <translation type="obsolete">البرامج المساعدة</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="119"/>
-        <location filename="mainwindow.cpp" line="127"/>
-        <location filename="mainwindow.cpp" line="184"/>
-        <location filename="mainwindow.cpp" line="292"/>
-        <location filename="mainwindow.cpp" line="320"/>
+        <location filename="mainwindow.cpp" line="113"/>
+        <location filename="mainwindow.cpp" line="121"/>
+        <location filename="mainwindow.cpp" line="178"/>
+        <location filename="mainwindow.cpp" line="286"/>
+        <location filename="mainwindow.cpp" line="314"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="121"/>
+        <location filename="mainwindow.cpp" line="115"/>
         <source>%1 - LeechCraft</source>
         <translation>%1 - LeechCraft</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="202"/>
+        <location filename="mainwindow.cpp" line="196"/>
         <source>/s	</source>
         <translation>/s	</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="205"/>
-        <location filename="mainwindow.cpp" line="209"/>
-        <location filename="mainwindow.cpp" line="407"/>
-        <location filename="mainwindow.cpp" line="408"/>
+        <location filename="mainwindow.cpp" line="199"/>
+        <location filename="mainwindow.cpp" line="203"/>
+        <location filename="mainwindow.cpp" line="401"/>
+        <location filename="mainwindow.cpp" line="402"/>
         <source>/s</source>
         <translation>/s</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="293"/>
+        <location filename="mainwindow.cpp" line="287"/>
         <source>Do you really want to quit?</source>
         <translation>هل تريد الخروج؟</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="321"/>
+        <location filename="mainwindow.cpp" line="315"/>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -373,7 +396,7 @@
         <translation type="obsolete">تحكّم با البرامج المساعدة</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="413"/>
+        <location filename="mainwindow.cpp" line="407"/>
         <source>%1 down, %2 up</source>
         <translation>تحميل %1، إعطاء %2</translation>
     </message>
@@ -582,9 +605,17 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::StartupWizard</name>
+    <message>
+        <location filename="startupwizard.cpp" line="10"/>
+        <source>Startup wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::TabContentsManager</name>
     <message>
-        <location filename="tabcontentsmanager.cpp" line="43"/>
+        <location filename="tabcontentsmanager.cpp" line="52"/>
         <source>Summary</source>
         <translation type="unfinished">ﻢﺤﻤّﻠﻴﻧ</translation>
     </message>
@@ -621,6 +652,34 @@
         <location filename="pluginmanagerdialog.ui" line="14"/>
         <source>Plugin Manager</source>
         <translation>إعداد البرتمج المساعدة</translation>
+    </message>
+</context>
+<context>
+    <name>Proxy</name>
+    <message numerus="yes">
+        <location filename="plugininterface/proxy.cpp" line="114"/>
+        <source>%n day(s), </source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="plugininterface/util.cpp" line="68"/>
+        <source>Could not cd into %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/util.cpp" line="75"/>
+        <source>Could not create %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

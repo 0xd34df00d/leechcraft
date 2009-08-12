@@ -21,6 +21,13 @@
     </message>
 </context>
 <context>
+    <name>CategorySelector</name>
+    <message>
+        <source>Tags selector</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CommonJobAdder</name>
     <message>
         <source>Add task</source>
@@ -133,6 +140,10 @@
     </message>
     <message>
         <source>New tab</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+T</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -249,6 +260,14 @@
     </message>
     <message>
         <source>Do you really want to clear cookies?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br /&gt;from %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -466,6 +485,13 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::StartupWizard</name>
+    <message>
+        <source>Startup wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::TabContentsManager</name>
     <message>
         <source>Summary</source>
@@ -499,6 +525,26 @@
     <message>
         <source>Plugin Manager</source>
         <translation type="unfinished">Plugin Manager</translation>
+    </message>
+</context>
+<context>
+    <name>Proxy</name>
+    <message numerus="yes">
+        <source>%n day(s), </source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <source>Could not cd into %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not create %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

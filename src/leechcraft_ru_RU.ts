@@ -21,6 +21,13 @@
     </message>
 </context>
 <context>
+    <name>CategorySelector</name>
+    <message>
+        <source>Tags selector</source>
+        <translation>Выбор меток</translation>
+    </message>
+</context>
+<context>
     <name>CommonJobAdder</name>
     <message>
         <source>Add task</source>
@@ -133,6 +140,10 @@
     <message>
         <source>New tab</source>
         <translation>Новая вкладка</translation>
+    </message>
+    <message>
+        <source>Ctrl+T</source>
+        <translation>Ctrl+T</translation>
     </message>
 </context>
 <context>
@@ -249,6 +260,14 @@
     <message>
         <source>Do you really want to clear cookies?</source>
         <translation>Вы действительно хотите очистить куки?</translation>
+    </message>
+    <message>
+        <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
+        <translation>&lt;br /&gt;&lt;br /&gt;типа &lt;code&gt;%1&lt;/code&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;br /&gt;from %1</source>
+        <translation>&lt;br /&gt;с %1</translation>
     </message>
 </context>
 <context>
@@ -469,6 +488,13 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::StartupWizard</name>
+    <message>
+        <source>Startup wizard</source>
+        <translation>Мастер после загрузки</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::TabContentsManager</name>
     <message>
         <source>Summary</source>
@@ -502,6 +528,28 @@
     <message>
         <source>Plugin Manager</source>
         <translation>Менеджер плагинов</translation>
+    </message>
+</context>
+<context>
+    <name>Proxy</name>
+    <message numerus="yes">
+        <source>%n day(s), </source>
+        <translation>
+            <numerusform>%n день</numerusform>
+            <numerusform>%n дня</numerusform>
+            <numerusform>%n дней</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <source>Could not cd into %1</source>
+        <translation>Невозможно перейти в %1</translation>
+    </message>
+    <message>
+        <source>Could not create %1</source>
+        <translation>Невозможно создать %1</translation>
     </message>
 </context>
 <context>
