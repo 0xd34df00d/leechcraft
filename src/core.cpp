@@ -833,8 +833,13 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 		string += tr ("<br /><br />of type <code>%1</code>").arg (p.Mime_);
 
 	if (!p.Additional_ ["SourceURL"].toUrl ().isEmpty ())
+	{
+		QString urlStr = p.Additional_ ["SourceURL"].toUrl ().toString ();
+		if (urlStr.size () > 63)
+			urlStr = urlStr.left (60) + "...";
 		string += tr ("<br />from %1")
-			.arg (p.Additional_ ["SourceURL"].toUrl ().toString ());
+			.arg (urlStr);
+	}
 
 	std::auto_ptr<HandlerChoiceDialog> dia (new HandlerChoiceDialog (string));
 
