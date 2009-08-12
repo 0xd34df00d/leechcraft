@@ -1,5 +1,6 @@
 #include "seekthru.h"
 #include <QMessageBox>
+#include <plugininterface/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -15,6 +16,8 @@ namespace LeechCraft
 			
 			void SeekThru::Init (ICoreProxy_ptr)
 			{
+				Translator_.reset (LeechCraft::Util::InstallTranslator ("seekthru"));
+
 				connect (&Core::Instance (),
 						SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
 								int*, QObject**)),

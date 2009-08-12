@@ -1,6 +1,7 @@
 #ifndef PLUGINS_SEEKTHRU_SEEKTHRU_H
 #define PLUGINS_SEEKTHRU_SEEKTHRU_H
 #include <QObject>
+#include <QTranslator>
 #include <QStringList>
 #include <interfaces/iinfo.h>
 #include <interfaces/ifinder.h>
@@ -23,6 +24,7 @@ namespace LeechCraft
 				Q_OBJECT
 				Q_INTERFACES (IInfo IFinder IHaveSettings IEntityHandler)
 
+				std::auto_ptr<QTranslator> Translator_;
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 			public:
 				void Init (ICoreProxy_ptr);
