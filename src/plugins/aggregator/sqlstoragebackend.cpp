@@ -75,7 +75,6 @@ namespace LeechCraft
 					QSqlQuery vacuum (DB_);
 					vacuum.exec ("VACUUM;");
 				}
-				DB_.close ();
 			}
 			
 			void SQLStorageBackend::Prepare ()
