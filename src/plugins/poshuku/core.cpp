@@ -205,7 +205,11 @@ namespace LeechCraft
 					else
 					{
 						url.replace (' ', '+');
-						result = QUrl (QString ("http://www.google.com/search?q=%1").arg (url));
+						result = QUrl (QString ("http://www.google.com/search?q=%1"
+									"&client=leechcraft_poshuku"
+									"&rls=org.leechcraft:%2")
+								.arg (url)
+								.arg (QLocale::system ().name ().replace ('_', '-')));
 					}
 				}
 			
