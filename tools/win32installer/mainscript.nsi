@@ -15,6 +15,7 @@ InstallDir "$PROGRAMFILES\Deviant\LeechCraft"
 !define MUI_STARTMENUPAGE_DEFAULTFOLDER "LeechCraft"
 
 !define MUI_WELCOMEFINISHPAGE_BITMAP installscreen.bmp
+!define MUI_HEADERIMAGE_BITMAP headerimage.bmp
 !insertmacro MUI_PAGE_WELCOME
 !define MUI_LICENSEPAGE_RADIOBUTTONS
 !insertmacro MUI_PAGE_LICENSE "license.txt"
