@@ -51,6 +51,8 @@ namespace LeechCraft
 			{
 				int s = Pieces_.size ();
 				QPainter painter (this);
+				painter.setRenderHints (QPainter::Antialiasing |
+						QPainter::SmoothPixmapTransform);
 				if (!s)
 				{
 					painter.setBackgroundMode (Qt::OpaqueMode);
@@ -74,7 +76,6 @@ namespace LeechCraft
 				tempPainter.end ();
 			
 				painter.drawPixmap (QRect (0, 0, width (), height ()), tempPicture);
-			
 				painter.end ();
 			
 				e->accept ();
