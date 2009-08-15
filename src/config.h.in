@@ -1,0 +1,7 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#define LEECHCRAFT_VERSION "${LEECHCRAFT_VERSION}"
+
+#endif
+

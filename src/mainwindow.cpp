@@ -25,6 +25,7 @@
 #include "application.h"
 #include "tabcontentsmanager.h"
 #include "startupwizard.h"
+#include "aboutdialog.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -138,9 +139,17 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	Ui_.setupUi (this);
 
+	connect (Ui_.ActionAboutQt_,
+			SIGNAL (triggered ()),
+			qApp,
+			SLOT (aboutQt ()));
+
 	Ui_.ActionAddTask_->setProperty ("ActionIcon", "addjob");
 	Ui_.ActionNewTab_->setProperty ("ActionIcon", "newtab");
 	Ui_.ActionSettings_->setProperty ("ActionIcon", "settings");
+	Ui_.ActionAboutLeechCraft_->setProperty ("ActionIcon", "about");
+	Ui_.ActionAboutQt_->setIcon (qApp->style ()->
+			standardIcon (QStyle::SP_MessageBoxQuestion).pixmap (32, 32));
 	Ui_.ActionQuit_->setProperty ("ActionIcon", "exit");
 	Ui_.ActionPluginManager_->setProperty ("ActionIcon", "pluginmanager");
 	Ui_.ActionLogger_->setProperty ("ActionIcon", "logger");
@@ -277,6 +286,13 @@ void LeechCraft::MainWindow::on_ActionNewTab__triggered ()
 void LeechCraft::MainWindow::on_ActionSettings__triggered ()
 {
 	SettingsSink_->show ();
+}
+
+void LeechCraft::MainWindow::on_ActionAboutLeechCraft__triggered ()
+{
+	AboutDialog *dia = new AboutDialog (this);
+	dia->setAttribute (Qt::WA_DeleteOnClose);
+	dia->show ();
 }
 
 void LeechCraft::MainWindow::on_ActionQuit__triggered ()

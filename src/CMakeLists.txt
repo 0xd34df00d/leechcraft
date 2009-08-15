@@ -168,6 +168,7 @@ SET (SRCS
 	tagsviewer.cpp
 	directorywatcher.cpp
 	tabcontents.cpp
+	aboutdialog.cpp
 	tabcontentsmanager.cpp
 	viewreemitter.cpp
 	startupwizard.cpp
@@ -212,6 +213,7 @@ SET (HEADERS
 	tagsviewer.h
 	directorywatcher.h
 	tabcontents.h
+	aboutdialog.h
 	tabcontentsmanager.h
 	viewreemitter.h
 	startupwizard.h
@@ -250,6 +252,7 @@ SET (FORMS
 	keysequencer.ui
 	tagsviewer.ui
 	tabcontents.ui
+	aboutdialog.ui
 	)
 SET (RESOURCES mainresources.qrc)
 SET (TRANSLATIONS
@@ -281,6 +284,17 @@ ADD_CUSTOM_COMMAND (OUTPUT
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	)
 
+IF (NOT DEFINED LEECHCRAFT_VERSION)
+	FIND_PROGRAM (GIT_CMD git)
+	EXECUTE_PROCESS (COMMAND "${GIT_CMD}" describe
+		OUTPUT_VARIABLE LEECHCRAFT_VERSION
+		OUTPUT_STRIP_TRAILING_WHITESPACE
+		)
+	MESSAGE (STATUS "Detected LeechCraft version: ${LEECHCRAFT_VERSION}")
+ENDIF (NOT DEFINED LEECHCRAFT_VERSION)
+
+CONFIGURE_FILE (config.h.in config.h)
+
 IF (UNIX)
 	ADD_CUSTOM_COMMAND (OUTPUT
 		data/leechcraft.1.gz
@@ -289,6 +303,7 @@ IF (UNIX)
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data
 		)
 	ADD_EXECUTABLE (leechcraft WIN32
+		config.h
 		${COMPILED_TRANSLATIONS}
 		${SRCS}
 		${MOC_SRCS}
@@ -298,6 +313,7 @@ IF (UNIX)
 		)
 ELSE (UNIX)
 	ADD_EXECUTABLE (leechcraft WIN32
+		config.h
 		${COMPILED_TRANSLATIONS}
 		${SRCS}
 		${MOC_SRCS}

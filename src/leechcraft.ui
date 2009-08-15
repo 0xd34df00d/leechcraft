@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>632</width>
+    <width>1045</width>
     <height>418</height>
    </rect>
   </property>
@@ -79,6 +79,9 @@
    <addaction name="ActionLogger_"/>
    <addaction name="ActionFullscreenMode_"/>
    <addaction name="separator"/>
+   <addaction name="ActionAboutLeechCraft_"/>
+   <addaction name="ActionAboutQt_"/>
+   <addaction name="separator"/>
    <addaction name="ActionQuit_"/>
   </widget>
   <action name="ActionAddTask_">
@@ -146,6 +149,16 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+T</string>
+   </property>
+  </action>
+  <action name="ActionAboutLeechCraft_">
+   <property name="text">
+    <string>About LeechCraft...</string>
+   </property>
+  </action>
+  <action name="ActionAboutQt_">
+   <property name="text">
+    <string>About Qt...</string>
    </property>
   </action>
  </widget>
