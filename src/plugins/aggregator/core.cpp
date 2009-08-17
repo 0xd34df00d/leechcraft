@@ -113,6 +113,7 @@ namespace LeechCraft
 				ItemModel_ = new ItemModel ();
 				JobHolderRepresentation_ = new JobHolderRepresentation ();
 				qRegisterMetaTypeStreamOperators<Feed> ("Feed");
+				qRegisterMetaTypeStreamOperators<Enclosure> ("Enclosure");
 				qRegisterMetaTypeStreamOperators<Item> ("Item");
 			
 				QDir dir = QDir::home ();
