@@ -297,35 +297,8 @@ void LeechCraft::Core::TryToAddJob (const QString& name, const QString& where)
 	e.Location_ = where;
 	e.Parameters_ = FromUserInitiated;
 
-	QObjectList plugins = PluginManager_->GetAllPlugins ();
-	foreach (QObject *plugin, plugins)
-	{
-		IDownload *di = qobject_cast<IDownload*> (plugin);
-		try
-		{
-			if (di &&
-					di->CouldDownload (e))
-			{
-				di->AddJob (e);
-				return;
-			}
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "failed to query/add task with"
-				<< e.what ()
-				<< "for"
-				<< plugin;
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "failed to query/add task"
-				<< plugin;
-		}
-	}
-	emit error (tr ("No plugins are able to download \"%1\"").arg (name));
+	if (!handleGotEntity (e))
+		emit error (tr ("No plugins are able to download \"%1\"").arg (name));
 }
 
 bool LeechCraft::Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) const
