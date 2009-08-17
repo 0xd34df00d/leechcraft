@@ -42,6 +42,11 @@ namespace LeechCraft
 					Hash,
 					MyEqual> Path2TreeItem_t;
 
+			typedef boost::unordered_map<boost::filesystem::path,
+					int,
+					Hash,
+					MyEqual> Path2Position_t;
+
 			class TorrentFilesModel : public QAbstractItemModel
 			{
 				Q_OBJECT
@@ -49,6 +54,7 @@ namespace LeechCraft
 				LeechCraft::Util::TreeItem *RootItem_;
 				bool AdditionDialog_;
 				Path2TreeItem_t Path2TreeItem_;
+				Path2Position_t Path2OriginalPosition_;
 				int FilesInTorrent_;
 			public:
 				enum

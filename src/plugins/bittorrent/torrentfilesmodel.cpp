@@ -197,14 +197,16 @@ namespace LeechCraft
 				Clear ();
 
 				libtorrent::torrent_info::file_iterator orig = begin;
-				beginInsertRows (QModelIndex (), 0, 0);
 				int distance = std::distance (begin, end);
 				if (!distance)
 					return;
+
+				beginInsertRows (QModelIndex (), 0, 0);
+
 				FilesInTorrent_ = distance;
 				Path2TreeItem_ [boost::filesystem::path ()] = RootItem_;
 
-				for (; begin != end; ++begin)
+				for (int pos = 0; begin != end; ++begin, ++pos)
 				{
 					Path2TreeItem_t::key_type parentPath = begin->path.branch_path ();
 					MkParentIfDoesntExist (begin->path);
@@ -220,6 +222,7 @@ namespace LeechCraft
 					item->ModifyData (0, Qt::Checked, Qt::CheckStateRole);
 					parentItem->AppendChild (item);
 					Path2TreeItem_ [begin->path] = item;
+					Path2OriginalPosition_ [begin->path] = pos;
 				}
 
 				for (int i = 0; i < RootItem_->ChildCount (); ++i)
@@ -257,6 +260,7 @@ namespace LeechCraft
 					item->ModifyData (1, i, RolePath);
 					parentItem->AppendChild (item);
 					Path2TreeItem_ [fi.Path_] = item;
+					Path2OriginalPosition_ [fi.Path_] = i;
 				}
 
 				for (int i = 0; i < RootItem_->ChildCount (); ++i)
@@ -267,7 +271,8 @@ namespace LeechCraft
 			
 			void TorrentFilesModel::UpdateFiles (const QList<FileInfo>& infos)
 			{
-				if (Path2TreeItem_.empty () || Path2TreeItem_.size () == 1)
+				if (Path2TreeItem_.empty () ||
+						Path2TreeItem_.size () == 1)
 				{
 					ResetFiles (infos);
 					return;
@@ -291,11 +296,13 @@ namespace LeechCraft
 			QVector<bool> TorrentFilesModel::GetSelectedFiles () const
 			{
 				QVector<bool> result (FilesInTorrent_);
-				int f = 0;
 				for (Path2TreeItem_t::const_iterator i = Path2TreeItem_.begin (),
 						end = Path2TreeItem_.end (); i != end; ++i)
 					if (!i->second->ChildCount ())
-						result [f++] = (i->second->Data (0, Qt::CheckStateRole).toInt () == Qt::Checked);
+					{
+						result [Path2OriginalPosition_.at (i->first)] =
+							(i->second->Data (0, Qt::CheckStateRole).toInt () == Qt::Checked);
+					}
 				return result;
 			}
 			
