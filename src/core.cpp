@@ -290,8 +290,18 @@ void LeechCraft::Core::DelayedInit ()
 			SLOT (pullCommandLine ()));
 }
 
-void LeechCraft::Core::TryToAddJob (const QString& name, const QString& where)
+void LeechCraft::Core::TryToAddJob (QString name, QString where)
 {
+	HookProxy_ptr proxy (new HookProxy);
+	Q_FOREACH (HookSignature<HIDManualJobAddition>::Signature_t f,
+			GetHooks<HIDManualJobAddition> ())
+	{
+		f (proxy, &name, &where);
+
+		if (proxy->IsCancelled ())
+			return;
+	}
+
 	DownloadEntity e;
 	e.Entity_ = name.toUtf8 ();
 	e.Location_ = where;
@@ -646,6 +656,16 @@ void LeechCraft::Core::handlePluginAction ()
 
 bool LeechCraft::Core::CouldHandle (const LeechCraft::DownloadEntity& e)
 {
+	HookProxy_ptr proxy (new HookProxy);
+	Q_FOREACH (HookSignature<HIDCouldHandle>::Signature_t f,
+			GetHooks<HIDCouldHandle> ())
+	{
+		bool result = f (proxy, e);
+
+		if (proxy->IsCancelled ())
+			return result;
+	}
+
 	if (!(e.Parameters_ & LeechCraft::OnlyHandle))
 	{
 		QObjectList plugins = PluginManager_->GetAllCastableRoots<IDownload*> ();
@@ -781,6 +801,16 @@ namespace
 
 bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 {
+	HookProxy_ptr proxy (new HookProxy);
+	Q_FOREACH (HookSignature<HIDGotEntity>::Signature_t f,
+			GetHooks<HIDGotEntity> ())
+	{
+		bool result = f (proxy, &p, id, pr, sender ());
+
+		if (proxy->IsCancelled ())
+			return result;
+	}
+
 	QString string = tr ("Too long to show");
 	if (p.Additional_.contains ("UserVisibleName") &&
 			p.Additional_ ["UserVisibleName"].canConvert<QString> ())
@@ -1007,16 +1037,38 @@ void LeechCraft::Core::embeddedTabWantsToFront ()
 	}
 }
 
-void LeechCraft::Core::handleStatusBarChanged (QWidget *contents, const QString& msg)
+void LeechCraft::Core::handleStatusBarChanged (QWidget *contents, const QString& origMessage)
 {
+	QString msg = origMessage;
+	HookProxy_ptr proxy (new HookProxy);
+	Q_FOREACH (HookSignature<HIDStatusBarChanged>::Signature_t f,
+			GetHooks<HIDStatusBarChanged> ())
+	{
+		f (proxy, contents, &msg);
+
+		if (proxy->IsCancelled ())
+			return;
+	}
+
 	if (contents->visibleRegion ().isEmpty ())
 		return;
 
 	ReallyMainWindow_->statusBar ()->showMessage (msg, 30000);
 }
 
-void LeechCraft::Core::handleLog (const QString& message)
+void LeechCraft::Core::handleLog (const QString& msg)
 {
+	QString message = msg;
+	HookProxy_ptr proxy (new HookProxy);
+	Q_FOREACH (HookSignature<HIDLogString>::Signature_t f,
+			GetHooks<HIDLogString> ())
+	{
+		f (proxy, &message, sender ());
+
+		if (proxy->IsCancelled ())
+			return;
+	}
+
 	IInfo *ii = qobject_cast<IInfo*> (sender ());
 	try
 	{

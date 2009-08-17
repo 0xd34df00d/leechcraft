@@ -157,7 +157,7 @@ namespace LeechCraft
 		QStringList GetTagsForIndex (int row, QAbstractItemModel *model) const;
 
 		void DelayedInit ();
-		void TryToAddJob (const QString&, const QString&);
+		void TryToAddJob (QString, QString);
 
 		/** Returns true if both indexes belong to the same model. If
 		 * both indexes are invalid, true is returned.
