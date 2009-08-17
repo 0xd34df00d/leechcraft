@@ -51,8 +51,6 @@ namespace LeechCraft
 			 */
 			typedef boost::function<void (IHookProxy_ptr,
 					const QString& msg, bool show)> Signature_t;
-			typedef QList<Signature_t> Functors_t;
-			Functors_t Functors_;
 		};
 
 	template<>
@@ -63,7 +61,12 @@ namespace LeechCraft
 					QNetworkAccessManager::Operation*,
 					QNetworkRequest*,
 					QIODevice**)> Signature_t;
-			typedef QList<Signature_t> Functors_t;
+		};
+
+	template<int id>
+		struct HooksContainer
+		{
+			typedef QList<typename HookSignature<id>::Signature_t> Functors_t;
 			Functors_t Functors_;
 		};
 };

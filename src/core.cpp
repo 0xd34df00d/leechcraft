@@ -366,7 +366,7 @@ void LeechCraft::Core::RegisterHook (LeechCraft::HookSignature<a>::Signature_t f
 	LC_APPENDER(a); \
 } \
 template<> \
-	LeechCraft::HookSignature<a>::Functors_t LeechCraft::Core::GetHooks<a> () const \
+	LeechCraft::HooksContainer<LeechCraft::a>::Functors_t LeechCraft::Core::GetHooks<a> () const \
 { \
 	return LC_GETTER(a); \
 }
@@ -378,7 +378,6 @@ template<> \
 #undef LC_DEFINE_REGISTER
 #undef LC_GETTER
 #undef LC_APPENDER
-
 
 bool LeechCraft::Core::eventFilter (QObject *watched, QEvent *e)
 {

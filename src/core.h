@@ -188,11 +188,11 @@ namespace LeechCraft
 		void Setup (QObject*);
 
 		template<LeechCraft::HookID id>
-			typename LeechCraft::HookSignature<id>::Functors_t GetHooks () const;
+			typename LeechCraft::HooksContainer<id>::Functors_t GetHooks () const;
 #define LC_STRN(a) a##_
 #define LC_DEFINE_REGISTER(a) \
 	private: \
-		LeechCraft::HookSignature<a> LC_STRN(a); \
+		LeechCraft::HooksContainer<a> LC_STRN(a); \
 	public: \
 		void RegisterHook (LeechCraft::HookSignature<LeechCraft::a>::Signature_t);
 #define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))
@@ -253,7 +253,7 @@ namespace LeechCraft
 	};
 #define LC_DEFINE_REGISTER(a) \
 	template<> \
-		LeechCraft::HookSignature<LeechCraft::a>::Functors_t Core::GetHooks<a> () const;
+		LeechCraft::HooksContainer<LeechCraft::a>::Functors_t Core::GetHooks<a> () const;
 	LC_EXPANDER (HOOKS_TYPES_LIST);
 #undef LC_DEFINE_REGISTER
 #undef LC_EXPANDER
