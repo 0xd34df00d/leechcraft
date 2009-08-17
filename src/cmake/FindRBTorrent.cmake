@@ -7,12 +7,12 @@
 
 # Copyright (c) 2008 Voker57 (voker57@gmail.com)
 
-IF(NOT DEFINED RBTorrent_INCLUDE_DIR)
+#IF(NOT DEFINED RBTorrent_INCLUDE_DIR)
 	FIND_PATH(RBTorrent_INCLUDE_DIR NAMES libtorrent/torrent.hpp PATH ENV)
-ENDIF()
-IF(NOT DEFINED RBTorrent_LIBRARY)
+#ENDIF()
+#IF(NOT DEFINED RBTorrent_LIBRARY)
 	FIND_LIBRARY(RBTorrent_LIBRARY NAMES torrent-rasterbar)
-ENDIF()
+#ENDIF()
 
 IF(RBTorrent_INCLUDE_DIR AND RBTorrent_LIBRARY)
 	SET(RBTorrent_FOUND 1)
