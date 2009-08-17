@@ -49,6 +49,9 @@ namespace LeechCraft
 	};
 };
 
+QDataStream& operator<< (QDataStream&, const LeechCraft::Plugins::LCFTP::TaskData&);
+QDataStream& operator>> (QDataStream&, LeechCraft::Plugins::LCFTP::TaskData&);
+
 Q_DECLARE_METATYPE (LeechCraft::Plugins::LCFTP::TaskData);
 Q_DECLARE_METATYPE (LeechCraft::Plugins::LCFTP::FetchedEntry);
 

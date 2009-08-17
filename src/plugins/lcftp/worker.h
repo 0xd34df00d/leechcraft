@@ -59,6 +59,7 @@ namespace LeechCraft
 				bool IsWorking () const;
 				void SetID (int);
 				TaskState GetState () const;
+				TaskData GetTask () const;
 				QUrl GetURL () const;
 				CURL_ptr GetHandle () const;
 				/** Prepares to perform the given task, starts it and

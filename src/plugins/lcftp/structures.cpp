@@ -1,4 +1,5 @@
 #include "structures.h"
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -18,4 +19,40 @@ namespace LeechCraft
 		};
 	};
 };
+
+QDataStream& operator<< (QDataStream& out, const LeechCraft::Plugins::LCFTP::TaskData& td)
+{
+	int version = 1;
+
+	out << version
+		<< static_cast<qint8> (td.Direction_)
+		<< td.URL_
+		<< td.Filename_
+		<< td.Internal_
+		<< td.Paused_;
+	return out;
+}
+
+QDataStream& operator>> (QDataStream& in, LeechCraft::Plugins::LCFTP::TaskData& td)
+{
+	int version;
+	in >> version;
+
+	if (version == 1)
+	{
+		qint8 dir;
+		in >> dir
+			>> td.URL_
+			>> td.Filename_
+			>> td.Internal_
+			>> td.Paused_;
+
+		td.Direction_ = static_cast<LeechCraft::Plugins::LCFTP::TaskData::Direction> (dir);
+	}
+	else
+		qWarning () << Q_FUNC_INFO
+			<< "unknown version"
+			<< version;
+	return in;
+}
 

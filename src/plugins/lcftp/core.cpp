@@ -34,6 +34,7 @@ namespace LeechCraft
 			, Toolbar_ (new QToolBar ())
 			{
 				qRegisterMetaType<TaskData> ("TaskData");
+				qRegisterMetaTypeStreamOperators<TaskData> ("TaskData");
 				qRegisterMetaType<FetchedEntry> ("FetchedEntry");
 
 				WorkersFilter_.reset (new InactiveWorkersFilter (this));
@@ -69,6 +70,10 @@ namespace LeechCraft
 						this,
 						SLOT (handleUpdateInterface ()));
 				timer->start ();
+
+				QTimer::singleShot (5000,
+						this,
+						SLOT (loadTasks ()));
 			}
 
 			Core& Core::Instance ()
@@ -84,6 +89,8 @@ namespace LeechCraft
 
 			void Core::Release ()
 			{
+				SaveTasks ();
+
 				Quitting_ = true;
 				WatchThread_->SetExit ();
 
@@ -529,6 +536,7 @@ namespace LeechCraft
 						break;
 				}
 				endInsertRows ();
+				SaveTasks ();
 				Reschedule ();
 			}
 
@@ -687,6 +695,49 @@ namespace LeechCraft
 				Toolbar_->addAction (ActionDelete_);
 			}
 
+			void Core::SaveTasks ()
+			{
+				QSettings settings (Util::Proxy::Instance ()->GetOrganizationName (),
+						Util::Proxy::Instance ()->GetApplicationName () + "_LCFTP");
+				settings.beginWriteArray ("Tasks");
+				settings.remove ("");
+
+				int i = 0;
+
+				Q_FOREACH (Worker_ptr w, Workers_)
+				{
+					if (!w->IsWorking ())
+						continue;
+
+					settings.setArrayIndex (i++);
+					settings.setValue ("Task",
+							QVariant::fromValue<TaskData> (w->GetTask ()));
+				}
+
+				Q_FOREACH (TaskData td, Tasks_)
+				{
+					settings.setArrayIndex (i++);
+					settings.setValue ("Task",
+							QVariant::fromValue<TaskData> (td));
+				}
+
+				settings.endArray ();
+			}
+
+			void Core::loadTasks ()
+			{
+				QSettings settings (Util::Proxy::Instance ()->GetOrganizationName (),
+						Util::Proxy::Instance ()->GetApplicationName () + "_LCFTP");
+				int size = settings.beginReadArray ("Tasks");
+				for (int i = 0; i < size; ++i)
+				{
+					settings.setArrayIndex (i);
+					TaskData td = settings.value ("Task").value<TaskData> ();
+					QueueTask (td);
+				}
+				settings.endArray ();
+			}
+
 			void Core::handlePerform ()
 			{
 				bool reschedule = false;
@@ -739,6 +790,8 @@ namespace LeechCraft
 							.arg (data.Filename_));
 					emit taskFinished (data.ID_);
 				}
+
+				SaveTasks ();
 			}
 
 			void Core::handleFetchedEntry (const FetchedEntry& entry)

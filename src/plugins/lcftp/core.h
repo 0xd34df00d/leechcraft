@@ -125,7 +125,9 @@ namespace LeechCraft
 				void Reschedule ();
 				Worker_ptr FindWorker (CURL*) const;
 				void SetupToolbar ();
+				void SaveTasks ();
 			public slots:
+				void loadTasks ();
 				void handleError (const QString&, const TaskData&);
 				void handleFinished (const TaskData&);
 				void handleFetchedEntry (const FetchedEntry&);

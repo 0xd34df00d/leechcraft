@@ -142,6 +142,11 @@ namespace LeechCraft
 				return result;
 			}
 
+			TaskData Worker::GetTask () const
+			{
+				return Task_;
+			}
+
 			QUrl Worker::GetURL () const
 			{
 				return Task_.URL_;
