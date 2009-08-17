@@ -71,15 +71,14 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	speedUpd->start ();
 	qApp->setQuitOnLastWindowClosed (false);
 
-	QList<QList<QAction*> > actions2embed = Core::Instance ().GetActions2Embed ();
 	Q_FOREACH (QList<QAction*> list, Core::Instance ().GetActions2Embed ())
 	{
 		Q_FOREACH (QAction *act, list)
 			act->setParent (this);
 		if (list.size ())
 		{
-			Ui_.MainToolbar_->insertActions (Ui_.ActionLogger_, list);
-			Ui_.MainToolbar_->insertSeparator (Ui_.ActionLogger_);
+			Ui_.MainToolbar_->insertActions (Ui_.ActionPluginManager_, list);
+			Ui_.MainToolbar_->insertSeparator (Ui_.ActionPluginManager_);
 		}
 	}
 

@@ -73,31 +73,57 @@
    <addaction name="ActionAddTask_"/>
    <addaction name="ActionNewTab_"/>
    <addaction name="separator"/>
-   <addaction name="ActionSettings_"/>
    <addaction name="ActionPluginManager_"/>
-   <addaction name="separator"/>
-   <addaction name="ActionLogger_"/>
-   <addaction name="ActionFullscreenMode_"/>
-   <addaction name="separator"/>
-   <addaction name="ActionAboutLeechCraft_"/>
-   <addaction name="ActionAboutQt_"/>
+   <addaction name="ActionSettings_"/>
    <addaction name="separator"/>
    <addaction name="ActionQuit_"/>
   </widget>
-  <action name="ActionAddTask_">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/resources/images/main_addjob.png</normaloff>:/resources/images/main_addjob.png</iconset>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1045</width>
+     <height>22</height>
+    </rect>
    </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>General</string>
+    </property>
+    <addaction name="ActionAddTask_"/>
+    <addaction name="ActionNewTab_"/>
+    <addaction name="separator"/>
+    <addaction name="ActionQuit_"/>
+   </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="ActionFullscreenMode_"/>
+    <addaction name="separator"/>
+    <addaction name="ActionLogger_"/>
+    <addaction name="separator"/>
+    <addaction name="ActionPluginManager_"/>
+    <addaction name="ActionSettings_"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="ActionAboutLeechCraft_"/>
+    <addaction name="ActionAboutQt_"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuTools"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <action name="ActionAddTask_">
    <property name="text">
     <string>Add task</string>
    </property>
   </action>
   <action name="ActionSettings_">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/resources/images/main_preferences.png</normaloff>:/resources/images/main_preferences.png</iconset>
-   </property>
    <property name="text">
     <string>Settings</string>
    </property>
