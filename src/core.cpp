@@ -399,8 +399,7 @@ template<> \
 }
 #define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))
 #define LC_EXPANDER(Names) BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), LC_TRAVERSER, Names)
-	LC_EXPANDER ((HIDDownloadFinishedNotification)
-			(HIDNetworkAccessManagerCreateRequest));
+	LC_EXPANDER (HOOKS_TYPES_LIST);
 #undef LC_EXPANDER
 #undef LC_TRAVERSER
 #undef LC_DEFINE_REGISTER

@@ -68,6 +68,8 @@ namespace LeechCraft
 		};
 };
 
+#define HOOKS_TYPES_LIST (HIDDownloadFinishedNotification)(HIDNetworkAccessManagerCreateRequest)
+
 /** @brief Tags manager's interface.
  *
  * This interface is for communication with the tags manager.
