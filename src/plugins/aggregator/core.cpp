@@ -50,6 +50,13 @@ namespace LeechCraft
 			, Initialized_ (false)
 			{
 				qRegisterMetaType<QItemSelection> ("QItemSelection");
+				qRegisterMetaType<Item> ("LeechCraft::Plugins::Aggregator::Item");
+				qRegisterMetaType<Enclosure> ("LeechCraft::Plugins::Aggregator::Enclosure");
+
+				qRegisterMetaTypeStreamOperators<Feed> ("LeechCraft::Plugins::Aggregator::Feed");
+				qRegisterMetaTypeStreamOperators<Item> ("LeechCraft::Plugins::Aggregator::Item");
+				qRegisterMetaTypeStreamOperators<Enclosure> ("LeechCraft::Plugins::Aggregator::Enclosure");
+			
 				QStringList placeholders;
 				placeholders << "" << "";
 				ItemLists_ = new LeechCraft::Util::MergeModel (placeholders);
@@ -112,9 +119,6 @@ namespace LeechCraft
 			
 			bool Core::DoDelayedInit ()
 			{
-				qRegisterMetaTypeStreamOperators<Feed> ("Feed");
-				qRegisterMetaTypeStreamOperators<Item> ("Item");
-			
 				QDir dir = QDir::home ();
 				if (!dir.cd (".leechcraft/aggregator") &&
 						!dir.mkpath (".leechcraft/aggregator"))
