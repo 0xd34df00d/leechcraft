@@ -92,15 +92,15 @@ SectionGroup "Core"
 		SectionIn 1 2 RO
 	SectionEnd
 
-	Section "MSVC" MSVC
+#	Section "MSVC" MSVC
 #		SetOutPath $WINDIR
 #		File /r WinSxS
-		SetOutPath $INSTDIR
-		File vcredist_x86.exe
-		DetailPrint "Installing Visual C++ 2008 Libraries"
-		ExecWait '"$INSTDIR\vcredist_x86.exe" /q:a /c:"msiexec /i vcredist.msi /quiet"'
-		SectionIn 1 2 RO
-	SectionEnd
+#		SetOutPath $INSTDIR
+#		File vcredist_x86.exe
+#		DetailPrint "Installing Visual C++ 2008 Libraries"
+#		ExecWait '"$INSTDIR\vcredist_x86.exe" /q:a /c:"msiexec /i vcredist.msi /quiet"'
+#		SectionIn 1 2 RO
+#	SectionEnd
 SectionGroupEnd
 
 SectionGroup "Plugins"
