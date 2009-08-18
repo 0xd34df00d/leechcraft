@@ -67,7 +67,7 @@
        <item>
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>LeechCraft — a crossplatform modular internet-client, featuring plugins for a web browser, RSS/feed reader, BitTorrent, FTP and lots of others.</string>
+          <string>LeechCraft — a crossplatform modular internet-client, featuring plugins for a web browser, news feed reader, BitTorrent, FTP and lots of others.</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
