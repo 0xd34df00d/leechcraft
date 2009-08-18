@@ -1,0 +1,130 @@
+<ui version="4.0" >
+ <class>fsIrcView</class>
+ <widget class="QWidget" name="fsIrcView" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>518</width>
+    <height>463</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <item>
+    <layout class="QVBoxLayout" >
+     <property name="spacing" >
+      <number>2</number>
+     </property>
+     <item>
+      <layout class="QHBoxLayout" name="_2" >
+       <item>
+        <widget class="QLineEdit" name="fsActionEdit" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text" >
+          <string>irc://irc.freenode.net/#fsirc</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="fsActionCombo" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize" >
+          <size>
+           <width>200</width>
+           <height>0</height>
+          </size>
+         </property>
+         <item>
+          <property name="text" >
+           <string>Open IRC URI</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Change nick</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Set encoding</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Stop this senseless struggle</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QTextBrowser" name="fsChatView" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="styleSheet" >
+        <string notr="true" >QTextBrowser
+{
+	background: black;
+	color:white;
+}</string>
+       </property>
+       <property name="tabChangesFocus" >
+        <bool>true</bool>
+       </property>
+       <property name="readOnly" >
+        <bool>true</bool>
+       </property>
+       <property name="html" >
+        <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=" font-family:'DejaVu Sans'; font-size:8pt; font-weight:400; font-style:normal;">
+&lt;p style="-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:10pt;">&lt;/p>&lt;/body>&lt;/html></string>
+       </property>
+       <property name="openLinks" >
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="FsCmdEdit" name="cmdEdit" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>FsCmdEdit</class>
+   <extends>QLineEdit</extends>
+   <header>fscmdedit.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
