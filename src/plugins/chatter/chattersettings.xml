@@ -3,8 +3,9 @@
 	<declare defaultlang="en" />
 	<page>
 		<label lang="en" value="Interface" />
-			<item type="checkbox" property="ShowTrayIcon" state="on">
-				<label lang="en" value="Show icon in tray" />
-			</item>
+		<item type="checkbox" property="ShowTrayIcon" state="on">
+			<label lang="en" value="Show icon in tray" />
+			<label lang="ru" value="Показывать иконку в трее" />
+		</item>
 	</page>
 </settings>
