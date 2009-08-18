@@ -16,3 +16,4 @@ src/data/leechcraft.1.gz
 *.dsc
 *.changes
 *.tar.gz
+*~
