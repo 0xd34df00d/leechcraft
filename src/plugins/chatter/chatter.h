@@ -1,6 +1,8 @@
 #ifndef PLUGINS_CHATTER_CHATTER_H
 #define PLUGINS_CHATTER_CHATTER_H
+#include <memory>
 #include <QObject>
+#include <QTranslator>
 #include <QStringList>
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
@@ -23,6 +25,8 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 				Q_INTERFACES (IInfo IHaveSettings IToolBarEmbedder IEntityHandler)
+
+				std::auto_ptr<QTranslator> Translator_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void Release ();

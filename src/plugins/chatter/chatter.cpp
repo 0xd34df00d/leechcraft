@@ -8,11 +8,12 @@
 using namespace LeechCraft::Plugins::Chatter;
 using namespace LeechCraft;
 
-void Plugin::Init (ICoreProxy_ptr proxy)
+void Plugin::Init (ICoreProxy_ptr)
 {
-	Q_UNUSED(proxy);
+	Translator_.reset (LeechCraft::Util::InstallTranslator ("chatter"));
+
 	fsIrc = new fsirc();
-	QAction *showAction = new QAction (tr ("Chatter..."),
+	QAction *showAction = new QAction (GetName (),
 			this);
 	showAction->setIcon (QIcon (":/fsirc/data/icon.svg"));
 	connect (showAction,
@@ -36,12 +37,12 @@ void Plugin::Release ()
 
 QString Plugin::GetName () const
 {
-	return tr ("IRC client");
+	return "Chatter";
 }
 
 QString Plugin::GetInfo () const
 {
-	return tr ("Allows to chat");
+	return tr ("Allows to chat in IRC");
 }
 
 QIcon Plugin::GetIcon () const
