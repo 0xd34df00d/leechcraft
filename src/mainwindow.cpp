@@ -302,6 +302,8 @@ void LeechCraft::MainWindow::on_ActionQuit__triggered ()
 				tr ("Do you really want to quit?"),
 				QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 		return;
+
+	setEnabled (false);
 	qApp->quit ();
 }
 
