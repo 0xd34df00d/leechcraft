@@ -60,6 +60,7 @@ OPTION (ENABLE_DEADLYRICS "Build DeadLyrics, the client for the lyricwiki.org si
 OPTION (ENABLE_SEEKTHRU "Build SeekThru, the client for the OpenSearch-aware web sites" ON)
 OPTION (ENABLE_NETWORKMONITOR "Build NetworkMonitor, the monitor for HTTP requests" ON)
 OPTION (ENABLE_HISTORYHOLDER "Build HistoryHolder, the keeper of the history" ON)
+OPTION (ENABLE_CHATTER "Build Chatter, simple IRC client" ON)
 
 IF (ENABLE_TORRENT)
 	IF (RBTorrent_FOUND)
@@ -80,6 +81,10 @@ ENDIF (ENABLE_POSHUKU)
 IF (ENABLE_NUFELLA)
 	ADD_SUBDIRECTORY (plugins/nufella)
 ENDIF (ENABLE_NUFELLA)
+
+IF (ENABLE_CHATTER)
+	ADD_SUBDIRECTORY (plugins/chatter)
+ENDIF (ENABLE_CHATTER)
 
 IF (ENABLE_HTTP)
 	ADD_SUBDIRECTORY (plugins/cstp)
