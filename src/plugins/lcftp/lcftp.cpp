@@ -14,7 +14,7 @@ namespace LeechCraft
 		{
 			void LCFTP::Init (ICoreProxy_ptr proxy)
 			{
-				Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku"));
+				Translator_.reset (LeechCraft::Util::InstallTranslator ("lcftp"));
 
 				XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
 				XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
