@@ -290,7 +290,10 @@ void LeechCraft::Core::DelayedInit ()
 void LeechCraft::Core::TryToAddJob (const QString& name, const QString& where)
 {
 	DownloadEntity e;
-	e.Entity_ = name.toUtf8 ();
+	if (QFile::exists (name))
+		e.Entity_ = QUrl::fromLocalFile (name);
+	else
+		e.Entity_ = name;
 	e.Location_ = where;
 	e.Parameters_ = FromUserInitiated;
 
