@@ -73,9 +73,18 @@ QList<QAction*> Plugin::GetActions () const
 	return Actions_;
 }
 
-void Plugin::Handle (LeechCraft::DownloadEntity)
+void Plugin::Handle (LeechCraft::DownloadEntity e)
 {
+	if (!e.Entity_.canConvert<QUrl> ())
+		return;
+	fsIrc->newTab(e.Entity_.toUrl().toString());
+}
 
+bool CouldHandle (const LeechCraft::DownloadEntity& e)
+{
+	if (!e.Entity_.canConvert<QUrl> ())
+		return false;
+	return (e.Entity_.toUrl().scheme() == "irc");
 }
 
 boost::shared_ptr<Util::XmlSettingsDialog> Plugin::GetSettingsDialog () const

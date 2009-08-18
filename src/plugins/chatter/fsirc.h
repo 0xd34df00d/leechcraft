@@ -44,6 +44,7 @@ class fsirc : public QDialog, Ui::fsMainWindow
 		static int findTab(QString);
 		void addTrayIcon();
 		void removeTrayIcon();
+		void newTab(QString uri=QString());
 	private:
 		void initConnections();
 		fsTrayIcon * trayIcon;
@@ -62,7 +63,6 @@ class fsirc : public QDialog, Ui::fsMainWindow
 		void gotHlite();
 		void anchorClicked(QUrl url);
 		void closeCurrentTab();
-		void newTab(QString uri=QString());
 		void refreshTabNames();
 		void clearCurrentTab();
 	signals:

@@ -19,9 +19,10 @@ namespace LeechCraft
 						 , public IInfo
 						 , public IHaveSettings
 						 , public IToolBarEmbedder
+						 , public IEntityHandler
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IHaveSettings IToolBarEmbedder)
+				Q_INTERFACES (IInfo IHaveSettings IToolBarEmbedder IEntityHandler)
 			public:
 				void Init (ICoreProxy_ptr);
 				void Release ();
