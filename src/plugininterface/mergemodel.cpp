@@ -11,6 +11,7 @@ using namespace LeechCraft::Util;
 
 MergeModel::MergeModel (const QStringList& headers, QObject *parent)
 : QAbstractProxyModel (parent)
+, DefaultAcceptsRowImpl_ (false)
 , Headers_ (headers)
 {
 #ifdef QT_DEBUG
@@ -385,12 +386,16 @@ void MergeModel::handleRowsRemoved (const QModelIndex&, int, int)
 
 bool MergeModel::AcceptsRow (QAbstractItemModel*, int) const
 {
+	DefaultAcceptsRowImpl_ = true;
 	return true;
 }
 
 int MergeModel::RowCount (QAbstractItemModel *model) const
 {
 	int orig = model->rowCount ();
+	if (DefaultAcceptsRowImpl_)
+		return orig;
+
 	int result = 0;
 	for (int i = 0; i < orig; ++i)
 		result += AcceptsRow (model, i) ? 1 : 0;

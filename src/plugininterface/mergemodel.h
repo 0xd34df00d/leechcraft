@@ -23,6 +23,8 @@ namespace LeechCraft
 		class PLUGININTERFACE_API MergeModel : public QAbstractProxyModel
 		{
 			Q_OBJECT
+
+			mutable bool DefaultAcceptsRowImpl_;
 		protected:
 			typedef std::deque<QAbstractItemModel*> models_t;
 			models_t Models_;
