@@ -132,7 +132,18 @@ void TabContainer::add (const QString& name, QWidget *contents)
 void TabContainer::add (const QString& name, QWidget *contents,
 		const QIcon& icon)
 {
-	TabWidget_->addTab (contents, icon, MakeTabName (name));
+	if (XmlSettingsManager::Instance ()->
+			property ("OpenTabNext").toBool ())
+	{
+		int current = TabWidget_->currentIndex ();
+		TabWidget_->insertTab (std::max (current + 1,
+					Core::Instance ().CountUnremoveableTabs ()),
+				contents,
+				icon,
+				MakeTabName (name));
+	}
+	else
+		TabWidget_->addTab (contents, icon, MakeTabName (name));
 	OriginalTabNames_ << name;
 	InvalidateName ();
 }

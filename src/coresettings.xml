@@ -106,6 +106,10 @@
 					<label lang="ru" value="Запрашивать подтверждение выхода" />
 					<label lang="uk" value="Запитувати підтвердження виходу" />
 				</item>
+				<item type="checkbox" property="OpenTabNext" default="false">
+					<label lang="en" value="Open new tab next to current" />
+					<label lang="ru" value="Открывать вкладку после текущей" />
+				</item>
 				<item type="path" property="WatchDirectory" onCancel="clear">
 					<label lang="en" value="Watch directory:" />
 					<label lang="ru" value="Следить за директорией:" />
