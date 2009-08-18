@@ -14,6 +14,7 @@ SET (SRCS
 	irc.cpp
 	ircserver.cpp
 	chatter.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (HEADERS
 	fscmdedit.h
@@ -26,6 +27,7 @@ SET (HEADERS
 	ircserver.h
 	config.h
 	chatter.h
+	xmlsettingsmanager.h
 	)
 SET (RESOURCES fsirc.qrc)
 SET (UIS
@@ -47,5 +49,7 @@ ADD_LIBRARY (leechcraft_chatter SHARED
 TARGET_LINK_LIBRARIES (leechcraft_chatter
 	${QT_LIBRARIES}
 	plugininterface
+	xmlsettingsdialog
 	)
 INSTALL (TARGETS leechcraft_chatter DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES chattersettings.xml DESTINATION ${LC_SETTINGS_DEST})

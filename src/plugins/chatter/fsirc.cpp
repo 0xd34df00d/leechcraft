@@ -88,20 +88,20 @@ void fsirc::initConnections()
 
 void fsirc::gotSomeMsg()
 {
-	if (!isActiveWindow())
+	if (trayIcon && !isActiveWindow())
 		trayIcon->raiseState(1);
 }
 
 void fsirc::gotHlite()
 {
-	if (!isActiveWindow())
+	if (trayIcon && !isActiveWindow())
 		trayIcon->raiseState(2);
 }
 
 void fsirc::toggleShow()
 {
 	// I've done some stuff to bring window to top here, but it doesn't work. At least on kde 3.5
-	if(isHidden()/* || !isActiveWindow()*/)
+	if(trayIcon && isHidden()/* || !isActiveWindow()*/)
 	{
 		show();
 //		window()->activateWindow();
@@ -119,7 +119,7 @@ void fsirc::toggleShow()
 
 void fsirc::checkIfTop()
 {
-	if(isActiveWindow())
+	if(trayIcon && isActiveWindow())
 	{
 		trayIcon->resetState();
 	}

@@ -2,8 +2,11 @@
 #include "fsirc.h"
 #include <QIcon>
 #include <plugininterface/util.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "xmlsettingsmanager.h"
 
 using namespace LeechCraft::Plugins::Chatter;
+using namespace LeechCraft;
 
 void Plugin::Init (ICoreProxy_ptr proxy)
 {
@@ -22,12 +25,13 @@ void Plugin::Init (ICoreProxy_ptr proxy)
 	SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), "chattersettings.xml");
 	if(XmlSettingsManager::Instance()->property("ShowTrayIcon").toBool())
 		fsIrc->addTrayIcon();
-	SettingsDialog_->RegisterObject ("ShowTrayIcon", fsIrc, "setTrayPresence");
+	XmlSettingsManager::Instance()->RegisterObject (QByteArray("ShowTrayIcon"), fsIrc, QByteArray("setTrayPresence"));
 }
 
 void Plugin::Release ()
 {
 	qDeleteAll(Actions_);
+	delete fsIrc;
 }
 
 QString Plugin::GetName () const

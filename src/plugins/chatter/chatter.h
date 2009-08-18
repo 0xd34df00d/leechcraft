@@ -36,7 +36,7 @@ namespace LeechCraft
 				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
 				void Handle (LeechCraft::DownloadEntity);
 
-				QList<QAction*> GetActions () const;]
+				QList<QAction*> GetActions () const;
 				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 			signals:
 				void gotEntity (const LeechCraft::DownloadEntity&);

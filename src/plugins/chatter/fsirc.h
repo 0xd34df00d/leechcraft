@@ -42,10 +42,10 @@ class fsirc : public QDialog, Ui::fsMainWindow
 		virtual ~fsirc();
 		static void finalizeIrcList();
 		static int findTab(QString);
-	private:
-		void initConnections();
 		void addTrayIcon();
 		void removeTrayIcon();
+	private:
+		void initConnections();
 		fsTrayIcon * trayIcon;
 		QTimer * ticker;
 		QPushButton * closeTabButton;
