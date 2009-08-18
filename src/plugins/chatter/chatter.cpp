@@ -19,6 +19,12 @@ void Plugin::Init (ICoreProxy_ptr proxy)
 			fsIrc,
 			SLOT (show ()));
 	Actions_.push_back (showAction);
+
+	SettingsDialog_.reset (new Util::XmlSettingsDialog ());
+	SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), "chattersettings.xml");
+	if(XmlSettingsManager::Instance()->property("ShowTrayIcon").toBool())
+		fsIrc->addTrayIcon();
+	SettingsDialog_->RegisterObject ("ShowTrayIcon", fsIrc, "setTrayPresence");
 }
 
 void Plugin::Release ()
@@ -79,6 +85,11 @@ QList<QAction*> Plugin::GetActions () const
 void Plugin::Handle (LeechCraft::DownloadEntity)
 {
 
+}
+
+boost::shared_ptr<Util::XmlSettingsDialog> Plugin::GetSettingsDialog () const
+{
+	return SettingsDialog_;
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_chatter, Plugin);

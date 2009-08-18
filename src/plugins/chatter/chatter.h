@@ -5,7 +5,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ifinder.h>
 #include <interfaces/ientityhandler.h>
-#include <interfaces/ihaveshortcuts.h>
+#include <interfaces/ihavesettings.h>
 
 class fsirc;
 
@@ -17,9 +17,10 @@ namespace LeechCraft
 		{
 			class Plugin : public QObject
 						 , public IInfo
+						 , public IHaveSettings
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo)
+				Q_INTERFACES (IInfo IHaveSettings)
 			public:
 				void Init (ICoreProxy_ptr);
 				void Release ();
@@ -39,12 +40,14 @@ namespace LeechCraft
 
 				void SetShortcut (int, const QKeySequence&);
 				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
-				QList<QAction*> GetActions () const;
+				QList<QAction*> GetActions () const;]
+				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 			signals:
 				void gotEntity (const LeechCraft::DownloadEntity&);
 			private:
 				QList<QAction*> Actions_;
 				fsirc *fsIrc;
+				boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
 			};
 		};
 	};

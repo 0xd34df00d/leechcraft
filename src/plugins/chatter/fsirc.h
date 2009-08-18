@@ -45,6 +45,7 @@ class fsirc : public QDialog, Ui::fsMainWindow
 	private:
 		void initConnections();
 		void addTrayIcon();
+		void removeTrayIcon();
 		fsTrayIcon * trayIcon;
 		QTimer * ticker;
 		QPushButton * closeTabButton;
@@ -55,6 +56,7 @@ class fsirc : public QDialog, Ui::fsMainWindow
 	public slots:
 		void toggleShow();
 		void checkIfTop();
+		void setTrayPresence(QVariant);
 	private slots:
 		void gotSomeMsg();
 		void gotHlite();

@@ -55,11 +55,8 @@ fsirc::fsirc(QWidget *parent) : QDialog(parent)
 	ticker->setInterval(700);
 	ticker->start();
 	initConnections();
-
-#ifndef FSIRC_NO_TRAY_ICON
-	addTrayIcon();
 	connect(ticker, SIGNAL(timeout()), this, SLOT(checkIfTop()));
-#endif
+	trayIcon = 0;
 }
 
 fsirc::~fsirc()
@@ -69,11 +66,19 @@ fsirc::~fsirc()
 
 void fsirc::addTrayIcon()
 {
-	trayIcon = new fsTrayIcon(this);
-	trayIcon->show();
-	connect(trayIcon, SIGNAL(clicked()), this, SLOT(toggleShow()));
+	if(!trayIcon)
+	{
+		trayIcon = new fsTrayIcon(this);
+		trayIcon->show();
+		connect(trayIcon, SIGNAL(clicked()), this, SLOT(toggleShow()));
+	}
 }
 
+void fsirc::removeTrayIcon()
+{
+	if(trayIcon)
+		delete trayIcon;
+}
 void fsirc::initConnections()
 {
 	connect(closeTabButton, SIGNAL(released()), this, SLOT(closeCurrentTab()));
@@ -185,4 +190,12 @@ void fsirc::clearCurrentTab()
 void fsirc::finalizeIrcList()
 {
 	qDeleteAll (ircList);
+}
+
+void fsirc::setTrayPresence(QVariant v)
+{
+	if(v.toBool())
+		addTrayIcon();
+	else
+		removeTrayIcon();
 }

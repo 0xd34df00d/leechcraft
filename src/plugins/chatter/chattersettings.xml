@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<declare defaultlang="en" />
+	<page>
+		<label lang="en" value="Interface" />
+			<item type="checkbox" property="ShowTrayIcon" state="on">
+				<label lang="en" value="Show icon in tray" />
+			</item>
+	</page>
+</settings>
