@@ -3,9 +3,8 @@
 #include <QObject>
 #include <QStringList>
 #include <interfaces/iinfo.h>
-#include <interfaces/ifinder.h>
 #include <interfaces/ientityhandler.h>
-#include <interfaces/ihaveshortcuts.h>
+#include <interfaces/itoolbarembedder.h>
 
 class fsirc;
 
@@ -17,9 +16,10 @@ namespace LeechCraft
 		{
 			class Plugin : public QObject
 						 , public IInfo
+						 , public IToolBarEmbedder
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo)
+				Q_INTERFACES (IInfo IToolBarEmbedder)
 			public:
 				void Init (ICoreProxy_ptr);
 				void Release ();
@@ -31,14 +31,9 @@ namespace LeechCraft
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
 
-				QStringList GetCategories () const;
-				IFindProxy_ptr GetProxy (const LeechCraft::Request&);
-
 				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
 				void Handle (LeechCraft::DownloadEntity);
 
-				void SetShortcut (int, const QKeySequence&);
-				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
 				QList<QAction*> GetActions () const;
 			signals:
 				void gotEntity (const LeechCraft::DownloadEntity&);
