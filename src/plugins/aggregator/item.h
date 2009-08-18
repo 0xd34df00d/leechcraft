@@ -121,6 +121,7 @@ namespace LeechCraft
 };
 
 Q_DECLARE_METATYPE (LeechCraft::Plugins::Aggregator::Item);
+Q_DECLARE_METATYPE (LeechCraft::Plugins::Aggregator::Item_ptr);
 
 #endif
 

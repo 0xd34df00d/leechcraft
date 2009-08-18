@@ -53,6 +53,9 @@ namespace LeechCraft
 				qRegisterMetaType<Item> ("LeechCraft::Plugins::Aggregator::Item");
 				qRegisterMetaType<Enclosure> ("LeechCraft::Plugins::Aggregator::Enclosure");
 
+				qRegisterMetaType<Item_ptr> ("Item_ptr");
+				qRegisterMetaType<Channel_ptr> ("Channel_ptr");
+
 				qRegisterMetaTypeStreamOperators<Feed> ("LeechCraft::Plugins::Aggregator::Feed");
 				qRegisterMetaTypeStreamOperators<Item> ("LeechCraft::Plugins::Aggregator::Item");
 				qRegisterMetaTypeStreamOperators<Enclosure> ("LeechCraft::Plugins::Aggregator::Enclosure");
@@ -203,11 +206,13 @@ namespace LeechCraft
 				connect (StorageBackend_.get (),
 						SIGNAL (channelDataUpdated (Channel_ptr)),
 						this,
-						SLOT (handleChannelDataUpdated (Channel_ptr)));
+						SLOT (handleChannelDataUpdated (Channel_ptr)),
+						Qt::QueuedConnection);
 				connect (StorageBackend_.get (),
 						SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
 						this,
-						SLOT (handleItemDataUpdated (Item_ptr, Channel_ptr)));
+						SLOT (handleItemDataUpdated (Item_ptr, Channel_ptr)),
+						Qt::QueuedConnection);
 			
 				ParserFactory::Instance ().Register (&RSS20Parser::Instance ());
 				ParserFactory::Instance ().Register (&Atom10Parser::Instance ());

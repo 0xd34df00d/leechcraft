@@ -66,5 +66,7 @@ namespace LeechCraft
 	};
 };
 
+Q_DECLARE_METATYPE (LeechCraft::Plugins::Aggregator::Channel_ptr);
+
 #endif
 
