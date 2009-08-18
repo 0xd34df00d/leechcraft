@@ -1,8 +1,6 @@
 #include "chatter.h"
 #include "fsirc.h"
 #include <QIcon>
-#include "core.h"
-#include "findproxy.h"
 #include <plugininterface/util.h>
 
 using namespace LeechCraft::Plugins::Chatter;
@@ -13,7 +11,7 @@ void Plugin::Init (ICoreProxy_ptr proxy)
 	fsIrc = new fsirc();
 	QAction *showAction = new QAction (tr ("Chatter..."),
 			this);
-	showAction->setProperty ("ActionIcon", "chatter_plugin");
+	showAction->setIcon (QIcon (":/fsirc/data/icon.svg"));
 	connect (showAction,
 			SIGNAL (triggered ()),
 			fsIrc,
@@ -29,13 +27,12 @@ void Plugin::Init (ICoreProxy_ptr proxy)
 
 void Plugin::Release ()
 {
-	Core::Instance ().Release ();
 	qDeleteAll(Actions_);
 }
 
 QString Plugin::GetName () const
 {
-	return "IRC client";
+	return tr ("IRC client");
 }
 
 QString Plugin::GetInfo () const
@@ -65,16 +62,6 @@ QStringList Plugin::Uses () const
 
 void Plugin::SetProvider (QObject*, const QString&)
 {
-}
-
-QStringList Plugin::GetCategories () const
-{
-	return QStringList ("irc");
-}
-
-IFindProxy_ptr Plugin::GetProxy (const LeechCraft::Request& r)
-{
-	return IFindProxy_ptr (new FindProxy (r));
 }
 
 QList<QAction*> Plugin::GetActions () const
