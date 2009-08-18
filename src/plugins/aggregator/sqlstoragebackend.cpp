@@ -348,7 +348,6 @@ namespace LeechCraft
 						"unread = :unread "
 						"WHERE parents_hash = :parents_hash");
 			
-			
 				RemoveFeed_ = QSqlQuery (DB_);
 				RemoveFeed_.prepare ("DELETE FROM feeds "
 						"WHERE url = :url");
@@ -1020,6 +1019,9 @@ namespace LeechCraft
 					const QString& title,
 					bool state)
 			{
+				items_container_t oldItems;
+				GetItems (oldItems, purl + title);
+
 				ToggleChannelUnread_.bindValue (":parents_hash", purl + title);
 				ToggleChannelUnread_.bindValue (":unread", state);
 			
@@ -1035,8 +1037,9 @@ namespace LeechCraft
 				emit channelDataUpdated (channel);
 				items_container_t items;
 				GetItems (items, purl + title);
-				Q_FOREACH (Item_ptr item, items)
-					emit itemDataUpdated (item, channel);
+				for (size_t i = 0; i < items.size (); ++i)
+					if (items.at (i)->Unread_ != oldItems.at (i)->Unread_)
+						emit itemDataUpdated (items.at (i), channel);
 			}
 			
 			bool SQLStorageBackend::UpdateFeedsStorage (int, int)
