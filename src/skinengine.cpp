@@ -160,6 +160,12 @@ void SkinEngine::FindIconSets ()
 	for (QStringList::iterator i = IconSets_.begin (),
 			end = IconSets_.end (); i != end; ++i)
 		*i = i->left (i->size () - 8);
+
+#ifndef Q_NO_DEBUG
+	qDebug () << Q_FUNC_INFO
+		<< "found"
+		<< IconSets_;
+#endif
 }
 
 void SkinEngine::FindIcons ()

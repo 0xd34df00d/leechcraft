@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "iconchooser.h"
+#include <QtDebug>
 #include "xmlsettingsmanager.h"
 
 using namespace LeechCraft;
@@ -25,6 +26,10 @@ IconChooser::IconChooser (const QStringList& sets, QWidget *parent)
 : QComboBox (parent)
 , Sets_ (sets)
 {
+#ifndef Q_NO_DEBUG
+	qDebug () << Q_FUNC_INFO
+		<< sets;
+#endif
 	addItems (sets);
 	reject ();
 }
@@ -38,8 +43,20 @@ void IconChooser::accept ()
 
 void IconChooser::reject ()
 {
-	int index = Sets_.indexOf (XmlSettingsManager::Instance ()->
-			Property ("IconSet", "oxygen").toString ());
+	QString iconset = XmlSettingsManager::Instance ()->
+			property ("IconSet").toString ();
+#ifndef Q_NO_DEBUG
+	qDebug () << Sets_
+		<< iconset;
+#endif
+	if (iconset.isEmpty ())
+	{
+		iconset = "oxygen";
+		XmlSettingsManager::Instance ()->
+			setProperty ("IconSet", iconset);
+		emit requestNewIconSet ();
+	}
+	int index = Sets_.indexOf (iconset);
 	setCurrentIndex (index == -1 ? 0 : index);
 }
 
