@@ -38,6 +38,10 @@ namespace LeechCraft
 				 */
 				virtual void Init (IProxyObject *proxy) = 0;
 
+				virtual ~PluginBase ()
+				{
+				}
+
 				/** See the official Qt docs for the
 				 * QWebPage::contentsChanged() signal.
 				 */
