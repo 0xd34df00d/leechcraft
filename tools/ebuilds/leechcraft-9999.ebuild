@@ -13,7 +13,7 @@ HOMEPAGE="http://leechcraft.org/"
 LICENSE="GPL-3"
 SLOT="0"
 KEYWORDS=""
-IUSE="+poshuku +torrent +aggregator +dbusmanager deadlyrics historyholder
+IUSE="+poshuku +torrent +aggregator chatter +dbusmanager deadlyrics +historyholder
 	lmp networkmonitor +seekthru debug"
 
 DEPEND="dev-libs/boost:1.37
@@ -46,6 +46,7 @@ src_configure()
 				$(cmake-utils_use_enable poshuku POSHUKU)
 				$(cmake-utils_use_enable torrent TORRENT)
 				$(cmake-utils_use_enable aggregator AGGREGATOR)
+				$(cmake-utils_use_enable chatter CHATTER)
 				$(cmake-utils_use_enable dbusmanager DBUSMANAGER)
 				$(cmake-utils_use_enable deadlyrics DEADLIRYCS)
 				$(cmake-utils_use_enable historyholder HISTORYHOLDER)
