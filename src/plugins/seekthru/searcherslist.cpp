@@ -40,6 +40,7 @@ namespace LeechCraft
 			void SearchersList::handleCurrentChanged (const QModelIndex& current)
 			{
 				Ui_.ButtonRemove_->setEnabled (current.isValid ());
+				Ui_.InfoBox_->setEnabled (current.isValid ());
 			
 				Current_ = current;
 			
@@ -110,7 +111,6 @@ namespace LeechCraft
 			{
 				Core::Instance ().SetTags (Current_, text.split (' ', QString::SkipEmptyParts));
 			}
-			
 		};
 	};
 };
