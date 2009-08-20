@@ -59,9 +59,8 @@ namespace LeechCraft
 			.GetReallyMainWindow ()->GetTabWidget ();
 		IMultiTabsWidget *imtw =
 			qobject_cast<IMultiTabsWidget*> (tw->currentWidget ());
-		if (imtw)
-			imtw->NewTabRequested ();
-		else
+		if (!imtw ||
+				query.size ())
 		{
 			TabContents *tc = new TabContents ();
 			Connect (tc);
@@ -73,6 +72,8 @@ namespace LeechCraft
 
 			tc->SetQuery (query);
 		}
+		else
+			imtw->NewTabRequested ();
 	}
 
 	void TabContentsManager::RemoveTab (TabContents *tc)
