@@ -299,10 +299,7 @@ void LeechCraft::PluginManager::ScanDir (const QString& dir)
 				QDir::Files))
 	{
 		QString name = fileinfo.canonicalFilePath ();
-		qDebug () << name << settings.childGroups ();
 		settings.beginGroup (name);
-
-		qDebug () << settings.childKeys ();
 
 		QPluginLoader_ptr loader (new QPluginLoader (name));
 		if (settings.value ("AllowLoad", true).toBool ())
