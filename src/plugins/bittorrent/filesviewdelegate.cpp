@@ -71,34 +71,64 @@ namespace LeechCraft
 			void FilesViewDelegate::paint (QPainter *painter,
 					const QStyleOptionViewItem& option, const QModelIndex& index) const
 			{
-				if (index.column () != 2 ||
+				if (index.column () == 0 ||
 						HasChildren (index))
 				{
 					QStyledItemDelegate::paint (painter, option, index);
 					return;
 				}
 
-				QStyleOptionProgressBar progressBarOption;
-				progressBarOption.state = QStyle::State_Enabled;
-				progressBarOption.direction = QApplication::layoutDirection ();
-				progressBarOption.rect = option.rect;
-				progressBarOption.fontMetrics = QApplication::fontMetrics ();
-				progressBarOption.minimum = 0;
-				progressBarOption.maximum = 100;
-				progressBarOption.textAlignment = Qt::AlignCenter;
-				progressBarOption.textVisible = true;
+				if (index.column () == 1)
+				{
+					QStyleOptionSpinBox sto = QStyleOptionSpinBox ();
+					sto.state = option.state;
+					sto.direction = QApplication::layoutDirection ();
+					sto.rect = option.rect;
+					sto.fontMetrics = QApplication::fontMetrics ();
+					sto.palette = QApplication::palette ();
+					sto.stepEnabled = QAbstractSpinBox::StepUpEnabled |
+						QAbstractSpinBox::StepDownEnabled;
 
-				double progress = index.data (TorrentFilesModel::RoleProgress).toDouble ();
-				int size = index.data (TorrentFilesModel::RoleSize).toInt ();
-				int done = progress * size;
-				progressBarOption.progress = progress < 0 ? 0 : progress * 100;
-				progressBarOption.text = QString (tr ("%1% (%2 of %3)")
-						.arg (static_cast<int> (progress * 100))
-						.arg (Util::Proxy::Instance ()->MakePrettySize (done))
-						.arg (Util::Proxy::Instance ()->MakePrettySize (size)));
+					QApplication::style ()->drawComplexControl (QStyle::CC_SpinBox,
+							&sto, painter);
 
-				QApplication::style ()->drawControl (QStyle::CE_ProgressBar,
-						&progressBarOption, painter);
+					int priority = index.data ().toInt ();
+					QRect subRect = QApplication::style ()->
+						subControlRect (QStyle::CC_SpinBox,
+								&sto,
+								QStyle::SC_SpinBoxEditField);
+
+					QApplication::style ()->drawItemText (painter,
+							subRect,
+							Qt::AlignRight,
+							sto.palette,
+							true,
+							QString::number (priority));
+				}
+				else if (index.column () == 2)
+				{
+					QStyleOptionProgressBar progressBarOption;
+					progressBarOption.state = QStyle::State_Enabled;
+					progressBarOption.direction = QApplication::layoutDirection ();
+					progressBarOption.rect = option.rect;
+					progressBarOption.fontMetrics = QApplication::fontMetrics ();
+					progressBarOption.minimum = 0;
+					progressBarOption.maximum = 100;
+					progressBarOption.textAlignment = Qt::AlignCenter;
+					progressBarOption.textVisible = true;
+
+					double progress = index.data (TorrentFilesModel::RoleProgress).toDouble ();
+					int size = index.data (TorrentFilesModel::RoleSize).toInt ();
+					int done = progress * size;
+					progressBarOption.progress = progress < 0 ? 0 : progress * 100;
+					progressBarOption.text = QString (tr ("%1% (%2 of %3)")
+							.arg (static_cast<int> (progress * 100))
+							.arg (Util::Proxy::Instance ()->MakePrettySize (done))
+							.arg (Util::Proxy::Instance ()->MakePrettySize (size)));
+
+					QApplication::style ()->drawControl (QStyle::CE_ProgressBar,
+							&progressBarOption, painter);
+				}
 			}
 			
 			void FilesViewDelegate::setEditorData (QWidget *editor, const QModelIndex& index) const
