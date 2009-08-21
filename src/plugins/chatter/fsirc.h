@@ -44,7 +44,6 @@ class fsirc : public QDialog, Ui::fsMainWindow
 		static int findTab(QString);
 		void addTrayIcon();
 		void removeTrayIcon();
-		void newTab(QString uri=QString());
 	private:
 		void initConnections();
 		fsTrayIcon * trayIcon;
@@ -58,6 +57,7 @@ class fsirc : public QDialog, Ui::fsMainWindow
 		void toggleShow();
 		void checkIfTop();
 		void setTrayPresence(QVariant);
+		void newTab(QString uri=QString());
 	private slots:
 		void gotSomeMsg();
 		void gotHlite();
