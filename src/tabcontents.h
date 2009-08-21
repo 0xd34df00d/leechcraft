@@ -48,6 +48,7 @@ namespace LeechCraft
 		void on_PluginsTasksTree__customContextMenuRequested (const QPoint&);
 	signals:
 		void filterUpdated ();
+		void queryUpdated (const QString&);
 	};
 };
 

@@ -141,6 +141,10 @@ namespace LeechCraft
 				SIGNAL (filterUpdated ()),
 				this,
 				SLOT (handleFilterUpdated ()));
+		connect (tc,
+				SIGNAL (queryUpdated (const QString&)),
+				this,
+				SLOT (handleQueryUpdated (const QString&)));
 	}
 
 	void TabContentsManager::handleFilterUpdated ()
@@ -150,6 +154,38 @@ namespace LeechCraft
 			return;
 
 		Reemitter_->ConnectModelSpecific (tc);
+	}
+
+	void TabContentsManager::handleQueryUpdated (const QString& query)
+	{
+		if (!query.size ())
+		{
+			emit changeTabName (static_cast<QWidget*> (sender ()),
+					tr ("Summary"));
+			return;
+		}
+
+		QStringList splittedList = query.split (' ', QString::SkipEmptyParts);
+		QStringList categories;
+		Q_FOREACH (QString splitted, splittedList)
+			if (splitted.startsWith ("ca:") ||
+					splitted.startsWith ("category:"))
+			{
+				QStringList parsed = splitted.split (':');
+				if (parsed.size () < 2)
+					continue;
+				QString category = parsed.at (1);
+				if (category.endsWith (')'))
+					category.chop (1);
+				categories << category;
+			}
+
+		if (categories.size ())
+			emit changeTabName (static_cast<QWidget*> (sender ()),
+					categories.join ("; "));
+		else
+			emit changeTabName (static_cast<QWidget*> (sender ()),
+					query);
 	}
 };
 

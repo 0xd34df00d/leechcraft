@@ -53,6 +53,7 @@ namespace LeechCraft
 		void Connect (TabContents*);
 	private slots:
 		void handleFilterUpdated ();
+		void handleQueryUpdated (const QString&);
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

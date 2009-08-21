@@ -176,10 +176,10 @@ namespace LeechCraft
 
 	void TabContents::feedFilterParameters ()
 	{
+		QString query = Ui_.FilterLine_->text ();
 		QAbstractItemModel *old = Ui_.PluginsTasksTree_->model ();
 		Ui_.PluginsTasksTree_->
-			setModel (Core::Instance ()
-					.GetTasksModel (Ui_.FilterLine_->text ()));
+			setModel (Core::Instance ().GetTasksModel (query));
 		delete old;
 
 		connect (Ui_.PluginsTasksTree_->selectionModel (),
@@ -199,6 +199,7 @@ namespace LeechCraft
 				fm.width ("99.99% (1024.0 kb from 1024.0 kb at 1024.0 kb/s)"));
 
 		emit filterUpdated ();
+		emit queryUpdated (query);
 	}
 
 	void TabContents::on_PluginsTasksTree__customContextMenuRequested (const QPoint& pos)
