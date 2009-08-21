@@ -294,11 +294,15 @@ void LeechCraft::PluginManager::ScanDir (const QString& dir)
 	settings.beginGroup ("Plugins");
 
 	QDir pluginsDir = QDir (dir);
-	Q_FOREACH (QString filename,
-			pluginsDir.entryList (QStringList ("*leechcraft_*"), QDir::Files))
+	Q_FOREACH (QFileInfo fileinfo,
+			pluginsDir.entryInfoList (QStringList ("*leechcraft_*"),
+				QDir::Files))
 	{
-		QString name = pluginsDir.absoluteFilePath (filename);
+		QString name = fileinfo.canonicalFilePath ();
+		qDebug () << name << settings.childGroups ();
 		settings.beginGroup (name);
+
+		qDebug () << settings.childKeys ();
 
 		QPluginLoader_ptr loader (new QPluginLoader (name));
 		if (settings.value ("AllowLoad", true).toBool ())
@@ -322,10 +326,12 @@ void LeechCraft::PluginManager::CheckPlugins ()
 	{
 		QPluginLoader_ptr loader = Plugins_.at (i);
 
+		QString file = loader->fileName ();
+
 		if (!QFileInfo (loader->fileName ()).isFile ())
 		{
 			qWarning () << "A plugin isn't really a file, aborting load:"
-				<< loader->fileName ();
+				<< file;
 			Plugins_.removeAt (i--);
 			continue;
 		}
@@ -334,7 +340,7 @@ void LeechCraft::PluginManager::CheckPlugins ()
 		if (!loader->isLoaded ())
 		{
 			qWarning () << "Could not load library:"
-				<< loader->fileName ()
+				<< file
 				<< ";"
 				<< loader->errorString ();
 			Plugins_.removeAt (i--);
@@ -352,7 +358,7 @@ void LeechCraft::PluginManager::CheckPlugins ()
 				<< "failed to construct the instance with"
 				<< e.what ()
 				<< "for"
-				<< loader->fileName ();
+				<< file;
 			Plugins_.removeAt (i--);
 			continue;
 		}
@@ -360,7 +366,7 @@ void LeechCraft::PluginManager::CheckPlugins ()
 		{
 			qWarning () << Q_FUNC_INFO
 				<< "failed to construct the instance for"
-				<< loader->fileName ();
+				<< file;
 			Plugins_.removeAt (i--);
 			continue;
 		}
@@ -369,19 +375,17 @@ void LeechCraft::PluginManager::CheckPlugins ()
 		if (!info)
 		{
 			qWarning () << "Casting to IInfo failed:"
-					<< loader->fileName ();
+					<< file;
 			Plugins_.removeAt (i--);
 			continue;
 		}
 
-		QString file = loader->fileName ();
-		settings.beginGroup (file);
+		QString name;
+		QIcon icon;
 		try
 		{
-			QString name = info->GetName ();
-			QIcon icon = info->GetIcon ();
-			settings.setValue ("Name", name);
-			settings.setValue ("Icon", icon);
+			name = info->GetName ();
+			icon = info->GetIcon ();
 		}
 		catch (const std::exception& e)
 		{
@@ -401,6 +405,9 @@ void LeechCraft::PluginManager::CheckPlugins ()
 			Plugins_.removeAt (i--);
 			continue;
 		}
+		settings.beginGroup (file);
+		settings.setValue ("Name", name);
+		settings.setValue ("Icon", icon);
 		settings.endGroup ();
 	}
 
