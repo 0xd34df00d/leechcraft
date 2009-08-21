@@ -407,8 +407,8 @@ namespace LeechCraft
 					UpdateSizeGraph (item->Child (i));
 					size += item->Child (i)->Data (1, RawDataRole).value<qulonglong> ();
 				}
-				item->ModifyData (1, size, RawDataRole);
-				item->ModifyData (1, Proxy::Instance ()->MakePrettySize (size));
+				item->ModifyData (2, size, RawDataRole);
+				item->ModifyData (2, Proxy::Instance ()->MakePrettySize (size));
 			}
 		};
 	};
