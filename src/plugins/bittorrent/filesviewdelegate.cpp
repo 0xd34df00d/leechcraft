@@ -19,7 +19,9 @@
 #include <QModelIndex>
 #include <QSpinBox>
 #include <QLineEdit>
+#include <QApplication>
 #include <QtDebug>
+#include <plugininterface/proxy.h>
 #include <plugininterface/treeitem.h>
 #include "filesviewdelegate.h"
 #include "torrentfilesmodel.h"
@@ -41,7 +43,7 @@ namespace LeechCraft
 			using LeechCraft::Util::TreeItem;
 			
 			FilesViewDelegate::FilesViewDelegate (QObject *parent)
-			: QItemDelegate (parent)
+			: QStyledItemDelegate (parent)
 			{
 			}
 			
@@ -52,7 +54,7 @@ namespace LeechCraft
 			QWidget* FilesViewDelegate::createEditor (QWidget *parent,
 					const QStyleOptionViewItem& option, const QModelIndex& index) const
 			{
-				if (index.column () == 2 &&
+				if (index.column () == 1 &&
 						!HasChildren (index))
 				{
 					QSpinBox *box = new QSpinBox (parent);
@@ -63,22 +65,49 @@ namespace LeechCraft
 						!HasChildren (index))
 					return new QLineEdit (parent);
 				else
-					return QItemDelegate::createEditor (parent, option, index);
+					return QStyledItemDelegate::createEditor (parent, option, index);
 			}
 			
 			void FilesViewDelegate::paint (QPainter *painter,
 					const QStyleOptionViewItem& option, const QModelIndex& index) const
 			{
-				QItemDelegate::paint (painter, option, index);
+				if (index.column () != 2 ||
+						HasChildren (index))
+				{
+					QStyledItemDelegate::paint (painter, option, index);
+					return;
+				}
+
+				QStyleOptionProgressBar progressBarOption;
+				progressBarOption.state = QStyle::State_Enabled;
+				progressBarOption.direction = QApplication::layoutDirection ();
+				progressBarOption.rect = option.rect;
+				progressBarOption.fontMetrics = QApplication::fontMetrics ();
+				progressBarOption.minimum = 0;
+				progressBarOption.maximum = 100;
+				progressBarOption.textAlignment = Qt::AlignCenter;
+				progressBarOption.textVisible = true;
+
+				double progress = index.data (TorrentFilesModel::RoleProgress).toDouble ();
+				int size = index.data (TorrentFilesModel::RoleSize).toInt ();
+				int done = progress * size;
+				progressBarOption.progress = progress < 0 ? 0 : progress * 100;
+				progressBarOption.text = QString (tr ("%1% (%2 of %3)")
+						.arg (static_cast<int> (progress * 100))
+						.arg (Util::Proxy::Instance ()->MakePrettySize (done))
+						.arg (Util::Proxy::Instance ()->MakePrettySize (size)));
+
+				QApplication::style ()->drawControl (QStyle::CE_ProgressBar,
+						&progressBarOption, painter);
 			}
 			
 			void FilesViewDelegate::setEditorData (QWidget *editor, const QModelIndex& index) const
 			{
-				if (index.column () == 2 &&
+				if (index.column () == 1 &&
 						!HasChildren (index))
 					qobject_cast<QSpinBox*> (editor)->
 						setValue (static_cast<TreeItem*> (index.internalPointer ())->
-								Data (2).toInt ());
+								Data (1).toInt ());
 				else if (index.column () == 0 &&
 						!HasChildren (index))
 				{
@@ -87,13 +116,13 @@ namespace LeechCraft
 					qobject_cast<QLineEdit*> (editor)->setText (data.toString ());
 				}
 				else
-					QItemDelegate::setEditorData (editor, index);
+					QStyledItemDelegate::setEditorData (editor, index);
 			}
 			
 			void FilesViewDelegate::setModelData (QWidget *editor, QAbstractItemModel *model,
 					const QModelIndex& index) const
 			{
-				if (index.column () == 2)
+				if (index.column () == 1)
 				{
 					int value = qobject_cast<QSpinBox*> (editor)->value ();
 					model->setData (index, value);
@@ -104,7 +133,7 @@ namespace LeechCraft
 							qobject_cast<QLineEdit*> (editor)->text ());
 				}
 				else
-					QItemDelegate::setModelData (editor, model, index);
+					QStyledItemDelegate::setModelData (editor, model, index);
 			}
 			
 		};

@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_BITTORRENT_FILESVIEWDELEGATE_H
 #define PLUGINS_BITTORRENT_FILESVIEWDELEGATE_H
-#include <QItemDelegate>
+#include <QStyledItemDelegate>
 
 namespace LeechCraft
 {
@@ -26,7 +26,7 @@ namespace LeechCraft
 	{
 		namespace BitTorrent
 		{
-			class FilesViewDelegate : public QItemDelegate
+			class FilesViewDelegate : public QStyledItemDelegate
 			{
 				Q_OBJECT
 			public:

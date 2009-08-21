@@ -41,7 +41,7 @@ namespace LeechCraft
 				if (AdditionDialog_)
 					rootData << tr ("Name") << tr ("Size");
 				else
-					rootData << tr ("Name") << tr ("Size") << tr ("Priority") << tr ("Progress");
+					rootData << tr ("Name") << tr ("Priority") << tr ("Progress");
 				RootItem_ = new TreeItem (rootData);
 			}
 			
@@ -65,7 +65,8 @@ namespace LeechCraft
 			
 				if (AdditionDialog_)
 				{
-					if (role == Qt::CheckStateRole && index.column () == 0)
+					if (role == Qt::CheckStateRole &&
+							index.column () == 0)
 						return static_cast<TreeItem*> (index.internalPointer ())->Data (index.column (), role);
 					else if (role == Qt::DisplayRole)
 						return static_cast<TreeItem*> (index.internalPointer ())->Data (index.column ());
@@ -73,12 +74,16 @@ namespace LeechCraft
 						return QVariant ();
 				}
 				else
-				{
-					if (role == Qt::DisplayRole)
-						return static_cast<TreeItem*> (index.internalPointer ())->Data (index.column ());
-					else
-						return QVariant ();
-				}
+					switch (role)
+					{
+						case Qt::DisplayRole:
+							return static_cast<TreeItem*> (index.internalPointer ())->Data (index.column ());
+						case RoleSize:
+						case RoleProgress:
+							return static_cast<TreeItem*> (index.internalPointer ())->Data (0, role);
+						default:
+							return QVariant ();
+					}
 			}
 			
 			Qt::ItemFlags TorrentFilesModel::flags (const QModelIndex& index) const
@@ -93,7 +98,7 @@ namespace LeechCraft
 						Qt::ItemIsEnabled |
 						Qt::ItemIsUserCheckable;
 				else if (!AdditionDialog_ &&
-						((index.column () == 2 &&
+						((index.column () == 1 &&
 						  !rowCount (index.sibling (index.row (), 0))) ||
 						  index.column () == 0))
 					return Qt::ItemIsSelectable |
@@ -172,7 +177,7 @@ namespace LeechCraft
 				}
 				else if (role == Qt::EditRole)
 				{
-					if (index.column () == 2)
+					if (index.column () == 1)
 					{
 						TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
 						Core::Instance ()->
@@ -267,7 +272,6 @@ namespace LeechCraft
 			
 					QList<QVariant> displayData;
 					displayData << QString::fromUtf8 (fi.Path_.leaf ().c_str ())
-						<< Proxy::Instance ()->MakePrettySize (fi.Size_)
 						<< QString::number (fi.Priority_)
 						<< QString::number (fi.Progress_, 'f', 3);
 					
@@ -276,6 +280,8 @@ namespace LeechCraft
 					item->ModifyData (0, pathStr, RawDataRole);
 					item->ModifyData (1, static_cast<qulonglong> (fi.Size_), RawDataRole);
 					item->ModifyData (1, i, RolePath);
+					item->ModifyData (0, static_cast<qulonglong> (fi.Size_), RoleSize);
+					item->ModifyData (0, fi.Progress_, RoleProgress);
 					parentItem->AppendChild (item);
 					Path2TreeItem_ [fi.Path_] = item;
 					Path2OriginalPosition_ [fi.Path_] = i;
@@ -306,9 +312,11 @@ namespace LeechCraft
 					}
 			
 					TreeItem *item = Path2TreeItem_ [fi.Path_];
-					item->ModifyData (3, QString::number (fi.Progress_, 'f', 3));
+					item->ModifyData (2, QString::number (fi.Progress_, 'f', 3));
+					item->ModifyData (0, static_cast<qulonglong> (fi.Size_), RoleSize);
+					item->ModifyData (0, fi.Progress_, RoleProgress);
 				}
-				emit dataChanged (index (0, 3), index (RootItem_->ChildCount () - 1, 3));
+				emit dataChanged (index (0, 2), index (RootItem_->ChildCount () - 1, 2));
 			}
 			
 			QVector<bool> TorrentFilesModel::GetSelectedFiles () const

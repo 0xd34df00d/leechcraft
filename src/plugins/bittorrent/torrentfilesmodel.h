@@ -78,7 +78,9 @@ namespace LeechCraft
 				enum
 				{
 					RawDataRole = 46,
-					RolePath
+					RolePath,
+					RoleSize,
+					RoleProgress
 				};
 
 				TorrentFilesModel (bool, QObject *parent = 0);
