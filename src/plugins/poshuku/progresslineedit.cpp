@@ -45,11 +45,6 @@ namespace LeechCraft
 				return IsCompleting_;
 			}
 			
-			void ProgressLineEdit::AddAction (QAction *act)
-			{
-				addAction (act);
-			}
-			
 			void ProgressLineEdit::focusInEvent (QFocusEvent *e)
 			{
 				QLineEdit::focusInEvent (e);

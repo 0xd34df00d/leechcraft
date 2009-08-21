@@ -39,7 +39,6 @@ namespace LeechCraft
 				ProgressLineEdit (QWidget* = 0);
 				virtual ~ProgressLineEdit ();
 				bool IsCompleting () const;
-				void AddAction (QAction*);
 			protected:
 				virtual void focusInEvent (QFocusEvent*);
 				virtual void keyPressEvent (QKeyEvent*);
