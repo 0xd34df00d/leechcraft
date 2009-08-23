@@ -658,7 +658,7 @@ namespace LeechCraft
 						tr ("LeechCraft"),
 						tr ("You are going to permanently remove the feed:"
 							"<br />%1<br /><br />"
-							"Are you are really sure that you want to do it?",
+							"Are you really sure that you want to do it?",
 							"Feed removing confirmation").arg (name),
 						QMessageBox::Ok | QMessageBox::Cancel,
 						this);
