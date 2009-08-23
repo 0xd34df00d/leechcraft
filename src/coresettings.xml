@@ -61,6 +61,9 @@
 				<option name="en">
 					<label lang="en" value="English" />
 				</option>
+				<option name="es">
+					<label lang="en" value="Esperanto" />
+				</option>
 				<option name="it">
 					<label lang="en" value="Italian" />
 				</option>
