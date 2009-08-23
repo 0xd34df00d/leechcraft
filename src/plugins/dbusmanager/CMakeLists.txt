@@ -29,10 +29,12 @@ SET (RESOURCES
 SET (TRANSLATIONS
 	leechcraft_dbusmanager_ru_RU.ts
 	leechcraft_dbusmanager_uk_UA.ts
+	leechcraft_dbusmanager_eo.ts
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_dbusmanager_ru_RU.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_dbusmanager_uk_UA.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_dbusmanager_eo.qm
 	)
 
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
