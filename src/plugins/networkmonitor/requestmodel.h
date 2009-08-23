@@ -45,7 +45,6 @@ namespace LeechCraft
 						const QNetworkRequest&, QNetworkReply*);
 				void handleFinished ();
 				void setClear (bool);
-			private slots:
 				void handleCurrentChanged (const QModelIndex&);
 			};
 		};

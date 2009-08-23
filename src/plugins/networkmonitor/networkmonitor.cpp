@@ -19,96 +19,144 @@
 #include "networkmonitor.h"
 #include <typeinfo>
 #include <QMenu>
+#include <QSortFilterProxyModel>
 #include <plugininterface/util.h>
 #include "requestmodel.h"
 #include "headermodel.h"
 
-using namespace LeechCraft::Plugins;
-using namespace LeechCraft::Plugins::NetworkMonitor;
-
-void LeechCraft::Plugins::NetworkMonitor::Plugin::Init (ICoreProxy_ptr proxy)
+namespace LeechCraft
 {
-	Translator_.reset (LeechCraft::Util::InstallTranslator ("networkmonitor"));
+	namespace Plugins
+	{
+		namespace NetworkMonitor
+		{
+			void Plugin::Init (ICoreProxy_ptr proxy)
+			{
+				Translator_.reset (LeechCraft::Util::InstallTranslator ("networkmonitor"));
 
-	NetworkAccessManager_ = proxy->GetNetworkAccessManager ();
+				NetworkAccessManager_ = proxy->GetNetworkAccessManager ();
 
-	Ui_.setupUi (this);
+				Ui_.setupUi (this);
+				connect (Ui_.SearchString_,
+						SIGNAL (textChanged (const QString&)),
+						this,
+						SLOT (filterUpdated ()));
+				connect (Ui_.SearchType_,
+						SIGNAL (currentIndexChanged (int)),
+						this,
+						SLOT (filterUpdated ()));
 
-	Model_ = new RequestModel (this);
-	Ui_.RequestsView_->setModel (Model_);
-	connect (Ui_.RequestsView_->selectionModel (),
-			SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
-			Model_,
-			SLOT (handleCurrentChanged (const QModelIndex&)));
+				ProxyModel_ = new QSortFilterProxyModel (this);
+				ProxyModel_->setDynamicSortFilter (true);
 
-	Ui_.RequestHeadersView_->setModel (Model_->GetRequestHeadersModel ());
-	Ui_.ReplyHeadersView_->setModel (Model_->GetReplyHeadersModel ());
+				Model_ = new RequestModel (this);
+				ProxyModel_->setSourceModel (Model_);
+				ProxyModel_->setFilterKeyColumn (3);
+				Ui_.RequestsView_->setModel (ProxyModel_);
+				connect (Ui_.RequestsView_->selectionModel (),
+						SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
+						this,
+						SLOT (handleCurrentChanged (const QModelIndex&)));
 
-	connect (Ui_.ClearFinished_,
-			SIGNAL (toggled (bool)),
-			Model_,
-			SLOT (setClear (bool)));
+				Ui_.RequestHeadersView_->setModel (Model_->GetRequestHeadersModel ());
+				Ui_.ReplyHeadersView_->setModel (Model_->GetReplyHeadersModel ());
 
-	connect (NetworkAccessManager_,
-			SIGNAL (requestCreated (QNetworkAccessManager::Operation,
-					const QNetworkRequest&, QNetworkReply*)),
-			Ui_.RequestsView_->model (),
-			SLOT (handleRequest (QNetworkAccessManager::Operation,
-					const QNetworkRequest&, QNetworkReply*)));
+				connect (Ui_.ClearFinished_,
+						SIGNAL (toggled (bool)),
+						Model_,
+						SLOT (setClear (bool)));
 
-	QAction *showAction = new QAction (tr ("Network monitor..."),
-			this);
-	showAction->setProperty ("ActionIcon", "networkmonitor_plugin");
-	connect (showAction,
-			SIGNAL (triggered ()),
-			this,
-			SLOT (show ()));
-	Actions_.push_back (showAction);
-}
+				connect (NetworkAccessManager_,
+						SIGNAL (requestCreated (QNetworkAccessManager::Operation,
+								const QNetworkRequest&, QNetworkReply*)),
+						Model_,
+						SLOT (handleRequest (QNetworkAccessManager::Operation,
+								const QNetworkRequest&, QNetworkReply*)));
 
-void Plugin::Release ()
-{
-	qDeleteAll (Actions_);
-}
+				QAction *showAction = new QAction (tr ("Network monitor..."),
+						this);
+				showAction->setProperty ("ActionIcon", "networkmonitor_plugin");
+				connect (showAction,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (show ()));
+				Actions_.push_back (showAction);
+			}
 
-QString Plugin::GetName () const
-{
-	return "NetworkMonitor";
-}
+			void Plugin::Release ()
+			{
+				qDeleteAll (Actions_);
+			}
 
-QString LeechCraft::Plugins::NetworkMonitor::Plugin::GetInfo () const
-{
-	return tr ("Monitors HTTP network requests and responses.");
-}
+			QString Plugin::GetName () const
+			{
+				return "NetworkMonitor";
+			}
 
-QIcon Plugin::GetIcon () const
-{
-	return QIcon (":/resources/images/networkmonitor.svg");
-}
+			QString Plugin::GetInfo () const
+			{
+				return tr ("Monitors HTTP network requests and responses.");
+			}
 
-QStringList Plugin::Provides () const
-{
-	return QStringList ();
-}
+			QIcon Plugin::GetIcon () const
+			{
+				return QIcon (":/resources/images/networkmonitor.svg");
+			}
 
-QStringList Plugin::Needs () const
-{
-	return QStringList ();
-}
+			QStringList Plugin::Provides () const
+			{
+				return QStringList ();
+			}
 
-QStringList Plugin::Uses () const
-{
-	return QStringList ();
-}
+			QStringList Plugin::Needs () const
+			{
+				return QStringList ();
+			}
 
-void Plugin::SetProvider (QObject*, const QString&)
-{
-}
+			QStringList Plugin::Uses () const
+			{
+				return QStringList ();
+			}
 
-QList<QAction*> Plugin::GetActions () const
-{
-	return Actions_;
-}
+			void Plugin::SetProvider (QObject*, const QString&)
+			{
+			}
 
-Q_EXPORT_PLUGIN2 (leechcraft_networkmonitor, Plugin);
+			QList<QAction*> Plugin::GetActions () const
+			{
+				return Actions_;
+			}
+
+			void Plugin::handleCurrentChanged (const QModelIndex& index)
+			{
+				Model_->handleCurrentChanged (ProxyModel_->mapToSource (index));
+			}
+			
+			void Plugin::filterUpdated ()
+			{
+				QString search = Ui_.SearchString_->text ();
+				switch (Ui_.SearchType_->currentIndex ())
+				{
+					case 0:
+						ProxyModel_->setFilterFixedString (search);
+						break;
+					case 1:
+						ProxyModel_->setFilterWildcard (search);
+						break;
+					case 2:
+						ProxyModel_->setFilterRegExp (search);
+						break;
+					default:
+						qWarning () << Q_FUNC_INFO
+							<< "unknown search type"
+							<< Ui_.SearchType_->currentIndex ()
+							<< Ui_.SearchType_->currentText ();
+						break;
+				}
+			}
+		};
+	};
+};
+
+Q_EXPORT_PLUGIN2 (leechcraft_networkmonitor, LeechCraft::Plugins::NetworkMonitor::Plugin);
 

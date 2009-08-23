@@ -25,6 +25,32 @@
     </widget>
    </item>
    <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLineEdit" name="SearchString_"/>
+     </item>
+     <item>
+      <widget class="QComboBox" name="SearchType_">
+       <item>
+        <property name="text">
+         <string>String</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Wildcard</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Regexp</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QLabel" name="label">
@@ -54,9 +80,6 @@
          <attribute name="headerVisible">
           <bool>false</bool>
          </attribute>
-         <attribute name="headerVisible">
-          <bool>false</bool>
-         </attribute>
         </widget>
        </item>
       </layout>
@@ -72,9 +95,6 @@
        </item>
        <item>
         <widget class="QTreeView" name="ReplyHeadersView_">
-         <attribute name="headerVisible">
-          <bool>false</bool>
-         </attribute>
          <attribute name="headerVisible">
           <bool>false</bool>
          </attribute>

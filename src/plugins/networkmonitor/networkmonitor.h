@@ -24,6 +24,8 @@
 #include <interfaces/itoolbarembedder.h>
 #include "ui_networkmonitor.h"
 
+class QSortFilterProxyModel;
+
 namespace LeechCraft
 {
 	namespace Plugins
@@ -41,6 +43,7 @@ namespace LeechCraft
 
 				Ui::NetworkMonitor Ui_;
 				RequestModel *Model_;
+				QSortFilterProxyModel *ProxyModel_;
 				QNetworkAccessManager *NetworkAccessManager_;
 				QList<QAction*> Actions_;
 				std::auto_ptr<QTranslator> Translator_;
@@ -56,6 +59,9 @@ namespace LeechCraft
 				void SetProvider (QObject*, const QString&);
 
 				QList<QAction*> GetActions () const;
+			public slots:
+				void handleCurrentChanged (const QModelIndex&);
+				void filterUpdated ();
 			};
 		};
 	};
