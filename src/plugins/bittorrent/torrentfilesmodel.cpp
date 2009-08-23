@@ -80,7 +80,13 @@ namespace LeechCraft
 							return static_cast<TreeItem*> (index.internalPointer ())->Data (index.column ());
 						case RoleSize:
 						case RoleProgress:
-							return static_cast<TreeItem*> (index.internalPointer ())->Data (0, role);
+							{
+								int result = static_cast<TreeItem*> (index.internalPointer ())->
+									Data (0, role).toInt ();
+								if (result < 0)
+									result = 0;
+								return result;
+							}
 						default:
 							return QVariant ();
 					}
