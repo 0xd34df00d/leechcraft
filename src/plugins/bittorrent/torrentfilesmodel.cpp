@@ -92,8 +92,7 @@ namespace LeechCraft
 					return 0;
 			
 				if (AdditionDialog_ &&
-						index.column () == 0 &&
-						!hasChildren (index))
+						index.column () == 0)
 					return Qt::ItemIsSelectable |
 						Qt::ItemIsEnabled |
 						Qt::ItemIsUserCheckable;
@@ -171,8 +170,56 @@ namespace LeechCraft
 			
 				if (role == Qt::CheckStateRole)
 				{
-					static_cast<TreeItem*> (index.internalPointer ())->ModifyData (0, value, Qt::CheckStateRole);
+					static_cast<TreeItem*> (index.internalPointer ())->
+						ModifyData (0, value, Qt::CheckStateRole);
 					emit dataChanged (index, index);
+
+					int rows = rowCount (index);
+					for (int i = 0; i < rows; ++i)
+						setData (this->index (i, 0, index), value, role);
+
+					QModelIndex pi = parent (index);
+					while (pi.isValid ())
+					{
+						bool hasChecked = false;
+						bool hasUnchecked = false;
+						int prows = rowCount (pi);
+						for (int i = 0; i < prows; ++i)
+						{
+							int state = this->index (i, 0, pi).data (role).toInt ();
+							switch (static_cast<Qt::CheckState> (state))
+							{
+								case Qt::Checked:
+									hasChecked = true;
+									break;
+								case Qt::Unchecked:
+									hasUnchecked = true;
+									break;
+								default:
+									hasChecked = true;
+									hasUnchecked = true;
+									break;
+							}
+							if (hasChecked && hasUnchecked)
+								break;
+						}
+						Qt::CheckState state;
+						if (hasChecked && hasUnchecked)
+							state = Qt::PartiallyChecked;
+						else if (hasChecked)
+							state = Qt::Checked;
+						else if (hasUnchecked)
+							state = Qt::Unchecked;
+						else
+							qWarning () << Q_FUNC_INFO
+								<< pi
+								<< "we have neither checked nor unchecked items. Strange.";
+						static_cast<TreeItem*> (pi.internalPointer ())->
+							ModifyData (0, state, Qt::CheckStateRole);
+						emit dataChanged (pi, pi);
+						pi = parent (pi);
+					}
+
 					return true;
 				}
 				else if (role == Qt::EditRole)
@@ -392,6 +439,8 @@ namespace LeechCraft
 				if (!AdditionDialog_)
 					data << QString ("") << QString ("");
 				TreeItem *item = new TreeItem (data, parent);
+				if (AdditionDialog_)
+					item->ModifyData (0, Qt::Checked, Qt::CheckStateRole);
 				parent->AppendChild (item);
 				Path2TreeItem_ [parentPath] = item;
 			}
