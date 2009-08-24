@@ -94,6 +94,7 @@ namespace LeechCraft
 		void on_ActionFullscreenMode__triggered (bool);
 		void on_ActionLogger__triggered ();
 		void handleToolButtonStyleChanged ();
+		void handleShowMenuBarAsButton ();
 		void on_MainTabWidget__currentChanged (int);
 		void updateSpeedIndicators ();
 		void updateClock ();

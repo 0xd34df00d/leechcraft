@@ -18,6 +18,10 @@
 				<label lang="ru" value="Использовать кнопки прокрутки табов" />
 				<label lang="uk" value="Використовувати кнопки прокручування табів" />
 			</item>
+			<item type="checkbox" property="ShowMenuBarAsButton" state="off">
+				<label lang="en" value="Show menu bar as button" />
+				<label lang="ru" value="Показывать панель меню в виде кнопки" />
+			</item>
 			<item type="combobox" property="ToolButtonStyle">
 				<label lang="en" value="Tool button style:" />
 				<label lang="ru" value="Стиль панелей инструментов:" />

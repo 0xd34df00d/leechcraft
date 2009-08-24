@@ -191,6 +191,14 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	XmlSettingsManager::Instance ()->RegisterObject ("ToolButtonStyle",
 			this, "handleToolButtonStyleChanged");
 	handleToolButtonStyleChanged ();
+	XmlSettingsManager::Instance ()->RegisterObject ("ShowMenuBarAsButton",
+			this, "handleShowMenuBarAsButton");
+
+	QMenu *menu = new QMenu (this);
+	menu->addMenu (Ui_.MenuGeneral_);
+	menu->addMenu (Ui_.MenuTools_);
+	menu->addMenu (Ui_.MenuHelp_);
+	Ui_.ActionMenu_->setMenu (menu);
 
 	IconChooser *ic = new IconChooser (SkinEngine::Instance ().ListIcons (),
 			this);
@@ -406,6 +414,22 @@ void LeechCraft::MainWindow::handleToolButtonStyleChanged ()
 	setToolButtonStyle (GetToolButtonStyle ());
 }
 
+void LeechCraft::MainWindow::handleShowMenuBarAsButton ()
+{
+	bool asButton = XmlSettingsManager::Instance ()->
+		property ("ShowMenuBarAsButton").toBool ();
+	if (asButton)
+	{
+		Ui_.MenuBar_->hide ();
+		Ui_.MainToolbar_->insertAction (Ui_.ActionPluginManager_, Ui_.ActionMenu_);
+	}
+	else
+	{
+		Ui_.MainToolbar_->removeAction (Ui_.ActionMenu_);
+		Ui_.MenuBar_->show ();
+	}
+}
+
 void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
 {
 	if (CurrentToolBar_)
@@ -507,6 +531,8 @@ void LeechCraft::MainWindow::doDelayedInit ()
 	for (QObjectList::const_iterator i = shortcuts.begin (),
 			end = shortcuts.end (); i != end; ++i)
 		ShortcutManager_->AddObject (*i);
+
+	handleShowMenuBarAsButton ();
 
 	new StartupWizard (this);
 }
