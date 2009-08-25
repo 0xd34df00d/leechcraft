@@ -103,7 +103,6 @@ namespace LeechCraft
 			void URLCompletionModel::handleItemAdded (const HistoryItem&)
 			{
 				Valid_ = false;
-				Populate ();
 			}
 			
 			void URLCompletionModel::Populate ()
