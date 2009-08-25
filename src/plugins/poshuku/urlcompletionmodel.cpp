@@ -113,10 +113,10 @@ namespace LeechCraft
 					Valid_ = true;
 			
 					int size = Items_.size () - 1;
-					if (size)
+					if (size > 0)
 						beginRemoveRows (QModelIndex (), 0, size);
 					Items_.clear ();
-					if (size)
+					if (size > 0)
 						endRemoveRows ();
 			
 					try
