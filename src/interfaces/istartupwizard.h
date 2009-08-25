@@ -25,6 +25,8 @@ class QWizardPage;
 class IStartupWizard
 {
 public:
+	virtual ~IStartupWizard () {}
+
 	virtual QList<QWizardPage*> GetWizardPages () const = 0;
 };
 
