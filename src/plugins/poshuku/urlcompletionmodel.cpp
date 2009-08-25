@@ -130,8 +130,11 @@ namespace LeechCraft
 					}
 			
 					size = Items_.size () - 1;
-					beginInsertRows (QModelIndex (), 0, size);
-					endInsertRows ();
+					if (size > 0)
+					{
+						beginInsertRows (QModelIndex (), 0, size);
+						endInsertRows ();
+					}
 				}
 			}
 		};
