@@ -25,6 +25,7 @@
 #include <QDir>
 #include <QUrl>
 #include <QTextCodec>
+#include <QInputDialog>
 #include <QtDebug>
 #include <plugininterface/util.h>
 #include <plugininterface/tagscompletionmodel.h>
@@ -37,6 +38,7 @@
 #include "favoritesmodel.h"
 #include "browserwidget.h"
 #include "cookieseditdialog.h"
+#include "editbookmarkdialog.h"
 
 namespace LeechCraft
 {
@@ -348,12 +350,17 @@ namespace LeechCraft
 				FavoritesFilterModel_->setDynamicSortFilter (true);
 				Ui_.FavoritesView_->setModel (FavoritesFilterModel_.get ());
 				Ui_.FavoritesView_->setItemDelegate (new FavoritesDelegate (this));
+				Ui_.FavoritesView_->addAction (Ui_.ActionEditBookmark_);
+				Ui_.FavoritesView_->addAction (Ui_.ActionChangeURL_);
+				Ui_.FavoritesView_->addAction (Ui_.ActionDeleteBookmark_);
 				connect (Ui_.FavoritesView_,
 						SIGNAL (deleteSelected (const QModelIndex&)),
 						this,
 						SLOT (translateRemoveFavoritesItem (const QModelIndex&)));
 			
-				FavoritesFilterLineCompleter_.reset (new TagsCompleter (Ui_.FavoritesFilterLine_, this));
+				FavoritesFilterLineCompleter_.reset (
+						new TagsCompleter (Ui_.FavoritesFilterLine_, this)
+						);
 				Ui_.FavoritesFilterLine_->AddSelector ();
 				connect (Ui_.FavoritesFilterLine_,
 						SIGNAL (textChanged (const QString&)),
@@ -407,6 +414,9 @@ namespace LeechCraft
 			
 			void Poshuku::on_FavoritesView__activated (const QModelIndex& index)
 			{
+				Ui_.ActionEditBookmark_->setEnabled (index.isValid ());
+				Ui_.ActionChangeURL_->setEnabled (index.isValid ());
+				Ui_.ActionDeleteBookmark_->setEnabled (index.isValid ());
 				Core::Instance ().NewURL (index.sibling (index.row (),
 							FavoritesModel::ColumnURL).data ().toString ());
 			}
@@ -416,7 +426,42 @@ namespace LeechCraft
 				for (int i = 0, size = FavoritesFilterModel_->rowCount (); 
 						i < size; ++i)
 					Core::Instance ().NewURL (FavoritesFilterModel_->
-							index (i,FavoritesModel::ColumnURL).data ().toString ());
+							index (i, FavoritesModel::ColumnURL).data ().toString ());
+			}
+			
+			void Poshuku::on_ActionEditBookmark__triggered ()
+			{
+				QModelIndex current = Ui_.FavoritesView_->
+					selectionModel ()->currentIndex ();
+				if (!current.isValid ())
+					return;
+				QModelIndex source = FavoritesFilterModel_->mapToSource (current);
+
+				EditBookmarkDialog dia (source, this);
+				if (dia.exec () != QDialog::Accepted)
+					return;
+
+				FavoritesModel *model = Core::Instance ().GetFavoritesModel ();
+				model->setData (source.sibling (source.row (),
+							FavoritesModel::ColumnTitle),
+						dia.GetTitle ());
+				model->setData (source.sibling (source.row (),
+							FavoritesModel::ColumnTags),
+						dia.GetTags ());
+			}
+
+			void Poshuku::on_ActionChangeURL__triggered ()
+			{
+			}
+
+			void Poshuku::on_ActionDeleteBookmark__triggered ()
+			{
+				QModelIndex current = Ui_.FavoritesView_->
+					selectionModel ()->currentIndex ();
+				if (!current.isValid ())
+					return;
+
+				translateRemoveFavoritesItem (current);
 			}
 			
 			void Poshuku::translateRemoveFavoritesItem (const QModelIndex& sourceIndex)

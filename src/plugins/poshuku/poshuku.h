@@ -105,6 +105,9 @@ namespace LeechCraft
 				void on_HistoryView__activated (const QModelIndex&);
 				void on_FavoritesView__activated (const QModelIndex&);
 				void on_OpenInTabs__released ();
+				void on_ActionEditBookmark__triggered ();
+				void on_ActionChangeURL__triggered ();
+				void on_ActionDeleteBookmark__triggered ();
 				void translateRemoveFavoritesItem (const QModelIndex&);
 				void viewerSettingsChanged ();
 				void developerExtrasChanged ();

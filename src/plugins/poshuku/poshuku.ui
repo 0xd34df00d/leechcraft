@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>681</width>
-    <height>519</height>
+    <height>529</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -37,11 +37,11 @@
           <enum>QTabWidget::West</enum>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="FavoritesTab_">
           <attribute name="title">
-           <string>Favorites</string>
+           <string>Bookmarks</string>
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_4">
            <property name="margin">
@@ -94,6 +94,9 @@
            </item>
            <item>
             <widget class="LeechCraft::Plugins::Poshuku::FavoritesTreeView" name="FavoritesView_">
+             <property name="contextMenuPolicy">
+              <enum>Qt::ActionsContextMenu</enum>
+             </property>
              <property name="rootIsDecorated">
               <bool>false</bool>
              </property>
@@ -175,9 +178,25 @@
     </widget>
    </item>
   </layout>
-  <action name="ActionSettings_">
+  <action name="ActionEditBookmark_">
    <property name="text">
-    <string>Settings...</string>
+    <string>Edit bookmark...</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit title and tags</string>
+   </property>
+  </action>
+  <action name="ActionChangeURL_">
+   <property name="text">
+    <string>Change URL...</string>
+   </property>
+   <property name="toolTip">
+    <string>Change URL of the bookmark</string>
+   </property>
+  </action>
+  <action name="ActionDeleteBookmark_">
+   <property name="text">
+    <string>Delete bookmark</string>
    </property>
   </action>
  </widget>

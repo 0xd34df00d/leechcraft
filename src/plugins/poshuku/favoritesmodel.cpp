@@ -124,16 +124,34 @@ namespace LeechCraft
 			bool FavoritesModel::setData (const QModelIndex& index,
 					const QVariant& value, int)
 			{
-				if (index.column () != ColumnTags)
-					return false;
-			
-				QStringList userTags = value.toStringList ();
-				Items_ [index.row ()].Tags_.clear ();
-				Q_FOREACH (QString ut, userTags) 
-					Items_ [index.row ()].Tags_.append (Core::Instance ().GetProxy ()->
-							GetTagsManager ()->GetID (ut));
-				Core::Instance ().GetStorageBackend ()->UpdateFavorites (Items_ [index.row ()]);
-				return true;
+				switch (index.column ())
+				{
+					case ColumnTags:
+						{
+							QStringList userTags = value.toStringList ();
+							Items_ [index.row ()].Tags_.clear ();
+							Q_FOREACH (QString ut, userTags) 
+								Items_ [index.row ()].Tags_.append (Core::Instance ().GetProxy ()->
+										GetTagsManager ()->GetID (ut));
+							Core::Instance ().GetStorageBackend ()->
+								UpdateFavorites (Items_ [index.row ()]);
+							return true;
+						}
+					case ColumnTitle:
+						{
+							QString title = value.toString ();
+							Items_ [index.row ()].Title_ = title;
+							Core::Instance ().GetStorageBackend ()->
+								UpdateFavorites (Items_ [index.row ()]);
+							return true;
+						}
+					case ColumnURL:
+						{
+							return true;
+						}
+					default:
+						return false;
+				}
 			}
 			
 			bool FavoritesModel::AddItem (const QString& title, const QString& url,
@@ -179,7 +197,8 @@ namespace LeechCraft
 			
 			void FavoritesModel::removeItem (const QModelIndex& index)
 			{
-				Core::Instance ().GetStorageBackend ()->RemoveFromFavorites (Items_ [index.row ()]);
+				Core::Instance ().GetStorageBackend ()->
+					RemoveFromFavorites (Items_ [index.row ()]);
 			}
 			
 			void FavoritesModel::handleItemAdded (const FavoritesModel::FavoritesItem& item)

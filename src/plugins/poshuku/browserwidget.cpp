@@ -107,7 +107,7 @@ namespace LeechCraft
 				Stop_->setParent (this);
 				Stop_->setProperty ("ActionIcon", "poshuku_stop");
 			
-				Add2Favorites_ = new QAction (tr ("Add to favorites..."),
+				Add2Favorites_ = new QAction (tr ("Bookmark..."),
 						this);
 				Add2Favorites_->setProperty ("ActionIcon", "poshuku_addtofavorites");
 				Add2Favorites_->setEnabled (false);

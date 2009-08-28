@@ -46,6 +46,7 @@ SET (SRCS
 	cookiesfilter.cpp
 	searchtext.cpp
 	reloadintervalselector.cpp
+	editbookmarkdialog.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -85,6 +86,7 @@ SET (HEADERS
 	cookiesfilter.h
 	searchtext.h
 	reloadintervalselector.h
+	editbookmarkdialog.h
 	interfaces/pluginbase.h
 	)
 SET (FORMS
@@ -99,6 +101,7 @@ SET (FORMS
 	passwordremember.ui
 	searchtext.ui
 	reloadintervalselector.ui
+	editbookmarkdialog.ui
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS
