@@ -180,6 +180,18 @@ namespace LeechCraft
 				}
 				return true;
 			}
+
+			void FavoritesModel::ChangeURL (const QModelIndex& index,
+					const QString& url)
+			{
+				FavoritesItem item = Items_.at (index.row ());
+				if (item.URL_ == url)
+					return;
+
+				removeItem (index);
+				item.URL_ = url;
+				Core::Instance ().GetStorageBackend ()->AddToFavorites (item);
+			}
 			
 			const FavoritesModel::items_t& FavoritesModel::GetItems () const
 			{

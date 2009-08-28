@@ -452,6 +452,37 @@ namespace LeechCraft
 
 			void Poshuku::on_ActionChangeURL__triggered ()
 			{
+				QModelIndex current = Ui_.FavoritesView_->
+					selectionModel ()->currentIndex ();
+				if (!current.isValid ())
+					return;
+				QModelIndex source = FavoritesFilterModel_->mapToSource (current);
+
+				QString title = source.sibling (source.row (),
+						FavoritesModel::ColumnTitle).data ().toString ();
+
+				QString currentURL = source.sibling (source.row (),
+						FavoritesModel::ColumnURL).data ().toString ();
+
+				bool ok = false;
+
+				QString newURL = QInputDialog::getText (this,
+						tr ("Change URL"),
+						tr ("Enter new URL for<br />%1")
+							.arg (title),
+						QLineEdit::Normal,
+						currentURL,
+						&ok);
+
+				if (!ok)
+					return;
+
+				if (newURL.isEmpty ())
+					QMessageBox::critical (this,
+							tr ("LeechCraft"),
+							tr ("URL of a bookmark can't be empty."));
+
+				Core::Instance ().GetFavoritesModel ()->ChangeURL (source, newURL);
 			}
 
 			void Poshuku::on_ActionDeleteBookmark__triggered ()

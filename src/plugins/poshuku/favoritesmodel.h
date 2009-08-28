@@ -76,6 +76,7 @@ namespace LeechCraft
 						int = Qt::EditRole);
 
 				bool AddItem (const QString&, const QString&, const QStringList&);
+				void ChangeURL (const QModelIndex&, const QString&);
 				const items_t& GetItems () const;
 			private:
 				QStringList GetVisibleTags (int) const;
