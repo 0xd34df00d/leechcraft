@@ -29,6 +29,7 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/structures.h>
 #include <interfaces/itoolbarembedder.h>
+#include <interfaces/itraymenu.h>
 
 class QSystemTrayIcon;
 class QTranslator;
@@ -54,9 +55,10 @@ namespace LeechCraft
 							 , public IEntityHandler
 							 , public IHaveShortcuts
 							 , public IToolBarEmbedder
+							 , public ITrayMenu
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IEmbedTab IHaveSettings IJobHolder IEntityHandler IHaveShortcuts IToolBarEmbedder)
+				Q_INTERFACES (IInfo IEmbedTab IHaveSettings IJobHolder IEntityHandler IHaveShortcuts IToolBarEmbedder ITrayMenu)
 
 				Aggregator_Impl *Impl_;
 			public:
@@ -84,6 +86,9 @@ namespace LeechCraft
 				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
 
 				QList<QAction*> GetActions () const;
+
+				QList<QAction*> GetTrayActions () const;
+				QList<QMenu*> GetTrayMenus () const;
 			protected:
 				virtual void keyPressEvent (QKeyEvent*);
 			private:

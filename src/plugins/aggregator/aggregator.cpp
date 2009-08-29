@@ -433,6 +433,19 @@ namespace LeechCraft
 				result += Impl_->ActionUpdateFeeds_;
 				return result;
 			}
+
+			QList<QAction*> Aggregator::GetTrayActions () const
+			{
+				QList<QAction*> result;
+				result += Impl_->ActionAddFeed_;
+				result += Impl_->ActionUpdateFeeds_;
+				return result;
+			}
+
+			QList<QMenu*> Aggregator::GetTrayMenus () const
+			{
+				return QList<QMenu*> ();
+			}
 			
 			void Aggregator::keyPressEvent (QKeyEvent *e)
 			{
