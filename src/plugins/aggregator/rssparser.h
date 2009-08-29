@@ -39,11 +39,7 @@ namespace LeechCraft
 				RSSParser ();
 			public:
 				virtual ~RSSParser ();
-				channels_container_t Parse (const channels_container_t&,
-						channels_container_t&,
-						const QDomDocument&) const;
 			protected:
-				virtual channels_container_t Parse (const QDomDocument&) const = 0;
 				QDateTime RFC822TimeToQDateTime (const QString&) const;
 				QList<Enclosure> GetEnclosures (const QDomElement&) const;
 			};

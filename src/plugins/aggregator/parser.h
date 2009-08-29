@@ -32,6 +32,7 @@ namespace LeechCraft
 			class Parser
 			{
 			public:
+				virtual ~Parser ();
 				/** @brief Indicates whether parser could parse the document.
 				 *
 				 * @param[in] doc 
@@ -51,7 +52,7 @@ namespace LeechCraft
 				 */
 				virtual channels_container_t Parse (const channels_container_t& old,
 						channels_container_t& modified,
-						const QDomDocument& document) const = 0;
+						const QDomDocument& document) const;
 			protected:
 				static const QString DC_;
 				static const QString WFW_;
@@ -61,6 +62,7 @@ namespace LeechCraft
 				static const QString Enc_;
 				static const QString ITunes_;
 
+				virtual channels_container_t Parse (const QDomDocument&) const = 0;
 				QString GetLink (const QDomElement&) const;
 				QString GetAuthor (const QDomElement&) const;
 				QString GetCommentsRSS (const QDomElement&) const;
