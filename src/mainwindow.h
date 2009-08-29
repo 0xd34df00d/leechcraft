@@ -80,7 +80,6 @@ namespace LeechCraft
 	private:
 		void InitializeInterface ();
 		void SetStatusBar ();
-		void SetTrayIcon ();
 		void ReadSettings ();
 		void WriteSettings ();
 	private slots:

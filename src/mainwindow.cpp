@@ -23,6 +23,7 @@
 #include <QChildEvent>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "plugininterface/proxy.h"
+#include "interfaces/itraymenu.h"
 #include "mainwindow.h"
 #include "view.h"
 #include "core.h"
@@ -174,7 +175,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	Ui_.ActionFullscreenMode_->setParent (this);
 
 	Ui_.MainTabWidget_->setTabIcon (0, QIcon (":/resources/images/leechcraft.svg"));
-	SetTrayIcon ();
 
 	XmlSettingsDialog_ = new XmlSettingsDialog ();
 	XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
@@ -217,6 +217,8 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	SetStatusBar ();
 	ReadSettings ();
 
+	TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/leechcraft.svg"), this);
+	TrayIcon_->show ();
 	FancyPopupManager_ = new FancyPopupManager (TrayIcon_, this);
 	LogToolBox_ = new LogToolBox (this);
 
@@ -252,23 +254,6 @@ void LeechCraft::MainWindow::SetStatusBar ()
 	statusBar ()->addPermanentWidget (Clock_);
 	if (!isFullScreen ())
 		Clock_->hide ();
-}
-
-void LeechCraft::MainWindow::SetTrayIcon ()
-{
-	TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/leechcraft.svg"), this);
-
-	QMenu *iconMenu = new QMenu (this);
-	iconMenu->addAction (Ui_.ActionAddTask_);
-	iconMenu->addSeparator ();
-	iconMenu->addAction (Ui_.ActionQuit_);
-
-	TrayIcon_->setContextMenu (iconMenu);
-	TrayIcon_->show ();
-	connect (TrayIcon_,
-			SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
-			this,
-			SLOT (handleTrayIconActivated (QSystemTrayIcon::ActivationReason)));
 }
 
 void LeechCraft::MainWindow::ReadSettings ()
@@ -533,6 +518,39 @@ void LeechCraft::MainWindow::doDelayedInit ()
 		ShortcutManager_->AddObject (*i);
 
 	handleShowMenuBarAsButton ();
+
+	QMenu *iconMenu = new QMenu (this);
+	iconMenu->addAction (Ui_.ActionAddTask_);
+	iconMenu->addSeparator ();
+	QMenu *menu = iconMenu->addMenu (tr ("LeechCraft menu"));
+	menu->addMenu (Ui_.MenuGeneral_);
+	menu->addMenu (Ui_.MenuTools_);
+	menu->addMenu (Ui_.MenuHelp_);
+	iconMenu->addSeparator ();
+
+	QObjectList trayMenus = Core::Instance ()
+		.GetPluginManager ()->GetAllCastableRoots<ITrayMenu*> ();
+	for (QObjectList::const_iterator i = trayMenus.begin (),
+			end = trayMenus.end (); i != end; ++i)
+	{
+		ITrayMenu* o = qobject_cast<ITrayMenu*> (*i);
+		QList<QAction*> actions = o->GetTrayActions ();
+		QList<QMenu*> menus = o->GetTrayMenus ();
+		iconMenu->addActions (actions);
+		Q_FOREACH (QMenu *m, menus)
+			iconMenu->addMenu (m);
+
+		if (actions.size () || menus.size ())
+			iconMenu->addSeparator ();
+	}
+
+	iconMenu->addAction (Ui_.ActionQuit_);
+
+	TrayIcon_->setContextMenu (iconMenu);
+	connect (TrayIcon_,
+			SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
+			this,
+			SLOT (handleTrayIconActivated (QSystemTrayIcon::ActivationReason)));
 
 	new StartupWizard (this);
 }
