@@ -105,6 +105,15 @@
 			</groupbox>
 		</tab>
 		<tab>
+			<label lang="en" value="Fast speed control" />
+			<label lang="ru" value="Быстрый контроль скорости" />
+			<item type="groupbox" property="EnableFastSpeedControl" checkable="true" state="off">
+				<label lang="en" value="Enable fast speed control" />
+				<label lang="ru" value="Включить быстрый контроль скорости" />
+				<item type="customwidget" name="FastSpeedControl" label="own" />
+			</item>
+		</tab>
+		<tab>
 			<label lang="en" value="Proxy" />
 			<label lang="ru" value="Прокси" />
 			<item type="groupbox" property="TrackerProxyEnabled" checkable="true" state="off">

@@ -44,6 +44,8 @@ namespace LeechCraft
 				TabWidget (QWidget* = 0);
 
 				void InvalidateSelection ();
+				void SetOverallDownloadRateController (int);
+				void SetOverallUploadRateController (int);
 			public slots:
 				void updateTorrentStats ();
 			private:

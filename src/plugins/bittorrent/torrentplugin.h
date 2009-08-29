@@ -38,6 +38,7 @@
 
 class QTimer;
 class QToolBar;
+class QComboBox;
 class QTabWidget;
 class QTranslator;
 
@@ -91,6 +92,11 @@ namespace LeechCraft
 					Import_,
 					Export_;
 				std::auto_ptr<QTranslator> Translator_;
+
+				QComboBox *DownSelector_,
+						  *UpSelector_;
+				QAction *DownSelectorAction_,
+						*UpSelectorAction_;
 
 				enum
 				{
@@ -173,6 +179,8 @@ namespace LeechCraft
 				void on_MoveFiles__triggered ();
 				void on_Import__triggered ();
 				void on_Export__triggered ();
+				void handleSpeedsChanged ();
+				void handleFastSpeedComboboxes ();
 				void setActionsEnabled ();
 				void showError (QString);
 				void doLogMessage (const QString&);

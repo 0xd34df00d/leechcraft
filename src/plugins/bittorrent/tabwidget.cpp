@@ -82,7 +82,8 @@ namespace LeechCraft
 						SLOT (currentWebSeedChanged (const QModelIndex&)));
 
 				connect (Ui_.OverallDownloadRateController_,
-						SIGNAL (valueChanged (int)), this,
+						SIGNAL (valueChanged (int)),
+						this,
 						SLOT (on_OverallDownloadRateController__valueChanged (int)));
 				connect (Ui_.OverallUploadRateController_,
 						SIGNAL (valueChanged (int)),
@@ -192,6 +193,18 @@ namespace LeechCraft
 				Ui_.TorrentTags_->setText (Core::Instance ()->GetProxy ()->GetTagsManager ()->
 						Join (Core::Instance ()->GetTagsForIndex ()));
 				updateTorrentStats ();
+			}
+
+			void TabWidget::SetOverallDownloadRateController (int val)
+			{
+				Ui_.OverallDownloadRateController_->setValue (val);
+				on_OverallDownloadRateController__valueChanged (val);
+			}
+
+			void TabWidget::SetOverallUploadRateController (int val)
+			{
+				Ui_.OverallUploadRateController_->setValue (val);
+				on_OverallUploadRateController__valueChanged (val);
 			}
 
 			void TabWidget::updateTorrentStats ()
