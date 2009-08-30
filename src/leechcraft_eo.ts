@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="ru" sourcelanguage="en">
 <context>
     <name>AboutDialog</name>
     <message>
         <location filename="aboutdialog.ui" line="14"/>
         <location filename="aboutdialog.ui" line="64"/>
         <source>About LeechCraft</source>
-        <translation type="unfinished"></translation>
+        <translation>Pri Leechcrafto</translation>
     </message>
     <message>
         <location filename="aboutdialog.ui" line="51"/>
         <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
+        <translation>Leechcrafto</translation>
     </message>
     <message utf8="true">
         <location filename="aboutdialog.ui" line="70"/>
         <source>LeechCraft — a crossplatform modular internet-client, featuring plugins for a web browser, news feed reader, BitTorrent, FTP and lots of others.</source>
-        <translation type="unfinished"></translation>
+        <translation>LeechCrafto estas plursistema modula interreta kleinto, trajtarante kromaĵojn por retfoliumilo, abonflua legilo, BitTorrent, FTP kaj multe da alioj.</translation>
     </message>
     <message>
         <location filename="aboutdialog.ui" line="80"/>
         <source>&lt;a href=&quot;http://leechcraft.org&quot;&gt;http://leechcraft.org&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;a href=&quot;http://leechcraft.org&quot;&gt;http://leechcraft.org&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="aboutdialog.ui" line="104"/>
         <source>Authors</source>
-        <translation type="unfinished"></translation>
+        <translation>Aŭtoro</translation>
     </message>
     <message>
         <location filename="aboutdialog.ui" line="110"/>
@@ -43,12 +43,23 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Voker57&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  Chatter plugin writer and maintainer&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  2008-2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;0xd34df00d&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  E-mail: &lt;a href=&quot;mailto:0xd34df00d@gmail.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#154071;&quot;&gt;0xd34df00d@gmail.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt; Ĉefa programisto kaj originala aŭtoro&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  2006-2009&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Voker57&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  Verkisto kaj prizorgulo de babila kromprogramo&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  2008-2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="aboutdialog.ui" line="132"/>
         <source>Contributors</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontribuanto</translation>
     </message>
     <message utf8="true">
         <location filename="aboutdialog.ui" line="138"/>
@@ -100,12 +111,12 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  E-Mail: &lt;a href=&quot;mailto:getbusy@mail.ru&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#154071;&quot;&gt;getbusy@mail.ru&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  Aggregator fixes, improvements and Ukrainian translation&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  2008&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="aboutdialog.ui" line="196"/>
         <source>Appreciations</source>
-        <translation type="unfinished"></translation>
+        <translation>Aprezoj</translation>
     </message>
     <message>
         <location filename="aboutdialog.ui" line="202"/>
@@ -118,12 +129,12 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Alexander Ermolov aka Ronin, Oleg Tsarev aka Zabivator and all the inhabitants of &lt;a href=&quot;xmpp:c_plus_plus@conference.jabber.ru&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#154071;&quot;&gt;c_plus_plus@conference.jabber.ru&lt;/span&gt;&lt;/a&gt; for countless discussions, ideas and such.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Rasterbar&apos;s Libtorrent for their great library, and especially Arvid Norberg for discussions, help and implementations of some of my ideas.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="aboutdialog.ui" line="218"/>
         <source>Licensing</source>
-        <translation type="unfinished"></translation>
+        <translation>Licencado</translation>
     </message>
     <message utf8="true">
         <location filename="aboutdialog.ui" line="224"/>
@@ -269,12 +280,12 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The hypothetical commands `show w&apos; and `show c&apos; should show the appropriate parts of the General Public License. Of course, your program&apos;s commands might be different; for a GUI interface, you would use an “about box”. &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;You should also get your employer (if you work as a programmer) or school, if any, to sign a “copyright disclaimer” for the program, if necessary. For more information on this, and how to apply and follow the GNU GPL, see &amp;lt;http://www.gnu.org/licenses/&amp;gt;. &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The GNU General Public License does not permit incorporating your program into proprietary programs. If your program is a subroutine library, you may consider it more useful to permit linking proprietary applications with the library. If this is what you want to do, use the GNU Lesser General Public License instead of this License. But first, please read &amp;lt;http://www.gnu.org/philosophy/why-not-lgpl.html&amp;gt;. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="aboutdialog.ui" line="373"/>
         <source>Third parties</source>
-        <translation type="unfinished"></translation>
+        <translation>Triaj anaroj</translation>
     </message>
     <message>
         <location filename="aboutdialog.ui" line="379"/>
@@ -285,7 +296,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;BitTorrent plugin uses the Rasterbar Software&apos;s libtorrent:&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Copyright (c) 2003 - 2007, Arvid Norberg&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;All rights reserved.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -293,22 +304,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="authenticationdialog.ui" line="13"/>
         <source>Authentication required</source>
-        <translation type="unfinished"></translation>
+        <translation>Aŭtentokontrolo estas nepra</translation>
     </message>
     <message>
         <location filename="authenticationdialog.ui" line="29"/>
         <source>Login:</source>
-        <translation type="unfinished"></translation>
+        <translation>Salutnomo:</translation>
     </message>
     <message>
         <location filename="authenticationdialog.ui" line="39"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pasvorto:</translation>
     </message>
     <message>
         <location filename="authenticationdialog.ui" line="55"/>
         <source>Save credentials</source>
-        <translation type="unfinished"></translation>
+        <translation>Savu legitimaĵon</translation>
     </message>
 </context>
 <context>
@@ -316,7 +327,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="plugininterface/categoryselector.cpp" line="36"/>
         <source>Tags selector</source>
-        <translation type="unfinished"></translation>
+        <translation>Selektilo de markoj</translation>
     </message>
 </context>
 <context>
@@ -324,28 +335,28 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="commonjobadder.ui" line="14"/>
         <source>Add task</source>
-        <translation type="unfinished"></translation>
+        <translation>Aldonu la taskon</translation>
     </message>
     <message>
         <location filename="commonjobadder.ui" line="29"/>
         <source>Entity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ento:</translation>
     </message>
     <message>
         <location filename="commonjobadder.ui" line="41"/>
         <location filename="commonjobadder.ui" line="69"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Foliumu...</translation>
     </message>
     <message>
         <location filename="commonjobadder.ui" line="48"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Algluu</translation>
     </message>
     <message>
         <location filename="commonjobadder.ui" line="57"/>
         <source>Location:</source>
-        <translation type="unfinished"></translation>
+        <translation>Loko:</translation>
     </message>
 </context>
 <context>
@@ -353,27 +364,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="handlerchoicedialog.ui" line="13"/>
         <source>Choose entity handler</source>
-        <translation type="unfinished"></translation>
+        <translation>Elektu la traktulo de ento</translation>
     </message>
     <message>
         <location filename="handlerchoicedialog.ui" line="19"/>
         <source>LeechCraft has detected an entity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Leechcrafto detektis aĵon:</translation>
     </message>
     <message>
         <location filename="handlerchoicedialog.ui" line="26"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation>Teksta etikedo</translation>
     </message>
     <message>
         <location filename="handlerchoicedialog.ui" line="33"/>
         <source>It could be downloaded by:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tio estas elŝutebla per:</translation>
     </message>
     <message>
         <location filename="handlerchoicedialog.ui" line="43"/>
         <source>It could be handled by:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tio estas traktebla per:</translation>
     </message>
 </context>
 <context>
@@ -381,17 +392,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="keysequencer.ui" line="20"/>
         <source>Press key sequence</source>
-        <translation type="unfinished"></translation>
+        <translation>Premtenu makroklavon</translation>
     </message>
     <message>
         <location filename="keysequencer.ui" line="26"/>
         <source>background-color: rgb(255, 255, 255);</source>
-        <translation type="unfinished"></translation>
+        <translation>fona koloro: rgb(255, 255, 255);</translation>
     </message>
     <message>
         <location filename="keysequencer.ui" line="42"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Предполагается, что это глагол</translatorcomment>
+        <translation>Klarigu</translation>
     </message>
 </context>
 <context>
@@ -399,94 +411,94 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="leechcraft.ui" line="14"/>
         <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
+        <translation>Leechcrafto</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="47"/>
         <source>Summary</source>
-        <translation type="unfinished"></translation>
+        <translation>Resгmo</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="65"/>
         <source>Main toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Ĉefa ilobreto</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="92"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Ĝenerala</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="101"/>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Ilaro</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="112"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Helpilo</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="123"/>
         <source>Add task</source>
-        <translation type="unfinished"></translation>
+        <translation>Aldonu la taskon</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="128"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Agordoj</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="136"/>
         <source>Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>Forlasu</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="142"/>
         <source>exit</source>
-        <translation type="unfinished"></translation>
+        <translation>eliri</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="147"/>
         <source>Plugin manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Kromaĵa mastrumilo</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="155"/>
         <location filename="leechcraft.ui" line="158"/>
         <source>Fullscreen mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Tutekrana reĝimo</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="161"/>
         <source>F11</source>
-        <translation type="unfinished"></translation>
+        <translation>F11</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="166"/>
         <location filename="leechcraft.ui" line="169"/>
         <source>Log</source>
-        <translation type="unfinished"></translation>
+        <translation>Protokolo</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="174"/>
         <source>New tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Nova langeto</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="177"/>
         <source>Ctrl+T</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+T</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="182"/>
         <source>About LeechCraft...</source>
-        <translation type="unfinished"></translation>
+        <translation>Pri Leechcrafto...</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="187"/>
         <source>About Qt...</source>
-        <translation type="unfinished"></translation>
+        <translation>Pri Qt...</translation>
     </message>
 </context>
 <context>
@@ -494,7 +506,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="aboutdialog.cpp" line="28"/>
         <source>LeechCraft %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Leechcrafto %1</translation>
     </message>
 </context>
 <context>
@@ -502,32 +514,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="application.cpp" line="132"/>
         <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
+        <translation>Leechcrafto</translation>
     </message>
     <message>
         <location filename="application.cpp" line="133"/>
         <source>Could not create path %1/.leechcraft</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne povis krei la vojon %1/.leechcrafto</translation>
     </message>
     <message>
         <location filename="application.cpp" line="151"/>
         <source>bytes</source>
-        <translation type="unfinished"></translation>
+        <translation>bajtoj</translation>
     </message>
     <message>
         <location filename="application.cpp" line="152"/>
         <source>KB</source>
-        <translation type="unfinished"></translation>
+        <translation>KB</translation>
     </message>
     <message>
         <location filename="application.cpp" line="153"/>
         <source>MB</source>
-        <translation type="unfinished"></translation>
+        <translation>MB</translation>
     </message>
     <message>
         <location filename="application.cpp" line="154"/>
         <source>GB</source>
-        <translation type="unfinished"></translation>
+        <translation>GB</translation>
     </message>
 </context>
 <context>
@@ -535,17 +547,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="categorymerger.cpp" line="30"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nomo</translation>
     </message>
     <message>
         <location filename="categorymerger.cpp" line="31"/>
         <source>State</source>
-        <translation type="unfinished"></translation>
+        <translation>Ŝtato</translation>
     </message>
     <message>
         <location filename="categorymerger.cpp" line="32"/>
         <source>Progress</source>
-        <translation type="unfinished"></translation>
+        <translation>Progreso</translation>
     </message>
 </context>
 <context>
@@ -554,7 +566,7 @@ p, li { white-space: pre-wrap; }
         <location filename="commonjobadder.cpp" line="54"/>
         <location filename="commonjobadder.cpp" line="67"/>
         <source>Select file</source>
-        <translation type="unfinished"></translation>
+        <translation>Selektu la dosieron</translation>
     </message>
 </context>
 <context>
@@ -562,84 +574,85 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="core.cpp" line="94"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nomo</translation>
     </message>
     <message>
         <location filename="core.cpp" line="95"/>
         <source>State</source>
-        <translation type="unfinished"></translation>
+        <translation>Ŝtato</translation>
     </message>
     <message>
         <location filename="core.cpp" line="96"/>
         <source>Progress</source>
-        <translation type="unfinished"></translation>
+        <translation>Progreso</translation>
     </message>
     <message>
         <location filename="core.cpp" line="332"/>
         <source>No plugins are able to download &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Плагины загружают что-то или что-то загружает плагины?</translatorcomment>
+        <translation>Kromaĵoj ne ebla elŝuti &quot;%1&quot;</translation>
     </message>
     <message>
         <location filename="core.cpp" line="558"/>
         <location filename="core.cpp" line="570"/>
         <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
+        <translation>Leechcrafto</translation>
     </message>
     <message>
         <location filename="core.cpp" line="559"/>
         <source>Do you really want to clear the network cache?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ĉu vi vere volas klarigi retan kaŝmemoron?</translation>
     </message>
     <message>
         <location filename="core.cpp" line="571"/>
         <source>Do you really want to clear cookies?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ĉu vi vere volas klarigi kuketon?</translation>
     </message>
     <message>
         <location filename="core.cpp" line="835"/>
         <source>Too long to show</source>
-        <translation type="unfinished"></translation>
+        <translation>Tro longe por montri</translation>
     </message>
     <message>
         <location filename="core.cpp" line="852"/>
         <source>Binary entity</source>
-        <translation type="unfinished"></translation>
+        <translation>Binara ento</translation>
     </message>
     <message>
         <location filename="core.cpp" line="855"/>
         <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br /&gt;&lt;br /&gt;de tipo &lt;code&gt;%1&lt;/code&gt;</translation>
     </message>
     <message>
         <location filename="core.cpp" line="862"/>
         <source>&lt;br /&gt;from %1</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br /&gt;el %1</translation>
     </message>
     <message>
         <location filename="core.cpp" line="952"/>
         <source>Select save location</source>
-        <translation type="unfinished"></translation>
+        <translation>Selektu lokon por savi</translation>
     </message>
     <message>
         <location filename="core.cpp" line="968"/>
         <location filename="core.cpp" line="985"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Eraro</translation>
     </message>
     <message>
         <location filename="core.cpp" line="969"/>
         <source>Could not add task to the selected downloader, would you like to try another one?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne povis aldonl la taskon al la selektita elŝutilo, ĉu vi volas provi alian?</translation>
     </message>
     <message>
         <location filename="core.cpp" line="986"/>
         <source>Could not handle task with the selected handler, would you like to try another one?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne povis traktl la taskon al la selektita traktilo, ĉu vi volas provi alian?</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1009"/>
         <source>Could not handle download entity %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne povis traktl la elŝuta ento %1.</translation>
     </message>
 </context>
 <context>
@@ -647,7 +660,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="fancypopupmanager.cpp" line="102"/>
         <source>LeechCraft Notification</source>
-        <translation type="unfinished"></translation>
+        <translation>Leechcrafta Sciigo</translation>
     </message>
 </context>
 <context>
@@ -659,17 +672,17 @@ p, li { white-space: pre-wrap; }
         <location filename="mainwindow.cpp" line="319"/>
         <location filename="mainwindow.cpp" line="349"/>
         <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
+        <translation>Leechcrafto</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="133"/>
         <source>%1 - LeechCraft</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 - Leechcrafto</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="222"/>
         <source>/s	</source>
-        <translation type="unfinished"></translation>
+        <translation>/s	</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="225"/>
@@ -677,22 +690,22 @@ p, li { white-space: pre-wrap; }
         <location filename="mainwindow.cpp" line="436"/>
         <location filename="mainwindow.cpp" line="437"/>
         <source>/s</source>
-        <translation type="unfinished"></translation>
+        <translation>/s</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="320"/>
         <source>Do you really want to quit?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ĉu vi vere volas forlasi?</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="350"/>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
-        <translation type="unfinished"></translation>
+        <translation>Tia ŝanĝo bezonas restarton de Leechcrafto. Ĉu vi volas restarti nun?</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="442"/>
         <source>%1 down, %2 up</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 suben, %2 supren</translation>
     </message>
 </context>
 <context>
@@ -701,22 +714,23 @@ p, li { white-space: pre-wrap; }
         <location filename="networkaccessmanager.cpp" line="149"/>
         <location filename="networkaccessmanager.cpp" line="159"/>
         <source>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt; nepras aŭtentokontrolon.</translation>
     </message>
     <message>
         <location filename="networkaccessmanager.cpp" line="185"/>
         <source>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt; havas SSL-eraron. Kion vi volas fari?</translation>
     </message>
     <message>
         <location filename="networkaccessmanager.cpp" line="220"/>
         <source>Could not create Core directory.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Если Core - это название, а не просто слово</translatorcomment>
+        <translation>Ne povis krei &quot;Core&quot; dosierujon.</translation>
     </message>
     <message>
         <location filename="networkaccessmanager.cpp" line="228"/>
         <source>Could not save cookies, error opening cookie file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne povis savi kuketojn, eraro de malfermitado de kuketan dosieron.</translation>
     </message>
 </context>
 <context>
@@ -724,17 +738,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="operationalmodel.cpp" line="27"/>
         <source>Entity</source>
-        <translation type="unfinished"></translation>
+        <translation>Ento</translation>
     </message>
     <message>
         <location filename="operationalmodel.cpp" line="28"/>
         <source>Category</source>
-        <translation type="unfinished"></translation>
+        <translation>Kategorio</translation>
     </message>
     <message>
         <location filename="operationalmodel.cpp" line="29"/>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Informoj</translation>
     </message>
 </context>
 <context>
@@ -742,22 +756,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="pluginmanager.cpp" line="76"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nomo</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="77"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosiero</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="241"/>
         <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
+        <translation>Leechcrafto</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="242"/>
         <source>Release of one or more plugins failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Eldono de unu aŭ plu kromaĵoj fiaskis.</translation>
     </message>
 </context>
 <context>
@@ -765,32 +779,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="requestnormalizer.cpp" line="45"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nomo</translation>
     </message>
     <message>
         <location filename="requestnormalizer.cpp" line="46"/>
         <source>State</source>
-        <translation type="unfinished"></translation>
+        <translation>Ŝtato</translation>
     </message>
     <message>
         <location filename="requestnormalizer.cpp" line="47"/>
         <source>Progress</source>
-        <translation type="unfinished"></translation>
+        <translation>Progreso</translation>
     </message>
     <message>
         <location filename="requestnormalizer.cpp" line="63"/>
         <source>Request validation error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Eraro de peta valideco: %1</translation>
     </message>
     <message>
         <location filename="requestnormalizer.cpp" line="79"/>
         <source>Request parsing error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Eraro de sintaksa analizilode peto: %1</translation>
     </message>
     <message>
         <location filename="requestnormalizer.cpp" line="103"/>
         <source>Open/close braces mismatch</source>
-        <translation type="unfinished"></translation>
+        <translation>Miskongruo de fermaj/malfermaj krampoj</translation>
     </message>
 </context>
 <context>
@@ -798,103 +812,104 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="sslerrorsdialog.cpp" line="60"/>
         <source>Certificate</source>
-        <translation type="unfinished"></translation>
+        <translation>Atestilo</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="61"/>
         <source>(No certificate available for this error)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Atestiloj ne disponebla por tia eraro)</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="65"/>
         <source>Valid:</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Предполагается, что это прилагательное единственного числа</translatorcomment>
+        <translation>Valida:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="66"/>
         <source>yes</source>
-        <translation type="unfinished"></translation>
+        <translation>jes</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="66"/>
         <source>no</source>
-        <translation type="unfinished"></translation>
+        <translation>ne</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="67"/>
         <source>Effective date:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fakta dato:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="69"/>
         <source>Expiry date:</source>
-        <translation type="unfinished"></translation>
+        <translation>Limdato:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="71"/>
         <source>Version:</source>
-        <translation type="unfinished"></translation>
+        <translation>Versio:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="73"/>
         <source>Serial number:</source>
-        <translation type="unfinished"></translation>
+        <translation>Seria numero:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="75"/>
         <source>MD5 digest:</source>
-        <translation type="unfinished"></translation>
+        <translation>MD5-mesaĝaro:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="77"/>
         <source>SHA1 digest:</source>
-        <translation type="unfinished"></translation>
+        <translation>SHA1-mesaĝaro:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="81"/>
         <source>Issuer info</source>
-        <translation type="unfinished"></translation>
+        <translation>Eldonanta informoj</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="87"/>
         <location filename="sslerrorsdialog.cpp" line="120"/>
         <source>Organization:</source>
-        <translation type="unfinished"></translation>
+        <translation>Organizo:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="92"/>
         <location filename="sslerrorsdialog.cpp" line="125"/>
         <source>Common name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Komuna nomo:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="97"/>
         <location filename="sslerrorsdialog.cpp" line="130"/>
         <source>Locality:</source>
-        <translation type="unfinished"></translation>
+        <translation>Loknombro:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="102"/>
         <location filename="sslerrorsdialog.cpp" line="135"/>
         <source>Organizational unit name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Organiza nomo de unuo:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="107"/>
         <location filename="sslerrorsdialog.cpp" line="140"/>
         <source>Country name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ŝtata nomo:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="112"/>
         <location filename="sslerrorsdialog.cpp" line="145"/>
         <source>State or province name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Provinca nomo:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="115"/>
         <source>Subject info</source>
-        <translation type="unfinished"></translation>
+        <translation>Tema informoj</translation>
     </message>
 </context>
 <context>
@@ -902,7 +917,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="startupwizard.cpp" line="28"/>
         <source>Startup wizard</source>
-        <translation type="unfinished"></translation>
+        <translation>Asistanto de startigo</translation>
     </message>
 </context>
 <context>
@@ -911,7 +926,7 @@ p, li { white-space: pre-wrap; }
         <location filename="tabcontentsmanager.cpp" line="69"/>
         <location filename="tabcontentsmanager.cpp" line="164"/>
         <source>Summary</source>
-        <translation type="unfinished"></translation>
+        <translation>Resumo</translation>
     </message>
 </context>
 <context>
@@ -919,12 +934,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="tagsviewer.cpp" line="44"/>
         <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>Renomu</translation>
     </message>
     <message>
         <location filename="tagsviewer.cpp" line="45"/>
         <source>Enter new tag name</source>
-        <translation type="unfinished"></translation>
+        <translation>Enigu novan nomon de marko</translation>
     </message>
 </context>
 <context>
@@ -932,12 +947,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="logtoolbox.ui" line="13"/>
         <source>Log</source>
-        <translation type="unfinished"></translation>
+        <translation>Protokolo</translation>
     </message>
     <message>
         <location filename="logtoolbox.ui" line="37"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Vakogu</translation>
     </message>
 </context>
 <context>
@@ -945,7 +960,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="pluginmanagerdialog.ui" line="14"/>
         <source>Plugin Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Kromaĵa mastrumilo</translation>
     </message>
 </context>
 <context>
@@ -953,7 +968,9 @@ p, li { white-space: pre-wrap; }
     <message numerus="yes">
         <location filename="plugininterface/proxy.cpp" line="132"/>
         <source>%n day(s), </source>
-        <translation type="unfinished">
+        <translation>
+            <numerusform>%n tago, </numerusform>
+            <numerusform>%n tagon, </numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -963,12 +980,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="plugininterface/util.cpp" line="86"/>
         <source>Could not cd into %1</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Если cd - это команда</translatorcomment>
+        <translation>Ne povis cd al %1</translation>
     </message>
     <message>
         <location filename="plugininterface/util.cpp" line="93"/>
         <source>Could not create %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ту povis krei %1</translation>
     </message>
 </context>
 <context>
@@ -976,7 +994,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="settingssink.ui" line="14"/>
         <source>Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Agordoj</translation>
     </message>
 </context>
 <context>
@@ -984,17 +1002,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="shortcutmanager.ui" line="14"/>
         <source>Shortcut manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Mastrumilo de simbola ligilo</translation>
     </message>
     <message>
         <location filename="shortcutmanager.ui" line="21"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nomo</translation>
     </message>
     <message>
         <location filename="shortcutmanager.ui" line="26"/>
         <source>Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Simbola ligilo</translation>
     </message>
 </context>
 <context>
@@ -1002,37 +1020,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="sslerrorsdialog.ui" line="13"/>
         <source>SSL errors occured</source>
-        <translation type="unfinished"></translation>
+        <translation>SSL-eraro aperis</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.ui" line="23"/>
         <source>&lt;Here we say that errors happened&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Tie ĉi ni diras ke eraro aperas&gt;</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.ui" line="31"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nomo</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.ui" line="36"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valoro</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.ui" line="50"/>
         <source>Don&apos;t remember my choice</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne memoru mian elekto</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.ui" line="57"/>
         <source>Remember my choice for the resource</source>
-        <translation type="unfinished"></translation>
+        <translation>Memoru mian elekto por la risurco</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.ui" line="64"/>
         <source>Remember my choice for the whole host</source>
-        <translation type="unfinished"></translation>
+        <translation>Memoru mian elekto por la tuta listo</translation>
     </message>
 </context>
 <context>
@@ -1040,7 +1058,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="tabcontents.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formular</translation>
     </message>
 </context>
 <context>
@@ -1048,7 +1066,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="tagsmanager.cpp" line="32"/>
         <source>untagged</source>
-        <translation type="unfinished"></translation>
+        <translation>Nemarkita</translation>
     </message>
 </context>
 <context>
@@ -1056,17 +1074,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="tagsviewer.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formular</translation>
     </message>
     <message>
         <location filename="tagsviewer.ui" line="38"/>
         <source>Rename...</source>
-        <translation type="unfinished"></translation>
+        <translation>Renomu...</translation>
     </message>
     <message>
         <location filename="tagsviewer.ui" line="45"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Viŝi</translation>
     </message>
 </context>
 </TS>
