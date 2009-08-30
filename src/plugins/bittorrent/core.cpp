@@ -127,6 +127,7 @@ namespace LeechCraft
 			, SaveScheduled_ (false)
 			, Toolbar_ (0)
 			, TabWidget_ (0)
+			, Menu_ (0)
 			{
 				setObjectName ("BitTorrent Core");
 				ExternalAddress_ = tr ("Unknown");
@@ -142,6 +143,11 @@ namespace LeechCraft
 			{
 				Toolbar_ = tool;
 				TabWidget_ = tab;
+			}
+
+			void Core::SetMenu (QMenu *menu)
+			{
+				Menu_ = menu;
 			}
 			
 			void Core::DoDelayedInit ()
@@ -427,6 +433,8 @@ namespace LeechCraft
 					return QVariant::fromValue<QToolBar*> (Toolbar_);
 				if (role == RoleAdditionalInfo)
 					return QVariant::fromValue<QWidget*> (TabWidget_);
+				if (role == RoleContextMenu)
+					return QVariant::fromValue<QMenu*> (Menu_);
 				int row = index.row (),
 					column = index.column ();
 			

@@ -127,6 +127,7 @@ namespace LeechCraft
 				QToolBar *Toolbar_;
 				QWidget *TabWidget_;
 				ICoreProxy_ptr Proxy_;
+				QMenu *Menu_;
 
 				Core ();
 			public:
@@ -151,6 +152,7 @@ namespace LeechCraft
 				static Core* Instance ();
 				virtual ~Core ();
 				void SetWidgets (QToolBar*, QWidget*);
+				void SetMenu (QMenu*);
 				void DoDelayedInit ();
 				void Release ();
 
