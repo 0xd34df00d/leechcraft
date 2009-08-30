@@ -99,10 +99,6 @@ namespace LeechCraft
 				ReloadPeriodically_->setCheckable (true);
 				ReloadPeriodically_->setProperty ("ActionIcon", "poshuku_reloadperiodically");
 
-				QMenu *reloadMenu = new QMenu (this);
-				reloadMenu->addAction (ReloadPeriodically_);
-				Reload_->setMenu (reloadMenu);
-			
 				Stop_ = Ui_.WebView_->pageAction (QWebPage::Stop);
 				Stop_->setParent (this);
 				Stop_->setProperty ("ActionIcon", "poshuku_stop");
@@ -175,6 +171,8 @@ namespace LeechCraft
 
 				moreMenu->addAction (Find_);
 				moreMenu->addAction (Add2Favorites_);
+				moreMenu->addSeparator ();
+				moreMenu->addAction (ReloadPeriodically_);
 				moreMenu->addSeparator ();
 				moreMenu->addAction (ZoomIn_);
 				moreMenu->addAction (ZoomOut_);
