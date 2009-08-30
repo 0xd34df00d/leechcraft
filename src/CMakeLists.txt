@@ -267,6 +267,7 @@ SET (TRANSLATIONS
 	leechcraft_uk_UA.ts
 	leechcraft_it.ts
 	leechcraft_ar.ts
+	leechcraft_eo.ts
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_ru_RU.qm
@@ -274,6 +275,7 @@ SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_uk_UA.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_it.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_ar.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_eo.qm
 	)
 
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
