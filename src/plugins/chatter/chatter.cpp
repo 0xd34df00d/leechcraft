@@ -47,7 +47,7 @@ QString Plugin::GetInfo () const
 
 QIcon Plugin::GetIcon () const
 {
-	return QIcon ();
+	return QIcon (":/fsirc/data/icon.svg");
 }
 
 QStringList Plugin::Provides () const
