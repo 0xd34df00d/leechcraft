@@ -243,6 +243,7 @@ SET (HEADERS
 	interfaces/ihaveshortcuts.h
 	interfaces/itoolbarembedder.h
 	interfaces/istartupwizard.h
+	interfaces/ipluginadaptor.h
 	interfaces/structures.h
 	)
 SET (FORMS

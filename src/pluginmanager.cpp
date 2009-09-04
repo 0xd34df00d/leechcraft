@@ -29,6 +29,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ipluginready.h>
+#include <interfaces/ipluginadaptor.h>
 #include <interfaces/ihaveshortcuts.h>
 #include "core.h"
 #include "pluginmanager.h"
@@ -543,6 +544,14 @@ void LeechCraft::PluginManager::CalculateDependencies ()
 			try
 			{
 				Roots_ << CalculateSingle (i);
+
+				IPluginAdaptor *ipa = qobject_cast<IPluginAdaptor*> ((*i)->instance ());
+				if (ipa)
+				{
+					QList<QObject*> plugins = ipa->GetPlugins ();
+					Q_FOREACH (QObject *child, plugins)
+						Roots_ << CalculateSingle (child, Plugins_.end ());
+				}
 			}
 			catch (...)
 			{
@@ -557,17 +566,9 @@ LeechCraft::PluginManager::DepTreeItem_ptr
 		(LeechCraft::PluginManager::PluginsContainer_t::iterator i)
 {
 	QObject *entity = (*i)->instance ();
-	DepTreeItem_ptr possibly = GetDependency (entity);
-	if (possibly)
-		return possibly;
-
-	IInfo *info = qobject_cast<IInfo*> (entity);
-	QStringList needs;
-	QStringList uses;
 	try
 	{
-		needs = info->Needs ();
-		uses = info->Uses ();
+		return CalculateSingle (entity, i);
 	}
 	catch (const std::exception& e)
 	{
@@ -587,6 +588,21 @@ LeechCraft::PluginManager::DepTreeItem_ptr
 		Unload (i);
 		throw;
 	}
+}
+
+LeechCraft::PluginManager::DepTreeItem_ptr
+	LeechCraft::PluginManager::CalculateSingle (QObject *entity,
+			LeechCraft::PluginManager::PluginsContainer_t::iterator pos)
+{
+	DepTreeItem_ptr possibly = GetDependency (entity);
+	if (possibly)
+		return possibly;
+
+	IInfo *info = qobject_cast<IInfo*> (entity);
+	QStringList needs;
+	QStringList uses;
+	needs = info->Needs ();
+	uses = info->Uses ();
 
 #ifdef QT_DEBUG
 	qDebug () << "new item" << info->GetName ();
@@ -601,13 +617,14 @@ LeechCraft::PluginManager::DepTreeItem_ptr
 				providers)
 		{
 			// It's initialized already.
-			if (p < i)
+			if (p < pos)
 			{
 				DepTreeItem_ptr depprov = GetDependency ((*p)->instance ());
+				// TODO register entity in depprov->Belongs_
 				if (depprov)
 					newDep->Needed_.insert (need, depprov);
 			}
-			else if (p > i)
+			else if (p > pos)
 				newDep->Needed_.insert (need, CalculateSingle (p));
 		}
 	}
@@ -619,13 +636,13 @@ LeechCraft::PluginManager::DepTreeItem_ptr
 				providers)
 		{
 			// It's initialized already.
-			if (p < i)
+			if (p < pos)
 			{
 				DepTreeItem_ptr depprov = GetDependency ((*p)->instance ());
 				if (depprov)
 					newDep->Used_.insert (use, depprov);
 			}
-			else if (p > i)
+			else if (p > pos)
 				newDep->Used_.insert (use, CalculateSingle (p));
 		}
 	}
@@ -639,13 +656,13 @@ LeechCraft::PluginManager::DepTreeItem_ptr
 				providers)
 		{
 			// It's initialized already.
-			if (p < i)
+			if (p < pos)
 			{
 				DepTreeItem_ptr depprov = GetDependency ((*p)->instance ());
 				if (depprov)
 					newDep->Used_.insert ("__lc_plugin2", depprov);
 			}
-			else if (p > i)
+			else if (p > pos)
 				newDep->Used_.insert ("__lc_plugin2", CalculateSingle (p));
 		}
 	}

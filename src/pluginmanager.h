@@ -134,7 +134,8 @@ namespace LeechCraft
 		/** Calculates the deps.
 		 */
 		void CalculateDependencies ();
-		DepTreeItem_ptr CalculateSingle (PluginsContainer_t::iterator i);
+		DepTreeItem_ptr CalculateSingle (PluginsContainer_t::iterator);
+		DepTreeItem_ptr CalculateSingle (QObject*, PluginsContainer_t::iterator);
 
 		/** Preinitializes the plugins, pushes second-level plugins to
 		 * first-level ones and calls IInfo::Init() on each one.
