@@ -119,6 +119,11 @@ QObject* CoreProxy::GetTreeViewReemitter () const
 	return TabContentsManager::Instance ().GetReemitter ();
 }
 
+IPluginsManager* CoreProxy::GetPluginsManager () const
+{
+	return Core::Instance ().GetPluginManager ();
+}
+
 #define LC_DEFINE_REGISTER(a) \
 void CoreProxy::RegisterHook (LeechCraft::HookSignature<LeechCraft::a>::Signature_t functor) \
 { \

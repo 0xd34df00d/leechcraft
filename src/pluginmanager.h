@@ -24,13 +24,16 @@
 #include <QMultiMap>
 #include <QStringList>
 #include <QPluginLoader>
+#include "interfaces/iinfo.h"
 
 namespace LeechCraft
 {
 	class MainWindow;
 	class PluginManager : public QAbstractItemModel
+						, public IPluginsManager
 	{
 		Q_OBJECT
+		Q_INTERFACES (IPluginsManager);
 
 		struct DepTreeItem;
 		typedef boost::shared_ptr<DepTreeItem> DepTreeItem_ptr;
@@ -87,6 +90,7 @@ namespace LeechCraft
 		void Release ();
 		QString Name (const Size_t& pos) const;
 		QString Info (const Size_t& pos) const;
+
 		QObjectList GetAllPlugins () const;
 
 		template<typename T> QList<T> GetAllCastableTo () const

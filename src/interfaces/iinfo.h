@@ -200,6 +200,23 @@ public:
 	virtual ~ITagsManager () {}
 };
 
+class IPluginsManager
+{
+public:
+	virtual QObjectList GetAllPlugins () const = 0;
+
+	template<typename T> QObjectList Filter (QObjectList source) const
+	{
+		QObjectList result;
+		Q_FOREACH (QObject *sp, source)
+			if (qobject_cast<T> (sp))
+				result << sp;
+		return result;
+	}
+
+	virtual ~IPluginsManager () {}
+};
+
 /** @brief Proxy class for the communication with LeechCraft.
  *
  * Allows to talk with LeechCraft, requesting and getting various
@@ -272,6 +289,10 @@ public:
 	 * active QTreeView.
 	 */
 	virtual QObject* GetTreeViewReemitter () const = 0;
+
+	/** @brief Returns the application's plugin manager.
+	 */
+	virtual IPluginsManager* GetPluginsManager () const = 0;
 
 #define LC_DEFINE_REGISTER(a) virtual void RegisterHook (LeechCraft::HookSignature<LeechCraft::a>::Signature_t) = 0;
 #define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))
@@ -463,6 +484,7 @@ public:
 Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
 Q_DECLARE_INTERFACE (ICoreProxy, "org.Deviant.LeechCraft.ICoreProxy/1.0");
 Q_DECLARE_INTERFACE (ITagsManager, "org.Deviant.LeechCraft.ITagsManager/1.0");
+Q_DECLARE_INTERFACE (IPluginsManager, "org.Deviant.LeechCraft.IPluginsManager/1.0");
 
 #endif
 
