@@ -54,6 +54,10 @@
 					<label lang="en" value="Local storage database" />
 					<label lang="ru" value="Локальное хранилище" />
 				</item>
+				<item type="checkbox" property="StoreLocalLinkHistory" state="on">
+					<label lang="en" value="Store local link history" />
+					<label lang="ru" value="Хранить локальную историю ссылок" />
+				</item>
 				<item type="spinbox" property="HistoryClearOlderThan" minimum="0" maximum="10000" default="30">
 					<lang value="en">
 						<label value="Clear history items older than:" />

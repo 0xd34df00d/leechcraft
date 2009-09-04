@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "linkhistory.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -31,12 +32,20 @@ namespace LeechCraft
 			
 			void LinkHistory::addHistoryEntry (const QString& url)
 			{
+				if (!XmlSettingsManager::Instance ()->
+						property ("StoreLocalLinkHistory").toBool ())
+					return;
+
 				if (!History_.contains (url))
 					History_ << url;
 			}
 			
 			bool LinkHistory::historyContains (const QString& url) const
 			{
+				if (!XmlSettingsManager::Instance ()->
+						property ("StoreLocalLinkHistory").toBool ())
+					return false;
+
 				if (History_.contains (url))
 					return true;
 				return false;
