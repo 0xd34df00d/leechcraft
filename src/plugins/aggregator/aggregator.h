@@ -119,6 +119,7 @@ namespace LeechCraft
 				void currentChannelChanged ();
 				void unreadNumberChanged (int);
 				void trayIconActivated ();
+				void constructInterface ();
 			signals:
 				void downloadFinished (const QString&);
 				void gotEntity (const LeechCraft::DownloadEntity&);

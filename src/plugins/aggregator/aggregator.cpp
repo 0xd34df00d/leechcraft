@@ -318,9 +318,8 @@ namespace LeechCraft
 				return QStringList ("webbrowser");
 			}
 			
-			void Aggregator::SetProvider (QObject* object, const QString& feature)
+			void Aggregator::SetProvider (QObject*, const QString&)
 			{
-				Core::Instance ().SetProvider (object, feature);
 			}
 			
 			QIcon Aggregator::GetIcon () const

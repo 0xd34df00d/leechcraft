@@ -296,11 +296,6 @@ namespace LeechCraft
 				return true;
 			}
 			
-			void Core::SetProvider (QObject *provider, const QString& feature)
-			{
-				Providers_ [feature] = provider;
-			}
-			
 			void Core::AddFeed (const QString& url, const QStringList& tags)
 			{
 				feeds_urls_t feeds;
@@ -412,7 +407,11 @@ namespace LeechCraft
 			
 			IWebBrowser* Core::GetWebBrowser () const
 			{
-				return qobject_cast<IWebBrowser*> (Providers_ ["webbrowser"]);
+				IPluginsManager *pm = Proxy_->GetPluginsManager ();
+				QObjectList browsers = pm->Filter<IWebBrowser*> (pm->GetAllPlugins ());
+				return browsers.size () ?
+					qobject_cast<IWebBrowser*> (browsers.at (0)) :
+					0;
 			}
 			
 			void Core::MarkItemAsUnread (const QModelIndex& i)
@@ -837,15 +836,11 @@ namespace LeechCraft
 			
 			QWebView* Core::CreateWindow ()
 			{
-				if (!Providers_.contains ("webbrowser"))
+				IWebBrowser *browser = GetWebBrowser ();
+				if (!browser)
 					return 0;
 			
-				QWebView *result;
-				QObject *provider = Providers_ ["webbrowser"];
-				QMetaObject::invokeMethod (provider,
-						"createWindow", Q_RETURN_ARG (QWebView*, result));
-			
-				return result;
+				return browser->CreateWindow ();
 			}
 			
 			void Core::GetChannels (channels_shorts_t& channels) const
@@ -961,19 +956,15 @@ namespace LeechCraft
 			
 			void Core::openLink (const QString& url)
 			{
-				if (!Providers_.contains ("webbrowser") ||
+				IWebBrowser *browser = GetWebBrowser ();
+				if (!browser ||
 						XmlSettingsManager::Instance ()->
 							property ("AlwaysUseExternalBrowser").toBool ())
 				{
 					QDesktopServices::openUrl (QUrl (url));
 					return;
 				}
-				IWebBrowser *browser = GetWebBrowser ();
-				if (!browser)
-				{
-					emit error (tr ("Provided web browser is wrong web browser."));
-					return;
-				}
+
 				browser->Open (url);
 			}
 			
