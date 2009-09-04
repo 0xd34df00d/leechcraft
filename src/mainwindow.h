@@ -67,6 +67,7 @@ namespace LeechCraft
 		bool IsShown_;
 		bool WasMaximized_;
 		QToolBar *CurrentToolBar_;
+		QString LanguageOnLoad_;
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
 		virtual ~MainWindow ();

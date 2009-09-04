@@ -194,6 +194,8 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	XmlSettingsManager::Instance ()->RegisterObject ("ShowMenuBarAsButton",
 			this, "handleShowMenuBarAsButton");
 
+	LanguageOnLoad_ = XmlSettingsManager::Instance ()->property ("Language").toString ();
+
 	QMenu *menu = new QMenu (this);
 	menu->addMenu (Ui_.MenuGeneral_);
 	menu->addMenu (Ui_.MenuTools_);
@@ -338,6 +340,10 @@ void LeechCraft::MainWindow::handleQuit ()
 
 void LeechCraft::MainWindow::handleLanguage ()
 {
+	if (LanguageOnLoad_ == XmlSettingsManager::Instance ()->
+			property ("Language").toString ())
+		return;
+
 	if (QMessageBox::question (this,
 				tr ("LeechCraft"),
 				tr ("This change requires restarting LeechCraft. "
