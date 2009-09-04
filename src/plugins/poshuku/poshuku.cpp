@@ -288,6 +288,11 @@ namespace LeechCraft
 			{
 				return Core::Instance ().GetWidget ();
 			}
+
+			QWebView* Poshuku::CreateWindow ()
+			{
+				return Core::Instance ().MakeWebView ();
+			}
 			
 			void Poshuku::SetShortcut (int name, const QKeySequence& sequence)
 			{
@@ -396,11 +401,6 @@ namespace LeechCraft
 						SIGNAL (stateChanged (int)),
 						this,
 						SLOT (updateHistoryFilter ()));
-			}
-			
-			QWebView* Poshuku::createWindow ()
-			{
-				return Core::Instance ().MakeWebView ();
 			}
 			
 			void Poshuku::on_HistoryView__activated (const QModelIndex& index)

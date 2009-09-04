@@ -61,6 +61,8 @@ public:
 	virtual QWidget* Widget () = 0;
 };
 
+class QWebView;
+
 /** @brief Base class for plugins that provide a web browser.
  */
 class IWebBrowser
@@ -80,6 +82,8 @@ public:
 	 * @return The IWebWidget.
 	 */
 	virtual IWebWidget* GetWidget () const = 0;
+
+	virtual QWebView* CreateWindow () = 0;
 
 	virtual ~IWebBrowser () {}
 };

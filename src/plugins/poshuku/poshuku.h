@@ -92,6 +92,7 @@ namespace LeechCraft
 
 				void Open (const QString&);
 				IWebWidget* GetWidget () const;
+				QWebView* CreateWindow ();
 
 				void SetShortcut (int, const QKeySequence&);
 				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
@@ -99,8 +100,6 @@ namespace LeechCraft
 				void RegisterSettings ();
 				void SetupFavoritesFilter ();
 				void SetupHistoryFilter ();
-			public slots:
-				QWebView* createWindow ();
 			private slots:
 				void on_HistoryView__activated (const QModelIndex&);
 				void on_FavoritesView__activated (const QModelIndex&);
