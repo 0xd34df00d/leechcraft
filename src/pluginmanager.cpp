@@ -214,7 +214,7 @@ bool LeechCraft::PluginManager::setData (const QModelIndex& index,
 
 LeechCraft::PluginManager::Size_t LeechCraft::PluginManager::GetSize () const
 {
-	return Plugins_.size ();
+	return AvailablePlugins_.size ();
 }
 
 void LeechCraft::PluginManager::Init ()
