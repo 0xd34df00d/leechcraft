@@ -81,8 +81,8 @@ namespace LeechCraft
 						case RoleSize:
 						case RoleProgress:
 							{
-								int result = static_cast<TreeItem*> (index.internalPointer ())->
-									Data (0, role).toInt ();
+								double result = static_cast<TreeItem*> (index.internalPointer ())->
+									Data (0, role).toDouble ();
 								if (result < 0)
 									result = 0;
 								return result;
