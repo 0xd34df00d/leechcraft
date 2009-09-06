@@ -100,8 +100,6 @@
     <property name="title">
      <string>Tools</string>
     </property>
-    <addaction name="ActionFullscreenMode_"/>
-    <addaction name="separator"/>
     <addaction name="ActionLogger_"/>
     <addaction name="separator"/>
     <addaction name="ActionPluginManager_"/>
@@ -114,7 +112,15 @@
     <addaction name="ActionAboutLeechCraft_"/>
     <addaction name="ActionAboutQt_"/>
    </widget>
+   <widget class="QMenu" name="MenuView_">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="ActionShowStatusBar_"/>
+    <addaction name="ActionFullscreenMode_"/>
+   </widget>
    <addaction name="MenuGeneral_"/>
+   <addaction name="MenuView_"/>
    <addaction name="MenuTools_"/>
    <addaction name="MenuHelp_"/>
   </widget>
@@ -193,6 +199,17 @@
    </property>
    <property name="ActionIcon" stdset="0">
     <string>menu</string>
+   </property>
+  </action>
+  <action name="ActionShowStatusBar_">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show status bar</string>
    </property>
   </action>
  </widget>

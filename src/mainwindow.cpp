@@ -90,14 +90,20 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	speedUpd->start ();
 	qApp->setQuitOnLastWindowClosed (false);
 
+    QToolBar *pluginsActionsBar = 0;
 	Q_FOREACH (QList<QAction*> list, Core::Instance ().GetActions2Embed ())
 	{
 		Q_FOREACH (QAction *act, list)
 			act->setParent (this);
 		if (list.size ())
 		{
-			Ui_.MainToolbar_->insertActions (Ui_.ActionPluginManager_, list);
-			Ui_.MainToolbar_->insertSeparator (Ui_.ActionPluginManager_);
+            if (!pluginsActionsBar)
+            {
+                pluginsActionsBar = new QToolBar (this);
+                addToolBar (Qt::LeftToolBarArea, pluginsActionsBar);
+            }
+			pluginsActionsBar->addActions (list);
+			pluginsActionsBar->addSeparator ();
 		}
 	}
 
@@ -173,6 +179,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	Ui_.ActionLogger_->setProperty ("ActionIcon", "logger");
 	Ui_.ActionFullscreenMode_->setProperty ("ActionIcon", "fullscreen");
 	Ui_.ActionFullscreenMode_->setParent (this);
+    Ui_.ActionShowStatusBar_->setProperty ("ActionIcon", "showstatusbar");
 
 	Ui_.MainTabWidget_->setTabIcon (0, QIcon (":/resources/images/leechcraft.svg"));
 
@@ -198,6 +205,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	QMenu *menu = new QMenu (this);
 	menu->addMenu (Ui_.MenuGeneral_);
+	menu->addMenu (Ui_.MenuView_);
 	menu->addMenu (Ui_.MenuTools_);
 	menu->addMenu (Ui_.MenuHelp_);
 	Ui_.ActionMenu_->setMenu (menu);
@@ -267,6 +275,10 @@ void LeechCraft::MainWindow::ReadSettings ()
 	WasMaximized_ = settings.value ("maximized").toBool ();
 	WasMaximized_ ? showMaximized () : showNormal ();
 	settings.endGroup ();
+    settings.beginGroup ("Window");
+    Ui_.ActionShowStatusBar_->setChecked (settings.value ("StatusBarEnabled", true).toBool ());
+    on_ActionShowStatusBar__triggered ();
+    settings.endGroup ();
 }
 
 void LeechCraft::MainWindow::WriteSettings ()
@@ -277,6 +289,9 @@ void LeechCraft::MainWindow::WriteSettings ()
 	settings.setValue ("pos",  pos ());
 	settings.setValue ("maximized", isMaximized ());
 	settings.endGroup ();
+    settings.beginGroup ("Window");
+    settings.setValue ("StatusBarEnabled", Ui_.ActionShowStatusBar_->isChecked ());
+    settings.endGroup ();
 }
 
 void LeechCraft::MainWindow::on_ActionAddTask__triggered ()
@@ -318,6 +333,11 @@ void LeechCraft::MainWindow::on_ActionQuit__triggered ()
 
 	setEnabled (false);
 	qApp->quit ();
+}
+
+void LeechCraft::MainWindow::on_ActionShowStatusBar__triggered ()
+{
+    statusBar ()->setVisible (Ui_.ActionShowStatusBar_->isChecked ());
 }
 
 void LeechCraft::MainWindow::handleQuit ()
@@ -530,6 +550,7 @@ void LeechCraft::MainWindow::doDelayedInit ()
 	iconMenu->addSeparator ();
 	QMenu *menu = iconMenu->addMenu (tr ("LeechCraft menu"));
 	menu->addMenu (Ui_.MenuGeneral_);
+	menu->addMenu (Ui_.MenuView_);
 	menu->addMenu (Ui_.MenuTools_);
 	menu->addMenu (Ui_.MenuHelp_);
 	iconMenu->addSeparator ();
