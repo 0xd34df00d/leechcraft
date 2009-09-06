@@ -198,7 +198,7 @@ namespace LeechCraft
 				if (StorageBackend_->UpdateFeedsStorage (XmlSettingsManager::Instance ()->
 						Property (strType + "FeedsTableVersion", feedsTable).toInt (),
 						feedsTable))
-					XmlSettingsManager::Instance ()->setProperty (strType + "FeedsTableVersion",
+					XmlSettingsManager::Instance ()->setProperty (qPrintable (strType + "FeedsTableVersion"),
 							feedsTable);
 				else
 					tablesOK = false;
@@ -206,7 +206,7 @@ namespace LeechCraft
 				if (StorageBackend_->UpdateChannelsStorage (XmlSettingsManager::Instance ()->
 						Property (strType + "ChannelsTableVersion", channelsTable).toInt (),
 						channelsTable))
-					XmlSettingsManager::Instance ()->setProperty (strType + "ChannelsTableVersion",
+					XmlSettingsManager::Instance ()->setProperty (qPrintable (strType + "ChannelsTableVersion"),
 							channelsTable);
 				else
 					tablesOK = false;
@@ -214,7 +214,7 @@ namespace LeechCraft
 				if (StorageBackend_->UpdateItemsStorage (XmlSettingsManager::Instance ()->
 						Property (strType + "ItemsTableVersion", itemsTable).toInt (),
 						itemsTable))
-					XmlSettingsManager::Instance ()->setProperty (strType + "ItemsTableVersion",
+					XmlSettingsManager::Instance ()->setProperty (qPrintable (strType + "ItemsTableVersion"),
 							itemsTable);
 				else
 					tablesOK = false;
