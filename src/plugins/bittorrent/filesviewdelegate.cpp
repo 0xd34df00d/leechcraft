@@ -159,8 +159,13 @@ namespace LeechCraft
 				}
 				else if (index.column () == 0)
 				{
-					model->setData (index,
-							qobject_cast<QLineEdit*> (editor)->text ());
+					QVariant oldData = static_cast<TreeItem*> (index.internalPointer ())->
+						Data (0, TorrentFilesModel::RawDataRole);
+					QString newText = qobject_cast<QLineEdit*> (editor)->text ();
+					if (oldData.toString () == newText)
+						return;
+
+					model->setData (index, newText);
 				}
 				else
 					QStyledItemDelegate::setModelData (editor, model, index);
