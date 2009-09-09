@@ -43,6 +43,7 @@ namespace LeechCraft
 			class InactiveWorkersFilter;
 			class WatchThread;
 			class TabManager;
+			class SummaryTab;
 
 			typedef boost::shared_ptr<CURLM> CURLM_ptr;
 			typedef boost::shared_ptr<CURLSH> CURLSH_ptr;
@@ -96,6 +97,8 @@ namespace LeechCraft
 						*ActionResume_,
 						*ActionDelete_;
 
+				SummaryTab *SummaryTab_;
+
 				enum Priority
 				{
 					PLow,
@@ -104,9 +107,16 @@ namespace LeechCraft
 
 				Core ();
 			public:
+				enum
+				{
+					RoleDownSpeedLimit = 200,
+					RoleUpSpeedLimit,
+					RoleLog
+				};
 				static Core& Instance ();
 				void Release ();
 				void SetCoreProxy (ICoreProxy_ptr);
+				ICoreProxy_ptr GetCoreProxy () const;
 
 				QAbstractItemModel* GetModel () const;
 				qint64 GetDownloadSpeed () const;
@@ -118,6 +128,7 @@ namespace LeechCraft
 				QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
 				QModelIndex parent (const QModelIndex&) const;
 				int rowCount (const QModelIndex& = QModelIndex ()) const;
+				bool setData (const QModelIndex&, const QVariant&, int);
 
 				QStringList Provides () const;
 				bool IsOK (const DownloadEntity&) const;

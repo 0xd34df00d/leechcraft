@@ -54,7 +54,9 @@ namespace LeechCraft
 					DLTotal_,
 					ULNow_,
 					ULTotal_,
-					InitialSize_;
+					InitialSize_,
+					DownLimit_,
+					UpLimit_;
 				QDateTime StartDT_;
 				TaskData Task_;
 			public:
@@ -96,6 +98,11 @@ namespace LeechCraft
 				void Abort ();
 				void Pause ();
 				void Resume ();
+				qint64 GetDownLimit () const;
+				qint64 GetUpLimit () const;
+				void SetDownLimit (qint64);
+				void SetUpLimit (qint64);
+				QString GetLog () const;
 			private:
 				void HandleTask (const TaskData&, CURL_ptr);
 				void ParseBuffer (const TaskData&);

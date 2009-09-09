@@ -33,6 +33,7 @@
 #include "xmlsettingsmanager.h"
 #include "watchthread.h"
 #include "tabmanager.h"
+#include "summarytab.h"
 
 namespace LeechCraft
 {
@@ -50,6 +51,7 @@ namespace LeechCraft
 			, NumScheduledWorkers_ (0)
 			, RunningHandles_ (0)
 			, Toolbar_ (new QToolBar ())
+			, SummaryTab_ (new SummaryTab ())
 			{
 				qRegisterMetaType<TaskData> ("TaskData");
 				qRegisterMetaTypeStreamOperators<TaskData> ("TaskData");
@@ -128,6 +130,16 @@ namespace LeechCraft
 			void Core::SetCoreProxy (ICoreProxy_ptr proxy)
 			{
 				Proxy_ = proxy;
+				connect (Proxy_->GetSelf (),
+						SIGNAL (currentViewChanged (QTreeView*)),
+						SummaryTab_,
+						SLOT (handleViewChanged (QTreeView*)));
+				SummaryTab_->handleViewChanged (proxy->GetCurrentView ());
+			}
+
+			ICoreProxy_ptr Core::GetCoreProxy () const
+			{
+				return Proxy_;
 			}
 
 			QAbstractItemModel* Core::GetModel () const
@@ -224,7 +236,28 @@ namespace LeechCraft
 				else if (role == RoleControls)
 					return QVariant::fromValue<QToolBar*> (Toolbar_);
 				else if (role == RoleAdditionalInfo)
-					return QVariant ();
+					return QVariant::fromValue<QWidget*> (SummaryTab_);
+				else if (role == RoleDownSpeedLimit)
+				{
+					if (r >= working)
+						return 0;
+					else
+						return Workers_.at (r)->GetDownLimit ();
+				}
+				else if (role == RoleUpSpeedLimit)
+				{
+					if (r >= working)
+						return 0;
+					else
+						return Workers_.at (r)->GetDownLimit ();
+				}
+				else if (role == RoleLog)
+				{
+					if (r >= working)
+						return 0;
+					else
+						return Workers_.at (r)->GetLog ();
+				}
 				else
 					return QVariant ();
 			}
@@ -251,6 +284,30 @@ namespace LeechCraft
 				result += Workers_.size ();
 				result += Tasks_.size ();
 				return result;
+			}
+
+			bool Core::setData (const QModelIndex& index, const QVariant& value, int role)
+			{
+				if (!index.isValid ())
+					return false;
+
+				int r = index.row ();
+				int working = Workers_.size ();
+				if (r >= working)
+					return false;
+
+				if (role == RoleDownSpeedLimit)
+				{
+					Workers_.at (r)->SetDownLimit (value.toInt ());
+					return true;
+				}
+				else if (role == RoleUpSpeedLimit)
+				{
+					Workers_.at (r)->SetUpLimit (value.toInt ());
+					return true;
+				}
+				else
+					return false;
 			}
 
 			QStringList Core::Provides () const

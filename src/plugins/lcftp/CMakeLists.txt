@@ -22,6 +22,7 @@ SET (SRCS
 	pane.cpp
 	tabwidget.cpp
 	tabmanager.cpp
+	summarytab.cpp
 	3dparty/ftpparse.c
 	)
 SET (HEADERS
@@ -35,11 +36,13 @@ SET (HEADERS
 	pane.h
 	tabwidget.h
 	tabmanager.h
+	summarytab.h
 	3dparty/ftpparse.h
 	)
 SET (FORMS
 	pane.ui
 	tabwidget.ui
+	summarytab.ui
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS

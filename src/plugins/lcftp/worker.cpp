@@ -103,6 +103,8 @@ namespace LeechCraft
 			, ULNow_ (0)
 			, ULTotal_ (0)
 			, InitialSize_ (0)
+			, DownLimit_ (-1)
+			, UpLimit_ (-1)
 			{
 				curl_easy_setopt (Handle_.get (),
 						CURLOPT_WRITEDATA, W_.get ());
@@ -227,11 +229,42 @@ namespace LeechCraft
 				Paused_ = false;
 			}
 
+			qint64 Worker::GetDownLimit () const
+			{
+				return DownLimit_;
+			}
+
+			qint64 Worker::GetUpLimit () const
+			{
+				return UpLimit_;
+			}
+
+			void Worker::SetDownLimit (qint64 limit)
+			{
+				DownLimit_ = limit;
+				curl_easy_setopt (Handle_.get (),
+						CURLOPT_MAX_RECV_SPEED_LARGE, limit);
+			}
+
+			void Worker::SetUpLimit (qint64 limit)
+			{
+				UpLimit_ = limit;
+				curl_easy_setopt (Handle_.get (),
+						CURLOPT_MAX_SEND_SPEED_LARGE, limit);
+			}
+			
+			QString Worker::GetLog () const
+			{
+				return QString ();
+			}
+
 			/** Sets up the libcurl handle to perform the task and
 			 * starts the task.
 			 */
 			void Worker::HandleTask (const TaskData& td, CURL_ptr handle)
 			{
+				SetDownLimit (-1);
+				SetUpLimit (-1);
 				curl_easy_setopt (handle.get (),
 						CURLOPT_URL, td.URL_.toEncoded ().constData ());
 				curl_easy_setopt (handle.get (),
