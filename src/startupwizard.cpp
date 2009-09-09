@@ -42,7 +42,7 @@ namespace LeechCraft
 		}
 
 		Q_FOREACH (QWizardPage *page, pages)
-				addPage (page);
+			addPage (page);
 
 		show ();
 	}
