@@ -56,6 +56,9 @@ namespace LeechCraft
 				qRegisterMetaType<TaskData> ("TaskData");
 				qRegisterMetaTypeStreamOperators<TaskData> ("TaskData");
 				qRegisterMetaType<FetchedEntry> ("FetchedEntry");
+				qRegisterMetaType<TaskData> ("LeechCraft::Plugins::LCFTP::TaskData");
+				qRegisterMetaTypeStreamOperators<TaskData> ("LeechCraft::Plugins::LCFTP::TaskData");
+				qRegisterMetaType<FetchedEntry> ("LeechCraft::Plugins::LCFTP::FetchedEntry");
 
 				WorkersFilter_.reset (new InactiveWorkersFilter (this));
 
