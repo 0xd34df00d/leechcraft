@@ -294,6 +294,8 @@ public:
 	 */
 	virtual IPluginsManager* GetPluginsManager () const = 0;
 
+	virtual QObject* GetSelf () = 0;
+
 #define LC_DEFINE_REGISTER(a) virtual void RegisterHook (LeechCraft::HookSignature<LeechCraft::a>::Signature_t) = 0;
 #define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))
 #define LC_EXPANDER(Names) BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), LC_TRAVERSER, Names)

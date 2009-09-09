@@ -31,6 +31,10 @@ using namespace LeechCraft::Util;
 CoreProxy::CoreProxy (QObject *parent)
 : QObject (parent)
 {
+	connect (&TabContentsManager::Instance (),
+			SIGNAL (currentViewChanged (QTreeView*)),
+			this,
+			SIGNAL (currentViewChanged (QTreeView*)));
 }
 
 QNetworkAccessManager* CoreProxy::GetNetworkAccessManager () const
@@ -122,6 +126,11 @@ QObject* CoreProxy::GetTreeViewReemitter () const
 IPluginsManager* CoreProxy::GetPluginsManager () const
 {
 	return Core::Instance ().GetPluginManager ();
+}
+
+QObject* CoreProxy::GetSelf ()
+{
+	return this;
 }
 
 #define LC_DEFINE_REGISTER(a) \

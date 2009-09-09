@@ -47,6 +47,7 @@ namespace LeechCraft
 		void FreeID (int);
 		QObject* GetTreeViewReemitter () const;
 		IPluginsManager* GetPluginsManager () const;
+		QObject* GetSelf ();
 
 #define LC_DEFINE_REGISTER(a) void RegisterHook (LeechCraft::HookSignature<LeechCraft::a>::Signature_t);
 #define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))
@@ -55,6 +56,8 @@ namespace LeechCraft
 #undef LC_EXPANDER
 #undef LC_TRAVERSER
 #undef LC_DEFINE_REGISTER
+	signals:
+		void currentViewChanged (QTreeView*);
 	};
 };
 

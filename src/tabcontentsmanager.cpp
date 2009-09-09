@@ -29,6 +29,12 @@ namespace LeechCraft
 	TabContentsManager::TabContentsManager ()
 	: Reemitter_ (new ViewReemitter (this))
 	{
+		TabWidget *tw = Core::Instance ()
+			.GetReallyMainWindow ()->GetTabWidget ();
+		connect (tw,
+				SIGNAL (currentChanged (int)),
+				this,
+				SLOT (handleCurrentChanged ()));
 	}
 
 	TabContentsManager& TabContentsManager::Instance ()
@@ -186,6 +192,15 @@ namespace LeechCraft
 		else
 			emit changeTabName (static_cast<QWidget*> (sender ()),
 					query);
+	}
+
+	void TabContentsManager::handleCurrentChanged ()
+	{
+		TabContents *tc = TabContentsManager::Instance ().GetCurrent ();
+		QTreeView *nv = 0;
+		if (tc)
+			nv = tc->GetUi ().PluginsTasksTree_;
+		emit currentViewChanged (nv);
 	}
 };
 

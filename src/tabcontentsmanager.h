@@ -22,6 +22,8 @@
 #include <QIcon>
 #include <QList>
 
+class QTreeView;
+
 namespace LeechCraft
 {
 	class TabContents;
@@ -54,6 +56,7 @@ namespace LeechCraft
 	private slots:
 		void handleFilterUpdated ();
 		void handleQueryUpdated (const QString&);
+		void handleCurrentChanged ();
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
@@ -62,6 +65,7 @@ namespace LeechCraft
 		void changeTooltip (QWidget*, QWidget*);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
+		void currentViewChanged (QTreeView*);
 	};
 };
 
