@@ -67,10 +67,6 @@
 				<label lang="en" value="Store" />
 				<label lang="ru" value="Хранение" />
 				<label lang="uk" value="Зберігання" />
-				<item type="checkbox" property="NeverRemoveUnread" default="off">
-					<label lang="en" value="Never remove unread items on update" />
-					<label lang="ru" value="Не удалять непрочитанные сообщения при обновлении" />
-				</item>
 				<item type="spinbox" property="ItemsPerChannel" default="1000" minimum="20" maximum="10000" step="50">
 					<label lang="en" value="Items per channel:" />
 					<label lang="ru" value="Статей в канале:" />
