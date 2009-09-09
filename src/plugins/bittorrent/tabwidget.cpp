@@ -83,7 +83,7 @@ namespace LeechCraft
                         SLOT (currentFileChanged (const QModelIndex&)));
 
                 currentFileChanged (QModelIndex ());
-				
+
 				connect (Ui_.WebSeedsView_->selectionModel (),
 						SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
 						this,
@@ -527,6 +527,7 @@ namespace LeechCraft
 				else
 				{
 					Core::Instance ()->UpdateFiles ();
+                    currentFileChanged (Ui_.FilesView_->selectionModel ()->currentIndex ());
 					Ui_.FilesView_->expandAll ();
 				}
 			}
@@ -602,84 +603,85 @@ namespace LeechCraft
 						GetTagsManager ()->Split (Ui_.TorrentTags_->text ()));
 			}
 
-            void TabWidget::currentFileChanged (const QModelIndex& index)
-            {
-                Ui_.FilePriorityRegulator_->setEnabled (index.isValid ());
+			void TabWidget::currentFileChanged (const QModelIndex& index)
+			{
+				Ui_.FilePriorityRegulator_->setEnabled (index.isValid ());
 
-                if (!index.isValid ())
-                {
-                    Ui_.FilePath_->setText ("");
-                    Ui_.FileProgress_->setText ("");
-                    Ui_.FilePriorityRegulator_->blockSignals (true);
-                    Ui_.FilePriorityRegulator_->setValue (0);
-                    Ui_.FilePriorityRegulator_->blockSignals (false);
-                }
-                else if (index.model ()->rowCount (index))
-                {
-                    Ui_.FilePath_->setText ("");
-                    Ui_.FileProgress_->setText ("");
-                    Ui_.FilePriorityRegulator_->blockSignals (true);
-                    Ui_.FilePriorityRegulator_->setValue (1);
-                    Ui_.FilePriorityRegulator_->blockSignals (false);
-                }
-                else
-                {
-					QVariant path = static_cast<TreeItem*> (index.internalPointer ())->
+				if (!index.isValid ())
+				{
+					Ui_.FilePath_->setText ("");
+					Ui_.FileProgress_->setText ("");
+					Ui_.FilePriorityRegulator_->blockSignals (true);
+					Ui_.FilePriorityRegulator_->setValue (0);
+					Ui_.FilePriorityRegulator_->blockSignals (false);
+				}
+				else
+				{
+					QString path = static_cast<TreeItem*> (index.internalPointer ())->
 						Data (TorrentFilesModel::ColumnPath,
-                                TorrentFilesModel::RawDataRole);
-                    Ui_.FilePath_->setText (path.toString ());
+								TorrentFilesModel::RawDataRole).toString ();
+					path = QApplication::fontMetrics ()
+						.elidedText (path,
+								Qt::ElideLeft,
+								Ui_.FilePath_->width ());
+					Ui_.FilePath_->setText (path);
 
-                    QModelIndex sindex = index.sibling (index.row (),
-                            TorrentFilesModel::ColumnProgress);
+					QModelIndex sindex = index.sibling (index.row (),
+							TorrentFilesModel::ColumnProgress);
 					double progress = sindex.data (TorrentFilesModel::RoleProgress).toDouble ();
 					int size = sindex.data (TorrentFilesModel::RoleSize).toInt ();
 					int done = progress * size;
-                    Ui_.FileProgress_->setText (tr ("%1% (%2 of %3)")
-                            .arg (progress * 100, 1, 'g')
-                            .arg (Util::Proxy::Instance ()->MakePrettySize (done))
-                            .arg (Util::Proxy::Instance ()->MakePrettySize (size)));
+					Ui_.FileProgress_->setText (tr ("%1% (%2 of %3)")
+							.arg (progress * 100, 0, 'f', 1)
+							.arg (Util::Proxy::Instance ()->MakePrettySize (done))
+							.arg (Util::Proxy::Instance ()->MakePrettySize (size)));
 
-                    QModelIndex prindex = index.sibling (index.row (),
-                            TorrentFilesModel::ColumnPriority);
-					int priority = prindex.data ().toInt ();
-                    Ui_.FilePriorityRegulator_->blockSignals (true);
-                    Ui_.FilePriorityRegulator_->setValue (priority);
-                    Ui_.FilePriorityRegulator_->blockSignals (false);
-                }
-            }
+					Ui_.FilePriorityRegulator_->blockSignals (true);
+					if (index.model ()->rowCount (index))
+						Ui_.FilePriorityRegulator_->setValue (1);
+					else
+					{
+						QModelIndex prindex = index.sibling (index.row (),
+								TorrentFilesModel::ColumnPriority);
+						int priority = prindex.data ().toInt ();
+						Ui_.FilePriorityRegulator_->setValue (priority);
+					}
+					Ui_.FilePriorityRegulator_->blockSignals (false);
+				}
+			}
 
-            void TabWidget::on_FilePriorityRegulator__valueChanged (int prio)
-            {
-                QModelIndex current = Ui_.FilesView_->selectionModel ()->currentIndex ();
+			void TabWidget::on_FilePriorityRegulator__valueChanged (int prio)
+			{
+				QModelIndex current = Ui_.FilesView_->selectionModel ()->currentIndex ();
 
-                QModelIndexList selected = Ui_.FilesView_->selectionModel ()->selectedRows ();
-                if (!selected.contains (current))
-                    selected.append (current);
+				QModelIndexList selected = Ui_.FilesView_->selectionModel ()->selectedRows ();
+				if (!selected.contains (current))
+					selected.append (current);
 
-                struct Applier
-                {
-                    Applier (const QModelIndexList& indexes, int prio)
-                    {
-                        Q_FOREACH (QModelIndex s, indexes)
-                        {
-                            int rows = s.model ()->rowCount (s);
-                            if (rows)
-                            {
-                                QModelIndexList childs;
-                                for (int i = 0; i < rows; ++i)
-                                    childs.append (s.child (i, TorrentFilesModel::ColumnPriority));
-                                Applier (childs, prio);
-                            }
-                            else
-                                Core::Instance ()->GetTorrentFilesModel ()->
-                                    setData (s.sibling (s.row (),
-                                            TorrentFilesModel::ColumnPriority), prio);
-                        }
-                    }
-                }
+				struct Applier
+				{
+					Applier (const QModelIndexList& indexes, int prio)
+					{
+						Q_FOREACH (QModelIndex s, indexes)
+						{
+							int rows = s.model ()->rowCount (s);
+							if (rows)
+							{
+								QModelIndexList childs;
+								for (int i = 0; i < rows; ++i)
+									childs.append (s.child (i, TorrentFilesModel::ColumnPriority));
+								Applier (childs, prio);
+							}
+							else
+								Core::Instance ()->GetTorrentFilesModel ()->
+									setData (s.sibling (s.row (),
+											TorrentFilesModel::ColumnPriority), prio);
+						}
+					}
+				}
 
-                Applier (selected, prio);
-            }
+				Applier (selected, prio);
+			}
 
 			void TabWidget::setTabWidgetSettings ()
 			{

@@ -369,6 +369,10 @@ namespace LeechCraft
 					item->ModifyData (ColumnPath, static_cast<qulonglong> (fi.Size_), RoleSize);
 					item->ModifyData (ColumnPath, fi.Progress_, RoleProgress);
 				}
+
+				for (int i = 0; i < RootItem_->ChildCount (); ++i)
+					UpdateSizeGraph (RootItem_->Child (i));
+
 				emit dataChanged (index (0, 2), index (RootItem_->ChildCount () - 1, 2));
 			}
 			
@@ -447,6 +451,8 @@ namespace LeechCraft
 				TreeItem *item = new TreeItem (data, parent);
 				if (AdditionDialog_)
 					item->ModifyData (0, Qt::Checked, Qt::CheckStateRole);
+                item->ModifyData (0, QString::fromUtf8 (parentPath.string ().c_str ()), RawDataRole);
+                qDebug () << item->Data (0, RawDataRole);
 				parent->AppendChild (item);
 				Path2TreeItem_ [parentPath] = item;
 			}
@@ -457,13 +463,18 @@ namespace LeechCraft
 					return;
 			
 				qulonglong size = 0;
+                qulonglong done = 0;
 				for (int i = 0; i < item->ChildCount (); ++i)
 				{
 					UpdateSizeGraph (item->Child (i));
-					size += item->Child (i)->Data (1, RawDataRole).value<qulonglong> ();
+                    qulonglong current = item->Child (i)->Data (1, RawDataRole).value<qulonglong> ();
+					size += current;
+                    done += item->Child (i)->Data (0, RoleProgress).toDouble () * current;
 				}
 				item->ModifyData (2, size, RawDataRole);
 				item->ModifyData (2, Proxy::Instance ()->MakePrettySize (size));
+                item->ModifyData (0, size, RoleSize);
+                item->ModifyData (0, static_cast<double> (done) / size, RoleProgress);
 			}
 		};
 	};

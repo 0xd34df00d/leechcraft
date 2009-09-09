@@ -73,8 +73,7 @@ namespace LeechCraft
 			void FilesViewDelegate::paint (QPainter *painter,
 					const QStyleOptionViewItem& option, const QModelIndex& index) const
 			{
-				if (index.column () != TorrentFilesModel::ColumnProgress ||
-                        HasChildren (index))
+				if (index.column () != TorrentFilesModel::ColumnProgress)
 				{
 					QStyledItemDelegate::paint (painter, option, index);
 					return;

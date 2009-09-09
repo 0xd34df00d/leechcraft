@@ -1559,13 +1559,13 @@
      </widget>
     </item>
     <item>
-     <widget class="QGroupBox" name="groupBox_5">
+     <widget class="QGroupBox" name="FileBox_">
       <property name="title">
        <string>File</string>
       </property>
       <layout class="QFormLayout" name="formLayout_11">
        <property name="fieldGrowthPolicy">
-        <enum>QFormLayout::ExpandingFieldsGrow</enum>
+        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
        </property>
        <item row="0" column="0">
         <widget class="QLabel" name="label_98">
