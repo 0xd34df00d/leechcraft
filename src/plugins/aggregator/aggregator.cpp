@@ -58,6 +58,7 @@
 #include "importbinary.h"
 #include "feedsettings.h"
 #include "jobholderrepresentation.h"
+#include "wizardgenerator.h"
 
 namespace LeechCraft
 {
@@ -423,6 +424,12 @@ namespace LeechCraft
 				_L (ActionImportBinary_);
 				_L (ActionExportBinary_);
 				return result;
+			}
+
+			QList<QWizardPage*> Aggregator::GetWizardPages () const
+			{
+				std::auto_ptr<WizardGenerator> wg (new WizardGenerator);
+				return wg->GetPages ();
 			}
 
 			QList<QAction*> Aggregator::GetActions () const

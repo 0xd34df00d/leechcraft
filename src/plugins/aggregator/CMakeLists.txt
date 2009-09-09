@@ -45,6 +45,8 @@ SET (SRCS
 	itemswidget.cpp
 	selectablebrowser.cpp
 	itemslistmodel.cpp
+	wizardgenerator.cpp
+	startupfirstpage.cpp
 	)
 SET (HEADERS
     aggregator.h
@@ -84,6 +86,8 @@ SET (HEADERS
 	itemswidget.h
 	selectablebrowser.h
 	itemslistmodel.h
+	wizardgenerator.h
+	startupfirstpage.h
 	)
 SET (FORMS
     mainwidget.ui
@@ -96,6 +100,7 @@ SET (FORMS
 	importbinary.ui
 	feedsettings.ui
 	itemswidget.ui
+	startupfirstpage.ui
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS

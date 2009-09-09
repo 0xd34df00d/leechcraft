@@ -30,6 +30,7 @@
 #include <interfaces/structures.h>
 #include <interfaces/itoolbarembedder.h>
 #include <interfaces/itraymenu.h>
+#include <interfaces/istartupwizard.h>
 
 class QSystemTrayIcon;
 class QTranslator;
@@ -55,10 +56,11 @@ namespace LeechCraft
 							 , public IEntityHandler
 							 , public IHaveShortcuts
 							 , public IToolBarEmbedder
+							 , public IStartupWizard
 							 , public ITrayMenu
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IEmbedTab IHaveSettings IJobHolder IEntityHandler IHaveShortcuts IToolBarEmbedder ITrayMenu)
+				Q_INTERFACES (IInfo IEmbedTab IHaveSettings IJobHolder IEntityHandler IHaveShortcuts IToolBarEmbedder IStartupWizard ITrayMenu)
 
 				Aggregator_Impl *Impl_;
 			public:
@@ -84,6 +86,8 @@ namespace LeechCraft
 
 				void SetShortcut (int, const QKeySequence&);
 				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
+
+				QList<QWizardPage*> GetWizardPages () const;
 
 				QList<QAction*> GetActions () const;
 
