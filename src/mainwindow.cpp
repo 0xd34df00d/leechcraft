@@ -71,8 +71,8 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			LogToolBox_,
 			SLOT (log (const QString&)));
 
-	TabContentsManager::Instance ().SetDefault (Ui_.SummaryContents_);
 	Core::Instance ().SetReallyMainWindow (this);
+	TabContentsManager::Instance ().SetDefault (Ui_.SummaryContents_);
 	Core::Instance ().DelayedInit ();
 
 	PluginManagerDialog_ = new PluginManagerDialog (this);
