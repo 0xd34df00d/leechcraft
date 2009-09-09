@@ -20,6 +20,8 @@
 #define PLUGINS_BITTORRENT_FILESVIEWDELEGATE_H
 #include <QStyledItemDelegate>
 
+class QTreeView;
+
 namespace LeechCraft
 {
 	namespace Plugins
@@ -29,8 +31,10 @@ namespace LeechCraft
 			class FilesViewDelegate : public QStyledItemDelegate
 			{
 				Q_OBJECT
+
+				QTreeView *View_;
 			public:
-				FilesViewDelegate (QObject *parent = 0);
+				FilesViewDelegate (QTreeView *parent = 0);
 				virtual ~FilesViewDelegate ();
 
 				virtual QWidget* createEditor (QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const;

@@ -20,6 +20,7 @@
 #include <QSpinBox>
 #include <QLineEdit>
 #include <QApplication>
+#include <QTreeView>
 #include <QtDebug>
 #include <plugininterface/proxy.h>
 #include <plugininterface/treeitem.h>
@@ -42,8 +43,9 @@ namespace LeechCraft
 
 			using LeechCraft::Util::TreeItem;
 			
-			FilesViewDelegate::FilesViewDelegate (QObject *parent)
+			FilesViewDelegate::FilesViewDelegate (QTreeView *parent)
 			: QStyledItemDelegate (parent)
+			, View_ (parent)
 			{
 			}
 			
@@ -54,14 +56,14 @@ namespace LeechCraft
 			QWidget* FilesViewDelegate::createEditor (QWidget *parent,
 					const QStyleOptionViewItem& option, const QModelIndex& index) const
 			{
-				if (index.column () == 1 &&
+				if (index.column () == TorrentFilesModel::ColumnPriority &&
 						!HasChildren (index))
 				{
 					QSpinBox *box = new QSpinBox (parent);
 					box->setRange (0, 7);
 					return box;
 				}
-				else if (index.column () == 0 &&
+				else if (index.column () == TorrentFilesModel::ColumnPath &&
 						!HasChildren (index))
 					return new QLineEdit (parent);
 				else
@@ -71,41 +73,13 @@ namespace LeechCraft
 			void FilesViewDelegate::paint (QPainter *painter,
 					const QStyleOptionViewItem& option, const QModelIndex& index) const
 			{
-				if (index.column () == 0 ||
-						HasChildren (index))
+				if (index.column () != TorrentFilesModel::ColumnProgress ||
+                        HasChildren (index))
 				{
 					QStyledItemDelegate::paint (painter, option, index);
 					return;
 				}
-
-				if (index.column () == 1)
-				{
-					QStyleOptionSpinBox sto = QStyleOptionSpinBox ();
-					sto.state = option.state;
-					sto.direction = QApplication::layoutDirection ();
-					sto.rect = option.rect;
-					sto.fontMetrics = QApplication::fontMetrics ();
-					sto.palette = QApplication::palette ();
-					sto.stepEnabled = QAbstractSpinBox::StepUpEnabled |
-						QAbstractSpinBox::StepDownEnabled;
-
-					QApplication::style ()->drawComplexControl (QStyle::CC_SpinBox,
-							&sto, painter);
-
-					int priority = index.data ().toInt ();
-					QRect subRect = QApplication::style ()->
-						subControlRect (QStyle::CC_SpinBox,
-								&sto,
-								QStyle::SC_SpinBoxEditField);
-
-					QApplication::style ()->drawItemText (painter,
-							subRect,
-							Qt::AlignRight,
-							sto.palette,
-							true,
-							QString::number (priority));
-				}
-				else if (index.column () == 2)
+                else
 				{
 					QStyleOptionProgressBar progressBarOption;
 					progressBarOption.state = QStyle::State_Enabled;
@@ -133,12 +107,12 @@ namespace LeechCraft
 			
 			void FilesViewDelegate::setEditorData (QWidget *editor, const QModelIndex& index) const
 			{
-				if (index.column () == 1 &&
+				if (index.column () == TorrentFilesModel::ColumnPriority &&
 						!HasChildren (index))
 					qobject_cast<QSpinBox*> (editor)->
 						setValue (static_cast<TreeItem*> (index.internalPointer ())->
 								Data (1).toInt ());
-				else if (index.column () == 0 &&
+				else if (index.column () == TorrentFilesModel::ColumnPath &&
 						!HasChildren (index))
 				{
 					QVariant data = static_cast<TreeItem*> (index.internalPointer ())->
@@ -152,12 +126,14 @@ namespace LeechCraft
 			void FilesViewDelegate::setModelData (QWidget *editor, QAbstractItemModel *model,
 					const QModelIndex& index) const
 			{
-				if (index.column () == 1)
+				if (index.column () == TorrentFilesModel::ColumnPriority)
 				{
 					int value = qobject_cast<QSpinBox*> (editor)->value ();
-					model->setData (index, value);
+					QModelIndexList sindexes = View_->selectionModel ()->selectedRows ();
+					Q_FOREACH (QModelIndex selected, sindexes)
+						model->setData (index.sibling (selected.row (), index.column ()), value);
 				}
-				else if (index.column () == 0)
+				else if (index.column () == TorrentFilesModel::ColumnPath)
 				{
 					QVariant oldData = static_cast<TreeItem*> (index.internalPointer ())->
 						Data (0, TorrentFilesModel::RawDataRole);

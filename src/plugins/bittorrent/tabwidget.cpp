@@ -20,6 +20,7 @@
 #include <QSortFilterProxyModel>
 #include <QUrl>
 #include <plugininterface/proxy.h>
+#include <plugininterface/treeitem.h>
 #include "core.h"
 #include "filesviewdelegate.h"
 #include "torrentfilesmodel.h"
@@ -58,7 +59,7 @@ namespace LeechCraft
 				Ui_.PiecesView_->setModel (Core::Instance ()->GetPiecesModel ());
 			
 				Ui_.FilesView_->setModel (Core::Instance ()->GetTorrentFilesModel ());
-				Ui_.FilesView_->setItemDelegate (new FilesViewDelegate (this));
+				Ui_.FilesView_->setItemDelegate (new FilesViewDelegate (Ui_.FilesView_));
 			
 				QSortFilterProxyModel *peersSorter = new QSortFilterProxyModel (this);
 				peersSorter->setDynamicSortFilter (true);
@@ -75,6 +76,13 @@ namespace LeechCraft
 						fm.width ("average.domain.name.of.a.tracker"));
 				header->resizeSection (1,
 						fm.width ("  BEP 99  "));
+
+                connect (Ui_.FilesView_->selectionModel (),
+                        SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
+                        this,
+                        SLOT (currentFileChanged (const QModelIndex&)));
+
+                currentFileChanged (QModelIndex ());
 				
 				connect (Ui_.WebSeedsView_->selectionModel (),
 						SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
@@ -593,6 +601,85 @@ namespace LeechCraft
 				Core::Instance ()->UpdateTags (Core::Instance ()->GetProxy ()->
 						GetTagsManager ()->Split (Ui_.TorrentTags_->text ()));
 			}
+
+            void TabWidget::currentFileChanged (const QModelIndex& index)
+            {
+                Ui_.FilePriorityRegulator_->setEnabled (index.isValid ());
+
+                if (!index.isValid ())
+                {
+                    Ui_.FilePath_->setText ("");
+                    Ui_.FileProgress_->setText ("");
+                    Ui_.FilePriorityRegulator_->blockSignals (true);
+                    Ui_.FilePriorityRegulator_->setValue (0);
+                    Ui_.FilePriorityRegulator_->blockSignals (false);
+                }
+                else if (index.model ()->rowCount (index))
+                {
+                    Ui_.FilePath_->setText ("");
+                    Ui_.FileProgress_->setText ("");
+                    Ui_.FilePriorityRegulator_->blockSignals (true);
+                    Ui_.FilePriorityRegulator_->setValue (1);
+                    Ui_.FilePriorityRegulator_->blockSignals (false);
+                }
+                else
+                {
+					QVariant path = static_cast<TreeItem*> (index.internalPointer ())->
+						Data (TorrentFilesModel::ColumnPath,
+                                TorrentFilesModel::RawDataRole);
+                    Ui_.FilePath_->setText (path.toString ());
+
+                    QModelIndex sindex = index.sibling (index.row (),
+                            TorrentFilesModel::ColumnProgress);
+					double progress = sindex.data (TorrentFilesModel::RoleProgress).toDouble ();
+					int size = sindex.data (TorrentFilesModel::RoleSize).toInt ();
+					int done = progress * size;
+                    Ui_.FileProgress_->setText (tr ("%1% (%2 of %3)")
+                            .arg (progress * 100, 1, 'g')
+                            .arg (Util::Proxy::Instance ()->MakePrettySize (done))
+                            .arg (Util::Proxy::Instance ()->MakePrettySize (size)));
+
+                    QModelIndex prindex = index.sibling (index.row (),
+                            TorrentFilesModel::ColumnPriority);
+					int priority = prindex.data ().toInt ();
+                    Ui_.FilePriorityRegulator_->blockSignals (true);
+                    Ui_.FilePriorityRegulator_->setValue (priority);
+                    Ui_.FilePriorityRegulator_->blockSignals (false);
+                }
+            }
+
+            void TabWidget::on_FilePriorityRegulator__valueChanged (int prio)
+            {
+                QModelIndex current = Ui_.FilesView_->selectionModel ()->currentIndex ();
+
+                QModelIndexList selected = Ui_.FilesView_->selectionModel ()->selectedRows ();
+                if (!selected.contains (current))
+                    selected.append (current);
+
+                struct Applier
+                {
+                    Applier (const QModelIndexList& indexes, int prio)
+                    {
+                        Q_FOREACH (QModelIndex s, indexes)
+                        {
+                            int rows = s.model ()->rowCount (s);
+                            if (rows)
+                            {
+                                QModelIndexList childs;
+                                for (int i = 0; i < rows; ++i)
+                                    childs.append (s.child (i, TorrentFilesModel::ColumnPriority));
+                                Applier (childs, prio);
+                            }
+                            else
+                                Core::Instance ()->GetTorrentFilesModel ()->
+                                    setData (s.sibling (s.row (),
+                                            TorrentFilesModel::ColumnPriority), prio);
+                        }
+                    }
+                }
+
+                Applier (selected, prio);
+            }
 
 			void TabWidget::setTabWidgetSettings ()
 			{

@@ -69,6 +69,8 @@ namespace LeechCraft
 				void on_UploadingTorrents__valueChanged (int);
 				void on_TorrentTags__editingFinished ();
 				void setTabWidgetSettings ();
+                void currentFileChanged (const QModelIndex&);
+                void on_FilePriorityRegulator__valueChanged (int);
 				void handleAddPeer ();
 				void handleAddWebSeed ();
 				void currentWebSeedChanged (const QModelIndex&);

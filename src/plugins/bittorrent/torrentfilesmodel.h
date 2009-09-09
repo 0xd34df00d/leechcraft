@@ -82,6 +82,12 @@ namespace LeechCraft
 					RoleSize,
 					RoleProgress
 				};
+                enum
+                {
+                    ColumnPath,
+                    ColumnPriority,
+                    ColumnProgress
+                };
 
 				TorrentFilesModel (bool, QObject *parent = 0);
 				virtual ~TorrentFilesModel ();

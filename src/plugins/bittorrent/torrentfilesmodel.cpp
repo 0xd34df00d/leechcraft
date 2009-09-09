@@ -365,9 +365,9 @@ namespace LeechCraft
 					}
 			
 					TreeItem *item = Path2TreeItem_ [fi.Path_];
-					item->ModifyData (2, QString::number (fi.Progress_, 'f', 3));
-					item->ModifyData (0, static_cast<qulonglong> (fi.Size_), RoleSize);
-					item->ModifyData (0, fi.Progress_, RoleProgress);
+					item->ModifyData (ColumnProgress, QString::number (fi.Progress_, 'f', 3));
+					item->ModifyData (ColumnPath, static_cast<qulonglong> (fi.Size_), RoleSize);
+					item->ModifyData (ColumnPath, fi.Progress_, RoleProgress);
 				}
 				emit dataChanged (index (0, 2), index (RootItem_->ChildCount () - 1, 2));
 			}
