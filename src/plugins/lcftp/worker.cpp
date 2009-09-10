@@ -212,7 +212,6 @@ namespace LeechCraft
 			{
 				if (File_)
 					File_->close ();
-				emit error (tr ("Aborted"), Task_);
 
 				IsWorking_ = false;
 			}
