@@ -73,6 +73,12 @@ namespace LeechCraft
 				}
 
 				Current_ = Core::Instance ().GetCoreProxy ()->MapToSource (current);
+				if (Current_.model () != Core::Instance ().GetModel ())
+				{
+					Current_ = QModelIndex ();
+					return;
+				}
+
 				Ui_.DownloadSpeed_->setValue (Core::Instance ().GetModel ()->
 						data (Current_, Core::RoleDownSpeedLimit).toInt () / 1024);
 				Ui_.UploadSpeed_->setValue (Core::Instance ().GetModel ()->
