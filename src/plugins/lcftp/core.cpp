@@ -1052,6 +1052,8 @@ namespace LeechCraft
 				}
 
 				Reschedule ();
+
+				SaveTasks ();
 			}
 		};
 	};
