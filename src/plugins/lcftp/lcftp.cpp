@@ -24,6 +24,10 @@
 #include "tabmanager.h"
 #include "xmlsettingsmanager.h"
 
+#ifdef AddJob
+#undef AddJob
+#endif
+
 namespace LeechCraft
 {
 	namespace Plugins
