@@ -40,6 +40,7 @@
 #include "debugmessagehandler.h"
 #include "tagsmanager.h"
 #include "mainwindow.h"
+#include "config.h"
 
 using namespace LeechCraft;
 
@@ -137,6 +138,7 @@ LeechCraft::Application::Application (int& argc, char **argv)
 
 	// Things are sane, prepare
     QCoreApplication::setApplicationName ("Leechcraft");
+	QCoreApplication::setApplicationVersion (LEECHCRAFT_VERSION);
     QCoreApplication::setOrganizationName ("Deviant");
 
 	Translator_.reset (LeechCraft::Util::InstallTranslator (""));
