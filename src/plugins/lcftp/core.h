@@ -163,7 +163,6 @@ namespace LeechCraft
 			private slots:
 				void handlePerform ();
 				void handleUpdateInterface ();
-				void handleThreadFinished ();
 				void handleTotalNumWorkersChanged ();
 				void handleWorkersPerDomainChanged ();
 				void handlePause ();
