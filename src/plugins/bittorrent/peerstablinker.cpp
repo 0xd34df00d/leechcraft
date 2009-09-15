@@ -143,7 +143,7 @@ namespace LeechCraft
 						.arg (Proxy::Instance ()->MakePrettySize (p.PI_->total_upload)));
 
 				if (p.PI_->downloading_piece_index >= 0)
-					Ui_->PeerProgress_->setText (tr ("%1 (piece %1, block %2, %3/%4)")
+					Ui_->PeerProgress_->setText (tr ("%1 (piece %2, block %3, %4/%5)")
 							.arg (p.PI_->progress)
 							.arg (p.PI_->downloading_piece_index)
 							.arg (p.PI_->downloading_block_index)
