@@ -3,7 +3,7 @@
 	<declare defaultlang="en" />
 	<page>
 		<label lang="en" value="Interface" />
-		<item type="checkbox" property="ShowTrayIcon" state="on">
+		<item type="checkbox" property="ShowTrayIcon" state="off">
 			<label lang="en" value="Show icon in tray" />
 			<label lang="ru" value="Показывать иконку в трее" />
 		</item>
