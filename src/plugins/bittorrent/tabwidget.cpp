@@ -473,7 +473,9 @@ namespace LeechCraft
 				Ui_.LabelComment_->
 					setText (QString::fromUtf8 (i->Info_->comment ().c_str ()));
 				Ui_.LabelPrivate_->
-					setText (i->Info_->priv () ? tr ("Yes") : tr ("No"));
+					setText (i->Info_->priv () ?
+							tr ("Yes") :
+							tr ("No"));
 				Ui_.LabelDHTNodesCount_->
 					setText (QString::number (i->Info_->nodes ().size ()));
 				Ui_.LabelFailed_->
@@ -496,7 +498,8 @@ namespace LeechCraft
 					setText (Proxy::Instance ()->MakePrettySize (i->Status_.block_size));
 				Ui_.LabelDistributedCopies_->
 					setText (i->Status_.distributed_copies == -1 ?
-						tr ("Not tracking") : QString::number (i->Status_.distributed_copies));
+						tr ("Not tracking") :
+						QString::number (i->Status_.distributed_copies));
 				Ui_.LabelRedundantData_->
 					setText (Proxy::Instance ()->MakePrettySize (i->Status_.total_redundant_bytes));
 				Ui_.LabelPeersInList_->
@@ -505,10 +508,12 @@ namespace LeechCraft
 					setText (QString::number (i->Status_.list_seeds));
 				Ui_.LabelPeersInSwarm_->
 					setText ((i->Status_.num_incomplete == -1 ?
-							tr ("Unknown") : QString::number (i->Status_.num_incomplete)));
+							tr ("Unknown") :
+							QString::number (i->Status_.num_incomplete)));
 				Ui_.LabelSeedsInSwarm_->
 					setText ((i->Status_.num_complete == -1 ?
-						  tr ("Unknown") : QString::number (i->Status_.num_complete)));
+						  tr ("Unknown") :
+						  QString::number (i->Status_.num_complete)));
 				Ui_.LabelConnectCandidates_->
 					setText (QString::number (i->Status_.connect_candidates));
 				Ui_.LabelUpBandwidthQueue_->
