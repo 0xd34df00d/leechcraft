@@ -714,7 +714,7 @@
 					<label lang="en" value="State change events" />
 					<label lang="ru" value="События изменения статуса" />
 				</item>
-				<item type="checkbox" property="NotificationProgress" default="on">
+				<item type="checkbox" property="NotificationProgress" default="off">
 					<label lang="en" value="Progress events" />
 					<label lang="ru" value="События хода торрентов" />
 				</item>
