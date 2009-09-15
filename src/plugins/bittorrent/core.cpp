@@ -441,7 +441,7 @@ namespace LeechCraft
 				if (!CheckValidity (row))
 					return QVariant ();
 			
-				libtorrent::torrent_handle h = Handles_.at (row).Handle_;
+				const libtorrent::torrent_handle& h = Handles_.at (row).Handle_;
 				libtorrent::torrent_status status = h.status ();
 			
 				switch (role)
@@ -592,7 +592,7 @@ namespace LeechCraft
 				if (!CheckValidity (CurrentTorrent_))
 					throw std::runtime_error ("Invalid torrent for stats");
 			
-				libtorrent::torrent_handle handle = Handles_.at (CurrentTorrent_).Handle_;
+				const libtorrent::torrent_handle& handle = Handles_.at (CurrentTorrent_).Handle_;
 			
 				std::auto_ptr<TorrentInfo> result (new TorrentInfo);
 				result->Info_.reset (new libtorrent::torrent_info (handle.get_torrent_info ()));
@@ -636,7 +636,7 @@ namespace LeechCraft
 			
 				for (size_t i = 0; i < peerInfos.size (); ++i)
 				{
-					libtorrent::peer_info pi = peerInfos [i];
+					const libtorrent::peer_info& pi = peerInfos [i];
 			
 					int interesting = 0;
 					for (size_t j = 0; j < localPieces.size (); ++j)
@@ -1653,7 +1653,7 @@ namespace LeechCraft
 					return QList<FileInfo> ();
 			
 				QList<FileInfo> result;
-				libtorrent::torrent_handle handle = Handles_.at (CurrentTorrent_).Handle_;
+				const libtorrent::torrent_handle& handle = Handles_.at (CurrentTorrent_).Handle_;
 				libtorrent::torrent_info info = handle.get_torrent_info ();
 				std::vector<libtorrent::size_type> prbytes;
 				
