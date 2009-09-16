@@ -62,6 +62,7 @@ OPTION (ENABLE_SEEKTHRU "Build SeekThru, the client for the OpenSearch-aware web
 OPTION (ENABLE_NETWORKMONITOR "Build NetworkMonitor, the monitor for HTTP requests" ON)
 OPTION (ENABLE_HISTORYHOLDER "Build HistoryHolder, the keeper of the history" ON)
 OPTION (ENABLE_CHATTER "Build Chatter, simple IRC client" ON)
+OPTION (ENABLE_YASD "Build YASD, Yet Another Site Downloader" ON)
 
 IF (ENABLE_TORRENT)
 	IF (RBTorrent_FOUND)
@@ -122,6 +123,10 @@ ENDIF (ENABLE_NETWORKMONITOR)
 IF (ENABLE_HISTORYHOLDER)
 	ADD_SUBDIRECTORY (plugins/historyholder)
 ENDIF (ENABLE_HISTORYHOLDER)
+
+IF (ENABLE_YASD)
+	ADD_SUBDIRECTORY (plugins/yasd)
+ENDIF (ENABLE_YASD)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
