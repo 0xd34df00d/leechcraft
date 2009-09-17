@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include <plugininterface/proxy.h>
 #include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
@@ -38,9 +38,8 @@ namespace LeechCraft
 			
 			QSettings* XmlSettingsManager::BeginSettings () const
 			{
-				QSettings *settings = new QSettings (
-						LeechCraft::Util::Proxy::Instance ()->GetOrganizationName (),
-						LeechCraft::Util::Proxy::Instance ()->GetApplicationName () + "_LCFTP");
+				QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_LCFTP");
 				return settings;
 			}
 			

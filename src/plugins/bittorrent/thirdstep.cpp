@@ -20,7 +20,7 @@
 #include <QFileInfo>
 #include <QDirIterator>
 #include <QtDebug>
-#include <plugininterface/proxy.h>
+#include <plugininterface/util.h>
 #include "thirdstep.h"
 #include "secondstep.h"
 #include "newtorrentwizard.h"
@@ -83,8 +83,7 @@ namespace LeechCraft
 			
 				NumPieces_->setText (QString::number (numPieces) +
 						tr (" pieces (%1)")
-						.arg (LeechCraft::Util::Proxy::Instance ()->
-							MakePrettySize (TotalSize_)));
+						.arg (LeechCraft::Util::MakePrettySize (TotalSize_)));
 			}
 			
 		};

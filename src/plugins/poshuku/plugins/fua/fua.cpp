@@ -20,8 +20,8 @@
 #include <QStandardItemModel>
 #include <QUrl>
 #include <QSettings>
+#include <QCoreApplication>
 #include <plugininterface/util.h>
-#include <plugininterface/proxy.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "settings.h"
 #include "xmlsettingsmanager.h"
@@ -61,8 +61,8 @@ void LeechCraft::Plugins::Poshuku::Plugins::Fua::FUA::Init (ICoreProxy_ptr)
 				<< tr ("Agent")
 				<< tr ("Identification string"));
 
-	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-			Proxy::Instance ()->GetApplicationName () + "_Poshuku_FUA");
+	QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Poshuku_FUA");
 	int size = settings.beginReadArray ("Fakes");
 	for (int i = 0; i < size; ++i)
 	{
@@ -150,8 +150,8 @@ QString FUA::OnUserAgentForUrl (const QWebPage*, const QUrl& url)
 
 void FUA::Save () const
 {
-	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-			Proxy::Instance ()->GetApplicationName () + "_Poshuku_FUA");
+	QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Poshuku_FUA");
 	settings.beginWriteArray ("Fakes");
 	settings.remove ("");
 	for (int i = 0; i < Model_->rowCount (); ++i)

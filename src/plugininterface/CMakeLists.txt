@@ -7,7 +7,6 @@ INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR}
 	..)
 
 SET (SRCS
-	proxy.cpp
 	tagscompleter.cpp
 	tagscompletionmodel.cpp
 	treeitem.cpp
@@ -23,7 +22,6 @@ SET (SRCS
 	structuresops.cpp
 	)
 SET (HEADERS
-	proxy.h
 	tagscompleter.h
 	tagscompletionmodel.h
 	treeitem.h

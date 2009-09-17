@@ -57,7 +57,6 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
-#include <plugininterface/proxy.h>
 #include <plugininterface/tagscompletionmodel.h>
 #include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
@@ -459,7 +458,7 @@ namespace LeechCraft
 									{
 										result = QString ("%1 (ETA: %2)")
 											.arg (result)
-											.arg (Proxy::Instance ()->MakeTimeFromLong
+											.arg (Util::MakeTimeFromLong
 													(
 													 static_cast<double> (status.total_wanted - status.total_wanted_done) /
 													 status.download_rate
@@ -470,12 +469,9 @@ namespace LeechCraft
 							case ColumnProgress:
 								return QString (tr ("%1% (%2 of %3 at %4)")
 										.arg (status.progress * 100, 0, 'f', 2)
-										.arg (Proxy::Instance ()->
-											MakePrettySize (status.total_wanted_done))
-										.arg (Proxy::Instance ()->
-											MakePrettySize (status.total_wanted)))
-										.arg (Proxy::Instance ()->
-												MakePrettySize (status.download_payload_rate) +
+										.arg (Util::MakePrettySize (status.total_wanted_done))
+										.arg (Util::MakePrettySize (status.total_wanted)))
+										.arg (Util::MakePrettySize (status.download_payload_rate) +
 												tr ("/s"));
 							default:
 								return QVariant ();
@@ -489,14 +485,14 @@ namespace LeechCraft
 							result += tr ("Progress:") + " " +
 								QString (tr ("%1% (%2 of %3)")
 										.arg (status.progress * 100, 0, 'f', 2)
-										.arg (Proxy::Instance ()->MakePrettySize (status.total_wanted_done))
-										.arg (Proxy::Instance ()->MakePrettySize (status.total_wanted))) +
+										.arg (Util::MakePrettySize (status.total_wanted_done))
+										.arg (Util::MakePrettySize (status.total_wanted))) +
 								tr ("; status:") + " " +
 								(status.paused ? tr ("Idle") : GetStringForState (status.state)) + "\n";
 							result += tr ("Downloading speed:") + " " +
-								Proxy::Instance ()->MakePrettySize (status.download_payload_rate) + tr ("/s") +
+								Util::MakePrettySize (status.download_payload_rate) + tr ("/s") +
 								tr ("; uploading speed:") + " " +
-								Proxy::Instance ()->MakePrettySize (status.upload_payload_rate) + tr ("/s") + "\n";
+								Util::MakePrettySize (status.upload_payload_rate) + tr ("/s") + "\n";
 							result += tr ("Peers/seeds: %1/%2").arg (status.num_peers).arg (status.num_seeds);
 							return result;
 						}
@@ -1728,8 +1724,8 @@ namespace LeechCraft
 			
 			void Core::RestoreTorrents ()
 			{
-				QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-						Proxy::Instance ()->GetApplicationName () + "_Torrent");
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_Torrent");
 				settings.beginGroup ("Core");
 				int torrents = settings.beginReadArray ("AddedTorrents");
 				for (int i = 0; i < torrents; ++i)
@@ -2060,8 +2056,8 @@ namespace LeechCraft
 						return;
 					}
 			
-				QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-						Proxy::Instance ()->GetApplicationName () + "_Torrent");
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_Torrent");
 				settings.beginGroup ("Core");
 				settings.beginWriteArray ("AddedTorrents");
 				settings.remove ("");

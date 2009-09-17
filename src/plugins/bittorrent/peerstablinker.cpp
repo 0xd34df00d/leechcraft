@@ -19,12 +19,11 @@
 #include "peerstablinker.h"
 #include <QTimer>
 #include <QSortFilterProxyModel>
-#include <plugininterface/proxy.h>
+#include <plugininterface/util.h>
 #include "ui_tabwidget.h"
 #include "core.h"
 #include "peersmodel.h"
 
-using LeechCraft::Util::Proxy;
 
 namespace LeechCraft
 {
@@ -124,23 +123,23 @@ namespace LeechCraft
 				Ui_->PeerPieces_->setPieceMap (p.PI_->pieces);
 
 				Ui_->PeerSpeed_->setText (tr ("%1/s | %2/s")
-						.arg (Proxy::Instance ()->MakePrettySize (p.PI_->down_speed))
-						.arg (Proxy::Instance ()->MakePrettySize (p.PI_->up_speed)));
+						.arg (Util::MakePrettySize (p.PI_->down_speed))
+						.arg (Util::MakePrettySize (p.PI_->up_speed)));
 
 				Ui_->PeerPayloadSpeed_->setText (tr ("%1/s | %2/s")
-						.arg (Proxy::Instance ()->MakePrettySize (p.PI_->payload_down_speed))
-						.arg (Proxy::Instance ()->MakePrettySize (p.PI_->payload_up_speed)));
+						.arg (Util::MakePrettySize (p.PI_->payload_down_speed))
+						.arg (Util::MakePrettySize (p.PI_->payload_up_speed)));
 
 				Ui_->PeerPeakSpeeds_->setText (tr ("%1/s | %2/s")
-						.arg (Proxy::Instance ()->MakePrettySize (p.PI_->download_rate_peak))
-						.arg (Proxy::Instance ()->MakePrettySize (p.PI_->upload_rate_peak)));
+						.arg (Util::MakePrettySize (p.PI_->download_rate_peak))
+						.arg (Util::MakePrettySize (p.PI_->upload_rate_peak)));
 
 				Ui_->PeerRemoteDLSpeed_->setText (tr ("%1/s")
-						.arg (Proxy::Instance ()->MakePrettySize (p.PI_->remote_dl_rate)));
+						.arg (Util::MakePrettySize (p.PI_->remote_dl_rate)));
 
 				Ui_->PeerDownloaded_->setText (tr ("%1 | %2")
-						.arg (Proxy::Instance ()->MakePrettySize (p.PI_->total_download))
-						.arg (Proxy::Instance ()->MakePrettySize (p.PI_->total_upload)));
+						.arg (Util::MakePrettySize (p.PI_->total_download))
+						.arg (Util::MakePrettySize (p.PI_->total_upload)));
 
 				if (p.PI_->downloading_piece_index >= 0)
 					Ui_->PeerProgress_->setText (tr ("%1 (piece %2, block %3, %4/%5)")
@@ -190,8 +189,7 @@ namespace LeechCraft
 
 				Ui_->PeerFailcount_->setText (QString::number (p.PI_->failcount));
 
-				Ui_->PeerPendingDisk_->setText (Proxy::Instance ()->
-						MakePrettySize (p.PI_->pending_disk_bytes));
+				Ui_->PeerPendingDisk_->setText (Util::MakePrettySize (p.PI_->pending_disk_bytes));
 
 				Ui_->PeerRTT_->setText (QString::number (p.PI_->rtt));
 			}

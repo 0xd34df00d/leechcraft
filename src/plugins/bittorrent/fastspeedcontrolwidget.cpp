@@ -19,7 +19,7 @@
 #include "fastspeedcontrolwidget.h"
 #include <QSettings>
 #include <QHBoxLayout>
-#include <plugininterface/proxy.h>
+#include <plugininterface/util.h>
 
 namespace LeechCraft
 {
@@ -37,8 +37,8 @@ namespace LeechCraft
 			
 			void FastSpeedControlWidget::LoadSettings ()
 			{
-				QSettings settings (Util::Proxy::Instance ()->GetOrganizationName (),
-						Util::Proxy::Instance ()->GetApplicationName () + "_Torrent");
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_Torrent");
 				settings.beginGroup ("FastSpeedControl");
 				int num = settings.beginReadArray ("Values");
 				if (!num)
@@ -63,8 +63,8 @@ namespace LeechCraft
 
 			void FastSpeedControlWidget::SaveSettings ()
 			{
-				QSettings settings (Util::Proxy::Instance ()->GetOrganizationName (),
-						Util::Proxy::Instance ()->GetApplicationName () + "_Torrent");
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_Torrent");
 				settings.beginGroup ("FastSpeedControl");
 				settings.remove ("");
 				settings.beginWriteArray ("Values");

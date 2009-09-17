@@ -25,7 +25,7 @@
 #include <QMessageBox>
 #include <QMainWindow>
 #include <QCryptographicHash>
-#include <plugininterface/proxy.h>
+#include <plugininterface/util.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ipluginready.h>
@@ -39,7 +39,6 @@
 
 using namespace LeechCraft;
 using LeechCraft::Util::MergeModel;
-using LeechCraft::Util::Proxy;
 
 LeechCraft::PluginManager::DepTreeItem::DepTreeItem ()
 : Plugin_ (0)
@@ -101,8 +100,8 @@ QVariant LeechCraft::PluginManager::data (const QModelIndex& index, int role) co
 			{
 				case Qt::DisplayRole:
 					{
-						QSettings settings (Util::Proxy::Instance ()->GetOrganizationName (),
-								Util::Proxy::Instance ()->GetApplicationName ());
+						QSettings settings (QCoreApplication::organizationName (),
+								QCoreApplication::applicationName ());
 						settings.beginGroup ("Plugins");
 						settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
 						QVariant result = settings.value ("Name");
@@ -112,8 +111,8 @@ QVariant LeechCraft::PluginManager::data (const QModelIndex& index, int role) co
 					}
 				case Qt::DecorationRole:
 					{
-						QSettings settings (Util::Proxy::Instance ()->GetOrganizationName (),
-								Util::Proxy::Instance ()->GetApplicationName ());
+						QSettings settings (QCoreApplication::organizationName (),
+								QCoreApplication::applicationName ());
 						settings.beginGroup ("Plugins");
 						settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
 						QVariant result = settings.value ("Icon");
@@ -123,8 +122,8 @@ QVariant LeechCraft::PluginManager::data (const QModelIndex& index, int role) co
 					}
 				case Qt::CheckStateRole:
 					{
-						QSettings settings (Util::Proxy::Instance ()->GetOrganizationName (),
-								Util::Proxy::Instance ()->GetApplicationName ());
+						QSettings settings (QCoreApplication::organizationName (),
+								QCoreApplication::applicationName ());
 						settings.beginGroup ("Plugins");
 						settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
 						bool result = settings.value ("AllowLoad", true).toBool ();
@@ -199,8 +198,8 @@ bool LeechCraft::PluginManager::setData (const QModelIndex& index,
 			role != Qt::CheckStateRole)
 		return false;
 
-	QSettings settings (Util::Proxy::Instance ()->GetOrganizationName (),
-			Util::Proxy::Instance ()->GetApplicationName ());
+	QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName ());
 	settings.beginGroup ("Plugins");
 	settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
 	settings.setValue ("AllowLoad", data.toBool ());
@@ -290,8 +289,8 @@ void LeechCraft::PluginManager::FindPlugins ()
 
 void LeechCraft::PluginManager::ScanDir (const QString& dir)
 {
-	QSettings settings (Util::Proxy::Instance ()->GetOrganizationName (),
-			Util::Proxy::Instance ()->GetApplicationName ());
+	QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName ());
 	settings.beginGroup ("Plugins");
 
 	QDir pluginsDir = QDir (dir);
@@ -316,8 +315,8 @@ void LeechCraft::PluginManager::ScanDir (const QString& dir)
 
 void LeechCraft::PluginManager::CheckPlugins ()
 {
-	QSettings settings (Util::Proxy::Instance ()->GetOrganizationName (),
-			Util::Proxy::Instance ()->GetApplicationName ());
+	QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName ());
 	settings.beginGroup ("Plugins");
 
 	for (int i = 0; i < Plugins_.size (); ++i)

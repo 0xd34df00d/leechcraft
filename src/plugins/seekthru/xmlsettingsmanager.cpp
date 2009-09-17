@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "xmlsettingsmanager.h"
-#include <plugininterface/proxy.h>
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
@@ -25,8 +25,6 @@ namespace LeechCraft
 	{
 		namespace SeekThru
 		{
-			using namespace LeechCraft::Util;
-			
 			XmlSettingsManager::XmlSettingsManager ()
 			{
 				BaseSettingsManager::Init ();
@@ -44,8 +42,8 @@ namespace LeechCraft
 			
 			QSettings* XmlSettingsManager::BeginSettings () const
 			{
-				QSettings *settings = new QSettings (Proxy::Instance ()->GetOrganizationName (),
-						Proxy::Instance ()->GetApplicationName () + "_SeekThru");
+				QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_SeekThru");
 				return settings;
 			}
 			

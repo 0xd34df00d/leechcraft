@@ -42,7 +42,6 @@
 #include <QLocalSocket>
 #include <QNetworkDiskCache>
 #include <plugininterface/util.h>
-#include <plugininterface/proxy.h>
 #include <plugininterface/customcookiejar.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>

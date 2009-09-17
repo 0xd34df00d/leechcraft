@@ -21,7 +21,7 @@
 #include <boost/functional/hash.hpp>
 #include <QtDebug>
 #include <plugininterface/treeitem.h>
-#include <plugininterface/proxy.h>
+#include <plugininterface/util.h>
 #include "core.h"
 
 using namespace LeechCraft::Util;
@@ -289,7 +289,7 @@ namespace LeechCraft
 			
 					QList<QVariant> displayData;
 					displayData << QString::fromUtf8 (begin->path.leaf ().c_str ())
-						<< Proxy::Instance ()->MakePrettySize (begin->size);
+						<< Util::MakePrettySize (begin->size);
 					
 					TreeItem *parentItem = Path2TreeItem_ [parentPath],
 							 *item = new TreeItem (displayData, parentItem);
@@ -472,7 +472,7 @@ namespace LeechCraft
                     done += item->Child (i)->Data (0, RoleProgress).toDouble () * current;
 				}
 				item->ModifyData (2, size, RawDataRole);
-				item->ModifyData (2, Proxy::Instance ()->MakePrettySize (size));
+				item->ModifyData (2, Util::MakePrettySize (size));
                 item->ModifyData (0, size, RoleSize);
                 item->ModifyData (0, static_cast<double> (done) / size, RoleProgress);
 			}

@@ -22,7 +22,8 @@
 #include <QTimer>
 #include <QVariant>
 #include <QtDebug>
-#include <plugininterface/proxy.h>
+#include <QCoreApplication>
+#include <plugininterface/util.h>
 #include "item.h"
 #include "core.h"
 
@@ -32,16 +33,14 @@ namespace LeechCraft
 	{
 		namespace Aggregator
 		{
-			using LeechCraft::Util::Proxy;
-			
 			ItemModel::ItemModel (QObject *parent)
 			: QAbstractItemModel (parent)
 			, SaveScheduled_ (false)
 			{
 				ItemHeaders_ << tr ("Name");
 			
-				QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-						Proxy::Instance ()->GetApplicationName () + "_Aggregator");
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_Aggregator");
 				int numItems = settings.beginReadArray ("ItemBucket");
 				for (int i = 0; i < numItems; ++i)
 				{
@@ -158,7 +157,8 @@ namespace LeechCraft
 			
 			void ItemModel::saveSettings ()
 			{
-				QSettings settings (Proxy::Instance ()->GetOrganizationName (), Proxy::Instance ()->GetApplicationName () + "_Aggregator");
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_Aggregator");
 				settings.beginWriteArray ("ItemBucket");
 				settings.remove ("");
 				for (size_t i = 0; i < Items_.size (); ++i)

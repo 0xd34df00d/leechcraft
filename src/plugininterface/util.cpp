@@ -25,16 +25,62 @@
 #include <QFile>
 #include <QDir>
 #include <QTemporaryFile>
+#include <QTime>
 #include <QSettings>
 #include <QtDebug>
-#include "proxy.h"
+
+QString LeechCraft::Util::MakePrettySize (qint64 sourcesize)
+{
+	int strNum = 0;
+	long double size = sourcesize;
+	if (size >= 1024)
+	{
+		strNum = 1;
+		size /= 1024;
+	}
+	if (size >= 1024)
+	{
+		strNum = 2;
+		size /= 1024;
+	}
+	if (size >= 1024)
+	{
+		strNum = 3;
+		size /= 1024;
+	}
+
+	switch (strNum)
+	{
+		case 0:
+			return QString::number (size, 'f', 1) + QObject::tr (" b");
+		case 1:
+			return QString::number (size, 'f', 1) + QObject::tr (" KiB");
+		case 2:
+			return QString::number (size, 'f', 1) + QObject::tr (" MiB");
+		case 3:
+			return QString::number (size, 'f', 1) + QObject::tr (" GiB");
+		default:
+			return "unknown";
+	}
+}
+
+QString LeechCraft::Util::MakeTimeFromLong (ulong time)
+{
+	int d = time / 86400;
+	time -= d * 86400;
+	QString result;
+	if (d)
+		result += QObject::tr ("%n day(s), ", "", d);
+	result += QTime (0, 0, 0).addSecs (time).toString ();
+	return result;
+}
 
 QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName,
 		const QString& prefix,
 		const QString& appName)
 {
-	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-			Proxy::Instance ()->GetApplicationName ());
+	QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName ());
 	QString localeName = settings.value ("Language", "system").toString ();
 
 	if (localeName == "system")

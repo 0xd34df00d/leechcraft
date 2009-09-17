@@ -22,7 +22,6 @@
 #include <QVariant>
 #include <QAction>
 #include <QtDebug>
-#include <plugininterface/proxy.h>
 #include <plugininterface/treeitem.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"

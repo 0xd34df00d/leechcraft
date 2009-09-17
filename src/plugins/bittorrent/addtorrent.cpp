@@ -19,7 +19,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <QHeaderView>
 #include <QFileDialog>
-#include <plugininterface/proxy.h>
+#include <plugininterface/util.h>
 #include "addtorrent.h"
 #include "torrentfilesmodel.h"
 #include "xmlsettingsmanager.h"
@@ -190,7 +190,7 @@ namespace LeechCraft
 				if (!info.is_valid ())
 					return;
 				TrackerURL_->setText (QString::fromStdString (info.trackers ().at (0).url));
-				Size_->setText (Util::Proxy::Instance ()->MakePrettySize (info.total_size ()));
+				Size_->setText (Util::MakePrettySize (info.total_size ()));
 				QString creator = QString::fromStdString (info.creator ()),
 						comment = QString::fromStdString (info.comment ());
 				QString date = QString::fromStdString (boost::posix_time::to_simple_string (info.creation_date ().get ()));

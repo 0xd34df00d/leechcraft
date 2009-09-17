@@ -26,9 +26,9 @@
 #include <QSettings>
 #include <QTextCodec>
 #include <QInputDialog>
+#include <QCoreApplication>
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
-#include <plugininterface/proxy.h>
 #include <plugininterface/util.h>
 #include "findproxy.h"
 
@@ -38,8 +38,6 @@ namespace LeechCraft
 	{
 		namespace SeekThru
 		{
-			using LeechCraft::Util::Proxy;
-			
 			const QString Core::OS_ = "http://a9.com/-/spec/opensearch/1.1/";
 			
 			Core::Core ()
@@ -497,8 +495,8 @@ namespace LeechCraft
 			
 			void Core::ReadSettings ()
 			{
-				QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-						Proxy::Instance ()->GetApplicationName () + "_SeekThru");
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_SeekThru");
 				int size = settings.beginReadArray ("Descriptions");
 				for (int i = 0; i < size; ++i)
 				{
@@ -510,8 +508,8 @@ namespace LeechCraft
 			
 			void Core::WriteSettings ()
 			{
-				QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-						Proxy::Instance ()->GetApplicationName () + "_SeekThru");
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_SeekThru");
 				settings.beginWriteArray ("Descriptions");
 				for (int i = 0; i < Descriptions_.size (); ++i)
 				{

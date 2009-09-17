@@ -25,7 +25,6 @@
 #include <QNetworkProxy>
 #include <QSettings>
 #include <plugininterface/util.h>
-#include <plugininterface/proxy.h>
 #include <plugininterface/customcookiejar.h>
 #include "core.h"
 #include "networkdiskcache.h"
@@ -166,8 +165,8 @@ void LeechCraft::NetworkAccessManager::handleAuthentication (const QNetworkProxy
 void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 		const QList<QSslError>& errors)
 {
-	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-			Proxy::Instance ()->GetApplicationName ());
+	QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName ());
 	settings.beginGroup ("SSL exceptions");
 	QStringList keys = settings.allKeys ();
 	if (keys.contains (reply->url ().toString ())) 

@@ -23,10 +23,11 @@
 #include <QSize>
 #include <QPixmap>
 #include <QFileIconProvider>
+#include <QDateTime>
 #include <QApplication>
 #include <QStyle>
 #include <QtDebug>
-#include <plugininterface/proxy.h>
+#include <plugininterface/util.h>
 
 namespace LeechCraft
 {
@@ -181,7 +182,7 @@ namespace LeechCraft
 										).toEncoded ());
 							QString size;
 							if (entry.isFile ())
-								size = Util::Proxy::Instance ()->MakePrettySize (entry.size ());
+								size = Util::MakePrettySize (entry.size ());
 							QString modified = entry.lastModified ()
 								.toString (Qt::SystemLocaleShortDate);
 

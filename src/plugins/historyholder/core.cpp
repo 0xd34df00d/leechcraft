@@ -24,11 +24,11 @@
 #include <QAction>
 #include <QTreeView>
 #include <QMainWindow>
+#include <QCoreApplication>
 #include <plugininterface/structuresops.h>
-#include <plugininterface/proxy.h>
+#include <plugininterface/util.h>
 #include "findproxy.h"
 
-using LeechCraft::Util::Proxy;
 using namespace LeechCraft::Plugins::HistoryHolder;
 
 QDataStream& operator<< (QDataStream& out, const Core::HistoryEntry& e)
@@ -70,8 +70,8 @@ LeechCraft::Plugins::HistoryHolder::Core::Core ()
 	qRegisterMetaType<HistoryEntry> ("LeechCraft::Plugins::HistoryHolder::Core::HistoryEntry");
 	qRegisterMetaTypeStreamOperators<HistoryEntry> ("LeechCraft::Plugins::HistoryHolder::Core::HistoryEntry");
 
-	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-			Proxy::Instance ()->GetApplicationName () + "_HistoryHolder");
+	QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_HistoryHolder");
 	int size = settings.beginReadArray ("History");
 	for (int i = 0; i < size; ++i)
 	{
@@ -240,8 +240,8 @@ int Core::rowCount (const QModelIndex& index) const
 
 void Core::WriteSettings ()
 {
-	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-			Proxy::Instance ()->GetApplicationName () + "_HistoryHolder");
+	QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_HistoryHolder");
 	settings.beginWriteArray ("History");
 	settings.remove ("");
 	int i = 0;

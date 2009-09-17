@@ -20,8 +20,9 @@
 #include <boost/bind.hpp>
 #include <QStringList>
 #include <QSettings>
+#include <QCoreApplication>
 #include <QtDebug>
-#include <plugininterface/proxy.h>
+#include <plugininterface/util.h>
 #include <plugininterface/tagscompleter.h>
 
 using namespace LeechCraft;
@@ -30,7 +31,7 @@ TagsManager::TagsManager ()
 {
 	ReadSettings ();
 	GetID (tr ("untagged"));
-	LeechCraft::Util::TagsCompleter::SetModel (GetModel ());
+	Util::TagsCompleter::SetModel (GetModel ());
 }
 
 TagsManager& TagsManager::Instance ()
@@ -163,8 +164,8 @@ QStringList TagsManager::GetAllTags () const
 
 void TagsManager::ReadSettings ()
 {
-	QSettings settings (Util::Proxy::Instance ()->GetOrganizationName (),
-			Util::Proxy::Instance ()->GetApplicationName ());
+	QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName ());
 	settings.beginGroup ("Tags");
 	Tags_ = settings.value ("Dict").value<TagsDictionary_t> ();
 	beginInsertRows (QModelIndex (), 0, Tags_.size () - 1);
@@ -174,8 +175,8 @@ void TagsManager::ReadSettings ()
 
 void TagsManager::WriteSettings () const
 {
-	QSettings settings (Util::Proxy::Instance ()->GetOrganizationName (),
-			Util::Proxy::Instance ()->GetApplicationName ());
+	QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName ());
 	settings.beginGroup ("Tags");
 	settings.setValue ("Dict", QVariant::fromValue<TagsDictionary_t> (Tags_));
 	settings.endGroup ();

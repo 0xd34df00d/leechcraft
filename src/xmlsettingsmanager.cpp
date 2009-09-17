@@ -18,8 +18,8 @@
 
 #include <QSettings>
 #include <QDynamicPropertyChangeEvent>
+#include <QCoreApplication>
 #include <QtDebug>
-#include <plugininterface/proxy.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -41,8 +41,8 @@ namespace LeechCraft
 
 	QSettings* XmlSettingsManager::BeginSettings () const
 	{
-		QSettings *settings = new QSettings (Util::Proxy::Instance ()->GetOrganizationName (),
-				Util::Proxy::Instance ()->GetApplicationName ());
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName ());
 		return settings;
 	}
 

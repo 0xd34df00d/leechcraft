@@ -18,7 +18,7 @@
 
 #include <QtDebug>
 #include <numeric>
-#include <plugininterface/proxy.h>
+#include <plugininterface/util.h>
 #include "core.h"
 #include "peersmodel.h"
 
@@ -28,8 +28,6 @@ namespace LeechCraft
 	{
 		namespace BitTorrent
 		{
-			using LeechCraft::Util::Proxy;
-			
 			PeersModel::PeersModel (QObject *parent)
 			: QAbstractItemModel (parent)
 			, CurrentTorrent_ (-1)
@@ -67,32 +65,28 @@ namespace LeechCraft
 						return pi.IP_;
 					case 1:
 						if (role == Qt::DisplayRole)
-							return Proxy::Instance ()->
-								MakePrettySize (pi.PI_->payload_down_speed) + tr ("/s");
+							return Util::MakePrettySize (pi.PI_->payload_down_speed) + tr ("/s");
 						else if (role == SortRole)
 							return pi.PI_->payload_down_speed;
 						else
 							return QVariant ();
 					case 2:
 						if (role == Qt::DisplayRole)
-							return Proxy::Instance ()->
-								MakePrettySize (pi.PI_->payload_up_speed) + tr ("/s");
+							return Util::MakePrettySize (pi.PI_->payload_up_speed) + tr ("/s");
 						else if (role == SortRole)
 							return pi.PI_->payload_up_speed;
 						else
 							return QVariant ();
 					case 3:
 						if (role == Qt::DisplayRole)
-							return Proxy::Instance ()->
-								MakePrettySize (pi.PI_->total_download);
+							return Util::MakePrettySize (pi.PI_->total_download);
 						else if (role == SortRole)
 							return static_cast<qulonglong> (pi.PI_->total_download);
 						else
 							return QVariant ();
 					case 4:
 						if (role == Qt::DisplayRole)
-							return Proxy::Instance ()->
-								MakePrettySize (pi.PI_->total_upload);
+							return Util::MakePrettySize (pi.PI_->total_upload);
 						else if (role == SortRole)
 							return static_cast<qulonglong> (pi.PI_->total_upload);
 						else

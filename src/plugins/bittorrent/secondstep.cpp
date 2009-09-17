@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include <QFileDialog>
-#include <plugininterface/proxy.h>
+#include <plugininterface/util.h>
 #include "secondstep.h"
 #include "xmlsettingsmanager.h"
 
@@ -59,8 +59,7 @@ namespace LeechCraft
 					QString path = files.at (i);
 					QTreeWidgetItem *item = new QTreeWidgetItem (FilesWidget_);
 					item->setText (0,
-							LeechCraft::Util::Proxy::Instance ()->
-							MakePrettySize (QFileInfo (path).size ()));
+							LeechCraft::Util::MakePrettySize (QFileInfo (path).size ()));
 					item->setText (1, path);
 				}
 			}

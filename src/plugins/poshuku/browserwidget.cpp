@@ -41,7 +41,7 @@
 #include <QDesktopServices>
 #include <QXmlStreamReader>
 #include <QTextCodec>
-#include <plugininterface/proxy.h>
+#include <plugininterface/util.h>
 #include "core.h"
 #include "historymodel.h"
 #include "finddialog.h"
@@ -971,10 +971,8 @@ namespace LeechCraft
 			{
 				Ui_.Progress_->setValue (p);
 				Ui_.Progress_->setFormat (tr ("%p% (%1 of %2 known)")
-						.arg (Util::Proxy::Instance ()->
-							MakePrettySize (Ui_.WebView_->page ()->bytesReceived ()))
-						.arg (Util::Proxy::Instance ()->
-							MakePrettySize (Ui_.WebView_->page ()->totalBytes ())));
+						.arg (Util::MakePrettySize (Ui_.WebView_->page ()->bytesReceived ()))
+						.arg (Util::MakePrettySize (Ui_.WebView_->page ()->totalBytes ())));
 				Ui_.Progress_->setVisible (p != 100);
 			}
 		};

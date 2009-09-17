@@ -27,15 +27,12 @@
 #include <QTextCodec>
 #include <QtDebug>
 #include <plugininterface/util.h>
-#include <plugininterface/proxy.h>
 #include "task.h"
 #include "xmlsettingsmanager.h"
 #include "representationmodel.h"
 #include "morphfile.h"
 #include "addtask.h"
 
-using LeechCraft::Util::Proxy;
-			
 namespace LeechCraft
 {
 	namespace Plugins
@@ -339,18 +336,18 @@ namespace LeechCraft
 									if (total > -1)
 										return QString (tr ("%1% (%2 of %3)"))
 											.arg (progress)
-											.arg (Proxy::Instance ()->MakePrettySize (done))
-											.arg (Proxy::Instance ()->MakePrettySize (total));
+											.arg (Util::MakePrettySize (done))
+											.arg (Util::MakePrettySize (total));
 									else
 										return QString (tr ("%1"))
-											.arg (Proxy::Instance ()->MakePrettySize (done));
+											.arg (Util::MakePrettySize (done));
 								}
 								else
 									return QString ("");
 							}
 						case HSpeed:
-							return task->IsRunning () ? Proxy::Instance ()->
-								MakePrettySize (task->GetSpeed ()) + tr ("/s") :
+							return task->IsRunning () ?
+								Util::MakePrettySize (task->GetSpeed ()) + tr ("/s") :
 								QVariant ();
 						case HRemaining:
 							{
@@ -363,11 +360,11 @@ namespace LeechCraft
 			
 								qint64 rem = (total - done) / speed;
 			
-								return Proxy::Instance ()->MakeTimeFromLong (rem);
+								return Util::MakeTimeFromLong (rem);
 							}
 						case HDownloading:
-							return task->IsRunning () ? Proxy::Instance ()->
-								MakeTimeFromLong (task->GetTimeFromStart () / 1000)
+							return task->IsRunning () ?
+								Util::MakeTimeFromLong (task->GetTimeFromStart () / 1000)
 								: QVariant ();;
 						default:
 							return QVariant ();
@@ -541,8 +538,8 @@ namespace LeechCraft
 			
 			void Core::writeSettings ()
 			{
-				QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-						Proxy::Instance ()->GetApplicationName () + "_CSTP");
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_CSTP");
 				settings.beginWriteArray ("ActiveTasks");
 				settings.remove ("");
 				int taskIndex = 0;
@@ -570,8 +567,8 @@ namespace LeechCraft
 			
 			void Core::ReadSettings ()
 			{
-				QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-						Proxy::Instance ()->GetApplicationName () + "_CSTP");
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_CSTP");
 				int size = settings.beginReadArray ("ActiveTasks");
 				for (int i = 0; i < size; ++i)
 				{

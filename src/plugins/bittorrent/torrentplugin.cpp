@@ -33,7 +33,6 @@
 #include <libtorrent/session.hpp>
 #include <plugininterface/tagscompletionmodel.h>
 #include <plugininterface/util.h>
-#include <plugininterface/proxy.h>
 #include "core.h"
 #include "addtorrent.h"
 #include "addmultipletorrents.h"
@@ -699,8 +698,8 @@ namespace LeechCraft
 					return;
 				}
 
-				QSettings settings (Util::Proxy::Instance ()->GetOrganizationName (),
-						Util::Proxy::Instance ()->GetApplicationName () + "_Torrent");
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_Torrent");
 				settings.beginGroup ("FastSpeedControl");
 				int num = settings.beginReadArray ("Values");
 				for (int i = 0; i < num; ++i)

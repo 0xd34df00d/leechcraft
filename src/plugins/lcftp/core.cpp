@@ -28,7 +28,7 @@
 #include <QToolBar>
 #include <QTimer>
 #include <curl/curl.h>
-#include <plugininterface/proxy.h>
+#include <plugininterface/util.h>
 #include "inactiveworkersfilter.h"
 #include "xmlsettingsmanager.h"
 #include "watchthread.h"
@@ -204,12 +204,10 @@ namespace LeechCraft
 									return tr ("Paused");
 								else if (States_.at (r).Direction_ == TaskData::DDownload)
 									return tr ("Downloading at %1")
-										.arg (Util::Proxy::Instance ()->
-												MakePrettySize (States_.at (r).DLSpeed_));
+										.arg (Util::MakePrettySize (States_.at (r).DLSpeed_));
 								else
 									return tr ("Uploading at %1")
-										.arg (Util::Proxy::Instance ()->
-												MakePrettySize (States_.at (r).ULSpeed_));
+										.arg (Util::MakePrettySize (States_.at (r).ULSpeed_));
 							}
 						case 2:
 							if (r >= working)
@@ -222,15 +220,12 @@ namespace LeechCraft
 										States_.at (r).UL_);
 								if (s.second)
 									return tr ("%1 of %2 (%3%)")
-										.arg (Util::Proxy::Instance ()->
-												MakePrettySize (s.first))
-										.arg (Util::Proxy::Instance ()->
-												MakePrettySize (s.second))
+										.arg (Util::MakePrettySize (s.first))
+										.arg (Util::MakePrettySize (s.second))
 										.arg (s.first * 100 / s.second);
 								else
 									return tr ("%1")
-										.arg (Util::Proxy::Instance ()->
-												MakePrettySize (s.first));
+										.arg (Util::MakePrettySize (s.first));
 							}
 						default:
 							return QVariant ();
@@ -775,8 +770,8 @@ namespace LeechCraft
 
 			void Core::SaveTasks ()
 			{
-				QSettings settings (Util::Proxy::Instance ()->GetOrganizationName (),
-						Util::Proxy::Instance ()->GetApplicationName () + "_LCFTP");
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_LCFTP");
 				settings.beginWriteArray ("Tasks");
 				settings.remove ("");
 
@@ -804,8 +799,8 @@ namespace LeechCraft
 
 			void Core::loadTasks ()
 			{
-				QSettings settings (Util::Proxy::Instance ()->GetOrganizationName (),
-						Util::Proxy::Instance ()->GetApplicationName () + "_LCFTP");
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_LCFTP");
 				int size = settings.beginReadArray ("Tasks");
 				for (int i = 0; i < size; ++i)
 				{

@@ -22,7 +22,7 @@
 #include <QBuffer>
 #include <QTimer>
 #include <QtDebug>
-#include <plugininterface/proxy.h>
+#include <plugininterface/util.h>
 
 namespace LeechCraft
 {
@@ -94,8 +94,7 @@ namespace LeechCraft
 				Source_.save (&renderBuffer, qPrintable (format), quality);
 				QByteArray renderData = renderBuffer.data ();
 				Rendered_.loadFromData (renderData);
-				Ui_.FileSizeLabel_->setText (LeechCraft::Util::Proxy::Instance ()->
-						MakePrettySize (renderData.size ()));
+				Ui_.FileSizeLabel_->setText (Util::MakePrettySize (renderData.size ()));
 				PixmapHolder_->setPixmap (Rendered_);
 				PixmapHolder_->resize (Rendered_.size ());
 			}

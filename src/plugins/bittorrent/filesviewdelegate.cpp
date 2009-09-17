@@ -22,7 +22,7 @@
 #include <QApplication>
 #include <QTreeView>
 #include <QtDebug>
-#include <plugininterface/proxy.h>
+#include <plugininterface/util.h>
 #include <plugininterface/treeitem.h>
 #include "filesviewdelegate.h"
 #include "torrentfilesmodel.h"
@@ -96,8 +96,8 @@ namespace LeechCraft
 					progressBarOption.progress = progress < 0 ? 0 : progress * 100;
 					progressBarOption.text = QString (tr ("%1% (%2 of %3)")
 							.arg (static_cast<int> (progress * 100))
-							.arg (Util::Proxy::Instance ()->MakePrettySize (done))
-							.arg (Util::Proxy::Instance ()->MakePrettySize (size)));
+							.arg (Util::MakePrettySize (done))
+							.arg (Util::MakePrettySize (size)));
 
 					QApplication::style ()->drawControl (QStyle::CE_ProgressBar,
 							&progressBarOption, painter);

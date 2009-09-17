@@ -17,9 +17,8 @@
  **********************************************************************/
 
 #include "xmlsettingsmanager.h"
-#include <plugininterface/proxy.h>
+#include <QCoreApplication>
 
-using LeechCraft::Util::Proxy;
 using namespace LeechCraft::Plugins::Poshuku::Plugins::Fua;
 
 XmlSettingsManager::XmlSettingsManager ()
@@ -35,8 +34,8 @@ XmlSettingsManager* XmlSettingsManager::Instance ()
 
 QSettings* XmlSettingsManager::BeginSettings () const
 {
-	QSettings *settings = new QSettings (Proxy::Instance ()->GetOrganizationName (),
-			Proxy::Instance ()->GetApplicationName () + "_Poshuku_FUA");
+	QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Poshuku_FUA");
 	return settings;
 }
 

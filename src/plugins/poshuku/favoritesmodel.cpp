@@ -20,7 +20,6 @@
 #include <algorithm>
 #include <QTimer>
 #include <QtDebug>
-#include <plugininterface/proxy.h>
 #include "filtermodel.h"
 #include "core.h"
 

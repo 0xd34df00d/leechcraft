@@ -34,7 +34,6 @@
 #include <QSessionManager>
 #include <QProcess>
 #include <QTimer>
-#include <plugininterface/proxy.h>
 #include <plugininterface/util.h>
 #include <plugininterface/structuresops.h>
 #include "debugmessagehandler.h"
@@ -149,11 +148,6 @@ LeechCraft::Application::Application (int& argc, char **argv)
 	qRegisterMetaType<LeechCraft::DownloadEntity> ("LeechCraft::DownloadEntity");
 	qRegisterMetaTypeStreamOperators<TagsManager::TagsDictionary_t> ("LeechCraft::TagsManager::TagsDictionary_t");
 	qRegisterMetaTypeStreamOperators<LeechCraft::DownloadEntity> ("LeechCraft::DownloadEntity");
-
-	LeechCraft::Util::Proxy::Instance ()->SetStrings (QStringList (tr ("bytes")) <<
-			tr ("KB") <<
-			tr ("MB") <<
-			tr ("GB"));
 
 	ParseCommandLine ();
 
