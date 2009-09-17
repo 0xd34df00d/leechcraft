@@ -8,12 +8,15 @@ INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/dcpp
 	)
 SET (SRCS
 	dcminator.cpp
+	core.cpp
 	)
 SET (HEADERS
 	dcminator.h
+	core.h
 	)
 SET (TRANSLATIONS
 	leechcraft_dcminator_ru_RU.ts

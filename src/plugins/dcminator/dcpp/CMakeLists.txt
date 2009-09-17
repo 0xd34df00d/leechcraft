@@ -58,10 +58,10 @@ ssl
 pthread
 m
 )
-INCLUDE_DIRECTORIES( after ${Boost_INCLUDE_DIR}/boost/tr1/tr1/)
-INCLUDE_DIRECTORIES( after ${Boost_INCLUDE_DIR})
-INCLUDE_DIRECTORIES( before ${OPENSSL_INCLUDE_DIR})
-add_definitions(-D_REENTRANT)
+INCLUDE_DIRECTORIES (after ${Boost_INCLUDE_DIR}/boost/tr1/tr1/)
+INCLUDE_DIRECTORIES (after ${Boost_INCLUDE_DIR})
+INCLUDE_DIRECTORIES (before ${OPENSSL_INCLUDE_DIR})
+add_definitions (-D_REENTRANT -fPIC)
 IF (APPLE)
     SET ( LIB ${LIB} crypto iconv)
 ENDIF(APPLE)

@@ -16,13 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_DCMINATOR_DCMINATOR_H
-#define PLUGINS_DCMINATOR_DCMINATOR_H
-#include <memory>
+#ifndef PLUGINS_DCMINATOR_CORE_H
+#define PLUGINS_DCMINATOR_CORE_H
 #include <QObject>
-#include <QStringList>
-#include <QTranslator>
-#include <interfaces/iinfo.h>
 
 namespace LeechCraft
 {
@@ -30,25 +26,14 @@ namespace LeechCraft
 	{
 		namespace DCminator
 		{
-			class Plugin : public QObject
-						 , public IInfo
+			class Core : public QObject
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo)
 
-				std::auto_ptr<QTranslator> Translator_;
+				Core ();
 			public:
-				void Init (ICoreProxy_ptr);
+				static Core& Instance ();
 				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
-			signals:
-				void gotEntity (const LeechCraft::DownloadEntity&);
 			};
 		};
 	};

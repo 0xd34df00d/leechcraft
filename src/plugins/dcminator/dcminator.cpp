@@ -1,7 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2009  Georg Rudoy
- *				 2009  Snark
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +19,7 @@
 #include "dcminator.h"
 #include <QIcon>
 #include <plugininterface/util.h>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -30,10 +30,12 @@ namespace LeechCraft
 			void Plugin::Init (ICoreProxy_ptr)
 			{
 				Translator_.reset (Util::InstallTranslator ("dcminator"));
+				Core::Instance ();
 			}
 
 			void Plugin::Release ()
 			{
+				Core::Instance ().Release ();
 				Translator_.reset ();
 			}
 

@@ -16,13 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_DCMINATOR_DCMINATOR_H
-#define PLUGINS_DCMINATOR_DCMINATOR_H
-#include <memory>
-#include <QObject>
-#include <QStringList>
-#include <QTranslator>
-#include <interfaces/iinfo.h>
+#include "core.h"
+#include <QtDebug>
+#include "dcpp/stdinc.h"
+#include "dcpp/version.h"
+#include "dcpp/DCPlusPlus.h"
+#include "dcpp/TimerManager.h"
+#include "dcpp/Util.h"
 
 namespace LeechCraft
 {
@@ -30,29 +30,28 @@ namespace LeechCraft
 	{
 		namespace DCminator
 		{
-			class Plugin : public QObject
-						 , public IInfo
+			void callBack (void*, const std::string& str)
 			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo)
+				qDebug () << "dcminator:" << str.c_str ();
+			}
 
-				std::auto_ptr<QTranslator> Translator_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
-			signals:
-				void gotEntity (const LeechCraft::DownloadEntity&);
-			};
+			Core::Core ()
+			{
+				dcpp::startup (callBack, NULL);
+				dcpp::TimerManager::getInstance ()->start ();
+			}
+
+			Core& Core::Instance ()
+			{
+				static Core c;
+				return c;
+			}
+
+			void Core::Release ()
+			{
+				dcpp::shutdown ();
+			}
 		};
 	};
 };
-
-#endif
 
