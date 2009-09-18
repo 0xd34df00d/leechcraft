@@ -1065,7 +1065,7 @@ namespace LeechCraft
 				CurrentTorrent_ = old;
 				return trackers;
 			}
-			
+
 			void Core::SetTrackers (const QStringList& trackers)
 			{
 				if (!CheckValidity (CurrentTorrent_))
@@ -1084,6 +1084,15 @@ namespace LeechCraft
 				CurrentTorrent_ = row;
 				SetTrackers (trackers);
 				CurrentTorrent_ = old;
+			}
+			
+			QString Core::GetMagnetLink () const
+			{
+				if (!CheckValidity (CurrentTorrent_))
+					return QString ();
+
+				std::string result = libtorrent::make_magnet_uri (Handles_ [CurrentTorrent_].Handle_);
+				return QString::fromStdString (result);
 			}
 			
 			QString Core::GetTorrentDirectory () const

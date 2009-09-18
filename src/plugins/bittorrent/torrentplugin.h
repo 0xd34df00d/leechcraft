@@ -89,6 +89,7 @@ namespace LeechCraft
 					OpenMultipleTorrents_,
 					MoveFiles_,
 					ChangeTrackers_,
+					MakeMagnetLink_,
 					Import_,
 					Export_;
 				std::auto_ptr<QTranslator> Translator_;
@@ -115,7 +116,8 @@ namespace LeechCraft
 					EAForceRecheck_,
 					EAMoveFiles_,
 					EAImport_,
-					EAExport_
+					EAExport_,
+					EAMakeMagnetLink_
 				};
 			public:
 				// IInfo
@@ -177,6 +179,7 @@ namespace LeechCraft
 				void on_ForceRecheck__triggered ();
 				void on_ChangeTrackers__triggered ();
 				void on_MoveFiles__triggered ();
+				void on_MakeMagnetLink__triggered ();
 				void on_Import__triggered ();
 				void on_Export__triggered ();
 				void handleSpeedsChanged ();

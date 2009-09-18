@@ -30,6 +30,7 @@
 #include <QTimer>
 #include <QToolBar>
 #include <QHeaderView>
+#include <QInputDialog>
 #include <libtorrent/session.hpp>
 #include <plugininterface/tagscompletionmodel.h>
 #include <plugininterface/util.h>
@@ -319,7 +320,8 @@ namespace LeechCraft
 						(ForceRecheck_)
 						(MoveFiles_)
 						(Import_)
-						(Export_));
+						(Export_)
+						(MakeMagnetLink_));
 			}
 			
 #define _L(a) result [EA##a] = ActionInfo (a->text (), \
@@ -343,6 +345,7 @@ namespace LeechCraft
 				_L (MoveFiles_);
 				_L (Import_);
 				_L (Export_);
+				_L (MakeMagnetLink_);
 				return result;
 			}
 #undef _L
@@ -667,6 +670,22 @@ namespace LeechCraft
 							.arg (oldDir)
 							.arg (newDir));
 			}
+
+			void TorrentPlugin::on_MakeMagnetLink__triggered ()
+			{
+				QString magnet = Core::Instance ()->GetMagnetLink ();
+				if (magnet.isEmpty ())
+					return;
+
+				QInputDialog *dia = new QInputDialog ();
+				dia->setWindowTitle ("LeechCraft");
+				dia->setLabelText (tr ("Magnet link:"));
+				dia->setAttribute (Qt::WA_DeleteOnClose);
+				dia->setInputMode (QInputDialog::TextInput);
+				dia->setTextValue (magnet);
+				dia->resize (700, dia->height ());
+				dia->show ();
+			}
 			
 			void TorrentPlugin::on_Import__triggered ()
 			{
@@ -852,15 +871,6 @@ namespace LeechCraft
 						this,
 						SLOT (on_OpenTorrent__triggered ()));
 			
-				ChangeTrackers_.reset (new QAction (tr ("Change trackers..."),
-							Toolbar_.get ()));
-				ChangeTrackers_->setShortcut (tr ("C"));
-				ChangeTrackers_->setProperty ("ActionIcon", "torrent_changetrackers");
-				connect (ChangeTrackers_.get (),
-						SIGNAL (triggered ()),
-						this,
-						SLOT (on_ChangeTrackers__triggered ()));
-			
 				CreateTorrent_.reset (new QAction (tr ("Create torrent..."),
 							Toolbar_.get ()));
 				CreateTorrent_->setShortcut (tr ("N"));
@@ -967,6 +977,23 @@ namespace LeechCraft
 						this,
 						SLOT (on_MoveFiles__triggered ()));
 			
+				ChangeTrackers_.reset (new QAction (tr ("Change trackers..."),
+							Toolbar_.get ()));
+				ChangeTrackers_->setShortcut (tr ("C"));
+				ChangeTrackers_->setProperty ("ActionIcon", "torrent_changetrackers");
+				connect (ChangeTrackers_.get (),
+						SIGNAL (triggered ()),
+						this,
+						SLOT (on_ChangeTrackers__triggered ()));
+
+				MakeMagnetLink_.reset (new QAction (tr ("Make magnet link..."),
+							Toolbar_.get ()));
+				MakeMagnetLink_->setProperty ("ActionIcon", "torrent_makemagnetlink");
+				connect (MakeMagnetLink_.get (),
+						SIGNAL (triggered ()),
+						this,
+						SLOT (on_MakeMagnetLink__triggered ()));
+			
 				Import_.reset (new QAction (tr ("Import..."),
 							Toolbar_.get ()));
 				connect (Import_.get (),
@@ -1009,6 +1036,7 @@ namespace LeechCraft
 				Toolbar_->addAction (ForceRecheck_.get ());
 				Toolbar_->addAction (MoveFiles_.get ());
 				Toolbar_->addAction (ChangeTrackers_.get ());
+				Toolbar_->addAction (MakeMagnetLink_.get ());
 				Toolbar_->addSeparator ();
 				Toolbar_->addAction (Import_.get ());
 				Toolbar_->addAction (Export_.get ());
@@ -1028,6 +1056,7 @@ namespace LeechCraft
 				contextMenu->addAction (ForceRecheck_.get ());
 				contextMenu->addAction (MoveFiles_.get ());
 				contextMenu->addAction (ChangeTrackers_.get ());
+				contextMenu->addAction (MakeMagnetLink_.get ());
 				Core::Instance ()->SetMenu (contextMenu);
 			}
 		};

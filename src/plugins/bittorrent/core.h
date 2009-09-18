@@ -227,6 +227,7 @@ namespace LeechCraft
 				QStringList GetTrackers (int) const;
 				void SetTrackers (const QStringList&);
 				void SetTrackers (int, const QStringList&);
+				QString GetMagnetLink () const;
 				QString GetTorrentDirectory () const;
 				bool MoveTorrentFiles (const QString&);
 				void SetCurrentTorrent (int);
