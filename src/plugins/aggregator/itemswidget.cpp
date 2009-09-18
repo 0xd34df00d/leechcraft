@@ -24,7 +24,7 @@
 #include <QUrl>
 #include <interfaces/iwebbrowser.h>
 #include <plugininterface/categoryselector.h>
-#include <plugininterface/proxy.h>
+#include <plugininterface/util.h>
 #include "core.h"
 #include "itemsfiltermodel.h"
 #include "xmlsettingsmanager.h"
@@ -290,8 +290,7 @@ namespace LeechCraft
 					if (i->Length_ > 0)
 						result += tr ("File of type %1, size %2:<br />")
 							.arg (i->Type_)
-							.arg (LeechCraft::Util::Proxy::Instance ()->
-									MakePrettySize (i->Length_));
+							.arg (LeechCraft::Util::MakePrettySize (i->Length_));
 					else
 						result += tr ("File of type %1 and unknown length:<br />")
 							.arg (i->Type_);

@@ -35,7 +35,6 @@
 #include <QKeyEvent>
 #include <plugininterface/tagscompletionmodel.h>
 #include <plugininterface/util.h>
-#include <plugininterface/proxy.h>
 #include <plugininterface/categoryselector.h>
 #include <plugininterface/tagscompleter.h>
 #include <plugininterface/backendselector.h>

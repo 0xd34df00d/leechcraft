@@ -63,6 +63,7 @@ OPTION (ENABLE_NETWORKMONITOR "Build NetworkMonitor, the monitor for HTTP reques
 OPTION (ENABLE_HISTORYHOLDER "Build HistoryHolder, the keeper of the history" ON)
 OPTION (ENABLE_CHATTER "Build Chatter, simple IRC client" ON)
 OPTION (ENABLE_YASD "Build YASD, Yet Another Site Downloader" ON)
+OPTION (ENABLE_DCMINATOR "Build DCminator, the DirectConnect client" ON)
 
 IF (ENABLE_TORRENT)
 	IF (RBTorrent_FOUND)
@@ -127,6 +128,10 @@ ENDIF (ENABLE_HISTORYHOLDER)
 IF (ENABLE_YASD)
 	ADD_SUBDIRECTORY (plugins/yasd)
 ENDIF (ENABLE_YASD)
+
+IF (ENABLE_DCMINATOR)
+	ADD_SUBDIRECTORY (plugins/dcminator)
+ENDIF (ENABLE_DCMINATOR)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)

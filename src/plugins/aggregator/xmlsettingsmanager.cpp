@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include <plugininterface/proxy.h>
 #include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
@@ -25,8 +25,6 @@ namespace LeechCraft
 	{
 		namespace Aggregator
 		{
-			using LeechCraft::Util::Proxy;
-			
 			XmlSettingsManager::XmlSettingsManager ()
 			{
 				LeechCraft::Util::BaseSettingsManager::Init ();
@@ -41,8 +39,8 @@ namespace LeechCraft
 			QSettings* XmlSettingsManager::BeginSettings () const
 			{
 				QSettings *settings =
-					new QSettings (Proxy::Instance ()->GetOrganizationName (),
-							Proxy::Instance ()->GetApplicationName () + "_Aggregator");
+					new QSettings (QCoreApplication::organizationName (),
+							QCoreApplication::applicationName () + "_Aggregator");
 				return settings;
 			}
 			

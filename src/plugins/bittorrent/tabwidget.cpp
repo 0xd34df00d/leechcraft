@@ -19,7 +19,7 @@
 #include "tabwidget.h"
 #include <QSortFilterProxyModel>
 #include <QUrl>
-#include <plugininterface/proxy.h>
+#include <plugininterface/util.h>
 #include <plugininterface/treeitem.h>
 #include "core.h"
 #include "filesviewdelegate.h"
@@ -268,7 +268,7 @@ namespace LeechCraft
 					QString operator() (const T& t1, const T& t2) const
 					{
 						Percenter p;
-						return Proxy::Instance ()->MakePrettySize (t1) +
+						return Util::MakePrettySize (t1) +
 							(i ? QObject::tr ("/s") : "") + p (t1, t2);
 					}
 				};
@@ -279,11 +279,9 @@ namespace LeechCraft
 				libtorrent::session_status stats = Core::Instance ()->GetOverallStats ();
 			
 				Ui_.LabelTotalDownloadRate_->
-					setText (Proxy::Instance ()->
-							MakePrettySize (stats.download_rate) + tr ("/s"));
+					setText (Util::MakePrettySize (stats.download_rate) + tr ("/s"));
 				Ui_.LabelTotalUploadRate_->
-					setText (Proxy::Instance ()->
-							MakePrettySize (stats.upload_rate) + tr ("/s"));
+					setText (Util::MakePrettySize (stats.upload_rate) + tr ("/s"));
 			
 				Constructor<1> speed;
 			
@@ -301,11 +299,9 @@ namespace LeechCraft
 					setText (speed (stats.tracker_upload_rate, stats.upload_rate));
 			
 				Ui_.LabelTotalDownloaded_->
-					setText (Proxy::Instance ()->
-							MakePrettySize (stats.total_download));
+					setText (Util::MakePrettySize (stats.total_download));
 				Ui_.LabelTotalUploaded_->
-					setText (Proxy::Instance ()->
-							MakePrettySize (stats.total_upload));
+					setText (Util::MakePrettySize (stats.total_upload));
 			
 				Constructor<0> simple;
 				Ui_.LabelOverheadDownloaded_->
@@ -337,9 +333,9 @@ namespace LeechCraft
 				else
 					Ui_.LabelSessionRating_->setText (QString::fromUtf8 ("\u221E"));
 				Ui_.LabelTotalFailedData_->
-					setText (Proxy::Instance ()->MakePrettySize (stats.total_failed_bytes));
+					setText (Util::MakePrettySize (stats.total_failed_bytes));
 				Ui_.LabelTotalRedundantData_->
-					setText (Proxy::Instance ()->MakePrettySize (stats.total_redundant_bytes));
+					setText (Util::MakePrettySize (stats.total_redundant_bytes));
 				Ui_.LabelExternalAddress_->
 					setText (Core::Instance ()->GetExternalAddress ());
 			
@@ -365,8 +361,8 @@ namespace LeechCraft
 				{
 					QStringList strings;
 					strings	<< i->first
-						<< Proxy::Instance ()->MakePrettySize (i->second.DownloadRate_) + tr ("/s")
-						<< Proxy::Instance ()->MakePrettySize (i->second.UploadRate_) + tr ("/s");
+						<< Util::MakePrettySize (i->second.DownloadRate_) + tr ("/s")
+						<< Util::MakePrettySize (i->second.UploadRate_) + tr ("/s");
 			
 					new QTreeWidgetItem (Ui_.PerTrackerStats_, strings);
 				}
@@ -410,11 +406,9 @@ namespace LeechCraft
 				Ui_.TorrentControlTab_->setEnabled (true);
 				Ui_.LabelState_->setText (i->State_);
 				Ui_.LabelDownloadRate_->
-					setText (Proxy::Instance ()->
-							MakePrettySize (i->Status_.download_rate) + tr ("/s"));
+					setText (Util::MakePrettySize (i->Status_.download_rate) + tr ("/s"));
 				Ui_.LabelUploadRate_->
-					setText (Proxy::Instance ()->
-							MakePrettySize (i->Status_.upload_rate) + tr ("/s"));
+					setText (Util::MakePrettySize (i->Status_.upload_rate) + tr ("/s"));
 				Ui_.LabelNextAnnounce_->
 					setText (QTime (i->Status_.next_announce.hours (),
 								i->Status_.next_announce.minutes (),
@@ -422,15 +416,15 @@ namespace LeechCraft
 				Ui_.LabelProgress_->
 					setText (QString::number (i->Status_.progress * 100, 'f', 2) + "%");
 				Ui_.LabelDownloaded_->
-					setText (Proxy::Instance ()->MakePrettySize (i->Status_.total_download));
+					setText (Util::MakePrettySize (i->Status_.total_download));
 				Ui_.LabelUploaded_->
-					setText (Proxy::Instance ()->MakePrettySize (i->Status_.total_upload));
+					setText (Util::MakePrettySize (i->Status_.total_upload));
 				Ui_.LabelWantedDownloaded_->
-					setText (Proxy::Instance ()->MakePrettySize (i->Status_.total_wanted_done));
+					setText (Util::MakePrettySize (i->Status_.total_wanted_done));
 				Ui_.LabelDownloadedTotal_->
-					setText (Proxy::Instance ()->MakePrettySize (i->Status_.all_time_download));
+					setText (Util::MakePrettySize (i->Status_.all_time_download));
 				Ui_.LabelUploadedTotal_->
-					setText (Proxy::Instance ()->MakePrettySize (i->Status_.all_time_upload));
+					setText (Util::MakePrettySize (i->Status_.all_time_upload));
 				if (i->Status_.all_time_download)
 					Ui_.LabelTorrentOverallRating_->
 						setText (QString::number (i->Status_.all_time_upload /
@@ -439,21 +433,21 @@ namespace LeechCraft
 					Ui_.LabelTorrentOverallRating_->
 						setText (QString::fromUtf8 ("\u221E"));
 				Ui_.LabelActiveTime_->
-					setText (Proxy::Instance ()->MakeTimeFromLong (i->Status_.active_time));
+					setText (Util::MakeTimeFromLong (i->Status_.active_time));
 				Ui_.LabelSeedingTime_->
-					setText (Proxy::Instance ()->MakeTimeFromLong (i->Status_.seeding_time));
+					setText (Util::MakeTimeFromLong (i->Status_.seeding_time));
 				Ui_.LabelSeedRank_->
 					setText (QString::number (i->Status_.seed_rank));
 				if (i->Status_.last_scrape >= 0)
 					Ui_.LabelLastScrape_->
-						setText (Proxy::Instance ()->MakeTimeFromLong (i->Status_.last_scrape));
+						setText (Util::MakeTimeFromLong (i->Status_.last_scrape));
 				else
 					Ui_.LabelLastScrape_->
 						setText (tr ("Wasn't yet"));
 				Ui_.LabelTotalSize_->
-					setText (Proxy::Instance ()->MakePrettySize (i->Info_->total_size ()));
+					setText (Util::MakePrettySize (i->Info_->total_size ()));
 				Ui_.LabelWantedSize_->
-					setText (Proxy::Instance ()->MakePrettySize (i->Status_.total_wanted));
+					setText (Util::MakePrettySize (i->Status_.total_wanted));
 				if (i->Status_.total_payload_download)
 					Ui_.LabelTorrentRating_->
 						setText (QString::number (i->Status_.total_payload_upload /
@@ -479,7 +473,7 @@ namespace LeechCraft
 				Ui_.LabelDHTNodesCount_->
 					setText (QString::number (i->Info_->nodes ().size ()));
 				Ui_.LabelFailed_->
-					setText (Proxy::Instance ()->MakePrettySize (i->Status_.total_failed_bytes));
+					setText (Util::MakePrettySize (i->Status_.total_failed_bytes));
 				Ui_.LabelConnectedPeers_->
 					setText (QString::number (i->Status_.num_peers));
 				Ui_.LabelConnectedSeeds_->
@@ -493,15 +487,15 @@ namespace LeechCraft
 				Ui_.LabelDownloadedPieces_->
 					setText (QString::number (i->Status_.num_pieces));
 				Ui_.LabelPieceSize_->
-					setText (Proxy::Instance ()->MakePrettySize (i->Info_->piece_length ()));
+					setText (Util::MakePrettySize (i->Info_->piece_length ()));
 				Ui_.LabelBlockSize_->
-					setText (Proxy::Instance ()->MakePrettySize (i->Status_.block_size));
+					setText (Util::MakePrettySize (i->Status_.block_size));
 				Ui_.LabelDistributedCopies_->
 					setText (i->Status_.distributed_copies == -1 ?
 						tr ("Not tracking") :
 						QString::number (i->Status_.distributed_copies));
 				Ui_.LabelRedundantData_->
-					setText (Proxy::Instance ()->MakePrettySize (i->Status_.total_redundant_bytes));
+					setText (Util::MakePrettySize (i->Status_.total_redundant_bytes));
 				Ui_.LabelPeersInList_->
 					setText (QString::number (i->Status_.list_peers));
 				Ui_.LabelSeedsInList_->
@@ -638,8 +632,8 @@ namespace LeechCraft
 					int done = progress * size;
 					Ui_.FileProgress_->setText (tr ("%1% (%2 of %3)")
 							.arg (progress * 100, 0, 'f', 1)
-							.arg (Util::Proxy::Instance ()->MakePrettySize (done))
-							.arg (Util::Proxy::Instance ()->MakePrettySize (size)));
+							.arg (Util::MakePrettySize (done))
+							.arg (Util::MakePrettySize (size)));
 
 					Ui_.FilePriorityRegulator_->blockSignals (true);
 					if (index.model ()->rowCount (index))

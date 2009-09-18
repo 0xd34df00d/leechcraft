@@ -27,7 +27,7 @@
 #include <QtDebug>
 #include <QSettings>
 #include <QUrl>
-#include <plugininterface/proxy.h>
+#include <QCoreApplication>
 #include <plugininterface/util.h>
 #include "item.h"
 
@@ -37,8 +37,6 @@ namespace LeechCraft
 	{
 		namespace Aggregator
 		{
-			using LeechCraft::Util::Proxy;
-			
 			RegexpMatcherManager::RegexpItem::RegexpItem (const QString& title,
 					const QString& body)
 			: Title_ (title)
@@ -358,8 +356,8 @@ namespace LeechCraft
 			
 			void RegexpMatcherManager::saveSettings () const
 			{
-				QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-						Proxy::Instance ()->GetApplicationName () + "_Aggregator");
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_Aggregator");
 				settings.beginWriteArray ("RegexpMatcher");
 				settings.remove ("");
 				std::for_each (Items_.begin (), Items_.end (), WriteOut (settings));
@@ -370,8 +368,8 @@ namespace LeechCraft
 			
 			void RegexpMatcherManager::RestoreSettings ()
 			{
-				QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-						Proxy::Instance ()->GetApplicationName () + "_Aggregator");
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_Aggregator");
 				int size = settings.beginReadArray ("RegexpMatcher");
 				for (int i = 0; i < size; ++i)
 				{

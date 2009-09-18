@@ -60,6 +60,29 @@ namespace LeechCraft
 			}
 		};
 
+		/*! @brief Makes a formatted size from number.
+		 *
+		 * Converts, for example, 1048576 to 1.0 MB.
+		 *
+		 * @param[in] sourcesize Size in bytes.
+		 * @return Formatted string.
+		 *
+		 * @sa SetStrings
+		 * @sa MakeTimeFromLong
+		 */
+		PLUGININTERFACE_API QString MakePrettySize (qint64);
+
+		/*! @brief Makes a formatted time from number.
+		 *
+		 * Converts, for example 256 to 00:04:16.
+		 *
+		 * @param[in] time Time interval in seconds.
+		 * @return DateTime object.
+		 *
+		 * @sa MakePrettySize
+		 */
+		PLUGININTERFACE_API QString MakeTimeFromLong (ulong);
+
 		/** @brief Loads and installs a translator.
 		 *
 		 * Attempts to load and install a translator for the current

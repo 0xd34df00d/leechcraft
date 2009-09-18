@@ -40,7 +40,7 @@
 #include <QMessageBox>
 #include <QWebHistory>
 #include <QtDebug>
-#include <plugininterface/proxy.h>
+#include <plugininterface/util.h>
 #include <interfaces/ihaveshortcuts.h>
 #include "browserwidget.h"
 #include "customwebview.h"
@@ -59,7 +59,6 @@ namespace LeechCraft
 	{
 		namespace Poshuku
 		{
-			using LeechCraft::Util::Proxy;
 			using LeechCraft::Util::TagsCompletionModel;
 			
 			Core::Core ()
@@ -447,8 +446,8 @@ namespace LeechCraft
 			
 			void Core::RestoreSession (bool ask)
 			{
-				QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-						Proxy::Instance ()->GetApplicationName () + "_Poshuku");
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_Poshuku");
 				int size = settings.beginReadArray ("Saved session");
 				if (!size) ;
 				else if (ask)
@@ -653,8 +652,8 @@ namespace LeechCraft
 					return;
 			
 				int pos = 0;
-				QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-						Proxy::Instance ()->GetApplicationName () + "_Poshuku");
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_Poshuku");
 				settings.beginWriteArray ("Saved session");
 				settings.remove ("");
 				for (widgets_t::const_iterator i = Widgets_.begin (),

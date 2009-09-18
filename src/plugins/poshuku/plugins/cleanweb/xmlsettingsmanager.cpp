@@ -16,10 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include <plugininterface/proxy.h>
 #include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
-using LeechCraft::Util::Proxy;
 using namespace LeechCraft::Plugins::Poshuku::Plugins::CleanWeb;
 
 XmlSettingsManager::XmlSettingsManager ()
@@ -35,8 +34,8 @@ XmlSettingsManager* XmlSettingsManager::Instance ()
 
 QSettings* XmlSettingsManager::BeginSettings () const
 {
-	return new QSettings (Proxy::Instance ()->GetOrganizationName (),
-			Proxy::Instance ()->GetApplicationName () + "_CleanWeb");
+	return new QSettings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_CleanWeb");
 }
 
 void XmlSettingsManager::EndSettings (QSettings*) const

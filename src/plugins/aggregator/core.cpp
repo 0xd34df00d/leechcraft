@@ -29,7 +29,6 @@
 #include <QNetworkReply>
 #include <interfaces/iwebbrowser.h>
 #include <plugininterface/mergemodel.h>
-#include <plugininterface/proxy.h>
 #include <plugininterface/util.h>
 #include "core.h"
 #include "regexpmatchermanager.h"

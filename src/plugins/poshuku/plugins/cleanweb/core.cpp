@@ -27,13 +27,12 @@
 #include <QTimer>
 #include <QTextCodec>
 #include <QMessageBox>
+#include <QCoreApplication>
 #include <plugininterface/util.h>
-#include <plugininterface/proxy.h>
 #include "xmlsettingsmanager.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Plugins::Poshuku::Plugins::CleanWeb;
-using LeechCraft::Util::Proxy;
 
 namespace
 {
@@ -636,8 +635,8 @@ void Core::Remove (const QString& fileName)
 
 void Core::WriteSettings ()
 {
-	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-			Proxy::Instance ()->GetApplicationName () + "_CleanWeb");
+	QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_CleanWeb");
 	settings.beginWriteArray ("Subscriptions");
 	settings.remove ("");
 
@@ -656,8 +655,8 @@ void Core::WriteSettings ()
 
 void Core::ReadSettings ()
 {
-	QSettings settings (Proxy::Instance ()->GetOrganizationName (),
-			Proxy::Instance ()->GetApplicationName () + "_CleanWeb");
+	QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_CleanWeb");
 	int size = settings.beginReadArray ("Subscriptions");
 
 	for (int i = 0; i < size; ++i)

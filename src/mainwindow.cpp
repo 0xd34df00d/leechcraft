@@ -22,7 +22,7 @@
 #include <QModelIndex>
 #include <QChildEvent>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "plugininterface/proxy.h"
+#include "plugininterface/util.h"
 #include "interfaces/itraymenu.h"
 #include "mainwindow.h"
 #include "view.h"
@@ -239,14 +239,14 @@ void LeechCraft::MainWindow::InitializeInterface ()
 void LeechCraft::MainWindow::SetStatusBar ()
 {
 	QFontMetrics fm = fontMetrics ();
-	int minSize = fm.width (Proxy::Instance ()->MakePrettySize (999) + tr ("/s	"));
+	int minSize = fm.width (Util::MakePrettySize (999) + tr ("/s	"));
 
 	DownloadSpeed_ = new QLabel;
-	DownloadSpeed_->setText (Proxy::Instance ()->MakePrettySize (0) + tr ("/s"));
+	DownloadSpeed_->setText (Util::MakePrettySize (0) + tr ("/s"));
 	DownloadSpeed_->setMinimumWidth (minSize);
 	DownloadSpeed_->setAlignment (Qt::AlignRight);
 	UploadSpeed_ = new QLabel;
-	UploadSpeed_->setText (Proxy::Instance ()->MakePrettySize (0) + tr ("/s"));
+	UploadSpeed_->setText (Util::MakePrettySize (0) + tr ("/s"));
 	UploadSpeed_->setMinimumWidth (minSize);
 	UploadSpeed_->setAlignment (Qt::AlignRight);
 	QString current = QTime::currentTime ().toString ();
@@ -468,8 +468,8 @@ void LeechCraft::MainWindow::updateSpeedIndicators ()
 {
 	QPair<qint64, qint64> speeds = Core::Instance ().GetSpeeds ();
 
-	QString down = Proxy::Instance ()->MakePrettySize (speeds.first) + tr ("/s");
-	QString up = Proxy::Instance ()->MakePrettySize (speeds.second) + tr ("/s");
+	QString down = Util::MakePrettySize (speeds.first) + tr ("/s");
+	QString up = Util::MakePrettySize (speeds.second) + tr ("/s");
 	DownloadSpeed_->setText (down);
 	UploadSpeed_->setText (up);
 	SpeedGraph_->PushSpeed (speeds.first, speeds.second);

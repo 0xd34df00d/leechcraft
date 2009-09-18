@@ -19,7 +19,7 @@
 #include <QSettings>
 #include <QDynamicPropertyChangeEvent>
 #include <QtDebug>
-#include <plugininterface/proxy.h>
+#include <QCoreApplication>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -28,8 +28,6 @@ namespace LeechCraft
 	{
 		namespace BitTorrent
 		{
-			using LeechCraft::Util::Proxy;
-
 			XmlSettingsManager::XmlSettingsManager ()
 			{
 				LeechCraft::Util::BaseSettingsManager::Init ();
@@ -44,8 +42,8 @@ namespace LeechCraft
 			QSettings* XmlSettingsManager::BeginSettings () const
 			{
 				QSettings *settings =
-					new QSettings (Proxy::Instance ()->GetOrganizationName (),
-							Proxy::Instance ()->GetApplicationName () + "_Torrent");
+					new QSettings (QCoreApplication::organizationName (),
+							QCoreApplication::applicationName () + "_Torrent");
 				return settings;
 			}
 			

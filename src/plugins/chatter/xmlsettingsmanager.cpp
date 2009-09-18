@@ -1,7 +1,6 @@
 #include "xmlsettingsmanager.h"
-#include <plugininterface/proxy.h>
+#include <QCoreApplication>
 
-using LeechCraft::Util::Proxy;
 using namespace LeechCraft::Plugins::Chatter;
 
 XmlSettingsManager::XmlSettingsManager ()
@@ -17,8 +16,8 @@ XmlSettingsManager* XmlSettingsManager::Instance ()
 
 QSettings* XmlSettingsManager::BeginSettings () const
 {
-	QSettings *settings = new QSettings (Proxy::Instance ()->GetOrganizationName (),
-			Proxy::Instance ()->GetApplicationName () + "_Chatter");
+	QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Chatter");
 	return settings;
 }
 

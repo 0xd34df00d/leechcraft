@@ -18,7 +18,7 @@
 
 #include "mainviewdelegate.h"
 #include <QApplication>
-#include <plugininterface/proxy.h>
+#include <plugininterface/util.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -62,8 +62,8 @@ namespace LeechCraft
 					pbo.progress = progress;
 					pbo.text = QString ("%1 (%2 of %3)")
 						.arg (progress)
-						.arg (LeechCraft::Util::Proxy::Instance ()->MakePrettySize (done))
-						.arg (LeechCraft::Util::Proxy::Instance ()->MakePrettySize (total));
+						.arg (LeechCraft::Util::MakePrettySize (done))
+						.arg (LeechCraft::Util::MakePrettySize (total));
 				}
 				else
 				{

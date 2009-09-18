@@ -17,10 +17,9 @@
  **********************************************************************/
 
 #include "adaptor.h"
-#include <plugininterface/proxy.h>
+#include <QCoreApplication>
 #include "core.h"
 
-using LeechCraft::Util::Proxy;
 using namespace LeechCraft::Plugins::DBusManager;
 
 Adaptor::Adaptor (Core *parent)
@@ -39,12 +38,12 @@ Adaptor::Adaptor (Core *parent)
 
 QString Adaptor::GetOrganizationName () const
 {
-	return Proxy::Instance ()->GetOrganizationName ();
+	return QCoreApplication::organizationName ();
 }
 
 QString Adaptor::GetApplicationName () const
 {
-	return Proxy::Instance ()->GetApplicationName ();
+	return QCoreApplication::applicationName ();
 }
 
 QString Adaptor::Greeter (const QString& msg,

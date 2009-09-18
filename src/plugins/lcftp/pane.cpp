@@ -22,7 +22,7 @@
 #include <QCompleter>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
-#include <plugininterface/proxy.h>
+#include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
 
@@ -231,7 +231,7 @@ namespace LeechCraft
 				name->setData (e.URL_, RDUrl);
 				items << name;
 
-				QStandardItem *size = new QStandardItem (Util::Proxy::Instance ()->MakePrettySize (e.Size_));
+				QStandardItem *size = new QStandardItem (Util::MakePrettySize (e.Size_));
 				size->setTextAlignment (Qt::AlignRight);
 				items << size;
 

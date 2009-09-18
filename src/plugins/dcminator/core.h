@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2009  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,40 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGININTERFACE_PROXY_H
-#define PLUGININTERFACE_PROXY_H
+#ifndef PLUGINS_DCMINATOR_CORE_H
+#define PLUGINS_DCMINATOR_CORE_H
 #include <QObject>
-#include <QStringList>
-#include <QTime>
-#include "config.h"
 
 namespace LeechCraft
 {
-	namespace Util
+	namespace Plugins
 	{
-		/*! @brief Provides some common features.
-		 *
-		 * Feature versions of Proxy class may include some sort of
-		 * communications with MainWindow class as it was before removing of
-		 * LogShower in main LeechCraft application.
-		 *
-		 */
-		class Proxy : public QObject
+		namespace DCminator
 		{
-			Q_OBJECT
+			class Core : public QObject
+			{
+				Q_OBJECT
 
-			Proxy ();
-			~Proxy ();
-
-			static Proxy *Instance_;
-			QStringList Strings_;
-		public:
-			PLUGININTERFACE_API static Proxy *Instance ();
-			PLUGININTERFACE_API void SetStrings (const QStringList&);
-			PLUGININTERFACE_API QString GetApplicationName () const;
-			PLUGININTERFACE_API QString GetOrganizationName () const;
-			PLUGININTERFACE_API QString MakePrettySize (qint64) const;
-			PLUGININTERFACE_API QString MakeTimeFromLong (ulong) const;
+				Core ();
+			public:
+				static Core& Instance ();
+				void Release ();
+			};
 		};
 	};
 };
