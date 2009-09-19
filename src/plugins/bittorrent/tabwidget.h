@@ -38,6 +38,7 @@ namespace LeechCraft
 				bool TorrentSelectionChanged_;
 				std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsChangeCompleter_;
 				QAction *AddPeer_;
+				QAction *BanPeer_;
 				QAction *AddWebSeed_;
 				QAction *RemoveWebSeed_;
 			public:
@@ -72,7 +73,9 @@ namespace LeechCraft
                 void currentFileChanged (const QModelIndex&);
                 void on_FilePriorityRegulator__valueChanged (int);
 				void handleAddPeer ();
+				void handleBanPeer ();
 				void handleAddWebSeed ();
+				void currentPeerChanged (const QModelIndex&);
 				void currentWebSeedChanged (const QModelIndex&);
 				void handleRemoveWebSeed ();
 			};

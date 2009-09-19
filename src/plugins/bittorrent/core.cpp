@@ -1414,6 +1414,17 @@ namespace LeechCraft
 			
 				file.write (result);
 			}
+
+			void Core::BanPeers (const QPair<QString, QString>& peers, bool block)
+			{
+				libtorrent::ip_filter filter = Session_->get_ip_filter ();
+				filter.add_rule (libtorrent::address::from_string (peers.first.toStdString ()),
+						libtorrent::address::from_string (peers.second.toStdString ()),
+						block ?
+							libtorrent::ip_filter::blocked :
+							0);
+				Session_->set_ip_filter (filter);
+			}
 			
 			void Core::SaveResumeData (const libtorrent::save_resume_data_alert& a) const
 			{

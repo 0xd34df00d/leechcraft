@@ -3,6 +3,7 @@ aggregator_add lc_subscribe.png
 aggregator_exportbinary lc_export.png
 aggregator_exportopml lc_documentexport.png
 aggregator_favorites lc_favorites.png
+aggregator_filter lc_filter.png
 aggregator_importbinary lc_import.png
 aggregator_importopml lc_documentimport.png
 aggregator_larrow lc_back.png
@@ -43,5 +44,6 @@ torrent_addjob lc_addjob.png
 torrent_deletejob lc_remove.png
 torrent_export lc_export.png
 torrent_import lc_import.png
+torrent_ipfilter lc_filter.png
 torrent_startjob lc_start.png
 torrent_stopjob lc_pause.png

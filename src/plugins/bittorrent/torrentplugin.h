@@ -87,6 +87,7 @@ namespace LeechCraft
 					ForceReannounce_,
 					ForceRecheck_,
 					OpenMultipleTorrents_,
+					IPFilter_,
 					MoveFiles_,
 					ChangeTrackers_,
 					MakeMagnetLink_,
@@ -117,7 +118,8 @@ namespace LeechCraft
 					EAMoveFiles_,
 					EAImport_,
 					EAExport_,
-					EAMakeMagnetLink_
+					EAMakeMagnetLink_,
+					EAIPFilter_
 				};
 			public:
 				// IInfo
@@ -167,6 +169,7 @@ namespace LeechCraft
 			private slots:
 				void on_OpenTorrent__triggered ();
 				void on_OpenMultipleTorrents__triggered ();
+				void on_IPFilter__triggered ();
 				void on_CreateTorrent__triggered ();
 				void on_RemoveTorrent__triggered ();
 				void on_Resume__triggered ();

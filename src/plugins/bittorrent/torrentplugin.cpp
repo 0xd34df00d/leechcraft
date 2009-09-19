@@ -309,6 +309,7 @@ namespace LeechCraft
 						(ChangeTrackers_)
 						(CreateTorrent_)
 						(OpenMultipleTorrents_)
+						(IPFilter_)
 						(RemoveTorrent_)
 						(Resume_)
 						(Stop_)
@@ -333,6 +334,7 @@ namespace LeechCraft
 				_L (ChangeTrackers_);
 				_L (CreateTorrent_);
 				_L (OpenMultipleTorrents_);
+				_L (IPFilter_);
 				_L (RemoveTorrent_);
 				_L (Resume_);
 				_L (Stop_);
@@ -361,6 +363,7 @@ namespace LeechCraft
 				QList<QAction*> result;
 				result += CreateTorrent_.get ();
 				result += OpenMultipleTorrents_.get ();
+				result += IPFilter_.get ();
 				return result;
 			}
 			
@@ -408,6 +411,10 @@ namespace LeechCraft
 					Core::Instance ()->AddFile (name, savePath, tags);
 				}
 				setActionsEnabled ();
+			}
+
+			void TorrentPlugin::on_IPFilter__triggered ()
+			{
 			}
 			
 			void TorrentPlugin::on_CreateTorrent__triggered ()
@@ -887,6 +894,14 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (on_OpenMultipleTorrents__triggered ()));
+
+				IPFilter_.reset (new QAction (tr ("IP filter..."),
+							Toolbar_.get ()));
+				IPFilter_->setProperty ("ActionIcon", "torrent_ipfilter");
+				connect (IPFilter_.get (),
+						SIGNAL (triggered ()),
+						this,
+						SLOT (on_IPFilter__triggered ()));
 			
 				RemoveTorrent_.reset (new QAction (tr ("Remove"),
 							Toolbar_.get ()));
@@ -988,7 +1003,7 @@ namespace LeechCraft
 
 				MakeMagnetLink_.reset (new QAction (tr ("Make magnet link..."),
 							Toolbar_.get ()));
-				MakeMagnetLink_->setProperty ("ActionIcon", "torrent_makemagnetlink");
+				MakeMagnetLink_->setProperty ("ActionIcon", "torrent_insertmagnetlink");
 				connect (MakeMagnetLink_.get (),
 						SIGNAL (triggered ()),
 						this,
