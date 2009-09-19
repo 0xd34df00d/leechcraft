@@ -16,10 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_TORRENT_BANPEERSDIALOG_H
-#define PLUGINS_TORRENT_BANPEERSDIALOG_H
+#ifndef PLUGINS_TORRENT_IPFILTERDIALOG_H
+#define PLUGINS_TORRENT_IPFILTERDIALOG_H
 #include <QDialog>
-#include "ui_banpeersdialog.h"
+#include "ui_ipfilterdialog.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -27,18 +28,21 @@ namespace LeechCraft
 	{
 		namespace BitTorrent
 		{
-			class BanPeersDialog : public QDialog
+			class IPFilterDialog : public QDialog
 			{
 				Q_OBJECT
 
-				Ui::BanPeersDialog Ui_;
+				Ui::IPFilterDialog Ui_;
 			public:
-				BanPeersDialog (QWidget* = 0);
+				IPFilterDialog (QWidget* = 0);
 
-				void SetIP (const QString&);
-				void SetIP (const QString&, const QString&);
-				QString GetStart () const;
-				QString GetEnd () const;
+				QMap<Core::BanRange_t, bool> GetFilter () const;
+			private slots:
+				void on_Tree__currentItemChanged (QTreeWidgetItem*);
+				void on_Tree__itemClicked (QTreeWidgetItem*, int);
+				void on_Add__released ();
+				void on_Modify__released ();
+				void on_Remove__released ();
 			};
 		};
 	};

@@ -1428,6 +1428,12 @@ namespace LeechCraft
 				ScheduleSave ();
 			}
 
+			void Core::ClearFilter ()
+			{
+				Session_->set_ip_filter (libtorrent::ip_filter ());
+				ScheduleSave ();
+			}
+
 			QMap<Core::BanRange_t, bool> Core::GetFilter () const
 			{
 				boost::tuple<std::vector<libtorrent::ip_range<libtorrent::address_v4> >,

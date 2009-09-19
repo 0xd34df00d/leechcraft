@@ -45,6 +45,7 @@
 #include "exportdialog.h"
 #include "wizardgenerator.h"
 #include "fastspeedcontrolwidget.h"
+#include "ipfilterdialog.h"
 
 #ifdef AddJob
 #undef AddJob
@@ -415,6 +416,15 @@ namespace LeechCraft
 
 			void TorrentPlugin::on_IPFilter__triggered ()
 			{
+				IPFilterDialog dia;
+				if (dia.exec () != QDialog::Accepted)
+					return;
+
+				Core::Instance ()->ClearFilter ();
+				QMap<Core::BanRange_t, bool> filter = dia.GetFilter ();
+				QList<Core::BanRange_t> keys = filter.keys ();
+				Q_FOREACH (Core::BanRange_t key, keys)
+					Core::Instance ()->BanPeers (key, filter [key]);
 			}
 			
 			void TorrentPlugin::on_CreateTorrent__triggered ()

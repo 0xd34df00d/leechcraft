@@ -246,6 +246,7 @@ namespace LeechCraft
 				void Export (const QString&, bool, bool) const;
 				typedef QPair<QString, QString> BanRange_t;
 				void BanPeers (const BanRange_t&, bool = true);
+				void ClearFilter ();
 				QMap<BanRange_t, bool> GetFilter () const;
 				bool CheckValidity (int) const;
 

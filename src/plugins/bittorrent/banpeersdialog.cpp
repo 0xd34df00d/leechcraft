@@ -50,6 +50,21 @@ namespace LeechCraft
 				}
 			}
 
+			void BanPeersDialog::SetIP (const QString& first, const QString& last)
+			{
+				if (first.contains (":"))
+				{
+					Ui_.RadioIP6_->setChecked (true);
+					Ui_.IP6Start_->setText (first);
+					Ui_.IP6End_->setText (last);
+				}
+				else
+				{
+					Ui_.IP4Start_->setText (first);
+					Ui_.IP4End_->setText (last);
+				}
+			}
+
 			QString BanPeersDialog::GetStart () const
 			{
 				return Ui_.IP4Start_->isEnabled () ? Ui_.IP4Start_->text () : Ui_.IP6Start_->text ();
