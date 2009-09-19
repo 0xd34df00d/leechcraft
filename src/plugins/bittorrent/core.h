@@ -244,8 +244,9 @@ namespace LeechCraft
 				QString GetExternalAddress () const;
 				void Import (const QString&);
 				void Export (const QString&, bool, bool) const;
-				void BanPeers (const QPair<QString, QString>&, bool = true);
-				QList<QPair<QString, QString> > GetFilter () const;
+				typedef QPair<QString, QString> BanRange_t;
+				void BanPeers (const BanRange_t&, bool = true);
+				QMap<BanRange_t, bool> GetFilter () const;
 				bool CheckValidity (int) const;
 
 				void SaveResumeData (const libtorrent::save_resume_data_alert&) const;
