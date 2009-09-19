@@ -67,12 +67,26 @@ namespace LeechCraft
 
 			QString BanPeersDialog::GetStart () const
 			{
-				return Ui_.IP4Start_->isEnabled () ? Ui_.IP4Start_->text () : Ui_.IP6Start_->text ();
+				if (Ui_.IP4Start_->isEnabled ())
+					return Ui_.IP4Start_->hasAcceptableInput () ?
+						Ui_.IP4Start_->text () :
+						QString ();
+				else
+					return Ui_.IP6Start_->hasAcceptableInput () ?
+						Ui_.IP6Start_->text () :
+						QString ();
 			}
 
 			QString BanPeersDialog::GetEnd () const
 			{
-				return Ui_.IP4Start_->isEnabled () ? Ui_.IP4End_->text () : Ui_.IP6End_->text ();
+				if (Ui_.IP4Start_->isEnabled ())
+					return Ui_.IP4End_->hasAcceptableInput () ?
+						Ui_.IP4End_->text () :
+						QString ();
+				else
+					return Ui_.IP6End_->hasAcceptableInput () ?
+						Ui_.IP6End_->text () :
+						QString ();
 			}
 		};
 	};

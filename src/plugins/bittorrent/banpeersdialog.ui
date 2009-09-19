@@ -34,7 +34,7 @@
        <item>
         <widget class="QLineEdit" name="IP4Start_">
          <property name="inputMask">
-          <string extracomment="IPv4 input mask">D00.D00.D00.D00; </string>
+          <string extracomment="IPv4 input mask">900.900.900.900; </string>
          </property>
         </widget>
        </item>
@@ -48,7 +48,7 @@
        <item>
         <widget class="QLineEdit" name="IP4End_">
          <property name="inputMask">
-          <string extracomment="IPv4 input mask">D00.D00.D00.D00; </string>
+          <string extracomment="IPv4 input mask">900.900.900.900; </string>
          </property>
         </widget>
        </item>

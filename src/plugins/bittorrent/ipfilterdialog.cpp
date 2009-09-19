@@ -86,9 +86,15 @@ namespace LeechCraft
 				if (dia.exec () != QDialog::Accepted)
 					return;
 
+				QString start = dia.GetStart ();
+				QString end = dia.GetEnd ();
+				if (start.isEmpty () ||
+						end.isEmpty ())
+					return;
+
 				QTreeWidgetItem *item = new QTreeWidgetItem (Ui_.Tree_);
-				item->setText (0, dia.GetStart ());
-				item->setText (1, dia.GetEnd ());
+				item->setText (0, start);
+				item->setText (1, end);
 				item->setText (2, tr ("block"));
 				item->setData (2, BlockRole, true);
 			}
@@ -101,8 +107,14 @@ namespace LeechCraft
 				if (dia.exec () != QDialog::Accepted)
 					return;
 
-				item->setText (0, dia.GetStart ());
-				item->setText (1, dia.GetEnd ());
+				QString start = dia.GetStart ();
+				QString end = dia.GetEnd ();
+				if (start.isEmpty () ||
+						end.isEmpty ())
+					return;
+
+				item->setText (0, start);
+				item->setText (1, end);
 			}
 
 			void IPFilterDialog::on_Remove__released ()
