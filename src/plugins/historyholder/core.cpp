@@ -259,25 +259,35 @@ void Core::remove ()
 	if (!currentView)
 		return;
 
-	QModelIndex index = currentView->selectionModel ()->currentIndex ();
-	index = CoreProxy_->MapToSource (index);
-	if (!index.isValid ())
+	QModelIndexList selected = currentView->selectionModel ()->selectedRows ();
+	QList<int> rows;
+	Q_FOREACH (QModelIndex index, selected)
 	{
-		qWarning () << Q_FUNC_INFO
-			<< "invalid index"
-			<< index;
-		return;
+		index = CoreProxy_->MapToSource (index);
+		if (!index.isValid ())
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "invalid index"
+				<< index;
+			continue;
+		}
+		
+		const FindProxy *sm = qobject_cast<const FindProxy*> (index.model ());
+		if (!sm)
+			continue;
+
+		index = sm->mapToSource (index);
+
+		rows << index.row ();
 	}
-	
-	const FindProxy *sm = qobject_cast<const FindProxy*> (index.model ());
-	if (!sm)
-		return;
 
-	index = sm->mapToSource (index);
-
-	beginRemoveRows (QModelIndex (), index.row (), index.row ());
-	History_.removeAt (index.row ());
-	endRemoveRows ();
+	qSort (rows.begin (), rows.end (), qGreater<int> ());
+	Q_FOREACH (int row, rows)
+	{
+		beginRemoveRows (QModelIndex (), row, row);
+		History_.removeAt (row);
+		endRemoveRows ();
+	}
 
 	WriteSettings ();
 }
