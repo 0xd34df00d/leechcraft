@@ -64,6 +64,14 @@
 				</item>
 			</groupbox>
 			<groupbox>
+				<label lang="en" value="Automatic downloading" />
+				<label lang="ru" value="Автоматическое скачивание" />
+				<item type="path" property="EnclosuresDownloadPath">
+					<label lang="en" value="Download directory for enclosures:" />
+					<label lang="ru" value="Директория для вложений:" />
+				</item>
+			</groupbox>
+			<groupbox>
 				<label lang="en" value="Store" />
 				<label lang="ru" value="Хранение" />
 				<label lang="uk" value="Зберігання" />

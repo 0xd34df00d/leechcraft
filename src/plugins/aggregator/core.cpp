@@ -1426,10 +1426,15 @@ namespace LeechCraft
 					if (settings.AutoDownloadEnclosures_)
 						Q_FOREACH (Item_ptr item, (*i)->Items_)
 							Q_FOREACH (Enclosure e, item->Enclosures_)
-								emit gotEntity (Util::MakeEntity (QUrl (e.URL_),
-											QString (),
-											0,
-											e.Type_));
+							{
+								DownloadEntity de = Util::MakeEntity (QUrl (e.URL_),
+										XmlSettingsManager::Instance ()->
+											property ("EnclosuresDownloadPath").toString (),
+										0,
+										e.Type_);
+								de.Additional_ [" Tags"] = (*i)->Tags_;
+								emit gotEntity (de);
+							}
 			
 					channels_container_t::const_iterator position =
 						std::find_if (ourChannels.begin (), ourChannels.end (),
