@@ -49,7 +49,7 @@ SectionGroup "Core"
 		File icon24.ico
 		File icon16.ico
 		File /r icons
-		File /r leechcraft
+#		File /r leechcraft
 		File /r oxygen
 		SetOutPath $INSTDIR\settings
 		File settings\coresettings.xml
@@ -114,10 +114,10 @@ SectionGroup "Plugins"
 	Section "BitTorrent" TORRENTPLUGIN
 		SetOutPath $INSTDIR
 		File torrent.dll
-		File boost_date_time-vc90-mt-1_37.dll
-		File boost_filesystem-vc90-mt-1_37.dll
-		File boost_system-vc90-mt-1_37.dll
-		File boost_thread-vc90-mt-1_37.dll
+		File boost_date_time-vc90-mt-1_39.dll
+		File boost_filesystem-vc90-mt-1_39.dll
+		File boost_system-vc90-mt-1_39.dll
+		File boost_thread-vc90-mt-1_39.dll
 		SetOutPath $INSTDIR\settings
 		File settings\torrentsettings.xml
 		SetOutPath $INSTDIR\plugins\bin
@@ -131,6 +131,11 @@ SectionGroup "Plugins"
 		File plugins\bin\leechcraft_cstp.dll
 		SectionIn 1
 	SectionEnd
+    Section "Chatter" CHATTERPLUGIN
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_chatter.dll
+		SectionIn 1
+	SectionEnd
 	Section "DeadLyrics" DEADLYRICSPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_deadlyrics.dll
@@ -139,6 +144,13 @@ SectionGroup "Plugins"
 	Section "HistoryHolder" HISTORYHOLDERPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_historyholder.dll
+		SectionIn 1
+	SectionEnd
+    Section "LCFTP" LCFTPPLUGIN
+        SetOutPath $INSTDIR
+		File libcurl.dll
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_lcftp.dll
 		SectionIn 1
 	SectionEnd
 	Section "NetworkMonitor" NETWORKMONITORPLUGIN
@@ -192,6 +204,16 @@ SectionGroup "Translations"
 		File /r *_ar.qm
 		SectionIn 1
 	SectionEnd
+    Section "Deutch"
+		SetOutPath $INSTDIR
+		File /r *_de_DE.qm
+		SectionIn 1
+	SectionEnd
+    Section "Esperanto"
+		SetOutPath $INSTDIR
+		File /r *_eo.qm
+		SectionIn 1
+	SectionEnd
 	Section "Italian"
 		SetOutPath $INSTDIR
 		File /r *_it.qm
@@ -234,12 +256,14 @@ SectionEnd
 
 LangString DESC_MAINFILES ${LANG_ENGLISH} "LeechCraft and its support libraries."
 LangString DESC_QT ${LANG_ENGLISH} "Qt libraries."
-LangString DESC_MSVC ${LANG_ENGLISH} "Microsoft Visual Studio libraries."
+#LangString DESC_MSVC ${LANG_ENGLISH} "Microsoft Visual Studio libraries."
 LangString DESC_OPENSSL ${LANG_ENGLISH} "OpenSSL support."
 LangString DESC_HTTPPLUGIN ${LANG_ENGLISH} "Support for the HTTP protocol."
+LangString DESC_CHATTERPLUGIN ${LANG_ENGLISH} "IRC chat."
 LangString DESC_TORRENTPLUGIN ${LANG_ENGLISH} "Feature-rich BitTorrent client."
 LangString DESC_AGGREGATORPLUGIN ${LANG_ENGLISH} "Sophisticated RSS/Atom news feed reader."
 LangString DESC_HISTORYHOLDERPLUGIN ${LANG_ENGLISH} "Keeps history of downloaded files."
+LangString DESC_LCFTPPLUGIN ${LANG_ENGLISH} "FTP client."
 LangString DESC_NETWORKMONITORPLUGIN ${LANG_ENGLISH} "Monitors HTTP network requests."
 LangString DESC_POSHUKUPLUGIN ${LANG_ENGLISH} "Full-featured web browser."
 LangString DESC_POSHUKUCLEANWEBPLUGIN ${LANG_ENGLISH} "Ad blocker for the Poshuku compatible with Firefox's AdBlock lists."
@@ -251,12 +275,14 @@ LangString DESC_SEEKTHRUPLUGIN ${LANG_ENGLISH} "Client for OpenSearch-aware sear
 
 LangString DESC_MAINFILES ${LANG_RUSSIAN} "Сам LeechCraft и его вспомогательные бИблиотеки."
 LangString DESC_QT ${LANG_RUSSIAN} "Библиотеки Qt."
-LangString DESC_MSVC ${LANG_RUSSIAN} "Библиотеки Microsoft Visual Studio."
+#LangString DESC_MSVC ${LANG_RUSSIAN} "Библиотеки Microsoft Visual Studio."
 LangString DESC_OPENSSL ${LANG_RUSSIAN} "Библиотеки OpenSSL."
 LangString DESC_HTTPPLUGIN ${LANG_RUSSIAN} "Поддержка HTTP."
+LangString DESC_CHATTERPLUGIN ${LANG_RUSSIAN} "Чаты IRC."
 LangString DESC_TORRENTPLUGIN ${LANG_RUSSIAN} "Полнофункциональный Torrent-клиент."
 LangString DESC_AGGREGATORPLUGIN ${LANG_RUSSIAN} "Агрегатор RSS/Atom-лент."
 LangString DESC_HISTORYHOLDERPLUGIN ${LANG_RUSSIAN} "Хранит историю закачек."
+LangString DESC_LCFTPPLUGIN ${LANG_RUSSIAN} "Клиент протокола FTP."
 LangString DESC_NETWORKMONITORPLUGIN ${LANG_RUSSIAN} "Следит за HTTP-запросами."
 LangString DESC_POSHUKUPLUGIN ${LANG_RUSSIAN} "Полнофункциональный веб-браузер."
 LangString DESC_POSHUKUCLEANWEBPLUGIN ${LANG_RUSSIAN} "Блокировщик рекламы для Poshuku, совместимый с Firefox AdBlock."
@@ -269,7 +295,7 @@ LangString DESC_SEEKTHRUPLUGIN ${LANG_RUSSIAN} "Клиент для поисковиков, поддержи
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
 	!insertmacro MUI_DESCRIPTION_TEXT ${MAINFILES} $(DESC_MAINFILES)
 	!insertmacro MUI_DESCRIPTION_TEXT ${QT} $(DESC_QT)
-	!insertmacro MUI_DESCRIPTION_TEXT ${MSVC} $(DESC_MSVC)
+#	!insertmacro MUI_DESCRIPTION_TEXT ${MSVC} $(DESC_MSVC)
 	!insertmacro MUI_DESCRIPTION_TEXT ${OPENSSL} $(DESC_OPENSSL)
 	!insertmacro MUI_DESCRIPTION_TEXT ${HTTPPLUGIN} $(DESC_HTTPPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${AGGREGATORPLUGIN} $(DESC_AGGREGATORPLUGIN)
@@ -283,6 +309,8 @@ LangString DESC_SEEKTHRUPLUGIN ${LANG_RUSSIAN} "Клиент для поисковиков, поддержи
 	!insertmacro MUI_DESCRIPTION_TEXT ${SEEKTHRUPLUGIN} $(DESC_SEEKTHRUPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${HISTORYHOLDERPLUGIN} $(DESC_HISTORYHOLDERPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${NETWORKMONITORPLUGIN} $(DESC_NETWORKMONITORPLUGIN)
+    !insertmacro MUI_DESCRIPTION_TEXT ${CHATTERPLUGIN} $(DESC_CHATTERPLUGIN)
+    !insertmacro MUI_DESCRIPTION_TEXT ${LCFTPPLUGIN} $(DESC_LCFTPPLUGIN)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Function .onInit
