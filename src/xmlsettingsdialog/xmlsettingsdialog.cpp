@@ -693,12 +693,21 @@ void XmlSettingsDialog::DoPath (const QDomElement& item, QFormLayout *lay)
 {
 	QLabel *label = new QLabel (GetLabel (item));
 	label->setWordWrap (false);
-	FilePicker *picker = new FilePicker (this);
+
+	FilePicker::Type type = FilePicker::TExistingDirectory;
+	if (item.attribute ("type") == "openFileName")
+		type = FilePicker::TOpenFileName;
+	else if (item.attribute ("type") == "saveFileName")
+		type = FilePicker::TSaveFileName;
+
+	FilePicker *picker = new FilePicker (type, this);
 	QVariant value = GetValue (item);
 	picker->SetText (value.toString ());
 	picker->setObjectName (item.attribute ("property"));
 	if (item.attribute ("onCancel") == "clear")
 		picker->SetClearOnCancel (true);
+	if (item.hasAttribute ("filter"))
+		picker->SetFilter (item.attribute ("filter"));
 
 	connect (picker,
 			SIGNAL (textChanged (const QString&)),

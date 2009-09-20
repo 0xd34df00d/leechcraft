@@ -44,11 +44,22 @@ namespace LeechCraft
 		QLineEdit *LineEdit_;
 		QPushButton *BrowseButton_;
 		bool ClearOnCancel_;
+		QString Filter_;
 	public:
-		FilePicker (QWidget *parent = 0);
+		enum Type
+		{
+			TExistingDirectory,
+			TOpenFileName,
+			TSaveFileName
+		};
+	private:
+		Type Type_;
+	public:
+		FilePicker (Type = TExistingDirectory, QWidget* = 0);
 		void SetText (const QString&);
 		QString GetText () const;
 		void SetClearOnCancel (bool);
+		void SetFilter (const QString&);
 	private slots:
 		void chooseFile ();
 	signals:

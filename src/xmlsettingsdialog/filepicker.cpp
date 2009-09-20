@@ -25,9 +25,10 @@
 
 using namespace LeechCraft;
 
-FilePicker::FilePicker (QWidget *parent)
+FilePicker::FilePicker (FilePicker::Type type, QWidget *parent)
 : QWidget (parent)
 , ClearOnCancel_ (false)
+, Type_ (type)
 {
 	LineEdit_ = new QLineEdit (this);
 	BrowseButton_ = new QPushButton (tr ("Browse..."));
@@ -36,8 +37,12 @@ FilePicker::FilePicker (QWidget *parent)
 	lay->addWidget (LineEdit_);
 	lay->addWidget (BrowseButton_);
 	setLayout (lay);
-	connect (BrowseButton_, SIGNAL (released ()), this, SLOT (chooseFile ()));
-	LineEdit_->setMinimumWidth (QApplication::fontMetrics ().width ("thisismaybeadefaultsettingstring,dont"));
+	connect (BrowseButton_,
+			SIGNAL (released ()),
+			this,
+			SLOT (chooseFile ()));
+	LineEdit_->setMinimumWidth (QApplication::fontMetrics ()
+			.width ("thisismaybeadefaultsettingstring,dont"));
 }
 
 void FilePicker::SetText (const QString& text)
@@ -55,9 +60,35 @@ void FilePicker::SetClearOnCancel (bool clear)
 	ClearOnCancel_ = clear;
 }
 
+void FilePicker::SetFilter (const QString& filter)
+{
+	Filter_ = filter;
+}
+
 void FilePicker::chooseFile ()
 {
-	QString name = QFileDialog::getExistingDirectory (this, tr ("Select file"), LineEdit_->text (), 0);
+	QString name;
+	switch (Type_)
+	{
+		case TExistingDirectory:
+			name = QFileDialog::getExistingDirectory (this,
+					tr ("Select directory"),
+					LineEdit_->text (),
+					0);
+			break;
+		case TOpenFileName:
+			name = QFileDialog::getOpenFileName (this,
+					tr ("Select file"),
+					LineEdit_->text (),
+					Filter_);
+			break;
+		case TSaveFileName:
+			name = QFileDialog::getSaveFileName (this,
+					tr ("Select file"),
+					LineEdit_->text (),
+					Filter_);
+			break;
+	}
 	if (name.isEmpty () && !ClearOnCancel_)
 		return;
 
