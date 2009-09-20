@@ -42,6 +42,10 @@ namespace LeechCraft
 				QString GetSaveDirectory () const;
 				Core::AddType GetAddType () const;
 				Util::TagsLineEdit* GetEdit ();
+				/** Returns the list of tags after the dialog is executed.
+				 *
+				 * @return List if IDs of tags.
+				 */
 				QStringList GetTags () const;
 			private slots:
 				void on_BrowseOpen__released ();

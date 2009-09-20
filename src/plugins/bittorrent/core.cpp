@@ -777,9 +777,6 @@ namespace LeechCraft
 				QString torrentFileName = QString::fromUtf8 (handle.name ().c_str ());
 				if (!torrentFileName.endsWith (".torrent"))
 					torrentFileName.append (".torrent");
-				QStringList ids;
-				Q_FOREACH (QString tag, tags)
-					ids << Proxy_->GetTagsManager ()->GetID (tag);
 				TorrentStruct tmp =
 				{
 					priorities,
@@ -788,7 +785,7 @@ namespace LeechCraft
 					torrentFileName,
 					TSIdle,
 			   		0,
-					ids,
+					tags,
 					true,
 					Proxy_->GetID (),
 					params

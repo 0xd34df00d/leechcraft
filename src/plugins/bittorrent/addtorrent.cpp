@@ -114,10 +114,26 @@ namespace LeechCraft
 						return Core::Started;
 				}
 			}
+
+			void AddTorrent::SetTags (const QStringList& ids)
+			{
+				QStringList tags;
+				Q_FOREACH (QString id, ids)
+					tags << Core::Instance ()->GetProxy ()->
+						GetTagsManager ()->GetTag (id);
+				TagsEdit_->setText (Core::Instance ()->
+						GetProxy ()->GetTagsManager ()->Join (tags));
+			}
 			
 			QStringList AddTorrent::GetTags () const
 			{
-				return Core::Instance ()->GetProxy ()->GetTagsManager ()->Split (TagsEdit_->text ());
+				QStringList tags = Core::Instance ()->GetProxy ()->
+					GetTagsManager ()->Split (TagsEdit_->text ());
+				QStringList result;
+				Q_FOREACH (QString tag, tags)
+					result << Core::Instance ()->GetProxy ()->
+						GetTagsManager ()->GetID (tag);
+				return result;
 			}
 			
 			Util::TagsLineEdit* AddTorrent::GetEdit ()

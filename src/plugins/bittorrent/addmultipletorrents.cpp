@@ -66,7 +66,13 @@ namespace LeechCraft
 			
 			QStringList AddMultipleTorrents::GetTags () const
 			{
-				return Core::Instance ()->GetProxy ()->GetTagsManager ()->Split (TagsEdit_->text ());
+				QStringList tags = Core::Instance ()->GetProxy ()->
+					GetTagsManager ()->Split (TagsEdit_->text ());
+				QStringList result;
+				Q_FOREACH (QString tag, tags)
+					result << Core::Instance ()->GetProxy ()->
+						GetTagsManager ()->GetID (tag);
+				return result;
 			}
 			
 			void AddMultipleTorrents::on_BrowseOpen__released ()

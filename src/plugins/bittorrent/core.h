@@ -80,6 +80,8 @@ namespace LeechCraft
 					QString TorrentFileName_;
 					TorrentState State_;
 					double Ratio_;
+					/** Holds the IDs of tags of the torrent.
+					 */
 					QStringList Tags_;
 					bool AutoManaged_;
 
@@ -192,11 +194,41 @@ namespace LeechCraft
 				QList<PeerInfo> GetPeers () const;
 				QStringList GetTagsForIndex (int = -1) const;
 				void UpdateTags (const QStringList&, int = -1);
-				int AddMagnet (const QString&, const QString&, const QStringList&,
-						LeechCraft::TaskParameters = LeechCraft::NoParameters);
-				int AddFile (const QString&, const QString&, const QStringList&,
-						const QVector<bool>& = QVector<bool> (),
-						LeechCraft::TaskParameters = LeechCraft::NoParameters);
+				/** @brief Adds the  given magnet link to the queue.
+				 *
+				 * Fetches the torrent and starts downloading the magnet link to
+				 * the given path, sets the given tags and takes into the account
+				 * the given parameters.
+				 *
+				 * @param[in] magnet The magnet link.
+				 * @param[in] path The save path.
+				 * @param[in] tags The IDs of the tags of the torrent.
+				 * @param[in] params Task parameters.
+				 * @return The ID of the task.
+				 */
+				int AddMagnet (const QString& magnet,
+						const QString& path,
+						const QStringList& tags,
+						LeechCraft::TaskParameters params = LeechCraft::NoParameters);
+				/** @brief Adds the given torrent file from the filename to the
+				 * queue.
+				 *
+				 * Starts downloading the torrent to the given path, sets the
+				 * passed IDs of the tags of the torrent, marks only selected files
+				 * for the download and takes into account the given params.
+				 *
+				 * @param[in] filename The file name of the torrent.
+				 * @param[in] path The save path.
+				 * @param[in] tags The IDs of the tags of the torrent.
+				 * @param[in] files The list of initial file selections.
+				 * @param[in] params Task parameters.
+				 * @return The ID of the task.
+				 */
+				int AddFile (const QString& filename,
+						const QString& path,
+						const QStringList& tags,
+						const QVector<bool>& files = QVector<bool> (),
+						LeechCraft::TaskParameters params = LeechCraft::NoParameters);
 				void RemoveTorrent (int);
 				void PauseTorrent (int);
 				void ResumeTorrent (int);
@@ -277,8 +309,18 @@ namespace LeechCraft
 				void ManipulateSettings ();
 				void CheckDownloadQueue ();
 				void CheckUploadQueue ();
-				QStringList GetTagsForIndexImpl (int) const;
-				void UpdateTagsImpl (const QStringList&, int);
+				/** Returns human-readable list of tags for the given torrent.
+				 *
+				 * @param[in] torrent The ID of the torrent.
+				 * @return The human-readable list of tags.
+				 */
+				QStringList GetTagsForIndexImpl (int torrent) const;
+				/** Sets the tags for the given torrent.
+				 *
+				 * @param[in] tags The human-readable list of tags.
+				 * @param[in] torrent The ID of the torrent.
+				 */
+				void UpdateTagsImpl (const QStringList& tags, int torrent);
 				void ParseStorage (const QDomElement&);
 				void ScheduleSave ();
 				void HandleLibtorrentException (const libtorrent::libtorrent_exception&);

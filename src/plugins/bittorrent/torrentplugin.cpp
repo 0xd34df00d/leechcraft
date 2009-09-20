@@ -164,14 +164,23 @@ namespace LeechCraft
 					{
 						QString at = XmlSettingsManager::Instance ()->
 							property ("AutomaticTags").toString ();
-						QStringList tags = Core::Instance ()->GetProxy ()->
-							GetTagsManager ()->Split (at);
+						QStringList tags = e.Additional_ [" Tags"].toStringList ();
+						Q_FOREACH (QString tag, Core::Instance ()->GetProxy ()->
+								GetTagsManager ()->Split (at))
+							tags << Core::Instance ()->GetProxy ()->
+								GetTagsManager ()->GetID (tag);
 				
 						QList<QPair<QString, QString> > queryItems = resource.queryItems ();
 						for (QList<QPair<QString, QString> >::const_iterator i = queryItems.begin (),
 								end = queryItems.end (); i != end; ++i)
 							if (i->first == "kt")
-								tags += i->second.split ('+', QString::SkipEmptyParts);
+							{
+								QStringList humanReadable = i->second
+									.split ('+', QString::SkipEmptyParts);
+								Q_FOREACH (QString hr, humanReadable)
+									tags += Core::Instance ()->GetProxy ()->
+										GetTagsManager ()->GetID (hr);
+							}
 				
 						return Core::Instance ()->AddMagnet (resource.toString (),
 								e.Location_,
@@ -203,11 +212,14 @@ namespace LeechCraft
 					AddTorrentDialog_->SetSavePath (e.Location_);
 			
 				QString path;
-				QStringList tags;
+				QStringList tags = e.Additional_ [" Tags"].toStringList ();
 				QVector<bool> files;
 				QString fname;
 				if (e.Parameters_ & FromUserInitiated)
 				{
+					if (!tags.isEmpty ())
+						AddTorrentDialog_->SetTags (tags);
+
 					if (AddTorrentDialog_->exec () == QDialog::Rejected)
 						return -1;
 			
@@ -226,8 +238,10 @@ namespace LeechCraft
 					path = e.Location_;
 					QString at = XmlSettingsManager::Instance ()->
 						property ("AutomaticTags").toString ();
-					tags = Core::Instance ()->GetProxy ()->
-						GetTagsManager ()->Split (at);
+					Q_FOREACH (QString tag, Core::Instance ()->GetProxy ()->
+							GetTagsManager ()->Split (at))
+						tags << Core::Instance ()->GetProxy ()->
+							GetTagsManager ()->GetID (tag);
 				}
 				int result = Core::Instance ()->AddFile (fname,
 						path,
@@ -378,7 +392,7 @@ namespace LeechCraft
 						path = AddTorrentDialog_->GetSavePath ();
 				QVector<bool> files = AddTorrentDialog_->GetSelectedFiles ();
 				QStringList tags = AddTorrentDialog_->GetTags ();
-				TaskParameters tp;
+				TaskParameters tp = FromUserInitiated;
 				if (AddTorrentDialog_->GetAddType () != Core::Started)
 					tp |= NoAutostart;
 				Core::Instance ()->AddFile (filename, path, tags, files, tp);
@@ -394,7 +408,7 @@ namespace LeechCraft
 				if (dialog.exec () == QDialog::Rejected)
 					return;
 			
-				TaskParameters tp;
+				TaskParameters tp = FromUserInitiated;
 				if (dialog.GetAddType () != Core::Started)
 					tp |= NoAutostart;
 			

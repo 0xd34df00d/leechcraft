@@ -50,8 +50,16 @@ namespace LeechCraft
 				QString GetSavePath () const;
 				QVector<bool> GetSelectedFiles () const;
 				Core::AddType GetAddType () const;
+				/** Sets tags for the newly added torrent.
+				 *
+				 * @param[in] tags List of IDs of tags.
+				 */
+				void SetTags (const QStringList& tags);
+				/** Returns the list of tags after the dialog is executed.
+				 *
+				 * @return List if IDs of tags.
+				 */
 				QStringList GetTags () const;
-				QStringList GetDefaultTags () const;
 				Util::TagsLineEdit* GetEdit ();
 			private slots:
 				void on_TorrentBrowse__released ();
