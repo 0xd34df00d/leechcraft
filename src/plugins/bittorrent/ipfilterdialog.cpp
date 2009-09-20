@@ -50,14 +50,14 @@ namespace LeechCraft
 				on_Tree__currentItemChanged (0);
 			}
 
-			QMap<Core::BanRange_t, bool> IPFilterDialog::GetFilter () const
+			QList<QPair<Core::BanRange_t, bool> > IPFilterDialog::GetFilter () const
 			{
-				QMap<Core::BanRange_t, bool> result;
+				QList<QPair<Core::BanRange_t, bool> > result;
 				for (int i = 0, size = Ui_.Tree_->topLevelItemCount (); i < size; ++i)
 				{
 					QTreeWidgetItem *item = Ui_.Tree_->topLevelItem (i);
-					result [qMakePair (item->text (0), item->text (1))] =
-						item->data (2, BlockRole).toBool ();
+					result << qMakePair (qMakePair (item->text (0), item->text (1)),
+							item->data (2, BlockRole).toBool ());
 				}
 				return result;
 			}

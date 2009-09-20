@@ -421,10 +421,10 @@ namespace LeechCraft
 					return;
 
 				Core::Instance ()->ClearFilter ();
-				QMap<Core::BanRange_t, bool> filter = dia.GetFilter ();
-				QList<Core::BanRange_t> keys = filter.keys ();
-				Q_FOREACH (Core::BanRange_t key, keys)
-					Core::Instance ()->BanPeers (key, filter [key]);
+				QList<QPair<Core::BanRange_t, bool> > filter = dia.GetFilter ();
+				QPair<Core::BanRange_t, bool> pair;
+				Q_FOREACH (pair, filter)
+					Core::Instance ()->BanPeers (pair.first, pair.second);
 			}
 			
 			void TorrentPlugin::on_CreateTorrent__triggered ()

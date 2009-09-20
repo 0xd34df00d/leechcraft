@@ -36,7 +36,7 @@ namespace LeechCraft
 			public:
 				IPFilterDialog (QWidget* = 0);
 
-				QMap<Core::BanRange_t, bool> GetFilter () const;
+				QList<QPair<Core::BanRange_t, bool> > GetFilter () const;
 			private slots:
 				void on_Tree__currentItemChanged (QTreeWidgetItem*);
 				void on_Tree__itemClicked (QTreeWidgetItem*, int);
