@@ -695,9 +695,9 @@ void XmlSettingsDialog::DoPath (const QDomElement& item, QFormLayout *lay)
 	label->setWordWrap (false);
 
 	FilePicker::Type type = FilePicker::TExistingDirectory;
-	if (item.attribute ("type") == "openFileName")
+	if (item.attribute ("pickerType") == "openFileName")
 		type = FilePicker::TOpenFileName;
-	else if (item.attribute ("type") == "saveFileName")
+	else if (item.attribute ("pickerType") == "saveFileName")
 		type = FilePicker::TSaveFileName;
 
 	FilePicker *picker = new FilePicker (type, this);
