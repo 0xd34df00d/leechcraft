@@ -39,6 +39,8 @@ SET (SRCS
 	wizardgenerator.cpp
 	startupfirstpage.cpp
 	fastspeedcontrolwidget.cpp
+	banpeersdialog.cpp
+	ipfilterdialog.cpp
 	)
 SET (HEADERS
 	torrentplugin.h
@@ -68,6 +70,8 @@ SET (HEADERS
 	wizardgenerator.h
 	startupfirstpage.h
 	fastspeedcontrolwidget.h
+	banpeersdialog.h
+	ipfilterdialog.h
 	newtorrentparams.h
 	torrentinfo.h
 	fileinfo.h
@@ -87,6 +91,8 @@ SET (FORMS
 	addwebseeddialog.ui
 	startupfirstpage.ui
 	fastspeedcontrolwidget.ui
+	banpeersdialog.ui
+	ipfilterdialog.ui
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS

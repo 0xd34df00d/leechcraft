@@ -16,25 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "downloaderswidget.h"
-#include <WContainerWidget>
-#include <WText>
-#include <WTreeView>
+#ifndef PLUGINS_TORRENT_BANPEERSDIALOG_H
+#define PLUGINS_TORRENT_BANPEERSDIALOG_H
+#include <QDialog>
+#include "ui_banpeersdialog.h"
 
-DownloadersWidget::DownloadersWidget (Wt::WContainerWidget *parentc)
-: Wt::WCompositeWidget (parentc)
+namespace LeechCraft
 {
-	setImplementation ((Container_ = new Wt::WContainerWidget ()));
+	namespace Plugins
+	{
+		namespace BitTorrent
+		{
+			class BanPeersDialog : public QDialog
+			{
+				Q_OBJECT
 
-	DownloadersView_ = new Wt::WTreeView (Container_);
-}
+				Ui::BanPeersDialog Ui_;
+			public:
+				BanPeersDialog (QWidget* = 0);
 
-DownloadersWidget::~DownloadersWidget ()
-{
-}
+				void SetIP (const QString&);
+				void SetIP (const QString&, const QString&);
+				QString GetStart () const;
+				QString GetEnd () const;
+			};
+		};
+	};
+};
 
-void DownloadersWidget::SetModel (Wt::WAbstractItemModel *model)
-{
-	DownloadersView_->setModel (model);
-}
+#endif
 

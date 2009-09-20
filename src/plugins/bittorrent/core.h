@@ -227,6 +227,7 @@ namespace LeechCraft
 				QStringList GetTrackers (int) const;
 				void SetTrackers (const QStringList&);
 				void SetTrackers (int, const QStringList&);
+				QString GetMagnetLink () const;
 				QString GetTorrentDirectory () const;
 				bool MoveTorrentFiles (const QString&);
 				void SetCurrentTorrent (int);
@@ -243,6 +244,10 @@ namespace LeechCraft
 				QString GetExternalAddress () const;
 				void Import (const QString&);
 				void Export (const QString&, bool, bool) const;
+				typedef QPair<QString, QString> BanRange_t;
+				void BanPeers (const BanRange_t&, bool = true);
+				void ClearFilter ();
+				QMap<BanRange_t, bool> GetFilter () const;
 				bool CheckValidity (int) const;
 
 				void SaveResumeData (const libtorrent::save_resume_data_alert&) const;

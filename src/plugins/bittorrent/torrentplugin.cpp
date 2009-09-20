@@ -30,6 +30,7 @@
 #include <QTimer>
 #include <QToolBar>
 #include <QHeaderView>
+#include <QInputDialog>
 #include <libtorrent/session.hpp>
 #include <plugininterface/tagscompletionmodel.h>
 #include <plugininterface/util.h>
@@ -44,6 +45,7 @@
 #include "exportdialog.h"
 #include "wizardgenerator.h"
 #include "fastspeedcontrolwidget.h"
+#include "ipfilterdialog.h"
 
 #ifdef AddJob
 #undef AddJob
@@ -308,6 +310,7 @@ namespace LeechCraft
 						(ChangeTrackers_)
 						(CreateTorrent_)
 						(OpenMultipleTorrents_)
+						(IPFilter_)
 						(RemoveTorrent_)
 						(Resume_)
 						(Stop_)
@@ -319,7 +322,8 @@ namespace LeechCraft
 						(ForceRecheck_)
 						(MoveFiles_)
 						(Import_)
-						(Export_));
+						(Export_)
+						(MakeMagnetLink_));
 			}
 			
 #define _L(a) result [EA##a] = ActionInfo (a->text (), \
@@ -331,6 +335,7 @@ namespace LeechCraft
 				_L (ChangeTrackers_);
 				_L (CreateTorrent_);
 				_L (OpenMultipleTorrents_);
+				_L (IPFilter_);
 				_L (RemoveTorrent_);
 				_L (Resume_);
 				_L (Stop_);
@@ -343,6 +348,7 @@ namespace LeechCraft
 				_L (MoveFiles_);
 				_L (Import_);
 				_L (Export_);
+				_L (MakeMagnetLink_);
 				return result;
 			}
 #undef _L
@@ -358,6 +364,7 @@ namespace LeechCraft
 				QList<QAction*> result;
 				result += CreateTorrent_.get ();
 				result += OpenMultipleTorrents_.get ();
+				result += IPFilter_.get ();
 				return result;
 			}
 			
@@ -405,6 +412,19 @@ namespace LeechCraft
 					Core::Instance ()->AddFile (name, savePath, tags);
 				}
 				setActionsEnabled ();
+			}
+
+			void TorrentPlugin::on_IPFilter__triggered ()
+			{
+				IPFilterDialog dia;
+				if (dia.exec () != QDialog::Accepted)
+					return;
+
+				Core::Instance ()->ClearFilter ();
+				QMap<Core::BanRange_t, bool> filter = dia.GetFilter ();
+				QList<Core::BanRange_t> keys = filter.keys ();
+				Q_FOREACH (Core::BanRange_t key, keys)
+					Core::Instance ()->BanPeers (key, filter [key]);
 			}
 			
 			void TorrentPlugin::on_CreateTorrent__triggered ()
@@ -667,6 +687,22 @@ namespace LeechCraft
 							.arg (oldDir)
 							.arg (newDir));
 			}
+
+			void TorrentPlugin::on_MakeMagnetLink__triggered ()
+			{
+				QString magnet = Core::Instance ()->GetMagnetLink ();
+				if (magnet.isEmpty ())
+					return;
+
+				QInputDialog *dia = new QInputDialog ();
+				dia->setWindowTitle ("LeechCraft");
+				dia->setLabelText (tr ("Magnet link:"));
+				dia->setAttribute (Qt::WA_DeleteOnClose);
+				dia->setInputMode (QInputDialog::TextInput);
+				dia->setTextValue (magnet);
+				dia->resize (700, dia->height ());
+				dia->show ();
+			}
 			
 			void TorrentPlugin::on_Import__triggered ()
 			{
@@ -852,15 +888,6 @@ namespace LeechCraft
 						this,
 						SLOT (on_OpenTorrent__triggered ()));
 			
-				ChangeTrackers_.reset (new QAction (tr ("Change trackers..."),
-							Toolbar_.get ()));
-				ChangeTrackers_->setShortcut (tr ("C"));
-				ChangeTrackers_->setProperty ("ActionIcon", "torrent_changetrackers");
-				connect (ChangeTrackers_.get (),
-						SIGNAL (triggered ()),
-						this,
-						SLOT (on_ChangeTrackers__triggered ()));
-			
 				CreateTorrent_.reset (new QAction (tr ("Create torrent..."),
 							Toolbar_.get ()));
 				CreateTorrent_->setShortcut (tr ("N"));
@@ -877,6 +904,14 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (on_OpenMultipleTorrents__triggered ()));
+
+				IPFilter_.reset (new QAction (tr ("IP filter..."),
+							Toolbar_.get ()));
+				IPFilter_->setProperty ("ActionIcon", "torrent_ipfilter");
+				connect (IPFilter_.get (),
+						SIGNAL (triggered ()),
+						this,
+						SLOT (on_IPFilter__triggered ()));
 			
 				RemoveTorrent_.reset (new QAction (tr ("Remove"),
 							Toolbar_.get ()));
@@ -967,6 +1002,23 @@ namespace LeechCraft
 						this,
 						SLOT (on_MoveFiles__triggered ()));
 			
+				ChangeTrackers_.reset (new QAction (tr ("Change trackers..."),
+							Toolbar_.get ()));
+				ChangeTrackers_->setShortcut (tr ("C"));
+				ChangeTrackers_->setProperty ("ActionIcon", "torrent_changetrackers");
+				connect (ChangeTrackers_.get (),
+						SIGNAL (triggered ()),
+						this,
+						SLOT (on_ChangeTrackers__triggered ()));
+
+				MakeMagnetLink_.reset (new QAction (tr ("Make magnet link..."),
+							Toolbar_.get ()));
+				MakeMagnetLink_->setProperty ("ActionIcon", "torrent_insertmagnetlink");
+				connect (MakeMagnetLink_.get (),
+						SIGNAL (triggered ()),
+						this,
+						SLOT (on_MakeMagnetLink__triggered ()));
+			
 				Import_.reset (new QAction (tr ("Import..."),
 							Toolbar_.get ()));
 				connect (Import_.get (),
@@ -1009,6 +1061,7 @@ namespace LeechCraft
 				Toolbar_->addAction (ForceRecheck_.get ());
 				Toolbar_->addAction (MoveFiles_.get ());
 				Toolbar_->addAction (ChangeTrackers_.get ());
+				Toolbar_->addAction (MakeMagnetLink_.get ());
 				Toolbar_->addSeparator ();
 				Toolbar_->addAction (Import_.get ());
 				Toolbar_->addAction (Export_.get ());
@@ -1028,6 +1081,7 @@ namespace LeechCraft
 				contextMenu->addAction (ForceRecheck_.get ());
 				contextMenu->addAction (MoveFiles_.get ());
 				contextMenu->addAction (ChangeTrackers_.get ());
+				contextMenu->addAction (MakeMagnetLink_.get ());
 				Core::Instance ()->SetMenu (contextMenu);
 			}
 		};

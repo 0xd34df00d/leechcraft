@@ -1,0 +1,3 @@
+[submodule "src/plugins/remoter/webclient"]
+	path = src/plugins/remoter/webclient
+	url = git://gitorious.org/qt-labs/webclient.git

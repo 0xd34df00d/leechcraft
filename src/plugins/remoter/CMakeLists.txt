@@ -4,32 +4,53 @@ INCLUDE_DIRECTORIES (
     ${QT_QTGUI_INCLUDE_DIR}
    	${QT_QTNETWORK_INCLUDE_DIR}
     ${QT_QTXML_INCLUDE_DIR}
+	${LEECHCRAFT_INCLUDE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
-	${Wt_INCLUDE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/webclient/src/
+	${CMAKE_CURRENT_SOURCE_DIR}/webclient/3rdparty/json/
 	)
 
 SET (SRCS
     remoter.cpp
-    core.cpp
-	qtowabstractitemmodeladaptor.cpp
-	downloaderswidget.cpp
-	qtowtoolbaradaptor.cpp
-	util.cpp
-	interface.cpp
+	core.cpp
+	webclient/src/widgeteventhandler.cpp
+	webclient/src/eventqueue.cpp
+	webclient/src/webclientserver.cpp
+	webclient/src/webclient.cpp
+	webclient/src/sessionserver.cpp
+	webclient/3rdparty/json/arraylist.c
+	webclient/3rdparty/json/debug.c
+	webclient/3rdparty/json/json_object.c
+	webclient/3rdparty/json/json_tokener.c
+	webclient/3rdparty/json/json_util.c
+	webclient/3rdparty/json/linkhash.c
+	webclient/3rdparty/json/printbuf.c
 	)
 SET (HEADERS
     remoter.h
-    core.h
-	qtowabstractitemmodeladaptor.h
-	downloaderswidget.h
-	qtowtoolbaradaptor.h
-	util.h
-	interface.h
+	core.h
+	webclient/src/webclient.h
+	webclient/src/widgeteventhandler.h
+	webclient/src/eventqueue.h
+	webclient/src/webclientserver.h
+	webclient/src/sessionserver.h
+	webclient/3rdparty/json/arraylist.h
+	webclient/3rdparty/json/config.h
+	webclient/3rdparty/json/json.h
+	webclient/3rdparty/json/json_object_private.h
+	webclient/3rdparty/json/json_util.h
+	webclient/3rdparty/json/printbuf.h
+	webclient/3rdparty/json/bits.h
+	webclient/3rdparty/json/debug.h
+	webclient/3rdparty/json/json_object.h
+	webclient/3rdparty/json/json_tokener.h
+	webclient/3rdparty/json/linkhash.h
 	)
-SET (FORMS
-    mainwindow.ui)
-SET (RESOURCES resources.qrc)
+SET (RESOURCES resources.qrc
+	webclient/src/src.qrc
+	webclient/3rdparty/dojo.qrc
+	)
 SET (TRANSLATIONS
 	leechcraft_remoter_ru_RU.ts
 	leechcraft_remoter_uk_UA.ts
@@ -39,13 +60,7 @@ SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_remoter_uk_UA.qm
 	)
 
-ADD_DEFINITIONS(${QT_DEFINITIONS})
-ADD_DEFINITIONS(-DQT_PLUGIN)
-ADD_DEFINITIONS(-DQT_NO_DEBUG)
-ADD_DEFINITIONS(-DQT_NO_KEYWORDS)
-ADD_DEFINITIONS(-DQT_GUI_LIB)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 ADD_CUSTOM_COMMAND (OUTPUT
@@ -58,13 +73,9 @@ ADD_LIBRARY (leechcraft_remoter SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
-	${UIS_H}
 	${RCCS})
 TARGET_LINK_LIBRARIES (leechcraft_remoter
 	${QT_LIBRARIES}
-	${Wt_LIBRARY}
-	${Wt_HTTP_LIBRARY}
-	${Wt_EXT_LIBRARY}
 	plugininterface
 	xmlsettingsdialog
 	)

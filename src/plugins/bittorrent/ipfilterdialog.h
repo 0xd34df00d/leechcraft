@@ -16,18 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef QTOWTOOLBARADAPTOR_H
-#define QTOWTOOLBARADAPTOR_H
-#include <vector>
-#include <Ext/ToolBar>
+#ifndef PLUGINS_TORRENT_IPFILTERDIALOG_H
+#define PLUGINS_TORRENT_IPFILTERDIALOG_H
+#include <QDialog>
+#include "ui_ipfilterdialog.h"
+#include "core.h"
 
-class QToolBar;
-
-class QToWToolbarAdaptor : public Wt::Ext::ToolBar
+namespace LeechCraft
 {
-public:
-	QToWToolbarAdaptor (const QToolBar*, Wt::WContainerWidget* = 0);
-	virtual ~QToWToolbarAdaptor ();
+	namespace Plugins
+	{
+		namespace BitTorrent
+		{
+			class IPFilterDialog : public QDialog
+			{
+				Q_OBJECT
+
+				Ui::IPFilterDialog Ui_;
+			public:
+				IPFilterDialog (QWidget* = 0);
+
+				QMap<Core::BanRange_t, bool> GetFilter () const;
+			private slots:
+				void on_Tree__currentItemChanged (QTreeWidgetItem*);
+				void on_Tree__itemClicked (QTreeWidgetItem*, int);
+				void on_Add__released ();
+				void on_Modify__released ();
+				void on_Remove__released ();
+			};
+		};
+	};
 };
 
 #endif

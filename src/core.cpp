@@ -323,7 +323,13 @@ void LeechCraft::Core::TryToAddJob (QString name, QString where)
 	if (QFile::exists (name))
 		e.Entity_ = QUrl::fromLocalFile (name);
 	else
-		e.Entity_ = name;
+	{
+		QUrl url (name);
+		if (url.isValid ())
+			e.Entity_ = url;
+		else
+			e.Entity_ = name;
+	}
 	e.Location_ = where;
 	e.Parameters_ = FromUserInitiated;
 

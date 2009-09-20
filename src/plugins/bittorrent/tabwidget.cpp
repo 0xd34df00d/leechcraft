@@ -30,6 +30,7 @@
 #include "peersmodel.h"
 #include "addpeerdialog.h"
 #include "addwebseeddialog.h"
+#include "banpeersdialog.h"
 
 namespace LeechCraft
 {
@@ -83,6 +84,11 @@ namespace LeechCraft
                         SLOT (currentFileChanged (const QModelIndex&)));
 
                 currentFileChanged (QModelIndex ());
+
+				connect (Ui_.PeersView_->selectionModel (),
+						SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
+						this,
+						SLOT (currentPeerChanged (const QModelIndex&)));
 
 				connect (Ui_.WebSeedsView_->selectionModel (),
 						SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
@@ -160,6 +166,17 @@ namespace LeechCraft
 						SLOT (handleAddPeer ()));
 				Ui_.PeersView_->addAction (AddPeer_);
 
+				BanPeer_ = new QAction (tr ("Ban peer..."),
+						Ui_.PeersView_);
+				BanPeer_->setProperty ("ActionIcon", "torrent_banpeer");
+				BanPeer_->setObjectName ("BanPeer_");
+				BanPeer_->setEnabled (false);
+				connect (BanPeer_,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleBanPeer ()));
+				Ui_.PeersView_->addAction (BanPeer_);
+
 				AddWebSeed_ = new QAction (tr ("Add web seed..."),
 						Ui_.WebSeedsView_);
 				AddWebSeed_->setProperty ("ActionIcon", "torrent_addwebseed");
@@ -168,6 +185,7 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (handleAddWebSeed ()));
+
 				RemoveWebSeed_ = new QAction (tr ("Remove web seed"),
 						Ui_.WebSeedsView_);
 				RemoveWebSeed_->setProperty ("ActionIcon", "torrent_removewebseed");
@@ -711,6 +729,18 @@ namespace LeechCraft
 				Core::Instance ()->AddPeer (peer.GetIP (), peer.GetPort ());
 			}
 
+			void TabWidget::handleBanPeer ()
+			{
+				QModelIndex peerIndex = Ui_.PeersView_->currentIndex ();
+
+				BanPeersDialog ban;
+				ban.SetIP (peerIndex.sibling (peerIndex.row (), 0).data ().toString ());
+				if (ban.exec () != QDialog::Accepted)
+					return;
+
+				Core::Instance ()->BanPeers (qMakePair (ban.GetStart (), ban.GetEnd ()));
+			}
+
 			void TabWidget::handleAddWebSeed ()
 			{
 				AddWebSeedDialog ws;
@@ -722,6 +752,11 @@ namespace LeechCraft
 					return;
 
 				Core::Instance ()->AddWebSeed (ws.GetURL (), ws.GetType ());
+			}
+
+			void TabWidget::currentPeerChanged (const QModelIndex& index)
+			{
+				BanPeer_->setEnabled (index.isValid ());
 			}
 
 			void TabWidget::currentWebSeedChanged (const QModelIndex& index)

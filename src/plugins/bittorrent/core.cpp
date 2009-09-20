@@ -1065,7 +1065,7 @@ namespace LeechCraft
 				CurrentTorrent_ = old;
 				return trackers;
 			}
-			
+
 			void Core::SetTrackers (const QStringList& trackers)
 			{
 				if (!CheckValidity (CurrentTorrent_))
@@ -1084,6 +1084,15 @@ namespace LeechCraft
 				CurrentTorrent_ = row;
 				SetTrackers (trackers);
 				CurrentTorrent_ = old;
+			}
+			
+			QString Core::GetMagnetLink () const
+			{
+				if (!CheckValidity (CurrentTorrent_))
+					return QString ();
+
+				std::string result = libtorrent::make_magnet_uri (Handles_ [CurrentTorrent_].Handle_);
+				return QString::fromStdString (result);
 			}
 			
 			QString Core::GetTorrentDirectory () const
@@ -1404,6 +1413,45 @@ namespace LeechCraft
 				writer.writeEndDocument ();
 			
 				file.write (result);
+			}
+
+			void Core::BanPeers (const Core::BanRange_t& peers, bool block)
+			{
+				libtorrent::ip_filter filter = Session_->get_ip_filter ();
+				filter.add_rule (libtorrent::address::from_string (peers.first.toStdString ()),
+						libtorrent::address::from_string (peers.second.toStdString ()),
+						block ?
+							libtorrent::ip_filter::blocked :
+							0);
+				Session_->set_ip_filter (filter);
+
+				ScheduleSave ();
+			}
+
+			void Core::ClearFilter ()
+			{
+				Session_->set_ip_filter (libtorrent::ip_filter ());
+				ScheduleSave ();
+			}
+
+			QMap<Core::BanRange_t, bool> Core::GetFilter () const
+			{
+				boost::tuple<std::vector<libtorrent::ip_range<libtorrent::address_v4> >,
+					std::vector<libtorrent::ip_range<libtorrent::address_v6> > > both =
+						Session_->get_ip_filter ().export_filter ();
+				std::vector<libtorrent::ip_range<libtorrent::address_v4> > v4 = both.get<0> ();
+				std::vector<libtorrent::ip_range<libtorrent::address_v6> > v6 = both.get<1> ();
+
+				QMap<Core::BanRange_t, bool> result;
+				Q_FOREACH (libtorrent::ip_range<libtorrent::address_v4> range, v4)
+					result [BanRange_t (QString::fromStdString (range.first.to_string ()),
+							QString::fromStdString (range.last.to_string ()))] =
+						range.flags;
+				Q_FOREACH (libtorrent::ip_range<libtorrent::address_v6> range, v6)
+					result [BanRange_t (QString::fromStdString (range.first.to_string ()),
+							QString::fromStdString (range.last.to_string ()))] =
+						range.flags;
+				return result;
 			}
 			
 			void Core::SaveResumeData (const libtorrent::save_resume_data_alert& a) const
@@ -1805,6 +1853,17 @@ namespace LeechCraft
 					endInsertRows ();
 				}
 				settings.endArray ();
+
+				int filters = settings.beginReadArray ("IPFilter");
+				for (int i = 0; i < filters; ++i)
+				{
+					settings.setArrayIndex (i);
+					BanRange_t range (settings.value ("First").toString (),
+							settings.value ("Last").toString ());
+					bool block = settings.value ("Block").toBool ();
+					BanPeers (range, block);
+				}
+				settings.endArray ();
 				settings.endGroup ();
 			}
 			
@@ -2108,6 +2167,19 @@ namespace LeechCraft
 						qWarning () << Q_FUNC_INFO << "unknown exception";
 					}
 					CurrentTorrent_ = oldCurrent;
+				}
+				settings.endArray ();
+				settings.beginWriteArray ("IPFilter");
+				settings.remove ("");
+				QMap<BanRange_t, bool> filter = GetFilter ();
+				QList<BanRange_t> keys = filter.keys ();
+				int i = 0;
+				Q_FOREACH (BanRange_t key, keys)
+				{
+					settings.setArrayIndex (i++);
+					settings.setValue ("First", key.first);
+					settings.setValue ("Last", key.second);
+					settings.setValue ("Block", filter [key]);
 				}
 				settings.endArray ();
 				settings.endGroup ();
