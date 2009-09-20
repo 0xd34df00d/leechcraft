@@ -77,6 +77,7 @@ namespace LeechCraft
 					bool ErrorFlag_;
 					LeechCraft::TaskParameters Parameters_;
 					quint32 ID_;
+					QStringList Tags_;
 				};
 				typedef std::list<TaskDescr> tasks_t;
 				tasks_t ActiveTasks_;
@@ -141,14 +142,23 @@ namespace LeechCraft
 				void writeSettings ();
 				void finishedReply (QNetworkReply*);
 			private:
-				int AddTask (const QUrl&, const QString&,
-						const QString&, const QString&,
+				int AddTask (const QUrl&,
+						const QString&,
+						const QString&,
+						const QString&,
+						const QStringList&,
 						LeechCraft::TaskParameters = LeechCraft::NoParameters);
-				int AddTask (QNetworkReply*, const QString&,
-						const QString&, const QString&,
+				int AddTask (QNetworkReply*,
+						const QString&,
+						const QString&,
+						const QString&,
+						const QStringList&,
 						LeechCraft::TaskParameters = LeechCraft::NoParameters);
-				int AddTask (TaskDescr&, const QString&,
-						const QString&, const QString&,
+				int AddTask (TaskDescr&,
+						const QString&,
+						const QString&,
+						const QString&,
+						const QStringList&,
 						LeechCraft::TaskParameters = LeechCraft::NoParameters);
 				void ReadSettings ();
 				void ScheduleSave ();

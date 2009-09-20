@@ -107,6 +107,7 @@ namespace LeechCraft
 			{
 				QUrl entity = e.Entity_.toUrl ();
 				QNetworkReply *rep = e.Entity_.value<QNetworkReply*> ();
+				QStringList tags = e.Additional_ [" Tags"].toStringList ();
 				if (rep)
 				{
 					QFileInfo fi (e.Location_);
@@ -120,7 +121,11 @@ namespace LeechCraft
 						file = "index";
 			
 					return AddTask (rep,
-							dir, file, QString (), e.Parameters_);
+							dir,
+							file,
+							QString (),
+							tags,
+							e.Parameters_);
 				}
 				else
 				{
@@ -137,6 +142,7 @@ namespace LeechCraft
 								task.LocalPath_,
 								task.Filename_,
 								task.Comment_,
+								tags,
 								e.Parameters_);
 					}
 					else
@@ -160,7 +166,11 @@ namespace LeechCraft
 						}
 			
 						return AddTask (entity,
-								dir, file, QString (), e.Parameters_);
+								dir,
+								file,
+								QString (),
+								tags,
+								e.Parameters_);
 					}
 				}
 			}
@@ -169,30 +179,33 @@ namespace LeechCraft
 					const QString& path,
 					const QString& filename,
 					const QString& comment,
+					const QStringList& tags,
 					LeechCraft::TaskParameters tp)
 			{
 				TaskDescr td;
 				td.Task_.reset (new Task (rep));
 			
-				return AddTask (td, path, filename, comment, tp);
+				return AddTask (td, path, filename, comment, tags, tp);
 			}
 			
 			int Core::AddTask (const QUrl& url,
 					const QString& path,
 					const QString& filename,
 					const QString& comment,
+					const QStringList& tags,
 					LeechCraft::TaskParameters tp)
 			{
 				TaskDescr td;
 				td.Task_.reset (new Task (url));
 			
-				return AddTask (td, path, filename, comment, tp);
+				return AddTask (td, path, filename, comment, tags, tp);
 			}
 			
 			int Core::AddTask (TaskDescr& td,
 					const QString& path,
 					const QString& filename,
 					const QString& comment,
+					const QStringList& tags,
 					LeechCraft::TaskParameters tp)
 			{
 				QDir dir (path);
@@ -202,6 +215,7 @@ namespace LeechCraft
 				td.ErrorFlag_ = false;
 				td.Parameters_ = tp;
 				td.ID_ = CoreProxy_->GetID ();
+				td.Tags_ = tags;
 			
 				if (td.File_->exists ())
 				{
@@ -493,6 +507,7 @@ namespace LeechCraft
 				QString filename = taskdscr->File_->fileName ();
 				QString url = taskdscr->Task_->GetURL ();
 				QString errorStr = taskdscr->Task_->GetErrorString ();
+				QStringList tags = taskdscr->Tags_;
 			
 				taskdscr->File_->close ();
 			
@@ -512,6 +527,7 @@ namespace LeechCraft
 							LeechCraft::Util::MakeEntity (QUrl::fromLocalFile (filename),
 								url,
 								tp);
+						e.Additional_ [" Tags"] = tags;
 						emit gotEntity (e);
 					}
 				}
@@ -555,6 +571,7 @@ namespace LeechCraft
 					settings.setValue ("Filename", i->File_->fileName ());
 					settings.setValue ("Comment", i->Comment_);
 					settings.setValue ("ErrorFlag", i->ErrorFlag_);
+					settings.setValue ("Tags", i->Tags_);
 				}
 				SaveScheduled_ = false;
 				settings.endArray ();
@@ -602,6 +619,7 @@ namespace LeechCraft
 			
 					td.Comment_ = settings.value ("Comment").toString ();
 					td.ErrorFlag_ = settings.value ("ErrorFlag").toBool ();
+					td.Tags_ = settings.value ("Tags").toStringList ();
 			
 					ActiveTasks_.push_back (td);
 				}
