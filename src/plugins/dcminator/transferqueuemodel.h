@@ -40,14 +40,19 @@ namespace LeechCraft
 						QueueItemInfo_ptr,
 						dcpp::noCaseStringHash,
 						dcpp::noCaseStringEq> DirectoryMap_t;
+				typedef DirectoryMap_t::iterator DirectoryIter_t;
+				typedef std::pair<DirectoryIter_t, DirectoryIter_t> DirectoryPair_t;
 				DirectoryMap_t DirectoryMap_;
 
 				QList<QueueItemInfo_ptr> Items_;
 			public:
 				TransferQueueModel (QObject* = 0);
+				virtual ~TransferQueueModel ();
 			private:
 				void AddQueueList (const dcpp::QueueItem::StringMap&);
 				void AddQueueItem (const QueueItemInfo_ptr&);
+				QueueItemInfo_ptr GetItemInfo (const std::string&);
+				void UpdateQueueItem (const std::string&, const dcpp::QueueItem&);
 				void RemoveQueueItem (const std::string&);
 
 				virtual void on (dcpp::QueueManagerListener::Added,

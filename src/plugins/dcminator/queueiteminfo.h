@@ -33,13 +33,33 @@ namespace LeechCraft
 			class QueueItemInfo : public dcpp::Flags
 								 , public dcpp::FastAlloc<QueueItemInfo>
 			{
+				std::string Target_;
 				std::string Path_;
+				int64_t Size_;
+				int64_t DownloadedBytes_;
+				time_t Added_;
+				dcpp::QueueItem::Priority Priority_;
+				bool Running_;
+				dcpp::TTHValue TTH_;
+				dcpp::QueueItem::SourceList Sources_;
+				dcpp::QueueItem::SourceList BadSources_;
+				uint32_t UpdateMask_;
 			public:
 				QueueItemInfo (const dcpp::QueueItem&);
 				virtual ~QueueItemInfo ();
 
+				std::string GetTarget () const;
 				std::string GetPath () const;
+				int64_t GetSize () const;
+				int64_t GetDownloadedBytes () const;
+				time_t GetAdded () const;
+
+				void SetPriority (const dcpp::QueueItem::Priority&);
+				void SetDownloadedBytes (int64_t);
+				void SetSources (const dcpp::QueueItem::SourceList&);
+				void SetBadSources (const dcpp::QueueItem::SourceList&);
 			};
+
 			typedef boost::shared_ptr<QueueItemInfo> QueueItemInfo_ptr;
 		};
 	};
