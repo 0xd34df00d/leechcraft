@@ -1482,7 +1482,7 @@ namespace LeechCraft
 					std::find_if (Handles_.begin (), Handles_.end (),
 							HandleFinder (a.handle));
 				libtorrent::torrent_info info = a.handle.get_torrent_info ();
-				torrent->TorrentFileName_ = QString::fromUtf8 (info.name ().c_str ());
+				torrent->TorrentFileName_ = QString::fromUtf8 (info.name ().c_str ()) + ".torrent";
 				torrent->FilePriorities_
 					.resize (std::distance (info.begin_files (), info.end_files ()));
 				std::fill (torrent->FilePriorities_.begin (),
@@ -1491,6 +1491,10 @@ namespace LeechCraft
 				boost::shared_array<char> metadata = info.metadata ();
 				std::copy (metadata.get (), metadata.get () + info.metadata_size (),
 						std::back_inserter (torrent->TorrentFileContents_));
+
+				qDebug () << "HandleMetadata"
+					<< std::distance (Handles_.begin (), torrent)
+					<< torrent->TorrentFileName_;
 			
 				ScheduleSave ();
 			}
@@ -2121,7 +2125,19 @@ namespace LeechCraft
 				{
 					settings.setArrayIndex (i);
 					if (!CheckValidity (i))
+					{
+						qWarning () << Q_FUNC_INFO
+							<< "invalid torrent"
+							<< i;
 						continue;
+					}
+					if (Handles_.at (i).TorrentFileName_.isEmpty ())
+					{
+						qWarning () << Q_FUNC_INFO
+							<< "empty file name"
+							<< i;
+						continue;
+					}
 					settings.remove ("");
 					int oldCurrent = CurrentTorrent_;
 					CurrentTorrent_ = i;
@@ -2131,29 +2147,31 @@ namespace LeechCraft
 								"/.leechcraft/bittorrent/" +
 								Handles_.at (i).TorrentFileName_);
 						if (!file_info.open (QIODevice::WriteOnly))
+							emit error (QString ("Cannot write settings! "
+										"Cannot open file %1 for write!")
+									.arg (Handles_.at (i).TorrentFileName_));
+						else
 						{
-							emit error ("Cannot write settings! Cannot open files for write!");
-							break;
+							file_info.write (Handles_.at (i).TorrentFileContents_);
+							file_info.close ();
+				
+							Handles_.at (i).Handle_.save_resume_data ();
+				
+							settings.setValue ("SavePath",
+									QString::fromStdString (Handles_.at (i).Handle_.save_path ().string ()));
+							settings.setValue ("Filename", Handles_.at (i).TorrentFileName_);
+							settings.setValue ("TrackersOverride", GetTrackers ());
+							settings.setValue ("Tags", Handles_.at (i).Tags_);
+							settings.setValue ("ID", Handles_.at (i).ID_);
+							settings.setValue ("Parameters", static_cast<int> (Handles_.at (i).Parameters_));
+							settings.setValue ("AutoManaged", Handles_.at (i).AutoManaged_);
+				
+							QByteArray prioritiesLine;
+							std::copy (Handles_.at (i).FilePriorities_.begin (),
+									Handles_.at (i).FilePriorities_.end (),
+									std::back_inserter (prioritiesLine));
+							settings.setValue ("Priorities", prioritiesLine);
 						}
-						file_info.write (Handles_.at (i).TorrentFileContents_);
-						file_info.close ();
-			
-						Handles_.at (i).Handle_.save_resume_data ();
-			
-						settings.setValue ("SavePath",
-								QString::fromStdString (Handles_.at (i).Handle_.save_path ().string ()));
-						settings.setValue ("Filename", Handles_.at (i).TorrentFileName_);
-						settings.setValue ("TrackersOverride", GetTrackers ());
-						settings.setValue ("Tags", Handles_.at (i).Tags_);
-						settings.setValue ("ID", Handles_.at (i).ID_);
-						settings.setValue ("Parameters", static_cast<int> (Handles_.at (i).Parameters_));
-						settings.setValue ("AutoManaged", Handles_.at (i).AutoManaged_);
-			
-						QByteArray prioritiesLine;
-						std::copy (Handles_.at (i).FilePriorities_.begin (),
-								Handles_.at (i).FilePriorities_.end (),
-								std::back_inserter (prioritiesLine));
-						settings.setValue ("Priorities", prioritiesLine);
 					}
 					catch (const std::exception& e)
 					{
@@ -2166,6 +2184,7 @@ namespace LeechCraft
 					CurrentTorrent_ = oldCurrent;
 				}
 				settings.endArray ();
+
 				settings.beginWriteArray ("IPFilter");
 				settings.remove ("");
 				QMap<BanRange_t, bool> filter = GetFilter ();
@@ -2279,7 +2298,7 @@ namespace LeechCraft
 			
 				void operator() (const libtorrent::metadata_received_alert& a) const
 				{
-					Core::Instance ()->HandleMetadata (a.handle);
+					Core::Instance ()->HandleMetadata (a);
 				}
 
 				void operator() (const libtorrent::file_error_alert& a) const
