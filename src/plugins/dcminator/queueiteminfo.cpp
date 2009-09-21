@@ -16,14 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_DCMINATOR_DCMINATOR_H
-#define PLUGINS_DCMINATOR_DCMINATOR_H
-#include <memory>
-#include <QObject>
-#include <QStringList>
-#include <QTranslator>
-#include <interfaces/iinfo.h>
-#include <interfaces/ijobholder.h>
+#include "queueiteminfo.h"
 
 namespace LeechCraft
 {
@@ -31,29 +24,21 @@ namespace LeechCraft
 	{
 		namespace DCminator
 		{
-			class Plugin : public QObject
-						 , public IInfo
+			QueueItemInfo::QueueItemInfo (const dcpp::QueueItem& aqi)
+			: dcpp::Flags (aqi)
+			, Path_ (dcpp::Util::getFilePath (aqi.getTarget ()))
 			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo)
+			}
 
-				std::auto_ptr<QTranslator> Translator_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
-			signals:
-				void gotEntity (const LeechCraft::DownloadEntity&);
-			};
+			QueueItemInfo::~QueueItemInfo ()
+			{
+			}
+
+			std::string QueueItemInfo::GetPath () const
+			{
+				return Path_;
+			}
 		};
 	};
 };
-
-#endif
 

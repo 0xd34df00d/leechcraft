@@ -13,10 +13,14 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	dcminator.cpp
 	core.cpp
+	transferqueuemodel.cpp
+	queueiteminfo.cpp
 	)
 SET (HEADERS
 	dcminator.h
 	core.h
+	transferqueuemodel.h
+	queueiteminfo.h
 	)
 SET (TRANSLATIONS
 	leechcraft_dcminator_ru_RU.ts

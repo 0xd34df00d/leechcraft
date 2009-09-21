@@ -16,14 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_DCMINATOR_DCMINATOR_H
-#define PLUGINS_DCMINATOR_DCMINATOR_H
-#include <memory>
-#include <QObject>
-#include <QStringList>
-#include <QTranslator>
-#include <interfaces/iinfo.h>
-#include <interfaces/ijobholder.h>
+#ifndef PLUGINS_DCMINATOR_QUEUEITEMINFO_H
+#define PLUGINS_DCMINATOR_QUEUEITEMINFO_H
+#include "dcpp/stdinc.h"
+#include "dcpp/DCPlusPlus.h"
+#include "dcpp/QueueManager.h"
+#include "dcpp/FastAlloc.h"
 
 namespace LeechCraft
 {
@@ -31,26 +29,18 @@ namespace LeechCraft
 	{
 		namespace DCminator
 		{
-			class Plugin : public QObject
-						 , public IInfo
+			// TODO implement
+			class QueueItemInfo : public dcpp::Flags
+								 , public dcpp::FastAlloc<QueueItemInfo>
 			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo)
-
-				std::auto_ptr<QTranslator> Translator_;
+				std::string Path_;
 			public:
-				void Init (ICoreProxy_ptr);
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
-			signals:
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				QueueItemInfo (const dcpp::QueueItem&);
+				virtual ~QueueItemInfo ();
+
+				std::string GetPath () const;
 			};
+			typedef boost::shared_ptr<QueueItemInfo> QueueItemInfo_ptr;
 		};
 	};
 };
