@@ -42,6 +42,7 @@ namespace LeechCraft
 		void handleAuthentication (const QNetworkProxy&, QAuthenticator*);
 		void handleSslErrors (QNetworkReply*, const QList<QSslError>&);
 		void saveCookies () const;
+		void handleFilterTrackingCookies ();
 	signals:
 		void requestCreated (QNetworkAccessManager::Operation,
 				const QNetworkRequest&, QNetworkReply*);

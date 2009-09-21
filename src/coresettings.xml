@@ -168,6 +168,10 @@
 				<suffix value=" МБ" />
 			</lang>
 		</item>
+		<item type="checkbox" name="FilterTrackingCookies" default="on">
+			<label lang="en" value="Filter tracking cookies" />
+			<label lang="ru" value="Фильтровать отслеживающие куки" />
+		</item>
 		<item type="pushbutton" name="ClearCache">
 			<label lang="en" value="Clear cache" />
 			<label lang="ru" value="Очистить кеш" />

@@ -29,10 +29,13 @@ namespace LeechCraft
 		class PLUGININTERFACE_API CustomCookieJar : public QNetworkCookieJar
 		{
 			Q_OBJECT
+
+			bool FilterTrackingCookies_;
 		public:
 			CustomCookieJar (QObject* = 0);
 			virtual ~CustomCookieJar ();
 
+			void SetFilterTrackingCookies (bool);
 			QByteArray Save () const;
 			void Load (const QByteArray&);
 

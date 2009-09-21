@@ -30,6 +30,7 @@
 #include "networkdiskcache.h"
 #include "authenticationdialog.h"
 #include "sslerrorsdialog.h"
+#include "xmlsettingsmanager.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -57,8 +58,13 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 			SLOT (handleSslErrors (QNetworkReply*,
 					const QList<QSslError>&)));
 
+	XmlSettingsManager::Instance ()->RegisterObject ("FilterTrackingCookies",
+			this,
+			"handleFilterTrackingCookies");
+
 	CustomCookieJar *jar = new CustomCookieJar (this);
 	setCookieJar (jar);
+	handleFilterTrackingCookies ();
 	QFile file (QDir::homePath () +
 			"/.leechcraft/core/cookies.txt");
 	if (file.open (QIODevice::ReadOnly))
@@ -239,5 +245,12 @@ void LeechCraft::NetworkAccessManager::saveCookies () const
 		}
 		file.write (jar->Save ());
 	}
+}
+
+void LeechCraft::NetworkAccessManager::handleFilterTrackingCookies ()
+{
+	qobject_cast<CustomCookieJar*> (cookieJar ())->
+		SetFilterTrackingCookies (XmlSettingsManager::Instance ()->
+				property ("FilterTrackingCookies").toBool ());
 }
 

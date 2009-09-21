@@ -23,11 +23,17 @@ using namespace LeechCraft::Util;
 
 CustomCookieJar::CustomCookieJar (QObject *parent)
 : QNetworkCookieJar (parent)
+, FilterTrackingCookies_ (false)
 {
 }
 
 CustomCookieJar::~CustomCookieJar ()
 {
+}
+
+void CustomCookieJar::SetFilterTrackingCookies (bool filter)
+{
+	FilterTrackingCookies_ = filter;
 }
 
 QByteArray CustomCookieJar::Save () const
@@ -46,10 +52,14 @@ QByteArray CustomCookieJar::Save () const
 void CustomCookieJar::Load (const QByteArray& data)
 {
 	QList<QByteArray> spcookies = data.split ('\n');
-	QList<QNetworkCookie> cookies;
+	QList<QNetworkCookie> cookies, filteredCookies;
 	for (QList<QByteArray>::const_iterator i = spcookies.begin (),
 			end = spcookies.end (); i != end; ++i)
 		cookies += QNetworkCookie::parseCookies (*i);
-	setAllCookies (cookies);
+	Q_FOREACH (QNetworkCookie cookie, cookies)
+		if (!(FilterTrackingCookies_ &&
+					cookie.name ().startsWith ("__utm")))
+			filteredCookies << cookie;
+	setAllCookies (filteredCookies);
 }
 
