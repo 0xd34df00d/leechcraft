@@ -20,6 +20,7 @@ SET (SRCS
 	modeltest.cpp
 	backendselector.cpp
 	structuresops.cpp
+	listmodel.cpp
 	)
 SET (HEADERS
 	tagscompleter.h
@@ -35,6 +36,7 @@ SET (HEADERS
 	modeltest.h
 	backendselector.h
 	structuresops.h
+	listmodel.h
 	)
 SET (FORMS
 	backendselector.ui
