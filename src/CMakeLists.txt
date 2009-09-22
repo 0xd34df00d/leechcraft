@@ -65,6 +65,7 @@ OPTION (ENABLE_CHATTER "Build Chatter, simple IRC client" ON)
 OPTION (ENABLE_YASD "Build YASD, Yet Another Site Downloader" ON)
 OPTION (ENABLE_DCMINATOR "Build DCminator, the DirectConnect client" ON)
 OPTION (ENABLE_REMOTER "Build Remoter, the remote access manager" OFF)
+OPTION (ENABLE_NEWLIFE "Build NewLife, the settings importer" ON)
 
 IF (ENABLE_TORRENT)
 	IF (RBTorrent_FOUND)
@@ -137,6 +138,10 @@ ENDIF (ENABLE_DCMINATOR)
 IF (ENABLE_REMOTER)
 	ADD_SUBDIRECTORY (plugins/remoter)
 ENDIF (ENABLE_REMOTER)
+
+IF (ENABLE_NEWLIFE)
+	ADD_SUBDIRECTORY (plugins/newlife)
+ENDIF (ENABLE_NEWLIFE)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
