@@ -61,6 +61,20 @@ namespace LeechCraft
 			return Headers_.at (section);
 		}
 
+		QModelIndex ListModel::index (int row, int column, const QModelIndex& parent) const
+		{
+			if (parent.isValid () ||
+					!hasIndex (row, column))
+				return QModelIndex ();
+
+			return createIndex (row, column);
+		}
+
+		QModelIndex ListModel::parent (const QModelIndex&) const
+		{
+			return QModelIndex ();
+		}
+
 		int ListModel::rowCount (const QModelIndex& index) const
 		{
 			return index.isValid () ? 0 : Items_.size ();

@@ -45,13 +45,15 @@ namespace LeechCraft
 				RolePointer = Qt::UserRole + 25
 			};
 
-			ListModel (const QStringList&, QObject* = 0);
+			ListModel (const QStringList& = QStringList (), QObject* = 0);
 			virtual ~ListModel ();
 
 			int columnCount (const QModelIndex& = QModelIndex ()) const;
 			QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
 			Qt::ItemFlags flags (const QModelIndex&) const;
 			QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
+			QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
+			QModelIndex parent (const QModelIndex&) const;
 			int rowCount (const QModelIndex& = QModelIndex ()) const;
 
 			void Insert (ListModelItem*, int = -1);
@@ -59,6 +61,7 @@ namespace LeechCraft
 			void Remove (int);
 			void Update (ListModelItem*);
 			void Update (int);
+
 			void SetHeaders (const QStringList&);
 
 			template<typename T>
