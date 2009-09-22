@@ -41,7 +41,10 @@ namespace LeechCraft
 
 		QVariant ListModel::data (const QModelIndex& index, int role) const
 		{
-			return Items_ [index.row ()]->Data (index.column (), role);
+			if (role != RolePointer)
+				return Items_ [index.row ()]->Data (index.column (), role);
+			else
+				return QVariant::fromValue<void*> (Items_ [index.row ()]);
 		}
 
 		Qt::ItemFlags ListModel::flags (const QModelIndex&) const

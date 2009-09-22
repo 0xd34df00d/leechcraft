@@ -40,6 +40,11 @@ namespace LeechCraft
 			QList<ListModelItem*> Items_;
 			QStringList Headers_;
 		public:
+			enum Roles
+			{
+				RolePointer = Qt::UserRole + 25
+			};
+
 			ListModel (const QStringList&, QObject* = 0);
 			virtual ~ListModel ();
 
