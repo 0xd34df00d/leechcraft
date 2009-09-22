@@ -16,6 +16,7 @@ SET (SRCS
 	selectablebrowser.cpp
 	wizardgenerator.cpp
 	startupfirstpage.cpp
+	tagsasker.cpp
 	)
 SET (HEADERS
 	seekthru.h
@@ -28,6 +29,7 @@ SET (HEADERS
 	selectablebrowser.h
 	wizardgenerator.h
 	startupfirstpage.h
+	tagsasker.h
 	)
 SET (TRANSLATIONS
 	leechcraft_seekthru_ru_RU.ts
@@ -36,6 +38,7 @@ SET (TRANSLATIONS
 SET (FORMS
 	searcherslist.ui
 	startupfirstpage.ui
+	tagsasker.ui
 	)
 SET (RESOURCES
 	resources.qrc

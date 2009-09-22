@@ -33,9 +33,11 @@ namespace LeechCraft
 		{
 			using namespace LeechCraft::Util;
 			
-			void SeekThru::Init (ICoreProxy_ptr)
+			void SeekThru::Init (ICoreProxy_ptr proxy)
 			{
 				Translator_.reset (LeechCraft::Util::InstallTranslator ("seekthru"));
+
+				Core::Instance ().SetProxy (proxy);
 
 				connect (&Core::Instance (),
 						SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,

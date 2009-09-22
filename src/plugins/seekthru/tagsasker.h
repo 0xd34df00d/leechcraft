@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SEEKTHRU_SEARCHERSLIST_H
-#define PLUGINS_SEEKTHRU_SEARCHERSLIST_H
-#include <QWidget>
-#include "ui_searcherslist.h"
+#ifndef PLUGINS_SEEKTHRU_TAGSASKER_H
+#define PLUGINS_SEEKTHRU_TAGSASKER_H
+#include <QDialog>
+#include "ui_tagsasker.h"
 
 namespace LeechCraft
 {
@@ -27,19 +27,15 @@ namespace LeechCraft
 	{
 		namespace SeekThru
 		{
-			class SearchersList : public QWidget
+			class TagsAsker : public QDialog
 			{
 				Q_OBJECT
 
-				Ui::SearchersList Ui_;
-				QModelIndex Current_;
+				Ui::TagsAsker Ui_;
 			public:
-				SearchersList (QWidget* = 0);
-			private slots:
-				void handleCurrentChanged (const QModelIndex&);
-				void on_ButtonAdd__released ();
-				void on_ButtonRemove__released ();
-				void on_Tags__editingFinished ();
+				TagsAsker (const QString&, QWidget* = 0);
+
+				QString GetTags () const;
 			};
 		};
 	};

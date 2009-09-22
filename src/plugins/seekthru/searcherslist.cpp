@@ -18,6 +18,7 @@
 
 #include "searcherslist.h"
 #include <QInputDialog>
+#include <plugininterface/tagscompleter.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -30,6 +31,8 @@ namespace LeechCraft
 			: QWidget (parent)
 			{
 				Ui_.setupUi (this);
+				new Util::TagsCompleter (Ui_.Tags_, this);
+				Ui_.Tags_->AddSelector ();
 				Ui_.SearchersView_->setModel (&Core::Instance ());
 				connect (Ui_.SearchersView_->selectionModel (),
 						SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
@@ -57,7 +60,8 @@ namespace LeechCraft
 					Ui_.LongName_->setText (longName);
 			
 				QStringList tags = current.data (Core::RoleTags).toStringList ();
-				Ui_.Tags_->setText (tags.join (" "));
+				Ui_.Tags_->setText (Core::Instance ().GetProxy ()->
+						GetTagsManager ()->Join (tags));
 			
 				QString contact = current.data (Core::RoleContact).toString ();
 				if (contact.isEmpty ())
@@ -107,9 +111,11 @@ namespace LeechCraft
 				Core::Instance ().Remove (Ui_.SearchersView_->selectionModel ()->currentIndex ());
 			}
 			
-			void SearchersList::on_Tags__textEdited (const QString& text)
+			void SearchersList::on_Tags__editingFinished ()
 			{
-				Core::Instance ().SetTags (Current_, text.split (' ', QString::SkipEmptyParts));
+				Core::Instance ().SetTags (Current_,
+						Core::Instance ().GetProxy ()->
+							GetTagsManager ()->Split (Ui_.Tags_->text ()));
 			}
 		};
 	};

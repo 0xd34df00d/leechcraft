@@ -31,6 +31,7 @@
 #include <interfaces/iwebbrowser.h>
 #include <plugininterface/util.h>
 #include "findproxy.h"
+#include "tagsasker.h"
 
 namespace LeechCraft
 {
@@ -48,8 +49,16 @@ namespace LeechCraft
 				qRegisterMetaTypeStreamOperators<QueryDescription> ("LeechCraft::Plugins::SeekThru::QueryDescription");
 				qRegisterMetaTypeStreamOperators<Description> ("LeechCraft::Plugins::SeekThru::Description");
 				ReadSettings ();
+			}
+
+			void Core::SetProxy (ICoreProxy_ptr proxy)
+			{
+				Proxy_ = proxy;
+			}
 			
-				GetCategories ();
+			ICoreProxy_ptr Core::GetProxy () const
+			{
+				return Proxy_;
 			}
 			
 			Core& Core::Instance ()
@@ -81,7 +90,12 @@ namespace LeechCraft
 							case RoleContact:
 								return d.Contact_;
 							case RoleTags:
-								return d.Tags_;
+								{
+									QStringList result;
+									Q_FOREACH (QString tag, d.Tags_)
+										result << Proxy_->GetTagsManager ()->GetTag (tag);
+									return result;
+								}
 							case RoleLongName:
 								return d.LongName_;
 							case RoleDeveloper:
@@ -197,7 +211,10 @@ namespace LeechCraft
 			
 			void Core::SetTags (const QModelIndex& index, const QStringList& tags)
 			{
-				Descriptions_ [index.row ()].Tags_ = tags;
+				Descriptions_ [index.row ()].Tags_.clear ();
+				Q_FOREACH (QString tag, tags)
+					Descriptions_ [index.row ()].Tags_ <<
+						Proxy_->GetTagsManager ()->GetID (tag);
 				WriteSettings ();
 			}
 			
@@ -206,7 +223,8 @@ namespace LeechCraft
 				QStringList result;
 				for (QList<Description>::const_iterator i = Descriptions_.begin (),
 						end = Descriptions_.end (); i != end; ++i)
-					result += i->Tags_;
+					Q_FOREACH (QString tag, i->Tags_)
+						result += Proxy_->GetTagsManager ()->GetTag (tag);
 			
 				result.sort ();
 				result.erase (std::unique (result.begin (), result.end ()), result.end ());
@@ -218,7 +236,11 @@ namespace LeechCraft
 			{
 				QList<SearchHandler_ptr> handlers;
 				Q_FOREACH (Description d, Descriptions_)
-					if (d.Tags_.contains (r.Category_))
+				{
+					QStringList ht;
+					Q_FOREACH (QString id, d.Tags_)
+						ht << Proxy_->GetTagsManager ()->GetTag (id);
+					if (ht.contains (r.Category_))
 					{
 						SearchHandler_ptr sh (new SearchHandler (d));
 						connect (sh.get (),
@@ -241,6 +263,7 @@ namespace LeechCraft
 								SIGNAL (warning (const QString&)));
 						handlers << sh;
 					}
+				}
 			
 				boost::shared_ptr<FindProxy> fp (new FindProxy (r));
 				fp->SetHandlers (handlers);
@@ -349,22 +372,26 @@ namespace LeechCraft
 				{
 					QDomElement tagsTag = root.firstChildElement ("Tags");
 					if (!tagsTag.isNull ())
-						descr.Tags_ = tagsTag.text ().split (' ', QString::SkipEmptyParts);
+						descr.Tags_ = Proxy_->GetTagsManager ()->Split (tagsTag.text ());
 					else
 						descr.Tags_ = QStringList ("default");
 				
-					QString userTags = QInputDialog::getText (0,
-							tr ("Enter categories"),
-							tr ("Please enter categories for this searcher:"),
-							QLineEdit::Normal,
-							descr.Tags_.join (" "));
+					TagsAsker ta (Proxy_->GetTagsManager ()->Join (descr.Tags_));
+					QString userTags;
+					qDebug () << Q_FUNC_INFO;
+					if (ta.exec () == QDialog::Accepted)
+						userTags = ta.GetTags ();
+
 					if (!userTags.isEmpty ())
-						descr.Tags_ = userTags.split (' ', QString::SkipEmptyParts);
+						descr.Tags_ = Proxy_->GetTagsManager ()->Split (userTags);
 				}
 				else
-				{
-					descr.Tags_ = useTags.split (' ', QString::SkipEmptyParts);
-				}
+					descr.Tags_ = Proxy_->GetTagsManager ()->Split (useTags);
+
+				QStringList hrTags = descr.Tags_;
+				descr.Tags_.clear ();
+				Q_FOREACH (QString tag, hrTags)
+					descr.Tags_ << Proxy_->GetTagsManager ()->GetID (tag);
 			
 				QDomElement longNameTag = root.firstChildElement ("LongName");
 				if (!longNameTag.isNull ())

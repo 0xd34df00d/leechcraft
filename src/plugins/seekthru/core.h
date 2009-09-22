@@ -21,6 +21,7 @@
 #include <QAbstractItemModel>
 #include <QMap>
 #include <interfaces/structures.h>
+#include <interfaces/iinfo.h>
 #include <interfaces/ifinder.h>
 #include "description.h"
 #include "searchhandler.h"
@@ -42,6 +43,7 @@ namespace LeechCraft
 				QMap<int, QString> Jobs_;
 				QList<Description> Descriptions_;
 				QStringList Headers_;
+				ICoreProxy_ptr Proxy_;
 
 				static const QString OS_;
 
@@ -61,6 +63,9 @@ namespace LeechCraft
 				};
 
 				static Core& Instance ();
+
+				void SetProxy (ICoreProxy_ptr);
+				ICoreProxy_ptr GetProxy () const;
 
 				virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
 				virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;

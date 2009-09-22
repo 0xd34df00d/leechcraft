@@ -16,10 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SEEKTHRU_SEARCHERSLIST_H
-#define PLUGINS_SEEKTHRU_SEARCHERSLIST_H
-#include <QWidget>
-#include "ui_searcherslist.h"
+#include "tagsasker.h"
+#include <plugininterface/tagscompleter.h>
 
 namespace LeechCraft
 {
@@ -27,23 +25,20 @@ namespace LeechCraft
 	{
 		namespace SeekThru
 		{
-			class SearchersList : public QWidget
+			TagsAsker::TagsAsker (const QString& text, QWidget *parent)
+			: QDialog (parent)
 			{
-				Q_OBJECT
+				Ui_.setupUi (this);
+				new Util::TagsCompleter (Ui_.Tags_, this);
+				Ui_.Tags_->AddSelector ();
+				Ui_.Tags_->setText (text);
+			}
 
-				Ui::SearchersList Ui_;
-				QModelIndex Current_;
-			public:
-				SearchersList (QWidget* = 0);
-			private slots:
-				void handleCurrentChanged (const QModelIndex&);
-				void on_ButtonAdd__released ();
-				void on_ButtonRemove__released ();
-				void on_Tags__editingFinished ();
-			};
+			QString TagsAsker::GetTags () const
+			{
+				return Ui_.Tags_->text ();
+			}
 		};
 	};
 };
-
-#endif
 
