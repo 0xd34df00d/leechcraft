@@ -18,6 +18,8 @@
 
 #include "hub.h"
 #include <QAction>
+#include <QDateTime>
+#include <QInputDialog>
 #include <plugininterface/util.h>
 #include "hubsortfiltermodel.h"
 
@@ -71,6 +73,7 @@ namespace LeechCraft
 			, UsersModel_ (new Util::ListModel (QStringList (), this))
 			, ProxyModel_ (new HubSortFilterModel (this))
 			, URL_ (aUrl)
+			, Client_ (0)
 			{
 				QStringList headers;
 				headers << tr ("Nick")
@@ -93,6 +96,31 @@ namespace LeechCraft
 				Ui_.UsersView_->addAction (Ui_.ActionGrantExtraSlot_);
 				Ui_.UsersView_->addAction (Ui_.ActionAddToFavorites_);
 				Ui_.UsersView_->addAction (Ui_.ActionRemoveFromAll_);
+				connect (Ui_.ChatInput_,
+						SIGNAL (returnPressed ()),
+						this,
+						SLOT (sendMessage ()));
+				connect (Ui_.Search_,
+						SIGNAL (textChanged (const QString&)),
+						this,
+						SLOT (filter (const QString&)));
+
+				connect (this,
+						SIGNAL (message (const QString&)),
+						Ui_.ChatBrowser_,
+						SLOT (appendPlainText (const QString&)));
+				connect (this,
+						SIGNAL (status (const QString&)),
+						Ui_.ChatBrowser_,
+						SLOT (appendPlainText (const QString&)));
+				connect (this,
+						SIGNAL (disconnected ()),
+						this,
+						SLOT (handleDisconnected ()));
+				connect (this,
+						SIGNAL (password ()),
+						this,
+						SLOT (handlePassword ()));
 
 				Ui_.Splitter_->setStretchFactor (0, 3);
 				Ui_.Splitter_->setStretchFactor (1, 1);
@@ -100,6 +128,21 @@ namespace LeechCraft
 
 			Hub::~Hub ()
 			{
+				if (Client_)
+				{
+					Client_->removeListener (this);
+					Client_->disconnect (true);
+					dcpp::ClientManager::getInstance ()->putClient (Client_);
+					Client_ = 0;
+				}
+			}
+
+			void Hub::ConnectHub (const QString& s)
+			{
+				Client_ = dcpp::ClientManager::getInstance ()->
+					getClient (s.toStdString ());
+				Client_->addListener (this);
+				Client_->connect ();
 			}
 
 			void Hub::on_ActionGetList__triggered ()
@@ -156,6 +199,57 @@ namespace LeechCraft
 						Ui_.UsersView_->selectionModel ()->selectedRows ())
 					UsersModel_->GetItem<UserInfo> (ProxyModel_->mapToSource (i))->
 						RemoveFromQueue ();
+			}
+
+			// If one day we will want to allow reconnections we should handle
+			// the disconnected event better — put the client back to manager
+			// and then request a new one.
+			void Hub::handleDisconnected ()
+			{
+				UsersModel_->Clear ();
+				Ui_.ChatBrowser_->appendPlainText (tr ("[%1] * Disconnected")
+						.arg (QDateTime::currentDateTime ().toString (Qt::SystemLocaleShortDate)));
+			}
+
+			void Hub::handlePassword ()
+			{
+				bool ok;
+				QString password = QInputDialog::getText (this,
+						tr ("LeechCraft"),
+						tr ("Enter hub password"),
+						QLineEdit::Password,
+						"",
+						&ok);
+				if (ok && !password.isEmpty ())
+				{
+					if (Client_)
+					{
+						std::string p = password.toStdString ();
+						Client_->setPassword (p);
+						Client_->password (p);
+					}
+				}
+				else
+				{
+					if (Client_)
+						Client_->disconnect (true);
+				}
+			}
+
+			void Hub::sendMessage ()
+			{
+				if (Client_)
+				{
+					Client_->hubMessage (Ui_.ChatInput_->text ().toStdString ());
+					Ui_.ChatInput_->clear ();
+				}
+			}
+
+			void Hub::filter (const QString& text)
+			{
+				ProxyModel_->setFilterKeyColumn (CNick);
+				ProxyModel_->setFilterRegExp (QRegExp (text,
+							Qt::CaseInsensitive, QRegExp::RegExp));
 			}
 
 			void Hub::UpdateUser (const dcpp::Identity& id)
@@ -218,8 +312,20 @@ namespace LeechCraft
 					const std::string& msg,
 					bool) throw ()
 			{
-				emit message (tr ("<%1> %2")
+				// TODO make all this colorful
+				emit message (tr ("[%1] <%2> %3")
+						.arg (QDateTime::currentDateTime ().toString (Qt::SystemLocaleShortDate))
 						.arg (Util::FromStdString (from.getIdentity ().getNick ()))
+						.arg (Util::FromStdString (msg)));
+			}
+
+			void Hub::on (dcpp::ClientListener::StatusMessage,
+					dcpp::Client*,
+					const std::string& msg, bool) throw ()
+			{
+				// TODO make all this colorful
+				emit status (tr ("[%1] * %2")
+						.arg (QDateTime::currentDateTime ().toString (Qt::SystemLocaleShortDate))
 						.arg (Util::FromStdString (msg)));
 			}
 		};

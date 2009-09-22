@@ -47,6 +47,7 @@ namespace LeechCraft
 				Util::ListModel *UsersModel_;
 				HubSortFilterModel *ProxyModel_;
 				QString URL_;
+				dcpp::Client *Client_;
 			public:
 				class UserInfo : public UserInfoBase
 							   , public Util::ListModelItem
@@ -77,6 +78,8 @@ namespace LeechCraft
 
 				Hub (const QString& = "", QWidget* = 0);
 				virtual ~Hub ();
+
+				void ConnectHub (const QString&);
 			private slots:
 				void on_ActionGetList__triggered ();
 				void on_ActionBrowseFileList__triggered ();
@@ -85,6 +88,10 @@ namespace LeechCraft
 				void on_ActionGrantExtraSlot__triggered ();
 				void on_ActionAddToFavorites__triggered ();
 				void on_ActionRemoveFromAll__triggered ();
+				void handleDisconnected ();
+				void handlePassword ();
+				void sendMessage ();
+				void filter (const QString&);
 			private:
 				void UpdateUser (const dcpp::Identity&);
 				void RemoveUser (const dcpp::UserPtr&);
@@ -100,8 +107,14 @@ namespace LeechCraft
 						const dcpp::OnlineUser&,
 						const std::string&,
 						bool) throw ();
+				void on (dcpp::ClientListener::StatusMessage,
+						dcpp::Client*,
+						const std::string&, bool) throw ();
 			signals:
 				void message (const QString&);
+				void status (const QString&);
+				void disconnected ();
+				void password ();
 			};
 		};
 	};
