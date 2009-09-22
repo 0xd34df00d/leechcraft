@@ -31,6 +31,11 @@ namespace LeechCraft
 {
 	namespace Util
 	{
+		inline QString FromStdString (const std::string& str)
+		{
+			return QString::fromUtf8 (str.c_str ());
+		}
+
 		template<typename In, typename Out, typename Pred>
 		Out copy_if (In first, In last, Out res, Pred p)
 		{
