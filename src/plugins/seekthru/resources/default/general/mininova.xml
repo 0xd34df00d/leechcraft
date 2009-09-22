@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>Mininova</ShortName>
+  <LongName>Mininova.org Search</LongName>
+  <Description>Search for torrents on mininova.org</Description>
+  <InputEncoding>UTF-8</InputEncoding>
+  <OutputEncoding>UTF-8</OutputEncoding>
+
+  <AdultContent>false</AdultContent>
+  <Language>en-us</Language>
+  <Contact>staff@mininova.org</Contact>
+  <Tags>mininova bittorrent torrent</Tags>
+
+  <Attribution>Search data from mininova.org, http://mininova.org/</Attribution>
+  <SyndicationRight>open</SyndicationRight>
+  <Query role="example" searchTerms="Linux" />
+  <Image height="16" width="16" type="image/vnd.microsoft.icon">http://mnstat.com/favicon.ico</Image>
+
+  <Url type="text/html" template="http://www.mininova.org/search/?search={searchTerms}" />
+  <Url type="application/rss+xml" template="http://www.mininova.org/rss/{searchTerms}" />
+</OpenSearchDescription>

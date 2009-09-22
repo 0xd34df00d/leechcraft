@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+    <ShortName>Яндекс.Словари. Перевод</ShortName>
+    <Description>Перевод c 6 иностранных языков на русский и обратно от ABBYY Lingvo.</Description>
+    <Image width="16" height="16" type="image/x-icon">http://slovari.yandex.ru/i/ico/translation.ico</Image>
+    <Url type="text/html" template="http://lingvo.yandex.ru/search.xml?os=translation&amp;text={searchTerms}&amp;st_translate=on"/>
+    <InputEncoding>UTF-8</InputEncoding>
+</OpenSearchDescription>

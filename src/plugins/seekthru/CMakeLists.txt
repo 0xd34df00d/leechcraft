@@ -14,6 +14,8 @@ SET (SRCS
 	findproxy.cpp
 	searchhandler.cpp
 	selectablebrowser.cpp
+	wizardgenerator.cpp
+	startupfirstpage.cpp
 	)
 SET (HEADERS
 	seekthru.h
@@ -24,6 +26,8 @@ SET (HEADERS
 	findproxy.h
 	searchhandler.h
 	selectablebrowser.h
+	wizardgenerator.h
+	startupfirstpage.h
 	)
 SET (TRANSLATIONS
 	leechcraft_seekthru_ru_RU.ts
@@ -31,6 +35,7 @@ SET (TRANSLATIONS
 	)
 SET (FORMS
 	searcherslist.ui
+	startupfirstpage.ui
 	)
 SET (RESOURCES
 	resources.qrc

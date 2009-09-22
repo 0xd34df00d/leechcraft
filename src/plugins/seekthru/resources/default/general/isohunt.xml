@@ -1,0 +1,14 @@
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+  <!-- Created on Tue, 01 Apr 2008 11:05:01 UTC-5 -->
+  <ShortName>isoHunt - BT search</ShortName>
+  <Description>BitTorrent search engine, with torrents, releases and ratings. The best P2P community online.</Description>
+  <Url type="text/html" method="get" template="http://isohunt.com/torrents/{searchTerms}"/>
+  <Contact>torrentsphere@gmail.com</Contact>
+  <Image width="16" height="16">http://isohunt.com/favicon.png</Image>
+  <Developer>isoHunt Team</Developer>
+  <InputEncoding>UTF-8</InputEncoding>
+  <moz:SearchForm>http://isohunt.com/</moz:SearchForm>
+  <moz:UpdateUrl>http://isohunt.com/isohunt_open_search.xml</moz:UpdateUrl>
+  <moz:IconUpdateUrl>http://isohunt.com/favicon.png</moz:IconUpdateUrl>
+  <moz:UpdateInterval>7</moz:UpdateInterval>
+</OpenSearchDescription>

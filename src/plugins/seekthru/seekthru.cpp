@@ -23,6 +23,7 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "searcherslist.h"
+#include "wizardgenerator.h"
 
 namespace LeechCraft
 {
@@ -124,6 +125,12 @@ namespace LeechCraft
 			void SeekThru::Handle (LeechCraft::DownloadEntity e)
 			{
 				Core::Instance ().Add (e.Entity_.toUrl ());
+			}
+
+			QList<QWizardPage*> SeekThru::GetWizardPages () const
+			{
+				std::auto_ptr<WizardGenerator> wg (new WizardGenerator);
+				return wg->GetPages ();
 			}
 			
 			void SeekThru::handleError (const QString& error)

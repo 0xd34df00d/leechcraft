@@ -1,5 +1,15 @@
 <RCC>
 	<qresource prefix="/" >
 		<file>resources/images/seekthru.svg</file>
+		<file>resources/default/general/enwiki.xml</file>
+		<file>resources/default/general/github.xml</file>
+		<file>resources/default/general/isohunt.xml</file>
+		<file>resources/default/general/lastfm.xml</file>
+		<file>resources/default/general/mininova.xml</file>
+		<file>resources/default/ru/ruwiki.xml</file>
+		<file>resources/default/ru/youtube.xml</file>
+		<file>resources/default/ru/yamarket.xml</file>
+		<file>resources/default/ru/yalingvo.xml</file>
+		<file>resources/default/ru/lurkmore.xml</file>
 	</qresource>
 </RCC>

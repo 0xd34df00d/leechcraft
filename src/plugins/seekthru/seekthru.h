@@ -25,6 +25,7 @@
 #include <interfaces/ifinder.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
+#include <interfaces/istartupwizard.h>
 #include <interfaces/structures.h>
 
 namespace LeechCraft
@@ -38,9 +39,10 @@ namespace LeechCraft
 						   , public IFinder
 						   , public IHaveSettings
 						   , public IEntityHandler
+						   , public IStartupWizard
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IFinder IHaveSettings IEntityHandler)
+				Q_INTERFACES (IInfo IFinder IHaveSettings IEntityHandler IStartupWizard)
 
 				std::auto_ptr<QTranslator> Translator_;
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
@@ -62,6 +64,8 @@ namespace LeechCraft
 
 				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
 				void Handle (LeechCraft::DownloadEntity);
+
+				QList<QWizardPage*> GetWizardPages () const;
 			private slots:
 				void handleError (const QString&);
 				void handleWarning (const QString&);

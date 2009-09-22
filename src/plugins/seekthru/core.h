@@ -82,11 +82,11 @@ namespace LeechCraft
 				QStringList GetCategories () const;
 				IFindProxy_ptr GetProxy (const LeechCraft::Request&);
 				IWebBrowser* GetWebBrowser () const;
+				void HandleEntity (const QString&, const QString& = QString ());
 			private slots:
 				void handleJobFinished (int);
 				void handleJobError (int);
 			private:
-				void HandleEntity (const QString&);
 				void HandleProvider (QObject*);
 				void ReadSettings ();
 				void WriteSettings ();

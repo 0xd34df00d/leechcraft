@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+    
+    <ShortName>Яндекс.Маркет</ShortName>
+    <Description>Выбор моделей и поиск товаров.</Description>
+    <Image width="16" height="16" type="image/x-icon">http://market.yandex.ru/favicon.ico</Image>
+    <Url type="text/html" method="GET" template="http://market.yandex.ru/search.xml?text={searchTerms}&amp;from=os"/>
+    <InputEncoding>UTF-8</InputEncoding>
+</OpenSearchDescription>

@@ -254,7 +254,7 @@ namespace LeechCraft
 				else
 					return 0;
 			}
-			
+
 			void Core::handleJobFinished (int id)
 			{
 				if (!Jobs_.contains (id))
@@ -288,7 +288,7 @@ namespace LeechCraft
 				Jobs_.remove (id);
 			}
 			
-			void Core::HandleEntity (const QString& contents)
+			void Core::HandleEntity (const QString& contents, const QString& useTags)
 			{
 				QDomDocument doc;
 				QString errorString;
@@ -345,19 +345,26 @@ namespace LeechCraft
 				if (!contactTag.isNull ())
 					descr.Contact_ = contactTag.text ();
 			
-				QDomElement tagsTag = root.firstChildElement ("Tags");
-				if (!tagsTag.isNull ())
-					descr.Tags_ = tagsTag.text ().split (' ', QString::SkipEmptyParts);
+				if (useTags.isEmpty ())
+				{
+					QDomElement tagsTag = root.firstChildElement ("Tags");
+					if (!tagsTag.isNull ())
+						descr.Tags_ = tagsTag.text ().split (' ', QString::SkipEmptyParts);
+					else
+						descr.Tags_ = QStringList ("default");
+				
+					QString userTags = QInputDialog::getText (0,
+							tr ("Enter categories"),
+							tr ("Please enter categories for this searcher:"),
+							QLineEdit::Normal,
+							descr.Tags_.join (" "));
+					if (!userTags.isEmpty ())
+						descr.Tags_ = userTags.split (' ', QString::SkipEmptyParts);
+				}
 				else
-					descr.Tags_ = QStringList ("default");
-			
-				QString userTags = QInputDialog::getText (0,
-						tr ("Enter categories"),
-						tr ("Please enter categories for this searcher:"),
-						QLineEdit::Normal,
-						descr.Tags_.join (" "));
-				if (!userTags.isEmpty ())
-					descr.Tags_ = userTags.split (' ', QString::SkipEmptyParts);
+				{
+					descr.Tags_ = useTags.split (' ', QString::SkipEmptyParts);
+				}
 			
 				QDomElement longNameTag = root.firstChildElement ("LongName");
 				if (!longNameTag.isNull ())
