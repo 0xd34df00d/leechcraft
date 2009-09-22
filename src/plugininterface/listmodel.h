@@ -76,7 +76,13 @@ namespace LeechCraft
 			template<typename T>
 				T* GetItem (const QModelIndex& index) const
 				{
-					return static_cast<T*> (Items_.at (index.row ()));
+					return GetItem<T> (index.row ());
+				}
+
+			template<typename T>
+				T* GetItem (int row) const
+				{
+					return static_cast<T*> (Items_.at (row));
 				}
 		};
 
