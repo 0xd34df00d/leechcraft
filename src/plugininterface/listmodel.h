@@ -69,10 +69,15 @@ namespace LeechCraft
 				{
 					QList<T*> result;
 					Q_FOREACH (ListModelItem *item, Items_)
-						result << qobject_cast<T*> (item);
+						result << static_cast<T*> (item);
 					return result;
 				}
 			
+			template<typename T>
+				T* GetItem (const QModelIndex& index) const
+				{
+					return static_cast<T*> (Items_.at (index.row ()));
+				}
 		};
 
 		template<> QList<ListModelItem*> ListModel::GetItems () const;
