@@ -132,6 +132,12 @@ namespace LeechCraft
 			emit dataChanged (index (pos, 0),
 					index (pos, columnCount () - 1));
 		}
+		
+		void ListModel::Clear ()
+		{
+			Items_.clear ();
+			reset ();
+		}
 
 		void ListModel::SetHeaders (const QStringList& headers)
 		{

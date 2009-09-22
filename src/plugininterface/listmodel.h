@@ -62,6 +62,8 @@ namespace LeechCraft
 			void Update (ListModelItem*);
 			void Update (int);
 
+			void Clear ();
+
 			void SetHeaders (const QStringList&);
 
 			template<typename T>
