@@ -79,21 +79,7 @@ QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName,
 		const QString& prefix,
 		const QString& appName)
 {
-	QSettings settings (QCoreApplication::organizationName (),
-			QCoreApplication::applicationName ());
-	QString localeName = settings.value ("Language", "system").toString ();
-
-	if (localeName == "system")
-	{
-		localeName = QString(::getenv ("LANG"));
-		if (localeName.isEmpty () || localeName.size () != 5)
-			localeName = QLocale::system ().name ();
-		localeName = localeName.left (5);
-	}
-
-	if (localeName.size () == 2)
-		localeName += "_00";
-
+	QString localeName = GetLocaleName ();
 	QString filename = prefix;
 	filename.append ("_");
 	if (!baseName.isEmpty ())
@@ -121,6 +107,31 @@ QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName,
 		<< localeName
 		<< filename;
 	return 0;
+}
+
+QString LeechCraft::Util::GetLocaleName ()
+{
+	QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName ());
+	QString localeName = settings.value ("Language", "system").toString ();
+
+	if (localeName == "system")
+	{
+		localeName = QString(::getenv ("LANG"));
+		if (localeName.isEmpty () || localeName.size () != 5)
+			localeName = QLocale::system ().name ();
+		localeName = localeName.left (5);
+	}
+
+	if (localeName.size () == 2)
+		localeName += "_00";
+
+	return localeName;
+}
+
+QString LeechCraft::Util::GetLanguage ()
+{
+	return GetLocaleName ().left (2);
 }
 
 QDir LeechCraft::Util::CreateIfNotExists (const QString& path)

@@ -108,6 +108,9 @@ namespace LeechCraft
 				const QString& prefix = "leechcraft",
 				const QString& appname = "leechcraft");
 
+		PLUGININTERFACE_API QString GetLocaleName ();
+		PLUGININTERFACE_API QString GetLanguage ();
+
 		/** @brief Creates a path if it isn't existing.
 		 *
 		 * Creates a relative path ~/.leechcraft/path and throws an
