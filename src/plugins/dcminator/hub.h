@@ -19,9 +19,16 @@
 #ifndef PLUGINS_DCMINATOR_HUB_H
 #define PLUGINS_DCMINATOR_HUB_H
 #include <QWidget>
+#include <plugininterface/listmodel.h>
 #include "dcpp/stdinc.h"
 #include "dcpp/DCPlusPlus.h"
 #include "dcpp/Client.h"
+#include "dcpp/ClientManager.h"
+#include "dcpp/FastAlloc.h"
+#include "userinfobase.h"
+#include "ui_hub.h"
+
+class QAction;
 
 namespace LeechCraft
 {
@@ -29,12 +36,72 @@ namespace LeechCraft
 	{
 		namespace DCminator
 		{
+			class HubSortFilterModel;
+
 			class Hub : public QWidget
 					  , private dcpp::ClientListener
 			{
 				Q_OBJECT
+
+				Ui::Hub Ui_;
+				Util::ListModel *UsersModel_;
+				HubSortFilterModel *ProxyModel_;
+				QString URL_;
 			public:
+				class UserInfo : public UserInfoBase
+							   , public Util::ListModelItem
+							   , public dcpp::FastAlloc<UserInfo>
+				{
+					dcpp::Identity Identity_;
+					QStringList Columns_;
+				public:
+					UserInfo (const dcpp::Identity&, const dcpp::UserPtr&);
+					void Update (const dcpp::Identity&);
+					QVariant Data (int, int) const;
+
+					const dcpp::Identity& GetIdentity () const;
+				};
+
+				enum Columns
+				{
+					CNick,
+					CShared,
+					CDescription,
+					CTag,
+					CConnection,
+					CIP,
+					CEmail,
+					CCID,
+					CMax
+				};
+
 				Hub (const QString& = "", QWidget* = 0);
+				virtual ~Hub ();
+			private slots:
+				void on_ActionGetList__triggered ();
+				void on_ActionBrowseFileList__triggered ();
+				void on_ActionMatchQueue__triggered ();
+				void on_ActionSendPM__triggered ();
+				void on_ActionGrantExtraSlot__triggered ();
+				void on_ActionAddToFavorites__triggered ();
+				void on_ActionRemoveFromAll__triggered ();
+			private:
+				void UpdateUser (const dcpp::Identity&);
+				void RemoveUser (const dcpp::UserPtr&);
+
+				void on (dcpp::ClientListener::UserUpdated,
+						dcpp::Client*, const dcpp::OnlineUser&) throw ();
+				void on (dcpp::ClientListener::UsersUpdated,
+						dcpp::Client*, const dcpp::OnlineUser::List&) throw ();
+				void on (dcpp::ClientListener::UserRemoved,
+						dcpp::Client*, const dcpp::OnlineUser&) throw ();
+				void on (dcpp::ClientListener::Message,
+						dcpp::Client*,
+						const dcpp::OnlineUser&,
+						const std::string&,
+						bool) throw ();
+			signals:
+				void message (const QString&);
 			};
 		};
 	};

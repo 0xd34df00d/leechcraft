@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Hub</class>
+ <widget class="QWidget" name="Hub">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QSplitter" name="Splitter_">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <widget class="QWidget" name="layoutWidget">
+      <layout class="QVBoxLayout">
+       <item>
+        <widget class="QPlainTextEdit" name="ChatBrowser_">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+         <property name="centerOnScroll">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="ChatInput_"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_2">
+      <layout class="QVBoxLayout" name="_2">
+       <item>
+        <widget class="QTreeView" name="UsersView_">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>2</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="contextMenuPolicy">
+          <enum>Qt::ActionsContextMenu</enum>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::ExtendedSelection</enum>
+         </property>
+         <property name="rootIsDecorated">
+          <bool>false</bool>
+         </property>
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="_3">
+         <item>
+          <widget class="QLineEdit" name="Search_"/>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+  <action name="ActionGetFileList_">
+   <property name="text">
+    <string>Get file list</string>
+   </property>
+   <property name="ActionIcon" stdset="0">
+    <string notr="true">dcminator_getfilelist</string>
+   </property>
+  </action>
+  <action name="ActionMatchQueue_">
+   <property name="text">
+    <string>Match queue</string>
+   </property>
+   <property name="ActionIcon" stdset="0">
+    <string notr="true">dcminator_matchqueue</string>
+   </property>
+  </action>
+  <action name="ActionSendPM_">
+   <property name="text">
+    <string>Send PM</string>
+   </property>
+   <property name="ActionIcon" stdset="0">
+    <string notr="true">dcminator_sendpm</string>
+   </property>
+  </action>
+  <action name="ActionGrantExtraSlot_">
+   <property name="text">
+    <string>Grant extra slot</string>
+   </property>
+   <property name="ActionIcon" stdset="0">
+    <string notr="true">dcminator_grantextraslot</string>
+   </property>
+  </action>
+  <action name="ActionAddToFavorites_">
+   <property name="text">
+    <string>Add to favorites</string>
+   </property>
+   <property name="ActionIcon" stdset="0">
+    <string notr="true">dcminator_addtofavorites</string>
+   </property>
+  </action>
+  <action name="ActionRemoveFromAll_">
+   <property name="text">
+    <string>Remove from all</string>
+   </property>
+   <property name="ActionIcon" stdset="0">
+    <string notr="true">dcminator_removefromall</string>
+   </property>
+  </action>
+  <action name="ActionBrowseFileList_">
+   <property name="text">
+    <string>Browse file list</string>
+   </property>
+   <property name="ActionIcon" stdset="0">
+    <string notr="true">dcminator_browsefilelist</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
