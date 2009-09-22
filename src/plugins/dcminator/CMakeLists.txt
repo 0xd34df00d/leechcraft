@@ -15,12 +15,16 @@ SET (SRCS
 	core.cpp
 	transferqueuemodel.cpp
 	queueiteminfo.cpp
+	hub.cpp
+	userinfobase.cpp
 	)
 SET (HEADERS
 	dcminator.h
 	core.h
 	transferqueuemodel.h
 	queueiteminfo.h
+	hub.h
+	userinfobase.h
 	)
 SET (TRANSLATIONS
 	leechcraft_dcminator_ru_RU.ts

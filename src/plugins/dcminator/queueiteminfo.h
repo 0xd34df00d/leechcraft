@@ -29,7 +29,6 @@ namespace LeechCraft
 	{
 		namespace DCminator
 		{
-			// TODO implement
 			class QueueItemInfo : public dcpp::Flags
 								 , public dcpp::FastAlloc<QueueItemInfo>
 			{
