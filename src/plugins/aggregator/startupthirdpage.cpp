@@ -54,6 +54,14 @@ namespace LeechCraft
 						"it; news; blogs; software; science", "http://habrahabr.ru/rss/");
 				Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Радио-Т"),
 						"it; blogs; podcasts", "http://feeds.rucast.net/radio-t");
+				Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Новости: Hardware на iXBT.com"),
+						"it; news; hardware", "http://www.ixbt.com/export/hardnews.rss");
+				Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Новости: Software на iXBT.com"),
+						"it; news; software", "http://www.ixbt.com/export/softnews.rss");
+				Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Статьи на iXBT.com"),
+						"it", "http://www.ixbt.com/export/articles.rss");
+				Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("3Dnews - Новости Hardware"),
+						"it; news; hardware", "http://www.3dnews.ru/news/rss/");
 				Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("MEMBRANA: Люди. Идеи. Технологии."),
 						"news; science", "http://www.membrana.ru/export/rss.xml");
 				Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Lenta.Ru"),
