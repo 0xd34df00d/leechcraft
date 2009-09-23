@@ -56,7 +56,7 @@
     <widget class="QTreeWidget" name="Tree_">
      <column>
       <property name="text">
-       <string>Feed</string>
+       <string>Engine</string>
       </property>
      </column>
      <column>
