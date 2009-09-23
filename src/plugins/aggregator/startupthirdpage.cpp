@@ -52,6 +52,8 @@ namespace LeechCraft
 						"it; news; software", "http://www.opennet.ru/opennews/opennews_6.rss");
 				Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Хабрахабр"),
 						"it; news; blogs; software; science", "http://habrahabr.ru/rss/");
+				Sets_ ["ru"] << FeedInfo (QString::fromutf8 ("Радио-Т"),
+						"it; blogs; podcasts", "http://feeds.rucast.net/radio-t");
 				Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("MEMBRANA: Люди. Идеи. Технологии."),
 						"news; science", "http://www.membrana.ru/export/rss.xml");
 				Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Lenta.Ru"),
