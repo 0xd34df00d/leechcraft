@@ -41,35 +41,53 @@ namespace LeechCraft
 			: QWizardPage (parent)
 			{
 				Sets_ ["general"] << FeedInfo (QString::fromUtf8 ("Slashdot"),
-						"it; news; software; science", "http://rss.slashdot.org/Slashdot/slashdot");
+						"it; news; software; science; world",
+						"http://rss.slashdot.org/Slashdot/slashdot");
 				Sets_ ["general"] << FeedInfo (QString::fromUtf8 ("Qt Labs Blogs"),
-						"it; qt; news; blogs", "http://labs.trolltech.com/blogs/feed/atom/");
+						"it; qt; news; blogs; programming",
+						"http://labs.trolltech.com/blogs/feed/atom/");
 				Sets_ ["general"] << FeedInfo (QString::fromUtf8 ("euronews RSS feed"),
-						"news", "http://feeds.feedburner.com/euronews/en/home/");
+						"news; world",
+						"http://feeds.feedburner.com/euronews/en/home/");
 				Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Linux.org.ru: Новости"),
-						"it; news; software", "http://www.linux.org.ru/section-rss.jsp?section=1");
+						"it; news; software",
+						"http://www.linux.org.ru/section-rss.jsp?section=1");
 				Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("OpenNews.opennet.ru: Основная лента"),
-						"it; news; software", "http://www.opennet.ru/opennews/opennews_6.rss");
+						"it; news; software",
+						"http://www.opennet.ru/opennews/opennews_6.rss");
 				Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Хабрахабр"),
-						"it; news; blogs; software; science", "http://habrahabr.ru/rss/");
+						"it; news; blogs; software; science",
+						"http://habrahabr.ru/rss/");
 				Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Радио-Т"),
-						"it; blogs; podcasts", "http://feeds.rucast.net/radio-t");
+						"it; blogs; podcasts",
+						"http://feeds.rucast.net/radio-t");
 				Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Новости: Hardware на iXBT.com"),
-						"it; news; hardware", "http://www.ixbt.com/export/hardnews.rss");
+						"it; news; hardware",
+						"http://www.ixbt.com/export/hardnews.rss");
 				Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Новости: Software на iXBT.com"),
-						"it; news; software", "http://www.ixbt.com/export/softnews.rss");
+						"it; news; software",
+						"http://www.ixbt.com/export/softnews.rss");
 				Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Статьи на iXBT.com"),
-						"it", "http://www.ixbt.com/export/articles.rss");
+						"it",
+						"http://www.ixbt.com/export/articles.rss");
 				Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("3Dnews - Новости Hardware"),
-						"it; news; hardware", "http://www.3dnews.ru/news/rss/");
+						"it; news; hardware",
+						"http://www.3dnews.ru/news/rss/");
 				Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("MEMBRANA: Люди. Идеи. Технологии."),
-						"news; science", "http://www.membrana.ru/export/rss.xml");
+						"news; science; world",
+						"http://www.membrana.ru/export/rss.xml");
+				Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Яндекс.Новости"),
+						"news; world",
+						"http://news.yandex.ru/index.rss");
 				Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Lenta.Ru"),
-						"news", "http://lenta.ru/rss/");
+						"news",
+						"http://lenta.ru/rss/");
 				Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Bash.Org.Ru"),
-						"fun", "http://bash.org.ru/rss/");
+						"fun",
+						"http://bash.org.ru/rss/");
 				Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("iBash.Org.Ru"),
-						"fun; it", "http://ibash.org.ru/rss.xml");
+						"fun; it",
+						"http://ibash.org.ru/rss.xml");
 
 				Ui_.setupUi (this);
 				Ui_.Tree_->header ()->setResizeMode (0, QHeaderView::ResizeToContents);
@@ -99,7 +117,8 @@ namespace LeechCraft
 						SIGNAL (accepted ()),
 						this,
 						SLOT (handleAccepted ()));
-				wizard ()->setMinimumWidth (800);
+				wizard ()->setMinimumWidth (std::max (wizard ()->minimumWidth (), 800));
+				wizard ()->setMinimumHeight (std::max (wizard ()->minimumHeight (), 500));
 			}
 
 			void StartupThirdPage::Populate (const QString& title)
@@ -116,6 +135,7 @@ namespace LeechCraft
 					item->setCheckState (0, Qt::Checked);
 
 					QLineEdit *edit = new QLineEdit (Ui_.Tree_);
+					edit->setFrame (false);
 					edit->setText (info.DefaultTags_);
 					Ui_.Tree_->setItemWidget (item, 1, edit);
 				}
