@@ -15,12 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
-
-#include "wizardgenerator.h"
-#include "xmlsettingsmanager.h"
-#include "startupfirstpage.h"
 #include "startupsecondpage.h"
-#include "startupthirdpage.h"
+#include <plugininterface/backendselector.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -28,31 +25,34 @@ namespace LeechCraft
 	{
 		namespace Aggregator
 		{
-			QList<QWizardPage*> WizardGenerator::GetPages ()
+			StartupSecondPage::StartupSecondPage (QWidget *parent)
+			: QWizardPage (parent)
+			, Selector_ (new Util::BackendSelector (XmlSettingsManager::Instance ()))
 			{
-				QList<QWizardPage*> result;
-				int version = XmlSettingsManager::Instance ()->
-					Property ("StartupVersion", 0).toInt ();
-				bool shouldBreak = false;
-				if (version == 0)
-				{
-					result << new StartupFirstPage ();
-					++version;
-				}
-				if (version == 1)
-				{
-					result << new StartupSecondPage ();
-					++version;
-					shouldBreak = true;
-				}
-				if (version == 2 &&
-						!shouldBreak)
-				{
-					result << new StartupThirdPage ();
-					++version;
-				}
-				XmlSettingsManager::Instance ()->setProperty ("StartupVersion", version);
-				return result;
+				Ui_.setupUi (this);
+				QHBoxLayout *lay = new QHBoxLayout ();
+				lay->addWidget (Selector_);
+				Ui_.SelectorContainer_->setLayout (lay);
+
+				setTitle (tr ("Aggregator"));
+				setSubTitle (tr ("Set storage options"));
+			}
+
+			void StartupSecondPage::initializePage ()
+			{
+				connect (wizard (),
+						SIGNAL (accepted ()),
+						this,
+						SLOT (handleAccepted ()));
+				connect (wizard (),
+						SIGNAL (accepted ()),
+						Selector_,
+						SLOT (accepted ()));
+			}
+
+			void StartupSecondPage::handleAccepted ()
+			{
+				wizard ()->setProperty ("NeedsRestart", true);
 			}
 		};
 	};

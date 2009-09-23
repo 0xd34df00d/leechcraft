@@ -16,44 +16,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "wizardgenerator.h"
-#include "xmlsettingsmanager.h"
-#include "startupfirstpage.h"
-#include "startupsecondpage.h"
-#include "startupthirdpage.h"
+#ifndef PLUGINS_AGGREGATOR_STARTUPSECONDPAGE_H
+#define PLUGINS_AGGREGATOR_STARTUPSECONDPAGE_H
+#include <QWizardPage>
+#include "ui_startupsecondpage.h"
 
 namespace LeechCraft
 {
+	namespace Util
+	{
+		class BackendSelector;
+	};
+
 	namespace Plugins
 	{
 		namespace Aggregator
 		{
-			QList<QWizardPage*> WizardGenerator::GetPages ()
+			class StartupSecondPage : public QWizardPage
 			{
-				QList<QWizardPage*> result;
-				int version = XmlSettingsManager::Instance ()->
-					Property ("StartupVersion", 0).toInt ();
-				bool shouldBreak = false;
-				if (version == 0)
-				{
-					result << new StartupFirstPage ();
-					++version;
-				}
-				if (version == 1)
-				{
-					result << new StartupSecondPage ();
-					++version;
-					shouldBreak = true;
-				}
-				if (version == 2 &&
-						!shouldBreak)
-				{
-					result << new StartupThirdPage ();
-					++version;
-				}
-				XmlSettingsManager::Instance ()->setProperty ("StartupVersion", version);
-				return result;
-			}
+				Q_OBJECT
+
+				Ui::StartupSecondPageWidget Ui_;
+				Util::BackendSelector *Selector_;
+			public:
+				StartupSecondPage (QWidget* = 0);
+
+				void initializePage ();
+			private slots:
+				void handleAccepted ();
+			};
 		};
 	};
 };
+
+#endif
+

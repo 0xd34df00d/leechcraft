@@ -288,11 +288,18 @@ namespace LeechCraft
 						this,
 						SLOT (scheduleSave ()));
 			
-				XmlSettingsManager::Instance ()->RegisterObject ("UpdateInterval", this, "updateIntervalChanged");
-				XmlSettingsManager::Instance ()->RegisterObject ("ShowIconInTray", this, "showIconInTrayChanged");
+				XmlSettingsManager::Instance ()->
+					RegisterObject ("UpdateInterval", this, "updateIntervalChanged");
+				XmlSettingsManager::Instance ()->
+					RegisterObject ("ShowIconInTray", this, "showIconInTrayChanged");
 				UpdateUnreadItemsNumber ();
 				Initialized_ = true;
 				return true;
+			}
+
+			void Core::AddFeed (const QString& url, const QString& tagString)
+			{
+				AddFeed (url, Proxy_->GetTagsManager ()->Split (tagString));
 			}
 			
 			void Core::AddFeed (const QString& url, const QStringList& tags)

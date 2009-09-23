@@ -47,6 +47,8 @@ SET (SRCS
 	itemslistmodel.cpp
 	wizardgenerator.cpp
 	startupfirstpage.cpp
+	startupsecondpage.cpp
+	startupthirdpage.cpp
 	)
 SET (HEADERS
     aggregator.h
@@ -88,6 +90,8 @@ SET (HEADERS
 	itemslistmodel.h
 	wizardgenerator.h
 	startupfirstpage.h
+	startupsecondpage.h
+	startupthirdpage.h
 	)
 SET (FORMS
     mainwidget.ui
@@ -101,6 +105,8 @@ SET (FORMS
 	feedsettings.ui
 	itemswidget.ui
 	startupfirstpage.ui
+	startupsecondpage.ui
+	startupthirdpage.ui
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS

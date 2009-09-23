@@ -129,6 +129,7 @@ namespace LeechCraft
 				bool CouldHandle (const LeechCraft::DownloadEntity&);
 				void SetWidgets (QToolBar*, QWidget*);
 				bool DoDelayedInit ();
+				void AddFeed (const QString&, const QString&);
 				void AddFeed (const QString&, const QStringList&);
 				void RemoveFeed (const QModelIndex&);
 				void Selected (const QModelIndex&);

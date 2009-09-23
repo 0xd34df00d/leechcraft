@@ -16,11 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "wizardgenerator.h"
-#include "xmlsettingsmanager.h"
-#include "startupfirstpage.h"
-#include "startupsecondpage.h"
-#include "startupthirdpage.h"
+#ifndef PLUGINS_AGGREGATOR_STARTUPTHIRDPAGE_H
+#define PLUGINS_AGGREGATOR_STARTUPTHIRDPAGE_H
+#include <QWizardPage>
+#include "ui_startupthirdpage.h"
 
 namespace LeechCraft
 {
@@ -28,32 +27,34 @@ namespace LeechCraft
 	{
 		namespace Aggregator
 		{
-			QList<QWizardPage*> WizardGenerator::GetPages ()
+			class StartupThirdPage : public QWizardPage
 			{
-				QList<QWizardPage*> result;
-				int version = XmlSettingsManager::Instance ()->
-					Property ("StartupVersion", 0).toInt ();
-				bool shouldBreak = false;
-				if (version == 0)
+				Q_OBJECT
+
+				Ui::StartupThirdPageWidget Ui_;
+				struct FeedInfo
 				{
-					result << new StartupFirstPage ();
-					++version;
-				}
-				if (version == 1)
-				{
-					result << new StartupSecondPage ();
-					++version;
-					shouldBreak = true;
-				}
-				if (version == 2 &&
-						!shouldBreak)
-				{
-					result << new StartupThirdPage ();
-					++version;
-				}
-				XmlSettingsManager::Instance ()->setProperty ("StartupVersion", version);
-				return result;
-			}
+					QString Name_;
+					QString DefaultTags_;
+					QString URL_;
+
+					FeedInfo (const QString&, const QString&, const QString&);
+				};
+				typedef QList<FeedInfo> FeedInfos_t;
+				QMap<QString, FeedInfos_t> Sets_;
+			public:
+				StartupThirdPage (QWidget* = 0);
+
+				void initializePage ();
+			private:
+				void Populate (const QString&);
+			private slots:
+				void handleAccepted ();
+				void handleCurrentIndexChanged (const QString&);
+			};
 		};
 	};
 };
+
+#endif
+
