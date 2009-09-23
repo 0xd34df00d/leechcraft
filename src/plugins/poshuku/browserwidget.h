@@ -67,6 +67,7 @@ namespace LeechCraft
 				QAction *Forward_;
 				QAction *Reload_;
 				QAction *ReloadPeriodically_;
+				QAction *NotifyWhenFinished_;
 				QAction *Stop_;
 				QAction *RecentlyClosedAction_;
 				QPoint OnLoadPos_;
@@ -153,6 +154,7 @@ namespace LeechCraft
 				void setScrollPosition ();
 				void pageFocus ();
 				void handleLoadProgress (int);
+				void notifyLoadFinished (bool);
 			signals:
 				void titleChanged (const QString&);
 				void urlChanged (const QString&);
@@ -163,6 +165,7 @@ namespace LeechCraft
 				void statusBarChanged (const QString&);
 				void gotEntity (const LeechCraft::DownloadEntity&);
 				void couldHandle (const LeechCraft::DownloadEntity&, bool*);
+				void downloadFinished (const QString&);
 			};
 		};
 	};

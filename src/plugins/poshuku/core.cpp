@@ -269,18 +269,7 @@ namespace LeechCraft
 				BrowserWidget *widget = new BrowserWidget ();
 				widget->Deown ();
 				widget->InitShortcuts ();
-				connect (widget,
-						SIGNAL (addToFavorites (const QString&, const QString&)),
-						this,
-						SLOT (handleAddToFavorites (const QString&, const QString&)));
-				connect (widget,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
-						this,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
-				connect (widget,
-						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)),
-						this,
-						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)));
+				SetupConnections (widget);
 				return widget;
 			}
 			
@@ -300,7 +289,8 @@ namespace LeechCraft
 			}
 
 			void Core::ConnectSignals (BrowserWidget *widget)
-			{			
+			{
+				SetupConnections (widget);
 				connect (widget,
 						SIGNAL (titleChanged (const QString&)),
 						this,
@@ -314,14 +304,6 @@ namespace LeechCraft
 						this,
 						SLOT (handleNeedToClose ()));
 				connect (widget,
-						SIGNAL (addToFavorites (const QString&, const QString&)),
-						this,
-						SLOT (handleAddToFavorites (const QString&, const QString&)));
-				connect (widget,
-						SIGNAL (urlChanged (const QString&)),
-						this,
-						SLOT (handleURLChanged (const QString&)));
-				connect (widget,
 						SIGNAL (statusBarChanged (const QString&)),
 						this,
 						SLOT (handleStatusBarChanged (const QString&)));
@@ -329,14 +311,6 @@ namespace LeechCraft
 						SIGNAL (tooltipChanged (QWidget*)),
 						this,
 						SLOT (handleTooltipChanged (QWidget*)));
-				connect (widget,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
-						this,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
-				connect (widget,
-						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)),
-						this,
-						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)));
 			}
 			
 			FavoritesModel* Core::GetFavoritesModel () const
@@ -498,6 +472,30 @@ namespace LeechCraft
 						!url.isEmpty () && url != "about:blank")
 					HistoryModel_->AddItem (view->title (),
 							url, QDateTime::currentDateTime ());
+			}
+
+			void Core::SetupConnections (BrowserWidget *widget)
+			{
+				connect (widget,
+						SIGNAL (addToFavorites (const QString&, const QString&)),
+						this,
+						SLOT (handleAddToFavorites (const QString&, const QString&)));
+				connect (widget,
+						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						this,
+						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+				connect (widget,
+						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)),
+						this,
+						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)));
+				connect (widget,
+						SIGNAL (downloadFinished (const QString&)),
+						this,
+						SIGNAL (downloadFinished (const QString&)));
+				connect (widget,
+						SIGNAL (urlChanged (const QString&)),
+						this,
+						SLOT (handleURLChanged (const QString&)));
 			}
 			
 			void Core::importXbel ()

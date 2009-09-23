@@ -112,7 +112,12 @@ namespace LeechCraft
 				CustomWebView* MakeWebView (bool = false);
 				void Unregister (BrowserWidget*);
 				QMenu* GetPluginsMenu () const;
-				void ConnectSignals (BrowserWidget*);
+				/** Sets up the connections between widget's signals
+				 * and our signals/slots only useful in own mode.
+				 *
+				 * Calls to SetupConnections internally as well.
+				 */
+				void ConnectSignals (BrowserWidget *widget);
 
 				FavoritesModel* GetFavoritesModel () const;
 				HistoryModel* GetHistoryModel () const;
@@ -127,6 +132,11 @@ namespace LeechCraft
 			private:
 				void RestoreSession (bool);
 				void HandleHistory (QWebView*);
+				/** Sets up the connections between widget's signals
+				 * and our signals/slots that are always useful, both in own
+				 * and deown mode.
+				 */
+				void SetupConnections (BrowserWidget *widget);
 			public slots:
 				void importXbel ();
 				void exportXbel ();
@@ -155,6 +165,7 @@ namespace LeechCraft
 				void gotEntity (const LeechCraft::DownloadEntity&);
 				void couldHandle (const LeechCraft::DownloadEntity&, bool*);
 				void newUnclose (QAction*);
+				void downloadFinished (const QString&);
 			};
 		};
 	};

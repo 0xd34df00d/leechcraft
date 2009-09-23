@@ -98,6 +98,10 @@ namespace LeechCraft
 				ReloadPeriodically_ = new QAction (tr ("Reload periodically"), this);
 				ReloadPeriodically_->setCheckable (true);
 				ReloadPeriodically_->setProperty ("ActionIcon", "poshuku_reloadperiodically");
+				
+				NotifyWhenFinished_ = new QAction (tr ("Notify when finished loading"), this);
+				NotifyWhenFinished_->setCheckable (true);
+				NotifyWhenFinished_->setProperty ("ActionIcon", "poshuku_notifywhenfinished");
 
 				Stop_ = Ui_.WebView_->pageAction (QWebPage::Stop);
 				Stop_->setParent (this);
@@ -173,6 +177,7 @@ namespace LeechCraft
 				moreMenu->addAction (Add2Favorites_);
 				moreMenu->addSeparator ();
 				moreMenu->addAction (ReloadPeriodically_);
+				moreMenu->addAction (NotifyWhenFinished_);
 				moreMenu->addSeparator ();
 				moreMenu->addAction (ZoomIn_);
 				moreMenu->addAction (ZoomOut_);
@@ -318,6 +323,10 @@ namespace LeechCraft
 						SIGNAL (loadFinished (bool)),
 						this,
 						SLOT (updateTooltip ()));
+				connect (Ui_.WebView_,
+						SIGNAL (loadFinished (bool)),
+						this,
+						SLOT (notifyLoadFinished (bool)));
 				connect (Ui_.WebView_,
 						SIGNAL (loadStarted ()),
 						this,
@@ -974,6 +983,26 @@ namespace LeechCraft
 						.arg (Util::MakePrettySize (Ui_.WebView_->page ()->bytesReceived ()))
 						.arg (Util::MakePrettySize (Ui_.WebView_->page ()->totalBytes ())));
 				Ui_.Progress_->setVisible (p != 100);
+			}
+
+			void BrowserWidget::notifyLoadFinished (bool ok)
+			{
+				if (!NotifyWhenFinished_->isChecked () ||
+						isVisible ())
+					return;
+
+				QString h = Ui_.WebView_->title ();
+				if (h.isEmpty ())
+					h = Ui_.WebView_->url ().toString ();
+				if (h.isEmpty ())
+					return;
+
+				if (ok)
+					emit downloadFinished (tr ("Page load finished: %1")
+							.arg (Ui_.WebView_->title ()));
+				else
+					emit downloadFinished (tr ("Page load failed: %1")
+							.arg (Ui_.WebView_->title ()));
 			}
 		};
 	};
