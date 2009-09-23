@@ -68,6 +68,8 @@ namespace LeechCraft
 				Ui_.setupUi (this);
 				Ui_.Progress_->hide ();
 
+				Ui_.WebView_->SetBrowserWidget (this);
+
 				connect (ReloadTimer_,
 						SIGNAL (timeout ()),
 						Ui_.WebView_,

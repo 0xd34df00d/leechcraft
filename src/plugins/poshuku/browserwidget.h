@@ -79,6 +79,8 @@ namespace LeechCraft
 				QTimer *ReloadTimer_;
 				bool HtmlMode_;
 				bool Own_;
+
+				friend class CustomWebView;
 			public:
 				enum Actions
 				{

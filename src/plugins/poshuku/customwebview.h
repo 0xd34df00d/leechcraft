@@ -28,15 +28,19 @@ namespace LeechCraft
 	{
 		namespace Poshuku
 		{
+			class BrowserWidget;
+
 			class CustomWebView : public QWebView
 			{
 				Q_OBJECT
 
 				QList<qreal> Zooms_;
+				BrowserWidget *Browser_;
 			public:
 				CustomWebView (QWidget* = 0);
 				virtual ~CustomWebView ();
 
+				void SetBrowserWidget (BrowserWidget*);
 				void Load (const QString&, QString = QString ());
 				void Load (const QUrl&, QString = QString ());
 				void Load (const QNetworkRequest&,

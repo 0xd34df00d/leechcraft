@@ -86,6 +86,11 @@ namespace LeechCraft
 			{
 			}
 			
+			void CustomWebView::SetBrowserWidget (BrowserWidget *widget)
+			{
+				Browser_ = widget;
+			}
+
 			void CustomWebView::Load (const QString& string, QString title)
 			{
 				Load (Core::Instance ().MakeURL (string), title);
@@ -219,6 +224,19 @@ namespace LeechCraft
 			
 				if (menu->isEmpty ())
 					menu.reset (page ()->createStandardContextMenu ());
+
+				if (!menu->isEmpty ())
+					menu->addSeparator ();
+
+				menu->addAction (Browser_->Add2Favorites_);
+				menu->addSeparator ();
+				menu->addAction (Browser_->Print_);
+				menu->addAction (Browser_->PrintPreview_);
+				menu->addSeparator ();
+				menu->addAction (Browser_->ViewSources_);
+				menu->addSeparator ();
+				menu->addAction (Browser_->ReloadPeriodically_);
+				menu->addAction (Browser_->NotifyWhenFinished_);
 			
 				if (!menu->isEmpty ())
 				{

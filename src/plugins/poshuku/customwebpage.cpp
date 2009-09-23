@@ -161,7 +161,7 @@ namespace LeechCraft
 			CustomWebPage::~CustomWebPage ()
 			{
 			}
-			
+
 			void CustomWebPage::SetButtons (Qt::MouseButtons buttons)
 			{
 				MouseButtons_ = buttons;
