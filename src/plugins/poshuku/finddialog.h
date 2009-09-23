@@ -37,6 +37,7 @@ namespace LeechCraft
 				FindDialog (QWidget* = 0);
 				virtual ~FindDialog ();
 
+				void SetText (const QString&);
 				void SetSuccessful (bool);
 				void Focus ();
 			private slots:

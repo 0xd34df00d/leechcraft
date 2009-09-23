@@ -213,11 +213,12 @@ namespace LeechCraft
 
 				if (!page ()->selectedText ().isEmpty ())
 				{
-					if (menu->isEmpty ())
-						menu->addAction (pageAction (QWebPage::Copy));
-					else
+					if (!menu->isEmpty ())
 						menu->addSeparator ();
 
+					menu->addAction (pageAction (QWebPage::Copy));
+					Browser_->Find_->setData (page ()->selectedText ());
+					menu->addAction (Browser_->Find_);
 					menu->addAction (tr ("Search..."),
 							this, SLOT (searchSelectedText ()));
 				}

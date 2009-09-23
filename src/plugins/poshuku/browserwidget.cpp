@@ -675,6 +675,9 @@ namespace LeechCraft
 			
 			void BrowserWidget::handleFind ()
 			{
+				QAction *act = qobject_cast<QAction*> (sender ());
+				if (act)
+					FindDialog_->SetText (act->data ().toString ());
 				FindDialog_->show ();
 				FindDialog_->Focus ();
 			}

@@ -34,6 +34,11 @@ namespace LeechCraft
 			{
 			}
 			
+			void FindDialog::SetText (const QString& text)
+			{
+				Ui_.Pattern_->setText (text);
+			}
+
 			void FindDialog::SetSuccessful (bool success)
 			{
 				QString ss = QString ("QLineEdit {"
