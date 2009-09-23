@@ -27,6 +27,9 @@ namespace LeechCraft
 		Q_OBJECT
 	public:
 		StartupWizard (QWidget* = 0);
+	private slots:
+		void handleAccepted ();
+		void handleRejected ();
 	};
 };
 

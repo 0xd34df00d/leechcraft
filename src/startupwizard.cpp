@@ -19,6 +19,7 @@
 #include "startupwizard.h"
 #include "interfaces/istartupwizard.h"
 #include "core.h"
+#include "application.h"
 
 namespace LeechCraft
 {
@@ -26,7 +27,6 @@ namespace LeechCraft
 	: QWizard (parent)
 	{
 		setWindowTitle (tr ("Startup wizard"));
-		setAttribute (Qt::WA_DeleteOnClose);
 
 		QList<IStartupWizard*> wizards = Core::Instance ()
 			.GetPluginManager ()->GetAllCastableTo<IStartupWizard*> ();
@@ -41,9 +41,36 @@ namespace LeechCraft
 			return;
 		}
 
+		// Do a queued connection to let all the pages-subscribers to
+		// perform the required changes and set up wizard's state.
+		connect (this,
+				SIGNAL (accepted ()),
+				this,
+				SLOT (handleAccepted ()),
+				Qt::QueuedConnection);
+		connect (this,
+				SIGNAL (accepted ()),
+				this,
+				SLOT (handleRejected ()),
+				Qt::QueuedConnection);
+
 		Q_FOREACH (QWizardPage *page, pages)
 			addPage (page);
 
 		show ();
 	}
+
+	void StartupWizard::handleAccepted ()
+	{
+		if (property ("NeedsRestart").toBool () == true)
+			qobject_cast<Application*> (qApp)->InitiateRestart ();
+
+		deleteLater ();
+	}
+
+	void StartupWizard::handleRejected ()
+	{
+		deleteLater ();
+	}
 };
+
