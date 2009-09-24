@@ -494,107 +494,107 @@ IPv6 input mask</extracomment>
         <translation>Торрент %1 не может быть переобъявлен сейчас, попробуйте позже.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1234"/>
+        <location filename="core.cpp" line="1231"/>
         <source>Could not open file %1 for write!</source>
         <translation>Невозможно открыть файл %1 на запись!</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1262"/>
+        <location filename="core.cpp" line="1259"/>
         <source>Could not open file %1 for reading</source>
         <translation>Невозможно открыть файл %1 для чтения</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1271"/>
+        <location filename="core.cpp" line="1268"/>
         <source>Could not parse document from file %1.&lt;br /&gt;%1 at %2:%3</source>
         <translation>Невозможно обработать документ из файла %1.&lt;br /&gt;%1 в %2:%3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1281"/>
+        <location filename="core.cpp" line="1278"/>
         <source>There should be only one storage section.</source>
         <translation>Должна быть только одна секция с хранилищем.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1299"/>
+        <location filename="core.cpp" line="1296"/>
         <source>Unknown storage version</source>
         <translation>Неизвестная версия хранилища</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1307"/>
+        <location filename="core.cpp" line="1304"/>
         <source>Could not open file %1 for writing</source>
         <translation>Не могу открыть файл %1 на запись</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1525"/>
+        <location filename="core.cpp" line="1522"/>
         <source>File finished: %1</source>
         <translation>Файл завершен: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1755"/>
+        <location filename="core.cpp" line="1752"/>
         <source>Queued for checking</source>
         <translation>В очереди на проверку</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1757"/>
+        <location filename="core.cpp" line="1754"/>
         <source>Checking files</source>
         <translation>Проверяются файлы</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1759"/>
+        <location filename="core.cpp" line="1756"/>
         <source>Downloading metadata</source>
         <translation>Скачивание метаданных</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1761"/>
+        <location filename="core.cpp" line="1758"/>
         <source>Downloading</source>
         <translation>Скачивание</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1763"/>
+        <location filename="core.cpp" line="1760"/>
         <source>Finished</source>
         <translation>Закончен</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1765"/>
+        <location filename="core.cpp" line="1762"/>
         <source>Seeding</source>
         <translation>Раздача</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1767"/>
+        <location filename="core.cpp" line="1764"/>
         <source>Allocating</source>
         <translation>Аллоцирование</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1769"/>
+        <location filename="core.cpp" line="1766"/>
         <source>Checking resume data</source>
         <translation>Проверка данных для продолжения</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1788"/>
+        <location filename="core.cpp" line="1785"/>
         <source>Could not open saved torrent %1 for read.</source>
         <translation>Невозможно открыть сохраненный торрент %1 на чтение.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1883"/>
+        <location filename="core.cpp" line="1880"/>
         <source>Bad bencoding in saved torrent data</source>
         <translation>Плохой код в сохраненном торренте</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1918"/>
+        <location filename="core.cpp" line="1915"/>
         <source>Torrent finished: %1</source>
         <translation>Торрент завершен: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2098"/>
+        <location filename="core.cpp" line="2095"/>
         <source>Error code %1 of category:&lt;blockquote&gt;%2&lt;/blockquote&gt;error message:&lt;blockquote&gt;%3&lt;/blockquote&gt;raw exception message:&lt;blockquote&gt;%4&lt;/blockquote&gt;</source>
         <translation>Код ошибки %1 категории &lt;blockquote&gt;%2&lt;/blockquote&gt;Сообщение об ошибке:&lt;blockquote&gt;%3&lt;/blockquote&gt;Исходное сообщение исключения:&lt;blockquote&gt;%4&lt;/blockquote&gt;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2114"/>
+        <location filename="core.cpp" line="2111"/>
         <source>Could not create path %1/.leechcraft/bittorrent</source>
         <translation>Не могу создать путь %1/.leechcraft/bittorrent</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2573"/>
+        <location filename="core.cpp" line="2570"/>
         <source>Wrong announce address %1</source>
         <translation>Неправильный адрес объявления %1</translation>
     </message>
@@ -632,12 +632,12 @@ IPv6 input mask</extracomment>
 <context>
     <name>LeechCraft::Plugins::BitTorrent::FirstStep</name>
     <message>
-        <location filename="firststep.cpp" line="47"/>
+        <location filename="firststep.cpp" line="49"/>
         <source>Select where to place torrent file</source>
         <translation>Выберите, где создать файл торрента</translation>
     </message>
     <message>
-        <location filename="firststep.cpp" line="59"/>
+        <location filename="firststep.cpp" line="62"/>
         <source>Select root path</source>
         <translation>Выберите корневую директорию</translation>
     </message>
@@ -943,7 +943,7 @@ IPv6 input mask</extracomment>
 <context>
     <name>LeechCraft::Plugins::BitTorrent::ThirdStep</name>
     <message>
-        <location filename="thirdstep.cpp" line="85"/>
+        <location filename="thirdstep.cpp" line="86"/>
         <source> pieces (%1)</source>
         <translation>частей (%1)</translation>
     </message>
@@ -1377,42 +1377,42 @@ IPv6 input mask</extracomment>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="core.cpp" line="2276"/>
+        <location filename="core.cpp" line="2273"/>
         <source>Saving resume data failed for torrent:&lt;br /&gt;%1&lt;br /&gt;%2</source>
         <translation>Сохранение данных для восстановления для торрента завершилось неудачно:&lt;br /&gt;%1&lt;br /&gt;%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2285"/>
+        <location filename="core.cpp" line="2282"/>
         <source>Storage for torrent:&lt;br /&gt;%1&lt;br /&gt;moved successfully to:&lt;br /&gt;%2</source>
         <translation>Файлы торрента:&lt;br /&gt;%1&lt;br /&gt;успешно перемещены в:&lt;br /&gt;%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2294"/>
+        <location filename="core.cpp" line="2291"/>
         <source>Storage move failure:&lt;br /&gt;%2&lt;br /&gt;for torrent:&lt;br /&gt;%1</source>
         <translation>Не удалось переместить файлы торрента:&lt;br /&gt;%1&lt;br /&gt;возникла ошибка:&lt;br /&gt;%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2308"/>
+        <location filename="core.cpp" line="2305"/>
         <source>File error for torrent:&lt;br /&gt;%1&lt;br /&gt;file:&lt;br /&gt;%2&lt;br /&gt;error:&lt;br /&gt;%3</source>
         <translation>Файловая ошибка для торрента:&lt;br /&gt;%1&lt;br /&gt;файл:&lt;br /&gt;%2&lt;br /&gt;ошибка:&lt;br /&gt;%3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2319"/>
+        <location filename="core.cpp" line="2316"/>
         <source>File rename failed for torrent:&lt;br /&gt;%1&lt;br /&gt;file %2, error:&lt;br /&gt;%3</source>
         <translation>Не удалось переименовать файл торрента:&lt;br /&gt;%1&lt;br /&gt;%2, ошибка:&lt;br /&gt;%3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2330"/>
+        <location filename="core.cpp" line="2327"/>
         <source>Failed to delete torrent:&lt;br /&gt;%1&lt;br /&gt;error:&lt;br /&gt;%2</source>
         <translation>Не удалось удалить торрент:&lt;br /&gt;%1&lt;br /&gt;ошибка:&lt;br /&gt;%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2275"/>
-        <location filename="core.cpp" line="2284"/>
-        <location filename="core.cpp" line="2293"/>
-        <location filename="core.cpp" line="2307"/>
-        <location filename="core.cpp" line="2318"/>
-        <location filename="core.cpp" line="2329"/>
+        <location filename="core.cpp" line="2272"/>
+        <location filename="core.cpp" line="2281"/>
+        <location filename="core.cpp" line="2290"/>
+        <location filename="core.cpp" line="2304"/>
+        <location filename="core.cpp" line="2315"/>
+        <location filename="core.cpp" line="2326"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>

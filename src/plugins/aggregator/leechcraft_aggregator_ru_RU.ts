@@ -865,12 +865,12 @@
 <context>
     <name>LeechCraft::Plugins::Aggregator::StartupThirdPage</name>
     <message>
-        <location filename="startupthirdpage.cpp" line="84"/>
+        <location filename="startupthirdpage.cpp" line="110"/>
         <source>Aggregator</source>
         <translation>Aggregator</translation>
     </message>
     <message>
-        <location filename="startupthirdpage.cpp" line="85"/>
+        <location filename="startupthirdpage.cpp" line="111"/>
         <source>Select feeds</source>
         <translation>Выбор лент новостей</translation>
     </message>

@@ -414,10 +414,61 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>BackendSelector</name>
+    <message>
+        <source>Form</source>
+        <translation>Форма</translation>
+    </message>
+    <message>
+        <source>SQLite</source>
+        <translation>SQLite</translation>
+    </message>
+    <message>
+        <source>PostgreSQL</source>
+        <translation>PostgreSQL</translation>
+    </message>
+    <message>
+        <source>Journal mode:</source>
+        <translation>Режим журналирования:</translation>
+    </message>
+    <message>
+        <source>Temp store:</source>
+        <translation>Временное хранилище:</translation>
+    </message>
+    <message>
+        <source>Synchronous:</source>
+        <translation>Синхронно:</translation>
+    </message>
+    <message>
+        <source>VACUUM on exit</source>
+        <translation>VACUUM при выходе</translation>
+    </message>
+    <message>
+        <source>Hostname:</source>
+        <translation>Имя хоста:</translation>
+    </message>
+    <message>
+        <source>Port:</source>
+        <translation>Порт:</translation>
+    </message>
+    <message>
+        <source>Username:</source>
+        <translation>Логин:</translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation>Пароль:</translation>
+    </message>
+    <message>
+        <source>Database name:</source>
+        <translation>Имя БД:</translation>
+    </message>
+</context>
+<context>
     <name>CategorySelector</name>
     <message>
         <source>Tags selector</source>
-        <translation type="obsolete">Выбор меток</translation>
+        <translation>Выбор тегов</translation>
     </message>
 </context>
 <context>
@@ -985,11 +1036,35 @@ p, li { white-space: pre-wrap; }
     <name>QObject</name>
     <message>
         <source>Could not cd into %1</source>
-        <translation type="obsolete">Невозможно перейти в %1</translation>
+        <translation>Невозможно перейти в %1</translation>
     </message>
     <message>
         <source>Could not create %1</source>
-        <translation type="obsolete">Невозможно создать %1</translation>
+        <translation>Невозможно создать %1</translation>
+    </message>
+    <message>
+        <source> b</source>
+        <translation>байт</translation>
+    </message>
+    <message>
+        <source> KiB</source>
+        <translation>КиБ</translation>
+    </message>
+    <message>
+        <source> MiB</source>
+        <translation>МиБ</translation>
+    </message>
+    <message>
+        <source> GiB</source>
+        <translation>ГиБ</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n day(s), </source>
+        <translation>
+            <numerusform>%n день</numerusform>
+            <numerusform>%n дня</numerusform>
+            <numerusform>%n дней</numerusform>
+        </translation>
     </message>
 </context>
 <context>

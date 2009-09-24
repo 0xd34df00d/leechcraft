@@ -70,6 +70,22 @@
         <source>While mirroring&lt;br /&gt;%1&lt;br /&gt;to&lt;br /&gt;%2&lt;br /&gt;an error occured:&lt;br /&gt;%3&lt;br /&gt; already exists.</source>
         <translation>Во время зеркалирования&lt;br /&gt;%1&lt;br /&gt;в&lt;br /&gt;%2&lt;br /&gt;возникла ошибка:&lt;br /&gt;%3&lt;br /&gt;уже существует.</translation>
     </message>
+    <message>
+        <source>Paused</source>
+        <translation>Приостановлен</translation>
+    </message>
+    <message>
+        <source>Pause</source>
+        <translation>Пауза</translation>
+    </message>
+    <message>
+        <source>Resume</source>
+        <translation>Продолжить</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>Удалить</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::LCFTP::LCFTP</name>
@@ -129,6 +145,29 @@
     <message>
         <source>/</source>
         <translation>/</translation>
+    </message>
+</context>
+<context>
+    <name>SummaryTab</name>
+    <message>
+        <source>Form</source>
+        <translation>Форма</translation>
+    </message>
+    <message>
+        <source>Download speed:</source>
+        <translation>Скорость загрузки:</translation>
+    </message>
+    <message>
+        <source>Upload speed:</source>
+        <translation>Скорость отдачи:</translation>
+    </message>
+    <message>
+        <source>Unlimited</source>
+        <translation>Неограничено</translation>
+    </message>
+    <message>
+        <source> KiB/s</source>
+        <translation>КиБ/с</translation>
     </message>
 </context>
 <context>
