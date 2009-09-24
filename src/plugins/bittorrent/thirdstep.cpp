@@ -58,7 +58,7 @@ namespace LeechCraft
 			
 				quint64 max = std::log (static_cast<long double> (TotalSize_ / 102400)) * 80;
 			
-				int pieceSize = 32 * 1024;
+				quint32 pieceSize = 32 * 1024;
 				int shouldIndex = 0;
 				for (; TotalSize_ / pieceSize >= max; pieceSize *= 2, ++shouldIndex) ;
 			
@@ -72,7 +72,7 @@ namespace LeechCraft
 			
 			void ThirdStep::on_PieceSize__currentIndexChanged ()
 			{
-				int mul = 32 * 1024;
+				quint32 mul = 32 * 1024;
 				int index = PieceSize_->currentIndex ();
 				while (index--)
 					mul *= 2;
