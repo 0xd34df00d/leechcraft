@@ -64,6 +64,7 @@
 #include "peersmodel.h"
 #include "torrentfilesmodel.h"
 #include "representationmodel.h"
+#include "config.h"
 
 using namespace LeechCraft::Util;
 
@@ -1193,7 +1194,8 @@ namespace LeechCraft
 				libtorrent::add_files (fs, fullPath, FileFilter);
 				libtorrent::create_torrent ct (fs, params.PieceSize_);
 			
-				ct.set_creator ("LeechCraft BitTorrent");
+				ct.set_creator (qPrintable (QString ("LeechCraft BitTorrent %1")
+							.arg (LEECHCRAFT_VERSION)));
 				if (!params.Comment_.isEmpty ())
 					ct.set_comment (params.Comment_.toUtf8 ());
 				for (int i = 0; i < params.URLSeeds_.size (); ++i)
