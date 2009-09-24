@@ -196,6 +196,8 @@ namespace LeechCraft
 					qWarning () << Q_FUNC_INFO
 						<< result
 						<< errstr;
+
+					IsWorking_ = false;
 					emit error (errstr, Task_);
 				}
 
