@@ -37,8 +37,10 @@ namespace LeechCraft
 				registerField ("Comment", Comment_);
 				registerField ("RootPath", RootPath_);
 				Date_->setDateTime (QDateTime::currentDateTime ());
-				OutputDirectory_->setText (XmlSettingsManager::Instance ()->property ("LastMakeTorrentDirectory").toString ());
-				RootPath_->setText (XmlSettingsManager::Instance ()->property ("LastAddDirectory").toString ());
+				OutputDirectory_->setText (XmlSettingsManager::Instance ()->
+						property ("LastMakeTorrentDirectory").toString ());
+				RootPath_->setText (XmlSettingsManager::Instance ()->
+						property ("LastAddDirectory").toString ());
 			}
 			
 			void FirstStep::on_BrowseOutput__released ()
@@ -50,7 +52,8 @@ namespace LeechCraft
 					return;
 			
 				OutputDirectory_->setText (directory);
-				XmlSettingsManager::Instance ()->setProperty ("LastMakeTorrentDirectory", directory);
+				XmlSettingsManager::Instance ()->
+					setProperty ("LastMakeTorrentDirectory", directory);
 			}
 			
 			void FirstStep::on_BrowseRoot__released ()
@@ -62,9 +65,9 @@ namespace LeechCraft
 					return;
 			
 				RootPath_->setText (directory);
-				XmlSettingsManager::Instance ()->setProperty ("LastAddDirectory", directory);
+				XmlSettingsManager::Instance ()->
+					setProperty ("LastAddDirectory", directory);
 			}
-			
 		};
 	};
 };

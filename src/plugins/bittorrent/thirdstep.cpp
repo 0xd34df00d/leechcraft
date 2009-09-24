@@ -47,13 +47,14 @@ namespace LeechCraft
 				TotalSize_ = 0;
 				QString path = field ("RootPath").toString ();
 			
-				QDirIterator it (field ("RootPath").toString (), QDirIterator::Subdirectories);
+				QDirIterator it (path,
+						QDirIterator::Subdirectories);
 				while (it.hasNext ())
 				{
+					it.next ();
 					QFileInfo info = it.fileInfo ();
 					if (info.isFile () && info.isReadable ())
 						TotalSize_ += info.size ();
-					it.next ();
 				}
 			
 				quint64 max = std::log (static_cast<long double> (TotalSize_ / 102400)) * 80;

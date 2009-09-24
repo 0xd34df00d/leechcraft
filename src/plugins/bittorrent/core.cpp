@@ -1188,7 +1188,9 @@ namespace LeechCraft
 				boost::filesystem::path::default_name_check (boost::filesystem::no_check);
 			
 				libtorrent::file_storage fs;
-				libtorrent::file_pool fp;
+				boost::filesystem::path fullPath =
+					boost::filesystem::complete (params.Path_.toUtf8 ().constData ());
+				libtorrent::add_files (fs, fullPath, FileFilter);
 				libtorrent::create_torrent ct (fs, params.PieceSize_);
 			
 				ct.set_creator ("LeechCraft BitTorrent");
@@ -1209,11 +1211,6 @@ namespace LeechCraft
 				ct.add_tracker (params.AnnounceURL_.toStdString ());
 			
 				std::auto_ptr<QProgressDialog> pd (new QProgressDialog ());
-			
-				boost::filesystem::path fullPath =
-					boost::filesystem::complete (params.Path_.toUtf8 ().constData ());
-				libtorrent::add_files (fs, fullPath, FileFilter);
-			
 				pd->setMaximum (ct.num_pieces ());
 			
 				libtorrent::set_piece_hashes (ct, fullPath.branch_path (),
