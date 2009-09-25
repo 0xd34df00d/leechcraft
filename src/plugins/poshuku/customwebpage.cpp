@@ -798,7 +798,9 @@ namespace LeechCraft
 				if (type == NavigationTypeFormSubmitted)
 				{
 					PageFormsData_t data = JSProxy_->GetForms ();
+#ifdef QT_DEBUG
 					qDebug () << frame << request.url () << data;
+#endif
 					if (!CheckData (data, frame, request))
 						return;
 			

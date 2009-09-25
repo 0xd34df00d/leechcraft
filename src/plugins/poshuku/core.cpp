@@ -208,7 +208,6 @@ namespace LeechCraft
 				withoutPercent.remove (QRegExp ("%%??",
 							Qt::CaseInsensitive, QRegExp::Wildcard));
 				QUrl testUrl (withoutPercent);
-				qDebug () << withoutPercent << testUrl.toString ();
 				QUrl result;
 				if (testUrl.toString () == withoutPercent)
 					result = QUrl::fromPercentEncoding (url.toUtf8 ());
