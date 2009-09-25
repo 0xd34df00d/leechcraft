@@ -32,7 +32,8 @@ namespace LeechCraft
 		namespace Poshuku
 		{
 			PluginManager::PluginManager (QObject *parent)
-			: ProxyObject_ (new ProxyObject)
+			: QObject (parent)
+			, ProxyObject_ (new ProxyObject)
 			{
 			}
 			

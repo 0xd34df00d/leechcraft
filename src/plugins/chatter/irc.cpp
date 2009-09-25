@@ -222,6 +222,7 @@ void IrcLayer::ircParse(QByteArray data)
 
 void IrcLayer::parseResp(int code, QString args, QHash<QString, QString> data)
 {
+	Q_UNUSED (data);
 	QStringList argz;
 	QString user;
 	if((code>=ERR_NOSUCHNICK)&&(code<=ERR_USERSDONTMATCH)&&(genError->exactMatch(args)))

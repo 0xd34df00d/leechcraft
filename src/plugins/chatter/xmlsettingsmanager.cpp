@@ -21,7 +21,7 @@ QSettings* XmlSettingsManager::BeginSettings () const
 	return settings;
 }
 
-void XmlSettingsManager::EndSettings (QSettings *settings) const
+void XmlSettingsManager::EndSettings (QSettings*) const
 {
 }
 

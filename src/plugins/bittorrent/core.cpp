@@ -2331,7 +2331,7 @@ namespace LeechCraft
 								.arg (QString::fromUtf8 (a.error.message ().c_str ())));
 				}
 				
-				void operator() (const libtorrent::file_completed_alert& a) const
+				void operator() (const libtorrent::file_completed_alert&) const
 				{
 //					Core::Instance ()->FileFinished (a.handle, a.index);
 				}

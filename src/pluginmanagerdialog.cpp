@@ -32,9 +32,3 @@ LeechCraft::PluginManagerDialog::~PluginManagerDialog ()
 {
 }
 
-void LeechCraft::PluginManagerDialog::on_PluginsTree__activated (const QModelIndex& index)
-{
-//	TODO show the window for that plugin.
-//	Core::Instance ().Activated (index);
-}
-

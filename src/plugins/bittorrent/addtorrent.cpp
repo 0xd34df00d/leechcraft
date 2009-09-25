@@ -207,9 +207,15 @@ namespace LeechCraft
 					return;
 				TrackerURL_->setText (QString::fromStdString (info.trackers ().at (0).url));
 				Size_->setText (Util::MakePrettySize (info.total_size ()));
-				QString creator = QString::fromStdString (info.creator ()),
-						comment = QString::fromStdString (info.comment ());
-				QString date = QString::fromStdString (boost::posix_time::to_simple_string (info.creation_date ().get ()));
+
+				QString creator = QString::fromUtf8 (info.creator ().c_str ()),
+						comment = QString::fromUtf8 (info.comment ().c_str ());
+
+				boost::optional<boost::posix_time::ptime> maybeDate = info.creation_date ();
+				QString date;
+				if (maybeDate)
+					date = QString::fromStdString (boost::posix_time::to_simple_string (*maybeDate.get_ptr ()));
+
 				if (!creator.isEmpty () && !creator.isNull ())
 					Creator_->setText (creator);
 				else

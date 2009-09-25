@@ -31,8 +31,6 @@ namespace LeechCraft
 	public:
 		PluginManagerDialog (QWidget* = 0);
 		virtual ~PluginManagerDialog ();
-	private slots:
-		void on_PluginsTree__activated (const QModelIndex&);
 	};
 };
 

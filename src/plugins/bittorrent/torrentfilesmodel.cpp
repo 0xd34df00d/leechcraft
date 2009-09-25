@@ -209,7 +209,7 @@ namespace LeechCraft
 							if (hasChecked && hasUnchecked)
 								break;
 						}
-						Qt::CheckState state;
+						Qt::CheckState state = Qt::Unchecked;
 						if (hasChecked && hasUnchecked)
 							state = Qt::PartiallyChecked;
 						else if (hasChecked)
