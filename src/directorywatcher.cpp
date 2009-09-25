@@ -53,14 +53,13 @@ namespace LeechCraft
 			return;
 
 		if (!dirs.isEmpty ())
-		{
 			Watcher_->removePaths (dirs);
-			XmlSettingsManager::Instance ()->
-				setProperty ("WatchedDirectoryOldContents", QStringList ());
-		}
 
 		if (!path.isEmpty ())
 		{
+			QDir dir (path);
+			Olds_ = dir.entryInfoList ();
+
 			Watcher_->addPath (path);
 			handleDirectoryChanged (path);
 		}
@@ -68,31 +67,11 @@ namespace LeechCraft
 
 	void DirectoryWatcher::handleDirectoryChanged (const QString& path)
 	{
-		qDebug () << Q_FUNC_INFO;
-		QStringList old;
-		if (Olds_.isEmpty ())
-			old = XmlSettingsManager::Instance ()->
-				property ("WatchedDirectoryOldContents").toStringList ();
-
 		QDir dir (path);
 		QList<QFileInfo> nl = dir.entryInfoList ();
-		QStringList nls;
-		Q_FOREACH (QFileInfo fi, nl)
-			nls << fi.fileName ();
-		XmlSettingsManager::Instance ()->
-			setProperty ("WatchedDirectoryOldContents", nls);
 
-		if (Olds_.isEmpty ())
-			Q_FOREACH (QString oldStr, old)
-				Q_FOREACH (QFileInfo fi, nl)
-					if (fi.fileName () == oldStr)
-					{
-						nl.removeAll (fi);
-						break;
-					}
-		else
-			Q_FOREACH (QFileInfo oldFi, Olds_)
-				nl.removeAll (oldFi);
+		Q_FOREACH (QFileInfo oldFi, Olds_)
+			nl.removeAll (oldFi);
 
 		Olds_ = nl;
 
