@@ -92,15 +92,15 @@ SectionGroup "Core"
 		SectionIn 1 2 RO
 	SectionEnd
 
-#	Section "MSVC" MSVC
+	Section "MSVC" MSVC
 #		SetOutPath $WINDIR
 #		File /r WinSxS
-#		SetOutPath $INSTDIR
-#		File vcredist_x86.exe
-#		DetailPrint "Installing Visual C++ 2008 Libraries"
-#		ExecWait '"$INSTDIR\vcredist_x86.exe" /q:a /c:"msiexec /i vcredist.msi /quiet"'
-#		SectionIn 1 2 RO
-#	SectionEnd
+		SetOutPath $INSTDIR
+		File vcredist_x86.exe
+		DetailPrint "Installing Visual C++ 2008 Libraries"
+		ExecWait '"$INSTDIR\vcredist_x86.exe" /q:a /c:"msiexec /i vcredist.msi /quiet"'
+		SectionIn 1 2 RO
+	SectionEnd
 SectionGroupEnd
 
 SectionGroup "Plugins"
@@ -256,7 +256,7 @@ SectionEnd
 
 LangString DESC_MAINFILES ${LANG_ENGLISH} "LeechCraft and its support libraries."
 LangString DESC_QT ${LANG_ENGLISH} "Qt libraries."
-#LangString DESC_MSVC ${LANG_ENGLISH} "Microsoft Visual Studio libraries."
+LangString DESC_MSVC ${LANG_ENGLISH} "Microsoft Visual Studio libraries."
 LangString DESC_OPENSSL ${LANG_ENGLISH} "OpenSSL support."
 LangString DESC_HTTPPLUGIN ${LANG_ENGLISH} "Support for the HTTP protocol."
 LangString DESC_CHATTERPLUGIN ${LANG_ENGLISH} "IRC chat."
@@ -275,7 +275,7 @@ LangString DESC_SEEKTHRUPLUGIN ${LANG_ENGLISH} "Client for OpenSearch-aware sear
 
 LangString DESC_MAINFILES ${LANG_RUSSIAN} "Сам LeechCraft и его вспомогательные бИблиотеки."
 LangString DESC_QT ${LANG_RUSSIAN} "Библиотеки Qt."
-#LangString DESC_MSVC ${LANG_RUSSIAN} "Библиотеки Microsoft Visual Studio."
+LangString DESC_MSVC ${LANG_RUSSIAN} "Библиотеки Microsoft Visual Studio."
 LangString DESC_OPENSSL ${LANG_RUSSIAN} "Библиотеки OpenSSL."
 LangString DESC_HTTPPLUGIN ${LANG_RUSSIAN} "Поддержка HTTP."
 LangString DESC_CHATTERPLUGIN ${LANG_RUSSIAN} "Чаты IRC."
@@ -295,7 +295,7 @@ LangString DESC_SEEKTHRUPLUGIN ${LANG_RUSSIAN} "Клиент для поисковиков, поддержи
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
 	!insertmacro MUI_DESCRIPTION_TEXT ${MAINFILES} $(DESC_MAINFILES)
 	!insertmacro MUI_DESCRIPTION_TEXT ${QT} $(DESC_QT)
-#	!insertmacro MUI_DESCRIPTION_TEXT ${MSVC} $(DESC_MSVC)
+	!insertmacro MUI_DESCRIPTION_TEXT ${MSVC} $(DESC_MSVC)
 	!insertmacro MUI_DESCRIPTION_TEXT ${OPENSSL} $(DESC_OPENSSL)
 	!insertmacro MUI_DESCRIPTION_TEXT ${HTTPPLUGIN} $(DESC_HTTPPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${AGGREGATORPLUGIN} $(DESC_AGGREGATORPLUGIN)
