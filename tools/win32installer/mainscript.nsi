@@ -41,15 +41,15 @@ InstType "Minimal"
 SectionGroup "Core"
 	Section "LeechCraft" MAINFILES
 		SetOutPath $INSTDIR
+		File icon64.ico
+#		File icon32.ico
+#		File icon24.ico
+#		File icon16.ico
 		File plugininterface.dll
 		File xmlsettingsdialog.dll
 		File leechcraft.exe
-		File icon64.ico
-		File icon32.ico
-		File icon24.ico
-		File icon16.ico
 		File /r icons
-#		File /r leechcraft
+		File /r leechcraft
 		File /r oxygen
 		SetOutPath $INSTDIR\settings
 		File settings\coresettings.xml
@@ -95,10 +95,11 @@ SectionGroup "Core"
 	Section "MSVC" MSVC
 #		SetOutPath $WINDIR
 #		File /r WinSxS
-		SetOutPath $INSTDIR
+#		SetOutPath $INSTDIR
+		SetOutPath $TEMP
 		File vcredist_x86.exe
 		DetailPrint "Installing Visual C++ 2008 Libraries"
-		ExecWait '"$INSTDIR\vcredist_x86.exe" /q:a /c:"msiexec /i vcredist.msi /quiet"'
+		ExecWait '"$TEMP\vcredist_x86.exe" /q:a /c:"msiexec /i vcredist.msi /quiet"'
 		SectionIn 1 2 RO
 	SectionEnd
 SectionGroupEnd
