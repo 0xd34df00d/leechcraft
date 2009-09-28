@@ -66,6 +66,7 @@ OPTION (ENABLE_YASD "Build YASD, Yet Another Site Downloader" ON)
 OPTION (ENABLE_DCMINATOR "Build DCminator, the DirectConnect client" ON)
 OPTION (ENABLE_REMOTER "Build Remoter, the remote access manager" OFF)
 OPTION (ENABLE_NEWLIFE "Build NewLife, the settings importer" ON)
+OPTION (ENABLE_ANHERO "Build AnHero, the crash handler" ON)
 
 IF (ENABLE_TORRENT)
 	IF (RBTorrent_FOUND)
@@ -142,6 +143,10 @@ ENDIF (ENABLE_REMOTER)
 IF (ENABLE_NEWLIFE)
 	ADD_SUBDIRECTORY (plugins/newlife)
 ENDIF (ENABLE_NEWLIFE)
+
+IF (ENABLE_ANHERO)
+	ADD_SUBDIRECTORY (plugins/anhero)
+ENDIF (ENABLE_ANHERO)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
