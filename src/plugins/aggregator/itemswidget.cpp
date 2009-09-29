@@ -154,6 +154,9 @@ namespace LeechCraft
 			
 			void ItemsWidget::SetTapeMode (bool tape)
 			{
+				if (!isVisible ())
+					return;
+
 				Impl_->TapeMode_ = tape;
 				if (tape)
 					disconnect (Impl_->Ui_.Items_->selectionModel (),
