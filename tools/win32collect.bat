@@ -23,6 +23,8 @@ mkdir %TARGET_DIR%\plugins\imageformats
 mkdir %TARGET_DIR%\plugins\sqldrivers
 mkdir %TARGET_DIR%\settings
 mkdir %TARGET_DIR%\translations
+mkdir %TARGET_DIR%\leechcraft
+mkdir %TARGET_DIR%\leechcraft\themes
 mkdir %TARGET_DIR%\icons
 
 rem === SHARED COMPONENTS ===
@@ -106,6 +108,7 @@ for /r %LEECHCRAFT_ROOT_DIR%\src %%f in (*.qm) do copy %%f %TARGET_DIR%\translat
 rem - Oxygen icon theme -
 copy %LEECHCRAFT_ROOT_DIR%\src\iconsets\oxygen\oxygen.mapping %TARGET_DIR%\icons
 xcopy /e /i %LEECHCRAFT_ROOT_DIR%\src\iconsets\oxygen\icons %TARGET_DIR%\icons\oxygen
+copy nul %TARGET_DIR%\leechcraft\themes\oxygen
 
 rem - Other stuff -
 copy %LEECHCRAFT_ROOT_DIR%\tools\win32installer\qt.conf %TARGET_DIR%
