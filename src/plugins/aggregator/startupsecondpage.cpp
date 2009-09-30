@@ -47,7 +47,7 @@ namespace LeechCraft
 				connect (wizard (),
 						SIGNAL (accepted ()),
 						Selector_,
-						SLOT (accepted ()));
+						SLOT (accept ()));
 			}
 
 			void StartupSecondPage::handleAccepted ()
