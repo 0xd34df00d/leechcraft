@@ -69,7 +69,7 @@ void NotificationManager::HandleFinishedNotification (IHookProxy_ptr proxy,
 		<< Core::Instance ().GetProxy ()->GetSettingsManager ()->
 				property ("FinishedDownloadMessageTimeout").toInt () * 1000;
 
-	if (Connection_->callWithArgumentList (QDBus::BlockWithGui,
+	if (Connection_->callWithArgumentList (QDBus::NoBlock,
 			"Notify", arguments).type () == QDBusMessage::ErrorMessage)
 		qWarning () << Q_FUNC_INFO
 			<< Connection_->lastError ();
