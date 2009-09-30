@@ -20,6 +20,7 @@
 #include <QUrl>
 #include <QTextCodec>
 #include <QMainWindow>
+#include <QNetworkReply>
 #include "xmlsettingsmanager.h"
 
 using namespace LeechCraft::Plugins::LMP;
@@ -166,6 +167,9 @@ QAction* Core::GetShowAction () const
 void Core::Handle (const LeechCraft::DownloadEntity& e)
 {
 	MediaSource *source = 0;
+	/* TODO
+	 * Use this code path when we will be able to figure out how to
+	 * synchronously check a local file if it's playable.
 	if (e.Entity_.canConvert<QUrl> ())
 	{
 		QUrl url = e.Entity_.toUrl ();
@@ -180,6 +184,21 @@ void Core::Handle (const LeechCraft::DownloadEntity& e)
 	{
 		QUrl url = e.Additional_ ["SourceURL"].toUrl ();
 		source = new MediaSource (url);
+	}
+	else
+		return;
+		*/
+	if (e.Entity_.canConvert<QNetworkReply*> ())
+	{
+		source = new MediaSource (e.Entity_.value<QNetworkReply*> ());
+	}
+	else if (e.Entity_.canConvert<QUrl> ())
+	{
+		QUrl url = e.Entity_.toUrl ();
+		if (url.scheme () == "file")
+			source = new MediaSource (url.toLocalFile ());
+		else
+			source = new MediaSource (url);
 	}
 	else
 		return;

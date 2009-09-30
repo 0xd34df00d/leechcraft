@@ -32,6 +32,44 @@ EntityChecker::EntityChecker (const LeechCraft::DownloadEntity& e)
 : Result_ (false)
 , Break_ (false)
 {
+	struct MimeChecker
+	{
+		bool operator () (const QString& mime)
+		{
+			if (mime == "application/ogg")
+				return true;
+			if (mime.startsWith ("audio/"))
+				return true;
+			if (mime.startsWith ("video/"))
+				return true;
+			return false;
+		}
+	};
+
+	if (e.Entity_.canConvert<QNetworkReply*> () &&
+			MimeChecker () (e.Mime_))
+	{
+		Result_ = true;
+		return;
+	}
+	if (e.Entity_.canConvert<QUrl> ())
+	{
+		QUrl url = e.Entity_.toUrl ();
+		QString extension = QFileInfo (url.path ()).suffix ();
+
+		QStringList goodExt = XmlSettingsManager::Instance ()->
+			property ("TestExtensions").toString ()
+			.split (' ', QString::SkipEmptyParts);
+
+		Result_ = goodExt.contains (extension);
+		return;
+	}
+
+	Result_ = false;
+
+	/* TODO
+	 * Use this code path when we will be able to figure out how to
+	 * synchronously check a local file if it's playable.
 	QString source;
 	if (e.Entity_.canConvert<QUrl> ())
 	{
@@ -89,6 +127,7 @@ EntityChecker::EntityChecker (const LeechCraft::DownloadEntity& e)
 
 	while (!Break_)
 		qApp->processEvents ();
+		*/
 }
 
 bool EntityChecker::Can () const
