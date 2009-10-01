@@ -203,19 +203,31 @@ namespace LeechCraft
 			
 			void Core::Remove (const QModelIndex& index)
 			{
+				QStringList oldCats = ComputeUniqueCategories ();
+
 				beginRemoveRows (QModelIndex (), index.row (), index.row ());
 				Descriptions_.removeAt (index.row ());
 				endRemoveRows ();
+
 				WriteSettings ();
+
+				QStringList newCats = ComputeUniqueCategories ();
+				emit categoriesChanged (newCats, oldCats);
 			}
 			
 			void Core::SetTags (const QModelIndex& index, const QStringList& tags)
 			{
+				QStringList oldCats = ComputeUniqueCategories ();
+
 				Descriptions_ [index.row ()].Tags_.clear ();
 				Q_FOREACH (QString tag, tags)
 					Descriptions_ [index.row ()].Tags_ <<
 						Proxy_->GetTagsManager ()->GetID (tag);
+
 				WriteSettings ();
+
+				QStringList newCats = ComputeUniqueCategories ();
+				emit categoriesChanged (newCats, oldCats);
 			}
 			
 			QStringList Core::GetCategories () const
@@ -313,6 +325,45 @@ namespace LeechCraft
 			
 			void Core::HandleEntity (const QString& contents, const QString& useTags)
 			{
+				try
+				{
+					Description descr = ParseData (contents, useTags);
+
+					QStringList oldCats = ComputeUniqueCategories ();
+
+					beginInsertRows (QModelIndex (), Descriptions_.size (), Descriptions_.size ());
+					Descriptions_ << descr;
+					endInsertRows ();
+
+					WriteSettings ();
+
+					QStringList newCats = ComputeUniqueCategories ();
+					emit categoriesChanged (newCats, oldCats);
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< e.what ();
+					return;
+				}
+			}
+
+			QStringList Core::ComputeUniqueCategories () const
+			{
+				QStringList ids;
+				Q_FOREACH (Description d, Descriptions_)
+					Q_FOREACH (QString id, d.Tags_)
+						if (!ids.contains (id))
+							ids << id;
+
+				QStringList result;
+				Q_FOREACH (QString id, ids)
+					result << Proxy_->GetTagsManager ()->GetTag (id);
+				return result;
+			}
+
+			Description Core::ParseData (const QString& contents, const QString& useTags)
+			{
 				QDomDocument doc;
 				QString errorString;
 				int line, column;
@@ -323,15 +374,12 @@ namespace LeechCraft
 							.arg (errorString)
 							.arg (line)
 							.arg (column));
-					return;
+					throw std::runtime_error ("Parse error");
 				}
 			
 				QDomElement root = doc.documentElement ();
 				if (root.tagName () != "OpenSearchDescription")
-				{
-					emit error (tr ("Not and OpenSearch description."));
-					return;
-				}
+					throw std::runtime_error ("Parse error");
 			
 				QDomElement shortNameTag = root.firstChildElement ("ShortName");
 				QDomElement descriptionTag = root.firstChildElement ("Description");
@@ -341,10 +389,7 @@ namespace LeechCraft
 						urlTag.isNull () ||
 						!urlTag.hasAttribute ("template") ||
 						!urlTag.hasAttribute ("type"))
-				{
-					emit error (tr ("Malformed OpenSearch description."));
-					return;
-				}
+					throw std::runtime_error ("Parse error");
 			
 				Description descr;
 				descr.ShortName_ = shortNameTag.text ();
@@ -503,12 +548,8 @@ namespace LeechCraft
 				}
 				if (!was)
 					descr.InputEncodings_ << "UTF-8";
-			
-				beginInsertRows (QModelIndex (), Descriptions_.size (), Descriptions_.size ());
-				Descriptions_ << descr;
-				endInsertRows ();
-			
-				WriteSettings ();
+
+				return descr;
 			}
 			
 			void Core::HandleProvider (QObject *provider)

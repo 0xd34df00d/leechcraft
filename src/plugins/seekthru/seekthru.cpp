@@ -57,6 +57,10 @@ namespace LeechCraft
 						SIGNAL (warning (const QString&)),
 						this,
 						SLOT (handleWarning (const QString&)));
+				connect (&Core::Instance (),
+						SIGNAL (categoriesChanged (const QStringList&, const QStringList&)),
+						this,
+						SIGNAL (categoriesChanged (const QStringList&, const QStringList&)));
 			
 				XmlSettingsDialog_.reset (new XmlSettingsDialog ());
 				XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),

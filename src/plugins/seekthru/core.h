@@ -88,19 +88,22 @@ namespace LeechCraft
 				IFindProxy_ptr GetProxy (const LeechCraft::Request&);
 				IWebBrowser* GetWebBrowser () const;
 				void HandleEntity (const QString&, const QString& = QString ());
-			private slots:
-				void handleJobFinished (int);
-				void handleJobError (int);
 			private:
+				QStringList ComputeUniqueCategories () const;
+				Description ParseData (const QString&, const QString&);
 				void HandleProvider (QObject*);
 				void ReadSettings ();
 				void WriteSettings ();
+			private slots:
+				void handleJobFinished (int);
+				void handleJobError (int);
 			signals:
 				void error (const QString&);
 				void warning (const QString&);
 				void delegateEntity (const LeechCraft::DownloadEntity&,
 						int*, QObject**);
 				void gotEntity (const LeechCraft::DownloadEntity&);
+				void categoriesChanged (const QStringList&, const QStringList&);
 			};
 		};
 	};
