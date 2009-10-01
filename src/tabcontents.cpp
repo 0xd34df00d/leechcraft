@@ -31,6 +31,18 @@ namespace LeechCraft
 	{
 		Ui_.setupUi (this);
 
+		Q_FOREACH (QObject *plugin, Core::Instance ().GetPluginManager ()->
+				GetAllCastableRoots<IFinder*> ())
+			connect (plugin,
+					SIGNAL (categoriesChanged (const QStringList&, const QStringList&)),
+					this,
+					SLOT (handleCategoriesChanged (const QStringList&, const QStringList&)));
+
+		Ui_.LeastCategory_->setDuplicatesEnabled (true);
+		QTimer::singleShot (0,
+				this,
+				SLOT (fillDefaultCombobox ()));
+
 		FilterTimer_->setSingleShot (true);
 		FilterTimer_->setInterval (800);
 		connect (FilterTimer_,
@@ -40,6 +52,14 @@ namespace LeechCraft
 
 		Ui_.ControlsDockWidget_->hide ();
 
+		connect (Ui_.SimpleSearch_,
+				SIGNAL (toggled (bool)),
+				this,
+				SLOT (filterParametersChanged ()));
+		connect (Ui_.LeastCategory_,
+				SIGNAL (currentIndexChanged (int)),
+				this,
+				SLOT (filterParametersChanged ()));
 		connect (Ui_.FilterLine_,
 				SIGNAL (textEdited (const QString&)),
 				this,
@@ -72,6 +92,60 @@ namespace LeechCraft
 	{
 		Ui_.FilterLine_->setText (query);
 		feedFilterParameters ();
+	}
+
+	void TabContents::FillCombobox (QComboBox *box)
+	{
+		box->addItem ("downloads");
+		Q_FOREACH (IFinder *plugin, Core::Instance ().GetPluginManager ()->
+				GetAllCastableTo<IFinder*> ())
+			box->addItems (plugin->GetCategories ());
+		box->adjustSize ();
+	}
+
+	QString TabContents::GetQuery () const
+	{
+		QString query = Ui_.FilterLine_->text ();
+		if (Ui_.SimpleSearch_->checkState () == Qt::Checked)
+		{
+			QString prepend = QString ("ca:%1")
+				.arg (Ui_.LeastCategory_->currentText ());
+			Q_FOREACH (QComboBox *box, AdditionalBoxes_)
+				prepend += QString (" OR ca:%1").arg (box->currentText ());
+			prepend = QString ("(%1) ").arg (prepend);
+			prepend += "t:";
+			switch (Ui_.Type_->currentIndex ())
+			{
+				case 0:
+					prepend += 'f';
+					break;
+				case 1:
+					prepend += 'w';
+					break;
+				case 2:
+					prepend += 'r';
+					break;
+				case 3:
+					prepend += 't';
+					break;
+				default:
+					prepend += 'f';
+					qWarning () << Q_FUNC_INFO
+						<< "unknown Type index"
+						<< Ui_.Type_->currentIndex ()
+						<< Ui_.Type_->currentText ();
+					break;
+			}
+
+			prepend += ' ';
+			query.prepend (prepend);
+		}
+		return query;
+	}
+
+	void TabContents::fillDefaultCombobox ()
+	{
+		FillCombobox (Ui_.LeastCategory_);
 	}
 
 	void TabContents::SmartDeselect (TabContents *newFocus)
@@ -176,7 +250,7 @@ namespace LeechCraft
 
 	void TabContents::feedFilterParameters ()
 	{
-		QString query = Ui_.FilterLine_->text ();
+		QString query = GetQuery ();
 		QAbstractItemModel *old = Ui_.PluginsTasksTree_->model ();
 		Ui_.PluginsTasksTree_->
 			setModel (Core::Instance ().GetTasksModel (query));
@@ -209,6 +283,65 @@ namespace LeechCraft
 		if (!menu)
 			return;
 		menu->popup (Ui_.PluginsTasksTree_->viewport ()->mapToGlobal (pos));
+	}
+	
+	void TabContents::on_Add__released ()
+	{
+		QComboBox *box = new QComboBox (this);
+		box->setDuplicatesEnabled (true);
+		box->setInsertPolicy (QComboBox::InsertAlphabetically);
+		connect (box,
+				SIGNAL (currentIndexChanged (int)),
+				this,
+				SLOT (filterParametersChanged ()));
+
+		FillCombobox (box);
+
+		QAction *remove = new QAction (tr ("Remove this category"), this);
+		connect (remove,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (removeCategoryBox ()));
+		remove->setData (QVariant::fromValue<QWidget*> (box));
+		box->setContextMenuPolicy (Qt::ActionsContextMenu);
+		box->addAction (remove);
+
+		Ui_.SearchStuff_->insertWidget (2, box);
+		AdditionalBoxes_ << box;
+	}
+
+	void TabContents::handleCategoriesChanged (const QStringList& newCats, const QStringList& oldCats)
+	{
+		Q_FOREACH (QComboBox *box, AdditionalBoxes_ + (QList<QComboBox*> () << Ui_.LeastCategory_))
+		{
+			Q_FOREACH (QString category, oldCats)
+				box->removeItem (box->findText (category));
+			box->addItems (newCats);
+		}
+	}
+
+	void TabContents::on_SimpleSearch__toggled (bool on)
+	{
+		Q_FOREACH (QComboBox *box, AdditionalBoxes_)
+			box->setEnabled (on);
+	}
+
+	void TabContents::removeCategoryBox ()
+	{
+		QAction *act = qobject_cast<QAction*> (sender ());
+		if (!act)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "sender is not a QAction*"
+				<< sender ();
+			return;
+		}
+
+		QComboBox *w = qobject_cast<QComboBox*> (act->data ().value<QWidget*> ());
+		AdditionalBoxes_.removeAll (w);
+		w->deleteLater ();
+
+		filterParametersChanged ();
 	}
 };
 

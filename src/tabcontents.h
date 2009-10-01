@@ -33,6 +33,7 @@ namespace LeechCraft
 		Ui::TabContents Ui_;
 		QTimer *FilterTimer_;
 		QToolBar *Controls_;
+		QList<QComboBox*> AdditionalBoxes_;
 	public:
 		TabContents (QWidget* = 0);
 		virtual ~TabContents ();
@@ -40,12 +41,20 @@ namespace LeechCraft
 		Ui::TabContents GetUi () const;
 		void SmartDeselect (TabContents*);
 		void SetQuery (const QString&);
+	private:
+		void FillCombobox (QComboBox*);
+		QString GetQuery () const;
 	private slots:
+		void fillDefaultCombobox ();
 		void updatePanes (const QItemSelection&, const QItemSelection&);
 		void filterParametersChanged ();
 		void filterReturnPressed ();
 		void feedFilterParameters ();
 		void on_PluginsTasksTree__customContextMenuRequested (const QPoint&);
+		void on_Add__released ();
+		void handleCategoriesChanged (const QStringList&, const QStringList&);
+		void on_SimpleSearch__toggled (bool);
+		void removeCategoryBox ();
 	signals:
 		void filterUpdated ();
 		void queryUpdated (const QString&);
