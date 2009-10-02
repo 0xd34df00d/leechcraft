@@ -172,35 +172,12 @@ namespace LeechCraft
 		if (newIndexes.size ())
 			newIndex = newIndexes.at (0).topLeft ();
 
-		if (!newIndex.isValid ())
-		{
-#ifdef QT_DEBUG
-			qDebug () << "invalidating";
-#endif
-
-			if (oldIndex.isValid ())
-			{
-#ifdef QT_DEBUG
-				qDebug () << "erasing older stuff";
-#endif
-				QToolBar *oldControls = Core::Instance ().GetControls (oldIndex);
-				if (oldControls)
-					Core::Instance ().GetReallyMainWindow ()->
-						removeToolBar (oldControls);
-				Ui_.ControlsDockWidget_->hide ();
-			}
-		}
-		else if (oldIndex.isValid () &&
+		if (oldIndex.isValid () &&
 				Core::Instance ().SameModel (newIndex, oldIndex))
 		{
 		}
-		else if (newIndex.isValid ())
+		else
 		{
-			QToolBar *controls = Core::Instance ()
-						.GetControls (newIndex);
-			QWidget *addiInfo = Core::Instance ()
-						.GetAdditionalInfo (newIndex);
-
 			if (oldIndex.isValid ())
 			{
 #ifdef QT_DEBUG
@@ -216,6 +193,11 @@ namespace LeechCraft
 #ifdef QT_DEBUG
 			qDebug () << "inserting newer stuff" << newIndex << controls << addiInfo;
 #endif
+
+			QToolBar *controls = Core::Instance ()
+						.GetControls (newIndex);
+			QWidget *addiInfo = Core::Instance ()
+						.GetAdditionalInfo (newIndex);
 
 			if (controls)
 			{
@@ -306,7 +288,7 @@ namespace LeechCraft
 		box->setContextMenuPolicy (Qt::ActionsContextMenu);
 		box->addAction (remove);
 
-		Ui_.SearchStuff_->insertWidget (2, box);
+		Ui_.SearchStuff_->insertWidget (3, box);
 		AdditionalBoxes_ << box;
 	}
 

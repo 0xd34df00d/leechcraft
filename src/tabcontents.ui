@@ -17,6 +17,9 @@
    <item>
     <layout class="QHBoxLayout" name="SearchStuff_">
      <item>
+      <widget class="QLineEdit" name="FilterLine_"/>
+     </item>
+     <item>
       <widget class="QCheckBox" name="SimpleSearch_">
        <property name="text">
         <string/>
@@ -69,9 +72,6 @@
         </property>
        </item>
       </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="FilterLine_"/>
      </item>
     </layout>
    </item>
