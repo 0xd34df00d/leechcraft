@@ -69,6 +69,12 @@ namespace LeechCraft
 					, ColumnDate = 1
 				};
 
+				struct PendingOPML
+				{
+					QString Filename_;
+				};
+				QMap<int, PendingOPML> PendingOPMLs_;
+
 				struct PendingJob
 				{
 					enum Role
@@ -127,6 +133,8 @@ namespace LeechCraft
 				ICoreProxy_ptr GetProxy () const;
 
 				bool CouldHandle (const LeechCraft::DownloadEntity&);
+				void Handle (LeechCraft::DownloadEntity);
+				void StartAddingOPML (const QString&);
 				void SetWidgets (QToolBar*, QWidget*);
 				bool DoDelayedInit ();
 				void AddFeed (const QString&, const QString&);

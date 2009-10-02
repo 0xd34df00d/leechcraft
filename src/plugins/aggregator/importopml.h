@@ -33,7 +33,7 @@ namespace LeechCraft
 
 				Ui::ImportOPML Ui_;
 			public:
-				ImportOPML (QWidget* = 0);
+				ImportOPML (const QString& = QString (), QWidget* = 0);
 				virtual ~ImportOPML ();
 
 				QString GetFilename () const;

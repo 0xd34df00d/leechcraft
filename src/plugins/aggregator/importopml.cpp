@@ -29,12 +29,20 @@ namespace LeechCraft
 	{
 		namespace Aggregator
 		{
-			ImportOPML::ImportOPML (QWidget *parent)
+			ImportOPML::ImportOPML (const QString& file, QWidget *parent)
 			: QDialog (parent)
 			{
 				Ui_.setupUi (this);
 				Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (false);
-				on_Browse__released ();
+
+				if (file.isEmpty ())
+					on_Browse__released ();
+				else
+				{
+					Ui_.File_->setText (file);
+					on_File__textEdited (file);
+					HandleFile (file);
+				}
 			}
 			
 			ImportOPML::~ImportOPML ()

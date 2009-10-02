@@ -48,6 +48,8 @@
 #include "jobholderrepresentation.h"
 #include "channelsfiltermodel.h"
 #include "itemslistmodel.h"
+#include "importopml.h"
+#include "addfeed.h"
 
 namespace LeechCraft
 {
@@ -121,17 +123,84 @@ namespace LeechCraft
 
 				QUrl url = e.Entity_.toUrl ();
 
-				if (url.scheme () != "http" &&
-						url.scheme () != "https")
-					return false;
-			
-				if (e.Mime_ != "application/atom+xml" &&
-						e.Mime_ != "application/rss+xml")
-					return false;
+				if (e.Mime_ == "text/x-opml")
+				{
+					if (url.scheme () != "file" &&
+							url.scheme () != "http" &&
+							url.scheme () != "https")
+						return false;
+				}
+				else
+				{
+					if (url.scheme () != "http" &&
+							url.scheme () != "https")
+						return false;
+				
+					if (e.Mime_ != "application/atom+xml" &&
+							e.Mime_ != "application/rss+xml")
+						return false;
+				}
 			
 				return true;
 			}
+
+			void Core::Handle (LeechCraft::DownloadEntity e)
+			{
+				QUrl url = e.Entity_.toUrl ();
+				if (e.Mime_ == "text/x-opml")
+				{
+					if (url.scheme () == "file")
+						StartAddingOPML (url.toLocalFile ());
+					else
+					{
+						QString name = LeechCraft::Util::GetTemporaryName ();
+
+						LeechCraft::DownloadEntity e = Util::MakeEntity (url,
+								name, 
+								LeechCraft::Internal |
+									LeechCraft::DoNotNotifyUser |
+									LeechCraft::DoNotSaveInHistory |
+									LeechCraft::NotPersistent |
+									LeechCraft::DoNotAnnounceEntity);
+						PendingOPML po =
+						{
+							name
+						};
+					
+						int id = -1;
+						QObject *pr;
+						emit delegateEntity (e, &id, &pr);
+						if (id == -1)
+						{
+							emit error (tr ("Task for OPML %1 wasn't delegated.")
+									.arg (url.toString ()));
+							return;
+						}
+					
+						HandleProvider (pr);
+						PendingOPMLs_ [id] = po;
+					}
+				}
+				else
+				{
+					Aggregator::AddFeed af (url.toString ());
+					if (af.exec () == QDialog::Accepted)
+						AddFeed (url.toString (),
+								af.GetTags ());
+				}
+			}
 			
+			void Core::StartAddingOPML (const QString& file)
+			{
+				ImportOPML importDialog (file);
+				if (importDialog.exec () == QDialog::Rejected)
+					return;
+			
+				AddFromOPML (importDialog.GetFilename (),
+						importDialog.GetTags (),
+						importDialog.GetMask ());
+			}
+
 			void Core::SetWidgets (QToolBar *bar, QWidget *tab)
 			{
 				ChannelsModel_->SetWidgets (bar, tab);
@@ -1013,7 +1082,13 @@ namespace LeechCraft
 			void Core::handleJobFinished (int id)
 			{
 				if (!PendingJobs_.contains (id))
-					return;
+				{
+					if (!PendingOPMLs_.contains (id))
+						return;
+
+					StartAddingOPML (PendingOPMLs_ [id].Filename_);
+					PendingOPMLs_.remove (id);
+				}
 				PendingJob pj = PendingJobs_ [id];
 				PendingJobs_.remove (id);
 			
@@ -1125,12 +1200,20 @@ namespace LeechCraft
 			{
 				if (PendingJobs_.contains (id))
 					PendingJobs_.remove (id);
+				if (PendingOPMLs_.contains (id))
+					PendingOPMLs_.remove (id);
 			}
 			
 			void Core::handleJobError (int id, IDownload::Error ie)
 			{
 				if (!PendingJobs_.contains (id))
-					return;
+				{
+					if (PendingOPMLs_.contains (id))
+					{
+						emit error (tr ("Unable to download the OPML file."));
+						return;
+					}
+				}
 			
 				PendingJob pj = PendingJobs_ [id];
 				FileRemoval file (pj.Filename_);

@@ -51,7 +51,6 @@
 #include "itembucket.h"
 #include "regexpmatcherui.h"
 #include "regexpmatchermanager.h"
-#include "importopml.h"
 #include "export.h"
 #include "itembucket.h"
 #include "importbinary.h"
@@ -363,10 +362,7 @@ namespace LeechCraft
 			
 			void Aggregator::Handle (LeechCraft::DownloadEntity e)
 			{
-				AddFeed af (e.Entity_.toUrl ().toString ());
-				if (af.exec () == QDialog::Accepted)
-					Core::Instance ().AddFeed (e.Entity_.toUrl ().toString (),
-							af.GetTags ());
+				Core::Instance ().Handle (e);
 			}
 			
 #define _LC_MERGE(a) EA##a
@@ -739,13 +735,7 @@ namespace LeechCraft
 			
 			void Aggregator::on_ActionImportOPML__triggered ()
 			{
-				ImportOPML importDialog;
-				if (importDialog.exec () == QDialog::Rejected)
-					return;
-			
-				Core::Instance ().AddFromOPML (importDialog.GetFilename (),
-						importDialog.GetTags (),
-						importDialog.GetMask ());
+				Core::Instance ().StartAddingOPML (QString ());
 			}
 			
 			void Aggregator::on_ActionExportOPML__triggered ()
