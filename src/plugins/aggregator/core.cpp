@@ -786,7 +786,22 @@ namespace LeechCraft
 				QStringList tagsList = Proxy_->GetTagsManager ()->Split (tags);
 				for (OPMLParser::items_container_t::const_iterator i = items.begin (),
 						end = items.end (); i != end; ++i)
+				{
 					AddFeed (i->URL_, tagsList + i->Categories_);
+
+					try
+					{
+						int interval = 0;
+						if (i->CustomFetchInterval_)
+							interval = i->FetchInterval_;
+						Feed::FeedSettings s (interval, i->MaxArticleNumber_, i->MaxArticleAge_);
+						StorageBackend_->SetFeedSettings (i->URL_, s);
+					}
+					catch (const std::exception& e)
+					{
+						emit error (tr ("Could not update feed settings"));
+					}
+				}
 			}
 			
 			void Core::ExportToOPML (const QString& where,
