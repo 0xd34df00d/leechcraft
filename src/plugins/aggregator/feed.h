@@ -49,8 +49,13 @@ namespace LeechCraft
 					 *
 					 * A default-constructed feed has all the settings set to default
 					 * values - so, no settings are overridden.
+					 *
+					 * @param[in] ut Update interval.
+					 * @param[in] ni Number of items.
+					 * @param[in] ia Max age.
+					 * @param[in] ada Automatically download enclosures.
 					 */
-					FeedSettings (int = 0, int = 0, int = 0, bool = false);
+					FeedSettings (int ut = 0, int ni = 0, int ia = 0, bool ada = false);
 
 					/** @brief Update timeout for the feed.
 					 *
