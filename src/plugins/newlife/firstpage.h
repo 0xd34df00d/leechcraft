@@ -16,14 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NEWLIFE_NEWLIFE_H
-#define PLUGINS_NEWLIFE_NEWLIFE_H
-#include <memory>
-#include <QObject>
-#include <QStringList>
-#include <QTranslator>
-#include <interfaces/iinfo.h>
-#include <interfaces/imenuembedder.h>
+#ifndef PLUGINS_NEWLIFE_FIRSTPAGE_H
+#define PLUGINS_NEWLIFE_FIRSTPAGE_H
+#include <QWizardPage>
+#include <QMap>
+#include "ui_firstpage.h"
 
 namespace LeechCraft
 {
@@ -31,31 +28,21 @@ namespace LeechCraft
 	{
 		namespace NewLife
 		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IMenuEmbedder
+			class AbstractImporter;
+
+			class FirstPage : public QWizardPage
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IMenuEmbedder)
 
-				std::auto_ptr<QTranslator> Translator_;
+				Ui::FirstPage Ui_;
+				QMap<const AbstractImporter*, int> StartPages_;
 			public:
-				void Init (ICoreProxy_ptr);
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
+				FirstPage (QWidget* = 0);
 
-				QList<QMenu*> GetToolMenus () const;
-				QList<QAction*> GetToolActions () const;
-			private slots:
-				void runWizard ();
-			signals:
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				virtual int nextId () const;
+
+				void SetupImporter (const AbstractImporter*);
+				AbstractImporter* GetImporter () const;
 			};
 		};
 	};

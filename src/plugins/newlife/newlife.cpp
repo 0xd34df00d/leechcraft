@@ -18,7 +18,10 @@
 
 #include "newlife.h"
 #include <QIcon>
+#include <QMenu>
+#include <QAction>
 #include <plugininterface/util.h>
+#include "importwizard.h"
 
 namespace LeechCraft
 {
@@ -68,6 +71,35 @@ namespace LeechCraft
 
 			void Plugin::SetProvider (QObject*, const QString&)
 			{
+			}
+
+			QList<QMenu*> Plugin::GetToolMenus () const
+			{
+				return QList<QMenu*> ();
+			}
+
+			QList<QAction*> Plugin::GetToolActions () const
+			{
+				QAction *importStuff = new QAction (tr ("Import settings..."), 0);
+				importStuff->setProperty ("ActionIcon", "newlife_importsettings");
+				connect (importStuff,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (runWizard ()));
+
+				QList<QAction*> result;
+				result << importStuff;
+				return result;
+			}
+
+			void Plugin::runWizard ()
+			{
+				ImportWizard *wiz = new ImportWizard ();
+				connect (wiz,
+						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						this,
+						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+				wiz->show ();
 			}
 		};
 	};

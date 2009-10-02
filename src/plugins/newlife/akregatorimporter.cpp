@@ -16,14 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NEWLIFE_NEWLIFE_H
-#define PLUGINS_NEWLIFE_NEWLIFE_H
-#include <memory>
-#include <QObject>
-#include <QStringList>
-#include <QTranslator>
-#include <interfaces/iinfo.h>
-#include <interfaces/imenuembedder.h>
+#include "akregatorimporter.h"
+#include "akregatorimportpage.h"
 
 namespace LeechCraft
 {
@@ -31,35 +25,24 @@ namespace LeechCraft
 	{
 		namespace NewLife
 		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IMenuEmbedder
+			AkregatorImporter::AkregatorImporter (QWidget *parent)
+			: AbstractImporter (parent)
 			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IMenuEmbedder)
+				ImportPage_ = new AkregatorImportPage ();
+			}
 
-				std::auto_ptr<QTranslator> Translator_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
+			QStringList AkregatorImporter::GetNames () const
+			{
+				return QStringList ("Akregator");
+			}
 
-				QList<QMenu*> GetToolMenus () const;
-				QList<QAction*> GetToolActions () const;
-			private slots:
-				void runWizard ();
-			signals:
-				void gotEntity (const LeechCraft::DownloadEntity&);
-			};
+			QList<QWizardPage*> AkregatorImporter::GetWizardPages () const
+			{
+				QList<QWizardPage*> result;
+				result << ImportPage_;
+				return result;
+			}
 		};
 	};
 };
-
-#endif
 

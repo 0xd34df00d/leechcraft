@@ -16,44 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NEWLIFE_NEWLIFE_H
-#define PLUGINS_NEWLIFE_NEWLIFE_H
-#include <memory>
-#include <QObject>
-#include <QStringList>
-#include <QTranslator>
-#include <interfaces/iinfo.h>
-#include <interfaces/imenuembedder.h>
+#ifndef PLUGINS_NEWLIFE_AKREGATORIMPORTPAGE_H
+#define PLUGINS_NEWLIFE_AKREGATORIMPORTPAGE_H
+#include <QWizardPage>
+#include "ui_akregatorimportpage.h"
 
 namespace LeechCraft
 {
+	struct DownloadEntity;
+
 	namespace Plugins
 	{
 		namespace NewLife
 		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IMenuEmbedder
+			class AkregatorImportPage : public QWizardPage
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IMenuEmbedder)
 
-				std::auto_ptr<QTranslator> Translator_;
+				Ui::AkregatorImportPage Ui_;
 			public:
-				void Init (ICoreProxy_ptr);
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
+				AkregatorImportPage (QWidget* = 0);
 
-				QList<QMenu*> GetToolMenus () const;
-				QList<QAction*> GetToolActions () const;
+				bool CheckValidity (const QString&) const;
+				virtual bool isComplete () const;
+				virtual int nextId () const;
+				virtual void initializePage ();
 			private slots:
-				void runWizard ();
+				void on_Browse__released ();
+				void handleAccepted ();
 			signals:
 				void gotEntity (const LeechCraft::DownloadEntity&);
 			};

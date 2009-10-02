@@ -16,14 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NEWLIFE_NEWLIFE_H
-#define PLUGINS_NEWLIFE_NEWLIFE_H
-#include <memory>
-#include <QObject>
-#include <QStringList>
-#include <QTranslator>
-#include <interfaces/iinfo.h>
-#include <interfaces/imenuembedder.h>
+#include "importwizard.h"
+#include <QtDebug>
+#include "akregatorimporter.h"
 
 namespace LeechCraft
 {
@@ -31,35 +26,43 @@ namespace LeechCraft
 	{
 		namespace NewLife
 		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IMenuEmbedder
+			ImportWizard::ImportWizard (QWidget *parent)
+			: QWizard (parent)
 			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IMenuEmbedder)
+				Ui_.setupUi (this);
 
-				std::auto_ptr<QTranslator> Translator_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
+				Importers_ << new AkregatorImporter (this);
+				
+				connect (this,
+						SIGNAL (accepted ()),
+						this,
+						SLOT (handleAccepted ()),
+						Qt::QueuedConnection);
+				connect (this,
+						SIGNAL (accepted ()),
+						this,
+						SLOT (handleRejected ()),
+						Qt::QueuedConnection);
 
-				QList<QMenu*> GetToolMenus () const;
-				QList<QAction*> GetToolActions () const;
-			private slots:
-				void runWizard ();
-			signals:
-				void gotEntity (const LeechCraft::DownloadEntity&);
-			};
+				SetupImporters ();
+			}
+
+			void ImportWizard::handleAccepted ()
+			{
+				deleteLater ();
+			}
+
+			void ImportWizard::handleRejected ()
+			{
+				deleteLater ();
+			}
+
+			void ImportWizard::SetupImporters ()
+			{
+				Q_FOREACH (AbstractImporter *ai, Importers_)
+					Ui_.FirstPage_->SetupImporter (ai);
+			}
 		};
 	};
 };
-
-#endif
 

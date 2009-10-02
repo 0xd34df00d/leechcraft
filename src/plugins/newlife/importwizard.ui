@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ImportWizard</class>
+ <widget class="QWizard" name="ImportWizard">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>586</width>
+    <height>212</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Wizard</string>
+  </property>
+  <property name="wizardStyle">
+   <enum>QWizard::ClassicStyle</enum>
+  </property>
+  <property name="options">
+   <set>QWizard::CancelButtonOnLeft|QWizard::NoDefaultButton</set>
+  </property>
+  <widget class="LeechCraft::Plugins::NewLife::FirstPage" name="FirstPage_">
+   <attribute name="pageId">
+    <string notr="true">0</string>
+   </attribute>
+  </widget>
+  <widget class="QWizardPage" name="PreparePage_">
+   <attribute name="pageId">
+    <string notr="true">1</string>
+   </attribute>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Now please prepare for the import of data from the selected application.</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>LeechCraft::Plugins::NewLife::FirstPage</class>
+   <extends>QWizardPage</extends>
+   <header>firstpage.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

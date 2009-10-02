@@ -16,44 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NEWLIFE_NEWLIFE_H
-#define PLUGINS_NEWLIFE_NEWLIFE_H
-#include <memory>
+#ifndef PLUGINS_NEWLIFE_ABSTRACTIMPORTER_H
+#define PLUGINS_NEWLIFE_ABSTRACTIMPORTER_H
 #include <QObject>
-#include <QStringList>
-#include <QTranslator>
-#include <interfaces/iinfo.h>
-#include <interfaces/imenuembedder.h>
+
+class QWizardPage;
 
 namespace LeechCraft
 {
+	struct DownloadEntity;
+
 	namespace Plugins
 	{
 		namespace NewLife
 		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IMenuEmbedder
+			class AbstractImporter : public QObject
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IMenuEmbedder)
-
-				std::auto_ptr<QTranslator> Translator_;
 			public:
-				void Init (ICoreProxy_ptr);
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
+				AbstractImporter (QObject *parent = 0) : QObject (parent) {}
+				virtual ~AbstractImporter () {}
 
-				QList<QMenu*> GetToolMenus () const;
-				QList<QAction*> GetToolActions () const;
-			private slots:
-				void runWizard ();
+				virtual QStringList GetNames () const = 0;
+				virtual QList<QWizardPage*> GetWizardPages () const = 0;
 			signals:
 				void gotEntity (const LeechCraft::DownloadEntity&);
 			};
