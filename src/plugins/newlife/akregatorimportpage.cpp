@@ -21,6 +21,7 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QSettings>
 #include <QUrl>
 #include <plugininterface/util.h>
 
@@ -121,7 +122,36 @@ namespace LeechCraft
 				DownloadEntity e = Util::MakeEntity (QUrl::fromLocalFile (filename),
 						QString (),
 						FromUserInitiated,
-						QString ("text/x-opml"));
+						"text/x-opml");
+
+				if (Ui_.ImportSettings_->checkState () == Qt::Checked)
+				{
+					QSettings settings (QDir::homePath () + "/.kde/share/config/akregatorrc",
+							QSettings::IniFormat);
+					if (settings.status () == QSettings::NoError)
+					{
+						if (settings.contains ("Show Tray Icon"))
+							e.Additional_ ["ShowTrayIcon"] = settings.value ("Show Tray Icon");
+						if (settings.contains ("Fetch On Startup"))
+							e.Additional_ ["UpdateOnStartup"] = settings.value ("Fetch On Startup");
+						if (settings.contains ("Auto Fetch Interval"))
+							e.Additional_ ["UpdateTimeout"] = settings.value ("Auto Fetch Interval");
+
+						settings.beginGroup ("Archive");
+						if (settings.contains ("Max Article Number"))
+							e.Additional_ ["MaxArticles"] = settings.value ("Max Article Number");
+						if (settings.contains ("Max Article Age"))
+							e.Additional_ ["MaxAge"] = settings.value ("Max Article Age");
+						settings.endGroup ();
+
+						e.Additional_ ["UserVisibleName"] = tr ("Akregator settings");
+					}
+					else
+						QMessageBox::critical (0,
+								tr ("LeechCraft"),
+								tr ("Could not access or parse Akregator settings."));
+				}
+
 				emit gotEntity (e);
 			}
 		};
