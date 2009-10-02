@@ -231,12 +231,18 @@ QToolBar* LeechCraft::Core::GetToolBar (int index) const
 
 QToolBar* LeechCraft::Core::GetControls (const QModelIndex& index) const
 {
+	if (!index.isValid ())
+		return 0;
+
 	QVariant data = index.data (RoleControls);
 	return data.value<QToolBar*> ();
 }
 
 QWidget* LeechCraft::Core::GetAdditionalInfo (const QModelIndex& index) const
 {
+	if (!index.isValid ())
+		return 0;
+
 	QVariant data = index.data (RoleAdditionalInfo);
 	return data.value<QWidget*> ();
 }
