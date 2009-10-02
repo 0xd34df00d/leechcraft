@@ -41,7 +41,6 @@ namespace LeechCraft
 				{
 					Ui_.File_->setText (file);
 					on_File__textEdited (file);
-					HandleFile (file);
 				}
 			}
 			
