@@ -27,6 +27,7 @@ namespace LeechCraft
 	: QWizard (parent)
 	{
 		setWindowTitle (tr ("Startup wizard"));
+		setWizardStyle (QWizard::ModernStyle);
 
 		QList<IStartupWizard*> wizards = Core::Instance ()
 			.GetPluginManager ()->GetAllCastableTo<IStartupWizard*> ();
