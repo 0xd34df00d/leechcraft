@@ -187,14 +187,16 @@ namespace LeechCraft
 				Ui_.ControlsDockWidget_->hide ();
 			}
 
+
+			QToolBar *controls = Core::Instance ()			
+						.GetControls (newIndex);
+
+			QWidget *addiInfo = Core::Instance ()
+						.GetAdditionalInfo (newIndex);
+
 #ifdef QT_DEBUG
 			qDebug () << "inserting newer stuff" << newIndex << controls << addiInfo;
 #endif
-
-			QToolBar *controls = Core::Instance ()
-						.GetControls (newIndex);
-			QWidget *addiInfo = Core::Instance ()
-						.GetAdditionalInfo (newIndex);
 
 			if (controls)
 			{
