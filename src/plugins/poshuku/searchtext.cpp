@@ -55,20 +55,9 @@ namespace LeechCraft
 				if (!selected.size ())
 					return;
 
-				QString query = Text_;
+				selected.prepend (Text_);
 
-				if (selected.size () == 1)
-					query = QString ("%1 ca:%2").arg (Text_).arg (selected.at (0));
-				else
-				{
-					query += " (";
-					query += QString ("ca:%1").arg (selected.at (0));
-					for (int i = 1; i < selected.size (); ++i)
-						query += QString (" OR ca:%1").arg (selected.at (i));
-					query += ")";
-				}
-
-				Core::Instance ().GetProxy ()->OpenSummary (query);
+				Core::Instance ().GetProxy ()->OpenSummary (selected);
 			}
 
 			void SearchText::on_MarkAll__released ()

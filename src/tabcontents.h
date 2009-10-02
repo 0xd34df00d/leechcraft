@@ -41,7 +41,7 @@ namespace LeechCraft
 		void AllowPlugins ();
 		Ui::TabContents GetUi () const;
 		void SmartDeselect (TabContents*);
-		void SetQuery (const QString&);
+		void SetQuery (QStringList);
 	private:
 		void FillCombobox (QComboBox*);
 		QString GetQuery () const;

@@ -275,7 +275,7 @@ public:
 
 	/** Opens a new Summary page with the given query.
 	 */
-	virtual void OpenSummary (const QString& query = QString ()) const = 0;
+	virtual void OpenSummary (const QStringList& query = QStringList ()) const = 0;
 
 	/** Returns an ID for a delegated task from the pool.
 	 */

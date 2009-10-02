@@ -59,7 +59,7 @@ namespace LeechCraft
 		return result;
 	}
 
-	void TabContentsManager::AddNewTab (const QString& query)
+	void TabContentsManager::AddNewTab (const QStringList& query)
 	{
 		TabWidget *tw = Core::Instance ()
 			.GetReallyMainWindow ()->GetTabWidget ();

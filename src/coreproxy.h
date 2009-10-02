@@ -42,7 +42,7 @@ namespace LeechCraft
 		QIcon GetIcon (const QString&, const QString& = QString ()) const;
 		ITagsManager* GetTagsManager () const;
 		QStringList GetSearchCategories () const;
-		void OpenSummary (const QString&) const;
+		void OpenSummary (const QStringList&) const;
 		int GetID ();
 		void FreeID (int);
 		QObject* GetTreeViewReemitter () const;

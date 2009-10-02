@@ -90,9 +90,23 @@ namespace LeechCraft
 		return Ui_;
 	}
 
-	void TabContents::SetQuery (const QString& query)
+	void TabContents::SetQuery (QStringList query)
 	{
-		Ui_.FilterLine_->setText (query);
+		if (query.isEmpty ())
+			return;
+
+		Ui_.FilterLine_->setText (query.takeFirst ());
+
+		if (!query.isEmpty ())
+			Ui_.LeastCategory_->setCurrentIndex (Ui_.LeastCategory_->findText (query.takeFirst ()));
+
+		Q_FOREACH (QString cat, query)
+		{
+			on_Add__released ();
+			QComboBox *box = AdditionalBoxes_.last ();
+			box->setCurrentIndex (box->findText (cat));
+		}
+
 		feedFilterParameters ();
 	}
 

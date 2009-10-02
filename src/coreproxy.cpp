@@ -94,7 +94,7 @@ QStringList CoreProxy::GetSearchCategories () const
 	return result;
 }
 
-void CoreProxy::OpenSummary (const QString& query) const
+void CoreProxy::OpenSummary (const QStringList& query) const
 {
 	TabContentsManager::Instance ().AddNewTab (query);
 }
