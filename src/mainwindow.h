@@ -105,6 +105,9 @@ namespace LeechCraft
 		void updateIconSet ();
 		void on_ActionPluginManager__triggered ();
 		void doDelayedInit ();
+	private:
+		void FillTray ();
+		void FillToolMenu ();
 	};
 };
 

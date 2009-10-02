@@ -24,6 +24,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "plugininterface/util.h"
 #include "interfaces/itraymenu.h"
+#include "interfaces/imenuembedder.h"
 #include "mainwindow.h"
 #include "view.h"
 #include "core.h"
@@ -545,6 +546,14 @@ void LeechCraft::MainWindow::doDelayedInit ()
 
 	handleShowMenuBarAsButton ();
 
+	FillTray ();
+	FillToolMenu ();
+
+	new StartupWizard (this);
+}
+
+void LeechCraft::MainWindow::FillTray ()
+{
 	QMenu *iconMenu = new QMenu (this);
 	iconMenu->addAction (Ui_.ActionAddTask_);
 	iconMenu->addSeparator ();
@@ -578,7 +587,34 @@ void LeechCraft::MainWindow::doDelayedInit ()
 			SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
 			this,
 			SLOT (handleTrayIconActivated (QSystemTrayIcon::ActivationReason)));
+}
 
-	new StartupWizard (this);
+void LeechCraft::MainWindow::FillToolMenu ()
+{
+	QList<QMenu*> toolMenus;
+	QList<QAction*> toolActions;
+	Core::Instance ().GetPluginManager ()->GetAllCastableRoots<IMenuEmbedder*> ();
+	Q_FOREACH (QObject *tool,
+			Core::Instance ().GetPluginManager ()->
+				GetAllCastableRoots<IMenuEmbedder*> ())
+	{
+		IMenuEmbedder *e = qobject_cast<IMenuEmbedder*> (tool);
+		toolMenus += e->GetToolMenus ();
+		toolActions += e->GetToolActions ();
+	}
+
+	if (toolActions.size ())
+	{
+		Q_FOREACH (QAction *action, toolActions)
+			Ui_.MenuTools_->insertAction (Ui_.ActionLogger_, action);
+		Ui_.MenuTools_->insertSeparator (Ui_.ActionLogger_);
+	}
+
+	if (toolMenus.size ())
+	{
+		Q_FOREACH (QMenu *menu, toolMenus)
+			Ui_.MenuTools_->insertMenu (Ui_.ActionLogger_, menu);
+		Ui_.MenuTools_->insertSeparator (Ui_.ActionLogger_);
+	}
 }
 
