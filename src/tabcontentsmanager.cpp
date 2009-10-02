@@ -76,6 +76,7 @@ namespace LeechCraft
 			emit changeTabIcon (tc,
 					QIcon (":/resources/images/leechcraft.svg"));
 
+			tc->AllowPlugins ();
 			tc->SetQuery (query);
 		}
 		else

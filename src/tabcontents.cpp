@@ -39,9 +39,6 @@ namespace LeechCraft
 					SLOT (handleCategoriesChanged (const QStringList&, const QStringList&)));
 
 		Ui_.LeastCategory_->setDuplicatesEnabled (true);
-		QTimer::singleShot (0,
-				this,
-				SLOT (fillDefaultCombobox ()));
 
 		FilterTimer_->setSingleShot (true);
 		FilterTimer_->setInterval (800);
@@ -81,6 +78,11 @@ namespace LeechCraft
 		QAbstractItemModel *old = Ui_.PluginsTasksTree_->model ();
 		Ui_.PluginsTasksTree_->setModel (0);
 		delete old;
+	}
+
+	void TabContents::AllowPlugins ()
+	{
+		FillCombobox (Ui_.LeastCategory_);
 	}
 
 	Ui::TabContents TabContents::GetUi () const
@@ -141,11 +143,6 @@ namespace LeechCraft
 			query.prepend (prepend);
 		}
 		return query;
-	}
-
-	void TabContents::fillDefaultCombobox ()
-	{
-		FillCombobox (Ui_.LeastCategory_);
 	}
 
 	void TabContents::SmartDeselect (TabContents *newFocus)

@@ -549,6 +549,8 @@ void LeechCraft::MainWindow::doDelayedInit ()
 	FillTray ();
 	FillToolMenu ();
 
+	Ui_.SummaryContents_->AllowPlugins ();
+
 	new StartupWizard (this);
 }
 
