@@ -33,6 +33,7 @@ namespace LeechCraft
 			: QWizard (parent)
 			{
 				setWindowTitle (tr ("New torrent wizard"));
+				setWizardStyle (QWizard::ModernStyle);
 			
 				setPage (PageIntro, new IntroPage);
 				setPage (PageFirstStep, new FirstStep);
