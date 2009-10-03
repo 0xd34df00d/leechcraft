@@ -32,8 +32,30 @@ HandlerChoiceDialog::HandlerChoiceDialog (const QString& entity, QWidget *parent
 
 void HandlerChoiceDialog::Add (const IInfo *ii, IDownload *id)
 {
-	QRadioButton *but = new QRadioButton (ii->GetName (), this);
-	but->setToolTip (ii->GetInfo ());
+	QString name;
+	QString tooltip;
+	try
+	{
+		name = ii->GetName ();
+		tooltip = ii->GetInfo ();
+	}
+	catch (const std::exception& e)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< "could not query"
+			<< e.what ()
+			<< ii;
+		return;
+	}
+	catch (...)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< "could not query"
+			<< ii;
+		return;
+	}
+	QRadioButton *but = new QRadioButton (name, this);
+	but->setToolTip (tooltip);
 	but->setProperty ("AddedAs", "IDownload");
 
 	if (!Buttons_->buttons ().size ())
@@ -41,22 +63,44 @@ void HandlerChoiceDialog::Add (const IInfo *ii, IDownload *id)
 
 	Buttons_->addButton (but);
 	Ui_.DownloadersLayout_->addWidget (but);
-	Downloaders_ [ii->GetName ()] = id;
+	Downloaders_ [name] = id;
 
 	Ui_.DownloadersLabel_->show ();
 }
 
 void HandlerChoiceDialog::Add (const IInfo *ii, IEntityHandler *ih)
 {
-	QRadioButton *but = new QRadioButton (ii->GetName (), this);
-	but->setToolTip (ii->GetInfo ());
+	QString name;
+	QString tooltip;
+	try
+	{
+		name = ii->GetName ();
+		tooltip = ii->GetInfo ();
+	}
+	catch (const std::exception& e)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< "could not query"
+			<< e.what ()
+			<< ii;
+		return;
+	}
+	catch (...)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< "could not query"
+			<< ii;
+		return;
+	}
+	QRadioButton *but = new QRadioButton (name, this);
+	but->setToolTip (tooltip);
 	but->setProperty ("AddedAs", "IEntityHandler");
 
 	if (!Buttons_->buttons ().size ())
 		but->setChecked (true);
 
 	Buttons_->addButton (but);
-	Handlers_ [ii->GetName ()] = ih;
+	Handlers_ [name] = ih;
 	Ui_.HandlersLayout_->addWidget (but);
 
 	Ui_.HandlersLabel_->show ();
