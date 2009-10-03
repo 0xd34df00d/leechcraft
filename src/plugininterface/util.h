@@ -65,6 +65,8 @@ namespace LeechCraft
 			}
 		};
 
+		PLUGININTERFACE_API QString GetUserText (const DownloadEntity&);
+
 		/*! @brief Makes a formatted size from number.
 		 *
 		 * Converts, for example, 1048576 to 1.0 MB.

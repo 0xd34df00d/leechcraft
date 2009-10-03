@@ -203,6 +203,7 @@ SET (SRCS
 	tabcontentsmanager.cpp
 	viewreemitter.cpp
 	startupwizard.cpp
+	localsockethandler.cpp
 	3dparty/qxttooltip.cpp
 	)
 SET (HEADERS
@@ -248,6 +249,7 @@ SET (HEADERS
 	tabcontentsmanager.h
 	viewreemitter.h
 	startupwizard.h
+	localsockethandler.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/iinfo.h

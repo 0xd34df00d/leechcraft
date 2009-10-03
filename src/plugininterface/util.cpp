@@ -27,7 +27,45 @@
 #include <QTemporaryFile>
 #include <QTime>
 #include <QSettings>
+#include <QTextCodec>
+#include <QUrl>
 #include <QtDebug>
+
+QString LeechCraft::Util::GetUserText (const DownloadEntity& p)
+{
+	QString string = QObject::tr ("Too long to show");
+	if (p.Additional_.contains ("UserVisibleName") &&
+			p.Additional_ ["UserVisibleName"].canConvert<QString> ())
+		string = p.Additional_ ["UserVisibleName"].toString ();
+	else if (p.Entity_.canConvert<QByteArray> ())
+	{
+		QByteArray entity = p.Entity_.toByteArray ();
+		if (entity.size () < 100)
+			string = QTextCodec::codecForName ("UTF-8")->toUnicode (entity);
+	}
+	else if (p.Entity_.canConvert<QUrl> ())
+	{
+		string = p.Entity_.toUrl ().toString ();
+		if (string.size () > 100)
+			string = string.left (97) + "...";
+	}
+	else
+		string = QObject::tr ("Binary entity");
+
+	if (!p.Mime_.isEmpty ())
+		string += QObject::tr ("<br /><br />of type <code>%1</code>").arg (p.Mime_);
+
+	if (!p.Additional_ ["SourceURL"].toUrl ().isEmpty ())
+	{
+		QString urlStr = p.Additional_ ["SourceURL"].toUrl ().toString ();
+		if (urlStr.size () > 63)
+			urlStr = urlStr.left (60) + "...";
+		string += QObject::tr ("<br />from %1")
+			.arg (urlStr);
+	}
+
+	return string;
+}
 
 QString LeechCraft::Util::MakePrettySize (qint64 sourcesize)
 {

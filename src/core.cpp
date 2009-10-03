@@ -89,8 +89,7 @@ bool HookProxy::IsCancelled () const
 }
 
 LeechCraft::Core::Core ()
-: Server_ (new QLocalServer)
-, MergeModel_ (new MergeModel (QStringList (tr ("Name"))
+: MergeModel_ (new MergeModel (QStringList (tr ("Name"))
 			<< tr ("State")
 			<< tr ("Progress")))
 , NetworkAccessManager_ (new NetworkAccessManager)
@@ -120,12 +119,6 @@ LeechCraft::Core::Core ()
 			SLOT (handleClipboardTimer ()));
 	ClipboardWatchdog_->start (2000);
 
-	Server_->listen (Application::GetSocketName ());
-	connect (Server_.get (),
-			SIGNAL (newConnection ()),
-			this,
-			SLOT (handleNewLocalServerConnection ()));
-
 	QList<QByteArray> proxyProperties;
 	proxyProperties << "ProxyEnabled"
 		<< "ProxyHost"
@@ -151,6 +144,7 @@ Core& LeechCraft::Core::Instance ()
 
 void LeechCraft::Core::Release ()
 {
+	LocalSocketHandler_.reset ();
 	XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");
 	DirectoryWatcher_.reset ();
 	MergeModel_.reset ();
@@ -162,7 +156,6 @@ void LeechCraft::Core::Release ()
 
 	NetworkAccessManager_.reset ();
 
-	Server_.reset ();
 	StorageBackend_.reset ();
 }
 
@@ -308,8 +301,10 @@ void LeechCraft::Core::DelayedInit ()
 
 	TabContainer_->handleTabNames ();
 
+	LocalSocketHandler_.reset (new LocalSocketHandler (ReallyMainWindow_));
+
 	QTimer::singleShot (1000,
-			this,
+			LocalSocketHandler_.get (),
 			SLOT (pullCommandLine ()));
 }
 
@@ -843,36 +838,7 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 			return result;
 	}
 
-	QString string = tr ("Too long to show");
-	if (p.Additional_.contains ("UserVisibleName") &&
-			p.Additional_ ["UserVisibleName"].canConvert<QString> ())
-		string = p.Additional_ ["UserVisibleName"].toString ();
-	else if (p.Entity_.canConvert<QByteArray> ())
-	{
-		QByteArray entity = p.Entity_.toByteArray ();
-		if (entity.size () < 100)
-			string = QTextCodec::codecForName ("UTF-8")->toUnicode (entity);
-	}
-	else if (p.Entity_.canConvert<QUrl> ())
-	{
-		string = p.Entity_.toUrl ().toString ();
-		if (string.size () > 100)
-			string = string.left (97) + "...";
-	}
-	else
-		string = tr ("Binary entity");
-
-	if (!p.Mime_.isEmpty ())
-		string += tr ("<br /><br />of type <code>%1</code>").arg (p.Mime_);
-
-	if (!p.Additional_ ["SourceURL"].toUrl ().isEmpty ())
-	{
-		QString urlStr = p.Additional_ ["SourceURL"].toUrl ().toString ();
-		if (urlStr.size () > 63)
-			urlStr = urlStr.left (60) + "...";
-		string += tr ("<br />from %1")
-			.arg (urlStr);
-	}
+	QString string = Util::GetUserText (p);
 
 	std::auto_ptr<HandlerChoiceDialog> dia (new HandlerChoiceDialog (string));
 
@@ -1117,84 +1083,6 @@ void LeechCraft::Core::handleLog (const QString& msg)
 		qWarning () << Q_FUNC_INFO
 			<< sender ();
 	}
-}
-
-void LeechCraft::Core::pullCommandLine ()
-{
-	QStringList arguments = qobject_cast<Application*> (qApp)->Arguments ();
-	DoCommandLine (arguments);
-}
-
-void LeechCraft::Core::handleNewLocalServerConnection ()
-{
-	ReallyMainWindow_->show ();
-	ReallyMainWindow_->activateWindow ();
-	ReallyMainWindow_->raise ();
-	std::auto_ptr<QLocalSocket> socket (Server_->nextPendingConnection ());
-	// I think 100 msecs would be more than enough for the local
-	// connections.
-	if (!socket->bytesAvailable ())
-		socket->waitForReadyRead (1000);
-
-	QByteArray read = socket->readAll ();
-	QDataStream in (read);
-	QStringList arguments;
-	in >> arguments;
-
-	DoCommandLine (arguments);
-}
-
-void LeechCraft::Core::DoCommandLine (const QStringList& arguments)
-{
-	if (!(arguments.size () > 1 &&
-			!arguments.last ().startsWith ('-')))
-		return;
-
-	TaskParameters tp;
-	if (!arguments.contains ("-automatic"))
-		tp |= FromUserInitiated;
-	else
-		tp |= AutoAccept;
-	if (arguments.contains ("-handle"))
-	{
-		tp |= OnlyHandle;
-		tp |= AutoAccept;
-	}
-	if (arguments.contains ("-download"))
-	{
-		tp |= OnlyDownload;
-		tp |= AutoAccept;
-	}
-
-	QVariant entity;
-	int typePos = arguments.indexOf ("-type");
-	if (typePos >= 0)
-	{
-		if (typePos + 1 < arguments.size ())
-		{
-			QString type = arguments.at (typePos + 1);
-			if (type == "url")
-				entity = QUrl (arguments.last ());
-			else if (type == "url_encoded")
-				entity = QUrl::fromEncoded (arguments.last ().toUtf8 ());
-			else
-				entity = arguments.last ();
-		}
-		else
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "illegal '-type' option position for"
-				<< arguments;
-			entity = arguments.last ();
-		}
-	}
-	else
-		entity = arguments.last ();
-
-	DownloadEntity e = Util::MakeEntity (entity,
-			QString (),
-			tp);
-	handleGotEntity (e);
 }
 
 void LeechCraft::Core::InitDynamicSignals (QObject *plugin)

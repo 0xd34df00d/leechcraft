@@ -33,6 +33,7 @@
 #include "requestnormalizer.h"
 #include "networkaccessmanager.h"
 #include "directorywatcher.h"
+#include "localsockethandler.h"
 
 class QLocalServer;
 class QAbstractProxyModel;
@@ -70,12 +71,12 @@ namespace LeechCraft
 		MainWindow *ReallyMainWindow_;
 		QTimer *ClipboardWatchdog_;
 		QString PreviousClipboardContents_;
-		std::auto_ptr<QLocalServer> Server_;
 		boost::shared_ptr<Util::MergeModel> MergeModel_;
 		std::auto_ptr<TabContainer> TabContainer_;
 		std::auto_ptr<QNetworkAccessManager> NetworkAccessManager_;
 		std::auto_ptr<StorageBackend> StorageBackend_;
 		std::auto_ptr<DirectoryWatcher> DirectoryWatcher_;
+		std::auto_ptr<LocalSocketHandler> LocalSocketHandler_;
 		typedef std::map<const QAbstractItemModel*, QObject*> repres2object_t;
 		// Contains unfolded representations
 		mutable repres2object_t Representation2Object_;
@@ -245,10 +246,7 @@ namespace LeechCraft
 		void embeddedTabWantsToFront ();
 		void handleStatusBarChanged (QWidget*, const QString&);
 		void handleLog (const QString&);
-		void pullCommandLine ();
-		void handleNewLocalServerConnection ();
 	private:
-		void DoCommandLine (const QStringList&);
 		bool CouldHandle (const LeechCraft::DownloadEntity&);
 		/** Maps totally unmapped index to the plugin's source model
 		 * through merge model and filter model.
