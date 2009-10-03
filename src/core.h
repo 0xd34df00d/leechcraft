@@ -247,7 +247,26 @@ namespace LeechCraft
 		void handleStatusBarChanged (QWidget*, const QString&);
 		void handleLog (const QString&);
 	private:
-		bool CouldHandle (const LeechCraft::DownloadEntity&);
+		enum ObjectType
+		{
+			OTDownloaders,
+			OTHandlers
+		};
+		/** Returns the list of objects, either downloaders or handlers,
+		 * that are able to handle given entity.
+		 *
+		 * @param[in] entity The download entity to download/handle.
+		 * @param[in] downloaders Query for downloaders (if true) or
+		 * handlers (if false).
+		 * @param[in] detectOnly Only detect the ability to handle the
+		 * entity — return immediately after the first suitable object
+		 * was found.
+		 *
+		 * @return The list of objects that are able/download the entity.
+		 */
+		QList<QObject*> GetObjects (const LeechCraft::DownloadEntity& entity,
+				ObjectType type, bool detectOnly) const;
+		bool CouldHandle (const LeechCraft::DownloadEntity&) const;
 		/** Maps totally unmapped index to the plugin's source model
 		 * through merge model and filter model.
 		 *

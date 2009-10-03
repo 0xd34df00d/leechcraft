@@ -681,7 +681,7 @@ void LeechCraft::Core::handlePluginAction ()
 	}
 }
 
-bool LeechCraft::Core::CouldHandle (const LeechCraft::DownloadEntity& e)
+bool LeechCraft::Core::CouldHandle (const LeechCraft::DownloadEntity& e) const
 {
 	HookProxy_ptr proxy (new HookProxy);
 	Q_FOREACH (HookSignature<HIDCouldHandle>::Signature_t f,
@@ -694,66 +694,12 @@ bool LeechCraft::Core::CouldHandle (const LeechCraft::DownloadEntity& e)
 	}
 
 	if (!(e.Parameters_ & LeechCraft::OnlyHandle))
-	{
-		QObjectList plugins = PluginManager_->GetAllCastableRoots<IDownload*> ();
-		for (int i = 0; i < plugins.size (); ++i)
-		{
-			if (plugins.at (i) == sender () &&
-					!(e.Parameters_ & ShouldQuerySource))
-				continue;
-
-			IDownload *id = qobject_cast<IDownload*> (plugins.at (i));
-			try
-			{
-				if (id->CouldDownload (e))
-					return true;
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "could not query"
-					<< e.what ()
-					<< plugins.at (i);
-			}
-			catch (...)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "could not query"
-					<< plugins.at (i);
-			}
-		}
-	}
+		if (GetObjects (e, OTDownloaders, true).size ())
+			return true;
 
 	if (!(e.Parameters_ & LeechCraft::OnlyDownload))
-	{
-		QObjectList plugins = PluginManager_->GetAllCastableRoots<IEntityHandler*> ();
-		for (int i = 0; i < plugins.size (); ++i)
-		{
-			if (plugins.at (i) == sender () &&
-					!(e.Parameters_ & ShouldQuerySource))
-				continue;
-
-			IEntityHandler *ih = qobject_cast<IEntityHandler*> (plugins.at (i));
-			try
-			{
-				if (ih->CouldHandle (e))
-					return true;
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "could not query"
-					<< e.what ()
-					<< plugins.at (i);
-			}
-			catch (...)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "could not query"
-					<< plugins.at (i);
-			}
-		}
-	}
+		if (GetObjects (e, OTHandlers, true).size ())
+			return true;
 
 	return false;
 }
@@ -826,6 +772,68 @@ namespace
 	}
 };
 
+QList<QObject*> LeechCraft::Core::GetObjects (const DownloadEntity& p,
+		LeechCraft::Core::ObjectType type, bool detectOnly) const
+{
+	QObjectList plugins;
+	switch (type)
+	{
+		case OTDownloaders:
+			plugins = PluginManager_->GetAllCastableRoots<IDownload*> ();
+			break;
+		case OTHandlers:
+			plugins = PluginManager_->GetAllCastableRoots<IEntityHandler*> ();
+			break;
+	}
+
+	QObjectList result;
+	for (int i = 0; i < plugins.size (); ++i)
+	{
+		if (plugins.at (i) == sender () &&
+				!(p.Parameters_ & ShouldQuerySource))
+			continue;
+
+		try
+		{
+			switch (type)
+			{
+				case OTDownloaders:
+					{
+						IDownload *id = qobject_cast<IDownload*> (plugins.at (i));
+						if (id->CouldDownload (p))
+							result << plugins.at (i);
+					}
+					break;
+				case OTHandlers:
+					{
+						IEntityHandler *ih = qobject_cast<IEntityHandler*> (plugins.at (i));
+						if (ih->CouldHandle (p))
+							result << plugins.at (i);
+					}
+					break;
+			}
+
+			if (detectOnly && result.size ())
+				break;
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "could not query"
+				<< e.what ()
+				<< plugins.at (i);
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "could not query"
+				<< plugins.at (i);
+		}
+	}
+
+	return result;
+}
+
 bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 {
 	HookProxy_ptr proxy (new HookProxy);
@@ -843,69 +851,13 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 	std::auto_ptr<HandlerChoiceDialog> dia (new HandlerChoiceDialog (string));
 
 	if (!(p.Parameters_ & LeechCraft::OnlyHandle))
-	{
-		QObjectList plugins = PluginManager_->GetAllCastableRoots<IDownload*> ();
-		for (int i = 0; i < plugins.size (); ++i)
-		{
-			if (plugins.at (i) == sender () &&
-					!(p.Parameters_ & ShouldQuerySource))
-				continue;
-
-			IDownload *id = qobject_cast<IDownload*> (plugins.at (i));
-			IInfo *ii = qobject_cast<IInfo*> (plugins.at (i));
-			try
-			{
-				if (id->CouldDownload (p))
-					dia->Add (ii, id);
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "could not query"
-					<< e.what ()
-					<< plugins.at (i);
-			}
-			catch (...)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "could not query"
-					<< plugins.at (i);
-			}
-		}
-	}
+		Q_FOREACH (QObject *plugin, GetObjects (p, OTDownloaders, false))
+			dia->Add (qobject_cast<IInfo*> (plugin), qobject_cast<IDownload*> (plugin));
 
 	// Handlers don't fit when we want to delegate.
 	if (!id && !(p.Parameters_ & LeechCraft::OnlyDownload))
-	{
-		QObjectList plugins = PluginManager_->GetAllCastableRoots<IEntityHandler*> ();
-		for (int i = 0; i < plugins.size (); ++i)
-		{
-			if (plugins.at (i) == sender () &&
-					!(p.Parameters_ & ShouldQuerySource))
-				continue;
-
-			IEntityHandler *ih = qobject_cast<IEntityHandler*> (plugins.at (i));
-			IInfo *ii = qobject_cast<IInfo*> (plugins.at (i));
-			try
-			{
-				if (ih->CouldHandle (p))
-					dia->Add (ii, ih);
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "could not query"
-					<< e.what ()
-					<< plugins.at (i);
-			}
-			catch (...)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "could not query"
-					<< plugins.at (i);
-			}
-		}
-	}
+		Q_FOREACH (QObject *plugin, GetObjects (p, OTHandlers, false))
+			dia->Add (qobject_cast<IInfo*> (plugin), qobject_cast<IEntityHandler*> (plugin));
 
 	if (p.Parameters_ & FromUserInitiated &&
 			!(p.Parameters_ & AutoAccept))
