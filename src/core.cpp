@@ -302,6 +302,10 @@ void LeechCraft::Core::DelayedInit ()
 	TabContainer_->handleTabNames ();
 
 	LocalSocketHandler_.reset (new LocalSocketHandler (ReallyMainWindow_));
+	connect (LocalSocketHandler_.get (),
+			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+			this,
+			SLOT (handleGotEntity (const LeechCraft::DownloadEntity&)));
 
 	QTimer::singleShot (1000,
 			LocalSocketHandler_.get (),
