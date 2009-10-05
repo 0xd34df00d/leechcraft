@@ -18,6 +18,7 @@
 
 #include "core.h"
 #include <typeinfo>
+#include <QUrl>
 #include <QSettings>
 #include <QTextCodec>
 #include <QToolBar>
@@ -115,8 +116,8 @@ ICoreProxy_ptr Core::GetCoreProxy () const
 void Core::Handle (const LeechCraft::DownloadEntity& entity)
 {
 	if (entity.Parameters_ & LeechCraft::DoNotSaveInHistory ||
-			!(entity.Parameters_ & LeechCraft::IsDownloaded) ||
-			!entity.Entity_.toByteArray ().size ())
+			entity.Parameters_ & LeechCraft::Internal ||
+			!(entity.Parameters_ & LeechCraft::IsDownloaded))
 		return;
 
 	HistoryEntry entry =
@@ -166,15 +167,18 @@ QVariant Core::data (const QModelIndex& index, int role) const
 			case 0:
 				{
 					QString stren;
-					if (e.Entity_.Entity_.canConvert<QByteArray> ())
+					if (e.Entity_.Entity_.canConvert<QUrl> ())
+						stren = e.Entity_.Entity_.toUrl ().toString ();
+					else if (e.Entity_.Entity_.canConvert<QByteArray> ())
 					{
 						QByteArray entity = e.Entity_.Entity_.toByteArray ();
 						if (entity.size () < 250)
 							stren = QTextCodec::codecForName ("UTF-8")->
 								toUnicode (entity);
 					}
-					if (stren.isEmpty ())
+					else
 						stren = tr ("Binary data");
+
 					if (!e.Entity_.Location_.isEmpty ())
 					{
 						stren += " (";
