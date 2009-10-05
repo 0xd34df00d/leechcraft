@@ -117,6 +117,10 @@
 					<label lang="en" value="Open new tab next to current" />
 					<label lang="ru" value="Открывать вкладку после текущей" />
 				</item>
+				<item type="checkbox" property="DontAskWhenSingle" default="false">
+					<label lang="en" value="Automatically accept task when there is only one handler" />
+					<label lang="ru" value="Автоматически добавлять задачу, когда есть только один обработчик" />
+				</item>
 				<item type="path" property="WatchDirectory" onCancel="clear">
 					<label lang="en" value="Watch directory:" />
 					<label lang="ru" value="Следить за директорией:" />

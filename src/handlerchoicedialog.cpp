@@ -30,7 +30,7 @@ HandlerChoiceDialog::HandlerChoiceDialog (const QString& entity, QWidget *parent
 	Ui_.HandlersLabel_->hide ();
 }
 
-void HandlerChoiceDialog::Add (const IInfo *ii, IDownload *id)
+bool HandlerChoiceDialog::Add (const IInfo *ii, IDownload *id)
 {
 	QString name;
 	QString tooltip;
@@ -45,14 +45,14 @@ void HandlerChoiceDialog::Add (const IInfo *ii, IDownload *id)
 			<< "could not query"
 			<< e.what ()
 			<< ii;
-		return;
+		return false;
 	}
 	catch (...)
 	{
 		qWarning () << Q_FUNC_INFO
 			<< "could not query"
 			<< ii;
-		return;
+		return false;
 	}
 	QRadioButton *but = new QRadioButton (name, this);
 	but->setToolTip (tooltip);
@@ -66,9 +66,10 @@ void HandlerChoiceDialog::Add (const IInfo *ii, IDownload *id)
 	Downloaders_ [name] = id;
 
 	Ui_.DownloadersLabel_->show ();
+	return true;
 }
 
-void HandlerChoiceDialog::Add (const IInfo *ii, IEntityHandler *ih)
+bool HandlerChoiceDialog::Add (const IInfo *ii, IEntityHandler *ih)
 {
 	QString name;
 	QString tooltip;
@@ -83,14 +84,14 @@ void HandlerChoiceDialog::Add (const IInfo *ii, IEntityHandler *ih)
 			<< "could not query"
 			<< e.what ()
 			<< ii;
-		return;
+		return false;
 	}
 	catch (...)
 	{
 		qWarning () << Q_FUNC_INFO
 			<< "could not query"
 			<< ii;
-		return;
+		return false;
 	}
 	QRadioButton *but = new QRadioButton (name, this);
 	but->setToolTip (tooltip);
@@ -104,6 +105,7 @@ void HandlerChoiceDialog::Add (const IInfo *ii, IEntityHandler *ih)
 	Ui_.HandlersLayout_->addWidget (but);
 
 	Ui_.HandlersLabel_->show ();
+	return true;
 }
 
 IDownload* HandlerChoiceDialog::GetDownload ()
@@ -118,6 +120,14 @@ IDownload* HandlerChoiceDialog::GetDownload ()
 	if (rit != Downloaders_.end ())
 		result = rit->second;
 	return result;
+}
+
+IDownload* HandlerChoiceDialog::GetFirstDownload ()
+{
+	if (Downloaders_.size ())
+		return Downloaders_.begin ()->second;
+	else
+		return 0;
 }
 
 IEntityHandler* HandlerChoiceDialog::GetEntityHandler ()

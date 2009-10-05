@@ -41,9 +41,10 @@ class HandlerChoiceDialog : public QDialog
 public:
 	HandlerChoiceDialog (const QString&, QWidget* = 0);
 
-	void Add (const IInfo*, IDownload*);
-	void Add (const IInfo*, IEntityHandler*);
+	bool Add (const IInfo*, IDownload*);
+	bool Add (const IInfo*, IEntityHandler*);
 	IDownload* GetDownload ();
+	IDownload* GetFirstDownload ();
 	IEntityHandler* GetEntityHandler ();
 	IEntityHandler* GetFirstEntityHandler ();
 	int NumChoices () const;

@@ -643,6 +643,24 @@ namespace
 		}
 		return true;
 	}
+
+	QString GetFilename (QString suggestion)
+	{
+		if (suggestion.isEmpty ())
+			suggestion = XmlSettingsManager::Instance ()->Property ("EntitySavePath",
+					QDesktopServices::storageLocation (QDesktopServices::DocumentsLocation))
+				.toString ();
+
+		QString dir = QFileDialog::getExistingDirectory (0,
+				Core::tr ("Select save location"),
+				suggestion,
+				QFileDialog::Options (~QFileDialog::ShowDirsOnly));
+
+		if (!dir.isEmpty ())
+			XmlSettingsManager::Instance ()->
+				setProperty ("EntitySavePath", dir);
+		return dir;
+	}
 };
 
 QList<QObject*> LeechCraft::Core::GetObjects (const DownloadEntity& p,
@@ -723,43 +741,49 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 
 	std::auto_ptr<HandlerChoiceDialog> dia (new HandlerChoiceDialog (string));
 
+	int numDownloaders = 0;
 	if (!(p.Parameters_ & LeechCraft::OnlyHandle))
 		Q_FOREACH (QObject *plugin, GetObjects (p, OTDownloaders, false))
-			dia->Add (qobject_cast<IInfo*> (plugin), qobject_cast<IDownload*> (plugin));
+			numDownloaders +=
+				dia->Add (qobject_cast<IInfo*> (plugin), qobject_cast<IDownload*> (plugin));
 
+	int numHandlers = 0;
 	// Handlers don't fit when we want to delegate.
 	if (!id && !(p.Parameters_ & LeechCraft::OnlyDownload))
 		Q_FOREACH (QObject *plugin, GetObjects (p, OTHandlers, false))
-			dia->Add (qobject_cast<IInfo*> (plugin), qobject_cast<IEntityHandler*> (plugin));
+			numHandlers +=
+				dia->Add (qobject_cast<IInfo*> (plugin), qobject_cast<IEntityHandler*> (plugin));
+
+	if (!(numHandlers + numDownloaders))
+		return false;
 
 	if (p.Parameters_ & FromUserInitiated &&
 			!(p.Parameters_ & AutoAccept))
 	{
-		if (!dia->NumChoices () ||
-				dia->exec () == QDialog::Rejected)
-			return false;
+		bool ask = true;
+		if (XmlSettingsManager::Instance ()->property ("DontAskWhenSingle").toBool ())
+			ask = (numHandlers + numDownloaders) != 1;
 
-		IDownload *sd = dia->GetDownload ();
-		IEntityHandler *sh = dia->GetEntityHandler ();
+		IDownload *sd = 0;
+		IEntityHandler *sh = 0;
+		if (ask)
+		{
+			if (dia->exec () == QDialog::Rejected)
+				return false;
+			sd = dia->GetDownload ();
+			sh = dia->GetEntityHandler ();
+		}
+		else
+		{
+			sd = dia->GetFirstDownload ();
+			sh = dia->GetFirstEntityHandler ();
+		}
+
 		if (sd)
 		{
-			QString suggestion;
-			if (p.Location_.size ())
-				suggestion = QFileInfo (p.Location_).absolutePath ();
-			else
-				suggestion = XmlSettingsManager::Instance ()->Property ("EntitySavePath",
-						QDesktopServices::storageLocation (QDesktopServices::DocumentsLocation))
-					.toString ();
-			QString dir = QFileDialog::getExistingDirectory (0,
-					tr ("Select save location"),
-					suggestion,
-					QFileDialog::Options (~QFileDialog::ShowDirsOnly));
-
+			QString dir = GetFilename (QFileInfo (p.Location_).absolutePath ());
 			if (dir.isEmpty ())
 				return false;
-
-			XmlSettingsManager::Instance ()->
-				setProperty ("EntitySavePath", dir);
 
 			p.Location_ = dir;
 
