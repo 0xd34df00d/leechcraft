@@ -526,40 +526,6 @@ void LeechCraft::Core::handleProxySettings () const
 	NetworkAccessManager_->setProxy (pr);
 }
 
-namespace
-{
-	void PassSelectionsByOne (QObject *object,
-			const QModelIndexList& selected,
-			const QByteArray& function)
-	{
-		for (QModelIndexList::const_iterator i = selected.begin (),
-				end = selected.end (); i != end; ++i)
-		{
-			try
-			{
-				QMetaObject::invokeMethod (object,
-						function,
-						Q_ARG (int, i->row ()));
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "invokation failed"
-					<< e.what ()
-					<< object
-					<< function;
-			}
-			catch (...)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "invokation failed"
-					<< object
-					<< function;
-			}
-		}
-	}
-};
-
 void LeechCraft::Core::handleSettingClicked (const QString& name)
 {
 	if (name == "ClearCache")
@@ -585,103 +551,6 @@ void LeechCraft::Core::handleSettingClicked (const QString& name)
 		CustomCookieJar *jar = static_cast<CustomCookieJar*> (NetworkAccessManager_->cookieJar ());
 		jar->setAllCookies (QList<QNetworkCookie> ());
 		jar->Save ();
-	}
-}
-
-void LeechCraft::Core::handlePluginAction ()
-{
-	QAction *source = qobject_cast<QAction*> (sender ());
-	QString slot = source->property ("Slot").toString ();
-	QString signal = source->property ("Signal").toString ();
-	QVariant varWhole = source->property ("WholeSelection");
-	bool whole = varWhole.isValid () && varWhole.toBool ();
-
-	if (slot.isEmpty () && signal.isEmpty ())
-		return;
-
-	QObject *object = source->property ("Object").value<QObject*> ();
-
-	TabContents *current = TabContentsManager::Instance ().GetCurrent ();
-	if (!current)
-	{
-		qWarning () << Q_FUNC_INFO
-			<< "called when no current plugin tab"
-			<< sender ()
-			<< slot
-			<< signal;
-		return;
-	}
-
-	QModelIndexList origSelection = current->
-		GetUi ().PluginsTasksTree_->selectionModel ()->selectedRows ();
-	QModelIndexList selected;
-	for (QModelIndexList::const_iterator i = origSelection.begin (),
-			end = origSelection.end (); i != end; ++i)
-		selected.push_back (MapToSource (*i));
-
-	if (whole)
-	{
-		std::deque<int> selections;
-		for (QModelIndexList::const_iterator i = selected.begin (),
-				end = selected.end (); i != end; ++i)
-			selections.push_back (i->row ());
-
-		if (!slot.isEmpty ())
-		{
-			try
-			{
-				QMetaObject::invokeMethod (object,
-						slot.toLatin1 (),
-						Q_ARG (std::deque<int>, selections));
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "slot invokation failed"
-					<< e.what ()
-					<< object
-					<< slot;
-			}
-			catch (...)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "slot invokation failed"
-					<< object
-					<< slot;
-			}
-		}
-
-		if (!signal.isEmpty ())
-		{
-			try
-			{
-				QMetaObject::invokeMethod (object,
-						signal.toLatin1 (),
-						Q_ARG (std::deque<int>, selections));
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "signal invokation failed"
-					<< e.what ()
-					<< object
-					<< slot;
-			}
-			catch (...)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "signal invokation failed"
-					<< object
-					<< slot;
-			}
-		}
-	}
-	else
-	{
-		if (!slot.isEmpty ())
-			PassSelectionsByOne (object, selected, slot.toLatin1 ());
-		if (!signal.isEmpty ())
-			PassSelectionsByOne (object, selected, signal.toLatin1 ());
 	}
 }
 
@@ -1102,20 +971,7 @@ void LeechCraft::Core::InitJobHolder (QObject *plugin)
 			QToolBar *controlsWidget = model->
 				index (0, 0).data (RoleControls).value<QToolBar*> ();
 			if (controlsWidget)
-			{
-				QList<QAction*> actions = controlsWidget->actions ();
-				for (QList<QAction*>::iterator i = actions.begin (),
-						end = actions.end (); i != end; ++i)
-				{
-					connect (*i,
-							SIGNAL (triggered ()),
-							this,
-							SLOT (handlePluginAction ()));
-					Action2Model_ [*i] = model;
-				}
-
 				controlsWidget->setParent (ReallyMainWindow_);
-			}
 
 			QWidget *additional = model->
 				index (0, 0).data (RoleAdditionalInfo).value<QWidget*> ();

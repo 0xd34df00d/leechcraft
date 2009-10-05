@@ -223,7 +223,6 @@ namespace LeechCraft
 	public slots:
 		void handleProxySettings () const;
 		void handleSettingClicked (const QString&);
-		void handlePluginAction ();
 	private slots:
 		/** Handles the entity which could be anything - path to a file,
 		 * link, contents of a .torrent file etc. If the entity is a
