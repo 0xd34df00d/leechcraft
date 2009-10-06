@@ -36,6 +36,8 @@
 class IPluginReady
 {
 public:
+	virtual ~IPluginReady () {}
+
 	/** @brief Returns the expected class of the plugins for this
 	 * plugin.
 	 *
