@@ -952,7 +952,8 @@ void LeechCraft::Core::InitDynamicSignals (QObject *plugin)
 		connect (plugin,
 				SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
 				this,
-				SLOT (handleGotEntity (LeechCraft::DownloadEntity)));
+				SLOT (handleGotEntity (LeechCraft::DownloadEntity)),
+				Qt::QueuedConnection);
 
 	if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
 					"delegateEntity (const LeechCraft::DownloadEntity&, int*, QObject**)"
