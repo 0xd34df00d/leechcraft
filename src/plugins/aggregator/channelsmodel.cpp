@@ -189,10 +189,8 @@ namespace LeechCraft
 				if (idx == Channels_.end ())
 					return;
 			
-				int pos = std::distance (Channels_.begin (), idx);
-				beginRemoveRows (QModelIndex (), pos, pos);
 				Channels_.erase (idx);
-				endRemoveRows ();
+				reset ();
 			}
 			
 			QModelIndex ChannelsModel::GetUnreadChannelIndex () const
