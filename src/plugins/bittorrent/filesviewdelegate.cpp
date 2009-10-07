@@ -91,9 +91,11 @@ namespace LeechCraft
 					progressBarOption.textVisible = true;
 
 					double progress = index.data (TorrentFilesModel::RoleProgress).toDouble ();
-					int size = index.data (TorrentFilesModel::RoleSize).toInt ();
-					int done = progress * size;
-					progressBarOption.progress = progress < 0 ? 0 : progress * 100;
+					qlonglong size = index.data (TorrentFilesModel::RoleSize).toLongLong ();
+					qlonglong done = progress * size;
+					progressBarOption.progress = progress < 0 ?
+						0 :
+						static_cast<int> (progress * 100);
 					progressBarOption.text = QString (tr ("%1% (%2 of %3)")
 							.arg (static_cast<int> (progress * 100))
 							.arg (Util::MakePrettySize (done))

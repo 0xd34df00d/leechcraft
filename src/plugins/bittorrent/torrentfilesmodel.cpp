@@ -469,7 +469,7 @@ namespace LeechCraft
 					UpdateSizeGraph (item->Child (i));
                     qulonglong current = item->Child (i)->Data (1, RawDataRole).value<qulonglong> ();
 					size += current;
-                    done += item->Child (i)->Data (0, RoleProgress).toDouble () * current;
+                    done += static_cast<qulonglong> (item->Child (i)->Data (0, RoleProgress).toDouble () * current);
 				}
 				item->ModifyData (2, size, RawDataRole);
 				item->ModifyData (2, Util::MakePrettySize (size));
