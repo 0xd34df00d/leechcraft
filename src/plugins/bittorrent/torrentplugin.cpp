@@ -462,7 +462,12 @@ namespace LeechCraft
 				QModelIndexList sis = sel->selectedRows ();
 				QList<int> rows;
 				Q_FOREACH (QModelIndex si, sis)
-					rows << Core::Instance ()->GetProxy ()->MapToSource (si).row ();
+				{
+					QModelIndex mapped = Core::Instance ()->GetProxy ()->MapToSource (si);
+					if (mapped.isValid () &&
+							mapped.model () == FilterModel_.get ())
+						rows << mapped.row ();
+				}
 
 				if (QMessageBox::question (0,
 							tr ("LeechCraft"),
