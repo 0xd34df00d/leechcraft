@@ -33,9 +33,12 @@ namespace LeechCraft
 			{
 				Translator_.reset (Util::InstallTranslator ("anhero"));
 
-				KCrash::setApplicationPath (qApp->applicationDirPath ());
-				KCrash::setApplicationName ("LeechCraft");
-				KCrash::setCrashHandler (KCrash::defaultCrashHandler);
+				if (!QApplication::arguments ().contains ("-noanhero"))
+				{
+					KCrash::setApplicationPath (qApp->applicationDirPath ());
+					KCrash::setApplicationName ("LeechCraft");
+					KCrash::setCrashHandler (KCrash::defaultCrashHandler);
+				}
 			}
 
 			void Plugin::Release ()
