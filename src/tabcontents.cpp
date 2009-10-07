@@ -162,10 +162,6 @@ namespace LeechCraft
 
 	void TabContents::SmartDeselect (TabContents *newFocus)
 	{
-		if (Controls_)
-			Core::Instance ().GetReallyMainWindow ()->
-				removeToolBar (Controls_);
-
 		if (newFocus &&
 				Ui_.PluginsTasksTree_->selectionModel ())
 			Ui_.PluginsTasksTree_->selectionModel ()->clear ();
@@ -189,10 +185,6 @@ namespace LeechCraft
 #ifdef QT_DEBUG
 				qDebug () << "erasing older stuff";
 #endif
-				QToolBar *oldControls = Core::Instance ().GetControls (oldIndex);
-				if (oldControls)
-					Core::Instance ().GetReallyMainWindow ()->
-						removeToolBar (oldControls);
 				Ui_.ControlsDockWidget_->hide ();
 			}
 
