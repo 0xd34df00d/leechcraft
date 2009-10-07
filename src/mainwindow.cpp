@@ -46,6 +46,7 @@
 #include "tabcontentsmanager.h"
 #include "startupwizard.h"
 #include "aboutdialog.h"
+#include "toolbarguard.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -54,8 +55,8 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 : QMainWindow (parent, flags)
 , IsShown_ (true)
 , WasMaximized_ (false)
-, CurrentToolBar_ (0)
 {
+	Guard_ = new ToolbarGuard (this);
 	InitializeInterface ();
 
 	connect (qApp,
@@ -139,6 +140,11 @@ void LeechCraft::MainWindow::SetAdditionalTitle (const QString& title)
 		setWindowTitle (tr ("LeechCraft"));
 	else
 		setWindowTitle (tr ("%1 - LeechCraft").arg (title));
+}
+
+LeechCraft::ToolbarGuard* LeechCraft::MainWindow::GetGuard () const
+{
+	return Guard_;
 }
 
 void LeechCraft::MainWindow::catchError (QString message)
@@ -439,29 +445,6 @@ void LeechCraft::MainWindow::handleShowMenuBarAsButton ()
 	{
 		Ui_.MainToolbar_->removeAction (Ui_.ActionMenu_);
 		Ui_.MenuBar_->show ();
-	}
-}
-
-void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
-{
-	if (CurrentToolBar_)
-	{
-		removeToolBar (CurrentToolBar_);
-		CurrentToolBar_ = 0;
-	}
-
-	TabContents *tc = index ?
-		qobject_cast<TabContents*> (Ui_.MainTabWidget_->widget (index)) :
-		Ui_.SummaryContents_;
-	TabContentsManager::Instance ().MadeCurrent (tc);
-	if (!tc || !index)
-	{
-		CurrentToolBar_ = Core::Instance ().GetToolBar (index);
-		if (CurrentToolBar_)
-		{
-			addToolBar (CurrentToolBar_);
-			CurrentToolBar_->show ();
-		}
 	}
 }
 

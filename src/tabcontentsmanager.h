@@ -23,6 +23,7 @@
 #include <QList>
 
 class QTreeView;
+class QToolBar;
 
 namespace LeechCraft
 {
@@ -56,7 +57,7 @@ namespace LeechCraft
 	private slots:
 		void handleFilterUpdated ();
 		void handleQueryUpdated (const QString&);
-		void handleCurrentChanged ();
+		void handleCurrentChanged (int index);
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

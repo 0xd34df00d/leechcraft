@@ -46,7 +46,7 @@ namespace LeechCraft
 		void FillCombobox (QComboBox*);
 		QString GetQuery () const;
 	private slots:
-		void updatePanes (const QItemSelection&, const QItemSelection&);
+		void updatePanes (const QModelIndex&, const QModelIndex&);
 		void filterParametersChanged ();
 		void filterReturnPressed ();
 		void feedFilterParameters ();

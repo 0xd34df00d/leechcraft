@@ -22,6 +22,7 @@
 #include "core.h"
 #include "mainwindow.h"
 #include "viewreemitter.h"
+#include "toolbarguard.h"
 #include "interfaces/imultitabs.h"
 
 namespace LeechCraft
@@ -34,7 +35,7 @@ namespace LeechCraft
 		connect (tw,
 				SIGNAL (currentChanged (int)),
 				this,
-				SLOT (handleCurrentChanged ()));
+				SLOT (handleCurrentChanged (int)));
 	}
 
 	TabContentsManager& TabContentsManager::Instance ()
@@ -94,7 +95,7 @@ namespace LeechCraft
 	{
 		Current_ = tc;
 
-		Q_FOREACH (TabContents *tab, GetTabs ())
+		Q_FOREACH (TabContents *tab, GetTabs () + (QList<TabContents*> () << Default_))
 			if (tab != tc)
 				tab->SmartDeselect (tc);
 
@@ -102,13 +103,14 @@ namespace LeechCraft
 		{
 			QItemSelectionModel *selectionModel = tc->
 				GetUi ().PluginsTasksTree_->selectionModel ();
-			QItemSelection sel;
+			QModelIndex ri;
 			if (selectionModel)
-				sel = selectionModel->selection ();
+				ri = selectionModel->currentIndex ();
 
-			if (sel.size ())
+			qDebug () << tc << ri;
+
+			if (ri.isValid ())
 			{
-				QModelIndex ri = sel.at (0).topLeft ();
 				QToolBar *controls = Core::Instance ()
 							.GetControls (ri);
 				QWidget *addiInfo = Core::Instance ()
@@ -118,7 +120,8 @@ namespace LeechCraft
 				{
 					controls->setFloatable (true);
 					controls->setMovable (true);
-					Core::Instance ().GetReallyMainWindow ()->addToolBar (controls);
+					Core::Instance ().GetReallyMainWindow ()->
+						GetGuard ()->AddToolbar (controls);
 					controls->show ();
 				}
 				if (addiInfo)
@@ -195,9 +198,22 @@ namespace LeechCraft
 					query);
 	}
 
-	void TabContentsManager::handleCurrentChanged ()
+	void TabContentsManager::handleCurrentChanged (int index)
 	{
-		TabContents *tc = TabContentsManager::Instance ().GetCurrent ();
+		TabContents *tc = index ?
+			qobject_cast<TabContents*> (Core::Instance ()
+					.GetReallyMainWindow ()->GetTabWidget ()->widget (index)) :
+			Default_;
+
+		if (!tc)
+		{
+			QToolBar *nt = Core::Instance ().GetToolBar (index);
+			Core::Instance ().GetReallyMainWindow ()->
+				GetGuard ()->AddToolbar (nt);
+		}
+
+		MadeCurrent (tc);
+
 		QTreeView *nv = 0;
 		if (tc)
 			nv = tc->GetUi ().PluginsTasksTree_;

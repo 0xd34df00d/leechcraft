@@ -204,6 +204,7 @@ SET (SRCS
 	viewreemitter.cpp
 	startupwizard.cpp
 	localsockethandler.cpp
+	toolbarguard.cpp
 	3dparty/qxttooltip.cpp
 	)
 SET (HEADERS
@@ -250,6 +251,7 @@ SET (HEADERS
 	viewreemitter.h
 	startupwizard.h
 	localsockethandler.h
+	toolbarguard.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/iinfo.h

@@ -46,6 +46,7 @@ namespace LeechCraft
 	class SettingsSink;
 	class ShortcutManager;
 	class LogToolBox;
+	class ToolbarGuard;
 
 	class MainWindow : public QMainWindow
 	{
@@ -66,14 +67,15 @@ namespace LeechCraft
 		LeechCraft::LogToolBox *LogToolBox_;
 		bool IsShown_;
 		bool WasMaximized_;
-		QToolBar *CurrentToolBar_;
 		QString LanguageOnLoad_;
+		ToolbarGuard *Guard_;
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
 		virtual ~MainWindow ();
 		TabWidget* GetTabWidget () const;
 		const IShortcutProxy* GetShortcutProxy () const;
 		void SetAdditionalTitle (const QString&);
+		ToolbarGuard* GetGuard () const;
 	public slots:
 		void catchError (QString);
 	protected:
@@ -96,7 +98,6 @@ namespace LeechCraft
 		void on_ActionLogger__triggered ();
 		void handleToolButtonStyleChanged ();
 		void handleShowMenuBarAsButton ();
-		void on_MainTabWidget__currentChanged (int);
 		void updateSpeedIndicators ();
 		void updateClock ();
 		void showHideMain ();

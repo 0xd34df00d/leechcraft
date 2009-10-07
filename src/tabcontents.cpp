@@ -21,6 +21,7 @@
 #include <QMenu>
 #include "core.h"
 #include "mainwindow.h"
+#include "toolbarguard.h"
 
 namespace LeechCraft
 {
@@ -170,18 +171,12 @@ namespace LeechCraft
 			Ui_.PluginsTasksTree_->selectionModel ()->clear ();
 	}
 
-	void TabContents::updatePanes (const QItemSelection& newIndexes,
-			const QItemSelection& oldIndexes)
+	void TabContents::updatePanes (const QModelIndex& newIndex,
+			const QModelIndex& oldIndex)
 	{
 #ifdef QT_DEBUG
 		qDebug () << Q_FUNC_INFO;
 #endif
-
-		QModelIndex oldIndex, newIndex;
-		if (oldIndexes.size ())
-			oldIndex = oldIndexes.at (0).topLeft ();
-		if (newIndexes.size ())
-			newIndex = newIndexes.at (0).topLeft ();
 
 		if (oldIndex.isValid () &&
 				Core::Instance ().SameModel (newIndex, oldIndex))
@@ -217,7 +212,7 @@ namespace LeechCraft
 				controls->setFloatable (true);
 				controls->setMovable (true);
 				Core::Instance ().GetReallyMainWindow ()->
-					addToolBar (controls);
+					GetGuard ()->AddToolbar (controls);
 				controls->show ();
 				Controls_ = controls;
 			}
@@ -252,11 +247,11 @@ namespace LeechCraft
 		delete old;
 
 		connect (Ui_.PluginsTasksTree_->selectionModel (),
-				SIGNAL (selectionChanged (const QItemSelection&,
-						const QItemSelection&)),
+				SIGNAL (currentRowChanged (const QModelIndex&,
+						const QModelIndex&)),
 				this,
-				SLOT (updatePanes (const QItemSelection&,
-						const QItemSelection&)));
+				SLOT (updatePanes (const QModelIndex&,
+						const QModelIndex&)));
 
 		QHeaderView *itemsHeader = Ui_.PluginsTasksTree_->header ();
 		QFontMetrics fm = fontMetrics ();
