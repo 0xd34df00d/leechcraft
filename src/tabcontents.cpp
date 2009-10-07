@@ -232,6 +232,10 @@ namespace LeechCraft
 
 	void TabContents::feedFilterParameters ()
 	{
+		if (Ui_.PluginsTasksTree_->selectionModel ())
+			updatePanes (QModelIndex (),
+					Ui_.PluginsTasksTree_->selectionModel ()->currentIndex ());
+
 		QString query = GetQuery ();
 		QAbstractItemModel *old = Ui_.PluginsTasksTree_->model ();
 		Ui_.PluginsTasksTree_->
