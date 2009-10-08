@@ -12,6 +12,8 @@ SET (SRCS
 	akregatorimporter.cpp
 	akregatorimportpage.cpp
 	firstpage.cpp
+	lifereaimportpage.cpp
+	lifereaimporter.cpp
 	)
 SET (HEADERS
 	newlife.h
@@ -19,11 +21,13 @@ SET (HEADERS
 	akregatorimporter.h
 	akregatorimportpage.h
 	firstpage.h
+	lifereaimportpage.h
+	lifereaimporter.h
 	abstractimporter.h
 	)
 SET (FORMS
 	importwizard.ui
-	akregatorimportpage.ui
+	feedssettingsimportpage.ui
 	firstpage.ui
 	)
 SET (TRANSLATIONS

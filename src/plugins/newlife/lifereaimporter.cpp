@@ -16,10 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "importwizard.h"
-#include <QtDebug>
-#include "akregatorimporter.h"
 #include "lifereaimporter.h"
+#include "lifereaimportpage.h"
 
 namespace LeechCraft
 {
@@ -27,42 +25,22 @@ namespace LeechCraft
 	{
 		namespace NewLife
 		{
-			ImportWizard::ImportWizard (QWidget *parent)
-			: QWizard (parent)
+			LifereaImporter::LifereaImporter (QWidget *parent)
+			: AbstractImporter (parent)
 			{
-				Ui_.setupUi (this);
-
-				Importers_ << new AkregatorImporter (this);
-				Importers_ << new LifereaImporter (this);
-				
-				connect (this,
-						SIGNAL (accepted ()),
-						this,
-						SLOT (handleAccepted ()),
-						Qt::QueuedConnection);
-				connect (this,
-						SIGNAL (accepted ()),
-						this,
-						SLOT (handleRejected ()),
-						Qt::QueuedConnection);
-
-				SetupImporters ();
+				ImportPage_ = new LifereaImportPage ();
 			}
 
-			void ImportWizard::handleAccepted ()
+			QStringList LifereaImporter::GetNames () const
 			{
-				deleteLater ();
+				return QStringList ("Liferea");
 			}
 
-			void ImportWizard::handleRejected ()
+			QList<QWizardPage*> LifereaImporter::GetWizardPages () const
 			{
-				deleteLater ();
-			}
-
-			void ImportWizard::SetupImporters ()
-			{
-				Q_FOREACH (AbstractImporter *ai, Importers_)
-					Ui_.FirstPage_->SetupImporter (ai);
+				QList<QWizardPage*> result;
+				result << ImportPage_;
+				return result;
 			}
 		};
 	};

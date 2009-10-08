@@ -16,55 +16,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "importwizard.h"
-#include <QtDebug>
-#include "akregatorimporter.h"
-#include "lifereaimporter.h"
+#ifndef PLUGINS_NEWLIFE_LIFEREAIMPORTPAGE_H
+#define PLUGINS_NEWLIFE_LIFEREAIMPORTPAGE_H
+#include <QWizardPage>
+#include "ui_feedssettingsimportpage.h"
 
 namespace LeechCraft
 {
+	struct DownloadEntity;
+
 	namespace Plugins
 	{
 		namespace NewLife
 		{
-			ImportWizard::ImportWizard (QWidget *parent)
-			: QWizard (parent)
+			class LifereaImportPage : public QWizardPage
 			{
-				Ui_.setupUi (this);
+				Q_OBJECT
 
-				Importers_ << new AkregatorImporter (this);
-				Importers_ << new LifereaImporter (this);
-				
-				connect (this,
-						SIGNAL (accepted ()),
-						this,
-						SLOT (handleAccepted ()),
-						Qt::QueuedConnection);
-				connect (this,
-						SIGNAL (accepted ()),
-						this,
-						SLOT (handleRejected ()),
-						Qt::QueuedConnection);
+				Ui::FeedsSettingsImportPage Ui_;
+			public:
+				LifereaImportPage (QWidget* = 0);
 
-				SetupImporters ();
-			}
-
-			void ImportWizard::handleAccepted ()
-			{
-				deleteLater ();
-			}
-
-			void ImportWizard::handleRejected ()
-			{
-				deleteLater ();
-			}
-
-			void ImportWizard::SetupImporters ()
-			{
-				Q_FOREACH (AbstractImporter *ai, Importers_)
-					Ui_.FirstPage_->SetupImporter (ai);
-			}
+				bool CheckValidity (const QString&) const;
+				virtual bool isComplete () const;
+				virtual int nextId () const;
+				virtual void initializePage ();
+			private slots:
+				void on_Browse__released ();
+				void handleAccepted ();
+			private:
+				QString GetSuggestion () const;
+			signals:
+				void gotEntity (const LeechCraft::DownloadEntity&);
+			};
 		};
 	};
 };
+
+#endif
 

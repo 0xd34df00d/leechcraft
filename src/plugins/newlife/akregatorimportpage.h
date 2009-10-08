@@ -19,7 +19,7 @@
 #ifndef PLUGINS_NEWLIFE_AKREGATORIMPORTPAGE_H
 #define PLUGINS_NEWLIFE_AKREGATORIMPORTPAGE_H
 #include <QWizardPage>
-#include "ui_akregatorimportpage.h"
+#include "ui_feedssettingsimportpage.h"
 
 namespace LeechCraft
 {
@@ -33,7 +33,7 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 
-				Ui::AkregatorImportPage Ui_;
+				Ui::FeedsSettingsImportPage Ui_;
 			public:
 				AkregatorImportPage (QWidget* = 0);
 
