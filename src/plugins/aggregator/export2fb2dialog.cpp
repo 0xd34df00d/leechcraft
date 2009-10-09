@@ -140,16 +140,19 @@ namespace LeechCraft
 								!i->Unread_)
 							continue;
 
-						bool suitable = false;
-						Q_FOREACH (QString cat, categories)
-							if (i->Categories_.contains (cat))
-							{
-								suitable = true;
-								break;
-							}
+						if (!i->Categories_.isEmpty ())
+						{
+							bool suitable = false;
+							Q_FOREACH (QString cat, categories)
+								if (i->Categories_.contains (cat))
+								{
+									suitable = true;
+									break;
+								}
 
-						if (!suitable)
-							continue;
+							if (!suitable)
+								continue;
+						}
 
 						Item_ptr item = sb->GetItem (i->Title_,
 									i->URL_, hash);
