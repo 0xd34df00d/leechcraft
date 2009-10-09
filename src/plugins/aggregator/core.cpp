@@ -486,6 +486,11 @@ namespace LeechCraft
 				return StorageBackend_->GetItem (item.Title_, item.URL_,
 						model->GetHash ().first + model->GetHash ().second);
 			}
+
+			ChannelsModel* Core::GetRawChannelsModel () const
+			{
+				return ChannelsModel_;
+			}
 			
 			QSortFilterProxyModel* Core::GetChannelsModel () const
 			{
@@ -646,6 +651,9 @@ namespace LeechCraft
 					return QStringList ();
 				}
 			
+				// TODO try to optimize by introducing the corresponding
+				// function in the storage backend to get only the
+				// categories.
 				items_shorts_t items;
 				StorageBackend_->GetItems (items, cs.ParentURL_ + cs.Title_);
 			

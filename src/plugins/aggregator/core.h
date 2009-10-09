@@ -142,6 +142,18 @@ namespace LeechCraft
 				void RemoveFeed (const QModelIndex&);
 				void Selected (const QModelIndex&);
 				Item_ptr GetItem (const QModelIndex&) const;
+
+				/** Returns the channels model as it is.
+				 *
+				 * @sa GetRawChannelsModel
+				 */
+				ChannelsModel* GetRawChannelsModel () const;
+
+				/** Returns the filter model with the
+				 * GetRawChannelsModel as a source.
+				 *
+				 * @sa GetRawChannelsModel.
+				 */
 				QSortFilterProxyModel* GetChannelsModel () const;
 				QAbstractItemModel* GetItemsModel () const;
 				IWebBrowser* GetWebBrowser () const;

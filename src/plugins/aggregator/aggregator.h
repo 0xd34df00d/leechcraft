@@ -118,6 +118,7 @@ namespace LeechCraft
 				void on_ActionExportOPML__triggered ();
 				void on_ActionImportBinary__triggered ();
 				void on_ActionExportBinary__triggered ();
+				void on_ActionExportFB2__triggered ();
 				void on_MergeItems__toggled (bool);
 				void on_ShowAsTape__toggled (bool);
 				void currentChannelChanged ();

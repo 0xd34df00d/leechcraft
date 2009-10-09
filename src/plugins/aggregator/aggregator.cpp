@@ -57,6 +57,7 @@
 #include "feedsettings.h"
 #include "jobholderrepresentation.h"
 #include "wizardgenerator.h"
+#include "export2fb2dialog.h"
 
 namespace LeechCraft
 {
@@ -89,6 +90,7 @@ namespace LeechCraft
 				QAction *ActionExportOPML_;
 				QAction *ActionImportBinary_;
 				QAction *ActionExportBinary_;
+				QAction *ActionExportFB2_;
 
 				QQueue<QString> ErrorQueue_;
 
@@ -116,7 +118,8 @@ namespace LeechCraft
 					EAActionImportOPML_,
 					EAActionExportOPML_,
 					EAActionImportBinary_,
-					EAActionExportBinary_
+					EAActionExportBinary_,
+					EAActionExportFB2_
 				};
 			};
 			
@@ -194,6 +197,7 @@ namespace LeechCraft
 					Impl_->ActionExportOPML_->setEnabled (false);
 					Impl_->ActionImportBinary_->setEnabled (false);
 					Impl_->ActionExportBinary_->setEnabled (false);
+					Impl_->ActionExportFB2_->setEnabled (false);
 					return;
 				}
 
@@ -396,7 +400,8 @@ namespace LeechCraft
 						(ActionImportOPML_)
 						(ActionExportOPML_)
 						(ActionImportBinary_)
-						(ActionExportBinary_));
+						(ActionExportBinary_)
+						(ActionExportFB2_));
 			}
 			
 #define _L(a) result [Aggregator_Impl::EA##a] = ActionInfo (Impl_->a->text (), \
@@ -418,6 +423,7 @@ namespace LeechCraft
 				_L (ActionExportOPML_);
 				_L (ActionImportBinary_);
 				_L (ActionExportBinary_);
+				_L (ActionExportFB2_);
 				return result;
 			}
 
@@ -530,6 +536,7 @@ namespace LeechCraft
 				bar->addAction (Impl_->ActionExportOPML_);
 				bar->addAction (Impl_->ActionImportBinary_);
 				bar->addAction (Impl_->ActionExportBinary_);
+				bar->addAction (Impl_->ActionExportFB2_);
 				bar->addSeparator ();
 				bar->addAction (Impl_->ActionHideReadItems_);
 			
@@ -605,6 +612,11 @@ namespace LeechCraft
 						this);
 				Impl_->ActionExportBinary_->setObjectName ("ActionExportBinary_");
 				Impl_->ActionExportBinary_->setProperty ("ActionIcon", "aggregator_exportbinary");
+
+				Impl_->ActionExportFB2_ = new QAction (tr ("Export to FB2..."),
+						this);
+				Impl_->ActionExportFB2_->setObjectName ("ActionExportFB2_");
+				Impl_->ActionExportFB2_->setProperty ("ActionIcon", "aggregator_fb2");
 			}
 			
 			void Aggregator::ScheduleShowError ()
@@ -785,6 +797,13 @@ namespace LeechCraft
 						exportDialog.GetOwner (),
 						exportDialog.GetOwnerEmail (),
 						exportDialog.GetSelectedFeeds ());
+			}
+
+			void Aggregator::on_ActionExportFB2__triggered ()
+			{
+				Export2FB2Dialog *dialog = new Export2FB2Dialog ();
+				dialog->setAttribute (Qt::WA_DeleteOnClose);
+				dialog->show ();
 			}
 			
 			void Aggregator::on_MergeItems__toggled (bool merge)
