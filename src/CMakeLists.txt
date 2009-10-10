@@ -67,6 +67,7 @@ OPTION (ENABLE_DCMINATOR "Build DCminator, the DirectConnect client" ON)
 OPTION (ENABLE_REMOTER "Build Remoter, the remote access manager" OFF)
 OPTION (ENABLE_NEWLIFE "Build NewLife, the settings importer" ON)
 OPTION (ENABLE_ANHERO "Build AnHero, the crash handler" ON)
+OPTION (ENABLE_VGRABBER "Build vGrabber, the vkontakte.ru music/video getter" ON)
 
 IF (ENABLE_TORRENT)
 	IF (RBTorrent_FOUND)
@@ -147,6 +148,10 @@ ENDIF (ENABLE_NEWLIFE)
 IF (ENABLE_ANHERO)
 	ADD_SUBDIRECTORY (plugins/anhero)
 ENDIF (ENABLE_ANHERO)
+
+IF (ENABLE_VGRABBER)
+	ADD_SUBDIRECTORY (plugins/vgrabber)
+ENDIF (ENABLE_VGRABBER)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
