@@ -74,7 +74,7 @@ namespace LeechCraft
 
 			QStringList Plugin::GetCategories () const
 			{
-				return QStringList ("vkontakte.ru/music");
+				return QStringList ("vkontakte.ru music");
 			}
 
 			IFindProxy_ptr Plugin::GetProxy (const Request& req)
