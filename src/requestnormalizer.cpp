@@ -91,7 +91,7 @@ void LeechCraft::RequestNormalizer::Validate (const QString& req) const
 		return;
 
 	// Check for braces
-	int openedBraces = 0;
+	int openedBraces = req.startsWith ('(');
 	for (int i = 0; i < req.size () - 1; ++i)
 	{
 		if (req.mid (i, 2) == " (")
@@ -100,7 +100,8 @@ void LeechCraft::RequestNormalizer::Validate (const QString& req) const
 			--openedBraces;
 	}
 	if (openedBraces)
-		throw std::runtime_error (qPrintable (tr ("Open/close braces mismatch")));
+		throw std::runtime_error (qPrintable (tr ("Open/close braces mismatch: %1")
+					.arg (openedBraces)));
 }
 
 namespace
