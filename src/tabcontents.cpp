@@ -28,7 +28,6 @@ namespace LeechCraft
 	TabContents::TabContents (QWidget *parent)
 	: QWidget (parent)
 	, FilterTimer_ (new QTimer (this))
-	, Controls_ (0)
 	{
 		Ui_.setupUi (this);
 
@@ -199,14 +198,13 @@ namespace LeechCraft
 			qDebug () << "inserting newer stuff" << newIndex << controls << addiInfo;
 #endif
 
+			Core::Instance ().GetReallyMainWindow ()->
+				GetGuard ()->AddToolbar (controls);
 			if (controls)
 			{
 				controls->setFloatable (true);
 				controls->setMovable (true);
-				Core::Instance ().GetReallyMainWindow ()->
-					GetGuard ()->AddToolbar (controls);
 				controls->show ();
-				Controls_ = controls;
 			}
 			if (addiInfo)
 			{

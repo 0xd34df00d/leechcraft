@@ -107,8 +107,6 @@ namespace LeechCraft
 			if (selectionModel)
 				ri = selectionModel->currentIndex ();
 
-			qDebug () << tc << ri;
-
 			if (ri.isValid ())
 			{
 				QToolBar *controls = Core::Instance ()
@@ -116,12 +114,12 @@ namespace LeechCraft
 				QWidget *addiInfo = Core::Instance ()
 							.GetAdditionalInfo (ri);
 
+				Core::Instance ().GetReallyMainWindow ()->
+					GetGuard ()->AddToolbar (controls);
 				if (controls)
 				{
 					controls->setFloatable (true);
 					controls->setMovable (true);
-					Core::Instance ().GetReallyMainWindow ()->
-						GetGuard ()->AddToolbar (controls);
 					controls->show ();
 				}
 				if (addiInfo)
@@ -131,6 +129,12 @@ namespace LeechCraft
 					tc->GetUi ().ControlsDockWidget_->setWidget (addiInfo);
 					tc->GetUi ().ControlsDockWidget_->show ();
 				}
+			}
+			else
+			{
+				Core::Instance ().GetReallyMainWindow ()->
+					GetGuard ()->AddToolbar (0);
+				tc->GetUi ().ControlsDockWidget_->hide ();
 			}
 		}
 	}

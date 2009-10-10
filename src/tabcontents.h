@@ -32,7 +32,6 @@ namespace LeechCraft
 
 		Ui::TabContents Ui_;
 		QTimer *FilterTimer_;
-		QToolBar *Controls_;
 		QList<QComboBox*> AdditionalBoxes_;
 	public:
 		TabContents (QWidget* = 0);
