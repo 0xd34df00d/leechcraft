@@ -124,10 +124,10 @@ namespace LeechCraft
 		QString query = Ui_.FilterLine_->text ();
 		if (Ui_.SimpleSearch_->checkState () == Qt::Checked)
 		{
-			QString prepend = QString ("ca:%1")
+			QString prepend = QString ("ca:\"%1\"")
 				.arg (Ui_.LeastCategory_->currentText ());
 			Q_FOREACH (QComboBox *box, AdditionalBoxes_)
-				prepend += QString (" OR ca:%1").arg (box->currentText ());
+				prepend += QString (" OR ca:\"%1\"").arg (box->currentText ());
 			prepend = QString ("(%1) ").arg (prepend);
 			prepend += "t:";
 			switch (Ui_.Type_->currentIndex ())

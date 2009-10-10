@@ -32,7 +32,7 @@ namespace LeechCraft
 	public:
 		RequestParser (const QString& = QString (), QObject* = 0);
 
-		void Parse (const QString&);
+		void Parse (QString);
 		const Request& GetRequest () const;
 	};
 };

@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "requestparser.h"
+#include <QtDebug>
 
 using namespace LeechCraft;
 
@@ -26,10 +27,22 @@ RequestParser::RequestParser (const QString& string, QObject *parent)
 	Parse (string);
 }
 
-void RequestParser::Parse (const QString& request)
+void RequestParser::Parse (QString request)
 {
 	Request_ = Request ();
 	Request_.CaseSensitive_ = false;
+
+	QRegExp rx ("(ca|category):\"(.+)\"");
+	rx.setMinimal (true);
+	int rxpos = rx.indexIn (request);
+	if (rxpos == -1)
+		Request_.Category_ = "downloads";
+	else
+	{
+		QStringList caps = rx.capturedTexts ();
+		Request_.Category_ = caps.at (2);
+		request.remove (caps.at (0));
+	}
 
 	QStringList tokens = request.split (' ', QString::SkipEmptyParts);
 	foreach (QString token, tokens)
@@ -59,9 +72,6 @@ void RequestParser::Parse (const QString& request)
 		if (key == "pl" ||
 				key == "plugin")
 			Request_.Plugin_ = value;
-		else if (key == "ca" ||
-				key == "category")
-			Request_.Category_ = value;
 		else if (key == "cs" ||
 				key == "casesensitive")
 			Request_.CaseSensitive_ = (value.toLower () == "true" ||
