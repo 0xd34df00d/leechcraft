@@ -21,7 +21,11 @@
 #include <QAbstractItemModel>
 #include <QList>
 #include <QUrl>
+#include <interfaces/structures.h>
 #include <interfaces/ifinder.h>
+
+class QToolBar;
+class QAction;
 
 namespace LeechCraft
 {
@@ -36,6 +40,10 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 				Q_INTERFACES (IFindProxy);
+
+				QToolBar *Toolbar_;
+				QAction *ActionDownload_;
+				QAction *ActionHandle_;
 
 				Request R_;
 
@@ -68,10 +76,14 @@ namespace LeechCraft
 			private slots:
 				void handleJobFinished (int);
 				void handleJobError (int);
+				void handleDownload ();
+				void handleHandle ();
 			private:
+				void EmitWith (TaskParameter);
 				void HandleProvider (QObject*);
 				QUrl GetURL () const;
 			signals:
+				void gotEntity (const LeechCraft::DownloadEntity&);
 				void delegateEntity (const LeechCraft::DownloadEntity&,
 						int*, QObject**);
 				void error (const QString&);

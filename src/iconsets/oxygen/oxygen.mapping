@@ -47,3 +47,5 @@ torrent_import lc_import.png
 torrent_ipfilter lc_filter.png
 torrent_startjob lc_start.png
 torrent_stopjob lc_pause.png
+vgrabber_handle lc_start.png
+vgrabber_download lc_aggregator_updateallfeeds.png

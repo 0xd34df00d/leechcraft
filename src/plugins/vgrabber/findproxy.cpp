@@ -19,6 +19,8 @@
 #include "findproxy.h"
 #include <QTextCodec>
 #include <QTime>
+#include <QToolBar>
+#include <QAction>
 #include <interfaces/structures.h>
 #include <plugininterface/util.h>
 
@@ -29,12 +31,27 @@ namespace LeechCraft
 		namespace vGrabber
 		{
 			FindProxy::FindProxy (const Request& r)
-			: R_ (r)
+			: Toolbar_ (new QToolBar)
+			, R_ (r)
 			{
+				ActionDownload_ = Toolbar_->addAction (tr ("Download"));
+				ActionDownload_->setProperty ("ActionIcon", "vgrabber_download");
+				connect (ActionDownload_,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleDownload ()));
+				
+				ActionHandle_ =  Toolbar_->addAction (tr ("Handle"));
+				ActionHandle_->setProperty ("ActionIcon", "vgrabber_handle");
+				connect (ActionHandle_,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleHandle ()));
 			}
 			
 			FindProxy::~FindProxy ()
 			{
+				delete Toolbar_;
 			}
 
 			void FindProxy::Start ()
@@ -80,7 +97,6 @@ namespace LeechCraft
 				if (!index.isValid ())
 					return QVariant ();
 			
-				int r = index.row ();
 				const Result& res = Results_ [index.row ()];
 				switch (role)
 				{
@@ -98,25 +114,10 @@ namespace LeechCraft
 							default:
 								return QString ();
 						}
-					/*
-					case LeechCraft::RoleAdditionalInfo:
-						if (Results_.at (r).Type_ == Result::TypeHTML)
-						{
-							Viewer_->SetHtml (Results_.at (r).Response_,
-									Results_.at (r).RequestURL_.toString ()); 
-							return QVariant::fromValue<QWidget*> (Viewer_.get ());
-						}
-						else
-							return 0;
 					case LeechCraft::RoleControls:
-						if (Results_.at (r).Type_ != Result::TypeHTML)
-						{
-							Action_->setData (r);
-							return QVariant::fromValue<QToolBar*> (Toolbar_.get ());
-						}
-						else
-							return 0;
-				*/
+						ActionDownload_->setData (res.URL_);
+						ActionHandle_->setData (res.URL_);
+						return QVariant::fromValue<QToolBar*> (Toolbar_);
 					default:
 						return QVariant ();
 				}
@@ -273,6 +274,34 @@ namespace LeechCraft
 				emit error (tr ("Search request for URL<br />%1<br />was delegated, but it failed.")
 						.arg (GetURL ().toString ()));
 				Jobs_.remove (id);
+			}
+
+			void FindProxy::handleDownload ()
+			{
+				EmitWith (LeechCraft::OnlyDownload);
+			}
+
+			void FindProxy::handleHandle ()
+			{
+				EmitWith (LeechCraft::OnlyHandle);
+			}
+
+			void FindProxy::EmitWith (LeechCraft::TaskParameter param)
+			{
+				QAction *act = qobject_cast<QAction*> (sender ());
+				QUrl url = act->data ().value<QUrl> ();
+				if (!url.isValid ())
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "url is not valid"
+						<< act;
+				}
+
+				DownloadEntity e = Util::MakeEntity (url,
+						QString (),
+						LeechCraft::FromUserInitiated |
+							param);
+				emit gotEntity (e);
 			}
 
 			void FindProxy::HandleProvider (QObject *provider)
