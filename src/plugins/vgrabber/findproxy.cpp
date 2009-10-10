@@ -156,6 +156,25 @@ namespace LeechCraft
 				return parent.isValid () ? 0 : Results_.size ();
 			}
 
+			namespace
+			{
+				QString Filter (QString str)
+				{
+					if (str.contains ("<a href='javascript"))
+					{
+						QRegExp unJS (".*<a href='javascript: showLyrics\\([0-9]*,[0-9]*\\);'>(.*)</a>");
+						unJS.setMinimal (true);
+						if (unJS.indexIn (str, 0) >= 0)
+							str = unJS.cap (1);
+					}
+
+					str.replace ("&amp;", "&");
+					str.replace ("&#39;", "'");
+
+					return str;
+				}
+			}
+
 			void FindProxy::handleJobFinished (int id)
 			{
 				if (!Jobs_.contains (id))
@@ -176,8 +195,7 @@ namespace LeechCraft
 
 				QList<QUrl> urls;
 				QList<int> lengths;
-//				"http://cs\\1.vkontakte.ru/u\\2/audio/\\3.mp3"
-//				\\4 — length in seconds
+
 				QRegExp links (".*onclick=\"return operate\\([0-9]*,([0-9]*),([0-9]*),'([0-9a-f]*)',([0-9]*)\\);\".*");
 				links.setMinimal (true);
 				int pos = 0;
@@ -238,8 +256,8 @@ namespace LeechCraft
 						{
 							urls.at (i),
 							lengths.at (i),
-							infos.at (i).first,
-							infos.at (i).second
+							Filter (infos.at (i).first),
+							Filter (infos.at (i).second)
 						};
 						Results_ << r;
 					}
