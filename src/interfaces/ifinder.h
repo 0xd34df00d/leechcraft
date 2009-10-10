@@ -124,7 +124,7 @@ public:
 	 *
 	 * @sa IFindProxy
 	 */
-	virtual boost::shared_ptr<IFindProxy> GetProxy (const LeechCraft::Request& r) = 0;
+	virtual IFindProxy_ptr GetProxy (const LeechCraft::Request& r) = 0;
 };
 
 Q_DECLARE_INTERFACE (IFinder, "org.Deviant.LeechCraft.IFinder/1.0");
