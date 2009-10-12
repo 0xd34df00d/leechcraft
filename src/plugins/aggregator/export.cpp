@@ -100,8 +100,9 @@ namespace LeechCraft
 			void Export::on_Browse__released ()
 			{
 				QString startingPath = QFileInfo (Ui_.File_->text ()).path ();
-				if (startingPath.isEmpty ())
-					startingPath = QDir::homePath ();
+				if (Ui_.File_->text ().isEmpty () ||
+						startingPath.isEmpty ())
+					startingPath = QDir::homePath () + "/feeds.opml";
 			
 				QString filename = QFileDialog::getSaveFileName (this,
 						Title_,
