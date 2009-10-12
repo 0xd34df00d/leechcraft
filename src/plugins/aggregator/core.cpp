@@ -132,6 +132,9 @@ namespace LeechCraft
 				}
 				else
 				{
+					if (url.scheme () == "feed")
+						return true;
+
 					if (url.scheme () != "http" &&
 							url.scheme () != "https")
 						return false;
@@ -200,7 +203,13 @@ namespace LeechCraft
 				}
 				else
 				{
-					Aggregator::AddFeed af (url.toString ());
+					QString str = url.toString ();
+					if (str.startsWith ("feed://"))
+						str.replace (0, 4, "http");
+					else if (str.startsWith ("feed:"))
+						str.remove  (0, 5);
+
+					Aggregator::AddFeed af (str);
 					if (af.exec () == QDialog::Accepted)
 						AddFeed (af.GetURL (),
 								af.GetTags ());
