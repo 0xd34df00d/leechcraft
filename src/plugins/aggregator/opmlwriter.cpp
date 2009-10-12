@@ -24,6 +24,7 @@
 #include <QDomElement>
 #include <QtDebug>
 #include <plugininterface/util.h>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -104,7 +105,10 @@ namespace LeechCraft
 				for (channels_shorts_t::const_iterator i = channels.begin (),
 						end = channels.end (); i != end; ++i)
 				{
-					QStringList tags = i->Tags_;
+					QStringList sourceTags = i->Tags_;
+					QStringList tags;
+					Q_FOREACH (QString st, sourceTags)
+						tags << Core::Instance ().GetProxy ()->GetTagsManager ()->GetTag (st);
 					tags.sort ();
 			
 					QDomElement inserter;
