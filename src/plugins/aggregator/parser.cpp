@@ -35,6 +35,8 @@ namespace LeechCraft
 			const QString Parser::Slash_ = "http://purl.org/rss/1.0/modules/slash/";
 			const QString Parser::Enc_ = "http://purl.oclc.org/net/rss_2.0/enc#";
 			const QString Parser::ITunes_ = "http://www.itunes.com/dtds/podcast-1.0.dtd";
+			const QString Parser::GeoRSSSimple_ = "http://www.georss.org/georss";
+			const QString Parser::GeoRSSW3_ = "http://www.w3.org/2003/01/geo/wgs84_pos#";
 
 			Parser::~Parser ()
 			{
@@ -249,20 +251,33 @@ namespace LeechCraft
 			
 				return result;
 			}
-			
-			// Via
-			// http://www.theukwebdesigncompany.com/articles/entity-escape-characters.php
-			QString Parser::UnescapeHTML (const QString& escaped) const
+
+			QPair<double, double> Parser::GetGeoPoint (const QDomElement& parent) const
 			{
-				QString result = escaped;
-				result.replace ("&euro;", "€");
-				result.replace ("&quot;", "\"");
-				result.replace ("&amp;", "&");
-				result.replace ("&nbsp;", " ");
-				result.replace ("&lt;", "<");
-				result.replace ("&gt;", ">");
-				result.replace ("&#8217;", "'");
-				result.replace ("&#8230;", "...");
+				QPair<double, double> result = qMakePair<double, double> (0, 0);
+
+				QDomNodeList lats = parent.elementsByTagNameNS (GeoRSSW3_, "lat");
+				QDomNodeList longs = parent.elementsByTagNameNS (GeoRSSW3_, "long");
+				if (lats.size () && longs.size ())
+				{
+					result.first = lats.at (0).toElement ().text ().toDouble ();
+					result.second = longs.at (0).toElement ().text ().toDouble ();
+				}
+				else
+				{
+					QDomNodeList points = parent.elementsByTagNameNS (GeoRSSSimple_, "point");
+					if (points.size ())
+					{
+						QString text = points.at (0).toElement ().text ();
+						QStringList splitted = text.split (' ', QString::KeepEmptyParts);
+						if (splitted.size () == 2)
+						{
+							result.first = splitted.at (0).toDouble ();
+							result.second = splitted.at (1).toDouble ();
+						}
+					}
+				}
+
 				return result;
 			}
 			
@@ -298,6 +313,22 @@ namespace LeechCraft
 				}
 				result.setTimeSpec (Qt::UTC);
 				return result.toLocalTime ();
+			}
+			
+			// Via
+			// http://www.theukwebdesigncompany.com/articles/entity-escape-characters.php
+			QString Parser::UnescapeHTML (const QString& escaped) const
+			{
+				QString result = escaped;
+				result.replace ("&euro;", "€");
+				result.replace ("&quot;", "\"");
+				result.replace ("&amp;", "&");
+				result.replace ("&nbsp;", " ");
+				result.replace ("&lt;", "<");
+				result.replace ("&gt;", ">");
+				result.replace ("&#8217;", "'");
+				result.replace ("&#8230;", "...");
+				return result;
 			}
 		};
 	};

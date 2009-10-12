@@ -105,6 +105,9 @@ namespace LeechCraft
 				result->CommentsPageLink_ = GetCommentsLink (item);
 				result->Enclosures_ = GetEnclosures (item);
 				result->Enclosures_ += GetEncEnclosures (item);
+				QPair<double, double> point = GetGeoPoint (item);
+				result->Latitude_ = point.first;
+				result->Longitude_ = point.second;
 				return result;
 			}
 		};

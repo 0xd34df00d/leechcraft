@@ -104,6 +104,10 @@ namespace LeechCraft
 			
 				item->Enclosures_ = GetEnclosures (entry);
 				item->Enclosures_ += GetEncEnclosures (entry);
+
+				QPair<double, double> point = GetGeoPoint (entry);
+				item->Latitude_ = point.first;
+				item->Longitude_ = point.second;
 			
 				return item;
 			}

@@ -87,7 +87,7 @@ namespace LeechCraft
 
 			QDataStream& operator<< (QDataStream& out, const Item& item)
 			{
-				int version = 2;
+				int version = 3;
 				out << version
 					<< item.Title_
 					<< item.Link_
@@ -100,7 +100,9 @@ namespace LeechCraft
 					<< item.NumComments_
 					<< item.CommentsLink_
 					<< item.CommentsPageLink_
-					<< item.Enclosures_;
+					<< item.Enclosures_
+					<< item.Latitude_
+					<< item.Longitude_;
 				return out;
 			}
 
@@ -108,8 +110,7 @@ namespace LeechCraft
 			{
 				int version = 0;
 				in >> version;
-				if (version == 1)
-				{
+				if (version >= 1)
 					in >> item.Title_
 						>> item.Link_
 						>> item.Description_
@@ -121,29 +122,16 @@ namespace LeechCraft
 						>> item.NumComments_
 						>> item.CommentsLink_
 						>> item.CommentsPageLink_;
-					return in;
-				}
-				else if (version == 2)
-				{
-					in >> item.Title_
-						>> item.Link_
-						>> item.Description_
-						>> item.Author_
-						>> item.Categories_
-						>> item.Guid_
-						>> item.PubDate_
-						>> item.Unread_
-						>> item.NumComments_
-						>> item.CommentsLink_
-						>> item.CommentsPageLink_
-						>> item.Enclosures_;
-					return in;
-				}
-				else
-				{
+				if (version >= 2)
+					in >> item.Enclosures_;
+				if (version == 3)
+					in >> item.Latitude_
+						>> item.Longitude_;
+
+				if (version < 1 || version > 3)
 					qWarning () << Q_FUNC_INFO << "unknown version" << version;
-					return in;
-				}
+
+				return in;
 			}
 
 			void Print (const Item& item)
@@ -220,7 +208,9 @@ namespace LeechCraft
 						i1->PubDate_ == i2->PubDate_ &&
 						i1->NumComments_ == i2->NumComments_ &&
 						i1->CommentsLink_ == i2->CommentsLink_ &&
-						i1->CommentsPageLink_ == i2->CommentsPageLink_);
+						i1->CommentsPageLink_ == i2->CommentsPageLink_ &&
+						i1->Latitude_ == i2->Latitude_ &&
+						i1->Longitude_ == i2->Longitude_);
 			}
 		};
 	};

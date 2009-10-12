@@ -134,6 +134,8 @@ namespace LeechCraft
 								   * - num_comments
 								   * - comments_url
 								   * - comments_page_url
+								   * - latitude
+								   * - longitude
 								   *
 								   * Binds:
 								   * - parents_hash
@@ -189,6 +191,8 @@ namespace LeechCraft
 								   * - num_comments
 								   * - comments_url
 								   * - comments_page_url
+								   * - latitude
+								   * - longitude
 								   */
 								  InsertItem_,
 								  /** Binds:
@@ -233,6 +237,8 @@ namespace LeechCraft
 								   * - title
 								   * - url
 								   * - guid
+								   * - latitude
+								   * - longitude
 								   */
 								  UpdateItem_,
 								  /** Binds:

@@ -99,6 +99,9 @@ namespace LeechCraft
 						item->CommentsLink_ = GetCommentsRSS (itemDescr);
 						item->CommentsPageLink_ = GetCommentsLink (itemDescr);
 						item->Enclosures_ = GetEncEnclosures (itemDescr);
+						QPair<double, double> point = GetGeoPoint (itemDescr);
+						item->Latitude_ = point.first;
+						item->Longitude_ = point.second;
 						if (item->Guid_.isEmpty ())
 							item->Guid_ = "empty";
 			

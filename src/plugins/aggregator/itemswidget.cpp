@@ -271,6 +271,13 @@ namespace LeechCraft
 							tr ("<a href='%1'%2>View comments</a></div>")
 								.arg (item->CommentsPageLink_)
 								.arg (linw ? " target='_blank'" : ""));
+
+				if (item->Latitude_ ||
+						item->Longitude_)
+					result += (startBox.arg (headerBg) +
+							tr ("Geoposition: %1 %2</div>")
+								.arg (item->Latitude_)
+								.arg (item->Longitude_));
 			
 				result += "<br />";
 				result += QString ("<div style='color: %2'>")

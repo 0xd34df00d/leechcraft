@@ -18,9 +18,10 @@
 
 #ifndef PLUGINS_AGGREGATOR_PARSER_H
 #define PLUGINS_AGGREGATOR_PARSER_H
-#include <QDomDocument>
 #include <vector>
 #include <boost/shared_ptr.hpp>
+#include <QPair>
+#include <QDomDocument>
 #include "channel.h"
 
 namespace LeechCraft
@@ -61,6 +62,8 @@ namespace LeechCraft
 				static const QString Slash_;
 				static const QString Enc_;
 				static const QString ITunes_;
+				static const QString GeoRSSSimple_;
+				static const QString GeoRSSW3_;
 
 				virtual channels_container_t Parse (const QDomDocument&) const = 0;
 				QString GetLink (const QDomElement&) const;
@@ -74,6 +77,7 @@ namespace LeechCraft
 				QStringList GetITunesCategories (const QDomElement&) const;
 				QStringList GetPlainCategories (const QDomElement&) const;
 				QList<Enclosure> GetEncEnclosures (const QDomElement&) const;
+				QPair<double, double> GetGeoPoint (const QDomElement&) const; 
 
 				QDateTime FromRFC3339 (const QString&) const;
 				QString UnescapeHTML (const QString&) const;

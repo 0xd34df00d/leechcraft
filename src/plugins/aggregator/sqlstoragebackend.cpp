@@ -215,7 +215,9 @@ namespace LeechCraft
 						"unread, "
 						"num_comments, "
 						"comments_url, "
-						"comments_page_url "
+						"comments_page_url, "
+						"latitude, "
+						"longitude "
 						"FROM items "
 						"WHERE parents_hash = :parents_hash "
 						"AND title = :title "
@@ -234,7 +236,9 @@ namespace LeechCraft
 						"unread, "
 						"num_comments, "
 						"comments_url, "
-						"comments_page_url "
+						"comments_page_url, "
+						"latitude, "
+						"longitude "
 						"FROM items "
 						"WHERE parents_hash = :parents_hash "
 						"ORDER BY pub_date DESC");
@@ -302,7 +306,9 @@ namespace LeechCraft
 						"unread, "
 						"num_comments, "
 						"comments_url, "
-						"comments_page_url"
+						"comments_page_url, "
+						"latitude, "
+						"longitude"
 						") VALUES ("
 						":parents_hash, "
 						":title, "
@@ -315,7 +321,9 @@ namespace LeechCraft
 						":unread, "
 						":num_comments, "
 						":comments_url, "
-						":comments_page_url"
+						":comments_page_url, "
+						":latitude, "
+						":longitude"
 						")");
 			
 				UpdateShortChannel_ = QSqlQuery (DB_);
@@ -356,7 +364,9 @@ namespace LeechCraft
 						"unread = :unread, "
 						"num_comments = :num_comments, "
 						"comments_url = :comments_url, "
-						"comments_page_url = :comments_page_url "
+						"comments_page_url = :comments_page_url, "
+						"latitude = :latitude, "
+						"longitude = :longitude "
 						"WHERE parents_hash = :parents_hash "
 						"AND title = :title "
 						"AND url = :url");
@@ -786,6 +796,8 @@ namespace LeechCraft
 					qWarning () << Q_FUNC_INFO << e.what ();
 					return;
 				}
+
+				qDebug () << "UpdateItem" << item->Longitude_;
 			
 				UpdateItem_.bindValue (":parents_hash", parentUrl + parentTitle);
 				UpdateItem_.bindValue (":title", item->Title_);
@@ -798,6 +810,8 @@ namespace LeechCraft
 				UpdateItem_.bindValue (":num_comments", item->NumComments_);
 				UpdateItem_.bindValue (":comments_url", item->CommentsLink_);
 				UpdateItem_.bindValue (":comments_page_url", item->CommentsPageLink_);
+				UpdateItem_.bindValue (":latitude", QString::number (item->Latitude_));
+				UpdateItem_.bindValue (":longitude", QString::number (item->Longitude_));
 			
 				if (!UpdateItem_.exec ())
 				{
@@ -884,6 +898,7 @@ namespace LeechCraft
 			void SQLStorageBackend::AddItem (Item_ptr item,
 					const QString& parentUrl, const QString& parentTitle)
 			{
+				qDebug () << "AddItem" << item->Longitude_;
 				InsertItem_.bindValue (":parents_hash", parentUrl + parentTitle);
 				InsertItem_.bindValue (":title", item->Title_);
 				InsertItem_.bindValue (":url", item->Link_);
@@ -896,6 +911,8 @@ namespace LeechCraft
 				InsertItem_.bindValue (":num_comments", item->NumComments_);
 				InsertItem_.bindValue (":comments_url", item->CommentsLink_);
 				InsertItem_.bindValue (":comments_page_url", item->CommentsPageLink_);
+				InsertItem_.bindValue (":latitude", QString::number (item->Latitude_));
+				InsertItem_.bindValue (":longitude", QString::number (item->Longitude_));
 			
 				if (!InsertItem_.exec ())
 				{
@@ -1212,7 +1229,9 @@ namespace LeechCraft
 							"unread %1, "
 							"num_comments SMALLINT, "
 							"comments_url TEXT, "
-							"comments_page_url TEXT"
+							"comments_page_url TEXT, "
+							"latitude TEXT, "
+							"longitude TEXT"
 							");").arg (unreadType)))
 					{
 						LeechCraft::Util::DBLock::DumpError (query.lastError ());
@@ -1371,6 +1390,18 @@ namespace LeechCraft
 						return false;
 					}
 				}
+				else if (version == 5)
+				{
+					QSqlQuery updateQuery = QSqlQuery (DB_);
+					if (!(updateQuery.exec (QString ("ALTER TABLE items "
+										"ADD latitude TEXT")) &&
+								updateQuery.exec (QString ("ALTER TABLE items "
+										"ADD longitude TEXT"))))
+					{
+						LeechCraft::Util::DBLock::DumpError (updateQuery);
+						return false;
+					}
+				}
 			
 				lock.Good ();
 				return true;
@@ -1389,6 +1420,9 @@ namespace LeechCraft
 				item->NumComments_ = query.value (8).toInt ();
 				item->CommentsLink_ = query.value (9).toString ();
 				item->CommentsPageLink_ = query.value (10).toString ();
+				qDebug () << "FillItem" << query.value (11) << query.value (12);
+				item->Latitude_ = query.value (11).toString ().toDouble ();
+				item->Longitude_ = query.value (12).toString ().toDouble ();
 			}
 			
 			void SQLStorageBackend::GetEnclosures (const QString& hash, const QString& title,

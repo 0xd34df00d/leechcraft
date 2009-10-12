@@ -285,7 +285,7 @@ namespace LeechCraft
 			
 				const int feedsTable = 1;
 				const int channelsTable = 1;
-				const int itemsTable = 4;
+				const int itemsTable = 5;
 			
 				bool tablesOK = true;
 			
@@ -1538,6 +1538,8 @@ namespace LeechCraft
 						(*ourItem)->NumComments_ = (*item)->NumComments_;
 						(*ourItem)->CommentsLink_ = (*item)->CommentsLink_;
 						(*ourItem)->CommentsPageLink_ = (*item)->CommentsPageLink_;
+						(*ourItem)->Latitude_ = (*item)->Latitude_;
+						(*ourItem)->Longitude_ = (*item)->Longitude_;
 			
 						StorageBackend_->UpdateItem ((*ourItem),
 								(*position)->ParentURL_, (*position)->Title_);
