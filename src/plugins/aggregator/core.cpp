@@ -202,7 +202,7 @@ namespace LeechCraft
 				{
 					Aggregator::AddFeed af (url.toString ());
 					if (af.exec () == QDialog::Accepted)
-						AddFeed (url.toString (),
+						AddFeed (af.GetURL (),
 								af.GetTags ());
 				}
 			}
