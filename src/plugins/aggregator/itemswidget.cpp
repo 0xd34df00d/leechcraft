@@ -274,10 +274,18 @@ namespace LeechCraft
 
 				if (item->Latitude_ ||
 						item->Longitude_)
+				{
+					QString link = QString ("http://maps.google.com/maps"
+							"?f=q&source=s_q&hl=en&geocode=&q=%1+%2")
+						.arg (item->Latitude_)
+						.arg (item->Longitude_);
 					result += (startBox.arg (headerBg) +
-							tr ("Geoposition: %1 %2</div>")
+							tr ("Geoposition: <a href='%3'%4 title='Google Maps'>%1 %2</a></div>")
 								.arg (item->Latitude_)
-								.arg (item->Longitude_));
+								.arg (item->Longitude_)
+								.arg (link)
+								.arg (linw ? " target='_blank'" : ""));
+				}
 			
 				result += "<br />";
 				result += QString ("<div style='color: %2'>")
