@@ -74,6 +74,12 @@ namespace LeechCraft
 							default:
 								return QVariant ();
 						}
+					case Qt::DecorationRole:
+						if (index.column () == ColumnTitle)
+							return Core::Instance ()
+								.GetIcon (Items_ [index.row ()].URL_);
+						else
+							return QVariant ();
 					case TagsRole:
 						return Core::Instance ().GetProxy ()->
 							GetTagsManager ()->Join (GetVisibleTags (index.row ()));
