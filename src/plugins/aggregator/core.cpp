@@ -367,12 +367,19 @@ namespace LeechCraft
 				QDateTime currentDateTime = QDateTime::currentDateTime ();
 				QDateTime lastUpdated = XmlSettingsManager::Instance ()->
 					Property ("LastUpdateDateTime", currentDateTime).toDateTime ();
-				connect (UpdateTimer_, SIGNAL (timeout ()), this, SLOT (updateFeeds ()));
+				connect (UpdateTimer_,
+						SIGNAL (timeout ()),
+						this,
+						SLOT (updateFeeds ()));
 			
 				int updateDiff = lastUpdated.secsTo (currentDateTime);
-				if ((XmlSettingsManager::Instance ()->property ("UpdateOnStartup").toBool ()) ||
-					(updateDiff > XmlSettingsManager::Instance ()->property ("UpdateInterval").toInt () * 60))
-						QTimer::singleShot (7000, this, SLOT (updateFeeds ()));
+				if ((XmlSettingsManager::Instance ()->
+							property ("UpdateOnStartup").toBool ()) ||
+					(updateDiff > XmlSettingsManager::Instance ()->
+							property ("UpdateInterval").toInt () * 60))
+						QTimer::singleShot (7000,
+								this,
+								SLOT (updateFeeds ()));
 				else
 					UpdateTimer_->start (updateDiff * 1000);
 			
@@ -1305,8 +1312,10 @@ namespace LeechCraft
 			
 					UpdateFeed (*i);
 				}
-				XmlSettingsManager::Instance ()->setProperty ("LastUpdateDateTime", QDateTime::currentDateTime ());
-				UpdateTimer_->start (XmlSettingsManager::Instance ()->property ("UpdateInterval").toInt () * 60 * 1000);
+				XmlSettingsManager::Instance ()->
+					setProperty ("LastUpdateDateTime", QDateTime::currentDateTime ());
+				UpdateTimer_->start (XmlSettingsManager::Instance ()->
+						property ("UpdateInterval").toInt () * 60 * 1000);
 			}
 			
 			void Core::fetchExternalFile (const QString& url, const QString& where)
