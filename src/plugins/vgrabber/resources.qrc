@@ -1,4 +1,5 @@
 <RCC>
   <qresource prefix="/" >
+    <file>resources/images/vgrabber.svg</file>
   </qresource>
 </RCC>

@@ -50,7 +50,7 @@ namespace LeechCraft
 
 			QIcon Plugin::GetIcon () const
 			{
-				return QIcon ();
+				return QIcon (":/resources/images/vgrabber.svg");
 			}
 
 			QStringList Plugin::Provides () const
