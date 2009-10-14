@@ -51,7 +51,7 @@ namespace LeechCraft
 
 			QIcon Plugin::GetIcon () const
 			{
-				return QIcon ();
+				return QIcon (":/resources/images/newlife.svg");
 			}
 
 			QStringList Plugin::Provides () const
