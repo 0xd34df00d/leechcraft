@@ -797,8 +797,6 @@ namespace LeechCraft
 					return;
 				}
 
-				qDebug () << "UpdateItem" << item->Longitude_;
-			
 				UpdateItem_.bindValue (":parents_hash", parentUrl + parentTitle);
 				UpdateItem_.bindValue (":title", item->Title_);
 				UpdateItem_.bindValue (":url", item->Link_);
@@ -898,7 +896,6 @@ namespace LeechCraft
 			void SQLStorageBackend::AddItem (Item_ptr item,
 					const QString& parentUrl, const QString& parentTitle)
 			{
-				qDebug () << "AddItem" << item->Longitude_;
 				InsertItem_.bindValue (":parents_hash", parentUrl + parentTitle);
 				InsertItem_.bindValue (":title", item->Title_);
 				InsertItem_.bindValue (":url", item->Link_);
@@ -1420,7 +1417,6 @@ namespace LeechCraft
 				item->NumComments_ = query.value (8).toInt ();
 				item->CommentsLink_ = query.value (9).toString ();
 				item->CommentsPageLink_ = query.value (10).toString ();
-				qDebug () << "FillItem" << query.value (11) << query.value (12);
 				item->Latitude_ = query.value (11).toString ().toDouble ();
 				item->Longitude_ = query.value (12).toString ().toDouble ();
 			}
