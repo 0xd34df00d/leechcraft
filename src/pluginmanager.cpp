@@ -404,7 +404,7 @@ void LeechCraft::PluginManager::CheckPlugins ()
 		}
 		settings.beginGroup (file);
 		settings.setValue ("Name", name);
-		settings.setValue ("Icon", icon);
+		settings.setValue ("Icon", icon.pixmap (48, 48));
 		settings.endGroup ();
 	}
 
