@@ -46,6 +46,7 @@ namespace LeechCraft
 				typedef std::vector<FavoritesItem> items_t;
 			private:
 				items_t Items_;
+				QMap<QString, QString> CheckResults_;
 			public:
 				enum Columns
 				{
@@ -78,6 +79,7 @@ namespace LeechCraft
 				bool AddItem (const QString&, const QString&, const QStringList&);
 				void ChangeURL (const QModelIndex&, const QString&);
 				const items_t& GetItems () const;
+				void SetCheckResults (const QMap<QString, QString>&);
 			private:
 				QStringList GetVisibleTags (int) const;
 			public slots:

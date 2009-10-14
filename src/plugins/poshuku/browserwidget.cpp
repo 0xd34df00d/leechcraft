@@ -113,6 +113,10 @@ namespace LeechCraft
 						this);
 				Add2Favorites_->setProperty ("ActionIcon", "poshuku_addtofavorites");
 				Add2Favorites_->setEnabled (false);
+
+				CheckFavorites_ = new QAction (tr ("Check favorites..."),
+						this);
+				CheckFavorites_->setProperty ("ActionIcon", "poshuku_checkfavorites");
 			
 				Find_ = new QAction (tr ("Find..."),
 						this);
@@ -177,6 +181,7 @@ namespace LeechCraft
 
 				moreMenu->addAction (Find_);
 				moreMenu->addAction (Add2Favorites_);
+				moreMenu->addAction (CheckFavorites_);
 				moreMenu->addSeparator ();
 				moreMenu->addAction (ReloadPeriodically_);
 				moreMenu->addAction (NotifyWhenFinished_);
@@ -226,6 +231,10 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (handleAdd2Favorites ()));
+				connect (CheckFavorites_,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleCheckFavorites ()));
 				connect (Print_,
 						SIGNAL (triggered ()),
 						this,
@@ -671,6 +680,11 @@ namespace LeechCraft
 			{
 				emit addToFavorites (Ui_.WebView_->title (),
 						Ui_.WebView_->url ().toString ());
+			}
+
+			void BrowserWidget::handleCheckFavorites ()
+			{
+				Core::Instance ().CheckFavorites ();
 			}
 			
 			void BrowserWidget::handleFind ()

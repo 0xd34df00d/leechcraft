@@ -50,6 +50,7 @@ namespace LeechCraft
 		{
 			class CustomWebView;
 			class BrowserWidget;
+			class FavoritesChecker;
 
 			class Core : public QObject
 			{
@@ -77,6 +78,8 @@ namespace LeechCraft
 				const IShortcutProxy *ShortcutProxy_;
 
 				ICoreProxy_ptr Proxy_;
+
+				FavoritesChecker *FavoritesChecker_;
 
 				bool Initialized_;
 
@@ -119,6 +122,8 @@ namespace LeechCraft
 				 */
 				void ConnectSignals (BrowserWidget *widget);
 
+				void CheckFavorites ();
+
 				FavoritesModel* GetFavoritesModel () const;
 				HistoryModel* GetHistoryModel () const;
 				URLCompletionModel* GetURLCompletionModel () const;
@@ -129,6 +134,7 @@ namespace LeechCraft
 				const IShortcutProxy* GetShortcutProxy () const;
 
 				QIcon GetIcon (const QUrl&) const;
+				QString GetUserAgent (const QUrl&, const QWebPage* = 0) const;
 			private:
 				void RestoreSession (bool);
 				void HandleHistory (QWebView*);

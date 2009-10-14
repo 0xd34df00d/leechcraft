@@ -80,6 +80,8 @@ namespace LeechCraft
 								.GetIcon (Items_ [index.row ()].URL_);
 						else
 							return QVariant ();
+					case Qt::ToolTipRole:
+						return CheckResults_ [Items_ [index.row ()].URL_];
 					case TagsRole:
 						return Core::Instance ().GetProxy ()->
 							GetTagsManager ()->Join (GetVisibleTags (index.row ()));
@@ -202,6 +204,29 @@ namespace LeechCraft
 			{
 				return Items_;
 			}
+
+			namespace
+			{
+				struct ItemFinder
+				{
+					const QString& URL_;
+			
+					ItemFinder (const QString& url)
+					: URL_ (url)
+					{
+					}
+			
+					bool operator() (const FavoritesModel::FavoritesItem& item) const
+					{
+						return item.URL_ == URL_;
+					}
+				};
+			};
+			
+			void FavoritesModel::SetCheckResults (const QMap<QString, QString>& res)
+			{
+				CheckResults_ = res;
+			}
 			
 			QStringList FavoritesModel::GetVisibleTags (int index) const
 			{
@@ -224,24 +249,6 @@ namespace LeechCraft
 				Items_.push_back (item);
 				endInsertRows ();
 			}
-			
-			namespace
-			{
-				struct ItemFinder
-				{
-					const QString& URL_;
-			
-					ItemFinder (const QString& url)
-					: URL_ (url)
-					{
-					}
-			
-					bool operator() (const FavoritesModel::FavoritesItem& item) const
-					{
-						return item.URL_ == URL_;
-					}
-				};
-			};
 			
 			void FavoritesModel::handleItemUpdated (const FavoritesModel::FavoritesItem& item)
 			{

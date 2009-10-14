@@ -47,6 +47,7 @@ SET (SRCS
 	searchtext.cpp
 	reloadintervalselector.cpp
 	editbookmarkdialog.cpp
+	favoriteschecker.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -87,6 +88,7 @@ SET (HEADERS
 	searchtext.h
 	reloadintervalselector.h
 	editbookmarkdialog.h
+	favoriteschecker.h
 	interfaces/pluginbase.h
 	)
 SET (FORMS

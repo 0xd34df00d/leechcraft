@@ -58,7 +58,9 @@ namespace LeechCraft
 				QAction *ZoomIn_;
 				QAction *ZoomOut_;
 				QAction *ZoomReset_;
+				// TODO move out to the common menu
 				QAction *ImportXbel_;
+				// TODO move out to the common menu
 				QAction *ExportXbel_;
 				QAction *Cut_;
 				QAction *Copy_;
@@ -69,6 +71,9 @@ namespace LeechCraft
 				QAction *ReloadPeriodically_;
 				QAction *NotifyWhenFinished_;
 				QAction *Stop_;
+				// TODO move out to the common menu
+				QAction *CheckFavorites_;
+				// TODO move out to the common menu
 				QAction *RecentlyClosedAction_;
 				QPoint OnLoadPos_;
 				boost::shared_ptr<QMovie> Loading_;
@@ -138,6 +143,7 @@ namespace LeechCraft
 				void on_URLEdit__returnPressed ();
 				void handleReloadPeriodically ();
 				void handleAdd2Favorites ();
+				void handleCheckFavorites ();
 				void handleFind ();
 				void findText (const QString&, QWebPage::FindFlags);
 				void handleViewPrint (QWebFrame*);
