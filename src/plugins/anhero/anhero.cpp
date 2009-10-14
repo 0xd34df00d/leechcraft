@@ -58,7 +58,7 @@ namespace LeechCraft
 
 			QIcon Plugin::GetIcon () const
 			{
-				return QIcon ();
+				return QIcon (":/resources/images/anhero.svg");
 			}
 
 			QStringList Plugin::Provides () const
