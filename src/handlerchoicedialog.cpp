@@ -34,10 +34,12 @@ bool HandlerChoiceDialog::Add (const IInfo *ii, IDownload *id)
 {
 	QString name;
 	QString tooltip;
+	QIcon icon;
 	try
 	{
 		name = ii->GetName ();
 		tooltip = ii->GetInfo ();
+		icon = ii->GetIcon ();
 	}
 	catch (const std::exception& e)
 	{
@@ -56,6 +58,8 @@ bool HandlerChoiceDialog::Add (const IInfo *ii, IDownload *id)
 	}
 	QRadioButton *but = new QRadioButton (name, this);
 	but->setToolTip (tooltip);
+	but->setIconSize (QSize (32, 32));
+	but->setIcon (icon);
 	but->setProperty ("AddedAs", "IDownload");
 
 	if (!Buttons_->buttons ().size ())
@@ -73,10 +77,12 @@ bool HandlerChoiceDialog::Add (const IInfo *ii, IEntityHandler *ih)
 {
 	QString name;
 	QString tooltip;
+	QIcon icon;
 	try
 	{
 		name = ii->GetName ();
 		tooltip = ii->GetInfo ();
+		icon = ii->GetIcon ();
 	}
 	catch (const std::exception& e)
 	{
@@ -95,6 +101,8 @@ bool HandlerChoiceDialog::Add (const IInfo *ii, IEntityHandler *ih)
 	}
 	QRadioButton *but = new QRadioButton (name, this);
 	but->setToolTip (tooltip);
+	but->setIconSize (QSize (32, 32));
+	but->setIcon (icon);
 	but->setProperty ("AddedAs", "IEntityHandler");
 
 	if (!Buttons_->buttons ().size ())
