@@ -69,7 +69,7 @@ namespace LeechCraft
 
 			QIcon Remoter::GetIcon () const
 			{
-				return QIcon ();
+				return QIcon (":/resources/images/remoter.svg");
 			}
 		};
 	};
