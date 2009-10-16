@@ -63,6 +63,11 @@ namespace LeechCraft
 					itemData (currentIndex).value<QObject*> ();
 				return qobject_cast<AbstractImporter*> (importerObject);
 			}
+
+			QString FirstPage::GetSelectedName () const
+			{
+				return Ui_.SourceApplication_->currentText ();
+			}
 		};
 	};
 };

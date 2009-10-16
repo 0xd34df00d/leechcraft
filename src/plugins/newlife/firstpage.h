@@ -43,6 +43,7 @@ namespace LeechCraft
 
 				void SetupImporter (const AbstractImporter*);
 				AbstractImporter* GetImporter () const;
+				QString GetSelectedName () const;
 			};
 		};
 	};

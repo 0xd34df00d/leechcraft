@@ -42,6 +42,8 @@ namespace LeechCraft
 				QList<AbstractImporter*> Importers_;
 			public:
 				ImportWizard (QWidget* = 0);
+
+				QString GetSelectedName () const;
 			private slots:
 				void handleAccepted ();
 				void handleRejected ();

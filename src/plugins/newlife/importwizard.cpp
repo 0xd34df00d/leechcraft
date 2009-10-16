@@ -49,6 +49,11 @@ namespace LeechCraft
 				SetupImporters ();
 			}
 
+			QString ImportWizard::GetSelectedName () const
+			{
+				return Ui_.FirstPage_->GetSelectedName ();
+			}
+
 			void ImportWizard::handleAccepted ()
 			{
 				deleteLater ();
