@@ -5,7 +5,7 @@ and integrated with each other with no effort.
 
 Currently it includes following plugins:
 * Aggregator, news feed reader
-* BitTorrent, the BitTorrent cleint
+* BitTorrent, the BitTorrent client
 * Chatter, the IRC client
 * CSTP, simple HTTP implementation
 * DBusManager, D-Bus for the LeechCraft
