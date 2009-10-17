@@ -62,7 +62,10 @@ namespace LeechCraft
 				switch (role)
 				{
 					case Qt::DisplayRole:
-						return Columns_.at (column);
+						if (column >= CMax)
+							return QVariant ();
+						else
+							return Columns_.at (column);
 					default:
 						return QVariant ();
 				}
