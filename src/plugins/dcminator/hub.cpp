@@ -111,11 +111,13 @@ namespace LeechCraft
 				connect (this,
 						SIGNAL (message (const QString&)),
 						Ui_.ChatBrowser_,
-						SLOT (appendPlainText (const QString&)));
+						SLOT (appendPlainText (const QString&)),
+						Qt::QueuedConnection);
 				connect (this,
 						SIGNAL (status (const QString&)),
 						Ui_.ChatBrowser_,
-						SLOT (appendPlainText (const QString&)));
+						SLOT (appendPlainText (const QString&)),
+						Qt::QueuedConnection);
 				connect (this,
 						SIGNAL (disconnected ()),
 						this,
