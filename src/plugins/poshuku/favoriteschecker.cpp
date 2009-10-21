@@ -37,7 +37,7 @@ namespace LeechCraft
 						tr ("Cancel"),
 						0, 0);
 				connect (ProgressDialog_,
-						SIGNAL (cancelled ()),
+						SIGNAL (canceled ()),
 						this,
 						SLOT (handleCanceled ()));
 			}
