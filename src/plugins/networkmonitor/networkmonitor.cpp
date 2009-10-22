@@ -75,7 +75,7 @@ namespace LeechCraft
 
 				QAction *showAction = new QAction (tr ("Network monitor..."),
 						this);
-				showAction->setProperty ("ActionIcon", "networkmonitor_plugin");
+				showAction->setIcon (GetIcon ());
 				connect (showAction,
 						SIGNAL (triggered ()),
 						this,
