@@ -1,4 +1,5 @@
 <RCC>
   <qresource prefix="/" >
+    <file>resources/images/dcminator.svg</file>
   </qresource>
 </RCC>

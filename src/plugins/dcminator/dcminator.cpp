@@ -51,7 +51,7 @@ namespace LeechCraft
 
 			QIcon Plugin::GetIcon () const
 			{
-				return QIcon ();
+				return QIcon (":/resources/images/dcminator.svg");
 			}
 
 			QStringList Plugin::Provides () const
