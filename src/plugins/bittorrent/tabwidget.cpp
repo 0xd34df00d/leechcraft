@@ -646,8 +646,8 @@ namespace LeechCraft
 					QModelIndex sindex = index.sibling (index.row (),
 							TorrentFilesModel::ColumnProgress);
 					double progress = sindex.data (TorrentFilesModel::RoleProgress).toDouble ();
-					int size = sindex.data (TorrentFilesModel::RoleSize).toInt ();
-					int done = progress * size;
+					qint64 size = sindex.data (TorrentFilesModel::RoleSize).toLongLong ();
+					qint64 done = progress * size;
 					Ui_.FileProgress_->setText (tr ("%1% (%2 of %3)")
 							.arg (progress * 100, 0, 'f', 1)
 							.arg (Util::MakePrettySize (done))
