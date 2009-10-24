@@ -48,6 +48,7 @@ namespace LeechCraft
 				{
 					Internal_ = true;
 					InternalBrowser_.reset (new QTextBrowser (this));
+					InternalBrowser_->setOpenExternalLinks (true);
 					ExternalBrowser_.reset ();
 					layout ()->addWidget (InternalBrowser_.get ());
 				}
