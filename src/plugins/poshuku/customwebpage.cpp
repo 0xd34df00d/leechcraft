@@ -54,8 +54,6 @@ namespace LeechCraft
 						this,
 						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
 
-				handleFrameCreated (mainFrame ());
-			
 				connect (mainFrame (),
 						SIGNAL (javaScriptWindowObjectCleared ()),
 						this,
