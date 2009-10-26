@@ -1315,7 +1315,8 @@ namespace LeechCraft
 			QPixmap SQLStorageBackend::UnserializePixmap (const QByteArray& bytes) const
 			{
 				QPixmap result;
-				result.loadFromData (bytes, "PNG");
+				if (bytes.size ())
+					result.loadFromData (bytes, "PNG");
 				return result;
 			}
 			
