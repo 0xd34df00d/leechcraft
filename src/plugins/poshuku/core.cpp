@@ -54,6 +54,7 @@
 #include "linkhistory.h"
 #include "config.h"
 #include "favoriteschecker.h"
+#include "webpluginfactory.h"
 #include "interfaces/pluginbase.h"
 
 namespace LeechCraft
@@ -66,6 +67,7 @@ namespace LeechCraft
 			
 			Core::Core ()
 			: NetworkAccessManager_ (0)
+			, WebPluginFactory_ (0)
 			, IsShuttingDown_ (false)
 			, ShortcutProxy_ (0)
 			, FavoritesChecker_ (0)
@@ -169,6 +171,8 @@ namespace LeechCraft
 			
 				XmlSettingsManager::Instance ()->setProperty ("CleanShutdown", true);
 				XmlSettingsManager::Instance ()->Release ();
+
+				delete WebPluginFactory_;
 			}
 			
 			void Core::SetProxy (ICoreProxy_ptr proxy)
@@ -181,6 +185,13 @@ namespace LeechCraft
 			ICoreProxy_ptr Core::GetProxy () const
 			{
 				return Proxy_;
+			}
+
+			WebPluginFactory* Core::GetWebPluginFactory ()
+			{
+				if (!WebPluginFactory_)
+					WebPluginFactory_ = new WebPluginFactory (this);
+				return WebPluginFactory_;
 			}
 			
 			void Core::SetProvider (QObject *object, const QString& feature)

@@ -32,6 +32,7 @@
 #include "pluginmanager.h"
 #include "jsproxy.h"
 #include "externalproxy.h"
+#include "webpluginfactory.h"
 
 namespace LeechCraft
 {
@@ -52,6 +53,8 @@ namespace LeechCraft
 
 				setForwardUnsupportedContent (true);
 				setNetworkAccessManager (Core::Instance ().GetNetworkAccessManager ());
+
+				setPluginFactory (Core::Instance ().GetWebPluginFactory ());
 
 				connect (ExternalProxy_.get (),
 						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),

@@ -44,6 +44,7 @@ namespace LeechCraft
 				void AddPlugin (QObject*);
 
 				void Init (IProxyObject*);
+				bool HandleWebPluginFactoryReload (QList<IWebPlugin*>&);
 				bool HandleBeginWebPageConstruction (QWebPage*);
 				bool HandleEndWebPageConstruction (QWebPage*);
 				bool HandleContentsChanged (QWebPage*);

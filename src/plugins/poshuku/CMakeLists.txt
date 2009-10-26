@@ -48,6 +48,7 @@ SET (SRCS
 	reloadintervalselector.cpp
 	editbookmarkdialog.cpp
 	favoriteschecker.cpp
+	webpluginfactory.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -89,7 +90,9 @@ SET (HEADERS
 	reloadintervalselector.h
 	editbookmarkdialog.h
 	favoriteschecker.h
+	webpluginfactory.h
 	interfaces/pluginbase.h
+	interfaces/iwebplugin.h
 	)
 SET (FORMS
 	poshuku.ui

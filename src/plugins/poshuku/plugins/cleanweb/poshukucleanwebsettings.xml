@@ -21,5 +21,13 @@
 			<label lang="ru" value="Подписки" />
 			<item type="customwidget" name="SubscriptionsManager" label="own" />
 		</tab>
+		<tab>
+			<label lang="en" value="FlashOnClick" />
+			<item type="groupbox" checkable="true" state="on" property="EnableFlashOnClick">
+				<label lang="en" value="Enable FlashOnClick" />
+				<label lang="en" value="Включить FlashOnClick" />
+				<item type="customwidget" name="FlashOnClickWhitelist" label="own" />
+			</item>
+		</tab>
 	</page>
 </settings>

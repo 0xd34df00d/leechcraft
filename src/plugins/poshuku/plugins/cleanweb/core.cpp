@@ -30,6 +30,7 @@
 #include <QCoreApplication>
 #include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
+#include "flashonclickplugin.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Plugins::Poshuku::Plugins::CleanWeb;
@@ -203,6 +204,7 @@ bool LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::operator!= (const FilterOp
 }
 
 LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::Core::Core ()
+: FlashOnClickPlugin_ (0)
 {
 	HeaderLabels_ << tr ("Name")
 		<< tr ("Last updated")
@@ -240,6 +242,7 @@ Core& Core::Instance ()
 
 void Core::Release ()
 {
+	delete FlashOnClickPlugin_;
 }
 
 int Core::columnCount (const QModelIndex&) const
@@ -352,6 +355,13 @@ QNetworkReply* Core::Hook (IHookProxy_ptr hook,
 	}
 	else
 		return 0;
+}
+
+FlashOnClickPlugin* Core::GetFlashOnClick ()
+{
+	if (!FlashOnClickPlugin_)
+		FlashOnClickPlugin_ = new FlashOnClickPlugin (this);
+	return FlashOnClickPlugin_;
 }
 
 /** We test each filter until we know that we should reject it or until

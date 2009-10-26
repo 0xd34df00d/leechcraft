@@ -51,6 +51,7 @@ namespace LeechCraft
 			class CustomWebView;
 			class BrowserWidget;
 			class FavoritesChecker;
+			class WebPluginFactory;
 
 			class Core : public QObject
 			{
@@ -67,6 +68,7 @@ namespace LeechCraft
 				std::auto_ptr<PluginManager> PluginManager_;
 				boost::shared_ptr<StorageBackend> StorageBackend_;
 				QNetworkAccessManager *NetworkAccessManager_;
+				WebPluginFactory *WebPluginFactory_;
 
 				QMap<QString, QObject*> Providers_;
 
@@ -103,6 +105,8 @@ namespace LeechCraft
 				void Release ();
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;
+
+				WebPluginFactory* GetWebPluginFactory ();
 
 				void SetProvider (QObject*, const QString&);
 				QByteArray GetExpectedPluginClass () const;

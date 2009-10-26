@@ -38,6 +38,8 @@ namespace LeechCraft
 			{
 				namespace CleanWeb
 				{
+					class FlashOnClickPlugin;
+
 					struct FilterOption
 					{
 						Qt::CaseSensitivity Case_;
@@ -85,6 +87,8 @@ namespace LeechCraft
 					{
 						Q_OBJECT
 
+						FlashOnClickPlugin *FlashOnClickPlugin_;
+
 						QList<Filter> Filters_;
 						QObjectList Downloaders_;
 						QStringList HeaderLabels_;
@@ -120,6 +124,8 @@ namespace LeechCraft
 								QNetworkRequest*,
 								QIODevice**);
 						bool ShouldReject (const QNetworkRequest&) const;
+
+						FlashOnClickPlugin* GetFlashOnClick ();
 					private:
 						bool Matches (const QString&, const Filter&,
 								const QString&, const QString&) const;

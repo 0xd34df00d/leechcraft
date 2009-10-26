@@ -21,6 +21,7 @@
 #include <stdexcept>
 #include <QObject>
 #include <QWebPage>
+#include "iwebplugin.h"
 
 class QNetworkRequest;
 
@@ -58,6 +59,23 @@ namespace LeechCraft
 
 				virtual ~PluginBase ()
 				{
+				}
+
+				/** @brief Reload of the web plugin factory.
+				 *
+				 * A plugin can insert itself into the list of the
+				 * plugins here. It's not recommended to inspect this
+				 * list of the plugins as the order of plugins is
+				 * not determined.
+				 *
+				 * @param plugins The list with web plugins.
+				 * @return True if the reload and plugin processing
+				 * should be stopped, false otherwise.
+				 */
+				virtual bool HandleWebPluginFactoryReload (QList<IWebPlugin*>& plugins)
+				{
+					Q_UNUSED (plugins);
+					return false;
 				}
 
 				/** @brief Begin of web page construction.

@@ -90,6 +90,7 @@ namespace LeechCraft
 				}
 			
 			VE (Init, (IProxyObject*));
+			BE (HandleWebPluginFactoryReload, (QList<IWebPlugin*>&));
 			BE (HandleBeginWebPageConstruction, (QWebPage*));
 			BE (HandleEndWebPageConstruction, (QWebPage*));
 			BE (HandleContentsChanged, (QWebPage*));

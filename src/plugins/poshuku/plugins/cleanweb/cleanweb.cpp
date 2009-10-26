@@ -27,6 +27,7 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "subscriptionsmanager.h"
+#include "flashonclickplugin.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -109,6 +110,21 @@ bool CleanWeb::CouldHandle (const DownloadEntity& e) const
 void CleanWeb::Handle (DownloadEntity e)
 {
 	Core::Instance ().Handle (e);
+}
+
+QByteArray CleanWeb::GetPluginClass () const
+{
+	return QByteArray (typeid (PluginBase).name ());
+}
+
+void CleanWeb::Init (IProxyObject*)
+{
+}
+
+bool CleanWeb::HandleWebPluginFactoryReload (QList<IWebPlugin*>& plugins)
+{
+	plugins << Core::Instance ().GetFlashOnClick ();
+	return false;
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_poshuku_cleanweb, CleanWeb);

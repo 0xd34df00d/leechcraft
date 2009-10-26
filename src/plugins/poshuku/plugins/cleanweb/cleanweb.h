@@ -23,8 +23,10 @@
 #include <QMap>
 #include <QTranslator>
 #include <interfaces/iinfo.h>
+#include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
+#include <interfaces/pluginbase.h>
 
 namespace LeechCraft
 {
@@ -40,9 +42,11 @@ namespace LeechCraft
 								   , public IInfo
 								   , public IHaveSettings
 								   , public IEntityHandler
+								   , public IPlugin2
+								   , public PluginBase
 					{
 						Q_OBJECT
-						Q_INTERFACES (IInfo IHaveSettings IEntityHandler)
+						Q_INTERFACES (IInfo IHaveSettings IEntityHandler IPlugin2 LeechCraft::Plugins::Poshuku::PluginBase)
 
 						boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
 						std::auto_ptr<QTranslator> Translator_;
@@ -61,6 +65,11 @@ namespace LeechCraft
 
 						bool CouldHandle (const DownloadEntity&) const;
 						void Handle (DownloadEntity);
+
+						QByteArray GetPluginClass () const;
+
+						void Init (IProxyObject*);
+						bool HandleWebPluginFactoryReload (QList<IWebPlugin*>&);
 					signals:
 						void delegateEntity (const LeechCraft::DownloadEntity&,
 								int*, QObject**);

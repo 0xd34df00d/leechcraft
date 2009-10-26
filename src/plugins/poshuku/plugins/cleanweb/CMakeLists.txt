@@ -5,15 +5,20 @@ SET (CLEANWEB_SRCS
 	core.cpp
 	xmlsettingsmanager.cpp
 	subscriptionsmanager.cpp
+	flashplaceholder.cpp
+	flashonclickplugin.cpp
 	)
 SET (CLEANWEB_HEADERS
 	cleanweb.h
 	core.h
 	xmlsettingsmanager.h
 	subscriptionsmanager.h
+	flashplaceholder.h
+	flashonclickplugin.h
 	)
 SET (CLEANWEB_FORMS
 	subscriptionsmanager.ui
+	flashplaceholder.ui
 	)
 SET (CLEANWEB_RESOURCES
 	resources.qrc
