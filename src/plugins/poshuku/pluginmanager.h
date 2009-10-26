@@ -44,6 +44,8 @@ namespace LeechCraft
 				void AddPlugin (QObject*);
 
 				void Init (IProxyObject*);
+				bool HandleBeginWebPageConstruction (QWebPage*);
+				bool HandleEndWebPageConstruction (QWebPage*);
 				bool HandleContentsChanged (QWebPage*);
 				bool HandleDatabaseQuotaExceeded (QWebPage*, QWebFrame*, QString);
 				bool HandleDownloadRequested (QWebPage*, const QNetworkRequest&);

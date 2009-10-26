@@ -60,6 +60,38 @@ namespace LeechCraft
 				{
 				}
 
+				/** @brief Begin of web page construction.
+				 *
+				 * This function is called just in the beginning of
+				 * construction of the webpage.
+				 *
+				 * @param[in] webpage Pointer to the web page being
+				 * constructed.
+				 * @return True if the web page construction and plugins
+				 * processing should be stopped, false otherwise.
+				 */
+				virtual bool HandleBeginWebPageConstruction (QWebPage *webpage)
+				{
+					Q_UNUSED (webpage);
+					return false;
+				}
+
+				/** @brief End of web page construction.
+				 *
+				 * This function is called just in the end of
+				 * construction of the webpage.
+				 *
+				 * @param[in] webpage Pointer to the web page being
+				 * constructed.
+				 * @return True if the web page construction and plugins
+				 * processing should be stopped, false otherwise.
+				 */
+				virtual bool HandleEndWebPageConstruction (QWebPage *webpage)
+				{
+					Q_UNUSED (webpage);
+					return false;
+				}
+
 				/** See the official Qt docs for the
 				 * QWebPage::contentsChanged() signal.
 				 */

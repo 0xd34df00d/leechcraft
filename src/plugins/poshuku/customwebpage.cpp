@@ -46,6 +46,10 @@ namespace LeechCraft
 			, JSProxy_ (new JSProxy (this))
 			, ExternalProxy_ (new ExternalProxy (this))
 			{
+				if (Core::Instance ().GetPluginManager ()->
+						HandleBeginWebPageConstruction (this))
+					return;
+
 				setForwardUnsupportedContent (true);
 				setNetworkAccessManager (Core::Instance ().GetNetworkAccessManager ());
 
@@ -152,6 +156,10 @@ namespace LeechCraft
 						SIGNAL (windowCloseRequested ()),
 						this,
 						SLOT (handleWindowCloseRequested ()));
+
+				if (Core::Instance ().GetPluginManager ()->
+						HandleEndWebPageConstruction (this))
+					return;
 			}
 			
 			CustomWebPage::~CustomWebPage ()

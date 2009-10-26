@@ -90,6 +90,8 @@ namespace LeechCraft
 				}
 			
 			VE (Init, (IProxyObject*));
+			BE (HandleBeginWebPageConstruction, (QWebPage*));
+			BE (HandleEndWebPageConstruction, (QWebPage*));
 			BE (HandleContentsChanged, (QWebPage*));
 			BE (HandleDatabaseQuotaExceeded, (QWebPage*)(QWebFrame*)(QString));
 			BE (HandleDownloadRequested, (QWebPage*)(const QNetworkRequest&));
