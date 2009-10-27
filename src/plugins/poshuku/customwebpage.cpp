@@ -210,9 +210,6 @@ namespace LeechCraft
 				if (Core::Instance ().GetPluginManager ()->
 						HandleFrameCreated (this, frame))
 					return;
-			
-				frame->addToJavaScriptWindowObject ("JSProxy", JSProxy_.get ());
-				frame->addToJavaScriptWindowObject ("external", ExternalProxy_.get ());
 			}
 			
 			void CustomWebPage::handleJavaScriptWindowObjectCleared ()
@@ -221,6 +218,9 @@ namespace LeechCraft
 				if (Core::Instance ().GetPluginManager ()->
 						HandleJavaScriptWindowObjectCleared (this, frame))
 					return;
+			
+				frame->addToJavaScriptWindowObject ("JSProxy", JSProxy_.get ());
+				frame->addToJavaScriptWindowObject ("external", ExternalProxy_.get ());
 			}
 			
 			void CustomWebPage::handleGeometryChangeRequested (const QRect& rect)
