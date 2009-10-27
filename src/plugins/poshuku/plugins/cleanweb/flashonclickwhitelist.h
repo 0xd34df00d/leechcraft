@@ -16,11 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_CLEANWEB_FLASHPLACEHOLDER_H
-#define PLUGINS_POSHUKU_PLUGINS_CLEANWEB_FLASHPLACEHOLDER_H
+#ifndef PLUGINS_POSHUKU_PLUGINS_CLEANWEB_FLASHONCLICKWHITELIST_H
+#define PLUGINS_POSHUKU_PLUGINS_CLEANWEB_FLASHONCLICKWHITELIST_H
 #include <QWidget>
-#include <QUrl>
-#include "ui_flashplaceholder.h"
+#include <QStringList>
+#include "ui_flashonclickwhitelist.h"
+
+class QStandardItemModel;
 
 namespace LeechCraft
 {
@@ -32,18 +34,25 @@ namespace LeechCraft
 			{
 				namespace CleanWeb
 				{
-					class FlashPlaceHolder : public QWidget
+					class FlashOnClickWhitelist : public QWidget
 					{
 						Q_OBJECT
 
-						Ui::FlashPlaceHolder Ui_;
-						QUrl URL_;
+						Ui::FlashOnClickWhitelist Ui_;
+						QStandardItemModel *Model_;
 					public:
-						FlashPlaceHolder (const QUrl&, QWidget* = 0);
+						FlashOnClickWhitelist (QWidget* = 0);
+
+						QStringList GetWhitelist () const;
+						bool Matches (const QString&) const;
+						void Add (const QString&);
 					private slots:
-						void on_LoadFlash__released ();
-						void handleContextMenu ();
-						void handleAddWhitelist ();
+						void on_Add__released ();
+						void on_Modify__released ();
+						void on_Remove__released ();
+					private:
+						void AddImpl (QString = QString (), const QModelIndex& = QModelIndex ());
+						void SaveSettings ();
 					};
 				};
 			};

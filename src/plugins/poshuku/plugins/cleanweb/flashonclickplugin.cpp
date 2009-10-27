@@ -20,6 +20,8 @@
 #include <QDebug>
 #include "flashplaceholder.h"
 #include "xmlsettingsmanager.h"
+#include "core.h"
+#include "flashonclickwhitelist.h"
 
 namespace LeechCraft
 {
@@ -47,13 +49,17 @@ namespace LeechCraft
 						return result;
 					}
 
-					QWidget* FlashOnClickPlugin::Create (const QString& mime,
+					QWidget* FlashOnClickPlugin::Create (const QString&,
 							const QUrl& url,
-							const QStringList& arguments,
-							const QStringList& values)
+							const QStringList&,
+							const QStringList&)
 					{
 						if (!XmlSettingsManager::Instance ()->
 								property ("EnableFlashOnClick").toBool ())
+							return 0;
+
+						if (Core::Instance ().GetFlashOnClickWhitelist ()->
+								Matches (url.toString ()))
 							return 0;
 
 						return new FlashPlaceHolder (url);

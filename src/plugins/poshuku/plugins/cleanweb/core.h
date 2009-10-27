@@ -39,6 +39,7 @@ namespace LeechCraft
 				namespace CleanWeb
 				{
 					class FlashOnClickPlugin;
+					class FlashOnClickWhitelist;
 
 					struct FilterOption
 					{
@@ -88,6 +89,7 @@ namespace LeechCraft
 						Q_OBJECT
 
 						FlashOnClickPlugin *FlashOnClickPlugin_;
+						FlashOnClickWhitelist *FlashOnClickWhitelist_;
 
 						QList<Filter> Filters_;
 						QObjectList Downloaders_;
@@ -126,6 +128,7 @@ namespace LeechCraft
 						bool ShouldReject (const QNetworkRequest&) const;
 
 						FlashOnClickPlugin* GetFlashOnClick ();
+						FlashOnClickWhitelist* GetFlashOnClickWhitelist ();
 					private:
 						bool Matches (const QString&, const Filter&,
 								const QString&, const QString&) const;

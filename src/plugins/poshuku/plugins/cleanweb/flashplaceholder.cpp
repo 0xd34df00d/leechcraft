@@ -20,7 +20,11 @@
 #include <QWebView>
 #include <QWebFrame>
 #include <QFile>
+#include <QMenu>
+#include <QCursor>
 #include <QtDebug>
+#include "core.h"
+#include "flashonclickwhitelist.h"
 
 namespace LeechCraft
 {
@@ -40,6 +44,12 @@ namespace LeechCraft
 						Ui_.setupUi (this);
 						setToolTip (url.toString ());
 						Ui_.LoadFlash_->setToolTip (url.toString ());
+
+						setContextMenuPolicy (Qt::CustomContextMenu);
+						connect (this,
+								SIGNAL (customContextMenuRequested (const QPoint&)),
+								this,
+								SLOT (handleContextMenu ()));
 					}
 
 					void FlashPlaceHolder::on_LoadFlash__released ()
@@ -67,9 +77,50 @@ namespace LeechCraft
 						while (frames.size ())
 						{
 							QWebFrame *frame = frames.takeFirst ();
-							qDebug () << frame->evaluateJavaScript (js);
+							frame->evaluateJavaScript (js);
 							frames += frame->childFrames ();
 						}
+					}
+
+					void FlashPlaceHolder::handleContextMenu ()
+					{
+						QMenu menu;
+						menu.addAction (tr ("Load"),
+								this,
+								SLOT (on_LoadFlash__released ()));
+						menu.addSeparator ();
+
+						QAction *addUrl = menu.addAction (tr ("Add URL to whitelist..."),
+								this,
+								SLOT (handleAddWhitelist ()));
+						QString url = URL_.toString ();
+						addUrl->setData (URL_.toString ());
+						QAction *addHost = menu.addAction (tr ("Add host to whitelist..."),
+								this,
+								SLOT (handleAddWhitelist ()));
+						QString host = URL_.host ();
+						addHost->setData (URL_.host ());
+
+						addUrl->setEnabled (!Core::Instance ()
+								.GetFlashOnClickWhitelist ()->Matches (url));
+						addHost->setEnabled (!Core::Instance ()
+								.GetFlashOnClickWhitelist ()->Matches (host));
+						menu.exec (QCursor::pos ());
+					}
+
+					void FlashPlaceHolder::handleAddWhitelist ()
+					{
+						QAction *action = qobject_cast<QAction*> (sender ());
+						if (!action)
+						{
+							qWarning () << Q_FUNC_INFO
+								<< "sender is not a QAction*"
+								<< sender ();
+							return;
+						}
+
+						Core::Instance ().GetFlashOnClickWhitelist ()->
+							Add (action->data ().toString ());
 					}
 				};
 			};

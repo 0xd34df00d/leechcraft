@@ -28,6 +28,7 @@
 #include "xmlsettingsmanager.h"
 #include "subscriptionsmanager.h"
 #include "flashonclickplugin.h"
+#include "flashonclickwhitelist.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -57,6 +58,8 @@ void CleanWeb::Init (ICoreProxy_ptr proxy)
 			"poshukucleanwebsettings.xml");
 	SettingsDialog_->SetCustomWidget ("SubscriptionsManager",
 			new SubscriptionsManager ());
+	SettingsDialog_->SetCustomWidget ("FlashOnClickWhitelist",
+			Core::Instance ().GetFlashOnClickWhitelist ());
 }
 
 void CleanWeb::Release ()

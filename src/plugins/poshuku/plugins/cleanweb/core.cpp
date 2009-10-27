@@ -31,6 +31,7 @@
 #include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
 #include "flashonclickplugin.h"
+#include "flashonclickwhitelist.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Plugins::Poshuku::Plugins::CleanWeb;
@@ -205,6 +206,7 @@ bool LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::operator!= (const FilterOp
 
 LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::Core::Core ()
 : FlashOnClickPlugin_ (0)
+, FlashOnClickWhitelist_ (new FlashOnClickWhitelist ())
 {
 	HeaderLabels_ << tr ("Name")
 		<< tr ("Last updated")
@@ -242,6 +244,7 @@ Core& Core::Instance ()
 
 void Core::Release ()
 {
+	delete FlashOnClickWhitelist_;
 	delete FlashOnClickPlugin_;
 }
 
@@ -362,6 +365,11 @@ FlashOnClickPlugin* Core::GetFlashOnClick ()
 	if (!FlashOnClickPlugin_)
 		FlashOnClickPlugin_ = new FlashOnClickPlugin (this);
 	return FlashOnClickPlugin_;
+}
+
+FlashOnClickWhitelist* Core::GetFlashOnClickWhitelist ()
+{
+	return FlashOnClickWhitelist_;
 }
 
 /** We test each filter until we know that we should reject it or until
