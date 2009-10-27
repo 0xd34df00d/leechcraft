@@ -44,7 +44,6 @@ namespace LeechCraft
 						mime.fileExtensions << "swf";
 						mime.name = "application/x-shockwave-flash";
 						result.mimeTypes << mime;
-						qDebug () << mime.fileExtensions << mime.name;
 						return result;
 					}
 
@@ -53,9 +52,8 @@ namespace LeechCraft
 							const QStringList& arguments,
 							const QStringList& values)
 					{
-						qDebug () << Q_FUNC_INFO;
 						if (!XmlSettingsManager::Instance ()->
-								property ("FlashOnClickPlugin").toBool ())
+								property ("EnableFlashOnClick").toBool ())
 							return 0;
 
 						return new FlashPlaceHolder;

@@ -40,10 +40,10 @@ namespace LeechCraft
 					const QStringList& args, const QStringList& params) const
 			{
 				IWebPlugin *plugin = MIME2Plugin_ [mime];
-				qDebug () << Q_FUNC_INFO << mime << plugin;
+				QObject *result = 0;
 				if (plugin)
-					return plugin->Create (mime, url, args, params);
-				return 0;
+					result = plugin->Create (mime, url, args, params);
+				return result;
 			}
 
 			QList<QWebPluginFactory::Plugin> WebPluginFactory::plugins () const
