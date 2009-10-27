@@ -17,6 +17,10 @@
  **********************************************************************/
 
 #include "flashplaceholder.h"
+#include <QWebView>
+#include <QWebFrame>
+#include <QFile>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -28,10 +32,44 @@ namespace LeechCraft
 			{
 				namespace CleanWeb
 				{
-					FlashPlaceHolder::FlashPlaceHolder (QWidget *parent)
+					FlashPlaceHolder::FlashPlaceHolder (const QUrl& url,
+							QWidget *parent)
 					: QWidget (parent)
+					, URL_ (url)
 					{
 						Ui_.setupUi (this);
+						setToolTip (url.toString ());
+						Ui_.LoadFlash_->setToolTip (url.toString ());
+					}
+
+					void FlashPlaceHolder::on_LoadFlash__released ()
+					{
+						QWidget *parent = parentWidget ();
+						QWebView *view = 0;
+						while (parent)
+						{
+							if ((view = qobject_cast<QWebView*> (parent)))
+								break;
+							parent = parent->parentWidget ();
+						}
+						if (!view)
+							return;
+
+						QString filename = ":/plugins/poshuku/plugins/cleanweb/resources/scripts/swap.js";
+						QFile file (filename);
+						file.open (QIODevice::ReadOnly);
+						QString js = QString (file.readAll ()).arg (URL_.toString ());
+
+						hide ();
+
+						QList<QWebFrame*> frames;
+						frames << view->page ()->mainFrame ();
+						while (frames.size ())
+						{
+							QWebFrame *frame = frames.takeFirst ();
+							qDebug () << frame->evaluateJavaScript (js);
+							frames += frame->childFrames ();
+						}
 					}
 				};
 			};

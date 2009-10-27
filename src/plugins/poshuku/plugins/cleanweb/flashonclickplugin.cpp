@@ -56,7 +56,7 @@ namespace LeechCraft
 								property ("EnableFlashOnClick").toBool ())
 							return 0;
 
-						return new FlashPlaceHolder;
+						return new FlashPlaceHolder (url);
 					}
 				};
 			};

@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/plugins/poshuku/plugins/cleanweb" >
   	<file>resources/images/poshuku_cleanweb.svg</file>
+  	<file>resources/scripts/swap.js</file>
   </qresource>
 </RCC>

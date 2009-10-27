@@ -19,6 +19,7 @@
 #ifndef PLUGINS_POSHUKU_PLUGINS_CLEANWEB_FLASHPLACEHOLDER_H
 #define PLUGINS_POSHUKU_PLUGINS_CLEANWEB_FLASHPLACEHOLDER_H
 #include <QWidget>
+#include <QUrl>
 #include "ui_flashplaceholder.h"
 
 namespace LeechCraft
@@ -36,8 +37,11 @@ namespace LeechCraft
 						Q_OBJECT
 
 						Ui::FlashPlaceHolder Ui_;
+						QUrl URL_;
 					public:
-						FlashPlaceHolder (QWidget* = 0);
+						FlashPlaceHolder (const QUrl&, QWidget* = 0);
+					private slots:
+						void on_LoadFlash__released ();
 					};
 				};
 			};
