@@ -100,22 +100,22 @@
         <translation>Соединение с IRC-сервером...</translation>
     </message>
     <message>
-        <location filename="irc.cpp" line="562"/>
+        <location filename="irc.cpp" line="563"/>
         <source>Disconnected from server.</source>
         <translation>Отключен от сервера.</translation>
     </message>
     <message>
-        <location filename="irc.cpp" line="600"/>
+        <location filename="irc.cpp" line="601"/>
         <source>Encoding has been set to %1</source>
         <translation>Кодировка установлена в %1</translation>
     </message>
     <message>
-        <location filename="irc.cpp" line="604"/>
+        <location filename="irc.cpp" line="605"/>
         <source>No such encoding!</source>
         <translation>Нет такой кодировки!</translation>
     </message>
     <message>
-        <location filename="irc.cpp" line="623"/>
+        <location filename="irc.cpp" line="624"/>
         <source>Invalid IRC URI</source>
         <translation>Неправильный IRC URI</translation>
     </message>

@@ -34,34 +34,32 @@
         <translation>%1 не был делегирован</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="291"/>
+        <location filename="core.cpp" line="303"/>
         <source>Could not open file %1.</source>
         <translation>Невозможно открыть файл %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="301"/>
+        <location filename="core.cpp" line="313"/>
         <source>Could not remove temporary file %1.</source>
         <translation>Невозможно удалить временный файл %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="309"/>
+        <location filename="core.cpp" line="321"/>
         <source>A job was delegated, but it failed.</source>
         <translation>Задача была делегирована неудачно.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="322"/>
+        <location filename="core.cpp" line="373"/>
         <source>XML parse error %1 at %2:%3.</source>
         <translation>Ошибка парсинга XML %1 в %2:%3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="332"/>
         <source>Not and OpenSearch description.</source>
-        <translation>Не OpenSearch-описание.</translation>
+        <translation type="obsolete">Не OpenSearch-описание.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="345"/>
         <source>Malformed OpenSearch description.</source>
-        <translation>Плохо сформированное OpenSearch-описание.</translation>
+        <translation type="obsolete">Плохо сформированное OpenSearch-описание.</translation>
     </message>
     <message>
         <source>Enter categories</source>
@@ -185,13 +183,13 @@
 <context>
     <name>LeechCraft::Plugins::SeekThru::SeekThru</name>
     <message>
-        <location filename="seekthru.cpp" line="79"/>
+        <location filename="seekthru.cpp" line="83"/>
         <source>Search via OpenSearch-aware search providers.</source>
         <translation>Поиск при помощи OpenSearch-поисковиков.</translation>
     </message>
     <message>
-        <location filename="seekthru.cpp" line="141"/>
-        <location filename="seekthru.cpp" line="148"/>
+        <location filename="seekthru.cpp" line="145"/>
+        <location filename="seekthru.cpp" line="152"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>

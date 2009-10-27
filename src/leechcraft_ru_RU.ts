@@ -417,58 +417,58 @@ p, li { white-space: pre-wrap; }
     <name>BackendSelector</name>
     <message>
         <source>Form</source>
-        <translation>Форма</translation>
+        <translation type="obsolete">Форма</translation>
     </message>
     <message>
         <source>SQLite</source>
-        <translation>SQLite</translation>
+        <translation type="obsolete">SQLite</translation>
     </message>
     <message>
         <source>PostgreSQL</source>
-        <translation>PostgreSQL</translation>
+        <translation type="obsolete">PostgreSQL</translation>
     </message>
     <message>
         <source>Journal mode:</source>
-        <translation>Режим журналирования:</translation>
+        <translation type="obsolete">Режим журналирования:</translation>
     </message>
     <message>
         <source>Temp store:</source>
-        <translation>Временное хранилище:</translation>
+        <translation type="obsolete">Временное хранилище:</translation>
     </message>
     <message>
         <source>Synchronous:</source>
-        <translation>Синхронно:</translation>
+        <translation type="obsolete">Синхронно:</translation>
     </message>
     <message>
         <source>VACUUM on exit</source>
-        <translation>VACUUM при выходе</translation>
+        <translation type="obsolete">VACUUM при выходе</translation>
     </message>
     <message>
         <source>Hostname:</source>
-        <translation>Имя хоста:</translation>
+        <translation type="obsolete">Имя хоста:</translation>
     </message>
     <message>
         <source>Port:</source>
-        <translation>Порт:</translation>
+        <translation type="obsolete">Порт:</translation>
     </message>
     <message>
         <source>Username:</source>
-        <translation>Логин:</translation>
+        <translation type="obsolete">Логин:</translation>
     </message>
     <message>
         <source>Password:</source>
-        <translation>Пароль:</translation>
+        <translation type="obsolete">Пароль:</translation>
     </message>
     <message>
         <source>Database name:</source>
-        <translation>Имя БД:</translation>
+        <translation type="obsolete">Имя БД:</translation>
     </message>
 </context>
 <context>
     <name>CategorySelector</name>
     <message>
         <source>Tags selector</source>
-        <translation>Выбор тегов</translation>
+        <translation type="obsolete">Выбор тегов</translation>
     </message>
 </context>
 <context>
@@ -492,6 +492,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Location:</source>
         <translation>Расположение:</translation>
+    </message>
+</context>
+<context>
+    <name>Core</name>
+    <message>
+        <source>Select save location</source>
+        <translation>Выберите место сохранения</translation>
     </message>
 </context>
 <context>
@@ -714,11 +721,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Too long to show</source>
-        <translation>Строка слишком длинна для отображения</translation>
+        <translation type="obsolete">Строка слишком длинна для отображения</translation>
     </message>
     <message>
         <source>Select save location</source>
-        <translation>Выберите место сохранения</translation>
+        <translation type="obsolete">Выберите место сохранения</translation>
     </message>
     <message>
         <source>Could not handle download entity %1.</source>
@@ -734,7 +741,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Binary entity</source>
-        <translation>Двоичный объект</translation>
+        <translation type="obsolete">Двоичный объект</translation>
     </message>
     <message>
         <source>LeechCraft</source>
@@ -750,11 +757,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
-        <translation>&lt;br /&gt;&lt;br /&gt;типа &lt;code&gt;%1&lt;/code&gt;</translation>
+        <translation type="obsolete">&lt;br /&gt;&lt;br /&gt;типа &lt;code&gt;%1&lt;/code&gt;</translation>
     </message>
     <message>
         <source>&lt;br /&gt;from %1</source>
-        <translation>&lt;br /&gt;с %1</translation>
+        <translation type="obsolete">&lt;br /&gt;с %1</translation>
     </message>
 </context>
 <context>
@@ -896,7 +903,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Open/close braces mismatch</source>
-        <translation>Несоответствие открывающих/закрывающих скобок</translation>
+        <translation type="obsolete">Несоответствие открывающих/закрывающих скобок</translation>
+    </message>
+    <message>
+        <source>Open/close braces mismatch: %1</source>
+        <translation>Несовпадение открывающих и закрывающих скобок: %1</translation>
     </message>
 </context>
 <context>
@@ -986,6 +997,13 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>LeechCraft::TabContents</name>
+    <message>
+        <source>Remove this category</source>
+        <translation>Удалить эту категорию</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::TabContentsManager</name>
     <message>
         <source>Summary</source>
@@ -1036,31 +1054,31 @@ p, li { white-space: pre-wrap; }
     <name>QObject</name>
     <message>
         <source>Could not cd into %1</source>
-        <translation>Невозможно перейти в %1</translation>
+        <translation type="obsolete">Невозможно перейти в %1</translation>
     </message>
     <message>
         <source>Could not create %1</source>
-        <translation>Невозможно создать %1</translation>
+        <translation type="obsolete">Невозможно создать %1</translation>
     </message>
     <message>
         <source> b</source>
-        <translation>байт</translation>
+        <translation type="obsolete">байт</translation>
     </message>
     <message>
         <source> KiB</source>
-        <translation>КиБ</translation>
+        <translation type="obsolete">КиБ</translation>
     </message>
     <message>
         <source> MiB</source>
-        <translation>МиБ</translation>
+        <translation type="obsolete">МиБ</translation>
     </message>
     <message>
         <source> GiB</source>
-        <translation>ГиБ</translation>
+        <translation type="obsolete">ГиБ</translation>
     </message>
     <message numerus="yes">
         <source>%n day(s), </source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>%n день</numerusform>
             <numerusform>%n дня</numerusform>
             <numerusform>%n дней</numerusform>
@@ -1125,6 +1143,26 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Form</source>
         <translation>Форма</translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation>Добавить</translation>
+    </message>
+    <message>
+        <source>String</source>
+        <translation>Строка</translation>
+    </message>
+    <message>
+        <source>Wildcard</source>
+        <translation>Маска</translation>
+    </message>
+    <message>
+        <source>Regexp</source>
+        <translation>Регексп</translation>
+    </message>
+    <message>
+        <source>Tags</source>
+        <translation>Теги</translation>
     </message>
 </context>
 <context>

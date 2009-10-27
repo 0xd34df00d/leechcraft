@@ -107,6 +107,19 @@
     </message>
 </context>
 <context>
+    <name>FavoritesChecker</name>
+    <message>
+        <location filename="favoriteschecker.cpp" line="103"/>
+        <source>%1 favorites are %2:&lt;br /&gt;&lt;ul&gt;%3&lt;/ul&gt;</source>
+        <translation>%1 закладок %2:&lt;br /&gt;&lt;ul&gt;%3&lt;/ul&gt;</translation>
+    </message>
+    <message>
+        <location filename="favoriteschecker.cpp" line="109"/>
+        <source>%1 favorites are %2.&lt;br /&gt;</source>
+        <translation>%1 закладок %2.&lt;br /&gt;</translation>
+    </message>
+</context>
+<context>
     <name>FindDialog</name>
     <message>
         <location filename="finddialog.ui" line="14"/>
@@ -151,7 +164,7 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::BrowserWidget</name>
     <message>
-        <location filename="browserwidget.cpp" line="173"/>
+        <location filename="browserwidget.cpp" line="177"/>
         <source>More...</source>
         <translation>Больше...</translation>
     </message>
@@ -160,27 +173,27 @@
         <translation type="obsolete">Добавить в избранное...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="117"/>
+        <location filename="browserwidget.cpp" line="121"/>
         <source>Find...</source>
         <translation>Найти...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="122"/>
+        <location filename="browserwidget.cpp" line="126"/>
         <source>Print...</source>
         <translation>Печать...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="127"/>
+        <location filename="browserwidget.cpp" line="131"/>
         <source>Print with preview...</source>
         <translation>Печать с предпросмотром...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="132"/>
+        <location filename="browserwidget.cpp" line="136"/>
         <source>Take page&apos;s screenshot...</source>
         <translation>Сделать скриншот страницы...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="137"/>
+        <location filename="browserwidget.cpp" line="141"/>
         <source>View sources...</source>
         <translation>Посмотреть исходники...</translation>
     </message>
@@ -209,77 +222,82 @@
         <translation>Добавить в закладки...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="142"/>
+        <location filename="browserwidget.cpp" line="117"/>
+        <source>Check favorites...</source>
+        <translation>Проверить закладки...</translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="146"/>
         <source>Close this tab</source>
         <translation>Закрыть эту вкладку</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="146"/>
+        <location filename="browserwidget.cpp" line="150"/>
         <source>Zoom in</source>
         <translation>Увеличить</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="150"/>
+        <location filename="browserwidget.cpp" line="154"/>
         <source>Zoom out</source>
         <translation>Уменьшить</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="154"/>
+        <location filename="browserwidget.cpp" line="158"/>
         <source>Reset zoom</source>
         <translation>Изначальный масштаб</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="158"/>
+        <location filename="browserwidget.cpp" line="162"/>
         <source>Import XBEL...</source>
         <translation>Импортировать XBEL...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="162"/>
+        <location filename="browserwidget.cpp" line="166"/>
         <source>Export XBEL...</source>
         <translation>Экспортировать в XBEL...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="198"/>
+        <location filename="browserwidget.cpp" line="203"/>
         <source>Recently closed</source>
         <translation>Недавно закрытые</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="205"/>
+        <location filename="browserwidget.cpp" line="210"/>
         <source>External links</source>
         <translation>Внешние ссылки</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="531"/>
+        <location filename="browserwidget.cpp" line="540"/>
         <source>Ctrl+D</source>
         <translation>Ctrl+D</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="532"/>
+        <location filename="browserwidget.cpp" line="541"/>
         <source>Ctrl+F</source>
         <translation>Ctrl+F</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="533"/>
+        <location filename="browserwidget.cpp" line="542"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="534"/>
+        <location filename="browserwidget.cpp" line="543"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="987"/>
+        <location filename="browserwidget.cpp" line="1001"/>
         <source>%p% (%1 of %2 known)</source>
         <translation>%p% (%1 из %2 известных)</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1006"/>
+        <location filename="browserwidget.cpp" line="1020"/>
         <source>Page load finished: %1</source>
         <translation>Загрузка страницы завершена: %1</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1009"/>
+        <location filename="browserwidget.cpp" line="1023"/>
         <source>Page load failed: %1</source>
         <translation>Ошибка загрузка страницы: %1</translation>
     </message>
@@ -288,63 +306,63 @@
         <translation type="obsolete">Ctrl+T</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="537"/>
+        <location filename="browserwidget.cpp" line="546"/>
         <source>Ctrl+W</source>
         <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="540"/>
+        <location filename="browserwidget.cpp" line="549"/>
         <source>Ctrl+0</source>
         <translation>Ctrl+0</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="543"/>
+        <location filename="browserwidget.cpp" line="552"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="544"/>
+        <location filename="browserwidget.cpp" line="553"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="545"/>
+        <location filename="browserwidget.cpp" line="554"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="550"/>
+        <location filename="browserwidget.cpp" line="559"/>
         <source>Ctrl+Shift+T</source>
         <translation>Ctrl+Shift+T</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="579"/>
+        <location filename="browserwidget.cpp" line="588"/>
         <source>Print web page</source>
         <translation>Печать веб-страницы</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="656"/>
+        <location filename="browserwidget.cpp" line="665"/>
         <source>Reloading once in %1</source>
         <translation>Перезагружается раз в %1</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="724"/>
+        <location filename="browserwidget.cpp" line="738"/>
         <source>Save screenshot</source>
         <translation>Сохранить скриншот</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="738"/>
-        <location filename="browserwidget.cpp" line="747"/>
+        <location filename="browserwidget.cpp" line="752"/>
+        <location filename="browserwidget.cpp" line="761"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="739"/>
+        <location filename="browserwidget.cpp" line="753"/>
         <source>Could not open %1 for write</source>
         <translation>Невозможно открыть %1 на запись</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="748"/>
+        <location filename="browserwidget.cpp" line="762"/>
         <source>Could not write screenshot to %1</source>
         <translation>Невозможно записать скриншот в %1</translation>
     </message>
@@ -360,45 +378,45 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Core</name>
     <message>
-        <location filename="core.cpp" line="73"/>
+        <location filename="core.cpp" line="79"/>
         <source>Plugins</source>
         <translation>Плагины</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="118"/>
+        <location filename="core.cpp" line="124"/>
         <source>Poshuku: general storage initialization error.</source>
         <translation>Poshuku: общая ошибка инициализации подсистемы хранения.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="506"/>
+        <location filename="core.cpp" line="705"/>
         <source>Select XBEL file</source>
         <translation>Выбор файла XBEL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="508"/>
-        <location filename="core.cpp" line="548"/>
+        <location filename="core.cpp" line="707"/>
+        <location filename="core.cpp" line="747"/>
         <source>XBEL files (*.xbel);;All files (*.*)</source>
         <translation>Файлы XBEL (*.xbel);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="521"/>
-        <location filename="core.cpp" line="536"/>
-        <location filename="core.cpp" line="564"/>
+        <location filename="core.cpp" line="720"/>
+        <location filename="core.cpp" line="735"/>
+        <location filename="core.cpp" line="763"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="522"/>
+        <location filename="core.cpp" line="721"/>
         <source>Could not open file %1 for reading.</source>
         <translation>Не могу открыть файл %1 для чтения.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="546"/>
+        <location filename="core.cpp" line="745"/>
         <source>Save XBEL file</source>
         <translation>Сохранение файла XBEL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="565"/>
+        <location filename="core.cpp" line="764"/>
         <source>Could not open file %1 for writing.</source>
         <translation>Не могу открыть файл %1 на запись.</translation>
     </message>
@@ -406,7 +424,7 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::CustomWebPage</name>
     <message>
-        <location filename="customwebpage.cpp" line="399"/>
+        <location filename="customwebpage.cpp" line="406"/>
         <source>Error loading %1</source>
         <translation>Ошибка загрузки %1</translation>
     </message>
@@ -476,6 +494,56 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::Plugins::Poshuku::FavoritesChecker</name>
+    <message>
+        <location filename="favoriteschecker.cpp" line="36"/>
+        <source>Checking Favorites...</source>
+        <translation>Проверка закладок...</translation>
+    </message>
+    <message>
+        <location filename="favoriteschecker.cpp" line="37"/>
+        <source>Cancel</source>
+        <translation>Отмена</translation>
+    </message>
+    <message>
+        <location filename="favoriteschecker.cpp" line="50"/>
+        <location filename="favoriteschecker.cpp" line="210"/>
+        <source>LeechCraft</source>
+        <translation>LeechCraft</translation>
+    </message>
+    <message>
+        <location filename="favoriteschecker.cpp" line="51"/>
+        <source>Already checking links, please wait...</source>
+        <translation>Ссылки уже проверяются, пожалуйста, подождите...</translation>
+    </message>
+    <message>
+        <location filename="favoriteschecker.cpp" line="170"/>
+        <location filename="favoriteschecker.cpp" line="176"/>
+        <source>HTTP %1</source>
+        <translation>HTTP %1</translation>
+    </message>
+    <message>
+        <location filename="favoriteschecker.cpp" line="179"/>
+        <source>&lt;br /&gt;Length: %1</source>
+        <translation>&lt;br /&gt;Размер: %1</translation>
+    </message>
+    <message>
+        <location filename="favoriteschecker.cpp" line="182"/>
+        <source>&lt;br /&gt;Last-modified: %1</source>
+        <translation>&lt;br /&gt;Последнее изменение: %1</translation>
+    </message>
+    <message>
+        <location filename="favoriteschecker.cpp" line="188"/>
+        <source>&lt;br /&gt;Redirects to %1</source>
+        <translation>&lt;br /&gt;Перенаправляется на %1</translation>
+    </message>
+    <message>
+        <location filename="favoriteschecker.cpp" line="198"/>
+        <source>%1 favorites total.&lt;br /&gt;%2 favorites are accessible.&lt;br /&gt;%3%4 are not correctly returned by the remote server.&lt;br /&gt;%5</source>
+        <translation>%1 закладок всего.&lt;br /&gt;%2 закладок доступно.&lt;br /&gt;%3%4 не отдаются правильно удаленным сервером.&lt;br /&gt;%5</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Plugins::Poshuku::FavoritesModel</name>
     <message>
         <location filename="favoritesmodel.cpp" line="42"/>
@@ -493,7 +561,7 @@
         <translation>Метки</translation>
     </message>
     <message>
-        <location filename="favoritesmodel.cpp" line="176"/>
+        <location filename="favoritesmodel.cpp" line="184"/>
         <source>Failed to add&lt;br /&gt;%1&lt;br /&gt;to Favorites, seems like such title is already used.</source>
         <translation>Не удалось добавить&lt;br /&gt;%1&lt;br /&gt;в Избранное, название может уже присутствовать.</translation>
     </message>
