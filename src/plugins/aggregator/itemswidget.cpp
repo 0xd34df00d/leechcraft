@@ -118,7 +118,7 @@ namespace LeechCraft
 			
 				Impl_->ItemCategorySelector_.reset (new CategorySelector ());
 				Impl_->ItemCategorySelector_->setWindowFlags (Qt::Widget);
-				Impl_->Ui_.CategoriesLayout_->addWidget (Impl_->ItemCategorySelector_.get ());
+				Impl_->Ui_.CategoriesSplitter_->addWidget (Impl_->ItemCategorySelector_.get ());
 				Impl_->ItemCategorySelector_->hide ();
 				Impl_->ItemCategorySelector_->setMinimumHeight (0);
 				connect (Impl_->ItemCategorySelector_.get (),
@@ -345,6 +345,8 @@ namespace LeechCraft
 					if (XmlSettingsManager::Instance ()->
 							property ("ShowCategorySelector").toBool ())
 					Impl_->ItemCategorySelector_->show ();
+					Impl_->Ui_.CategoriesSplitter_->setStretchFactor (0, 9);
+					Impl_->Ui_.CategoriesSplitter_->setStretchFactor (0, 1);
 				}
 				else
 				{
