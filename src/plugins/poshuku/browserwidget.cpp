@@ -402,6 +402,12 @@ namespace LeechCraft
 			void BrowserWidget::Deown ()
 			{
 				Own_ = false;
+				CloseTab_->setEnabled (false);
+				disconnect (CloseTab_,
+						0,
+						this,
+						0);
+				ToolBar_->removeAction (CloseTab_);
 			}
 
 			void BrowserWidget::SetMainMode ()
