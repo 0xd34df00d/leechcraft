@@ -49,12 +49,14 @@ namespace LeechCraft
 				QString GetHex (QPalette::ColorRole,
 						QPalette::ColorGroup = QApplication::palette ().currentColorGroup ());
 				QString ToHtml (const Item_ptr&);
+				void RestoreSplitter ();
 			private slots:
 				void channelChanged (const QModelIndex&);
 				void on_ActionMarkItemAsUnread__triggered ();
 				void on_CaseSensitiveSearch__stateChanged (int);
 				void on_ActionAddToItemBucket__triggered ();
 				void on_ActionItemCommentsSubscribe__triggered ();
+				void on_CategoriesSplitter__splitterMoved ();
 				void currentItemChanged (const QItemSelection&);
 				void makeCurrentItemVisible ();
 				void updateItemsFilter ();

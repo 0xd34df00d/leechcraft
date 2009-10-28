@@ -141,6 +141,8 @@ namespace LeechCraft
 			
 			ItemsWidget::~ItemsWidget ()
 			{
+				on_CategoriesSplitter__splitterMoved ();
+
 				disconnect (Impl_->ItemsFilterModel_.get (),
 						0,
 						this,
@@ -326,6 +328,23 @@ namespace LeechCraft
 			
 				return result;
 			}
+
+			void ItemsWidget::RestoreSplitter ()
+			{
+				QList<int> sizes;
+				sizes << XmlSettingsManager::Instance ()->
+					Property ("CategoriesSplitter1", 0).toInt ();
+				sizes << XmlSettingsManager::Instance ()->
+					Property ("CategoriesSplitter2", 0).toInt ();
+				if (!sizes.at (0) &&
+						!sizes.at (1))
+				{
+					Impl_->Ui_.CategoriesSplitter_->setStretchFactor (0, 8);
+					Impl_->Ui_.CategoriesSplitter_->setStretchFactor (1, 1);
+				}
+				else
+					Impl_->Ui_.CategoriesSplitter_->setSizes (sizes);
+			}
 			
 			void ItemsWidget::channelChanged (const QModelIndex& mapped)
 			{
@@ -345,8 +364,7 @@ namespace LeechCraft
 					if (XmlSettingsManager::Instance ()->
 							property ("ShowCategorySelector").toBool ())
 					Impl_->ItemCategorySelector_->show ();
-					Impl_->Ui_.CategoriesSplitter_->setStretchFactor (0, 9);
-					Impl_->Ui_.CategoriesSplitter_->setStretchFactor (0, 1);
+					RestoreSplitter ();
 				}
 				else
 				{
@@ -382,6 +400,15 @@ namespace LeechCraft
 				QModelIndex selected = Impl_->Ui_.Items_->selectionModel ()->currentIndex ();
 				Core::Instance ().SubscribeToComments (Impl_->ItemsFilterModel_->
 						mapToSource (selected));
+			}
+
+			void ItemsWidget::on_CategoriesSplitter__splitterMoved ()
+			{
+				QList<int> sizes = Impl_->Ui_.CategoriesSplitter_->sizes ();
+				XmlSettingsManager::Instance ()->
+					setProperty ("CategoriesSplitter1", sizes.at (0));
+				XmlSettingsManager::Instance ()->
+					setProperty ("CategoriesSplitter2", sizes.at (1));
 			}
 			
 			void ItemsWidget::currentItemChanged (const QItemSelection& selection)
