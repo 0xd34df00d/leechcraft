@@ -58,7 +58,7 @@ namespace LeechCraft
 				while (!channel.isNull ())
 				{
 					Channel_ptr chan (new Channel);
-					chan->Title_ = channel.firstChildElement ("title").text ();
+					chan->Title_ = channel.firstChildElement ("title").text ().trimmed ();
 					chan->Description_ = channel.firstChildElement ("description").text ();
 					chan->Link_ = GetLink (channel);
 					chan->LastBuild_ = RFC822TimeToQDateTime (channel.firstChildElement ("lastBuildDate").text ());

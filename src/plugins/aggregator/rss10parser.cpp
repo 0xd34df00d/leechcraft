@@ -55,7 +55,7 @@ namespace LeechCraft
 				while (!channelDescr.isNull ())
 				{
 					Channel_ptr channel (new Channel);
-					channel->Title_ = channelDescr.firstChildElement ("title").text ();
+					channel->Title_ = channelDescr.firstChildElement ("title").text ().trimmed ();
 					channel->Link_ = channelDescr.firstChildElement ("link").text ();
 					channel->Description_ =
 						channelDescr.firstChildElement ("description").text ();

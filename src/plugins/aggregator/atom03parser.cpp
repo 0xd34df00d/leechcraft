@@ -57,7 +57,7 @@ namespace LeechCraft
 				channels.push_back (chan);
 			
 				QDomElement root = doc.documentElement ();
-				chan->Title_ = root.firstChildElement ("title").text ();
+				chan->Title_ = root.firstChildElement ("title").text ().trimmed ();
 				if (chan->Title_.isEmpty ())
 					chan->Title_ = QObject::tr ("(No title)");
 				chan->LastBuild_ = FromRFC3339 (root.firstChildElement ("updated").text ());
