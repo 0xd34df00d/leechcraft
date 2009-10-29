@@ -2,39 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0">
 <context>
-    <name>AddTask</name>
-    <message>
-        <location filename="addtask.ui" line="13"/>
-        <source>Add task</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="addtask.ui" line="21"/>
-        <source>URL:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="addtask.ui" line="31"/>
-        <source>Local path:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="addtask.ui" line="43"/>
-        <source>Browse...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="addtask.ui" line="55"/>
-        <source>Filename:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="addtask.ui" line="65"/>
-        <source>Comment:</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::Plugins::CSTP::AddTask</name>
     <message>
         <location filename="addtask.cpp" line="107"/>
@@ -118,57 +85,57 @@
 <context>
     <name>LeechCraft::Plugins::CSTP::Core</name>
     <message>
-        <location filename="core.cpp" line="54"/>
+        <location filename="core.cpp" line="51"/>
         <source>URL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="55"/>
+        <location filename="core.cpp" line="52"/>
         <source>State</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="56"/>
+        <location filename="core.cpp" line="53"/>
         <source>Progress</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="57"/>
+        <location filename="core.cpp" line="54"/>
         <source>Speed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="58"/>
+        <location filename="core.cpp" line="55"/>
         <source>ETA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="59"/>
+        <location filename="core.cpp" line="56"/>
         <source>DTA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="217"/>
+        <location filename="core.cpp" line="228"/>
         <source>Could not truncate file </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="340"/>
+        <location filename="core.cpp" line="351"/>
         <source>%1% (%2 of %3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="345"/>
+        <location filename="core.cpp" line="356"/>
         <source>%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="353"/>
+        <location filename="core.cpp" line="364"/>
         <source>/s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="452"/>
+        <location filename="core.cpp" line="463"/>
         <source>Could not open file </source>
         <translation type="unfinished"></translation>
     </message>

@@ -4,92 +4,92 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="32"/>
+        <location filename="core.cpp" line="33"/>
         <source>Show LMP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="236"/>
+        <location filename="core.cpp" line="255"/>
         <source>Initializing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="239"/>
+        <location filename="core.cpp" line="258"/>
         <source>Stopped</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="242"/>
+        <location filename="core.cpp" line="261"/>
         <source>Playing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="245"/>
+        <location filename="core.cpp" line="264"/>
         <source>Buffering</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="248"/>
+        <location filename="core.cpp" line="267"/>
         <source>Paused</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="251"/>
+        <location filename="core.cpp" line="270"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="256"/>
+        <location filename="core.cpp" line="275"/>
         <source> (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="257"/>
+        <location filename="core.cpp" line="276"/>
         <source> [</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="262"/>
+        <location filename="core.cpp" line="281"/>
         <source>/</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="266"/>
+        <location filename="core.cpp" line="285"/>
         <source>]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="268"/>
+        <location filename="core.cpp" line="287"/>
         <source> from </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="276"/>
+        <location filename="core.cpp" line="295"/>
         <source>nowhere</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="289"/>
+        <location filename="core.cpp" line="308"/>
         <source> (CD)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="292"/>
+        <location filename="core.cpp" line="311"/>
         <source> (DVD)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="295"/>
+        <location filename="core.cpp" line="314"/>
         <source> (VCD)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="298"/>
+        <location filename="core.cpp" line="317"/>
         <source> (Unknown disc type)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="303"/>
+        <location filename="core.cpp" line="322"/>
         <source>stream</source>
         <translation type="unfinished"></translation>
     </message>

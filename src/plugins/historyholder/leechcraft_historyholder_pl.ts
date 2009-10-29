@@ -4,7 +4,7 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="177"/>
+        <location filename="core.cpp" line="180"/>
         <source>Binary data</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12,22 +12,22 @@
 <context>
     <name>LeechCraft::Plugins::HistoryHolder::Core</name>
     <message>
-        <location filename="core.cpp" line="66"/>
+        <location filename="core.cpp" line="67"/>
         <source>Entity/location</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="67"/>
+        <location filename="core.cpp" line="68"/>
         <source>Date</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="68"/>
+        <location filename="core.cpp" line="69"/>
         <source>Tags</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="83"/>
+        <location filename="core.cpp" line="84"/>
         <source>Remove</source>
         <translation type="unfinished"></translation>
     </message>

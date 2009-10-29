@@ -317,6 +317,77 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>BackendSelector</name>
+    <message>
+        <location filename="plugininterface/backendselector.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/backendselector.ui" line="21"/>
+        <source>SQLite</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/backendselector.ui" line="26"/>
+        <source>PostgreSQL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/backendselector.ui" line="46"/>
+        <source>Journal mode:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/backendselector.ui" line="82"/>
+        <source>Temp store:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/backendselector.ui" line="103"/>
+        <source>Synchronous:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/backendselector.ui" line="131"/>
+        <source>VACUUM on exit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/backendselector.ui" line="160"/>
+        <source>Hostname:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/backendselector.ui" line="170"/>
+        <source>Port:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/backendselector.ui" line="187"/>
+        <source>Username:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/backendselector.ui" line="197"/>
+        <source>Password:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/backendselector.ui" line="211"/>
+        <source>Database name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CategorySelector</name>
+    <message>
+        <location filename="plugininterface/categoryselector.cpp" line="36"/>
+        <source>Tags selector</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CommonJobAdder</name>
     <message>
         <location filename="commonjobadder.ui" line="14"/>
@@ -342,6 +413,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="commonjobadder.ui" line="57"/>
         <source>Location:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Core</name>
+    <message>
+        <location filename="core.cpp" line="655"/>
+        <source>Select save location</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -526,26 +605,6 @@ p, li { white-space: pre-wrap; }
         <source>Could not create path %1/.leechcraft</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <location filename="application.cpp" line="151"/>
-        <source>bytes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="application.cpp" line="152"/>
-        <source>KB</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="application.cpp" line="153"/>
-        <source>MB</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="application.cpp" line="154"/>
-        <source>GB</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>LeechCraft::CategoryMerger</name>
@@ -577,84 +636,59 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>LeechCraft::Core</name>
     <message>
-        <location filename="core.cpp" line="94"/>
+        <location filename="core.cpp" line="92"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="95"/>
+        <location filename="core.cpp" line="93"/>
         <source>State</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="96"/>
+        <location filename="core.cpp" line="94"/>
         <source>Progress</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="332"/>
+        <location filename="core.cpp" line="342"/>
         <source>No plugins are able to download &quot;%1&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="558"/>
-        <location filename="core.cpp" line="570"/>
+        <location filename="core.cpp" line="534"/>
+        <location filename="core.cpp" line="546"/>
         <source>LeechCraft</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="559"/>
+        <location filename="core.cpp" line="535"/>
         <source>Do you really want to clear the network cache?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="571"/>
+        <location filename="core.cpp" line="547"/>
         <source>Do you really want to clear cookies?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="835"/>
-        <source>Too long to show</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="852"/>
-        <source>Binary entity</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="855"/>
-        <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="862"/>
-        <source>&lt;br /&gt;from %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="952"/>
-        <source>Select save location</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="968"/>
-        <location filename="core.cpp" line="985"/>
+        <location filename="core.cpp" line="794"/>
+        <location filename="core.cpp" line="811"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="969"/>
+        <location filename="core.cpp" line="795"/>
         <source>Could not add task to the selected downloader, would you like to try another one?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="986"/>
+        <location filename="core.cpp" line="812"/>
         <source>Could not handle task with the selected handler, would you like to try another one?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1009"/>
+        <location filename="core.cpp" line="835"/>
         <source>Could not handle download entity %1.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -670,49 +704,49 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>LeechCraft::MainWindow</name>
     <message>
-        <location filename="mainwindow.cpp" line="138"/>
-        <location filename="mainwindow.cpp" line="146"/>
-        <location filename="mainwindow.cpp" line="222"/>
-        <location filename="mainwindow.cpp" line="329"/>
-        <location filename="mainwindow.cpp" line="368"/>
+        <location filename="mainwindow.cpp" line="140"/>
+        <location filename="mainwindow.cpp" line="153"/>
+        <location filename="mainwindow.cpp" line="229"/>
+        <location filename="mainwindow.cpp" line="336"/>
+        <location filename="mainwindow.cpp" line="375"/>
         <source>LeechCraft</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="140"/>
+        <location filename="mainwindow.cpp" line="142"/>
         <source>%1 - LeechCraft</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="242"/>
+        <location filename="mainwindow.cpp" line="249"/>
         <source>/s	</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="245"/>
-        <location filename="mainwindow.cpp" line="249"/>
-        <location filename="mainwindow.cpp" line="471"/>
-        <location filename="mainwindow.cpp" line="472"/>
+        <location filename="mainwindow.cpp" line="252"/>
+        <location filename="mainwindow.cpp" line="256"/>
+        <location filename="mainwindow.cpp" line="455"/>
+        <location filename="mainwindow.cpp" line="456"/>
         <source>/s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="330"/>
+        <location filename="mainwindow.cpp" line="337"/>
         <source>Do you really want to quit?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="369"/>
+        <location filename="mainwindow.cpp" line="376"/>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="477"/>
+        <location filename="mainwindow.cpp" line="461"/>
         <source>%1 down, %2 up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="551"/>
+        <location filename="mainwindow.cpp" line="545"/>
         <source>LeechCraft menu</source>
         <translation type="unfinished"></translation>
     </message>
@@ -720,23 +754,23 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>LeechCraft::NetworkAccessManager</name>
     <message>
-        <location filename="networkaccessmanager.cpp" line="149"/>
-        <location filename="networkaccessmanager.cpp" line="159"/>
+        <location filename="networkaccessmanager.cpp" line="154"/>
+        <location filename="networkaccessmanager.cpp" line="164"/>
         <source>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="185"/>
+        <location filename="networkaccessmanager.cpp" line="190"/>
         <source>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="220"/>
+        <location filename="networkaccessmanager.cpp" line="225"/>
         <source>Could not create Core directory.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="228"/>
+        <location filename="networkaccessmanager.cpp" line="233"/>
         <source>Could not save cookies, error opening cookie file.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -762,22 +796,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>LeechCraft::PluginManager</name>
     <message>
-        <location filename="pluginmanager.cpp" line="77"/>
+        <location filename="pluginmanager.cpp" line="76"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="78"/>
+        <location filename="pluginmanager.cpp" line="77"/>
         <source>File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="242"/>
+        <location filename="pluginmanager.cpp" line="241"/>
         <source>LeechCraft</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="243"/>
+        <location filename="pluginmanager.cpp" line="242"/>
         <source>Release of one or more plugins failed.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -811,7 +845,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="requestnormalizer.cpp" line="103"/>
-        <source>Open/close braces mismatch</source>
+        <source>Open/close braces mismatch: %1</source>
+        <oldsource>Open/close braces mismatch</oldsource>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -922,16 +957,24 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>LeechCraft::StartupWizard</name>
     <message>
-        <location filename="startupwizard.cpp" line="28"/>
+        <location filename="startupwizard.cpp" line="29"/>
         <source>Startup wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::TabContents</name>
+    <message>
+        <location filename="tabcontents.cpp" line="284"/>
+        <source>Remove this category</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::TabContentsManager</name>
     <message>
-        <location filename="tabcontentsmanager.cpp" line="69"/>
-        <location filename="tabcontentsmanager.cpp" line="164"/>
+        <location filename="tabcontentsmanager.cpp" line="76"/>
+        <location filename="tabcontentsmanager.cpp" line="178"/>
         <source>Summary</source>
         <translation type="unfinished"></translation>
     </message>
@@ -967,6 +1010,66 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="pluginmanagerdialog.ui" line="14"/>
         <source>Plugin Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="plugininterface/util.cpp" line="36"/>
+        <source>Too long to show</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/util.cpp" line="53"/>
+        <source>Binary entity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/util.cpp" line="56"/>
+        <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/util.cpp" line="63"/>
+        <source>&lt;br /&gt;from %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/util.cpp" line="93"/>
+        <source> b</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/util.cpp" line="95"/>
+        <source> KiB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/util.cpp" line="97"/>
+        <source> MiB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/util.cpp" line="99"/>
+        <source> GiB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <location filename="plugininterface/util.cpp" line="111"/>
+        <source>%n day(s), </source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="plugininterface/util.cpp" line="181"/>
+        <source>Could not cd into %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/util.cpp" line="188"/>
+        <source>Could not create %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1041,11 +1144,36 @@ p, li { white-space: pre-wrap; }
         <source>Form</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="tabcontents.ui" line="48"/>
+        <source>Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="tabcontents.ui" line="56"/>
+        <source>String</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="tabcontents.ui" line="61"/>
+        <source>Wildcard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="tabcontents.ui" line="66"/>
+        <source>Regexp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="tabcontents.ui" line="71"/>
+        <source>Tags</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>TagsManager</name>
     <message>
-        <location filename="tagsmanager.cpp" line="32"/>
+        <location filename="tagsmanager.cpp" line="33"/>
         <source>untagged</source>
         <translation type="unfinished"></translation>
     </message>
