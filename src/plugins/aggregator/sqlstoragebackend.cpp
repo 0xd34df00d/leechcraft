@@ -374,7 +374,8 @@ namespace LeechCraft
 				ToggleChannelUnread_ = QSqlQuery (DB_);
 				ToggleChannelUnread_.prepare ("UPDATE items SET "
 						"unread = :unread "
-						"WHERE parents_hash = :parents_hash");
+						"WHERE parents_hash = :parents_hash "
+						"AND unread <> :unread");
 			
 				RemoveFeed_ = QSqlQuery (DB_);
 				RemoveFeed_.prepare ("DELETE FROM feeds "
@@ -1054,8 +1055,9 @@ namespace LeechCraft
 				items_container_t oldItems;
 				GetItems (oldItems, purl + title);
 
-				ToggleChannelUnread_.bindValue (":parents_hash", purl + title);
-				ToggleChannelUnread_.bindValue (":unread", state);
+				ToggleChannelUnread_.bindValue (0, state);
+				ToggleChannelUnread_.bindValue (1, purl + title);
+				ToggleChannelUnread_.bindValue (2, state);
 			
 				if (!ToggleChannelUnread_.exec ())
 				{
