@@ -60,7 +60,7 @@
 					<label lang="en" value="System" />
 				</option>
 				<option name="ar">
-					<label lang="en" value="Arabic" />
+					<label lang="en" value="Arabic (العربية)" />
 				</option>
 				<option name="en">
 					<label lang="en" value="English" />
@@ -69,13 +69,16 @@
 					<label lang="en" value="Esperanto" />
 				</option>
 				<option name="it">
-					<label lang="en" value="Italian" />
+					<label lang="en" value="Italian (Italiano)" />
+				</option>
+				<option name="pl">
+					<label lang="en" value="Polish (Polski)" />
 				</option>
 				<option name="ru_RU">
-					<label lang="en" value="Russian" />
+					<label lang="en" value="Russian (Русский)" />
 				</option>
 				<option name="uk_UA">
-					<label lang="en" value="Ukrainian" />
+					<label lang="en" value="Ukrainian (Українська)" />
 				</option>
 			</item>
 			<item type="spinbox" property="MaxLogLines" default="500" step="250" minimum="10" maximum="50000">
