@@ -1,48 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="pl_PL">
 <context>
     <name>AddMultipleTorrents</name>
     <message>
         <location filename="addmultipletorrents.ui" line="13"/>
         <source>Add multiple torrents</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj wiele torrentów</translation>
     </message>
     <message>
         <location filename="addmultipletorrents.ui" line="25"/>
         <source>Open directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Otwórz folder:</translation>
     </message>
     <message>
         <location filename="addmultipletorrents.ui" line="37"/>
         <location filename="addmultipletorrents.ui" line="58"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Przeglądaj...</translation>
     </message>
     <message>
         <location filename="addmultipletorrents.ui" line="46"/>
         <source>Save directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz folder:</translation>
     </message>
     <message>
         <location filename="addmultipletorrents.ui" line="67"/>
         <source>Tags:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tagi:</translation>
     </message>
     <message>
         <location filename="addmultipletorrents.ui" line="74"/>
         <source>Add as:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj jako:</translation>
     </message>
     <message>
         <location filename="addmultipletorrents.ui" line="82"/>
         <source>Started</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozpoczęto</translation>
     </message>
     <message>
         <location filename="addmultipletorrents.ui" line="87"/>
         <source>Paused</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapauzowano</translation>
     </message>
 </context>
 <context>
@@ -50,34 +50,34 @@
     <message>
         <location filename="addpeerdialog.ui" line="14"/>
         <source>Add a peer</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj peera</translation>
     </message>
     <message>
         <location filename="addpeerdialog.ui" line="22"/>
         <source>IPv4:</source>
-        <translation type="unfinished"></translation>
+        <translation>IPv4:</translation>
     </message>
     <message>
         <location filename="addpeerdialog.ui" line="32"/>
         <source>D00.D00.D00.D00; </source>
         <extracomment>IPv4 input mask</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>D00.D00.D00.D00; </translation>
     </message>
     <message>
         <location filename="addpeerdialog.ui" line="39"/>
         <source>IPv6:</source>
-        <translation type="unfinished"></translation>
+        <translation>IPv6:</translation>
     </message>
     <message>
         <location filename="addpeerdialog.ui" line="49"/>
         <source>hhhh:hhhh:hhhh:hhhh:hhhh:hhhh:hhhh:hhhh; </source>
         <extracomment>IPv6 input mask</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>hhhh:hhhh:hhhh:hhhh:hhhh:hhhh:hhhh:hhhh; </translation>
     </message>
     <message>
         <location filename="addpeerdialog.ui" line="56"/>
         <source>Port:</source>
-        <translation type="unfinished"></translation>
+        <translation>Port:</translation>
     </message>
 </context>
 <context>
@@ -85,28 +85,28 @@
     <message>
         <location filename="addtorrent.ui" line="14"/>
         <source>Add torrent</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj torrent</translation>
     </message>
     <message>
         <location filename="addtorrent.ui" line="25"/>
         <source>Torrent</source>
-        <translation type="unfinished"></translation>
+        <translation>Torrent</translation>
     </message>
     <message>
         <location filename="addtorrent.ui" line="31"/>
         <source>Torrent:</source>
-        <translation type="unfinished"></translation>
+        <translation>Torrent:</translation>
     </message>
     <message>
         <location filename="addtorrent.ui" line="43"/>
         <location filename="addtorrent.ui" line="186"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Przeglądaj...</translation>
     </message>
     <message>
         <location filename="addtorrent.ui" line="52"/>
         <source>Tracker URL:</source>
-        <translation type="unfinished"></translation>
+        <translation>Adres URL trackera:</translation>
     </message>
     <message>
         <location filename="addtorrent.ui" line="59"/>
@@ -115,27 +115,27 @@
         <location filename="addtorrent.ui" line="101"/>
         <location filename="addtorrent.ui" line="115"/>
         <source>&lt;unknown&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;nieznane&gt;</translation>
     </message>
     <message>
         <location filename="addtorrent.ui" line="66"/>
         <source>Size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozmiar:</translation>
     </message>
     <message>
         <location filename="addtorrent.ui" line="80"/>
         <source>Creator:</source>
-        <translation type="unfinished"></translation>
+        <translation>Twórca:</translation>
     </message>
     <message>
         <location filename="addtorrent.ui" line="94"/>
         <source>Comment:</source>
-        <translation type="unfinished"></translation>
+        <translation>Komentarz:</translation>
     </message>
     <message>
         <location filename="addtorrent.ui" line="108"/>
         <source>Date:</source>
-        <translation type="unfinished"></translation>
+        <translation>Data:</translation>
     </message>
     <message>
         <location filename="addtorrent.ui" line="122"/>
