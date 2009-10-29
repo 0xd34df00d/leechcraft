@@ -73,6 +73,19 @@ namespace LeechCraft
 			, FavoritesChecker_ (0)
 			, Initialized_ (false)
 			{
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_Poshuku");
+				int size = settings.beginReadArray ("Saved session");
+				if (size)
+					for (int i = 0; i < size; ++i)
+					{
+						settings.setArrayIndex (i);
+						QString title = settings.value ("Title").toString ();
+						QString url = settings.value ("URL").toString ();
+						SavedSessionState_ << QPair<QString, QString> (title, url);
+					}
+				settings.endArray ();
+
 				PluginManager_.reset (new PluginManager (this));
 				URLCompletionModel_.reset (new URLCompletionModel (this));
 			
@@ -619,19 +632,16 @@ namespace LeechCraft
 			
 			void Core::RestoreSession (bool ask)
 			{
-				QSettings settings (QCoreApplication::organizationName (),
-						QCoreApplication::applicationName () + "_Poshuku");
-				int size = settings.beginReadArray ("Saved session");
-				if (!size) ;
+				if (!SavedSessionState_.size ()) ;
 				else if (ask)
 				{
 					std::auto_ptr<RestoreSessionDialog> dia (new RestoreSessionDialog ());
 					bool added = false;
-					for (int i = 0; i < size; ++i)
+					for (int i = 0; i < SavedSessionState_.size (); ++i)
 					{
-						settings.setArrayIndex (i);
-						QString title = settings.value ("Title").toString ();
-						QString url = settings.value ("URL").toString ();
+						QPair<QString, QString> pair = SavedSessionState_.at (i);
+						QString title = pair.first;
+						QString url = pair.second;
 						if (title.isEmpty () || url.isEmpty ())
 							continue;
 						dia->AddPair (title, url);
@@ -649,18 +659,15 @@ namespace LeechCraft
 				}
 				else
 				{
-					for (int i = 0; i < size; ++i)
+					for (int i = 0; i < SavedSessionState_.size (); ++i)
 					{
-						settings.setArrayIndex (i);
-						QString url = settings.value ("URL").toString ();
+						QString url = SavedSessionState_.at (i).second;
 						if (url.isEmpty ())
 							continue;
 						RestoredURLs_ << url;
 					}
 					QTimer::singleShot (2000, this, SLOT (restorePages ()));
 				}
-				settings.remove ("");
-				settings.endArray ();
 			}
 			
 			void Core::HandleHistory (QWebView *view)

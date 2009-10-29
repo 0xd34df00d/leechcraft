@@ -61,6 +61,7 @@ namespace LeechCraft
 
 				typedef std::vector<BrowserWidget*> widgets_t;
 				widgets_t Widgets_;
+				QList<QPair<QString, QString> > SavedSessionState_;
 
 				std::auto_ptr<FavoritesModel> FavoritesModel_;
 				std::auto_ptr<HistoryModel> HistoryModel_;
