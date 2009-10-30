@@ -44,6 +44,7 @@
 #include "radiogroup.h"
 #include "scripter.h"
 #include "fontpicker.h"
+#include "colorpicker.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -320,6 +321,8 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 		DoCombobox (item, lay);
 	else if (type == "font")
 		DoFont (item, lay);
+	else if (type == "color")
+		DoColor (item, lay);
 	else if (type == "pushbutton")
 		DoPushButton (item, lay);
 	else if (type == "customwidget")
@@ -529,6 +532,12 @@ QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject
 		if (value.isNull () ||
 				!value.canConvert<QFont> ())
 			value = QApplication::font ();
+	}
+	else if (type == "color")
+	{
+		if (!value.canConvert<QColor> ()
+				|| !value.value<QColor> ().isValid ())
+			value = QColor (item.attribute ("default"));
 	}
 	else if (type == "pushbutton") ;
 	else if (type == "customwidget") ;
@@ -820,6 +829,24 @@ void XmlSettingsDialog::DoFont (const QDomElement& item, QFormLayout *lay)
 	lay->addRow (label, picker);
 }
 
+void XmlSettingsDialog::DoColor (const QDomElement& item, QFormLayout *lay)
+{
+	QString labelString = GetLabel (item);
+	QLabel *label = new QLabel (labelString);
+	label->setWordWrap (false);
+
+	ColorPicker *picker = new ColorPicker (labelString, this);
+	picker->setObjectName (item.attribute ("property"));
+	picker->SetCurrentColor (GetValue (item).value<QColor> ());
+
+	connect (picker,
+			SIGNAL (currentColorChanged (const QColor&)),
+			this,
+			SLOT (updatePreferences ()));
+
+	lay->addRow (label, picker);
+}
+
 void XmlSettingsDialog::DoPushButton (const QDomElement& item, QFormLayout *lay)
 {
 	QPushButton *button = new QPushButton (this);
@@ -988,6 +1015,7 @@ void XmlSettingsDialog::SetValue (QWidget *object, const QVariant& value)
 	RadioGroup *radiogroup = qobject_cast<RadioGroup*> (object);
 	QComboBox *combobox = qobject_cast<QComboBox*> (object);
 	FontPicker *fontPicker = qobject_cast<FontPicker*> (object);
+	ColorPicker *colorPicker = qobject_cast<ColorPicker*> (object);
 	if (edit)
 		edit->setText (value.toString ());
 	else if (checkbox)
@@ -1017,6 +1045,8 @@ void XmlSettingsDialog::SetValue (QWidget *object, const QVariant& value)
 	}
 	else if (fontPicker)
 		fontPicker->SetCurrentFont (value.value<QFont> ());
+	else if (colorPicker)
+		colorPicker->SetCurrentColor (value.value<QColor> ());
 	else
 		qWarning () << Q_FUNC_INFO << "unhandled object" << object << "for" << value;
 }
@@ -1098,9 +1128,8 @@ void XmlSettingsDialog::updatePreferences ()
 	RadioGroup *radiogroup = qobject_cast<RadioGroup*> (sender ());
 	QComboBox *combobox = qobject_cast<QComboBox*> (sender ());
 	FontPicker *fontPicker = qobject_cast<FontPicker*> (sender ());
-	if (fontPicker)
-		value = fontPicker->GetCurrentFont ();
-	else if (edit)
+	ColorPicker *colorPicker = qobject_cast<ColorPicker*> (sender ());
+	if (edit)
 		value = edit->text ();
 	else if (checkbox)
 		value = checkbox->checkState ();
@@ -1108,6 +1137,10 @@ void XmlSettingsDialog::updatePreferences ()
 		value = spinbox->value ();
 	else if (doubleSpinbox)
 		value = doubleSpinbox->value ();
+	else if (fontPicker)
+		value = fontPicker->GetCurrentFont ();
+	else if (colorPicker)
+		value = colorPicker->GetCurrentColor ();
 	else if (groupbox)
 		value = groupbox->isChecked ();
 	else if (rangeWidget)

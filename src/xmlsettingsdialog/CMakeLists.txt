@@ -18,6 +18,7 @@ SET (SRCS
 	settings.cpp
 	basesettingsmanager.cpp
 	fontpicker.cpp
+	colorpicker.cpp
 	)
 SET (HEADERS
     xmlsettingsdialog.h
@@ -32,6 +33,7 @@ SET (HEADERS
 	settings.h
 	basesettingsmanager.h
 	fontpicker.h
+	colorpicker.h
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ADD_LIBRARY (xmlsettingsdialog SHARED ${SRCS} ${MOC_SRCS})
