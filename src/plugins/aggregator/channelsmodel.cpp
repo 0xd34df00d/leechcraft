@@ -24,6 +24,7 @@
 #include <interfaces/structures.h>
 #include "channelsmodel.h"
 #include "item.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -87,17 +88,18 @@ namespace LeechCraft
 						index.column () == 0)
 					return Channels_.at (row).Favicon_;
 				else if (role == Qt::ForegroundRole)
-					return Channels_.at (row).Unread_ ?
-					   	Qt::red :
-						QApplication::palette ().color (QPalette::Text);
+					if (Channels_.at (row).Unread_ &&
+							XmlSettingsManager::Instance ()->
+							property ("UnreadCustomColor").toBool ())
+						return XmlSettingsManager::Instance ()->
+							property ("UnreadItemsColor").value<QColor> ();
+					else
+						return QVariant ();
 				else if (role == Qt::FontRole)
 				{
 					if (Channels_.at (row).Unread_)
-					{
-						QFont defaultFont = QApplication::font ();
-						defaultFont.setBold (true);
-						return defaultFont;
-					}
+						return XmlSettingsManager::Instance ()->
+							property ("UnreadItemsFont");
 					else
 						return QVariant ();
 				}

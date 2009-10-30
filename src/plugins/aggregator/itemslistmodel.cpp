@@ -21,6 +21,7 @@
 #include <QPalette>
 #include <QtDebug>
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -172,8 +173,17 @@ namespace LeechCraft
 					}
 				}
 				else if (role == Qt::ForegroundRole)
-					return CurrentItems_ [index.row ()].Unread_ ?
-					   	Qt::red : QApplication::palette ().color (QPalette::Text);
+					if (CurrentItems_ [index.row ()].Unread_ &&
+							XmlSettingsManager::Instance ()->
+							property ("UnreadCustomColor").toBool ())
+						return XmlSettingsManager::Instance ()->
+							property ("UnreadItemsColor").value<QColor> ();
+					else
+						return QVariant ();
+				else if (role == Qt::FontRole &&
+						CurrentItems_ [index.row ()].Unread_)
+					return XmlSettingsManager::Instance ()->
+						property ("UnreadItemsFont");
 				else
 					return QVariant ();
 			}
