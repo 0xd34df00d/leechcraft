@@ -18,6 +18,7 @@
 
 #include "fontpicker.h"
 #include <QLabel>
+#include <QFontInfo>
 #include <QPushButton>
 #include <QFontDialog>
 #include <QHBoxLayout>
@@ -50,6 +51,8 @@ namespace LeechCraft
 	{
 		Font_ = font;
 		QString text = Font_.family ();
+		text += tr (", %1 pt")
+			.arg (QFontInfo (Font_).pointSize ());
 		if (Font_.bold ())
 			text += tr (", bold");
 		if (Font_.italic ())
