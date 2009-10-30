@@ -159,8 +159,14 @@ void LeechCraft::MainWindow::catchError (QString message)
 void LeechCraft::MainWindow::closeEvent (QCloseEvent *e)
 {
 	e->ignore ();
-	hide ();
-	IsShown_ = false;
+	if (XmlSettingsManager::Instance ()->
+			property ("ExitOnClose").toBool ())
+		on_ActionQuit__triggered ();
+	else
+	{
+		hide ();
+		IsShown_ = false;
+	}
 }
 
 void LeechCraft::MainWindow::InitializeInterface ()

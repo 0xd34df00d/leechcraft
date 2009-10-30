@@ -116,6 +116,10 @@
 					<label lang="ru" value="Запрашивать подтверждение выхода" />
 					<label lang="uk" value="Запитувати підтвердження виходу" />
 				</item>
+				<item type="checkbox" property="ExitOnClose" default="false">
+					<label lang="en" value="Exit on close" />
+					<label lang="ru" value="Выходить при закрытии" />
+				</item>
 				<item type="checkbox" property="OpenTabNext" default="false">
 					<label lang="en" value="Open new tab next to current" />
 					<label lang="ru" value="Открывать вкладку после текущей" />
