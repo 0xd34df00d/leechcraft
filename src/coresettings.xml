@@ -236,4 +236,13 @@
 			</item>
 		</item>
 	</page>
+	<page>
+		<label lang="en" value="Plugins" />
+		<label lang="ru" value="Плагины" />
+		<groupbox>
+			<label lang="en" value="Plugins manager" />
+			<label lang="ru" value="Менеджер плагинов" />
+			<item type="customwidget" label="own" name="PluginManager" />
+		</groupbox>
+	</page>
 </settings>

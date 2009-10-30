@@ -73,7 +73,6 @@
    <addaction name="ActionAddTask_"/>
    <addaction name="ActionNewTab_"/>
    <addaction name="separator"/>
-   <addaction name="ActionPluginManager_"/>
    <addaction name="ActionSettings_"/>
    <addaction name="separator"/>
    <addaction name="ActionQuit_"/>
@@ -102,7 +101,6 @@
     </property>
     <addaction name="ActionLogger_"/>
     <addaction name="separator"/>
-    <addaction name="ActionPluginManager_"/>
     <addaction name="ActionSettings_"/>
    </widget>
    <widget class="QMenu" name="MenuHelp_">
@@ -146,11 +144,6 @@
    </property>
    <property name="ActionIcon" stdset="0">
     <string>exit</string>
-   </property>
-  </action>
-  <action name="ActionPluginManager_">
-   <property name="text">
-    <string>Plugin manager</string>
    </property>
   </action>
   <action name="ActionFullscreenMode_">

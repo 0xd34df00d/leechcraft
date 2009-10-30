@@ -77,7 +77,9 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	TabContentsManager::Instance ().SetDefault (Ui_.SummaryContents_);
 	Core::Instance ().DelayedInit ();
 
-	PluginManagerDialog_ = new PluginManagerDialog (this);
+	PluginManagerDialog_ = new PluginManagerDialog ();
+	PluginManagerDialog_->setWindowFlags (Qt::Widget);
+	XmlSettingsDialog_->SetCustomWidget ("PluginManager", PluginManagerDialog_);
 
 	QTimer *speedUpd = new QTimer (this);
 	speedUpd->setInterval (1000);
@@ -182,7 +184,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	Ui_.ActionAboutQt_->setIcon (qApp->style ()->
 			standardIcon (QStyle::SP_MessageBoxQuestion).pixmap (32, 32));
 	Ui_.ActionQuit_->setProperty ("ActionIcon", "exit");
-	Ui_.ActionPluginManager_->setProperty ("ActionIcon", "pluginmanager");
 	Ui_.ActionLogger_->setProperty ("ActionIcon", "logger");
 	Ui_.ActionFullscreenMode_->setProperty ("ActionIcon", "fullscreen");
 	Ui_.ActionFullscreenMode_->setParent (this);
@@ -439,7 +440,7 @@ void LeechCraft::MainWindow::handleShowMenuBarAsButton ()
 	if (asButton)
 	{
 		Ui_.MenuBar_->hide ();
-		Ui_.MainToolbar_->insertAction (Ui_.ActionPluginManager_, Ui_.ActionMenu_);
+		Ui_.MainToolbar_->insertAction (Ui_.ActionSettings_, Ui_.ActionMenu_);
 	}
 	else
 	{
@@ -508,11 +509,6 @@ void LeechCraft::MainWindow::updateIconSet ()
 {
 	SkinEngine::Instance ().UpdateIconSet (findChildren<QAction*> ());
 	SkinEngine::Instance ().UpdateIconSet (findChildren<QTabWidget*> ());
-}
-
-void LeechCraft::MainWindow::on_ActionPluginManager__triggered ()
-{
-	PluginManagerDialog_->show ();
 }
 
 void LeechCraft::MainWindow::doDelayedInit ()

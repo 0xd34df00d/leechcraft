@@ -32,3 +32,11 @@ LeechCraft::PluginManagerDialog::~PluginManagerDialog ()
 {
 }
 
+void LeechCraft::PluginManagerDialog::accept ()
+{
+}
+
+void LeechCraft::PluginManagerDialog::reject ()
+{
+}
+
