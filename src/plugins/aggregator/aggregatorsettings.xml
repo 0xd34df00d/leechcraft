@@ -18,7 +18,7 @@
 					<label lang="ru" value="Вести себя тихо" />
 					<label lang="uk" value="Поводитись тихо" />
 				</item>
-				<item type="checkbox" property="AlwaysUseExternalBrowser" state="off">
+				<item type="checkbox" property="AlwaysUseExternalBrowser" state="on">
 					<label lang="en" value="Always use external browser" />
 					<label lang="ru" value="Всегда использовать внешний браузер" />
 				</item>
