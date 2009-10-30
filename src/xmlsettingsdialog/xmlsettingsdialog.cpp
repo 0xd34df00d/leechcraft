@@ -28,7 +28,6 @@
 #include <QDir>
 #include <QCheckBox>
 #include <QComboBox>
-#include <QFontComboBox>
 #include <QVBoxLayout>
 #include <QListWidget>
 #include <QStackedWidget>
@@ -44,6 +43,7 @@
 #include "filepicker.h"
 #include "radiogroup.h"
 #include "scripter.h"
+#include "fontpicker.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -804,19 +804,20 @@ void XmlSettingsDialog::DoCombobox (const QDomElement& item, QFormLayout *lay)
 
 void XmlSettingsDialog::DoFont (const QDomElement& item, QFormLayout *lay)
 {
-	QFontComboBox *box = new QFontComboBox (this);
-	box->setObjectName (item.attribute ("property"));
-	box->setCurrentFont (GetValue (item).value<QFont> ());
+	QString labelString = GetLabel (item);
+	QLabel *label = new QLabel (labelString);
+	label->setWordWrap (false);
 
-	connect (box,
+	FontPicker *picker = new FontPicker (labelString, this);
+	picker->setObjectName (item.attribute ("property"));
+	picker->SetCurrentFont (GetValue (item).value<QFont> ());
+
+	connect (picker,
 			SIGNAL (currentFontChanged (const QFont&)),
 			this,
 			SLOT (updatePreferences ()));
 
-	QLabel *label = new QLabel (GetLabel (item));
-	label->setWordWrap (false);
-
-	lay->addRow (label, box);
+	lay->addRow (label, picker);
 }
 
 void XmlSettingsDialog::DoPushButton (const QDomElement& item, QFormLayout *lay)
@@ -986,7 +987,7 @@ void XmlSettingsDialog::SetValue (QWidget *object, const QVariant& value)
 	FilePicker *picker = qobject_cast<FilePicker*> (object);
 	RadioGroup *radiogroup = qobject_cast<RadioGroup*> (object);
 	QComboBox *combobox = qobject_cast<QComboBox*> (object);
-	QFontComboBox *fontComboBox = qobject_cast<QFontComboBox*> (object);
+	FontPicker *fontPicker = qobject_cast<FontPicker*> (object);
 	if (edit)
 		edit->setText (value.toString ());
 	else if (checkbox)
@@ -1014,8 +1015,8 @@ void XmlSettingsDialog::SetValue (QWidget *object, const QVariant& value)
 				<< value
 				<< "not found";
 	}
-	else if (fontComboBox)
-		fontComboBox->setCurrentFont (value.value<QFont> ());
+	else if (fontPicker)
+		fontPicker->SetCurrentFont (value.value<QFont> ());
 	else
 		qWarning () << Q_FUNC_INFO << "unhandled object" << object << "for" << value;
 }
@@ -1096,9 +1097,9 @@ void XmlSettingsDialog::updatePreferences ()
 	FilePicker *picker = qobject_cast<FilePicker*> (sender ());
 	RadioGroup *radiogroup = qobject_cast<RadioGroup*> (sender ());
 	QComboBox *combobox = qobject_cast<QComboBox*> (sender ());
-	QFontComboBox *fontComboBox = qobject_cast<QFontComboBox*> (sender ());
-	if (fontComboBox)
-		value = fontComboBox->currentFont ();
+	FontPicker *fontPicker = qobject_cast<FontPicker*> (sender ());
+	if (fontPicker)
+		value = fontPicker->GetCurrentFont ();
 	else if (edit)
 		value = edit->text ();
 	else if (checkbox)

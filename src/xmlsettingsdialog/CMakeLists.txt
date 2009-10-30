@@ -17,6 +17,7 @@ SET (SRCS
 	bytearray.cpp
 	settings.cpp
 	basesettingsmanager.cpp
+	fontpicker.cpp
 	)
 SET (HEADERS
     xmlsettingsdialog.h
@@ -30,6 +31,7 @@ SET (HEADERS
 	bytearray.h
 	settings.h
 	basesettingsmanager.h
+	fontpicker.h
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ADD_LIBRARY (xmlsettingsdialog SHARED ${SRCS} ${MOC_SRCS})
