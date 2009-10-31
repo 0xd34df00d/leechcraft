@@ -23,7 +23,6 @@
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 #include <QMainWindow>
-#include <QTreeWidgetItem>
 #include <QMessageBox>
 #include <QtDebug>
 #include <QTimer>
@@ -32,15 +31,12 @@
 #include <QAction>
 #include <QToolBar>
 #include <QKeyEvent>
-#include <QClipboard>
 #include <QDir>
-#include <QLocalServer>
 #include <QTextCodec>
 #include <QDesktopServices>
 #include <QNetworkReply>
-#include <QFileDialog>
-#include <QLocalSocket>
-#include <QNetworkDiskCache>
+#include <QAbstractNetworkCache>
+#include <QClipboard>
 #include <plugininterface/util.h>
 #include <plugininterface/customcookiejar.h>
 #include <interfaces/iinfo.h>
@@ -643,24 +639,6 @@ namespace
 		}
 		return true;
 	}
-
-	QString GetFilename (QString suggestion)
-	{
-		if (suggestion.isEmpty ())
-			suggestion = XmlSettingsManager::Instance ()->Property ("EntitySavePath",
-					QDesktopServices::storageLocation (QDesktopServices::DocumentsLocation))
-				.toString ();
-
-		QString dir = QFileDialog::getExistingDirectory (0,
-				Core::tr ("Select save location"),
-				suggestion,
-				QFileDialog::Options (~QFileDialog::ShowDirsOnly));
-
-		if (!dir.isEmpty ())
-			XmlSettingsManager::Instance ()->
-				setProperty ("EntitySavePath", dir);
-		return dir;
-	}
 };
 
 QList<QObject*> LeechCraft::Core::GetObjects (const DownloadEntity& p,
@@ -761,13 +739,15 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 			!(p.Parameters_ & AutoAccept))
 	{
 		bool ask = true;
-		if (XmlSettingsManager::Instance ()->property ("DontAskWhenSingle").toBool ())
-			ask = (numHandlers + numDownloaders) != 1;
+		if (XmlSettingsManager::Instance ()->
+				property ("DontAskWhenSingle").toBool ())
+			ask = numDownloaders;
 
 		IDownload *sd = 0;
 		IEntityHandler *sh = 0;
 		if (ask)
 		{
+			dia->SetFilenameSuggestion (p.Location_);
 			if (dia->exec () == QDialog::Rejected)
 				return false;
 			sd = dia->GetDownload ();
@@ -781,7 +761,7 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 
 		if (sd)
 		{
-			QString dir = GetFilename (QFileInfo (p.Location_).absolutePath ());
+			QString dir = dia->GetFilename ();
 			if (dir.isEmpty ())
 				return false;
 

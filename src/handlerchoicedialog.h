@@ -28,26 +28,36 @@ class IInfo;
 class IDownload;
 class IEntityHandler;
 
-class HandlerChoiceDialog : public QDialog
+namespace LeechCraft
 {
-	Q_OBJECT
+	class HandlerChoiceDialog : public QDialog
+	{
+		Q_OBJECT
 
-	Ui::HandlerChoiceDialog Ui_;
-	std::auto_ptr<QButtonGroup> Buttons_;
-	typedef std::map<QString, IDownload*> downloaders_t;
-	downloaders_t Downloaders_;
-	typedef std::map<QString, IEntityHandler*> handlers_t;
-	handlers_t Handlers_;
-public:
-	HandlerChoiceDialog (const QString&, QWidget* = 0);
+		Ui::HandlerChoiceDialog Ui_;
+		std::auto_ptr<QButtonGroup> Buttons_;
+		typedef std::map<QString, IDownload*> downloaders_t;
+		downloaders_t Downloaders_;
+		typedef std::map<QString, IEntityHandler*> handlers_t;
+		handlers_t Handlers_;
+		mutable QString Suggestion_;
+	public:
+		HandlerChoiceDialog (const QString&, QWidget* = 0);
 
-	bool Add (const IInfo*, IDownload*);
-	bool Add (const IInfo*, IEntityHandler*);
-	IDownload* GetDownload ();
-	IDownload* GetFirstDownload ();
-	IEntityHandler* GetEntityHandler ();
-	IEntityHandler* GetFirstEntityHandler ();
-	int NumChoices () const;
+		void SetFilenameSuggestion (const QString&);
+		bool Add (const IInfo*, IDownload*);
+		bool Add (const IInfo*, IEntityHandler*);
+		IDownload* GetDownload ();
+		IDownload* GetFirstDownload ();
+		IEntityHandler* GetEntityHandler ();
+		IEntityHandler* GetFirstEntityHandler ();
+		QString GetFilename () const;
+		int NumChoices () const;
+	private:
+		QStringList GetPluginSavePaths (const QString&) const;
+	private slots:
+		void populateLocationsBox ();
+	};
 };
 
 #endif

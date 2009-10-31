@@ -35,7 +35,6 @@
 #include "directorywatcher.h"
 #include "localsockethandler.h"
 
-class QLocalServer;
 class QAbstractProxyModel;
 class QAction;
 class IDownload;
