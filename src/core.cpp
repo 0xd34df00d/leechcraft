@@ -295,8 +295,6 @@ void LeechCraft::Core::DelayedInit ()
 
 	InitMultiTab (&TabContentsManager::Instance ());
 
-	TabContainer_->handleTabNames ();
-
 	LocalSocketHandler_.reset (new LocalSocketHandler (ReallyMainWindow_));
 	connect (LocalSocketHandler_.get (),
 			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
@@ -377,12 +375,6 @@ QPair<qint64, qint64> LeechCraft::Core::GetSpeeds () const
 	}
 
 	return QPair<qint64, qint64> (download, upload);
-}
-
-int LeechCraft::Core::CountUnremoveableTabs () const
-{
-	// + 1 because of tabs with downloaders
-	return PluginManager_->GetAllCastableTo<IEmbedTab*> ().size () + 1;
 }
 
 QNetworkAccessManager* LeechCraft::Core::GetNetworkAccessManager () const
@@ -1003,11 +995,13 @@ void LeechCraft::Core::InitEmbedTab (QObject *plugin)
 	{
 		IInfo *ii = qobject_cast<IInfo*> (plugin);
 		IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
+		QWidget *contents = iet->GetTabContents ();
+		contents->setProperty ("IsUnremoveable", true);
 		TabContainer_->add (ii->GetName (),
-				iet->GetTabContents (),
+				contents,
 				ii->GetIcon ());
 		TabContainer_->SetToolBar (iet->GetToolBar (),
-				iet->GetTabContents ());
+				contents);
 	}
 	catch (const std::exception& e)
 	{

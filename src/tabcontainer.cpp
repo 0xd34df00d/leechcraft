@@ -55,8 +55,6 @@ TabContainer::TabContainer (TabWidget *tabWidget,
 			this,
 			SLOT (handleMoveHappened (int, int)));
 
-	XmlSettingsManager::Instance ()->RegisterObject ("ShowTabNames",
-			this, "handleTabNames");
 	XmlSettingsManager::Instance ()->RegisterObject ("UseTabScrollButtons",
 			this, "handleScrollButtons");
 
@@ -75,16 +73,9 @@ QWidget* TabContainer::GetWidget (int position) const
 QToolBar* TabContainer::GetToolBar (int position) const
 {
 	QWidget *widget = TabWidget_->widget (position);
-	if (position >= Core::Instance ().CountUnremoveableTabs ())
+	IMultiTabsWidget *itw = qobject_cast<IMultiTabsWidget*> (widget);
+	if (itw)
 	{
-		IMultiTabsWidget *itw = qobject_cast<IMultiTabsWidget*> (widget);
-		if (!itw)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "casting to ITabWidget* failed for"
-				<< TabWidget_->widget (position);
-			return 0;
-		}
 		try
 		{
 			return itw->GetToolBar ();
@@ -154,8 +145,7 @@ void TabContainer::add (const QString& name, QWidget *contents,
 			property ("OpenTabNext").toBool ())
 	{
 		int current = TabWidget_->currentIndex ();
-		TabWidget_->insertTab (std::max (current + 1,
-					Core::Instance ().CountUnremoveableTabs ()),
+		TabWidget_->insertTab (current + 1,
 				contents,
 				icon,
 				MakeTabName (name));
@@ -178,42 +168,37 @@ void TabContainer::remove (QWidget *contents)
 
 void TabContainer::remove (int index)
 {
-	if (index >= Core::Instance ().CountUnremoveableTabs ())
+	QWidget *widget = TabWidget_->widget (index);
+	if (widget->property ("IsUnremoveable").toBool ())
+		return;
+	TabContents *tc = qobject_cast<TabContents*> (widget);
+	if (tc)
 	{
-		QWidget *widget = TabWidget_->widget (index);
-		TabContents *tc = qobject_cast<TabContents*> (widget);
-		if (tc)
-		{
-			TabContentsManager::Instance ().RemoveTab (tc);
-			return;
-		}
+		TabContentsManager::Instance ().RemoveTab (tc);
+		return;
+	}
 
-		IMultiTabsWidget *itw =
-			qobject_cast<IMultiTabsWidget*> (widget);
-		if (!itw)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "casting to ITabWidget* failed for"
-				<< TabWidget_->widget (index);
-			return;
-		}
-		try
-		{
-			itw->Remove ();
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "failed to ITabWidget::Remove"
-				<< e.what ()
-				<< TabWidget_->widget (index);
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "failed to ITabWidget::Remove"
-				<< TabWidget_->widget (index);
-		}
+	IMultiTabsWidget *itw =
+		qobject_cast<IMultiTabsWidget*> (widget);
+	if (!itw)
+		return;
+
+	try
+	{
+		itw->Remove ();
+	}
+	catch (const std::exception& e)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< "failed to ITabWidget::Remove"
+			<< e.what ()
+			<< TabWidget_->widget (index);
+	}
+	catch (...)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< "failed to ITabWidget::Remove"
+			<< TabWidget_->widget (index);
 	}
 }
 
@@ -241,27 +226,6 @@ void TabContainer::changeTooltip (QWidget *contents, QWidget *tip)
 	if (tabNumber == -1)
 		return;
 	TabWidget_->SetTooltip (tabNumber, tip);
-}
-
-void TabContainer::handleTabNames ()
-{
-	int size = Core::Instance ().CountUnremoveableTabs ();
-	if (XmlSettingsManager::Instance ()->property ("ShowTabNames").toBool ())
-	{
-		for (int i = 0; i < size; ++i)
-			if (TabWidget_->tabText (i).isNull () ||
-					TabWidget_->tabText (i).isEmpty ())
-				TabWidget_->setTabText (i, UnremTabNames_ [i]);
-	}
-	else
-	{
-		UnremTabNames_.clear ();
-		for (int i = 0; i < size; ++i)
-		{
-			UnremTabNames_ << TabWidget_->tabText (i);
-			TabWidget_->setTabText (i, QString ());
-		}
-	}
 }
 
 void TabContainer::handleScrollButtons ()

@@ -191,14 +191,6 @@ namespace LeechCraft
 		
 		QPair<qint64, qint64> GetSpeeds () const;
 
-		/** Counts how much tabs couldn't be removed. A tab is
-		 * considered unremovable if it's from IEmbedTab or LeechCraft's
-		 * internals.
-		 *
-		 * @return Number of unremovable tabs.
-		 */
-		int CountUnremoveableTabs () const;
-
 		QNetworkAccessManager* GetNetworkAccessManager () const;
 
 		QModelIndex MapToSource (const QModelIndex&) const;

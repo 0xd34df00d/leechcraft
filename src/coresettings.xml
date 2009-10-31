@@ -8,11 +8,6 @@
 			<label lang="en" value="Appearance" />
 			<label lang="ru" value="Внешний вид" />
             <label lang="uk" value="Зовнішній вигляд" />
-			<item type="checkbox" property="ShowTabNames" state="on">
-				<label lang="en" value="Show tab names" />
-				<label lang="ru" value="Показывать названия вкладок" />
-				<label lang="uk" value="Показувати назви вкладок" />
-			</item>
 			<item type="checkbox" property="UseTabScrollButtons" state="on">
 				<label lang="en" value="Use tab scroll buttons" />
 				<label lang="ru" value="Использовать кнопки прокрутки табов" />
