@@ -179,7 +179,7 @@
 				<suffix value=" МБ" />
 			</lang>
 		</item>
-		<item type="checkbox" name="FilterTrackingCookies" default="on">
+		<item type="checkbox" property="FilterTrackingCookies" default="on">
 			<label lang="en" value="Filter tracking cookies" />
 			<label lang="ru" value="Фильтровать отслеживающие куки" />
 		</item>
