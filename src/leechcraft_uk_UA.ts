@@ -115,11 +115,11 @@
     </message>
     <message>
         <source>Fullscreen mode</source>
-        <translation type="unfinished"></translation>
+        <translation>На весь екран</translation>
     </message>
     <message>
         <source>Log</source>
-        <translation type="unfinished"></translation>
+        <translation>Журнал</translation>
     </message>
     <message>
         <source>Plugin manager</source>
@@ -131,7 +131,7 @@
     </message>
     <message>
         <source>exit</source>
-        <translation type="unfinished"></translation>
+        <translation>Вийти</translation>
     </message>
     <message>
         <source>Main toolbar</source>
@@ -139,7 +139,7 @@
     </message>
     <message>
         <source>New tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Нова вкладка</translation>
     </message>
     <message>
         <source>Ctrl+T</source>
@@ -239,11 +239,11 @@
     </message>
     <message>
         <source>Could not add task to the selected downloader, would you like to try another one?</source>
-        <translation type="unfinished"></translation>
+        <translation>Не можу створити задачу для вказаного завантажувача, хочете спробувати інший?</translation>
     </message>
     <message>
         <source>Could not handle task with the selected handler, would you like to try another one?</source>
-        <translation type="unfinished"></translation>
+        <translation>Не можу виконати задачу за допомогою вказаного обробника, хочете спробувати інший?</translation>
     </message>
     <message>
         <source>Binary entity</source>
@@ -255,19 +255,19 @@
     </message>
     <message>
         <source>Do you really want to clear the network cache?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви справді хочете очистити мережевий кеш?</translation>
     </message>
     <message>
         <source>Do you really want to clear cookies?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви справді хочете очистити кукіси?</translation>
     </message>
     <message>
         <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br /&gt;&lt;br /&gt;типу &lt;code&gt;%1&lt;/code&gt;</translation>
     </message>
     <message>
         <source>&lt;br /&gt;from %1</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br /&gt;з %1</translation>
     </message>
 </context>
 <context>
@@ -321,14 +321,14 @@
     </message>
     <message>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
-        <translation type="unfinished"></translation>
+        <translation>Для того, щоб ця зміна вступила в дію необхідно перезапустити LeechCraft. Хочете зробити це негайно?</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::NetworkAccessManager</name>
     <message>
         <source>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;містить SSL помилки. Що будемо робити?</translation>
     </message>
     <message>
         <source>Could not create Core directory.</source>
@@ -336,11 +336,11 @@
     </message>
     <message>
         <source>Could not save cookies, error opening cookie file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка відкриття файлу кукісів - збереження кукісів неможливе.</translation>
     </message>
     <message>
         <source>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;вимагає аутентифікацію.</translation>
     </message>
 </context>
 <context>
@@ -397,62 +397,62 @@
     </message>
     <message>
         <source>Request validation error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка перевірки запиту: %1</translation>
     </message>
     <message>
         <source>Request parsing error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка розбору запиту: %1</translation>
     </message>
     <message>
         <source>Open/close braces mismatch</source>
-        <translation type="unfinished"></translation>
+        <translation>Неспівпадіння між відкриваючими і закриваючими дужками</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::SslErrorsDialog</name>
     <message>
         <source>Certificate</source>
-        <translation type="unfinished"></translation>
+        <translation>Сертифікат</translation>
     </message>
     <message>
         <source>(No certificate available for this error)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Для цієї помилки немає сертифікату)</translation>
     </message>
     <message>
         <source>Valid:</source>
-        <translation type="unfinished"></translation>
+        <translation>Чинний:</translation>
     </message>
     <message>
         <source>yes</source>
-        <translation type="unfinished"></translation>
+        <translation>так</translation>
     </message>
     <message>
         <source>no</source>
-        <translation type="unfinished"></translation>
+        <translation>ні</translation>
     </message>
     <message>
         <source>Effective date:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ефективна дата:</translation>
     </message>
     <message>
         <source>Expiry date:</source>
-        <translation type="unfinished"></translation>
+        <translation>Дата завершення:</translation>
     </message>
     <message>
         <source>Version:</source>
-        <translation type="unfinished"></translation>
+        <translation>Версія:</translation>
     </message>
     <message>
         <source>Serial number:</source>
-        <translation type="unfinished"></translation>
+        <translation>Серійний номер:</translation>
     </message>
     <message>
         <source>MD5 digest:</source>
-        <translation type="unfinished"></translation>
+        <translation>MD5 дайджест:</translation>
     </message>
     <message>
         <source>SHA1 digest:</source>
-        <translation type="unfinished"></translation>
+        <translation>SHA1 дайджест:</translation>
     </message>
     <message>
         <source>Issuer info</source>
@@ -460,7 +460,7 @@
     </message>
     <message>
         <source>Organization:</source>
-        <translation type="unfinished"></translation>
+        <translation>Організація:</translation>
     </message>
     <message>
         <source>Common name:</source>
@@ -472,15 +472,15 @@
     </message>
     <message>
         <source>Organizational unit name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Назва підрозділу:</translation>
     </message>
     <message>
         <source>Country name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Країна:</translation>
     </message>
     <message>
         <source>State or province name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Штат або область:</translation>
     </message>
     <message>
         <source>Subject info</source>
@@ -498,14 +498,14 @@
     <name>LeechCraft::TabContentsManager</name>
     <message>
         <source>Summary</source>
-        <translation type="unfinished">Підсумок</translation>
+        <translation>Підсумок</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::TagsViewer</name>
     <message>
         <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>Переіменувати</translation>
     </message>
     <message>
         <source>Enter new tag name</source>
@@ -516,11 +516,11 @@
     <name>LogToolBox</name>
     <message>
         <source>Log</source>
-        <translation type="unfinished"></translation>
+        <translation>Журнал</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished">Очистити</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -534,10 +534,10 @@
     <name>Proxy</name>
     <message numerus="yes">
         <source>%n day(s), </source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n день, </numerusform>
+            <numerusform>%n дені, </numerusform>
+            <numerusform>%n денів, </numerusform>
         </translation>
     </message>
 </context>
@@ -545,11 +545,11 @@
     <name>QObject</name>
     <message>
         <source>Could not cd into %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося увійти до %1</translation>
     </message>
     <message>
         <source>Could not create %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося створити %1</translation>
     </message>
 </context>
 <context>
@@ -563,22 +563,22 @@
     <name>ShortcutManager</name>
     <message>
         <source>Shortcut manager</source>
-        <translation type="unfinished">Менеджер комбінацій клавіш</translation>
+        <translation>Менеджер комбінацій клавіш</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Назва</translation>
+        <translation>Назва</translation>
     </message>
     <message>
         <source>Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Комбінація клавіш</translation>
     </message>
 </context>
 <context>
     <name>SslErrorsDialog</name>
     <message>
         <source>SSL errors occured</source>
-        <translation type="unfinished"></translation>
+        <translation>Трапилася помилка SSL</translation>
     </message>
     <message>
         <source>&lt;Here we say that errors happened&gt;</source>
@@ -586,15 +586,15 @@
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Назва</translation>
+        <translation>Назва</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Значення</translation>
     </message>
     <message>
         <source>Don&apos;t remember my choice</source>
-        <translation type="unfinished"></translation>
+        <translation>Не запам&apos;ятовувати мій вибір</translation>
     </message>
     <message>
         <source>Remember my choice for the whole host</source>
@@ -609,7 +609,7 @@
     <name>TabContents</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished">Форма</translation>
+        <translation>Форма</translation>
     </message>
 </context>
 <context>

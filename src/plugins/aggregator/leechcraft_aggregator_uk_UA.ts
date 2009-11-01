@@ -40,7 +40,7 @@
         <location filename="export.ui" line="25"/>
         <source>Save to:</source>
         <oldsource>Where to save:</oldsource>
-        <translation type="unfinished">Куди зберегти:</translation>
+        <translation>Куди зберігати:</translation>
     </message>
     <message>
         <location filename="export.ui" line="37"/>
@@ -443,7 +443,7 @@
         <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you are really sure that you want to do it?</source>
         <oldsource>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you are really sure that you want to do this?</oldsource>
         <comment>Feed removing confirmation</comment>
-        <translation type="unfinished">Ви збираєтеся назавжди видалити стрічку:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Ви насправді впевнені, що бажаєте це зробити?</translation>
+        <translation>Ви збираєтеся назавжди видалити стрічку:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Ви насправді впевнені, що бажаєте це зробити?</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="662"/>
@@ -500,17 +500,17 @@
     <message>
         <location filename="core.cpp" line="103"/>
         <source>Name</source>
-        <translation type="unfinished">Назва</translation>
+        <translation>Назва</translation>
     </message>
     <message>
         <location filename="core.cpp" line="104"/>
         <source>Date</source>
-        <translation type="unfinished">Дата</translation>
+        <translation>Дата</translation>
     </message>
     <message>
         <location filename="core.cpp" line="255"/>
         <source>This feed is already added.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ця стрічка вже існує.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="281"/>
@@ -520,72 +520,72 @@
     <message>
         <location filename="core.cpp" line="308"/>
         <source>Could not remove the feed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Неможливо видалити стрічку.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="542"/>
         <source>Could not get feed settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Неможливо отримати налаштування для стрічки</translation>
     </message>
     <message>
         <location filename="core.cpp" line="557"/>
         <source>Could not update feed settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Неможливо оновити налаштування для стрічки</translation>
     </message>
     <message>
         <location filename="core.cpp" line="582"/>
         <source>Could not update feed</source>
-        <translation type="unfinished"></translation>
+        <translation>Неможливо оновити стрічку</translation>
     </message>
     <message>
         <location filename="core.cpp" line="617"/>
         <source>Could not open file %1 for reading.</source>
-        <translation type="unfinished">Не можу відкрити файл %1 для читання.</translation>
+        <translation>Не можу відкрити файл %1 для читання.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="634"/>
         <source>XML error, file %1, line %2, column %3, error:&lt;br /&gt;%4</source>
-        <translation type="unfinished">Помилка аналізу XML, файл %1, рядок %2, стовпчик %3, текс помилки:&lt;br/&gt;%4</translation>
+        <translation>Помилка аналізу XML, файл %1, рядок %2, стовпчик %3, текс помилки:&lt;br/&gt;%4</translation>
     </message>
     <message>
         <location filename="core.cpp" line="645"/>
         <source>OPML from file %1 is not valid.</source>
-        <translation type="unfinished">OPML з файлу %1 не валідний</translation>
+        <translation>OPML з файлу %1 не чинний.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="918"/>
         <source>Provided web browser is wrong web browser.</source>
-        <translation type="unfinished"></translation>
+        <translation>Наданий веб браузер неправильний.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="975"/>
         <source>Downloaded file from url %1 has null size!</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантажений за адресою %1 файл порожній!</translation>
     </message>
     <message>
         <location filename="core.cpp" line="987"/>
         <source>Feed with url %1 not found.</source>
-        <translation type="unfinished">Не можу знайти стрічку за адресою %1.</translation>
+        <translation>Стрічка за адресою %1 не знайдена.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1001"/>
         <source>XML file parse error: %1, line %2, column %3, filename %4, from %5</source>
-        <translation type="unfinished">Помилка аналізу XML: %1, рядок %2, стовпчик %3, ім&apos;я файлу %4, з %5</translation>
+        <translation>Помилка аналізу XML: %1, рядок %2, стовпчик %3, ім&apos;я файлу %4, з %5</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1014"/>
         <source>Could not find parser to parse file %1 from %2</source>
-        <translation type="unfinished">Не можу знайти обробник для файлу %1 з %2</translation>
+        <translation>Не можу знайти обробник для файлу %1 з %2</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1093"/>
         <source>Address not found:&lt;br /&gt;%1</source>
-        <translation type="unfinished"></translation>
+        <translation>Адреса не знайдена:&lt;br /&gt;%1</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1096"/>
         <source>Access denied:&lt;br /&gt;%1</source>
-        <translation type="unfinished"></translation>
+        <translation>Доступ заборонено:&lt;br /&gt;%1</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1099"/>
@@ -606,17 +606,17 @@
     <message>
         <location filename="core.cpp" line="1400"/>
         <source>Added channel &quot;%1&quot; (has %2 items)</source>
-        <translation type="unfinished"></translation>
+        <translation>Доданий канал &quot;%1&quot; (що має %2 елементів)</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1419"/>
         <source>Updated channel &quot;%1&quot; (%2 new items)</source>
-        <translation type="unfinished"></translation>
+        <translation>Оновлено канал &quot;%1&quot; (%2 нових елементів)</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1473"/>
         <source>Could not mark channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Неможливо позначити канал</translation>
     </message>
 </context>
 <context>
@@ -624,34 +624,34 @@
     <message>
         <location filename="importbinary.cpp" line="103"/>
         <source>Select binary file</source>
-        <translation type="unfinished"></translation>
+        <translation>Обрати двійковий файл</translation>
     </message>
     <message>
         <location filename="importbinary.cpp" line="105"/>
         <source>Aggregator exchange files (*.lcae);;All files (*.*)</source>
-        <translation type="unfinished">Файл обміну Aggregator (*.lcae);;Всі файли (*.*)</translation>
+        <translation>Файл обміну Aggregator (*.lcae);;Всі файли (*.*)</translation>
     </message>
     <message>
         <location filename="importbinary.cpp" line="130"/>
         <location filename="importbinary.cpp" line="144"/>
         <location filename="importbinary.cpp" line="157"/>
         <source>LeechCraft</source>
-        <translation type="unfinished">LeechCraft</translation>
+        <translation>LeechCraft</translation>
     </message>
     <message>
         <location filename="importbinary.cpp" line="131"/>
         <source>Could not open file %1 for reading.</source>
-        <translation type="unfinished">Не можу відкрити файл %1 для читання.</translation>
+        <translation>Неможливо відкрити файл %1 для читання.</translation>
     </message>
     <message>
         <location filename="importbinary.cpp" line="145"/>
         <source>Selected file %1 is not a valid LeechCraft::Aggregator exchange file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Обраний файл %1 не є чинним файлом обміну  LeechCraft::Aggregator.</translation>
     </message>
     <message>
         <location filename="importbinary.cpp" line="158"/>
         <source>Selected file %1 is a valid LeechCraft::Aggregator exchange file, but its version %2 is unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Обраний файл %1 є чинним файлом обміну  LeechCraft::Aggregator, але має невідому версію %2</translation>
     </message>
 </context>
 <context>
@@ -740,32 +740,32 @@
     <message>
         <location filename="itemswidget.cpp" line="230"/>
         <source>%1 comments, &lt;a href=&apos;%2&apos;%3&gt;view them&lt;/a&gt;&lt;/div&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 коментарів, &lt;a href=&apos;%2&apos;%3&gt;view them&lt;/a&gt;&lt;/div&gt;</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="236"/>
         <source>%1 comments&lt;/div&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 коментарів&lt;/div&gt;</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="240"/>
         <source>&lt;a href=&apos;%1&apos;%2&gt;View comments&lt;/a&gt;&lt;/div&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;a href=&apos;%1&apos;%2&gt;Переглянути коментарі&lt;/a&gt;&lt;/div&gt;</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="263"/>
         <source>File of type %1, size %2:&lt;br /&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип файлу %1, розмір %2:&lt;br /&gt;</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="268"/>
         <source>File of type %1 and unknown length:&lt;br /&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип файлу %1 розмір невідомий:&lt;br /&gt;</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="274"/>
         <source>&lt;br /&gt;Specified language: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br /&gt;Вказана мова: %1</translation>
     </message>
 </context>
 <context>

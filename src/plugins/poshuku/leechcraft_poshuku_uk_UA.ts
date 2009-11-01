@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="uk_UA">
 <context>
     <name>AddToFavoritesDialog</name>
     <message>
         <location filename="addtofavoritesdialog.ui" line="14"/>
         <source>Add to favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати до улюблених</translation>
     </message>
     <message>
         <location filename="addtofavoritesdialog.ui" line="29"/>
         <source>URL:</source>
-        <translation type="unfinished"></translation>
+        <translation>Адреса:</translation>
     </message>
     <message>
         <location filename="addtofavoritesdialog.ui" line="43"/>
         <source>Title:</source>
-        <translation type="unfinished"></translation>
+        <translation>Назва:</translation>
     </message>
     <message>
         <location filename="addtofavoritesdialog.ui" line="53"/>
         <source>Tags:</source>
-        <translation type="unfinished"></translation>
+        <translation>Позначки:</translation>
     </message>
 </context>
 <context>
@@ -37,42 +37,42 @@
     <message>
         <location filename="cookieseditdialog.ui" line="14"/>
         <source>Cookies Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор кукісів</translation>
     </message>
     <message>
         <location filename="cookieseditdialog.ui" line="37"/>
         <source>Domain:</source>
-        <translation type="unfinished"></translation>
+        <translation>Домен:</translation>
     </message>
     <message>
         <location filename="cookieseditdialog.ui" line="51"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Назва:</translation>
     </message>
     <message>
         <location filename="cookieseditdialog.ui" line="65"/>
         <source>Expiration date:</source>
-        <translation type="unfinished"></translation>
+        <translation>Дата завершення:</translation>
     </message>
     <message>
         <location filename="cookieseditdialog.ui" line="79"/>
         <source>Path:</source>
-        <translation type="unfinished"></translation>
+        <translation>Шлях:</translation>
     </message>
     <message>
         <location filename="cookieseditdialog.ui" line="93"/>
         <source>Value:</source>
-        <translation type="unfinished"></translation>
+        <translation>Значення:</translation>
     </message>
     <message>
         <location filename="cookieseditdialog.ui" line="110"/>
         <source>Secure</source>
-        <translation type="unfinished"></translation>
+        <translation>Безпечно</translation>
     </message>
     <message>
         <location filename="cookieseditdialog.ui" line="117"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити</translation>
     </message>
 </context>
 <context>
@@ -89,22 +89,22 @@
         <location filename="finddialog.ui" line="14"/>
         <location filename="finddialog.ui" line="51"/>
         <source>Find</source>
-        <translation type="unfinished"></translation>
+        <translation>Знайти</translation>
     </message>
     <message>
         <location filename="finddialog.ui" line="27"/>
         <source>Backwards</source>
-        <translation type="unfinished"></translation>
+        <translation>Зворотній пошук</translation>
     </message>
     <message>
         <location filename="finddialog.ui" line="34"/>
         <source>Case</source>
-        <translation type="unfinished"></translation>
+        <translation>Враховувати регістр</translation>
     </message>
     <message>
         <location filename="finddialog.ui" line="41"/>
         <source>Cycle</source>
-        <translation type="unfinished"></translation>
+        <translation>По колу</translation>
     </message>
     <message>
         <location filename="finddialog.ui" line="61"/>
@@ -114,7 +114,7 @@
     <message>
         <location filename="finddialog.ui" line="58"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрити</translation>
     </message>
 </context>
 <context>
@@ -122,7 +122,7 @@
     <message>
         <location filename="addtofavoritesdialog.cpp" line="21"/>
         <source>untagged</source>
-        <translation type="unfinished"></translation>
+        <translation>без позначок</translation>
     </message>
 </context>
 <context>
@@ -130,82 +130,82 @@
     <message>
         <location filename="browserwidget.cpp" line="76"/>
         <source>More...</source>
-        <translation type="unfinished"></translation>
+        <translation>Більше...</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="79"/>
         <source>Add to favorites...</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати до улюблених...</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="84"/>
         <source>Find...</source>
-        <translation type="unfinished"></translation>
+        <translation>Знайти...</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="89"/>
         <source>Print...</source>
-        <translation type="unfinished"></translation>
+        <translation>Друкувати...</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="94"/>
         <source>Print with preview...</source>
-        <translation type="unfinished"></translation>
+        <translation>Переглянути і надрукувати...</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="99"/>
         <source>Take page&apos;s screenshot...</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти як зображення...</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="104"/>
         <source>View sources...</source>
-        <translation type="unfinished"></translation>
+        <translation>Переглянути код сторінки...</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="109"/>
         <source>Create new tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Нова вкладка</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="113"/>
         <source>Close this tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрити поточну вкладку</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="117"/>
         <source>Zoom in</source>
-        <translation type="unfinished"></translation>
+        <translation>Збільшити</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="121"/>
         <source>Zoom out</source>
-        <translation type="unfinished"></translation>
+        <translation>Зменшити</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="125"/>
         <source>Reset zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Відновити масштаб</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="129"/>
         <source>Import XBEL...</source>
-        <translation type="unfinished"></translation>
+        <translation>Імпортувати в XBEL...</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="133"/>
         <source>Export XBEL...</source>
-        <translation type="unfinished"></translation>
+        <translation>Експортувати з XBEL...</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="160"/>
         <source>Recently closed</source>
-        <translation type="unfinished"></translation>
+        <translation>Нещодавно закриті</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="167"/>
         <source>External links</source>
-        <translation type="unfinished"></translation>
+        <translation>Заовнішні посилання</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="484"/>
@@ -265,12 +265,12 @@
     <message>
         <location filename="browserwidget.cpp" line="528"/>
         <source>Print web page</source>
-        <translation type="unfinished"></translation>
+        <translation>Друкувати веб сторінку</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="629"/>
         <source>Save screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти зображення</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="643"/>
@@ -281,12 +281,12 @@
     <message>
         <location filename="browserwidget.cpp" line="644"/>
         <source>Could not open %1 for write</source>
-        <translation type="unfinished"></translation>
+        <translation>Не можу відкрити %1 для запису</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="653"/>
         <source>Could not write screenshot to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не можу записати зображення до %1</translation>
     </message>
 </context>
 <context>
@@ -302,7 +302,7 @@
     <message>
         <location filename="core.cpp" line="54"/>
         <source>Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Плагіни</translation>
     </message>
     <message>
         <location filename="core.cpp" line="451"/>
