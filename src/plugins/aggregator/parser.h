@@ -64,6 +64,7 @@ namespace LeechCraft
 				static const QString ITunes_;
 				static const QString GeoRSSSimple_;
 				static const QString GeoRSSW3_;
+				static const QString Media_;
 
 				virtual channels_container_t Parse (const QDomDocument&) const = 0;
 				QString GetLink (const QDomElement&) const;

@@ -37,6 +37,7 @@ namespace LeechCraft
 			const QString Parser::ITunes_ = "http://www.itunes.com/dtds/podcast-1.0.dtd";
 			const QString Parser::GeoRSSSimple_ = "http://www.georss.org/georss";
 			const QString Parser::GeoRSSW3_ = "http://www.w3.org/2003/01/geo/wgs84_pos#";
+			const QString Parser::Media_ = "http://search.yahoo.com/mrss/";
 
 			Parser::~Parser ()
 			{

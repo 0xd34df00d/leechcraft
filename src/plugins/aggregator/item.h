@@ -58,6 +58,78 @@ namespace LeechCraft
 				QString Lang_;
 			};
 
+			struct MRSSThumbnail
+			{
+				QString URL_;
+				int Width_;
+				int Height_;
+				QString Time_;
+			};
+
+			struct MRSSCredit
+			{
+				QString Role_;
+				QString Who_;
+			};
+
+			struct MRSSComment
+			{
+				QString Type_;
+				QString Comment_;
+			};
+
+			struct MRSSPeerLink
+			{
+				QString Type_;
+				QString Link_;
+			};
+
+			struct MRSSScene
+			{
+				QString Title_;
+				QString Description_;
+				QString StartTime_;
+				QString EndTime_;
+			};
+
+			struct MRSSEntry
+			{
+				QString URL_;
+				qint64 Size_;
+				QString Type_;
+				QString Medium_;
+				bool IsDefault_;
+				QString Expression_;
+				int Bitrate_;
+				double Framerate_;
+				double SamplingRate_;
+				int Channels_;
+				int Duration_;
+				int Width_;
+				int Height_;
+				QString Lang_;
+				int Group_;
+				QString Rating_;
+				QString RatingScheme_;
+				QString Title_;
+				QString Description_;
+				QString Keywords_;
+				QString CopyrightURL_;
+				QString CopyrightText_;
+				int RatingAverage_;
+				int RatingCount_;
+				int RatingMin_;
+				int RatingMax_;
+				int Views_;
+				int Favs_;
+				int Tags_;
+				QList<MRSSThumbnail> Thumbnails_;
+				QList<MRSSCredit> Credits_;
+				QList<MRSSComment> Comments_;
+				QList<MRSSPeerLink> PeerLinks_;
+				QList<MRSSScene> Scenes_;
+			};
+
 			struct Item
 			{
 				/** The title of the item as showed in the item list.
@@ -125,6 +197,10 @@ namespace LeechCraft
 				 */
 				double Longitude_;
 
+				/* List of MediaRSS entries.
+				 */
+				QList<MRSSEntry> MRSSEntries_;
+
 				/** Returns the simplified (short) representation of this item.
 				 *
 				 * @return The simplified (short) representation.
@@ -147,6 +223,20 @@ namespace LeechCraft
 			bool operator== (const Item&, const Item&);
 			QDataStream& operator<< (QDataStream&, const Enclosure&);
 			QDataStream& operator>> (QDataStream&, Enclosure&);
+			QDataStream& operator<< (QDataStream&, const MRSSEntry&);
+			QDataStream& operator>> (QDataStream&, MRSSEntry&);
+			QDataStream& operator<< (QDataStream&, const MRSSThumbnail&);
+			QDataStream& operator>> (QDataStream&, MRSSThumbnail&);
+			QDataStream& operator<< (QDataStream&, const MRSSCredit&);
+			QDataStream& operator>> (QDataStream&, MRSSCredit&);
+			QDataStream& operator<< (QDataStream&, const MRSSComment&);
+			QDataStream& operator>> (QDataStream&, MRSSComment&);
+			QDataStream& operator<< (QDataStream&, const MRSSPeerLink&);
+			QDataStream& operator>> (QDataStream&, MRSSPeerLink&);
+			QDataStream& operator<< (QDataStream&, const MRSSScene&);
+			QDataStream& operator>> (QDataStream&, MRSSScene&);
+			QDataStream& operator<< (QDataStream&, const MRSSEntry&);
+			QDataStream& operator>> (QDataStream&, MRSSEntry&);
 			QDataStream& operator<< (QDataStream&, const Item&);
 			QDataStream& operator>> (QDataStream&, Item&);
 			void Print (const Item&);

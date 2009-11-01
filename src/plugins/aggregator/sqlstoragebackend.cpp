@@ -1098,6 +1098,28 @@ namespace LeechCraft
 			
 				return success;
 			}
+
+			QString SQLStorageBackend::GetBoolType () const
+			{
+				switch (Type_)
+				{
+					case SBSQLite:
+						return "TINYINT";
+					case SBPostgres:
+						return "BOOLEAN";
+				}
+			}
+
+			QString SQLStorageBackend::GetBlobType () const
+			{
+				switch (Type_)
+				{
+					case SBSQLite:
+						return "BLOB";
+					case SBPostgres:
+						return "BYTEA";
+				}
+			}
 			
 			bool SQLStorageBackend::InitializeTables ()
 			{
@@ -1116,24 +1138,13 @@ namespace LeechCraft
 			
 				if (!DB_.tables ().contains ("feeds_settings"))
 				{
-					QString adeType;
-					switch (Type_)
-					{
-						case SBSQLite:
-							adeType = "TINYINT";
-							break;
-						case SBPostgres:
-							adeType = "BOOLEAN";
-							break;
-					}
-
 					if (!query.exec (QString ("CREATE TABLE feeds_settings ("
 									"feed_url TEXT PRIMARY KEY, "
 									"update_timeout INTEGER NOT NULL, "
 									"num_items INTEGER NOT NULL, "
 									"item_age INTEGER NOT NULL, "
 									"auto_download_enclosures %1 NOT NULL"
-									");").arg (adeType)))
+									");").arg (GetBoolType ())))
 					{
 						LeechCraft::Util::DBLock::DumpError (query.lastError ());
 						return false;
@@ -1162,16 +1173,6 @@ namespace LeechCraft
 			
 				if (!DB_.tables ().contains ("channels"))
 				{
-					QString blob;
-					switch (Type_)
-					{
-						case SBSQLite:
-							blob = "BLOB";
-							break;
-						case SBPostgres:
-							blob = "BYTEA";
-							break;
-					}
 					if (!query.exec (QString ("CREATE TABLE channels ("
 							"parent_feed_url TEXT, "
 							"url TEXT, "
@@ -1184,7 +1185,7 @@ namespace LeechCraft
 							"pixmap_url TEXT, "
 							"pixmap %1, "
 							"favicon %1 "
-							");").arg (blob)))
+							");").arg (GetBlobType ())))
 					{
 						LeechCraft::Util::DBLock::DumpError (query.lastError ());
 						return false;
@@ -1206,16 +1207,6 @@ namespace LeechCraft
 			
 				if (!DB_.tables ().contains ("items"))
 				{
-					QString unreadType;
-					switch (Type_)
-					{
-						case SBSQLite:
-							unreadType = "TINYINT";
-							break;
-						case SBPostgres:
-							unreadType = "BOOLEAN";
-							break;
-					}
 					if (!query.exec (QString ("CREATE TABLE items ("
 							"parents_hash TEXT, "
 							"title TEXT, "
@@ -1231,7 +1222,7 @@ namespace LeechCraft
 							"comments_page_url TEXT, "
 							"latitude TEXT, "
 							"longitude TEXT"
-							");").arg (unreadType)))
+							");").arg (GetBoolType ())))
 					{
 						LeechCraft::Util::DBLock::DumpError (query.lastError ());
 						return false;
@@ -1296,6 +1287,163 @@ namespace LeechCraft
 					if (!query.exec ("CREATE INDEX "
 								"idx_enclosures_item_parents_hash_item_title_item_url "
 								"ON enclosures (item_parents_hash, item_title, item_url);"))
+						LeechCraft::Util::DBLock::DumpError (query.lastError ());
+				}
+
+				if (!DB_.tables ().contains ("mrss"))
+				{
+					if (!query.exec (QString ("CREATE TABLE mrss ("
+									"url TEXT, "
+									"size BIGINT, "
+									"type TEXT, "
+									"medium TEXT, "
+									"is_default %1, "
+									"expression TEXT, "
+									"bitrate INTEGER, "
+									"framerate REAL, "
+									"samplingrate REAL, "
+									"channels SMALLINT, "
+									"duration INTEGER, "
+									"width INTEGER, "
+									"height INTEGER, "
+									"lang TEXT, "
+									"mediagroup INTEGER, "
+									"rating TEXT, "
+									"rating_scheme TEXT, "
+									"title TEXT, "
+									"description TEXT, "
+									"keywords TEXT, "
+									"copyright_url TEXT, "
+									"copyright_text TEXT, "
+									"star_rating_average SMALLINT, "
+									"star_rating_count INTEGER, "
+									"star_rating_min SMALLINT, "
+									"star_rating_max SMALLINT, "
+									"stat_views INTEGER, "
+									"stat_favs INTEGER, "
+									"tags TEXT, "
+									"item_parents_hash TEXT, "
+									"item_title TEXT, "
+									"item_url TEXT "
+									");").arg (GetBoolType ())))
+					{
+						LeechCraft::Util::DBLock::DumpError (query.lastError ());
+						return false;
+					}
+
+					if (!query.exec ("CREATE INDEX "
+								"idx_mrss_item_parents_hash_item_title_item_url "
+								"ON mrss (item_parents_hash, item_title, item_url);"))
+						LeechCraft::Util::DBLock::DumpError (query.lastError ());
+				}
+				
+				if (!DB_.tables ().contains ("mrss_thumbnails"))
+				{
+					if (!query.exec ("CREATE TABLE mrss_thumbnails ("
+								"parent_url TEXT, "
+								"item_parents_hash TEXT, "
+								"item_title TEXT, "
+								"item_url TEXT, "
+								"url TEXT, "
+								"width INTEGER, "
+								"height INTEGER, "
+								"time TEXT"
+								");"))
+					{
+						LeechCraft::Util::DBLock::DumpError (query.lastError ());
+						return false;
+					}
+
+					if (!query.exec ("CREATE INDEX "
+								"idx_mrss_thumbnails_parent_url_item_parents_hash_item_title_item_url "
+								"ON mrss_thumbnails (parent_url, item_parents_hash, item_title, item_url);"))
+						LeechCraft::Util::DBLock::DumpError (query.lastError ());
+				}
+
+				if (!DB_.tables ().contains ("mrss_credits"))
+				{
+
+					if (!query.exec ("CREATE TABLE mrss_credits ("
+								"parent_url TEXT, "
+								"item_parents_hash TEXT, "
+								"item_title TEXT, "
+								"item_url TEXT, "
+								"role TEXT, "
+								"who TEXT"
+								");"))
+					{
+						LeechCraft::Util::DBLock::DumpError (query.lastError ());
+						return false;
+					}
+
+					if (!query.exec ("CREATE INDEX "
+								"idx_mrss_credits_parent_url_item_parents_hash_item_title_item_url "
+								"ON mrss_credits (parent_url, item_parents_hash, item_title, item_url);"))
+						LeechCraft::Util::DBLock::DumpError (query.lastError ());
+				}
+
+				if (!DB_.tables ().contains ("mrss_comments"))
+				{
+					if (!query.exec ("CREATE TABLE mrss_comments ("
+								"parent_url TEXT, "
+								"item_parents_hash TEXT, "
+								"item_title TEXT, "
+								"item_url TEXT, "
+								"type TEXT, "
+								"comment TEXT"
+								");"))
+					{
+						LeechCraft::Util::DBLock::DumpError (query.lastError ());
+						return false;
+					}
+
+					if (!query.exec ("CREATE INDEX "
+								"idx_mrss_comments_parent_url_item_parents_hash_item_title_item_url "
+								"ON mrss_comments (parent_url, item_parents_hash, item_title, item_url);"))
+						LeechCraft::Util::DBLock::DumpError (query.lastError ());
+				}
+
+				if (!DB_.tables ().contains ("mrss_peerlinks"))
+				{
+					if (!query.exec ("CREATE TABLE mrss_peerlinks ("
+								"parent_url TEXT, "
+								"item_parents_hash TEXT, "
+								"item_title TEXT, "
+								"item_url TEXT, "
+								"type TEXT, "
+								"link TEXT"
+								");"))
+					{
+						LeechCraft::Util::DBLock::DumpError (query.lastError ());
+						return false;
+					}
+
+					if (!query.exec ("CREATE INDEX "
+								"idx_mrss_peerlinks_parent_url_item_parents_hash_item_title_item_url "
+								"ON mrss_peerlinks (parent_url, item_parents_hash, item_title, item_url);"))
+						LeechCraft::Util::DBLock::DumpError (query.lastError ());
+				}
+
+				if (!DB_.tables ().contains ("mrss_scenes"))
+				{
+					if (!query.exec ("CREATE TABLE mrss_scenes ("
+								"parent_url TEXT, "
+								"item_parents_hash TEXT, "
+								"item_title TEXT, "
+								"item_url TEXT, "
+								"title TEXT, "
+								"description TEXT, "
+								"start_time TEXT, "
+								"end_time TEXT"
+								");"))
+					{
+						LeechCraft::Util::DBLock::DumpError (query.lastError ());
+						return false;
+					}
+
+					if (!query.exec ("CREATE INDEX "
+								"idx_mrss_scenes_parent_url_item_parents_hash_item_title_item_url "
+								"ON mrss_scenes (parent_url, item_parents_hash, item_title, item_url);"))
 						LeechCraft::Util::DBLock::DumpError (query.lastError ());
 				}
 			

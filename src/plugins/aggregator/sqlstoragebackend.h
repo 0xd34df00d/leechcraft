@@ -328,6 +328,8 @@ namespace LeechCraft
 				virtual bool UpdateItemsStorage (int, int);
 				virtual void ToggleChannelUnread (const QString&, const QString&, bool);
 			private:
+				QString GetBoolType () const;
+				QString GetBlobType () const;
 				bool InitializeTables ();
 				QByteArray SerializePixmap (const QPixmap&) const;
 				QPixmap UnserializePixmap (const QByteArray&) const;
