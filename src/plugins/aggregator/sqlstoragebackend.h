@@ -288,7 +288,127 @@ namespace LeechCraft
 								   * - item_title
 								   * - item_url
 								   */
-								  GetEnclosures_;
+								  GetEnclosures_,
+								  /** Binds:
+								   * - url
+								   * - size
+								   * - type
+								   * - medium
+								   * - is_default
+								   * - expression
+								   * - bitrate
+								   * - framerate
+								   * - samplingrate
+								   * - channels
+								   * - duration
+								   * - width
+								   * - height
+								   * - lang
+								   * - mediagroup
+								   * - rating
+								   * - rating_scheme
+								   * - title
+								   * - description
+								   * - keywords
+								   * - copyright_url
+								   * - copyright_text
+								   * - star_rating_average
+								   * - star_rating_count
+								   * - star_rating_min
+								   * - star_rating_max
+								   * - stat_views
+								   * - stat_favs
+								   * - tags
+								   * - item_parents_hash
+								   * - item_title
+								   * - item_url
+								   */
+								  WriteMediaRSS_,
+								  /** Binds:
+								   * - item_parents_hash
+								   * - item_title
+								   * - item_url
+								   */
+								  RemoveMediaRSS_,
+								  /** Binds:
+								   * - parent_url
+								   * - item_parents_hash
+								   * - item_title
+								   * - item_url
+								   * - url
+								   * - width
+								   * - height
+								   * - time
+								   */
+								  WriteMediaRSSThumbnail_,
+								  /** Binds:
+								   * - parent_url
+								   * - item_parents_hash
+								   * - item_title
+								   * - item_url
+								   * - role
+								   * - who
+								   */
+								  WriteMediaRSSCredit_,
+								  /** Binds:
+								   * - parent_url
+								   * - item_parents_hash
+								   * - item_title
+								   * - item_url
+								   * - type
+								   * - comment
+								   */
+								  WriteMediaRSSComment_,
+								  /** Binds:
+								   * - parent_url
+								   * - item_parents_hash
+								   * - item_title
+								   * - item_url
+								   * - type
+								   * - link
+								   */
+								  WriteMediaRSSPeerLink_,
+								  /** Binds:
+								   * - parent_url
+								   * - item_parents_hash
+								   * - item_title
+								   * - item_url
+								   * - title
+								   * - description
+								   * - start_time
+								   * - end_time
+								   */
+								  WriteMediaRSSScene_,
+								  /** Binds:
+								   * - item_parents_hash
+								   * - item_title
+								   * - item_url
+								   */
+								  RemoveMediaRSSThumbnails_,
+								  /** Binds:
+								   * - item_parents_hash
+								   * - item_title
+								   * - item_url
+								   */
+								  RemoveMediaRSSCredits_,
+								  /** Binds:
+								   * - item_parents_hash
+								   * - item_title
+								   * - item_url
+								   */
+								  RemoveMediaRSSComments_,
+								  /** Binds:
+								   * - item_parents_hash
+								   * - item_title
+								   * - item_url
+								   */
+								  RemoveMediaRSSPeerLinks_,
+								  /** Binds:
+								   * - item_parents_hash
+								   * - item_title
+								   * - item_url
+								   */
+								  RemoveMediaRSSScenes_;
 			public:
 				SQLStorageBackend (Type);
 				virtual ~SQLStorageBackend ();
