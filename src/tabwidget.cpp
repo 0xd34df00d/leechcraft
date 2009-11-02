@@ -36,11 +36,6 @@ TabWidget::TabWidget (QWidget *parent)
 : QTabWidget (parent)
 , AsResult_ (false)
 {
-	connect (tabBar (),
-			SIGNAL (tabMoved (int, int)),
-			this,
-			SLOT (checkTabMoveAllowed (int, int)));
-
 	XmlSettingsManager::Instance ()->RegisterObject ("TabBarLocation",
 			this, "handleTabBarLocationChanged");
 
