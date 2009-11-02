@@ -35,6 +35,8 @@ namespace LeechCraft
 	protected:
 		virtual bool event (QEvent*);
 		virtual void tabRemoved (int);
+	private slots:
+		void handleTabBarLocationChanged ();
 	signals:
 		void moveHappened (int, int);
 	};

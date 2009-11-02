@@ -37,6 +37,26 @@
 					<label lang="ru" value="Текст под иконкой" />
 				</option>
 			</item>
+			<item type="combobox" property="TabBarLocation">
+				<label lang="en" value="Tab bar location:" />
+				<label lang="ru" value="Положение вкладок:" />
+				<option name="north" default="true">
+					<label lang="en" value="Top" />
+					<label lang="ru" value="Сверху" />
+				</option>
+				<option name="south">
+					<label lang="en" value="Bottom" />
+					<label lang="ru" value="Снизу" />
+				</option>
+				<option name="west">
+					<label lang="en" value="Left" />
+					<label lang="ru" value="Слева" />
+				</option>
+				<option name="east">
+					<label lang="en" value="Right" />
+					<label lang="ru" value="Справа" />
+				</option>
+			</item>
 			<item type="customwidget" name="IconSet">
 				<label lang="en" value="Icon set:" />
 				<label lang="ru" value="Набор иконок:" />

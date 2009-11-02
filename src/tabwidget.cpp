@@ -21,6 +21,7 @@
 #include <QHelpEvent>
 #include <QtDebug>
 #include "core.h"
+#include "xmlsettingsmanager.h"
 #include "3dparty/qxttooltip.h"
 
 /**
@@ -39,6 +40,11 @@ TabWidget::TabWidget (QWidget *parent)
 			SIGNAL (tabMoved (int, int)),
 			this,
 			SLOT (checkTabMoveAllowed (int, int)));
+
+	XmlSettingsManager::Instance ()->RegisterObject ("TabBarLocation",
+			this, "handleTabBarLocationChanged");
+
+	handleTabBarLocationChanged ();
 }
 
 void TabWidget::SetTooltip (int index, QWidget *widget)
@@ -76,5 +82,22 @@ void TabWidget::tabRemoved (int index)
 			Widgets_ [*i - 1] = Widgets_ [*i];
 			Widgets_.remove (*i);
 		}
+}
+
+void TabWidget::handleTabBarLocationChanged ()
+{
+	QTabWidget::TabPosition pos = QTabWidget::North;
+
+	QString value = XmlSettingsManager::Instance ()->
+		property ("TabBarLocation").toString ();
+
+	if (value == "south")
+		pos = QTabWidget::South;
+	else if (value == "west")
+		pos = QTabWidget::West;
+	else if (value == "east")
+		pos = QTabWidget::South;
+
+	setTabPosition (pos);
 }
 
