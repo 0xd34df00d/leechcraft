@@ -37,9 +37,11 @@ SET (UIS
 	)
 SET (TRANSLATIONS
 	leechcraft_chatter_ru_RU.ts
+	leechcraft_chatter_ar.ts
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_chatter_ru_RU.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_chatter_ar.qm
 	)
 
 QT4_WRAP_UI (C_UIS ${UIS})
