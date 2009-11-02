@@ -43,6 +43,7 @@ namespace LeechCraft
 				virtual void initializePage ();
 			private slots:
 				void on_Browse__released ();
+				void on_FileLocation__textEdited (const QString&);
 				void handleAccepted ();
 			signals:
 				void gotEntity (const LeechCraft::DownloadEntity&);

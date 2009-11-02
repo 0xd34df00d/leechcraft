@@ -107,14 +107,18 @@ namespace LeechCraft
 					return;
 
 				if (!CheckValidity (filename))
-				{
 					QMessageBox::critical (this,
 							tr ("LeechCraft"),
 							tr ("The file you've selected is not a valid OPML file."));
-					return;
-				}
+				else
+					Ui_.FileLocation_->setText (filename);
+				
+				emit completeChanged ();
+			}
 
-				Ui_.FileLocation_->setText (filename);
+			void AkregatorImportPage::on_FileLocation__textEdited (const QString& text)
+			{
+				emit completeChanged ();
 			}
 
 			void AkregatorImportPage::handleAccepted ()
