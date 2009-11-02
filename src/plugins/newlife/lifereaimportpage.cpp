@@ -112,14 +112,18 @@ namespace LeechCraft
 					return;
 
 				if (!CheckValidity (filename))
-				{
 					QMessageBox::critical (this,
 							tr ("LeechCraft"),
 							tr ("The directory you've selected is not Liferea's directory."));
-					return;
-				}
+				else
+					Ui_.FileLocation_->setText (filename);
 
-				Ui_.FileLocation_->setText (filename);
+				emit completeChanged ();
+			}
+
+			void LifereaImportPage::on_FileLocation__textEdited (const QString& text)
+			{
+				emit completeChanged ();
 			}
 
 			void LifereaImportPage::handleAccepted ()
