@@ -65,14 +65,6 @@ bool TabWidget::event (QEvent *e)
 		return QTabWidget::event (e);
 }
 
-void TabWidget::tabInserted (int index)
-{
-	/*
-	if (index < Core::Instance ().CountUnremoveableTabs ())
-		tabBar ()->setTabButton (index, QTabBar::RightSide, 0);
-		*/
-}
-
 void TabWidget::tabRemoved (int index)
 {
 	Widgets_.remove (index);
@@ -84,24 +76,5 @@ void TabWidget::tabRemoved (int index)
 			Widgets_ [*i - 1] = Widgets_ [*i];
 			Widgets_.remove (*i);
 		}
-}
-
-void TabWidget::checkTabMoveAllowed (int from, int to)
-{
-	/*
-	int unrem = Core::Instance ().CountUnremoveableTabs ();
-	if (!AsResult_ &&
-			(from < unrem || to < unrem))
-	{
-		AsResult_ = true;
-		tabBar ()->moveTab (to, from);
-	}
-	else
-	{
-		std::swap (Widgets_ [from], Widgets_ [to]);
-		emit moveHappened (from, to);
-	}
-	AsResult_ = false;
-	*/
 }
 
