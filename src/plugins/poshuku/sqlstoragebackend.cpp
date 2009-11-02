@@ -175,9 +175,19 @@ namespace LeechCraft
 				}
 			
 				HistoryTruncater_ = QSqlQuery (DB_);
-				HistoryTruncater_.prepare ("DELETE FROM history "
-						"WHERE date IN "
-						"	(SELECT date FROM history ORDER BY date DESC OFFSET :num)");
+				switch (Type_)
+				{
+					case SBSQLite:
+						HistoryTruncater_.prepare ("DELETE FROM history "
+								"ORDER BY date DESC "
+								"LIMIT 10000 OFFSET :num");
+						break;
+					case SBPostgres:
+						HistoryTruncater_.prepare ("DELETE FROM history "
+								"WHERE date IN "
+								"	(SELECT date FROM history ORDER BY date DESC OFFSET :num)");
+						break;
+				}
 			
 				FavoritesLoader_ = QSqlQuery (DB_);
 				switch (Type_)
