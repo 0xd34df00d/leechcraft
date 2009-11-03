@@ -195,7 +195,7 @@ namespace LeechCraft
 
 		QModelIndex MapToSource (const QModelIndex&) const;
 
-		void RemoveTab (int);
+		TabContainer* GetTabContainer () const;
 
 		void Setup (QObject*);
 

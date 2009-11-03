@@ -198,6 +198,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	Ui_.MainTabWidget_->setTabIcon (0, QIcon (":/resources/images/leechcraft.svg"));
 	Ui_.MainTabWidget_->AddAction2TabBar (Ui_.ActionNewTab_);
+	Ui_.MainTabWidget_->AddAction2TabBar (Ui_.ActionCloseTab_);
 
 	QToolButton *newTab = new QToolButton ();
 	newTab->setDefaultAction (Ui_.ActionNewTab_);
@@ -336,7 +337,16 @@ void LeechCraft::MainWindow::on_ActionNewTab__triggered ()
 
 void LeechCraft::MainWindow::on_ActionCloseTab__triggered ()
 {
-	Core::Instance ().RemoveTab (Ui_.MainTabWidget_->currentIndex ());
+	QAction *act = qobject_cast<QAction*> (sender ());
+	int pos = -1;
+	if (act && act->data ().canConvert<QPoint> ())
+	{
+		pos = Ui_.MainTabWidget_->TabAt (act->data ().value<QPoint> ());
+		act->setData (QVariant ());
+	}
+	else
+		pos = Ui_.MainTabWidget_->currentIndex ();
+	Core::Instance ().GetTabContainer ()->remove (pos);
 }
 
 void LeechCraft::MainWindow::on_ActionSettings__triggered ()

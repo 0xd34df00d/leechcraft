@@ -387,9 +387,9 @@ QModelIndex LeechCraft::Core::MapToSource (const QModelIndex& index) const
 	return MapToSourceRecursively (index);
 }
 
-void LeechCraft::Core::RemoveTab (int index)
+TabContainer* LeechCraft::Core::GetTabContainer () const
 {
-	TabContainer_->remove (index);
+	return TabContainer_.get ();
 }
 
 #define LC_APPENDER(a) a##_.Functors_.append (functor)
