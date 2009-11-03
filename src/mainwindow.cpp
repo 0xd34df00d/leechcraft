@@ -196,6 +196,10 @@ void LeechCraft::MainWindow::InitializeInterface ()
     Ui_.ActionShowStatusBar_->setProperty ("ActionIcon", "showstatusbar");
 
 	Ui_.MainTabWidget_->setTabIcon (0, QIcon (":/resources/images/leechcraft.svg"));
+	Ui_.MainTabWidget_->AddAction2TabBar (Ui_.ActionNewTab_);
+	QToolButton *newTab = new QToolButton ();
+	newTab->setDefaultAction (Ui_.ActionNewTab_);
+	Ui_.MainTabWidget_->setCornerWidget (newTab, Qt::TopLeftCorner);
 
 	XmlSettingsDialog_ = new XmlSettingsDialog ();
 	XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),

@@ -70,7 +70,6 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="ActionNewTab_"/>
    <addaction name="ActionSettings_"/>
   </widget>
   <widget class="QMenuBar" name="MenuBar_">

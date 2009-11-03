@@ -61,6 +61,7 @@ namespace LeechCraft
 		void handleScrollButtons ();
 		void handleCurrentChanged (int);
 		void handleMoveHappened (int, int);
+		void handleCloseAllButCurrent ();
 	private:
 		int FindTabForWidget (QWidget*) const;
 		QString MakeTabName (const QString&) const;

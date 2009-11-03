@@ -32,6 +32,8 @@ namespace LeechCraft
 	public:
 		TabWidget (QWidget* = 0);
 		void SetTooltip (int, QWidget*);
+		int TabAt (const QPoint&) const;
+		void AddAction2TabBar (QAction*);
 	protected:
 		virtual bool event (QEvent*);
 		virtual void tabRemoved (int);

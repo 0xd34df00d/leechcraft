@@ -19,6 +19,7 @@
 #include "tabcontainer.h"
 #include <QCoreApplication>
 #include <QKeyEvent>
+#include <QCursor>
 #include <QtDebug>
 #include <interfaces/imultitabs.h>
 #include "core.h"
@@ -59,6 +60,15 @@ TabContainer::TabContainer (TabWidget *tabWidget,
 			this, "handleScrollButtons");
 
 	handleScrollButtons ();
+
+	QAction *closeAllButCurrent = new QAction (tr ("Close all but this"),
+			this);
+	connect (closeAllButCurrent,
+			SIGNAL (triggered ()),
+			this,
+			SLOT (handleCloseAllButCurrent ()));
+	closeAllButCurrent->setProperty ("ActionIcon", "closeallbutcorrent");
+	TabWidget_->AddAction2TabBar (closeAllButCurrent);
 }
 
 TabContainer::~TabContainer ()
@@ -249,6 +259,16 @@ void TabContainer::handleMoveHappened (int from, int to)
 	std::swap (OriginalTabNames_ [from],
 			OriginalTabNames_ [to]);
 	InvalidateName ();
+}
+
+void TabContainer::handleCloseAllButCurrent ()
+{
+	/*
+	int cur = TabWidget_->TabAt (QCursor::pos ());
+	for (int i = TabWidget_->count () - 1; i >= 0; --i)
+		if (i != cur)
+			remove (i);
+			*/
 }
 
 int TabContainer::FindTabForWidget (QWidget *widget) const

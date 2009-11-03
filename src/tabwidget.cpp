@@ -36,6 +36,8 @@ TabWidget::TabWidget (QWidget *parent)
 : QTabWidget (parent)
 , AsResult_ (false)
 {
+	tabBar ()->setExpanding (false);
+	tabBar ()->setContextMenuPolicy (Qt::ActionsContextMenu);
 	XmlSettingsManager::Instance ()->RegisterObject ("TabBarLocation",
 			this, "handleTabBarLocationChanged");
 
@@ -45,6 +47,16 @@ TabWidget::TabWidget (QWidget *parent)
 void TabWidget::SetTooltip (int index, QWidget *widget)
 {
 	Widgets_ [index] = widget;
+}
+
+int TabWidget::TabAt (const QPoint& pos) const
+{
+	return tabBar ()->tabAt (tabBar ()->mapToGlobal (pos));
+}
+
+void TabWidget::AddAction2TabBar (QAction *act)
+{
+	tabBar ()->addAction (act);
 }
 
 bool TabWidget::event (QEvent *e)
