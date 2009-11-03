@@ -200,6 +200,14 @@
     <string>Show status bar</string>
    </property>
   </action>
+  <action name="ActionCloseTab_">
+   <property name="text">
+    <string>Close tab</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

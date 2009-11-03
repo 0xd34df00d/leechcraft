@@ -195,6 +195,8 @@ namespace LeechCraft
 
 		QModelIndex MapToSource (const QModelIndex&) const;
 
+		void RemoveTab (int);
+
 		void Setup (QObject*);
 
 		template<LeechCraft::HookID id>

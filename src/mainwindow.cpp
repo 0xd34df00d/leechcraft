@@ -185,6 +185,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	Ui_.ActionAddTask_->setProperty ("ActionIcon", "addjob");
 	Ui_.ActionNewTab_->setProperty ("ActionIcon", "newtab");
+	Ui_.ActionCloseTab_->setProperty ("ActionIcon", "closetab");
 	Ui_.ActionSettings_->setProperty ("ActionIcon", "settings");
 	Ui_.ActionAboutLeechCraft_->setProperty ("ActionIcon", "about");
 	Ui_.ActionAboutQt_->setIcon (qApp->style ()->
@@ -197,9 +198,14 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	Ui_.MainTabWidget_->setTabIcon (0, QIcon (":/resources/images/leechcraft.svg"));
 	Ui_.MainTabWidget_->AddAction2TabBar (Ui_.ActionNewTab_);
+
 	QToolButton *newTab = new QToolButton ();
 	newTab->setDefaultAction (Ui_.ActionNewTab_);
 	Ui_.MainTabWidget_->setCornerWidget (newTab, Qt::TopLeftCorner);
+
+	QToolButton *closeTab = new QToolButton ();
+	closeTab->setDefaultAction (Ui_.ActionCloseTab_);
+	Ui_.MainTabWidget_->setCornerWidget (closeTab, Qt::TopRightCorner);
 
 	XmlSettingsDialog_ = new XmlSettingsDialog ();
 	XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
@@ -326,6 +332,11 @@ void LeechCraft::MainWindow::on_ActionAddTask__triggered ()
 void LeechCraft::MainWindow::on_ActionNewTab__triggered ()
 {
 	TabContentsManager::Instance ().AddNewTab ();
+}
+
+void LeechCraft::MainWindow::on_ActionCloseTab__triggered ()
+{
+	Core::Instance ().RemoveTab (Ui_.MainTabWidget_->currentIndex ());
 }
 
 void LeechCraft::MainWindow::on_ActionSettings__triggered ()
