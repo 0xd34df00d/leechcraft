@@ -526,17 +526,17 @@
 <context>
     <name>LeechCraft::Plugins::Aggregator::ChannelsModel</name>
     <message>
-        <location filename="channelsmodel.cpp" line="41"/>
+        <location filename="channelsmodel.cpp" line="42"/>
         <source>Feed</source>
         <translation>Лента</translation>
     </message>
     <message>
-        <location filename="channelsmodel.cpp" line="42"/>
+        <location filename="channelsmodel.cpp" line="43"/>
         <source>Unread items</source>
         <translation>Непрочитанные</translation>
     </message>
     <message>
-        <location filename="channelsmodel.cpp" line="43"/>
+        <location filename="channelsmodel.cpp" line="44"/>
         <source>Last build</source>
         <translation>Последняя сборка</translation>
     </message>
@@ -789,12 +789,12 @@
 <context>
     <name>LeechCraft::Plugins::Aggregator::ItemsListModel</name>
     <message>
-        <location filename="itemslistmodel.cpp" line="35"/>
+        <location filename="itemslistmodel.cpp" line="36"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="itemslistmodel.cpp" line="35"/>
+        <location filename="itemslistmodel.cpp" line="36"/>
         <source>Date</source>
         <translation>Дата</translation>
     </message>
@@ -817,52 +817,52 @@
         <translation>Подписаться на комментарии</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="237"/>
+        <location filename="itemswidget.cpp" line="239"/>
         <source>Published on %1 by %2</source>
         <translation>Опубликовал %2 в %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="243"/>
+        <location filename="itemswidget.cpp" line="245"/>
         <source>Published on %1</source>
         <translation>Опубликовано в %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="248"/>
+        <location filename="itemswidget.cpp" line="250"/>
         <source>Published by %1</source>
         <translation>Опубликовал %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="261"/>
+        <location filename="itemswidget.cpp" line="263"/>
         <source>%1 comments, &lt;a href=&apos;%2&apos;%3&gt;view them&lt;/a&gt;&lt;/div&gt;</source>
         <translation>&lt;a href=&apos;%2&apos;%3&gt;посмотреть %1 комментариев&lt;/a&gt;&lt;/div&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="267"/>
+        <location filename="itemswidget.cpp" line="269"/>
         <source>%1 comments&lt;/div&gt;</source>
         <translation>%1 комментариев&lt;/div&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="271"/>
+        <location filename="itemswidget.cpp" line="273"/>
         <source>&lt;a href=&apos;%1&apos;%2&gt;View comments&lt;/a&gt;&lt;/div&gt;</source>
         <translation>&lt;a href=&apos;%1&apos;%2&gt;Посмотреть комментарии&lt;/a&gt;&lt;/div&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="283"/>
+        <location filename="itemswidget.cpp" line="285"/>
         <source>Geoposition: &lt;a href=&apos;%3&apos;%4 title=&apos;Google Maps&apos;&gt;%1 %2&lt;/a&gt;&lt;/div&gt;</source>
         <translation>Положение: &lt;a href=&apos;%3&apos;%4 title=&apos;Google Maps&apos;&gt;%1 %2&lt;/a&gt;&lt;/div&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="309"/>
+        <location filename="itemswidget.cpp" line="311"/>
         <source>File of type %1, size %2:&lt;br /&gt;</source>
         <translation>Файл типа %1, размер %2:&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="313"/>
+        <location filename="itemswidget.cpp" line="315"/>
         <source>File of type %1 and unknown length:&lt;br /&gt;</source>
         <translation>Файл типа %1 и неизвестного размера:&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="319"/>
+        <location filename="itemswidget.cpp" line="321"/>
         <source>&lt;br /&gt;Specified language: %1</source>
         <translation>&lt;br /&gt;Указанный язык: %1</translation>
     </message>
@@ -974,7 +974,7 @@
         <translation>(Без названия)</translation>
     </message>
     <message>
-        <location filename="parser.cpp" line="210"/>
+        <location filename="parser.cpp" line="211"/>
         <source>Podcast %1</source>
         <extracomment>This is the template for the category created of * iTunes podcast keywords.</extracomment>
         <translation>подкаст %1</translation>

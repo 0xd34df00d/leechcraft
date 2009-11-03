@@ -417,58 +417,58 @@ p, li { white-space: pre-wrap; }
     <name>BackendSelector</name>
     <message>
         <source>Form</source>
-        <translation type="obsolete">Форма</translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <source>SQLite</source>
-        <translation type="obsolete">SQLite</translation>
+        <translation>SQLite</translation>
     </message>
     <message>
         <source>PostgreSQL</source>
-        <translation type="obsolete">PostgreSQL</translation>
+        <translation>PostgreSQL</translation>
     </message>
     <message>
         <source>Journal mode:</source>
-        <translation type="obsolete">Режим журналирования:</translation>
+        <translation>Режим журналирования:</translation>
     </message>
     <message>
         <source>Temp store:</source>
-        <translation type="obsolete">Временное хранилище:</translation>
+        <translation>Временное хранилище:</translation>
     </message>
     <message>
         <source>Synchronous:</source>
-        <translation type="obsolete">Синхронно:</translation>
+        <translation>Синхронно:</translation>
     </message>
     <message>
         <source>VACUUM on exit</source>
-        <translation type="obsolete">VACUUM при выходе</translation>
+        <translation>VACUUM при выходе</translation>
     </message>
     <message>
         <source>Hostname:</source>
-        <translation type="obsolete">Имя хоста:</translation>
+        <translation>Имя хоста:</translation>
     </message>
     <message>
         <source>Port:</source>
-        <translation type="obsolete">Порт:</translation>
+        <translation>Порт:</translation>
     </message>
     <message>
         <source>Username:</source>
-        <translation type="obsolete">Логин:</translation>
+        <translation>Логин:</translation>
     </message>
     <message>
         <source>Password:</source>
-        <translation type="obsolete">Пароль:</translation>
+        <translation>Пароль:</translation>
     </message>
     <message>
         <source>Database name:</source>
-        <translation type="obsolete">Имя БД:</translation>
+        <translation>Имя БД:</translation>
     </message>
 </context>
 <context>
     <name>CategorySelector</name>
     <message>
         <source>Tags selector</source>
-        <translation type="obsolete">Выбор тегов</translation>
+        <translation>Выбор тегов</translation>
     </message>
 </context>
 <context>
@@ -498,7 +498,22 @@ p, li { white-space: pre-wrap; }
     <name>Core</name>
     <message>
         <source>Select save location</source>
-        <translation>Выберите место сохранения</translation>
+        <translation type="obsolete">Выберите место сохранения</translation>
+    </message>
+</context>
+<context>
+    <name>FilePicker</name>
+    <message>
+        <source>Browse...</source>
+        <translation>Обзор...</translation>
+    </message>
+    <message>
+        <source>Select directory</source>
+        <translation>Выберите директорию</translation>
+    </message>
+    <message>
+        <source>Select file</source>
+        <translation>Выберите файл</translation>
     </message>
 </context>
 <context>
@@ -525,6 +540,14 @@ p, li { white-space: pre-wrap; }
         <source>It could be handled by:</source>
         <oldsource>This entity could also be handled by:</oldsource>
         <translation>Может быть обработан с помощью:</translation>
+    </message>
+    <message>
+        <source>Save to:</source>
+        <translation>Сохранить в:</translation>
+    </message>
+    <message>
+        <source>Browse...</source>
+        <translation>Обзор...</translation>
     </message>
 </context>
 <context>
@@ -574,7 +597,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Plugin manager</source>
-        <translation>Менеджер плагинов</translation>
+        <translation type="obsolete">Менеджер плагинов</translation>
     </message>
     <message>
         <source>F11</source>
@@ -632,6 +655,14 @@ p, li { white-space: pre-wrap; }
         <source>Show status bar</source>
         <translation>Показывать строку состояния</translation>
     </message>
+    <message>
+        <source>Close tab</source>
+        <translation>Закрыть вкладку</translation>
+    </message>
+    <message>
+        <source>Ctrl+W</source>
+        <translation>Ctrl+W</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::AboutDialog</name>
@@ -680,6 +711,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Progress</source>
         <translation>Прогресс</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::ColorPicker</name>
+    <message>
+        <source>Choose color</source>
+        <translation>Выбор цвета</translation>
+    </message>
+    <message>
+        <source>Choose...</source>
+        <translation>Выбрать...</translation>
     </message>
 </context>
 <context>
@@ -769,6 +811,44 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>LeechCraft Notification</source>
         <translation>Уведомление LeechCraft</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::FontPicker</name>
+    <message>
+        <source>Choose font</source>
+        <translation>Выбор шрифта</translation>
+    </message>
+    <message>
+        <source>Choose...</source>
+        <translation>Выбрать...</translation>
+    </message>
+    <message>
+        <source>, %1 pt</source>
+        <translation>, %1 pt</translation>
+    </message>
+    <message>
+        <source>, bold</source>
+        <translation>, жирный</translation>
+    </message>
+    <message>
+        <source>, italic</source>
+        <translation>, курсивный</translation>
+    </message>
+    <message>
+        <source>, underlined</source>
+        <translation>, подчеркнутый</translation>
+    </message>
+    <message>
+        <source>, striken out</source>
+        <translation>, зачеркнутый</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::HandlerChoiceDialog</name>
+    <message>
+        <source>Select save location</source>
+        <translation>Выберите место сохранения</translation>
     </message>
 </context>
 <context>
@@ -1054,35 +1134,51 @@ p, li { white-space: pre-wrap; }
     <name>QObject</name>
     <message>
         <source>Could not cd into %1</source>
-        <translation type="obsolete">Невозможно перейти в %1</translation>
+        <translation>Невозможно перейти в %1</translation>
     </message>
     <message>
         <source>Could not create %1</source>
-        <translation type="obsolete">Невозможно создать %1</translation>
+        <translation>Невозможно создать %1</translation>
     </message>
     <message>
         <source> b</source>
-        <translation type="obsolete">байт</translation>
+        <translation> байт</translation>
     </message>
     <message>
         <source> KiB</source>
-        <translation type="obsolete">КиБ</translation>
+        <translation> КиБ</translation>
     </message>
     <message>
         <source> MiB</source>
-        <translation type="obsolete">МиБ</translation>
+        <translation> МиБ</translation>
     </message>
     <message>
         <source> GiB</source>
-        <translation type="obsolete">ГиБ</translation>
+        <translation> ГиБ</translation>
     </message>
     <message numerus="yes">
         <source>%n day(s), </source>
-        <translation type="obsolete">
+        <translation>
             <numerusform>%n день</numerusform>
             <numerusform>%n дня</numerusform>
             <numerusform>%n дней</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>Too long to show</source>
+        <translation>Строка слишком длинна для отображения</translation>
+    </message>
+    <message>
+        <source>Binary entity</source>
+        <translation>Двоичный объект</translation>
+    </message>
+    <message>
+        <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
+        <translation>&lt;br /&gt;&lt;br /&gt;типа &lt;code&gt;%1&lt;/code&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;br /&gt;from %1</source>
+        <translation>&lt;br /&gt;с %1</translation>
     </message>
 </context>
 <context>
@@ -1136,6 +1232,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Remember my choice for the resource</source>
         <translation>Запомнить мой выбор для ресурса</translation>
+    </message>
+</context>
+<context>
+    <name>TabContainer</name>
+    <message>
+        <source>Close all but this</source>
+        <translation>Закрыть все кроме этого</translation>
     </message>
 </context>
 <context>

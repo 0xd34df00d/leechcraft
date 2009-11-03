@@ -84,23 +84,23 @@
         <translation>Файлы OPML (*.opml *.xml);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="akregatorimportpage.cpp" line="112"/>
-        <location filename="akregatorimportpage.cpp" line="155"/>
+        <location filename="akregatorimportpage.cpp" line="111"/>
+        <location filename="akregatorimportpage.cpp" line="159"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="akregatorimportpage.cpp" line="113"/>
+        <location filename="akregatorimportpage.cpp" line="112"/>
         <source>The file you&apos;ve selected is not a valid OPML file.</source>
         <translation>Файл, выбранный вами, не является валидным OPML-файлом.</translation>
     </message>
     <message>
-        <location filename="akregatorimportpage.cpp" line="151"/>
+        <location filename="akregatorimportpage.cpp" line="155"/>
         <source>Akregator settings</source>
         <translation>Настройки Akregator</translation>
     </message>
     <message>
-        <location filename="akregatorimportpage.cpp" line="156"/>
+        <location filename="akregatorimportpage.cpp" line="160"/>
         <source>Could not access or parse Akregator settings.</source>
         <translation>Невозможно получить доступ либо разобрать настройки Akregator.</translation>
     </message>
@@ -123,12 +123,12 @@
         <translation>Выбор директории Liferea</translation>
     </message>
     <message>
-        <location filename="lifereaimportpage.cpp" line="117"/>
+        <location filename="lifereaimportpage.cpp" line="116"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="lifereaimportpage.cpp" line="118"/>
+        <location filename="lifereaimportpage.cpp" line="117"/>
         <source>The directory you&apos;ve selected is not Liferea&apos;s directory.</source>
         <translation>Выбранная вами директория не является директорией LIferea.</translation>
     </message>
