@@ -277,6 +277,8 @@ namespace LeechCraft
 			
 				if (i < Zooms_.size () - 1)
 					setZoomFactor (Zooms_ [i + 1]);
+
+				emit invalidateSettings ();
 			}
 			
 			void CustomWebView::zoomOut ()
@@ -285,11 +287,15 @@ namespace LeechCraft
 			
 				if (i > 0)
 					setZoomFactor (Zooms_ [i - 1]);
+
+				emit invalidateSettings ();
 			}
 			
 			void CustomWebView::zoomReset ()
 			{
 				setZoomFactor (1);
+
+				emit invalidateSettings ();
 			}
 			
 			void CustomWebView::remakeURL (const QUrl& url)

@@ -16,10 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_RESTORESESSIONDIALOG_H
-#define PLUGINS_POSHUKU_RESTORESESSIONDIALOG_H
-#include <QDialog>
-#include "ui_restoresessiondialog.h"
+#ifndef PLUGINS_POSHUKU_BROWSERWIDGETSETTINGS_H
+#define PLUGINS_POSHUKU_BROWSERWIDGETSETTINGS_H
+#include <QTime>
+#include <QMetaType>
+
+class QDataStream;
 
 namespace LeechCraft
 {
@@ -27,24 +29,20 @@ namespace LeechCraft
 	{
 		namespace Poshuku
 		{
-			class RestoreSessionDialog : public QDialog
+			struct BrowserWidgetSettings
 			{
-				Q_OBJECT
-
-				Ui::RestoreSessionDialog Ui_;
-			public:
-				RestoreSessionDialog (QWidget* = 0);
-				virtual ~RestoreSessionDialog ();
-
-				void AddPair (const QString&, const QString&);
-				QList<int> GetSelectedURLs () const;
-			private slots:
-				void on_SelectAll__released ();
-				void on_SelectNone__released ();
+				qreal ZoomFactor_;
+				bool NotifyWhenFinished_;
+				QTime ReloadInterval_;
 			};
+
+			QDataStream& operator<< (QDataStream&, const BrowserWidgetSettings&);
+			QDataStream& operator>> (QDataStream&, BrowserWidgetSettings&);
 		};
 	};
 };
+
+Q_DECLARE_METATYPE (LeechCraft::Plugins::Poshuku::BrowserWidgetSettings);
 
 #endif
 

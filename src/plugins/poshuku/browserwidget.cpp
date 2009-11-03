@@ -41,6 +41,7 @@
 #include <QDesktopServices>
 #include <QXmlStreamReader>
 #include <QTextCodec>
+#include <QDataStream>
 #include <plugininterface/util.h>
 #include "core.h"
 #include "historymodel.h"
@@ -50,6 +51,7 @@
 #include "sourceviewer.h"
 #include "passwordremember.h"
 #include "reloadintervalselector.h"
+#include "browserwidgetsettings.h"
 
 namespace LeechCraft
 {
@@ -69,6 +71,10 @@ namespace LeechCraft
 				Ui_.Progress_->hide ();
 
 				Ui_.WebView_->SetBrowserWidget (this);
+				connect (Ui_.WebView_,
+						SIGNAL (invalidateSettings ()),
+						this,
+						SIGNAL (invalidateSettings ()));
 
 				connect (ReloadTimer_,
 						SIGNAL (timeout ()),
@@ -217,6 +223,10 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (handleReloadPeriodically ()));
+				connect (NotifyWhenFinished_,
+						SIGNAL (triggered ()),
+						this,
+						SIGNAL (invalidateSettings ()));
 				connect (Ui_.WebView_,
 						SIGNAL (addToFavorites (const QString&, const QString&)),
 						this,
@@ -446,6 +456,31 @@ namespace LeechCraft
 			{
 				return Ui_.WebView_;
 			}
+
+			BrowserWidgetSettings BrowserWidget::GetWidgetSettings () const
+			{
+				BrowserWidgetSettings result =
+				{
+					Ui_.WebView_->zoomFactor (),
+					NotifyWhenFinished_->isChecked (),
+					QTime (0, 0, 0).addMSecs (ReloadTimer_->interval ())
+				};
+				return result;
+			}
+
+			void BrowserWidget::SetWidgetSettings (const BrowserWidgetSettings& settings)
+			{
+				Ui_.WebView_->setZoomFactor (settings.ZoomFactor_);
+				NotifyWhenFinished_->setChecked (settings.NotifyWhenFinished_);
+				QTime interval = settings.ReloadInterval_;
+				QTime null (0, 0, 0);
+				int msecs = null.msecsTo (interval);
+				if (msecs >= 1000)
+				{
+					ReloadPeriodically_->setChecked (true);
+					SetActualReloadInterval (interval);
+				}
+			}
 			
 			void BrowserWidget::SetURL (const QUrl& url)
 			{
@@ -585,6 +620,17 @@ namespace LeechCraft
 			
 				frame->print (printer.get ());
 			}
+
+			void BrowserWidget::SetActualReloadInterval (const QTime& value)
+			{
+				QTime null (0, 0, 0);
+				int msecs = null.msecsTo (value);
+				QString tip = tr ("Reloading once in %1")
+					.arg (value.toString ());
+				ReloadPeriodically_->setStatusTip (tip);
+				ReloadPeriodically_->setToolTip (tip);
+				ReloadTimer_->start (msecs);
+			}
 			
 			void BrowserWidget::handleIconChanged ()
 			{
@@ -640,11 +686,7 @@ namespace LeechCraft
 						return;
 					}
 
-					QString tip = tr ("Reloading once in %1")
-						.arg (value.toString ());
-					ReloadPeriodically_->setStatusTip (tip);
-					ReloadPeriodically_->setToolTip (tip);
-					ReloadTimer_->start (null.msecsTo (value));
+					SetActualReloadInterval (value);
 				}
 				else if (ReloadTimer_->isActive ())
 				{
@@ -652,6 +694,8 @@ namespace LeechCraft
 					ReloadPeriodically_->setToolTip (QString ());
 					ReloadTimer_->stop ();
 				}
+
+				emit invalidateSettings ();
 			}
 			
 			void BrowserWidget::handleAdd2Favorites ()

@@ -16,10 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_RESTORESESSIONDIALOG_H
-#define PLUGINS_POSHUKU_RESTORESESSIONDIALOG_H
-#include <QDialog>
-#include "ui_restoresessiondialog.h"
+#include "browserwidgetsettings.h"
+#include <QDataStream>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -27,24 +26,31 @@ namespace LeechCraft
 	{
 		namespace Poshuku
 		{
-			class RestoreSessionDialog : public QDialog
+			QDataStream& operator<< (QDataStream& out, const BrowserWidgetSettings& s)
 			{
-				Q_OBJECT
+				qint8 version = 1;
+				out << version
+					<< s.ZoomFactor_
+					<< s.NotifyWhenFinished_
+					<< s.ReloadInterval_;
+				return out;
+			}
 
-				Ui::RestoreSessionDialog Ui_;
-			public:
-				RestoreSessionDialog (QWidget* = 0);
-				virtual ~RestoreSessionDialog ();
-
-				void AddPair (const QString&, const QString&);
-				QList<int> GetSelectedURLs () const;
-			private slots:
-				void on_SelectAll__released ();
-				void on_SelectNone__released ();
-			};
+			QDataStream& operator>> (QDataStream& in, BrowserWidgetSettings& s)
+			{
+				qint8 version;
+				in >> version;
+				if (version == 1)
+					in >> s.ZoomFactor_
+						>> s.NotifyWhenFinished_
+						>> s.ReloadInterval_;
+				else
+					qWarning () << Q_FUNC_INFO
+						<< "unknown version"
+						<< version;
+				return in;
+			}
 		};
 	};
 };
-
-#endif
 

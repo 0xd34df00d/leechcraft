@@ -73,6 +73,8 @@ namespace LeechCraft
 			, FavoritesChecker_ (0)
 			, Initialized_ (false)
 			{
+				qRegisterMetaType<BrowserWidgetSettings> ("LeechCraft::Plugins::Poshuku::BrowserWidgetSettings");
+				qRegisterMetaTypeStreamOperators<BrowserWidgetSettings> ("LeechCraft::Plugins::Poshuku::BrowserWidgetSettings");
 				QSettings settings (QCoreApplication::organizationName (),
 						QCoreApplication::applicationName () + "_Poshuku");
 				int size = settings.beginReadArray ("Saved session");
@@ -83,6 +85,7 @@ namespace LeechCraft
 						QString title = settings.value ("Title").toString ();
 						QString url = settings.value ("URL").toString ();
 						SavedSessionState_ << QPair<QString, QString> (title, url);
+						SavedSessionSettings_ << settings.value ("Settings").value<BrowserWidgetSettings> ();
 					}
 				settings.endArray ();
 
@@ -340,6 +343,10 @@ namespace LeechCraft
 						SIGNAL (tooltipChanged (QWidget*)),
 						this,
 						SLOT (handleTooltipChanged (QWidget*)));
+				connect (widget,
+						SIGNAL (invalidateSettings ()),
+						this,
+						SLOT (saveSingleSession ()));
 			}
 
 			void Core::CheckFavorites ()
@@ -664,7 +671,7 @@ namespace LeechCraft
 						QString url = SavedSessionState_.at (i).second;
 						if (url.isEmpty ())
 							continue;
-						RestoredURLs_ << url;
+						RestoredURLs_ << i;
 					}
 					QTimer::singleShot (2000, this, SLOT (restorePages ()));
 				}
@@ -792,14 +799,14 @@ namespace LeechCraft
 			{
 				emit changeTabName (dynamic_cast<QWidget*> (sender ()), newTitle);
 			
-				saveSession ();
+				saveSingleSession ();
 			}
 			
 			void Core::handleURLChanged (const QString&)
 			{
 				HandleHistory (dynamic_cast<BrowserWidget*> (sender ())->GetView ());
 			
-				saveSession ();
+				saveSingleSession ();
 			}
 			
 			void Core::handleIconChanged (const QIcon& newIcon)
@@ -866,15 +873,51 @@ namespace LeechCraft
 					settings.setArrayIndex (pos++);
 					settings.setValue ("Title", (*i)->GetView ()->title ());
 					settings.setValue ("URL", (*i)->GetView ()->url ().toString ());
+					settings.setValue ("Settings",
+							QVariant::fromValue<BrowserWidgetSettings> ((*i)->GetWidgetSettings ()));
 				}
+				settings.endArray ();
+			}
+
+			void Core::saveSingleSession ()
+			{
+				BrowserWidget *source = qobject_cast<BrowserWidget*> (sender ());
+				if (!source)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "sender is not a BrowserWidget*"
+						<< sender ();
+					return;
+				}
+
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_Poshuku");
+				settings.beginWriteArray ("Saved session");
+				for (int i = 0, size = Widgets_.size (); i < size; ++i)
+					if (Widgets_.at (i) == source)
+					{
+						settings.setArrayIndex (i);
+						settings.setValue ("Title", source->GetView ()->title ());
+						settings.setValue ("URL", source->GetView ()->url ().toString ());
+						settings.setValue ("Settings",
+								QVariant::fromValue<BrowserWidgetSettings> (source->GetWidgetSettings ()));
+						break;
+					}
 				settings.endArray ();
 			}
 			
 			void Core::restorePages ()
 			{
-				for (QStringList::const_iterator i = RestoredURLs_.begin (),
+				for (QList<int>::const_iterator i = RestoredURLs_.begin (),
 						end = RestoredURLs_.end (); i != end; ++i)
-					NewURL (*i);
+				{
+					int idx = *i;
+					NewURL (SavedSessionState_.at (idx).second)->
+						SetWidgetSettings (SavedSessionSettings_.at (idx));
+				}
+
+				SavedSessionState_.clear ();
+				SavedSessionSettings_.clear ();
 			
 				saveSession ();
 			}

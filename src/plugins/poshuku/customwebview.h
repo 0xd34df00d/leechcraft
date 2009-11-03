@@ -77,6 +77,7 @@ namespace LeechCraft
 				void printRequested (QWebFrame*);
 				void closeRequested ();
 				void storeFormData (const PageFormsData_t&);
+				void invalidateSettings ();
 			};
 		};
 	};

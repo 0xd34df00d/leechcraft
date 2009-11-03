@@ -55,15 +55,14 @@ namespace LeechCraft
 				item->setIcon (0, Core::Instance ().GetIcon (QUrl (url)));
 			}
 			
-			QStringList RestoreSessionDialog::GetSelectedURLs () const
+			QList<int> RestoreSessionDialog::GetSelectedURLs () const
 			{
-				QStringList result;
+				QList<int> result;
 				for (int i = 0, end = Ui_.Pages_->topLevelItemCount ();
 						i < end; ++i)
 					if (Ui_.Pages_->topLevelItem (i)->
 							data (0, Qt::CheckStateRole).toInt () == Qt::Checked)
-						result << Ui_.Pages_->topLevelItem (i)->
-							data (1, Qt::DisplayRole).toString ();
+						result << i;
 				return result;
 			}
 			

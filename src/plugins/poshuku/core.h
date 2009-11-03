@@ -31,6 +31,7 @@
 #include "storagebackend.h"
 #include "urlcompletionmodel.h"
 #include "pluginmanager.h"
+#include "browserwidgetsettings.h"
 
 class QString;
 class QWidget;
@@ -61,7 +62,9 @@ namespace LeechCraft
 
 				typedef std::vector<BrowserWidget*> widgets_t;
 				widgets_t Widgets_;
+				// title/url pairs;
 				QList<QPair<QString, QString> > SavedSessionState_;
+				QList<BrowserWidgetSettings> SavedSessionSettings_;
 
 				std::auto_ptr<FavoritesModel> FavoritesModel_;
 				std::auto_ptr<HistoryModel> HistoryModel_;
@@ -74,7 +77,7 @@ namespace LeechCraft
 				QMap<QString, QObject*> Providers_;
 
 				bool IsShuttingDown_;
-				QStringList RestoredURLs_;
+				QList<int> RestoredURLs_;
 
 				QMap<QString, QString> SavedSession_;
 				QList<QAction*> Unclosers_;
@@ -162,6 +165,7 @@ namespace LeechCraft
 				void handleTooltipChanged (QWidget*);
 				void favoriteTagsUpdated (const QStringList&);
 				void saveSession ();
+				void saveSingleSession ();
 				void restorePages ();
 				void postConstruct ();
 			signals:

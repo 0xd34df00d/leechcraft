@@ -20,6 +20,7 @@
 #define PLUGINS_POSHUKU_BROWSERWIDGET_H
 #include <boost/shared_ptr.hpp>
 #include <QWidget>
+#include <QTime>
 #include <interfaces/imultitabs.h>
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/ihaveshortcuts.h>
@@ -28,6 +29,7 @@
 
 class QToolBar;
 class QMovie;
+class QDataStream;
 
 namespace LeechCraft
 {
@@ -37,6 +39,7 @@ namespace LeechCraft
 		{
 			class FindDialog;
 			class PasswordRemember;
+			class BrowserWidgetSettings;
 
 			class BrowserWidget : public QWidget
 								, public IWebWidget
@@ -119,6 +122,8 @@ namespace LeechCraft
 
 				void SetUnclosers (const QList<QAction*>&);
 				CustomWebView* GetView () const;
+				BrowserWidgetSettings GetWidgetSettings () const;
+				void SetWidgetSettings (const BrowserWidgetSettings&);
 				void SetURL (const QUrl&);
 
 				void Load (const QString&);
@@ -135,6 +140,7 @@ namespace LeechCraft
 				void SetOnLoadScrollPoint (const QPoint&);
 			private:
 				void PrintImpl (bool, QWebFrame*);
+				void SetActualReloadInterval (const QTime&);
 			private slots:
 				void handleIconChanged ();
 				void handleStatusBarMessage (const QString&);
@@ -172,6 +178,7 @@ namespace LeechCraft
 				void gotEntity (const LeechCraft::DownloadEntity&);
 				void couldHandle (const LeechCraft::DownloadEntity&, bool*);
 				void downloadFinished (const QString&);
+				void invalidateSettings ();
 			};
 		};
 	};

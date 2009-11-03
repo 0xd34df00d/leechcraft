@@ -49,6 +49,7 @@ SET (SRCS
 	editbookmarkdialog.cpp
 	favoriteschecker.cpp
 	webpluginfactory.cpp
+	browserwidgetsettings.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -91,6 +92,7 @@ SET (HEADERS
 	editbookmarkdialog.h
 	favoriteschecker.h
 	webpluginfactory.h
+	browserwidgetsettings.h
 	interfaces/pluginbase.h
 	interfaces/iwebplugin.h
 	)
