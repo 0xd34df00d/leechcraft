@@ -29,6 +29,7 @@ namespace LeechCraft
 
 		bool AsResult_;
 		QMap<int, QWidget*> Widgets_;
+		QList<QAction*> TabBarActions_;
 	public:
 		TabWidget (QWidget* = 0);
 		void SetTooltip (int, QWidget*);
@@ -39,6 +40,7 @@ namespace LeechCraft
 		virtual void tabRemoved (int);
 	private slots:
 		void handleTabBarLocationChanged ();
+		void handleTabBarContextMenu (const QPoint&);
 	signals:
 		void moveHappened (int, int);
 	};

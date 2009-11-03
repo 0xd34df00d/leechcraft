@@ -263,12 +263,19 @@ void TabContainer::handleMoveHappened (int from, int to)
 
 void TabContainer::handleCloseAllButCurrent ()
 {
-	/*
-	int cur = TabWidget_->TabAt (QCursor::pos ());
+	QAction *act = qobject_cast<QAction*> (sender ());
+	if (!act)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< "sender is not a QAction*"
+			<< sender ();
+		return;
+	}
+
+	int cur = TabWidget_->TabAt (act->data ().value<QPoint> ());
 	for (int i = TabWidget_->count () - 1; i >= 0; --i)
 		if (i != cur)
 			remove (i);
-			*/
 }
 
 int TabContainer::FindTabForWidget (QWidget *widget) const

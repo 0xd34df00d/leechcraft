@@ -19,6 +19,8 @@
 #include "tabwidget.h"
 #include <QTabBar>
 #include <QHelpEvent>
+#include <QAction>
+#include <QMenu>
 #include <QtDebug>
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -37,7 +39,11 @@ TabWidget::TabWidget (QWidget *parent)
 , AsResult_ (false)
 {
 	tabBar ()->setExpanding (false);
-	tabBar ()->setContextMenuPolicy (Qt::ActionsContextMenu);
+	tabBar ()->setContextMenuPolicy (Qt::CustomContextMenu);
+	connect (tabBar (),
+			SIGNAL (customContextMenuRequested (const QPoint&)),
+			this,
+			SLOT (handleTabBarContextMenu (const QPoint&)));
 	XmlSettingsManager::Instance ()->RegisterObject ("TabBarLocation",
 			this, "handleTabBarLocationChanged");
 
@@ -51,12 +57,13 @@ void TabWidget::SetTooltip (int index, QWidget *widget)
 
 int TabWidget::TabAt (const QPoint& pos) const
 {
-	return tabBar ()->tabAt (tabBar ()->mapToGlobal (pos));
+	QPoint p = tabBar ()->mapFromGlobal (pos);
+	return tabBar ()->tabAt (p);
 }
 
 void TabWidget::AddAction2TabBar (QAction *act)
 {
-	tabBar ()->addAction (act);
+	TabBarActions_ << act;
 }
 
 bool TabWidget::event (QEvent *e)
@@ -106,5 +113,24 @@ void TabWidget::handleTabBarLocationChanged ()
 		pos = QTabWidget::South;
 
 	setTabPosition (pos);
+}
+
+void TabWidget::handleTabBarContextMenu (const QPoint& pos)
+{
+	QMenu menu ("", tabBar ());
+	Q_FOREACH (QAction *act, TabBarActions_)
+	{
+		menu.addAction (act);
+		act->blockSignals (true);
+	}
+
+	QAction *picked = menu.exec (tabBar ()->mapToGlobal (pos));
+	Q_FOREACH (QAction *act, TabBarActions_)
+		act->blockSignals (false);
+	if (!picked)
+		return;
+
+	picked->setData (tabBar ()->mapToGlobal (pos));
+	picked->trigger ();
 }
 
