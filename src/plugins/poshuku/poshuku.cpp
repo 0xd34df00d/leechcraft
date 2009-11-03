@@ -59,7 +59,6 @@ namespace LeechCraft
 			
 				Core::Instance ().ConnectSignals (Ui_.MainView_);
 				Ui_.MainView_->InitShortcuts ();
-				Ui_.MainView_->SetMainMode ();
 			
 				RegisterSettings ();
 			

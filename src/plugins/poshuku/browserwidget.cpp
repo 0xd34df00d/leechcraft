@@ -143,10 +143,6 @@ namespace LeechCraft
 				ViewSources_->setProperty ("ActionIcon", "poshuku_viewsources");
 				ViewSources_->setEnabled (false);
 			
-				CloseTab_ = new QAction (tr ("Close this tab"),
-						this);
-				CloseTab_->setProperty ("ActionIcon", "poshuku_closetab");
-			
 				ZoomIn_ = new QAction (tr ("Zoom in"),
 						this);
 				ZoomIn_->setProperty ("ActionIcon", "poshuku_zoomin");
@@ -215,8 +211,6 @@ namespace LeechCraft
 				addressBar->setDefaultWidget (Ui_.URLEdit_);
 				ToolBar_->addAction (addressBar);
 			
-				ToolBar_->addAction (CloseTab_);
-			
 				static_cast<QVBoxLayout*> (layout ())->insertWidget (0, ToolBar_);
 			
 				connect (ReloadPeriodically_,
@@ -255,10 +249,6 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (handleViewSources ()));
-				connect (CloseTab_,
-						SIGNAL (triggered ()),
-						this,
-						SIGNAL (needToClose ()));
 				connect (ZoomIn_,
 						SIGNAL (triggered ()),
 						Ui_.WebView_,
@@ -402,23 +392,8 @@ namespace LeechCraft
 			void BrowserWidget::Deown ()
 			{
 				Own_ = false;
-				CloseTab_->setEnabled (false);
-				disconnect (CloseTab_,
-						0,
-						this,
-						0);
-				ToolBar_->removeAction (CloseTab_);
 			}
 
-			void BrowserWidget::SetMainMode ()
-			{
-				CloseTab_->setEnabled (false);
-				disconnect (CloseTab_,
-						0,
-						this,
-						0);
-			}
-			
 			void BrowserWidget::InitShortcuts ()
 			{
 				const IShortcutProxy *proxy = Core::Instance ().GetShortcutProxy ();
@@ -437,7 +412,6 @@ namespace LeechCraft
 				PrintPreview_->setShortcut (proxy->GetShortcut (object, EAPrintPreview_));
 				ScreenSave_->setShortcut (proxy->GetShortcut (object, EAScreenSave_));
 				ViewSources_->setShortcut (proxy->GetShortcut (object, EAViewSources_));
-				CloseTab_->setShortcut (proxy->GetShortcut (object, EACloseTab_));
 				ZoomIn_->setShortcut (proxy->GetShortcut (object, EAZoomIn_));
 				ZoomOut_->setShortcut (proxy->GetShortcut (object, EAZoomOut_));
 				ZoomReset_->setShortcut (proxy->GetShortcut (object, EAZoomReset_));
@@ -522,7 +496,6 @@ namespace LeechCraft
 						(PrintPreview_)
 						(ScreenSave_)
 						(ViewSources_)
-						(CloseTab_)
 						(ZoomIn_)
 						(ZoomOut_)
 						(ZoomReset_)
@@ -549,7 +522,6 @@ namespace LeechCraft
 				_L (PrintPreview_, tr ("Ctrl+Shift+P"));
 				_L (ScreenSave_, Qt::Key_F12);
 				_L (ViewSources_, QKeySequence ());
-				_L (CloseTab_, tr ("Ctrl+W"));
 				_L (ZoomIn_, Qt::CTRL + Qt::Key_Plus);
 				_L (ZoomOut_, Qt::CTRL + Qt::Key_Minus);
 				_L (ZoomReset_, tr ("Ctrl+0"));
@@ -982,7 +954,7 @@ namespace LeechCraft
 						act->setData (QVariant::fromValue<LeechCraft::DownloadEntity> (e));
 						if (!inserted)
 						{
-							ToolBar_->insertAction (CloseTab_, ExternalLinks_->menuAction ());
+							ToolBar_->addAction (ExternalLinks_->menuAction ());
 							inserted = true;
 						}
 					}

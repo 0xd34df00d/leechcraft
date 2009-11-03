@@ -54,7 +54,6 @@ namespace LeechCraft
 				QAction *PrintPreview_;
 				QAction *ScreenSave_;
 				QAction *ViewSources_;
-				QAction *CloseTab_;
 				QAction *ZoomIn_;
 				QAction *ZoomOut_;
 				QAction *ZoomReset_;
@@ -116,7 +115,6 @@ namespace LeechCraft
 				virtual ~BrowserWidget ();
 
 				void Deown ();
-				void SetMainMode ();
 				void InitShortcuts ();
 
 				void SetUnclosers (const QList<QAction*>&);
