@@ -126,6 +126,9 @@
    <property name="text">
     <string>Settings</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
    <property name="menuRole">
     <enum>QAction::PreferencesRole</enum>
    </property>
@@ -133,6 +136,9 @@
   <action name="ActionQuit_">
    <property name="text">
     <string>Quit</string>
+   </property>
+   <property name="shortcut">
+    <string>F10</string>
    </property>
    <property name="menuRole">
     <enum>QAction::QuitRole</enum>
