@@ -131,7 +131,7 @@ QString SkinEngine::GetIconName (const QString& actionIcon) const
 	if (IconName2FileName_.contains (actionIcon))
 		icon = IconName2FileName_ [actionIcon];
 	else
-		icon = QString ("lc_") + actionIcon + ".png";
+		icon = QString ("lc_") + actionIcon;
 	return icon;
 }
 
@@ -278,7 +278,7 @@ void SkinEngine::CollectSubdir (QDir current, const QString& dir, int size)
 
 	for (QFileInfoList::const_iterator i = infos.begin (),
 			infoEnd = infos.end (); i != infoEnd; ++i)
-		IconName2Path_ [i->fileName ()] [size] = i->absoluteFilePath ();
+		IconName2Path_ [i->baseName ()] [size] = i->absoluteFilePath ();
 }
 
 std::vector<int> SkinEngine::GetDirForBase (const QString& base,
