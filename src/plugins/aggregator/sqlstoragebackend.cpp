@@ -479,6 +479,43 @@ namespace LeechCraft
 							":item_url"
 							")").arg (orReplace));
 
+				GetMediaRSSs_ = QSqlQuery (DB_);
+				GetMediaRSSs_.prepare ("SELECT "
+						"url, "
+						"size, "
+						"type, "
+						"medium, "
+						"is_default, "
+						"expression, "
+						"bitrate, "
+						"framerate, "
+						"samplingrate, "
+						"channels, "
+						"duration, "
+						"width, "
+						"height, "
+						"lang, "
+						"mediagroup, "
+						"rating, "
+						"rating_scheme, "
+						"title, "
+						"description, "
+						"keywords, "
+						"copyright_url, "
+						"copyright_text, "
+						"star_rating_average, "
+						"star_rating_count, "
+						"star_rating_min, "
+						"star_rating_max, "
+						"stat_views, "
+						"stat_favs, "
+						"tags "
+						"FROM mrss "
+						"WHERE item_parents_hash = :item_parents_hash "
+						"AND item_title = :item_title "
+						"AND item_url = :item_url "
+						"ORDER BY title");
+
 				WriteMediaRSSThumbnail_ = QSqlQuery (DB_);
 				WriteMediaRSSThumbnail_.prepare (QString ("INSERT %1 INTO mrss_thumbnails ("
 							"parent_url, "
@@ -500,6 +537,19 @@ namespace LeechCraft
 							":time"
 							")").arg (orReplace));
 
+				GetMediaRSSThumbnails_ = QSqlQuery (DB_);
+				GetMediaRSSThumbnails_.prepare ("SELECT "
+						"url, "
+						"width, "
+						"height, "
+						"time "
+						"FROM mrss_thumbnails "
+						"WHERE parent_url = :parent_url "
+						"AND item_parents_hash = :item_parents_hash "
+						"AND item_title = :item_title "
+						"AND item_url = :item_url "
+						"ORDER BY time");
+
 				WriteMediaRSSCredit_ = QSqlQuery (DB_);
 				WriteMediaRSSCredit_.prepare (QString ("INSERT %1 INTO mrss_credits ("
 							"parent_url, "
@@ -517,6 +567,17 @@ namespace LeechCraft
 							":who"
 							")").arg (orReplace));
 
+				GetMediaRSSCredits_ = QSqlQuery (DB_);
+				GetMediaRSSCredits_.prepare ("SELECT "
+						"role, "
+						"who "
+						"FROM mrss_credits "
+						"WHERE parent_url = :parent_url "
+						"AND item_parents_hash = :item_parents_hash "
+						"AND item_title = :item_title "
+						"AND item_url = :item_url "
+						"ORDER BY role");
+
 				WriteMediaRSSComment_ = QSqlQuery (DB_);
 				WriteMediaRSSComment_.prepare ("INSERT INTO mrss_comments ("
 						"parent_url, "
@@ -533,6 +594,18 @@ namespace LeechCraft
 						":type, "
 						":comment"
 						")");
+
+				GetMediaRSSComments_ = QSqlQuery (DB_);
+				GetMediaRSSComments_.prepare ("SELECT "
+						"type, "
+						"comment "
+						"FROM mrss_comments "
+						"WHERE parent_url = :parent_url "
+						"AND item_parents_hash = :item_parents_hash "
+						"AND item_title = :item_title "
+						"AND item_url = :item_url "
+						"GROUP BY type "
+						"ORDER BY comment");
 				
 				WriteMediaRSSPeerLink_ = QSqlQuery (DB_);
 				WriteMediaRSSPeerLink_.prepare ("INSERT INTO mrss_peerlinks ("
@@ -550,6 +623,18 @@ namespace LeechCraft
 						":type, "
 						":link"
 						")");
+
+				GetMediaRSSPeerLinks_ = QSqlQuery (DB_);
+				GetMediaRSSPeerLinks_.prepare ("SELECT "
+						"type, "
+						"link "
+						"FROM mrss_peerlinks "
+						"WHERE parent_url = :parent_url "
+						"AND item_parents_hash = :item_parents_hash "
+						"AND item_title = :item_title "
+						"AND item_url = :item_url "
+						"GROUP BY type "
+						"ORDER BY link");
 
 				WriteMediaRSSScene_ = QSqlQuery (DB_);
 				WriteMediaRSSScene_.prepare ("INSERT INTO mrss_scenes ("
@@ -571,6 +656,19 @@ namespace LeechCraft
 						":start_time, "
 						":end_time"
 						")");
+
+				GetMediaRSSScenes_ = QSqlQuery (DB_);
+				GetMediaRSSScenes_.prepare ("SELECT "
+						"title, "
+						"description, "
+						"start_time, "
+						"end_time"
+						"FROM mrss_scenes "
+						"WHERE parent_url = :parent_url "
+						"AND item_parents_hash = :item_parents_hash "
+						"AND item_title = :item_title "
+						"AND item_url = :item_url "
+						"ORDER BY start_time");
 			
 				RemoveEnclosures_ = QSqlQuery (DB_);
 				RemoveEnclosures_.prepare ("DELETE FROM enclosures "
@@ -826,6 +924,7 @@ namespace LeechCraft
 				ItemFullSelector_.finish ();
 			
 				GetEnclosures (hash, title, link, item->Enclosures_);
+				GetMRSSEntries (hash, title, link, item->MRSSEntries_);
 			
 				return item;
 			}
@@ -845,6 +944,7 @@ namespace LeechCraft
 					Item_ptr item (new Item);
 					FillItem (ItemsFullSelector_, item);
 					GetEnclosures (hash, item->Title_, item->Link_, item->Enclosures_);
+					GetMRSSEntries (hash, item->Title_, item->Link_, item->MRSSEntries_);
 			
 					items.push_back (item);
 				}
@@ -910,6 +1010,7 @@ namespace LeechCraft
 				}
 				ChannelFinder_.finish ();
 			
+				// TODO check if this lock can be removed
 				LeechCraft::Util::DBLock lock (DB_);
 				try
 				{
@@ -985,6 +1086,7 @@ namespace LeechCraft
 			void SQLStorageBackend::UpdateItem (Item_ptr item,
 					const QString& parentUrl, const QString& parentTitle)
 			{
+				// TODO check if this lock can be removed
 				LeechCraft::Util::DBLock lock (DB_);
 				try
 				{
@@ -2052,6 +2154,170 @@ namespace LeechCraft
 				}
 			
 				GetEnclosures_.finish ();
+			}
+
+			void SQLStorageBackend::GetMRSSEntries (const QString& hash, const QString& title,
+					const QString& link, QList<MRSSEntry>& entries) const
+			{
+				GetMediaRSSs_.bindValue (":item_parents_hash", hash);
+				GetMediaRSSs_.bindValue (":item_title", title);
+				GetMediaRSSs_.bindValue (":item_url", link);
+
+				if (!GetMediaRSSs_.exec ())
+				{
+					LeechCraft::Util::DBLock::DumpError (GetMediaRSSs_);
+					return;
+				}
+
+				while (GetMediaRSSs_.next ())
+				{
+					QString eUrl = GetMediaRSSs_.value (0).toString ();
+					MRSSEntry e =
+					{
+						eUrl,
+						GetMediaRSSs_.value (1).toLongLong (),
+						GetMediaRSSs_.value (2).toString (),
+						GetMediaRSSs_.value (3).toString (),
+						GetMediaRSSs_.value (4).toBool (),
+						GetMediaRSSs_.value (5).toString (),
+						GetMediaRSSs_.value (6).toInt (),
+						GetMediaRSSs_.value (7).toDouble (),
+						GetMediaRSSs_.value (8).toDouble (),
+						GetMediaRSSs_.value (9).toInt (),
+						GetMediaRSSs_.value (10).toInt (),
+						GetMediaRSSs_.value (11).toInt (),
+						GetMediaRSSs_.value (12).toInt (),
+						GetMediaRSSs_.value (13).toString (),
+						GetMediaRSSs_.value (14).toInt (),
+						GetMediaRSSs_.value (15).toString (),
+						GetMediaRSSs_.value (16).toString (),
+						GetMediaRSSs_.value (17).toString (),
+						GetMediaRSSs_.value (18).toString (),
+						GetMediaRSSs_.value (19).toString (),
+						GetMediaRSSs_.value (20).toString (),
+						GetMediaRSSs_.value (21).toString (),
+						GetMediaRSSs_.value (22).toInt (),
+						GetMediaRSSs_.value (23).toInt (),
+						GetMediaRSSs_.value (24).toInt (),
+						GetMediaRSSs_.value (25).toInt (),
+						GetMediaRSSs_.value (26).toInt (),
+						GetMediaRSSs_.value (27).toInt (),
+						GetMediaRSSs_.value (28).toInt (),
+						QList<MRSSThumbnail> (),
+						QList<MRSSCredit> (),
+						QList<MRSSComment> (),
+						QList<MRSSPeerLink> (),
+						QList<MRSSScene> ()
+					};
+
+					GetMediaRSSThumbnails_.bindValue (":parent_url", eUrl);
+					GetMediaRSSThumbnails_.bindValue (":item_parents_hash", hash);
+					GetMediaRSSThumbnails_.bindValue (":item_title", title);
+					GetMediaRSSThumbnails_.bindValue (":item_url", link);
+					if (!GetMediaRSSThumbnails_.exec ())
+						LeechCraft::Util::DBLock::DumpError (GetMediaRSSThumbnails_);
+					else
+					{
+						while (GetMediaRSSThumbnails_.next ())
+						{
+							MRSSThumbnail th =
+							{
+								GetMediaRSSThumbnails_.value (0).toString (),
+								GetMediaRSSThumbnails_.value (1).toInt (),
+								GetMediaRSSThumbnails_.value (2).toInt (),
+								GetMediaRSSThumbnails_.value (3).toString ()
+							};
+							e.Thumbnails_ << th;
+						}
+						GetMediaRSSThumbnails_.finish ();
+					}
+
+					GetMediaRSSCredits_.bindValue (":parent_url", eUrl);
+					GetMediaRSSCredits_.bindValue (":item_parents_hash", hash);
+					GetMediaRSSCredits_.bindValue (":item_title", title);
+					GetMediaRSSCredits_.bindValue (":item_url", link);
+					if (!GetMediaRSSCredits_.exec ())
+						LeechCraft::Util::DBLock::DumpError (GetMediaRSSCredits_);
+					else
+					{
+						while (GetMediaRSSCredits_.next ())
+						{
+							MRSSCredit cr =
+							{
+								GetMediaRSSCredits_.value (0).toString (),
+								GetMediaRSSCredits_.value (1).toString ()
+							};
+							e.Credits_ << cr;
+						}
+						GetMediaRSSCredits_.finish ();
+					}
+
+					GetMediaRSSComments_.bindValue (":parent_url", eUrl);
+					GetMediaRSSComments_.bindValue (":item_parents_hash", hash);
+					GetMediaRSSComments_.bindValue (":item_title", title);
+					GetMediaRSSComments_.bindValue (":item_url", link);
+					if (!GetMediaRSSComments_.exec ())
+						LeechCraft::Util::DBLock::DumpError (GetMediaRSSComments_);
+					else
+					{
+						while (GetMediaRSSComments_.next ())
+						{
+							MRSSComment cm =
+							{
+								GetMediaRSSComments_.value (0).toString (),
+								GetMediaRSSComments_.value (1).toString ()
+							};
+							e.Comments_ << cm;
+						}
+						GetMediaRSSComments_.finish ();
+					}
+
+					GetMediaRSSPeerLinks_.bindValue (":parent_url", eUrl);
+					GetMediaRSSPeerLinks_.bindValue (":item_parents_hash", hash);
+					GetMediaRSSPeerLinks_.bindValue (":item_title", title);
+					GetMediaRSSPeerLinks_.bindValue (":item_url", link);
+					if (!GetMediaRSSPeerLinks_.exec ())
+						LeechCraft::Util::DBLock::DumpError (GetMediaRSSPeerLinks_);
+					else
+					{
+						while (GetMediaRSSPeerLinks_.next ())
+						{
+							MRSSPeerLink pl =
+							{
+								GetMediaRSSPeerLinks_.value (0).toString (),
+								GetMediaRSSPeerLinks_.value (1).toString ()
+							};
+							e.PeerLinks_ << pl;
+						}
+						GetMediaRSSPeerLinks_.finish ();
+					}
+
+					GetMediaRSSScenes_.bindValue (":parent_url", eUrl);
+					GetMediaRSSScenes_.bindValue (":item_parents_hash", hash);
+					GetMediaRSSScenes_.bindValue (":item_title", title);
+					GetMediaRSSScenes_.bindValue (":item_url", link);
+					if (!GetMediaRSSScenes_.exec ())
+						LeechCraft::Util::DBLock::DumpError (GetMediaRSSScenes_);
+					else
+					{
+						while (GetMediaRSSScenes_.next ())
+						{
+							MRSSScene th =
+							{
+								GetMediaRSSScenes_.value (0).toString (),
+								GetMediaRSSScenes_.value (1).toString (),
+								GetMediaRSSScenes_.value (2).toString (),
+								GetMediaRSSScenes_.value (3).toString ()
+							};
+							e.Scenes_ << th;
+						}
+						GetMediaRSSScenes_.finish ();
+					}
+
+					entries << e;
+				}
+
+				GetMediaRSSs_.finish ();
 			}
 		};
 	};

@@ -324,6 +324,43 @@ namespace LeechCraft
 								   * - item_url
 								   */
 								  WriteMediaRSS_,
+								  /** Returns:
+								   * - url
+								   * - size
+								   * - type
+								   * - medium
+								   * - is_default
+								   * - expression
+								   * - bitrate
+								   * - framerate
+								   * - samplingrate
+								   * - channels
+								   * - duration
+								   * - width
+								   * - height
+								   * - lang
+								   * - mediagroup
+								   * - rating
+								   * - rating_scheme
+								   * - title
+								   * - description
+								   * - keywords
+								   * - copyright_url
+								   * - copyright_text
+								   * - star_rating_average
+								   * - star_rating_count
+								   * - star_rating_min
+								   * - star_rating_max
+								   * - stat_views
+								   * - stat_favs
+								   * - tags
+								   *
+								   * Binds:
+								   * - item_parents_hash
+								   * - item_title
+								   * - item_url
+								   */
+								  GetMediaRSSs_,
 								  /** Binds:
 								   * - item_parents_hash
 								   * - item_title
@@ -341,6 +378,19 @@ namespace LeechCraft
 								   * - time
 								   */
 								  WriteMediaRSSThumbnail_,
+								  /** Returns:
+								   * - url
+								   * - width
+								   * - height
+								   * - time
+								   *
+								   * Binds:
+								   * - parent_url
+								   * - item_parents_hash
+								   * - item_title
+								   * - item_url
+								   */
+								  GetMediaRSSThumbnails_,
 								  /** Binds:
 								   * - parent_url
 								   * - item_parents_hash
@@ -350,6 +400,17 @@ namespace LeechCraft
 								   * - who
 								   */
 								  WriteMediaRSSCredit_,
+								  /** Returns:
+								   * - role
+								   * - who
+								   *
+								   * Binds:
+								   * - parent_url
+								   * - item_parents_hash
+								   * - item_title
+								   * - item_url
+								   */
+								  GetMediaRSSCredits_,
 								  /** Binds:
 								   * - parent_url
 								   * - item_parents_hash
@@ -359,6 +420,17 @@ namespace LeechCraft
 								   * - comment
 								   */
 								  WriteMediaRSSComment_,
+								  /** Returns:
+								   * - type
+								   * - comment
+								   *
+								   * Binds:
+								   * - parent_url
+								   * - item_parents_hash
+								   * - item_title
+								   * - item_url
+								   */
+								  GetMediaRSSComments_,
 								  /** Binds:
 								   * - parent_url
 								   * - item_parents_hash
@@ -368,6 +440,17 @@ namespace LeechCraft
 								   * - link
 								   */
 								  WriteMediaRSSPeerLink_,
+								  /** Returns:
+								   * - type
+								   * - linkz
+								   *
+								   * Binds:
+								   * - parent_url
+								   * - item_parents_hash
+								   * - item_title
+								   * - item_url
+								   */
+								  GetMediaRSSPeerLinks_,
 								  /** Binds:
 								   * - parent_url
 								   * - item_parents_hash
@@ -379,6 +462,19 @@ namespace LeechCraft
 								   * - end_time
 								   */
 								  WriteMediaRSSScene_,
+								  /** Returns:
+								   * - title
+								   * - description
+								   * - start_time
+								   * - end_time
+								   *
+								   * Binds:
+								   * - parent_url
+								   * - item_parents_hash
+								   * - item_title
+								   * - item_url
+								   */
+								  GetMediaRSSScenes_,
 								  /** Binds:
 								   * - item_parents_hash
 								   * - item_title
@@ -457,6 +553,8 @@ namespace LeechCraft
 				void FillItem (const QSqlQuery&, Item_ptr&) const;
 				void GetEnclosures (const QString&, const QString&, const QString&,
 						QList<Enclosure>&) const;
+				void GetMRSSEntries (const QString&, const QString&, const QString&,
+						QList<MRSSEntry>&) const;
 			};
 		};
 	};
