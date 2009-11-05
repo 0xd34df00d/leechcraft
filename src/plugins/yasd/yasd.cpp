@@ -49,7 +49,7 @@ namespace LeechCraft
 
 			QIcon Plugin::GetIcon () const
 			{
-				return QIcon ();
+				return QIcon (":/resources/images/yasd.svg");
 			}
 
 			QStringList Plugin::Provides () const

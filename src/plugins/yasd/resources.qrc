@@ -1,4 +1,5 @@
 <RCC>
   <qresource prefix="/" >
+    <file>resources/images/yasd.svg</file>
   </qresource>
 </RCC>
