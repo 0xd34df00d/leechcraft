@@ -4,12 +4,12 @@
 	<page>
 		<label lang="en" value="Environment" />
 		<label lang="ru" value="Окружение" />
-		<tab>
+		<groupbox>
 			<label lang="en" value="KDE" />
 			<item type="checkbox" property="UseKDENotifications" state="on">
 				<label lang="en" value="Use KDE4 Visual Notifications" />
 				<label lang="ru" value="Использовать визуальные оповещения KDE4" />
 			</item>
-		</tab>
+		</groupbox>
 	</page>
 </settings>
