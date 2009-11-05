@@ -23,12 +23,28 @@
 class QAction;
 class QMenu;
 
+/** @brief Interface for adding actions and menus into tray icon menu.
+ *
+ * If your plugin wants to add custom actions and menus into LeechCraft's
+ * tray menu icon, it should implement this interface. Actions and menus
+ * are to be returned by GetTrayActions() and GetTrayMenus()
+ * respectively.
+ */
 class ITrayMenu
 {
 public:
 	virtual ~ITrayMenu () {}
 
+	/** @brief Returns the list of actions to insert into tray icon menu.
+	 *
+	 * @return The list of actions.
+	 */
 	virtual QList<QAction*> GetTrayActions () const = 0;
+
+	/** @brief Returns the list of menus to insert into tray icon menu.
+	 *
+	 * @return The list of menus.
+	 */
 	virtual QList<QMenu*> GetTrayMenus () const = 0;
 };
 
