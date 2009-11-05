@@ -18,10 +18,9 @@
 
 #include "lyricwikisearcher.h"
 #include <QHttp>
-#include <QHttpRequestHeader>
-#include <QDomDocument>
 #include <QtDebug>
 #include <QCryptographicHash>
+#include <QUrl>
 #include "core.h"
 #include "lyricscache.h"
 
@@ -50,35 +49,11 @@ namespace LeechCraft
 				{
 				}
 			
-				QByteArray data = QByteArray ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-							"<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" "
-							"xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" "
-							"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-							"xmlns:si=\"http://soapinterop.org/xsd\" "
-							"xmlns:tns=\"urn:LyricWiki\" "
-							"xmlns:soap=\"http://schemas.xmlsoap.org/wsdl/soap/\" "
-							"xmlns:wsdl=\"http://schemas.xmlsoap.org/wsdl/\" "
-							"xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\" "
-							"SOAP-ENV:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">"
-							"<SOAP-ENV:Body><tns:getSong>"
-							"<artist xsi:type=\"xsd:string\">")
-					.append (asa.at (0))
-					.append ("</artist><song xsi:type=\"xsd:string\">")
-					.append (asa.at (1))
-					.append ("</song></tns:getSong></SOAP-ENV:Body></SOAP-ENV:Envelope>");
-			
-				QHttpRequestHeader request ("POST", "/server.php");
-				request.setValue ("TE", "deflate,gzip;q=0.3");
-				request.setValue ("Connection", "close");
-				request.setValue ("Host", "lyricwiki.org");
-				request.setValue ("User-Agent", "DeadLyRicS/LeechCraft");
-				request.setValue ("Content-Length", QString::number (data.size ()));
-				request.setValue ("Content-Type", "text/xml; charset=utf-8");
-				request.setValue ("SOAPAction", "\"urn:LyricWiki#getSong\"");
-			
-				QHttp *http = new QHttp (this);
-				http->setHost ("www.lyricwiki.org");
-				http->request (request, data);
+				QHttp *http = new QHttp ("www.lyricsplugin.com", 80, this);
+				QUrl url ("http://www.lyricsplugin.com/winamp03/plugin/");
+				url.addQueryItem ("artist", asa.at (0));
+				url.addQueryItem ("title", asa.at (1));
+				http->get (url.toEncoded ());
 			
 				connect (http,
 						SIGNAL (done (bool)),
@@ -87,6 +62,9 @@ namespace LeechCraft
 			
 				http->setObjectName (hash);
 				http->setProperty ("IDHash", hash);
+				http->setProperty ("Artist", asa.at (0));
+				http->setProperty ("Title", asa.at (1));
+				http->setProperty ("URL", url);
 			}
 			
 			void LyricWikiSearcher::Stop (const QByteArray& hash)
@@ -100,38 +78,15 @@ namespace LeechCraft
 				QByteArray response = http->readAll ();
 				http->deleteLater ();
 			
-				QDomDocument doc;
-				doc.setContent (response, false);
-				QDomNodeList lyrics = doc.elementsByTagName ("lyrics");
-				QDomNodeList artist = doc.elementsByTagName ("artist");
-				QDomNodeList song = doc.elementsByTagName ("song");
-				QDomNodeList url = doc.elementsByTagName ("url");
-				if (!lyrics.size () ||
-						!artist.size () ||
-						!song.size () ||
-						!url.size ())
-				{
-					qWarning () << Q_FUNC_INFO << "Lyrics fetch error" << response;
-					emit error (tr ("Lyrics fetch error"));
-					return;
-				}
-			
-				QString text = lyrics.at (0).toElement ().text ();
-				if (text == "Not found")
-				{
-					qWarning () << Q_FUNC_INFO << "No lyrics found";
-					emit error (tr ("No lyrics found"));
-					return;
-				}
 				QByteArray hash = http->property ("IDHash").toByteArray ();
 			
 				Lyrics result =
 				{
-					artist.at (0).toElement ().text (),
+					http->property ("Artist").toString (),
 					"",
-					song.at (0).toElement ().text (),
-					text,
-					url.at (0).toElement ().text ()
+					http->property ("Title").toString (),
+					QString::fromUtf8 (response),
+					http->property ("URL").value<QUrl> ().toString ()
 				};
 			
 				LyricsCache::Instance ().SetLyrics (hash, result);
