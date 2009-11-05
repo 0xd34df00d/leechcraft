@@ -17,10 +17,10 @@
  **********************************************************************/
 
 #include "findproxy.h"
-#include <QTextEdit>
 #include <QUrl>
 #include <QtDebug>
 #include <interfaces/structures.h>
+#include <plugininterface/selectablebrowser.h>
 #include "searcher.h"
 #include "core.h"
 
@@ -37,7 +37,8 @@ namespace LeechCraft
 			, FetchedSomething_ (false)
 			{
 				setObjectName ("DeadLyRicS FindProxy");
-				LyricsHolder_ = new QTextEdit ();
+				LyricsHolder_ = new Util::SelectableBrowser ();
+				LyricsHolder_->Construct (Core::Instance ().GetWebBrowser ());
 				QStringList subs = Request_.String_.split (" - ", QString::SkipEmptyParts);
 				if (subs.size () < 2)
 					return;
@@ -113,7 +114,7 @@ namespace LeechCraft
 					}
 					else if (role == LeechCraft::RoleAdditionalInfo)
 					{
-						LyricsHolder_->setPlainText (lyrics.Text_);
+						LyricsHolder_->SetHtml (lyrics.Text_);
 						return QVariant::fromValue<QWidget*> (LyricsHolder_);
 					}
 					else

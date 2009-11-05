@@ -23,10 +23,13 @@
 #include <interfaces/ifinder.h>
 #include "searcher.h"
 
-class QTextEdit;
-
 namespace LeechCraft
 {
+	namespace Util
+	{
+		class SelectableBrowser;
+	};
+
 	namespace Plugins
 	{
 		namespace DeadLyrics
@@ -40,7 +43,7 @@ namespace LeechCraft
 				LeechCraft::Request Request_;
 				std::vector<QByteArray> Hashes_;
 				lyrics_t Lyrics_;
-				QTextEdit *LyricsHolder_;
+				Util::SelectableBrowser *LyricsHolder_;
 				QString ErrorString_;
 				bool FetchedSomething_;
 

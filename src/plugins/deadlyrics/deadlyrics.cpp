@@ -29,7 +29,7 @@ namespace LeechCraft
 		{
 			void DeadLyRicS::Init (ICoreProxy_ptr proxy)
 			{
-				Core::Instance ().SetNetworkAccessManager (proxy->GetNetworkAccessManager ());
+				Core::Instance ().SetProxy (proxy);
 			}
 			
 			void DeadLyRicS::Release ()

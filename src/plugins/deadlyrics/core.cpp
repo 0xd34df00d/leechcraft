@@ -22,6 +22,7 @@
 #include <QCryptographicHash>
 #include <QUrl>
 #include <QtDebug>
+#include <interfaces/iwebbrowser.h>
 #include "lyricwikisearcher.h"
 
 namespace LeechCraft
@@ -48,14 +49,23 @@ namespace LeechCraft
 				Searchers_.clear ();
 			}
 			
-			void Core::SetNetworkAccessManager (QNetworkAccessManager *manager)
+			void Core::SetProxy (ICoreProxy_ptr proxy)
 			{
-				Manager_ = manager;
+				Proxy_ = proxy;
 			}
 			
 			QNetworkAccessManager* Core::GetNetworkAccessManager () const
 			{
-				return Manager_;
+				return Proxy_->GetNetworkAccessManager ();
+			}
+
+			IWebBrowser* Core::GetWebBrowser () const
+			{
+				IPluginsManager *pm = Proxy_->GetPluginsManager ();
+				QObjectList browsers = pm->Filter<IWebBrowser*> (pm->GetAllPlugins ());
+				return browsers.size () ?
+					qobject_cast<IWebBrowser*> (browsers.at (0)) :
+					0;
 			}
 			
 			QStringList Core::GetCategories () const

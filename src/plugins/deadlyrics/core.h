@@ -19,9 +19,11 @@
 #ifndef PLUGINS_DEADLYRICS_CORE_H
 #define PLUGINS_DEADLYRICS_CORE_H
 #include <QAbstractItemModel>
+#include <interfaces/iinfo.h>
 #include "searcher.h"
 
 class QNetworkAccessManager;
+class IWebBrowser;
 
 namespace LeechCraft
 {
@@ -34,15 +36,17 @@ namespace LeechCraft
 				Q_OBJECT
 
 				searchers_t Searchers_;
-				QNetworkAccessManager *Manager_;
+				ICoreProxy_ptr Proxy_;
 
 				Core ();
 			public:
 				static Core& Instance ();
 				void Release ();
 
-				void SetNetworkAccessManager (QNetworkAccessManager*);
+				void SetProxy (ICoreProxy_ptr);
 				QNetworkAccessManager* GetNetworkAccessManager () const;
+				IWebBrowser* GetWebBrowser () const;
+
 				QStringList GetCategories () const;
 
 				/** Returns all the searches for the given category. It's assumed
