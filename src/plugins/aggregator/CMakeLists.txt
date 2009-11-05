@@ -43,7 +43,6 @@ SET (SRCS
 	feedsettings.cpp
 	jobholderrepresentation.cpp
 	itemswidget.cpp
-	selectablebrowser.cpp
 	itemslistmodel.cpp
 	wizardgenerator.cpp
 	startupfirstpage.cpp
@@ -87,7 +86,6 @@ SET (HEADERS
 	feedsettings.h
 	jobholderrepresentation.h
 	itemswidget.h
-	selectablebrowser.h
 	itemslistmodel.h
 	wizardgenerator.h
 	startupfirstpage.h

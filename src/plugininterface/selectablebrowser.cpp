@@ -21,47 +21,44 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+	namespace Util
 	{
-		namespace Aggregator
+		SelectableBrowser::SelectableBrowser (QWidget *parent)
+		: QWidget (parent)
+		, Internal_ (true)
 		{
-			SelectableBrowser::SelectableBrowser (QWidget *parent)
-			: QWidget (parent)
-			, Internal_ (true)
+			QVBoxLayout *lay = new QVBoxLayout ();
+			lay->setContentsMargins (0, 0, 0, 0);
+			setLayout (lay);
+		}
+		
+		void SelectableBrowser::Construct (IWebBrowser *browser)
+		{
+			if (browser &&
+					browser->GetWidget ())
 			{
-				QVBoxLayout *lay = new QVBoxLayout ();
-				lay->setContentsMargins (0, 0, 0, 0);
-				setLayout (lay);
+				Internal_ = false;
+				InternalBrowser_.reset ();
+				ExternalBrowser_.reset (browser->GetWidget ());
+				layout ()->addWidget (ExternalBrowser_->Widget ());
 			}
-			
-			void SelectableBrowser::Construct (IWebBrowser *browser)
+			else
 			{
-				if (browser &&
-						browser->GetWidget ())
-				{
-					Internal_ = false;
-					InternalBrowser_.reset ();
-					ExternalBrowser_.reset (browser->GetWidget ());
-					layout ()->addWidget (ExternalBrowser_->Widget ());
-				}
-				else
-				{
-					Internal_ = true;
-					InternalBrowser_.reset (new QTextBrowser (this));
-					InternalBrowser_->setOpenExternalLinks (true);
-					ExternalBrowser_.reset ();
-					layout ()->addWidget (InternalBrowser_.get ());
-				}
+				Internal_ = true;
+				InternalBrowser_.reset (new QTextBrowser (this));
+				InternalBrowser_->setOpenExternalLinks (true);
+				ExternalBrowser_.reset ();
+				layout ()->addWidget (InternalBrowser_.get ());
 			}
-			
-			void SelectableBrowser::SetHtml (const QString& html, const QUrl& base)
-			{
-				if (Internal_)
-					InternalBrowser_->setHtml (html);
-				else
-					ExternalBrowser_->SetHtml (html, base);
-			}
-		};
+		}
+		
+		void SelectableBrowser::SetHtml (const QString& html, const QUrl& base)
+		{
+			if (Internal_)
+				InternalBrowser_->setHtml (html);
+			else
+				ExternalBrowser_->SetHtml (html, base);
+		}
 	};
 };
 

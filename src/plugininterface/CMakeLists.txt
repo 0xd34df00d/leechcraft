@@ -21,6 +21,7 @@ SET (SRCS
 	backendselector.cpp
 	structuresops.cpp
 	listmodel.cpp
+	selectablebrowser.cpp
 	)
 SET (HEADERS
 	tagscompleter.h
@@ -37,6 +38,7 @@ SET (HEADERS
 	backendselector.h
 	structuresops.h
 	listmodel.h
+	selectablebrowser.h
 	)
 SET (FORMS
 	backendselector.ui

@@ -16,32 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_SELECTABLEBROWSER_H
-#define PLUGINS_AGGREGATOR_SELECTABLEBROWSER_H
+#ifndef PLUGININTERFACE_SELECTABLEBROWSER_H
+#define PLUGININTERFACE_SELECTABLEBROWSER_H
 #include <memory>
 #include <QWidget>
 #include <QTextBrowser>
 #include <interfaces/iwebbrowser.h>
+#include "config.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+	namespace Util
 	{
-		namespace Aggregator
+		class PLUGININTERFACE_API SelectableBrowser : public QWidget
 		{
-			class SelectableBrowser : public QWidget
-			{
-				Q_OBJECT
+			Q_OBJECT
 
-				bool Internal_;
-				std::auto_ptr<QTextBrowser> InternalBrowser_;
-				std::auto_ptr<IWebWidget> ExternalBrowser_;
-			public:
-				SelectableBrowser (QWidget* = 0);
-				void Construct (IWebBrowser*);
+			bool Internal_;
+			std::auto_ptr<QTextBrowser> InternalBrowser_;
+			std::auto_ptr<IWebWidget> ExternalBrowser_;
+		public:
+			SelectableBrowser (QWidget* = 0);
+			void Construct (IWebBrowser*);
 
-				void SetHtml (const QString&, const QUrl& = QString ());
-			};
+			void SetHtml (const QString&, const QUrl& = QString ());
 		};
 	};
 };
