@@ -1,6 +1,5 @@
 <RCC>
   <qresource prefix="/" >
     <file>resources/images/aggregator.svg</file>
-    <file>resources/images/trayicon.png</file>
   </qresource>
 </RCC>
