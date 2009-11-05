@@ -150,9 +150,9 @@
 				</item>
 			</groupbox>
 			<item type="groupbox" property="ShowFinishedDownloadMessages" state="on" checkable="true">
-				<label lang="en" value="Show messages about finished downloads in tray" />
-				<label lang="ru" value="Показывать сообщения о завершенных закачках в трее" />
-				<label lang="uk" value="Показувати повідомленя про завершені завантаження в треї" />
+				<label lang="en" value="Show messages in tray" />
+				<label lang="ru" value="Показывать сообщения в трее" />
+				<label lang="uk" value="Показувати повідомленя в треї" />
 				<item type="spinbox" property="FinishedDownloadMessageTimeout" default="10" minimum="1" maximum="15" step="1">
 					<lang value="en">
 						<label value="Message timeout:" />
