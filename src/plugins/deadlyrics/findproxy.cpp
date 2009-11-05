@@ -23,6 +23,7 @@
 #include <plugininterface/selectablebrowser.h>
 #include "searcher.h"
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -38,7 +39,11 @@ namespace LeechCraft
 			{
 				setObjectName ("DeadLyRicS FindProxy");
 				LyricsHolder_ = new Util::SelectableBrowser ();
-				LyricsHolder_->Construct (Core::Instance ().GetWebBrowser ());
+				if (XmlSettingsManager::Instance ()->
+						property ("UseBrowser").toBool ())
+					LyricsHolder_->Construct (Core::Instance ().GetWebBrowser ());
+				else
+					LyricsHolder_->Construct (0);
 				QStringList subs = Request_.String_.split (" - ", QString::SkipEmptyParts);
 				if (subs.size () < 2)
 					return;

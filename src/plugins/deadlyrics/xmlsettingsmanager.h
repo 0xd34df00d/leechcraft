@@ -16,13 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_DEADLYRICS_DEADLYRICS_H
-#define PLUGINS_DEADLYRICS_DEADLYRICS_H
-#include <QObject>
-#include <QStringList>
-#include <interfaces/iinfo.h>
-#include <interfaces/ifinder.h>
-#include <interfaces/ihavesettings.h>
+#ifndef PLUGINS_DEADLYRICS_XMLSETTINGSMANAGER_H
+#define PLUGINS_DEADLYRICS_XMLSETTINGSMANAGER_H
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
@@ -30,31 +26,16 @@ namespace LeechCraft
 	{
 		namespace DeadLyrics
 		{
-			class DeadLyRicS : public QObject
-							 , public IInfo
-							 , public IFinder
-							 , public IHaveSettings
+			class XmlSettingsManager : public LeechCraft::Util::BaseSettingsManager
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IFinder IHaveSettings)
 
-				boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
+				XmlSettingsManager ();
 			public:
-				void Init (ICoreProxy_ptr);
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-
-				void SetProvider (QObject*, const QString&);
-
-				QStringList GetCategories () const;
-				IFindProxy_ptr GetProxy (const LeechCraft::Request&);
-
-				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
+				static XmlSettingsManager* Instance ();
+			protected:
+				virtual QSettings* BeginSettings () const;
+				virtual void EndSettings (QSettings*) const;
 			};
 		};
 	};

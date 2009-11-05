@@ -13,6 +13,7 @@ SET (SRCS
 	lyricwikisearcher.cpp
 	findproxy.cpp
 	lyricscache.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (HEADERS
 	deadlyrics.h
@@ -21,6 +22,7 @@ SET (HEADERS
 	lyricwikisearcher.h
 	findproxy.h
 	lyricscache.h
+	xmlsettingsmanager.h
 	)
 SET (TRANSLATIONS
 	leechcraft_deadlyrics_ru_RU.ts
@@ -58,3 +60,4 @@ TARGET_LINK_LIBRARIES (leechcraft_deadlyrics
 	)
 INSTALL (TARGETS leechcraft_deadlyrics DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+INSTALL (FILES deadlyricssettings.xml DESTINATION ${LC_SETTINGS_DEST})

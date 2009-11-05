@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<declare defaultlang="en" />
+	<page>
+		<label lang="en" value="Appearance" />
+		<label lang="ru" value="Внешний вид" />
+		<groupbox>
+			<label lang="en" value="Lyrics view" />
+			<label lang="ru" value="Просмотр текстов" />
+			<item type="checkbox" property="UseBrowser" state="on">
+				<label lang="en" value="Use a web browser (if available)" />
+				<label lang="ru" value="Использовать браузер (если доступен)" />
+			</item>
+		</groupbox>
+	</page>
+</settings>

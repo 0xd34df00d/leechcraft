@@ -18,8 +18,10 @@
 
 #include "deadlyrics.h"
 #include <QIcon>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
 #include "findproxy.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -30,6 +32,10 @@ namespace LeechCraft
 			void DeadLyRicS::Init (ICoreProxy_ptr proxy)
 			{
 				Core::Instance ().SetProxy (proxy);
+
+				SettingsDialog_.reset (new Util::XmlSettingsDialog ());
+				SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+						"deadlyricssettings.xml");
 			}
 			
 			void DeadLyRicS::Release ()
@@ -78,6 +84,11 @@ namespace LeechCraft
 			IFindProxy_ptr DeadLyRicS::GetProxy (const LeechCraft::Request& req)
 			{
 				return IFindProxy_ptr (new FindProxy (req));
+			}
+
+			boost::shared_ptr<Util::XmlSettingsDialog> DeadLyRicS::GetSettingsDialog () const
+			{
+				return SettingsDialog_;
 			}
 			
 			Q_EXPORT_PLUGIN2 (leechcraft_deadlyrics, DeadLyRicS);
