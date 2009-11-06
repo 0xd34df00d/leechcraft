@@ -1541,7 +1541,7 @@ namespace LeechCraft
 			
 						if (!IsModified (*ourItem, *item))
 							continue;
-			
+
 						(*ourItem)->Description_ = (*item)->Description_;
 						(*ourItem)->Categories_ = (*item)->Categories_;
 						(*ourItem)->NumComments_ = (*item)->NumComments_;
@@ -1549,6 +1549,7 @@ namespace LeechCraft
 						(*ourItem)->CommentsPageLink_ = (*item)->CommentsPageLink_;
 						(*ourItem)->Latitude_ = (*item)->Latitude_;
 						(*ourItem)->Longitude_ = (*item)->Longitude_;
+						(*ourItem)->MRSSEntries_ = (*item)->MRSSEntries_;
 			
 						StorageBackend_->UpdateItem ((*ourItem),
 								(*position)->ParentURL_, (*position)->Title_);
