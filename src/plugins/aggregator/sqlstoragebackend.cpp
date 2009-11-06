@@ -604,7 +604,6 @@ namespace LeechCraft
 						"AND item_parents_hash = :item_parents_hash "
 						"AND item_title = :item_title "
 						"AND item_url = :item_url "
-						"GROUP BY type "
 						"ORDER BY comment");
 				
 				WriteMediaRSSPeerLink_ = QSqlQuery (DB_);
@@ -633,7 +632,6 @@ namespace LeechCraft
 						"AND item_parents_hash = :item_parents_hash "
 						"AND item_title = :item_title "
 						"AND item_url = :item_url "
-						"GROUP BY type "
 						"ORDER BY link");
 
 				WriteMediaRSSScene_ = QSqlQuery (DB_);
@@ -662,7 +660,7 @@ namespace LeechCraft
 						"title, "
 						"description, "
 						"start_time, "
-						"end_time"
+						"end_time "
 						"FROM mrss_scenes "
 						"WHERE parent_url = :parent_url "
 						"AND item_parents_hash = :item_parents_hash "
