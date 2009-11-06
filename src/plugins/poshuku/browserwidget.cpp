@@ -110,6 +110,8 @@ namespace LeechCraft
 				NotifyWhenFinished_ = new QAction (tr ("Notify when finished loading"), this);
 				NotifyWhenFinished_->setCheckable (true);
 				NotifyWhenFinished_->setProperty ("ActionIcon", "poshuku_notifywhenfinished");
+				NotifyWhenFinished_->setChecked (XmlSettingsManager::Instance ()->
+						property ("NotifyFinishedByDefault").toBool ());
 
 				Stop_ = Ui_.WebView_->pageAction (QWebPage::Stop);
 				Stop_->setParent (this);
@@ -1010,6 +1012,7 @@ namespace LeechCraft
 			void BrowserWidget::notifyLoadFinished (bool ok)
 			{
 				if (!NotifyWhenFinished_->isChecked () ||
+						!Own_ ||
 						isVisible ())
 					return;
 

@@ -27,6 +27,10 @@
 				<label lang="en" value="Generate tooltips" />
 				<label lang="ru" value="Создавать образ страниц" />
 			</item>
+			<item type="checkbox" property="NotifyFinishedByDefault" state="on">
+				<label lang="en" value="Notify about finished loads by default" />
+				<label lang="ru" value="По умолчанию уведомлять о завершенных загрузках" />
+			</item>
 			<item type="lineedit" property="ExternalSchemes" default="smb nfs telnet imap pop nntp news">
 				<label lang="en" value="Open these schemes using external applications:" />
 				<label lang="ru" value="Открывать эти схемы внешними приложениями:" />
