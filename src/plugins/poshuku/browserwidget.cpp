@@ -343,10 +343,6 @@ namespace LeechCraft
 						this,
 						SLOT (enableActions ()));
 				connect (Ui_.WebView_,
-						SIGNAL (loadStarted ()),
-						this,
-						SLOT (setupLoading ()));
-				connect (Ui_.WebView_,
 						SIGNAL (printRequested (QWebFrame*)),
 						this,
 						SLOT (handleViewPrint (QWebFrame*)));
@@ -636,12 +632,7 @@ namespace LeechCraft
 			{
 				int progress = Ui_.Progress_->value ();
 				if (progress == 100)
-				{
 					emit iconChanged (Ui_.WebView_->icon ());
-					Loading_.reset ();
-				}
-				else if (Loading_)
-					emit iconChanged (QIcon (Loading_->currentPixmap ()));
 				else
 					emit iconChanged (QIcon ());
 			}
@@ -899,20 +890,10 @@ namespace LeechCraft
 				ViewSources_->setEnabled (true);
 			}
 			
-			void BrowserWidget::setupLoading ()
-			{
-				Loading_.reset (new QMovie (":/resources/images/loading.gif"));
-				Loading_->setBackgroundColor (QApplication::palette ().color (QPalette::Window));
-				Loading_->start ();
-				connect (Loading_.get (),
-						SIGNAL (frameChanged (int)),
-						this,
-						SLOT (handleIconChanged ()));
-			}
-			
 			void BrowserWidget::handleEntityAction ()
 			{
-				emit gotEntity (qobject_cast<QAction*> (sender ())->data ().value<LeechCraft::DownloadEntity> ());
+				emit gotEntity (qobject_cast<QAction*> (sender ())->
+						data ().value<LeechCraft::DownloadEntity> ());
 			}
 			
 			void BrowserWidget::checkLinkRels ()

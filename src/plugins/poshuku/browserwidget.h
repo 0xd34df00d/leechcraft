@@ -28,7 +28,6 @@
 #include "ui_browserwidget.h"
 
 class QToolBar;
-class QMovie;
 class QDataStream;
 
 namespace LeechCraft
@@ -78,7 +77,6 @@ namespace LeechCraft
 				// TODO move out to the common menu
 				QAction *RecentlyClosedAction_;
 				QPoint OnLoadPos_;
-				boost::shared_ptr<QMovie> Loading_;
 				QMenu *RecentlyClosed_;
 				QMenu *ExternalLinks_;
 				FindDialog *FindDialog_;
@@ -160,7 +158,6 @@ namespace LeechCraft
 				void handleUncloseDestroyed ();
 				void updateTooltip ();
 				void enableActions ();
-				void setupLoading ();
 				void handleEntityAction ();
 				void checkLinkRels ();
 				void setScrollPosition ();
