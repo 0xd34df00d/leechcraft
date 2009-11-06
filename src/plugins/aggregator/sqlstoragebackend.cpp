@@ -1377,11 +1377,12 @@ namespace LeechCraft
 			
 				Channel_ptr channel = GetChannel (title, purl);
 				emit channelDataUpdated (channel);
-				items_container_t items;
-				GetItems (items, purl + title);
-				for (size_t i = 0; i < items.size (); ++i)
-					if (items.at (i)->Unread_ != oldItems.at (i)->Unread_)
-						emit itemDataUpdated (items.at (i), channel);
+				for (size_t i = 0; i < oldItems.size (); ++i)
+					if (oldItems.at (i)->Unread_ != state)
+					{
+						oldItems.at (i)->Unread_ = state;
+						emit itemDataUpdated (oldItems.at (i), channel);
+					}
 			}
 			
 			bool SQLStorageBackend::UpdateFeedsStorage (int, int)
