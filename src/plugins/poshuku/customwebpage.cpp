@@ -56,6 +56,12 @@ namespace LeechCraft
 
 				setPluginFactory (Core::Instance ().GetWebPluginFactory ());
 
+				connect (this,
+						SIGNAL (delayedFillForms (QWebFrame*)),
+						this,
+						SLOT (fillForms (QWebFrame*)),
+						Qt::QueuedConnection);
+
 				connect (ExternalProxy_.get (),
 						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
 						this,
@@ -251,7 +257,7 @@ namespace LeechCraft
 						HandleLoadFinished (this, ok))
 					return;
 			
-				FillForms (mainFrame ());
+				emit delayedFillForms (mainFrame ());
 			}
 			
 			void CustomWebPage::handleLoadProgress (int progress)
@@ -651,7 +657,7 @@ namespace LeechCraft
 				}
 			}
 			
-			void CustomWebPage::FillForms (QWebFrame *frame)
+			void CustomWebPage::fillForms (QWebFrame *frame)
 			{
 				JSProxy_->ClearForms ();
 			
@@ -671,7 +677,7 @@ namespace LeechCraft
 						<< sfile.errorString ();
 			
 				Q_FOREACH (QWebFrame *childFrame, frame->childFrames ())
-					FillForms (childFrame);
+					fillForms (childFrame);
 			}
 		};
 	};

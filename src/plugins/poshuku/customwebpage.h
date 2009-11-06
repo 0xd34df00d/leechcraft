@@ -76,6 +76,7 @@ namespace LeechCraft
 				void handleToolBarVisiblityChangeRequested (bool);
 				void handleUnsupportedContent (QNetworkReply*);
 				void handleWindowCloseRequested ();
+				void fillForms (QWebFrame*);
 			protected:
 				virtual bool acceptNavigationRequest (QWebFrame*,
 						const QNetworkRequest&, QWebPage::NavigationType);
@@ -92,12 +93,12 @@ namespace LeechCraft
 				QWebFrame* FindFrame (const QUrl&);
 				void HandleForms (QWebFrame*, const QNetworkRequest&,
 						QWebPage::NavigationType);
-				void FillForms (QWebFrame*);
 			signals:
 				void gotEntity (const LeechCraft::DownloadEntity&);
 				void loadingURL (const QUrl&);
 				void storeFormData (const PageFormsData_t&);
 				void couldHandle (const LeechCraft::DownloadEntity&, bool*);
+				void delayedFillForms (QWebFrame*);
 			};
 		};
 	};
