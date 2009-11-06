@@ -423,8 +423,6 @@ namespace LeechCraft
 								.arg (thumb.Height_);
 						result += "/>";
 
-						qDebug () << cur << num;
-
 						if (num && cur < num)
 							++cur;
 						else
@@ -433,6 +431,8 @@ namespace LeechCraft
 							cur = 1;
 						}
 					}
+
+					result += "<hr />";
 
 					if (!entry->Keywords_.isEmpty ())
 						result += tr ("<strong>Keywords:</strong> <em>%1</em><br />")
@@ -537,12 +537,12 @@ namespace LeechCraft
 							.arg (headerText);
 						result += QString ("<ul>%1</ul")
 							.arg (tech);
-						result += "</div";
+						result += "</div>";
 					}
 
 					if (!entry->Rating_.isEmpty () &&
 							!entry->RatingScheme_.isEmpty ())
-						result += tr ("<strong>Rating:</strong> %1 (according to %2 scheme)")
+						result += tr ("<strong>Rating:</strong> %1 (according to %2 scheme)<br />")
 							.arg (entry->Rating_)
 							.arg (entry->RatingScheme_.mid (4));
 
@@ -566,15 +566,15 @@ namespace LeechCraft
 					if (!entry->CopyrightURL_.isEmpty ())
 					{
 						if (!entry->CopyrightText_.isEmpty ())
-							result += tr ("<strong>Copyright:</strong> <a href='%1' target='_blank'>%2</a>")
+							result += tr ("<strong>Copyright:</strong> <a href='%1' target='_blank'>%2</a><br />")
 								.arg (entry->CopyrightURL_)
 								.arg (entry->CopyrightText_);
 						else
-							result += tr ("<strong>Copyright:</strong> <a href='%1' target='_blank'>%1</a>")
+							result += tr ("<strong>Copyright:</strong> <a href='%1' target='_blank'>%1</a><br />")
 								.arg (entry->CopyrightURL_);
 					}
 					else if (!entry->CopyrightText_.isEmpty ())
-						result += tr ("<strong>Copyright:</strong> %1")
+						result += tr ("<strong>Copyright:</strong> %1<br />")
 							.arg (entry->CopyrightText_);
 
 					QString credits;
@@ -589,7 +589,7 @@ namespace LeechCraft
 
 					if (!credits.isEmpty ())
 					{
-						result += tr ("<strong>Credits1:</strong");
+						result += tr ("<strong>Credits:</strong");
 						result += inpad.arg (alternateBg)
 							.arg (headerText);
 						result += QString ("<ul>%1</ul")
