@@ -486,7 +486,8 @@ namespace LeechCraft
 						tech += tr ("<li><strong>Sampling rate:</strong> %1</li>")
 							.arg (entry->SamplingRate_);
 					if (!entry->Type_.isEmpty ())
-						tech += tr ("<li><strong>MIME type:</strong> %1</li>");
+						tech += tr ("<li><strong>MIME type:</strong> %1</li>")
+							.arg (entry->Type_);
 
 					if (!tech.isEmpty ())
 					{
