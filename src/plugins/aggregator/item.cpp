@@ -18,6 +18,7 @@
 
 #include <QtDebug>
 #include <QDataStream>
+#include <typeinfo>
 #include "item.h"
 
 namespace LeechCraft
@@ -63,6 +64,9 @@ namespace LeechCraft
 			template<typename T>
 			bool SameSets (const QList<T>& t1, const QList<T>& t2)
 			{
+				if (t1.size () != t2.size ())
+					return false;
+
 				bool ok = true;
 				Q_FOREACH (T t, t1)
 					if (!t2.contains (t))
@@ -89,7 +93,6 @@ namespace LeechCraft
 					e1.Width_ == e2.Width_ &&
 					e1.Height_ == e2.Height_ &&
 					e1.Lang_ == e2.Lang_ &&
-					e1.Group_ == e2.Group_ &&
 					e1.Rating_ == e2.Rating_ &&
 					e1.RatingScheme_ == e2.RatingScheme_ &&
 					e1.Title_ == e2.Title_ &&
@@ -506,7 +509,7 @@ namespace LeechCraft
 						i1->CommentsPageLink_ == i2->CommentsPageLink_ &&
 						i1->Latitude_ == i2->Latitude_ &&
 						i1->Longitude_ == i2->Longitude_ &&
-						i1->MRSSEntries_ == i2->MRSSEntries_);
+						SameSets (i1->MRSSEntries_, i2->MRSSEntries_));
 			}
 		};
 	};
