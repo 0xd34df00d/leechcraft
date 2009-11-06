@@ -377,10 +377,41 @@ namespace LeechCraft
 						result += tr ("%1<br />")
 							.arg (entry->Description_);
 
+					QList<int> sizes;
+					int num = 0;
+					for (int i = 0; i < entry->Thumbnails_.size (); ++i)
+					{
+						int width = entry->Thumbnails_.at (i).Width_;
+						if (!width)
+							break;
+
+						if (!sizes.contains (width))
+							sizes << width;
+						else
+						{
+							bool broke = false;;
+							for (int j = i + 1; j < entry->Thumbnails_.size (); ++j)
+								if (entry->Thumbnails_.at (j).Width_ == sizes.at (j % sizes.size ()))
+								{
+									broke = true;
+									break;
+								}
+
+							if (broke)
+								continue;
+							num = sizes.size ();
+							break;
+						}
+					}
+
+					if (!num || num == entry->Thumbnails_.size ())
+						num = 3;
+
+					int cur = 1;
 					Q_FOREACH (MRSSThumbnail thumb, entry->Thumbnails_)
 					{
 						if (!thumb.Time_.isEmpty ())
-							result += tr ("Thumbnail at %1:<br />")
+							result += tr ("<hr />Thumbnail at %1:<br />")
 								.arg (thumb.Time_);
 						result += QString ("<img src='%1' ")
 							.arg (thumb.URL_);
@@ -391,6 +422,16 @@ namespace LeechCraft
 							result += QString ("height='%1' ")
 								.arg (thumb.Height_);
 						result += "/>";
+
+						qDebug () << cur << num;
+
+						if (num && cur < num)
+							++cur;
+						else
+						{
+							result += "<br />";
+							cur = 1;
+						}
 					}
 
 					if (!entry->Keywords_.isEmpty ())
