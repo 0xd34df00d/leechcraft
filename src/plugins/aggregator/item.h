@@ -66,11 +66,15 @@ namespace LeechCraft
 				QString Time_;
 			};
 
+			bool operator== (const MRSSThumbnail&, const MRSSThumbnail&);
+
 			struct MRSSCredit
 			{
 				QString Role_;
 				QString Who_;
 			};
+
+			bool operator== (const MRSSCredit&, const MRSSCredit&);
 
 			struct MRSSComment
 			{
@@ -78,11 +82,15 @@ namespace LeechCraft
 				QString Comment_;
 			};
 
+			bool operator== (const MRSSComment&, const MRSSComment&);
+
 			struct MRSSPeerLink
 			{
 				QString Type_;
 				QString Link_;
 			};
+
+			bool operator== (const MRSSPeerLink&, const MRSSPeerLink&);
 
 			struct MRSSScene
 			{
@@ -91,6 +99,8 @@ namespace LeechCraft
 				QString StartTime_;
 				QString EndTime_;
 			};
+
+			bool operator== (const MRSSScene&, const MRSSScene&);
 
 			struct MRSSEntry
 			{
@@ -129,6 +139,8 @@ namespace LeechCraft
 				QList<MRSSPeerLink> PeerLinks_;
 				QList<MRSSScene> Scenes_;
 			};
+
+			bool operator== (const MRSSEntry&, const MRSSEntry&);
 
 			struct Item
 			{

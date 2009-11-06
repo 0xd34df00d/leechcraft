@@ -32,6 +32,7 @@ namespace LeechCraft
 		{
 			class Parser
 			{
+				friend class MRSSParser;
 			public:
 				virtual ~Parser ();
 				/** @brief Indicates whether parser could parse the document.
@@ -64,7 +65,7 @@ namespace LeechCraft
 				static const QString ITunes_;
 				static const QString GeoRSSSimple_;
 				static const QString GeoRSSW3_;
-				static const QString Media_;
+				static const QString MediaRSS_;
 
 				virtual channels_container_t Parse (const QDomDocument&) const = 0;
 				QString GetLink (const QDomElement&) const;
@@ -79,9 +80,10 @@ namespace LeechCraft
 				QStringList GetPlainCategories (const QDomElement&) const;
 				QList<Enclosure> GetEncEnclosures (const QDomElement&) const;
 				QPair<double, double> GetGeoPoint (const QDomElement&) const; 
+				QList<MRSSEntry> GetMediaRSS (const QDomElement&) const;
 
 				QDateTime FromRFC3339 (const QString&) const;
-				QString UnescapeHTML (const QString&) const;
+				static QString UnescapeHTML (const QString&);
 			};
 		};
 	};

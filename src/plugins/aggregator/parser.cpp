@@ -17,10 +17,23 @@
  **********************************************************************/
 
 #include "parser.h"
+#include <boost/optional.hpp>
 #include <QDomElement>
 #include <QStringList>
 #include <QObject>
 #include <QtDebug>
+
+uint qHash (const QDomNode& node)
+{
+	if (node.lineNumber () == -1 ||
+			node.columnNumber () == -1)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< "node is unhasheable";
+		return -1;
+	}
+	return (node.lineNumber () << 24) + node.columnNumber ();
+}
 
 namespace LeechCraft
 {
@@ -37,7 +50,7 @@ namespace LeechCraft
 			const QString Parser::ITunes_ = "http://www.itunes.com/dtds/podcast-1.0.dtd";
 			const QString Parser::GeoRSSSimple_ = "http://www.georss.org/georss";
 			const QString Parser::GeoRSSW3_ = "http://www.w3.org/2003/01/geo/wgs84_pos#";
-			const QString Parser::Media_ = "http://search.yahoo.com/mrss/";
+			const QString Parser::MediaRSS_ = "http://search.yahoo.com/mrss/";
 
 			Parser::~Parser ()
 			{
@@ -281,6 +294,480 @@ namespace LeechCraft
 
 				return result;
 			}
+
+			class MRSSParser
+			{
+				struct ArbitraryLocatedData
+				{
+					boost::optional<QString> URL_;
+					boost::optional<QString> Rating_;
+					boost::optional<QString> RatingScheme_;
+					boost::optional<QString> Title_;
+					boost::optional<QString> Description_;
+					boost::optional<QString> Keywords_;
+					boost::optional<QString> CopyrightURL_;
+					boost::optional<QString> CopyrightText_;
+					boost::optional<int> RatingAverage_;
+					boost::optional<int> RatingCount_;
+					boost::optional<int> RatingMin_;
+					boost::optional<int> RatingMax_;
+					boost::optional<int> Views_;
+					boost::optional<int> Favs_;
+					boost::optional<QString> Tags_;
+					QList<MRSSThumbnail> Thumbnails_;
+					QList<MRSSCredit> Credits_;
+					QList<MRSSComment> Comments_;
+					QList<MRSSPeerLink> PeerLinks_;
+					QList<MRSSScene> Scenes_;
+
+					/**  Updates *this's fields according to the
+					 * child. Some kind of merge.
+					 */
+					ArbitraryLocatedData& operator+= (const ArbitraryLocatedData& child)
+					{
+						if (child.URL_)
+							URL_.reset (*child.URL_);
+						if (child.Rating_)
+							Rating_.reset (*child.Rating_);
+						if (child.RatingScheme_)
+							RatingScheme_.reset (*child.RatingScheme_);
+						if (child.Title_)
+							Title_.reset (*child.Title_);
+						if (child.Description_)
+							Description_.reset (*child.Description_);
+						if (child.Keywords_)
+							Keywords_.reset (*child.Keywords_);
+						if (child.CopyrightURL_)
+							CopyrightURL_.reset (*child.CopyrightURL_);
+						if (child.CopyrightText_)
+							CopyrightText_.reset (*child.CopyrightText_);
+						if (child.RatingAverage_)
+							RatingAverage_.reset (*child.RatingAverage_);
+						if (child.RatingCount_)
+							RatingCount_.reset (*child.RatingCount_);
+						if (child.RatingMin_)
+							RatingMin_.reset (*child.RatingMin_);
+						if (child.RatingMax_)
+							RatingMax_.reset (*child.RatingMax_);
+						if (child.Views_)
+							Views_.reset (*child.Views_);
+						if (child.Favs_)
+							Favs_.reset (*child.Favs_);
+						if (child.Tags_)
+							Tags_.reset (*child.Tags_);
+
+						Thumbnails_ += child.Thumbnails_;
+						Credits_ += child.Credits_;
+						Comments_ += child.Comments_;
+						PeerLinks_ += child.PeerLinks_;
+						Scenes_ += child.Scenes_;
+						return *this;
+					}
+				};
+				QHash<QDomNode, ArbitraryLocatedData> Cache_;
+			public:
+				MRSSParser () {}
+
+				QList<MRSSEntry> operator() (const QDomElement& item)
+				{
+					QList<MRSSEntry> result;
+
+					QDomNodeList groups = item.elementsByTagNameNS (Parser::MediaRSS_,
+							"group");
+					for (int i = 0; i < groups.size (); ++i)
+						result += CollectChildren (groups.at (i).toElement ());
+
+					result += CollectChildren (item);
+
+					return result;
+				}
+			private:
+				QList<MRSSEntry> CollectChildren (const QDomElement& holder)
+				{
+					QList<MRSSEntry> result;
+					QDomNodeList entries = holder.elementsByTagNameNS (Parser::MediaRSS_,
+							"content");
+					for (int i = 0; i < entries.size (); ++i)
+					{
+						MRSSEntry entry;
+
+						QDomElement en = entries.at (i).toElement ();
+						ArbitraryLocatedData d = GetArbitraryLocatedDataFor (en);
+
+						if (en.hasAttribute ("url"))
+							entry.URL_ = en.attribute ("url");
+						else
+							entry.URL_ = *d.URL_;
+
+						entry.Size_ = en.attribute ("fileSize").toInt ();
+						entry.Type_ = en.attribute ("type");
+						entry.Medium_ = en.attribute ("medium");
+						entry.IsDefault_ = (en.attribute ("isDefault") == "true");
+						entry.Expression_ = en.attribute ("expression");
+						if (entry.Expression_.isEmpty ())
+							entry.Expression_ = "full";
+						entry.Bitrate_ = en.attribute ("bitrate").toInt ();
+						entry.Framerate_ = en.attribute ("framerate").toDouble ();
+						entry.SamplingRate_ = en.attribute ("samplingrate").toDouble ();
+						entry.Channels_ = en.attribute ("channels").toInt ();
+						entry.Duration_ = en.attribute ("duration").toInt ();
+						entry.Width_ = en.attribute ("width").toInt ();
+						entry.Height_ = en.attribute ("height").toInt ();
+						entry.Lang_ = en.attribute ("lang").toInt ();
+
+						entry.Rating_ = d.Rating_.get_value_or (QString ());
+						entry.RatingScheme_ = d.RatingScheme_.get_value_or (QString ());
+						entry.Title_ = d.Title_.get_value_or (QString ());
+						entry.Description_ = d.Description_.get_value_or (QString ());
+						entry.Keywords_ = d.Keywords_.get_value_or (QString ());
+						entry.CopyrightURL_ = d.CopyrightURL_.get_value_or (QString ());
+						entry.CopyrightText_ = d.CopyrightText_.get_value_or (QString ());
+						entry.RatingAverage_ = d.RatingAverage_.get_value_or (0);
+						entry.RatingCount_ = d.RatingCount_.get_value_or (0);
+						entry.RatingMin_ = d.RatingMin_.get_value_or (0);
+						entry.RatingMax_ = d.RatingMax_.get_value_or (0);
+						entry.Views_ = d.Views_.get_value_or (0);
+						entry.Favs_ = d.Favs_.get_value_or (0);
+						entry.Tags_ = d.Tags_.get_value_or (QString ());
+						entry.Thumbnails_ = d.Thumbnails_;
+						entry.Credits_ = d.Credits_;
+						entry.Comments_ = d.Comments_;
+						entry.PeerLinks_ = d.PeerLinks_;
+						entry.Scenes_ = d.Scenes_;
+
+						result << entry;
+					}
+					return result;
+				}
+
+				ArbitraryLocatedData GetArbitraryLocatedDataFor (const QDomElement& holder)
+				{
+					ArbitraryLocatedData result;
+
+					QList<QDomElement> parents;
+					QDomElement parent = holder;
+					while (!parent.isNull ())
+					{
+						parents.prepend (parent);
+						parent = parent.parentNode ().toElement ();
+					}
+					Q_FOREACH (QDomElement p, parents)
+						result += CollectArbitraryLocatedData (p);
+
+					return result;
+				}
+
+				boost::optional<QString> GetURL (const QDomElement& element)
+				{
+					QDomNodeList elems = element.elementsByTagNameNS (Parser::MediaRSS_,
+							"player");
+					if (!elems.size ())
+						return boost::optional<QString> ();
+
+					return boost::optional<QString> (elems.at (0).toElement ().attribute ("url"));
+				}
+
+				boost::optional<QString> GetTitle (const QDomElement& element)
+				{
+					QDomNodeList elems = element.elementsByTagNameNS (Parser::MediaRSS_,
+							"title");
+					if (!elems.size ())
+						return boost::optional<QString> ();
+
+					QDomElement telem = elems.at (0).toElement ();
+					return boost::optional<QString> (Parser::UnescapeHTML (telem.text ()));
+				}
+
+				boost::optional<QString> GetDescription (const QDomElement& element)
+				{
+					QDomNodeList elems = element.elementsByTagNameNS (Parser::MediaRSS_,
+							"description");
+					if (!elems.size ())
+						return boost::optional<QString> ();
+
+					QDomElement telem = elems.at (0).toElement ();
+					return boost::optional<QString> (Parser::UnescapeHTML (telem.text ()));
+				}
+
+				boost::optional<QString> GetKeywords (const QDomElement& element)
+				{
+					QDomNodeList elems = element.elementsByTagNameNS (Parser::MediaRSS_,
+							"keywords");
+					if (!elems.size ())
+						return boost::optional<QString> ();
+
+					QDomElement telem = elems.at (0).toElement ();
+					return boost::optional<QString> (telem.text ());
+				}
+
+				boost::optional<int> GetInt (const QDomElement& elem, const QString& attrname)
+				{
+					if (elem.hasAttribute (attrname))
+					{
+						bool ok = false;
+						int result = elem.attribute (attrname).toInt (&ok);
+						if (ok)
+							return boost::optional<int> (result);
+					}
+					return boost::optional<int> ();
+				}
+
+				QList<MRSSThumbnail> GetThumbnails (const QDomElement& element)
+				{
+					QList<MRSSThumbnail> result;
+					QDomNodeList thumbs = element.elementsByTagNameNS (Parser::MediaRSS_,
+							"thumbnail");;
+					for (int i = 0; i < thumbs.size (); ++i)
+					{
+						QDomElement thumbNode = thumbs.at (i).toElement ();
+						boost::optional<int> widthOpt = GetInt (thumbNode, "width");
+						int width = widthOpt ? *widthOpt : 0;
+						boost::optional<int> heightOpt = GetInt (thumbNode, "height");
+						int height = heightOpt ? *heightOpt : 0;
+						MRSSThumbnail thumb =
+						{
+							thumbNode.attribute ("url"),
+							width,
+							height,
+							thumbNode.attribute ("time")
+						};
+						result << thumb;
+					}
+					return result;
+				}
+
+				QList<MRSSCredit> GetCredits (const QDomElement& element)
+				{
+					QList<MRSSCredit> result;
+					QDomNodeList credits = element.elementsByTagNameNS (Parser::MediaRSS_,
+							"credit");
+					for (int i = 0; i < credits.size (); ++i)
+					{
+						QDomElement creditNode = credits.at (i).toElement ();
+						if (!creditNode.hasAttribute ("role"))
+							continue;
+						MRSSCredit credit =
+						{
+							creditNode.attribute ("role"),
+							creditNode.text ()
+						};
+						result << credit;
+					}
+					return result;
+				}
+
+				QList<MRSSComment> GetComments (const QDomElement& element)
+				{
+					QList<MRSSComment> result;
+					QDomNodeList commParents = element.elementsByTagNameNS (Parser::MediaRSS_,
+							"comments");
+					if (commParents.size ())
+					{
+						QDomNodeList comments = commParents.at (0).toElement ()
+							.elementsByTagNameNS (Parser::MediaRSS_,
+								"comment");
+						for (int i = 0; i < comments.size (); ++i)
+						{
+							MRSSComment comment =
+							{
+								QObject::tr ("Comments"),
+								comments.at (i).toElement ().text ()
+							};
+							result << comment;
+						}
+					}
+
+					QDomNodeList respParents = element.elementsByTagNameNS (Parser::MediaRSS_,
+							"responses");
+					if (respParents.size ())
+					{
+						QDomNodeList responses = respParents.at (0).toElement ()
+							.elementsByTagNameNS (Parser::MediaRSS_,
+								"response");
+						for (int i = 0; i < responses.size (); ++i)
+						{
+							MRSSComment comment =
+							{
+								QObject::tr ("Responses"),
+								responses.at (i).toElement ().text ()
+							};
+							result << comment;
+						}
+					}
+
+					QDomNodeList backParents = element.elementsByTagNameNS (Parser::MediaRSS_,
+							"backLinks");
+					if (backParents.size ())
+					{
+						QDomNodeList backlinks = backParents.at (0).toElement ()
+							.elementsByTagNameNS (Parser::MediaRSS_,
+								"backLink");
+						for (int i = 0; i < backlinks.size (); ++i)
+						{
+							MRSSComment comment =
+							{
+								QObject::tr ("Backlinks"),
+								backlinks.at (i).toElement ().text ()
+							};
+							result << comment;
+						}
+					}
+					return result;
+				}
+
+				QList<MRSSPeerLink> GetPeerLinks (const QDomElement& element)
+				{
+					QList<MRSSPeerLink> result;
+					QDomNodeList links = element.elementsByTagNameNS (Parser::MediaRSS_,
+							"peerLink");
+					for (int i = 0; i < links.size (); ++i)
+					{
+						QDomElement linkNode = links.at (i).toElement ();
+						MRSSPeerLink pl =
+						{
+							linkNode.attribute ("type"),
+							linkNode.attribute ("href")
+						};
+						result << pl;
+					}
+					return result;
+				}
+
+				QList<MRSSScene> GetScenes (const QDomElement& element)
+				{
+					QList<MRSSScene> result;
+					QDomNodeList scenesNode = element.elementsByTagNameNS (Parser::MediaRSS_,
+							"scenes");
+					if (scenesNode.size ())
+					{
+						QDomNodeList scenesNodes = scenesNode.at (0).toElement ()
+							.elementsByTagNameNS (Parser::MediaRSS_, "scene");
+						for (int i = 0; i < scenesNodes.size (); ++i)
+						{
+							QDomElement sceneNode = scenesNodes.at (i).toElement ();
+							MRSSScene scene =
+							{
+								sceneNode.firstChildElement ("sceneTitle").text (),
+								sceneNode.firstChildElement ("sceneDescription").text (),
+								sceneNode.firstChildElement ("sceneStartTime").text (),
+								sceneNode.firstChildElement ("sceneEndTime").text ()
+							};
+							result << scene;
+						}
+					}
+					return result;
+				}
+
+				ArbitraryLocatedData CollectArbitraryLocatedData (const QDomElement& element)
+				{
+					if (Cache_.contains (element))
+						return Cache_ [element];
+
+					boost::optional<QString> rating;
+					boost::optional<QString> rscheme;
+					{
+						QDomNodeList elems = element.elementsByTagNameNS (Parser::MediaRSS_,
+								"rating");
+						if (elems.size ())
+						{
+							QDomElement relem = elems.at (0).toElement ();
+							rating.reset (relem.text ());
+							if (relem.hasAttribute ("scheme"))
+								rscheme.reset (relem.attribute ("scheme"));
+							else
+								rscheme.reset ("urn:simple");
+						}
+					}
+
+					boost::optional<QString> curl;
+					boost::optional<QString> ctext;
+					{
+						QDomNodeList elems = element.elementsByTagNameNS (Parser::MediaRSS_,
+								"copyright");
+						if (elems.size ())
+						{
+							QDomElement celem = elems.at (0).toElement ();
+							ctext.reset (celem.text ());
+							if (celem.hasAttribute ("url"))
+								curl.reset (celem.attribute ("url"));
+						}
+					}
+					boost::optional<int> raverage;
+					boost::optional<int> rcount;
+					boost::optional<int> rmin;
+					boost::optional<int> rmax;
+					boost::optional<int> views;
+					boost::optional<int> favs;
+					boost::optional<QString> tags;
+					{
+						QDomNodeList comms = element.elementsByTagNameNS (Parser::MediaRSS_,
+								"community");
+						if (comms.size ())
+						{
+							QDomElement comm = comms.at (0).toElement ();
+							QDomNodeList stars = comm.elementsByTagNameNS (Parser::MediaRSS_,
+									"starRating");
+							if (stars.size ())
+							{
+								QDomElement rating = stars.at (0).toElement ();
+								raverage = GetInt (rating, "average");
+								rcount = GetInt (rating, "count");
+								rmin = GetInt (rating, "min");
+								rmax = GetInt (rating, "max");
+							}
+
+							QDomNodeList stats = comm.elementsByTagNameNS (Parser::MediaRSS_,
+									"statistics");
+							if (stats.size ())
+							{
+								QDomElement stat = stats.at (0).toElement ();
+								views = GetInt (stat, "views");
+								favs = GetInt (stat, "favorites");
+							}
+
+							QDomNodeList tagsNode = comm.elementsByTagNameNS (Parser::MediaRSS_,
+									"tags");
+							if (tagsNode.size ())
+							{
+								QDomElement tag = tagsNode.at (0).toElement ();
+								tags.reset (tag.text ());
+							}
+						}
+					}
+
+					ArbitraryLocatedData result =
+					{
+						GetURL (element),
+						rating,
+						rscheme,
+						GetTitle (element),
+						GetDescription (element),
+						GetKeywords (element),
+						curl,
+						ctext,
+						raverage,
+						rcount,
+						rmin,
+						rmax,
+						views,
+						favs,
+						tags,
+						GetThumbnails (element),
+						GetCredits (element),
+						GetComments (element),
+						GetPeerLinks (element),
+						GetScenes (element)
+					};
+
+					Cache_ [element] = result;
+					return result;
+				}
+			};
+
+			QList<MRSSEntry> Parser::GetMediaRSS (const QDomElement& item) const
+			{
+				return MRSSParser () (item);
+			}
 			
 			QDateTime Parser::FromRFC3339 (const QString& t) const
 			{
@@ -318,7 +805,7 @@ namespace LeechCraft
 			
 			// Via
 			// http://www.theukwebdesigncompany.com/articles/entity-escape-characters.php
-			QString Parser::UnescapeHTML (const QString& escaped) const
+			QString Parser::UnescapeHTML (const QString& escaped)
 			{
 				QString result = escaped;
 				result.replace ("&euro;", "€");
