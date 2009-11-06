@@ -197,6 +197,7 @@ namespace LeechCraft
 			
 				QString headerBg = GetHex (QPalette::Window);
 				QString headerText = GetHex (QPalette::WindowText);
+				QString alternateBg = GetHex (QPalette::AlternateBase);
 			
 				QString startBox = "<div style='background: %1; "
 					"color: COLOR; "
@@ -215,6 +216,14 @@ namespace LeechCraft
 						"padding-left: 1em; "
 						"padding-right: 1em'>")
 					.arg (GetHex (QPalette::Base));
+
+				QString inpad = QString ("<div style='background: %1; "
+						"color: %2; "
+						"border: 1px solid #333333; "
+						"padding-top: 1em; "
+						"padding-bottom: 1em; "
+						"padding-left: 2em; "
+						"padding-right: 2em;'>");
 			
 				// Title
 				result += startBox.arg (headerBg);
@@ -295,17 +304,11 @@ namespace LeechCraft
 			
 				// Description
 				result += item->Description_;
+
 				for (QList<Enclosure>::const_iterator i = item->Enclosures_.begin (),
 						end = item->Enclosures_.end (); i != end; ++i)
 				{
-					result += QString ("<div style='background: %1; "
-						"color: %2; "
-						"border: 1px solid #333333; "
-						"padding-top: 1em; "
-						"padding-bottom: 1em; "
-						"padding-left: 2em; "
-						"padding-right: 2em;'>")
-						.arg (headerBg)
+					result += inpad.arg (headerBg)
 						.arg (headerText);
 					if (i->Length_ > 0)
 						result += tr ("File of type %1, size %2:<br />")
@@ -320,6 +323,236 @@ namespace LeechCraft
 					if (!i->Lang_.isEmpty ())
 						result += tr ("<br />Specified language: %1")
 							.arg (i->Lang_);
+					result += "</div>";
+				}
+
+				for (QList<MRSSEntry>::const_iterator entry = item->MRSSEntries_.begin (),
+						endEntry = item->MRSSEntries_.end (); entry != endEntry; ++entry)
+				{
+					result += inpad.arg (headerBg)
+						.arg (headerText);
+
+					QString url = entry->URL_;
+
+					if (entry->Medium_ == "image")
+						result += tr ("Image ");
+					else if (entry->Medium_ == "audio")
+						result += tr ("Audio ");
+					else if (entry->Medium_ == "video")
+						result += tr ("Video ");
+					else if (entry->Medium_ == "document")
+						result += tr ("Document ");
+					else if (entry->Medium_ == "executable")
+						result += tr ("Executable ");
+
+					if (entry->Title_.isEmpty ())
+						result += tr ("<a href='%1' target='_blank'>%1</a><hr />")
+							.arg (url);
+					else
+						result += tr ("<a href='%1' target='_blank'>%2</a><hr />")
+							.arg (url)
+							.arg (entry->Title_);
+
+					if (entry->Size_ != 0)
+					{
+						result += Util::MakePrettySize (entry->Size_);
+						result += "<br />";
+					}
+
+					QString peers;
+					Q_FOREACH (MRSSPeerLink pl, entry->PeerLinks_)
+						peers += QString ("<li>Also available in <a href='%1'>P2P (%2)</a></li>")
+							.arg (pl.Link_)
+							.arg (pl.Type_);
+					if (peers.size ())
+					{
+						result += inpad.arg (alternateBg)
+							.arg (headerText);
+						result += QString ("<ul>%1</ul>")
+							.arg (peers);
+						result += "</div>";
+					}
+
+					if (!entry->Description_.isEmpty ())
+						result += tr ("%1<br />")
+							.arg (entry->Description_);
+
+					Q_FOREACH (MRSSThumbnail thumb, entry->Thumbnails_)
+					{
+						if (!thumb.Time_.isEmpty ())
+							result += tr ("Thumbnail at %1:<br />")
+								.arg (thumb.Time_);
+						result += QString ("<img src='%1' ")
+							.arg (thumb.URL_);
+						if (thumb.Width_)
+							result += QString ("width='%1' ")
+								.arg (thumb.Width_);
+						if (thumb.Height_)
+							result += QString ("height='%1' ")
+								.arg (thumb.Height_);
+						result += "/>";
+					}
+
+					if (!entry->Keywords_.isEmpty ())
+						result += tr ("<strong>Keywords:</strong> <em>%1</em><br />")
+							.arg (entry->Keywords_);
+
+					if (!entry->Lang_.isEmpty ())
+						result += tr ("<strong>Language:</strong> %1<br />")
+							.arg (entry->Lang_);
+
+					if (entry->Expression_ == "sample")
+						result += tr ("Sample");
+					else if (entry->Expression_ == "nonstop")
+						result += tr ("Continuous stream");
+					else
+						result += tr ("Full version");
+					result += "<br />";
+
+					QString scenes;
+					Q_FOREACH (MRSSScene sc, entry->Scenes_)
+					{
+						QString current;
+						if (!sc.Title_.isEmpty ())
+							current += tr ("Title: %1<br />")
+								.arg (sc.Title_);
+						if (!sc.StartTime_.isEmpty ())
+							current += tr ("Start time: %1<br />")
+								.arg (sc.StartTime_);
+						if (!sc.EndTime_.isEmpty ())
+							current += tr ("End time: %1<br />")
+								.arg (sc.EndTime_);
+						if (!sc.Description_.isEmpty ())
+							current += tr ("%1<br />")
+								.arg (sc.Description_);
+
+						if (!current.isEmpty ())
+							scenes += QString ("<li>%1</li>")
+								.arg (current);
+					}
+
+					if (scenes.size ())
+					{
+						result += tr ("<strong>Scenes:</strong");
+						result += inpad.arg (alternateBg)
+							.arg (headerText);
+						result += QString ("<ul>%1</ul")
+							.arg (scenes);
+						result += "</div>";
+					}
+
+					if (entry->Views_)
+						result += tr ("<strong>Views:</strong> %1")
+							.arg (entry->Views_);
+					if (entry->Favs_)
+						result += tr ("<strong>Added to favorites:</strong> %1 times")
+							.arg (entry->Favs_);
+					if (entry->RatingAverage_)
+						result += tr ("<strong>Average rating:</strong> %1")
+							.arg (entry->RatingAverage_);
+					if (entry->RatingCount_)
+						result += tr ("<strong>Number of marks:</strong> %1")
+							.arg (entry->RatingCount_);
+					if (entry->RatingMin_)
+						result += tr ("<strong>Minimal rating:</strong> %1")
+							.arg (entry->RatingMin_);
+					if (entry->RatingMax_)
+						result += tr ("<strong>Maximal rating:</strong> %1")
+							.arg (entry->RatingMax_);
+
+					if (!entry->Tags_.isEmpty ())
+						result += tr ("<strong>User tags:</strong> %1")
+							.arg (entry->Tags_);
+
+					QString tech;
+					if (entry->Duration_)
+						tech += tr ("<li><strong>Duration:</strong> %1</li>")
+							.arg (entry->Channels_);
+					if (entry->Channels_)
+						tech += tr ("<li><strong>Channels:</strong> %1</li>")
+							.arg (entry->Channels_);
+					if (entry->Width_ &&
+							entry->Height_)
+						tech += tr ("<li><strong>Size:</strong> %1x%2</li>")
+							.arg (entry->Width_)
+							.arg (entry->Height_);
+					if (entry->Bitrate_)
+						tech += tr ("<li><strong>Bitrate:</strong> %1 kbps</li>")
+							.arg (entry->Bitrate_);
+					if (entry->Framerate_)
+						tech += tr ("<li><strong>Framerate:</strong> %1</li>")
+							.arg (entry->Framerate_);
+					if (entry->SamplingRate_)
+						tech += tr ("<li><strong>Sampling rate:</strong> %1</li>")
+							.arg (entry->SamplingRate_);
+
+					if (!tech.isEmpty ())
+					{
+						result += tr ("<strong>Technical information:</strong>");
+						result += inpad.arg (alternateBg)
+							.arg (headerText);
+						result += QString ("<ul>%1</ul")
+							.arg (tech);
+						result += "</div";
+					}
+
+					if (!entry->Rating_.isEmpty () &&
+							!entry->RatingScheme_.isEmpty ())
+						result += tr ("<strong>Rating:</strong> %1 (according to %2 scheme)")
+							.arg (entry->Rating_)
+							.arg (entry->RatingScheme_.mid (4));
+
+					QMap<QString, QString> comments;
+					Q_FOREACH (MRSSComment cm, entry->Comments_)
+						comments [cm.Type_] += QString ("<li>%1</li>")
+							.arg (cm.Comment_);
+
+					QStringList cmTypes = comments.keys ();
+					Q_FOREACH (QString type, cmTypes)
+					{
+						result += tr ("<strong>%1:</strong")
+							.arg (type);
+						result += inpad.arg (alternateBg)
+							.arg (headerText);
+						result += QString ("<ul>%1</ul")
+							.arg (comments [type]);
+						result += "</div>";
+					}
+
+					if (!entry->CopyrightURL_.isEmpty ())
+					{
+						if (!entry->CopyrightText_.isEmpty ())
+							result += tr ("<strong>Copyright:</strong> <a href='%1' target='_blank'>%2</a>")
+								.arg (entry->CopyrightURL_)
+								.arg (entry->CopyrightText_);
+						else
+							result += tr ("<strong>Copyright:</strong> <a href='%1' target='_blank'>%1</a>")
+								.arg (entry->CopyrightURL_);
+					}
+					else if (!entry->CopyrightText_.isEmpty ())
+						result += tr ("<strong>Copyright:</strong> %1")
+							.arg (entry->CopyrightText_);
+
+					QString credits;
+					Q_FOREACH (MRSSCredit cr, entry->Credits_)
+					{
+						if (cr.Role_.isEmpty ())
+							continue;
+						credits += tr ("<li>%1: %2</li>")
+							.arg (cr.Role_)
+							.arg (cr.Who_);
+					}
+
+					if (!credits.isEmpty ())
+					{
+						result += tr ("<strong>Credits1:</strong");
+						result += inpad.arg (alternateBg)
+							.arg (headerText);
+						result += QString ("<ul>%1</ul")
+							.arg (credits);
+						result += "</div>";
+					}
+
 					result += "</div>";
 				}
 			
