@@ -413,7 +413,7 @@ namespace LeechCraft
 						entry.Duration_ = en.attribute ("duration").toInt ();
 						entry.Width_ = en.attribute ("width").toInt ();
 						entry.Height_ = en.attribute ("height").toInt ();
-						entry.Lang_ = en.attribute ("lang").toInt ();
+						entry.Lang_ = en.attribute ("lang");
 
 						entry.Rating_ = d.Rating_.get_value_or (QString ());
 						entry.RatingScheme_ = d.RatingScheme_.get_value_or (QString ());
