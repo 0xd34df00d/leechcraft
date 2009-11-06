@@ -295,6 +295,20 @@ namespace LeechCraft
 				return result;
 			}
 
+			namespace
+			{
+				QList<QDomNode> GetDirectChildrenNS (const QDomElement& elem,
+						const QString& ns, const QString& name)
+				{
+					QList<QDomNode> result;
+					QDomNodeList unf = elem.elementsByTagNameNS (ns, name);
+					for (int i = 0, size = unf.size (); i < size; ++i)
+						if (unf.at (i).parentNode () == elem)
+							result << unf.at (i);
+					return result;
+				}
+			}
+
 			class MRSSParser
 			{
 				struct ArbitraryLocatedData
@@ -435,6 +449,11 @@ namespace LeechCraft
 						entry.PeerLinks_ = d.PeerLinks_;
 						entry.Scenes_ = d.Scenes_;
 
+						/*
+						Q_FOREACH (MRSSThumbnail th, entry.Thumbnails_)
+							qDebug () << entry.URL_ << th.URL_;
+							*/
+
 						result << entry;
 					}
 					return result;
@@ -459,7 +478,7 @@ namespace LeechCraft
 
 				boost::optional<QString> GetURL (const QDomElement& element)
 				{
-					QDomNodeList elems = element.elementsByTagNameNS (Parser::MediaRSS_,
+					QList<QDomNode> elems = GetDirectChildrenNS (element, Parser::MediaRSS_,
 							"player");
 					if (!elems.size ())
 						return boost::optional<QString> ();
@@ -469,7 +488,7 @@ namespace LeechCraft
 
 				boost::optional<QString> GetTitle (const QDomElement& element)
 				{
-					QDomNodeList elems = element.elementsByTagNameNS (Parser::MediaRSS_,
+					QList<QDomNode> elems = GetDirectChildrenNS (element, Parser::MediaRSS_,
 							"title");
 					if (!elems.size ())
 						return boost::optional<QString> ();
@@ -480,7 +499,7 @@ namespace LeechCraft
 
 				boost::optional<QString> GetDescription (const QDomElement& element)
 				{
-					QDomNodeList elems = element.elementsByTagNameNS (Parser::MediaRSS_,
+					QList<QDomNode> elems = GetDirectChildrenNS (element, Parser::MediaRSS_,
 							"description");
 					if (!elems.size ())
 						return boost::optional<QString> ();
@@ -491,7 +510,7 @@ namespace LeechCraft
 
 				boost::optional<QString> GetKeywords (const QDomElement& element)
 				{
-					QDomNodeList elems = element.elementsByTagNameNS (Parser::MediaRSS_,
+					QList<QDomNode> elems = GetDirectChildrenNS (element, Parser::MediaRSS_,
 							"keywords");
 					if (!elems.size ())
 						return boost::optional<QString> ();
@@ -515,7 +534,7 @@ namespace LeechCraft
 				QList<MRSSThumbnail> GetThumbnails (const QDomElement& element)
 				{
 					QList<MRSSThumbnail> result;
-					QDomNodeList thumbs = element.elementsByTagNameNS (Parser::MediaRSS_,
+					QList<QDomNode> thumbs = GetDirectChildrenNS (element, Parser::MediaRSS_,
 							"thumbnail");;
 					for (int i = 0; i < thumbs.size (); ++i)
 					{
@@ -539,7 +558,7 @@ namespace LeechCraft
 				QList<MRSSCredit> GetCredits (const QDomElement& element)
 				{
 					QList<MRSSCredit> result;
-					QDomNodeList credits = element.elementsByTagNameNS (Parser::MediaRSS_,
+					QList<QDomNode> credits = GetDirectChildrenNS (element, Parser::MediaRSS_,
 							"credit");
 					for (int i = 0; i < credits.size (); ++i)
 					{
@@ -559,7 +578,7 @@ namespace LeechCraft
 				QList<MRSSComment> GetComments (const QDomElement& element)
 				{
 					QList<MRSSComment> result;
-					QDomNodeList commParents = element.elementsByTagNameNS (Parser::MediaRSS_,
+					QList<QDomNode> commParents = GetDirectChildrenNS (element, Parser::MediaRSS_,
 							"comments");
 					if (commParents.size ())
 					{
@@ -577,7 +596,7 @@ namespace LeechCraft
 						}
 					}
 
-					QDomNodeList respParents = element.elementsByTagNameNS (Parser::MediaRSS_,
+					QList<QDomNode> respParents = GetDirectChildrenNS (element, Parser::MediaRSS_,
 							"responses");
 					if (respParents.size ())
 					{
@@ -595,7 +614,7 @@ namespace LeechCraft
 						}
 					}
 
-					QDomNodeList backParents = element.elementsByTagNameNS (Parser::MediaRSS_,
+					QList<QDomNode> backParents = GetDirectChildrenNS (element, Parser::MediaRSS_,
 							"backLinks");
 					if (backParents.size ())
 					{
@@ -618,7 +637,7 @@ namespace LeechCraft
 				QList<MRSSPeerLink> GetPeerLinks (const QDomElement& element)
 				{
 					QList<MRSSPeerLink> result;
-					QDomNodeList links = element.elementsByTagNameNS (Parser::MediaRSS_,
+					QList<QDomNode> links = GetDirectChildrenNS (element, Parser::MediaRSS_,
 							"peerLink");
 					for (int i = 0; i < links.size (); ++i)
 					{
@@ -636,7 +655,7 @@ namespace LeechCraft
 				QList<MRSSScene> GetScenes (const QDomElement& element)
 				{
 					QList<MRSSScene> result;
-					QDomNodeList scenesNode = element.elementsByTagNameNS (Parser::MediaRSS_,
+					QList<QDomNode> scenesNode = GetDirectChildrenNS (element, Parser::MediaRSS_,
 							"scenes");
 					if (scenesNode.size ())
 					{
@@ -666,7 +685,7 @@ namespace LeechCraft
 					boost::optional<QString> rating;
 					boost::optional<QString> rscheme;
 					{
-						QDomNodeList elems = element.elementsByTagNameNS (Parser::MediaRSS_,
+						QList<QDomNode> elems = GetDirectChildrenNS (element, Parser::MediaRSS_,
 								"rating");
 						if (elems.size ())
 						{
@@ -682,7 +701,7 @@ namespace LeechCraft
 					boost::optional<QString> curl;
 					boost::optional<QString> ctext;
 					{
-						QDomNodeList elems = element.elementsByTagNameNS (Parser::MediaRSS_,
+						QList<QDomNode> elems = GetDirectChildrenNS (element, Parser::MediaRSS_,
 								"copyright");
 						if (elems.size ())
 						{
@@ -700,7 +719,7 @@ namespace LeechCraft
 					boost::optional<int> favs;
 					boost::optional<QString> tags;
 					{
-						QDomNodeList comms = element.elementsByTagNameNS (Parser::MediaRSS_,
+						QList<QDomNode> comms = GetDirectChildrenNS (element, Parser::MediaRSS_,
 								"community");
 						if (comms.size ())
 						{
