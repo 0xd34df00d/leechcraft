@@ -937,7 +937,7 @@ namespace LeechCraft
 					return;
 				}
 			
-				while (ItemsFullSelector_.next  ())
+				while (ItemsFullSelector_.next ())
 				{
 					Item_ptr item (new Item);
 					FillItem (ItemsFullSelector_, item);
@@ -1008,18 +1008,6 @@ namespace LeechCraft
 				}
 				ChannelFinder_.finish ();
 			
-				// TODO check if this lock can be removed
-				LeechCraft::Util::DBLock lock (DB_);
-				try
-				{
-					lock.Init ();
-				}
-				catch (const std::runtime_error& e)
-				{
-					qWarning () << Q_FUNC_INFO << e.what ();
-					return;
-				}
-			
 				UpdateChannel_.bindValue (":parent_feed_url", parent);
 				UpdateChannel_.bindValue (":url", channel->Link_);
 				UpdateChannel_.bindValue (":title", channel->Title_);
@@ -1038,9 +1026,12 @@ namespace LeechCraft
 					LeechCraft::Util::DBLock::DumpError (UpdateChannel_);
 					throw std::runtime_error ("failed to save channel");
 				}
+
+				if (!UpdateChannel_.numRowsAffected ())
+					qWarning () << Q_FUNC_INFO
+						<< "no rows affected by UpdateChannel_";
 			
 				UpdateChannel_.finish ();
-				lock.Good ();
 			
 				emit channelDataUpdated (channel);
 			}
@@ -1075,6 +1066,10 @@ namespace LeechCraft
 					LeechCraft::Util::DBLock::DumpError (UpdateShortChannel_);
 					throw std::runtime_error ("failed to save channel");
 				}
+
+				if (!UpdateShortChannel_.numRowsAffected ())
+					qWarning () << Q_FUNC_INFO
+						<< "no rows affected by UpdateShortChannel_";
 			
 				UpdateShortChannel_.finish ();
 			
@@ -1084,18 +1079,6 @@ namespace LeechCraft
 			void SQLStorageBackend::UpdateItem (Item_ptr item,
 					const QString& parentUrl, const QString& parentTitle)
 			{
-				// TODO check if this lock can be removed
-				LeechCraft::Util::DBLock lock (DB_);
-				try
-				{
-					lock.Init ();
-				}
-				catch (const std::runtime_error& e)
-				{
-					qWarning () << Q_FUNC_INFO << e.what ();
-					return;
-				}
-
 				UpdateItem_.bindValue (":parents_hash", parentUrl + parentTitle);
 				UpdateItem_.bindValue (":title", item->Title_);
 				UpdateItem_.bindValue (":url", item->Link_);
@@ -1115,10 +1098,17 @@ namespace LeechCraft
 					LeechCraft::Util::DBLock::DumpError (UpdateItem_);
 					throw std::runtime_error ("failed to save item");
 				}
-			
-				lock.Good ();
+
+				if (!UpdateItem_.numRowsAffected ())
+					qWarning () << Q_FUNC_INFO
+						<< "no rows affected by UpdateItem_";
 			
 				UpdateItem_.finish ();
+
+				WriteEnclosures (parentUrl + parentTitle,
+						item->Title_, item->Link_, item->Enclosures_);
+				WriteMRSSEntries (parentUrl + parentTitle,
+						item->Title_, item->Link_, item->MRSSEntries_);
 			
 				Channel_ptr channel = GetChannel (parentTitle, parentUrl);
 				emit itemDataUpdated (item, channel);
@@ -1152,6 +1142,10 @@ namespace LeechCraft
 					LeechCraft::Util::DBLock::DumpError (UpdateShortItem_);
 					throw std::runtime_error ("failed to save item");
 				}
+
+				if (!UpdateShortItem_.numRowsAffected ())
+					qWarning () << Q_FUNC_INFO
+						<< "no rows affected by UpdateShortItem_";
 			
 				UpdateShortItem_.finish ();
 			
@@ -1217,146 +1211,12 @@ namespace LeechCraft
 				}
 			
 				InsertItem_.finish ();
-			
-				for (QList<Enclosure>::const_iterator i = item->Enclosures_.begin (),
-						end = item->Enclosures_.end (); i != end; ++i)
-				{
-					WriteEnclosure_.bindValue (":url", i->URL_);
-					WriteEnclosure_.bindValue (":type", i->Type_);
-					WriteEnclosure_.bindValue (":length", i->Length_);
-					WriteEnclosure_.bindValue (":lang", i->Lang_);
-					WriteEnclosure_.bindValue (":item_parents_hash", parentUrl + parentTitle);
-					WriteEnclosure_.bindValue (":item_title", item->Title_);
-					WriteEnclosure_.bindValue (":item_url", item->Link_);
-			
-					if (!WriteEnclosure_.exec ())
-						LeechCraft::Util::DBLock::DumpError (WriteEnclosure_);
-				}
-			
-				WriteEnclosure_.finish ();
 
-				Q_FOREACH (MRSSEntry e, item->MRSSEntries_)
-				{
-					WriteMediaRSS_.bindValue (":url", e.URL_);
-					WriteMediaRSS_.bindValue (":size", e.Size_);
-					WriteMediaRSS_.bindValue (":type", e.Type_);
-					WriteMediaRSS_.bindValue (":medium", e.Medium_);
-					WriteMediaRSS_.bindValue (":is_default", e.IsDefault_);
-					WriteMediaRSS_.bindValue (":expression", e.Expression_);
-					WriteMediaRSS_.bindValue (":bitrate", e.Bitrate_);
-					WriteMediaRSS_.bindValue (":framerate", e.Framerate_);
-					WriteMediaRSS_.bindValue (":samplingrate", e.SamplingRate_);
-					WriteMediaRSS_.bindValue (":channels", e.Channels_);
-					WriteMediaRSS_.bindValue (":duration", e.Duration_);
-					WriteMediaRSS_.bindValue (":width", e.Width_);
-					WriteMediaRSS_.bindValue (":height", e.Height_);
-					WriteMediaRSS_.bindValue (":lang", e.Lang_);
-					WriteMediaRSS_.bindValue (":mediagroup", e.Group_);
-					WriteMediaRSS_.bindValue (":rating", e.Rating_);
-					WriteMediaRSS_.bindValue (":rating_scheme", e.RatingScheme_);
-					WriteMediaRSS_.bindValue (":title", e.Title_);
-					WriteMediaRSS_.bindValue (":description", e.Description_);
-					WriteMediaRSS_.bindValue (":keywords", e.Keywords_);
-					WriteMediaRSS_.bindValue (":copyright_url", e.CopyrightURL_);
-					WriteMediaRSS_.bindValue (":copyright_text", e.CopyrightText_);
-					WriteMediaRSS_.bindValue (":star_rating_average", e.RatingAverage_);
-					WriteMediaRSS_.bindValue (":star_rating_count", e.RatingCount_);
-					WriteMediaRSS_.bindValue (":star_rating_min", e.RatingMin_);
-					WriteMediaRSS_.bindValue (":star_rating_max", e.RatingMax_);
-					WriteMediaRSS_.bindValue (":stat_views", e.Views_);
-					WriteMediaRSS_.bindValue (":stat_favs", e.Favs_);
-					WriteMediaRSS_.bindValue (":tags", e.Tags_);
-					WriteMediaRSS_.bindValue (":item_parents_hash", parentUrl + parentTitle);
-					WriteMediaRSS_.bindValue (":item_title", item->Title_);
-					WriteMediaRSS_.bindValue (":item_url", item->Link_);
+				WriteEnclosures (parentUrl + parentTitle,
+						item->Title_, item->Link_, item->Enclosures_);
+				WriteMRSSEntries (parentUrl + parentTitle,
+						item->Title_, item->Link_, item->MRSSEntries_);
 
-					if (!WriteMediaRSS_.exec ())
-					{
-						LeechCraft::Util::DBLock::DumpError (WriteMediaRSS_);
-						continue;
-					}
-					
-					WriteMediaRSS_.finish ();
-
-					Q_FOREACH (MRSSThumbnail t, e.Thumbnails_)
-					{
-						WriteMediaRSSThumbnail_.bindValue (":parent_url", e.URL_);
-						WriteMediaRSSThumbnail_.bindValue (":item_parents_hash", parentUrl + parentTitle);
-						WriteMediaRSSThumbnail_.bindValue (":item_title", item->Title_);
-						WriteMediaRSSThumbnail_.bindValue (":item_url", item->Link_);
-						WriteMediaRSSThumbnail_.bindValue (":url", t.URL_);
-						WriteMediaRSSThumbnail_.bindValue (":width", t.Width_);
-						WriteMediaRSSThumbnail_.bindValue (":height", t.Height_);
-						WriteMediaRSSThumbnail_.bindValue (":time", t.Time_);
-
-						if (!WriteMediaRSSThumbnail_.exec ())
-							LeechCraft::Util::DBLock::DumpError (WriteMediaRSSThumbnail_);
-						
-						WriteMediaRSSThumbnail_.finish ();
-					}
-
-					Q_FOREACH (MRSSCredit c, e.Credits_)
-					{
-						WriteMediaRSSCredit_.bindValue (":parent_url", e.URL_);
-						WriteMediaRSSCredit_.bindValue (":item_parents_hash", parentUrl + parentTitle);
-						WriteMediaRSSCredit_.bindValue (":item_title", item->Title_);
-						WriteMediaRSSCredit_.bindValue (":item_url", item->Link_);
-						WriteMediaRSSCredit_.bindValue (":role", c.Role_);
-						WriteMediaRSSCredit_.bindValue (":who", c.Who_);
-
-						if (!WriteMediaRSSCredit_.exec ())
-							LeechCraft::Util::DBLock::DumpError (WriteMediaRSSCredit_);
-						
-						WriteMediaRSSCredit_.finish ();
-					}
-
-					Q_FOREACH (MRSSComment c, e.Comments_)
-					{
-						WriteMediaRSSComment_.bindValue (":parent_url", e.URL_);
-						WriteMediaRSSComment_.bindValue (":item_parents_hash", parentUrl + parentTitle);
-						WriteMediaRSSComment_.bindValue (":item_title", item->Title_);
-						WriteMediaRSSComment_.bindValue (":item_url", item->Link_);
-						WriteMediaRSSComment_.bindValue (":type", c.Type_);
-						WriteMediaRSSComment_.bindValue (":comment", c.Comment_);
-
-						if (!WriteMediaRSSComment_.exec ())
-							LeechCraft::Util::DBLock::DumpError (WriteMediaRSSComment_);
-						
-						WriteMediaRSSComment_.finish ();
-					}
-
-					Q_FOREACH (MRSSPeerLink p, e.PeerLinks_)
-					{
-						WriteMediaRSSPeerLink_.bindValue (":parent_url", e.URL_);
-						WriteMediaRSSPeerLink_.bindValue (":item_parents_hash", parentUrl + parentTitle);
-						WriteMediaRSSPeerLink_.bindValue (":item_title", item->Title_);
-						WriteMediaRSSPeerLink_.bindValue (":item_url", item->Link_);
-						WriteMediaRSSPeerLink_.bindValue (":type", p.Type_);
-						WriteMediaRSSPeerLink_.bindValue (":link", p.Link_);
-
-						if (!WriteMediaRSSPeerLink_.exec ())
-							LeechCraft::Util::DBLock::DumpError (WriteMediaRSSPeerLink_);
-						
-						WriteMediaRSSPeerLink_.finish ();
-					}
-
-					Q_FOREACH (MRSSScene s, e.Scenes_)
-					{
-						WriteMediaRSSScene_.bindValue (":parent_url", e.URL_);
-						WriteMediaRSSScene_.bindValue (":item_parents_hash", parentUrl + parentTitle);
-						WriteMediaRSSScene_.bindValue (":item_title", item->Title_);
-						WriteMediaRSSScene_.bindValue (":item_url", item->Link_);
-						WriteMediaRSSScene_.bindValue (":title", s.Title_);
-						WriteMediaRSSScene_.bindValue (":description", s.Description_);
-						WriteMediaRSSScene_.bindValue (":start_time", s.StartTime_);
-						WriteMediaRSSScene_.bindValue (":end_time", s.EndTime_);
-
-						if (!WriteMediaRSSScene_.exec ())
-							LeechCraft::Util::DBLock::DumpError (WriteMediaRSSScene_);
-						
-						WriteMediaRSSScene_.finish ();
-					}
-				}
 			
 				Channel_ptr channel = GetChannel (parentTitle, parentUrl);
 				emit itemDataUpdated (item, channel);
@@ -1904,31 +1764,6 @@ namespace LeechCraft
 						return false;
 					}
 
-					if (Type_ == SBPostgres)
-					{
-						if (!query.exec ("CREATE RULE \"replace_mrss_credits\" AS "
-											"ON INSERT TO \"mrss_credits\" "
-											"WHERE "
-												"EXISTS (SELECT 1 FROM mrss_credits "
-													"WHERE item_parents_hash = NEW.item_parents_hash "
-													"AND item_title = NEW.item_title "
-													"AND item_url = NEW.item_url "
-													"AND parent_url = NEW.parent_url "
-													"AND who = NEW.who) "
-											"DO INSTEAD "
-												"(UPDATE mrss_credits "
-													"SET who = NEW.who "
-													"WHERE item_parents_hash = NEW.item_parents_hash "
-													"AND item_title = NEW.item_title "
-													"AND item_url = NEW.item_url "
-													"AND parent_url = NEW.parent_url "
-													"AND role = NEW.role)"))
-						{
-							LeechCraft::Util::DBLock::DumpError (query);
-							return false;
-						}
-					}
-
 					if (!query.exec ("CREATE INDEX "
 								"idx_mrss_credits_parent_url_item_parents_hash_item_title_item_url "
 								"ON mrss_credits (parent_url, item_parents_hash, item_title, item_url);"))
@@ -2124,6 +1959,28 @@ namespace LeechCraft
 				item->Latitude_ = query.value (11).toString ().toDouble ();
 				item->Longitude_ = query.value (12).toString ().toDouble ();
 			}
+
+			void SQLStorageBackend::WriteEnclosures (const QString& hash,
+					const QString& title, const QString& link,
+					const QList<Enclosure>& enclosures)
+			{
+				for (QList<Enclosure>::const_iterator i = enclosures.begin (),
+						end = enclosures.end (); i != end; ++i)
+				{
+					WriteEnclosure_.bindValue (":url", i->URL_);
+					WriteEnclosure_.bindValue (":type", i->Type_);
+					WriteEnclosure_.bindValue (":length", i->Length_);
+					WriteEnclosure_.bindValue (":lang", i->Lang_);
+					WriteEnclosure_.bindValue (":item_parents_hash", hash);
+					WriteEnclosure_.bindValue (":item_title", title);
+					WriteEnclosure_.bindValue (":item_url", link);
+			
+					if (!WriteEnclosure_.exec ())
+						LeechCraft::Util::DBLock::DumpError (WriteEnclosure_);
+				}
+			
+				WriteEnclosure_.finish ();
+			}
 			
 			void SQLStorageBackend::GetEnclosures (const QString& hash, const QString& title,
 					const QString& link, QList<Enclosure>& enclosures) const
@@ -2152,6 +2009,134 @@ namespace LeechCraft
 				}
 			
 				GetEnclosures_.finish ();
+			}
+
+			void SQLStorageBackend::WriteMRSSEntries (const QString& hash,
+					const QString& title, const QString& link,
+					const QList<MRSSEntry>& entries)
+			{
+				Q_FOREACH (MRSSEntry e, entries)
+				{
+					WriteMediaRSS_.bindValue (":url", e.URL_);
+					WriteMediaRSS_.bindValue (":size", e.Size_);
+					WriteMediaRSS_.bindValue (":type", e.Type_);
+					WriteMediaRSS_.bindValue (":medium", e.Medium_);
+					WriteMediaRSS_.bindValue (":is_default", e.IsDefault_);
+					WriteMediaRSS_.bindValue (":expression", e.Expression_);
+					WriteMediaRSS_.bindValue (":bitrate", e.Bitrate_);
+					WriteMediaRSS_.bindValue (":framerate", e.Framerate_);
+					WriteMediaRSS_.bindValue (":samplingrate", e.SamplingRate_);
+					WriteMediaRSS_.bindValue (":channels", e.Channels_);
+					WriteMediaRSS_.bindValue (":duration", e.Duration_);
+					WriteMediaRSS_.bindValue (":width", e.Width_);
+					WriteMediaRSS_.bindValue (":height", e.Height_);
+					WriteMediaRSS_.bindValue (":lang", e.Lang_);
+					WriteMediaRSS_.bindValue (":mediagroup", e.Group_);
+					WriteMediaRSS_.bindValue (":rating", e.Rating_);
+					WriteMediaRSS_.bindValue (":rating_scheme", e.RatingScheme_);
+					WriteMediaRSS_.bindValue (":title", e.Title_);
+					WriteMediaRSS_.bindValue (":description", e.Description_);
+					WriteMediaRSS_.bindValue (":keywords", e.Keywords_);
+					WriteMediaRSS_.bindValue (":copyright_url", e.CopyrightURL_);
+					WriteMediaRSS_.bindValue (":copyright_text", e.CopyrightText_);
+					WriteMediaRSS_.bindValue (":star_rating_average", e.RatingAverage_);
+					WriteMediaRSS_.bindValue (":star_rating_count", e.RatingCount_);
+					WriteMediaRSS_.bindValue (":star_rating_min", e.RatingMin_);
+					WriteMediaRSS_.bindValue (":star_rating_max", e.RatingMax_);
+					WriteMediaRSS_.bindValue (":stat_views", e.Views_);
+					WriteMediaRSS_.bindValue (":stat_favs", e.Favs_);
+					WriteMediaRSS_.bindValue (":tags", e.Tags_);
+					WriteMediaRSS_.bindValue (":item_parents_hash", hash);
+					WriteMediaRSS_.bindValue (":item_title", title);
+					WriteMediaRSS_.bindValue (":item_url", link);
+
+					if (!WriteMediaRSS_.exec ())
+					{
+						LeechCraft::Util::DBLock::DumpError (WriteMediaRSS_);
+						continue;
+					}
+					
+					WriteMediaRSS_.finish ();
+
+					Q_FOREACH (MRSSThumbnail t, e.Thumbnails_)
+					{
+						WriteMediaRSSThumbnail_.bindValue (":parent_url", e.URL_);
+						WriteMediaRSSThumbnail_.bindValue (":item_parents_hash", hash);
+						WriteMediaRSSThumbnail_.bindValue (":item_title", title);
+						WriteMediaRSSThumbnail_.bindValue (":item_url", link);
+						WriteMediaRSSThumbnail_.bindValue (":url", t.URL_);
+						WriteMediaRSSThumbnail_.bindValue (":width", t.Width_);
+						WriteMediaRSSThumbnail_.bindValue (":height", t.Height_);
+						WriteMediaRSSThumbnail_.bindValue (":time", t.Time_);
+
+						if (!WriteMediaRSSThumbnail_.exec ())
+							LeechCraft::Util::DBLock::DumpError (WriteMediaRSSThumbnail_);
+						
+						WriteMediaRSSThumbnail_.finish ();
+					}
+
+					Q_FOREACH (MRSSCredit c, e.Credits_)
+					{
+						WriteMediaRSSCredit_.bindValue (":parent_url", e.URL_);
+						WriteMediaRSSCredit_.bindValue (":item_parents_hash", hash);
+						WriteMediaRSSCredit_.bindValue (":item_title", title);
+						WriteMediaRSSCredit_.bindValue (":item_url", link);
+						WriteMediaRSSCredit_.bindValue (":role", c.Role_);
+						WriteMediaRSSCredit_.bindValue (":who", c.Who_);
+
+						if (!WriteMediaRSSCredit_.exec ())
+							LeechCraft::Util::DBLock::DumpError (WriteMediaRSSCredit_);
+						
+						WriteMediaRSSCredit_.finish ();
+					}
+
+					Q_FOREACH (MRSSComment c, e.Comments_)
+					{
+						WriteMediaRSSComment_.bindValue (":parent_url", e.URL_);
+						WriteMediaRSSComment_.bindValue (":item_parents_hash", hash);
+						WriteMediaRSSComment_.bindValue (":item_title", title);
+						WriteMediaRSSComment_.bindValue (":item_url", link);
+						WriteMediaRSSComment_.bindValue (":type", c.Type_);
+						WriteMediaRSSComment_.bindValue (":comment", c.Comment_);
+
+						if (!WriteMediaRSSComment_.exec ())
+							LeechCraft::Util::DBLock::DumpError (WriteMediaRSSComment_);
+						
+						WriteMediaRSSComment_.finish ();
+					}
+
+					Q_FOREACH (MRSSPeerLink p, e.PeerLinks_)
+					{
+						WriteMediaRSSPeerLink_.bindValue (":parent_url", e.URL_);
+						WriteMediaRSSPeerLink_.bindValue (":item_parents_hash", hash);
+						WriteMediaRSSPeerLink_.bindValue (":item_title", title);
+						WriteMediaRSSPeerLink_.bindValue (":item_url", link);
+						WriteMediaRSSPeerLink_.bindValue (":type", p.Type_);
+						WriteMediaRSSPeerLink_.bindValue (":link", p.Link_);
+
+						if (!WriteMediaRSSPeerLink_.exec ())
+							LeechCraft::Util::DBLock::DumpError (WriteMediaRSSPeerLink_);
+						
+						WriteMediaRSSPeerLink_.finish ();
+					}
+
+					Q_FOREACH (MRSSScene s, e.Scenes_)
+					{
+						WriteMediaRSSScene_.bindValue (":parent_url", e.URL_);
+						WriteMediaRSSScene_.bindValue (":item_parents_hash", hash);
+						WriteMediaRSSScene_.bindValue (":item_title", title);
+						WriteMediaRSSScene_.bindValue (":item_url", link);
+						WriteMediaRSSScene_.bindValue (":title", s.Title_);
+						WriteMediaRSSScene_.bindValue (":description", s.Description_);
+						WriteMediaRSSScene_.bindValue (":start_time", s.StartTime_);
+						WriteMediaRSSScene_.bindValue (":end_time", s.EndTime_);
+
+						if (!WriteMediaRSSScene_.exec ())
+							LeechCraft::Util::DBLock::DumpError (WriteMediaRSSScene_);
+						
+						WriteMediaRSSScene_.finish ();
+					}
+				}
 			}
 
 			void SQLStorageBackend::GetMRSSEntries (const QString& hash, const QString& title,

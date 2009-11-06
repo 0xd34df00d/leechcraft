@@ -551,8 +551,12 @@ namespace LeechCraft
 				QPixmap UnserializePixmap (const QByteArray&) const;
 				bool RollItemsStorage (int);
 				void FillItem (const QSqlQuery&, Item_ptr&) const;
+				void WriteEnclosures (const QString&, const QString&, const QString&,
+						const QList<Enclosure>&);
 				void GetEnclosures (const QString&, const QString&, const QString&,
 						QList<Enclosure>&) const;
+				void WriteMRSSEntries (const QString&, const QString&, const QString&,
+						const QList<MRSSEntry>&);
 				void GetMRSSEntries (const QString&, const QString&, const QString&,
 						QList<MRSSEntry>&) const;
 			};
