@@ -1627,7 +1627,7 @@ namespace LeechCraft
 
 						int maxNew = ipc - (*position)->Items_.size ();
 						if ((*i)->Items_.size () > maxNew)
-							(*i)->Items_.resize (maxNew);
+							(*i)->Items_.resize (maxNew >= 0 ? maxNew : 0);
 			
 						if ((*i)->Items_.size ())
 							emitString += tr ("Updated channel \"%1\" (%2 new items)")
