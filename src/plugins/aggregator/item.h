@@ -122,7 +122,7 @@ namespace LeechCraft
 				int RatingMax_;
 				int Views_;
 				int Favs_;
-				int Tags_;
+				QString Tags_;
 				QList<MRSSThumbnail> Thumbnails_;
 				QList<MRSSCredit> Credits_;
 				QList<MRSSComment> Comments_;

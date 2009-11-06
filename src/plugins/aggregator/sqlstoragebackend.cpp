@@ -2202,7 +2202,7 @@ namespace LeechCraft
 						GetMediaRSSs_.value (25).toInt (),
 						GetMediaRSSs_.value (26).toInt (),
 						GetMediaRSSs_.value (27).toInt (),
-						GetMediaRSSs_.value (28).toInt (),
+						GetMediaRSSs_.value (28).toString (),
 						QList<MRSSThumbnail> (),
 						QList<MRSSCredit> (),
 						QList<MRSSComment> (),
