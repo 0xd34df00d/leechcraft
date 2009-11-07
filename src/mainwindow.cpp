@@ -200,13 +200,10 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	Ui_.MainTabWidget_->AddAction2TabBar (Ui_.ActionNewTab_);
 	Ui_.MainTabWidget_->AddAction2TabBar (Ui_.ActionCloseTab_);
 
-	QToolButton *newTab = new QToolButton ();
-	newTab->setDefaultAction (Ui_.ActionNewTab_);
-	Ui_.MainTabWidget_->setCornerWidget (newTab, Qt::TopLeftCorner);
-
-	QToolButton *closeTab = new QToolButton ();
-	closeTab->setDefaultAction (Ui_.ActionCloseTab_);
-	Ui_.MainTabWidget_->setCornerWidget (closeTab, Qt::TopRightCorner);
+	QToolBar *bar = new QToolBar ();
+	bar->addAction (Ui_.ActionNewTab_);
+	bar->addAction (Ui_.ActionCloseTab_);
+	Ui_.MainTabWidget_->setCornerWidget (bar, Qt::TopRightCorner);
 
 	XmlSettingsDialog_ = new XmlSettingsDialog ();
 	XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
