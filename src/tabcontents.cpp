@@ -246,6 +246,12 @@ namespace LeechCraft
 				this,
 				SLOT (updatePanes (const QModelIndex&,
 						const QModelIndex&)));
+		connect (Ui_.PluginsTasksTree_->selectionModel (),
+				SIGNAL (currentRowChanged (const QModelIndex&,
+						const QModelIndex&)),
+				this,
+				SLOT (syncSelection (const QModelIndex&)),
+				Qt::QueuedConnection);
 
 		QHeaderView *itemsHeader = Ui_.PluginsTasksTree_->header ();
 		QFontMetrics fm = fontMetrics ();
@@ -326,6 +332,16 @@ namespace LeechCraft
 		w->deleteLater ();
 
 		filterParametersChanged ();
+	}
+
+	void TabContents::syncSelection (const QModelIndex& current)
+	{
+		QItemSelectionModel *selm = Ui_.PluginsTasksTree_->selectionModel ();
+		QModelIndex now = selm->currentIndex ();
+		if (current != now ||
+				!selm->rowIntersectsSelection (now.row (), QModelIndex ()))
+			selm->select (now, QItemSelectionModel::ClearAndSelect |
+					QItemSelectionModel::Rows);
 	}
 };
 

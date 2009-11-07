@@ -54,6 +54,7 @@ namespace LeechCraft
 		void handleCategoriesChanged (const QStringList&, const QStringList&);
 		void on_SimpleSearch__toggled (bool);
 		void removeCategoryBox ();
+		void syncSelection (const QModelIndex&);
 	signals:
 		void filterUpdated ();
 		void queryUpdated (const QString&);
