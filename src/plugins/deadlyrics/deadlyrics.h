@@ -55,6 +55,8 @@ namespace LeechCraft
 				IFindProxy_ptr GetProxy (const LeechCraft::Request&);
 
 				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
+			signals:
+				void categoriesChanged (const QStringList&, const QStringList&);
 			};
 		};
 	};
