@@ -60,6 +60,7 @@ namespace LeechCraft
 				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
 			signals:
 				void gotEntity (const LeechCraft::DownloadEntity&);
+				void categoriesChanged (const QStringList&, const QStringList&);
 			};
 		};
 	};
