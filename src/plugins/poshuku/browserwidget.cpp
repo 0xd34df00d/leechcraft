@@ -468,7 +468,13 @@ namespace LeechCraft
 
 			void BrowserWidget::SetWidgetSettings (const BrowserWidgetSettings& settings)
 			{
-				Ui_.WebView_->setZoomFactor (settings.ZoomFactor_);
+				if (settings.ZoomFactor_ != 1)
+				{
+					qDebug () << Q_FUNC_INFO
+						<< "setting zoomfactor to"
+						<< settings.ZoomFactor_;
+					Ui_.WebView_->setZoomFactor (settings.ZoomFactor_);
+				}
 				NotifyWhenFinished_->setChecked (settings.NotifyWhenFinished_);
 				QTime interval = settings.ReloadInterval_;
 				QTime null (0, 0, 0);
