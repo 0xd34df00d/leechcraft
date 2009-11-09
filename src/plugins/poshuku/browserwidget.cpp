@@ -1009,9 +1009,6 @@ namespace LeechCraft
 			void BrowserWidget::handleLoadProgress (int p)
 			{
 				Ui_.Progress_->setValue (p);
-				Ui_.Progress_->setFormat (tr ("%p% (%1 of %2 known)")
-						.arg (Util::MakePrettySize (Ui_.WebView_->page ()->bytesReceived ()))
-						.arg (Util::MakePrettySize (Ui_.WebView_->page ()->totalBytes ())));
 				Ui_.Progress_->setVisible (p != 100);
 			}
 
