@@ -100,6 +100,7 @@ namespace LeechCraft
 				QMap<int, PendingJob> PendingJobs_;
 				QMap<QString, ExternalData> PendingJob2ExternalData_;
 				QList<QObject*> Downloaders_;
+				QMap<int, QObject*> ID2Downloader_;
 
 				bool SaveScheduled_;
 				ChannelsModel *ChannelsModel_;
@@ -232,7 +233,7 @@ namespace LeechCraft
 						const PendingJob&);
 				void MarkChannel (const QModelIndex&, bool);
 				void UpdateFeed (const QString&);
-				void HandleProvider (QObject*);
+				void HandleProvider (QObject*, int);
 			signals:
 				void error (const QString&) const;
 				void showDownloadMessage (const QString&);

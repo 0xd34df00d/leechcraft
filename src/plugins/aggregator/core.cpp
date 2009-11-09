@@ -180,7 +180,7 @@ namespace LeechCraft
 							return;
 						}
 					
-						HandleProvider (pr);
+						HandleProvider (pr, id);
 						PendingOPMLs_ [id] = po;
 					}
 
@@ -447,7 +447,7 @@ namespace LeechCraft
 					return;
 				}
 			
-				HandleProvider (pr);
+				HandleProvider (pr, id);
 				PendingJobs_ [id] = pj;
 			}
 			
@@ -1147,6 +1147,7 @@ namespace LeechCraft
 				}
 				PendingJob pj = PendingJobs_ [id];
 				PendingJobs_.remove (id);
+				ID2Downloader_.remove (id);
 			
 				FileRemoval file (pj.Filename_);
 				if (!file.open (QIODevice::ReadOnly))
@@ -1255,7 +1256,10 @@ namespace LeechCraft
 			void Core::handleJobRemoved (int id)
 			{
 				if (PendingJobs_.contains (id))
+				{
 					PendingJobs_.remove (id);
+					ID2Downloader_.remove (id);
+				}
 				if (PendingOPMLs_.contains (id))
 					PendingOPMLs_.remove (id);
 			}
@@ -1297,6 +1301,7 @@ namespace LeechCraft
 					emit error (msg.arg (pj.URL_));
 				}
 				PendingJobs_.remove (id);
+				ID2Downloader_.remove (id);
 			}
 			
 			void Core::updateFeeds ()
@@ -1346,7 +1351,7 @@ namespace LeechCraft
 					return;
 				}
 			
-				HandleProvider (pr);
+				HandleProvider (pr, id);
 				PendingJobs_ [id] = pj;
 			}
 			
@@ -1626,7 +1631,7 @@ namespace LeechCraft
 							}
 
 						int maxNew = ipc - (*position)->Items_.size ();
-						if ((*i)->Items_.size () > maxNew)
+						if (static_cast<int> ((*i)->Items_.size ()) > maxNew)
 							(*i)->Items_.resize (maxNew >= 0 ? maxNew : 0);
 			
 						if ((*i)->Items_.size ())
@@ -1690,8 +1695,34 @@ namespace LeechCraft
 			
 			void Core::UpdateFeed (const QString& url)
 			{
+				QList<int> keys = PendingJobs_.keys ();
+				Q_FOREACH (int key, keys)
+					if (PendingJobs_ [key].URL_ == url)
+					{
+						QObject *provider = ID2Downloader_ [key];
+						IDownload *downloader = qobject_cast<IDownload*> (provider);
+						if (downloader)
+						{
+							qWarning () << Q_FUNC_INFO
+								<< "stalled task detected from"
+								<< downloader
+								<< "trying to kill...";
+							downloader->KillTask (key);
+							ID2Downloader_.remove (key);
+							PendingJobs_.remove (key);
+							qWarning () << Q_FUNC_INFO
+								<< "killed!";
+						}
+						else
+							qWarning () << Q_FUNC_INFO
+								<< "provider is not a downloader:"
+								<< provider
+								<< "; cannot kill the task";
+						return;
+					}
+
 				QString filename = LeechCraft::Util::GetTemporaryName ();
-			
+
 				LeechCraft::DownloadEntity e = LeechCraft::Util::MakeEntity (QUrl (url),
 						filename,
 						LeechCraft::Internal |
@@ -1717,12 +1748,12 @@ namespace LeechCraft
 					return;
 				}
 			
-				HandleProvider (pr);
+				HandleProvider (pr, id);
 				PendingJobs_ [id] = pj;
 				Updates_ [url] = QDateTime::currentDateTime ();
 			}
 			
-			void Core::HandleProvider (QObject *provider)
+			void Core::HandleProvider (QObject *provider, int id)
 			{
 				if (Downloaders_.contains (provider))
 					return;
@@ -1740,6 +1771,8 @@ namespace LeechCraft
 						SIGNAL (jobError (int, IDownload::Error)),
 						this,
 						SLOT (handleJobError (int, IDownload::Error)));
+
+				ID2Downloader_ [id] = provider;
 			}
 		};
 	};
