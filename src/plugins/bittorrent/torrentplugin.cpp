@@ -252,6 +252,11 @@ namespace LeechCraft
 				file.remove ();
 				return result;
 			}
+
+			void TorrentPlugin::KillTask (int id)
+			{
+				Core::Instance ()->KillTask (id);
+			}
 			
 			QAbstractItemModel* TorrentPlugin::GetRepresentation () const
 			{

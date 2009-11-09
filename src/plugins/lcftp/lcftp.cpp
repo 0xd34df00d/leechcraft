@@ -165,6 +165,14 @@ namespace LeechCraft
 				return Core::Instance ().Add (e);
 			}
 
+			void LCFTP::KillTask (int id)
+			{
+				Q_UNUSED (id);
+				// TODO implement
+				// remember that id is the id of the task obtained by
+				// the call to GetID() and returned from AddJob.
+			}
+
 			bool LCFTP::CouldHandle (const DownloadEntity& e) const
 			{
 				return Core::Instance ().IsOK (e);

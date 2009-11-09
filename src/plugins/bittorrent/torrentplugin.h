@@ -141,6 +141,7 @@ namespace LeechCraft
 				void StopAll ();
 				bool CouldDownload (const LeechCraft::DownloadEntity&) const;
 				int AddJob (LeechCraft::DownloadEntity);
+				void KillTask (int);
 
 				// IJobHolder
 				QAbstractItemModel* GetRepresentation () const;

@@ -59,7 +59,7 @@ namespace LeechCraft
 			{
 				StartTime_.start ();
 			}
-			
+
 			void Task::Start (const boost::intrusive_ptr<MorphFile>& tof)
 			{
 				FileSizeAtStart_ = tof->size ();

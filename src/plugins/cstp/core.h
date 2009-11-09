@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_CSTP_CORE_H
 #define PLUGINS_CSTP_CORE_H
-#include <list>
+#include <vector>
 #include <boost/intrusive_ptr.hpp>
 #include <QAbstractItemModel>
 #include <QStringList>
@@ -79,7 +79,7 @@ namespace LeechCraft
 					quint32 ID_;
 					QStringList Tags_;
 				};
-				typedef std::list<TaskDescr> tasks_t;
+				typedef std::vector<TaskDescr> tasks_t;
 				tasks_t ActiveTasks_;
 				RepresentationModel *RepresentationModel_;
 				bool SaveScheduled_;
@@ -110,6 +110,7 @@ namespace LeechCraft
 				void ItemSelected (const QModelIndex&);
 
 				int AddTask (LeechCraft::DownloadEntity&);
+				void KillTask (int);
 				qint64 GetDone (int) const;
 				qint64 GetTotal (int) const;
 				bool IsRunning (int) const;

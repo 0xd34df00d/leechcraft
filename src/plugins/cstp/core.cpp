@@ -174,6 +174,20 @@ namespace LeechCraft
 					}
 				}
 			}
+
+			void Core::KillTask (int id)
+			{
+				for (int i = 0, size = ActiveTasks_.size (); i != size; ++i)
+					if (static_cast<int> (ActiveTasks_ [i].ID_) == id)
+					{
+						removeTriggered (i);
+						return;
+					}
+				qWarning () << Q_FUNC_INFO
+					<< "not found"
+					<< id
+					<< ActiveTasks_.size ();
+			}
 			
 			int Core::AddTask (QNetworkReply *rep,
 					const QString& path,
@@ -436,7 +450,7 @@ namespace LeechCraft
 				}
 			
 				tasks_t::iterator it = ActiveTasks_.begin ();
-				std::advance (it, Selected_.row ());
+				std::advance (it, i);
 				Remove (it);
 			}
 			

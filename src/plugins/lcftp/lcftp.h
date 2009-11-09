@@ -67,6 +67,7 @@ namespace LeechCraft
 				void StopAll ();
 				bool CouldDownload (const DownloadEntity&) const;
 				int AddJob (DownloadEntity);
+				void KillTask (int);
 
 				bool CouldHandle (const DownloadEntity&) const;
 				void Handle (DownloadEntity);

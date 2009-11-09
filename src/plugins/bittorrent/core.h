@@ -229,6 +229,7 @@ namespace LeechCraft
 						const QStringList& tags,
 						const QVector<bool>& files = QVector<bool> (),
 						LeechCraft::TaskParameters params = LeechCraft::NoParameters);
+				void KillTask (int);
 				void RemoveTorrent (int);
 				void PauseTorrent (int);
 				void ResumeTorrent (int);

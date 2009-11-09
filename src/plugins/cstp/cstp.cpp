@@ -163,6 +163,11 @@ namespace LeechCraft
 			{
 				return Core::Instance ().AddTask (e);
 			}
+
+			void CSTP::KillTask (int id)
+			{
+				Core::Instance ().KillTask (id);
+			}
 			
 			QAbstractItemModel* CSTP::GetRepresentation () const
 			{
