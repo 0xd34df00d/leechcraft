@@ -1455,6 +1455,13 @@ namespace LeechCraft
 				HandleDict_t::const_iterator torrent =
 					std::find_if (Handles_.begin (), Handles_.end (),
 							HandleFinder (a.handle));
+				if (torrent == Handles_.end ())
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "this torrent doesn't exist anymore";
+					return;
+				}
+
 				QFile file (QDir::homePath () +
 						"/.leechcraft/bittorrent/" +
 						torrent->TorrentFileName_ +
@@ -1480,6 +1487,13 @@ namespace LeechCraft
 				HandleDict_t::iterator torrent =
 					std::find_if (Handles_.begin (), Handles_.end (),
 							HandleFinder (a.handle));
+				if (torrent == Handles_.end ())
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "this torrent doesn't exist anymore";
+					return;
+				}
+
 				libtorrent::torrent_info info = a.handle.get_torrent_info ();
 				torrent->TorrentFileName_ = QString::fromUtf8 (info.name ().c_str ()) + ".torrent";
 				torrent->FilePriorities_
@@ -1503,7 +1517,6 @@ namespace LeechCraft
 				QList<TorrentStruct>::const_iterator sit =
 					std::find_if (Handles_.begin (), Handles_.end (),
 							HandleFinder (th));
-
 				if (sit == Handles_.end ())
 				{
 					qWarning () << Q_FUNC_INFO
