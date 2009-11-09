@@ -100,8 +100,17 @@ namespace LeechCraft
 				Forward_->setProperty ("ActionIcon", "poshuku_forward");
 			
 				Reload_ = Ui_.WebView_->pageAction (QWebPage::Reload);
-				Reload_->setParent (this);
 				Reload_->setProperty ("ActionIcon", "poshuku_reload");
+				Reload_->setIcon (Core::Instance ()
+						.GetProxy ()->GetIcon ("poshuku_reload"));
+
+				Stop_ = Ui_.WebView_->pageAction (QWebPage::Stop);
+				Stop_->setProperty ("ActionIcon", "poshuku_stop");
+				Stop_->setIcon (Core::Instance ()
+						.GetProxy ()->GetIcon ("poshuku_stop"));
+
+				ReloadStop_ = new QAction (this);
+				handleLoadProgress (0);
 
 				ReloadPeriodically_ = new QAction (tr ("Reload periodically"), this);
 				ReloadPeriodically_->setCheckable (true);
@@ -113,9 +122,6 @@ namespace LeechCraft
 				NotifyWhenFinished_->setChecked (XmlSettingsManager::Instance ()->
 						property ("NotifyFinishedByDefault").toBool ());
 
-				Stop_ = Ui_.WebView_->pageAction (QWebPage::Stop);
-				Stop_->setParent (this);
-				Stop_->setProperty ("ActionIcon", "poshuku_stop");
 			
 				Add2Favorites_ = new QAction (tr ("Bookmark..."),
 						this);
@@ -173,8 +179,7 @@ namespace LeechCraft
 			
 				ToolBar_->addAction (Back_);
 				ToolBar_->addAction (Forward_);
-				ToolBar_->addAction (Reload_);
-				ToolBar_->addAction (Stop_);
+				ToolBar_->addAction (ReloadStop_);
 
 				QMenu *moreMenu = new QMenu (this);
 				QAction *more = moreMenu->menuAction ();
@@ -1009,7 +1014,30 @@ namespace LeechCraft
 			void BrowserWidget::handleLoadProgress (int p)
 			{
 				Ui_.Progress_->setValue (p);
-				Ui_.Progress_->setVisible (p != 100);
+				Ui_.Progress_->setVisible (!(p == 100 || !p));
+				QAction *o = 0;
+				QAction *n = 0;
+				if (p < 100 && p > 0)
+				{
+					o = Reload_;
+					n = Stop_;
+				}
+				else
+				{
+					o = Stop_;
+					n = Reload_;
+				}
+				disconnect (ReloadStop_,
+						SIGNAL (triggered ()),
+						o,
+						SLOT (trigger ()));
+				ReloadStop_->setIcon (n->icon ());
+				ReloadStop_->setShortcut (n->shortcut ());
+				ReloadStop_->setText (n->text ());
+				connect (ReloadStop_,
+						SIGNAL (triggered ()),
+						n,
+						SLOT (trigger ()));
 			}
 
 			void BrowserWidget::notifyLoadFinished (bool ok)

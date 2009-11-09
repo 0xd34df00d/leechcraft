@@ -69,9 +69,10 @@ namespace LeechCraft
 				QAction *Back_;
 				QAction *Forward_;
 				QAction *Reload_;
+				QAction *Stop_;
+				QAction *ReloadStop_;
 				QAction *ReloadPeriodically_;
 				QAction *NotifyWhenFinished_;
-				QAction *Stop_;
 				// TODO move out to the common menu
 				QAction *CheckFavorites_;
 				// TODO move out to the common menu
