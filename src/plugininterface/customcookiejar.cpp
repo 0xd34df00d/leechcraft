@@ -63,3 +63,24 @@ void CustomCookieJar::Load (const QByteArray& data)
 	setAllCookies (filteredCookies);
 }
 
+void CustomCookieJar::CollectGarbage ()
+{
+	QList<QNetworkCookie> cookies = allCookies ();
+	QList<QNetworkCookie> result;
+	Q_FOREACH (QNetworkCookie cookie, cookies)
+		if (!result.contains (cookie))
+			result << cookie;
+	qDebug () << Q_FUNC_INFO << cookies.size () << result.size ();
+	setAllCookies (result);
+}
+
+QList<QNetworkCookie> CustomCookieJar::cookiesForUrl (const QUrl& url) const
+{
+	QList<QNetworkCookie> result = QNetworkCookieJar::cookiesForUrl (url);
+	QList<QNetworkCookie> filtered;
+	Q_FOREACH (QNetworkCookie cookie, result)
+		if (!filtered.contains (cookie))
+			filtered << cookie;
+	return filtered;
+}
+

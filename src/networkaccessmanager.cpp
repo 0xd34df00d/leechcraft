@@ -97,7 +97,18 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 
 NetworkAccessManager::~NetworkAccessManager ()
 {
-	saveCookies ();
+	CustomCookieJar *jar = static_cast<CustomCookieJar*> (cookieJar ());
+	if (!jar)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< "jar is NULL";
+		return;
+	}
+	else
+	{
+		jar->CollectGarbage ();
+		saveCookies ();
+	}
 }
 
 QNetworkReply* NetworkAccessManager::createRequest (QNetworkAccessManager::Operation op,

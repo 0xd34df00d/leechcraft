@@ -38,6 +38,9 @@ namespace LeechCraft
 			void SetFilterTrackingCookies (bool);
 			QByteArray Save () const;
 			void Load (const QByteArray&);
+			void CollectGarbage ();
+
+			QList<QNetworkCookie> cookiesForUrl (const QUrl&) const;
 
 			using QNetworkCookieJar::allCookies;
 			using QNetworkCookieJar::setAllCookies;
