@@ -81,9 +81,11 @@ namespace LeechCraft
 				return Core::Instance ().GetCategories ();
 			}
 			
-			IFindProxy_ptr DeadLyRicS::GetProxy (const LeechCraft::Request& req)
+			QList<IFindProxy_ptr> DeadLyRicS::GetProxy (const LeechCraft::Request& req)
 			{
-				return IFindProxy_ptr (new FindProxy (req));
+				QList<IFindProxy_ptr> result;
+				result << IFindProxy_ptr (new FindProxy (req));
+				return result;
 			}
 
 			boost::shared_ptr<Util::XmlSettingsDialog> DeadLyRicS::GetSettingsDialog () const

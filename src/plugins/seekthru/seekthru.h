@@ -58,7 +58,7 @@ namespace LeechCraft
 				void SetProvider (QObject*, const QString&);
 
 				QStringList GetCategories () const;
-				IFindProxy_ptr GetProxy (const LeechCraft::Request&);
+				QList<IFindProxy_ptr> GetProxy (const LeechCraft::Request&);
 
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 

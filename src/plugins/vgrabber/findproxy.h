@@ -49,18 +49,37 @@ namespace LeechCraft
 
 				QMap<int, QString> Jobs_;
 
-				struct Result
+				struct AudioResult
 				{
 					QUrl URL_;
 					int Length_;
 					QString Performer_;
 					QString Title_;
 				};
-				QList<Result> Results_;
+				QList<AudioResult> AudioResults_;
+
+				struct VideoResult
+				{
+					QUrl URL_;
+					QString Length_;
+					QString Performer_;
+					QString Title_;
+					QString Date_;
+					QString Description_;
+				};
+				QList<VideoResult> VideoResults_;
 
 				QList<QObject*> Downloaders_;
 			public:
-				FindProxy (const Request&);
+				enum Type
+				{
+					TAudio,
+					TVideo
+				};
+			private:
+				Type Type_;
+			public:
+				FindProxy (Type, const Request&);
 				virtual ~FindProxy ();
 
 				void Start ();
@@ -79,6 +98,8 @@ namespace LeechCraft
 				void handleDownload ();
 				void handleHandle ();
 			private:
+				void HandleAsAudio (const QString&);
+				void HandleAsVideo (const QString&);
 				void EmitWith (TaskParameter);
 				void HandleProvider (QObject*);
 				QUrl GetURL () const;
@@ -88,6 +109,8 @@ namespace LeechCraft
 						int*, QObject**);
 				void error (const QString&);
 			};
+
+			typedef boost::shared_ptr<FindProxy> FindProxy_ptr;
 		};
 	};
 };

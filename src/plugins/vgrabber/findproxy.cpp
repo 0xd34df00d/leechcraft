@@ -30,9 +30,10 @@ namespace LeechCraft
 	{
 		namespace vGrabber
 		{
-			FindProxy::FindProxy (const Request& r)
+			FindProxy::FindProxy (Type t, const Request& r)
 			: Toolbar_ (new QToolBar)
 			, R_ (r)
+			, Type_ (t)
 			{
 				ActionDownload_ = Toolbar_->addAction (tr ("Download"));
 				ActionDownload_->setProperty ("ActionIcon", "vgrabber_download");
@@ -97,27 +98,78 @@ namespace LeechCraft
 				if (!index.isValid ())
 					return QVariant ();
 			
-				const Result& res = Results_ [index.row ()];
 				switch (role)
 				{
 					case Qt::DisplayRole:
-						switch (index.column ())
+						switch (Type_)
 						{
-							case 0:
-								return QString ("%1 - %2")
-									.arg (res.Performer_)
-									.arg (res.Title_);
-							case 1:
-								return QTime (0, 0, 0).addSecs (res.Length_ - 1).toString ();
-							case 2:
-								return res.URL_.toString ();
-							default:
-								return QString ();
+							case TAudio:
+								if (!AudioResults_.size ())
+									return tr ("Searching for audio \"%1\" on vkontakte.ru...")
+										.arg (R_.String_);
+								{
+
+									const AudioResult& res = AudioResults_ [index.row ()];
+									switch (index.column ())
+									{
+										case 0:
+											return QString ("%1 - %2")
+												.arg (res.Performer_)
+												.arg (res.Title_);
+										case 1:
+											return QTime (0, 0, 0).addSecs (res.Length_ - 1).toString ();
+										case 2:
+											return res.URL_.toString ();
+										default:
+											return QString ();
+									}
+								}
+							case TVideo:
+								if (!AudioResults_.size ())
+									return tr ("Searching for video \"%1\" on vkontakte.ru...")
+										.arg (R_.String_);
+								{
+									const VideoResult& res = VideoResults_ [index.row ()];
+									switch (index.column ())
+									{
+										case 0:
+											return QString ("%1 - %2")
+												.arg (res.Performer_)
+												.arg (res.Title_);
+										case 1:
+											return res.Length_;
+										case 2:
+											return tr ("(Uploaded on %1) %2")
+												.arg (res.Date_)
+												.arg (res.Description_);
+										default:
+											return QString ();
+									}
+								}
 						}
 					case LeechCraft::RoleControls:
-						ActionDownload_->setData (res.URL_);
-						ActionHandle_->setData (res.URL_);
-						return QVariant::fromValue<QToolBar*> (Toolbar_);
+						{
+							QUrl url;
+							switch (Type_)
+							{
+								case TAudio:
+									if (AudioResults_.size ())
+										url = AudioResults_ [index.row ()].URL_;
+									break;
+								case TVideo:
+									if (VideoResults_.size ())
+										url = VideoResults_ [index.row ()].URL_;
+									break;
+							}
+							if (!url.isEmpty ())
+							{
+								ActionDownload_->setData (url);
+								ActionHandle_->setData (url);
+							}
+							ActionDownload_->setEnabled (!url.isEmpty ());
+							ActionHandle_->setEnabled (!url.isEmpty ());
+							return QVariant::fromValue<QToolBar*> (Toolbar_);
+						}
 					default:
 						return QVariant ();
 				}
@@ -154,7 +206,25 @@ namespace LeechCraft
 			
 			int FindProxy::rowCount (const QModelIndex& parent) const
 			{
-				return parent.isValid () ? 0 : Results_.size ();
+				if (parent.isValid ())
+					return 0;
+				else
+				{
+					int count = 0;
+					switch (Type_)
+					{
+						case TAudio:
+							count = AudioResults_.size ();
+							break;
+						case TVideo:
+							count = VideoResults_.size ();
+							break;
+					}
+					if (!count)
+						count = 1;
+
+					return count;
+				}
 			}
 
 			namespace
@@ -192,8 +262,74 @@ namespace LeechCraft
 					return;
 				}
 
-				QString contents = QTextCodec::codecForName ("Windows-1251")->toUnicode (file.readAll ());
+				QString contents = QTextCodec::codecForName ("Windows-1251")->
+					toUnicode (file.readAll ());
 
+				switch (Type_)
+				{
+					case TAudio:
+						HandleAsAudio (contents);
+						break;
+					case TVideo:
+						HandleAsVideo (contents);
+						break;
+				}
+			}
+
+			void FindProxy::HandleAsVideo (const QString& contents)
+			{
+				QRegExp upt ("<div class=\"aname\" style=\"width:255px; overflow: hidden\"><a href=\"([a-b0-9_]*)\"><span class=\"match\">(.*)</span> - (.*)</a></div>.*"
+						"<div class=\"adesc\" style=\"width:255px; overflow: hidden\">(.*)</div>.*"
+						"<div class=\"ainfo\"><b style=\"color:#000\">([0-9:]*)</b> (.*)</div>");
+				upt.setMinimal (true);
+				int pos = 0;
+				while (pos >= 0)
+				{
+					if (contents.mid (pos).contains ("<span class=\"match\">"))
+						pos = upt.indexIn (contents, pos);
+					else
+						pos = -1;
+
+					if (pos >= 0)
+					{
+						QStringList captured = upt.capturedTexts ();
+						captured.removeFirst ();
+						qDebug () << "AsVideo" << captured;
+						QUrl url = QUrl (QString ("http://vkontakte.ru/%1")
+								.arg (captured.at (0)));
+						QString performer = captured.at (1);
+						QString title = captured.at (2);
+						QString descr = captured.at (3);
+						QString length = captured.at (4);
+						QString date = captured.at (5);
+
+						VideoResult vr =
+						{
+							url,
+							length,
+							performer,
+							title,
+							date,
+							descr
+						};
+
+						VideoResults_ << vr;
+					}
+				}
+
+				if (VideoResults_.size ())
+				{
+					if (VideoResults_.size () > 1)
+					{
+						beginInsertRows (QModelIndex (), 1, VideoResults_.size () - 1);
+						endInsertRows ();
+					}
+					emit dataChanged (index (0, 0), index (0, columnCount () - 1));
+				}
+			}
+
+			void FindProxy::HandleAsAudio (const QString& contents)
+			{
 				QList<QUrl> urls;
 				QList<int> lengths;
 
@@ -240,29 +376,35 @@ namespace LeechCraft
 					}
 				}
 
-				if (Results_.size ())
+				if (AudioResults_.size ())
 				{
-					beginRemoveRows (QModelIndex (), 0, Results_.size () - 1);
-					Results_.clear ();
+					beginRemoveRows (QModelIndex (), 1, AudioResults_.size () - 1);
+					AudioResults_.clear ();
 					endRemoveRows ();
 				}
 
 				int size = urls.size ();
 				if (size)
 				{
-					beginInsertRows (QModelIndex (), 0, urls.size () - 1);
+					if (size > 1)
+						beginInsertRows (QModelIndex (), 1, size - 1);
+
 					for (int i = 0; i < size; ++i)
 					{
-						Result r =
+						AudioResult r =
 						{
 							urls.at (i),
 							lengths.at (i),
 							Filter (infos.at (i).first),
 							Filter (infos.at (i).second)
 						};
-						Results_ << r;
+						AudioResults_ << r;
 					}
-					endInsertRows ();
+
+					if (size > 1)
+						endInsertRows ();
+
+					emit dataChanged (index (0, 0), index (0, columnCount () - 1));
 				}
 			}
 
@@ -323,14 +465,14 @@ namespace LeechCraft
 			QUrl FindProxy::GetURL () const
 			{
 				QByteArray urlStr;
-				if (R_.Category_.endsWith ("music"))
-					urlStr = "http://vkontakte.ru/gsearch.php?q=FIND&section=audio";
-				else
+				switch (Type_)
 				{
-					qWarning () << Q_FUNC_INFO
-						<< "unknown category"
-						<< R_.Category_;
-					return QUrl ();
+					case TAudio:
+						urlStr = "http://vkontakte.ru/gsearch.php?q=FIND&section=audio";
+						break;
+					case TVideo:
+						urlStr = "http://vkontakte.ru/gsearch.php?q=FIND&section=video";
+						break;
 				}
 
 				return QUrl (urlStr.replace ("FIND",

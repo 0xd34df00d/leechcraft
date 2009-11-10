@@ -76,9 +76,11 @@ QStringList Plugin::GetCategories () const
 	return QStringList ("history");
 }
 
-IFindProxy_ptr Plugin::GetProxy (const LeechCraft::Request& r)
+QList<IFindProxy_ptr> Plugin::GetProxy (const LeechCraft::Request& r)
 {
-	return IFindProxy_ptr (new FindProxy (r));
+	QList<IFindProxy_ptr> result;
+	result << IFindProxy_ptr (new FindProxy (r));
+	return result;
 }
 
 bool Plugin::CouldHandle (const LeechCraft::DownloadEntity& e) const

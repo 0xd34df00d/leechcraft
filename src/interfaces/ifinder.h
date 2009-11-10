@@ -113,18 +113,19 @@ public:
 	 */
 	virtual QStringList GetCategories () const = 0;
 
-	/** @brief Returns find proxy for the given request.
+	/** @brief Returns find proxies for the given request.
 	 *
-	 * Returns a shared pointer to IFindProxy that handles this
+	 * Returns a shared pointer to IFindProxy objects that handle this
 	 * sub-request r.
 	 *
 	 * @param[in] r The request that should be handled by the returned
-	 * IFindProxy.
-	 * @return Shared pointer to the IFindProxy handling the request.
+	 * IFindProxy objects.
+	 * @return QList of shared pointer to the IFindProxy handling the
+	 * request.
 	 *
 	 * @sa IFindProxy
 	 */
-	virtual IFindProxy_ptr GetProxy (const LeechCraft::Request& r) = 0;
+	virtual QList<IFindProxy_ptr> GetProxy (const LeechCraft::Request& r) = 0;
 };
 
 Q_DECLARE_INTERFACE (IFinder, "org.Deviant.LeechCraft.IFinder/1.0");

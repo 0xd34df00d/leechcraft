@@ -113,9 +113,11 @@ namespace LeechCraft
 				return Core::Instance ().GetCategories ();
 			}
 			
-			IFindProxy_ptr SeekThru::GetProxy (const LeechCraft::Request& r)
+			QList<IFindProxy_ptr> SeekThru::GetProxy (const LeechCraft::Request& r)
 			{
-				return Core::Instance ().GetProxy (r);
+				QList<IFindProxy_ptr> result;
+				result << Core::Instance ().GetProxy (r);
+				return result;
 			}
 			
 			boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> SeekThru::GetSettingsDialog () const

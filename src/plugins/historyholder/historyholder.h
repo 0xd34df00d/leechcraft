@@ -51,7 +51,7 @@ namespace LeechCraft
 				void SetProvider (QObject*, const QString&);
 
 				QStringList GetCategories () const;
-				IFindProxy_ptr GetProxy (const LeechCraft::Request&);
+				QList<IFindProxy_ptr> GetProxy (const LeechCraft::Request&);
 
 				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
 				void Handle (LeechCraft::DownloadEntity);

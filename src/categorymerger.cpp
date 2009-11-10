@@ -77,10 +77,10 @@ LeechCraft::CategoryMerger::CategoryMerger (const Request& r,
 				continue;
 			}
 
-			IFindProxy_ptr proxy;
+			QList<IFindProxy_ptr> proxies;
 			try
 			{
-				proxy = (*i)->GetProxy (r);
+				proxies = (*i)->GetProxy (r);
 			}
 			catch (const std::exception& e)
 			{
@@ -98,33 +98,34 @@ LeechCraft::CategoryMerger::CategoryMerger (const Request& r,
 				continue;
 			}
 
-			if (!proxy)
+			Q_FOREACH (IFindProxy_ptr proxy, proxies)
 			{
-				qWarning () << Q_FUNC_INFO
-					<< "got null proxy"
-					<< *i;
-				continue;
-			}
+				if (!proxy)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "got null proxy"
+						<< *i;
+					continue;
+				}
 
-			try
-			{
-				AddModel (proxy->GetModel ());
-				Proxies_.push_back (proxy);
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "getting model"
-					<< *i
-					<< e.what ();
-				continue;
-			}
-			catch (...)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "getting model"
-					<< *i;
-				continue;
+				try
+				{
+					AddModel (proxy->GetModel ());
+					Proxies_.push_back (proxy);
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "getting model"
+						<< *i
+						<< e.what ();
+				}
+				catch (...)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "getting model"
+						<< *i;
+				}
 			}
 		}
 	}

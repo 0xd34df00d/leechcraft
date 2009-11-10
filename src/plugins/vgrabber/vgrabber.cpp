@@ -111,31 +111,38 @@ namespace LeechCraft
 				return result;
 			}
 
-			IFindProxy_ptr vGrabber::GetProxy (const Request& req)
+			QList<IFindProxy_ptr> vGrabber::GetProxy (const Request& req)
 			{
-				boost::shared_ptr<FindProxy> fp;
+				QList<FindProxy_ptr> preresult;
 				if (Audio_->GetHRCategories ().contains (req.Category_))
-					fp.reset (new FindProxy (req));
-//				else if (Video_->GetCategories ().contains (req.Category_))
-				else
-					return IFindProxy_ptr ();
+					preresult << FindProxy_ptr (new FindProxy (FindProxy::TAudio, req));
 
-				connect (fp.get (),
-						SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
-								int*, QObject**)),
-						this,
-						SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
-								int*, QObject**)));
-				connect (fp.get (),
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
-						this,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
-				connect (fp.get (),
-						SIGNAL (error (const QString&)),
-						this,
-						SLOT (handleError (const QString&)));
-				fp->Start ();
-				return IFindProxy_ptr (fp);
+				if (Video_->GetHRCategories ().contains (req.Category_))
+					preresult << FindProxy_ptr (new FindProxy (FindProxy::TVideo, req));
+
+				QList<IFindProxy_ptr> result;
+				Q_FOREACH (FindProxy_ptr fp, preresult)
+				{
+					connect (fp.get (),
+							SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
+									int*, QObject**)),
+							this,
+							SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
+									int*, QObject**)));
+					connect (fp.get (),
+							SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+							this,
+							SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+					connect (fp.get (),
+							SIGNAL (error (const QString&)),
+							this,
+							SLOT (handleError (const QString&)));
+
+					fp->Start ();
+
+					result << IFindProxy_ptr (fp);
+				}
+				return result;
 			}
 
 			ICoreProxy_ptr vGrabber::GetProxy () const
