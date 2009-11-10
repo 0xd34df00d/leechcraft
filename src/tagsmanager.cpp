@@ -154,6 +154,11 @@ QAbstractItemModel* TagsManager::GetModel ()
 	return this;
 }
 
+QObject* TagsManager::GetObject ()
+{
+	return this;
+}
+
 QStringList TagsManager::GetAllTags () const
 {
 	QStringList result;
