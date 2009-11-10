@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<declare defaultlang="en" />
+	<page>
+		<label lang="en" value="General settings" />
+		<label lang="ru" value="Общие настройки" />
+		<label lang="uk" value="Загальні параметри" />
+		<tab>
+			<label lang="en" value="Audio" />
+			<label lang="ru" value="Аудио" />
+			<item type="customwidget" name="AudioCategoriesToUse" label="own" />
+		</tab>
+		<tab>
+			<label lang="en" value="Video" />
+			<label lang="ru" value="Видео" />
+			<item type="customwidget" name="VideoCategoriesToUse" label="own" />
+		</tab>
+	</page>
+</settings>

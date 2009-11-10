@@ -7,10 +7,20 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	vgrabber.cpp
 	findproxy.cpp
+	categoriesselector.cpp
+	categorymodifier.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (HEADERS
 	vgrabber.h
 	findproxy.h
+	categoriesselector.h
+	categorymodifier.h
+	xmlsettingsmanager.h
+	)
+SET (FORMS
+	categoriesselector.ui
+	categorymodifier.ui
 	)
 SET (TRANSLATIONS
 	leechcraft_vgrabber_ru_RU.ts
@@ -20,6 +30,7 @@ SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_vgrabber_ru_RU.qm
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 ADD_CUSTOM_COMMAND (OUTPUT
@@ -32,6 +43,7 @@ ADD_LIBRARY (leechcraft_vgrabber SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
+	${UIS_H}
 	${RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_vgrabber
@@ -41,3 +53,4 @@ TARGET_LINK_LIBRARIES (leechcraft_vgrabber
 	)
 INSTALL (TARGETS leechcraft_vgrabber DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+INSTALL (FILES vgrabbersettings.xml DESTINATION ${LC_SETTINGS_DEST})

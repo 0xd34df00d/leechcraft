@@ -24,6 +24,7 @@
 #include <QTranslator>
 #include <interfaces/iinfo.h>
 #include <interfaces/ifinder.h>
+#include <interfaces/ihavesettings.h>
 
 namespace LeechCraft
 {
@@ -31,14 +32,22 @@ namespace LeechCraft
 	{
 		namespace vGrabber
 		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IFinder
+			class CategoriesSelector;
+
+			class vGrabber : public QObject
+						   , public IInfo
+						   , public IFinder
+						   , public IHaveSettings
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IFinder)
+				Q_INTERFACES (IInfo IFinder IHaveSettings)
 
 				std::auto_ptr<QTranslator> Translator_;
+				boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
+				ICoreProxy_ptr Proxy_;
+
+				CategoriesSelector *Audio_;
+				CategoriesSelector *Video_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void Release ();
@@ -52,8 +61,14 @@ namespace LeechCraft
 
 				QStringList GetCategories () const;
 				IFindProxy_ptr GetProxy (const Request&);
+
+				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
+
+				ICoreProxy_ptr GetProxy () const;
 			private slots:
 				void handleError (const QString&);
+				void handleCategoriesGoingToChange (const QStringList&,
+						const QStringList&);
 			signals:
 				void gotEntity (const LeechCraft::DownloadEntity&);
 				void delegateEntity (const LeechCraft::DownloadEntity&,

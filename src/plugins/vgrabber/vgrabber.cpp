@@ -20,7 +20,10 @@
 #include <QIcon>
 #include <QMessageBox>
 #include <plugininterface/util.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "findproxy.h"
+#include "xmlsettingsmanager.h"
+#include "categoriesselector.h"
 
 namespace LeechCraft
 {
@@ -28,58 +31,95 @@ namespace LeechCraft
 	{
 		namespace vGrabber
 		{
-			void Plugin::Init (ICoreProxy_ptr)
+			void vGrabber::Init (ICoreProxy_ptr proxy)
 			{
+				Proxy_ = proxy;
+
 				Translator_.reset (Util::InstallTranslator ("vgrabber"));
+
+				SettingsDialog_.reset (new Util::XmlSettingsDialog ());
+				SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+						"vgrabbersettings.xml");
+
+				Audio_ = new CategoriesSelector (CategoriesSelector::TAudio,
+						this);
+				Video_ = new CategoriesSelector (CategoriesSelector::TVideo,
+						this);
+				connect (Audio_,
+						SIGNAL (goingToAccept (const QStringList&,
+								const QStringList&)),
+						this,
+						SLOT (handleCategoriesGoingToChange (const QStringList&,
+								const QStringList&)));
+				connect (Video_,
+						SIGNAL (goingToAccept (const QStringList&,
+								const QStringList&)),
+						this,
+						SLOT (handleCategoriesGoingToChange (const QStringList&,
+								const QStringList&)));
+
+				SettingsDialog_->SetCustomWidget ("AudioCategoriesToUse", Audio_);
+				SettingsDialog_->SetCustomWidget ("VideoCategoriesToUse", Video_);
 			}
 
-			void Plugin::Release ()
+			void vGrabber::Release ()
 			{
+				delete Audio_;
+				delete Video_;
 				Translator_.reset ();
 			}
 
-			QString Plugin::GetName () const
+			QString vGrabber::GetName () const
 			{
 				return "vGrabber";
 			}
 
-			QString Plugin::GetInfo () const
+			QString vGrabber::GetInfo () const
 			{
-				return tr ("vkontakte.ru music/video grabber.");
+				return tr ("vkontakte.ru audio/video grabber.");
 			}
 
-			QIcon Plugin::GetIcon () const
+			QIcon vGrabber::GetIcon () const
 			{
 				return QIcon (":/resources/images/vgrabber.svg");
 			}
 
-			QStringList Plugin::Provides () const
+			QStringList vGrabber::Provides () const
 			{
 				return QStringList ();
 			}
 
-			QStringList Plugin::Needs () const
+			QStringList vGrabber::Needs () const
 			{
 				return QStringList ("http");
 			}
 
-			QStringList Plugin::Uses () const
+			QStringList vGrabber::Uses () const
 			{
 				return QStringList ();
 			}
 
-			void Plugin::SetProvider (QObject*, const QString&)
+			void vGrabber::SetProvider (QObject*, const QString&)
 			{
 			}
 
-			QStringList Plugin::GetCategories () const
+			QStringList vGrabber::GetCategories () const
 			{
-				return QStringList ("vkontakte.ru music");
+				QStringList result;
+				result += Audio_->GetHRCategories ();
+				result += Video_->GetHRCategories ();
+				return result;
 			}
 
-			IFindProxy_ptr Plugin::GetProxy (const Request& req)
+			IFindProxy_ptr vGrabber::GetProxy (const Request& req)
 			{
-				boost::shared_ptr<FindProxy> fp (new FindProxy (req));
+				boost::shared_ptr<FindProxy> fp;
+				if (Audio_->GetHRCategories ().contains (req.Category_))
+					fp.reset (new FindProxy (req));
+//				else if (Video_->GetCategories ().contains (req.Category_))
+				else
+					return IFindProxy_ptr ();
+
 				connect (fp.get (),
 						SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
 								int*, QObject**)),
@@ -98,16 +138,38 @@ namespace LeechCraft
 				return IFindProxy_ptr (fp);
 			}
 
-			void Plugin::handleError (const QString& msg)
+			ICoreProxy_ptr vGrabber::GetProxy () const
+			{
+				return Proxy_;
+			}
+
+			boost::shared_ptr<Util::XmlSettingsDialog> vGrabber::GetSettingsDialog () const
+			{
+				return SettingsDialog_;
+			}
+
+			void vGrabber::handleError (const QString& msg)
 			{
 				qWarning () << Q_FUNC_INFO << sender () << msg;
 				QMessageBox::critical (0,
 						tr ("LeechCraft"),
 						msg);
 			}
+
+			void vGrabber::handleCategoriesGoingToChange (const QStringList& added,
+					const QStringList& removed)
+			{
+				QStringList hrAdded, hrRemoved;
+				Q_FOREACH (QString a, added)
+					hrAdded << Proxy_->GetTagsManager ()->GetTag (a);
+				Q_FOREACH (QString r, removed)
+					hrRemoved << Proxy_->GetTagsManager ()->GetTag (r);
+
+				emit categoriesChanged (hrAdded, hrRemoved);
+			}
 		};
 	};
 };
 
-Q_EXPORT_PLUGIN2 (leechcraft_vgrabber, LeechCraft::Plugins::vGrabber::Plugin);
+Q_EXPORT_PLUGIN2 (leechcraft_vgrabber, LeechCraft::Plugins::vGrabber::vGrabber);
 
