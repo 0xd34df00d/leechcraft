@@ -110,12 +110,21 @@ namespace LeechCraft
 		feedFilterParameters ();
 	}
 
+	QStringList TabContents::GetUniqueCategories () const
+	{
+		QStringList result;
+		Q_FOREACH (IFinder *plugin, Core::Instance ().GetPluginManager ()->
+				GetAllCastableTo<IFinder*> ())
+			result += plugin->GetCategories ();
+		result.removeDuplicates ();
+		result.sort ();
+		return result;
+	}
+
 	void TabContents::FillCombobox (QComboBox *box)
 	{
 		box->addItem ("downloads");
-		Q_FOREACH (IFinder *plugin, Core::Instance ().GetPluginManager ()->
-				GetAllCastableTo<IFinder*> ())
-			box->addItems (plugin->GetCategories ());
+		box->addItems (GetUniqueCategories ());
 		box->adjustSize ();
 	}
 
@@ -300,13 +309,15 @@ namespace LeechCraft
 		AdditionalBoxes_ << box;
 	}
 
-	void TabContents::handleCategoriesChanged (const QStringList& newCats, const QStringList& oldCats)
+	void TabContents::handleCategoriesChanged (const QStringList&, const QStringList&)
 	{
-		Q_FOREACH (QComboBox *box, AdditionalBoxes_ + (QList<QComboBox*> () << Ui_.LeastCategory_))
+		QStringList currentCats = GetUniqueCategories ();
+
+		Q_FOREACH (QComboBox *box,
+				AdditionalBoxes_ + (QList<QComboBox*> () << Ui_.LeastCategory_))
 		{
-			Q_FOREACH (QString category, oldCats)
-				box->removeItem (box->findText (category));
-			box->addItems (newCats);
+			box->clear ();
+			box->addItems (currentCats);
 		}
 	}
 

@@ -42,6 +42,7 @@ namespace LeechCraft
 		void SmartDeselect (TabContents*);
 		void SetQuery (QStringList);
 	private:
+		QStringList GetUniqueCategories () const;
 		void FillCombobox (QComboBox*);
 		QString GetQuery () const;
 	private slots:
