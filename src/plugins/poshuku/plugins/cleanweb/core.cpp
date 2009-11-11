@@ -400,7 +400,7 @@ bool Core::ShouldReject (const QNetworkRequest& req) const
 	QString cinUrlStr = urlStr.toLower ();
 	QString domain = url.host ();
 
-	if (cinUrlStr == "about:blank")
+	if (cinUrlSstr == "about:blank")
 		return false;
 	
 	Q_FOREACH (Filter filter, Filters_)
