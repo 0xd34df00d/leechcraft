@@ -399,9 +399,6 @@ bool Core::ShouldReject (const QNetworkRequest& req) const
 	QString urlStr = url.toString ();
 	QString cinUrlStr = urlStr.toLower ();
 	QString domain = url.host ();
-
-	if (cinUrlSstr == "about:blank")
-		return false;
 	
 	Q_FOREACH (Filter filter, Filters_)
 	{
