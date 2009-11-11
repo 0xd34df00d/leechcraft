@@ -120,11 +120,11 @@ QByteArray CleanWeb::GetPluginClass () const
 	return QByteArray (typeid (PluginBase).name ());
 }
 
-void CleanWeb::Init (IProxyObject*)
+void CleanWeb::Init (LeechCraft::Plugins::Poshuku::IProxyObject*)
 {
 }
 
-bool CleanWeb::HandleWebPluginFactoryReload (QList<IWebPlugin*>& plugins)
+bool CleanWeb::HandleWebPluginFactoryReload (QList<LeechCraft::Plugins::Poshuku::IWebPlugin*>& plugins)
 {
 	plugins << Core::Instance ().GetFlashOnClick ();
 	return false;
