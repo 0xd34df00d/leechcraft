@@ -352,12 +352,9 @@ QNetworkReply* Core::Hook (IHookProxy_ptr hook,
 	if (ShouldReject (*req))
 	{
 		qDebug () << "rejecting" << req->url ();
-		hook->CancelDefault ();
 		*req = QNetworkRequest ();
-		return manager->get (QNetworkRequest (QUrl ("about:blank")));
 	}
-	else
-		return 0;
+	return 0;
 }
 
 FlashOnClickPlugin* Core::GetFlashOnClick ()
