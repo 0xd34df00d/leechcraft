@@ -125,7 +125,7 @@ namespace LeechCraft
 									}
 								}
 							case TVideo:
-								if (!AudioResults_.size ())
+								if (!VideoResults_.size ())
 									return tr ("Searching for video \"%1\" on vkontakte.ru...")
 										.arg (R_.String_);
 								{
@@ -133,15 +133,11 @@ namespace LeechCraft
 									switch (index.column ())
 									{
 										case 0:
-											return QString ("%1 - %2")
-												.arg (res.Performer_)
-												.arg (res.Title_);
+											return res.Title_;
 										case 1:
-											return res.Length_;
+											return tr ("Video");
 										case 2:
-											return tr ("(Uploaded on %1) %2")
-												.arg (res.Date_)
-												.arg (res.Description_);
+											return res.URL_.toString ();
 										default:
 											return QString ();
 									}
@@ -278,14 +274,27 @@ namespace LeechCraft
 
 			void FindProxy::HandleAsVideo (const QString& contents)
 			{
-				QRegExp upt ("<div class=\"aname\" style=\"width:255px; overflow: hidden\"><a href=\"([a-b0-9_]*)\"><span class=\"match\">(.*)</span> - (.*)</a></div>.*"
+				/* TODO check out why this fucking single \" at the beginning breaks it all. Why
+				 * "\"><a href=\"(.*)\">(.*)</a></div>.*" works and why
+				 * "\"><a href=\"(.*)\">(.*)</a></div>.*" doesn't.
+				 *
+				 * The block:
+* <div class="aname" style="width:255px; overflow: hidden"><a href="video430140_158836"><span class="match">Tool</span> - StinkFist</a></div>
+* <div class="adesc" style="width:255px; overflow: hidden">Люблю Тул за их необычные клипы.</div>
+* <div class="ainfo"><b style="color:#000">5:20</b> Загружено 9 июля 2007</div>
+				 *
+				QRegExp upt ("\"><a href=\"(.*)\">(.*)</a></div>.*"
 						"<div class=\"adesc\" style=\"width:255px; overflow: hidden\">(.*)</div>.*"
-						"<div class=\"ainfo\"><b style=\"color:#000\">([0-9:]*)</b> (.*)</div>");
+						"<div class=\"ainfo\"><b style=\"color:#000\">(.*)</b> (.*)</div>");
+				 */
+				QRegExp upt (".*><a href=\"video([0-9\\_]*)\">(.*)</a></div>.*",
+						Qt::CaseSensitive,
+						QRegExp::RegExp2);
 				upt.setMinimal (true);
 				int pos = 0;
 				while (pos >= 0)
 				{
-					if (contents.mid (pos).contains ("<span class=\"match\">"))
+					if (contents.mid (pos).contains ("<a href=\"video"))
 						pos = upt.indexIn (contents, pos);
 					else
 						pos = -1;
@@ -294,26 +303,29 @@ namespace LeechCraft
 					{
 						QStringList captured = upt.capturedTexts ();
 						captured.removeFirst ();
-						qDebug () << "AsVideo" << captured;
-						QUrl url = QUrl (QString ("http://vkontakte.ru/%1")
+						QUrl url = QUrl (QString ("http://vkontakte.ru/video%1")
 								.arg (captured.at (0)));
-						QString performer = captured.at (1);
-						QString title = captured.at (2);
-						QString descr = captured.at (3);
-						QString length = captured.at (4);
-						QString date = captured.at (5);
+						QString title = captured.at (1);
+						title.replace ("<span class=\"match\">", "").replace ("</span>", "");
+						/*
+						QString descr = captured.at (2);
+						QString length = captured.at (3);
+						QString date = captured.at (4);
+						*/
 
 						VideoResult vr =
 						{
 							url,
+							title
+							/*
 							length,
-							performer,
-							title,
 							date,
 							descr
+							*/
 						};
 
 						VideoResults_ << vr;
+						pos += upt.matchedLength ();
 					}
 				}
 

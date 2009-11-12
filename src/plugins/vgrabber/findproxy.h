@@ -61,11 +61,12 @@ namespace LeechCraft
 				struct VideoResult
 				{
 					QUrl URL_;
-					QString Length_;
-					QString Performer_;
 					QString Title_;
+					/*
+					QString Length_;
 					QString Date_;
 					QString Description_;
+					*/
 				};
 				QList<VideoResult> VideoResults_;
 
