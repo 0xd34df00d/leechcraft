@@ -23,6 +23,8 @@
 
 namespace LeechCraft
 {
+	/** Shows the About LeechCraft information.
+	 */
 	class AboutDialog : public QDialog
 	{
 		Q_OBJECT

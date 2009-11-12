@@ -299,9 +299,22 @@ namespace LeechCraft
 		void handleCouldHandle (const LeechCraft::DownloadEntity& entity,
 				bool *could);
 
+		/** Handles requests to show a tab above others.
+		 */
 		void embeddedTabWantsToFront ();
-		void handleStatusBarChanged (QWidget*, const QString&);
-		void handleLog (const QString&);
+
+		/** Handles requests to change statusbar's status text.
+		 *
+		 * @param[in] sender The sender of the event.
+		 * @param[in] msg The message to show.
+		 */
+		void handleStatusBarChanged (QWidget *sender, const QString& msg);
+
+		/** Handles log requests.
+		 *
+		 * @param[in] log The message to log.
+		 */
+		void handleLog (const QString& log);
 	private:
 		enum ObjectType
 		{
