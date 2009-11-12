@@ -96,8 +96,17 @@ namespace LeechCraft
 		static Core& Instance ();
 		void Release ();
 
+		/** Sets the pointer to the main window.
+		 */
 		void SetReallyMainWindow (MainWindow*);
+
+		/** Returns the pointer to the main window. The result is valid
+		 * only if a valid window was set with SetReallyMainWindow().
+		 */
 		MainWindow* GetReallyMainWindow ();
+
+		/** Returns the pointer to the app-wide shortcut proxy.
+		 */
 		const IShortcutProxy* GetShortcutProxy () const;
 
 		/** Returns all plugins that implement IHaveSettings as
@@ -121,9 +130,31 @@ namespace LeechCraft
 		 */
 		QList<QList<QAction*> > GetActions2Embed () const;
 
+		/** Returns the model which manages the plugins, displays
+		 * various info about them like name, description, icon and
+		 * allows to switch them off.
+		 *
+		 * For example, this model is used in the Plugin Manager page
+		 * in the settings.
+		 */
 		QAbstractItemModel* GetPluginsModel () const;
-		QAbstractItemModel* GetTasksModel (const QString&) const;
+
+		/** Creates a new model for the given request and returns a
+		 * pointer to it. Ownership is transferred to the caller.
+		 *
+		 * For example, this is used in the Summary.
+		 */
+		QAbstractItemModel* GetTasksModel (const QString& request) const;
+
+		/** Returns pointer to the app-wide Plugin Manager.
+		 *
+		 * Note that plugin manager is only initialized after the call
+		 * to DelayedInit().
+		 */
 		PluginManager* GetPluginManager () const;
+
+		/** Returns pointer to the storage backend of the Core.
+		 */
 		StorageBackend* GetStorageBackend () const;
 
 		/** Returns toolbar for plugin that represents the tab widget's
@@ -174,7 +205,13 @@ namespace LeechCraft
 		 */
 		QStringList GetTagsForIndex (int row, QAbstractItemModel *model) const;
 
+		/** Performs the initialization of systems that are dependant
+		 * on others, like the main window or the Tab Contents Manager.
+		 */
 		void DelayedInit ();
+
+		/** Tries to add a task from the Add Task Dialog.
+		 */
 		void TryToAddJob (QString, QString);
 
 		/** Returns true if both indexes belong to the same model. If
@@ -189,16 +226,31 @@ namespace LeechCraft
 		 */
 		bool SameModel (const QModelIndex& i1, const QModelIndex& i2) const;
 		
+		/** Calculates and returns current upload/download speeds.
+		 */
 		QPair<qint64, qint64> GetSpeeds () const;
 
+		/** Returns the app-wide network access manager.
+		 */
 		QNetworkAccessManager* GetNetworkAccessManager () const;
 
-		QModelIndex MapToSource (const QModelIndex&) const;
+		/** Maps given index from a model obtained from GetTasksModel()
+		 * to the index provided by a corresponding plugin's model.
+		 */
+		QModelIndex MapToSource (const QModelIndex& index) const;
 
+		/** Returns the app-wide TabContainer.
+		 */
 		TabContainer* GetTabContainer () const;
 
-		void Setup (QObject*);
+		/** Sets up connections for the given object which is expected
+		 * to be a plugin instance.
+		 */
+		void Setup (QObject *object);
 
+		/** Some preprocessor black magick to initialize storage and a
+		 * method per each hook signature.
+		 */
 		template<LeechCraft::HookID id>
 			typename LeechCraft::HooksContainer<id>::Functors_t GetHooks () const;
 #define LC_STRN(a) a##_
@@ -214,7 +266,12 @@ namespace LeechCraft
 
 		virtual bool eventFilter (QObject*, QEvent*);
 	public slots:
+		/** Handles changes of proxy settings in the Settings Dialog.
+		 */
 		void handleProxySettings () const;
+		/* Dispatcher of button clicks in the Settings Dialog (of the
+		 * settings of type 'pushbutton').
+		 */
 		void handleSettingClicked (const QString&);
 	private slots:
 		/** Handles the entity which could be anything - path to a file,
@@ -233,7 +290,18 @@ namespace LeechCraft
 		 */
 		bool handleGotEntity (LeechCraft::DownloadEntity entity,
 				int *id = 0, QObject **provider = 0);
-		void handleCouldHandle (const LeechCraft::DownloadEntity&, bool*);
+
+		/** Returns whether the given entity could be handlerd.
+		 *
+		 * @param[in] entity The download entity to be checked.
+		 * @param[out] could Whether the given entity could be checked.
+		 */
+		void handleCouldHandle (const LeechCraft::DownloadEntity& entity,
+				bool *could);
+
+		/** Checks the clipboard for new content and whether it could
+		 * be handled.
+		 */
 		void handleClipboardTimer ();
 		void embeddedTabWantsToFront ();
 		void handleStatusBarChanged (QWidget*, const QString&);
@@ -258,7 +326,33 @@ namespace LeechCraft
 		 */
 		QList<QObject*> GetObjects (const LeechCraft::DownloadEntity& entity,
 				ObjectType type, bool detectOnly) const;
-		bool CouldHandle (const LeechCraft::DownloadEntity&) const;
+
+		/** Checks whether given entity could be handled or downloaded.
+		 *
+		 * @param[in] entity The entity to check.
+		 * @return Whether the given entity could be handled.
+		 */
+		bool CouldHandle (LeechCraft::DownloadEntity entity) const;
+
+		/** Initializes IInfo's signals of the object.
+		 */
+		void InitDynamicSignals (QObject *object);
+
+		/** Initializes the object as a IJobHolder. The object is assumed
+		 * to be a valid IJobHolder*.
+		 */
+		void InitJobHolder (QObject *object);
+
+		/** Initializes the object as a IEmbedTab. The object is assumed
+		 * to be a valid IEmbedTab*.
+		 */
+		void InitEmbedTab (QObject *object);
+
+		/** Initializes the object as a IMultiTabs. The object is assumed
+		 * to be a valid IMultiTabs*.
+		 */
+		void InitMultiTab (QObject *object);
+
 		/** Maps totally unmapped index to the plugin's source model
 		 * through merge model and filter model.
 		 *
@@ -268,15 +362,20 @@ namespace LeechCraft
 		 * @exception std::runtime_error Throws if the required model
 		 * could not be found.
 		 */
-		void InitDynamicSignals (QObject*);
-		void InitJobHolder (QObject*);
-		void InitEmbedTab (QObject*);
-		void InitMultiTab (QObject*);
 		QModelIndex MapToSourceRecursively (QModelIndex) const;
 	signals:
-		void error (QString) const;
-		void log (const QString&);
-		void downloadFinished (const QString&);
+		/** Notifies the user about an error by a pop-up message box.
+		 */
+		void error (QString error) const;
+
+		/** Logs the message into LeechCraft's log.
+		 */
+		void log (const QString& message);
+
+		/** Notifies the user. The text is taken from the message.
+		 * Notification is usualy performed via system tray balloon tip.
+		 */
+		void downloadFinished (const QString& message);
 	};
 #define LC_DEFINE_REGISTER(a) \
 	template<> \

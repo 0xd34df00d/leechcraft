@@ -67,7 +67,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	connect (&Core::Instance (),
 			SIGNAL (downloadFinished (const QString&)),
 			this,
-			SLOT (handleDownloadFinished (const QString&)));
+			SLOT (handleDownloadFinished (QString)));
 	connect (&Core::Instance (),
 			SIGNAL (log (const QString&)),
 			LogToolBox_,
@@ -518,7 +518,7 @@ void LeechCraft::MainWindow::handleTrayIconActivated (QSystemTrayIcon::Activatio
 	}
 }
 
-void LeechCraft::MainWindow::handleDownloadFinished (const QString& string)
+void LeechCraft::MainWindow::handleDownloadFinished (QString string)
 {
 	bool show = XmlSettingsManager::Instance ()->
 		property ("ShowFinishedDownloadMessages").toBool ();
@@ -526,7 +526,7 @@ void LeechCraft::MainWindow::handleDownloadFinished (const QString& string)
 	HookProxy_ptr proxy (new HookProxy);
 	Q_FOREACH (HookSignature<HIDDownloadFinishedNotification>::Signature_t f,
 			Core::Instance ().GetHooks<HIDDownloadFinishedNotification> ())
-		f (proxy, string, show);
+		f (proxy, &string, show);
 
 	if (show &&
 			!proxy->IsCancelled ())

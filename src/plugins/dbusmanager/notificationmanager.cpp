@@ -49,7 +49,7 @@ NotificationManager::NotificationManager (QObject *parent)
 }
 
 void NotificationManager::HandleFinishedNotification (IHookProxy_ptr proxy,
-		const QString& msg, bool show)
+		QString *msg, bool show)
 {
 	if (!Connection_.get () ||
 			!show ||
@@ -63,7 +63,7 @@ void NotificationManager::HandleFinishedNotification (IHookProxy_ptr proxy,
 		<< QString ()
 		<< QString ("leechcraft_main")
 		<< QString ()
-		<< msg
+		<< *msg
 		<< QStringList ()
 		<< QVariantMap ()
 		<< Core::Instance ().GetProxy ()->GetSettingsManager ()->

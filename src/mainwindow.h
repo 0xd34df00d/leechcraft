@@ -103,7 +103,7 @@ namespace LeechCraft
 		void updateClock ();
 		void showHideMain ();
 		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
-		void handleDownloadFinished (const QString&);
+		void handleDownloadFinished (QString);
 		void updateIconSet ();
 		void doDelayedInit ();
 	private:

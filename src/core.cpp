@@ -547,13 +547,13 @@ void LeechCraft::Core::handleSettingClicked (const QString& name)
 	}
 }
 
-bool LeechCraft::Core::CouldHandle (const LeechCraft::DownloadEntity& e) const
+bool LeechCraft::Core::CouldHandle (LeechCraft::DownloadEntity e) const
 {
 	HookProxy_ptr proxy (new HookProxy);
 	Q_FOREACH (HookSignature<HIDCouldHandle>::Signature_t f,
 			GetHooks<HIDCouldHandle> ())
 	{
-		bool result = f (proxy, e);
+		bool result = f (proxy, &e);
 
 		if (proxy->IsCancelled ())
 			return result;

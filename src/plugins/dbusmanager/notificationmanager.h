@@ -36,7 +36,8 @@ namespace LeechCraft
 				std::auto_ptr<QDBusInterface> Connection_;
 			public:
 				NotificationManager (QObject* = 0);
-				void HandleFinishedNotification (LeechCraft::IHookProxy_ptr, const QString&, bool);
+				void HandleFinishedNotification (LeechCraft::IHookProxy_ptr,
+						QString*, bool);
 			};
 		};
 	};

@@ -47,6 +47,8 @@ namespace LeechCraft
 	public:
 		virtual ~IHookProxy () {}
 
+		/** Cancels default handler of the event.
+		 */
 		virtual void CancelDefault () = 0;
 	};
 
@@ -54,12 +56,58 @@ namespace LeechCraft
 
 	enum HookID
 	{
+		/** Is called before user is notified about something via
+		 * standard means (a balloon tip).
+		 * 
+		 * IHookProxy::CancelDefault() cancels the balloon tip.
+		 */
 		HIDDownloadFinishedNotification,
+
+		/** Is called in the beginnign of creating request in the
+		 * application-wide network access manager.
+		 *
+		 * IHookProxy::CancelDefault() cancels default request creation
+		 * and returns the reply obtained from the hook.
+		 */
 		HIDNetworkAccessManagerCreateRequest,
+
+		/** Is called in the beginning of the manual job addition
+		 * handler.
+		 *
+		 * IHookProxy::CancelDefault() cancels default processing.
+		 */
 		HIDManualJobAddition,
+
+		/** Is called in the beginning of the method handling the
+		 * "couldHandle" request (IInfo::couldHandle() signal).
+		 *
+		 * IHookProxy::CancelDefault() cancels default processing
+		 * and returns the result from the hook from the handler.
+		 */
 		HIDCouldHandle,
+
+		/** Is called in the beginning of the method handling the
+		 * "gotEntity" request (IInfo::gotEntity() signal).
+		 *
+		 * IHookProxy::CancelDefault() cancels default processing
+		 * and returns the result from the hook from the handler.
+		 */
 		HIDGotEntity,
+
+		/** Is called in the beginning of the method handling the
+		 * changed of the status bar text from the plugins.
+		 *
+		 * IHookProxy::CancelDefault() cancels default processing
+		 * and returns the result from the hook from the handler.
+		 */
 		HIDStatusBarChanged,
+
+		/** Is called in the beginning of the method logging the
+		 * messages obtained via the IInfo::log() signal.
+		 *
+		 * IHookProxy::CancelDefault() cancels default processing
+		 * and returns the result from the hook from the handler.
+		 */
 		HIDLogString
 	};
 
@@ -69,27 +117,39 @@ namespace LeechCraft
 	template<>
 		struct HookSignature<HIDDownloadFinishedNotification>
 		{
-			/** @param[in] msg Message to show.
+			/** @param[in,out] msg Message to show.
 			 * @param[in] show If the notification is enabled in the
 			 * settings.
 			 */
 			typedef boost::function<void (IHookProxy_ptr,
-					const QString& msg, bool show)> Signature_t;
+					QString *msg, bool show)> Signature_t;
 		};
 
 	template<>
 		struct HookSignature<HIDNetworkAccessManagerCreateRequest>
 		{
+			/** @param[in,out] manager The network access manager.
+			 * @param[in,out] op The operation performed.
+			 * @param[in,out] req The request to which the reply should be
+			 * created.
+			 * @param[in,out] op The device with the outgoing data.
+			 * @return The newly created reply. If
+			 * IHookProxy::CancelDefault() wasn't called, the return
+			 * value is ignored.
+			 */
 			typedef boost::function<QNetworkReply* (IHookProxy_ptr,
-					QNetworkAccessManager*,
-					QNetworkAccessManager::Operation*,
-					QNetworkRequest*,
-					QIODevice**)> Signature_t;
+					QNetworkAccessManager *manager,
+					QNetworkAccessManager::Operation *op,
+					QNetworkRequest *req,
+					QIODevice **dev)> Signature_t;
 		};
 
 	template<>
 		struct HookSignature<HIDManualJobAddition>
 		{
+			/** @param[in,out] entity The entity to be manually added.
+			 * @paarm[in,out] The location where the entity should be saved.
+			 */
 			typedef boost::function<void (IHookProxy_ptr,
 					QString *entity,
 					QString *location)> Signature_t;
@@ -98,13 +158,29 @@ namespace LeechCraft
 	template<>
 		struct HookSignature<HIDCouldHandle>
 		{
+			/** @param[in,out] entity The entity to be queried for.
+			 * @return Whether the entity can be handled or not. If
+			 * IHookProxy::CancelDefault() wasn't called, the return
+			 * value is ignored.
+			 */
 			typedef boost::function<bool (IHookProxy_ptr,
-					const LeechCraft::DownloadEntity& entity)> Signature_t;
+					LeechCraft::DownloadEntity *entity)> Signature_t;
 		};
 
 	template<>
 		struct HookSignature<HIDGotEntity>
 		{
+			/** @param[in,out] entity The entity that is either got or
+			 * should be delegated.
+			 * @param[in,out] id The id of task in case of delegation.
+			 * Please note that this pointer can be NULL.
+			 * @param[in,out] provider The provider object in case of
+			 * delegation. Please not that this pointer can be NULL.
+			 * @param[in,out] sender The sender of the signal.
+			 * @return Whether the entity was delegated or not. If
+			 * IHookProxy::CancelDefault() wasn't called, the return
+			 * value is ignored.
+			 */
 			typedef boost::function<bool (IHookProxy_ptr,
 					LeechCraft::DownloadEntity *entity,
 					int *id,
@@ -115,6 +191,11 @@ namespace LeechCraft
 	template<>
 		struct HookSignature<HIDStatusBarChanged>
 		{
+			/** @param[in,out] sendWidget The widget that sent this
+			 * signal.
+			 * @param[in,out] newStatus The new contents of the status
+			 * bar.
+			 */
 			typedef boost::function<void (IHookProxy_ptr,
 					QWidget *sendWidget,
 					QString *newStatus)> Signature_t;
@@ -123,6 +204,9 @@ namespace LeechCraft
 	template<>
 		struct HookSignature<HIDLogString>
 		{
+			/** @param[in,out] string The string to be logged.
+			 * @param[in,out] sender The sender of the signal.
+			 */
 			typedef boost::function<void (IHookProxy_ptr,
 					QString *string,
 					QObject *sender)> Signature_t;
@@ -323,6 +407,22 @@ typedef boost::shared_ptr<ICoreProxy> ICoreProxy_ptr;
  * plugin doesn't provide this interface (qobject_cast<IInfo*> to it
  * fails), it would be considered as a malformed one and would be
  * unloaded.
+ *
+ * This interface can also have following signals which will be
+ * autodetected by LeechCraft:
+ * - couldHandle (const LeechCraft::DownloadEntity& entity, bool *could);
+ *   Checks whether given entity could be handled.
+ * - gotEntity (const LeechCraft::DownloadEntity& entity);
+ *   Notifies other plugins about a new entity.
+ * - delegateEntity (const LeechCraft::DownloadEntity& entity, int *id, QObject **provider);
+ *   Entity delegation request. If a suitable provider is found, the
+ *   entity is delegated to it, id is set according to the task ID
+ *   returned from the provider, and provider is set to point to the
+ *   provider object.
+ * - downloadFinished (const QString& message);
+ *   Notifies the user about an event.
+ * - log (const QString& message);
+ *   Writes a message to the LeechCraft's log.
  */
 class IInfo
 {
