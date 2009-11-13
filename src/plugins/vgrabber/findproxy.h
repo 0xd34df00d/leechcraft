@@ -29,7 +29,7 @@ class QAction;
 
 namespace LeechCraft
 {
-	class DownloadEntity;
+	struct DownloadEntity;
 
 	namespace Plugins
 	{

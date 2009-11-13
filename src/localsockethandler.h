@@ -23,7 +23,7 @@
 
 namespace LeechCraft
 {
-	class DownloadEntity;
+	struct DownloadEntity;
 	class MainWindow;
 
 	class LocalSocketHandler : public QObject

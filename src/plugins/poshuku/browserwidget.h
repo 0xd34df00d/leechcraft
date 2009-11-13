@@ -38,7 +38,7 @@ namespace LeechCraft
 		{
 			class FindDialog;
 			class PasswordRemember;
-			class BrowserWidgetSettings;
+			struct BrowserWidgetSettings;
 
 			class BrowserWidget : public QWidget
 								, public IWebWidget
