@@ -28,6 +28,10 @@ class QSystemTrayIcon;
 
 namespace LeechCraft
 {
+	/** Manages notifications from IInfo::downloadFinished(). Shows nice
+	 * balloon tip with all the notifications collected and removes
+	 * older ones based on timer.
+	 */
 	class FancyPopupManager : public QObject
 	{
 		Q_OBJECT
@@ -40,14 +44,27 @@ namespace LeechCraft
 
 		QSystemTrayIcon *TrayIcon_;
 	public:
+		/** Constructs the manager.
+		 */
 		FancyPopupManager (QSystemTrayIcon*,QObject* = 0);
 		~FancyPopupManager ();
 
+		/** Pushes the message to the message array. Shows the popup if
+		 * it was hidden, appends the message otherwise.
+		 */
 		void ShowMessage (const QString&);
 	private slots:
+		/** Checks the messages and deletes too old ones.
+		 */
 		void timerTimeout ();
+
+		/** Clears the message queue.
+		 */
 		void handleMessageClicked ();
 	private:
+		/** The main function to show the message and update the
+		 * corresponding string.
+		 */
 		void UpdateMessage ();
 	};
 };

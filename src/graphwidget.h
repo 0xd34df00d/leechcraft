@@ -25,6 +25,8 @@ namespace LeechCraft
 {
 	namespace Util
 	{
+		/** Draws a scrollling graph with two speed curves.
+		 */
 		class GraphWidget : public QFrame
 		{
 			Q_OBJECT
@@ -34,15 +36,38 @@ namespace LeechCraft
 			QColor DownColor_;
 			QColor UpColor_;
 		public:
-			GraphWidget (const QColor&, const QColor&,
+			/** Constructs the graph widget and sets color for download
+			 * and upload speeds.
+			 *
+			 * @param[in] down The color of the download speed graph.
+			 * @param[in] up The color of the upload speed graph.
+			 * @param[in] parent The parent widget.
+			 */
+			GraphWidget (const QColor& down, const QColor& up,
 					QWidget *parent = 0);
 
-			void PushSpeed (quint64, quint64);
+			/** Adds a pair of download and upload speed to the graph.
+			 * Removes older speeds if needed. Repaints itself.
+			 *
+			 * @param[in] down Download speed.
+			 * @param[in] up Upload speed.
+			 */
+			void PushSpeed (quint64 down, quint64 up);
 		protected:
+			/** Finds out max speeds and calls PaintSingle() to actually
+			 * paint the graphs.
+			 */
 			virtual void paintEvent (QPaintEvent*);
 		private:
-			virtual void PaintSingle (quint64, const QList<quint64>&,
-					QPainter*);
+			/** Paints single graph with known max value, list of speeds
+			 * on the given painter.
+			 *
+			 * @param[in] max The maximum speed.
+			 * @param[in] speeds The list of speeds.
+			 * @param[in] painter The painter to paint on.
+			 */
+			virtual void PaintSingle (quint64 max, const QList<quint64>& speeds,
+					QPainter *painter);
 		};
 	};
 };
