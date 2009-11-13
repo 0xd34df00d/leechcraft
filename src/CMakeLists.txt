@@ -210,6 +210,7 @@ SET (SRCS
 	startupwizard.cpp
 	localsockethandler.cpp
 	toolbarguard.cpp
+	clipboardwatcher.cpp
 	3dparty/qxttooltip.cpp
 	)
 SET (HEADERS
@@ -257,6 +258,7 @@ SET (HEADERS
 	startupwizard.h
 	localsockethandler.h
 	toolbarguard.h
+	clipboardwatcher.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/iinfo.h

@@ -22,13 +22,24 @@
 
 namespace LeechCraft
 {
+	/** Widget for selecting the current style in the settings dialog.
+	 */
 	class AppStyler : public QComboBox
 	{
 		Q_OBJECT
 	public:
+		/** Constructs and initializes the AppStyler, preparing it to
+		 * be inserted into the settings dialog.
+		 */
 		AppStyler (QWidget* = 0);
 	public slots:
+		/** Accepts current style selection.
+		 */
 		void accept ();
+
+		/** Rejects current styel selection and reverts the state to
+		 * the previous one.
+		 */
 		void reject ();
 	};
 };

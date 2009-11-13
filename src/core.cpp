@@ -91,6 +91,7 @@ LeechCraft::Core::Core ()
 , NetworkAccessManager_ (new NetworkAccessManager)
 , StorageBackend_ (new SQLStorageBackend)
 , DirectoryWatcher_ (new DirectoryWatcher)
+, ClipboardWatcher_ (new ClipboardWatcher)
 {
 	MergeModel_->setObjectName ("Core MergeModel");
 	MergeModel_->setProperty ("__LeechCraft_own_core_model", true);
@@ -103,17 +104,14 @@ LeechCraft::Core::Core ()
 			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
 			this,
 			SLOT (handleGotEntity (LeechCraft::DownloadEntity)));
+	connect (ClipboardWatcher_.get (),
+			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+			this,
+			SLOT (handleGotEntity (LeechCraft::DownloadEntity)));
 
 	StorageBackend_->Prepare ();
 
 	PluginManager_ = new PluginManager (this);
-
-	ClipboardWatchdog_ = new QTimer (this);
-	connect (ClipboardWatchdog_,
-			SIGNAL (timeout ()),
-			this,
-			SLOT (handleClipboardTimer ()));
-	ClipboardWatchdog_->start (2000);
 
 	QList<QByteArray> proxyProperties;
 	proxyProperties << "ProxyEnabled"
@@ -142,13 +140,12 @@ void LeechCraft::Core::Release ()
 {
 	LocalSocketHandler_.reset ();
 	XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");
+	ClipboardWatcher_.reset ();
 	DirectoryWatcher_.reset ();
 	MergeModel_.reset ();
 
 	PluginManager_->Release ();
 	delete PluginManager_;
-	ClipboardWatchdog_->stop ();
-	delete ClipboardWatchdog_;
 
 	NetworkAccessManager_.reset ();
 
@@ -819,22 +816,6 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 void LeechCraft::Core::handleCouldHandle (const LeechCraft::DownloadEntity& e, bool *could)
 {
 	*could = CouldHandle (e);
-}
-
-void LeechCraft::Core::handleClipboardTimer ()
-{
-	QString text = QApplication::clipboard ()->text ();
-	if (text.isEmpty () || text == PreviousClipboardContents_)
-		return;
-
-	PreviousClipboardContents_ = text;
-
-	DownloadEntity e = Util::MakeEntity (text.toUtf8 (),
-			QString (),
-			LeechCraft::FromUserInitiated);
-
-	if (XmlSettingsManager::Instance ()->property ("WatchClipboard").toBool ())
-		handleGotEntity (e);
 }
 
 void LeechCraft::Core::embeddedTabWantsToFront ()

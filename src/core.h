@@ -34,6 +34,7 @@
 #include "networkaccessmanager.h"
 #include "directorywatcher.h"
 #include "localsockethandler.h"
+#include "clipboardwatcher.h"
 
 class QAbstractProxyModel;
 class QAction;
@@ -68,13 +69,12 @@ namespace LeechCraft
 
 		PluginManager *PluginManager_;
 		MainWindow *ReallyMainWindow_;
-		QTimer *ClipboardWatchdog_;
-		QString PreviousClipboardContents_;
 		boost::shared_ptr<Util::MergeModel> MergeModel_;
 		std::auto_ptr<TabContainer> TabContainer_;
 		std::auto_ptr<QNetworkAccessManager> NetworkAccessManager_;
 		std::auto_ptr<StorageBackend> StorageBackend_;
 		std::auto_ptr<DirectoryWatcher> DirectoryWatcher_;
+		std::auto_ptr<ClipboardWatcher> ClipboardWatcher_;
 		std::auto_ptr<LocalSocketHandler> LocalSocketHandler_;
 		typedef std::map<const QAbstractItemModel*, QObject*> repres2object_t;
 		// Contains unfolded representations
@@ -299,13 +299,22 @@ namespace LeechCraft
 		void handleCouldHandle (const LeechCraft::DownloadEntity& entity,
 				bool *could);
 
-		/** Checks the clipboard for new content and whether it could
-		 * be handled.
+		/** Handles requests to show a tab above others.
 		 */
-		void handleClipboardTimer ();
 		void embeddedTabWantsToFront ();
-		void handleStatusBarChanged (QWidget*, const QString&);
-		void handleLog (const QString&);
+
+		/** Handles requests to change statusbar's status text.
+		 *
+		 * @param[in] sender The sender of the event.
+		 * @param[in] msg The message to show.
+		 */
+		void handleStatusBarChanged (QWidget *sender, const QString& msg);
+
+		/** Handles log requests.
+		 *
+		 * @param[in] log The message to log.
+		 */
+		void handleLog (const QString& log);
 	private:
 		enum ObjectType
 		{

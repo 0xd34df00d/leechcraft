@@ -27,6 +27,8 @@
 
 namespace LeechCraft
 {
+	/** Watches a given directory for files which could be handled.
+	 */
 	class DirectoryWatcher : public QObject
 	{
 		Q_OBJECT
@@ -34,12 +36,32 @@ namespace LeechCraft
 		std::auto_ptr<QFileSystemWatcher> Watcher_;
 		QList<QFileInfo> Olds_;
 	public:
-		DirectoryWatcher (QObject* = 0);
+		/** Constructs the watcher, registers it as a client for
+		 * "WatchDirectory" setting in the XML settings manager (the
+		 * settingsChanged() is used for that).
+		 *
+		 * @param[in] parent The parent object.
+		 */
+		DirectoryWatcher (QObject *parent = 0);
 	private slots:
+		/** Handles the changed settings. Removes previous directory
+		 * from the watch list and adds a new one. Checks the new
+		 * directory for entities.
+		 */
 		void settingsChanged ();
-		void handleDirectoryChanged (const QString&);
+
+		/** Handles the changes in the directory. Compares the
+		 * QFileInfos from previous run with current ones and emits
+		 * gotEntity() for each file which has been added or modified
+		 * since the previous check.
+		 *
+		 * @param[in] dir The directory that changed.
+		 */
+		void handleDirectoryChanged (const QString& dir);
 	signals:
-		void gotEntity (const LeechCraft::DownloadEntity&);
+		/** Emitted when a new or modified file is detected.
+		 */
+		void gotEntity (const LeechCraft::DownloadEntity& entity);
 	};
 };
 

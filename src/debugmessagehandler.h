@@ -23,7 +23,31 @@
 
 namespace DebugHandler
 {
+	/** Simple debug message handler. Writes the message of type type
+	 * to the logs. The logs are contained in ~/.leechcraft and have
+	 * following names for different message types:
+	 * - QtDebugMsg -> debug.log
+	 * - QtWarningMsg -> warning.log
+	 * - QtCriticalMsg -> critical.log
+	 * - QtFatalMsg -> fatal.log
+	 *
+	 * @param[in] type The type of the message.
+	 * @param[in] message The message to print.
+	 *
+	 * @sa backtraced
+	 */
 	void simple (QtMsgType type, const char *message);
+
+	/** Debug message handler which prints backtraces for all messages
+	 * except QtDebugMsg ones. This is the only difference from the
+	 * simple() debug message handler. Refer to simple() documentation
+	 * for more information.
+	 *
+	 * @param[in] type The type of the message.
+	 * @param[in] message The message to print.
+	 *
+	 * @sa simple
+	 */
 	void backtraced (QtMsgType type, const char *message);
 };
 

@@ -126,7 +126,6 @@ namespace LeechCraft
 
 			Worker::~Worker ()
 			{
-				qDebug () << Q_FUNC_INFO;
 			}
 
 			bool Worker::IsWorking () const

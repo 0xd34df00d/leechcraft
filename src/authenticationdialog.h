@@ -23,20 +23,44 @@
 
 namespace LeechCraft
 {
+	/** Provides a standard authentication dialog, for example, for
+	 * proxies, SSL stuff etc.
+	 */
 	class AuthenticationDialog : public QDialog
 	{
 		Q_OBJECT
 
 		Ui::AuthenticationDialog Ui_;
 	public:
-		AuthenticationDialog (const QString&,
-				const QString&,
-				const QString&,
-				QWidget* = 0);
-		virtual ~AuthenticationDialog ();
+		/** Initializes the dialog. Sets initial login to login, initial
+		 * password to password and message of the dialog to message.
+		 *
+		 * @param[in] message The message explaining the dialog.
+		 * @param[in] login Initial (suggested) login.
+		 * @param[in] password Initial (suggested) password.
+		 * @param[in] parent Parent widget of this dialog.
+		 */
+		AuthenticationDialog (const QString& message,
+				const QString& login,
+				const QString& password,
+				QWidget *parent = 0);
 
+		/** Returns the login.
+		 *
+		 * @return The login.
+		 */
 		QString GetLogin () const;
+
+		/** Returns the password.
+		 *
+		 * @return The password.
+		 */
 		QString GetPassword () const;
+
+		/** Returns whether user has chosen to save authentication data.
+		 *
+		 * @return True if auth data should be saved, false otherwise.
+		 */
 		bool ShouldSave () const;
 	};
 };

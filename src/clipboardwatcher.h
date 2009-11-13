@@ -16,22 +16,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef ABOUTDIALOG_H
-#define ABOUTDIALOG_H
-#include <QDialog>
-#include "ui_aboutdialog.h"
+#ifndef CLIPBOARDWATCHER_H
+#define CLIPBOARDWATCHER_H
+#include <QObject>
+#include <QString>
+#include <interfaces/structures.h>
 
 namespace LeechCraft
 {
-	/** Shows the About LeechCraft information.
+	/** @brief Watches clipboard for downloadable contents.
+	 *
+	 * ClipboardWatcher polls the clipboard periodically for new content
+	 * and emits gotEntity() if it's found.
+	 *
+	 * The entities emitted from ClipboardWatcher do have
+	 * LeechCraft::FromUserInitiated flag set, Entity_ is an utf8-ed
+	 * text from the clipboard.
 	 */
-	class AboutDialog : public QDialog
+	class ClipboardWatcher : public QObject
 	{
 		Q_OBJECT
 
-		Ui::AboutDialog Ui_;
+		QTimer *ClipboardWatchdog_;
+		QString PreviousClipboardContents_;
 	public:
-		AboutDialog (QWidget* = 0);
+		ClipboardWatcher (QObject *parent = 0);
+		/** Stops the polling timer and destructs the watcher.
+		 */
+		virtual ~ClipboardWatcher ();
+	private slots:
+		/** Checks the clipboard for new content and whether it could
+		 * be handled.
+		 */
+		void handleClipboardTimer ();
+	signals:
+		/** Notifies about new entity obtained from the clipboard.
+		 */
+		void gotEntity (const LeechCraft::DownloadEntity&);
 	};
 };
 

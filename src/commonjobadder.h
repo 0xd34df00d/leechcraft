@@ -23,18 +23,47 @@
 
 namespace LeechCraft
 {
+	/** Dialog for adding tasks directly via LeechCraft. Has two fields,
+	 * What and Where, corresponding to Entity_ and Location_ fields of
+	 * DownloadEntity respectively.
+	 */
 	class CommonJobAdder : public QDialog,
 						   private Ui::CommonJobAdder
 	{
 		Q_OBJECT
 	public:
+		/** Creates the dialog and sets the what/where values to
+		 * previous ones.
+		 *
+		 * @param[in] parent The parent widget.
+		 */
 		CommonJobAdder (QWidget *parent = 0);
-		virtual ~CommonJobAdder ();
+
+		/** Returns the value of What field.
+		 *
+		 * @return The What.
+		 */
 		QString GetString () const;
+
+		/** Returns the value of Where field.
+		 *
+		 * @return the Where.
+		 */
 		QString GetWhere () const;
 	private slots:
+		/** Handles clicking the Browse button near What field. Pops up
+		 * the QFileDialog::getOpenFileName dialog.
+		 */
 		void on_Browse__released ();
+	
+		/** Handles clicking the Browse button near Where field. Pops up
+		 * the QFileDialog::getOpenFileName dialog.
+		 */
 		void on_BrowseWhere__released ();
+
+		/** Handles clicking the Paste button. Pastes text to the What
+		 * field from the clipboard.
+		 */
 		void on_Paste__released ();
 	};
 };

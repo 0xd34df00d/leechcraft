@@ -53,6 +53,10 @@ namespace LeechCraft
 			Q_OBJECT
 		public:
 			/** @brief Constructor.
+			 *
+			 * Sets the default window title and window flags
+			 * (Qt::Tool | Qt::WindowStaysOnTopHint), calculates the
+			 * default geometry.
 			 * 
 			 * @param[in] parent Pointer to parent widget.
 			 */
@@ -81,6 +85,9 @@ namespace LeechCraft
 			 */
 			QStringList GetSelections ();
 		protected:
+			/** @brief Checks whether after the move event the selector
+			 * won't be beoynd the screen. if it would, moves back.
+			 */
 			virtual void moveEvent (QMoveEvent*);
 		public slots:
 			/** @brief Selects all variants.
@@ -100,6 +107,8 @@ namespace LeechCraft
 			 */
 			void lineTextChanged (const QString& newText);
 		private slots:
+			/** @brief Emits selectionChanged() to notify about selection changes.
+			 */
 			void buttonToggled ();
 		signals:
 			/** @brief Indicates that selections have changed.

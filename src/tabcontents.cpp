@@ -317,6 +317,7 @@ namespace LeechCraft
 				AdditionalBoxes_ + (QList<QComboBox*> () << Ui_.LeastCategory_))
 		{
 			box->clear ();
+			box->addItem ("downloads");
 			box->addItems (currentCats);
 		}
 	}

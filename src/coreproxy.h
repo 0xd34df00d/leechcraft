@@ -24,6 +24,8 @@
 
 namespace LeechCraft
 {
+	/** Implements the ICoreProxy's interface.
+	 */
 	class CoreProxy : public QObject
 					, public ICoreProxy
 	{

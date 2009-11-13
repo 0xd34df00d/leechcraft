@@ -731,6 +731,7 @@ bool LeechCraft::PluginManager::InitializeSingle (LeechCraft::PluginManager::Dep
 	{
 		IInfo *ii = qobject_cast<IInfo*> (item->Plugin_);
 		QString name = ii->GetName ();
+		qDebug () << "Initializing" << name << "...";
 		ii->Init (ICoreProxy_ptr (new CoreProxy ()));
 		item->Initialized_ = true;
 
