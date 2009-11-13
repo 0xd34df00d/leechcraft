@@ -37,7 +37,7 @@ IconChooser::IconChooser (const QStringList& sets, QWidget *parent)
 void IconChooser::accept ()
 {
 	if (XmlSettingsManager::Instance ()->
-			property ("Iconset").toString () == currentText ())
+			property ("IconSet").toString () == currentText ())
 		return;
 
 	XmlSettingsManager::Instance ()->
