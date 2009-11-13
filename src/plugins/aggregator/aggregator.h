@@ -44,7 +44,7 @@ namespace LeechCraft
 		namespace Aggregator
 		{
 			class ItemBucket;
-			class Enclosure;
+			struct Enclosure;
 
 			struct Aggregator_Impl;
 

@@ -115,10 +115,10 @@ SectionGroup "Plugins"
 	Section "BitTorrent" TORRENTPLUGIN
 		SetOutPath $INSTDIR
 		File torrent.dll
-		File boost_date_time-vc90-mt-1_39.dll
-		File boost_filesystem-vc90-mt-1_39.dll
-		File boost_system-vc90-mt-1_39.dll
-		File boost_thread-vc90-mt-1_39.dll
+		File boost_date_time-vc90-mt-1_40.dll
+		File boost_filesystem-vc90-mt-1_40.dll
+		File boost_system-vc90-mt-1_40.dll
+		File boost_thread-vc90-mt-1_40.dll
 		SetOutPath $INSTDIR\settings
 		File settings\torrentsettings.xml
 		SetOutPath $INSTDIR\plugins\bin
@@ -154,11 +154,21 @@ SectionGroup "Plugins"
 		File plugins\bin\leechcraft_lcftp.dll
 		SectionIn 1
 	SectionEnd
+    Section "LMP" LMPPLUGIN
+        SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_lmp.dll
+        SectionIn 1
+    SectionEnd
 	Section "NetworkMonitor" NETWORKMONITORPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_networkmonitor.dll
 		SectionIn 1
 	SectionEnd
+    Section "NewLife" NEWLIFEPLUGIN
+        SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_newlife.dll
+		SectionIn 1
+    SectionEnd
 	Section "Poshuku" POSHUKUPLUGIN
 		SetOutPath $INSTDIR\settings
 		File settings\poshukusettings.xml
@@ -192,11 +202,11 @@ SectionGroup "Plugins"
 		File plugins\bin\leechcraft_seekthru.dll
 		SectionIn 1
 	SectionEnd
-#	Section "LMP" LMPPLUGIN
-#		SetOutPath $INSTDIR\plugins\bin
-#		File plugins\bin\leechcraft_lmp.dll
-#		SectionIn 1
-#	SectionEnd
+    Section "VGrabber" VGRABBERPLUGIN
+        SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_vgrabber.dll
+		SectionIn 1
+    SectionEnd
 SectionGroupEnd
 
 SectionGroup "Translations"
@@ -265,14 +275,16 @@ LangString DESC_TORRENTPLUGIN ${LANG_ENGLISH} "Feature-rich BitTorrent client."
 LangString DESC_AGGREGATORPLUGIN ${LANG_ENGLISH} "Sophisticated RSS/Atom news feed reader."
 LangString DESC_HISTORYHOLDERPLUGIN ${LANG_ENGLISH} "Keeps history of downloaded files."
 LangString DESC_LCFTPPLUGIN ${LANG_ENGLISH} "FTP client."
+LangString DESC_LMPPLUGIN ${LANG_ENGLISH} "LeechCraft Media Player."
 LangString DESC_NETWORKMONITORPLUGIN ${LANG_ENGLISH} "Monitors HTTP network requests."
+LangString DESC_NEWLIFEPLUGIN ${LANG_ENGLISH} "Imports settings from other programs."
 LangString DESC_POSHUKUPLUGIN ${LANG_ENGLISH} "Full-featured web browser."
 LangString DESC_POSHUKUCLEANWEBPLUGIN ${LANG_ENGLISH} "Ad blocker for the Poshuku compatible with Firefox's AdBlock lists."
 LangString DESC_POSHUKUFILESCHEMEPLUGIN ${LANG_ENGLISH} "Support of the file:// scheme for the Poshuku."
 LangString DESC_POSHUKUFUAPLUGIN ${LANG_ENGLISH} "Fake User Agent plugin for the Poshuku."
-#LangString DESC_LMPPLUGIN ${LANG_ENGLISH} "LeechCraft Media Player."
 LangString DESC_DEADLYRICSPLUGIN ${LANG_ENGLISH} "Fetches lyrics from LyricWiki.org."
 LangString DESC_SEEKTHRUPLUGIN ${LANG_ENGLISH} "Client for OpenSearch-aware search engines."
+LangString DESC_VGRABBERPLUGIN ${LANG_ENGLISH} "VKontakte.ru stuff grabber."
 
 LangString DESC_MAINFILES ${LANG_RUSSIAN} "Сам LeechCraft и его вспомогательные бИблиотеки."
 LangString DESC_QT ${LANG_RUSSIAN} "Библиотеки Qt."
@@ -284,14 +296,16 @@ LangString DESC_TORRENTPLUGIN ${LANG_RUSSIAN} "Полнофункциональный Torrent-клиен
 LangString DESC_AGGREGATORPLUGIN ${LANG_RUSSIAN} "Агрегатор RSS/Atom-лент."
 LangString DESC_HISTORYHOLDERPLUGIN ${LANG_RUSSIAN} "Хранит историю закачек."
 LangString DESC_LCFTPPLUGIN ${LANG_RUSSIAN} "Клиент протокола FTP."
+LangString DESC_LMPPLUGIN ${LANG_RUSSIAN} "LeechCraft Media Player - многофункциональный проигрыватель."
 LangString DESC_NETWORKMONITORPLUGIN ${LANG_RUSSIAN} "Следит за HTTP-запросами."
+LangString DESC_NEWLIFEPLUGIN ${LANG_RUSSIAN} "Импорт настроек из других программ."
 LangString DESC_POSHUKUPLUGIN ${LANG_RUSSIAN} "Полнофункциональный веб-браузер."
 LangString DESC_POSHUKUCLEANWEBPLUGIN ${LANG_RUSSIAN} "Блокировщик рекламы для Poshuku, совместимый с Firefox AdBlock."
 LangString DESC_POSHUKUFILESCHEMEPLUGIN ${LANG_RUSSIAN} "Поддержка file://-схемы для Poshuku."
 LangString DESC_POSHUKUFUAPLUGIN ${LANG_RUSSIAN} "Плагин для Poshuku, подделывающий идентификацию браузера."
-#LangString DESC_LMPPLUGIN ${LANG_RUSSIAN} "LeechCraft Media Player."
 LangString DESC_DEADLYRICSPLUGIN ${LANG_RUSSIAN} "Поиск песен на LyricWiki.org."
 LangString DESC_SEEKTHRUPLUGIN ${LANG_RUSSIAN} "Клиент для поисковиков, поддерживающих OpenSearch."
+LangString DESC_VGRABBERPLUGIN ${LANG_RUSSIAN} "Плагин для скачивания и проигрывания музыки и видео из социальной сети В Контакте."
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
 	!insertmacro MUI_DESCRIPTION_TEXT ${MAINFILES} $(DESC_MAINFILES)
@@ -301,7 +315,8 @@ LangString DESC_SEEKTHRUPLUGIN ${LANG_RUSSIAN} "Клиент для поисковиков, поддержи
 	!insertmacro MUI_DESCRIPTION_TEXT ${HTTPPLUGIN} $(DESC_HTTPPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${AGGREGATORPLUGIN} $(DESC_AGGREGATORPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${TORRENTPLUGIN} $(DESC_TORRENTPLUGIN)
-#	!insertmacro MUI_DESCRIPTION_TEXT ${LMPPLUGIN} $(DESC_LMPPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${LMPPLUGIN} $(DESC_LMPPLUGIN)
+    !insertmacro MUI_DESCRIPTION_TEXT ${NEWLIFEPLUGIN} $(DESC_NEWLIFEPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${POSHUKUPLUGIN} $(DESC_POSHUKUPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${POSHUKUFILESCHEMEPLUGIN} $(DESC_POSHUKUFILESCHEMEPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${POSHUKUFUAPLUGIN} $(DESC_POSHUKUFUAPLUGIN)
@@ -312,6 +327,7 @@ LangString DESC_SEEKTHRUPLUGIN ${LANG_RUSSIAN} "Клиент для поисковиков, поддержи
 	!insertmacro MUI_DESCRIPTION_TEXT ${NETWORKMONITORPLUGIN} $(DESC_NETWORKMONITORPLUGIN)
     !insertmacro MUI_DESCRIPTION_TEXT ${CHATTERPLUGIN} $(DESC_CHATTERPLUGIN)
     !insertmacro MUI_DESCRIPTION_TEXT ${LCFTPPLUGIN} $(DESC_LCFTPPLUGIN)
+    !insertmacro MUI_DESCRIPTION_TEXT ${VGRABBERPLUGIN} $(DESC_VGRABBERPLUGIN)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Function .onInit

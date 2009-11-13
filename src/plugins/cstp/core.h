@@ -66,8 +66,8 @@ namespace LeechCraft
 				Q_OBJECT
 				QStringList Headers_;
 
-				friend class _Local::ObjectFinder;
-				friend class _Local::SpeedAccumulator;
+				friend struct _Local::ObjectFinder;
+				friend struct _Local::SpeedAccumulator;
 
 				struct TaskDescr
 				{

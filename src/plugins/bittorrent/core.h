@@ -45,7 +45,7 @@ class QToolBar;
 
 namespace libtorrent
 {
-	class cache_status;
+	struct cache_status;
 	class session;
 };
 
