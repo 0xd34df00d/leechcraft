@@ -32,10 +32,6 @@ LeechCraft::AuthenticationDialog::AuthenticationDialog (const QString& message,
 	Ui_.PasswordEdit_->setText (password);
 }
 
-LeechCraft::AuthenticationDialog::~AuthenticationDialog ()
-{
-}
-
 QString LeechCraft::AuthenticationDialog::GetLogin () const
 {
 	return Ui_.LoginEdit_->text ();

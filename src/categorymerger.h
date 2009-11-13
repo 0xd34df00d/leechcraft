@@ -28,6 +28,13 @@ namespace LeechCraft
 {
 	struct Request;
 
+	/** Extracts categories from the request, finds the corresponding
+	 * plugins that can handle it and merges models received from them
+	 * into one.
+	 *
+	 * If the category is "embedded", like "downloaders", it also filters
+	 * the results according to the request paremeters.
+	 */
 	class CategoryMerger : public Util::MergeModel
 	{
 		Q_OBJECT
@@ -37,8 +44,11 @@ namespace LeechCraft
 		boost::shared_ptr<Util::MergeModel> MergeModel_;
 		std::auto_ptr<FilterModel> FilterModel_;
 	public:
-		CategoryMerger (const Request&,
-				const boost::shared_ptr<Util::MergeModel>&,
+		/** Constructs the merger according to request. Uses the merge
+		 * as a MergeModel if categories is the one of the built-ins.
+		 */
+		CategoryMerger (const Request& req,
+				const boost::shared_ptr<Util::MergeModel>& merge,
 				QObject* = 0);
 	};
 };

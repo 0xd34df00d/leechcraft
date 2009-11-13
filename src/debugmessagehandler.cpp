@@ -29,91 +29,68 @@
 QMutex G_DbgMutex;
 uint Counter = 0;
 
+namespace
+{
+	void Write (QtMsgType type, const char *message, bool bt)
+	{
+		QString name (QDir::homePath ());
+		name += ("/.leechcraft/");
+		switch (type)
+		{
+			case QtDebugMsg:
+				name += "debug.log";
+				break;
+			case QtWarningMsg:
+				name += "warning.log";
+				break;
+			case QtCriticalMsg:
+				name += "critical.log";
+				break;
+			case QtFatalMsg:
+				name += "fatal.log";
+				break;
+		}
+
+		std::ofstream ostr;
+		G_DbgMutex.lock ();
+		ostr.open (QDir::toNativeSeparators (name).toStdString ().c_str (), std::ios::app);
+		ostr << "["
+			<< QDateTime::currentDateTime ().toString ("dd.MM.yyyy HH:mm:ss.zzz").toStdString ()
+			<< "] ["
+			<< QThread::currentThread ()
+			<< "] ["
+			<< QString ("%1").arg (Counter++, 3, 10, QChar ('0')).toStdString ()
+			<< "] ";
+		ostr << message << std::endl;
+
+#ifdef _GNU_SOURCE
+		if (type != QtDebugMsg && bt)
+		{
+			const int maxSize = 100;
+			void *array [maxSize];
+			size_t size = backtrace (array, maxSize);
+			char **strings = backtrace_symbols (array, size);
+
+			ostr << "Backtrace of " << size << " frames:" << std::endl;
+
+			for (size_t i = 0; i < size; ++i)
+				ostr << i << "\t" << strings [i] << std::endl;
+			std::free (strings);
+		}
+#endif
+
+		ostr.close ();
+		G_DbgMutex.unlock ();
+	}
+};
+
 void DebugHandler::simple (QtMsgType type, const char *message)
 {
-	QString name (QDir::homePath ());
-	name += ("/.leechcraft/");
-	switch (type)
-	{
-		case QtDebugMsg:
-			name += "debug.log";
-			break;
-		case QtWarningMsg:
-			name += "warning.log";
-			break;
-		case QtCriticalMsg:
-			name += "critical.log";
-			break;
-		case QtFatalMsg:
-			name += "fatal.log";
-			break;
-	}
-
-	std::ofstream ostr;
-	G_DbgMutex.lock ();
-	ostr.open (QDir::toNativeSeparators (name).toStdString ().c_str (), std::ios::app);
-	ostr << "["
-		<< QDateTime::currentDateTime ().toString ("dd.MM.yyyy HH:mm:ss.zzz").toStdString ()
-		<< "] ["
-		<< QThread::currentThread ()
-		<< "] ["
-		<< QString ("%1").arg (Counter++, 3, 10, QChar ('0')).toStdString ()
-		<< "] ";
-	ostr << message << std::endl;
-
-	ostr.close ();
-	G_DbgMutex.unlock ();
+	Write (type, message, false);
 }
 
 void DebugHandler::backtraced (QtMsgType type, const char *message)
 {
-	QString name (QDir::homePath ());
-	name += ("/.leechcraft/");
-	switch (type)
-	{
-		case QtDebugMsg:
-			name += "debug.log";
-			break;
-		case QtWarningMsg:
-			name += "warning.log";
-			break;
-		case QtCriticalMsg:
-			name += "critical.log";
-			break;
-		case QtFatalMsg:
-			name += "fatal.log";
-			break;
-	}
-
-	std::ofstream ostr;
-	G_DbgMutex.lock ();
-	ostr.open (QDir::toNativeSeparators (name).toStdString ().c_str (), std::ios::app);
-	ostr << "["
-		<< QDateTime::currentDateTime ().toString ("dd.MM.yyyy HH:mm:ss.zzz").toStdString ()
-		<< "] ["
-		<< QThread::currentThread ()
-		<< "] ["
-		<< QString ("%1").arg (Counter++, 3, 10, QChar ('0')).toStdString ()
-		<< "] ";
-	ostr << message << std::endl;
-
-#ifdef _GNU_SOURCE
-	if (type != QtDebugMsg)
-	{
-		const int maxSize = 100;
-		void *array [maxSize];
-		size_t size = backtrace (array, maxSize);
-		char **strings = backtrace_symbols (array, size);
-
-		ostr << "Backtrace of " << size << " frames:" << std::endl;
-
-		for (size_t i = 0; i < size; ++i)
-			ostr << i << "\t" << strings [i] << std::endl;
-		std::free (strings);
-	}
-#endif
-
-	ostr.close ();
-	G_DbgMutex.unlock ();
+	Write (type, message, true);
 }
 

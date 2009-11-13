@@ -34,10 +34,6 @@ LeechCraft::CommonJobAdder::CommonJobAdder (QWidget *parent)
 				QDir::homePath ()).toString ());
 }
 
-LeechCraft::CommonJobAdder::~CommonJobAdder ()
-{
-}
-
 QString LeechCraft::CommonJobAdder::GetString () const
 {
 	return What_->text ();
