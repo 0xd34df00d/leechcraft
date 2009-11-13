@@ -34,7 +34,6 @@
 #include "fancypopupmanager.h"
 #include "skinengine.h"
 #include "childactioneventfilter.h"
-#include "zombitechstyle.h"
 #include "logtoolbox.h"
 #include "settingssink.h"
 #include "iconchooser.h"
@@ -171,9 +170,6 @@ void LeechCraft::MainWindow::closeEvent (QCloseEvent *e)
 
 void LeechCraft::MainWindow::InitializeInterface ()
 {
-	if (QApplication::arguments ().contains ("-zombie"))
-		QApplication::setStyle (new ZombiTechStyle ());
-
 	installEventFilter (new ChildActionEventFilter (this));
 
 	Ui_.setupUi (this);

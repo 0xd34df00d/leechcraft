@@ -177,7 +177,6 @@ SET (SRCS
 	skinengine.cpp
 	childactioneventfilter.cpp
 	tabcontainer.cpp
-	zombitechstyle.cpp
 	logtoolbox.cpp
 	settingssink.cpp
 	authenticationdialog.cpp
@@ -225,7 +224,6 @@ SET (HEADERS
 	skinengine.h
 	childactioneventfilter.h
 	tabcontainer.h
-	zombitechstyle.h
 	logtoolbox.h
 	settingssink.h
 	authenticationdialog.h
