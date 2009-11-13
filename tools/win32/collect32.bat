@@ -6,7 +6,7 @@ set BOOST_VERSION="1_40"
 set LIBTORRENT_BIN_DIR="F:\X-Files\Projects\Lib\libtorrent\bin\msvc-9.0\release\boost-link-shared\boost-source\threading-multi"
 set LIBCURL_BIN_DIR="F:\X-Files\Projects\Lib\curl-7.19.6\lib\DLL-Release"
 set OPENSSL_BIN_DIR="F:\X-Files\Projects\Lib\openssl-0.9.8k\out32dll"
-set QT_BIN_DIR="c:\Programs\qt-win-opensource-src-4.5.3\bin\"
+set QT_BIN_DIR="c:\Programs\qt-win-opensource-src-4.5.3\lib\"
 
 set LEECHCRAFT_ROOT_DIR="..\.."
 set LEECHCRAFT_BUILD_DIR="build32"
@@ -118,3 +118,4 @@ copy nul %TARGET_DIR%\leechcraft\themes\oxygen
 
 rem - Other stuff -
 copy %LEECHCRAFT_ROOT_DIR%\tools\win32installer\qt.conf %TARGET_DIR%
+pause
