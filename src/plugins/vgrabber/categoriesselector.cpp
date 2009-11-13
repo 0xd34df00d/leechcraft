@@ -110,7 +110,6 @@ namespace LeechCraft
 
 			void CategoriesSelector::WriteSettings ()
 			{
-				qDebug () << Q_FUNC_INFO;
 				QSettings settings (QCoreApplication::organizationName (),
 						QCoreApplication::applicationName () + "_vGrabber");
 				settings.beginGroup ("Categories");
@@ -145,8 +144,6 @@ namespace LeechCraft
 
 			void CategoriesSelector::accept ()
 			{
-				qDebug () << Q_FUNC_INFO << this;
-
 				WriteSettings ();
 
 				emit goingToAccept (Added_, Deleted_);
@@ -157,7 +154,6 @@ namespace LeechCraft
 
 			void CategoriesSelector::reject ()
 			{
-				qDebug () << Q_FUNC_INFO << this;
 				ReadSettings ();
 
 				Deleted_.clear ();
