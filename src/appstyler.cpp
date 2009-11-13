@@ -36,6 +36,11 @@ namespace LeechCraft
 
 	void AppStyler::accept ()
 	{
+		if (currentText () ==
+				XmlSettingsManager::Instance ()->
+				property ("AppQStyle").toString ())
+			return;
+
 		QString style = currentText ();
 		XmlSettingsManager::Instance ()->
 			setProperty ("AppQStyle", style);
