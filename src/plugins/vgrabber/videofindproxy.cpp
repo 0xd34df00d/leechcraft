@@ -171,9 +171,65 @@ namespace LeechCraft
 				}
 			}
 
+			namespace
+			{
+				QString GetStringFromRX (const QString& pattern, const QString& contents)
+				{
+					QString result;
+					QRegExp rx (pattern);
+					rx.setMinimal (true);
+					if (rx.indexIn (contents) != -1)
+						result = rx.capturedTexts ().at (1);
+					else
+						qWarning () << Q_FUNC_INFO
+							<< "nothing captured for pattern"
+							<< rx.pattern ();
+					return result;
+				}
+			};
+
 			void VideoFindProxy::HandleVideoPage (const QString& contents)
 			{
+				// http://'host'/assets/videos/'vtag+vkid'.vk.flv
+				QString host = GetStringFromRX (".*host:'([0-9a-z\\.]*)'.*", contents);
+				QString vtag = GetStringFromRX (".*vtag:'([0-9a-f\\-]*)'.*", contents);
+				QString vkid = GetStringFromRX (".*vkid:'([0-9a-f]*)'.*", contents);
 
+				if (host.isEmpty () ||
+						vtag.isEmpty () ||
+						vkid.isEmpty ())
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "one of required attrs is empty"
+						<< host
+						<< vtag
+						<< vkid
+						<< "for"
+						<< contents;
+					return;
+				}
+
+				QString source = "http://HOST/assets/videos/VTAGVKID.vk.flv";
+				source.replace ("HOST", host);
+				source.replace ("VTAG", vtag);
+				source.replace ("VKID", vkid);
+
+				LeechCraft::TaskParameter hd;
+				switch (Type_)
+				{
+					case PTInvalid:
+						qWarning () << Q_FUNC_INFO
+							<< "invalid Type_, assuming both Download and Handle";
+						break;
+					case PTHandle:
+						hd = OnlyHandle;
+						break;
+					case PTDownload:
+						hd = OnlyDownload;
+						break;
+				}
+
+				EmitWith (hd, QUrl (source));
 			}
 
 			void VideoFindProxy::handleDownload ()
