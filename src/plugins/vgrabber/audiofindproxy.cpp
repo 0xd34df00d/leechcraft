@@ -20,6 +20,7 @@
 #include <QAction>
 #include <QTextCodec>
 #include <QTime>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -171,23 +172,43 @@ namespace LeechCraft
 					endRemoveRows ();
 				}
 
+				QList<AudioResult> tmp;
+
 				int size = urls.size ();
+				for (int i = 0; i < size; ++i)
+				{
+					if (XmlSettingsManager::Instance ()->
+							property ("FilterSameURLs").toBool () &&
+							urls.count (urls.at (i)) > 1)
+						continue;
+
+					QPair<QString, QString> pair = infos.at (i);
+					int length = lengths.at (i);
+
+					if (XmlSettingsManager::Instance ()->
+							property ("FilterSamePTL").toBool () &&
+							infos.count (pair) > 1 &&
+							lengths.count (length) > 1)
+						continue;
+
+					AudioResult r =
+					{
+						urls.at (i),
+						length,
+						Filter (pair.first),
+						Filter (pair.second)
+					};
+					tmp << r;
+				}
+
+				size = tmp.size ();
+
 				if (size)
 				{
 					if (size > 1)
 						beginInsertRows (QModelIndex (), 1, size - 1);
 
-					for (int i = 0; i < size; ++i)
-					{
-						AudioResult r =
-						{
-							urls.at (i),
-							lengths.at (i),
-							Filter (infos.at (i).first),
-							Filter (infos.at (i).second)
-						};
-						AudioResults_ << r;
-					}
+					AudioResults_ = tmp;
 
 					if (size > 1)
 						endInsertRows ();
