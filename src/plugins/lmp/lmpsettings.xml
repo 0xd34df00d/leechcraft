@@ -10,7 +10,7 @@
 			<item type="groupbox" property="TestOnly" state="on" checkable="true">
 				<label lang="en" value="Test only these extensions" />
 				<label lang="ru" value="Проверять только эти расширения" />
-				<item type="lineedit" property="TestExtensions" default="avi flac mkv mp3 ogg">
+				<item type="lineedit" property="TestExtensions" default="avi flac flv mkv mp3 ogg">
 					<label lang="en" value="Extenstions list:" />
 					<label lang="ru" value="Список расширений:" />
 				</item>
