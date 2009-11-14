@@ -18,7 +18,6 @@
 
 #include "findproxy.h"
 #include <QTextCodec>
-#include <QTime>
 #include <QToolBar>
 #include <QAction>
 #include <interfaces/structures.h>
@@ -30,10 +29,9 @@ namespace LeechCraft
 	{
 		namespace vGrabber
 		{
-			FindProxy::FindProxy (Type t, const Request& r)
+			FindProxy::FindProxy (const Request& r)
 			: Toolbar_ (new QToolBar)
 			, R_ (r)
-			, Type_ (t)
 			{
 				ActionDownload_ = Toolbar_->addAction (tr ("Download"));
 				ActionDownload_->setProperty ("ActionIcon", "vgrabber_download");
@@ -59,9 +57,9 @@ namespace LeechCraft
 			{
 				QUrl url = GetURL ();
 
-				QString fname = LeechCraft::Util::GetTemporaryName ();
-				LeechCraft::DownloadEntity e =
-					LeechCraft::Util::MakeEntity (url,
+				QString fname = Util::GetTemporaryName ();
+				DownloadEntity e =
+					Util::MakeEntity (url,
 						fname,
 						LeechCraft::Internal |
 							LeechCraft::DoNotNotifyUser |
@@ -93,84 +91,6 @@ namespace LeechCraft
 				return 3;
 			}
 			
-			QVariant FindProxy::data (const QModelIndex& index, int role) const
-			{
-				if (!index.isValid ())
-					return QVariant ();
-			
-				switch (role)
-				{
-					case Qt::DisplayRole:
-						switch (Type_)
-						{
-							case TAudio:
-								if (!AudioResults_.size ())
-									return tr ("Searching for audio \"%1\" on vkontakte.ru...")
-										.arg (R_.String_);
-								{
-
-									const AudioResult& res = AudioResults_ [index.row ()];
-									switch (index.column ())
-									{
-										case 0:
-											return QString ("%1 - %2")
-												.arg (res.Performer_)
-												.arg (res.Title_);
-										case 1:
-											return QTime (0, 0, 0).addSecs (res.Length_ - 1).toString ();
-										case 2:
-											return res.URL_.toString ();
-										default:
-											return QString ();
-									}
-								}
-							case TVideo:
-								if (!VideoResults_.size ())
-									return tr ("Searching for video \"%1\" on vkontakte.ru...")
-										.arg (R_.String_);
-								{
-									const VideoResult& res = VideoResults_ [index.row ()];
-									switch (index.column ())
-									{
-										case 0:
-											return res.Title_;
-										case 1:
-											return tr ("Video");
-										case 2:
-											return res.URL_.toString ();
-										default:
-											return QString ();
-									}
-								}
-						}
-					case LeechCraft::RoleControls:
-						{
-							QUrl url;
-							switch (Type_)
-							{
-								case TAudio:
-									if (AudioResults_.size ())
-										url = AudioResults_ [index.row ()].URL_;
-									break;
-								case TVideo:
-									if (VideoResults_.size ())
-										url = VideoResults_ [index.row ()].URL_;
-									break;
-							}
-							if (!url.isEmpty ())
-							{
-								ActionDownload_->setData (url);
-								ActionHandle_->setData (url);
-							}
-							ActionDownload_->setEnabled (!url.isEmpty ());
-							ActionHandle_->setEnabled (!url.isEmpty ());
-							return QVariant::fromValue<QToolBar*> (Toolbar_);
-						}
-					default:
-						return QVariant ();
-				}
-			}
-			
 			Qt::ItemFlags FindProxy::flags (const QModelIndex& index) const
 			{
 				if (!index.isValid ())
@@ -200,48 +120,6 @@ namespace LeechCraft
 				return QModelIndex ();
 			}
 			
-			int FindProxy::rowCount (const QModelIndex& parent) const
-			{
-				if (parent.isValid ())
-					return 0;
-				else
-				{
-					int count = 0;
-					switch (Type_)
-					{
-						case TAudio:
-							count = AudioResults_.size ();
-							break;
-						case TVideo:
-							count = VideoResults_.size ();
-							break;
-					}
-					if (!count)
-						count = 1;
-
-					return count;
-				}
-			}
-
-			namespace
-			{
-				QString Filter (QString str)
-				{
-					if (str.contains ("<a href='javascript"))
-					{
-						QRegExp unJS (".*<a href='javascript: showLyrics\\([0-9]*,[0-9]*\\);'>(.*)</a>");
-						unJS.setMinimal (true);
-						if (unJS.indexIn (str, 0) >= 0)
-							str = unJS.cap (1);
-					}
-
-					str.replace ("&amp;", "&");
-					str.replace ("&#39;", "'");
-
-					return str;
-				}
-			}
-
 			void FindProxy::handleJobFinished (int id)
 			{
 				if (!Jobs_.contains (id))
@@ -261,163 +139,7 @@ namespace LeechCraft
 				QString contents = QTextCodec::codecForName ("Windows-1251")->
 					toUnicode (file.readAll ());
 
-				switch (Type_)
-				{
-					case TAudio:
-						HandleAsAudio (contents);
-						break;
-					case TVideo:
-						HandleAsVideo (contents);
-						break;
-				}
-			}
-
-			void FindProxy::HandleAsVideo (const QString& contents)
-			{
-				/* TODO check out why this fucking single \" at the beginning breaks it all. Why
-				 * "\"><a href=\"(.*)\">(.*)</a></div>.*" works and why
-				 * "\"><a href=\"(.*)\">(.*)</a></div>.*" doesn't.
-				 *
-				 * The block:
-* <div class="aname" style="width:255px; overflow: hidden"><a href="video430140_158836"><span class="match">Tool</span> - StinkFist</a></div>
-* <div class="adesc" style="width:255px; overflow: hidden">Люблю Тул за их необычные клипы.</div>
-* <div class="ainfo"><b style="color:#000">5:20</b> Загружено 9 июля 2007</div>
-				 *
-				QRegExp upt ("\"><a href=\"(.*)\">(.*)</a></div>.*"
-						"<div class=\"adesc\" style=\"width:255px; overflow: hidden\">(.*)</div>.*"
-						"<div class=\"ainfo\"><b style=\"color:#000\">(.*)</b> (.*)</div>");
-				 */
-				QRegExp upt (".*><a href=\"video([0-9\\_]*)\">(.*)</a></div>.*",
-						Qt::CaseSensitive,
-						QRegExp::RegExp2);
-				upt.setMinimal (true);
-				int pos = 0;
-				while (pos >= 0)
-				{
-					if (contents.mid (pos).contains ("<a href=\"video"))
-						pos = upt.indexIn (contents, pos);
-					else
-						pos = -1;
-
-					if (pos >= 0)
-					{
-						QStringList captured = upt.capturedTexts ();
-						captured.removeFirst ();
-						QUrl url = QUrl (QString ("http://vkontakte.ru/video%1")
-								.arg (captured.at (0)));
-						QString title = captured.at (1);
-						title.replace ("<span class=\"match\">", "").replace ("</span>", "");
-						/*
-						QString descr = captured.at (2);
-						QString length = captured.at (3);
-						QString date = captured.at (4);
-						*/
-
-						VideoResult vr =
-						{
-							url,
-							title
-							/*
-							length,
-							date,
-							descr
-							*/
-						};
-
-						VideoResults_ << vr;
-						pos += upt.matchedLength ();
-					}
-				}
-
-				if (VideoResults_.size ())
-				{
-					if (VideoResults_.size () > 1)
-					{
-						beginInsertRows (QModelIndex (), 1, VideoResults_.size () - 1);
-						endInsertRows ();
-					}
-					emit dataChanged (index (0, 0), index (0, columnCount () - 1));
-				}
-			}
-
-			void FindProxy::HandleAsAudio (const QString& contents)
-			{
-				QList<QUrl> urls;
-				QList<int> lengths;
-
-				QRegExp links (".*onclick=\"return operate\\([0-9]*,([0-9]*),([0-9]*),'([0-9a-f]*)',([0-9]*)\\);\".*");
-				links.setMinimal (true);
-				int pos = 0;
-				while (pos >= 0)
-				{
-					if (contents.mid (pos).contains ("return operate"))
-						pos = links.indexIn (contents, pos);
-					else
-						pos = -1;
-
-					if (pos >= 0)
-					{
-						QStringList captured = links.capturedTexts ();
-						captured.removeFirst ();
-						urls << QUrl (QString ("http://cs%1.vkontakte.ru/u%2/audio/%3.mp3")
-								.arg (captured.at (0))
-								.arg (captured.at (1))
-								.arg (captured.at (2)));
-						lengths << captured.at (3).toInt ();
-						pos += links.matchedLength ();
-					}
-				}
-
-				QList<QPair<QString, QString> > infos;
-				QRegExp names (".*performer[0-9]*\">(.*)</b> - <span id=\"title[0-9]*\">(.*)</spa.*");
-				names.setMinimal (true);
-				pos = 0;
-				while (pos >= 0)
-				{
-					if (contents.mid (pos).contains ("return operate"))
-						pos = names.indexIn (contents, pos);
-					else
-						pos = -1;
-
-					if (pos >= 0)
-					{
-						QStringList captured = names.capturedTexts ();
-						captured.removeFirst ();
-						infos << qMakePair<QString, QString> (captured.at (0), captured.at (1));
-						pos += names.matchedLength ();
-					}
-				}
-
-				if (AudioResults_.size ())
-				{
-					beginRemoveRows (QModelIndex (), 1, AudioResults_.size () - 1);
-					AudioResults_.clear ();
-					endRemoveRows ();
-				}
-
-				int size = urls.size ();
-				if (size)
-				{
-					if (size > 1)
-						beginInsertRows (QModelIndex (), 1, size - 1);
-
-					for (int i = 0; i < size; ++i)
-					{
-						AudioResult r =
-						{
-							urls.at (i),
-							lengths.at (i),
-							Filter (infos.at (i).first),
-							Filter (infos.at (i).second)
-						};
-						AudioResults_ << r;
-					}
-
-					if (size > 1)
-						endInsertRows ();
-
-					emit dataChanged (index (0, 0), index (0, columnCount () - 1));
-				}
+				Handle (contents);
 			}
 
 			void FindProxy::handleJobError (int id)
@@ -430,20 +152,9 @@ namespace LeechCraft
 				Jobs_.remove (id);
 			}
 
-			void FindProxy::handleDownload ()
-			{
-				EmitWith (LeechCraft::OnlyDownload);
-			}
-
-			void FindProxy::handleHandle ()
-			{
-				EmitWith (LeechCraft::OnlyHandle);
-			}
-
-			void FindProxy::EmitWith (LeechCraft::TaskParameter param)
+			void FindProxy::EmitWith (LeechCraft::TaskParameter param, const QUrl& url)
 			{
 				QAction *act = qobject_cast<QAction*> (sender ());
-				QUrl url = act->data ().value<QUrl> ();
 				if (!url.isValid ())
 				{
 					qWarning () << Q_FUNC_INFO
@@ -472,23 +183,6 @@ namespace LeechCraft
 						SIGNAL (jobError (int, IDownload::Error)),
 						this,
 						SLOT (handleJobError (int)));
-			}
-
-			QUrl FindProxy::GetURL () const
-			{
-				QByteArray urlStr;
-				switch (Type_)
-				{
-					case TAudio:
-						urlStr = "http://vkontakte.ru/gsearch.php?q=FIND&section=audio";
-						break;
-					case TVideo:
-						urlStr = "http://vkontakte.ru/gsearch.php?q=FIND&section=video";
-						break;
-				}
-
-				return QUrl (urlStr.replace ("FIND",
-							QTextCodec::codecForName ("Windows-1251")->fromUnicode (R_.String_)));
 			}
 		};
 	};

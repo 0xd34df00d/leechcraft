@@ -41,69 +41,36 @@ namespace LeechCraft
 				Q_OBJECT
 				Q_INTERFACES (IFindProxy);
 
-				QToolBar *Toolbar_;
+				QList<QObject*> Downloaders_;
+			protected:
 				QAction *ActionDownload_;
 				QAction *ActionHandle_;
-
+				QToolBar *Toolbar_;
 				Request R_;
-
 				QMap<int, QString> Jobs_;
-
-				struct AudioResult
-				{
-					QUrl URL_;
-					int Length_;
-					QString Performer_;
-					QString Title_;
-				};
-				QList<AudioResult> AudioResults_;
-
-				struct VideoResult
-				{
-					QUrl URL_;
-					QString Title_;
-					/*
-					QString Length_;
-					QString Date_;
-					QString Description_;
-					*/
-				};
-				QList<VideoResult> VideoResults_;
-
-				QList<QObject*> Downloaders_;
 			public:
-				enum Type
-				{
-					TAudio,
-					TVideo
-				};
-			private:
-				Type Type_;
-			public:
-				FindProxy (Type, const Request&);
+				FindProxy (const Request&);
 				virtual ~FindProxy ();
 
 				void Start ();
 				QAbstractItemModel* GetModel ();
 
 				virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
-				virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
 				virtual Qt::ItemFlags flags (const QModelIndex&) const;
 				virtual QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
 				virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
 				virtual QModelIndex parent (const QModelIndex&) const;
-				virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
+			protected:
+				virtual QUrl GetURL () const = 0;
+				virtual void Handle (const QString&) = 0;
+				void EmitWith (TaskParameter, const QUrl&);
+				void HandleProvider (QObject*);
+			protected slots:
+				virtual void handleDownload () = 0;
+				virtual void handleHandle () = 0;
 			private slots:
 				void handleJobFinished (int);
 				void handleJobError (int);
-				void handleDownload ();
-				void handleHandle ();
-			private:
-				void HandleAsAudio (const QString&);
-				void HandleAsVideo (const QString&);
-				void EmitWith (TaskParameter);
-				void HandleProvider (QObject*);
-				QUrl GetURL () const;
 			signals:
 				void gotEntity (const LeechCraft::DownloadEntity&);
 				void delegateEntity (const LeechCraft::DownloadEntity&,

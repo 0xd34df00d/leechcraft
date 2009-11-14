@@ -21,7 +21,8 @@
 #include <QMessageBox>
 #include <plugininterface/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "findproxy.h"
+#include "audiofindproxy.h"
+#include "videofindproxy.h"
 #include "xmlsettingsmanager.h"
 #include "categoriesselector.h"
 
@@ -115,10 +116,10 @@ namespace LeechCraft
 			{
 				QList<FindProxy_ptr> preresult;
 				if (Audio_->GetHRCategories ().contains (req.Category_))
-					preresult << FindProxy_ptr (new FindProxy (FindProxy::TAudio, req));
+					preresult << FindProxy_ptr (new AudioFindProxy (req));
 
 				if (Video_->GetHRCategories ().contains (req.Category_))
-					preresult << FindProxy_ptr (new FindProxy (FindProxy::TVideo, req));
+					preresult << FindProxy_ptr (new VideoFindProxy (req));
 
 				QList<IFindProxy_ptr> result;
 				Q_FOREACH (FindProxy_ptr fp, preresult)

@@ -10,6 +10,8 @@ SET (SRCS
 	categoriesselector.cpp
 	categorymodifier.cpp
 	xmlsettingsmanager.cpp
+	audiofindproxy.cpp
+	videofindproxy.cpp
 	)
 SET (HEADERS
 	vgrabber.h
@@ -17,6 +19,8 @@ SET (HEADERS
 	categoriesselector.h
 	categorymodifier.h
 	xmlsettingsmanager.h
+	audiofindproxy.h
+	videofindproxy.h
 	)
 SET (FORMS
 	categoriesselector.ui
