@@ -85,9 +85,9 @@ bool HookProxy::IsCancelled () const
 }
 
 LeechCraft::Core::Core ()
-: MergeModel_ (new MergeModel (QStringList (tr ("Name"))
-			<< tr ("State")
-			<< tr ("Progress")))
+: MergeModel_ (new MergeModel (QStringList (QString ())
+			<< QString ()
+			<< QString ()))
 , NetworkAccessManager_ (new NetworkAccessManager)
 , StorageBackend_ (new SQLStorageBackend)
 , DirectoryWatcher_ (new DirectoryWatcher)

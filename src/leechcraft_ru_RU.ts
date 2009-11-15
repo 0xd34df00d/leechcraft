@@ -11,10 +11,6 @@
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
-    <message utf8="true">
-        <source>LeechCraft — a crossplatform modular internet-client, featuring plugins for a web browser, RSS/feed reader, BitTorrent, FTP and lots of others.</source>
-        <translation type="obsolete">LeechCraft — кроссплатформенный модульный интернет-клиент, имеющий веб-браузер, клиент для четния лент новостей, BitTorrent-клиент и множество других плагинов.</translation>
-    </message>
     <message>
         <source>&lt;a href=&quot;http://leechcraft.org&quot;&gt;http://leechcraft.org&lt;/a&gt;</source>
         <translation>&lt;a href=&quot;http://leechcraft.org&quot;&gt;http://leechcraft.org&lt;/a&gt;</translation>
@@ -24,118 +20,12 @@
         <translation>Авторы</translation>
     </message>
     <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Georg Rudoy&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  E-mail: &lt;a href=&quot;mailto:0xd34df00d@gmail.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#154071;&quot;&gt;0xd34df00d@gmail.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  Lead developer and original author&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  2006-2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Georg Rudoy&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  E-mail: &lt;a href=&quot;mailto:0xd34df00d@gmail.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#154071;&quot;&gt;0xd34df00d@gmail.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  Lead developer and original author&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  2006-2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
         <source>Contributors</source>
         <translation>Помощники</translation>
-    </message>
-    <message utf8="true">
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Alexandra Simonenko&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  E-mail: &lt;a href=&quot;mailto:saksa.larissen@gmail.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#154071;&quot;&gt;saksa.larissen@gmail.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  Testing, proof-reading Russian translations and GUI ideas&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  2009&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;lk4d4&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  E-mail: &lt;a href=&quot;mailto:lk4d4@yandex.ru&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#154071;&quot;&gt;lk4d4@yandex.ru&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  Gentoo ebuild maintainer&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  2009&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Mikhail Pisanov&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;  &lt;/span&gt;E-mail: &lt;a href=&quot;mailto:miha@52.ru&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#154071;&quot;&gt;miha@52.ru&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  OpenSUSE package maintainer&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  2009&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Mikhail Sidorov aka Pevzi&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  E-mail: &lt;a href=&quot;mailto:pevzi23@gmail.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#154071;&quot;&gt;pevzi23@gmail.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  Graphics designer&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Alexandra Simonenko&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  E-mail: &lt;a href=&quot;mailto:saksa.larissen@gmail.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#154071;&quot;&gt;saksa.larissen@gmail.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  Testing, proof-reading Russian translations and GUI ideas&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  2009&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;lk4d4&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  E-mail: &lt;a href=&quot;mailto:lk4d4@yandex.ru&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#154071;&quot;&gt;lk4d4@yandex.ru&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  Gentoo ebuild maintainer&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  2009&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Mikhail Pisanov&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;  &lt;/span&gt;E-mail: &lt;a href=&quot;mailto:miha@52.ru&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#154071;&quot;&gt;miha@52.ru&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  OpenSUSE package maintainer&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  2009&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Mikhail Sidorov aka Pevzi&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  E-mail: &lt;a href=&quot;mailto:pevzi23@gmail.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#154071;&quot;&gt;pevzi23@gmail.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  Graphics designer&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Translators</source>
-        <translation type="obsolete">Переводчики</translation>
-    </message>
-    <message utf8="true">
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Arabic — Nadim Abazid, JID: &lt;a href=&quot;xmpp:nounou@jabber.ru&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#154071;&quot;&gt;nounou@jabber.ru&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Russian — Georg Rudoy, E-Mail: &lt;a href=&quot;mailto:0xd34df00d@gmail.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#154071;&quot;&gt;0xd34df00d@gmail.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Ukrainian — Alexander Saprykin, E-Mail: &lt;a href=&quot;mailto:cutwatercore@gmail.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#154071;&quot;&gt;cutwatercore@gmail.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Arabic — Nadim Abazid, JID: &lt;a href=&quot;xmpp:nounou@jabber.ru&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#154071;&quot;&gt;nounou@jabber.ru&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Russian — Georg Rudoy, E-Mail: &lt;a href=&quot;mailto:0xd34df00d@gmail.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#154071;&quot;&gt;0xd34df00d@gmail.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Ukrainian — Alexander Saprykin, E-Mail: &lt;a href=&quot;mailto:cutwatercore@gmail.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#154071;&quot;&gt;cutwatercore@gmail.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Appreciations</source>
         <translation>Благодарности</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Egor Skorov aka Spo1ler for a couple of patches.&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Alexander Ermolov aka Ronin, Oleg Tsarev aka Zabivator and all the inhabitants of &lt;a href=&quot;xmpp:c_plus_plus@conference.jabber.ru&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#154071;&quot;&gt;c_plus_plus@conference.jabber.ru&lt;/span&gt;&lt;/a&gt; for countless discussions, ideas and such.&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Rasterbar&apos;s Libtorrent for their great library, and especially Arvid Norberg for discussions, help and implementations of some of my ideas.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Egor Skorov aka Spo1ler for a couple of patches.&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Alexander Ermolov aka Ronin, Oleg Tsarev aka Zabivator and all the inhabitants of &lt;a href=&quot;xmpp:c_plus_plus@conference.jabber.ru&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#154071;&quot;&gt;c_plus_plus@conference.jabber.ru&lt;/span&gt;&lt;/a&gt; for countless discussions, ideas and such.&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Rasterbar&apos;s Libtorrent for their great library, and especially Arvid Norberg for discussions, help and implementations of some of my ideas.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Licensing</source>
@@ -159,7 +49,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message utf8="true">
         <source>LeechCraft — a crossplatform modular internet-client, featuring plugins for a web browser, news feed reader, BitTorrent, FTP and lots of others.</source>
-        <translation>LeechCraft — кроссплатформенный модульный интернет-клиент, имеющий веб-браузер, клиент для четния лент новостей, BitTorrent-клиент и множество других плагинов.</translation>
+        <translation>LeechCraft — кроссплатформенный модульный интернет-клиент, включающий веб-браузер, клиент для чтения лент новостей, BitTorrent-клиент и множество других плагинов.</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -414,64 +304,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>BackendSelector</name>
-    <message>
-        <source>Form</source>
-        <translation>Форма</translation>
-    </message>
-    <message>
-        <source>SQLite</source>
-        <translation>SQLite</translation>
-    </message>
-    <message>
-        <source>PostgreSQL</source>
-        <translation>PostgreSQL</translation>
-    </message>
-    <message>
-        <source>Journal mode:</source>
-        <translation>Режим журналирования:</translation>
-    </message>
-    <message>
-        <source>Temp store:</source>
-        <translation>Временное хранилище:</translation>
-    </message>
-    <message>
-        <source>Synchronous:</source>
-        <translation>Синхронно:</translation>
-    </message>
-    <message>
-        <source>VACUUM on exit</source>
-        <translation>VACUUM при выходе</translation>
-    </message>
-    <message>
-        <source>Hostname:</source>
-        <translation>Имя хоста:</translation>
-    </message>
-    <message>
-        <source>Port:</source>
-        <translation>Порт:</translation>
-    </message>
-    <message>
-        <source>Username:</source>
-        <translation>Логин:</translation>
-    </message>
-    <message>
-        <source>Password:</source>
-        <translation>Пароль:</translation>
-    </message>
-    <message>
-        <source>Database name:</source>
-        <translation>Имя БД:</translation>
-    </message>
-</context>
-<context>
-    <name>CategorySelector</name>
-    <message>
-        <source>Tags selector</source>
-        <translation>Выбор тегов</translation>
-    </message>
-</context>
-<context>
     <name>CommonJobAdder</name>
     <message>
         <source>Add task</source>
@@ -491,29 +323,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Location:</source>
-        <translation>Расположение:</translation>
-    </message>
-</context>
-<context>
-    <name>Core</name>
-    <message>
-        <source>Select save location</source>
-        <translation type="obsolete">Выберите место сохранения</translation>
-    </message>
-</context>
-<context>
-    <name>FilePicker</name>
-    <message>
-        <source>Browse...</source>
-        <translation>Обзор...</translation>
-    </message>
-    <message>
-        <source>Select directory</source>
-        <translation>Выберите директорию</translation>
-    </message>
-    <message>
-        <source>Select file</source>
-        <translation>Выберите файл</translation>
+        <translation>Сохранить в:</translation>
     </message>
 </context>
 <context>
@@ -554,7 +364,7 @@ p, li { white-space: pre-wrap; }
     <name>KeySequencer</name>
     <message>
         <source>Press key sequence</source>
-        <translation>Введите сочетание</translation>
+        <translation>Введите сочетание клавиш</translation>
     </message>
     <message>
         <source>background-color: rgb(255, 255, 255);</source>
@@ -589,15 +399,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Log</source>
-        <translation>Журнал</translation>
+        <translation>Лог</translation>
     </message>
     <message>
         <source>Summary</source>
         <translation>Сводка</translation>
-    </message>
-    <message>
-        <source>Plugin manager</source>
-        <translation type="obsolete">Менеджер плагинов</translation>
     </message>
     <message>
         <source>F11</source>
@@ -663,6 +469,14 @@ p, li { white-space: pre-wrap; }
         <source>Ctrl+W</source>
         <translation>Ctrl+W</translation>
     </message>
+    <message>
+        <source>Ctrl+P</source>
+        <translation>Ctrl+P</translation>
+    </message>
+    <message>
+        <source>F10</source>
+        <translation>F10</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::AboutDialog</name>
@@ -678,50 +492,8 @@ p, li { white-space: pre-wrap; }
         <translation>Невозможно создать путь %1/.leechcraft</translation>
     </message>
     <message>
-        <source>bytes</source>
-        <translation type="obsolete">байт</translation>
-    </message>
-    <message>
-        <source>KB</source>
-        <translation type="obsolete">Кб</translation>
-    </message>
-    <message>
-        <source>MB</source>
-        <translation type="obsolete">Мб</translation>
-    </message>
-    <message>
-        <source>GB</source>
-        <translation type="obsolete">Гб</translation>
-    </message>
-    <message>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::CategoryMerger</name>
-    <message>
-        <source>Name</source>
-        <translation>Имя</translation>
-    </message>
-    <message>
-        <source>State</source>
-        <translation>Состояние</translation>
-    </message>
-    <message>
-        <source>Progress</source>
-        <translation>Прогресс</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::ColorPicker</name>
-    <message>
-        <source>Choose color</source>
-        <translation>Выбор цвета</translation>
-    </message>
-    <message>
-        <source>Choose...</source>
-        <translation>Выбрать...</translation>
     </message>
 </context>
 <context>
@@ -734,40 +506,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>LeechCraft::Core</name>
     <message>
-        <source>Setting up %1...</source>
-        <translation type="obsolete">Настройка %1...</translation>
-    </message>
-    <message>
         <source>No plugins are able to download &quot;%1&quot;</source>
         <translation>Нет плагинов, способных загрузить «%1»</translation>
     </message>
     <message>
         <source>Error</source>
         <translation>Ошибка</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation>Имя</translation>
-    </message>
-    <message>
-        <source>State</source>
-        <translation>Состояние</translation>
-    </message>
-    <message>
-        <source>Progress</source>
-        <translation>Прогресс</translation>
-    </message>
-    <message>
-        <source>Calculating dependencies...</source>
-        <translation type="obsolete">Подсчет зависимостей...</translation>
-    </message>
-    <message>
-        <source>Too long to show</source>
-        <translation type="obsolete">Строка слишком длинна для отображения</translation>
-    </message>
-    <message>
-        <source>Select save location</source>
-        <translation type="obsolete">Выберите место сохранения</translation>
     </message>
     <message>
         <source>Could not handle download entity %1.</source>
@@ -782,10 +526,6 @@ p, li { white-space: pre-wrap; }
         <translation>Невозможно обработать задачу выбранным обработчиком, хотите попробовать другой?</translation>
     </message>
     <message>
-        <source>Binary entity</source>
-        <translation type="obsolete">Двоичный объект</translation>
-    </message>
-    <message>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
@@ -795,15 +535,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Do you really want to clear cookies?</source>
-        <translation>Вы действительно хотите очистить куки?</translation>
-    </message>
-    <message>
-        <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
-        <translation type="obsolete">&lt;br /&gt;&lt;br /&gt;типа &lt;code&gt;%1&lt;/code&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br /&gt;from %1</source>
-        <translation type="obsolete">&lt;br /&gt;с %1</translation>
+        <translation>Вы действительно хотите удалить куки?</translation>
     </message>
 </context>
 <context>
@@ -811,37 +543,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>LeechCraft Notification</source>
         <translation>Уведомление LeechCraft</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::FontPicker</name>
-    <message>
-        <source>Choose font</source>
-        <translation>Выбор шрифта</translation>
-    </message>
-    <message>
-        <source>Choose...</source>
-        <translation>Выбрать...</translation>
-    </message>
-    <message>
-        <source>, %1 pt</source>
-        <translation>, %1 pt</translation>
-    </message>
-    <message>
-        <source>, bold</source>
-        <translation>, жирный</translation>
-    </message>
-    <message>
-        <source>, italic</source>
-        <translation>, курсивный</translation>
-    </message>
-    <message>
-        <source>, underlined</source>
-        <translation>, подчеркнутый</translation>
-    </message>
-    <message>
-        <source>, striken out</source>
-        <translation>, зачеркнутый</translation>
     </message>
 </context>
 <context>
@@ -854,28 +555,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>LeechCraft::MainWindow</name>
     <message>
-        <source>Initializing interface...</source>
-        <translation type="obsolete">Инициализация интерфейса...</translation>
-    </message>
-    <message>
-        <source>Initializing core and plugins...</source>
-        <translation type="obsolete">Инициализация ядра и плагинов...</translation>
-    </message>
-    <message>
-        <source>Plugins</source>
-        <translation type="obsolete">Плагины</translation>
-    </message>
-    <message>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
     <message>
         <source>/s</source>
         <translation>/с</translation>
-    </message>
-    <message>
-        <source>Plugin control</source>
-        <translation type="obsolete">Управление плагинами</translation>
     </message>
     <message>
         <source>%1 down, %2 up</source>
@@ -948,11 +633,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Release of one or more plugins failed.</source>
-        <translation>Освобождение одного или нескольких плагинов не удалось.</translation>
-    </message>
-    <message>
-        <source>Initializing %1...</source>
-        <translation type="obsolete">Инициализация %1...</translation>
+        <translation>Завершение работы одного или нескольких плагинов не удалось.</translation>
     </message>
     <message>
         <source>LeechCraft</source>
@@ -970,10 +651,6 @@ p, li { white-space: pre-wrap; }
         <translation>Состояние</translation>
     </message>
     <message>
-        <source>Progress</source>
-        <translation>Прогресс</translation>
-    </message>
-    <message>
         <source>Request validation error: %1</source>
         <translation>Ошибка проверки запроса: %1</translation>
     </message>
@@ -982,12 +659,12 @@ p, li { white-space: pre-wrap; }
         <translation>Ошибка обработки запроса: %1</translation>
     </message>
     <message>
-        <source>Open/close braces mismatch</source>
-        <translation type="obsolete">Несоответствие открывающих/закрывающих скобок</translation>
-    </message>
-    <message>
         <source>Open/close braces mismatch: %1</source>
         <translation>Несовпадение открывающих и закрывающих скобок: %1</translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation>Статус</translation>
     </message>
 </context>
 <context>
@@ -1098,14 +775,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Enter new tag name</source>
-        <translation>Введите новое имя метки</translation>
+        <translation>Введите новое имя тега</translation>
     </message>
 </context>
 <context>
     <name>LogToolBox</name>
     <message>
         <source>Log</source>
-        <translation>Журнал</translation>
+        <translation>Лог</translation>
     </message>
     <message>
         <source>Clear</source>
@@ -1120,68 +797,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>Proxy</name>
-    <message numerus="yes">
-        <source>%n day(s), </source>
-        <translation type="obsolete">
-            <numerusform>%n день</numerusform>
-            <numerusform>%n дня</numerusform>
-            <numerusform>%n дней</numerusform>
-        </translation>
-    </message>
-</context>
-<context>
-    <name>QObject</name>
-    <message>
-        <source>Could not cd into %1</source>
-        <translation>Невозможно перейти в %1</translation>
-    </message>
-    <message>
-        <source>Could not create %1</source>
-        <translation>Невозможно создать %1</translation>
-    </message>
-    <message>
-        <source> b</source>
-        <translation> байт</translation>
-    </message>
-    <message>
-        <source> KiB</source>
-        <translation> КиБ</translation>
-    </message>
-    <message>
-        <source> MiB</source>
-        <translation> МиБ</translation>
-    </message>
-    <message>
-        <source> GiB</source>
-        <translation> ГиБ</translation>
-    </message>
-    <message numerus="yes">
-        <source>%n day(s), </source>
-        <translation>
-            <numerusform>%n день</numerusform>
-            <numerusform>%n дня</numerusform>
-            <numerusform>%n дней</numerusform>
-        </translation>
-    </message>
-    <message>
-        <source>Too long to show</source>
-        <translation>Строка слишком длинна для отображения</translation>
-    </message>
-    <message>
-        <source>Binary entity</source>
-        <translation>Двоичный объект</translation>
-    </message>
-    <message>
-        <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
-        <translation>&lt;br /&gt;&lt;br /&gt;типа &lt;code&gt;%1&lt;/code&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br /&gt;from %1</source>
-        <translation>&lt;br /&gt;с %1</translation>
-    </message>
-</context>
-<context>
     <name>SettingsSink</name>
     <message>
         <source>Preferences</source>
@@ -1192,7 +807,7 @@ p, li { white-space: pre-wrap; }
     <name>ShortcutManager</name>
     <message>
         <source>Shortcut manager</source>
-        <translation>Менеджер сочетаний клавиш</translation>
+        <translation>Сочетания клавиш</translation>
     </message>
     <message>
         <source>Name</source>
@@ -1261,7 +876,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Regexp</source>
-        <translation>Регексп</translation>
+        <translation>Regexp</translation>
     </message>
     <message>
         <source>Tags</source>
@@ -1272,7 +887,7 @@ p, li { white-space: pre-wrap; }
     <name>TagsManager</name>
     <message>
         <source>untagged</source>
-        <translation>без метки</translation>
+        <translation>без тегов</translation>
     </message>
 </context>
 <context>

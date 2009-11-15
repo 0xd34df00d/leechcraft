@@ -43,8 +43,8 @@ LeechCraft::RequestNormalizer::RequestNormalizer (const boost::shared_ptr<MergeM
 : QObject (parent)
 , MergeModel_ (merge)
 , Root_ (new MergeModel (QStringList (tr ("Name"))
-			<< tr ("State")
-			<< tr ("Progress")))
+			<< tr ("Status")
+			<< tr ("State")))
 , Parser_ (new RequestParser)
 {
 	setObjectName ("RequestNormalizer");
