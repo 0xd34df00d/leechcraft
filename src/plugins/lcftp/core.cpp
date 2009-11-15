@@ -128,6 +128,8 @@ namespace LeechCraft
 
 				if (!WatchThread_->wait (100))
 					WatchThread_->terminate ();
+
+				delete WatchThread_;
 			}
 
 			void Core::SetCoreProxy (ICoreProxy_ptr proxy)
