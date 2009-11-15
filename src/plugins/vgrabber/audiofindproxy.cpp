@@ -50,6 +50,8 @@ namespace LeechCraft
 			AudioFindProxy::AudioFindProxy (const Request& r)
 			: FindProxy (r)
 			{
+				SetError (tr ("Searching for %1...")
+						.arg (r.String_));
 			}
 
 			QVariant AudioFindProxy::data (const QModelIndex& index, int role) const
@@ -60,12 +62,20 @@ namespace LeechCraft
 				switch (role)
 				{
 					case Qt::DisplayRole:
-						if (!AudioResults_.size ())
-							return tr ("Searching for audio \"%1\" on vkontakte.ru...")
-								.arg (R_.String_);
+						if (Error_)
+						{
+							switch (index.column ())
+							{
+								case 0:
+									return *Error_;
+								case 1:
+									return tr ("Audio vkontakte.ru");
+								default:
+									return QString ();
+							}
+						}
 						else
 						{
-
 							const AudioResult& res = AudioResults_ [index.row ()];
 							switch (index.column ())
 							{
@@ -83,7 +93,9 @@ namespace LeechCraft
 						}
 					case LeechCraft::RoleControls:
 						{
-							QUrl url = AudioResults_ [index.row ()].URL_;
+							QUrl url;
+							if (AudioResults_.size () > index.row ())
+								url = AudioResults_ [index.row ()].URL_;
 							if (!url.isEmpty ())
 							{
 								ActionDownload_->setData (url);
@@ -103,11 +115,10 @@ namespace LeechCraft
 				if (parent.isValid ())
 					return 0;
 
-				int count = AudioResults_.size ();
-				if (!count)
-					count = 1;
-
-				return count;
+				if (Error_)
+					return 1;
+				else
+					return AudioResults_.size ();
 			}
 
 			QUrl AudioFindProxy::GetURL () const
@@ -205,16 +216,14 @@ namespace LeechCraft
 
 				if (size)
 				{
-					if (size > 1)
-						beginInsertRows (QModelIndex (), 1, size - 1);
-
+					SetError (QString ());
+					beginInsertRows (QModelIndex (), 0, size - 1);
 					AudioResults_ = tmp;
-
-					if (size > 1)
-						endInsertRows ();
-
-					emit dataChanged (index (0, 0), index (0, columnCount () - 1));
+					endInsertRows ();
 				}
+				else
+					SetError (tr ("Nothing found for %1")
+							.arg (R_.String_));
 			}
 
 			void AudioFindProxy::handleDownload ()

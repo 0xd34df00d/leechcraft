@@ -55,6 +55,12 @@ namespace LeechCraft
 
 			void FindProxy::Start ()
 			{
+				if (R_.String_.isEmpty ())
+				{
+					SetError (tr ("Empty search string"));
+					return;
+				}
+
 				QUrl url = GetURL ();
 
 				QString fname = Util::GetTemporaryName ();
@@ -150,6 +156,28 @@ namespace LeechCraft
 				emit error (tr ("Search request for URL<br />%1<br />was delegated, but it failed.")
 						.arg (GetURL ().toString ()));
 				Jobs_.remove (id);
+			}
+
+			void FindProxy::SetError (const QString& error)
+			{
+				if (error.isEmpty () &&
+						Error_)
+				{
+					beginRemoveRows (QModelIndex (), 0, 0);
+					Error_ = boost::optional<QString> ();
+					endRemoveRows ();
+				}
+				else
+				{
+					bool insert = !Error_;
+					if (insert)
+						beginInsertRows (QModelIndex (), 0, 0);
+					Error_ = error;
+					if (insert)
+						endInsertRows ();
+					else
+						emit dataChanged (index (0, 0), index (0, columnCount () - 1));
+				}
 			}
 
 			void FindProxy::EmitWith (LeechCraft::TaskParameter param, const QUrl& url)

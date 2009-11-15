@@ -18,6 +18,7 @@
 
 #ifndef PLUGINS_VGRABBER_FINDPROXY_H
 #define PLUGINS_VGRABBER_FINDPROXY_H
+#include <boost/optional.hpp>
 #include <QAbstractItemModel>
 #include <QList>
 #include <QUrl>
@@ -48,6 +49,7 @@ namespace LeechCraft
 				QToolBar *Toolbar_;
 				Request R_;
 				QMap<int, QString> Jobs_;
+				boost::optional<QString> Error_;
 			public:
 				FindProxy (const Request&);
 				virtual ~FindProxy ();
@@ -61,6 +63,7 @@ namespace LeechCraft
 				virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
 				virtual QModelIndex parent (const QModelIndex&) const;
 			protected:
+				void SetError (const QString&);
 				virtual QUrl GetURL () const = 0;
 				virtual void Handle (const QString&) = 0;
 				void EmitWith (TaskParameter, const QUrl&);

@@ -31,6 +31,8 @@ namespace LeechCraft
 			: FindProxy (r)
 			, Type_ (PTInvalid)
 			{
+				SetError (tr ("Searching for %1...")
+						.arg (r.String_));
 			}
 
 			QVariant VideoFindProxy::data (const QModelIndex& index, int role) const
@@ -41,9 +43,18 @@ namespace LeechCraft
 				switch (role)
 				{
 					case Qt::DisplayRole:
-						if (!VideoResults_.size ())
-							return tr ("Searching for video \"%1\" on vkontakte.ru...")
-								.arg (R_.String_);
+						if (Error_)
+						{
+							switch (index.column ())
+							{
+								case 0:
+									return *Error_;
+								case 1:
+									return tr ("Video vkontakte.ru");
+								default:
+									return QString ();
+							}
+						}
 						else
 						{
 							const VideoResult& res = VideoResults_ [index.row ()];
@@ -61,7 +72,9 @@ namespace LeechCraft
 						}
 					case LeechCraft::RoleControls:
 						{
-							QUrl url = VideoResults_ [index.row ()].URL_;
+							QUrl url;
+							if (VideoResults_.size () > index.row ())
+								url = VideoResults_ [index.row ()].URL_;
 							if (!url.isEmpty ())
 							{
 								ActionDownload_->setData (url);
@@ -81,11 +94,10 @@ namespace LeechCraft
 				if (parent.isValid ())
 					return 0;
 
-				int count = VideoResults_.size ();
-				if (!count)
-					count = 1;
-
-				return count;
+				if (Error_)
+					return 1;
+				else
+					return VideoResults_.size ();
 			}
 
 			QUrl VideoFindProxy::GetURL () const
@@ -162,13 +174,14 @@ namespace LeechCraft
 
 				if (VideoResults_.size ())
 				{
-					if (VideoResults_.size () > 1)
-					{
-						beginInsertRows (QModelIndex (), 1, VideoResults_.size () - 1);
-						endInsertRows ();
-					}
-					emit dataChanged (index (0, 0), index (0, columnCount () - 1));
+					SetError (QString ());
+
+					beginInsertRows (QModelIndex (), 0, VideoResults_.size () - 1);
+					endInsertRows ();
 				}
+				else
+					SetError (tr ("Nothing found for %1")
+							.arg (R_.String_));
 			}
 
 			namespace
