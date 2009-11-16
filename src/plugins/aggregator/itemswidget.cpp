@@ -474,10 +474,10 @@ namespace LeechCraft
 
 					if (scenes.size ())
 					{
-						result += tr ("<strong>Scenes:</strong");
+						result += tr ("<strong>Scenes:</strong>");
 						result += inpad.arg (alternateBg)
 							.arg (headerText);
-						result += QString ("<ul>%1</ul")
+						result += QString ("<ul>%1</ul>")
 							.arg (scenes);
 						result += "</div>";
 					}
@@ -535,7 +535,7 @@ namespace LeechCraft
 						result += tr ("<strong>Technical information:</strong>");
 						result += inpad.arg (alternateBg)
 							.arg (headerText);
-						result += QString ("<ul>%1</ul")
+						result += QString ("<ul>%1</ul>")
 							.arg (tech);
 						result += "</div>";
 					}
@@ -554,11 +554,11 @@ namespace LeechCraft
 					QStringList cmTypes = comments.keys ();
 					Q_FOREACH (QString type, cmTypes)
 					{
-						result += tr ("<strong>%1:</strong")
+						result += tr ("<strong>%1:</strong>")
 							.arg (type);
 						result += inpad.arg (alternateBg)
 							.arg (headerText);
-						result += QString ("<ul>%1</ul")
+						result += QString ("<ul>%1</ul>")
 							.arg (comments [type]);
 						result += "</div>";
 					}
@@ -589,10 +589,10 @@ namespace LeechCraft
 
 					if (!credits.isEmpty ())
 					{
-						result += tr ("<strong>Credits:</strong");
+						result += tr ("<strong>Credits:</strong>");
 						result += inpad.arg (alternateBg)
 							.arg (headerText);
-						result += QString ("<ul>%1</ul")
+						result += QString ("<ul>%1</ul>")
 							.arg (credits);
 						result += "</div>";
 					}
