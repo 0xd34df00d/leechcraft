@@ -9,11 +9,6 @@
         <translation>URL:</translation>
     </message>
     <message>
-        <location filename="addfeed.ui" line="36"/>
-        <source>http://deviant-soft.ws/rss.xml</source>
-        <translation>http://deviant-soft.ws/rss.xml</translation>
-    </message>
-    <message>
         <location filename="addfeed.ui" line="43"/>
         <source>Tags:</source>
         <translation>Теги:</translation>
