@@ -146,7 +146,7 @@ void SkinEngine::FindIconSets ()
 	IconSets_ << dir.entryList (QStringList ("*.mapping"));
 #elif defined (Q_OS_WIN32)
 	QDir dir = QDir::current ();
-	if (dir.cd ("icons"))
+	if (dir.cd (QCoreApplication::applicationDirPath () + "/icons"))
 		IconSets_ << dir.entryList (QStringList ("*.mapping"));
 #endif
 
