@@ -127,8 +127,8 @@ QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName,
 	QTranslator *transl = new QTranslator;
 #ifdef Q_WS_WIN
 	if (transl->load (filename, ":/") ||
-        transl->load (filename,
-            QCoreApplication::applicationDirPath () + "/translations"))
+			transl->load (filename,
+				QCoreApplication::applicationDirPath () + "/translations"))
 #else
 	if (transl->load (filename, ":/") ||
 			transl->load (filename,
