@@ -126,8 +126,7 @@ namespace LeechCraft
 								w->GetHandle ().get ());
 				}
 
-				if (!WatchThread_->wait (100))
-					WatchThread_->terminate ();
+				WatchThread_->terminate ();
 
 				delete WatchThread_;
 			}
