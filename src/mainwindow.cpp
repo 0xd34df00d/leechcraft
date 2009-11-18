@@ -52,6 +52,7 @@ using namespace LeechCraft::Util;
 
 LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 : QMainWindow (parent, flags)
+, TrayIcon_ (0)
 , IsShown_ (true)
 , WasMaximized_ (false)
 {
@@ -75,10 +76,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	Core::Instance ().SetReallyMainWindow (this);
 	TabContentsManager::Instance ().SetDefault (Ui_.SummaryContents_);
 	Core::Instance ().DelayedInit ();
-
-	PluginManagerDialog_ = new PluginManagerDialog ();
-	PluginManagerDialog_->setWindowFlags (Qt::Widget);
-	XmlSettingsDialog_->SetCustomWidget ("PluginManager", PluginManagerDialog_);
 
 	QTimer *speedUpd = new QTimer (this);
 	speedUpd->setInterval (1000);
@@ -116,7 +113,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 
 	WasMaximized_ = isMaximized ();
 	Ui_.ActionFullscreenMode_->setChecked (isFullScreen ());
-	QTimer::singleShot (0,
+	QTimer::singleShot (700,
 			this,
 			SLOT (doDelayedInit ()));
 }
@@ -209,6 +206,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 			&Core::Instance (),
 			SLOT (handleSettingClicked (const QString&)));
 
+	XmlSettingsDialog_->SetCustomWidget ("AppQStyle", new AppStyler (this));
 	XmlSettingsDialog_->SetCustomWidget ("TagsViewer", new TagsViewer);
 
 	XmlSettingsManager::Instance ()->RegisterObject ("Language",
@@ -234,8 +232,8 @@ void LeechCraft::MainWindow::InitializeInterface ()
 			SIGNAL (requestNewIconSet ()),
 			this,
 			SLOT (updateIconSet ()));
+
 	XmlSettingsDialog_->SetCustomWidget ("IconSet", ic);
-	XmlSettingsDialog_->SetCustomWidget ("AppQStyle", new AppStyler (this));
 
 	SettingsSink_ = new SettingsSink (tr ("LeechCraft"),
 			XmlSettingsDialog_);
@@ -245,12 +243,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	SetStatusBar ();
 	ReadSettings ();
 
-	TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/leechcraft.svg"), this);
-	TrayIcon_->show ();
-	FancyPopupManager_ = new FancyPopupManager (TrayIcon_, this);
 	LogToolBox_ = new LogToolBox (this);
-
-	setAcceptDrops (true);
 }
 
 
@@ -483,9 +476,10 @@ void LeechCraft::MainWindow::updateSpeedIndicators ()
 	UploadSpeed_->setText (up);
 	SpeedGraph_->PushSpeed (speeds.first, speeds.second);
 
-	TrayIcon_->setToolTip (tr ("%1 down, %2 up")
-			.arg (down)
-			.arg (up));
+	if (TrayIcon_)
+		TrayIcon_->setToolTip (tr ("%1 down, %2 up")
+				.arg (down)
+				.arg (up));
 }
 
 void LeechCraft::MainWindow::updateClock ()
@@ -537,6 +531,10 @@ void LeechCraft::MainWindow::updateIconSet ()
 
 void LeechCraft::MainWindow::doDelayedInit ()
 {
+	PluginManagerDialog *pm = new PluginManagerDialog ();
+	pm->setWindowFlags (Qt::Widget);
+	XmlSettingsDialog_->SetCustomWidget ("PluginManager", pm);
+
 	QObjectList settable = Core::Instance ().GetSettables ();
 	for (QObjectList::const_iterator i = settable.begin (),
 			end = settable.end (); i != end; ++i)
@@ -553,6 +551,8 @@ void LeechCraft::MainWindow::doDelayedInit ()
 	FillToolMenu ();
 
 	Ui_.SummaryContents_->AllowPlugins ();
+
+	setAcceptDrops (true);
 
 	new StartupWizard (this);
 }
@@ -587,6 +587,9 @@ void LeechCraft::MainWindow::FillTray ()
 
 	iconMenu->addAction (Ui_.ActionQuit_);
 
+	TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/leechcraft.svg"), this);
+	TrayIcon_->show ();
+	FancyPopupManager_ = new FancyPopupManager (TrayIcon_, this);
 	TrayIcon_->setContextMenu (iconMenu);
 	connect (TrayIcon_,
 			SIGNAL (activated (QSystemTrayIcon::ActivationReason)),

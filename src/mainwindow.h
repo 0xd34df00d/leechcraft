@@ -62,7 +62,6 @@ namespace LeechCraft
 		LeechCraft::Util::XmlSettingsDialog *XmlSettingsDialog_;
 		SettingsSink *SettingsSink_;
 		ShortcutManager *ShortcutManager_;
-		PluginManagerDialog *PluginManagerDialog_;
 		FancyPopupManager *FancyPopupManager_;
 		LeechCraft::LogToolBox *LogToolBox_;
 		bool IsShown_;
