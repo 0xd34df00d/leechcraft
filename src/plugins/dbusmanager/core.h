@@ -50,6 +50,8 @@ namespace LeechCraft
 				QStringList GetLoadedPlugins ();
 			private:
 				void DumpError ();
+			private slots:
+				void doDelayedInit ();
 			signals:
 				void aboutToQuit ();
 				void someEventHappened (const QString&);

@@ -23,18 +23,17 @@
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 #include <QApplication>
+#include <QTimer>
 #include "adaptor.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Plugins::DBusManager;
 
 Core::Core ()
-: NotificationManager_ (new NotificationManager)
 {
-	new Adaptor (this);
-
-	QDBusConnection::sessionBus ().registerService ("org.LeechCraft.DBus");
-	QDBusConnection::sessionBus ().registerObject ("/LeechCraft/Manager", this);
+	QTimer::singleShot (1500,
+			this,
+			SLOT (doDelayedInit ()));
 }
 
 Core& Core::Instance ()
@@ -52,12 +51,6 @@ void Core::Release ()
 void Core::SetProxy (ICoreProxy_ptr proxy)
 {
 	Proxy_ = proxy;
-	Proxy_->RegisterHook (HookSignature<HIDDownloadFinishedNotification>::Signature_t (
-				boost::bind (&NotificationManager::HandleFinishedNotification,
-				NotificationManager_.get (),
-				_1,
-				_2,
-				_3)));
 }
 
 ICoreProxy_ptr Core::GetProxy () const
@@ -79,5 +72,21 @@ void Core::DumpError ()
 {
 	qDebug () << Q_FUNC_INFO
 		<< Connection_->lastError ().message ();
+}
+
+void Core::doDelayedInit ()
+{
+	NotificationManager_.reset (new NotificationManager);
+	new Adaptor (this);
+
+	QDBusConnection::sessionBus ().registerService ("org.LeechCraft.DBus");
+	QDBusConnection::sessionBus ().registerObject ("/LeechCraft/Manager", this);
+
+	Proxy_->RegisterHook (HookSignature<HIDDownloadFinishedNotification>::Signature_t (
+				boost::bind (&NotificationManager::HandleFinishedNotification,
+				NotificationManager_.get (),
+				_1,
+				_2,
+				_3)));
 }
 
