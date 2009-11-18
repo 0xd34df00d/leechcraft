@@ -171,6 +171,7 @@ namespace LeechCraft
 			
 				Impl_->AdditionalInfo_ = new ItemsWidget ();
 				Impl_->Ui_.setupUi (this);
+				on_ActionHideReadItems__triggered ();
 
 				if (!Core::Instance ().DoDelayedInit ())
 				{
@@ -592,6 +593,8 @@ namespace LeechCraft
 				Impl_->ActionHideReadItems_->setCheckable (true);
 				Impl_->ActionHideReadItems_->setProperty ("ActionIcon", "aggregator_rssshow");
 				Impl_->ActionHideReadItems_->setProperty ("ActionIconOff", "aggregator_rsshide");
+				Impl_->ActionHideReadItems_->setChecked (XmlSettingsManager::Instance ()->
+						Property ("HideReadItems", false).toBool ());
 			
 				Impl_->ActionImportOPML_ = new QAction (tr ("Import from OPML..."),
 						this);
@@ -741,6 +744,8 @@ namespace LeechCraft
 			void Aggregator::on_ActionHideReadItems__triggered ()
 			{
 				bool hide = Impl_->ActionHideReadItems_->isChecked ();
+				XmlSettingsManager::Instance ()->
+					setProperty ("HideReadItems", hide);
 				Impl_->Ui_.ItemsWidget_->SetHideRead (hide);
 				Impl_->AdditionalInfo_->SetHideRead (hide);
 			}
