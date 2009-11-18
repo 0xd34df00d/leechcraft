@@ -115,7 +115,6 @@ namespace LeechCraft
 				SaveTasks ();
 
 				Quitting_ = true;
-				WatchThread_->SetExit ();
 
 				deleteLater ();
 
@@ -126,7 +125,9 @@ namespace LeechCraft
 								w->GetHandle ().get ());
 				}
 
-				WatchThread_->terminate ();
+				WatchThread_->SetExit ();
+				if (!WatchThread_->wait (100))
+					WatchThread_->terminate ();
 
 				delete WatchThread_;
 			}
