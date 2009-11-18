@@ -206,6 +206,12 @@ void SkinEngine::FillMapping (const QString& folder, const QString& iconSet)
 		QFile mappingFile (dir.filePath (iconSet + ".mapping"));
 		if (mappingFile.open (QIODevice::ReadOnly))
 			ParseMapping (mappingFile);
+		else
+			qWarning () << Q_FUNC_INFO
+				<< "failed to open mapping file"
+				<< iconSet
+				<< folder
+				<< mappingFile.errorString ();
 	}
 
 	if (QFileInfo (dir.filePath (iconSet + ".mapping.d")).isDir ())
@@ -216,6 +222,14 @@ void SkinEngine::FillMapping (const QString& folder, const QString& iconSet)
 			QFile mappingFile (dir.filePath (entry));
 			if (mappingFile.open (QIODevice::ReadOnly))
 				ParseMapping (mappingFile);
+			else
+				qWarning () << Q_FUNC_INFO
+					<< "failed to open mapping file"
+					<< folder
+					<< iconSet
+					<< "for mapping.d:"
+					<< dir.filePath (entry)
+					<< mappingFile.errorString ();
 		}
 	}
 }
@@ -276,9 +290,12 @@ void SkinEngine::CollectSubdir (QDir current, const QString& dir, int size)
 		current.entryInfoList (QStringList ("*.png") << "*.svg",
 				QDir::Files | QDir::Readable);
 
+	QStringList values = IconName2FileName_.values ();
 	for (QFileInfoList::const_iterator i = infos.begin (),
 			infoEnd = infos.end (); i != infoEnd; ++i)
-		IconName2Path_ [i->baseName ()] [size] = i->absoluteFilePath ();
+		if (values.contains (i->baseName ()) ||
+				i->baseName ().startsWith ("lc_"))
+			IconName2Path_ [i->baseName ()] [size] = i->absoluteFilePath ();
 }
 
 std::vector<int> SkinEngine::GetDirForBase (const QString& base,
