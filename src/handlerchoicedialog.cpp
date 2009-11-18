@@ -267,6 +267,11 @@ namespace LeechCraft
 		QList<QStringList> otherTextsList;
 		Q_FOREACH (QString otherPlugin, otherPlugins)
 			otherTextsList.append (GetPluginSavePaths (otherPlugin));
+
+		for (int i = 0; i < otherTextsList.size (); ++i)
+			Q_FOREACH (QString ptext, pluginTexts)
+				otherTextsList [i].removeAll (ptext);
+
 		while (otherTexts.size () < 16)
 		{
 			bool added = false;
