@@ -17,8 +17,10 @@
  **********************************************************************/
 
 #include "appstyler.h"
+#include <typeinfo>
 #include <QStyleFactory>
 #include <QApplication>
+#include <QtDebug>
 #include "xmlsettingsmanager.h"
 
 #ifdef Q_WS_WIN
@@ -59,7 +61,16 @@ namespace LeechCraft
 				setProperty ("AppQStyle", style);
 #endif
 		}
-		QApplication::setStyle (style);
+		QStyle *sInst = QStyleFactory::create (style);
+		if (sInst &&
+				typeid (*sInst) != typeid (*QApplication::style ()))
+		{
+			qDebug () << Q_FUNC_INFO
+				<< "typeids do not match, setting style";
+			QApplication::setStyle (sInst);
+		}
+		else
+			delete sInst;
 		int index = findText (style);
 		setCurrentIndex (index);
 	}
