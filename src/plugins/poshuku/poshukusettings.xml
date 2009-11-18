@@ -31,6 +31,10 @@
 				<label lang="en" value="Notify about finished loads by default" />
 				<label lang="ru" value="По умолчанию уведомлять о завершенных загрузках" />
 			</item>
+			<item type="checkbox" property="CloseEmptyDelegatedPages" default="on">
+				<label lang="en" value="Automatically close empty pages with delegated content" />
+				<label lang="ru" value="Автоматически закрывать пустые страницы с делегированным контентом" />
+			</item>
 			<item type="lineedit" property="ExternalSchemes" default="smb nfs telnet imap pop nntp news">
 				<label lang="en" value="Open these schemes using external applications:" />
 				<label lang="ru" value="Открывать эти схемы внешними приложениями:" />

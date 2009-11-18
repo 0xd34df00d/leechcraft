@@ -25,6 +25,7 @@
 #include <QNetworkReply>
 #include <QDesktopServices>
 #include <QSysInfo>
+#include <QWebHistory>
 #include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
 #include "customwebview.h"
@@ -357,6 +358,7 @@ namespace LeechCraft
 				if (Core::Instance ().GetPluginManager ()->
 						HandleUnsupportedContent (this, reply))
 					return;
+
 			
 				switch (reply->error ())
 				{
@@ -373,6 +375,10 @@ namespace LeechCraft
 									QString (),
 									LeechCraft::FromUserInitiated);
 							emit gotEntity (e);
+							if (XmlSettingsManager::Instance ()->
+									property ("CloseEmptyDelegatedPages").toBool () &&
+									history ()->currentItem ().url ().isEmpty ())
+								emit windowCloseRequested ();
 						}
 						break;
 					case QNetworkReply::NoError:
@@ -385,14 +391,21 @@ namespace LeechCraft
 										reply->header (QNetworkRequest::ContentTypeHeader).isValid ())
 								{
 									LeechCraft::DownloadEntity e =
-										LeechCraft::Util::MakeEntity (QVariant::fromValue<QNetworkReply*> (reply),
-											QString (),
-											LeechCraft::FromUserInitiated);
+										LeechCraft::Util::MakeEntity (
+												QVariant::fromValue<QNetworkReply*> (reply),
+												QString (),
+												LeechCraft::FromUserInitiated
+												);
 
 									e.Additional_ ["SourceURL"] = reply->url ();
-									e.Mime_ = reply->header (QNetworkRequest::ContentTypeHeader).toString ();
+									e.Mime_ = reply->
+										header (QNetworkRequest::ContentTypeHeader).toString ();
 			
 									emit gotEntity (e);
+									if (XmlSettingsManager::Instance ()->
+											property ("CloseEmptyDelegatedPages").toBool () &&
+											history ()->currentItem ().url ().isEmpty ())
+										emit windowCloseRequested ();
 									break;
 								}
 								else
