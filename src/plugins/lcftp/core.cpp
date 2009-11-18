@@ -126,7 +126,7 @@ namespace LeechCraft
 				}
 
 				WatchThread_->SetExit ();
-				if (!WatchThread_->wait (100))
+				if (!WatchThread_->wait (600))
 					WatchThread_->terminate ();
 
 				delete WatchThread_;
