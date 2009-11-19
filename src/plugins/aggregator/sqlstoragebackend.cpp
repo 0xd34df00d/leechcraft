@@ -77,9 +77,10 @@ namespace LeechCraft
 			
 				if (!DB_.open ())
 				{
+					qWarning () << Q_FUNC_INFO;
 					LeechCraft::Util::DBLock::DumpError (DB_.lastError ());
-					throw std::runtime_error (QString ("Could not initialize database: %1")
-							.arg (DB_.lastError ().text ()).toUtf8 ().constData ());
+					throw std::runtime_error (qPrintable (QString ("Could not initialize database: %1")
+								.arg (DB_.lastError ().text ())));
 				}
 			
 				InitializeTables ();
@@ -997,12 +998,23 @@ namespace LeechCraft
 				ChannelFinder_.bindValue (":url", channel->Link_);
 				if (!ChannelFinder_.exec ())
 				{
+					qWarning () << Q_FUNC_INFO;
 					LeechCraft::Util::DBLock::DumpError (ChannelFinder_);
-					throw std::runtime_error ("Unable to execute channel finder query");
+					throw std::runtime_error (qPrintable (QString (
+									"Unable to execute channel finder query for t %1, url %2, p %3")
+								.arg (channel->Title_)
+								.arg (channel->Link_)
+								.arg (parent)));
 				}
 				ChannelFinder_.next ();
 				if (!ChannelFinder_.isValid ())
 				{
+					qWarning () << Q_FUNC_INFO
+						<< "not found such channel"
+						<< channel->Title_
+						<< channel->Link_
+						<< parent
+						<< ", inserting it";
 					AddChannel (channel, parent);
 					return;
 				}
@@ -1023,8 +1035,13 @@ namespace LeechCraft
 			
 				if (!UpdateChannel_.exec ())
 				{
+					qWarning () << Q_FUNC_INFO;
 					LeechCraft::Util::DBLock::DumpError (UpdateChannel_);
-					throw std::runtime_error ("failed to save channel");
+					throw std::runtime_error (qPrintable (QString (
+									"Failed to save channel t %1, u %2, p %3")
+								.arg (channel->Title_)
+								.arg (channel->Link_)
+								.arg (parent)));
 				}
 
 				if (!UpdateChannel_.numRowsAffected ())
@@ -1044,14 +1061,25 @@ namespace LeechCraft
 				ChannelFinder_.bindValue (":url", channel.Link_);
 				if (!ChannelFinder_.exec ())
 				{
+					qWarning () << Q_FUNC_INFO;
 					LeechCraft::Util::DBLock::DumpError (ChannelFinder_);
-					throw std::runtime_error ("Unable to execute channel finder query");
+					throw std::runtime_error (qPrintable (QString (
+									"Unable to execute channel finder query t %1, u %2, p %3")
+								.arg (channel.Title_)
+								.arg (channel.Link_)
+								.arg (parent)));
 				}
 				ChannelFinder_.next ();
 				if (!ChannelFinder_.isValid ())
-					throw std::runtime_error ("Selected channel for updating "
-							"doesn't exist and we don't have enough info to "
-							"insert it.");
+				{
+					qWarning () << Q_FUNC_INFO;
+					throw std::runtime_error (qPrintable (QString (
+									"Selected channel for updating doesn't exist and we don't "
+									"have enough info to insert it t %1, u %2, p %3.")
+								.arg (channel.Title_)
+								.arg (channel.Link_)
+								.arg (parent)));
+				}
 				ChannelFinder_.finish ();
 			
 				UpdateShortChannel_.bindValue (":parent_feed_url", parent);
@@ -1063,8 +1091,13 @@ namespace LeechCraft
 			
 				if (!UpdateShortChannel_.exec ())
 				{
+					qWarning () << Q_FUNC_INFO;
 					LeechCraft::Util::DBLock::DumpError (UpdateShortChannel_);
-					throw std::runtime_error ("failed to save channel");
+					throw std::runtime_error (qPrintable (QString (
+									"Failed to save channel t %1, u %2, p %3")
+								.arg (channel.Title_)
+								.arg (channel.Link_)
+								.arg (parent)));
 				}
 
 				if (!UpdateShortChannel_.numRowsAffected ())
@@ -1095,8 +1128,14 @@ namespace LeechCraft
 			
 				if (!UpdateItem_.exec ())
 				{
+					qWarning () << Q_FUNC_INFO;
 					LeechCraft::Util::DBLock::DumpError (UpdateItem_);
-					throw std::runtime_error ("failed to save item");
+					throw std::runtime_error (qPrintable (QString (
+									"Failed to save item pu %1, pt %2, t %3, u %4")
+								.arg (parentUrl)
+								.arg (parentTitle)
+								.arg (item->Title_)
+								.arg (item->Link_)));
 				}
 
 				if (!UpdateItem_.numRowsAffected ())
@@ -1123,13 +1162,27 @@ namespace LeechCraft
 				ItemFinder_.bindValue (":url", item.URL_);
 				if (!ItemFinder_.exec ())
 				{
+					qWarning () << Q_FUNC_INFO;
 					LeechCraft::Util::DBLock::DumpError (ItemFinder_);
-					throw std::runtime_error ("Unable to execute item finder query");
+					throw std::runtime_error (qPrintable (QString (
+									"Unable to execute item finder query pu %1, pt %2, t %3, u %4")
+								.arg (parentUrl)
+								.arg (parentTitle)
+								.arg (item.Title_)
+								.arg (item.URL_)));
 				}
 				ItemFinder_.next ();
 				if (!ItemFinder_.isValid ())
-					throw std::runtime_error ("Specified item doesn't exist and we "
-							"couldn't add it because there isn't enough info");
+				{
+					qWarning () << Q_FUNC_INFO;
+					throw std::runtime_error (qPrintable (QString (
+									"Specified item doesn't exist and we couldn't add it because "
+									"there isn't enough info pu %1, pt %2, t %3, u %4")
+								.arg (parentUrl)
+								.arg (parentTitle)
+								.arg (item.Title_)
+								.arg (item.URL_)));
+				}
 				ItemFinder_.finish ();
 			
 				UpdateShortItem_.bindValue (":parents_hash", parentUrl + parentTitle);
@@ -1139,8 +1192,14 @@ namespace LeechCraft
 			
 				if (!UpdateShortItem_.exec ())
 				{
+					qWarning () << Q_FUNC_INFO;
 					LeechCraft::Util::DBLock::DumpError (UpdateShortItem_);
-					throw std::runtime_error ("failed to save item");
+					throw std::runtime_error (qPrintable (QString (
+									"Failed to save item pu %1, pt %2, t %3, u %4")
+								.arg (parentUrl)
+								.arg (parentTitle)
+								.arg (item.Title_)
+								.arg (item.URL_)));
 				}
 
 				if (!UpdateShortItem_.numRowsAffected ())
@@ -1172,8 +1231,13 @@ namespace LeechCraft
 			
 				if (!InsertChannel_.exec ())
 				{
+					qWarning () << Q_FUNC_INFO;
 					LeechCraft::Util::DBLock::DumpError (InsertChannel_);
-					throw std::runtime_error ("failed to save channel");
+					throw std::runtime_error (qPrintable (QString (
+									"Failed to save channel t %1, u %2, p %3")
+								.arg (channel->Title_)
+								.arg (channel->Link_)
+								.arg (url)));
 				}
 			
 				InsertChannel_.finish ();
@@ -1206,8 +1270,14 @@ namespace LeechCraft
 			
 				if (!InsertItem_.exec ())
 				{
+					qWarning () << Q_FUNC_INFO;
 					LeechCraft::Util::DBLock::DumpError (InsertItem_);
-					throw std::runtime_error ("failed to save item");
+					throw std::runtime_error (qPrintable (QString (
+									"Failed to save item pu %1, pt %2, t %3, u %4")
+								.arg (parentUrl)
+								.arg (parentTitle)
+								.arg (item->Title_)
+								.arg (item->Link_)));
 				}
 			
 				InsertItem_.finish ();
@@ -1369,8 +1439,12 @@ namespace LeechCraft
 			
 				if (!ToggleChannelUnread_.exec ())
 				{
+					qWarning () << Q_FUNC_INFO;
 					LeechCraft::Util::DBLock::DumpError (ToggleChannelUnread_);
-					throw std::runtime_error ("failed to toggle item");
+					throw std::runtime_error (qPrintable (QString (
+									"Failed to toggle item t %1, p %2")
+								.arg (title)
+								.arg (purl)));
 				}
 			
 				ToggleChannelUnread_.finish ();
