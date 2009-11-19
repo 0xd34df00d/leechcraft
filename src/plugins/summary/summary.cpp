@@ -19,6 +19,7 @@
 #include "summary.h"
 #include <QIcon>
 #include <plugininterface/util.h>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -26,28 +27,32 @@ namespace LeechCraft
 	{
 		namespace Summary
 		{
-			void Summary::Init (ICoreProxy_ptr)
+			void Summary::Init (ICoreProxy_ptr proxy)
 			{
-				Translator_.reset (Util::InstallTranslator ("yasd"));
+				Translator_.reset (Util::InstallTranslator ("summary"));
+
+				Core::Instance ().SetProxy (proxy);
 			}
 
 			void Summary::SecondInit ()
 			{
+				Core::Instance ().SecondInit ();
 			}
 
 			void Summary::Release ()
 			{
+				Core::Instance ().Release ();
 				Translator_.reset ();
 			}
 
 			QString Summary::GetName () const
 			{
-				return "YASD";
+				return "Summary";
 			}
 
 			QString Summary::GetInfo () const
 			{
-				return tr ("Yet Another Site Downloader");
+				return tr ("Summary of downloads and recent events");
 			}
 
 			QIcon Summary::GetIcon () const
@@ -62,7 +67,7 @@ namespace LeechCraft
 
 			QStringList Summary::Needs () const
 			{
-				return QStringList ("http");
+				return QStringList ();
 			}
 
 			QStringList Summary::Uses () const

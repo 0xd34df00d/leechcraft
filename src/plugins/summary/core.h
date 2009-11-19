@@ -16,13 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SUMMARY_SUMMARY_H
-#define PLUGINS_SUMMARY_SUMMARY_H
-#include <memory>
+#ifndef PLUGINS_SUMMARY_CORE_H
+#define PLUGINS_SUMMARY_CORE_H
 #include <QObject>
-#include <QStringList>
-#include <QTranslator>
-#include <interfaces/iinfo.h>
+#include "interfaces/iinfo.h"
 
 namespace LeechCraft
 {
@@ -30,24 +27,19 @@ namespace LeechCraft
 	{
 		namespace Summary
 		{
-			class Summary : public QObject
-						  , public IInfo
+			class Core : public QObject
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo)
 
-				std::auto_ptr<QTranslator> Translator_;
+				ICoreProxy_ptr Proxy_;
+				Core ();
 			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
+				static Core& Instance ();
 				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
+				void SetProxy (ICoreProxy_ptr);
+				ICoreProxy_ptr GetProxy () const;
+
+				void SecondInit ();
 			};
 		};
 	};

@@ -6,9 +6,11 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	summary.cpp
+	core.cpp
 	)
 SET (HEADERS
 	summary.h
+	core.h
 	)
 SET (TRANSLATIONS
 	leechcraft_summary_ru_RU.ts
