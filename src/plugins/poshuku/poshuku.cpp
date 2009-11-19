@@ -74,10 +74,25 @@ namespace LeechCraft
 							tr ("LeechCraft"),
 							e.what ());
 				}
+
 				try
 				{
 					QWebSettings::setOfflineStoragePath (
 							LeechCraft::Util::CreateIfNotExists ("poshuku/offlinestorage").absolutePath ()
+							);
+				}
+				catch (const std::runtime_error& e)
+				{
+					QMessageBox::warning (0,
+							tr ("LeechCraft"),
+							e.what ());
+				}
+
+				try
+				{
+					QWebSettings::setOfflineWebApplicationCachePath (
+							LeechCraft::Util::CreateIfNotExists ("poshuku/offlinewebappcache")
+								.absolutePath ()
 							);
 				}
 				catch (const std::runtime_error& e)
