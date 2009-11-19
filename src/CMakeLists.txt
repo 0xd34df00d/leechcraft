@@ -49,6 +49,7 @@ ADD_SUBDIRECTORY (iconsets)
 
 SET (LEECHCRAFT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
+OPTION (ENABLE_SUMMARY "Buidl Summary, the plugin that shows a handy summary of the stuff going on" ON)
 OPTION (ENABLE_TORRENT "Build BitTorrent, the BitTorrent client" ON)
 OPTION (ENABLE_AGGREGATOR "Build Aggregator, the RSS/Atom feed reader" ON)
 OPTION (ENABLE_POSHUKU "Build Poshuku, the WWW Browser" ON)
@@ -68,6 +69,10 @@ OPTION (ENABLE_REMOTER "Build Remoter, the remote access manager" OFF)
 OPTION (ENABLE_NEWLIFE "Build NewLife, the settings importer" ON)
 OPTION (ENABLE_ANHERO "Build AnHero, the crash handler" ON)
 OPTION (ENABLE_VGRABBER "Build vGrabber, the vkontakte.ru music/video getter" ON)
+
+if (ENABLE_SUMMARY)
+	ADD_SUBDIRECTORY (plugins/summary)
+ENDIF (ENABLE_SUMMARY)
 
 IF (ENABLE_TORRENT)
 	IF (RBTorrent_FOUND)
