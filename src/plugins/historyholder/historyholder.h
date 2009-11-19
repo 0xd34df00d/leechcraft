@@ -41,6 +41,7 @@ namespace LeechCraft
 				Q_INTERFACES (IInfo IFinder IEntityHandler IHaveShortcuts)
 			public:
 				void Init (ICoreProxy_ptr);
+				void SecondInit ();
 				void Release ();
 				QString GetName () const;
 				QString GetInfo () const;

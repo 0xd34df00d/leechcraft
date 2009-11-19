@@ -183,6 +183,10 @@ namespace LeechCraft
 				itemsHeader->resizeSection (2,
 						fm.width ("Average URL could be very very long, but we don't account this."));
 			}
+
+			void Poshuku::SecondInit ()
+			{
+			}
 			
 			void Poshuku::Release ()
 			{

@@ -67,6 +67,10 @@ namespace LeechCraft
 						"seekthrusettings.xml");
 				XmlSettingsDialog_->SetCustomWidget ("SearchersList", new SearchersList);
 			}
+
+			void SeekThru::SecondInit ()
+			{
+			}
 			
 			void SeekThru::Release ()
 			{

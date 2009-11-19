@@ -434,11 +434,24 @@ public:
 	 * Generally, all initialization code should be placed into this
 	 * method instead of plugin's instance object's constructor.
 	 *
+	 * After this call plugin should be in a usable state.
+	 *
 	 * @param[in] proxy The pointer to proxy to LeechCraft.
 	 *
 	 * @sa Release
+	 * @sa SecondInit
 	 */
 	virtual void Init (ICoreProxy_ptr proxy) = 0;
+
+	/** @brief Performs second stage of initialization.
+	 *
+	 * This function is called when all the plugins are initialized by
+	 * IInfo::Init() and may now communicate with others with no fear of
+	 * getting init-order bugs.
+	 *
+	 * @sa Init
+	 */
+	virtual void SecondInit () = 0;
 
 	/** @brief Returns the name of the plugin.
 	 *

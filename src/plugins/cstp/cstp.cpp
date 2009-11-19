@@ -90,6 +90,10 @@ namespace LeechCraft
 						this,
 						SLOT (handleItemSelected (const QModelIndex&)));
 			}
+
+			void CSTP::SecondInit ()
+			{
+			}
 			
 			void CSTP::Release ()
 			{

@@ -66,6 +66,7 @@ namespace LeechCraft
 			public:
 				virtual ~Aggregator ();
 				void Init (ICoreProxy_ptr);
+				void SecondInit ();
 				void Release ();
 				QString GetName () const;
 				QString GetInfo () const;

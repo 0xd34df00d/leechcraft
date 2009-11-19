@@ -34,6 +34,10 @@ namespace LeechCraft
 				Translator_.reset (Util::InstallTranslator ("newlife"));
 			}
 
+			void Plugin::SecondInit ()
+			{
+			}
+
 			void Plugin::Release ()
 			{
 				Translator_.reset ();

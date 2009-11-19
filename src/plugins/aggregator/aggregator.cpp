@@ -284,6 +284,10 @@ namespace LeechCraft
 				Core::Instance ().SetWidgets (Impl_->ControlToolBar_, Impl_->AdditionalInfo_);
 				currentChannelChanged ();
 			}
+
+			void Aggregator::SecondInit ()
+			{
+			}
 			
 			void Aggregator::Release ()
 			{

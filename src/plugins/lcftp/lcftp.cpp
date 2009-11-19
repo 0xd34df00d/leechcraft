@@ -92,6 +92,10 @@ namespace LeechCraft
 						SIGNAL (statusBarChanged (QWidget*, const QString&)));
 			}
 
+			void LCFTP::SecondInit ()
+			{
+			}
+
 			void LCFTP::Release ()
 			{
 				Core::Instance ().Release ();

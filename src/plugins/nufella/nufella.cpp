@@ -25,6 +25,10 @@ void Nufella::Init (ICoreProxy_ptr)
 	Translator_.reset (LeechCraft::Util::InstallTranslator ("nufella"));
 }
 
+void Nufella::SecondInit ()
+{
+}
+
 void Nufella::Release ()
 {
 }

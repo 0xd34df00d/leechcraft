@@ -46,6 +46,10 @@ namespace LeechCraft
 										_5)));
 					}
 
+					void FileScheme::SecondInit ()
+					{
+					}
+
 					void FileScheme::Release ()
 					{
 					}

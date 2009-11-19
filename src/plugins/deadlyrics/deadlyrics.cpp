@@ -37,6 +37,10 @@ namespace LeechCraft
 				SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 						"deadlyricssettings.xml");
 			}
+
+			void DeadLyRicS::SecondInit ()
+			{
+			}
 			
 			void DeadLyRicS::Release ()
 			{

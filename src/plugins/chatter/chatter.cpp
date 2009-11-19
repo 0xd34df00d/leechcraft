@@ -29,6 +29,10 @@ void Plugin::Init (ICoreProxy_ptr)
 	XmlSettingsManager::Instance()->RegisterObject (QByteArray("ShowTrayIcon"), fsIrc, QByteArray("setTrayPresence"));
 }
 
+void Plugin::SecondInit ()
+{
+}
+
 void Plugin::Release ()
 {
 	qDeleteAll(Actions_);

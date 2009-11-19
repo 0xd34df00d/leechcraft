@@ -63,7 +63,9 @@ namespace LeechCraft
 		QList<DepTreeItem_ptr> Roots_;
 		typedef boost::shared_ptr<QPluginLoader> QPluginLoader_ptr;
 		typedef QList<QPluginLoader_ptr> PluginsContainer_t;
+		// Only currently loaded plugins
 		mutable PluginsContainer_t Plugins_;
+		// All plugins ever seen
 		PluginsContainer_t AvailablePlugins_;
 		QMap<QString, PluginsContainer_t::const_iterator> FeatureProviders_;
 
@@ -148,6 +150,8 @@ namespace LeechCraft
 		bool InitializeSingle (DepTreeItem_ptr);
 		void Release (DepTreeItem_ptr);
 		void DumpTree ();
+		DepTreeItem_ptr FindTreeItem (PluginsContainer_t::iterator);
+		DepTreeItem_ptr FindTreeItem (QObject*);
 		PluginsContainer_t::iterator Find (DepTreeItem_ptr);
 		PluginsContainer_t::iterator Find (QObject*);
 		void Unload (PluginsContainer_t::iterator);

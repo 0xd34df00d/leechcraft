@@ -40,6 +40,10 @@ namespace LeechCraft
 						"dbusmanagersettings.xml");
 			}
 
+			void DBusManager::SecondInit ()
+			{
+			}
+
 			void DBusManager::Release ()
 			{
 				Core::Instance ().Release ();

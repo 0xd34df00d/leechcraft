@@ -41,6 +41,7 @@ namespace LeechCraft
 				boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
 			public:
 				void Init (ICoreProxy_ptr);
+				void SecondInit ();
 				void Release ();
 				QString GetName () const;
 				QString GetInfo () const;

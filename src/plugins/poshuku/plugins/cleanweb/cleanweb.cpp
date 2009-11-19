@@ -62,6 +62,10 @@ void CleanWeb::Init (ICoreProxy_ptr proxy)
 			Core::Instance ().GetFlashOnClickWhitelist ());
 }
 
+void CleanWeb::SecondInit ()
+{
+}
+
 void CleanWeb::Release ()
 {
 }

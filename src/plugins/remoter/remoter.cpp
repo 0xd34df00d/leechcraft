@@ -34,6 +34,10 @@ namespace LeechCraft
 				Core::Instance ().Init (proxy);
 			}
 
+			void Remoter::SecondInit ()
+			{
+			}
+
 			void Remoter::Release ()
 			{
 			}

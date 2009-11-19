@@ -32,6 +32,10 @@ void Plugin::Init (ICoreProxy_ptr proxy)
 			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
 }
 
+void Plugin::SecondInit ()
+{
+}
+
 void Plugin::Release ()
 {
 	Core::Instance ().Release ();

@@ -63,6 +63,10 @@ namespace LeechCraft
 				SettingsDialog_->SetCustomWidget ("VideoCategoriesToUse", Video_);
 			}
 
+			void vGrabber::SecondInit ()
+			{
+			}
+
 			void vGrabber::Release ()
 			{
 				delete Audio_;

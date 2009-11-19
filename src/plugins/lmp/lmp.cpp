@@ -43,6 +43,10 @@ void LMP::Init (ICoreProxy_ptr proxy)
 			SIGNAL (bringToFront ()));
 }
 
+void LMP::SecondInit ()
+{
+}
+
 void LMP::Release ()
 {
 	Core::Instance ().Release ();

@@ -32,6 +32,10 @@ namespace LeechCraft
 				Translator_.reset (Util::InstallTranslator ("yasd"));
 			}
 
+			void Plugin::SecondInit ()
+			{
+			}
+
 			void Plugin::Release ()
 			{
 				Translator_.reset ();

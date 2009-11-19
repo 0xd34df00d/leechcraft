@@ -41,6 +41,7 @@ namespace LeechCraft
 				std::auto_ptr<QTranslator> Translator_;
 			public:
 				void Init (ICoreProxy_ptr);
+				void SecondInit ();
 				void Release ();
 				QString GetName () const;
 				QString GetInfo () const;

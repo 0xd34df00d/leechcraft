@@ -41,6 +41,10 @@ namespace LeechCraft
 				}
 			}
 
+			void Plugin::SecondInit ()
+			{
+			}
+
 			void Plugin::Release ()
 			{
 				Translator_.reset ();

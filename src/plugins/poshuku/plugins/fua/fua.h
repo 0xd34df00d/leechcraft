@@ -61,6 +61,7 @@ namespace LeechCraft
 						QMap<QString, QString> Browser2ID_;
 					public:
 						void Init (ICoreProxy_ptr);
+						void SecondInit ();
 						void Release ();
 						QString GetName () const;
 						QString GetInfo () const;

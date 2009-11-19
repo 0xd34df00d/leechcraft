@@ -83,6 +83,10 @@ namespace LeechCraft
 				Actions_.push_back (showAction);
 			}
 
+			void Plugin::SecondInit ()
+			{
+			}
+
 			void Plugin::Release ()
 			{
 				qDeleteAll (Actions_);

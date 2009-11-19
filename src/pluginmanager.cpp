@@ -38,911 +38,1009 @@
 #include "coreproxy.h"
 
 using namespace LeechCraft;
-using LeechCraft::Util::MergeModel;
+using Util::MergeModel;
 
-LeechCraft::PluginManager::DepTreeItem::DepTreeItem ()
-: Plugin_ (0)
-, Initialized_ (false)
+namespace LeechCraft
 {
-}
-
-void LeechCraft::PluginManager::DepTreeItem::Print (int margin)
-{
-	QString pre (margin, ' ');
-	qDebug () << pre << Plugin_ << Initialized_;
-	qDebug () << pre << "Needed:";
-	QList<DepTreeItem_ptr> items = Needed_.values ();
-	Q_FOREACH (DepTreeItem_ptr item, items)
-		item->Print (margin + 2);
-	qDebug () << pre << "Used:";
-	items = Used_.values ();
-	Q_FOREACH (DepTreeItem_ptr item, items)
-		item->Print (margin + 2);
-}
-
-LeechCraft::PluginManager::Finder::Finder (QObject *o)
-: Object_ (o)
-{
-}
-
-bool LeechCraft::PluginManager::Finder::operator() (LeechCraft::PluginManager::DepTreeItem_ptr item) const
-{
-	return Object_ == item->Plugin_;
-}
-
-LeechCraft::PluginManager::PluginManager (QObject *parent)
-: QAbstractItemModel (parent)
-{
-	Headers_ << tr ("Name")
-		<< tr ("File");
-	FindPlugins ();
-}
-
-LeechCraft::PluginManager::~PluginManager ()
-{
-}
-
-int LeechCraft::PluginManager::columnCount (const QModelIndex&) const
-{
-	return Headers_.size ();
-}
-
-QVariant LeechCraft::PluginManager::data (const QModelIndex& index, int role) const
-{
-	if (!index.isValid () ||
-			index.row () >= GetSize ())
-		return QVariant ();
-
-	switch (index.column ())
+	PluginManager::DepTreeItem::DepTreeItem ()
+	: Plugin_ (0)
+	, Initialized_ (false)
 	{
-		case 0:
-			switch (role)
-			{
-				case Qt::DisplayRole:
-					{
-						QSettings settings (QCoreApplication::organizationName (),
-								QCoreApplication::applicationName ());
-						settings.beginGroup ("Plugins");
-						settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
-						QVariant result = settings.value ("Name");
-						settings.endGroup ();
-						settings.endGroup ();
-						return result;
-					}
-				case Qt::DecorationRole:
-					{
-						QSettings settings (QCoreApplication::organizationName (),
-								QCoreApplication::applicationName ());
-						settings.beginGroup ("Plugins");
-						settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
-						QVariant result = settings.value ("Icon");
-						settings.endGroup ();
-						settings.endGroup ();
-						return result;
-					}
-				case Qt::CheckStateRole:
-					{
-						QSettings settings (QCoreApplication::organizationName (),
-								QCoreApplication::applicationName ());
-						settings.beginGroup ("Plugins");
-						settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
-						bool result = settings.value ("AllowLoad", true).toBool ();
-						settings.endGroup ();
-						settings.endGroup ();
-						return result ? Qt::Checked : Qt::Unchecked;
-					}
-				case Qt::ForegroundRole:
+	}
+
+	void PluginManager::DepTreeItem::Print (int margin)
+	{
+		QString pre (margin, ' ');
+		qDebug () << pre << Plugin_ << Initialized_;
+		qDebug () << pre << "Needed:";
+		QList<DepTreeItem_ptr> items = Needed_.values ();
+		Q_FOREACH (DepTreeItem_ptr item, items)
+			item->Print (margin + 2);
+		qDebug () << pre << "Used:";
+		items = Used_.values ();
+		Q_FOREACH (DepTreeItem_ptr item, items)
+			item->Print (margin + 2);
+	}
+
+	PluginManager::Finder::Finder (QObject *o)
+	: Object_ (o)
+	{
+	}
+
+	bool PluginManager::Finder::operator() (PluginManager::DepTreeItem_ptr item) const
+	{
+		return Object_ == item->Plugin_;
+	}
+
+	PluginManager::PluginManager (QObject *parent)
+	: QAbstractItemModel (parent)
+	{
+		Headers_ << tr ("Name")
+			<< tr ("File");
+		FindPlugins ();
+	}
+
+	PluginManager::~PluginManager ()
+	{
+	}
+
+	int PluginManager::columnCount (const QModelIndex&) const
+	{
+		return Headers_.size ();
+	}
+
+	QVariant PluginManager::data (const QModelIndex& index, int role) const
+	{
+		if (!index.isValid () ||
+				index.row () >= GetSize ())
+			return QVariant ();
+
+		switch (index.column ())
+		{
+			case 0:
+				switch (role)
+				{
+					case Qt::DisplayRole:
+						{
+							QSettings settings (QCoreApplication::organizationName (),
+									QCoreApplication::applicationName ());
+							settings.beginGroup ("Plugins");
+							settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
+							QVariant result = settings.value ("Name");
+							settings.endGroup ();
+							settings.endGroup ();
+							return result;
+						}
+					case Qt::DecorationRole:
+						{
+							QSettings settings (QCoreApplication::organizationName (),
+									QCoreApplication::applicationName ());
+							settings.beginGroup ("Plugins");
+							settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
+							QVariant result = settings.value ("Icon");
+							settings.endGroup ();
+							settings.endGroup ();
+							return result;
+						}
+					case Qt::CheckStateRole:
+						{
+							QSettings settings (QCoreApplication::organizationName (),
+									QCoreApplication::applicationName ());
+							settings.beginGroup ("Plugins");
+							settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
+							bool result = settings.value ("AllowLoad", true).toBool ();
+							settings.endGroup ();
+							settings.endGroup ();
+							return result ? Qt::Checked : Qt::Unchecked;
+						}
+					case Qt::ForegroundRole:
+						return QApplication::palette ()
+							.brush (AvailablePlugins_.at (index.row ())->isLoaded () ?
+									QPalette::Normal :
+									QPalette::Disabled,
+								QPalette::WindowText);
+					default:
+						return QVariant ();
+				}
+			case 1:
+				if (role == Qt::DisplayRole)
+					return AvailablePlugins_.at (index.row ())->fileName ();
+				else if (role == Qt::ForegroundRole)
 					return QApplication::palette ()
 						.brush (AvailablePlugins_.at (index.row ())->isLoaded () ?
 								QPalette::Normal :
 								QPalette::Disabled,
 							QPalette::WindowText);
-				default:
+				else
 					return QVariant ();
-			}
-		case 1:
-			if (role == Qt::DisplayRole)
-				return AvailablePlugins_.at (index.row ())->fileName ();
-			else if (role == Qt::ForegroundRole)
-				return QApplication::palette ()
-					.brush (AvailablePlugins_.at (index.row ())->isLoaded () ?
-							QPalette::Normal :
-							QPalette::Disabled,
-						QPalette::WindowText);
-			else
+			default:
 				return QVariant ();
-		default:
+		}
+	}
+
+	Qt::ItemFlags PluginManager::flags (const QModelIndex& index) const
+	{
+		Qt::ItemFlags result = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+		if (index.column () == 0)
+			result |= Qt::ItemIsUserCheckable;
+		return result;
+	}
+
+	QVariant PluginManager::headerData (int column, Qt::Orientation orient, int role) const
+	{
+		if (role != Qt::DisplayRole ||
+				orient != Qt::Horizontal)
 			return QVariant ();
-	}
-}
 
-Qt::ItemFlags LeechCraft::PluginManager::flags (const QModelIndex& index) const
-{
-	Qt::ItemFlags result = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-	if (index.column () == 0)
-		result |= Qt::ItemIsUserCheckable;
-	return result;
-}
-
-QVariant LeechCraft::PluginManager::headerData (int column, Qt::Orientation orient, int role) const
-{
-	if (role != Qt::DisplayRole ||
-			orient != Qt::Horizontal)
-		return QVariant ();
-
-	return Headers_.at (column);
-}
-
-QModelIndex LeechCraft::PluginManager::index (int row, int column, const QModelIndex&) const
-{
-	return createIndex (row, column);
-}
-
-QModelIndex LeechCraft::PluginManager::parent (const QModelIndex&) const
-{
-	return QModelIndex ();
-}
-
-int LeechCraft::PluginManager::rowCount (const QModelIndex& index) const
-{
-	if (!index.isValid ())
-		return AvailablePlugins_.size ();
-	else
-		return 0;
-}
-
-bool LeechCraft::PluginManager::setData (const QModelIndex& index,
-		const QVariant& data, int role)
-{
-	if (index.column () != 0 ||
-			role != Qt::CheckStateRole)
-		return false;
-
-	QSettings settings (QCoreApplication::organizationName (),
-			QCoreApplication::applicationName ());
-	settings.beginGroup ("Plugins");
-	settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
-	settings.setValue ("AllowLoad", data.toBool ());
-	settings.endGroup ();
-	settings.endGroup ();
-
-	emit dataChanged (index, index);
-
-	return true;
-}
-
-LeechCraft::PluginManager::Size_t LeechCraft::PluginManager::GetSize () const
-{
-	return AvailablePlugins_.size ();
-}
-
-void LeechCraft::PluginManager::Init ()
-{
-	CheckPlugins ();
-	CalculateDependencies ();
-	InitializePlugins ();
-}
-
-void LeechCraft::PluginManager::Release ()
-{
-	while (Roots_.size ())
-	{
-		try
-		{
-			Release (Roots_.takeAt (0));
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO << e.what ();
-		}
-		catch (...)
-		{
-			QMessageBox::warning (0,
-					tr ("LeechCraft"),
-					tr ("Release of one or more plugins failed."));
-		}
+		return Headers_.at (column);
 	}
 
-	Plugins_.clear ();
-}
-
-QString LeechCraft::PluginManager::Name (const LeechCraft::PluginManager::Size_t& pos) const
-{
-	return (qobject_cast<IInfo*> (Plugins_ [pos]->instance ()))->GetName ();
-}
-
-QString LeechCraft::PluginManager::Info (const LeechCraft::PluginManager::Size_t& pos) const
-{
-	return qobject_cast<IInfo*> (Plugins_ [pos]->instance ())->GetInfo ();
-}
-
-QObjectList LeechCraft::PluginManager::GetAllPlugins () const
-{
-	QObjectList result;
-	for (PluginsContainer_t::const_iterator i = Plugins_.begin ();
-			i != Plugins_.end (); ++i)
-		result << (*i)->instance ();
-	return result;
-}
-
-QObject* LeechCraft::PluginManager::GetProvider (const QString& feature) const
-{
-	if (!FeatureProviders_.contains (feature))
-		return 0;
-	return (*FeatureProviders_ [feature])->instance ();
-}
-
-void LeechCraft::PluginManager::Unload (QObject *plugin)
-{
-	Unload (Find (plugin));
-}
-
-void LeechCraft::PluginManager::FindPlugins ()
-{
-#ifdef Q_WS_WIN
-	ScanDir (QApplication::applicationDirPath () + "/plugins/bin");
-#else
-	ScanDir ("/usr/local/lib/leechcraft/plugins");
-	ScanDir ("/usr/lib/leechcraft/plugins");
-#endif
-}
-
-void LeechCraft::PluginManager::ScanDir (const QString& dir)
-{
-	QSettings settings (QCoreApplication::organizationName (),
-			QCoreApplication::applicationName ());
-	settings.beginGroup ("Plugins");
-
-	QDir pluginsDir = QDir (dir);
-	Q_FOREACH (QFileInfo fileinfo,
-			pluginsDir.entryInfoList (QStringList ("*leechcraft_*"),
-				QDir::Files))
+	QModelIndex PluginManager::index (int row, int column, const QModelIndex&) const
 	{
-		QString name = fileinfo.canonicalFilePath ();
-		settings.beginGroup (name);
-
-		QPluginLoader_ptr loader (new QPluginLoader (name));
-		if (settings.value ("AllowLoad", true).toBool ())
-			Plugins_.push_back (loader);
-
-		AvailablePlugins_.push_back (loader);
-
-		settings.endGroup ();
+		return createIndex (row, column);
 	}
 
-	settings.endGroup ();
-}
-
-void LeechCraft::PluginManager::CheckPlugins ()
-{
-	QSettings settings (QCoreApplication::organizationName (),
-			QCoreApplication::applicationName ());
-	settings.beginGroup ("Plugins");
-
-	for (int i = 0; i < Plugins_.size (); ++i)
+	QModelIndex PluginManager::parent (const QModelIndex&) const
 	{
-		QPluginLoader_ptr loader = Plugins_.at (i);
-
-		QString file = loader->fileName ();
-
-		if (!QFileInfo (loader->fileName ()).isFile ())
-		{
-			qWarning () << "A plugin isn't really a file, aborting load:"
-				<< file;
-			Plugins_.removeAt (i--);
-			continue;
-		}
-
-		loader->load ();
-		if (!loader->isLoaded ())
-		{
-			qWarning () << "Could not load library:"
-				<< file
-				<< ";"
-				<< loader->errorString ();
-			Plugins_.removeAt (i--);
-			continue;
-		}
-
-		QObject *pluginEntity;
-		try
-		{
-			pluginEntity = loader->instance ();
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "failed to construct the instance with"
-				<< e.what ()
-				<< "for"
-				<< file;
-			Plugins_.removeAt (i--);
-			continue;
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "failed to construct the instance for"
-				<< file;
-			Plugins_.removeAt (i--);
-			continue;
-		}
-
-		IInfo *info = qobject_cast<IInfo*> (pluginEntity);
-		if (!info)
-		{
-			qWarning () << "Casting to IInfo failed:"
-					<< file;
-			Plugins_.removeAt (i--);
-			continue;
-		}
-
-		QString name;
-		QIcon icon;
-		try
-		{
-			name = info->GetName ();
-			icon = info->GetIcon ();
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "failed to get name/icon"
-				<< e.what ()
-				<< "for"
-				<< file;
-			Plugins_.removeAt (i--);
-			continue;
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "failed to get name/icon"
-				<< file;
-			Plugins_.removeAt (i--);
-			continue;
-		}
-		settings.beginGroup (file);
-		settings.setValue ("Name", name);
-		settings.setValue ("Icon", icon.pixmap (48, 48));
-		settings.endGroup ();
+		return QModelIndex ();
 	}
 
-	settings.endGroup ();
-}
-
-QList<LeechCraft::PluginManager::PluginsContainer_t::iterator>
-	LeechCraft::PluginManager::FindProviders (const QString& feature)
-{
-	QList<PluginsContainer_t::iterator> result;
-	for (PluginsContainer_t::iterator i = Plugins_.begin ();
-			i != Plugins_.end (); ++i)
+	int PluginManager::rowCount (const QModelIndex& index) const
 	{
-		try
-		{
-			if (qobject_cast<IInfo*> ((*i)->instance ())->
-					Provides ().contains (feature))
-				result << i;
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "failed to get providers with"
-				<< e.what ()
-				<< "for"
-				<< (*i)->fileName ();
-			Unload (i);
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "failed to get providers"
-				<< (*i)->fileName ();
-			Unload (i);
-		}
-	}
-	return result;
-}
-
-QList<LeechCraft::PluginManager::PluginsContainer_t::iterator>
-	LeechCraft::PluginManager::FindProviders (const QByteArray& expected)
-{
-	QList<PluginsContainer_t::iterator> result;
-	for (PluginsContainer_t::iterator i = Plugins_.begin ();
-			i != Plugins_.end (); ++i)
-	{
-		IPlugin2 *ip2 = qobject_cast<IPlugin2*> ((*i)->instance ());
-		try
-		{
-			if (ip2 &&
-					ip2->GetPluginClass () == expected)
-				result << i;
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "failed to get class with"
-				<< e.what ()
-				<< "for"
-				<< (*i)->fileName ();
-			Unload (i);
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "failed to get class"
-				<< (*i)->fileName ();
-			Unload (i);
-		}
-	}
-	return result;
-}
-
-LeechCraft::PluginManager::DepTreeItem_ptr
-	LeechCraft::PluginManager::GetDependency
-		(QObject *entity)
-{
-	struct Finder
-	{
-		QObject *Plugin_;
-		DepTreeItem_ptr Result_;
-
-		Finder (QObject *plugin)
-		: Plugin_ (plugin)
-		{
-		}
-
-		bool operator() (DepTreeItem_ptr item)
-		{
-			QList<DepTreeItem_ptr> deps =
-				item->Needed_.values () + item->Used_.values ();
-			std::sort (deps.begin (), deps.end ());
-			QList<DepTreeItem_ptr>::const_iterator last =
-				std::unique (deps.begin (), deps.end ());
-
-			for (QList<DepTreeItem_ptr>::const_iterator i = deps.begin ();
-					i != last; ++i)
-				if ((*i)->Plugin_ == Plugin_)
-				{
-					Result_ = *i;
-					return true;
-				}
-			for (QList<DepTreeItem_ptr>::const_iterator i = deps.begin ();
-					i != last; ++i)
-				if (operator() (*i))
-					return true;
-
-			return false;
-		}
-	};
-
-	Finder finder (entity);
-	Q_FOREACH (DepTreeItem_ptr dep, Roots_)
-	{
-		if (dep->Plugin_ == entity)
-		{
-			Roots_.removeAll (dep);
-			return dep;
-		}
+		if (!index.isValid ())
+			return AvailablePlugins_.size ();
 		else
-		{
-			if (finder (dep))
-				return finder.Result_;
-		}
+			return 0;
 	}
 
-	return DepTreeItem_ptr ();
-}
+	bool PluginManager::setData (const QModelIndex& index,
+			const QVariant& data, int role)
+	{
+		if (index.column () != 0 ||
+				role != Qt::CheckStateRole)
+			return false;
 
-void LeechCraft::PluginManager::CalculateDependencies ()
-{
-	for (PluginsContainer_t::iterator i = Plugins_.begin ();
-			i < Plugins_.end (); ++i)
-		if (!GetDependency ((*i)->instance ()))
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName ());
+		settings.beginGroup ("Plugins");
+		settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
+		settings.setValue ("AllowLoad", data.toBool ());
+		settings.endGroup ();
+		settings.endGroup ();
+
+		emit dataChanged (index, index);
+
+		return true;
+	}
+
+	PluginManager::Size_t PluginManager::GetSize () const
+	{
+		return AvailablePlugins_.size ();
+	}
+
+	void PluginManager::Init ()
+	{
+		CheckPlugins ();
+		CalculateDependencies ();
+		InitializePlugins ();
+	}
+
+	void PluginManager::Release ()
+	{
+		while (Roots_.size ())
 		{
 			try
 			{
-				Roots_ << CalculateSingle (i);
+				Release (Roots_.takeAt (0));
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO << e.what ();
+			}
+			catch (...)
+			{
+				QMessageBox::warning (0,
+						tr ("LeechCraft"),
+						tr ("Release of one or more plugins failed."));
+			}
+		}
 
-				IPluginAdaptor *ipa = qobject_cast<IPluginAdaptor*> ((*i)->instance ());
-				if (ipa)
-				{
-					QList<QObject*> plugins = ipa->GetPlugins ();
-					Q_FOREACH (QObject *child, plugins)
-						Roots_ << CalculateSingle (child, Plugins_.end ());
-				}
+		Plugins_.clear ();
+	}
+
+	QString PluginManager::Name (const PluginManager::Size_t& pos) const
+	{
+		return (qobject_cast<IInfo*> (Plugins_ [pos]->instance ()))->GetName ();
+	}
+
+	QString PluginManager::Info (const PluginManager::Size_t& pos) const
+	{
+		return qobject_cast<IInfo*> (Plugins_ [pos]->instance ())->GetInfo ();
+	}
+
+	QObjectList PluginManager::GetAllPlugins () const
+	{
+		QObjectList result;
+		for (PluginsContainer_t::const_iterator i = Plugins_.begin ();
+				i != Plugins_.end (); ++i)
+			result << (*i)->instance ();
+		return result;
+	}
+
+	QObject* PluginManager::GetProvider (const QString& feature) const
+	{
+		if (!FeatureProviders_.contains (feature))
+			return 0;
+		return (*FeatureProviders_ [feature])->instance ();
+	}
+
+	void PluginManager::Unload (QObject *plugin)
+	{
+		Unload (Find (plugin));
+	}
+
+	void PluginManager::FindPlugins ()
+	{
+#ifdef Q_WS_WIN
+		ScanDir (QApplication::applicationDirPath () + "/plugins/bin");
+#else
+		ScanDir ("/usr/local/lib/leechcraft/plugins");
+		ScanDir ("/usr/lib/leechcraft/plugins");
+#endif
+	}
+
+	void PluginManager::ScanDir (const QString& dir)
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName ());
+		settings.beginGroup ("Plugins");
+
+		QDir pluginsDir = QDir (dir);
+		Q_FOREACH (QFileInfo fileinfo,
+				pluginsDir.entryInfoList (QStringList ("*leechcraft_*"),
+					QDir::Files))
+		{
+			QString name = fileinfo.canonicalFilePath ();
+			settings.beginGroup (name);
+
+			QPluginLoader_ptr loader (new QPluginLoader (name));
+			if (settings.value ("AllowLoad", true).toBool ())
+				Plugins_.push_back (loader);
+
+			AvailablePlugins_.push_back (loader);
+
+			settings.endGroup ();
+		}
+
+		settings.endGroup ();
+	}
+
+	void PluginManager::CheckPlugins ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName ());
+		settings.beginGroup ("Plugins");
+
+		for (int i = 0; i < Plugins_.size (); ++i)
+		{
+			QPluginLoader_ptr loader = Plugins_.at (i);
+
+			QString file = loader->fileName ();
+
+			if (!QFileInfo (loader->fileName ()).isFile ())
+			{
+				qWarning () << "A plugin isn't really a file, aborting load:"
+					<< file;
+				Plugins_.removeAt (i--);
+				continue;
+			}
+
+			loader->load ();
+			if (!loader->isLoaded ())
+			{
+				qWarning () << "Could not load library:"
+					<< file
+					<< ";"
+					<< loader->errorString ();
+				Plugins_.removeAt (i--);
+				continue;
+			}
+
+			QObject *pluginEntity;
+			try
+			{
+				pluginEntity = loader->instance ();
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "failed to construct the instance with"
+					<< e.what ()
+					<< "for"
+					<< file;
+				Plugins_.removeAt (i--);
+				continue;
 			}
 			catch (...)
 			{
 				qWarning () << Q_FUNC_INFO
-					<< "CalculateSingle failed";
+					<< "failed to construct the instance for"
+					<< file;
+				Plugins_.removeAt (i--);
+				continue;
 			}
-		}
-}
 
-LeechCraft::PluginManager::DepTreeItem_ptr
-	LeechCraft::PluginManager::CalculateSingle
-		(LeechCraft::PluginManager::PluginsContainer_t::iterator i)
-{
-	QObject *entity = (*i)->instance ();
-	try
-	{
-		return CalculateSingle (entity, i);
-	}
-	catch (const std::exception& e)
-	{
-		qWarning () << Q_FUNC_INFO
-			<< "failed to get required stuff with"
-			<< e.what ()
-			<< "for"
-			<< (*i)->fileName ();
-		Unload (i);
-		throw;
-	}
-	catch (...)
-	{
-		qWarning () << Q_FUNC_INFO
-			<< "failed to get required stuff"
-			<< (*i)->fileName ();
-		Unload (i);
-		throw;
-	}
-}
-
-LeechCraft::PluginManager::DepTreeItem_ptr
-	LeechCraft::PluginManager::CalculateSingle (QObject *entity,
-			LeechCraft::PluginManager::PluginsContainer_t::iterator pos)
-{
-	DepTreeItem_ptr possibly = GetDependency (entity);
-	if (possibly)
-		return possibly;
-
-	IInfo *info = qobject_cast<IInfo*> (entity);
-	QStringList needs;
-	QStringList uses;
-	needs = info->Needs ();
-	uses = info->Uses ();
-
-#ifdef QT_DEBUG
-	qDebug () << "new item" << info->GetName ();
-#endif
-	DepTreeItem_ptr newDep (new DepTreeItem ());
-	newDep->Plugin_ = entity;
-
-	Q_FOREACH (QString need, needs)
-	{
-		QList<PluginsContainer_t::iterator> providers = FindProviders (need);
-		Q_FOREACH (PluginsContainer_t::iterator p,
-				providers)
-		{
-			// It's initialized already.
-			if (p < pos)
+			IInfo *info = qobject_cast<IInfo*> (pluginEntity);
+			if (!info)
 			{
-				DepTreeItem_ptr depprov = GetDependency ((*p)->instance ());
-				// TODO register entity in depprov->Belongs_
-				if (depprov)
-					newDep->Needed_.insert (need, depprov);
+				qWarning () << "Casting to IInfo failed:"
+						<< file;
+				Plugins_.removeAt (i--);
+				continue;
 			}
-			else if (p > pos)
-				newDep->Needed_.insert (need, CalculateSingle (p));
-		}
-	}
 
-	Q_FOREACH (QString use, uses)
-	{
-		QList<PluginsContainer_t::iterator> providers = FindProviders (use);
-		Q_FOREACH (PluginsContainer_t::iterator p,
-				providers)
-		{
-			// It's initialized already.
-			if (p < pos)
+			QString name;
+			QIcon icon;
+			try
 			{
-				DepTreeItem_ptr depprov = GetDependency ((*p)->instance ());
-				if (depprov)
-					newDep->Used_.insert (use, depprov);
+				name = info->GetName ();
+				icon = info->GetIcon ();
 			}
-			else if (p > pos)
-				newDep->Used_.insert (use, CalculateSingle (p));
-		}
-	}
-
-	IPluginReady *ipr = qobject_cast<IPluginReady*> (entity);
-	if (ipr)
-	{
-		QList<PluginsContainer_t::iterator> providers =
-			FindProviders (ipr->GetExpectedPluginClass ());
-		Q_FOREACH (PluginsContainer_t::iterator p,
-				providers)
-		{
-			// It's initialized already.
-			if (p < pos)
+			catch (const std::exception& e)
 			{
-				DepTreeItem_ptr depprov = GetDependency ((*p)->instance ());
-				if (depprov)
-					newDep->Used_.insert ("__lc_plugin2", depprov);
+				qWarning () << Q_FUNC_INFO
+					<< "failed to get name/icon"
+					<< e.what ()
+					<< "for"
+					<< file;
+				Plugins_.removeAt (i--);
+				continue;
 			}
-			else if (p > pos)
-				newDep->Used_.insert ("__lc_plugin2", CalculateSingle (p));
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "failed to get name/icon"
+					<< file;
+				Plugins_.removeAt (i--);
+				continue;
+			}
+			settings.beginGroup (file);
+			settings.setValue ("Name", name);
+			settings.setValue ("Icon", icon.pixmap (48, 48));
+			settings.endGroup ();
 		}
+
+		settings.endGroup ();
 	}
 
-	return newDep;
-}
-
-void LeechCraft::PluginManager::InitializePlugins ()
-{
-	Q_FOREACH (DepTreeItem_ptr item, Roots_)
-		InitializeSingle (item);
-}
-
-bool LeechCraft::PluginManager::InitializeSingle (LeechCraft::PluginManager::DepTreeItem_ptr item)
-{
-	QList<QString> keys = item->Needed_.uniqueKeys ();
-	Q_FOREACH (QString key, keys)
+	QList<PluginManager::PluginsContainer_t::iterator>
+		PluginManager::FindProviders (const QString& feature)
 	{
-		QList<DepTreeItem_ptr> providers = item->Needed_.values (key);
-		bool wasSuccessful = false;
-		for (QList<DepTreeItem_ptr>::const_iterator i = providers.begin (),
-				end = providers.end (); i != end; ++i)
+		QList<PluginsContainer_t::iterator> result;
+		for (PluginsContainer_t::iterator i = Plugins_.begin ();
+				i != Plugins_.end (); ++i)
 		{
-			if (!(*i)->Initialized_)
-				InitializeSingle (*i);
+			try
+			{
+				if (qobject_cast<IInfo*> ((*i)->instance ())->
+						Provides ().contains (feature))
+					result << i;
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "failed to get providers with"
+					<< e.what ()
+					<< "for"
+					<< (*i)->fileName ();
+				Unload (i);
+			}
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "failed to get providers"
+					<< (*i)->fileName ();
+				Unload (i);
+			}
+		}
+		return result;
+	}
 
-			if (!(*i)->Initialized_)
-				item->Needed_.remove (key, *i);
+	QList<PluginManager::PluginsContainer_t::iterator>
+		PluginManager::FindProviders (const QByteArray& expected)
+	{
+		QList<PluginsContainer_t::iterator> result;
+		for (PluginsContainer_t::iterator i = Plugins_.begin ();
+				i != Plugins_.end (); ++i)
+		{
+			IPlugin2 *ip2 = qobject_cast<IPlugin2*> ((*i)->instance ());
+			try
+			{
+				if (ip2 &&
+						ip2->GetPluginClass () == expected)
+					result << i;
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "failed to get class with"
+					<< e.what ()
+					<< "for"
+					<< (*i)->fileName ();
+				Unload (i);
+			}
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "failed to get class"
+					<< (*i)->fileName ();
+				Unload (i);
+			}
+		}
+		return result;
+	}
+
+	PluginManager::DepTreeItem_ptr
+		PluginManager::GetDependency
+			(QObject *entity)
+	{
+		struct Finder
+		{
+			QObject *Plugin_;
+			DepTreeItem_ptr Result_;
+
+			Finder (QObject *plugin)
+			: Plugin_ (plugin)
+			{
+			}
+
+			bool operator() (DepTreeItem_ptr item)
+			{
+				QList<DepTreeItem_ptr> deps =
+					item->Needed_.values () + item->Used_.values ();
+				std::sort (deps.begin (), deps.end ());
+				QList<DepTreeItem_ptr>::const_iterator last =
+					std::unique (deps.begin (), deps.end ());
+
+				for (QList<DepTreeItem_ptr>::const_iterator i = deps.begin ();
+						i != last; ++i)
+					if ((*i)->Plugin_ == Plugin_)
+					{
+						Result_ = *i;
+						return true;
+					}
+				for (QList<DepTreeItem_ptr>::const_iterator i = deps.begin ();
+						i != last; ++i)
+					if (operator() (*i))
+						return true;
+
+				return false;
+			}
+		};
+
+		Finder finder (entity);
+		Q_FOREACH (DepTreeItem_ptr dep, Roots_)
+		{
+			if (dep->Plugin_ == entity)
+			{
+				Roots_.removeAll (dep);
+				return dep;
+			}
 			else
 			{
-				wasSuccessful = true;
-
-				qobject_cast<IInfo*> (item->Plugin_)->
-					SetProvider ((*i)->Plugin_, key);;
+				if (finder (dep))
+					return finder.Result_;
 			}
 		}
 
-		if (!wasSuccessful)
-			return false;
+		return DepTreeItem_ptr ();
 	}
 
-	keys = item->Used_.uniqueKeys ();
-	Q_FOREACH (QString key, keys)
+	void PluginManager::CalculateDependencies ()
 	{
-		QList<DepTreeItem_ptr> providers = item->Used_.values (key);
-		for (QList<DepTreeItem_ptr>::const_iterator i = providers.begin (),
-				end = providers.end (); i != end; ++i)
-		{
-			if (!(*i)->Initialized_)
-				InitializeSingle (*i);
-
-			if (!(*i)->Initialized_)
-				item->Used_.remove (key, *i);
-			else
+		for (PluginsContainer_t::iterator i = Plugins_.begin ();
+				i < Plugins_.end (); ++i)
+			if (!GetDependency ((*i)->instance ()))
 			{
-				if (key == "__lc_plugin2")
-					qobject_cast<IPluginReady*> (item->Plugin_)->
-						AddPlugin ((*i)->Plugin_);
-				else
-					qobject_cast<IInfo*> (item->Plugin_)->
-						SetProvider ((*i)->Plugin_, key);
+				try
+				{
+					Roots_ << CalculateSingle (i);
+
+					IPluginAdaptor *ipa = qobject_cast<IPluginAdaptor*> ((*i)->instance ());
+					if (ipa)
+					{
+						QList<QObject*> plugins = ipa->GetPlugins ();
+						Q_FOREACH (QObject *child, plugins)
+							Roots_ << CalculateSingle (child, Plugins_.end ());
+					}
+				}
+				catch (...)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "CalculateSingle failed";
+				}
 			}
-		}
 	}
 
-	try
+	PluginManager::DepTreeItem_ptr
+		PluginManager::CalculateSingle
+			(PluginManager::PluginsContainer_t::iterator i)
 	{
-		IInfo *ii = qobject_cast<IInfo*> (item->Plugin_);
-		QString name = ii->GetName ();
-		qDebug () << "Initializing" << name << "...";
-		ii->Init (ICoreProxy_ptr (new CoreProxy ()));
-		item->Initialized_ = true;
-
-		Core::Instance ().Setup (item->Plugin_);
-	}
-	catch (const std::exception& e)
-	{
-		qWarning () << Q_FUNC_INFO << 2 << e.what ();
-		Unload (Find (item));
-		return false;
-	}
-	catch (...)
-	{
-		qWarning () << Q_FUNC_INFO << 2;
-		Unload (Find (item));
-		return false;
-	}
-	return true;
-}
-
-void LeechCraft::PluginManager::Release (DepTreeItem_ptr item)
-{
-	QList<DepTreeItem_ptr> deps =
-		item->Needed_.values () + item->Used_.values ();
-	std::sort (deps.begin (), deps.end ());
-	QList<DepTreeItem_ptr>::const_iterator last =
-		std::unique (deps.begin (), deps.end ());
-
-	if (item->Initialized_)
-	{
-		IInfo *ii = qobject_cast<IInfo*> (item->Plugin_);
-#ifdef QT_DEBUG
+		QObject *entity = (*i)->instance ();
 		try
 		{
-			qDebug () << Q_FUNC_INFO << ii->GetName ();
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "failed to get the name of the unloading object";
-		}
-#endif
-
-		PluginsContainer_t::iterator i = Find (item);
-		try
-		{
-			ii->Release ();
-			item->Initialized_ = false;
+			return CalculateSingle (entity, i);
 		}
 		catch (const std::exception& e)
 		{
 			qWarning () << Q_FUNC_INFO
-				<< "failed to release the unloading object with"
+				<< "failed to get required stuff with"
 				<< e.what ()
 				<< "for"
 				<< (*i)->fileName ();
+			Unload (i);
+			throw;
 		}
 		catch (...)
 		{
-			PluginsContainer_t::iterator i = Find (item);
 			qWarning () << Q_FUNC_INFO
-				<< "failed to release the unloading object"
+				<< "failed to get required stuff"
 				<< (*i)->fileName ();
+			Unload (i);
+			throw;
 		}
-		Unload (i);
 	}
 
-	for (QList<DepTreeItem_ptr>::const_iterator i = deps.begin ();
-			i != last; ++i)
-		Release (*i);
-}
-
-void LeechCraft::PluginManager::DumpTree ()
-{
-	Q_FOREACH (DepTreeItem_ptr item, Roots_)
-		item->Print ();
-}
-
-namespace
-{
-	struct LoaderFinder
+	PluginManager::DepTreeItem_ptr
+		PluginManager::CalculateSingle (QObject *entity,
+				PluginManager::PluginsContainer_t::iterator pos)
 	{
-		QObject *Object_;
+		DepTreeItem_ptr possibly = GetDependency (entity);
+		if (possibly)
+			return possibly;
 
-		LoaderFinder (QObject *o)
-		: Object_ (o)
+		IInfo *info = qobject_cast<IInfo*> (entity);
+		QStringList needs;
+		QStringList uses;
+		needs = info->Needs ();
+		uses = info->Uses ();
+
+#ifdef QT_DEBUG
+		qDebug () << "new item" << info->GetName ();
+#endif
+		DepTreeItem_ptr newDep (new DepTreeItem ());
+		newDep->Plugin_ = entity;
+
+		Q_FOREACH (QString need, needs)
 		{
+			QList<PluginsContainer_t::iterator> providers = FindProviders (need);
+			Q_FOREACH (PluginsContainer_t::iterator p,
+					providers)
+			{
+				// It's initialized already.
+				if (p < pos)
+				{
+					DepTreeItem_ptr depprov = GetDependency ((*p)->instance ());
+					// TODO register entity in depprov->Belongs_
+					if (depprov)
+						newDep->Needed_.insert (need, depprov);
+				}
+				else if (p > pos)
+					newDep->Needed_.insert (need, CalculateSingle (p));
+			}
 		}
 
-		bool operator() (const boost::shared_ptr<QPluginLoader>& ptr) const
+		Q_FOREACH (QString use, uses)
 		{
-			return ptr->instance () == Object_;
+			QList<PluginsContainer_t::iterator> providers = FindProviders (use);
+			Q_FOREACH (PluginsContainer_t::iterator p,
+					providers)
+			{
+				// It's initialized already.
+				if (p < pos)
+				{
+					DepTreeItem_ptr depprov = GetDependency ((*p)->instance ());
+					if (depprov)
+						newDep->Used_.insert (use, depprov);
+				}
+				else if (p > pos)
+					newDep->Used_.insert (use, CalculateSingle (p));
+			}
 		}
-	};
-};
 
-LeechCraft::PluginManager::PluginsContainer_t::iterator
-	LeechCraft::PluginManager::Find (DepTreeItem_ptr item)
-{
-	return Find (item->Plugin_);
-}
-
-LeechCraft::PluginManager::PluginsContainer_t::iterator
-	LeechCraft::PluginManager::Find (QObject *item)
-{
-	return std::find_if (Plugins_.begin (), Plugins_.end (),
-			LoaderFinder (item));
-}
-
-void LeechCraft::PluginManager::Unload (PluginsContainer_t::iterator i)
-{
-	if (i == Plugins_.end ())
-		return;
-
-	if (!UnloadQueue_.contains (i))
-		UnloadQueue_ << i;
-
-	DepTreeItem_ptr dep = GetDependency ((*i)->instance ());
-	if (dep)
-	{
-		QPluginLoader_ptr pluginLoader = *i;
-		Q_FOREACH (DepTreeItem_ptr belongs, dep->Belongs_)
-			Unload (Find (belongs));
-
-		if (dep->Initialized_)
+		IPluginReady *ipr = qobject_cast<IPluginReady*> (entity);
+		if (ipr)
 		{
+			QList<PluginsContainer_t::iterator> providers =
+				FindProviders (ipr->GetExpectedPluginClass ());
+			Q_FOREACH (PluginsContainer_t::iterator p,
+					providers)
+			{
+				// It's initialized already.
+				if (p < pos)
+				{
+					DepTreeItem_ptr depprov = GetDependency ((*p)->instance ());
+					if (depprov)
+						newDep->Used_.insert ("__lc_plugin2", depprov);
+				}
+				else if (p > pos)
+					newDep->Used_.insert ("__lc_plugin2", CalculateSingle (p));
+			}
+		}
+
+		return newDep;
+	}
+
+	void PluginManager::InitializePlugins ()
+	{
+		Q_FOREACH (DepTreeItem_ptr item, Roots_)
+			InitializeSingle (item);
+
+		struct InitSecond
+		{
+			PluginManager *That_;
+
+			InitSecond (PluginManager *that)
+			: That_ (that)
+			{
+			}
+
+			bool operator() (DepTreeItem_ptr item) const
+			{
+				if (!item ||
+						!item->Initialized_)
+					return false;;
+
+				try
+				{
+					qobject_cast<IInfo*> (item->Plugin_)->SecondInit ();
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO << 2 << e.what ();
+					That_->Unload (That_->Find (item));
+					return false;
+				}
+				catch (...)
+				{
+					qWarning () << Q_FUNC_INFO << 2;
+					That_->Unload (That_->Find (item));
+					return false;
+				}
+
+				return true;
+			}
+		} init (this);
+
+
+		for (PluginsContainer_t::iterator i = Plugins_.begin ();
+				i < Plugins_.end (); ++i)
+		{
+			if (!init (FindTreeItem (i)))
+				continue;
+
+			IPluginAdaptor *ipa = qobject_cast<IPluginAdaptor*> ((*i)->instance ());
+			if (ipa)
+				Q_FOREACH (QObject *plugin, ipa->GetPlugins ())
+					init (FindTreeItem (plugin));
+		}
+	}
+
+	bool PluginManager::InitializeSingle (PluginManager::DepTreeItem_ptr item)
+	{
+		QList<QString> keys = item->Needed_.uniqueKeys ();
+		Q_FOREACH (QString key, keys)
+		{
+			QList<DepTreeItem_ptr> providers = item->Needed_.values (key);
+			bool wasSuccessful = false;
+			for (QList<DepTreeItem_ptr>::const_iterator i = providers.begin (),
+					end = providers.end (); i != end; ++i)
+			{
+				if (!(*i)->Initialized_)
+					InitializeSingle (*i);
+
+				if (!(*i)->Initialized_)
+					item->Needed_.remove (key, *i);
+				else
+				{
+					wasSuccessful = true;
+
+					qobject_cast<IInfo*> (item->Plugin_)->
+						SetProvider ((*i)->Plugin_, key);;
+				}
+			}
+
+			if (!wasSuccessful)
+				return false;
+		}
+
+		keys = item->Used_.uniqueKeys ();
+		Q_FOREACH (QString key, keys)
+		{
+			QList<DepTreeItem_ptr> providers = item->Used_.values (key);
+			for (QList<DepTreeItem_ptr>::const_iterator i = providers.begin (),
+					end = providers.end (); i != end; ++i)
+			{
+				if (!(*i)->Initialized_)
+					InitializeSingle (*i);
+
+				if (!(*i)->Initialized_)
+					item->Used_.remove (key, *i);
+				else
+				{
+					if (key == "__lc_plugin2")
+						qobject_cast<IPluginReady*> (item->Plugin_)->
+							AddPlugin ((*i)->Plugin_);
+					else
+						qobject_cast<IInfo*> (item->Plugin_)->
+							SetProvider ((*i)->Plugin_, key);
+				}
+			}
+		}
+
+		try
+		{
+			IInfo *ii = qobject_cast<IInfo*> (item->Plugin_);
+			QString name = ii->GetName ();
+			qDebug () << "Initializing" << name << "...";
+			ii->Init (ICoreProxy_ptr (new CoreProxy ()));
+			item->Initialized_ = true;
+
+			Core::Instance ().Setup (item->Plugin_);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO << 2 << e.what ();
+			Unload (Find (item));
+			return false;
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO << 2;
+			Unload (Find (item));
+			return false;
+		}
+		return true;
+	}
+
+	void PluginManager::Release (DepTreeItem_ptr item)
+	{
+		QList<DepTreeItem_ptr> deps =
+			item->Needed_.values () + item->Used_.values ();
+		std::sort (deps.begin (), deps.end ());
+		QList<DepTreeItem_ptr>::const_iterator last =
+			std::unique (deps.begin (), deps.end ());
+
+		if (item->Initialized_)
+		{
+			IInfo *ii = qobject_cast<IInfo*> (item->Plugin_);
+#ifdef QT_DEBUG
 			try
 			{
-				qobject_cast<IInfo*> (dep->Plugin_)->Release ();
+				qDebug () << Q_FUNC_INFO << ii->GetName ();
+			}
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "failed to get the name of the unloading object";
+			}
+#endif
+
+			PluginsContainer_t::iterator i = Find (item);
+			try
+			{
+				ii->Release ();
+				item->Initialized_ = false;
 			}
 			catch (const std::exception& e)
 			{
-				PluginsContainer_t::iterator i = Find (dep);
 				qWarning () << Q_FUNC_INFO
 					<< "failed to release the unloading object with"
 					<< e.what ()
 					<< "for"
-					<< pluginLoader->fileName ();
+					<< (*i)->fileName ();
 			}
 			catch (...)
 			{
-				PluginsContainer_t::iterator i = Find (dep);
+				PluginsContainer_t::iterator i = Find (item);
 				qWarning () << Q_FUNC_INFO
 					<< "failed to release the unloading object"
-					<< pluginLoader->fileName ();
+					<< (*i)->fileName ();
+			}
+			Unload (i);
+		}
+
+		for (QList<DepTreeItem_ptr>::const_iterator i = deps.begin ();
+				i != last; ++i)
+			Release (*i);
+	}
+
+	void PluginManager::DumpTree ()
+	{
+		Q_FOREACH (DepTreeItem_ptr item, Roots_)
+			item->Print ();
+	}
+
+	PluginManager::DepTreeItem_ptr PluginManager::FindTreeItem (PluginManager::PluginsContainer_t::iterator i)
+	{
+		return FindTreeItem ((*i)->instance ());
+	}
+
+	PluginManager::DepTreeItem_ptr PluginManager::FindTreeItem (QObject *inst)
+	{
+		struct Descender
+		{
+			const QObject * const Inst_;
+
+			Descender (const QObject * const inst)
+			: Inst_ (inst)
+			{
+			}
+
+			DepTreeItem_ptr operator() (DepTreeItem_ptr first) const
+			{
+				QList<DepTreeItem_ptr> list;
+				list << first;
+				while (!list.isEmpty ())
+				{
+					DepTreeItem_ptr item = list.takeFirst ();
+					if (item->Plugin_ == Inst_)
+						return item;
+					else
+					{
+						list << item->Needed_.values ();
+						list << item->Used_.values ();
+					}
+				}
+
+				return DepTreeItem_ptr ();
+			}
+		} desc (inst);
+
+		Q_FOREACH (DepTreeItem_ptr root, Roots_)
+		{
+			DepTreeItem_ptr item = desc (root);
+			if (item)
+				return item;
+		}
+
+		return DepTreeItem_ptr ();
+	}
+
+	namespace
+	{
+		struct LoaderFinder
+		{
+			QObject *Object_;
+
+			LoaderFinder (QObject *o)
+			: Object_ (o)
+			{
+			}
+
+			bool operator() (const boost::shared_ptr<QPluginLoader>& ptr) const
+			{
+				return ptr->instance () == Object_;
+			}
+		};
+	};
+
+	PluginManager::PluginsContainer_t::iterator
+		PluginManager::Find (DepTreeItem_ptr item)
+	{
+		return Find (item->Plugin_);
+	}
+
+	PluginManager::PluginsContainer_t::iterator
+		PluginManager::Find (QObject *item)
+	{
+		return std::find_if (Plugins_.begin (), Plugins_.end (),
+				LoaderFinder (item));
+	}
+
+	void PluginManager::Unload (PluginsContainer_t::iterator i)
+	{
+		if (i == Plugins_.end ())
+			return;
+
+		if (!UnloadQueue_.contains (i))
+			UnloadQueue_ << i;
+
+		DepTreeItem_ptr dep = GetDependency ((*i)->instance ());
+		if (dep)
+		{
+			QPluginLoader_ptr pluginLoader = *i;
+			Q_FOREACH (DepTreeItem_ptr belongs, dep->Belongs_)
+				Unload (Find (belongs));
+
+			if (dep->Initialized_)
+			{
+				try
+				{
+					qobject_cast<IInfo*> (dep->Plugin_)->Release ();
+				}
+				catch (const std::exception& e)
+				{
+					PluginsContainer_t::iterator i = Find (dep);
+					qWarning () << Q_FUNC_INFO
+						<< "failed to release the unloading object with"
+						<< e.what ()
+						<< "for"
+						<< pluginLoader->fileName ();
+				}
+				catch (...)
+				{
+					PluginsContainer_t::iterator i = Find (dep);
+					qWarning () << Q_FUNC_INFO
+						<< "failed to release the unloading object"
+						<< pluginLoader->fileName ();
+				}
 			}
 		}
+
+		/** TODO understand why app segfaults on exit if it's uncommented.
+		if (UnloadQueue_.size () == 1)
+			processUnloadQueue ();
+		*/
 	}
 
-	/** TODO understand why app segfaults on exit if it's uncommented.
-	if (UnloadQueue_.size () == 1)
-		processUnloadQueue ();
-	*/
-}
-
-void LeechCraft::PluginManager::processUnloadQueue ()
-{
-	for (int i = 0; i < UnloadQueue_.size (); ++i)
+	void PluginManager::processUnloadQueue ()
 	{
-		QPluginLoader_ptr loader = *UnloadQueue_.at (i);
-		IInfo *ii = qobject_cast<IInfo*> (loader->instance ());
-		QString name;
-		try
+		for (int i = 0; i < UnloadQueue_.size (); ++i)
 		{
-			name = ii->GetName ();
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "unable to get name for the unload"
-				<< loader->instance ()
-				<< e.what ();
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "unable to get name for the unload"
-				<< loader->instance ();
-		}
-
-		try
-		{
-#ifdef QT_DEBUG
-			qDebug () << Q_FUNC_INFO
-				<< name;
-#endif
-			if (!loader->unload ())
+			QPluginLoader_ptr loader = *UnloadQueue_.at (i);
+			IInfo *ii = qobject_cast<IInfo*> (loader->instance ());
+			QString name;
+			try
+			{
+				name = ii->GetName ();
+			}
+			catch (const std::exception& e)
+			{
 				qWarning () << Q_FUNC_INFO
-					<< "unable to unload"
+					<< "unable to get name for the unload"
 					<< loader->instance ()
-					<< loader->errorString ();
+					<< e.what ();
+			}
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "unable to get name for the unload"
+					<< loader->instance ();
+			}
+
+			try
+			{
+#ifdef QT_DEBUG
+				qDebug () << Q_FUNC_INFO
+					<< name;
+#endif
+				if (!loader->unload ())
+					qWarning () << Q_FUNC_INFO
+						<< "unable to unload"
+						<< loader->instance ()
+						<< loader->errorString ();
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "unable to unload with exception"
+					<< loader->instance ()
+					<< e.what ();
+			}
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "unable to unload with exception"
+					<< loader->instance ();
+			}
 		}
-		catch (const std::exception& e)
+		std::sort (UnloadQueue_.begin (), UnloadQueue_.end ());
+		while (UnloadQueue_.size ())
 		{
-			qWarning () << Q_FUNC_INFO
-				<< "unable to unload with exception"
-				<< loader->instance ()
-				<< e.what ();
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "unable to unload with exception"
-				<< loader->instance ();
+			Plugins_.erase (UnloadQueue_.last ());
+			UnloadQueue_.pop_back ();
 		}
 	}
-	std::sort (UnloadQueue_.begin (), UnloadQueue_.end ());
-	while (UnloadQueue_.size ())
-	{
-		Plugins_.erase (UnloadQueue_.last ());
-		UnloadQueue_.pop_back ();
-	}
-}
+};
 

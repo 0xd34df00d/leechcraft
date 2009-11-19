@@ -77,6 +77,10 @@ namespace LeechCraft
 			
 				setActionsEnabled ();
 			}
+
+			void TorrentPlugin::SecondInit ()
+			{
+			}
 			
 			TorrentPlugin::~TorrentPlugin ()
 			{

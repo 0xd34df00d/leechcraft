@@ -50,6 +50,7 @@ namespace LeechCraft
 				CategoriesSelector *Video_;
 			public:
 				void Init (ICoreProxy_ptr);
+				void SecondInit ();
 				void Release ();
 				QString GetName () const;
 				QString GetInfo () const;

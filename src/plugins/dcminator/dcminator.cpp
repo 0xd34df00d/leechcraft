@@ -33,6 +33,10 @@ namespace LeechCraft
 				Core::Instance ();
 			}
 
+			void Plugin::SecondInit ()
+			{
+			}
+
 			void Plugin::Release ()
 			{
 				Core::Instance ().Release ();
