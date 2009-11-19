@@ -325,6 +325,7 @@ namespace LeechCraft
 					<< "DefaultFontSize"
 					<< "DefaultFixedFontSize"
 					<< "AutoLoadImages"
+					<< "DNSPrefetchEnabled"
 					<< "AllowJavascript"
 					<< "AllowJava"
 					<< "AllowPlugins"
@@ -531,6 +532,8 @@ namespace LeechCraft
 						XmlSettingsManager::Instance ()->property ("DefaultFixedFontSize").toInt ());
 				QWebSettings::globalSettings ()->setAttribute (QWebSettings::AutoLoadImages,
 						XmlSettingsManager::Instance ()->property ("AutoLoadImages").toBool ());
+				QWebSettings::globalSettings ()->setAttribute (QWebSettings::DnsPrefetchEnabled,
+						XmlSettingsManager::Instance ()->property ("DNSPrefetchEnabled").toBool ());
 				QWebSettings::globalSettings ()->setAttribute (QWebSettings::JavascriptEnabled,
 						XmlSettingsManager::Instance ()->property ("AllowJavascript").toBool ());
 				QWebSettings::globalSettings ()->setAttribute (QWebSettings::JavaEnabled,

@@ -112,6 +112,10 @@
 			<groupbox>
 				<label lang="en" value="In-memory" />
 				<label lang="ru" value="В памяти" />
+				<item type="checkbox" property="DNSPrefetchEnabled" default="on">
+					<label lang="en" value="Prefetch DNS entries" />
+					<label lang="ru" value="Предварительно разрешать адреса через DNS" />
+				</item>
 				<item type="spinbox" property="MaximumPagesInCache" default="15" minimum="5" maximum="1000" step="5">
 					<label lang="en" value="Maximum pages:" />
 					<label lang="ru" value="Максимум страниц:" />
