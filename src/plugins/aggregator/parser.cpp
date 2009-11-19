@@ -65,6 +65,13 @@ namespace LeechCraft
 				for (size_t i = 0; i < newes.size (); ++i)
 				{
 					Channel_ptr newChannel = newes [i];
+					if (newChannel->Link_.isEmpty ())
+					{
+						qWarning () << Q_FUNC_INFO
+							<< "detected empty link for"
+							<< newChannel->Title_;
+						newChannel->Link_ = "about:blank";
+					}
 					int position = -1;
 					for (size_t j = 0; j < channels.size (); ++j)
 						if (channels [j]->Title_ == newChannel->Title_ &&
