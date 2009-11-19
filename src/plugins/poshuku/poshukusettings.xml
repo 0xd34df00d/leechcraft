@@ -90,6 +90,10 @@
 					<label lang="en" value="Cookies..." />
 					<label lang="ru" value="Куки..." />
 				</item>
+				<item type="pushbutton" name="ClearIconDatabase">
+					<label lang="en" value="Clear favicon database" />
+					<label lang="ru" value="Очистить базу иконок сайтов" />
+				</item>
 			</groupbox>
 		</tab>
 		<tab>
@@ -149,6 +153,10 @@
 						<label value="Общая ёмкость:" />
 						<suffix value=" МБ" />
 					</lang>
+				</item>
+				<item type="pushbutton" name="ClearMemoryCaches">
+					<label lang="en" value="Clear in-memory caches" />
+					<label lang="ru" value="Очистить кеши в памяти" />
 				</item>
 			</groupbox>
 		</tab>
