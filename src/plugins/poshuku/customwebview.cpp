@@ -27,6 +27,7 @@
 #include "customwebpage.h"
 #include "browserwidget.h"
 #include "searchtext.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -80,6 +81,15 @@ namespace LeechCraft
 						SIGNAL (storeFormData (const PageFormsData_t&)),
 						this,
 						SIGNAL (storeFormData (const PageFormsData_t&)));
+
+				QList<QByteArray> renderSettings;
+				renderSettings << "Antialiasing"
+					<< "TextAntialiasing"
+					<< "SmoothPixmapTransform"
+					<< "HighQualityAntialiasing";
+				XmlSettingsManager::Instance ()->RegisterObject (renderSettings,
+						this, "renderSettingsChanged");
+				renderSettingsChanged ();
 			}
 			
 			CustomWebView::~CustomWebView ()
@@ -367,6 +377,25 @@ namespace LeechCraft
 				SearchText *st = new SearchText (text, this);
 				st->setAttribute (Qt::WA_DeleteOnClose);
 				st->show ();
+			}
+
+			void CustomWebView::renderSettingsChanged ()
+			{
+				QPainter::RenderHints hints;
+				if (XmlSettingsManager::Instance ()->
+						property ("Antialiasing").toBool ())
+					hints |= QPainter::Antialiasing;
+				if (XmlSettingsManager::Instance ()->
+						property ("TextAntialiasing").toBool ())
+					hints |= QPainter::TextAntialiasing;
+				if (XmlSettingsManager::Instance ()->
+						property ("SmoothPixmapTransform").toBool ())
+					hints |= QPainter::SmoothPixmapTransform;
+				if (XmlSettingsManager::Instance ()->
+						property ("HighQualityAntialiasing").toBool ())
+					hints |= QPainter::HighQualityAntialiasing;
+
+				setRenderHints (hints);
 			}
 		};
 	};

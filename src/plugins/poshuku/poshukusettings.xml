@@ -269,5 +269,27 @@
 				</item>	
 			</groupbox>
 		</tab>
+		<tab>
+			<label lang="en" value="Rendering" />
+			<label lang="ru" value="Рендеринг" />
+			<groupbox>
+				<item type="checkbox" property="Antialiasing" default="on">
+					<label lang="en" value="Antialias primitives if possible" />
+					<label lang="ru" value="По возможности сглаживать примитивы" />
+				</item>
+				<item type="checkbox" property="TextAntialiasing" default="on">
+					<label lang="en" value="Antialias text if possible" />
+					<label lang="ru" value="По возможности сглаживать текст" />
+				</item>
+				<item type="checkbox" property="SmoothPixmapTransform" default="on">
+					<label lang="en" value="Smooth pixmap transform" />
+					<label lang="ru" value="Гладкое преобразование изображений" />
+				</item>
+				<item type="checkbox" property="HighQualityAntialiasing" default="on">
+					<label lang="en" value="High-quality antialiasing" />
+					<label lang="ru" value="Высококачественное сглаживание" />
+				</item>
+			</groupbox>
+		</tab>
 	</page>
 </settings>

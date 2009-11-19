@@ -70,6 +70,7 @@ namespace LeechCraft
 				void copyImage ();
 				void copyImageLocation ();
 				void searchSelectedText ();
+				void renderSettingsChanged ();
 			signals:
 				void urlChanged (const QString&);
 				void gotEntity (const LeechCraft::DownloadEntity&);
