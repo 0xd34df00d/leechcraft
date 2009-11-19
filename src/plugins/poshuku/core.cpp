@@ -649,7 +649,7 @@ namespace LeechCraft
 						QPair<QString, QString> pair = SavedSessionState_.at (i);
 						QString title = pair.first;
 						QString url = pair.second;
-						if (title.isEmpty () || url.isEmpty ())
+						if (url.isEmpty ())
 							continue;
 						dia->AddPair (title, url);
 						added = true;
