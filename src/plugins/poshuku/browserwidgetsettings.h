@@ -34,6 +34,7 @@ namespace LeechCraft
 				qreal ZoomFactor_;
 				bool NotifyWhenFinished_;
 				QTime ReloadInterval_;
+				QByteArray WebHistorySerialized_;
 			};
 
 			QDataStream& operator<< (QDataStream&, const BrowserWidgetSettings&);

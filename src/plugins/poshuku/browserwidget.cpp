@@ -41,6 +41,7 @@
 #include <QDesktopServices>
 #include <QXmlStreamReader>
 #include <QTextCodec>
+#include <QWebHistory>
 #include <QDataStream>
 #include <plugininterface/util.h>
 #include "core.h"
@@ -462,11 +463,15 @@ namespace LeechCraft
 
 			BrowserWidgetSettings BrowserWidget::GetWidgetSettings () const
 			{
+				QByteArray ba;
+				QDataStream out (&ba, QIODevice::WriteOnly);
+				out << *Ui_.WebView_->page ()->history ();
 				BrowserWidgetSettings result =
 				{
 					Ui_.WebView_->zoomFactor (),
 					NotifyWhenFinished_->isChecked (),
-					QTime (0, 0, 0).addMSecs (ReloadTimer_->interval ())
+					QTime (0, 0, 0).addMSecs (ReloadTimer_->interval ()),
+					ba
 				};
 				return result;
 			}
@@ -488,6 +493,11 @@ namespace LeechCraft
 				{
 					ReloadPeriodically_->setChecked (true);
 					SetActualReloadInterval (interval);
+				}
+				if (settings.WebHistorySerialized_.size ())
+				{
+					QDataStream str (settings.WebHistorySerialized_);
+					str >> *Ui_.WebView_->page ()->history ();
 				}
 			}
 			

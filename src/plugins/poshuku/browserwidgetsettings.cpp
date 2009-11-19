@@ -28,11 +28,12 @@ namespace LeechCraft
 		{
 			QDataStream& operator<< (QDataStream& out, const BrowserWidgetSettings& s)
 			{
-				qint8 version = 1;
+				qint8 version = 2;
 				out << version
 					<< s.ZoomFactor_
 					<< s.NotifyWhenFinished_
-					<< s.ReloadInterval_;
+					<< s.ReloadInterval_
+					<< s.WebHistorySerialized_;
 				return out;
 			}
 
@@ -40,11 +41,14 @@ namespace LeechCraft
 			{
 				qint8 version;
 				in >> version;
-				if (version == 1)
+				if (version >= 1)
 					in >> s.ZoomFactor_
 						>> s.NotifyWhenFinished_
 						>> s.ReloadInterval_;
-				else
+				if (version >= 2)
+					in >> s.WebHistorySerialized_;
+
+				if (version > 2 || version < 1)
 					qWarning () << Q_FUNC_INFO
 						<< "unknown version"
 						<< version;
