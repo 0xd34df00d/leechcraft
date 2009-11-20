@@ -34,7 +34,6 @@ namespace LeechCraft
 
 				HistoryFilterModel_.reset (new HistoryFilterModel (this));
 				HistoryFilterModel_->setSourceModel (Core::Instance ().GetHistoryModel ());
-				Core::Instance ().GetHistoryModel ()->setParent (HistoryFilterModel_.get ());
 				HistoryFilterModel_->setDynamicSortFilter (true);
 				Ui_.HistoryView_->setModel (HistoryFilterModel_.get ());
 			
