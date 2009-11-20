@@ -33,12 +33,8 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "customwebview.h"
-#include "favoritesdelegate.h"
-#include "historymodel.h"
-#include "favoritesmodel.h"
 #include "browserwidget.h"
 #include "cookieseditdialog.h"
-#include "editbookmarkdialog.h"
 
 namespace LeechCraft
 {
@@ -46,21 +42,12 @@ namespace LeechCraft
 	{
 		namespace Poshuku
 		{
-			using LeechCraft::Util::TagsCompleter;
 			using LeechCraft::Util::TagsCompletionModel;
 			
 			void Poshuku::Init (ICoreProxy_ptr coreProxy)
 			{
 				Core::Instance ().setParent (this);
 				Core::Instance ().SetProxy (coreProxy);
-			
-				Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku"));
-				Ui_.setupUi (this);
-			
-				Core::Instance ().ConnectSignals (Ui_.MainView_);
-				Ui_.MainView_->InitShortcuts ();
-			
-				RegisterSettings ();
 			
 				try
 				{
@@ -171,32 +158,18 @@ namespace LeechCraft
 					return;
 				}
 			
-				SetupFavoritesFilter ();
-				SetupHistoryFilter ();
+				Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku"));
+				Ui_.setupUi (this);
+			
+				Core::Instance ().ConnectSignals (Ui_.MainView_);
+				Ui_.MainView_->InitShortcuts ();
+			
+				RegisterSettings ();
 			
 				connect (Core::Instance ().GetFavoritesModel (),
 						SIGNAL (error (const QString&)),
 						this,
 						SLOT (handleError (const QString&)));
-			
-				QHeaderView *itemsHeader = Ui_.FavoritesView_->header ();
-				QFontMetrics fm = fontMetrics ();
-				itemsHeader->resizeSection (0,
-						fm.width ("Average site title can be very big, it's also the "
-							"most important part, so it's priority is the biggest."));
-				itemsHeader->resizeSection (1,
-						fm.width ("Average URL could be very very long, but we don't account this."));
-				itemsHeader->resizeSection (2,
-						fm.width ("Average tags list size should be like this."));
-			
-				itemsHeader = Ui_.HistoryView_->header ();
-				itemsHeader->resizeSection (0,
-						fm.width ("Average site title can be very big, it's also the "
-							"most important part, so it's priority is the biggest."));
-				itemsHeader->resizeSection (1,
-						fm.width (QDateTime::currentDateTime ().toString () + " space"));
-				itemsHeader->resizeSection (2,
-						fm.width ("Average URL could be very very long, but we don't account this."));
 			}
 
 			void Poshuku::SecondInit ()
@@ -208,8 +181,6 @@ namespace LeechCraft
 				Core::Instance ().setParent (0);
 				Core::Instance ().Release ();
 				XmlSettingsDialog_.reset ();
-				FavoritesFilterLineCompleter_.reset ();
-				FavoritesFilterModel_.reset ();
 			}
 			
 			QString Poshuku::GetName () const
@@ -371,159 +342,6 @@ namespace LeechCraft
 				cacheSettingsChanged ();
 			}
 			
-			void Poshuku::SetupFavoritesFilter ()
-			{
-				FavoritesFilterModel_.reset (new FilterModel (this));
-				FavoritesFilterModel_->setSourceModel (Core::Instance ().GetFavoritesModel ());
-				FavoritesFilterModel_->setDynamicSortFilter (true);
-				Ui_.FavoritesView_->setModel (FavoritesFilterModel_.get ());
-				Ui_.FavoritesView_->setItemDelegate (new FavoritesDelegate (this));
-				Ui_.FavoritesView_->addAction (Ui_.ActionEditBookmark_);
-				Ui_.FavoritesView_->addAction (Ui_.ActionChangeURL_);
-				Ui_.FavoritesView_->addAction (Ui_.ActionDeleteBookmark_);
-				connect (Ui_.FavoritesView_,
-						SIGNAL (deleteSelected (const QModelIndex&)),
-						this,
-						SLOT (translateRemoveFavoritesItem (const QModelIndex&)));
-			
-				FavoritesFilterLineCompleter_.reset (
-						new TagsCompleter (Ui_.FavoritesFilterLine_, this)
-						);
-				Ui_.FavoritesFilterLine_->AddSelector ();
-				connect (Ui_.FavoritesFilterLine_,
-						SIGNAL (textChanged (const QString&)),
-						this,
-						SLOT (updateFavoritesFilter ()));
-				connect (Ui_.FavoritesFilterType_,
-						SIGNAL (currentIndexChanged (int)),
-						this,
-						SLOT (updateFavoritesFilter ()));
-				connect (Ui_.FavoritesFilterCaseSensitivity_,
-						SIGNAL (stateChanged (int)),
-						this,
-						SLOT (updateFavoritesFilter ()));
-			}
-			
-			void Poshuku::SetupHistoryFilter ()
-			{
-				HistoryFilterModel_.reset (new HistoryFilterModel (this));
-				HistoryFilterModel_->setSourceModel (Core::Instance ().GetHistoryModel ());
-				Core::Instance ().GetHistoryModel ()->setParent (HistoryFilterModel_.get ());
-				HistoryFilterModel_->setDynamicSortFilter (true);
-				Ui_.HistoryView_->setModel (HistoryFilterModel_.get ());
-			
-				connect (Ui_.HistoryFilterLine_,
-						SIGNAL (textChanged (const QString&)),
-						this,
-						SLOT (updateHistoryFilter ()));
-				connect (Ui_.HistoryFilterType_,
-						SIGNAL (currentIndexChanged (int)),
-						this,
-						SLOT (updateHistoryFilter ()));
-				connect (Ui_.HistoryFilterCaseSensitivity_,
-						SIGNAL (stateChanged (int)),
-						this,
-						SLOT (updateHistoryFilter ()));
-			}
-			
-			void Poshuku::on_HistoryView__activated (const QModelIndex& index)
-			{
-				if (!index.parent ().isValid ())
-					return;
-
-				Core::Instance ().NewURL (index.sibling (index.row (),
-							HistoryModel::ColumnURL).data ().toString ());
-			}
-			
-			void Poshuku::on_FavoritesView__activated (const QModelIndex& index)
-			{
-				Ui_.ActionEditBookmark_->setEnabled (index.isValid ());
-				Ui_.ActionChangeURL_->setEnabled (index.isValid ());
-				Ui_.ActionDeleteBookmark_->setEnabled (index.isValid ());
-				Core::Instance ().NewURL (index.sibling (index.row (),
-							FavoritesModel::ColumnURL).data ().toString ());
-			}
-			
-			void Poshuku::on_OpenInTabs__released ()
-			{
-				for (int i = 0, size = FavoritesFilterModel_->rowCount (); 
-						i < size; ++i)
-					Core::Instance ().NewURL (FavoritesFilterModel_->
-							index (i, FavoritesModel::ColumnURL).data ().toString ());
-			}
-			
-			void Poshuku::on_ActionEditBookmark__triggered ()
-			{
-				QModelIndex current = Ui_.FavoritesView_->
-					selectionModel ()->currentIndex ();
-				if (!current.isValid ())
-					return;
-				QModelIndex source = FavoritesFilterModel_->mapToSource (current);
-
-				EditBookmarkDialog dia (source, this);
-				if (dia.exec () != QDialog::Accepted)
-					return;
-
-				FavoritesModel *model = Core::Instance ().GetFavoritesModel ();
-				model->setData (source.sibling (source.row (),
-							FavoritesModel::ColumnTitle),
-						dia.GetTitle ());
-				model->setData (source.sibling (source.row (),
-							FavoritesModel::ColumnTags),
-						dia.GetTags ());
-			}
-
-			void Poshuku::on_ActionChangeURL__triggered ()
-			{
-				QModelIndex current = Ui_.FavoritesView_->
-					selectionModel ()->currentIndex ();
-				if (!current.isValid ())
-					return;
-				QModelIndex source = FavoritesFilterModel_->mapToSource (current);
-
-				QString title = source.sibling (source.row (),
-						FavoritesModel::ColumnTitle).data ().toString ();
-
-				QString currentURL = source.sibling (source.row (),
-						FavoritesModel::ColumnURL).data ().toString ();
-
-				bool ok = false;
-
-				QString newURL = QInputDialog::getText (this,
-						tr ("Change URL"),
-						tr ("Enter new URL for<br />%1")
-							.arg (title),
-						QLineEdit::Normal,
-						currentURL,
-						&ok);
-
-				if (!ok)
-					return;
-
-				if (newURL.isEmpty ())
-					QMessageBox::critical (this,
-							tr ("LeechCraft"),
-							tr ("URL of a bookmark can't be empty."));
-
-				Core::Instance ().GetFavoritesModel ()->ChangeURL (source, newURL);
-			}
-
-			void Poshuku::on_ActionDeleteBookmark__triggered ()
-			{
-				QModelIndex current = Ui_.FavoritesView_->
-					selectionModel ()->currentIndex ();
-				if (!current.isValid ())
-					return;
-
-				translateRemoveFavoritesItem (current);
-			}
-			
-			void Poshuku::translateRemoveFavoritesItem (const QModelIndex& sourceIndex)
-			{
-				QModelIndex index = FavoritesFilterModel_->mapToSource (sourceIndex);
-				Core::Instance ().GetFavoritesModel ()->removeItem (index);
-			}
-			
 			void Poshuku::viewerSettingsChanged ()
 			{
 				QWebSettings::globalSettings ()->setFontFamily (QWebSettings::StandardFont,
@@ -593,61 +411,6 @@ namespace LeechCraft
 						);
 				QWebSettings::setOfflineStorageDefaultQuota (XmlSettingsManager::Instance ()->
 						property ("OfflineStorageQuota").toInt () * 1024);
-			}
-			
-			void Poshuku::updateFavoritesFilter ()
-			{
-				int section = Ui_.FavoritesFilterType_->currentIndex ();
-				QString text = Ui_.FavoritesFilterLine_->text ();
-			
-				switch (section)
-				{
-					case 1:
-						FavoritesFilterModel_->setTagsMode (false);
-						FavoritesFilterModel_->setFilterWildcard (text);
-						break;
-					case 2:
-						FavoritesFilterModel_->setTagsMode (false);
-						FavoritesFilterModel_->setFilterRegExp (text);
-						break;
-					case 3:
-						FavoritesFilterModel_->setTagsMode (true);
-						FavoritesFilterModel_->setFilterFixedString (text);
-						break;
-					default:
-						FavoritesFilterModel_->setTagsMode (false);
-						FavoritesFilterModel_->setFilterFixedString (text);
-						break;
-				}
-			
-				FavoritesFilterModel_->
-					setFilterCaseSensitivity ((Ui_.FavoritesFilterCaseSensitivity_->
-								checkState () == Qt::Checked) ? Qt::CaseSensitive :
-							Qt::CaseInsensitive);
-			}
-			
-			void Poshuku::updateHistoryFilter ()
-			{
-				int section = Ui_.HistoryFilterType_->currentIndex ();
-				QString text = Ui_.HistoryFilterLine_->text ();
-			
-				switch (section)
-				{
-					case 1:
-						HistoryFilterModel_->setFilterWildcard (text);
-						break;
-					case 2:
-						HistoryFilterModel_->setFilterRegExp (text);
-						break;
-					default:
-						HistoryFilterModel_->setFilterFixedString (text);
-						break;
-				}
-			
-				HistoryFilterModel_->
-					setFilterCaseSensitivity ((Ui_.HistoryFilterCaseSensitivity_->
-								checkState () == Qt::Checked) ? Qt::CaseSensitive :
-							Qt::CaseInsensitive);
 			}
 			
 			void Poshuku::handleError (const QString& msg)

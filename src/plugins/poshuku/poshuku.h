@@ -31,9 +31,6 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <plugininterface/tagscompleter.h>
-#include "filtermodel.h"
-#include "historyfiltermodel.h"
 #include "ui_poshuku.h"
 
 class QWebView;
@@ -61,10 +58,7 @@ namespace LeechCraft
 				Ui::Poshuku Ui_;
 
 				std::auto_ptr<QTranslator> Translator_;
-				std::auto_ptr<LeechCraft::Util::TagsCompleter> FavoritesFilterLineCompleter_;
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
-				std::auto_ptr<FilterModel> FavoritesFilterModel_;
-				std::auto_ptr<HistoryFilterModel> HistoryFilterModel_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
@@ -99,21 +93,10 @@ namespace LeechCraft
 				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
 			private:
 				void RegisterSettings ();
-				void SetupFavoritesFilter ();
-				void SetupHistoryFilter ();
 			private slots:
-				void on_HistoryView__activated (const QModelIndex&);
-				void on_FavoritesView__activated (const QModelIndex&);
-				void on_OpenInTabs__released ();
-				void on_ActionEditBookmark__triggered ();
-				void on_ActionChangeURL__triggered ();
-				void on_ActionDeleteBookmark__triggered ();
-				void translateRemoveFavoritesItem (const QModelIndex&);
 				void viewerSettingsChanged ();
 				void developerExtrasChanged ();
 				void cacheSettingsChanged ();
-				void updateFavoritesFilter ();
-				void updateHistoryFilter ();
 				void handleError (const QString&);
 				void handleNewTab ();
 				void handleSettingsClicked (const QString&);

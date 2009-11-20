@@ -50,6 +50,9 @@ SET (SRCS
 	favoriteschecker.cpp
 	webpluginfactory.cpp
 	browserwidgetsettings.cpp
+	hideabletabwidget.cpp
+	bookmarkswidget.cpp
+	historywidget.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -93,6 +96,9 @@ SET (HEADERS
 	favoriteschecker.h
 	webpluginfactory.h
 	browserwidgetsettings.h
+	hideabletabwidget.h
+	bookmarkswidget.h
+	historywidget.h
 	interfaces/pluginbase.h
 	interfaces/iwebplugin.h
 	)
@@ -109,6 +115,9 @@ SET (FORMS
 	searchtext.ui
 	reloadintervalselector.ui
 	editbookmarkdialog.ui
+	hideabletabwidget.ui
+	bookmarkswidget.ui
+	historywidget.ui
 	)
 SET (RESOURCES resources.qrc)
 SET (TRANSLATIONS

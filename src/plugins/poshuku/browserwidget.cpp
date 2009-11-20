@@ -53,6 +53,8 @@
 #include "passwordremember.h"
 #include "reloadintervalselector.h"
 #include "browserwidgetsettings.h"
+#include "bookmarkswidget.h"
+#include "historywidget.h"
 
 namespace LeechCraft
 {
@@ -69,6 +71,10 @@ namespace LeechCraft
 			, Own_ (true)
 			{
 				Ui_.setupUi (this);
+				Ui_.Sidebar_->AddPage (tr ("Bookmarks"), new BookmarksWidget);
+				Ui_.Sidebar_->AddPage (tr ("History"), new HistoryWidget);
+				Ui_.Splitter_->setSizes (QList<int> () << 1 << 1000);
+				Ui_.Sidebar_->handleToggleHide ();
 				Ui_.Progress_->hide ();
 
 				Ui_.WebView_->SetBrowserWidget (this);
