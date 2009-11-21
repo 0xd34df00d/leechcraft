@@ -297,6 +297,7 @@ namespace LeechCraft
 				if (Impl_->TagsLineCompleter_.get ())
 					disconnect (Impl_->TagsLineCompleter_.get (), 0, this, 0);
 				Impl_->TrayIcon_->hide ();
+				delete Impl_->AdditionalInfo_;
 				delete Impl_;
 				Core::Instance ().Release ();
 			}
