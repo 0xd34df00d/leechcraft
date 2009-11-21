@@ -125,6 +125,7 @@ namespace LeechCraft
 				 */
 				QModelIndex MapToSourceRecursively (QModelIndex index) const;
 			private:
+				void MadeCurrent (SummaryWidget*);
 				SummaryWidget* CreateSummaryWidget ();
 			private slots:
 				void handleCurrentTabChanged (int);

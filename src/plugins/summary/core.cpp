@@ -56,6 +56,10 @@ namespace LeechCraft
 			void Core::SetProxy (ICoreProxy_ptr proxy)
 			{
 				Proxy_ = proxy;
+				connect (Proxy_->GetTabWidget (),
+						SIGNAL (currentChanged (int)),
+						this,
+						SLOT (handleCurrentTabChanged (int)));
 			}
 
 			ICoreProxy_ptr Core::GetProxy () const
@@ -159,6 +163,12 @@ namespace LeechCraft
 				return index;
 			}
 
+			void Core::MadeCurrent (SummaryWidget *tc)
+			{
+				Q_FOREACH (SummaryWidget *w, Others_ + (QList<SummaryWidget*> () << Default_))
+					w->SmartDeselect (tc);
+			}
+
 			SummaryWidget* Core::CreateSummaryWidget ()
 			{
 				SummaryWidget *result = new SummaryWidget ();
@@ -182,6 +192,7 @@ namespace LeechCraft
 			{
 				QWidget *newTab = Proxy_->GetTabWidget ()->widget (newIndex);
 				Current_ = qobject_cast<SummaryWidget*> (newTab);
+				MadeCurrent (Current_);
 			}
 
 			void Core::handleNewTabRequested ()
@@ -192,6 +203,7 @@ namespace LeechCraft
 
 				emit addNewTab (tr ("Summary"), newTab);
 				emit changeTabIcon (newTab, QIcon (":/resources/images/summary.svg"));
+				emit raiseTab (newTab);
 			}
 
 			void Core::handleNeedToClose ()

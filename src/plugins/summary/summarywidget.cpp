@@ -174,9 +174,22 @@ namespace LeechCraft
 
 			void SummaryWidget::SmartDeselect (SummaryWidget *newFocus)
 			{
+#ifdef QT_DEBUG
+				qDebug () << "SmartDeselect" << newFocus << this;
+#endif
 				if (newFocus &&
-						Ui_.PluginsTasksTree_->selectionModel ())
-					Ui_.PluginsTasksTree_->selectionModel ()->clear ();
+						newFocus != this)
+				{
+					if (Ui_.PluginsTasksTree_->selectionModel ())
+					{
+						Ui_.PluginsTasksTree_->selectionModel ()->clear ();
+						Ui_.PluginsTasksTree_->selectionModel ()->clearSelection ();
+						Ui_.PluginsTasksTree_->selectionModel ()->
+							setCurrentIndex (QModelIndex (), QItemSelectionModel::ClearAndSelect);
+					}
+					Toolbar_->clear ();
+					Ui_.ControlsDockWidget_->hide ();
+				}
 			}
 
 			Ui::SummaryWidget SummaryWidget::GetUi () const
@@ -188,7 +201,7 @@ namespace LeechCraft
 					const QModelIndex& oldIndex)
 			{
 #ifdef QT_DEBUG
-				qDebug () << Q_FUNC_INFO;
+				qDebug () << Q_FUNC_INFO << this << newIndex << oldIndex;
 #endif
 
 				if (oldIndex.isValid () &&
@@ -206,7 +219,7 @@ namespace LeechCraft
 					}
 
 
-					QToolBar *controls = Core::Instance ()			
+					QToolBar *controls = Core::Instance ()
 								.GetControls (newIndex);
 
 					QWidget *addiInfo = Core::Instance ()
@@ -354,8 +367,12 @@ namespace LeechCraft
 			{
 				QItemSelectionModel *selm = Ui_.PluginsTasksTree_->selectionModel ();
 				QModelIndex now = selm->currentIndex ();
+#ifdef QT_DEBUG
+				qDebug () << Q_FUNC_INFO << this << current << now;
+#endif
 				if (current != now ||
-						!selm->rowIntersectsSelection (now.row (), QModelIndex ()))
+						(now.isValid () &&
+						 !selm->rowIntersectsSelection (now.row (), QModelIndex ())))
 					selm->select (now, QItemSelectionModel::ClearAndSelect |
 							QItemSelectionModel::Rows);
 			}
