@@ -26,8 +26,6 @@
 #include "xmlsettingsmanager.h"
 #include "tabwidget.h"
 #include "mainwindow.h"
-#include "tabcontents.h"
-#include "tabcontentsmanager.h"
 
 using namespace LeechCraft;
 
@@ -151,6 +149,7 @@ void TabContainer::add (const QString& name, QWidget *contents)
 void TabContainer::add (const QString& name, QWidget *contents,
 		const QIcon& icon)
 {
+	OriginalTabNames_ << name;
 	if (XmlSettingsManager::Instance ()->
 			property ("OpenTabNext").toBool ())
 	{
@@ -162,7 +161,6 @@ void TabContainer::add (const QString& name, QWidget *contents,
 	}
 	else
 		TabWidget_->addTab (contents, icon, MakeTabName (name));
-	OriginalTabNames_ << name;
 	InvalidateName ();
 }
 
@@ -181,12 +179,6 @@ void TabContainer::remove (int index)
 	QWidget *widget = TabWidget_->widget (index);
 	if (widget->property ("IsUnremoveable").toBool ())
 		return;
-	TabContents *tc = qobject_cast<TabContents*> (widget);
-	if (tc)
-	{
-		TabContentsManager::Instance ().RemoveTab (tc);
-		return;
-	}
 
 	IMultiTabsWidget *itw =
 		qobject_cast<IMultiTabsWidget*> (widget);
@@ -299,7 +291,12 @@ QString TabContainer::MakeTabName (const QString& name) const
 
 void TabContainer::InvalidateName ()
 {
-	Core::Instance ().GetReallyMainWindow ()->
-		SetAdditionalTitle (OriginalTabNames_.at (TabWidget_->currentIndex ()));
+	int ci = TabWidget_->currentIndex ();
+	if (ci >= 0)
+		Core::Instance ().GetReallyMainWindow ()->
+			SetAdditionalTitle (OriginalTabNames_.at (ci));
+	else
+		Core::Instance ().GetReallyMainWindow ()->
+			SetAdditionalTitle (QString ());
 }
 

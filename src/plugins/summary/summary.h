@@ -23,6 +23,9 @@
 #include <QStringList>
 #include <QTranslator>
 #include <interfaces/iinfo.h>
+#include <interfaces/iembedtab.h>
+#include <interfaces/imultitabs.h>
+#include <interfaces/isummaryrepresentation.h>
 
 namespace LeechCraft
 {
@@ -32,9 +35,12 @@ namespace LeechCraft
 		{
 			class Summary : public QObject
 						  , public IInfo
+						  , public IEmbedTab
+						  , public IMultiTabs
+						  , public ISummaryRepresentation
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo)
+				Q_INTERFACES (IInfo IEmbedTab IMultiTabs ISummaryRepresentation)
 
 				std::auto_ptr<QTranslator> Translator_;
 			public:
@@ -48,6 +54,22 @@ namespace LeechCraft
 				QStringList Needs () const;
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
+
+				QWidget* GetTabContents ();
+				QToolBar* GetToolBar () const;
+
+				QModelIndex MapToSource (const QModelIndex&) const;
+				QObject* GetTreeViewReemitter () const;
+				QTreeView* GetCurrentView () const;
+			signals:
+				void bringToFront ();
+				void addNewTab (const QString&, QWidget*);
+				void removeTab (QWidget*);
+				void changeTabName (QWidget*, const QString&);
+				void changeTabIcon (QWidget*, const QIcon&);
+				void changeTooltip (QWidget*, QWidget*);
+				void statusBarChanged (QWidget*, const QString&);
+				void raiseTab (QWidget*);
 			};
 		};
 	};

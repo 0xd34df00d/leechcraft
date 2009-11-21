@@ -57,7 +57,8 @@ namespace LeechCraft
 
 				selected.prepend (Text_);
 
-				Core::Instance ().GetProxy ()->OpenSummary (selected);
+//				TODO implement this as a gotEntity.
+//				Core::Instance ().GetProxy ()->OpenSummary (selected);
 			}
 
 			void SearchText::on_MarkAll__released ()

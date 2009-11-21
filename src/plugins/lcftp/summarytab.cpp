@@ -39,25 +39,6 @@ namespace LeechCraft
 				timer->start (1000);
 			}
 
-			void SummaryTab::handleViewChanged (QTreeView *view)
-			{
-				QItemSelectionModel *selection = view ?
-					view->selectionModel () :
-					0;
-
-				updateTab ();
-
-				if (selection)
-				{
-					connect (selection,
-							SIGNAL (currentChanged (const QModelIndex&,
-									const QModelIndex&)),
-							this,
-							SLOT (handleCurrentChanged (const QModelIndex&)));
-					handleCurrentChanged (selection->currentIndex ());
-				}
-			}
-
 			void SummaryTab::updateTab ()
 			{
 				if (!Current_.isValid ())

@@ -18,12 +18,13 @@
 
 #include "coreproxy.h"
 #include <algorithm>
+#include <interfaces/ifinder.h>
 #include "core.h"
 #include "mainwindow.h"
 #include "xmlsettingsmanager.h"
 #include "skinengine.h"
 #include "tagsmanager.h"
-#include "tabcontentsmanager.h"
+#include "tabwidget.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -31,10 +32,6 @@ using namespace LeechCraft::Util;
 CoreProxy::CoreProxy (QObject *parent)
 : QObject (parent)
 {
-	connect (&TabContentsManager::Instance (),
-			SIGNAL (currentViewChanged (QTreeView*)),
-			this,
-			SIGNAL (currentViewChanged (QTreeView*)));
 }
 
 QNetworkAccessManager* CoreProxy::GetNetworkAccessManager () const
@@ -49,11 +46,7 @@ const IShortcutProxy* CoreProxy::GetShortcutProxy () const
 
 QTreeView* CoreProxy::GetCurrentView () const
 {
-	TabContents *tc = TabContentsManager::Instance ().GetCurrent ();
-	if (!tc)
-		return 0;
-	else
-		return tc->GetUi ().PluginsTasksTree_;
+	return Core::Instance ().GetCurrentView ();
 }
 
 QModelIndex CoreProxy::MapToSource (const QModelIndex& index) const
@@ -69,6 +62,11 @@ BaseSettingsManager* CoreProxy::GetSettingsManager () const
 QMainWindow* CoreProxy::GetMainWindow () const
 {
 	return Core::Instance ().GetReallyMainWindow ();
+}
+
+QTabWidget* CoreProxy::GetTabWidget () const
+{
+	return Core::Instance ().GetReallyMainWindow ()->GetTabWidget ();
 }
 
 QIcon CoreProxy::GetIcon (const QString& icon, const QString& iconOff) const
@@ -94,11 +92,6 @@ QStringList CoreProxy::GetSearchCategories () const
 	return result;
 }
 
-void CoreProxy::OpenSummary (const QStringList& query) const
-{
-	TabContentsManager::Instance ().AddNewTab (query);
-}
-
 int CoreProxy::GetID ()
 {
 	int i = 0;
@@ -120,7 +113,7 @@ void CoreProxy::FreeID (int id)
 
 QObject* CoreProxy::GetTreeViewReemitter () const
 {
-	return TabContentsManager::Instance ().GetReemitter ();
+	return Core::Instance ().GetTreeViewReemitter ();
 }
 
 IPluginsManager* CoreProxy::GetPluginsManager () const

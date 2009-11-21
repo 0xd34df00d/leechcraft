@@ -49,18 +49,16 @@
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/iwindow.h>
 #include <interfaces/itoolbarembedder.h>
+#include <interfaces/isummaryrepresentation.h>
 #include <interfaces/structures.h>
 #include "application.h"
 #include "mainwindow.h"
 #include "pluginmanager.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
-#include "mergemodel.h"
 #include "sqlstoragebackend.h"
-#include "requestparser.h"
 #include "handlerchoicedialog.h"
 #include "tagsmanager.h"
-#include "tabcontentsmanager.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -85,16 +83,11 @@ bool HookProxy::IsCancelled () const
 }
 
 LeechCraft::Core::Core ()
-: MergeModel_ (new MergeModel (QStringList (QString ())
-			<< QString ()
-			<< QString ()))
-, NetworkAccessManager_ (new NetworkAccessManager)
+: NetworkAccessManager_ (new NetworkAccessManager)
 , StorageBackend_ (new SQLStorageBackend)
 , DirectoryWatcher_ (new DirectoryWatcher)
 , ClipboardWatcher_ (new ClipboardWatcher)
 {
-	MergeModel_->setObjectName ("Core MergeModel");
-	MergeModel_->setProperty ("__LeechCraft_own_core_model", true);
 	connect (NetworkAccessManager_.get (),
 			SIGNAL (error (const QString&)),
 			this,
@@ -142,7 +135,6 @@ void LeechCraft::Core::Release ()
 	XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");
 	ClipboardWatcher_.reset ();
 	DirectoryWatcher_.reset ();
-	MergeModel_.reset ();
 
 	PluginManager_->Release ();
 	delete PluginManager_;
@@ -193,13 +185,6 @@ QAbstractItemModel* LeechCraft::Core::GetPluginsModel () const
 	return PluginManager_;
 }
 
-QAbstractItemModel* LeechCraft::Core::GetTasksModel (const QString& text) const
-{
-	RequestNormalizer *rm = new RequestNormalizer (MergeModel_);
-	rm->SetRequest (text);
-	return rm->GetModel ();
-}
-
 PluginManager* LeechCraft::Core::GetPluginManager () const
 {
 	return PluginManager_;
@@ -213,41 +198,6 @@ StorageBackend* LeechCraft::Core::GetStorageBackend () const
 QToolBar* LeechCraft::Core::GetToolBar (int index) const
 {
 	return TabContainer_->GetToolBar (index);
-}
-
-QToolBar* LeechCraft::Core::GetControls (const QModelIndex& index) const
-{
-	if (!index.isValid ())
-		return 0;
-
-	QVariant data = index.data (RoleControls);
-	return data.value<QToolBar*> ();
-}
-
-QWidget* LeechCraft::Core::GetAdditionalInfo (const QModelIndex& index) const
-{
-	if (!index.isValid ())
-		return 0;
-
-	QVariant data = index.data (RoleAdditionalInfo);
-	return data.value<QWidget*> ();
-}
-
-QStringList LeechCraft::Core::GetTagsForIndex (int index,
-		QAbstractItemModel *model) const
-{
-	MergeModel::const_iterator modIter =
-		dynamic_cast<MergeModel*> (model)->GetModelForRow (index);
-
-	int starting = dynamic_cast<MergeModel*> (model)->
-		GetStartingRow (modIter);
-
-	QStringList ids = (*modIter)->data ((*modIter)->
-			index (index - starting, 0), RoleTags).toStringList ();
-	QStringList result;
-	Q_FOREACH (QString id, ids)
-		result << TagsManager::Instance ().GetTag (id);
-	return result;
 }
 
 void LeechCraft::Core::Setup (QObject *plugin)
@@ -290,8 +240,6 @@ void LeechCraft::Core::DelayedInit ()
 			InitEmbedTab (plugin);
 	}
 
-	InitMultiTab (&TabContentsManager::Instance ());
-
 	LocalSocketHandler_.reset (new LocalSocketHandler (ReallyMainWindow_));
 	connect (LocalSocketHandler_.get (),
 			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
@@ -331,13 +279,6 @@ void LeechCraft::Core::TryToAddJob (QString name, QString where)
 
 	if (!handleGotEntity (e))
 		emit error (tr ("No plugins are able to download \"%1\"").arg (name));
-}
-
-bool LeechCraft::Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) const
-{
-	QModelIndex mapped1 = MapToSourceRecursively (i1);
-	QModelIndex mapped2 = MapToSourceRecursively (i2);
-	return mapped1.model () == mapped2.model ();
 }
 
 QPair<qint64, qint64> LeechCraft::Core::GetSpeeds () const
@@ -381,7 +322,42 @@ QNetworkAccessManager* LeechCraft::Core::GetNetworkAccessManager () const
 
 QModelIndex LeechCraft::Core::MapToSource (const QModelIndex& index) const
 {
-	return MapToSourceRecursively (index);
+	QList<ISummaryRepresentation*> summaries =
+		PluginManager_->GetAllCastableTo<ISummaryRepresentation*> ();
+	Q_FOREACH (ISummaryRepresentation *summary, summaries)
+	{
+		QModelIndex mapped = summary->MapToSource (index);
+		if (mapped.isValid ())
+			return mapped;
+	}
+	return QModelIndex ();
+}
+
+QObject* LeechCraft::Core::GetTreeViewReemitter () const
+{
+	// TODO move out to a separate class so that merging would be possible
+	QList<ISummaryRepresentation*> summaries =
+		PluginManager_->GetAllCastableTo<ISummaryRepresentation*> ();
+	Q_FOREACH (ISummaryRepresentation *summary, summaries)
+	{
+		QObject* result = summary->GetTreeViewReemitter ();
+		if (result)
+			return result;
+	}
+	return 0;
+}
+
+QTreeView* LeechCraft::Core::GetCurrentView () const
+{
+	QList<ISummaryRepresentation*> summaries =
+		PluginManager_->GetAllCastableTo<ISummaryRepresentation*> ();
+	Q_FOREACH (ISummaryRepresentation *summary, summaries)
+	{
+		QTreeView* result = summary->GetCurrentView ();
+		if (result)
+			return result;
+	}
+	return 0;
 }
 
 TabContainer* LeechCraft::Core::GetTabContainer () const
@@ -946,8 +922,6 @@ void LeechCraft::Core::InitJobHolder (QObject *plugin)
 	{
 		IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
 		QAbstractItemModel *model = ijh->GetRepresentation ();
-		Representation2Object_ [model] = plugin;
-		MergeModel_->AddModel (model);
 
 		if (model)
 		{
@@ -1032,14 +1006,5 @@ void LeechCraft::Core::InitMultiTab (QObject *plugin)
 			SIGNAL (raiseTab (QWidget*)),
 			TabContainer_.get (),
 			SLOT (bringToFront (QWidget*)));
-}
-
-QModelIndex LeechCraft::Core::MapToSourceRecursively (QModelIndex index) const
-{
-	const QAbstractProxyModel *model = 0;
-	while ((model = qobject_cast<const QAbstractProxyModel*> (index.model ())) &&
-			model->property ("__LeechCraft_own_core_model").toBool ())
-		index = model->mapToSource (index);
-	return index;
 }
 

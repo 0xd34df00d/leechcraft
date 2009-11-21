@@ -135,11 +135,6 @@ namespace LeechCraft
 			void Core::SetCoreProxy (ICoreProxy_ptr proxy)
 			{
 				Proxy_ = proxy;
-				connect (Proxy_->GetSelf (),
-						SIGNAL (currentViewChanged (QTreeView*)),
-						SummaryTab_,
-						SLOT (handleViewChanged (QTreeView*)));
-				SummaryTab_->handleViewChanged (proxy->GetCurrentView ());
 			}
 
 			ICoreProxy_ptr Core::GetCoreProxy () const

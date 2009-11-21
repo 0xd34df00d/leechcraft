@@ -38,7 +38,6 @@
 #include "coreproxy.h"
 
 using namespace LeechCraft;
-using Util::MergeModel;
 
 namespace LeechCraft
 {

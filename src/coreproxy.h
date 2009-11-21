@@ -41,10 +41,10 @@ namespace LeechCraft
 		QModelIndex MapToSource (const QModelIndex&) const;
 		Util::BaseSettingsManager* GetSettingsManager () const;
 		QMainWindow* GetMainWindow () const;
+		QTabWidget* GetTabWidget () const;
 		QIcon GetIcon (const QString&, const QString& = QString ()) const;
 		ITagsManager* GetTagsManager () const;
 		QStringList GetSearchCategories () const;
-		void OpenSummary (const QStringList&) const;
 		int GetID ();
 		void FreeID (int);
 		QObject* GetTreeViewReemitter () const;
@@ -58,8 +58,6 @@ namespace LeechCraft
 #undef LC_EXPANDER
 #undef LC_TRAVERSER
 #undef LC_DEFINE_REGISTER
-	signals:
-		void currentViewChanged (QTreeView*);
 	};
 };
 

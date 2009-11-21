@@ -16,29 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef OPERATIONALMODEL_H
-#define OPERATIONALMODEL_H
-#include <plugininterface/mergemodel.h>
+#ifndef PLUGINS_SUMMARY_REQUESTPARSER_H
+#define PLUGINS_SUMMARY_REQUESTPARSER_H
+#include <QObject>
+#include <QStringList>
+#include <interfaces/ifinder.h>
 
 namespace LeechCraft
 {
-	class OperationalModel : public Util::MergeModel
+	namespace Plugins
 	{
-		Q_OBJECT
-	public:
-		enum Operation
+		namespace Summary
 		{
-			OpNull,
-			OpAnd,
-			OpOr
+			class RequestParser : public QObject
+			{
+				Q_OBJECT
+
+				Request Request_;
+			public:
+				RequestParser (const QString& = QString (), QObject* = 0);
+
+				void Parse (QString);
+				const Request& GetRequest () const;
+			};
 		};
-	private:
-		Operation Op_;
-	public:
-		OperationalModel (QObject* = 0);
-		void SetOperation (Operation);
-	protected:
-		bool AcceptsRow (QAbstractItemModel*, int) const;
 	};
 };
 

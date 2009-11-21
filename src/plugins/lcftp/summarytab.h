@@ -38,7 +38,6 @@ namespace LeechCraft
 			public:
 				SummaryTab (QWidget* = 0);
 			public slots:
-				void handleViewChanged (QTreeView*);
 				void handleCurrentChanged (const QModelIndex&);
 				void updateTab ();
 				void on_DownloadSpeed__valueChanged (int);

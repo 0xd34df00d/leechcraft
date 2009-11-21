@@ -34,6 +34,7 @@ class QModelIndex;
 class QIcon;
 class QMainWindow;
 class QAbstractItemModel;
+class QTabWidget;
 
 namespace LeechCraft
 {
@@ -306,6 +307,20 @@ public:
 		return result;
 	}
 
+	template<typename T> QObjectList GetAllCastableRoots () const
+	{
+		return Filter<T> (GetAllPlugins ());
+	}
+
+	template<typename T> QList<T> GetAllCastableTo () const
+	{
+		QObjectList roots = GetAllCastableRoots<T> ();
+		QList<T> result;
+		Q_FOREACH (QObject *root, roots)
+			result << qobject_cast<T> (root);
+		return result;
+	}
+
 	virtual ~IPluginsManager () {}
 };
 
@@ -356,6 +371,10 @@ public:
 	 */
 	virtual QMainWindow* GetMainWindow () const = 0;
 
+	/** Returns the main tab widget.
+	 */
+	virtual QTabWidget* GetTabWidget () const = 0;
+
 	/** Returns the application-wide tags manager.
 	 */
 	virtual ITagsManager* GetTagsManager () const = 0;
@@ -364,10 +383,6 @@ public:
 	 * finders installed.
 	 */
 	virtual QStringList GetSearchCategories () const = 0;
-
-	/** Opens a new Summary page with the given query.
-	 */
-	virtual void OpenSummary (const QStringList& query = QStringList ()) const = 0;
 
 	/** Returns an ID for a delegated task from the pool.
 	 */

@@ -16,26 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef REQUESTPARSER_H
-#define REQUESTPARSER_H
-#include <QObject>
-#include <QStringList>
-#include <interfaces/ifinder.h>
+#ifndef INTERFACES_ISUMMARYREPRESENTATION_H
+#define INTERFACES_ISUMMARYREPRESENTATION_H
+#include <QtPlugin>
 
-namespace LeechCraft
+class QModelIndex;
+class QTreeView;
+
+class ISummaryRepresentation
 {
-	class RequestParser : public QObject
-	{
-		Q_OBJECT
+public:
+	virtual ~ISummaryRepresentation () {}
 
-		Request Request_;
-	public:
-		RequestParser (const QString& = QString (), QObject* = 0);
-
-		void Parse (QString);
-		const Request& GetRequest () const;
-	};
+	virtual QModelIndex MapToSource (const QModelIndex&) const = 0;
+	virtual QObject* GetTreeViewReemitter () const = 0;
+	virtual QTreeView* GetCurrentView () const = 0;
 };
+
+Q_DECLARE_INTERFACE (ISummaryRepresentation, "org.Deviant.LeechCraft.ISummaryRepresentation/1.0");
 
 #endif
 

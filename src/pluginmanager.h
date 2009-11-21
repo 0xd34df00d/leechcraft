@@ -95,31 +95,6 @@ namespace LeechCraft
 
 		QObjectList GetAllPlugins () const;
 
-		template<typename T> QList<T> GetAllCastableTo () const
-		{
-			QList<T> result;
-			for (PluginsContainer_t::const_iterator i = Plugins_.begin (); i != Plugins_.end (); ++i)
-			{
-				QObject *instance = (*i)->instance ();
-				T casted = qobject_cast<T> (instance);
-				if (casted)
-					result << casted;
-			}
-			return result;
-		}
-
-		template<typename T> QObjectList GetAllCastableRoots () const
-		{
-			QObjectList result;
-			for (PluginsContainer_t::const_iterator i = Plugins_.begin (); i != Plugins_.end (); ++i)
-			{
-				QObject *instance = (*i)->instance ();
-				if (qobject_cast<T> (instance))
-					result << instance;
-			}
-			return result;
-		}
-
 		QObject* GetProvider (const QString&) const;
 		void Unload (QObject*);
 	private:

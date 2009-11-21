@@ -176,7 +176,6 @@ SET (SRCS
 	main.cpp
 	pluginmanager.cpp
 	xmlsettingsmanager.cpp
-	filtermodel.cpp
 	pluginmanagerdialog.cpp
 	fancypopupmanager.cpp
 	skinengine.cpp
@@ -191,11 +190,7 @@ SET (SRCS
 	debugmessagehandler.cpp
 	application.cpp
 	iconchooser.cpp
-	requestparser.cpp
 	handlerchoicedialog.cpp
-	categorymerger.cpp
-	requestnormalizer.cpp
-	operationalmodel.cpp
 	tabwidget.cpp
 	graphwidget.cpp
 	shortcutmanager.cpp
@@ -207,10 +202,7 @@ SET (SRCS
 	tagsmanager.cpp
 	tagsviewer.cpp
 	directorywatcher.cpp
-	tabcontents.cpp
 	aboutdialog.cpp
-	tabcontentsmanager.cpp
-	viewreemitter.cpp
 	startupwizard.cpp
 	localsockethandler.cpp
 	toolbarguard.cpp
@@ -223,7 +215,6 @@ SET (HEADERS
 	core.h
 	pluginmanager.h
 	xmlsettingsmanager.h
-	filtermodel.h
 	pluginmanagerdialog.h
 	fancypopupmanager.h
 	skinengine.h
@@ -238,11 +229,7 @@ SET (HEADERS
 	debugmessagehandler.h
 	application.h
 	iconchooser.h
-	requestparser.h
 	handlerchoicedialog.h
-	categorymerger.h
-	requestnormalizer.h
-	operationalmodel.h
 	tabwidget.h
 	graphwidget.h
 	shortcutmanager.h
@@ -254,10 +241,7 @@ SET (HEADERS
 	tagsmanager.h
 	tagsviewer.h
 	directorywatcher.h
-	tabcontents.h
 	aboutdialog.h
-	tabcontentsmanager.h
-	viewreemitter.h
 	startupwizard.h
 	localsockethandler.h
 	toolbarguard.h
@@ -284,6 +268,7 @@ SET (HEADERS
 	interfaces/istartupwizard.h
 	interfaces/ipluginadaptor.h
 	interfaces/imenuembedder.h
+	interfaces/isummaryrepresentation.h
 	interfaces/structures.h
 	)
 SET (FORMS
@@ -298,7 +283,6 @@ SET (FORMS
 	shortcutmanager.ui
 	keysequencer.ui
 	tagsviewer.ui
-	tabcontents.ui
 	aboutdialog.ui
 	)
 SET (RESOURCES mainresources.qrc)

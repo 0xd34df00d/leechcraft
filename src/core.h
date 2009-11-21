@@ -28,9 +28,7 @@
 #include <interfaces/structures.h>
 #include "pluginmanager.h"
 #include "tabcontainer.h"
-#include "plugininterface/mergemodel.h"
 #include "storagebackend.h"
-#include "requestnormalizer.h"
 #include "networkaccessmanager.h"
 #include "directorywatcher.h"
 #include "localsockethandler.h"
@@ -44,7 +42,6 @@ class QToolBar;
 
 namespace LeechCraft
 {
-	class FilterModel;
 	class MainWindow;
 
 	class HookProxy : public IHookProxy
@@ -69,18 +66,12 @@ namespace LeechCraft
 
 		PluginManager *PluginManager_;
 		MainWindow *ReallyMainWindow_;
-		boost::shared_ptr<Util::MergeModel> MergeModel_;
 		std::auto_ptr<TabContainer> TabContainer_;
 		std::auto_ptr<QNetworkAccessManager> NetworkAccessManager_;
 		std::auto_ptr<StorageBackend> StorageBackend_;
 		std::auto_ptr<DirectoryWatcher> DirectoryWatcher_;
 		std::auto_ptr<ClipboardWatcher> ClipboardWatcher_;
 		std::auto_ptr<LocalSocketHandler> LocalSocketHandler_;
-		typedef std::map<const QAbstractItemModel*, QObject*> repres2object_t;
-		// Contains unfolded representations
-		mutable repres2object_t Representation2Object_;
-		typedef std::map<const QAction*, QAbstractItemModel*> action2model_t;
-		mutable action2model_t Action2Model_;
 
 		Core ();
 	public:
@@ -139,13 +130,6 @@ namespace LeechCraft
 		 */
 		QAbstractItemModel* GetPluginsModel () const;
 
-		/** Creates a new model for the given request and returns a
-		 * pointer to it. Ownership is transferred to the caller.
-		 *
-		 * For example, this is used in the Summary.
-		 */
-		QAbstractItemModel* GetTasksModel (const QString& request) const;
-
 		/** Returns pointer to the app-wide Plugin Manager.
 		 *
 		 * Note that plugin manager is only initialized after the call
@@ -166,44 +150,6 @@ namespace LeechCraft
 		 * @return Toolbar for the given plugin's page.
 		 */
 		QToolBar* GetToolBar (int index) const;
-		
-		/** Returns controls for the model with a given index. The
-		 * return value can't be NULL.
-		 *
-		 * The passed index shouldn't be mapped to source from filter
-		 * model, Core will do it itself.
-		 *
-		 * @param[in] index Unmapped index for which the widget should
-		 * be returned.
-		 * @return Toolbar with controls.
-		 *
-		 * @sa GetAdditionalInfo
-		 */
-		QToolBar* GetControls (const QModelIndex& index) const;
-
-		/** Returns additional info for the model with a given index, or
-		 * NULL if the model doesn't provide it.
-		 *
-		 * The passed index shouldn't be mapped to source from filter
-		 * model, Core will do it itself.
-		 *
-		 * @param[in] index Unmapped index for which the widget should
-		 * be returned.
-		 * @return Widget with additional info/controls.
-		 *
-		 * @sa GetControls
-		 */
-		QWidget* GetAdditionalInfo (const QModelIndex& index) const;
-
-		/** Returns list of tags for a given row using given model. It's
-		 * assumed that the passed model is actually a MergeModel.
-		 *
-		 * @param[in] row The row in the merge model for which the tags
-		 * should be retrieved.
-		 * @param[in] model The MergeModel which contains the row.
-		 * @return Tags for the row.
-		 */
-		QStringList GetTagsForIndex (int row, QAbstractItemModel *model) const;
 
 		/** Performs the initialization of systems that are dependant
 		 * on others, like the main window or the Tab Contents Manager.
@@ -238,6 +184,10 @@ namespace LeechCraft
 		 * to the index provided by a corresponding plugin's model.
 		 */
 		QModelIndex MapToSource (const QModelIndex& index) const;
+
+		QObject* GetTreeViewReemitter () const;
+
+		QTreeView* GetCurrentView () const;
 
 		/** Returns the app-wide TabContainer.
 		 */
@@ -361,17 +311,6 @@ namespace LeechCraft
 		 * to be a valid IMultiTabs*.
 		 */
 		void InitMultiTab (QObject *object);
-
-		/** Maps totally unmapped index to the plugin's source model
-		 * through merge model and filter model.
-		 *
-		 * @param[in] index The original unmapped index.
-		 * @return Mapped index from the plugin's model.
-		 *
-		 * @exception std::runtime_error Throws if the required model
-		 * could not be found.
-		 */
-		QModelIndex MapToSourceRecursively (QModelIndex) const;
 	signals:
 		/** Notifies the user about an error by a pop-up message box.
 		 */

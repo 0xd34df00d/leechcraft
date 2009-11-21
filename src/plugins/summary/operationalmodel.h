@@ -16,40 +16,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef CATEGORYMERGER_H
-#define CATEGORYMERGER_H
-#include <vector>
-#include <boost/shared_ptr.hpp>
+#ifndef PLUGINS_SUMMARY_OPERATIONALMODEL_H
+#define PLUGINS_SUMMARY_OPERATIONALMODEL_H
 #include <plugininterface/mergemodel.h>
-#include <interfaces/ifinder.h>
-#include "filtermodel.h"
 
 namespace LeechCraft
 {
-	struct Request;
-
-	/** Extracts categories from the request, finds the corresponding
-	 * plugins that can handle it and merges models received from them
-	 * into one.
-	 *
-	 * If the category is "embedded", like "downloaders", it also filters
-	 * the results according to the request paremeters.
-	 */
-	class CategoryMerger : public Util::MergeModel
+	namespace Plugins
 	{
-		Q_OBJECT
-
-		typedef std::vector<boost::shared_ptr<IFindProxy> > proxies_t;
-		proxies_t Proxies_;
-		boost::shared_ptr<Util::MergeModel> MergeModel_;
-		std::auto_ptr<FilterModel> FilterModel_;
-	public:
-		/** Constructs the merger according to request. Uses the merge
-		 * as a MergeModel if categories is the one of the built-ins.
-		 */
-		CategoryMerger (const Request& req,
-				const boost::shared_ptr<Util::MergeModel>& merge,
-				QObject* = 0);
+		namespace Summary
+		{
+			class OperationalModel : public Util::MergeModel
+			{
+				Q_OBJECT
+			public:
+				enum Operation
+				{
+					OpNull,
+					OpAnd,
+					OpOr
+				};
+			private:
+				Operation Op_;
+			public:
+				OperationalModel (QObject* = 0);
+				void SetOperation (Operation);
+			protected:
+				bool AcceptsRow (QAbstractItemModel*, int) const;
+			};
+		};
 	};
 };
 

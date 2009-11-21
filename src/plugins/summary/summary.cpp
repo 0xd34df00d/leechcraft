@@ -20,6 +20,8 @@
 #include <QIcon>
 #include <plugininterface/util.h>
 #include "core.h"
+#include "summarywidget.h"
+#include "treeviewreemitter.h"
 
 namespace LeechCraft
 {
@@ -32,6 +34,35 @@ namespace LeechCraft
 				Translator_.reset (Util::InstallTranslator ("summary"));
 
 				Core::Instance ().SetProxy (proxy);
+
+				connect (&Core::Instance (),
+						SIGNAL (addNewTab (const QString&, QWidget*)),
+						this,
+						SIGNAL (addNewTab (const QString&, QWidget*)));
+				connect (&Core::Instance (),
+						SIGNAL (removeTab (QWidget*)),
+						this,
+						SIGNAL (removeTab (QWidget*)));
+				connect (&Core::Instance (),
+						SIGNAL (changeTabName (QWidget*, const QString&)),
+						this,
+						SIGNAL (changeTabName (QWidget*, const QString&)));
+				connect (&Core::Instance (),
+						SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
+						this,
+						SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
+				connect (&Core::Instance (),
+						SIGNAL (changeTooltip (QWidget*, QWidget*)),
+						this,
+						SIGNAL (changeTooltip (QWidget*, QWidget*)));
+				connect (&Core::Instance (),
+						SIGNAL (statusBarChanged (QWidget*, const QString&)),
+						this,
+						SIGNAL (statusBarChanged (QWidget*, const QString&)));
+				connect (&Core::Instance (),
+						SIGNAL (raiseTab (QWidget*)),
+						this,
+						SIGNAL (raiseTab (QWidget*)));
 			}
 
 			void Summary::SecondInit ()
@@ -77,6 +108,31 @@ namespace LeechCraft
 
 			void Summary::SetProvider (QObject*, const QString&)
 			{
+			}
+
+			QWidget* Summary::GetTabContents ()
+			{
+				return Core::Instance ().GetDefaultTab ();
+			}
+
+			QToolBar* Summary::GetToolBar () const
+			{
+				return Core::Instance ().GetDefaultTab ()->GetToolBar ();
+			}
+
+			QModelIndex Summary::MapToSource (const QModelIndex& index) const
+			{
+				return Core::Instance ().MapToSourceRecursively (index);
+			}
+
+			QObject* Summary::GetTreeViewReemitter () const
+			{
+				return Core::Instance ().GetTreeViewReemitter ();
+			}
+			
+			QTreeView* Summary::GetCurrentView () const
+			{
+				return Core::Instance ().GetCurrentView ();
 			}
 		};
 	};

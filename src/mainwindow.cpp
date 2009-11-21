@@ -22,9 +22,10 @@
 #include <QModelIndex>
 #include <QChildEvent>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "plugininterface/util.h"
-#include "interfaces/itraymenu.h"
-#include "interfaces/imenuembedder.h"
+#include <plugininterface/util.h>
+#include <interfaces/itraymenu.h>
+#include <interfaces/imenuembedder.h>
+#include <interfaces/imultitabs.h>
 #include "mainwindow.h"
 #include "view.h"
 #include "core.h"
@@ -42,7 +43,6 @@
 #include "appstyler.h"
 #include "tagsviewer.h"
 #include "application.h"
-#include "tabcontentsmanager.h"
 #include "startupwizard.h"
 #include "aboutdialog.h"
 #include "toolbarguard.h"
@@ -74,7 +74,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			SLOT (log (const QString&)));
 
 	Core::Instance ().SetReallyMainWindow (this);
-	TabContentsManager::Instance ().SetDefault (Ui_.SummaryContents_);
 	Core::Instance ().DelayedInit ();
 
 	QTimer *speedUpd = new QTimer (this);
@@ -318,7 +317,10 @@ void LeechCraft::MainWindow::on_ActionAddTask__triggered ()
 
 void LeechCraft::MainWindow::on_ActionNewTab__triggered ()
 {
-	TabContentsManager::Instance ().AddNewTab ();
+	IMultiTabsWidget *imtw =
+		qobject_cast<IMultiTabsWidget*> (GetTabWidget ()->currentWidget ());
+	if (imtw)
+		imtw->NewTabRequested ();
 }
 
 void LeechCraft::MainWindow::on_ActionCloseTab__triggered ()
@@ -426,6 +428,12 @@ void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
 void LeechCraft::MainWindow::on_ActionLogger__triggered ()
 {
 	LogToolBox_->show ();
+}
+
+void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
+{
+	QToolBar *bar = Core::Instance ().GetToolBar (index);
+	GetGuard ()->AddToolbar (bar);
 }
 
 namespace
@@ -549,8 +557,6 @@ void LeechCraft::MainWindow::doDelayedInit ()
 
 	FillTray ();
 	FillToolMenu ();
-
-	Ui_.SummaryContents_->AllowPlugins ();
 
 	setAcceptDrops (true);
 

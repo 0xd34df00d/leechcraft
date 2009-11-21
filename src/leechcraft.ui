@@ -25,7 +25,7 @@
     <item>
      <widget class="LeechCraft::TabWidget" name="MainTabWidget_">
       <property name="currentIndex">
-       <number>0</number>
+       <number>-1</number>
       </property>
       <property name="iconSize">
        <size>
@@ -42,19 +42,6 @@
       <property name="movable">
        <bool>true</bool>
       </property>
-      <widget class="QWidget" name="DownloadersTab_">
-       <attribute name="title">
-        <string>Summary</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <property name="margin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="LeechCraft::TabContents" name="SummaryContents_" native="true"/>
-        </item>
-       </layout>
-      </widget>
      </widget>
     </item>
    </layout>
@@ -78,7 +65,7 @@
      <x>0</x>
      <y>0</y>
      <width>1045</width>
-     <height>22</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="MenuGeneral_">
@@ -220,12 +207,6 @@
    <class>LeechCraft::TabWidget</class>
    <extends>QTabWidget</extends>
    <header>tabwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>LeechCraft::TabContents</class>
-   <extends>QWidget</extends>
-   <header>tabcontents.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
