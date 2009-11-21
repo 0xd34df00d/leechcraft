@@ -130,6 +130,7 @@ namespace LeechCraft
 				void handleCurrentTabChanged (int);
 				void handleNewTabRequested ();
 				void handleNeedToClose ();
+				void handleFilterUpdated ();
 			signals:
 				void addNewTab (const QString&, QWidget*);
 				void removeTab (QWidget*);

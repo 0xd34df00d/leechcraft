@@ -170,6 +170,11 @@ namespace LeechCraft
 						SIGNAL (needToClose ()),
 						this,
 						SLOT (handleNeedToClose ()));
+				connect (result,
+						SIGNAL (filterUpdated ()),
+						this,
+						SLOT (handleFilterUpdated ()));
+				Reemitter_->Connect (result);
 				return result;
 			}
 
@@ -204,6 +209,20 @@ namespace LeechCraft
 
 				Others_.removeAll (tab);
 				tab->deleteLater ();
+			}
+
+			void Core::handleFilterUpdated ()
+			{
+				SummaryWidget *w = qobject_cast<SummaryWidget*> (sender ());
+				if (!w)
+				{
+					qDebug () << Q_FUNC_INFO
+						<< "not a SummaryWidget*"
+						<< sender ();
+					return;
+				}
+
+				Reemitter_->ConnectModelSpecific (w);
 			}
 		};
 	};
