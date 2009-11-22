@@ -47,7 +47,11 @@ namespace LeechCraft
 			
 			void ProgressLineEdit::focusInEvent (QFocusEvent *e)
 			{
+				// TODO don't know why, but without these connections
+				// don't work.
+				qDebug () << Q_FUNC_INFO;
 				QLineEdit::focusInEvent (e);
+				qDebug () << 1;
 			
 				disconnect (completer (),
 						0,
