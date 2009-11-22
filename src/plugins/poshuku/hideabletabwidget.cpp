@@ -55,7 +55,7 @@ namespace LeechCraft
 				QVBoxLayout *tabLay = new QVBoxLayout;
 				QToolBar *hc = new QToolBar;
 				hc->addAction (Hider_);
-				hc->setFixedSize (16, 16);
+				hc->setFixedWidth (QApplication::fontMetrics ().width ("<"));
 				tabLay->addWidget (hc);
 				tabLay->addWidget (TabBar_);
 				tabLay->setStretch (1, 10);
