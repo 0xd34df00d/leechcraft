@@ -25,6 +25,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iembedtab.h>
 #include <interfaces/imultitabs.h>
+#include <interfaces/ientityhandler.h>
 #include <interfaces/isummaryrepresentation.h>
 
 namespace LeechCraft
@@ -37,10 +38,11 @@ namespace LeechCraft
 						  , public IInfo
 						  , public IEmbedTab
 						  , public IMultiTabs
+						  , public IEntityHandler
 						  , public ISummaryRepresentation
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IEmbedTab IMultiTabs ISummaryRepresentation)
+				Q_INTERFACES (IInfo IEmbedTab IMultiTabs IEntityHandler ISummaryRepresentation)
 
 				std::auto_ptr<QTranslator> Translator_;
 			public:
@@ -57,6 +59,9 @@ namespace LeechCraft
 
 				QWidget* GetTabContents ();
 				QToolBar* GetToolBar () const;
+
+				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
+				void Handle (LeechCraft::DownloadEntity);
 
 				QModelIndex MapToSource (const QModelIndex&) const;
 				QObject* GetTreeViewReemitter () const;

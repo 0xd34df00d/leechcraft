@@ -98,6 +98,32 @@ namespace LeechCraft
 					return 0;
 			}
 
+			bool Core::CouldHandle (const LeechCraft::DownloadEntity& e) const
+			{
+				if (e.Mime_ == "x-leechcraft/category-search-request" && 
+						e.Entity_.canConvert<QString> ())
+					return true;
+				else
+					return false;
+			}
+			
+			void Core::Handle (LeechCraft::DownloadEntity e)
+			{
+				QString query = e.Entity_.toString ();
+				QStringList cats = e.Additional_ ["Categories"].toStringList ();
+
+				SummaryWidget *newTab = CreateSummaryWidget ();
+
+				Others_ << newTab;
+
+				cats.prepend (query);
+				newTab->SetQuery (cats);
+
+				emit addNewTab (tr ("Summary"), newTab);
+				emit changeTabIcon (newTab, QIcon (":/resources/images/summary.svg"));
+				emit raiseTab (newTab);
+			}
+
 			bool Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) const
 			{
 				QModelIndex mapped1 = MapToSourceRecursively (i1);

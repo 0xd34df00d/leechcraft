@@ -120,6 +120,16 @@ namespace LeechCraft
 				return Core::Instance ().GetDefaultTab ()->GetToolBar ();
 			}
 
+			bool Summary::CouldHandle (const LeechCraft::DownloadEntity& e) const
+			{
+				return Core::Instance ().CouldHandle (e);
+			}
+			
+			void Summary::Handle (LeechCraft::DownloadEntity e)
+			{
+				Core::Instance ().Handle (e);
+			}
+
 			QModelIndex Summary::MapToSource (const QModelIndex& index) const
 			{
 				return Core::Instance ().MapToSourceRecursively (index);
