@@ -88,6 +88,7 @@ QStringList CoreProxy::GetSearchCategories () const
 	for (QList<IFinder*>::iterator i = finders.begin (),
 			end = finders.end (); i != end; ++i)
 		result += (*i)->GetCategories (); 
+	result.removeDuplicates ();
 	std::sort (result.begin (), result.end ());
 	return result;
 }
