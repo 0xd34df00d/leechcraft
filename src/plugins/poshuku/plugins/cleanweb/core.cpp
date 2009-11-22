@@ -27,11 +27,15 @@
 #include <QTimer>
 #include <QTextCodec>
 #include <QMessageBox>
+#include <QWebFrame>
+#include <QWebPage>
+#include <QWebElementCollection>
 #include <QCoreApplication>
 #include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
 #include "flashonclickplugin.h"
 #include "flashonclickwhitelist.h"
+#include "blockednetworkreply.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Plugins::Poshuku::Plugins::CleanWeb;
@@ -344,17 +348,45 @@ void Core::Remove (const QModelIndex& index)
 }
 
 QNetworkReply* Core::Hook (IHookProxy_ptr hook,
-		QNetworkAccessManager *manager,
+		QNetworkAccessManager*,
 		QNetworkAccessManager::Operation*,
 		QNetworkRequest *req,
 		QIODevice**)
 {
-	if (ShouldReject (*req))
+	QString matched;
+	if (ShouldReject (*req, &matched))
 	{
-		qDebug () << "rejecting" << req->url ();
-		*req = QNetworkRequest ();
+		if (Blocked_.size () > 30)
+			Blocked_.removeFirst ();
+		qDebug () << "rejecting against" << matched << req->url ();
+		Blocked_ << matched;
+		hook->CancelDefault ();
+		return new BlockedNetworkReply (*req, this);
 	}
 	return 0;
+}
+
+void Core::HandleLoadFinished (QWebPage *page)
+{
+	QWebFrame *frame = page->mainFrame ();
+	Q_FOREACH (QString blocked, Blocked_)
+	{
+		QString stripped = blocked;
+		stripped.remove ('\\');
+		stripped.remove ('*');
+		QString selector = QString ("*[src~=\"%1\"]").arg (stripped);
+		QWebElementCollection elems = frame->findAllElements (selector);
+
+		if (elems.count ())
+			Blocked_.removeOne (blocked);
+		else
+			continue;
+
+		qDebug () << blocked << elems.count ();
+
+		Q_FOREACH (QWebElement elem, elems)
+			elem.removeFromDocument ();
+	}
 }
 
 FlashOnClickPlugin* Core::GetFlashOnClick ()
@@ -390,7 +422,7 @@ FlashOnClickWhitelist* Core::GetFlashOnClickWhitelist ()
  *
  * The same is applied to the filter strings.
  */
-bool Core::ShouldReject (const QNetworkRequest& req) const
+bool Core::ShouldReject (const QNetworkRequest& req, QString *matchedFilter) const
 {
 	QUrl url = req.url ();
 	QString urlStr = url.toString ();
@@ -412,7 +444,10 @@ bool Core::ShouldReject (const QNetworkRequest& req) const
 			bool cs = filter.Options_ [filterString].Case_ == Qt::CaseSensitive;
 			QString url = cs ? urlStr : cinUrlStr;
 			if (Matches (filterString, filter, url, domain))
+			{
+				*matchedFilter = filterString;
 				return true;
+			}
 		}
 	}
 

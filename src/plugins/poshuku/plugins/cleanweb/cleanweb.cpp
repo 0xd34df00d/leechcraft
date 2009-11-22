@@ -134,5 +134,11 @@ bool CleanWeb::HandleWebPluginFactoryReload (QList<LeechCraft::Plugins::Poshuku:
 	return false;
 }
 
+bool CleanWeb::HandleLoadFinished (QWebPage *page, bool)
+{
+	Core::Instance ().HandleLoadFinished (page);
+	return false;
+}
+
 Q_EXPORT_PLUGIN2 (leechcraft_poshuku_cleanweb, CleanWeb);
 

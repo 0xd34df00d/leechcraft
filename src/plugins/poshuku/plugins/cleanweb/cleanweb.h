@@ -71,6 +71,7 @@ namespace LeechCraft
 
 						void Init (IProxyObject*);
 						bool HandleWebPluginFactoryReload (QList<IWebPlugin*>&);
+						bool HandleLoadFinished (QWebPage*, bool);
 					signals:
 						void delegateEntity (const LeechCraft::DownloadEntity&,
 								int*, QObject**);

@@ -27,6 +27,7 @@
 #include <interfaces/idownload.h>
 
 class QNetworkRequest;
+class QWebPage;
 
 namespace LeechCraft
 {
@@ -104,6 +105,8 @@ namespace LeechCraft
 						};
 						QMap<int, PendingJob> PendingJobs_;
 
+						QList<QString> Blocked_;
+
 						Core ();
 					public:
 						static Core& Instance ();
@@ -125,7 +128,8 @@ namespace LeechCraft
 								QNetworkAccessManager::Operation*,
 								QNetworkRequest*,
 								QIODevice**);
-						bool ShouldReject (const QNetworkRequest&) const;
+						void HandleLoadFinished (QWebPage*);
+						bool ShouldReject (const QNetworkRequest&, QString*) const;
 
 						FlashOnClickPlugin* GetFlashOnClick ();
 						FlashOnClickWhitelist* GetFlashOnClickWhitelist ();

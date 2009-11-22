@@ -8,6 +8,7 @@ SET (CLEANWEB_SRCS
 	flashplaceholder.cpp
 	flashonclickplugin.cpp
 	flashonclickwhitelist.cpp
+	blockednetworkreply.cpp
 	)
 SET (CLEANWEB_HEADERS
 	cleanweb.h
@@ -17,6 +18,7 @@ SET (CLEANWEB_HEADERS
 	flashplaceholder.h
 	flashonclickplugin.h
 	flashonclickwhitelist.h
+	blockednetworkreply.h
 	)
 SET (CLEANWEB_FORMS
 	subscriptionsmanager.ui
