@@ -98,7 +98,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 		{
             if (!pluginsActionsBar)
             {
-                pluginsActionsBar = new QToolBar (this);
+                pluginsActionsBar = new QToolBar (tr ("Actions"), this);
                 addToolBar (Qt::LeftToolBarArea, pluginsActionsBar);
             }
 			pluginsActionsBar->addActions (list);
