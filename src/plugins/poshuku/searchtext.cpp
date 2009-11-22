@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "searchtext.h"
+#include <plugininterface/util.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -55,10 +56,14 @@ namespace LeechCraft
 				if (!selected.size ())
 					return;
 
-				selected.prepend (Text_);
+				DownloadEntity e = Util::MakeEntity (Text_,
+						QString (),
+						FromUserInitiated,
+						"x-leechcraft/category-search-request");
 
-//				TODO implement this as a gotEntity.
-//				Core::Instance ().GetProxy ()->OpenSummary (selected);
+				e.Additional_ ["Categories"] = selected;
+
+				emit gotEntity (e);
 			}
 
 			void SearchText::on_MarkAll__released ()

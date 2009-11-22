@@ -376,6 +376,10 @@ namespace LeechCraft
 					return;
 
 				SearchText *st = new SearchText (text, this);
+				connect (st,
+						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						this,
+						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
 				st->setAttribute (Qt::WA_DeleteOnClose);
 				st->show ();
 			}

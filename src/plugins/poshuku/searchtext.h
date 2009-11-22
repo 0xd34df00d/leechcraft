@@ -19,6 +19,7 @@
 #ifndef PLUGINS_POSHUKU_SEARCHTEXT_H
 #define PLUGINS_POSHUKU_SEARCHTEXT_H
 #include <QDialog>
+#include <interfaces/iinfo.h>
 #include "ui_searchtext.h"
 
 namespace LeechCraft
@@ -39,6 +40,8 @@ namespace LeechCraft
 				void doSearch ();
 				void on_MarkAll__released ();
 				void on_UnmarkAll__released ();
+			signals:
+				void gotEntity (const LeechCraft::DownloadEntity&);
 			};
 		};
 	};
