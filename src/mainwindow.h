@@ -29,6 +29,7 @@
 class QLabel;
 class QDockWidget;
 class QModelIndex;
+class QToolBar;
 class IShortcutProxy;
 
 namespace LeechCraft
@@ -68,6 +69,7 @@ namespace LeechCraft
 		bool WasMaximized_;
 		QString LanguageOnLoad_;
 		ToolbarGuard *Guard_;
+		QToolBar *PluginsActionsBar_;
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
 		virtual ~MainWindow ();

@@ -55,6 +55,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , TrayIcon_ (0)
 , IsShown_ (true)
 , WasMaximized_ (false)
+, PluginsActionsBar_ (0)
 {
 	Guard_ = new ToolbarGuard (this);
 	InitializeInterface ();
@@ -89,20 +90,26 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	speedUpd->start ();
 	qApp->setQuitOnLastWindowClosed (false);
 
-    QToolBar *pluginsActionsBar = 0;
 	Q_FOREACH (QList<QAction*> list, Core::Instance ().GetActions2Embed ())
 	{
 		Q_FOREACH (QAction *act, list)
 			act->setParent (this);
 		if (list.size ())
 		{
-            if (!pluginsActionsBar)
+            if (!PluginsActionsBar_)
             {
-                pluginsActionsBar = new QToolBar (tr ("Actions"), this);
-                addToolBar (Qt::LeftToolBarArea, pluginsActionsBar);
+                PluginsActionsBar_ = new QToolBar (tr ("Actions"), this);
+				Qt::ToolBarArea area;
+				QSettings settings ("Deviant", "Leechcraft");
+				settings.beginGroup ("Window");
+				area = static_cast<Qt::ToolBarArea> (settings
+						.value ("PluginsArea", 1).toInt ());
+				addToolBar (area, PluginsActionsBar_);
+				PluginsActionsBar_->setVisible (settings
+						.value ("PluginsBarVisible", true).toBool ());
             }
-			pluginsActionsBar->addActions (list);
-			pluginsActionsBar->addSeparator ();
+			PluginsActionsBar_->addActions (list);
+			PluginsActionsBar_->addSeparator ();
 		}
 	}
 
@@ -300,7 +307,12 @@ void LeechCraft::MainWindow::WriteSettings ()
 	settings.setValue ("maximized", isMaximized ());
 	settings.endGroup ();
     settings.beginGroup ("Window");
-    settings.setValue ("StatusBarEnabled", Ui_.ActionShowStatusBar_->isChecked ());
+    settings.setValue ("StatusBarEnabled",
+			Ui_.ActionShowStatusBar_->isChecked ());
+	settings.setValue ("PluginsArea",
+			toolBarArea (PluginsActionsBar_));
+	settings.setValue ("PluginsBarVisible",
+			PluginsActionsBar_->isVisible ());
     settings.endGroup ();
 }
 
