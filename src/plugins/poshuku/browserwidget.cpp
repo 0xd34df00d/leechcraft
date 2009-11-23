@@ -29,7 +29,6 @@
 #include <QMenu>
 #include <QMovie>
 #include <QWidgetAction>
-#include <QCompleter>
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QTimer>
@@ -373,14 +372,6 @@ namespace LeechCraft
 						SIGNAL (newUnclose (QAction*)),
 						this,
 						SLOT (handleNewUnclose (QAction*)));
-			
-				QCompleter *completer = new QCompleter (this);
-				completer->setModel (Core::Instance ().GetURLCompletionModel ());
-				Ui_.URLEdit_->setCompleter (completer);
-				connect (Ui_.URLEdit_,
-						SIGNAL (textEdited (const QString&)),
-						Core::Instance ().GetURLCompletionModel (),
-						SLOT (setBase (const QString&)));
 			
 				QTimer::singleShot (100,
 						this,

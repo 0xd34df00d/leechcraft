@@ -54,6 +54,8 @@ namespace LeechCraft
 			public slots:
 				void setBase (const QString&);
 				void handleItemAdded (const HistoryItem&);
+			signals:
+				void baseUpdated (QObject*);
 			private:
 				void Populate ();
 			};

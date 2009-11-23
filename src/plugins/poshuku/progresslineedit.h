@@ -45,6 +45,7 @@ namespace LeechCraft
 			public slots:
 				void handleActivated (const QModelIndex&);
 				void handleHighlighted (const QModelIndex&);
+				void refocus (QObject*);
 			};
 		};
 	};

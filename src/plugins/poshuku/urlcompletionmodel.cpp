@@ -98,6 +98,8 @@ namespace LeechCraft
 				Base_ = str;
 			
 				Populate ();
+
+				emit baseUpdated (sender ());
 			}
 			
 			void URLCompletionModel::handleItemAdded (const HistoryItem&)
@@ -129,7 +131,7 @@ namespace LeechCraft
 					}
 			
 					size = Items_.size () - 1;
-					if (size > 0)
+					if (size >= 0)
 					{
 						beginInsertRows (QModelIndex (), 0, size);
 						endInsertRows ();

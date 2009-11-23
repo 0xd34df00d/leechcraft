@@ -23,6 +23,7 @@
 #include <QToolBar>
 #include <QtDebug>
 #include "urlcompletionmodel.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -34,6 +35,20 @@ namespace LeechCraft
 			: QLineEdit (parent)
 			, IsCompleting_ (false)
 			{
+				QCompleter *completer = new QCompleter (this);
+				completer->setModel (Core::Instance ().GetURLCompletionModel ());
+				setCompleter (completer);
+
+				connect (this,
+						SIGNAL (textEdited (const QString&)),
+						Core::Instance ().GetURLCompletionModel (),
+						SLOT (setBase (const QString&)));
+
+				connect (Core::Instance ().GetURLCompletionModel (),
+						SIGNAL (baseUpdated (QObject*)),
+						this,
+						SLOT (refocus (QObject*)),
+						Qt::QueuedConnection);
 			}
 			
 			ProgressLineEdit::~ProgressLineEdit ()
@@ -47,16 +62,13 @@ namespace LeechCraft
 			
 			void ProgressLineEdit::focusInEvent (QFocusEvent *e)
 			{
-				// TODO don't know why, but without these connections
-				// don't work.
-				qDebug () << Q_FUNC_INFO;
 				QLineEdit::focusInEvent (e);
-				qDebug () << 1;
-			
+
 				disconnect (completer (),
 						0,
 						this,
 						0);
+
 				connect (completer (),
 						SIGNAL (activated (const QModelIndex&)),
 						this,
@@ -93,6 +105,13 @@ namespace LeechCraft
 					.data (URLCompletionModel::RoleURL).toString ();
 			
 				setText (url);
+			}
+
+			void ProgressLineEdit::refocus (QObject *source)
+			{
+				setFocus ();
+				if (source == this)
+					completer ()->popup ()->show ();
 			}
 		};
 	};
