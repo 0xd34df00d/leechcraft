@@ -110,7 +110,8 @@ namespace LeechCraft
 			void ProgressLineEdit::refocus (QObject *source)
 			{
 				setFocus ();
-				if (source == this)
+				if (source == this &&
+						completer ()->completionCount ())
 					completer ()->popup ()->show ();
 			}
 		};
