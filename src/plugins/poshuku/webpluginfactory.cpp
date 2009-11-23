@@ -39,11 +39,14 @@ namespace LeechCraft
 					const QUrl& url,
 					const QStringList& args, const QStringList& params) const
 			{
-				IWebPlugin *plugin = MIME2Plugin_ [mime];
-				QObject *result = 0;
-				if (plugin)
-					result = plugin->Create (mime, url, args, params);
-				return result;
+				QList<IWebPlugin*> plugins = MIME2Plugin_.values (mime);
+				Q_FOREACH (IWebPlugin *plugin, plugins)
+				{
+					QObject *result = plugin->Create (mime, url, args, params);
+					if (result)
+						return result;
+				}
+				return 0;
 			}
 
 			QList<QWebPluginFactory::Plugin> WebPluginFactory::plugins () const
@@ -72,7 +75,7 @@ namespace LeechCraft
 				Q_FOREACH (IWebPlugin *plugin, Plugins_)
 					Q_FOREACH (const QWebPluginFactory::MimeType mime,
 							plugin->Plugin ().mimeTypes)
-						MIME2Plugin_.insert (mime.name, plugin);
+						MIME2Plugin_.insertMulti (mime.name, plugin);
 			}
 		};
 	};
