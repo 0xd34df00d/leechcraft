@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/plugins/poshuku/plugins/wyfv" >
+  	<file>resources/images/poshuku_wyfv.svg</file>
+  </qresource>
+</RCC>

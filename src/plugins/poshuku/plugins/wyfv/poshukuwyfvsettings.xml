@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<declare defaultlang="en" />
+	<page>
+		<label lang="en" value="General" />
+		<label lang="ru" value="Общие" />
+		<tab>
+			<label lang="en" value="VYFW" />
+			<groupbox>
+				<label lang="en" value="Enable for these sites:" />
+				<label lang="ru" value="Включить для этих сайтов:" />
+				<item type="checkbox" default="on" property="YouTube">
+					<label lang="en" value="YouTube" />
+				</item>
+			</groupbox>
+		</tab>
+	</page>
+</settings>
