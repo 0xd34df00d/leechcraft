@@ -947,12 +947,18 @@ namespace LeechCraft
 						continue;
 			
 					LeechCraft::DownloadEntity e;
-					QString entity = attributes.value ("title").toString ();
-			
-					if (entity.isEmpty ())
-						continue;
-			
+
 					e.Mime_ = attributes.value ("type").toString ();
+			
+					QString entity = attributes.value ("title").toString ();
+					if (entity.isEmpty ())
+					{
+						entity = e.Mime_;
+						entity.remove ("application/");
+						entity.remove ("+xml");
+						entity = entity.toUpper ();
+					}
+			
 					QString hrefUrl (attributes.value ("href").toString ());
 					if (hrefUrl.indexOf ("://") < 0)
 					{
