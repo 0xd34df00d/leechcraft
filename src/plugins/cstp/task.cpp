@@ -26,6 +26,7 @@
 #include <QFileInfo>
 #include <QDataStream>
 #include <QDir>
+#include <QTimer>
 #include <QtDebug>
 #include "hook.h"
 #include "core.h"
@@ -44,7 +45,7 @@ namespace LeechCraft
 			, FileSizeAtStart_ (-1)
 			, Speed_ (0)
 			, Counter_ (0)
-			, UpdateCounter_ (0)
+			, Timer_ (0)
 			{
 				StartTime_.start ();
 			}
@@ -55,7 +56,7 @@ namespace LeechCraft
 			, Total_ (0)
 			, FileSizeAtStart_ (-1)
 			, Speed_ (0)
-			, UpdateCounter_ (0)
+			, Timer_ (0)
 			{
 				StartTime_.start ();
 			}
@@ -232,6 +233,14 @@ namespace LeechCraft
 				Speed_ = 0;
 				FileSizeAtStart_ = -1;
 				Reply_.reset ();
+
+				delete Timer_;
+				Timer_ = new QTimer (this);
+				connect (Timer_,
+						SIGNAL (timeout ()),
+						this,
+						SIGNAL (updateInterface ()));
+				Timer_->start (3000);
 			}
 			
 			void Task::RecalculateSpeed ()
@@ -246,8 +255,7 @@ namespace LeechCraft
 			
 				RecalculateSpeed ();
 			
-				if (done == total ||
-						UpdateCounter_++ % 100 == 0)
+				if (done == total)
 					emit updateInterface ();
 			}
 			

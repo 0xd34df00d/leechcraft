@@ -32,6 +32,7 @@ class QAuthenticator;
 class QNetworkProxy;
 class QIODevice;
 class QFile;
+class QTimer;
 
 namespace LeechCraft
 {
@@ -53,6 +54,7 @@ namespace LeechCraft
 				boost::intrusive_ptr<MorphFile> To_;
 				int Counter_;
 				int UpdateCounter_;
+				QTimer *Timer_;
 			public:
 				explicit Task (const QUrl& = QUrl ());
 				explicit Task (QNetworkReply*);
