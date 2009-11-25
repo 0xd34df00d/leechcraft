@@ -19,6 +19,7 @@
 #ifndef PLUGINS_POSHUKU_HIDEABLETABWIDGET_H
 #define PLUGINS_POSHUKU_HIDEABLETABWIDGET_H
 #include <QWidget>
+#include <QSequentialAnimationGroup>
 #include "ui_hideabletabwidget.h"
 
 class QAction;
@@ -33,15 +34,22 @@ namespace LeechCraft
 			class HideableTabWidget : public QWidget
 			{
 				Q_OBJECT
+				Q_PROPERTY (int ContentsWidth
+						READ GetContentsWidth
+						WRITE SetContentsWidth);
 
 				Ui::HideableTabWidget Ui_;
 
 				QAction *Hider_;
 				QTabBar *TabBar_;
 				bool Hidden_;
+				int Width_;
+				QSequentialAnimationGroup AnimationsFIFO_;
 			public:
 				HideableTabWidget (QWidget* = 0);
 				void AddPage (const QString&, QWidget*);
+				int GetContentsWidth () const;
+				void SetContentsWidth (int);
 			private:
 				void Hide (bool);
 			public slots:
