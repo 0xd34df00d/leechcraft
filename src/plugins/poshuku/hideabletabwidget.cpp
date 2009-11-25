@@ -20,7 +20,6 @@
 #include <QAction>
 #include <QTabBar>
 #include <QToolBar>
-#include <QPropertyAnimation>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -32,7 +31,6 @@ namespace LeechCraft
 			HideableTabWidget::HideableTabWidget (QWidget *parent)
 			: QWidget (parent)
 			, Hidden_ (false)
-			, Width_ (0)
 			{
 				Ui_.setupUi (this);
 
@@ -72,49 +70,11 @@ namespace LeechCraft
 				Ui_.Stack_->addWidget (widget);
 			}
 
-			int HideableTabWidget::GetContentsWidth () const
-			{
-				return Ui_.Stack_->width ();
-			}
-
-			void HideableTabWidget::SetContentsWidth (int w)
-			{
-				qDebug () << w;
-				if (w)
-				{
-					Ui_.Stack_->resize (w, Ui_.Stack_->height ());
-					if (!Ui_.Stack_->isVisible ())
-						Ui_.Stack_->setVisible (true);
-				}
-				else
-					Ui_.Stack_->setVisible (false);
-			}
-
 			void HideableTabWidget::Hide (bool h)
 			{
-				int startWidth = 0;
-				int endWidth = 0;
-				if (h)
-				{
-					Width_ = Ui_.Stack_->width ();
-					startWidth = Width_;
-				}
-				else
-					endWidth = Ui_.Stack_->sizeHint ().width ();
-
-				qDebug () << h << startWidth << endWidth;
-
-				QPropertyAnimation *animation = new QPropertyAnimation (this, "ContentsWidth");
-				animation->setDuration (500);
-				animation->setStartValue (startWidth);
-				animation->setEndValue (endWidth);
-				AnimationsFIFO_.addAnimation (animation);
-				connect (animation,
-						SIGNAL (finished ()),
-						animation,
-						SLOT (deleteLater ()));
-				if (AnimationsFIFO_.state () != QAbstractAnimation::Running)
-					AnimationsFIFO_.start ();
+				Ui_.Stack_->setVisible (!h);
+				adjustSize ();
+				parentWidget ()->adjustSize ();
 			}
 
 			void HideableTabWidget::handleToggleHide ()
