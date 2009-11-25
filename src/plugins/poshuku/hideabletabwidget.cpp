@@ -79,7 +79,6 @@ namespace LeechCraft
 
 			void HideableTabWidget::SetContentsWidth (int w)
 			{
-				qDebug () << w;
 				if (w)
 				{
 					Ui_.Stack_->resize (w, Ui_.Stack_->height ());
@@ -101,8 +100,6 @@ namespace LeechCraft
 				}
 				else
 					endWidth = Ui_.Stack_->sizeHint ().width ();
-
-				qDebug () << h << startWidth << endWidth;
 
 				QPropertyAnimation *animation = new QPropertyAnimation (this, "ContentsWidth");
 				animation->setDuration (500);
