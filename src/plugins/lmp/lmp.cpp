@@ -23,6 +23,7 @@
 #include "xmlsettingsmanager.h"
 #include "core.h"
 #include "entitychecker.h"
+#include "playerwidget.h"
 
 using namespace LeechCraft::Plugins::LMP;
 using namespace LeechCraft::Util;
@@ -85,6 +86,16 @@ void LMP::SetProvider (QObject*, const QString&)
 QIcon LMP::GetIcon () const
 {
 	return QIcon (":/plugins/lmp/resources/images/lmp.svg");
+}
+
+IVideoWidget* LMP::CreateWidget () const
+{
+	return Core::Instance ().CreateWidget ();
+}
+
+IVideoWidget* LMP::GetDefaultWidget () const
+{
+	return Core::Instance ().GetDefaultWidget ();
 }
 
 boost::shared_ptr<XmlSettingsDialog> LMP::GetSettingsDialog () const

@@ -23,6 +23,7 @@
 #include <QTranslator>
 #include <QAction>
 #include <interfaces/iinfo.h>
+#include <interfaces/imediaplayer.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/itoolbarembedder.h>
@@ -37,12 +38,13 @@ namespace LeechCraft
 		{
 			class LMP : public QObject
 					  , public IInfo
+					  , public IMediaPlayer
 					  , public IHaveSettings
 					  , public IEntityHandler
 					  , public IToolBarEmbedder
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IHaveSettings IEntityHandler IToolBarEmbedder)
+				Q_INTERFACES (IInfo IMediaPlayer IHaveSettings IEntityHandler IToolBarEmbedder)
 
 				std::auto_ptr<QTranslator> Translator_;
 				boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
@@ -57,6 +59,9 @@ namespace LeechCraft
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
 				QIcon GetIcon () const;
+
+				IVideoWidget* CreateWidget () const;
+				IVideoWidget* GetDefaultWidget () const;
 
 				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 

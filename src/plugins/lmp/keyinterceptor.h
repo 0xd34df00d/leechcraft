@@ -29,11 +29,15 @@ namespace LeechCraft
 	{
 		namespace LMP
 		{
+			class PlayerWidget;
+
 			class KeyInterceptor : public QObject
 			{
 				Q_OBJECT
+
+				PlayerWidget *Player_;
 			public:
-				KeyInterceptor (QObject* = 0);
+				KeyInterceptor (PlayerWidget*, QObject* = 0);
 				virtual ~KeyInterceptor ();
 			protected:
 				virtual bool eventFilter (QObject*, QEvent*);

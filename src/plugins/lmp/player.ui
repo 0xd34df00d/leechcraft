@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>574</width>
-    <height>298</height>
+    <height>296</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,14 +23,7 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="Phonon::VideoWidget" name="VideoWidget_" native="true">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-     </widget>
+     <widget class="LeechCraft::Plugins::LMP::PlayerWidget" name="Player_" native="true"/>
      <widget class="QTreeView" name="Queue_">
       <property name="rootIsDecorated">
        <bool>false</bool>
@@ -45,9 +38,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>Phonon::VideoWidget</class>
+   <class>LeechCraft::Plugins::LMP::PlayerWidget</class>
    <extends>QWidget</extends>
-   <header location="global">Phonon</header>
+   <header>playerwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

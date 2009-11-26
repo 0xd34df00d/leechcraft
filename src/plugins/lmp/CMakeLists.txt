@@ -1,6 +1,7 @@
 SET (QT_USE_QTNETWORK TRUE)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
 	${QT_PHONON_INCLUDES}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${Boost_INCLUDE_DIR}
@@ -13,6 +14,8 @@ SET (SRCS
 	videosettings.cpp
 	entitychecker.cpp
 	player.cpp
+	playerwidget.cpp
+	defaultwidget.cpp
 	)
 SET (HEADERS
 	lmp.h
@@ -22,10 +25,13 @@ SET (HEADERS
 	videosettings.h
 	entitychecker.h
 	player.h
+	playerwidget.h
+	defaultwidget.h
 	phonon.h
 	)
 SET (FORMS
     player.ui
+	playerwidget.ui
 	videosettings.ui
 	)
 SET (RESOURCES resources.qrc)

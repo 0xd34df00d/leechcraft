@@ -16,17 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LMP_PLAYER_H
-#define PLUGINS_LMP_PLAYER_H
-#include <memory>
-#include <QDialog>
-#include <QStandardItemModel>
-#include "ui_player.h"
-#include "phonon.h"
-
-class QStatusBar;
-class QToolBar;
-class QAction;
+#ifndef PLUGINS_LMP_DEFAULTWIDGET_H
+#define PLUGINS_LMP_DEFAULTWIDGET_H
+#include <interfaces/imediaplayer.h>
 
 namespace LeechCraft
 {
@@ -34,31 +26,18 @@ namespace LeechCraft
 	{
 		namespace LMP
 		{
-			class Player : public QDialog
+			class DefaultWidget : public IVideoWidget
 			{
-				Q_OBJECT
-
-				Ui::Player Ui_;
-				QStatusBar *StatusBar_;
-				std::auto_ptr<QStandardItemModel> QueueModel_;
-				enum
-				{
-					SourceRole = Qt::UserRole + 100
-				};
+				Q_INTERFACES (IVideoWidget);
 			public:
-				Player (QWidget* = 0);
+				DefaultWidget ();
+
 				void Play ();
 				void Pause ();
-				void TogglePause ();
-				void Enqueue (Phonon::MediaSource*);
-			private:
-				void FillQueue (int) const;
-			public slots:
-				void handleStateUpdated (const QString&);
-				void handleError (const QString&);
-			private slots:
-				void handleSourceChanged (const Phonon::MediaSource&);
-				void on_Queue__activated (const QModelIndex&);
+				void Stop ();
+				void Enqueue (const QUrl&);
+				void Enqueue (QIODevice*);
+				QWidget* Widget ();
 			};
 		};
 	};

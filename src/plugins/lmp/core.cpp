@@ -22,319 +22,147 @@
 #include <QMainWindow>
 #include <QNetworkReply>
 #include "xmlsettingsmanager.h"
+#include "defaultwidget.h"
+#include "keyinterceptor.h"
 
-using namespace LeechCraft::Plugins::LMP;
 using namespace Phonon;
 
-Core::Core ()
-: TotalTimeAvailable_ (false)
-, VideoWidget_ (0)
-, ShowAction_ (new QAction (QIcon (":/plugins/lmp/resources/images/lmp.svg"),
-			tr ("Show LMP"), this))
+namespace LeechCraft
 {
-	ShowAction_->setEnabled (false);
-}
-
-Core& Core::Instance ()
-{
-	static Core core;
-	return core;
-}
-
-void Core::Release ()
-{
-	if (AudioOutput_.get ())
-		XmlSettingsManager::Instance ()->setProperty ("Volume", AudioOutput_->volume ());
-	MediaObject_.reset ();
-	Player_.reset ();
-}
-
-void Core::SetCoreProxy (ICoreProxy_ptr proxy)
-{
-	Proxy_ = proxy;
-}
-
-ICoreProxy_ptr Core::GetCoreProxy () const
-{
-	return Proxy_;
-}
-
-void Core::Reinitialize ()
-{
-	TotalTimeAvailable_ = false;
-
-	MediaObject_.reset (new MediaObject (this));
-	MediaObject_->setTickInterval (100);
-	connect (MediaObject_.get (),
-			SIGNAL (totalTimeChanged (qint64)),
-			this,
-			SLOT (totalTimeChanged ()));
-	connect (MediaObject_.get (),
-			SIGNAL (tick (qint64)),
-			this,
-			SLOT (updateState ()));
-	connect (MediaObject_.get (),
-			SIGNAL (stateChanged (Phonon::State,
-					Phonon::State)),
-			this,
-			SLOT (updateState ()));
-	connect (MediaObject_.get (),
-			SIGNAL (hasVideoChanged (bool)),
-			this,
-			SLOT (handleHasVideoChanged (bool)));
-
-	qreal oldVolume = XmlSettingsManager::Instance ()->Property ("Volume", 1).value<qreal> ();
-	if (AudioOutput_.get ())
-		oldVolume = AudioOutput_->volume ();
-	AudioOutput_.reset (new AudioOutput (MusicCategory, this));
-	AudioOutput_->setVolume (oldVolume);
-
-	SeekSlider_->setMediaObject (MediaObject_.get ());
-	VolumeSlider_->setAudioOutput (AudioOutput_.get ());
-}
-
-MediaObject* Core::GetMediaObject () const
-{
-	return MediaObject_.get ();
-}
-
-void Core::SetVideoWidget (VideoWidget *widget)
-{
-	VideoWidget_ = widget;
-}
-
-void Core::SetSeekSlider (SeekSlider *slider)
-{
-	SeekSlider_ = slider;
-}
-
-void Core::SetVolumeSlider (VolumeSlider *slider)
-{
-	VolumeSlider_ = slider;
-}
-
-void Core::IncrementVolume ()
-{
-	qreal nv = AudioOutput_->volume ();
-	nv += 0.1;
-	if (nv > 1)
-		nv = 1;
-	AudioOutput_->setVolume (nv);
-}
-
-void Core::DecrementVolume ()
-{
-	qreal nv = AudioOutput_->volume ();
-	nv -= 0.1;
-	if (nv < 0)
-		nv = 0;
-	AudioOutput_->setVolume (nv);
-}
-
-void Core::ToggleFullScreen ()
-{
-	VideoWidget_->setFullScreen (1 - VideoWidget_->isFullScreen ());
-}
-
-void Core::TogglePause ()
-{
-	if (MediaObject_.get ())
+	namespace Plugins
 	{
-		if (MediaObject_->state () == PausedState)
-			play ();
-		else
-			pause ();
-	}
-}
-
-void Core::Forward (SkipAmount a)
-{
-	if (MediaObject_.get ())
-		MediaObject_->seek (MediaObject_->currentTime () + a * 1000);
-}
-
-void Core::Rewind (SkipAmount a)
-{
-	if (MediaObject_.get ())
-		MediaObject_->seek (MediaObject_->currentTime () - a * 1000);
-}
-
-QAction* Core::GetShowAction () const
-{
-	return ShowAction_;
-}
-
-void Core::Handle (const LeechCraft::DownloadEntity& e)
-{
-	MediaSource *source = 0;
-	/* TODO
-	 * Use this code path when we will be able to figure out how to
-	 * synchronously check a local file if it's playable.
-	if (e.Entity_.canConvert<QUrl> ())
-	{
-		QUrl url = e.Entity_.toUrl ();
-		if (url.scheme () == "file")
-			source = new MediaSource (url.toLocalFile ());
-		else
-			source = new MediaSource (url);
-	}
-	else if (e.Entity_.canConvert<QString> ())
-		source = new MediaSource (e.Entity_.toString ());
-	else if (e.Additional_ ["SourceURL"].canConvert<QUrl> ())
-	{
-		QUrl url = e.Additional_ ["SourceURL"].toUrl ();
-		source = new MediaSource (url);
-	}
-	else
-		return;
-		*/
-	if (e.Entity_.canConvert<QNetworkReply*> ())
-	{
-		source = new MediaSource (e.Entity_.value<QNetworkReply*> ());
-	}
-	else if (e.Entity_.canConvert<QUrl> ())
-	{
-		QUrl url = e.Entity_.toUrl ();
-		if (url.scheme () == "file")
-			source = new MediaSource (url.toLocalFile ());
-		else
-			source = new MediaSource (url);
-	}
-	else
-		return;
-
-	if (!Player_.get ())
-	{
-		Player_.reset (new Player (Proxy_->GetMainWindow ()));
-		ShowAction_->setEnabled (true);
-		connect (ShowAction_,
-				SIGNAL (triggered ()),
-				Player_.get (),
-				SLOT (show ()));
-	}
-	Player_->show ();
-	Player_->Enqueue (source);
-	if (!MediaObject_->queue ().size ())
-	{
-		play ();
-		VideoWidget_->setVisible (MediaObject_->hasVideo ());
-	}
-}
-
-void Core::play ()
-{
-	if (MediaObject_.get ())
-	{
-		if (!VideoPath_.isValid ())
-			VideoPath_.reconnect (MediaObject_.get (), VideoWidget_);
-		if (!AudioPath_.isValid ())
-			AudioPath_.reconnect (MediaObject_.get (), AudioOutput_.get ());
-
-		MediaObject_->play ();
-		emit bringToFront ();
-	}
-}
-
-void Core::pause ()
-{
-	if (MediaObject_.get ())
-		MediaObject_->pause ();
-}
-
-void Core::setSource (const QString& filename)
-{
-	MediaObject_->setCurrentSource (filename);
-}
-
-void Core::updateState ()
-{
-	QString result;
-	switch (MediaObject_->state ())
-	{
-		case LoadingState:
-			result = tr ("Initializing");
-			break;
-		case StoppedState:
-			result = tr ("Stopped");
-			break;
-		case PlayingState:
-			result = tr ("Playing");
-			break;
-		case BufferingState:
-			result = tr ("Buffering");
-			break;
-		case PausedState:
-			result = tr ("Paused");
-			break;
-		case ErrorState:
-			result = tr ("Error");
-			emit stateUpdated (result);
-			break;
-	}
-	if (MediaObject_->state () == ErrorState)
-		result += tr (" (%1)").arg (MediaObject_->errorString ()); 
-	result += tr (" [");
-	result += QString::number (static_cast<double> (MediaObject_->
-				currentTime ())/1000., 'f', 1);
-	if (TotalTimeAvailable_)
-	{
-		result += tr ("/");
-		result += QString::number (static_cast<double> (MediaObject_->
-					totalTime ())/1000., 'f', 1);
-	}
-	result += tr ("]");
-
-	result += tr (" from ");
-	MediaSource source = MediaObject_->currentSource ();
-	switch (source.type ())
-	{
-		case MediaSource::Invalid:
-#if PHONON_VERSION >= PHONON_VERSION_CHECK (4, 3, 0)
-		case MediaSource::Empty:
-#endif
-			result += tr ("nowhere");
-			break;
-		case MediaSource::LocalFile:
-			result += source.fileName ();
-			break;
-		case MediaSource::Url:
-			result += source.url ().toString ();
-			break;
-		case MediaSource::Disc:
-			result += source.deviceName ();
-			switch (source.discType ())
+		namespace LMP
+		{
+			Core::Core ()
+			: ShowAction_ (new QAction (QIcon (":/plugins/lmp/resources/images/lmp.svg"),
+						tr ("Show LMP"), this))
+			, DefaultWidget_ (0)
 			{
-				case Cd:
-					result += tr (" (CD)");
-					break;
-				case Dvd:
-					result += tr (" (DVD)");
-					break;
-				case Vcd:
-					result += tr (" (VCD)");
-					break;
-				default:
-					result += tr (" (Unknown disc type)");
-					break;
+				ShowAction_->setEnabled (false);
 			}
-			break;
-		case MediaSource::Stream:
-			result += tr ("stream");
-			break;
-	}
 
-	if (MediaObject_->state () == ErrorState)
-		emit error (result);
-	else
-		emit stateUpdated (result);
-}
+			Core& Core::Instance ()
+			{
+				static Core core;
+				return core;
+			}
 
-void Core::totalTimeChanged ()
-{
-	TotalTimeAvailable_ = true;
-}
+			void Core::Release ()
+			{
+				delete DefaultWidget_;
+				Player_.reset ();
+			}
 
-void Core::handleHasVideoChanged (bool)
-{
-}
+			void Core::SetCoreProxy (ICoreProxy_ptr proxy)
+			{
+				Proxy_ = proxy;
+			}
+
+			ICoreProxy_ptr Core::GetCoreProxy () const
+			{
+				return Proxy_;
+			}
+
+			PlayerWidget* Core::CreateWidget () const
+			{
+				PlayerWidget *result = new PlayerWidget;
+				KeyInterceptor *ki = new KeyInterceptor (result, result);
+				QList<QWidget*> children = result->findChildren<QWidget*> ();
+				children << result;
+				for (QList<QWidget*>::iterator i = children.begin (),
+						end = children.end (); i != end; ++i)
+					(*i)->installEventFilter (ki);
+				return result;
+			}
+
+			IVideoWidget* Core::GetDefaultWidget () const
+			{
+				if (!DefaultWidget_)
+					DefaultWidget_ = new DefaultWidget;
+				return DefaultWidget_;
+			}
+
+			void Core::Reinitialize ()
+			{
+			}
+
+			void Core::Play ()
+			{
+				Player_->Play ();
+			}
+
+			void Core::Pause ()
+			{
+				Player_->Pause ();
+			}
+
+			void Core::Enqueue (const QUrl& url)
+			{
+				Player_->Enqueue (new MediaSource (url));
+			}
+
+			void Core::Enqueue (QIODevice *data)
+			{
+				Player_->Enqueue (new MediaSource (data));
+			}
+
+			QAction* Core::GetShowAction () const
+			{
+				return ShowAction_;
+			}
+
+			void Core::Handle (const LeechCraft::DownloadEntity& e)
+			{
+				MediaSource *source = 0;
+				/* TODO
+				 * Use this code path when we will be able to figure out how to
+				 * synchronously check a local file if it's playable.
+				if (e.Entity_.canConvert<QUrl> ())
+				{
+					QUrl url = e.Entity_.toUrl ();
+					if (url.scheme () == "file")
+						source = new MediaSource (url.toLocalFile ());
+					else
+						source = new MediaSource (url);
+				}
+				else if (e.Entity_.canConvert<QString> ())
+					source = new MediaSource (e.Entity_.toString ());
+				else if (e.Additional_ ["SourceURL"].canConvert<QUrl> ())
+				{
+					QUrl url = e.Additional_ ["SourceURL"].toUrl ();
+					source = new MediaSource (url);
+				}
+				else
+					return;
+					*/
+				if (e.Entity_.canConvert<QNetworkReply*> ())
+				{
+					source = new MediaSource (e.Entity_.value<QNetworkReply*> ());
+				}
+				else if (e.Entity_.canConvert<QUrl> ())
+				{
+					QUrl url = e.Entity_.toUrl ();
+					if (url.scheme () == "file")
+						source = new MediaSource (url.toLocalFile ());
+					else
+						source = new MediaSource (url);
+				}
+				else
+					return;
+
+				if (!Player_.get ())
+				{
+					Player_.reset (new Player (Proxy_->GetMainWindow ()));
+					ShowAction_->setEnabled (true);
+					connect (ShowAction_,
+							SIGNAL (triggered ()),
+							Player_.get (),
+							SLOT (show ()));
+				}
+				Player_->show ();
+				Player_->Enqueue (source);
+			}
+		};
+	};
+};
 

@@ -16,17 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LMP_PLAYER_H
-#define PLUGINS_LMP_PLAYER_H
-#include <memory>
-#include <QDialog>
-#include <QStandardItemModel>
-#include "ui_player.h"
-#include "phonon.h"
-
-class QStatusBar;
-class QToolBar;
-class QAction;
+#include "defaultwidget.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -34,35 +25,36 @@ namespace LeechCraft
 	{
 		namespace LMP
 		{
-			class Player : public QDialog
+			void DefaultWidget::Play ()
 			{
-				Q_OBJECT
+				Core::Instance ().Play ();
+			}
 
-				Ui::Player Ui_;
-				QStatusBar *StatusBar_;
-				std::auto_ptr<QStandardItemModel> QueueModel_;
-				enum
-				{
-					SourceRole = Qt::UserRole + 100
-				};
-			public:
-				Player (QWidget* = 0);
-				void Play ();
-				void Pause ();
-				void TogglePause ();
-				void Enqueue (Phonon::MediaSource*);
-			private:
-				void FillQueue (int) const;
-			public slots:
-				void handleStateUpdated (const QString&);
-				void handleError (const QString&);
-			private slots:
-				void handleSourceChanged (const Phonon::MediaSource&);
-				void on_Queue__activated (const QModelIndex&);
-			};
+			void DefaultWidget::Pause ()
+			{
+				Core::Instance ().Pause ();
+			}
+
+			void DefaultWidget::Stop ()
+			{
+				Core::Instance ().Pause ();
+			}
+
+			void DefaultWidget::Enqueue (const QUrl& url)
+			{
+				Core::Instance ().Enqueue (url);
+			}
+
+			void DefaultWidget::Enqueue (QIODevice* data)
+			{
+				Core::Instance ().Enqueue (data);
+			}
+
+			QWidget* DefaultWidget::Widget ()
+			{
+				return 0;
+			}
 		};
 	};
 };
-
-#endif
 
