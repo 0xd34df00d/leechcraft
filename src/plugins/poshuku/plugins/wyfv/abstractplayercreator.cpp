@@ -16,38 +16,5 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_WYFV_PLAYER_H
-#define PLUGINS_POSHUKU_PLUGINS_WYFV_PLAYER_H
-#include <boost/function.hpp>
-#include <QWidget>
-#include <QList>
-#include "ui_player.h"
-
-namespace LeechCraft
-{
-	namespace Plugins
-	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace WYFV
-				{
-					class Player : public QWidget
-					{
-						Q_OBJECT
-
-					protected:
-						Ui::Player Ui_;
-
-						Player (const QUrl&, const QStringList&, const QStringList&);
-						void SetVideoUrl (const QUrl&);
-					};
-				};
-			};
-		};
-	};
-};
-
-#endif
+#include "abstractplayercreator.h"
 

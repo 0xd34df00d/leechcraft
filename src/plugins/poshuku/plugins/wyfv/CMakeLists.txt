@@ -6,6 +6,9 @@ SET (WYFV_SRCS
 	xmlsettingsmanager.cpp
 	wyfvplugin.cpp
 	player.cpp
+	playerfactory.cpp
+	abstractplayercreator.cpp
+	youtubeplayer.cpp
 	)
 SET (WYFV_HEADERS
 	wyfv.h
@@ -13,6 +16,9 @@ SET (WYFV_HEADERS
 	xmlsettingsmanager.h
 	wyfvplugin.h
 	player.h
+	playerfactory.h
+	abstractplayercreator.h
+	youtubeplayer.h
 	)
 SET (WYFV_FORMS
 	player.ui

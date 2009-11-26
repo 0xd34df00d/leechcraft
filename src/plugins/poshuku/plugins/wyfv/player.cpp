@@ -28,11 +28,16 @@ namespace LeechCraft
 			{
 				namespace WYFV
 				{
-					Player::Player (const QUrl& url,
-							const QStringList& args,
-							const QStringList& params)
+					Player::Player (const QUrl&,
+							const QStringList&,
+							const QStringList&)
 					{
 						Ui_.setupUi (this);
+					}
+
+					void Player::SetVideoUrl (const QUrl& url)
+					{
+//						Ui.VideoPlayer_->play (Phonon::MediaSource (url));
 					}
 				};
 			};

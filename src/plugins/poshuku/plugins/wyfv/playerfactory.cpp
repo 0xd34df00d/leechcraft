@@ -16,10 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "wyfvplugin.h"
-#include <QtDebug>
-#include "player.h"
 #include "playerfactory.h"
+#include <boost/bind.hpp>
+#include "youtubeplayer.h"
 
 namespace LeechCraft
 {
@@ -31,31 +30,32 @@ namespace LeechCraft
 			{
 				namespace WYFV
 				{
-					WYFVPlugin::WYFVPlugin (QObject *parent)
-					: QObject (parent)
+					QList<PlayerFactory::PlayerCreator_f> PlayerFactory::Players_;
+					QList<AbstractPlayerCreator*> PlayerFactory::AllocatedCreators_;
+
+					void PlayerFactory::Init ()
 					{
-						PlayerFactory::Init ();
+						Players_.clear ();
+						qDeleteAll (AllocatedCreators_);
+						AllocatedCreators_.clear ();
+
+						AllocatedCreators_ << new YoutubePlayerCreator;
+						Q_FOREACH (AbstractPlayerCreator *apc, AllocatedCreators_)
+							Players_ << PlayerCreator_f (boost::bind (&AbstractPlayerCreator::Create,
+										apc,
+										_1,
+										_2,
+										_3));
 					}
 
-					QWebPluginFactory::Plugin WYFVPlugin::Plugin () const
+					Player* PlayerFactory::Create (const QUrl& url,
+							const QStringList& args, const QStringList& values)
 					{
-						QWebPluginFactory::Plugin result;
-						result.name = "WYFVPlugin";
-						QWebPluginFactory::MimeType mime;
-						mime.fileExtensions << "swf";
-						mime.name = "application/x-shockwave-flash";
-						result.mimeTypes << mime;
+						Player *result = 0;
+						Q_FOREACH (PlayerCreator_f c, Players_)
+							if (result = c (url, args, values))
+								break;
 						return result;
-					}
-
-					QWidget* WYFVPlugin::Create (const QString&,
-							const QUrl& url,
-							const QStringList& args,
-							const QStringList& values)
-					{
-						Player *p = PlayerFactory::Create (url, args, values);
-						qDebug () << url << args << values << p;
-						return p;
 					}
 				};
 			};

@@ -16,10 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "wyfvplugin.h"
-#include <QtDebug>
+#ifndef PLUGINS_POSHUKU_PLUGINS_WYFV_YOUTUBEPLAYER_H
+#define PLUGINS_POSHUKU_PLUGINS_WYFV_YOUTUBEPLAYER_H
+#include <QStringList>
 #include "player.h"
-#include "playerfactory.h"
+#include "abstractplayercreator.h"
 
 namespace LeechCraft
 {
@@ -31,35 +32,25 @@ namespace LeechCraft
 			{
 				namespace WYFV
 				{
-					WYFVPlugin::WYFVPlugin (QObject *parent)
-					: QObject (parent)
+					class YoutubePlayer : public Player
 					{
-						PlayerFactory::Init ();
-					}
+						Q_OBJECT
+					public:
+						YoutubePlayer (const QUrl&, const QStringList&, const QStringList&);
+					};
 
-					QWebPluginFactory::Plugin WYFVPlugin::Plugin () const
+					class YoutubePlayerCreator : public AbstractPlayerCreator
 					{
-						QWebPluginFactory::Plugin result;
-						result.name = "WYFVPlugin";
-						QWebPluginFactory::MimeType mime;
-						mime.fileExtensions << "swf";
-						mime.name = "application/x-shockwave-flash";
-						result.mimeTypes << mime;
-						return result;
-					}
-
-					QWidget* WYFVPlugin::Create (const QString&,
-							const QUrl& url,
-							const QStringList& args,
-							const QStringList& values)
-					{
-						Player *p = PlayerFactory::Create (url, args, values);
-						qDebug () << url << args << values << p;
-						return p;
-					}
+					public:
+						virtual Player* Create (const QUrl&,
+								const QStringList&,
+								const QStringList&) const;
+					};
 				};
 			};
 		};
 	};
 };
+
+#endif
 

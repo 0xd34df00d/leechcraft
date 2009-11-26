@@ -14,48 +14,18 @@
    <string/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <widget class="Phonon::VideoPlayer" name="VideoPlayer_">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
+   <property name="margin">
+    <number>1</number>
+   </property>
    <item>
     <layout class="QHBoxLayout" name="ControlsLayout_">
      <item>
       <widget class="QComboBox" name="Quality_"/>
      </item>
-     <item>
-      <widget class="Phonon::SeekSlider" name="Seek_"/>
-     </item>
-     <item>
-      <widget class="Phonon::VolumeSlider" name="Volume_"/>
-     </item>
     </layout>
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>Phonon::VideoPlayer</class>
-   <extends>QWidget</extends>
-   <header location="global">phonon/videoplayer.h</header>
-  </customwidget>
-  <customwidget>
-   <class>Phonon::SeekSlider</class>
-   <extends>QWidget</extends>
-   <header location="global">phonon/seekslider.h</header>
-  </customwidget>
-  <customwidget>
-   <class>Phonon::VolumeSlider</class>
-   <extends>QWidget</extends>
-   <header location="global">phonon/volumeslider.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

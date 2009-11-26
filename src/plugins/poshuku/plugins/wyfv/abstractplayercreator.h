@@ -16,10 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "wyfvplugin.h"
-#include <QtDebug>
-#include "player.h"
-#include "playerfactory.h"
+#ifndef PLUGINS_POSHUKU_PLUGINS_WYFV_ABSTRACTPLAYERCREATOR_H
+#define PLUGINS_POSHUKU_PLUGINS_WYFV_ABSTRACTPLAYERCREATOR_H
+#include <QStringList>
+
+class QUrl;
 
 namespace LeechCraft
 {
@@ -31,35 +32,20 @@ namespace LeechCraft
 			{
 				namespace WYFV
 				{
-					WYFVPlugin::WYFVPlugin (QObject *parent)
-					: QObject (parent)
-					{
-						PlayerFactory::Init ();
-					}
+					class Player;
 
-					QWebPluginFactory::Plugin WYFVPlugin::Plugin () const
+					class AbstractPlayerCreator
 					{
-						QWebPluginFactory::Plugin result;
-						result.name = "WYFVPlugin";
-						QWebPluginFactory::MimeType mime;
-						mime.fileExtensions << "swf";
-						mime.name = "application/x-shockwave-flash";
-						result.mimeTypes << mime;
-						return result;
-					}
-
-					QWidget* WYFVPlugin::Create (const QString&,
-							const QUrl& url,
-							const QStringList& args,
-							const QStringList& values)
-					{
-						Player *p = PlayerFactory::Create (url, args, values);
-						qDebug () << url << args << values << p;
-						return p;
-					}
+					public:
+						virtual Player* Create (const QUrl&,
+								const QStringList&,
+								const QStringList&) const = 0;
+					};
 				};
 			};
 		};
 	};
 };
+
+#endif
 
