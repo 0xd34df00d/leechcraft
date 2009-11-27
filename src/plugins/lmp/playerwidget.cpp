@@ -22,6 +22,7 @@
 #include "phonon.h"
 #include "videosettings.h"
 #include "xmlsettingsmanager.h"
+#include "core.h"
 
 using namespace Phonon;
 
@@ -35,7 +36,7 @@ namespace LeechCraft
 			: QWidget (parent)
 			, MediaObject_ (new MediaObject)
 			{
-				qDebug () << Q_FUNC_INFO;
+				setObjectName ("LeechCraft::Plugins::LMP::PlayerWidget");
 				MediaObject_->setTickInterval (700);
 				connect (MediaObject_.get (),
 						SIGNAL (tick (qint64)),
@@ -182,7 +183,8 @@ namespace LeechCraft
 				Play_ = new QAction (tr ("Play"),
 						this);
 				Play_->setObjectName ("Play_");
-				Play_->setProperty ("ActionIcon", "lmp_play");
+				Play_->setIcon (Core::Instance ()
+						.GetCoreProxy ()->GetIcon ("lmp_play"));
 				connect (Play_,
 						SIGNAL (triggered ()),
 						this,
@@ -191,7 +193,8 @@ namespace LeechCraft
 				Pause_ = new QAction (tr ("Pause"),
 						this);
 				Pause_->setObjectName ("Pause_");
-				Pause_->setProperty ("ActionIcon", "lmp_pause");
+				Pause_->setIcon (Core::Instance ()
+						.GetCoreProxy ()->GetIcon ("lmp_pause"));
 				connect (Pause_,
 						SIGNAL (triggered ()),
 						this,
@@ -200,7 +203,8 @@ namespace LeechCraft
 				ViewerSettings_ = new QAction (tr ("Viewer settings"),
 						this);
 				ViewerSettings_->setObjectName ("ViewerSettings_");
-				ViewerSettings_->setProperty ("ActionIcon", "lmp_viewersettings");
+				ViewerSettings_->setIcon (Core::Instance ()
+						.GetCoreProxy ()->GetIcon ("lmp_viewersettings"));
 				connect (ViewerSettings_,
 						SIGNAL (triggered ()),
 						this,
@@ -255,7 +259,6 @@ namespace LeechCraft
 						break;
 					case ErrorState:
 						result = tr ("Error");
-						emit stateUpdated (result);
 						break;
 				}
 				if (MediaObject_->state () == ErrorState)
@@ -338,6 +341,11 @@ namespace LeechCraft
 				XmlSettingsManager::Instance ()->setProperty ("Contrast", c);
 				XmlSettingsManager::Instance ()->setProperty ("Hue", h);
 				XmlSettingsManager::Instance ()->setProperty ("Saturation", s);
+			}
+
+			void PlayerWidget::handleStateUpdated (const QString& state)
+			{
+				setToolTip (state);
 			}
 		};
 	};
