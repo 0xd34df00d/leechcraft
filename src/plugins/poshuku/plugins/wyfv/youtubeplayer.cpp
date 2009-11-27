@@ -21,6 +21,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtDebug>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -36,6 +37,8 @@ namespace LeechCraft
 							const QStringList& args, const QStringList& values)
 					: Player (url, args, values)
 					{
+						Setup ();
+
 						QString flashvars = values.at (args.indexOf ("flashvars"));
 						QStringList pairs = flashvars.split ("&",
 								QString::SkipEmptyParts);
@@ -60,26 +63,53 @@ namespace LeechCraft
 						QUrl vurl = QUrl::fromEncoded ("http://youtube.com/get_video");
 						vurl.setEncodedQueryItems (query);
 
-						SetVideoUrl (vurl);
+						OriginalURL_ = vurl;
+
+						newQualityRequested (Ui_.Quality_->currentIndex ());
 					}
 
-					QNetworkRequest YoutubePlayer::MakeReq (const QUrl& url, const QUrl& oldUrl)
+					void YoutubePlayer::Setup ()
 					{
+						// TODO detect somehow available formats. Maybe the fmt_map
+						// in the flashvars would help?
+
+						Ui_.Quality_->addItem ("HD (1280x720)", "22");
+						Ui_.Quality_->addItem ("HQ (640x380)", "35");
+						Ui_.Quality_->addItem ("mp4 (480x360)", "18");
+						Ui_.Quality_->addItem ("flv (320x180)", "34");
+						Ui_.Quality_->addItem ("3gp (176x144)", "17");
+
+						Ui_.Quality_->setCurrentIndex (Ui_.Quality_->
+								findData (XmlSettingsManager::Instance ()->
+									Property ("YoutubePreviousQuality", "fmt34")));
+
+						connect (Ui_.Quality_,
+								SIGNAL (currentIndexChanged (int)),
+								this,
+								SLOT (newQualityRequested (int)));
+					}
+
+					void YoutubePlayer::newQualityRequested (int index)
+					{
+						QString fmt = Ui_.Quality_->itemData (index).toString ();
+						qDebug () << index << fmt;
+
+						XmlSettingsManager::Instance ()->
+							setProperty ("YoutubePreviousQuality", fmt);
+
+						QUrl url = OriginalURL_;
+						url.addQueryItem ("fmt", fmt);
 						qDebug () << url.toEncoded ();
-						QNetworkRequest req;
-						req.setUrl (url);
-						req.setRawHeader ("User-Agent", "Mozilla/5.0");
-						req.setRawHeader ("Accept-Encoding", "identity");
-						req.setRawHeader ("Accept", "*/*");
-						req.setRawHeader ("accept-language", "*/*");
-						if (oldUrl.isValid ())
-							req.setRawHeader ("Referer", oldUrl.toEncoded ());
-						return req;
+						SetVideoUrl (url);
 					}
 
 					Player* YoutubePlayerCreator::Create (const QUrl& url,
 							const QStringList& args, const QStringList& values) const
 					{
+						if (!XmlSettingsManager::Instance ()->
+								property ("YouTube").toBool ())
+							return 0;
+
 						Player *result = 0;
 						QString flashvars = values.at (args.indexOf ("flashvars"));
 						if (url.host () == "s.ytimg.com" &&

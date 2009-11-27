@@ -57,6 +57,8 @@ namespace LeechCraft
 					{
 						if (Player_)
 						{
+							Player_->Stop ();
+							Player_->Clear ();
 							Player_->Enqueue (url);
 							Player_->Play ();
 						}
@@ -67,7 +69,10 @@ namespace LeechCraft
 						if (Player_)
 						{
 							QNetworkReply *rep = ClearNAM_->get (req);
+							Player_->Stop ();
+							Player_->Clear ();
 							Player_->Enqueue (rep);
+							Player_->Play ();
 						}
 					}
 				};

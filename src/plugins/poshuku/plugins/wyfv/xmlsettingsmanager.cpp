@@ -35,7 +35,7 @@ XmlSettingsManager* XmlSettingsManager::Instance ()
 QSettings* XmlSettingsManager::BeginSettings () const
 {
 	return new QSettings (QCoreApplication::organizationName (),
-			QCoreApplication::applicationName () + "_WYFV");
+			QCoreApplication::applicationName () + "_Poshuku_WYFV");
 }
 
 void XmlSettingsManager::EndSettings (QSettings*) const
