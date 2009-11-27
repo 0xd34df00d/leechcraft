@@ -56,9 +56,9 @@ namespace LeechCraft
 				Ui_.ControlsLayout_->insertWidget (0, SetupToolbar ());
 
 				Ui_.SeekSlider_->setMediaObject (MediaObject_.get ());
-				Ui_.VolumeSlider_->setAudioOutput (AudioOutput_.get ());
 
 				AudioOutput_.reset (new AudioOutput (MusicCategory, this));
+				Ui_.VolumeSlider_->setAudioOutput (AudioOutput_.get ());
 			}
 
 			void PlayerWidget::Play ()
