@@ -84,6 +84,7 @@ namespace LeechCraft
 				void updateState ();
 				void totalTimeChanged ();
 				void changeViewerSettings ();
+				void handleStateUpdated (const QString&);
 			signals:
 				void stateUpdated (const QString&);
 				void error (const QString&);
