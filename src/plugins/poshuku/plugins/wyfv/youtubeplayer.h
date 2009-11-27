@@ -24,6 +24,7 @@
 #include "abstractplayercreator.h"
 
 class QNetworkRequest;
+class QNetworkReply;
 
 namespace LeechCraft
 {
@@ -45,6 +46,7 @@ namespace LeechCraft
 					private:
 						void Setup ();
 						QNetworkRequest MakeReq (const QUrl&) const;
+						QNetworkReply* ReqAndContinueFormatCheck (const QUrl&);
 					private slots:
 						void newQualityRequested (int);
 						void handleFormatCheckFinished ();

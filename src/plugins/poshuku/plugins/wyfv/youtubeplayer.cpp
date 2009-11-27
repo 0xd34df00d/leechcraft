@@ -100,6 +100,18 @@ namespace LeechCraft
 						return req;
 					}
 
+					QNetworkReply* YoutubePlayer::ReqAndContinueFormatCheck (const QUrl& url)
+					{
+						QNetworkRequest req = MakeReq (url);
+						QNetworkReply *rep = ClearNAM_->head (req);
+						connect (rep,
+								SIGNAL (finished ()),
+								this,
+								SLOT (handleFormatCheckFinished ()));
+
+						return rep;
+					}
+
 					void YoutubePlayer::newQualityRequested (int index)
 					{
 						Ui_.Quality_->setEnabled (false);
@@ -108,17 +120,12 @@ namespace LeechCraft
 						QUrl url = OriginalURL_;
 						url.addQueryItem ("fmt", fmt);
 
-						QNetworkRequest req = MakeReq (url);
-						QNetworkReply *rep = ClearNAM_->head (req);
-						rep->setProperty ("fmt", fmt);
-						connect (rep,
-								SIGNAL (finished ()),
-								this,
-								SLOT (handleFormatCheckFinished ()));
+						ReqAndContinueFormatCheck (url)->setProperty ("fmt", fmt);
 					}
 
 					void YoutubePlayer::handleFormatCheckFinished ()
 					{
+						Ui_.Quality_->setEnabled (true);
 						QNetworkReply *rep = qobject_cast<QNetworkReply*> (sender ());
 						if (!rep)
 						{
@@ -129,8 +136,9 @@ namespace LeechCraft
 						}
 						rep->deleteLater ();
 
+						QString fmt = rep->property ("fmt").toString ();
+
 						int code = rep->attribute (QNetworkRequest::HttpStatusCodeAttribute).toInt ();
-						Ui_.Quality_->setEnabled (true);
 						if (code == 404)
 						{
 							QMessageBox::critical (this,
@@ -138,8 +146,13 @@ namespace LeechCraft
 									tr ("This format is unavailable, please select another one."));
 							return;
 						}
-						QString fmt = rep->property ("fmt").toString ();
-
+						// 3xx codes => redirection
+						else if (code / 100 == 3)
+						{
+							QUrl url = rep->header (QNetworkRequest::LocationHeader).value<QUrl> ();
+							ReqAndContinueFormatCheck (url)->setProperty ("fmt", fmt);
+							return;
+						}
 						XmlSettingsManager::Instance ()->
 							setProperty ("YoutubePreviousQuality", fmt);
 
