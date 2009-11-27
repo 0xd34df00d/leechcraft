@@ -47,6 +47,11 @@ namespace LeechCraft
 				QAction *Play_;
 				QAction *Pause_;
 				QAction *ViewerSettings_;
+				
+				QAction *FullScreen_;
+				QAction *TogglePause_;
+				QAction *VolumeUp_;
+				QAction *VolumeDown_;
 			public:
 				enum SkipAmount
 				{
@@ -78,6 +83,7 @@ namespace LeechCraft
 				void decrementVolume ();
 			private:
 				QToolBar* SetupToolbar ();
+				void SetupContextMenu ();
 				void ApplyVideoSettings (qreal, qreal, qreal, qreal);
 			private slots:
 				void handleHasVideoChanged (bool);

@@ -59,6 +59,8 @@ namespace LeechCraft
 
 				AudioOutput_.reset (new AudioOutput (MusicCategory, this));
 				Ui_.VolumeSlider_->setAudioOutput (AudioOutput_.get ());
+
+				SetupContextMenu ();
 			}
 
 			void PlayerWidget::Play ()
@@ -222,6 +224,38 @@ namespace LeechCraft
 				bar->addAction (ViewerSettings_);
 
 				return bar;
+			}
+
+			void PlayerWidget::SetupContextMenu ()
+			{
+				FullScreen_ = new QAction (tr ("Toggle full screen"),
+						this);
+				FullScreen_->setIcon (Core::Instance ()
+						.GetCoreProxy ()->GetIcon ("lmp_togglefullscreen"));
+				QList<QKeySequence> fullscreenShortcuts;
+				fullscreenShortcuts << tr ("F");
+				FullScreen_->setShortcuts (fullscreenShortcuts);
+				connect (FullScreen_,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (toggleFullScreen ()));
+
+				TogglePause_ = new QAction (tr ("Pause/resume"),
+						this);
+				TogglePause_->setIcon (Core::Instance ()
+						.GetCoreProxy ()->GetIcon ("lmp_togglepause"));
+				QList<QKeySequence> togglePauseShortcuts;
+				togglePauseShortcuts << tr ("P")
+					<< tr ("R")
+					<< Qt::Key_Space;
+				TogglePause_->setShortcuts (togglePauseShortcuts);
+				connect (TogglePause_,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (togglePause ()));
+
+				Ui_.VideoWidget_->addAction (FullScreen_);
+				Ui_.VideoWidget_->addAction (TogglePause_);
 			}
 
 			void PlayerWidget::ApplyVideoSettings (qreal b, qreal c, qreal h, qreal s)
