@@ -20,6 +20,7 @@
 #include <QUrl>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QMessageBox>
 #include <QtDebug>
 #include "xmlsettingsmanager.h"
 
@@ -62,6 +63,9 @@ namespace LeechCraft
 
 						QUrl vurl = QUrl::fromEncoded ("http://youtube.com/get_video");
 						vurl.setEncodedQueryItems (query);
+						vurl.addQueryItem ("eurl", "");
+						vurl.addQueryItem ("el", "embedded");
+						vurl.addQueryItem ("ps", "default");
 
 						OriginalURL_ = vurl;
 
@@ -81,7 +85,7 @@ namespace LeechCraft
 
 						Ui_.Quality_->setCurrentIndex (Ui_.Quality_->
 								findData (XmlSettingsManager::Instance ()->
-									Property ("YoutubePreviousQuality", "fmt34")));
+									Property ("YoutubePreviousQuality", "34")));
 
 						connect (Ui_.Quality_,
 								SIGNAL (currentIndexChanged (int)),
@@ -89,17 +93,58 @@ namespace LeechCraft
 								SLOT (newQualityRequested (int)));
 					}
 
+					QNetworkRequest YoutubePlayer::MakeReq (const QUrl& url) const
+					{
+						QNetworkRequest req;
+						req.setUrl (url);
+						return req;
+					}
+
 					void YoutubePlayer::newQualityRequested (int index)
 					{
+						Ui_.Quality_->setEnabled (false);
+
 						QString fmt = Ui_.Quality_->itemData (index).toString ();
-						qDebug () << index << fmt;
+						QUrl url = OriginalURL_;
+						url.addQueryItem ("fmt", fmt);
+
+						QNetworkRequest req = MakeReq (url);
+						QNetworkReply *rep = ClearNAM_->head (req);
+						rep->setProperty ("fmt", fmt);
+						connect (rep,
+								SIGNAL (finished ()),
+								this,
+								SLOT (handleFormatCheckFinished ()));
+					}
+
+					void YoutubePlayer::handleFormatCheckFinished ()
+					{
+						QNetworkReply *rep = qobject_cast<QNetworkReply*> (sender ());
+						if (!rep)
+						{
+							qWarning () << Q_FUNC_INFO
+								<< "sender is not a QNetworkReply*"
+								<< sender ();
+							return;
+						}
+						rep->deleteLater ();
+
+						int code = rep->attribute (QNetworkRequest::HttpStatusCodeAttribute).toInt ();
+						Ui_.Quality_->setEnabled (true);
+						if (code == 404)
+						{
+							QMessageBox::critical (this,
+									tr ("LeechCraft"),
+									tr ("This format is unavailable, please select another one."));
+							return;
+						}
+						QString fmt = rep->property ("fmt").toString ();
 
 						XmlSettingsManager::Instance ()->
 							setProperty ("YoutubePreviousQuality", fmt);
 
 						QUrl url = OriginalURL_;
 						url.addQueryItem ("fmt", fmt);
-						qDebug () << url.toEncoded ();
 						SetVideoUrl (url);
 					}
 
@@ -111,9 +156,12 @@ namespace LeechCraft
 							return 0;
 
 						Player *result = 0;
-						QString flashvars = values.at (args.indexOf ("flashvars"));
+						int varsidx = args.indexOf ("flashvars");
+						QString flashvars;
+						if (varsidx >= 0)
+							flashvars = values.at (varsidx);
+
 						if (url.host () == "s.ytimg.com" &&
-								args.contains ("flashvars") &&
 								flashvars.contains ("&video_id=") &&
 								flashvars.contains ("&t="))
 							return new YoutubePlayer (url, args, values);

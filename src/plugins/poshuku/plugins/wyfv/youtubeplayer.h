@@ -44,8 +44,10 @@ namespace LeechCraft
 						YoutubePlayer (const QUrl&, const QStringList&, const QStringList&);
 					private:
 						void Setup ();
+						QNetworkRequest MakeReq (const QUrl&) const;
 					private slots:
 						void newQualityRequested (int);
+						void handleFormatCheckFinished ();
 					};
 
 					class YoutubePlayerCreator : public AbstractPlayerCreator
