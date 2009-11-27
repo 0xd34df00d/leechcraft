@@ -78,11 +78,6 @@ namespace LeechCraft
 			void PlayerWidget::Enqueue (const QUrl& url)
 			{
 				Enqueue (MediaSource (url));
-				if (!MediaObject_->queue ().size ())
-				{
-					play ();
-					Ui_.VideoWidget_->setVisible (MediaObject_->hasVideo ());
-				}
 			}
 
 			void PlayerWidget::Enqueue (QIODevice *data)
@@ -99,6 +94,8 @@ namespace LeechCraft
 			{
 				MediaObject_->enqueue (source);
 				Ui_.VideoWidget_->setVisible (MediaObject_->hasVideo ());
+				if (!MediaObject_->queue ().size ())
+					Ui_.VideoWidget_->setVisible (MediaObject_->hasVideo ());
 			}
 
 			void PlayerWidget::Forward (SkipAmount a)
