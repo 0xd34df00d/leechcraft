@@ -19,6 +19,7 @@
 #ifndef PLUGINS_POSHUKU_PLUGINS_WYFV_CORE_H
 #define PLUGINS_POSHUKU_PLUGINS_WYFV_CORE_H
 #include <QObject>
+#include <interfaces/iinfo.h>
 
 namespace LeechCraft
 {
@@ -37,11 +38,15 @@ namespace LeechCraft
 						Q_OBJECT
 
 						WYFVPlugin *Plugin_;
+						ICoreProxy_ptr Proxy_;
 
 						Core ();
 					public:
 						static Core& Instance ();
 						void Release ();
+
+						void SetProxy (ICoreProxy_ptr);
+						ICoreProxy_ptr GetProxy () const;
 
 						WYFVPlugin* GetWYFVPlugin ();
 					};

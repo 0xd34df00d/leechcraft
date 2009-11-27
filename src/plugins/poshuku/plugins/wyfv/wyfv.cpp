@@ -40,6 +40,8 @@ namespace LeechCraft
 					{
 						Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku_wyfv"));
 
+						Core::Instance ().SetProxy (proxy);
+
 						SettingsDialog_.reset (new Util::XmlSettingsDialog);
 						SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 								"poshukuwyfvsettings.xml");

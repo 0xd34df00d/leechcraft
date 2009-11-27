@@ -19,8 +19,11 @@
 #ifndef PLUGINS_POSHUKU_PLUGINS_WYFV_YOUTUBEPLAYER_H
 #define PLUGINS_POSHUKU_PLUGINS_WYFV_YOUTUBEPLAYER_H
 #include <QStringList>
+#include <QUrl>
 #include "player.h"
 #include "abstractplayercreator.h"
+
+class QNetworkRequest;
 
 namespace LeechCraft
 {
@@ -37,6 +40,8 @@ namespace LeechCraft
 						Q_OBJECT
 					public:
 						YoutubePlayer (const QUrl&, const QStringList&, const QStringList&);
+					private:
+						QNetworkRequest MakeReq (const QUrl&, const QUrl& = QUrl ());
 					};
 
 					class YoutubePlayerCreator : public AbstractPlayerCreator

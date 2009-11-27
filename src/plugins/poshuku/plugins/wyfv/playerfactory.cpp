@@ -53,7 +53,7 @@ namespace LeechCraft
 					{
 						Player *result = 0;
 						Q_FOREACH (PlayerCreator_f c, Players_)
-							if (result = c (url, args, values))
+							if ((result = c (url, args, values)))
 								break;
 						return result;
 					}

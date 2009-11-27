@@ -54,7 +54,6 @@ namespace LeechCraft
 							const QStringList& values)
 					{
 						Player *p = PlayerFactory::Create (url, args, values);
-						qDebug () << url << args << values << p;
 						return p;
 					}
 				};

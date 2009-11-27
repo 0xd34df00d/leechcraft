@@ -21,7 +21,11 @@
 #include <boost/function.hpp>
 #include <QWidget>
 #include <QList>
+#include <interfaces/imediaplayer.h>
 #include "ui_player.h"
+
+class QNetworkRequest;
+class QNetworkAccessManager;
 
 namespace LeechCraft
 {
@@ -37,11 +41,16 @@ namespace LeechCraft
 					{
 						Q_OBJECT
 
+						IVideoWidget *Player_;
 					protected:
+						QNetworkAccessManager *ClearNAM_;
 						Ui::Player Ui_;
 
 						Player (const QUrl&, const QStringList&, const QStringList&);
 						void SetVideoUrl (const QUrl&);
+						void SetRequest (const QNetworkRequest&);
+					public:
+						virtual ~Player ();
 					};
 				};
 			};

@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "player.h"
+#include <QNetworkReply>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -31,13 +33,42 @@ namespace LeechCraft
 					Player::Player (const QUrl&,
 							const QStringList&,
 							const QStringList&)
+					: Player_ (0)
+					, ClearNAM_ (new QNetworkAccessManager)
 					{
 						Ui_.setupUi (this);
+						QList<IMediaPlayer*> players = Core::Instance ().GetProxy ()->
+							GetPluginsManager ()->GetAllCastableTo<IMediaPlayer*> ();
+						Q_FOREACH (IMediaPlayer *player, players)
+							if ((Player_ = player->CreateWidget ()))
+								break;
+						if (Player_)
+							qobject_cast<QBoxLayout*> (layout ())->
+								insertWidget (0, Player_->Widget ());
+					}
+
+					Player::~Player ()
+					{
+						delete Player_;
+						delete ClearNAM_;
 					}
 
 					void Player::SetVideoUrl (const QUrl& url)
 					{
-//						Ui.VideoPlayer_->play (Phonon::MediaSource (url));
+						if (Player_)
+						{
+							Player_->Enqueue (url);
+							Player_->Play ();
+						}
+					}
+
+					void Player::SetRequest (const QNetworkRequest& req)
+					{
+						if (Player_)
+						{
+							QNetworkReply *rep = ClearNAM_->get (req);
+							Player_->Enqueue (rep);
+						}
 					}
 				};
 			};

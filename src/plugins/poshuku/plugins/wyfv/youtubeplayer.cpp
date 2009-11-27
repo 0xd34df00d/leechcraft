@@ -18,6 +18,8 @@
 
 #include "youtubeplayer.h"
 #include <QUrl>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -52,21 +54,32 @@ namespace LeechCraft
 								video_id = parts.at (1);
 						}
 						QList<QPair<QByteArray, QByteArray> > query;
-						query << QPair<QByteArray, QByteArray> ("t",
-								t.toUtf8 ());
-						query << QPair<QByteArray, QByteArray> ("video_d",
-								video_id.toUtf8 ());
+						query << QPair<QByteArray, QByteArray> ("video_id", video_id.toUtf8 ());
+						query << QPair<QByteArray, QByteArray> ("t", t.toUtf8 ());
 
-						QUrl vurl = QUrl::fromEncoded ("http://www.youtube.com/get_video");
+						QUrl vurl = QUrl::fromEncoded ("http://youtube.com/get_video");
 						vurl.setEncodedQueryItems (query);
 
 						SetVideoUrl (vurl);
 					}
 
+					QNetworkRequest YoutubePlayer::MakeReq (const QUrl& url, const QUrl& oldUrl)
+					{
+						qDebug () << url.toEncoded ();
+						QNetworkRequest req;
+						req.setUrl (url);
+						req.setRawHeader ("User-Agent", "Mozilla/5.0");
+						req.setRawHeader ("Accept-Encoding", "identity");
+						req.setRawHeader ("Accept", "*/*");
+						req.setRawHeader ("accept-language", "*/*");
+						if (oldUrl.isValid ())
+							req.setRawHeader ("Referer", oldUrl.toEncoded ());
+						return req;
+					}
+
 					Player* YoutubePlayerCreator::Create (const QUrl& url,
 							const QStringList& args, const QStringList& values) const
 					{
-						qDebug () << Q_FUNC_INFO << url << args;
 						Player *result = 0;
 						QString flashvars = values.at (args.indexOf ("flashvars"));
 						if (url.host () == "s.ytimg.com" &&
