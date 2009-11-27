@@ -51,6 +51,8 @@ namespace LeechCraft
 						void SetRequest (const QNetworkRequest&);
 					public:
 						virtual ~Player ();
+					private slots:
+						void handlePlayerError (const QString&);
 					};
 				};
 			};
