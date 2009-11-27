@@ -1,0 +1,98 @@
+= Dependencies =
+Consider Depends:, Recommends:, Suggests: and Provides: to be virtual packages. Plugins don't depend on other plugins, they depend on functionality provided by other plugins.
+Qt4 is >=4.6.
+Boost is >= 1.37.
+
+== Overall ==
+ Qt4 (>=4.6)
+	Core
+	Gui
+	Network
+	XML
+	Script
+	SQL
+	SQLite
+	PostgreSQL recommended
+ Boost (>= 1.37)
+	Header-only libraries
+	date_time
+	filesystem
+	system
+	thread
+	signals
+
+== Aggregator ==
+ Depends: downloader-http
+ Recommends: webbrowser
+ Suggests: aggregatedisplay
+ Provides: feedreader
+
+== Anhero ==
+ KDE >= 4.2
+
+== BitTorrent ==
+ Rasterbar Libtorrent (0.15 when it'd be released, branches/RC_0_15 from SVN for now)
+ Depends: aggregatedisplay
+ Provides: downloader-bittorrent
+ Suggests: webbrowser
+ 
+== CSTP ==
+ Depends: aggregatedisplay
+ Provides: downloader-http
+
+== DBusManager ==
+ QtDBus
+ Provides: dbus
+
+== DCminator ==
+ This should not be built, it doesn't work yet.
+
+== DeadLyrics ==
+ Depends: downloader-http
+		  aggregatedisplay
+
+== LCFTP ==
+ libcurl >= 7.19.4
+ Depends: aggregatedisplay
+
+== LMP ==
+ Phonon >= 4.2.0
+ Provides: mediaplayer
+
+== New Life ==
+ Suggests: feedreader
+		   downloader-bittorrent
+
+== Poshuku ==
+ QtWebkit
+ Recommends: downloader-http
+			 feedreader
+			 websearch
+ Provides: webbrowser
+
+=== CleanWeb ===
+ Depends: downloader-http
+
+=== WYFV ===
+ Depends: mediaplayer
+
+== Remoter ==
+ This should not be built, it doesn't work yet.
+
+== SeekThru ==
+ Depends: downloader-http
+		  aggregatedisplay
+ Provides: websearch
+
+== Summary ==
+ Recommends: downloader-*
+ Suggests: feedreader
+ Provides: aggregatedisplay
+
+== vGrabber ==
+ Depends: downloader-http
+		  aggregatedisplay
+
+== YASD ==
+ This should not be built, it doesn't work yet.
+
