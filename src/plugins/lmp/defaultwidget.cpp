@@ -37,7 +37,12 @@ namespace LeechCraft
 
 			void DefaultWidget::Stop ()
 			{
-				Core::Instance ().Pause ();
+				Core::Instance ().Stop ();
+			}
+
+			void DefaultWidget::Clear ()
+			{
+				Core::Instance ().Clear ();
 			}
 
 			void DefaultWidget::Enqueue (const QUrl& url)

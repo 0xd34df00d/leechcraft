@@ -62,6 +62,8 @@ namespace LeechCraft
 				void Reinitialize ();
 				void Play ();
 				void Pause ();
+				void Stop ();
+				void Clear ();
 				void Enqueue (const QUrl&);
 				void Enqueue (QIODevice*);
 				QAction* GetShowAction () const;

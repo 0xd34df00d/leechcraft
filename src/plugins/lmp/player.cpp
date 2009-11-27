@@ -86,6 +86,17 @@ namespace LeechCraft
 				Ui_.Player_->Pause ();
 			}
 
+			void Player::Stop ()
+			{
+				Ui_.Player_->Stop ();
+			}
+
+			void Player::Clear ()
+			{
+				QueueModel_->clear ();
+				Ui_.Player_->Clear ();
+			}
+
 			void Player::TogglePause ()
 			{
 				Ui_.Player_->togglePause ();
@@ -142,8 +153,7 @@ namespace LeechCraft
 			void Player::FillQueue (int start) const
 			{
 				for (int i = start; i < QueueModel_->rowCount (); ++i)
-					Ui_.Player_->GetMediaObject ()->
-						enqueue (*QueueModel_->item (i)->
+					Ui_.Player_->Enqueue (*QueueModel_->item (i)->
 								data (SourceRole).value<MediaSource*> ());
 			}
 
@@ -173,13 +183,11 @@ namespace LeechCraft
 
 			void Player::on_Queue__activated (const QModelIndex& si)
 			{
-				MediaObject *o = Ui_.Player_->GetMediaObject ();
-
 				MediaSource *source = QueueModel_->
 					item (si.row ())->data (SourceRole).value<MediaSource*> ();
-				o->clearQueue ();
-				o->setCurrentSource (*source);
-				o->play ();
+				Ui_.Player_->Clear ();
+				Ui_.Player_->Enqueue (*source);
+				Ui_.Player_->Play ();
 				FillQueue (si.row ());
 			}
 		};

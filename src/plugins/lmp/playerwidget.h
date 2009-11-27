@@ -59,6 +59,7 @@ namespace LeechCraft
 				void Play ();
 				void Pause ();
 				void Stop ();
+				void Clear ();
 				void Enqueue (const QUrl&);
 				void Enqueue (QIODevice*);
 				QWidget* Widget ();

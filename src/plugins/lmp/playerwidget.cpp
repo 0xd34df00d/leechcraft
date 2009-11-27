@@ -72,7 +72,12 @@ namespace LeechCraft
 
 			void PlayerWidget::Stop ()
 			{
-				pause ();
+				MediaObject_->stop ();
+			}
+
+			void PlayerWidget::Clear ()
+			{
+				MediaObject_->clear ();
 			}
 
 			void PlayerWidget::Enqueue (const QUrl& url)

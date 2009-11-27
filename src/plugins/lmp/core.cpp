@@ -96,6 +96,16 @@ namespace LeechCraft
 				Player_->Pause ();
 			}
 
+			void Core::Stop ()
+			{
+				Player_->Stop ();
+			}
+
+			void Core::Clear ()
+			{
+				Player_->Clear ();
+			}
+
 			void Core::Enqueue (const QUrl& url)
 			{
 				Player_->Enqueue (new MediaSource (url));

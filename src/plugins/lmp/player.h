@@ -49,6 +49,8 @@ namespace LeechCraft
 				Player (QWidget* = 0);
 				void Play ();
 				void Pause ();
+				void Stop ();
+				void Clear ();
 				void TogglePause ();
 				void Enqueue (Phonon::MediaSource*);
 			private:

@@ -33,6 +33,7 @@ public:
 	virtual void Play () = 0;
 	virtual void Pause () = 0;
 	virtual void Stop () = 0;
+	virtual void Clear () = 0;
 
 	virtual QWidget* Widget () = 0;
 };
