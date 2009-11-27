@@ -36,6 +36,7 @@
 #include "mainwindow.h"
 #include "xmlsettingsmanager.h"
 #include "coreproxy.h"
+#include "config.h"
 
 using namespace LeechCraft;
 
@@ -283,8 +284,11 @@ namespace LeechCraft
 #ifdef Q_WS_WIN
 		ScanDir (QApplication::applicationDirPath () + "/plugins/bin");
 #else
-		ScanDir ("/usr/local/lib/leechcraft/plugins");
-		ScanDir ("/usr/lib/leechcraft/plugins");
+		QString libdir (PLUGINS_LIBDIR);
+		ScanDir (QString ("/usr/local/%1/leechcraft/plugins")
+				.arg (libdir));
+		ScanDir (QString ("/usr/%1/leechcraft/plugins")
+				.arg (libdir));
 #endif
 	}
 

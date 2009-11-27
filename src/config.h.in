@@ -2,6 +2,7 @@
 #define CONFIG_H
 
 #define LEECHCRAFT_VERSION "${LEECHCRAFT_VERSION}"
+#define PLUGINS_LIBDIR "${LIBDIR}"
 
 #endif
 
