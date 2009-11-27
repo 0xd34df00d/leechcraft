@@ -232,9 +232,9 @@ namespace LeechCraft
 						this);
 				FullScreen_->setIcon (Core::Instance ()
 						.GetCoreProxy ()->GetIcon ("lmp_togglefullscreen"));
-				QList<QKeySequence> fullscreenShortcuts;
-				fullscreenShortcuts << tr ("F");
-				FullScreen_->setShortcuts (fullscreenShortcuts);
+				QList<QKeySequence> fullscreens;
+				fullscreens << tr ("F");
+				FullScreen_->setShortcuts (fullscreens);
 				connect (FullScreen_,
 						SIGNAL (triggered ()),
 						this,
@@ -244,18 +244,47 @@ namespace LeechCraft
 						this);
 				TogglePause_->setIcon (Core::Instance ()
 						.GetCoreProxy ()->GetIcon ("lmp_togglepause"));
-				QList<QKeySequence> togglePauseShortcuts;
-				togglePauseShortcuts << tr ("P")
-					<< tr ("R")
-					<< Qt::Key_Space;
-				TogglePause_->setShortcuts (togglePauseShortcuts);
+				QList<QKeySequence> togglePauses;
+				togglePauses << Qt::Key_Space
+					<< tr ("P")
+					<< tr ("R");
+				TogglePause_->setShortcuts (togglePauses);
 				connect (TogglePause_,
 						SIGNAL (triggered ()),
 						this,
 						SLOT (togglePause ()));
 
+				VolumeUp_ = new QAction (tr ("Volume up"),
+						this);
+				VolumeUp_->setIcon (Core::Instance ()
+						.GetCoreProxy ()->GetIcon ("lmp_volumeup"));
+				QList<QKeySequence> volumeUps;
+				volumeUps << Qt::Key_Up
+					<< QString ("=")
+					<< QString ("+");
+				VolumeUp_->setShortcuts (volumeUps);
+				connect (VolumeUp_,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (incrementVolume ()));
+
+				VolumeDown_ = new QAction (tr ("Volume down"),
+						this);
+				VolumeDown_->setIcon (Core::Instance ()
+						.GetCoreProxy ()->GetIcon ("lmp_volumedown"));
+				QList<QKeySequence> volumeDowns;
+				volumeDowns << Qt::Key_Down
+					<< QString ("-");
+				VolumeDown_->setShortcuts (volumeDowns);
+				connect (VolumeDown_,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (decrementVolume ()));
+
 				Ui_.VideoWidget_->addAction (FullScreen_);
 				Ui_.VideoWidget_->addAction (TogglePause_);
+				Ui_.VideoWidget_->addAction (VolumeUp_);
+				Ui_.VideoWidget_->addAction (VolumeDown_);
 			}
 
 			void PlayerWidget::ApplyVideoSettings (qreal b, qreal c, qreal h, qreal s)
