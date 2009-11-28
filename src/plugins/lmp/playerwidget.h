@@ -88,7 +88,6 @@ namespace LeechCraft
 			private slots:
 				void handleHasVideoChanged (bool);
 				void updateState ();
-				void totalTimeChanged ();
 				void changeViewerSettings ();
 				void handleStateUpdated (const QString&);
 			signals:
