@@ -52,14 +52,24 @@ namespace LeechCraft
 						setWindowTitle (tr ("Related videos"));
 						setWindowFlags (Qt::WindowStaysOnTopHint);
 
-						QGraphicsWidget *form = new QGraphicsWidget;
-						form->setLayout (Layout_);
-						Scene_->addItem (form);
+						Form_ = new QGraphicsWidget;
+						Form_->setLayout (Layout_);
+						Scene_->addItem (Form_);
 					}
 
 					RelatedWidget::~RelatedWidget ()
 					{
-						delete Layout_;
+						RelatedItems_.clear ();
+
+						delete OpacityAnimation_;
+						while (Layout_->count ())
+						{
+							QGraphicsLayoutItem *item = Layout_->itemAt (0);
+							Layout_->removeAt (0);
+							delete item;
+						}
+						delete Form_;
+						delete Scene_;
 					}
 
 					namespace

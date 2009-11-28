@@ -22,6 +22,7 @@
 #include "related.h"
 
 class QGraphicsScene;
+class QGraphicsWidget;
 class QGraphicsLinearLayout;
 class QPropertyAnimation;
 
@@ -44,6 +45,7 @@ namespace LeechCraft
 						bool Shown_;
 						QPropertyAnimation *OpacityAnimation_;
 						QList<QWidget*> RelatedItems_;
+						QGraphicsWidget *Form_;
 					public:
 						RelatedWidget (QWidget* = 0);
 						virtual ~RelatedWidget ();
