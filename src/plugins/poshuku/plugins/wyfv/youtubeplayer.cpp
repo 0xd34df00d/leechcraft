@@ -23,6 +23,8 @@
 #include <QMessageBox>
 #include <QtDebug>
 #include "xmlsettingsmanager.h"
+#include "related.h"
+#include "relatedwidget.h"
 
 namespace LeechCraft
 {
@@ -37,12 +39,22 @@ namespace LeechCraft
 					YoutubePlayer::YoutubePlayer (const QUrl& url,
 							const QStringList& args, const QStringList& values)
 					: Player (url, args, values)
+					, RelatedWidget_ (new RelatedWidget)
 					{
+						RelatedWidget_->hide ();
 						Setup ();
+
+						connect (Ui_.Related_,
+								SIGNAL (toggled (bool)),
+								this,
+								SLOT (handleRelatedToggled (bool)));
 
 						QString flashvars = values.at (args.indexOf ("flashvars"));
 						QStringList pairs = flashvars.split ("&",
 								QString::SkipEmptyParts);
+
+						FillRelated (pairs);
+
 						QString t;
 						QString video_id;
 						Q_FOREACH (QString pair, pairs)
@@ -72,6 +84,11 @@ namespace LeechCraft
 						newQualityRequested (Ui_.Quality_->currentIndex ());
 					}
 
+					YoutubePlayer::~YoutubePlayer ()
+					{
+						delete RelatedWidget_;
+					}
+
 					void YoutubePlayer::Setup ()
 					{
 						// TODO detect somehow available formats. Maybe the fmt_map
@@ -91,6 +108,60 @@ namespace LeechCraft
 								SIGNAL (currentIndexChanged (int)),
 								this,
 								SLOT (newQualityRequested (int)));
+					}
+
+					void YoutubePlayer::FillRelated (const QStringList& flashvars)
+					{
+						QMap<int, Related> related;
+						Q_FOREACH (QString var, flashvars)
+						{
+							if (!var.startsWith ("rv."))
+								continue;
+
+							QStringList split = var.mid (3)
+								.split ('=', QString::SkipEmptyParts);
+							if (split.size () != 2)
+							{
+								qDebug () << "skipping" << split;
+								continue;
+							}
+
+							QString value = split.at (1);
+							QStringList idname = split.at (0).split ('.',
+									QString::SkipEmptyParts);
+							if (idname.size () != 2)
+							{
+								qDebug () << "skipping" << split.at (0) << "for" << value;
+								continue;
+							}
+
+							int num = idname.at (0).toInt ();
+							QString name = idname.at (1);
+							Related &r = related [num];
+							if (name == "id")
+								r.ID_ = value;
+							else if (name == "url")
+								r.URL_ = QUrl (QUrl::fromPercentEncoding (value.toUtf8 ()));
+							else if (name == "title")
+								r.Title_ = QUrl::fromPercentEncoding (value.toUtf8 ())
+									.replace ('+', ' ');
+							else if (name == "thumbnailUrl")
+								r.Thumbnail_ = QUrl (QUrl::fromPercentEncoding (value.toUtf8 ()));
+							else if (name == "length_seconds")
+								r.Length_ = value.toInt ();
+							else if (name == "rating")
+								r.Rating_ = value.toDouble ();
+							else if (name == "view_count")
+								r.ViewCount_ = value.toLongLong ();
+							else if (name == "author")
+								r.Author_ = value;
+							else
+								qWarning () << Q_FUNC_INFO
+									<< "unknown field name"
+									<< name;
+						}
+
+						RelatedWidget_->SetRelated (related.values ());
 					}
 
 					QNetworkRequest YoutubePlayer::MakeReq (const QUrl& url) const
@@ -159,6 +230,17 @@ namespace LeechCraft
 						QUrl url = OriginalURL_;
 						url.addQueryItem ("fmt", fmt);
 						SetVideoUrl (url);
+					}
+
+					void YoutubePlayer::handleRelatedToggled (bool checked)
+					{
+						if (checked)
+						{
+							QPoint pos = Ui_.Related_->pos ();
+							pos.ry () += Ui_.Related_->rect ().height ();
+							RelatedWidget_->move (mapToGlobal (pos));
+						}
+						RelatedWidget_->ToggleVisibility ();
 					}
 
 					Player* YoutubePlayerCreator::Create (const QUrl& url,

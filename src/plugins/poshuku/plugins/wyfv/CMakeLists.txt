@@ -9,6 +9,8 @@ SET (WYFV_SRCS
 	playerfactory.cpp
 	abstractplayercreator.cpp
 	youtubeplayer.cpp
+	relatedwidget.cpp
+	relateditem.cpp
 	)
 SET (WYFV_HEADERS
 	wyfv.h
@@ -19,9 +21,13 @@ SET (WYFV_HEADERS
 	playerfactory.h
 	abstractplayercreator.h
 	youtubeplayer.h
+	relatedwidget.h
+	relateditem.h
+	related.h
 	)
 SET (WYFV_FORMS
 	player.ui
+	relateditem.ui
 	)
 SET (WYFV_RESOURCES
 	resources.qrc

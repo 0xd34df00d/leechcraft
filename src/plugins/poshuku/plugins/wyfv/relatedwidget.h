@@ -16,15 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_WYFV_YOUTUBEPLAYER_H
-#define PLUGINS_POSHUKU_PLUGINS_WYFV_YOUTUBEPLAYER_H
-#include <QStringList>
-#include <QUrl>
-#include "player.h"
-#include "abstractplayercreator.h"
+#ifndef PLUGINS_POSHUKU_PLUGINS_WYFV_RELATEDWIDGET_H
+#define PLUGINS_POSHUKU_PLUGINS_WYFV_RELATEDWIDGET_H
+#include <QGraphicsView>
+#include "related.h"
 
-class QNetworkRequest;
-class QNetworkReply;
+class QGraphicsScene;
+class QGraphicsLinearLayout;
+class QPropertyAnimation;
 
 namespace LeechCraft
 {
@@ -36,34 +35,23 @@ namespace LeechCraft
 			{
 				namespace WYFV
 				{
-					class RelatedWidget;
-
-					class YoutubePlayer : public Player
+					class RelatedWidget : public QGraphicsView
 					{
 						Q_OBJECT
 
-						QUrl OriginalURL_;
-						RelatedWidget *RelatedWidget_;
+						QGraphicsScene *Scene_;
+						QGraphicsLinearLayout *Layout_;
+						bool Shown_;
+						QPropertyAnimation *OpacityAnimation_;
+						QList<QWidget*> RelatedItems_;
 					public:
-						YoutubePlayer (const QUrl&, const QStringList&, const QStringList&);
-						virtual ~YoutubePlayer ();
-					private:
-						void Setup ();
-						void FillRelated (const QStringList&);
-						QNetworkRequest MakeReq (const QUrl&) const;
-						QNetworkReply* ReqAndContinueFormatCheck (const QUrl&);
-					private slots:
-						void newQualityRequested (int);
-						void handleFormatCheckFinished ();
-						void handleRelatedToggled (bool);
-					};
+						RelatedWidget (QWidget* = 0);
+						virtual ~RelatedWidget ();
 
-					class YoutubePlayerCreator : public AbstractPlayerCreator
-					{
-					public:
-						virtual Player* Create (const QUrl&,
-								const QStringList&,
-								const QStringList&) const;
+						void SetRelated (QList<Related>);
+						void ToggleVisibility ();
+					private slots:
+						void handleAnimationFinished ();
 					};
 				};
 			};

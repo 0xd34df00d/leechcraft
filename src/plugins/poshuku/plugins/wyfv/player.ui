@@ -22,6 +22,19 @@
      <item>
       <widget class="QComboBox" name="Quality_"/>
      </item>
+     <item>
+      <widget class="QPushButton" name="Related_">
+       <property name="text">
+        <string>Related...</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
   </layout>

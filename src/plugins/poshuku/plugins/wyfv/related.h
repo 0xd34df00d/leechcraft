@@ -1,3 +1,4 @@
+
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2006-2009  Georg Rudoy
@@ -16,15 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_WYFV_YOUTUBEPLAYER_H
-#define PLUGINS_POSHUKU_PLUGINS_WYFV_YOUTUBEPLAYER_H
-#include <QStringList>
-#include <QUrl>
-#include "player.h"
-#include "abstractplayercreator.h"
+#ifndef PLUGINS_POSHUKU_PLUGINS_WYFV_RELATED_H
+#define PLUGINS_POSHUKU_PLUGINS_WYFV_RELATED_H
 
-class QNetworkRequest;
-class QNetworkReply;
+#include <QString>
+#include <QUrl>
 
 namespace LeechCraft
 {
@@ -36,34 +33,16 @@ namespace LeechCraft
 			{
 				namespace WYFV
 				{
-					class RelatedWidget;
-
-					class YoutubePlayer : public Player
+					struct Related
 					{
-						Q_OBJECT
-
-						QUrl OriginalURL_;
-						RelatedWidget *RelatedWidget_;
-					public:
-						YoutubePlayer (const QUrl&, const QStringList&, const QStringList&);
-						virtual ~YoutubePlayer ();
-					private:
-						void Setup ();
-						void FillRelated (const QStringList&);
-						QNetworkRequest MakeReq (const QUrl&) const;
-						QNetworkReply* ReqAndContinueFormatCheck (const QUrl&);
-					private slots:
-						void newQualityRequested (int);
-						void handleFormatCheckFinished ();
-						void handleRelatedToggled (bool);
-					};
-
-					class YoutubePlayerCreator : public AbstractPlayerCreator
-					{
-					public:
-						virtual Player* Create (const QUrl&,
-								const QStringList&,
-								const QStringList&) const;
+						QString ID_;
+						QUrl URL_;
+						QString Title_;
+						QUrl Thumbnail_;
+						int Length_;
+						double Rating_;
+						qint32 ViewCount_;
+						QString Author_;
 					};
 				};
 			};
