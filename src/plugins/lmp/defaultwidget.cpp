@@ -25,6 +25,10 @@ namespace LeechCraft
 	{
 		namespace LMP
 		{
+			DefaultWidget::DefaultWidget ()
+			{
+			}
+
 			void DefaultWidget::Play ()
 			{
 				Core::Instance ().Play ();
