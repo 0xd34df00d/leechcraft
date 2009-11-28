@@ -20,7 +20,6 @@
 #include <QtDebug>
 #include "filtermodel.h"
 #include "core.h"
-#include "tagsmanager.h"
 
 namespace LeechCraft
 {
@@ -47,7 +46,8 @@ namespace LeechCraft
 				else
 				{
 					QStringList itemTags = Core::Instance ().GetTagsForIndex (source_row, sourceModel ()),
-								filterTags = TagsManager::Instance ().Split (filterRegExp ().pattern ());
+								filterTags = Core::Instance ().GetProxy ()->
+									GetTagsManager ()->Split (filterRegExp ().pattern ());
 					if (!filterTags.size () || !itemTags.size ())
 						return true;
 
