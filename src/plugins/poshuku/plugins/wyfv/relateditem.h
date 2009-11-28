@@ -20,6 +20,7 @@
 #define PLUGINS_POSHUKU_PLUGINS_WYFV_RELATEDITEM_H
 #include <QWidget>
 #include <QBuffer>
+#include <QUrl>
 #include "ui_relateditem.h"
 
 namespace LeechCraft
@@ -40,12 +41,17 @@ namespace LeechCraft
 
 						Ui::RelatedItem Ui_;
 						QBuffer PixmapData_;
+						QUrl URL_;
 					public:
 						RelatedItem (QWidget* = 0);
 						void SetRelated (const Related&);
+					protected:
+						bool eventFilter (QObject*, QEvent*);
 					private slots:
 						void addToPixmap ();
 						void handlePixmapFinished ();
+					signals:
+						void navigate (const QUrl&);
 					};
 				};
 			};

@@ -37,12 +37,16 @@ namespace LeechCraft
 					: QWidget (parent)
 					{
 						Ui_.setupUi (this);
+
+						Ui_.Title_->installEventFilter (this);
+						Ui_.Thumbnail_->installEventFilter (this);
 					}
 
 					void RelatedItem::SetRelated (const Related& related)
 					{
 						Ui_.Title_->setText (related.Title_);
 						Ui_.Rating_->setValue (related.Rating_ * 100);
+						URL_ = related.URL_;
 
 						QNetworkReply *reply = Core::Instance ().GetProxy ()->
 							GetNetworkAccessManager ()->get (QNetworkRequest (related.Thumbnail_));
@@ -54,6 +58,17 @@ namespace LeechCraft
 								SIGNAL (finished ()),
 								this,
 								SLOT (handlePixmapFinished ()));
+					}
+
+					bool RelatedItem::eventFilter (QObject *obj, QEvent *e)
+					{
+						if (e->type () == QEvent::MouseButtonPress)
+						{
+							emit navigate (URL_);
+							return true;
+						}
+						else
+							return QObject::eventFilter (obj, e);
 					}
 
 					void RelatedItem::addToPixmap ()
@@ -93,7 +108,10 @@ namespace LeechCraft
 							Ui_.Thumbnail_->setText (tr ("Failed to load"));
 						}
 						else
+						{
 							Ui_.Thumbnail_->setPixmap (px);
+							PixmapData_.setData (QByteArray ());
+						}
 					}
 				};
 			};

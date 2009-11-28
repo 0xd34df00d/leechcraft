@@ -54,6 +54,8 @@ namespace LeechCraft
 						void ToggleVisibility ();
 					private slots:
 						void handleAnimationFinished ();
+					signals:
+						void navigate (const QUrl&);
 					};
 				};
 			};

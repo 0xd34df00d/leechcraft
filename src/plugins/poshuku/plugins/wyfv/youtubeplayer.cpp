@@ -42,6 +42,10 @@ namespace LeechCraft
 					, RelatedWidget_ (new RelatedWidget)
 					{
 						RelatedWidget_->hide ();
+						connect (RelatedWidget_,
+								SIGNAL (navigate (const QUrl&)),
+								this,
+								SLOT (handleNavigate (const QUrl&)));
 						Setup ();
 
 						connect (Ui_.Related_,

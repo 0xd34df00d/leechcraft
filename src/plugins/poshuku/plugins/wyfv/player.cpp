@@ -19,6 +19,7 @@
 #include "player.h"
 #include <QNetworkReply>
 #include <QMessageBox>
+#include <QWebView>
 #include "core.h"
 
 namespace LeechCraft
@@ -81,6 +82,22 @@ namespace LeechCraft
 							Player_->Enqueue (rep);
 							Player_->Play ();
 						}
+					}
+
+					void Player::handleNavigate (const QUrl& url)
+					{
+						QWidget *parent = parentWidget ();
+						QWebView *view = 0;
+						while (parent)
+						{
+							if ((view = qobject_cast<QWebView*> (parent)))
+								break;
+							parent = parent->parentWidget ();
+						}
+						if (!view)
+							return;
+
+						view->load (url);
 					}
 
 					void Player::handlePlayerError (const QString& error)

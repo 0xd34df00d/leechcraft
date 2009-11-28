@@ -104,6 +104,10 @@ namespace LeechCraft
 						Q_FOREACH (Related r, related)
 						{
 							RelatedItem *item = new RelatedItem ();
+							connect (item,
+									SIGNAL (navigate (const QUrl&)),
+									this,
+									SIGNAL (navigate (const QUrl&)));
 							item->SetRelated (r);
 							if (item->height () < height)
 								height = item->height ();
