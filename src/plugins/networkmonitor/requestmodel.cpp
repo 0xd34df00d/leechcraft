@@ -77,6 +77,9 @@ void LeechCraft::Plugins::NetworkMonitor::RequestModel::handleRequest (QNetworkA
 		case QNetworkAccessManager::PostOperation:
 			opName = "POST";
 			break;
+		case QNetworkAccessManager::DeleteOperation:
+			opName = "DELETE";
+			break;
 		case QNetworkAccessManager::UnknownOperation:
 			opName = "Unknown";
 			break;
