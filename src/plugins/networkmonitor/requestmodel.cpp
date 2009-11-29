@@ -54,6 +54,13 @@ HeaderModel* RequestModel::GetReplyHeadersModel () const
 void LeechCraft::Plugins::NetworkMonitor::RequestModel::handleRequest (QNetworkAccessManager::Operation op,
 		const QNetworkRequest& req, QNetworkReply *rep)
 {
+	if (rep->isFinished ())
+	{
+		qWarning () << Q_FUNC_INFO
+			<< "skipping the finished reply"
+			<< rep;
+		return;
+	}
 	QList<QStandardItem*> items;
 	QString opName;
 	switch (op)
@@ -82,9 +89,17 @@ void LeechCraft::Plugins::NetworkMonitor::RequestModel::handleRequest (QNetworkA
 	appendRow (items);
 
 	connect (rep,
+			SIGNAL (error (QNetworkReply::NetworkError )),
+			this,
+			SLOT (handleFinished ()));
+	connect (rep,
 			SIGNAL (finished ()),
 			this,
 			SLOT (handleFinished ()));
+	connect (rep,
+			SIGNAL (destroyed (QObject*)),
+			this,
+			SLOT (handleGonnaDestroy (QObject*)));
 }
 
 namespace
@@ -181,6 +196,22 @@ void RequestModel::handleCurrentChanged (const QModelIndex& newItem)
 				data ().toMap (), RequestHeadersModel_);
 		FeedHeaders (item (itemFromIndex (newItem)->row (), 2)->
 				data ().toMap (), ReplyHeadersModel_);
+	}
+}
+
+void RequestModel::handleGonnaDestroy (QObject *obj)
+{
+	if (!obj && sender ())
+		obj = sender ();
+
+	for (int i = 0; i < rowCount (); ++i)
+	{
+		QStandardItem *ci = item (i);
+		if (ci->data ().value<QNetworkReply*> () == obj)
+		{
+			qDeleteAll (takeRow (i));
+			break;
+		}
 	}
 }
 
