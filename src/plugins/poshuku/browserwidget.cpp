@@ -72,8 +72,7 @@ namespace LeechCraft
 				Ui_.setupUi (this);
 				Ui_.Sidebar_->AddPage (tr ("Bookmarks"), new BookmarksWidget);
 				Ui_.Sidebar_->AddPage (tr ("History"), new HistoryWidget);
-				Ui_.Splitter_->setSizes (QList<int> () << 1 << 1000);
-				Ui_.Sidebar_->handleToggleHide ();
+				Ui_.Splitter_->setSizes (QList<int> () << 0 << 1000);
 				Ui_.Progress_->hide ();
 
 				Ui_.WebView_->SetBrowserWidget (this);

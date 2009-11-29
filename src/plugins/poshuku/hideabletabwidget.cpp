@@ -30,15 +30,8 @@ namespace LeechCraft
 		{
 			HideableTabWidget::HideableTabWidget (QWidget *parent)
 			: QWidget (parent)
-			, Hidden_ (false)
 			{
 				Ui_.setupUi (this);
-
-				Hider_ = new QAction ("<", this);
-				connect (Hider_,
-						SIGNAL (triggered ()),
-						this,
-						SLOT (handleToggleHide ()));
 
 				TabBar_ = new QTabBar;
 				TabBar_->setShape (QTabBar::RoundedWest);
@@ -54,7 +47,6 @@ namespace LeechCraft
 
 				QVBoxLayout *tabLay = new QVBoxLayout;
 				QToolBar *hc = new QToolBar;
-				hc->addAction (Hider_);
 				hc->setFixedWidth (QApplication::fontMetrics ().width ("<"));
 				tabLay->addWidget (hc);
 				tabLay->addWidget (TabBar_);
@@ -68,25 +60,6 @@ namespace LeechCraft
 			{
 				TabBar_->addTab (name);
 				Ui_.Stack_->addWidget (widget);
-			}
-
-			void HideableTabWidget::Hide (bool h)
-			{
-				Ui_.Stack_->setVisible (!h);
-				adjustSize ();
-				parentWidget ()->adjustSize ();
-			}
-
-			void HideableTabWidget::handleToggleHide ()
-			{
-				Hidden_ = !Hidden_;
-				Hide (Hidden_);
-				QString text;
-				if (Hidden_)
-					text = ">";
-				else
-					text = "<";
-				Hider_->setText (text);
 			}
 		};
 	};
