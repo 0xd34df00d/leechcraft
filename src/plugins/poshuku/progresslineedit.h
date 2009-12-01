@@ -39,13 +39,6 @@ namespace LeechCraft
 				ProgressLineEdit (QWidget* = 0);
 				virtual ~ProgressLineEdit ();
 				bool IsCompleting () const;
-			protected:
-				virtual void focusInEvent (QFocusEvent*);
-				virtual void keyPressEvent (QKeyEvent*);
-			public slots:
-				void handleActivated (const QModelIndex&);
-				void handleHighlighted (const QModelIndex&);
-				void refocus (QObject*);
 			};
 		};
 	};

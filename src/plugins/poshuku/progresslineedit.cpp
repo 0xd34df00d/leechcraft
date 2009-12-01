@@ -37,18 +37,14 @@ namespace LeechCraft
 			{
 				QCompleter *completer = new QCompleter (this);
 				completer->setModel (Core::Instance ().GetURLCompletionModel ());
+				completer->setCompletionRole (URLCompletionModel::RoleURL);
+				completer->setCompletionMode (QCompleter::UnfilteredPopupCompletion);
 				setCompleter (completer);
 
 				connect (this,
 						SIGNAL (textEdited (const QString&)),
 						Core::Instance ().GetURLCompletionModel (),
 						SLOT (setBase (const QString&)));
-
-				connect (Core::Instance ().GetURLCompletionModel (),
-						SIGNAL (baseUpdated (QObject*)),
-						this,
-						SLOT (refocus (QObject*)),
-						Qt::QueuedConnection);
 			}
 			
 			ProgressLineEdit::~ProgressLineEdit ()
@@ -58,61 +54,6 @@ namespace LeechCraft
 			bool ProgressLineEdit::IsCompleting () const
 			{
 				return IsCompleting_;
-			}
-			
-			void ProgressLineEdit::focusInEvent (QFocusEvent *e)
-			{
-				QLineEdit::focusInEvent (e);
-
-				disconnect (completer (),
-						0,
-						this,
-						0);
-
-				connect (completer (),
-						SIGNAL (activated (const QModelIndex&)),
-						this,
-						SLOT (handleActivated (const QModelIndex&)));
-				connect (completer (),
-						SIGNAL (highlighted (const QModelIndex&)),
-						this,
-						SLOT (handleHighlighted (const QModelIndex&)));
-			}
-			
-			void ProgressLineEdit::keyPressEvent (QKeyEvent *e)
-			{
-				QLineEdit::keyPressEvent (e);
-				IsCompleting_ = false;
-			}
-			
-			void ProgressLineEdit::handleActivated (const QModelIndex& index)
-			{
-				QString url = qobject_cast<URLCompletionModel*> (completer ()->
-						model ())->index (index.row (), 0)
-					.data (URLCompletionModel::RoleURL).toString ();
-			
-				setText (url);
-				IsCompleting_ = false;
-				emit returnPressed ();
-			}
-			
-			void ProgressLineEdit::handleHighlighted (const QModelIndex& index)
-			{
-				IsCompleting_ = index.isValid ();
-			
-				QString url = qobject_cast<URLCompletionModel*> (completer ()->
-						model ())->index (index.row (), 0)
-					.data (URLCompletionModel::RoleURL).toString ();
-			
-				setText (url);
-			}
-
-			void ProgressLineEdit::refocus (QObject *source)
-			{
-				setFocus ();
-				if (source == this &&
-						completer ()->completionCount ())
-					completer ()->popup ()->show ();
 			}
 		};
 	};
