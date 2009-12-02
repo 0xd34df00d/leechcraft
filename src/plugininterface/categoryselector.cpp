@@ -25,6 +25,7 @@
 #include <QMoveEvent>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QAction>
 #include <QtDebug>
 
 using namespace LeechCraft::Util;
@@ -44,6 +45,23 @@ CategorySelector::CategorySelector (QWidget *parent)
 			SIGNAL (itemChanged (QTreeWidgetItem*, int)),
 			this,
 			SLOT (buttonToggled ()));
+
+	QAction *all = new QAction (tr ("Select all"), this);
+	connect (all,
+			SIGNAL (triggered ()),
+			this,
+			SLOT (selectAll ()));
+
+	QAction *none = new QAction (tr ("Select none"), this);
+	connect (none,
+			SIGNAL (triggered ()),
+			this,
+			SLOT (selectNone ()));
+
+	addAction (all);
+	addAction (none);
+
+	setContextMenuPolicy (Qt::ActionsContextMenu);
 }
 
 CategorySelector::~CategorySelector ()
