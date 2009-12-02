@@ -87,7 +87,12 @@ LeechCraft::Core::Core ()
 , StorageBackend_ (new SQLStorageBackend)
 , DirectoryWatcher_ (new DirectoryWatcher)
 , ClipboardWatcher_ (new ClipboardWatcher)
+, LocalSocketHandler_ (new LocalSocketHandler)
 {
+	connect (LocalSocketHandler_.get (),
+			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+			this,
+			SLOT (queueEntity (const LeechCraft::DownloadEntity&)));
 	connect (NetworkAccessManager_.get (),
 			SIGNAL (error (const QString&)),
 			this,
@@ -149,6 +154,8 @@ void LeechCraft::Core::SetReallyMainWindow (MainWindow *win)
 	ReallyMainWindow_ = win;
 	ReallyMainWindow_->GetTabWidget ()->installEventFilter (this);
 	ReallyMainWindow_->installEventFilter (this);
+
+	LocalSocketHandler_->SetMainWindow (win);
 }
 
 MainWindow* LeechCraft::Core::GetReallyMainWindow ()
@@ -240,7 +247,11 @@ void LeechCraft::Core::DelayedInit ()
 			InitEmbedTab (plugin);
 	}
 
-	LocalSocketHandler_.reset (new LocalSocketHandler (ReallyMainWindow_));
+	disconnect (LocalSocketHandler_.get (),
+			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+			this,
+			SLOT (queueEntity (const LeechCraft::DownloadEntity&)));
+
 	connect (LocalSocketHandler_.get (),
 			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
 			this,
@@ -249,6 +260,10 @@ void LeechCraft::Core::DelayedInit ()
 	QTimer::singleShot (1000,
 			LocalSocketHandler_.get (),
 			SLOT (pullCommandLine ()));
+
+	QTimer::singleShot (2000,
+			this,
+			SLOT (pullEntityQueue ()));
 }
 
 void LeechCraft::Core::TryToAddJob (QString name, QString where)
@@ -792,6 +807,18 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 void LeechCraft::Core::handleCouldHandle (const LeechCraft::DownloadEntity& e, bool *could)
 {
 	*could = CouldHandle (e);
+}
+
+void LeechCraft::Core::queueEntity (LeechCraft::DownloadEntity e)
+{
+	QueuedEntities_ << e;
+}
+
+void LeechCraft::Core::pullEntityQueue ()
+{
+	Q_FOREACH (DownloadEntity e, QueuedEntities_)
+		handleGotEntity (e);
+	QueuedEntities_.clear ();
 }
 
 void LeechCraft::Core::embeddedTabWantsToFront ()

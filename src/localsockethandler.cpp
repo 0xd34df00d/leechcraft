@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "localsockethandler.h"
+#include <cstdlib>
 #include <QLocalSocket>
 #include <QUrl>
 #include "plugininterface/util.h"
@@ -26,23 +27,43 @@
 
 namespace LeechCraft
 {
-	LocalSocketHandler::LocalSocketHandler (MainWindow *parent)
-	: QObject (parent)
-	, Server_ (new QLocalServer)
-	, Window_ (parent)
+	LocalSocketHandler::LocalSocketHandler ()
+	: Server_ (new QLocalServer)
+	, Window_ (0)
 	{
-		Server_->listen (Application::GetSocketName ());
+		if (!Server_->listen (Application::GetSocketName ()))
+		{
+			if (!static_cast<Application*> (qApp)->IsAlreadyRunning ())
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "WTF? We cannot listen() on the local server but aren't running";
+				std::exit (Application::EGeneralSocketError);
+			}
+			else
+				std::exit (Application::EAlreadyRunning);
+		}
 		connect (Server_.get (),
 				SIGNAL (newConnection ()),
 				this,
 				SLOT (handleNewLocalServerConnection ()));
 	}
 
+	void LocalSocketHandler::SetMainWindow (MainWindow *parent)
+	{
+		Window_ = parent;
+	}
+
 	void LocalSocketHandler::handleNewLocalServerConnection ()
 	{
-		Window_->show ();
-		Window_->activateWindow ();
-		Window_->raise ();
+		if (Window_)
+		{
+			Window_->show ();
+			Window_->activateWindow ();
+			Window_->raise ();
+		}
+		else
+			qWarning () << Q_FUNC_INFO
+				<< "but Window_ is still NULL";
 		std::auto_ptr<QLocalSocket> socket (Server_->nextPendingConnection ());
 		// I think 100 msecs would be more than enough for the local
 		// connections.
