@@ -16,11 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "importwizard.h"
-#include <QtDebug>
-#include "akregatorimporter.h"
-#include "lifereaimporter.h"
 #include "ktorrentimporter.h"
+#include "ktorrentimportpage.h"
 
 namespace LeechCraft
 {
@@ -28,50 +25,25 @@ namespace LeechCraft
 	{
 		namespace NewLife
 		{
-			ImportWizard::ImportWizard (QWidget *parent)
-			: QWizard (parent)
+			KTorrentImporter::KTorrentImporter (QWidget *parent)
+			: AbstractImporter (parent)
 			{
-				Ui_.setupUi (this);
-
-				Importers_ << new AkregatorImporter (this);
-				Importers_ << new LifereaImporter (this);
-				Importers_ << new KTorrentImporter (this);
-				
-				connect (this,
-						SIGNAL (accepted ()),
-						this,
-						SLOT (handleAccepted ()),
-						Qt::QueuedConnection);
-				connect (this,
-						SIGNAL (accepted ()),
-						this,
-						SLOT (handleRejected ()),
-						Qt::QueuedConnection);
-
-				SetupImporters ();
+				ImportPage_ = new KTorrentImportPage ();
 			}
 
-			QString ImportWizard::GetSelectedName () const
+			QStringList KTorrentImporter::GetNames () const
 			{
-				return Ui_.FirstPage_->GetSelectedName ();
+				return QStringList ("KTorrent");
 			}
 
-			void ImportWizard::handleAccepted ()
+			QList<QWizardPage*> KTorrentImporter::GetWizardPages () const
 			{
-				deleteLater ();
-			}
-
-			void ImportWizard::handleRejected ()
-			{
-				deleteLater ();
-			}
-
-			void ImportWizard::SetupImporters ()
-			{
-				Q_FOREACH (AbstractImporter *ai, Importers_)
-					Ui_.FirstPage_->SetupImporter (ai);
+				QList<QWizardPage*> result;
+				result << ImportPage_;
+				return result;
 			}
 		};
 	};
 };
 
+ 
