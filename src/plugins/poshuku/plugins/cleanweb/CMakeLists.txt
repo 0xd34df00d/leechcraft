@@ -9,6 +9,10 @@ SET (CLEANWEB_SRCS
 	flashonclickplugin.cpp
 	flashonclickwhitelist.cpp
 	blockednetworkreply.cpp
+	userfilters.cpp
+	userfiltersmodel.cpp
+	filter.cpp
+	ruleoptiondialog.cpp
 	)
 SET (CLEANWEB_HEADERS
 	cleanweb.h
@@ -19,11 +23,17 @@ SET (CLEANWEB_HEADERS
 	flashonclickplugin.h
 	flashonclickwhitelist.h
 	blockednetworkreply.h
+	userfilters.h
+	userfiltersmodel.h
+	filter.h
+	ruleoptiondialog.h
 	)
 SET (CLEANWEB_FORMS
 	subscriptionsmanager.ui
 	flashplaceholder.ui
 	flashonclickwhitelist.ui
+	userfilters.ui
+	ruleoptiondialog.ui
 	)
 SET (CLEANWEB_RESOURCES
 	resources.qrc

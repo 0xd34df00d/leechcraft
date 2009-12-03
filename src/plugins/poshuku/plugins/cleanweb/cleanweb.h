@@ -72,6 +72,9 @@ namespace LeechCraft
 						void Init (IProxyObject*);
 						bool HandleWebPluginFactoryReload (QList<IWebPlugin*>&);
 						bool HandleLoadFinished (QWebPage*, bool);
+						bool OnWebViewCtxMenu (QWebView*, QContextMenuEvent*,
+								const QWebHitTestResult&, QMenu*,
+								WebViewCtxMenuStage);
 					signals:
 						void delegateEntity (const LeechCraft::DownloadEntity&,
 								int*, QObject**);

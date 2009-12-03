@@ -24,6 +24,7 @@
 #include "iwebplugin.h"
 
 class QNetworkRequest;
+class QWebView;
 
 namespace LeechCraft
 {
@@ -377,6 +378,55 @@ namespace LeechCraft
 				virtual QString OnUserAgentForUrl (const QWebPage*, const QUrl&)
 				{
 					throw std::runtime_error ("We don't handle it by default.");
+				}
+
+				/** Enumartion describing the part of menu that's being
+				 * constructed inside QWebView's subclass'
+				 * contextMenuEvent.
+				 */
+				enum WebViewCtxMenuStage
+				{
+					/// Just the beginning of menu construction.
+					WVSStart,
+					/// Stage related to clicking on a hyperlink finished.
+					WVSAfterLink,
+					/// Stage related to clicking on an image finished.
+					WVSAfterImage,
+					/// Stage related to clicking with having some
+					/// selected text finished.
+					WVSAfterSelectedText,
+					/// The standard set of actions was embedded, This
+					/// stage is just before executing the menu.
+					WVSAfterFinish
+				};
+
+				/** Called inside QWebView's subclass' context menu
+				 * event on different stages with different values
+				 * of stage. All stages are passed regardless whether
+				 * their ocnditions where met like selected text is
+				 * present for WVSAfterSelectedText stage.
+				 *
+				 * @param[in/out] view The QWebView where all this
+				 * happens.
+				 * @param[in] e The context menu event.
+				 * @param[in] r The result of performing
+				 * QWebFrame::hitTestContent(). This one is used
+				 * through the whole procedure of building the menu.
+				 * @param[in/out] menu The menu that is being constructed.
+				 * @param[in] stage Curretn stage.
+				 */
+				virtual bool OnWebViewCtxMenu (QWebView *view,
+						QContextMenuEvent *e,
+						const QWebHitTestResult& r,
+						QMenu *menu,
+						WebViewCtxMenuStage stage)
+				{
+					Q_UNUSED (view);
+					Q_UNUSED (e);
+					Q_UNUSED (r);
+					Q_UNUSED (menu);
+					Q_UNUSED (stage);
+					return false;
 				}
 			};
 
