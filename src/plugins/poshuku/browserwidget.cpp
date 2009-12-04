@@ -213,6 +213,16 @@ namespace LeechCraft
 				moreMenu->addAction (ImportXbel_);
 				moreMenu->addAction (ExportXbel_);
 				moreMenu->addSeparator ();
+
+				ChangeEncoding_ = moreMenu->addMenu (tr ("Change encoding"));
+				connect (ChangeEncoding_,
+						SIGNAL (aboutToShow ()),
+						this,
+						SLOT (handleChangeEncodingAboutToShow ()));
+				connect (ChangeEncoding_,
+						SIGNAL (triggered (QAction*)),
+						this,
+						SLOT (handleChangeEncodingTriggered (QAction*)));
 			
 				RecentlyClosed_ = moreMenu->addMenu (tr ("Recently closed"));
 				RecentlyClosed_->setEnabled (false);
@@ -1071,6 +1081,59 @@ namespace LeechCraft
 				else
 					emit downloadFinished (tr ("Page load failed: %1")
 							.arg (Ui_.WebView_->title ()));
+			}
+
+			void BrowserWidget::handleChangeEncodingAboutToShow ()
+			{
+				ChangeEncoding_->clear ();
+
+				QStringList codecs;
+				QList<int> mibs = QTextCodec::availableMibs ();
+				QMap<QString, int> name2mib;
+				Q_FOREACH (int mib, mibs)
+				{
+					QString name = QTextCodec::codecForMib (mib)->name ();
+					codecs << name;
+					name2mib [name] = mib;
+				}
+				codecs.sort ();
+
+				QString defaultEncoding = Ui_.WebView_->
+					settings ()->defaultTextEncoding ();
+				const int currentCodec = codecs.indexOf (defaultEncoding);
+
+				QAction *def = ChangeEncoding_->addAction (tr ("Default"));
+				def->setData (-1);
+				def->setCheckable (true);
+				if (currentCodec == -1)
+					def->setChecked (true);
+				ChangeEncoding_->addSeparator ();
+
+				for (int i = 0; i < codecs.count (); ++i)
+				{
+					QAction *cdc = ChangeEncoding_->addAction (codecs.at (i));
+					cdc->setData (name2mib [codecs.at (i)]);
+					cdc->setCheckable (true);
+					if (currentCodec == i)
+						cdc->setChecked (true);
+				}
+			}
+
+			void BrowserWidget::handleChangeEncodingTriggered (QAction *action)
+			{
+				if (!action)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "action is null";
+					return;
+				}
+
+				int mib = action->data ().toInt ();
+				QString encoding;
+				if (mib >= 0)
+					encoding = QTextCodec::codecForMib (mib)->name ();
+				Ui_.WebView_->settings ()->setDefaultTextEncoding (encoding);
+				Reload_->trigger ();
 			}
 		};
 	};
