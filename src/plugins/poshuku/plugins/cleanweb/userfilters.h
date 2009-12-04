@@ -33,9 +33,15 @@ namespace LeechCraft
 				{
 					class UserFilters : public QWidget
 					{
+						Q_OBJECT
+
 						Ui::UserFilters Ui_;
 					public:
 						UserFilters (QWidget* = 0);
+					private slots:
+						void on_Add__released ();
+						void on_Modify__released ();
+						void on_Remove__released ();
 					};
 				};
 			};

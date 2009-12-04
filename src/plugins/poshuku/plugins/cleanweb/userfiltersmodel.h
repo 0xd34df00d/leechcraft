@@ -49,7 +49,9 @@ namespace LeechCraft
 
 						const Filter& GetFilter () const;
 						void InitiateAdd (const QString& = QString ());
+						void Remove (int);
 					private:
+						void SplitRow (int*, bool*) const;
 						void ReadSettings ();
 						void WriteSettings () const;
 					private slots:

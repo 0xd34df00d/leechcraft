@@ -37,6 +37,25 @@ namespace LeechCraft
 						Ui_.View_->setModel (Core::Instance ()
 								.GetUserFiltersModel ());
 					}
+
+					void UserFilters::on_Add__released ()
+					{
+						Core::Instance ().GetUserFiltersModel ()->InitiateAdd ();
+					}
+
+					void UserFilters::on_Modify__released ()
+					{
+					}
+
+					void UserFilters::on_Remove__released ()
+					{
+						QModelIndex current = Ui_.View_->currentIndex ();
+						if (!current.isValid ())
+							return;
+
+						Core::Instance ()
+							.GetUserFiltersModel ()->Remove (current.row ());
+					}
 				};
 			};
 		};

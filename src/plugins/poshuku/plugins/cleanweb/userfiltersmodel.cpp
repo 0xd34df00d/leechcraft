@@ -64,11 +64,7 @@ namespace LeechCraft
 
 						int row = index.row ();
 						bool isException = true;
-						if (row >= Filter_.ExceptionStrings_.size ())
-						{
-							isException = false;
-							row = row - Filter_.ExceptionStrings_.size ();
-						}
+						SplitRow (&row, &isException);
 
 						const QStringList& list = isException ?
 							Filter_.ExceptionStrings_ :
@@ -149,14 +145,24 @@ namespace LeechCraft
 					{
 						RuleOptionDialog dia;
 						dia.SetString (suggested);
+						dia.setWindowTitle (tr ("Add a filter"));
 						if (dia.exec () != QDialog::Accepted)
 							return;
 
 						QString rule = dia.GetString ();
+						int size = 0;
 						if (dia.IsException ())
+						{
+							size = Filter_.ExceptionStrings_.size ();
 							Filter_.ExceptionStrings_ << rule;
+						}
 						else
+						{
+							size = rowCount ();
 							Filter_.FilterStrings_ << rule;
+						}
+
+						beginInsertRows (QModelIndex (), size, size);
 
 						if (dia.GetType () == FilterOption::MTRegexp)
 							Filter_.RegExps_ [rule] = QRegExp (rule,
@@ -165,8 +171,33 @@ namespace LeechCraft
 						Filter_.Options_ [rule].Case_ = dia.GetCase ();
 						Filter_.Options_ [rule].Domains_ = dia.GetDomains ();
 						Filter_.Options_ [rule].NotDomains_ = dia.GetNotDomains ();
+						endInsertRows ();
 
 						WriteSettings ();
+					}
+
+					void UserFiltersModel::Remove (int index)
+					{
+						int pos = index;
+						bool isException;
+						SplitRow (&pos, &isException);
+						beginRemoveRows (QModelIndex (), index, index);
+						if (isException)
+							Filter_.ExceptionStrings_.removeAt (pos);
+						else
+							Filter_.FilterStrings_.removeAt (pos);
+						endRemoveRows ();
+					}
+
+					void UserFiltersModel::SplitRow (int *row, bool *isException) const
+					{
+						if (*row >= Filter_.ExceptionStrings_.size ())
+						{
+							*isException = false;
+							*row = *row - Filter_.ExceptionStrings_.size ();
+						}
+						else
+							*isException = true;
 					}
 
 					void UserFiltersModel::ReadSettings ()
