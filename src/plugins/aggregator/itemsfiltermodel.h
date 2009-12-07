@@ -19,7 +19,8 @@
 #ifndef PLUGINS_AGGREGATOR_ITEMSFILTERMODEL_H
 #define PLUGINS_AGGREGATOR_ITEMSFILTERMODEL_H
 #include <QSortFilterProxyModel>
-#include <QStringList>
+#include <QSet>
+#include <QString>
 
 namespace LeechCraft
 {
@@ -32,7 +33,7 @@ namespace LeechCraft
 				Q_OBJECT
 
 				bool HideRead_;
-				QStringList ItemCategories_;
+				QSet<QString> ItemCategories_;
 			public:
 				ItemsFilterModel (QObject* = 0);
 				virtual ~ItemsFilterModel ();

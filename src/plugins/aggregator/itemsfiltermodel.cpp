@@ -78,7 +78,7 @@ namespace LeechCraft
 			
 			void ItemsFilterModel::categorySelectionChanged (const QStringList& categories)
 			{
-				ItemCategories_ = categories;
+				ItemCategories_ = QSet<QString>::fromList (categories);
 				invalidateFilter ();
 			}
 		};
