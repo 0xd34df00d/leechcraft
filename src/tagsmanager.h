@@ -50,6 +50,7 @@ namespace LeechCraft
 
 		tag_id GetID (const QString&);
 		QString GetTag (tag_id) const;
+		QStringList GetAllTags () const;
 		QStringList Split (const QString&) const;
 		QString Join (const QStringList&) const;
 		QAbstractItemModel* GetModel ();
@@ -59,7 +60,6 @@ namespace LeechCraft
 		void SetTag (const QModelIndex&, const QString&);
 	private:
 		tag_id InsertTag (const QString&);
-		QStringList GetAllTags () const;
 		void ReadSettings ();
 		void WriteSettings () const;
 	signals:

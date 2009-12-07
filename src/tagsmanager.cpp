@@ -94,6 +94,14 @@ QString TagsManager::GetTag (ITagsManager::tag_id id) const
 	return Tags_ [id];
 }
 
+QStringList TagsManager::GetAllTags () const
+{
+	QStringList result;
+	std::copy (Tags_.begin (), Tags_.end (),
+			std::back_inserter (result));
+	return result;
+}
+
 QStringList TagsManager::Split (const QString& string) const
 {
 	QStringList splitted = string.split (";", QString::SkipEmptyParts);
@@ -157,14 +165,6 @@ QAbstractItemModel* TagsManager::GetModel ()
 QObject* TagsManager::GetObject ()
 {
 	return this;
-}
-
-QStringList TagsManager::GetAllTags () const
-{
-	QStringList result;
-	std::copy (Tags_.begin (), Tags_.end (),
-			std::back_inserter (result));
-	return result;
 }
 
 void TagsManager::ReadSettings ()
