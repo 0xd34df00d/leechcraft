@@ -46,6 +46,11 @@ namespace LeechCraft
 			bool ItemsFilterModel::filterAcceptsRow (int sourceRow,
 					const QModelIndex& sourceParent) const
 			{
+				if (HideRead_ &&
+						Core::Instance ().IsItemRead (sourceRow) &&
+						!Core::Instance ().IsItemCurrent (sourceRow))
+					return false;
+
 				if (!ItemCategories_.isEmpty ())
 				{
 					bool categoryFound = false;
@@ -67,13 +72,8 @@ namespace LeechCraft
 						return false;
 				}
 			
-				if (HideRead_ &&
-						Core::Instance ().IsItemRead (sourceRow) &&
-						!Core::Instance ().IsItemCurrent (sourceRow))
-					return false;
-				else
-					return QSortFilterProxyModel::filterAcceptsRow (sourceRow,
-							sourceParent);
+				return QSortFilterProxyModel::filterAcceptsRow (sourceRow,
+						sourceParent);
 			}
 			
 			void ItemsFilterModel::categorySelectionChanged (const QStringList& categories)
