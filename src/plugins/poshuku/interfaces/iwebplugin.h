@@ -32,7 +32,18 @@ namespace LeechCraft
 			public:
 				virtual ~IWebPlugin () {}
 
-				virtual QWebPluginFactory::Plugin Plugin () const = 0;
+				/** Queries the plugin for the information.
+				 *
+				 * inPlugins is true if the plugin is being queried inside
+				 * the QWebPluginFactory::plugins(), false otherwise.
+				 * Plugins can relate on this parameter for them to not
+				 * be exposed to the DOM.
+				 *
+				 * @param[in] inPlugins If queried inside the
+				 * QWebPluginFactory::plugins().
+				 */
+				virtual QWebPluginFactory::Plugin Plugin (bool inPlugins) const = 0;
+
 				virtual QWidget* Create (const QString&,
 						const QUrl&,
 						const QStringList&,

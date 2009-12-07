@@ -38,8 +38,11 @@ namespace LeechCraft
 					{
 					}
 
-					QWebPluginFactory::Plugin FlashOnClickPlugin::Plugin () const
+					QWebPluginFactory::Plugin FlashOnClickPlugin::Plugin (bool isq) const
 					{
+						if (isq)
+							throw "I want to be anonymous";
+
 						QWebPluginFactory::Plugin result;
 						result.name = "FlashOnClickPlugin";
 						QWebPluginFactory::MimeType mime;

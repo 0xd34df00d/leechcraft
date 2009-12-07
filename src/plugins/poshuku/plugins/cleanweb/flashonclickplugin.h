@@ -38,7 +38,7 @@ namespace LeechCraft
 					public:
 						FlashOnClickPlugin (QObject* = 0);
 
-						QWebPluginFactory::Plugin Plugin () const;
+						QWebPluginFactory::Plugin Plugin (bool) const;
 						QWidget* Create (const QString&,
 								const QUrl&,
 								const QStringList&,
