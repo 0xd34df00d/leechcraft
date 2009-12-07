@@ -70,6 +70,11 @@ CategorySelector::~CategorySelector ()
 
 void CategorySelector::SetPossibleSelections (const QStringList& tags)
 {
+	disconnect (this,
+			SIGNAL (itemChanged (QTreeWidgetItem*, int)),
+			this,
+			SLOT (buttonToggled ()));
+
 	clear ();
 
 	QStringList mytags = tags;
@@ -89,15 +94,26 @@ void CategorySelector::SetPossibleSelections (const QStringList& tags)
 	addTopLevelItems (items);
 
 	setHeaderLabel (QString ());
+
+	connect (this,
+			SIGNAL (itemChanged (QTreeWidgetItem*, int)),
+			this,
+			SLOT (buttonToggled ()));
+
+	emit selectionChanged (tags);
 }
 
 QStringList CategorySelector::GetSelections ()
 {
 	QStringList tags;
 
-	for (int i = 0; i < topLevelItemCount (); ++i)
-		if (topLevelItem (i)->checkState (0) == Qt::Checked)
-			tags += topLevelItem (i)->data (0, RoleTag).toString ();
+	for (int i = 0, size = topLevelItemCount ();
+			i < size; ++i)
+	{
+		QTreeWidgetItem *item = topLevelItem (i);
+		if (item->checkState (0) == Qt::Checked)
+			tags += item->data (0, RoleTag).toString ();
+	}
 
 	return tags;
 }
