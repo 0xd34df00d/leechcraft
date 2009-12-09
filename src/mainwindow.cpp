@@ -552,7 +552,6 @@ void LeechCraft::MainWindow::updateIconSet ()
 void LeechCraft::MainWindow::doDelayedInit ()
 {
 	PluginManagerDialog *pm = new PluginManagerDialog ();
-	pm->setWindowFlags (Qt::Widget);
 	XmlSettingsDialog_->SetCustomWidget ("PluginManager", pm);
 
 	QObjectList settable = Core::Instance ().GetSettables ();

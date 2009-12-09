@@ -18,12 +18,12 @@
 
 #ifndef PLUGINMANAGERDIALOG_H
 #define PLUGINMANAGERDIALOG_H
-#include <QDialog>
+#include <QWidget>
 #include "ui_pluginmanagerdialog.h"
 
 namespace LeechCraft
 {
-	class PluginManagerDialog : public QDialog
+	class PluginManagerDialog : public QWidget
 	{
 		Q_OBJECT
 
