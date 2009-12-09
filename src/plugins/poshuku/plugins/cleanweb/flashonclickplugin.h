@@ -35,6 +35,8 @@ namespace LeechCraft
 											 , public IWebPlugin
 					{
 						Q_OBJECT
+
+						Q_INTERFACES (LeechCraft::Plugins::Poshuku::IWebPlugin)
 					public:
 						FlashOnClickPlugin (QObject* = 0);
 

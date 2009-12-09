@@ -18,8 +18,8 @@
 
 #ifndef PLUGINS_POSHUKU_INTERFACES_IWEBPLUGIN_H
 #define PLUGINS_POSHUKU_INTERFACES_IWEBPLUGIN_H
+#include <QtPlugin>
 #include <QWebPluginFactory>
-#include <QStringList>
 
 namespace LeechCraft
 {
@@ -27,6 +27,10 @@ namespace LeechCraft
 	{
 		namespace Poshuku
 		{
+			/** Base class for plugins that want to be available from the
+			 * Poshuku's Web Plugin Factory which is a subclass of
+			 * QWebPluginFactory.
+			 */
 			class IWebPlugin
 			{
 			public:
@@ -44,14 +48,22 @@ namespace LeechCraft
 				 */
 				virtual QWebPluginFactory::Plugin Plugin (bool inPlugins) const = 0;
 
-				virtual QWidget* Create (const QString&,
-						const QUrl&,
-						const QStringList&,
-						const QStringList&) = 0;
+				/** Askes the plugin to create its instance for the
+				 * given mime, url, args and their params.
+				 *
+				 * See QWebPluginFactory::create() for more info.
+				 */
+				virtual QWidget* Create (const QString& mime,
+						const QUrl& url,
+						const QStringList& args,
+						const QStringList& params) = 0;
 			};
 		};
 	};
 };
+
+Q_DECLARE_INTERFACE (LeechCraft::Plugins::Poshuku::IWebPlugin,
+		"org.Deviant.LeechCraft.Plugins.Poshuku.IWebPlugin/1.0");
 
 #endif
 
