@@ -170,7 +170,7 @@ void XmlSettingsDialog::SetCustomWidget (const QString& name, QWidget *widget)
 		throw std::runtime_error (qPrintable (QString ("Widget %1 "
 						"appears to exist more than once").arg (name)));
 
-	widgets [0]->layout ()->addWidget (widget);
+	widgets.at (0)->layout ()->addWidget (widget);
 	Customs_ << widget;
 	connect (widget,
 			SIGNAL (destroyed (QObject*)),
@@ -206,6 +206,7 @@ void XmlSettingsDialog::ParsePage (const QDomElement& page)
 	lay->setFieldGrowthPolicy (QFormLayout::AllNonFixedFieldsGrow);
 	lay->setContentsMargins (0, 0, 0, 0);
 	baseWidget->setLayout (lay);
+	baseWidget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 	ParseEntity (page, baseWidget);
 }
@@ -226,7 +227,9 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
 		QFormLayout *groupLayout = new QFormLayout ();
 		groupLayout->setRowWrapPolicy (QFormLayout::DontWrapRows);
 		groupLayout->setFieldGrowthPolicy (QFormLayout::AllNonFixedFieldsGrow);
+		groupLayout->setContentsMargins (2, 2, 2, 2);
 		box->setLayout (groupLayout);
+		box->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 		ParseEntity (gbox, box);
 		
 		QFormLayout *lay = qobject_cast<QFormLayout*> (baseWidget->layout ());
@@ -286,6 +289,7 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
 			widgetLay->setFieldGrowthPolicy (QFormLayout::AllNonFixedFieldsGrow);
 			widgetLay->setContentsMargins (0, 0, 0, 0);
 			page->setLayout (widgetLay);
+			page->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 			tabs->addTab (page, GetLabel (tab));
 			ParseEntity (tab, page);
 			tab = tab.nextSiblingElement ("tab");
@@ -665,7 +669,9 @@ void XmlSettingsDialog::DoGroupbox (const QDomElement& item, QFormLayout *lay)
 	QFormLayout *groupLayout = new QFormLayout ();
 	groupLayout->setRowWrapPolicy (QFormLayout::DontWrapRows);
 	groupLayout->setFieldGrowthPolicy (QFormLayout::AllNonFixedFieldsGrow);
+	groupLayout->setContentsMargins (2, 2, 2, 2);
 	box->setLayout (groupLayout);
+	box->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 	box->setCheckable (true);
 
 	QVariant value = GetValue (item);
@@ -869,6 +875,7 @@ void XmlSettingsDialog::DoCustomWidget (const QDomElement& item, QFormLayout *la
 	QVBoxLayout *layout = new QVBoxLayout ();
 	layout->setContentsMargins (0, 0, 0, 0);
 	widget->setLayout (layout);
+	widget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 	if (item.attribute ("label") == "own")
 		lay->addRow (widget);
