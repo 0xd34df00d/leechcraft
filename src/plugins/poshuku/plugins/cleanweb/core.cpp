@@ -237,6 +237,16 @@ void Core::Release ()
 	delete FlashOnClickPlugin_;
 }
 
+void Core::SetProxy (ICoreProxy_ptr proxy)
+{
+	Proxy_ = proxy;
+}
+
+ICoreProxy_ptr Core::GetProxy () const
+{
+	return Proxy_;
+}
+
 int Core::columnCount (const QModelIndex&) const
 {
 	return HeaderLabels_.size ();

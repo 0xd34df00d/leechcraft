@@ -18,6 +18,7 @@
 
 #include "flashonclickplugin.h"
 #include <QDebug>
+#include <interfaces/iflashoverrider.h>
 #include "flashplaceholder.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
@@ -64,6 +65,11 @@ namespace LeechCraft
 						if (Core::Instance ().GetFlashOnClickWhitelist ()->
 								Matches (url.toString ()))
 							return 0;
+
+						Q_FOREACH (IFlashOverrider* plugin, Core::Instance ().GetProxy ()->
+								GetPluginsManager ()->GetAllCastableTo<IFlashOverrider*> ())
+							if (plugin->WouldOverrideFlash (url))
+								return 0;
 
 						return new FlashPlaceHolder (url);
 					}

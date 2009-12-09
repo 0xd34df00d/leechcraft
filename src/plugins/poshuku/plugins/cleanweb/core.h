@@ -69,10 +69,15 @@ namespace LeechCraft
 
 						QList<QString> Blocked_;
 
+						ICoreProxy_ptr Proxy_;
+
 						Core ();
 					public:
 						static Core& Instance ();
 						void Release ();
+
+						void SetProxy (ICoreProxy_ptr);
+						ICoreProxy_ptr GetProxy () const;
 
 						int columnCount (const QModelIndex& = QModelIndex ()) const;
 						QVariant data (const QModelIndex&, int) const;

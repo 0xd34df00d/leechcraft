@@ -45,6 +45,8 @@ void CleanWeb::Init (ICoreProxy_ptr proxy)
 			SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
 					int*, QObject**)));
 
+	Core::Instance ().SetProxy (proxy);
+
 	proxy->RegisterHook (HookSignature<HIDNetworkAccessManagerCreateRequest>::Signature_t (
 				boost::bind (&Core::Hook,
 					&Core::Instance (),
