@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef IPROXYOBJECT_H
-#define IPROXYOBJECT_H
+#ifndef PLUGINS_POSHUKU_INTERFACES_IPROXYOBJECT_H
+#define PLUGINS_POSHUKU_INTERFACES_IPROXYOBJECT_H
 #include <QtPlugin>
 
 class QMenu;
