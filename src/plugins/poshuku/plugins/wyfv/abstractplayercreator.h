@@ -37,6 +37,7 @@ namespace LeechCraft
 					class AbstractPlayerCreator
 					{
 					public:
+						virtual bool WouldRatherPlay (const QUrl&) const = 0;
 						virtual Player* Create (const QUrl&,
 								const QStringList&,
 								const QStringList&) const = 0;
