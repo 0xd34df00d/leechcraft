@@ -4,13 +4,18 @@
 	<page>
 		<label lang="en" value="General" />
 		<label lang="ru" value="Общие" />
+		<label lang="ua" value="Загальні" />
 		<tab>
 			<label lang="en" value="VYFW" />
 			<groupbox>
 				<label lang="en" value="Enable for these sites:" />
 				<label lang="ru" value="Включить для этих сайтов:" />
+				<label lang="ua" value="Використовувати для цих сайтів:" />
 				<item type="checkbox" default="on" property="YouTube">
 					<label lang="en" value="YouTube" />
+				</item>
+				<item type="checkbox" default="on" property="Vkontakte.ru">
+					<label lang="en" value="Vkontakte.ru" />
 				</item>
 			</groupbox>
 		</tab>

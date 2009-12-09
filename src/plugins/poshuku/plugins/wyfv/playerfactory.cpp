@@ -19,6 +19,7 @@
 #include "playerfactory.h"
 #include <boost/bind.hpp>
 #include "youtubeplayer.h"
+#include "vkontakteruplayer.h"
 
 namespace LeechCraft
 {
@@ -41,6 +42,8 @@ namespace LeechCraft
 						AllocatedCreators_.clear ();
 
 						AllocatedCreators_ << new YoutubePlayerCreator;
+						AllocatedCreators_ << new VkontakteruPlayerCreator;
+
 						Q_FOREACH (AbstractPlayerCreator *apc, AllocatedCreators_)
 						{
 							Creators_ << PlayerCreator_f (boost::bind (&AbstractPlayerCreator::Create,
