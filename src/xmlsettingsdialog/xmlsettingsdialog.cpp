@@ -55,6 +55,7 @@ XmlSettingsDialog::XmlSettingsDialog ()
 	Pages_ = new QStackedWidget (this);
 
 	QHBoxLayout *mainLay = new QHBoxLayout (this);
+	mainLay->setContentsMargins (0, 0, 0, 0);
 	mainLay->addWidget (Pages_);
 	setLayout (mainLay);
 
@@ -203,6 +204,7 @@ void XmlSettingsDialog::ParsePage (const QDomElement& page)
 	QFormLayout *lay = new QFormLayout;
 	lay->setRowWrapPolicy (QFormLayout::DontWrapRows);
 	lay->setFieldGrowthPolicy (QFormLayout::AllNonFixedFieldsGrow);
+	lay->setContentsMargins (0, 0, 0, 0);
 	baseWidget->setLayout (lay);
 
 	ParseEntity (page, baseWidget);
@@ -282,6 +284,7 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
 			QFormLayout *widgetLay = new QFormLayout;
 			widgetLay->setRowWrapPolicy (QFormLayout::DontWrapRows);
 			widgetLay->setFieldGrowthPolicy (QFormLayout::AllNonFixedFieldsGrow);
+			widgetLay->setContentsMargins (0, 0, 0, 0);
 			page->setLayout (widgetLay);
 			tabs->addTab (page, GetLabel (tab));
 			ParseEntity (tab, page);
