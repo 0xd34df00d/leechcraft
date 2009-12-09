@@ -174,7 +174,11 @@
 		<label lang="en" value="Tags" />
 		<label lang="ru" value="Теги" />
 		<label lang="uk" value="Теги" />
-		<item type="customwidget" label="own" name="TagsViewer" />
+		<groupbox>
+			<label lang="en" value="Tags manager" />
+			<label lang="ru" value="Менеджер тегов" />
+			<item type="customwidget" label="own" name="TagsViewer" />
+		</groupbox>
 	</page>
 	<page>
 		<label lang="en" value="Network" />
