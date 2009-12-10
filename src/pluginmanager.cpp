@@ -103,7 +103,7 @@ namespace LeechCraft
 					case Qt::DisplayRole:
 						{
 							QSettings settings (QCoreApplication::organizationName (),
-									QCoreApplication::applicationName ());
+									QCoreApplication::applicationName () + "-pg");
 							settings.beginGroup ("Plugins");
 							settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
 							QVariant result = settings.value ("Name");
@@ -114,7 +114,7 @@ namespace LeechCraft
 					case Qt::DecorationRole:
 						{
 							QSettings settings (QCoreApplication::organizationName (),
-									QCoreApplication::applicationName ());
+									QCoreApplication::applicationName () + "-pg");
 							settings.beginGroup ("Plugins");
 							settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
 							QVariant result = settings.value ("Icon");
@@ -125,7 +125,7 @@ namespace LeechCraft
 					case Qt::CheckStateRole:
 						{
 							QSettings settings (QCoreApplication::organizationName (),
-									QCoreApplication::applicationName ());
+									QCoreApplication::applicationName () + "-pg");
 							settings.beginGroup ("Plugins");
 							settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
 							bool result = settings.value ("AllowLoad", true).toBool ();
@@ -201,7 +201,7 @@ namespace LeechCraft
 			return false;
 
 		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName ());
+				QCoreApplication::applicationName () + "-pg");
 		settings.beginGroup ("Plugins");
 		settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
 		settings.setValue ("AllowLoad", data.toBool ());
@@ -295,7 +295,7 @@ namespace LeechCraft
 	void PluginManager::ScanDir (const QString& dir)
 	{
 		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName ());
+				QCoreApplication::applicationName () + "-pg");
 		settings.beginGroup ("Plugins");
 
 		QDir pluginsDir = QDir (dir);
@@ -321,7 +321,7 @@ namespace LeechCraft
 	void PluginManager::CheckPlugins ()
 	{
 		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName ());
+				QCoreApplication::applicationName () + "-pg");
 		settings.beginGroup ("Plugins");
 
 		for (int i = 0; i < Plugins_.size (); ++i)
