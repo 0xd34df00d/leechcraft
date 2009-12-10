@@ -170,9 +170,26 @@ namespace LeechCraft
 		 */
 		RoleContextMenu
 	};
+
+	struct Notification
+	{
+		enum Priority
+		{
+			P1_,
+			P2_,
+			P3_,
+			P4_,
+			P5_
+		};
+
+		QString Text_;
+		bool UntilUserSees_;
+		Priority Priority_;
+	};
 };
 
 Q_DECLARE_METATYPE (LeechCraft::DownloadEntity);
+Q_DECLARE_METATYPE (LeechCraft::Notification);
 Q_DECLARE_METATYPE (QNetworkReply*);
 Q_DECLARE_METATYPE (QToolBar*);
 Q_DECLARE_METATYPE (QMenu*);
