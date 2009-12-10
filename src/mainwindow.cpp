@@ -58,6 +58,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , PluginsActionsBar_ (0)
 {
 	Guard_ = new ToolbarGuard (this);
+	setUpdatesEnabled (false);
 	InitializeInterface ();
 
 	connect (qApp,
@@ -115,6 +116,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 
 	updateIconSet ();
 
+	setUpdatesEnabled (true);
 	show ();
 
 	WasMaximized_ = isMaximized ();
