@@ -31,6 +31,8 @@ namespace LeechCraft
 			{
 				namespace CleanWeb
 				{
+					class RuleOptionDialog;
+
 					class UserFiltersModel : public QAbstractItemModel
 					{
 						Q_OBJECT
@@ -49,8 +51,10 @@ namespace LeechCraft
 
 						const Filter& GetFilter () const;
 						void InitiateAdd (const QString& = QString ());
+						void Modify (int);
 						void Remove (int);
 					private:
+						void Add (const RuleOptionDialog&);
 						void SplitRow (int*, bool*) const;
 						void ReadSettings ();
 						void WriteSettings () const;

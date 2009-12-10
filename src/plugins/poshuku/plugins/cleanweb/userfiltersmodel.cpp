@@ -149,6 +149,11 @@ namespace LeechCraft
 						if (dia.exec () != QDialog::Accepted)
 							return;
 
+						Add (dia);
+					}
+					
+					void UserFiltersModel::Add (const RuleOptionDialog& dia)
+					{
 						QString rule = dia.GetString ();
 						int size = 0;
 						if (dia.IsException ())
@@ -174,6 +179,34 @@ namespace LeechCraft
 						endInsertRows ();
 
 						WriteSettings ();
+					}
+
+					void UserFiltersModel::Modify (int index)
+					{
+						int pos = index;
+						bool isException;
+						SplitRow (&pos, &isException);
+
+						QString rule;
+						if (isException)
+							rule = Filter_.ExceptionStrings_.at (pos);
+						else
+							rule = Filter_.FilterStrings_.at (pos);
+
+						RuleOptionDialog dia;
+						dia.SetException (isException);
+						dia.SetString (rule);
+						dia.SetType (Filter_.Options_ [rule].MatchType_);
+						dia.SetCase (Filter_.Options_ [rule].Case_);
+						dia.SetDomains (Filter_.Options_ [rule].Domains_);
+						dia.SetNotDomains (Filter_.Options_ [rule].NotDomains_);
+
+						dia.setWindowTitle (tr ("Modify filter"));
+						if (dia.exec () != QDialog::Accepted)
+							return;
+
+						Remove (index);
+						Add (dia);
 					}
 
 					void UserFiltersModel::Remove (int index)

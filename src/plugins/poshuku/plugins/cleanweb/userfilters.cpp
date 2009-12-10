@@ -45,6 +45,12 @@ namespace LeechCraft
 
 					void UserFilters::on_Modify__released ()
 					{
+						QModelIndex current = Ui_.View_->currentIndex ();
+						if (!current.isValid ())
+							return;
+
+						Core::Instance ()
+							.GetUserFiltersModel ()->Modify (current.row ());
 					}
 
 					void UserFilters::on_Remove__released ()
