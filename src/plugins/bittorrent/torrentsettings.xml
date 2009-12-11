@@ -98,9 +98,13 @@
 						<binary type="image" place="rcc">:/resources/images/clients/utorrent.png</binary>
 					</option>
 				</item>
-				<item type="lineedit" property="PeerIDVersion" default="0300" inputMask="9999">
-					<label lang="en" value="Peer ID version:" />
-					<label lang="ru" value="Версия Peer ID:" />
+				<item type="groupbox" property="OverridePeerIDVersion" default="false" checkable="true">
+					<label lang="en" value="Override Peer ID version" />
+					<label lang="ru" value="Переопределить версию Peer ID" />
+					<item type="lineedit" property="PeerIDVersion" default="0300" inputMask="9999">
+						<label lang="en" value="Peer ID version:" />
+						<label lang="ru" value="Версия Peer ID:" />
+					</item>
 				</item>
 			</groupbox>
 		</tab>

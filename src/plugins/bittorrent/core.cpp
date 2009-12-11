@@ -156,13 +156,33 @@ namespace LeechCraft
 				{
 					QString peerIDstring = XmlSettingsManager::Instance ()->
 						property ("PeerIDString").toString ();
-					QString ver = XmlSettingsManager::Instance ()->
-						property ("PeerIDVersion").toString ();
-					if (ver.size () != 4)
+
+					QString ver;
+					if (XmlSettingsManager::Instance ()->
+							property ("OverridePeerIDVersion").toBool ())
+						ver = XmlSettingsManager::Instance ()->
+							property ("PeerIDVersion").toString ();
+					else
 					{
-						ver = "1111";
-						XmlSettingsManager::Instance ()->setProperty ("PeerIDVersion", ver);
+						// Build peer_id
+						// Get the tag name.
+						ver = LEECHCRAFT_VERSION;
+						// Get the part before the '-'.
+						ver = ver.split ('-', QString::SkipEmptyParts).at (0);
+						QStringList vers = ver.split ('.', QString::SkipEmptyParts);
+						if (vers.size () != 3)
+							throw std::runtime_error ("Malformed version string "
+									"(could not split it to three parts)");
+						ver = QString ("%1%2")
+							.arg (vers.at (1).toInt (),
+									2, 10, QChar ('0'))
+							.arg (vers.at (2).toInt (),
+									2, 10, QChar ('0'));
 					}
+
+
+					if (ver.size () != 4)
+						ver = "1111";
 					Session_ = new libtorrent::session (libtorrent::fingerprint
 							(peerIDstring.toLatin1 ().constData (),
 							 ver.at (0).digitValue (),
