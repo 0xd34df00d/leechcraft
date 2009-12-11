@@ -18,6 +18,9 @@
     <normaloff>:/resources/images/poshuku.svg</normaloff>:/resources/images/poshuku.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="margin">
+    <number>0</number>
+   </property>
    <item>
     <widget class="LeechCraft::Plugins::Poshuku::BrowserWidget" name="MainView_" native="true"/>
    </item>
