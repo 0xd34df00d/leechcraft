@@ -19,6 +19,7 @@
 #ifndef PLUGINS_POSHUKU_BOOKMARKSWIDGET_H
 #define PLUGINS_POSHUKU_BOOKMARKSWIDGET_H
 #include <memory>
+#include <boost/shared_ptr.hpp>
 #include <QWidget>
 #include <plugininterface/tagscompleter.h>
 #include "filtermodel.h"
@@ -26,6 +27,11 @@
 
 namespace LeechCraft
 {
+	namespace Util
+	{
+		class FlatToFoldersProxyModel;
+	};
+
 	namespace Plugins
 	{
 		namespace Poshuku
@@ -35,6 +41,7 @@ namespace LeechCraft
 				Q_OBJECT
 
 				Ui::BookmarksWidget Ui_;
+				boost::shared_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
 				std::auto_ptr<FilterModel> FavoritesFilterModel_;
 				std::auto_ptr<Util::TagsCompleter> FavoritesFilterLineCompleter_;
 			public:
