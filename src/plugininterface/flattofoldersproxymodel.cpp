@@ -88,7 +88,16 @@ namespace LeechCraft
 				return fti->Index_.data (role);
 			else if (fti->Type_ == FlatTreeItem::TFolder &&
 					index.column () == 0)
-				return fti->Tag_;
+			{
+				if (fti->Tag_.isEmpty ())
+					return tr ("untagged");
+
+				QString ut = TM_->GetTag (fti->Tag_);
+				if (ut.isEmpty ())
+					return tr ("<unknown tag>");
+				else
+					return ut;
+			}
 			else
 				return QVariant ();
 		}
@@ -242,7 +251,7 @@ namespace LeechCraft
 			QStringList tags = idx.data (RoleTags).toStringList ();
 
 			if (tags.isEmpty ())
-				tags << QString (tr ("untagged"));
+				tags << QString ();
 
 			QPersistentModelIndex pidx (idx);
 
@@ -258,7 +267,7 @@ namespace LeechCraft
 			QStringList tags = idx.data (RoleTags).toStringList ();
 
 			if (tags.isEmpty ())
-				tags << QString (tr ("untagged"));
+				tags << QString ();
 
 			QPersistentModelIndex pidx (idx);
 
