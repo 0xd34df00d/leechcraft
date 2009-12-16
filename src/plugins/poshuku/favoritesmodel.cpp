@@ -294,9 +294,19 @@ namespace LeechCraft
 					return;
 			
 				beginInsertRows (QModelIndex (), 0, items.size () - 1);
-				for (items_t::const_reverse_iterator i = items.rbegin (),
+				for (items_t::reverse_iterator i = items.rbegin (),
 						end = items.rend (); i != end; ++i)
+				{
+					Q_FOREACH (QString tag, i->Tags_)
+					{
+						QString ut = Core::Instance ().GetProxy ()->
+							GetTagsManager ()->GetTag (tag);
+						if (ut.isEmpty ())
+							i->Tags_.removeAll (tag);
+					}
+
 					Items_.push_back (*i);
+				}
 				endInsertRows ();
 			}
 		};
