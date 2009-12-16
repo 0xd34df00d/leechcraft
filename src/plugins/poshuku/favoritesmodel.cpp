@@ -85,6 +85,8 @@ namespace LeechCraft
 					case TagsRole:
 						return Core::Instance ().GetProxy ()->
 							GetTagsManager ()->Join (GetVisibleTags (index.row ()));
+					case RoleTags:
+						return Items_ [index.row ()].Tags_;
 					default:
 						return QVariant ();
 				}
