@@ -36,7 +36,9 @@ void TagsFilterModel::setTagsMode (bool tags)
 bool TagsFilterModel::filterAcceptsRow (int source_row, const QModelIndex& index) const
 {
 	if (NormalMode_)
-		return QSortFilterProxyModel::filterAcceptsRow (source_row, index);
+		return (index.isValid () && index.model ()->rowCount (index)) ?
+			true :
+			QSortFilterProxyModel::filterAcceptsRow (source_row, index);
 	else
 	{
 		QStringList itemTags = GetTagsForIndex (source_row);
