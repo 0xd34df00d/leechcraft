@@ -266,7 +266,7 @@ namespace LeechCraft
 			
 				int n = std::distance (Items_.begin (), pos);
 			
-				emit dataChanged (index (n, 2), index (n, 2));
+				emit dataChanged (index (n, 0), index (n, 2));
 			}
 			
 			void FavoritesModel::handleItemRemoved (const FavoritesModel::FavoritesItem& item)
