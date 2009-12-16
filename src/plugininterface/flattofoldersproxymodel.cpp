@@ -284,6 +284,7 @@ namespace LeechCraft
 			item->Type_ = FlatTreeItem::TItem;
 			item->Index_ = pidx;
 			item->Parent_ = folder;
+			item->Tag_ = tag;
 
 			int size = folder->C_.size ();
 			QModelIndex iidx = index (Root_->C_.indexOf (folder), 0);
@@ -336,11 +337,16 @@ namespace LeechCraft
 		void FlatToFoldersProxyModel::handleDataChanged (const QModelIndex& topLeft,
 				const QModelIndex& bottomRight)
 		{
-			QItemSelectionRange range (topLeft, bottomRight);
+			QItemSelectionRange range (topLeft.sibling (topLeft.row (), 0),
+					bottomRight.sibling (bottomRight.row (), 0));
 			QModelIndexList indexes = range.indexes ();
+			qDebug () << topLeft << bottomRight;
 			for (int i = 0, size = indexes.size ();
 					i < size; ++i)
+			{
+				qDebug () << indexes.at (i);
 				HandleChanged (indexes.at (i));
+			}
 		}
 
 		void FlatToFoldersProxyModel::handleModelReset ()
