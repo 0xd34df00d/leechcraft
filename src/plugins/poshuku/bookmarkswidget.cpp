@@ -179,8 +179,18 @@ namespace LeechCraft
 						FavoritesFilterModel_->setFilterRegExp (text);
 						break;
 					case 3:
-						FavoritesFilterModel_->setTagsMode (true);
-						FavoritesFilterModel_->setFilterFixedString (text);
+						{
+							FavoritesFilterModel_->setTagsMode (true);
+							QStringList tags = Core::Instance ().GetProxy ()->
+								GetTagsManager ()->Split (text);
+							QStringList ids;
+							Q_FOREACH (QString tag, tags)
+								ids.append (Core::Instance ().GetProxy ()->
+										GetTagsManager ()->GetID (tag));
+							QString joined = Core::Instance ().GetProxy ()->
+								GetTagsManager ()->Join (ids);
+							FavoritesFilterModel_->setFilterFixedString (joined);
+						}
 						break;
 					default:
 						FavoritesFilterModel_->setTagsMode (false);

@@ -55,12 +55,6 @@ namespace LeechCraft
 					, ColumnTags
 				};
 
-				enum
-				{
-					/// Returns the user-sensible string with tags.
-					TagsRole = 42
-				};
-
 				FavoritesModel (QObject* = 0);
 				virtual ~FavoritesModel ();
 

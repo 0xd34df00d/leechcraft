@@ -18,6 +18,7 @@
 
 #include "filtermodel.h"
 #include <QStringList>
+#include <interfaces/structures.h>
 #include "favoritesmodel.h"
 
 namespace LeechCraft
@@ -38,7 +39,7 @@ namespace LeechCraft
 			QStringList FilterModel::GetTagsForIndex (int row) const
 			{
 				return sourceModel ()->data (sourceModel ()->index (row, 0),
-						FavoritesModel::TagsRole).toStringList ();
+						LeechCraft::RoleTags).toStringList ();
 			}
 		};
 	};

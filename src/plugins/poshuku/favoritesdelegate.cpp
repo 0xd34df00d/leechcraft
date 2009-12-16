@@ -59,10 +59,16 @@ namespace LeechCraft
 				}
 			
 				QStringList tags = Core::Instance ().GetFavoritesModel ()->
-					data (index, FavoritesModel::TagsRole).toStringList ();
+					data (index, LeechCraft::RoleTags).toStringList ();
+
+				QStringList user;
+				Q_FOREACH (QString id, tags)
+					user.append (Core::Instance ().GetProxy ()->GetTagsManager ()->
+							GetTag (id));
+
 				static_cast<TagsLineEdit*> (editor)->
 					setText (Core::Instance ().GetProxy ()->
-							GetTagsManager ()->Join (tags));
+							GetTagsManager ()->Join (user));
 			}
 			
 			void FavoritesDelegate::setModelData (QWidget *editor,

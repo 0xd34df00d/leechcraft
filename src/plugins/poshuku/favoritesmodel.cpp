@@ -82,9 +82,6 @@ namespace LeechCraft
 							return QVariant ();
 					case Qt::ToolTipRole:
 						return CheckResults_ [Items_ [index.row ()].URL_];
-					case TagsRole:
-						return Core::Instance ().GetProxy ()->
-							GetTagsManager ()->Join (GetVisibleTags (index.row ()));
 					case RoleTags:
 						return Items_ [index.row ()].Tags_;
 					default:
