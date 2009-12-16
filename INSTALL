@@ -1,6 +1,6 @@
 = Dependencies =
 Consider Depends:, Recommends:, Suggests: and Provides: to be virtual packages. Plugins don't depend on other plugins, they depend on functionality provided by other plugins.
-Qt4 is >=4.6.
+Qt4 is >= 4.6.
 Boost is >= 1.37.
 
 == Overall ==
@@ -95,4 +95,3 @@ Boost is >= 1.37.
 
 == YASD ==
  This should not be built, it doesn't work yet.
-
