@@ -20,6 +20,7 @@
 #define PLUGINS_DBUSMANAGER_TASKS_H
 #include <QObject>
 #include <QStringList>
+#include <QVariantList>
 
 namespace LeechCraft
 {
@@ -35,8 +36,7 @@ namespace LeechCraft
 
 				QStringList GetHolders () const;
 				int RowCount (const QString& holder) const;
-				int ColumnCount (const QString& holder) const;
-				QVariant GetData (const QString&, int, int, int) const;
+				QVariantList GetData (const QString&, int, int) const;
 			};
 		};
 	};

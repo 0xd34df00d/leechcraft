@@ -44,9 +44,8 @@ namespace LeechCraft
 			public slots:
 				QStringList GetHolders () const;
 				int RowCount (const QString& holder, const QDBusMessage&) const;
-				int ColumnCount (const QString& holder, const QDBusMessage&) const;
-				QDBusVariant GetData (const QString& holder,
-						int row, int column, int role,
+				QVariantList GetData (const QString& holder,
+						int row, int role,
 						const QDBusMessage&) const;
 			};
 		};

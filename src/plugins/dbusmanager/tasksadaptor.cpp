@@ -19,6 +19,8 @@
 #include "tasksadaptor.h"
 #include <QCoreApplication>
 #include <QDBusMessage>
+#include <QDBusArgument>
+#include <QDBusMetaType>
 #include "core.h"
 
 namespace LeechCraft
@@ -31,6 +33,7 @@ namespace LeechCraft
 			: QDBusAbstractAdaptor (parent)
 			, Tasks_ (parent)
 			{
+				qDBusRegisterMetaType<QVariantList> ();
 			}
 
 			QStringList TasksAdaptor::GetHolders () const
@@ -54,36 +57,20 @@ namespace LeechCraft
 				}
 			}
 
-			int TasksAdaptor::ColumnCount (const QString& name,
+			QVariantList TasksAdaptor::GetData (const QString& name,
+					int r, int role,
 					const QDBusMessage& msg) const
 			{
 				try
 				{
-					return Tasks_->ColumnCount (name);
-				}
-				catch (const QString& str)
-				{
-					QDBusConnection::sessionBus ()
-						.send (msg.createErrorReply ("ColumnCount() failure",
-									str));
-					return -1;
-				}
-			}
-
-			QDBusVariant TasksAdaptor::GetData (const QString& name,
-					int r, int c, int role,
-					const QDBusMessage& msg) const
-			{
-				try
-				{
-					return QDBusVariant (Tasks_->GetData (name, r, c, role));
+					return Tasks_->GetData (name, r, role);
 				}
 				catch (const QString& str)
 				{
 					QDBusConnection::sessionBus ()
 						.send (msg.createErrorReply ("GetData() failure",
 									str));
-					return QDBusVariant (QVariant (str));
+					return QVariantList () << str;
 				}
 			}
 		};
