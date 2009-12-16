@@ -19,31 +19,30 @@
 #ifndef PLUGININTERFACE_FLATTOFOLDERSPROXYMODEL_H
 #define PLUGININTERFACE_FLATTOFOLDERSPROXYMODEL_H
 #include <boost/shared_ptr.hpp>
-#include <QAbstractProxyModel>
+#include <QAbstractItemModel>
 #include <QStringList>
+#include <QMultiHash>
 #include "config.h"
 
 class ITagsManager;
 
 namespace LeechCraft
 {
-	struct FolderLevel;
-	struct ChildLevel;
-
-	typedef boost::shared_ptr<FolderLevel> FolderLevel_ptr;
-	typedef boost::shared_ptr<ChildLevel> ChildLevel_ptr;
+	struct FlatTreeItem;
+	typedef boost::shared_ptr<FlatTreeItem> FlatTreeItem_ptr;
 
 	namespace Util
 	{
-		class PLUGININTERFACE_API FlatToFoldersProxyModel : public QAbstractProxyModel
+		class PLUGININTERFACE_API FlatToFoldersProxyModel : public QAbstractItemModel
 		{
 			Q_OBJECT
 
+			QAbstractItemModel *SourceModel_;
+
 			ITagsManager *TM_;
-			QStringList CurrentTags_;
-			QList<FolderLevel_ptr> Folders_;
-			QMap<QString, FolderLevel_ptr> Tag2Folder_;
-			QMap<QPersistentModelIndex, ChildLevel_ptr> Index2Child_;
+
+			FlatTreeItem_ptr Root_;
+			QMultiHash<QPersistentModelIndex, FlatTreeItem_ptr> Items_;
 		public:
 			FlatToFoldersProxyModel (QObject* = 0);
 
@@ -51,14 +50,25 @@ namespace LeechCraft
 
 			virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
 			virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
+			virtual QVariant headerData (int, Qt::Orientation, int) const;
 			virtual Qt::ItemFlags flags (const QModelIndex&) const;
 			virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
 			virtual QModelIndex parent (const QModelIndex&) const;
 			virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 
-			virtual void setSourceModel (QAbstractItemModel*);
+			virtual void SetSourceModel (QAbstractItemModel*);
+		private:
+			void HandleRowInserted (int);
+			void HandleRowRemoved (int);
+			void AddForTag (const QString&, const QPersistentModelIndex&);
+			void RemoveFromTag (const QString&, const QPersistentModelIndex&);
+			void HandleChanged (const QModelIndex&);
+			FlatTreeItem_ptr GetFolder (const QString&);
 		private slots:
+			void handleDataChanged (const QModelIndex&, const QModelIndex&);
 			void handleModelReset ();
+			void handleRowsInserted (const QModelIndex&, int, int);
+			void handleRowsAboutToBeRemoved (const QModelIndex&, int, int);
 		};
 	};
 };
