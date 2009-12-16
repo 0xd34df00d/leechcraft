@@ -56,7 +56,8 @@ namespace LeechCraft
 			virtual QModelIndex parent (const QModelIndex&) const;
 			virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 
-			virtual void SetSourceModel (QAbstractItemModel*);
+			void SetSourceModel (QAbstractItemModel*);
+			QModelIndex MapToSource (const QModelIndex&) const;
 		private:
 			void HandleRowInserted (int);
 			void HandleRowRemoved (int);

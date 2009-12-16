@@ -202,6 +202,19 @@ namespace LeechCraft
 			handleModelReset ();
 		}
 
+		QModelIndex FlatToFoldersProxyModel::MapToSource (const QModelIndex& proxy) const
+		{
+			if (!proxy.isValid ())
+				return QModelIndex ();
+
+			FlatTreeItem *item = ToFlat (proxy);
+
+			if (item->Type_ != FlatTreeItem::TItem)
+				return QModelIndex ();
+
+			return item->Index_;
+		}
+
 		FlatTreeItem_ptr FlatToFoldersProxyModel::GetFolder (const QString& tag)
 		{
 			QList<FlatTreeItem_ptr>& c = Root_->C_;
