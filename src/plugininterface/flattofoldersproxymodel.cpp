@@ -92,14 +92,21 @@ namespace LeechCraft
 			else if (fti->Type_ == FlatTreeItem::TFolder &&
 					index.column () == 0)
 			{
-				if (fti->Tag_.isEmpty ())
-					return tr ("untagged");
+				if (role == Qt::DisplayRole)
+				{
+					if (fti->Tag_.isEmpty ())
+						return tr ("untagged");
 
-				QString ut = TM_->GetTag (fti->Tag_);
-				if (ut.isEmpty ())
-					return tr ("<unknown tag>");
+					QString ut = TM_->GetTag (fti->Tag_);
+					if (ut.isEmpty ())
+						return tr ("<unknown tag>");
+					else
+						return ut;
+				}
+				else if (role == RoleTags)
+					return TM_->GetTag (fti->Tag_);
 				else
-					return ut;
+					return QVariant ();
 			}
 			else
 				return QVariant ();
@@ -343,13 +350,9 @@ namespace LeechCraft
 			QItemSelectionRange range (topLeft.sibling (topLeft.row (), 0),
 					bottomRight.sibling (bottomRight.row (), 0));
 			QModelIndexList indexes = range.indexes ();
-			qDebug () << topLeft << bottomRight;
 			for (int i = 0, size = indexes.size ();
 					i < size; ++i)
-			{
-				qDebug () << indexes.at (i);
 				HandleChanged (indexes.at (i));
-			}
 		}
 
 		void FlatToFoldersProxyModel::handleModelReset ()
