@@ -25,6 +25,7 @@
 #include <interfaces/iinfo.h>
 #include "notificationmanager.h"
 #include "general.h"
+#include "tasks.h"
 
 namespace LeechCraft
 {
@@ -39,6 +40,7 @@ namespace LeechCraft
 				std::auto_ptr<QDBusConnection> Connection_;
 				std::auto_ptr<NotificationManager> NotificationManager_;
 				std::auto_ptr<General> General_;
+				std::auto_ptr<Tasks> Tasks_;
 
 				ICoreProxy_ptr Proxy_;
 

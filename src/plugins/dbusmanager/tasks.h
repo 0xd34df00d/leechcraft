@@ -16,12 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_DBUSMANAGER_GENERALADAPTOR_H
-#define PLUGINS_DBUSMANAGER_GENERALADAPTOR_H
-#include <QDBusAbstractAdaptor>
+#ifndef PLUGINS_DBUSMANAGER_TASKS_H
+#define PLUGINS_DBUSMANAGER_TASKS_H
+#include <QObject>
 #include <QStringList>
-
-class QDBusMessage;
 
 namespace LeechCraft
 {
@@ -29,26 +27,16 @@ namespace LeechCraft
 	{
 		namespace DBusManager
 		{
-			class General;
-
-			class GeneralAdaptor : public QDBusAbstractAdaptor
+			class Tasks : public QObject
 			{
 				Q_OBJECT
-
-				Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.DBus.General");
-				Q_PROPERTY (QString OrganizationName READ GetOrganizationName);
-				Q_PROPERTY (QString ApplicationName READ GetApplicationName);
-
-				General *General_;
 			public:
-				GeneralAdaptor (General*);
+				Tasks (QObject* = 0);
 
-				QString GetOrganizationName () const;
-				QString GetApplicationName () const;
-			public slots:
-				QStringList GetLoadedPlugins ();
-				QString GetDescription (const QString& name, const QDBusMessage&);
-				QByteArray GetIcon (const QString& name, int dimension, const QDBusMessage&);
+				QStringList GetHolders () const;
+				int RowCount (const QString& holder) const;
+				int ColumnCount (const QString& holder) const;
+				QVariant GetData (const QString&, int, int, int) const;
 			};
 		};
 	};

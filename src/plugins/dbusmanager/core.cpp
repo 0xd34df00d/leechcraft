@@ -25,6 +25,7 @@
 #include <QApplication>
 #include <QTimer>
 #include "generaladaptor.h"
+#include "tasksadaptor.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Plugins::DBusManager;
@@ -71,11 +72,16 @@ void Core::DumpError ()
 void Core::doDelayedInit ()
 {
 	NotificationManager_.reset (new NotificationManager);
+
 	General_.reset (new General);
 	new GeneralAdaptor (General_.get ());
 
+	Tasks_.reset (new Tasks);
+	new TasksAdaptor (Tasks_.get ());
+
 	QDBusConnection::sessionBus ().registerService ("org.LeechCraft.DBus");
-	QDBusConnection::sessionBus ().registerObject ("/LeechCraft/General", General_.get ());
+	QDBusConnection::sessionBus ().registerObject ("/General", General_.get ());
+	QDBusConnection::sessionBus ().registerObject ("/Tasks", Tasks_.get ());
 
 	Proxy_->RegisterHook (HookSignature<HIDDownloadFinishedNotification>::Signature_t (
 				boost::bind (&NotificationManager::HandleFinishedNotification,

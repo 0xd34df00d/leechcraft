@@ -11,8 +11,10 @@ SET (SRCS
 	iinfoadaptor.cpp
 	notificationmanager.cpp
 	xmlsettingsmanager.cpp
-	generaladaptor.cpp
 	general.cpp
+	generaladaptor.cpp
+	tasks.cpp
+	tasksadaptor.cpp
 	)
 SET (HEADERS
 	dbusmanager.h
@@ -20,8 +22,10 @@ SET (HEADERS
 	iinfoadaptor.h
 	notificationmanager.h
 	xmlsettingsmanager.h
-	generaladaptor.h
 	general.h
+	generaladaptor.h
+	tasks.h
+	tasksadaptor.h
 	)
 SET (FORMS
 	)
