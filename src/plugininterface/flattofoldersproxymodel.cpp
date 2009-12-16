@@ -85,7 +85,10 @@ namespace LeechCraft
 		{
 			FlatTreeItem *fti = ToFlat (index);
 			if (fti->Type_ == FlatTreeItem::TItem)
-				return fti->Index_.data (role);
+			{
+				QModelIndex source = fti->Index_;
+				return source.sibling (source.row (), index.column ()).data (role);
+			}
 			else if (fti->Type_ == FlatTreeItem::TFolder &&
 					index.column () == 0)
 			{
