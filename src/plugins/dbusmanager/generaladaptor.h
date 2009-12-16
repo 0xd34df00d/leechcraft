@@ -16,44 +16,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "adaptor.h"
-#include <QCoreApplication>
-#include "core.h"
+#ifndef PLUGINS_DBUSMANAGER_GENERALADAPTOR_H
+#define PLUGINS_DBUSMANAGER_GENERALADAPTOR_H
+#include <QDBusAbstractAdaptor>
+#include <QStringList>
 
-using namespace LeechCraft::Plugins::DBusManager;
+class QDBusMessage;
 
-Adaptor::Adaptor (Core *parent)
-: QDBusAbstractAdaptor (parent)
-, Core_ (parent)
+namespace LeechCraft
 {
-	connect (parent,
-			SIGNAL (aboutToQuit ()),
-			this,
-			SIGNAL (aboutToQuit ()));
-	connect (parent,
-			SIGNAL (someEventHappened (const QString&)),
-			this,
-			SIGNAL (someEventHappened (const QString&)));
-}
+	namespace Plugins
+	{
+		namespace DBusManager
+		{
+			class General;
 
-QString Adaptor::GetOrganizationName () const
-{
-	return QCoreApplication::organizationName ();
-}
+			class GeneralAdaptor : public QDBusAbstractAdaptor
+			{
+				Q_OBJECT
 
-QString Adaptor::GetApplicationName () const
-{
-	return QCoreApplication::applicationName ();
-}
+				Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.DBus");
+				Q_PROPERTY (QString OrganizationName READ GetOrganizationName);
+				Q_PROPERTY (QString ApplicationName READ GetApplicationName);
 
-QString Adaptor::Greeter (const QString& msg,
-		const QDBusMessage&)
-{
-	return Core_->Greeter (msg);
-}
+				General *General_;
+			public:
+				GeneralAdaptor (General*);
 
-QStringList Adaptor::GetLoadedPlugins ()
-{
-	return Core_->GetLoadedPlugins ();
-}
+				QString GetOrganizationName () const;
+				QString GetApplicationName () const;
+			public slots:
+				QStringList GetLoadedPlugins ();
+				QString GetDescription (const QString& name, const QDBusMessage&);
+				QByteArray GetIcon (const QString& name, int dimension, const QDBusMessage&);
+			};
+		};
+	};
+};
+
+#endif
 

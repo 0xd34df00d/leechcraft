@@ -24,7 +24,7 @@
 #include <QDBusConnectionInterface>
 #include <QApplication>
 #include <QTimer>
-#include "adaptor.h"
+#include "generaladaptor.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Plugins::DBusManager;
@@ -44,7 +44,6 @@ Core& Core::Instance ()
 
 void Core::Release ()
 {
-	emit aboutToQuit ();
 	Proxy_.reset ();
 }
 
@@ -60,12 +59,7 @@ ICoreProxy_ptr Core::GetProxy () const
 
 QString Core::Greeter (const QString&)
 {
-	return "LeechCraft D-Bus connector development version";
-}
-
-QStringList Core::GetLoadedPlugins ()
-{
-	return QStringList ("Not implemented");
+	return tr ("LeechCraft D-Bus general interface");
 }
 
 void Core::DumpError ()
@@ -77,10 +71,11 @@ void Core::DumpError ()
 void Core::doDelayedInit ()
 {
 	NotificationManager_.reset (new NotificationManager);
-	new Adaptor (this);
+	General_.reset (new General);
+	new GeneralAdaptor (General_.get ());
 
 	QDBusConnection::sessionBus ().registerService ("org.LeechCraft.DBus");
-	QDBusConnection::sessionBus ().registerObject ("/LeechCraft/Manager", this);
+	QDBusConnection::sessionBus ().registerObject ("/LeechCraft/General", General_.get ());
 
 	Proxy_->RegisterHook (HookSignature<HIDDownloadFinishedNotification>::Signature_t (
 				boost::bind (&NotificationManager::HandleFinishedNotification,
