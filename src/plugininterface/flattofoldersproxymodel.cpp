@@ -234,6 +234,14 @@ namespace LeechCraft
 			return item->Index_;
 		}
 
+		QList<QModelIndex> FlatToFoldersProxyModel::MapFromSource (const QModelIndex& source) const
+		{
+			QList<QModelIndex> result;
+			Q_FOREACH (FlatTreeItem_ptr item, Items_.values (QPersistentModelIndex (source)))
+				result << item->Index_;
+			return result;
+		}
+
 		FlatTreeItem_ptr FlatToFoldersProxyModel::GetFolder (const QString& tag)
 		{
 			QList<FlatTreeItem_ptr>& c = Root_->C_;

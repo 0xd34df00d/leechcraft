@@ -58,6 +58,7 @@ namespace LeechCraft
 
 			void SetSourceModel (QAbstractItemModel*);
 			QModelIndex MapToSource (const QModelIndex&) const;
+			QList<QModelIndex> MapFromSource (const QModelIndex&) const;
 		private:
 			void HandleRowInserted (int);
 			void HandleRowRemoved (int);
