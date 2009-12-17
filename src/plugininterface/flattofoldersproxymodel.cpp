@@ -181,6 +181,12 @@ namespace LeechCraft
 
 			SourceModel_ = model;
 
+			Items_.clear ();
+			Root_->C_.clear ();
+
+			if (!model)
+				return;
+
 			// We don't support changing columns (yet) so don't connect
 			// to columns* signals.
 			connect (model,
@@ -216,8 +222,6 @@ namespace LeechCraft
 					SLOT (handleRowsAboutToBeRemoved (const QModelIndex&,
 							int, int)));
 
-			Items_.clear ();
-			Root_->C_.clear ();
 			handleModelReset ();
 		}
 
