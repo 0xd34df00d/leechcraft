@@ -38,6 +38,7 @@
 #include <plugininterface/categoryselector.h>
 #include <plugininterface/tagscompleter.h>
 #include <plugininterface/backendselector.h>
+#include <plugininterface/flattofoldersproxymodel.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "ui_mainwidget.h"
 #include "itemsfiltermodel.h"
@@ -94,8 +95,9 @@ namespace LeechCraft
 
 				QQueue<QString> ErrorQueue_;
 
-				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
-				std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsLineCompleter_;
+				boost::shared_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
+				boost::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
+				std::auto_ptr<Util::TagsCompleter> TagsLineCompleter_;
 				std::auto_ptr<QSystemTrayIcon> TrayIcon_;
 				std::auto_ptr<QTranslator> Translator_;
 				std::auto_ptr<ItemBucket> ItemBucket_;
@@ -213,7 +215,10 @@ namespace LeechCraft
 			
 				Impl_->ItemBucket_.reset (new ItemBucket (this));
 			
-				Impl_->Ui_.Feeds_->setModel (Core::Instance ().GetChannelsModel ());
+				Impl_->FlatToFolders_.reset (new Util::FlatToFoldersProxyModel);
+				Impl_->FlatToFolders_->SetTagsManager (Core::Instance ().GetProxy ()->GetTagsManager ());
+				Impl_->FlatToFolders_->SetSourceModel (Core::Instance ().GetChannelsModel ());
+				Impl_->Ui_.Feeds_->setModel (Impl_->FlatToFolders_.get ());
 				Impl_->Ui_.Feeds_->addAction (Impl_->ActionMarkChannelAsRead_);
 				Impl_->Ui_.Feeds_->addAction (Impl_->ActionMarkChannelAsUnread_);
 				QAction *sep1 = new QAction (Impl_->Ui_.Feeds_),
@@ -466,15 +471,16 @@ namespace LeechCraft
 				{
 					QItemSelectionModel *channelSM = Impl_->Ui_.Feeds_->selectionModel ();
 					QModelIndex currentChannel = channelSM->currentIndex ();
-					int numChannels = Impl_->Ui_.Feeds_->model ()->rowCount ();
+					int numChannels = Impl_->Ui_.Feeds_->
+						model ()->rowCount (currentChannel.parent ());
 			
 					QItemSelectionModel::SelectionFlags chanSF =
 						QItemSelectionModel::Select |
 						QItemSelectionModel::Clear |
 						QItemSelectionModel::Rows;
+
 					if (e->key () == Qt::Key_Less &&
-							currentChannel.isValid () &&
-							numChannels)
+							currentChannel.isValid ())
 					{
 						if (currentChannel.row () > 0)
 						{
@@ -494,8 +500,7 @@ namespace LeechCraft
 						return;
 					}
 					else if (e->key () == Qt::Key_Greater &&
-							currentChannel.isValid () &&
-							numChannels)
+							currentChannel.isValid ())
 					{
 						if (currentChannel.row () < numChannels - 1)
 						{
@@ -516,7 +521,6 @@ namespace LeechCraft
 					}
 					else if ((e->key () == Qt::Key_Greater ||
 							e->key () == Qt::Key_Less) &&
-							numChannels &&
 							!currentChannel.isValid ())
 					{
 						QModelIndex next = Impl_->Ui_.Feeds_->model ()->index (0, 0);
@@ -651,8 +655,9 @@ namespace LeechCraft
 				else
 					return Core::Instance ()
 						.GetChannelsModel ()->
-						mapToSource (Impl_->Ui_.Feeds_->
-								selectionModel ()->currentIndex ());
+						mapToSource (Impl_->FlatToFolders_->
+								MapToSource (Impl_->Ui_.Feeds_->
+									selectionModel ()->currentIndex ()));
 			}
 			
 			void Aggregator::showError (const QString& msg)
@@ -831,6 +836,7 @@ namespace LeechCraft
 			void Aggregator::currentChannelChanged ()
 			{
 				QModelIndex index = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
+				index = Impl_->FlatToFolders_->MapToSource (index);
 				Core::Instance ().CurrentChannelChanged (index, false);
 			}
 			
@@ -856,7 +862,8 @@ namespace LeechCraft
 				emit bringToFront ();
 				QModelIndex unread = Core::Instance ().GetUnreadChannelIndex ();
 				if (unread.isValid ())
-					Impl_->Ui_.Feeds_->setCurrentIndex (unread);
+					Impl_->Ui_.Feeds_->setCurrentIndex (Impl_->FlatToFolders_->
+							MapFromSource (unread).at (0));
 			}
 		};
 	};

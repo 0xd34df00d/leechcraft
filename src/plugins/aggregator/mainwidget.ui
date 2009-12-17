@@ -56,12 +56,6 @@
            <height>16</height>
           </size>
          </property>
-         <property name="rootIsDecorated">
-          <bool>false</bool>
-         </property>
-         <property name="itemsExpandable">
-          <bool>false</bool>
-         </property>
         </widget>
        </item>
        <item>
