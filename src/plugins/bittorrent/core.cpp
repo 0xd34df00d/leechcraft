@@ -1968,8 +1968,9 @@ namespace LeechCraft
 						end = info.end_files (); i != end; ++i)
 				{
 					DownloadEntity e;
-					e.Entity_ = QTextCodec::codecForLocale ()->
-						toUnicode ((torrent.Handle_.save_path () / i->path).string ().c_str ()).toUtf8 ();
+					e.Entity_ = QUrl::fromLocalFile (QTextCodec::codecForLocale ()->
+							toUnicode ((torrent.Handle_.save_path () / i->path)
+							.string ().c_str ()).toUtf8 ());
 					e.Parameters_ = LeechCraft::IsDownloaded |
 						LeechCraft::ShouldQuerySource;
 					e.Location_ = torrent.TorrentFileName_;
