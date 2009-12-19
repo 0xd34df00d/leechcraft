@@ -103,20 +103,22 @@ namespace LeechCraft
 				MediaObject_->enqueue (source);
 				MediaObject_->stop ();
 				Ui_.VideoWidget_->setVisible (MediaObject_->hasVideo ());
-				if (!MediaObject_->queue ().size ())
-					Ui_.VideoWidget_->setVisible (MediaObject_->hasVideo ());
 			}
 
 			void PlayerWidget::Forward (SkipAmount a)
 			{
 				if (MediaObject_.get ())
 					MediaObject_->seek (MediaObject_->currentTime () + a * 1000);
+
+				updateState ();
 			}
 
 			void PlayerWidget::Rewind (SkipAmount a)
 			{
 				if (MediaObject_.get ())
 					MediaObject_->seek (MediaObject_->currentTime () - a * 1000);
+
+				updateState ();
 			}
 
 			State PlayerWidget::GetState () const
