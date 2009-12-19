@@ -260,8 +260,7 @@ namespace LeechCraft
 				VolumeUp_->setIcon (Core::Instance ()
 						.GetCoreProxy ()->GetIcon ("lmp_volumeup"));
 				QList<QKeySequence> volumeUps;
-				volumeUps << Qt::Key_Up
-					<< QString ("=")
+				volumeUps << QString ("=")
 					<< QString ("+")
 					<< QString ("*");
 				VolumeUp_->setShortcuts (volumeUps);
@@ -275,8 +274,7 @@ namespace LeechCraft
 				VolumeDown_->setIcon (Core::Instance ()
 						.GetCoreProxy ()->GetIcon ("lmp_volumedown"));
 				QList<QKeySequence> volumeDowns;
-				volumeDowns << Qt::Key_Down
-					<< QString ("-")
+				volumeDowns << QString ("-")
 					<< QString ("/");;
 				VolumeDown_->setShortcuts (volumeDowns);
 				connect (VolumeDown_,
