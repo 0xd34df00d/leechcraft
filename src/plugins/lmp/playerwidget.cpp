@@ -101,6 +101,7 @@ namespace LeechCraft
 			void PlayerWidget::Enqueue (const MediaSource& source)
 			{
 				MediaObject_->enqueue (source);
+				MediaObject_->stop ();
 				Ui_.VideoWidget_->setVisible (MediaObject_->hasVideo ());
 				if (!MediaObject_->queue ().size ())
 					Ui_.VideoWidget_->setVisible (MediaObject_->hasVideo ());
