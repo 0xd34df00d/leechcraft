@@ -43,21 +43,12 @@ namespace LeechCraft
 					keyPressEvent (dynamic_cast<QKeyEvent*> (e));
 					return true;
 				}
-				else if (e->type () == QEvent::KeyRelease)
-				{
-					keyReleaseEvent (dynamic_cast<QKeyEvent*> (e));
-					return true;
-				}
 				return QObject::eventFilter (obj, e);
 			}
 
 			void KeyInterceptor::keyPressEvent (QKeyEvent *e)
 			{
-				if (e->text () == "*")
-					Player_->incrementVolume ();
-				else if (e->text () == "/")
-					Player_->decrementVolume ();
-				else if (e->key () == Qt::Key_Right)
+				if (e->key () == Qt::Key_Right)
 					Player_->Forward (PlayerWidget::SkipLittle);
 				else if (e->key () == Qt::Key_Left)
 					Player_->Rewind (PlayerWidget::SkipLittle);
@@ -69,15 +60,6 @@ namespace LeechCraft
 					Player_->Forward (PlayerWidget::SkipALot);
 				else if (e->key () == Qt::Key_PageDown)
 					Player_->Rewind (PlayerWidget::SkipALot);
-			}
-
-			void KeyInterceptor::keyReleaseEvent (QKeyEvent *e)
-			{
-				if (e->key () == Qt::Key_Return ||
-						e->key () == Qt::Key_Enter)
-					Player_->toggleFullScreen ();
-				else if (e->key () == Qt::Key_Space)
-					Player_->togglePause ();
 			}
 		};
 	};
