@@ -261,7 +261,7 @@ namespace LeechCraft
 								.arg (QLocale::system ().name ().replace ('_', '-')));
 					}
 				}
-			
+
 				return result;
 			}
 			

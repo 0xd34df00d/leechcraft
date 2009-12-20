@@ -22,6 +22,7 @@
 #include <QMenu>
 #include <QApplication>
 #include <QClipboard>
+#include <QFile>
 #include <QtDebug>
 #include "core.h"
 #include "customwebpage.h"
@@ -115,6 +116,26 @@ namespace LeechCraft
 					if (result.canConvert (QVariant::String))
 						setHtml (result.toString ());
 					return;
+				}
+				if (url.scheme () == "about")
+				{
+					if (url.path () == "plugins")
+					{
+						QFile pef (":/resources/html/pluginsenum.html");
+						pef.open (QIODevice::ReadOnly);
+						QString contents = QString (pef.readAll ())
+							.replace ("INSTALLEDPLUGINS", tr ("Installed plugins"))
+							.replace ("NOPLUGINS", tr ("No plugins installed"))
+							.replace ("FILENAME", tr ("File name"))
+							.replace ("MIME", tr ("MIME type"))
+							.replace ("DESCR", tr ("Description"))
+							.replace ("SUFFIXES", tr ("Suffixes"))
+							.replace ("ENABLED", tr ("Enabled"))
+							.replace ("NO", tr ("No"))
+							.replace ("YES", tr ("Yes"));
+						setHtml (contents);
+						return;
+					}
 				}
 				if (title.isEmpty ())
 					title = tr ("Loading...");

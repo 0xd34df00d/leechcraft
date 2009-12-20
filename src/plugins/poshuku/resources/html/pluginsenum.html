@@ -1,0 +1,63 @@
+<html>
+<head>
+<title>About Plugins</title>
+</head>
+<body>
+<script language="javascript">
+numPlugins = navigator.plugins.length;
+
+if (numPlugins > 0)
+ document.writeln("INSTALLEDPLUGINS");
+else
+ document.writeln("No plug-ins are installed.");
+
+for (i = 0; i < numPlugins; i++) {
+ plugin = navigator.plugins[i];
+ document.write("<center><font size=+1><b>");
+ document.write(plugin.name);
+ document.writeln("</b></font></center><br>");
+ document.writeln("<dl>");
+ document.writeln("<dd>FILENAME:");
+ document.write(plugin.filename);
+ document.write("<dd><br>");
+ document.write(plugin.description);
+ document.writeln("</dl>");
+ document.writeln("<p>");
+ document.writeln("<table border=1 >");
+ document.writeln("<tr>");
+ document.writeln("<th width=20%>MIME</th>");
+ document.writeln("<th width=50%>DESCR</th>");
+ document.writeln("<th width=20%>SUFFIXES</th>");
+ document.writeln("<th>ENABLED</th>");
+ document.writeln("</tr>");
+ numTypes = plugin.length;
+ for (j = 0; j < numTypes; j++)
+ {
+  mimetype = plugin[j];
+ 
+  if (mimetype){
+   enabled = "NO";
+   enabledPlugin = mimetype.enabledPlugin;
+   if (enabledPlugin && (enabledPlugin.name == plugin.name))
+    enabled = "YES";
+   document.writeln("<tr align=center>");
+   document.writeln("<td>");
+   document.write(mimetype.type);
+   document.writeln("</td>");
+   document.writeln("<td>");
+   document.write(mimetype.description);
+   document.writeln("</td>");
+   document.writeln("<td>");
+   document.write(mimetype.suffixes);
+   document.writeln("</td>");
+   document.writeln("<td>");
+   document.writeln(enabled);
+   document.writeln("</td>");
+   document.writeln("</tr>");
+  }
+ }
+ document.write("</table>");
+}
+</SCRIPT>
+</BODY>
+</HTML>
