@@ -983,7 +983,6 @@ void LeechCraft::Core::InitEmbedTab (QObject *plugin)
 		IInfo *ii = qobject_cast<IInfo*> (plugin);
 		IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
 		QWidget *contents = iet->GetTabContents ();
-		contents->setProperty ("IsUnremoveable", true);
 		TabContainer_->add (ii->GetName (),
 				contents,
 				ii->GetIcon ());
