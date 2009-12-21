@@ -131,6 +131,7 @@ namespace LeechCraft
 			
 			void Aggregator::Init (ICoreProxy_ptr proxy)
 			{
+				setProperty ("IsUnremoveable", true);
 				Impl_ = new Aggregator_Impl;
 				Impl_->Translator_.reset (LeechCraft::Util::InstallTranslator ("aggregator"));
 			
