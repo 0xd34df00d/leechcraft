@@ -85,6 +85,7 @@ OPTION (ENABLE_REMOTER "Build Remoter, the remote access manager" OFF)
 OPTION (ENABLE_NEWLIFE "Build NewLife, the settings importer" ON)
 OPTION (ENABLE_ANHERO "Build AnHero, the crash handler" ON)
 OPTION (ENABLE_VGRABBER "Build vGrabber, the vkontakte.ru music/video getter" ON)
+OPTION (ENABLE_PYLC "Build PyLC, Python support for LeechCraft" ON)
 
 if (ENABLE_SUMMARY)
 	ADD_SUBDIRECTORY (plugins/summary)
@@ -173,6 +174,10 @@ ENDIF (ENABLE_ANHERO)
 IF (ENABLE_VGRABBER)
 	ADD_SUBDIRECTORY (plugins/vgrabber)
 ENDIF (ENABLE_VGRABBER)
+
+IF (ENABLE_PYLC)
+	ADD_SUBDIRECTORY (plugins/pylc)
+ENDIF (ENABLE_PYLC)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
