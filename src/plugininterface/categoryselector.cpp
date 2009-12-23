@@ -37,6 +37,7 @@ CategorySelector::CategorySelector (QWidget *parent)
 	setWindowTitle (tr ("Tags selector"));
 	setWindowFlags (Qt::Tool | Qt::WindowStaysOnTopHint);
 	setRootIsDecorated (false);
+	setUniformRowHeights (true);
 
 	QRect avail = QApplication::desktop ()->availableGeometry (this);
 	setMinimumHeight (avail.height () / 3 * 2);
@@ -136,14 +137,44 @@ void CategorySelector::moveEvent (QMoveEvent *e)
 
 void CategorySelector::selectAll ()
 {
-	for (int i = 0; i < topLevelItemCount (); ++i)
-		topLevelItem (i)->setCheckState (0, Qt::Checked);
+	disconnect (this,
+			SIGNAL (itemChanged (QTreeWidgetItem*, int)),
+			this,
+			SLOT (buttonToggled ()));
+
+	QStringList tags;
+
+	for (int i = 0, size = topLevelItemCount (); i < size; ++i)
+	{
+		QTreeWidgetItem *item = topLevelItem (i);
+		item->setCheckState (0, Qt::Checked);
+		tags += item->data (0, RoleTag).toString ();
+	}
+
+	connect (this,
+			SIGNAL (itemChanged (QTreeWidgetItem*, int)),
+			this,
+			SLOT (buttonToggled ()));
+
+	emit selectionChanged (tags);
 }
 
 void CategorySelector::selectNone ()
 {
+	disconnect (this,
+			SIGNAL (itemChanged (QTreeWidgetItem*, int)),
+			this,
+			SLOT (buttonToggled ()));
+
 	for (int i = 0; i < topLevelItemCount (); ++i)
 		topLevelItem (i)->setCheckState (0, Qt::Unchecked);
+
+	connect (this,
+			SIGNAL (itemChanged (QTreeWidgetItem*, int)),
+			this,
+			SLOT (buttonToggled ()));
+
+	emit selectionChanged (QStringList ());
 }
 
 void CategorySelector::lineTextChanged (const QString& text)
