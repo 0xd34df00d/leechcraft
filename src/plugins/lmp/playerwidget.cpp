@@ -66,7 +66,6 @@ namespace LeechCraft
 				Ui_.SeekSlider_->setMediaObject (MediaObject_.get ());
 
 				AudioOutput_.reset (new AudioOutput (MusicCategory, this));
-				Ui_.VolumeSlider_->setAudioOutput (AudioOutput_.get ());
 
 				SetupContextMenu ();
 
@@ -150,7 +149,10 @@ namespace LeechCraft
 					if (!VideoPath_.isValid ())
 						VideoPath_.reconnect (MediaObject_.get (), Ui_.VideoWidget_);
 					if (!AudioPath_.isValid ())
+					{
 						AudioPath_.reconnect (MediaObject_.get (), AudioOutput_.get ());
+						Ui_.VolumeSlider_->setAudioOutput (AudioOutput_.get ());
+					}
 
 					MediaObject_->play ();
 				}
