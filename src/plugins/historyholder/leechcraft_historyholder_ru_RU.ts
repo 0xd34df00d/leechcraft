@@ -4,9 +4,8 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="core.cpp" line="180"/>
         <source>Binary data</source>
-        <translation>Бинарные данные</translation>
+        <translation type="obsolete">Бинарные данные</translation>
     </message>
 </context>
 <context>
@@ -31,13 +30,25 @@
         <source>Remove</source>
         <translation>Удалить</translation>
     </message>
+    <message>
+        <location filename="core.cpp" line="180"/>
+        <source>Binary data</source>
+        <translation>Двоичные данные</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Plugins::HistoryHolder::Plugin</name>
+    <message>
+        <location filename="historyholder.cpp" line="51"/>
+        <source>Holds history from various plugins</source>
+        <translation>Хранит историю из других плагинов</translation>
+    </message>
 </context>
 <context>
     <name>Plugin</name>
     <message>
-        <location filename="historyholder.cpp" line="47"/>
         <source>Holds history from various plugins</source>
-        <translation>Хранит историю различных плагинов</translation>
+        <translation type="obsolete">Хранит историю различных плагинов</translation>
     </message>
 </context>
 </TS>
