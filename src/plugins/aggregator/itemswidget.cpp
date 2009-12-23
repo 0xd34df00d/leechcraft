@@ -627,7 +627,7 @@ namespace LeechCraft
 			{
 				Impl_->Ui_.Items_->scrollToTop ();
 				currentItemChanged (QItemSelection ());
-				
+
 				if (!isVisible ())
 					return;
 			
