@@ -22,7 +22,7 @@
         <translation>Сетевой монитор...</translation>
     </message>
     <message>
-        <location filename="networkmonitor.cpp" line="98"/>
+        <location filename="networkmonitor.cpp" line="102"/>
         <source>Monitors HTTP network requests and responses.</source>
         <translation>Следит за HTTP-запросами.</translation>
     </message>
@@ -50,7 +50,7 @@
         <translation>Хост</translation>
     </message>
     <message>
-        <location filename="requestmodel.cpp" line="78"/>
+        <location filename="requestmodel.cpp" line="88"/>
         <source>In progress</source>
         <translation>Выполняется</translation>
     </message>
