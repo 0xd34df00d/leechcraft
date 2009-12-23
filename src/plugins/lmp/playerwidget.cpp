@@ -18,6 +18,9 @@
 
 #include "playerwidget.h"
 #include <QToolBar>
+#include <QStylePainter>
+#include <QBitmap>
+#include <QTimer>
 #include <QDialog>
 #include "phonon.h"
 #include "videosettings.h"
@@ -43,6 +46,10 @@ namespace LeechCraft
 						this,
 						SLOT (updateState ()));
 				connect (MediaObject_.get (),
+						SIGNAL (tick (qint64)),
+						this,
+						SLOT (updateOSD ()));
+				connect (MediaObject_.get (),
 						SIGNAL (stateChanged (Phonon::State,
 								Phonon::State)),
 						this,
@@ -53,6 +60,7 @@ namespace LeechCraft
 						SLOT (handleHasVideoChanged (bool)));
 
 				Ui_.setupUi (this);
+				Ui_.VideoWidget_->installEventFilter (this);
 				Ui_.ControlsLayout_->insertWidget (0, SetupToolbar ());
 
 				Ui_.SeekSlider_->setMediaObject (MediaObject_.get ());
@@ -61,6 +69,10 @@ namespace LeechCraft
 				Ui_.VolumeSlider_->setAudioOutput (AudioOutput_.get ());
 
 				SetupContextMenu ();
+
+				QBitmap bm (32, 32);
+				bm.clear ();
+				TransparentCursor_ = QCursor (bm, bm);
 			}
 
 			void PlayerWidget::Play ()
@@ -152,6 +164,10 @@ namespace LeechCraft
 
 			void PlayerWidget::toggleFullScreen ()
 			{
+				if (!Ui_.VideoWidget_->isFullScreen ())
+					QTimer::singleShot (1500,
+							this,
+							SLOT (hideCursor ()));
 				Ui_.VideoWidget_->setFullScreen (!Ui_.VideoWidget_->isFullScreen ());
 			}
 
@@ -284,10 +300,24 @@ namespace LeechCraft
 						this,
 						SLOT (decrementVolume ()));
 
+				OSD_ = new QAction (tr ("On-screen display"),
+						this);
+				OSD_->setIcon (Core::Instance ()
+						.GetCoreProxy ()->GetIcon ("lmp_osd"));
+				QList<QKeySequence> osds;
+				osds << QString ("o");
+				OSD_->setShortcuts (osds);
+				OSD_->setCheckable (true);
+				connect (OSD_,
+						SIGNAL (toggled (bool)),
+						this,
+						SLOT (updateOSD ()));
+
 				Ui_.VideoWidget_->addAction (FullScreen_);
 				Ui_.VideoWidget_->addAction (TogglePause_);
 				Ui_.VideoWidget_->addAction (VolumeUp_);
 				Ui_.VideoWidget_->addAction (VolumeDown_);
+				Ui_.VideoWidget_->addAction (OSD_);
 			}
 
 			void PlayerWidget::ApplyVideoSettings (qreal b, qreal c, qreal h, qreal s)
@@ -298,9 +328,46 @@ namespace LeechCraft
 				Ui_.VideoWidget_->setSaturation (s);
 			}
 
+			bool PlayerWidget::eventFilter (QObject *o, QEvent *e)
+			{
+				if (OSD_->isChecked () &&
+						e->type () == QEvent::Paint &&
+						o == Ui_.VideoWidget_)
+				{
+					/*
+					QPainter p (Ui_.VideoWidget_);
+					p.setPen (QColor (Qt::white));
+					p.drawText (200, 200, "Test");
+					*/
+				}
+				else if (e->type () == QEvent::MouseMove &&
+						o == Ui_.VideoWidget_)
+				{
+					qDebug () << Q_FUNC_INFO;
+					if (Ui_.VideoWidget_->isFullScreen ())
+					{
+						Ui_.VideoWidget_->setCursor (QCursor ());
+						QTimer::singleShot (1500,
+								this,
+								SLOT (hideCursor ()));
+					}
+				}
+				return QObject::eventFilter (o, e);
+			}
+
 			void PlayerWidget::handleHasVideoChanged (bool has)
 			{
 				Ui_.VideoWidget_->setVisible (has);
+				updateOSD ();
+			}
+
+			void PlayerWidget::updateOSD ()
+			{
+				if (!MediaObject_->hasVideo () &&
+						!OSD_->isChecked ())
+					return;
+
+				Ui_.VideoWidget_->update ();
 			}
 
 			void PlayerWidget::updateState ()
@@ -412,6 +479,11 @@ namespace LeechCraft
 			void PlayerWidget::handleStateUpdated (const QString& state)
 			{
 				setToolTip (state);
+			}
+
+			void PlayerWidget::hideCursor ()
+			{
+				Ui_.VideoWidget_->setCursor (TransparentCursor_);
 			}
 		};
 	};

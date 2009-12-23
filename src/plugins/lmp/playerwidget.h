@@ -20,6 +20,7 @@
 #define PLUGINS_LMP_PLAYERWIDGET_H
 #include <memory>
 #include <QWidget>
+#include <QCursor>
 #include <interfaces/imediaplayer.h>
 #include "ui_playerwidget.h"
 #include "phonon.h"
@@ -52,6 +53,10 @@ namespace LeechCraft
 				QAction *TogglePause_;
 				QAction *VolumeUp_;
 				QAction *VolumeDown_;
+
+				QAction *OSD_;
+
+				QCursor TransparentCursor_;
 			public:
 				enum SkipAmount
 				{
@@ -85,11 +90,15 @@ namespace LeechCraft
 				QToolBar* SetupToolbar ();
 				void SetupContextMenu ();
 				void ApplyVideoSettings (qreal, qreal, qreal, qreal);
+			protected:
+				bool eventFilter (QObject*, QEvent*);
 			private slots:
 				void handleHasVideoChanged (bool);
+				void updateOSD ();
 				void updateState ();
 				void changeViewerSettings ();
 				void handleStateUpdated (const QString&);
+				void hideCursor ();
 			signals:
 				void stateUpdated (const QString&);
 				void error (const QString&);
