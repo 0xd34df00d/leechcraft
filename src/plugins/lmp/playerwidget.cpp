@@ -115,8 +115,10 @@ namespace LeechCraft
 
 			void PlayerWidget::Enqueue (const MediaSource& source)
 			{
+				bool shouldStop = GetState () == Phonon::StoppedState;
 				MediaObject_->enqueue (source);
-				MediaObject_->stop ();
+				if (shouldStop)
+					MediaObject_->stop ();
 				Ui_.VideoWidget_->setVisible (MediaObject_->hasVideo ());
 			}
 
