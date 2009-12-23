@@ -19,6 +19,7 @@
 #include "core.h"
 #include <QtDebug>
 #include "itemsfiltermodel.h"
+#include "itemswidget.h"
 
 namespace LeechCraft
 {
@@ -29,12 +30,18 @@ namespace LeechCraft
 			ItemsFilterModel::ItemsFilterModel (QObject *parent)
 			: QSortFilterProxyModel (parent)
 			, HideRead_ (false)
+			, ItemsWidget_ (0)
 			{
 				setDynamicSortFilter (true);
 			}
 			
 			ItemsFilterModel::~ItemsFilterModel ()
 			{
+			}
+
+			void ItemsFilterModel::SetItemsWidget (ItemsWidget *w)
+			{
+				ItemsWidget_ = w;
 			}
 			
 			void ItemsFilterModel::SetHideRead (bool hide)
@@ -47,15 +54,15 @@ namespace LeechCraft
 					const QModelIndex& sourceParent) const
 			{
 				if (HideRead_ &&
-						Core::Instance ().IsItemRead (sourceRow) &&
-						!Core::Instance ().IsItemCurrent (sourceRow))
+						ItemsWidget_->IsItemRead (sourceRow) &&
+						!ItemsWidget_->IsItemCurrent (sourceRow))
 					return false;
 
 				if (!ItemCategories_.isEmpty ())
 				{
 					bool categoryFound = false;
 					QStringList itemCategories =
-						Core::Instance ().GetItemCategories (sourceRow);
+						ItemsWidget_->GetItemCategories (sourceRow);
 			
 					if (!itemCategories.size ())
 						categoryFound = true;

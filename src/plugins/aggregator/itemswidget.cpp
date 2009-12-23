@@ -20,14 +20,19 @@
 #include <memory>
 #include <QFileInfo>
 #include <QHeaderView>
-#include <QtDebug>
+#include <QSortFilterProxyModel>
 #include <QUrl>
+#include <QtDebug>
 #include <interfaces/iwebbrowser.h>
 #include <plugininterface/categoryselector.h>
 #include <plugininterface/util.h>
+#include <plugininterface/mergemodel.h>
 #include "core.h"
-#include "itemsfiltermodel.h"
 #include "xmlsettingsmanager.h"
+#include "itemsfiltermodel.h"
+#include "itemslistmodel.h"
+#include "channelsmodel.h"
+#include "itemmodel.h"
 
 namespace LeechCraft
 {
@@ -41,33 +46,43 @@ namespace LeechCraft
 			{
 				Ui::ItemsWidget Ui_;
 
+				QToolBar *ControlToolBar_;
+				QAction *ActionHideReadItems_;
+
 				QAction *ActionMarkItemAsUnread_;
 				QAction *ActionAddToItemBucket_;
 				QAction *ActionItemCommentsSubscribe_;
 
 				bool TapeMode_;
+				bool MergeMode_;
 
+				QSortFilterProxyModel *ChannelsFilter_;
+
+				std::auto_ptr<ItemsListModel> CurrentItemsModel_;
+				QList<boost::shared_ptr<ItemsListModel> > SupplementaryModels_;
+				std::auto_ptr<Util::MergeModel> ItemLists_;
 				std::auto_ptr<ItemsFilterModel> ItemsFilterModel_;
 				std::auto_ptr<CategorySelector> ItemCategorySelector_;
 			};
 			
 			ItemsWidget::ItemsWidget (QWidget *parent)
 			: QWidget (parent)
+			, Impl_ (new ItemsWidget_Impl)
 			{
-				Impl_ = new ItemsWidget_Impl;
-				Impl_->TapeMode_ = false;
-				Impl_->ActionMarkItemAsUnread_ = new QAction (tr ("Mark item as unread"),
-						this);
-				Impl_->ActionMarkItemAsUnread_->setObjectName ("ActionMarkItemAsUnread_");
-			
-				Impl_->ActionAddToItemBucket_ = new QAction (tr ("Add to item bucket"),
-						this);
-				Impl_->ActionAddToItemBucket_->setObjectName ("ActionAddToItemBucket_");
+				SetupActions ();
 
-				Impl_->ActionItemCommentsSubscribe_ = new QAction (tr ("Subscribe to comments"),
-						this);
-				Impl_->ActionItemCommentsSubscribe_->setObjectName ("ActionItemCommentsSubscribe_");
-			
+				Impl_->ChannelsFilter_ = 0;
+				Impl_->TapeMode_ = false;
+				Impl_->MergeMode_ = false;
+				Impl_->ControlToolBar_ = SetupToolBar ();
+
+				Impl_->CurrentItemsModel_.reset (new ItemsListModel);
+				QStringList headers;
+				headers << tr ("Name")
+					<< tr ("Date");
+				Impl_->ItemLists_.reset (new Util::MergeModel (headers));
+				Impl_->ItemLists_->AddModel (Impl_->CurrentItemsModel_.get ());
+
 				Impl_->Ui_.setupUi (this);
 				Impl_->Ui_.ItemView_->Construct (Core::Instance ().GetWebBrowser ());
 			
@@ -75,8 +90,9 @@ namespace LeechCraft
 			
 				Impl_->Ui_.Items_->sortByColumn (1, Qt::DescendingOrder);
 				Impl_->ItemsFilterModel_.reset (new ItemsFilterModel (this));
-				Impl_->ItemsFilterModel_->setSourceModel (Core::Instance ().GetItemsModel ());
-				connect (Core::Instance ().GetItemsModel (),
+				Impl_->ItemsFilterModel_->SetItemsWidget (this);
+				Impl_->ItemsFilterModel_->setSourceModel (Impl_->ItemLists_.get ());
+				connect (Impl_->ItemLists_.get (),
 						SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
 						Impl_->ItemsFilterModel_.get (),
 						SLOT (invalidate ()));
@@ -97,7 +113,7 @@ namespace LeechCraft
 						this,
 						SLOT (updateItemsFilter ()));
 			
-				connect (&Core::Instance (),
+				connect (this,
 						SIGNAL (currentChannelChanged (const QModelIndex&)),
 						this,
 						SLOT (channelChanged (const QModelIndex&)));
@@ -135,8 +151,16 @@ namespace LeechCraft
 			
 				currentItemChanged (QItemSelection ());
 
+				connect (Core::Instance ().GetStorageBackend (),
+						SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
+						this,
+						SLOT (handleItemDataUpdated (Item_ptr, Channel_ptr)),
+						Qt::QueuedConnection);
+
 				XmlSettingsManager::Instance ()->RegisterObject ("ShowCategorySelector",
 						this, "selectorVisiblityChanged");
+
+				on_ActionHideReadItems__triggered ();
 			}
 			
 			ItemsWidget::~ItemsWidget ()
@@ -153,7 +177,48 @@ namespace LeechCraft
 						0);
 				delete Impl_;
 			}
+
+			void ItemsWidget::SetChannelActions (const ChannelActions& ca)
+			{
+				QAction *first = Impl_->ControlToolBar_->actions ().first ();
+				Impl_->ControlToolBar_->insertAction (first,
+						ca.ActionRemoveFeed_);
+				Impl_->ControlToolBar_->insertAction (first,
+						ca.ActionUpdateSelectedFeed_);
+				Impl_->ControlToolBar_->insertSeparator (first);
+			}
+
+			void ItemsWidget::SetChannelsFilter (QSortFilterProxyModel *m)
+			{
+				Impl_->ChannelsFilter_ = m;
+
+				connect (m,
+						SIGNAL (rowsInserted (const QModelIndex&,
+								int, int)),
+						this,
+						SLOT (invalidateMergeMode ()));
+				connect (m,
+						SIGNAL (rowsRemoved (const QModelIndex&,
+								int, int)),
+						this,
+						SLOT (invalidateMergeMode ()));
+			}
 			
+			Item_ptr ItemsWidget::GetItem (const QModelIndex& index) const
+			{
+				QModelIndex mapped = Impl_->ItemLists_->mapToSource (index);
+				const ItemsListModel *model = static_cast<const ItemsListModel*> (mapped.model ());
+				ItemShort item = model->GetItem (mapped);
+				return Core::Instance ().GetStorageBackend ()->
+					GetItem (item.Title_, item.URL_,
+						model->GetHash ().first + model->GetHash ().second);
+			}
+
+			QToolBar* ItemsWidget::GetToolBar () const
+			{
+				return Impl_->ControlToolBar_;
+			}
+
 			void ItemsWidget::SetTapeMode (bool tape)
 			{
 				if (!isVisible ())
@@ -176,9 +241,186 @@ namespace LeechCraft
 				currentItemChanged (QItemSelection ());
 			}
 			
+			void ItemsWidget::SetMergeMode (bool merge)
+			{
+				Impl_->MergeMode_ = merge;
+				if (Impl_->MergeMode_)
+				{
+					QSortFilterProxyModel *f = Impl_->ChannelsFilter_;
+					ChannelsModel *cm = Core::Instance ().GetRawChannelsModel ();
+					for (int i = 0, size = f ?
+							f->rowCount () :
+							cm->rowCount ();
+							i < size; ++i)
+					{
+						QModelIndex index = f ?
+							f->index (i, 0) :
+							cm->index (i, 0);
+						ChannelShort cs;
+						try
+						{
+							cs = cm->
+								GetChannelForIndex (f ? f->mapToSource (index) : index);
+						}
+						catch (const std::exception& e)
+						{
+							qWarning () << Q_FUNC_INFO
+								<< e.what ();
+							continue;
+						}
+						QPair<QString, QString> hash = qMakePair (cs.ParentURL_, cs.Title_);
+			
+						if (hash == Impl_->CurrentItemsModel_->GetHash ())
+							continue;
+			
+						boost::shared_ptr<ItemsListModel> ilm (new ItemsListModel);
+						ilm->Reset (hash);
+						Impl_->SupplementaryModels_ << ilm;
+						Impl_->ItemLists_->AddModel (ilm.get ());
+					}
+				}
+				else
+					while (Impl_->SupplementaryModels_.size ())
+					{
+						Impl_->ItemLists_->
+							RemoveModel (Impl_->SupplementaryModels_.at (0).get ());
+						Impl_->SupplementaryModels_.removeAt (0);
+					}
+			}
+			
 			void ItemsWidget::SetHideRead (bool hide)
 			{
 				Impl_->ItemsFilterModel_->SetHideRead (hide);
+			}
+
+			bool ItemsWidget::IsItemCurrent (int item) const
+			{
+				return !Impl_->MergeMode_ &&
+					Impl_->CurrentItemsModel_->GetSelectedRow () == item;
+			}
+
+			void ItemsWidget::Selected (const QModelIndex& index)
+			{
+				QModelIndex mapped = Impl_->ItemLists_->mapToSource (index);
+				static_cast<ItemsListModel*> (*Impl_->ItemLists_->
+						GetModelForRow (index.row ()))->Selected (mapped);
+			}
+
+			void ItemsWidget::MarkItemAsUnread (const QModelIndex& i)
+			{
+				QModelIndex mapped = Impl_->ItemLists_->mapToSource (i);
+				static_cast<ItemsListModel*> (*Impl_->ItemLists_->
+						GetModelForRow (i.row ()))->MarkItemAsUnread (mapped);
+			}
+
+			bool ItemsWidget::IsItemRead (int item) const
+			{
+				Util::MergeModel::const_iterator i = Impl_->ItemLists_->
+					GetModelForRow (item);
+				int starting = Impl_->ItemLists_->GetStartingRow (i);
+				return static_cast<ItemsListModel*> (*i)->IsItemRead (item - starting);
+			}
+
+			QStringList ItemsWidget::GetItemCategories (int index) const
+			{
+				if (!Impl_->SupplementaryModels_.size ())
+					return Impl_->CurrentItemsModel_->GetCategories (index);
+				else
+				{
+					LeechCraft::Util::MergeModel::const_iterator i = Impl_->ItemLists_->
+						GetModelForRow (index);
+					int starting = Impl_->ItemLists_->GetStartingRow (i);
+					return static_cast<ItemsListModel*> (*i)->GetCategories (index - starting);
+				}
+			}
+			
+			void ItemsWidget::AddToItemBucket (const QModelIndex& index) const
+			{
+				Core::Instance ().GetItemBucket ()->
+					GetItemModel ()->AddItem (GetItem (index));
+			}
+
+			void ItemsWidget::SubscribeToComments (const QModelIndex& index) const
+			{
+				Item_ptr it = GetItem (index);
+				QString commentRSS = it->CommentsLink_;
+				QStringList tags = it->Categories_;
+			
+				QStringList addTags = Core::Instance ().GetProxy ()->
+					GetTagsManager ()->Split (XmlSettingsManager::Instance ()->
+							property ("CommentsTags").toString ());
+				Core::Instance ().AddFeed (commentRSS, tags + addTags);
+			}
+			
+			void ItemsWidget::CurrentChannelChanged (const QModelIndex& si)
+			{
+				qDebug () << Q_FUNC_INFO << si;
+				if (Impl_->MergeMode_)
+					return;
+			
+				QModelIndex index = si;
+				QSortFilterProxyModel *f = Impl_->ChannelsFilter_;
+				if (f)
+					index = f->mapToSource (index);
+
+				qDebug () << f << index;
+
+				try
+				{
+					ChannelShort ch = Core::Instance ()
+						.GetRawChannelsModel ()->GetChannelForIndex (index);
+					Impl_->CurrentItemsModel_->Reset (qMakePair (ch.ParentURL_, ch.Title_));
+				}
+				catch (const std::exception&)
+				{
+					Impl_->CurrentItemsModel_->Reset (qMakePair (QString (), QString ()));
+				}
+				emit currentChannelChanged (index);
+			}
+
+			void ItemsWidget::SetupActions ()
+			{
+				Impl_->ActionHideReadItems_ = new QAction (tr ("Hide read items"),
+						this);
+				Impl_->ActionHideReadItems_->setObjectName ("ActionHideReadItems_");
+				Impl_->ActionHideReadItems_->setCheckable (true);
+				Impl_->ActionHideReadItems_->setProperty ("ActionIcon", "aggregator_rssshow");
+				Impl_->ActionHideReadItems_->setProperty ("ActionIconOff", "aggregator_rsshide");
+				Impl_->ActionHideReadItems_->setChecked (XmlSettingsManager::Instance ()->
+						Property ("HideReadItems", false).toBool ());
+
+				Impl_->ActionMarkItemAsUnread_ = new QAction (tr ("Mark item as unread"),
+						this);
+				Impl_->ActionMarkItemAsUnread_->setObjectName ("ActionMarkItemAsUnread_");
+			
+				Impl_->ActionAddToItemBucket_ = new QAction (tr ("Add to item bucket"),
+						this);
+				Impl_->ActionAddToItemBucket_->setObjectName ("ActionAddToItemBucket_");
+
+				Impl_->ActionItemCommentsSubscribe_ = new QAction (tr ("Subscribe to comments"),
+						this);
+				Impl_->ActionItemCommentsSubscribe_->setObjectName ("ActionItemCommentsSubscribe_");
+			}
+			
+			QToolBar* ItemsWidget::SetupToolBar ()
+			{
+				QToolBar *bar = new QToolBar ();
+				bar->setWindowTitle (tr ("Aggregator"));
+
+				const AppWideActions& aw = Core::Instance ().GetAppWideActions ();
+			
+				bar->addAction (aw.ActionItemBucket_);
+				bar->addAction (aw.ActionRegexpMatcher_);
+				bar->addSeparator ();
+				bar->addAction (aw.ActionImportOPML_);
+				bar->addAction (aw.ActionExportOPML_);
+				bar->addAction (aw.ActionImportBinary_);
+				bar->addAction (aw.ActionExportBinary_);
+				bar->addAction (aw.ActionExportFB2_);
+				bar->addSeparator ();
+				bar->addAction (Impl_->ActionHideReadItems_);
+			
+				return bar;
 			}
 			
 			QString ItemsWidget::GetHex (QPalette::ColorRole role, QPalette::ColorGroup group)
@@ -622,6 +864,32 @@ namespace LeechCraft
 				else
 					Impl_->Ui_.CategoriesSplitter_->setSizes (sizes);
 			}
+
+			void ItemsWidget::handleItemDataUpdated (Item_ptr item, Channel_ptr channel)
+			{
+				QPair<QString, QString> hash = qMakePair (channel->ParentURL_, channel->Title_);
+
+				if (Impl_->CurrentItemsModel_->GetHash () == hash)
+				{
+					Impl_->CurrentItemsModel_->ItemDataUpdated (item);
+				}
+				else
+					Q_FOREACH (boost::shared_ptr<ItemsListModel> m, Impl_->SupplementaryModels_)
+						if (m->GetHash () == hash)
+						{
+							m->ItemDataUpdated (item);
+							break;
+						}
+			}
+
+			void ItemsWidget::invalidateMergeMode ()
+			{
+				if (Impl_->MergeMode_)
+				{
+					SetMergeMode (false);
+					SetMergeMode (true);
+				}
+			}
 			
 			void ItemsWidget::channelChanged (const QModelIndex& mapped)
 			{
@@ -649,13 +917,21 @@ namespace LeechCraft
 					Impl_->ItemCategorySelector_->hide ();
 				}
 			}
+
+			void ItemsWidget::on_ActionHideReadItems__triggered ()
+			{
+				bool hide = Impl_->ActionHideReadItems_->isChecked ();
+				XmlSettingsManager::Instance ()->
+					setProperty ("HideReadItems", hide);
+				SetHideRead (hide);
+			}
 			
 			void ItemsWidget::on_ActionMarkItemAsUnread__triggered ()
 			{
 				QModelIndexList indexes = Impl_->Ui_.Items_->
 					selectionModel ()->selectedRows ();
 				for (int i = 0; i < indexes.size (); ++i)
-					Core::Instance ().MarkItemAsUnread (Impl_->
+					MarkItemAsUnread (Impl_->
 							ItemsFilterModel_->mapToSource (indexes.at (i)));
 			}
 			
@@ -667,7 +943,7 @@ namespace LeechCraft
 			
 			void ItemsWidget::on_ActionAddToItemBucket__triggered ()
 			{
-				Core::Instance ().AddToItemBucket (Impl_->ItemsFilterModel_->
+				AddToItemBucket (Impl_->ItemsFilterModel_->
 						mapToSource (Impl_->Ui_.Items_->selectionModel ()->
 							currentIndex ()));
 			}
@@ -675,7 +951,7 @@ namespace LeechCraft
 			void ItemsWidget::on_ActionItemCommentsSubscribe__triggered ()
 			{
 				QModelIndex selected = Impl_->Ui_.Items_->selectionModel ()->currentIndex ();
-				Core::Instance ().SubscribeToComments (Impl_->ItemsFilterModel_->
+				SubscribeToComments (Impl_->ItemsFilterModel_->
 						mapToSource (selected));
 			}
 
@@ -698,7 +974,7 @@ namespace LeechCraft
 					{
 						QModelIndex index = Impl_->ItemsFilterModel_->index (i, 0);
 						QModelIndex mapped = Impl_->ItemsFilterModel_->mapToSource (index);
-						Item_ptr item = Core::Instance ().GetItem (mapped);
+						Item_ptr item = GetItem (mapped);
 			
 						html += ToHtml (item);
 						html += "<hr />";
@@ -721,9 +997,9 @@ namespace LeechCraft
 						return;
 					}
 			
-					Core::Instance ().Selected (sindex);
+					Selected (sindex);
 			
-					Item_ptr item = Core::Instance ().GetItem (sindex);
+					Item_ptr item = GetItem (sindex);
 			
 					Impl_->Ui_.ItemView_->SetHtml (ToHtml (item));
 			

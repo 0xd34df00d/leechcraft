@@ -49,8 +49,8 @@
 #include "itemsfiltermodel.h"
 #include "channelsfiltermodel.h"
 #include "xmlsettingsmanager.h"
-#include "itembucket.h"
 #include "regexpmatcherui.h"
+#include "itembucket.h"
 #include "regexpmatchermanager.h"
 #include "export.h"
 #include "itembucket.h"
@@ -59,6 +59,7 @@
 #include "jobholderrepresentation.h"
 #include "wizardgenerator.h"
 #include "export2fb2dialog.h"
+#include "actionsstructs.h"
 
 namespace LeechCraft
 {
@@ -74,25 +75,8 @@ namespace LeechCraft
 			{
 				Ui::MainWidget Ui_;
 
-				ItemsWidget *AdditionalInfo_;
-
-				QToolBar *ControlToolBar_;
-				QAction *ActionAddFeed_;
-				QAction *ActionUpdateFeeds_;
-				QAction *ActionRemoveFeed_;
-				QAction *ActionMarkChannelAsRead_;
-				QAction *ActionMarkChannelAsUnread_;
-				QAction *ActionChannelSettings_;
-				QAction *ActionUpdateSelectedFeed_;
-				QAction *ActionItemBucket_;
-				QAction *ActionRegexpMatcher_;
-				QAction *ActionHideReadItems_;
-				QAction *ActionImportOPML_;
-				QAction *ActionExportOPML_;
-				QAction *ActionImportBinary_;
-				QAction *ActionExportBinary_;
-				QAction *ActionExportFB2_;
-
+				AppWideActions AppWideActions_;
+				ChannelActions ChannelActions_;
 				QQueue<QString> ErrorQueue_;
 
 				boost::shared_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
@@ -100,7 +84,6 @@ namespace LeechCraft
 				std::auto_ptr<Util::TagsCompleter> TagsLineCompleter_;
 				std::auto_ptr<QSystemTrayIcon> TrayIcon_;
 				std::auto_ptr<QTranslator> Translator_;
-				std::auto_ptr<ItemBucket> ItemBucket_;
 				std::auto_ptr<RegexpMatcherUi> RegexpMatcherUi_;
 
 				QModelIndex SelectedRepr_;
@@ -132,12 +115,14 @@ namespace LeechCraft
 			void Aggregator::Init (ICoreProxy_ptr proxy)
 			{
 				setProperty ("IsUnremoveable", true);
+
 				Impl_ = new Aggregator_Impl;
+				SetupActionsStruct (Impl_->ChannelActions_, this);
+				SetupActionsStruct (Impl_->AppWideActions_, this);
+				Core::Instance ().SetAppWideActions (Impl_->AppWideActions_);
+			
 				Impl_->Translator_.reset (LeechCraft::Util::InstallTranslator ("aggregator"));
-			
-				SetupActions ();
-			
-				Impl_->ControlToolBar_ = SetupMenuBar ();
+
 				Impl_->TrayIcon_.reset (new QSystemTrayIcon (QIcon (":/resources/images/aggregator.svg"), this));
 				Impl_->TrayIcon_->hide ();
 				connect (Impl_->TrayIcon_.get (),
@@ -172,11 +157,26 @@ namespace LeechCraft
 				Impl_->XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
 						new LeechCraft::Util::BackendSelector (XmlSettingsManager::Instance ()));
 			
-				Impl_->AdditionalInfo_ = new ItemsWidget ();
-				Impl_->Ui_.setupUi (this);
-				on_ActionHideReadItems__triggered ();
-
+				bool initFailed = false;
 				if (!Core::Instance ().DoDelayedInit ())
+				{
+					setEnabled (false);
+					Impl_->AppWideActions_.ActionAddFeed_->setEnabled (false);
+					Impl_->AppWideActions_.ActionUpdateFeeds_->setEnabled (false);
+					Impl_->AppWideActions_.ActionItemBucket_->setEnabled (false);
+					Impl_->AppWideActions_.ActionRegexpMatcher_->setEnabled (false);
+					Impl_->AppWideActions_.ActionImportOPML_->setEnabled (false);
+					Impl_->AppWideActions_.ActionExportOPML_->setEnabled (false);
+					Impl_->AppWideActions_.ActionImportBinary_->setEnabled (false);
+					Impl_->AppWideActions_.ActionExportBinary_->setEnabled (false);
+					Impl_->AppWideActions_.ActionExportFB2_->setEnabled (false);
+					initFailed =true;
+				}
+
+				Impl_->Ui_.setupUi (this);
+				Impl_->Ui_.ItemsWidget_->SetChannelActions (Impl_->ChannelActions_);
+
+				if (initFailed)
 				{
 					QMessageBox::critical (this,
 							tr ("LeechCraft"),
@@ -184,28 +184,14 @@ namespace LeechCraft
 								"Check logs and talk with the developers. "
 								"Or, at least, check the storage backend "
 								"settings and restart LeechCraft."));
-					setEnabled (false);
-					Impl_->AdditionalInfo_->setEnabled (false);
-					Impl_->ControlToolBar_->setEnabled (false);
-					Impl_->ActionAddFeed_->setEnabled (false);
-					Impl_->ActionUpdateFeeds_->setEnabled (false);
-					Impl_->ActionRemoveFeed_->setEnabled (false);
-					Impl_->ActionMarkChannelAsRead_->setEnabled (false);
-					Impl_->ActionMarkChannelAsUnread_->setEnabled (false);
-					Impl_->ActionChannelSettings_->setEnabled (false);
-					Impl_->ActionUpdateSelectedFeed_->setEnabled (false);
-					Impl_->ActionItemBucket_->setEnabled (false);
-					Impl_->ActionRegexpMatcher_->setEnabled (false);
-					Impl_->ActionHideReadItems_->setEnabled (false);
-					Impl_->ActionImportOPML_->setEnabled (false);
-					Impl_->ActionExportOPML_->setEnabled (false);
-					Impl_->ActionImportBinary_->setEnabled (false);
-					Impl_->ActionExportBinary_->setEnabled (false);
-					Impl_->ActionExportFB2_->setEnabled (false);
 					return;
 				}
 
+				Impl_->Ui_.ItemsWidget_->
+					SetChannelsFilter (Core::Instance ()
+							.GetChannelsModel ());
 				Core::Instance ().GetJobHolderRepresentation ()->setParent (this);
+				Core::Instance ().GetReprWidget ()->SetChannelActions (Impl_->ChannelActions_);
 			
 				Impl_->Ui_.MergeItems_->setChecked (XmlSettingsManager::Instance ()->
 						Property ("MergeItems", false).toBool ());
@@ -214,34 +200,42 @@ namespace LeechCraft
 			
 				Impl_->RegexpMatcherUi_.reset (new RegexpMatcherUi (this));
 			
-				Impl_->ItemBucket_.reset (new ItemBucket (this));
-			
 				Impl_->FlatToFolders_.reset (new Util::FlatToFoldersProxyModel);
 				Impl_->FlatToFolders_->SetTagsManager (Core::Instance ().GetProxy ()->GetTagsManager ());
 				Impl_->FlatToFolders_->SetSourceModel (Core::Instance ().GetChannelsModel ());
 				Impl_->Ui_.Feeds_->setModel (Impl_->FlatToFolders_.get ());
-				Impl_->Ui_.Feeds_->addAction (Impl_->ActionMarkChannelAsRead_);
-				Impl_->Ui_.Feeds_->addAction (Impl_->ActionMarkChannelAsUnread_);
+				Impl_->Ui_.Feeds_->addAction (Impl_->
+						ChannelActions_.ActionMarkChannelAsRead_);
+				Impl_->Ui_.Feeds_->addAction (Impl_->
+						ChannelActions_.ActionMarkChannelAsUnread_);
 				QAction *sep1 = new QAction (Impl_->Ui_.Feeds_),
 						*sep2 = new QAction (Impl_->Ui_.Feeds_);
 				sep1->setSeparator (true);
 				sep2->setSeparator (true);
 				Impl_->Ui_.Feeds_->addAction (sep1);
-				Impl_->Ui_.Feeds_->addAction (Impl_->ActionRemoveFeed_);
-				Impl_->Ui_.Feeds_->addAction (Impl_->ActionUpdateSelectedFeed_);
+				Impl_->Ui_.Feeds_->addAction (Impl_->
+						ChannelActions_.ActionRemoveFeed_);
+				Impl_->Ui_.Feeds_->addAction (Impl_->
+						ChannelActions_.ActionUpdateSelectedFeed_);
 				Impl_->Ui_.Feeds_->addAction (sep2);
-				Impl_->Ui_.Feeds_->addAction (Impl_->ActionChannelSettings_);
+				Impl_->Ui_.Feeds_->addAction (Impl_->
+						ChannelActions_.ActionChannelSettings_);
 				Impl_->Ui_.Feeds_->setContextMenuPolicy (Qt::ActionsContextMenu);
 				QHeaderView *channelsHeader = Impl_->Ui_.Feeds_->header ();
 
 				QMenu *contextMenu = new QMenu (tr ("Feeds actions"));
-				contextMenu->addAction (Impl_->ActionMarkChannelAsRead_);
-				contextMenu->addAction (Impl_->ActionMarkChannelAsUnread_);
+				contextMenu->addAction (Impl_->
+						ChannelActions_.ActionMarkChannelAsRead_);
+				contextMenu->addAction (Impl_->
+						ChannelActions_.ActionMarkChannelAsUnread_);
 				contextMenu->addSeparator ();
-				contextMenu->addAction (Impl_->ActionRemoveFeed_);
-				contextMenu->addAction (Impl_->ActionUpdateSelectedFeed_);
+				contextMenu->addAction (Impl_->
+						ChannelActions_.ActionRemoveFeed_);
+				contextMenu->addAction (Impl_->
+						ChannelActions_.ActionUpdateSelectedFeed_);
 				contextMenu->addSeparator ();
-				contextMenu->addAction (Impl_->ActionChannelSettings_);
+				contextMenu->addAction (Impl_->
+						ChannelActions_.ActionChannelSettings_);
 				Core::Instance ().SetContextMenu (contextMenu);
 			
 				QFontMetrics fm = fontMetrics ();
@@ -254,15 +248,11 @@ namespace LeechCraft
 						SIGNAL (textChanged (const QString&)),
 						Core::Instance ().GetChannelsModel (),
 						SLOT (setFilterFixedString (const QString&)));
-				connect (Impl_->Ui_.TagsLine_,
-						SIGNAL (textChanged (const QString&)),
-						&Core::Instance (),
-						SLOT (tagsUpdated ()));
 				connect (Impl_->Ui_.Feeds_->selectionModel (),
 						SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
 						this,
 						SLOT (currentChannelChanged ()));
-				connect (Impl_->ActionUpdateFeeds_,
+				connect (Impl_->AppWideActions_.ActionUpdateFeeds_,
 						SIGNAL (triggered ()),
 						&Core::Instance (),
 						SLOT (updateFeeds ()));
@@ -287,7 +277,6 @@ namespace LeechCraft
 						this,
 						SLOT (handleItemSelected (const QModelIndex&)));
 			
-				Core::Instance ().SetWidgets (Impl_->ControlToolBar_, Impl_->AdditionalInfo_);
 				currentChannelChanged ();
 			}
 
@@ -303,7 +292,6 @@ namespace LeechCraft
 				if (Impl_->TagsLineCompleter_.get ())
 					disconnect (Impl_->TagsLineCompleter_.get (), 0, this, 0);
 				Impl_->TrayIcon_->hide ();
-				delete Impl_->AdditionalInfo_;
 				delete Impl_;
 				Core::Instance ().Release ();
 			}
@@ -349,7 +337,7 @@ namespace LeechCraft
 			
 			QToolBar* Aggregator::GetToolBar () const
 			{
-				return Impl_->ControlToolBar_;
+				return Impl_->Ui_.ItemsWidget_->GetToolBar ();
 			}
 			
 			boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> Aggregator::GetSettingsDialog () const
@@ -368,7 +356,8 @@ namespace LeechCraft
 				if (si.model () != GetRepresentation ())
 					si = QModelIndex ();
 				Impl_->SelectedRepr_ = si;
-				Core::Instance ().CurrentChannelChanged (Impl_->SelectedRepr_, true);
+				Core::Instance ().GetJobHolderRepresentation ()->SelectionChanged (si);
+				Core::Instance ().GetReprWidget ()->CurrentChannelChanged (Impl_->SelectedRepr_);
 			}
 			
 			bool Aggregator::CouldHandle (const LeechCraft::DownloadEntity& e) const
@@ -385,7 +374,7 @@ namespace LeechCraft
 			
 #define _LC_SINGLE(a) \
 				case Aggregator_Impl::_LC_MERGE(a): \
-					Impl_->a->setShortcut (shortcut); \
+					Impl_->AppWideActions_.a->setShortcut (shortcut); \
 					break;
 			
 #define _LC_TRAVERSER(z,i,array) \
@@ -401,14 +390,8 @@ namespace LeechCraft
 			{
 				_LC_EXPANDER ((ActionAddFeed_)
 						(ActionUpdateFeeds_)
-						(ActionRemoveFeed_)
-						(ActionMarkChannelAsRead_)
-						(ActionMarkChannelAsUnread_)
-						(ActionChannelSettings_)
-						(ActionUpdateSelectedFeed_)
 						(ActionItemBucket_)
 						(ActionRegexpMatcher_)
-						(ActionHideReadItems_)
 						(ActionImportOPML_)
 						(ActionExportOPML_)
 						(ActionImportBinary_)
@@ -416,21 +399,16 @@ namespace LeechCraft
 						(ActionExportFB2_));
 			}
 			
-#define _L(a) result [Aggregator_Impl::EA##a] = ActionInfo (Impl_->a->text (), \
-					Impl_->a->shortcut (), Impl_->a->icon ())
+#define _L(a) result [Aggregator_Impl::EA##a] = ActionInfo (Impl_->AppWideActions_.a->text (), \
+		Impl_->AppWideActions_.a->shortcut (), \
+		Impl_->AppWideActions_.a->icon ())
 			QMap<int, ActionInfo> Aggregator::GetActionInfo () const
 			{
 				QMap<int, ActionInfo> result;
 				_L (ActionAddFeed_);
 				_L (ActionUpdateFeeds_);
-				_L (ActionRemoveFeed_);
-				_L (ActionMarkChannelAsRead_);
-				_L (ActionMarkChannelAsUnread_);
-				_L (ActionChannelSettings_);
-				_L (ActionUpdateSelectedFeed_);
 				_L (ActionItemBucket_);
 				_L (ActionRegexpMatcher_);
-				_L (ActionHideReadItems_);
 				_L (ActionImportOPML_);
 				_L (ActionExportOPML_);
 				_L (ActionImportBinary_);
@@ -448,16 +426,16 @@ namespace LeechCraft
 			QList<QAction*> Aggregator::GetActions () const
 			{
 				QList<QAction*> result;
-				result += Impl_->ActionAddFeed_;
-				result += Impl_->ActionUpdateFeeds_;
+				result += Impl_->AppWideActions_.ActionAddFeed_;
+				result += Impl_->AppWideActions_.ActionUpdateFeeds_;
 				return result;
 			}
 
 			QList<QAction*> Aggregator::GetTrayActions () const
 			{
 				QList<QAction*> result;
-				result += Impl_->ActionAddFeed_;
-				result += Impl_->ActionUpdateFeeds_;
+				result += Impl_->AppWideActions_.ActionAddFeed_;
+				result += Impl_->AppWideActions_.ActionUpdateFeeds_;
 				return result;
 			}
 
@@ -531,107 +509,7 @@ namespace LeechCraft
 				}
 				e->ignore ();
 			}
-			
-			QToolBar* Aggregator::SetupMenuBar ()
-			{
-				QToolBar *bar = new QToolBar ();
-				bar->setWindowTitle (tr ("Aggregator"));
-			
-				bar->addAction (Impl_->ActionRemoveFeed_);
-				bar->addAction (Impl_->ActionUpdateSelectedFeed_);
-				bar->addSeparator ();
-				bar->addAction (Impl_->ActionItemBucket_);
-				bar->addAction (Impl_->ActionRegexpMatcher_);
-				bar->addSeparator ();
-				bar->addAction (Impl_->ActionImportOPML_);
-				bar->addAction (Impl_->ActionExportOPML_);
-				bar->addAction (Impl_->ActionImportBinary_);
-				bar->addAction (Impl_->ActionExportBinary_);
-				bar->addAction (Impl_->ActionExportFB2_);
-				bar->addSeparator ();
-				bar->addAction (Impl_->ActionHideReadItems_);
-			
-				return bar;
-			}
-			
-			void Aggregator::SetupActions ()
-			{
-				Impl_->ActionAddFeed_ = new QAction (tr ("Add feed..."),
-						this);
-				Impl_->ActionAddFeed_->setObjectName ("ActionAddFeed_");
-				Impl_->ActionAddFeed_->setProperty ("ActionIcon", "aggregator_add");
-			
-				Impl_->ActionUpdateFeeds_ = new QAction (tr ("Update all feeds"),
-						this);
-				Impl_->ActionUpdateFeeds_->setProperty ("ActionIcon", "aggregator_updateallfeeds");
-			
-				Impl_->ActionRemoveFeed_ = new QAction (tr ("Remove feed"),
-						this);
-				Impl_->ActionRemoveFeed_->setObjectName ("ActionRemoveFeed_");
-				Impl_->ActionRemoveFeed_->setProperty ("ActionIcon", "aggregator_remove");
-			
-				Impl_->ActionMarkChannelAsRead_ = new QAction (tr ("Mark channel as read"),
-						this);
-				Impl_->ActionMarkChannelAsRead_->setObjectName ("ActionMarkChannelAsRead_");
-			
-				Impl_->ActionMarkChannelAsUnread_ = new QAction (tr ("Mark channel as unread"),
-						this);
-				Impl_->ActionMarkChannelAsUnread_->setObjectName ("ActionMarkChannelAsUnread_");
-			
-				Impl_->ActionChannelSettings_ = new QAction (tr ("Settings..."),
-						this);
-				Impl_->ActionChannelSettings_->setObjectName ("ActionChannelSettings_");
-			
-				Impl_->ActionUpdateSelectedFeed_ = new QAction (tr ("Update selected feed"),
-						this);
-				Impl_->ActionUpdateSelectedFeed_->setObjectName ("ActionUpdateSelectedFeed_");
-				Impl_->ActionUpdateSelectedFeed_->setProperty ("ActionIcon", "aggregator_updateselectedfeed");
-			
-				Impl_->ActionItemBucket_ = new QAction (tr ("Item bucket..."),
-						this);
-				Impl_->ActionItemBucket_->setObjectName ("ActionItemBucket_");
-				Impl_->ActionItemBucket_->setProperty ("ActionIcon", "aggregator_favorites");
-			
-				Impl_->ActionRegexpMatcher_ = new QAction (tr ("Regexp matcher..."),
-						this);
-				Impl_->ActionRegexpMatcher_->setObjectName ("ActionRegexpMatcher_");
-				Impl_->ActionRegexpMatcher_->setProperty ("ActionIcon", "aggregator_filter");
-			
-				Impl_->ActionHideReadItems_ = new QAction (tr ("Hide read items"),
-						this);
-				Impl_->ActionHideReadItems_->setObjectName ("ActionHideReadItems_");
-				Impl_->ActionHideReadItems_->setCheckable (true);
-				Impl_->ActionHideReadItems_->setProperty ("ActionIcon", "aggregator_rssshow");
-				Impl_->ActionHideReadItems_->setProperty ("ActionIconOff", "aggregator_rsshide");
-				Impl_->ActionHideReadItems_->setChecked (XmlSettingsManager::Instance ()->
-						Property ("HideReadItems", false).toBool ());
-			
-				Impl_->ActionImportOPML_ = new QAction (tr ("Import from OPML..."),
-						this);
-				Impl_->ActionImportOPML_->setObjectName ("ActionImportOPML_");
-				Impl_->ActionImportOPML_->setProperty ("ActionIcon", "aggregator_importopml");
-			
-				Impl_->ActionExportOPML_ = new QAction (tr ("Export to OPML..."),
-						this);
-				Impl_->ActionExportOPML_->setObjectName ("ActionExportOPML_");
-				Impl_->ActionExportOPML_->setProperty ("ActionIcon", "aggregator_exportopml");
-			
-				Impl_->ActionImportBinary_ = new QAction (tr ("Import from binary..."),
-						this);
-				Impl_->ActionImportBinary_->setObjectName ("ActionImportBinary_");
-				Impl_->ActionImportBinary_->setProperty ("ActionIcon", "aggregator_importbinary");
-			
-				Impl_->ActionExportBinary_ = new QAction (tr ("Export to binary..."),
-						this);
-				Impl_->ActionExportBinary_->setObjectName ("ActionExportBinary_");
-				Impl_->ActionExportBinary_->setProperty ("ActionIcon", "aggregator_exportbinary");
 
-				Impl_->ActionExportFB2_ = new QAction (tr ("Export to FB2..."),
-						this);
-				Impl_->ActionExportFB2_->setObjectName ("ActionExportFB2_");
-				Impl_->ActionExportFB2_->setProperty ("ActionIcon", "aggregator_fb2");
-			}
-			
 			void Aggregator::ScheduleShowError ()
 			{
 				if (Impl_->ErrorQueue_.size () > 1)
@@ -644,7 +522,7 @@ namespace LeechCraft
 			
 			bool Aggregator::IsRepr () const
 			{
-				return Impl_->AdditionalInfo_->isVisible ();
+				return Core::Instance ().GetReprWidget ()->isVisible ();
 			}
 
 			QModelIndex Aggregator::GetRelevantIndex () const
@@ -744,21 +622,12 @@ namespace LeechCraft
 			
 			void Aggregator::on_ActionItemBucket__triggered ()
 			{
-				Impl_->ItemBucket_->show ();
+				Core::Instance ().GetItemBucket ()->show ();
 			}
 			
 			void Aggregator::on_ActionRegexpMatcher__triggered ()
 			{
 				Impl_->RegexpMatcherUi_->show ();
-			}
-			
-			void Aggregator::on_ActionHideReadItems__triggered ()
-			{
-				bool hide = Impl_->ActionHideReadItems_->isChecked ();
-				XmlSettingsManager::Instance ()->
-					setProperty ("HideReadItems", hide);
-				Impl_->Ui_.ItemsWidget_->SetHideRead (hide);
-				Impl_->AdditionalInfo_->SetHideRead (hide);
 			}
 			
 			void Aggregator::on_ActionImportOPML__triggered ()
@@ -824,7 +693,7 @@ namespace LeechCraft
 			
 			void Aggregator::on_MergeItems__toggled (bool merge)
 			{
-				Core::Instance ().SetMerge (merge);
+				Impl_->Ui_.ItemsWidget_->SetMergeMode (merge);
 				XmlSettingsManager::Instance ()->setProperty ("MergeItems", merge);
 			}
 			
@@ -838,7 +707,7 @@ namespace LeechCraft
 			{
 				QModelIndex index = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
 				index = Impl_->FlatToFolders_->MapToSource (index);
-				Core::Instance ().CurrentChannelChanged (index, false);
+				Impl_->Ui_.ItemsWidget_->CurrentChannelChanged (index);
 			}
 			
 			void Aggregator::unreadNumberChanged (int number)

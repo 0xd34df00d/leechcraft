@@ -49,6 +49,7 @@ SET (SRCS
 	startupsecondpage.cpp
 	startupthirdpage.cpp
 	export2fb2dialog.cpp
+	actionsstructs.cpp
 	)
 SET (HEADERS
     aggregator.h
@@ -92,6 +93,7 @@ SET (HEADERS
 	startupsecondpage.h
 	startupthirdpage.h
 	export2fb2dialog.h
+	actionsstructs.h
 	)
 SET (FORMS
     mainwidget.ui

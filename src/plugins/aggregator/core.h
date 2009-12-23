@@ -31,6 +31,8 @@
 #include "channel.h"
 #include "feed.h"
 #include "storagebackend.h"
+#include "actionsstructs.h"
+#include "itembucket.h"
 
 class QTimer;
 class QNetworkReply;
@@ -42,20 +44,14 @@ class IWebBrowser;
 
 namespace LeechCraft
 {
-	namespace Util
-	{
-		class MergeModel;
-	};
-
 	namespace Plugins
 	{
 		namespace Aggregator
 		{
 			class ChannelsModel;
-			class ItemModel;
 			class JobHolderRepresentation;
 			class ChannelsFilterModel;
-			class ItemsListModel;
+			class ItemsWidget;
 
 			class Core : public QObject
 			{
@@ -106,16 +102,14 @@ namespace LeechCraft
 				ChannelsModel *ChannelsModel_;
 				QTimer *UpdateTimer_, *CustomUpdateTimer_;
 				boost::shared_ptr<StorageBackend> StorageBackend_;
-				ItemModel *ItemModel_;
 				JobHolderRepresentation *JobHolderRepresentation_;
 				QMap<QString, QDateTime> Updates_;
 				ChannelsFilterModel *ChannelsFilterModel_;
-				ItemsListModel *CurrentItemsModel_;
-				QList<boost::shared_ptr<ItemsListModel> > SupplementaryModels_;
-				LeechCraft::Util::MergeModel *ItemLists_;
-				bool MergeMode_;
 				ICoreProxy_ptr Proxy_;
 				bool Initialized_;
+				AppWideActions AppWideActions_;
+				ItemsWidget *ReprWidget_;
+				std::auto_ptr<ItemBucket> ItemBucket_;
 
 				Core ();
 			public:
@@ -136,13 +130,14 @@ namespace LeechCraft
 				bool CouldHandle (const LeechCraft::DownloadEntity&);
 				void Handle (LeechCraft::DownloadEntity);
 				void StartAddingOPML (const QString&);
-				void SetWidgets (QToolBar*, QWidget*);
+				void SetAppWideActions (const AppWideActions&);
+				const AppWideActions& GetAppWideActions () const;
 				bool DoDelayedInit ();
 				void AddFeed (const QString&, const QString&);
 				void AddFeed (const QString&, const QStringList&);
 				void RemoveFeed (const QModelIndex&);
-				void Selected (const QModelIndex&);
-				Item_ptr GetItem (const QModelIndex&) const;
+				ItemsWidget* GetReprWidget () const;
+				ItemBucket* GetItemBucket () const;
 
 				/** Returns the channels model as it is.
 				 *
@@ -156,11 +151,7 @@ namespace LeechCraft
 				 * @sa GetRawChannelsModel.
 				 */
 				QSortFilterProxyModel* GetChannelsModel () const;
-				QAbstractItemModel* GetItemsModel () const;
 				IWebBrowser* GetWebBrowser () const;
-				void MarkItemAsUnread (const QModelIndex&);
-				bool IsItemRead (int) const;
-				bool IsItemCurrent (int) const;
 				void MarkChannelAsRead (const QModelIndex&);
 				void MarkChannelAsUnread (const QModelIndex&);
 
@@ -175,13 +166,11 @@ namespace LeechCraft
 				void SetTagsForIndex (const QString&, const QModelIndex&);
 				void UpdateFavicon (const QModelIndex&);
 				QStringList GetCategories (const QModelIndex&) const;
-				QStringList GetItemCategories (int) const;
 				Feed::FeedSettings GetFeedSettings (const QModelIndex&) const;
 				void SetFeedSettings (const Feed::FeedSettings&, const QModelIndex&);
 				void UpdateFeed (const QModelIndex&, bool);
 				QModelIndex GetUnreadChannelIndex () const;
 				int GetUnreadChannelsNumber () const;
-				void AddToItemBucket (const QModelIndex&) const;
 				void AddFromOPML (const QString&,
 						const QString&,
 						const std::vector<bool>&);
@@ -196,14 +185,10 @@ namespace LeechCraft
 						const QString&,
 						const std::vector<bool>&) const;
 				JobHolderRepresentation* GetJobHolderRepresentation () const;
-				ItemModel* GetItemModel () const;
 				StorageBackend* GetStorageBackend () const;
-				void SubscribeToComments (const QModelIndex&);
 				QWebView* CreateWindow ();
 				void GetChannels (channels_shorts_t&) const;
 				void AddFeeds (const feeds_container_t&, const QString&);
-				void SetMerge (bool);
-				void CurrentChannelChanged (const QModelIndex&, bool);
 				void SetContextMenu (QMenu*);
 			public slots:
 				void openLink (const QString&);
@@ -211,7 +196,6 @@ namespace LeechCraft
 				void updateIntervalChanged ();
 				void showIconInTrayChanged ();
 				void handleSslError (QNetworkReply*);
-				void tagsUpdated ();
 			private slots:
 				void fetchExternalFile (const QString&, const QString&);
 				void scheduleSave ();
@@ -238,7 +222,6 @@ namespace LeechCraft
 				void error (const QString&) const;
 				void showDownloadMessage (const QString&);
 				void channelDataUpdated ();
-				void currentChannelChanged (const QModelIndex&);
 				void unreadNumberChanged (int) const;
 				void delegateEntity (const LeechCraft::DownloadEntity&, int*, QObject**);
 				void gotEntity (const LeechCraft::DownloadEntity&);

@@ -47,9 +47,9 @@
 #include "itemmodel.h"
 #include "jobholderrepresentation.h"
 #include "channelsfiltermodel.h"
-#include "itemslistmodel.h"
 #include "importopml.h"
 #include "addfeed.h"
+#include "itemswidget.h"
 
 namespace LeechCraft
 {
@@ -60,12 +60,8 @@ namespace LeechCraft
 			Core::Core ()
 			: SaveScheduled_ (false)
 			, ChannelsModel_ (0)
-			, ItemModel_ (0)
 			, JobHolderRepresentation_ (0)
 			, ChannelsFilterModel_ (0)
-			, CurrentItemsModel_ (new ItemsListModel)
-			, ItemLists_ (0)
-			, MergeMode_ (false)
 			, Initialized_ (false)
 			{
 				qRegisterMetaType<QItemSelection> ("QItemSelection");
@@ -78,11 +74,6 @@ namespace LeechCraft
 				qRegisterMetaTypeStreamOperators<Feed> ("LeechCraft::Plugins::Aggregator::Feed");
 				qRegisterMetaTypeStreamOperators<Item> ("LeechCraft::Plugins::Aggregator::Item");
 				qRegisterMetaTypeStreamOperators<Enclosure> ("LeechCraft::Plugins::Aggregator::Enclosure");
-			
-				QStringList placeholders;
-				placeholders << "" << "";
-				ItemLists_ = new LeechCraft::Util::MergeModel (placeholders);
-				ItemLists_->AddModel (CurrentItemsModel_);
 			}
 			
 			Core& Core::Instance ()
@@ -93,16 +84,11 @@ namespace LeechCraft
 			
 			void Core::Release ()
 			{
-				if (ItemModel_)
-					ItemModel_->saveSettings ();
 				XmlSettingsManager::Instance ()->Release ();
 				StorageBackend_.reset ();
 				delete JobHolderRepresentation_;
-				delete ItemModel_;
 				delete ChannelsFilterModel_;
 				delete ChannelsModel_;
-				delete ItemLists_;
-				delete CurrentItemsModel_;
 			}
 			
 			void Core::SetProxy (ICoreProxy_ptr proxy)
@@ -209,7 +195,7 @@ namespace LeechCraft
 					else if (str.startsWith ("feed:"))
 						str.remove  (0, 5);
 
-					Aggregator::AddFeed af (str);
+					LeechCraft::Plugins::Aggregator::AddFeed af (str);
 					if (af.exec () == QDialog::Accepted)
 						AddFeed (af.GetURL (),
 								af.GetTags ());
@@ -227,9 +213,14 @@ namespace LeechCraft
 						importDialog.GetMask ());
 			}
 
-			void Core::SetWidgets (QToolBar *bar, QWidget *tab)
+			void Core::SetAppWideActions (const AppWideActions& aw)
 			{
-				ChannelsModel_->SetWidgets (bar, tab);
+				AppWideActions_ = aw;
+			}
+
+			const AppWideActions& Core::GetAppWideActions () const
+			{
+				return AppWideActions_;
 			}
 			
 			bool Core::DoDelayedInit ()
@@ -270,17 +261,13 @@ namespace LeechCraft
 					return false;
 				}
 
-				QStringList headers;
-				headers << tr ("Name")
-					<< tr ("Date");
-				ItemLists_->SetHeaders (headers);
+				ItemBucket_.reset (new ItemBucket ());
 
 				ChannelsModel_ = new ChannelsModel ();
 				ChannelsFilterModel_ = new ChannelsFilterModel ();
 				ChannelsFilterModel_->setSourceModel (ChannelsModel_);
 				ChannelsFilterModel_->setFilterKeyColumn (0);
 			
-				ItemModel_ = new ItemModel ();
 				JobHolderRepresentation_ = new JobHolderRepresentation ();
 			
 				const int feedsTable = 1;
@@ -320,11 +307,6 @@ namespace LeechCraft
 						this,
 						SLOT (handleChannelDataUpdated (Channel_ptr)),
 						Qt::QueuedConnection);
-				connect (StorageBackend_.get (),
-						SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
-						this,
-						SLOT (handleItemDataUpdated (Item_ptr, Channel_ptr)),
-						Qt::QueuedConnection);
 			
 				ParserFactory::Instance ().Register (&RSS20Parser::Instance ());
 				ParserFactory::Instance ().Register (&Atom10Parser::Instance ());
@@ -352,6 +334,10 @@ namespace LeechCraft
 									_1));
 					}
 				}
+
+				ReprWidget_ = new ItemsWidget ();
+				ReprWidget_->SetChannelsFilter (JobHolderRepresentation_);
+				ChannelsModel_->SetWidgets (ReprWidget_->GetToolBar (), ReprWidget_);
 			
 				JobHolderRepresentation_->setSourceModel (ChannelsModel_);
 			
@@ -481,28 +467,19 @@ namespace LeechCraft
 					ChannelsModel_->RemoveChannel (shorts [i]);
 				StorageBackend_->RemoveFeed (feedURL);
 			
-				if (!MergeMode_ && feedURL  == CurrentItemsModel_->GetHash ().first)
-					CurrentItemsModel_->SetHash (qMakePair (QString (), QString ()));
-			
 				UpdateUnreadItemsNumber ();
 			}
 			
-			void Core::Selected (const QModelIndex& index)
+			ItemsWidget* Core::GetReprWidget () const
 			{
-				QModelIndex mapped = ItemLists_->mapToSource (index);
-				static_cast<ItemsListModel*> (*ItemLists_->
-						GetModelForRow (index.row ()))->Selected (mapped);
-			}
-			
-			Item_ptr Core::GetItem (const QModelIndex& index) const
-			{
-				QModelIndex mapped = ItemLists_->mapToSource (index);
-				const ItemsListModel *model = static_cast<const ItemsListModel*> (mapped.model ());
-				ItemShort item = model->GetItem (mapped);
-				return StorageBackend_->GetItem (item.Title_, item.URL_,
-						model->GetHash ().first + model->GetHash ().second);
+				return ReprWidget_;
 			}
 
+			ItemBucket* Core::GetItemBucket () const
+			{
+				return ItemBucket_.get ();
+			}
+			
 			ChannelsModel* Core::GetRawChannelsModel () const
 			{
 				return ChannelsModel_;
@@ -513,11 +490,6 @@ namespace LeechCraft
 				return ChannelsFilterModel_;
 			}
 			
-			QAbstractItemModel* Core::GetItemsModel () const
-			{
-				return ItemLists_;
-			}
-			
 			IWebBrowser* Core::GetWebBrowser () const
 			{
 				IPluginsManager *pm = Proxy_->GetPluginsManager ();
@@ -525,26 +497,6 @@ namespace LeechCraft
 				return browsers.size () ?
 					qobject_cast<IWebBrowser*> (browsers.at (0)) :
 					0;
-			}
-			
-			void Core::MarkItemAsUnread (const QModelIndex& i)
-			{
-				QModelIndex mapped = ItemLists_->mapToSource (i);
-				static_cast<ItemsListModel*> (*ItemLists_->
-						GetModelForRow (i.row ()))->MarkItemAsUnread (mapped);
-			}
-			
-			bool Core::IsItemRead (int item) const
-			{
-				LeechCraft::Util::MergeModel::const_iterator i = ItemLists_->
-					GetModelForRow (item);
-				int starting = ItemLists_->GetStartingRow (i);
-				return static_cast<ItemsListModel*> (*i)->IsItemRead (item - starting);
-			}
-			
-			bool Core::IsItemCurrent (int item) const
-			{
-				return !MergeMode_ && CurrentItemsModel_->GetSelectedRow () == item;
 			}
 			
 			void Core::MarkChannelAsRead (const QModelIndex& i)
@@ -667,9 +619,6 @@ namespace LeechCraft
 					return QStringList ();
 				}
 			
-				// TODO try to optimize by introducing the corresponding
-				// function in the storage backend to get only the
-				// categories.
 				items_shorts_t items;
 				StorageBackend_->GetItems (items, cs.ParentURL_ + cs.Title_);
 			
@@ -685,19 +634,6 @@ namespace LeechCraft
 				}
 				std::sort (result.begin (), result.end ());
 				return result;
-			}
-			
-			QStringList Core::GetItemCategories (int index) const
-			{
-				if (!SupplementaryModels_.size ())
-					return CurrentItemsModel_->GetCategories (index);
-				else
-				{
-					LeechCraft::Util::MergeModel::const_iterator i = ItemLists_->
-						GetModelForRow (index);
-					int starting = ItemLists_->GetStartingRow (i);
-					return static_cast<ItemsListModel*> (*i)->GetCategories (index - starting);
-				}
 			}
 			
 			Feed::FeedSettings Core::GetFeedSettings (const QModelIndex& index) const
@@ -766,11 +702,6 @@ namespace LeechCraft
 			int Core::GetUnreadChannelsNumber () const
 			{
 				return ChannelsModel_->GetUnreadChannelsNumber ();
-			}
-			
-			void Core::AddToItemBucket (const QModelIndex& index) const
-			{
-				ItemModel_->AddItem (GetItem (index));
 			}
 			
 			void Core::AddFromOPML (const QString& filename,
@@ -943,26 +874,9 @@ namespace LeechCraft
 				return JobHolderRepresentation_;
 			}
 			
-			ItemModel* Core::GetItemModel () const
-			{
-				return ItemModel_;
-			}
-			
 			StorageBackend* Core::GetStorageBackend () const
 			{
 				return StorageBackend_.get ();
-			}
-			
-			void Core::SubscribeToComments (const QModelIndex& index)
-			{
-				Item_ptr it = GetItem (index);
-				QString commentRSS = it->CommentsLink_;
-				QStringList tags = it->Categories_;
-			
-				QStringList addTags = Proxy_->GetTagsManager ()->
-					Split (XmlSettingsManager::Instance ()->
-							property ("CommentsTags").toString ());
-				AddFeed (commentRSS, tags + addTags);
 			}
 			
 			QWebView* Core::CreateWindow ()
@@ -1007,71 +921,6 @@ namespace LeechCraft
 				}
 			}
 			
-			void Core::SetMerge (bool merge)
-			{
-				MergeMode_ = merge;
-				if (MergeMode_)
-				{
-					for (int i = 0, size = ChannelsFilterModel_->rowCount ();
-							i < size; ++i)
-					{
-						QModelIndex index = ChannelsFilterModel_->index (i, 0);
-						ChannelShort cs;
-						try
-						{
-							cs = ChannelsModel_->
-								GetChannelForIndex (ChannelsFilterModel_->mapToSource (index));
-						}
-						catch (const std::exception& e)
-						{
-							qWarning () << Q_FUNC_INFO
-								<< e.what ();
-							continue;
-						}
-						QPair<QString, QString> hash = qMakePair (cs.ParentURL_, cs.Title_);
-			
-						if (hash == CurrentItemsModel_->GetHash ())
-							continue;
-			
-						boost::shared_ptr<ItemsListModel> ilm (new ItemsListModel);
-						ilm->Reset (hash);
-						SupplementaryModels_ << ilm;
-						ItemLists_->AddModel (ilm.get ());
-					}
-				}
-				else
-					while (SupplementaryModels_.size ())
-					{
-						ItemLists_->RemoveModel (SupplementaryModels_.at (0).get ());
-						SupplementaryModels_.removeAt (0);
-					}
-			}
-			
-			void Core::CurrentChannelChanged (const QModelIndex& si, bool repr)
-			{
-				if (MergeMode_)
-					return;
-			
-				QModelIndex index;
-				if (repr)
-				{
-					index = JobHolderRepresentation_->mapToSource (si);
-					JobHolderRepresentation_->SelectionChanged (si);
-				}
-				else
-					index = ChannelsFilterModel_->mapToSource (si);
-				try
-				{
-					ChannelShort ch = ChannelsModel_->GetChannelForIndex (index);
-					CurrentItemsModel_->Reset (qMakePair (ch.ParentURL_, ch.Title_));
-				}
-				catch (const std::exception&)
-				{
-					CurrentItemsModel_->Reset (qMakePair (QString (), QString ()));
-				}
-				emit currentChannelChanged (index);
-			}
-
 			void Core::SetContextMenu (QMenu *menu)
 			{
 				ChannelsModel_->SetMenu (menu);
@@ -1367,23 +1216,12 @@ namespace LeechCraft
 				cs.Unread_ = StorageBackend_->GetUnreadItems (cs.ParentURL_, cs.Title_);
 				ChannelsModel_->UpdateChannelData (cs);
 				UpdateUnreadItemsNumber ();
-			
-				QPair<QString, QString> newHash = qMakePair (cs.ParentURL_, cs.Title_);
-			}
-			
-			void Core::handleItemDataUpdated (Item_ptr item, Channel_ptr channel)
-			{
-				if (MergeMode_ ||
-						(qMakePair (channel->ParentURL_, channel->Title_) !=
-						 CurrentItemsModel_->GetHash ()))
-					return;
-			
-				CurrentItemsModel_->ItemDataUpdated (item);
 			}
 			
 			void Core::updateIntervalChanged ()
 			{
-				UpdateTimer_->setInterval (XmlSettingsManager::Instance ()->property ("UpdateInterval").toInt () * 60 * 1000);
+				UpdateTimer_->setInterval (XmlSettingsManager::Instance ()->
+						property ("UpdateInterval").toInt () * 60 * 1000);
 			}
 			
 			void Core::showIconInTrayChanged ()
@@ -1394,15 +1232,6 @@ namespace LeechCraft
 			void Core::handleSslError (QNetworkReply *reply)
 			{
 				reply->ignoreSslErrors ();
-			}
-			
-			void Core::tagsUpdated ()
-			{
-				if (MergeMode_)
-				{
-					SetMerge (false);
-					SetMerge (true);
-				}
 			}
 			
 			void Core::handleCustomUpdates ()

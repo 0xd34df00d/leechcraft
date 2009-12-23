@@ -28,16 +28,20 @@ namespace LeechCraft
 	{
 		namespace Aggregator
 		{
+			class ItemsWidget;
+
 			class ItemsFilterModel : public QSortFilterProxyModel
 			{
 				Q_OBJECT
 
 				bool HideRead_;
 				QSet<QString> ItemCategories_;
+				ItemsWidget *ItemsWidget_;
 			public:
 				ItemsFilterModel (QObject* = 0);
 				virtual ~ItemsFilterModel ();
 
+				void SetItemsWidget (ItemsWidget*);
 				void SetHideRead (bool);
 			protected:
 				virtual bool filterAcceptsRow (int, const QModelIndex&) const;

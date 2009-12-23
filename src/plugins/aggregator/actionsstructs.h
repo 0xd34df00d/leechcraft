@@ -16,13 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_ITEMBUCKET_H
-#define PLUGINS_AGGREGATOR_ITEMBUCKET_H
-#include <QDialog>
-#include "item.h"
-#include "ui_itembucket.h"
+#ifndef PLUGINS_AGGREGATOR_ACTIONSSTRUCTS_H
+#define PLUGINS_AGGREGATOR_ACTIONSSTRUCTS_H
 
-class QModelIndex;
+class QAction;
+class QWidget;
 
 namespace LeechCraft
 {
@@ -30,24 +28,31 @@ namespace LeechCraft
 	{
 		namespace Aggregator
 		{
-			class ItemModel;
-
-			class ItemBucket : public QDialog
+			struct AppWideActions
 			{
-				Q_OBJECT
-
-				ItemModel *ItemModel_;
-				Ui::ItemBucket Ui_;
-			public:
-				ItemBucket (QWidget* = 0);
-				virtual ~ItemBucket ();
-
-				ItemModel* GetItemModel () const;
-			private slots:
-				void on_Items__activated (const QModelIndex&);
-				void on_ActionDeleteItem__triggered ();
-				void currentItemChanged (const QModelIndex&);
+				QAction *ActionAddFeed_;
+				QAction *ActionUpdateFeeds_;
+				QAction *ActionItemBucket_;
+				QAction *ActionRegexpMatcher_;
+				QAction *ActionImportOPML_;
+				QAction *ActionExportOPML_;
+				QAction *ActionImportBinary_;
+				QAction *ActionExportBinary_;
+				QAction *ActionExportFB2_;
 			};
+
+			void SetupActionsStruct (AppWideActions&, QWidget*);
+
+			struct ChannelActions
+			{
+				QAction *ActionRemoveFeed_;
+				QAction *ActionUpdateSelectedFeed_;
+				QAction *ActionMarkChannelAsRead_;
+				QAction *ActionMarkChannelAsUnread_;
+				QAction *ActionChannelSettings_;
+			};
+
+			void SetupActionsStruct (ChannelActions&, QWidget*);
 		};
 	};
 };
