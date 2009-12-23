@@ -58,7 +58,6 @@ namespace LeechCraft
 						SIGNAL (hasVideoChanged (bool)),
 						this,
 						SLOT (handleHasVideoChanged (bool)));
-
 				Ui_.setupUi (this);
 				Ui_.VideoWidget_->installEventFilter (this);
 				Ui_.ControlsLayout_->insertWidget (0, SetupToolbar ());
@@ -66,6 +65,11 @@ namespace LeechCraft
 				Ui_.SeekSlider_->setMediaObject (MediaObject_.get ());
 
 				AudioOutput_.reset (new AudioOutput (MusicCategory, this));
+
+				connect (MediaObject_.get (),
+						SIGNAL (finished ()),
+						Ui_.VideoWidget_,
+						SLOT (exitFullScreen ()));
 
 				SetupContextMenu ();
 
