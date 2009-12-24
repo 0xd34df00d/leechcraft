@@ -53,22 +53,6 @@
         <source>XML parse error %1 at %2:%3.</source>
         <translation>Ошибка парсинга XML %1 в %2:%3.</translation>
     </message>
-    <message>
-        <source>Not and OpenSearch description.</source>
-        <translation type="obsolete">Не OpenSearch-описание.</translation>
-    </message>
-    <message>
-        <source>Malformed OpenSearch description.</source>
-        <translation type="obsolete">Плохо сформированное OpenSearch-описание.</translation>
-    </message>
-    <message>
-        <source>Enter categories</source>
-        <translation type="obsolete">Введите категории</translation>
-    </message>
-    <message>
-        <source>Please enter categories for this searcher:</source>
-        <translation type="obsolete">Пожалуйста, введите категории для этого поисковика:</translation>
-    </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::SeekThru::SearchHandler</name>
@@ -121,10 +105,6 @@
         <location filename="searchhandler.cpp" line="295"/>
         <source>Search request for URL&lt;br /&gt;%1&lt;br /&gt;was delegated, but it failed.</source>
         <translation>Поисковый запрос к URL&lt;br /&gt;%1&lt;br /&gt;был делегирван, но не удался.</translation>
-    </message>
-    <message>
-        <source>A job was delegated, but it failed.</source>
-        <translation type="obsolete">Задача была делегирована неудачно.</translation>
     </message>
 </context>
 <context>
@@ -183,13 +163,13 @@
 <context>
     <name>LeechCraft::Plugins::SeekThru::SeekThru</name>
     <message>
-        <location filename="seekthru.cpp" line="83"/>
+        <location filename="seekthru.cpp" line="87"/>
         <source>Search via OpenSearch-aware search providers.</source>
         <translation>Поиск при помощи OpenSearch-поисковиков.</translation>
     </message>
     <message>
-        <location filename="seekthru.cpp" line="145"/>
-        <location filename="seekthru.cpp" line="152"/>
+        <location filename="seekthru.cpp" line="151"/>
+        <location filename="seekthru.cpp" line="158"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
