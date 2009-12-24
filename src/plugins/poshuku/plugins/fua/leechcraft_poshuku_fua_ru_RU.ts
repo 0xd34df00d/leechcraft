@@ -55,7 +55,7 @@
         <translation>Строка идентификации</translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="97"/>
+        <location filename="fua.cpp" line="101"/>
         <source>Allows to set fake user agents for different sites.</source>
         <translation>Позволяет устанавливать поддельные user-agent для различных сайтов.</translation>
     </message>
