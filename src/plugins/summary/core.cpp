@@ -76,9 +76,6 @@ namespace LeechCraft
 
 				Default_ = CreateSummaryWidget ();
 				Default_->setProperty ("IsUnremoveable", true);
-
-				emit addNewTab (tr ("Summary"), Default_);
-				emit changeTabIcon (Default_, QIcon (":/resources/images/summary.svg"));
 			}
 
 			TreeViewReemitter* Core::GetTreeViewReemitter () const
