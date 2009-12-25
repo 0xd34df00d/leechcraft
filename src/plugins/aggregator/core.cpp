@@ -84,11 +84,14 @@ namespace LeechCraft
 			
 			void Core::Release ()
 			{
-				XmlSettingsManager::Instance ()->Release ();
-				StorageBackend_.reset ();
 				delete JobHolderRepresentation_;
 				delete ChannelsFilterModel_;
 				delete ChannelsModel_;
+				delete ReprWidget_;
+				ItemBucket_.reset ();
+
+				StorageBackend_.reset ();
+				XmlSettingsManager::Instance ()->Release ();
 			}
 			
 			void Core::SetProxy (ICoreProxy_ptr proxy)
