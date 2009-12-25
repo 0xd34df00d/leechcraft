@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>550</width>
-    <height>511</height>
+    <height>535</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -191,6 +191,13 @@
          </widget>
         </item>
        </layout>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="TryLive_">
+        <property name="text">
+         <string>Try to play this torrent live</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

@@ -48,6 +48,7 @@ namespace LeechCraft
 				void SetSavePath (const QString&);
 				QString GetFilename () const;
 				QString GetSavePath () const;
+				bool GetTryLive () const;
 				QVector<bool> GetSelectedFiles () const;
 				Core::AddType GetAddType () const;
 				/** Sets tags for the newly added torrent.

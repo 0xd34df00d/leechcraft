@@ -41,6 +41,9 @@ SET (SRCS
 	fastspeedcontrolwidget.cpp
 	banpeersdialog.cpp
 	ipfilterdialog.cpp
+	livestreammanager.cpp
+	livestreamplugin.cpp
+	livestreamdevice.cpp
 	)
 SET (HEADERS
 	torrentplugin.h
@@ -72,6 +75,9 @@ SET (HEADERS
 	fastspeedcontrolwidget.h
 	banpeersdialog.h
 	ipfilterdialog.h
+	livestreammanager.h
+	livestreamplugin.h
+	livestreamdevice.h
 	newtorrentparams.h
 	torrentinfo.h
 	fileinfo.h

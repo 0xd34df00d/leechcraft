@@ -20,11 +20,13 @@
 #include <memory>
 #include <numeric>
 #include <typeinfo>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/fstream.hpp>
 #include <QFile>
 #include <QProgressDialog>
 #include <QDir>
 #include <QFileInfo>
-#include <QTimerEvent>
 #include <QSettings>
 #include <QToolBar>
 #include <QTimer>
@@ -32,9 +34,8 @@
 #include <QDomElement>
 #include <QDomNode>
 #include <QtDebug>
-#include <QThreadPool>
 #include <QApplication>
-#include <QRunnable>
+#include <QStandardItemModel>
 #include <QDomElement>
 #include <QDomDocument>
 #include <QXmlStreamWriter>
@@ -54,9 +55,6 @@
 #include <libtorrent/storage.hpp>
 #include <libtorrent/file.hpp>
 #include <libtorrent/magnet_uri.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/fstream.hpp>
 #include <plugininterface/tagscompletionmodel.h>
 #include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
@@ -64,6 +62,7 @@
 #include "peersmodel.h"
 #include "torrentfilesmodel.h"
 #include "representationmodel.h"
+#include "livestreammanager.h"
 #include "config.h"
 
 using namespace LeechCraft::Util;
@@ -124,6 +123,7 @@ namespace LeechCraft
 			, PeersModel_ (new PeersModel ())
 			, TorrentFilesModel_ (new TorrentFilesModel (false))
 			, WebSeedsModel_ (new QStandardItemModel ())
+			, LiveStreamManager_ (new LiveStreamManager ())
 			, SaveScheduled_ (false)
 			, Toolbar_ (0)
 			, TabWidget_ (0)
@@ -133,6 +133,11 @@ namespace LeechCraft
 				ExternalAddress_ = tr ("Unknown");
 				WebSeedsModel_->setHorizontalHeaderLabels (QStringList (tr ("URL"))
 						<< tr ("Standard"));
+
+				connect (LiveStreamManager_.get (),
+						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						this,
+						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
 			}
 			
 			Core::~Core ()
@@ -740,6 +745,7 @@ namespace LeechCraft
 			int Core::AddFile (const QString& filename,
 					const QString& path,
 					const QStringList& tags,
+					bool tryLive,
 					const QVector<bool>& files,
 					TaskParameters params)
 			{
@@ -813,6 +819,12 @@ namespace LeechCraft
 				};
 				Handles_.append (tmp);
 				endInsertRows ();
+
+				if (tryLive)
+				{
+					handle.set_sequential_download (true);
+					LiveStreamManager_->EnableOn (handle);
+				}
 			
 				ScheduleSave ();
 				return tmp.ID_;
@@ -1577,7 +1589,12 @@ namespace LeechCraft
 					LeechCraft::ShouldQuerySource;
 				e.Location_ = torrent.TorrentFileName_;
 				e.Additional_ [" Tags"] = torrent.Tags_;
-				emit fileFinished (e);
+				emit gotEntity (e);
+			}
+
+			void Core::PieceRead (const libtorrent::read_piece_alert& a)
+			{
+				LiveStreamManager_->PieceRead (a);
 			}
 			
 			void Core::MoveUp (const std::deque<int>& selections)
@@ -1975,7 +1992,7 @@ namespace LeechCraft
 						LeechCraft::ShouldQuerySource;
 					e.Location_ = torrent.TorrentFileName_;
 					e.Additional_ [" Tags"] = torrent.Tags_;
-					emit fileFinished (e);
+					emit gotEntity (e);
 				}
 
 				emit taskFinished (torrent.ID_);
@@ -2383,6 +2400,11 @@ namespace LeechCraft
 				{
 //					Core::Instance ()->FileFinished (a.handle, a.index);
 				}
+
+				void operator() (const libtorrent::read_piece_alert& a) const
+				{
+					Core::Instance ()->PieceRead (a);
+				}
 			};
 			
 #undef __LLEECHCRAFT_API
@@ -2405,6 +2427,7 @@ namespace LeechCraft
 							, libtorrent::file_error_alert
 							, libtorrent::file_rename_failed_alert
 							, libtorrent::file_completed_alert
+							, libtorrent::read_piece_alert
 							>::handle_alert (a, sd);
 					}
 					catch (const libtorrent::libtorrent_exception& e)
@@ -2728,8 +2751,17 @@ namespace LeechCraft
 					mask |= libtorrent::alert::peer_notification;
 				if (XmlSettingsManager::Instance ()->property ("NotificationPortMapping").toBool ())
 					mask |= libtorrent::alert::port_mapping_notification;
+
 				if (XmlSettingsManager::Instance ()->property ("NotificationStorage").toBool ())
 					mask |= libtorrent::alert::storage_notification;
+				else
+					QMessageBox::warning (0,
+							tr ("LeechCraft BitTorrent"),
+							tr ("Storage notifications are disabled. Live streaming "
+								"definitely won't work without them, so if you are "
+								"experiencing troubles, reenable storage notifications "
+								"in \"Notifications\" section of BitTorrent settings."));
+
 				if (XmlSettingsManager::Instance ()->property ("NotificationTracker").toBool ())
 					mask |= libtorrent::alert::tracker_notification;
 				if (XmlSettingsManager::Instance ()->property ("NotificationStatus").toBool ())
