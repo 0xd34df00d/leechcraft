@@ -792,7 +792,10 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 			p.Location_ = QDir::tempPath ();
 		return DoDownload (sd, p, id, pr);
 	}
-	else if ((p.Parameters_ & LeechCraft::AutoAccept) &&
+	else if (((p.Parameters_ & LeechCraft::AutoAccept) ||
+				numHandlers == 1 &&
+				XmlSettingsManager::Instance ()->
+					property ("DontAskWhenSingle").toBool ()) &&
 			dia->GetFirstEntityHandler ())
 		return DoHandle (dia->GetFirstEntityHandler (), p);
 	else
