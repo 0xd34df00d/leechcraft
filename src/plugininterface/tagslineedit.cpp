@@ -72,7 +72,9 @@ void TagsLineEdit::insertTag (const QString& completion)
 	if (completion.startsWith (wtext))
 		wtext.clear ();
 	int pos = wtext.lastIndexOf ("; ");
-	wtext = wtext.left (pos).append ("; ").append (completion);
+	if (pos >= 0)
+		wtext = wtext.left (pos).append ("; ");
+	wtext.append (completion);
 	wtext = wtext.simplified ();
 	setText (wtext);
 }
