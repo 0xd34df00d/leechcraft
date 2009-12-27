@@ -321,17 +321,25 @@ namespace LeechCraft
 		{
 			FlatTreeItem_ptr folder = GetFolder (tag);
 			QList<FlatTreeItem_ptr>& c = folder->C_;
+			int findex = Root_->C_.indexOf (folder);
 			for (int i = 0, size = c.size ();
 					i < size; ++i)
 			{
 				if (c.at (i)->Index_ != pidx)
 					continue;
 
-				beginRemoveRows (index (Root_->C_.indexOf (folder), 0), i, i);
+				beginRemoveRows (index (findex, 0), i, i);
 				Items_.remove (pidx, c.at (i));
 				c.removeAt (i);
 				endRemoveRows ();
 				break;
+			}
+
+			if (c.isEmpty ())
+			{
+				beginRemoveRows (QModelIndex (), findex, findex);
+				Root_->C_.removeAt (findex);
+				endRemoveRows ();
 			}
 		}
 
