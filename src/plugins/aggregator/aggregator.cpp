@@ -204,6 +204,13 @@ namespace LeechCraft
 				Impl_->FlatToFolders_->SetTagsManager (Core::Instance ().GetProxy ()->GetTagsManager ());
 				Impl_->FlatToFolders_->SetSourceModel (Core::Instance ().GetChannelsModel ());
 				Impl_->Ui_.Feeds_->setModel (Impl_->FlatToFolders_.get ());
+				Impl_->Ui_.Feeds_->expandAll ();
+				connect (Impl_->FlatToFolders_.get (),
+						SIGNAL (rowsInserted (const QModelIndex&,
+								int, int)),
+						Impl_->Ui_.Feeds_,
+						SLOT (expandAll ()));
+
 				Impl_->Ui_.Feeds_->addAction (Impl_->
 						ChannelActions_.ActionMarkChannelAsRead_);
 				Impl_->Ui_.Feeds_->addAction (Impl_->
