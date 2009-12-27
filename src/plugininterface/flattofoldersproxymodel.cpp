@@ -338,6 +338,8 @@ namespace LeechCraft
 		void FlatToFoldersProxyModel::HandleChanged (const QModelIndex& idx)
 		{
 			QSet<QString> newTags = QSet<QString>::fromList (idx.data (RoleTags).toStringList ());
+			if (newTags.isEmpty ())
+				newTags << QString ();
 
 			QPersistentModelIndex pidx (idx);
 			QList<FlatTreeItem_ptr> items = Items_.values (pidx);
