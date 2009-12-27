@@ -105,8 +105,16 @@ void TagsLineEdit::keyPressEvent (QKeyEvent *e)
 
 	QLineEdit::keyPressEvent (e);
 
-	bool cos = e->modifiers () & (Qt::ControlModifier | Qt::ShiftModifier);
-	if (!Completer_ || (cos && e->text ().isEmpty ()))
+	bool cos = e->modifiers () & (Qt::ControlModifier |
+			Qt::ShiftModifier |
+			Qt::AltModifier |
+			Qt::MetaModifier);
+	bool isShortcut = e->modifiers () & (Qt::ControlModifier |
+			Qt::AltModifier |
+			Qt::ShiftModifier);
+	if (!Completer_ ||
+			(cos && e->text ().isEmpty ()) ||
+			isShortcut)
 		return;
 
 	QString completionPrefix = textUnderCursor ();
