@@ -78,6 +78,16 @@ namespace LeechCraft
 				filterParametersChanged ();
 			}
 
+			SummaryWidget::~SummaryWidget ()
+			{
+				Toolbar_->clear ();
+
+				QWidget *widget = Ui_.ControlsDockWidget_->widget ();
+				Ui_.ControlsDockWidget_->setWidget (0);
+				if (widget)
+					widget->setParent (0);
+			}
+
 			void SummaryWidget::Remove ()
 			{
 				emit needToClose ();
@@ -234,8 +244,6 @@ namespace LeechCraft
 						Toolbar_->addActions (controls->actions ());
 					if (addiInfo)
 					{
-						if (addiInfo->parent () != this)
-							addiInfo->setParent (this);
 						Ui_.ControlsDockWidget_->setWidget (addiInfo);
 						Ui_.ControlsDockWidget_->show ();
 					}

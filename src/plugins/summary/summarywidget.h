@@ -44,6 +44,7 @@ namespace LeechCraft
 				QToolBar *Toolbar_;
 			public:
 				SummaryWidget (QWidget* = 0);
+				virtual ~SummaryWidget ();
 
 				void Remove ();
 				QToolBar* GetToolBar () const;
