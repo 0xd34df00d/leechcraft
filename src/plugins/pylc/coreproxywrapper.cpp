@@ -16,11 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_PYLC_WRAPPEROBJECT_H
-#define PLUGINS_PYLC_WRAPPEROBJECT_H
-#include <QObject>
-#include <PythonQt/PythonQt.h>
-#include <interfaces/iinfo.h>
+#include "coreproxywrapper.h"
 
 namespace LeechCraft
 {
@@ -28,35 +24,21 @@ namespace LeechCraft
 	{
 		namespace PyLC
 		{
-			class WrapperObject : public QObject
-								, public IInfo
+			CoreProxyWrapper::CoreProxyWrapper (ICoreProxy_ptr wrapped)
+			: W_ (wrapped)
 			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo)
+			}
 
-				QString Filename_;
-				PythonQtObjectPtr Module_;
-			public:
-				WrapperObject (const QString&, QObject* = 0);
+			QNetworkAccessManager* CoreProxyWrapper::GetNetworkAccessManager () const
+			{
+				return W_->GetNetworkAccessManager ();
+			}
 
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
-			private:
-				void* qt_metacast_dummy (const char*);
-				QVariant Call (const QString&, const QVariantList& = QVariantList ());
-				bool Implements (const char*);
-			};
+			QStringList CoreProxyWrapper::GetSearchCategories () const
+			{
+				return W_->GetSearchCategories ();
+			}
 		};
 	};
 };
-
-#endif
 

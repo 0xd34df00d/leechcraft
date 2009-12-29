@@ -18,6 +18,7 @@
 
 #include "wrapperobject.h"
 #include <QIcon>
+#include "coreproxywrapper.h"
 
 namespace LeechCraft
 {
@@ -45,32 +46,28 @@ namespace LeechCraft
 				Module_ = PythonQt::self ()->createModuleFromFile (filename, filename);
 			}
 
-			void WrapperObject::Init (ICoreProxy_ptr)
+			void WrapperObject::Init (ICoreProxy_ptr proxy)
 			{
 			}
 
 			void WrapperObject::SecondInit ()
 			{
-				PythonQt::self ()->call (Module_, "SecondInit", QVariantList ());
+				Call ("SecondInit");
 			}
 
 			void WrapperObject::Release ()
 			{
-				PythonQt::self ()->call (Module_, "Release", QVariantList ());
+				Call ("Release");
 			}
 
 			QString WrapperObject::GetName () const
 			{
-				QVariant result = PythonQt::self ()->call (Module_,
-						"GetName", QVariantList ());
-				return result.toString ();
+				return Call ("GetName").toString ();
 			}
 
 			QString WrapperObject::GetInfo () const
 			{
-				QVariant result = PythonQt::self ()->call (Module_,
-						"GetInfo", QVariantList ());
-				return result.toString ();
+				return Call ("GetInfo").toString ();
 			}
 
 			QIcon WrapperObject::GetIcon () const
@@ -80,27 +77,26 @@ namespace LeechCraft
 
 			QStringList WrapperObject::Provides () const
 			{
-				QVariant result = PythonQt::self ()->call (Module_,
-						"Provides", QVariantList ());
-				return result.toStringList ();
+				return Call ("Provides").toStringList ();
 			}
 
 			QStringList WrapperObject::Needs () const
 			{
-				QVariant result = PythonQt::self ()->call (Module_,
-						"Needs", QVariantList ());
-				return result.toStringList ();
+				return Call ("Needs").toStringList ();
 			}
 
 			QStringList WrapperObject::Uses () const
 			{
-				QVariant result = PythonQt::self ()->call (Module_,
-						"Uses", QVariantList ());
-				return result.toStringList ();
+				return Call ("Uses").toStringList ();
 			}
 
 			void WrapperObject::SetProvider (QObject*, const QString&)
 			{
+			}
+
+			QVariant WrapperObject::Call (const QString& name, const QVariantList& args)
+			{
+				return PythonQt::self ()->call (Module_, name, args);
 			}
 
 			bool WrapperObject::Implements (const char *interface)

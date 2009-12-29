@@ -16,10 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_PYLC_WRAPPEROBJECT_H
-#define PLUGINS_PYLC_WRAPPEROBJECT_H
+#ifndef PLUGINS_PYLC_COREPROXYWRAPPER_H
+#define PLUGINS_PYLC_COREPROXYWRAPPER_H
 #include <QObject>
-#include <PythonQt/PythonQt.h>
 #include <interfaces/iinfo.h>
 
 namespace LeechCraft
@@ -28,31 +27,33 @@ namespace LeechCraft
 	{
 		namespace PyLC
 		{
-			class WrapperObject : public QObject
-								, public IInfo
+			class CoreProxyWrapper : public QObject
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo)
 
-				QString Filename_;
-				PythonQtObjectPtr Module_;
+				ICoreProxy_ptr W_;
 			public:
-				WrapperObject (const QString&, QObject* = 0);
-
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
-			private:
-				void* qt_metacast_dummy (const char*);
-				QVariant Call (const QString&, const QVariantList& = QVariantList ());
-				bool Implements (const char*);
+				CoreProxyWrapper (ICoreProxy_ptr);
+			public slots:
+				QNetworkAccessManager* GetNetworkAccessManager () const;
+				/*
+				const IShortcutProxy* GetShortcutProxy () const;
+				QTreeView* GetCurrentView () const;
+				QModelIndex MapToSource (const QModelIndex&) const;
+				Util::BaseSettingsManager* GetSettingsManager () const;
+				QIcon GetIcon (const QString& on, const QString& off = QString ()) const;
+				QMainWindow* GetMainWindow () const;
+				QTabWidget* GetTabWidget () const;
+				ITagsManager* GetTagsManager () const;
+				*/
+				QStringList GetSearchCategories () const;
+				/*
+				int GetID ();
+				void FreeID (int);
+				QObject* GetTreeViewReemitter () const;
+				IPluginsManager* GetPluginsManager () const;
+				QObject* GetSelf ();
+				*/
 			};
 		};
 	};
