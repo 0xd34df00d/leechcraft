@@ -48,6 +48,10 @@ namespace LeechCraft
 
 			void WrapperObject::Init (ICoreProxy_ptr proxy)
 			{
+				PythonQt::self ()->registerClass (&CoreProxyWrapper::staticMetaObject);
+				QVariantList args;
+				args << QVariant::fromValue<QObject*> (new CoreProxyWrapper (proxy));
+				Call ("Init", args);
 			}
 
 			void WrapperObject::SecondInit ()
@@ -94,7 +98,7 @@ namespace LeechCraft
 			{
 			}
 
-			QVariant WrapperObject::Call (const QString& name, const QVariantList& args)
+			QVariant WrapperObject::Call (const QString& name, const QVariantList& args) const
 			{
 				return PythonQt::self ()->call (Module_, name, args);
 			}
