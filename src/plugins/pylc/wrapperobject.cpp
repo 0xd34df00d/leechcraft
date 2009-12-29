@@ -116,7 +116,28 @@ namespace LeechCraft
 
 			QIcon WrapperObject::GetIcon () const
 			{
-				return QIcon ();
+				try
+				{
+					QVariant value = Call ("GetIcon");
+					if (value.canConvert<QIcon> ())
+					{
+						return value.value<QIcon> ();
+					}
+					else
+					{
+						qWarning () << Q_FUNC_INFO
+							<< "Can't load icon for plugin \""
+							<< GetName ()
+							<< "\"";
+						return QIcon ();
+					}
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO 
+						<< e.what ();			    
+					return QIcon ();
+				}
 			}
 
 			QStringList WrapperObject::Provides () const
@@ -161,8 +182,20 @@ namespace LeechCraft
 				}
 			}
 
-			void WrapperObject::SetProvider (QObject*, const QString&)
+			void WrapperObject::SetProvider (QObject* provider, const QString& feature)
 			{
+				QVariantList args;
+				args.append (QVariant::fromValue (provider));
+				args.append (feature);
+				try
+				{
+					Call ("SetProvider", args);
+				}
+				catch (std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< e.what ();
+				}
 			}
 
 			QVariant WrapperObject::Call (const QString& name, QVariantList args) const
