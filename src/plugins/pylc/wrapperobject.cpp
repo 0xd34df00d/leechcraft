@@ -68,7 +68,9 @@ namespace LeechCraft
 
 			QString WrapperObject::GetInfo () const
 			{
-				return QString ();
+				QVariant result = PythonQt::self ()->call (Module_,
+						"GetInfo", QVariantList ());
+				return result.toString ();
 			}
 
 			QIcon WrapperObject::GetIcon () const
@@ -78,17 +80,23 @@ namespace LeechCraft
 
 			QStringList WrapperObject::Provides () const
 			{
-				return QStringList ();
+				QVariant result = PythonQt::self ()->call (Module_,
+						"Provides", QVariantList ());
+				return result.toStringList ();
 			}
 
 			QStringList WrapperObject::Needs () const
 			{
-				return QStringList ();
+				QVariant result = PythonQt::self ()->call (Module_,
+						"Needs", QVariantList ());
+				return result.toStringList ();
 			}
 
 			QStringList WrapperObject::Uses () const
 			{
-				return QStringList ();
+				QVariant result = PythonQt::self ()->call (Module_,
+						"Uses", QVariantList ());
+				return result.toStringList ();
 			}
 
 			void WrapperObject::SetProvider (QObject*, const QString&)
