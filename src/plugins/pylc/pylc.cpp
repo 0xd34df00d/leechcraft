@@ -18,8 +18,8 @@
 
 #include "pylc.h"
 #include <QIcon>
-#include <PythonQt/PythonQt.h>
 #include <plugininterface/util.h>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -30,16 +30,6 @@ namespace LeechCraft
 			void Plugin::Init (ICoreProxy_ptr)
 			{
 				Translator_.reset (Util::InstallTranslator ("pylc"));
-
-				PythonQt::init (PythonQt::RedirectStdOut);
-				connect (PythonQt::self (),
-						SIGNAL (pythonStdOut (const QString&)),
-						this,
-						SLOT (handleStdOut (const QString&)));
-				connect (PythonQt::self (),
-						SIGNAL (pythonStdErr (const QString&)),
-						this,
-						SLOT (handleStdErr (const QString&)));
 			}
 
 			void Plugin::SecondInit ()
@@ -85,14 +75,9 @@ namespace LeechCraft
 			{
 			}
 
-			void Plugin::handleStdOut (const QString& str)
+			QList<QObject*> Plugin::GetPlugins ()
 			{
-				qDebug () << "<python>" << str;
-			}
-
-			void Plugin::handleStdErr (const QString& str)
-			{
-				qWarning () << "<python>" << str;
+				return Core::Instance ().GetPlugins ();
 			}
 		};
 	};

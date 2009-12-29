@@ -16,14 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_PYLC_PYLC_H
-#define PLUGINS_PYLC_PYLC_H
+#ifndef PLUGINS_PYLC_CORE_H
+#define PLUGINS_PYLC_CORE_H
 #include <memory>
 #include <QObject>
-#include <QStringList>
-#include <QTranslator>
-#include <interfaces/iinfo.h>
-#include <interfaces/ipluginadaptor.h>
 
 namespace LeechCraft
 {
@@ -31,27 +27,22 @@ namespace LeechCraft
 	{
 		namespace PyLC
 		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IPluginAdaptor
+			class Core : public QObject
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IPluginAdaptor)
 
-				std::auto_ptr<QTranslator> Translator_;
+				QList<QObject*> Plugins_;
+
+				Core ();
 			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
+				static Core& Instance ();
 
 				QList<QObject*> GetPlugins ();
+			private:
+				QStringList FindPlugins () const;
+			private slots:
+				void handleStdOut (const QString&);
+				void handleStdErr (const QString&);
 			};
 		};
 	};

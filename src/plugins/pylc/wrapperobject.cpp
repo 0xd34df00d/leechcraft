@@ -37,9 +37,13 @@ namespace LeechCraft
 				return QObject::qt_metacast(_clname);
 			}
 
-			WrapperObject::WrapperObject (QObject *parent)
+			WrapperObject::WrapperObject (const QString& filename,
+					QObject *parent)
 			: QObject (parent)
+			, Filename_ (filename)
 			{
+				Module_ = PythonQt::self ()->createModuleFromFile (filename, filename);
+				qDebug () << Q_FUNC_INFO << filename << GetName ();
 			}
 
 			void WrapperObject::Init (ICoreProxy_ptr)
@@ -48,15 +52,20 @@ namespace LeechCraft
 
 			void WrapperObject::SecondInit ()
 			{
+				PythonQt::self ()->call (Module_, "SecondInit", QVariantList ());
 			}
 
 			void WrapperObject::Release ()
 			{
+				PythonQt::self ()->call (Module_, "Release", QVariantList ());
 			}
 
 			QString WrapperObject::GetName () const
 			{
-				return QString ();
+				QVariant result = PythonQt::self ()->call (Module_,
+						"Release", QVariantList ());
+				qDebug () << "GetName" << result;
+				return result.toString ();
 			}
 
 			QString WrapperObject::GetInfo () const

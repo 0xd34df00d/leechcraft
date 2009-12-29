@@ -19,6 +19,7 @@
 #ifndef PLUGINS_PYLC_WRAPPEROBJECT_H
 #define PLUGINS_PYLC_WRAPPEROBJECT_H
 #include <QObject>
+#include <PythonQt/PythonQt.h>
 #include <interfaces/iinfo.h>
 
 namespace LeechCraft
@@ -32,8 +33,11 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 				Q_INTERFACES (IInfo)
+
+				QString Filename_;
+				PythonQtObjectPtr Module_;
 			public:
-				WrapperObject (QObject* = 0);
+				WrapperObject (const QString&, QObject* = 0);
 
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
@@ -46,6 +50,7 @@ namespace LeechCraft
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
 			private:
+				void* qt_metacast_dummy (const char*);
 				bool Implements (const char*);
 			};
 		};
