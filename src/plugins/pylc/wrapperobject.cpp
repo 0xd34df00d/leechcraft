@@ -43,7 +43,6 @@ namespace LeechCraft
 			, Filename_ (filename)
 			{
 				Module_ = PythonQt::self ()->createModuleFromFile (filename, filename);
-				qDebug () << Q_FUNC_INFO << filename << GetName ();
 			}
 
 			void WrapperObject::Init (ICoreProxy_ptr)
@@ -63,8 +62,7 @@ namespace LeechCraft
 			QString WrapperObject::GetName () const
 			{
 				QVariant result = PythonQt::self ()->call (Module_,
-						"Release", QVariantList ());
-				qDebug () << "GetName" << result;
+						"GetName", QVariantList ());
 				return result.toString ();
 			}
 
