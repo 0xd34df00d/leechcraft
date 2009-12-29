@@ -48,6 +48,9 @@ namespace LeechCraft
 				QStringList Needs () const;
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
+			private slots:
+				void handleStdOut (const QString&);
+				void handleStdErr (const QString&);
 			};
 		};
 	};
