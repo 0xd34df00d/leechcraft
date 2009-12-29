@@ -165,7 +165,7 @@ namespace LeechCraft
 			{
 			}
 
-			QVariant WrapperObject::Call (const QString& name, const QVariantList& args) const
+			QVariant WrapperObject::Call (const QString& name, QVariantList args) const
 			{
 				if (Module_.isNull ())
 				{
@@ -177,7 +177,7 @@ namespace LeechCraft
 				}
 
 				PythonQtObjectPtr instance =
-					PythonQt::self ()->lookupObject (Module_, "instance");
+					PythonQt::self ()->lookupObject (Module_, "pInst");
 				QVariant result = PythonQt::self ()->call (instance, name, args);
 				if (PythonQt::self ()->handleError ())
 				{

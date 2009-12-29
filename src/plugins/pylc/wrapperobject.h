@@ -35,7 +35,7 @@ namespace LeechCraft
 				Q_INTERFACES (IInfo)
 
 				QString Filename_;
-				PythonQtObjectPtr Module_;
+				mutable PythonQtObjectPtr Module_;
 			public:
 				WrapperObject (const QString&, QObject* = 0);
 
@@ -51,7 +51,7 @@ namespace LeechCraft
 				void SetProvider (QObject*, const QString&);
 			private:
 				void* qt_metacast_dummy (const char*);
-				QVariant Call (const QString&, const QVariantList& = QVariantList ()) const;
+				QVariant Call (const QString&, QVariantList = QVariantList ()) const;
 				bool Implements (const char*);
 			};
 		};
